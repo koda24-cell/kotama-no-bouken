@@ -95,13 +95,14 @@ let hiddenBossFirstClear=false;
 const stageEvents = [
  {id:"forest-intro",title:"はじまりの樹海",pages:["コタマたちは、魔法の石像が眠るという樹海へ足を踏み入れた。","木々の間から、小さな影がこちらを見つめている。冒険の始まりだ。"]},
  {id:"goblin-intro",title:"森の奥へ",pages:["樹海の奥では、ゴブリンたちが道を塞いでいた。","仲間と力を合わせて、先へ進もう。"]},
- {id:"dragon-intro",title:"炎の竜",pages:["熱風が吹き荒れ、巨大な翼が空を覆う。","この先に待つのは、炎をまとうドラゴンだ。"]},
+ {id:"wolf-intro",title:"霧の中の瞳",pages:["ゴブリンの群れを抜けると、森は深い霧に包まれた。","霧の向こうで、いくつもの瞳が光っている。","オオカミだ。姿を惑わせる幻影が、コタマたちを待ち受けていた。"]},
+ {id:"dragon-intro",title:"炎の竜",pages:["熱風が吹き荒れ、巨大な翼が空を覆う。","この先に待つのは、炎をまとうドラゴンだ。","仲間たちは武器を握りしめ、炎の中へ踏み出した。"]},
  {id:"maou-intro",title:"魔王の城",pages:["長い冒険の果てに、魔王の城へたどり着いた。","仲間たちとともに、最後の戦いへ。"]},
  {id:"slime-clear",trigger:"clear",stage:1,title:"樹海の小さな勝利",pages:["スライムを退け、コタマたちは樹海の奥へ進む。","まだ冒険は始まったばかり。仲間と一緒なら、きっと大丈夫だ。"]},
  {id:"goblin-clear",trigger:"clear",stage:2,title:"ゴブリンの包囲を抜けて",pages:["ゴブリンたちの包囲を突破した。","森の奥から、さらに強い気配が近づいてくる。"]},
  {id:"wolf-clear",trigger:"clear",stage:3,title:"静かな森を越えて",pages:["オオカミの幻影が霧の中へ消えていった。","木々の向こうには、赤い光が揺れている。"]},
  {id:"dragon-clear",trigger:"clear",stage:4,title:"炎竜を越えて",pages:["炎竜との激闘を乗り越えた。","残る道は、魔王の城へと続いている。"]},
- {id:"maou-clear",trigger:"clear",stage:5,title:"冒険の終わり",pages:["魔王を倒し、世界に平穏が戻った。","コタマたちの冒険は、仲間との絆とともに語り継がれていく。"]},
+ {id:"maou-clear",trigger:"clear",stage:5,title:"冒険の終わり",pages:["魔王を倒し、世界に平穏が戻った。","樹海に朝日が差し込み、仲間たちは静かに顔を見合わせた。","コタマたちの冒険は、仲間との絆とともに語り継がれていく。"]},
  {id:"hidden-boss-clear",trigger:"clear",hiddenBoss:true,title:"混沌を越えて",pages:["混沌の幻影を打ち破り、深い静寂が訪れた。","新たな強敵に挑んだ経験は、仲間たちの胸に刻まれた。"]}
 ];
 const growth={};
@@ -162,9 +163,9 @@ equipment.samurai.katana1="katana";equipment.samurai.armor="leather-armor";
 const enemyData=[
   {name:"スライム",element:"無属性",weaknesses:["炎","氷","雷","聖"],resistances:[],physicalResistances:["斬撃","打撃","壊","突"],hp:180,attack:12,defense:4,spDefense:35,physicalDamageRate:.18,gold:7,sprite:"slime",actionName:"粘液攻撃",image:"assets/monsters/suraimu.png"},
   {name:"ゴブリン",element:"無属性",weaknesses:["炎","斬撃"],resistances:[],hp:360,attack:32,defense:10,gold:10,sprite:"goblin",actionName:"棍棒の一撃",image:"assets/monsters/goburinn.png"},
-  {name:"オオカミ",element:"無属性",weaknesses:["雷","打撃","壊"],resistances:[],hp:660,attack:30,defense:20,gold:14,sprite:"wolf",actionName:"鋭い牙",image:"assets/monsters/ookami.png"},
-  {name:"ドラゴン",element:"炎",weaknesses:["氷","斬撃"],resistances:["炎"],hp:1600,attack:65,defense:40,spAttack:90,spDefense:20,gold:35,sprite:"dragon",actionName:"鋭い爪"},
-  {name:"魔王",element:"無属性",weaknesses:["雷"],resistances:["炎","氷","聖","斬撃","打撃","壊","突"],hp:2700,attack:70,spAttack:100,defense:100,gold:35,sprite:"maou",actionName:"深淵の斬撃",image:"assets/monsters/maou.png"}
+  {name:"オオカミ",element:"無属性",weaknesses:["雷","打撃","壊"],resistances:[],hp:660,attack:38,defense:20,gold:25,sprite:"wolf",actionName:"鋭い牙",image:"assets/monsters/ookami.png"},
+  {name:"ドラゴン",element:"炎",weaknesses:["氷","斬撃"],resistances:["炎"],hp:1600,attack:65,defense:40,spAttack:90,spDefense:20,gold:60,sprite:"dragon",actionName:"鋭い爪"},
+  {name:"魔王",element:"無属性",weaknesses:["雷"],resistances:["炎","氷","聖","斬撃","打撃","壊","突"],hp:2700,attack:70,spAttack:100,defense:100,gold:100,sprite:"maou",actionName:"深淵の斬撃",image:"assets/monsters/maou.png"}
 ];
 const $=id=>document.getElementById(id);
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -485,7 +486,7 @@ function renderCompendium(){
  const progress=$("compendium-progress");if(progress)progress.textContent=`${names.filter(n=>compendium[n]?.defeated).length} / 5 討伐`;
  const unlock=$("hidden-boss-unlock");if(unlock){unlock.innerHTML=hiddenBossUnlocked()?`<h3>隠しステージ解放！</h3><p>「混沌の幻影」への挑戦条件を達成しました。</p><button id="hidden-boss-start" class="primary-button">隠しボスに挑戦</button>`:'<h3>隠しステージ</h3><p>解放条件：魔王・ドラゴン討伐、通常モンスター図鑑80%以上</p>';$("hidden-boss-start")?.addEventListener("click",startHiddenBoss);}
 }
-function renderEventGallery(){const box=$("event-gallery");if(!box)return;box.innerHTML=stageEvents.filter(e=>{const st=e.hiddenBoss?6:(e.stage||({"forest-intro":1,"goblin-intro":2,"dragon-intro":4,"maou-intro":5}[e.id]));return st?!!stageEntered[st]:!!stageEntered[1];}).map(e=>`<article><strong>${esc(e.title)}</strong><p>${eventRead[e.id]?"閲覧済み":"未読"}</p><button class="secondary-button" data-event-open="${esc(e.id)}">読む</button></article>`).join("")||"<p>ステージに到達すると、ここに冒険の記録が追加されます。</p>";box.querySelectorAll("[data-event-open]").forEach(b=>b.addEventListener("click",()=>playEventById(b.dataset.eventOpen)));}
+function renderEventGallery(){const box=$("event-gallery");if(!box)return;box.innerHTML=stageEvents.filter(e=>{const st=e.hiddenBoss?6:(e.stage||({"forest-intro":1,"goblin-intro":2,"wolf-intro":3,"dragon-intro":4,"maou-intro":5}[e.id]));return st?!!stageEntered[st]:!!stageEntered[1];}).map(e=>`<article><strong>${esc(e.title)}</strong><p>${eventRead[e.id]?"閲覧済み":"未読"}</p><button class="secondary-button" data-event-open="${esc(e.id)}">読む</button></article>`).join("")||"<p>ステージに到達すると、ここに冒険の記録が追加されます。</p>";box.querySelectorAll("[data-event-open]").forEach(b=>b.addEventListener("click",()=>playEventById(b.dataset.eventOpen)));}
 let activeEvent=null,activeEventPage=0,eventAfterAction=null,storyRun=0,storySkip=false,storyWake=null,storyBgmAudio=null,storyBgmFadeTimer=null;
 // ストーリー演出：黒い暗転画面に白い文字が一文字ずつ現れ、ゆっくり消えていく。
 // ボタンやタブは無い。画面をクリック（またはEnter/Space）すると演出を飛ばせる。
@@ -541,7 +542,7 @@ function closeStoryEvent(markRead=true){
   if(closingStoryAudio){const initial=closingStoryAudio.volume,started=performance.now(),duration=850;const fade=setInterval(()=>{const t=Math.min(1,(performance.now()-started)/duration);closingStoryAudio.volume=initial*(1-t);if(t>=1){clearInterval(fade);finish();}},50);}else finish();
 }
 function playEventById(id){const ev=stageEvents.find(e=>e.id===id);if(ev)openEvent(ev);}
-function playStageEvent(stage,done){const ids={1:"forest-intro",2:"goblin-intro",4:"dragon-intro",5:"maou-intro"};const ev=stageEvents.find(e=>e.id===ids[stage]&&!e.trigger);if(ev&&!eventRead[ev.id])openEvent(ev,done);else if(done)done();}
+function playStageEvent(stage,done){const ids={1:"forest-intro",2:"goblin-intro",3:"wolf-intro",4:"dragon-intro",5:"maou-intro"};const ev=stageEvents.find(e=>e.id===ids[stage]&&!e.trigger);if(ev&&!eventRead[ev.id])openEvent(ev,done);else if(done)done();}
 function playStageClearEvent(stage,hiddenBoss,done){const ev=stageEvents.find(e=>e.trigger==="clear"&&(hiddenBoss?e.hiddenBoss===true:e.stage===stage));if(ev&&!eventRead[ev.id])openEvent(ev,done);else if(done)done();}
 function setupStoryEvents(){
   const skip=()=>{if(!activeEvent)return;storySkip=true;if(storyWake)storyWake();};
@@ -1068,7 +1069,7 @@ async function beginStageCore(){
   arena?.classList.add("stage-arrival-pending");
   if(isMaouStage)arena?.classList.add("maou-awaiting");
 
-  const stageEventIds={1:"forest-intro",2:"goblin-intro",4:"dragon-intro",5:"maou-intro"};
+  const stageEventIds={1:"forest-intro",2:"goblin-intro",3:"wolf-intro",4:"dragon-intro",5:"maou-intro"};
   const introEvent=stageEvents.find(e=>e.id===stageEventIds[battleState.stage]&&!e.trigger);
   stageIntroStoryPending=!!(introEvent&&!eventRead[introEvent.id]);
   maouIntroBgmPersistent=false;
