@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fantasy RPG</title>
+  <link rel="stylesheet" href="./style.css?v=20261104-15">
+  <script src="./script.js?v=20261104-15" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+</head>
+<body>
+  <div class="game">
+
+    <header class="topbar">
+      <div class="logo">FANTASY RPG</div>
+      <button id="retreat-button" class="retreat-button" type="button">撤退</button>
+      <button id="list-button" type="button" aria-label="メニューを開く" title="メニューを開く" aria-expanded="false">☰</button>
+      <div id="list-menu" class="list-menu" hidden>
+        <div class="list-menu-heading">メニュー</div>
+        <button id="save-button" type="button">SAVE</button>
+        <button id="load-button" type="button">LOAD</button>
+        <button id="skip-button" aria-pressed="false" type="button">戦闘速度：通常</button>
+        <button id="compendium-menu-button" type="button">図鑑</button>
+        <button id="achievements-menu-button" type="button">実績</button>
+      </div>
+
+      <nav class="main-nav">
+        <button data-screen="home">ホーム</button>
+        <button data-screen="formation">編成</button>
+        <button data-screen="shop">ショップ</button>
+        <button data-screen="training">強化・育成</button>
+        <button data-screen="settings">設定</button>
+      </nav>
+
+      <div class="gold-display">
+        <span>GOLD</span>
+        <strong id="gold">50</strong>
+      </div>
+    </header>
+
+    <main>
+      <!-- ホーム -->
+      <section id="home" class="screen active">
+        <div class="page-heading">
+
+
+          <p>仲間を編成して、モンスターとの戦いに挑もう。</p>
+        </div>
+
+        <div class="home-title-logo" role="img" aria-label="コタマのぼうけん">コタマのぼうけん</div>
+        <div id="home-party" class="home-party"></div>
+
+        <div class="home-actions">
+          <button id="start-button" class="primary-button">
+            START
+          </button>
+          <p id="start-warning" class="warning" role="alert"></p>
+          <button id="event-gallery-button" class="secondary-button">冒険の記録</button>
+          <section id="event-gallery" class="event-gallery" hidden></section>
+        </div>
+      </section>
+
+      <!-- モンスター図鑑 -->
+      <section id="compendium" class="screen">
+        <div class="page-heading"><p>出会ったモンスターを記録します。討伐すると詳細が解放されます。</p></div>
+        <div class="section-title"><h2>モンスター図鑑</h2><span id="compendium-progress">0 / 5</span></div>
+        <div id="compendium-list" class="compendium-grid"></div>
+        <section id="hidden-boss-unlock" class="hidden-boss-unlock"></section>
+        <div class="page-actions"><button class="secondary-button" data-screen="home">BACK</button></div>
+      </section>
+
+      <!-- 実績 -->
+      <section id="achievements" class="screen">
+        <div class="page-heading"><p>冒険の中で達成した記録と、これから挑戦できる目標です。</p></div>
+        <div class="section-title"><h2>実績一覧</h2><span id="achievement-progress">0 / 12 達成</span></div>
+        <div id="achievement-list" class="achievement-grid"></div>
+        <div class="page-actions"><button class="secondary-button" data-screen="home">BACK</button></div>
+      </section>
+
+      <!-- 編成 -->
+      <section id="formation" class="screen">
+        <div class="page-heading">
+          <p>戦闘に参加する仲間を4人選んでください。</p>
+        </div>
+
+        <div class="section-title">
+          <h2>参加メンバー</h2>
+          <span id="party-count">0 / 4</span>
+        </div>
+
+        <div id="selected-party" class="character-grid selected-grid"></div>
+
+        <div class="section-title">
+          <h2>仲間候補</h2>
+          <span>キャラクターを選択して編成</span>
+        </div>
+
+        <div id="character-roster" class="character-grid"></div>
+
+        <div class="page-actions">
+          <button class="secondary-button" data-screen="home">
+            BACK
+          </button>
+          <button id="formation-done" class="primary-button">
+            決定
+          </button>
+        </div>
+      </section>
+
+      <!-- ショップ -->
+      <section id="shop" class="screen">
+        <div class="page-heading">
+          <p>ゴールドを使って、戦いに必要なアイテムを購入しよう。</p>
+        </div>
+
+        <div id="shop-buyer" class="shop-buyer"></div>
+        <div id="shop-category-tabs" class="category-tabs"></div>
+        <div id="shop-items" class="shop-grid"></div>
+
+        <div class="page-actions">
+          <button class="secondary-button" data-screen="home">
+            BACK
+          </button>
+        </div>
+      </section>
+
+      <!-- 強化・育成 -->
+      <section id="training" class="screen">
+        <div class="page-heading"><p>仲間ごとのスキルを開放し、装備を製作・強化します。</p></div>
+        <section id="progression-panel" class="progression-panel"></section>
+        <div class="page-actions"><button class="secondary-button" data-screen="home">BACK</button></div>
+      </section>
+
+      <!-- 設定 -->
+      <section id="settings" class="screen">
+        <div class="page-heading">
+          <p>ゲームの動作を設定します。</p>
+        </div>
+
+        <div class="settings-panel">
+          <label class="setting-row"><span>BGM</span><input id="bgm-toggle" type="checkbox" checked></label>
+          <label class="setting-row volume-row"><span>BGM音量 <output id="bgm-volume-value">15%</output></span><input id="bgm-volume" type="range" min="0" max="100" value="15"></label>
+          <label class="setting-row"><span>効果音</span><input id="se-toggle" type="checkbox" checked></label>
+          <label class="setting-row volume-row"><span>SE音量 <output id="se-volume-value">20%</output></span><input id="se-volume" type="range" min="0" max="100" value="20"></label>
+          <h2 class="soundtrack-heading">サウンドトラック</h2>
+          <p class="soundtrack-help">チェックを付けると試聴できます。別の曲にチェックすると、前の曲は停止します。</p>
+          <div class="soundtrack-list">
+            <label class="soundtrack-row"><span><strong>ファイナルバトル・アーク</strong><small>魔王戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="arc" aria-label="ファイナルバトル・アークを試聴"></label>
+            <label class="soundtrack-row"><span><strong>ファイナルバトル・オーバーチュア</strong><small>魔王戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="overture" aria-label="ファイナルバトル・オーバーチュアを試聴"></label>
+            <label class="soundtrack-row"><span><strong>March for a Delightful Future</strong><small>ENDING画面 BGM</small></span><input type="checkbox" class="track-preview" data-track="ending" aria-label="ENDING BGMを試聴"></label>
+            <label class="soundtrack-row"><span><strong>Deckrail</strong><small>ドラゴン戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="dragonDeckrail" aria-label="Deckrailを試聴"></label>
+            <label class="soundtrack-row"><span><strong>Derringer</strong><small>ドラゴン戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="dragonDerringer" aria-label="Derringerを試聴"></label>
+            <label class="soundtrack-row"><span><strong>Zero Defects</strong><small>裏ボス戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="hiddenZero" aria-label="Zero Defectsを試聴"></label>
+            <label class="soundtrack-row"><span><strong>Do not go against me</strong><small>裏ボス戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="hiddenAgainst" aria-label="Do not go against meを試聴"></label>
+            <label class="soundtrack-row"><span><strong>Swirling Black</strong><small>裏ボス戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="hiddenSwirling" aria-label="Swirling Blackを試聴"></label>
+            <label class="soundtrack-row"><span><strong>Soldiers</strong><small>ゴブリン戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="goblinSoldiers" aria-label="Soldiersを試聴"></label>
+            <label class="soundtrack-row"><span><strong>Leathers Motorcycle</strong><small>ゴブリン戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="goblinLeathers" aria-label="Leathers Motorcycleを試聴"></label>
+            <label class="soundtrack-row"><span><strong>Lower Sanctum</strong><small>スライム戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="slimeLower" aria-label="Lower Sanctumを試聴"></label>
+            <label class="soundtrack-row"><span><strong>Sakura Mellows</strong><small>スライム戦 BGM</small></span><input type="checkbox" class="track-preview" data-track="slimeSakura" aria-label="Sakura Mellowsを試聴"></label>
+            <label class="soundtrack-row"><span><strong>古き剣</strong><small>ストーリーアニメーション BGM</small></span><input type="checkbox" class="track-preview" data-track="storySword" aria-label="古き剣を試聴"></label>
+            <label class="soundtrack-row"><span><strong>沈黙の聖堂</strong><small>ストーリーアニメーション BGM</small></span><input type="checkbox" class="track-preview" data-track="storySanctum" aria-label="沈黙の聖堂を試聴"></label>
+            <label class="soundtrack-row"><span><strong>ホーム BGM</strong><small>ゲーム内シンセサウンド</small></span><input type="checkbox" class="track-preview" data-track="home" aria-label="ホームBGMを試聴"></label>
+            <label class="soundtrack-row"><span><strong>通常戦闘 BGM</strong><small>ゲーム内シンセサウンド</small></span><input type="checkbox" class="track-preview" data-track="normal" aria-label="通常戦闘BGMを試聴"></label>
+          </div>
+        </div>
+
+        <div class="page-actions">
+          <button class="secondary-button" data-screen="home">
+            BACK
+          </button>
+        </div>
+      </section>
+
+      <!-- 暗転してステージ名を表示する切り替え演出 -->
+      <div id="stage-transition" class="stage-transition" hidden aria-hidden="true">
+        <div class="stage-transition-title" id="stage-transition-title">STAGE 1</div><div class="stage-particles" id="stage-particles" aria-hidden="true"></div>
+      </div>
+
+      <!-- 戦闘 -->
+      <section id="battle" class="screen battle-screen">
+        <div class="page-heading battle-heading">
+          <p class="eyebrow">BATTLE STAGE</p>
+          <h1 id="stage-title">STAGE 1 / 5</h1>
+          <p id="turn-counter">第1ターン　行動選択</p>
+        </div>
+        <div class="battle-arena">
+          <div class="stage-stars" aria-hidden="true">*　　 .　　 *　　 .　　 *</div>
+          <div id="battle-enemy" class="enemy-display">
+            <div class="enemy-placeholder">MONSTER</div>
+            <h2 id="enemy-name">スライム</h2>
+            <div class="hp-track"><div id="enemy-hp-bar" class="hp-fill"></div></div>
+            <div id="enemy-break-track" class="enemy-break-track" hidden><i></i><span></span></div>
+            <p id="enemy-hp-text" aria-hidden="true"></p>
+          </div>
+          <button id="battle-log-open" class="battle-log-open" type="button" aria-haspopup="dialog">LOG</button>
+        </div>
+        <div class="battle-window event-window">
+          <div class="window-title">EVENT</div>
+          <div id="event-log" class="event-log" aria-live="polite"><p>冒険が始まる。</p></div>
+        </div>
+        <div id="battle-party" class="battle-party"></div>
+        <div class="battle-bottom" id="battle-bottom">
+          <div class="battle-window command-window">
+            <div class="window-title" id="command-title">コタマ　どうする？</div>
+            <div id="battle-commands" class="battle-commands" role="menu">
+              <p class="empty-note">戦闘コマンドを準備しています。</p>
+            </div>
+            <p id="command-hint" class="command-hint">コマンドを選択してください。</p>
+          </div>
+          <div class="battle-window command-info-window">
+            <div class="window-title">COMMAND INFO</div>
+            <p id="command-description" class="command-description">コマンドを選択すると、攻撃やスキルの内容がここに表示されます。</p>
+            <div id="battle-log" class="battle-log" hidden aria-live="polite"><p>戦闘準備完了。</p></div>
+          </div>
+          <div id="battle-result" class="battle-result" hidden>
+            <h2 id="result-title"></h2><p id="result-message"></p>
+            <button id="next-stage-button" class="primary-button">次へ</button>
+            <button id="retry-stage-button" class="primary-button" hidden>同じステージに再挑戦</button>
+            <button id="formation-retry-button" class="secondary-button" hidden>編成・装備を変更して再挑戦</button>
+            <button id="return-home-button" class="secondary-button">ホームへ戻る</button>
+          </div>
+        </div>
+        <div id="battle-support" class="battle-support" role="status">全員の行動を選ぶと、味方の行動が順番に再生されます。</div>
+      </section>
+
+      <!-- ゲームクリア -->
+      <section id="clear" class="screen">
+        <div class="clear-panel">
+          <p class="eyebrow">ADVENTURE COMPLETE</p>
+          <h1>GAME CLEAR</h1>
+          <p>ラスボスを倒し、冒険を成し遂げた！</p>
+          <p id="clear-gold-summary" class="clear-gold-summary">魔王討伐報酬：0G ／ 現在の所持金：50G</p>
+          <button class="primary-button" data-screen="home">
+            ホームへ戻る
+          </button>
+        </div>
+      </section>
+      <section id="battle-log-dialog" class="game-dialog battle-log-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="battle-log-dialog-title">
+        <div class="game-dialog-panel battle-log-dialog-panel">
+          <div class="battle-log-dialog-head"><h2 id="battle-log-dialog-title">BATTLE LOG</h2><button id="battle-log-close" class="secondary-button" type="button">閉じる</button></div>
+          <div id="battle-log-dialog-content" class="battle-log-dialog-content" aria-live="polite"></div>
+        </div>
+      </section>
+      <section id="tutorial-overlay" class="tutorial-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+        <div id="tutorial-spotlight" class="tutorial-spotlight" hidden aria-hidden="true"></div>
+        <div class="tutorial-panel">
+          <p class="eyebrow">TUTORIAL</p>
+          <h2 id="tutorial-title">冒険へようこそ！</h2>
+          <p id="tutorial-message">まずは戦い方と画面の見方を確認していこう！</p>
+          <div class="tutorial-actions"><button id="tutorial-next" class="primary-button" type="button">次へ</button></div>
+        </div>
+      </section>
+      <!-- 購入ログポップアップ -->
+      <section id="story-event" class="story-event" hidden role="dialog" aria-modal="true" aria-label="ストーリー">
+        <div class="story-event-stage"><p id="story-event-text" class="story-event-text"></p></div>
+      </section>
+      <section id="retreat-dialog" class="game-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="retreat-dialog-title">
+        <div class="game-dialog-panel retreat-dialog-panel">
+          <h2 id="retreat-dialog-title">本当に撤退しますか？</h2>
+          <p><strong id="retreat-stage-name">ステージ</strong>から再戦可能です。<br>撤退すると今回の戦闘報酬は獲得できません。</p>
+          <div class="dialog-actions"><button id="retreat-yes" class="primary-button" type="button">はい</button><button id="retreat-no" class="secondary-button" type="button">いいえ</button></div>
+        </div>
+      </section>
+					<div id="purchase-popup" class="purchase-popup"
+     role="status" aria-live="polite" hidden>
+			  <div class="purchase-popup-message" id="purchase-popup-message">
+	    アイテムを購入しました！ご武運を！
+			  </div>
+</div>
+    </main>
+
+    <footer class="footer-controls">
+      <span id="system-message" role="status"></span>
+    </footer>
+    <section id="stage-select-dialog" class="game-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="stage-select-title">
+      <div class="game-dialog-panel"><h2 id="stage-select-title">ステージ選択</h2><p>解放済みのステージを選択してください。クリア済みのステージにも再挑戦できます。</p><div id="stage-select-list" class="stage-select-list"></div><button type="button" class="secondary-button" id="stage-select-close">閉じる</button></div>
+    </section>
+    <section id="save-dialog" class="game-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="save-dialog-title">
+      <div class="game-dialog-panel"><h2 id="save-dialog-title">セーブデータ</h2><p id="save-dialog-help">保存先のスロットを選択してください。</p><div id="save-slot-list" class="save-slot-list"></div><button id="save-dialog-close" type="button" class="secondary-button">閉じる</button></div>
+    </section>
+    <section id="load-dialog" class="game-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="load-dialog-title">
+      <div class="game-dialog-panel"><h2 id="load-dialog-title">ロードデータ</h2><p>読み込むスロットを選択してください。現在の進行状況は失われる場合があります。</p><div id="load-slot-list" class="save-slot-list"></div><div class="load-dialog-actions"><button id="new-game-button" type="button" class="secondary-button">最初から</button><button id="load-dialog-close" type="button" class="secondary-button">閉じる</button></div></div>
+    </section>
+
+  </div>
+</body>
+</html>
