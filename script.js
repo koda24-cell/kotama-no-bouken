@@ -583,7 +583,7 @@ function renderStageEnvironment(stage){
   const env=battleState.hiddenBossMode
     ?{key:"chaos",name:"混沌の領域",description:"現実と闇が溶け合う、異形の力に満ちた空間。"}
     :stage<=3
-      ?{key:"forest",name:"はじまりの樹海",description:"木漏れ日が差し込む穏やかな森。魔物の気配が少しずつ濃くなっていく。"}
+      ?{key:"forest",name:"はじまりの樹海",description:"木漏れ日が差し込む穏やかながらも、魔物の気配が漂い始めた最初の修練の森。"}
       :stage===4
         ?{key:"lava",name:"焦土の溶岩洞窟",description:"地表の割れ目からマグマが吹き出す、熱気と硫黄に満ちた危険な地底通路。"}
         :{key:"castle",name:"魔王城・回廊",description:"冷たく冷え切った石畳の回廊。その先では魔王が待ち構える。"};
