@@ -866,6 +866,7 @@ function stopPreview(resumeBgm=true){
   if(resumeBgm&&wasActive&&state.screen==="settings"&&$("bgm-toggle")?.checked)startBgm();
 }
 function previewTrack(key){
+  if(bgmUnlocks[key]!==true){renderBgmUnlocks();setSystemMessage("この楽曲はまだ解放されていません。");return;}
   stopPreview(false);
   stopBgm(); // 試聴中はゲーム内BGMを停止し、選択した音源だけを再生する。
   const toggle=document.querySelector(`.track-preview[data-track="${key}"]`);
@@ -1042,7 +1043,7 @@ function buildEquipmentState(savedEquipment,migrateStarterGear=true){
   if(migrateStarterGear)for(const [cid,slots] of Object.entries(starters))for(const [slot,id] of Object.entries(slots))if(!clean[cid][slot])clean[cid][slot]=id;
   return clean;
 }
-function createSaveData(){return {saveVersion:9,tutorial:JSON.parse(JSON.stringify(tutorialState)),state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
+function createSaveData(){return {saveVersion:9,tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
 
 function persistAutoSave(){try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));return true;}catch(error){console.warn("オートセーブに失敗:",error);return false;}}
 function createBattleStartSnapshot(){return {game:createSaveData(),battle:{stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode,maxStage:battleState.maxStage,enemy:JSON.parse(JSON.stringify(battleState.enemy)),bossBgmChoice:battleState.bossBgmChoice,unionGauges:{...battleState.unionGauges}}};}
@@ -1070,6 +1071,12 @@ function loadGame(){try{
   const legacyTrainingPoints=Math.max(0,Math.floor(Number(d.trainingPoints)||Math.max(0,(Number(d.state.maxUnlockedStage)||1)-1)));for(const c of characters){const basePoints=Math.max(0,Math.floor(Number(d.trainingPoints?.[c.id]??(typeof d.trainingPoints==="object"?0:legacyTrainingPoints))||0));const priorAwards=d.stageSkillPointAwarded?Object.values(d.stageSkillPointAwarded).filter(stage=>stage?.[c.id]).length:Object.values(d.stageCleared||{}).filter(Boolean).length;trainingPoints[c.id]=basePoints+((Number(d.saveVersion)||0)<7?priorAwards*2:0);}stageCleared={...(d.stageCleared||{})};stageEntered={...(d.stageEntered||{})};stageSkillPointAwarded=JSON.parse(JSON.stringify(d.stageSkillPointAwarded||{}));if(!d.stageEntered){for(let i=1;i<(Number(d.state.maxUnlockedStage)||1);i++)stageEntered[i]=true;}if(!d.stageCleared){for(let i=1;i<(Number(d.state.maxUnlockedStage)||1);i++)stageCleared[i]=true;}if(!d.stageSkillPointAwarded){for(const stage of Object.keys(stageCleared))if(stageCleared[stage])stageSkillPointAwarded[stage]=Object.fromEntries(characters.map(c=>[c.id,true]));}
   if(Array.isArray(d.combatants))for(const saved of d.combatants){const c=getCharacter(saved.id);if(c){c.hp=Math.max(0,Math.min(effectiveStats(c).maxHp,Number(saved.hp)||0));c.sp=Math.max(0,Math.min(c.maxSp,Number(saved.sp)||0));}}
   for(const name of compendiumNames()){compendium[name]={encountered:!!d.compendium?.[name]?.encountered,defeated:!!d.compendium?.[name]?.defeated};}
+  for(const key of Object.keys(enemyEncounterCounts))delete enemyEncounterCounts[key];
+  if(d.enemyEncounterCounts&&typeof d.enemyEncounterCounts==="object")for(const [name,count] of Object.entries(d.enemyEncounterCounts))if(compendium[name]||name==="混沌の幻影")enemyEncounterCounts[name]=Math.max(0,Math.floor(Number(count)||0));
+  for(const name of compendiumNames())if(!enemyEncounterCounts[name]&&compendium[name]?.encountered)enemyEncounterCounts[name]=1;
+  for(const key of Object.keys(bgmUnlocks))delete bgmUnlocks[key];Object.assign(bgmUnlocks,{home:true,normal:true});
+  if(d.bgmUnlocks&&typeof d.bgmUnlocks==="object")for(const key of BGM_TRACK_KEYS)if(d.bgmUnlocks[key]===true)bgmUnlocks[key]=true;
+  renderBgmUnlocks();
   // ドラゴン討伐記録が残っている旧セーブでは、STAGE 5（魔王の城）を解放する。
   // 討伐記録を根拠にするため、所持品・育成値・他ステージの進行は変更しない。
   if(compendium["ドラゴン"]?.defeated){if(!stageCleared[4]||state.maxUnlockedStage<5)repairedStageProgress=true;stageCleared[4]=true;state.maxUnlockedStage=Math.max(state.maxUnlockedStage,5);}
@@ -1104,7 +1111,9 @@ function resetTransientBattleState(){
 }
 function startBattle(stage=1){battleBgmSelections={};stageIntroStoryPending=false;maouIntroBgmPersistent=false;battleState.tutorialMode=false;state.firstStageStarted=true;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));}catch(e){}retryContext=null;battleState.hiddenBossMode=false;battleState.maxStage=5;resetTransientBattleState();battleState.koCount=0;battleState.rankResult=null;battleState.stage=Math.max(1,Math.min(state.maxUnlockedStage||1,Number(stage)||1));battleState.unionGauges={kotama:0,knight:0,healer:0,warrior:0,mage:0,samurai:0};getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});beginStage();}
 async function beginStageCore(){
+  const resumedBattle=!!pendingBattleResumeEnemy;
   battleState.enemy=pendingBattleResumeEnemy||createEnemy(battleState.stage);pendingBattleResumeEnemy=null;registerEncounter(battleState.enemy.name);
+  if(!resumedBattle){enemyEncounterCounts[battleState.enemy.name]=(Number(enemyEncounterCounts[battleState.enemy.name])||0)+1;unlockBgmForEncounter(battleState.enemy.name,battleState.stage);}
   stageEntered[battleState.stage]=true;
   const breakMax=BATTLE_RULES.bosses[battleState.enemy.name]?.break||0;if(breakMax){battleState.enemy._breakMax=breakMax;battleState.enemy._breakCurrent=breakMax;}goblinCharging=false;goblinTeamAttackUsed=false;goblinTeamAttackPending=false;burnedTurns={};specialOmenShown={};battleState.wolfEvasionTurns=0;battleState.wolfHalfHpEvasionUsed=false;battleState.wolfLastTargetId=null;battleState.wolfClones=[];battleState.wolfDisplayOrder=[];battleState.wolfCloneTurns=0;battleState.wolfCloneLastTargetId=null;battleState.wolfSplitPending=false;if(battleState.stage===5&&!battleState.bossBgmChoice)battleState.bossBgmChoice=Math.random()<.5?"arc":"overture";
   battleState.turnCount=0;
@@ -1128,6 +1137,7 @@ async function beginStageCore(){
   $("battle-support").hidden=false;
   $("event-log").replaceChildren();
   $("stage-title").textContent=battleState.hiddenBossMode?"HIDDEN BOSS":"STAGE "+battleState.stage+" / "+battleState.maxStage;
+  renderStageEnvironment(battleState.stage);
   $("battle-result").hidden=true;
   $("retry-stage-button").hidden=true;$("formation-retry-button").hidden=true;$("return-home-button").hidden=true;
   $("battle-commands").hidden=false;
@@ -1507,7 +1517,9 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
   const enemyStatuses=[];
   if(e.name==="オオカミ"&&!splitWolf&&battleState.wolfEvasionTurns>0)enemyStatuses.push(`<span class="enemy-status-buff">警鐘 回避上昇 ${battleState.wolfEvasionTurns}T</span>`);
   
-  if(Number(e._defenseDownTurns)>0)enemyStatuses.push(`<span class="enemy-status-debuff">防御力低下 ${e._defenseDownTurns}T</span>`);
+  if(Number(e._defenseDownTurns)>0)enemyStatuses.push(`<span class="enemy-status-debuff">▼ 防御低下 ${e._defenseDownTurns}T</span>`);
+  if(Number(e._brokenTurns)>0)enemyStatuses.push(`<span class="enemy-status-debuff">💥 ブレイク ${e._brokenTurns}T</span>`);
+  if(e._transformed)enemyStatuses.push(`<span class="enemy-status-buff">✦ 強化状態</span>`);
   statusHost.innerHTML=enemyStatuses.join("");
   const hpTrack=display.querySelector(".hp-track");if(hpTrack&&statusHost.parentElement!==display)display.insertBefore(statusHost,hpTrack);
   statusHost.hidden=enemyStatuses.length===0;
@@ -2030,7 +2042,7 @@ async function finishStage(){
   const droppedItems=awardMaterials(e);
   if(e.name==="混沌の幻影"&&hiddenBossWasFirstClear)droppedItems.push({id:"chaos_crystal",name:"混沌の結晶",count:3});
   await showItemDropAnimation(droppedItems);
-  if(!battleState.hiddenBossMode){stageCleared[battleState.stage]=true;state.maxUnlockedStage=Math.max(state.maxUnlockedStage||1,Math.min(battleState.maxStage,battleState.stage+1));stageSkillPointAwarded[battleState.stage]=stageSkillPointAwarded[battleState.stage]||{};for(const member of getParty())if(!stageSkillPointAwarded[battleState.stage][member.id]){trainingPoints[member.id]=(trainingPoints[member.id]||0)+3;stageSkillPointAwarded[battleState.stage][member.id]=true;}}
+  if(!battleState.hiddenBossMode){stageCleared[battleState.stage]=true;state.maxUnlockedStage=Math.max(state.maxUnlockedStage||1,Math.min(battleState.maxStage,battleState.stage+1));stageSkillPointAwarded[battleState.stage]=stageSkillPointAwarded[battleState.stage]||{};for(const member of getParty())if(!stageSkillPointAwarded[battleState.stage][member.id]){trainingPoints[member.id]=(trainingPoints[member.id]||0)+3;stageSkillPointAwarded[battleState.stage][member.id]=true;}if(battleState.stage>=battleState.maxStage)unlockBgm("ending");}
   // 討伐記録・報酬・クリア記録・次ステージ解放を、画面遷移前に一括保存する。
   persistAutoSave();
   renderGold();
