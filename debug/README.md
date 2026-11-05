@@ -4,7 +4,7 @@
 ローカル開発サーバー（例：localhost）でホーム画面を表示し、Ctrl + Shift + D を押します。戦闘中は安全のため起動を拒否します。GitHub Pagesなどの公開ホストではdebug-loader.jsが管理モジュールを読み込まないため、デバッグ機能は無効です。
 
 ## 構成
-- debug-loader.js：localhost / 127.0.0.1 / file: のみで管理モジュールを読み込む
+- debug-loader.js：localhost / 127.0.0.1 のみで管理モジュールを読み込む
 - debug.js / debug.css：独立管理UI
 - debug-save.js：kotamaDebugTestSaveV1 のみを操作
 - debug-assets.js：マニフェストとHTML/CSS/JSの静的参照調査
