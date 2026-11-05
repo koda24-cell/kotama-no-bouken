@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-06",
+  "source": "GitHub main tree at inspection time; regenerate after asset changes",
+  "files": [
+    {
+      "path": "assets/buttons/練習２_03.png",
+      "size": 7061,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/buttons/練習２_06.png",
+      "size": 5560,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/buttons/練習２_08.png",
+      "size": 7548,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/buttons/練習２_11.png",
+      "size": 5706,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/buttons/練習２_14.png",
+      "size": 6681,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/characters/hi-ra-.png",
+      "size": 282204,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/characters/kishi.png",
+      "size": 248046,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/characters/kotama.png",
+      "size": 272019,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/characters/mahoutukai.png",
+      "size": 265298,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/characters/sennshi.png",
+      "size": 95573,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/monsters/goburinn.png",
+      "size": 1886958,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/monsters/maou.png",
+      "size": 395591,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/monsters/ookami.png",
+      "size": 86628,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/monsters/suraimu.png",
+      "size": 103470,
+      "extension": "png",
+      "category": "image"
+    },
+    {
+      "path": "assets/music/Final Battle Arc.mp3",
+      "size": 7307113,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/Final Battle Overture.mp3",
+      "size": 8678019,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/March_for__delightful_future.mp3",
+      "size": 10564048,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/ストーリー/古き剣.mp3",
+      "size": 4341913,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/ストーリー/沈黙の聖堂.mp3",
+      "size": 5162957,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/仕分け雨/Digilune.mp3",
+      "size": 3605420,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/仕分け雨/Sunny_day_shopping.mp3",
+      "size": 1998424,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/仕分け雨/あやしいお店.mp3",
+      "size": 3841920,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/仕分け雨/夜闇に、風に紛れて.mp3",
+      "size": 7611569,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/仕分け雨/蒼獣シーガー.mp3",
+      "size": 2511512,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/戦闘/Deckrail.mp3",
+      "size": 3025683,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/戦闘/Derringer.mp3",
+      "size": 2499975,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/戦闘/Do_not_go_against_me.mp3",
+      "size": 4750176,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/戦闘/Leathers_Motorcycle.mp3",
+      "size": 3336444,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/戦闘/Lower_Sanctum.mp3",
+      "size": 3685800,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/戦闘/Sakura_Mellows.mp3",
+      "size": 5336357,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/戦闘/Soldiers.mp3",
+      "size": 3671562,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/戦闘/Swirling_Black.mp3",
+      "size": 2416302,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/music/戦闘/Zero_Defects.mp3",
+      "size": 2626612,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/se/bukikyouka/決定ボタンを押す10.mp3",
+      "size": 58176,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/haiboku/おやすみ.mp3",
+      "size": 248642,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/home/決定ボタンを押す33.mp3",
+      "size": 43257,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/senntou/ダメージ.mp3",
+      "size": 45447,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/senntou/打撃音_3.mp3",
+      "size": 61696,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/senntou/斬撃音.mp3",
+      "size": 54251,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/senntou/決定ボタンを押す15.mp3",
+      "size": 20688,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/shop/決定ボタンを押す14.mp3",
+      "size": 40896,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/syouri/アイテムを入手2.mp3",
+      "size": 49024,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/tekikoudou/16bitアタック.mp3",
+      "size": 57996,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/tekikoudou/スライムの攻撃.mp3",
+      "size": 15672,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/tekikoudou/ドラゴンが火を吐く.mp3",
+      "size": 37965,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/tekikoudou/ドラゴンの鳴き声1.mp3",
+      "size": 78336,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/tekikoudou/ドラゴンの鳴き声2.mp3",
+      "size": 42048,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/unionskill/キラーン！.mp3",
+      "size": 33524,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/unionskill/居合抜き1.mp3",
+      "size": 62692,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/unionskill/聖魔法.mp3",
+      "size": 103444,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/se/レトロアクション.mp3",
+      "size": 6270,
+      "extension": "mp3",
+      "category": "se"
+    },
+    {
+      "path": "assets/serihu/ganner/ショットガンのポンプアクション1.mp3",
+      "size": 26330,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/ganner/拳銃をチャッと構える.mp3",
+      "size": 25076,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kishi/「ここで退くわけには…」.mp3",
+      "size": 36736,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kishi/「そこ！」.mp3",
+      "size": 26496,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kishi/「たあ！」.mp3",
+      "size": 26496,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kishi/「もっと冷静になることです」.mp3",
+      "size": 40832,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kishi/「覚悟を…決めましょう」.mp3",
+      "size": 36736,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kotama/「くっ、こんなはずでは……」.mp3",
+      "size": 60185,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kotama/「ぐっ！」.mp3",
+      "size": 25703,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kotama/「これは強敵だな…！」.mp3",
+      "size": 40750,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kotama/「とう！」.mp3",
+      "size": 26957,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kotama/「やった！」.mp3",
+      "size": 15672,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kotama/「効かないぞ！」.mp3",
+      "size": 25703,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/kotama/「受けてみろ！奥義！」.mp3",
+      "size": 35107,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/tiyushi/「やりました！」.mp3",
+      "size": 26330,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/tiyushi/「強そう…大丈夫かな…。」.mp3",
+      "size": 80874,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/tiyushi/「彼の者に再び命を与えよ！」.mp3",
+      "size": 59558,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/tiyushi/「心の準備をしないと…！」.mp3",
+      "size": 47646,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/tiyushi/「怖いです…」.mp3",
+      "size": 25076,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/tiyushi/「神の裁きを！」.mp3",
+      "size": 28838,
+      "extension": "mp3",
+      "category": "music"
+    },
+    {
+      "path": "assets/serihu/tiyushi/「負けました…」.mp3",
+      "size": 40750,
+      "extension": "mp3",
+      "category": "music"
+    }
+  ]
+}
