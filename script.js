@@ -554,6 +554,77 @@ function renderAll(){
   for(const job of jobs){try{job();}catch(error){console.error(`[Render] ${job.name} failed:`,error);if(job===renderProgressionPanel){const box=$("progression-panel");if(box)box.innerHTML='<p class="empty-note">強化・育成データの表示中にエラーが発生しました。画面を再読み込みしてください。</p>';}}}
 }
 function renderClearSummary(){const summary=$("clear-gold-summary");if(!summary)return;const reward=Number(battleState.lastRewardGold)||0;summary.textContent=`魔王討伐報酬：${reward}G ／ 現在の所持金：${state.gold}G`; }
+function unlockBgm(key){
+  if(!BGM_TRACK_KEYS.includes(key)||bgmUnlocks[key])return false;
+  bgmUnlocks[key]=true;renderBgmUnlocks();persistAutoSave();return true;
+}
+function unlockBgmForEncounter(enemyName,stage){
+  const stageTracks={1:["slimeLower","slimeSakura"],2:["goblinSoldiers","goblinLeathers"],4:["dragonDeckrail","dragonDerringer"],5:["arc","overture"]};
+  (stageTracks[stage]||[]).forEach(unlockBgm);
+  if(enemyName==="混沌の幻影")["hiddenZero","hiddenAgainst","hiddenSwirling"].forEach(unlockBgm);
+}
+function renderBgmUnlocks(){
+  document.querySelectorAll(".track-preview").forEach(input=>{
+    const key=input.dataset.track,row=input.closest(".soundtrack-row"),strong=row&&row.querySelector("strong"),small=row&&row.querySelector("small");
+    if(!key||!row||!strong||!small)return;
+    if(!input.dataset.originalTitle)input.dataset.originalTitle=strong.textContent;
+    if(!input.dataset.originalSubtitle)input.dataset.originalSubtitle=small.textContent;
+    const locked=bgmUnlocks[key]!==true;
+    input.disabled=locked;row.classList.toggle("track-locked",locked);
+    strong.textContent=locked?"？？？（未解放）":input.dataset.originalTitle;
+    small.textContent=locked?"未解放の楽曲です":input.dataset.originalSubtitle;
+    input.setAttribute("aria-label",locked?"未解放の楽曲":input.dataset.originalTitle+"を試聴");
+  });
+}
+function renderStageEnvironment(stage){
+  const arena=document.querySelector(".battle-arena"),banner=$("stage-environment");
+  if(!arena||!banner)return;
+  // 現行5ステージの敵・ストーリー配置を維持し、3つの背景エリアにまとめる。
+  const env=battleState.hiddenBossMode
+    ?{key:"chaos",name:"混沌の領域",description:"現実と闇が溶け合う、異形の力に満ちた空間。"}
+    :stage<=3
+      ?{key:"forest",name:"はじまりの樹海",description:"木漏れ日が差し込む穏やかな森。魔物の気配が少しずつ濃くなっていく。"}
+      :stage===4
+        ?{key:"lava",name:"焦土の溶岩洞窟",description:"地表の割れ目からマグマが吹き出す、熱気と硫黄に満ちた危険な地底通路。"}
+        :{key:"castle",name:"魔王城・回廊",description:"冷たく冷え切った石畳の回廊。その先では魔王が待ち構える。"};
+  arena.dataset.environment=env.key;
+  banner.innerHTML="<strong>"+esc(env.name)+"</strong><span>"+esc(env.description)+"</span>";
+  banner.hidden=false;
+}
+function renderEnemyAnalysis(){
+  const box=$("enemy-analysis"),e=battleState.enemy;if(!box||!e)return;
+  const known=(Number(enemyEncounterCounts[e.name])||0)>=2;
+  const data=enemyData.find(enemy=>enemy.name===e.name)||e;
+  const value=v=>known&&Number.isFinite(Number(v))?Math.floor(Number(v)).toLocaleString("ja-JP"):"？？？";
+  const list=v=>known?(Array.isArray(v)&&v.length?v.map(esc).join("・"):"なし"):"？？？";
+  const hp=data.hp!==undefined?data.hp:e.maxHp;
+  const spDefense=data.spDefense!==undefined?data.spDefense:(Number.isFinite(data.defense)?Math.floor(data.defense/2):undefined);
+  const resistances=[...(data.resistances||[]),...(data.physicalResistances||[])];
+  box.innerHTML="<div class=\"enemy-analysis-heading\"><strong>ANALYZE / 敵情報</strong><span>"+(known?"情報開示済み":"未解析")+"</span></div>"+
+    "<div class=\"enemy-analysis-grid\"><span>HP <b>"+value(hp)+"</b></span><span>ATK <b>"+value(data.attack)+"</b></span><span>DEF <b>"+value(data.defense)+"</b></span><span>SP DEF <b>"+value(spDefense)+"</b></span>"+
+    "<span class=\"enemy-analysis-wide\">弱点 <b>"+list(data.weaknesses)+"</b></span><span class=\"enemy-analysis-wide\">耐性 <b>"+list(resistances)+"</b></span></div>"+
+    "<small>"+(known?"2回目以降の遭遇により敵情報が開示されています。":"初回遭遇：？？？　もう一度遭遇すると情報が開示されます。")+"</small>";
+  box.classList.toggle("is-analyzed",known);
+}
+function renderImperialStatus(){
+  const panel=$("imperial-status-panel");if(!panel)return;
+  // Gemini側の戦闘ロジックとの接続用。キャラクターIDは imperial、熱量は heatGauge を標準名とする。
+  const imperial=characters.find(c=>c.id==="imperial"||c.name==="インペリアル");
+  if(!imperial||!state.party.includes(imperial.id)){panel.hidden=true;return;}
+  const raw=imperial.heatGauge!==undefined?imperial.heatGauge:(imperial.heat!==undefined?imperial.heat:(imperial.overheatGauge||0));
+  const heat=Math.max(0,Math.min(6,Math.floor(Number(typeof raw==="object"?raw.value:raw)||0)));
+  const overheated=imperial.overheated===true||imperial.isOverheated===true||imperial.overheatWarning===true||heat>=6;
+  const exposed=imperial.exposed===true||imperial.isExposed===true||imperial.defenseless===true||imperial.isDefenseless===true||imperial.unprotected===true;
+  const segments=Array.from({length:6},(_,i)=>"<i class=\""+(i<heat?"filled":"")+"\"></i>").join("");
+  const alerts=(overheated?"<span class=\"imperial-alert overheat\">⚠ OVERHEAT／オーバーヒート</span>":"")+
+    (exposed?"<span class=\"imperial-alert exposed\">⚠ 無防備状態／被ダメージに注意</span>":"")+
+    (!overheated&&!exposed?"<span class=\"imperial-safe\">稼働状態：正常</span>":"");
+  panel.hidden=false;
+  panel.innerHTML="<div class=\"imperial-status-head\"><strong>インペリアル専用ステータス</strong><span>HEAT "+heat+" / 6</span></div>"+
+    "<div class=\"imperial-heat-meter\" role=\"meter\" aria-label=\"熱ゲージ\" aria-valuemin=\"0\" aria-valuemax=\"6\" aria-valuenow=\""+heat+"\">"+segments+"</div>"+
+    "<div class=\"imperial-alerts\">"+alerts+"</div>";
+}
+
 function formationBaseStats(c){
   const g=growth[c.id]?.spent||{},bonus=BATTLE_RULES.classBonuses[c.id]||{},items=uniqueEquippedItems(c);
   const rate=k=>items.reduce((n,i)=>n+(Number(i[k])||0),0);
