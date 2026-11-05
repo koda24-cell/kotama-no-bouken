@@ -601,7 +601,7 @@ function renderEnemyAnalysis(){
   const spDefense=data.spDefense!==undefined?data.spDefense:(Number.isFinite(data.defense)?Math.floor(data.defense/2):undefined);
   const resistances=[...(data.resistances||[]),...(data.physicalResistances||[])];
   box.innerHTML="<div class=\"enemy-analysis-heading\"><strong>ANALYZE / 敵情報</strong><span>"+(known?"情報開示済み":"未解析")+"</span></div>"+
-    "<div class=\"enemy-analysis-grid\"><span>HP <b>"+value(hp)+"</b></span><span>ATK <b>"+value(data.attack)+"</b></span><span>DEF <b>"+value(data.defense)+"</b></span><span>SP DEF <b>"+value(spDefense)+"</b></span>"+
+    "<div class=\"enemy-analysis-grid\"><span>"+(e.members?"HP（1体）":"HP")+" <b>"+value(hp)+"</b></span><span>ATK <b>"+value(data.attack)+"</b></span><span>DEF <b>"+value(data.defense)+"</b></span><span>SP DEF <b>"+value(spDefense)+"</b></span>"+
     "<span class=\"enemy-analysis-wide\">弱点 <b>"+list(data.weaknesses)+"</b></span><span class=\"enemy-analysis-wide\">耐性 <b>"+list(resistances)+"</b></span></div>"+
     "<small>"+(known?"2回目以降の遭遇により敵情報が開示されています。":"初回遭遇：？？？　もう一度遭遇すると情報が開示されます。")+"</small>";
   box.classList.toggle("is-analyzed",known);
