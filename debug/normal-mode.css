@@ -1,0 +1,2 @@
+/* Keep the legacy DEV launcher out of all normal/public play sessions. */
+#kotama-admin-launcher{display:none!important}
