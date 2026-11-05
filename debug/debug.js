@@ -41,6 +41,6 @@
  function download(text,name){const u=URL.createObjectURL(new Blob([text],{type:"application/json"}));const a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
  async function loadVersion(){try{versionData=await window.KotamaDebugVersion.load();render()}catch(e){alert(e.message)}}
  document.addEventListener("keydown",e=>{if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==="d"&&!e.repeat&&!e.target.matches("input,textarea,select,[contenteditable=true]")){e.preventDefault();e.stopPropagation();panel&&!panel.hidden?close():open()}});
- document.addEventListener("DOMContentLoaded",()=>{const old=document.getElementById("kotama-admin-launcher");if(old)old.setAttribute("aria-hidden","true");loadVersion();window.KotamaDebugAssets.load().then(x=>{assetData=x;if(panel&&!panel.hidden&&active==="dashboard")render()}).catch(()=>{});});
+ const init=()=>{const old=document.getElementById("kotama-admin-launcher");if(old)old.setAttribute("aria-hidden","true");loadVersion();window.KotamaDebugAssets.load().then(x=>{assetData=x;if(panel&&!panel.hidden&&active==="dashboard")render()}).catch(()=>{});}; if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
  window.KotamaDebug={open,close};
 })();
