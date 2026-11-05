@@ -184,12 +184,14 @@
         </div>
         <div class="battle-arena">
           <div class="stage-stars" aria-hidden="true">*　　 .　　 *　　 .　　 *</div>
+          <div id="stage-environment" class="stage-environment-banner" hidden aria-live="polite"></div>
           <div id="battle-enemy" class="enemy-display">
             <div class="enemy-placeholder">MONSTER</div>
             <h2 id="enemy-name">スライム</h2>
             <div class="hp-track"><div id="enemy-hp-bar" class="hp-fill"></div></div>
             <div id="enemy-break-track" class="enemy-break-track" hidden><i></i><span></span></div>
             <p id="enemy-hp-text" aria-hidden="true"></p>
+            <section id="enemy-analysis" class="enemy-analysis" hidden aria-live="polite" aria-label="敵の分析情報"></section>
           </div>
           <button id="battle-log-open" class="battle-log-open" type="button" aria-haspopup="dialog">LOG</button>
         </div>
@@ -198,6 +200,7 @@
           <div id="event-log" class="event-log" aria-live="polite"><p>冒険が始まる。</p></div>
         </div>
         <div id="battle-party" class="battle-party"></div>
+        <section id="imperial-status-panel" class="imperial-status-panel" hidden aria-live="polite" aria-label="インペリアル専用ステータス"></section>
         <div class="battle-bottom" id="battle-bottom">
           <div class="battle-window command-window">
             <div class="window-title" id="command-title">コタマ　どうする？</div>
