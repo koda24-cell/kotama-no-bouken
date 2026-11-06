@@ -162,6 +162,8 @@ function extApplyStatusStats(c, raw) {
   if (extHasStatus(c, "attackDown")) { const p = 1 - Math.min(.9, extStatusPower(c, "attackDown")); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "curse")) { const p = 1 - Math.min(.9, extStatusPower(c, "curse") || .15); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "defenseUp")) { const p = 1 + extStatusPower(c, "defenseUp"); mul("defense", p); mul("spDefense", p); }
+  if (extHasStatus(c, "bindArms")) mul("attack", .6);
+  if (extHasStatus(c, "bindLegs")) raw.speed = Math.floor(raw.speed * .5);
 }
 // 呪い：回復量が半分になる。
 function extHealMul(target) { return extHasStatus(target, "curse") ? .5 : 1; }
@@ -281,7 +283,10 @@ const EXT_ACTION_PRIORITY = Object.freeze({
   UNION: 3,
   NONE: 0
 });
-function extEnemySpeed(e) { return Number.isFinite(e?.speed) ? e.speed : (EXT_ENEMY_SPEED[e?.name] ?? 50); }
+function extEnemySpeed(e) {
+  const base = Number.isFinite(e?.speed) ? e.speed : (EXT_ENEMY_SPEED[e?.name] ?? 50);
+  return extHasStatus(e, "bindLegs") ? Math.floor(base * .5) : base;
+}
 function extActionPriority(action) {
   if (action.type === "guard") return EXT_ACTION_PRIORITY.GUARD;
   if (action.type === "union") return EXT_ACTION_PRIORITY.UNION;
@@ -476,9 +481,26 @@ function extPickPartyTarget(alive, act) {
 async function extVariantAction(e, turn) {
   const alive = livingParty(); if (!alive.length) return;
   const ratio = enemyHpTotal(e) / e.maxHp;
-  const usable = e.ai.filter(a => (!a.minTurn || turn >= a.minTurn) && (!a.hpBelow || ratio <= a.hpBelow));
-  const forced = usable.find(a => a.everyTurns && turn % a.everyTurns === 0);
-  const act = forced || extWeightedPick(usable.filter(a => !a.everyTurns).length ? usable.filter(a => !a.everyTurns) : usable);
+  const eligible = e.ai.filter(a => (!a.minTurn || turn >= a.minTurn) && (!a.hpBelow || ratio <= a.hpBelow));
+  // 頭封じは術式、腕封じは物理系の特殊行動を封じる。
+  const usable = eligible.filter(a => !(extHasStatus(e, "bindHead") && a.kind === "sp") && !(extHasStatus(e, "bindArms") && a.kind === "phys" && !a.heal));
+  const act = e._pendingAiAction
+    ? (eligible.find(a => a.name === e._pendingAiAction) || null)
+    : (() => {
+        const forced = usable.find(a => a.everyTurns && turn % a.everyTurns === 0);
+        return forced || extWeightedPick(usable.filter(a => !a.everyTurns).length ? usable.filter(a => !a.everyTurns) : usable);
+      })();
+  if (!act || (extHasStatus(e, "bindHead") && act.kind === "sp") || (extHasStatus(e, "bindArms") && act.kind === "phys" && !act.heal)) {
+    e._pendingAiAction = null;
+    pushEvent(`${e.name}は封じられて特殊行動を使えない！`, "warning");
+    return;
+  }
+  if (act.telegraph && e._pendingAiAction !== act.name) {
+    e._pendingAiAction = act.name;
+    pushEvent(`${e.name}は「${act.name}」の構えを取った！ 次のターンに攻撃が来る！`, "warning");
+    return;
+  }
+  e._pendingAiAction = null;
   if (act.heal) {
     const before = e.hp; e.hp = Math.min(e.maxHp, e.hp + Math.floor(e.maxHp * act.heal));
     pushEvent(`${e.name}は「${act.name}」を唱えた！ HPが${e.hp - before}回復した。`); renderBattle(); return;
