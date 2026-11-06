@@ -19,9 +19,9 @@
 function extInstallCharacters(characters) {
   for (const job of EXT_NEW_JOBS) characters.push(JSON.parse(JSON.stringify(job)));
   const bindSkills = {
-    warrior: { id:"arm-break", name:"アームブレイク", cost:18, target:"enemy", type:"bindArms" },
-    mage: { id:"head-crush", name:"ヘッドクラッシュ", cost:22, target:"enemy", type:"bindHead" },
-    samurai: { id:"leg-cut", name:"レッグカット", cost:20, target:"enemy", type:"bindLegs" }
+    warrior: { id:"arm-break", name:"アームブレイク", cost:18, target:"enemy", type:"bindArms", xj:{ kind:"physical", mult:1 } },
+    mage: { id:"head-crush", name:"ヘッドクラッシュ", cost:22, target:"enemy", type:"bindHead", xj:{ kind:"sp", mult:1 } },
+    samurai: { id:"leg-cut", name:"レッグカット", cost:20, target:"enemy", type:"bindLegs", xj:{ kind:"physical", mult:1.1 } }
   };
   for (const [id, skill] of Object.entries(bindSkills)) {
     const actor = characters.find(c => c.id === id);
