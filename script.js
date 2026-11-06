@@ -2066,7 +2066,7 @@ async function finishStage(){
   if(!e)return;
   battleState.stageFinished=true;
   battleState.busy=true;
-  if(battleState.encounterMode&&typeof fieldFinishEncounter==="function"){const fieldDrops=awardMaterials(e);await showItemDropAnimation(fieldDrops);await fieldFinishEncounter(e);return;}// [FIELD] 雑魚戦・FOE戦も素材ドロップを表示（ランク・スキルポイントは発生しない）
+  if(battleState.encounterMode&&typeof fieldFinishEncounter==="function"){await fieldFinishEncounter(e);return;}// [FIELD] 雑魚戦：素材ドロップ・結果表示はfield.js側で処理（ランク・スキルポイントは発生しない）
   await playEnemyDefeatAnimation();
   battleState.lastRewardGold=e.gold;
   registerDefeat(e.compendiumAs||e.name);
