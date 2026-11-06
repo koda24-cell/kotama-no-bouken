@@ -473,3 +473,44 @@ body[data-screen="battle"] .gold-display{display:none!important;}
   .event-log{min-height:38px;max-height:84px;padding:6px 8px}
   .event-window .window-title::after{font-size:8px}
 }
+
+
+/* GPT overhaul: Etrian-inspired compact battle frame and information hierarchy. */
+.battle-screen{max-width:860px;margin:0 auto;padding:5px 0}
+.battle-heading{margin-bottom:5px}
+.battle-arena{
+  min-height:198px;
+  padding:20px 12px 10px;
+  border:2px solid #a88b58;
+  border-radius:3px;
+  background:
+    radial-gradient(ellipse at 50% 38%,#344c45 0%,#1b302d 48%,#0c1820 100%),
+    repeating-linear-gradient(0deg,transparent 0 23px,#ffffff08 24px 25px);
+  box-shadow:inset 0 0 0 3px #101b24,0 4px 14px #0008;
+}
+.stage-stars{opacity:.25}
+.enemy-display{width:min(270px,72%);max-height:178px}
+.enemy-image{width:150px;height:112px;object-fit:contain}
+.enemy-placeholder{height:96px}
+.enemy-display h2{color:#f0e4c2;font-size:15px;text-shadow:0 2px 4px #000}
+.enemy-display .hp-track{max-width:220px;margin:5px auto}
+.battle-party{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:7px}
+.battle-member{border:1px solid #9d895f;border-radius:3px;background:linear-gradient(145deg,#18293a,#0e1928);box-shadow:inset 0 0 0 1px #0008}
+.battle-member.active-turn{border-color:#f0d58b;background:linear-gradient(145deg,#293c4b,#172b36)}
+.battle-bottom{grid-template-columns:minmax(220px,.92fr) minmax(0,1.08fr);gap:7px;margin-top:7px}
+.battle-window{border:2px solid #a88b58;border-radius:3px;background:linear-gradient(145deg,#17283a,#0d1726);box-shadow:inset 0 0 0 1px #0008}
+.command-window{min-height:290px}
+.event-window{min-height:58px;margin-top:7px}
+.event-log{max-height:62px}
+.window-title{color:#e8d6a2;letter-spacing:.08em}
+.command-option{border-bottom:1px solid #ffffff10}
+.command-option:hover,.command-option.keyboard-focus{background:#b69a5b22;color:#ffe8a6}
+.command-hint{border-color:#a88b5844;background:#08131e}
+.battle-support{border-color:#8f7950;border-radius:3px;background:#101e2b}
+@media(max-width:620px){
+  .battle-arena{min-height:178px;padding:16px 8px 8px}
+  .enemy-image{width:128px;height:96px}
+  .battle-party{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .battle-bottom{grid-template-columns:minmax(0,1fr)}
+  .command-window{min-height:0}
+}
