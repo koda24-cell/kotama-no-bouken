@@ -704,7 +704,7 @@ function openSkillUpgradeDialog(charId,nodeId,returnFocus){
     if(committing)return;
     committing=true;confirm.disabled=true;
     const latest=getTrainingUpgradeEligibility(charId,nodeId);
-    if(!latest.allowed||latest.level!==eligibility.level||latest.cost!==eligibility.cost){
+    if(!latest.allowed||latest.level!==eligibility.level||latest.cost!==eligibility.cost||latest.points!==eligibility.points){
       close();selectedTrainingSkill=nodeId;renderProgressionPanel();
       setSystemMessage("強化条件または育成ポイントが変わったため、確定を中止しました。最新の状態を確認してください。");
       return;
