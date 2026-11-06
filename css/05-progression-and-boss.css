@@ -189,3 +189,27 @@ body:not([data-screen="battle"]) .retreat-button{display:none}
 @media(prefers-reduced-motion:reduce){.battle-member.battle-bob,.battle-member.damage-flash,.battle-member.guard-flash{animation:none!important}}
 
 
+
+/* P2-1: skill upgrade confirmation dialog */
+.skill-upgrade-dialog{z-index:140;padding:14px}
+.skill-upgrade-dialog-panel{width:min(520px,100%);max-height:90vh;gap:12px;overflow-y:auto}
+.skill-upgrade-eyebrow{margin:0;color:#ffe29a;font-size:10px;font-weight:800;letter-spacing:.16em}
+.skill-upgrade-name{margin:0;padding:9px 11px;border:1px solid #6575c5;border-radius:6px;background:#101b50;color:#fff0b6;font-weight:700}
+.skill-upgrade-level,.skill-upgrade-cost{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:10px 12px;border:1px solid #6575c5;border-radius:6px;background:#101b50;color:#dce5ff}
+.skill-upgrade-level strong,.skill-upgrade-cost strong{color:#ffe9a0;font-variant-numeric:tabular-nums}
+.skill-upgrade-effects{display:grid;gap:7px}
+.skill-upgrade-effects>strong{color:#ffe9a0}
+.skill-upgrade-effect-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:8px 10px;border-radius:5px;background:#101b50;color:#dce5ff;font-size:12px}
+.skill-upgrade-effect-row b{text-align:right;color:#fff0b6;font-variant-numeric:tabular-nums}
+.skill-upgrade-note{margin:0;line-height:1.6}
+.skill-upgrade-reasons{margin:7px 0 0;color:#ffd59a;font-size:11px;line-height:1.6}
+.skill-upgrade-dialog .dialog-actions{margin-top:2px}
+.skill-upgrade-dialog .dialog-actions button{min-width:112px;min-height:40px}
+@media(max-width:520px){
+ .skill-upgrade-dialog{padding:9px}
+ .skill-upgrade-dialog-panel{padding:14px;max-height:90vh}
+ .skill-upgrade-effect-row{grid-template-columns:1fr;gap:3px}
+ .skill-upgrade-effect-row b{text-align:left}
+ .skill-upgrade-dialog .dialog-actions{gap:8px}
+ .skill-upgrade-dialog .dialog-actions button{min-width:0;flex:1;padding:9px 7px}
+}
