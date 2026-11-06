@@ -438,16 +438,21 @@ async function extDamageSkill(actor, skill, a, x, mult) {
     flashEnemyDamage();
   }
   sound("damage", true);
-  // 状態異常の付与（ボスには効きにくい）
+  // 状態異常は命中した対象ごとに独立判定・独立管理する。
   if (x.status && enemyHpTotal(enemy) > 0 && total > 0) {
     for (const st of Array.isArray(x.status) ? x.status : [x.status]) {
-      const chance = st.chance * (extIsBoss(enemy) ? (st.bossMul ?? .5) : 1);
       const label = EXT_STATUS_DEFS[st.type].label;
-      if (Math.random() < chance) {
-        const r = addStatus(enemy, st.type, { turns: st.turns, power: st.power });
-        if (r === "new" || r === "refresh") pushEvent(`${enemy.name}は${label}状態になった！`);
-        else pushEvent(`${enemy.name}の${label}は変わらなかった。`);
-      } else pushEvent(`${enemy.name}には${label}が効かなかった。`);
+      for (const target of targets) {
+        const unit = target.ref;
+        if (!unit || unit.hp <= 0) continue;
+        const chance = st.chance * (extIsBoss(enemy) ? (st.bossMul ?? .5) : 1);
+        const unitName = unit.displayName || unit.name || enemy.name;
+        if (Math.random() < chance) {
+          const r = addStatus(unit, st.type, { turns: st.turns, power: st.power });
+          if (r === "new" || r === "refresh") pushEvent(`${unitName}は${label}状態になった！`);
+          else pushEvent(`${unitName}の${label}は変わらなかった。`);
+        } else pushEvent(`${unitName}には${label}が効かなかった。`);
+      }
     }
     renderBattle();
   }
