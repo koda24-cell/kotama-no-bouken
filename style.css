@@ -514,3 +514,13 @@ body[data-screen="battle"] .gold-display{display:none!important;}
   .battle-bottom{grid-template-columns:minmax(0,1fr)}
   .command-window{min-height:0}
 }
+
+
+/* Enemy field notes: show the tactical identity of each monster at a glance. */
+.enemy-traits{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:4px auto 5px;max-width:360px}
+.enemy-traits[hidden]{display:none!important}
+.enemy-trait{display:inline-block;padding:2px 6px;border:1px solid #8f9c9a;border-radius:2px;background:#0a1b22;color:#d6e0d8;font-size:9px;line-height:1.35;letter-spacing:.02em}
+.enemy-trait-weak{border-color:#b76b5d;color:#ffc3ae;background:#301a1a}
+.enemy-trait-resist{border-color:#6b91aa;color:#b9ddf0;background:#142b3a}
+.enemy-trait-element{border-color:#b69b61;color:#f0d99e}
+.enemy-trait-pattern{border-color:#82936e;color:#c9dcae;background:#18251d}
