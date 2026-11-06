@@ -198,6 +198,7 @@ function extResetBattle() {
   battleState.enemyStatuses = {};
   battleState.enemyUnitStatuses = {};
   for (const c of characters) { c._xjCharge = null; c._heat = 0; c._overheat = false; }
+  battleState._evSnap = {}; battleState._evAction = null;
 }
 
 /* 毎ターン開始時：毒のダメージ */
@@ -558,4 +559,101 @@ async function extMaouPhaseAction(e, turn, alive) {
     return true;
   }
   return false;
+}
+
+/* ============================================================
+   5. 戦闘イベント（演出・UI側への通知）
+   ------------------------------------------------------------
+   戦闘の処理が「いま起きたこと」を document に CustomEvent で知らせます。
+   イベント名は "battle:" + 名前（例: battle:damage:applied）。詳細は event.detail。
+   ・通知するだけで、戦闘の計算・順序・乱数は変えません（待ちもしません）。
+   ・リスナーが無くても、あっても、戦闘の結果は同じです。
+   ・リスナー側で例外が出ても、戦闘は止まりません。
+   仕様の一覧は docs/battle-visual-refresh/EVENT_SPEC.md を参照してください。
+   ============================================================ */
+function battleEmit(name, detail) {
+  try {
+    const d = Object.assign({ turn: (battleState?.turnCount || 0) + 1 }, detail);
+    document.dispatchEvent(new CustomEvent("battle:" + name, { detail: d }));
+  } catch (err) { /* 通知の失敗で戦闘を止めない */ }
+}
+
+// 味方の「悪い状態異常」の識別子（拡張側の状態異常 + 行動不能）。表示の背景色などの判定に使う。
+// 返す識別子：burn / poison / paralysis / curse / defenseDown / attackDown / stun
+function extGetStatusIds(c, includeBeneficial) {
+  if (!c) return [];
+  const bag = extStatusBag(c, false), ids = [];
+  if (bag) for (const [type, s] of Object.entries(bag)) {
+    if (!(s.turns > 0)) continue;
+    if (includeBeneficial || EXT_STATUS_DEFS[type]?.harm) ids.push(type);
+  }
+  if (isActionIncapacitated(c)) ids.push("stun");
+  return ids;
+}
+
+// インペリアルの熱（SP攻撃コマンド右側の縦線の本数）。現在値・最大値・直前の値を返す。
+function extImperialGauge(c) {
+  c = c || getCharacter("imperial");
+  if (!c) return null;
+  return { characterId: c.id, heat: c._heat || 0, max: EXT_HEAT_LIMIT, overheated: c._overheat === true, charging: !!c._xjCharge };
+}
+
+// renderBattle の末尾から呼ばれ、前回との差分から「状態異常の付与／解除」と「熱の増減」を通知する。
+// 付与・解除の経路（時間切れ・解除スキル・スタン消費など）がいくつあっても、ここで1か所にまとまる。
+function extEmitStateChanges() {
+  try {
+    const snap = battleState._evSnap || (battleState._evSnap = {});
+    for (const c of getParty()) {
+      const prev = snap[c.id] || { status: [], heat: 0, overheated: false };
+      const status = extGetStatusIds(c);
+      for (const id of status) if (!prev.status.includes(id)) battleEmit("status:added", { targetId: c.id, statusId: id, statuses: status.slice() });
+      for (const id of prev.status) if (!status.includes(id)) battleEmit("status:cleared", { targetId: c.id, statusId: id, statuses: status.slice() });
+      const heat = c._heat || 0, overheated = c._overheat === true;
+      if (c.id === "imperial" && (heat !== prev.heat || overheated !== prev.overheated)) {
+        battleEmit("imperial:changed", { characterId: c.id, heat, before: prev.heat, max: EXT_HEAT_LIMIT, overheated });
+      }
+      snap[c.id] = { status, heat, overheated };
+    }
+  } catch (err) { /* 通知の失敗で戦闘を止めない */ }
+}
+
+// 行動の種類を演出向けに分類する：normal / sp / magic / guard / union / item
+function extActionInfo(action) {
+  const actor = getCharacter(action.actor);
+  const info = { actorId: action.actor, side: "party", kind: "normal", skillId: null, skillName: null, element: null, targetIds: [], partnerId: action.partner || null };
+  if (action.type === "guard") info.kind = "guard";
+  else if (action.type === "union") { info.kind = "union"; info.skillName = unionSkills[action.actor]?.name || null; info.participantIds = [action.actor, ...(action.partner ? [action.partner] : [])]; }
+  else if (action.type === "item") { info.kind = "item"; info.targetIds = [action.target].filter(Boolean); }
+  else if (action.type === "imperial-release") {
+    const skill = (actor?.spSkills || []).find(s => s.id === actor._xjCharge?.skillId);
+    info.kind = "sp"; info.skillId = skill?.id || null; info.skillName = skill?.name || null; info.element = skill?.element || null; info.released = true;
+  } else if (action.type === "skill") {
+    const skill = getCharacterSkills(actor).find(s => s.id === action.skillId);
+    const magicTypes = ["level-lightning-all", "level-lightning-single", "level-flare", "level-magic-bomb", "holy-light"];
+    info.skillId = action.skillId; info.skillName = skill?.name || null; info.element = skill?.element || null;
+    info.kind = (skill && (magicTypes.includes(skill.type) || (actor?.id === "mage" && !skill.xj))) ? "magic" : "sp";
+    info.targetIds = action.targetIds ? action.targetIds.slice() : (action.targetId ? [action.targetId] : (action.target ? [action.target] : []));
+  } else if (action.targetId) info.targetIds = [action.targetId];
+  return info;
+}
+
+// 行動の開始／終了。行動中は battleState._evAction に現在の行動を持ち、ダメージ通知に添える。
+function extEmitActionStart(info) {
+  battleState._evAction = info;
+  battleEmit("action:start", info);
+}
+function extEmitActionEnd() {
+  const info = battleState._evAction; battleState._evAction = null;
+  if (info) battleEmit("action:end", info);
+}
+function extEmitEnemyActionStart() {
+  const e = battleState.enemy; if (!e) return;
+  const name = describeEnemyAction(e, battleState.turnCount + 1);
+  // 敵の「特殊攻撃」かどうかは行動名で判定する。実際に当たった攻撃の詳細は damage:applied を参照。
+  extEmitActionStart({ actorId: "enemy", side: "enemy", kind: name === (e.actionName || "通常攻撃") ? "enemy-normal" : "enemy-special", skillId: null, skillName: name, element: e.element || null, targetIds: [] });
+}
+
+// ダメージの確定（HPが実際に減った直後）。miss=true は回避・ミスで、ダメージ0。
+function extEmitDamage(targetId, side, amount, extra) {
+  battleEmit(amount > 0 ? "damage:applied" : "damage:missed", Object.assign({ targetId, side, amount, action: battleState._evAction || null }, extra));
 }

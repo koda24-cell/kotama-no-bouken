@@ -883,7 +883,8 @@ function setupNavigation(){
     e.preventDefault();e.stopImmediatePropagation();setSystemMessage("今は案内している装備欄だけ操作できます。");
   },true);
   $("battle-log-open")?.addEventListener("click",()=>{const modal=$("battle-log-dialog");if(modal){renderBattleLogDialog();modal.hidden=false;const content=$("battle-log-dialog-content");if(content)content.scrollTop=content.scrollHeight;}});$("battle-log-close")?.addEventListener("click",()=>{$("battle-log-dialog").hidden=true;});$("battle-log-dialog")?.addEventListener("click",e=>{if(e.target===$("battle-log-dialog"))$("battle-log-dialog").hidden=true;});
-  setupStoryEvents();$("event-gallery-button")?.addEventListener("click",()=>{$("event-gallery").hidden=!$("event-gallery").hidden;if(!$("event-gallery").hidden)renderEventGallery();});document.querySelectorAll("[data-screen]").forEach(b=>b.addEventListener("click",e=>{e.preventDefault();if(tutorialState.started&&!tutorialState.completed)return;if(state.screen==="battle"&&b.dataset.screen!=="battle")return;showScreen(b.dataset.screen);playSe("assets/se/home/決定ボタンを押す33");if(b.dataset.screen==="training")renderProgressionPanel();}));document.querySelectorAll("[data-category]").forEach(b=>b.addEventListener("click",()=>{currentCategory=b.dataset.category;renderShop();sound("select");}));$("formation-done")?.addEventListener("click",()=>{if(tutorialState.started&&!tutorialState.completed){setSystemMessage("チュートリアルの指示に沿って操作を進めよう。");return;}if(state.party.filter(Boolean).length!==PARTY_LIMIT){setSystemMessage("仲間を4人選んでください。");sound("error");return;}if(retryContext){startStageFromRetryContext();return;}showScreen("home");});$("start-button")?.addEventListener("click",()=>{if(tutorialState.phase==="complete"&&!$("tutorial-overlay")?.hidden)tutorialClose();if(tutorialState.started&&!tutorialState.completed){if(tutorialState.phase==="intro"||tutorialState.phase==="welcome"){tutorialClose();beginTutorial(false);}else resumeTutorial();return;}if(state.party.filter(Boolean).length!==PARTY_LIMIT){$("start-warning").textContent="戦闘を始めるには仲間を4人編成してください。";sound("error");return;}if(!state.firstStageStarted){startBattle(1);return;}openStageSelectDialog();});$("se-toggle")?.addEventListener("change",()=>{persistAudioSettings();sound("select");});$("bgm-toggle")?.addEventListener("change",()=>{persistAudioSettings();$("bgm-toggle").checked?startBgm():stopBgm();});$("bgm-volume")?.addEventListener("input",e=>{bgmVolume=Number(e.target.value)/100;applyVolumeControls();persistAudioSettings();if(bossBgmAudio)bossBgmAudio.volume=(currentBgmKey==="boss"?.2625:(currentBgmKey==="ending"?.0875:.20/3))*bgmVolume;if(storyBgmAudio&&!storyBgmFadeTimer)storyBgmAudio.volume=.09*bgmVolume;if(previewAudio){const selectedTrack=document.querySelector(".track-preview:checked")?.dataset.track;const fullVolumeTrack=["arc","overture","storySword","storySanctum"].includes(selectedTrack);previewAudio.volume=.65625*bgmVolume*(fullVolumeTrack?1:1/3);}});$("se-volume")?.addEventListener("input",e=>{seVolume=Number(e.target.value)/100;applyVolumeControls();persistAudioSettings();});document.querySelectorAll(".track-preview").forEach(ch=>ch.addEventListener("change",()=>{if(ch.checked)previewTrack(ch.dataset.track);else if(soundtrackPreviewActive)stopPreview(true);}));$("save-button")?.addEventListener("click",saveGame);$("load-button")?.addEventListener("click",openLoadDialog);$("skip-button")?.addEventListener("click",()=>{battleSpeed=battleSpeed===1?2:1;battleState.fast=battleSpeed===2;syncBattleSpeedUI();setSystemMessage(battleSpeed===2?"戦闘速度を2.0倍にしました。":"戦闘速度を1.0倍に戻しました。");});$("list-button")?.addEventListener("click",()=>{const m=$("list-menu");m.hidden=!m.hidden;$("list-button").setAttribute("aria-expanded",String(!m.hidden));updateListMenuForScreen();});document.addEventListener("click",e=>{const m=$("list-menu"),b=$("list-button");if(!m||m.hidden)return;const target=e.target;if(m.contains(target)||b?.contains(target))return;m.hidden=true;b?.setAttribute("aria-expanded","false");});$("compendium-menu-button")?.addEventListener("click",()=>{showScreen("compendium");$("list-menu").hidden=true;});$("achievements-menu-button")?.addEventListener("click",()=>{showScreen("achievements");$("list-menu").hidden=true;});$("save-dialog-close")?.addEventListener("click",()=>$("save-dialog").hidden=true);$("load-dialog-close")?.addEventListener("click",()=>$("load-dialog").hidden=true);$("new-game-button")?.addEventListener("click",startNewGameFromLoad);$("retreat-button")?.addEventListener("click",()=>{playSe("assets/se/senntou/決定ボタンを押す15");if(battleState.tutorialMode&&tutorialState.phase!=="battle-retreat"){setSystemMessage("まずはチュートリアルの戦闘を進めよう。");return;}if((battleState.busy&&!(battleState.tutorialMode&&tutorialState.phase==="battle-retreat"))||battleState.stageFinished){setSystemMessage("行動処理中は撤退できません。行動選択中に操作してください。");return;}if(battleState.tutorialMode)tutorialClose();const modal=$("retreat-dialog");if(modal){$("retreat-stage-name").textContent=battleState.tutorialMode?"チュートリアル戦（スライムa）":`${battleState.enemy?.name||`STAGE ${battleState.stage}`}戦`;modal.hidden=false;retreatConfirmed=false;}});$("retreat-no")?.addEventListener("click",()=>{$("retreat-dialog").hidden=true;if(battleState.tutorialMode&&tutorialState.phase==="battle-retreat"){tutorialOverlay("戦い方の基本は完了！","撤退ボタンを押して拠点へ戻ろう。");tutorialHighlight("#retreat-button");}});$("retreat-yes")?.addEventListener("click",()=>{if(retreatConfirmed)return;retreatConfirmed=true;const modal=$("retreat-dialog");if(modal)modal.hidden=true;retryContext=null;battleStartSnapshot=null;battleState.busy=true;if(battleState.tutorialMode){tutorialClose();tutorialAfterRetreat();return;}showScreen("home");setSystemMessage("撤退しました。次の冒険ではステージを選択できます。");});$("save-dialog")?.addEventListener("click",e=>{if(e.target===$("save-dialog"))$("save-dialog").hidden=true;});$("load-dialog")?.addEventListener("click",e=>{if(e.target===$("load-dialog"))$("load-dialog").hidden=true;});}
+  setupStoryEvents();$("event-gallery-button")?.addEventListener("click",()=>{$("event-gallery").hidden=!$("event-gallery").hidden;if(!$("event-gallery").hidden)renderEventGallery();});document.querySelectorAll("[data-screen]").forEach(b=>b.addEventListener("click",e=>{e.preventDefault();if(tutorialState.started&&!tutorialState.completed)return;if(state.screen==="battle"&&b.dataset.screen!=="battle")return;showScreen(b.dataset.screen);playSe("assets/se/home/決定ボタンを押す33");if(b.dataset.screen==="training")renderProgressionPanel();}));document.querySelectorAll("[data-category]").forEach(b=>b.addEventListener("click",()=>{currentCategory=b.dataset.category;renderShop();sound("select");}));$("formation-done")?.addEventListener("click",()=>{if(tutorialState.started&&!tutorialState.completed){setSystemMessage("チュートリアルの指示に沿って操作を進めよう。");return;}if(state.party.filter(Boolean).length!==PARTY_LIMIT){setSystemMessage("仲間を4人選んでください。");sound("error");return;}if(retryContext){startStageFromRetryContext();return;}showScreen("home");});$("start-button")?.addEventListener("click",()=>{if(tutorialState.phase==="complete"&&!$("tutorial-overlay")?.hidden)tutorialClose();if(tutorialState.started&&!tutorialState.completed){if(tutorialState.phase==="intro"||tutorialState.phase==="welcome"){tutorialClose();beginTutorial(false);}else resumeTutorial();return;}if(state.party.filter(Boolean).length!==PARTY_LIMIT){$("start-warning").textContent="戦闘を始めるには仲間を4人編成してください。";sound("error");return;}if(!state.firstStageStarted){startBattle(1);return;}openStageSelectDialog();});$("se-toggle")?.addEventListener("change",()=>{persistAudioSettings();sound("select");});$("bgm-toggle")?.addEventListener("change",()=>{persistAudioSettings();$("bgm-toggle").checked?startBgm():stopBgm();});$("bgm-volume")?.addEventListener("input",e=>{bgmVolume=Number(e.target.value)/100;applyVolumeControls();persistAudioSettings();if(bossBgmAudio)bossBgmAudio.volume=(currentBgmKey==="boss"?.2625:(currentBgmKey==="ending"?.0875:.20/3))*bgmVolume;if(storyBgmAudio&&!storyBgmFadeTimer)storyBgmAudio.volume=.09*bgmVolume;if(previewAudio){const selectedTrack=document.querySelector(".track-preview:checked")?.dataset.track;const fullVolumeTrack=["arc","overture","storySword","storySanctum"].includes(selectedTrack);previewAudio.volume=.65625*bgmVolume*(fullVolumeTrack?1:1/3);}});$("se-volume")?.addEventListener("input",e=>{seVolume=Number(e.target.value)/100;applyVolumeControls();persistAudioSettings();});document.querySelectorAll(".track-preview").forEach(ch=>ch.addEventListener("change",()=>{if(ch.checked)previewTrack(ch.dataset.track);else if(soundtrackPreviewActive)stopPreview(true);}));$("save-button")?.addEventListener("click",saveGame);$("load-button")?.addEventListener("click",openLoadDialog);$("skip-button")?.addEventListener("click",()=>{battleSpeed=battleSpeed===1?2:1;battleState.fast=battleSpeed===2;syncBattleSpeedUI();setSystemMessage(battleSpeed===2?"戦闘速度を2.0倍にしました。":"戦闘速度を1.0倍に戻しました。");});$("list-button")?.addEventListener("click",()=>{const m=$("list-menu");m.hidden=!m.hidden;$("list-button").setAttribute("aria-expanded",String(!m.hidden));updateListMenuForScreen();});document.addEventListener("click",e=>{const m=$("list-menu"),b=$("list-button");if(!m||m.hidden)return;const target=e.target;if(m.contains(target)||b?.contains(target))return;m.hidden=true;b?.setAttribute("aria-expanded","false");});$("compendium-menu-button")?.addEventListener("click",()=>{showScreen("compendium");$("list-menu").hidden=true;});$("achievements-menu-button")?.addEventListener("click",()=>{showScreen("achievements");$("list-menu").hidden=true;});$("save-dialog-close")?.addEventListener("click",()=>$("save-dialog").hidden=true);$("load-dialog-close")?.addEventListener("click",()=>$("load-dialog").hidden=true);$("new-game-button")?.addEventListener("click",startNewGameFromLoad);$("retreat-button")?.addEventListener("click",()=>{playSe("assets/se/senntou/決定ボタンを押す15");if(battleState.tutorialMode&&tutorialState.phase!=="battle-retreat"){setSystemMessage("まずはチュートリアルの戦闘を進めよう。");return;}if((battleState.busy&&!(battleState.tutorialMode&&tutorialState.phase==="battle-retreat"))||battleState.stageFinished){setSystemMessage("行動処理中は撤退できません。行動選択中に操作してください。");return;}if(battleState.tutorialMode)tutorialClose();const modal=$("retreat-dialog");if(modal){$("retreat-stage-name").textContent=battleState.tutorialMode?"チュートリアル戦（スライムa）":`${battleState.enemy?.name||`STAGE ${battleState.stage}`}戦`;modal.hidden=false;retreatConfirmed=false;}});$("retreat-no")?.addEventListener("click",()=>{$("retreat-dialog").hidden=true;if(battleState.tutorialMode&&tutorialState.phase==="battle-retreat"){tutorialOverlay("戦い方の基本は完了！","撤退ボタンを押して拠点へ戻ろう。");tutorialHighlight("#retreat-button");}});$("retreat-yes")?.addEventListener("click",()=>{if(retreatConfirmed)return;retreatConfirmed=true;battleEmit("end",{result:"retreat"});// [EVT]
+const modal=$("retreat-dialog");if(modal)modal.hidden=true;retryContext=null;battleStartSnapshot=null;battleState.busy=true;if(battleState.tutorialMode){tutorialClose();tutorialAfterRetreat();return;}showScreen("home");setSystemMessage("撤退しました。次の冒険ではステージを選択できます。");});$("save-dialog")?.addEventListener("click",e=>{if(e.target===$("save-dialog"))$("save-dialog").hidden=true;});$("load-dialog")?.addEventListener("click",e=>{if(e.target===$("load-dialog"))$("load-dialog").hidden=true;});}
 
 
 function openStageSelectDialog(){const dlg=$("stage-select-dialog");if(!dlg)return;const box=$("stage-select-list");box.innerHTML=Array.from({length:5},(_,i)=>i+1).map(n=>{const open=n<=(state.maxUnlockedStage||1),clear=!!stageCleared[n];return `<button type="button" class="stage-select-card ${clear?"stage-cleared":""}" data-stage="${n}" ${open?"":"disabled"}><strong>STAGE ${n}</strong><span>${["樹海の入り口","ゴブリンの森","霧の森","炎竜の巣","魔王の城"][n-1]}</span><small>${clear?"CLEAR済み":open?"挑戦可能":"未解放"}</small></button>`;}).join("");box.querySelectorAll("[data-stage]").forEach(b=>b.onclick=()=>{const n=Number(b.dataset.stage);dlg.hidden=true;startBattle(n);});dlg.hidden=false;}
@@ -981,6 +982,7 @@ async function beginStageCore(){
   const resumedBattle=!!pendingBattleResumeEnemy;
   battleState.enemy=pendingBattleResumeEnemy||createEnemy(battleState.stage);pendingBattleResumeEnemy=null;registerEncounter(battleState.enemy.compendiumAs||battleState.enemy.name);
   if(!resumedBattle){const encounterName=battleState.enemy.compendiumAs||battleState.enemy.name;enemyEncounterCounts[encounterName]=(Number(enemyEncounterCounts[encounterName])||0)+1;unlockBgmForEncounter(encounterName,battleState.stage);}
+  battleEmit("start",{partyIds:(state.party||[]).slice(),stage:battleState.stage,enemyName:battleState.enemy.name,resumed:resumedBattle});// [EVT]
   stageEntered[battleState.stage]=true;
   const breakMax=BATTLE_RULES.bosses[battleState.enemy.name]?.break||0;if(breakMax){battleState.enemy._breakMax=breakMax;battleState.enemy._breakCurrent=breakMax;}goblinCharging=false;goblinTeamAttackUsed=false;goblinTeamAttackPending=false;burnedTurns={};specialOmenShown={};battleState.wolfEvasionTurns=0;battleState.wolfHalfHpEvasionUsed=false;battleState.wolfLastTargetId=null;battleState.wolfClones=[];battleState.wolfDisplayOrder=[];battleState.wolfCloneTurns=0;battleState.wolfCloneLastTargetId=null;battleState.wolfSplitPending=false;if(battleState.stage===5&&!battleState.bossBgmChoice)battleState.bossBgmChoice=Math.random()<.5?"arc":"overture";
   battleState.turnCount=0;
@@ -1181,6 +1183,7 @@ function pushLog(message){
   if(!last||last.message!==message||last.turn!==turn)battleState.log.push({turn,message});
   refreshBattleLog();renderBattleLogDialog();
   const m=$("battle-message");if(m)m.textContent=message;
+  battleEmit("log:push",{message,turn});// [EVT]
 }
 function renderBattleLogDialog(){const source=$("battle-log"),target=$("battle-log-dialog-content");if(source&&target){target.innerHTML=source.innerHTML;target.scrollTop=target.scrollHeight;}}
 function pushEvent(message,variant=""){
@@ -1208,7 +1211,8 @@ function showEnemyOmen(kind="generic"){
 }
 function showMaouOmen(){showEnemyOmen("maou");}
 function displayEnemyNode(){return $("battle-enemy");}
-function combatNumber(target,text,kind="damage"){const node=typeof target==="string"?document.querySelector(`[data-party-id="${target}"]`):target;if(!node)return;const n=document.createElement("span");n.className=`combat-number ${kind}`;n.textContent=text;node.appendChild(n);setTimeout(()=>n.remove(),battleDelayMs(1350));}
+function combatNumber(target,text,kind="damage"){if(kind==="heal"&&typeof target==="string"){const healed=parseInt(String(text).replace("+",""),10);if(healed>0)battleEmit("heal:applied",{targetId:target,amount:healed});}// [EVT]
+const node=typeof target==="string"?document.querySelector(`[data-party-id="${target}"]`):target;if(!node)return;const n=document.createElement("span");n.className=`combat-number ${kind}`;n.textContent=text;node.appendChild(n);setTimeout(()=>n.remove(),battleDelayMs(1350));}
 function flashEnemyDamage(target=null){
   const damaged=target||$("battle-enemy")?.querySelector(".enemy-image,.enemy-placeholder,.enemy-group-unit");
   if(!damaged)return;
@@ -1230,6 +1234,7 @@ async function applyPartyDamageAnimated(character,damage,options={}){
   }
   if(!options.sureHit&&Math.random()<partyEvasionRate(character)){
     pushEvent(`${character.name}は攻撃を回避した！`);
+    extEmitDamage(character.id,"party",0,{hpAfter:character.hp,ko:false,missed:true});// [EVT]
     renderBattle();
     return 0;
   }
@@ -1255,6 +1260,7 @@ async function applyPartyDamageAnimated(character,damage,options={}){
   const card=document.querySelector(`.battle-member[data-party-id="${character.id}"]`);
   if(card){clearTimeout(card._damageFlashTimer);card.classList.remove("damage-flash");void card.offsetWidth;card.classList.add("damage-flash");card._damageFlashTimer=setTimeout(()=>card.classList.remove("damage-flash"),battleDelayMs(300));}
   combatNumber(character.id,`-${amount}`,"damage");
+  extEmitDamage(character.id,"party",amount,{hpAfter:character.hp,ko:character.hp<=0,element:options.element||null,magic:!!(options.magic||options.element||options.spAttack),statusDamage:!!options.statusDamage});// [EVT]
   await wait(720);
   return amount;
 }
@@ -1294,7 +1300,8 @@ function applyDamageToEnemyTarget(enemy,target,amount){
   if(target.kind==="clone")animateEnemyIcons(target);
   if(target.kind==="main")return applyDamageToEnemy(enemy,value);
   if(target.kind==="clone"){
-    const clone=target.ref;const dealt=Math.min(clone.hp,value);clone.hp=Math.max(0,clone.hp-dealt);
+    const clone=target.ref;const dealt=Math.min(clone.hp,value);clone.hp=Math.max(0,clone.hp-dealt);extEmitDamage(clone.id,"enemy",dealt,{hpAfter:clone.hp,ko:clone.hp<=0});// [EVT]
+    
     if(dealt>0)flashEnemyDamage(document.querySelector(`[data-enemy-id="${clone.id}"]`));
     if(clone.hp<=0)pushEvent("オオカミの偽物は霧となって消えた……！");
     return dealt;
@@ -1302,7 +1309,7 @@ function applyDamageToEnemyTarget(enemy,target,amount){
   const unit=target.ref;
   if(target.kind==="member"){
     animateEnemyIcons(target);
-    const dealt=Math.min(unit.hp,value);unit.hp=Math.max(0,unit.hp-dealt);
+    const dealt=Math.min(unit.hp,value);unit.hp=Math.max(0,unit.hp-dealt);extEmitDamage(unit.id,"enemy",dealt,{hpAfter:unit.hp,ko:unit.hp<=0});// [EVT]
     if(dealt>0)flashEnemyDamage(document.querySelector(`[data-enemy-id="${unit.id}"]`));
     enemy.hp=enemy.members.reduce((n,m)=>n+Math.max(0,m.hp),0);
     return dealt;
@@ -1310,6 +1317,12 @@ function applyDamageToEnemyTarget(enemy,target,amount){
   return 0;
 }
 function applyDamageToEnemy(enemy,amount){
+  const unit=enemy&&enemy.members?enemy.members.find(m=>m.hp>0)||null:null;// [EVT] ダメージを受ける個体（倒れる前に確定しておく）
+  const dealt=applyDamageToEnemyCore(enemy,amount);
+  if(enemy&&amount>0)extEmitDamage(unit?unit.id:"enemy","enemy",dealt,{hpAfter:unit?unit.hp:enemy.hp,ko:unit?unit.hp<=0:enemy.hp<=0});// [EVT]
+  return dealt;
+}
+function applyDamageToEnemyCore(enemy,amount){
   if(!enemy||amount<=0)return 0;
   animateEnemyIcons({kind:"main"});
   if(enemy.members){const target=enemy.members.find(m=>m.hp>0);if(!target)return 0;const dealt=Math.min(target.hp,Math.max(0,Math.floor(amount)));target.hp-=dealt;if(dealt>0)flashEnemyDamage(document.querySelector(`[data-enemy-id="${target.id}"]`));enemy.hp=enemy.members.reduce((n,m)=>n+Math.max(0,m.hp),0);return dealt;}
@@ -1393,7 +1406,7 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
   statusHost.innerHTML=enemyStatuses.join("");
   const hpTrack=display.querySelector(".hp-track");if(hpTrack&&statusHost.parentElement!==display)display.insertBefore(statusHost,hpTrack);
   statusHost.hidden=enemyStatuses.length===0;
-  $("battle-party").innerHTML=getParty().map(c=>{const u=unionSkills[c.id],g=battleState.unionGauges[c.id]||0,ready=!!u&&g>=u.requiredHits,active=c.id===currentActor()?.id,incapacitated=isActionIncapacitated(c);return `<article class="battle-member ${active&&!battleState.busy?"active-turn":""} ${(battleState.actingIds||[]).includes(c.id)?"acting-turn":""} ${incapacitated&&c.hp>0?"action-incapacitated":""}${c.hp<=0?"dead":""} ${ready?"union-ready":""}" data-party-id="${c.id}"><div class="battle-portrait ${c.id==="healer"?"healer-portrait":c.id==="mage"?"mage-portrait":""}">${extBattlePortrait(c)}</div><div class="member-head"><strong>${esc(c.name)}${extStatusBadges(c)}${extJobBadges(c)}${(c._stunTurns||c._actionDisabledTurns||c.stunTurns||c.actionDisabledTurns||0)>0?' <span class="status-chip status-stun" title="行動不能：残り'+(c._actionDisabledTurns||c._stunTurns||c.actionDisabledTurns||c.stunTurns)+'ターン">⛓ 行動不能 '+(c._actionDisabledTurns||c._stunTurns||c.actionDisabledTurns||c.stunTurns)+'T</span>':""}${battleState.guarding[c.id]?' <span class="status-chip status-guard" title="現在ターン防御中">🛡 防御</span>':""}${battleState.tauntTarget===c.id?' <span class="status-chip status-taunt" title="挑発対象">⚑ 挑発</span>':""}</strong><span>${c.hp<=0?"戦闘不能":incapacitated?"行動不能":active&&!battleState.busy?"> 行動選択中":""}</span></div><div class="battle-gauge-label"><span>HP</span><strong>${Math.max(0,c.hp)} / ${effectiveStats(c).maxHp}</strong></div><div class="hp-track"><div class="hp-fill" style="width:${Math.max(0,c.hp)/effectiveStats(c).maxHp*100}%"></div><div class="hp-loss-preview" style="left:${Math.max(0,c.hp)/effectiveStats(c).maxHp*100}%;width:${Number.isFinite(c._hpBeforeDamage)&&c._hpBeforeDamage>c.hp?(Math.min(effectiveStats(c).maxHp,c._hpBeforeDamage)-Math.max(0,c.hp))/effectiveStats(c).maxHp*100:0}%" ${Number.isFinite(c._hpBeforeDamage)&&c._hpBeforeDamage>c.hp?"":"hidden"}></div></div><div class="battle-gauge-label sp-gauge-label"><span>SP</span><strong>${c.sp} / ${c.maxSp}</strong></div><div class="sp-track"><div class="sp-fill" style="width:${c.sp/c.maxSp*100}%"></div></div><div class="union-mini">UNION ${g}/${u?.requiredHits||0}<div class="union-track"><i style="width:${u?g/u.requiredHits*100:0}%"></i></div></div></article>`;}).join("");renderEnemyAnalysis();renderImperialStatus();}
+  $("battle-party").innerHTML=getParty().map(c=>{const u=unionSkills[c.id],g=battleState.unionGauges[c.id]||0,ready=!!u&&g>=u.requiredHits,active=c.id===currentActor()?.id,incapacitated=isActionIncapacitated(c);return `<article class="battle-member ${active&&!battleState.busy?"active-turn":""} ${(battleState.actingIds||[]).includes(c.id)?"acting-turn":""} ${incapacitated&&c.hp>0?"action-incapacitated":""}${c.hp<=0?"dead":""} ${ready?"union-ready":""}" data-party-id="${c.id}"><div class="battle-portrait ${c.id==="healer"?"healer-portrait":c.id==="mage"?"mage-portrait":""}">${extBattlePortrait(c)}</div><div class="member-head"><strong>${esc(c.name)}${extStatusBadges(c)}${extJobBadges(c)}${(c._stunTurns||c._actionDisabledTurns||c.stunTurns||c.actionDisabledTurns||0)>0?' <span class="status-chip status-stun" title="行動不能：残り'+(c._actionDisabledTurns||c._stunTurns||c.actionDisabledTurns||c.stunTurns)+'ターン">⛓ 行動不能 '+(c._actionDisabledTurns||c._stunTurns||c.actionDisabledTurns||c.stunTurns)+'T</span>':""}${battleState.guarding[c.id]?' <span class="status-chip status-guard" title="現在ターン防御中">🛡 防御</span>':""}${battleState.tauntTarget===c.id?' <span class="status-chip status-taunt" title="挑発対象">⚑ 挑発</span>':""}</strong><span>${c.hp<=0?"戦闘不能":incapacitated?"行動不能":active&&!battleState.busy?"> 行動選択中":""}</span></div><div class="battle-gauge-label"><span>HP</span><strong>${Math.max(0,c.hp)} / ${effectiveStats(c).maxHp}</strong></div><div class="hp-track"><div class="hp-fill" style="width:${Math.max(0,c.hp)/effectiveStats(c).maxHp*100}%"></div><div class="hp-loss-preview" style="left:${Math.max(0,c.hp)/effectiveStats(c).maxHp*100}%;width:${Number.isFinite(c._hpBeforeDamage)&&c._hpBeforeDamage>c.hp?(Math.min(effectiveStats(c).maxHp,c._hpBeforeDamage)-Math.max(0,c.hp))/effectiveStats(c).maxHp*100:0}%" ${Number.isFinite(c._hpBeforeDamage)&&c._hpBeforeDamage>c.hp?"":"hidden"}></div></div><div class="battle-gauge-label sp-gauge-label"><span>SP</span><strong>${c.sp} / ${c.maxSp}</strong></div><div class="sp-track"><div class="sp-fill" style="width:${c.sp/c.maxSp*100}%"></div></div><div class="union-mini">UNION ${g}/${u?.requiredHits||0}<div class="union-track"><i style="width:${u?g/u.requiredHits*100:0}%"></i></div></div></article>`;}).join("");renderEnemyAnalysis();renderImperialStatus();extEmitStateChanges();/* [EVT] */}
 function renderActionMenu(forceRender=false){if(battleState.busy&&!forceRender)return;let skipped=0;while(currentActor()&&currentActor().hp>0&&(isActionIncapacitated(currentActor())||extIsChargeLocked(currentActor()))){const blocked=currentActor();if(isActionIncapacitated(blocked)){extCancelCharge(blocked);consumeIncapacitatedTurn(blocked);}battleState.currentActorIndex++;skipped++;}if(skipped)renderBattle();if(skipped&&battleState.currentActorIndex>=battleState.turnOrder.length){battleState.busy=true;renderBattle();executeTurn();return;}setCommandDescription("攻撃：敵に通常攻撃を行います。敵の防御力によってダメージが変化します。SPスキル：SPを消費して、敵の防御を貫通する攻撃などを行います。防御：敵の攻撃に備えて受けるダメージを軽減します。");const actor=currentActor(),box=$("battle-commands");if(!actor){executeTurn();return;}const uReady=unionSkills[actor.id]&&(battleState.unionGauges[actor.id]||0)>=unionSkills[actor.id].requiredHits;const chimeKey=`${battleState.stage}:${battleState.turnCount}:${actor.id}`;if(uReady&&readyChimeKey!==chimeKey){readyChimeKey=chimeKey;playReadyChime();}$("command-title").textContent=`${actor.name}　どうする？`;box.hidden=false;battleState.menuMode="main";box.innerHTML=`<button class="command-option" data-action="attack" data-description="敵に通常攻撃を行います。敵の防御力によってダメージが変化します。">攻撃</button><button class="command-option" data-action="skill" data-description="SPを消費して強力なスキルを使用します。スキルごとに効果や属性が異なります。" ${isSkillRestricted(actor)?"disabled":""}>SPスキル${isSkillRestricted(actor)?"（装備適性なし）":""}</button><button class="command-option" data-action="guard" data-description="このターンに受けるダメージを軽減します。防御中はユニオンゲージが増加しません。">防御</button><button class="command-option" data-action="item" data-description="所持している道具を使用します。回復薬などで味方を支援できます。">道具</button><div class="union-panel"><div class="window-title">ユニオンスキル</div><div class="union-list">${unionOption(actor)}</div></div>${battleState.currentActorIndex>0?'<button class="command-option back-option" data-action="back">前のキャラへ戻る</button>':''}`;
   box.querySelectorAll("[data-description]").forEach(b=>b.addEventListener("focus",()=>setCommandDescription(b.dataset.description)));box.querySelectorAll("[data-description]").forEach(b=>b.addEventListener("pointerenter",()=>setCommandDescription(b.dataset.description)));box.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.description)setCommandDescription(b.dataset.description);sound("select");const a=b.dataset.action;if(a==="attack")targetEnemy({type:"attack",actor:actor.id});else if(a==="guard")commitAction({type:"guard",actor:actor.id});else if(a==="skill")renderSkillMenu(actor);else if(a==="item")renderItemMenu(actor);else if(a==="back")undoPrevious();}));box.querySelectorAll("[data-union]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.description)setCommandDescription(b.dataset.description);sound("select",true);const type=b.dataset.union;if(type==="cross-break")renderPartnerMenu(actor);else commitAction({type:"union",actor:actor.id});}));$("command-hint").textContent=`${actor.name}の行動を選択してください。全員の選択後、行動が順番に再生されます。`;tutorialSyncCommandLock();}
 function setCommandDescription(message){const panel=$("command-description");if(panel)panel.textContent=message||"コマンドを選択すると、効果の説明がここに表示されます。";}
@@ -1506,12 +1519,14 @@ async function executeTurn(){
   const useRound=!battleState.tutorialMode;
   battleState._roundActive=useRound;
   const resolvedTurn=battleState.turnCount+1;
+  battleEmit("turn:start",{turn:resolvedTurn});// [EVT]
   if(useRound){
     await extRoundStart();
     if(enemyHpTotal(battleState.enemy)<=0){battleState._roundActive=false;await finishStage();return;}
     if(livingParty().length===0){battleState._roundActive=false;finishDefeat();return;}
   }
   const order=useRound?extBuildRoundOrder():[...battleState.actions.filter(Boolean).map((action,index)=>({action,index})).sort((a,b)=>(a.action.type==="union"?0:1)-(b.action.type==="union"?0:1)||a.index-b.index).map(x=>({kind:"party",action:x.action})),{kind:"enemy"}];
+  battleEmit("turn:order",{turn:resolvedTurn,order:order.map(x=>x.kind==="enemy"?{side:"enemy",actorId:"enemy"}:{side:"party",actorId:x.action.actor,kind:x.action.type})});// [EVT]
   for(const entry of order){
     if(enemyHpTotal(battleState.enemy)<=0)break;
     if(entry.kind==="enemy"){
@@ -1519,7 +1534,9 @@ async function executeTurn(){
       battleState.actingIds=[];
       checkBossTransformation(battleState.enemy);
       if(useRound&&extEnemyParalyzed(battleState.enemy)){pushEvent(`${battleState.enemy.name}は麻痺して動けない！`);renderBattle();await wait(700);continue;}
+      extEmitEnemyActionStart();// [EVT]
       await enemyTurn();
+      extEmitActionEnd();// [EVT]
       renderBattle();
       await wait(950);
       if(battleState.stage===5&&battleState.enemy?.name==="魔王"&&[3,7,11].includes(resolvedTurn)){showEnemyOmen("maou");}
@@ -1533,7 +1550,9 @@ async function executeTurn(){
     if(isActionIncapacitated(actor)){extCancelCharge(actor);consumeIncapacitatedTurn(actor);continue;}
     if(useRound&&extPartyParalyzed(actor)){extCancelCharge(actor);pushEvent(`${actor.name}は麻痺して動けない！`);renderBattle();await wait(600);continue;}
     battleState.actingIds=[action.actor,...(action.partner?[action.partner]:[])];renderBattle();
+    extEmitActionStart(extActionInfo(action));// [EVT]
     await executeAction(action);
+    extEmitActionEnd();// [EVT]
     renderBattle();
     if(action.type!=="guard")animatePartyIcon(actor.id);if(action.type==="union"&&action.partner)animatePartyIcon(action.partner);
     await wait(1180);
@@ -1546,6 +1565,7 @@ async function executeTurn(){
   battleState._roundActive=false;
   if(livingParty().length===0){finishDefeat();return;}
   battleState.turnCount++;
+  battleEmit("turn:end",{turn:resolvedTurn});// [EVT]
   refreshBattleLog();
   battleState.actions=[];
   battleState.consumedActors=[];
@@ -1691,6 +1711,8 @@ function clearNegativeStatuses(character){
 }
 const unionPortraitFiles={kotama:"kotama.png",knight:"kishi.png",warrior:"sennshi.png",healer:"hi-ra-.png",mage:"mahoutukai.png"};
 async function showUnionCutin(skill, participants){
+  const unionDetail={actorId:participants[0]?.id,participantIds:participants.map(c=>c.id),skillName:skill.name,skillType:skill.type};// [EVT]
+  battleEmit("union:start",unionDetail);
   const layer=document.getElementById("union-cutin-layer")||document.createElement("div");
   layer.id="union-cutin-layer";
   layer.className="union-cutin-layer";
@@ -1716,6 +1738,7 @@ async function showUnionCutin(skill, participants){
   layer.classList.remove("is-exiting");
   layer.setAttribute("aria-hidden","true");
   layer.innerHTML="";
+  battleEmit("union:end",unionDetail);// [EVT]
 }
 async function executeUnion(a){const actor=getCharacter(a.actor),u=unionSkills[a.actor],e=battleState.enemy;if(actor&&isSkillRestricted(actor)){pushLog(`${actor.name}は装備の適性がないため、ユニオンスキルを使用できない！`);return;}if(!actor||!u||(battleState.unionGauges[actor.id]||0)<u.requiredHits){pushLog("ユニオンゲージが足りません。");return;}const participants=[actor];if(u.type==="cross-break"){const partner=getCharacter(a.partner);if(!partner||partner.hp<=0||(battleState.unionGauges[partner.id]||0)<unionSkills[partner.id].requiredHits){pushLog("協力者のユニオンゲージが不足しています。");return;}participants.push(partner);}participants.forEach(c=>animatePartyIcon(c.id));await showUnionCutin(u,participants);if(!battleState.enemy||enemyHpTotal(battleState.enemy)<=0)return;await wait(160);if(u.type==="stun"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const dealt=applyDamageToEnemy(e,Math.floor(u.damage*(1+treeBonus(actor.id,"union"))));if(lastEnemyAttackMissed){pushLog(`${e.name}は「${u.name}」を回避した！`);renderBattle();return;}if(dealt>0)addBreakDamage(e,"union","無属性",actor);battleState.enemyStunned=true;pushLog(`${actor.name}の「${u.name}」！ ${dealt}ダメージ。敵の次の行動を妨害！`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();sound("damage",true);}else if(u.type==="meteor"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const dealt=applyDamageToEnemy(e,Math.floor(u.damage*(1+treeBonus(actor.id,"union"))));if(lastEnemyAttackMissed){pushLog(`${e.name}は「${u.name}」を回避した！`);renderBattle();return;}if(dealt>0)addBreakDamage(e,"union","無属性",actor);pushLog(`${actor.name}の「${u.name}」！ ${dealt}ダメージ！`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();playSe("assets/se/unionskill/聖魔法");}else if(u.type==="aegis"){battleState.aegisActive=true;battleState.unionGauges[actor.id]=0;for(const c of livingParty())c.hp=effectiveStats(c).maxHp;pushLog(`${actor.name}の「${u.name}」！ 生存中の味方全員を全回復し、次の敵ターンを無効化！`);sound("heal");}else if(u.type==="full-heal"){
   let sp=0,revived=0;
@@ -1909,6 +1932,7 @@ async function playEnemyDefeatAnimation(){
 }
 async function finishStage(){
   if(battleState.stageFinished)return;
+  battleEmit("end",{result:"win"});// [EVT]
   const e=battleState.enemy;
   if(!e)return;
   battleState.stageFinished=true;
@@ -1960,6 +1984,7 @@ async function finishStage(){
   pushLog(`${e.name}を倒した！ ${e.gold}G獲得。`);
 }
 function finishDefeat(){
+  battleEmit("end",{result:"lose"});// [EVT]
   playSe("assets/se/haiboku/おやすみ");
   battleState.busy=true;
   battleState.stageFinished=true;

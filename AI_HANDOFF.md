@@ -76,6 +76,7 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | フェーズ | 魔王のHP段階（1〜3）。段階が上がると技が増える |
 | 無防備 | インペリアルのチャージ中の状態。受けるダメージが増える |
 | `[EXT]` | `script.js` 内の、`battle-ext.js` を呼ぶフックの目印 |
+| `[EVT]` | `script.js` 内の、戦闘イベント（演出側への通知）を発火する1行の目印。仕様は `docs/battle-visual-refresh/EVENT_SPEC.md` |
 
 ## 7. 現在進行中の作業（2026-11-06 時点）
 
