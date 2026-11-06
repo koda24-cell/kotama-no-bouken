@@ -21,5 +21,8 @@ const EXT_STATUS_DEFS = {
   attackDown:  { label:"攻撃↓",  icon:"▼",  harm:true, fresh:"party" },
   attackUp:    { label:"攻撃↑",  icon:"▲",  harm:false },
   defenseUp:   { label:"防御↑",  icon:"▲",  harm:false },
-  speedUp:     { label:"速度↑",  icon:"▲",  harm:false }
+  speedUp:     { label:"速度↑",  icon:"▲",  harm:false },
+  bindHead:    { label:"頭封じ", icon:"⛓", harm:true, fresh:"party" },
+  bindArms:    { label:"腕封じ", icon:"⛓", harm:true, fresh:"party" },
+  bindLegs:    { label:"脚封じ", icon:"⛓", harm:true, fresh:"party" }
 };
