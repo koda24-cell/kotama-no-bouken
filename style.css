@@ -473,3 +473,15 @@ body[data-screen="battle"] .gold-display{display:none!important;}
   .event-log{min-height:38px;max-height:84px;padding:6px 8px}
   .event-window .window-title::after{font-size:8px}
 }
+
+
+/* 管理者パネル：プレイヤー編集コントロール */
+.admin-edit-form{display:flex;flex-direction:column;gap:9px;margin:8px 0 12px}
+.admin-edit-form label{display:flex;flex-direction:column;gap:4px;color:#b9c8ec;font-size:11px;font-weight:700}
+.admin-edit-form input[type="number"]{width:100%;min-width:0;min-height:34px;padding:6px 8px;border:1px solid #6177ad;border-radius:5px;background:#080f24;color:#f5f7ff;font:700 13px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace}
+.admin-edit-form button{align-self:flex-start;min-height:32px;padding:7px 12px;border:1px solid #d9c27a;border-radius:6px;background:#394675;color:#ffe8a3;font-weight:800;cursor:pointer}
+.admin-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.admin-edit-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:7px 12px}
+.admin-edit-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(70px,100px);align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #ffffff12}
+.admin-edit-row span{overflow-wrap:anywhere}
+@media(max-width:420px){.admin-edit-grid{grid-template-columns:1fr}.admin-edit-row{grid-template-columns:minmax(0,1fr) 82px}}
