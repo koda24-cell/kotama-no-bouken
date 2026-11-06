@@ -487,6 +487,7 @@ async function extVariantAction(e, turn) {
   animateEnemyAttack();
   const sp = act.kind === "sp";
   pushEvent(`${e.name}は「${act.name}」${act.all ? "を放った" : "で攻撃した"}！`);
+  if (act.all && battleState.tauntTarget && alive.some(c => c.id === battleState.tauntTarget)) pushEvent("騎士の挑発で敵の注意を引いた！ ただし全体攻撃は防ぎきれない。");
   sound("damage", true);
   const targets = act.all ? alive.slice() : [extPickPartyTarget(alive, act)];
   for (const c of targets) {
