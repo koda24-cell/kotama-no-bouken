@@ -185,3 +185,19 @@
 @media(max-width:620px){
   .field-viewport{height:min(42vh,360px);min-height:230px}
 }
+
+/* Keep the exploration frame compact and make the floor map a clear tactical panel. */
+.field-viewport{width:min(100%,780px);margin-inline:auto}
+.field-minimap{
+  width:clamp(112px,21%,172px);
+  height:auto;
+  max-height:72%;
+  padding:5px;
+  border:1px solid #d8c18b;
+  background:#06111bea;
+  box-shadow:0 3px 14px #000c,inset 0 0 0 1px #ffffff1a;
+}
+@media(max-width:620px){
+  .field-viewport{width:100%}
+  .field-minimap{width:clamp(104px,29%,136px);max-height:60%}
+}
