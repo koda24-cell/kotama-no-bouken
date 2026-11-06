@@ -347,6 +347,13 @@ function extSkillLabelExtra(actor, skill) {
   if (!skill.xj?.heat) return "";
   return ` ／ 熱 ${skill.xj.heat}${actor._overheat ? " ／ オーバーヒート" : ""}`;
 }
+// LUC（運）は敵への状態異常付与率を高める。基準値50、1ポイントにつき相対0.5%上昇、最大25%。
+function extPartyStatusInflictChance(actor, baseChance) {
+  const luck = Math.max(0, Number(effectiveStats(actor).luck) || 50);
+  const bonus = Math.min(0.25, Math.max(0, luck - 50) * 0.005);
+  return Math.max(0, Math.min(0.95, baseChance * (1 + bonus)));
+}
+
 function extSkillDamage(actor, enemy, x, mult) {
   let d;
   if (x.kind === "sp") {
@@ -406,7 +413,7 @@ async function extDamageSkill(actor, skill, a, x, mult) {
       for (const target of targets) {
         const unit = target.ref;
         if (!unit || unit.hp <= 0) continue;
-        const chance = Math.min(.95, st.chance * (extIsBoss(enemy) ? (st.bossMul ?? .75) : 1.25));
+        const chance = extPartyStatusInflictChance(actor, st.chance * (extIsBoss(enemy) ? (st.bossMul ?? .75) : 1.25));
         const unitName = unit.displayName || unit.name || enemy.name;
         if (Math.random() < chance) {
           const r = addStatus(unit, st.type, { turns: st.turns, power: st.power });
