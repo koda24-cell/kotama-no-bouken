@@ -201,3 +201,7 @@
   .field-viewport{width:100%}
   .field-minimap{width:clamp(104px,29%,136px);max-height:60%}
 }
+
+/* Smaller exploration stage: keep movement grid readable without dominating the screen. */
+.field-viewport{height:min(38vh,350px);min-height:220px;max-height:350px}
+@media(max-width:620px){.field-viewport{height:min(36vh,300px);min-height:205px;max-height:300px}}
