@@ -62,6 +62,21 @@
 - **既存仕様への影響・注意点：**
 - **確認日：**
 
+## 5-2. 研究の進捗（2026-11-06 時点・Claude）
+
+研究リポジトリ（非公開）に、次の成果が追加済み。**GPT は `sources_and_notes/HANDOFF_CLAUDE_TO_GPT.md` から読むこと。**
+
+| 成果 | 研究リポジトリ内の場所 |
+|---|---|
+| EO3 HD セーブの復号・構造解析（GPT照合用チェックリスト付き） | `sources_and_notes/CLAUDE_EO3HD_SAVE_ANALYSIS_REPORT.md` |
+| キャラクター解析（職業・サブクラス・ステータス・スキル配列） | `gameplay_research/classes_and_party/EO3HD_CHARACTER_ANALYSIS.md` |
+| アイテム・装備・所持金 | `gameplay_research/items_equipment_economy/EO3HD_ITEM_ANALYSIS.md` |
+| 画面レイアウト・UI研究（スクショ17枚で検証） | `gameplay_research/ui_and_presentation/EO3HD_UI_RESEARCH.md` |
+| **コタマへのUI改善提案（優先度付き・未採用）** | `kotama_application/UI_PROPOSALS_FROM_EO3HD.md` |
+| GPTへの照合・検討依頼 | `sources_and_notes/HANDOFF_CLAUDE_TO_GPT.md` |
+
+コタマのコード・仕様は**未変更**。提案の採用はユーザーの判断待ち。採用が決まったら、`docs/` に分担表を作ってから実装する。
+
 ## 6. 参照リンク
 
 - 研究リポジトリ： https://github.com/koda24-cell/etrian-odyssey-research
