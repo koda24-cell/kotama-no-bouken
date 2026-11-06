@@ -357,6 +357,8 @@ function fieldUpdate() {
     const d = FIELD_DIRS[dir];
     fieldState.dir = dir;
     const current = fieldPlayerTile();
+    const origin = fieldTileCenter(current.tx, current.ty);
+    fieldState.x = origin.x; fieldState.y = origin.y;
     const tx = current.tx + d.dx, ty = current.ty + d.dy;
     const tile = fieldTileAt(a, tx, ty);
     const next = fieldTileCenter(tx, ty);
