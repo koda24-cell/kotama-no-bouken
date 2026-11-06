@@ -25,12 +25,12 @@ const EXT_NEW_JOBS = [
   { id:"assassin", name:"アサシン", image:"assets/characters/assassin.svg", emblem:"暗", hp:85, maxHp:85, attack:70, spAttack:40, defense:15, guardCut:.30, sp:80, maxSp:80,
     spSkills:[
       { id:"poison-blade", name:"毒刃", cost:12, target:"enemy", type:"xj", description:"斬撃で攻撃し、高確率で敵を毒にする。毒は毎ターン開始時にダメージ。", xj:{ kind:"phys", mult:.9, element:"斬撃", fx:"slash", status:{ type:"poison", chance:.85, turns:4, power:.06, bossMul:.7 } } },
-      { id:"paralyze-needle", name:"麻痺針", cost:16, target:"enemy", type:"xj", description:"突属性の針で攻撃し、敵を麻痺させる。麻痺した敵は一定確率で行動できない。", xj:{ kind:"phys", mult:.5, element:"突", fx:"slash", status:{ type:"paralysis", chance:.7, turns:3, power:0, bossMul:.4 } } },
+      { id:"paralyze-needle", name:"麻痺針", cost:16, target:"enemy", type:"xj", priority:4, description:"突属性の針で攻撃し、敵を麻痺させる。麻痺した敵は一定確率で行動できない。", xj:{ kind:"phys", mult:.5, element:"突", fx:"slash", status:{ type:"paralysis", chance:.7, turns:3, power:0, bossMul:.4 } } },
       { id:"venom-fog", name:"毒霧", cost:24, target:"allEnemies", type:"xj", description:"毒の霧で敵全体を攻撃し、毒を与える。", xj:{ kind:"phys", mult:.6, element:"無属性", fx:"magic", status:{ type:"poison", chance:.6, turns:3, power:.06, bossMul:.7 } } }
     ] },
   { id:"gunner", name:"ガンナー", image:"assets/characters/gunner.svg", emblem:"銃", hp:90, maxHp:90, attack:95, spAttack:30, defense:15, guardCut:.30, sp:70, maxSp:70,
     spSkills:[
-      { id:"snipe", name:"狙撃", cost:15, target:"enemy", type:"xj", description:"壊属性の遠距離攻撃。攻撃力の230%の単体ダメージ。", xj:{ kind:"phys", mult:2.3, element:"壊", fx:"slash" } },
+      { id:"snipe", name:"狙撃", cost:15, target:"enemy", type:"xj", priority:4, description:"壊属性の遠距離攻撃。攻撃力の230%の単体ダメージ。", xj:{ kind:"phys", mult:2.3, element:"壊", fx:"slash" } },
       { id:"ricochet", name:"跳弾", cost:24, target:"allEnemies", type:"xj", description:"弾丸を跳ね返らせ、敵全体に壊属性ダメージを2回与える。", xj:{ kind:"phys", mult:.85, hits:2, element:"壊", fx:"slash" } },
       { id:"cover-fire", name:"援護射撃", cost:18, target:"enemy", type:"xj", description:"敵の足元を撃ち抜き、3ターンの間、敵の防御力を25%下げる。", xj:{ kind:"phys", mult:.6, element:"壊", fx:"slash", status:{ type:"defenseDown", chance:1, turns:3, power:.25, bossMul:1 } } }
     ] },
@@ -42,7 +42,7 @@ const EXT_NEW_JOBS = [
   { id:"princess", name:"プリンセス", image:"assets/characters/princess.svg", emblem:"姫", hp:90, maxHp:90, attack:10, spAttack:80, defense:12, guardCut:.30, sp:150, maxSp:150,
     spSkills:[
       { id:"inspire-song", name:"鼓舞の歌", cost:25, target:"allAllies", type:"xj", description:"味方全体の攻撃力とSP攻撃力を3ターンの間30%上げる。", xj:{ buff:{ attackUp:{ turns:3, power:.30 } } } },
-      { id:"guardian-dance", name:"守りの舞", cost:25, target:"allAllies", type:"xj", description:"味方全体の防御力とSP防御力を3ターンの間40%上げる。", xj:{ buff:{ defenseUp:{ turns:3, power:.40 } } } },
+      { id:"guardian-dance", name:"守りの舞", cost:25, target:"allAllies", type:"xj", priority:2, description:"味方全体の防御力とSP防御力を3ターンの間40%上げる。", xj:{ buff:{ defenseUp:{ turns:3, power:.40 } } } },
       { id:"victory-hymn", name:"凱歌", cost:45, target:"allAllies", type:"xj", description:"味方全体の攻撃・防御を25%、スピードを30%、3ターンの間上げる。", xj:{ buff:{ attackUp:{ turns:3, power:.25 }, defenseUp:{ turns:3, power:.25 }, speedUp:{ turns:3, power:.30 } } } }
     ] },
   { id:"reaper", name:"リーパー", image:"assets/characters/reaper.svg", emblem:"鎌", hp:95, maxHp:95, attack:105, spAttack:60, defense:18, guardCut:.30, sp:70, maxSp:70,
