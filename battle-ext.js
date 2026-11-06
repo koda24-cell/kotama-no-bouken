@@ -268,18 +268,17 @@ async function extEndOfTurnStatuses() {
 
 /* ============================================================
    2. 行動優先度とスピード順
-   - 優先度4：ユニオンスキル（最優先）
-   - 優先度3：挑発・防御系スキル
-   - 優先度2：通常防御
-   - 優先度1：速攻指定された攻撃スキル
+   - 優先度3：ユニオンスキル（最優先）
+   - 優先度2：挑発・防御系スキル
+   - 優先度1：通常防御・速攻指定された攻撃スキル
    - 優先度なし：その他の行動と敵行動（速度順）
-   - 同一優先度内は速度順。同速なら味方を先にする。
+   - 数字が大きいほど優先。同一優先度内は速度順。同速なら味方を先にする。
    ============================================================ */
 const EXT_ACTION_PRIORITY = Object.freeze({
   QUICK_ATTACK: 1,
-  GUARD: 2,
-  DEFENSIVE_SKILL: 3,
-  UNION: 4,
+  GUARD: 1,
+  DEFENSIVE_SKILL: 2,
+  UNION: 3,
   NONE: 0
 });
 function extEnemySpeed(e) { return Number.isFinite(e?.speed) ? e.speed : (EXT_ENEMY_SPEED[e?.name] ?? 50); }
