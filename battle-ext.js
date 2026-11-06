@@ -314,7 +314,7 @@ function extBuildRoundOrder() {
   entries.push({ kind: "enemy", priority: EXT_ACTION_PRIORITY.NORMAL, speed: extEnemySpeed(battleState.enemy), index: index++ });
   entries.sort((a, b) => a.priority - b.priority || b.speed - a.speed || (a.kind === "enemy" ? 1 : 0) - (b.kind === "enemy" ? 1 : 0) || a.index - b.index);
   const names = entries.filter(en => en.priority >= EXT_ACTION_PRIORITY.UNION || en.kind === "enemy").map(en => en.kind === "enemy" ? battleState.enemy.name : getCharacter(en.action.actor)?.name).filter(Boolean);
-  pushLog(`行動順：${[...entries.filter(en => en.priority < 2).map(en => getCharacter(en.action.actor)?.name), ...names].filter(Boolean).join(" → ")}`);
+  pushLog(`行動順：${entries.map(en => en.kind === "enemy" ? battleState.enemy.name : getCharacter(en.action.actor)?.name).filter(Boolean).join(" → ")}`);
   return entries;
 }
 function extEnemyParalyzed(e) {
