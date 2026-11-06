@@ -211,3 +211,12 @@ body:not([data-screen="battle"]) .retreat-button{display:none}
  .skill-upgrade-dialog .dialog-actions{gap:8px}
  .skill-upgrade-dialog .dialog-actions button{min-width:0;flex:1;padding:9px 7px}
 }
+
+/* P2-1 review fixes: modal scroll containment and visible keyboard focus */
+.skill-upgrade-dialog{overscroll-behavior:contain}
+.skill-upgrade-dialog-panel{overscroll-behavior:contain;scroll-behavior:auto}
+.skill-upgrade-dialog button:focus-visible{outline:3px solid #fff0a8;outline-offset:3px}
+@media(orientation:landscape) and (max-height:520px){
+ .skill-upgrade-dialog{align-items:flex-start;padding-block:8px}
+ .skill-upgrade-dialog-panel{max-height:calc(100dvh - 16px)}
+}
