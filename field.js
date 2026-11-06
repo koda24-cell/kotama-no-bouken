@@ -156,7 +156,8 @@ function fieldEnsureExtraDom() {
   }
   if (!$("field-minimap")) {
     const mini = document.createElement("canvas"); mini.id = "field-minimap"; mini.className = "field-minimap"; mini.setAttribute("aria-label", "ミニマップ（タップで全体マップ）");
-    vp.appendChild(mini); mini.addEventListener("click", () => fieldToggleFullMap());
+    const mapRail = document.querySelector("#field .field-map-rail");
+    (mapRail || vp).appendChild(mini); mini.addEventListener("click", () => fieldToggleFullMap());
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
