@@ -183,24 +183,24 @@ const FIELD_AREAS = {
    ・ボス・既存の敵の数値には影響しない。
    ------------------------------------------------------------ */
 const FIELD_ENEMIES = {
-  "stray-slime": { name:"はぐれスライム", element:"無属性", weaknesses:["炎","氷","雷","聖"], resistances:[], physicalResistances:["打撃"], hp:80, attack:9, spAttack:8, defense:3, spDefense:18, gold:4, speed:30, dropAs:"スライム", image:"assets/monsters/suraimu.png", sprite:"slime",
+  "stray-slime": { name:"はぐれスライム", element:"無属性", weaknesses:["炎","氷","雷","聖"], resistances:[], physicalResistances:["打撃"], hp:180, attack:12, spAttack:8, defense:3, spDefense:18, gold:6, speed:60, dropAs:"スライム", image:"assets/monsters/suraimu.png", sprite:"slime",
     ai:[ { name:"体当たり", weight:70, kind:"phys", power:1.0 }, { name:"ねばねば", weight:30, kind:"phys", power:.6, status:{ type:"defenseDown", chance:.4, turns:2, power:3 } } ] },
-  "mushroom": { name:"キノコもどき", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:95, attack:10, spAttack:12, defense:6, spDefense:8, gold:5, speed:25, image:"assets/monsters/suraimu.png", sprite:"slime",
+  "mushroom": { name:"キノコもどき", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:200, attack:13, spAttack:12, defense:6, spDefense:8, gold:7, speed:48, image:"assets/monsters/suraimu.png", sprite:"slime",
     ai:[ { name:"頭突き", weight:60, kind:"phys", power:1.0 }, { name:"しびれ胞子", weight:40, all:true, kind:"sp", power:.4, status:{ type:"poison", chance:.25, turns:2, power:.04 } } ] },
-  "forest-goblin": { name:"森ゴブリン", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:160, attack:22, spAttack:10, defense:8, spDefense:4, gold:8, speed:55, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin",
+  "forest-goblin": { name:"森ゴブリン", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:340, attack:26, spAttack:10, defense:8, spDefense:4, gold:12, speed:72, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin",
     ai:[ { name:"棍棒", weight:70, kind:"phys", power:1.0 }, { name:"石投げ", weight:30, kind:"phys", power:.8, target:"rear" } ] },
-  "goblin-scout": { name:"ゴブリンの斥候", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:130, attack:24, spAttack:10, defense:6, spDefense:4, gold:9, speed:80, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin",
+  "goblin-scout": { name:"ゴブリンの斥候", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:280, attack:28, spAttack:10, defense:6, spDefense:4, gold:12, speed:95, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin",
     ai:[ { name:"素早い突き", weight:60, kind:"phys", power:.9 }, { name:"毒ナイフ", weight:40, kind:"phys", power:.7, status:{ type:"poison", chance:.45, turns:3, power:.05 } } ] },
-  "mist-bat": { name:"霧コウモリ", element:"無属性", weaknesses:["雷","炎"], resistances:[], hp:230, attack:28, spAttack:20, defense:12, spDefense:10, gold:12, speed:105, image:"assets/monsters/ookami.png", sprite:"wolf",
+  "mist-bat": { name:"霧コウモリ", element:"無属性", weaknesses:["雷","炎"], resistances:[], hp:480, attack:32, spAttack:20, defense:12, spDefense:10, gold:18, speed:105, image:"assets/monsters/ookami.png", sprite:"wolf",
     ai:[ { name:"吸血", weight:55, kind:"phys", power:.9, drain:.35 }, { name:"超音波", weight:45, all:true, kind:"sp", power:.4, status:{ type:"paralysis", chance:.2, turns:1 } } ] },
-  "forest-wolf": { name:"森オオカミ", element:"無属性", weaknesses:["雷","打撃","壊"], resistances:[], hp:290, attack:32, spAttack:12, defense:16, spDefense:8, gold:14, speed:85, dropAs:"オオカミ", image:"assets/monsters/ookami.png", sprite:"wolf",
+  "forest-wolf": { name:"森オオカミ", element:"無属性", weaknesses:["雷","打撃","壊"], resistances:[], hp:560, attack:36, spAttack:12, defense:16, spDefense:8, gold:20, speed:85, dropAs:"オオカミ", image:"assets/monsters/ookami.png", sprite:"wolf",
     ai:[ { name:"噛みつき", weight:65, kind:"phys", power:1.0 }, { name:"飛びかかり", weight:35, kind:"phys", power:1.3, target:"rear", minTurn:2 } ] },
   "fire-lizard": { name:"火トカゲ", element:"炎", weaknesses:["氷"], resistances:["炎"], hp:430, attack:44, spAttack:46, defense:24, spDefense:16, gold:18, speed:60, image:"assets/monsters/dragon.svg", sprite:"dragon",
     ai:[ { name:"しっぽ打ち", weight:55, kind:"phys", power:1.0 }, { name:"火の息", weight:45, kind:"sp", power:1.0, element:"炎", status:{ type:"burn", chance:.3, turns:2 } } ] },
-  "lava-golem": { name:"溶岩ゴーレム", element:"炎", weaknesses:["氷","打撃"], resistances:["炎"], hp:620, attack:50, spAttack:40, defense:44, spDefense:14, gold:22, speed:20, image:"assets/monsters/dragon.svg", sprite:"dragon",
+  "lava-golem": { name:"溶岩ゴーレム", element:"炎", weaknesses:["氷","打撃"], resistances:["炎"], hp:520, attack:50, spAttack:40, defense:44, spDefense:14, gold:22, speed:20, image:"assets/monsters/dragon.svg", sprite:"dragon",
     ai:[ { name:"岩の拳", weight:65, kind:"phys", power:1.15 }, { name:"溶岩投げ", weight:35, all:true, kind:"sp", power:.5, element:"炎", status:{ type:"burn", chance:.2, turns:2 } } ] },
   "dark-knight": { name:"魔王軍の騎士", element:"無属性", weaknesses:["雷","聖"], resistances:[], hp:760, attack:58, spAttack:50, defense:48, spDefense:30, gold:28, speed:50, image:"assets/monsters/maou.png", sprite:"maou",
     ai:[ { name:"黒鉄の斬撃", weight:65, kind:"phys", power:1.1 }, { name:"闇の剣", weight:35, kind:"sp", power:1.0, status:{ type:"curse", chance:.3, turns:3 } } ] },
-  "wraith": { name:"さまよう亡霊", element:"無属性", weaknesses:["聖","炎"], resistances:["斬撃","突"], hp:520, attack:36, spAttack:60, defense:20, spDefense:48, gold:24, speed:70, image:"assets/monsters/chaos-phantom.svg", sprite:"maou",
-    ai:[ { name:"呪いの声", weight:45, all:true, kind:"sp", power:.5, status:{ type:"curse", chance:.3, turns:2 } }, { name:"生命吸収", weight:55, kind:"sp", power:.9, drain:.4 } ] }
+  "wraith": { name:"さまよう亡霊", element:"無属性", weaknesses:["聖","炎"], resistances:["斬撃","突"], hp:440, attack:36, spAttack:50, defense:20, spDefense:48, gold:24, speed:70, image:"assets/monsters/chaos-phantom.svg", sprite:"maou",
+    ai:[ { name:"呪いの声", weight:45, all:true, kind:"sp", power:.5, status:{ type:"curse", chance:.2, turns:2 } }, { name:"生命吸収", weight:55, kind:"sp", power:.8, drain:.4 } ] }
 };
