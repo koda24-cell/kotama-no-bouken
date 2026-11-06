@@ -545,3 +545,7 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 @keyframes union-skill-reveal{0%{opacity:0;letter-spacing:.22em;filter:blur(5px)}100%{opacity:1;letter-spacing:.08em;filter:blur(0)}}
 @media(max-width:600px){.union-cutin-swipe{width:94vw;min-height:200px;padding:14px 12px}.union-cutin-member{flex-direction:column;gap:2px}.union-cutin-portrait{width:clamp(46px,16vw,76px);height:clamp(64px,16vh,100px)}.union-cutin-skill{font-size:clamp(20px,6vw,32px);margin:0;padding:7px 10px}}
 @media(prefers-reduced-motion:reduce){.union-cutin-layer.is-active .union-cutin-swipe,.union-cutin-layer.is-exiting .union-cutin-swipe,.union-cutin-skill{animation:none!important;transform:none;opacity:1}}
+
+/* Keep the battle stage itself compact while leaving room for the tactical panels. */
+.battle-arena{width:min(100%,720px);min-height:188px;margin-left:auto;margin-right:auto}
+@media(max-width:620px){.battle-arena{width:100%;min-height:172px}}
