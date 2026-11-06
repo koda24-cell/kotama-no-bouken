@@ -35,7 +35,7 @@ function extInstallItems(shopItems, enhancementMaterials) {
 /* ---------- 新職業の解放 ---------- */
 function extJobsUnlocked() { if (!Array.isArray(state.unlockedJobs)) state.unlockedJobs = []; return state.unlockedJobs; }
 function extIsJobAvailable(c) { return !!c && (!EXT_NEW_JOB_IDS.includes(c.id) || extJobsUnlocked().includes(c.id)); }
-function extAvailableCharacters() { return characters.filter(extIsJobAvailable); }
+function extAvailableCharacters() { return characters.filter(c => c.id !== "imperial" && extIsJobAvailable(c)); }
 function extJobUnlockRequirement(id) {
   const stageEntry = Object.entries(EXT_JOB_UNLOCK_BY_STAGE).find(([, jobId]) => jobId === id);
   if (stageEntry) return `STAGE ${stageEntry[0]} クリアで解放`;
