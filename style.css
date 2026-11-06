@@ -742,3 +742,266 @@ body[data-screen="battle"] .gold-display{display:none!important;}
     width:184px;height:132px;max-height:124px;
   }
 }
+
+
+/* ============================================================
+   Battle interaction motion pass — original Etrian-inspired feel.
+   Focus travel, command confirmation, event feed and tactical feedback.
+   ============================================================ */
+@keyframes command-panel-arrive{
+  0%{opacity:0;transform:translateY(9px);filter:brightness(.7)}
+  70%{opacity:1;transform:translateY(-1px);filter:brightness(1.16)}
+  100%{opacity:1;transform:translateY(0);filter:brightness(1)}
+}
+@keyframes command-cursor-enter{
+  0%{opacity:.45;transform:translateX(-7px) scale(.985);box-shadow:inset 3px 0 0 #d9bd78}
+  55%{transform:translateX(2px) scale(1.012)}
+  100%{opacity:1;transform:translateX(0) scale(1);box-shadow:inset 4px 0 0 #f2d58b,0 0 14px #d8b86a38}
+}
+@keyframes command-confirm{
+  0%{transform:scale(1);filter:brightness(1)}
+  24%{transform:scale(.975);filter:brightness(1.45)}
+  62%{transform:scale(1.018);filter:brightness(1.18)}
+  100%{transform:scale(1);filter:brightness(1)}
+}
+@keyframes event-line-arrive{
+  0%{opacity:0;transform:translateY(8px);filter:blur(2px)}
+  65%{opacity:1;transform:translateY(-1px);filter:blur(0)}
+  100%{opacity:1;transform:translateY(0);filter:blur(0)}
+}
+@keyframes event-warning-pulse{
+  0%,100%{box-shadow:inset 0 0 0 1px #a64b3a66,0 0 0 #e35b3b00}
+  50%{box-shadow:inset 0 0 0 1px #f08b5c,0 0 14px #e35b3b55}
+}
+@keyframes command-info-reveal{
+  0%{opacity:.35;transform:translateY(5px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+@keyframes battle-window-glint{
+  0%{transform:translateX(-130%);opacity:0}
+  18%{opacity:.42}
+  100%{transform:translateX(130%);opacity:0}
+}
+.command-window,
+.command-info-window,
+.event-window{
+  position:relative;
+  isolation:isolate;
+}
+.command-window{
+  overflow:hidden;
+  border-color:#c1a66f;
+  background:
+    linear-gradient(145deg,#1b2c3b 0%,#101c2b 58%,#0a1420 100%);
+  box-shadow:inset 0 0 0 1px #0009,inset 0 1px 0 #ffffff12,0 4px 12px #0007;
+}
+.command-window::before,
+.command-info-window::before,
+.event-window::before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:3px;
+  border:1px solid #c6a86c24;
+  pointer-events:none;
+}
+.command-window>.window-title,
+.command-info-window>.window-title,
+.event-window>.window-title{
+  position:relative;
+  z-index:1;
+  color:#f0dba5;
+  text-shadow:0 1px 3px #000;
+}
+#battle-commands{
+  position:relative;
+  z-index:1;
+  perspective:600px;
+}
+#battle-commands>.command-option{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:30px;
+  padding:6px 9px;
+  border:1px solid #7d8b8e88;
+  border-left:3px solid #71818a;
+  border-radius:2px;
+  background:linear-gradient(90deg,#172838,#142333 72%,#101b29);
+  color:#e8e7dd;
+  text-align:left;
+  text-shadow:0 1px 2px #000;
+  transform-origin:left center;
+  transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease,transform .16s ease,filter .16s ease;
+  animation:command-panel-arrive .22s ease-out both;
+}
+#battle-commands>.command-option:nth-child(2){animation-delay:24ms}
+#battle-commands>.command-option:nth-child(3){animation-delay:48ms}
+#battle-commands>.command-option:nth-child(4){animation-delay:72ms}
+#battle-commands>.command-option:nth-child(5){animation-delay:96ms}
+#battle-commands>.command-option:nth-child(6){animation-delay:120ms}
+#battle-commands>.command-option::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  opacity:0;
+  background:linear-gradient(100deg,transparent 0%,#f4dda522 48%,transparent 100%);
+  transform:translateX(-120%);
+  pointer-events:none;
+}
+#battle-commands>.command-option:hover,
+#battle-commands>.command-option.mouse-focus,
+#battle-commands>.command-option.keyboard-focus,
+#battle-commands>.command-option:focus-visible{
+  z-index:2;
+  border-color:#d8bd7c;
+  border-left-color:#f0d58b;
+  background:linear-gradient(90deg,#3b4140,#293b47 68%,#1b2d3a);
+  color:#fff0c4;
+  box-shadow:inset 4px 0 0 #e5c77e,0 0 0 1px #e5c77e55,0 3px 12px #0008;
+  transform:translateX(3px);
+  outline:none;
+}
+#battle-commands>.command-option.mouse-focus,
+#battle-commands>.command-option.keyboard-focus{
+  animation:command-cursor-enter .2s cubic-bezier(.2,.8,.2,1) both;
+}
+#battle-commands>.command-option:hover::before,
+#battle-commands>.command-option.mouse-focus::before,
+#battle-commands>.command-option.keyboard-focus::before{
+  opacity:1;
+  animation:battle-window-glint .48s ease-out both;
+}
+#battle-commands>.command-option:active{
+  transform:translateX(2px) scale(.975);
+  filter:brightness(1.4);
+  background:#5a4b2c;
+}
+#battle-commands>.command-option:focus-visible{
+  outline:2px solid #f4dfa1;
+  outline-offset:2px;
+}
+#battle-commands>.command-option[aria-disabled="true"],
+#battle-commands>.command-option:disabled{
+  filter:grayscale(.65);
+  opacity:.48;
+  border-color:#5e6870;
+  box-shadow:none;
+  transform:none;
+}
+#battle-commands>.command-option[aria-disabled="true"]:hover,
+#battle-commands>.command-option:disabled:hover{
+  transform:none;
+  background:linear-gradient(90deg,#172838,#142333 72%,#101b29);
+}
+#battle-commands .union-panel{
+  position:relative;
+  margin-top:5px;
+  padding:7px;
+  border:1px solid #a68d59aa;
+  background:linear-gradient(145deg,#28263a,#141c2b);
+  box-shadow:inset 0 0 12px #0007;
+  animation:command-panel-arrive .28s ease-out both;
+}
+#battle-commands .union-panel .window-title{
+  color:#e9d29a;
+}
+.command-info-window{
+  overflow:hidden;
+  border-color:#8c9ca0;
+  background:linear-gradient(145deg,#172a36,#101b29 72%,#0a1420);
+}
+.command-description{
+  position:relative;
+  z-index:1;
+  min-height:3.2em;
+  padding:8px 9px;
+  border-left:2px solid #c3a66a;
+  background:linear-gradient(90deg,#0a1721bb,#101c29aa);
+  color:#e1e6df;
+  line-height:1.7;
+  text-shadow:0 1px 2px #000;
+  animation:command-info-reveal .18s ease-out;
+}
+.event-window{
+  border-color:#b59a66;
+  background:linear-gradient(145deg,#182d35,#0d1b25);
+  box-shadow:inset 0 0 0 1px #0009,0 3px 12px #0007;
+}
+.event-window .window-title::after{
+  content:"BATTLE FEED";
+  color:#d4c18e;
+  letter-spacing:.13em;
+}
+.event-log{
+  position:relative;
+  border:1px solid #8b9b8d66;
+  border-radius:2px;
+  background:linear-gradient(90deg,#07151cdd,#10232bdd);
+  box-shadow:inset 0 0 14px #0008;
+}
+.event-log p{
+  position:relative;
+  padding:3px 5px 3px 11px;
+  border-left:2px solid #c0ad76;
+  color:#f1eee2;
+  animation:event-line-arrive .26s cubic-bezier(.2,.75,.25,1) both;
+}
+.event-log p::before{
+  content:"›";
+  position:absolute;
+  left:2px;
+  top:2px;
+  color:#e5ca83;
+  font-weight:900;
+}
+.event-log p.event-warning{
+  border-left-color:#e47758;
+  background:linear-gradient(90deg,#6a261f66,transparent 90%);
+  color:#ffd4bd;
+  animation:event-line-arrive .26s ease-out both,event-warning-pulse 1.15s ease-in-out .26s 2;
+}
+.event-log p.event-maou-shake{
+  border-left-color:#b98bdf;
+  color:#e6d1ff;
+  text-shadow:0 0 9px #b77be888;
+}
+.battle-log p{
+  animation:event-line-arrive .22s ease-out both;
+}
+.battle-support{
+  position:relative;
+  overflow:hidden;
+  border-color:#a58c5a;
+  background:linear-gradient(90deg,#111f2c,#1c2d36,#111f2c);
+  color:#d7d3c4;
+}
+.battle-support::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:2px;
+  background:#c8a96d;
+  box-shadow:0 0 9px #d9bd78;
+}
+@media(max-width:700px){
+  #battle-commands>.command-option{min-height:26px;padding:4px 5px}
+  .command-description{padding:6px 7px;font-size:clamp(9px,2vw,12px)}
+  .event-log p{padding-block:2px;font-size:clamp(9px,2vw,12px)}
+}
+@media(prefers-reduced-motion:reduce){
+  #battle-commands>.command-option,
+  #battle-commands .union-panel,
+  .event-log p,
+  .battle-log p,
+  .command-description{
+    animation:none!important;
+    transition:none!important;
+  }
+  #battle-commands>.command-option:hover,
+  #battle-commands>.command-option.mouse-focus,
+  #battle-commands>.command-option.keyboard-focus{
+    transform:none;
+  }
+}
