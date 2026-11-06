@@ -1420,7 +1420,7 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
   if(e.members){
     img?.remove();placeholder.hidden=true;
     let group=display.querySelector(".enemy-group");if(!group){group=document.createElement("div");group.className="enemy-group";display.prepend(group);}
-    group.innerHTML=e.members.map(m=>m.hp>0?`<div class="enemy-group-unit" data-enemy-id="${esc(m.id)}"><img src="${esc(m.image)}" alt="${esc(m.name||"ゴブリン")}"><span>${esc(m.displayName||m.name||m.id.replace("goblin-","ゴブリン "))}</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,m.hp)/m.maxHp*100}%"></i></div><small>${Math.max(0,m.hp)} / ${m.maxHp}</small></div>`:"").join("");
+    group.innerHTML=e.members.map(m=>m.hp>0?`<div class="enemy-group-unit" data-enemy-id="${esc(m.id)}"><img src="${esc(m.image)}" alt="${esc(m.name||"ゴブリン")}"><span>${esc(m.displayName||m.name||m.id.replace("goblin-","ゴブリン "))}</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,m.hp)/m.maxHp*100}%"></i></div><div class="enemy-unit-status">${extEnemyStatusBadges(m).join("")}</div><small>${Math.max(0,m.hp)} / ${m.maxHp}</small></div>`:"").join("");
   }else{
     display.querySelector(".enemy-group")?.remove();
     if(e.image){
@@ -1433,8 +1433,8 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
       img?.remove();
       let group=display.querySelector(".enemy-group");if(!group){group=document.createElement("div");group.className="enemy-group wolf-enemy-group";display.prepend(group);}
       const wolfBuffs=battleState.wolfEvasionTurns>0?`<span class="enemy-unit-buff">警鐘・回避上昇 ${battleState.wolfEvasionTurns}T</span>`:"";
-      const realUnit=`<div class="enemy-group-unit wolf-unit" data-enemy-id="wolf-main"><img src="${esc(e.image||"")}" alt="オオカミ"><span>オオカミ</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,e.hp)/e.maxHp*100}%"></i></div><div class="enemy-unit-buffs">${wolfBuffs}</div></div>`;
-      const fakeUnits=liveWolfClones.map(c=>`<div class="enemy-group-unit wolf-unit" data-enemy-id="${esc(c.id)}"><img src="${esc(e.image||"")}" alt="オオカミ"><span>オオカミ</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,c.hp)/c.maxHp*100}%"></i></div><div class="enemy-unit-buffs">${wolfBuffs}</div></div>`);
+      const realUnit=`<div class="enemy-group-unit wolf-unit" data-enemy-id="wolf-main"><img src="${esc(e.image||"")}" alt="オオカミ"><span>オオカミ</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,e.hp)/e.maxHp*100}%"></i></div><div class="enemy-unit-status">${extEnemyStatusBadges(e).join("")}</div><div class="enemy-unit-buffs">${wolfBuffs}</div></div>`;
+      const fakeUnits=liveWolfClones.map(c=>`<div class="enemy-group-unit wolf-unit" data-enemy-id="${esc(c.id)}"><img src="${esc(e.image||"")}" alt="オオカミ"><span>オオカミ</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,c.hp)/c.maxHp*100}%"></i></div><div class="enemy-unit-status">${extEnemyStatusBadges(c).join("")}</div><div class="enemy-unit-buffs">${wolfBuffs}</div></div>`);
       // 表示順だけ毎回の分身時にランダム化。本物のHPは本体、偽物は個別HPで管理。
       const unitMarkup={"wolf-main":realUnit,...Object.fromEntries(liveWolfClones.map((c,i)=>[c.id,fakeUnits[i]]))};
       group.innerHTML=(battleState.wolfDisplayOrder?.length?battleState.wolfDisplayOrder:["wolf-main",...liveWolfClones.map(c=>c.id)]).filter(id=>unitMarkup[id]).map(id=>unitMarkup[id]).join("");
