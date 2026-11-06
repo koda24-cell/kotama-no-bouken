@@ -9,6 +9,8 @@
   if(typeof originalFoe==="function")window.fieldTriggerFoeBattle=async function(){if(dev.noFoeBattles)return;return originalFoe.apply(this,arguments);};
   const originalDamage=window.applyDamageToEnemyTarget;
   if(typeof originalDamage==="function")window.applyDamageToEnemyTarget=function(enemy,target,amount){return originalDamage.call(this,enemy,target,dev.oneHitEnemies?99999999:amount);};
+  const originalDirectDamage=window.applyDamageToEnemy;
+  if(typeof originalDirectDamage==="function")window.applyDamageToEnemy=function(enemy,amount){return originalDirectDamage.call(this,enemy,dev.oneHitEnemies?99999999:amount);};
   const originalFinish=window.fieldFinishEncounter;
   if(typeof originalFinish==="function")window.fieldFinishEncounter=async function(enemy){
     if(dev.testBattle){
