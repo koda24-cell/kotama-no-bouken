@@ -3,7 +3,7 @@
    battle-ext.js — 戦闘拡張（Claude担当）
    1. 状態異常の統一管理（火傷・毒・麻痺・呪い・防御ダウン・攻撃ダウン・各種バフ）
    2. スピード（素早さ）と行動順
-   3. 新職業6種（ハイランダー／アサシン／プリンセス／ガンナー／リーパー／インペリアル）
+   3. 職業データは data/jobs.js から読み込み
    4. 敵バリエーション（STAGE1〜3）と、ドラゴン／魔王の行動差別化
    ------------------------------------------------------------
    このファイルは script.js より先に読み込まれる。
@@ -12,82 +12,8 @@
    ============================================================ */
 
 /* ---------- 基本データ ---------- */
-// スピード：大きいほど先に行動する。武士は80、アサシンは最速。
-const EXT_JOB_SPEED = { kotama:70, knight:40, healer:55, warrior:50, mage:45, samurai:80, assassin:100, gunner:75, highlander:60, princess:65, reaper:55, imperial:50 };
-const EXT_ENEMY_SPEED = { "スライム":30, "ゴブリン":45, "オオカミ":90, "ドラゴン":65, "魔王":70, "混沌の幻影":85 };
-const EXT_BOSS_NAMES = ["ドラゴン", "魔王", "混沌の幻影"];
-const EXT_REAR_IDS = ["mage", "healer", "princess", "gunner"];
-const EXT_NEW_JOB_IDS = ["assassin", "gunner", "highlander", "princess", "reaper", "imperial"];
-// 新職業の解放条件：ステージクリアで1人ずつ。インペリアルは隠しボス討伐。
-const EXT_JOB_UNLOCK_BY_STAGE = { 1:"assassin", 2:"gunner", 3:"highlander", 4:"princess", 5:"reaper" };
-const EXT_JOB_UNLOCK_HIDDEN = "imperial";
-const EXT_HEAT_LIMIT = 6;          // 熱がこの値に達するとオーバーヒート
-const EXT_RELEASE_MULT = 2.2;      // チャージ後に放つSP攻撃のダメージ倍率
-const EXT_DEFENSELESS_MULT = 1.8;  // チャージ中（無防備）に受けるダメージ倍率
-
-// 新職業の初期装備（解放した時に、空いている枠へ装備する）
-const EXT_STARTER_GEAR = {
-  highlander:{ weapon:"iron-spear", armor:"leather-armor" },
-  assassin:{ weapon:"dagger", armor:"leather-armor" },
-  princess:{ weapon:"princess-rod", armor:"leather-armor" },
-  gunner:{ weapon:"flintlock", armor:"leather-armor" },
-  reaper:{ weapon:"scythe", armor:"leather-armor" },
-  imperial:{ weapon:"magic-sword", armor:"leather-armor" }
-};
-
-// xj は新スキルの効果記述。executeAction から extExecuteSkill に渡される。
-const EXT_NEW_JOBS = [
-  { id:"assassin", name:"アサシン", image:"", emblem:"暗", hp:85, maxHp:85, attack:70, spAttack:40, defense:15, guardCut:.30, sp:80, maxSp:80,
-    spSkills:[
-      { id:"poison-blade", name:"毒刃", cost:12, target:"enemy", type:"xj", description:"斬撃で攻撃し、高確率で敵を毒にする。毒は毎ターン開始時にダメージ。", xj:{ kind:"phys", mult:.9, element:"斬撃", fx:"slash", status:{ type:"poison", chance:.85, turns:4, power:.06, bossMul:.7 } } },
-      { id:"paralyze-needle", name:"麻痺針", cost:16, target:"enemy", type:"xj", description:"突属性の針で攻撃し、敵を麻痺させる。麻痺した敵は一定確率で行動できない。", xj:{ kind:"phys", mult:.5, element:"突", fx:"slash", status:{ type:"paralysis", chance:.7, turns:3, power:0, bossMul:.4 } } },
-      { id:"venom-fog", name:"毒霧", cost:24, target:"allEnemies", type:"xj", description:"毒の霧で敵全体を攻撃し、毒を与える。", xj:{ kind:"phys", mult:.6, element:"無属性", fx:"magic", status:{ type:"poison", chance:.6, turns:3, power:.06, bossMul:.7 } } }
-    ] },
-  { id:"gunner", name:"ガンナー", image:"", emblem:"銃", hp:90, maxHp:90, attack:95, spAttack:30, defense:15, guardCut:.30, sp:70, maxSp:70,
-    spSkills:[
-      { id:"snipe", name:"狙撃", cost:15, target:"enemy", type:"xj", description:"壊属性の遠距離攻撃。攻撃力の230%の単体ダメージ。", xj:{ kind:"phys", mult:2.3, element:"壊", fx:"slash" } },
-      { id:"ricochet", name:"跳弾", cost:24, target:"allEnemies", type:"xj", description:"弾丸を跳ね返らせ、敵全体に壊属性ダメージを2回与える。", xj:{ kind:"phys", mult:.85, hits:2, element:"壊", fx:"slash" } },
-      { id:"cover-fire", name:"援護射撃", cost:18, target:"enemy", type:"xj", description:"敵の足元を撃ち抜き、3ターンの間、敵の防御力を25%下げる。", xj:{ kind:"phys", mult:.6, element:"壊", fx:"slash", status:{ type:"defenseDown", chance:1, turns:3, power:.25, bossMul:1 } } }
-    ] },
-  { id:"highlander", name:"ハイランダー", image:"", emblem:"槍", hp:120, maxHp:120, attack:110, spAttack:20, defense:40, guardCut:.45, sp:60, maxSp:60,
-    spSkills:[
-      { id:"lance-charge", name:"ランスチャージ", cost:15, target:"enemy", type:"xj", description:"突属性の高火力単体攻撃。攻撃力の210%のダメージ。", xj:{ kind:"phys", mult:2.1, element:"突", fx:"slash" } },
-      { id:"sky-pierce", name:"天槍穿ち", cost:32, target:"enemy", type:"xj", description:"全力の突き。攻撃力の340%の突属性ダメージ。", xj:{ kind:"phys", mult:3.4, element:"突", fx:"slash" } }
-    ] },
-  { id:"princess", name:"プリンセス", image:"", emblem:"姫", hp:90, maxHp:90, attack:10, spAttack:80, defense:12, guardCut:.30, sp:150, maxSp:150,
-    spSkills:[
-      { id:"inspire-song", name:"鼓舞の歌", cost:25, target:"allAllies", type:"xj", description:"味方全体の攻撃力とSP攻撃力を3ターンの間30%上げる。", xj:{ buff:{ attackUp:{ turns:3, power:.30 } } } },
-      { id:"guardian-dance", name:"守りの舞", cost:25, target:"allAllies", type:"xj", description:"味方全体の防御力とSP防御力を3ターンの間40%上げる。", xj:{ buff:{ defenseUp:{ turns:3, power:.40 } } } },
-      { id:"victory-hymn", name:"凱歌", cost:45, target:"allAllies", type:"xj", description:"味方全体の攻撃・防御を25%、スピードを30%、3ターンの間上げる。", xj:{ buff:{ attackUp:{ turns:3, power:.25 }, defenseUp:{ turns:3, power:.25 }, speedUp:{ turns:3, power:.30 } } } }
-    ] },
-  { id:"reaper", name:"リーパー", image:"", emblem:"鎌", hp:95, maxHp:95, attack:105, spAttack:60, defense:18, guardCut:.30, sp:70, maxSp:70,
-    spSkills:[
-      { id:"curse-blade", name:"呪詛の刃", cost:20, target:"enemy", type:"xj", description:"斬撃で攻撃し、3ターンの間、敵の攻撃力と防御力を20%下げる。", xj:{ kind:"phys", mult:1.0, element:"斬撃", fx:"slash", status:[{ type:"attackDown", chance:.9, turns:3, power:.20, bossMul:.8 }, { type:"defenseDown", chance:.9, turns:3, power:.20, bossMul:.8 }] } },
-      { id:"withering-mist", name:"衰弱の霧", cost:26, target:"allEnemies", type:"xj", description:"敵全体を弱らせ、3ターンの間、攻撃力を25%下げる。", xj:{ kind:"sp", mult:.7, element:"無属性", fx:"magic", status:{ type:"attackDown", chance:.9, turns:3, power:.25, bossMul:.8 } } },
-      { id:"reap-soul", name:"首狩り", cost:30, target:"enemy", type:"xj", description:"斬撃で攻撃し、10%の確率で即死させる。ボスには効かない。", xj:{ kind:"phys", mult:1.8, element:"斬撃", fx:"slash", instaKill:.10 } }
-    ] },
-  { id:"imperial", name:"インペリアル", image:"", emblem:"魔", hp:110, maxHp:110, attack:85, spAttack:115, defense:30, guardCut:.40, sp:100, maxSp:100,
-    spSkills:[
-      { id:"imp-flame", name:"炎魔剣", cost:18, target:"enemy", type:"xj", description:"【熱2】チャージ後に炎の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:1.7, element:"炎", fx:"flame", charge:true, heat:2 } },
-      { id:"imp-frost", name:"氷魔剣", cost:18, target:"enemy", type:"xj", description:"【熱2】チャージ後に氷の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:1.7, element:"氷", fx:"magic", charge:true, heat:2 } },
-      { id:"imp-thunder", name:"雷魔剣", cost:26, target:"enemy", type:"xj", description:"【熱3】チャージ後に雷の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:2.3, element:"雷", fx:"magic", charge:true, heat:3 } },
-      { id:"imp-nova", name:"煌魔断", cost:38, target:"allEnemies", type:"xj", description:"【熱4】チャージ後に聖なる光で敵全体を斬る。チャージ中は無防備。", xj:{ kind:"sp", mult:1.9, element:"聖", fx:"magic", charge:true, heat:4 } }
-    ] }
-];
-
-// 新職業用の武器。防具・護符は既存の汎用品に職業IDを追加して共用する。
-const EXT_NEW_ITEMS = [
-  { id:"iron-spear", name:"鉄の槍", category:"weapon", icon:"SWORD", description:"ハイランダーの基本の槍。", price:60, effect:"攻撃力 +22", attackBonus:22, physicalElement:"突", classes:["highlander"], unlock:1 },
-  { id:"knight-lance", name:"騎士の大槍", category:"weapon", icon:"SWORD", description:"貫通力に優れた大槍。", price:140, effect:"攻撃力 +45", attackBonus:45, physicalElement:"突", classes:["highlander"], unlock:4 },
-  { id:"dagger", name:"短剣", category:"weapon", icon:"SWORD", description:"素早く扱える短剣。", price:40, effect:"攻撃力 +14", attackBonus:14, physicalElement:"斬撃", classes:["assassin"], unlock:1 },
-  { id:"assassin-dagger", name:"暗殺者の短剣", category:"weapon", icon:"SWORD", description:"毒を塗り込める特別な短剣。", price:120, effect:"攻撃力 +32", attackBonus:32, physicalElement:"斬撃", classes:["assassin"], unlock:3 },
-  { id:"princess-rod", name:"王女の杖", category:"weapon", icon:"STAFF", description:"魔力を高める気品ある杖。", price:60, effect:"SP攻撃力 +25", spAttackBonus:25, physicalElement:"打撃", classes:["princess"], unlock:1 },
-  { id:"flintlock", name:"火打ち銃", category:"weapon", icon:"KNUCKLE", description:"扱いやすい基本の銃。", price:55, effect:"攻撃力 +20", attackBonus:20, physicalElement:"壊", classes:["gunner"], unlock:1 },
-  { id:"rifle", name:"ライフル", category:"weapon", icon:"KNUCKLE", description:"長射程の高性能な銃。", price:130, effect:"攻撃力 +42", attackBonus:42, physicalElement:"壊", classes:["gunner"], unlock:4 },
-  { id:"scythe", name:"死神の鎌", category:"weapon", icon:"SWORD", description:"魂を刈り取る大鎌。", price:70, effect:"攻撃力 +25", attackBonus:25, physicalElement:"斬撃", classes:["reaper"], unlock:1 },
-  { id:"magic-sword", name:"魔法剣", category:"weapon", icon:"SWORD", description:"魔力を宿す剣。SP攻撃力も高める。", price:90, effect:"攻撃力 +15／SP攻撃力 +20", attackBonus:15, spAttackBonus:20, physicalElement:"斬撃", classes:["imperial"], unlock:1 }
-];
-const EXT_ENH_MATERIALS = { "iron-spear":"monster_fang", "knight-lance":"dragon_scale", dagger:"monster_fang", "assassin-dagger":"monster_fang", "princess-rod":"slime_jelly", flintlock:"monster_hide", rifle:"dragon_scale", scythe:"monster_fang", "magic-sword":"slime_jelly" };
+// 戦闘拡張の処理を管理。職業の数値・スキル定義は data/jobs.js を参照。
+// 職業・職業解放データは data/jobs.js、職業専用装備は data/items.js に分離。
 
 /* script.js から呼ばれる初期化 */
 function extInstallCharacters(characters) {
@@ -110,6 +36,12 @@ function extInstallItems(shopItems, enhancementMaterials) {
 function extJobsUnlocked() { if (!Array.isArray(state.unlockedJobs)) state.unlockedJobs = []; return state.unlockedJobs; }
 function extIsJobAvailable(c) { return !!c && (!EXT_NEW_JOB_IDS.includes(c.id) || extJobsUnlocked().includes(c.id)); }
 function extAvailableCharacters() { return characters.filter(extIsJobAvailable); }
+function extJobUnlockRequirement(id) {
+  const stageEntry = Object.entries(EXT_JOB_UNLOCK_BY_STAGE).find(([, jobId]) => jobId === id);
+  if (stageEntry) return `STAGE ${stageEntry[0]} クリアで解放`;
+  if (id === EXT_JOB_UNLOCK_HIDDEN) return '隠しボス「混沌の幻影」の初回討伐で解放';
+  return '解放条件未設定';
+}
 function extUnlockJob(id) {
   const list = extJobsUnlocked();
   if (!EXT_NEW_JOB_IDS.includes(id) || list.includes(id)) return false;
