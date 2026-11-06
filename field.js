@@ -18,7 +18,7 @@
 const FIELD_TILE = 32;
 const FIELD_SPEED = 118;
 const FIELD_HIT = { halfW: 9, top: 7, bottom: 5 };
-const FIELD_VISION = 3.6;              // 視界の半径（マス）
+const FIELD_VISION = 4;                // 視界の半径（マス）：世界樹準拠の4マス
 const FIELD_FOE_SIGHT = 4.5;           // FOEがプレイヤーに気づく距離（マス）
 const FIELD_FOE_SPEED = { patrol: 52, chase: 84 };   // プレイヤーが動いている間だけ、この速さで動く
 const FIELD_GATHER_USES = 2;
