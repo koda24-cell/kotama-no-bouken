@@ -652,7 +652,7 @@ function getTrainingEffectPreview(charId,nodeId,level,nextLevel){
   if(charId==="knight"&&node.id==="knight-defense-camp")return [{label:"味方全体の防御力上昇（3ターン）",before:String(level?50+5*(level-1):0),after:String(50+5*(nextLevel-1))}];
   if(charId==="knight"&&node.id==="knight-magic-guard")return [{label:"魔法ダメージ軽減",before:String(level?50+2*(level-1):0)+"%",after:String(50+2*(nextLevel-1))+"%"}];
   if(charId==="knight"&&node.id==="knight-full-guard")return [{label:"ダメージ軽減",before:String(level?Math.min(80,35+5*level):0)+"%",after:String(Math.min(80,35+5*nextLevel))+"%"}];
-  if(charId==="healer"&&node.id==="healer-line-heal")return [{label:"回復対象",before:level?"横列の味方3人":"未習得",after:"横列の味方3人（効果倍率のLv差は現行処理に明示なし）"}];
+  if(charId==="healer"&&node.id==="healer-line-heal")return [{label:"回復量の基礎倍率",before:level?pct(.55+.08*level):"未習得",after:pct(.55+.08*nextLevel)}];
   if(charId==="healer"&&node.id==="healer-refresh")return [
     {label:"状態異常回復の対象",before:level>=5?"味方全体":level?"味方1人":"未習得",after:nextLevel>=5?"味方全体":"味方1人"},
     {label:"消費SP",before:level>=6?String(Math.max(1,10-level)): "5",after:nextLevel>=6?String(Math.max(1,10-nextLevel)):"5"}
