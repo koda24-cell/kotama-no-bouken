@@ -239,63 +239,71 @@
           <h1 id="stage-title">STAGE 1 / 5</h1>
           <p id="turn-counter">第1ターン　行動選択</p>
         </div>
-        <div class="battle-arena">
-          <div class="stage-stars" aria-hidden="true">*　　 .　　 *　　 .　　 *</div>
-          <div id="stage-environment" class="stage-environment-banner" hidden aria-live="polite"></div>
-          <div id="battle-enemy" class="enemy-display">
-            <div class="enemy-placeholder">MONSTER</div>
-            <h2 id="enemy-name">スライム</h2>
-            <div class="hp-track"><div id="enemy-hp-bar" class="hp-fill"></div></div>
-            <div id="enemy-break-track" class="enemy-break-track" hidden><i></i><span></span></div>
-            <p id="enemy-hp-text" aria-hidden="true"></p>
-            <section id="enemy-analysis" class="enemy-analysis" hidden aria-live="polite" aria-label="敵の分析情報"></section>
-          </div>
-          <button id="battle-log-open" class="battle-log-open" type="button" aria-haspopup="dialog">LOG</button>
-          <!-- [ANALYZE] 画面端の開閉ボタン。押すと敵・味方の状態パネルを開く -->
-          <div class="analyze-tabs" role="group" aria-label="状態確認">
-            <button id="analyze-enemy-button" class="analyze-tab-button" type="button" data-analyze="enemy" aria-haspopup="dialog" aria-controls="analyze-panel">敵</button>
-            <button id="analyze-party-button" class="analyze-tab-button" type="button" data-analyze="party" aria-haspopup="dialog" aria-controls="analyze-panel">味方</button>
-          </div>
-        </div>
-        <section id="analyze-panel" class="analyze-panel" hidden role="dialog" aria-modal="false" aria-labelledby="analyze-panel-title">
-          <div class="analyze-panel-head">
-            <strong id="analyze-panel-title">ANALYZE</strong>
-            <div class="analyze-panel-tabs" role="tablist">
-              <button type="button" role="tab" data-analyze-tab="enemy">敵</button>
-              <button type="button" role="tab" data-analyze-tab="party">味方</button>
+        <div class="battle-layout">
+          <div class="battle-arena">
+            <div class="stage-stars" aria-hidden="true">*　　 .　　 *　　 .　　 *</div>
+            <div id="stage-environment" class="stage-environment-banner" hidden aria-live="polite"></div>
+            <div id="battle-enemy" class="enemy-display">
+              <div class="enemy-placeholder">MONSTER</div>
+              <h2 id="enemy-name">スライム</h2>
+              <div class="hp-track"><div id="enemy-hp-bar" class="hp-fill"></div></div>
+              <div id="enemy-break-track" class="enemy-break-track" hidden><i></i><span></span></div>
+              <p id="enemy-hp-text" aria-hidden="true"></p>
+              <section id="enemy-analysis" class="enemy-analysis" hidden aria-live="polite" aria-label="敵の分析情報"></section>
             </div>
-            <button id="analyze-close" class="analyze-close" type="button" aria-label="閉じる">×</button>
-          </div>
-          <div id="analyze-panel-body" class="analyze-panel-body" aria-live="polite"></div>
-        </section>
-        <div class="battle-window event-window">
-          <div class="window-title">EVENT</div>
-          <div id="event-log" class="event-log" aria-live="polite"><p>冒険が始まる。</p></div>
-        </div>
-        <div id="battle-party" class="battle-party"></div>
-        <section id="imperial-status-panel" class="imperial-status-panel" hidden aria-live="polite" aria-label="インペリアル専用ステータス"></section>
-        <div class="battle-bottom" id="battle-bottom">
-          <div class="battle-window command-window">
-            <div class="window-title" id="command-title">コタマ　どうする？</div>
-            <div id="battle-commands" class="battle-commands" role="menu">
-              <p class="empty-note">戦闘コマンドを準備しています。</p>
+            <button id="battle-log-open" class="battle-log-open" type="button" aria-haspopup="dialog">LOG</button>
+            <div class="analyze-tabs" role="group" aria-label="状態確認">
+              <button id="analyze-enemy-button" class="analyze-tab-button" type="button" data-analyze="enemy" aria-haspopup="dialog" aria-controls="analyze-panel">敵</button>
+              <button id="analyze-party-button" class="analyze-tab-button" type="button" data-analyze="party" aria-haspopup="dialog" aria-controls="analyze-panel">味方</button>
             </div>
-            <p id="command-hint" class="command-hint">コマンドを選択してください。</p>
           </div>
-          <div class="battle-window command-info-window">
-            <div class="window-title">COMMAND INFO</div>
-            <p id="command-description" class="command-description">コマンドを選択すると、攻撃やスキルの内容がここに表示されます。</p>
-            <div id="battle-log" class="battle-log" hidden aria-live="polite"><p>戦闘準備完了。</p></div>
+          <aside class="battle-tactical-map" aria-label="戦闘位置表示">
+            <div class="window-title">TACTICAL MAP</div>
+            <div class="battle-map-grid" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <small>前衛　／　後衛</small>
+          </aside>
+          <section id="analyze-panel" class="analyze-panel" hidden role="dialog" aria-modal="false" aria-labelledby="analyze-panel-title">
+            <div class="analyze-panel-head">
+              <strong id="analyze-panel-title">ANALYZE</strong>
+              <div class="analyze-panel-tabs" role="tablist">
+                <button type="button" role="tab" data-analyze-tab="enemy">敵</button>
+                <button type="button" role="tab" data-analyze-tab="party">味方</button>
+              </div>
+              <button id="analyze-close" class="analyze-close" type="button" aria-label="閉じる">×</button>
+            </div>
+            <div id="analyze-panel-body" class="analyze-panel-body" aria-live="polite"></div>
+          </section>
+          <div class="battle-window event-window">
+            <div class="window-title">EVENT</div>
+            <div id="event-log" class="event-log" aria-live="polite"><p>冒険が始まる。</p></div>
           </div>
-          <div id="battle-result" class="battle-result" hidden>
-            <h2 id="result-title"></h2><p id="result-message"></p>
-            <button id="next-stage-button" class="primary-button">次へ</button>
-            <button id="retry-stage-button" class="primary-button" hidden>同じステージに再挑戦</button>
-            <button id="formation-retry-button" class="secondary-button" hidden>編成・装備を変更して再挑戦</button>
-            <button id="return-home-button" class="secondary-button">ホームへ戻る</button>
+          <div id="battle-party" class="battle-party"></div>
+          <section id="imperial-status-panel" class="imperial-status-panel" hidden aria-live="polite" aria-label="インペリアル専用ステータス"></section>
+          <div class="battle-bottom" id="battle-bottom">
+            <div class="battle-window command-window">
+              <div class="window-title" id="command-title">コタマ　どうする？</div>
+              <div id="battle-commands" class="battle-commands" role="menu">
+                <p class="empty-note">戦闘コマンドを準備しています。</p>
+              </div>
+              <p id="command-hint" class="command-hint">コマンドを選択してください。</p>
+            </div>
+            <div class="battle-window command-info-window">
+              <div class="window-title">COMMAND INFO</div>
+              <p id="command-description" class="command-description">コマンドを選択すると、攻撃やスキルの内容がここに表示されます。</p>
+              <div id="battle-log" class="battle-log" hidden aria-live="polite"><p>戦闘準備完了。</p></div>
+            </div>
+            <div id="battle-result" class="battle-result" hidden>
+              <h2 id="result-title"></h2><p id="result-message"></p>
+              <button id="next-stage-button" class="primary-button">次へ</button>
+              <button id="retry-stage-button" class="primary-button" hidden>同じステージに再挑戦</button>
+              <button id="formation-retry-button" class="secondary-button" hidden>編成・装備を変更して再挑戦</button>
+              <button id="return-home-button" class="secondary-button">ホームへ戻る</button>
+            </div>
           </div>
+          <div id="battle-support" class="battle-support" role="status">全員の行動を選ぶと、味方の行動が順番に再生されます。</div>
         </div>
-        <div id="battle-support" class="battle-support" role="status">全員の行動を選ぶと、味方の行動が順番に再生されます。</div>
       </section>
 
       <!-- ゲームクリア -->
