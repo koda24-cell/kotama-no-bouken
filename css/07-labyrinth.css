@@ -102,3 +102,98 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 @media(max-width:620px){
  .field-map-rail .field-minimap{min-height:96px;padding:4px}
 }
+
+
+/* FOE threat language: a roaming hazard should read differently from scenery. */
+.field-foe{
+  width:38px;
+  height:42px;
+  z-index:14;
+  filter:drop-shadow(0 3px 2px #000c);
+}
+.field-foe::before{
+  content:"";
+  position:absolute;
+  left:2px;right:2px;top:4px;bottom:3px;
+  border:1px solid #ffb45c99;
+  border-radius:48% 48% 42% 42%;
+  box-shadow:0 0 8px #ff7b24aa,inset 0 0 8px #ff8a2a44;
+  animation:foe-presence 2s ease-in-out infinite;
+}
+.field-foe .field-object-sprite{
+  inset:2px 3px 5px;
+  z-index:1;
+  display:grid;
+  place-items:center;
+  border-radius:45%;
+  background:radial-gradient(ellipse at 50% 55%,#ffbd68 0 20%,#b84b1c 48%,#4c170c00 75%);
+  color:#fff0c5;
+  font-size:22px;
+  text-shadow:0 2px 2px #260900,0 0 7px #ff6b22;
+  animation:foe-stalk 1.8s ease-in-out infinite alternate;
+}
+.field-foe[data-sprite="foe-wolf"] .field-object-sprite::before{content:"🐻"}
+.field-foe[data-sprite="foe-goblin"] .field-object-sprite::before{content:"👺"}
+.field-foe[data-sprite="foe-dragon"] .field-object-sprite::before{content:"🐉"}
+.field-foe[data-sprite="foe-maou"] .field-object-sprite::before{content:"♞"}
+.field-foe .field-object-label{
+  left:50%;
+  bottom:calc(100% + 3px);
+  padding:2px 5px;
+  border:1px solid #ffb45caa;
+  border-radius:2px;
+  background:linear-gradient(180deg,#451d13ee,#170b09ee);
+  color:#ffe2b0;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.04em;
+  text-shadow:0 1px 2px #000;
+  box-shadow:0 2px 5px #0009;
+}
+.field-foe.is-chasing{
+  z-index:16;
+  filter:drop-shadow(0 0 5px #ff2525) drop-shadow(0 3px 2px #000);
+}
+.field-foe.is-chasing::before{
+  border:2px solid #ff5959;
+  box-shadow:0 0 5px #ff2222,0 0 16px #ff1717bb,inset 0 0 10px #ff202055;
+  animation:foe-hunt-ring .48s ease-in-out infinite alternate;
+}
+.field-foe.is-chasing .field-object-sprite{
+  background:radial-gradient(ellipse at 50% 55%,#fff0c0 0 16%,#ff4b3d 42%,#8d0909 68%,#3b000000 78%);
+  color:#fff;
+  animation:foe-hunt-lunge .42s ease-in-out infinite alternate;
+}
+.field-foe.is-chasing .field-object-label{
+  border-color:#ff6565;
+  background:linear-gradient(180deg,#8d1717f5,#350808f5);
+  color:#fff;
+}
+.field-foe.is-chasing::after{
+  content:"!";
+  position:absolute;
+  z-index:3;
+  top:-8px;right:-5px;
+  width:14px;height:14px;
+  display:grid;place-items:center;
+  border:1px solid #fff0b0;
+  border-radius:50%;
+  background:#d51f1f;
+  color:#fff;
+  font-size:10px;font-weight:900;
+  box-shadow:0 0 8px #ff2424;
+  animation:foe-alert-mark .42s ease-in-out infinite alternate;
+}
+@keyframes foe-presence{to{transform:scale(1.13);opacity:.55}}
+@keyframes foe-stalk{to{transform:translateY(-2px) scale(1.04)}}
+@keyframes foe-hunt-ring{to{transform:scale(1.14);opacity:.7}}
+@keyframes foe-hunt-lunge{to{transform:translateY(-3px) scale(1.1)}}
+@keyframes foe-alert-mark{to{transform:scale(1.18);filter:brightness(1.35)}}
+@media(prefers-reduced-motion:reduce){
+ .field-foe::before,.field-foe .field-object-sprite,.field-foe.is-chasing::after{animation:none!important}
+}
+@media(max-width:620px){
+ .field-foe{width:36px;height:40px}
+ .field-foe .field-object-sprite{font-size:20px}
+ .field-foe .field-object-label{font-size:7px}
+}
