@@ -1435,7 +1435,13 @@ function consumeIncapacitatedTurn(c){if(!c)return;const remaining=Math.max(0,(c.
 function livingParty(){return getParty().filter(c=>c.hp>0);}
 function chargeGauge(c,n=1){const u=unionSkills[c.id];if(u)battleState.unionGauges[c.id]=Math.min(u.requiredHits,(battleState.unionGauges[c.id]||0)+n);}
 function partyDamageReduction(character){const items=uniqueEquippedItems(character);return Math.min(.5,items.reduce((n,i)=>n+(i.damageReduction||0),0)+(character.hp<=effectiveStats(character).maxHp*.3?items.reduce((n,i)=>n+(i.lowHpReduction||0),0):0));}
-function partyEvasionRate(character){return Math.min(.5,uniqueEquippedItems(character).reduce((n,i)=>n+(i.evasionRate||0),0));}
+// LUCは敵の攻撃を見切る能力として回避率に反映する。基準値50では追加回避なし。
+function partyEvasionRate(character){
+  const luck = Math.max(0, Number(effectiveStats(character).luck) || 50);
+  const luckEvasion = Math.min(.20, Math.max(0, luck - 50) * .0015);
+  const equipmentEvasion = uniqueEquippedItems(character).reduce((n,i)=>n+(i.evasionRate||0),0);
+  return Math.min(.5, equipmentEvasion + luckEvasion);
+}
 function partyElementalDamageReduction(character,element){const values=uniqueEquippedItems(character).map(item=>{if(item.elementResistances?.includes(element))return Number(item.elementDamageReduction)||0;if(element==="炎")return Number(item.fireDamageReduction)||0;return 0;});return Math.min(.5,values.reduce((a,b)=>a+b,0));}
 function getWeaponPhysicalElement(character){
   if(!character)return "無属性";
