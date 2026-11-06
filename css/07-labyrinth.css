@@ -69,3 +69,20 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   .field-hud{flex-wrap:wrap;gap:6px}
   .field-minimap{top:6px;right:6px}
 }
+
+/* [SIDE] サブイベントの調べられる物（仮表示：絵文字。GPT が絵を付ける場合は data-sprite ごとに差し替え） */
+.field-object[data-kind="event"] .field-object-sprite::before{content:"✨";filter:drop-shadow(0 0 4px #9fe7ff)}
+.field-object[data-sprite="ev-stump"] .field-object-sprite::before{content:"🪵"}
+.field-object[data-sprite="ev-crate"] .field-object-sprite::before{content:"🧺"}
+.field-object[data-sprite="ev-shard"] .field-object-sprite::before{content:"💠"}
+.field-object[data-sprite="ev-bag"] .field-object-sprite::before{content:"👝"}
+.field-object[data-sprite="ev-emblem"] .field-object-sprite::before{content:"🛡️"}
+.field-object[data-sprite="ev-sword"] .field-object-sprite::before{content:"🗡️"}
+/* 隠し発見：近くで正面を向くまで、かすかなきらめきだけ */
+.field-object.is-hidden-event .field-object-sprite::before{content:"✧";font-size:14px;color:#dff6ff;opacity:.28;filter:none;animation:field-side-glint 2.4s ease-in-out infinite}
+.field-object.is-hidden-event.is-near .field-object-sprite::before{opacity:.9}
+@keyframes field-side-glint{0%,70%,100%{opacity:.12}80%{opacity:.5}}
+.field-object[data-kind="event"].is-opened .field-object-sprite::before{opacity:.35;filter:grayscale(1)}
+.field-object.is-hidden-event.is-opened .field-object-sprite::before{opacity:0;animation:none}
+.lg-event{background:#7fd6ff;border-radius:50%!important}
+@media(prefers-reduced-motion:reduce){.field-object.is-hidden-event .field-object-sprite::before{animation:none;opacity:.28}}

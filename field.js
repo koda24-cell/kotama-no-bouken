@@ -75,7 +75,11 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
     else if (c === "?") objects.push({ key: `sign:${key}:${tx}:${ty}`, kind: "sign", tx, ty, sprite: "sign", name: "看板", scene: def.signScene });
     else if (c === "B") objects.push({ key: `gate:${n}`, kind: "gate", tx, ty, sprite: "boss-gate", name: "", walk: true });
     else if (c === "E") objects.push({ key: `exit:${n}`, kind: "exit", tx, ty, sprite: "exit", name: "", walk: true });
-    else if (/[a-z]/.test(c) && def.objects && def.objects[c]) { const o = def.objects[c]; objects.push({ key: `npc:${n}:${o.id}`, kind: o.kind || "npc", tx, ty, sprite: o.sprite, name: o.name, scene: o.scene, id: o.id }); }
+    else if (/[a-z]/.test(c) && def.objects && def.objects[c]) {
+      const o = def.objects[c], kind = o.kind || "npc";
+      // [SIDE] kind:"event" はサブイベントの調べられる物。NPC は sideEvents を持てる
+      objects.push({ key: `${kind === "event" ? "event" : "npc"}:${n}:${o.id}`, kind, tx, ty, sprite: o.sprite, name: o.name, scene: o.scene, id: o.id, event: o.event, hidden: !!o.hidden, sideEvents: o.sideEvents || null });
+    }
   }));
   // P が無いフロアは、出口（1F）または上り階段の上から始める
   if (!grid.some(r => r.includes("P"))) { const exit = objects.find(o => o.kind === "exit"); if (exit) start = { tx: exit.tx, ty: exit.ty }; else if (up) start = { ...up }; }
@@ -160,7 +164,7 @@ function fieldEnsureExtraDom() {
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
-    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
+    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-event"></i>発見</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
     vp.appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
   }
@@ -182,9 +186,10 @@ function fieldBuildDom() {
     tiles.push(`<i class="field-tile ${FIELD_TILE_CLASS[c] || "tile-floor"}${edge}${fog}" style="left:${tx * FIELD_TILE}px;top:${ty * FIELD_TILE}px"></i>`);
   }
   const objs = a.objects.map(o => {
-    const opened = (o.kind === "chest" && fieldState.flags[o.key]) || (o.kind === "gather" && (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES) ? " is-opened" : "";
+    const opened = (o.kind === "chest" && fieldState.flags[o.key]) || (o.kind === "gather" && (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES) || (o.kind === "event" && fieldSideDone(o.event)) ? " is-opened" : "";
+    const hidden = o.kind === "event" && o.hidden ? " is-hidden-event" : "";
     const fog = exp[o.ty * a.w + o.tx] ? "" : " is-unexplored";
-    return `<div class="field-object${opened}${fog}" data-kind="${esc(o.kind)}" data-object-id="${esc(o.id || o.key)}" data-key="${esc(o.key)}" data-sprite="${esc(o.sprite || "")}" data-tx="${o.tx}" data-ty="${o.ty}" style="left:${o.tx * FIELD_TILE}px;top:${o.ty * FIELD_TILE}px"><span class="field-object-sprite"></span>${o.name ? `<b class="field-object-label">${esc(o.name)}</b>` : ""}</div>`;
+    return `<div class="field-object${opened}${hidden}${fog}" data-kind="${esc(o.kind)}" data-object-id="${esc(o.id || o.key)}" data-key="${esc(o.key)}" data-sprite="${esc(o.sprite || "")}" data-tx="${o.tx}" data-ty="${o.ty}" style="left:${o.tx * FIELD_TILE}px;top:${o.ty * FIELD_TILE}px"><span class="field-object-sprite"></span>${o.name ? `<b class="field-object-label">${esc(o.name)}</b>` : ""}</div>`;
   }).join("");
   map.innerHTML = `<div class="field-tiles">${tiles.join("")}</div>${objs}<div id="field-foes" class="field-foes"></div><div id="field-player" class="field-player" data-dir="down" data-moving="false" data-step="0"><span class="field-player-shadow"></span><span class="field-player-sprite"></span></div>`;
   fieldState.built = a.key; fieldState.nearKey = ""; fieldState.lastTileKey = "";
@@ -252,6 +257,7 @@ function fieldDrawMap(canvas, cell, full) {
     else if (o.kind === "chest") dot(o.tx, o.ty, fieldState.flags[o.key] ? "#7a6a55" : "#ff9a3c", .7, "square");
     else if (o.kind === "gather") dot(o.tx, o.ty, (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES ? "#5d7a5d" : "#3ee07a", .7);
     else if (o.kind === "npc") dot(o.tx, o.ty, "#c7a3ff", .7);
+    else if (o.kind === "event") { const done = fieldSideDone(o.event); if (!o.hidden || done) dot(o.tx, o.ty, done ? "#5f7f8f" : "#7fd6ff", .7); }
     else if (o.kind === "gate") dot(o.tx, o.ty, "#ff3030", .9);
   }
   for (const foe of fieldState.foes) {
@@ -597,10 +603,70 @@ async function fieldSay(text, who = "narration") {
    ------------------------------------------------------------ */
 async function fieldInteract(o) {
   if (fieldState.lock) return;
-  if (o.kind === "npc" || o.kind === "sign") { await fieldPlayScene(o.scene); return; }
+  if (o.kind === "npc" || o.kind === "sign") { await fieldPlayScene(o.scene); if (o.sideEvents) await fieldRunNpcSideEvents(o); return; }
+  if (o.kind === "event") { await fieldRunSideEvent(o.event, o); return; }
   if (o.kind === "save") { await fieldUseSavePoint(o); return; }
   if (o.kind === "chest") { await fieldOpenChest(o); return; }
   if (o.kind === "gather") { await fieldGather(o); return; }
+}
+/* ------------------------------------------------------------
+   [SIDE] サブイベント（探索コンテンツ）
+   データ：data/field-maps.js の FIELD_SIDE_EVENTS ／ 会話：data/story.js の side-*
+   ・完了フラグ fieldState.flags["side:<ID>"] はセーブされ、報酬は1回だけ受け取れる。
+   ・報酬は既存のゴールド・消耗品（inventory）・素材（materials）のみ。
+   ------------------------------------------------------------ */
+function fieldSideDef(id) { return (typeof FIELD_SIDE_EVENTS !== "undefined" && FIELD_SIDE_EVENTS[id]) || null; }
+function fieldSideDone(id) { return !!(id && fieldState.flags[`side:${id}`]); }
+function fieldSideReady(ev) { return (ev.requires || []).every(fieldSideDone); }
+function fieldMaterialName(id) { return (typeof materialNames !== "undefined" && materialNames[id]) || FIELD_MATERIAL_FALLBACK[id] || id; }
+function fieldSideHasNeeds(ev) { return Object.entries(ev.needs || {}).every(([id, n]) => (materials[id] || 0) >= n); }
+function fieldSideNeedsText(ev) { return Object.entries(ev.needs || {}).map(([id, n]) => `${fieldMaterialName(id)}×${n}（所持 ${materials[id] || 0}）`).join("、"); }
+// 報酬を渡し、表示用の文を返す
+function fieldSideGrant(ev) {
+  const r = ev.reward || {}, parts = [];
+  if (r.gold) { state.gold += r.gold; if (typeof renderGold === "function") renderGold(); parts.push(`${r.gold}G`); }
+  for (const [id, n] of r.items || []) { const item = typeof itemById === "function" ? itemById(id) : null; if (!item) continue; inventory[id] = (inventory[id] || 0) + n; parts.push(`${item.name}×${n}`); }
+  for (const [id, n] of r.materials || []) { materials[id] = (materials[id] || 0) + n; parts.push(`${fieldMaterialName(id)}×${n}`); }
+  if (ev.keyItem) return `だいじなもの「${ev.keyItem}」を手に入れた。`;
+  return parts.length ? `${parts.join("、")}を手に入れた！` : "";
+}
+function fieldSideMarkDone(id) {
+  fieldState.flags[`side:${id}`] = true;
+  document.querySelectorAll(`#field-map .field-object[data-kind="event"]`).forEach(el => { const o = fieldArea().objects.find(x => x.key === el.dataset.key); if (o && o.event === id) el.classList.add("is-opened"); });
+  fieldMiniDirty = true;
+}
+// サブイベントを1つ進める。戻り値：達成したら true
+async function fieldRunSideEvent(id, o = null, opts = {}) {
+  const ev = fieldSideDef(id); if (!ev || fieldState.lock) return false;
+  if (fieldSideDone(id)) {
+    if (opts.fromNpc) return false;
+    if (ev.doneScene && await fieldPlayScene(ev.doneScene)) return false;
+    await fieldSay("もう何も見つからない。"); return false;
+  }
+  if (!fieldSideReady(ev)) { if (ev.hintScene) await fieldPlayScene(ev.hintScene); return false; }
+  if (ev.needs) {
+    if (!fieldSideHasNeeds(ev)) { await fieldSay(`${ev.needText || "必要な素材が足りない。"}（必要：${fieldSideNeedsText(ev)}）`); return false; }
+    const choice = await fieldAsk(`${ev.askText || "素材を渡しますか？"}（${fieldSideNeedsText(ev)}）`, ["渡す", "やめる"]);
+    if (choice !== 0) return false;
+    if (!fieldSideHasNeeds(ev) || fieldSideDone(id)) return false;
+    for (const [mid, n] of Object.entries(ev.needs)) materials[mid] = Math.max(0, (materials[mid] || 0) - n);
+  }
+  // 先にフラグを立ててから報酬を渡す（会話中の二重実行・再取得を防ぐ）
+  fieldSideMarkDone(id);
+  const text = fieldSideGrant(ev);
+  persistAutoSave();
+  fieldEmit("side:complete", { area: fieldState.area, floor: fieldState.floor, eventId: id, objectId: o?.key || null, reward: { ...(ev.reward || {}) }, keyItem: ev.keyItem || null });
+  if (ev.scene) await fieldPlayScene(ev.scene);
+  if (text) { if (typeof playSe === "function") playSe("assets/se/syouri/アイテムを入手2", .7); await fieldSay(text); }
+  return true;
+}
+// NPC との会話のあとに、そのNPCのサブイベントを1つだけ進める
+async function fieldRunNpcSideEvents(o) {
+  for (const id of o.sideEvents || []) {
+    if (fieldSideDone(id)) continue;
+    await fieldRunSideEvent(id, o, { fromNpc: true });
+    return;
+  }
 }
 function fieldFullHeal() { for (const c of getParty()) { c.hp = effectiveStats(c).maxHp; c.sp = c.maxSp; } }
 async function fieldUseSavePoint() {
