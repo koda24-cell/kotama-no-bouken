@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./css/06-field.css?v=20261106-13">
   <link rel="stylesheet" href="./css/07-labyrinth.css?v=20261106-15">
   <link rel="stylesheet" href="./style.css?v=20261106-13">
+  <link rel="stylesheet" href="./css/08-item-compendium.css?v=20261106-20">
   <script src="./data/battle-rules.js?v=20261106-11" defer></script>
   <script src="./data/progression.js?v=20261106-11" defer></script>
   <script src="./data/skill-trees.js?v=20261106-11" defer></script>
@@ -30,6 +31,7 @@
   <script src="./analyze-panel.js?v=20261106-15" defer></script>
   <script src="./level.js?v=20261106-15" defer></script>
   <script src="./field.js?v=20261106-15" defer></script>
+  <script src="./item-compendium.js?v=20261106-20" defer></script>
 </head>
 <body>
   <div class="game">
@@ -44,6 +46,7 @@
         <button id="load-button" type="button">LOAD</button>
         <button id="skip-button" aria-pressed="false" type="button">戦闘速度：通常</button>
         <button id="compendium-menu-button" type="button">図鑑</button>
+        <button id="item-compendium-menu-button" type="button">アイテム図鑑</button>
         <button id="achievements-menu-button" type="button">実績</button>
       </div>
 
@@ -89,6 +92,15 @@
         <div class="section-title"><h2>モンスター図鑑</h2><span id="compendium-progress">0 / 5</span></div>
         <div id="compendium-list" class="compendium-grid"></div>
         <section id="hidden-boss-unlock" class="hidden-boss-unlock"></section>
+        <div class="page-actions"><button class="secondary-button" data-screen="home">BACK</button></div>
+      </section>
+
+      <!-- アイテム図鑑（item-compendium.js） -->
+      <section id="item-compendium" class="screen">
+        <div class="page-heading"><p>武器・防具・アクセサリー・消耗品・素材・製作レシピを確認できます。</p></div>
+        <div class="section-title"><h2>アイテム図鑑</h2><span id="item-compendium-progress">0 / 0</span></div>
+        <div id="item-compendium-tabs" class="item-dex-tabs" role="group" aria-label="分類"></div>
+        <div id="item-compendium-list" class="item-dex-list"></div>
         <div class="page-actions"><button class="secondary-button" data-screen="home">BACK</button></div>
       </section>
 

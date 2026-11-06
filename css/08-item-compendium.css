@@ -1,0 +1,17 @@
+/* アイテム図鑑（item-compendium.js）。既存の図鑑の配色に合わせた最小限のスタイル。 */
+body[data-screen="battle"] #list-menu #item-compendium-menu-button{display:none}
+.item-dex-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.item-dex-tabs button{min-height:34px;padding:5px 12px;border:1px solid #7482a8;border-radius:16px;background:#101a38;color:#dfe6ff;font-size:12px}
+.item-dex-tabs button.active{border-color:#ffe29a;background:#26356f;color:#ffe29a}
+.item-dex-section{margin:14px 0}
+.item-dex-section h3{margin:0 0 8px;padding-bottom:4px;border-bottom:1px solid #7482a855;color:#ffe29a;font-size:15px}
+.item-dex-section h3 small{color:#cbd4f4;font-size:12px;font-weight:400}
+.item-dex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:10px}
+.item-dex-card{min-width:0;padding:10px 12px;border:1px solid #7482a8;border-radius:8px;background:#101a38;color:#edf1ff}
+.item-dex-card p{margin:6px 0 0;font-size:12px;line-height:1.7;overflow-wrap:anywhere}
+.item-dex-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.item-dex-head strong{min-width:0;color:#fff0b6;font-size:14px;overflow-wrap:anywhere}
+.item-dex-status{flex:0 0 auto;padding:1px 8px;border:1px solid #7482a8;border-radius:10px;color:#cbd4f4;font-size:10px}
+.item-dex-card.is-obtained .item-dex-status{border-color:#8fe3a4;color:#baffc9}
+.item-dex-card.is-locked{opacity:.6}
+.item-dex-card.is-locked .item-dex-status{border-style:dashed}
