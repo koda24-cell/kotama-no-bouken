@@ -42,7 +42,7 @@ function levelAwardBattleExp(e) {
     const before = effectiveStats(c).maxHp;
     characterLevels[c.id] = lv; levelExp[c.id] = cur;
     if (lv > from) {
-      c.hp = Math.min(effectiveStats(c).maxHp, c.hp + Math.max(0, effectiveStats(c).maxHp - before));
+      if(c.hp>0)c.hp = Math.min(effectiveStats(c).maxHp, c.hp + Math.max(0, effectiveStats(c).maxHp - before));
       trainingPoints[c.id] = (trainingPoints[c.id] || 0) + LEVEL_SKILL_POINTS * (lv - from);
       ups.push({ id: c.id, name: c.name, from, to: lv });
     }
