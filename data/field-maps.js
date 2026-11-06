@@ -9,6 +9,7 @@
        _=安全地帯  P=開始位置  E=出口（ホームへ）  <=上り階段（前のフロアへ）  >=下り階段（次のフロアへ）
        B=ボスゲート  S=導きの灯（全回復・セーブ）  T=宝箱  G=採取ポイント  ?=看板  a〜z=objects のNPCなど
        （objects の kind:"event" はサブイベントの調べられる物。内容は下の FIELD_SIDE_EVENTS）
+       （kind:"switch"／"door"／"cache" は仕掛け。内容は下の FIELD_PUZZLES。onWall:true は壁に付いた物で、壁のマスに置く）
    ・encounter.scale：そのフロアの雑魚敵の強さ倍率（HP・攻撃・防御・SP攻撃・SP防御・経験値・ゴールド）。
    ・chests はそのフロアの T を左上から順に読んだ順番。gathers は採取できる素材と重み。
    ・foes：FOE（見える強敵）。enemy は FIELD_ENEMIES のID、path は巡回する2地点（マス座標）。
@@ -24,7 +25,11 @@ const FIELD_AREAS = {
       b: { kind: "npc", id: "herb-girl", name: "薬草摘みのミナ", sprite: "npc-girl", scene: "a1-herb-girl", sideEvents: ["a1-herb-medicine"] },
       // [SIDE] サブイベント（1F：古い切り株／2F：木の根元の隠し物）
       c: { kind: "event", id: "a1-old-stump", name: "古い切り株", sprite: "ev-stump", event: "a1-old-stump" },
-      d: { kind: "event", id: "a1-root-cache", name: "", sprite: "ev-hidden", event: "a1-root-cache", hidden: true }
+      d: { kind: "event", id: "a1-root-cache", name: "", sprite: "ev-hidden", event: "a1-root-cache", hidden: true },
+      // [PUZZLE] 仕掛け（1F：レバーで鉄格子の扉が開く）
+      e: { kind: "switch", id: "a1-lever", name: "古いレバー", sprite: "pz-lever", puzzle: "a1-lever-gate", onWall: true },
+      f: { kind: "door", id: "a1-gate", name: "鉄格子の扉", sprite: "pz-door", puzzle: "a1-lever-gate" },
+      g: { kind: "cache", id: "a1-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a1-lever-gate" }
     },
     floors: [
       { encounter: { min: 16, max: 28, scale: 1.0, table: [ { enemy: "stray-slime", weight: 70 }, { enemy: "mushroom", weight: 30 } ] },
@@ -45,10 +50,10 @@ const FIELD_AREAS = {
         "#####.#.###.#.#.#######.#.#",
         "#.....#.#...#T#.#.....#.#.#",
         "#.#######.#.###.#.###.#.#.#",
-        "#.#.......#.#...#.#.#.#...#",
+        "#.#.......#.#...#.#g#.#...#",
         "#.#.###.###.#.###.#.#.#####",
         "#.#.#.#.#G..#.....#.#...#T#",
-        "#.#.#.#.###########.###.#.#",
+        "#.#.#.#.##e########f###.#.#",
         "#E#...#...................#",
         "###########################"
       ] },
@@ -109,7 +114,13 @@ const FIELD_AREAS = {
       b: { kind: "npc", id: "watchman", name: "見張り番タオ", sprite: "npc-guard", scene: "a2-watchman", sideEvents: ["a2-watch-fangs"] },
       // [SIDE] サブイベント（1F・2F：ゴブリンに奪われた木箱）
       c: { kind: "event", id: "a2-crate-1", name: "壊れた木箱", sprite: "ev-crate", event: "a2-crate-1" },
-      d: { kind: "event", id: "a2-crate-2", name: "壊れた木箱", sprite: "ev-crate", event: "a2-crate-2" }
+      d: { kind: "event", id: "a2-crate-2", name: "壊れた木箱", sprite: "ev-crate", event: "a2-crate-2" },
+      // [PUZZLE] 仕掛け（2F：東西2つの合図石を両方鳴らすと門が開く）
+      e: { kind: "switch", id: "a2-stone-west", name: "西の合図石", sprite: "pz-bell", puzzle: "a2-twin-stones", onWall: true },
+      f: { kind: "switch", id: "a2-stone-east", name: "東の合図石", sprite: "pz-bell", puzzle: "a2-twin-stones", onWall: true },
+      g: { kind: "sign", id: "a2-plaque", name: "古い立て札", sprite: "pz-plaque", scene: "pz-a2-plaque", onWall: true },
+      h: { kind: "door", id: "a2-gate", name: "見張りの門", sprite: "pz-door", puzzle: "a2-twin-stones" },
+      i: { kind: "cache", id: "a2-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a2-twin-stones" }
     },
     floors: [
       { encounter: { min: 15, max: 26, scale: 1.0, table: [ { enemy: "forest-goblin", weight: 60 }, { enemy: "goblin-scout", weight: 25 }, { enemy: "mushroom", weight: 15 } ] },
@@ -150,12 +161,12 @@ const FIELD_AREAS = {
         "#.....#.**..#S#...#...*.#.#",
         "#.#.#.#**.*.###.#.#.#**.#.#",
         "#.#.#....*....#.#.#...**..#",
-        "###.###***..#.#.#.#.#.#.###",
-        "#...#.....**#.#.#.#.#.....#",
-        "#.#.#.#####.#.#.#.#.#####.#",
+        "#e#.###***..#.#.#.#.#.#.f##",
+        "#...g.....**#.#.#.#.#.....#",
+        "#.#h#.#####.#.#.#.#.#####.#",
         "#.#.#.....#.#.#.#.#.#T....#",
         "#.#.###.#.#.#.#.#.#.#####.#",
-        "#.#.#...#...#.#.#.#.....#.#",
+        "#.#i#...#...#.#.#.#.....#.#",
         "#.###.###.###.#.#.#####.#.#",
         "#.....#...#...#G#.#..>#.#.#",
         "#######.#.#.#####.#.###.#.#",
@@ -195,20 +206,27 @@ const FIELD_AREAS = {
       a: { kind: "npc", id: "statue", name: "魔法の石像", sprite: "statue", scene: "a3-statue", sideEvents: ["a3-light-return"] },
       // [SIDE] サブイベント（1F・2F：石像の光のかけら）
       c: { kind: "event", id: "a3-shard-1", name: "光るかけら", sprite: "ev-shard", event: "a3-shard-1" },
-      d: { kind: "event", id: "a3-shard-2", name: "光るかけら", sprite: "ev-shard", event: "a3-shard-2" }
+      d: { kind: "event", id: "a3-shard-2", name: "光るかけら", sprite: "ev-shard", event: "a3-shard-2" },
+      // [PUZZLE] 仕掛け（1F：3つの石灯籠を石碑の順番でともすと霧の門が開く）
+      e: { kind: "switch", id: "a3-lantern-east", name: "東の石灯籠", sprite: "pz-lantern", puzzle: "a3-lanterns", onWall: true },
+      f: { kind: "switch", id: "a3-lantern-west", name: "西の石灯籠", sprite: "pz-lantern", puzzle: "a3-lanterns", onWall: true },
+      g: { kind: "switch", id: "a3-lantern-north", name: "北の石灯籠", sprite: "pz-lantern", puzzle: "a3-lanterns", onWall: true },
+      h: { kind: "sign", id: "a3-stone", name: "霧の石碑", sprite: "pz-plaque", scene: "pz-a3-stone", onWall: true },
+      i: { kind: "door", id: "a3-gate", name: "霧の門", sprite: "pz-mist-door", puzzle: "a3-lanterns" },
+      j: { kind: "cache", id: "a3-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a3-lanterns" }
     },
     floors: [
       { encounter: { min: 14, max: 24, scale: 1.0, table: [ { enemy: "mist-bat", weight: 50 }, { enemy: "forest-wolf", weight: 35 }, { enemy: "goblin-scout", weight: 15 } ] },
         chests: [ { item: "high-potion", count: 1 }, { gold: 160 } ], gathers: [ ["monster_fang", 45], ["monster_hide", 45], ["slime_jelly", 10] ],
         foes: [ { enemy: "foe-mist-stag", path: [[3, 7], [8, 6]] } ], map: [
-        "###########################",
+        "#########g#################",
         "#.........#.......#.....#c#",
         "###.#####.#####.#.#.###.#.#",
         "#...#..**.*...#.#...#...#.#",
         "#.###.#**...#.#.#####.###.#",
-        "#.#.....***.#...#....*....#",
+        "#.#.....***.#...#....*....e",
         "#.#####*.***###.###*.*###.#",
-        "#.......*..*..#.#..*....#.#",
+        "f.......*..*..#.#..*....#.#",
         "#.#####.*..*#.###.#####.###",
         "#.#...#*.**.#.#...#G..#...#",
         "#.#.#.#.###.#.#.#####.###.#",
@@ -216,9 +234,9 @@ const FIELD_AREAS = {
         "#####.#######.#.###.#.#.###",
         "#...#.#.#.....#.....#.#...#",
         "#.#.#.#.#.#.#########.###.#",
-        "#.#.....#.#T#.........#.#.#",
-        "#.#####.#.###.#########.#.#",
-        "#>#...#.#...............#.#",
+        "#.#.....#.#T#.........#j#.#",
+        "#.#####.#.##h.#########.#.#",
+        "#>#...#.#.....i.........#.#",
         "###.#.###################.#",
         "#E..#.....................#",
         "###########################"
@@ -279,7 +297,11 @@ const FIELD_AREAS = {
       a: { kind: "npc", id: "miner", name: "鉱夫ガルド", sprite: "npc-miner", scene: "a4-miner", sideEvents: ["a4-tool-return"] },
       // [SIDE] サブイベント（1F：置き去りの道具袋／2F：岩壁の鉱脈）
       c: { kind: "event", id: "a4-toolbag", name: "道具袋", sprite: "ev-bag", event: "a4-toolbag" },
-      d: { kind: "event", id: "a4-ore-vein", name: "", sprite: "ev-hidden", event: "a4-ore-vein", hidden: true }
+      d: { kind: "event", id: "a4-ore-vein", name: "", sprite: "ev-hidden", event: "a4-ore-vein", hidden: true },
+      // [PUZZLE] 仕掛け（2F：ひびの入った岩壁を崩すと隠し通路が現れる）
+      e: { kind: "sign", id: "a4-note", name: "鉱夫の刻み書き", sprite: "pz-plaque", scene: "pz-a4-note", onWall: true },
+      f: { kind: "door", id: "a4-crack", name: "", sprite: "pz-crack", puzzle: "a4-cracked-wall", hidden: true },
+      g: { kind: "cache", id: "a4-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a4-cracked-wall" }
     },
     floors: [
       { encounter: { min: 13, max: 24, scale: 1.0, table: [ { enemy: "fire-lizard", weight: 65 }, { enemy: "lava-golem", weight: 35 } ] },
@@ -321,12 +343,12 @@ const FIELD_AREAS = {
         "#.#########..*.*#.#.#####.#",
         "#...#......***.*#.#...#...#",
         "###.#.#####.....#.###.#.###",
-        "#.#.#...#T.*.**.....#.#...#",
+        "#g#.#...#T.*.**.....#.#...#",
         "#.#.###.###.#.#.###.#.###.#",
         "#.#...#...#.#.#.#...#...#.#",
         "#.###.###.#.#.#.#.#####.#.#",
-        "#.#.......#...*..*..#.*...#",
-        "#.#.#######.#..**.#.#...#.#",
+        "#.#.f.....#...*..*..#.*...#",
+        "#.#.#e#####.#..**.#.#...#.#",
         "#...#........**..*#.....#.#",
         "#####.#######.#.#.#######.#",
         "#<....#G........#.........#",
@@ -363,7 +385,15 @@ const FIELD_AREAS = {
       a: { kind: "npc", id: "ghost-knight", name: "亡霊の騎士", sprite: "npc-ghost", scene: "a5-ghost-knight", sideEvents: ["a5-knights-rest"] },
       // [SIDE] サブイベント（1F：騎士団の紋章／2F：折れた剣）
       c: { kind: "event", id: "a5-emblem", name: "騎士団の紋章", sprite: "ev-emblem", event: "a5-emblem" },
-      d: { kind: "event", id: "a5-broken-sword", name: "折れた剣", sprite: "ev-sword", event: "a5-broken-sword" }
+      d: { kind: "event", id: "a5-broken-sword", name: "折れた剣", sprite: "ev-sword", event: "a5-broken-sword" },
+      // [PUZZLE] 仕掛け（2F：4体の騎士像に碑文の順で触れると騎士団の扉が開く）
+      e: { kind: "switch", id: "a5-statue-shield", name: "盾の騎士像", sprite: "pz-statue", puzzle: "a5-oath-statues", onWall: true },
+      f: { kind: "switch", id: "a5-statue-sword", name: "剣の騎士像", sprite: "pz-statue", puzzle: "a5-oath-statues", onWall: true },
+      g: { kind: "switch", id: "a5-statue-staff", name: "杖の騎士像", sprite: "pz-statue", puzzle: "a5-oath-statues", onWall: true },
+      h: { kind: "switch", id: "a5-statue-bow", name: "弓の騎士像", sprite: "pz-statue", puzzle: "a5-oath-statues", onWall: true },
+      i: { kind: "sign", id: "a5-oath", name: "誓いの碑文", sprite: "pz-plaque", scene: "pz-a5-oath", onWall: true },
+      j: { kind: "door", id: "a5-gate", name: "騎士団の扉", sprite: "pz-door", puzzle: "a5-oath-statues" },
+      k: { kind: "cache", id: "a5-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a5-oath-statues" }
     },
     floors: [
       { encounter: { min: 12, max: 22, scale: 1.0, table: [ { enemy: "dark-knight", weight: 55 }, { enemy: "wraith", weight: 45 } ] },
@@ -396,15 +426,15 @@ const FIELD_AREAS = {
         foes: [ { enemy: "foe-black-general", path: [[11, 19], [16, 17]] } ], map: [
         "###########################",
         "#.....#.............#T....#",
-        "#.#####.#########.#.###.#.#",
-        "#.......#.......#.#.....#.#",
-        "#.#########.###.#.#######.#",
+        "#.#####.###i#####.#.###.#.#",
+        "#.......#...j...#.#.....#.#",
+        "#.#########.###.#.##e####.#",
         "#........***#...#.#.#.....#",
-        "#######*****#.###.#.#.#####",
-        "#........*.*#...#.#...#...#",
+        "##f####*****#.###.#.#.#####",
+        "#........*.*#..k#.#...#...#",
         "#######.**#.#####.#.#####.#",
         "#........*..#...#.#.......#",
-        "#.#####.#####.#.#.#######.#",
+        "#.####h.#####.#.#.#######.#",
         "#.#G..#...#...#...#.#.....#",
         "#.###.###.#.#######.#.#####",
         "#...#.....#.#...#...#.#>..#",
@@ -412,7 +442,7 @@ const FIELD_AREAS = {
         "#d#.#...#.....#...#.#**.#.#",
         "###.#.#.#.#######.#.#***#.#",
         "#...#.#......G#...#..*..#.#",
-        "#.###.#########.###.#####.#",
+        "#.###.#########.###.##g##.#",
         "#<#S............#.........#",
         "###########################"
       ] },
@@ -476,6 +506,37 @@ const FIELD_SIDE_EVENTS = {
   "a5-emblem":      { scene: "side-a5-emblem", doneScene: "side-a5-relic-done", keyItem: "騎士団の紋章" },
   "a5-broken-sword": { scene: "side-a5-broken-sword", doneScene: "side-a5-relic-done", keyItem: "団長の折れた剣" },
   "a5-knights-rest": { requires: ["a5-emblem", "a5-broken-sword"], hintScene: "side-a5-knights-hint", scene: "side-a5-knights-rest", reward: { gold: 500, items: [["high-potion", 3], ["ether", 3]] } }
+};
+
+/* ------------------------------------------------------------
+   仕掛け・謎解き（任意攻略。メイン進行には不要）
+   仕様：docs/specs/field-puzzles/IMPLEMENTATION_NOTES.md
+   ・objects の kind:"switch"（スイッチ）／"door"（扉。開くまで通れない）／"cache"（扉の奥の報酬）と組み合わせる。
+   ・type：
+       lever  … スイッチ1つで開く
+       all    … すべてのスイッチを入れると開く（順番は自由。入れたスイッチは保存される）
+       order  … order の順にスイッチを入れると開く。間違えると最初からやり直し（途中経過は保存しない）
+       hidden … 扉そのものを調べて開ける隠し通路（hidden:true の扉は、開くまで壁に見える）
+   ・保存フラグ：解決 fieldState.flags["puzzle:<ID>"]、報酬 ["puzzle:<ID>:reward"]、
+     all のスイッチ ["puzzle:<ID>:sw:<スイッチID>"]。どれも既存のフィールドフラグとしてセーブされる。
+   ・lockedScene：開く前の扉を調べたときのヒント。solveScene：解けたとき。報酬は既存のものだけ。
+   ------------------------------------------------------------ */
+const FIELD_PUZZLES = {
+  "a1-lever-gate":   { type: "lever", switches: ["a1-lever"], askText: "古いレバーだ。引いてみますか？",
+                       lockedScene: "pz-a1-door", solveScene: "pz-a1-solve", reward: { gold: 80, items: [["ether", 1]] } },
+  "a2-twin-stones":  { type: "all", switches: ["a2-stone-west", "a2-stone-east"], askText: "合図石だ。木づちで叩いてみますか？",
+                       onText: "カーン……と澄んだ音が森に響いた。（鳴らした合図石 {n}/{total}）", alreadyText: "この合図石はもう鳴らした。もう一方を探そう。",
+                       lockedScene: "pz-a2-door", solveScene: "pz-a2-solve", reward: { gold: 180, items: [["high-potion", 1]], materials: [["goblin_cloth", 2]] } },
+  "a3-lanterns":     { type: "order", switches: ["a3-lantern-east", "a3-lantern-west", "a3-lantern-north"], order: ["a3-lantern-east", "a3-lantern-west", "a3-lantern-north"],
+                       askText: "石灯籠だ。火をともしますか？", progressText: "石灯籠に、青白い灯がともった。（{n}/{total}）",
+                       wrongText: "ふっと冷たい風が吹き、ともした灯がすべて消えてしまった……。（順番が違うようだ。霧の石碑を読み返そう）", litText: "この灯籠には、もう灯がともっている。",
+                       lockedScene: "pz-a3-door", solveScene: "pz-a3-solve", reward: { gold: 260, items: [["high-potion", 2]] } },
+  "a4-cracked-wall": { type: "hidden", askText: "岩壁に、細かいひびが走っている……。体当たりしてみますか？",
+                       solveScene: "pz-a4-solve", reward: { gold: 300, materials: [["dragon_scale", 2]] } },
+  "a5-oath-statues": { type: "order", switches: ["a5-statue-shield", "a5-statue-sword", "a5-statue-staff", "a5-statue-bow"], order: ["a5-statue-shield", "a5-statue-sword", "a5-statue-staff", "a5-statue-bow"],
+                       askText: "騎士像が手を差し出している。触れますか？", progressText: "騎士像の瞳に、かすかな光が宿った。（{n}/{total}）",
+                       wrongText: "騎士像の光がいっせいに消えた……。（作法が違うようだ。誓いの碑文を読み返そう）", litText: "この騎士像には、もう光が宿っている。",
+                       lockedScene: "pz-a5-door", solveScene: "pz-a5-solve", reward: { gold: 600, items: [["ether", 2]], materials: [["maou_crystal", 1]] } }
 };
 
 /* ------------------------------------------------------------
