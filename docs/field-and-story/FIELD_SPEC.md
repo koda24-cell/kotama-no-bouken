@@ -1,7 +1,7 @@
 # フィールド・エンカウント・ストーリー：共通インターフェース仕様
 
 - 作成担当：Claude ／ 利用者：GPT（見た目・演出）、他AI
-- 状態：フェーズ1bの実装はこの仕様に合わせる。変更が必要になった場合は、Claude がこの文書を先に更新してから実装する。
+- 状態：**フェーズ1b実装済み（`feature/ai-claude-field-story`）。本書は実装に合わせて更新済み**。変更が必要になった場合は、Claude がこの文書を先に更新してから実装する。
 - 目的：GPT が `field.js` の処理を読まなくても、**DOM構造・CSSクラス・イベント・データ形式**だけで見た目を作れるようにする。
 
 ---
@@ -25,36 +25,38 @@
 <section id="field" class="screen field-screen" data-area="1" data-theme="forest">
   <div class="field-hud">
     <strong id="field-area-name">はじまりの樹海</strong>
-    <span id="field-hint">移動：矢印/WASD・パッド　調べる：Z/Enter・Aボタン</span>
-    <button id="field-home-button" type="button">ホームへ</button>
+    <span id="field-hint" class="field-hint">移動：矢印/WASD・パッド　調べる：Z/Enter・A</span>
+    <button id="field-home-button" class="field-home-button" type="button">ホームへ</button>
   </div>
   <div id="field-viewport" class="field-viewport">
-    <div id="field-map" class="field-map">               <!-- カメラ移動は transform: translate() -->
+    <div id="field-map" class="field-map">               <!-- カメラは transform: translate() scale() -->
       <div class="field-tiles">
-        <i class="field-tile tile-wall"></i> …            <!-- 1マス1要素。行優先で並ぶ -->
+        <i class="field-tile tile-wall is-edge" style="left:…;top:…"></i> …   <!-- 1マス1要素 -->
       </div>
-      <div class="field-object" data-kind="npc" data-object-id="woodcutter" data-sprite="npc-woodcutter"
-           style="left:…px; top:…px"><span class="field-object-sprite"></span><b class="field-object-label">木こり</b></div>
-      <div id="field-player" class="field-player" data-dir="down" data-moving="false">
-        <span class="field-player-sprite"></span>
+      <div class="field-object" data-kind="npc" data-object-id="woodcutter" data-key="npc:1:woodcutter"
+           data-sprite="npc-woodcutter" style="left:…px; top:…px">
+        <span class="field-object-sprite"></span><b class="field-object-label">木こりボルド</b>
+      </div>
+      <div id="field-player" class="field-player" data-dir="down" data-moving="false" data-step="0">
+        <span class="field-player-shadow"></span><span class="field-player-sprite"></span>
       </div>
     </div>
-    <div id="field-encounter-flash" class="field-encounter-flash" hidden></div>
     <div id="field-player-alert" class="field-player-alert" hidden>！</div>
-  </div>
-  <div id="field-dialog" class="field-dialog" hidden role="dialog" aria-live="polite">
-    <div class="field-dialog-portrait"><img alt=""></div>
-    <div class="field-dialog-body">
-      <strong class="field-dialog-name"></strong>
-      <p class="field-dialog-text"></p>
-      <span class="field-dialog-next" aria-hidden="true">▼</span>
+    <div id="field-encounter-flash" class="field-encounter-flash" hidden></div>
+    <div id="field-dialog" class="field-dialog" hidden role="dialog" aria-live="polite">   <!-- ビューポート内の下部 -->
+      <div class="field-dialog-portrait"><img alt=""></div>
+      <div class="field-dialog-body">
+        <strong class="field-dialog-name"></strong>
+        <p class="field-dialog-text"></p>
+        <span class="field-dialog-next" aria-hidden="true">▼</span>
+      </div>
+      <div class="field-dialog-choices" hidden></div>     <!-- button[data-choice]、選択中は .is-selected -->
     </div>
-    <div class="field-dialog-choices" hidden></div>      <!-- 「はい／いいえ」等。button[data-choice] -->
   </div>
   <div id="field-pad" class="field-pad">
-    <button data-dir="up">▲</button><button data-dir="left">◀</button>
-    <button data-dir="right">▶</button><button data-dir="down">▼</button>
-    <button id="field-action" class="field-action">A</button>
+    <div class="field-dpad"><button data-dir="up">▲</button><button data-dir="left">◀</button>
+      <button data-dir="right">▶</button><button data-dir="down">▼</button></div>   <!-- 押下中は .is-pressed -->
+    <button id="field-action" class="field-action">A</button>                        <!-- 調べられる物の前で .is-ready -->
   </div>
 </section>
 ```
@@ -73,6 +75,8 @@
 | 主人公 | `#field-player[data-dir]` | `up` `down` `left` `right` |
 | 主人公 | `#field-player[data-moving]` | `true` / `false`（歩行アニメ切替用） |
 | 主人公 | `#field-player[data-step]` | `0`〜`3`（歩行コマ。8フレームごとに進む） |
+| 会話 | `.field-dialog.has-portrait` / `.is-narration` / `[data-speaker]` | 顔画像あり／地の文／話者ID |
+| タイル | `.tile-wall.is-edge` | 下が通路の壁（手前に見える面を描く用） |
 | CSS変数 | `--tile` | 1マスのピクセル数（既定 32px） |
 
 マス目の大きさは `--tile` で決まる。見た目担当は `--tile` を変えてよいが、当たり判定は `field.js` 内の論理座標（1マス=32）で行うため、**表示倍率は `#field-map` の `scale` で変える**こと。
@@ -120,7 +124,7 @@ const FIELD_ENEMIES = { "field-slime": { name:"はぐれスライム", hp:…, a
 | `#` | 壁（木・岩・城壁。見た目はテーマで変える） | × | – |
 | `.` | 地面 | ○ | あり |
 | `,` | 道 | ○ | あり |
-| `"` | 草むら | ○ | あり（出現率 1.5 倍） |
+| `*` | 草むら | ○ | あり（出現率 1.5 倍） |
 | `~` | 水・溶岩 | × | – |
 | `_` | 安全地帯 | ○ | なし |
 | `P` | 開始位置（安全地帯扱い） | ○ | なし |

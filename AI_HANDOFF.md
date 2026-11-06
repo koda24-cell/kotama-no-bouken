@@ -24,6 +24,8 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | 2 | `data/*.js`（11ファイル） | **固定データ**（数値・文章・定義）。ここを直せば調整できる（`data/README.md`） |
 | 3 | `battle-ext.js` | 戦闘の拡張ロジック（状態異常・行動順・新職業のスキル・敵バリエーションの処理・魔王のフェーズ） |
 | 4 | `script.js` | ゲーム本体（画面・戦闘進行・ショップ・セーブ・チュートリアルなど） |
+| 5 | `analyze-panel.js` | 戦闘中の「敵」「味方」状態パネル（読み取り専用） |
+| 6 | `field.js` | フィールド探索：自由移動・ランダムエンカウント・会話・ボスゲート。`script.js` の `// [FIELD]` フックから呼ばれる |
 
 - `data/` と `css/` の中身は、**処理を持たない（または最小限）** 設定ファイルです。数値や文章の調整は、まずここを探してください。
 - `battle-ext.js` は `script.js` より先に読み込まれ、`script.js` の変数は「関数の中でのみ」参照します。
@@ -39,7 +41,8 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | 状態異常の表示名・アイコン | `data/status-effects.js` |
 | 職業の能力値・スキル・スピード・解放条件 | `data/jobs.js`（初期6職業は `data/characters.js`） |
 | 装備・アイテム・製作レシピ | `data/items.js` |
-| ストーリーの文章・実績 | `data/progression.js` |
+| ストーリーの文章・実績 | `data/progression.js`（ステージ導入・クリアの一枚絵風イベント）、`data/story.js`（フィールドの会話） |
+| フィールドのマップ・雑魚敵・出現率・フィールドBGM | `data/field-maps.js` |
 | スキルツリー | `data/skill-trees.js` |
 | 見た目 | `css/` の該当ファイル。迷ったら `style.css` の末尾 |
 | 戦闘の処理（行動順・状態異常のかかり方・新職業の動き） | `battle-ext.js` |
@@ -76,6 +79,7 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | フェーズ | 魔王のHP段階（1〜3）。段階が上がると技が増える |
 | 無防備 | インペリアルのチャージ中の状態。受けるダメージが増える |
 | `[EXT]` | `script.js` 内の、`battle-ext.js` を呼ぶフックの目印 |
+| `[FIELD]` / `[ANALYZE]` | `script.js` 内の、`field.js` / `analyze-panel.js` を呼ぶフックの目印。仕様は `docs/field-and-story/FIELD_SPEC.md` |
 | `[EVT]` | `script.js` 内の、戦闘イベント（演出側への通知）を発火する1行の目印。仕様は `docs/battle-visual-refresh/EVENT_SPEC.md` |
 
 ## 7. 現在進行中の作業（2026-11-06 時点）

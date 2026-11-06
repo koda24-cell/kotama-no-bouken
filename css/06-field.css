@@ -50,3 +50,113 @@
   .analyze-tab-button{min-width:32px;padding:7px 5px;font-size:10px}
   .analyze-panel[data-tab="party"] .analyze-panel-body{grid-template-columns:1fr}
 }
+
+/* ---------- [FIELD] フィールド画面（仮スタイル：GPTが G1〜G5 で差し替える） ---------- */
+.field-screen{position:relative;padding:8px 0 0}
+.field-screen:not(.active){display:none}
+.field-hud{display:flex;align-items:center;gap:10px;margin:0 0 6px;padding:6px 10px;border:1px solid #8da0c455;border-radius:6px;background:#0a1230e6}
+.field-hud strong{color:var(--gold,#d8b45a);font-size:14px;letter-spacing:.06em;white-space:nowrap}
+.field-hint{color:#aebbd4;font-size:11px;margin-right:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.field-home-button{padding:5px 10px;border:1px solid #8da0c477;border-radius:5px;background:#17266f;color:#fff;font-size:12px;white-space:nowrap}
+.field-viewport{position:relative;height:min(58vh,560px);min-height:300px;border:2px solid #222b52;border-radius:8px;background:#05070f;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.field-map{position:absolute;left:0;top:0;transform-origin:0 0;image-rendering:pixelated;will-change:transform}
+.field-tiles{position:absolute;inset:0}
+.field-tile{position:absolute;width:var(--tile,32px);height:var(--tile,32px);display:block}
+
+/* 地形の色（テーマ別）。--g=地面 --p=道 --w=壁 --e=壁の手前面 --x=水/溶岩 --s=安全地帯 */
+.field-screen{--g:#4f8f3a;--g2:#5b9b44;--p:#b79a63;--w:#1f4d24;--e:#173a1b;--x:#2f6fb0;--s:#7fae5b}
+.field-screen[data-theme="goblin"]{--g:#5d7d35;--g2:#688a3c;--p:#8f6e44;--w:#2d3f1c;--e:#202e14;--x:#3b6a8a;--s:#88a058}
+.field-screen[data-theme="mist"]{--g:#46705f;--g2:#4f7a69;--p:#8f9aa0;--w:#1d3a36;--e:#142a27;--x:#3c6c86;--s:#6f9a88}
+.field-screen[data-theme="lava"]{--g:#4a3530;--g2:#553c35;--p:#7a5a44;--w:#241614;--e:#170d0b;--x:#e2541b;--s:#6d4e3f}
+.field-screen[data-theme="castle"]{--g:#3f4258;--g2:#464a62;--p:#5f6380;--w:#1b1c2a;--e:#11121c;--x:#2b2440;--s:#585c78}
+.tile-floor{background:var(--g)}
+.tile-path{background:var(--p);box-shadow:inset 0 0 0 1px #0000000d}
+.tile-grass{background:var(--g) radial-gradient(circle at 30% 70%,#ffffff1f 0 2px,transparent 3px),radial-gradient(circle at 70% 35%,#ffffff1a 0 2px,transparent 3px);background-color:var(--g2);box-shadow:inset 0 -6px 0 #0000001f}
+.tile-wall{background:var(--w);box-shadow:inset 0 0 0 1px #00000026}
+.tile-wall.is-edge{background:linear-gradient(var(--w) 0 55%,var(--e) 55%)}
+.tile-water{background:var(--x);box-shadow:inset 0 4px 0 #ffffff22}
+.field-screen[data-theme="lava"] .tile-water{animation:field-lava 2.4s ease-in-out infinite alternate}
+@keyframes field-lava{to{filter:brightness(1.25) saturate(1.2)}}
+.tile-safe{background:var(--s)}
+.tile-exit{background:var(--s);box-shadow:inset 0 0 0 3px #ffffff55}
+.tile-gate{background:radial-gradient(circle,#ff5a5a66,transparent 70%),var(--p);animation:field-gate 1.6s ease-in-out infinite alternate}
+@keyframes field-gate{to{box-shadow:inset 0 0 12px #ff4d4d}}
+.field-screen[data-theme="mist"] .field-viewport::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 30%,#c9dbe055 75%)}
+
+/* オブジェクト（仮表示：絵文字）。data-sprite ごとに GPT が絵を付ける */
+.field-object{position:absolute;width:var(--tile,32px);height:var(--tile,32px);z-index:5;pointer-events:none}
+.field-object-sprite{position:absolute;inset:2px;display:grid;place-items:center;font-size:22px;line-height:1}
+.field-object-sprite::before{content:"●"}
+.field-object[data-kind="npc"] .field-object-sprite::before{content:"🧑"}
+.field-object[data-sprite="npc-girl"] .field-object-sprite::before{content:"👧"}
+.field-object[data-sprite="npc-merchant"] .field-object-sprite::before{content:"🧔"}
+.field-object[data-sprite="npc-guard"] .field-object-sprite::before{content:"💂"}
+.field-object[data-sprite="npc-miner"] .field-object-sprite::before{content:"⛏"}
+.field-object[data-sprite="npc-ghost"] .field-object-sprite::before{content:"👻"}
+.field-object[data-sprite="statue"] .field-object-sprite::before{content:"🗿"}
+.field-object[data-kind="sign"] .field-object-sprite::before{content:"🪧"}
+.field-object[data-kind="chest"] .field-object-sprite::before{content:"🎁"}
+.field-object[data-kind="chest"].is-opened .field-object-sprite::before{content:"📦";opacity:.7}
+.field-object[data-kind="save"] .field-object-sprite::before{content:"✦";color:#ffe27a;text-shadow:0 0 8px #ffd34d,0 0 16px #ffb800;animation:field-lamp 1.2s ease-in-out infinite alternate}
+@keyframes field-lamp{to{transform:scale(1.18);text-shadow:0 0 12px #fff2b0,0 0 22px #ffb800}}
+.field-object[data-kind="gate"] .field-object-sprite::before{content:"";}
+.field-object[data-kind="exit"] .field-object-sprite::before{content:"⇦";color:#fff;font-size:16px;opacity:.8}
+.field-object-label{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);padding:1px 4px;border-radius:3px;background:#000a;color:#fff;font-size:8px;font-weight:400;white-space:nowrap;opacity:0;transition:opacity .15s}
+.field-object.is-near .field-object-label{opacity:1}
+.field-object.is-near .field-object-sprite{filter:drop-shadow(0 0 4px #fff)}
+
+/* 主人公（仮：コタマの立ち絵を縮小。GPTが4方向×歩行コマの絵に差し替える） */
+.field-player{position:absolute;width:32px;height:40px;pointer-events:none}
+.field-player-shadow{position:absolute;left:7px;right:7px;bottom:2px;height:6px;border-radius:50%;background:#0006}
+.field-player-sprite{position:absolute;inset:0 0 4px;background:url("../assets/characters/kotama.png") center top/contain no-repeat;transform-origin:50% 100%}
+.field-player[data-dir="left"] .field-player-sprite{transform:scaleX(-1)}
+.field-player[data-moving="true"][data-step="1"] .field-player-sprite,.field-player[data-moving="true"][data-step="3"] .field-player-sprite{translate:0 -2px}
+.field-player[data-moving="true"][data-dir="left"][data-step="1"] .field-player-sprite,.field-player[data-moving="true"][data-dir="left"][data-step="3"] .field-player-sprite{translate:0 -2px}
+.field-player[data-dir="up"] .field-player-sprite{filter:brightness(.82)}
+
+/* エンカウント演出（仮） */
+.field-player-alert{position:absolute;z-index:40;transform:translate(-50%,-100%);color:#ff4d4d;font-size:26px;font-weight:900;text-shadow:0 0 3px #fff,0 2px 0 #000;animation:field-alert .25s ease-out}
+@keyframes field-alert{from{transform:translate(-50%,-60%) scale(.4)}to{transform:translate(-50%,-100%) scale(1)}}
+.field-encounter-flash{position:absolute;inset:0;z-index:45;background:#000;animation:field-flash .5s steps(2,end) forwards}
+@keyframes field-flash{0%{background:#fff}25%{background:#000}50%{background:#fff}100%{background:#000}}
+
+/* 会話ウィンドウ（仮：黒地・白枠） */
+.field-dialog{position:absolute;left:8px;right:8px;bottom:8px;z-index:50;display:flex;gap:10px;min-height:92px;padding:10px 12px;border:3px solid #fff;border-radius:4px;background:#000e;color:#fff;cursor:pointer}
+.field-dialog[hidden]{display:none}
+.field-dialog-portrait{display:none;flex:0 0 64px;height:64px;border:2px solid #fff;background:#111 center/cover;overflow:hidden}
+.field-dialog.has-portrait .field-dialog-portrait{display:block}
+.field-dialog-portrait img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.field-dialog-body{position:relative;flex:1;min-width:0}
+.field-dialog-name{display:block;margin-bottom:3px;color:#ffe27a;font-size:13px}
+.field-dialog-name[hidden]{display:none}
+.field-dialog-text{margin:0;font-size:15px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.field-dialog.is-narration .field-dialog-text{color:#dfe6ff}
+.field-dialog-next{position:absolute;right:0;bottom:-4px;font-size:12px;animation:field-next .7s steps(2,end) infinite}
+@keyframes field-next{50%{opacity:0}}
+.field-dialog-choices{position:absolute;right:12px;bottom:calc(100% + 6px);display:flex;flex-direction:column;gap:4px;padding:6px;border:3px solid #fff;border-radius:4px;background:#000}
+.field-dialog-choices[hidden]{display:none}
+.field-dialog-choices button{min-width:110px;padding:6px 12px 6px 22px;border:0;background:transparent;color:#fff;font-size:14px;text-align:left;position:relative}
+.field-dialog-choices button.is-selected{color:#ffe27a}
+.field-dialog-choices button.is-selected::before{content:"♥";position:absolute;left:4px;color:#ff4d4d}
+
+/* バーチャルパッド（仮） */
+.field-pad{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:0 6px;touch-action:none;user-select:none;-webkit-user-select:none}
+.field-dpad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:2px}
+.field-dpad button{border:2px solid #8da0c4aa;border-radius:10px;background:#16204ad9;color:#dce7ff;font-size:18px;touch-action:none}
+.field-dpad button.is-pressed{background:#2f4196;border-color:#fff}
+.field-dpad [data-dir="up"]{grid-column:2;grid-row:1}
+.field-dpad [data-dir="left"]{grid-column:1;grid-row:2}
+.field-dpad [data-dir="right"]{grid-column:3;grid-row:2}
+.field-dpad [data-dir="down"]{grid-column:2;grid-row:3}
+.field-action{width:72px;height:72px;border:3px solid var(--gold,#d8b45a);border-radius:50%;background:#3a2a10;color:var(--gold,#d8b45a);font-size:22px;font-weight:900;touch-action:none}
+.field-action.is-ready{box-shadow:0 0 0 3px #ffe27a55,0 0 14px #ffd34d}
+@media(hover:hover) and (pointer:fine) and (min-width:900px){
+  .field-pad{opacity:.55}
+  .field-dpad{grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px)}
+  .field-action{width:56px;height:56px;font-size:18px}
+}
+@media(max-width:560px){
+  .field-hint{display:none}
+  .field-viewport{height:min(52vh,460px)}
+  .field-dialog-text{font-size:14px}
+}
