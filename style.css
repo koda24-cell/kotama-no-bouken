@@ -1537,3 +1537,28 @@ body[data-screen="battle"] .gold-display{display:none!important;}
  .battle-member:has(.status-ext-burn) .battle-portrait,
  .battle-member:has(.status-ext-curse) .battle-portrait{animation:none!important;filter:none}
 }
+
+
+/* Dungeon floor identity: make the current labyrinth layer the battle heading. */
+.battle-heading .eyebrow{color:#bda66d;letter-spacing:.24em;font-size:9px;text-shadow:0 1px 3px #000}
+.battle-heading h1#stage-title{
+  display:inline-flex;align-items:center;justify-content:center;gap:.45em;
+  max-width:100%;margin:1px auto 3px;padding:4px 13px;
+  border:1px solid #9c875b;border-top-color:#d7c28d;border-bottom-color:#675331;
+  border-radius:2px;background:linear-gradient(180deg,#26343aee,#111d27f5);
+  color:#f2dfad;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;
+  font-size:clamp(15px,2.3vw,21px);font-weight:800;letter-spacing:.08em;
+  text-shadow:0 2px 4px #000,0 0 12px #d9b86b33;
+  box-shadow:inset 0 0 0 2px #080f18,0 2px 7px #0008;
+}
+.battle-heading #turn-counter{color:#d2d9d5;font-size:11px;letter-spacing:.08em;text-shadow:0 1px 3px #000}
+.stage-environment-banner{
+  border-color:#c4a76c!important;
+  background:linear-gradient(90deg,#080f18e8,#172a2beF 50%,#080f18e8)!important;
+  box-shadow:inset 0 0 0 1px #080f18,0 3px 12px #0009!important;
+}
+.stage-environment-banner strong{letter-spacing:.14em!important;text-shadow:0 0 8px #d7b86b55}
+@media(max-width:560px){
+ .battle-heading h1#stage-title{padding:4px 8px;font-size:clamp(13px,4vw,17px);letter-spacing:.04em}
+ .stage-environment-banner{max-width:96%}
+}
