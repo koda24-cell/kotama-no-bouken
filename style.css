@@ -1676,3 +1676,17 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 .kotama-admin-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid #6478ad55;background:#0e1933}
 .kotama-admin-footer span{color:#9eafd9;font-size:10px}
 @media(max-width:600px){#kotama-admin-launcher{right:6px;bottom:6px;width:36px;height:22px}.kotama-admin-window{max-height:94vh}.kotama-admin-header{padding:10px 12px}.kotama-admin-header h2{font-size:17px}.kotama-admin-content{padding:10px}.kotama-admin-tabs{padding:8px;gap:4px}.kotama-admin-tabs button{padding:7px 8px;font-size:11px}.kotama-admin-footer span{max-width:65%;line-height:1.4}}
+
+/* ===== [EXT] 戦闘拡張（battle-ext.js）：状態異常・新職業の文字アイコン・敵バリエーション ===== */
+.status-ext{display:inline-block;margin-left:3px;padding:0 3px;border-radius:2px;font-size:.78em;font-weight:800;white-space:nowrap}
+.status-ext-bad{color:#ffd0c8;background:#6b2030}
+.status-ext-good{color:#cfeeff;background:#1d4a6a}
+.status-heat{color:#ffe3b0;background:#6a3c12}
+.job-emblem{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:56px;font-family:serif;font-weight:900;font-size:clamp(28px,6vw,56px);color:#fff4d0;background:radial-gradient(circle at 35% 28%,#3c5aa8,#14204f 68%,#0a0e26);border:2px solid #e8c77b;box-shadow:inset 0 0 0 3px #16245c,0 0 12px #4f6fd066;text-shadow:2px 3px #0a1030}
+.battle-portrait .job-emblem{font-size:clamp(20px,4vw,34px)}
+#battle-enemy[data-variant="poison-slime"] .enemy-image{filter:hue-rotate(95deg) saturate(1.5)}
+#battle-enemy[data-variant="fire-slime"] .enemy-image{filter:hue-rotate(-120deg) saturate(1.8) brightness(1.1)}
+#battle-enemy[data-variant="goblin-archer"] .enemy-image{filter:hue-rotate(35deg) saturate(1.2)}
+#battle-enemy[data-variant="goblin-shaman"] .enemy-image{filter:hue-rotate(200deg) saturate(1.3)}
+#battle-enemy[data-variant="giant-bat"] .enemy-image{filter:grayscale(.7) brightness(.55) contrast(1.3)}
+#battle-enemy[data-variant="giant-spider"] .enemy-image{filter:hue-rotate(260deg) saturate(1.4) brightness(.8)}
