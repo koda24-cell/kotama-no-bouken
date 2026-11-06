@@ -327,6 +327,7 @@
 #field-player[data-step="2"]{--frame-x:-64px}
 #field-player[data-step="3"]{--frame-x:-96px}
 #field-player .field-player-sprite{
+  inset:0;
   background-image:url("../assets/field/kotama-walk.svg");
   background-position:var(--frame-x) var(--frame-y);
   background-size:128px 160px;background-repeat:no-repeat;
