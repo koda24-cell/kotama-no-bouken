@@ -3,12 +3,7 @@
 // Fantasy RPG - Battle風の固定フレーム / ターン制コマンド入力
 const PARTY_LIMIT = 4;
 // 追加ゲームシステム・第1段階の数値設定。調整時はここを変更する。
-const BATTLE_RULES = {
-  classBonuses: { warrior:{attack:1.10}, knight:{defense:1.15,attack:1.0}, kotama:{maxHp:1.10,attack:1.05}, mage:{spAttack:1.15}, healer:{healing:1.20}, samurai:{attack:1.20,defense:.90} },
-  passives: { warrior:{normalDamage:1.10}, knight:{normalDamageTaken:.90}, kotama:{lowHpDefense:1.20,threshold:.50}, mage:{spDamage:1.10}, healer:{healing:1.10}, samurai:{} },
-  elements: { weak:1.5, normal:1, resist:.5, immune:0 },
-  break: { normal:10, sp:20, ultimate:30, union:40, weak:1.5, resist:.5 },
-  bosses: { ドラゴン:{break:100}, 魔王:{break:150}, 混沌の幻影:{break:200} }
+// 戦闘バランス設定は data/battle-rules.js に分離。
 };
 // キャラクター・ユニオンスキルの定義は data/characters.js に分離。
 if(typeof extInstallCharacters==="function")extInstallCharacters(characters);
@@ -22,18 +17,7 @@ for(const r of recipes)shopItems.push({...r,category:"weapon",craftedOnly:true,d
 const compendium = Object.fromEntries(["スライム","ゴブリン","オオカミ","ドラゴン","魔王","混沌の幻影"].map(name=>[name,{encountered:false,defeated:false}]));
 const eventRead = {};
 let hiddenBossFirstClear=false;
-const stageEvents = [
- {id:"forest-intro",title:"はじまりの樹海",pages:["コタマたちは、魔法の石像が眠るという樹海へ足を踏み入れた。","木々の間から、小さな影がこちらを見つめている。冒険の始まりだ。"]},
- {id:"goblin-intro",title:"森の奥へ",pages:["樹海の奥では、ゴブリンたちが道を塞いでいた。","仲間と力を合わせて、先へ進もう。"]},
- {id:"wolf-intro",title:"霧の中の瞳",pages:["ゴブリンの群れを抜けると、森は深い霧に包まれた。","霧の向こうで、いくつもの瞳が光っている。","オオカミだ。姿を惑わせる幻影が、コタマたちを待ち受けていた。"]},
- {id:"dragon-intro",title:"炎の竜",pages:["熱風が吹き荒れ、巨大な翼が空を覆う。","この先に待つのは、炎をまとうドラゴンだ。","仲間たちは武器を握りしめ、炎の中へ踏み出した。"]},
- {id:"maou-intro",title:"魔王の城",pages:["長い冒険の果てに、魔王の城へたどり着いた。","仲間たちとともに、最後の戦いへ。"]},
- {id:"slime-clear",trigger:"clear",stage:1,title:"樹海の小さな勝利",pages:["スライムを退け、コタマたちは樹海の奥へ進む。","まだ冒険は始まったばかり。仲間と一緒なら、きっと大丈夫だ。"]},
- {id:"goblin-clear",trigger:"clear",stage:2,title:"ゴブリンの包囲を抜けて",pages:["ゴブリンたちの包囲を突破した。","森の奥から、さらに強い気配が近づいてくる。"]},
- {id:"wolf-clear",trigger:"clear",stage:3,title:"静かな森を越えて",pages:["オオカミの幻影が霧の中へ消えていった。","木々の向こうには、赤い光が揺れている。"]},
- {id:"dragon-clear",trigger:"clear",stage:4,title:"炎竜を越えて",pages:["炎竜との激闘を乗り越えた。","残る道は、魔王の城へと続いている。"]},
- {id:"maou-clear",trigger:"clear",stage:5,title:"冒険の終わり",pages:["魔王を倒し、世界に平穏が戻った。","樹海に朝日が差し込み、仲間たちは静かに顔を見合わせた。","コタマたちの冒険は、仲間との絆とともに語り継がれていく。"]},
- {id:"hidden-boss-clear",trigger:"clear",hiddenBoss:true,title:"混沌を越えて",pages:["混沌の幻影を打ち破り、深い静寂が訪れた。","新たな強敵に挑んだ経験は、仲間たちの胸に刻まれた。"]}
+// ストーリーイベント定義は data/progression.js に分離。
 ];
 const growth={};
 characters.forEach(c=>growth[c.id]={spent:{maxHp:0,attack:0,defense:0,maxSp:0,spAttack:0,spDefense:0},unspent:0});
@@ -42,23 +26,9 @@ characters.forEach(c=>growth[c.id]={spent:{maxHp:0,attack:0,defense:0,maxSp:0,sp
 const characterLevels={};
 characters.forEach(c=>characterLevels[c.id]=1);
 // 成長配分の編集中データ。確定するまで実際の能力値・セーブデータには反映しない。
-const growthKeys=["maxHp","attack","defense","maxSp","spAttack","spDefense"];
-const growthLabels={maxHp:"最大HP",attack:"攻撃力",defense:"防御力",maxSp:"最大SP",spAttack:"SP攻撃力",spDefense:"SP防御力"};
-const growthPerPoint={maxHp:10,attack:2,defense:2,maxSp:5,spAttack:2,spDefense:2};
+// 成長配分の設定は data/progression.js に分離。
+;
 // 第4段階：実績・討伐数・最高ランク・使用職業の永続記録
-const achievementDefinitions=[
-{id:"first_win",name:"はじめての勝利",description:"初めて戦闘に勝利する",reward:50},
-{id:"defeat_10",name:"駆け出しの討伐者",description:"敵を合計10体倒す",reward:100},
-{id:"defeat_50",name:"百戦錬磨",description:"敵を合計50体倒す",reward:200},
-{id:"dragon_slayer",name:"竜殺し",description:"ドラゴンを倒す",reward:300},
-{id:"maou_slayer",name:"魔王討伐",description:"魔王を倒す",reward:500},
-{id:"perfect_victory",name:"無傷の勝利",description:"戦闘不能者を出さずに勝利する",reward:100},
-{id:"lightning",name:"電光石火",description:"3ターン以内に勝利する",reward:200},
-{id:"weapon_smith",name:"はじめての武器職人",description:"武器を初めて製作する",reward:100},
-{id:"enhancement_master",name:"強化の極み",description:"武器を+5にする",reward:200},
-{id:"compendium_80",name:"図鑑コレクター",description:"通常モンスター図鑑を80%以上埋める",reward:300},
-{id:"all_jobs",name:"みんなで冒険",description:"全職業を勝利編成に参加させる",reward:200},
-{id:"hidden_boss",name:"さらなる強敵",description:"隠しボスを倒す",reward:500}
 ];
 const achievementUnlocked={};
 let totalEnemyDefeats=0;
@@ -542,40 +512,7 @@ function renderShop(){
   buyerBox?.querySelector("[data-buyer-prev]")?.addEventListener("click",()=>{{const list=extAvailableCharacters();shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+list.length-1)%list.length].id;}renderShop();});
   buyerBox?.querySelector("[data-buyer-next]")?.addEventListener("click",()=>{{const list=extAvailableCharacters();shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+1)%list.length].id;}renderShop();});
 }
-const skillTreeDefinitions={
- kotama:{passive:{id:"kotama-mastery",name:"剣マスタリー",desc:"レベルごとに攻撃力が2%上昇する。",effect:"stats",stat:"attack"},a:{id:"kotama-shock-spark",name:"ショックスパーク",desc:"敵全体に雷属性のSP攻撃。レベルに応じて威力が上昇する。",effect:"none"},b:{id:"kotama-shock-bolt",name:"ショックボルト",desc:"敵単体に雷属性のSP攻撃。低SP消費で扱いやすい。",effect:"none"},derived:{id:"kotama-burst-blade",name:"バーストブレイド",desc:"ショックスパークとショックボルトを習得すると解放。敵単体に威力400%の強力な一撃。",effect:"none"}},
- knight:{passive:{id:"knight-mastery",name:"盾マスタリー",desc:"レベルごとに防御力が2%上昇する。",effect:"stats",stat:"defense"},a:{id:"knight-defense-camp",name:"防衛陣地",desc:"3ターンの間、味方全体の防御力を上昇させる。",effect:"none"},b:{id:"knight-magic-guard",name:"マジックガード",desc:"使用ターン、味方全体が受ける魔法ダメージを軽減する。",effect:"none"},derived:{id:"knight-full-guard",name:"フルガード",desc:"使用ターン、味方への攻撃を騎士が引き受け、自身も防御状態になる。5ターンの再使用待機。",effect:"none"}},
- healer:{passive:{id:"healer-mastery",name:"回復マスタリー",desc:"レベルごとに回復量が3%上昇する。",effect:"heal"},a:{id:"healer-line-heal",name:"ラインヒール",desc:"横列の味方3人を自動的に回復する。",effect:"none"},b:{id:"healer-refresh",name:"リフレッシュ",desc:"味方の状態異常を解除する。Lv.5で全体化し、Lv.6以降は消費SPが減少する。",effect:"none"},derived:{id:"healer-holy-light",name:"聖なる光",desc:"敵全体に聖属性のSP攻撃。敵ごとの聖属性相性に応じて威力が変化する。",effect:"none"}},
- mage:{passive:{id:"mage-mastery",name:"術マスタリー",desc:"レベルごとにSP攻撃力が2%上昇する。",effect:"stats",stat:"mage"},a:{id:"mage-flare",name:"フレア",desc:"敵単体に強力な炎属性SP攻撃。",effect:"none"},b:{id:"mage-magic-bomb",name:"マジックボム",desc:"敵単体に魔法耐性の影響を受けない無属性SP攻撃。",effect:"none"},derived:{id:"mage-compression",name:"術式圧縮",desc:"次に実行する攻撃の攻撃回数を2倍にする。重ねがけ可能。",effect:"none"}},
- warrior:{passive:{id:"warrior-passive",name:"猛攻の基礎",desc:"最大HP・攻撃力・防御力を高める。",effect:"stats",stat:"warrior"},a:{id:"warrior-branch-a",name:"闘志の連鎖",desc:"SP攻撃を強化し、SPスキル「旋風斬り」を習得する。",effect:"sp"},b:{id:"warrior-branch-b",name:"破砕の一撃",desc:"ブレイク値を追加で蓄積し、SPスキル「連撃」を習得する。",effect:"break",effects:["sp"]},derived:{id:"warrior-derived",name:"戦場の覇気",desc:"派生SPスキル「剛覇斬」を習得する。",effect:"sp"}},
- samurai:{passive:{id:"samurai-passive",name:"剣技の基礎",desc:"攻撃力・最大HP・防御力を高める。",effect:"stats",stat:"samurai"},a:{id:"samurai-branch-a",name:"流水の太刀",desc:"通常攻撃を強化し、SPスキル「居合」を習得する。",effect:"normal"},b:{id:"samurai-branch-b",name:"鋭刃",desc:"SP攻撃の威力を高め、SPスキル「斬鉄」を習得する。",effect:"sp",effects:["normal"]},derived:{id:"samurai-derived",name:"一刀両断の極意",desc:"派生SPスキル「秘剣・無双」を習得する。",effect:"sp"}}
-};
-const legacyEffectMap={kotama:[["element","sp","union"]],knight:[["guard","taunt","guard"]],healer:[["heal","revive","unionHeal"]],warrior:[["normal","sp","break"]],mage:[["sp","element","union"]],samurai:[["normal","normal","union"]]};
-const legacySkillMap={kotama:["kotama-arc","kotama-overload","kotama-finish"],knight:["knight-wall","knight-taunt","knight-aegis"],healer:["healer-care","healer-revive","healer-union"],warrior:["warrior-power","warrior-charge","warrior-break"],mage:["mage-focus","mage-element","mage-meteor"],samurai:["samurai-edge","samurai-flow","samurai-iaido"]};
-const skillTreeExtraSkills={
- kotama:{node:"kotama-shock-spark",skill:{id:"kotama-shock-spark-skill",name:"ショックスパーク",cost:25,target:"allEnemies",type:"level-lightning-all",element:"雷"}},
- knight:{node:"knight-defense-camp",skill:{id:"knight-defense-camp-skill",name:"防衛陣地",cost:7,target:"self",type:"defense-camp"}},
- healer:{node:"healer-line-heal",skill:{id:"healer-line-heal-skill",name:"ラインヒール",cost:20,target:"self",type:"line-heal"}},
- mage:{node:"mage-flare",skill:{id:"mage-flare-skill",name:"フレア",cost:15,target:"enemy",type:"level-flare",element:"炎"}},
- warrior:{node:"warrior-branch-a",skill:{id:"warrior-whirlwind",name:"旋風斬り",cost:25,target:"enemy",type:"multiSlash"}},
- samurai:{node:"samurai-branch-a",skill:{id:"samurai-iaido",name:"居合",cost:30,target:"enemy",type:"pierce"}}
-};
-const skillTreeBranchBSkills={
- kotama:{id:"kotama-shock-bolt-skill",name:"ショックボルト",cost:8,target:"enemy",type:"level-lightning-single",element:"雷"},
- knight:{id:"knight-magic-guard-skill",name:"マジックガード",cost:3,target:"self",type:"magic-guard"},
- healer:{id:"healer-refresh-skill",name:"リフレッシュ",cost:5,target:"self",type:"refresh"},
- mage:{id:"mage-magic-bomb-skill",name:"マジックボム",cost:10,target:"enemy",type:"level-magic-bomb"},
- warrior:{id:"warrior-double-strike",name:"連撃",cost:20,target:"enemy",type:"multiSlash"},
- samurai:{id:"samurai-sever",name:"斬鉄",cost:25,target:"enemy",type:"pierce"}
-};
-const skillTreeDerivedSkills={
- kotama:{id:"kotama-burst-blade-skill",name:"バーストブレイド",cost:40,target:"enemy",type:"burst-blade"},
- knight:{id:"knight-full-guard-skill",name:"フルガード",cost:30,target:"self",type:"full-guard"},
- healer:{id:"healer-holy-light-skill",name:"聖なる光",cost:15,target:"allEnemies",type:"holy-light",element:"聖"},
- mage:{id:"mage-compression-skill",name:"術式圧縮",cost:10,target:"self",type:"compression"},
- warrior:{id:"warrior-overdrive",name:"剛覇斬",cost:40,hpCost:25,target:"enemy",type:"charge"},
- samurai:{id:"samurai-mugen",name:"秘剣・無双",cost:50,target:"enemy",type:"multiSlash"}
-};
+// スキルツリー定義は data/skill-trees.js に分離。
 const skillLevels={};characters.forEach(c=>skillLevels[c.id]={});
 const legacyTreeBonuses={};characters.forEach(c=>legacyTreeBonuses[c.id]={});
 function treeNodes(charId){const t=skillTreeDefinitions[charId];return t?[t.passive,t.a,t.b,t.derived]:[];}
