@@ -1,0 +1,52 @@
+/* ============================================================
+   css/06-field.css — フィールド探索・会話・アナライズパネル
+   ・Claude作成の「仮スタイル」。Claude のPRがマージされた時点で GPT に引き継ぐ。
+   ・DOM・クラスの一覧は docs/field-and-story/FIELD_SPEC.md
+   ============================================================ */
+
+/* ---------- [ANALYZE] 戦闘画面右端の「敵」「味方」ボタンと状態パネル ---------- */
+#enemy-analysis{display:none!important}
+.analyze-tabs{position:absolute;top:42px;right:0;z-index:5;display:flex;flex-direction:column;gap:6px}
+.analyze-tab-button{min-width:38px;padding:8px 6px;border:1px solid var(--gold,#d8b45a);border-right:0;border-radius:7px 0 0 7px;background:#101a45e6;color:var(--gold,#d8b45a);font-size:11px;font-weight:700;letter-spacing:.06em;writing-mode:vertical-rl;text-orientation:upright;line-height:1;box-shadow:-2px 2px 8px #0008;cursor:pointer}
+.analyze-tab-button:hover,.analyze-tab-button:focus-visible{background:#26356f;outline:2px solid var(--gold,#d8b45a);outline-offset:1px}
+.analyze-tab-button[aria-expanded="true"]{background:var(--gold,#d8b45a);color:#101a45}
+.analyze-panel{position:fixed;top:clamp(70px,14vh,130px);left:50%;transform:translateX(-50%);z-index:60;width:min(calc(100vw - 24px),560px);max-height:min(72vh,620px);display:flex;flex-direction:column;border:1px solid #b7a66c;border-radius:8px;background:#070d24f2;color:#dce7ff;box-shadow:0 6px 22px #000b;overflow:hidden}
+.analyze-panel[hidden]{display:none}
+.analyze-panel-head{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #8da0c455;background:#0f1838}
+.analyze-panel-head strong{color:#e6d49b;font-size:10px;letter-spacing:.1em}
+.analyze-panel-tabs{display:flex;gap:4px;margin-right:auto}
+.analyze-panel-tabs button{padding:3px 10px;border:1px solid #8da0c477;border-radius:4px;background:#1a2550;color:#aebbd4;font-size:11px;cursor:pointer}
+.analyze-panel-tabs button.is-active{border-color:var(--gold,#d8b45a);background:#2b3a78;color:#fff}
+.analyze-close{width:26px;height:26px;padding:0;border:1px solid #8da0c477;border-radius:4px;background:#1a2550;color:#fff;font-size:14px;line-height:1;cursor:pointer}
+.analyze-panel-body{padding:6px;overflow:auto;display:grid;gap:6px}
+.analyze-panel[data-tab="party"] .analyze-panel-body{grid-template-columns:repeat(2,minmax(0,1fr))}
+.analyze-card{padding:6px 7px;border:1px solid #8da0c455;border-radius:6px;background:#0d1530;font-size:10px}
+.analyze-card header{display:flex;justify-content:space-between;align-items:baseline;gap:6px;margin-bottom:4px}
+.analyze-card header strong{color:#f5f1e6;font-size:12px}
+.analyze-card header small{color:#aeb9d1;font-size:9px}
+.analyze-enemy.is-known header small{color:#9fe6ae}
+.analyze-member.is-down{opacity:.6}
+.analyze-member.is-down header small{color:#ff8e8e}
+.analyze-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 8px;color:#aebbd4}
+.analyze-grid-compact{grid-template-columns:repeat(3,minmax(0,1fr));gap:1px 5px;font-size:9px}
+.analyze-grid b{color:#f5f1e6;font-weight:700;margin-left:2px;overflow-wrap:anywhere}
+.analyze-wide{grid-column:1/-1}
+.analyze-bars{display:grid;gap:2px;margin-bottom:4px}
+.analyze-bars span{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:4px;color:#aebbd4;font-size:9px}
+.analyze-bars b{color:#f5f1e6}
+.analyze-bars i{grid-column:1/-1;display:block;height:4px;border-radius:2px;background:#26304f;overflow:hidden}
+.analyze-bars u{display:block;height:100%;background:#5fd38a;text-decoration:none}
+.analyze-bars .is-sp u{background:#5aa8ff}
+.analyze-statuses{display:flex;flex-wrap:wrap;align-items:center;gap:3px;margin-top:5px}
+.analyze-statuses em{color:#e6d49b;font-style:normal;font-size:9px;margin-right:2px}
+.analyze-status{padding:1px 5px;border-radius:9px;font-size:9px;border:1px solid}
+.analyze-status.is-bad{border-color:#ff7a7a99;background:#4a141c;color:#ffd0d0}
+.analyze-status.is-good{border-color:#7ad6ff99;background:#12324a;color:#d4f2ff}
+.analyze-status b{font-weight:700}
+.analyze-none{color:#8796b5;font-size:9px}
+.analyze-empty{margin:6px;color:#aebbd4;font-size:11px}
+@media(max-width:560px){
+  .analyze-tabs{top:38px}
+  .analyze-tab-button{min-width:32px;padding:7px 5px;font-size:10px}
+  .analyze-panel[data-tab="party"] .analyze-panel-body{grid-template-columns:1fr}
+}
