@@ -1393,6 +1393,21 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
   const breakMax=e._breakMax||0;let breakTrack=displayBreakTrack();breakTrack?.classList.toggle("maou-break-track",e.name==="魔王");if(breakMax){breakTrack.hidden=false;breakTrack.querySelector("i").style.width=`${Math.max(0,e._breakCurrent??breakMax)/breakMax*100}%`;breakTrack.querySelector("span").textContent=e._brokenTurns>0?"BREAK！":`BREAK ${Math.max(0,e._breakCurrent??breakMax)} / ${breakMax}`;}else if(breakTrack)breakTrack.hidden=true;
   let enemyTrack=enemyBar.parentElement;let enemyLoss=enemyTrack.querySelector(".hp-loss-preview");if(!enemyLoss){enemyLoss=document.createElement("div");enemyLoss.className="hp-loss-preview";enemyTrack.appendChild(enemyLoss);}const enemyBefore=Number(e._hpBeforeDamage);if(Number.isFinite(enemyBefore)&&enemyBefore>e.hp){enemyLoss.style.left=`${Math.max(0,e.hp)/e.maxHp*100}%`;enemyLoss.style.width=`${(Math.min(e.maxHp,enemyBefore)-Math.max(0,e.hp))/e.maxHp*100}%`;enemyLoss.hidden=false;}else enemyLoss.hidden=true;
   const display=$("battle-enemy"),placeholder=display.querySelector(".enemy-placeholder");display.dataset.variant=e.variantId||"";
+  // 弱点・耐性・行動傾向を戦闘中に確認できるようにし、敵ごとの攻略差を見える化する。
+  let traits=display.querySelector(".enemy-traits");if(!traits){traits=document.createElement("div");traits.className="enemy-traits";const name=$("enemy-name");name?.after(traits);}
+  const traitTags=[];
+  if(e.element&&e.element!=="無属性")traitTags.push(`<span class="enemy-trait enemy-trait-element">${esc(e.element)}属性</span>`);
+  if(e.weaknesses?.length)traitTags.push(`<span class="enemy-trait enemy-trait-weak">弱点 ${esc(e.weaknesses.join("・"))}</span>`);
+  if(e.resistances?.length)traitTags.push(`<span class="enemy-trait enemy-trait-resist">耐性 ${esc(e.resistances.join("・"))}</span>`);
+  if(e.physicalResistances?.length)traitTags.push(`<span class="enemy-trait enemy-trait-resist">物理耐性 ${esc(e.physicalResistances.join("・"))}</span>`);
+  const ai=e.ai||[],tendencies=[];
+  if(ai.some(x=>x.all))tendencies.push("全体攻撃");
+  if(ai.some(x=>x.status))tendencies.push("状態異常");
+  if(ai.some(x=>x.target==="rear"))tendencies.push("後衛狙い");
+  if(ai.some(x=>x.drain))tendencies.push("HP吸収");
+  if(ai.some(x=>x.heal))tendencies.push("自己回復");
+  if(tendencies.length)traitTags.push(`<span class="enemy-trait enemy-trait-pattern">${esc(tendencies.join(" / "))}</span>`);
+  traits.innerHTML=traitTags.join("");traits.hidden=traitTags.length===0;
   const liveWolfClones=(battleState.wolfClones||[]).filter(c=>c.hp>0);const splitWolf=e.name==="オオカミ"&&liveWolfClones.length>0;
   display.classList.toggle("enemy-individual-hp",!!e.members||splitWolf);
   let img=display.querySelector(".enemy-image");
