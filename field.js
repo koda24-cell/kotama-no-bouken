@@ -78,7 +78,9 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
     else if (/[a-z]/.test(c) && def.objects && def.objects[c]) {
       const o = def.objects[c], kind = o.kind || "npc";
       // [SIDE] kind:"event" はサブイベントの調べられる物。NPC は sideEvents を持てる
-      objects.push({ key: `${kind === "event" ? "event" : "npc"}:${n}:${o.id}`, kind, tx, ty, sprite: o.sprite, name: o.name, scene: o.scene, id: o.id, event: o.event, hidden: !!o.hidden, sideEvents: o.sideEvents || null });
+      // [PUZZLE] kind:"switch"／"door"／"cache" は仕掛け。onWall は壁に付いた物（壁のマスに置く）
+      const keyKind = kind === "npc" || kind === "sign" ? "npc" : kind;
+      objects.push({ key: `${keyKind}:${n}:${o.id}`, kind, tx, ty, sprite: o.sprite, name: o.name, scene: o.scene, id: o.id, event: o.event, hidden: !!o.hidden, sideEvents: o.sideEvents || null, puzzle: o.puzzle || null, onWall: !!o.onWall });
     }
   }));
   // P が無いフロアは、出口（1F）または上り階段の上から始める
@@ -87,7 +89,11 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
 }
 function fieldTileAt(a, tx, ty) { return (a.grid[ty] && a.grid[ty][tx]) || "#"; }
 function fieldIsSolidChar(c) { return FIELD_SOLID.has(c) || /[a-z]/.test(c); }
-function fieldSolidAt(a, px, py) { return fieldIsSolidChar(fieldTileAt(a, Math.floor(px / FIELD_TILE), Math.floor(py / FIELD_TILE))); }
+// [PUZZLE] マップ文字に対応する objects の定義（英小文字のみ）
+function fieldLetterDef(a, c) { return /[a-z]/.test(c) && a.def.objects ? a.def.objects[c] || null : null; }
+// 仕掛けの扉は、解けるまで通れない。開いた後は床として扱う
+function fieldCharSolid(a, c) { const o = fieldLetterDef(a, c); if (o && o.kind === "door") return !fieldPuzzleSolved(o.puzzle); return fieldIsSolidChar(c); }
+function fieldSolidAt(a, px, py) { return fieldCharSolid(a, fieldTileAt(a, Math.floor(px / FIELD_TILE), Math.floor(py / FIELD_TILE))); }
 function fieldBoxBlocked(a, x, y) {
   const l = x - FIELD_HIT.halfW, r = x + FIELD_HIT.halfW - .01, t = y - FIELD_HIT.top, b = y + FIELD_HIT.bottom - .01;
   return fieldSolidAt(a, l, t) || fieldSolidAt(a, r, t) || fieldSolidAt(a, l, b) || fieldSolidAt(a, r, b);
@@ -102,7 +108,9 @@ function fieldExplored(a = fieldArea()) {
   if (!fieldState.explored[a.key] || fieldState.explored[a.key].length !== a.w * a.h) fieldState.explored[a.key] = new Uint8Array(a.w * a.h);
   return fieldState.explored[a.key];
 }
-function fieldOpaque(a, tx, ty) { const c = fieldTileAt(a, tx, ty); return c === "#"; }
+function fieldOpaque(a, tx, ty) { const c = fieldTileAt(a, tx, ty); return c === "#" || fieldWallLike(a, c); }
+// [PUZZLE] 壁に付いた物・開く前の隠し通路は、壁として描画し、視界もさえぎる
+function fieldWallLike(a, c) { const o = fieldLetterDef(a, c); return !!o && (o.onWall || (o.kind === "door" && o.hidden && !fieldPuzzleSolved(o.puzzle))); }
 // 2マス間の見通し（間に壁があれば見えない。終点の壁そのものは見える）
 function fieldLos(a, x0, y0, x1, y1) {
   let dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx + dy, x = x0, y = y0;
@@ -164,7 +172,7 @@ function fieldEnsureExtraDom() {
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
-    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-event"></i>発見</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
+    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-event"></i>発見</span><span><i class="lg-puzzle"></i>仕掛け</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
     vp.appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
   }
@@ -180,19 +188,21 @@ function fieldBuildDom() {
   map.style.setProperty("--tile", FIELD_TILE + "px");
   const exp = fieldExplored(a), tiles = [];
   for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
-    const c = fieldTileAt(a, tx, ty);
-    const edge = c === "#" && !fieldIsSolidChar(fieldTileAt(a, tx, ty + 1)) ? " is-edge" : "";
+    const c = fieldTileAt(a, tx, ty), wall = c === "#" || fieldWallLike(a, c);
+    const edge = wall && !fieldCharSolid(a, fieldTileAt(a, tx, ty + 1)) ? " is-edge" : "";
     const fog = exp[ty * a.w + tx] ? "" : " is-unexplored";
-    tiles.push(`<i class="field-tile ${FIELD_TILE_CLASS[c] || "tile-floor"}${edge}${fog}" style="left:${tx * FIELD_TILE}px;top:${ty * FIELD_TILE}px"></i>`);
+    tiles.push(`<i class="field-tile ${wall ? "tile-wall" : FIELD_TILE_CLASS[c] || "tile-floor"}${edge}${fog}" style="left:${tx * FIELD_TILE}px;top:${ty * FIELD_TILE}px"></i>`);
   }
   const objs = a.objects.map(o => {
     const opened = (o.kind === "chest" && fieldState.flags[o.key]) || (o.kind === "gather" && (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES) || (o.kind === "event" && fieldSideDone(o.event)) ? " is-opened" : "";
     const hidden = o.kind === "event" && o.hidden ? " is-hidden-event" : "";
+    const puzzleState = fieldPuzzleObjectClass(o);
     const fog = exp[o.ty * a.w + o.tx] ? "" : " is-unexplored";
-    return `<div class="field-object${opened}${hidden}${fog}" data-kind="${esc(o.kind)}" data-object-id="${esc(o.id || o.key)}" data-key="${esc(o.key)}" data-sprite="${esc(o.sprite || "")}" data-tx="${o.tx}" data-ty="${o.ty}" style="left:${o.tx * FIELD_TILE}px;top:${o.ty * FIELD_TILE}px"><span class="field-object-sprite"></span>${o.name ? `<b class="field-object-label">${esc(o.name)}</b>` : ""}</div>`;
+    return `<div class="field-object${opened}${hidden}${puzzleState}${fog}" data-kind="${esc(o.kind)}" data-object-id="${esc(o.id || o.key)}" data-key="${esc(o.key)}" data-sprite="${esc(o.sprite || "")}" data-tx="${o.tx}" data-ty="${o.ty}" style="left:${o.tx * FIELD_TILE}px;top:${o.ty * FIELD_TILE}px"><span class="field-object-sprite"></span>${o.name ? `<b class="field-object-label">${esc(o.name)}</b>` : ""}</div>`;
   }).join("");
   map.innerHTML = `<div class="field-tiles">${tiles.join("")}</div>${objs}<div id="field-foes" class="field-foes"></div><div id="field-player" class="field-player" data-dir="down" data-moving="false" data-step="0"><span class="field-player-shadow"></span><span class="field-player-sprite"></span></div>`;
   fieldState.built = a.key; fieldState.nearKey = ""; fieldState.lastTileKey = "";
+  fieldPuzzleProgress = {};   // [PUZZLE] 順番の仕掛けの途中経過は、フロアを出ると最初からになる
   fieldSpawnFoes();
   fieldMiniDirty = true;
 }
@@ -227,7 +237,7 @@ function fieldRender() {
    ------------------------------------------------------------ */
 const FIELD_MAP_COLORS = { wall: "#3a4160", floor: "#a9b8d6", path: "#c9b98f", grass: "#8fbf7d", water: "#3d78c4", lava: "#e0612a", safe: "#d9e6b8", gate: "#ff5a5a", exit: "#ffffff" };
 function fieldMapColor(a, c) {
-  if (c === "#") return FIELD_MAP_COLORS.wall;
+  if (c === "#" || fieldWallLike(a, c)) return FIELD_MAP_COLORS.wall;
   if (c === "~") return a.def.theme === "lava" ? FIELD_MAP_COLORS.lava : FIELD_MAP_COLORS.water;
   if (c === ",") return FIELD_MAP_COLORS.path;
   if (c === "*") return FIELD_MAP_COLORS.grass;
@@ -258,6 +268,9 @@ function fieldDrawMap(canvas, cell, full) {
     else if (o.kind === "gather") dot(o.tx, o.ty, (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES ? "#5d7a5d" : "#3ee07a", .7);
     else if (o.kind === "npc") dot(o.tx, o.ty, "#c7a3ff", .7);
     else if (o.kind === "event") { const done = fieldSideDone(o.event); if (!o.hidden || done) dot(o.tx, o.ty, done ? "#5f7f8f" : "#7fd6ff", .7); }
+    else if (o.kind === "switch") dot(o.tx, o.ty, fieldPuzzleSolved(o.puzzle) ? "#7a6a8a" : "#ff8ad8", .6, "square");
+    else if (o.kind === "door") { if (!fieldPuzzleSolved(o.puzzle) && !o.hidden) dot(o.tx, o.ty, "#c8a060", .8, "square"); }
+    else if (o.kind === "cache") dot(o.tx, o.ty, fieldState.flags[`puzzle:${o.puzzle}:reward`] ? "#7a6a55" : "#ff9a3c", .7, "square");
     else if (o.kind === "gate") dot(o.tx, o.ty, "#ff3030", .9);
   }
   for (const foe of fieldState.foes) {
@@ -414,7 +427,7 @@ function fieldFacingObject() {
   const d = FIELD_DIRS[fieldState.dir] || FIELD_DIRS.down;
   const fx = fieldState.x + d.dx * 20, fy = fieldState.y - 2 + d.dy * 20;
   const tx = Math.floor(fx / FIELD_TILE), ty = Math.floor(fy / FIELD_TILE);
-  return a.objects.find(o => !o.walk && o.tx === tx && o.ty === ty) || null;
+  return a.objects.find(o => !o.walk && !(o.kind === "door" && fieldPuzzleSolved(o.puzzle)) && o.tx === tx && o.ty === ty) || null;
 }
 function fieldUpdateNear() {
   const o = fieldState.lock ? null : fieldFacingObject(), key = o ? o.key : "";
@@ -428,7 +441,7 @@ function fieldUpdateNear() {
 /* ------------------------------------------------------------
    FOE
    ------------------------------------------------------------ */
-function fieldFoeWalkable(a, tx, ty) { const c = fieldTileAt(a, tx, ty); return !fieldIsSolidChar(c) && !FIELD_SAFE.has(c); }
+function fieldFoeWalkable(a, tx, ty) { const c = fieldTileAt(a, tx, ty); return !fieldCharSolid(a, c) && !FIELD_SAFE.has(c); }
 function fieldSpawnFoes() {
   const a = fieldArea(), host = $("field-foes");
   fieldState.foes = (a.floor.foes || []).map((def, i) => {
@@ -605,6 +618,7 @@ async function fieldInteract(o) {
   if (fieldState.lock) return;
   if (o.kind === "npc" || o.kind === "sign") { await fieldPlayScene(o.scene); if (o.sideEvents) await fieldRunNpcSideEvents(o); return; }
   if (o.kind === "event") { await fieldRunSideEvent(o.event, o); return; }
+  if (o.kind === "switch" || o.kind === "door" || o.kind === "cache") { await fieldPuzzleInteract(o); return; }
   if (o.kind === "save") { await fieldUseSavePoint(o); return; }
   if (o.kind === "chest") { await fieldOpenChest(o); return; }
   if (o.kind === "gather") { await fieldGather(o); return; }
@@ -666,6 +680,113 @@ async function fieldRunNpcSideEvents(o) {
     if (fieldSideDone(id)) continue;
     await fieldRunSideEvent(id, o, { fromNpc: true });
     return;
+  }
+}
+/* ------------------------------------------------------------
+   [PUZZLE] 仕掛け・謎解き（任意攻略）
+   データ：data/field-maps.js の FIELD_PUZZLES ／ 会話：data/story.js の pz-*
+   ・解決 fieldState.flags["puzzle:<ID>"]、報酬 ["puzzle:<ID>:reward"]、all のスイッチ ["puzzle:<ID>:sw:<スイッチID>"] を保存する。
+   ・順番（order）の途中経過は fieldPuzzleProgress に持ち、保存しない（フロアを出ると最初から）。
+   ------------------------------------------------------------ */
+let fieldPuzzleProgress = {};
+function fieldPuzzleDef(id) { return (typeof FIELD_PUZZLES !== "undefined" && FIELD_PUZZLES[id]) || null; }
+function fieldPuzzleSolved(id) { return !!(id && fieldState.flags[`puzzle:${id}`]); }
+function fieldPuzzleSwitchOn(o) {
+  const pz = fieldPuzzleDef(o.puzzle); if (!pz) return false;
+  if (fieldPuzzleSolved(o.puzzle)) return true;
+  if (pz.type === "all") return !!fieldState.flags[`puzzle:${o.puzzle}:sw:${o.id}`];
+  if (pz.type === "order") return (fieldPuzzleProgress[o.puzzle] || []).includes(o.id);
+  return false;
+}
+function fieldPuzzleObjectClass(o) {
+  if (o.kind === "switch") return fieldPuzzleSwitchOn(o) ? " is-on" : "";
+  if (o.kind === "door") return (fieldPuzzleSolved(o.puzzle) ? " is-open" : "") + (o.hidden ? " is-hidden-door" : "");
+  if (o.kind === "cache") return fieldState.flags[`puzzle:${o.puzzle}:reward`] ? " is-opened" : "";
+  return "";
+}
+// 仕掛けの見た目（スイッチ・扉・宝箱・壁のタイル）を今の状態に合わせる
+function fieldPuzzleRefresh(id) {
+  const a = fieldArea(), exp = fieldExplored(a), tiles = $("field-map")?.querySelector(".field-tiles")?.children;
+  for (const o of a.objects) {
+    if (o.puzzle !== id) continue;
+    const el = document.querySelector(`#field-map .field-object[data-key="${CSS.escape(o.key)}"]`);
+    if (el) { el.classList.remove("is-on", "is-open", "is-opened"); for (const k of fieldPuzzleObjectClass(o).split(" ").filter(Boolean)) el.classList.add(k); }
+    if (o.kind === "door" && tiles) {
+      const tile = tiles[o.ty * a.w + o.tx], wall = fieldWallLike(a, fieldTileAt(a, o.tx, o.ty));
+      if (tile) { tile.classList.toggle("tile-wall", wall); tile.classList.toggle("tile-floor", !wall); tile.classList.toggle("is-edge", false); if (!exp[o.ty * a.w + o.tx]) tile.classList.add("is-unexplored"); }
+    }
+  }
+  fieldUpdateVision(true);
+  fieldMiniDirty = true;
+}
+function fieldPuzzleFill(text, pz, n) { return String(text || "").replace("{n}", n).replace("{total}", (pz.order || pz.switches || []).length); }
+async function fieldPuzzleSolve(id) {
+  const pz = fieldPuzzleDef(id); if (!pz || fieldPuzzleSolved(id)) return;
+  fieldState.flags[`puzzle:${id}`] = true;
+  delete fieldPuzzleProgress[id];
+  persistAutoSave();
+  fieldEmit("puzzle:solve", { area: fieldState.area, floor: fieldState.floor, puzzleId: id });
+  if (typeof playSe === "function") playSe("assets/se/unionskill/キラーン！", .6);
+  fieldPuzzleRefresh(id);
+  if (pz.solveScene) await fieldPlayScene(pz.solveScene);
+}
+async function fieldPuzzleInteract(o) {
+  const id = o.puzzle, pz = fieldPuzzleDef(id); if (!pz || fieldState.lock) return;
+  const solved = fieldPuzzleSolved(id);
+  if (o.kind === "cache") {
+    const key = `puzzle:${id}:reward`;
+    if (!solved) return;
+    if (fieldState.flags[key]) { await fieldSay("宝箱は空っぽだ。"); return; }
+    fieldState.flags[key] = true;   // 先にフラグを立ててから報酬を渡す（二重取得の防止）
+    fieldPuzzleRefresh(id);
+    const text = fieldSideGrant({ reward: pz.reward });
+    persistAutoSave();
+    fieldEmit("puzzle:reward", { area: fieldState.area, floor: fieldState.floor, puzzleId: id, reward: { ...(pz.reward || {}) } });
+    if (typeof playSe === "function") playSe("assets/se/syouri/アイテムを入手2", .7);
+    await fieldSay(`古い宝箱を開けた！ ${text}`);
+    return;
+  }
+  if (o.kind === "door") {
+    if (solved) return;
+    if (pz.type === "hidden") {
+      const choice = await fieldAsk(pz.askText || "調べてみますか？", ["体当たりする", "やめる"]);
+      if (choice === 0 && !fieldPuzzleSolved(id)) await fieldPuzzleSolve(id);
+      return;
+    }
+    if (pz.lockedScene) await fieldPlayScene(pz.lockedScene); else await fieldSay("固く閉ざされていて、びくともしない。");
+    return;
+  }
+  // スイッチ
+  if (solved) { await fieldSay("仕掛けはもう動いている。"); return; }
+  if (pz.type === "all" && fieldState.flags[`puzzle:${id}:sw:${o.id}`]) { await fieldSay(pz.alreadyText || "このスイッチはもう入っている。"); return; }
+  if (pz.type === "order" && (fieldPuzzleProgress[id] || []).includes(o.id)) { await fieldSay(pz.litText || "これはもう作動している。"); return; }
+  const choice = await fieldAsk(pz.askText || "スイッチを入れますか？", ["はい", "いいえ"]);
+  if (choice !== 0 || fieldPuzzleSolved(id)) return;
+  if (typeof sound === "function") sound("select");
+  if (pz.type === "lever") { await fieldPuzzleSolve(id); return; }
+  if (pz.type === "all") {
+    fieldState.flags[`puzzle:${id}:sw:${o.id}`] = true;
+    persistAutoSave();
+    fieldPuzzleRefresh(id);
+    const on = pz.switches.filter(sw => fieldState.flags[`puzzle:${id}:sw:${sw}`]).length;
+    await fieldSay(fieldPuzzleFill(pz.onText || "カチリ、と音がした。（{n}/{total}）", pz, on));
+    if (on >= pz.switches.length) await fieldPuzzleSolve(id);
+    return;
+  }
+  if (pz.type === "order") {
+    const prog = [...(fieldPuzzleProgress[id] || []), o.id];
+    const correct = prog.every((sw, i) => pz.order[i] === sw);
+    if (!correct) {
+      fieldPuzzleProgress[id] = [];
+      fieldPuzzleRefresh(id);
+      if (typeof sound === "function") sound("error");
+      await fieldSay(pz.wrongText || "仕掛けが元に戻ってしまった……。");
+      return;
+    }
+    fieldPuzzleProgress[id] = prog;
+    fieldPuzzleRefresh(id);
+    await fieldSay(fieldPuzzleFill(pz.progressText || "カチリ、と音がした。（{n}/{total}）", pz, prog.length));
+    if (prog.length >= pz.order.length) await fieldPuzzleSolve(id);
   }
 }
 function fieldFullHeal() { for (const c of getParty()) { c.hp = effectiveStats(c).maxHp; c.sp = c.maxSp; } }
