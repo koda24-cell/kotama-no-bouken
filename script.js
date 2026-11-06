@@ -875,7 +875,7 @@ function loadGame(){try{
   if($("bgm-toggle")?.checked)startBgm();else stopBgm();renderAll();setSystemMessage(Number(d.saveVersion)>=2?"ロードしました。":"旧セーブデータを新しい装備形式に変換してロードしました。");sound("select");
 }catch(e){setSystemMessage("セーブデータが不正か、存在しません。");sound("error");}}
 function createEnemy(stage){
-  if(battleState.hiddenBossMode){return {name:"混沌の幻影",element:"無属性",weaknesses:[],resistances:["炎","氷","雷","聖","斬撃","打撃","壊","突"],hp:7200,maxHp:7200,attack:145,defense:155,spAttack:165,spDefense:95,gold:0,sprite:"maou",actionName:"混沌の一撃",_breakMax:260,_breakCurrent:260};}
+  if(battleState.hiddenBossMode){return {name:"混沌の幻影",element:"無属性",weaknesses:[],resistances:["炎","氷","雷","聖","斬撃","打撃","壊","突"],hp:7200,maxHp:7200,attack:145,defense:155,spAttack:165,spDefense:95,gold:0,sprite:"maou",image:"assets/monsters/chaos-phantom.svg",actionName:"混沌の一撃",_breakMax:260,_breakCurrent:260};}
   const d=enemyData[stage-1];
   {const variant=extPickEnemyVariant(stage);if(variant)return variant;}// [EXT] STAGE1〜3の敵バリエーション
   if(stage===2){
