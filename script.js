@@ -5,7 +5,8 @@ const PARTY_LIMIT = 5;
 // ゲーム進行・画面・セーブなどの処理を管理。固定データは data/ 以下に分離。
 // キャラクター・ユニオンスキルの定義は data/characters.js に分離。
 if(typeof extInstallCharacters==="function")extInstallCharacters(characters);
-const state={screen:"home",gold:50,maxUnlockedStage:1,firstStageStarted:false,party:["kotama","knight","mage","healer"]};
+const OWNED_CHARACTER_LIMIT=10;
+const state={screen:"home",gold:50,maxUnlockedStage:1,firstStageStarted:false,party:["kotama","knight","mage","healer"],ownedCharacters:["kotama","knight","mage","healer"]};
 // 素材所持数はプレイ中に変化するため、ゲーム状態として script.js で管理。
 const materials={};
 shopItems.push(...accessoryItems);
@@ -290,7 +291,7 @@ function beginTutorial(resume=false){
   if(!resume) tutorialState={started:true,completed:false,phase:"battle",battlePhase:"tutorial-intro",heroSwordGranted:false,heroSwordEquipped:false,armorBought:false,potionBought:false,healerRemoved:false,healerReadded:false,accessoryExplained:false};
   else {tutorialState.started=true;tutorialState.completed=false;}
   battleState.tutorialMode=true;battleState.hiddenBossMode=false;battleState.maxStage=5;battleState.stage=1;resetTransientBattleState();
-  state.party=["kotama","knight","mage","healer"];
+  state.party=["kotama","knight","mage","healer"];state.ownedCharacters=["kotama","knight","mage","healer"];
   equipment.kotama.weapon=null;equipment.kotama.armor=null;ensureStarterGear();
   getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});
   battleState.unionGauges={kotama:0,knight:0,healer:0,warrior:0,mage:0,samurai:0};
@@ -542,17 +543,86 @@ function formationBaseStats(c){
   if(typeof levelApplyStats==="function")levelApplyStats(c,base);// [LEVEL]
   return base;
 }
-function renderFormation(){const selected=$("selected-party"),roster=$("character-roster"),count=$("party-count");if(!selected||!roster)return;if(count)count.textContent=`${state.party.filter(Boolean).length} / ${PARTY_LIMIT}`;
-  selected.innerHTML=Array.from({length:PARTY_LIMIT},(_,index)=>{const id=state.party[index],c=getCharacter(id);if(!c)return `<article class="character-card selected-character empty-party-slot"><h3>空き枠 ${index+1}</h3><p>下の仲間候補から配置できます。</p><button class="secondary-button" data-select-slot="${index}">この枠に配置</button></article>`;const s=effectiveStats(c),base=formationBaseStats(c),bonus={maxHp:s.maxHp-base.maxHp,attack:s.attack-base.attack,spAttack:s.spAttack-base.spAttack,defense:s.defense-base.defense,spDefense:s.spDefense-base.spDefense,maxSp:s.maxSp-base.maxSp};return `<article class="character-card selected-character"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)} ${typeof levelBadge==="function"?levelBadge(c):""}</h3>${typeof levelExpBar==="function"?levelExpBar(c):""}<div class="character-stats"><span>HP ${base.maxHp}${bonus.maxHp?` <b class="stat-bonus">+${bonus.maxHp}</b>`:""}</span><span>攻撃 ${base.attack}${bonus.attack?` <b class="stat-bonus">+${bonus.attack}</b>`:""}</span><span>SP攻撃 ${base.spAttack}${bonus.spAttack?` <b class="stat-bonus">+${bonus.spAttack}</b>`:""}</span><span>防御 ${base.defense}${bonus.defense?` <b class="stat-bonus">+${bonus.defense}</b>`:""}</span><span>SP防御 ${base.spDefense}${bonus.spDefense?` <b class="stat-bonus">+${bonus.spDefense}</b>`:""}</span><span>最大SP ${base.maxSp}${bonus.maxSp?` <b class="stat-bonus">+${bonus.maxSp}</b>`:""}</span><span>速さ ${s.speed}</span></div>${equipmentSlots(c).map(([slot,label])=>`<label class="equip-row">${label}<select data-equip="${slot}" data-character="${c.id}">${equipmentOptions(slot,c.id)}</select></label>`).join("")}<button class="secondary-button" data-remove-character="${c.id}">編成から外す</button></article>`;}).join("");
-  roster.innerHTML=characters.map(/* インペリアルも表示（未解放時は解放条件を表示） */c=>{const unlocked=extIsJobAvailable(c),chosen=state.party.includes(c.id),full=state.party.filter(Boolean).length>=PARTY_LIMIT,lockNote=!unlocked?extJobUnlockRequirement(c.id):"";return `<article class="character-card selectable ${chosen?"selected":""} ${!unlocked?"locked":""}"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)} ${typeof levelBadge==="function"?levelBadge(c):""}</h3><div class="character-stats"><span>HP ${effectiveStats(c).maxHp}</span><span>攻撃 ${effectiveStats(c).attack}</span><span>防御 ${effectiveStats(c).defense}</span><span>速さ ${effectiveStats(c).speed}</span></div>${lockNote?`<p class="job-unlock-note">${esc(lockNote)}</p>`:""}<button class="${chosen?"secondary-button":"primary-button"}" data-toggle-character="${c.id}" ${!unlocked||(!chosen&&full)?"disabled":""}>${!unlocked?"未解放":chosen?"選択中":"編成に加える"}</button></article>`;}).join("");
-  selected.querySelectorAll("[data-remove-character]").forEach(b=>b.onclick=()=>removeCharacter(b.dataset.removeCharacter));selected.querySelectorAll("[data-select-slot]").forEach(b=>b.onclick=()=>{formationTargetSlot=Number(b.dataset.selectSlot);setSystemMessage(`空き枠${formationTargetSlot+1}を選択しました。仲間候補を選んでください。`);});roster.querySelectorAll("[data-toggle-character]").forEach(b=>b.onclick=()=>toggleCharacter(b.dataset.toggleCharacter));selected.querySelectorAll("[data-equip]").forEach(sel=>sel.onchange=()=>equipItem(sel.dataset.character,sel.dataset.equip,sel.value));}
+function renderFormation(){
+  const selected=$("selected-party"),roster=$("character-roster"),reserve=$("reserve-roster"),count=$("party-count");
+  if(!selected||!roster)return;
+  const owned=Array.isArray(state.ownedCharacters)?state.ownedCharacters:[...state.party.filter(Boolean)];
+  const activeCount=state.party.filter(Boolean).length;
+  if(count)count.textContent=`${activeCount} / ${PARTY_LIMIT}人参加・所持 ${owned.length} / ${OWNED_CHARACTER_LIMIT}人`;
+  selected.innerHTML=Array.from({length:PARTY_LIMIT},(_,index)=>{
+    const id=state.party[index],c=getCharacter(id);
+    if(!c)return `<article class="character-card selected-character empty-party-slot"><h3>空き枠 ${index+1}</h3><p>仲間一覧から配置できます。</p></article>`;
+    const s=effectiveStats(c),base=formationBaseStats(c),bonus={maxHp:s.maxHp-base.maxHp,attack:s.attack-base.attack,spAttack:s.spAttack-base.spAttack,defense:s.defense-base.defense,spDefense:s.spDefense-base.spDefense,maxSp:s.maxSp-base.maxSp};
+    const heroLocked=c.id==="kotama"&&!stageCleared[5];
+    return `<article class="character-card selected-character"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)} ${typeof levelBadge==="function"?levelBadge(c):""}</h3>${typeof levelExpBar==="function"?levelExpBar(c):""}<div class="character-stats"><span>HP ${base.maxHp}${bonus.maxHp?` <b class="stat-bonus">+${bonus.maxHp}</b>`:""}</span><span>攻撃 ${base.attack}${bonus.attack?` <b class="stat-bonus">+${bonus.attack}</b>`:""}</span><span>SP攻撃 ${base.spAttack}${bonus.spAttack?` <b class="stat-bonus">+${bonus.spAttack}</b>`:""}</span><span>防御 ${base.defense}${bonus.defense?` <b class="stat-bonus">+${bonus.defense}</b>`:""}</span><span>SP防御 ${base.spDefense}${bonus.spDefense?` <b class="stat-bonus">+${bonus.spDefense}</b>`:""}</span><span>最大SP ${base.maxSp}${bonus.maxSp?` <b class="stat-bonus">+${bonus.maxSp}</b>`:""}</span><span>速さ ${s.speed}</span></div>${equipmentSlots(c).map(([slot,label])=>`<label class="equip-row">${label}<select data-equip="${slot}" data-character="${c.id}">${equipmentOptions(slot,c.id)}</select></label>`).join("")}<button class="secondary-button" data-remove-character="${c.id}" ${heroLocked?"disabled title=\"魔王討伐後に控えへ移動できます\"":""}>控えに移動</button></article>`;
+  }).join("");
+  roster.innerHTML=characters.filter(c=>!owned.includes(c.id)).map(c=>{
+    const unlocked=extIsJobAvailable(c),lockNote=!unlocked?extJobUnlockRequirement(c.id):"";
+    return `<article class="character-card selectable ${!unlocked?"locked":""}"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)} ${typeof levelBadge==="function"?levelBadge(c):""}</h3><div class="character-stats"><span>HP ${effectiveStats(c).maxHp}</span><span>攻撃 ${effectiveStats(c).attack}</span><span>防御 ${effectiveStats(c).defense}</span><span>速さ ${effectiveStats(c).speed}</span></div>${lockNote?`<p class="job-unlock-note">${esc(lockNote)}</p>`:""}<button class="primary-button" data-toggle-character="${c.id}" ${!unlocked||owned.length>=OWNED_CHARACTER_LIMIT?"disabled":""}>${!unlocked?"未解放":owned.length>=OWNED_CHARACTER_LIMIT?"所持上限":"仲間に加える"}</button></article>`;
+  }).join("")||'<p class="empty-note">現在、加入できる仲間候補はいません。</p>';
+  if(reserve){
+    const reserveIds=owned.filter(id=>!state.party.includes(id));
+    reserve.innerHTML=reserveIds.map(id=>{
+      const c=getCharacter(id);if(!c)return "";
+      const full=activeCount>=PARTY_LIMIT;
+      return `<article class="character-card selectable"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)} ${typeof levelBadge==="function"?levelBadge(c):""}</h3>${typeof levelExpBar==="function"?levelExpBar(c):""}<p>控えメンバー</p><button class="primary-button" data-toggle-character="${c.id}" ${full?"disabled":""}>${full?"参加枠がいっぱい":"編成に加える"}</button><button class="secondary-button" data-release-character="${c.id}">仲間から外す</button></article>`;
+    }).join("")||'<p class="empty-note">控えメンバーはいません。</p>';
+  }
+  selected.querySelectorAll("[data-remove-character]").forEach(b=>b.onclick=()=>removeCharacter(b.dataset.removeCharacter));
+  roster.querySelectorAll("[data-toggle-character]").forEach(b=>b.onclick=()=>toggleCharacter(b.dataset.toggleCharacter));
+  reserve?.querySelectorAll("[data-toggle-character]").forEach(b=>b.onclick=()=>toggleCharacter(b.dataset.toggleCharacter));
+  reserve?.querySelectorAll("[data-release-character]").forEach(b=>b.onclick=()=>releaseCharacter(b.dataset.releaseCharacter));
+  selected.querySelectorAll("[data-equip]").forEach(sel=>sel.onchange=()=>equipItem(sel.dataset.character,sel.dataset.equip,sel.value));
+}
 function equipmentSlots(c){return c.id==="samurai"?[["katana1","武器1"],["katana2","武器2"],["armor","防具"],["accessory1","装飾品1"],["accessory2","装飾品2"]]:[["weapon","武器"],["armor","防具"],["accessory1","装飾品1"],["accessory2","装飾品2"]];}
 function equipmentOptions(slot,charId){const current=equipment[charId][slot]||"";const cat=(slot==="armor"?"armor":slot.startsWith("accessory")?"accessory":"weapon");const owned=shopItems.filter(i=>i.category===cat&&(inventory[i.id]>0||equipment[charId]?.[slot]===i.id)&&((slot.startsWith("katana")?i.slot==="katana":!i.slot)));return `<option value="" ${!current?"selected":""}>なし</option>`+owned.map(i=>`<option value="${i.id}" ${current===i.id?"selected":""}>${esc(i.name)}</option>`).join("");}
 function equipItem(charId,slot,newId){const c=getCharacter(charId);if(!c||!equipment[c.id]||!(slot in equipment[c.id]))return;const item=itemById(newId);if(newId&&(!item||!(inventory[newId]>0))){setSystemMessage("所持していない装備です。");sound("error");renderFormation();return;}if(newId&&!(item.classes||[]).includes(charId)&&!window.confirm(`${item.name}は${c.name}の適性装備ではありません。装備するとSPスキルとユニオンスキルが使用できなくなります。装備しますか？`)){renderFormation();return;}const old=equipment[charId][slot];if(old===newId)return;if(old)inventory[old]=(inventory[old]||0)+1;if(newId){inventory[newId]--;if(inventory[newId]<=0)delete inventory[newId];}equipment[charId][slot]=newId||null;renderAll();sound("select");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword"&&charId==="kotama"&&slot==="weapon"&&equipment.kotama?.weapon==="hero-sword"){tutorialState.heroSwordEquipped=true;tutorialState.phase="shop-nav";tutorialOverlay("SHOPへ移動しよう","装備できたね！装備品はSHOPで購入できるよ。画面上部のショップを押して移動しよう。");tutorialHighlight('.main-nav [data-screen="shop"]');tutorialSave();}
   // 勇者の剣を装備するまでは、武器欄の発光を保つ（再描画で対象が作り直されるため付け直す）。
   else if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword")tutorialHighlight('#selected-party select[data-character="kotama"][data-equip="weapon"]');}
-function toggleCharacter(id){if(state.party.includes(id)){removeCharacter(id);return;}const used=state.party.filter(Boolean).length;if(used>=PARTY_LIMIT){sound("error");return;}let slot=Number.isInteger(formationTargetSlot)?formationTargetSlot:state.party.findIndex(x=>!x);if(slot<0||slot>=PARTY_LIMIT||state.party[slot])slot=state.party.findIndex(x=>!x);if(slot<0)slot=used;state.party[slot]=id;formationTargetSlot=state.party.findIndex(x=>!x);if(formationTargetSlot<0)formationTargetSlot=0;renderAll();sound("select");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="formation-add"&&id==="healer"&&state.party.includes("healer")){tutorialState.healerReadded=true;tutorialState.phase="equipment-intro";tutorialOverlay("装備を確認しよう","キャラクターごとに武器・防具・アクセサリを管理できるよ。");tutorialHighlight("#selected-party");tutorialSave();}}
-function removeCharacter(id){const slot=state.party.indexOf(id);if(slot>=0)delete state.party[slot];formationTargetSlot=slot>=0?slot:state.party.findIndex(x=>!x);renderAll();sound("back");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="formation-remove"&&id==="healer"){tutorialState.healerRemoved=true;tutorialState.phase="formation-add";tutorialOverlay("治癒士を編成に戻そう","仲間候補から治癒士を選び、もう一度編成に加えてみよう。");tutorialHighlight('#character-roster [data-toggle-character="healer"]');tutorialSave();}}
+function toggleCharacter(id){
+  const c=getCharacter(id);if(!c)return;
+  if(state.party.includes(id)){removeCharacter(id);return;}
+  if(!extIsJobAvailable(c)){sound("error");setSystemMessage(extJobUnlockRequirement(id)||"まだ加入できない仲間です。");return;}
+  if(!state.ownedCharacters.includes(id)){
+    if(state.ownedCharacters.length>=OWNED_CHARACTER_LIMIT){sound("error");setSystemMessage(`仲間の所持上限は${OWNED_CHARACTER_LIMIT}人です。`);return;}
+    state.ownedCharacters.push(id);
+  }
+  const used=state.party.filter(Boolean).length;
+  if(used<PARTY_LIMIT){
+    let slot=Number.isInteger(formationTargetSlot)?formationTargetSlot:state.party.findIndex(x=>!x);
+    if(slot<0||slot>=PARTY_LIMIT||state.party[slot])slot=state.party.findIndex(x=>!x);
+    if(slot<0)slot=used;
+    state.party[slot]=id;
+    formationTargetSlot=state.party.findIndex(x=>!x);
+    if(formationTargetSlot<0)formationTargetSlot=0;
+  }else{
+    setSystemMessage(`${c.name}が仲間に加わりました。現在は控えメンバーです。`);
+  }
+  renderAll();sound("select");
+  if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="formation-add"&&id==="healer"&&state.party.includes("healer")){
+    tutorialState.healerReadded=true;tutorialState.phase="equipment-intro";
+    tutorialOverlay("装備を確認しよう","装備できたね！キャラクターごとに武器・防具・アクセサリを管理できるよ。");
+    tutorialHighlight("#selected-party");tutorialSave();
+  }
+}
+function removeCharacter(id){
+  if(id==="kotama"&&!stageCleared[5]){setSystemMessage("主人公は魔王討伐後に控えへ移動できます。");sound("error");return;}
+  const slot=state.party.indexOf(id);
+  if(slot>=0)delete state.party[slot];
+  formationTargetSlot=slot>=0?slot:state.party.findIndex(x=>!x);
+  renderAll();sound("back");
+  if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="formation-remove"&&id==="healer"){
+    tutorialState.healerRemoved=true;tutorialState.phase="formation-add";
+    tutorialOverlay("治癒士を編成に戻そう","控えメンバーから治癒士を選び、もう一度編成に加えてみよう。");
+    tutorialHighlight('#reserve-roster [data-toggle-character="healer"]');tutorialSave();
+  }
+}
+function releaseCharacter(id){
+  if(state.party.includes(id)){setSystemMessage("先に戦闘編成から外してください。");return;}
+  if(id==="kotama"&&!stageCleared[5]){setSystemMessage("主人公は魔王討伐後に仲間から外せます。");return;}
+  state.ownedCharacters=state.ownedCharacters.filter(x=>x!==id);
+  renderAll();sound("back");setSystemMessage("仲間から外しました。");
+}
 function shopDisplayCategory(item){
   if(item.category==="accessory")return "accessory";
   if(item.category==="healing")return "other";
@@ -926,7 +996,7 @@ function buildEquipmentState(savedEquipment,migrateStarterGear=true){
   if(migrateStarterGear)for(const [cid,slots] of Object.entries(starters))for(const [slot,id] of Object.entries(slots))if(!clean[cid][slot])clean[cid][slot]=id;
   return clean;
 }
-function createSaveData(){return {saveVersion:10,levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
+function createSaveData(){return {saveVersion:11,levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],ownedCharacters:[...(state.ownedCharacters||state.party.filter(Boolean))],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
 
 function persistAutoSave(){try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));return true;}catch(error){console.warn("オートセーブに失敗:",error);return false;}}
 function createBattleStartSnapshot(){return {game:createSaveData(),battle:{encounterMode:!!battleState.encounterMode,fieldEnemyId:battleState.fieldEnemyId||null,fieldFoeKey:battleState.fieldFoeKey||null,/* [FIELD] */stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode,maxStage:battleState.maxStage,enemy:JSON.parse(JSON.stringify(battleState.enemy)),bossBgmChoice:battleState.bossBgmChoice,unionGauges:{...battleState.unionGauges}}};}
@@ -943,7 +1013,7 @@ function loadGame(){try{
   const d=JSON.parse(localStorage.getItem("fantasyRpgSave")||"null");
   let repairedStageProgress=false;
   if(!d||!d.state||!Number.isFinite(d.state.gold)||!Array.isArray(d.state.party)||d.state.party.some(id=>id!==null&&!characters.some(c=>c.id===id))||d.state.party.length>PARTY_LIMIT)throw new Error("invalid save");
-  state.gold=Math.max(0,Math.floor(d.state.gold));state.party=d.state.party.map(id=>id===null?null:id);state.maxUnlockedStage=Math.max(1,Math.min(5,Number(d.state.maxUnlockedStage)||1));state.firstStageStarted=d.state.firstStageStarted!==false;state.unlockedJobs=Array.isArray(d.state.unlockedJobs)?d.state.unlockedJobs.filter(id=>EXT_NEW_JOB_IDS.includes(id)):[];
+  state.gold=Math.max(0,Math.floor(d.state.gold));state.party=d.state.party.map(id=>id===null?null:id);{const savedOwned=Array.isArray(d.state.ownedCharacters)?d.state.ownedCharacters:d.state.party;const validOwned=savedOwned.filter(id=>characters.some(c=>c.id===id));state.ownedCharacters=[...new Set([...state.party.filter(Boolean),...validOwned])].slice(0,OWNED_CHARACTER_LIMIT);}state.maxUnlockedStage=Math.max(1,Math.min(5,Number(d.state.maxUnlockedStage)||1));state.firstStageStarted=d.state.firstStageStarted!==false;state.unlockedJobs=Array.isArray(d.state.unlockedJobs)?d.state.unlockedJobs.filter(id=>EXT_NEW_JOB_IDS.includes(id)):[];
   if(d.tutorial&&typeof d.tutorial==="object"){tutorialState={...tutorialState,...d.tutorial};}else{tutorialState={...tutorialState,started:false,completed:true,phase:"complete"};}
   Object.keys(inventory).forEach(k=>delete inventory[k]);
   if(d.inventory&&typeof d.inventory==="object")for(const [id,count] of Object.entries(d.inventory)){if(shopItems.some(i=>i.id===id)&&Number.isFinite(count)&&count>0)inventory[id]=Math.floor(count);}
