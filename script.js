@@ -2337,7 +2337,7 @@ document.addEventListener("DOMContentLoaded",()=>{initAdminTools();setupNavigati
   if(forceNewGame){
     localStorage.removeItem("kotamaStartNewGameNow");localStorage.removeItem("fantasyRpgSave");
     tutorialState={started:true,completed:false,phase:"intro",battlePhase:"tutorial-intro",heroSwordGranted:false,heroSwordEquipped:false,armorBought:false,potionBought:false,healerRemoved:false,healerReadded:false,accessoryExplained:false};
-    state.gold=50;state.party=["kotama","knight","mage","healer"];state.maxUnlockedStage=1;state.firstStageStarted=false;state.unlockedJobs=[];
+    state.gold=50;state.party=["kotama","knight","mage","healer"];state.ownedCharacters=["kotama","knight","mage","healer"];state.maxUnlockedStage=1;state.firstStageStarted=false;state.unlockedJobs=[];
     for(const id of Object.keys(equipment))equipment[id]={weapon:null,armor:null,accessory1:null,accessory2:null,katana1:null,katana2:null};
     equipment.kotama.weapon=null;equipment.kotama.armor=null;ensureStarterGear();
     for(const id of Object.keys(inventory))delete inventory[id];
