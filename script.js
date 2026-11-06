@@ -1027,7 +1027,8 @@ async function beginStageCore(){
   $("battle-bottom")?.classList.remove("result-shown");
   $("battle-support").hidden=false;
   $("event-log").replaceChildren();
-  $("stage-title").textContent=battleState.encounterMode?"ENCOUNTER"/* [FIELD] */:battleState.hiddenBossMode?"HIDDEN BOSS":"STAGE "+battleState.stage+" / "+battleState.maxStage;
+  const floorNames=["はじまりの樹海","ゴブリンの森","霧の森","炎竜の巣","魔王城・回廊"];
+  $("stage-title").textContent=battleState.encounterMode?"ENCOUNTER"/* [FIELD] */:battleState.hiddenBossMode?"HIDDEN BOSS":`第${battleState.stage}階層　${floorNames[battleState.stage-1]||"未踏の迷宮"}`;
   renderStageEnvironment(battleState.stage);
   $("battle-result").hidden=true;
   $("retry-stage-button").hidden=true;$("formation-retry-button").hidden=true;$("return-home-button").hidden=true;
@@ -1059,7 +1060,7 @@ async function beginStageCore(){
   if(battleState.encounterMode){arena?.classList.remove("stage-arrival-pending");await wait(250);}// [FIELD] 雑魚戦はステージ名の暗転を出さない
   else if(overlay){
     const title=$("stage-transition-title");
-    title.textContent=isMaouStage?"第５ステージ":`第${battleState.stage}ステージ`;
+    title.textContent=isMaouStage?"魔王城・回廊":(floorNames[battleState.stage-1]||`第${battleState.stage}階層`);
     title.dataset.text=title.textContent;
     overlay.classList.remove("playing","maou-stage","maou-clear");
     overlay.classList.toggle("maou-stage",isMaouStage);
