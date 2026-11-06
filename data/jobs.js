@@ -42,7 +42,7 @@ const EXT_NEW_JOBS = [
   { id:"princess", name:"プリンセス", image:"assets/characters/princess.svg", emblem:"姫", hp:90, maxHp:90, attack:10, spAttack:80, defense:12, guardCut:.30, sp:150, maxSp:150,
     spSkills:[
       { id:"inspire-song", name:"鼓舞の歌", cost:25, target:"allAllies", type:"xj", description:"味方全体の攻撃力とSP攻撃力を3ターンの間30%上げる。", xj:{ buff:{ attackUp:{ turns:3, power:.30 } } } },
-      { id:"guardian-dance", name:"守りの舞", cost:25, target:"allAllies", type:"xj", description:"味方全体の防御力とSP防御力を3ターンの間40%上げる。", xj:{ buff:{ defenseUp:{ turns:3, power:.40 } } } },
+      { id:"guardian-dance", name:"守りの舞", cost:25, target:"allAllies", type:"xj", priority:2, description:"味方全体の防御力とSP防御力を3ターンの間40%上げる。", xj:{ buff:{ defenseUp:{ turns:3, power:.40 } } } },
       { id:"victory-hymn", name:"凱歌", cost:45, target:"allAllies", type:"xj", description:"味方全体の攻撃・防御を25%、スピードを30%、3ターンの間上げる。", xj:{ buff:{ attackUp:{ turns:3, power:.25 }, defenseUp:{ turns:3, power:.25 }, speedUp:{ turns:3, power:.30 } } } }
     ] },
   { id:"reaper", name:"リーパー", image:"assets/characters/reaper.svg", emblem:"鎌", hp:95, maxHp:95, attack:105, spAttack:60, defense:18, guardCut:.30, sp:70, maxSp:70,
