@@ -1,7 +1,7 @@
 "use strict";
 
 // Fantasy RPG - Battle風の固定フレーム / ターン制コマンド入力
-const PARTY_LIMIT = 4;
+const PARTY_LIMIT = 5;
 // ゲーム進行・画面・セーブなどの処理を管理。固定データは data/ 以下に分離。
 // キャラクター・ユニオンスキルの定義は data/characters.js に分離。
 if(typeof extInstallCharacters==="function")extInstallCharacters(characters);
