@@ -172,3 +172,37 @@ Issue：ゲーム全体の画面構成・導線レビュー
 - 現在の実機ブラウザでの全体通し動作
 
 このロードマップは初期調査で確認できた範囲に基づく。Claude A/B/Cの結果を反映して更新する。
+
+
+## 9. GPTによる追加コード確認（2026-11-06）
+
+以下は `development` の実コードを確認して分かった事実。仕様として正しいかどうかは別途Claude Aと照合する。
+
+### 9-1. 編成上限は現状4人
+
+- `script.js` 冒頭で `const PARTY_LIMIT = 4` と定義されている。
+- 初期 `state.party` は `["kotama","knight","mage","healer"]` の4枠。
+- `renderFormation()` は `PARTY_LIMIT` 個の枠を生成し、`toggleCharacter()` も同じ上限で追加を制限する。
+- `index.html` の説明文も4人となっている。
+
+したがって、過去に確定した「戦闘参加最大5人」とは明確な不一致がある。単なる説明文だけではなく、実際のロジック上限も4人である。変更時は戦闘UI、ユニオンゲージ、セーブデータの party 配列、チュートリアル、敵ターゲット処理への影響を確認する。
+
+### 9-2. 経験値は現在の編成メンバーだけに配布される構造
+
+- `levelAwardBattleExp()` は `getParty()` を走査している。
+- `getParty()` は `state.party` のIDからキャラクターを取得する。
+- さらにHPが0以下のキャラクターを除外している。
+- そのため、現在の実装は少なくとも「編成外の控えにも経験値を配る」構造にはなっていない。
+
+過去の確定仕様「控えにも経験値付与」と不一致の可能性が高い。Aの監査で、控えメンバーの定義・経験値配布の例外条件も含めて確認する。
+
+### 9-3. セーブデータの現状
+
+- `createSaveData()` は `saveVersion:10` を保存する。
+- `state.party`、`unlockedJobs`、`characterLevels`、`levelExp`、`equipment`、`inventory`、`materials`、`weaponLevels`、`growth`、`unlockedSkills`、`skillLevels`、`stageCleared`、`stageEntered`、`field` などを保存している。
+- `loadGame()` は party 配列が `PARTY_LIMIT` を超えるデータを不正として扱う。
+- したがって、編成上限を4から5へ変更する場合、旧セーブの扱い・新しい配列長・移行処理を含めて検討が必要。
+
+### 9-4. 実装着手の判断
+
+上記2点（編成上限・控え経験値）は全体仕様に直接関わるため、軽微なUI調整より優先度が高い。ただし、セーブ互換性と既存システムへの影響があるため、Claude Aの横断監査とClaude Bの通しテスト計画を受けて、GPTが独立ブランチで実装案を作る。
