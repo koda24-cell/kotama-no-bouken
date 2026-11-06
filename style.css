@@ -602,3 +602,14 @@ body[data-screen="battle"] .gold-display{display:none!important;}
  .battle-party>.battle-member{grid-column:span 3!important}
  .battle-tactical-map{max-width:180px;justify-self:end}
 }
+
+
+/* Taunt should read as a clear defensive stance, not a tiny status label. */
+.battle-member:has(.status-taunt){border:2px solid #d9b85f!important;box-shadow:0 0 0 2px #d9b85f33,inset 0 0 18px #d9b85f18;position:relative}
+.battle-member:has(.status-taunt)::after{content:"挑発中";position:absolute;top:3px;right:5px;padding:2px 5px;background:#6b4b18;color:#fff0bf;border:1px solid #e4c46f;font-size:9px;font-weight:800;letter-spacing:.08em;pointer-events:none}
+.status-chip.status-taunt{background:#76531d!important;border-color:#e4c46f!important;color:#fff0bf!important;font-weight:800}
+@media(prefers-reduced-motion:no-preference){
+ .battle-member:has(.status-taunt){animation:taunt-ready-pulse 1.8s ease-in-out infinite}
+}
+@keyframes taunt-ready-pulse{0%,100%{box-shadow:0 0 0 2px #d9b85f22,inset 0 0 12px #d9b85f10}50%{box-shadow:0 0 0 3px #d9b85f66,inset 0 0 22px #d9b85f25}}
+@media(prefers-reduced-motion:reduce){.battle-member:has(.status-taunt){animation:none}}
