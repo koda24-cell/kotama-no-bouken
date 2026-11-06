@@ -549,3 +549,56 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 /* Keep the battle stage itself compact while leaving room for the tactical panels. */
 .battle-arena{width:min(100%,720px);min-height:188px;margin-left:auto;margin-right:auto}
 @media(max-width:620px){.battle-arena{width:100%;min-height:172px}}
+
+
+/* Reference-led layout pass: command rail at left, enemy stage at center,
+   party formation in two rows (2 + 3), and a compact tactical map at lower right. */
+.battle-layout{
+  display:grid;
+  grid-template-columns:minmax(205px,.72fr) minmax(0,1.65fr) minmax(112px,.42fr);
+  grid-template-areas:
+    "command arena map"
+    "event party map"
+    "info party map"
+    "support support support";
+  gap:7px;
+  align-items:stretch;
+}
+.battle-arena{grid-area:arena;width:100%;min-height:166px;max-width:none;padding:12px 8px 8px}
+.command-window{grid-area:command;min-height:0}
+.event-window{grid-area:event;min-height:0;margin:0}
+.command-info-window{grid-area:info;min-height:0}
+.battle-party{grid-area:party;align-content:center;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0}
+.battle-party>.battle-member:nth-child(1),
+.battle-party>.battle-member:nth-child(2){grid-column:span 3}
+.battle-party>.battle-member:nth-child(n+3){grid-column:span 2}
+.battle-tactical-map{grid-area:map;align-self:end;min-width:0;padding:8px;border:2px solid #a88b58;background:linear-gradient(145deg,#17283a,#0b1520);color:#e8d6a2}
+.battle-tactical-map .window-title{font-size:10px;text-align:center}
+.battle-map-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:9px 0}
+.battle-map-grid i{aspect-ratio:1;border:1px solid #a88b5866;background:#142a32}
+.battle-map-grid i:nth-child(2),.battle-map-grid i:nth-child(4),.battle-map-grid i:nth-child(6){background:#263f3c}
+.battle-map-grid i:nth-child(5){background:#c3a66a;box-shadow:0 0 7px #c3a66a88}
+.battle-tactical-map small{display:block;text-align:center;font-size:9px;color:#b9c4c1}
+.battle-bottom{display:contents}
+.battle-support{grid-area:support;margin:0}
+.battle-result{grid-column:1/-1}
+@media(max-width:760px){
+ .battle-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);grid-template-areas:
+  "arena arena"
+  "command map"
+  "party party"
+  "event event"
+  "info info"
+  "support support";gap:6px}
+ .battle-arena{min-height:150px}
+ .battle-tactical-map{align-self:stretch}
+ .battle-party{grid-template-columns:repeat(6,minmax(0,1fr))}
+ .battle-party>.battle-member{grid-column:span 2!important}
+ .battle-party>.battle-member:nth-child(1),.battle-party>.battle-member:nth-child(2){grid-column:span 3!important}
+ .battle-bottom{display:contents}
+}
+@media(max-width:420px){
+ .battle-layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"arena" "command" "party" "map" "event" "info" "support"}
+ .battle-party>.battle-member{grid-column:span 3!important}
+ .battle-tactical-map{max-width:180px;justify-self:end}
+}
