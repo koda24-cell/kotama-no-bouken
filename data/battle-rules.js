@@ -5,3 +5,4 @@ const BATTLE_RULES = {
   elements: { weak:1.5, normal:1, resist:.5, immune:0 },
   break: { normal:10, sp:20, ultimate:30, union:40, weak:1.5, resist:.5 },
   bosses: { ドラゴン:{break:100}, 魔王:{break:150}, 混沌の幻影:{break:200} }
+};
