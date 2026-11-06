@@ -1,4 +1,3 @@
-const PARTY_LIMIT = 4;
 const BATTLE_RULES = {
   classBonuses: { warrior:{attack:1.10}, knight:{defense:1.15,attack:1.0}, kotama:{maxHp:1.10,attack:1.05}, mage:{spAttack:1.15}, healer:{healing:1.20}, samurai:{attack:1.20,defense:.90} },
   passives: { warrior:{normalDamage:1.10}, knight:{normalDamageTaken:.90}, kotama:{lowHpDefense:1.20,threshold:.50}, mage:{spDamage:1.10}, healer:{healing:1.10}, samurai:{} },
