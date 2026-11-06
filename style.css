@@ -1375,6 +1375,7 @@ body[data-screen="battle"] .gold-display{display:none!important;}
   animation:enemy-particle-burst .58s ease-out both;
 }
 .battle-arena.enemy-pixel-defeating .enemy-group-unit{
+  position:relative;
   animation:enemy-shard-collapse .62s cubic-bezier(.18,.72,.24,1) both!important;
   transform-origin:center bottom;
 }
@@ -1458,6 +1459,8 @@ body[data-screen="battle"] .gold-display{display:none!important;}
     animation:none!important;
     opacity:0!important;
   }
+  .battle-arena.enemy-defeating{animation:none!important}
+  .battle-arena.enemy-defeating::after{animation:none!important;opacity:0!important}
   .battle-arena.enemy-pixel-defeating .enemy-image,
   .battle-arena.enemy-pixel-defeating .enemy-placeholder,
   .battle-arena.enemy-pixel-defeating .enemy-group-unit{
