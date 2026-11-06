@@ -18,6 +18,8 @@ const characters = [
   { id:"mage", name:"魔術師", image:"assets/characters/mahoutukai.png", hp:70,maxHp:70,attack:2,spAttack:95,defense:5,guardCut:.20,sp:180,maxSp:180,spSkills:[{id:"fire",name:"ファイア",cost:15,target:"allEnemies",type:"fire",element:"炎"},{id:"freeze",name:"フリーズ",cost:20,target:"allEnemies",type:"ice",element:"氷"},{id:"thunder",name:"サンダー",cost:25,target:"allEnemies",type:"thunder",element:"雷"}] },
   { id:"samurai", name:"武士", image:"assets/characters/samurai.png", hp:105,maxHp:105,attack:72,spAttack:35,defense:18,spDefense:12,guardCut:.35,sp:75,maxSp:75,spSkills:[{id:"many-slashes",name:"乱れ斬り",cost:20,target:"enemy",type:"multiSlash"},{id:"helmet-break",name:"兜割",cost:25,target:"enemy",type:"pierce"}] }
 ];
+// [EXT] 新職業6種とスピード（battle-ext.js）
+if(typeof extInstallCharacters==="function")extInstallCharacters(characters);
 const unionSkills = {
   kotama:{id:"magic-bullet-union",name:"至高の魔弾",requiredHits:4,type:"stun",damage:300},
   knight:{id:"aegis-union",name:"イージスの大盾",requiredHits:4,type:"aegis"},
@@ -88,6 +90,8 @@ const accessoryItems=[
 {id:"acc-chaos-charm",name:"混沌の護符",category:"accessory",icon:"CHARM",description:"最大HP+20%、SP攻撃力+10%。",price:0,hpRate:.20,spAttackRate:.10,effect:"最大HP +20%／SP攻撃力 +10%",classes:["kotama","knight","healer","warrior","mage","samurai"]}
 ];
 shopItems.push(...accessoryItems);
+// [EXT] 新職業用の武器と、共用装備への職業追加
+if(typeof extInstallItems==="function")extInstallItems(shopItems,enhancementMaterials);
 for(const r of recipes)shopItems.push({...r,category:"weapon",craftedOnly:true,description:"素材から製作する武器。",effect:r.attackBonus?`攻撃力 +${r.attackBonus}`:`SP攻撃力 +${r.spAttackBonus}`,unlock:99});
 const compendium = Object.fromEntries(["スライム","ゴブリン","オオカミ","ドラゴン","魔王","混沌の幻影"].map(name=>[name,{encountered:false,defeated:false}]));
 const eventRead = {};
@@ -95,13 +99,14 @@ let hiddenBossFirstClear=false;
 const stageEvents = [
  {id:"forest-intro",title:"はじまりの樹海",pages:["コタマたちは、魔法の石像が眠るという樹海へ足を踏み入れた。","木々の間から、小さな影がこちらを見つめている。冒険の始まりだ。"]},
  {id:"goblin-intro",title:"森の奥へ",pages:["樹海の奥では、ゴブリンたちが道を塞いでいた。","仲間と力を合わせて、先へ進もう。"]},
- {id:"dragon-intro",title:"炎の竜",pages:["熱風が吹き荒れ、巨大な翼が空を覆う。","この先に待つのは、炎をまとうドラゴンだ。"]},
+ {id:"wolf-intro",title:"霧の中の瞳",pages:["ゴブリンの群れを抜けると、森は深い霧に包まれた。","霧の向こうで、いくつもの瞳が光っている。","オオカミだ。姿を惑わせる幻影が、コタマたちを待ち受けていた。"]},
+ {id:"dragon-intro",title:"炎の竜",pages:["熱風が吹き荒れ、巨大な翼が空を覆う。","この先に待つのは、炎をまとうドラゴンだ。","仲間たちは武器を握りしめ、炎の中へ踏み出した。"]},
  {id:"maou-intro",title:"魔王の城",pages:["長い冒険の果てに、魔王の城へたどり着いた。","仲間たちとともに、最後の戦いへ。"]},
  {id:"slime-clear",trigger:"clear",stage:1,title:"樹海の小さな勝利",pages:["スライムを退け、コタマたちは樹海の奥へ進む。","まだ冒険は始まったばかり。仲間と一緒なら、きっと大丈夫だ。"]},
  {id:"goblin-clear",trigger:"clear",stage:2,title:"ゴブリンの包囲を抜けて",pages:["ゴブリンたちの包囲を突破した。","森の奥から、さらに強い気配が近づいてくる。"]},
  {id:"wolf-clear",trigger:"clear",stage:3,title:"静かな森を越えて",pages:["オオカミの幻影が霧の中へ消えていった。","木々の向こうには、赤い光が揺れている。"]},
  {id:"dragon-clear",trigger:"clear",stage:4,title:"炎竜を越えて",pages:["炎竜との激闘を乗り越えた。","残る道は、魔王の城へと続いている。"]},
- {id:"maou-clear",trigger:"clear",stage:5,title:"冒険の終わり",pages:["魔王を倒し、世界に平穏が戻った。","コタマたちの冒険は、仲間との絆とともに語り継がれていく。"]},
+ {id:"maou-clear",trigger:"clear",stage:5,title:"冒険の終わり",pages:["魔王を倒し、世界に平穏が戻った。","樹海に朝日が差し込み、仲間たちは静かに顔を見合わせた。","コタマたちの冒険は、仲間との絆とともに語り継がれていく。"]},
  {id:"hidden-boss-clear",trigger:"clear",hiddenBoss:true,title:"混沌を越えて",pages:["混沌の幻影を打ち破り、深い静寂が訪れた。","新たな強敵に挑んだ経験は、仲間たちの胸に刻まれた。"]}
 ];
 const growth={};
@@ -162,9 +167,9 @@ equipment.samurai.katana1="katana";equipment.samurai.armor="leather-armor";
 const enemyData=[
   {name:"スライム",element:"無属性",weaknesses:["炎","氷","雷","聖"],resistances:[],physicalResistances:["斬撃","打撃","壊","突"],hp:180,attack:12,defense:4,spDefense:35,physicalDamageRate:.18,gold:7,sprite:"slime",actionName:"粘液攻撃",image:"assets/monsters/suraimu.png"},
   {name:"ゴブリン",element:"無属性",weaknesses:["炎","斬撃"],resistances:[],hp:360,attack:32,defense:10,gold:10,sprite:"goblin",actionName:"棍棒の一撃",image:"assets/monsters/goburinn.png"},
-  {name:"オオカミ",element:"無属性",weaknesses:["雷","打撃","壊"],resistances:[],hp:660,attack:30,defense:20,gold:14,sprite:"wolf",actionName:"鋭い牙",image:"assets/monsters/ookami.png"},
-  {name:"ドラゴン",element:"炎",weaknesses:["氷","斬撃"],resistances:["炎"],hp:1600,attack:65,defense:40,spAttack:90,spDefense:20,gold:35,sprite:"dragon",actionName:"鋭い爪"},
-  {name:"魔王",element:"無属性",weaknesses:["雷"],resistances:["炎","氷","聖","斬撃","打撃","壊","突"],hp:2700,attack:70,spAttack:100,defense:100,gold:35,sprite:"maou",actionName:"深淵の斬撃",image:"assets/monsters/maou.png"}
+  {name:"オオカミ",element:"無属性",weaknesses:["雷","打撃","壊"],resistances:[],hp:660,attack:38,defense:20,gold:25,sprite:"wolf",actionName:"鋭い牙",image:"assets/monsters/ookami.png"},
+  {name:"ドラゴン",element:"炎",weaknesses:["氷","斬撃"],resistances:["炎"],hp:1600,attack:65,defense:40,spAttack:90,spDefense:20,gold:60,sprite:"dragon",actionName:"鋭い爪"},
+  {name:"魔王",element:"無属性",weaknesses:["雷"],resistances:["炎","氷","聖","斬撃","打撃","壊","突"],hp:2700,attack:70,spAttack:100,defense:100,gold:100,sprite:"maou",actionName:"深淵の斬撃",image:"assets/monsters/maou.png"}
 ];
 const $=id=>document.getElementById(id);
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -270,9 +275,9 @@ function stopBgm(){if(bgmTimer){clearInterval(bgmTimer);bgmTimer=null;}if(bossBg
 function equippedItems(c){return Object.entries(equipment[c.id]||{}).map(([slot,id])=>{const item=itemById(id);if(!item)return null;const lv=weaponLevels[id]||0;if(item.category!=="weapon"||!lv)return item;const mult=1+lv*.1;return {...item,attackBonus:Math.floor((item.attackBonus||0)*mult),spAttackBonus:Math.floor((item.spAttackBonus||0)*mult)};}).filter(Boolean);}
 // 同じアクセサリを2枠に装備しても同一効果は重複しない。別種類の効果は合算する。
 function uniqueEquippedItems(c){const seen=new Set();return equippedItems(c).filter(item=>{const id=item.id||item.name;if(seen.has(id))return false;seen.add(id);return true;});}
-function effectiveStats(c,growthOverride=null){const items=equippedItems(c);const sum=k=>items.reduce((n,i)=>n+(i[k]||0),0);const rate=k=>{const seen=new Set();return items.reduce((n,i)=>{if(!i[k])return n;const id=i.id||i.name;if(seen.has(id))return n;seen.add(id);return n+i[k];},0);};const g=growthOverride||growth[c.id]||{spent:{}};const bonus=BATTLE_RULES.classBonuses[c.id]||{};const raw={maxHp:c.maxHp+sum("hpBonus")+(g.spent.maxHp||0)*10,attack:c.attack+sum("attackBonus")+(g.spent.attack||0)*2,spAttack:c.spAttack+sum("spAttackBonus")+(g.spent.spAttack||0)*2,defense:Math.max(0,c.defense+sum("defenseBonus")+(g.spent.defense||0)*2-(c._defenseDownTurns>0?(c._defenseDown||0):0)),spDefense:(Number.isFinite(c.spDefense)?c.spDefense:Math.floor(c.defense/2))+sum("spDefenseBonus")+(g.spent.spDefense||0)*2,maxSp:c.maxSp+(g.spent.maxSp||0)*5};if(battleState.defenseCampTurns>0)raw.defense+=50+5*Math.max(0,battleState._defenseCampLevel-1);const passiveRate=treeStatBonus(c.id);if(passiveRate){const statType=skillTreeDefinitions[c.id]?.passive?.stat;if(statType==="attack"){raw.attack=Math.floor(raw.attack*(1+passiveRate));}else if(statType==="defense"){raw.defense=Math.floor(raw.defense*(1+passiveRate));}else if(statType==="balanced"){raw.maxHp=Math.floor(raw.maxHp*(1+passiveRate));raw.attack=Math.floor(raw.attack*(1+passiveRate));raw.spAttack=Math.floor(raw.spAttack*(1+passiveRate));}else if(statType==="healer"){raw.maxHp=Math.floor(raw.maxHp*(1+passiveRate));raw.spAttack=Math.floor(raw.spAttack*(1+passiveRate));raw.spDefense=Math.floor(raw.spDefense*(1+passiveRate));}else if(statType==="warrior"){raw.maxHp=Math.floor(raw.maxHp*(1+passiveRate));raw.attack=Math.floor(raw.attack*(1+passiveRate));raw.defense=Math.floor(raw.defense*(1+passiveRate));}else if(statType==="mage"){raw.spAttack=Math.floor(raw.spAttack*(1+passiveRate));}else if(statType==="samurai"){raw.attack=Math.floor(raw.attack*(1+passiveRate));raw.maxHp=Math.floor(raw.maxHp*(1+passiveRate));raw.defense=Math.floor(raw.defense*(1+passiveRate));}}for(const key of ["maxHp","attack","spAttack","defense","spDefense"])if(Number.isFinite(bonus[key]))raw[key]=Math.floor(raw[key]*bonus[key]);raw.maxHp=Math.floor(raw.maxHp*(1+rate("hpRate")));raw.attack=Math.floor(raw.attack*(1+rate("attackRate")));raw.spAttack=Math.floor(raw.spAttack*(1+rate("spAttackRate")));return {...c,...raw};}
-function effectiveAttackPower(c){const stats=effectiveStats(c);return burnedTurns[c.id]>0?Math.floor(stats.attack/2):stats.attack;}
-function effectiveSpAttackPower(c){const power=effectiveStats(c).spAttack;return burnedTurns[c.id]>0?Math.floor(power/2):power;}
+function effectiveStats(c,growthOverride=null){const items=equippedItems(c);const sum=k=>items.reduce((n,i)=>n+(i[k]||0),0);const rate=k=>{const seen=new Set();return items.reduce((n,i)=>{if(!i[k])return n;const id=i.id||i.name;if(seen.has(id))return n;seen.add(id);return n+i[k];},0);};const g=growthOverride||growth[c.id]||{spent:{}};const bonus=BATTLE_RULES.classBonuses[c.id]||{};const raw={maxHp:c.maxHp+sum("hpBonus")+(g.spent.maxHp||0)*10,attack:c.attack+sum("attackBonus")+(g.spent.attack||0)*2,spAttack:c.spAttack+sum("spAttackBonus")+(g.spent.spAttack||0)*2,defense:Math.max(0,c.defense+sum("defenseBonus")+(g.spent.defense||0)*2-extDefenseDownAmount(c)),spDefense:(Number.isFinite(c.spDefense)?c.spDefense:Math.floor(c.defense/2))+sum("spDefenseBonus")+(g.spent.spDefense||0)*2,maxSp:c.maxSp+(g.spent.maxSp||0)*5};if(battleState.defenseCampTurns>0)raw.defense+=50+5*Math.max(0,battleState._defenseCampLevel-1);const passiveRate=treeStatBonus(c.id);if(passiveRate){const statType=skillTreeDefinitions[c.id]?.passive?.stat;if(statType==="attack"){raw.attack=Math.floor(raw.attack*(1+passiveRate));}else if(statType==="defense"){raw.defense=Math.floor(raw.defense*(1+passiveRate));}else if(statType==="balanced"){raw.maxHp=Math.floor(raw.maxHp*(1+passiveRate));raw.attack=Math.floor(raw.attack*(1+passiveRate));raw.spAttack=Math.floor(raw.spAttack*(1+passiveRate));}else if(statType==="healer"){raw.maxHp=Math.floor(raw.maxHp*(1+passiveRate));raw.spAttack=Math.floor(raw.spAttack*(1+passiveRate));raw.spDefense=Math.floor(raw.spDefense*(1+passiveRate));}else if(statType==="warrior"){raw.maxHp=Math.floor(raw.maxHp*(1+passiveRate));raw.attack=Math.floor(raw.attack*(1+passiveRate));raw.defense=Math.floor(raw.defense*(1+passiveRate));}else if(statType==="mage"){raw.spAttack=Math.floor(raw.spAttack*(1+passiveRate));}else if(statType==="samurai"){raw.attack=Math.floor(raw.attack*(1+passiveRate));raw.maxHp=Math.floor(raw.maxHp*(1+passiveRate));raw.defense=Math.floor(raw.defense*(1+passiveRate));}}for(const key of ["maxHp","attack","spAttack","defense","spDefense"])if(Number.isFinite(bonus[key]))raw[key]=Math.floor(raw[key]*bonus[key]);raw.maxHp=Math.floor(raw.maxHp*(1+rate("hpRate")));raw.attack=Math.floor(raw.attack*(1+rate("attackRate")));raw.spAttack=Math.floor(raw.spAttack*(1+rate("spAttackRate")));extApplyStatusStats(c,raw);return {...c,...raw};}
+function effectiveAttackPower(c){const stats=effectiveStats(c);return extHasStatus(c,"burn")?Math.floor(stats.attack/2):stats.attack;}
+function effectiveSpAttackPower(c){const power=effectiveStats(c).spAttack;return extHasStatus(c,"burn")?Math.floor(power/2):power;}
 function getEquippedName(c,slot){const item=itemById(equipment[c.id]?.[slot]);return item?item.name:"なし";}
 function statWithBonus(base,bonus){return `${base}${bonus?` <b class="stat-bonus">+${bonus}</b>`:""}`;}
 function tutorialSave(){
@@ -443,14 +448,14 @@ function tutorialAfterRetreat(){
 }
 function tutorialFinish(){tutorialState.completed=true;tutorialState.started=false;tutorialState.phase="complete";battleState.tutorialMode=false;tutorialClose();tutorialSave();try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));}catch(e){}showScreen("home");if($("start-button"))$("start-button").textContent="START";tutorialOverlay("チュートリアル完了！","編成・装備・買い物の準備ができたよ。これでチュートリアルは終了。STARTを押して、冒険に出発しよう！");tutorialHighlight("#start-button");}
 function showScreen(name){const el=$(name);if(!el||!el.classList.contains("screen"))return;if(tutorialState.phase==="complete"&&name!=="home"&&$("tutorial-overlay")&&!$("tutorial-overlay").hidden)tutorialClose();if(name==="home")retryContext=null;document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s===el));if(name!=="settings")stopPreview(false);state.screen=name;document.body.dataset.screen=name;if($("list-menu"))$("list-menu").hidden=true;$("list-button")?.setAttribute("aria-expanded","false");updateListMenuForScreen();if($("bgm-toggle")?.checked)startBgm();else stopBgm();document.querySelectorAll(".main-nav [data-screen]").forEach(b=>b.toggleAttribute("aria-current",b.dataset.screen===name));renderAll();window.scrollTo({top:0,behavior:"auto"});}
-function getCharacterImage(c){if(c.id==="samurai")return `<span class="image-fallback samurai-emblem" role="img" aria-label="武士の仮アイコン">武</span>`;return c.image?`<img src="${esc(c.image)}" alt="${esc(c.name)}" onerror="this.style.display='none';if(!this.parentElement.querySelector('.image-fallback')){const f=document.createElement('span');f.className='image-fallback';f.textContent='画像未配置';this.parentElement.appendChild(f)}">`:`<span class="image-fallback">画像準備中</span>`;}
+function getCharacterImage(c){if(c.emblem&&!c.image)return `<span class="image-fallback job-emblem" role="img" aria-label="${esc(c.name)}">${esc(c.emblem)}</span>`;if(c.id==="samurai")return `<span class="image-fallback samurai-emblem" role="img" aria-label="武士の仮アイコン">武</span>`;return c.image?`<img src="${esc(c.image)}" alt="${esc(c.name)}" onerror="this.style.display='none';if(!this.parentElement.querySelector('.image-fallback')){const f=document.createElement('span');f.className='image-fallback';f.textContent='画像未配置';this.parentElement.appendChild(f)}">`:`<span class="image-fallback">画像準備中</span>`;}
 function renderGold(){if($("gold"))$("gold").textContent=state.gold;}
 function renderHome(){const box=$("home-party");if(!box)return;box.innerHTML=getParty().map(c=>`<article class="character-card home-character"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)}</h3><p>HP ${effectiveStats(c).maxHp}　SP ${c.maxSp}</p><p>武器：${esc(getEquippedName(c,"weapon"))}</p><p>防具：${esc(getEquippedName(c,"armor"))}</p></article>`).join("");}
 function renderAchievements(){const box=$("achievement-list");if(!box)return;const unlocked=achievementDefinitions.filter(a=>achievementUnlocked[a.id]).length;const progress=$("achievement-progress");if(progress)progress.textContent=`${unlocked} / ${achievementDefinitions.length} 達成`;
  box.innerHTML=achievementDefinitions.map(a=>`<article class="achievement-card ${achievementUnlocked[a.id]?"unlocked":"locked"}"><div><strong>${esc(a.name)}</strong><p>${esc(a.description)}</p></div><span>${achievementUnlocked[a.id]?"達成済み":`報酬 ${a.reward}G`}</span></article>`).join("");
 }
 function unlockAchievement(id){const def=achievementDefinitions.find(a=>a.id===id);if(!def||achievementUnlocked[id])return false;achievementUnlocked[id]=true;state.gold+=def.reward;pushLog(`実績達成：「${def.name}」！ ${def.reward}G獲得。`);showPurchasePopup(`実績達成：${def.name}（${def.reward}G獲得）`);renderGold();renderAchievements();return true;}
-function updateJobVictoryRoster(){for(const id of state.party.filter(Boolean))if(!jobVictoryRoster.includes(id))jobVictoryRoster.push(id);if(characters.every(c=>jobVictoryRoster.includes(c.id)))unlockAchievement("all_jobs");}
+function updateJobVictoryRoster(){for(const id of state.party.filter(Boolean))if(!jobVictoryRoster.includes(id))jobVictoryRoster.push(id);if(characters.filter(c=>!EXT_NEW_JOB_IDS.includes(c.id)).every(c=>jobVictoryRoster.includes(c.id)))unlockAchievement("all_jobs");}
 function battleRankFor(turns,kos){if(kos===0&&turns<=5)return "S";if(kos===0&&turns<=8)return "A";if(turns<=12)return "B";return "C";}
 // ランク報酬：ステージが進むほど上限が上がる（STAGE1は最大10G、以降10Gずつ増え最大50G）。
 function rankReward(rank,stage=battleState.stage){const cap=battleState.hiddenBossMode?50:Math.min(50,10*Math.max(1,Number(stage)||1));return Math.round(cap*({S:1,A:.8,B:.5,C:.2})[rank]||0);}
@@ -485,7 +490,7 @@ function renderCompendium(){
  const progress=$("compendium-progress");if(progress)progress.textContent=`${names.filter(n=>compendium[n]?.defeated).length} / 5 討伐`;
  const unlock=$("hidden-boss-unlock");if(unlock){unlock.innerHTML=hiddenBossUnlocked()?`<h3>隠しステージ解放！</h3><p>「混沌の幻影」への挑戦条件を達成しました。</p><button id="hidden-boss-start" class="primary-button">隠しボスに挑戦</button>`:'<h3>隠しステージ</h3><p>解放条件：魔王・ドラゴン討伐、通常モンスター図鑑80%以上</p>';$("hidden-boss-start")?.addEventListener("click",startHiddenBoss);}
 }
-function renderEventGallery(){const box=$("event-gallery");if(!box)return;box.innerHTML=stageEvents.filter(e=>{const st=e.hiddenBoss?6:(e.stage||({"forest-intro":1,"goblin-intro":2,"dragon-intro":4,"maou-intro":5}[e.id]));return st?!!stageEntered[st]:!!stageEntered[1];}).map(e=>`<article><strong>${esc(e.title)}</strong><p>${eventRead[e.id]?"閲覧済み":"未読"}</p><button class="secondary-button" data-event-open="${esc(e.id)}">読む</button></article>`).join("")||"<p>ステージに到達すると、ここに冒険の記録が追加されます。</p>";box.querySelectorAll("[data-event-open]").forEach(b=>b.addEventListener("click",()=>playEventById(b.dataset.eventOpen)));}
+function renderEventGallery(){const box=$("event-gallery");if(!box)return;box.innerHTML=stageEvents.filter(e=>{const st=e.hiddenBoss?6:(e.stage||({"forest-intro":1,"goblin-intro":2,"wolf-intro":3,"dragon-intro":4,"maou-intro":5}[e.id]));return st?!!stageEntered[st]:!!stageEntered[1];}).map(e=>`<article><strong>${esc(e.title)}</strong><p>${eventRead[e.id]?"閲覧済み":"未読"}</p><button class="secondary-button" data-event-open="${esc(e.id)}">読む</button></article>`).join("")||"<p>ステージに到達すると、ここに冒険の記録が追加されます。</p>";box.querySelectorAll("[data-event-open]").forEach(b=>b.addEventListener("click",()=>playEventById(b.dataset.eventOpen)));}
 let activeEvent=null,activeEventPage=0,eventAfterAction=null,storyRun=0,storySkip=false,storyWake=null,storyBgmAudio=null,storyBgmFadeTimer=null;
 // ストーリー演出：黒い暗転画面に白い文字が一文字ずつ現れ、ゆっくり消えていく。
 // ボタンやタブは無い。画面をクリック（またはEnter/Space）すると演出を飛ばせる。
@@ -541,7 +546,7 @@ function closeStoryEvent(markRead=true){
   if(closingStoryAudio){const initial=closingStoryAudio.volume,started=performance.now(),duration=850;const fade=setInterval(()=>{const t=Math.min(1,(performance.now()-started)/duration);closingStoryAudio.volume=initial*(1-t);if(t>=1){clearInterval(fade);finish();}},50);}else finish();
 }
 function playEventById(id){const ev=stageEvents.find(e=>e.id===id);if(ev)openEvent(ev);}
-function playStageEvent(stage,done){const ids={1:"forest-intro",2:"goblin-intro",4:"dragon-intro",5:"maou-intro"};const ev=stageEvents.find(e=>e.id===ids[stage]&&!e.trigger);if(ev&&!eventRead[ev.id])openEvent(ev,done);else if(done)done();}
+function playStageEvent(stage,done){const ids={1:"forest-intro",2:"goblin-intro",3:"wolf-intro",4:"dragon-intro",5:"maou-intro"};const ev=stageEvents.find(e=>e.id===ids[stage]&&!e.trigger);if(ev&&!eventRead[ev.id])openEvent(ev,done);else if(done)done();}
 function playStageClearEvent(stage,hiddenBoss,done){const ev=stageEvents.find(e=>e.trigger==="clear"&&(hiddenBoss?e.hiddenBoss===true:e.stage===stage));if(ev&&!eventRead[ev.id])openEvent(ev,done);else if(done)done();}
 function setupStoryEvents(){
   const skip=()=>{if(!activeEvent)return;storySkip=true;if(storyWake)storyWake();};
@@ -562,15 +567,15 @@ function formationBaseStats(c){
     maxHp:stat("maxHp",c.maxHp+(g.maxHp||0)*10),
     attack:stat("attack",c.attack+(g.attack||0)*2),
     spAttack:stat("spAttack",c.spAttack+(g.spAttack||0)*2),
-    defense:stat("defense",Math.max(0,c.defense+(g.defense||0)*2-(c._defenseDownTurns>0?(c._defenseDown||0):0))),
+    defense:stat("defense",Math.max(0,c.defense+(g.defense||0)*2-extDefenseDownAmount(c))),
     spDefense:stat("spDefense",(Number.isFinite(c.spDefense)?c.spDefense:Math.floor(c.defense/2))+(g.spDefense||0)*2),
     maxSp:c.maxSp+(g.maxSp||0)*5
   };
   return base;
 }
 function renderFormation(){const selected=$("selected-party"),roster=$("character-roster"),count=$("party-count");if(!selected||!roster)return;if(count)count.textContent=`${state.party.filter(Boolean).length} / ${PARTY_LIMIT}`;
-  selected.innerHTML=Array.from({length:PARTY_LIMIT},(_,index)=>{const id=state.party[index],c=getCharacter(id);if(!c)return `<article class="character-card selected-character empty-party-slot"><h3>空き枠 ${index+1}</h3><p>下の仲間候補から配置できます。</p><button class="secondary-button" data-select-slot="${index}">この枠に配置</button></article>`;const s=effectiveStats(c),base=formationBaseStats(c),bonus={maxHp:s.maxHp-base.maxHp,attack:s.attack-base.attack,spAttack:s.spAttack-base.spAttack,defense:s.defense-base.defense,spDefense:s.spDefense-base.spDefense,maxSp:s.maxSp-base.maxSp};return `<article class="character-card selected-character"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)}</h3><div class="character-stats"><span>HP ${base.maxHp}${bonus.maxHp?` <b class="stat-bonus">+${bonus.maxHp}</b>`:""}</span><span>攻撃 ${base.attack}${bonus.attack?` <b class="stat-bonus">+${bonus.attack}</b>`:""}</span><span>SP攻撃 ${base.spAttack}${bonus.spAttack?` <b class="stat-bonus">+${bonus.spAttack}</b>`:""}</span><span>防御 ${base.defense}${bonus.defense?` <b class="stat-bonus">+${bonus.defense}</b>`:""}</span><span>SP防御 ${base.spDefense}${bonus.spDefense?` <b class="stat-bonus">+${bonus.spDefense}</b>`:""}</span><span>最大SP ${base.maxSp}${bonus.maxSp?` <b class="stat-bonus">+${bonus.maxSp}</b>`:""}</span></div>${equipmentSlots(c).map(([slot,label])=>`<label class="equip-row">${label}<select data-equip="${slot}" data-character="${c.id}">${equipmentOptions(slot,c.id)}</select></label>`).join("")}<button class="secondary-button" data-remove-character="${c.id}">編成から外す</button></article>`;}).join("");
-  roster.innerHTML=characters.map(c=>{const chosen=state.party.includes(c.id),full=state.party.filter(Boolean).length>=PARTY_LIMIT;return `<article class="character-card selectable ${chosen?"selected":""}"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)}</h3><div class="character-stats"><span>HP ${effectiveStats(c).maxHp}</span><span>攻撃 ${effectiveStats(c).attack}</span><span>防御 ${effectiveStats(c).defense}</span></div><button class="${chosen?"secondary-button":"primary-button"}" data-toggle-character="${c.id}" ${!chosen&&full?"disabled":""}>${chosen?"選択中":"編成に加える"}</button></article>`;}).join("");
+  selected.innerHTML=Array.from({length:PARTY_LIMIT},(_,index)=>{const id=state.party[index],c=getCharacter(id);if(!c)return `<article class="character-card selected-character empty-party-slot"><h3>空き枠 ${index+1}</h3><p>下の仲間候補から配置できます。</p><button class="secondary-button" data-select-slot="${index}">この枠に配置</button></article>`;const s=effectiveStats(c),base=formationBaseStats(c),bonus={maxHp:s.maxHp-base.maxHp,attack:s.attack-base.attack,spAttack:s.spAttack-base.spAttack,defense:s.defense-base.defense,spDefense:s.spDefense-base.spDefense,maxSp:s.maxSp-base.maxSp};return `<article class="character-card selected-character"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)}</h3><div class="character-stats"><span>HP ${base.maxHp}${bonus.maxHp?` <b class="stat-bonus">+${bonus.maxHp}</b>`:""}</span><span>攻撃 ${base.attack}${bonus.attack?` <b class="stat-bonus">+${bonus.attack}</b>`:""}</span><span>SP攻撃 ${base.spAttack}${bonus.spAttack?` <b class="stat-bonus">+${bonus.spAttack}</b>`:""}</span><span>防御 ${base.defense}${bonus.defense?` <b class="stat-bonus">+${bonus.defense}</b>`:""}</span><span>SP防御 ${base.spDefense}${bonus.spDefense?` <b class="stat-bonus">+${bonus.spDefense}</b>`:""}</span><span>最大SP ${base.maxSp}${bonus.maxSp?` <b class="stat-bonus">+${bonus.maxSp}</b>`:""}</span><span>速さ ${s.speed}</span></div>${equipmentSlots(c).map(([slot,label])=>`<label class="equip-row">${label}<select data-equip="${slot}" data-character="${c.id}">${equipmentOptions(slot,c.id)}</select></label>`).join("")}<button class="secondary-button" data-remove-character="${c.id}">編成から外す</button></article>`;}).join("");
+  roster.innerHTML=extAvailableCharacters().map(c=>{const chosen=state.party.includes(c.id),full=state.party.filter(Boolean).length>=PARTY_LIMIT;return `<article class="character-card selectable ${chosen?"selected":""}"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)}</h3><div class="character-stats"><span>HP ${effectiveStats(c).maxHp}</span><span>攻撃 ${effectiveStats(c).attack}</span><span>防御 ${effectiveStats(c).defense}</span><span>速さ ${effectiveStats(c).speed}</span></div><button class="${chosen?"secondary-button":"primary-button"}" data-toggle-character="${c.id}" ${!chosen&&full?"disabled":""}>${chosen?"選択中":"編成に加える"}</button></article>`;}).join("");
   selected.querySelectorAll("[data-remove-character]").forEach(b=>b.onclick=()=>removeCharacter(b.dataset.removeCharacter));selected.querySelectorAll("[data-select-slot]").forEach(b=>b.onclick=()=>{formationTargetSlot=Number(b.dataset.selectSlot);setSystemMessage(`空き枠${formationTargetSlot+1}を選択しました。仲間候補を選んでください。`);});roster.querySelectorAll("[data-toggle-character]").forEach(b=>b.onclick=()=>toggleCharacter(b.dataset.toggleCharacter));selected.querySelectorAll("[data-equip]").forEach(sel=>sel.onchange=()=>equipItem(sel.dataset.character,sel.dataset.equip,sel.value));}
 function equipmentSlots(c){return c.id==="samurai"?[["katana1","武器1"],["katana2","武器2"],["armor","防具"],["accessory1","装飾品1"],["accessory2","装飾品2"]]:[["weapon","武器"],["armor","防具"],["accessory1","装飾品1"],["accessory2","装飾品2"]];}
 function equipmentOptions(slot,charId){const current=equipment[charId][slot]||"";const cat=(slot==="armor"?"armor":slot.startsWith("accessory")?"accessory":"weapon");const owned=shopItems.filter(i=>i.category===cat&&(inventory[i.id]>0||equipment[charId]?.[slot]===i.id)&&((slot.startsWith("katana")?i.slot==="katana":!i.slot)));return `<option value="" ${!current?"selected":""}>なし</option>`+owned.map(i=>`<option value="${i.id}" ${current===i.id?"selected":""}>${esc(i.name)}</option>`).join("");}
@@ -613,8 +618,8 @@ function renderShop(){
   }).join("")||'<p class="empty-note">この職業に対応する商品はありません。</p>';
   box.querySelectorAll("[data-buy-item]").forEach(b=>b.onclick=()=>buyItem(b.dataset.buyItem,b.dataset.buyMode||"store"));
   tabs?.querySelectorAll("[data-category]").forEach(b=>b.onclick=()=>{currentCategory=b.dataset.category;renderShop();sound("select");});
-  buyerBox?.querySelector("[data-buyer-prev]")?.addEventListener("click",()=>{shopBuyerId=characters[(characters.findIndex(c=>c.id===shopBuyerId)+characters.length-1)%characters.length].id;renderShop();});
-  buyerBox?.querySelector("[data-buyer-next]")?.addEventListener("click",()=>{shopBuyerId=characters[(characters.findIndex(c=>c.id===shopBuyerId)+1)%characters.length].id;renderShop();});
+  buyerBox?.querySelector("[data-buyer-prev]")?.addEventListener("click",()=>{{const list=extAvailableCharacters();shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+list.length-1)%list.length].id;}renderShop();});
+  buyerBox?.querySelector("[data-buyer-next]")?.addEventListener("click",()=>{{const list=extAvailableCharacters();shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+1)%list.length].id;}renderShop();});
 }
 const skillTreeDefinitions={
  kotama:{passive:{id:"kotama-mastery",name:"剣マスタリー",desc:"レベルごとに攻撃力が2%上昇する。",effect:"stats",stat:"attack"},a:{id:"kotama-shock-spark",name:"ショックスパーク",desc:"敵全体に雷属性のSP攻撃。レベルに応じて威力が上昇する。",effect:"none"},b:{id:"kotama-shock-bolt",name:"ショックボルト",desc:"敵単体に雷属性のSP攻撃。低SP消費で扱いやすい。",effect:"none"},derived:{id:"kotama-burst-blade",name:"バーストブレイド",desc:"ショックスパークとショックボルトを習得すると解放。敵単体に威力400%の強力な一撃。",effect:"none"}},
@@ -670,7 +675,7 @@ function getCharacterSkills(c){
 function treeStatBonus(charId){const node=skillTreeDefinitions[charId]?.passive;return node&&getTreeLevel(charId,node.id)>0?getTreeLevel(charId,node.id)*.02:0;}
 function renderProgressionPanelUnsafe(){
  const box=$("progression-panel");if(!box)return;
- const c=getCharacter(shopBuyerId)||characters[0],stats=effectiveStats(c),tree=skillTreeDefinitions[c.id],points=trainingPoints[c.id]||0;
+ const c=(skillTreeDefinitions[(getCharacter(shopBuyerId)||characters[0]).id]?(getCharacter(shopBuyerId)||characters[0]):characters[0]),stats=effectiveStats(c),tree=skillTreeDefinitions[c.id],points=trainingPoints[c.id]||0;
  const passive=tree.passive,a=tree.a,b=tree.b,derived=tree.derived;
  const isNewTree=newTreeCharacterIds.includes(c.id);
  const level=getTreeLevel(c.id,passive.id),la=getTreeLevel(c.id,a.id),lb=getTreeLevel(c.id,b.id),ld=getTreeLevel(c.id,derived.id);
@@ -683,7 +688,7 @@ function renderProgressionPanelUnsafe(){
  const mat=Object.entries(materials).map(([id,n])=>`${materialNames[id]||id} ×${n||0}`).join("　／　")||"素材なし";
  const selectedLevel=getTreeLevel(c.id,selectedNode.id),selectedMax=isNewTree?10:selectedNode===a||selectedNode===b?5:1;
  const selectedNext=isNewTree?(selectedNode===passive?`レベルごとに${c.id==="healer"?"回復量3%":"対応能力2%"}上昇`:selectedNode===derived?`派生スキル「${skillTreeDerivedSkills[c.id].name}」の効果が強化`:`「${(selectedNode===a?skillTreeExtraSkills[c.id].skill:skillTreeBranchBSkills[c.id]).name}」の効果がレベルに応じて上昇`):(selectedNode===passive?"最大HP・攻撃力などの基礎能力が2%上昇":selectedNode===derived?`派生SPスキル「${skillTreeDerivedSkills[c.id].name}」を習得`:`対応する${selectedNode.effect}効果が3%上昇`);
- box.innerHTML=`<div class="training-character-select"><h2>強化・育成</h2><div class="training-character-tabs">${characters.map(ch=>`<button type="button" data-training-character="${ch.id}" class="${ch.id===c.id?"active":""}">${esc(ch.name)}</button>`).join("")}</div></div>
+ box.innerHTML=`<div class="training-character-select"><h2>強化・育成</h2><div class="training-character-tabs">${characters.filter(ch=>skillTreeDefinitions[ch.id]).map(ch=>`<button type="button" data-training-character="${ch.id}" class="${ch.id===c.id?"active":""}">${esc(ch.name)}</button>`).join("")}</div></div>
  <section class="training-tree"><div class="training-section-head"><div><h3>${esc(c.name)}のスキルツリー</h3><p>基礎パッシブを取得し、2系統のSPスキルを育成。両方を習得すると派生スキルが解放されます。</p></div><strong>育成ポイント：${points}pt</strong></div>
  <div class="skill-tree-scroll"><div class="skill-tree-layout"><div class="skill-tree-passive">${nodeCard(passive,"passive")}</div><div class="skill-tree-branches"><div class="skill-branch-top">${nodeCard(a,"branch")}</div><div class="skill-branch-bottom">${nodeCard(b,"branch")}</div></div><div class="skill-tree-derived">${nodeCard(derived,"derived")}</div></div></div>
  <div class="skill-detail-panel"><strong>選択中：${esc(selectedNode.name)}</strong><p>${esc(selectedNode.desc)}</p><small>現在レベル：${selectedLevel}/${selectedMax} ／ 次の強化：${esc(selectedNext)} ／ 取得条件：${esc(conditionFor(selectedNode))} ／ 状態：${stateLabel(selectedNode)}</small></div></section>
@@ -721,7 +726,7 @@ function registerCharacterLevel(characterId,nextLevel){
 // 将来の経験値・レベル機能から利用する公開連携口。
 window.KotamaGameProgression=Object.freeze({setCharacterLevel:registerCharacterLevel,getCharacterLevel:id=>characterLevels[id]||1});
 function awardMaterials(enemy){
-  const drops=[];const name=enemy?.name;
+  const drops=[];const name=enemy?.dropAs||enemy?.name;
   const table={"スライム":[["slime_jelly",.5]],"オオカミ":[["monster_fang",.4],["monster_hide",.2]],"ゴブリン":[["goblin_cloth",.4]],"ドラゴン":[["dragon_scale",1],["dragon_claw",.5]],"魔王":[["maou_crystal",1],["maou_horn",.5]]}[name]||[];
   const attempts=name==="ゴブリン"&&Array.isArray(enemy.members)?enemy.members.length:1;
   for(let n=0;n<attempts;n++)for(const [id,chance] of table){if(Math.random()<chance){materials[id]=(materials[id]||0)+1;const existing=drops.find(x=>x.id===id);if(existing)existing.count++;else drops.push({id,name:materialNames[id],count:1});}}
@@ -971,7 +976,7 @@ function buildEquipmentState(savedEquipment,migrateStarterGear=true){
   if(migrateStarterGear)for(const [cid,slots] of Object.entries(starters))for(const [slot,id] of Object.entries(slots))if(!clean[cid][slot])clean[cid][slot]=id;
   return clean;
 }
-function createSaveData(){return {saveVersion:9,tutorial:JSON.parse(JSON.stringify(tutorialState)),state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
+function createSaveData(){return {saveVersion:9,tutorial:JSON.parse(JSON.stringify(tutorialState)),state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
 
 function persistAutoSave(){try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));return true;}catch(error){console.warn("オートセーブに失敗:",error);return false;}}
 function createBattleStartSnapshot(){return {game:createSaveData(),battle:{stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode,maxStage:battleState.maxStage,enemy:JSON.parse(JSON.stringify(battleState.enemy)),bossBgmChoice:battleState.bossBgmChoice,unionGauges:{...battleState.unionGauges}}};}
@@ -988,7 +993,7 @@ function loadGame(){try{
   const d=JSON.parse(localStorage.getItem("fantasyRpgSave")||"null");
   let repairedStageProgress=false;
   if(!d||!d.state||!Number.isFinite(d.state.gold)||!Array.isArray(d.state.party)||d.state.party.some(id=>id!==null&&!characters.some(c=>c.id===id))||d.state.party.length>PARTY_LIMIT)throw new Error("invalid save");
-  state.gold=Math.max(0,Math.floor(d.state.gold));state.party=d.state.party.map(id=>id===null?null:id);state.maxUnlockedStage=Math.max(1,Math.min(5,Number(d.state.maxUnlockedStage)||1));state.firstStageStarted=d.state.firstStageStarted!==false;
+  state.gold=Math.max(0,Math.floor(d.state.gold));state.party=d.state.party.map(id=>id===null?null:id);state.maxUnlockedStage=Math.max(1,Math.min(5,Number(d.state.maxUnlockedStage)||1));state.firstStageStarted=d.state.firstStageStarted!==false;state.unlockedJobs=Array.isArray(d.state.unlockedJobs)?d.state.unlockedJobs.filter(id=>EXT_NEW_JOB_IDS.includes(id)):[];
   if(d.tutorial&&typeof d.tutorial==="object"){tutorialState={...tutorialState,...d.tutorial};}else{tutorialState={...tutorialState,started:false,completed:true,phase:"complete"};}
   Object.keys(inventory).forEach(k=>delete inventory[k]);
   if(d.inventory&&typeof d.inventory==="object")for(const [id,count] of Object.entries(d.inventory)){if(shopItems.some(i=>i.id===id)&&Number.isFinite(count)&&count>0)inventory[id]=Math.floor(count);}
@@ -1004,7 +1009,7 @@ function loadGame(){try{
   if(compendium["ドラゴン"]?.defeated){if(!stageCleared[4]||state.maxUnlockedStage<5)repairedStageProgress=true;stageCleared[4]=true;state.maxUnlockedStage=Math.max(state.maxUnlockedStage,5);}
   // ステージクリア記録と解放番号が食い違う場合も、既存の進行を後退させず次の段階まで補正する。
   for(let stage=1;stage<=4;stage++)if(stageCleared[stage]===true&&state.maxUnlockedStage<stage+1){state.maxUnlockedStage=stage+1;repairedStageProgress=true;}
-  hiddenBossFirstClear=!!d.hiddenBossFirstClear;
+  hiddenBossFirstClear=!!d.hiddenBossFirstClear;extSyncJobUnlocks();
   for(const k of Object.keys(achievementUnlocked))delete achievementUnlocked[k];
   if(d.achievementUnlocked&&typeof d.achievementUnlocked==="object")for(const def of achievementDefinitions)achievementUnlocked[def.id]=d.achievementUnlocked[def.id]===true;
   totalEnemyDefeats=Math.max(0,Math.floor(Number(d.totalEnemyDefeats)||0));
@@ -1019,6 +1024,7 @@ function loadGame(){try{
 function createEnemy(stage){
   if(battleState.hiddenBossMode){return {name:"混沌の幻影",element:"無属性",weaknesses:[],resistances:["炎","氷","雷","聖","斬撃","打撃","壊","突"],hp:7200,maxHp:7200,attack:145,defense:155,spAttack:165,spDefense:95,gold:0,sprite:"maou",actionName:"混沌の一撃",_breakMax:260,_breakCurrent:260};}
   const d=enemyData[stage-1];
+  {const variant=extPickEnemyVariant(stage);if(variant)return variant;}// [EXT] STAGE1〜3の敵バリエーション
   if(stage===2){
     const count=3+Math.floor(Math.random()*3);
     const members=Array.from({length:count},(_,i)=>({id:`goblin-${i+1}`,name:"ゴブリン",hp:d.hp,maxHp:d.hp,attack:d.attack,defense:d.defense,spDefense:Math.floor(d.defense/2),gold:d.gold,sprite:d.sprite,image:d.image,actionName:d.actionName,alive:true}));
@@ -1027,13 +1033,14 @@ function createEnemy(stage){
   return {...d,spDefense:Number.isFinite(d.spDefense)?d.spDefense:Math.floor(d.defense/2),hp:d.hp,maxHp:d.hp};
 }
 function resetTransientBattleState(){
-  burnedTurns={};mageCompressionStacks.mage=0;goblinCharging=false;goblinTeamAttackUsed=false;goblinTeamAttackPending=false;defenseDownFresh=new Set();lastEnemyAttackMissed=false;specialOmenShown={};
+  extResetBattle();burnedTurns={};mageCompressionStacks.mage=0;goblinCharging=false;goblinTeamAttackUsed=false;goblinTeamAttackPending=false;defenseDownFresh=new Set();lastEnemyAttackMissed=false;specialOmenShown={};
   for(const c of characters){c._defenseDown=0;c._defenseDownTurns=0;for(const key of ["_stunTurns","stunTurns","_actionDisabledTurns","actionDisabledTurns"])if(key in c)c[key]=0;for(const key of ["_stunned","stunned","actionDisabled"])if(key in c)c[key]=false;}
   battleState.wolfEvasionTurns=0;battleState.wolfHalfHpEvasionUsed=false;battleState.wolfLastTargetId=null;battleState.wolfClones=[];battleState.wolfDisplayOrder=[];battleState.wolfCloneTurns=0;battleState.wolfCloneLastTargetId=null;battleState.wolfSplitPending=false;battleState.tauntTarget=null;battleState.enemyStunned=false;battleState.defenseCampTurns=0;battleState.magicGuardActive=false;battleState.fullGuardActive=false;battleState.knightFullGuardCooldown=0;battleState.aegisActive=false;battleState.bossBgmChoice=null;
 }
 function startBattle(stage=1){battleBgmSelections={};stageIntroStoryPending=false;maouIntroBgmPersistent=false;battleState.tutorialMode=false;state.firstStageStarted=true;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));}catch(e){}retryContext=null;battleState.hiddenBossMode=false;battleState.maxStage=5;resetTransientBattleState();battleState.koCount=0;battleState.rankResult=null;battleState.stage=Math.max(1,Math.min(state.maxUnlockedStage||1,Number(stage)||1));battleState.unionGauges={kotama:0,knight:0,healer:0,warrior:0,mage:0,samurai:0};getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});beginStage();}
 async function beginStageCore(){
-  battleState.enemy=pendingBattleResumeEnemy||createEnemy(battleState.stage);pendingBattleResumeEnemy=null;registerEncounter(battleState.enemy.name);
+  extResetBattle();// [EXT]
+  battleState.enemy=pendingBattleResumeEnemy||createEnemy(battleState.stage);pendingBattleResumeEnemy=null;registerEncounter(battleState.enemy.compendiumAs||battleState.enemy.name);
   stageEntered[battleState.stage]=true;
   const breakMax=BATTLE_RULES.bosses[battleState.enemy.name]?.break||0;if(breakMax){battleState.enemy._breakMax=breakMax;battleState.enemy._breakCurrent=breakMax;}goblinCharging=false;goblinTeamAttackUsed=false;goblinTeamAttackPending=false;burnedTurns={};specialOmenShown={};battleState.wolfEvasionTurns=0;battleState.wolfHalfHpEvasionUsed=false;battleState.wolfLastTargetId=null;battleState.wolfClones=[];battleState.wolfDisplayOrder=[];battleState.wolfCloneTurns=0;battleState.wolfCloneLastTargetId=null;battleState.wolfSplitPending=false;if(battleState.stage===5&&!battleState.bossBgmChoice)battleState.bossBgmChoice=Math.random()<.5?"arc":"overture";
   battleState.turnCount=0;
@@ -1068,7 +1075,7 @@ async function beginStageCore(){
   arena?.classList.add("stage-arrival-pending");
   if(isMaouStage)arena?.classList.add("maou-awaiting");
 
-  const stageEventIds={1:"forest-intro",2:"goblin-intro",4:"dragon-intro",5:"maou-intro"};
+  const stageEventIds={1:"forest-intro",2:"goblin-intro",3:"wolf-intro",4:"dragon-intro",5:"maou-intro"};
   const introEvent=stageEvents.find(e=>e.id===stageEventIds[battleState.stage]&&!e.trigger);
   stageIntroStoryPending=!!(introEvent&&!eventRead[introEvent.id]);
   maouIntroBgmPersistent=false;
@@ -1293,6 +1300,7 @@ async function applyPartyDamageAnimated(character,damage,options={}){
     if(battleState.magicGuardActive&&!options.statusDamage&&(options.magic||options.element||options.spAttack))requested=Math.floor(requested*(1-(battleState._magicGuardRate||.5)));
     requested=Math.floor(requested*(1-partyDamageReduction(character)));
   }
+  requested=Math.floor(requested*extDefenselessMul(character,options));// [EXT] チャージ中は無防備
   if(requested<=0)return 0;
   const previousHp=character.hp, amount=Math.min(character.hp,requested);
   if(!battleState.guarding[character.id])playSe("assets/se/senntou/ダメージ");
@@ -1325,7 +1333,7 @@ function calcEnemyPhysicalDamage(enemy,attack){
   const target=enemy?.members?.find(m=>m.hp>0)||enemy;
   const base=calcPhysical(attack,target.defense);
   if(battleState.tutorialMode&&enemy?.name==="スライムa")return Math.max(1,Math.floor(base*.03));
-  if(target.name!=="スライム")return base;
+  if(target.name!=="スライム"&&!target.slimeLike&&!enemy?.slimeLike)return base;
   return base>0?Math.max(Math.floor(attack*.1),Math.floor(base*(target.physicalDamageRate??enemy.physicalDamageRate??.18)),1):0;
 }
 function enemyHpTotal(enemy){if(!enemy)return 0;if(enemy.members)return enemy.members.reduce((n,m)=>n+Math.max(0,m.hp),0);return Math.max(0,enemy.hp);}
@@ -1405,14 +1413,14 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
   const enemyBar=$("enemy-hp-bar");enemyBar.style.width=`${enemyCurrentPct}%`;
   const breakMax=e._breakMax||0;let breakTrack=displayBreakTrack();breakTrack?.classList.toggle("maou-break-track",e.name==="魔王");if(breakMax){breakTrack.hidden=false;breakTrack.querySelector("i").style.width=`${Math.max(0,e._breakCurrent??breakMax)/breakMax*100}%`;breakTrack.querySelector("span").textContent=e._brokenTurns>0?"BREAK！":`BREAK ${Math.max(0,e._breakCurrent??breakMax)} / ${breakMax}`;}else if(breakTrack)breakTrack.hidden=true;
   let enemyTrack=enemyBar.parentElement;let enemyLoss=enemyTrack.querySelector(".hp-loss-preview");if(!enemyLoss){enemyLoss=document.createElement("div");enemyLoss.className="hp-loss-preview";enemyTrack.appendChild(enemyLoss);}const enemyBefore=Number(e._hpBeforeDamage);if(Number.isFinite(enemyBefore)&&enemyBefore>e.hp){enemyLoss.style.left=`${Math.max(0,e.hp)/e.maxHp*100}%`;enemyLoss.style.width=`${(Math.min(e.maxHp,enemyBefore)-Math.max(0,e.hp))/e.maxHp*100}%`;enemyLoss.hidden=false;}else enemyLoss.hidden=true;
-  const display=$("battle-enemy"),placeholder=display.querySelector(".enemy-placeholder");
+  const display=$("battle-enemy"),placeholder=display.querySelector(".enemy-placeholder");display.dataset.variant=e.variantId||"";
   const liveWolfClones=(battleState.wolfClones||[]).filter(c=>c.hp>0);const splitWolf=e.name==="オオカミ"&&liveWolfClones.length>0;
   display.classList.toggle("enemy-individual-hp",!!e.members||splitWolf);
   let img=display.querySelector(".enemy-image");
   if(e.members){
     img?.remove();placeholder.hidden=true;
     let group=display.querySelector(".enemy-group");if(!group){group=document.createElement("div");group.className="enemy-group";display.prepend(group);}
-    group.innerHTML=e.members.map(m=>m.hp>0?`<div class="enemy-group-unit" data-enemy-id="${esc(m.id)}"><img src="${esc(m.image)}" alt="${esc(m.name||"ゴブリン")}"><span>${esc(m.displayName||m.name||m.id.replace("goblin-","ゴブリン "))}</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,m.hp)/m.maxHp*100}%"></i></div><small>${Math.max(0,m.hp)} / ${m.maxHp}</small></div>`:"").join("");
+    group.innerHTML=e.members.map(m=>m.hp>0?`<div class="enemy-group-unit" data-enemy-id="${esc(m.id)}"><img src="${esc(m.image)}" alt="${esc(m.name||"ゴブリン")}"><span>${esc(m.displayName||m.name||m.id.replace("goblin-","ゴブリン "))}</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,m.hp)/m.maxHp*100}%"></i></div><div class="enemy-unit-status">${extEnemyStatusBadges(m).join("")}</div><small>${Math.max(0,m.hp)} / ${m.maxHp}</small></div>`:"").join("");
   }else{
     display.querySelector(".enemy-group")?.remove();
     if(e.image){
@@ -1425,8 +1433,8 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
       img?.remove();
       let group=display.querySelector(".enemy-group");if(!group){group=document.createElement("div");group.className="enemy-group wolf-enemy-group";display.prepend(group);}
       const wolfBuffs=battleState.wolfEvasionTurns>0?`<span class="enemy-unit-buff">警鐘・回避上昇 ${battleState.wolfEvasionTurns}T</span>`:"";
-      const realUnit=`<div class="enemy-group-unit wolf-unit" data-enemy-id="wolf-main"><img src="${esc(e.image||"")}" alt="オオカミ"><span>オオカミ</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,e.hp)/e.maxHp*100}%"></i></div><div class="enemy-unit-buffs">${wolfBuffs}</div></div>`;
-      const fakeUnits=liveWolfClones.map(c=>`<div class="enemy-group-unit wolf-unit" data-enemy-id="${esc(c.id)}"><img src="${esc(e.image||"")}" alt="オオカミ"><span>オオカミ</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,c.hp)/c.maxHp*100}%"></i></div><div class="enemy-unit-buffs">${wolfBuffs}</div></div>`);
+      const realUnit=`<div class="enemy-group-unit wolf-unit" data-enemy-id="wolf-main"><img src="${esc(e.image||"")}" alt="オオカミ"><span>オオカミ</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,e.hp)/e.maxHp*100}%"></i></div><div class="enemy-unit-status">${extEnemyStatusBadges(e).join("")}</div><div class="enemy-unit-buffs">${wolfBuffs}</div></div>`;
+      const fakeUnits=liveWolfClones.map(c=>`<div class="enemy-group-unit wolf-unit" data-enemy-id="${esc(c.id)}"><img src="${esc(e.image||"")}" alt="オオカミ"><span>オオカミ</span><div class="enemy-unit-hp"><i style="width:${Math.max(0,c.hp)/c.maxHp*100}%"></i></div><div class="enemy-unit-status">${extEnemyStatusBadges(c).join("")}</div><div class="enemy-unit-buffs">${wolfBuffs}</div></div>`);
       // 表示順だけ毎回の分身時にランダム化。本物のHPは本体、偽物は個別HPで管理。
       const unitMarkup={"wolf-main":realUnit,...Object.fromEntries(liveWolfClones.map((c,i)=>[c.id,fakeUnits[i]]))};
       group.innerHTML=(battleState.wolfDisplayOrder?.length?battleState.wolfDisplayOrder:["wolf-main",...liveWolfClones.map(c=>c.id)]).filter(id=>unitMarkup[id]).map(id=>unitMarkup[id]).join("");
@@ -1436,12 +1444,12 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
   const enemyStatuses=[];
   if(e.name==="オオカミ"&&!splitWolf&&battleState.wolfEvasionTurns>0)enemyStatuses.push(`<span class="enemy-status-buff">警鐘 回避上昇 ${battleState.wolfEvasionTurns}T</span>`);
   
-  if(Number(e._defenseDownTurns)>0)enemyStatuses.push(`<span class="enemy-status-debuff">防御力低下 ${e._defenseDownTurns}T</span>`);
+  enemyStatuses.push(...extEnemyStatusBadges(e));
   statusHost.innerHTML=enemyStatuses.join("");
   const hpTrack=display.querySelector(".hp-track");if(hpTrack&&statusHost.parentElement!==display)display.insertBefore(statusHost,hpTrack);
   statusHost.hidden=enemyStatuses.length===0;
-  $("battle-party").innerHTML=getParty().map(c=>{const u=unionSkills[c.id],g=battleState.unionGauges[c.id]||0,ready=!!u&&g>=u.requiredHits,active=c.id===currentActor()?.id,incapacitated=isActionIncapacitated(c);return `<article class="battle-member ${active&&!battleState.busy?"active-turn":""} ${(battleState.actingIds||[]).includes(c.id)?"acting-turn":""} ${incapacitated&&c.hp>0?"action-incapacitated":""}${c.hp<=0?"dead":""} ${ready?"union-ready":""}" data-party-id="${c.id}"><div class="battle-portrait ${c.id==="healer"?"healer-portrait":c.id==="mage"?"mage-portrait":""}"><img src="${esc(c.image)}" alt="${esc(c.name)}" onerror="this.parentElement.classList.add('portrait-missing');this.remove()"></div><div class="member-head"><strong>${esc(c.name)}${burnedTurns[c.id]>0?' <span class="status-burn" title="火傷：残り'+burnedTurns[c.id]+'ターン">🔥火傷 '+burnedTurns[c.id]+'</span>':""}${c._defenseDownTurns>0?' <span class="status-down" title="防御力低下：残り'+c._defenseDownTurns+'ターン">▼防御↓ '+c._defenseDownTurns+'</span>':""}</strong><span>${c.hp<=0?"戦闘不能":incapacitated?"行動不能":active&&!battleState.busy?"> 行動選択中":""}</span></div><div class="battle-gauge-label"><span>HP</span><strong>${Math.max(0,c.hp)} / ${effectiveStats(c).maxHp}</strong></div><div class="hp-track"><div class="hp-fill" style="width:${Math.max(0,c.hp)/effectiveStats(c).maxHp*100}%"></div><div class="hp-loss-preview" style="left:${Math.max(0,c.hp)/effectiveStats(c).maxHp*100}%;width:${Number.isFinite(c._hpBeforeDamage)&&c._hpBeforeDamage>c.hp?(Math.min(effectiveStats(c).maxHp,c._hpBeforeDamage)-Math.max(0,c.hp))/effectiveStats(c).maxHp*100:0}%" ${Number.isFinite(c._hpBeforeDamage)&&c._hpBeforeDamage>c.hp?"":"hidden"}></div></div><div class="battle-gauge-label sp-gauge-label"><span>SP</span><strong>${c.sp} / ${c.maxSp}</strong></div><div class="sp-track"><div class="sp-fill" style="width:${c.sp/c.maxSp*100}%"></div></div><div class="union-mini">UNION ${g}/${u?.requiredHits||0}<div class="union-track"><i style="width:${u?g/u.requiredHits*100:0}%"></i></div></div></article>`;}).join("");}
-function renderActionMenu(forceRender=false){if(battleState.busy&&!forceRender)return;let skipped=0;while(currentActor()&&currentActor().hp>0&&isActionIncapacitated(currentActor())){const blocked=currentActor();consumeIncapacitatedTurn(blocked);battleState.currentActorIndex++;skipped++;}if(skipped)renderBattle();if(skipped&&battleState.currentActorIndex>=battleState.turnOrder.length){battleState.busy=true;renderBattle();executeTurn();return;}setCommandDescription("攻撃：敵に通常攻撃を行います。敵の防御力によってダメージが変化します。SPスキル：SPを消費して、敵の防御を貫通する攻撃などを行います。防御：敵の攻撃に備えて受けるダメージを軽減します。");const actor=currentActor(),box=$("battle-commands");if(!actor){executeTurn();return;}const uReady=unionSkills[actor.id]&&(battleState.unionGauges[actor.id]||0)>=unionSkills[actor.id].requiredHits;const chimeKey=`${battleState.stage}:${battleState.turnCount}:${actor.id}`;if(uReady&&readyChimeKey!==chimeKey){readyChimeKey=chimeKey;playReadyChime();}$("command-title").textContent=`${actor.name}　どうする？`;box.hidden=false;battleState.menuMode="main";box.innerHTML=`<button class="command-option" data-action="attack" data-description="敵に通常攻撃を行います。敵の防御力によってダメージが変化します。">攻撃</button><button class="command-option" data-action="skill" data-description="SPを消費して強力なスキルを使用します。スキルごとに効果や属性が異なります。" ${isSkillRestricted(actor)?"disabled":""}>SPスキル${isSkillRestricted(actor)?"（装備適性なし）":""}</button><button class="command-option" data-action="guard" data-description="このターンに受けるダメージを軽減します。防御中はユニオンゲージが増加しません。">防御</button><button class="command-option" data-action="item" data-description="所持している道具を使用します。回復薬などで味方を支援できます。">道具</button><div class="union-panel"><div class="window-title">ユニオンスキル</div><div class="union-list">${unionOption(actor)}</div></div>${battleState.currentActorIndex>0?'<button class="command-option back-option" data-action="back">前のキャラへ戻る</button>':''}`;
+  $("battle-party").innerHTML=getParty().map(c=>{const u=unionSkills[c.id],g=battleState.unionGauges[c.id]||0,ready=!!u&&g>=u.requiredHits,active=c.id===currentActor()?.id,incapacitated=isActionIncapacitated(c);return `<article class="battle-member ${active&&!battleState.busy?"active-turn":""} ${(battleState.actingIds||[]).includes(c.id)?"acting-turn":""} ${incapacitated&&c.hp>0?"action-incapacitated":""}${c.hp<=0?"dead":""} ${ready?"union-ready":""}" data-party-id="${c.id}"><div class="battle-portrait ${c.id==="healer"?"healer-portrait":c.id==="mage"?"mage-portrait":""}">${extBattlePortrait(c)}</div><div class="member-head"><strong>${esc(c.name)}${extStatusBadges(c)}${extJobBadges(c)}</strong><span>${c.hp<=0?"戦闘不能":incapacitated?"行動不能":active&&!battleState.busy?"> 行動選択中":""}</span></div><div class="battle-gauge-label"><span>HP</span><strong>${Math.max(0,c.hp)} / ${effectiveStats(c).maxHp}</strong></div><div class="hp-track"><div class="hp-fill" style="width:${Math.max(0,c.hp)/effectiveStats(c).maxHp*100}%"></div><div class="hp-loss-preview" style="left:${Math.max(0,c.hp)/effectiveStats(c).maxHp*100}%;width:${Number.isFinite(c._hpBeforeDamage)&&c._hpBeforeDamage>c.hp?(Math.min(effectiveStats(c).maxHp,c._hpBeforeDamage)-Math.max(0,c.hp))/effectiveStats(c).maxHp*100:0}%" ${Number.isFinite(c._hpBeforeDamage)&&c._hpBeforeDamage>c.hp?"":"hidden"}></div></div><div class="battle-gauge-label sp-gauge-label"><span>SP</span><strong>${c.sp} / ${c.maxSp}</strong></div><div class="sp-track"><div class="sp-fill" style="width:${c.sp/c.maxSp*100}%"></div></div><div class="union-mini">UNION ${g}/${u?.requiredHits||0}<div class="union-track"><i style="width:${u?g/u.requiredHits*100:0}%"></i></div></div></article>`;}).join("");}
+function renderActionMenu(forceRender=false){if(battleState.busy&&!forceRender)return;let skipped=0;while(currentActor()&&currentActor().hp>0&&(isActionIncapacitated(currentActor())||extIsChargeLocked(currentActor()))){const blocked=currentActor();if(isActionIncapacitated(blocked)){extCancelCharge(blocked);consumeIncapacitatedTurn(blocked);}battleState.currentActorIndex++;skipped++;}if(skipped)renderBattle();if(skipped&&battleState.currentActorIndex>=battleState.turnOrder.length){battleState.busy=true;renderBattle();executeTurn();return;}setCommandDescription("攻撃：敵に通常攻撃を行います。敵の防御力によってダメージが変化します。SPスキル：SPを消費して、敵の防御を貫通する攻撃などを行います。防御：敵の攻撃に備えて受けるダメージを軽減します。");const actor=currentActor(),box=$("battle-commands");if(!actor){executeTurn();return;}const uReady=unionSkills[actor.id]&&(battleState.unionGauges[actor.id]||0)>=unionSkills[actor.id].requiredHits;const chimeKey=`${battleState.stage}:${battleState.turnCount}:${actor.id}`;if(uReady&&readyChimeKey!==chimeKey){readyChimeKey=chimeKey;playReadyChime();}$("command-title").textContent=`${actor.name}　どうする？`;box.hidden=false;battleState.menuMode="main";box.innerHTML=`<button class="command-option" data-action="attack" data-description="敵に通常攻撃を行います。敵の防御力によってダメージが変化します。">攻撃</button><button class="command-option" data-action="skill" data-description="SPを消費して強力なスキルを使用します。スキルごとに効果や属性が異なります。" ${isSkillRestricted(actor)?"disabled":""}>SPスキル${isSkillRestricted(actor)?"（装備適性なし）":""}</button><button class="command-option" data-action="guard" data-description="このターンに受けるダメージを軽減します。防御中はユニオンゲージが増加しません。">防御</button><button class="command-option" data-action="item" data-description="所持している道具を使用します。回復薬などで味方を支援できます。">道具</button><div class="union-panel"><div class="window-title">ユニオンスキル</div><div class="union-list">${unionOption(actor)}</div></div>${battleState.currentActorIndex>0?'<button class="command-option back-option" data-action="back">前のキャラへ戻る</button>':''}`;
   box.querySelectorAll("[data-description]").forEach(b=>b.addEventListener("focus",()=>setCommandDescription(b.dataset.description)));box.querySelectorAll("[data-description]").forEach(b=>b.addEventListener("pointerenter",()=>setCommandDescription(b.dataset.description)));box.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.description)setCommandDescription(b.dataset.description);sound("select");const a=b.dataset.action;if(a==="attack")targetEnemy({type:"attack",actor:actor.id});else if(a==="guard")commitAction({type:"guard",actor:actor.id});else if(a==="skill")renderSkillMenu(actor);else if(a==="item")renderItemMenu(actor);else if(a==="back")undoPrevious();}));box.querySelectorAll("[data-union]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.description)setCommandDescription(b.dataset.description);sound("select",true);const type=b.dataset.union;if(type==="cross-break")renderPartnerMenu(actor);else commitAction({type:"union",actor:actor.id});}));$("command-hint").textContent=`${actor.name}の行動を選択してください。全員の選択後、行動が順番に再生されます。`;tutorialSyncCommandLock();}
 function setCommandDescription(message){const panel=$("command-description");if(panel)panel.textContent=message||"コマンドを選択すると、効果の説明がここに表示されます。";}
 function isSkillRestricted(c){return equippedItems(c).some(i=>!(i.classes||[]).includes(c.id));}
@@ -1449,6 +1457,7 @@ function unionSkillDescription(c,u){const details={stun:"敵単体に大ダメ�
 function unionOption(c){const u=unionSkills[c.id],g=battleState.unionGauges[c.id]||0;if(!u)return "";const ready=g>=u.requiredHits,blocked=isSkillRestricted(c);return `<button class="command-option union-command ${ready?"union-command-ready":""}" data-union="${u.type}" data-description="${esc(unionSkillDescription(c,u))}" ${ready&&!blocked?"":"disabled"}>${esc(u.name)} <small>${blocked?"装備適性なし":`${g}/${u.requiredHits}`}</small></button>`;}
 function describeSkill(skill){
   if(!skill)return "スキルの詳細情報はありません。";
+  if(skill.description)return `${skill.name}：${skill.description}消費SP：${skill.cost}。`;// [EXT]
   const cost=`消費SP：${skill.cost}。`;
   if(skill.type==="level-lightning-all"||skill.type==="level-lightning-single")return `${skill.name}：レベル${skill.treeLevel}。雷属性のSP攻撃です。${cost}`;
    if(skill.type==="level-flare")return `${skill.name}：レベル${skill.treeLevel}。敵単体に強力な炎属性SP攻撃。${cost}`;
@@ -1470,7 +1479,7 @@ function describeSkill(skill){
   if(skill.type==="pierce"||skill.type==="spAttack")return `${skill.name}：敵の防御力を貫通するSP攻撃です。${cost}`;
   return `${skill.name}：SPを消費して発動するスキルです。${cost}`;
 }
-function renderSkillMenu(actor){battleState.menuMode="skill";setCommandDescription("使用するSPスキルを選択してください。スキル名にカーソルを合わせると効果を確認できます。");const box=$("battle-commands");$("command-title").textContent=`${actor.name}のSPスキル`;if(isSkillRestricted(actor)){box.innerHTML=`<p class="empty-note">${esc(actor.name)}は装備適性がないため、SPスキルを使用できません。適性装備に戻すと再び使用できます。</p><button class="command-option back-option" data-action="back">戻る</button>`;box.querySelector("[data-action=back]").onclick=()=>renderActionMenu();return;}box.innerHTML=getCharacterSkills(actor).map(s=>`<button class="command-option" data-skill="${s.id}" data-description="${esc(describeSkill(s))}" ${(actor.sp<s.cost||(s.hpCost&&actor.hp<=s.hpCost)||s.disabled)?"disabled":""}>${esc(s.name)} <small>${s.treeLevel?`Lv.${s.treeLevel} ／ `:""}SP ${s.cost}${s.disabled?" ／ 再使用待機中":""}${s.hpCost?` / HP ${s.hpCost}`:""}</small></button>`).join("")+`<button class="command-option back-option" data-action="back">戻る</button>`;box.querySelectorAll("[data-skill]").forEach(b=>{b.addEventListener("focus",()=>setCommandDescription(b.dataset.description));b.addEventListener("pointerenter",()=>{setCommandDescription(b.dataset.description);if(battleState.tutorialMode&&tutorialState.phase==="battle-sp-command")tutorialHighlight(".command-info-window");});b.onclick=()=>{setCommandDescription(b.dataset.description);if(battleState.tutorialMode&&tutorialState.phase==="battle-sp-command")tutorialHighlight(".command-info-window");const s=getCharacterSkills(actor).find(x=>x.id===b.dataset.skill);if(!s)return;sound("select");if(s.target==="enemy")targetEnemy({type:"skill",actor:actor.id,skillId:s.id});else if(s.target==="allEnemies")targetEnemy({type:"skill",actor:actor.id,skillId:s.id,all:true});else if(s.type==="line-heal")renderLineHealMenu(actor,s);else if(s.target==="ally"||s.target==="deadAlly")renderAllyMenu(actor,s);else commitAction({type:"skill",actor:actor.id,skillId:s.id});};});box.querySelector("[data-action=back]").onclick=()=>renderActionMenu();tutorialSyncCommandLock();}
+function renderSkillMenu(actor){battleState.menuMode="skill";setCommandDescription("使用するSPスキルを選択してください。スキル名にカーソルを合わせると効果を確認できます。");const box=$("battle-commands");$("command-title").textContent=`${actor.name}のSPスキル`;if(isSkillRestricted(actor)){box.innerHTML=`<p class="empty-note">${esc(actor.name)}は装備適性がないため、SPスキルを使用できません。適性装備に戻すと再び使用できます。</p><button class="command-option back-option" data-action="back">戻る</button>`;box.querySelector("[data-action=back]").onclick=()=>renderActionMenu();return;}box.innerHTML=getCharacterSkills(actor).map(s=>`<button class="command-option" data-skill="${s.id}" data-description="${esc(describeSkill(s))}" ${(actor.sp<s.cost||(s.hpCost&&actor.hp<=s.hpCost)||s.disabled||extSkillBlocked(actor,s))?"disabled":""}>${esc(s.name)} <small>${s.treeLevel?`Lv.${s.treeLevel} ／ `:""}SP ${s.cost}${extSkillLabelExtra(actor,s)}${s.disabled?" ／ 再使用待機中":""}${s.hpCost?` / HP ${s.hpCost}`:""}</small></button>`).join("")+`<button class="command-option back-option" data-action="back">戻る</button>`;box.querySelectorAll("[data-skill]").forEach(b=>{b.addEventListener("focus",()=>setCommandDescription(b.dataset.description));b.addEventListener("pointerenter",()=>{setCommandDescription(b.dataset.description);if(battleState.tutorialMode&&tutorialState.phase==="battle-sp-command")tutorialHighlight(".command-info-window");});b.onclick=()=>{setCommandDescription(b.dataset.description);if(battleState.tutorialMode&&tutorialState.phase==="battle-sp-command")tutorialHighlight(".command-info-window");const s=getCharacterSkills(actor).find(x=>x.id===b.dataset.skill);if(!s)return;sound("select");if(s.target==="enemy")targetEnemy({type:"skill",actor:actor.id,skillId:s.id});else if(s.target==="allEnemies")targetEnemy({type:"skill",actor:actor.id,skillId:s.id,all:true});else if(s.type==="line-heal")renderLineHealMenu(actor,s);else if(s.target==="ally"||s.target==="deadAlly")renderAllyMenu(actor,s);else commitAction({type:"skill",actor:actor.id,skillId:s.id});};});box.querySelector("[data-action=back]").onclick=()=>renderActionMenu();tutorialSyncCommandLock();}
 function renderItemMenu(actor){battleState.menuMode="item";const owned=shopItems.filter(i=>i.kind&&(inventory[i.id]||0)>0);const box=$("battle-commands");$("command-title").textContent=`${actor.name}の道具`;if(!owned.length){box.innerHTML='<p class="empty-note">使用できるアイテムがありません。</p><button class="command-option" data-action="back">戻る</button>';box.querySelector("[data-action=back]").onclick=renderActionMenu;return;}box.innerHTML=owned.map(i=>`<button class="command-option" data-item="${i.id}">>${esc(i.name)} <small>×${inventory[i.id]}</small></button>`).join("")+`<button class="command-option" data-action="back">戻る</button>`;box.querySelectorAll("[data-item]").forEach(b=>b.onclick=()=>{const item=itemById(b.dataset.item);renderAllyMenu(actor,item,{item:true});});box.querySelector("[data-action=back]").onclick=renderActionMenu;}
 function renderLineHealMenu(actor,skill){
   const party=getParty(),box=$("battle-commands");
@@ -1547,12 +1556,37 @@ function undoPrevious(){if(battleState.currentActorIndex<=0)return;const idx=bat
 async function executeTurn(){
   if(!battleState.enemy){battleState.busy=false;return;}
   if(enemyHpTotal(battleState.enemy)<=0){await finishStage();return;}
-  const order=battleState.actions.filter(Boolean).map((action,index)=>({action,index})).sort((a,b)=>(a.action.type==="union"?0:1)-(b.action.type==="union"?0:1)||a.index-b.index).map(x=>x.action);
-  for(const action of order){
+  // [EXT] 行動順：全員が行動を選んだあと、味方と敵をスピード順に再生する。
+  // チュートリアルだけは従来どおり「味方（選択順）→ 敵」で固定する。
+  const useRound=!battleState.tutorialMode;
+  battleState._roundActive=useRound;
+  const resolvedTurn=battleState.turnCount+1;
+  if(useRound){
+    await extRoundStart();
+    if(enemyHpTotal(battleState.enemy)<=0){battleState._roundActive=false;await finishStage();return;}
+    if(livingParty().length===0){battleState._roundActive=false;finishDefeat();return;}
+  }
+  const order=useRound?extBuildRoundOrder():[...battleState.actions.filter(Boolean).map((action,index)=>({action,index})).sort((a,b)=>(a.action.type==="union"?0:1)-(b.action.type==="union"?0:1)||a.index-b.index).map(x=>({kind:"party",action:x.action})),{kind:"enemy"}];
+  for(const entry of order){
     if(enemyHpTotal(battleState.enemy)<=0)break;
+    if(entry.kind==="enemy"){
+      if(livingParty().length===0)break;
+      battleState.actingIds=[];
+      checkBossTransformation(battleState.enemy);
+      if(useRound&&extEnemyParalyzed(battleState.enemy)){pushEvent(`${battleState.enemy.name}は麻痺して動けない！`);renderBattle();await wait(700);continue;}
+      await enemyTurn();
+      renderBattle();
+      await wait(950);
+      if(battleState.stage===5&&battleState.enemy?.name==="魔王"&&[3,7,11].includes(resolvedTurn)){showEnemyOmen("maou");}
+      if(battleState.enemy?.name==="ドラゴン"&&resolvedTurn%3===2){showEnemyOmen("dragon");}
+      if(livingParty().length===0){battleState._roundActive=false;finishDefeat();return;}
+      continue;
+    }
+    const action=entry.action;
     const actor=getCharacter(action.actor);
     if(!actor||actor.hp<=0||battleState.consumedActors.includes(action.actor))continue;
-    if(isActionIncapacitated(actor)){consumeIncapacitatedTurn(actor);continue;}
+    if(isActionIncapacitated(actor)){extCancelCharge(actor);consumeIncapacitatedTurn(actor);continue;}
+    if(useRound&&extPartyParalyzed(actor)){extCancelCharge(actor);pushEvent(`${actor.name}は麻痺して動けない！`);renderBattle();await wait(600);continue;}
     battleState.actingIds=[action.actor,...(action.partner?[action.partner]:[])];renderBattle();
     await executeAction(action);
     renderBattle();
@@ -1562,14 +1596,9 @@ async function executeTurn(){
     if(enemyHpTotal(battleState.enemy)<=0)break;
   }
   battleState.actingIds=[];
-  if(enemyHpTotal(battleState.enemy)<=0){await finishStage();return;}
-  checkBossTransformation(battleState.enemy);
-  const resolvedTurn=battleState.turnCount+1;
-  await enemyTurn();
-  renderBattle();
-  await wait(950);
-  if(battleState.stage===5&&battleState.enemy?.name==="魔王"&&[3,7,11].includes(resolvedTurn)){showEnemyOmen("maou");}
-  if(battleState.enemy?.name==="ドラゴン"&&resolvedTurn%3===2){showEnemyOmen("dragon");}
+  if(enemyHpTotal(battleState.enemy)<=0){battleState._roundActive=false;await finishStage();return;}
+  if(useRound){battleState._roundActive=false;await extEndOfTurnStatuses();}
+  battleState._roundActive=false;
   if(livingParty().length===0){finishDefeat();return;}
   battleState.turnCount++;
   refreshBattleLog();
@@ -1634,13 +1663,15 @@ async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
   }
   return total;
 }
-async function executeAction(a){const actor=getCharacter(a.actor),enemy=battleState.enemy;if(!actor||actor.hp<=0)return;const stats=effectiveStats(actor);if(actor.id==="mage"&&mageCompressionStacks.mage>0&&a.type!=="skill")mageCompressionStacks.mage=0;if(a.type==="guard"){battleState.guarding[actor.id]=actor.guardCut;flashPartyGuard(actor.id);pushLog(`${actor.name}は防御の構えを取った。`);return;}animatePartyIcon(actor.id);if(a.type==="attack"){let d=calcEnemyPhysicalDamage(enemy,effectiveAttackPower(actor));if(actor.id==="warrior")d=Math.floor(d*BATTLE_RULES.passives.warrior.normalDamage);d=Math.floor(d*(1+treeBonus(actor.id,"normal")));d=applyWeaponAttributeDamage(enemy,d,actor);beginEnemyDamagePreview(enemy);const chosen=a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):livingEnemyTargets(enemy)[0];const dealt=chosen?applyDamageToEnemyTarget(enemy,chosen,d):applyDamageToEnemy(enemy,d);if(!lastEnemyAttackMissed&&dealt>0)addBreakDamage(enemy,"normal",getWeaponPhysicalElement(actor),actor);animatePartyIcon(actor.id);animateEnemyIcons(chosen);chargeGauge(actor);if(actor.id==="samurai"&&equipment.samurai?.katana1&&equipment.samurai?.katana2&&dealt>0&&enemyHpTotal(enemy)>0){const secondTarget=(a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):null)||livingEnemyTargets(enemy)[0];const second=secondTarget?applyDamageToEnemyTarget(enemy,secondTarget,d):0;if(second>0)addBreakDamage(enemy,"normal",getWeaponPhysicalElement(actor),actor);pushLog(`二刀流！ 追加で${second}ダメージ！`);combatNumber(displayEnemyNode(),`-${second}`,"damage");}if(lastEnemyAttackMissed){pushLog(`${enemy.name}は攻撃を回避した！`);}else{pushLog(`${actor.name}の攻撃！ ${enemy.name}に${dealt}ダメージ。`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");showHitEffect("slash");flashEnemyDamage();}if(!lastEnemyAttackMissed)playSe(actor.id==="warrior"?"assets/se/senntou/打撃音_3":"assets/se/senntou/斬撃音");return;}if(a.type==="skill"){if(isSkillRestricted(actor)){pushLog(`${actor.name}は装備の適性がないため、SPスキルを使用できない！`);return;}const skill=getCharacterSkills(actor).find(s=>s.id===a.skillId);if(!skill||actor.sp<skill.cost||(skill.hpCost&&actor.hp<=skill.hpCost)){pushLog(`${actor.name}はスキルを使えなかった。`);return;}actor.sp-=Math.max(1,Math.floor(skill.cost*(1-Math.min(.5,uniqueEquippedItems(actor).reduce((n,i)=>n+(i.spCostReduction||0),0)))));if(skill.hpCost)actor.hp-=skill.hpCost;
+async function executeAction(a){const actor=getCharacter(a.actor),enemy=battleState.enemy;if(!actor||actor.hp<=0)return;if(a.type==="imperial-release"){await extImperialRelease(actor);return;}// [EXT]
+const stats=effectiveStats(actor);if(actor.id==="mage"&&mageCompressionStacks.mage>0&&a.type!=="skill")mageCompressionStacks.mage=0;if(a.type==="guard"){battleState.guarding[actor.id]=actor.guardCut;flashPartyGuard(actor.id);pushLog(`${actor.name}は防御の構えを取った。`);return;}animatePartyIcon(actor.id);if(a.type==="attack"){let d=calcEnemyPhysicalDamage(enemy,effectiveAttackPower(actor));if(actor.id==="warrior")d=Math.floor(d*BATTLE_RULES.passives.warrior.normalDamage);d=Math.floor(d*(1+treeBonus(actor.id,"normal")));d=applyWeaponAttributeDamage(enemy,d,actor);beginEnemyDamagePreview(enemy);const chosen=a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):livingEnemyTargets(enemy)[0];const dealt=chosen?applyDamageToEnemyTarget(enemy,chosen,d):applyDamageToEnemy(enemy,d);if(!lastEnemyAttackMissed&&dealt>0)addBreakDamage(enemy,"normal",getWeaponPhysicalElement(actor),actor);animatePartyIcon(actor.id);animateEnemyIcons(chosen);chargeGauge(actor);if(actor.id==="samurai"&&equipment.samurai?.katana1&&equipment.samurai?.katana2&&dealt>0&&enemyHpTotal(enemy)>0){const secondTarget=(a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):null)||livingEnemyTargets(enemy)[0];const second=secondTarget?applyDamageToEnemyTarget(enemy,secondTarget,d):0;if(second>0)addBreakDamage(enemy,"normal",getWeaponPhysicalElement(actor),actor);pushLog(`二刀流！ 追加で${second}ダメージ！`);combatNumber(displayEnemyNode(),`-${second}`,"damage");}if(lastEnemyAttackMissed){pushLog(`${enemy.name}は攻撃を回避した！`);}else{pushLog(`${actor.name}の攻撃！ ${enemy.name}に${dealt}ダメージ。`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");showHitEffect("slash");flashEnemyDamage();}if(!lastEnemyAttackMissed)playSe(actor.id==="warrior"?"assets/se/senntou/打撃音_3":"assets/se/senntou/斬撃音");return;}if(a.type==="skill"){if(isSkillRestricted(actor)){pushLog(`${actor.name}は装備の適性がないため、SPスキルを使用できない！`);return;}const skill=getCharacterSkills(actor).find(s=>s.id===a.skillId);if(!skill||actor.sp<skill.cost||(skill.hpCost&&actor.hp<=skill.hpCost)){pushLog(`${actor.name}はスキルを使えなかった。`);return;}actor.sp-=Math.max(1,Math.floor(skill.cost*(1-Math.min(.5,uniqueEquippedItems(actor).reduce((n,i)=>n+(i.spCostReduction||0),0)))));if(skill.hpCost)actor.hp-=skill.hpCost;
+   if(skill.xj){await extExecuteSkill(actor,skill,a);return;}// [EXT] 新職業のスキル
    const compressionHits=actor.id==="mage"&&mageCompressionStacks.mage>0&&skill.type!=="compression"?(2**mageCompressionStacks.mage):1;
    if(actor.id==="mage"&&skill.type==="compression"){mageCompressionStacks.mage++;chargeGauge(actor);pushLog(`${actor.name}は「術式圧縮」！ 次の行動で魔法攻撃の回数が${2**mageCompressionStacks.mage}倍になる。`);return;}
    if(skill.type==="defense-camp"){battleState.defenseCampTurns=3;battleState._defenseCampLevel=skill.treeLevel||1;chargeGauge(actor);pushLog(`${actor.name}は「防衛陣地」！ 3ターンの間、味方全体の防御力が${50+5*((skill.treeLevel||1)-1)}上昇する。`);return;}
    if(skill.type==="magic-guard"){battleState.magicGuardActive=true;battleState._magicGuardRate=(50+2*((skill.treeLevel||1)-1))/100;chargeGauge(actor);pushLog(`${actor.name}は「マジックガード」！ このターン、味方全体の魔法ダメージを${50+2*((skill.treeLevel||1)-1)}%軽減する。`);return;}
    if(skill.type==="full-guard"){if(battleState.knightFullGuardCooldown>0){pushLog("フルガードはまだ再使用できない。");return;}const reduction=Math.min(.80,.35+.05*(skill.treeLevel||1));battleState.fullGuardActive=true;battleState._fullGuardReduction=reduction;battleState.guarding.knight=reduction;flashPartyGuard(actor.id);chargeGauge(actor);battleState.knightFullGuardCooldown=6;pushLog(`${actor.name}は「フルガード」！ 味方への攻撃を引き受け、防御率${Math.round(reduction*100)}%で守る！`);return;}
-   if(skill.type==="line-heal"){const party=getParty(),targets=(a.targetIds||[]).map(id=>party.find(c=>c.id===id)).filter(c=>c&&c.hp>0);let total=0;for(const target of targets){const before=target.hp;const power=effectiveSpAttackPower(actor)*(.55+.08*(skill.treeLevel||1))*BATTLE_RULES.classBonuses.healer.healing*BATTLE_RULES.passives.healer.healing*(1+treeBonus(actor.id,"heal"));target.hp=Math.min(effectiveStats(target).maxHp,target.hp+Math.floor(power));const amount=target.hp-before;total+=amount;renderBattle();if(amount>0){combatNumber(target.id,`+${amount}`,"heal");const card=document.querySelector(`.battle-member[data-party-id="${target.id}"]`);if(card){card.classList.remove("heal-flash");void card.offsetWidth;card.classList.add("heal-flash");setTimeout(()=>card.classList.remove("heal-flash"),battleDelayMs(420));}}sound("heal");await wait(320);}chargeGauge(actor);pushLog(`${actor.name}の「ラインヒール」！ 味方${targets.length}人のHPを合計${total}回復。`);return;}
+   if(skill.type==="line-heal"){const party=getParty(),targets=(a.targetIds||[]).map(id=>party.find(c=>c.id===id)).filter(c=>c&&c.hp>0);let total=0;for(const target of targets){const before=target.hp;const power=effectiveSpAttackPower(actor)*(.55+.08*(skill.treeLevel||1))*BATTLE_RULES.classBonuses.healer.healing*BATTLE_RULES.passives.healer.healing*(1+treeBonus(actor.id,"heal"));target.hp=Math.min(effectiveStats(target).maxHp,target.hp+Math.floor(power*extHealMul(target)));const amount=target.hp-before;total+=amount;renderBattle();if(amount>0){combatNumber(target.id,`+${amount}`,"heal");const card=document.querySelector(`.battle-member[data-party-id="${target.id}"]`);if(card){card.classList.remove("heal-flash");void card.offsetWidth;card.classList.add("heal-flash");setTimeout(()=>card.classList.remove("heal-flash"),battleDelayMs(420));}}sound("heal");await wait(320);}chargeGauge(actor);pushLog(`${actor.name}の「ラインヒール」！ 味方${targets.length}人のHPを合計${total}回復。`);return;}
    if(skill.type==="refresh"){const targets=skill.treeLevel>=5?getParty():[getCharacter(a.target)].filter(Boolean);for(const target of targets){if(target.hp<=0)continue;clearNegativeStatuses(target);}chargeGauge(actor);pushLog(`${actor.name}の「リフレッシュ」！ ${skill.treeLevel>=5?"味方全体":targets[0]?.name||"味方"}の状態異常を解除した。`);sound("heal");return;}
    if(["level-lightning-all","level-lightning-single","level-flare","level-magic-bomb","holy-light","burst-blade"].includes(skill.type)){
      const lv=skill.treeLevel||1,magical=skill.type!=="burst-blade";let raw=skill.type==="burst-blade"?effectiveAttackPower(actor)*(4+.2*(lv-1)):effectiveSpAttackPower(actor);
@@ -1659,7 +1690,7 @@ async function executeAction(a){const actor=getCharacter(a.actor),enemy=battleSt
    }
    if(actor.id==="mage"&&compressionHits>1)mageCompressionStacks.mage=0;
    if(skill.type==="taunt"){battleState.tauntTarget=actor.id;chargeGauge(actor);pushLog(`${actor.name}は挑発！ 敵の攻撃を引きつける。`);return;}
-  if(skill.type==="heal"){const target=getCharacter(a.target);if(!target||target.hp<=0){pushLog("回復対象がいません。");return;}const before=target.hp;const healingPower=effectiveSpAttackPower(actor)*(actor.id==="healer"?BATTLE_RULES.classBonuses.healer.healing*BATTLE_RULES.passives.healer.healing:1)*(1+Math.min(.5,uniqueEquippedItems(actor).reduce((n,i)=>n+(i.healingRate||0),0))+treeBonus(actor.id,"heal"));target.hp=Math.min(effectiveStats(target).maxHp,target.hp+Math.floor(healingPower));chargeGauge(actor);pushLog(`${actor.name}のヒール！ ${target.name}のHPが${target.hp-before}回復。`);combatNumber(target.id,`+${target.hp-before}`,"heal");sound("heal");return;}
+  if(skill.type==="heal"){const target=getCharacter(a.target);if(!target||target.hp<=0){pushLog("回復対象がいません。");return;}const before=target.hp;const healingPower=effectiveSpAttackPower(actor)*(actor.id==="healer"?BATTLE_RULES.classBonuses.healer.healing*BATTLE_RULES.passives.healer.healing:1)*(1+Math.min(.5,uniqueEquippedItems(actor).reduce((n,i)=>n+(i.healingRate||0),0))+treeBonus(actor.id,"heal"));target.hp=Math.min(effectiveStats(target).maxHp,target.hp+Math.floor(healingPower*extHealMul(target)));chargeGauge(actor);pushLog(`${actor.name}のヒール！ ${target.name}のHPが${target.hp-before}回復。`);combatNumber(target.id,`+${target.hp-before}`,"heal");sound("heal");return;}
   if(skill.type==="revive"){const target=getCharacter(a.target);if(!target||target.hp>0){pushLog("蘇生対象がいません。");return;}target.hp=Math.min(50+Math.floor(50*treeBonus(actor.id,"revive")),effectiveStats(target).maxHp);chargeGauge(actor);chargeGauge(target);pushLog(`${actor.name}の死者蘇生！ ${target.name}がHP${target.hp}で復活。`);sound("heal");return;}
   if(skill.type==="multiSlash"){
     let total=0,actualHits=0;const hits=equipment.samurai?.katana1&&equipment.samurai?.katana2?6:3;beginEnemyDamagePreview(enemy);
@@ -1690,10 +1721,11 @@ async function executeAction(a){const actor=getCharacter(a.actor),enemy=battleSt
     }
     chargeGauge(actor);sound("damage",true);return;
   }}
- if(a.type==="item"){const it=itemById(a.itemId),target=getCharacter(a.target);if(!it||!target||!(inventory[a.itemId]>0)||target.hp<=0){pushLog("アイテムを使用できませんでした。");return;}inventory[a.itemId]--;if(inventory[a.itemId]<=0)delete inventory[a.itemId];if(it.kind==="heal"){const before=target.hp;target.hp=Math.min(effectiveStats(target).maxHp,target.hp+it.amount);pushLog(`${actor.name}は${it.name}を使用。${target.name}のHPが${target.hp-before}回復。`);combatNumber(target.id,`+${target.hp-before}`,"heal");sound("heal");}else{const before=target.sp;target.sp=Math.min(target.maxSp,target.sp+it.amount);pushLog(`${actor.name}は${it.name}を使用。${target.name}のSPが${target.sp-before}回復。`);combatNumber(target.id,`SP +${target.sp-before}`,"sp");sound("heal");}renderAll();return;}
+ if(a.type==="item"){const it=itemById(a.itemId),target=getCharacter(a.target);if(!it||!target||!(inventory[a.itemId]>0)||target.hp<=0){pushLog("アイテムを使用できませんでした。");return;}inventory[a.itemId]--;if(inventory[a.itemId]<=0)delete inventory[a.itemId];if(it.kind==="heal"){const before=target.hp;target.hp=Math.min(effectiveStats(target).maxHp,target.hp+Math.floor(it.amount*extHealMul(target)));pushLog(`${actor.name}は${it.name}を使用。${target.name}のHPが${target.hp-before}回復。`);combatNumber(target.id,`+${target.hp-before}`,"heal");sound("heal");}else{const before=target.sp;target.sp=Math.min(target.maxSp,target.sp+it.amount);pushLog(`${actor.name}は${it.name}を使用。${target.name}のSPが${target.sp-before}回復。`);combatNumber(target.id,`SP +${target.sp-before}`,"sp");sound("heal");}renderAll();return;}
  if(a.type==="union"){await executeUnion(a);}}
 function clearNegativeStatuses(character){
   if(!character)return;
+  extClearHarmful(character);// [EXT]
   if(character.id==="mage"&&((character._stunTurns||0)>0||(character._actionDisabledTurns||0)>0||(character.stunTurns||0)>0||(character.actionDisabledTurns||0)>0))mageCompressionStacks.mage=0;
   // Current negative effects are managed in these existing stores.
   delete burnedTurns[character.id];
@@ -1758,23 +1790,9 @@ async function executeUnion(a){const actor=getCharacter(a.actor),u=unionSkills[a
 }else if(u.type==="samurai-slash"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(effectiveStats(actor).attack*4*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);if(dealt>0)addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);pushLog(`${actor.name}の「${u.name}」！ 渾身の一刀で${dealt}ダメージ！（防御無視）`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");showHitEffect("samurai");flashEnemyDamage();sound("damage",true);}else if(u.type==="cross-break"){const partner=getCharacter(a.partner);beginEnemyDamagePreview(e);let total=0;for(let i=0;i<2;i++){const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(actor.spAttack*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0)addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);if(enemyHpTotal(e)<=0)break;}if(enemyHpTotal(e)>0){const attack=effectiveStats(partner).attack;const d=applyWeaponAttributeDamage(e,Math.floor(calcEnemyPhysicalDamage(e,attack)*(1+treeBonus(partner.id,"union"))),partner);for(let i=0;i<2;i++){const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0)addBreakDamage(e,"union",getWeaponPhysicalElement(partner),partner);if(enemyHpTotal(e)<=0)break;}}battleState.unionGauges[actor.id]=0;battleState.unionGauges[partner.id]=0;pushLog(`${actor.name}と${partner.name}の「${u.name}」！ 合計${total}ダメージ！`);combatNumber(displayEnemyNode(),`-${total}`,"damage");sound("damage",true);}
  renderBattle();}
 async function applyEnemyTurnStatuses(){
-  for(const c of getParty()){
-    if(burnedTurns[c.id]>0){
-      if(c.hp>0){
-        const dealt=await applyPartyDamageAnimated(c,10,{sureHit:true,element:"炎",statusDamage:true});
-        if(dealt>0)pushEvent(`${c.name}は火傷で${dealt}ダメージを受けた！`);
-        if(c.hp<=0)pushEvent(`${c.name}は戦闘不能になった！`);
-      }
-      burnedTurns[c.id]--;if(burnedTurns[c.id]<=0){delete burnedTurns[c.id];pushEvent(`${c.name}の火傷が治まった。`);}
-    }
-    if(defenseDownFresh.has(c.id)){defenseDownFresh.delete(c.id);}else if(c._defenseDownTurns>0)c._defenseDownTurns--;
-    if(c._defenseDownTurns<=0){c._defenseDown=0;c._defenseDownTurns=0;}
-  }
-  if(battleState.defenseCampTurns>0)battleState.defenseCampTurns--;
-  battleState.magicGuardActive=false;battleState._magicGuardRate=.5;
-  battleState.fullGuardActive=false;delete battleState.guarding.knight;
-  if(battleState.knightFullGuardCooldown>0)battleState.knightFullGuardCooldown--;
-  renderBattle();
+  // [EXT] スピード順ラウンド中は、全員の行動後（ラウンド終了時）にまとめて処理する。
+  if(battleState._roundActive)return;
+  await extEndOfTurnStatuses();
 }
 function describeEnemyAction(e,turn){
   if(e?.name==="ドラゴン"&&(turn===1||turn%3===0))return "ドラゴンブレス";
@@ -1832,6 +1850,7 @@ async function enemyTurn(){
   if(aegisForThisTurn){pushEvent(`${e.name}は「${describeEnemyAction(e,battleState.turnCount+1)}」を仕掛けた！`);pushEvent("イージスの盾が攻撃を防いだ！");sound("guard",true);await applyEnemyTurnStatuses();return;}
   const alive=livingParty();
   if(!alive.length)return;
+  if(e.ai){await extVariantAction(e,turn);await applyEnemyTurnStatuses();return;}// [EXT] 敵バリエーションの行動
   if(e.name==="混沌の幻影"){
     if(e.hp<=e.maxHp*.5&&!e._transformed){e._transformed=true;e.attack=Math.floor(e.attack*1.2);e.spAttack=Math.floor(e.spAttack*1.2);e.defense=Math.floor(e.defense*1.1);e._chaosWaveBonus=1.2;pushEvent("混沌の幻影は姿を変え、力を増した！","warning");document.querySelector(".battle-arena")?.classList.add("boss-transformed");}
     const roll=Math.random();
@@ -1884,7 +1903,7 @@ async function enemyTurn(){
       if(c.hp<=0)continue;
       const guardMultiplier=battleState.fullGuardActive&&c.id==="knight"?1-(battleState._fullGuardReduction||.4):battleState.guarding[c.id]?0.5:1;const raw=calcSp(e.spAttack||80,effectiveSpDefense(c));const d=Math.floor(raw*guardMultiplier);
       await applyPartyDamageAnimated(c,d,{element:"炎",magic:true});
-      if(c.hp>0&&Math.random()<(e._burnChance||.30)){burnedTurns[c.id]=2;pushEvent(`${c.name}は火傷状態になった！`);renderBattle();}
+      if(c.hp>0&&Math.random()<(e._burnChance||.30))extInflict(c,"burn",{turns:2});
     }
     await applyEnemyTurnStatuses();return;
   }
@@ -1895,12 +1914,13 @@ async function enemyTurn(){
     pushEvent("魔王は「瘴気の黒炎」を放った！");sound("damage",true);
     for(const c of alive.slice()){
       if(c.hp<=0)continue;
-      const guardMultiplier=battleState.fullGuardActive&&c.id==="knight"?1-(battleState._fullGuardReduction||.4):battleState.guarding[c.id]?0.5:1;const d=Math.floor(80*guardMultiplier);
-      await applyPartyDamageAnimated(c,d,{element:"炎",magic:true});
-      if(c.hp>0&&Math.random()<.5){burnedTurns[c.id]=4;pushEvent(`${c.name}は火傷状態になった！`);renderBattle();}
+      const guardMultiplier=battleState.fullGuardActive&&c.id==="knight"?1-(battleState._fullGuardReduction||.4):battleState.guarding[c.id]?0.5:1;const d=Math.floor((55+Math.floor(effectiveStats(c).maxHp*.20))*guardMultiplier);// [EXT] 魔王の黒炎：闇属性・最大HP割合・呪い
+      await applyPartyDamageAnimated(c,d,{element:"闇",magic:true});
+      if(c.hp>0&&Math.random()<.6)extInflict(c,"curse",{turns:3,power:.15});
     }
     await applyEnemyTurnStatuses();return;
   }
+  if(e.name==="魔王"){if(await extMaouPhaseAction(e,turn,alive)){await applyEnemyTurnStatuses();return;}}// [EXT] 魔王のフェーズ行動
   const taunt=alive.find(c=>c.id===battleState.tauntTarget);
   const rearIds=new Set(["mage","healer"]);
   const rear=alive.filter(c=>rearIds.has(c.id));
@@ -1917,7 +1937,7 @@ async function enemyTurn(){
     const hasArmor=!!equipment.knight?.armor;
     damage=Math.max(1,Math.floor(effectiveStats(target).maxHp*(hasArmor?1/5:1/3)));
   }
-  const finalTarget=battleState.fullGuardActive&&target.id!=="knight"&&getCharacter("knight")?.hp>0?getCharacter("knight"):target;animateEnemyAttack();pushEvent(`${e.name}は「${sp?"ダーククロー":(e.actionName||"攻撃")}」で攻撃した！ ${finalTarget.name}に${damage}ダメージ。`);if(e.name==="スライム")playSe("assets/se/tekikoudou/スライムの攻撃");else if(e.name==="魔王"&&!sp)playSe("assets/se/tekikoudou/16bitアタック");else sound("damage",true);await applyPartyDamageAnimated(target,damage,{normalAttack:!sp,spAttack:sp,magic:sp});if(e.name==="スライム"&&target.hp>0){target._defenseDownTurns=5;target._defenseDown=5;defenseDownFresh.add(target.id);pushEvent(`${target.name}の防御力が下がった！`);}if(e.name==="オオカミ")battleState.wolfLastTargetId=target.hp>0?target.id:null;
+  const finalTarget=battleState.fullGuardActive&&target.id!=="knight"&&getCharacter("knight")?.hp>0?getCharacter("knight"):target;animateEnemyAttack();pushEvent(`${e.name}は「${sp?"ダーククロー":(e.actionName||"攻撃")}」で攻撃した！ ${finalTarget.name}に${damage}ダメージ。`);if(e.name==="スライム")playSe("assets/se/tekikoudou/スライムの攻撃");else if(e.name==="魔王"&&!sp)playSe("assets/se/tekikoudou/16bitアタック");else sound("damage",true);await applyPartyDamageAnimated(target,damage,{normalAttack:!sp,spAttack:sp,magic:sp});if(e.name==="スライム"&&target.hp>0){addStatus(target,"defenseDown",{turns:5,power:5});pushEvent(`${target.name}の防御力が下がった！`);}if(e.name==="オオカミ")battleState.wolfLastTargetId=target.hp>0?target.id:null;
   if(e.name==="オオカミ"&&(battleState.wolfClones||[]).some(c=>c.hp>0)){
     for(const clone of (battleState.wolfClones||[]).filter(c=>c.hp>0)){
       const cloneTarget=livingParty().find(c=>c.id===battleState.wolfLastTargetId)||livingParty().filter(c=>rearIds.has(c.id))[0]||livingParty()[0];
@@ -1950,7 +1970,7 @@ async function finishStage(){
   battleState.busy=true;
   await playEnemyDefeatAnimation();
   battleState.lastRewardGold=e.gold;
-  registerDefeat(e.name);
+  registerDefeat(e.compendiumAs||e.name);
   totalEnemyDefeats+=Array.isArray(e.members)?e.members.length:1;
   state.gold+=e.gold;
   const rankResult=recordBattleRank();
@@ -1960,6 +1980,7 @@ async function finishStage(){
   if(e.name==="混沌の幻影"&&hiddenBossWasFirstClear)droppedItems.push({id:"chaos_crystal",name:"混沌の結晶",count:3});
   await showItemDropAnimation(droppedItems);
   if(!battleState.hiddenBossMode){stageCleared[battleState.stage]=true;state.maxUnlockedStage=Math.max(state.maxUnlockedStage||1,Math.min(battleState.maxStage,battleState.stage+1));stageSkillPointAwarded[battleState.stage]=stageSkillPointAwarded[battleState.stage]||{};for(const member of getParty())if(!stageSkillPointAwarded[battleState.stage][member.id]){trainingPoints[member.id]=(trainingPoints[member.id]||0)+3;stageSkillPointAwarded[battleState.stage][member.id]=true;}}
+  const newJobs=extUnlockForClear(battleState.stage,!!battleState.hiddenBossMode);// [EXT] 新しい仲間の解放
   // 討伐記録・報酬・クリア記録・次ステージ解放を、画面遷移前に一括保存する。
   persistAutoSave();
   renderGold();
@@ -1990,6 +2011,7 @@ async function finishStage(){
     $("next-stage-button").textContent="次へ";
   }
   $("return-home-button").hidden=false;
+  if(newJobs.length){$("result-message").textContent+=`\n新しい仲間：${newJobs.join("・")}が加わった！（編成から選べます）`;pushLog(`新しい仲間：${newJobs.join("・")}が加わった。`);}// [EXT]
   pushLog(`${e.name}を倒した！ ${e.gold}G獲得。`);
 }
 function finishDefeat(){
@@ -2216,7 +2238,7 @@ document.addEventListener("DOMContentLoaded",()=>{initAdminTools();setupNavigati
   if(forceNewGame){
     localStorage.removeItem("kotamaStartNewGameNow");localStorage.removeItem("fantasyRpgSave");
     tutorialState={started:true,completed:false,phase:"intro",battlePhase:"tutorial-intro",heroSwordGranted:false,heroSwordEquipped:false,armorBought:false,potionBought:false,healerRemoved:false,healerReadded:false,accessoryExplained:false};
-    state.gold=50;state.party=["kotama","knight","mage","healer"];state.maxUnlockedStage=1;state.firstStageStarted=false;
+    state.gold=50;state.party=["kotama","knight","mage","healer"];state.maxUnlockedStage=1;state.firstStageStarted=false;state.unlockedJobs=[];
     for(const id of Object.keys(equipment))equipment[id]={weapon:null,armor:null,accessory1:null,accessory2:null,katana1:null,katana2:null};
     equipment.kotama.weapon=null;equipment.kotama.armor=null;ensureStarterGear();
     for(const id of Object.keys(inventory))delete inventory[id];
