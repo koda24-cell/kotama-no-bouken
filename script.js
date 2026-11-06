@@ -735,10 +735,13 @@ function installSkillUpgradeCommitShield(){
   Object.assign(shield.style,{position:"fixed",inset:"0",zIndex:"10000",background:"transparent",pointerEvents:"auto",cursor:"default"});
   document.body.appendChild(shield);
   const blockKeys=event=>{event.preventDefault();event.stopImmediatePropagation();};
+  const blockClicks=event=>{event.preventDefault();event.stopImmediatePropagation();};
   document.addEventListener("keydown",blockKeys,true);
+  document.addEventListener("click",blockClicks,true);
   window.setTimeout(()=>{
     shield.remove();
     document.removeEventListener("keydown",blockKeys,true);
+    document.removeEventListener("click",blockClicks,true);
   },450);
 }
 function openSkillUpgradeDialog(charId,nodeId,returnFocus){
