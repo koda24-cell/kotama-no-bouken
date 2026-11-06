@@ -2282,11 +2282,51 @@ function adminPanelMarkup(){
   panel.querySelectorAll("[data-admin-tab]").forEach(b=>b.addEventListener("click",()=>{adminActiveTab=b.dataset.adminTab;renderAdminPanel();}));
   document.addEventListener("keydown",e=>{if(!panel.hidden&&e.key==="Escape"){e.preventDefault();close();}});
 }
-function adminRenderPlayer(){
-  const members=characters.map(c=>{const st=effectiveStats(c),slots=equipment[c.id]||{};return `<article class="admin-card"><h3>${esc(c.name)} <small>Lv.${characterLevels[c.id]||1}</small></h3>${adminRow("HP",`${c.hp} / ${st.maxHp}`)}${adminRow("SP",`${c.sp} / ${c.maxSp}`)}${adminRow("攻撃 / 防御",`${st.attack} / ${st.defense}`)}${adminRow("SP攻撃 / SP防御",`${st.spAttack} / ${st.spDefense}`)}${adminRow("武器",getEquippedName(c,"weapon"))}${adminRow("防具",getEquippedName(c,"armor"))}${adminRow("アクセサリ",[slots.accessory1,slots.accessory2].filter(Boolean).map(id=>itemById(id)?.name||id).join(" / ")||"なし")}${adminRow("習得スキル",treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).map(n=>`${n.name} Lv.${getTreeLevel(c.id,n.id)}`).join("、")||"なし")}</article>`;}).join("");
-  const items=Object.entries(inventory).filter(([,n])=>Number(n)>0).map(([id,n])=>`${itemById(id)?.name||id} ×${n}`);const mats=Object.entries(materials).filter(([,n])=>Number(n)>0).map(([id,n])=>`${materialNames[id]||id} ×${n}`);
-  return `<div class="admin-section"><h3>プレイヤー情報</h3>${adminRow("所持ゴールド",`${state.gold} G`)}${adminRow("編成",getParty().map(c=>c.name).join(" / "))}<h3>所持品</h3>${adminRow("アイテム・装備",items.join("、")||"なし")}${adminRow("素材",mats.join("、")||"なし")}</div><div class="admin-grid">${members}</div>`;
+function adminNumberInput(name,value,min=0,max=999999){
+  return `<input type="number" name="${esc(name)}" value="${Math.max(min,Math.min(max,Math.floor(Number(value)||0)))}" min="${min}" max="${max}" step="1" inputmode="numeric">`;
 }
+function adminRenderPlayer(){
+  const owned=Array.isArray(state.ownedCharacters)?state.ownedCharacters:state.party.filter(Boolean);
+  const members=owned.map(id=>{
+    const c=getCharacter(id);if(!c)return "";
+    const stats=effectiveStats(c);
+    return `<article class="admin-card"><h3>${esc(c.name)} <small>Lv.${characterLevels[c.id]||1}</small></h3><form class="admin-edit-form" data-admin-character="${esc(c.id)}"><div class="admin-edit-grid"><label>レベル ${adminNumberInput("level",characterLevels[c.id]||1,1,LEVEL_CAP||99)}</label><label>HP ${adminNumberInput("hp",c.hp,0,stats.maxHp)}</label><label>SP ${adminNumberInput("sp",c.sp,0,c.maxSp)}</label><label>育成ポイント ${adminNumberInput("trainingPoints",trainingPoints[c.id]||0,0,9999)}</label></div><button type="submit">このキャラに適用</button></form><div class="admin-data-row"><span>最大HP / 最大SP</span><strong>${stats.maxHp} / ${c.maxSp}</strong></div><div class="admin-data-row"><span>攻撃 / 防御</span><strong>${stats.attack} / ${stats.defense}</strong></div><div class="admin-data-row"><span>SP攻撃 / SP防御</span><strong>${stats.spAttack} / ${stats.spDefense}</strong></div><div class="admin-data-row"><span>装備</span><strong>${esc(getEquippedName(c,"weapon"))} / ${esc(getEquippedName(c,"armor"))}</strong></div></article>`;
+  }).join("");
+  const itemRows=Object.keys(inventory).filter(id=>Number(inventory[id])>0||itemById(id)).map(id=>`<label class="admin-edit-row"><span>${esc(itemById(id)?.name||id)}</span>${adminNumberInput(id,inventory[id]||0,0,9999)}</label>`).join("");
+  const materialRows=Object.keys(materialNames).map(id=>`<label class="admin-edit-row"><span>${esc(materialNames[id])}</span>${adminNumberInput(id,materials[id]||0,0,9999)}</label>`).join("");
+  return `<div class="admin-section"><h3>プレイヤー基本情報</h3><form id="admin-gold-form" class="admin-edit-form"><label>所持ゴールド ${adminNumberInput("gold",state.gold,0,99999999)}</label><button type="submit">ゴールドを適用</button></form><p class="admin-note">編集した値は現在のゲームデータに反映し、オートセーブへ保存します。</p>${adminRow("戦闘編成",getParty().map(c=>c.name).join(" / "))}${adminRow("所持仲間",owned.length+" / "+OWNED_CHARACTER_LIMIT+"人")}</div><h3>キャラクター編集</h3><div class="admin-grid">${members||'<p class="admin-note">所持仲間がいません。</p>'}</div><div class="admin-section"><h3>所持アイテム編集</h3><form id="admin-inventory-form" class="admin-edit-form"><div class="admin-edit-list">${itemRows||'<p>アイテムはありません。</p>'}</div><button type="submit">アイテム数を適用</button></form></div><div class="admin-section"><h3>素材編集</h3><form id="admin-material-form" class="admin-edit-form"><div class="admin-edit-list">${materialRows}</div><button type="submit">素材数を適用</button></form></div>`;
+}
+function adminReadSafeInteger(value,min,max){
+  const n=Number(value);if(!Number.isFinite(n))return null;
+  const v=Math.floor(n);return v<min||v>max?null:v;
+}
+function adminApplyPlayerEdits(event){
+  event.preventDefault();const form=event.currentTarget;
+  if(form.id==="admin-gold-form"){
+    const gold=adminReadSafeInteger(new FormData(form).get("gold"),0,99999999);
+    if(gold===null){setSystemMessage("ゴールドは0〜99,999,999の整数で入力してください。");return;}
+    state.gold=gold;
+  }else if(form.matches("[data-admin-character]")){
+    const id=form.dataset.adminCharacter,c=getCharacter(id);if(!c)return;
+    const fd=new FormData(form),cap=typeof LEVEL_CAP==="number"?LEVEL_CAP:99;
+    const level=adminReadSafeInteger(fd.get("level"),1,cap),hp=adminReadSafeInteger(fd.get("hp"),0,999999),sp=adminReadSafeInteger(fd.get("sp"),0,999999),points=adminReadSafeInteger(fd.get("trainingPoints"),0,9999);
+    if([level,hp,sp,points].some(v=>v===null)){setSystemMessage("レベル・HP・SP・育成ポイントの入力値を確認してください。");return;}
+    characterLevels[id]=level;
+    if(typeof levelExp!=="undefined")levelExp[id]=0;
+    trainingPoints[id]=points;
+    const max=effectiveStats(c);c.hp=Math.min(hp,max.maxHp);c.sp=Math.min(sp,c.maxSp);
+  }else if(form.id==="admin-inventory-form"||form.id==="admin-material-form"){
+    const target=form.id==="admin-inventory-form"?inventory:materials;
+    for(const input of form.querySelectorAll('input[type="number"]')){
+      const value=adminReadSafeInteger(input.value,0,9999);
+      if(value===null){setSystemMessage("アイテム・素材数は0〜9,999の整数で入力してください。");return;}
+    }
+    for(const input of form.querySelectorAll('input[type="number"]'))target[input.name]=Number(input.value);
+  }else return;
+  renderAll();persistAutoSave();setSystemMessage("管理者編集を適用し、オートセーブしました。");
+  renderAdminPanel();
+}
+
 function adminRenderProgress(){
   const names=["樹海の入り口","ゴブリンの森","霧の森","炎竜の巣","魔王の城"];
   const stages=names.map((name,i)=>{const n=i+1,boss=["スライム","ゴブリン","オオカミ","ドラゴン","魔王"][i];return `<article class="admin-card"><h3>STAGE ${n}：${name}</h3>${adminRow("解放状態",n<=(state.maxUnlockedStage||1)?"解放済み":"未解放")}${adminRow("到達記録",stageEntered[n]?"到達済み":"未到達")}${adminRow("クリア記録",stageCleared[n]?"クリア済み":"未クリア")}${adminRow(`${boss} 討伐記録`,compendium[boss]?.defeated?"討伐済み":"未討伐")}</article>`;}).join("");
@@ -2307,6 +2347,10 @@ function renderAdminPanel(){
   const renderers={player:adminRenderPlayer,progress:adminRenderProgress,battle:adminRenderBattle,save:adminRenderSave};
   content.innerHTML=(renderers[adminActiveTab]||adminRenderPlayer)();
   $("kotama-admin-panel")?.querySelectorAll("[data-admin-tab]").forEach(b=>b.classList.toggle("active",b.dataset.adminTab===adminActiveTab));
+  if(adminActiveTab==="player"){
+    $("admin-gold-form")?.addEventListener("submit",adminApplyPlayerEdits);
+    $("kotama-admin-content")?.querySelectorAll("[data-admin-character],#admin-inventory-form,#admin-material-form").forEach(form=>form.addEventListener("submit",adminApplyPlayerEdits));
+  }
   if(adminActiveTab==="save"){
     $("admin-backup")?.addEventListener("click",adminExportBackup);
     $("admin-restore-trigger")?.addEventListener("click",()=>$("admin-restore-file")?.click());
