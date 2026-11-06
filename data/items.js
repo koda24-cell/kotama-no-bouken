@@ -21,7 +21,7 @@ const shopItems=[
   {id:"wind-boots",name:"風読みのブーツ",category:"accessory",icon:"BOOTS",description:"風の流れを読む軽量ブーツ。",price:420,effect:"AGI +32／回避補助",speedBonus:32,evasionRate:.04,classes:["kotama","knight","healer","warrior","mage","samurai"],unlock:4}
 ];
 // 第2段階：素材・製作・強化・育成データ
-const materialNames={chaos_crystal:"混沌の結晶",slime_jelly:"スライムゼリー",monster_fang:"魔物の牙",goblin_cloth:"ゴブリンの布",monster_hide:"魔物の皮",dragon_scale:"炎竜の鱗",dragon_claw:"炎竜の爪",maou_crystal:"魔王の結晶",maou_horn:"魔王の角"};
+const materialNames={chaos_crystal:"混沌の結晶",slime_jelly:"スライムゼリー",monster_fang:"魔物の牙",goblin_cloth:"ゴブリンの布",monster_hide:"魔物の皮",dragon_scale:"炎竜の鱗",dragon_claw:"炎竜の爪",maou_crystal:"魔王の結晶",maou_horn:"魔王の角",foe_bear_pelt:"暴れ熊の剛毛",foe_captain_medal:"親衛隊長の勲章",foe_mist_horn:"霧纏いの大角",foe_salamander_core:"灼熱核",foe_black_crest:"黒騎士団長の紋章"};
 const recipes=[
 {id:"slime-rod",name:"スライムロッド",icon:"STAFF",classes:["mage","healer","kotama"],spAttackBonus:20,physicalElement:"打撃",cost:100,needs:{slime_jelly:1}},
 {id:"wolf-fang-sword",name:"狼牙の剣",icon:"SWORD",classes:["warrior","kotama","knight"],attackBonus:30,physicalElement:"斬撃",cost:150,needs:{monster_fang:1}},
@@ -30,7 +30,12 @@ const recipes=[
 {id:"dragon-greatsword",name:"炎竜の大剣",icon:"SWORD",classes:["warrior"],attackBonus:70,physicalElement:"斬撃",cost:500,needs:{dragon_scale:1,dragon_claw:1}},
 {id:"dragon-staff",name:"炎竜の杖",icon:"STAFF",classes:["mage","healer"],spAttackBonus:70,physicalElement:"打撃",cost:500,needs:{dragon_scale:1,slime_jelly:1}},
 {id:"maou-sword",name:"魔王の剣",icon:"SWORD",classes:["warrior","samurai","kotama"],attackBonus:100,physicalElement:"斬撃",cost:1000,needs:{maou_crystal:1,maou_horn:1}},
-{id:"maou-staff",name:"魔王の杖",icon:"STAFF",classes:["mage","healer"],spAttackBonus:100,physicalElement:"打撃",cost:1000,needs:{maou_crystal:1,dragon_scale:1}}
+{id:"maou-staff",name:"魔王の杖",icon:"STAFF",classes:["mage","healer"],spAttackBonus:100,physicalElement:"打撃",cost:1000,needs:{maou_crystal:1,dragon_scale:1}},
+{id:"foe-bear-breaker",name:"暴れ熊の粉砕斧",icon:"AXE",classes:["warrior","knight","kotama"],attackBonus:38,physicalElement:"打撃",cost:280,foeRequirement:"森の暴れ熊を討伐",needs:{foe_bear_pelt:1,monster_fang:2}},
+{id:"foe-captain-sabre",name:"親衛隊長の軍刀",icon:"SWORD",classes:["samurai","warrior","kotama"],attackBonus:50,physicalElement:"斬撃",cost:400,foeRequirement:"ゴブリン親衛隊長を討伐",needs:{foe_captain_medal:1,goblin_cloth:2}},
+{id:"foe-mist-staff",name:"霧角の魔杖",icon:"STAFF",classes:["mage","healer"],spAttackBonus:65,physicalElement:"打撃",cost:520,foeRequirement:"霧纏いの大鹿を討伐",needs:{foe_mist_horn:1,monster_hide:2}},
+{id:"foe-salamander-blade",name:"灼熱の竜刃",icon:"SWORD",classes:["warrior","samurai","kotama"],attackBonus:82,physicalElement:"斬撃",cost:760,foeRequirement:"灼熱のサラマンダーを討伐",needs:{foe_salamander_core:1,dragon_scale:2}},
+{id:"foe-black-general-katana",name:"黒騎士団長の太刀",icon:"SWORD",classes:["samurai","warrior"],attackBonus:105,physicalElement:"斬撃",cost:1050,foeRequirement:"黒騎士団長を討伐",needs:{foe_black_crest:1,maou_crystal:1}}
 ];
 const enhancementCosts=[0,100,200,300,500,800];
 // 武器強化素材の割り当て。仕様書に武器別対応表がないため、初期値として仮設定。
@@ -44,7 +49,7 @@ const enhancementMaterials={
   "slime-rod":"slime_jelly", "wolf-fang-sword":"monster_fang",
   "goblin-shield":"goblin_cloth", "beast-knuckle":"monster_hide",
   "dragon-greatsword":"dragon_scale", "dragon-staff":"dragon_scale",
-  "maou-sword":"maou_crystal", "maou-staff":"maou_crystal"
+  "maou-sword":"maou_crystal", "maou-staff":"maou_crystal", "foe-bear-breaker":"foe_bear_pelt", "foe-captain-sabre":"foe_captain_medal", "foe-mist-staff":"foe_mist_horn", "foe-salamander-blade":"foe_salamander_core", "foe-black-general-katana":"foe_black_crest"
 };
 const accessoryItems=[
 {id:"acc-hp-ring",name:"生命の指輪",category:"accessory",icon:"RING",description:"最大HP+15%。",price:200,hpRate:.15,effect:"最大HP +15%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
