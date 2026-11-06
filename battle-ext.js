@@ -155,27 +155,27 @@ function extIsBoss(e) { return !!e && EXT_BOSS_NAMES.includes(e.name); }
 function extStatusBag(t, create) {
   if (!t) return null;
   if (extIsParty(t)) return extPartyStatuses[t.id] || (create ? (extPartyStatuses[t.id] = {}) : null);
-  // 敵（本体・集団の個体・分身）の状態異常は、戦闘中の敵1体分としてまとめて管理する。
   if (!battleState.enemy) return null;
+  // 敵本体・集団の各個体・分身をID単位で管理し、状態異常を共有させない。
+  if (t === battleState.enemy) return battleState.enemyStatuses || (create ? (battleState.enemyStatuses = {}) : null);
+  if (t.id != null) {
+    const id = String(t.id);
+    battleState.enemyUnitStatuses ||= {};
+    return battleState.enemyUnitStatuses[id] || (create ? (battleState.enemyUnitStatuses[id] = {}) : null);
+  }
   return battleState.enemyStatuses || (create ? (battleState.enemyStatuses = {}) : null);
 }
 function extHasStatus(t, type) { const b = extStatusBag(t, false); return !!(b && b[type] && b[type].turns > 0); }
 function extStatusPower(t, type) { const b = extStatusBag(t, false); return b && b[type] ? b[type].power : 0; }
 
-function extEnemyStatEffect(rec, type, apply) {
-  const e = battleState.enemy; if (!e) return;
+function extEnemyStatEffect(rec, type, apply, target) {
+  const e = target || battleState.enemy; if (!e) return;
   if (type === "attackDown") {
-    if (apply) { rec.lost = Math.floor(e.attack * rec.power); e.attack -= rec.lost; }
-    else { e.attack += rec.lost || 0; rec.lost = 0; }
+    if (apply) { rec.lost = Math.floor((e.attack || 0) * rec.power); e.attack = Math.max(0, (e.attack || 0) - rec.lost); }
+    else { e.attack = (e.attack || 0) + (rec.lost || 0); rec.lost = 0; }
   } else if (type === "defenseDown") {
-    if (apply) {
-      rec.lost = Math.floor(e.defense * rec.power); e.defense -= rec.lost;
-      if (e.members) { rec.lostMembers = {}; for (const m of e.members) { const l = Math.floor(m.defense * rec.power); m.defense -= l; rec.lostMembers[m.id] = l; } }
-    } else {
-      e.defense += rec.lost || 0;
-      if (e.members && rec.lostMembers) for (const m of e.members) m.defense += rec.lostMembers[m.id] || 0;
-      rec.lost = 0; rec.lostMembers = null;
-    }
+    if (apply) { rec.lost = Math.floor((e.defense || 0) * rec.power); e.defense = Math.max(0, (e.defense || 0) - rec.lost); }
+    else { e.defense = (e.defense || 0) + (rec.lost || 0); rec.lost = 0; }
   }
 }
 // 戻り値："new"（新規）／"refresh"（持続か強さを更新）／"same"（変化なし）／false（付与できない）
@@ -190,20 +190,20 @@ function addStatus(t, type, opts = {}) {
     const changed = turns > cur.turns || power > cur.power;
     cur.turns = Math.max(cur.turns, turns);
     if (power > cur.power) {
-      if (!party) extEnemyStatEffect(cur, type, false);
+      if (!party) extEnemyStatEffect(cur, type, false, t);
       cur.power = power;
-      if (!party) extEnemyStatEffect(cur, type, true);
+      if (!party) extEnemyStatEffect(cur, type, true, t);
     }
     return changed ? "refresh" : "same";
   }
   const rec = { turns, power, fresh: def.fresh === "always" || (def.fresh === "party" && party) };
   bag[type] = rec;
-  if (!party) extEnemyStatEffect(rec, type, true);
+  if (!party) extEnemyStatEffect(rec, type, true, t);
   return "new";
 }
 function extRemoveStatus(t, type) {
   const bag = extStatusBag(t, false); if (!bag || !bag[type]) return;
-  if (!extIsParty(t)) extEnemyStatEffect(bag[type], type, false);
+  if (!extIsParty(t)) extEnemyStatEffect(bag[type], type, false, t);
   delete bag[type];
 }
 function extClearHarmful(t) {
@@ -263,6 +263,7 @@ function extBattlePortrait(c) {
 function extResetBattle() {
   extPartyStatuses = {};
   battleState.enemyStatuses = {};
+  battleState.enemyUnitStatuses = {};
   for (const c of characters) { c._xjCharge = null; c._heat = 0; c._overheat = false; }
 }
 
@@ -276,14 +277,23 @@ async function extRoundStart() {
     if (dealt > 0) pushEvent(`${c.name}は毒で${dealt}ダメージを受けた！`);
     if (c.hp <= 0) pushEvent(`${c.name}は戦闘不能になった！`);
   }
-  if (e && enemyHpTotal(e) > 0 && extHasStatus(e, "poison")) {
-    const pct = extIsBoss(e) ? Math.min(.025, extStatusPower(e, "poison") || .025) : (extStatusPower(e, "poison") || .06);
-    const d = Math.max(8, Math.floor(e.maxHp * pct));
-    beginEnemyDamagePreview(e);
-    let total = 0;
-    if (e.members) { for (const m of e.members.filter(x => x.hp > 0)) total += applyDamageToEnemyTarget(e, { kind: "member", ref: m }, d); }
-    else { const dealt = Math.min(e.hp, d); e.hp -= dealt; total = dealt; }
-    if (total > 0) { combatNumber(displayEnemyNode(), `-${total}`, "damage"); flashEnemyDamage(); pushEvent(`${e.name}は毒で${total}ダメージを受けた！`); }
+  if (e && enemyHpTotal(e) > 0) {
+    const units = e.members
+      ? e.members.filter(m => m.hp > 0).map(m => ({ kind: "member", ref: m }))
+      : livingEnemyTargets(e);
+    for (const target of units) {
+      const unit = target.ref;
+      if (!unit || unit.hp <= 0 || !extHasStatus(unit, "poison")) continue;
+      const pct = extIsBoss(e) ? Math.min(.025, extStatusPower(unit, "poison") || .025) : (extStatusPower(unit, "poison") || .06);
+      const damage = Math.max(1, Math.floor((unit.maxHp || e.maxHp) * pct));
+      beginEnemyDamagePreview(e);
+      const dealt = applyDamageToEnemyTarget(e, target, damage);
+      if (dealt > 0) {
+        combatNumber(target.kind === "member" ? document.querySelector(`[data-enemy-id="${unit.id}"]`) : displayEnemyNode(), `-${dealt}`, "damage");
+        flashEnemyDamage();
+        pushEvent(`${unit.displayName || unit.name || e.name}は毒で${dealt}ダメージを受けた！`);
+      }
+    }
   }
   renderBattle();
   await wait(300);
@@ -299,7 +309,8 @@ async function extEndOfTurnStatuses() {
       if (c.hp <= 0) pushEvent(`${c.name}は戦闘不能になった！`);
     }
   }
-  for (const holder of [...getParty(), ...(e ? [e] : [])]) {
+  const enemyHolders = e ? (e.members ? e.members : [e, ...(battleState.wolfClones || [])]) : [];
+  for (const holder of [...getParty(), ...enemyHolders]) {
     const bag = extStatusBag(holder, false); if (!bag) continue;
     for (const type of Object.keys(bag)) {
       const s = bag[type];
