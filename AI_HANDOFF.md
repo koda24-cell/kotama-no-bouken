@@ -87,6 +87,8 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | PR #8：データ・CSSの分割（Claude）。挙動の変更なし | 未マージ |
 | 新職業の解放条件の設定・画像作成（GPT） | 作業中。`data/jobs.js` と `assets/characters/` を触る |
 
+| フィールド探索・ランダムエンカウント・ストーリー追加（Claude：処理／GPT：見た目・推敲） | 分担確定。`docs/field-and-story/README.md` を参照 |
+
 **衝突しやすい場所：** `script.js` 全体、`style.css` の末尾、`index.html` の `<head>`（`?v=` の行）、`data/jobs.js` の先頭付近。触る前に、最新の `development` と未マージPRの変更ファイルを確認してください。
 
 ## 8. 動作確認の最低ライン
