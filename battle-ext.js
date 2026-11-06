@@ -149,6 +149,14 @@ function extInflict(target, type, opts = {}) {
   if (r === "new" || r === "refresh") { pushEvent(`${target.name}は${EXT_STATUS_DEFS[type].label}状態になった！`); renderBattle(); }
   return r;
 }
+
+// VIT（耐久力）は敵から受ける状態異常への抵抗に反映する。
+// 基準値50では補正なし。50を超える分だけ付与率を軽減し、最大35%軽減。
+function extPartyStatusChance(target, baseChance) {
+  const vitality = Math.max(0, Number(effectiveStats(target).vitality) || 50);
+  const reduction = Math.min(0.35, Math.max(0, vitality - 50) * 0.007);
+  return Math.max(0, Math.min(0.95, baseChance * (1 - reduction)));
+}
 function extDefenseDownAmount(c) {
   if (!extHasStatus(c, "defenseDown")) return 0;
   const p = extStatusPower(c, "defenseDown");
@@ -497,7 +505,7 @@ async function extVariantAction(e, turn) {
     const dealt = await applyPartyDamageAnimated(c, d, { normalAttack: !sp, spAttack: sp, magic: sp, element: act.element });
     if (dealt > 0 && !act.all) pushEvent(`${c.name}に${dealt}ダメージ。`);
     if (act.drain && dealt > 0) { const before = e.hp; e.hp = Math.min(e.maxHp, e.hp + Math.floor(dealt * act.drain)); if (e.hp > before) pushEvent(`${e.name}はHPを${e.hp - before}吸い取った！`); }
-    if (c.hp > 0 && act.status && Math.random() < Math.min(.95, act.status.chance * (e.foe ? 1.25 : 1.35))) extInflict(c, act.status.type, act.status);
+    if (c.hp > 0 && act.status && Math.random() < extPartyStatusChance(c, act.status.chance * (e.foe ? 1.25 : 1.35))) extInflict(c, act.status.type, act.status);
     if (c.hp <= 0) pushEvent(`${c.name}は戦闘不能になった！`);
   }
   battleState.tauntTarget = null;
@@ -546,7 +554,7 @@ async function extMaouPhaseAction(e, turn, alive) {
       if (c.hp <= 0) continue;
       const d = Math.floor((Math.floor((e.spAttack || 100) * act.spMult) + Math.floor(effectiveStats(c).maxHp * act.hpRate)) * guardRate(c));
       await applyPartyDamageAnimated(c, d, { element: "闇", magic: true });
-      if (c.hp > 0 && Math.random() < act.curse.chance) extInflict(c, "curse", { turns: act.curse.turns, power: act.curse.power });
+      if (c.hp > 0 && Math.random() < extPartyStatusChance(c, act.curse.chance)) extInflict(c, "curse", { turns: act.curse.turns, power: act.curse.power });
     }
     return true;
   }
