@@ -165,7 +165,10 @@ function extDefenseDownAmount(c) {
 // 能力値への反映（effectiveStats から呼ばれる）
 function extApplyStatusStats(c, raw) {
   const mul = (key, rate) => { raw[key] = Math.max(0, Math.floor(raw[key] * rate)); };
-  raw.speed = Math.floor((Number.isFinite(c.speed) ? c.speed : (EXT_JOB_SPEED[c.id] ?? 50)) * (1 + extStatusPower(c, "speedUp")));
+  // AGI（素早さ）は装備・成長・レベル補正を反映した raw.speed を基準にする。
+  // 速度上昇状態で基礎値に戻してしまわないよう、最終速度へ倍率を適用する。
+  raw.speed = Math.max(0, Math.floor((Number.isFinite(raw.speed) ? raw.speed : (EXT_JOB_SPEED[c.id] ?? 50)) * (1 + extStatusPower(c, "speedUp"))));
+  raw.agility = raw.speed;
   if (extHasStatus(c, "attackUp")) { const p = 1 + extStatusPower(c, "attackUp"); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "attackDown")) { const p = 1 - Math.min(.9, extStatusPower(c, "attackDown")); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "curse")) { const p = 1 - Math.min(.9, extStatusPower(c, "curse") || .15); mul("attack", p); mul("spAttack", p); }
