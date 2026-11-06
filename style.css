@@ -1468,3 +1468,72 @@ body[data-screen="battle"] .gold-display{display:none!important;}
     opacity:0!important;
   }
 }
+
+
+/* ============================================================
+   Status ailment presentation — distinct EO-style tactical tells.
+   Visual only: status application, duration and combat rules are unchanged.
+   ============================================================ */
+.status-ext{transition:filter .18s ease,box-shadow .18s ease}
+.status-ext-bad{border:1px solid #ffb0a044;box-shadow:inset 0 0 7px #0005}
+.status-ext-good{border:1px solid #8bc9ff55;box-shadow:inset 0 0 7px #0005}
+
+/* Each ailment has its own readable color language. */
+.status-ext-poison,.enemy-status-poison{color:#d8ffc0!important;background:#234b25!important;border-color:#91d66c!important}
+.status-ext-paralysis,.enemy-status-paralysis{color:#e2fbff!important;background:#174b61!important;border-color:#65e5ef!important}
+.status-ext-burn,.enemy-status-burn{color:#ffe1ad!important;background:#713318!important;border-color:#ff9b43!important}
+.status-ext-curse,.enemy-status-curse{color:#f0d8ff!important;background:#48265f!important;border-color:#c48be8!important}
+.status-ext-bindHead,.status-ext-bindArms,.status-ext-bindLegs,
+.enemy-status-bindHead,.enemy-status-bindArms,.enemy-status-bindLegs{color:#e5e8f0!important;background:#343b4d!important;border-color:#aab4c9!important}
+.status-ext-defenseDown,.status-ext-attackDown,
+.enemy-status-defenseDown,.enemy-status-attackDown{color:#ffd2c9!important;background:#642b32!important;border-color:#f08b82!important}
+.status-ext-attackUp,.status-ext-defenseUp,.status-ext-speedUp,
+.enemy-status-attackUp,.enemy-status-defenseUp,.enemy-status-speedUp{color:#fff0b7!important;background:#59491e!important;border-color:#e5c66b!important}
+
+/* Party cards communicate dangerous states even when the badge is small. */
+.battle-member:has(.status-ext-poison){border-color:#80bd68!important;box-shadow:inset 0 0 18px #4a9a3520,0 0 7px #65bd4930}
+.battle-member:has(.status-ext-paralysis){border-color:#62d5e4!important;box-shadow:inset 0 0 18px #35b9d522,0 0 8px #5ee5f533}
+.battle-member:has(.status-ext-burn){border-color:#e98b45!important;box-shadow:inset 0 0 18px #e9682522,0 0 8px #ff873344}
+.battle-member:has(.status-ext-curse){border-color:#b47bd5!important;box-shadow:inset 0 0 18px #994ac522,0 0 8px #b76be044}
+.battle-member:has(.status-ext-bindHead),
+.battle-member:has(.status-ext-bindArms),
+.battle-member:has(.status-ext-bindLegs),
+.battle-member.action-incapacitated{border-color:#9aa6bd!important;box-shadow:inset 0 0 18px #8794aa20,0 0 7px #9aa6bd33}
+.battle-member:has(.status-ext-defenseDown),
+.battle-member:has(.status-ext-attackDown){box-shadow:inset 0 0 14px #d34d4d18}
+
+/* Enemy badges inherit the same status color language, including wolf clones. */
+.enemy-status-list [data-status],.enemy-unit-status [data-status]{border:1px solid currentColor;box-shadow:inset 0 0 6px #0007,0 1px 4px #0007}
+.enemy-status-list .enemy-status-poison,.enemy-unit-status .enemy-status-poison{color:#d8ffc0;background:#234b25}
+.enemy-status-list .enemy-status-paralysis,.enemy-unit-status .enemy-status-paralysis{color:#e2fbff;background:#174b61}
+.enemy-status-list .enemy-status-burn,.enemy-unit-status .enemy-status-burn{color:#ffe1ad;background:#713318}
+.enemy-status-list .enemy-status-curse,.enemy-unit-status .enemy-status-curse{color:#f0d8ff;background:#48265f}
+.enemy-status-list .enemy-status-bindHead,.enemy-status-list .enemy-status-bindArms,.enemy-status-list .enemy-status-bindLegs,
+.enemy-unit-status .enemy-status-bindHead,.enemy-unit-status .enemy-status-bindArms,.enemy-unit-status .enemy-status-bindLegs{color:#e5e8f0;background:#343b4d}
+.enemy-status-list .enemy-status-defenseDown,.enemy-status-list .enemy-status-attackDown,
+.enemy-unit-status .enemy-status-defenseDown,.enemy-unit-status .enemy-status-attackDown{color:#ffd2c9;background:#642b32}
+
+/* Subtle motion helps identify the ailment without distracting from turn flow. */
+@media(prefers-reduced-motion:no-preference){
+ .battle-member:has(.status-ext-poison) .battle-portrait{animation:ailment-poison-breathe 2.8s ease-in-out infinite}
+ .battle-member:has(.status-ext-paralysis) .battle-portrait{animation:ailment-paralysis-jolt 3.2s ease-in-out infinite}
+ .battle-member:has(.status-ext-burn) .battle-portrait{animation:ailment-burn-flicker 2.2s ease-in-out infinite}
+ .battle-member:has(.status-ext-curse) .battle-portrait{animation:ailment-curse-pulse 2.6s ease-in-out infinite}
+ .battle-member:has(.status-ext-bindHead) .battle-portrait,
+ .battle-member:has(.status-ext-bindArms) .battle-portrait,
+ .battle-member:has(.status-ext-bindLegs) .battle-portrait,
+ .battle-member.action-incapacitated .battle-portrait{filter:grayscale(.55) brightness(.82)}
+ .enemy-status-list .enemy-status-poison,.enemy-unit-status .enemy-status-poison{animation:ailment-poison-breathe 2.8s ease-in-out infinite}
+ .enemy-status-list .enemy-status-paralysis,.enemy-unit-status .enemy-status-paralysis{animation:ailment-paralysis-jolt 3.2s ease-in-out infinite}
+}
+@keyframes ailment-poison-breathe{0%,100%{filter:drop-shadow(0 0 1px #83c65a)}50%{filter:drop-shadow(0 0 7px #83c65a)}}
+@keyframes ailment-paralysis-jolt{0%,88%,100%{transform:translateX(0)}90%{transform:translateX(-2px)}93%{transform:translateX(2px)}96%{transform:translateX(-1px)}}
+@keyframes ailment-burn-flicker{0%,100%{filter:drop-shadow(0 0 1px #e98539)}50%{filter:drop-shadow(0 0 7px #ff9b43) brightness(1.08)}}
+@keyframes ailment-curse-pulse{0%,100%{filter:drop-shadow(0 0 1px #a76acb)}50%{filter:drop-shadow(0 0 7px #b77bdf)}}
+@media(prefers-reduced-motion:reduce){
+ .status-ext,.enemy-status-list [data-status],.enemy-unit-status [data-status]{animation:none!important;transition:none!important}
+ .battle-member:has(.status-ext-poison) .battle-portrait,
+ .battle-member:has(.status-ext-paralysis) .battle-portrait,
+ .battle-member:has(.status-ext-burn) .battle-portrait,
+ .battle-member:has(.status-ext-curse) .battle-portrait{animation:none!important;filter:none}
+}

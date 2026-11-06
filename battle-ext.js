@@ -181,7 +181,7 @@ function extStatusBadges(c) {
   const bag = extStatusBag(c, false); if (!bag) return "";
   return Object.entries(bag).filter(([, s]) => s.turns > 0).map(([type, s]) => {
     const def = EXT_STATUS_DEFS[type];
-    return ` <span class="status-ext ${def.harm ? "status-ext-bad" : "status-ext-good"}" title="${def.label}：残り${s.turns}ターン">${def.icon}${def.label} ${s.turns}</span>`;
+    return ` <span class="status-ext status-ext-${type} ${def.harm ? "status-ext-bad" : "status-ext-good"}" data-status="${type}" title="${def.label}：残り${s.turns}ターン">${def.icon}${def.label} ${s.turns}</span>`;
   }).join("");
 }
 function extJobBadges(c) {
@@ -196,7 +196,7 @@ function extEnemyStatusBadges(e) {
   const bag = extStatusBag(e, false); if (!bag) return [];
   return Object.entries(bag).filter(([, s]) => s.turns > 0).map(([type, s]) => {
     const def = EXT_STATUS_DEFS[type];
-    return `<span class="${def.harm ? "enemy-status-debuff" : "enemy-status-buff"}">${def.icon}${def.label} ${s.turns}T</span>`;
+    return `<span class="enemy-status-${type} ${def.harm ? "enemy-status-debuff" : "enemy-status-buff"}" data-status="${type}" title="${def.label}：残り${s.turns}ターン">${def.icon}${def.label} ${s.turns}T</span>`;
   });
 }
 function extBattlePortrait(c) {
