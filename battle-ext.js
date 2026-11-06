@@ -15,6 +15,9 @@
 // 戦闘拡張の処理を管理。職業の数値・スキル定義は data/jobs.js を参照。
 // 職業・職業解放データは data/jobs.js、職業専用装備は data/items.js に分離。
 
+/* [JOB] 個体の現在の職業ID（job.js が無い環境では従来どおり c.id） */
+function extJobOf(c) { const id = typeof c === "string" ? c : c?.id; return typeof jobOf === "function" ? jobOf(id) : id; }
+
 /* script.js から呼ばれる初期化 */
 function extInstallCharacters(characters) {
   for (const job of EXT_NEW_JOBS) characters.push(JSON.parse(JSON.stringify(job)));
@@ -22,8 +25,8 @@ function extInstallCharacters(characters) {
   // インペリアル専用パネル（script.js の renderImperialStatus）との接続口。
   // パネルは heatGauge / overheated / exposed という標準名で状態を読むため、内部の _heat / _overheat / _xjCharge を読み取り専用で公開する。
   // enumerable:false なので、セーブデータや JSON には含まれない。
-  const imperial = characters.find(c => c.id === "imperial");
-  if (imperial) {
+  // [JOB] 職業変更でどの個体もインペリアルになり得るため、全個体に定義する（熱を持たない個体は 0 / false を返すだけ）。
+  for (const imperial of characters) {
     Object.defineProperties(imperial, {
       heatGauge: { get() { return this._heat || 0; }, enumerable: false },
       overheated: { get() { return this._overheat === true; }, enumerable: false },
@@ -157,7 +160,7 @@ function extDefenseDownAmount(c) {
 // 能力値への反映（effectiveStats から呼ばれる）
 function extApplyStatusStats(c, raw) {
   const mul = (key, rate) => { raw[key] = Math.max(0, Math.floor(raw[key] * rate)); };
-  raw.speed = Math.floor((Number.isFinite(c.speed) ? c.speed : (EXT_JOB_SPEED[c.id] ?? 50)) * (1 + extStatusPower(c, "speedUp")));
+  raw.speed = Math.floor((Number.isFinite(c.speed) ? c.speed : (EXT_JOB_SPEED[extJobOf(c)] ?? 50))  /* [JOB] */ * (1 + extStatusPower(c, "speedUp")));
   if (extHasStatus(c, "attackUp")) { const p = 1 + extStatusPower(c, "attackUp"); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "attackDown")) { const p = 1 - Math.min(.9, extStatusPower(c, "attackDown")); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "curse")) { const p = 1 - Math.min(.9, extStatusPower(c, "curse") || .15); mul("attack", p); mul("spAttack", p); }
@@ -175,7 +178,7 @@ function extStatusBadges(c) {
 }
 function extJobBadges(c) {
   let html = "";
-  if ((typeof jobOf === "function" ? jobOf(c) : c.id) === "imperial") {  // [JOB] 熱ゲージは職業で表示
+  if (extJobOf(c) === "imperial") {  // [JOB] 熱ゲージは職業で表示
     html += c._overheat ? ' <span class="status-ext status-ext-bad">🔥OVERHEAT</span>' : ` <span class="status-ext status-heat" title="熱が${EXT_HEAT_LIMIT}たまるとオーバーヒート">熱 ${c._heat || 0}/${EXT_HEAT_LIMIT}</span>`;
     if (c._xjCharge) html += ' <span class="status-ext status-ext-bad" title="チャージ中は無防備。受けるダメージが増える">⚠無防備</span>';
   }
@@ -471,7 +474,7 @@ function extWeightedPick(list) {
 function extPickPartyTarget(alive, act) {
   const taunt = alive.find(c => c.id === battleState.tauntTarget);
   if (taunt) return taunt;
-  if (act.target === "rear") { const rear = alive.filter(c => EXT_REAR_IDS.includes(c.id)); if (rear.length) return rear[Math.floor(Math.random() * rear.length)]; }
+  if (act.target === "rear") { const rear = alive.filter(c => EXT_REAR_IDS.includes(extJobOf(c)));  /* [JOB] 後衛は職業で判定 */ if (rear.length) return rear[Math.floor(Math.random() * rear.length)]; }
   return alive[Math.floor(Math.random() * alive.length)];
 }
 async function extVariantAction(e, turn) {
@@ -593,7 +596,7 @@ function extGetStatusIds(c, includeBeneficial) {
 
 // インペリアルの熱（SP攻撃コマンド右側の縦線の本数）。現在値・最大値・直前の値を返す。
 function extImperialGauge(c) {
-  c = c || getCharacter("imperial");
+  c = c || getParty().find(x => extJobOf(x) === "imperial") || getCharacter("imperial");  // [JOB]
   if (!c) return null;
   return { characterId: c.id, heat: c._heat || 0, max: EXT_HEAT_LIMIT, overheated: c._overheat === true, charging: !!c._xjCharge };
 }
@@ -609,7 +612,7 @@ function extEmitStateChanges() {
       for (const id of status) if (!prev.status.includes(id)) battleEmit("status:added", { targetId: c.id, statusId: id, statuses: status.slice() });
       for (const id of prev.status) if (!status.includes(id)) battleEmit("status:cleared", { targetId: c.id, statusId: id, statuses: status.slice() });
       const heat = c._heat || 0, overheated = c._overheat === true;
-      if (c.id === "imperial" && (heat !== prev.heat || overheated !== prev.overheated)) {
+      if (extJobOf(c) === "imperial" && (heat !== prev.heat || overheated !== prev.overheated)) {
         battleEmit("imperial:changed", { characterId: c.id, heat, before: prev.heat, max: EXT_HEAT_LIMIT, overheated });
       }
       snap[c.id] = { status, heat, overheated };
@@ -631,7 +634,7 @@ function extActionInfo(action) {
     const skill = getCharacterSkills(actor).find(s => s.id === action.skillId);
     const magicTypes = ["level-lightning-all", "level-lightning-single", "level-flare", "level-magic-bomb", "holy-light"];
     info.skillId = action.skillId; info.skillName = skill?.name || null; info.element = skill?.element || null;
-    info.kind = (skill && (magicTypes.includes(skill.type) || (actor?.id === "mage" && !skill.xj))) ? "magic" : "sp";
+    info.kind = (skill && (magicTypes.includes(skill.type) || (extJobOf(actor) === "mage" && !skill.xj))) ? "magic" : "sp";
     info.targetIds = action.targetIds ? action.targetIds.slice() : (action.targetId ? [action.targetId] : (action.target ? [action.target] : []));
   } else if (action.targetId) info.targetIds = [action.targetId];
   return info;
