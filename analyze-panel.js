@@ -88,7 +88,7 @@ function analyzePartyHtml() {
     const statuses = analyzePartyStatuses(c);
     const hpRate = Math.max(0, c.hp) / Math.max(1, s.maxHp) * 100, spRate = Math.max(0, c.sp) / Math.max(1, c.maxSp) * 100;
     return `<article class="analyze-card analyze-member ${c.hp <= 0 ? "is-down" : ""}" data-party-id="${esc(c.id)}">
-      <header><strong>${esc(c.name)}</strong><small>${c.hp <= 0 ? "戦闘不能" : ""}</small></header>
+      <header><strong>${typeof levelBadge === "function" ? levelBadge(c) : ""}${esc(c.name)}</strong><small>${c.hp <= 0 ? "戦闘不能" : ""}</small></header>${typeof levelExpBar === "function" ? levelExpBar(c) : ""}
       <div class="analyze-bars">
         <span>HP <b>${Math.max(0, c.hp)} / ${s.maxHp}</b><i><u style="width:${hpRate}%"></u></i></span>
         <span class="is-sp">SP <b>${Math.max(0, c.sp)} / ${c.maxSp}</b><i><u style="width:${spRate}%"></u></i></span>

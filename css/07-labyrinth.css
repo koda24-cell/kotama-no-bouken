@@ -1,0 +1,71 @@
+/* ============================================================
+   css/07-labyrinth.css — 迷宮（視界・マッピング・FOE・採取）とレベル表示
+   ・Claude作成の仮スタイル。GPTが見た目を調整してよい（DOMは LABYRINTH_SPEC.md）。
+   ・css/06-field.css（GPT担当）とは別ファイルにして、同時編集を避けている。
+   ============================================================ */
+
+/* ---------- レベル表示 ---------- */
+.lv-badge{display:inline-block;margin:0 4px 0 0;padding:0 5px;border:1px solid #ffd96a99;border-radius:8px;background:#3a2c08cc;color:#ffe48a;font-size:10px;font-weight:700;line-height:1.5;vertical-align:middle;letter-spacing:.02em}
+h3 .lv-badge{margin-left:4px;font-size:11px}
+.lv-exp{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:5px;margin:3px 0 5px;font-size:10px;color:#ffe48a}
+.lv-exp i{display:block;height:5px;border-radius:3px;background:#2a2f4a;overflow:hidden}
+.lv-exp u{display:block;height:100%;background:linear-gradient(90deg,#ffcf4a,#ffef9a);text-decoration:none}
+.lv-exp small{color:#aeb9d1;font-size:9px}
+.battle-member .lv-badge{font-size:9px;padding:0 4px}
+
+/* ---------- HUD：フロア・危険度・MAP ---------- */
+.field-floor-label{padding:1px 7px;border:1px solid #ffffff55;border-radius:4px;background:#0006;color:#fff;font-size:12px;font-weight:700;white-space:nowrap}
+.field-danger{flex:0 0 auto;width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 6px currentColor;background:currentColor;color:#3c8bff;transition:color .3s}
+.field-danger[data-level="1"]{color:#3fd06a}
+.field-danger[data-level="2"]{color:#ffd23c}
+.field-danger[data-level="3"]{color:#ff8a1c}
+.field-danger[data-level="4"]{color:#ff2d2d;animation:field-danger-pulse .6s ease-in-out infinite alternate}
+@keyframes field-danger-pulse{to{transform:scale(1.25)}}
+.field-map-button{padding:5px 9px;border:1px solid #ffd96a99;border-radius:5px;background:#3a2c08;color:#ffe48a;font-size:12px;font-weight:700;white-space:nowrap}
+
+/* ---------- 視界（未踏は真っ暗、視界の外は暗く） ---------- */
+.field-tile.is-unexplored{background:#000!important;box-shadow:none!important;animation:none!important}
+.field-object.is-unexplored{visibility:hidden}
+.field-fog{position:absolute;inset:0;z-index:30;pointer-events:none}
+.field-screen[data-theme="mist"] .field-viewport::after{z-index:31}
+
+/* ---------- 地形・物 ---------- */
+.tile-stairs-up,.tile-stairs-down{background:repeating-linear-gradient(180deg,#d8d0b8 0 5px,#8f8670 5px 8px)}
+.tile-stairs-down{background:repeating-linear-gradient(180deg,#5d5648 0 5px,#2b2720 5px 8px)}
+.field-object[data-kind="stairs"] .field-object-sprite::before{content:"";}
+.field-object[data-kind="stairs"] .field-object-label{opacity:.85;font-size:8px}
+.field-object[data-kind="gather"] .field-object-sprite::before{content:"🌿";filter:drop-shadow(0 0 4px #7dff9a)}
+.field-object[data-kind="gather"].is-opened .field-object-sprite::before{opacity:.35;filter:grayscale(1)}
+.field-foe{position:absolute;width:32px;height:32px;z-index:12;pointer-events:none}
+.field-foe .field-object-sprite{inset:0;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,#ffb347 0 35%,#ff6a00 60%,#ff6a0000 72%);animation:field-foe-pulse 1.2s ease-in-out infinite alternate}
+.field-foe .field-object-sprite::before{content:"";}
+.field-foe.is-chasing .field-object-sprite{background:radial-gradient(circle,#ff7a7a 0 35%,#ff1a1a 60%,#ff1a1a00 72%);animation-duration:.45s}
+.field-foe .field-object-label{opacity:1;font-size:8px;background:#a01d00cc}
+.field-foe.is-unexplored{visibility:hidden}
+@keyframes field-foe-pulse{to{transform:scale(1.15)}}
+.field-screen.is-foe-encounter .field-encounter-flash{animation-duration:.35s;background:#600}
+
+/* ---------- ミニマップ・全体マップ ---------- */
+.field-minimap{position:absolute;top:8px;right:8px;z-index:35;padding:3px;border:1px solid #ffffff66;border-radius:4px;background:#000a;cursor:pointer;image-rendering:pixelated}
+.field-fullmap{position:absolute;inset:6px;z-index:60;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;border:2px solid #ffffffaa;border-radius:6px;background:#04081ef2;color:#fff}
+.field-fullmap[hidden]{display:none}
+.field-fullmap-head{display:flex;align-items:center;gap:10px;width:100%}
+.field-fullmap-head strong{font-size:13px;color:#ffe48a}
+.field-fullmap-head span{margin-right:auto;font-size:11px;color:#aebbd4}
+.field-fullmap-head button{padding:4px 10px;border:1px solid #ffffff77;border-radius:4px;background:#17266f;color:#fff;font-size:12px}
+.field-fullmap canvas{flex:0 0 auto;max-width:100%;image-rendering:pixelated;background:#0008}
+.field-fullmap-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 10px;font-size:10px;color:#cfd8ee}
+.field-fullmap-legend i{display:inline-block;width:9px;height:9px;margin-right:3px;vertical-align:-1px;border-radius:2px}
+.lg-player{background:#fff;clip-path:polygon(50% 0,100% 100%,0 100%)}.lg-stairs{background:#ffd84a}.lg-lamp{background:#ffe27a;border-radius:50%!important}.lg-chest{background:#ff9a3c}.lg-gather{background:#3ee07a;border-radius:50%!important}.lg-foe{background:#ff8a1c;border-radius:50%!important}.lg-gate{background:#ff3030;border-radius:50%!important}
+
+/* ---------- フロア選択（磁軸） ---------- */
+.field-stratum-card{display:grid;gap:3px;text-align:left}
+.field-stratum-card.is-locked{opacity:.45}
+.field-floor-buttons{display:flex;gap:6px;margin-top:4px}
+.field-floor-button{min-width:54px;padding:6px 8px;border:1px solid var(--gold,#d8b45a);border-radius:5px;background:#17266f;color:#fff;font-weight:700}
+.field-floor-button small{display:block;font-size:9px;font-weight:400;color:#aebbd4}
+.field-floor-button:disabled{opacity:.35}
+@media(max-width:560px){
+  .field-hud{flex-wrap:wrap;gap:6px}
+  .field-minimap{top:6px;right:6px}
+}
