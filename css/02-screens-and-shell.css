@@ -6,9 +6,11 @@
 .game{width:min(1200px,100%)}
 body{font-size:13px}
 @media(max-width:700px){.game{width:100%}body{padding:8px;font-size:14px}.battle-screen{max-width:100%}.battle-bottom{grid-template-columns:minmax(0,1fr)}.battle-party{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.battle-party{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:380px){.battle-party{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(prefers-reduced-motion:reduce){.union-cutin-skill{animation:none}.hp-loss-preview{transition:none}}
 
-.battle-party { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: clamp(2px, .55vw, 8px); }
+.battle-party { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; gap: clamp(2px, .55vw, 8px); }
 .battle-member { min-width: 0; padding: clamp(2px, .4vw, 6px); }
 .battle-portrait { height: clamp(28px, 4.4vw, 54px); }
 .member-head { min-width: 0; }
@@ -47,7 +49,7 @@ body{font-size:13px}
   .command-window, .log-window { height: 190px; min-height: 190px; max-height: 190px; }
   .battle-log { height: 145px; max-height: 145px; }
   .battle-commands .command-option { min-width: 68px; font-size: 10px; }
-  .battle-party { grid-template-columns: repeat(4, minmax(0,1fr)) !important; }
+  .battle-party { grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
   .battle-member { font-size: 8px; }
   .battle-portrait { height: 28px; }
   .enemy-group-unit img { height: 48px; }
