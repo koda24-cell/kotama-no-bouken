@@ -16,17 +16,16 @@
    ============================================================ */
 
 const FIELD_TILE = 32;
-const FIELD_SPEED = 118;
 const FIELD_HIT = { halfW: 9, top: 7, bottom: 5 };
 const FIELD_VISION = 3.6;              // 視界の半径（マス）
 const FIELD_FOE_SIGHT = 4.5;           // FOEがプレイヤーに気づく距離（マス）
-const FIELD_FOE_SPEED = { patrol: 52, chase: 84 };   // プレイヤーが動いている間だけ、この速さで動く
 const FIELD_GATHER_USES = 2;
 const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);
 const FIELD_SAFE = new Set(["_", "P", "E", "B", "<", ">"]);
 const FIELD_TILE_CLASS = { "#":"tile-wall", ".":"tile-floor", ",":"tile-path", "*":"tile-grass", "~":"tile-water", "_":"tile-safe", "P":"tile-safe", "E":"tile-exit", "B":"tile-gate", "S":"tile-safe", "T":"tile-floor", "?":"tile-floor", "G":"tile-floor", "<":"tile-stairs-up", ">":"tile-stairs-down" };
 const FIELD_DIRS = { up:{dx:0,dy:-1}, down:{dx:0,dy:1}, left:{dx:-1,dy:0}, right:{dx:1,dy:0} };
 const FIELD_ENCOUNTER_DELAY = 900;
+const FIELD_ENCOUNTER_INTERVAL_MULTIPLIER = 1.5;
 const FIELD_MATERIAL_FALLBACK = { slime_jelly: "スライムゼリー" };
 
 let fieldState = {
@@ -38,7 +37,8 @@ let fieldState = {
   foes: [], foeDefeated: {}, gatherUsed: {}, foeGraceUntil: 0,
   lock: false, built: "", triggerTile: "", nearKey: "", positioned: false, mapOpen: false, lastTileKey: ""
 };
-const fieldInput = { keys: new Set(), pad: new Set() };
+const fieldInput = { keys: new Set(), pad: new Set(), pendingDir: null };
+let fieldMoveAnimUntil = 0;
 let fieldRaf = null, fieldLastTs = 0, fieldFrame = 0, fieldMiniDirty = true, fieldMiniTimer = 0;
 let fieldDialogAdvance = null, fieldDialogTyping = null, fieldChoiceState = null;
 const fieldAreaCache = {};
@@ -156,7 +156,8 @@ function fieldEnsureExtraDom() {
   }
   if (!$("field-minimap")) {
     const mini = document.createElement("canvas"); mini.id = "field-minimap"; mini.className = "field-minimap"; mini.setAttribute("aria-label", "ミニマップ（タップで全体マップ）");
-    vp.appendChild(mini); mini.addEventListener("click", () => fieldToggleFullMap());
+    const mapRail = document.querySelector("#field .field-map-rail");
+    (mapRail || vp).appendChild(mini); mini.addEventListener("click", () => fieldToggleFullMap());
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
@@ -291,17 +292,13 @@ function fieldIsActive() { return state.screen === "field"; }
 function fieldModalOpen() {
   return [...document.querySelectorAll(".game-dialog, #story-event, #tutorial-overlay")].some(el => !el.hidden) || !$("list-menu")?.hidden;
 }
-function fieldInputVector() {
-  const k = fieldInput.keys, p = fieldInput.pad;
-  let dx = 0, dy = 0;
-  if (k.has("ArrowLeft") || k.has("a") || p.has("left")) dx -= 1;
-  if (k.has("ArrowRight") || k.has("d") || p.has("right")) dx += 1;
-  if (k.has("ArrowUp") || k.has("w") || p.has("up")) dy -= 1;
-  if (k.has("ArrowDown") || k.has("s") || p.has("down")) dy += 1;
-  return { dx, dy };
+function fieldRequestStep(dir) {
+  if (!fieldIsActive() || fieldState.lock || fieldState.mapOpen || fieldModalOpen() || fieldDialogAdvance || fieldChoiceState) return;
+  if (FIELD_DIRS[dir]) fieldInput.pendingDir = dir;
 }
 function fieldSetupInput() {
   const keyName = e => e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  const directionKeys = { ArrowUp:"up", w:"up", ArrowDown:"down", s:"down", ArrowLeft:"left", a:"left", ArrowRight:"right", d:"right" };
   document.addEventListener("keydown", e => {
     if (!fieldIsActive() || fieldModalOpen()) return;
     const k = keyName(e);
@@ -311,14 +308,13 @@ function fieldSetupInput() {
     if (fieldState.mapOpen) { if (["x", "Escape", "z", "Enter"].includes(k)) fieldToggleFullMap(false); return; }
     if (["z", "Enter", " "].includes(k)) { if (!e.repeat) fieldActionPressed(); return; }
     if (["x", "Escape"].includes(k)) { if (fieldDialogAdvance) fieldActionPressed(); return; }
-    fieldInput.keys.add(k);
+    if (!e.repeat && directionKeys[k]) fieldRequestStep(directionKeys[k]);
   });
-  document.addEventListener("keyup", e => fieldInput.keys.delete(keyName(e)));
-  window.addEventListener("blur", () => { fieldInput.keys.clear(); fieldInput.pad.clear(); });
+  window.addEventListener("blur", () => { fieldInput.keys.clear(); fieldInput.pad.clear(); fieldInput.pendingDir = null; });
   document.querySelectorAll("#field-pad [data-dir]").forEach(btn => {
     const dir = btn.dataset.dir;
-    const on = e => { e.preventDefault(); fieldInput.pad.add(dir); btn.classList.add("is-pressed"); try { btn.setPointerCapture(e.pointerId); } catch (_) {} };
-    const off = () => { fieldInput.pad.delete(dir); btn.classList.remove("is-pressed"); };
+    const on = e => { e.preventDefault(); fieldRequestStep(dir); btn.classList.add("is-pressed"); try { btn.setPointerCapture(e.pointerId); } catch (_) {} };
+    const off = () => { btn.classList.remove("is-pressed"); };
     btn.addEventListener("pointerdown", on);
     ["pointerup", "pointercancel", "lostpointercapture"].forEach(t => btn.addEventListener(t, off));
     btn.addEventListener("contextmenu", e => e.preventDefault());
@@ -350,30 +346,38 @@ function fieldStartLoop() {
   };
   fieldRaf = requestAnimationFrame(loop);
 }
-function fieldUpdate(dt) {
+function fieldUpdate() {
   const a = fieldArea(); if (!a) return;
   const blocked = fieldState.lock || fieldState.mapOpen || fieldModalOpen() || !!fieldDialogAdvance || !!fieldChoiceState;
-  const { dx, dy } = blocked ? { dx: 0, dy: 0 } : fieldInputVector();
-  fieldState.moving = !!(dx || dy);
+  const dir = blocked ? null : fieldInput.pendingDir;
+  fieldInput.pendingDir = null;
   let moved = 0;
-  if (fieldState.moving) {
-    if (dx && !dy) fieldState.dir = dx < 0 ? "left" : "right";
-    else if (dy && !dx) fieldState.dir = dy < 0 ? "up" : "down";
-    else {
-      const keep = (fieldState.dir === "left" && dx < 0) || (fieldState.dir === "right" && dx > 0) || (fieldState.dir === "up" && dy < 0) || (fieldState.dir === "down" && dy > 0);
-      if (!keep) fieldState.dir = dy < 0 ? "up" : "down";
+  if (dir && FIELD_DIRS[dir]) {
+    const d = FIELD_DIRS[dir];
+    fieldState.dir = dir;
+    const current = fieldPlayerTile();
+    const origin = fieldTileCenter(current.tx, current.ty);
+    fieldState.x = origin.x; fieldState.y = origin.y;
+    const tx = current.tx + d.dx, ty = current.ty + d.dy;
+    const tile = fieldTileAt(a, tx, ty);
+    const next = fieldTileCenter(tx, ty);
+    // 1入力=1マス。移動先のマスと当たり判定を先に確認し、壁際での押し込み・滑りを防ぐ。
+    if (!fieldIsSolidChar(tile) && !fieldBoxBlocked(a, next.x, next.y)) {
+      fieldState.x = next.x; fieldState.y = next.y;
+      moved = FIELD_TILE;
+      fieldFrame++;
+      fieldState.step = fieldFrame % 2 ? 1 : 3;
+      fieldMoveAnimUntil = performance.now() + 140;
+      // FOEもプレイヤーの1歩に対して最大1マスだけ行動する。
+      fieldUpdateFoes();
+      fieldAfterMove(a, moved);
+    } else {
+      fieldState.step = 0;
     }
-    const len = Math.hypot(dx, dy), v = FIELD_SPEED * dt / len;
-    const ox = fieldState.x, oy = fieldState.y;
-    const nx = fieldState.x + dx * v; if (!fieldBoxBlocked(a, nx, fieldState.y)) fieldState.x = nx;
-    const ny = fieldState.y + dy * v; if (!fieldBoxBlocked(a, fieldState.x, ny)) fieldState.y = ny;
-    moved = Math.hypot(fieldState.x - ox, fieldState.y - oy);
-    fieldFrame++; if (fieldFrame % 8 === 0) fieldState.step = (fieldState.step + 1) % 4;
-  } else { fieldState.step = 0; }
+  }
+  fieldState.moving = performance.now() < fieldMoveAnimUntil;
+  if (!fieldState.moving && moved === 0) fieldState.step = 0;
   fieldUpdateVision();
-  // FOEはプレイヤーが動いた分だけ動く（世界樹の迷宮と同じく、止まって考えられる）
-  if (moved > 0 && !blocked) fieldUpdateFoes(dt * Math.min(1, moved / Math.max(1e-6, FIELD_SPEED * dt)));
-  if (moved > 0) fieldAfterMove(a, moved);
   if (!blocked) fieldCheckFoeContact();
   fieldUpdateNear();
   fieldUpdateDanger();
@@ -450,7 +454,7 @@ function fieldBfsStep(a, from, to) {
   let cur = goal; while (prev[cur] !== start) cur = prev[cur];
   return { tx: cur % W, ty: Math.floor(cur / W) };
 }
-function fieldUpdateFoes(dt) {
+function fieldUpdateFoes() {
   const a = fieldArea(), pt = fieldPlayerTile(), now = performance.now();
   if (now < fieldState.foeGraceUntil) return;
   for (const f of fieldState.foes) {
@@ -468,9 +472,9 @@ function fieldUpdateFoes(dt) {
     }
     const step = fieldBfsStep(a, ft, target) || (f.mode === "chase" ? null : null);
     const goal = step ? fieldTileCenter(step.tx, step.ty) : (f.mode === "chase" && fieldFoeWalkable(a, pt.tx, pt.ty) ? { x: fieldState.x, y: fieldState.y } : fieldTileCenter(ft.tx, ft.ty));
-    const speed = (f.mode === "chase" ? FIELD_FOE_SPEED.chase : FIELD_FOE_SPEED.patrol) * dt;
     const vx = goal.x - f.x, vy = goal.y - f.y, len = Math.hypot(vx, vy);
-    if (len > .01) { const k = Math.min(1, speed / len); f.x += vx * k; f.y += vy * k; }
+    // 探索者の1歩に対してFOEも1マス単位で移動。途中位置での接触判定をなくす。
+    if (len > .01) { f.x = goal.x; f.y = goal.y; }
   }
   fieldMiniDirty = true;
 }
@@ -699,7 +703,9 @@ async function fieldOnGate() {
 function fieldRollNextEncounter() {
   const enc = fieldArea()?.floor.encounter || { min: 16, max: 28 };
   fieldState.steps = 0; fieldState.walked = 0;
-  fieldState.nextEncounter = enc.min + Math.floor(Math.random() * (enc.max - enc.min + 1));
+  const minSteps = Math.max(1, Math.ceil(enc.min * FIELD_ENCOUNTER_INTERVAL_MULTIPLIER));
+  const maxSteps = Math.max(minSteps, Math.ceil(enc.max * FIELD_ENCOUNTER_INTERVAL_MULTIPLIER));
+  fieldState.nextEncounter = minSteps + Math.floor(Math.random() * (maxSteps - minSteps + 1));
 }
 function fieldPickEnemyId() {
   const table = fieldArea()?.floor.encounter?.table || [];

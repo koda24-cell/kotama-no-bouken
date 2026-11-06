@@ -473,3 +473,143 @@ body[data-screen="battle"] .gold-display{display:none!important;}
   .event-log{min-height:38px;max-height:84px;padding:6px 8px}
   .event-window .window-title::after{font-size:8px}
 }
+
+
+/* GPT overhaul: Etrian-inspired compact battle frame and information hierarchy. */
+.battle-screen{max-width:860px;margin:0 auto;padding:5px 0}
+.battle-heading{margin-bottom:5px}
+.battle-arena{
+  min-height:198px;
+  padding:20px 12px 10px;
+  border:2px solid #a88b58;
+  border-radius:3px;
+  background:
+    radial-gradient(ellipse at 50% 38%,#344c45 0%,#1b302d 48%,#0c1820 100%),
+    repeating-linear-gradient(0deg,transparent 0 23px,#ffffff08 24px 25px);
+  box-shadow:inset 0 0 0 3px #101b24,0 4px 14px #0008;
+}
+.stage-stars{opacity:.25}
+.enemy-display{width:min(270px,72%);max-height:178px}
+.enemy-image{width:150px;height:112px;object-fit:contain}
+.enemy-placeholder{height:96px}
+.enemy-display h2{color:#f0e4c2;font-size:15px;text-shadow:0 2px 4px #000}
+.enemy-display .hp-track{max-width:220px;margin:5px auto}
+.battle-party{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:7px}
+.battle-member{border:1px solid #9d895f;border-radius:3px;background:linear-gradient(145deg,#18293a,#0e1928);box-shadow:inset 0 0 0 1px #0008}
+.battle-member.active-turn{border-color:#f0d58b;background:linear-gradient(145deg,#293c4b,#172b36)}
+.battle-bottom{grid-template-columns:minmax(220px,.92fr) minmax(0,1.08fr);gap:7px;margin-top:7px}
+.battle-window{border:2px solid #a88b58;border-radius:3px;background:linear-gradient(145deg,#17283a,#0d1726);box-shadow:inset 0 0 0 1px #0008}
+.command-window{min-height:290px}
+.event-window{min-height:58px;margin-top:7px}
+.event-log{max-height:62px}
+.window-title{color:#e8d6a2;letter-spacing:.08em}
+.command-option{border-bottom:1px solid #ffffff10}
+.command-option:hover,.command-option.keyboard-focus{background:#b69a5b22;color:#ffe8a6}
+.command-hint{border-color:#a88b5844;background:#08131e}
+.battle-support{border-color:#8f7950;border-radius:3px;background:#101e2b}
+@media(max-width:620px){
+  .battle-arena{min-height:178px;padding:16px 8px 8px}
+  .enemy-image{width:128px;height:96px}
+  .battle-party{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .battle-bottom{grid-template-columns:minmax(0,1fr)}
+  .command-window{min-height:0}
+}
+
+
+/* Enemy field notes: show the tactical identity of each monster at a glance. */
+.enemy-traits{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:4px auto 5px;max-width:360px}
+.enemy-traits[hidden]{display:none!important}
+.enemy-trait{display:inline-block;padding:2px 6px;border:1px solid #8f9c9a;border-radius:2px;background:#0a1b22;color:#d6e0d8;font-size:9px;line-height:1.35;letter-spacing:.02em}
+.enemy-trait-weak{border-color:#b76b5d;color:#ffc3ae;background:#301a1a}
+.enemy-trait-resist{border-color:#6b91aa;color:#b9ddf0;background:#142b3a}
+.enemy-trait-element{border-color:#b69b61;color:#f0d99e}
+.enemy-trait-pattern{border-color:#82936e;color:#c9dcae;background:#18251d}
+
+
+/* Final union cut-in overrides: keep the effect cinematic, not flashy or skewed. */
+.union-cutin-layer{background:radial-gradient(ellipse at center,#071522ee 0%,#02070df5 78%);backdrop-filter:blur(3px)}
+.union-cutin-layer::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(135deg,transparent 0 42px,#d7bd7a0b 43px 44px);opacity:1}
+.union-cutin-swipe{width:min(900px,92vw);min-height:clamp(190px,30vh,300px);padding:clamp(14px,2.5vw,26px) clamp(18px,4vw,44px);background:linear-gradient(135deg,#0b1b2b 0%,#1b3040 52%,#0b1825 100%);border:1px solid #c3a66a;border-top:3px solid #dfc88e;border-bottom:3px solid #dfc88e;box-shadow:0 16px 48px #000c,inset 0 0 32px #8fa8b01a;transform:translateY(48px) scale(.96);opacity:0;filter:none}
+.union-cutin-layer.is-active .union-cutin-swipe{animation:union-cutin-enter 360ms cubic-bezier(.18,.8,.2,1) forwards}
+.union-cutin-layer.is-exiting .union-cutin-swipe{animation:union-cutin-exit 260ms ease-in forwards}
+.union-cutin-label{color:#d9c38e;font-size:clamp(10px,1.5vw,14px);letter-spacing:.24em;text-shadow:none;margin-bottom:8px}
+.union-cutin-members{min-height:clamp(84px,16vh,150px);gap:clamp(10px,2.5vw,28px)}
+.union-cutin-member{font-size:clamp(11px,1.7vw,17px);font-weight:700;color:#f2eee4;text-shadow:0 2px 4px #000;transform:translateY(0)!important;filter:none}
+.union-cutin-portrait{width:clamp(54px,9vw,112px);height:clamp(72px,15vh,150px);filter:drop-shadow(0 4px 8px #0009)}
+.union-cutin-skill{margin:0 auto;max-width:100%;padding:7px 24px;color:#fff1c6;background:linear-gradient(90deg,transparent,#20394a 18%,#20394a 82%,transparent);border:0;border-top:1px solid #c3a66a;border-bottom:1px solid #c3a66a;font-size:clamp(22px,4.6vw,46px);font-weight:800;letter-spacing:.08em;text-shadow:0 2px 8px #000;transform:none;animation:union-skill-reveal 620ms ease-out both}
+.union-cutin-topline,.union-cutin-bottomline{height:1px;background:#d9c38e;box-shadow:0 0 10px #d9c38e66;transform:none}
+.union-cutin-topline{top:5%}.union-cutin-bottomline{bottom:5%}
+.union-cutin-swipe::before{background:linear-gradient(110deg,transparent 0%,#ffffff08 45%,#ffffff18 50%,#ffffff08 55%,transparent 100%);mix-blend-mode:screen}
+@keyframes union-cutin-enter{0%{transform:translateY(48px) scale(.96);opacity:0}70%{transform:translateY(-3px) scale(1.005);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes union-cutin-exit{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-24px) scale(.98);opacity:0}}
+@keyframes union-skill-reveal{0%{opacity:0;letter-spacing:.22em;filter:blur(5px)}100%{opacity:1;letter-spacing:.08em;filter:blur(0)}}
+@media(max-width:600px){.union-cutin-swipe{width:94vw;min-height:200px;padding:14px 12px}.union-cutin-member{flex-direction:column;gap:2px}.union-cutin-portrait{width:clamp(46px,16vw,76px);height:clamp(64px,16vh,100px)}.union-cutin-skill{font-size:clamp(20px,6vw,32px);margin:0;padding:7px 10px}}
+@media(prefers-reduced-motion:reduce){.union-cutin-layer.is-active .union-cutin-swipe,.union-cutin-layer.is-exiting .union-cutin-swipe,.union-cutin-skill{animation:none!important;transform:none;opacity:1}}
+
+/* Keep the battle stage itself compact while leaving room for the tactical panels. */
+.battle-arena{width:min(100%,720px);min-height:188px;margin-left:auto;margin-right:auto}
+@media(max-width:620px){.battle-arena{width:100%;min-height:172px}}
+
+
+/* Reference-led layout pass: command rail at left, enemy stage at center,
+   party formation in two rows (2 + 3), and a compact tactical map at lower right. */
+.battle-layout{
+  display:grid;
+  grid-template-columns:minmax(205px,.72fr) minmax(0,1.65fr) minmax(112px,.42fr);
+  grid-template-areas:
+    "command arena map"
+    "event party map"
+    "info party map"
+    "support support support";
+  gap:7px;
+  align-items:stretch;
+}
+.battle-arena{grid-area:arena;width:100%;min-height:166px;max-width:none;padding:12px 8px 8px}
+.command-window{grid-area:command;min-height:0}
+.event-window{grid-area:event;min-height:0;margin:0}
+.command-info-window{grid-area:info;min-height:0}
+.battle-party{grid-area:party;align-content:center;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0}
+.battle-party>.battle-member:nth-child(1),
+.battle-party>.battle-member:nth-child(2){grid-column:span 3}
+.battle-party>.battle-member:nth-child(n+3){grid-column:span 2}
+.battle-tactical-map{grid-area:map;align-self:end;min-width:0;padding:8px;border:2px solid #a88b58;background:linear-gradient(145deg,#17283a,#0b1520);color:#e8d6a2}
+.battle-tactical-map .window-title{font-size:10px;text-align:center}
+.battle-map-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:9px 0}
+.battle-map-grid i{aspect-ratio:1;border:1px solid #a88b5866;background:#142a32}
+.battle-map-grid i:nth-child(2),.battle-map-grid i:nth-child(4),.battle-map-grid i:nth-child(6){background:#263f3c}
+.battle-map-grid i:nth-child(5){background:#c3a66a;box-shadow:0 0 7px #c3a66a88}
+.battle-tactical-map small{display:block;text-align:center;font-size:9px;color:#b9c4c1}
+.battle-bottom{display:contents}
+.battle-support{grid-area:support;margin:0}
+.battle-result{grid-column:1/-1}
+@media(max-width:760px){
+ .battle-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);grid-template-areas:
+  "arena arena"
+  "command map"
+  "party party"
+  "event event"
+  "info info"
+  "support support";gap:6px}
+ .battle-arena{min-height:150px}
+ .battle-tactical-map{align-self:stretch}
+ .battle-party{grid-template-columns:repeat(6,minmax(0,1fr))}
+ .battle-party>.battle-member{grid-column:span 2!important}
+ .battle-party>.battle-member:nth-child(1),.battle-party>.battle-member:nth-child(2){grid-column:span 3!important}
+ .battle-bottom{display:contents}
+}
+@media(max-width:420px){
+ .battle-layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"arena" "command" "party" "map" "event" "info" "support"}
+ .battle-party>.battle-member{grid-column:span 3!important}
+ .battle-tactical-map{max-width:180px;justify-self:end}
+}
+
+
+/* Taunt should read as a clear defensive stance, not a tiny status label. */
+.battle-member:has(.status-taunt){border:2px solid #d9b85f!important;box-shadow:0 0 0 2px #d9b85f33,inset 0 0 18px #d9b85f18;position:relative}
+.battle-member:has(.status-taunt)::after{content:"挑発中";position:absolute;top:3px;right:5px;padding:2px 5px;background:#6b4b18;color:#fff0bf;border:1px solid #e4c46f;font-size:9px;font-weight:800;letter-spacing:.08em;pointer-events:none}
+.status-chip.status-taunt{background:#76531d!important;border-color:#e4c46f!important;color:#fff0bf!important;font-weight:800}
+@media(prefers-reduced-motion:no-preference){
+ .battle-member:has(.status-taunt){animation:taunt-ready-pulse 1.8s ease-in-out infinite}
+}
+@keyframes taunt-ready-pulse{0%,100%{box-shadow:0 0 0 2px #d9b85f22,inset 0 0 12px #d9b85f10}50%{box-shadow:0 0 0 3px #d9b85f66,inset 0 0 22px #d9b85f25}}
+@media(prefers-reduced-motion:reduce){.battle-member:has(.status-taunt){animation:none}}

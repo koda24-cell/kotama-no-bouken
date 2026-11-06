@@ -18,6 +18,15 @@
 /* script.js から呼ばれる初期化 */
 function extInstallCharacters(characters) {
   for (const job of EXT_NEW_JOBS) characters.push(JSON.parse(JSON.stringify(job)));
+  const bindSkills = {
+    warrior: { id:"arm-break", name:"アームブレイク", cost:18, target:"enemy", type:"bindArms", xj:{ kind:"physical", mult:1 } },
+    mage: { id:"head-crush", name:"ヘッドクラッシュ", cost:22, target:"enemy", type:"bindHead", xj:{ kind:"sp", mult:1 } },
+    samurai: { id:"leg-cut", name:"レッグカット", cost:20, target:"enemy", type:"bindLegs", xj:{ kind:"physical", mult:1.1 } }
+  };
+  for (const [id, skill] of Object.entries(bindSkills)) {
+    const actor = characters.find(c => c.id === id);
+    if (actor && !actor.spSkills.some(s => s.id === skill.id)) actor.spSkills.push(skill);
+  }
   for (const c of characters) if (!Number.isFinite(c.speed)) c.speed = EXT_JOB_SPEED[c.id] ?? 50;
   // インペリアル専用パネル（script.js の renderImperialStatus）との接続口。
   // パネルは heatGauge / overheated / exposed という標準名で状態を読むため、内部の _heat / _overheat / _xjCharge を読み取り専用で公開する。
@@ -162,6 +171,8 @@ function extApplyStatusStats(c, raw) {
   if (extHasStatus(c, "attackDown")) { const p = 1 - Math.min(.9, extStatusPower(c, "attackDown")); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "curse")) { const p = 1 - Math.min(.9, extStatusPower(c, "curse") || .15); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "defenseUp")) { const p = 1 + extStatusPower(c, "defenseUp"); mul("defense", p); mul("spDefense", p); }
+  if (extHasStatus(c, "bindArms")) mul("attack", .6);
+  if (extHasStatus(c, "bindLegs")) raw.speed = Math.floor(raw.speed * .5);
 }
 // 呪い：回復量が半分になる。
 function extHealMul(target) { return extHasStatus(target, "curse") ? .5 : 1; }
@@ -268,21 +279,23 @@ async function extEndOfTurnStatuses() {
 
 /* ============================================================
    2. 行動優先度とスピード順
-   - 優先度4：ユニオンスキル（最優先）
-   - 優先度3：挑発・防御系スキル
-   - 優先度2：通常防御
-   - 優先度1：速攻指定された攻撃スキル
+   - 優先度3：ユニオンスキル（最優先）
+   - 優先度2：挑発・防御系スキル
+   - 優先度1：通常防御・速攻指定された攻撃スキル
    - 優先度なし：その他の行動と敵行動（速度順）
-   - 同一優先度内は速度順。同速なら味方を先にする。
+   - 数字が大きいほど優先。同一優先度内は速度順。同速なら味方を先にする。
    ============================================================ */
 const EXT_ACTION_PRIORITY = Object.freeze({
   QUICK_ATTACK: 1,
-  GUARD: 2,
-  DEFENSIVE_SKILL: 3,
-  UNION: 4,
+  GUARD: 1,
+  DEFENSIVE_SKILL: 2,
+  UNION: 3,
   NONE: 0
 });
-function extEnemySpeed(e) { return Number.isFinite(e?.speed) ? e.speed : (EXT_ENEMY_SPEED[e?.name] ?? 50); }
+function extEnemySpeed(e) {
+  const base = Number.isFinite(e?.speed) ? e.speed : (EXT_ENEMY_SPEED[e?.name] ?? 50);
+  return extHasStatus(e, "bindLegs") ? Math.floor(base * .5) : base;
+}
 function extActionPriority(action) {
   if (action.type === "guard") return EXT_ACTION_PRIORITY.GUARD;
   if (action.type === "union") return EXT_ACTION_PRIORITY.UNION;
@@ -334,7 +347,12 @@ function extIsChargeLocked(c) { return !!c && !!c._xjCharge; }
 /* ============================================================
    3. 新職業のスキル実行
    ============================================================ */
-function extSkillBlocked(actor, skill) { return !!skill.xj && actor._overheat === true; }
+function extSkillBlocked(actor, skill) {
+  if (skill.xj && actor._overheat === true) return true;
+  if (extHasStatus(actor, "bindHead") && ["fire","ice","thunder","spAttack","heal","revive","level-flare","level-lightning-all","level-lightning-single","holy-light"].includes(skill.type)) return true;
+  if (extHasStatus(actor, "bindArms") && ["charge","multiSlash","pierce","bindArms","bindLegs"].includes(skill.type)) return true;
+  return false;
+}
 function extSkillLabelExtra(actor, skill) {
   if (!skill.xj?.heat) return "";
   return ` ／ 熱 ${skill.xj.heat}${actor._overheat ? " ／ オーバーヒート" : ""}`;
@@ -412,6 +430,7 @@ async function extDamageSkill(actor, skill, a, x, mult) {
   return total;
 }
 async function extExecuteSkill(actor, skill, a) {
+  if (extSkillBlocked(actor, skill)) { pushEvent(`${actor.name}は封じ状態のためスキルを使えない！`, "warning"); return; }
   const x = skill.xj;
   if (x.buff) {
     for (const t of getParty().filter(c => c.hp > 0)) for (const [type, cfg] of Object.entries(x.buff)) addStatus(t, type, cfg);
@@ -477,9 +496,26 @@ function extPickPartyTarget(alive, act) {
 async function extVariantAction(e, turn) {
   const alive = livingParty(); if (!alive.length) return;
   const ratio = enemyHpTotal(e) / e.maxHp;
-  const usable = e.ai.filter(a => (!a.minTurn || turn >= a.minTurn) && (!a.hpBelow || ratio <= a.hpBelow));
-  const forced = usable.find(a => a.everyTurns && turn % a.everyTurns === 0);
-  const act = forced || extWeightedPick(usable.filter(a => !a.everyTurns).length ? usable.filter(a => !a.everyTurns) : usable);
+  const eligible = e.ai.filter(a => (!a.minTurn || turn >= a.minTurn) && (!a.hpBelow || ratio <= a.hpBelow));
+  // 頭封じは術式、腕封じは物理系の特殊行動を封じる。
+  const usable = eligible.filter(a => !(extHasStatus(e, "bindHead") && a.kind === "sp") && !(extHasStatus(e, "bindArms") && a.kind === "phys" && !a.heal));
+  const act = e._pendingAiAction
+    ? (eligible.find(a => a.name === e._pendingAiAction) || null)
+    : (() => {
+        const forced = usable.find(a => a.everyTurns && turn % a.everyTurns === 0);
+        return forced || extWeightedPick(usable.filter(a => !a.everyTurns).length ? usable.filter(a => !a.everyTurns) : usable);
+      })();
+  if (!act || (extHasStatus(e, "bindHead") && act.kind === "sp") || (extHasStatus(e, "bindArms") && act.kind === "phys" && !act.heal)) {
+    e._pendingAiAction = null;
+    pushEvent(`${e.name}は封じられて特殊行動を使えない！`, "warning");
+    return;
+  }
+  if (act.telegraph && e._pendingAiAction !== act.name) {
+    e._pendingAiAction = act.name;
+    pushEvent(`${e.name}は「${act.name}」の構えを取った！ 次のターンに攻撃が来る！`, "warning");
+    return;
+  }
+  e._pendingAiAction = null;
   if (act.heal) {
     const before = e.hp; e.hp = Math.min(e.maxHp, e.hp + Math.floor(e.maxHp * act.heal));
     pushEvent(`${e.name}は「${act.name}」を唱えた！ HPが${e.hp - before}回復した。`); renderBattle(); return;
@@ -487,6 +523,7 @@ async function extVariantAction(e, turn) {
   animateEnemyAttack();
   const sp = act.kind === "sp";
   pushEvent(`${e.name}は「${act.name}」${act.all ? "を放った" : "で攻撃した"}！`);
+  if (act.all && battleState.tauntTarget && alive.some(c => c.id === battleState.tauntTarget)) pushEvent("騎士の挑発で敵の注意を引いた！ ただし全体攻撃は防ぎきれない。");
   sound("damage", true);
   const targets = act.all ? alive.slice() : [extPickPartyTarget(alive, act)];
   for (const c of targets) {
