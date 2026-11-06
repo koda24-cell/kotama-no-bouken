@@ -8,6 +8,7 @@
        #=壁  .=地面  ,=道  *=草むら（出現率1.5倍）  ~=水/溶岩（通れない）
        _=安全地帯  P=開始位置  E=出口（ホームへ）  <=上り階段（前のフロアへ）  >=下り階段（次のフロアへ）
        B=ボスゲート  S=導きの灯（全回復・セーブ）  T=宝箱  G=採取ポイント  ?=看板  a〜z=objects のNPCなど
+       （objects の kind:"event" はサブイベントの調べられる物。内容は下の FIELD_SIDE_EVENTS）
    ・encounter.scale：そのフロアの雑魚敵の強さ倍率（HP・攻撃・防御・SP攻撃・SP防御・経験値・ゴールド）。
    ・chests はそのフロアの T を左上から順に読んだ順番。gathers は採取できる素材と重み。
    ・foes：FOE（見える強敵）。enemy は FIELD_ENEMIES のID、path は巡回する2地点（マス座標）。
@@ -19,15 +20,18 @@ const FIELD_AREAS = {
     bgm: "assets/music/仕分け雨/蒼獣シーガー.mp3",
     enterScene: "a1-enter", bossScene: "a1-boss", signScene: "a1-sign",
     objects: {
-      a: { kind: "npc", id: "woodcutter", name: "木こりボルド", sprite: "npc-woodcutter", scene: "a1-woodcutter" },
-      b: { kind: "npc", id: "herb-girl", name: "薬草摘みのミナ", sprite: "npc-girl", scene: "a1-herb-girl" }
+      a: { kind: "npc", id: "woodcutter", name: "木こりボルド", sprite: "npc-woodcutter", scene: "a1-woodcutter", sideEvents: ["a1-axe-return"] },
+      b: { kind: "npc", id: "herb-girl", name: "薬草摘みのミナ", sprite: "npc-girl", scene: "a1-herb-girl", sideEvents: ["a1-herb-medicine"] },
+      // [SIDE] サブイベント（1F：古い切り株／2F：木の根元の隠し物）
+      c: { kind: "event", id: "a1-old-stump", name: "古い切り株", sprite: "ev-stump", event: "a1-old-stump" },
+      d: { kind: "event", id: "a1-root-cache", name: "", sprite: "ev-hidden", event: "a1-root-cache", hidden: true }
     },
     floors: [
       { encounter: { min: 16, max: 28, scale: 1.0, table: [ { enemy: "stray-slime", weight: 70 }, { enemy: "mushroom", weight: 30 } ] },
         chests: [ { item: "potion", count: 2 }, { gold: 40 } ], gathers: [ ["slime_jelly", 60], ["monster_hide", 25], ["goblin_cloth", 15] ],
         foes: [ { enemy: "foe-bear", path: [[25, 14], [25, 9]] } ], map: [
         "###########################",
-        "#G#.....................#.#",
+        "#G#.....................#c#",
         "#.#.#.#.###.###########.#.#",
         "#...#.#.#...#....*.>#...#.#",
         "#####.#.#.###.###***#.###.#",
@@ -68,7 +72,7 @@ const FIELD_AREAS = {
         "#.#***#########.#**.###.#.#",
         "#.#...#.........#.**#...#.#",
         "#.###.#.#########.#.#.###.#",
-        "#.#...#.....#...#.#...#...#",
+        "#.#...#.....#...#.#...#d..#",
         "#.#.#######.#.#.#.#######.#",
         "#<#.........#.#...........#",
         "###########################"
@@ -101,8 +105,11 @@ const FIELD_AREAS = {
     bgm: "assets/music/仕分け雨/Digilune.mp3",
     enterScene: "a2-enter", bossScene: "a2-boss", signScene: "a2-sign",
     objects: {
-      a: { kind: "npc", id: "merchant", name: "行商人ロッコ", sprite: "npc-merchant", scene: "a2-merchant" },
-      b: { kind: "npc", id: "watchman", name: "見張り番タオ", sprite: "npc-guard", scene: "a2-watchman" }
+      a: { kind: "npc", id: "merchant", name: "行商人ロッコ", sprite: "npc-merchant", scene: "a2-merchant", sideEvents: ["a2-cargo-return"] },
+      b: { kind: "npc", id: "watchman", name: "見張り番タオ", sprite: "npc-guard", scene: "a2-watchman", sideEvents: ["a2-watch-fangs"] },
+      // [SIDE] サブイベント（1F・2F：ゴブリンに奪われた木箱）
+      c: { kind: "event", id: "a2-crate-1", name: "壊れた木箱", sprite: "ev-crate", event: "a2-crate-1" },
+      d: { kind: "event", id: "a2-crate-2", name: "壊れた木箱", sprite: "ev-crate", event: "a2-crate-2" }
     },
     floors: [
       { encounter: { min: 15, max: 26, scale: 1.0, table: [ { enemy: "forest-goblin", weight: 60 }, { enemy: "goblin-scout", weight: 25 }, { enemy: "mushroom", weight: 15 } ] },
@@ -127,7 +134,7 @@ const FIELD_AREAS = {
         "#**.#.#######.###.#########",
         "#*..#.....#...#...#...#...#",
         "###.#####.#.###.###.#.#.#.#",
-        "#E..#...............#...#.#",
+        "#E..#...............#...#c#",
         "###########################"
       ] },
       { encounter: { min: 14, max: 25, scale: 1.15, table: [ { enemy: "forest-goblin", weight: 50 }, { enemy: "goblin-scout", weight: 50 } ] },
@@ -136,7 +143,7 @@ const FIELD_AREAS = {
         "###########################",
         "#G........................#",
         "#########.###########.###.#",
-        "#...#...#.......#...#.....#",
+        "#...#...#.......#..d#.....#",
         "#.#.#.#.#.#####.#.#######.#",
         "#.#...#.#.....#.#.......#.#",
         "#.#####.#####.#.#######.#.#",
@@ -185,14 +192,17 @@ const FIELD_AREAS = {
     // 最終フロアでは、石像と話すまで霧が晴れず、ボスゲートに入れない
     gateRequires: { flag: "a3-statue", scene: "a3-gate-locked" },
     objects: {
-      a: { kind: "npc", id: "statue", name: "魔法の石像", sprite: "statue", scene: "a3-statue" }
+      a: { kind: "npc", id: "statue", name: "魔法の石像", sprite: "statue", scene: "a3-statue", sideEvents: ["a3-light-return"] },
+      // [SIDE] サブイベント（1F・2F：石像の光のかけら）
+      c: { kind: "event", id: "a3-shard-1", name: "光るかけら", sprite: "ev-shard", event: "a3-shard-1" },
+      d: { kind: "event", id: "a3-shard-2", name: "光るかけら", sprite: "ev-shard", event: "a3-shard-2" }
     },
     floors: [
       { encounter: { min: 14, max: 24, scale: 1.0, table: [ { enemy: "mist-bat", weight: 50 }, { enemy: "forest-wolf", weight: 35 }, { enemy: "goblin-scout", weight: 15 } ] },
         chests: [ { item: "high-potion", count: 1 }, { gold: 160 } ], gathers: [ ["monster_fang", 45], ["monster_hide", 45], ["slime_jelly", 10] ],
         foes: [ { enemy: "foe-mist-stag", path: [[3, 7], [8, 6]] } ], map: [
         "###########################",
-        "#.........#.......#.....#.#",
+        "#.........#.......#.....#c#",
         "###.#####.#####.#.#.###.#.#",
         "#...#..**.*...#.#...#...#.#",
         "#.###.#**...#.#.#####.###.#",
@@ -233,7 +243,7 @@ const FIELD_AREAS = {
         "#.#.#.#.**###..*#.#.#####.#",
         "#.#.#.#..*#..*..#...#...#.#",
         "#.#.#.#.#.#.#.*.#.###.#.#.#",
-        "#...#.#.#...#.**#...#.#...#",
+        "#...#.#.#...#.**#..d#.#...#",
         "#.#####.#####.#.#####.###.#",
         "#<........................#",
         "###########################"
@@ -266,7 +276,10 @@ const FIELD_AREAS = {
     bgm: "assets/music/仕分け雨/あやしいお店.mp3",
     enterScene: "a4-enter", bossScene: "a4-boss", signScene: "a4-sign",
     objects: {
-      a: { kind: "npc", id: "miner", name: "鉱夫ガルド", sprite: "npc-miner", scene: "a4-miner" }
+      a: { kind: "npc", id: "miner", name: "鉱夫ガルド", sprite: "npc-miner", scene: "a4-miner", sideEvents: ["a4-tool-return"] },
+      // [SIDE] サブイベント（1F：置き去りの道具袋／2F：岩壁の鉱脈）
+      c: { kind: "event", id: "a4-toolbag", name: "道具袋", sprite: "ev-bag", event: "a4-toolbag" },
+      d: { kind: "event", id: "a4-ore-vein", name: "", sprite: "ev-hidden", event: "a4-ore-vein", hidden: true }
     },
     floors: [
       { encounter: { min: 13, max: 24, scale: 1.0, table: [ { enemy: "fire-lizard", weight: 65 }, { enemy: "lava-golem", weight: 35 } ] },
@@ -275,7 +288,7 @@ const FIELD_AREAS = {
         "###########################",
         "#.........#...............#",
         "#.#.#####.#.#########.###.#",
-        "#...#...#.#....T#...#...#.#",
+        "#...#...#.#....T#...#..c#.#",
         "#.###.#.#.#.#####.#.#####.#",
         "#.#...#.#..***.*..#.#.....#",
         "#.#.###.###*.**.###.#.###.#",
@@ -300,7 +313,7 @@ const FIELD_AREAS = {
         "###########################",
         "#.......#G................#",
         "#.###.#.###.###.#####.###.#",
-        "#.#...#...#.#.#.....#...#>#",
+        "#.#...#...#.#d#.....#...#>#",
         "#.#.#####.#.#.#####.###.###",
         "#.#.#.......#.....#...#...#",
         "#.#.#.###########.###.#.#.#",
@@ -347,7 +360,10 @@ const FIELD_AREAS = {
     bgm: "assets/music/仕分け雨/Sunny_day_shopping.mp3",
     enterScene: "a5-enter", bossScene: "a5-boss", signScene: "a5-sign",
     objects: {
-      a: { kind: "npc", id: "ghost-knight", name: "亡霊の騎士", sprite: "npc-ghost", scene: "a5-ghost-knight" }
+      a: { kind: "npc", id: "ghost-knight", name: "亡霊の騎士", sprite: "npc-ghost", scene: "a5-ghost-knight", sideEvents: ["a5-knights-rest"] },
+      // [SIDE] サブイベント（1F：騎士団の紋章／2F：折れた剣）
+      c: { kind: "event", id: "a5-emblem", name: "騎士団の紋章", sprite: "ev-emblem", event: "a5-emblem" },
+      d: { kind: "event", id: "a5-broken-sword", name: "折れた剣", sprite: "ev-sword", event: "a5-broken-sword" }
     },
     floors: [
       { encounter: { min: 12, max: 22, scale: 1.0, table: [ { enemy: "dark-knight", weight: 55 }, { enemy: "wraith", weight: 45 } ] },
@@ -366,7 +382,7 @@ const FIELD_AREAS = {
         "#.###.#.#.#.#.#*..###.###.#",
         "#.#...#.#.#.#..*......#...#",
         "#.#.###.#.#.###...###.#.###",
-        "#.#...#.#.......*.....#.#.#",
+        "#.#...#.#.......*.....#.#c#",
         "#.###.#.#####.#.###.###.#.#",
         "#.#...#.#.....#...#.....#.#",
         "#.#.###.###.###.#.#######.#",
@@ -393,7 +409,7 @@ const FIELD_AREAS = {
         "#.###.###.#.#######.#.#####",
         "#...#.....#.#...#...#.#>..#",
         "#.#.#.#####.#.#.###.#.###.#",
-        "#.#.#...#.....#...#.#**.#.#",
+        "#d#.#...#.....#...#.#**.#.#",
         "###.#.#.#.#######.#.#***#.#",
         "#...#.#......G#...#..*..#.#",
         "#.###.#########.###.#####.#",
@@ -423,6 +439,43 @@ const FIELD_AREAS = {
       ] }
     ]
   }
+};
+
+/* ------------------------------------------------------------
+   サブイベント（探索コンテンツ）
+   仕様：docs/specs/field-side-events/IMPLEMENTATION_NOTES.md
+   ・各階層の 1F・2F に「調べられる物」（objects の kind:"event"）を置き、
+     3F の既存NPC（objects の sideEvents）に「届ける・渡す」イベントを付ける。
+   ・完了すると fieldState.flags["side:<イベントID>"] が立ち、セーブされる（報酬は1回だけ）。
+   ・scene：はじめて達成したときの会話（data/story.js）。doneScene：達成後にもう一度調べたとき。
+   ・requires：先に達成しておくイベントID。足りないときは hintScene を流す（NPCのイベントで使う）。
+   ・needs：渡す素材と個数（materials のID）。足りないときは needText を表示する。
+   ・reward：gold／items（消耗品 [ID, 個数]）／materials（素材 [ID, 個数]）。既存のものだけを使う。
+   ・keyItem：報酬の代わりに手に入れる「だいじなもの」の名前（表示だけ。フラグで管理）。
+   ------------------------------------------------------------ */
+const FIELD_SIDE_EVENTS = {
+  /* 第1階層 はじまりの樹海 */
+  "a1-old-stump":   { scene: "side-a1-old-stump", doneScene: "side-a1-old-stump-done", keyItem: "木こりの手斧" },
+  "a1-root-cache":  { scene: "side-a1-root-cache", reward: { gold: 30, items: [["potion", 2]] } },
+  "a1-axe-return":  { requires: ["a1-old-stump"], hintScene: "side-a1-axe-hint", scene: "side-a1-axe-return", reward: { gold: 60, items: [["ether", 1]] } },
+  "a1-herb-medicine": { needs: { slime_jelly: 3 }, speaker: "herb-girl", askText: "スライムゼリーを3つ、ミナに渡しますか？", needText: "ミナ「スライムゼリーが3つあれば、よく効く傷薬が作れるの！　採取ポイントやスライムから集めてきてくれる？」", scene: "side-a1-herb-medicine", reward: { items: [["potion", 3]] } },
+  /* 第2階層 ゴブリンの森 */
+  "a2-crate-1":     { scene: "side-a2-crate-1", doneScene: "side-a2-crate-done", keyItem: "ロッコの荷物（布地）" },
+  "a2-crate-2":     { scene: "side-a2-crate-2", doneScene: "side-a2-crate-done", keyItem: "ロッコの荷物（薬瓶）" },
+  "a2-cargo-return": { requires: ["a2-crate-1", "a2-crate-2"], hintScene: "side-a2-cargo-hint", scene: "side-a2-cargo-return", reward: { gold: 150, items: [["high-potion", 2]] } },
+  "a2-watch-fangs": { needs: { monster_fang: 3 }, speaker: "watchman", askText: "魔物の牙を3つ、タオに渡しますか？", needText: "タオ「見張り台の鳴子に使う、魔物の牙が足りなくてな。3つ持ってきてくれたら礼をするぞ」", scene: "side-a2-watch-fangs", reward: { gold: 100, items: [["ether", 2]] } },
+  /* 第3階層 霧の森 */
+  "a3-shard-1":     { scene: "side-a3-shard-1", doneScene: "side-a3-shard-done", keyItem: "光るかけら" },
+  "a3-shard-2":     { scene: "side-a3-shard-2", doneScene: "side-a3-shard-done", keyItem: "光るかけら" },
+  "a3-light-return": { requires: ["a3-shard-1", "a3-shard-2"], hintScene: "side-a3-light-hint", scene: "side-a3-light-return", reward: { items: [["high-potion", 2], ["ether", 3]] } },
+  /* 第4階層 焦土の溶岩洞窟 */
+  "a4-toolbag":     { scene: "side-a4-toolbag", doneScene: "side-a4-toolbag-done", keyItem: "ガルドの道具袋" },
+  "a4-ore-vein":    { scene: "side-a4-ore-vein", reward: { gold: 150, materials: [["dragon_scale", 1]] } },
+  "a4-tool-return": { requires: ["a4-toolbag"], hintScene: "side-a4-tool-hint", scene: "side-a4-tool-return", reward: { gold: 300, items: [["high-potion", 3]] } },
+  /* 第5階層 魔王城・回廊 */
+  "a5-emblem":      { scene: "side-a5-emblem", doneScene: "side-a5-relic-done", keyItem: "騎士団の紋章" },
+  "a5-broken-sword": { scene: "side-a5-broken-sword", doneScene: "side-a5-relic-done", keyItem: "団長の折れた剣" },
+  "a5-knights-rest": { requires: ["a5-emblem", "a5-broken-sword"], hintScene: "side-a5-knights-hint", scene: "side-a5-knights-rest", reward: { gold: 500, items: [["high-potion", 3], ["ether", 3]] } }
 };
 
 /* ------------------------------------------------------------

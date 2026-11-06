@@ -235,6 +235,130 @@ const STORY_SCENES = {
     ]
   },
 
+  /* ============================================================
+     [SIDE] サブイベント（探索コンテンツ）　データ：data/field-maps.js の FIELD_SIDE_EVENTS
+     ・報酬・完了フラグは field.js が扱う。ここは会話だけ（once は付けない）。
+     ============================================================ */
+  /* ---------- 第1階層 ---------- */
+  "side-a1-old-stump": { lines: [
+    { who: "narration", text: "苔むした切り株に、使い込まれた手斧が刺さったままになっている。" },
+    { who: "kotama", text: "持ち手に「ボルド」って彫ってある……。木こりのおじさんのかな？　届けてあげよう。" }
+  ] },
+  "side-a1-old-stump-done": { lines: [ { who: "narration", text: "古い切り株だ。斧が刺さっていた跡が残っている。" } ] },
+  "side-a1-root-cache": { lines: [
+    { who: "narration", text: "木の根元で、何かがきらりと光った。" },
+    { who: "narration", text: "根のすき間に、古い革袋が押し込まれている。昔の旅人の忘れ物だろうか。" },
+    { who: "kotama", text: "ありがたく使わせてもらおう！" }
+  ] },
+  "side-a1-axe-hint": { lines: [
+    { who: "woodcutter", text: "そういや、愛用の手斧をどこかに置き忘れちまってな。樹海の入口の階の、奥まった切り株のあたりだと思うんだが……。" },
+    { who: "woodcutter", text: "見かけたら持ってきてくれねえか。" }
+  ] },
+  "side-a1-axe-return": { lines: [
+    { who: "kotama", text: "おじさん、これ……切り株に刺さってたよ。" },
+    { who: "woodcutter", text: "おお、おれの手斧！　よく見つけてくれたな。" },
+    { who: "warrior", text: "いい斧だ。大事に使われてきたのがわかる。", ifParty: true },
+    { who: "woodcutter", text: "こいつは礼だ。少ねえが取っといてくれ。" }
+  ] },
+  "side-a1-herb-medicine": { lines: [
+    { who: "herb-girl", text: "わあ、ぷるぷるのゼリー！　ありがとう！" },
+    { who: "narration", text: "ミナは薬草とゼリーを手ぎわよく練り合わせた。" },
+    { who: "herb-girl", text: "はい、できたて！　傷にぬるとすぐ効くよ。" },
+    { who: "healer", text: "上手ですね……！　わたしも見習わなくちゃ。", ifParty: true }
+  ] },
+  /* ---------- 第2階層 ---------- */
+  "side-a2-crate-1": { lines: [
+    { who: "narration", text: "踏み荒らされた茂みに、壊れた木箱が転がっている。" },
+    { who: "narration", text: "中には布地がきちんと畳まれていた。ふたには「ロッコ商店」の焼き印。" },
+    { who: "kotama", text: "行商人さんの荷物だ！　ゴブリンが運ぶ途中で落としたのかな。" }
+  ] },
+  "side-a2-crate-2": { lines: [
+    { who: "narration", text: "木箱の残骸の中で、薬瓶がいくつか無事に残っていた。" },
+    { who: "narration", text: "これにも「ロッコ商店」の焼き印がある。" },
+    { who: "kotama", text: "これで二つ目。返しに行こう！" }
+  ] },
+  "side-a2-crate-done": { lines: [ { who: "narration", text: "空になった木箱だ。もう何も入っていない。" } ] },
+  "side-a2-cargo-hint": { lines: [
+    { who: "merchant", text: "そうだ、もし森で「ロッコ商店」の焼き印がある木箱を見かけたら……。" },
+    { who: "merchant", text: "中身だけでも拾ってきてくれないか。たしか二箱、森の浅いところで持っていかれたんだ。" }
+  ] },
+  "side-a2-cargo-return": { lines: [
+    { who: "kotama", text: "ロッコさん、森で見つけた荷物、持ってきたよ！" },
+    { who: "merchant", text: "な、なんと！　布地も薬瓶も無事じゃないか！" },
+    { who: "knight", text: "困ったときはお互い様です。", ifParty: true },
+    { who: "merchant", text: "あんたたちは命の恩人……いや、商売の恩人だ。売り物だが、ぜひ受け取ってくれ。" }
+  ] },
+  "side-a2-watch-fangs": { lines: [
+    { who: "watchman", text: "おお、立派な牙だ。これで鳴子を作れば、ゴブリンが近づいてもすぐわかる。" },
+    { who: "watchman", text: "助かったよ。見張りの支給品だが、あんたたちのほうが役立てられるだろう。" }
+  ] },
+  /* ---------- 第3階層 ---------- */
+  "side-a3-shard-1": { lines: [
+    { who: "narration", text: "霧の中で、小さなかけらが淡く光っている。" },
+    { who: "narration", text: "手に取ると、ほんのりと温かい。石像の目にともっていた光と、同じ色だ。" },
+    { who: "kotama", text: "石像の光のかけら……？　持っていこう。" }
+  ] },
+  "side-a3-shard-2": { lines: [
+    { who: "narration", text: "濡れた石の上に、もうひとつの光るかけらが落ちていた。" },
+    { who: "mage", text: "魔力の残り香ね。呪いで散らされた光の一部だわ。", ifParty: true },
+    { who: "kotama", text: "これで二つ。石像のところへ戻ろう！" }
+  ] },
+  "side-a3-shard-done": { lines: [ { who: "narration", text: "かけらが落ちていた場所だ。もう光は残っていない。" } ] },
+  "side-a3-light-hint": { lines: [
+    { who: "statue", text: "……呪いに奪われたわが光は、かけらとなって霧の森に散った。" },
+    { who: "statue", text: "森の浅い所に、二つほど感じる。見つけたなら、ここへ。" }
+  ] },
+  "side-a3-light-return": { lines: [
+    { who: "kotama", text: "石像さん、光のかけら、二つとも見つけたよ。" },
+    { who: "narration", text: "かけらが石像の胸に吸い込まれ、苔むした体がぼんやりと光った。" },
+    { who: "statue", text: "……あたたかい。少しだけ、力が戻った。" },
+    { who: "statue", text: "礼に、森の恵みを託そう。魔王のもとへ向かう旅の助けとなれ。" }
+  ] },
+  /* ---------- 第4階層 ---------- */
+  "side-a4-toolbag": { lines: [
+    { who: "narration", text: "崩れた岩の陰に、すすだらけの道具袋が置き去りになっている。" },
+    { who: "narration", text: "つるはしと、使い込まれた手袋。袋には「ガルド」と縫い取りがある。" },
+    { who: "kotama", text: "鉱夫のおじさんの道具だ。届けてあげなきゃ。" }
+  ] },
+  "side-a4-toolbag-done": { lines: [ { who: "narration", text: "道具袋が置かれていた場所だ。" } ] },
+  "side-a4-ore-vein": { lines: [
+    { who: "narration", text: "岩壁の割れ目の奥で、赤い光がちらちらとまたたいている。" },
+    { who: "narration", text: "手を伸ばすと、熱を帯びた鱗のような石がころりと落ちてきた。小さな金貨の袋も一緒だ。" },
+    { who: "kotama", text: "炎竜の鱗……？　昔の鉱夫が隠していったのかも。" }
+  ] },
+  "side-a4-tool-hint": { lines: [
+    { who: "miner", text: "崩れたときに、道具袋を洞窟の入口の階に置いてきちまった。" },
+    { who: "miner", text: "あれがありゃ、自分で岩をどけて帰れるんだがなあ……。" }
+  ] },
+  "side-a4-tool-return": { lines: [
+    { who: "kotama", text: "おじさん、これ！　入口の階に落ちてたよ。" },
+    { who: "miner", text: "おお、おれの道具袋！　これで坑道を掘り直して、自力で帰れる！" },
+    { who: "miner", text: "礼だ、受け取ってくれ。坑道の詰め所にあった薬と、おれのへそくりだ。" }
+  ] },
+  /* ---------- 第5階層 ---------- */
+  "side-a5-emblem": { lines: [
+    { who: "narration", text: "床に、ひび割れた紋章が落ちている。剣と盾を組み合わせた、騎士団のしるしだ。" },
+    { who: "knight", text: "これは……かつての騎士団の紋章。まさか、こんな所に。", ifParty: true },
+    { who: "kotama", text: "亡霊の騎士さんたちのものかもしれない。" }
+  ] },
+  "side-a5-broken-sword": { lines: [
+    { who: "narration", text: "壁ぎわに、根元から折れた剣が立てかけられていた。" },
+    { who: "narration", text: "柄には、団長のしるしが刻まれている。" },
+    { who: "kotama", text: "最後まで戦った人の剣だ……。持っていこう。" }
+  ] },
+  "side-a5-relic-done": { lines: [ { who: "narration", text: "騎士団の遺品が残されていた場所だ。" } ] },
+  "side-a5-knights-hint": { lines: [
+    { who: "ghost-knight", text: "……我らが団の紋章と、団長の剣。この回廊のどこかに、まだ残っているはずだ。" },
+    { who: "ghost-knight", text: "あれが戻れば、我らも少しは安らげるのだが。" }
+  ] },
+  "side-a5-knights-rest": { lines: [
+    { who: "kotama", text: "騎士さん、紋章と剣を見つけてきたよ。" },
+    { who: "ghost-knight", text: "……おお。団長の剣……。我らの誇りが、帰ってきた。" },
+    { who: "narration", text: "亡霊の騎士の姿が、少しだけやわらいだように見えた。" },
+    { who: "knight", text: "先達の誇り、必ず玉座まで届けます。", ifParty: true },
+    { who: "ghost-knight", text: "礼を言う、生者よ。我らが最後に残した備えだ。玉座の戦いに役立ててくれ。" }
+  ] },
+
   /* ---------- 共通 ---------- */
   "save-point": {
     lines: [
