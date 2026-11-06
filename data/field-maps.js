@@ -73,7 +73,7 @@ const FIELD_AREAS = {
         "#<#.........#.#...........#",
         "###########################"
       ] },
-      { encounter: { min: 15, max: 26, scale: 1.3, table: [ { enemy: "stray-slime", weight: 40 }, { enemy: "mushroom", weight: 40 }, { enemy: "forest-goblin", weight: 20 } ] },
+      { encounter: { min: 15, max: 26, scale: 1.15, table: [ { enemy: "stray-slime", weight: 40 }, { enemy: "mushroom", weight: 40 }, { enemy: "forest-goblin", weight: 20 } ] },
         chests: [ { gold: 80 } ], gathers: [ ["slime_jelly", 60], ["monster_hide", 40] ], foes: [], map: [
         "############################",
         "######...****.......##B#####",
@@ -155,7 +155,7 @@ const FIELD_AREAS = {
         "#<......#.........#.......#",
         "###########################"
       ] },
-      { encounter: { min: 14, max: 25, scale: 1.3, table: [ { enemy: "forest-goblin", weight: 45 }, { enemy: "goblin-scout", weight: 45 }, { enemy: "mist-bat", weight: 8 } ] },
+      { encounter: { min: 14, max: 25, scale: 1.15, table: [ { enemy: "forest-goblin", weight: 45 }, { enemy: "goblin-scout", weight: 45 }, { enemy: "mist-bat", weight: 8 } ] },
         chests: [ { item: "potion", count: 2 } ], gathers: [ ["goblin_cloth", 60], ["monster_fang", 40] ], foes: [], map: [
         "############################",
         "#__P_,,,,..****....#########",
@@ -319,7 +319,7 @@ const FIELD_AREAS = {
         "#<....#G........#.........#",
         "###########################"
       ] },
-      { encounter: { min: 13, max: 23, scale: 1.3, table: [ { enemy: "fire-lizard", weight: 45 }, { enemy: "lava-golem", weight: 55 } ] },
+      { encounter: { min: 13, max: 23, scale: 1.15, table: [ { enemy: "fire-lizard", weight: 45 }, { enemy: "lava-golem", weight: 55 } ] },
         chests: [ { gold: 350 } ], gathers: [ ["monster_hide", 50], ["dragon_scale", 25], ["monster_fang", 25] ], foes: [], map: [
         "############################",
         "#_<_##~~~~~.....~~~~~~######",
@@ -400,7 +400,7 @@ const FIELD_AREAS = {
         "#<#S............#.........#",
         "###########################"
       ] },
-      { encounter: { min: 12, max: 22, scale: 1.3, table: [ { enemy: "dark-knight", weight: 45 }, { enemy: "wraith", weight: 55 } ] },
+      { encounter: { min: 12, max: 22, scale: 1.15, table: [ { enemy: "dark-knight", weight: 45 }, { enemy: "wraith", weight: 55 } ] },
         chests: [ { item: "ether", count: 2 } ], gathers: [ ["maou_crystal", 20], ["dragon_scale", 30], ["monster_fang", 50] ], foes: [], map: [
         "############################",
         "##########___B___###########",
@@ -456,14 +456,14 @@ const FIELD_ENEMIES = {
     ai:[ { name:"呪いの声", weight:45, all:true, kind:"sp", power:.55, status:{ type:"curse", chance:.25, turns:2 } }, { name:"生命吸収", weight:55, kind:"sp", power:.9, drain:.4 } ] },
 
   /* ---------- FOE（各階層に1種。マップ上を巡回し、近づくと追ってくる） ---------- */
-  "foe-bear": { foe:true, name:"森の暴れ熊", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:2000, attack:58, spAttack:10, defense:16, spDefense:8, gold:60, exp:120, speed:40, dropAs:"オオカミ", image:"assets/monsters/ookami.png", sprite:"wolf",
+  "foe-bear": { foe:true, name:"森の暴れ熊", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:3000, attack:220, spAttack:10, defense:16, spDefense:8, gold:60, exp:120, speed:40, dropAs:"オオカミ", image:"assets/monsters/ookami.png", sprite:"wolf",
     ai:[ { name:"薙ぎ払い", weight:45, all:true, kind:"phys", power:.7 }, { name:"剛腕", weight:55, kind:"phys", power:1.5 } ] },
-  "foe-goblin-captain": { foe:true, name:"ゴブリン親衛隊長", element:"無属性", weaknesses:["炎"], resistances:["斬撃"], hp:2600, attack:56, spAttack:20, defense:24, spDefense:14, gold:140, exp:480, speed:70, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin",
+  "foe-goblin-captain": { foe:true, name:"ゴブリン親衛隊長", element:"無属性", weaknesses:["炎"], resistances:["斬撃"], hp:4200, attack:240, spAttack:20, defense:24, spDefense:14, gold:140, exp:480, speed:70, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin",
     ai:[ { name:"号令の一撃", weight:50, kind:"phys", power:1.4 }, { name:"毒刃の乱舞", weight:30, all:true, kind:"phys", power:.6, status:{ type:"poison", chance:.4, turns:3, power:.06 } }, { name:"鼓舞の雄叫び", weight:20, heal:.12, hpBelow:.5 } ] },
-  "foe-mist-stag": { foe:true, name:"霧纏いの大鹿", element:"無属性", weaknesses:["雷"], resistances:["打撃"], hp:3600, attack:70, spAttack:60, defense:32, spDefense:30, gold:260, exp:1050, speed:90, dropAs:"オオカミ", image:"assets/monsters/ookami.png", sprite:"wolf",
+  "foe-mist-stag": { foe:true, name:"霧纏いの大鹿", element:"無属性", weaknesses:["雷"], resistances:["打撃"], hp:5600, attack:280, spAttack:60, defense:32, spDefense:30, gold:260, exp:1050, speed:90, dropAs:"オオカミ", image:"assets/monsters/ookami.png", sprite:"wolf",
     ai:[ { name:"突進", weight:50, kind:"phys", power:1.45 }, { name:"幻惑の霧", weight:30, all:true, kind:"sp", power:.6, status:{ type:"paralysis", chance:.3, turns:1 } }, { name:"角の一閃", weight:20, kind:"phys", power:1.8, minTurn:3 } ] },
-  "foe-salamander": { foe:true, name:"灼熱のサラマンダー", element:"炎", weaknesses:["氷"], resistances:["炎"], hp:4800, attack:84, spAttack:100, defense:46, spDefense:34, gold:420, exp:2300, speed:65, image:"assets/monsters/dragon.svg", sprite:"dragon",
+  "foe-salamander": { foe:true, name:"灼熱のサラマンダー", element:"炎", weaknesses:["氷"], resistances:["炎"], hp:7600, attack:320, spAttack:100, defense:46, spDefense:34, gold:420, exp:2300, speed:65, image:"assets/monsters/dragon.svg", sprite:"dragon",
     ai:[ { name:"灼熱の牙", weight:45, kind:"phys", power:1.3, status:{ type:"burn", chance:.4, turns:2 } }, { name:"業火", weight:35, all:true, kind:"sp", power:.75, element:"炎", status:{ type:"burn", chance:.3, turns:2 } }, { name:"溶岩の鎧", weight:20, heal:.1, hpBelow:.5 } ] },
-  "foe-black-general": { foe:true, name:"黒騎士団長", element:"無属性", weaknesses:["雷","聖"], resistances:["斬撃"], hp:6400, attack:100, spAttack:96, defense:72, spDefense:50, gold:600, exp:3700, speed:60, image:"assets/monsters/maou.png", sprite:"maou",
+  "foe-black-general": { foe:true, name:"黒騎士団長", element:"無属性", weaknesses:["雷","聖"], resistances:["斬撃"], hp:10000, attack:380, spAttack:96, defense:72, spDefense:50, gold:600, exp:3700, speed:60, image:"assets/monsters/maou.png", sprite:"maou",
     ai:[ { name:"断罪の剣", weight:45, kind:"phys", power:1.4 }, { name:"黒炎の陣", weight:35, all:true, kind:"sp", power:.7, status:{ type:"curse", chance:.35, turns:3 } }, { name:"不屈", weight:20, heal:.1, hpBelow:.4 } ] }
 };
