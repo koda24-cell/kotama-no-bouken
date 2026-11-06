@@ -265,19 +265,38 @@ async function extEndOfTurnStatuses() {
 }
 
 /* ============================================================
-   2. スピードと行動順
-   - 優先行動：ユニオン → 防御・挑発などの防御系 → それ以外（味方と敵をスピード順）
-   - 同じスピードなら、味方が先に行動する。
+   2. 行動優先度とスピード順
+   - 優先度1：通常防御（敵の行動より先に防御状態を成立）
+   - 優先度2：挑発・防御系スキル
+   - 優先度3：ユニオンスキル（速度に関係なく先行）
+   - 優先度4：速攻指定された攻撃スキル
+   - 優先度5：その他の行動と敵行動（速度順）
+   - 同一優先度内は速度順。同速なら味方を先にする。
    ============================================================ */
+const EXT_ACTION_PRIORITY = Object.freeze({
+  GUARD: 1,
+  DEFENSIVE_SKILL: 2,
+  UNION: 3,
+  QUICK_ATTACK: 4,
+  NORMAL: 5
+});
 function extEnemySpeed(e) { return Number.isFinite(e?.speed) ? e.speed : (EXT_ENEMY_SPEED[e?.name] ?? 50); }
 function extActionPriority(action) {
-  if (action.type === "union") return 0;
-  if (action.type === "guard") return 1;
+  if (action.type === "guard") return EXT_ACTION_PRIORITY.GUARD;
+  if (action.type === "union") return EXT_ACTION_PRIORITY.UNION;
   if (action.type === "skill") {
-    const s = getCharacterSkills(getCharacter(action.actor)).find(x => x.id === action.skillId);
-    if (s && ["taunt", "defense-camp", "magic-guard", "full-guard"].includes(s.type)) return 1;
+    const actor = getCharacter(action.actor);
+    const skill = getCharacterSkills(actor).find(x => x.id === action.skillId);
+    if (skill && ["taunt", "defense-camp", "magic-guard", "full-guard", "guardian-stance"].includes(skill.type)) {
+      return EXT_ACTION_PRIORITY.DEFENSIVE_SKILL;
+    }
+    const configuredPriority = Number(skill?.priority ?? skill?.xj?.priority);
+    if (Number.isFinite(configuredPriority) && configuredPriority >= EXT_ACTION_PRIORITY.QUICK_ATTACK && configuredPriority < EXT_ACTION_PRIORITY.NORMAL) {
+      return configuredPriority;
+    }
+    if (skill?.quick === true || skill?.xj?.quick === true) return EXT_ACTION_PRIORITY.QUICK_ATTACK;
   }
-  return 2;
+  return EXT_ACTION_PRIORITY.NORMAL;
 }
 function extBuildRoundOrder() {
   const entries = [];
@@ -292,9 +311,9 @@ function extBuildRoundOrder() {
     en.priority = extActionPriority(en.action);
     en.speed = actor ? effectiveStats(actor).speed : 0;
   }
-  entries.push({ kind: "enemy", priority: 2, speed: extEnemySpeed(battleState.enemy), index: index++ });
+  entries.push({ kind: "enemy", priority: EXT_ACTION_PRIORITY.NORMAL, speed: extEnemySpeed(battleState.enemy), index: index++ });
   entries.sort((a, b) => a.priority - b.priority || b.speed - a.speed || (a.kind === "enemy" ? 1 : 0) - (b.kind === "enemy" ? 1 : 0) || a.index - b.index);
-  const names = entries.filter(en => en.priority === 2 || en.kind === "enemy").map(en => en.kind === "enemy" ? battleState.enemy.name : getCharacter(en.action.actor)?.name).filter(Boolean);
+  const names = entries.filter(en => en.priority >= EXT_ACTION_PRIORITY.UNION || en.kind === "enemy").map(en => en.kind === "enemy" ? battleState.enemy.name : getCharacter(en.action.actor)?.name).filter(Boolean);
   pushLog(`行動順：${[...entries.filter(en => en.priority < 2).map(en => getCharacter(en.action.actor)?.name), ...names].filter(Boolean).join(" → ")}`);
   return entries;
 }
