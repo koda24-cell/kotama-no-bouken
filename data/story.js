@@ -30,17 +30,17 @@ const STORY_SCENES = {
   "prologue": {
     once: true,
     lines: [
-      { who: "narration", text: "樹海のふもとにある小さな村。そこには昔から、ひとつの言い伝えがあった。" },
-      { who: "narration", text: "――樹海の奥に眠る『魔法の石像』が、魔物から村を守ってくれている、と。" },
-      { who: "elder", text: "コタマや、よく来てくれた。……実はな、石像の光が消えてしまったのじゃ。" },
-      { who: "elder", text: "それからというもの、森の魔物たちが妙に荒っぽくなってのう。村の者は怖がって樹海に近づけん。" },
-      { who: "kotama", text: "石像の様子を見てくればいいんだね。まかせて！" },
+      { who: "narration", text: "樹海のふもとに、小さな村がある。村には、昔から語り継がれてきた言い伝えがあった。" },
+      { who: "narration", text: "――樹海の奥に眠る『魔法の石像』が、村を魔物から守ってくれている、と。" },
+      { who: "elder", text: "コタマ、よく来てくれた。……実はな、石像の光が消えてしまったのじゃ。" },
+      { who: "elder", text: "それ以来、森の魔物たちはすっかり気が荒くなってしまってのう。村の者も怖がって、樹海に近づけなくなった。" },
+      { who: "kotama", text: "石像の様子を見に行けばいいんだね。まかせて！" },
       { who: "knight", text: "村の守りの要が失われたとあっては、放っておけません。お供します。", ifParty: true },
       { who: "healer", text: "けが人が出たら、わたしがすぐに治しますね。", ifParty: true },
       { who: "warrior", text: "魔物が相手なら話は早い。道はおれが切り開く！", ifParty: true },
       { who: "mage", text: "石像の光……魔力の流れが乱れているのかもしれないわね。調べがいがありそう。", ifParty: true },
       { who: "samurai", text: "義を見てせざるは勇無きなり。拙者も参ろう。", ifParty: true },
-      { who: "elder", text: "道中には『導きの灯』がともっておる。灯に触れれば、疲れも傷も癒えるはずじゃ。" },
+      { who: "elder", text: "道中には『導きの灯』がともっておる。触れれば、傷も疲れも癒やしてくれるはずじゃ。" },
       { who: "elder", text: "くれぐれも気をつけてな。" }
     ]
   },
@@ -49,14 +49,14 @@ const STORY_SCENES = {
   "a1-enter": {
     once: true,
     lines: [
-      { who: "kotama", text: "ここが樹海の入り口……。草むらの奥から、何かの気配がする。" },
+      { who: "kotama", text: "ここが樹海の入り口か……。草むらの向こうから、何かの気配がする。" },
       { who: "narration", text: "（矢印キー・WASD、または画面のパッドで移動。Z／Enter、またはAボタンで調べる）" }
     ]
   },
   "a1-woodcutter": {
     lines: [
-      { who: "woodcutter", text: "おう、村の子か。この先は魔物がうろついてるぞ。" },
-      { who: "woodcutter", text: "草むらや森の中を歩いてると、急に飛びかかってきやがる。道の真ん中でも油断するなよ。" },
+      { who: "woodcutter", text: "おう、村の子か。この先には魔物がうろついてるぞ。気をつけな。" },
+      { who: "woodcutter", text: "草むらや森の中を歩いてると、いきなり飛びかかってきやがる。道の上だって油断するなよ。" },
       { who: "woodcutter", text: "奥に光ってる灯があったろう？　あれに触れりゃ元気が戻る。ありがてえこった。" }
     ],
     repeat: [
@@ -65,8 +65,8 @@ const STORY_SCENES = {
   },
   "a1-herb-girl": {
     lines: [
-      { who: "herb-girl", text: "あ、こんにちは！　わたし、薬草を摘みに来たんだけど……スライムが増えてて困ってるの。" },
-      { who: "herb-girl", text: "スライムってね、剣で叩いてもぷよんってはね返しちゃうんだって。" },
+      { who: "herb-girl", text: "あっ、こんにちは！　薬草を摘みに来たんだけど……最近スライムが増えて、困ってるの。" },
+      { who: "herb-girl", text: "スライムって、剣で叩いてもぷよんって跳ね返しちゃうんだって。" },
       { who: "herb-girl", text: "魔法とか、SPを使う技なら効くみたい。おじいちゃんが言ってた！" },
       { who: "mage", text: "その通りよ。物理より魔力のほうが通りやすい相手ね。", ifParty: true }
     ],
@@ -88,14 +88,14 @@ const STORY_SCENES = {
   "a2-enter": {
     once: true,
     lines: [
-      { who: "kotama", text: "木が踏み倒されてる……。ここを通ったのは、ひとりやふたりじゃなさそうだ。" },
+      { who: "kotama", text: "木がなぎ倒されてる……。ここを通ったのは、ひとりやふたりじゃなさそうだ。" },
       { who: "warrior", text: "足跡がやたらと揃ってる。群れで動いてるな。", ifParty: true }
     ]
   },
   "a2-merchant": {
     lines: [
-      { who: "merchant", text: "ひどい目にあったよ……。ゴブリンどもに荷車ごと荷物を持っていかれちまった。" },
-      { who: "merchant", text: "あいつら、前はもっとバラバラで間抜けだったのに、最近は妙に統率がとれてるんだ。" },
+      { who: "merchant", text: "まいったよ……。ゴブリンどもに、荷車ごと荷物を奪われちまった。" },
+      { who: "merchant", text: "あいつら、前はもっとバラバラに動いてたのに、最近は妙に統率が取れてるんだ。" },
       { who: "merchant", text: "まるで誰かに命令されてるみたいにな。" },
       { who: "knight", text: "命令……。背後に、群れを操る何者かがいるということでしょうか。", ifParty: true }
     ],
@@ -105,7 +105,7 @@ const STORY_SCENES = {
   },
   "a2-watchman": {
     lines: [
-      { who: "watchman", text: "ここから先は霧の森だ。魔法の石像は、その霧のいちばん奥にある。" },
+      { who: "watchman", text: "この先に広がっているのが霧の森だ。魔法の石像は、霧のいちばん奥にある。" },
       { who: "watchman", text: "だが、ゴブリンの群れが道をふさいでいる。抜けるなら覚悟していけ。" }
     ],
     repeat: [
@@ -126,7 +126,7 @@ const STORY_SCENES = {
   "a3-enter": {
     once: true,
     lines: [
-      { who: "kotama", text: "前が見えないくらいの霧……。どこかで、誰かに呼ばれている気がする。" },
+      { who: "kotama", text: "前が見えないほどの霧……。どこかから、誰かに呼ばれている気がする。" },
       { who: "healer", text: "なんだか、悲しそうな声……。", ifParty: true }
     ]
   },
@@ -135,11 +135,11 @@ const STORY_SCENES = {
     setFlag: "a3-statue",
     lines: [
       { who: "narration", text: "苔むした石像の目に、かすかな光がともった。" },
-      { who: "statue", text: "……よく来た、小さき魔弾の使い手よ。" },
+      { who: "statue", text: "……よく来た、旅人よ。" },
       { who: "kotama", text: "しゃべった！？　あなたが、村を守ってくれていた石像なの？" },
-      { who: "statue", text: "いかにも。だが、わが光は魔王の呪いに奪われた。この霧も、呪いが生んだものだ。" },
+      { who: "statue", text: "いかにも。だが、わが光は魔王の呪いに奪われてしまった。この霧も、その呪いが生み出したものだ。" },
       { who: "statue", text: "霧の奥にひそむ幻影の狼は、呪いの番人。あれを退ければ、霧は晴れよう。" },
-      { who: "statue", text: "魔王は炎竜を従え、焦土の洞窟の先に城を築いた。……わが光を真に取り戻すには、魔王を討つほかない。" },
+      { who: "statue", text: "魔王は炎竜を従え、焦土の洞窟の先に城を構えている。……わが光を取り戻すには、魔王を討つほかない。" },
       { who: "kotama", text: "魔王……。わかった。村のためにも、あなたのためにも、ぼくたちが行く！" },
       { who: "mage", text: "呪いの源を断つ、ということね。望むところよ。", ifParty: true },
       { who: "samurai", text: "長き道のりになりそうだ。だが、退く理由はない。", ifParty: true },
@@ -169,13 +169,13 @@ const STORY_SCENES = {
   "a4-enter": {
     once: true,
     lines: [
-      { who: "kotama", text: "あつい……！　息をするだけで、のどが焼けそうだ。" },
+      { who: "kotama", text: "熱い……！　息をするだけで、喉まで焼けそうだ。" },
       { who: "knight", text: "溶岩には近づかないように。足を取られたら終わりです。", ifParty: true }
     ]
   },
   "a4-miner": {
     lines: [
-      { who: "miner", text: "おお、人だ！　助かった……。炎竜が暴れたせいで坑道が崩れて、出られなくなってたんだ。" },
+      { who: "miner", text: "おお、人が来た！　助かった……。炎竜が暴れたせいで坑道が崩れて、出られなくなってたんだ。" },
       { who: "miner", text: "あの竜は、魔王の命令で城への道を守ってやがる。鱗は硬いが、冷気には弱いはずだ。" },
       { who: "miner", text: "火傷にも気をつけな。竜の炎を浴びると、しばらく力が入らなくなる。" }
     ],
@@ -204,8 +204,8 @@ const STORY_SCENES = {
   },
   "a5-ghost-knight": {
     lines: [
-      { who: "ghost-knight", text: "……生者か。我らはかつて魔王に挑み、敗れた騎士団の成れの果てだ。" },
-      { who: "ghost-knight", text: "魔王は闇と呪いを操る。呪いを受けた者は、癒やしの力が弱まる。" },
+      { who: "ghost-knight", text: "……生者か。我らはかつて魔王に挑み、敗れた騎士団。その成れの果てだ。" },
+      { who: "ghost-knight", text: "魔王は闇と呪いを操る。呪いを受ければ、癒やしの力も弱まってしまう。" },
       { who: "ghost-knight", text: "だが、やつは雷を嫌う。我らが最後に見た、唯一の隙だ。" },
       { who: "knight", text: "先達の無念、確かに受け取りました。", ifParty: true },
       { who: "ghost-knight", text: "……行け。我らの代わりに、あの玉座を終わらせてくれ。" }
