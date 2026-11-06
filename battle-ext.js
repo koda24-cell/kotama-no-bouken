@@ -18,6 +18,15 @@
 /* script.js から呼ばれる初期化 */
 function extInstallCharacters(characters) {
   for (const job of EXT_NEW_JOBS) characters.push(JSON.parse(JSON.stringify(job)));
+  const bindSkills = {
+    warrior: { id:"arm-break", name:"アームブレイク", cost:18, target:"enemy", type:"bindArms" },
+    mage: { id:"head-crush", name:"ヘッドクラッシュ", cost:22, target:"enemy", type:"bindHead" },
+    samurai: { id:"leg-cut", name:"レッグカット", cost:20, target:"enemy", type:"bindLegs" }
+  };
+  for (const [id, skill] of Object.entries(bindSkills)) {
+    const actor = characters.find(c => c.id === id);
+    if (actor && !actor.spSkills.some(s => s.id === skill.id)) actor.spSkills.push(skill);
+  }
   for (const c of characters) if (!Number.isFinite(c.speed)) c.speed = EXT_JOB_SPEED[c.id] ?? 50;
   // インペリアル専用パネル（script.js の renderImperialStatus）との接続口。
   // パネルは heatGauge / overheated / exposed という標準名で状態を読むため、内部の _heat / _overheat / _xjCharge を読み取り専用で公開する。
@@ -338,7 +347,12 @@ function extIsChargeLocked(c) { return !!c && !!c._xjCharge; }
 /* ============================================================
    3. 新職業のスキル実行
    ============================================================ */
-function extSkillBlocked(actor, skill) { return !!skill.xj && actor._overheat === true; }
+function extSkillBlocked(actor, skill) {
+  if (skill.xj && actor._overheat === true) return true;
+  if (extHasStatus(actor, "bindHead") && ["fire","ice","thunder","spAttack","heal","revive","level-flare","level-lightning-all","level-lightning-single","holy-light"].includes(skill.type)) return true;
+  if (extHasStatus(actor, "bindArms") && ["charge","multiSlash","pierce","bindArms","bindLegs"].includes(skill.type)) return true;
+  return false;
+}
 function extSkillLabelExtra(actor, skill) {
   if (!skill.xj?.heat) return "";
   return ` ／ 熱 ${skill.xj.heat}${actor._overheat ? " ／ オーバーヒート" : ""}`;
