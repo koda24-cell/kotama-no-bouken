@@ -10,85 +10,11 @@ const BATTLE_RULES = {
   break: { normal:10, sp:20, ultimate:30, union:40, weak:1.5, resist:.5 },
   bosses: { ドラゴン:{break:100}, 魔王:{break:150}, 混沌の幻影:{break:200} }
 };
-const characters = [
-  { id:"kotama", name:"コタマ", image:"assets/characters/kotama.png", hp:100,maxHp:100,attack:150,spAttack:100,defense:35,guardCut:.60,sp:60,maxSp:60,spSkills:[{id:"magic-bullet",name:"魔力弾",cost:15,target:"enemy",type:"spAttack",element:"雷"}] },
-  { id:"knight", name:"騎士", image:"assets/characters/kishi.png", hp:120,maxHp:120,attack:35,spAttack:10,defense:60,guardCut:.80,sp:50,maxSp:50,spSkills:[{id:"taunt",name:"挑発",cost:5,target:"self",type:"taunt"}] },
-  { id:"healer", name:"治癒士", image:"assets/characters/hi-ra-.png", hp:80,maxHp:80,attack:5,spAttack:90,defense:10,guardCut:.25,sp:120,maxSp:120,spSkills:[{id:"heal",name:"ヒール",cost:15,target:"ally",type:"heal"},{id:"revive",name:"死者蘇生",cost:30,target:"deadAlly",type:"revive"}] },
-  { id:"warrior", name:"戦士", image:"assets/characters/sennshi.png", hp:130,maxHp:130,attack:50,spAttack:180,defense:20,guardCut:.50,sp:80,maxSp:80,spSkills:[{id:"charge",name:"突撃",cost:10,hpCost:20,target:"enemy",type:"charge"}] },
-  { id:"mage", name:"魔術師", image:"assets/characters/mahoutukai.png", hp:70,maxHp:70,attack:2,spAttack:95,defense:5,guardCut:.20,sp:180,maxSp:180,spSkills:[{id:"fire",name:"ファイア",cost:15,target:"allEnemies",type:"fire",element:"炎"},{id:"freeze",name:"フリーズ",cost:20,target:"allEnemies",type:"ice",element:"氷"},{id:"thunder",name:"サンダー",cost:25,target:"allEnemies",type:"thunder",element:"雷"}] },
-  { id:"samurai", name:"武士", image:"assets/characters/samurai.png", hp:105,maxHp:105,attack:72,spAttack:35,defense:18,spDefense:12,guardCut:.35,sp:75,maxSp:75,spSkills:[{id:"many-slashes",name:"乱れ斬り",cost:20,target:"enemy",type:"multiSlash"},{id:"helmet-break",name:"兜割",cost:25,target:"enemy",type:"pierce"}] }
-];
-// [EXT] 新職業6種とスピード（battle-ext.js）
+// キャラクター・ユニオンスキルの定義は data/characters.js に分離。
 if(typeof extInstallCharacters==="function")extInstallCharacters(characters);
-const unionSkills = {
-  kotama:{id:"magic-bullet-union",name:"至高の魔弾",requiredHits:4,type:"stun",damage:300},
-  knight:{id:"aegis-union",name:"イージスの大盾",requiredHits:4,type:"aegis"},
-  healer:{id:"full-healing-union",name:"フルヒーリング",requiredHits:5,type:"full-heal"},
-  warrior:{id:"cross-break-union",name:"クロスブレイク",requiredHits:4,type:"cross-break",requiredMembers:2},
-  mage:{id:"meteor-union",name:"メテオ",requiredHits:5,type:"meteor",damage:666},
-  samurai:{id:"samurai-union",name:"一刀両断",requiredHits:4,type:"samurai-slash",damage:420}
-};
 const state={screen:"home",gold:50,maxUnlockedStage:1,firstStageStarted:false,party:["kotama","knight","mage","healer"]};
-// 物理武器にはphysicalElementを設定する（斬撃／打撃／壊／突）。魔法スキルはこの値を参照しない。
-const shopItems=[
-  {id:"hero-sword",name:"勇者の剣",category:"weapon",icon:"SWORD",description:"チュートリアルで入手する特別な剣。",price:0,effect:"攻撃力 +25",attackBonus:25,physicalElement:"斬撃",classes:["kotama"],unlock:1,tutorialOnly:true},
-  {id:"sword",name:"冒険者の剣",category:"weapon",icon:"SWORD",description:"扱いやすい基本の剣。",price:20,effect:"攻撃力 +15",attackBonus:15,physicalElement:"斬撃",classes:["kotama","warrior","knight"],unlock:1},
-  {id:"great-sword",name:"炎の大剣",category:"weapon",icon:"SWORD",description:"炎の力を宿した大剣。",price:90,effect:"攻撃力 +30",attackBonus:30,physicalElement:"斬撃",classes:["warrior"],unlock:3},
-  {id:"mage-staff",name:"見習いの杖",category:"weapon",icon:"STAFF",description:"魔力を高める杖。",price:35,effect:"SP攻撃力 +20",spAttackBonus:20,physicalElement:"打撃",classes:["kotama","mage","healer"],unlock:1},
-  {id:"healer-staff",name:"祈りの杖",category:"weapon",icon:"STAFF",description:"治癒士向けの杖。",price:100,effect:"SP攻撃力 +35",spAttackBonus:35,physicalElement:"打撃",classes:["healer"],unlock:3},
-  {id:"knuckles",name:"鍛錬の籠手",category:"weapon",icon:"KNUCKLE",description:"素早い格闘に適した武器。",price:55,effect:"攻撃力 +20",attackBonus:20,physicalElement:"打撃",classes:["kotama","warrior"],unlock:2},
-  {id:"katana",name:"旅人の刀",category:"weapon",icon:"KATANA",description:"武士が扱う基本の刀。二刀流用。",price:45,effect:"攻撃力 +20",attackBonus:20,physicalElement:"斬撃",classes:["samurai"],slot:"katana",unlock:1},
-  {id:"iron-katana",name:"鋼の刀",category:"weapon",icon:"KATANA",description:"切れ味を高めた刀。",price:130,effect:"攻撃力 +40",attackBonus:40,physicalElement:"斬撃",classes:["samurai"],slot:"katana",unlock:4},
-  {id:"leather-armor",name:"革の鎧",category:"armor",icon:"ARMOR",description:"軽く扱いやすい防具。",price:20,effect:"防御力 +5",defenseBonus:5,classes:["warrior","knight","kotama","mage","healer","samurai"],unlock:1},
-  {id:"iron-armor",name:"鉄の鎧",category:"armor",icon:"ARMOR",description:"頑丈な防具。",price:80,effect:"防御力 +10",defenseBonus:10,classes:["warrior","knight","kotama"],unlock:3},
-  {id:"shield",name:"木の盾",category:"armor",icon:"SHIELD",description:"物理・魔法攻撃への備え。",price:55,effect:"防御力 +4／SP防御力 +4",defenseBonus:4,spDefenseBonus:4,classes:["warrior","knight","kotama"],unlock:2},
-  {id:"charm-hp",name:"生命の護符",category:"accessory",icon:"CHARM",description:"最大HPを高める護符。",price:45,effect:"最大HP +15",hpBonus:15,classes:["kotama","knight","healer","warrior","mage","samurai"],unlock:1},
-  {id:"charm-atk",name:"剛力の護符",category:"accessory",icon:"CHARM",description:"攻撃力を高める護符。",price:70,effect:"攻撃力 +10",attackBonus:10,classes:["kotama","knight","healer","warrior","mage","samurai"],unlock:2},
-  {id:"charm-magic",name:"魔力の護符",category:"accessory",icon:"CHARM",description:"SP攻撃力を高める護符。",price:70,effect:"SP攻撃力 +6",spAttackBonus:6,classes:["kotama","knight","healer","warrior","mage","samurai"],unlock:2},
-  {id:"potion",name:"回復薬",category:"healing",icon:"POTION",description:"味方1人のHPを30回復。",price:10,effect:"HP +30",kind:"heal",amount:30,unlock:1},
-  {id:"high-potion",name:"上級回復薬",category:"healing",icon:"POTION",description:"味方1人のHPを70回復。",price:25,effect:"HP +70",kind:"heal",amount:70,unlock:3},
-  {id:"ether",name:"SPエーテル",category:"healing",icon:"ETHER",description:"味方1人のSPを30回復。",price:15,effect:"SP +30",kind:"sp",amount:30,unlock:2}
-];
-// 第2段階：素材・製作・強化・育成データ
-const materialNames={chaos_crystal:"混沌の結晶",slime_jelly:"スライムゼリー",monster_fang:"魔物の牙",goblin_cloth:"ゴブリンの布",monster_hide:"魔物の皮",dragon_scale:"炎竜の鱗",dragon_claw:"炎竜の爪",maou_crystal:"魔王の結晶",maou_horn:"魔王の角"};
+// 素材所持数はプレイ中に変化するため、ゲーム状態として script.js で管理。
 const materials={};
-const recipes=[
-{id:"slime-rod",name:"スライムロッド",icon:"STAFF",classes:["mage","healer","kotama"],spAttackBonus:20,physicalElement:"打撃",cost:100,needs:{slime_jelly:1}},
-{id:"wolf-fang-sword",name:"狼牙の剣",icon:"SWORD",classes:["warrior","kotama","knight"],attackBonus:30,physicalElement:"斬撃",cost:150,needs:{monster_fang:1}},
-{id:"goblin-shield",name:"ゴブリンシールド",icon:"SHIELD",classes:["knight","warrior","kotama"],defenseBonus:10,cost:150,needs:{goblin_cloth:1}},
-{id:"beast-knuckle",name:"ビーストナックル",icon:"KNUCKLE",classes:["warrior","kotama"],attackBonus:45,physicalElement:"打撃",cost:250,needs:{monster_hide:1,monster_fang:1}},
-{id:"dragon-greatsword",name:"炎竜の大剣",icon:"SWORD",classes:["warrior"],attackBonus:70,physicalElement:"斬撃",cost:500,needs:{dragon_scale:1,dragon_claw:1}},
-{id:"dragon-staff",name:"炎竜の杖",icon:"STAFF",classes:["mage","healer"],spAttackBonus:70,physicalElement:"打撃",cost:500,needs:{dragon_scale:1,slime_jelly:1}},
-{id:"maou-sword",name:"魔王の剣",icon:"SWORD",classes:["warrior","samurai","kotama"],attackBonus:100,physicalElement:"斬撃",cost:1000,needs:{maou_crystal:1,maou_horn:1}},
-{id:"maou-staff",name:"魔王の杖",icon:"STAFF",classes:["mage","healer"],spAttackBonus:100,physicalElement:"打撃",cost:1000,needs:{maou_crystal:1,dragon_scale:1}}
-];
-const enhancementCosts=[0,100,200,300,500,800];
-// 武器強化素材の割り当て。仕様書に武器別対応表がないため、初期値として仮設定。
-// 調整時はこの表だけを変更する。
-const enhancementMaterials={
-  // 店売り武器：序盤素材を使用する仮設定
-  sword:"slime_jelly", "mage-staff":"slime_jelly", "knuckles":"monster_hide",
-  "great-sword":"dragon_scale", "healer-staff":"dragon_scale",
-  katana:"monster_fang", "iron-katana":"monster_fang",
-  // 製作武器：レシピに含まれる代表素材を使用
-  "slime-rod":"slime_jelly", "wolf-fang-sword":"monster_fang",
-  "goblin-shield":"goblin_cloth", "beast-knuckle":"monster_hide",
-  "dragon-greatsword":"dragon_scale", "dragon-staff":"dragon_scale",
-  "maou-sword":"maou_crystal", "maou-staff":"maou_crystal"
-};
-const accessoryItems=[
-{id:"acc-hp-ring",name:"生命の指輪",category:"accessory",icon:"RING",description:"最大HP+15%。",price:200,hpRate:.15,effect:"最大HP +15%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-strength",name:"剛力の腕輪",category:"accessory",icon:"RING",description:"攻撃力+10%。",price:200,attackRate:.10,effect:"攻撃力 +10%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-magic",name:"魔力の首飾り",category:"accessory",icon:"CHARM",description:"SP攻撃力+10%。",price:200,spAttackRate:.10,effect:"SP攻撃力 +10%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-guardian",name:"守護のブローチ",category:"accessory",icon:"CHARM",description:"被ダメージ-10%。",price:300,damageReduction:.10,effect:"被ダメージ -10%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-evasion",name:"回避のイヤリング",category:"accessory",icon:"RING",description:"回避率+10%。",price:300,evasionRate:.10,effect:"回避率 +10%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-sp-save",name:"魔力節約のお守り",category:"accessory",icon:"CHARM",description:"SP消費-15%。",price:350,spCostReduction:.15,effect:"SP消費 -15%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-heal",name:"癒やしの指輪",category:"accessory",icon:"RING",description:"回復量+15%。",price:350,healingRate:.15,effect:"回復量 +15%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-fire-resist",name:"火耐性のお守り",category:"accessory",icon:"CHARM",description:"炎属性ダメージ-30%。",price:300,fireDamageReduction:.30,effect:"炎属性被ダメージ -30%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-break",name:"ブレイクの腕輪",category:"accessory",icon:"RING",description:"ブレイクダメージ+20%。",price:400,breakRate:.20,effect:"ブレイクダメージ +20%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-indomitable",name:"不屈のペンダント",category:"accessory",icon:"CHARM",description:"HP30%以下で被ダメージ-20%。",price:400,lowHpReduction:.20,effect:"HP30%以下で被ダメージ -20%",classes:["kotama","knight","healer","warrior","mage","samurai"]},
-{id:"acc-chaos-charm",name:"混沌の護符",category:"accessory",icon:"CHARM",description:"最大HP+20%、SP攻撃力+10%。",price:0,hpRate:.20,spAttackRate:.10,effect:"最大HP +20%／SP攻撃力 +10%",classes:["kotama","knight","healer","warrior","mage","samurai"]}
-];
 shopItems.push(...accessoryItems);
 // [EXT] 新職業用の武器と、共用装備への職業追加
 if(typeof extInstallItems==="function")extInstallItems(shopItems,enhancementMaterials);
@@ -164,13 +90,8 @@ equipment.knight.weapon="sword";equipment.knight.armor="leather-armor";
 equipment.mage.weapon="mage-staff";equipment.mage.armor="leather-armor";
 equipment.healer.weapon="mage-staff";equipment.healer.armor="leather-armor";
 equipment.samurai.katana1="katana";equipment.samurai.armor="leather-armor";
-const enemyData=[
-  {name:"スライム",element:"無属性",weaknesses:["炎","氷","雷","聖"],resistances:[],physicalResistances:["斬撃","打撃","壊","突"],hp:180,attack:12,defense:4,spDefense:35,physicalDamageRate:.18,gold:7,sprite:"slime",actionName:"粘液攻撃",image:"assets/monsters/suraimu.png"},
-  {name:"ゴブリン",element:"無属性",weaknesses:["炎","斬撃"],resistances:[],hp:360,attack:32,defense:10,gold:10,sprite:"goblin",actionName:"棍棒の一撃",image:"assets/monsters/goburinn.png"},
-  {name:"オオカミ",element:"無属性",weaknesses:["雷","打撃","壊"],resistances:[],hp:660,attack:38,defense:20,gold:25,sprite:"wolf",actionName:"鋭い牙",image:"assets/monsters/ookami.png"},
-  {name:"ドラゴン",element:"炎",weaknesses:["氷","斬撃"],resistances:["炎"],hp:1600,attack:65,defense:40,spAttack:90,spDefense:20,gold:60,sprite:"dragon",actionName:"鋭い爪"},
-  {name:"魔王",element:"無属性",weaknesses:["雷"],resistances:["炎","氷","聖","斬撃","打撃","壊","突"],hp:2700,attack:70,spAttack:100,defense:100,gold:100,sprite:"maou",actionName:"深淵の斬撃",image:"assets/monsters/maou.png"}
-];
+// 敵の基本データは data/enemies.js に分離。
+
 const $=id=>document.getElementById(id);
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const getCharacter=id=>characters.find(c=>c.id===id);
@@ -575,7 +496,7 @@ function formationBaseStats(c){
 }
 function renderFormation(){const selected=$("selected-party"),roster=$("character-roster"),count=$("party-count");if(!selected||!roster)return;if(count)count.textContent=`${state.party.filter(Boolean).length} / ${PARTY_LIMIT}`;
   selected.innerHTML=Array.from({length:PARTY_LIMIT},(_,index)=>{const id=state.party[index],c=getCharacter(id);if(!c)return `<article class="character-card selected-character empty-party-slot"><h3>空き枠 ${index+1}</h3><p>下の仲間候補から配置できます。</p><button class="secondary-button" data-select-slot="${index}">この枠に配置</button></article>`;const s=effectiveStats(c),base=formationBaseStats(c),bonus={maxHp:s.maxHp-base.maxHp,attack:s.attack-base.attack,spAttack:s.spAttack-base.spAttack,defense:s.defense-base.defense,spDefense:s.spDefense-base.spDefense,maxSp:s.maxSp-base.maxSp};return `<article class="character-card selected-character"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)}</h3><div class="character-stats"><span>HP ${base.maxHp}${bonus.maxHp?` <b class="stat-bonus">+${bonus.maxHp}</b>`:""}</span><span>攻撃 ${base.attack}${bonus.attack?` <b class="stat-bonus">+${bonus.attack}</b>`:""}</span><span>SP攻撃 ${base.spAttack}${bonus.spAttack?` <b class="stat-bonus">+${bonus.spAttack}</b>`:""}</span><span>防御 ${base.defense}${bonus.defense?` <b class="stat-bonus">+${bonus.defense}</b>`:""}</span><span>SP防御 ${base.spDefense}${bonus.spDefense?` <b class="stat-bonus">+${bonus.spDefense}</b>`:""}</span><span>最大SP ${base.maxSp}${bonus.maxSp?` <b class="stat-bonus">+${bonus.maxSp}</b>`:""}</span><span>速さ ${s.speed}</span></div>${equipmentSlots(c).map(([slot,label])=>`<label class="equip-row">${label}<select data-equip="${slot}" data-character="${c.id}">${equipmentOptions(slot,c.id)}</select></label>`).join("")}<button class="secondary-button" data-remove-character="${c.id}">編成から外す</button></article>`;}).join("");
-  roster.innerHTML=extAvailableCharacters().map(c=>{const chosen=state.party.includes(c.id),full=state.party.filter(Boolean).length>=PARTY_LIMIT;return `<article class="character-card selectable ${chosen?"selected":""}"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)}</h3><div class="character-stats"><span>HP ${effectiveStats(c).maxHp}</span><span>攻撃 ${effectiveStats(c).attack}</span><span>防御 ${effectiveStats(c).defense}</span><span>速さ ${effectiveStats(c).speed}</span></div><button class="${chosen?"secondary-button":"primary-button"}" data-toggle-character="${c.id}" ${!chosen&&full?"disabled":""}>${chosen?"選択中":"編成に加える"}</button></article>`;}).join("");
+  roster.innerHTML=characters.map(c=>{const unlocked=extIsJobAvailable(c),chosen=state.party.includes(c.id),full=state.party.filter(Boolean).length>=PARTY_LIMIT,lockNote=!unlocked?extJobUnlockRequirement(c.id):"";return `<article class="character-card selectable ${chosen?"selected":""} ${!unlocked?"locked":""}"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)}</h3><div class="character-stats"><span>HP ${effectiveStats(c).maxHp}</span><span>攻撃 ${effectiveStats(c).attack}</span><span>防御 ${effectiveStats(c).defense}</span><span>速さ ${effectiveStats(c).speed}</span></div>${lockNote?`<p class="job-unlock-note">${esc(lockNote)}</p>`:""}<button class="${chosen?"secondary-button":"primary-button"}" data-toggle-character="${c.id}" ${!unlocked||(!chosen&&full)?"disabled":""}>${!unlocked?"未解放":chosen?"選択中":"編成に加える"}</button></article>`;}).join("");
   selected.querySelectorAll("[data-remove-character]").forEach(b=>b.onclick=()=>removeCharacter(b.dataset.removeCharacter));selected.querySelectorAll("[data-select-slot]").forEach(b=>b.onclick=()=>{formationTargetSlot=Number(b.dataset.selectSlot);setSystemMessage(`空き枠${formationTargetSlot+1}を選択しました。仲間候補を選んでください。`);});roster.querySelectorAll("[data-toggle-character]").forEach(b=>b.onclick=()=>toggleCharacter(b.dataset.toggleCharacter));selected.querySelectorAll("[data-equip]").forEach(sel=>sel.onchange=()=>equipItem(sel.dataset.character,sel.dataset.equip,sel.value));}
 function equipmentSlots(c){return c.id==="samurai"?[["katana1","武器1"],["katana2","武器2"],["armor","防具"],["accessory1","装飾品1"],["accessory2","装飾品2"]]:[["weapon","武器"],["armor","防具"],["accessory1","装飾品1"],["accessory2","装飾品2"]];}
 function equipmentOptions(slot,charId){const current=equipment[charId][slot]||"";const cat=(slot==="armor"?"armor":slot.startsWith("accessory")?"accessory":"weapon");const owned=shopItems.filter(i=>i.category===cat&&(inventory[i.id]>0||equipment[charId]?.[slot]===i.id)&&((slot.startsWith("katana")?i.slot==="katana":!i.slot)));return `<option value="" ${!current?"selected":""}>なし</option>`+owned.map(i=>`<option value="${i.id}" ${current===i.id?"selected":""}>${esc(i.name)}</option>`).join("");}
