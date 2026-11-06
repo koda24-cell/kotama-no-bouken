@@ -10,9 +10,11 @@ const stageEvents = [
  {id:"dragon-clear",trigger:"clear",stage:4,title:"炎竜を越えて",pages:["炎竜との激闘を乗り越えた。","残る道は、魔王の城へと続いている。"]},
  {id:"maou-clear",trigger:"clear",stage:5,title:"冒険の終わり",pages:["魔王を倒し、世界に平穏が戻った。","樹海に朝日が差し込み、仲間たちは静かに顔を見合わせた。","コタマたちの冒険は、仲間との絆とともに語り継がれていく。"]},
  {id:"hidden-boss-clear",trigger:"clear",hiddenBoss:true,title:"混沌を越えて",pages:["混沌の幻影を打ち破り、深い静寂が訪れた。","新たな強敵に挑んだ経験は、仲間たちの胸に刻まれた。"]}
+];
 const growthKeys=["maxHp","attack","defense","maxSp","spAttack","spDefense"];
 const growthLabels={maxHp:"最大HP",attack:"攻撃力",defense:"防御力",maxSp:"最大SP",spAttack:"SP攻撃力",spDefense:"SP防御力"};
-const growthPerPoint={maxHp:10,attack:2,defense:2,maxSp:5,spAttack:2,spDefense:2}const achievementDefinitions=[
+const growthPerPoint={maxHp:10,attack:2,defense:2,maxSp:5,spAttack:2,spDefense:2};
+const achievementDefinitions=[
 {id:"first_win",name:"はじめての勝利",description:"初めて戦闘に勝利する",reward:50},
 {id:"defeat_10",name:"駆け出しの討伐者",description:"敵を合計10体倒す",reward:100},
 {id:"defeat_50",name:"百戦錬磨",description:"敵を合計50体倒す",reward:200},
@@ -25,3 +27,4 @@ const growthPerPoint={maxHp:10,attack:2,defense:2,maxSp:5,spAttack:2,spDefense:2
 {id:"compendium_80",name:"図鑑コレクター",description:"通常モンスター図鑑を80%以上埋める",reward:300},
 {id:"all_jobs",name:"みんなで冒険",description:"全職業を勝利編成に参加させる",reward:200},
 {id:"hidden_boss",name:"さらなる強敵",description:"隠しボスを倒す",reward:500}
+];
