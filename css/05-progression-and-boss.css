@@ -1,0 +1,191 @@
+/* ============================================================
+   css/05-progression-and-boss.css — HP表示・ドロップ報酬、強化・育成、セーブ枠、スキルツリー、魔王専用の表示、撤退確認
+   ※ 読み込み順が見た目に影響します（後ろのルールが前を上書き）。順序は index.html を参照。
+   ============================================================ */
+/* 2026-11: readability and per-enemy health presentation */
+.command-window .window-title { font-size: 15px; }
+.battle-commands .command-option {
+  min-height: 34px;
+  padding: 6px 8px;
+  font-size: clamp(13px, 1.25vw, 16px);
+  line-height: 1.35;
+}
+.battle-commands .command-option small { font-size: clamp(10px, .95vw, 12px); }
+.battle-commands .union-command { min-height: 32px; font-size: clamp(12px, 1.1vw, 14px); }
+.enemy-group-unit { width: min(18%, 108px); }
+.enemy-unit-hp { width: 90%; height: 6px; margin: 3px auto 1px; overflow: hidden; border: 1px solid #ffffff66; background: #090909aa; }
+.enemy-unit-hp i { display: block; height: 100%; background: #ff6969; transition: width .25s; }
+.enemy-group-unit small { color: #f4e9dc; font-size: 9px; font-variant-numeric: tabular-nums; }
+.wolf-enemy-group { width: 100%; justify-content: center; gap: clamp(16px, 6vw, 64px); }
+.wolf-enemy-group .enemy-group-unit { width: min(38%, 160px); }
+.wolf-enemy-group .enemy-group-unit img { height: clamp(75px, 12vw, 125px); }
+.wolf-enemy-group .enemy-unit-hp i { background: #ff6969; }
+.shop-preview-track { position: relative; }
+.shop-preview-track i { background: #f4f4f4 !important; }
+.shop-preview-track em { position: absolute; top: 0; height: 100%; background: #62e58d !important; }
+.shop-preview-added, .currently-equipped { color: #70e59a !important; font-weight: 700; }
+.shop-buy-choices { display: grid; grid-template-columns: 1fr; gap: 5px; }
+.empty-party-slot { display: flex; flex-direction: column; justify-content: center; min-height: 260px; border-style: dashed; opacity: .85; }
+.empty-party-slot p { color: var(--dim); font-size: 11px; }
+@media (max-width: 700px) {
+  .battle-commands .command-option { min-height: 34px; padding: 5px 7px; font-size: 13px; }
+  .battle-commands .command-option small { font-size: 10px; }
+  .wolf-enemy-group .enemy-group-unit { width: 42%; }
+}
+
+/* 2026-11-02: battle target cursor, individual enemy gauges and drop reward */
+.enemy-display.enemy-individual-hp > .hp-track { display: none !important; }
+.enemy-group-unit.target-highlight,
+.enemy-image.target-highlight,
+.enemy-placeholder.target-highlight {
+  outline: 3px solid #ffe17b;
+  outline-offset: 4px;
+  border-radius: 7px;
+  filter: drop-shadow(0 0 8px #ffe17b) brightness(1.18);
+}
+.enemy-unit-status { display:flex; justify-content:center; flex-wrap:wrap; gap:2px; min-height:0; margin-top:2px; }
+.enemy-unit-status:empty { display:none; }
+.enemy-unit-status .enemy-status-debuff, .enemy-unit-status .enemy-status-buff { display:inline-block; padding:1px 3px; border-radius:3px; font-size:8px; line-height:1.2; white-space:nowrap; }
+.enemy-unit-buffs { display:flex; justify-content:center; flex-wrap:wrap; gap:3px; min-height:14px; margin-top:3px; }
+.enemy-unit-buff { display:inline-block; padding:2px 5px; border:1px solid #70d88a; border-radius:4px; background:#17552e; color:#d7ffd9; font-size:9px; line-height:1.2; white-space:nowrap; }
+.wolf-enemy-group .wolf-unit { width:min(38%, 170px); }
+.wolf-enemy-group .wolf-unit img { height:clamp(78px, 13vw, 132px); }
+.wolf-enemy-group .wolf-unit > span { color:#f6eac2; font-size:clamp(10px, 1vw, 12px); }
+.drop-reward-layer { position:absolute; z-index:8; inset:12% 5% 12%; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:clamp(10px, 2vw, 24px); pointer-events:none; }
+.drop-reward-item { display:grid; justify-items:center; gap:4px; min-width:76px; padding:10px 12px; border:2px solid #e8cf82; border-radius:9px; background:linear-gradient(145deg,#182b78ee,#090f39f2); color:#fff0b6; box-shadow:0 5px 20px #000b, inset 0 0 0 1px #ffffff30; opacity:0; animation:drop-reward-rise .55s cubic-bezier(.18,.72,.25,1) calc(var(--drop-index, 0) * .12s) forwards; }
+.drop-reward-image { display:grid; place-items:center; width:42px; height:42px; border:2px solid #f7df91; border-radius:10px; background:radial-gradient(circle at 35% 28%,#fff9d8,#e6ad4b 48%,#68458f 100%); color:#fff8dc; font-size:31px; line-height:1; text-shadow:0 2px 5px #49305e; }
+.drop-reward-item strong { font-size:11px; font-weight:700; text-align:center; }
+.drop-reward-item small { color:#aef0c0; font-size:11px; }
+.drop-reward-layer.drop-reward-fade .drop-reward-item { animation:drop-reward-out .24s ease-in forwards; }
+@keyframes drop-reward-rise { from { opacity:0; transform:translateY(22px) scale(.7); } to { opacity:1; transform:translateY(-4px) scale(1); } }
+@keyframes drop-reward-out { to { opacity:0; transform:translateY(-18px) scale(.85); } }
+
+/* Keep the progression and weapon-upgrade panel in the same fantasy-blue UI language. */
+.progression-panel { margin:22px 0; padding:16px; border:2px solid var(--line); border-radius:8px; background:linear-gradient(155deg,#111b59,#080d35); color:var(--fg); box-shadow:inset 0 0 0 2px var(--win-deep),0 8px 22px #0005; }
+.progression-panel h2 { margin:0 0 12px; color:var(--gold); font-size:18px; font-weight:700; }
+.progression-panel h3 { margin:0 0 7px; color:var(--gold); font-size:14px; font-weight:700; }
+.progression-panel h4 { color:var(--gold); }
+.progression-panel p,
+.progression-panel small,
+.progression-panel label,
+.progression-panel li { color:var(--dim); }
+.progression-panel .material-line { padding:9px 11px; border:1px solid #6575c5; border-radius:6px; background:#080f3e; color:#e4e9ff; }
+.progression-grid { grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+.progression-grid section { min-width:0; padding:12px; border:1px solid #6575c5; border-radius:7px; background:linear-gradient(180deg,#17266f,#0b1447); color:var(--fg); box-shadow:inset 0 0 0 1px #ffffff12; }
+.progression-grid article { gap:6px; padding:9px 2px; border-bottom:1px solid #ffffff25; }
+.progression-grid article strong { color:#fff0b6; font-size:13px; }
+.progression-grid small { color:#c2cbed; font-size:11px; }
+.progression-grid button { min-height:30px; padding:5px 12px; border:1px solid var(--gold); border-radius:4px; background:#18276d; color:var(--gold); }
+.progression-grid button:hover:not(:disabled) { background:#263b9b; }
+.progression-grid button:disabled { opacity:.45; }
+.progression-grid label { border-bottom:1px solid #ffffff20; color:#e1e7ff; }
+.progression-grid .growth-preview { color:#dce4ff; }
+.progression-grid .growth-note { color:#f0d88a; }
+@media(max-width:600px) { .progression-panel { padding:10px; } .progression-grid { grid-template-columns:1fr; } .drop-reward-item { min-width:66px; padding:7px 8px; } }
+
+/* Phase 1: shop category and description readability */
+.shop-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));}
+.shop-item p{line-height:1.6;overflow-wrap:normal;word-break:normal;text-wrap:pretty;}
+.shop-item h3{line-height:1.45;}
+.shop-buyer-job{margin:2px 0 4px;color:var(--gold);font-size:12px;}
+
+/* Phase 2-4: training, stage selection, save slots and compact list menu */
+.training-character-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 16px}
+.training-character-tabs button{padding:7px 13px;border:1px solid #7588d5;border-radius:5px;background:#101b55;color:#e7ecff}
+.training-character-tabs button.active{border-color:var(--gold);background:#263b8c;color:#ffe9a0}
+.training-section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.training-section-head>strong{color:var(--gold);white-space:nowrap}
+.training-tree,.training-stats{margin:14px 0;padding:14px;border:1px solid #6575c5;border-radius:8px;background:#0b1546}
+.training-tree h3,.training-stats h3{margin:0 0 5px;color:var(--gold)}
+.training-tree p,.training-stats p{color:#cbd4f4;font-size:12px}
+.skill-tree-scroll{overflow-x:auto;padding:8px 2px 12px}
+.skill-tree-row{display:flex;align-items:stretch;gap:9px;min-width:max-content}
+.skill-node{width:205px;min-height:188px;padding:12px;border:1px solid #6675a9;border-radius:8px;background:#151d4a;display:flex;flex-direction:column;gap:7px;position:relative}
+.skill-node-step{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#3b477b;color:#fff;font-weight:700}
+.skill-node strong{color:#fff0b6}.skill-node p{min-height:36px;margin:0;color:#d4dcf7}.skill-node small{color:#b8c5ef;margin-top:auto}
+.skill-node button{padding:7px;border:1px solid var(--gold);border-radius:5px;background:#1d2c72;color:var(--gold)}
+.skill-node button:disabled{opacity:.55}
+.skill-opened{border-color:#e5c66d;background:linear-gradient(160deg,#3a3260,#17214f)}
+.skill-opened .skill-node-step{background:#a27d2e}.skill-available{border-color:#75c7b0;box-shadow:0 0 12px #75c7b033}.skill-locked{filter:saturate(.55)}
+.skill-connector{align-self:center;color:#c9a94d;font-size:19px;letter-spacing:-3px}
+.training-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.training-stat-grid span{padding:9px;border:1px solid #53649d;border-radius:5px;background:#111d50;color:#d8e1ff;font-size:12px}
+.training-stat-grid b{float:right;color:#fff0b6}
+.footer-controls{position:relative;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:10px 14px;min-height:48px}
+#list-button{position:fixed;right:16px;top:50%;z-index:80;transform:translateY(-50%);padding:11px 14px;border:2px solid var(--gold);border-radius:7px;background:#111b58;color:#ffe9a0;box-shadow:0 5px 16px #0008}
+.list-menu{position:fixed;right:16px;top:calc(50% + 30px);z-index:81;width:190px;padding:10px;border:2px solid #b7a05d;border-radius:8px;background:#0b123d;box-shadow:0 12px 30px #000b;display:grid;gap:6px}
+.list-menu[hidden]{display:none}.list-menu-heading{padding:4px 6px;color:var(--gold);font-weight:700;border-bottom:1px solid #ffffff35}
+.list-menu button{padding:8px;text-align:left;border:1px solid #6273b7;border-radius:5px;background:#15235f;color:#eef2ff}
+#system-message{margin-right:54px}
+body[data-screen="battle"] .main-nav{display:none}
+body[data-screen="battle"] .topbar{justify-content:space-between}
+body[data-screen="battle"] #list-menu #compendium-menu-button,body[data-screen="battle"] #list-menu #achievements-menu-button{display:none}
+.retreat-button{position:absolute;right:18px;top:16px;z-index:30;padding:7px 15px;border:2px solid #e35c65;border-radius:5px;background:#4a1421;color:#fff;font-weight:700;box-shadow:0 2px 8px #0007}
+body:not([data-screen="battle"]) .retreat-button{display:none}
+.game-dialog{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:18px;background:#05091dcc;backdrop-filter:blur(3px)}
+.game-dialog[hidden]{display:none}.game-dialog-panel{width:min(560px,100%);max-height:85vh;overflow:auto;padding:20px;border:2px solid #9ca9e4;border-radius:10px;background:linear-gradient(160deg,#17266b,#090f37);color:#f0f3ff;box-shadow:0 18px 50px #000b}
+.game-dialog-panel h2{margin:0 0 8px;color:var(--gold)}.game-dialog-panel>p{color:#cbd4f4;font-size:13px}
+.save-slot-list,.stage-select-list{display:grid;gap:9px;margin:15px 0}
+.save-slot,.stage-select-card{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border:1px solid #6575c5;border-radius:7px;background:#101b50;color:#eef2ff;text-align:left}
+.save-slot p,.save-slot small{margin:4px 0;color:#cbd4f4;font-size:12px}
+.save-slot button,.stage-select-card{cursor:pointer}.save-slot button{padding:8px 12px;border:1px solid var(--gold);border-radius:5px;background:#243779;color:#ffe9a0}
+.save-slot button:disabled,.stage-select-card:disabled{opacity:.4;cursor:not-allowed}
+.stage-select-card{display:grid;grid-template-columns:1fr auto;cursor:pointer}.stage-select-card strong{color:#ffe9a0}.stage-select-card span{grid-column:1}.stage-select-card small{grid-column:2;grid-row:1/3;color:#bfcaf2}.stage-select-card.stage-cleared{border-color:#9ecb9c}
+.battle-bob{animation:battle-icon-bob .38s ease-in-out}
+@keyframes battle-icon-bob{0%,100%{transform:translateY(0)}35%{transform:translateY(-5px)}70%{transform:translateY(2px)}}
+.volume-row{display:grid;grid-template-columns:1fr;gap:5px}.volume-row span{display:flex;justify-content:space-between}.volume-row input[type=range]{width:100%;accent-color:#e5c66d}
+@media(max-width:650px){#list-button{right:8px;top:auto;bottom:72px;transform:none}.list-menu{right:8px;top:auto;bottom:124px}.retreat-button{top:8px;right:8px}.training-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.training-section-head{align-items:flex-start;flex-direction:column}.save-slot{align-items:flex-start;flex-direction:column}.stage-select-card{grid-template-columns:1fr}.stage-select-card small{grid-column:1;grid-row:auto}}
+
+.battle-screen{position:relative}
+.enemy-group-unit.battle-bob,.enemy-image.battle-bob,.enemy-placeholder.battle-bob{animation:battle-icon-bob .38s ease-in-out}
+
+.skill-detail-button{background:#0c174b!important;border-color:#6d83c8!important;color:#e4ebff!important}.skill-detail-panel{margin-top:10px;padding:10px 12px;border:1px solid #7b8bd1;border-radius:6px;background:#101a4a}.skill-detail-panel strong{color:var(--gold)}.skill-detail-panel p{margin:5px 0;color:#e0e7ff}.skill-detail-panel small{color:#bfcaf2}
+
+/* Updated branching skill tree: passive -> two SP branches -> derived skill */
+.skill-tree-layout{display:grid;grid-template-columns:minmax(180px,1fr) minmax(210px,1.15fr) minmax(180px,1fr);gap:26px;align-items:stretch;min-width:690px;padding:10px 8px 16px}
+.skill-tree-passive,.skill-tree-derived{display:flex;align-items:center;position:relative}
+.skill-tree-passive:after{content:"";position:absolute;left:100%;top:50%;width:26px;border-top:2px solid #c9a94d}
+.skill-tree-derived:before{content:"";position:absolute;right:100%;top:50%;width:26px;border-top:2px solid #c9a94d}
+.skill-tree-branches{display:grid;grid-template-rows:1fr 1fr;gap:16px;position:relative}
+.skill-tree-branches:before{content:"";position:absolute;left:-26px;top:25%;height:50%;border-left:2px solid #c9a94d}
+.skill-tree-branches:after{content:"";position:absolute;right:-26px;top:25%;height:50%;border-right:2px solid #c9a94d}
+.skill-branch-top,.skill-branch-bottom{position:relative;display:flex;align-items:center}
+.skill-branch-top:before,.skill-branch-bottom:before{content:"";position:absolute;right:100%;width:26px;border-top:2px solid #c9a94d}
+.skill-branch-top:after,.skill-branch-bottom:after{content:"";position:absolute;left:100%;width:26px;border-top:2px solid #c9a94d}
+.skill-tree-layout .skill-node{box-sizing:border-box;width:100%;min-height:220px}
+.skill-tree-layout .skill-node.selected{outline:2px solid #ffe18a;outline-offset:2px}
+.skill-level{padding:5px 7px;border-radius:4px;background:#0c1744;color:#ffe9a0;font-size:12px;font-weight:700}
+.skill-detail-panel{margin-top:10px;padding:12px;border:1px solid #6575c5;border-radius:7px;background:#111d50}
+.skill-detail-panel strong{color:#ffe9a0}.skill-detail-panel small{display:block;color:#cbd4f4;line-height:1.7}
+@media(max-width:700px){.skill-tree-layout{grid-template-columns:150px 190px 150px;gap:22px;min-width:556px}.skill-tree-layout .skill-node{min-height:240px;padding:9px}.skill-tree-layout .skill-node strong{font-size:13px}.skill-tree-layout .skill-node p{font-size:11px}.skill-tree-branches{gap:10px}.skill-tree-passive:after,.skill-tree-derived:before,.skill-branch-top:before,.skill-branch-bottom:before,.skill-branch-top:after,.skill-branch-bottom:after{width:22px}.skill-tree-branches:before{left:-22px}.skill-tree-branches:after{right:-22px}}
+#list-button{width:48px;height:48px;padding:0;display:grid;place-items:center;font-size:25px;line-height:1}
+
+
+/* 追加仕様A：プレイヤー枠全体のアニメーション・ゲージ数値 */
+.battle-member.battle-bob{animation:battle-icon-bob .38s ease-in-out}
+.battle-member.damage-flash{animation:party-frame-damage-flash .3s ease-out}
+@keyframes party-frame-damage-flash{0%,100%{filter:none}28%{filter:brightness(1.45) sepia(.35) saturate(2) hue-rotate(315deg)}}
+.battle-member.guard-flash{animation:party-guard-flash .52s ease-out}
+@keyframes party-guard-flash{0%,100%{box-shadow:inset 0 0 0 2px var(--win-deep)}35%{box-shadow:0 0 14px 4px #fff9,inset 0 0 0 2px #fff9}}
+.battle-gauge-label{display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:9px;line-height:1.15;color:#f3f0ff;font-variant-numeric:tabular-nums}
+.battle-gauge-label strong{font-size:9px;font-weight:700;color:#fff}
+.battle-gauge-label.sp-gauge-label{margin-top:3px;color:#cbd7ff}
+.battle-member .hp-track{margin-top:2px}
+.battle-member .sp-track{margin-top:2px}
+/* 追加仕様B：魔王専用ブレイクゲージ */
+.enemy-break-track.maou-break-track{width:min(390px,92%);height:15px;margin:9px auto 5px;border-width:2px;border-color:#e6b94e;border-radius:10px;box-shadow:0 0 10px #d49b4c55}
+.enemy-break-track.maou-break-track i{border-radius:8px;background:linear-gradient(90deg,#f4d36d,#f28a4e,#d94c59)}
+.enemy-break-track.maou-break-track span{font-size:11px;line-height:1.5;color:#fff0c0}
+/* 追加仕様C：魔王イベント専用表示 */
+.story-event-panel.maou-story{border-color:#a879e8;background:linear-gradient(145deg,#25143f,#100d27);box-shadow:0 18px 70px #000b,0 0 22px #9b63e855}
+.story-event-panel.maou-story h2{color:#c99aff}
+.story-event-text.maou-story-text{color:#d9b7ff;text-shadow:0 1px 3px #160b2c}
+/* 追加仕様D：撤退確認 */
+.retreat-dialog-panel{max-width:460px;text-align:center;border-color:#e38c9a}
+.retreat-dialog-panel h2{color:#ffd4dc}
+.retreat-dialog-panel p{line-height:1.9}
+.dialog-actions{display:flex;justify-content:center;gap:12px;margin-top:18px}
+.dialog-actions button{min-width:100px}
+@media(prefers-reduced-motion:reduce){.battle-member.battle-bob,.battle-member.damage-flash,.battle-member.guard-flash{animation:none!important}}
+
+

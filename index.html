@@ -4,16 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fantasy RPG</title>
-  <link rel="stylesheet" href="./style.css?v=20261106-4">
-  <script src="./data/battle-rules.js?v=20261106-4" defer></script>
-  <script src="./data/progression.js?v=20261106-4" defer></script>
-  <script src="./data/skill-trees.js?v=20261106-4" defer></script>
-  <script src="./data/characters.js?v=20261106-4" defer></script>
-  <script src="./data/items.js?v=20261106-4" defer></script>
-  <script src="./data/enemies.js?v=20261106-4" defer></script>
-  <script src="./data/jobs.js?v=20261106-4" defer></script>
-  <script src="./battle-ext.js?v=20261106-4" defer></script>
-  <script src="./script.js?v=20261106-4" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <link rel="stylesheet" href="./css/01-battle-base.css?v=20261106-9">
+  <link rel="stylesheet" href="./css/02-screens-and-shell.css?v=20261106-9">
+  <link rel="stylesheet" href="./css/03-responsive-layout.css?v=20261106-9">
+  <link rel="stylesheet" href="./css/04-nav-and-battle-panels.css?v=20261106-9">
+  <link rel="stylesheet" href="./css/05-progression-and-boss.css?v=20261106-9">
+  <link rel="stylesheet" href="./style.css?v=20261106-9">
+  <script src="./data/battle-rules.js?v=20261106-9" defer></script>
+  <script src="./data/progression.js?v=20261106-9" defer></script>
+  <script src="./data/skill-trees.js?v=20261106-9" defer></script>
+  <script src="./data/characters.js?v=20261106-9" defer></script>
+  <script src="./data/items.js?v=20261106-9" defer></script>
+  <script src="./data/enemies.js?v=20261106-9" defer></script>
+  <script src="./data/jobs.js?v=20261106-9" defer></script>
+  <script src="./data/status-effects.js?v=20261106-9" defer></script>
+  <script src="./data/enemy-variants.js?v=20261106-9" defer></script>
+  <script src="./data/boss-phases.js?v=20261106-9" defer></script>
+  <script src="./battle-ext.js?v=20261106-9" defer></script>
+  <script src="./script.js?v=20261106-9" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
 </head>
 <body>
   <div class="game">
@@ -192,12 +200,14 @@
         </div>
         <div class="battle-arena">
           <div class="stage-stars" aria-hidden="true">*　　 .　　 *　　 .　　 *</div>
+          <div id="stage-environment" class="stage-environment-banner" hidden aria-live="polite"></div>
           <div id="battle-enemy" class="enemy-display">
             <div class="enemy-placeholder">MONSTER</div>
             <h2 id="enemy-name">スライム</h2>
             <div class="hp-track"><div id="enemy-hp-bar" class="hp-fill"></div></div>
             <div id="enemy-break-track" class="enemy-break-track" hidden><i></i><span></span></div>
             <p id="enemy-hp-text" aria-hidden="true"></p>
+            <section id="enemy-analysis" class="enemy-analysis" hidden aria-live="polite" aria-label="敵の分析情報"></section>
           </div>
           <button id="battle-log-open" class="battle-log-open" type="button" aria-haspopup="dialog">LOG</button>
         </div>
@@ -206,6 +216,7 @@
           <div id="event-log" class="event-log" aria-live="polite"><p>冒険が始まる。</p></div>
         </div>
         <div id="battle-party" class="battle-party"></div>
+        <section id="imperial-status-panel" class="imperial-status-panel" hidden aria-live="polite" aria-label="インペリアル専用ステータス"></section>
         <div class="battle-bottom" id="battle-bottom">
           <div class="battle-window command-window">
             <div class="window-title" id="command-title">コタマ　どうする？</div>

@@ -1,0 +1,223 @@
+/* ============================================================
+   css/02-screens-and-shell.css — 共通の外枠、ショップ・装備、ブレイクゲージ、素材・製作、図鑑・イベント記録、実績、倍速モード
+   ※ 読み込み順が見た目に影響します（後ろのルールが前を上書き）。順序は index.html を参照。
+   ============================================================ */
+/* Shared game shell: centered, fluid, and capped at the specification width. */
+.game{width:min(1200px,100%)}
+body{font-size:13px}
+@media(max-width:700px){.game{width:100%}body{padding:8px;font-size:14px}.battle-screen{max-width:100%}.battle-bottom{grid-template-columns:minmax(0,1fr)}.battle-party{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.union-cutin-skill{animation:none}.hp-loss-preview{transition:none}}
+
+.battle-party { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: clamp(2px, .55vw, 8px); }
+.battle-member { min-width: 0; padding: clamp(2px, .4vw, 6px); }
+.battle-portrait { height: clamp(28px, 4.4vw, 54px); }
+.member-head { min-width: 0; }
+.member-head strong { overflow-wrap: anywhere; }
+.stat-line { flex-wrap: wrap; gap: 2px 5px; }
+.battle-bottom { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; }
+.command-window, .log-window { height: 300px; min-height: 300px; max-height: 300px; overflow: hidden; }
+.battle-commands { display: flex; flex-wrap: nowrap; gap: 4px; align-items: stretch; overflow-x: auto; min-width: 0; }
+.battle-commands .command-option { flex: 0 0 auto; min-width: 76px; }
+.battle-log { height: 250px; max-height: 250px; overflow-y: auto; overflow-x: hidden; }
+.enemy-group { display: flex; align-items: end; justify-content: center; gap: clamp(2px, 1vw, 12px); width: 100%; min-height: 95px; padding: 8px 3px 0; box-sizing: border-box; }
+.enemy-group-unit { display: flex; flex-direction: column; align-items: center; min-width: 0; width: min(18%, 108px); animation: goblin-pop .25s ease-out both; }
+.enemy-group-unit img { display: block; width: 100%; height: clamp(45px, 9vw, 110px); object-fit: contain; image-rendering: auto; filter: drop-shadow(0 3px 3px #0009); }
+.enemy-group-unit span { font-size: clamp(7px, .8vw, 10px); color: #f6eac2; white-space: nowrap; }
+.wolf-clone { position: absolute; width: 35%; height: 72%; left: 6%; top: 2%; object-fit: contain; opacity: .48; filter: blur(1px) drop-shadow(0 0 12px #b5e7ff); transform: scaleX(-1); pointer-events: none; }
+@keyframes goblin-pop { from { opacity: 0; transform: translateY(12px) scale(.8); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.battle-arena.enemy-pixel-defeating .enemy-image, .battle-arena.enemy-pixel-defeating .enemy-placeholder, .battle-arena.enemy-pixel-defeating .enemy-group-unit { animation: pixel-vanish .62s steps(5,end) forwards; }
+@keyframes pixel-vanish { 0%, 20%, 40% { opacity: 1; filter: brightness(1.7); } 10%, 30%, 50% { opacity: .15; } 70% { opacity: .5; transform: scale(.8); } 100% { opacity: 0; transform: scale(.3) translateY(12px); filter: grayscale(1); } }
+.battle-arena.dragon-breath::after { content: ""; position: absolute; z-index: 4; inset: 8% 4%; border-radius: 12px; pointer-events: none; background: radial-gradient(ellipse at center, #ffb52a44 0%, #ff4a1533 42%, transparent 72%); box-shadow: inset 0 0 28px #ff5a1e99; animation: flame-wash .82s ease-out both; }
+.battle-arena.maou-dark-flames::after { content: ""; position: absolute; z-index: 4; inset: 5% 2%; border-radius: 12px; pointer-events: none; background: repeating-linear-gradient(110deg, transparent 0 24px, #24051fcc 25px 34px, #7b122988 35px 43px, transparent 44px 66px); box-shadow: inset 0 0 35px #160017, 0 0 20px #6d123c88; animation: dark-flame-wash .82s ease-out both; }
+@keyframes flame-wash { 0% { opacity: 0; transform: scale(.92); } 35% { opacity: 1; } 100% { opacity: 0; transform: scale(1.04); } }
+@keyframes dark-flame-wash { 0% { opacity: 0; transform: translateY(12px); } 28% { opacity: 1; } 100% { opacity: 0; transform: translateY(-8px); } }
+.battle-arena.wolf-mist::after { content: ""; position: absolute; z-index: 4; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, #c8e8ff99, #a6b6d344 40%, transparent 75%); filter: blur(7px); animation: mist-spread .62s ease-out both; }
+@keyframes mist-spread { from { opacity: 0; transform: scale(.6); } 45% { opacity: .95; } to { opacity: 0; transform: scale(1.3); } }
+.hit-effect { position: absolute; z-index: 9; left: 50%; top: 38%; transform: translate(-50%,-50%); font-size: clamp(28px, 5vw, 60px); font-weight: 1000; pointer-events: none; text-shadow: 0 0 8px #fff, 0 0 18px #ffda67; animation: hit-burst .5s ease-out forwards; }
+.hit-slash { color: #f8f4ff; -webkit-text-stroke: 2px #7c9bff; }
+.hit-flame { filter: drop-shadow(0 0 12px #ff6a19); }
+.hit-magic { color: #9ff8ff; }
+.combat-number.miss { color: #bdeaff; font-size: 24px; text-shadow: 0 0 8px #65cfff; }
+@keyframes hit-burst { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.3) rotate(-20deg); } 30% { opacity: 1; transform: translate(-50%,-50%) scale(1.2) rotate(8deg); } 100% { opacity: 0; transform: translate(-50%,-70%) scale(1.5) rotate(18deg); } }
+.union-cutin-member { overflow: hidden; position: relative; }
+.union-cutin-portrait { object-fit: cover !important; object-position: center 18% !important; transform: scale(1.42); filter: drop-shadow(0 0 10px #ffffff55); }
+.union-cutin-member span { position: relative; z-index: 2; padding: 3px 7px; background: #090d28dd; border: 1px solid #ffe17b; }
+@media (max-width: 620px) {
+  .battle-bottom { grid-template-columns: minmax(0,1fr); }
+  .command-window, .log-window { height: 190px; min-height: 190px; max-height: 190px; }
+  .battle-log { height: 145px; max-height: 145px; }
+  .battle-commands .command-option { min-width: 68px; font-size: 10px; }
+  .battle-party { grid-template-columns: repeat(4, minmax(0,1fr)) !important; }
+  .battle-member { font-size: 8px; }
+  .battle-portrait { height: 28px; }
+  .enemy-group-unit img { height: 48px; }
+}
+
+/* Revised dragon warning presentation */
+.enemy-display.dragon-ominous .enemy-image,.enemy-display.dragon-ominous .enemy-placeholder{transform-origin:center bottom;animation:dragon-ominous-pulse .9s ease-in-out 2;filter:drop-shadow(0 0 13px #ff452c)}
+@keyframes dragon-ominous-pulse{0%,100%{transform:translateY(0) scale(1)}35%{transform:translateY(-3px) scale(1.025)}70%{transform:translateY(1px) scale(.99)}}
+#enemy-hp-text[aria-hidden="true"]{display:none!important}
+@media(prefers-reduced-motion:reduce){.enemy-display.dragon-ominous .enemy-image,.enemy-display.dragon-ominous .enemy-placeholder{animation:none!important}}
+/* Revised shop and equipment presentation */
+.shop-buyer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0;padding:10px 12px;border:2px solid var(--line);border-radius:6px;background:var(--win)}
+.shop-buyer-head{display:flex;align-items:center;gap:12px;color:var(--gold)}
+.shop-buyer-head button{border:1px solid var(--line);border-radius:4px;padding:5px 10px;background:#080f49;color:var(--fg)}
+.shop-buyer-stats{color:var(--dim);font-size:11px;text-align:right}
+.shop-locked{opacity:.62;border-style:dashed}
+.shop-lock-note{color:var(--hp-low)!important}
+@media(max-width:560px){.shop-buyer{align-items:flex-start;flex-direction:column}.shop-buyer-stats{text-align:left}}
+
+/* Wolf body and clone are displayed as independent side-by-side targets. */
+.battle-arena .enemy-display.wolf-split{width:48%;margin-right:auto;transform:translateX(3%);}
+.battle-arena .enemy-display.wolf-split .enemy-image{width:150px;height:122px;}
+.wolf-clone-panel{position:absolute;z-index:2;right:5%;bottom:12px;width:42%;max-width:230px;text-align:center;padding:5px 8px;border:1px solid #b9dfff66;border-radius:7px;background:#101b3b88;opacity:.78;filter:drop-shadow(0 0 9px #b5e7ff66);}
+.wolf-clone-panel img{display:block;width:100%;height:116px;object-fit:contain;transform:scaleX(-1);filter:blur(.35px) drop-shadow(0 0 10px #b5e7ff);}
+.wolf-clone-panel strong{display:block;color:#e1f4ff;font-size:12px;font-weight:500;}
+.wolf-clone-panel small{color:#b9dfff;font-size:10px;}
+.wolf-clone-hp-track{height:6px;margin:3px auto;width:88%;background:#0009;border:1px solid #ffffff66;}
+.wolf-clone-hp-track i{display:block;height:100%;background:#8fdcff;transition:width .25s;}
+.enemy-status-list{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;min-height:0;margin:3px 0;}
+.enemy-status-list[hidden]{display:none;}
+.enemy-status-list span{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;}
+.enemy-status-buff{color:#d7ffd9;background:#17552e;border:1px solid #70d88a;}
+.enemy-status-debuff{color:#ffe1a3;background:#654018;border:1px solid #e8a84f;}
+@media(max-width:560px){.battle-arena .enemy-display.wolf-split{width:48%;}.battle-arena .enemy-display.wolf-split .enemy-image{width:115px;height:100px;}.wolf-clone-panel{right:2%;width:44%;}.wolf-clone-panel img{height:94px;}}
+
+/* One-time dragon appearance flourish, separate from its later warning cue. */
+.battle-arena.dragon-arrival .enemy-display{animation:dragon-arrival-rise 1.05s cubic-bezier(.18,.72,.22,1) both;}
+.battle-arena.dragon-arrival .enemy-image,.battle-arena.dragon-arrival .enemy-placeholder{filter:drop-shadow(0 0 18px #ff572e);}
+.battle-arena.dragon-arrival::after{content:"";position:absolute;z-index:2;left:50%;bottom:22%;width:120px;height:90px;transform:translateX(-50%);border-radius:50%;pointer-events:none;background:radial-gradient(ellipse,#ffb33b66 0%,#ff4c2444 42%,transparent 72%);animation:dragon-arrival-flare 1.05s ease-out both;}
+@keyframes dragon-arrival-rise{0%{opacity:0;transform:translateY(18px) scale(.9)}55%{opacity:1;transform:translateY(-5px) scale(1.035)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes dragon-arrival-flare{0%{opacity:0;scale:.25}45%{opacity:1;scale:1.25}100%{opacity:0;scale:1.7}}
+@media(prefers-reduced-motion:reduce){.battle-arena.dragon-arrival .enemy-display,.battle-arena.dragon-arrival::after{animation:none!important}}
+
+/* Shop purchase/equipment refinement */
+.shop-buyer-head{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px;border:2px solid var(--line);border-radius:7px;background:#0b1458}
+.shop-buyer-head>button{min-width:38px;min-height:38px;border:1px solid var(--gold);border-radius:5px;background:#17266f;color:var(--gold)}
+.shop-buyer-portrait{width:76px;height:76px;flex:0 0 76px;overflow:hidden;border:2px solid #dce6ff;border-radius:5px;background:#070c32}
+.shop-buyer-portrait img{width:100%;height:100%;object-fit:contain}
+.shop-buyer-info{min-width:0;max-width:520px;text-align:left}
+.shop-buyer-info>strong{display:block;color:var(--gold);font-size:18px;margin-bottom:5px}
+.shop-buyer-stats{font-size:12px;line-height:1.8;color:#e6eaff}
+.shop-class-tabs{margin-top:7px}
+.shop-class-tabs button{font-size:11px;padding:5px 8px}
+.shop-stat-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 8px;margin:10px 0;padding:8px;border:1px solid #83a5ff88;border-radius:5px;background:#08113c;color:#dce8ff;font-size:11px}
+.shop-stat-preview strong{grid-column:1/-1;color:var(--gold);font-size:12px}
+.shop-stat-preview span{white-space:nowrap}
+@media(max-width:560px){.shop-buyer-head{gap:8px;padding:8px}.shop-buyer-portrait{width:58px;height:58px;flex-basis:58px}.shop-buyer-stats{font-size:10px}.shop-stat-preview{font-size:10px}}
+.shop-stat-preview{grid-template-columns:1fr}
+.shop-stat-preview strong{grid-column:1}
+.shop-preview-row{display:grid;gap:3px;color:#e6eaff}
+.shop-preview-row>span{font-size:11px}
+.shop-preview-row b{color:var(--gold)}
+.shop-preview-track{position:relative;height:7px;overflow:hidden;border-radius:10px;background:#020725;border:1px solid #8294c766}
+.shop-preview-track i,.shop-preview-track em{position:absolute;left:0;top:0;height:100%;display:block;border-radius:10px}
+.shop-preview-track i{background:#7283a9;opacity:.85}
+.shop-preview-track em{background:#76e69a;opacity:.9;box-shadow:0 0 5px #76e69a88}
+
+/* Samurai-specific visual treatment. The temporary emblem is intentional
+   until an original character portrait is supplied. */
+.samurai-emblem,.union-cutin-samurai-mark{display:flex;align-items:center;justify-content:center;font-family:serif;font-weight:1000;color:#fff4d0;background:radial-gradient(circle at 35% 28%,#a94b42,#39121d 68%,#100b18);border:2px solid #e8c77b;box-shadow:inset 0 0 0 3px #3a1722,0 0 14px #c85b4d66;text-shadow:2px 3px #280d16}
+.samurai-emblem{width:100%;height:100%;font-size:clamp(36px,7vw,72px);letter-spacing:.08em}
+.union-cutin-samurai-mark{width:clamp(58px,12vw,150px);height:clamp(78px,18vh,200px);font-size:clamp(44px,7vw,86px);clip-path:polygon(14% 0,100% 0,86% 100%,0 100%)}
+.hit-samurai{font-family:serif;font-size:clamp(32px,7vw,64px);font-weight:1000;color:#fff7dc;text-shadow:0 0 7px #fff,0 0 18px #ffb33b,3px 4px #8a1010;animation:samurai-hit .36s ease-out forwards}
+@keyframes samurai-hit{0%{opacity:0;transform:translate(-50%,-50%) rotate(-35deg) scale(1.8)}35%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}100%{opacity:0;transform:translate(-50%,-75%) rotate(12deg) scale(.8)}}
+.samurai-cutin{background:linear-gradient(145deg,#180b16 0%,#5d111b 42%,#140b20 100%);border-color:#ffe5a0;box-shadow:0 0 0 3px #210b16,0 16px 50px #000a,0 0 32px #e34c3d88}
+.samurai-cutin .union-cutin-skill{background:linear-gradient(100deg,#3b0d18,#8d1e25 50%,#3b0d18);border-color:#fff0bd;color:#fff4d8;text-shadow:0 3px #3a0710,0 0 18px #ffb46b}
+.samurai-cut-line{position:absolute;z-index:4;left:-15%;top:48%;width:130%;height:5px;pointer-events:none;background:linear-gradient(90deg,transparent,#fff 22%,#fff8d8 50%,#ffb0a0 78%,transparent);box-shadow:0 0 10px #fff,0 0 28px #ff6b4e;transform:rotate(-18deg) scaleX(0);transform-origin:left;animation:samurai-cut 520ms 180ms ease-out forwards}
+@keyframes samurai-cut{0%{transform:rotate(-18deg) scaleX(0);opacity:0}35%{opacity:1}100%{transform:rotate(-18deg) scaleX(1);opacity:0}}
+@media(prefers-reduced-motion:reduce){.hit-samurai,.samurai-cut-line{animation:none;opacity:1}}
+
+/* Samurai-specific visual treatment. The temporary emblem is intentional
+   until an original character portrait is supplied. */
+.samurai-emblem,.union-cutin-samurai-mark{display:flex;align-items:center;justify-content:center;font-family:serif;font-weight:1000;color:#fff4d0;background:radial-gradient(circle at 35% 28%,#a94b42,#39121d 68%,#100b18);border:2px solid #e8c77b;box-shadow:inset 0 0 0 3px #3a1722,0 0 14px #c85b4d66;text-shadow:2px 3px #280d16}
+.samurai-emblem{width:100%;height:100%;font-size:clamp(36px,7vw,72px);letter-spacing:.08em}
+.union-cutin-samurai-mark{width:clamp(58px,12vw,150px);height:clamp(78px,18vh,200px);font-size:clamp(44px,7vw,86px);clip-path:polygon(14% 0,100% 0,86% 100%,0 100%)}
+.hit-samurai{font-family:serif;font-size:clamp(32px,7vw,64px);font-weight:1000;color:#fff7dc;text-shadow:0 0 7px #fff,0 0 18px #ffb33b,3px 4px #8a1010;animation:samurai-hit .36s ease-out forwards}
+@keyframes samurai-hit{0%{opacity:0;transform:translate(-50%,-50%) rotate(-35deg) scale(1.8)}35%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}100%{opacity:0;transform:translate(-50%,-75%) rotate(12deg) scale(.8)}}
+.samurai-cutin{background:linear-gradient(145deg,#180b16 0%,#5d111b 42%,#140b20 100%);border-color:#ffe5a0;box-shadow:0 0 0 3px #210b16,0 16px 50px #000a,0 0 32px #e34c3d88}
+.samurai-cutin .union-cutin-skill{background:linear-gradient(100deg,#3b0d18,#8d1e25 50%,#3b0d18);border-color:#fff0bd;color:#fff4d8;text-shadow:0 3px #3a0710,0 0 18px #ffb46b}
+.samurai-cut-line{position:absolute;z-index:4;left:-15%;top:48%;width:130%;height:5px;pointer-events:none;background:linear-gradient(90deg,transparent,#fff 22%,#fff8d8 50%,#ffb0a0 78%,transparent);box-shadow:0 0 10px #fff,0 0 28px #ff6b4e;transform:rotate(-18deg) scaleX(0);transform-origin:left;animation:samurai-cut 520ms 180ms ease-out forwards}
+@keyframes samurai-cut{0%{transform:rotate(-18deg) scaleX(0);opacity:0}35%{opacity:1}100%{transform:rotate(-18deg) scaleX(1);opacity:0}}
+@media(prefers-reduced-motion:reduce){.hit-samurai,.samurai-cut-line{animation:none;opacity:1}}
+
+/* 第1段階：ブレイクゲージ・ボス形態変化 */
+.enemy-break-track{position:relative;width:min(260px,78%);height:8px;margin:5px auto 2px;background:#211d2d;border:1px solid #9b83b4;border-radius:8px;overflow:visible}
+.enemy-break-track[hidden]{display:none}
+.enemy-break-track i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#e6b94e,#f47b48);border-radius:8px;transition:width .25s ease}
+.enemy-break-track span{display:block;text-align:center;font-size:9px;line-height:1.4;color:#ffe8a7;font-weight:700;text-shadow:0 1px 2px #000}
+.enemy-display.boss-transformed .enemy-image,.enemy-display.boss-transformed .enemy-placeholder{animation:boss-form-flash .75s ease-in-out 2;filter:drop-shadow(0 0 16px #ff6a32)}
+@keyframes boss-form-flash{0%,100%{transform:scale(1)}50%{transform:scale(1.07);filter:brightness(1.8) drop-shadow(0 0 18px #ff6a32)}}
+
+/* 第2段階：素材・製作・強化・育成パネル */
+.progression-panel{margin:28px 0;padding:20px;border:2px solid #8b7658;border-radius:12px;background:rgba(255,250,235,.96);color:#34291f}.progression-panel h2{margin:0 0 12px}.progression-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.progression-grid section{padding:12px;border:1px solid #c7b797;border-radius:8px;background:#fffdf7}.progression-grid article{display:grid;gap:5px;padding:9px 0;border-bottom:1px solid #e2d7c3}.progression-grid article:last-child{border-bottom:0}.progression-grid small{display:block;line-height:1.5}.progression-grid button{justify-self:start;padding:6px 14px}.progression-grid label{display:flex;align-items:center;justify-content:space-between;padding:5px 0}.material-line{line-height:1.8;overflow-wrap:anywhere}
+.growth-note{font-size:12px;color:#725d3e}.growth-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;margin:8px 0 12px;padding:0;list-style:none;font-size:12px}.growth-preview strong{color:#285c35}.growth-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.growth-actions button{font-size:12px}.growth-actions button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:600px){.progression-panel{padding:12px}.progression-grid{grid-template-columns:1fr}.growth-preview{grid-template-columns:1fr}}
+
+/* Stage 3: monster compendium and adventure event archive */
+.compendium-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:16px 0}
+.compendium-card,.hidden-boss-unlock,.event-gallery article{padding:14px;border:1px solid #7482a8;border-radius:8px;background:#101a38;color:#edf1ff}
+.compendium-card h3{margin:8px 0}.compendium-card p{font-size:12px;line-height:1.7;min-height:72px}.compendium-card small,.event-gallery small{color:#d6c58c}
+.compendium-art{height:105px;display:grid;place-items:center;background:radial-gradient(ellipse,#344365,#080e22);border-radius:6px;color:#d8dff2;font-size:42px;font-weight:900;overflow:hidden}
+.compendium-art img{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 4px 8px #000)}
+.compendium-card:not(.unlocked) .compendium-art{filter:brightness(.25)}
+.hidden-boss-unlock{margin:16px 0;border-color:#b18c57}.event-gallery{display:grid;gap:8px;margin:12px auto;max-width:760px;text-align:left}.event-gallery[hidden]{display:none}
+.event-gallery p{font-size:13px;line-height:1.7}
+
+.story-event{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:20px;background:rgba(4,8,20,.82);backdrop-filter:blur(5px);animation:storyFade .3s ease both}.story-event[hidden]{display:none}.story-event-panel{width:min(680px,100%);padding:clamp(22px,5vw,42px);border:1px solid #c7b77b;border-radius:16px;background:linear-gradient(145deg,#18243a,#0b1325);color:#f5f0df;box-shadow:0 18px 70px #0009}.story-event-panel h2{margin:8px 0 24px;color:#f1d99b}.story-event-panel>p:not(.eyebrow){min-height:5em;line-height:2;font-size:1.08rem;white-space:pre-wrap}.story-event-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:24px}.story-event-footer>div{display:flex;gap:10px}.story-event-footer button{min-width:92px}@keyframes storyFade{from{opacity:0}to{opacity:1}}
+
+/* Stage 4: achievements and battle result details */
+.achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+.achievement-card{display:flex;justify-content:space-between;align-items:center;gap:12px;min-width:0;padding:12px;border:2px solid var(--line);border-radius:7px;background:var(--win);box-shadow:inset 0 0 0 2px var(--win-deep)}
+.achievement-card strong{color:var(--gold);font-size:13px}
+.achievement-card p{margin:4px 0 0;color:var(--dim);font-size:11px}
+.achievement-card>span{flex:0 0 auto;color:var(--dim);font-size:10px;text-align:right}
+.achievement-card.unlocked{border-color:#e8c96e;background:linear-gradient(120deg,#4a3b1c88,#201d42)}
+.achievement-card.unlocked>span{color:#ffe59b}
+.battle-result #result-message{white-space:pre-line;line-height:1.8}
+.battle-result button[hidden]{display:none!important}
+body.battle-speed-fast .battle-arena .enemy-display.enemy-attacking .enemy-image{animation-duration:.325s}
+body.battle-speed-fast .battle-arena .enemy-display .damage-flash{animation-duration:.15s}
+body.battle-speed-fast .stage-transition.playing{animation-duration:2s!important}
+body.battle-speed-fast .stage-transition.maou-stage.playing{animation-duration:2.3s!important}
+body.battle-speed-fast .stage-transition.maou-clear.playing{animation-duration:1.65s!important}
+body.battle-speed-fast .stage-particles i{animation-duration:.625s!important}
+@media(max-width:650px){.achievement-grid{grid-template-columns:1fr}.achievement-card{padding:10px}}
+body.battle-speed-fast .battle-portrait.damage-flash{animation-duration:.15s}
+/* 2.0x mode: shorten visual timelines as well as JavaScript waits. */
+body.battle-speed-fast .combat-number{animation-duration:.675s}
+body.battle-speed-fast .battle-member.union-ready{animation-duration:.675s!important}
+body.battle-speed-fast .enemy-display.maou-ominous .enemy-image,
+body.battle-speed-fast .enemy-display.maou-ominous .enemy-placeholder{animation-duration:.625s}
+body.battle-speed-fast .enemy-display.enemy-ominous,
+body.battle-speed-fast .enemy-display.dragon-ominous .enemy-image,
+body.battle-speed-fast .enemy-display.dragon-ominous .enemy-placeholder{animation-duration:.325s}
+body.battle-speed-fast .battle-arena.enemy-pixel-defeating .enemy-image,
+body.battle-speed-fast .battle-arena.enemy-pixel-defeating .enemy-placeholder,
+body.battle-speed-fast .battle-arena.enemy-pixel-defeating .enemy-group-unit{animation-duration:.31s}
+body.battle-speed-fast .battle-arena.enemy-defeating .enemy-display{animation-duration:.45s}
+body.battle-speed-fast .battle-arena.enemy-defeating .enemy-image,
+body.battle-speed-fast .battle-arena.enemy-defeating .enemy-placeholder{animation-duration:.45s}
+body.battle-speed-fast .battle-arena.enemy-defeating .enemy-display h2,
+body.battle-speed-fast .battle-arena.enemy-defeating #enemy-hp-text,
+body.battle-speed-fast .battle-arena.enemy-defeating .hp-track{animation-duration:.34s}
+body.battle-speed-fast .battle-arena.enemy-defeating::after{animation-duration:.425s}
+body.battle-speed-fast .union-cutin-layer.is-active .union-cutin-swipe,
+body.battle-speed-fast .union-cutin-layer.is-exiting .union-cutin-swipe{animation-duration:140ms}
+body.battle-speed-fast .union-cutin-skill{animation-duration:350ms}
+body.battle-speed-fast .battle-arena.dragon-breath::after,
+body.battle-speed-fast .battle-arena.maou-dark-flames::after{animation-duration:.41s}
+body.battle-speed-fast .battle-arena.wolf-mist::after{animation-duration:.31s}
+body.battle-speed-fast .hit-effect{animation-duration:.25s}
+body.battle-speed-fast .battle-arena.dragon-arrival .enemy-display,
+body.battle-speed-fast .battle-arena.dragon-arrival::after{animation-duration:.525s}
+body.battle-speed-fast .hit-samurai{animation-duration:.18s}
+body.battle-speed-fast .samurai-cut-line{animation-duration:260ms;animation-delay:90ms}
+body.battle-speed-fast .enemy-display.boss-transformed .enemy-image,
+body.battle-speed-fast .enemy-display.boss-transformed .enemy-placeholder{animation-duration:.375s}
+body.battle-speed-fast .stage-transition.maou-stage .stage-particles i,
+body.battle-speed-fast .stage-transition.maou-clear .stage-particles i{animation-duration:1.325s!important}
+body.battle-speed-fast .battle-arena.maou-arrival .enemy-display,
+body.battle-speed-fast .battle-arena.maou-arrival .enemy-image,
+body.battle-speed-fast .battle-arena.maou-arrival::after{animation-duration:.71s}
+
