@@ -277,3 +277,22 @@
 @media(prefers-reduced-motion:reduce){
   .field-screen *, .field-screen *:before, .field-screen *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
 }
+
+
+/* ---------- エリア初回入場タイトル ---------- */
+.field-area-intro{
+  position:absolute;z-index:35;left:50%;top:35%;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  min-width:min(72%,300px);padding:13px 22px 15px;
+  border-top:1px solid #e9d9aa99;border-bottom:1px solid #e9d9aa99;
+  background:linear-gradient(90deg,transparent,#101b25e8 18% 82%,transparent);
+  color:#fff4d4;text-align:center;pointer-events:none;
+  transform:translate(-50%,-50%);opacity:0;
+  animation:field-area-intro-in .48s ease-out forwards;
+}
+.field-area-intro-index{color:#e4c77e;font-size:10px;font-weight:800;letter-spacing:.24em;text-shadow:0 1px 4px #000}
+.field-area-intro-title{font-size:clamp(19px,4vw,27px);font-weight:800;letter-spacing:.12em;text-shadow:0 2px 8px #000,0 0 16px #000}
+.field-area-intro.is-leaving{animation:field-area-intro-out .42s ease-in forwards}
+@keyframes field-area-intro-in{0%{opacity:0;filter:blur(5px);transform:translate(-50%,-43%) scale(1.06)}100%{opacity:1;filter:blur(0);transform:translate(-50%,-50%) scale(1)}}
+@keyframes field-area-intro-out{to{opacity:0;filter:blur(4px);transform:translate(-50%,-58%) scale(.98)}}
+@media(prefers-reduced-motion:reduce){.field-area-intro,.field-area-intro.is-leaving{animation:none;opacity:1}.field-area-intro.is-leaving{opacity:0}}
