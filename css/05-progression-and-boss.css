@@ -189,3 +189,15 @@ body:not([data-screen="battle"]) .retreat-button{display:none}
 @media(prefers-reduced-motion:reduce){.battle-member.battle-bob,.battle-member.damage-flash,.battle-member.guard-flash{animation:none!important}}
 
 
+
+
+/* Material sale controls */
+.material-sale-panel { margin:10px 0 14px; padding:12px; border:1px solid #6575c5; border-radius:7px; background:linear-gradient(180deg,#17266f,#0b1447); }
+.material-sale-panel h3 { margin:0 0 5px; color:var(--gold); font-size:14px; }
+.material-sale-panel>p { margin:0 0 9px; color:#c2cbed; font-size:11px; }
+.material-sale-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; }
+.material-sale-item { display:flex; flex-direction:column; gap:6px; min-width:0; padding:9px; border:1px solid #53649d; border-radius:6px; background:#101b50; }
+.material-sale-item strong { color:#fff0b6; font-size:12px; }
+.material-sale-item small { color:#cbd4f4; font-size:11px; }
+.material-sale-item button { min-height:30px; padding:5px 9px; border:1px solid var(--gold); border-radius:4px; background:#18276d; color:var(--gold); }
+.material-sale-item button:hover { background:#263b9b; }
