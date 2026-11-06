@@ -193,7 +193,7 @@ function fieldBuildDom() {
 }
 function fieldViewScale() {
   const vp = $("field-viewport"); if (!vp) return 1;
-  return Math.max(1, Math.min(2, Math.floor((vp.clientWidth / (12 * FIELD_TILE)) * 4) / 4));
+  return Math.max(1.25, Math.min(2.5, Math.floor((vp.clientWidth / (9 * FIELD_TILE)) * 4) / 4));
 }
 function fieldRender() {
   const a = fieldArea(), vp = $("field-viewport"), map = $("field-map"), p = $("field-player");
