@@ -613,3 +613,132 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 }
 @keyframes taunt-ready-pulse{0%,100%{box-shadow:0 0 0 2px #d9b85f22,inset 0 0 12px #d9b85f10}50%{box-shadow:0 0 0 3px #d9b85f66,inset 0 0 22px #d9b85f25}}
 @media(prefers-reduced-motion:reduce){.battle-member:has(.status-taunt){animation:none}}
+
+
+/* GPT battle arena pass: give the monster stage more scale, depth and floor identity. */
+.battle-arena{
+  min-height:clamp(220px,32vh,286px);
+  padding:28px 16px 16px;
+  border:2px solid #c1a66f;
+  border-radius:3px;
+  background:
+    radial-gradient(ellipse at 50% 72%,#a0b99a20 0%,transparent 45%),
+    linear-gradient(180deg,#0b1b25 0%,#18343a 48%,#263c35 69%,#111f24 70%,#0a141c 100%),
+    repeating-linear-gradient(0deg,transparent 0 22px,#ffffff08 23px 24px);
+  box-shadow:inset 0 0 0 3px #0a151d,inset 0 -30px 42px #02070b88,0 5px 18px #0009;
+}
+.battle-arena:not([data-environment]){
+  background:
+    radial-gradient(ellipse at 50% 70%,#a0b99a20 0%,transparent 45%),
+    linear-gradient(180deg,#0b1b25 0%,#18343a 48%,#263c35 69%,#111f24 70%,#0a141c 100%),
+    repeating-linear-gradient(0deg,transparent 0 22px,#ffffff08 23px 24px);
+}
+.battle-arena[data-environment="forest"]{
+  background:
+    radial-gradient(ellipse at 50% 62%,#b7d58c35 0%,transparent 48%),
+    radial-gradient(ellipse at 8% 28%,#77ad7655 0%,transparent 35%),
+    radial-gradient(ellipse at 92% 24%,#a7c77a44 0%,transparent 34%),
+    repeating-linear-gradient(90deg,transparent 0 48px,#071b1b55 50px 54px,transparent 57px 104px),
+    linear-gradient(180deg,#102b35 0%,#214b43 45%,#3e6648 68%,#1d342b 69%,#0c1b1a 100%);
+}
+.battle-arena[data-environment="lava"]{
+  background:
+    radial-gradient(ellipse at 50% 90%,#ffb13d99 0%,#e74b2355 26%,transparent 58%),
+    radial-gradient(ellipse at 12% 35%,#ff8b3833 0%,transparent 34%),
+    radial-gradient(ellipse at 88% 32%,#e94b2b33 0%,transparent 34%),
+    repeating-linear-gradient(0deg,transparent 0 26px,#ffbd5a0b 27px 29px),
+    linear-gradient(180deg,#170e20 0%,#48202a 48%,#6a3024 69%,#35141d 70%,#140c17 100%);
+}
+.battle-arena[data-environment="castle"]{
+  background:
+    radial-gradient(ellipse at 50% 62%,#a78cbd22 0%,transparent 48%),
+    repeating-linear-gradient(90deg,transparent 0 62px,#080b1a66 64px 68px,transparent 70px 124px),
+    linear-gradient(180deg,#080b1a 0%,#1a1a32 48%,#383044 69%,#211d2a 70%,#0b0b18 100%);
+}
+.battle-arena[data-environment="chaos"]{
+  background:
+    radial-gradient(ellipse at 50% 70%,#c78bff44 0%,#6b2c8b22 24%,transparent 58%),
+    repeating-radial-gradient(ellipse at 50% 72%,transparent 0 22px,#b17ad51a 23px 24px,transparent 25px 46px),
+    linear-gradient(180deg,#080613 0%,#21102f 48%,#321b43 69%,#180d27 70%,#05030d 100%);
+}
+.stage-stars{
+  top:9px;
+  opacity:.42;
+  color:#e9e4c9;
+  text-shadow:0 0 8px #d8e6d566;
+}
+.enemy-display{
+  width:min(430px,86%);
+  max-height:none;
+  text-align:center;
+  filter:drop-shadow(0 5px 5px #0008);
+}
+.enemy-image{
+  width:220px;
+  height:164px;
+  max-height:clamp(118px,23vh,174px);
+  object-fit:contain;
+  margin:0 auto 5px;
+}
+.enemy-placeholder{
+  height:150px;
+  color:#d0d9c6;
+  text-shadow:0 0 16px #9fc4a6aa,0 3px 5px #000;
+}
+.enemy-display h2{
+  margin:5px 0 4px;
+  color:#fff0c8;
+  font-size:clamp(14px,1.5vw,18px);
+  font-weight:700;
+  letter-spacing:.08em;
+  text-shadow:0 2px 5px #000,0 0 12px #000b;
+}
+.enemy-display .hp-track{
+  max-width:280px;
+  height:9px;
+  margin:6px auto 4px;
+  border:1px solid #d2c18e;
+  background:#080b11dd;
+  box-shadow:0 2px 6px #0009;
+}
+.enemy-display .hp-fill{
+  box-shadow:inset 0 1px 0 #ffffff55;
+}
+.enemy-display #enemy-hp-text{
+  color:#e0dfd3;
+  text-shadow:0 1px 3px #000;
+}
+.battle-arena:has(.enemy-break-track:not([hidden])) .enemy-display{
+  width:min(500px,92%);
+}
+.battle-arena:has(.enemy-break-track:not([hidden])) .enemy-image{
+  width:260px;
+  height:184px;
+  max-height:clamp(132px,25vh,194px);
+}
+@media(max-width:760px){
+  .battle-arena{
+    min-height:clamp(196px,29vh,238px);
+    padding:24px 10px 12px;
+  }
+  .enemy-display{width:min(390px,92%)}
+  .enemy-image{width:190px;height:140px;max-height:clamp(112px,20vh,148px)}
+  .enemy-placeholder{height:122px}
+  .battle-arena:has(.enemy-break-track:not([hidden])) .enemy-image{
+    width:218px;height:154px;max-height:clamp(120px,22vh,162px);
+  }
+}
+@media(max-width:420px){
+  .battle-arena{
+    min-height:188px;
+    padding:22px 7px 10px;
+  }
+  .enemy-display{width:96%}
+  .enemy-image{width:164px;height:122px;max-height:116px}
+  .enemy-placeholder{height:108px}
+  .enemy-display h2{font-size:13px}
+  .enemy-display .hp-track{max-width:220px}
+  .battle-arena:has(.enemy-break-track:not([hidden])) .enemy-image{
+    width:184px;height:132px;max-height:124px;
+  }
+}
