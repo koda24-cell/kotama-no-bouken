@@ -16,7 +16,9 @@ const shopItems=[
   {id:"charm-magic",name:"魔力の護符",category:"accessory",icon:"CHARM",description:"SP攻撃力を高める護符。",price:70,effect:"SP攻撃力 +6",spAttackBonus:6,classes:["kotama","knight","healer","warrior","mage","samurai"],unlock:2},
   {id:"potion",name:"回復薬",category:"healing",icon:"POTION",description:"味方1人のHPを30回復。",price:10,effect:"HP +30",kind:"heal",amount:30,unlock:1},
   {id:"high-potion",name:"上級回復薬",category:"healing",icon:"POTION",description:"味方1人のHPを70回復。",price:25,effect:"HP +70",kind:"heal",amount:70,unlock:3},
-  {id:"ether",name:"SPエーテル",category:"healing",icon:"ETHER",description:"味方1人のSPを30回復。",price:15,effect:"SP +30",kind:"sp",amount:30,unlock:2}
+  {id:"ether",name:"SPエーテル",category:"healing",icon:"ETHER",description:"味方1人のSPを30回復。",price:15,effect:"SP +30",kind:"sp",amount:30,unlock:2},
+  {id:"swift-shoes",name:"疾風の靴",category:"accessory",icon:"BOOTS",description:"AGIを高め、行動順で先手を取りやすくする靴。",price:180,effect:"AGI +18",speedBonus:18,classes:["kotama","knight","healer","warrior","mage","samurai"],unlock:2},
+  {id:"wind-boots",name:"風読みのブーツ",category:"accessory",icon:"BOOTS",description:"風の流れを読む軽量ブーツ。",price:420,effect:"AGI +32／回避補助",speedBonus:32,evasionRate:.04,classes:["kotama","knight","healer","warrior","mage","samurai"],unlock:4}
 ];
 // 第2段階：素材・製作・強化・育成データ
 const materialNames={chaos_crystal:"混沌の結晶",slime_jelly:"スライムゼリー",monster_fang:"魔物の牙",goblin_cloth:"ゴブリンの布",monster_hide:"魔物の皮",dragon_scale:"炎竜の鱗",dragon_claw:"炎竜の爪",maou_crystal:"魔王の結晶",maou_horn:"魔王の角"};
