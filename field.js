@@ -16,11 +16,9 @@
    ============================================================ */
 
 const FIELD_TILE = 32;
-const FIELD_SPEED = 118;
 const FIELD_HIT = { halfW: 9, top: 7, bottom: 5 };
 const FIELD_VISION = 3.6;              // 視界の半径（マス）
 const FIELD_FOE_SIGHT = 4.5;           // FOEがプレイヤーに気づく距離（マス）
-const FIELD_FOE_SPEED = { patrol: 52, chase: 84 };   // プレイヤーが動いている間だけ、この速さで動く
 const FIELD_GATHER_USES = 2;
 const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);
 const FIELD_SAFE = new Set(["_", "P", "E", "B", "<", ">"]);
@@ -370,7 +368,7 @@ function fieldUpdate() {
       fieldState.step = fieldFrame % 2 ? 1 : 3;
       fieldMoveAnimUntil = performance.now() + 140;
       // FOEもプレイヤーの1歩に対して最大1マスだけ行動する。
-      fieldUpdateFoes(1);
+      fieldUpdateFoes();
       fieldAfterMove(a, moved);
     } else {
       fieldState.step = 0;
@@ -455,7 +453,7 @@ function fieldBfsStep(a, from, to) {
   let cur = goal; while (prev[cur] !== start) cur = prev[cur];
   return { tx: cur % W, ty: Math.floor(cur / W) };
 }
-function fieldUpdateFoes(dt) {
+function fieldUpdateFoes() {
   const a = fieldArea(), pt = fieldPlayerTile(), now = performance.now();
   if (now < fieldState.foeGraceUntil) return;
   for (const f of fieldState.foes) {
