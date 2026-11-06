@@ -749,7 +749,7 @@ function awardMaterials(enemy){
   const table={"スライム":[["slime_jelly",.5]],"オオカミ":[["monster_fang",.4],["monster_hide",.2]],"ゴブリン":[["goblin_cloth",.4]],"ドラゴン":[["dragon_scale",1],["dragon_claw",.5]],"魔王":[["maou_crystal",1],["maou_horn",.5]]}[name]||[];
   const attempts=name==="ゴブリン"&&Array.isArray(enemy.members)?enemy.members.length:1;
   for(let n=0;n<attempts;n++)for(const [id,chance] of table){if(Math.random()<chance){materials[id]=(materials[id]||0)+1;const existing=drops.find(x=>x.id===id);if(existing)existing.count++;else drops.push({id,name:materialNames[id],count:1});}}
-  // FOE専用素材は対応するFOEの初回撃破ごとに1個確定。通常敵の共通素材ドロップも併せて行う。
+  // FOE専用素材は対応するFOEを撃破するたびに1個確定。通常敵の共通素材ドロップも併せて行う。
   const foeMaterial=({"foe-bear":"foe_bear_pelt","foe-goblin-captain":"foe_captain_medal","foe-mist-stag":"foe_mist_horn","foe-salamander":"foe_salamander_core","foe-black-general":"foe_black_crest"})[battleState.fieldEnemyId];
   if(battleState.fieldFoeKey&&foeMaterial){materials[foeMaterial]=(materials[foeMaterial]||0)+1;const existing=drops.find(x=>x.id===foeMaterial);if(existing)existing.count++;else drops.push({id:foeMaterial,name:materialNames[foeMaterial],count:1});}
   if(drops.length)pushLog(`素材を入手：${drops.map(x=>`${x.name}×${x.count}`).join("、")}`);
