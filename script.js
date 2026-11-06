@@ -2,8 +2,7 @@
 
 // Fantasy RPG - Battle風の固定フレーム / ターン制コマンド入力
 const PARTY_LIMIT = 4;
-// 追加ゲームシステム・第1段階の数値設定。調整時はここを変更する。
-// 戦闘バランス設定は data/battle-rules.js に分離。
+// ゲーム進行・画面・セーブなどの処理を管理。固定データは data/ 以下に分離。
 // キャラクター・ユニオンスキルの定義は data/characters.js に分離。
 if(typeof extInstallCharacters==="function")extInstallCharacters(characters);
 const state={screen:"home",gold:50,maxUnlockedStage:1,firstStageStarted:false,party:["kotama","knight","mage","healer"]};
