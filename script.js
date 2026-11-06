@@ -661,10 +661,13 @@ function getTrainingEffectPreview(charId,nodeId,level,nextLevel){
   if(charId==="mage"&&node.id==="mage-flare")return [{label:"SP攻撃の基礎倍率",before:pct(.90+.12*level),after:pct(.90+.12*nextLevel)}];
   if(charId==="mage"&&node.id==="mage-magic-bomb")return [{label:"SP攻撃の基礎倍率",before:pct(.90+.10*level),after:pct(.90+.10*nextLevel)}];
   if(charId==="mage"&&node.id==="mage-compression")return [{label:"次の魔法攻撃の回数",before:level?"2倍（重ねがけ可能）":"未習得",after:"2倍（重ねがけ可能）／このノードのLvによる倍率差なし"}];
+  if(isNew&&node===derived)return [{label:"派生スキル",before:"未習得",after:skillTreeDerivedSkills[charId].name+"を習得"}];
   if(!isNew){
     const effects=[node.effect,...(node.effects||[])].filter((v,i,a)=>v&&a.indexOf(v)===i);
-    if(effects.length)return effects.map(effect=>({label:effect==="normal"?"通常攻撃補正":effect==="sp"?"SP攻撃補正":effect==="break"?"ブレイク補正":effect==="element"?"属性攻撃補正":effect==="guard"?"防御補正":effect==="taunt"?"挑発補正":effect==="heal"?"回復補正":effect==="revive"?"蘇生補正":effect==="union"?"ユニオン補正":effect+"補正",before:pct(level*.03),after:pct(nextLevel*.03)}));
-    if(node===derived)return [{label:"派生スキル",before:"未習得",after:"習得"}];
+    const rows=effects.map(effect=>({label:effect==="normal"?"通常攻撃補正":effect==="sp"?"SP攻撃補正":effect==="break"?"ブレイク補正":effect==="element"?"属性攻撃補正":effect==="guard"?"防御補正":effect==="taunt"?"挑発補正":effect==="heal"?"回復補正":effect==="revive"?"蘇生補正":effect==="union"?"ユニオン補正":effect+"補正",before:pct(level*.03),after:pct(nextLevel*.03)}));
+    const unlock=node===a?skillTreeExtraSkills[charId]?.skill:node===b?skillTreeBranchBSkills[charId]:node===derived?skillTreeDerivedSkills[charId]:null;
+    if(level===0&&unlock)rows.push({label:"習得スキル",before:"未習得",after:unlock.name+"を習得"});
+    if(rows.length)return rows;
   }
   return [{label:"効果値",before:level?"現在の効果":"未習得",after:"この強化段階では効果値は変化しません"}];
 }
