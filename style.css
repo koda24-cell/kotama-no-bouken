@@ -1294,3 +1294,174 @@ body[data-screen="battle"] .gold-display{display:none!important;}
   .hit-effect::before,.hit-effect::after{animation:none!important;opacity:0!important}
   .combat-number.damage,.combat-number.heal,.combat-number.sp,.combat-number.miss{animation:none!important}
 }
+
+
+/* ============================================================
+   Enemy defeat v2 — staggered shatter, energy collapse and boss burst.
+   Complements the existing defeat classes without changing combat timing.
+   ============================================================ */
+@keyframes enemy-shard-collapse{
+  0%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1);filter:brightness(1)}
+  18%{opacity:1;transform:translate3d(0,-5px,0) rotate(-2deg) scale(1.07);filter:brightness(2.2)}
+  42%{opacity:.95;transform:translate3d(-4px,-8px,0) rotate(2deg) scale(.94);filter:brightness(1.7) saturate(1.4)}
+  68%{opacity:.52;transform:translate3d(9px,-2px,0) rotate(8deg) scale(.68);filter:brightness(2) blur(.4px)}
+  100%{opacity:0;transform:translate3d(22px,16px,0) rotate(18deg) scale(.12);filter:brightness(2.4) blur(3px)}
+}
+@keyframes enemy-particle-burst{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.12) rotate(0)}
+  22%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.7) rotate(24deg)}
+}
+@keyframes enemy-aura-collapse{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}
+  22%{opacity:.9;transform:translate(-50%,-50%) scale(1)}
+  58%{opacity:.65;transform:translate(-50%,-50%) scale(1.35)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.8)}
+}
+@keyframes boss-core-collapse{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+  20%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  46%{opacity:.9;transform:translate(-50%,-50%) scale(.72)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(5.5)}
+}
+@keyframes boss-arena-flash{
+  0%,100%{box-shadow:inset 0 0 0 transparent}
+  18%{box-shadow:inset 0 0 55px 12px #f5d58b66}
+  42%{box-shadow:inset 0 0 38px 8px #b66de088}
+  70%{box-shadow:inset 0 0 70px 16px #fff2cf55}
+}
+@keyframes defeat-name-fade{
+  0%{opacity:1;filter:blur(0);letter-spacing:normal}
+  35%{opacity:1;filter:blur(0);letter-spacing:.12em}
+  100%{opacity:0;filter:blur(5px);letter-spacing:.35em;transform:translateY(-7px)}
+}
+/* Regular enemies: a bright hit, staggered breakup and outward fragments. */
+.battle-arena.enemy-pixel-defeating .enemy-image,
+.battle-arena.enemy-pixel-defeating .enemy-placeholder{
+  animation:enemy-shard-collapse .62s cubic-bezier(.18,.72,.24,1) both!important;
+  transform-origin:center bottom;
+}
+.battle-arena.enemy-pixel-defeating .enemy-display h2,
+.battle-arena.enemy-pixel-defeating #enemy-hp-text,
+.battle-arena.enemy-pixel-defeating .hp-track{
+  animation:defeat-name-fade .48s ease-in both;
+}
+.battle-arena.enemy-pixel-defeating .enemy-display::before{
+  content:"";
+  position:absolute;
+  z-index:5;
+  left:50%;
+  top:43%;
+  width:clamp(70px,18vw,170px);
+  aspect-ratio:1;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle,#fff9dc 0%,#ffd47766 18%,#d9a2ff44 38%,transparent 70%);
+  box-shadow:0 0 25px 8px #f6d18a66;
+  animation:enemy-aura-collapse .62s ease-out both;
+}
+.battle-arena.enemy-pixel-defeating .enemy-display::after{
+  content:"";
+  position:absolute;
+  z-index:6;
+  left:50%;
+  top:43%;
+  width:clamp(60px,16vw,145px);
+  aspect-ratio:1;
+  border-radius:50%;
+  pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,#fff4c9 0deg 2deg,transparent 2deg 24deg);
+  mask-image:radial-gradient(circle,transparent 0 18%,#000 24% 55%,transparent 72%);
+  animation:enemy-particle-burst .58s ease-out both;
+}
+.battle-arena.enemy-pixel-defeating .enemy-group-unit{
+  animation:enemy-shard-collapse .62s cubic-bezier(.18,.72,.24,1) both!important;
+  transform-origin:center bottom;
+}
+.battle-arena.enemy-pixel-defeating .enemy-group-unit:nth-child(2){animation-delay:.045s!important}
+.battle-arena.enemy-pixel-defeating .enemy-group-unit:nth-child(3){animation-delay:.09s!important}
+.battle-arena.enemy-pixel-defeating .enemy-group-unit:nth-child(4){animation-delay:.135s!important}
+.battle-arena.enemy-pixel-defeating .enemy-group-unit:nth-child(5){animation-delay:.18s!important}
+.battle-arena.enemy-pixel-defeating .enemy-group-unit img{
+  filter:brightness(1.5) drop-shadow(0 0 9px #ffe2a8);
+}
+.battle-arena.enemy-pixel-defeating .enemy-group-unit::before,
+.battle-arena.enemy-pixel-defeating .enemy-group-unit::after{
+  content:"";
+  position:absolute;
+  z-index:3;
+  left:50%;
+  top:42%;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle,#fff 0%,#ffe5a6 18%,#d5b4ff66 48%,transparent 72%);
+  animation:enemy-particle-burst .48s ease-out both;
+}
+.battle-arena.enemy-pixel-defeating .enemy-group-unit::after{
+  animation-delay:.08s;
+  transform:translate(-50%,-50%) scale(.7);
+}
+/* Boss defeat: retain the existing 900ms choreography, add layered collapse rings. */
+.battle-arena.enemy-defeating{
+  animation:boss-arena-flash .9s ease-out both;
+}
+.battle-arena.enemy-defeating::before{
+  content:"";
+  position:absolute;
+  z-index:4;
+  left:50%;
+  top:46%;
+  width:clamp(110px,28vw,250px);
+  aspect-ratio:1;
+  border:2px solid #ffe8b0;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle, #fff5d888 0%,#c18ce044 28%,transparent 68%);
+  box-shadow:0 0 20px 8px #e7c0ff77,inset 0 0 24px #fff0c966;
+  animation:enemy-aura-collapse .9s ease-out both;
+}
+.battle-arena.enemy-defeating .enemy-display::before{
+  content:"";
+  position:absolute;
+  z-index:5;
+  left:50%;
+  top:44%;
+  width:clamp(90px,22vw,210px);
+  aspect-ratio:1;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle,#fff 0%,#ffe6b8 12%,#d58cff66 35%,transparent 68%);
+  box-shadow:0 0 35px 12px #d9a0ff88;
+  animation:boss-core-collapse .9s cubic-bezier(.2,.7,.2,1) both;
+}
+.battle-arena.enemy-defeating .enemy-display h2{
+  animation:defeat-name-fade .68s ease-in both;
+}
+.battle-arena.enemy-defeated #battle-enemy{
+  visibility:hidden;
+  opacity:0;
+}
+@media(max-width:700px){
+  .battle-arena.enemy-pixel-defeating .enemy-display::before,
+  .battle-arena.enemy-pixel-defeating .enemy-display::after{top:42%}
+  .battle-arena.enemy-defeating::before{width:clamp(90px,34vw,170px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .battle-arena.enemy-pixel-defeating .enemy-display::before,
+  .battle-arena.enemy-pixel-defeating .enemy-display::after,
+  .battle-arena.enemy-pixel-defeating .enemy-group-unit::before,
+  .battle-arena.enemy-pixel-defeating .enemy-group-unit::after,
+  .battle-arena.enemy-defeating::before,
+  .battle-arena.enemy-defeating .enemy-display::before{
+    animation:none!important;
+    opacity:0!important;
+  }
+  .battle-arena.enemy-pixel-defeating .enemy-image,
+  .battle-arena.enemy-pixel-defeating .enemy-placeholder,
+  .battle-arena.enemy-pixel-defeating .enemy-group-unit{
+    animation:none!important;
+    opacity:0!important;
+  }
+}
