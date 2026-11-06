@@ -1,0 +1,484 @@
+/* ============================================================
+   css/03-responsive-layout.css — 全画面レイアウト統一・レスポンシブ対応（画面幅に応じた配置の調整）
+   ※ 読み込み順が見た目に影響します（後ろのルールが前を上書き）。順序は index.html を参照。
+   ============================================================ */
+/* ================================================================
+   全画面レイアウト統一・レスポンシブ対応
+   - 共通のゲーム外枠は最大1200px
+   - 各画面と戦闘パネルは外枠の幅を共有
+   - CSS zoom / 拡大用の横幅補正 / 負のマージンを使用しない
+   ================================================================ */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+}
+
+body {
+  padding: clamp(8px, 1.2vw, 16px);
+}
+
+.game {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 0;
+  margin-inline: auto;
+}
+
+.topbar,
+main,
+.screen,
+.footer-controls {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.topbar {
+  flex-wrap: wrap;
+}
+
+.main-nav {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.main-nav button,
+.footer-controls button {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.footer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.footer-controls #system-message {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.screen {
+  box-sizing: border-box;
+}
+
+/* Home: do not add four fixed 25% widths plus gaps/padding. */
+.home-party {
+  width: 100%;
+  min-width: 0;
+}
+
+.home-character {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+}
+
+/* Common content blocks must shrink inside their screen. */
+.character-grid,
+.shop-grid,
+.compendium-grid,
+.achievement-grid,
+.progression-grid,
+.settings-panel,
+.progression-panel,
+.shop-buyer,
+.category-tabs,
+.page-actions {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.settings-panel {
+  width: min(100%, 760px);
+  margin-inline: auto;
+}
+
+.category-tabs {
+  flex-wrap: wrap;
+}
+
+.page-actions {
+  flex-wrap: wrap;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+/* Battle screen: all major regions share the same parent width. */
+.battle-screen {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0;
+  margin-inline: 0 !important;
+  padding: 6px 0;
+}
+
+.battle-heading,
+.battle-arena,
+.event-window,
+.battle-party,
+.battle-bottom,
+.battle-support,
+.battle-result {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.battle-arena {
+  margin-inline: 0;
+}
+
+.battle-party {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.battle-member,
+.member-head,
+.stat-line {
+  min-width: 0;
+}
+
+.battle-bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(5px, 1vw, 12px);
+  align-items: stretch;
+}
+
+.command-window,
+.log-window {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}
+
+.battle-commands {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.battle-commands .command-option {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex: 0 0 auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.battle-commands .command-option small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.battle-log,
+.event-log {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-wrap: anywhere;
+}
+
+.command-hint,
+.window-title,
+.event-log p,
+.battle-result {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.enemy-display,
+.enemy-display .enemy-image,
+.enemy-placeholder {
+  max-width: 100%;
+}
+
+/* Mid-size and small screens: keep command/log side by side, but scroll
+   their own contents instead of shrinking the whole battle canvas. */
+@media (max-width: 700px) {
+  body {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .game {
+    min-height: calc(100vh - 16px);
+  }
+
+  .topbar {
+    align-items: center;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .logo {
+    flex: 1 1 100%;
+    width: 100%;
+    text-align: center;
+  }
+
+  .main-nav {
+    flex: 1 1 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .main-nav button {
+    min-width: 0;
+    padding: 7px 4px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .gold-display {
+    margin-left: auto;
+  }
+
+  .home-party {
+    min-height: 190px;
+    padding: 8px;
+    gap: 2px;
+  }
+
+  .home-character {
+    padding: 3px;
+  }
+
+  .home-character .character-art {
+    height: clamp(85px, 25vw, 120px);
+  }
+
+  .home-character h3 {
+    font-size: 11px;
+    overflow-wrap: anywhere;
+  }
+
+  .battle-screen {
+    padding: 4px 0;
+  }
+
+  .battle-heading {
+    gap: 6px;
+  }
+
+  .battle-heading #turn-counter {
+    margin-left: auto;
+  }
+
+  .battle-arena {
+    min-height: 170px;
+    padding-inline: 8px;
+  }
+
+  .battle-party {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .battle-member {
+    padding: 4px 3px;
+    font-size: 8px;
+  }
+
+  .battle-portrait {
+    height: 28px;
+  }
+
+  .member-head {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .member-head strong {
+    font-size: 10px;
+  }
+
+  .stat-line {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 4px;
+    font-size: 8px;
+  }
+
+  .battle-bottom {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 5px;
+  }
+
+  .command-window,
+  .log-window {
+    display: flex;
+    flex-direction: column;
+    height: 230px;
+    min-height: 0;
+    max-height: 230px;
+    padding: 6px;
+    overflow: hidden;
+  }
+
+  .window-title {
+    flex: 0 0 auto;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .battle-commands {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 166px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    gap: 2px;
+  }
+
+  .battle-commands .command-option {
+    min-height: 28px;
+    padding: 4px 3px;
+    font-size: clamp(9px, 2.6vw, 11px);
+    text-align: left;
+  }
+
+  .battle-commands .command-option small {
+    font-size: 8px;
+  }
+
+  .battle-log {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-size: 10px;
+  }
+
+  .command-hint {
+    flex: 0 0 auto;
+    min-height: 30px;
+    max-height: 38px;
+    overflow-y: auto;
+    font-size: 9px;
+  }
+
+  .event-window {
+    min-height: 58px;
+    padding: 6px 8px;
+  }
+
+  .event-log {
+    max-height: 58px;
+    font-size: 10px;
+  }
+
+  .battle-support {
+    font-size: 9px;
+    overflow-wrap: anywhere;
+  }
+
+  .shop-buyer {
+    flex-wrap: wrap;
+  }
+
+  .shop-buyer-head {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .story-event {
+    padding: 10px;
+  }
+
+  .story-event-panel {
+    width: 100%;
+    max-width: 680px;
+    padding: clamp(14px, 4vw, 28px);
+  }
+
+  .story-event-footer {
+    flex-wrap: wrap;
+  }
+
+  .purchase-popup {
+    right: 8px;
+    bottom: 8px;
+    max-width: calc(100vw - 16px);
+  }
+}
+
+@media (max-width: 380px) {
+  .battle-party {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .battle-member {
+    padding: 5px;
+    font-size: 9px;
+  }
+
+  .member-head {
+    justify-content: space-between;
+  }
+
+  .stat-line {
+    justify-content: space-between;
+    font-size: 9px;
+  }
+
+  .main-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .story-event-footer {
+    align-items: stretch;
+  }
+
+  .story-event-footer > div {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .story-event-footer button {
+    min-width: 0;
+  }
+}
+
+@media (min-width: 701px) {
+  .battle-bottom {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .command-window,
+  .log-window {
+    min-height: 190px;
+  }
+
+  .battle-commands {
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  .battle-log {
+    max-height: 320px;
+    overflow-y: auto;
+  }
+}
+
+
+
