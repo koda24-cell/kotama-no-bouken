@@ -1263,7 +1263,7 @@ async function applyPartyDamageAnimated(character,damage,options={}){
   }
   if(!options.bypassMitigation){
     if(battleState.guarding[character.id])requested=Math.floor(requested*(1-treeBonus(character.id,"guard")));
-    if(battleState.tauntTarget===character.id)requested=Math.floor(requested*(1-treeBonus(character.id,"taunt")));
+    if(battleState.tauntTarget===character.id){const tauntReduction=Math.min(.75,.25+treeBonus(character.id,"taunt"));requested=Math.floor(requested*(1-tauntReduction));}
     if(options.normalAttack&&character.id==="knight")requested=Math.floor(requested*BATTLE_RULES.passives.knight.normalDamageTaken);
     if(options.element)requested=Math.floor(requested*(1-partyElementalDamageReduction(character,options.element)));
     if(battleState.magicGuardActive&&!options.statusDamage&&(options.magic||options.element||options.spAttack))requested=Math.floor(requested*(1-(battleState._magicGuardRate||.5)));
@@ -1708,7 +1708,7 @@ const stats=effectiveStats(actor);if(actor.id==="mage"&&mageCompressionStacks.ma
      if(actor.id==="mage"&&compressionHits>1)mageCompressionStacks.mage=0;chargeGauge(actor);if(!magical&&total>0)combatNumber(displayEnemyNode(),`-${total}`,"damage");sound("damage",true);return;
    }
    if(actor.id==="mage"&&compressionHits>1)mageCompressionStacks.mage=0;
-   if(skill.type==="taunt"){battleState.tauntTarget=actor.id;chargeGauge(actor);pushLog(`${actor.name}は挑発！ 敵の攻撃を引きつける。`);return;}
+   if(skill.type==="taunt"){battleState.tauntTarget=actor.id;chargeGauge(actor);pushLog(`${actor.name}は挑発！ 単体攻撃を引きつけ、全体攻撃も自分へのダメージを軽減する。`);return;}
   if(skill.type==="heal"){const target=getCharacter(a.target);if(!target||target.hp<=0){pushLog("回復対象がいません。");return;}const before=target.hp;const healingPower=effectiveSpAttackPower(actor)*(actor.id==="healer"?BATTLE_RULES.classBonuses.healer.healing*BATTLE_RULES.passives.healer.healing:1)*(1+Math.min(.5,uniqueEquippedItems(actor).reduce((n,i)=>n+(i.healingRate||0),0))+treeBonus(actor.id,"heal"));target.hp=Math.min(effectiveStats(target).maxHp,target.hp+Math.floor(healingPower*extHealMul(target)));chargeGauge(actor);pushLog(`${actor.name}のヒール！ ${target.name}のHPが${target.hp-before}回復。`);combatNumber(target.id,`+${target.hp-before}`,"heal");sound("heal");return;}
   if(skill.type==="revive"){const target=getCharacter(a.target);if(!target||target.hp>0){pushLog("蘇生対象がいません。");return;}target.hp=Math.min(50+Math.floor(50*treeBonus(actor.id,"revive")),effectiveStats(target).maxHp);chargeGauge(actor);chargeGauge(target);pushLog(`${actor.name}の死者蘇生！ ${target.name}がHP${target.hp}で復活。`);sound("heal");return;}
   if(skill.type==="multiSlash"){
@@ -1889,7 +1889,7 @@ async function enemyTurn(){
       const totals={};let attacks=0;
       for(let i=0;i<living.length*3;i++){
         const targets=livingParty();if(!targets.length)break;
-        const target=targets[Math.floor(Math.random()*targets.length)];
+        const target=targets.find(c=>c.id===battleState.tauntTarget)||targets[Math.floor(Math.random()*targets.length)];
         const raw=calcPhysical(e.attack,effectiveStats(target).defense,false);
         const d=Math.floor(raw*(1-(battleState.guarding[target.id]||0)));
         const dealt=await applyPartyDamageAnimated(target,d,{normalAttack:true});totals[target.name]=(totals[target.name]||0)+dealt;attacks++;
@@ -1962,7 +1962,7 @@ async function enemyTurn(){
   const finalTarget=battleState.fullGuardActive&&target.id!=="knight"&&getCharacter("knight")?.hp>0?getCharacter("knight"):target;animateEnemyAttack();pushEvent(`${e.name}は「${sp?"ダーククロー":(e.actionName||"攻撃")}」で攻撃した！ ${finalTarget.name}に${damage}ダメージ。`);if(e.name==="スライム")playSe("assets/se/tekikoudou/スライムの攻撃");else if(e.name==="魔王"&&!sp)playSe("assets/se/tekikoudou/16bitアタック");else sound("damage",true);await applyPartyDamageAnimated(target,damage,{normalAttack:!sp,spAttack:sp,magic:sp});if(e.name==="スライム"&&target.hp>0){addStatus(target,"defenseDown",{turns:5,power:5});pushEvent(`${target.name}の防御力が下がった！`);}if(e.name==="オオカミ")battleState.wolfLastTargetId=target.hp>0?target.id:null;
   if(e.name==="オオカミ"&&(battleState.wolfClones||[]).some(c=>c.hp>0)){
     for(const clone of (battleState.wolfClones||[]).filter(c=>c.hp>0)){
-      const cloneTarget=livingParty().find(c=>c.id===battleState.wolfLastTargetId)||livingParty().filter(c=>rearIds.has(c.id))[0]||livingParty()[0];
+      const cloneTarget=livingParty().find(c=>c.id===battleState.tauntTarget)||livingParty().find(c=>c.id===battleState.wolfLastTargetId)||livingParty().filter(c=>rearIds.has(c.id))[0]||livingParty()[0];
       if(!cloneTarget)break;
       let cd=calcPhysical(e.attack,effectiveStats(cloneTarget).defense,false);
       if(battleState.wolfLastTargetId===cloneTarget.id||battleState.wolfCloneLastTargetId===cloneTarget.id)cd*=2;
@@ -2085,7 +2085,7 @@ function describeCommand(button){const hint=$("command-hint");if(!hint||!button)
  else if(action==="skill")text="SPを消費して、キャラクター固有の技を使用します。";
  else if(action==="item")text="所持している回復アイテムを使用します。";
  else if(action==="back")text="ひとつ前の選択へ戻ります。";
- else if(skillId){const actor=currentActor(),sk=getCharacterSkills(actor).find(x=>x.id===skillId);if(sk)text=({taunt:"敵の攻撃を引きつけ、仲間を守ります。",heal:"SP攻撃力をもとに、味方1人のHPを回復します。",revive:"倒れた味方1人をHP少量で蘇生します。",spAttack:"魔力を弾丸に変え、敵単体へダメージを与えます。",charge:"HPとSPを代償に、強烈な一撃を放ちます。",fire:`${sk.element||"炎"}属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。${sk.element||"炎"}に弱い敵には威力が上がり、${sk.element||"炎"}に耐性を持つ敵には威力が下がります。`,ice:"氷属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。氷に弱い敵に有効です。",thunder:"雷属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。雷に弱い敵に有効です。"})[sk.type]||describeSkill(sk);}
+ else if(skillId){const actor=currentActor(),sk=getCharacterSkills(actor).find(x=>x.id===skillId);if(sk)text=({taunt:"次の敵ターン、単体攻撃の対象を騎士に集中させます。全体攻撃も騎士が受けるダメージを軽減します。",heal:"SP攻撃力をもとに、味方1人のHPを回復します。",revive:"倒れた味方1人をHP少量で蘇生します。",spAttack:"魔力を弾丸に変え、敵単体へダメージを与えます。",charge:"HPとSPを代償に、強烈な一撃を放ちます。",fire:`${sk.element||"炎"}属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。${sk.element||"炎"}に弱い敵には威力が上がり、${sk.element||"炎"}に耐性を持つ敵には威力が下がります。`,ice:"氷属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。氷に弱い敵に有効です。",thunder:"雷属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。雷に弱い敵に有効です。"})[sk.type]||describeSkill(sk);}
  else if(itemId){const it=itemById(itemId);if(it)text=it.description;}
  else if(unionType){const actor=currentActor(),u=actor&&unionSkills[actor.id];if(u)text=({stun:"至高の魔弾。敵を貫き、次の行動を封じる必殺の一撃。",aegis:"イージスの大盾。仲間を全快させ、敵の次の攻撃を防ぎます。","full-heal":"フルヒーリング。仲間全員を癒やし、SPも回復します。","cross-break":"クロスブレイク。仲間と連携して連続攻撃を放ちます。",meteor:"メテオ。天より隕石を呼び、666の固定ダメージを与えます。"})[u.type]||u.name;}
  else if(target){const c=getCharacter(target);if(c)text=`${c.name}を対象に選びます。HP ${Math.max(0,c.hp)}/${effectiveStats(c).maxHp}、SP ${c.sp}/${c.maxSp}。`;}
