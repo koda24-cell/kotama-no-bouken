@@ -197,3 +197,69 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
  .field-foe .field-object-sprite{font-size:20px}
  .field-foe .field-object-label{font-size:7px}
 }
+
+
+/* ============================================================
+   Labyrinth atmosphere — distinct environmental identity per stratum.
+   Purely decorative: no map, visibility, collision, encounter or save logic.
+   ============================================================ */
+.field-viewport::before{
+  content:"";
+  position:absolute;
+  z-index:20;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 0%,#d7f4a51c 0%,transparent 58%),
+    radial-gradient(ellipse at 50% 50%,transparent 48%,#07140b35 100%);
+  box-shadow:inset 0 0 34px 8px #07140b55;
+}
+.field-screen[data-theme="goblin"] .field-viewport::before{
+  background:
+    radial-gradient(ellipse at 18% 12%,#b4d65a20 0%,transparent 42%),
+    radial-gradient(ellipse at 78% 75%,#18270c45 0%,transparent 58%),
+    linear-gradient(135deg,#26370b18,#111a0c38);
+  box-shadow:inset 0 0 42px 10px #101b0c88;
+}
+.field-screen[data-theme="mist"] .field-viewport::before{
+  background:
+    radial-gradient(ellipse at 50% 45%,#d4e8df0a 0%,transparent 54%),
+    linear-gradient(180deg,#c7e5df12 0%,transparent 32%,#a6c8c51c 100%),
+    radial-gradient(ellipse at 50% 50%,transparent 34%,#172d3544 100%);
+  box-shadow:inset 0 0 48px 12px #b6d4d044;
+}
+.field-screen[data-theme="mist"] .field-viewport::after{
+  content:"";
+  position:absolute;
+  z-index:31;
+  inset:-8%;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 18% 58%,#d6e8df26 0%,transparent 38%),
+    radial-gradient(ellipse at 78% 35%,#c5ddd925 0%,transparent 42%),
+    linear-gradient(90deg,transparent 0%,#c8dedb0c 48%,transparent 100%);
+  background-size:130% 100%,120% 100%,100% 100%;
+  animation:field-mist-drift 24s ease-in-out infinite alternate;
+}
+.field-screen[data-theme="lava"] .field-viewport::before{
+  background:
+    radial-gradient(ellipse at 50% 100%,#ff5b1d38 0%,transparent 56%),
+    radial-gradient(ellipse at 14% 62%,#f18a3420 0%,transparent 36%),
+    radial-gradient(ellipse at 86% 20%,#a92a1920 0%,transparent 42%),
+    linear-gradient(180deg,#180b0a12,#f04a1b12);
+  box-shadow:inset 0 0 48px 12px #1b0809bb, inset 0 -14px 34px #f04a1b22;
+}
+.field-screen[data-theme="castle"] .field-viewport::before{
+  background:
+    radial-gradient(ellipse at 50% 0%,#a9b7e01b 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 100%,#4c4d8020 0%,transparent 48%),
+    linear-gradient(135deg,#080d251c,#17132c28);
+  box-shadow:inset 0 0 48px 12px #080a1bbb;
+}
+@keyframes field-mist-drift{
+  0%{transform:translate3d(-1.5%,0,0);opacity:.58}
+  100%{transform:translate3d(1.5%,0,0);opacity:.9}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-screen[data-theme="mist"] .field-viewport::after{animation:none!important}
+}
