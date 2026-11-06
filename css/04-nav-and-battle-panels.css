@@ -221,3 +221,36 @@
   }
 }
 
+
+/* [P5-0] 味方カードの行動欄（決定済み行動・状態）。1行に収め、長いときは末尾を省略する。 */
+.battle-member .member-head .member-action-label {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-height: 1.25em;
+  line-height: 1.25;
+}
+.battle-member .member-head .member-action-decided { color: #cfd6ff; }
+.battle-member .member-head .member-action-blocked { color: #c4c8dc; }
+/* 名前と行動欄が折り返す幅では、行動欄を常に独立した1行にして、カード内の位置をそろえる。 */
+@media (max-width: 700px) {
+  .battle-member .member-head .member-action-label { flex-basis: 100%; text-align: center; }
+}
+
+/* [P5-4] 使用できないコマンド（タップで理由を表示）。見た目は従来の disabled に合わせる。 */
+.battle-commands .command-option[aria-disabled="true"],
+.battle-commands .command-option[aria-disabled="true"]:hover,
+.battle-commands .command-option[aria-disabled="true"].keyboard-focus,
+.battle-commands .command-option[aria-disabled="true"].mouse-focus {
+  color: #777db7;
+  opacity: .55;
+  cursor: not-allowed;
+}
+.battle-commands .command-option[aria-disabled="true"]:hover,
+.battle-commands .command-option[aria-disabled="true"].keyboard-focus,
+.battle-commands .command-option[aria-disabled="true"].mouse-focus {
+  opacity: .8;
+}
