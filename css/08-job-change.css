@@ -1,0 +1,14 @@
+/* [JOB] 職業変更（育成画面のセクションと確認ダイアログ）。骨組み段階の最小限のスタイル。 */
+.job-change-section{margin-top:16px;padding:14px;border:1px solid #6f7fc4;border-radius:8px;background:#0d1648cc}
+.job-change-section h3{margin:0 0 6px;color:var(--gold)}
+.job-change-note{margin:4px 0;color:#cbd4f4;font-size:13px}
+.job-change-picker{display:flex;gap:8px;align-items:center;margin:8px 0}
+.job-change-picker select{min-width:0;max-width:100%}
+.job-change-current{margin:6px 0}
+.job-change-list{display:flex;flex-wrap:wrap;gap:8px}
+.job-change-list button{flex:0 1 auto}
+.job-change-table{width:100%;margin:10px 0;border-collapse:collapse;font-size:13px}
+.job-change-table th,.job-change-table td{padding:4px 6px;border-bottom:1px solid #ffffff22;text-align:left}
+.job-change-table thead th{color:#cbd4f4}
+.job-change-warn{margin:6px 0;color:#ffd38a;font-size:13px}
+.job-change-name{font-size:15px}

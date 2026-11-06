@@ -39,7 +39,7 @@ function analyzePartyStatuses(c) {
   }
   if (burnedTurns[c.id] > 0 && !(bag && bag.burn && bag.burn.turns > 0)) chips.push(analyzeStatusChip("🔥火傷", burnedTurns[c.id], true));
   if (c._defenseDownTurns > 0) chips.push(analyzeStatusChip("▼防御↓", c._defenseDownTurns, true));
-  if (c.id === "imperial") {
+  if ((typeof jobOf === "function" ? jobOf(c) : c.id) === "imperial") {  // [JOB]
     if (c._overheat) chips.push(analyzeStatusChip("OVERHEAT", undefined, true));
     else chips.push(analyzeStatusChip(`熱 ${c._heat || 0}/${typeof EXT_HEAT_LIMIT !== "undefined" ? EXT_HEAT_LIMIT : 6}`, undefined, false));
     if (c._xjCharge) chips.push(analyzeStatusChip("⚠無防備", undefined, true));

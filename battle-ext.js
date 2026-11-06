@@ -175,7 +175,7 @@ function extStatusBadges(c) {
 }
 function extJobBadges(c) {
   let html = "";
-  if (c.id === "imperial") {
+  if ((typeof jobOf === "function" ? jobOf(c) : c.id) === "imperial") {  // [JOB] 熱ゲージは職業で表示
     html += c._overheat ? ' <span class="status-ext status-ext-bad">🔥OVERHEAT</span>' : ` <span class="status-ext status-heat" title="熱が${EXT_HEAT_LIMIT}たまるとオーバーヒート">熱 ${c._heat || 0}/${EXT_HEAT_LIMIT}</span>`;
     if (c._xjCharge) html += ' <span class="status-ext status-ext-bad" title="チャージ中は無防備。受けるダメージが増える">⚠無防備</span>';
   }
