@@ -1005,3 +1005,138 @@ body[data-screen="battle"] .gold-display{display:none!important;}
     transform:none;
   }
 }
+
+
+/* ============================================================
+   Battle action motion pass — enemy intent, actor movement, guard impact.
+   Uses the existing JS animation hooks; no battle timing or damage logic changes.
+   ============================================================ */
+@keyframes enemy-idle-breath{
+  0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 4px 4px #0008)}
+  50%{transform:translateY(-3px) scale(1.018);filter:drop-shadow(0 8px 7px #0009) brightness(1.045)}
+}
+@keyframes enemy-attack-lunge{
+  0%{transform:translateY(0) scale(1);filter:brightness(1)}
+  18%{transform:translateY(-5px) scale(1.045);filter:brightness(1.2)}
+  48%{transform:translateY(16px) scale(1.105);filter:brightness(1.35) drop-shadow(0 8px 12px #000b)}
+  68%{transform:translateY(10px) scale(1.07);filter:brightness(1.16)}
+  100%{transform:translateY(0) scale(1);filter:brightness(1)}
+}
+@keyframes enemy-unit-attack{
+  0%,100%{transform:translateY(0) scale(1)}
+  25%{transform:translateY(-4px) scale(1.04)}
+  58%{transform:translateY(12px) scale(1.09)}
+  76%{transform:translateY(5px) scale(1.04)}
+}
+@keyframes party-action-lunge{
+  0%,100%{transform:translateY(0) scale(1);filter:none}
+  28%{transform:translateY(-3px) scale(1.012);filter:brightness(1.08)}
+  58%{transform:translateY(-6px) scale(1.025);filter:brightness(1.18) drop-shadow(0 0 7px #e8d28b77)}
+  78%{transform:translateY(1px) scale(.995);filter:brightness(1.04)}
+}
+@keyframes party-portrait-action{
+  0%,100%{transform:translateY(0) scale(1)}
+  35%{transform:translateY(-5px) scale(1.04)}
+  65%{transform:translateY(1px) scale(.99)}
+}
+@keyframes party-guard-impact{
+  0%,100%{filter:none;box-shadow:inset 0 0 0 1px #d2c18e55}
+  24%{filter:brightness(1.5);box-shadow:inset 0 0 0 2px #eaf7ff,0 0 20px 5px #91d9ff88}
+  52%{filter:brightness(1.2);box-shadow:inset 0 0 0 2px #a9ddff,0 0 12px 2px #70bfff66}
+}
+@keyframes enemy-omen-gather{
+  0%,100%{filter:drop-shadow(0 0 0 transparent);transform:translateY(0)}
+  50%{filter:drop-shadow(0 0 18px #b9a4e9aa);transform:translateY(-2px) scale(1.018)}
+}
+@keyframes enemy-hit-recover{
+  0%{transform:translateX(0) scale(1);filter:brightness(1)}
+  16%{transform:translateX(-8px) scale(1.045);filter:brightness(1.7) saturate(1.3)}
+  32%{transform:translateX(7px) scale(.985)}
+  50%{transform:translateX(-4px) scale(1.02);filter:brightness(1.25)}
+  72%{transform:translateX(2px) scale(1)}
+  100%{transform:translateX(0) scale(1);filter:brightness(1)}
+}
+/* Ambient breathing stops while an explicit hit, target, warning or action animation runs. */
+.enemy-display:not(.enemy-attacking):not(.enemy-ominous):not(.maou-ominous):not(.dragon-ominous):not(.magic-target-active) .enemy-image:not(.battle-bob):not(.damage-flash):not(.magic-target-hit),
+.enemy-display:not(.enemy-attacking):not(.enemy-ominous):not(.maou-ominous):not(.dragon-ominous):not(.magic-target-active) .enemy-placeholder:not(.battle-bob):not(.damage-flash):not(.magic-target-hit){
+  animation:enemy-idle-breath 3.2s ease-in-out infinite;
+  transform-origin:center bottom;
+}
+.enemy-group-unit:not(.battle-bob):not(.damage-flash):not(.magic-target-hit) img{
+  animation:enemy-idle-breath 3.5s ease-in-out infinite;
+  transform-origin:center bottom;
+}
+/* Existing animateEnemyAttack() adds .enemy-attacking to #battle-enemy. */
+.enemy-display.enemy-attacking .enemy-image,
+.enemy-display.enemy-attacking .enemy-placeholder{
+  animation:enemy-attack-lunge .7s cubic-bezier(.2,.72,.25,1) both;
+  transform-origin:center bottom;
+}
+.enemy-display.enemy-attacking .enemy-group-unit,
+.enemy-display.enemy-attacking .enemy-group-unit img{
+  animation:enemy-unit-attack .62s cubic-bezier(.2,.72,.25,1) both;
+  transform-origin:center bottom;
+}
+/* animatePartyIcon() is already called when an actor performs an action. */
+.battle-member.battle-bob{
+  animation:party-action-lunge .52s cubic-bezier(.2,.78,.25,1) both;
+  z-index:2;
+}
+.battle-member.battle-bob .battle-portrait{
+  animation:party-portrait-action .52s cubic-bezier(.2,.78,.25,1) both;
+}
+.battle-member.guard-flash{
+  animation:party-guard-impact .52s ease-out both;
+  border-color:#b8e3ff!important;
+  z-index:2;
+}
+.battle-member.heal-flash{
+  box-shadow:0 0 18px #65ff9b66,inset 0 0 0 1px #83ffb2;
+}
+.enemy-display.enemy-ominous .enemy-image,
+.enemy-display.enemy-ominous .enemy-placeholder{
+  animation:enemy-omen-gather .82s ease-in-out 3;
+  transform-origin:center bottom;
+}
+.enemy-display.maou-ominous .enemy-image,
+.enemy-display.maou-ominous .enemy-placeholder{
+  animation:enemy-omen-gather .72s ease-in-out 4;
+  filter:drop-shadow(0 0 18px #b46be6aa);
+  transform-origin:center bottom;
+}
+.enemy-display .enemy-group-unit.damage-flash,
+.enemy-display .enemy-image.damage-flash,
+.enemy-display .enemy-placeholder.damage-flash{
+  animation:enemy-hit-recover .42s cubic-bezier(.2,.8,.2,1) both;
+}
+@media(max-width:700px){
+  .enemy-display.enemy-attacking .enemy-image,
+  .enemy-display.enemy-attacking .enemy-placeholder{
+    animation-duration:.58s;
+  }
+  .enemy-display.enemy-attacking .enemy-group-unit,
+  .enemy-display.enemy-attacking .enemy-group-unit img{
+    animation-duration:.52s;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .enemy-display:not(.enemy-attacking) .enemy-image,
+  .enemy-display:not(.enemy-attacking) .enemy-placeholder,
+  .enemy-group-unit:not(.damage-flash) img{
+    animation:none!important;
+  }
+  .enemy-display.enemy-attacking .enemy-image,
+  .enemy-display.enemy-attacking .enemy-placeholder,
+  .enemy-display.enemy-attacking .enemy-group-unit,
+  .enemy-display.enemy-attacking .enemy-group-unit img,
+  .battle-member.battle-bob,
+  .battle-member.battle-bob .battle-portrait,
+  .battle-member.guard-flash,
+  .enemy-display.enemy-ominous .enemy-image,
+  .enemy-display.enemy-ominous .enemy-placeholder,
+  .enemy-display.maou-ominous .enemy-image,
+  .enemy-display.maou-ominous .enemy-placeholder{
+    animation:none!important;
+    transform:none!important;
+  }
+}
