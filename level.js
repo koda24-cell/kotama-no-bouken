@@ -32,8 +32,9 @@ function levelAwardBattleExp(e) {
   if (battleState.tutorialMode) return null;
   const exp = levelEnemyExp(e); if (!exp) return null;
   const ups = [];
-  for (const c of getParty()) {
-    if (c.hp <= 0) continue;
+  for (const id of (Array.isArray(state.ownedCharacters)?state.ownedCharacters:getParty().map(c=>c.id))) {
+    const c=getCharacter(id);if(!c)continue;
+    if (state.party.includes(c.id) && c.hp <= 0) continue;
     const from = levelOf(c); let lv = from, cur = levelExpNow(c) + exp;
     while (lv < LEVEL_CAP && cur >= levelExpToNext(lv)) { cur -= levelExpToNext(lv); lv++; }
     if (lv >= LEVEL_CAP) cur = 0;
@@ -41,7 +42,7 @@ function levelAwardBattleExp(e) {
     const before = effectiveStats(c).maxHp;
     characterLevels[c.id] = lv; levelExp[c.id] = cur;
     if (lv > from) {
-      c.hp = Math.min(effectiveStats(c).maxHp, c.hp + Math.max(0, effectiveStats(c).maxHp - before));
+      if(c.hp>0)c.hp = Math.min(effectiveStats(c).maxHp, c.hp + Math.max(0, effectiveStats(c).maxHp - before));
       trainingPoints[c.id] = (trainingPoints[c.id] || 0) + LEVEL_SKILL_POINTS * (lv - from);
       ups.push({ id: c.id, name: c.name, from, to: lv });
     }
