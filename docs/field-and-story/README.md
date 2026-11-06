@@ -84,6 +84,7 @@ GPT はフェーズ1bのPR（#18）を読んでから着手する。
 | 1c 雑魚戦のバランス調整 | 完了（`feature/ai-claude-field-balance`） |
 | 2 見た目・素材・演出（GPT） | **着手可能**。`css/06-field.css` はここから GPT 担当 |
 | 3 シナリオ推敲（GPT） | 着手可能（`data/story.js` の `text` のみ） |
+| 4 迷宮化（世界樹の迷宮参考）・レベル・不具合修正（Claude） | 完了（`feature/ai-claude-labyrinth`）。仕様は `LABYRINTH_SPEC.md`。GPT追加依頼 G8〜G10 |
 
 ## 4. ユーザー確認が必要な点（仮決めで進める）
 

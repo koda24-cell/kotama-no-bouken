@@ -25,7 +25,8 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | 3 | `battle-ext.js` | 戦闘の拡張ロジック（状態異常・行動順・新職業のスキル・敵バリエーションの処理・魔王のフェーズ） |
 | 4 | `script.js` | ゲーム本体（画面・戦闘進行・ショップ・セーブ・チュートリアルなど） |
 | 5 | `analyze-panel.js` | 戦闘中の「敵」「味方」状態パネル（読み取り専用） |
-| 6 | `field.js` | フィールド探索：自由移動・ランダムエンカウント・会話・ボスゲート。`script.js` の `// [FIELD]` フックから呼ばれる |
+| 6 | `level.js` | レベル・経験値（`data/levels.js`）。`// [LEVEL]` フックから呼ばれる |
+| 7 | `field.js` | フィールド探索：自由移動・ランダムエンカウント・会話・ボスゲート。`script.js` の `// [FIELD]` フックから呼ばれる |
 
 - `data/` と `css/` の中身は、**処理を持たない（または最小限）** 設定ファイルです。数値や文章の調整は、まずここを探してください。
 - `battle-ext.js` は `script.js` より先に読み込まれ、`script.js` の変数は「関数の中でのみ」参照します。
@@ -42,7 +43,8 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | 職業の能力値・スキル・スピード・解放条件 | `data/jobs.js`（初期6職業は `data/characters.js`） |
 | 装備・アイテム・製作レシピ | `data/items.js` |
 | ストーリーの文章・実績 | `data/progression.js`（ステージ導入・クリアの一枚絵風イベント）、`data/story.js`（フィールドの会話） |
-| フィールドのマップ・雑魚敵・出現率・フィールドBGM | `data/field-maps.js` |
+| 迷宮の階層・フロア・雑魚敵・FOE・採取・出現率・BGM | `data/field-maps.js`（仕様 `docs/field-and-story/LABYRINTH_SPEC.md`） |
+| レベルの成長率・必要経験値・ボスの経験値 | `data/levels.js` |
 | スキルツリー | `data/skill-trees.js` |
 | 見た目 | `css/` の該当ファイル。迷ったら `style.css` の末尾 |
 | 戦闘の処理（行動順・状態異常のかかり方・新職業の動き） | `battle-ext.js` |
