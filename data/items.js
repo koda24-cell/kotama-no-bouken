@@ -20,6 +20,8 @@ const shopItems=[
 ];
 // 第2段階：素材・製作・強化・育成データ
 const materialNames={chaos_crystal:"混沌の結晶",slime_jelly:"スライムゼリー",monster_fang:"魔物の牙",goblin_cloth:"ゴブリンの布",monster_hide:"魔物の皮",dragon_scale:"炎竜の鱗",dragon_claw:"炎竜の爪",maou_crystal:"魔王の結晶",maou_horn:"魔王の角"};
+// 素材の1個あたり売却価格。希少度に応じた固定価格で、素材IDは既存セーブと共通。
+const materialSellPrices={slime_jelly:5,monster_fang:8,goblin_cloth:8,monster_hide:12,dragon_scale:50,dragon_claw:65,maou_crystal:150,maou_horn:180,chaos_crystal:100};
 const recipes=[
 {id:"slime-rod",name:"スライムロッド",icon:"STAFF",classes:["mage","healer","kotama"],spAttackBonus:20,physicalElement:"打撃",cost:100,needs:{slime_jelly:1}},
 {id:"wolf-fang-sword",name:"狼牙の剣",icon:"SWORD",classes:["warrior","kotama","knight"],attackBonus:30,physicalElement:"斬撃",cost:150,needs:{monster_fang:1}},
