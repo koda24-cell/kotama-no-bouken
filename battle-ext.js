@@ -398,7 +398,7 @@ async function extDamageSkill(actor, skill, a, x, mult) {
       for (const target of targets) {
         const unit = target.ref;
         if (!unit || unit.hp <= 0) continue;
-        const chance = st.chance * (extIsBoss(enemy) ? (st.bossMul ?? .5) : 1);
+        const chance = Math.min(.95, st.chance * (extIsBoss(enemy) ? (st.bossMul ?? .75) : 1.25));
         const unitName = unit.displayName || unit.name || enemy.name;
         if (Math.random() < chance) {
           const r = addStatus(unit, st.type, { turns: st.turns, power: st.power });
@@ -497,7 +497,7 @@ async function extVariantAction(e, turn) {
     const dealt = await applyPartyDamageAnimated(c, d, { normalAttack: !sp, spAttack: sp, magic: sp, element: act.element });
     if (dealt > 0 && !act.all) pushEvent(`${c.name}に${dealt}ダメージ。`);
     if (act.drain && dealt > 0) { const before = e.hp; e.hp = Math.min(e.maxHp, e.hp + Math.floor(dealt * act.drain)); if (e.hp > before) pushEvent(`${e.name}はHPを${e.hp - before}吸い取った！`); }
-    if (c.hp > 0 && act.status && Math.random() < act.status.chance) extInflict(c, act.status.type, act.status);
+    if (c.hp > 0 && act.status && Math.random() < Math.min(.95, act.status.chance * (e.foe ? 1.25 : 1.35))) extInflict(c, act.status.type, act.status);
     if (c.hp <= 0) pushEvent(`${c.name}は戦闘不能になった！`);
   }
   battleState.tauntTarget = null;
