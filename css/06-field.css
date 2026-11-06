@@ -296,3 +296,21 @@
 @keyframes field-area-intro-in{0%{opacity:0;filter:blur(5px);transform:translate(-50%,-43%) scale(1.06)}100%{opacity:1;filter:blur(0);transform:translate(-50%,-50%) scale(1)}}
 @keyframes field-area-intro-out{to{opacity:0;filter:blur(4px);transform:translate(-50%,-58%) scale(.98)}}
 @media(prefers-reduced-motion:reduce){.field-area-intro,.field-area-intro.is-leaving{animation:none;opacity:1}.field-area-intro.is-leaving{opacity:0}}
+
+
+/* ---------- オリジナルSVGオブジェクト素材 ---------- */
+.field-object-sprite{background-position:center bottom;background-repeat:no-repeat;background-size:contain}
+.field-object-sprite::before{content:none!important}
+.field-object[data-sprite="npc-woodcutter"] .field-object-sprite{background-image:url("../assets/field/npc-woodcutter.svg")}
+.field-object[data-sprite="npc-girl"] .field-object-sprite{background-image:url("../assets/field/npc-girl.svg")}
+.field-object[data-sprite="npc-merchant"] .field-object-sprite{background-image:url("../assets/field/npc-merchant.svg")}
+.field-object[data-sprite="npc-guard"] .field-object-sprite{background-image:url("../assets/field/npc-guard.svg")}
+.field-object[data-sprite="statue"] .field-object-sprite{background-image:url("../assets/field/statue.svg")}
+.field-object[data-sprite="npc-miner"] .field-object-sprite{background-image:url("../assets/field/npc-miner.svg")}
+.field-object[data-sprite="npc-ghost"] .field-object-sprite{background-image:url("../assets/field/npc-ghost.svg")}
+.field-object[data-sprite="sign"] .field-object-sprite{background-image:url("../assets/field/sign.svg")}
+.field-object[data-sprite="chest"] .field-object-sprite{background-image:url("../assets/field/chest.svg")}
+.field-object[data-sprite="save-lamp"] .field-object-sprite{background-image:url("../assets/field/save-lamp.svg");filter:drop-shadow(0 0 5px #ffe27a)}
+.field-object[data-sprite="boss-gate"] .field-object-sprite{background-image:url("../assets/field/boss-gate.svg")}
+.field-object[data-sprite="exit"] .field-object-sprite{background-image:url("../assets/field/exit.svg")}
+.field-object[data-kind="chest"].is-opened .field-object-sprite{background-image:url("../assets/field/chest-open.svg");opacity:.82}
