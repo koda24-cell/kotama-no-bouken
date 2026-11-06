@@ -69,3 +69,36 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   .field-hud{flex-wrap:wrap;gap:6px}
   .field-minimap{top:6px;right:6px}
 }
+
+
+/* Cartography: distinguish the adventurer's live sight from remembered terrain. */
+.field-map-rail{
+  border-color:#d1b879;
+  background:
+    radial-gradient(ellipse at 50% 0%,#314b55 0%,transparent 54%),
+    linear-gradient(180deg,#172c39 0%,#0b1722 100%);
+}
+.field-map-rail .field-minimap{
+  min-height:116px;
+  border:2px solid #d8c18b;
+  background:
+    linear-gradient(135deg,#17232b,#050b12);
+  box-shadow:inset 0 0 0 2px #000,0 0 0 1px #f0d99a33,0 4px 12px #000b;
+}
+.field-map-rail::after{
+  content:"明るい区画：現在の視界\A暗い区画：踏破した記録";
+  white-space:pre-line;
+  color:#d2c49d;
+  font-size:9px;
+  line-height:1.65;
+}
+.field-fullmap-legend .lg-vision{
+  display:inline-block;width:10px;height:10px;margin-right:4px;vertical-align:-1px;
+  border:1px solid #ffe08a;background:#ffe08a66;box-shadow:0 0 6px #ffe08a88;
+}
+.field-fullmap-legend .lg-player{
+  box-shadow:0 0 0 2px #fff4a8,0 0 8px #fff4a8;
+}
+@media(max-width:620px){
+ .field-map-rail .field-minimap{min-height:96px;padding:4px}
+}

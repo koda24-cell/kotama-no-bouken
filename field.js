@@ -161,7 +161,7 @@ function fieldEnsureExtraDom() {
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
-    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
+    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-vision"></i>現在視界</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
     vp.appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
   }
@@ -239,8 +239,15 @@ function fieldDrawMap(canvas, cell, full) {
   const exp = fieldExplored(a);
   for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) {
     if (!exp[y * a.w + x]) continue;
+    const visible = fieldState.visible?.has(`${x},${y}`) || false;
     g.fillStyle = fieldMapColor(a, fieldTileAt(a, x, y)); g.fillRect(x * cell, y * cell, cell, cell);
-    if (full && fieldTileAt(a, x, y) !== "#") { g.strokeStyle = "rgba(0,0,0,.12)"; g.strokeRect(x * cell + .5, y * cell + .5, cell - 1, cell - 1); }
+    if (visible) {
+      g.fillStyle = "rgba(255,231,151,.24)"; g.fillRect(x * cell, y * cell, cell, cell);
+      g.strokeStyle = "rgba(255,224,125,.72)"; g.lineWidth = Math.max(.7, cell * .09); g.strokeRect(x * cell + .5, y * cell + .5, Math.max(0, cell - 1), Math.max(0, cell - 1));
+    } else {
+      g.fillStyle = "rgba(2,8,16,.42)"; g.fillRect(x * cell, y * cell, cell, cell);
+    }
+    if (full && fieldTileAt(a, x, y) !== "#") { g.strokeStyle = visible ? "rgba(255,224,125,.48)" : "rgba(0,0,0,.2)"; g.lineWidth = 1; g.strokeRect(x * cell + .5, y * cell + .5, cell - 1, cell - 1); }
   }
   const dot = (x, y, color, size = .62, shape = "circle") => {
     g.fillStyle = color; const cx = (x + .5) * cell, cy = (y + .5) * cell, r = cell * size / 2;
