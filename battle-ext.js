@@ -287,12 +287,12 @@ function extActionPriority(action) {
   if (action.type === "skill") {
     const actor = getCharacter(action.actor);
     const skill = getCharacterSkills(actor).find(x => x.id === action.skillId);
+    const configuredPriority = Number(skill?.priority ?? skill?.xj?.priority);
+    if (Number.isFinite(configuredPriority) && configuredPriority >= EXT_ACTION_PRIORITY.GUARD && configuredPriority < EXT_ACTION_PRIORITY.NORMAL) {
+      return configuredPriority;
+    }
     if (skill && ["taunt", "defense-camp", "magic-guard", "full-guard", "guardian-stance"].includes(skill.type)) {
       return EXT_ACTION_PRIORITY.DEFENSIVE_SKILL;
-    }
-    const configuredPriority = Number(skill?.priority ?? skill?.xj?.priority);
-    if (Number.isFinite(configuredPriority) && configuredPriority >= EXT_ACTION_PRIORITY.QUICK_ATTACK && configuredPriority < EXT_ACTION_PRIORITY.NORMAL) {
-      return configuredPriority;
     }
     if (skill?.quick === true || skill?.xj?.quick === true) return EXT_ACTION_PRIORITY.QUICK_ATTACK;
   }
