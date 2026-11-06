@@ -202,19 +202,25 @@
           <span id="field-hint" class="field-hint">移動：1回押すと1マス（矢印/WASD・パッド）　調べる：Z/Enter・A</span>
           <button id="field-home-button" class="field-home-button" type="button">ホームへ</button>
         </div>
-        <div id="field-viewport" class="field-viewport">
-          <div id="field-map" class="field-map"></div>
-          <div id="field-player-alert" class="field-player-alert" hidden aria-hidden="true">！</div>
-          <div id="field-encounter-flash" class="field-encounter-flash" hidden aria-hidden="true"></div>
-          <div id="field-dialog" class="field-dialog" hidden role="dialog" aria-live="polite" aria-label="会話">
-            <div class="field-dialog-portrait"><img alt=""></div>
-            <div class="field-dialog-body">
-              <strong class="field-dialog-name"></strong>
-              <p class="field-dialog-text"></p>
-              <span class="field-dialog-next" aria-hidden="true">▼</span>
+        <div class="field-exploration-layout">
+          <div id="field-viewport" class="field-viewport">
+            <div id="field-map" class="field-map"></div>
+            <div id="field-player-alert" class="field-player-alert" hidden aria-hidden="true">！</div>
+            <div id="field-encounter-flash" class="field-encounter-flash" hidden aria-hidden="true"></div>
+            <div id="field-dialog" class="field-dialog" hidden role="dialog" aria-live="polite" aria-label="会話">
+              <div class="field-dialog-portrait"><img alt=""></div>
+              <div class="field-dialog-body">
+                <strong class="field-dialog-name"></strong>
+                <p class="field-dialog-text"></p>
+                <span class="field-dialog-next" aria-hidden="true">▼</span>
+              </div>
+              <div class="field-dialog-choices" hidden></div>
             </div>
-            <div class="field-dialog-choices" hidden></div>
           </div>
+          <aside class="field-map-rail" aria-label="探索マップ">
+            <strong>MAP</strong>
+            <span>踏破した場所が記録されます</span>
+          </aside>
         </div>
         <div id="field-pad" class="field-pad" aria-label="移動パッド">
           <div class="field-dpad">
