@@ -327,7 +327,7 @@ function resumeTutorial(){
   if(tutorialState.phase==="formation-intro"){showScreen("home");tutorialOverlay("拠点に戻ってきた！","編成タブを開いて、仲間の編成を確認しよう。");tutorialHighlight('.main-nav [data-screen="formation"]');return;}
   if(tutorialState.phase.startsWith("formation")||tutorialState.phase==="equipment-intro"||tutorialState.phase==="equipment-grant"||tutorialState.phase==="equip-hero-sword"){
     showScreen("formation");
-    const messages={"formation-intro":["拠点に戻ってきた！","編成を確認しよう。仲間は最大4人まで編成できるよ。"],"formation-remove":["治癒士を外そう","編成中の治癒士の『編成から外す』を押してみよう。"],"formation-add":["治癒士を編成に戻そう","仲間候補から治癒士を選んで、再び編成に加えよう。"],"equipment-intro":["装備を確認しよう","各キャラクターの装備欄から武器・防具・アクセサリを管理できるよ。"],"equipment-grant":["勇者の剣を入手！","勇者の剣を1本受け取ったよ。コタマの武器欄から装備してみよう。"],"equip-hero-sword":["勇者の剣を装備しよう","コタマの武器欄から勇者の剣を装備してみよう。"]};
+    const messages={"formation-intro":["拠点に戻ってきた！","編成を確認しよう。仲間は最大5人まで編成できるよ。"],"formation-remove":["治癒士を外そう","編成中の治癒士の『編成から外す』を押してみよう。"],"formation-add":["治癒士を編成に戻そう","仲間候補から治癒士を選んで、再び編成に加えよう。"],"equipment-intro":["装備を確認しよう","各キャラクターの装備欄から武器・防具・アクセサリを管理できるよ。"],"equipment-grant":["勇者の剣を入手！","勇者の剣を1本受け取ったよ。コタマの武器欄から装備してみよう。"],"equip-hero-sword":["勇者の剣を装備しよう","コタマの武器欄から勇者の剣を装備してみよう。"]};
     const m=messages[tutorialState.phase]||messages["formation-intro"];tutorialOverlay(m[0],m[1]);return;
   }
   if(tutorialState.phase==="shop-accessory"){showScreen("formation");tutorialOverlay("アクセサリについて","アクセサリは2種類装備できるよ。次は回復薬を購入しよう。");tutorialHighlight('#selected-party select[data-equip^="accessory"]');return;}
@@ -1533,7 +1533,7 @@ function commitAction(action){if(battleState.busy)return;const actor=getCharacte
     }
     if(tutorialState.battlePhase==="sp"&&action.type==="skill"){tutorialState.battlePhase="sp-resolved";}
     if(tutorialState.battlePhase==="guard"&&action.type==="guard"){
-      // 防御は4人全員に行わせる
+      // 防御は編成中の全員に行わせる
       battleState.actions=battleState.turnOrder.map(id=>({type:"guard",actor:id}));battleState.currentActorIndex=battleState.turnOrder.length;battleState.busy=true;tutorialState.battlePhase="guard-resolved";renderBattle();setTimeout(executeTurn,battleDelayMs(200));return;
     }
     if(tutorialState.battlePhase==="union"&&action.type==="union"){tutorialState.battlePhase="union-resolved";}
