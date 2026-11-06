@@ -2332,10 +2332,56 @@ function adminRenderProgress(){
   const stages=names.map((name,i)=>{const n=i+1,boss=["スライム","ゴブリン","オオカミ","ドラゴン","魔王"][i];return `<article class="admin-card"><h3>STAGE ${n}：${name}</h3>${adminRow("解放状態",n<=(state.maxUnlockedStage||1)?"解放済み":"未解放")}${adminRow("到達記録",stageEntered[n]?"到達済み":"未到達")}${adminRow("クリア記録",stageCleared[n]?"クリア済み":"未クリア")}${adminRow(`${boss} 討伐記録`,compendium[boss]?.defeated?"討伐済み":"未討伐")}</article>`;}).join("");
   return `<div class="admin-section"><h3>進行状況</h3>${adminRow("現在の解放上限",`STAGE ${state.maxUnlockedStage||1}`)}${adminRow("最初のステージ開始",state.firstStageStarted?"開始済み":"未開始")}${adminRow("討伐数",totalEnemyDefeats)}<p class="admin-note">討伐記録（図鑑）とステージクリア・解放フラグを別々に表示しています。</p></div><div class="admin-grid">${stages}</div>`;
 }
+
 function adminRenderBattle(){
-  const enemy=battleState.enemy;const party=characters.map(c=>`<article class="admin-card"><h3>${esc(c.name)}</h3>${adminRow("HP / SP",`${c.hp} / ${c.sp}`)}${adminRow("状態",[c._stunTurns>0?`スタン ${c._stunTurns}`:"",c._actionDisabledTurns>0?`行動不能 ${c._actionDisabledTurns}`:"",burnedTurns[c.id]>0?`やけど ${burnedTurns[c.id]}`:"",c._defenseDownTurns>0?`防御低下 ${c._defenseDownTurns}`:""].filter(Boolean).join("・")||"なし")}</article>`).join("");
-  const enemyText=enemy?`${enemy.name} ／ HP ${enemy.hp}${enemy.maxHp?` / ${enemy.maxHp}`:""}`:"戦闘中ではありません";
-  return `<div class="admin-section"><h3>現在の戦闘</h3>${adminRow("画面",state.screen)}${adminRow("ステージ",battleState.hiddenBossMode?"HIDDEN BOSS":`STAGE ${battleState.stage} / ${battleState.maxStage}`)}${adminRow("ターン",battleState.turnCount)}${adminRow("敵",enemyText)}${adminRow("敵の攻撃 / 防御",enemy?`${enemy.attack??"—"} / ${enemy.defense??"—"}`:"—")}${adminRow("敵の出現数",enemy?.members?.length|| (enemy?1:0))}${adminRow("戦闘処理",battleState.busy?"処理中":"入力待ち")}</div><div class="admin-grid">${party}</div><p class="admin-note">この初期版では戦闘データは確認専用です。HP・SP変更、敵の差し替え、状態異常付与などの操作機能は、通常戦闘への影響を分離してから追加します。</p>`;
+  const enemy=battleState.enemy,active=state.screen==="battle"&&!!enemy&&!battleState.busy;
+  const party=getParty().map(c=>{
+    const stats=effectiveStats(c);
+    const status=[c._stunTurns>0?"スタン "+c._stunTurns:"",c._actionDisabledTurns>0?"行動不能 "+c._actionDisabledTurns:"",burnedTurns[c.id]>0?"やけど "+burnedTurns[c.id]:"",c._defenseDownTurns>0?"防御低下 "+c._defenseDownTurns:""].filter(Boolean).join("・")||"なし";
+    return '<article class="admin-card"><h3>'+esc(c.name)+'</h3>'+adminRow("状態",status)+'<form class="admin-edit-form" data-admin-battle-character="'+esc(c.id)+'"><div class="admin-edit-grid"><label>HP '+adminNumberInput("hp",c.hp,0,stats.maxHp)+'</label><label>SP '+adminNumberInput("sp",c.sp,0,c.maxSp)+'</label></div><button type="submit" '+(active?"":"disabled")+'>HP・SPを適用</button><button type="button" class="secondary-button" data-admin-clear-status="'+esc(c.id)+'" '+(active?"":"disabled")+'>一時状態を解除</button></form></article>';
+  }).join("");
+  let enemyEditor="";
+  if(enemy&&enemy.members&&enemy.members.length){
+    enemyEditor=enemy.members.map((m,i)=>'<form class="admin-edit-form admin-enemy-edit" data-admin-enemy-member="'+i+'"><h4>'+esc(m.displayName||m.name||("敵 "+(i+1)))+'</h4><div class="admin-edit-grid"><label>HP '+adminNumberInput("hp",m.hp,0,999999)+'</label><label>最大HP '+adminNumberInput("maxHp",m.maxHp||m.hp,1,999999)+'</label><label>攻撃 '+adminNumberInput("attack",m.attack||0,0,999999)+'</label><label>防御 '+adminNumberInput("defense",m.defense||0,0,999999)+'</label></div><button type="submit" '+(active?"":"disabled")+'>この敵に適用</button></form>').join("");
+  }else if(enemy){
+    enemyEditor='<form class="admin-edit-form" id="admin-enemy-edit"><div class="admin-edit-grid"><label>HP '+adminNumberInput("hp",enemy.hp,0,9999999)+'</label><label>最大HP '+adminNumberInput("maxHp",enemy.maxHp||enemy.hp,1,9999999)+'</label><label>攻撃 '+adminNumberInput("attack",enemy.attack||0,0,999999)+'</label><label>防御 '+adminNumberInput("defense",enemy.defense||0,0,999999)+'</label><label>SP防御 '+adminNumberInput("spDefense",enemy.spDefense||0,0,999999)+'</label></div><button type="submit" '+(active?"":"disabled")+'>敵データを適用</button></form>';
+  }
+  const enemyText=enemy?enemy.name+" ／ HP "+enemyHpTotal(enemy)+" / "+(enemy.maxHp||"—"):"戦闘中ではありません";
+  return '<div class="admin-section"><h3>現在の戦闘</h3>'+adminRow("画面",state.screen)+adminRow("ステージ",battleState.hiddenBossMode?"HIDDEN BOSS":"STAGE "+battleState.stage+" / "+battleState.maxStage)+adminRow("ターン",battleState.turnCount)+adminRow("敵",enemyText)+adminRow("敵の出現数",enemy&&enemy.members?enemy.members.length:(enemy?1:0))+adminRow("戦闘処理",battleState.busy?"処理中":"入力待ち")+'</div>'+
+    (enemy?'<div class="admin-section"><h3>敵データ編集</h3><p class="admin-note">現在の戦闘に出ている敵だけを編集します。敵の基本データ定義は変更しません。</p>'+enemyEditor+'</div>':'<div class="admin-section"><p class="admin-note">戦闘中ではありません。戦闘画面で開くと編集できます。</p></div>')+
+    '<h3>味方データ編集</h3><div class="admin-grid">'+party+'</div><p class="admin-note">変更は現在の戦闘状態にのみ適用し、敵の基本データやセーブデータには保存しません。敵HPを0にしても勝利処理は自動実行されません。処理中は編集できません。</p>';
+}
+function adminApplyBattleEdits(event){
+  event.preventDefault();
+  if(state.screen!=="battle"||!battleState.enemy||battleState.busy){setSystemMessage("戦闘中の入力待ち状態でのみ編集できます。");return;}
+  const form=event.currentTarget,fd=new FormData(form);
+  if(form.matches("[data-admin-battle-character]")){
+    const id=form.dataset.adminBattleCharacter,c=getCharacter(id);if(!c)return;
+    const stats=effectiveStats(c),hp=adminReadSafeInteger(fd.get("hp"),0,stats.maxHp),sp=adminReadSafeInteger(fd.get("sp"),0,c.maxSp);
+    if(hp===null||sp===null){setSystemMessage("HP・SPの値を確認してください。");return;}
+    c.hp=hp;c.sp=sp;
+  }else if(form.matches("[data-admin-enemy-member]")){
+    const index=Number(form.dataset.adminEnemyMember),m=battleState.enemy.members&&battleState.enemy.members[index];if(!m)return;
+    const hp=adminReadSafeInteger(fd.get("hp"),0,999999),maxHp=adminReadSafeInteger(fd.get("maxHp"),1,999999),attack=adminReadSafeInteger(fd.get("attack"),0,999999),defense=adminReadSafeInteger(fd.get("defense"),0,999999);
+    if([hp,maxHp,attack,defense].some(v=>v===null)||hp>maxHp){setSystemMessage("敵のHPは最大HP以下、各能力値は0以上の整数にしてください。");return;}
+    Object.assign(m,{hp,maxHp,attack,defense,alive:hp>0});
+    battleState.enemy.hp=battleState.enemy.members.reduce((n,unit)=>n+Math.max(0,unit.hp),0);
+    battleState.enemy.maxHp=battleState.enemy.members.reduce((n,unit)=>n+Math.max(1,unit.maxHp||unit.hp),0);
+  }else if(form.id==="admin-enemy-edit"){
+    const enemy=battleState.enemy,hp=adminReadSafeInteger(fd.get("hp"),0,9999999),maxHp=adminReadSafeInteger(fd.get("maxHp"),1,9999999),attack=adminReadSafeInteger(fd.get("attack"),0,999999),defense=adminReadSafeInteger(fd.get("defense"),0,999999),spDefense=adminReadSafeInteger(fd.get("spDefense"),0,999999);
+    if([hp,maxHp,attack,defense,spDefense].some(v=>v===null)||hp>maxHp){setSystemMessage("敵のHPは最大HP以下、各能力値は0以上の整数にしてください。");return;}
+    Object.assign(enemy,{hp,maxHp,attack,defense,spDefense});
+  }else return;
+  renderBattle();renderAdminPanel();setSystemMessage("現在の戦闘データに適用しました（セーブ対象外）。");
+}
+function adminClearBattleStatus(id){
+  if(state.screen!=="battle"||battleState.busy)return;
+  const c=getCharacter(id);if(!c)return;
+  for(const key of ["_stunTurns","stunTurns","_actionDisabledTurns","actionDisabledTurns","_defenseDown","_defenseDownTurns"])if(key in c)c[key]=0;
+  for(const key of ["_stunned","stunned","actionDisabled"])if(key in c)c[key]=false;
+  burnedTurns[id]=0;
+  if(typeof defenseDownFresh!=="undefined"&&defenseDownFresh instanceof Set)defenseDownFresh.delete(id);
+  renderBattle();renderAdminPanel();setSystemMessage(c.name+"の対応済み一時状態を解除しました。");
 }
 function adminRenderSave(){
   let data=null,error="";try{data=JSON.parse(localStorage.getItem("fantasyRpgSave")||"null");}catch(e){error="オートセーブのJSONを解析できません。";}
@@ -2350,6 +2396,10 @@ function renderAdminPanel(){
   if(adminActiveTab==="player"){
     $("admin-gold-form")?.addEventListener("submit",adminApplyPlayerEdits);
     $("kotama-admin-content")?.querySelectorAll("[data-admin-character],#admin-inventory-form,#admin-material-form").forEach(form=>form.addEventListener("submit",adminApplyPlayerEdits));
+  }
+  if(adminActiveTab==="battle"){
+    $("kotama-admin-content")?.querySelectorAll("[data-admin-battle-character],[data-admin-enemy-member],#admin-enemy-edit").forEach(form=>form.addEventListener("submit",adminApplyBattleEdits));
+    $("kotama-admin-content")?.querySelectorAll("[data-admin-clear-status]").forEach(button=>button.addEventListener("click",()=>adminClearBattleStatus(button.dataset.adminClearStatus)));
   }
   if(adminActiveTab==="save"){
     $("admin-backup")?.addEventListener("click",adminExportBackup);

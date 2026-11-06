@@ -485,3 +485,9 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 .admin-edit-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(70px,100px);align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #ffffff12}
 .admin-edit-row span{overflow-wrap:anywhere}
 @media(max-width:420px){.admin-edit-grid{grid-template-columns:1fr}.admin-edit-row{grid-template-columns:minmax(0,1fr) 82px}}
+
+/* 管理者パネル：戦闘データ編集 */
+.admin-enemy-edit{padding:10px;border:1px solid #52699d;border-radius:7px;background:#0b1530}
+.admin-enemy-edit h4{margin:0 0 8px;color:#ffe8a3;font-size:12px}
+.admin-edit-form button:disabled{opacity:.45;cursor:not-allowed}
+.admin-edit-form .secondary-button{border-color:#6578a8;background:#182747;color:#dce6ff}
