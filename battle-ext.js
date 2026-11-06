@@ -69,17 +69,7 @@ function extSyncJobUnlocks() {
    - fresh：付与されたラウンドの終了時には持続が減らない（毒など、次ラウンドから効果が出るもの）。
    - 敵への攻撃力ダウン／防御ダウンは、敵の数値を直接下げ、切れると元に戻す。
    ============================================================ */
-const EXT_STATUS_DEFS = {
-  burn:        { label:"火傷",   icon:"🔥", harm:true },
-  poison:      { label:"毒",     icon:"☠",  harm:true, fresh:"always" },
-  paralysis:   { label:"麻痺",   icon:"⚡", harm:true, fresh:"party" },
-  curse:       { label:"呪い",   icon:"☾",  harm:true, fresh:"party" },
-  defenseDown: { label:"防御↓",  icon:"▼",  harm:true, fresh:"party" },
-  attackDown:  { label:"攻撃↓",  icon:"▼",  harm:true, fresh:"party" },
-  attackUp:    { label:"攻撃↑",  icon:"▲",  harm:false },
-  defenseUp:   { label:"防御↑",  icon:"▲",  harm:false },
-  speedUp:     { label:"速度↑",  icon:"▲",  harm:false }
-};
+// 状態異常の定義（表示名・アイコン・性質）は data/status-effects.js を参照。
 let extPartyStatuses = {};
 
 function extIsParty(t) { return !!t && characters.includes(t); }
@@ -449,31 +439,9 @@ function extDefenselessMul(character, options) {
 
 /* ============================================================
    4. 敵バリエーション（STAGE1〜3）
-   - クリア済みのステージでは、一定確率で別の敵が現れる（初回は従来どおり）。
-   - ai：行動パターン。weight=選ばれやすさ / all=全体 / kind=phys|sp / status=付与する状態異常
-     heal=自己回復の割合 / drain=与ダメージの割合だけ回復 / hpBelow=HPがこの割合以下で使用
-     everyTurns=そのターン周期で必ず使用 / minTurn=このターン以降 / target=rear で後衛を狙う
+   データ（敵の能力・行動パターン）は data/enemy-variants.js にあります。
+   ここには、出現判定と行動の処理だけを置いています。
    ============================================================ */
-const EXT_ENEMY_VARIANTS = {
-  1: [
-    { variantId:"poison-slime", baseName:"スライム", name:"毒スライム", element:"無属性", weaknesses:["炎","氷","雷","聖"], resistances:[], physicalResistances:["斬撃","打撃","壊","突"], hp:200, attack:14, defense:4, spDefense:35, physicalDamageRate:.18, slimeLike:true, gold:12, sprite:"slime", speed:35,
-      ai:[ { name:"毒液", weight:60, kind:"phys", power:1.0, status:{ type:"poison", chance:.65, turns:3, power:.06 } }, { name:"溶解液", weight:40, kind:"sp", power:1.0, status:{ type:"defenseDown", chance:.8, turns:3, power:5 } } ] },
-    { variantId:"fire-slime", baseName:"スライム", name:"炎スライム", element:"炎", weaknesses:["氷"], resistances:["炎"], physicalResistances:["斬撃","打撃","壊","突"], hp:210, attack:13, spAttack:30, defense:4, spDefense:30, physicalDamageRate:.18, slimeLike:true, gold:12, sprite:"slime", speed:40,
-      ai:[ { name:"火の粉", weight:60, kind:"sp", power:1.0, element:"炎", status:{ type:"burn", chance:.40, turns:2 } }, { name:"燃え広がる", weight:40, all:true, kind:"sp", power:.6, element:"炎", status:{ type:"burn", chance:.30, turns:2 }, everyTurns:3 } ] }
-  ],
-  2: [
-    { variantId:"goblin-archer", baseName:"ゴブリン", name:"ゴブリンアーチャー", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:320, attack:40, defense:8, gold:22, sprite:"goblin", speed:70,
-      ai:[ { name:"狙い撃ち", weight:60, kind:"phys", power:1.2, target:"rear" }, { name:"毒矢", weight:40, kind:"phys", power:.9, status:{ type:"poison", chance:.5, turns:3, power:.06 } } ] },
-    { variantId:"goblin-shaman", baseName:"ゴブリン", name:"ゴブリンシャーマン", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:340, attack:20, spAttack:46, defense:8, spDefense:25, gold:24, sprite:"goblin", speed:50,
-      ai:[ { name:"火の玉", weight:45, kind:"sp", power:1.0, element:"炎", status:{ type:"burn", chance:.35, turns:2 } }, { name:"弱体の呪文", weight:30, all:true, kind:"sp", power:.5, status:{ type:"attackDown", chance:.6, turns:3, power:.2 } }, { name:"癒やしの祈り", weight:35, heal:.18, hpBelow:.6 } ] }
-  ],
-  3: [
-    { variantId:"giant-bat", baseName:"オオカミ", name:"大コウモリ", element:"無属性", weaknesses:["雷","炎"], resistances:[], hp:520, attack:36, defense:14, gold:34, sprite:"wolf", speed:110,
-      ai:[ { name:"吸血", weight:45, kind:"phys", power:1.0, drain:.4 }, { name:"麻痺の牙", weight:35, kind:"phys", power:.8, status:{ type:"paralysis", chance:.5, turns:2 } }, { name:"超音波", weight:20, all:true, kind:"sp", power:.5, status:{ type:"paralysis", chance:.25, turns:2 } } ] },
-    { variantId:"giant-spider", baseName:"オオカミ", name:"大蜘蛛", element:"無属性", weaknesses:["炎"], resistances:[], hp:600, attack:38, spAttack:36, defense:22, spDefense:14, gold:38, sprite:"wolf", speed:60,
-      ai:[ { name:"毒牙", weight:50, kind:"phys", power:1.0, status:{ type:"poison", chance:.7, turns:4, power:.06 } }, { name:"蜘蛛の糸", weight:30, kind:"phys", power:.6, status:{ type:"defenseDown", chance:.8, turns:3, power:6 } }, { name:"麻痺糸", weight:20, all:true, kind:"sp", power:.4, status:{ type:"paralysis", chance:.3, turns:2 } } ] }
-  ]
-};
 // クリア済みのステージのみ、約半分の確率で別の敵が現れる。
 function extPickEnemyVariant(stage) {
   const list = EXT_ENEMY_VARIANTS[stage];
@@ -528,49 +496,54 @@ async function extVariantAction(e, turn) {
    - ドラゴン：炎属性・SP攻撃主体の全体攻撃＋火傷（ダメージは持続）
    - 魔王    ：闇属性・最大HP割合の全体攻撃＋呪い（回復と攻撃が落ちる）
    ============================================================ */
-// 魔王のフェーズ行動。行動した場合は true を返す。
+// 魔王のフェーズ行動。行動した場合は true を返す。数値・技名は data/boss-phases.js。
 async function extMaouPhaseAction(e, turn, alive) {
+  const cfg = EXT_MAOU_PHASES;
   const ratio = enemyHpTotal(e) / e.maxHp;
-  const phase = ratio > .66 ? 1 : ratio > .33 ? 2 : 3;
+  const phase = ratio > cfg.thresholds[0] ? 1 : ratio > cfg.thresholds[1] ? 2 : 3;
   if (phase > (e._phase || 1)) {
     e._phase = phase;
-    pushEvent(phase === 2 ? "魔王の瞳が妖しく光る……！ 攻撃が激しさを増す！" : "魔王の魔力が暴走する……！ 終焉の闇が迫る！", "warning");
+    pushEvent(cfg.messages[phase], "warning");
     await wait(900);
   }
-  if (phase === 1) return false;
+  const list = cfg.phases[phase];
+  if (!list) return false;
   const r = Math.random();
+  // chance を上から足し合わせた区間のどこに r が入るかで、行動を選ぶ（誤差が出ないよう小数6桁で丸める）。
+  let upTo = 0, act = null;
+  for (const a of list) { upTo = Math.round((upTo + a.chance) * 1e6) / 1e6; if (r < upTo) { act = a; break; } }
+  if (!act) return false;
   const arena = () => document.querySelector(".battle-arena");
   const guardRate = c => battleState.fullGuardActive && c.id === "knight" ? 1 - (battleState._fullGuardReduction || .4) : battleState.guarding[c.id] ? .5 : 1;
-  const hits = (phase === 3 && r < .25) ? 5 : (phase === 2 && r < .30) ? 3 : 0;
-  if (hits) {
-    pushEvent(`魔王は「暗黒連撃」を繰り出した！（${hits}連撃）`, "warning");
-    for (let i = 0; i < hits; i++) {
+  if (act.type === "combo") {
+    pushEvent(`魔王は「${act.name}」を繰り出した！（${act.hits}連撃）`, "warning");
+    for (let i = 0; i < act.hits; i++) {
       const live = livingParty(); if (!live.length) break;
       const t = live.find(c => c.id === battleState.tauntTarget) || live[Math.floor(Math.random() * live.length)];
       animateEnemyAttack(); sound("damage", true);
-      const d = Math.floor(calcPhysical(e.attack * .6, effectiveStats(t).defense, !!battleState.guarding[t.id]) * (1 - (battleState.guarding[t.id] || 0)));
+      const d = Math.floor(calcPhysical(e.attack * act.power, effectiveStats(t).defense, !!battleState.guarding[t.id]) * (1 - (battleState.guarding[t.id] || 0)));
       await applyPartyDamageAnimated(t, d, { normalAttack: true });
       await wait(200);
     }
     return true;
   }
-  if (phase === 3 && r >= .25 && r < .60) {
-    pushEvent("魔王は「終焉の闇」を放った！", "warning"); animateEnemyAttack(); sound("damage", true);
+  if (act.type === "darkness") {
+    pushEvent(`魔王は「${act.name}」を放った！`, "warning"); animateEnemyAttack(); sound("damage", true);
     arena()?.classList.add("maou-dark-flames"); setTimeout(() => arena()?.classList.remove("maou-dark-flames"), battleDelayMs(850));
     for (const c of alive.slice()) {
       if (c.hp <= 0) continue;
-      const d = Math.floor((Math.floor((e.spAttack || 100) * .5) + Math.floor(effectiveStats(c).maxHp * .14)) * guardRate(c));
+      const d = Math.floor((Math.floor((e.spAttack || 100) * act.spMult) + Math.floor(effectiveStats(c).maxHp * act.hpRate)) * guardRate(c));
       await applyPartyDamageAnimated(c, d, { element: "闇", magic: true });
-      if (c.hp > 0 && Math.random() < .7) extInflict(c, "curse", { turns: 3, power: .15 });
+      if (c.hp > 0 && Math.random() < act.curse.chance) extInflict(c, "curse", { turns: act.curse.turns, power: act.curse.power });
     }
     return true;
   }
-  if (r >= (phase === 3 ? .60 : .30) && r < (phase === 3 ? .72 : .45)) {
+  if (act.type === "soulEat") {
     const t = extPickPartyTarget(alive, {});
-    pushEvent(`魔王は「魂喰らい」で${t.name}を襲った！`, "warning"); animateEnemyAttack(); sound("damage", true);
-    const d = Math.floor(calcSp((e.spAttack || 100) * 1.3, effectiveSpDefense(t)) * (battleState.guarding[t.id] ? .5 : 1));
+    pushEvent(`魔王は「${act.name}」で${t.name}を襲った！`, "warning"); animateEnemyAttack(); sound("damage", true);
+    const d = Math.floor(calcSp((e.spAttack || 100) * act.spMult, effectiveSpDefense(t)) * (battleState.guarding[t.id] ? .5 : 1));
     const dealt = await applyPartyDamageAnimated(t, d, { spAttack: true, magic: true, element: "闇" });
-    if (dealt > 0) { const before = e.hp; e.hp = Math.min(e.maxHp, e.hp + Math.floor(e.maxHp * .04)); if (e.hp > before) pushEvent(`魔王はHPを${e.hp - before}回復した！`); }
+    if (dealt > 0) { const before = e.hp; e.hp = Math.min(e.maxHp, e.hp + Math.floor(e.maxHp * act.healRate)); if (e.hp > before) pushEvent(`魔王はHPを${e.hp - before}回復した！`); }
     return true;
   }
   return false;

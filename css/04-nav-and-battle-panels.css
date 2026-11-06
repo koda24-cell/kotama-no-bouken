@@ -1,0 +1,223 @@
+/* ============================================================
+   css/04-nav-and-battle-panels.css — 上部ナビのコンパクト化、コマンド欄・ログ欄の配置
+   ※ 読み込み順が見た目に影響します（後ろのルールが前を上書き）。順序は index.html を参照。
+   ============================================================ */
+/* ================================================================
+   拡大時のレイアウト維持・戦闘コマンド全件表示・上部ナビcompact化
+   旧CSSに残っていた以下の競合を最終ルールで解消する。
+   - 620px / 700px以下で battle-bottom を1列にする指定
+   - battle-commands の固定高さ・最大高さ・縦横スクロール指定
+   - mobile時の log-window order:-1 による左右順の逆転
+   - main-nav の3列 / 2列化とtopbarの複数段折り返し
+   ================================================================ */
+
+/* Desktop/tablet: keep all six navigation items in one compact row. */
+.topbar {
+  min-width: 0;
+}
+
+.logo,
+.gold-display {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.main-nav {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  justify-content: stretch;
+  gap: clamp(2px, .45vw, 5px);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.main-nav button {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  padding: 4px clamp(1px, .45vw, 7px);
+  font-size: clamp(8px, .9vw, 12px);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+/* Keep the navigation on one row even when browser zoom narrows the CSS viewport. */
+@media (max-width: 700px) {
+  .topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "logo gold"
+      "nav nav";
+    align-items: center;
+    justify-content: initial;
+    gap: 5px;
+    padding: 6px 7px;
+  }
+
+  .logo {
+    grid-area: logo;
+    width: auto;
+    text-align: left;
+    font-size: clamp(9px, 2vw, 15px);
+    letter-spacing: clamp(0px, .2vw, 2px);
+  }
+
+  .gold-display {
+    grid-area: gold;
+    justify-self: end;
+    margin-left: 0;
+    gap: 4px;
+    font-size: clamp(8px, 1.8vw, 12px);
+  }
+
+  .gold-display strong {
+    font-size: clamp(12px, 2.5vw, 18px);
+  }
+
+  .main-nav {
+    grid-area: nav;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    width: 100%;
+    flex: none;
+    gap: clamp(2px, .55vw, 5px);
+  }
+
+  .main-nav button {
+    width: 100%;
+    min-height: 27px;
+    padding: 3px 1px;
+    font-size: clamp(7px, 1.8vw, 10px);
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+}
+
+/* Command and log panels stay side by side at every viewport width. */
+.battle-bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+  gap: clamp(3px, .8vw, 9px);
+  align-items: stretch;
+}
+
+.battle-bottom > .command-window {
+  order: 0;
+}
+
+.battle-bottom > .log-window {
+  order: 1;
+}
+
+.command-window,
+.log-window {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}
+
+/* The command list expands naturally: no hidden items and no command scrollbar. */
+.battle-commands {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: none;
+  height: auto;
+  overflow: visible;
+  gap: 2px;
+}
+
+.battle-commands .command-option {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 24px;
+  height: auto;
+  padding: 3px 4px;
+  gap: 2px 4px;
+  font-size: clamp(8px, 1vw, 12px);
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.battle-commands .command-option small {
+  min-width: 0;
+  max-width: 48%;
+  margin-left: auto;
+  font-size: clamp(7px, .8vw, 10px);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.union-panel,
+.union-list {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.command-hint {
+  flex: 0 0 auto;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  font-size: clamp(8px, .9vw, 10px);
+}
+
+@media (max-width: 700px) {
+  .battle-bottom {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+    gap: 4px;
+  }
+
+  .command-window,
+  .log-window {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    padding: 5px;
+    overflow: visible;
+  }
+
+  .battle-commands {
+    max-height: none;
+    height: auto;
+    overflow: visible;
+  }
+
+  .battle-commands .command-option {
+    min-height: 22px;
+    padding: 2px 3px;
+    font-size: clamp(7px, 2.1vw, 10px);
+  }
+
+  .battle-commands .command-option small {
+    font-size: clamp(7px, 1.7vw, 9px);
+  }
+
+  .command-hint {
+    max-height: none;
+    font-size: clamp(7px, 1.8vw, 9px);
+  }
+}
+
