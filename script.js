@@ -4,7 +4,6 @@
 const PARTY_LIMIT = 4;
 // 追加ゲームシステム・第1段階の数値設定。調整時はここを変更する。
 // 戦闘バランス設定は data/battle-rules.js に分離。
-};
 // キャラクター・ユニオンスキルの定義は data/characters.js に分離。
 if(typeof extInstallCharacters==="function")extInstallCharacters(characters);
 const state={screen:"home",gold:50,maxUnlockedStage:1,firstStageStarted:false,party:["kotama","knight","mage","healer"]};
@@ -18,7 +17,6 @@ const compendium = Object.fromEntries(["スライム","ゴブリン","オオカ�
 const eventRead = {};
 let hiddenBossFirstClear=false;
 // ストーリーイベント定義は data/progression.js に分離。
-];
 const growth={};
 characters.forEach(c=>growth[c.id]={spent:{maxHp:0,attack:0,defense:0,maxSp:0,spAttack:0,spDefense:0},unspent:0});
 // レベル値は既存仕様に経験値・必要経験値がないため初期値のみ管理する。
@@ -27,9 +25,7 @@ const characterLevels={};
 characters.forEach(c=>characterLevels[c.id]=1);
 // 成長配分の編集中データ。確定するまで実際の能力値・セーブデータには反映しない。
 // 成長配分の設定は data/progression.js に分離。
-;
 // 第4段階：実績・討伐数・最高ランク・使用職業の永続記録
-];
 const achievementUnlocked={};
 let totalEnemyDefeats=0;
 let bestRanks={};
