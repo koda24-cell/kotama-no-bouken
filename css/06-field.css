@@ -314,3 +314,22 @@
 .field-object[data-sprite="boss-gate"] .field-object-sprite{background-image:url("../assets/field/boss-gate.svg")}
 .field-object[data-sprite="exit"] .field-object-sprite{background-image:url("../assets/field/exit.svg")}
 .field-object[data-kind="chest"].is-opened .field-object-sprite{background-image:url("../assets/field/chest-open.svg");opacity:.82}
+
+
+/* ---------- コタマ：4方向×4コマの歩行スプライト ---------- */
+#field-player{--frame-x:0px;--frame-y:0px}
+#field-player[data-dir="down"]{--frame-y:0px}
+#field-player[data-dir="left"]{--frame-y:-40px}
+#field-player[data-dir="right"]{--frame-y:-80px}
+#field-player[data-dir="up"]{--frame-y:-120px}
+#field-player[data-step="0"]{--frame-x:0px}
+#field-player[data-step="1"]{--frame-x:-32px}
+#field-player[data-step="2"]{--frame-x:-64px}
+#field-player[data-step="3"]{--frame-x:-96px}
+#field-player .field-player-sprite{
+  background-image:url("../assets/field/kotama-walk.svg");
+  background-position:var(--frame-x) var(--frame-y);
+  background-size:128px 160px;background-repeat:no-repeat;
+  image-rendering:pixelated;filter:none;transform:none;translate:0 0;
+}
+#field-player[data-moving="true"] .field-player-sprite{animation:none}
