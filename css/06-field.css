@@ -58,7 +58,7 @@
 .field-hud strong{color:var(--gold,#d8b45a);font-size:14px;letter-spacing:.06em;white-space:nowrap}
 .field-hint{color:#aebbd4;font-size:11px;margin-right:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .field-home-button{padding:5px 10px;border:1px solid #8da0c477;border-radius:5px;background:#17266f;color:#fff;font-size:12px;white-space:nowrap}
-.field-viewport{position:relative;height:min(58vh,560px);min-height:300px;border:2px solid #222b52;border-radius:8px;background:#05070f;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.field-viewport{position:relative;height:min(68vh,720px);min-height:420px;border:2px solid #222b52;border-radius:8px;background:#05070f;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
 .field-map{position:absolute;left:0;top:0;transform-origin:0 0;image-rendering:pixelated;will-change:transform}
 .field-tiles{position:absolute;inset:0}
 .field-tile{position:absolute;width:var(--tile,32px);height:var(--tile,32px);display:block}
@@ -141,14 +141,14 @@
 
 /* バーチャルパッド（仮） */
 .field-pad{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:0 6px;touch-action:none;user-select:none;-webkit-user-select:none}
-.field-dpad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:2px}
+.field-dpad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,64px);gap:3px}
 .field-dpad button{border:2px solid #8da0c4aa;border-radius:10px;background:#16204ad9;color:#dce7ff;font-size:18px;touch-action:none}
 .field-dpad button.is-pressed{background:#2f4196;border-color:#fff}
 .field-dpad [data-dir="up"]{grid-column:2;grid-row:1}
 .field-dpad [data-dir="left"]{grid-column:1;grid-row:2}
 .field-dpad [data-dir="right"]{grid-column:3;grid-row:2}
 .field-dpad [data-dir="down"]{grid-column:2;grid-row:3}
-.field-action{width:72px;height:72px;border:3px solid var(--gold,#d8b45a);border-radius:50%;background:#3a2a10;color:var(--gold,#d8b45a);font-size:22px;font-weight:900;touch-action:none}
+.field-action{width:88px;height:88px;border:3px solid var(--gold,#d8b45a);border-radius:50%;background:#3a2a10;color:var(--gold,#d8b45a);font-size:22px;font-weight:900;touch-action:none}
 .field-action.is-ready{box-shadow:0 0 0 3px #ffe27a55,0 0 14px #ffd34d}
 @media(hover:hover) and (pointer:fine) and (min-width:900px){
   .field-pad{opacity:.55}
@@ -157,6 +157,17 @@
 }
 @media(max-width:560px){
   .field-hint{display:none}
-  .field-viewport{height:min(52vh,460px)}
+  .field-viewport{height:min(62vh,560px);min-height:360px}
   .field-dialog-text{font-size:14px}
 }
+
+/* 素材売却 */
+.material-sell-panel{margin:12px 0;padding:12px;border:1px solid #8da0c455;border-radius:8px;background:#101a36}
+.material-sell-panel h3{margin:0 0 6px}
+.material-sell-panel>p{margin:0 0 8px;color:#aebbd4;font-size:12px}
+.material-sell-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.material-sell-list article{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid #8da0c433;border-radius:6px;background:#0b1228}
+.material-sell-list article span{flex:1;min-width:0;font-size:12px}
+.material-sell-list article strong{color:var(--gold,#d8b45a);white-space:nowrap}
+.material-sell-list article button{padding:5px 8px;border:1px solid #8da0c4;border-radius:5px;background:#24376a;color:#fff;font-size:11px;white-space:nowrap}
+@media(max-width:560px){.field-dpad{grid-template-columns:repeat(3,58px);grid-template-rows:repeat(3,58px)}.field-action{width:78px;height:78px}}
