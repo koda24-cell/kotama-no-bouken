@@ -19,6 +19,17 @@
 function extInstallCharacters(characters) {
   for (const job of EXT_NEW_JOBS) characters.push(JSON.parse(JSON.stringify(job)));
   for (const c of characters) if (!Number.isFinite(c.speed)) c.speed = EXT_JOB_SPEED[c.id] ?? 50;
+  // インペリアル専用パネル（script.js の renderImperialStatus）との接続口。
+  // パネルは heatGauge / overheated / exposed という標準名で状態を読むため、内部の _heat / _overheat / _xjCharge を読み取り専用で公開する。
+  // enumerable:false なので、セーブデータや JSON には含まれない。
+  const imperial = characters.find(c => c.id === "imperial");
+  if (imperial) {
+    Object.defineProperties(imperial, {
+      heatGauge: { get() { return this._heat || 0; }, enumerable: false },
+      overheated: { get() { return this._overheat === true; }, enumerable: false },
+      exposed: { get() { return !!this._xjCharge; }, enumerable: false }
+    });
+  }
 }
 function extInstallItems(shopItems, enhancementMaterials) {
   const known = new Set(shopItems.map(i => i.id));

@@ -14,6 +14,12 @@ if(typeof extInstallItems==="function")extInstallItems(shopItems,enhancementMate
 for(const r of recipes)shopItems.push({...r,category:"weapon",craftedOnly:true,description:"素材から製作する武器。",effect:r.attackBonus?`攻撃力 +${r.attackBonus}`:`SP攻撃力 +${r.spAttackBonus}`,unlock:99});
 const compendium = Object.fromEntries(["スライム","ゴブリン","オオカミ","ドラゴン","魔王","混沌の幻影"].map(name=>[name,{encountered:false,defeated:false}]));
 const eventRead = {};
+// [integration] PR #2 のコードが使っているが、PR #2 に宣言が無かったため、統合時に追加した（GPT確認待ち）。
+// BGM_TRACK_KEYS は index.html のサウンドトラック一覧(data-track)と同じ16曲。初期解放は loadGame() と同じ home / normal のみ。
+// ※ storySword / storySanctum を解放する処理は PR #2 に無いため、現状は未解放のまま。解放条件はGPTが決める。
+const BGM_TRACK_KEYS=["arc","overture","ending","dragonDeckrail","dragonDerringer","hiddenZero","hiddenAgainst","hiddenSwirling","goblinSoldiers","goblinLeathers","slimeLower","slimeSakura","storySword","storySanctum","home","normal"];
+const bgmUnlocks={home:true,normal:true};
+const enemyEncounterCounts={};
 let hiddenBossFirstClear=false;
 // ストーリーイベント定義は data/progression.js に分離。
 const growth={};
@@ -495,6 +501,7 @@ function renderEnemyAnalysis(){
     "<div class=\"enemy-analysis-grid\"><span>"+(e.members?"HP（1体）":"HP")+" <b>"+value(hp)+"</b></span><span>ATK <b>"+value(data.attack)+"</b></span><span>DEF <b>"+value(data.defense)+"</b></span><span>SP DEF <b>"+value(spDefense)+"</b></span>"+
     "<span class=\"enemy-analysis-wide\">弱点 <b>"+list(data.weaknesses)+"</b></span><span class=\"enemy-analysis-wide\">耐性 <b>"+list(resistances)+"</b></span></div>"+
     "<small>"+(known?"2回目以降の遭遇により敵情報が開示されています。":"初回遭遇：？？？　もう一度遭遇すると情報が開示されます。")+"</small>";
+  box.hidden=false;// [integration] PR #2 では hidden のままで表示されなかったため追加（GPT確認待ち）
   box.classList.toggle("is-analyzed",known);
 }
 function renderImperialStatus(){
