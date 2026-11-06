@@ -430,6 +430,7 @@ async function extDamageSkill(actor, skill, a, x, mult) {
   return total;
 }
 async function extExecuteSkill(actor, skill, a) {
+  if (extSkillBlocked(actor, skill)) { pushEvent(`${actor.name}は封じ状態のためスキルを使えない！`, "warning"); return; }
   const x = skill.xj;
   if (x.buff) {
     for (const t of getParty().filter(c => c.hp > 0)) for (const [type, cfg] of Object.entries(x.buff)) addStatus(t, type, cfg);
