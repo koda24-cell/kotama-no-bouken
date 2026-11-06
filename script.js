@@ -501,8 +501,9 @@ function renderEnemyAnalysis(){
     "<div class=\"enemy-analysis-grid\"><span>"+(e.members?"HP（1体）":"HP")+" <b>"+value(hp)+"</b></span><span>ATK <b>"+value(data.attack)+"</b></span><span>DEF <b>"+value(data.defense)+"</b></span><span>SP DEF <b>"+value(spDefense)+"</b></span>"+
     "<span class=\"enemy-analysis-wide\">弱点 <b>"+list(data.weaknesses)+"</b></span><span class=\"enemy-analysis-wide\">耐性 <b>"+list(resistances)+"</b></span></div>"+
     "<small>"+(known?"2回目以降の遭遇により敵情報が開示されています。":"初回遭遇：？？？　もう一度遭遇すると情報が開示されます。")+"</small>";
-  box.hidden=false;// [integration] PR #2 では hidden のままで表示されなかったため追加（GPT確認待ち）
+  box.hidden=true;// [ANALYZE] 常時表示をやめ、画面端の「敵」「味方」ボタンから開くパネル（analyze-panel.js）で表示する
   box.classList.toggle("is-analyzed",known);
+  if(typeof renderAnalyzePanel==="function")renderAnalyzePanel();// [ANALYZE]
 }
 function renderImperialStatus(){
   const panel=$("imperial-status-panel");if(!panel)return;
