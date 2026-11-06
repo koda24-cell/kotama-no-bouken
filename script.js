@@ -615,7 +615,7 @@ function getTrainingUpgradeEligibility(charId,nodeId){
   const tree=skillTreeDefinitions[charId],node=treeNodes(charId).find(n=>n.id===nodeId);
   if(!tree||!node)return {allowed:false,reasons:["スキル情報を確認できません。"],cost:1};
   const isNew=newTreeCharacterIds.includes(charId),passive=tree.passive,a=tree.a,b=tree.b,derived=tree.derived;
-  const lv=getTreeLevel(charId,nodeId),level=getTreeLevel(charId,passive.id),la=getTreeLevel(charId,a.id),lb=getTreeLevel(charId,b.id);
+  const lv=getTreeLevel(charId,nodeId),level=characterLevels[charId]||1,la=getTreeLevel(charId,a.id),lb=getTreeLevel(charId,b.id);
   const max=isNew?10:(node===a||node===b?5:1),cost=node===derived&&!isNew?2:1,reasons=[];
   const stageForLevel=n=>n===0?1:n<=2?2:n===3?3:n===4?4:5;
   if(lv>=max)reasons.push("最大レベルに到達しています。");
