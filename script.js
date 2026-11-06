@@ -1970,7 +1970,9 @@ async function enemyTurn(){
   const taunt=alive.find(c=>c.id===battleState.tauntTarget);
   const rearIds=new Set(["mage","healer"]);
   const rear=alive.filter(c=>rearIds.has(c.id));
+  // 挑発は敵の単体通常攻撃より優先。挑発対象が戦闘不能なら通常の標的選択へ戻す。
   let target=taunt||(e.name==="オオカミ"?(alive.find(c=>c.id===battleState.wolfLastTargetId)||rear[Math.floor(Math.random()*Math.max(1,rear.length))]||alive[Math.floor(Math.random()*alive.length)]):alive[Math.floor(Math.random()*alive.length)]);
+  if(taunt)pushEvent(`${e.name}は騎士の挑発に引き寄せられた！ ${taunt.name}を狙っている！`,"warning");
   let stats=effectiveStats(target);if(target.id==="kotama"&&target.hp<=stats.maxHp*BATTLE_RULES.passives.kotama.threshold)stats={...stats,defense:Math.floor(stats.defense*BATTLE_RULES.passives.kotama.lowHpDefense)};
   const sp=(e.name==="魔王"&&Math.random()>=.7);
   let damage=sp?calcSp(e.spAttack||0,e.spDefense??Math.floor(e.defense/2),!!battleState.guarding[target.id]):calcPhysical(e.attack,stats.defense,!!battleState.guarding[target.id]);
