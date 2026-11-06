@@ -178,7 +178,7 @@
 .field-map{image-rendering:pixelated}
 .field-player{transition:none!important}
 .field-player[data-moving="true"] .field-player-sprite{animation:field-step-tap 140ms steps(2,end)}
-@keyframes field-step-tap{0%{filter:brightness(1.25);transform:translateY(-1px)}100%{filter:brightness(1);}}
+@keyframes field-step-tap{0%{filter:brightness(1.25)}100%{filter:brightness(1);}}
 .field-minimap{border:1px solid #d2b879;background:#07111aee;border-radius:2px;box-shadow:0 2px 10px #000b}
 .field-fullmap{border:2px solid #b89b61;border-radius:3px;background:#081522f5}
 .field-fullmap-head strong{color:#e8d6a2}
