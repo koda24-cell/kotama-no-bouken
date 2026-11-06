@@ -1406,6 +1406,15 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
   if(ai.some(x=>x.target==="rear"))tendencies.push("後衛狙い");
   if(ai.some(x=>x.drain))tendencies.push("HP吸収");
   if(ai.some(x=>x.heal))tendencies.push("自己回復");
+  const scriptedTraits={
+    "スライム":["物理耐性","防御低下"],
+    "ゴブリン":["予告付き強打","連携攻撃"],
+    "オオカミ":["分身","回避上昇"],
+    "ドラゴン":["全体炎ブレス","HP半分で強化"],
+    "魔王":["段階変化","全体闇攻撃"],
+    "混沌の幻影":["形態変化","行動封じ"]
+  };
+  for(const label of (scriptedTraits[e.name]||[]))if(!tendencies.includes(label))tendencies.push(label);
   if(tendencies.length)traitTags.push(`<span class="enemy-trait enemy-trait-pattern">${esc(tendencies.join(" / "))}</span>`);
   traits.innerHTML=traitTags.join("");traits.hidden=traitTags.length===0;
   const liveWolfClones=(battleState.wolfClones||[]).filter(c=>c.hp>0);const splitWolf=e.name==="オオカミ"&&liveWolfClones.length>0;
