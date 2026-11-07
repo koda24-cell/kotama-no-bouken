@@ -24,6 +24,7 @@ export async function loadField3DAssets({
   const entries = Object.entries(manifest);
   const assets = Object.create(null);
   const errors = [];
+  let completedCount = 0;
 
   await Promise.all(entries.map(async ([key, descriptor]) => {
     const url = typeof descriptor === "string" ? descriptor : descriptor?.url;
@@ -69,11 +70,13 @@ export async function loadField3DAssets({
           return instance;
         }
       });
-      onProgress?.({ key, url, status: "loaded", completed: Object.keys(assets).length, total: entries.length });
+      completedCount += 1;
+      onProgress?.({ key, url, status: "loaded", completed: completedCount, loaded: Object.keys(assets).length, total: entries.length });
     } catch (error) {
       errors.push({ key, url, error });
       onAssetError?.({ key, url, error });
-      onProgress?.({ key, url, status: "error", completed: Object.keys(assets).length, total: entries.length });
+      completedCount += 1;
+      onProgress?.({ key, url, status: "error", completed: completedCount, loaded: Object.keys(assets).length, total: entries.length });
     }
   }));
 
@@ -81,6 +84,7 @@ export async function loadField3DAssets({
     assets: Object.freeze(assets),
     errors: Object.freeze(errors),
     loadedCount: Object.keys(assets).length,
+    completedCount,
     totalCount: entries.length
   });
 }
