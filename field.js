@@ -181,7 +181,7 @@ function fieldEnsureExtraDom() {
     const legend = document.createElement("div");
     legend.id = "field-minimap-legend";
     legend.className = "field-minimap-legend";
-    legend.innerHTML = '<span><i class="mini-player"></i>現在地</span><span><i class="mini-foe"></i>FOE巡回</span><span><i class="mini-chase"></i>FOE追跡</span>';
+    legend.innerHTML = '<span><i class="mini-player"></i>現在地</span><span><i class="mini-stairs"></i>階段</span><span><i class="mini-chest"></i>宝箱</span><span><i class="mini-gather"></i>採集</span><span><i class="mini-foe"></i>FOE巡回</span><span><i class="mini-chase"></i>FOE追跡</span>';
     $("field-minimap")?.insertAdjacentElement("afterend", legend);
   }
 }
@@ -252,52 +252,85 @@ function fieldMapColor(a, c) {
 }
 function fieldDrawMap(canvas, cell, full) {
   const a = fieldArea(); if (!canvas || !a) return;
-  const W = a.w * cell, H = a.h * cell, dpr = Math.min(2, window.devicePixelRatio || 1);
-  if (canvas.width !== W * dpr) { canvas.width = W * dpr; canvas.height = H * dpr; canvas.style.width = W + "px"; canvas.style.height = H + "px"; }
-  const g = canvas.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
-  const exp = fieldExplored(a);
-  for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) {
-    if (!exp[y * a.w + x]) continue;
-    const visible = fieldState.visible?.has(`${x},${y}`) || false;
-    g.fillStyle = fieldMapColor(a, fieldTileAt(a, x, y)); g.fillRect(x * cell, y * cell, cell, cell);
+  const local = !full, radius = 4;
+  const { tx: playerTx, ty: playerTy } = fieldPlayerTile();
+  const originX = local ? playerTx - radius : 0, originY = local ? playerTy - radius : 0;
+  const cols = local ? radius * 2 + 1 : a.w, rows = local ? radius * 2 + 1 : a.h;
+  const W = cols * cell, H = rows * cell, dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (canvas.width !== W * dpr || canvas.height !== H * dpr) {
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  }
+  const g = canvas.getContext("2d"), exp = fieldExplored(a);
+  g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  g.fillStyle = "#030912"; g.fillRect(0, 0, W, H);
+  const inWindow = (x, y) => x >= originX && y >= originY && x < originX + cols && y < originY + rows;
+  for (let my = 0; my < rows; my++) for (let mx = 0; mx < cols; mx++) {
+    const x = originX + mx, y = originY + my, sx = mx * cell, sy = my * cell;
+    g.fillStyle = "#07111c"; g.fillRect(sx, sy, cell, cell);
+    g.strokeStyle = "rgba(105,132,153,.16)"; g.lineWidth = .6; g.strokeRect(sx + .3, sy + .3, cell - .6, cell - .6);
+    if (x < 0 || y < 0 || x >= a.w || y >= a.h || !exp[y * a.w + x]) continue;
+    const visible = fieldState.visible?.has(x + "," + y) || false;
+    g.fillStyle = fieldMapColor(a, fieldTileAt(a, x, y)); g.fillRect(sx, sy, cell, cell);
     if (visible) {
-      g.fillStyle = "rgba(255,231,151,.24)"; g.fillRect(x * cell, y * cell, cell, cell);
-      g.strokeStyle = "rgba(255,224,125,.72)"; g.lineWidth = Math.max(.7, cell * .09); g.strokeRect(x * cell + .5, y * cell + .5, Math.max(0, cell - 1), Math.max(0, cell - 1));
+      g.fillStyle = "rgba(255,231,151,.24)"; g.fillRect(sx, sy, cell, cell);
+      g.strokeStyle = "rgba(255,224,125,.86)";
     } else {
-      g.fillStyle = "rgba(2,8,16,.42)"; g.fillRect(x * cell, y * cell, cell, cell);
+      g.fillStyle = "rgba(2,8,16,.48)"; g.fillRect(sx, sy, cell, cell);
+      g.strokeStyle = "rgba(0,0,0,.28)";
     }
-    if (full && fieldTileAt(a, x, y) !== "#") { g.strokeStyle = visible ? "rgba(255,224,125,.48)" : "rgba(0,0,0,.2)"; g.lineWidth = 1; g.strokeRect(x * cell + .5, y * cell + .5, cell - 1, cell - 1); }
+    g.lineWidth = Math.max(.7, cell * .08); g.strokeRect(sx + .5, sy + .5, Math.max(0, cell - 1), Math.max(0, cell - 1));
+    if (fieldTileAt(a, x, y) === "#") {
+      g.strokeStyle = visible ? "rgba(225,235,247,.24)" : "rgba(0,0,0,.32)";
+      g.lineWidth = Math.max(.7, cell * .1); g.strokeRect(sx + 1, sy + 1, Math.max(0, cell - 2), Math.max(0, cell - 2));
+    }
   }
   const dot = (x, y, color, size = .62, shape = "circle") => {
-    g.fillStyle = color; const cx = (x + .5) * cell, cy = (y + .5) * cell, r = cell * size / 2;
+    if (!inWindow(x, y)) return;
+    g.fillStyle = color;
+    const cx = (x - originX + .5) * cell, cy = (y - originY + .5) * cell, r = cell * size / 2;
     if (shape === "square") g.fillRect(cx - r, cy - r, r * 2, r * 2);
-    else if (shape === "triangle") { g.beginPath(); g.moveTo(cx, cy - r * 1.2); g.lineTo(cx + r, cy + r * .8); g.lineTo(cx - r, cy + r * .8); g.closePath(); g.fill(); }
-    else { g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill(); }
+    else if (shape === "diamond") {
+      g.beginPath(); g.moveTo(cx, cy - r); g.lineTo(cx + r, cy); g.lineTo(cx, cy + r); g.lineTo(cx - r, cy); g.closePath(); g.fill();
+    } else if (shape === "triangle" || shape === "triangle-down") {
+      g.beginPath();
+      if (shape === "triangle") { g.moveTo(cx, cy - r * 1.2); g.lineTo(cx + r, cy + r * .8); g.lineTo(cx - r, cy + r * .8); }
+      else { g.moveTo(cx - r, cy - r * .8); g.lineTo(cx + r, cy - r * .8); g.lineTo(cx, cy + r * 1.2); }
+      g.closePath(); g.fill();
+    } else { g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill(); }
   };
   for (const o of a.objects) {
-    if (!exp[o.ty * a.w + o.tx]) continue;
-    if (o.kind === "stairs") { dot(o.tx, o.ty, "#ffd84a", .8, "square"); if (full) { g.fillStyle = "#222"; g.font = `bold ${Math.floor(cell * .7)}px sans-serif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(o.dir === "up" ? "▲" : "▼", (o.tx + .5) * cell, (o.ty + .55) * cell); } }
-    else if (o.kind === "save") dot(o.tx, o.ty, "#ffe27a", .8);
-    else if (o.kind === "chest") dot(o.tx, o.ty, fieldState.flags[o.key] ? "#7a6a55" : "#ff9a3c", .7, "square");
-    else if (o.kind === "gather") dot(o.tx, o.ty, (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES ? "#5d7a5d" : "#3ee07a", .7);
-    else if (o.kind === "npc" || o.kind === "sign") dot(o.tx, o.ty, "#c7a3ff", .7, "square");
+    if (!inWindow(o.tx, o.ty) || !exp[o.ty * a.w + o.tx]) continue;
+    if (o.kind === "stairs") {
+      dot(o.tx, o.ty, "#ffd84a", .84, o.dir === "up" ? "triangle" : "triangle-down");
+      if (full) {
+        g.fillStyle = "#222"; g.font = "bold " + Math.floor(cell * .7) + "px sans-serif";
+        g.textAlign = "center"; g.textBaseline = "middle";
+        g.fillText(o.dir === "up" ? "▲" : "▼", (o.tx + .5) * cell, (o.ty + .55) * cell);
+      }
+    } else if (o.kind === "save") dot(o.tx, o.ty, "#ffe27a", .8);
+    else if (o.kind === "chest") dot(o.tx, o.ty, fieldState.flags[o.key] ? "#7a6a55" : "#ff9a3c", .76, "square");
+    else if (o.kind === "gather") dot(o.tx, o.ty, (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES ? "#5d7a5d" : "#3ee07a", .76);
+    else if (o.kind === "npc" || o.kind === "sign") dot(o.tx, o.ty, "#c7a3ff", .72, "square");
     else if (o.kind === "gate") dot(o.tx, o.ty, "#ff3030", .9);
-    else if (o.kind === "exit") { dot(o.tx, o.ty, "#fff4c2", .9, "square"); if (full) { g.strokeStyle = "#5a4720"; g.lineWidth = Math.max(1, cell * .12); g.strokeRect(o.tx * cell + cell * .2, o.ty * cell + cell * .2, cell * .6, cell * .6); } }
+    else if (o.kind === "exit") dot(o.tx, o.ty, "#fff4c2", .9, "square");
+    else if (o.kind === "door") dot(o.tx, o.ty, o.opened ? "#63d6dc" : "#f0c36a", .82, "square");
+    else if (o.kind === "hiddenPassage" || o.kind === "hidden-passage") dot(o.tx, o.ty, "#c68cff", .82, "diamond");
   }
   for (const foe of fieldState.foes) {
     if (foe.defeated) continue;
     const fx = Math.floor(foe.x / FIELD_TILE), fy = Math.floor(foe.y / FIELD_TILE);
-    if (exp[fy * a.w + fx]) dot(fx, fy, foe.mode === "chase" ? "#ff3030" : "#ffad45", .94, foe.mode === "chase" ? "triangle" : "circle");
+    if (inWindow(fx, fy) && exp[fy * a.w + fx]) dot(fx, fy, foe.mode === "chase" ? "#ff3030" : "#ffad45", .94, foe.mode === "chase" ? "triangle" : "circle");
   }
-  const { tx, ty } = fieldPlayerTile();
-  g.save(); g.translate((fieldState.x / FIELD_TILE) * cell, (fieldState.y / FIELD_TILE) * cell);
-  g.rotate({ up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 }[fieldState.dir] || 0);
+  g.save();
+  g.translate((fieldState.x / FIELD_TILE - originX) * cell, (fieldState.y / FIELD_TILE - originY) * cell);
+  g.rotate({up:0,right:Math.PI/2,down:Math.PI,left:-Math.PI/2}[fieldState.dir] || 0);
   g.fillStyle = "#fff"; g.strokeStyle = "#000"; g.lineWidth = Math.max(1, cell / 8);
-  g.beginPath(); g.moveTo(0, -cell * .55); g.lineTo(cell * .42, cell * .4); g.lineTo(-cell * .42, cell * .4); g.closePath(); g.stroke(); g.fill(); g.restore();
-  void tx; void ty;
+  g.beginPath(); g.moveTo(0, -cell * .55); g.lineTo(cell * .42, cell * .4); g.lineTo(-cell * .42, cell * .4); g.closePath();
+  g.stroke(); g.fill(); g.restore();
 }
 function fieldDrawMinimap() {
-  fieldDrawMap($("field-minimap"), 4, false);
+  fieldDrawMap($("field-minimap"), 12, false);
   const a = fieldArea(), status = $("field-minimap-status");
   if (!a || !status) return;
   const { tx, ty } = fieldPlayerTile();
@@ -307,7 +340,7 @@ function fieldDrawMinimap() {
     return fieldState.visible?.has(`${fx},${fy}`);
   });
   const chasing = visible.filter(f => f.mode === "chase").length;
-  status.textContent = `座標 ${tx + 1}, ${ty + 1}　/　視界内FOE ${visible.length}（追跡 ${chasing}）`;
+  status.textContent = `周囲9×9　座標 ${tx + 1}, ${ty + 1}　/　視界内FOE ${visible.length}（追跡 ${chasing}）`;
 }
 function fieldDrawFullMap() {
   const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
