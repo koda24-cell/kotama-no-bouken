@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="./css/05-progression-and-boss.css?v=20261106-11">
   <link rel="stylesheet" href="./css/06-field.css?v=20261107-06">
   <link rel="stylesheet" href="./css/07-labyrinth.css?v=20261107-34">
+  <link rel="stylesheet" href="./css/08-cartography-ui.css?v=20261107-01">
   <link rel="stylesheet" href="./style.css?v=20261107-13">
   <script src="./data/battle-rules.js?v=20261106-11" defer></script>
   <script src="./data/progression.js?v=20261106-11" defer></script>
@@ -29,7 +30,7 @@
   <script src="./script.js?v=20261107-07" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
   <script src="./analyze-panel.js?v=20261106-15" defer></script>
   <script src="./level.js?v=20261106-15" defer></script>
-  <script src="./field.js?v=20261107-04" defer></script>
+  <script src="./field.js?v=20261107-05" defer></script>
   <script src="./monster-compendium.js?v=20261106-19" defer></script>
 </head>
 <body>
@@ -219,7 +220,7 @@
           </div>
           <aside class="field-map-rail" aria-label="探索マップ">
             <strong>MAP</strong>
-            <span>踏破した場所が記録されます</span>
+            <span>周囲9×9マスを表示。タップで全体マップを開きます。</span>
           </aside>
         </div>
         <div id="field-pad" class="field-pad" aria-label="移動パッド">
