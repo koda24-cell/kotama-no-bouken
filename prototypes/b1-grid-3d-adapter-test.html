@@ -72,8 +72,8 @@ if(snapshot.objects.length!==area.objects.length) throw new Error("3D snapshot o
 if(snapshot.foes.length!==foes.length) throw new Error("3D snapshot FOE count does not match the floor definitions.");
 if(!startCell||startCell.solid) throw new Error("Resolved field start tile is not walkable.");
 const host=document.querySelector("#view");
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x08120e);scene.fog=new THREE.FogExp2(0x15271c,.038);
-const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.08,110);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x08120e);scene.fog=new THREE.FogExp2(0x15271c,.052);
+const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.08,28);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;host.appendChild(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xa5c6a5,0x17120e,1.15));
@@ -117,7 +117,7 @@ for(const cell of snapshot.cells.filter(c=>c.terrain==="grass").slice(0,14)){
  crystal.position.set(cell.world.x,.38,cell.world.z);scene.add(crystal);
 }
 const tileMap=new Map(snapshot.cells.map(c=>[c.tx+","+c.ty,c]));
-document.querySelector("#msg").textContent=`実マップ ${width}×${grid.length} / Objects ${snapshot.objects.length} / FOE ${snapshot.foes.length} / 壁 ${snapshot.cells.filter(c=>c.solid).length}マス`;\ndocument.querySelector("#msg").textContent=`実マップ ${width}×${grid.length} / 開始位置 ${start.tx},${start.ty} / 壁 ${snapshot.cells.filter(c=>c.solid).length}マス`;
+document.querySelector("#msg").textContent=`実マップ ${width}×${grid.length} / 開始位置 ${start.tx},${start.ty} / Objects ${snapshot.objects.length} / FOE ${snapshot.foes.length} / 壁 ${snapshot.cells.filter(c=>c.solid).length}マス`;
 let tx=start.tx,ty=start.ty,dir="up",turning=false;
 const yaw={up:0,right:-Math.PI/2,down:Math.PI,left:Math.PI/2};
 function syncCamera(){const p=snapshot.cells.find(c=>c.tx===tx&&c.ty===ty).world;camera.position.set(p.x,1.68,p.z);camera.rotation.set(0,yaw[dir],0);}
