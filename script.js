@@ -1028,6 +1028,12 @@ async function beginStageCore(){
   $("battle-support").hidden=false;
   $("event-log").replaceChildren();
   const floorNames=["はじまりの樹海","ゴブリンの森","霧の森","炎竜の巣","魔王城・回廊"];
+  const battleScreen=$("battle");
+  if(battleScreen){
+    battleScreen.classList.toggle("is-boss-battle",!battleState.encounterMode);
+    if(!battleState.encounterMode){battleScreen.dataset.bossStage=String(battleState.stage);battleScreen.dataset.bossName=battleState.enemy.name;}
+    else{delete battleScreen.dataset.bossStage;delete battleScreen.dataset.bossName;}
+  }
   $("stage-title").textContent=battleState.encounterMode?"ENCOUNTER"/* [FIELD] */:battleState.hiddenBossMode?"HIDDEN BOSS":`第${battleState.stage}階層　${floorNames[battleState.stage-1]||"未踏の迷宮"}`;
   renderStageEnvironment(battleState.stage);
   $("battle-result").hidden=true;
@@ -1060,9 +1066,14 @@ async function beginStageCore(){
   if(battleState.encounterMode){arena?.classList.remove("stage-arrival-pending");await wait(250);}// [FIELD] 雑魚戦はステージ名の暗転を出さない
   else if(overlay){
     const title=$("stage-transition-title");
+    const kicker=$("stage-transition-kicker"),enemyLabel=$("stage-transition-enemy");
     title.textContent=isMaouStage?"魔王城・回廊":(floorNames[battleState.stage-1]||`第${battleState.stage}階層`);
     title.dataset.text=title.textContent;
-    overlay.classList.remove("playing","maou-stage","maou-clear");
+    if(kicker)kicker.textContent=battleState.hiddenBossMode?"HIDDEN THREAT":"BOSS ENCOUNTER";
+    if(enemyLabel)enemyLabel.textContent=battleState.enemy?.name||"";
+    overlay.dataset.stage=String(battleState.stage);
+    overlay.classList.remove("playing","maou-stage","maou-clear","boss-stage");
+    overlay.classList.add("boss-stage");
     overlay.classList.toggle("maou-stage",isMaouStage);
     overlay.hidden=false;
     overlay.setAttribute("aria-hidden","false");
@@ -1092,7 +1103,7 @@ async function beginStageCore(){
   // showScreen() already selected the correct track. Do not restart it here:
   // restarting the boss MP3 after the stage intro caused the audible dip.
   $("battle-support").textContent="コマンドを選ぶと説明がここに表示されます。全員の選択後、行動が順番に再生されます。";
-  pushEvent(`${battleState.enemy.name}が現れた！`);
+  pushEvent(`${battleState.enemy.name}が現れた！`,battleState.encounterMode?"":"boss-arrival");
   if(battleState.enemy.name==="ドラゴン")playSe(Math.random()<.5?"assets/se/tekikoudou/ドラゴンの鳴き声1":"assets/se/tekikoudou/ドラゴンの鳴き声2");
   renderBattle();
   if(battleState.enemy.name==="ドラゴン"){
