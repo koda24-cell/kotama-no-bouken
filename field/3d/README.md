@@ -24,9 +24,11 @@ const snapshot = buildField3DSnapshot({
   area,
   fieldState,
   tilePixels: FIELD_TILE,
-  isSolidChar: (mapArea, char) => fieldCharSolid(mapArea, char),
-  isDoorOpen: object => fieldDoorOpen(object),
-  isPuzzleSolved: id => fieldPuzzleSolved(id)
+  // field.js の実関数。ラッパーを挟まず、そのまま渡せる。
+  isSolidChar: fieldCharSolid,
+  isDoorOpen: fieldDoorOpen,
+  // field/field-puzzles.js の実関数。
+  isPuzzleSolved: fieldPuzzleSolved
 });
 const world = buildField3DWorld(THREE, snapshot);
 scene.add(world.group);
@@ -36,7 +38,7 @@ world.dispose();
 scene.remove(world.group);
 ```
 
-上記は接続イメージ。既存の実関数が利用可能なスクリプト順・スコープを確認してから本編へ接続すること。
+上記の関数名・引数は、現在の development に存在する実装と照合済み。`fieldCharSolid(area, char)` は扉の開閉も含む通行判定、`fieldDoorOpen(object)` は扉状態、`fieldPuzzleSolved(id)` は仕掛け解決状態を返す。いずれも読み取り専用で利用する。なお、この例はAPI確認用であり、本編への接続を実施したものではない。
 
 ## スナップショット契約
 
@@ -45,6 +47,7 @@ scene.remove(world.group);
 - `fieldState.foes`：既存FOE配列。tx/tyを優先し、未設定時はx/yから算出。
 - `fieldState.explored[area.key]`：既存探索済み配列を読み取り専用コピーとして出力。
 - `fieldState.visible`：既存可視範囲Setを配列化。
+- `fieldState.flags`：このAdapterでは変更しない。宝箱・採集・サブイベントの表示状態は、対応する既存状態関数を特定してから別途マッピングする。現段階では報酬・採集回数のゲーム処理を3D側へ複製しない。
 - 既存の`fieldCharSolid`を渡すことで、扉・壁付き仕掛けなどの判定を重複実装しない。
 
 ## 実マップ変換プレビュー
@@ -55,6 +58,7 @@ scene.remove(world.group);
 - 既存マップの壁・通路記号を利用した移動ブロック
 - 実マップから生成した簡易ミニマップ
 - 既存本編のfieldState・セーブ・イベントには接続しない
+- `area.objects` は空配列であり、NPC・宝箱・採集・扉の3Dオブジェクト描画テストではない
 
 ## 未実施の検証
 
