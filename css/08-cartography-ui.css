@@ -28,3 +28,5 @@
 .field-minimap-legend{grid-area:legend;align-self:start;gap:4px 6px;font-size:8px}
 }
 @media(max-width:380px){.field-map-rail{grid-template-columns:minmax(88px,30%) minmax(0,1fr);gap:3px 6px;padding:6px}.field-minimap-legend span{gap:3px}.field-minimap-legend i{flex-basis:8px;width:8px;height:8px}}
+.field-minimap-legend .mini-puzzle{background:#ff8ad8;transform:rotate(45deg);border-radius:1px}
+.field-minimap-legend .mini-secret{background:#63d6dc;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
