@@ -14,6 +14,7 @@ g.fieldTriggerFoeBattle = () => {}; g.fieldTriggerEncounter = () => {};
   const cache = a.objects.find(o => o.kind === "cache" && o.puzzle === "a1-lever-gate");
   ok(lever && door && cache, "移植したデータに仕掛けのスイッチ・扉・宝箱がある");
   ok(!g.fieldCanEnter(a, door.tx, door.ty), "解く前の扉は通れない");
+  ok(g.fieldWallLike(a, g.fieldTileAt(a, door.tx, door.ty)), "閉じた仕掛け扉は視界も遮る");
   ok(g.fieldWallLike(a, g.fieldTileAt(a, lever.tx, lever.ty)), "壁に付いたレバーは壁として扱う");
   await g.fieldInteract(door); ok(said.includes("scene:pz-a1-door"), "扉を調べるとヒントの会話");
   await g.fieldInteract(lever);
