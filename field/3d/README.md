@@ -49,6 +49,34 @@ scene.remove(world.group);
 
 上記の関数名・引数は、現在の development に存在する実装と照合済み。`fieldCharSolid(area, char)` は扉の開閉も含む通行判定、`fieldDoorOpen(object)` は扉状態、`fieldPuzzleSolved(id)` は仕掛け解決状態を返す。いずれも読み取り専用で利用する。なお、この例はAPI確認用であり、本編への接続を実施したものではない。
 
+
+## GLB / glTF素材の読み込み口
+
+`field-3d-asset-loader.js` は、将来制作する高品質なGLB素材を読み込むための任意モジュール。Three.js本体やGLTFLoaderの取得先を固定しないよう、呼び出し側から互換性のある `GLTFLoader` を注入する。
+
+```js
+import { loadField3DAssets } from "./field/3d/field-3d-asset-loader.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const result = await loadField3DAssets({
+  GLTFLoader,
+  manifest: {
+    ancientColumn: { url: "./assets/field-3d/ruins/column.glb", scale: 1 },
+    mossCluster: { url: "./assets/field-3d/nature/moss.glb", scale: 0.8 }
+  },
+  onAssetError: ({ key, url, error }) => console.warn("3D asset unavailable", key, url, error)
+});
+
+const column = result.assets.ancientColumn?.clone();
+if (column) scene.add(column);
+```
+
+- 読み込み失敗は個別に記録し、他の素材の読み込みを継続する。
+- `clone()` は配置ごとの独立したObject3Dを返す。元の読み込みシーンは変更しない。
+- GLTFLoaderは利用環境に合うものを呼び出し側で用意する。Three.jsのバージョン・CDN・ビルド方式をこのモジュールで固定しない。
+- この段階ではGLB実素材はまだ追加していない。仮素材を完成品として扱わず、素材制作後にmanifestへ登録する。
+- テクスチャ/ジオメトリの共有リソースを含むため、個別インスタンスの破棄時に共有material/geometryを不用意にdisposeしないこと。アセット全体の解放管理は本編統合時に設計する。
+
 ## スナップショット契約
 
 - `area.grid`：既存マップの文字グリッド。幅・高さはarea.w/area.hを利用。
