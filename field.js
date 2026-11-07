@@ -11,16 +11,20 @@
        ミニマップ／全体マップで確認できる。マップはセーブされる。
      ・エンカウントの危険度をHUDの色で表示（青→緑→黄→橙→赤）。
      ・FOE：マップ上に見えている強敵。プレイヤーが動いたときだけ動き、見つかると追ってくる。
-     ・採取ポイント：素材を拾える（1回の探索で2回まで。ホームに戻ると復活）。
+     ・採集ポイント：採取・伐採・採掘（各点2回まで。その点で最初に採集してから実時間30分で戻る。処理は Claude B の [LOOT]）。
    script.js からは「// [FIELD]」の目印を付けた短いフックでこのファイルの関数を呼ぶ。
    ============================================================ */
 
 const FIELD_TILE = 32;
-const FIELD_SPEED = 118;
+const FIELD_SPEED = 118;               // 旧：自由移動の速さ（現在は未使用。参照互換のため残す）
+const FIELD_STEP_MS = 150;             // [GRID] 1マス進むのにかかる時間（ミリ秒）。押しっぱなしで連続移動
 const FIELD_HIT = { halfW: 9, top: 7, bottom: 5 };
 const FIELD_VISION = 3.6;              // 視界の半径（マス）
 const FIELD_FOE_SIGHT = 4.5;           // FOEがプレイヤーに気づく距離（マス）
-const FIELD_FOE_SPEED = { patrol: 52, chase: 84 };   // プレイヤーが動いている間だけ、この速さで動く
+const FIELD_FOE_SPEED = { patrol: 52, chase: 84 };   // 旧：自由移動時のFOEの速さ（現在は未使用）
+// [FOE] ターン制のFOEルール。1ターン＝プレイヤーの1歩
+// graceSteps：逃走後にFOEを止める歩数。世界樹の迷宮どおり「FOEが移動前のマスへ戻る」だけにしたため 0（止めない）
+const FIELD_FOE_RULES = { loseTurns: 3, graceSteps: 0, nearSight: 1.5 };
 const FIELD_GATHER_USES = 2;
 const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);
 const FIELD_SAFE = new Set(["_", "P", "E", "B", "<", ">"]);
@@ -36,9 +40,12 @@ let fieldState = {
   explored: {},            // "area-floor" → Uint8Array（1=マッピング済み）
   visible: new Set(),      // 今見えているマス "x,y"
   foes: [], foeDefeated: {}, gatherUsed: {}, foeGraceUntil: 0,
-  lock: false, built: "", triggerTile: "", nearKey: "", positioned: false, mapOpen: false, lastTileKey: ""
+  lock: false, built: "", triggerTile: "", nearKey: "", positioned: false, mapOpen: false, lastTileKey: "",
+  turn: 0, foeGraceSteps: 0,   // [FOE] 経過ターン（歩数）・逃走後にFOEが止まっている残り歩数
+  foeContact: null,            // [FOE] FOE戦になった接触の記録（逃げたときに位置を戻すため）
+  view: null, stepUntil: 0     // [GRID] 描画用の位置（移動アニメーション）・次の1歩を受け付ける時刻
 };
-const fieldInput = { keys: new Set(), pad: new Set() };
+const fieldInput = { keys: new Set(), pad: new Set(), tap: null };   // tap：短い押下でも1歩進むための予約
 let fieldRaf = null, fieldLastTs = 0, fieldFrame = 0, fieldMiniDirty = true, fieldMiniTimer = 0;
 let fieldDialogAdvance = null, fieldDialogTyping = null, fieldChoiceState = null;
 const fieldAreaCache = {};
@@ -75,7 +82,15 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
     else if (c === "?") objects.push({ key: `sign:${key}:${tx}:${ty}`, kind: "sign", tx, ty, sprite: "sign", name: "看板", scene: def.signScene });
     else if (c === "B") objects.push({ key: `gate:${n}`, kind: "gate", tx, ty, sprite: "boss-gate", name: "", walk: true });
     else if (c === "E") objects.push({ key: `exit:${n}`, kind: "exit", tx, ty, sprite: "exit", name: "", walk: true });
-    else if (/[a-z]/.test(c) && def.objects && def.objects[c]) { const o = def.objects[c]; objects.push({ key: `npc:${n}:${o.id}`, kind: o.kind || "npc", tx, ty, sprite: o.sprite, name: o.name, scene: o.scene, id: o.id }); }
+    else if (/[a-z]/.test(c) && def.objects && def.objects[c]) {
+      const o = def.objects[c], kind = o.kind || "npc";
+      // [SIDE] kind:"event" はサブイベントの調べられる物。NPC は sideEvents を持てる
+      // [PUZZLE] kind:"switch"／"door"／"cache" は仕掛け。onWall は壁に付いた物（壁のマスに置く）
+      // [DOOR] kind:"door" は oneWay（片側からだけ開く）・requires（鍵）・hidden（隠し通路）を持てる
+      const keyKind = kind === "npc" || kind === "sign" ? "npc" : kind;
+      objects.push({ key: `${keyKind}:${n}:${o.id}`, kind, tx, ty, sprite: o.sprite, name: o.name, scene: o.scene, id: o.id, event: o.event, hidden: !!o.hidden, sideEvents: o.sideEvents || null, puzzle: o.puzzle || null, onWall: !!o.onWall,
+        oneWay: o.oneWay || null, requires: o.requires || null, lockedText: o.lockedText || "", askText: o.askText || "", openScene: o.openScene || "" });
+    }
   }));
   // P が無いフロアは、出口（1F）または上り階段の上から始める
   if (!grid.some(r => r.includes("P"))) { const exit = objects.find(o => o.kind === "exit"); if (exit) start = { tx: exit.tx, ty: exit.ty }; else if (up) start = { ...up }; }
@@ -83,13 +98,37 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
 }
 function fieldTileAt(a, tx, ty) { return (a.grid[ty] && a.grid[ty][tx]) || "#"; }
 function fieldIsSolidChar(c) { return FIELD_SOLID.has(c) || /[a-z]/.test(c); }
-function fieldSolidAt(a, px, py) { return fieldIsSolidChar(fieldTileAt(a, Math.floor(px / FIELD_TILE), Math.floor(py / FIELD_TILE))); }
+// [PUZZLE] マップ文字に対応する objects の定義（英小文字のみ）
+function fieldLetterDef(a, c) { return /[a-z]/.test(c) && a.def.objects ? a.def.objects[c] || null : null; }
+// [DOOR] 扉が開いているか。仕掛けの扉は解決フラグ（field/field-puzzles.js）、それ以外は "door:<ID>:open"（セーブされる）
+function fieldDoorOpen(o) {
+  if (!o) return true;
+  if (o.puzzle) return typeof fieldPuzzleSolved === "function" ? fieldPuzzleSolved(o.puzzle) : !!fieldState.flags[`puzzle:${o.puzzle}`];
+  return !!fieldState.flags[`door:${o.id}:open`];
+}
+// 扉は開くまで壁、開いた後は床として扱う
+function fieldCharSolid(a, c) { const o = fieldLetterDef(a, c); if (o && o.kind === "door") return !fieldDoorOpen(o); return fieldIsSolidChar(c); }
+function fieldSolidAt(a, px, py) { return fieldCharSolid(a, fieldTileAt(a, Math.floor(px / FIELD_TILE), Math.floor(py / FIELD_TILE))); }
+// [GRID] 通行判定（プレイヤー・FOE共通の入口）。who="foe" は安全地帯・階段・出口・他のFOEのマスにも入らない
+function fieldCanEnter(a, tx, ty, who = "player", self = null) {
+  if (!a || tx < 0 || ty < 0 || tx >= a.w || ty >= a.h) return false;
+  if (fieldCharSolid(a, fieldTileAt(a, tx, ty))) return false;
+  if (who === "foe") {
+    if (!fieldFoeWalkable(a, tx, ty)) return false;
+    if (fieldState.foes.some(f => f !== self && !f.defeated && f.tx === tx && f.ty === ty)) return false;
+  }
+  return true;
+}
 function fieldBoxBlocked(a, x, y) {
   const l = x - FIELD_HIT.halfW, r = x + FIELD_HIT.halfW - .01, t = y - FIELD_HIT.top, b = y + FIELD_HIT.bottom - .01;
   return fieldSolidAt(a, l, t) || fieldSolidAt(a, r, t) || fieldSolidAt(a, l, b) || fieldSolidAt(a, r, b);
 }
 function fieldTileCenter(tx, ty) { return { x: tx * FIELD_TILE + FIELD_TILE / 2, y: ty * FIELD_TILE + FIELD_TILE / 2 + 4 }; }
 function fieldPlayerTile() { return { tx: Math.floor(fieldState.x / FIELD_TILE), ty: Math.floor(fieldState.y / FIELD_TILE) }; }
+// [GRID] 位置をマスの中心にそろえる（旧セーブの自由移動の位置も、ここで1マス単位になる）
+function fieldSnapToTile() { const { tx, ty } = fieldPlayerTile(), c = fieldTileCenter(tx, ty); fieldState.x = c.x; fieldState.y = c.y; }
+// [GRID] 描画用の位置（論理位置は fieldState.x/y で、1歩ごとに即座に更新。見た目だけを補間する）
+function fieldViewPos() { return fieldState.view || { x: fieldState.x, y: fieldState.y }; }
 
 /* ------------------------------------------------------------
    視界・マッピング
@@ -98,7 +137,9 @@ function fieldExplored(a = fieldArea()) {
   if (!fieldState.explored[a.key] || fieldState.explored[a.key].length !== a.w * a.h) fieldState.explored[a.key] = new Uint8Array(a.w * a.h);
   return fieldState.explored[a.key];
 }
-function fieldOpaque(a, tx, ty) { const c = fieldTileAt(a, tx, ty); return c === "#"; }
+function fieldOpaque(a, tx, ty) { const c = fieldTileAt(a, tx, ty); return c === "#" || fieldWallLike(a, c); }
+// [PUZZLE] 壁に付いた物・開く前の隠し通路は、壁として描画し、視界もさえぎる
+function fieldWallLike(a, c) { const o = fieldLetterDef(a, c); return !!o && (o.onWall || (o.kind === "door" && !fieldDoorOpen(o))); }
 // 2マス間の見通し（間に壁があれば見えない。終点の壁そのものは見える）
 function fieldLos(a, x0, y0, x1, y1) {
   let dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx + dy, x = x0, y = y0;

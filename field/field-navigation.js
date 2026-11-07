@@ -10,6 +10,7 @@ function fieldShow({ returning = false } = {}) {
   const a = fieldArea();
   if (fieldState.built !== a.key || !$("field-map")?.children.length) fieldBuildDom();
   if (!fieldState.positioned) fieldPlaceAtStart();
+  fieldSnapToTile(); fieldState.view = null; fieldState.stepUntil = 0; fieldInput.tap = null;   // [GRID]
   fieldState.lock = false; fieldState.mapOpen = false; if ($("field-fullmap")) $("field-fullmap").hidden = true;
   const pt = fieldPlayerTile(); fieldState.triggerTile = `${pt.tx},${pt.ty}`;
   fieldInput.keys.clear(); fieldInput.pad.clear();
