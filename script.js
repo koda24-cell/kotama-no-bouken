@@ -442,6 +442,199 @@ function getCharacterSkills(c){
  return skills;
 }
 function treeStatBonus(charId){const node=skillTreeDefinitions[charId]?.passive;return node&&getTreeLevel(charId,node.id)>0?getTreeLevel(charId,node.id)*.02:0;}
+// P2-1: スキル強化の確認・効果プレビュー。ここでは表示のみ行い、確定時だけ既存データを更新する。
+function getTrainingUpgradeEligibility(charId,nodeId){
+  const tree=skillTreeDefinitions[charId],node=treeNodes(charId).find(n=>n.id===nodeId);
+  if(!tree||!node)return {allowed:false,reasons:["スキル情報を確認できません。"],cost:1};
+  const isNew=newTreeCharacterIds.includes(charId),passive=tree.passive,a=tree.a,b=tree.b,derived=tree.derived;
+  const lv=getTreeLevel(charId,nodeId),level=getTreeLevel(charId,passive.id),la=getTreeLevel(charId,a.id),lb=getTreeLevel(charId,b.id);
+  const max=isNew?10:(node===a||node===b?5:1),cost=node===derived&&!isNew?2:1,reasons=[];
+  const stageForLevel=n=>n===0?1:n<=2?2:n===3?3:n===4?4:5;
+  if(lv>=max)reasons.push("最大レベルに到達しています。");
+  else if(node===passive){
+    if(!stageEntered[1])reasons.push("第1ステージに到達していません。");
+    if(!isNew&&(characterLevels[charId]||1)<1)reasons.push("キャラクターLv.1以上が必要です。");
+  }else if(node===a||node===b){
+    if(level<1)reasons.push("基礎パッシブをLv.1以上にする必要があります。");
+    const requiredStage=isNew?2:stageForLevel(lv+1);
+    if(!stageEntered[requiredStage])reasons.push("第"+requiredStage+"ステージに到達していません。");
+    if(!isNew&&(characterLevels[charId]||1)<1)reasons.push("キャラクターLv.1以上が必要です。");
+  }else{
+    if(isNew?(la<1||lb<1):(la<2||lb<2))reasons.push(isNew?"SP A・SP Bを両方Lv.1以上にする必要があります。":"SP A・SP Bを両方Lv.2以上にする必要があります。");
+    if(!stageEntered[4])reasons.push("第4ステージに到達していません。");
+  }
+  if((trainingPoints[charId]||0)<cost)reasons.push("育成ポイントが不足しています（必要："+cost+"pt／所持："+(trainingPoints[charId]||0)+"pt）。");
+  return {allowed:reasons.length===0,reasons,cost,node,level:lv,nextLevel:Math.min(max,lv+1),max,points:trainingPoints[charId]||0};
+}
+function getTrainingEffectPreview(charId,nodeId,level,nextLevel){
+  const tree=skillTreeDefinitions[charId],node=treeNodes(charId).find(n=>n.id===nodeId);
+  if(!tree||!node)return [];
+  const isNew=newTreeCharacterIds.includes(charId),a=tree.a,b=tree.b,derived=tree.derived;
+  const pct=n=>String(Math.round(n*1000)/10).replace(/\.0$/,"")+"%";
+  if(node===tree.passive){
+    if(charId==="healer")return [{label:"回復量補正",before:pct(level*.03),after:pct(nextLevel*.03)}];
+    if(charId==="kotama")return [{label:"攻撃力補正",before:pct(level*.02),after:pct(nextLevel*.02)}];
+    if(charId==="knight")return [{label:"防御力補正",before:pct(level*.02),after:pct(nextLevel*.02)}];
+    if(charId==="mage")return [{label:"SP攻撃力補正",before:pct(level*.02),after:pct(nextLevel*.02)}];
+    if(charId==="warrior"||charId==="samurai")return [{label:"基礎能力補正",before:pct(level*.02),after:pct(nextLevel*.02)}];
+  }
+  if(charId==="kotama"&&node.id==="kotama-shock-spark")return [{label:"SP攻撃の基礎倍率",before:pct(.60+.10*level),after:pct(.60+.10*nextLevel)}];
+  if(charId==="kotama"&&node.id==="kotama-shock-bolt")return [{label:"SP攻撃の基礎倍率",before:pct(.90+.10*level),after:pct(.90+.10*nextLevel)}];
+  if(charId==="kotama"&&node.id==="kotama-burst-blade")return [{label:"攻撃力に対する倍率",before:pct(4+.20*Math.max(0,level-1)),after:pct(4+.20*Math.max(0,nextLevel-1))}];
+  if(charId==="knight"&&node.id==="knight-defense-camp")return [{label:"味方全体の防御力上昇（3ターン）",before:String(level?50+5*(level-1):0),after:String(50+5*(nextLevel-1))}];
+  if(charId==="knight"&&node.id==="knight-magic-guard")return [{label:"魔法ダメージ軽減",before:String(level?50+2*(level-1):0)+"%",after:String(50+2*(nextLevel-1))+"%"}];
+  if(charId==="knight"&&node.id==="knight-full-guard")return [{label:"ダメージ軽減",before:String(level?Math.min(80,35+5*level):0)+"%",after:String(Math.min(80,35+5*nextLevel))+"%"}];
+  if(charId==="healer"&&node.id==="healer-line-heal")return [{label:"回復量の基礎倍率",before:level?pct(.55+.08*level):"未習得",after:pct(.55+.08*nextLevel)}];
+  if(charId==="healer"&&node.id==="healer-refresh")return [
+    {label:"状態異常回復の対象",before:level>=5?"味方全体":level?"味方1人":"未習得",after:nextLevel>=5?"味方全体":"味方1人"},
+    {label:"消費SP",before:level>=6?String(Math.max(1,10-level)): "5",after:nextLevel>=6?String(Math.max(1,10-nextLevel)):"5"}
+  ];
+  if(charId==="healer"&&node.id==="healer-holy-light")return [{label:"SP攻撃の基礎倍率",before:pct(.50+.12*level),after:pct(.50+.12*nextLevel)}];
+  if(charId==="mage"&&node.id==="mage-flare")return [{label:"SP攻撃の基礎倍率",before:pct(.90+.12*level),after:pct(.90+.12*nextLevel)}];
+  if(charId==="mage"&&node.id==="mage-magic-bomb")return [{label:"SP攻撃の基礎倍率",before:pct(.90+.10*level),after:pct(.90+.10*nextLevel)}];
+  if(charId==="mage"&&node.id==="mage-compression")return [{label:"次の魔法攻撃の回数",before:level?"2倍（重ねがけ可能）":"未習得",after:"2倍（重ねがけ可能）／このノードのLvによる倍率差なし"}];
+  if(isNew&&node===derived&&level===0)return [{label:"派生スキル",before:"未習得",after:skillTreeDerivedSkills[charId].name+"を習得"}];
+  if(!isNew){
+    const effects=[node.effect,...(node.effects||[])].filter((v,i,a)=>v&&a.indexOf(v)===i);
+    const rows=effects.map(effect=>({label:effect==="normal"?"通常攻撃補正":effect==="sp"?"SP攻撃補正":effect==="break"?"ブレイク補正":effect==="element"?"属性攻撃補正":effect==="guard"?"防御補正":effect==="taunt"?"挑発補正":effect==="heal"?"回復補正":effect==="revive"?"蘇生補正":effect==="union"?"ユニオン補正":effect+"補正",before:pct(level*.03),after:pct(nextLevel*.03)}));
+    const unlock=node===a?skillTreeExtraSkills[charId]?.skill:node===b?skillTreeBranchBSkills[charId]:node===derived?skillTreeDerivedSkills[charId]:null;
+    if(level===0&&unlock)rows.push({label:"習得スキル",before:"未習得",after:unlock.name+"を習得"});
+    if(rows.length)return rows;
+  }
+  return [{label:"効果値",before:level?"現在の効果":"未習得",after:"この強化段階では効果値は変化しません"}];
+}
+let skillUpgradeDialogCleanup=null;
+function closeSkillUpgradeDialog(options={}){
+  const dialog=$("skill-upgrade-dialog");
+  if(dialog)dialog.remove();
+  if(skillUpgradeDialogCleanup){skillUpgradeDialogCleanup();skillUpgradeDialogCleanup=null;}
+  let focusTarget=options.focusTarget||null;
+  if(typeof focusTarget==="function")focusTarget=focusTarget();
+  if(focusTarget&&focusTarget.isConnected&&!focusTarget.disabled){
+    try{focusTarget.focus({preventScroll:true});}catch(error){focusTarget.focus();}
+  }
+}
+function activateSkillUpgradeDialogEnvironment(dialog){
+  const background=[...document.body.children].filter(element=>element!==dialog);
+  const previousInert=background.map(element=>({element,inert:element.inert}));
+  const bodyOverflow=document.body.style.overflow;
+  const rootOverflow=document.documentElement.style.overflow;
+  const bodyOverscroll=document.body.style.overscrollBehavior;
+  const rootOverscroll=document.documentElement.style.overscrollBehavior;
+  background.forEach(element=>{element.inert=true;});
+  document.body.style.overflow="hidden";
+  document.documentElement.style.overflow="hidden";
+  document.body.style.overscrollBehavior="none";
+  document.documentElement.style.overscrollBehavior="none";
+  const focusSelector='button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  const getFocusable=()=>[...dialog.querySelectorAll(focusSelector)].filter(element=>!element.hidden&&element.getAttribute("aria-hidden")!=="true");
+  const onKeyDown=event=>{
+    if(event.key==="Escape"){
+      event.preventDefault();event.stopPropagation();
+      closeSkillUpgradeDialog({focusTarget:dialog._returnFocus});
+      return;
+    }
+    if(event.key!=="Tab")return;
+    const focusable=getFocusable();
+    if(!focusable.length){event.preventDefault();return;}
+    const first=focusable[0],last=focusable[focusable.length-1],active=document.activeElement;
+    if(event.shiftKey&&(active===first||!dialog.contains(active))){
+      event.preventDefault();last.focus({preventScroll:true});
+    }else if(!event.shiftKey&&(active===last||!dialog.contains(active))){
+      event.preventDefault();first.focus({preventScroll:true});
+    }
+  };
+  const onFocusIn=event=>{
+    if(!dialog.contains(event.target)){
+      const first=getFocusable()[0];
+      if(first)first.focus({preventScroll:true});
+    }
+  };
+  dialog.addEventListener("keydown",onKeyDown);
+  document.addEventListener("focusin",onFocusIn,true);
+  return ()=>{
+    dialog.removeEventListener("keydown",onKeyDown);
+    document.removeEventListener("focusin",onFocusIn,true);
+    previousInert.forEach(item=>{item.element.inert=item.inert;});
+    document.body.style.overflow=bodyOverflow;
+    document.documentElement.style.overflow=rootOverflow;
+    document.body.style.overscrollBehavior=bodyOverscroll;
+    document.documentElement.style.overscrollBehavior=rootOverscroll;
+  };
+}
+function installSkillUpgradeCommitShield(){
+  const shield=document.createElement("div");
+  shield.setAttribute("aria-hidden","true");
+  Object.assign(shield.style,{position:"fixed",inset:"0",zIndex:"10000",background:"transparent",pointerEvents:"auto",cursor:"default"});
+  document.body.appendChild(shield);
+  const blockKeys=event=>{event.preventDefault();event.stopImmediatePropagation();};
+  const blockClicks=event=>{event.preventDefault();event.stopImmediatePropagation();};
+  document.addEventListener("keydown",blockKeys,true);
+  document.addEventListener("click",blockClicks,true);
+  window.setTimeout(()=>{
+    shield.remove();
+    document.removeEventListener("keydown",blockKeys,true);
+    document.removeEventListener("click",blockClicks,true);
+  },450);
+}
+function openSkillUpgradeDialog(charId,nodeId,returnFocus){
+  const c=getCharacter(charId),eligibility=getTrainingUpgradeEligibility(charId,nodeId);
+  if(!c||!eligibility.node)return;
+  if(!eligibility.allowed){selectedTrainingSkill=nodeId;renderProgressionPanel();setSystemMessage(eligibility.reasons.join(" "));return;}
+  closeSkillUpgradeDialog();
+  const node=eligibility.node,preview=getTrainingEffectPreview(charId,nodeId,eligibility.level,eligibility.nextLevel);
+  const dialog=document.createElement("section");
+  dialog.id="skill-upgrade-dialog";dialog.className="game-dialog skill-upgrade-dialog";
+  dialog.setAttribute("role","dialog");dialog.setAttribute("aria-modal","true");dialog.setAttribute("aria-labelledby","skill-upgrade-title");
+  dialog.innerHTML=
+    '<div class="game-dialog-panel skill-upgrade-dialog-panel">'+
+      '<p class="skill-upgrade-eyebrow">SKILL UPGRADE</p>'+
+      '<h2 id="skill-upgrade-title">スキル強化の確認</h2>'+
+      '<p class="skill-upgrade-name">'+esc(c.name)+' ／ '+esc(node.name)+'</p>'+
+      '<div class="skill-upgrade-level"><span>レベル</span><strong>Lv.'+eligibility.level+' → Lv.'+eligibility.nextLevel+'</strong></div>'+
+      '<div class="skill-upgrade-effects"><strong>効果の変化</strong>'+
+        preview.map(item=>'<div class="skill-upgrade-effect-row"><span>'+esc(item.label)+'</span><b>'+esc(item.before)+' → '+esc(item.after)+'</b></div>').join("")+
+      '</div>'+
+      '<div class="skill-upgrade-cost"><span>消費ポイント</span><strong>'+eligibility.cost+'pt</strong><span>確定後の残り</span><strong>'+(eligibility.points-eligibility.cost)+'pt</strong></div>'+
+      '<p class="skill-upgrade-note">「強化する」を押すまで、レベル・ポイント・習得状態は変更されません。</p>'+
+      '<div class="dialog-actions"><button type="button" class="secondary-button" data-upgrade-cancel>キャンセル</button><button type="button" class="primary-button" data-upgrade-confirm>強化する</button></div>'+
+    '</div>';
+  dialog._returnFocus=returnFocus||null;
+  document.body.appendChild(dialog);
+  skillUpgradeDialogCleanup=activateSkillUpgradeDialogEnvironment(dialog);
+  const cancel=dialog.querySelector("[data-upgrade-cancel]"),confirm=dialog.querySelector("[data-upgrade-confirm]");
+  let committing=false;
+  const close=()=>closeSkillUpgradeDialog({focusTarget:returnFocus});
+  cancel.onclick=close;
+  dialog.addEventListener("click",event=>{if(event.target===dialog)close();});
+  confirm.onclick=()=>{
+    if(committing)return;
+    committing=true;confirm.disabled=true;
+    const latest=getTrainingUpgradeEligibility(charId,nodeId);
+    const focusAfterRender=()=>[...document.querySelectorAll("#progression-panel [data-select-skill]")].find(button=>button.dataset.selectSkill===nodeId);
+    if(!latest.allowed||latest.level!==eligibility.level||latest.cost!==eligibility.cost||latest.points!==eligibility.points){
+      selectedTrainingSkill=nodeId;renderAll();
+      closeSkillUpgradeDialog({focusTarget:focusAfterRender});
+      installSkillUpgradeCommitShield();
+      setSystemMessage("強化条件または育成ポイントが変わったため、確定を中止しました。最新の状態を確認してください。");
+      return;
+    }
+    trainingPoints[charId]=latest.points-latest.cost;
+    setTreeLevel(charId,nodeId,latest.nextLevel);
+    unlockedSkills[charId]=treeNodes(charId).filter(n=>getTreeLevel(charId,n.id)>0).map(n=>n.id);
+    selectedTrainingSkill=nodeId;
+    renderAll();
+    closeSkillUpgradeDialog({focusTarget:focusAfterRender});
+    installSkillUpgradeCommitShield();
+    setSystemMessage(c.name+"の「"+node.name+"」を"+(node===skillTreeDefinitions[charId].a||node===skillTreeDefinitions[charId].b?"Lv."+getTreeLevel(charId,nodeId)+"に強化":"取得")+"しました。");
+  };
+  cancel.focus({preventScroll:true});
+  const panel=dialog.querySelector(".skill-upgrade-dialog-panel");
+  if(panel)panel.scrollTop=0;
+  dialog.scrollTop=0;
+}
+
+
 function renderProgressionPanelUnsafe(){
  const box=$("progression-panel");if(!box)return;
  const c=(skillTreeDefinitions[(getCharacter(shopBuyerId)||characters[0]).id]?(getCharacter(shopBuyerId)||characters[0]):characters[0]),stats=effectiveStats(c),tree=skillTreeDefinitions[c.id],points=trainingPoints[c.id]||0;
@@ -451,7 +644,7 @@ function renderProgressionPanelUnsafe(){
  const selectedNode=treeNodes(c.id).find(n=>n.id===selectedTrainingSkill)||passive;
  const stageForLevel=n=>n===0?1:n<=2?2:n===3?3:n===4?4:5;
  const conditionFor=node=>{if(!isNewTree){if(node===passive)return "第1ステージ到達・キャラクターLv.1";if(node===a||node===b)return `基礎パッシブ取得後・第${stageForLevel(Math.max(getTreeLevel(c.id,node.id)+1,1))}ステージ到達・キャラクターLv.1以上`;return "2つの通常SPスキルが両方Lv.2以上・第4ステージ到達";}if(node===passive)return "第1ステージ到達";if(node===a||node===b)return "基礎マスタリーLv.1以上・第2ステージ到達";return "SP A・SP Bを両方習得（Lv.1以上）・第4ステージ到達";};
- const canUpgrade=node=>{const lv=getTreeLevel(c.id,node.id),max=isNewTree?10:(node===a||node===b?5:1);if(lv>=max)return false;if(node===passive)return !!stageEntered[1]&&points>=1;if(node===a||node===b)return (isNewTree?level>=1&&!!stageEntered[2]:level>=1&&!!stageEntered[stageForLevel(lv+1)])&&points>=1;return (isNewTree?la>=1&&lb>=1&&!!stageEntered[4]&&points>=1:la>=2&&lb>=2&&!!stageEntered[4]&&points>=2);};
+ const canUpgrade=node=>getTrainingUpgradeEligibility(c.id,node.id).allowed;
  const stateLabel=node=>{const lv=getTreeLevel(c.id,node.id),max=isNewTree?10:(node===a||node===b?5:1);if(lv>=max)return "最大レベル";return canUpgrade(node)?(lv>0?"強化可能":"取得可能"):"条件未達成";};
  const nodeCard=(node,kind)=>{const lv=getTreeLevel(c.id,node.id),max=isNewTree?10:(kind==="branch"?5:1),available=canUpgrade(node),selected=selectedNode.id===node.id,linkedSkill=kind==="branch"?(node===a?skillTreeExtraSkills[c.id].skill.name:skillTreeBranchBSkills[c.id].name):kind==="derived"?skillTreeDerivedSkills[c.id].name:"",cost=node===derived&&!isNewTree?2:1;return `<article class="skill-node skill-${available?"available":lv>0?"opened":"locked"} ${selected?"selected":""}" data-node-kind="${kind}"><span class="skill-node-step">${kind==="passive"?"基礎":kind==="derived"?"派生":node===a?"SP A":"SP B"}</span><strong>${esc(node.name)}</strong><p>${esc(node.desc)}</p><div class="skill-level">${isNewTree?`Lv.${lv}/${max}`:kind==="branch"?`SPスキル（${lv}/5）`:lv?"取得済み":"未取得"}</div>${linkedSkill?`<small>習得SPスキル：${esc(linkedSkill)}</small>`:""}<small>${esc(conditionFor(node))}</small><button type="button" class="skill-detail-button" data-select-skill="${node.id}">詳細</button><button type="button" data-upgrade-skill="${node.id}" ${available?"":"disabled"}>${lv>=max?"最大":lv?"強化する":"取得する"}（${cost}pt）</button></article>`;};
  const mat=Object.entries(materials).map(([id,n])=>`${materialNames[id]||id} ×${n||0}`).join("　／　")||"素材なし";
@@ -468,14 +661,14 @@ function renderProgressionPanelUnsafe(){
  <div class="training-skill-main">
   <div class="training-section-head"><div><h3>${esc(c.name)}のスキルツリー</h3><p>基礎パッシブを取得し、2系統のSPスキルを育成。両方を習得すると派生スキルが解放されます。</p></div><strong>育成ポイント：${points}pt</strong></div>
   <div class="skill-tree-scroll"><div class="skill-tree-layout"><div class="skill-tree-passive">${nodeCard(passive,"passive")}</div><div class="skill-tree-branches"><div class="skill-branch-top">${nodeCard(a,"branch")}</div><div class="skill-branch-bottom">${nodeCard(b,"branch")}</div></div><div class="skill-tree-derived">${nodeCard(derived,"derived")}</div></div></div>
-  <div class="skill-detail-panel"><strong>選択中：${esc(selectedNode.name)}</strong><p>${esc(selectedNode.desc)}</p><small>現在レベル：${selectedLevel}/${selectedMax} ／ 次の強化：${esc(selectedNext)} ／ 取得条件：${esc(conditionFor(selectedNode))} ／ 状態：${stateLabel(selectedNode)}</small></div>
+  <div class="skill-detail-panel"><strong>選択中：${esc(selectedNode.name)}</strong><p>${esc(selectedNode.desc)}</p><small>現在レベル：${selectedLevel}/${selectedMax} ／ 次の強化：${esc(selectedNext)} ／ 取得条件：${esc(conditionFor(selectedNode))} ／ 状態：${stateLabel(selectedNode)}</small>${canUpgrade(selectedNode)?"":`<p class="skill-upgrade-reasons"><strong>強化できない理由：</strong>${getTrainingUpgradeEligibility(c.id,selectedNode.id).reasons.map(esc).join(" ")}</p>`}</div>
  </div>
  </section>
  <section class="training-stats"><h3>${esc(c.name)}のステータス</h3><p>Lv.${characterLevels[c.id]||1}　／　取得スキル：${treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).length}系統</p><div class="training-stat-grid"><span>HP <b>${stats.maxHp}</b></span><span>ATK <b>${stats.attack}</b></span><span>DEF <b>${stats.defense}</b></span><span>最大SP <b>${stats.maxSp}</b></span><span>SP攻撃力 <b>${stats.spAttack}</b></span><span>SP防御力 <b>${stats.spDefense}</b></span></div><p>装備補正：${equippedItems(c).map(i=>`${esc(i.name)}（${esc(i.effect||"装備効果")}）`).join("、")||"なし"}</p><p>取得済み：${treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).map(n=>`${esc(n.name)} Lv.${getTreeLevel(c.id,n.id)}`).join("、")||"なし"}</p></section>
  <p class="material-line">所持素材：${esc(mat)}</p><div class="progression-grid"><section><h3>武器製作</h3>${recipes.map(r=>{const ok=Object.entries(r.needs).every(([id,n])=>(materials[id]||0)>=n)&&state.gold>=r.cost;return `<article><strong>${esc(r.name)}</strong><small>${r.attackBonus?`ATK +${r.attackBonus}`:`SP攻撃 +${r.spAttackBonus}`} ／ ${r.classes.map(id=>getCharacter(id)?.name).join("・")}</small><small>${Object.entries(r.needs).map(([id,n])=>`${materialNames[id]}×${n}（${materials[id]||0}）`).join("、")} ／ ${r.cost}G</small><button data-craft="${r.id}" ${ok?"":"disabled"}>製作</button></article>`;}).join("")}</section><section><h3>装備中の武器強化</h3><p>${esc(c.name)}が現在装備している武器のみ対象です。最大+5。</p>${[...new Set(Object.values(equipment[c.id]||{}).filter(Boolean))].filter(id=>itemById(id)?.category==="weapon").map(id=>{const lv=weaponLevels[id]||0,cost=enhancementCosts[lv+1]||0,material=enhancementMaterials[id]||"slime_jelly",need=lv+1;return `<article><strong>${esc(itemById(id).name)} +${lv}</strong><small>強化後：${itemById(id).attackBonus?"攻撃力":"SP攻撃力"}補正 +${Math.floor((itemById(id).attackBonus||itemById(id).spAttackBonus||0)*(1+(lv+1)*.1))}</small><small>必要：${lv<5?`${cost}G・${materialNames[material]}×${need}（所持 ${materials[material]||0}）`:"最大強化"}</small><button data-enhance="${id}" ${lv>=5||state.gold<cost||(materials[material]||0)<need?"disabled":""}>${lv>=5?"強化上限":"強化する"}</button></article>`;}).join("")||"<p>装備中の武器がありません。</p>"}</section></div>`;
  box.querySelectorAll("[data-training-character]").forEach(btn=>btn.onclick=()=>{shopBuyerId=btn.dataset.trainingCharacter;selectedTrainingSkill=null;renderProgressionPanel();});
  box.querySelectorAll("[data-select-skill]").forEach(btn=>btn.onclick=()=>{selectedTrainingSkill=btn.dataset.selectSkill;renderProgressionPanel();});
- box.querySelectorAll("[data-upgrade-skill]").forEach(btn=>btn.onclick=()=>{const node=treeNodes(c.id).find(n=>n.id===btn.dataset.upgradeSkill);if(!node||!canUpgrade(node))return;const cost=node===derived&&!newTreeCharacterIds.includes(c.id)?2:1;trainingPoints[c.id]-=cost;setTreeLevel(c.id,node.id,getTreeLevel(c.id,node.id)+1);unlockedSkills[c.id]=treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).map(n=>n.id);selectedTrainingSkill=node.id;renderAll();setSystemMessage(`${c.name}の「${node.name}」を${node===a||node===b?`Lv.${getTreeLevel(c.id,node.id)}に強化`:`取得`}しました。`);});
+ box.querySelectorAll("[data-upgrade-skill]").forEach(btn=>btn.onclick=()=>{const node=treeNodes(c.id).find(n=>n.id===btn.dataset.upgradeSkill);if(!node)return;openSkillUpgradeDialog(c.id,node.id,btn);});
  box.querySelectorAll("[data-craft]").forEach(btn=>btn.onclick=()=>craftRecipe(btn.dataset.craft));
  box.querySelectorAll("[data-enhance]").forEach(btn=>btn.onclick=()=>enhanceWeapon(btn.dataset.enhance));
 }
