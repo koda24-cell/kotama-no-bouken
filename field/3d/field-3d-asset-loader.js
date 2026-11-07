@@ -33,7 +33,9 @@ export async function loadField3DAssets({
     if (!url) {
       const error = new TypeError(`Asset "${key}" has no URL.`);
       errors.push({ key, url: null, error });
+      completedCount += 1;
       onAssetError?.({ key, url: null, error });
+      onProgress?.({ key, url: null, status: "error", completed: completedCount, loaded: Object.keys(assets).length, total: entries.length });
       return;
     }
 
