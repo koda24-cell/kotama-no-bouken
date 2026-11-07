@@ -13,6 +13,7 @@
 export async function loadField3DAssets({
   GLTFLoader,
   manifest = {},
+  baseUrl = null,
   onProgress = null,
   onAssetError = null
 } = {}) {
@@ -27,7 +28,8 @@ export async function loadField3DAssets({
   let completedCount = 0;
 
   await Promise.all(entries.map(async ([key, descriptor]) => {
-    const url = typeof descriptor === "string" ? descriptor : descriptor?.url;
+    const rawUrl = typeof descriptor === "string" ? descriptor : descriptor?.url;
+    const url = rawUrl && baseUrl ? new URL(rawUrl, baseUrl).href : rawUrl;
     if (!url) {
       const error = new TypeError(`Asset "${key}" has no URL.`);
       errors.push({ key, url: null, error });
