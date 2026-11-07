@@ -294,8 +294,8 @@ function fieldFoeContact(f, pt) { return !f.defeated && f.tx === pt.tx && f.ty =
 function fieldFoeTurn(a, playerFrom) {
   fieldState.turn++;
   const pt = fieldPlayerTile();
-  // 自分からFOEのマスに入れば、止まっている間でも接触になる
-  for (const f of fieldState.foes) if (fieldFoeContact(f, pt)) { fieldTriggerFoeBattle(f); return true; }
+  // 自分からFOEのマスに入れば、止まっている間でも接触になる（FOEは動いていない）
+  for (const f of fieldState.foes) if (fieldFoeContact(f, pt)) { fieldFoeStartContact(f, null, playerFrom); return true; }
   if (fieldState.foeGraceSteps > 0) { fieldState.foeGraceSteps--; fieldFoePlanAll(a); fieldMiniDirty = true; return false; }
   for (const f of fieldState.foes) {
     if (f.defeated) continue;
@@ -307,9 +307,10 @@ function fieldFoeTurn(a, playerFrom) {
       const step = fieldFoeNextStep(a, f, pt, true);
       if (!step) break;
       if (!f.view) f.view = { x: f.x, y: f.y };
-      f.dir = fieldFoeDirTo({ tx: f.tx, ty: f.ty }, step) || f.dir;
+      const from = { tx: f.tx, ty: f.ty };
+      f.dir = fieldFoeDirTo(from, step) || f.dir;
       fieldFoePlace(f, step.tx, step.ty); moved = true;
-      if (fieldFoeContact(f, pt)) { fieldTriggerFoeBattle(f); return true; }
+      if (fieldFoeContact(f, pt)) { fieldFoeStartContact(f, from, playerFrom); return true; }
       fieldFoeAwareness(a, f, pt, false);
     }
     // 持ち場で止まっている見張りは、決まった順に向きを変える
@@ -320,8 +321,12 @@ function fieldFoeTurn(a, playerFrom) {
   }
   fieldFoePlanAll(a);
   fieldMiniDirty = true;
-  void playerFrom;
   return false;
+}
+// FOE戦の開始。逃げたときに位置を戻せるよう、接触の直前の位置を覚えておく
+function fieldFoeStartContact(f, foeFrom, playerFrom) {
+  fieldState.foeContact = { key: f.key, foeFrom: foeFrom ? { ...foeFrom } : null, playerFrom: playerFrom ? { tx: playerFrom.tx, ty: playerFrom.ty } : null };
+  fieldTriggerFoeBattle(f);
 }
 // 表示用：次の1歩の予定（状態は変えない）
 function fieldFoePlanAll(a) {
@@ -337,7 +342,7 @@ function fieldFoePlanAll(a) {
 function fieldCheckFoeContact() {
   if (fieldState.lock) return;
   const pt = fieldPlayerTile();
-  for (const f of fieldState.foes) if (fieldFoeContact(f, pt)) { fieldTriggerFoeBattle(f); return; }
+  for (const f of fieldState.foes) if (fieldFoeContact(f, pt)) { fieldFoeStartContact(f, null, null); return; }
 }
 // 旧API（互換用）：1ターン進める
 function fieldUpdateFoes() { const a = fieldArea(); if (a) fieldFoeTurn(a, fieldPlayerTile()); }
@@ -355,20 +360,29 @@ function fieldRenderFoes() {
     el.style.left = (v.x - 16) + "px"; el.style.top = (v.y - 20) + "px"; el.style.zIndex = String(10 + Math.floor(v.y));
   }
 }
+// FOE戦のあと。世界樹の迷宮と同じく、逃げたときはプレイヤーはそのマスに残り、FOEが移動前のマスへ戻る（1歩分の猶予ができる）。
+// プレイヤーが自分からFOEのマスに入った場合（FOEは動いていない）は、プレイヤーが入る前のマスへ戻る（この場合の扱いは推測）。
+// 他のFOEは動かさない。
 function fieldResetFoesAfterBattle(defeatedKey) {
-  const pt = fieldPlayerTile();
+  const a = fieldArea(), contact = fieldState.foeContact;
+  fieldState.foeContact = null;
   for (const f of fieldState.foes) {
     if (f.key === defeatedKey) { f.defeated = true; fieldState.foeDefeated[f.key] = true; continue; }
-    // 逃げた後は、近くのFOEを巡回の起点へ戻し、数歩のあいだ動かさない
-    if (Math.abs(f.tx - pt.tx) + Math.abs(f.ty - pt.ty) <= 3) {
-      // 巡回路のうち、プレイヤーからいちばん遠い地点へ戻す（目の前に戻して即接触にならないように）
-      let best = 0, bd = -1;
-      f.path.forEach((p, i) => { const d = Math.abs(p[0] - pt.tx) + Math.abs(p[1] - pt.ty); if (d > bd) { bd = d; best = i; } });
-      fieldFoePlace(f, f.path[best][0], f.path[best][1]); f.pathIdx = best; f.pathStep = best === 0 ? 1 : -1; f.view = null;
+    f.lostAt = 0; f.paceAcc = 0;
+  }
+  const f = contact && fieldState.foes.find(x => x.key === contact.key && !x.defeated);
+  if (f && a) {
+    const free = p => p && fieldCanEnter(a, p.tx, p.ty, "player") && !fieldState.foes.some(x => x !== f && !x.defeated && x.tx === p.tx && x.ty === p.ty);
+    const pt = fieldPlayerTile();
+    if (contact.foeFrom && free(contact.foeFrom) && !(contact.foeFrom.tx === pt.tx && contact.foeFrom.ty === pt.ty)) {
+      fieldFoePlace(f, contact.foeFrom.tx, contact.foeFrom.ty); f.view = null;
+    } else if (contact.playerFrom && free(contact.playerFrom)) {
+      const c = fieldTileCenter(contact.playerFrom.tx, contact.playerFrom.ty);
+      fieldState.x = c.x; fieldState.y = c.y; fieldState.view = null;
     }
-    f.mode = "patrol"; f.lostTurns = 0; f.lastSeen = null; f.lostAt = 0; f.paceAcc = 0;
+    if (f.type !== "patrol") { f.mode = "chase"; f.lostTurns = 0; f.lastSeen = { ...fieldPlayerTile() }; }
   }
   fieldState.foeGraceSteps = FIELD_FOE_RULES.graceSteps;
   fieldState.foeGraceUntil = 0;
-  const a = fieldArea(); if (a) fieldFoePlanAll(a);
+  if (a) fieldFoePlanAll(a);
 }

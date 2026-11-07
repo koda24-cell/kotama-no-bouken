@@ -23,7 +23,8 @@ const FIELD_VISION = 3.6;              // 視界の半径（マス）
 const FIELD_FOE_SIGHT = 4.5;           // FOEがプレイヤーに気づく距離（マス）
 const FIELD_FOE_SPEED = { patrol: 52, chase: 84 };   // 旧：自由移動時のFOEの速さ（現在は未使用）
 // [FOE] ターン制のFOEルール。1ターン＝プレイヤーの1歩
-const FIELD_FOE_RULES = { loseTurns: 3, graceSteps: 3, nearSight: 1.5 };
+// graceSteps：逃走後にFOEを止める歩数。世界樹の迷宮どおり「FOEが移動前のマスへ戻る」だけにしたため 0（止めない）
+const FIELD_FOE_RULES = { loseTurns: 3, graceSteps: 0, nearSight: 1.5 };
 const FIELD_GATHER_USES = 2;
 const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);
 const FIELD_SAFE = new Set(["_", "P", "E", "B", "<", ">"]);
@@ -41,6 +42,7 @@ let fieldState = {
   foes: [], foeDefeated: {}, gatherUsed: {}, foeGraceUntil: 0,
   lock: false, built: "", triggerTile: "", nearKey: "", positioned: false, mapOpen: false, lastTileKey: "",
   turn: 0, foeGraceSteps: 0,   // [FOE] 経過ターン（歩数）・逃走後にFOEが止まっている残り歩数
+  foeContact: null,            // [FOE] FOE戦になった接触の記録（逃げたときに位置を戻すため）
   view: null, stepUntil: 0     // [GRID] 描画用の位置（移動アニメーション）・次の1歩を受け付ける時刻
 };
 const fieldInput = { keys: new Set(), pad: new Set(), tap: null };   // tap：短い押下でも1歩進むための予約

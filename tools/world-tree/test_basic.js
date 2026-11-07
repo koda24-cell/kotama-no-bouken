@@ -48,10 +48,19 @@ ok(g.fieldState.foes.map(f => `${f.tx},${f.ty}`).join() === before && g.fieldSta
 a = setup(1, 0, 25, 16); const f3 = g.fieldState.foes[0]; g.fieldFoePlace(f3, 25, 14); f3.dir = "down"; f3.mode = "patrol";
 t += 1000; g.fieldTryStep(a, "up", t);   // (25,15) へ。FOE が (25,14)->(25,15) で接触
 ok(foeBattle === f3.key, "向かってくるFOEとぶつかるとFOE戦");
-// 8. 逃走後は数歩止まる
-g.fieldResetFoesAfterBattle(null); ok(Math.abs(f3.ty - g.fieldPlayerTile().ty) > 2, "逃走後、近くのFOEは遠い巡回点へ戻る");
-const fpos = `${f3.tx},${f3.ty}`; t += 1000; g.fieldTryStep(a, "up", t);
-ok(`${f3.tx},${f3.ty}` === fpos && g.fieldState.foeGraceSteps === 2, "逃走後はFOEが数歩止まる");
+// 8. 逃走（世界樹の迷宮どおり）：FOEが動いて接触した場合は、FOEが移動前のマスへ戻り、プレイヤーはそのまま
+g.fieldResetFoesAfterBattle(null);
+ok(f3.tx === 25 && f3.ty === 14 && g.fieldPlayerTile().ty === 15, "逃げると、FOEは移動前のマスへ戻り、プレイヤーはそのマスに残る");
+ok(g.fieldState.foeGraceSteps === 0, "他のFOEを止める猶予は無い（1歩分の距離が猶予になる）");
+// 8b. プレイヤーが自分からFOEのマスに入った場合は、プレイヤーが元のマスへ戻る
+a = setup(1, 0, 25, 13); const f4 = g.fieldState.foes[0]; g.fieldFoePlace(f4, 25, 12); f4.dir = "up"; f4.type = "patrol"; f4.def = { ...f4.def, pace: 0.01 };
+t += 1000; g.fieldTryStep(a, "up", t);
+ok(foeBattle === f4.key && g.fieldPlayerTile().ty === 12, "止まっているFOEに自分から入るとFOE戦");
+g.fieldResetFoesAfterBattle(null);
+ok(g.fieldPlayerTile().ty === 13 && f4.ty === 12, "逃げると、プレイヤーが入る前のマスへ戻る");
+// 8c. 勝った場合はFOEが消える
+g.fieldState.foeContact = { key: f4.key, foeFrom: null, playerFrom: { tx: 25, ty: 13 } };
+g.fieldResetFoesAfterBattle(f4.key); ok(f4.defeated && g.fieldState.foeDefeated[f4.key], "勝つとFOEは撃破扱い");
 // 9. FOEは安全地帯（階段）に入らない
 a = setup(1, 0, 19, 3);   // 下り階段
 ok(!g.fieldCanEnter(a, 19, 3, "foe"), "FOEは階段に入らない");
