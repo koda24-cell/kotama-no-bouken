@@ -437,3 +437,63 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   .field-danger,.field-foe-alert{min-height:21px;padding:2px 5px;font-size:9px;letter-spacing:0}
 }
 @media(prefers-reduced-motion:reduce){.field-danger{animation:none!important}}
+
+
+/* ============================================================
+   Labyrinth tile materials — readable stone, soil and terrain surfaces.
+   Visual-only treatment: tile classes, map coordinates and collision remain unchanged.
+   ============================================================ */
+.field-tile{isolation:isolate;}
+.tile-floor{
+  background-color:var(--g);
+  background-image:radial-gradient(ellipse at 22% 24%,#ffffff12 0 1px,transparent 2px),radial-gradient(ellipse at 76% 72%,#00000018 0 2px,transparent 3px),linear-gradient(135deg,#ffffff08,transparent 48%,#00000012);
+  box-shadow:inset 0 0 0 1px #00000018,inset 0 1px 0 #ffffff0b;
+}
+.tile-path{
+  background-color:var(--p);
+  background-image:linear-gradient(90deg,#00000012 1px,transparent 1px),linear-gradient(0deg,#ffffff0c 1px,transparent 1px),linear-gradient(135deg,#ffffff0c,#00000012);
+  background-size:16px 16px,16px 16px,100% 100%;
+  box-shadow:inset 0 0 0 1px #00000025,inset 0 2px 0 #ffffff12,inset 0 -2px 0 #00000012;
+}
+.tile-grass{
+  background-image:radial-gradient(ellipse at 25% 30%,#d8ef9c35 0 2px,transparent 3px),radial-gradient(ellipse at 72% 68%,#193d1c55 0 3px,transparent 4px),repeating-linear-gradient(115deg,transparent 0 8px,#d9ed9b12 9px 10px,transparent 11px 16px);
+  box-shadow:inset 0 0 0 1px #17351d44,inset 0 -5px 0 #00000020;
+}
+.tile-wall{
+  background-image:linear-gradient(180deg,#ffffff16,transparent 24%,#00000018),linear-gradient(90deg,transparent 48%,#00000018 49% 51%,transparent 52%),repeating-linear-gradient(0deg,transparent 0 14px,#00000024 15px 16px);
+  box-shadow:inset 0 0 0 1px #00000045,inset 0 2px 0 #ffffff13;
+}
+.tile-wall.is-edge{
+  background-image:linear-gradient(180deg,#ffffff16,transparent 22%,#0000001a),linear-gradient(90deg,transparent 48%,#00000018 49% 51%,transparent 52%),repeating-linear-gradient(0deg,transparent 0 14px,#00000024 15px 16px),linear-gradient(var(--w) 0 55%,var(--e) 55%);
+}
+.tile-water{
+  background-image:repeating-linear-gradient(160deg,transparent 0 8px,#d9f5ff20 9px 10px,transparent 11px 17px),radial-gradient(ellipse at 30% 20%,#d8f6ff30,transparent 58%);
+  box-shadow:inset 0 0 0 1px #061a2a55,inset 0 3px 0 #ffffff24;
+}
+.tile-safe{
+  background-image:radial-gradient(circle at 50% 50%,#f2e7a51f 0 2px,transparent 3px),linear-gradient(135deg,#ffffff16,transparent 55%,#00000018);
+  box-shadow:inset 0 0 0 1px #ffffff18,inset 0 -3px 0 #00000018;
+}
+.tile-exit{
+  background-image:linear-gradient(45deg,transparent 46%,#f8e7a055 48% 52%,transparent 54%),linear-gradient(-45deg,transparent 46%,#f8e7a055 48% 52%,transparent 54%),radial-gradient(circle,#fff4c433,transparent 68%);
+  box-shadow:inset 0 0 0 2px #f5e5a899,inset 0 0 0 5px #101b18aa,0 0 8px #f5dc7a33;
+}
+.tile-stairs-up,.tile-stairs-down{
+  background-color:var(--p);
+  background-image:repeating-linear-gradient(0deg,transparent 0 5px,#17120d88 6px 7px),linear-gradient(90deg,#ffffff16,transparent 50%,#00000020);
+  box-shadow:inset 0 0 0 2px #d9c18a88,inset 0 0 0 4px #17130e99;
+}
+.tile-stairs-up::after,.tile-stairs-down::after{
+  position:absolute;inset:0;display:grid;place-items:center;
+  color:#fff0bd;font:bold 17px/1 sans-serif;text-shadow:0 2px 3px #000,0 0 6px #e9c66a;
+}
+.tile-stairs-up::after{content:"⇧"}
+.tile-stairs-down::after{content:"⇩"}
+.tile-gate{
+  background-image:repeating-linear-gradient(90deg,transparent 0 7px,#ffb0a044 8px 9px),radial-gradient(circle,#ff5a5a66,transparent 70%),linear-gradient(180deg,#ffffff12,transparent);
+  box-shadow:inset 0 0 0 2px #e5b17a99,inset 0 0 0 5px #240d0d88;
+}
+.field-screen[data-theme="mist"] .tile-wall{background-blend-mode:screen,normal,normal;}
+.field-screen[data-theme="lava"] .tile-wall{background-image:linear-gradient(180deg,#ff9a5b16,transparent 25%,#00000025),linear-gradient(90deg,transparent 48%,#00000022 49% 51%,transparent 52%),repeating-linear-gradient(0deg,transparent 0 14px,#00000030 15px 16px);}
+.field-screen[data-theme="castle"] .tile-wall{background-image:linear-gradient(180deg,#d5dcff18,transparent 25%,#00000024),linear-gradient(90deg,transparent 48%,#00000022 49% 51%,transparent 52%),repeating-linear-gradient(0deg,transparent 0 14px,#00000030 15px 16px);}
+@media(prefers-reduced-motion:reduce){.field-screen[data-theme="lava"] .tile-water{animation:none!important}}
