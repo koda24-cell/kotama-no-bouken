@@ -129,7 +129,7 @@ function fieldUpdateVision(force = false) {
   if (newly.length) {
     document.querySelectorAll("#field-map .field-object.is-unexplored").forEach(el => {
       const ox = Number(el.dataset.tx), oy = Number(el.dataset.ty);
-      if (exp[oy * a.w + ox]) el.classList.remove("is-unexplored");
+      if (exp[oy * a.w + ox]) { el.classList.add("is-discovered"); el.classList.remove("is-unexplored"); }
     });
   }
   fieldMiniDirty = true;
