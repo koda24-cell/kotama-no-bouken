@@ -123,7 +123,8 @@ function loadFloor(index){
  const markerGroup=new THREE.Group();
  for(const f of snapshot.foes){const m=new THREE.Mesh(new THREE.ConeGeometry(.55,1.45,7),new THREE.MeshStandardMaterial({color:0xb94f45}));m.position.set(f.world.x,.72,f.world.z);markerGroup.add(m);}
  scene.add(markerGroup);layers.push({group:markerGroup,dispose(){markerGroup.traverse(n=>{n.geometry?.dispose?.();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose();}});markerGroup.clear();}});
- const qa=inspectField3DSnapshot(snapshot);\n mapInfo={objects:snapshot.objects.length,foes:snapshot.foes.length,decor:decor.counts,landmarks:landmarks.counts,qa};
+ const qa=inspectField3DSnapshot(snapshot);
+ mapInfo={objects:snapshot.objects.length,foes:snapshot.foes.length,decor:decor.counts,landmarks:landmarks.counts,qa};
  title.textContent="はじまりの樹海・"+(index+1)+"F";status.textContent="壁 "+world.wallCount+" / 床 "+world.floorCount+" / 装飾 "+Object.values(decor.counts).reduce((a,b)=>a+b,0)+" / ランドマーク "+placements.length+" / GLB "+Object.keys(loadedAssets).length+"種 / QA "+(qa.ok?"OK":qa.errorCount+" errors")+(qa.warningCount?"・警告"+qa.warningCount:"");
  placeCamera();drawMini();
 }
