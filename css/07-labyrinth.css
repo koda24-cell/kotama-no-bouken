@@ -1046,3 +1046,61 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 @media(prefers-reduced-motion:reduce){
   .field-fog::after{animation:none!important}
 }
+
+
+/* Danger escalation feedback — a compact three-step hazard trace on the existing HUD. */
+.field-danger{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  transition:color .25s ease,border-color .25s ease,background-color .25s ease,box-shadow .25s ease;
+}
+.field-danger::after{
+  content:"";
+  display:block;
+  width:21px;
+  height:4px;
+  flex:0 0 21px;
+  margin-left:2px;
+  border-radius:1px;
+  background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);
+  opacity:.16;
+  transition:opacity .25s ease,filter .25s ease;
+}
+.field-danger[data-level="1"]::after{opacity:.32}
+.field-danger[data-level="2"]{
+  background:linear-gradient(110deg,#07101ee8,#342b12e8);
+  box-shadow:inset 0 0 9px #0008,0 0 5px #e8c64b22;
+}
+.field-danger[data-level="2"]::after{opacity:.58}
+.field-danger[data-level="3"]{
+  background:linear-gradient(110deg,#07101ef0,#3b1d0cf0);
+  box-shadow:inset 0 0 9px #0008,0 0 8px #ff8a1c35;
+}
+.field-danger[data-level="3"]::after{
+  opacity:.9;
+  filter:drop-shadow(0 0 3px currentColor);
+}
+.field-danger[data-level="4"]{
+  background:linear-gradient(110deg,#210b10f5,#4b1018f5);
+  box-shadow:inset 0 0 10px #000b,0 0 10px #ff343455;
+  animation:field-danger-critical 0.85s ease-in-out infinite alternate;
+}
+.field-danger[data-level="4"]::before{
+  box-shadow:0 0 5px currentColor,0 0 11px currentColor;
+}
+.field-danger[data-level="4"]::after{
+  opacity:1;
+  filter:drop-shadow(0 0 4px currentColor);
+}
+@keyframes field-danger-critical{
+  from{border-color:#b83d48;box-shadow:inset 0 0 8px #000b,0 0 4px #ff343422}
+  to{border-color:#ff8585;box-shadow:inset 0 0 12px #000b,0 0 12px #ff343477}
+}
+@media(max-width:620px){
+  .field-danger::after{width:15px;flex-basis:15px;height:3px}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-danger{animation:none!important;transition:none!important}
+  .field-danger::after{transition:none!important}
+}
