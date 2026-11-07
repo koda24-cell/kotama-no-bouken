@@ -27,6 +27,15 @@ function fieldEnsureExtraDom() {
     vp.appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
   }
+  if (!$("field-map-rail")) {
+    const rail = document.createElement("aside");
+    rail.id = "field-map-rail"; rail.className = "field-map-rail";
+    rail.setAttribute("aria-label", "探索マップ");
+    rail.innerHTML = '<strong>MAP</strong><span class="field-map-hint">周囲9×9マスを表示</span><div id="field-minimap-status" class="field-minimap-status"></div><div id="field-minimap-legend" class="field-minimap-legend"><span><i class="mini-player"></i>現在地</span><span><i class="mini-stairs"></i>階段</span><span><i class="mini-chest"></i>宝箱</span><span><i class="mini-gather"></i>採集</span><span><i class="mini-puzzle"></i>仕掛け</span><span><i class="mini-secret"></i>隠し通路</span><span><i class="mini-foe"></i>FOE巡回</span><span><i class="mini-chase"></i>FOE追跡</span></div>';
+    vp.after(rail);
+    const mini = $("field-minimap");
+    if (mini) rail.insertBefore(mini, $("field-minimap-status"));
+  }
 }
 function fieldBuildDom() {
   const a = fieldArea(), screen = $("field"), map = $("field-map"); if (!a || !screen || !map) return;
@@ -85,7 +94,7 @@ function fieldRender() {
    ------------------------------------------------------------ */
 const FIELD_MAP_COLORS = { wall: "#3a4160", floor: "#a9b8d6", path: "#c9b98f", grass: "#8fbf7d", water: "#3d78c4", lava: "#e0612a", safe: "#d9e6b8", gate: "#ff5a5a", exit: "#ffffff" };
 function fieldMapColor(a, c) {
-  if (c === "#") return FIELD_MAP_COLORS.wall;
+  if (c === "#" || (typeof fieldWallLike === "function" && fieldWallLike(a, c))) return FIELD_MAP_COLORS.wall;
   if (c === "~") return a.def.theme === "lava" ? FIELD_MAP_COLORS.lava : FIELD_MAP_COLORS.water;
   if (c === ",") return FIELD_MAP_COLORS.path;
   if (c === "*") return FIELD_MAP_COLORS.grass;
@@ -95,41 +104,91 @@ function fieldMapColor(a, c) {
 }
 function fieldDrawMap(canvas, cell, full) {
   const a = fieldArea(); if (!canvas || !a) return;
-  const W = a.w * cell, H = a.h * cell, dpr = Math.min(2, window.devicePixelRatio || 1);
-  if (canvas.width !== W * dpr) { canvas.width = W * dpr; canvas.height = H * dpr; canvas.style.width = W + "px"; canvas.style.height = H + "px"; }
-  const g = canvas.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
-  const exp = fieldExplored(a);
-  for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) {
-    if (!exp[y * a.w + x]) continue;
-    g.fillStyle = fieldMapColor(a, fieldTileAt(a, x, y)); g.fillRect(x * cell, y * cell, cell, cell);
-    if (full && fieldTileAt(a, x, y) !== "#") { g.strokeStyle = "rgba(0,0,0,.12)"; g.strokeRect(x * cell + .5, y * cell + .5, cell - 1, cell - 1); }
+  const local = !full, radius = 4, player = fieldPlayerTile();
+  const originX = local ? player.tx - radius : 0, originY = local ? player.ty - radius : 0;
+  const cols = local ? 9 : a.w, rows = local ? 9 : a.h;
+  const W = cols * cell, H = rows * cell, dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (canvas.width !== W * dpr || canvas.height !== H * dpr) {
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + "px"; canvas.style.height = H + "px";
   }
-  const dot = (x, y, color, size = .62, shape = "circle") => {
-    g.fillStyle = color; const cx = (x + .5) * cell, cy = (y + .5) * cell, r = cell * size / 2;
-    if (shape === "square") g.fillRect(cx - r, cy - r, r * 2, r * 2); else { g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill(); }
+  const g = canvas.getContext("2d"), exp = fieldExplored(a);
+  g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  g.fillStyle = "#030912"; g.fillRect(0, 0, W, H);
+  const inWindow = (x,y) => x >= originX && y >= originY && x < originX + cols && y < originY + rows;
+  for (let my=0; my<rows; my++) for (let mx=0; mx<cols; mx++) {
+    const x=originX+mx, y=originY+my, sx=mx*cell, sy=my*cell;
+    g.fillStyle="#07111c"; g.fillRect(sx,sy,cell,cell);
+    if (x<0 || y<0 || x>=a.w || y>=a.h || !exp[y*a.w+x]) continue;
+    const visible=fieldState.visible?.has(x+","+y)||false;
+    g.fillStyle=fieldMapColor(a,fieldTileAt(a,x,y)); g.fillRect(sx,sy,cell,cell);
+    g.fillStyle=visible?"rgba(255,231,151,.24)":"rgba(2,8,16,.48)"; g.fillRect(sx,sy,cell,cell);
+    g.strokeStyle=visible?"rgba(255,224,125,.86)":"rgba(0,0,0,.28)";
+    g.lineWidth=Math.max(.7,cell*.08); g.strokeRect(sx+.5,sy+.5,Math.max(0,cell-1),Math.max(0,cell-1));
+  }
+  const dot=(x,y,color,size=.62,shape="circle")=>{
+    if(!inWindow(x,y)) return;
+    g.fillStyle=color;
+    const cx=(x-originX+.5)*cell,cy=(y-originY+.5)*cell,rad=cell*size/2;
+    if(shape==="square") g.fillRect(cx-rad,cy-rad,rad*2,rad*2);
+    else if(shape==="triangle"||shape==="triangle-down"){
+      g.beginPath();
+      if(shape==="triangle"){g.moveTo(cx,cy-rad*1.2);g.lineTo(cx+rad,cy+rad*.8);g.lineTo(cx-rad,cy+rad*.8)}
+      else{g.moveTo(cx-rad,cy-rad*.8);g.lineTo(cx+rad,cy-rad*.8);g.lineTo(cx,cy+rad*1.2)}
+      g.closePath();g.fill();
+    } else if(shape==="diamond"){g.beginPath();g.moveTo(cx,cy-rad);g.lineTo(cx+rad,cy);g.lineTo(cx,cy+rad);g.lineTo(cx-rad,cy);g.closePath();g.fill()}
+    else{g.beginPath();g.arc(cx,cy,rad,0,Math.PI*2);g.fill()}
   };
-  for (const o of a.objects) {
-    if (!exp[o.ty * a.w + o.tx]) continue;
-    if (o.kind === "stairs") { dot(o.tx, o.ty, "#ffd84a", .8, "square"); if (full) { g.fillStyle = "#222"; g.font = `bold ${Math.floor(cell * .7)}px sans-serif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(o.dir === "up" ? "▲" : "▼", (o.tx + .5) * cell, (o.ty + .55) * cell); } }
-    else if (o.kind === "save") dot(o.tx, o.ty, "#ffe27a", .8);
-    else if (o.kind === "chest") dot(o.tx, o.ty, fieldState.flags[o.key] ? "#7a6a55" : "#ff9a3c", .7, "square");
-    else if (o.kind === "gather") dot(o.tx, o.ty, (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES ? "#5d7a5d" : "#3ee07a", .7);
-    else if (o.kind === "npc") dot(o.tx, o.ty, "#c7a3ff", .7);
-    else if (o.kind === "gate") dot(o.tx, o.ty, "#ff3030", .9);
+  for(const o of a.objects){
+    if(!inWindow(o.tx,o.ty)||!exp[o.ty*a.w+o.tx]) continue;
+    if(o.kind==="stairs") dot(o.tx,o.ty,"#ffd84a",.84,o.dir==="up"?"triangle":"triangle-down");
+    else if(o.kind==="save") dot(o.tx,o.ty,"#ffe27a",.8);
+    else if(o.kind==="chest") dot(o.tx,o.ty,fieldState.flags[o.key]?"#7a6a55":"#ff9a3c",.76,"square");
+    else if(o.kind==="gather") dot(o.tx,o.ty,(fieldState.gatherUsed[o.key]||0)>=FIELD_GATHER_USES?"#5d7a5d":"#3ee07a",.76);
+    else if(o.kind==="npc"||o.kind==="sign") dot(o.tx,o.ty,"#c7a3ff",.72,"square");
+    else if(o.kind==="event"){
+      const done=typeof fieldSideDone==="function"&&fieldSideDone(o.event);
+      if(!o.hidden||done) dot(o.tx,o.ty,done?"#5f7f8f":"#7fd6ff",.72,"square");
+    }
+    else if(o.kind==="switch"){
+      const solved=typeof fieldPuzzleSolved==="function"&&fieldPuzzleSolved(o.puzzle);
+      dot(o.tx,o.ty,solved?"#7a6a8a":"#ff8ad8",.72,"square");
+    }
+    else if(o.kind==="cache"){
+      const opened=!!fieldState.flags["puzzle:"+o.puzzle+":reward"];
+      dot(o.tx,o.ty,opened?"#7a6a55":"#ff9a3c",.76,"square");
+    }
+    else if(o.kind==="gate") dot(o.tx,o.ty,"#ff3030",.9);
+    else if(o.kind==="exit") dot(o.tx,o.ty,"#fff4c2",.9,"square");
+    else if(o.kind==="door"){
+      const opened=typeof fieldDoorOpen==="function"?fieldDoorOpen(o):!!fieldState.flags["door:"+o.id+":open"];
+      if(!o.hidden||opened) dot(o.tx,o.ty,opened?"#63d6dc":"#f0c36a",.82,o.hidden?"diamond":"square");
+    }
+    else if(o.kind==="hiddenPassage"||o.kind==="hidden-passage") dot(o.tx,o.ty,"#c68cff",.82,"diamond");
   }
-  for (const foe of fieldState.foes) {
-    if (foe.defeated) continue;
-    const fx = Math.floor(foe.x / FIELD_TILE), fy = Math.floor(foe.y / FIELD_TILE);
-    if (exp[fy * a.w + fx]) dot(fx, fy, foe.mode === "chase" ? "#ff2d2d" : "#ff8a1c", .9);
+  for(const foe of fieldState.foes){
+    if(foe.defeated) continue;
+    const fx=Math.floor(foe.x/FIELD_TILE),fy=Math.floor(foe.y/FIELD_TILE);
+    if(inWindow(fx,fy)&&exp[fy*a.w+fx]) dot(fx,fy,foe.mode==="chase"?"#ff3030":"#ffad45",.94,foe.mode==="chase"?"triangle":"circle");
   }
-  const { tx, ty } = fieldPlayerTile();
-  g.save(); g.translate((fieldState.x / FIELD_TILE) * cell, (fieldState.y / FIELD_TILE) * cell);
-  g.rotate({ up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 }[fieldState.dir] || 0);
-  g.fillStyle = "#fff"; g.strokeStyle = "#000"; g.lineWidth = Math.max(1, cell / 8);
-  g.beginPath(); g.moveTo(0, -cell * .55); g.lineTo(cell * .42, cell * .4); g.lineTo(-cell * .42, cell * .4); g.closePath(); g.stroke(); g.fill(); g.restore();
-  void tx; void ty;
+  g.save();g.translate((fieldState.x/FIELD_TILE-originX)*cell,(fieldState.y/FIELD_TILE-originY)*cell);
+  g.rotate({up:0,right:Math.PI/2,down:Math.PI,left:-Math.PI/2}[fieldState.dir]||0);
+  g.fillStyle="#fff";g.strokeStyle="#000";g.lineWidth=Math.max(1,cell/8);
+  g.beginPath();g.moveTo(0,-cell*.55);g.lineTo(cell*.42,cell*.4);g.lineTo(-cell*.42,cell*.4);g.closePath();g.stroke();g.fill();g.restore();
 }
-function fieldDrawMinimap() { fieldDrawMap($("field-minimap"), 4, false); }
+function fieldDrawMinimap() {
+  fieldDrawMap($("field-minimap"), 12, false);
+  const a=fieldArea(),status=$("field-minimap-status");
+  if(!a||!status)return;
+  const {tx,ty}=fieldPlayerTile();
+  const visible=(fieldState.foes||[]).filter(f=>{
+    if(f.defeated)return false;
+    const fx=Math.floor(f.x/FIELD_TILE),fy=Math.floor(f.y/FIELD_TILE);
+    return fieldState.visible?.has(`${fx},${fy}`);
+  });
+  const chasing=visible.filter(f=>f.mode==="chase").length;
+  status.textContent=`座標 ${tx+1}, ${ty+1}　/　視界内FOE ${visible.length}（追跡 ${chasing}）`;
+}
 function fieldDrawFullMap() {
   const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
   const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - 92) / a.h)));
