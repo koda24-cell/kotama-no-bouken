@@ -402,3 +402,40 @@ applyField3DQualityPreset(renderer, quality);
 - FOEが壁セル上に配置されている場合の警告
 
 展示ページのステータス欄にQA結果を表示する。これはデータ構造の検査であり、実ゲームの移動・扉・仕掛け・セーブ・FOE AIのテストを代替しない。
+
+
+## GLBマニフェスト・読み込みQA
+
+`field-3d-asset-qa.js` は、素材の取得前後にマニフェストと読み込み結果を読み取り専用で検査する。
+
+```js
+import {
+  inspectField3DManifest,
+  inspectField3DAssetLoad
+} from "./field/3d/field-3d-asset-qa.js";
+
+const manifestReport = inspectField3DManifest(manifest);
+const loadResult = await loadField3DAssets({ GLTFLoader, manifest: manifest.assets, baseUrl });
+const loadReport = inspectField3DAssetLoad(manifestReport, loadResult);
+console.table(loadReport.issues);
+```
+
+- キー、相対URL、GLB拡張子、カテゴリ、required指定、正のscale、LOD値を検査する。
+- `required:true` の素材が読み込み失敗した場合は `requiredMissing` に反映する。
+- optional素材の失敗も記録するが、ゲーム全体を停止する理由にはしない。
+- この検査はファイルの実在・GLB内部構造・テクスチャ品質までは検証しない。実ロード結果と別途の目視確認が必要。
+- 展示ページのステータス欄にマニフェスト/ロードQAを追加した。現在のmanifestは全件optionalで実GLB未配置のため、未配置はエラーではなく確認項目として表示される。
+
+## GLB共有リソースの解放
+
+`field-3d-asset-disposal.js` は、ロード結果が所有する元シーンのGeometry・Material・Textureを重複なく解放する。
+
+```js
+import { disposeField3DAssets } from "./field/3d/field-3d-asset-disposal.js";
+
+// 先に、ロード結果から作った全cloneをシーンから取り除いておく。
+const report = disposeField3DAssets(loadResult);
+console.info(report);
+```
+
+**重要：** cloneが表示中、または別シーンで共有リソースを使用中に呼び出してはいけない。フロア切替時に個別cloneを破棄する用途ではなく、展示/ゲーム全体を終了し、共有アセットを使う全cloneを除去した後の一括解放用。呼び出し側が所有権と寿命を管理する。
