@@ -4,6 +4,19 @@
  * Geometry is instanced by category; gameplay and collision remain elsewhere.
  */
 
+function addFaceShading(THREE, geometry, { top = 1.16, side = 0.82, underside = 0.68 } = {}) {
+  const normals = geometry.getAttribute("normal");
+  const colors = new Float32Array(normals.count * 3);
+  for (let i = 0; i < normals.count; i += 1) {
+    const ny = normals.getY(i);
+    const factor = ny > 0.5 ? top : ny < -0.5 ? underside : side;
+    colors[i * 3] = factor;
+    colors[i * 3 + 1] = factor;
+    colors[i * 3 + 2] = factor;
+  }
+  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+}
+
 export function buildField3DWorld(THREE, snapshot, options = {}) {
   if (!THREE?.Group || !THREE?.InstancedMesh || !snapshot?.cells) {
     throw new TypeError("buildField3DWorld: Three.js and a valid grid snapshot are required.");
@@ -11,7 +24,7 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
 
   const scale = snapshot.scale;
   const wallHeight = snapshot.wallHeight;
-  const floorY = -0.12;
+  const floorY = options.floorY ?? -0.12;
   const group = new THREE.Group();
   group.name = "kotama-field-3d-world";
 
@@ -21,18 +34,23 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     grass: 0x405d3d,
     safe: 0x777b62,
     wall: 0x39483f,
-    hazard: 0x274d59
+    hazard: 0x274d59,
+    object: 0x665c4c,
+    unknown: 0x4b5149
   };
   Object.assign(palette, options.palette || {});
 
   const floorGeometry = new THREE.PlaneGeometry(scale, scale);
   floorGeometry.rotateX(-Math.PI / 2);
   const wallGeometry = new THREE.BoxGeometry(scale, wallHeight, scale);
+  // Vertex colors tint the six box faces by orientation without creating six
+  // materials per wall. Instanced color still provides stable cell variation.
+  addFaceShading(THREE, wallGeometry, options.wallFaceShading);
   const floorMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, roughness: 0.96, vertexColors: true
+    color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true
   });
   const wallMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, roughness: 0.92, vertexColors: true
+    color: 0xffffff, roughness: options.wallRoughness ?? 0.88, vertexColors: true
   });
 
   const floorCells = snapshot.cells.filter(cell => cell.floorVisible);
@@ -55,14 +73,10 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
       );
       dummy.updateMatrix();
       mesh.setMatrixAt(index, dummy.matrix);
-      const colorKey = kind === "wall" ? "wall" : cell.terrain;
-      // Stable per-cell tint variation breaks up large flat surfaces without textures
-      // or per-cell materials. Coordinates are used instead of randomness so reloads
-      // produce exactly the same map appearance.
+      const colorKey = kind === "wall" ? "wall" : (palette[cell.terrain] != null ? cell.terrain : "floor");
+      // Stable coordinate hash avoids flickering or nondeterministic map colors.
       const hash = Math.abs(Math.sin((cell.tx + 17) * 127.1 + (cell.ty + 31) * 311.7));
-      const variation = kind === "wall"
-        ? 0.88 + hash * 0.18
-        : 0.94 + hash * 0.10;
+      const variation = kind === "wall" ? 0.88 + hash * 0.18 : 0.94 + hash * 0.10;
       const instanceColor = new THREE.Color(palette[colorKey] ?? palette.floor);
       instanceColor.multiplyScalar(variation);
       mesh.setColorAt(index, instanceColor);
@@ -77,11 +91,11 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   placeInstances(floorMesh, floorCells, "floor");
   placeInstances(wallMesh, wallCells, "wall");
 
-  // A subtle base slab prevents gaps at map edges without changing cell collision.
-  const base = new THREE.Mesh(
-    new THREE.BoxGeometry(snapshot.area.worldWidth, 0.2, snapshot.area.worldDepth),
-    new THREE.MeshStandardMaterial({ color: options.baseColor ?? 0x1b211b, roughness: 1 })
-  );
+  const baseGeometry = new THREE.BoxGeometry(snapshot.area.worldWidth, 0.2, snapshot.area.worldDepth);
+  const baseMaterial = new THREE.MeshStandardMaterial({
+    color: options.baseColor ?? 0x1b211b, roughness: 1
+  });
+  const base = new THREE.Mesh(baseGeometry, baseMaterial);
   base.position.set(snapshot.area.worldWidth / 2, -0.28, snapshot.area.worldDepth / 2);
   base.receiveShadow = true;
   group.add(base);
@@ -100,5 +114,9 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     });
   }
 
-  return Object.freeze({ group, dispose, floorCount: floorCells.length, wallCount: wallCells.length });
+  return Object.freeze({
+    group, dispose,
+    floorCount: floorCells.length,
+    wallCount: wallCells.length
+  });
 }
