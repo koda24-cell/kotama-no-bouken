@@ -588,3 +588,72 @@ button:focus-visible,[role="button"]:focus-visible{outline:3px solid var(--gold)
  .battle-screen.is-boss-battle #battle-enemy.maou-ominous::after,
  .battle-screen.is-boss-battle #battle-enemy.dragon-ominous::after{animation:none!important}
 }
+
+
+/* Etrian battle identity: each stratum has its own boss-arena atmosphere. */
+.battle-screen.is-boss-battle .battle-arena{
+  background:
+    radial-gradient(ellipse at 50% 78%,var(--boss-floor-light,#8fc58b22),transparent 58%),
+    linear-gradient(180deg,var(--boss-sky-top,#081522) 0%,var(--boss-sky-mid,#142b32) 56%,var(--boss-floor,#263b36) 57%,#101b24 100%);
+}
+.battle-screen.is-boss-battle .battle-arena::after{
+  content:"";position:absolute;z-index:0;inset:0;pointer-events:none;opacity:.46;
+  background:
+    linear-gradient(90deg,transparent 0 8%,var(--boss-accent,#d7c58b) 8.15%,transparent 8.3% 91.7%,var(--boss-accent,#d7c58b) 91.85%,transparent 92%),
+    repeating-linear-gradient(0deg,transparent 0 34px,var(--boss-glow,#d7c58b22) 35px,transparent 36px 68px);
+  mask-image:linear-gradient(180deg,transparent 0%,black 28%,black 100%);
+}
+.battle-screen[data-boss-stage="1"]{--boss-sky-top:#071b19;--boss-sky-mid:#173a2c;--boss-floor:#304c37;--boss-floor-light:#9bd77b35}
+.battle-screen[data-boss-stage="2"]{--boss-sky-top:#171b0c;--boss-sky-mid:#343b1b;--boss-floor:#45452a;--boss-floor-light:#c1c66c30}
+.battle-screen[data-boss-stage="3"]{--boss-sky-top:#071b28;--boss-sky-mid:#17404a;--boss-floor:#2b4b50;--boss-floor-light:#8bd9e535}
+.battle-screen[data-boss-stage="4"]{--boss-sky-top:#250e0a;--boss-sky-mid:#57251a;--boss-floor:#623321;--boss-floor-light:#ff8a4938}
+.battle-screen[data-boss-stage="5"]{--boss-sky-top:#150d24;--boss-sky-mid:#302044;--boss-floor:#44304f;--boss-floor-light:#c08bea38}
+
+/* The battle heading reads as a compact expedition battle plaque. */
+.battle-screen .battle-heading{
+  position:relative;gap:8px;padding:5px 10px 6px;
+  border:1px solid #9b895e66;border-left:3px solid var(--boss-accent,#b89b61);
+  background:linear-gradient(90deg,#111d2bea,#0a1320c9 72%,transparent);
+  box-shadow:inset 0 1px #ffffff0d;
+}
+.battle-screen .battle-heading .eyebrow{margin:0;color:#d7c28c!important;font-size:9px!important;letter-spacing:.18em}
+.battle-screen .battle-heading h1{margin:0;color:var(--boss-accent,#e6d49b);font-size:16px;letter-spacing:.04em}
+.battle-screen .battle-heading #turn-counter{
+  margin:0 0 0 auto;padding:2px 7px;border:1px solid #9b895e66;
+  background:#080f1bdc;color:#f0e2bd;font-size:10px;white-space:nowrap;
+}
+
+/* Enemy traits and tactical map become readable field-guide instruments. */
+.battle-screen .enemy-display .enemy-traits{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:4px;margin:5px auto 0;
+  max-width:100%;color:#e9dfc2;font-size:9px;line-height:1.35;
+}
+.battle-screen .enemy-display .enemy-traits span{
+  padding:2px 5px;border:1px solid #a99a7055;border-radius:2px;
+  background:#091522d9;color:#e5d9b5;
+}
+.battle-screen .enemy-display #enemy-analysis{
+  margin:5px auto 0;padding:5px 7px;max-width:min(100%,340px);
+  border:1px solid #8e9bb866;background:#07111ddd;
+  color:#d5dfeb;font-size:10px;line-height:1.45;text-align:left;
+}
+.battle-screen .battle-tactical-map{
+  border:1px solid #9b895e88;border-radius:3px;
+  background:linear-gradient(180deg,#101d2a,#08121d);
+  box-shadow:inset 0 0 0 2px #0007,0 4px 12px #0006;
+  color:#d8c89d;
+}
+.battle-screen .battle-tactical-map .window-title{
+  padding-bottom:5px;border-bottom:1px solid #b89b6155;
+  color:#e8d6a2;font-size:10px;letter-spacing:.12em;
+}
+.battle-screen .battle-tactical-map small{color:#c1c8da;font-size:9px}
+@media(max-width:620px){
+  .battle-screen .battle-heading{gap:5px;padding:4px 7px}
+  .battle-screen .battle-heading h1{font-size:14px}
+  .battle-screen .battle-heading #turn-counter{font-size:9px;padding:2px 5px}
+  .battle-screen .enemy-display .enemy-traits{font-size:8px;gap:3px}
+}
+@media(prefers-reduced-motion:reduce){
+  .battle-screen.is-boss-battle .battle-arena::after{animation:none}
+}
