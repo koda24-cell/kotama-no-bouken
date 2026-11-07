@@ -165,7 +165,7 @@ function fieldEnsureExtraDom() {
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
-    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-vision"></i>現在視界</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
+    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div id="field-fullmap-summary" class="field-fullmap-summary" aria-live="polite"></div><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-vision"></i>現在視界</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span><span><i class="lg-sign"></i>看板・人</span><span><i class="lg-exit"></i>出口</span></div>`;
     vp.appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
   }
@@ -263,8 +263,9 @@ function fieldDrawMap(canvas, cell, full) {
     else if (o.kind === "save") dot(o.tx, o.ty, "#ffe27a", .8);
     else if (o.kind === "chest") dot(o.tx, o.ty, fieldState.flags[o.key] ? "#7a6a55" : "#ff9a3c", .7, "square");
     else if (o.kind === "gather") dot(o.tx, o.ty, (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES ? "#5d7a5d" : "#3ee07a", .7);
-    else if (o.kind === "npc") dot(o.tx, o.ty, "#c7a3ff", .7);
+    else if (o.kind === "npc" || o.kind === "sign") dot(o.tx, o.ty, "#c7a3ff", .7, "square");
     else if (o.kind === "gate") dot(o.tx, o.ty, "#ff3030", .9);
+    else if (o.kind === "exit") { dot(o.tx, o.ty, "#fff4c2", .9, "square"); if (full) { g.strokeStyle = "#5a4720"; g.lineWidth = Math.max(1, cell * .12); g.strokeRect(o.tx * cell + cell * .2, o.ty * cell + cell * .2, cell * .6, cell * .6); } }
   }
   for (const foe of fieldState.foes) {
     if (foe.defeated) continue;
@@ -285,6 +286,14 @@ function fieldDrawFullMap() {
   fieldDrawMap($("field-fullmap-canvas"), cell, true);
   $("field-fullmap-title").textContent = `${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n, a.f)}`;
   $("field-fullmap-rate").textContent = `踏破率 ${fieldExploredRate(a)}%`;
+  const exp = fieldExplored(a);
+  const known = a.objects.filter(o => exp[o.ty * a.w + o.tx]);
+  const count = kind => known.filter(o => o.kind === kind).length;
+  const unopened = known.filter(o => o.kind === "chest" && !fieldState.flags[o.key]).length;
+  const gatherReady = known.filter(o => o.kind === "gather" && (fieldState.gatherUsed[o.key] || 0) < FIELD_GATHER_USES).length;
+  const knownFoes = fieldState.foes.filter(f => !f.defeated && exp[Math.floor(f.y / FIELD_TILE) * a.w + Math.floor(f.x / FIELD_TILE)]).length;
+  const { tx, ty } = fieldPlayerTile();
+  $("field-fullmap-summary").innerHTML = `<span class="map-coordinate">現在座標 <b>${tx + 1}, ${ty + 1}</b></span><span>階段 <b>${count("stairs")}</b></span><span>未回収の宝箱 <b>${unopened}</b></span><span>採取可能 <b>${gatherReady}</b></span><span>発見FOE <b>${knownFoes}</b></span>`;
 }
 function fieldToggleFullMap(force) {
   const full = $("field-fullmap"); if (!full) return;

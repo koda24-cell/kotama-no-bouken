@@ -910,3 +910,25 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   .field-object.is-discovered .field-object-label{animation:none!important}
   .field-object.is-discovered::after{display:none}
 }
+
+
+/* Full-map field notes: a compact record of landmarks already discovered. */
+.field-fullmap-summary{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:4px 6px;width:100%;
+  padding:6px 5px;border-top:1px solid #b99b6577;border-bottom:1px solid #b99b6577;
+  background:linear-gradient(90deg,#0b1722aa,#293342aa,#0b1722aa);
+  color:#c9d0d2;font-size:10px;line-height:1.45;
+}
+.field-fullmap-summary span{
+  padding:2px 6px;border:1px solid #b99b6544;border-radius:3px;background:#07111acc;
+  white-space:nowrap;
+}
+.field-fullmap-summary b{color:#ffe29a;font-variant-numeric:tabular-nums}
+.field-fullmap-summary .map-coordinate{color:#e6d7ae}
+.field-fullmap-summary .map-coordinate b{color:#fff2c5;letter-spacing:.08em}
+.field-fullmap-legend .lg-sign{background:#c7a3ff}
+.field-fullmap-legend .lg-exit{background:#fff4c2;border:1px solid #9a7e42}
+@media(max-width:480px){
+  .field-fullmap-summary{gap:3px;font-size:9px;padding:5px 2px}
+  .field-fullmap-summary span{padding:2px 4px}
+}
