@@ -21,11 +21,11 @@ const FIELD_GATHER_KINDS = {
   mine: { label: "採掘", pointName: "採掘ポイント", verb: "岩を掘り出した", emptyText: "もう掘れそうな岩は残っていない。" }
 };
 
-// 共通ルール（提案中。最終決定はユーザー）
-//   respawn: "home" … ホームから出発し直す（＝宿で一晩休む扱い）と、すべての採集点が復活する。
-//            採集回数はセーブされるので、ロードし直しても復活しない。
+// 共通ルール（ユーザー決定 2026-11-07）
+//   respawn: "time" … 採集点ごとに、その点で最初に採集してから実時間で respawnMinutes 分たつと、回数がすべて戻る。
+//            時刻と回数はセーブされるので、ロードやホーム帰還では戻らない。ゲームを閉じている間も時間は進む。
 //   bonusChance … 1回の採集で素材を2個得る確率（従来と同じ 25%）
-const FIELD_GATHER_RULES = { respawn: "home", bonusChance: .25 };
+const FIELD_GATHER_RULES = { respawn: "time", respawnMinutes: 30, bonusChance: .25 };
 
 // 採集点ごとの定義。uses を省略すると field.js の FIELD_GATHER_USES（2回）
 const FIELD_GATHER_POINTS = {

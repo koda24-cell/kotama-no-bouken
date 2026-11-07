@@ -54,6 +54,7 @@ function fieldDeserialize(d) {
    [LOOT] 宝箱・採集・探索記録のセーブ（saveVersion 11。担当：Claude B）
    ・gatherUsed：採集回数（キー → 回数。0回は保存しない）
    ・discovered：発見済みの宝箱・扉の奥の宝箱・採集点のキー（配列。セーブ時に踏破ビットから補う）
+   ・gatherTimes：採集点ごとの「この回の最初の採集」の時刻（実時間ミリ秒）。30分たつと回数が戻る（旧セーブ・時刻なしは読み込んだ時刻から数える）
    ・expedition：ホームから出発した回数
    旧セーブ（saveVersion 10 以前・項目なし）は「採集回数0（すべて採集可能）・発見状態は踏破ビットから作り直す」。
    宝箱の開封（chest:…）・仕掛けの報酬（puzzle:…:reward）・サブイベント（side:…）は既存の flags のまま保存する。
@@ -63,10 +64,12 @@ function fieldLootSerialize() {
   const idx = fieldLootIndex(), gatherUsed = {};
   for (const [k, v] of Object.entries(fieldState.gatherUsed || {})) if (idx.has(k) && v > 0) gatherUsed[k] = Math.floor(v);
   const discovered = Object.keys(fieldLootSyncDiscovered()).filter(k => idx.has(k)).sort();
-  return { gatherUsed, discovered, expedition: Math.max(0, Math.floor(Number(fieldState.expedition) || 0)) };
+  const gatherTimes = {};
+  for (const k of Object.keys(gatherUsed)) { const t = Number(fieldState.gatherTimes?.[k]); if (Number.isFinite(t) && t > 0) gatherTimes[k] = Math.floor(t); }
+  return { gatherUsed, gatherTimes, discovered, expedition: Math.max(0, Math.floor(Number(fieldState.expedition) || 0)) };
 }
 function fieldLootDeserialize(d) {
-  fieldState.gatherUsed = {}; fieldState.discovered = {}; fieldState.expedition = 0;
+  fieldState.gatherUsed = {}; fieldState.gatherTimes = {}; fieldState.discovered = {}; fieldState.expedition = 0;
   if (typeof fieldLootIndex !== "function") return;
   const idx = fieldLootIndex();
   if (d && typeof d === "object") {
@@ -75,10 +78,12 @@ function fieldLootDeserialize(d) {
       const n = Math.max(0, Math.min(fieldGatherPointDef(e.a, e.o).uses, Math.floor(Number(v) || 0)));
       if (n) fieldState.gatherUsed[k] = n;
     }
+    if (d.gatherTimes && typeof d.gatherTimes === "object") for (const [k, v] of Object.entries(d.gatherTimes)) { const t = Number(v); if (fieldState.gatherUsed[k] && Number.isFinite(t) && t > 0) fieldState.gatherTimes[k] = t; }
     if (Array.isArray(d.discovered)) for (const k of d.discovered) if (typeof k === "string" && idx.has(k)) fieldState.discovered[k] = true;
     fieldState.expedition = Math.max(0, Math.floor(Number(d.expedition) || 0));
   }
   fieldLootSyncDiscovered();
+  if (typeof fieldGatherRefresh === "function") fieldGatherRefresh();   // 閉じている間に30分たった採集点を戻す（時刻なしは今から数える）
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fieldSetupInput); else fieldSetupInput();

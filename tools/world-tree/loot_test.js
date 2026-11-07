@@ -57,14 +57,16 @@ const J = x => JSON.stringify(x);
   await r(`fieldOpenChest(fieldLootIndex().get('chest:1-1:9:13').o)`);
   ok("既存形式 {item:'ether',count:1} は従来どおり", r("inventory.ether") === 1);
   c.events.length = 0;
+  const T0 = 1_800_000_000_000; r(`fieldNowMs = () => ${T0}`);   // 実時間を固定（30分ルールの検証用）
   await r(`fieldGather(fieldLootIndex().get('${gk}').o)`);
   const ge = c.events.find(e => e[0] === "field:gather");
-  ok("採集1回目：remaining 1・kind chop・uses 2・respawn home・オートセーブに gatherUsed=1", ge && ge[1].remaining === 1 && ge[1].kind === "chop" && ge[1].uses === 2 && ge[1].respawn === "home" && c.lastSave().field.gatherUsed[gk] === 1);
+  ok("採集1回目：remaining 1・kind chop・uses 2・respawn time・respawnAt=30分後・オートセーブに gatherUsed=1 と時刻", ge && ge[1].remaining === 1 && ge[1].kind === "chop" && ge[1].uses === 2 && ge[1].respawn === "time" && ge[1].respawnAt === T0 + 30 * 60000 && c.lastSave().field.gatherUsed[gk] === 1 && c.lastSave().field.gatherTimes[gk] === T0);
   ok("採集メッセージが種別に応じる", /伐採ポイントだ！ 木を切り出した。/.test(c.said.at(-1)), c.said.at(-1));
   await r(`fieldGather(fieldLootIndex().get('${gk}').o)`);
   const matsBefore = J(r("materials"));
   await r(`fieldGather(fieldLootIndex().get('${gk}').o)`);
   ok("採集2回で depleted・3回目は素材が増えない", r(`fieldLootState('${gk}')`) === "depleted" && J(r("materials")) === matsBefore);
+  ok("採り尽くしたときは、戻るまでの残り時間を表示", /あと約30分で、また採れるようになる/.test(c.said.at(-1)), c.said.at(-1));
   ok("フロア集計（既知の分だけ）", J(r(`fieldFloorSummary(1,1)`)) === J({ chestsKnown: 2, chestsOpened: 2, gathersKnown: 1, gathersReady: 0, gathersByKind: { chop: { known: 1, ready: 0 } } }));
   ok("fieldLootList は発見済みだけ・採集点に remaining/uses/respawn", (l => l.length === 3 && l.find(x => x.key === gk).remaining === 0 && l.find(x => x.key === gk).uses === 2)(r(`fieldLootList(1,1)`)));
   const fsave = JSON.parse(J(r(`fieldSerialize()`)));
@@ -73,7 +75,20 @@ const J = x => JSON.stringify(x);
   let enterErr = null;
   r(`fieldState.flags['floor:1-1']=true;fieldState.flags.prologue=true;`);   // 1F の導入イベント（openEvent）を避けるため 2F へ出発する
   try { await r(`fieldEnterArea(1,{floor:1,fromHome:true})`); } catch (e) { enterErr = e; }
-  ok("ホームから出発（fieldEnterArea fromHome）で採集点が ready に戻り expedition+1、宝箱は opened のまま", !enterErr && r(`fieldLootState('${gk}')`) === "ready" && r("fieldState.expedition") === fsave.expedition + 1 && r(`fieldLootState('${ck}')`) === "opened" && c.events.some(e => e[0] === "field:loot:respawn"), enterErr ? String(enterErr) : "");
+  ok("ホームから出発（fieldEnterArea fromHome）しても採集点は戻らない（時間で戻る）・expedition+1・宝箱は opened のまま", !enterErr && r(`fieldLootState('${gk}')`) === "depleted" && r("fieldState.expedition") === fsave.expedition + 1 && r(`fieldLootState('${ck}')`) === "opened");
+  r(`fieldNowMs = () => ${T0 + 29 * 60000}`);
+  ok("29分後はまだ戻らない", r(`fieldLootState('${gk}')`) === "depleted");
+  c.events.length = 0; r(`fieldNowMs = () => ${T0 + 30 * 60000}`);
+  ok("最初の採集から30分で ready に戻り、field:loot:respawn（reason=time）が出る", r(`fieldLootState('${gk}')`) === "ready" && c.events.some(e => e[0] === "field:loot:respawn" && e[1].reason === "time" && e[1].keys.includes(gk)));
+  // ゲームを閉じている間も時間は進む：採集→保存→35分後の時刻で読み込む
+  r(`fieldNowMs = () => ${T0}`); await r(`fieldGather(fieldLootIndex().get('${gk}').o)`); await r(`fieldGather(fieldLootIndex().get('${gk}').o)`);
+  const fs2 = JSON.parse(J(r(`fieldSerialize()`)));
+  r(`fieldNowMs = () => ${T0 + 35 * 60000}`); r(`fieldDeserialize(${J(fs2)})`);
+  ok("閉じている間に30分たっていれば、読み込んだときに戻る", r(`fieldLootState('${gk}')`) === "ready" && !r(`fieldState.gatherUsed['${gk}']`));
+  // 時刻の無い旧形式（saveVersion 11 の提案版）は、読み込んだ時刻から数える
+  const fs3 = { ...fs2 }; delete fs3.gatherTimes; r(`fieldNowMs = () => ${T0 + 100 * 60000}`); r(`fieldDeserialize(${J(fs3)})`);
+  ok("時刻の無いセーブは、読み込んだ時刻から30分で戻る", r(`fieldLootState('${gk}')`) === "depleted" && r(`fieldState.gatherTimes['${gk}']`) === T0 + 100 * 60000);
+  r(`fieldNowMs = () => Date.now()`);
   const dist = r(`(()=>{const e=fieldLootIndex().get('gather:4-0:11:9');const t=fieldGatherPointDef(e.a,e.o).table;const d={};for(let i=0;i<20000;i++){const m=fieldGatherPick(t);d[m]=(d[m]||0)+1;}return d;})()`);
   info("採掘ポイント gather:4-0:11:9（第4階層の1フロア目）20000回抽選：" + J(dist));
   ok("抽選はテーブルの素材だけ", Object.keys(dist).every(k => ["monster_fang", "dragon_scale", "monster_hide"].includes(k)));
@@ -186,11 +201,11 @@ const J = x => JSON.stringify(x);
   // 7-2 既存項目を1つも消していない
   const oldKeys = Object.keys(v10).sort(), newKeys = Object.keys(v11).sort();
   ok("トップレベルの既存セーブ項目（monsterRecords 等）がすべて残る", oldKeys.every(k => newKeys.includes(k)) && newKeys.includes("monsterRecords"), "旧 " + oldKeys.length + " 項目 → 新 " + newKeys.length + " 項目");
-  ok("field の既存項目がすべて残り、追加は gatherUsed・discovered・expedition だけ", (() => { const o = Object.keys(v10.field), n = Object.keys(v11.field); return o.every(k => n.includes(k)) && J(n.filter(k => !o.includes(k)).sort()) === J(["discovered", "expedition", "gatherUsed"]); })());
+  ok("field の既存項目がすべて残り、追加は gatherUsed・gatherTimes・discovered・expedition だけ", (() => { const o = Object.keys(v10.field), n = Object.keys(v11.field); return o.every(k => n.includes(k)) && J(n.filter(k => !o.includes(k)).sort()) === J(["discovered", "expedition", "gatherTimes", "gatherUsed"]); })());
   // 7-3 旧コード／新コードで同じ v10 を読込→再セーブして比較
-  const strip = s => { const x = JSON.parse(J(s)); delete x.saveVersion; for (const k of ["gatherUsed", "discovered", "expedition"]) delete (x.field || {})[k]; return J(x); };
+  const strip = s => { const x = JSON.parse(J(s)); delete x.saveVersion; for (const k of ["gatherUsed", "gatherTimes", "discovered", "expedition"]) delete (x.field || {})[k]; return J(x); };
   const ob = makeFull(BASE, v10); ob.run("loadGame()");
-  ok("v10 を旧コード／新コードで読込→再セーブ：saveVersion と追加3項目以外は完全一致", strip(ob.save()) === strip(v11));
+  ok("v10 を旧コード／新コードで読込→再セーブ：saveVersion と追加4項目以外は完全一致", strip(ob.save()) === strip(v11));
   // 7-4 v11 で採り尽くし → セーブ → ロード
   r(`fieldState.gatherUsed['gather:1-0:9:17']=2;fieldState.expedition=3;`);
   const v11b = c.save();

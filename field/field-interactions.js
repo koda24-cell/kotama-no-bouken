@@ -42,8 +42,10 @@ async function fieldOpenChest(o) {
 // [LOOT] 採集（採取／伐採／採掘）。回数を先に記録 → 素材 → オートセーブ
 async function fieldGather(o) {
   const a = fieldArea(), def = fieldGatherPointDef(a, o), kd = fieldGatherKindDef(def.kind);
+  fieldGatherRefresh();
   const used = fieldState.gatherUsed[o.key] || 0;
-  if (used >= def.uses) { await fieldSay(`${kd.emptyText}（ホームから出発し直すと、また採れるようになる）`); return; }
+  if (used >= def.uses) { await fieldSay(`${kd.emptyText}（あと約${fieldGatherMinutesLeft(o)}分で、また採れるようになる）`); return; }
+  if (!used) fieldState.gatherTimes[o.key] = fieldNowMs();   // この回の最初の採集の時刻。ここから30分で全回数が戻る
   fieldState.gatherUsed[o.key] = used + 1;   // 先に回数を記録してから素材を渡す（二重取得の防止）
   fieldLootMarkDiscovered(o.key);
   const remaining = def.uses - used - 1;
@@ -53,7 +55,7 @@ async function fieldGather(o) {
   const ok = fieldLootAddMaterial(mat, count, "gather");
   if (remaining <= 0) document.querySelector(`#field-map .field-object[data-key="${CSS.escape(o.key)}"]`)?.classList.add("is-opened");
   if (typeof playSe === "function") playSe("assets/se/syouri/アイテムを入手2", .6);
-  fieldEmit("gather", { area: fieldState.area, floor: fieldState.floor, objectId: o.key, objectKey: o.key, kind: def.kind, material: ok ? mat : null, count: ok ? count : 0, uses: def.uses, remaining, state: remaining > 0 ? "ready" : "depleted", respawn: fieldGatherRespawnRule() });
+  fieldEmit("gather", { area: fieldState.area, floor: fieldState.floor, objectId: o.key, objectKey: o.key, kind: def.kind, material: ok ? mat : null, count: ok ? count : 0, uses: def.uses, remaining, state: remaining > 0 ? "ready" : "depleted", respawn: fieldGatherRespawnRule(), respawnAt: fieldGatherRespawnAt(o) });
   fieldMiniDirty = true;
   persistAutoSave();
   await fieldSay(ok ? `${kd.pointName}だ！ ${kd.verb}。${fieldMaterialName(mat)}×${count}を手に入れた。（残り${remaining}回）` : `${kd.pointName}だ！ ……何も見つからなかった。（残り${remaining}回）`);
@@ -171,7 +173,9 @@ async function fieldPuzzleOpenCache(o, pz) {
    ・開封は既存のフラグ（chest:<階層-フロア>:<x>:<y>、puzzle:<ID>:reward）をそのまま使う（キー名は変えない）。
    ・採集回数 fieldState.gatherUsed・発見済み fieldState.discovered・出発回数 fieldState.expedition は
      セーブする（saveVersion 11。field/field-persistence.js の fieldLootSerialize）。
-   ・再出現：採集点はホームから出発し直したときだけ復活する（fieldLootOnDeparture）。ロードでは復活しない。
+   ・再出現（ユーザー決定 2026-11-07）：採集点は、その点で最初に採集してから実時間で30分たつと、回数がすべて戻る
+     （FIELD_GATHER_RULES.respawnMinutes。時刻 fieldState.gatherTimes はセーブされ、ゲームを閉じている間も時間は進む）。
+     ロードやホーム帰還では戻らない。
    ・表示用（GPT）：fieldLootState / fieldGatherKind / fieldGatherRemaining / fieldGatherDepleted /
      fieldFloorSummary / fieldStratumSummary / fieldLootList / fieldMaterialSources。未発見は返さない・数えない。
    ============================================================ */
@@ -191,9 +195,35 @@ function fieldGatherPointDef(a, o) {
   const uses = Math.max(1, Math.floor(Number(p.uses) || FIELD_GATHER_USES));
   return { kind: fieldGatherKindOf(a, o), table, uses };
 }
-function fieldGatherRespawnRule() { return (typeof FIELD_GATHER_RULES !== "undefined" && FIELD_GATHER_RULES.respawn) || "home"; }
+function fieldGatherRespawnRule() { return (typeof FIELD_GATHER_RULES !== "undefined" && FIELD_GATHER_RULES.respawn) || "time"; }
+// 実時間（ミリ秒）。検証で差し替えられるように関数にしておく
+function fieldNowMs() { return Date.now(); }
+function fieldGatherRespawnMs() { const m = typeof FIELD_GATHER_RULES !== "undefined" ? Number(FIELD_GATHER_RULES.respawnMinutes) : NaN; return (Number.isFinite(m) && m > 0 ? m : 30) * 60000; }
+// 30分たった採集点の回数を戻す。戻った点のキーの配列を返す
+function fieldGatherRefresh(now = fieldNowMs()) {
+  if (!fieldState.gatherTimes || typeof fieldState.gatherTimes !== "object") fieldState.gatherTimes = {};
+  const times = fieldState.gatherTimes, span = fieldGatherRespawnMs(), back = [];
+  for (const k of Object.keys(fieldState.gatherUsed || {})) {
+    let t = Number(times[k]);
+    if (!Number.isFinite(t) || t > now) { times[k] = now; continue; }   // 時刻が無い・未来（端末の時計が戻った）なら、今から数える
+    if (now - t >= span) { delete fieldState.gatherUsed[k]; delete times[k]; back.push(k); }
+  }
+  for (const k of Object.keys(times)) if (!fieldState.gatherUsed[k]) delete times[k];
+  if (back.length) {
+    for (const k of back) document.querySelector(`#field-map .field-object[data-key="${CSS.escape(k)}"]`)?.classList.remove("is-opened");
+    fieldMiniDirty = true;
+    fieldEmit("loot:respawn", { reason: "time", keys: back.slice() });
+  }
+  return back;
+}
+// 採り尽くした点が戻るまでの残り時間（分、切り上げ）
+function fieldGatherMinutesLeft(o) {
+  const t = Number(fieldState.gatherTimes?.[o.key]); if (!Number.isFinite(t)) return Math.ceil(fieldGatherRespawnMs() / 60000);
+  return Math.max(1, Math.ceil((t + fieldGatherRespawnMs() - fieldNowMs()) / 60000));
+}
+function fieldGatherRespawnAt(o) { const t = Number(fieldState.gatherTimes?.[o.key]); return Number.isFinite(t) ? t + fieldGatherRespawnMs() : null; }
 function fieldGatherUses(o) { const e = fieldLootIndex().get(o.key); return e ? fieldGatherPointDef(e.a, e.o).uses : FIELD_GATHER_USES; }
-function fieldGatherRemaining(o) { return Math.max(0, fieldGatherUses(o) - (fieldState.gatherUsed[o.key] || 0)); }
+function fieldGatherRemaining(o) { fieldGatherRefresh(); return Math.max(0, fieldGatherUses(o) - (fieldState.gatherUsed[o.key] || 0)); }
 function fieldGatherDepleted(o) { return fieldGatherRemaining(o) <= 0; }
 function fieldGatherPick(table) {
   const total = table.reduce((n, t) => n + (Number(t[1]) || 0), 0); let r = Math.random() * total, mat = table[0][0];
@@ -289,13 +319,15 @@ function fieldMaterialSources(materialId) {
   }
   return out;
 }
-// ホームから出発したとき（＝一晩休んだ扱い）：採集点がすべて復活する（field/field-navigation.js の fieldEnterArea から）
+// ホームから出発したとき（field/field-navigation.js の fieldEnterArea から）：出発回数を数え、30分たった採集点を戻す。
+// 採集点の回数そのものは、ホーム帰還では戻らない（時間で戻る）。
 function fieldLootOnDeparture() {
   fieldLootIndex();
-  fieldState.gatherUsed = {};
   fieldState.expedition = Math.max(0, Math.floor(Number(fieldState.expedition) || 0)) + 1;
-  fieldEmit("loot:respawn", { reason: "home", expedition: fieldState.expedition });
+  fieldGatherRefresh();
 }
+// 探索中も、30分たった採集点を戻す（画面の表示を更新するため。判定自体は採集・集計のたびにも行う）
+if (typeof setInterval === "function") setInterval(() => { try { if (typeof fieldIsActive === "function" && fieldIsActive()) fieldGatherRefresh(); } catch (e) { console.warn("[field] 採集点の更新に失敗:", e); } }, 15000);
 function fieldItemName(id) { const item = typeof itemById === "function" ? itemById(id) : null; return item ? item.name : null; }
 // 素材の入手はすべてここを通す（ショップ・製作・売却・アイテム図鑑の接続点。materials は既存のグローバル）
 function fieldLootAddMaterial(id, n, source) {
