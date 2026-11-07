@@ -1032,6 +1032,7 @@ async function beginStageCore(){
   if(battleScreen){
     battleScreen.dataset.battleStage=String(battleState.stage);
     battleScreen.dataset.battleMode=battleState.encounterMode?"encounter":"boss";
+    battleScreen.dataset.battleThreat=battleState.fieldFoeKey?"foe":battleState.encounterMode?"normal":"boss";
     battleScreen.classList.toggle("is-boss-battle",!battleState.encounterMode);
     if(!battleState.encounterMode){battleScreen.dataset.bossStage=String(battleState.stage);battleScreen.dataset.bossName=battleState.enemy.name;}
     else{delete battleScreen.dataset.bossStage;delete battleScreen.dataset.bossName;}
@@ -1406,7 +1407,7 @@ function renderBattle(){const e=battleState.enemy;if(!e)return;$("turn-counter")
   const enemyBar=$("enemy-hp-bar");enemyBar.style.width=`${enemyCurrentPct}%`;
   const breakMax=e._breakMax||0;let breakTrack=displayBreakTrack();breakTrack?.classList.toggle("maou-break-track",e.name==="魔王");if(breakMax){breakTrack.hidden=false;breakTrack.querySelector("i").style.width=`${Math.max(0,e._breakCurrent??breakMax)/breakMax*100}%`;breakTrack.querySelector("span").textContent=e._brokenTurns>0?"BREAK！":`BREAK ${Math.max(0,e._breakCurrent??breakMax)} / ${breakMax}`;}else if(breakTrack)breakTrack.hidden=true;
   let enemyTrack=enemyBar.parentElement;let enemyLoss=enemyTrack.querySelector(".hp-loss-preview");if(!enemyLoss){enemyLoss=document.createElement("div");enemyLoss.className="hp-loss-preview";enemyTrack.appendChild(enemyLoss);}const enemyBefore=Number(e._hpBeforeDamage);if(Number.isFinite(enemyBefore)&&enemyBefore>e.hp){enemyLoss.style.left=`${Math.max(0,e.hp)/e.maxHp*100}%`;enemyLoss.style.width=`${(Math.min(e.maxHp,enemyBefore)-Math.max(0,e.hp))/e.maxHp*100}%`;enemyLoss.hidden=false;}else enemyLoss.hidden=true;
-  const display=$("battle-enemy"),placeholder=display.querySelector(".enemy-placeholder");display.dataset.variant=e.variantId||"";
+  const display=$("battle-enemy"),placeholder=display.querySelector(".enemy-placeholder");display.dataset.variant=e.variantId||e.sprite||"";
   // 弱点・耐性・行動傾向を戦闘中に確認できるようにし、敵ごとの攻略差を見える化する。
   let traits=display.querySelector(".enemy-traits");if(!traits){traits=document.createElement("div");traits.className="enemy-traits";const name=$("enemy-name");name?.after(traits);}
   const traitTags=[];
