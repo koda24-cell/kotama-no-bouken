@@ -559,7 +559,7 @@ button:focus-visible,[role="button"]:focus-visible{outline:3px solid var(--gold)
 .battle-screen.is-boss-battle #battle-enemy .enemy-placeholder{
   filter:drop-shadow(0 0 8px var(--boss-glow,#d7c58b55));
 }
-.battle-screen.is-boss-battle .hp-track{
+.battle-screen.is-boss-battle .enemy-display .hp-track{
   height:10px;border:1px solid color-mix(in srgb,var(--boss-accent,#d7c58b) 85%,white);
   padding:1px;background:#090711;box-shadow:0 0 0 2px #080b18,0 0 12px var(--boss-glow,#d7c58b55);
 }
