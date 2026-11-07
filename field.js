@@ -518,6 +518,8 @@ function fieldRenderFoes() {
     el.hidden = false;
     el.classList.toggle("is-unexplored", !exp[ty * a.w + tx]);
     el.classList.toggle("is-chasing", f.mode === "chase");
+    const distance = Math.hypot(fieldState.x - f.x, fieldState.y - f.y) / FIELD_TILE;
+    el.dataset.proximity = distance <= 2 ? "near" : distance <= 4 ? "approach" : distance <= 6 ? "range" : "distant";
     el.style.left = (f.x - 16) + "px"; el.style.top = (f.y - 20) + "px"; el.style.zIndex = String(10 + Math.floor(f.y));
   }
   const visibleFoes = fieldState.foes.filter(f => {
@@ -526,11 +528,17 @@ function fieldRenderFoes() {
     return fieldState.visible?.has(`${tx},${ty}`);
   });
   const chasing = visibleFoes.filter(f => f.mode === "chase").length;
+  const nearest = visibleFoes.reduce((best, f) => {
+    const distance = Math.hypot(fieldState.x - f.x, fieldState.y - f.y) / FIELD_TILE;
+    return !best || distance < best.distance ? { f, distance } : best;
+  }, null);
   const alert = $("field-foe-alert");
   if (alert) {
-    alert.textContent = chasing ? `FOE 追跡中 ×${chasing}` : visibleFoes.length ? `FOE確認 ×${visibleFoes.length}` : "";
-    alert.dataset.state = chasing ? "chase" : visibleFoes.length ? "sighted" : "none";
-    alert.title = chasing ? "FOEがこちらを追跡しています" : visibleFoes.length ? "視界内に未討伐のFOEがいます" : "";
+    alert.textContent = chasing ? `FOE 追跡中 ×${chasing}`
+      : nearest ? `FOE接近・約${Math.max(1, Math.round(nearest.distance))}マス` : "";
+    alert.dataset.state = chasing ? "chase" : nearest ? (nearest.distance <= 2 ? "near" : "sighted") : "none";
+    alert.title = chasing ? "FOEがこちらを追跡しています"
+      : nearest ? `視界内の最も近いFOEまで約${Math.max(1, Math.round(nearest.distance))}マス` : "";
   }
 }
 function fieldResetFoesAfterBattle(defeatedKey) {
