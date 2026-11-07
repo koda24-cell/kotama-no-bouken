@@ -156,3 +156,39 @@ const world = buildField3DWorld(THREE, snapshot, {
 - 面ごとの色差は頂点カラーで表現し、壁ごとにMaterialを増やさない。
 - セルごとの色変化は座標由来の固定値で、再読み込み後も同じ色になる。
 - 現状は色・粗さによる仮材質。PBRテクスチャ、法線マップ、実素材の凹凸はGLB/テクスチャ制作後に追加する。
+
+
+## 樹海の環境装飾レイヤー
+
+`field-3d-decoration-layer.js` は、既存スナップショットの歩行可能セルを参照して苔・シダ・発光植物・壁際の根を配置する。配置は座標由来の決定的ハッシュで決めるため、同じマップなら再読み込み後も同じ配置になる。
+
+```js
+import { buildField3DDecorationLayer } from "./field/3d/field-3d-decoration-layer.js";
+
+const decoration = buildField3DDecorationLayer(THREE, snapshot, {
+  density: 1,
+  maxPerKind: 420,
+  includeRoots: true,
+  rootDensity: 0.12,
+  assets: loadedAssets.assets,
+  assetKeys: {
+    moss: "mossCluster",
+    fern: "fern",
+    glowPlant: "glowPlant",
+    root: "wallRoot"
+  }
+});
+scene.add(decoration.group);
+
+// フロア再構築時
+decoration.dispose();
+scene.remove(decoration.group);
+```
+
+- 初期値では通路・安全地形・草地に地形別の密度で配置する。
+- プレイヤー、FOE、操作オブジェクトと同じセルは装飾候補から除外する。
+- 根は隣接する壁セルを検出した場合のみ壁際へ配置する。
+- GLBが登録されていない場合はInstancedMeshの簡易形状で代用する。完成素材ではない。
+- `density`、`maxPerKind`、`rules`で密度と上限を調整できる。iPhone実機で負荷を測定してから値を確定する。
+- 本レイヤーは表示専用。装飾に衝突判定・採集判定・探索判定を持たせない。
+- `dispose()` はこのレイヤーが生成したGeometry/Materialを破棄する。GLB由来の共有リソースは破棄しない。
