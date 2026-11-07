@@ -49,14 +49,16 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | 職業の能力値・スキル・スピード・解放条件 | `data/jobs.js`（初期6職業は `data/characters.js`） |
 | 装備・アイテム・製作レシピ | `data/items.js` |
 | ストーリーの文章・実績 | `data/progression.js`（ステージ導入・クリアの一枚絵風イベント）、`data/story.js`（フィールドの会話） |
-| 迷宮の階層・フロア・雑魚敵・FOE・採取・出現率・BGM | `data/field-maps.js`（仕様 `docs/field-and-story/LABYRINTH_SPEC.md`） |
+| 迷宮の階層・フロア・FOE配置・BGM | `data/field-maps.js`、敵能力値は `data/field-enemies.js`（仕様 `docs/field-and-story/LABYRINTH_SPEC.md`） |
 | レベルの成長率・必要経験値・ボスの経験値 | `data/levels.js` |
 | スキルツリー | `data/skill-trees.js` |
 | 見た目 | `css/` の該当ファイル。迷ったら `style.css` の末尾 |
 | 戦闘の処理（行動順・状態異常のかかり方・新職業の動き） | `battle-ext.js` |
-| 画面・ショップ・セーブ・チュートリアル・ドラゴンの行動 | `script.js` |
+| チュートリアルの操作・進行 | `tutorial.js` |
+| 開発者用管理パネル | `admin-tools.js` |
+| 画面・ショップ・セーブ・ドラゴンの行動 | `script.js` |
 
-> まだ `script.js` の中にあるデータ：BGM・効果音の割り当て表、チュートリアルの文言、ドラゴンの行動。分割の候補ですが、他のAIが編集中のことがあるため、専用のPRで行います。
+> まだ `script.js` の中にあるデータ：BGM・効果音の割り当て表、ドラゴンの行動など。今後は機能単位で小さく分割し、他のAIの作業と競合しないようにします。
 
 ## 4. コードの約束事（壊しやすいところ）
 
