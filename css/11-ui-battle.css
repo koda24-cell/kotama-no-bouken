@@ -8,6 +8,7 @@
      .battle-bottom は display:contents にして、コマンド・説明・結果をグリッドに直接並べる（HTML の構造・ID は変えない）。
    ・スマホ（〜700px）：見出し1行 → 敵（残りの高さ全部）→ メッセージ（細い帯）→ 味方 → コマンド｜説明。
    ・PC（701px〜）：左に 見出し・敵・メッセージ・味方、右の列に コマンド（上）と説明（下）。
+   ・高さ560px以下（横向きのスマホ）：1画面には収まらないので、敵の枠の高さを固定して最小限の縦スクロールを許す。
    ・敵が複数（〜5体）：.enemy-group の各体が幅を分け合い、画像の高さは敵の枠の高さに合わせる（コンテナクエリ）。
    ・味方が5人：.battle-party に5人目が入ると、上2・下3の2段（6列グリッドの2列ぶん／3列ぶん）になる。
    ・チュートリアルの強調対象（#battle-party・#battle-enemy・.command-window・.command-info-window・.event-window・
@@ -270,12 +271,6 @@ body[data-screen="battle"] .analyze-panel { max-height: calc(100dvh - 90px); }
   body[data-screen="battle"] #battle .union-panel { margin-top: 2px; padding-top: 2px; }
 }
 
-/* ---------- 低い画面（横向きのスマホなど）：最小限のスクロールを許す ---------- */
-@media (max-height: 560px) {
-  body[data-screen="battle"] .game { height: auto; min-height: 0 !important; }
-  body[data-screen="battle"] #battle.battle-screen.active { grid-template-rows: auto 200px auto auto auto 220px; overflow: visible; }
-}
-
 /* ============================================================
    PC・タブレット（701px〜）：左に 敵・メッセージ・味方、右の列に コマンド・説明
    ============================================================ */
@@ -335,4 +330,16 @@ body[data-screen="battle"] .analyze-panel { max-height: calc(100dvh - 90px); }
   body[data-screen="battle"] #battle:has(> .battle-bottom.result-shown) { grid-template-rows: auto minmax(160px, 1fr) auto auto auto; }
   body[data-screen="battle"] #battle .battle-result h2 { font-size: 22px; }
   body[data-screen="battle"] #battle .battle-result #result-message { font-size: 13px; }
+}
+
+/* ---------- 低い画面（横向きのスマホなど、高さ560px以下）：1画面には収まらないので、最小限の縦スクロールを許す ---------- */
+@media (max-height: 560px) {
+  body[data-screen="battle"] .game { height: auto !important; min-height: 0 !important; }
+  body[data-screen="battle"] #battle.battle-screen.active { grid-template-rows: auto 200px auto auto auto 240px; overflow: visible; }
+}
+@media (min-width: 701px) and (max-height: 560px) {
+  body[data-screen="battle"] #battle.battle-screen.active,
+  body[data-screen="battle"] #battle:has(> .battle-bottom.result-shown) { grid-template-rows: auto 230px auto auto auto; }
+  body[data-screen="battle"] #battle .command-hint { display: none !important; }
+  body[data-screen="battle"] #battle .command-info-window { min-height: 110px !important; }
 }
