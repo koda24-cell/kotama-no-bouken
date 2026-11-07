@@ -318,3 +318,10 @@ body:is([data-screen="home"],[data-screen="formation"],[data-screen="shop"],[dat
 @media (max-width: 700px) { #achievement-list.achievement-grid { grid-template-columns: 1fr !important; } }
 /* 図鑑・実績・設定の BACK など下部の操作 */
 :is(#settings, #compendium, #achievements, #training, #shop, #formation) .page-actions { margin-top: var(--ui-gap) !important; }
+
+/* ホーム：狭い画面（380px以下）では名前とLvを2行にして、名前が「コ…」と切れないようにする */
+@media (max-width: 380px) {
+  #home-party h3 { flex-wrap: wrap; white-space: normal; row-gap: 2px; font-size: 13px !important; }
+  #home-party .character-art { width: 46px; }
+  #home-party .home-character { grid-template-columns: 46px minmax(0, 1fr); }
+}
