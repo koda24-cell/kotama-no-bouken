@@ -12,7 +12,8 @@
        （kind:"switch"／"door"／"cache" は仕掛け。内容は下の FIELD_PUZZLES。onWall:true は壁に付いた物で、壁のマスに置く）
    ・encounter.scale：そのフロアの雑魚敵の強さ倍率（HP・攻撃・防御・SP攻撃・SP防御・経験値・ゴールド）。
    ・chests はそのフロアの T を左上から順に読んだ順番。gathers は採取できる素材と重み。
-   ・foes：FOE（見える強敵）。enemy は FIELD_ENEMIES のID、path は巡回する2地点（マス座標）。
+   ・foes：FOE（見える強敵）。enemy は FIELD_ENEMIES のID、path は巡回する地点（マス座標）。
+     任意で type（chaser／patrol／sentinel）・loop・sight・fov・pace・dir・turns を指定できる（field.js の [FOE] 節を参照）。
    ・bgm は仮割り当て（ユーザー確認待ち）。
    ============================================================ */
 const FIELD_AREAS = {
@@ -125,7 +126,7 @@ const FIELD_AREAS = {
     floors: [
       { encounter: { min: 15, max: 26, scale: 1.0, table: [ { enemy: "forest-goblin", weight: 60 }, { enemy: "goblin-scout", weight: 25 }, { enemy: "mushroom", weight: 15 } ] },
         chests: [ { item: "potion", count: 3 }, { gold: 90 } ], gathers: [ ["goblin_cloth", 50], ["monster_fang", 30], ["monster_hide", 20] ],
-        foes: [ { enemy: "foe-goblin-captain", path: [[22, 7], [25, 8]] } ], map: [
+        foes: [ { enemy: "foe-goblin-captain", path: [[22, 9], [25, 8]] } ], map: [
         "###########################",
         "#.......#>#...#....T#.....#",
         "#.###.#.#.#.#.#.#.###.###.#",
@@ -150,7 +151,7 @@ const FIELD_AREAS = {
       ] },
       { encounter: { min: 14, max: 25, scale: 1.15, table: [ { enemy: "forest-goblin", weight: 50 }, { enemy: "goblin-scout", weight: 50 } ] },
         chests: [ { item: "ether", count: 2 }, { gold: 110 } ], gathers: [ ["goblin_cloth", 45], ["monster_fang", 35], ["monster_hide", 20] ],
-        foes: [ { enemy: "foe-goblin-captain", path: [[21, 1], [24, 3]] } ], map: [
+        foes: [ { enemy: "foe-goblin-captain", path: [[21, 1], [25, 3]] } ], map: [
         "###########################",
         "#G........................#",
         "#########.###########.###.#",

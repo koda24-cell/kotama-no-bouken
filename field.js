@@ -16,11 +16,14 @@
    ============================================================ */
 
 const FIELD_TILE = 32;
-const FIELD_SPEED = 118;
+const FIELD_SPEED = 118;               // 旧：自由移動の速さ（現在は未使用。参照互換のため残す）
+const FIELD_STEP_MS = 150;             // [GRID] 1マス進むのにかかる時間（ミリ秒）。押しっぱなしで連続移動
 const FIELD_HIT = { halfW: 9, top: 7, bottom: 5 };
 const FIELD_VISION = 3.6;              // 視界の半径（マス）
 const FIELD_FOE_SIGHT = 4.5;           // FOEがプレイヤーに気づく距離（マス）
-const FIELD_FOE_SPEED = { patrol: 52, chase: 84 };   // プレイヤーが動いている間だけ、この速さで動く
+const FIELD_FOE_SPEED = { patrol: 52, chase: 84 };   // 旧：自由移動時のFOEの速さ（現在は未使用）
+// [FOE] ターン制のFOEルール。1ターン＝プレイヤーの1歩
+const FIELD_FOE_RULES = { loseTurns: 3, graceSteps: 3, nearSight: 1.5 };
 const FIELD_GATHER_USES = 2;
 const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);
 const FIELD_SAFE = new Set(["_", "P", "E", "B", "<", ">"]);
@@ -36,9 +39,11 @@ let fieldState = {
   explored: {},            // "area-floor" → Uint8Array（1=マッピング済み）
   visible: new Set(),      // 今見えているマス "x,y"
   foes: [], foeDefeated: {}, gatherUsed: {}, foeGraceUntil: 0,
-  lock: false, built: "", triggerTile: "", nearKey: "", positioned: false, mapOpen: false, lastTileKey: ""
+  lock: false, built: "", triggerTile: "", nearKey: "", positioned: false, mapOpen: false, lastTileKey: "",
+  turn: 0, foeGraceSteps: 0,   // [FOE] 経過ターン（歩数）・逃走後にFOEが止まっている残り歩数
+  view: null, stepUntil: 0     // [GRID] 描画用の位置（移動アニメーション）・次の1歩を受け付ける時刻
 };
-const fieldInput = { keys: new Set(), pad: new Set() };
+const fieldInput = { keys: new Set(), pad: new Set(), tap: null };   // tap：短い押下でも1歩進むための予約
 let fieldRaf = null, fieldLastTs = 0, fieldFrame = 0, fieldMiniDirty = true, fieldMiniTimer = 0;
 let fieldDialogAdvance = null, fieldDialogTyping = null, fieldChoiceState = null;
 const fieldAreaCache = {};
@@ -80,7 +85,7 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
       // [SIDE] kind:"event" はサブイベントの調べられる物。NPC は sideEvents を持てる
       // [PUZZLE] kind:"switch"／"door"／"cache" は仕掛け。onWall は壁に付いた物（壁のマスに置く）
       const keyKind = kind === "npc" || kind === "sign" ? "npc" : kind;
-      objects.push({ key: `${keyKind}:${n}:${o.id}`, kind, tx, ty, sprite: o.sprite, name: o.name, scene: o.scene, id: o.id, event: o.event, hidden: !!o.hidden, sideEvents: o.sideEvents || null, puzzle: o.puzzle || null, onWall: !!o.onWall });
+      objects.push({ key: `${keyKind}:${n}:${o.id}`, kind, tx, ty, sprite: o.sprite, name: o.name, scene: o.scene, id: o.id, event: o.event, hidden: !!o.hidden, sideEvents: o.sideEvents || null, puzzle: o.puzzle || null, onWall: !!o.onWall, oneWay: o.oneWay || null, requires: o.requires || null, lockedText: o.lockedText || "", askText: o.askText || "", openScene: o.openScene || "" });
     }
   }));
   // P が無いフロアは、出口（1F）または上り階段の上から始める
@@ -92,7 +97,19 @@ function fieldIsSolidChar(c) { return FIELD_SOLID.has(c) || /[a-z]/.test(c); }
 // [PUZZLE] マップ文字に対応する objects の定義（英小文字のみ）
 function fieldLetterDef(a, c) { return /[a-z]/.test(c) && a.def.objects ? a.def.objects[c] || null : null; }
 // 仕掛けの扉は、解けるまで通れない。開いた後は床として扱う
-function fieldCharSolid(a, c) { const o = fieldLetterDef(a, c); if (o && o.kind === "door") return !fieldPuzzleSolved(o.puzzle); return fieldIsSolidChar(c); }
+function fieldCharSolid(a, c) { const o = fieldLetterDef(a, c); if (o && o.kind === "door") return !fieldDoorOpen(o); return fieldIsSolidChar(c); }
+// [DOOR] 扉が開いているか。仕掛けの扉は解決フラグ、それ以外は "door:<ID>:open"（セーブされる）
+function fieldDoorOpen(o) { if (!o) return true; if (o.puzzle) return fieldPuzzleSolved(o.puzzle); return !!fieldState.flags[`door:${o.id}:open`]; }
+// [GRID] 通行判定（プレイヤー・FOE共通の入口）。who="foe" は安全地帯・階段・出口・他のFOEのマスにも入らない
+function fieldCanEnter(a, tx, ty, who = "player", self = null) {
+  if (!a || tx < 0 || ty < 0 || tx >= a.w || ty >= a.h) return false;
+  if (fieldCharSolid(a, fieldTileAt(a, tx, ty))) return false;
+  if (who === "foe") {
+    if (!fieldFoeWalkable(a, tx, ty)) return false;
+    if (fieldState.foes.some(f => f !== self && !f.defeated && f.tx === tx && f.ty === ty)) return false;
+  }
+  return true;
+}
 function fieldSolidAt(a, px, py) { return fieldCharSolid(a, fieldTileAt(a, Math.floor(px / FIELD_TILE), Math.floor(py / FIELD_TILE))); }
 function fieldBoxBlocked(a, x, y) {
   const l = x - FIELD_HIT.halfW, r = x + FIELD_HIT.halfW - .01, t = y - FIELD_HIT.top, b = y + FIELD_HIT.bottom - .01;
@@ -100,6 +117,10 @@ function fieldBoxBlocked(a, x, y) {
 }
 function fieldTileCenter(tx, ty) { return { x: tx * FIELD_TILE + FIELD_TILE / 2, y: ty * FIELD_TILE + FIELD_TILE / 2 + 4 }; }
 function fieldPlayerTile() { return { tx: Math.floor(fieldState.x / FIELD_TILE), ty: Math.floor(fieldState.y / FIELD_TILE) }; }
+// [GRID] 位置をマスの中心にそろえる（旧セーブの自由移動の位置も、ここで1マス単位になる）
+function fieldSnapToTile() { const { tx, ty } = fieldPlayerTile(), c = fieldTileCenter(tx, ty); fieldState.x = c.x; fieldState.y = c.y; }
+// [GRID] 描画用の位置（論理位置は fieldState.x/y で、1歩ごとに即座に更新。見た目だけを補間する）
+function fieldViewPos() { return fieldState.view || { x: fieldState.x, y: fieldState.y }; }
 
 /* ------------------------------------------------------------
    視界・マッピング
@@ -110,7 +131,7 @@ function fieldExplored(a = fieldArea()) {
 }
 function fieldOpaque(a, tx, ty) { const c = fieldTileAt(a, tx, ty); return c === "#" || fieldWallLike(a, c); }
 // [PUZZLE] 壁に付いた物・開く前の隠し通路は、壁として描画し、視界もさえぎる
-function fieldWallLike(a, c) { const o = fieldLetterDef(a, c); return !!o && (o.onWall || (o.kind === "door" && o.hidden && !fieldPuzzleSolved(o.puzzle))); }
+function fieldWallLike(a, c) { const o = fieldLetterDef(a, c); return !!o && (o.onWall || (o.kind === "door" && o.hidden && !fieldDoorOpen(o))); }
 // 2マス間の見通し（間に壁があれば見えない。終点の壁そのものは見える）
 function fieldLos(a, x0, y0, x1, y1) {
   let dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx + dy, x = x0, y = y0;
@@ -213,18 +234,19 @@ function fieldViewScale() {
 function fieldRender() {
   const a = fieldArea(), vp = $("field-viewport"), map = $("field-map"), p = $("field-player");
   if (!a || !vp || !map || !p) return;
-  p.style.left = (fieldState.x - 16) + "px";
-  p.style.top = (fieldState.y - 34) + "px";
-  p.style.zIndex = String(10 + Math.floor(fieldState.y));
+  const view = fieldViewPos();   // [GRID] 見た目の位置（移動アニメーション中は補間）
+  p.style.left = (view.x - 16) + "px";
+  p.style.top = (view.y - 34) + "px";
+  p.style.zIndex = String(10 + Math.floor(view.y));
   p.dataset.dir = fieldState.dir; p.dataset.moving = String(fieldState.moving); p.dataset.step = String(fieldState.step);
   const s = fieldViewScale(), vw = vp.clientWidth, vh = vp.clientHeight, mw = a.w * FIELD_TILE * s, mh = a.h * FIELD_TILE * s;
-  const tx = mw <= vw ? (vw - mw) / 2 : -Math.max(0, Math.min(mw - vw, fieldState.x * s - vw / 2));
-  const ty = mh <= vh ? (vh - mh) / 2 : -Math.max(0, Math.min(mh - vh, (fieldState.y - 12) * s - vh / 2));
+  const tx = mw <= vw ? (vw - mw) / 2 : -Math.max(0, Math.min(mw - vw, view.x * s - vw / 2));
+  const ty = mh <= vh ? (vh - mh) / 2 : -Math.max(0, Math.min(mh - vh, (view.y - 12) * s - vh / 2));
   map.style.transform = `translate(${Math.round(tx)}px,${Math.round(ty)}px) scale(${s})`;
   // 視界：主人公を中心に、外側ほど暗くする
   const fog = $("field-fog");
   if (fog) {
-    const cx = Math.round(tx + fieldState.x * s), cy = Math.round(ty + (fieldState.y - 10) * s), r = FIELD_VISION * FIELD_TILE * s;
+    const cx = Math.round(tx + view.x * s), cy = Math.round(ty + (view.y - 10) * s), r = FIELD_VISION * FIELD_TILE * s;
     fog.style.background = `radial-gradient(circle at ${cx}px ${cy}px, transparent ${Math.round(r * .55)}px, rgba(0,0,0,.5) ${Math.round(r * .95)}px, rgba(0,0,0,.66) ${Math.round(r * 1.25)}px)`;
   }
   fieldRenderFoes();
@@ -269,7 +291,7 @@ function fieldDrawMap(canvas, cell, full) {
     else if (o.kind === "npc") dot(o.tx, o.ty, "#c7a3ff", .7);
     else if (o.kind === "event") { const done = fieldSideDone(o.event); if (!o.hidden || done) dot(o.tx, o.ty, done ? "#5f7f8f" : "#7fd6ff", .7); }
     else if (o.kind === "switch") dot(o.tx, o.ty, fieldPuzzleSolved(o.puzzle) ? "#7a6a8a" : "#ff8ad8", .6, "square");
-    else if (o.kind === "door") { if (!fieldPuzzleSolved(o.puzzle) && !o.hidden) dot(o.tx, o.ty, "#c8a060", .8, "square"); }
+    else if (o.kind === "door") { if (!fieldDoorOpen(o) && !o.hidden) dot(o.tx, o.ty, "#c8a060", .8, "square"); }
     else if (o.kind === "cache") dot(o.tx, o.ty, fieldState.flags[`puzzle:${o.puzzle}:reward`] ? "#7a6a55" : "#ff9a3c", .7, "square");
     else if (o.kind === "gate") dot(o.tx, o.ty, "#ff3030", .9);
   }
@@ -331,12 +353,14 @@ function fieldSetupInput() {
     if (["z", "Enter", " "].includes(k)) { if (!e.repeat) fieldActionPressed(); return; }
     if (["x", "Escape"].includes(k)) { if (fieldDialogAdvance) fieldActionPressed(); return; }
     fieldInput.keys.add(k);
+    const tapDir = { ArrowLeft: "left", a: "left", ArrowRight: "right", d: "right", ArrowUp: "up", w: "up", ArrowDown: "down", s: "down" }[k];
+    if (tapDir && !e.repeat) fieldInput.tap = tapDir;   // [GRID] 一瞬のキー押下でも1歩進む
   });
   document.addEventListener("keyup", e => fieldInput.keys.delete(keyName(e)));
-  window.addEventListener("blur", () => { fieldInput.keys.clear(); fieldInput.pad.clear(); });
+  window.addEventListener("blur", () => { fieldInput.keys.clear(); fieldInput.pad.clear(); fieldInput.tap = null; });
   document.querySelectorAll("#field-pad [data-dir]").forEach(btn => {
     const dir = btn.dataset.dir;
-    const on = e => { e.preventDefault(); fieldInput.pad.add(dir); btn.classList.add("is-pressed"); try { btn.setPointerCapture(e.pointerId); } catch (_) {} };
+    const on = e => { e.preventDefault(); fieldInput.pad.add(dir); fieldInput.tap = dir; btn.classList.add("is-pressed"); try { btn.setPointerCapture(e.pointerId); } catch (_) {} };
     const off = () => { fieldInput.pad.delete(dir); btn.classList.remove("is-pressed"); };
     btn.addEventListener("pointerdown", on);
     ["pointerup", "pointercancel", "lostpointercapture"].forEach(t => btn.addEventListener(t, off));
@@ -369,33 +393,65 @@ function fieldStartLoop() {
   };
   fieldRaf = requestAnimationFrame(loop);
 }
+// [GRID] 押している方向（1つ）。今の向きが押されていればそれを優先する
+function fieldHeldDir() {
+  const { dx, dy } = fieldInputVector();
+  if (!dx && !dy) return null;
+  const want = { left: dx < 0, right: dx > 0, up: dy < 0, down: dy > 0 };
+  if (want[fieldState.dir]) return fieldState.dir;
+  if (dy) return dy < 0 ? "up" : "down";
+  return dx < 0 ? "left" : "right";
+}
+// [GRID] 1入力＝1マス。世界樹の迷宮と同じく、プレイヤーの1歩＝1ターンで、FOEもその1歩に対して動く
 function fieldUpdate(dt) {
   const a = fieldArea(); if (!a) return;
   const blocked = fieldState.lock || fieldState.mapOpen || fieldModalOpen() || !!fieldDialogAdvance || !!fieldChoiceState;
-  const { dx, dy } = blocked ? { dx: 0, dy: 0 } : fieldInputVector();
-  fieldState.moving = !!(dx || dy);
-  let moved = 0;
-  if (fieldState.moving) {
-    if (dx && !dy) fieldState.dir = dx < 0 ? "left" : "right";
-    else if (dy && !dx) fieldState.dir = dy < 0 ? "up" : "down";
-    else {
-      const keep = (fieldState.dir === "left" && dx < 0) || (fieldState.dir === "right" && dx > 0) || (fieldState.dir === "up" && dy < 0) || (fieldState.dir === "down" && dy > 0);
-      if (!keep) fieldState.dir = dy < 0 ? "up" : "down";
-    }
-    const len = Math.hypot(dx, dy), v = FIELD_SPEED * dt / len;
-    const ox = fieldState.x, oy = fieldState.y;
-    const nx = fieldState.x + dx * v; if (!fieldBoxBlocked(a, nx, fieldState.y)) fieldState.x = nx;
-    const ny = fieldState.y + dy * v; if (!fieldBoxBlocked(a, fieldState.x, ny)) fieldState.y = ny;
-    moved = Math.hypot(fieldState.x - ox, fieldState.y - oy);
-    fieldFrame++; if (fieldFrame % 8 === 0) fieldState.step = (fieldState.step + 1) % 4;
-  } else { fieldState.step = 0; }
+  const now = performance.now();
+  if (blocked) fieldInput.tap = null;
+  if (!blocked && now >= fieldState.stepUntil) {
+    const dir = fieldHeldDir() || fieldInput.tap;
+    fieldInput.tap = null;
+    if (dir) fieldTryStep(a, dir, now);
+  }
+  fieldState.moving = now < fieldState.stepUntil;
+  if (!fieldState.moving) fieldState.step = 0;
+  fieldAnimateView(dt);
   fieldUpdateVision();
-  // FOEはプレイヤーが動いた分だけ動く（世界樹の迷宮と同じく、止まって考えられる）
-  if (moved > 0 && !blocked) fieldUpdateFoes(dt * Math.min(1, moved / Math.max(1e-6, FIELD_SPEED * dt)));
-  if (moved > 0) fieldAfterMove(a, moved);
-  if (!blocked) fieldCheckFoeContact();
   fieldUpdateNear();
   fieldUpdateDanger();
+}
+function fieldTryStep(a, dir, now = performance.now()) {
+  const d = FIELD_DIRS[dir]; if (!d) return false;
+  fieldSnapToTile();
+  const turned = fieldState.dir !== dir;
+  fieldState.dir = dir;
+  const p = fieldPlayerTile(), tx = p.tx + d.dx, ty = p.ty + d.dy;
+  if (!fieldCanEnter(a, tx, ty, "player")) {
+    // 壁や扉に向き直るだけ（正面を調べられるように）。ターンは進まない
+    if (turned) fieldState.stepUntil = now + FIELD_STEP_MS * .5;
+    return false;
+  }
+  const from = { tx: p.tx, ty: p.ty }, c = fieldTileCenter(tx, ty);
+  if (!fieldState.view) fieldState.view = { x: fieldState.x, y: fieldState.y };
+  fieldState.x = c.x; fieldState.y = c.y;
+  fieldState.stepUntil = now + FIELD_STEP_MS;
+  fieldFrame++; fieldState.step = fieldFrame % 2 ? 1 : 3;
+  fieldUpdateVision();
+  // 1ターンの処理順：プレイヤー移動 → 接触判定 → FOE移動（すれ違いも接触） → 接触判定 → 歩数・エンカウント
+  if (fieldFoeTurn(a, from)) return true;
+  fieldAfterMove(a, FIELD_TILE);
+  return true;
+}
+// 描画用の位置を論理位置へ近づける（見た目のなめらかさのためだけ）
+function fieldAnimateView(dt) {
+  const lerp = (v, target) => {
+    if (!v) return null;
+    const k = Math.min(1, (dt * 1000) / Math.max(1, FIELD_STEP_MS * .55));
+    v.x += (target.x - v.x) * k; v.y += (target.y - v.y) * k;
+    return Math.hypot(target.x - v.x, target.y - v.y) < .5 ? null : v;
+  };
+  fieldState.view = lerp(fieldState.view, fieldState);
+  for (const f of fieldState.foes) f.view = lerp(f.view, f);
 }
 function fieldAfterMove(a, moved) {
   const { tx, ty } = fieldPlayerTile(), c = fieldTileAt(a, tx, ty);
@@ -424,10 +480,10 @@ function fieldUpdateDanger() {
 }
 function fieldFacingObject() {
   const a = fieldArea(); if (!a) return null;
-  const d = FIELD_DIRS[fieldState.dir] || FIELD_DIRS.down;
-  const fx = fieldState.x + d.dx * 20, fy = fieldState.y - 2 + d.dy * 20;
-  const tx = Math.floor(fx / FIELD_TILE), ty = Math.floor(fy / FIELD_TILE);
-  return a.objects.find(o => !o.walk && !(o.kind === "door" && fieldPuzzleSolved(o.puzzle)) && o.tx === tx && o.ty === ty) || null;
+  // [GRID] 正面の1マス
+  const d = FIELD_DIRS[fieldState.dir] || FIELD_DIRS.down, p = fieldPlayerTile();
+  const tx = p.tx + d.dx, ty = p.ty + d.dy;
+  return a.objects.find(o => !o.walk && !(o.kind === "door" && fieldDoorOpen(o)) && o.tx === tx && o.ty === ty) || null;
 }
 function fieldUpdateNear() {
   const o = fieldState.lock ? null : fieldFacingObject(), key = o ? o.key : "";
@@ -442,13 +498,39 @@ function fieldUpdateNear() {
    FOE
    ------------------------------------------------------------ */
 function fieldFoeWalkable(a, tx, ty) { const c = fieldTileAt(a, tx, ty); return !fieldCharSolid(a, c) && !FIELD_SAFE.has(c); }
+/* [FOE] FOEの定義（data/field-maps.js の floors[].foes[]）
+     enemy  : FIELD_ENEMIES のID
+     path   : 巡回する地点の列（マス座標）。1点だけなら、その場から動かない
+     loop   : "pingpong"（往復・既定）｜"cycle"（周回）
+     type   : "chaser"（既定。巡回し、見つけると追う）｜"patrol"（決まった道を巡回し続け、追わない）
+              ｜"sentinel"（持ち場で向きを変えて見張り、見つけると追い、見失うと持ち場へ戻る）
+     sight  : 気づく距離（既定 FIELD_FOE_SIGHT）。fov："front"（既定。前方と真横・すぐ隣だけ見える）｜"all"
+     pace   : 1ターンに動くマス数（既定1。0.5＝2歩に1回、2＝1歩に2マス）
+     dir    : 最初の向き。turns／turnEvery：sentinel が見張る向きの順番と、向きを変える間隔（ターン）
+   ルール：1ターン＝プレイヤーの1歩。FOEは壁・閉じた扉・安全地帯（階段・出口・ボス門など）・物・他のFOEのマスに入らない。
+           同じマスに入ったら接触（FOE戦）。見失うと最後に見た地点を確かめ、loseTurns ターンで巡回へ戻る。 */
+function fieldFoeDirTo(from, to) {
+  const dx = to.tx - from.tx, dy = to.ty - from.ty;
+  if (!dx && !dy) return null;
+  return Math.abs(dx) >= Math.abs(dy) ? (dx < 0 ? "left" : "right") : (dy < 0 ? "up" : "down");
+}
+function fieldFoePlace(f, tx, ty) { const c = fieldTileCenter(tx, ty); f.tx = tx; f.ty = ty; f.x = c.x; f.y = c.y; }
 function fieldSpawnFoes() {
   const a = fieldArea(), host = $("field-foes");
-  fieldState.foes = (a.floor.foes || []).map((def, i) => {
-    const key = `foe:${a.key}:${i}`, p0 = def.path[0], c = fieldTileCenter(p0[0], p0[1]);
-    return { key, def, enemy: FIELD_ENEMIES[def.enemy], x: c.x, y: c.y, sx: c.x, sy: c.y, mode: "patrol", pathIdx: 1, lostAt: 0, next: null, defeated: !!fieldState.foeDefeated[key] };
+  fieldState.foes = [];
+  (a.floor.foes || []).forEach((def, i) => {
+    const key = `foe:${a.key}:${i}`, path = (def.path || []).filter(p => Array.isArray(p) && p.length >= 2);
+    if (!path.length) return;
+    const p0 = path[0], c = fieldTileCenter(p0[0], p0[1]);
+    const type = ["patrol", "sentinel"].includes(def.type) ? def.type : "chaser";
+    const second = path[1] ? { tx: path[1][0], ty: path[1][1] } : null;
+    const dir = FIELD_DIRS[def.dir] ? def.dir : (second && fieldFoeDirTo({ tx: p0[0], ty: p0[1] }, second)) || "down";
+    fieldState.foes.push({ key, def, enemy: FIELD_ENEMIES[def.enemy], type, path, tx: p0[0], ty: p0[1], x: c.x, y: c.y, sx: c.x, sy: c.y, view: null,
+      dir, mode: "patrol", pathIdx: path.length > 1 ? 1 : 0, pathStep: 1, paceAcc: 0, lostTurns: 0, lastSeen: null, nextTile: null, turnIdx: 0,
+      lostAt: 0, next: null, defeated: !!fieldState.foeDefeated[key] });
   });
-  if (host) host.innerHTML = fieldState.foes.map(f => `<div class="field-object field-foe" data-kind="foe" data-key="${esc(f.key)}" data-sprite="foe-${esc(f.enemy?.sprite || "monster")}"${f.defeated ? " hidden" : ""}><span class="field-object-sprite"></span><b class="field-object-label">FOE ${esc(f.enemy?.name || "")}</b></div>`).join("");
+  if (host) host.innerHTML = fieldState.foes.map(f => `<div class="field-object field-foe" data-kind="foe" data-key="${esc(f.key)}" data-sprite="foe-${esc(f.enemy?.sprite || "monster")}" data-dir="${esc(f.dir)}" data-mode="${esc(f.mode)}" data-type="${esc(f.type)}"${f.defeated ? " hidden" : ""}><span class="field-object-sprite"></span><b class="field-object-label">FOE ${esc(f.enemy?.name || "")}</b></div>`).join("");
+  fieldFoePlanAll(a);
 }
 // a→b の最短経路の最初の一歩（マス）
 function fieldBfsStep(a, from, to) {
@@ -469,57 +551,148 @@ function fieldBfsStep(a, from, to) {
   let cur = goal; while (prev[cur] !== start) cur = prev[cur];
   return { tx: cur % W, ty: Math.floor(cur / W) };
 }
-function fieldUpdateFoes(dt) {
-  const a = fieldArea(), pt = fieldPlayerTile(), now = performance.now();
-  if (now < fieldState.foeGraceUntil) return;
-  for (const f of fieldState.foes) {
-    if (f.defeated) continue;
-    const ft = { tx: Math.floor(f.x / FIELD_TILE), ty: Math.floor(f.y / FIELD_TILE) };
-    const dist = Math.hypot(fieldState.x - f.x, fieldState.y - f.y) / FIELD_TILE;
-    const sees = dist <= FIELD_FOE_SIGHT && fieldLos(a, ft.tx, ft.ty, pt.tx, pt.ty);
-    if (sees) { if (f.mode !== "chase") fieldEmit("foe:notice", { key: f.key, enemyName: f.enemy?.name }); f.mode = "chase"; f.lostAt = 0; }
-    else if (f.mode === "chase") { if (!f.lostAt) f.lostAt = now; if (now - f.lostAt > 2600) f.mode = "patrol"; }
-    let target;
-    if (f.mode === "chase" && fieldFoeWalkable(a, pt.tx, pt.ty)) target = pt;
-    else {
-      const wp = f.def.path[f.pathIdx]; target = { tx: wp[0], ty: wp[1] };
-      if (ft.tx === target.tx && ft.ty === target.ty) { f.pathIdx = (f.pathIdx + 1) % f.def.path.length; const w2 = f.def.path[f.pathIdx]; target = { tx: w2[0], ty: w2[1] }; }
+// FOEにプレイヤーが見えているか（前方視野・距離・壁による見通し）
+function fieldFoeSees(a, f, pt) {
+  if (FIELD_SAFE.has(fieldTileAt(a, pt.tx, pt.ty))) return false;   // 安全地帯の上は見つからない
+  const dx = pt.tx - f.tx, dy = pt.ty - f.ty, dist = Math.hypot(dx, dy);
+  if (dist > (Number(f.def.sight) || FIELD_FOE_SIGHT)) return false;
+  if (dist > FIELD_FOE_RULES.nearSight && f.def.fov !== "all") {
+    const d = FIELD_DIRS[f.dir] || FIELD_DIRS.down;
+    if (dx * d.dx + dy * d.dy < 0) return false;   // 真後ろ側は見えない（真横は見える）
+  }
+  return fieldLos(a, f.tx, f.ty, pt.tx, pt.ty);
+}
+// 気づく・見失う（ターンの最初と、動いた後に判定）
+function fieldFoeAwareness(a, f, pt, countTurn) {
+  if (f.type === "patrol") { f.mode = "patrol"; return; }
+  if (fieldFoeSees(a, f, pt)) {
+    if (f.mode !== "chase") fieldEmit("foe:notice", { key: f.key, enemyName: f.enemy?.name });
+    f.mode = "chase"; f.lostTurns = 0; f.lastSeen = { tx: pt.tx, ty: pt.ty };
+    return;
+  }
+  if (f.mode === "chase") { f.mode = "search"; f.lostTurns = 0; }
+  if (f.mode === "search" && countTurn) {
+    f.lostTurns++;
+    const there = f.lastSeen && f.tx === f.lastSeen.tx && f.ty === f.lastSeen.ty;
+    if (there || f.lostTurns > FIELD_FOE_RULES.loseTurns) {
+      f.mode = "return"; f.lastSeen = null;
+      // 巡回路のうち、いちばん近い地点へ戻る
+      let best = 0, bd = Infinity;
+      f.path.forEach((p, i) => { const d = Math.abs(p[0] - f.tx) + Math.abs(p[1] - f.ty); if (d < bd) { bd = d; best = i; } });
+      f.pathIdx = best;
+      fieldEmit("foe:lost", { key: f.key, enemyName: f.enemy?.name });
     }
-    const step = fieldBfsStep(a, ft, target) || (f.mode === "chase" ? null : null);
-    const goal = step ? fieldTileCenter(step.tx, step.ty) : (f.mode === "chase" && fieldFoeWalkable(a, pt.tx, pt.ty) ? { x: fieldState.x, y: fieldState.y } : fieldTileCenter(ft.tx, ft.ty));
-    const speed = (f.mode === "chase" ? FIELD_FOE_SPEED.chase : FIELD_FOE_SPEED.patrol) * dt;
-    const vx = goal.x - f.x, vy = goal.y - f.y, len = Math.hypot(vx, vy);
-    if (len > .01) { const k = Math.min(1, speed / len); f.x += vx * k; f.y += vy * k; }
   }
-  fieldMiniDirty = true;
 }
-function fieldCheckFoeContact() {
-  if (fieldState.lock || performance.now() < fieldState.foeGraceUntil) return;
+// 次に向かうマス（commit=true のとき巡回の進み具合を更新する）
+function fieldFoeTarget(a, f, pt, commit) {
+  if (f.mode === "chase") return fieldFoeWalkable(a, pt.tx, pt.ty) ? pt : f.lastSeen;
+  if (f.mode === "search") return f.lastSeen;
+  let idx = f.pathIdx, stepDir = f.pathStep;
+  let wp = f.path[idx];
+  if (f.tx === wp[0] && f.ty === wp[1]) {
+    if (f.mode === "return" && commit) f.mode = "patrol";
+    if (f.path.length > 1) {
+      if (f.def.loop === "cycle") idx = (idx + 1) % f.path.length;
+      else { if (idx + stepDir < 0 || idx + stepDir >= f.path.length) stepDir = -stepDir; idx += stepDir; }
+      wp = f.path[idx];
+    }
+    if (commit) { f.pathIdx = idx; f.pathStep = stepDir; }
+  }
+  return { tx: wp[0], ty: wp[1] };
+}
+function fieldFoeNextStep(a, f, pt, commit) {
+  const target = fieldFoeTarget(a, f, pt, commit);
+  if (!target) return null;
+  const step = fieldBfsStep(a, { tx: f.tx, ty: f.ty }, target);
+  if (!step) return null;
+  // 接触のため、プレイヤーのマスにだけは入れる（安全地帯は fieldFoeWalkable で除外済み）
+  const onPlayer = step.tx === pt.tx && step.ty === pt.ty && fieldFoeWalkable(a, pt.tx, pt.ty);
+  if (!onPlayer && !fieldCanEnter(a, step.tx, step.ty, "foe", f)) return null;
+  return step;
+}
+function fieldFoeContact(f, pt) { return !f.defeated && f.tx === pt.tx && f.ty === pt.ty; }
+// 1ターン分のFOEの行動。接触したら FOE 戦を始めて true を返す
+function fieldFoeTurn(a, playerFrom) {
+  fieldState.turn++;
+  const pt = fieldPlayerTile();
+  // 自分からFOEのマスに入れば、止まっている間でも接触になる
+  for (const f of fieldState.foes) if (fieldFoeContact(f, pt)) { fieldTriggerFoeBattle(f); return true; }
+  if (fieldState.foeGraceSteps > 0) { fieldState.foeGraceSteps--; fieldFoePlanAll(a); fieldMiniDirty = true; return false; }
   for (const f of fieldState.foes) {
     if (f.defeated) continue;
-    if (Math.hypot(fieldState.x - f.x, fieldState.y - (f.y)) < 24) { fieldTriggerFoeBattle(f); return; }
+    fieldFoeAwareness(a, f, pt, true);
+    f.paceAcc += Number(f.def.pace) > 0 ? Number(f.def.pace) : 1;
+    let moved = false;
+    while (f.paceAcc >= 1) {
+      f.paceAcc -= 1;
+      const step = fieldFoeNextStep(a, f, pt, true);
+      if (!step) break;
+      if (!f.view) f.view = { x: f.x, y: f.y };
+      f.dir = fieldFoeDirTo({ tx: f.tx, ty: f.ty }, step) || f.dir;
+      fieldFoePlace(f, step.tx, step.ty); moved = true;
+      if (fieldFoeContact(f, pt)) { fieldTriggerFoeBattle(f); return true; }
+      fieldFoeAwareness(a, f, pt, false);
+    }
+    // 持ち場で止まっている見張りは、決まった順に向きを変える
+    if (!moved && f.mode === "patrol" && f.path.length === 1) {
+      const turns = (f.def.turns || []).filter(d => FIELD_DIRS[d]), every = Math.max(1, Number(f.def.turnEvery) || 2);
+      if (turns.length && fieldState.turn % every === 0) { f.turnIdx = (f.turnIdx + 1) % turns.length; f.dir = turns[f.turnIdx]; fieldFoeAwareness(a, f, pt, false); }
+    }
+  }
+  fieldFoePlanAll(a);
+  fieldMiniDirty = true;
+  void playerFrom;
+  return false;
+}
+// 表示用：次の1歩の予定（状態は変えない）
+function fieldFoePlanAll(a) {
+  const pt = fieldPlayerTile();
+  for (const f of fieldState.foes) {
+    if (f.defeated) { f.nextTile = null; continue; }
+    const saved = { pathIdx: f.pathIdx, pathStep: f.pathStep, mode: f.mode };
+    f.nextTile = fieldState.foeGraceSteps > 0 ? null : fieldFoeNextStep(a, f, pt, false);
+    Object.assign(f, saved);
   }
 }
+// 旧API（互換用）：同じマスにいるFOEとの接触
+function fieldCheckFoeContact() {
+  if (fieldState.lock) return;
+  const pt = fieldPlayerTile();
+  for (const f of fieldState.foes) if (fieldFoeContact(f, pt)) { fieldTriggerFoeBattle(f); return; }
+}
+// 旧API（互換用）：1ターン進める
+function fieldUpdateFoes() { const a = fieldArea(); if (a) fieldFoeTurn(a, fieldPlayerTile()); }
 function fieldRenderFoes() {
   const a = fieldArea(), exp = fieldExplored(a);
   for (const f of fieldState.foes) {
     const el = document.querySelector(`#field-foes [data-key="${CSS.escape(f.key)}"]`); if (!el) continue;
     if (f.defeated) { el.hidden = true; continue; }
-    const tx = Math.floor(f.x / FIELD_TILE), ty = Math.floor(f.y / FIELD_TILE);
+    const v = f.view || f;
     el.hidden = false;
-    el.classList.toggle("is-unexplored", !exp[ty * a.w + tx]);
+    el.classList.toggle("is-unexplored", !exp[f.ty * a.w + f.tx]);
     el.classList.toggle("is-chasing", f.mode === "chase");
-    el.style.left = (f.x - 16) + "px"; el.style.top = (f.y - 20) + "px"; el.style.zIndex = String(10 + Math.floor(f.y));
+    if (el.dataset.mode !== f.mode) el.dataset.mode = f.mode;
+    if (el.dataset.dir !== f.dir) el.dataset.dir = f.dir;
+    el.style.left = (v.x - 16) + "px"; el.style.top = (v.y - 20) + "px"; el.style.zIndex = String(10 + Math.floor(v.y));
   }
 }
 function fieldResetFoesAfterBattle(defeatedKey) {
+  const pt = fieldPlayerTile();
   for (const f of fieldState.foes) {
     if (f.key === defeatedKey) { f.defeated = true; fieldState.foeDefeated[f.key] = true; continue; }
-    // 逃げた後は、FOEを巡回の起点へ戻し、少しの間動かさない
-    if (Math.hypot(fieldState.x - f.x, fieldState.y - f.y) < FIELD_TILE * 3) { f.x = f.sx; f.y = f.sy; f.pathIdx = 1; }
-    f.mode = "patrol"; f.lostAt = 0;
+    // 逃げた後は、近くのFOEを巡回の起点へ戻し、数歩のあいだ動かさない
+    if (Math.abs(f.tx - pt.tx) + Math.abs(f.ty - pt.ty) <= 3) {
+      // 巡回路のうち、プレイヤーからいちばん遠い地点へ戻す（目の前に戻して即接触にならないように）
+      let best = 0, bd = -1;
+      f.path.forEach((p, i) => { const d = Math.abs(p[0] - pt.tx) + Math.abs(p[1] - pt.ty); if (d > bd) { bd = d; best = i; } });
+      fieldFoePlace(f, f.path[best][0], f.path[best][1]); f.pathIdx = best; f.pathStep = best === 0 ? 1 : -1; f.view = null;
+    }
+    f.mode = "patrol"; f.lostTurns = 0; f.lastSeen = null; f.lostAt = 0; f.paceAcc = 0;
   }
-  fieldState.foeGraceUntil = performance.now() + 2500;
+  fieldState.foeGraceSteps = FIELD_FOE_RULES.graceSteps;
+  fieldState.foeGraceUntil = 0;
+  const a = fieldArea(); if (a) fieldFoePlanAll(a);
 }
 
 /* ------------------------------------------------------------
@@ -618,10 +791,64 @@ async function fieldInteract(o) {
   if (fieldState.lock) return;
   if (o.kind === "npc" || o.kind === "sign") { await fieldPlayScene(o.scene); if (o.sideEvents) await fieldRunNpcSideEvents(o); return; }
   if (o.kind === "event") { await fieldRunSideEvent(o.event, o); return; }
+  if (o.kind === "door" && !o.puzzle) { await fieldDoorInteract(o); return; }   // [DOOR] 仕掛けではない扉・ショートカット・隠し通路
   if (o.kind === "switch" || o.kind === "door" || o.kind === "cache") { await fieldPuzzleInteract(o); return; }
   if (o.kind === "save") { await fieldUseSavePoint(o); return; }
   if (o.kind === "chest") { await fieldOpenChest(o); return; }
   if (o.kind === "gather") { await fieldGather(o); return; }
+}
+/* ------------------------------------------------------------
+   [DOOR] 扉・ショートカット・隠し通路（仕掛け FIELD_PUZZLES に属さないもの）
+   objects の定義：{ kind:"door", id, name, sprite,
+     hidden:true        … 隠し通路。発見までは壁と同じ（描画・ミニマップ・視界・踏破率に出ない）。正面の壁を調べると見つかる
+     oneWay:"left"等    … ショートカット扉。その向き側（例 "left"＝扉の西側）に立って調べたときだけ開く。反対側からは開かない
+     requires:{ flag } または { item } … 鍵。条件を満たすまで開かない（lockedText で理由を表示） }
+   開いた扉は fieldState.flags["door:<ID>:open"] に保存され、以後は床として通れる（FOE も通る）。
+   ------------------------------------------------------------ */
+function fieldDoorSideOk(o) {
+  if (!o.oneWay || !FIELD_DIRS[o.oneWay]) return true;
+  const d = FIELD_DIRS[o.oneWay], p = fieldPlayerTile();
+  return p.tx === o.tx + d.dx && p.ty === o.ty + d.dy;
+}
+function fieldDoorReqOk(o) {
+  const r = o.requires; if (!r) return true;
+  if (r.flag && !fieldState.flags[r.flag]) return false;
+  if (r.item && !((typeof inventory !== "undefined" && inventory[r.item]) > 0)) return false;
+  return true;
+}
+function fieldDoorRefresh(o) {
+  const a = fieldArea(), exp = fieldExplored(a), tiles = $("field-map")?.querySelector(".field-tiles")?.children;
+  const el = document.querySelector(`#field-map .field-object[data-key="${CSS.escape(o.key)}"]`);
+  if (el) { el.classList.remove("is-open", "is-one-way", "is-locked"); for (const k of fieldPuzzleObjectClass(o).split(" ").filter(Boolean)) el.classList.add(k); }
+  const tile = tiles?.[o.ty * a.w + o.tx], wall = fieldWallLike(a, fieldTileAt(a, o.tx, o.ty));
+  if (tile) { tile.classList.toggle("tile-wall", wall); tile.classList.toggle("tile-floor", !wall); tile.classList.toggle("is-edge", false); if (!exp[o.ty * a.w + o.tx]) tile.classList.add("is-unexplored"); }
+  fieldState.lastTileKey = ""; fieldUpdateVision(true);
+  fieldFoePlanAll(a);
+  fieldMiniDirty = true;
+}
+async function fieldDoorOpenNow(o) {
+  fieldState.flags[`door:${o.id}:open`] = true;
+  persistAutoSave();
+  fieldEmit(o.hidden ? "hidden:found" : "door:open", { area: fieldState.area, floor: fieldState.floor, objectId: o.key, doorId: o.id, oneWay: o.oneWay || null });
+  if (typeof playSe === "function") playSe("assets/se/unionskill/キラーン！", .6);
+  fieldDoorRefresh(o);
+  if (o.openScene) await fieldPlayScene(o.openScene);
+}
+async function fieldDoorInteract(o) {
+  if (fieldState.lock || fieldDoorOpen(o)) return;
+  if (o.hidden) {
+    const choice = await fieldAsk(o.askText || "壁の一部が、ほかと少し違う気がする……。調べてみますか？", ["調べる", "やめる"]);
+    if (choice !== 0 || fieldDoorOpen(o)) return;
+    await fieldDoorOpenNow(o);
+    if (!o.openScene) await fieldSay("壁の向こうに、隠された通路を見つけた！");
+    return;
+  }
+  if (!fieldDoorSideOk(o)) { await fieldSay(o.lockedText || "向こう側からかんぬきが掛かっていて、こちらからは開かない。"); return; }
+  if (!fieldDoorReqOk(o)) { await fieldSay(o.lockedText || "鍵が掛かっている。"); return; }
+  const choice = await fieldAsk(o.askText || (o.oneWay ? "かんぬきを外して、扉を開けますか？（近道になりそうだ）" : "扉を開けますか？"), ["開ける", "やめる"]);
+  if (choice !== 0 || fieldDoorOpen(o)) return;
+  await fieldDoorOpenNow(o);
+  if (!o.openScene) await fieldSay(o.oneWay ? "扉が開いた。これで近道が通れるようになった。" : "扉が開いた。");
 }
 /* ------------------------------------------------------------
    [SIDE] サブイベント（探索コンテンツ）
@@ -700,7 +927,7 @@ function fieldPuzzleSwitchOn(o) {
 }
 function fieldPuzzleObjectClass(o) {
   if (o.kind === "switch") return fieldPuzzleSwitchOn(o) ? " is-on" : "";
-  if (o.kind === "door") return (fieldPuzzleSolved(o.puzzle) ? " is-open" : "") + (o.hidden ? " is-hidden-door" : "");
+  if (o.kind === "door") { const open = fieldDoorOpen(o); return (open ? " is-open" : "") + (o.hidden ? " is-hidden-door" : "") + (!open && o.oneWay ? " is-one-way" : "") + (!open && o.requires ? " is-locked" : ""); }
   if (o.kind === "cache") return fieldState.flags[`puzzle:${o.puzzle}:reward`] ? " is-opened" : "";
   return "";
 }
@@ -1022,6 +1249,7 @@ function fieldShow({ returning = false } = {}) {
   const a = fieldArea();
   if (fieldState.built !== a.key || !$("field-map")?.children.length) fieldBuildDom();
   if (!fieldState.positioned) fieldPlaceAtStart();
+  fieldSnapToTile(); fieldState.view = null; fieldState.stepUntil = 0; fieldInput.tap = null;   // [GRID]
   fieldState.lock = false; fieldState.mapOpen = false; if ($("field-fullmap")) $("field-fullmap").hidden = true;
   const pt = fieldPlayerTile(); fieldState.triggerTile = `${pt.tx},${pt.ty}`;
   fieldInput.keys.clear(); fieldInput.pad.clear();
