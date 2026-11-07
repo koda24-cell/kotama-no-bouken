@@ -192,3 +192,37 @@ scene.remove(decoration.group);
 - `density`、`maxPerKind`、`rules`で密度と上限を調整できる。iPhone実機で負荷を測定してから値を確定する。
 - 本レイヤーは表示専用。装飾に衝突判定・採集判定・探索判定を持たせない。
 - `dispose()` はこのレイヤーが生成したGeometry/Materialを破棄する。GLB由来の共有リソースは破棄しない。
+
+
+## 遠景ランドマークレイヤー
+
+`field-3d-landmark-layer.js` は、マップ制作者が明示した配置データだけを使って、大型の環境シルエットを配置する。通路の先に見せる古代アーチ、崩れた柱、巨大な石碑、垂れ下がる根、樹冠などを想定する。自動でマップやイベントを解釈・変更することはない。
+
+```js
+import { buildField3DLandmarkLayer } from "./field/3d/field-3d-landmark-layer.js";
+
+const landmarks = buildField3DLandmarkLayer(THREE, [
+  {
+    id: "b1f-distant-arch-01",
+    kind: "ancientArch",
+    position: { x: 20, y: 0, z: -36 },
+    rotation: { y: Math.PI }
+  },
+  {
+    id: "b1f-monolith-01",
+    kind: "monolith",
+    position: { x: -12, y: 0, z: -24 },
+    scale: 1.3
+  }
+], {
+  assets: loadedAssets.assets,
+  maxCount: 80
+});
+scene.add(landmarks.group);
+```
+
+- 配置座標はワールド座標。既存マップの通行セル・イベントセルと重ならない位置を制作者が指定する。
+- GLBがあれば複製して使用し、未登録時は簡易形状を表示する。
+- `maxCount` で配置上限を設定する。大量配置は避け、視線の先に少数のシルエットを置く。
+- 生成した仮Geometry/Materialのみ破棄し、GLB由来の共有リソースには触れない。
+- 表示専用であり、当たり判定・移動・探索・イベント進行には影響しない。
