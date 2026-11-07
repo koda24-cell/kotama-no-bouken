@@ -1145,3 +1145,55 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 @media(prefers-reduced-motion:reduce){
   .field-foe[data-proximity="near"]:not(.is-chasing)::before{animation:none!important}
 }
+
+/* Interaction focus: each landmark gets a distinct, quiet response when faced. */
+.field-object.is-near[data-kind="chest"]:not(.is-opened)::before{
+  border-color:#ffe08a;
+  box-shadow:0 0 0 1px #ffe08a88,0 0 15px #ffbd4fbb,inset 0 0 8px #ffd87555;
+}
+.field-object.is-near[data-kind="chest"]:not(.is-opened) .field-object-sprite{
+  filter:drop-shadow(0 0 8px #ffd36a) drop-shadow(0 2px 2px #000d);
+}
+.field-object.is-near[data-kind="gather"]:not(.is-opened)::before{
+  border-color:#a8f4b9;
+  box-shadow:0 0 0 1px #8de9a877,0 0 14px #50d98c99,inset 0 0 8px #76ffad44;
+}
+.field-object.is-near[data-kind="gather"]:not(.is-opened) .field-object-sprite{
+  filter:drop-shadow(0 0 8px #80ffad) drop-shadow(0 2px 2px #000d);
+}
+.field-object.is-near[data-kind="stairs"]::before{
+  border-color:#fff0b3;
+  box-shadow:0 0 0 1px #fff0b388,0 0 15px #f4d77dbb,inset 0 0 9px #fff0b355;
+}
+.field-object.is-near[data-kind="stairs"] .field-object-sprite{
+  filter:drop-shadow(0 0 9px #fff0b3) drop-shadow(0 2px 2px #000d);
+}
+.field-object.is-near[data-kind="save"]::before{
+  border-color:#c9e8ff;
+  box-shadow:0 0 0 1px #c9e8ff88,0 0 16px #80cfffbb,inset 0 0 9px #b7e4ff66;
+}
+.field-object.is-near[data-kind="save"] .field-object-sprite{
+  filter:drop-shadow(0 0 9px #b9e4ff) drop-shadow(0 2px 2px #000d);
+}
+.field-object.is-near[data-kind="npc"]::before,
+.field-object.is-near[data-kind="sign"]::before{
+  border-color:#e2c8ff;
+  box-shadow:0 0 0 1px #e2c8ff77,0 0 13px #b995e899,inset 0 0 8px #d7b8ff44;
+}
+.field-object.is-near[data-kind="gate"]::before{
+  border-color:#ffb18a;
+  box-shadow:0 0 0 1px #ff8d6c88,0 0 16px #ed554fbb,inset 0 0 9px #ff9c6b66;
+}
+.field-object.is-near[data-kind="exit"]::before{
+  border-color:#fff4c5;
+  box-shadow:0 0 0 1px #fff4c599,0 0 17px #ffe68acc,inset 0 0 10px #fff4c577;
+}
+.field-object.is-near[data-kind="chest"] .field-object-label{border-color:#e7bd62;color:#ffe7a8}
+.field-object.is-near[data-kind="gather"] .field-object-label{border-color:#83d99c;color:#c9ffd6}
+.field-object.is-near[data-kind="stairs"] .field-object-label,
+.field-object.is-near[data-kind="exit"] .field-object-label{border-color:#e8d69a;color:#fff3c4}
+.field-object.is-near[data-kind="save"] .field-object-label{border-color:#9bcdf2;color:#d8efff}
+.field-object.is-near[data-kind="gate"] .field-object-label{border-color:#e78a78;color:#ffd1c4}
+@media(prefers-reduced-motion:reduce){
+  .field-object.is-near .field-object-sprite{animation:none!important}
+}
