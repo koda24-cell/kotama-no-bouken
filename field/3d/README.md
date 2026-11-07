@@ -102,3 +102,32 @@ if (column) scene.add(column);
 ## 未実施の検証
 
 この段階ではコードをGitHubへ追加した状態であり、iPhone Safari実機での表示・FPS・メモリ計測は未実施。ブラウザ上でプレビューを開き、動作確認する必要がある。本編の移動関数・FOE・オブジェクトイベントとの統合も未実施。
+
+
+## スナップショット連動オブジェクト配置
+
+`field-3d-object-layer.js` は `snapshot.objects` を読み、オブジェクトを3D空間へ配置する表示専用レイヤー。
+
+```js
+import { buildField3DObjectLayer } from "./field/3d/field-3d-object-layer.js";
+
+const objectLayer = buildField3DObjectLayer(THREE, snapshot, {
+  assets: loadedAssets.assets,
+  // 必要に応じてmanifestのキー名に合わせて上書き
+  assetKeys: { save: "saveLamp", gather: "harvestNode" },
+  fallback: true
+});
+scene.add(objectLayer.group);
+
+// フロア再構築時
+objectLayer.dispose();
+scene.remove(objectLayer.group);
+```
+
+- `snapshot.objects` の座標・種類・既存状態を使って配置する。ゲーム側の状態を変更しない。
+- `hidden` がtrueのオブジェクトは初期設定で表示しない。発見条件そのものは既存ゲーム側のcallbackが決める。
+- GLBが未登録・読み込み失敗の場合は種類別の簡易プレースホルダーを表示する。これは仮表示であり完成素材ではない。
+- 扉が開いている場合の回転は見た目だけの表現。通行可否は既存ゲームの判定に従う。
+- `placedKeys` と `skipped` で配置結果を確認できる。
+- `dispose()` はこのレイヤーが生成したプレースホルダーのGeometry/Materialのみ破棄する。GLB由来の共有リソースは破棄しない。
+- オブジェクトの高さ・向き・壁面配置は素材ごとに調整が必要。現在のfallbackは位置・種類確認用の箱形状。
