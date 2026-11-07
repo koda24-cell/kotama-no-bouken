@@ -49,9 +49,14 @@ function normalizeObject(object, context) {
     walk: !!object.walk,
     onWall: !!object.onWall,
     hidden,
+    concealed: !!object.hidden,
     doorOpen,
     puzzleSolved,
-    state
+    state,
+    presentationClass: String(state?.presentationClass ?? ""),
+    lootState: state?.lootState ?? null,
+    gatherKind: state?.gatherKind ?? null,
+    remaining: Number.isFinite(Number(state?.remaining)) ? Number(state.remaining) : null
   });
 }
 
@@ -145,6 +150,7 @@ export function buildField3DSnapshot({
       key: String(foe.key ?? ""),
       enemyId: String(foe.def?.enemy ?? ""),
       name: String(foe.enemy?.name ?? "FOE"),
+      sprite: String(foe.enemy?.sprite ?? "monster"),
       tx, ty,
       world: worldCenter(tx, ty, scale),
       dir: foe.dir ?? "down",
