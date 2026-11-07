@@ -1641,3 +1641,79 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 @media(prefers-reduced-motion:reduce){
   .battle-screen #battle-commands>.command-option{transition:none}
 }
+
+
+/* Enemy field-guide identity: species silhouettes and FOE threat tier. */
+.battle-screen #battle-enemy[data-variant="slime"]{
+  --enemy-aura:#9edbba;--enemy-aura-soft:#79d6a52b;
+}
+.battle-screen #battle-enemy[data-variant="goblin"]{
+  --enemy-aura:#d8b06d;--enemy-aura-soft:#d49b4a2b;
+}
+.battle-screen #battle-enemy[data-variant="wolf"]{
+  --enemy-aura:#b6c8dc;--enemy-aura-soft:#91b5d52b;
+}
+.battle-screen #battle-enemy[data-variant="dragon"]{
+  --enemy-aura:#ef9862;--enemy-aura-soft:#f06c3b30;
+}
+.battle-screen #battle-enemy[data-variant="maou"]{
+  --enemy-aura:#c7a0ed;--enemy-aura-soft:#9a65d52e;
+}
+.battle-screen #battle-enemy[data-variant] .enemy-image,
+.battle-screen #battle-enemy[data-variant] .enemy-placeholder{
+  filter:drop-shadow(0 0 7px var(--enemy-aura-soft,#d8c99a22));
+}
+.battle-screen #battle-enemy[data-variant] #enemy-name{
+  text-shadow:0 0 10px var(--enemy-aura-soft,#d8c99a22),0 2px 4px #000;
+}
+.battle-screen[data-battle-threat="foe"] .battle-arena{
+  border:2px solid #d36f43;
+  box-shadow:inset 0 0 0 2px #140c0a,inset 0 0 44px #e45d2a20,0 0 18px #c64e2c35;
+}
+.battle-screen[data-battle-threat="foe"] .battle-heading{
+  border-color:#c86b45aa;border-left-color:#f08b52;
+  background:linear-gradient(90deg,#35170feF,#17131bcf 76%,transparent);
+}
+.battle-screen[data-battle-threat="foe"] .battle-heading .eyebrow{
+  color:#ffad78!important;
+}
+.battle-screen[data-battle-threat="foe"] .battle-heading h1{
+  color:#ffd0a0;
+}
+.battle-screen[data-battle-threat="foe"] .battle-heading h1::after{
+  content:"  /  FOE";font-size:.62em;letter-spacing:.16em;color:#ff9367;
+}
+.battle-screen[data-battle-threat="foe"] #battle-enemy .hp-track{
+  border:1px solid #e28a55;background:#1b0e0d;
+  box-shadow:0 0 0 2px #100b12,0 0 12px #e45d2a55;
+}
+.battle-screen[data-battle-threat="foe"] #battle-enemy .hp-fill{
+  background:linear-gradient(90deg,#7c261d,#d65332 55%,#ffb06e);
+}
+.battle-screen[data-battle-threat="foe"] .enemy-analysis{
+  border-color:#c77a50;background:linear-gradient(145deg,#1b1415f2,#101522f2);
+}
+.battle-screen .enemy-analysis{
+  position:relative;overflow:hidden;
+}
+.battle-screen .enemy-analysis::before{
+  content:"FIELD NOTES";display:block;margin:-1px -2px 5px;padding:2px 5px;
+  border-bottom:1px solid #a9956755;color:#d9c58f;
+  font-size:8px;font-weight:900;letter-spacing:.2em;
+}
+.battle-screen[data-battle-threat="foe"] .enemy-analysis::before{
+  content:"FIELD NOTES  /  FOE WARNING";color:#ffad78;border-color:#c77a5066;
+}
+.battle-screen .enemy-analysis-grid>span{
+  padding:2px 3px;border-bottom:1px solid #8492a022;
+}
+.battle-screen .enemy-analysis-grid .enemy-analysis-wide{
+  background:#a5b9d00b;
+}
+@media(max-width:560px){
+  .battle-screen[data-battle-threat="foe"] .battle-heading h1::after{font-size:.58em}
+}
+@media(prefers-reduced-motion:reduce){
+  .battle-screen #battle-enemy[data-variant] .enemy-image,
+  .battle-screen #battle-enemy[data-variant] .enemy-placeholder{transition:none}
+}
