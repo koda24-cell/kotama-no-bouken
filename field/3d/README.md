@@ -278,3 +278,24 @@ const loaded = await loadField3DAssets({
 - `completed` は成功・失敗を問わず処理が完了した件数、`loaded` は読み込み成功数。
 - GLBを追加したらmanifestのキー・パス・スケールを更新し、ライセンス情報も別途記録する。
 - JSONの雛形追加は素材モデルの完成を意味しない。GLB実ファイル、テクスチャ、LODは別途制作・検品が必要。
+
+
+## GLBのPBRマテリアル統一
+
+`field-3d-materials.js` はGLB読込後のMeshStandard/Physical系マテリアルを、素材カテゴリ別の基準値へ整える補助関数。
+
+```js
+import { configureField3DMaterials } from "./field/3d/field-3d-materials.js";
+
+const model = loaded.assets.stoneWallA.scene;
+const report = configureField3DMaterials(THREE, model, {
+  profile: "stone",
+  renderer,
+  overrides: { maxAnisotropy: 4 }
+});
+console.info(report.meshCount, report.materialCount, report.textureCount);
+```
+
+利用可能なプロファイルは `stone`、`dirt`、`moss`、`foliage`、`glow`、`metal`。Base ColorとEmissiveテクスチャはsRGB、Normal/ORM系はGLTFLoader標準のNon-Color設定を維持する。テクスチャの異方性はRendererの上限を超えないよう制限する。
+
+この関数は素材を最適化・変換するものではなく、既存GLBのマテリアル値を調整する。元の素材を保管し、実機表示で過度な光沢・暗さ・発光にならないか確認すること。
