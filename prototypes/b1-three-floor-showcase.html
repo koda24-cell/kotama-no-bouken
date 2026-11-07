@@ -35,6 +35,7 @@ import {GLTFLoader} from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/js
 import {loadField3DAssets} from "../field/3d/field-3d-asset-loader.js";
 import {configureField3DMaterials} from "../field/3d/field-3d-materials.js";
 import {buildField3DObjectLayer} from "../field/3d/field-3d-object-layer.js";
+import {inspectField3DSnapshot} from "../field/3d/field-3d-qa.js";
 import {buildField3DSnapshot} from "../field/3d/field-3d-grid-adapter.js";
 import {buildField3DWorld} from "../field/3d/field-3d-world.js";
 import {buildField3DAtmosphere} from "../field/3d/field-3d-atmosphere.js";
@@ -91,7 +92,7 @@ function buildFixture(source,index){
  const foes=(source.foes||[]).map((f,i)=>({key:"foe:"+index+":"+i,def:f,enemy:enemies?.[f.enemy],tx:f.path?.[0]?.[0]??0,ty:f.path?.[0]?.[1]??0,dir:f.dir||"down",mode:"patrol",defeated:false,type:f.type||"chaser"}));
  const area={n:1,f:index,key:"1-"+index,def:defs,grid,w:width,h:height,objects};
  const fieldState={x:start.x*32+16,y:start.y*32+16,dir:"up",moving:false,foes,explored:{"1-"+index:new Uint8Array(width*height).fill(1)},visible:new Set()};
- const snapshot=buildField3DSnapshot({area,fieldState,tilePixels:32,isSolidChar:(_a,c)=>"#~ST?G".includes(c)||/[a-z]/.test(c)});
+ const snapshot=buildField3DSnapshot({area,fieldState,tilePixels:32,isSolidChar:(_a,c)=>"#~ST?G".includes(c)||/[a-z]/.test(c),isObjectHidden:object=>!!object.hidden});
  if(snapshot.cells.length!==width*height)throw new Error("Grid cell count mismatch on "+(index+1)+"F");
  if(snapshot.objects.length!==objects.length)throw new Error("Object fixture mismatch on "+(index+1)+"F");
  return {snapshot,start,foes,width,height};
@@ -122,8 +123,8 @@ function loadFloor(index){
  const markerGroup=new THREE.Group();
  for(const f of snapshot.foes){const m=new THREE.Mesh(new THREE.ConeGeometry(.55,1.45,7),new THREE.MeshStandardMaterial({color:0xb94f45}));m.position.set(f.world.x,.72,f.world.z);markerGroup.add(m);}
  scene.add(markerGroup);layers.push({group:markerGroup,dispose(){markerGroup.traverse(n=>{n.geometry?.dispose?.();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose();}});markerGroup.clear();}});
- mapInfo={objects:snapshot.objects.length,foes:snapshot.foes.length,decor:decor.counts,landmarks:landmarks.counts};
- title.textContent="はじまりの樹海・"+(index+1)+"F";status.textContent="壁 "+world.wallCount+" / 床 "+world.floorCount+" / 装飾 "+Object.values(decor.counts).reduce((a,b)=>a+b,0)+" / ランドマーク "+placements.length+" / GLB "+Object.keys(loadedAssets).length+"種";
+ const qa=inspectField3DSnapshot(snapshot);\n mapInfo={objects:snapshot.objects.length,foes:snapshot.foes.length,decor:decor.counts,landmarks:landmarks.counts,qa};
+ title.textContent="はじまりの樹海・"+(index+1)+"F";status.textContent="壁 "+world.wallCount+" / 床 "+world.floorCount+" / 装飾 "+Object.values(decor.counts).reduce((a,b)=>a+b,0)+" / ランドマーク "+placements.length+" / GLB "+Object.keys(loadedAssets).length+"種 / QA "+(qa.ok?"OK":qa.errorCount+" errors")+(qa.warningCount?"・警告"+qa.warningCount:"");
  placeCamera();drawMini();
 }
 function step(action){if(!snapshot)return;if(action==="left")player.dir=(player.dir+3)%4;else if(action==="right")player.dir=(player.dir+1)%4;else{const sign=action==="back"?-1:1,d=dirs[player.dir],nx=player.x+d.x*sign,ny=player.y+d.y*sign,cell=snapshot.cells.find(c=>c.tx===nx&&c.ty===ny);if(cell&&!cell.solid){player.x=nx;player.y=ny;}}placeCamera();drawMini();}
