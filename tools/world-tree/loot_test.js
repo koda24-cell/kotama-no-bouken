@@ -82,11 +82,14 @@ const J = x => JSON.stringify(x);
 
   /* ---------- 3. 扉の奥の宝箱（fieldPuzzleOpenCache） ---------- */
   const cacheExpr = `[...fieldLootIndex().values()].find(e=>e.o.kind==='cache'&&e.o.id==='a1-cache').o`;
-  ok("A の fieldPuzzleSolved／fieldPuzzleRefresh はこのブランチ単体では未定義", r(`typeof fieldPuzzleSolved`) === "undefined" && r(`typeof fieldPuzzleRefresh`) === "undefined");
+  // A（field/field-puzzles.js）が入っていない状態と入った状態の両方で動くように確認する
+  const hasA = r(`typeof fieldPuzzleSolved`) === "function";
+  info(hasA ? "Claude A の field/field-puzzles.js あり（マージ後の状態として検証）" : "Claude A の fieldPuzzleSolved／fieldPuzzleRefresh なし（このブランチ単体として検証）");
+  if (hasA) r(`fieldState.flags['puzzle:a1-lever-gate']=true;`);
   r(`state.gold=0;`); c.events.length = 0;
   let cacheErr = null;
   try { await r(`fieldPuzzleOpenCache(${cacheExpr}, FIELD_PUZZLES['a1-lever-gate'])`); } catch (e) { cacheErr = e; }
-  ok("A の関数が無くてもエラーにならず報酬（80G・エーテル）と field:puzzle:reward（kind=cache）", !cacheErr && r("state.gold") === 80 && r(`fieldState.flags['puzzle:a1-lever-gate:reward']`) === true
+  ok((hasA ? "A あり" : "A の関数が無くても") + "：エラーにならず報酬（80G・エーテル）と field:puzzle:reward（kind=cache）", !cacheErr && r("state.gold") === 80 && r(`fieldState.flags['puzzle:a1-lever-gate:reward']`) === true
     && (e => e && e[1].kind === "cache" && e[1].puzzleId === "a1-lever-gate" && e[1].state === "opened")(c.events.find(e => e[0] === "field:puzzle:reward")), cacheErr ? String(cacheErr) : "");
   ok("オートセーブ時点で報酬フラグが保存済み・cache は opened", c.lastSave().field.flags["puzzle:a1-lever-gate:reward"] === true && r(`fieldLootState(${cacheExpr}.key)`) === "opened");
   await r(`fieldPuzzleOpenCache(${cacheExpr}, FIELD_PUZZLES['a1-lever-gate'])`);
@@ -128,6 +131,22 @@ const J = x => JSON.stringify(x);
   await r(`(async()=>{fieldState.area=4;await fieldRunSideEvent('a4-ore-vein',null);})()`);
   ok("素材報酬のサブイベント（炎竜の鱗×1）は fieldLootAddMaterial を通る（source=side）", r("materials.dragon_scale") === 1 && c.events.some(e => e[0] === "field:material" && e[1].source === "side" && e[1].materialId === "dragon_scale"));
   ok("fieldSideDone は render から typeof 確認で呼べる関数", r(`typeof fieldSideDone`) === "function");
+
+  /* ---------- 4b. Claude A の fieldInteract 経由（A のコードがあるときだけ。マージ後の確認用） ---------- */
+  if (hasA) {
+    r(`fieldState.area=1;fieldState.floor=0;state.gold=0;for(const k of Object.keys(fieldState.flags))if(k.startsWith('side:')||k.startsWith('puzzle:a1'))delete fieldState.flags[k];for(const k of Object.keys(inventory))delete inventory[k];`);
+    const objs = `fieldArea(1,0).objects`;
+    c.answer = 0;
+    await r(`fieldInteract(${objs}.find(o=>o.kind==='switch'&&o.puzzle==='a1-lever-gate'))`);
+    await r(`fieldInteract(${objs}.find(o=>o.kind==='cache'&&o.puzzle==='a1-lever-gate'))`);
+    ok("A 経由：レバー→扉の奥の宝箱で 80G・エーテル（fieldPuzzleInteract → fieldPuzzleOpenCache）", r("state.gold") === 80 && r("inventory.ether") === 1 && r(`fieldState.flags['puzzle:a1-lever-gate:reward']`) === true);
+    const evObj = r(`(()=>{for(let f=0;f<3;f++){const o=fieldArea(1,f).objects.find(o=>o.kind==='event'&&o.event==='a1-old-stump');if(o)return {f,key:o.key};}})()`);
+    await r(`fieldInteract(fieldArea(1,${evObj ? evObj.f : 0}).objects.find(o=>o.key==='${evObj ? evObj.key : ""}'))`);
+    ok("A 経由：調べる物（kind:event）→ fieldRunSideEvent で完了", !!evObj && r(`fieldSideDone('a1-old-stump')`));
+    const npc = r(`(()=>{for(let f=0;f<3;f++){const o=fieldArea(1,f).objects.find(o=>o.id==='woodcutter');if(o)return {f,key:o.key,se:o.sideEvents};}})()`);
+    await r(`fieldInteract(fieldArea(1,${npc.f}).objects.find(o=>o.key==='${npc.key}'))`);
+    ok("A 経由：NPC（o.sideEvents あり）の会話後に fieldRunNpcSideEvents で報酬 60G", Array.isArray(npc.se) && r(`fieldSideDone('a1-axe-return')`) && r("state.gold") === 140);
+  }
 
   /* ---------- 5. ショップ・製作との連携 ---------- */
   r(`state.gold=0;for(const k of Object.keys(materials))delete materials[k];for(const k of Object.keys(inventory))delete inventory[k];`);
