@@ -37,6 +37,7 @@ import {loadField3DAssets} from "../field/3d/field-3d-asset-loader.js";
 import {configureField3DMaterials} from "../field/3d/field-3d-materials.js";
 import {buildField3DObjectLayer} from "../field/3d/field-3d-object-layer.js";
 import {inspectField3DSnapshot} from "../field/3d/field-3d-qa.js";
+import {inspectField3DManifest,inspectField3DAssetLoad} from "../field/3d/field-3d-asset-qa.js";
 import {buildField3DSnapshot} from "../field/3d/field-3d-grid-adapter.js";
 import {buildField3DWorld} from "../field/3d/field-3d-world.js";
 import {buildField3DAtmosphere} from "../field/3d/field-3d-atmosphere.js";
@@ -54,19 +55,21 @@ const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.08,42);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
 const quality=resolveField3DQualityPreset({profile:"mobile",devicePixelRatio, maxTextureSize:renderer.capabilities.maxTextureSize});
 applyField3DQualityPreset(renderer,quality);renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;host.appendChild(renderer.domElement);
-let layers=[],snapshot=null,grid=[],player={x:1,y:1,dir:0},mapInfo=null,loadedAssets={};
+let layers=[],snapshot=null,grid=[],player={x:1,y:1,dir:0},mapInfo=null,loadedAssets={},assetQa=null;
 const ASSET_KEYS={landmark:{brokenColumn:"brokenColumnA",ancientArch:"ancientArchA",rootCurtain:"wallRootA"},decoration:{moss:"mossClusterA",fern:"fernA",glowPlant:"glowPlantA",root:"wallRootA"}};
 async function loadB1FAssets(){
  const manifestUrl=new URL("../assets/field-3d/b1/manifest.json",import.meta.url);
  try{
   const response=await fetch(manifestUrl);if(!response.ok)throw new Error("manifest HTTP "+response.status);
   const manifest=await response.json();
+  const manifestQa=inspectField3DManifest(manifest);
+  if(!manifestQa.ok)console.warn("[B1F manifest QA]",manifestQa.issues);
   const result=await loadField3DAssets({GLTFLoader,manifest:manifest.assets||{},baseUrl:manifestUrl.href,
    onProgress:({key,status:assetStatus,completed,total})=>{status.textContent="GLB素材 "+completed+"/"+total+" ("+key+": "+assetStatus+")";},
    onAssetError:({key,url,error})=>console.warn("[B1F GLB unavailable]",key,url,error)});
   const profiles={stoneWallA:"stone",stoneFloorA:"stone",dirtFloorA:"dirt",wallRootA:"moss",ceilingRootA:"moss",brokenColumnA:"stone",ancientArchA:"stone",ancientDoorA:"stone",mossClusterA:"moss",fernA:"foliage",glowPlantA:"glow",fungusA:"glow",chestA:"metal",gatherA:"foliage",saveLampA:"glow"};
   for(const [key,asset] of Object.entries(result.assets))configureField3DMaterials(THREE,asset.scene,{profile:profiles[key]||"stone",renderer,maxAnisotropy:quality.pixelRatio>1?4:2});
-  loadedAssets=result.assets;return result;
+  loadedAssets=result.assets;assetQa=inspectField3DAssetLoad(manifestQa,result);return result;
  }catch(error){console.warn("[B1F GLB manifest unavailable; placeholders remain active]",error);return {assets:{},errors:[{key:"manifest",error}],loadedCount:0,completedCount:0,totalCount:0};}
 }
 const dirs=[{x:0,y:-1},{x:1,y:0},{x:0,y:1},{x:-1,y:0}];
@@ -136,7 +139,7 @@ addEventListener("keydown",e=>{const a={ArrowLeft:"left",ArrowRight:"right",Arro
 addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 const assetReport=await loadB1FAssets();
 loadFloor(0);
-status.textContent+=" (GLB "+assetReport.loadedCount+"/"+assetReport.totalCount+")";
+status.textContent+=" (GLB "+assetReport.loadedCount+"/"+assetReport.totalCount+" / asset QA "+(assetQa?.ok?"OK":(assetQa?.failed||assetQa?.issues?.length||0)+"件要確認")+")";
 renderer.setAnimationLoop(()=>renderer.render(scene,camera));
 </script>
 </body></html>
