@@ -1104,3 +1104,44 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   .field-danger{animation:none!important;transition:none!important}
   .field-danger::after{transition:none!important}
 }
+
+
+/* FOE proximity cues — distinguish nearby visible threats from distant sightings. */
+.field-foe[data-proximity="approach"]:not(.is-chasing)::before{
+  border-color:#ffd36b;
+  box-shadow:0 0 10px #ffc247bb,inset 0 0 9px #ffca5844;
+}
+.field-foe[data-proximity="near"]:not(.is-chasing){
+  filter:drop-shadow(0 0 5px #ffb02e) drop-shadow(0 3px 2px #000);
+}
+.field-foe[data-proximity="near"]:not(.is-chasing)::before{
+  border:2px solid #ffe08a;
+  box-shadow:0 0 7px #ffc247,0 0 16px #ff9d2fbb,inset 0 0 10px #ffbd4d66;
+  animation:foe-near-warning .58s ease-in-out infinite alternate;
+}
+.field-foe[data-proximity="near"]:not(.is-chasing)::after{
+  content:"!";
+  position:absolute;
+  z-index:3;
+  top:-7px;right:-5px;
+  width:13px;height:13px;
+  display:grid;place-items:center;
+  border:1px solid #fff0b0;
+  border-radius:50%;
+  background:#bd7414;
+  color:#fff;
+  font-size:9px;font-weight:900;
+  box-shadow:0 0 7px #ffb02e;
+}
+.field-foe-alert[data-state="near"]{
+  border-color:#ffd36b;
+  background:linear-gradient(180deg,#5a3b0fee,#211506ef);
+  color:#ffe4a0;
+  box-shadow:0 0 9px #ffb02e66,inset 0 0 8px #0009;
+}
+@keyframes foe-near-warning{
+  to{transform:scale(1.12);opacity:.68}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-foe[data-proximity="near"]:not(.is-chasing)::before{animation:none!important}
+}
