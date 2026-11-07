@@ -62,8 +62,5 @@ export function applyField3DQualityPreset(renderer, preset) {
   if (!renderer || !preset) throw new TypeError("renderer and preset are required.");
   renderer.setPixelRatio?.(preset.pixelRatio);
   if (renderer.shadowMap) renderer.shadowMap.enabled = !!preset.shadows;
-  if (renderer.shadowMap && renderer.shadowMap.type != null && preset.shadows) {
-    renderer.shadowMap.type = 1; // THREE.BasicShadowMap; caller may override with THREE.PCFSoftShadowMap.
-  }
   return renderer;
 }
