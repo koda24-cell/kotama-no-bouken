@@ -43,7 +43,7 @@ export function buildField3DDecorationLayer(THREE, snapshot, {
     moss: { color: palette.moss ?? 0x526b48, size: [0.72, 0.18, 0.55], roughness: 1 },
     fern: { color: palette.fern ?? 0x376b43, size: [0.42, 0.78, 0.34], roughness: 0.9 },
     glowPlant: { color: palette.glowPlant ?? 0x68c9a9, size: [0.28, 0.48, 0.28], roughness: 0.55, emissive: 0x245b48 },
-    root: { color: palette.root ?? 0x594634, size: [0.22, 0.22, 1.9], roughness: 0.96 }
+    root: { color: palette.root ?? 0x594634, size: [0.22, 1.9, 0.22], roughness: 0.96 }
   };
   const geometry = {
     moss: new THREE.SphereGeometry(1, 7, 5),
@@ -135,7 +135,7 @@ export function buildField3DDecorationLayer(THREE, snapshot, {
     const mesh = new THREE.InstancedMesh(geometry[kind], materials[kind], placements.length);
     placements.forEach((p, index) => {
       dummy.position.set(p.x, p.y, p.z);
-      dummy.rotation.set(0, p.ry, kind === "fern" ? -0.12 : 0);
+      dummy.rotation.set(kind === "root" ? Math.PI / 2 : 0, p.ry, kind === "fern" ? -0.12 : 0);
       dummy.scale.set(p.sx, p.sy, p.sz);
       dummy.updateMatrix();
       mesh.setMatrixAt(index, dummy.matrix);
