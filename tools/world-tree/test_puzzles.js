@@ -20,11 +20,15 @@ g.fieldTriggerFoeBattle = () => {}; g.fieldTriggerEncounter = () => {};
   ok(g.fieldState.flags["puzzle:a1-lever-gate"] === true, "レバーで仕掛けが解ける");
   ok(g.fieldCanEnter(a, door.tx, door.ty), "解いた後の扉は通れる");
   ok(g.fieldObjectStateClass(door).includes("is-open"), "扉に is-open が付く");
-  said.length = 0; await g.fieldInteract(cache);
-  ok(!g.fieldState.flags["puzzle:a1-lever-gate:reward"] && said.some(t => t.includes("今はまだ")), "Claude B の報酬処理が無くてもエラーにならない");
+  const hasB = typeof g.fieldPuzzleOpenCache === "function";   // Claude B（#100）が統合済みかどうか
+  const realCache = g.fieldPuzzleOpenCache;
+  if (!hasB) {
+    said.length = 0; await g.fieldInteract(cache);
+    ok(!g.fieldState.flags["puzzle:a1-lever-gate:reward"] && said.some(t => t.includes("今はまだ")), "Claude B の報酬処理が無くてもエラーにならない");
+  }
   let called = null; g.fieldPuzzleOpenCache = async (o, pz) => { called = [o.key, !!pz]; };
   await g.fieldInteract(cache); ok(called && called[0] === cache.key && called[1], "扉の奥の宝箱は fieldPuzzleOpenCache(o, pz) に渡す");
-  delete g.fieldPuzzleOpenCache;
+  if (hasB) g.fieldPuzzleOpenCache = realCache; else delete g.fieldPuzzleOpenCache;
   // 第4階層2F：隠し通路（ひびの入った岩壁）
   g.fieldState.area = 4; g.fieldState.floor = 1; a = g.fieldArea(4, 1);
   const crack = a.objects.find(o => o.kind === "door" && o.hidden);
@@ -42,8 +46,10 @@ g.fieldTriggerFoeBattle = () => {}; g.fieldTriggerEncounter = () => {};
   // サブイベント：Claude B の処理が無くても例外にならない
   g.fieldState.area = 1; g.fieldState.floor = 0; a = g.fieldArea(1, 0);
   const ev = a.objects.find(o => o.kind === "event");
-  let threw = false; try { await g.fieldInteract(ev); } catch (e) { threw = true; } ok(!threw, "サブイベントの物を調べても、B の処理が無い状態でエラーにならない");
+  const realSide = g.fieldRunSideEvent;
+  if (typeof realSide !== "function") { let threw = false; try { await g.fieldInteract(ev); } catch (e) { threw = true; } ok(!threw, "サブイベントの物を調べても、B の処理が無い状態でエラーにならない"); }
   let evCalled = null; g.fieldRunSideEvent = async (id, o) => { evCalled = id; }; await g.fieldInteract(ev); ok(evCalled === ev.event, "サブイベントは fieldRunSideEvent(o.event, o) に渡す");
+  if (typeof realSide === "function") g.fieldRunSideEvent = realSide;
   ok(g.fieldObjectStateClass({ kind: "event", hidden: true, event: "x" }).includes("is-hidden-event"), "隠しサブイベントに is-hidden-event が付く");
   console.log(fails ? `\n${fails} 件失敗` : "\nすべて成功"); process.exit(fails ? 1 : 0);
 })();
