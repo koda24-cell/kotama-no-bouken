@@ -104,11 +104,15 @@ body:is([data-screen="home"],[data-screen="formation"],[data-screen="shop"],[dat
 @media (min-width: 701px) {
   #selected-party.selected-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) !important; align-items: start; }
   .fm-slots { grid-template-columns: minmax(0, 1fr); }
-  .fm-slot-main { grid-template-columns: auto 64px minmax(0, 1fr); min-height: 84px; }
-  .fm-slot .character-art { width: 64px; height: 72px !important; }
+  .fm-slot-main { grid-template-columns: auto 56px minmax(0, 1fr); }
   .fm-stats.character-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .fm-detail-head { grid-template-columns: 96px minmax(0, 1fr); }
-  .fm-detail-head .character-art { height: 104px !important; }
+  .fm-detail-head { grid-template-columns: 72px minmax(0, 1fr); }
+  .fm-detail-head .character-art { height: 76px !important; }
+  /* 効果を select の横に置いて高さを抑える（チュートリアルの「装備を確認しよう」で #selected-party 全体と案内パネルが重ならないように） */
+  #selected-party .equip-row { grid-template-columns: 4.5em minmax(0, 1fr) minmax(0, 9em); grid-template-areas: "label sel eff"; }
+  #selected-party .equip-row select { min-height: 36px; }
+  .fm-slot-main { min-height: 72px; }
+  .fm-slot .character-art { height: 60px !important; width: 56px; }
 }
 
 /* ============================== ショップ ============================== */

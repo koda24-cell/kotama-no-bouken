@@ -22,7 +22,7 @@ const path = require("path"), fs = require("fs");
     try { tutorialClose(); } catch (e) {} document.body.classList.remove("tutorial-home-focus", "tutorial-active");
     state.firstStageStarted = true; state.maxUnlockedStage = 5; state.gold = 1234;
     for (let i = 1; i <= 3; i++) { stageCleared[i] = true; stageEntered[i] = true; }
-    trainingPoints.kotama = 3; inventory["iron-sword"] = 1;
+    trainingPoints.kotama = 3; inventory["sword"] = (inventory["sword"] || 0) + 1;
     if (typeof compendium !== "undefined" && compendium["スライム"]) { compendium["スライム"].encountered = true; compendium["スライム"].defeated = true; compendium["ゴブリン"].encountered = true; }
     window.persistAutoSave = () => true;
     renderAll();
@@ -80,7 +80,7 @@ const path = require("path"), fs = require("fs");
       // 装備変更（編成の select）
       showScreen("formation"); q('#selected-party [data-focus-character="kotama"]')?.click();
       const sel = q('#selected-party select[data-character="kotama"][data-equip="weapon"]');
-      if (sel) { sel.value = "iron-sword"; sel.dispatchEvent(new Event("change", { bubbles: true })); }
+      if (sel) { sel.value = "sword"; sel.dispatchEvent(new Event("change", { bubbles: true })); }
       out.equipChange = equipment.kotama.weapon;
       // パーティ入れ替え（外す→加える）
       q('#selected-party [data-remove-character="healer"]')?.click(); out.removed = !state.party.includes("healer");
