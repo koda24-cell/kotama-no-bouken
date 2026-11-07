@@ -380,3 +380,25 @@ applyField3DQualityPreset(renderer, quality);
 5. 問題があればフロア別プロファイルまたは候補配置を調整し、ゲーム本編への統合は別途レビュー後に行う。
 
 配置プランナーはマップ全体から候補を選ぶため、フロアごとの演出密度は `landmarkLimit` で制御する。候補位置は壁面から通路側へ壁厚相当以上離しており、候補選択は座標seedで分散させる。最終的な見栄えはブラウザでの目視確認が必要。
+
+
+## GLB素材を展示ページへ接続
+
+`prototypes/b1-three-floor-showcase.html` は、B1F manifestを読み込み、GLTFLoaderでGLBを取得してPBR材質設定を適用する。現在のキー対応は以下。
+
+- 環境装飾：`mossClusterA` / `fernA` / `glowPlantA` / `wallRootA`
+- 大型ランドマーク：`brokenColumnA` / `ancientArchA` / `wallRootA`
+- オブジェクト：`chestA` / `saveLampA` / `gatherA`
+
+未配置・未制作のGLBは読み込みエラーとして記録し、該当箇所は既存の仮形状へフォールバックする。manifestに登録した15個のGLBファイル自体は、まだリポジトリに追加されていないため、現状の初回表示は仮素材中心となる。GLBの実制作・追加後に同じ展示ページで反映を確認できる。
+
+## スナップショットQA
+
+`field-3d-qa.js` の `inspectField3DSnapshot(snapshot)` は、描画前に以下の構造を読み取り専用で検査する。
+
+- セル数と座標重複・マップ範囲
+- プレイヤー開始位置の存在と壁セル侵入
+- オブジェクトとFOEの座標範囲
+- FOEが壁セル上に配置されている場合の警告
+
+展示ページのステータス欄にQA結果を表示する。これはデータ構造の検査であり、実ゲームの移動・扉・仕掛け・セーブ・FOE AIのテストを代替しない。
