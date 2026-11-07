@@ -670,8 +670,79 @@ function getTrainingEffectPreview(charId,nodeId,level,nextLevel){
   }
   return [{label:"効果値",before:level?"現在の効果":"未習得",after:"この強化段階では効果値は変化しません"}];
 }
-function closeSkillUpgradeDialog(){
-  const dialog=$("skill-upgrade-dialog");if(dialog)dialog.remove();
+let skillUpgradeDialogCleanup=null;
+function closeSkillUpgradeDialog(options={}){
+  const dialog=$("skill-upgrade-dialog");
+  if(dialog)dialog.remove();
+  if(skillUpgradeDialogCleanup){skillUpgradeDialogCleanup();skillUpgradeDialogCleanup=null;}
+  let focusTarget=options.focusTarget||null;
+  if(typeof focusTarget==="function")focusTarget=focusTarget();
+  if(focusTarget&&focusTarget.isConnected&&!focusTarget.disabled){
+    try{focusTarget.focus({preventScroll:true});}catch(error){focusTarget.focus();}
+  }
+}
+function activateSkillUpgradeDialogEnvironment(dialog){
+  const background=[...document.body.children].filter(element=>element!==dialog);
+  const previousInert=background.map(element=>({element,inert:element.inert}));
+  const bodyOverflow=document.body.style.overflow;
+  const rootOverflow=document.documentElement.style.overflow;
+  const bodyOverscroll=document.body.style.overscrollBehavior;
+  const rootOverscroll=document.documentElement.style.overscrollBehavior;
+  background.forEach(element=>{element.inert=true;});
+  document.body.style.overflow="hidden";
+  document.documentElement.style.overflow="hidden";
+  document.body.style.overscrollBehavior="none";
+  document.documentElement.style.overscrollBehavior="none";
+  const focusSelector='button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  const getFocusable=()=>[...dialog.querySelectorAll(focusSelector)].filter(element=>!element.hidden&&element.getAttribute("aria-hidden")!=="true");
+  const onKeyDown=event=>{
+    if(event.key==="Escape"){
+      event.preventDefault();event.stopPropagation();
+      closeSkillUpgradeDialog({focusTarget:dialog._returnFocus});
+      return;
+    }
+    if(event.key!=="Tab")return;
+    const focusable=getFocusable();
+    if(!focusable.length){event.preventDefault();return;}
+    const first=focusable[0],last=focusable[focusable.length-1],active=document.activeElement;
+    if(event.shiftKey&&(active===first||!dialog.contains(active))){
+      event.preventDefault();last.focus({preventScroll:true});
+    }else if(!event.shiftKey&&(active===last||!dialog.contains(active))){
+      event.preventDefault();first.focus({preventScroll:true});
+    }
+  };
+  const onFocusIn=event=>{
+    if(!dialog.contains(event.target)){
+      const first=getFocusable()[0];
+      if(first)first.focus({preventScroll:true});
+    }
+  };
+  dialog.addEventListener("keydown",onKeyDown);
+  document.addEventListener("focusin",onFocusIn,true);
+  return ()=>{
+    dialog.removeEventListener("keydown",onKeyDown);
+    document.removeEventListener("focusin",onFocusIn,true);
+    previousInert.forEach(item=>{item.element.inert=item.inert;});
+    document.body.style.overflow=bodyOverflow;
+    document.documentElement.style.overflow=rootOverflow;
+    document.body.style.overscrollBehavior=bodyOverscroll;
+    document.documentElement.style.overscrollBehavior=rootOverscroll;
+  };
+}
+function installSkillUpgradeCommitShield(){
+  const shield=document.createElement("div");
+  shield.setAttribute("aria-hidden","true");
+  Object.assign(shield.style,{position:"fixed",inset:"0",zIndex:"10000",background:"transparent",pointerEvents:"auto",cursor:"default"});
+  document.body.appendChild(shield);
+  const blockKeys=event=>{event.preventDefault();event.stopImmediatePropagation();};
+  const blockClicks=event=>{event.preventDefault();event.stopImmediatePropagation();};
+  document.addEventListener("keydown",blockKeys,true);
+  document.addEventListener("click",blockClicks,true);
+  window.setTimeout(()=>{
+    shield.remove();
+    document.removeEventListener("keydown",blockKeys,true);
+    document.removeEventListener("click",blockClicks,true);
+  },450);
 }
 function openSkillUpgradeDialog(charId,nodeId,returnFocus){
   const c=getCharacter(charId),eligibility=getTrainingUpgradeEligibility(charId,nodeId);
@@ -695,19 +766,23 @@ function openSkillUpgradeDialog(charId,nodeId,returnFocus){
       '<p class="skill-upgrade-note">「強化する」を押すまで、レベル・ポイント・習得状態は変更されません。</p>'+
       '<div class="dialog-actions"><button type="button" class="secondary-button" data-upgrade-cancel>キャンセル</button><button type="button" class="primary-button" data-upgrade-confirm>強化する</button></div>'+
     '</div>';
+  dialog._returnFocus=returnFocus||null;
   document.body.appendChild(dialog);
+  skillUpgradeDialogCleanup=activateSkillUpgradeDialogEnvironment(dialog);
   const cancel=dialog.querySelector("[data-upgrade-cancel]"),confirm=dialog.querySelector("[data-upgrade-confirm]");
   let committing=false;
-  const close=()=>{closeSkillUpgradeDialog();if(returnFocus&&returnFocus.isConnected)returnFocus.focus();};
+  const close=()=>closeSkillUpgradeDialog({focusTarget:returnFocus});
   cancel.onclick=close;
   dialog.addEventListener("click",event=>{if(event.target===dialog)close();});
-  dialog.addEventListener("keydown",event=>{if(event.key==="Escape"){event.preventDefault();close();}});
   confirm.onclick=()=>{
     if(committing)return;
     committing=true;confirm.disabled=true;
     const latest=getTrainingUpgradeEligibility(charId,nodeId);
+    const focusAfterRender=()=>[...document.querySelectorAll("#progression-panel [data-select-skill]")].find(button=>button.dataset.selectSkill===nodeId);
     if(!latest.allowed||latest.level!==eligibility.level||latest.cost!==eligibility.cost||latest.points!==eligibility.points){
-      close();selectedTrainingSkill=nodeId;renderProgressionPanel();
+      selectedTrainingSkill=nodeId;renderAll();
+      closeSkillUpgradeDialog({focusTarget:focusAfterRender});
+      installSkillUpgradeCommitShield();
       setSystemMessage("強化条件または育成ポイントが変わったため、確定を中止しました。最新の状態を確認してください。");
       return;
     }
@@ -715,10 +790,15 @@ function openSkillUpgradeDialog(charId,nodeId,returnFocus){
     setTreeLevel(charId,nodeId,latest.nextLevel);
     unlockedSkills[charId]=treeNodes(charId).filter(n=>getTreeLevel(charId,n.id)>0).map(n=>n.id);
     selectedTrainingSkill=nodeId;
-    close();renderAll();
+    renderAll();
+    closeSkillUpgradeDialog({focusTarget:focusAfterRender});
+    installSkillUpgradeCommitShield();
     setSystemMessage(c.name+"の「"+node.name+"」を"+(node===skillTreeDefinitions[charId].a||node===skillTreeDefinitions[charId].b?"Lv."+getTreeLevel(charId,nodeId)+"に強化":"取得")+"しました。");
   };
-  cancel.focus();
+  cancel.focus({preventScroll:true});
+  const panel=dialog.querySelector(".skill-upgrade-dialog-panel");
+  if(panel)panel.scrollTop=0;
+  dialog.scrollTop=0;
 }
 
 function renderProgressionPanelUnsafe(){
