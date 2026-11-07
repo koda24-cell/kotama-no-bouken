@@ -74,7 +74,10 @@ export function planField3DLandmarks(snapshot, {
 
   }
 
-  // Rank by stable seeded score rather than map scan order, avoiding a cluster at the northwest edge.\n  candidates.sort((a, b) => hash01(b.sourceCell.tx, b.sourceCell.ty, seed + 101) - hash01(a.sourceCell.tx, a.sourceCell.ty, seed + 101));\n  const suggestions = candidates.slice(0, Math.max(0, Math.floor(maxCount)));\n  return Object.freeze(suggestions.map(item => Object.freeze({
+  // Rank by stable seeded score rather than map scan order, avoiding a cluster at the northwest edge.
+  candidates.sort((a, b) => hash01(b.sourceCell.tx, b.sourceCell.ty, seed + 101) - hash01(a.sourceCell.tx, a.sourceCell.ty, seed + 101));
+  const suggestions = candidates.slice(0, Math.max(0, Math.floor(maxCount)));
+  return Object.freeze(suggestions.map(item => Object.freeze({
     ...item,
     position: Object.freeze(item.position),
     rotation: Object.freeze(item.rotation),
