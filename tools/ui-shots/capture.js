@@ -56,7 +56,7 @@ const path = require("path"), fs = require("fs");
           if (r.right > W + 1 || r.left < -1) { let p = el.parentElement, clipped = false; while (p) { const pc = getComputedStyle(p); if (/(auto|scroll|hidden|clip)/.test(pc.overflowX)) { const pr = p.getBoundingClientRect(); if (pr.right <= W + 1) { clipped = true; break; } } p = p.parentElement; } over.push(`${el.tagName.toLowerCase()}${el.id ? "#" + el.id : ""}${el.className && typeof el.className === "string" ? "." + el.className.trim().split(/\s+/).slice(0, 2).join(".") : ""} [${Math.round(r.left)}..${Math.round(r.right)}]${clipped ? " (切れて見えない)" : ""}`); }
         }
         const fixed = [...document.querySelectorAll("body *")].filter(el => { const cs = getComputedStyle(el); return (cs.position === "fixed" || cs.position === "sticky") && !el.closest("[hidden]") && cs.display !== "none" && el.getBoundingClientRect().height > 0; }).map(el => `${el.tagName.toLowerCase()}#${el.id}.${String(el.className).split(" ")[0]} bottom=${Math.round(innerHeight - el.getBoundingClientRect().bottom)}`);
-        return { scrollW: document.documentElement.scrollWidth, innerW: W, scrollH: document.documentElement.scrollHeight, innerH: innerHeight, overflow: over.slice(0, 12), overflowCount: over.length, fixed };
+        return { scrollW: document.documentElement.scrollWidth, innerW: W, scrollH: document.documentElement.scrollHeight, innerH: innerHeight, overflow: over.slice(0, 12), overflowCount: over.length, overflowVisible: over.filter(t => !t.endsWith("(切れて見えない)")).length, fixed };
       });
       report[name] = m;
       const jpg = process.env.FORMAT === "jpeg"; await page.screenshot(jpg ? { path: path.join(outDir, `${name}.jpg`), type: "jpeg", quality: 60 } : { path: path.join(outDir, `${name}.png`) });
