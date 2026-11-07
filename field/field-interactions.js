@@ -8,7 +8,14 @@
    ------------------------------------------------------------ */
 async function fieldInteract(o) {
   if (fieldState.lock) return;
-  if (o.kind === "npc" || o.kind === "sign") { await fieldPlayScene(o.scene); return; }
+  if (o.kind === "npc" || o.kind === "sign") {
+    await fieldPlayScene(o.scene);
+    if (o.sideEvents && typeof fieldRunNpcSideEvents === "function") await fieldRunNpcSideEvents(o);   // [SIDE]（Claude B）
+    return;
+  }
+  if (o.kind === "event") { if (typeof fieldRunSideEvent === "function") await fieldRunSideEvent(o.event, o); return; }   // [SIDE]（Claude B）
+  if (o.kind === "door" && !o.puzzle) { await fieldDoorInteract(o); return; }   // [DOOR] field/field-puzzles.js
+  if (o.kind === "switch" || o.kind === "door" || o.kind === "cache") { await fieldPuzzleInteract(o); return; }   // [PUZZLE] field/field-puzzles.js
   if (o.kind === "save") { await fieldUseSavePoint(o); return; }
   if (o.kind === "chest") { await fieldOpenChest(o); return; }
   if (o.kind === "gather") { await fieldGather(o); return; }
@@ -530,14 +537,18 @@ function fieldSetupRetreatChoice() {
   // script.js 側のクリック処理（ダイアログを開く）より後に整えるため、1拍おいてから書き換える
   btn.addEventListener("click", () => setTimeout(() => {
     const enc = !!battleState.encounterMode && !dlg.hidden;
-    if (title) title.innerHTML = enc ? "どうしますか？" : original.title;
-    if (text) text.innerHTML = enc ? "<strong>逃げる</strong>：迷宮に戻って探索を続けます。<br><strong>ホームへ帰還</strong>：迷宮を出てホームに戻ります。<br>どちらも今回の戦闘報酬は獲得できません。" : original.text;
-    if (yes) yes.textContent = enc ? "逃げる" : original.yes;
+    // 脚封じ：世界樹の迷宮（HD版）と同じく、迷宮の戦闘から逃げられない（判定は battle-ext.js の extEscapeBlocked）
+    const legBound = enc && typeof extEscapeBlocked === "function" && extEscapeBlocked();
+    if (title) title.innerHTML = legBound ? "逃げられない！" : enc ? "どうしますか？" : original.title;
+    if (text) text.innerHTML = legBound ? "脚を封じられた仲間がいるため、逃げることもホームへ帰還することもできません。<br>脚封じを治すか、戦って切り抜けましょう。"
+      : enc ? "<strong>逃げる</strong>：迷宮に戻って探索を続けます。<br><strong>ホームへ帰還</strong>：迷宮を出てホームに戻ります。<br>どちらも今回の戦闘報酬は獲得できません。" : original.text;
+    if (yes) { yes.textContent = enc ? "逃げる" : original.yes; yes.hidden = legBound; }
     if (no) no.textContent = enc ? "戦う" : original.no;
-    if (home) home.hidden = !enc;
+    if (home) home.hidden = !enc || legBound;
   }, 0));
   home?.addEventListener("click", () => {
     if (!battleState.encounterMode) return;
+    if (typeof extEscapeBlocked === "function" && extEscapeBlocked()) return;   // 脚封じ中は帰還もできない
     battleEmit("end", { result: "retreat" });
     dlg.hidden = true; battleStartSnapshot = null; battleState.busy = true;
     battleState.encounterMode = false; battleState.fieldEnemyId = null; battleState.fieldFoeKey = null;
@@ -545,3 +556,4 @@ function fieldSetupRetreatChoice() {
     fieldLeaveToHome("迷宮から撤退し、ホームに戻りました。");
   });
 }
+
