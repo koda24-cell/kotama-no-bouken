@@ -2,3 +2,57 @@
    css/12-ui-screens.css — UI全面改修：ホーム・編成・ショップ・強化育成・設定・図鑑・実績 — Phase 4（Claude B）
    共通の変数・ヘッダーは css/09-ui-base.css。画面ごとの切り替えは body[data-screen]。
    ============================================================ */
+
+/* 共通：一般画面のパネル・見出し（担当画面だけに効かせる） */
+:root { --p4-panel: #0c1650; --p4-panel-2: #111d5c; --p4-line: #5f6fb8; --p4-line-strong: #c9b25a; --p4-sel: #ffe18a; --p4-up: #7be495; --p4-down: #ff7b7b; }
+body:is([data-screen="home"],[data-screen="formation"],[data-screen="shop"],[data-screen="training"],[data-screen="settings"],[data-screen="compendium"],[data-screen="achievements"]) .section-title { margin: 10px 0 6px !important; }
+/* 緑のボタンの発光（style.css の green-radial-burst：scale 1.38）が幅の広いボタンで横にはみ出すのを画面内で切る（スクロール領域は作らない） */
+#home, #formation, #shop, #training, #settings, #compendium, #achievements { overflow-x: clip; }
+.p4-panel, .home-party-panel, .home-facilities { padding: 10px; border: 1px solid var(--p4-line); border-radius: var(--ui-radius); background: var(--p4-panel); min-width: 0; }
+
+/* ============================== ホーム ============================== */
+#home .home-title-logo { font-size: clamp(22px, 6vw, 36px) !important; margin: 2px auto 8px !important; }
+.home-layout { display: grid; gap: var(--ui-gap); min-width: 0; }
+.home-party-panel .section-title { margin: 0 0 8px !important; }
+.home-link { min-height: 32px; padding: 0 10px; border: 1px solid var(--p4-line); border-radius: 6px; background: transparent; color: var(--gold); font-size: var(--ui-text-s); white-space: nowrap; }
+#home-party.home-party { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ui-gap); min-height: 0 !important; padding: 0 !important; border: 0 !important; background: none !important; align-items: stretch; }
+#home-party .home-character { display: grid; grid-template-columns: 52px minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 8px; row-gap: 4px; align-items: center; width: auto !important; min-width: 0; padding: 8px !important; border: 1px solid var(--p4-line) !important; border-radius: var(--ui-radius); background: linear-gradient(#151f66, #0d1449) !important; text-align: left; }
+#home-party .character-art { grid-column: 1; grid-row: 1 / 3; height: 60px !important; width: 52px; border-radius: 6px; background: radial-gradient(ellipse at 50% 80%, #2c2a6a, #090d33); }
+#home-party .character-art img { object-fit: contain; }
+#home-party .home-character-body { display: contents; }
+#home-party h3 { grid-column: 2; align-self: end; display: flex; align-items: center; gap: 4px; margin: 0 !important; font-size: 14px !important; color: var(--gold); white-space: nowrap; min-width: 0; }
+#home-party .home-character-job { grid-column: 2; grid-row: 2; align-self: start; }
+#home-party .home-character-vitals, #home-party .home-character-gear { grid-column: 1 / -1; }
+.home-character-name { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.home-character-job { margin: 0 0 2px !important; font-size: 11px !important; color: var(--dim) !important; }
+.home-character-vitals { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 0; }
+.home-character-vitals div { display: flex; justify-content: space-between; align-items: baseline; gap: 4px; padding: 1px 6px; border-radius: 4px; background: #070c33; white-space: nowrap; }
+.home-character-vitals dt { font-size: 10px; color: var(--dim); }
+.home-character-vitals dd { margin: 0; font-size: 13px; font-weight: 700; }
+.home-character-vitals .is-hp dd { color: var(--hp); }
+.home-character-vitals .is-sp dd { color: var(--mp); }
+.home-character-gear { display: grid; gap: 1px; margin: 0 !important; font-size: 10px !important; color: #cdd5f5 !important; }
+.home-character-gear span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.home-character-gear i { font-style: normal; color: var(--dim); margin-right: 4px; }
+#home .home-actions { display: grid; justify-items: center; gap: 4px; margin: 0 !important; }
+#home #start-button { width: min(100%, 360px); min-height: 56px; }
+#home #start-warning:empty { display: none; }
+.home-facilities-title { margin: 0 0 8px; font-size: 15px; color: var(--gold); }
+.home-facility-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: var(--ui-gap); }
+.home-facility { display: grid !important; gap: 2px; justify-items: start; min-height: var(--ui-tap); width: 100% !important; margin: 0 !important; padding: 8px 10px !important; text-align: left; }
+.home-facility strong { font-size: 14px; }
+.home-facility small { font-size: 10px; color: var(--dim); font-weight: 400; }
+#event-gallery.event-gallery { margin: 8px 0 0 !important; max-width: none !important; gap: 6px; }
+.event-gallery-title { margin: 0; font-size: 14px; color: var(--gold); }
+#event-gallery article { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 8px; padding: 8px 10px !important; }
+#event-gallery article p { margin: 0; font-size: 11px; color: var(--dim); white-space: nowrap; }
+#event-gallery article.is-unread p { color: var(--gold); }
+#event-gallery article button { min-height: 36px; margin: 0; padding: 0 12px; }
+@media (min-width: 701px) {
+  #home-party.home-party { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #home-party .home-character { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; text-align: center; padding: 10px !important; }
+  #home-party .character-art { grid-row: auto; width: 100%; height: 150px !important; }
+  #home-party h3, #home-party .home-character-job { grid-column: 1; grid-row: auto; justify-content: center; }
+  .home-character-gear { text-align: left; }
+  .home-layout { max-width: 1100px; margin: 0 auto; }
+}

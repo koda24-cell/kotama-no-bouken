@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="./css/09-ui-base.css?v=20261107-30">
   <link rel="stylesheet" href="./css/10-ui-field.css?v=20261107-30">
   <link rel="stylesheet" href="./css/11-ui-battle.css?v=20261107-30">
-  <link rel="stylesheet" href="./css/12-ui-screens.css?v=20261107-30">
+  <link rel="stylesheet" href="./css/12-ui-screens.css?v=20261107-60">
   <script src="./data/battle-rules.js?v=20261106-11" defer></script>
   <script src="./data/progression.js?v=20261106-11" defer></script>
   <script src="./data/skill-trees.js?v=20261106-11" defer></script>
@@ -82,21 +82,33 @@
       <!-- ホーム -->
       <section id="home" class="screen active">
         <div class="page-heading">
-
-
           <p>仲間を編成して、モンスターとの戦いに挑もう。</p>
         </div>
 
         <div class="home-title-logo" role="img" aria-label="コタマのぼうけん">コタマのぼうけん</div>
-        <div id="home-party" class="home-party"></div>
+        <div class="home-layout">
+          <section class="home-party-panel" aria-labelledby="home-party-title">
+            <div class="section-title"><h2 id="home-party-title">パーティ</h2><button type="button" class="home-link" data-screen="formation">編成を変更 ›</button></div>
+            <div id="home-party" class="home-party"></div>
+          </section>
 
-        <div class="home-actions">
-          <button id="start-button" class="primary-button">
-            START
-          </button>
-          <p id="start-warning" class="warning" role="alert"></p>
-          <button id="event-gallery-button" class="secondary-button">冒険の記録</button>
-          <section id="event-gallery" class="event-gallery" hidden></section>
+          <div class="home-actions">
+            <button id="start-button" class="primary-button">
+              START
+            </button>
+            <p id="start-warning" class="warning" role="alert"></p>
+          </div>
+
+          <!-- 拠点の施設：将来の施設（宿・交易所など）はここに .home-facility を足す -->
+          <section class="home-facilities" aria-labelledby="home-facilities-title">
+            <h2 id="home-facilities-title" class="home-facilities-title">拠点</h2>
+            <div class="home-facility-list">
+              <button id="event-gallery-button" class="secondary-button home-facility" type="button"><strong>冒険の記録</strong><small>これまでの物語を読み返す</small></button>
+              <button class="secondary-button home-facility" type="button" data-screen="compendium"><strong>モンスター図鑑</strong><small>出会った敵の記録</small></button>
+              <button class="secondary-button home-facility" type="button" data-screen="achievements"><strong>実績</strong><small>達成した記録と目標</small></button>
+            </div>
+            <section id="event-gallery" class="event-gallery" hidden></section>
+          </section>
         </div>
       </section>
 
