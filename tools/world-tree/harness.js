@@ -18,7 +18,7 @@ function load(repo) {
   ctx.globalThis = ctx;
   vm.createContext(ctx);
   const run = f => vm.runInContext(fs.readFileSync(path.join(repo, f), "utf8").replace(/^"use strict";/, "").replace(/^const (\w+)/gm, "var $1").replace(/^let (\w+)/gm, "var $1"), ctx, { filename: f });
-  run("data/field-maps.js"); run("field.js");
+  run("data/field-maps.js"); if (fs.existsSync(path.join(repo, "data/field-gathering.js"))) run("data/field-gathering.js"); run("field.js");
   ctx.__events = events;
   return ctx;
 }
