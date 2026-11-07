@@ -66,6 +66,7 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   });
 
   const floorCells = snapshot.cells.filter(cell => cell.floorVisible);
+  const wallCells = snapshot.cells.filter(cell => cell.solid);
   const dirtCells = floorCells.filter(cell => cell.terrain === "grass" || cell.terrain === "floor");
   const stoneCells = floorCells.filter(cell => cell.terrain !== "grass" && cell.terrain !== "floor");
   const floorMesh = stoneCells.length
