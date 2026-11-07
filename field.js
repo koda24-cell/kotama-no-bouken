@@ -427,6 +427,8 @@ function fieldUpdateDanger() {
   const lv = r < .35 ? 0 : r < .6 ? 1 : r < .8 ? 2 : r < .92 ? 3 : 4;
   const labels = ["安全", "注意", "警戒", "危険", "非常に危険"];
   if (el.dataset.level !== String(lv)) { el.dataset.level = String(lv); }
+  const screen = $("field");
+  if (screen && screen.dataset.dangerLevel !== String(lv)) screen.dataset.dangerLevel = String(lv);
   el.textContent = `危険度：${labels[lv]}`;
   el.title = `ランダムエンカウント ${labels[lv]}`;
   el.setAttribute("aria-label", `ランダムエンカウントの危険度：${labels[lv]}`);

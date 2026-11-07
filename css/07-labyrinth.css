@@ -1262,3 +1262,26 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   .field-floor-label{min-height:19px;padding:2px 6px;font-size:11px}
   .field-floor-label::before{margin-right:4px;font-size:6px}
 }
+
+
+/* Encounter danger atmosphere: the labyrinth frame subtly warns as danger rises. */
+.field-viewport{transition:border-color .3s ease,box-shadow .3s ease}
+.field-screen[data-danger-level="2"] .field-viewport{
+  border-color:#b99a4d;
+  box-shadow:inset 0 0 0 3px #111d28,inset 0 0 28px #c89a3022,0 5px 18px #0008;
+}
+.field-screen[data-danger-level="3"] .field-viewport{
+  border-color:#d47736;
+  box-shadow:inset 0 0 0 3px #24170f,inset 0 0 42px #e65b1d35,0 5px 18px #0008;
+}
+.field-screen[data-danger-level="4"] .field-viewport{
+  animation:field-encounter-atmosphere .9s ease-in-out infinite alternate;
+}
+@keyframes field-encounter-atmosphere{
+  from{border-color:#9e343b;box-shadow:inset 0 0 0 3px #281116,inset 0 0 30px #a51d2b38,0 5px 18px #0008}
+  to{border-color:#ed7770;box-shadow:inset 0 0 0 3px #351016,inset 0 0 54px #ed263b55,0 5px 18px #0008}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-viewport{transition:none!important}
+  .field-screen[data-danger-level="4"] .field-viewport{animation:none!important;border-color:#c85a61;box-shadow:inset 0 0 0 3px #281116,inset 0 0 38px #a51d2b44,0 5px 18px #0008}
+}
