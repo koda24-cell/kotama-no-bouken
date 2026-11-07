@@ -46,17 +46,33 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   // Vertex colors tint the six box faces by orientation without creating six
   // materials per wall. Instanced color still provides stable cell variation.
   addFaceShading(THREE, wallGeometry, options.wallFaceShading);
+  const textures = options.proceduralTextures?.maps || options.proceduralTextures || {};
+  const stoneMaps = textures.stone || {};
+  const dirtMaps = textures.dirt || {};
   const floorMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true
+    color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true,
+    map: stoneMaps.map || null, normalMap: stoneMaps.normalMap || null,
+    roughnessMap: stoneMaps.roughnessMap || null
+  });
+  const dirtFloorMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true,
+    map: dirtMaps.map || null, normalMap: dirtMaps.normalMap || null,
+    roughnessMap: dirtMaps.roughnessMap || null
   });
   const wallMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, roughness: options.wallRoughness ?? 0.88, vertexColors: true
+    color: 0xffffff, roughness: options.wallRoughness ?? 0.88, vertexColors: true,
+    map: stoneMaps.map || null, normalMap: stoneMaps.normalMap || null,
+    roughnessMap: stoneMaps.roughnessMap || null
   });
 
   const floorCells = snapshot.cells.filter(cell => cell.floorVisible);
-  const wallCells = snapshot.cells.filter(cell => cell.solid);
-  const floorMesh = floorCells.length
-    ? new THREE.InstancedMesh(floorGeometry, floorMaterial, floorCells.length)
+  const dirtCells = floorCells.filter(cell => cell.terrain === "grass" || cell.terrain === "floor");
+  const stoneCells = floorCells.filter(cell => cell.terrain !== "grass" && cell.terrain !== "floor");
+  const floorMesh = stoneCells.length
+    ? new THREE.InstancedMesh(floorGeometry, floorMaterial, stoneCells.length)
+    : null;
+  const dirtFloorMesh = dirtCells.length
+    ? new THREE.InstancedMesh(floorGeometry, dirtFloorMaterial, dirtCells.length)
     : null;
   const wallMesh = wallCells.length
     ? new THREE.InstancedMesh(wallGeometry, wallMaterial, wallCells.length)
@@ -88,7 +104,8 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     group.add(mesh);
   }
 
-  placeInstances(floorMesh, floorCells, "floor");
+  placeInstances(floorMesh, stoneCells, "floor");
+  placeInstances(dirtFloorMesh, dirtCells, "floor");
   placeInstances(wallMesh, wallCells, "wall");
 
   const baseGeometry = new THREE.BoxGeometry(snapshot.area.worldWidth, 0.2, snapshot.area.worldDepth);
@@ -101,8 +118,8 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   group.add(base);
 
   group.userData.kotama3d = {
-    floorMesh, wallMesh, floorGeometry, wallGeometry,
-    floorMaterial, wallMaterial, base
+    floorMesh, dirtFloorMesh, wallMesh, floorGeometry, wallGeometry,
+    floorMaterial, dirtFloorMaterial, wallMaterial, base
   };
 
   function dispose() {
