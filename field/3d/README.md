@@ -131,3 +131,28 @@ scene.remove(objectLayer.group);
 - `placedKeys` と `skipped` で配置結果を確認できる。
 - `dispose()` はこのレイヤーが生成したプレースホルダーのGeometry/Materialのみ破棄する。GLB由来の共有リソースは破棄しない。
 - オブジェクトの高さ・向き・壁面配置は素材ごとに調整が必要。現在のfallbackは位置・種類確認用の箱形状。
+
+
+## 床・壁の材質と面ごとの陰影
+
+`field-3d-world.js` は、セルのterrainに応じて床色を切り替え、壁BoxGeometryの頂面・側面・下面に頂点カラーを設定する。InstancedMeshのセル単位の色変化と組み合わせ、面ごとの陰影を少ないMaterial数で表現する。
+
+```js
+const world = buildField3DWorld(THREE, snapshot, {
+  palette: {
+    floor: 0x59665a,
+    path: 0x756c52,
+    grass: 0x405d3d,
+    safe: 0x777b62,
+    wall: 0x39483f,
+    hazard: 0x274d59
+  },
+  wallFaceShading: { top: 1.16, side: 0.82, underside: 0.68 },
+  floorRoughness: 0.96,
+  wallRoughness: 0.88
+});
+```
+
+- 面ごとの色差は頂点カラーで表現し、壁ごとにMaterialを増やさない。
+- セルごとの色変化は座標由来の固定値で、再読み込み後も同じ色になる。
+- 現状は色・粗さによる仮材質。PBRテクスチャ、法線マップ、実素材の凹凸はGLB/テクスチャ制作後に追加する。
