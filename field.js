@@ -139,7 +139,7 @@ function fieldExplored(a = fieldArea()) {
 }
 function fieldOpaque(a, tx, ty) { const c = fieldTileAt(a, tx, ty); return c === "#" || fieldWallLike(a, c); }
 // [PUZZLE] 壁に付いた物・開く前の隠し通路は、壁として描画し、視界もさえぎる
-function fieldWallLike(a, c) { const o = fieldLetterDef(a, c); return !!o && (o.onWall || (o.kind === "door" && o.hidden && !fieldDoorOpen(o))); }
+function fieldWallLike(a, c) { const o = fieldLetterDef(a, c); return !!o && (o.onWall || (o.kind === "door" && !fieldDoorOpen(o))); }
 // 2マス間の見通し（間に壁があれば見えない。終点の壁そのものは見える）
 function fieldLos(a, x0, y0, x1, y1) {
   let dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx + dy, x = x0, y = y0;
