@@ -30,7 +30,7 @@
 - `field/field-persistence.js`：探索セーブ／ロード
 - `field/field-navigation.js`：探索画面の出入り・階層選択
 
-Claude A/Bの旧PRはmonolithicな `field.js` を前提にしているため、現行モジュールへ移植する。旧 `field.js` をそのまま置き換えない。
+旧PR #94/#95 はmonolithicな `field.js` を前提にした参照用ブランチとして残す。現行への再移植は新PR #99/#100で完了。旧 `field.js` をそのまま置き換えない。
 
 ## テスト状況
 - 主要JavaScript 13ファイル：構文チェック済み。
