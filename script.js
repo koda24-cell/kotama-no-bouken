@@ -1088,7 +1088,7 @@ async function applyPartyDamageAnimated(character,damage,options={}){
       character=knight;
     }
   }
-  if(!options.sureHit&&Math.random()<partyEvasionRate(character)){
+  if(!options.sureHit&&Math.random()<partyEvasionRate(character)*extEvasionMul(character)){// [EXT] 脚封じ中は回避できない
     pushEvent(`${character.name}は攻撃を回避した！`);
     extEmitDamage(character.id,"party",0,{hpAfter:character.hp,ko:false,missed:true});// [EVT]
     renderBattle();
@@ -1152,6 +1152,7 @@ function livingEnemyTargets(enemy){
 }
 function applyDamageToEnemyTarget(enemy,target,amount){
   if(!target||!target.ref||amount<=0)return 0;
+  amount=extEnemyDamageTakenMul(enemy,target,amount);// [EXT] 睡眠中は被ダメージ増
   const value=Math.max(0,Math.floor(amount));
   if(target.kind==="clone")animateEnemyIcons(target);
   if(target.kind==="main")return applyDamageToEnemy(enemy,value);
@@ -1173,6 +1174,7 @@ function applyDamageToEnemyTarget(enemy,target,amount){
   return 0;
 }
 function applyDamageToEnemy(enemy,amount){
+  amount=extEnemyDamageTakenMul(enemy,null,amount);// [EXT] 睡眠中は被ダメージ増
   const unit=enemy&&enemy.members?enemy.members.find(m=>m.hp>0)||null:null;// [EVT] ダメージを受ける個体（倒れる前に確定しておく）
   const dealt=applyDamageToEnemyCore(enemy,amount);
   if(enemy&&amount>0)extEmitDamage(unit?unit.id:"enemy","enemy",dealt,{hpAfter:unit?unit.hp:enemy.hp,ko:unit?unit.hp<=0:enemy.hp<=0});// [EVT]
@@ -1271,7 +1273,7 @@ function unionSkillDescription(c,u){const details={stun:"敵単体に大ダメ�
 // [P5-4] 使用できないコマンドは disabled にせず灰色表示にし、タップで理由を説明欄に出す。
 // 判定条件は従来の disabled と同じ。disabled はチュートリアルのロック専用に残す（tutorialSyncCommandLock）。
 const SKILL_RESTRICTED_REASON="装備適性がないため、SPスキルを使えません。";
-function skillUnavailableReason(actor,s){if(actor.sp<s.cost)return `SPが足りません（必要 ${s.cost}／残り ${actor.sp}）。`;if(s.hpCost&&actor.hp<=s.hpCost)return `HPが足りません（必要 ${s.hpCost}）。`;if(s.disabled)return "再使用待機中です。";if(extSkillBlocked(actor,s))return "オーバーヒート中のため使えません。";return "";}
+function skillUnavailableReason(actor,s){if(actor.sp<s.cost)return `SPが足りません（必要 ${s.cost}／残り ${actor.sp}）。`;if(s.hpCost&&actor.hp<=s.hpCost)return `HPが足りません（必要 ${s.hpCost}）。`;if(s.disabled)return "再使用待機中です。";{const sealed=extSkillSealReason(actor,s);if(sealed)return sealed;}/* [EXT] 封じ */if(extSkillBlocked(actor,s))return "オーバーヒート中のため使えません。";return "";}
 function unavailableAttrs(reason){return reason?` aria-disabled="true" data-unavailable-reason="${esc(reason)}"`:"";}
 function unavailableNote(reason){return reason?esc(`　【使用不可】${reason}`):"";}
 document.addEventListener("click",e=>{const b=e.target.closest?.('#battle-commands .command-option[aria-disabled="true"]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();setCommandDescription(b.dataset.unavailableReason||"今は使えません。");sound("error");},true);
@@ -1420,6 +1422,7 @@ async function executeTurn(){
       if(livingParty().length===0)break;
       battleState.actingIds=[];
       checkBossTransformation(battleState.enemy);
+      if(useRound&&await extEnemyAilmentTurn(battleState.enemy)){renderBattle();await wait(700);continue;}// [EXT] 睡眠・混乱
       if(useRound&&extEnemyParalyzed(battleState.enemy)){pushEvent(`${battleState.enemy.name}は麻痺して動けない！`);renderBattle();await wait(700);continue;}
       extEmitEnemyActionStart();// [EVT]
       await enemyTurn();
@@ -1435,6 +1438,7 @@ async function executeTurn(){
     const actor=getCharacter(action.actor);
     if(!actor||actor.hp<=0||battleState.consumedActors.includes(action.actor))continue;
     if(isActionIncapacitated(actor)){extCancelCharge(actor);consumeIncapacitatedTurn(actor);continue;}
+    if(useRound&&await extPartyAilmentTurn(actor,action))continue;// [EXT] 睡眠・混乱・封じ
     if(useRound&&extPartyParalyzed(actor)){extCancelCharge(actor);pushEvent(`${actor.name}は麻痺して動けない！`);renderBattle();await wait(600);continue;}
     battleState.actingIds=[action.actor,...(action.partner?[action.partner]:[])];renderBattle();
     extEmitActionStart(extActionInfo(action));// [EVT]
