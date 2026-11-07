@@ -38,7 +38,7 @@ function makeSurface(kind, size, seed) {
     for (let x = 0; x < size; x += 1) {
       const i = y * size + x;
       const n = periodicNoise(x, y, size, seed);
-      const fine = hash(x, y, seed) - 0.5;
+      const fine = Math.sin((x / size) * Math.PI * 34 + seed) * Math.cos((y / size) * Math.PI * 38 + seed * 0.7) * 0.5;
       const broad = periodicNoise(x, y, size / 4, seed + 11);
       let height = 0.5 + n * 0.16 + broad * 0.12 + fine * 0.06;
 
@@ -49,7 +49,7 @@ function makeSurface(kind, size, seed) {
         const chipped = hash(Math.floor(x / 8), Math.floor(y / 8), seed + 5) > 0.982 ? 0.14 : 0;
         height -= joint * 0.16 + chipped;
       } else {
-        const pebble = hash(Math.floor(x / 5), Math.floor(y / 5), seed + 19) > 0.91 ? 0.12 : 0;
+        const pebble = periodicNoise(x, y, size / 8, seed + 19) > 0.78 ? 0.08 : 0;
         height += pebble;
       }
       heights[i] = Math.max(0, Math.min(1, height));
@@ -86,7 +86,8 @@ function makeSurface(kind, size, seed) {
       normalImage.data[ni + 1] = (ny / length * 0.5 + 0.5) * 255;
       normalImage.data[ni + 2] = (1 / length * 0.5 + 0.5) * 255;
       normalImage.data[ni + 3] = 255;
-      const rough = stone ? 205 + (hash(x, y, seed + 31) - 0.5) * 32 : 232 + (hash(x, y, seed + 37) - 0.5) * 22;
+      const roughNoise = periodicNoise(x, y, size / 6, seed + 31);
+      const rough = stone ? 205 + roughNoise * 16 : 232 + roughNoise * 11;
       roughImage.data[ni] = roughImage.data[ni + 1] = roughImage.data[ni + 2] = rough;
       roughImage.data[ni + 3] = 255;
     }
