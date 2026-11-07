@@ -31,6 +31,10 @@ button:active{background:#526b46}
 <script>window.__KOTAMA_FIELD_AREAS__=FIELD_AREAS;window.__KOTAMA_FIELD_ENEMIES__=FIELD_ENEMIES;</script>
 <script type="module">
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+import {GLTFLoader} from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js";
+import {loadField3DAssets} from "../field/3d/field-3d-asset-loader.js";
+import {configureField3DMaterials} from "../field/3d/field-3d-materials.js";
+import {buildField3DObjectLayer} from "../field/3d/field-3d-object-layer.js";
 import {buildField3DSnapshot} from "../field/3d/field-3d-grid-adapter.js";
 import {buildField3DWorld} from "../field/3d/field-3d-world.js";
 import {buildField3DAtmosphere} from "../field/3d/field-3d-atmosphere.js";
@@ -48,7 +52,21 @@ const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.08,42);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
 const quality=resolveField3DQualityPreset({profile:"mobile",devicePixelRatio, maxTextureSize:renderer.capabilities.maxTextureSize});
 applyField3DQualityPreset(renderer,quality);renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;host.appendChild(renderer.domElement);
-let layers=[],snapshot=null,grid=[],player={x:1,y:1,dir:0},mapInfo=null;
+let layers=[],snapshot=null,grid=[],player={x:1,y:1,dir:0},mapInfo=null,loadedAssets={};
+const ASSET_KEYS={landmark:{brokenColumn:"brokenColumnA",ancientArch:"ancientArchA",rootCurtain:"wallRootA"},decoration:{moss:"mossClusterA",fern:"fernA",glowPlant:"glowPlantA",root:"wallRootA"}};
+async function loadB1FAssets(){
+ const manifestUrl=new URL("../assets/field-3d/b1/manifest.json",import.meta.url);
+ try{
+  const response=await fetch(manifestUrl);if(!response.ok)throw new Error("manifest HTTP "+response.status);
+  const manifest=await response.json();
+  const result=await loadField3DAssets({GLTFLoader,manifest:manifest.assets||{},baseUrl:manifestUrl.href,
+   onProgress:({key,status:assetStatus,completed,total})=>{status.textContent="GLB素材 "+completed+"/"+total+" ("+key+": "+assetStatus+")";},
+   onAssetError:({key,url,error})=>console.warn("[B1F GLB unavailable]",key,url,error)});
+  const profiles={stoneWallA:"stone",stoneFloorA:"stone",dirtFloorA:"dirt",wallRootA:"moss",ceilingRootA:"moss",brokenColumnA:"stone",ancientArchA:"stone",ancientDoorA:"stone",mossClusterA:"moss",fernA:"foliage",glowPlantA:"glow",fungusA:"glow",chestA:"metal",gatherA:"foliage",saveLampA:"glow"};
+  for(const [key,asset] of Object.entries(result.assets))configureField3DMaterials(THREE,asset.scene,{profile:profiles[key]||"stone",renderer,maxAnisotropy:quality.pixelRatio>1?4:2});
+  loadedAssets=result.assets;return result;
+ }catch(error){console.warn("[B1F GLB manifest unavailable; placeholders remain active]",error);return {assets:{},errors:[{key:"manifest",error}],loadedCount:0,completedCount:0,totalCount:0};}
+}
 const dirs=[{x:0,y:-1},{x:1,y:0},{x:0,y:1},{x:-1,y:0}];
 const mini=document.querySelector("#mini"),ctx=mini.getContext("2d");
 function clearScene(){for(const layer of layers){scene.remove(layer.group);layer.dispose?.();}layers=[];}
@@ -93,16 +111,19 @@ function loadFloor(index){
  const palette={floor:0x59644c,path:0x71654b,grass:0x38583b,safe:0x777c5a,wall:0x34463a,hazard:0x315d64};
  const world=buildField3DWorld(THREE,snapshot,{palette});scene.add(world.group);layers.push(world);
  const atmosphere=buildField3DAtmosphere(THREE,scene,{fogColor:layout.fogColor,fogDensity:layout.fogDensity,maxPixelRatio:quality.pixelRatio,keyPosition:[snapshot.area.worldWidth*.35,13,snapshot.area.worldDepth*.25],fillPosition:[snapshot.area.worldWidth*.7,5,snapshot.area.worldDepth*.7]});layers.push(atmosphere);
- const decor=buildField3DDecorationLayer(THREE,snapshot,{density:layout.decoration.density,maxPerKind:Math.min(layout.decoration.maxPerKind,quality.maxDecorationPerKind),rootDensity:layout.decoration.rootDensity,palette:layout.palette});scene.add(decor.group);layers.push(decor);
+ const decor=buildField3DDecorationLayer(THREE,snapshot,{density:layout.decoration.density,maxPerKind:Math.min(layout.decoration.maxPerKind,quality.maxDecorationPerKind),rootDensity:layout.decoration.rootDensity,palette:layout.palette,assets:loadedAssets,assetKeys:ASSET_KEYS.decoration});scene.add(decor.group);layers.push(decor);
  const placements=planField3DLandmarks(snapshot,{maxCount:Math.min(layout.landmarkLimit,quality.maxVisibleLandmarks),seed:layout.landmarkSeed,...layout.landmarkOptions});
- const landmarks=buildField3DLandmarkLayer(THREE,placements,{maxCount:quality.maxVisibleLandmarks});scene.add(landmarks.group);layers.push(landmarks);
- // Minimal map object and FOE markers, for spatial orientation only.
- const markerGroup=new THREE.Group();const mats={chest:0xe2bd62,gather:0x65c9a1,npc:0xd6b47c,event:0x9b83ce,door:0x9eafb2,foe:0xb94f45,other:0xb9c6a8};
- for(const o of snapshot.objects){if(o.hidden)continue;const m=new THREE.Mesh(new THREE.OctahedronGeometry(.42),new THREE.MeshStandardMaterial({color:mats[o.kind]||mats.other,emissive:0x101010}));m.position.set(o.world.x,.52,o.world.z);markerGroup.add(m);}
- for(const f of snapshot.foes){const m=new THREE.Mesh(new THREE.ConeGeometry(.55,1.45,7),new THREE.MeshStandardMaterial({color:mats.foe}));m.position.set(f.world.x,.72,f.world.z);markerGroup.add(m);}
+ const landmarkAssets={brokenColumn:loadedAssets.brokenColumnA,ancientArch:loadedAssets.ancientArchA,rootCurtain:loadedAssets.wallRootA};
+ const landmarks=buildField3DLandmarkLayer(THREE,placements,{assets:landmarkAssets,maxCount:quality.maxVisibleLandmarks});scene.add(landmarks.group);layers.push(landmarks);
+ // Game-object meshes use real GLB assets when present; placeholders remain for missing models.
+ const objectLayer=buildField3DObjectLayer(THREE,snapshot,{assets:{chest:loadedAssets.chestA,save:loadedAssets.saveLampA,gather:loadedAssets.gatherA},hideConcealed:true});
+ scene.add(objectLayer.group);layers.push(objectLayer);
+ // FOEs remain simple test markers; real enemy models are a later asset task.
+ const markerGroup=new THREE.Group();
+ for(const f of snapshot.foes){const m=new THREE.Mesh(new THREE.ConeGeometry(.55,1.45,7),new THREE.MeshStandardMaterial({color:0xb94f45}));m.position.set(f.world.x,.72,f.world.z);markerGroup.add(m);}
  scene.add(markerGroup);layers.push({group:markerGroup,dispose(){markerGroup.traverse(n=>{n.geometry?.dispose?.();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose();}});markerGroup.clear();}});
  mapInfo={objects:snapshot.objects.length,foes:snapshot.foes.length,decor:decor.counts,landmarks:landmarks.counts};
- title.textContent="はじまりの樹海・"+(index+1)+"F";status.textContent="壁 "+world.wallCount+" / 床 "+world.floorCount+" / 装飾 "+Object.values(decor.counts).reduce((a,b)=>a+b,0)+" / ランドマーク "+placements.length;
+ title.textContent="はじまりの樹海・"+(index+1)+"F";status.textContent="壁 "+world.wallCount+" / 床 "+world.floorCount+" / 装飾 "+Object.values(decor.counts).reduce((a,b)=>a+b,0)+" / ランドマーク "+placements.length+" / GLB "+Object.keys(loadedAssets).length+"種";
  placeCamera();drawMini();
 }
 function step(action){if(!snapshot)return;if(action==="left")player.dir=(player.dir+3)%4;else if(action==="right")player.dir=(player.dir+1)%4;else{const sign=action==="back"?-1:1,d=dirs[player.dir],nx=player.x+d.x*sign,ny=player.y+d.y*sign,cell=snapshot.cells.find(c=>c.tx===nx&&c.ty===ny);if(cell&&!cell.solid){player.x=nx;player.y=ny;}}placeCamera();drawMini();}
@@ -110,7 +131,9 @@ document.querySelectorAll("button[data-action]").forEach(b=>b.addEventListener("
 selector.addEventListener("change",()=>loadFloor(Number(selector.value)));
 addEventListener("keydown",e=>{const a={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"forward",ArrowDown:"back",a:"left",d:"right",w:"forward",s:"back"}[e.key];if(a){e.preventDefault();step(a);}});
 addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+const assetReport=await loadB1FAssets();
 loadFloor(0);
+status.textContent+=" (GLB "+assetReport.loadedCount+"/"+assetReport.totalCount+")";
 renderer.setAnimationLoop(()=>renderer.render(scene,camera));
 </script>
 </body></html>
