@@ -299,3 +299,60 @@ console.info(report.meshCount, report.materialCount, report.textureCount);
 利用可能なプロファイルは `stone`、`dirt`、`moss`、`foliage`、`glow`、`metal`。Base ColorとEmissiveテクスチャはsRGB、Normal/ORM系はGLTFLoader標準のNon-Color設定を維持する。テクスチャの異方性はRendererの上限を超えないよう制限する。
 
 この関数は素材を最適化・変換するものではなく、既存GLBのマテリアル値を調整する。元の素材を保管し、実機表示で過度な光沢・暗さ・発光にならないか確認すること。
+
+
+## B1F実マップ向け配置プランナー
+
+`field-3d-landmark-planner.js` は、`buildField3DSnapshot()` の結果から壁セルと隣接歩行セルを調べ、根・崩れた柱・古代アーチの候補を決定的に提案する。配置は壁セル側へ寄せ、プレイヤー・FOE・オブジェクトのセルを除外する。提案結果は表示用であり、マップデータに書き戻さない。
+
+```js
+import { planField3DLandmarks } from "./field/3d/field-3d-landmark-planner.js";
+import { buildField3DLandmarkLayer } from "./field/3d/field-3d-landmark-layer.js";
+
+const suggestions = planField3DLandmarks(snapshot, {
+  maxCount: layout.landmarkLimit,
+  seed: layout.landmarkSeed,
+  ...layout.landmarkOptions
+});
+const landmarks = buildField3DLandmarkLayer(THREE, suggestions, {
+  assets: loadedAssets.assets,
+  maxCount: layout.landmarkLimit
+});
+scene.add(landmarks.group);
+```
+
+## B1Fフロア別ビジュアルプロファイル
+
+`field-3d-b1-layout.js` は第1階層「はじまりの樹海」の1F〜3Fに、霧色・霧密度・装飾密度・ランドマーク上限・配置seed・植物色を割り当てる。
+
+```js
+import { getB1F3DLayoutFromSnapshot } from "./field/3d/field-3d-b1-layout.js";
+import { planField3DLandmarks } from "./field/3d/field-3d-landmark-planner.js";
+
+const layout = getB1F3DLayoutFromSnapshot(snapshot);
+if (layout) {
+  atmosphere.setFogDensity(layout.fogDensity);
+  const placements = planField3DLandmarks(snapshot, {
+    maxCount: layout.landmarkLimit,
+    seed: layout.landmarkSeed,
+    ...layout.landmarkOptions
+  });
+}
+```
+
+## 品質プリセット
+
+`field-3d-quality-presets.js` は `high` / `balanced` / `mobile` の初期値を提供する。これらは実測済み性能値ではない。iPhone Safariを含む実機測定前の保守的な出発点として扱い、GPU・発熱・フレーム時間を測定して調整する。
+
+```js
+import { resolveField3DQualityPreset, applyField3DQualityPreset } from "./field/3d/field-3d-quality-presets.js";
+
+const quality = resolveField3DQualityPreset({
+  profile: "mobile",
+  devicePixelRatio: window.devicePixelRatio,
+  maxTextureSize: renderer.capabilities.maxTextureSize
+});
+applyField3DQualityPreset(renderer, quality);
+```
+
+プランナーは壁セルの隣接関係を使うヒューリスティックであり、手作業による演出配置の代替ではない。採用前に各フロアのプレビューで視界・通行幅・重なりを確認し、必要なら候補を個別に除外・調整する。
