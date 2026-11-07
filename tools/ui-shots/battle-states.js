@@ -20,6 +20,7 @@ const path = require("path"), fs = require("fs");
     try { localStorage.clear(); } catch (e) {}
     try { tutorialFinish(); } catch (e) {} try { tutorialClose(); } catch (e) {} tutorialState.phase = "complete"; tutorialState.completed = true; tutorialState.started = false; try { syncTutorialActive(); } catch (e) {}
     document.querySelectorAll("#tutorial-overlay").forEach(el => el.hidden = true);
+    document.body.classList.remove("tutorial-home-focus", "tutorial-active");
     state.firstStageStarted = true; state.maxUnlockedStage = 5; state.gold = 1234;
     for (let i = 1; i <= 5; i++) { stageCleared[i] = true; stageEntered[i] = true; }
     for (const k of Object.keys(eventRead || {})) eventRead[k] = true; if (typeof stageEvents !== "undefined") stageEvents.forEach(e => eventRead[e.id] = true);
@@ -41,7 +42,8 @@ const path = require("path"), fs = require("fs");
     ["target", async () => { await click('#battle-commands [data-action="attack"]'); }],
     ["skill", async () => { await click('#battle-commands [data-action="back"]'); await waitReady(); await click('#battle-commands [data-action="skill"]'); }],
     ["item", async () => { await click('#battle-commands [data-action="back"]'); await waitReady(); await click('#battle-commands [data-action="item"]'); }],
-    ["union", async () => { await click('#battle-commands [data-action="back"]'); await page.evaluate(() => { for (const c of getParty()) battleState.unionGauges[c.id] = 99; battleState.party?.forEach?.(() => {}); renderBattle(); renderActionMenu(true); }); }],
+    ["ally-target", async () => { await page.evaluate(() => { getParty()[1].hp -= 40; getParty()[2].hp -= 20; renderBattle(); }); await click('#battle-commands [data-item]'); await page.evaluate(() => { const b = document.querySelector("#battle-commands [data-target]"); b?.dispatchEvent(new PointerEvent("pointerenter")); b?.classList.add("keyboard-focus"); }); }],
+    ["union", async () => { await click('#battle-commands [data-action="back"]'); await click('#battle-commands [data-action="back"]'); await page.evaluate(() => { for (const c of getParty()) battleState.unionGauges[c.id] = 99; battleState.party?.forEach?.(() => {}); renderBattle(); renderActionMenu(true); }); }],
     ["second-actor", async () => { await page.evaluate(() => { for (const c of getParty()) battleState.unionGauges[c.id] = 1; renderBattle(); renderActionMenu(true); }); await click('#battle-commands [data-action="guard"]'); await page.waitForTimeout(300); }],
     ["log", async () => { await click("#battle-log-open"); }],
     ["analyze-party", async () => { await click("#battle-log-close"); await click("#analyze-party-button"); }],
@@ -63,7 +65,9 @@ const path = require("path"), fs = require("fs");
       await fn();
       await page.waitForTimeout(500);
       if (only && !only.includes(name)) continue;
+      await closeStory();
       if (!name.startsWith("tutorial")) await hideTutorial();
+      await page.waitForTimeout(Number(process.env.SETTLE || 300));
       const m = await page.evaluate(() => {
         const W = innerWidth, H = innerHeight, over = [];
         for (const el of document.querySelectorAll("body *")) {
@@ -77,7 +81,8 @@ const path = require("path"), fs = require("fs");
         const spotEl = document.getElementById("tutorial-spotlight"); let spot = null;
         if (spotEl && !spotEl.hidden && typeof tutorialSpotlightTarget !== "undefined" && tutorialSpotlightTarget) { const a = spotEl.getBoundingClientRect(), t = tutorialSpotlightTarget.getBoundingClientRect(); spot = { target: (tutorialSpotlightTarget.id || tutorialSpotlightTarget.className), dx: Math.round(a.left + 7 - t.left), dy: Math.round(a.top + 7 - t.top), inView: t.top >= 0 && t.bottom <= H }; }
         const rect = sel => { const e = document.querySelector(sel); if (!e) return null; const r = e.getBoundingClientRect(); return r.height ? [Math.round(r.top), Math.round(r.bottom)] : null; };
-        return { scrollW: document.documentElement.scrollWidth, innerW: W, scrollH: document.documentElement.scrollHeight, innerH: H, overflowCount: over.length, overflow: over.slice(0, 6),
+        const cover = [...document.querySelectorAll("body *")].filter(el => { const cs = getComputedStyle(el); const r = el.getBoundingClientRect(); return (cs.position === "fixed" || cs.position === "absolute") && cs.display !== "none" && cs.visibility !== "hidden" && Number(cs.opacity) > 0 && r.width * r.height > W * H * .5; }).map(el => `${el.tagName.toLowerCase()}#${el.id}.${String(el.className).split(" ")[0]}`);
+        return { cover, scrollW: document.documentElement.scrollWidth, innerW: W, scrollH: document.documentElement.scrollHeight, innerH: H, overflowCount: over.length, overflow: over.slice(0, 6),
           cmdCount: btns.length, cmdBottom: last ? Math.round(H - last.bottom) : null, cmdScroll: box ? box.scrollHeight > box.clientHeight + 1 : null,
           rows: { arena: rect(".battle-arena"), event: rect(".event-window"), party: rect("#battle-party"), commands: rect(".command-window"), info: rect(".command-info-window"), result: rect("#battle-result") }, spot };
       });

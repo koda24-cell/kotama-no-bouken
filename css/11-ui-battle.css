@@ -1,4 +1,338 @@
 /* ============================================================
    css/11-ui-battle.css — UI全面改修：戦闘画面 — Phase 3（Claude C）
    共通の変数・ヘッダーは css/09-ui-base.css。画面ごとの切り替えは body[data-screen]。
+   仕様：docs/ui-overhaul/WORLD_TREE_UI_OVERHAUL_SPEC.md §5 ／ 調査：docs/ui-overhaul/PHASE0_SURVEY.md §4-3
+
+   方針
+   ・#battle を CSS グリッドにして、ページをスクロールさせずに1画面へ収める（ヘッダーの下の高さ全部を使う）。
+     .battle-bottom は display:contents にして、コマンド・説明・結果をグリッドに直接並べる（HTML の構造・ID は変えない）。
+   ・スマホ（〜700px）：見出し1行 → 敵（残りの高さ全部）→ メッセージ（細い帯）→ 味方 → コマンド｜説明。
+   ・PC（701px〜）：左に 見出し・敵・メッセージ・味方、右の列に コマンド（上）と説明（下）。
+   ・敵が複数（〜5体）：.enemy-group の各体が幅を分け合い、画像の高さは敵の枠の高さに合わせる（コンテナクエリ）。
+   ・味方が5人：.battle-party に5人目が入ると、上2・下3の2段（6列グリッドの2列ぶん／3列ぶん）になる。
+   ・チュートリアルの強調対象（#battle-party・#battle-enemy・.command-window・.command-info-window・.event-window・
+     #turn-counter・#battle-commands のボタン）は消さず、すべて画面内に表示する。
+   ・演出（被弾・撃破・カットイン・ボス演出）のクラスやアニメーションには触れない。
+   ・古い CSS（01・02・03・04・05・style.css）に !important が多いため、上書きに必要な箇所だけ !important を使う。
    ============================================================ */
+
+body[data-screen="battle"] {
+  --bt-gap: 6px;
+  --bt-cmd-h: clamp(200px, 34dvh, 300px);   /* スマホのコマンド・説明の段の高さ */
+  --bt-side-w: clamp(280px, 30vw, 380px);    /* PC の右列（コマンド・説明）の幅 */
+  --bt-gold: #ffe17b;
+}
+
+/* ---------- 画面の高さ：ヘッダーの下を戦闘画面が全部使う（ページは縦にスクロールしない） ---------- */
+body[data-screen="battle"] .game {
+  display: flex; flex-direction: column; gap: var(--bt-gap) !important;
+  height: calc(100vh - max(8px, var(--ui-safe-t)) - max(8px, var(--ui-safe-b)));
+  height: calc(100dvh - max(8px, var(--ui-safe-t)) - max(8px, var(--ui-safe-b)));
+  min-height: 0 !important;
+}
+body[data-screen="battle"] .game > .topbar { flex: 0 0 auto; margin-bottom: 0 !important; }
+/* 下のお知らせ欄（#system-message）：空のときは隠し、文があるときだけ細い1行で出す */
+body[data-screen="battle"] .game > .footer-controls { flex: 0 0 auto; min-height: 0; padding: 3px 8px; border-top: 0; font-size: 11px; }
+body[data-screen="battle"] .game > .footer-controls:has(#system-message:empty) { display: none; }
+body[data-screen="battle"] .game > .footer-controls #system-message { margin-right: 0; }
+body[data-screen="battle"] .game > main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+
+body[data-screen="battle"] #battle.battle-screen.active {
+  flex: 1 1 auto; min-height: 0;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  grid-template-rows: auto minmax(120px, 1fr) auto auto auto var(--bt-cmd-h);
+  grid-template-areas:
+    "head head"
+    "arena arena"
+    "event event"
+    "party party"
+    "imperial imperial"
+    "cmd info";
+  gap: var(--bt-gap);
+  width: 100% !important; max-width: 100% !important;
+  margin: 0 !important; padding: 0 !important;
+  overflow: hidden;
+}
+body[data-screen="battle"] #battle > * { margin: 0 !important; min-width: 0; }
+body[data-screen="battle"] #battle .battle-bottom { display: contents !important; }
+
+/* ---------- 見出し：1行（ステージ名・ターン）。BATTLE STAGE の文字は隠す ---------- */
+body[data-screen="battle"] #battle .battle-heading {
+  grid-area: head;
+  display: flex; align-items: baseline; flex-wrap: nowrap; gap: 8px;
+  min-height: 0; padding: 0 2px;
+}
+body[data-screen="battle"] #battle .battle-heading .eyebrow { display: none; }
+body[data-screen="battle"] #battle #stage-title {
+  margin: 0; font-size: 12px; line-height: 1.4; letter-spacing: .08em; color: var(--gold);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+body[data-screen="battle"] #battle #turn-counter {
+  margin: 0 0 0 auto !important; font-size: 12px; line-height: 1.4; white-space: nowrap; color: var(--gold);
+}
+
+/* ---------- 敵の枠：残りの高さを全部使う。画像は枠の高さに合わせて伸び縮みする ---------- */
+body[data-screen="battle"] #battle .battle-arena {
+  grid-area: arena;
+  min-height: 0 !important; height: auto;
+  padding: 26px 40px 6px !important;
+  border-width: 2px;
+  container-type: size; container-name: battle-arena;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+body[data-screen="battle"] #battle .stage-stars { display: none; }
+body[data-screen="battle"] #battle .enemy-display {
+  align-self: stretch; width: 100%; max-width: 560px; height: 100%; min-height: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+}
+/* 画像は残りの高さを全部使う（名前・HP・BREAK の帯の分を引いた高さ）。縦横比は保つ */
+body[data-screen="battle"] #battle .enemy-image {
+  flex: 1 1 0; min-height: 40px; height: auto !important; max-height: 360px !important;
+  width: 100% !important; max-width: 100% !important;
+  margin: 0 auto 2px; object-fit: contain; object-position: center bottom;
+}
+body[data-screen="battle"] #battle .enemy-placeholder { flex: 1 1 0; min-height: 40px; height: auto !important; max-height: 200px; }
+body[data-screen="battle"] #battle .enemy-display h2 { margin: 0 0 2px; font-size: 13px; line-height: 1.3; }
+body[data-screen="battle"] #battle .enemy-display > .hp-track { width: min(100%, 320px); height: 7px; margin: 1px auto 0; }
+body[data-screen="battle"] #battle .enemy-break-track { margin: 3px auto 0; height: 7px; }
+body[data-screen="battle"] #battle .enemy-break-track span { font-size: 9px; line-height: 1.3; }
+body[data-screen="battle"] #battle .enemy-status-list { margin: 2px 0; }
+/* 2回目以降の分析情報：敵の上に半透明で重ね、敵の画像を押し縮めない */
+body[data-screen="battle"] #battle .enemy-analysis {
+  position: absolute; z-index: 3; top: 26px; left: 8px; right: 44px; width: auto; margin: 0;
+  max-height: calc(100cqh - 90px); overflow: auto; padding: 4px 6px; opacity: .92;
+}
+
+/* 複数の敵（ゴブリンの群れ・分身・今後の2〜5体）：各体が幅を分け合う */
+body[data-screen="battle"] #battle .enemy-group {
+  flex: 1 1 0; width: 100%; min-height: 0; padding: 0; gap: clamp(2px, 1.5cqw, 14px);
+  display: flex; flex-wrap: nowrap; align-items: stretch; justify-content: center;
+}
+body[data-screen="battle"] #battle .enemy-group-unit,
+body[data-screen="battle"] #battle .wolf-enemy-group .wolf-unit {
+  flex: 0 1 150px; width: auto !important; min-width: 0; min-height: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+}
+body[data-screen="battle"] #battle .enemy-group-unit img,
+body[data-screen="battle"] #battle .wolf-enemy-group .wolf-unit img {
+  flex: 1 1 0; min-height: 30px; max-height: 220px; width: 100%; height: auto !important;
+  object-fit: contain; object-position: center bottom;
+}
+body[data-screen="battle"] #battle .enemy-group-unit > span { font-size: 10px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+body[data-screen="battle"] #battle .enemy-group-unit small { font-size: 9px; line-height: 1.2; }
+body[data-screen="battle"] #battle .enemy-unit-hp { height: 5px; margin: 2px auto 0; }
+
+/* 地域名の帯：左上に1行。右の LOG・敵・味方ボタンとは重ねない */
+body[data-screen="battle"] #battle .stage-environment-banner {
+  top: 4px; left: 6px; right: 44px; width: auto; transform: none;
+  justify-content: flex-start; padding: 2px 6px; gap: 6px; white-space: nowrap; overflow: hidden;
+}
+body[data-screen="battle"] #battle .stage-environment-banner span { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+/* LOG・敵・味方：右端に縦に並べる */
+body[data-screen="battle"] #battle .battle-log-open { top: 4px; right: 4px; padding: 4px 6px; font-size: 10px; min-width: 34px; }
+body[data-screen="battle"] #battle .analyze-tabs { top: 34px; right: 0; gap: 4px; }
+body[data-screen="battle"] #battle .analyze-tab-button { min-width: 30px; padding: 6px 4px; font-size: 10px; }
+
+/* ---------- メッセージ：細い帯（1〜2行） ---------- */
+body[data-screen="battle"] #battle .event-window {
+  grid-area: event; min-height: 0 !important; padding: 3px 6px !important; border-width: 2px;
+}
+body[data-screen="battle"] #battle .event-window .window-title { display: none; }
+body[data-screen="battle"] #battle .event-log {
+  min-height: calc(1.5em + 8px); max-height: calc(3em + 8px); padding: 4px 8px; font-size: 12px;
+}
+body[data-screen="battle"] #battle .event-log p { font-size: 12px; line-height: 1.5; }
+
+/* ---------- 味方：コンパクトなカード（4人は横1列、5人は上2・下3） ---------- */
+body[data-screen="battle"] #battle .battle-party {
+  grid-area: party;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 4px;
+}
+body[data-screen="battle"] #battle .battle-member {
+  padding: 3px 4px 4px !important; font-size: 9px !important; border-width: 2px; min-width: 0;
+}
+body[data-screen="battle"] #battle .battle-portrait { height: 26px !important; margin: -1px -2px 2px; }
+body[data-screen="battle"] #battle .battle-member .member-head { flex-wrap: wrap; justify-content: flex-start; gap: 0 3px; }
+body[data-screen="battle"] #battle .battle-member .member-head strong {
+  font-size: 10px !important; line-height: 1.25; min-width: 0; max-width: 100%; overflow-wrap: anywhere;
+}
+body[data-screen="battle"] #battle .battle-member .member-head .member-action-label {
+  flex-basis: 100%; text-align: left; font-size: 9px; min-height: 1.2em; line-height: 1.2;
+}
+body[data-screen="battle"] #battle .battle-gauge-label { margin-top: 1px; font-size: 9px; }
+body[data-screen="battle"] #battle .battle-gauge-label strong { font-size: 9px; }
+body[data-screen="battle"] #battle .battle-member .hp-track { height: 5px; margin: 1px 0 0; }
+body[data-screen="battle"] #battle .battle-member .sp-track { height: 4px; margin-top: 1px; }
+body[data-screen="battle"] #battle .union-mini { margin-top: 2px; font-size: 8px; line-height: 1.2; }
+body[data-screen="battle"] #battle .union-track { height: 3px; margin-top: 1px; }
+/* 行動を選んでいる味方：金の枠と光で強調 */
+body[data-screen="battle"] #battle .battle-member.active-turn {
+  border-color: var(--bt-gold) !important;
+  box-shadow: 0 0 0 1px var(--bt-gold), 0 0 10px #ffe17b88 !important;
+}
+/* 味方を対象に選ぶとき（回復など）、指している味方を強調（script.js の renderAllyMenu が付ける） */
+body[data-screen="battle"] #battle .battle-member.ally-target-highlight {
+  outline: 3px solid var(--bt-gold); outline-offset: 1px; filter: brightness(1.15);
+}
+/* 5人：上2・下3（6列グリッドで、上の2人は3列ぶん、下の3人は2列ぶん） */
+body[data-screen="battle"] #battle .battle-party:has(> .battle-member:nth-child(5)) { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+body[data-screen="battle"] #battle .battle-party:has(> .battle-member:nth-child(5)) > .battle-member { grid-column: span 2; }
+body[data-screen="battle"] #battle .battle-party:has(> .battle-member:nth-child(5)) > .battle-member:nth-child(-n+2) { grid-column: span 3; }
+/* 2段のときは顔を左、数値を右に置いて高さを抑える */
+body[data-screen="battle"] #battle .battle-party:has(> .battle-member:nth-child(5)) > .battle-member {
+  display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 4px; align-content: start;
+}
+body[data-screen="battle"] #battle .battle-party:has(> .battle-member:nth-child(5)) > .battle-member > * { grid-column: 2; }
+body[data-screen="battle"] #battle .battle-party:has(> .battle-member:nth-child(5)) > .battle-member > .battle-portrait {
+  grid-column: 1; grid-row: 1 / span 6; height: 100% !important; min-height: 30px; margin: 0;
+}
+body[data-screen="battle"] #battle .battle-party:has(> .battle-member:nth-child(5)) .union-mini { display: none; }
+
+body[data-screen="battle"] #battle .imperial-status-panel { grid-area: imperial; padding: 4px 8px; }
+
+/* ---------- コマンド：縦の一覧。枠の中だけスクロールし、画面外へは出さない ---------- */
+body[data-screen="battle"] #battle .command-window {
+  grid-area: cmd;
+  display: flex !important; flex-direction: column;
+  height: auto !important; min-height: 0 !important; max-height: none !important;
+  padding: 5px 6px !important; overflow: hidden !important; border-width: 2px;
+}
+body[data-screen="battle"] #battle #command-title {
+  flex: 0 0 auto; margin: 0 0 3px; font-size: 13px !important; line-height: 1.35;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+body[data-screen="battle"] #battle .battle-commands {
+  flex: 1 1 auto; min-height: 0 !important; height: auto !important; max-height: none !important;
+  overflow-y: auto !important; overflow-x: hidden !important; overscroll-behavior: contain;
+  gap: 2px; padding-right: 2px;
+}
+body[data-screen="battle"] #battle .battle-commands .command-option {
+  flex: 0 0 auto; flex-wrap: nowrap;
+  min-height: 34px !important; padding: 4px 6px !important; gap: 4px;
+  font-size: 14px !important; line-height: 1.25; border-left: 3px solid transparent; border-radius: 4px;
+}
+body[data-screen="battle"] #battle .battle-commands .command-option small {
+  max-width: 50%; font-size: 10px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* 選択中のコマンド：左の金の線＋背景で強調 */
+body[data-screen="battle"] #battle .battle-commands .command-option.keyboard-focus,
+body[data-screen="battle"] #battle .battle-commands .command-option.mouse-focus,
+body[data-screen="battle"] #battle .battle-commands .command-option:focus-visible,
+body[data-screen="battle"] #battle .battle-commands .command-option:active {
+  background: #ffffff22; color: var(--gold); border-left-color: var(--bt-gold);
+}
+body[data-screen="battle"] #battle .union-panel { margin-top: 3px; padding-top: 3px; }
+body[data-screen="battle"] #battle .union-panel .window-title { margin: 0 0 1px; font-size: 10px !important; letter-spacing: .08em; }
+body[data-screen="battle"] #battle .battle-commands .union-command { font-size: 13px !important; }
+body[data-screen="battle"] #battle .battle-commands .back-option { margin-top: 3px; font-size: 12px !important; }
+/* 対象選択中：コマンド選択とはっきり区別する（枠の色・見出しの印） */
+body[data-screen="battle"] #battle .command-window:has([data-enemy-target], [data-target]) {
+  animation: none; border-color: var(--bt-gold); box-shadow: 0 0 0 1px var(--bt-gold), 0 0 12px #ffe17b55, inset 0 0 0 2px var(--win-deep);
+}
+body[data-screen="battle"] #battle .command-window:has([data-enemy-target], [data-target]) #command-title::before {
+  content: "TARGET"; display: inline-block; margin-right: 6px; padding: 0 5px; border-radius: 3px;
+  background: var(--bt-gold); color: #1a1530; font-size: 10px; letter-spacing: .08em; vertical-align: 2px;
+}
+/* 補足の1行・常時の案内は、スマホでは説明欄と重複するので隠す（PC では表示） */
+body[data-screen="battle"] #battle .command-hint,
+body[data-screen="battle"] #battle .battle-support { display: none !important; }
+
+/* ---------- 説明欄：コマンドの横。長いときは枠の中だけスクロール ---------- */
+body[data-screen="battle"] #battle .command-info-window {
+  grid-area: info;
+  min-height: 0 !important; height: auto; padding: 5px 7px !important; overflow-y: auto; border-width: 2px;
+  overscroll-behavior: contain;
+}
+body[data-screen="battle"] #battle .command-info-window .window-title { margin-bottom: 2px; font-size: 10px; letter-spacing: .08em; }
+body[data-screen="battle"] #battle .command-description { margin: 0; font-size: 11px; line-height: 1.6; }
+
+/* ---------- 戦闘結果：コマンドと説明の段を使う。敵の枠は小さくして結果を広く見せる ---------- */
+body[data-screen="battle"] #battle .battle-result {
+  grid-column: 1 / -1; grid-row: 6;
+  min-height: 0 !important; margin: 0 !important; padding: 8px 10px !important;
+  overflow-y: auto; justify-content: flex-start !important;
+}
+body[data-screen="battle"] #battle:has(> .battle-bottom.result-shown) {
+  grid-template-rows: auto minmax(90px, .8fr) auto auto auto minmax(var(--bt-cmd-h), 1.2fr);
+}
+body[data-screen="battle"] #battle .battle-result h2 { margin: 2px 0 4px; font-size: 18px; }
+body[data-screen="battle"] #battle .battle-result #result-message { margin: 0 0 6px; font-size: 12px; line-height: 1.6; }
+body[data-screen="battle"] #battle .battle-result button { margin: 3px; min-height: 38px; }
+
+/* ---------- 戦闘ログ・状態パネル：画面内に収める ---------- */
+body[data-screen="battle"] .battle-log-dialog-panel { max-height: calc(100dvh - 40px); }
+body[data-screen="battle"] .analyze-panel { max-height: calc(100dvh - 90px); }
+
+/* 縦が短いスマホ（360×780 など）：コマンドの行を少し詰めて、6行（前のキャラへ戻る を含む）まで枠に収める */
+@media (max-width: 700px) and (max-height: 800px) {
+  body[data-screen="battle"] #battle .battle-commands .command-option { min-height: 31px !important; padding: 3px 6px !important; }
+  body[data-screen="battle"] #battle .union-panel { margin-top: 2px; padding-top: 2px; }
+}
+
+/* ---------- 低い画面（横向きのスマホなど）：最小限のスクロールを許す ---------- */
+@media (max-height: 560px) {
+  body[data-screen="battle"] .game { height: auto; min-height: 0 !important; }
+  body[data-screen="battle"] #battle.battle-screen.active { grid-template-rows: auto 200px auto auto auto 220px; overflow: visible; }
+}
+
+/* ============================================================
+   PC・タブレット（701px〜）：左に 敵・メッセージ・味方、右の列に コマンド・説明
+   ============================================================ */
+@media (min-width: 701px) {
+  body[data-screen="battle"] .game {
+    height: calc(100vh - max(12px, var(--ui-safe-t)) - max(12px, var(--ui-safe-b)));
+    height: calc(100dvh - max(12px, var(--ui-safe-t)) - max(12px, var(--ui-safe-b)));
+    max-width: 1400px;
+  }
+  body[data-screen="battle"] #battle.battle-screen.active {
+    grid-template-columns: minmax(0, 1fr) var(--bt-side-w);
+    grid-template-rows: auto minmax(160px, 1fr) auto auto auto;
+    grid-template-areas:
+      "head head"
+      "arena cmd"
+      "event cmd"
+      "party info"
+      "imperial info";
+    gap: 8px;
+  }
+  body[data-screen="battle"] #battle #stage-title,
+  body[data-screen="battle"] #battle #turn-counter { font-size: 14px; }
+  body[data-screen="battle"] #battle .battle-heading .eyebrow { display: inline; margin: 0; font-size: 10px; }
+  body[data-screen="battle"] #battle .battle-arena { padding: 30px 48px 8px !important; border-width: 3px; }
+  body[data-screen="battle"] #battle .enemy-display h2 { font-size: 15px; }
+  body[data-screen="battle"] #battle .battle-log-open { top: 6px; right: 6px; padding: 5px 10px; font-size: 11px; }
+  body[data-screen="battle"] #battle .analyze-tabs { top: 40px; }
+  body[data-screen="battle"] #battle .analyze-tab-button { min-width: 36px; padding: 8px 6px; font-size: 11px; }
+  body[data-screen="battle"] #battle .stage-environment-banner { left: 50%; right: auto; width: min(70%, 640px); transform: translateX(-50%); justify-content: center; }
+  body[data-screen="battle"] #battle .event-log p { font-size: 13px; }
+
+  body[data-screen="battle"] #battle .battle-party { gap: 6px; }
+  body[data-screen="battle"] #battle .battle-member { padding: 4px 6px 5px !important; font-size: 10px !important; }
+  body[data-screen="battle"] #battle .battle-portrait { height: clamp(28px, 6vh, 46px) !important; }
+  body[data-screen="battle"] #battle .battle-member .member-head strong { font-size: 12px !important; }
+  body[data-screen="battle"] #battle .battle-member .member-head .member-action-label { flex-basis: auto; margin-left: auto; font-size: 10px; }
+  body[data-screen="battle"] #battle .battle-gauge-label,
+  body[data-screen="battle"] #battle .battle-gauge-label strong { font-size: 10px; }
+  body[data-screen="battle"] #battle .battle-member .hp-track { height: 6px; }
+  body[data-screen="battle"] #battle .battle-member .sp-track { height: 5px; }
+  body[data-screen="battle"] #battle .union-mini { font-size: 9px; }
+
+  body[data-screen="battle"] #battle .command-window { padding: 8px 10px !important; border-width: 3px; }
+  body[data-screen="battle"] #battle #command-title { font-size: 16px !important; margin-bottom: 5px; }
+  body[data-screen="battle"] #battle .battle-commands .command-option { min-height: 38px !important; font-size: 15px !important; padding: 5px 8px !important; }
+  body[data-screen="battle"] #battle .battle-commands .command-option small { font-size: 11px !important; }
+  body[data-screen="battle"] #battle .union-panel .window-title { font-size: 11px !important; }
+  body[data-screen="battle"] #battle .command-hint {
+    display: block !important; flex: 0 0 auto; min-height: 0 !important; max-height: 3.2em !important;
+    margin: 5px 0 0; padding: 4px 6px; font-size: 11px !important; line-height: 1.45; overflow: hidden;
+  }
+  body[data-screen="battle"] #battle .command-info-window { padding: 8px 10px !important; border-width: 3px; }
+  body[data-screen="battle"] #battle .command-info-window .window-title { font-size: 11px; }
+  body[data-screen="battle"] #battle .command-description { font-size: 12px; line-height: 1.7; }
+
+  body[data-screen="battle"] #battle .battle-result { grid-column: 2; grid-row: 2 / 6; justify-content: center !important; }
+  body[data-screen="battle"] #battle:has(> .battle-bottom.result-shown) { grid-template-rows: auto minmax(160px, 1fr) auto auto auto; }
+  body[data-screen="battle"] #battle .battle-result h2 { font-size: 22px; }
+  body[data-screen="battle"] #battle .battle-result #result-message { font-size: 13px; }
+}
