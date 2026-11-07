@@ -1,0 +1,120 @@
+/* GPT cartography UI pass: keep the exploration map readable and give each map a distinct job. */
+.field-map-rail::before,
+.field-map-rail::after{content:none!important}
+
+.field-map-rail .field-minimap{
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  height:auto;
+  aspect-ratio:1;
+  padding:6px;
+  border:1px solid #dfc98f;
+  background:#030912;
+  box-shadow:inset 0 0 0 2px #ffffff12,0 2px 8px #000b;
+  image-rendering:pixelated;
+  cursor:pointer;
+}
+.field-map-rail .field-minimap-status{
+  width:100%;
+  padding:5px 4px;
+  border-block:1px solid #c3a66a55;
+  color:#f0e4c4;
+  font-size:9px;
+  line-height:1.55;
+  text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+.field-map-rail .field-minimap-legend{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px 7px;
+  width:100%;
+  color:#d5dedb;
+  font-size:9px;
+}
+.field-minimap-legend span{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  min-width:0;
+  white-space:nowrap;
+}
+.field-minimap-legend i{
+  display:inline-block;
+  flex:0 0 9px;
+  width:9px;
+  height:9px;
+  border:1px solid #07111c;
+}
+.field-minimap-legend .mini-player{
+  background:#fff;
+  clip-path:polygon(50% 0,100% 100%,50% 78%,0 100%);
+}
+.field-minimap-legend .mini-stairs{
+  background:#ffd84a;
+  clip-path:polygon(50% 0,100% 100%,0 100%);
+}
+.field-minimap-legend .mini-chest{background:#ff9a3c;border-radius:1px}
+.field-minimap-legend .mini-gather{background:#3ee07a;border-radius:50%}
+.field-minimap-legend .mini-foe{background:#ffad45;border-radius:50%}
+.field-minimap-legend .mini-chase{
+  background:#ff3030;
+  clip-path:polygon(50% 0,100% 100%,0 100%);
+}
+
+/* On phones, put the cartography strip below the field instead of squeezing the field into a narrow column. */
+@media(max-width:620px){
+  .field-exploration-layout{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:7px;
+    width:100%;
+  }
+  .field-exploration-layout .field-viewport{
+    width:100%;
+    min-width:0;
+  }
+  .field-map-rail{
+    display:grid;
+    grid-template-columns:minmax(96px,34%) minmax(0,1fr);
+    grid-template-areas:
+      "map title"
+      "map hint"
+      "map status"
+      "map legend";
+    grid-template-rows:auto auto auto 1fr;
+    align-items:center;
+    gap:4px 9px;
+    min-width:0;
+    padding:8px;
+  }
+  .field-map-rail>strong{
+    grid-area:title;
+    align-self:end;
+    text-align:left;
+    font-size:11px;
+    letter-spacing:.12em;
+  }
+  .field-map-rail>span{
+    grid-area:hint;
+    align-self:start;
+    text-align:left;
+    font-size:9px;
+  }
+  .field-map-rail .field-minimap{grid-area:map;align-self:center;padding:4px}
+  .field-map-rail .field-minimap-status{grid-area:status;text-align:left;padding:3px 0;font-size:8px}
+  .field-map-rail .field-minimap-legend{
+    grid-area:legend;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:4px 6px;
+    align-self:start;
+    font-size:8px;
+  }
+}
+@media(max-width:380px){
+  .field-map-rail{grid-template-columns:minmax(88px,34%) minmax(0,1fr);gap:3px 6px;padding:6px}
+  .field-map-rail .field-minimap{padding:3px}
+  .field-minimap-legend span{gap:3px}
+  .field-minimap-legend i{flex-basis:8px;width:8px;height:8px}
+}
