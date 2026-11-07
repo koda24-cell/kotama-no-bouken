@@ -46,7 +46,7 @@ function makeSurface(kind, size, seed) {
         const cell = Math.floor(size / 4);
         const gx = x % cell, gy = y % cell;
         const joint = gx < 3 || gx >= cell - 3 || gy < 3 || gy >= cell - 3 ? 1 : 0;
-        const chipped = hash(Math.floor(x / 8), Math.floor(y / 8), seed + 5) > 0.982 ? 0.14 : 0;
+        const chipped = periodicNoise(x, y, size / 8, seed + 5) > 0.94 ? 0.10 : 0;
         height -= joint * 0.16 + chipped;
       } else {
         const pebble = periodicNoise(x, y, size / 8, seed + 19) > 0.78 ? 0.08 : 0;
