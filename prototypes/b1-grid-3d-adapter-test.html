@@ -34,8 +34,15 @@ import {buildField3DWorld} from "../field/3d/field-3d-world.js";
 const source=window.__KOTAMA_FIELD_AREAS__?.[1]?.floors?.[0];
 if(!source) throw new Error("B1F floor data was not loaded.");
 const grid=source.map.map(row=>row.split(""));
-const area={n:1,f:0,key:"1-0",def:window.__KOTAMA_FIELD_AREAS__[1],floor:source,grid,w:grid[0].length,h:grid.length,objects:[]};
-const start={tx:1,ty:2}; // 1,1 is a G (solid gather tile) in the current map data.
+const width=Math.max(...grid.map(row=>row.length));
+const area={n:1,f:0,key:"1-0",def:window.__KOTAMA_FIELD_AREAS__[1],floor:source,grid,w:width,h:grid.length,objects:[]};
+// Mirror fieldArea() start selection: P first, otherwise E, otherwise the up-stairs tile.
+let start=null;
+for(let y=0;y<grid.length&&!start;y++) for(let x=0;x<grid[y].length;x++) if(grid[y][x]==="P"){start={tx:x,ty:y};break;}
+if(!start){for(let y=0;y<grid.length&&!start;y++) for(let x=0;x<grid[y].length;x++) if(grid[y][x]==="E"){start={tx:x,ty:y};break;}}
+if(!start){for(let y=0;y<grid.length&&!start;y++) for(let x=0;x<grid[y].length;x++) if(grid[y][x]==="<"){start={tx:x,ty:y};break;}}
+if(!start) start={tx:1,ty:1};
+
 const fieldState={x:start.tx*32+16,y:start.ty*32+20,dir:"up",moving:false,foes:[],explored:{"1-0":new Uint8Array(grid.length*width).fill(1)},visible:new Set()};
 const snapshot=buildField3DSnapshot({area,fieldState,tilePixels:32,isSolidChar:(_a,c)=>"#~ST?G".includes(c)||/[a-z]/.test(c)});
 const host=document.querySelector("#view");
@@ -59,7 +66,8 @@ for(const cell of snapshot.cells.filter(c=>c.terrain==="grass").slice(0,14)){
  const crystal=new THREE.Mesh(new THREE.OctahedronGeometry(.22),glowMat);
  crystal.position.set(cell.world.x,.38,cell.world.z);scene.add(crystal);
 }
-const tileMap=new Map(snapshot.cells.map(c=>[c.tx+","+c.ty,c]));\ndocument.querySelector("#msg").textContent=`実マップ ${width}×${grid.length} / 開始位置 ${start.tx},${start.ty} / 壁 ${snapshot.cells.filter(c=>c.solid).length}マス`;
+const tileMap=new Map(snapshot.cells.map(c=>[c.tx+","+c.ty,c]));
+document.querySelector("#msg").textContent=`実マップ ${width}×${grid.length} / 開始位置 ${start.tx},${start.ty} / 壁 ${snapshot.cells.filter(c=>c.solid).length}マス`;\ndocument.querySelector("#msg").textContent=`実マップ ${width}×${grid.length} / 開始位置 ${start.tx},${start.ty} / 壁 ${snapshot.cells.filter(c=>c.solid).length}マス`;
 let tx=start.tx,ty=start.ty,dir="up",turning=false;
 const yaw={up:0,right:-Math.PI/2,down:Math.PI,left:Math.PI/2};
 function syncCamera(){const p=snapshot.cells.find(c=>c.tx===tx&&c.ty===ty).world;camera.position.set(p.x,1.68,p.z);camera.rotation.set(0,yaw[dir],0);}
