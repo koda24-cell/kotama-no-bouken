@@ -165,9 +165,24 @@ function fieldEnsureExtraDom() {
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
-    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div id="field-fullmap-summary" class="field-fullmap-summary" aria-live="polite"></div><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-vision"></i>現在視界</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span><span><i class="lg-sign"></i>看板・人</span><span><i class="lg-exit"></i>出口</span></div>`;
+    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div id="field-fullmap-summary" class="field-fullmap-summary" aria-live="polite"></div><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-vision"></i>現在視界</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE巡回</span><span><i class="lg-chase"></i>FOE追跡</span><span><i class="lg-gate"></i>ボス</span><span><i class="lg-sign"></i>看板・人</span><span><i class="lg-exit"></i>出口</span></div>`;
     vp.appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
+  }
+  const mapRail = document.querySelector("#field .field-map-rail");
+  if (mapRail && !$("field-minimap-status")) {
+    const status = document.createElement("div");
+    status.id = "field-minimap-status";
+    status.className = "field-minimap-status";
+    status.setAttribute("aria-live", "polite");
+    mapRail.appendChild(status);
+  }
+  if (mapRail && !$("field-minimap-legend")) {
+    const legend = document.createElement("div");
+    legend.id = "field-minimap-legend";
+    legend.className = "field-minimap-legend";
+    legend.innerHTML = '<span><i class="mini-player"></i>現在地</span><span><i class="mini-foe"></i>FOE巡回</span><span><i class="mini-chase"></i>FOE追跡</span>';
+    $("field-minimap")?.insertAdjacentElement("afterend", legend);
   }
 }
 function fieldBuildDom() {
@@ -255,7 +270,9 @@ function fieldDrawMap(canvas, cell, full) {
   }
   const dot = (x, y, color, size = .62, shape = "circle") => {
     g.fillStyle = color; const cx = (x + .5) * cell, cy = (y + .5) * cell, r = cell * size / 2;
-    if (shape === "square") g.fillRect(cx - r, cy - r, r * 2, r * 2); else { g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill(); }
+    if (shape === "square") g.fillRect(cx - r, cy - r, r * 2, r * 2);
+    else if (shape === "triangle") { g.beginPath(); g.moveTo(cx, cy - r * 1.2); g.lineTo(cx + r, cy + r * .8); g.lineTo(cx - r, cy + r * .8); g.closePath(); g.fill(); }
+    else { g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill(); }
   };
   for (const o of a.objects) {
     if (!exp[o.ty * a.w + o.tx]) continue;
@@ -270,7 +287,7 @@ function fieldDrawMap(canvas, cell, full) {
   for (const foe of fieldState.foes) {
     if (foe.defeated) continue;
     const fx = Math.floor(foe.x / FIELD_TILE), fy = Math.floor(foe.y / FIELD_TILE);
-    if (exp[fy * a.w + fx]) dot(fx, fy, foe.mode === "chase" ? "#ff2d2d" : "#ff8a1c", .9);
+    if (exp[fy * a.w + fx]) dot(fx, fy, foe.mode === "chase" ? "#ff3030" : "#ffad45", .94, foe.mode === "chase" ? "triangle" : "circle");
   }
   const { tx, ty } = fieldPlayerTile();
   g.save(); g.translate((fieldState.x / FIELD_TILE) * cell, (fieldState.y / FIELD_TILE) * cell);
@@ -279,7 +296,19 @@ function fieldDrawMap(canvas, cell, full) {
   g.beginPath(); g.moveTo(0, -cell * .55); g.lineTo(cell * .42, cell * .4); g.lineTo(-cell * .42, cell * .4); g.closePath(); g.stroke(); g.fill(); g.restore();
   void tx; void ty;
 }
-function fieldDrawMinimap() { fieldDrawMap($("field-minimap"), 4, false); }
+function fieldDrawMinimap() {
+  fieldDrawMap($("field-minimap"), 4, false);
+  const a = fieldArea(), status = $("field-minimap-status");
+  if (!a || !status) return;
+  const { tx, ty } = fieldPlayerTile();
+  const visible = fieldState.foes.filter(f => {
+    if (f.defeated) return false;
+    const fx = Math.floor(f.x / FIELD_TILE), fy = Math.floor(f.y / FIELD_TILE);
+    return fieldState.visible?.has(`${fx},${fy}`);
+  });
+  const chasing = visible.filter(f => f.mode === "chase").length;
+  status.textContent = `座標 ${tx + 1}, ${ty + 1}　/　視界内FOE ${visible.length}（追跡 ${chasing}）`;
+}
 function fieldDrawFullMap() {
   const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
   const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - 92) / a.h)));
@@ -291,9 +320,10 @@ function fieldDrawFullMap() {
   const count = kind => known.filter(o => o.kind === kind).length;
   const unopened = known.filter(o => o.kind === "chest" && !fieldState.flags[o.key]).length;
   const gatherReady = known.filter(o => o.kind === "gather" && (fieldState.gatherUsed[o.key] || 0) < FIELD_GATHER_USES).length;
-  const knownFoes = fieldState.foes.filter(f => !f.defeated && exp[Math.floor(f.y / FIELD_TILE) * a.w + Math.floor(f.x / FIELD_TILE)]).length;
+  const knownFoes = fieldState.foes.filter(f => !f.defeated && exp[Math.floor(f.y / FIELD_TILE) * a.w + Math.floor(f.x / FIELD_TILE)]);
+  const chasingFoes = knownFoes.filter(f => f.mode === "chase").length;
   const { tx, ty } = fieldPlayerTile();
-  $("field-fullmap-summary").innerHTML = `<span class="map-coordinate">現在座標 <b>${tx + 1}, ${ty + 1}</b></span><span>階段 <b>${count("stairs")}</b></span><span>未回収の宝箱 <b>${unopened}</b></span><span>採取可能 <b>${gatherReady}</b></span><span>発見FOE <b>${knownFoes}</b></span>`;
+  $("field-fullmap-summary").innerHTML = `<span class="map-coordinate">現在座標 <b>${tx + 1}, ${ty + 1}</b></span><span>階段 <b>${count("stairs")}</b></span><span>未回収の宝箱 <b>${unopened}</b></span><span>採取可能 <b>${gatherReady}</b></span><span>発見FOE <b>${knownFoes.length}</b></span><span class="map-foe-alert">追跡中 <b>${chasingFoes}</b></span>`;
 }
 function fieldToggleFullMap(force) {
   const full = $("field-fullmap"); if (!full) return;
