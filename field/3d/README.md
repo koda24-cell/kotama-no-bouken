@@ -226,3 +226,28 @@ scene.add(landmarks.group);
 - `maxCount` で配置上限を設定する。大量配置は避け、視線の先に少数のシルエットを置く。
 - 生成した仮Geometry/Materialのみ破棄し、GLB由来の共有リソースには触れない。
 - 表示専用であり、当たり判定・移動・探索・イベント進行には影響しない。
+
+
+## B1Fの照明・霧レイヤー
+
+`field-3d-atmosphere.js` は、環境光・上方光・青緑の補助光・指数フォグ・控えめな疑似光芒をまとめて設定する。光芒はボリュームレンダリングではなく半透明メッシュによる軽量な演出で、実機で濃度を調整する前提。
+
+```js
+import { buildField3DAtmosphere } from "./field/3d/field-3d-atmosphere.js";
+
+const atmosphere = buildField3DAtmosphere(THREE, scene, {
+  fogDensity: 0.045,
+  maxPixelRatio: 1.5
+});
+atmosphere.applyRendererQuality(renderer);
+// 必要なら探索中に調整
+atmosphere.setFogDensity(0.052);
+
+// シーン終了時
+atmosphere.dispose();
+```
+
+- 初期値はB1F向けの仮値。実際のカメラ距離・照明・GLB素材と合わせて調整する。
+- 光芒は固定位置の演出用。プレイヤー位置やイベント状態を変更しない。
+- iPhoneではpixel ratioを制限し、描画負荷と発熱を確認してから上限を決める。
+- 本モジュールはRendererやSceneの生成・破棄を所有しない。fogはdispose時に解除する。
