@@ -1562,3 +1562,82 @@ body[data-screen="battle"] .gold-display{display:none!important;}
  .battle-heading h1#stage-title{padding:4px 8px;font-size:clamp(13px,4vw,17px);letter-spacing:.04em}
  .stage-environment-banner{max-width:96%}
 }
+
+
+/* Encounter atmosphere: retain the current stratum's identity outside boss fights. */
+.battle-screen[data-battle-mode="encounter"] .battle-arena{
+  background-image:
+    radial-gradient(ellipse at 50% 78%,var(--encounter-glow,#75a88b20),transparent 58%),
+    linear-gradient(180deg,var(--encounter-sky,#0b1b20) 0%,var(--encounter-mid,#172c2b) 58%,var(--encounter-ground,#263a31) 59%,#101b24 100%);
+}
+.battle-screen[data-battle-stage="1"]{--encounter-sky:#0a201b;--encounter-mid:#18372b;--encounter-ground:#2b4533;--encounter-glow:#91c77b24}
+.battle-screen[data-battle-stage="2"]{--encounter-sky:#1a200f;--encounter-mid:#30351d;--encounter-ground:#41432b;--encounter-glow:#b9be6b20}
+.battle-screen[data-battle-stage="3"]{--encounter-sky:#0b2028;--encounter-mid:#1b3b42;--encounter-ground:#2a464a;--encounter-glow:#83c8d522}
+.battle-screen[data-battle-stage="4"]{--encounter-sky:#24120d;--encounter-mid:#48231a;--encounter-ground:#573020;--encounter-glow:#f08b4b25}
+.battle-screen[data-battle-stage="5"]{--encounter-sky:#171124;--encounter-mid:#2a203b;--encounter-ground:#3d3049;--encounter-glow:#b58ad32a}
+.battle-screen[data-battle-mode="encounter"] .battle-arena{
+  border-color:color-mix(in srgb,var(--encounter-glow) 70%,#71808a);
+}
+
+/* Tactical map: make the front and rear ranks legible as a small field diagram. */
+.battle-screen .battle-tactical-map{
+  position:relative;overflow:hidden;padding:8px 9px 7px;
+}
+.battle-screen .battle-tactical-map::after{
+  content:"";position:absolute;inset:31px 8px 22px;pointer-events:none;
+  border:1px solid #b9a16b55;
+  background:linear-gradient(180deg,#101d2b66 0 48%,#c4a66b0b 49% 51%,#172b2b66 52% 100%);
+}
+.battle-screen .battle-map-grid{
+  position:relative;z-index:1;gap:4px;margin:8px 0 6px;
+  padding:5px;border:1px solid #9b895e55;
+  background:linear-gradient(180deg,#07121d,#0c1c25);
+}
+.battle-screen .battle-map-grid i{
+  position:relative;z-index:1;min-width:0;
+  border:1px solid #8c9b9b88;
+  background:linear-gradient(145deg,#263c42,#14262f);
+  box-shadow:inset 0 1px #ffffff12;
+}
+.battle-screen .battle-map-grid i:nth-child(-n+3){background:linear-gradient(145deg,#1b2938,#101a27);border-style:dashed}
+.battle-screen .battle-map-grid i:nth-child(4),.battle-screen .battle-map-grid i:nth-child(6){background:linear-gradient(145deg,#33483c,#1b302b)}
+.battle-screen .battle-map-grid i:nth-child(5){background:radial-gradient(circle,#e8d39a 0 18%,#8f7848 22%,#263b36 70%);border-color:#e2ca8d;box-shadow:0 0 9px #d5b86b99}
+.battle-screen .battle-tactical-map small{position:relative;z-index:1;letter-spacing:.08em}
+
+/* Command deck: clarify the active decision and keep supporting text secondary. */
+.battle-screen .command-window>.window-title,
+.battle-screen .command-info-window>.window-title,
+.battle-screen .event-window>.window-title{
+  min-height:25px;padding:5px 8px;
+  border-bottom:1px solid #b89b6155;
+  background:linear-gradient(90deg,#263747aa,#111d2a55);
+  font-size:11px;letter-spacing:.1em;
+}
+.battle-screen #battle-commands>.command-option{
+  min-height:32px;padding:6px 10px 6px 12px;
+  font-size:clamp(11px,1.25vw,14px);line-height:1.35;
+}
+.battle-screen #battle-commands>.command-option.keyboard-focus,
+.battle-screen #battle-commands>.command-option.mouse-focus{
+  border-color:#f0d18a;color:#fff0c4;
+  background:linear-gradient(90deg,#66532b88,#243346 78%);
+  box-shadow:inset 4px 0 #f0d18a,0 0 10px #d7b96b33;
+}
+.battle-screen .command-hint{
+  border-top:1px solid #b89b6155;
+  color:#c9d0d1;background:linear-gradient(90deg,#091522,#142331);
+}
+.battle-screen .command-description{
+  border-left:3px solid #c3a66a;
+  background:linear-gradient(90deg,#0a1721,#142331aa);
+  color:#e8e1cf;
+}
+.battle-screen .event-log p{line-height:1.45}
+@media(max-width:620px){
+  .battle-screen .battle-tactical-map{padding:6px 7px}
+  .battle-screen .battle-map-grid{gap:3px;padding:4px}
+  .battle-screen #battle-commands>.command-option{min-height:29px;padding:5px 8px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .battle-screen #battle-commands>.command-option{transition:none}
+}

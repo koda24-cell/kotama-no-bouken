@@ -1030,6 +1030,8 @@ async function beginStageCore(){
   const floorNames=["はじまりの樹海","ゴブリンの森","霧の森","炎竜の巣","魔王城・回廊"];
   const battleScreen=$("battle");
   if(battleScreen){
+    battleScreen.dataset.battleStage=String(battleState.stage);
+    battleScreen.dataset.battleMode=battleState.encounterMode?"encounter":"boss";
     battleScreen.classList.toggle("is-boss-battle",!battleState.encounterMode);
     if(!battleState.encounterMode){battleScreen.dataset.bossStage=String(battleState.stage);battleScreen.dataset.bossName=battleState.enemy.name;}
     else{delete battleScreen.dataset.bossStage;delete battleScreen.dataset.bossName;}
