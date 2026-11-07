@@ -932,3 +932,117 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   .field-fullmap-summary{gap:3px;font-size:9px;padding:5px 2px}
   .field-fullmap-summary span{padding:2px 4px}
 }
+
+
+/* ============================================================
+   Stratum atmosphere — each floor gets its own ambient light and air.
+   Purely decorative overlays; visibility and tile rendering are untouched.
+   ============================================================ */
+.field-fog::after{
+  background-repeat:no-repeat;
+  background-size:100% 100%;
+  animation:field-stratum-air 28s ease-in-out infinite alternate;
+}
+/* Forest: sunbeams through the canopy, then root-shadow, then ancient pollen. */
+.field-screen[data-theme="forest"][data-floor="0"] .field-fog::after{
+  background-image:
+    linear-gradient(112deg,transparent 8%,#d9f4a51a 18%,transparent 30%),
+    linear-gradient(76deg,transparent 54%,#dff7b512 64%,transparent 76%),
+    radial-gradient(ellipse at 50% 0%,#c9f39c16,transparent 68%),
+    radial-gradient(ellipse at 50% 50%,transparent 48%,#02070d20 76%,#02070d66 100%);
+}
+.field-screen[data-theme="forest"][data-floor="1"] .field-fog::after{
+  background-image:
+    linear-gradient(90deg,transparent 15%,#8da66b12 32%,transparent 48%),
+    radial-gradient(ellipse at 50% 100%,#344b251f,transparent 70%),
+    radial-gradient(ellipse at 50% 50%,transparent 48%,#02070d28 76%,#02070d77 100%);
+}
+.field-screen[data-theme="forest"][data-floor="2"] .field-fog::after{
+  background-image:
+    radial-gradient(ellipse at 50% 12%,#f4d28a20,transparent 56%),
+    radial-gradient(circle at 22% 72%,#e7c27a10 0 2px,transparent 26%),
+    radial-gradient(ellipse at 50% 50%,transparent 42%,#100d072e 78%,#08080588 100%);
+}
+/* Goblin wood: dirty light, drifting smoke, and a hard campfire glow. */
+.field-screen[data-theme="goblin"][data-floor="0"] .field-fog::after{
+  background-image:
+    radial-gradient(ellipse at 18% 18%,#d7d28b1c,transparent 52%),
+    linear-gradient(165deg,#3e44201a,transparent 46%),
+    radial-gradient(ellipse at 50% 50%,transparent 46%,#10120777 100%);
+}
+.field-screen[data-theme="goblin"][data-floor="1"] .field-fog::after{
+  background-image:
+    linear-gradient(18deg,#7c8b3a12,transparent 44%),
+    radial-gradient(ellipse at 75% 85%,#b3a14a12,transparent 54%),
+    radial-gradient(ellipse at 50% 50%,transparent 40%,#090d067c 100%);
+}
+.field-screen[data-theme="goblin"][data-floor="2"] .field-fog::after{
+  background-image:
+    radial-gradient(ellipse at 50% 100%,#ff9d3b24,transparent 58%),
+    linear-gradient(180deg,#15180a22,transparent 48%),
+    radial-gradient(ellipse at 50% 50%,transparent 40%,#090b04a8 100%);
+}
+/* Mist forest: layered pale veils, with the deepest floor almost washed out. */
+.field-screen[data-theme="mist"][data-floor="0"] .field-fog::after{
+  background-image:
+    linear-gradient(105deg,transparent 12%,#dff8ed18 32%,transparent 54%),
+    radial-gradient(ellipse at 50% 8%,#e9fff022,transparent 64%),
+    radial-gradient(ellipse at 50% 50%,transparent 52%,#17302c44 100%);
+}
+.field-screen[data-theme="mist"][data-floor="1"] .field-fog::after{
+  background-image:
+    linear-gradient(0deg,#d9f2ec16,transparent 42%,#d9f2ec12),
+    linear-gradient(90deg,transparent,#d5eee51b 48%,transparent),
+    radial-gradient(ellipse at 50% 50%,transparent 36%,#142b2c66 100%);
+}
+.field-screen[data-theme="mist"][data-floor="2"] .field-fog::after{
+  background-image:
+    radial-gradient(ellipse at 50% 30%,#f0fff02a,transparent 62%),
+    linear-gradient(180deg,#e9f8ef18,transparent 72%),
+    radial-gradient(ellipse at 50% 50%,transparent 42%,#1c34334a 100%);
+}
+/* Lava cavern: low red heat, brighter molten reflections on the deepest level. */
+.field-screen[data-theme="lava"][data-floor="0"] .field-fog::after{
+  background-image:
+    radial-gradient(ellipse at 50% 100%,#e85d3020,transparent 62%),
+    linear-gradient(180deg,#1b09070e,transparent 48%),
+    radial-gradient(ellipse at 50% 50%,transparent 44%,#12060488 100%);
+}
+.field-screen[data-theme="lava"][data-floor="1"] .field-fog::after{
+  background-image:
+    radial-gradient(ellipse at 18% 92%,#ff5b342b,transparent 42%),
+    radial-gradient(ellipse at 82% 86%,#ff8a3a20,transparent 46%),
+    radial-gradient(ellipse at 50% 50%,transparent 38%,#180604a8 100%);
+}
+.field-screen[data-theme="lava"][data-floor="2"] .field-fog::after{
+  background-image:
+    radial-gradient(ellipse at 50% 100%,#ff9c3b38,transparent 58%),
+    linear-gradient(180deg,transparent 35%,#e34b2410),
+    radial-gradient(ellipse at 50% 50%,transparent 38%,#190603b8 100%);
+}
+/* Demon castle: cold shafts, spectral blue, then a restrained royal-gold focus. */
+.field-screen[data-theme="castle"][data-floor="0"] .field-fog::after{
+  background-image:
+    linear-gradient(115deg,transparent 18%,#cbd8ff18 34%,transparent 50%),
+    radial-gradient(ellipse at 50% 0%,#aebeff14,transparent 58%),
+    radial-gradient(ellipse at 50% 50%,transparent 46%,#05071488 100%);
+}
+.field-screen[data-theme="castle"][data-floor="1"] .field-fog::after{
+  background-image:
+    linear-gradient(90deg,transparent 28%,#8d9bd01b 50%,transparent 72%),
+    radial-gradient(ellipse at 50% 100%,#252e641c,transparent 60%),
+    radial-gradient(ellipse at 50% 50%,transparent 38%,#040610b8 100%);
+}
+.field-screen[data-theme="castle"][data-floor="2"] .field-fog::after{
+  background-image:
+    radial-gradient(ellipse at 50% 8%,#f0d39a20,transparent 54%),
+    linear-gradient(180deg,#c9b17a0e,transparent 55%),
+    radial-gradient(ellipse at 50% 50%,transparent 38%,#07050bb8 100%);
+}
+@keyframes field-stratum-air{
+  from{background-position:0% 0%,0% 0%,center}
+  to{background-position:100% 8%,0% 0%,center}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-fog::after{animation:none!important}
+}
