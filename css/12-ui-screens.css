@@ -253,3 +253,64 @@ body:is([data-screen="home"],[data-screen="formation"],[data-screen="shop"],[dat
 #progression-panel .training-stat-grid { margin: 6px 0 !important; gap: 4px !important; }
 #progression-panel .training-stat-grid span { padding: 4px 8px !important; }
 #progression-panel .training-stats p { margin: 2px 0 !important; }
+
+/* ============================== 図鑑 ============================== */
+#compendium-list.compendium-grid { display: block !important; margin: 0 !important; }
+.cmp-tabs { display: flex; flex-wrap: nowrap; gap: 4px; margin: 0 0 var(--ui-gap); overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--p4-line); }
+.cmp-tabs::-webkit-scrollbar { display: none; }
+.cmp-tabs button { flex: 0 0 auto; display: grid; justify-items: center; min-height: 40px; padding: 2px 12px; border: 1px solid transparent; border-bottom: 0; border-radius: 6px 6px 0 0; background: transparent; color: var(--dim); font-size: 13px; white-space: nowrap; }
+.cmp-tabs button small { font-size: 9px; }
+.cmp-tabs button.active { border-color: var(--p4-line-strong); background: var(--p4-panel-2); color: var(--gold); box-shadow: inset 0 -3px 0 var(--gold); }
+.cmp-layout { display: grid; gap: var(--ui-gap); min-width: 0; }
+.cmp-list { display: grid; gap: 4px; align-content: start; min-width: 0; max-height: 46vh; overflow-y: auto; overscroll-behavior: contain; padding: 4px; border: 1px solid var(--p4-line); border-radius: var(--ui-radius); background: #080f3e; }
+.cmp-list .compendium-section-title { margin: 6px 2px 2px !important; font-size: 13px !important; }
+.cmp-row { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 8px; align-items: center; min-height: 42px; padding: 3px 8px 3px 3px; border: 1px solid var(--p4-line); border-radius: 6px; background: var(--p4-panel); color: inherit; text-align: left; }
+.cmp-row.is-selected { border-color: var(--p4-sel); background: #1d2d82; box-shadow: inset 4px 0 0 var(--p4-sel); }
+.cmp-thumb { display: grid; place-items: center; height: 34px; border-radius: 4px; background: radial-gradient(ellipse, #344365, #080e22); color: #d8dff2; font-size: 15px; overflow: hidden; }
+.cmp-row:not(.unlocked) .cmp-thumb { filter: brightness(.45); }
+.cmp-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.cmp-row-name { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cmp-row-state { font-size: 10px; color: var(--dim); white-space: nowrap; }
+.cmp-row.unlocked .cmp-row-state { color: var(--p4-up); }
+.cmp-row.compendium-foe .cmp-row-name::after { content: " FOE"; color: #ffb36b; font-size: 9px; }
+.cmp-detail { min-width: 0; }
+.cmp-detail .compendium-card { margin: 0; border-color: var(--p4-line-strong) !important; background: linear-gradient(#131f6a, #0b1447) !important; }
+.cmp-detail .compendium-art { height: 140px !important; }
+.cmp-detail .compendium-card p { min-height: 0 !important; }
+#compendium #hidden-boss-unlock { margin: var(--ui-gap) 0 0 !important; padding: 10px !important; }
+@media (min-width: 701px) {
+  .cmp-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: start; }
+  .cmp-list { max-height: calc(100vh - 230px); }
+  .cmp-detail { position: sticky; top: 8px; }
+  .cmp-detail .compendium-art { height: 220px !important; }
+}
+.cmp-detail .compendium-art img { height: 100%; width: auto; }
+
+/* ============================== 設定 ============================== */
+#settings .settings-panel { width: min(100%, 960px) !important; max-width: none !important; margin: 0 auto !important; padding: 4px 12px 10px !important; border: 1px solid var(--p4-line) !important; border-radius: var(--ui-radius) !important; background: var(--p4-panel) !important; }
+#settings .setting-row { min-height: 48px; padding: 6px 2px !important; font-size: var(--ui-text); color: #e3e8ff; }
+#settings .setting-row input[type="checkbox"] { width: 22px; height: 22px; }
+#settings .volume-row { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(120px, 1.4fr); gap: 10px; }
+#settings .volume-row input[type="range"] { width: 100% !important; height: 28px; accent-color: var(--gold); }
+#settings .volume-row output { color: var(--gold); margin-left: 4px; }
+.settings-data-heading, #settings .soundtrack-heading { margin: 12px 0 6px !important; padding-top: 10px !important; border-top: 1px solid var(--p4-line) !important; color: var(--gold); font-size: 15px !important; }
+.settings-data-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--ui-gap); }
+.settings-data-actions button { min-height: var(--ui-tap); margin: 0 !important; width: 100%; }
+#settings .soundtrack-help { font-size: 11px !important; }
+#settings .soundtrack-list { display: grid !important; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+#settings .soundtrack-row { min-height: 44px; padding: 4px 10px !important; border: 1px solid #ffffff1c !important; border-radius: 6px; background: #080f3e; }
+#settings .soundtrack-row:has(input:checked) { border-color: var(--gold) !important; }
+#settings .soundtrack-row strong { font-size: 12px !important; }
+#settings .soundtrack-row small { font-size: 10px !important; }
+@media (min-width: 701px) { #settings .soundtrack-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .settings-data-actions { max-width: 420px; } }
+
+/* ============================== 実績 ============================== */
+#achievement-list.achievement-grid { gap: 6px !important; margin: 0 !important; }
+#achievement-list .achievement-card { min-height: 52px; padding: 8px 10px !important; border-width: 1px !important; border-color: var(--p4-line); border-radius: var(--ui-radius) !important; background: var(--p4-panel); }
+#achievement-list .achievement-card.unlocked { border-color: #e8c96e; }
+#achievement-list .achievement-card.locked { opacity: .85; }
+#achievement-list .achievement-card > span { white-space: nowrap; }
+@media (min-width: 701px) { #achievement-list.achievement-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
+@media (max-width: 700px) { #achievement-list.achievement-grid { grid-template-columns: 1fr !important; } }
+/* 図鑑・実績・設定の BACK など下部の操作 */
+:is(#settings, #compendium, #achievements, #training, #shop, #formation) .page-actions { margin-top: var(--ui-gap) !important; }
