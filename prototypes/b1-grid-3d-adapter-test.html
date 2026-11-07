@@ -24,8 +24,9 @@ button:active{background:#526b46}
 <div id="msg">実際のFIELD_AREAS[1].floors[0].mapを3D変換しています</div>
 <div id="info">実マップの壁・通路を使用<br>← → 旋回 / ↑ 前進 / ↓ 後退</div>
 <div id="controls"><button data-action="left">↶</button><button data-action="forward">▲</button><button data-action="right">↷</button><button data-action="back">▼</button></div>
+<script src="../data/field-enemies.js"></script>
 <script src="../data/field-maps.js"></script>
-<script>window.__KOTAMA_FIELD_AREAS__ = FIELD_AREAS;</script>
+<script>window.__KOTAMA_FIELD_AREAS__ = FIELD_AREAS; window.__KOTAMA_FIELD_ENEMIES__ = FIELD_ENEMIES;</script>
 <script type="module">
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 import {buildField3DSnapshot} from "../field/3d/field-3d-grid-adapter.js";
@@ -35,7 +36,26 @@ const source=window.__KOTAMA_FIELD_AREAS__?.[1]?.floors?.[0];
 if(!source) throw new Error("B1F floor data was not loaded.");
 const grid=source.map.map(row=>row.split(""));
 const width=Math.max(...grid.map(row=>row.length));
-const area={n:1,f:0,key:"1-0",def:window.__KOTAMA_FIELD_AREAS__[1],floor:source,grid,w:width,h:grid.length,objects:[]};
+const def=window.__KOTAMA_FIELD_AREAS__[1];
+const area={n:1,f:0,key:"1-0",def,floor:source,grid,w:width,h:grid.length,objects:[]};
+// Test fixture: translate the real map symbols and object definitions into the same descriptor shape
+// returned by fieldArea(). This does not implement any gameplay interactions.
+let chestIndex=0;
+grid.forEach((row,ty)=>row.forEach((ch,tx)=>{
+ let o=null;
+ if(ch==="<"||ch===">") o={key:(ch==="<"?"up:":"down:")+"1-0",kind:"stairs",dir:ch==="<"?"up":"down",tx,ty,sprite:ch==="<"?"stairs-up":"stairs-down",name:ch==="<"?"上り階段":"下り階段",walk:true};
+ else if(ch==="S") o={key:`save:1-0:${tx}:${ty}`,kind:"save",tx,ty,sprite:"save-lamp",name:"導きの灯"};
+ else if(ch==="T") o={key:`chest:1-0:${tx}:${ty}`,kind:"chest",tx,ty,sprite:"chest",name:"宝箱",reward:(source.chests||[])[chestIndex++]||{gold:10}};
+ else if(ch==="G") o={key:`gather:1-0:${tx}:${ty}`,kind:"gather",tx,ty,sprite:"gather",name:"採取ポイント"};
+ else if(ch==="?") o={key:`sign:1-0:${tx}:${ty}`,kind:"sign",tx,ty,sprite:"sign",name:"看板"};
+ else if(ch==="B") o={key:"gate:1",kind:"gate",tx,ty,sprite:"boss-gate",name:"",walk:true};
+ else if(ch==="E") o={key:"exit:1",kind:"exit",tx,ty,sprite:"exit",name:"",walk:true};
+ else if(/[a-z]/.test(ch)&&def.objects?.[ch]){
+  const d=def.objects[ch],kind=d.kind||"npc",keyKind=kind==="npc"||kind==="sign"?"npc":kind;
+  o={key:`${keyKind}:1:${d.id}`,kind,tx,ty,sprite:d.sprite,name:d.name,id:d.id,event:d.event,hidden:!!d.hidden,puzzle:d.puzzle||null,onWall:!!d.onWall};
+ }
+ if(o) area.objects.push(o);
+}));
 // Mirror fieldArea() start selection: P first, otherwise E, otherwise the up-stairs tile.
 let start=null;
 for(let y=0;y<grid.length&&!start;y++) for(let x=0;x<grid[y].length;x++) if(grid[y][x]==="P"){start={tx:x,ty:y};break;}
@@ -43,7 +63,8 @@ if(!start){for(let y=0;y<grid.length&&!start;y++) for(let x=0;x<grid[y].length;x
 if(!start){for(let y=0;y<grid.length&&!start;y++) for(let x=0;x<grid[y].length;x++) if(grid[y][x]==="<"){start={tx:x,ty:y};break;}}
 if(!start) start={tx:1,ty:1};
 
-const fieldState={x:start.tx*32+16,y:start.ty*32+20,dir:"up",moving:false,foes:[],explored:{"1-0":new Uint8Array(grid.length*width).fill(1)},visible:new Set()};
+const foes=(source.foes||[]).map((f,i)=>({key:`foe:1-0:${i}`,def:f,enemy:window.__KOTAMA_FIELD_ENEMIES__?.[f.enemy],tx:f.path?.[0]?.[0]??0,ty:f.path?.[0]?.[1]??0,dir:f.dir||"down",mode:"patrol",defeated:false,type:f.type||"chaser"}));
+const fieldState={x:start.tx*32+16,y:start.ty*32+20,dir:"up",moving:false,foes,explored:{"1-0":new Uint8Array(grid.length*width).fill(1)},visible:new Set()};
 const snapshot=buildField3DSnapshot({area,fieldState,tilePixels:32,isSolidChar:(_a,c)=>"#~ST?G".includes(c)||/[a-z]/.test(c)});
 const host=document.querySelector("#view");
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x08120e);scene.fog=new THREE.FogExp2(0x15271c,.038);
@@ -54,6 +75,30 @@ scene.add(new THREE.HemisphereLight(0xa5c6a5,0x17120e,1.15));
 const sun=new THREE.DirectionalLight(0xc8e5c2,2.3);sun.position.set(-12,18,10);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
 const world=buildField3DWorld(THREE,snapshot,{palette:{floor:0x59644c,path:0x71654b,grass:0x38583b,safe:0x777c5a,wall:0x34463a,hazard:0x315d64}});
 scene.add(world.group);
+// Neutral geometry markers: distinct silhouettes by object category, using the map's real object coordinates.
+const objectGroup=new THREE.Group(); objectGroup.name="kotama-3d-object-markers";
+const objectMaterials={
+ npc:new THREE.MeshStandardMaterial({color:0xd7b47b,emissive:0x35200a}),
+ event:new THREE.MeshStandardMaterial({color:0x9d83cf,emissive:0x24133b}),
+ chest:new THREE.MeshStandardMaterial({color:0xe0b85c,metalness:.35,roughness:.55}),
+ gather:new THREE.MeshStandardMaterial({color:0x78cda5,emissive:0x164b36}),
+ door:new THREE.MeshStandardMaterial({color:0x9babb0,metalness:.65,roughness:.4}),
+ switch:new THREE.MeshStandardMaterial({color:0xe2cf78,emissive:0x5a4512}),
+ cache:new THREE.MeshStandardMaterial({color:0x9e79d0,emissive:0x35204b}),
+ other:new THREE.MeshStandardMaterial({color:0xb2c5a2})
+};
+for(const o of snapshot.objects){
+ const kind=objectMaterials[o.kind]?o.kind:"other";
+ const geometry=o.kind==="chest"||o.kind==="cache"?new THREE.BoxGeometry(.9,.65,.65):o.kind==="door"?new THREE.BoxGeometry(.8,2.5,.28):new THREE.OctahedronGeometry(.48);
+ const marker=new THREE.Mesh(geometry,objectMaterials[kind]);
+ marker.position.set(o.world.x,o.onWall?1.8:.55,o.world.z);marker.castShadow=true;marker.userData.objectKey=o.key;objectGroup.add(marker);
+}
+scene.add(objectGroup);
+// FOE markers are visualization-only and do not run the existing FOE AI.
+const foeGroup=new THREE.Group();foeGroup.name="kotama-3d-foe-markers";
+const foeMat=new THREE.MeshStandardMaterial({color:0xb54d42,roughness:.72});
+for(const foe of snapshot.foes){const marker=new THREE.Mesh(new THREE.ConeGeometry(.62,1.65,7),foeMat);marker.position.set(foe.world.x,.83,foe.world.z);marker.castShadow=true;marker.userData.foeKey=foe.key;foeGroup.add(marker);}
+scene.add(foeGroup);
 const rootMat=new THREE.MeshStandardMaterial({color:0x382b20,roughness:.9});
 for(let i=0;i<18;i++){
  const x=(Math.sin(i*12.37)*.5+.5)*snapshot.area.worldWidth;
@@ -94,7 +139,7 @@ function drawMini(){
 drawMini();
 addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight)});
 function animate(){requestAnimationFrame(animate);renderer.render(scene,camera)}animate();
-addEventListener("pagehide",()=>{world.dispose();renderer.dispose()});
+addEventListener("pagehide",()=>{world.dispose();renderer.dispose();for(const m of Object.values(objectMaterials))m.dispose();foeMat.dispose();});
 </script>
 </body>
 </html>
