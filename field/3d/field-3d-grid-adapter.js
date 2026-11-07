@@ -70,6 +70,7 @@ export function buildField3DSnapshot({
   fieldState,
   worldUnitsPerTile = FIELD_3D_DEFAULTS.worldUnitsPerTile,
   wallHeight = FIELD_3D_DEFAULTS.wallHeight,
+  tilePixels = 32,
   isSolidChar = null,
   isDoorOpen = null,
   isPuzzleSolved = null,
@@ -85,6 +86,7 @@ export function buildField3DSnapshot({
 
   const scale = Math.max(0.1, finite(worldUnitsPerTile, FIELD_3D_DEFAULTS.worldUnitsPerTile));
   const height = Math.max(0.5, finite(wallHeight, FIELD_3D_DEFAULTS.wallHeight));
+  const tileSize = Math.max(1, finite(tilePixels, 32));
   const rows = area.grid;
   const width = finite(area.w, Math.max(...rows.map(row => row.length)));
   const depth = finite(area.h, rows.length);
@@ -131,13 +133,13 @@ export function buildField3DSnapshot({
     }
   }
 
-  const playerTileX = Math.floor(finite(fieldState.x) / 32);
-  const playerTileY = Math.floor(finite(fieldState.y) / 32);
+  const playerTileX = Math.floor(finite(fieldState.x) / tileSize);
+  const playerTileY = Math.floor(finite(fieldState.y) / tileSize);
   const playerDir = ["up", "right", "down", "left"].includes(fieldState.dir)
     ? fieldState.dir : "down";
   const foes = (Array.isArray(fieldState.foes) ? fieldState.foes : []).map(foe => {
-    const tx = finite(foe.tx, Math.floor(finite(foe.x) / 32));
-    const ty = finite(foe.ty, Math.floor(finite(foe.y) / 32));
+    const tx = finite(foe.tx, Math.floor(finite(foe.x) / tileSize));
+    const ty = finite(foe.ty, Math.floor(finite(foe.y) / tileSize));
     return Object.freeze({
       key: String(foe.key ?? ""),
       enemyId: String(foe.def?.enemy ?? ""),
