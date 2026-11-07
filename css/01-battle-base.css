@@ -502,3 +502,44 @@ button:focus-visible,[role="button"]:focus-visible{outline:3px solid var(--gold)
     flex-basis:38px;
   }
 }
+
+
+/* Boss opening: distinct stratum frame and a readable arrival hierarchy. */
+.battle-screen.is-boss-battle .battle-arena{
+  border-color:var(--boss-accent,#d7c58b);
+  box-shadow:0 0 0 1px #080d20,inset 0 0 0 2px #080d20,inset 0 0 38px var(--boss-glow,#d7c58b22),0 8px 24px #0009;
+  transition:border-color .35s ease,box-shadow .35s ease;
+}
+.battle-screen[data-boss-stage="1"]{--boss-accent:#8fc58b;--boss-glow:#75c96b35}
+.battle-screen[data-boss-stage="2"]{--boss-accent:#a6ad68;--boss-glow:#a6ad6835}
+.battle-screen[data-boss-stage="3"]{--boss-accent:#9acbd4;--boss-glow:#77c9d535}
+.battle-screen[data-boss-stage="4"]{--boss-accent:#e18b50;--boss-glow:#ed542d45}
+.battle-screen[data-boss-stage="5"]{--boss-accent:#b78bd2;--boss-glow:#9a4cc255}
+.stage-transition-copy{position:relative;z-index:2;display:grid;justify-items:center;gap:10px;width:min(92vw,900px);padding:24px 18px;text-align:center}
+.stage-transition-kicker{color:#e6d49b;font-size:clamp(10px,2vw,14px);font-weight:800;letter-spacing:.42em;text-shadow:0 0 12px #d9b96c88;opacity:0}
+.stage-transition-enemy{color:#f4e8d4;font-size:clamp(17px,3.4vw,27px);font-weight:800;letter-spacing:.18em;text-shadow:0 2px 12px #000,0 0 18px #f1c27b66;opacity:0}
+.stage-transition.playing .stage-transition-kicker{animation:stage-title-reveal 4s ease-in-out .08s forwards}
+.stage-transition.playing .stage-transition-enemy{animation:stage-title-reveal 4s ease-in-out .2s forwards}
+.stage-transition.boss-stage{background:radial-gradient(ellipse at 50% 48%,#1a1c35 0%,#080b1b 46%,#02030b 100%)}
+.stage-transition[data-stage="1"] .stage-transition-title{color:#b7e4a4;text-shadow:0 0 22px #6dbd6d88}
+.stage-transition[data-stage="2"] .stage-transition-title{color:#d4d89a;text-shadow:0 0 22px #a5ad5588}
+.stage-transition[data-stage="3"] .stage-transition-title{color:#b9e2e8;text-shadow:0 0 22px #7ac7d688}
+.stage-transition[data-stage="4"] .stage-transition-title{color:#ffb16e;text-shadow:0 0 24px #f45a3088}
+.stage-transition[data-stage="5"] .stage-transition-title{color:#d5a9f2;text-shadow:0 0 26px #a04bdcaa}
+.event-log .event-boss-arrival{
+  padding:5px 8px;
+  border:1px solid var(--boss-accent,#d7c58b);
+  border-left-width:4px;
+  background:linear-gradient(90deg,var(--boss-glow,#d7c58b22),#070d20cc 78%);
+  color:#fff1d3;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-shadow:0 0 9px var(--boss-glow,#d7c58b55);
+  animation:boss-arrival-message .55s ease-out both;
+}
+@keyframes boss-arrival-message{from{opacity:0;transform:translateY(7px);filter:brightness(1.8)}to{opacity:1;transform:none;filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){
+  .battle-screen.is-boss-battle .battle-arena{transition:none}
+  .stage-transition.playing .stage-transition-kicker,.stage-transition.playing .stage-transition-enemy{animation:none;opacity:1}
+  .event-log .event-boss-arrival{animation:none}
+}
