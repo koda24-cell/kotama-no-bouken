@@ -126,7 +126,7 @@ export function buildField3DSnapshot({
       const center = worldCenter(tx, ty, scale);
       cells.push(Object.freeze({
         tx, ty, char, terrain, solid,
-        floorVisible: !solid && char !== "~",
+        floorVisible: char !== "#" && char !== "~" && !linkedObjects.some(object => object.onWall),
         wallHeight: solid ? height : 0,
         world: center,
         objects: Object.freeze(linkedObjects)
