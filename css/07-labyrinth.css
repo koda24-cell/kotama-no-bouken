@@ -592,7 +592,7 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   font-weight:900;
   text-shadow:0 2px 3px #17100a,0 0 7px #f1d58b;
 }
-.field-object[data-dir="down"] .field-object-sprite::before{content:"⇩"}
+.field-object[data-sprite="stairs-down"] .field-object-sprite::before{content:"⇩"}
 
 /* Save point: a small sanctuary-like beacon. */
 .field-object[data-kind="save"]::before{
