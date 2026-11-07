@@ -163,3 +163,93 @@ body:is([data-screen="home"],[data-screen="formation"],[data-screen="shop"],[dat
   #shop-items .shop-detail { position: sticky; top: 8px; }
   #shop-buyer .shop-buyer-stats { font-size: 12px !important; }
 }
+
+/* ============================== 強化・育成 ============================== */
+#progression-panel.progression-panel { margin: 0 !important; padding: 10px !important; }
+.tr-title { margin: 0 0 6px !important; font-size: 16px !important; }
+#progression-panel .training-character-tabs { display: flex !important; flex-wrap: nowrap !important; gap: 4px !important; margin: 0 0 var(--ui-gap) !important; padding-bottom: 2px; overflow-x: auto; scrollbar-width: none; }
+#progression-panel .training-character-tabs::-webkit-scrollbar { display: none; }
+#progression-panel .training-character-tabs button { position: relative; flex: 0 0 auto; display: grid; grid-template-columns: 28px auto; align-items: center; gap: 4px; min-height: var(--ui-tap); padding: 2px 10px 2px 3px !important; font-size: 13px; white-space: nowrap; }
+#progression-panel .training-character-tabs button.active { box-shadow: inset 0 -3px 0 var(--gold); }
+.tr-tab-art { display: block; width: 28px; height: 32px; overflow: hidden; border-radius: 4px; background: #070c33; }
+.tr-tab-art img { width: 100%; height: 100%; object-fit: contain; }
+.tr-tab-art .image-fallback { font-size: 12px; display: grid; place-items: center; height: 100%; }
+.tr-tab-pt { position: absolute; top: -4px; right: -2px; min-width: 16px; height: 16px; padding: 0 3px; border-radius: 8px; background: var(--p4-up); color: #062012; font-size: 10px; line-height: 16px; text-align: center; }
+#progression-panel .training-tree.tr-board { margin: 0 0 var(--ui-gap) !important; padding: 10px !important; min-width: 0; }
+.tr-who { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--p4-line); }
+.tr-who-art { height: 52px; border-radius: 6px; overflow: hidden; background: radial-gradient(ellipse at 50% 80%, #2c2a6a, #090d33); }
+.tr-who-art img { width: 100%; height: 100%; object-fit: contain; }
+.tr-who-info { min-width: 0; }
+.tr-who-info h3 { margin: 0 !important; font-size: 15px !important; }
+.tr-who-info p { margin: 2px 0 0 !important; font-size: 10px !important; color: var(--dim) !important; }
+.tr-points { display: grid; justify-items: end; line-height: 1.1; }
+.tr-points small { font-size: 9px; color: var(--dim); }
+.tr-points strong { font-size: 22px; color: var(--gold); }
+.tr-points strong span { font-size: 11px; margin-left: 2px; }
+.tr-body { display: grid; gap: var(--ui-gap); min-width: 0; }
+.tr-tree-wrap { min-width: 0; }
+.tr-help { margin: 0 0 6px !important; font-size: 11px !important; }
+/* スマホ：縦の並び（基礎 → SP A・SP B → 派生）。横にはみ出さない */
+.tr-tree { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; min-width: 0; }
+.tr-col { position: relative; display: grid; gap: 8px; min-width: 0; }
+.tr-col-branch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tr-col-passive, .tr-col-derived { width: min(100%, 300px); justify-self: center; }
+.tr-col + .tr-col::before { content: ""; position: absolute; left: 50%; top: -18px; height: 18px; border-left: 2px solid var(--p4-line-strong); }
+.tr-col-branch::after { content: ""; position: absolute; left: 25%; right: 25%; top: -9px; border-top: 2px solid var(--p4-line-strong); }
+.tr-col-derived::after { content: ""; position: absolute; left: 25%; right: 25%; top: -9px; border-top: 2px solid var(--p4-line-strong); }
+.tr-node { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "step name" "lv lv" "bar bar" "state state"; align-items: center; gap: 3px 6px; min-width: 0; min-height: 76px; padding: 8px; border: 1px solid var(--p4-line); border-radius: var(--ui-radius); background: #151d4a; color: inherit; text-align: left; }
+.tr-node.skill-available { border-color: #75c7b0; box-shadow: 0 0 10px #75c7b033; }
+.tr-node.skill-opened { border-color: #a27d2e; }
+.tr-node.skill-locked { opacity: .75; }
+.tr-node.selected { border-color: var(--p4-sel); box-shadow: 0 0 0 2px var(--p4-sel); background: #1e2a72; }
+.tr-node-step { grid-area: step; padding: 1px 6px; border-radius: 8px; background: #3b477b; color: #fff; font-size: 10px; white-space: nowrap; }
+.tr-node.skill-opened .tr-node-step { background: #a27d2e; }
+.tr-node strong { grid-area: name; min-width: 0; font-size: 13px; color: #fff0b6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tr-node-lv { grid-area: lv; font-size: 11px; color: #e6ebff; }
+.tr-node-bar { grid-area: bar; display: block; height: 4px; border-radius: 2px; background: #2a2f5a; overflow: hidden; }
+.tr-node-bar u { display: block; height: 100%; background: linear-gradient(90deg, #c9a94d, #ffe18a); }
+.tr-node-state { grid-area: state; font-size: 10px !important; color: var(--dim) !important; }
+.tr-node.skill-available .tr-node-state { color: var(--p4-up) !important; }
+#progression-panel .tr-detail.skill-detail-panel { margin: 0 !important; padding: 10px !important; border: 1px solid var(--p4-line-strong) !important; border-radius: var(--ui-radius) !important; background: linear-gradient(#131f6a, #0b1447) !important; min-width: 0; }
+.tr-detail-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px; align-items: center; }
+.tr-detail-head h4 { margin: 0; font-size: 15px; overflow-wrap: anywhere; }
+.tr-state { font-size: 11px; padding: 1px 8px; border-radius: 8px; border: 1px solid var(--p4-line); white-space: nowrap; }
+.tr-state.is-ok { border-color: var(--p4-up); color: var(--p4-up); }
+.tr-state.is-max { border-color: var(--gold); color: var(--gold); }
+.tr-state.is-ng { color: var(--dim); }
+.tr-detail > p { margin: 6px 0 !important; font-size: 12px !important; color: #e3e8ff !important; line-height: 1.6; }
+.tr-detail-list { display: grid; gap: 4px; margin: 0 0 8px; }
+.tr-detail-list div { display: grid; grid-template-columns: 6.5em minmax(0, 1fr); gap: 6px; font-size: 11px; }
+.tr-detail-list dt { color: var(--dim); }
+.tr-detail-list dd { margin: 0; color: #e6ebff; min-width: 0; overflow-wrap: anywhere; }
+.tr-detail-list dd b { color: var(--gold); }
+.tr-detail-list .tr-node-bar { margin-top: 3px; max-width: 200px; }
+.tr-upgrade { width: 100%; min-height: 44px; margin: 0 !important; }
+#progression-panel .training-stats, #progression-panel .material-line { margin: 0 0 var(--ui-gap) !important; }
+#progression-panel .training-stats { padding: 10px !important; }
+@media (min-width: 701px) {
+  .tr-body { grid-template-columns: minmax(0, 1fr) minmax(280px, 340px); align-items: start; }
+  /* PC：横の並び（基礎 → SP A/B → 派生） */
+  .tr-tree { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 26px; align-items: center; }
+  .tr-col-branch { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .tr-col-passive, .tr-col-derived { width: 100%; }
+  .tr-col + .tr-col::before { left: -26px; top: 50%; width: 26px; height: 0; border-left: 0; border-top: 2px solid var(--p4-line-strong); }
+  .tr-col-branch::after, .tr-col-derived::after { display: none; }
+  .tr-col-branch .tr-node { position: relative; }
+  .tr-col-branch::before { top: 25% !important; height: 50% !important; width: 0 !important; left: -13px !important; border-top: 0 !important; border-left: 2px solid var(--p4-line-strong) !important; }
+  .tr-col-derived::before { left: -26px; }
+  .tr-node { min-height: 96px; }
+  #progression-panel .tr-detail.skill-detail-panel { position: sticky; top: 8px; }
+}
+.tr-detail-head .tr-node-step { grid-area: auto; justify-self: start; }
+/* 製作・強化：1件を「名前・説明｜ボタン」の1行にまとめる */
+#progression-panel .progression-grid { display: grid; gap: var(--ui-gap) !important; }
+#progression-panel .progression-grid section { padding: 10px !important; }
+#progression-panel .progression-grid article { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; grid-auto-flow: dense; column-gap: 8px; row-gap: 1px; align-items: center; padding: 6px 0 !important; }
+#progression-panel .progression-grid article > * { grid-column: 1; min-width: 0; }
+#progression-panel .progression-grid article > button { grid-column: 2; grid-row: 1 / span 3; min-height: 36px; margin: 0; }
+#progression-panel .progression-grid article small { font-size: 10px !important; line-height: 1.4; }
+@media (min-width: 701px) { #progression-panel .progression-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) !important; align-items: start; } }
+#progression-panel .training-stat-grid { margin: 6px 0 !important; gap: 4px !important; }
+#progression-panel .training-stat-grid span { padding: 4px 8px !important; }
+#progression-panel .training-stats p { margin: 2px 0 !important; }
