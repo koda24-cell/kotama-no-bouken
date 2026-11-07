@@ -415,6 +415,10 @@ function shopDisplayCategory(item){
   }
   return "other";
 }
+// [UI-P4] ショップ：カテゴリは横スクロールのタブ、一覧（アイコン・名前・所持数・価格）と詳細（説明・能力・装備比較・購入）を分ける。
+// #shop-items[data-shop-mode] は将来の「売る」タブ用（今は buy のみ）。購入の処理（buyItem）は変更しない。
+// チュートリアル中は案内対象（革の鎧・回復薬）を選択状態にし、購入ボタンを #shop-items 内に必ず出す。
+var shopSelectedItemId=null;
 function renderShop(){
   const box=$("shop-items");if(!box)return;
   const buyer=getCharacter(shopBuyerId)||characters[0];
@@ -423,21 +427,32 @@ function renderShop(){
   const orderedCategories=["weapon","armor","shield","staff","knuckle","accessory","other"].filter(c=>availableCategories.includes(c));
   if(!orderedCategories.includes(currentCategory))currentCategory=orderedCategories[0]||"weapon";
   const tabs=$("shop-category-tabs");
-  if(tabs)tabs.innerHTML=orderedCategories.map(c=>`<button data-category="${c}" class="${currentCategory===c?"active":""}">${categoryNames[c]}</button>`).join("");
+  if(tabs){tabs.setAttribute("role","tablist");tabs.innerHTML=orderedCategories.map(c=>`<button type="button" role="tab" data-category="${c}" class="${currentCategory===c?"active":""}" aria-selected="${currentCategory===c}">${categoryNames[c]}</button>`).join("");}
   const buyerBox=$("shop-buyer");
   const before=effectiveStats(buyer);
   const jobNames={kotama:"冒険者",knight:"騎士",healer:"治癒士",warrior:"戦士",mage:"魔術師",samurai:"武士"};
   if(buyerBox)buyerBox.innerHTML=`<div class="shop-buyer-head"><button type="button" data-buyer-prev aria-label="前の仲間">◀</button><div class="shop-buyer-portrait">${getCharacterImage(buyer)}</div><div class="shop-buyer-info"><strong>${esc(buyer.name)}</strong><div class="shop-buyer-job">職業：${jobNames[buyer.id]||buyer.name}</div><div class="shop-buyer-stats">HP ${before.maxHp}／攻撃 ${before.attack}／SP攻撃 ${before.spAttack}／防御 ${before.defense}／SP防御 ${before.spDefense}</div></div><button type="button" data-buyer-next aria-label="次の仲間">▶</button></div>`;
   const items=shopItems.filter(i=>!i.craftedOnly&&(!i.tutorialOnly||tutorialState.started&&!tutorialState.completed)&&shopDisplayCategory(i)===currentCategory&&(i.category==="healing"||(i.classes||[]).includes(buyer.id)));
-  box.innerHTML=items.map(i=>{
-    const locked=(i.unlock||1)>(state.maxUnlockedStage||1),owned=inventory[i.id]||0,canUse=(i.classes||[]).includes(buyer.id)||i.category==="healing";
+  if(tutorialState.started&&!tutorialState.completed){const want=items.find(i=>i.id==="leather-armor")||items.find(i=>i.id==="potion");if(want)shopSelectedItemId=want.id;}
+  const sel=items.find(i=>i.id===shopSelectedItemId)||items[0]||null;
+  const equippedIds=Object.values(equipment[buyer.id]||{});
+  const list=items.map(i=>{const locked=(i.unlock||1)>(state.maxUnlockedStage||1),owned=inventory[i.id]||0,on=sel&&sel.id===i.id;return `<button type="button" class="shop-row ${on?"is-selected":""} ${locked?"is-locked":""}" data-shop-select="${esc(i.id)}" aria-pressed="${!!on}"><span class="item-icon">${esc(i.icon)}</span><span class="shop-row-name">${esc(i.name)}${equippedIds.includes(i.id)?'<small class="shop-row-tag">装備中</small>':""}${locked?`<small class="shop-row-tag is-lock">STAGE ${i.unlock}後</small>`:""}</span><span class="shop-row-owned">所持 ${owned}</span><span class="shop-row-price ${state.gold<i.price?"is-short":""}">${i.price}G</span></button>`;}).join("");
+  let detail='<p class="empty-note">この職業に対応する商品はありません。</p>';
+  if(sel){const i=sel,locked=(i.unlock||1)>(state.maxUnlockedStage||1),owned=inventory[i.id]||0,canUse=(i.classes||[]).includes(buyer.id)||i.category==="healing";
     const slot=getShopItemSlot(i,buyer.id);
     const preview=slot?previewEquipmentStats(buyer,i,slot):null;
-    const previewText=preview?renderShopStatPreview(before,preview):"";
-    return `<article class="shop-item ${locked?"shop-locked":""}"><div class="item-icon">${i.icon}</div><h3>${esc(i.name)}</h3><p>${esc(i.description)}</p><p>${esc(i.effect)}</p><p>所持数：${owned}</p>${Object.values(equipment[buyer.id]||{}).includes(i.id)?`<p class="currently-equipped">現在装備中</p>`:""}${previewText}<p class="price">${i.price} GOLD</p>${locked?`<p class="shop-lock-note">STAGE ${i.unlock} クリア後に解放</p>`:i.category==="healing"?`<button class="primary-button" data-buy-item="${i.id}" data-buy-mode="store" ${state.gold<i.price?"disabled":""}>購入する</button>`:slot?`<div class="shop-buy-choices"><button class="primary-button" data-buy-item="${i.id}" data-buy-mode="equip" ${state.gold<i.price||!canUse?"disabled":""}>購入して装備</button><button class="secondary-button" data-buy-item="${i.id}" data-buy-mode="store" ${state.gold<i.price?"disabled":""}>購入して保管</button></div>`:`<button class="primary-button" data-buy-item="${i.id}" data-buy-mode="store" ${state.gold<i.price?"disabled":""}>購入して保管</button>`}</article>`;
-  }).join("")||'<p class="empty-note">この職業に対応する商品はありません。</p>';
+    const slotLabel=slot?(equipmentSlots(buyer).find(x=>x[0]===slot)||[slot,slot])[1]:"";
+    const current=slot?itemById(equipment[buyer.id]?.[slot]):null;
+    const classesText=i.category==="healing"?"全員":(i.classes||[]).map(id=>getCharacter(id)?.name).filter(Boolean).join("・");
+    const compare=preview?`<div class="shop-compare"><div class="shop-compare-head"><span>${esc(slotLabel)}：${current?esc(current.name):"なし"}</span><b>→</b><span class="is-new">${esc(i.name)}</span></div>${renderShopStatPreview(before,preview)}</div>`:"";
+    const buy=locked?`<p class="shop-lock-note">STAGE ${i.unlock} クリア後に解放</p>`:i.category==="healing"?`<button class="primary-button" data-buy-item="${i.id}" data-buy-mode="store" ${state.gold<i.price?"disabled":""}>購入する</button>`:slot?`<div class="shop-buy-choices"><button class="primary-button" data-buy-item="${i.id}" data-buy-mode="equip" ${state.gold<i.price||!canUse?"disabled":""}>購入して装備</button><button class="secondary-button" data-buy-item="${i.id}" data-buy-mode="store" ${state.gold<i.price?"disabled":""}>購入して保管</button></div>`:`<button class="primary-button" data-buy-item="${i.id}" data-buy-mode="store" ${state.gold<i.price?"disabled":""}>購入して保管</button>`;
+    detail=`<article class="shop-item shop-detail ${locked?"shop-locked":""}" aria-live="polite"><header class="shop-detail-head"><div class="item-icon">${esc(i.icon)}</div><div><h3>${esc(i.name)}</h3><p class="shop-detail-meta"><span class="price">${i.price} GOLD</span><span>所持数：${owned}</span>${equippedIds.includes(i.id)?`<span class="currently-equipped">現在装備中</span>`:""}</p></div></header><p>${esc(i.description)}</p><p class="shop-detail-effect">${esc(i.effect)}</p><p class="shop-detail-classes">装備できる仲間：${esc(classesText||"—")}</p>${compare}<div class="shop-detail-buy">${state.gold<i.price&&!locked?'<p class="shop-short-note">ゴールドが足りません</p>':""}${buy}</div></article>`;}
+  box.dataset.shopMode="buy";
+  box.innerHTML=items.length?`<div class="shop-list" role="list" aria-label="商品一覧">${list}</div>${detail}`:detail;
   box.querySelectorAll("[data-buy-item]").forEach(b=>b.onclick=()=>buyItem(b.dataset.buyItem,b.dataset.buyMode||"store"));
-  tabs?.querySelectorAll("[data-category]").forEach(b=>b.onclick=()=>{currentCategory=b.dataset.category;renderShop();sound("select");});
+  box.querySelectorAll("[data-shop-select]").forEach(b=>b.onclick=()=>{shopSelectedItemId=b.dataset.shopSelect;renderShop();sound("select");if(window.matchMedia&&window.matchMedia("(max-width:700px)").matches)box.querySelector(".shop-detail")?.scrollIntoView({block:"nearest",behavior:"smooth"});});
+  tabs?.querySelectorAll("[data-category]").forEach(b=>b.onclick=()=>{currentCategory=b.dataset.category;shopSelectedItemId=null;renderShop();sound("select");});
+  {const act=tabs?.querySelector(".active");if(act&&tabs.scrollWidth>tabs.clientWidth){const tr=tabs.getBoundingClientRect(),ar=act.getBoundingClientRect();if(ar.left<tr.left||ar.right>tr.right)tabs.scrollLeft+=ar.left-tr.left-8;}}// 選択中のタブを横スクロールの中で見える位置に（ページは動かさない）
   buyerBox?.querySelector("[data-buyer-prev]")?.addEventListener("click",()=>{{const list=extAvailableCharacters();shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+list.length-1)%list.length].id;}renderShop();});
   buyerBox?.querySelector("[data-buyer-next]")?.addEventListener("click",()=>{{const list=extAvailableCharacters();shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+1)%list.length].id;}renderShop();});
 }
