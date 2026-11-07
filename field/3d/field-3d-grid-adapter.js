@@ -15,7 +15,8 @@ export const FIELD_3D_DEFAULTS = Object.freeze({
 });
 
 const WALKABLE_TERRAIN = new Set([".", ",", "*", "_", "P", "E", "B", "<", ">"]);
-const SAFE_TERRAIN = new Set(["_", "P", "E", "B", "<", ">", "S"]);\nconst DEFAULT_SOLID_TERRAIN = new Set(["#", "~", "S", "T", "?", "G"]);
+const SAFE_TERRAIN = new Set(["_", "P", "E", "B", "<", ">", "S"]);
+const DEFAULT_SOLID_TERRAIN = new Set(["#", "~", "S", "T", "?", "G"]);
 
 function finite(value, fallback = 0) {
   const n = Number(value);
