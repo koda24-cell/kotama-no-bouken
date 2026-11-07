@@ -330,3 +330,95 @@
   .field-player[data-moving="true"] .field-player-sprite,
   .field-player[data-moving="true"] .field-player-shadow{animation:none!important}
 }
+
+
+/* Encounter cut-in: turn the field warning into a short dungeon ambush beat. */
+.field-screen.is-encounter .field-viewport{
+  filter:saturate(.72) brightness(.76);
+  transition:filter .18s ease-out;
+}
+.field-screen.is-encounter .field-player{
+  filter:drop-shadow(0 0 7px #fff1c988);
+}
+.field-screen.is-foe-encounter .field-viewport{
+  filter:saturate(.62) brightness(.58) contrast(1.12);
+}
+.field-screen.is-foe-encounter .field-player{
+  filter:drop-shadow(0 0 8px #ff643c);
+}
+.field-screen.is-encounter .field-player-alert{
+  color:#ffe9a0;
+  font-size:30px;
+  text-shadow:0 0 5px #fff,0 0 14px #ffcf6b,0 3px 0 #26170d;
+}
+.field-screen.is-foe-encounter .field-player-alert{
+  color:#ff6c4e;
+  font-size:36px;
+  text-shadow:0 0 5px #fff,0 0 12px #ff351d,0 0 26px #ff351d,0 3px 0 #210707;
+  animation:field-foe-alert .42s cubic-bezier(.16,.84,.22,1) both;
+}
+@keyframes field-foe-alert{
+  0%{transform:translate(-50%,-55%) scale(.2) rotate(-12deg);opacity:0}
+  58%{transform:translate(-50%,-112%) scale(1.22) rotate(3deg);opacity:1}
+  100%{transform:translate(-50%,-100%) scale(1) rotate(0);opacity:1}
+}
+.field-encounter-flash{
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:#070914;
+}
+.field-encounter-flash::before{
+  content:"ENCOUNTER";
+  position:relative;
+  z-index:2;
+  padding:8px 16px;
+  border-block:1px solid #e7d69a99;
+  color:#f3e6bd;
+  font-size:clamp(13px,3vw,20px);
+  font-weight:900;
+  letter-spacing:.42em;
+  text-indent:.42em;
+  text-shadow:0 0 15px #f2d88c99;
+  animation:field-encounter-title .5s ease-out both;
+}
+.field-encounter-flash::after{
+  content:"";
+  position:absolute;
+  inset:-35%;
+  background:repeating-linear-gradient(112deg,transparent 0 34px,#d7c58b18 35px 36px,transparent 37px 70px);
+  transform:translateX(-12%);
+  animation:field-encounter-sweep .5s ease-out both;
+}
+.field-screen.is-foe-encounter .field-encounter-flash{
+  background:radial-gradient(ellipse at center,#40150f 0%,#160a11 48%,#03040b 100%);
+}
+.field-screen.is-foe-encounter .field-encounter-flash::before{
+  content:"FOE  /  DANGER";
+  border-block:2px solid #ff8058;
+  color:#ffd2a7;
+  letter-spacing:.3em;
+  text-shadow:0 0 8px #ff573d,0 0 24px #e43b2d;
+  box-shadow:0 0 28px #f34c3344;
+}
+.field-screen.is-foe-encounter .field-encounter-flash::after{
+  background:repeating-linear-gradient(112deg,transparent 0 25px,#ff684b24 26px 28px,transparent 29px 52px);
+}
+@keyframes field-encounter-title{
+  0%{opacity:0;transform:scale(1.35);letter-spacing:.8em}
+  25%,75%{opacity:1}
+  100%{opacity:0;transform:scale(.96);letter-spacing:.3em}
+}
+@keyframes field-encounter-sweep{
+  0%{transform:translateX(-32%) rotate(0);opacity:0}
+  30%{opacity:1}
+  100%{transform:translateX(32%) rotate(0);opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-screen.is-encounter .field-viewport,
+  .field-screen.is-encounter .field-player,
+  .field-screen.is-foe-encounter .field-player-alert,
+  .field-encounter-flash::before,
+  .field-encounter-flash::after{transition:none!important;animation:none!important}
+  .field-encounter-flash::before{opacity:1}
+}
