@@ -25,7 +25,7 @@ export function planField3DLandmarks(snapshot, {
   const objects = new Set((snapshot.objects || []).map(o => o.tx + "," + o.ty));
   const foes = new Set((snapshot.foes || []).filter(f => !f.defeated).map(f => f.tx + "," + f.ty));
   const playerKey = snapshot.player?.tx + "," + snapshot.player?.ty;
-  const suggestions = [];
+  const candidates = [];
 
   for (const cell of snapshot.cells) {
     if (!cell.solid || cell.char !== "#") continue;
@@ -42,9 +42,9 @@ export function planField3DLandmarks(snapshot, {
     const roll = hash01(cell.tx, cell.ty, seed);
     const toward = adjacent[Math.floor(hash01(cell.tx, cell.ty, seed + 3) * adjacent.length)];
     const position = {
-      x: cell.world.x + toward.dx * scale * 0.34,
+      x: cell.world.x + toward.dx * scale * 0.54,
       y: 0,
-      z: cell.world.z + toward.dy * scale * 0.34
+      z: cell.world.z + toward.dy * scale * 0.54
     };
     const rotation = { y: [0, -Math.PI / 2, Math.PI, Math.PI / 2][toward.side] };
     let kind = null;
@@ -62,7 +62,7 @@ export function planField3DLandmarks(snapshot, {
       factor = 0.72 + hash01(cell.tx, cell.ty, seed + 11) * 0.5;
     }
     if (!kind) continue;
-    suggestions.push({
+    candidates.push({
       id: "auto-" + snapshot.area.key + "-" + cell.tx + "-" + cell.ty,
       kind,
       position,
@@ -71,10 +71,10 @@ export function planField3DLandmarks(snapshot, {
       sourceCell: { tx: cell.tx, ty: cell.ty },
       presentationOnly: true
     });
-    if (suggestions.length >= maxCount) break;
+
   }
 
-  return Object.freeze(suggestions.map(item => Object.freeze({
+  // Rank by stable seeded score rather than map scan order, avoiding a cluster at the northwest edge.\n  candidates.sort((a, b) => hash01(b.sourceCell.tx, b.sourceCell.ty, seed + 101) - hash01(a.sourceCell.tx, a.sourceCell.ty, seed + 101));\n  const suggestions = candidates.slice(0, Math.max(0, Math.floor(maxCount)));\n  return Object.freeze(suggestions.map(item => Object.freeze({
     ...item,
     position: Object.freeze(item.position),
     rotation: Object.freeze(item.rotation),
