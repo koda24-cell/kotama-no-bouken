@@ -69,3 +69,40 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   .field-hud{flex-wrap:wrap;gap:6px}
   .field-minimap{top:6px;right:6px}
 }
+
+/* [SIDE] サブイベントの調べられる物（仮表示：絵文字。GPT が絵を付ける場合は data-sprite ごとに差し替え） */
+.field-object[data-kind="event"] .field-object-sprite::before{content:"✨";filter:drop-shadow(0 0 4px #9fe7ff)}
+.field-object[data-sprite="ev-stump"] .field-object-sprite::before{content:"🪵"}
+.field-object[data-sprite="ev-crate"] .field-object-sprite::before{content:"🧺"}
+.field-object[data-sprite="ev-shard"] .field-object-sprite::before{content:"💠"}
+.field-object[data-sprite="ev-bag"] .field-object-sprite::before{content:"👝"}
+.field-object[data-sprite="ev-emblem"] .field-object-sprite::before{content:"🛡️"}
+.field-object[data-sprite="ev-sword"] .field-object-sprite::before{content:"🗡️"}
+/* 隠し発見：近くで正面を向くまで、かすかなきらめきだけ */
+.field-object.is-hidden-event .field-object-sprite::before{content:"✧";font-size:14px;color:#dff6ff;opacity:.28;filter:none;animation:field-side-glint 2.4s ease-in-out infinite}
+.field-object.is-hidden-event.is-near .field-object-sprite::before{opacity:.9}
+@keyframes field-side-glint{0%,70%,100%{opacity:.12}80%{opacity:.5}}
+.field-object[data-kind="event"].is-opened .field-object-sprite::before{opacity:.35;filter:grayscale(1)}
+.field-object.is-hidden-event.is-opened .field-object-sprite::before{opacity:0;animation:none}
+.lg-event{background:#7fd6ff;border-radius:50%!important}
+@media(prefers-reduced-motion:reduce){.field-object.is-hidden-event .field-object-sprite::before{animation:none;opacity:.28}}
+
+/* [PUZZLE] 仕掛け（仮表示：絵文字。GPT が絵を付ける場合は data-sprite ごとに差し替え） */
+.field-object[data-kind="switch"] .field-object-sprite::before{content:"🔘";opacity:.75;filter:grayscale(.6)}
+.field-object[data-sprite="pz-lever"] .field-object-sprite::before{content:"🕹️"}
+.field-object[data-sprite="pz-bell"] .field-object-sprite::before{content:"🔔"}
+.field-object[data-sprite="pz-lantern"] .field-object-sprite::before{content:"🏮"}
+.field-object[data-sprite="pz-statue"] .field-object-sprite::before{content:"🤺"}
+.field-object[data-kind="switch"].is-on .field-object-sprite::before{opacity:1;filter:drop-shadow(0 0 6px #ffe680) drop-shadow(0 0 2px #fff)}
+.field-object[data-kind="door"] .field-object-sprite::before{content:"🚪"}
+.field-object[data-sprite="pz-mist-door"] .field-object-sprite::before{content:"🌫️"}
+.field-object[data-kind="door"].is-open .field-object-sprite::before{opacity:.18}
+.field-object[data-kind="door"].is-open .field-object-label{display:none}
+/* 隠し通路：開くまでは、ひびの入った岩壁にしか見えない */
+.field-object.is-hidden-door .field-object-sprite::before{content:"";position:absolute;inset:7px 9px;border-left:2px solid #00000055;border-bottom:2px solid #00000040;transform:skew(-18deg);opacity:.6}
+.field-object.is-hidden-door.is-near .field-object-sprite::before{opacity:1;border-color:#2b1a0a}
+.field-object.is-hidden-door.is-open .field-object-sprite::before{display:none}
+.field-object[data-kind="cache"] .field-object-sprite::before{content:"🎁"}
+.field-object[data-kind="cache"].is-opened .field-object-sprite::before{content:"📦";opacity:.7}
+.field-object[data-sprite="pz-plaque"] .field-object-sprite::before{content:"📜"}
+.lg-puzzle{background:#ff8ad8}
