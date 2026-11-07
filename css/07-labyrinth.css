@@ -678,3 +678,91 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 @media(prefers-reduced-motion:reduce){
   .field-object[data-kind="save"] .field-object-sprite::before{animation:none!important}
 }
+
+
+/* ============================================================
+   Exploration fog atmosphere — subtle drifting dust and layered gloom.
+   Decorative only: vision radius, explored tiles and map state are unchanged.
+   ============================================================ */
+.field-fog{
+  overflow:hidden;
+  background-repeat:no-repeat;
+}
+.field-fog::before,
+.field-fog::after{
+  content:"";
+  position:absolute;
+  inset:-12%;
+  pointer-events:none;
+}
+.field-fog::before{
+  opacity:.2;
+  background:
+    radial-gradient(circle at 12% 24%,#f4e8bd 0 1px,transparent 2px),
+    radial-gradient(circle at 73% 18%,#d6e7d0 0 1px,transparent 2px),
+    radial-gradient(circle at 42% 76%,#e8d9b5 0 1px,transparent 2px),
+    radial-gradient(circle at 88% 68%,#d6e7d0 0 1px,transparent 2px),
+    radial-gradient(circle at 25% 88%,#f4e8bd 0 1px,transparent 2px);
+  background-size:137px 119px,173px 151px,191px 163px,157px 181px,211px 173px;
+  mix-blend-mode:screen;
+  animation:field-fog-dust 34s linear infinite;
+}
+.field-fog::after{
+  inset:0;
+  opacity:.34;
+  background:
+    radial-gradient(ellipse at 50% 50%,transparent 48%,#02070d20 76%,#02070d66 100%),
+    linear-gradient(180deg,#06101a12,transparent 22% 78%,#02070d22);
+}
+.field-screen[data-theme="forest"] .field-fog::before{opacity:.16}
+.field-screen[data-theme="goblin"] .field-fog::before{
+  opacity:.23;
+  background-color:transparent;
+  filter:sepia(.22) hue-rotate(18deg);
+}
+.field-screen[data-theme="mist"] .field-fog::before{
+  opacity:.28;
+  background:
+    radial-gradient(circle at 12% 24%,#e3f6ef 0 1px,transparent 2px),
+    radial-gradient(circle at 73% 18%,#d6ece8 0 1px,transparent 2px),
+    radial-gradient(circle at 42% 76%,#e3f6ef 0 1px,transparent 2px),
+    radial-gradient(circle at 88% 68%,#d6ece8 0 1px,transparent 2px);
+  background-size:137px 119px,173px 151px,191px 163px,157px 181px;
+}
+.field-screen[data-theme="lava"] .field-fog::before{
+  opacity:.22;
+  background:
+    radial-gradient(circle at 12% 24%,#ffb16c 0 1px,transparent 2px),
+    radial-gradient(circle at 73% 18%,#f26c3b 0 1px,transparent 2px),
+    radial-gradient(circle at 42% 76%,#ffd08a 0 1px,transparent 2px),
+    radial-gradient(circle at 88% 68%,#f26c3b 0 1px,transparent 2px);
+  background-size:137px 119px,173px 151px,191px 163px,157px 181px;
+}
+.field-screen[data-theme="castle"] .field-fog::before{
+  opacity:.2;
+  background:
+    radial-gradient(circle at 12% 24%,#c7d3ff 0 1px,transparent 2px),
+    radial-gradient(circle at 73% 18%,#9da8d9 0 1px,transparent 2px),
+    radial-gradient(circle at 42% 76%,#e0e5ff 0 1px,transparent 2px),
+    radial-gradient(circle at 88% 68%,#9da8d9 0 1px,transparent 2px);
+  background-size:137px 119px,173px 151px,191px 163px,157px 181px;
+}
+@keyframes field-fog-dust{
+  from{transform:translate3d(-1.5%,-1%,0)}
+  to{transform:translate3d(1.5%,1%,0)}
+}
+.field-viewport{
+  box-shadow:
+    inset 0 0 0 2px #080d14,
+    inset 0 0 28px 5px #02070d99,
+    0 5px 18px #0008;
+}
+.field-screen[data-theme="mist"] .field-viewport{
+  box-shadow:inset 0 0 0 2px #182b32,inset 0 0 34px 7px #b4d4d033,0 5px 18px #0008;
+}
+.field-screen[data-theme="lava"] .field-viewport{
+  box-shadow:inset 0 0 0 2px #28100c,inset 0 0 34px 7px #e64c2222,0 5px 18px #0008;
+}
+@media(prefers-reduced-motion:reduce){
+  .field-fog::before{animation:none!important}
+}
