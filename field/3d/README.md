@@ -251,3 +251,30 @@ atmosphere.dispose();
 - 光芒は固定位置の演出用。プレイヤー位置やイベント状態を変更しない。
 - iPhoneではpixel ratioを制限し、描画負荷と発熱を確認してから上限を決める。
 - 本モジュールはRendererやSceneの生成・破棄を所有しない。fogはdispose時に解除する。
+
+
+## B1F素材マニフェスト
+
+`assets/field-3d/b1/manifest.json` にB1F向け素材キーと相対パスの雛形を追加した。現在は**参照先のGLB実ファイルは未配置**であり、すべて `required:false`。未制作の素材があっても探索画面全体を失敗させず、仮形状へフォールバックする運用とする。
+
+```js
+import manifest from "./assets/field-3d/b1/manifest.json";
+import { loadField3DAssets } from "./field/3d/field-3d-asset-loader.js";
+
+const loaded = await loadField3DAssets({
+  GLTFLoader,
+  manifest: manifest.assets,
+  baseUrl: new URL("./assets/field-3d/b1/", import.meta.url).href,
+  onProgress: ({ key, status, completed, total }) => {
+    console.info("3D asset", key, status, completed + "/" + total);
+  },
+  onAssetError: ({ key, url, error }) => {
+    console.warn("3D asset fallback:", key, url, error);
+  }
+});
+```
+
+- `baseUrl` を指定すると、manifest内の相対パスをその基準URLから解決する。
+- `completed` は成功・失敗を問わず処理が完了した件数、`loaded` は読み込み成功数。
+- GLBを追加したらmanifestのキー・パス・スケールを更新し、ライセンス情報も別途記録する。
+- JSONの雛形追加は素材モデルの完成を意味しない。GLB実ファイル、テクスチャ、LODは別途制作・検品が必要。
