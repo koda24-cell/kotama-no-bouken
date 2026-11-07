@@ -852,3 +852,61 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 @media(prefers-reduced-motion:reduce){
   .field-screen .tile-water{animation:none!important}
 }
+
+
+/* Newly revealed objects briefly announce their discovery.
+   The effect runs only when an unexplored object enters the player's mapped view. */
+.field-object.is-discovered::after{
+  content:"";
+  position:absolute;
+  z-index:2;
+  inset:-5px;
+  border:1px solid var(--discovery-color,#f4d98a);
+  border-radius:50%;
+  pointer-events:none;
+  opacity:0;
+  animation:field-object-discovery .82s ease-out both;
+}
+.field-object[data-kind="chest"]{--discovery-color:#ffd16b}
+.field-object[data-kind="gather"]{--discovery-color:#8dffc0}
+.field-object[data-kind="stairs"]{--discovery-color:#e8dfb8}
+.field-object[data-kind="save"]{--discovery-color:#fff0a0}
+.field-object[data-kind="npc"],
+.field-object[data-kind="sign"]{--discovery-color:#d8baff}
+.field-object[data-kind="gate"],
+.field-object[data-kind="exit"]{--discovery-color:#ff9b82}
+.field-object.is-discovered .field-object-sprite{
+  animation:field-object-discovery-pop .62s cubic-bezier(.2,.8,.25,1) both;
+}
+.field-object[data-kind="chest"].is-discovered .field-object-sprite{
+  filter:drop-shadow(0 0 7px #ffc65c) drop-shadow(0 2px 2px #000d);
+}
+.field-object[data-kind="gather"].is-discovered .field-object-sprite{
+  filter:drop-shadow(0 0 7px #76ffad) drop-shadow(0 2px 2px #000d);
+}
+.field-object[data-kind="stairs"].is-discovered .field-object-sprite{
+  filter:drop-shadow(0 0 7px #fff0b3) drop-shadow(0 2px 2px #000d);
+}
+.field-object.is-discovered .field-object-label{
+  animation:field-object-label-discovery .55s ease-out both;
+}
+@keyframes field-object-discovery{
+  0%{opacity:0;transform:scale(.42)}
+  22%{opacity:.9}
+  100%{opacity:0;transform:scale(1.55)}
+}
+@keyframes field-object-discovery-pop{
+  0%{transform:scale(.55) rotate(-8deg)}
+  58%{transform:scale(1.22) rotate(3deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+@keyframes field-object-label-discovery{
+  0%{opacity:0;transform:translateY(4px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-object.is-discovered::after,
+  .field-object.is-discovered .field-object-sprite,
+  .field-object.is-discovered .field-object-label{animation:none!important}
+  .field-object.is-discovered::after{display:none}
+}
