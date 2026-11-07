@@ -15,7 +15,8 @@
 | オートマッピング | 見たマスを記録。ミニマップ（右上）と全体マップ（MAPボタン／Mキー／ミニマップをタップ）。セーブに保存 | `field.js` |
 | 危険度 | HUDの玉が 青→緑→黄→橙→赤（次のエンカウントまでの近さ） | `#field-danger[data-level=0〜4]` |
 | FOE | マップ上に見える強敵。**プレイヤーが動いたときだけ動く**。4.5マス以内で見通せると追跡、見失うと巡回に戻る。接触でFOE戦。倒すとホームに戻るまで出ない。逃げると起点へ戻り2.5秒停止 | `field.js`、`FIELD_ENEMIES` の `foe:true` |
-| 採取ポイント | `G`。1回の探索で2回まで素材入手。ホームから出発し直すと復活 | `field.js` |
+| 採集ポイント | `G`。種別は採取（take）／伐採（chop）／採掘（mine）で、採集点ごとの素材テーブルは `data/field-gathering.js`（無い点はフロアの `gathers`）。1回の探索で2回まで素材入手。**ホームから出発し直すと復活**（採集回数はセーブされ、ロードでは復活しない。saveVersion 11） | `field.js` の `[LOOT]` |
+| 宝箱 | `T`。中身は `chests`（`gold`／`item`＋`count`／`material`＋`count`／`items`・`materials` の配列。組み合わせ可）。状態は 未発見→発見→開封済み。開封フラグ `chest:<階層-フロア>:<x>:<y>` | `field.js` の `[LOOT]` |
 | フロアの強さ | `encounter.scale`（1.0／1.15／1.3）で雑魚敵のHP・攻撃・防御・経験値・ゴールドを倍率 | `data/field-maps.js` |
 | レベル・経験値 | 勝利で生存者全員が経験値。レベルで基礎能力が成長（HP+5%／攻撃・SP攻撃・防御・SP防御+3%）し、スキルポイント+1。上限Lv50 | `data/levels.js`、`level.js` |
 | 撤退（雑魚・FOE戦） | 「逃げる（迷宮へ）」「ホームへ帰還」「戦う」を選べる。ステージ戦（ボス）は従来どおり | `field.js` `fieldSetupRetreatChoice` |
@@ -58,6 +59,7 @@
 
 - `field.floor`、`field.maps`（`"階層-フロア"` → 16進ビット列）を追加。`levelExp`（キャラID→現在レベル内の経験値）を追加。レベル自体は既存の `characterLevels`。
 - 旧セーブ：`floor` が無ければ1Fから。クリア済み階層は全フロアを磁軸から選べる。
+- saveVersion 11（Claude B）：`field.gatherUsed`（採集点キー→採集回数）、`field.discovered`（発見済みの宝箱・採集点・扉の奥の宝箱のキー配列）、`field.expedition`（ホームから出発した回数）を追加。旧セーブ（項目なし）は採集回数0・発見状態は踏破ビット（`maps`）から作り直す。
 
 ## 5. バランス検証（自動戦闘・店売り装備のみ・スキルツリーなし）
 

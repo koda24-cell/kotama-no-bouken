@@ -11,7 +11,8 @@
        ミニマップ／全体マップで確認できる。マップはセーブされる。
      ・エンカウントの危険度をHUDの色で表示（青→緑→黄→橙→赤）。
      ・FOE：マップ上に見えている強敵。プレイヤーが動いたときだけ動き、見つかると追ってくる。
-     ・採取ポイント：素材を拾える（1回の探索で2回まで。ホームに戻ると復活）。
+     ・採集ポイント：素材を拾える（採取／伐採／採掘。1回の探索で2回まで。ホームから出発し直すと復活。
+       採集回数はセーブされるので、ロードでは復活しない）。種別とテーブルは data/field-gathering.js。
    script.js からは「// [FIELD]」の目印を付けた短いフックでこのファイルの関数を呼ぶ。
    ============================================================ */
 
@@ -71,7 +72,7 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
     else if (c === ">") { down = { tx, ty }; objects.push({ key: `down:${key}`, kind: "stairs", dir: "down", tx, ty, sprite: "stairs-down", name: "下り階段", walk: true }); }
     else if (c === "S") objects.push({ key: `save:${key}:${tx}:${ty}`, kind: "save", tx, ty, sprite: "save-lamp", name: "導きの灯" });
     else if (c === "T") { const reward = (floor.chests || [])[chestIndex++] || { gold: 10 }; objects.push({ key: `chest:${key}:${tx}:${ty}`, kind: "chest", tx, ty, sprite: "chest", name: "宝箱", reward }); }
-    else if (c === "G") objects.push({ key: `gather:${key}:${tx}:${ty}`, kind: "gather", tx, ty, sprite: "gather", name: "採取ポイント" });
+    else if (c === "G") { const gk = fieldGatherKindAt(key, tx, ty); objects.push({ key: `gather:${key}:${tx}:${ty}`, kind: "gather", tx, ty, sprite: "gather", name: fieldGatherKindDef(gk).pointName, gatherKind: gk }); }   // [LOOT] 採集の種別は data/field-gathering.js
     else if (c === "?") objects.push({ key: `sign:${key}:${tx}:${ty}`, kind: "sign", tx, ty, sprite: "sign", name: "看板", scene: def.signScene });
     else if (c === "B") objects.push({ key: `gate:${n}`, kind: "gate", tx, ty, sprite: "boss-gate", name: "", walk: true });
     else if (c === "E") objects.push({ key: `exit:${n}`, kind: "exit", tx, ty, sprite: "exit", name: "", walk: true });
@@ -194,7 +195,7 @@ function fieldBuildDom() {
     tiles.push(`<i class="field-tile ${wall ? "tile-wall" : FIELD_TILE_CLASS[c] || "tile-floor"}${edge}${fog}" style="left:${tx * FIELD_TILE}px;top:${ty * FIELD_TILE}px"></i>`);
   }
   const objs = a.objects.map(o => {
-    const opened = (o.kind === "chest" && fieldState.flags[o.key]) || (o.kind === "gather" && (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES) || (o.kind === "event" && fieldSideDone(o.event)) ? " is-opened" : "";
+    const opened = (o.kind === "chest" && fieldState.flags[o.key]) || (o.kind === "gather" && fieldGatherDepleted(o)) || (o.kind === "event" && fieldSideDone(o.event)) ? " is-opened" : "";
     const hidden = o.kind === "event" && o.hidden ? " is-hidden-event" : "";
     const puzzleState = fieldPuzzleObjectClass(o);
     const fog = exp[o.ty * a.w + o.tx] ? "" : " is-unexplored";
@@ -265,7 +266,7 @@ function fieldDrawMap(canvas, cell, full) {
     if (o.kind === "stairs") { dot(o.tx, o.ty, "#ffd84a", .8, "square"); if (full) { g.fillStyle = "#222"; g.font = `bold ${Math.floor(cell * .7)}px sans-serif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(o.dir === "up" ? "▲" : "▼", (o.tx + .5) * cell, (o.ty + .55) * cell); } }
     else if (o.kind === "save") dot(o.tx, o.ty, "#ffe27a", .8);
     else if (o.kind === "chest") dot(o.tx, o.ty, fieldState.flags[o.key] ? "#7a6a55" : "#ff9a3c", .7, "square");
-    else if (o.kind === "gather") dot(o.tx, o.ty, (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES ? "#5d7a5d" : "#3ee07a", .7);
+    else if (o.kind === "gather") dot(o.tx, o.ty, fieldGatherDepleted(o) ? "#5d7a5d" : "#3ee07a", .7);
     else if (o.kind === "npc") dot(o.tx, o.ty, "#c7a3ff", .7);
     else if (o.kind === "event") { const done = fieldSideDone(o.event); if (!o.hidden || done) dot(o.tx, o.ty, done ? "#5f7f8f" : "#7fd6ff", .7); }
     else if (o.kind === "switch") dot(o.tx, o.ty, fieldPuzzleSolved(o.puzzle) ? "#7a6a8a" : "#ff8ad8", .6, "square");
@@ -738,10 +739,12 @@ async function fieldPuzzleInteract(o) {
     if (!solved) return;
     if (fieldState.flags[key]) { await fieldSay("宝箱は空っぽだ。"); return; }
     fieldState.flags[key] = true;   // 先にフラグを立ててから報酬を渡す（二重取得の防止）
+    fieldLootMarkDiscovered(o.key);
     fieldPuzzleRefresh(id);
-    const text = fieldSideGrant({ reward: pz.reward });
+    const got = fieldLootGrant(pz.reward, "chest");   // [LOOT] 通常の宝箱と同じ付与処理（素材は fieldLootAddMaterial を通る）
+    const text = got.parts.length ? `${got.parts.join("、")}を手に入れた！` : "";
     persistAutoSave();
-    fieldEmit("puzzle:reward", { area: fieldState.area, floor: fieldState.floor, puzzleId: id, reward: { ...(pz.reward || {}) } });
+    fieldEmit("puzzle:reward", { area: fieldState.area, floor: fieldState.floor, puzzleId: id, reward: { ...(pz.reward || {}) }, objectKey: o.key, kind: "cache", state: "opened", granted: got.granted, respawn: "never" });
     if (typeof playSe === "function") playSe("assets/se/syouri/アイテムを入手2", .7);
     await fieldSay(`古い宝箱を開けた！ ${text}`);
     return;
@@ -801,34 +804,197 @@ async function fieldUseSavePoint() {
   const choice = await fieldAsk("冒険の記録を残しますか？", ["セーブする", "やめる"], "lamp");
   if (choice === 0 && typeof openSaveDialog === "function") openSaveDialog();
 }
+/* ------------------------------------------------------------
+   [LOOT] 宝箱・採集・探索記録（担当：Claude B）
+   データ：data/field-maps.js の chests（宝箱の中身）／ data/field-gathering.js（採集の種別・テーブル）
+   ・探索オブジェクトの状態
+       宝箱（chest）・扉の奥の宝箱（cache）："undiscovered" → "discovered" → "opened"
+       採集ポイント（gather）              ："undiscovered" → "ready" ⇄ "depleted"
+     発見＝そのマスが踏破ビット（オートマッピング）で既知になったとき。開封・採集したものも発見済み。
+   ・開封は既存のフラグ（chest:<階層-フロア>:<x>:<y>、puzzle:<ID>:reward）をそのまま使う（キー名は変えない）。
+   ・採集回数 fieldState.gatherUsed（キー→回数）と発見済み一覧 fieldState.discovered はセーブする（saveVersion 11）。
+   ・再出現：採集点はホームから出発し直したときだけ復活する（fieldLootOnDeparture）。ロードでは復活しない。
+   ・開封・採集は「状態を先に保存 → 報酬 → オートセーブ」の順（二重取得の防止）。
+   ・表示用（GPT）：fieldLootState / fieldGatherKind / fieldFloorSummary / fieldStratumSummary / fieldLootList。
+     未発見のものは返さない・数えない。総数は出さない。
+   ------------------------------------------------------------ */
+const FIELD_LOOT_KINDS = new Set(["chest", "cache", "gather"]);
+let fieldLootIndexCache = null;
+function fieldGatherKindDef(kind) {
+  const defs = typeof FIELD_GATHER_KINDS !== "undefined" ? FIELD_GATHER_KINDS : null;
+  return (defs && (defs[kind] || defs.take)) || { label: "採取", pointName: "採取ポイント", verb: "採取した", emptyText: "もう何も採れそうにない。" };
+}
+function fieldGatherPointRaw(floorKey, tx, ty) { return (typeof FIELD_GATHER_POINTS !== "undefined" && FIELD_GATHER_POINTS[floorKey] && FIELD_GATHER_POINTS[floorKey][`${tx},${ty}`]) || null; }
+function fieldGatherKindAt(floorKey, tx, ty) { const p = fieldGatherPointRaw(floorKey, tx, ty); return p && ["take", "chop", "mine"].includes(p.kind) ? p.kind : "take"; }
+// 採集点の定義（種別・テーブル・回数）。data/field-gathering.js に無い点はフロアの gathers を使う「採取」
+function fieldGatherPointDef(a, o) {
+  const p = fieldGatherPointRaw(a.key, o.tx, o.ty) || {};
+  const table = Array.isArray(p.table) && p.table.length ? p.table : (Array.isArray(a.floor.gathers) && a.floor.gathers.length ? a.floor.gathers : [["slime_jelly", 1]]);
+  const uses = Math.max(1, Math.floor(Number(p.uses) || FIELD_GATHER_USES));
+  return { kind: o.gatherKind || "take", table, uses };
+}
+function fieldGatherRespawnRule() { return (typeof FIELD_GATHER_RULES !== "undefined" && FIELD_GATHER_RULES.respawn) || "home"; }
+function fieldGatherUses(o) { const e = fieldLootIndex().get(o.key); return e ? fieldGatherPointDef(e.a, e.o).uses : FIELD_GATHER_USES; }
+function fieldGatherRemaining(o) { return Math.max(0, fieldGatherUses(o) - (fieldState.gatherUsed[o.key] || 0)); }
+function fieldGatherDepleted(o) { return fieldGatherRemaining(o) <= 0; }
+// 全フロアの宝箱・採集点・扉の奥の宝箱の一覧（キー → { a, o }）
+function fieldLootIndex() {
+  if (fieldLootIndexCache) return fieldLootIndexCache;
+  const idx = new Map();
+  for (const n of Object.keys(FIELD_AREAS).map(Number)) for (let f = 0; f < fieldFloorCount(n); f++) {
+    const a = fieldArea(n, f); if (!a) continue;
+    for (const o of a.objects) if (FIELD_LOOT_KINDS.has(o.kind)) idx.set(o.key, { a, o });
+  }
+  return (fieldLootIndexCache = idx);
+}
+function fieldLootStore() { if (!fieldState.discovered || typeof fieldState.discovered !== "object") fieldState.discovered = {}; return fieldState.discovered; }
+function fieldLootMarkDiscovered(key) { if (key && fieldLootIndex().has(key)) fieldLootStore()[key] = true; }
+function fieldLootOpened(o) {
+  if (o.kind === "chest") return !!fieldState.flags[o.key];
+  if (o.kind === "cache") return !!fieldState.flags[`puzzle:${o.puzzle}:reward`];
+  return false;
+}
+function fieldLootDiscovered(a, o) {
+  if (fieldLootStore()[o.key] || fieldLootOpened(o) || (o.kind === "gather" && (fieldState.gatherUsed[o.key] || 0) > 0)) return true;
+  const exp = fieldState.explored[a.key];
+  return !!(exp && exp.length === a.w * a.h && exp[o.ty * a.w + o.tx]);
+}
+// 踏破ビットから発見済み一覧を作り直す（セーブ時・ロード後）
+function fieldLootSyncDiscovered() {
+  const store = fieldLootStore();
+  for (const [key, { a, o }] of fieldLootIndex()) if (!store[key] && fieldLootDiscovered(a, o)) store[key] = true;
+  return store;
+}
+// 探索オブジェクトの状態。存在しないキーは null
+function fieldLootState(objectKey) {
+  const e = fieldLootIndex().get(objectKey); if (!e) return null;
+  const { a, o } = e;
+  if (o.kind === "gather") return !fieldLootDiscovered(a, o) ? "undiscovered" : fieldGatherDepleted(o) ? "depleted" : "ready";
+  if (fieldLootOpened(o)) return "opened";
+  return fieldLootDiscovered(a, o) ? "discovered" : "undiscovered";
+}
+// 採集点の種別（"take"｜"chop"｜"mine"）。未発見・採集点以外は null
+function fieldGatherKind(objectKey) {
+  const e = fieldLootIndex().get(objectKey);
+  return e && e.o.kind === "gather" && fieldLootDiscovered(e.a, e.o) ? e.o.gatherKind : null;
+}
+// 発見済みの探索オブジェクトの一覧（地図・図鑑用）。未発見のものは含めない
+function fieldLootList(area = fieldState.area, floor = fieldState.floor) {
+  const a = fieldArea(area, floor); if (!a) return [];
+  const out = [];
+  for (const o of a.objects) {
+    if (!FIELD_LOOT_KINDS.has(o.kind)) continue;
+    const st = fieldLootState(o.key); if (!st || st === "undiscovered") continue;
+    const row = { key: o.key, kind: o.kind, tx: o.tx, ty: o.ty, state: st };
+    if (o.kind === "gather") { row.gatherKind = o.gatherKind; row.remaining = fieldGatherRemaining(o); row.uses = fieldGatherUses(o); row.respawn = fieldGatherRespawnRule(); }
+    if (o.kind === "cache") row.puzzleId = o.puzzle;
+    out.push(row);
+  }
+  return out;
+}
+// フロアの集計。未発見のものは数えない（総数は出さない）
+function fieldFloorSummary(area = fieldState.area, floor = fieldState.floor) {
+  const s = { chestsKnown: 0, chestsOpened: 0, gathersKnown: 0, gathersReady: 0, gathersByKind: {} };
+  for (const r of fieldLootList(area, floor)) {
+    if (r.kind === "gather") {
+      s.gathersKnown++; if (r.state === "ready") s.gathersReady++;
+      const k = s.gathersByKind[r.gatherKind] || (s.gathersByKind[r.gatherKind] = { known: 0, ready: 0 });
+      k.known++; if (r.state === "ready") k.ready++;
+    } else { s.chestsKnown++; if (r.state === "opened") s.chestsOpened++; }
+  }
+  return s;
+}
+// 階層の集計（3フロア分の合計）
+function fieldStratumSummary(area = fieldState.area) {
+  const s = { chestsKnown: 0, chestsOpened: 0, gathersKnown: 0, gathersReady: 0 };
+  for (let f = 0; f < fieldFloorCount(area); f++) { const x = fieldFloorSummary(area, f); for (const k of Object.keys(s)) s[k] += x[k]; }
+  return s;
+}
+// 素材が採れる「発見済みの」採集点（アイテム図鑑 #44 の入手場所表示用）
+function fieldMaterialSources(materialId) {
+  const out = [];
+  for (const [key, { a, o }] of fieldLootIndex()) {
+    if (o.kind !== "gather" || !fieldLootDiscovered(a, o)) continue;
+    if (!fieldGatherPointDef(a, o).table.some(t => t[0] === materialId)) continue;
+    out.push({ key, area: a.n, floor: a.f, floorLabel: fieldFloorLabel(a.n, a.f), gatherKind: o.gatherKind });
+  }
+  return out;
+}
+// ホームから出発したとき（＝一晩休んだ扱い）：採集点がすべて復活する
+function fieldLootOnDeparture() {
+  fieldState.gatherUsed = {};
+  fieldState.expedition = Math.max(0, Math.floor(Number(fieldState.expedition) || 0)) + 1;
+  fieldEmit("loot:respawn", { reason: "home", expedition: fieldState.expedition });
+}
+function fieldItemName(id) { const item = typeof itemById === "function" ? itemById(id) : null; return item ? item.name : null; }
+// 素材の入手はすべてここを通す（素材売却 #55・製作 #56・アイテム図鑑 #44 の接続点）
+function fieldLootAddMaterial(id, n, source) {
+  n = Math.max(0, Math.floor(Number(n) || 0)); if (!id || !n) return false;
+  const names = typeof materialNames !== "undefined" ? materialNames : FIELD_MATERIAL_FALLBACK;
+  if (!names[id]) { console.warn("[field] 未定義の素材IDのため付与しません:", id); return false; }
+  materials[id] = (materials[id] || 0) + n;
+  if (typeof itemCompendiumRecord === "function") itemCompendiumRecord(id, source);
+  fieldEmit("material", { area: fieldState.area, floor: fieldState.floor, materialId: id, count: n, source });
+  return true;
+}
+function fieldLootAddItem(id, n, source) {
+  n = Math.max(0, Math.floor(Number(n) || 0)); if (!id || !n) return false;
+  if (!fieldItemName(id)) { console.warn("[field] 未定義のアイテムIDのため付与しません:", id); return false; }
+  inventory[id] = (inventory[id] || 0) + n;
+  if (typeof itemCompendiumRecord === "function") itemCompendiumRecord(id, source);
+  return true;
+}
+// 宝箱の中身を渡す。対応する形：
+//   { gold }、{ item, count }（既存）、{ material, count }（count は item が無いときだけ素材の数）、
+//   { items: [[id, n], ...] }、{ materials: [[id, n], ...] }（扉の奥の宝箱・組み合わせ用）
+// item は shopItems の ID（消耗品・装備・製作武器）。戻り値：表示用 parts と、実際に渡した granted
+function fieldLootGrant(r, source = "chest") {
+  r = r || {}; const parts = [], granted = { gold: 0, items: [], materials: [] };
+  const gold = Math.max(0, Math.floor(Number(r.gold) || 0));
+  if (gold) { state.gold += gold; if (typeof renderGold === "function") renderGold(); granted.gold = gold; parts.push(`${gold}G`); }
+  const items = [...(Array.isArray(r.items) ? r.items : [])], mats = [...(Array.isArray(r.materials) ? r.materials : [])];
+  if (r.item) items.unshift([r.item, r.count || 1]);
+  if (r.material) mats.unshift([r.material, r.item ? (r.materialCount || 1) : (r.count || 1)]);
+  for (const [id, n] of items) if (fieldLootAddItem(id, n, source)) { granted.items.push([id, Math.floor(n)]); parts.push(`${fieldItemName(id)}×${Math.floor(n)}`); }
+  for (const [id, n] of mats) if (fieldLootAddMaterial(id, n, source)) { granted.materials.push([id, Math.floor(n)]); parts.push(`${fieldMaterialName(id)}×${Math.floor(n)}`); }
+  return { parts, granted };
+}
 async function fieldOpenChest(o) {
   if (fieldState.flags[o.key]) { await fieldSay("宝箱は空っぽだ。"); return; }
-  fieldState.flags[o.key] = true;
+  fieldState.flags[o.key] = true;   // 先に開封済みにしてから報酬を渡す（二重取得の防止）
+  fieldLootMarkDiscovered(o.key);
   document.querySelector(`#field-map .field-object[data-key="${CSS.escape(o.key)}"]`)?.classList.add("is-opened");
-  const r = o.reward || {}; let text = "";
-  if (r.gold) { state.gold += r.gold; renderGold(); text = `宝箱を開けた！ ${r.gold}Gを手に入れた。`; }
-  else if (r.item) { const item = itemById(r.item); inventory[r.item] = (inventory[r.item] || 0) + (r.count || 1); text = `宝箱を開けた！ ${item ? item.name : r.item}×${r.count || 1}を手に入れた。`; }
+  const r = o.reward || {}, got = fieldLootGrant(r, "chest");
+  const text = got.parts.length ? `宝箱を開けた！ ${got.parts.join("、")}を手に入れた。` : "宝箱を開けた！ ……中は空っぽだった。";
   if (typeof playSe === "function") playSe("assets/se/syouri/アイテムを入手2", .7);
-  fieldEmit("chest", { area: fieldState.area, floor: fieldState.floor, objectId: o.key, reward: { ...r } });
+  fieldEmit("chest", { area: fieldState.area, floor: fieldState.floor, objectId: o.key, objectKey: o.key, kind: "chest", state: "opened", reward: { ...r }, granted: got.granted, remaining: 0, respawn: "never" });
   fieldMiniDirty = true;
   persistAutoSave();
   await fieldSay(text);
 }
+function fieldGatherPick(table) {
+  const total = table.reduce((n, t) => n + (Number(t[1]) || 0), 0); let r = Math.random() * total, mat = table[0][0];
+  for (const [id, w] of table) { r -= (Number(w) || 0); if (r <= 0) { mat = id; break; } }
+  return mat;
+}
 async function fieldGather(o) {
+  const a = fieldArea(), def = fieldGatherPointDef(a, o), kd = fieldGatherKindDef(def.kind);
   const used = fieldState.gatherUsed[o.key] || 0;
-  if (used >= FIELD_GATHER_USES) { await fieldSay("もう何も採れそうにない。（ホームに戻ると、また採れるようになる）"); return; }
-  const table = fieldArea().floor.gathers || [["slime_jelly", 1]];
-  const total = table.reduce((n, t) => n + t[1], 0); let r = Math.random() * total, mat = table[0][0];
-  for (const [id, w] of table) { r -= w; if (r <= 0) { mat = id; break; } }
-  const count = Math.random() < .25 ? 2 : 1;
-  materials[mat] = (materials[mat] || 0) + count;
+  if (used >= def.uses) { await fieldSay(`${kd.emptyText}（ホームから出発し直すと、また採れるようになる）`); return; }
+  // 先に回数を記録してから素材を渡す（二重取得の防止）
   fieldState.gatherUsed[o.key] = used + 1;
-  if (used + 1 >= FIELD_GATHER_USES) document.querySelector(`#field-map .field-object[data-key="${CSS.escape(o.key)}"]`)?.classList.add("is-opened");
+  fieldLootMarkDiscovered(o.key);
+  const remaining = def.uses - used - 1;
+  const mat = fieldGatherPick(def.table);
+  const bonus = typeof FIELD_GATHER_RULES !== "undefined" && Number.isFinite(FIELD_GATHER_RULES.bonusChance) ? FIELD_GATHER_RULES.bonusChance : .25;
+  const count = Math.random() < bonus ? 2 : 1;
+  const ok = fieldLootAddMaterial(mat, count, "gather");
+  if (remaining <= 0) document.querySelector(`#field-map .field-object[data-key="${CSS.escape(o.key)}"]`)?.classList.add("is-opened");
   if (typeof playSe === "function") playSe("assets/se/syouri/アイテムを入手2", .6);
-  fieldEmit("gather", { area: fieldState.area, floor: fieldState.floor, objectId: o.key, material: mat, count });
+  fieldEmit("gather", { area: fieldState.area, floor: fieldState.floor, objectId: o.key, objectKey: o.key, kind: def.kind, material: ok ? mat : null, count: ok ? count : 0, uses: def.uses, remaining, state: remaining > 0 ? "ready" : "depleted", respawn: fieldGatherRespawnRule() });
   fieldMiniDirty = true;
   persistAutoSave();
-  await fieldSay(`採取ポイントだ！ ${(typeof materialNames !== "undefined" && materialNames[mat]) || FIELD_MATERIAL_FALLBACK[mat] || mat}×${count}を手に入れた。（残り${FIELD_GATHER_USES - used - 1}回）`);
+  await fieldSay(ok ? `${kd.pointName}だ！ ${kd.verb}。${fieldMaterialName(mat)}×${count}を手に入れた。（残り${remaining}回）` : `${kd.pointName}だ！ ……何も見つからなかった。（残り${remaining}回）`);
 }
 async function fieldAskReturnHome() {
   if (fieldState.lock) return;
@@ -1046,7 +1212,7 @@ async function fieldEnterArea(n, opts = {}) {
   if (n > (state.maxUnlockedStage || 1)) n = state.maxUnlockedStage || 1;
   let f = Math.max(0, Math.min(fieldFloorCount(n) - 1, Number(opts.floor) || 0));
   if (f > 0 && !fieldState.flags[`floor:${n}-${f}`]) f = 0;
-  if (opts.fromHome || opts.afterBoss) { fieldFullHeal(); fieldState.gatherUsed = {}; fieldState.foeDefeated = {}; }
+  if (opts.fromHome || opts.afterBoss) { fieldFullHeal(); fieldLootOnDeparture(); fieldState.foeDefeated = {}; }   // [LOOT] 採集点の復活は出発時だけ（ロードでは復活しない）
   fieldState.area = n; fieldState.floor = f; fieldState.positioned = false;
   fieldState.flags[`floor:${n}-${f}`] = true;
   state.firstStageStarted = true;
@@ -1111,11 +1277,33 @@ function fieldSerialize() {
   for (const [key, arr] of Object.entries(fieldState.explored)) if (arr && arr.some(v => v)) maps[key] = fieldEncodeBits(arr);
   return { area: fieldState.area, floor: fieldState.floor, x: Math.round(fieldState.x), y: Math.round(fieldState.y), positioned: !!fieldState.positioned,
     checkpoint: fieldState.checkpoint ? { ...fieldState.checkpoint, x: Math.round(fieldState.checkpoint.x), y: Math.round(fieldState.checkpoint.y) } : null,
-    flags: Object.fromEntries(Object.entries(fieldState.flags).filter(([k, v]) => v === true && !k.startsWith("__"))), enemyEncounters, maps };
+    flags: Object.fromEntries(Object.entries(fieldState.flags).filter(([k, v]) => v === true && !k.startsWith("__"))), enemyEncounters, maps,
+    ...fieldLootSerialize() };   // [LOOT] saveVersion 11：gatherUsed・discovered・expedition
+}
+// [LOOT] 採集回数（キー→回数。0回は保存しない）・発見済みの探索オブジェクト（キーの配列）・出発回数
+function fieldLootSerialize() {
+  const idx = fieldLootIndex(), gatherUsed = {};
+  for (const [k, v] of Object.entries(fieldState.gatherUsed || {})) if (idx.has(k) && v > 0) gatherUsed[k] = Math.floor(v);
+  const discovered = Object.keys(fieldLootSyncDiscovered()).filter(k => idx.has(k)).sort();
+  return { gatherUsed, discovered, expedition: Math.max(0, Math.floor(Number(fieldState.expedition) || 0)) };
+}
+// [LOOT] 旧セーブ（saveVersion 10 以前・項目なし）は「採集回数0（すべて採集可能）・発見状態は踏破ビットから作り直す」
+function fieldLootDeserialize(d) {
+  fieldState.gatherUsed = {}; fieldState.discovered = {}; fieldState.expedition = 0;
+  if (!d || typeof d !== "object") return;
+  const idx = fieldLootIndex();
+  if (d.gatherUsed && typeof d.gatherUsed === "object") for (const [k, v] of Object.entries(d.gatherUsed)) {
+    const e = idx.get(k); if (!e || e.o.kind !== "gather") continue;
+    const n = Math.max(0, Math.min(fieldGatherPointDef(e.a, e.o).uses, Math.floor(Number(v) || 0)));
+    if (n) fieldState.gatherUsed[k] = n;
+  }
+  if (Array.isArray(d.discovered)) for (const k of d.discovered) if (typeof k === "string" && idx.has(k)) fieldState.discovered[k] = true;
+  fieldState.expedition = Math.max(0, Math.floor(Number(d.expedition) || 0));
+  fieldLootSyncDiscovered();
 }
 function fieldDeserialize(d) {
   fieldState.flags = {}; fieldState.checkpoint = null; fieldState.area = 1; fieldState.floor = 0; fieldState.positioned = false; fieldState.built = "";
-  fieldState.explored = {}; fieldState.gatherUsed = {}; fieldState.foeDefeated = {};
+  fieldState.explored = {}; fieldState.gatherUsed = {}; fieldState.foeDefeated = {}; fieldState.discovered = {}; fieldState.expedition = 0;
   if (!d || typeof d !== "object") {
     if (state.firstStageStarted) fieldState.flags["prologue"] = true;
     fieldState.area = Math.max(1, Math.min(5, state.maxUnlockedStage || 1));
@@ -1134,6 +1322,7 @@ function fieldDeserialize(d) {
   const a = fieldArea();
   if (d.positioned && d.floor !== undefined && Number.isFinite(Number(d.x)) && !fieldBoxBlocked(a, Number(d.x), Number(d.y))) { fieldState.x = Number(d.x); fieldState.y = Number(d.y); fieldState.positioned = true; }
   if (d.enemyEncounters && typeof d.enemyEncounters === "object") for (const [name, count] of Object.entries(d.enemyEncounters)) enemyEncounterCounts[name] = Math.max(0, Math.floor(Number(count) || 0));
+  fieldLootDeserialize(d);   // [LOOT] フラグ・踏破ビットを読み込んだ後に行う
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fieldSetupInput); else fieldSetupInput();

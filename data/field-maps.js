@@ -12,6 +12,8 @@
        （kind:"switch"／"door"／"cache" は仕掛け。内容は下の FIELD_PUZZLES。onWall:true は壁に付いた物で、壁のマスに置く）
    ・encounter.scale：そのフロアの雑魚敵の強さ倍率（HP・攻撃・防御・SP攻撃・SP防御・経験値・ゴールド）。
    ・chests はそのフロアの T を左上から順に読んだ順番。gathers は採取できる素材と重み。
+     chests の中身：{ gold }／{ item, count }／{ material, count }／{ items: [[ID,数]] }／{ materials: [[ID,数]] }（組み合わせ可。field.js の fieldLootGrant）
+     採集点ごとの種別（採取・伐採・採掘）とテーブルは data/field-gathering.js（無い点はこの gathers を使う）。
    ・foes：FOE（見える強敵）。enemy は FIELD_ENEMIES のID、path は巡回する2地点（マス座標）。
    ・bgm は仮割り当て（ユーザー確認待ち）。
    ============================================================ */
@@ -58,7 +60,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 15, max: 26, scale: 1.15, table: [ { enemy: "stray-slime", weight: 50 }, { enemy: "mushroom", weight: 50 } ] },
-        chests: [ { gold: 60 }, { item: "ether", count: 1 } ], gathers: [ ["slime_jelly", 55], ["monster_hide", 30], ["goblin_cloth", 15] ],
+        chests: [ { gold: 60, materials: [ ["monster_hide", 2] ] }, { item: "ether", count: 1 } ], gathers: [ ["slime_jelly", 55], ["monster_hide", 30], ["goblin_cloth", 15] ],
         foes: [ { enemy: "foe-bear", path: [[19, 14], [17, 16]] } ], map: [
         "###########################",
         "#...............#T#.....#>#",
@@ -149,7 +151,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 14, max: 25, scale: 1.15, table: [ { enemy: "forest-goblin", weight: 50 }, { enemy: "goblin-scout", weight: 50 } ] },
-        chests: [ { item: "ether", count: 2 }, { gold: 110 } ], gathers: [ ["goblin_cloth", 45], ["monster_fang", 35], ["monster_hide", 20] ],
+        chests: [ { item: "ether", count: 2, materials: [ ["goblin_cloth", 2] ] }, { gold: 110 } ], gathers: [ ["goblin_cloth", 45], ["monster_fang", 35], ["monster_hide", 20] ],
         foes: [ { enemy: "foe-goblin-captain", path: [[21, 1], [24, 3]] } ], map: [
         "###########################",
         "#G........................#",
@@ -242,7 +244,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 14, max: 24, scale: 1.1, table: [ { enemy: "mist-bat", weight: 45 }, { enemy: "forest-wolf", weight: 55 } ] },
-        chests: [ { item: "ether", count: 2 }, { gold: 200 } ], gathers: [ ["monster_fang", 50], ["monster_hide", 50] ],
+        chests: [ { item: "ether", count: 2 }, { gold: 200, materials: [ ["monster_fang", 2] ] } ], gathers: [ ["monster_fang", 50], ["monster_hide", 50] ],
         foes: [ { enemy: "foe-mist-stag", path: [[5, 7], [2, 9]] } ], map: [
         "###########################",
         "#..........*..#.....#..>..#",
@@ -330,7 +332,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 13, max: 23, scale: 1.15, table: [ { enemy: "fire-lizard", weight: 50 }, { enemy: "lava-golem", weight: 50 } ] },
-        chests: [ { item: "ether", count: 3 }, { gold: 300 } ], gathers: [ ["monster_hide", 45], ["monster_fang", 35], ["dragon_scale", 20] ],
+        chests: [ { item: "ether", count: 3, materials: [ ["dragon_scale", 1] ] }, { gold: 300 } ], gathers: [ ["monster_hide", 45], ["monster_fang", 35], ["dragon_scale", 20] ],
         foes: [ { enemy: "foe-salamander", path: [[3, 10], [1, 6]] } ], map: [
         "###########################",
         "#.......#G................#",
@@ -422,7 +424,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 12, max: 22, scale: 1.15, table: [ { enemy: "dark-knight", weight: 50 }, { enemy: "wraith", weight: 50 } ] },
-        chests: [ { item: "ether", count: 3 }, { gold: 450 } ], gathers: [ ["monster_fang", 40], ["dragon_scale", 25], ["maou_crystal", 15], ["monster_hide", 20] ],
+        chests: [ { item: "ether", count: 3, materials: [ ["maou_crystal", 1] ] }, { gold: 450 } ], gathers: [ ["monster_fang", 40], ["dragon_scale", 25], ["maou_crystal", 15], ["monster_hide", 20] ],
         foes: [ { enemy: "foe-black-general", path: [[11, 19], [16, 17]] } ], map: [
         "###########################",
         "#.....#.............#T....#",

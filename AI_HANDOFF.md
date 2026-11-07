@@ -44,6 +44,7 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | 装備・アイテム・製作レシピ | `data/items.js` |
 | ストーリーの文章・実績 | `data/progression.js`（ステージ導入・クリアの一枚絵風イベント）、`data/story.js`（フィールドの会話） |
 | 迷宮の階層・フロア・雑魚敵・FOE・採取・出現率・BGM | `data/field-maps.js`（仕様 `docs/field-and-story/LABYRINTH_SPEC.md`） |
+| 採集ポイントの種別（採取／伐採／採掘）・素材テーブル・回数 | `data/field-gathering.js` |
 | レベルの成長率・必要経験値・ボスの経験値 | `data/levels.js` |
 | スキルツリー | `data/skill-trees.js` |
 | 見た目 | `css/` の該当ファイル。迷ったら `style.css` の末尾 |
