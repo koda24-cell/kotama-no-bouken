@@ -543,3 +543,48 @@ button:focus-visible,[role="button"]:focus-visible{outline:3px solid var(--gold)
   .stage-transition.playing .stage-transition-kicker,.stage-transition.playing .stage-transition-enemy{animation:none;opacity:1}
   .event-log .event-boss-arrival{animation:none}
 }
+
+
+/* Etrian-style boss presence: weight, vitality and dangerous intent. */
+.battle-screen.is-boss-battle .battle-arena::before{
+  content:"";position:absolute;z-index:0;inset:9% 12% 12%;pointer-events:none;
+  border:1px solid color-mix(in srgb,var(--boss-accent,#d7c58b) 32%,transparent);
+  border-radius:50%;opacity:.42;
+  background:repeating-radial-gradient(ellipse at center,transparent 0 24px,var(--boss-glow,#d7c58b22) 25px 26px,transparent 27px 46px);
+  mask-image:radial-gradient(ellipse,black 15%,transparent 75%);
+  animation:boss-arena-sigil 9s linear infinite;
+}
+.battle-screen.is-boss-battle #battle-enemy{animation:boss-presence-breathe 4.2s ease-in-out infinite;transform-origin:center bottom}
+.battle-screen.is-boss-battle #battle-enemy .enemy-image,
+.battle-screen.is-boss-battle #battle-enemy .enemy-placeholder{
+  filter:drop-shadow(0 0 8px var(--boss-glow,#d7c58b55));
+}
+.battle-screen.is-boss-battle .hp-track{
+  height:10px;border:1px solid color-mix(in srgb,var(--boss-accent,#d7c58b) 85%,white);
+  padding:1px;background:#090711;box-shadow:0 0 0 2px #080b18,0 0 12px var(--boss-glow,#d7c58b55);
+}
+.battle-screen.is-boss-battle .enemy-display .hp-fill{
+  background:linear-gradient(90deg,#681d32,#c83d48 48%,#ff9a75);
+  box-shadow:0 0 8px #ff665d99,inset 0 1px 2px #ffffff66;
+}
+.battle-screen.is-boss-battle #battle-enemy.enemy-ominous,
+.battle-screen.is-boss-battle #battle-enemy.maou-ominous,
+.battle-screen.is-boss-battle #battle-enemy.dragon-ominous{filter:drop-shadow(0 0 16px #ff3d3d99)}
+.battle-screen.is-boss-battle #battle-enemy.enemy-ominous::after,
+.battle-screen.is-boss-battle #battle-enemy.maou-ominous::after,
+.battle-screen.is-boss-battle #battle-enemy.dragon-ominous::after{
+  content:"";position:absolute;z-index:3;left:50%;top:3%;width:min(72%,260px);height:70%;
+  transform:translateX(-50%);pointer-events:none;border-radius:50%;
+  background:radial-gradient(ellipse,transparent 42%,#ff3c3c22 68%,transparent 75%);
+  border-top:2px solid #ff8c7c88;animation:boss-threat-warning .7s ease-in-out infinite alternate;
+}
+@keyframes boss-arena-sigil{to{transform:rotate(360deg)}}
+@keyframes boss-presence-breathe{0%,100%{translate:0 0;filter:brightness(1)}50%{translate:0 -3px;filter:brightness(1.08)}}
+@keyframes boss-threat-warning{from{opacity:.25;scale:.94}to{opacity:.9;scale:1.06}}
+@media(prefers-reduced-motion:reduce){
+ .battle-screen.is-boss-battle .battle-arena::before,
+ .battle-screen.is-boss-battle #battle-enemy,
+ .battle-screen.is-boss-battle #battle-enemy.enemy-ominous::after,
+ .battle-screen.is-boss-battle #battle-enemy.maou-ominous::after,
+ .battle-screen.is-boss-battle #battle-enemy.dragon-ominous::after{animation:none!important}
+}
