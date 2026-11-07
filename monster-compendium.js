@@ -161,16 +161,38 @@ function monsterCardHtml(entry, r, legacy) {
   const counts = !legacy && r && encountered ? `　遭遇 ${r.encounters || 0} ／ 討伐 ${r.defeats || 0}` : "";
   return `<article class="compendium-card compendium-${entry.category} ${defeated ? "unlocked" : ""}" data-monster-id="${esc(entry.id)}"><div class="compendium-art">${art}</div><span class="compendium-category">${esc(MONSTER_CATEGORY_LABELS[entry.category])}</span><h3>${encountered ? esc(entry.name) : "？？？？"}</h3><p>${body}</p><small>${defeated ? "討伐済み" : encountered ? "未討伐" : "未発見"}${counts}</small></article>`;
 }
+// [UI-P4] 一覧（区分タブ＋1行ずつ）と詳細（選んだ1体のカード）に分ける。記録・判定は変更しない。
+let compendiumSelectedId = null, compendiumFilter = "all";
+function compendiumEntryState(e) {
+  const legacy = e.legacyName ? (compendium[e.legacyName] || {}) : null, r = monsterRecords[e.id];
+  return { legacy, r, encountered: legacy ? !!legacy.encountered : !!r?.encountered, defeated: legacy ? !!legacy.defeated : !!r?.defeated };
+}
 function renderMonsterCompendium() {
   const box = $("compendium-list"); if (!box) return;
   const entries = monsterCompendiumEntries();
-  const html = MONSTER_CATEGORY_ORDER.map(cat => {
-    const items = entries.filter(e => e.category === cat); if (!items.length) return "";
-    const done = items.filter(e => (e.legacyName ? compendium[e.legacyName]?.defeated : monsterRecords[e.id]?.defeated)).length;
-    return `<h3 class="compendium-section-title">${esc(MONSTER_CATEGORY_LABELS[cat])}　<small>${done} / ${items.length} 討伐</small></h3>` +
-      items.map(e => monsterCardHtml(e, monsterRecords[e.id], e.legacyName ? (compendium[e.legacyName] || {}) : null)).join("");
+  const cats = MONSTER_CATEGORY_ORDER.filter(cat => entries.some(e => e.category === cat));
+  if (compendiumFilter !== "all" && !cats.includes(compendiumFilter)) compendiumFilter = "all";
+  const shown = entries.filter(e => compendiumFilter === "all" || e.category === compendiumFilter);
+  if (!shown.some(e => e.id === compendiumSelectedId)) compendiumSelectedId = (shown.find(e => compendiumEntryState(e).encountered) || shown[0] || {}).id || null;
+  const tabs = `<div class="cmp-tabs" role="tablist" aria-label="図鑑の区分">${["all", ...cats].map(cat => { const items = cat === "all" ? entries : entries.filter(e => e.category === cat); const done = items.filter(e => compendiumEntryState(e).defeated).length; return `<button type="button" role="tab" data-compendium-filter="${cat}" class="${compendiumFilter === cat ? "active" : ""}" aria-selected="${compendiumFilter === cat}">${cat === "all" ? "すべて" : esc(MONSTER_CATEGORY_LABELS[cat])}<small>${done}/${items.length}</small></button>`; }).join("")}</div>`;
+  const list = (compendiumFilter === "all" ? cats : [compendiumFilter]).map(cat => {
+    const items = shown.filter(e => e.category === cat); if (!items.length) return "";
+    const done = items.filter(e => compendiumEntryState(e).defeated).length;
+    return `<h3 class="compendium-section-title">${esc(MONSTER_CATEGORY_LABELS[cat])}　<small>${done} / ${items.length} 討伐</small></h3>` + items.map(e => {
+      const st = compendiumEntryState(e), d = e.data() || {}, on = e.id === compendiumSelectedId;
+      const thumb = st.defeated && d.image ? `<img src="${esc(d.image)}" alt="" onerror="this.remove()">` : `<span>${st.encountered ? "影" : "?"}</span>`;
+      return `<button type="button" class="cmp-row compendium-${e.category} ${st.defeated ? "unlocked" : ""} ${on ? "is-selected" : ""}" data-monster-select="${esc(e.id)}" aria-pressed="${on}"><span class="cmp-thumb">${thumb}</span><span class="cmp-row-name">${st.encountered ? esc(e.name) : "？？？？"}</span><small class="cmp-row-state">${st.defeated ? "討伐済み" : st.encountered ? "未討伐" : "未発見"}</small></button>`;
+    }).join("");
   }).join("");
-  box.innerHTML = html;
+  const selEntry = shown.find(e => e.id === compendiumSelectedId);
+  const detail = selEntry ? (() => { const st = compendiumEntryState(selEntry); return monsterCardHtml(selEntry, st.r, st.legacy); })() : '<p class="empty-note">モンスターを選んでください。</p>';
+  box.innerHTML = `${tabs}<div class="cmp-layout"><div class="cmp-list" aria-label="モンスター一覧">${list}</div><div class="cmp-detail" aria-live="polite">${detail}</div></div>`;
+  box.querySelectorAll("[data-compendium-filter]").forEach(b => b.onclick = () => { compendiumFilter = b.dataset.compendiumFilter; compendiumSelectedId = null; renderMonsterCompendium(); });
+  box.querySelectorAll("[data-monster-select]").forEach(b => b.onclick = () => {
+    compendiumSelectedId = b.dataset.monsterSelect; const scroll = box.querySelector(".cmp-list")?.scrollTop || 0; renderMonsterCompendium();
+    const l = box.querySelector(".cmp-list"); if (l) l.scrollTop = scroll;
+    if (window.matchMedia && window.matchMedia("(max-width:700px)").matches) box.querySelector(".cmp-detail")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
   // 見出しの数字は従来どおり「ステージボス5種の討伐数」（隠しボス解放条件の基準）。全体の数も併記する。
   const bossNames = compendiumNames().slice(0, 5);
   const allDone = entries.filter(e => (e.legacyName ? compendium[e.legacyName]?.defeated : monsterRecords[e.id]?.defeated)).length;

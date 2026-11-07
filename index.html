@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Fantasy RPG</title>
   <link rel="stylesheet" href="./css/01-battle-base.css?v=20261106-11">
   <link rel="stylesheet" href="./css/02-screens-and-shell.css?v=20261106-19">
@@ -13,6 +13,10 @@
   <link rel="stylesheet" href="./css/07-labyrinth.css?v=20261107-10">
   <link rel="stylesheet" href="./style.css?v=20261106-13">
   <link rel="stylesheet" href="./css/08-cartography-ui.css?v=20261107-02">
+  <link rel="stylesheet" href="./css/09-ui-base.css?v=20261107-30">
+  <link rel="stylesheet" href="./css/10-ui-field.css?v=20261107-30">
+  <link rel="stylesheet" href="./css/11-ui-battle.css?v=20261107-30">
+  <link rel="stylesheet" href="./css/12-ui-screens.css?v=20261107-60">
   <script src="./data/battle-rules.js?v=20261106-11" defer></script>
   <script src="./data/progression.js?v=20261106-11" defer></script>
   <script src="./data/skill-trees.js?v=20261106-11" defer></script>
@@ -29,7 +33,7 @@
   <script src="./data/levels.js?v=20261106-15" defer></script>
   <script src="./data/story.js?v=20261107-10" defer></script>
   <script src="./battle-ext.js?v=20261107-01" defer></script>
-  <script src="./script.js?v=20261107-21" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <script src="./script.js?v=20261107-61" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
   <script src="./tutorial.js?v=20261107-01" defer></script>
   <script src="./admin-tools.js?v=20261107-01" defer></script>
   <script src="./analyze-panel.js?v=20261106-15" defer></script>
@@ -42,7 +46,7 @@
   <script src="./field/field-puzzles.js?v=20261107-10" defer></script>
   <script src="./field/field-navigation.js?v=20261107-21" defer></script>
   <script src="./field/field-persistence.js?v=20261107-22" defer></script>
-  <script src="./monster-compendium.js?v=20261106-19" defer></script>
+  <script src="./monster-compendium.js?v=20261107-60" defer></script>
 </head>
 <body>
   <div class="game">
@@ -78,21 +82,33 @@
       <!-- ホーム -->
       <section id="home" class="screen active">
         <div class="page-heading">
-
-
           <p>仲間を編成して、モンスターとの戦いに挑もう。</p>
         </div>
 
         <div class="home-title-logo" role="img" aria-label="コタマのぼうけん">コタマのぼうけん</div>
-        <div id="home-party" class="home-party"></div>
+        <div class="home-layout">
+          <section class="home-party-panel" aria-labelledby="home-party-title">
+            <div class="section-title"><h2 id="home-party-title">パーティ</h2><button type="button" class="home-link" data-screen="formation">編成を変更 ›</button></div>
+            <div id="home-party" class="home-party"></div>
+          </section>
 
-        <div class="home-actions">
-          <button id="start-button" class="primary-button">
-            START
-          </button>
-          <p id="start-warning" class="warning" role="alert"></p>
-          <button id="event-gallery-button" class="secondary-button">冒険の記録</button>
-          <section id="event-gallery" class="event-gallery" hidden></section>
+          <div class="home-actions">
+            <button id="start-button" class="primary-button">
+              START
+            </button>
+            <p id="start-warning" class="warning" role="alert"></p>
+          </div>
+
+          <!-- 拠点の施設：将来の施設（宿・交易所など）はここに .home-facility を足す -->
+          <section class="home-facilities" aria-labelledby="home-facilities-title">
+            <h2 id="home-facilities-title" class="home-facilities-title">拠点</h2>
+            <div class="home-facility-list">
+              <button id="event-gallery-button" class="secondary-button home-facility" type="button"><strong>冒険の記録</strong><small>これまでの物語を読み返す</small></button>
+              <button class="secondary-button home-facility" type="button" data-screen="compendium"><strong>モンスター図鑑</strong><small>出会った敵の記録</small></button>
+              <button class="secondary-button home-facility" type="button" data-screen="achievements"><strong>実績</strong><small>達成した記録と目標</small></button>
+            </div>
+            <section id="event-gallery" class="event-gallery" hidden></section>
+          </section>
         </div>
       </section>
 
@@ -116,7 +132,7 @@
       <!-- 編成 -->
       <section id="formation" class="screen">
         <div class="page-heading">
-          <p>戦闘に参加する仲間を4人選んでください。</p>
+          <p>戦闘に参加する仲間を4人選びます。仲間を押すと詳細と装備を確認・変更できます。</p>
         </div>
 
         <div class="section-title">
@@ -128,7 +144,7 @@
 
         <div class="section-title">
           <h2>仲間候補</h2>
-          <span>キャラクターを選択して編成</span>
+          <span>押すと詳細・装備を表示</span>
         </div>
 
         <div id="character-roster" class="character-grid"></div>
@@ -170,7 +186,7 @@
       <!-- 設定 -->
       <section id="settings" class="screen">
         <div class="page-heading">
-          <p>ゲームの動作を設定します。</p>
+          <p>音量とセーブデータを設定します。セーブ・ロードは右上の ☰ からも開けます。</p>
         </div>
 
         <div class="settings-panel">
@@ -178,6 +194,8 @@
           <label class="setting-row volume-row"><span>BGM音量 <output id="bgm-volume-value">15%</output></span><input id="bgm-volume" type="range" min="0" max="100" value="15"></label>
           <label class="setting-row"><span>効果音</span><input id="se-toggle" type="checkbox" checked></label>
           <label class="setting-row volume-row"><span>SE音量 <output id="se-volume-value">20%</output></span><input id="se-volume" type="range" min="0" max="100" value="20"></label>
+          <h2 class="settings-data-heading">データ</h2>
+          <div class="settings-data-actions"><button type="button" class="secondary-button" onclick="openSaveDialog()">セーブ</button><button type="button" class="secondary-button" onclick="openLoadDialog()">ロード</button></div>
           <h2 class="soundtrack-heading">サウンドトラック</h2>
           <p class="soundtrack-help">チェックを付けると試聴できます。別の曲にチェックすると、前の曲は停止します。</p>
           <div class="soundtrack-list">
