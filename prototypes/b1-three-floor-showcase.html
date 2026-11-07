@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>はじまりの樹海 B1F 3フロア展示</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#08120e;color:#eef1e5;font-family:system-ui,sans-serif}
+#view{position:fixed;inset:0}canvas{display:block}
+header{position:fixed;z-index:3;top:max(10px,env(safe-area-inset-top));left:12px;right:12px;display:flex;align-items:center;gap:8px;pointer-events:none}
+header h1{font-size:17px;margin:0;text-shadow:0 2px 8px #000;flex:1}
+header small{display:block;color:#c0d4b3;font-size:9px;letter-spacing:.12em}
+select{pointer-events:auto;background:#13251c;color:#fff;border:1px solid #91a889;border-radius:8px;padding:9px;max-width:130px}
+#stats{position:fixed;z-index:2;left:12px;bottom:max(12px,env(safe-area-inset-bottom));font-size:10px;line-height:1.7;text-shadow:0 2px 6px #000;background:#07110dcc;padding:8px 10px;border-radius:8px;max-width:65vw}
+#mini{position:fixed;z-index:2;right:10px;top:65px;width:120px;height:120px;border:1px solid #b8c9a777;background:#07100dcc}
+#controls{position:fixed;z-index:3;bottom:max(14px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;gap:7px}
+button{width:48px;height:48px;border-radius:50%;border:1px solid #a5b99488;background:#102018dd;color:#fff;font-size:19px;touch-action:manipulation}
+button:active{background:#526b46}
+#status{position:fixed;z-index:4;top:58px;left:12px;font-size:10px;color:#d7e4c8;text-shadow:0 2px 6px #000}
+</style>
+</head>
+<body>
+<div id="view"></div>
+<header><div><small>KOTAMA NO BOUKEN / MAP SHOWCASE</small><h1 id="floor-title">はじまりの樹海・1F</h1></div><select id="floor"><option value="0">1F・入口</option><option value="1">2F・深部</option><option value="2">3F・遺跡</option></select></header>
+<div id="status">実マップを読み込み中…</div>
+<canvas id="mini" width="240" height="240"></canvas>
+<div id="stats">← → 旋回 / ↑ 前進 / ↓ 後退<br>この画面は演出確認用。ゲーム進行・FOE AIとは未接続。</div>
+<div id="controls"><button data-action="left">↶</button><button data-action="forward">▲</button><button data-action="right">↷</button><button data-action="back">▼</button></div>
+<script src="../data/field-enemies.js"></script>
+<script src="../data/field-maps.js"></script>
+<script>window.__KOTAMA_FIELD_AREAS__=FIELD_AREAS;window.__KOTAMA_FIELD_ENEMIES__=FIELD_ENEMIES;</script>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+import {buildField3DSnapshot} from "../field/3d/field-3d-grid-adapter.js";
+import {buildField3DWorld} from "../field/3d/field-3d-world.js";
+import {buildField3DAtmosphere} from "../field/3d/field-3d-atmosphere.js";
+import {buildField3DDecorationLayer} from "../field/3d/field-3d-decoration-layer.js";
+import {buildField3DLandmarkLayer} from "../field/3d/field-3d-landmark-layer.js";
+import {planField3DLandmarks} from "../field/3d/field-3d-landmark-planner.js";
+import {getB1F3DLayout} from "../field/3d/field-3d-b1-layout.js";
+import {resolveField3DQualityPreset,applyField3DQualityPreset} from "../field/3d/field-3d-quality-presets.js";
+
+const defs=window.__KOTAMA_FIELD_AREAS__?.[1],enemies=window.__KOTAMA_FIELD_ENEMIES__;
+if(!defs?.floors?.length)throw new Error("FIELD_AREAS[1] floor data missing");
+const host=document.querySelector("#view"),selector=document.querySelector("#floor"),status=document.querySelector("#status"),title=document.querySelector("#floor-title");
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.08,42);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
+const quality=resolveField3DQualityPreset({profile:"mobile",devicePixelRatio, maxTextureSize:renderer.capabilities.maxTextureSize});
+applyField3DQualityPreset(renderer,quality);renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;host.appendChild(renderer.domElement);
+let layers=[],snapshot=null,grid=[],player={x:1,y:1,dir:0},mapInfo=null;
+const dirs=[{x:0,y:-1},{x:1,y:0},{x:0,y:1},{x:-1,y:0}];
+const mini=document.querySelector("#mini"),ctx=mini.getContext("2d");
+function clearScene(){for(const layer of layers){scene.remove(layer.group);layer.dispose?.();}layers=[];}
+function buildFixture(source,index){
+ grid=source.map.map(row=>row.split(""));const width=Math.max(...grid.map(row=>row.length)),height=grid.length;
+ const objects=[];let chestIndex=0;
+ grid.forEach((row,ty)=>row.forEach((ch,tx)=>{
+  let o=null;
+  if(ch==="<"||ch===">")o={key:"stairs:"+index+":"+tx+":"+ty,kind:"stairs",tx,ty,sprite:"stairs",walk:true};
+  else if(ch==="S")o={key:"save:"+index+":"+tx+":"+ty,kind:"save",tx,ty,sprite:"save-lamp"};
+  else if(ch==="T")o={key:"chest:"+index+":"+tx+":"+ty,kind:"chest",tx,ty,sprite:"chest",reward:(source.chests||[])[chestIndex++]||{gold:0}};
+  else if(ch==="G")o={key:"gather:"+index+":"+tx+":"+ty,kind:"gather",tx,ty,sprite:"gather"};
+  else if(ch==="?")o={key:"sign:"+index+":"+tx+":"+ty,kind:"sign",tx,ty,sprite:"sign"};
+  else if(ch==="B"||ch==="E")o={key:"marker:"+index+":"+tx+":"+ty,kind:ch==="B"?"gate":"exit",tx,ty,walk:true};
+  else if(/[a-z]/.test(ch)&&defs.objects?.[ch]){const d=defs.objects[ch];o={key:d.kind+":"+d.id,kind:d.kind,tx,ty,id:d.id,sprite:d.sprite,name:d.name,hidden:!!d.hidden,onWall:!!d.onWall,puzzle:d.puzzle};}
+  if(o)objects.push(o);
+ }));
+ let start=null;
+ for(let y=0;y<height&&!start;y++)for(let x=0;x<grid[y].length;x++)if(grid[y][x]==="P"){start={x,y};break;}
+ if(!start)for(let y=0;y<height&&!start;y++)for(let x=0;x<grid[y].length;x++)if(grid[y][x]==="E"||grid[y][x]==="<"){start={x,y};break;}
+ if(!start)start={x:1,y:1};
+ const foes=(source.foes||[]).map((f,i)=>({key:"foe:"+index+":"+i,def:f,enemy:enemies?.[f.enemy],tx:f.path?.[0]?.[0]??0,ty:f.path?.[0]?.[1]??0,dir:f.dir||"down",mode:"patrol",defeated:false,type:f.type||"chaser"}));
+ const area={n:1,f:index,key:"1-"+index,def:defs,grid,w:width,h:height,objects};
+ const fieldState={x:start.x*32+16,y:start.y*32+16,dir:"up",moving:false,foes,explored:{"1-"+index:new Uint8Array(width*height).fill(1)},visible:new Set()};
+ const snapshot=buildField3DSnapshot({area,fieldState,tilePixels:32,isSolidChar:(_a,c)=>"#~ST?G".includes(c)||/[a-z]/.test(c)});
+ if(snapshot.cells.length!==width*height)throw new Error("Grid cell count mismatch on "+(index+1)+"F");
+ if(snapshot.objects.length!==objects.length)throw new Error("Object fixture mismatch on "+(index+1)+"F");
+ return {snapshot,start,foes,width,height};
+}
+function drawMini(){
+ ctx.clearRect(0,0,240,240);if(!snapshot)return;
+ const sx=240/snapshot.area.width,sy=240/snapshot.area.height;
+ for(const c of snapshot.cells){ctx.fillStyle=c.solid?"#29372e":c.terrain==="grass"?"#496a42":c.terrain==="path"?"#827653":"#657361";ctx.fillRect(c.tx*sx,c.ty*sy,sx+.3,sy+.3);}
+ for(const o of snapshot.objects){ctx.fillStyle=o.kind==="chest"?"#e5bd61":o.kind==="gather"?"#73c9a1":"#c4b8a0";ctx.fillRect(o.tx*sx,o.ty*sy,Math.max(2,sx*.7),Math.max(2,sy*.7));}
+ for(const f of snapshot.foes){ctx.fillStyle="#db6255";ctx.fillRect(f.tx*sx,f.ty*sy,Math.max(3,sx*.8),Math.max(3,sy*.8));}
+ ctx.fillStyle="#fff";ctx.beginPath();ctx.arc((player.x+.5)*sx,(player.y+.5)*sy,Math.max(3,sx*.18),0,Math.PI*2);ctx.fill();
+}
+function placeCamera(){camera.position.set((player.x+.5)*snapshot.scale,1.68,(player.y+.5)*snapshot.scale);const d=dirs[player.dir];camera.lookAt(camera.position.x+d.x,1.55,camera.position.z+d.y);}
+function loadFloor(index){
+ clearScene();const source=defs.floors[index];const built=buildFixture(source,index);snapshot=built.snapshot;player={x:built.start.x,y:built.start.y,dir:0};
+ const layout=getB1F3DLayout(index+1);
+ const palette={floor:0x59644c,path:0x71654b,grass:0x38583b,safe:0x777c5a,wall:0x34463a,hazard:0x315d64};
+ const world=buildField3DWorld(THREE,snapshot,{palette});scene.add(world.group);layers.push(world);
+ const atmosphere=buildField3DAtmosphere(THREE,scene,{fogColor:layout.fogColor,fogDensity:layout.fogDensity,maxPixelRatio:quality.pixelRatio,keyPosition:[snapshot.area.worldWidth*.35,13,snapshot.area.worldDepth*.25],fillPosition:[snapshot.area.worldWidth*.7,5,snapshot.area.worldDepth*.7]});layers.push(atmosphere);
+ const decor=buildField3DDecorationLayer(THREE,snapshot,{density:layout.decoration.density,maxPerKind:Math.min(layout.decoration.maxPerKind,quality.maxDecorationPerKind),rootDensity:layout.decoration.rootDensity,palette:layout.palette});scene.add(decor.group);layers.push(decor);
+ const placements=planField3DLandmarks(snapshot,{maxCount:Math.min(layout.landmarkLimit,quality.maxVisibleLandmarks),seed:layout.landmarkSeed,...layout.landmarkOptions});
+ const landmarks=buildField3DLandmarkLayer(THREE,placements,{maxCount:quality.maxVisibleLandmarks});scene.add(landmarks.group);layers.push(landmarks);
+ // Minimal map object and FOE markers, for spatial orientation only.
+ const markerGroup=new THREE.Group();const mats={chest:0xe2bd62,gather:0x65c9a1,npc:0xd6b47c,event:0x9b83ce,door:0x9eafb2,foe:0xb94f45,other:0xb9c6a8};
+ for(const o of snapshot.objects){if(o.hidden)continue;const m=new THREE.Mesh(new THREE.OctahedronGeometry(.42),new THREE.MeshStandardMaterial({color:mats[o.kind]||mats.other,emissive:0x101010}));m.position.set(o.world.x,.52,o.world.z);markerGroup.add(m);}
+ for(const f of snapshot.foes){const m=new THREE.Mesh(new THREE.ConeGeometry(.55,1.45,7),new THREE.MeshStandardMaterial({color:mats.foe}));m.position.set(f.world.x,.72,f.world.z);markerGroup.add(m);}
+ scene.add(markerGroup);layers.push({group:markerGroup,dispose(){markerGroup.traverse(n=>{n.geometry?.dispose?.();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose();}});markerGroup.clear();}});
+ mapInfo={objects:snapshot.objects.length,foes:snapshot.foes.length,decor:decor.counts,landmarks:landmarks.counts};
+ title.textContent="はじまりの樹海・"+(index+1)+"F";status.textContent="壁 "+world.wallCount+" / 床 "+world.floorCount+" / 装飾 "+Object.values(decor.counts).reduce((a,b)=>a+b,0)+" / ランドマーク "+placements.length;
+ placeCamera();drawMini();
+}
+function step(action){if(!snapshot)return;if(action==="left")player.dir=(player.dir+3)%4;else if(action==="right")player.dir=(player.dir+1)%4;else{const sign=action==="back"?-1:1,d=dirs[player.dir],nx=player.x+d.x*sign,ny=player.y+d.y*sign,cell=snapshot.cells.find(c=>c.tx===nx&&c.ty===ny);if(cell&&!cell.solid){player.x=nx;player.y=ny;}}placeCamera();drawMini();}
+document.querySelectorAll("button[data-action]").forEach(b=>b.addEventListener("click",()=>step(b.dataset.action)));
+selector.addEventListener("change",()=>loadFloor(Number(selector.value)));
+addEventListener("keydown",e=>{const a={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"forward",ArrowDown:"back",a:"left",d:"right",w:"forward",s:"back"}[e.key];if(a){e.preventDefault();step(a);}});
+addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+loadFloor(0);
+renderer.setAnimationLoop(()=>renderer.render(scene,camera));
+</script>
+</body></html>
