@@ -1302,3 +1302,16 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 @media(prefers-reduced-motion:reduce){
   .field-object[data-kind="gate"].is-boss-near::before{animation:none!important;border-color:#ffb08c;box-shadow:0 0 12px #e52d3d,inset 0 0 0 2px #2a080d}
 }
+
+/* Cartography intelligence: make FOE movement states legible at map glance. */
+.field-map-rail .field-minimap-status{width:100%;padding:5px 4px;border-block:1px solid #c3a66a55;color:#dce5e1;font-size:9px;line-height:1.5;text-align:center;font-variant-numeric:tabular-nums}
+.field-map-rail .field-minimap-legend{display:grid;grid-template-columns:1fr 1fr;gap:5px 7px;width:100%;color:#cbd5d0;font-size:9px}
+.field-minimap-legend span{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.field-minimap-legend i{display:inline-block;flex:0 0 8px;width:8px;height:8px;border-radius:50%}
+.field-minimap-legend .mini-player{background:#fff;border:1px solid #18212a;clip-path:polygon(50% 0,100% 100%,50% 78%,0 100%)}
+.field-minimap-legend .mini-foe{background:#ffad45}
+.field-minimap-legend .mini-chase{background:#ff3030;clip-path:polygon(50% 0,100% 100%,0 100%);border-radius:0}
+.field-fullmap-legend .lg-chase{background:#ff3030;clip-path:polygon(50% 0,100% 100%,0 100%);border-radius:0}
+.field-fullmap-summary .map-foe-alert{border-color:#b84a3d;background:#6b211c33;color:#ffb19a}
+.field-fullmap-summary .map-foe-alert b{color:#ffb19a}
+@media(max-width:620px){.field-map-rail .field-minimap-status{font-size:8px;padding:4px 1px}.field-map-rail .field-minimap-legend{gap:4px 3px;font-size:8px}}
