@@ -4,7 +4,7 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 ルール（やってよいこと・手順）は `AI_DEVELOPMENT_RULES.md` が正です。この資料は「どこに何があるか」「何に気をつけるか」を短く伝えるためのもので、ルールを変更するものではありません。
 
 - 最終更新：2026-11-07（development の現状と分割後の読み込み構成を反映）
-- 作業を始める前に読む順番：このファイル → `AI_DEVELOPMENT_RULES.md` → 触る領域の README（`data/README.md`、`css/README.md`）
+- 作業を始める前に読む順番：このファイル → `AI_DEVELOPMENT_RULES.md` → `docs/PROJECT_CURRENT_STATE.md` → 触る領域の README（`data/README.md`、`css/README.md`）
 
 ---
 
