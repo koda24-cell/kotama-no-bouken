@@ -98,8 +98,10 @@ function extStatusBag(t, create) {
   }
   return battleState.enemyStatuses || (create ? (battleState.enemyStatuses = {}) : null);
 }
-function extHasStatus(t, type) { const b = extStatusBag(t, false); return !!(b && b[type] && b[type].turns > 0); }
-function extStatusPower(t, type) { const b = extStatusBag(t, false); return b && b[type] ? b[type].power : 0; }
+// 別名（data/status-effects.js の EXT_STATUS_ALIASES）を正式IDへ読み替える。
+function extStatusId(type) { return (typeof EXT_STATUS_ALIASES === "object" && EXT_STATUS_ALIASES[type]) || type; }
+function extHasStatus(t, type) { type = extStatusId(type); const b = extStatusBag(t, false); return !!(b && b[type] && b[type].turns > 0); }
+function extStatusPower(t, type) { type = extStatusId(type); const b = extStatusBag(t, false); return b && b[type] ? b[type].power : 0; }
 
 function extEnemyStatEffect(rec, type, apply, target) {
   const e = target || battleState.enemy; if (!e) return;
@@ -109,10 +111,17 @@ function extEnemyStatEffect(rec, type, apply, target) {
   } else if (type === "defenseDown") {
     if (apply) { rec.lost = Math.floor((e.defense || 0) * rec.power); e.defense = Math.max(0, (e.defense || 0) - rec.lost); }
     else { e.defense = (e.defense || 0) + (rec.lost || 0); rec.lost = 0; }
+  } else if (type === "bindArm" || type === "bindHead") {
+    // 封じ：腕＝攻撃力、頭＝SP攻撃力を下げ、切れると元に戻す（強さは data/status-effects.js の EXT_AILMENT_RULES）。
+    const key = type === "bindArm" ? "attack" : "spAttack";
+    const mul = type === "bindArm" ? EXT_AILMENT_RULES.bindArm.attackMul : EXT_AILMENT_RULES.bindHead.enemySpAttackMul;
+    if (apply) { rec.lost = Math.floor((e[key] || 0) * (1 - mul)); if (Number.isFinite(e[key])) e[key] = Math.max(0, e[key] - rec.lost); }
+    else { if (Number.isFinite(e[key])) e[key] += (rec.lost || 0); rec.lost = 0; }
   }
 }
 // 戻り値："new"（新規）／"refresh"（持続か強さを更新）／"same"（変化なし）／false（付与できない）
 function addStatus(t, type, opts = {}) {
+  type = extStatusId(type);
   const def = EXT_STATUS_DEFS[type], bag = extStatusBag(t, true);
   if (!def || !bag) return false;
   const turns = Math.max(1, Math.floor(opts.turns ?? def.turns ?? 3));
@@ -135,9 +144,11 @@ function addStatus(t, type, opts = {}) {
   return "new";
 }
 function extRemoveStatus(t, type) {
+  type = extStatusId(type);
   const bag = extStatusBag(t, false); if (!bag || !bag[type]) return;
   if (!extIsParty(t)) extEnemyStatEffect(bag[type], type, false, t);
   delete bag[type];
+  if (extIsParty(t)) extGrantPartyImmunity(t, type);
 }
 function extClearHarmful(t) {
   const bag = extStatusBag(t, false); if (!bag) return;
@@ -146,8 +157,176 @@ function extClearHarmful(t) {
 // 味方への付与：ログ付き。
 function extInflict(target, type, opts = {}) {
   const r = addStatus(target, type, opts);
-  if (r === "new" || r === "refresh") { pushEvent(`${target.name}は${EXT_STATUS_DEFS[type].label}状態になった！`); renderBattle(); }
+  if (r === "new" || r === "refresh") { pushEvent(`${target.name}は${EXT_STATUS_DEFS[extStatusId(type)].label}状態になった！`); renderBattle(); }
   return r;
+}
+/* ============================================================
+   1-b. 睡眠・混乱・封じ・耐性（Claude C / C2）
+   - 効果量・ルールは data/status-effects.js の EXT_AILMENT_RULES。
+   - 付与率は extStatusChance() の1か所で決める。付与の判定は extTryStatus()（乱数は従来どおり1回だけ使う）。
+   - 付与に失敗したときは battle:status:resist を通知する（reason：immune／resisted／tolerance）。
+   ============================================================ */
+let extPartyImmunity = {};   // 味方ID → { 状態ID: このラウンドまで免疫 }
+function extCurrentRound() { return (battleState?.turnCount || 0) + 1; }
+// 味方の麻痺・睡眠が治ったとき、次のラウンドまで同じ状態にならない。
+function extGrantPartyImmunity(c, type) {
+  const rule = EXT_AILMENT_RULES.partyImmunity;
+  if (!c || !rule || !rule.types.includes(type)) return;
+  (extPartyImmunity[c.id] ||= {})[type] = extCurrentRound() + (rule.rounds || 1);
+}
+function extPartyImmune(c, type) { const until = extPartyImmunity[c?.id]?.[type]; return Number.isFinite(until) && extCurrentRound() <= until; }
+function extTickPartyImmunity() {
+  for (const id of Object.keys(extPartyImmunity)) for (const [type, until] of Object.entries(extPartyImmunity[id])) if (until < extCurrentRound()) delete extPartyImmunity[id][type];
+}
+// 確実に行動できない状態（睡眠・既存の拘束）。麻痺・混乱は確率なので含めない。
+function extHardDisabled(c) { return !!c && (extHasStatus(c, "sleep") || (typeof isActionIncapacitated === "function" && isActionIncapacitated(c))); }
+// ラウンド開始時：生存者全員が行動不能なら連続回数を数える。
+function extUpdatePartyLockStreak() {
+  const alive = getParty().filter(c => c.hp > 0);
+  battleState._partyLockStreak = alive.length && alive.every(extHardDisabled) ? (battleState._partyLockStreak || 0) + 1 : 0;
+}
+// 敵の状態異常耐性（1.0=通常、0=無効）。個体 → 敵本体 → ボスの既定値 → 1.0 の順に探す。
+function extAilmentResist(unit, type) {
+  type = extStatusId(type);
+  const e = battleState.enemy;
+  const own = unit?.ailmentResist?.[type] ?? e?.ailmentResist?.[type];
+  if (Number.isFinite(own)) return Math.max(0, own);
+  if (extToleranceTarget(e)) { const d = EXT_AILMENT_RULES.bossDefaultResist?.[type]; if (Number.isFinite(d)) return d; }
+  return 1;
+}
+// 「付与されるたびに耐性が上がる」対象：ボス（EXT_BOSS_NAMES）、ステージ戦の階層ボス、ailmentTolerance:true の敵。
+function extToleranceTarget(e) {
+  if (!e) return false;
+  if (typeof e.ailmentTolerance === "boolean") return e.ailmentTolerance;
+  if (extIsBoss(e)) return true;
+  return !battleState.encounterMode && !battleState.tutorialMode && Array.isArray(typeof enemyData !== "undefined" ? enemyData : null) && enemyData.some(d => d.name === e.name);
+}
+function extToleranceKey(unit) { return unit === battleState.enemy || unit?.id == null ? "enemy" : String(unit.id); }
+function extToleranceCount(unit, type) { return battleState._ailmentTolerance?.[extToleranceKey(unit)]?.[extStatusId(type)] || 0; }
+function extAddTolerance(unit, type) {
+  const t = (battleState._ailmentTolerance ||= {}), k = extToleranceKey(unit);
+  (t[k] ||= {})[extStatusId(type)] = extToleranceCount(unit, type) + 1;
+}
+// [#51 統合点] 味方の状態異常耐性（VIT など）。基準では 1（補正なし）。
+function extPartyAilmentResistMul(target) { return 1; }
+// [#52 統合点] 味方が敵に付与するときの付与率補正（LUC など）。基準では 1（補正なし）。
+function extInflictorAilmentMul(source) { return 1; }
+/* 付与率の唯一の計算式。
+   付与率 = 基本付与率 × 全体倍率 × (味方→敵：bossMul × 敵の耐性 × ボスの耐性上昇 × 付与者補正)
+                               (敵→味方：味方の耐性補正、治った直後の免疫・全員行動不能の上限なら 0)
+   戻り値 { chance, reason }。reason は付与率を 0 にした理由（"immune"／"tolerance"）か null。 */
+function extStatusChance(source, target, type, baseChance, opts = {}) {
+  type = extStatusId(type);
+  const rules = EXT_AILMENT_RULES, g = rules.globalMul || {};
+  let chance = Number(baseChance) || 0, reason = null;
+  if (extIsParty(target)) {
+    chance *= source?.foe ? (g.toPartyFromFoe ?? 1) : (g.toParty ?? 1);
+    chance *= extPartyAilmentResistMul(target);
+    if (extPartyImmune(target, type)) { chance = 0; reason = "tolerance"; }
+    else if (type === "sleep" && (battleState._partyLockStreak || 0) >= (rules.partyAllLockCap ?? 1)) {
+      const others = getParty().filter(c => c.hp > 0 && c !== target);
+      if (others.every(extHardDisabled)) { chance = 0; reason = "tolerance"; }
+    }
+  } else {
+    const e = battleState.enemy;
+    chance *= g.toEnemy ?? 1;
+    if (extIsBoss(e)) chance *= opts.bossMul ?? .5;
+    const resist = extAilmentResist(target, type);
+    if (resist <= 0) { chance = 0; reason = "immune"; }
+    chance *= resist;
+    if (chance > 0 && extToleranceTarget(e) && (rules.bossTolerance?.types || []).includes(type)) {
+      const n = extToleranceCount(target, type);
+      if (n > 0) { chance *= Math.pow(1 - (rules.bossTolerance.step ?? .5), n); if (chance <= 0) reason = "tolerance"; }
+    }
+    if (source && extIsParty(source)) chance *= extInflictorAilmentMul(source);
+  }
+  return { chance: Math.max(0, Math.min(rules.maxChance ?? 1, chance)), reason };
+}
+// 付与の判定。乱数は付与率に関係なく1回だけ使う（既存の戦闘結果の再現性を保つ）。
+function extTryStatus(source, target, type, baseChance, opts = {}) {
+  const { chance, reason } = extStatusChance(source, target, type, baseChance, opts);
+  const hit = Math.random() < chance;
+  if (hit) { if (!extIsParty(target) && extToleranceTarget(battleState.enemy)) extAddTolerance(target, type); return true; }
+  battleEmit("status:resist", {
+    targetId: extIsParty(target) ? target.id : (target === battleState.enemy ? "enemy" : target?.id ?? "enemy"),
+    targetName: target?.displayName || target?.name || battleState.enemy?.name || "",
+    side: extIsParty(target) ? "party" : "enemy",
+    type: extStatusId(type),
+    reason: reason || "resisted",
+    chance
+  });
+  return false;
+}
+// スキルが使う部位："head"／"arm"／null（封じの影響なし）
+function extSkillBodyPart(skill) {
+  if (!skill) return null;
+  if (EXT_SKILL_BODY_PART.none.includes(skill.type)) return null;
+  if (EXT_SKILL_BODY_PART.arm.includes(skill.type)) return "arm";
+  if (skill.xj) return ["phys", "physical"].includes(skill.xj.kind) ? "arm" : "head";
+  return "head";
+}
+// 封じで使えない理由（使えるなら ""）。スキル選択の灰色表示と、行動直前の判定の両方で使う。
+function extSkillSealReason(actor, skill) {
+  const part = extSkillBodyPart(skill);
+  if (part === "head" && extHasStatus(actor, "bindHead")) return "頭封じのため、このスキルは使えません。";
+  if (part === "arm" && extHasStatus(actor, "bindArm")) return "腕封じのため、このスキルは使えません。";
+  return "";
+}
+// 回避率の倍率（脚封じ中は回避できない）
+function extEvasionMul(c) { return extHasStatus(c, "bindLeg") ? EXT_AILMENT_RULES.bindLeg.evasionMul : 1; }
+// 逃走できないか（脚封じの味方がいる）。逃走処理（field.js の撤退など）から参照する想定。
+function extEscapeBlocked() { return getParty().some(c => c.hp > 0 && extHasStatus(c, "bindLeg")); }
+// 味方の行動直前（スピード順ラウンドのみ）：睡眠・混乱・封じ。行動を取りやめた場合は true。
+async function extPartyAilmentTurn(actor, action) {
+  if (!actor || actor.hp <= 0) return false;
+  if (extHasStatus(actor, "sleep")) {
+    extCancelCharge(actor); pushEvent(`${actor.name}は眠っていて動けない！`); renderBattle(); await wait(600); return true;
+  }
+  if (extHasStatus(actor, "confusion") && action && action.type !== "guard" && Math.random() < EXT_AILMENT_RULES.confusion.misactChance) {
+    extCancelCharge(actor);
+    const allies = getParty().filter(c => c.hp > 0 && c !== actor);
+    const victim = allies.length ? allies[Math.floor(Math.random() * allies.length)] : null;
+    if (!victim) { pushEvent(`${actor.name}は混乱してうろたえている！`); renderBattle(); await wait(600); return true; }
+    pushEvent(`${actor.name}は混乱して${victim.name}を攻撃した！`, "warning");
+    const d = calcPhysical(effectiveAttackPower(actor), effectiveStats(victim).defense, !!battleState.guarding[victim.id]);
+    await applyPartyDamageAnimated(victim, d, { normalAttack: true });
+    if (victim.hp <= 0) pushEvent(`${victim.name}は戦闘不能になった！`);
+    return true;
+  }
+  if (action && action.type === "skill") {
+    const skill = getCharacterSkills(actor).find(s => s.id === action.skillId);
+    const sealed = extSkillSealReason(actor, skill);
+    if (sealed) { pushEvent(`${actor.name}は封じられていて「${skill.name}」を使えない！`, "warning"); renderBattle(); await wait(600); return true; }
+  }
+  return false;
+}
+// 敵の行動直前（スピード順ラウンドのみ）：睡眠・混乱。行動を取りやめた場合は true。
+async function extEnemyAilmentTurn(e) {
+  if (!e) return false;
+  if (extHasStatus(e, "sleep")) { pushEvent(`${e.name}は眠っている……。`); return true; }
+  if (extHasStatus(e, "confusion") && Math.random() < EXT_AILMENT_RULES.confusion.misactChance) { pushEvent(`${e.name}は混乱してうろたえている！`); return true; }
+  return false;
+}
+// 敵の被ダメージ倍率（睡眠中は増える）。applyDamageToEnemyTarget／applyDamageToEnemy の先頭から呼ばれる。
+// target が "main" の場合は applyDamageToEnemy 側で掛けるので、ここでは掛けない（二重適用の防止）。
+function extEnemyDamageTakenMul(enemy, target, amount) {
+  if (!enemy || !(amount > 0) || battleState._statusTick) return amount;
+  if (target && target.kind === "main") return amount;
+  const unit = target ? target.ref : (enemy.members ? enemy.members.find(m => m.hp > 0) : enemy);
+  return unit && extHasStatus(unit, "sleep") ? Math.floor(amount * EXT_AILMENT_RULES.sleep.damageTakenMul) : amount;
+}
+// ダメージを受けたら睡眠から覚める（毒・火傷などの状態異常ダメージを除く）。extEmitDamage から呼ばれる。
+function extWakeOnDamage(targetId, side, extra) {
+  if (extra?.statusDamage || battleState._statusTick) return;
+  let unit = null;
+  if (side === "party") unit = getCharacter(targetId);
+  else if (battleState.enemy) {
+    const e = battleState.enemy;
+    unit = targetId === "enemy" ? e : (e.members || []).find(m => m.id === targetId) || (battleState.wolfClones || []).find(c => c.id === targetId) || (targetId === "wolf-main" ? e : null);
+  }
+  if (!unit || !extHasStatus(unit, "sleep")) return;
+  extRemoveStatus(unit, "sleep");
+  pushEvent(`${unit.displayName || unit.name}は目を覚ました！`);
 }
 function extDefenseDownAmount(c) {
   if (!extHasStatus(c, "defenseDown")) return 0;
@@ -162,6 +341,8 @@ function extApplyStatusStats(c, raw) {
   if (extHasStatus(c, "attackDown")) { const p = 1 - Math.min(.9, extStatusPower(c, "attackDown")); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "curse")) { const p = 1 - Math.min(.9, extStatusPower(c, "curse") || .15); mul("attack", p); mul("spAttack", p); }
   if (extHasStatus(c, "defenseUp")) { const p = 1 + extStatusPower(c, "defenseUp"); mul("defense", p); mul("spDefense", p); }
+  if (extHasStatus(c, "bindArm")) mul("attack", EXT_AILMENT_RULES.bindArm.attackMul);
+  if (extHasStatus(c, "bindLeg")) raw.speed = Math.floor(raw.speed * EXT_AILMENT_RULES.bindLeg.speedMul);
 }
 // 呪い：回復量が半分になる。
 function extHealMul(target) { return extHasStatus(target, "curse") ? .5 : 1; }
@@ -195,6 +376,10 @@ function extBattlePortrait(c) {
 
 function extResetBattle() {
   extPartyStatuses = {};
+  extPartyImmunity = {};
+  battleState._ailmentTolerance = {};
+  battleState._partyLockStreak = 0;
+  battleState._statusTick = false;
   battleState.enemyStatuses = {};
   battleState.enemyUnitStatuses = {};
   for (const c of characters) { c._xjCharge = null; c._heat = 0; c._overheat = false; }
@@ -204,6 +389,7 @@ function extResetBattle() {
 /* 毎ターン開始時：毒のダメージ */
 async function extRoundStart() {
   const e = battleState.enemy;
+  extUpdatePartyLockStreak();
   for (const c of getParty()) {
     if (c.hp <= 0 || !extHasStatus(c, "poison")) continue;
     const d = Math.max(6, Math.floor(effectiveStats(c).maxHp * (extStatusPower(c, "poison") || .06)));
@@ -221,7 +407,9 @@ async function extRoundStart() {
       const pct = extIsBoss(e) ? Math.min(.025, extStatusPower(unit, "poison") || .025) : (extStatusPower(unit, "poison") || .06);
       const damage = Math.max(1, Math.floor((unit.maxHp || e.maxHp) * pct));
       beginEnemyDamagePreview(e);
+      battleState._statusTick = true;  // 毒のダメージでは睡眠から覚めない
       const dealt = applyDamageToEnemyTarget(e, target, damage);
+      battleState._statusTick = false;
       if (dealt > 0) {
         combatNumber(target.kind === "member" ? document.querySelector(`[data-enemy-id="${unit.id}"]`) : displayEnemyNode(), `-${dealt}`, "damage");
         flashEnemyDamage();
@@ -244,6 +432,7 @@ async function extEndOfTurnStatuses() {
     }
   }
   const enemyHolders = e ? (e.members ? e.members : [e, ...(battleState.wolfClones || [])]) : [];
+  extTickPartyImmunity();
   for (const holder of [...getParty(), ...enemyHolders]) {
     const bag = extStatusBag(holder, false); if (!bag) continue;
     for (const type of Object.keys(bag)) {
@@ -282,7 +471,10 @@ const EXT_ACTION_PRIORITY = Object.freeze({
   UNION: 4,
   NONE: 0
 });
-function extEnemySpeed(e) { return Number.isFinite(e?.speed) ? e.speed : (EXT_ENEMY_SPEED[e?.name] ?? 50); }
+function extEnemySpeed(e) {
+  const base = Number.isFinite(e?.speed) ? e.speed : (EXT_ENEMY_SPEED[e?.name] ?? 50);
+  return extHasStatus(e, "bindLeg") ? Math.floor(base * EXT_AILMENT_RULES.bindLeg.speedMul) : base;  // 脚封じ
+}
 function extActionPriority(action) {
   if (action.type === "guard") return EXT_ACTION_PRIORITY.GUARD;
   if (action.type === "union") return EXT_ACTION_PRIORITY.UNION;
@@ -394,13 +586,13 @@ async function extDamageSkill(actor, skill, a, x, mult) {
   // 状態異常は命中した対象ごとに独立判定・独立管理する。
   if (x.status && enemyHpTotal(enemy) > 0 && total > 0) {
     for (const st of Array.isArray(x.status) ? x.status : [x.status]) {
-      const label = EXT_STATUS_DEFS[st.type].label;
+      const label = EXT_STATUS_DEFS[extStatusId(st.type)].label;
       for (const target of targets) {
         const unit = target.ref;
         if (!unit || unit.hp <= 0) continue;
-        const chance = st.chance * (extIsBoss(enemy) ? (st.bossMul ?? .5) : 1);
         const unitName = unit.displayName || unit.name || enemy.name;
-        if (Math.random() < chance) {
+        // 付与率は extStatusChance() の1か所で決める（bossMul・敵の耐性・ボスの耐性上昇）。
+        if (extTryStatus(actor, unit, st.type, st.chance, { bossMul: st.bossMul })) {
           const r = addStatus(unit, st.type, { turns: st.turns, power: st.power });
           if (r === "new" || r === "refresh") pushEvent(`${unitName}は${label}状態になった！`);
           else pushEvent(`${unitName}の${label}は変わらなかった。`);
@@ -446,7 +638,9 @@ async function extImperialRelease(actor) {
 }
 // チャージ中の味方が受けるダメージ（applyPartyDamageAnimated から呼ばれる）
 function extDefenselessMul(character, options) {
-  return character && character._xjCharge && !options.statusDamage ? EXT_DEFENSELESS_MULT : 1;
+  let mul = character && character._xjCharge && !options.statusDamage ? EXT_DEFENSELESS_MULT : 1;
+  if (character && !options.statusDamage && extHasStatus(character, "sleep")) mul *= EXT_AILMENT_RULES.sleep.damageTakenMul;  // 睡眠中は被ダメージ増
+  return mul;
 }
 
 /* ============================================================
@@ -477,7 +671,11 @@ function extPickPartyTarget(alive, act) {
 async function extVariantAction(e, turn) {
   const alive = livingParty(); if (!alive.length) return;
   const ratio = enemyHpTotal(e) / e.maxHp;
-  const usable = e.ai.filter(a => (!a.minTurn || turn >= a.minTurn) && (!a.hpBelow || ratio <= a.hpBelow));
+  const eligible = e.ai.filter(a => (!a.minTurn || turn >= a.minTurn) && (!a.hpBelow || ratio <= a.hpBelow));
+  // 頭封じ：術系の行動（kind:"sp"）は使えない。使える行動が無くなる場合は封じの影響を受けない行動に限る。
+  const sealedHead = extHasStatus(e, "bindHead");
+  const usable = sealedHead ? eligible.filter(a => a.kind !== "sp") : eligible;
+  if (!usable.length) { pushEvent(`${e.name}は頭を封じられていて、術を使えない！`); return; }
   const forced = usable.find(a => a.everyTurns && turn % a.everyTurns === 0);
   const act = forced || extWeightedPick(usable.filter(a => !a.everyTurns).length ? usable.filter(a => !a.everyTurns) : usable);
   if (act.heal) {
@@ -497,7 +695,7 @@ async function extVariantAction(e, turn) {
     const dealt = await applyPartyDamageAnimated(c, d, { normalAttack: !sp, spAttack: sp, magic: sp, element: act.element });
     if (dealt > 0 && !act.all) pushEvent(`${c.name}に${dealt}ダメージ。`);
     if (act.drain && dealt > 0) { const before = e.hp; e.hp = Math.min(e.maxHp, e.hp + Math.floor(dealt * act.drain)); if (e.hp > before) pushEvent(`${e.name}はHPを${e.hp - before}吸い取った！`); }
-    if (c.hp > 0 && act.status && Math.random() < act.status.chance) extInflict(c, act.status.type, act.status);
+    if (c.hp > 0 && act.status && extTryStatus(e, c, act.status.type, act.status.chance)) extInflict(c, act.status.type, act.status);
     if (c.hp <= 0) pushEvent(`${c.name}は戦闘不能になった！`);
   }
   battleState.tauntTarget = null;
@@ -546,7 +744,7 @@ async function extMaouPhaseAction(e, turn, alive) {
       if (c.hp <= 0) continue;
       const d = Math.floor((Math.floor((e.spAttack || 100) * act.spMult) + Math.floor(effectiveStats(c).maxHp * act.hpRate)) * guardRate(c));
       await applyPartyDamageAnimated(c, d, { element: "闇", magic: true });
-      if (c.hp > 0 && Math.random() < act.curse.chance) extInflict(c, "curse", { turns: act.curse.turns, power: act.curse.power });
+      if (c.hp > 0 && extTryStatus(e, c, "curse", act.curse.chance)) extInflict(c, "curse", { turns: act.curse.turns, power: act.curse.power });
     }
     return true;
   }
@@ -655,5 +853,6 @@ function extEmitEnemyActionStart() {
 
 // ダメージの確定（HPが実際に減った直後）。miss=true は回避・ミスで、ダメージ0。
 function extEmitDamage(targetId, side, amount, extra) {
+  if (amount > 0) extWakeOnDamage(targetId, side, extra);
   battleEmit(amount > 0 ? "damage:applied" : "damage:missed", Object.assign({ targetId, side, amount, action: battleState._evAction || null }, extra));
 }
