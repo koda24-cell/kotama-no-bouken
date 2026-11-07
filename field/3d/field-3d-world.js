@@ -56,7 +56,16 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
       dummy.updateMatrix();
       mesh.setMatrixAt(index, dummy.matrix);
       const colorKey = kind === "wall" ? "wall" : cell.terrain;
-      mesh.setColorAt(index, new THREE.Color(palette[colorKey] ?? palette.floor));
+      // Stable per-cell tint variation breaks up large flat surfaces without textures
+      // or per-cell materials. Coordinates are used instead of randomness so reloads
+      // produce exactly the same map appearance.
+      const hash = Math.abs(Math.sin((cell.tx + 17) * 127.1 + (cell.ty + 31) * 311.7));
+      const variation = kind === "wall"
+        ? 0.88 + hash * 0.18
+        : 0.94 + hash * 0.10;
+      const instanceColor = new THREE.Color(palette[colorKey] ?? palette.floor);
+      instanceColor.multiplyScalar(variation);
+      mesh.setColorAt(index, instanceColor);
     });
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
