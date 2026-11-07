@@ -72,7 +72,7 @@ async function loadB1FAssets(){
   const profiles={stoneWallA:"stone",stoneFloorA:"stone",dirtFloorA:"dirt",wallRootA:"moss",ceilingRootA:"moss",brokenColumnA:"stone",ancientArchA:"stone",ancientDoorA:"stone",mossClusterA:"moss",fernA:"foliage",glowPlantA:"glow",fungusA:"glow",chestA:"metal",gatherA:"foliage",saveLampA:"glow"};
   for(const [key,asset] of Object.entries(result.assets))configureField3DMaterials(THREE,asset.scene,{profile:profiles[key]||"stone",renderer,maxAnisotropy:quality.pixelRatio>1?4:2});
   loadedAssets=result.assets;assetQa=inspectField3DAssetLoad(manifestQa,result);return result;
- }catch(error){console.warn("[B1F GLB manifest unavailable; placeholders remain active]",error);return {assets:{},errors:[{key:"manifest",error}],loadedCount:0,completedCount:0,totalCount:0};}
+ }catch(error){console.warn("[B1F GLB manifest unavailable; placeholders remain active]",error);assetQa={ok:false,loaded:0,failed:1,total:0,requiredMissing:0,issues:[{code:"manifest.fetch-failed",message:error.message}]};return {assets:{},errors:[{key:"manifest",error}],loadedCount:0,completedCount:0,totalCount:0};}
 }
 const dirs=[{x:0,y:-1},{x:1,y:0},{x:0,y:1},{x:-1,y:0}];
 const mini=document.querySelector("#mini"),ctx=mini.getContext("2d");
