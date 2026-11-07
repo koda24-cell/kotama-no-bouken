@@ -35,7 +35,7 @@ const source=window.__KOTAMA_FIELD_AREAS__?.[1]?.floors?.[0];
 if(!source) throw new Error("B1F floor data was not loaded.");
 const grid=source.map.map(row=>row.split(""));
 const area={n:1,f:0,key:"1-0",def:window.__KOTAMA_FIELD_AREAS__[1],floor:source,grid,w:grid[0].length,h:grid.length,objects:[]};
-const start={tx:1,ty:1};
+const start={tx:1,ty:2}; // 1,1 is a G (solid gather tile) in the current map data.
 const fieldState={x:start.tx*32+16,y:start.ty*32+20,dir:"up",moving:false,foes:[],explored:{"1-0":new Uint8Array(grid.length*grid[0].length).fill(1)},visible:new Set()};
 const snapshot=buildField3DSnapshot({area,fieldState,tilePixels:32,isSolidChar:(_a,c)=>c==="#"||c==="~"||/[a-z]/.test(c)});
 const host=document.querySelector("#view");
