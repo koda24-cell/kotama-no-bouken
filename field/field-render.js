@@ -31,7 +31,7 @@ function fieldEnsureExtraDom() {
     const rail = document.createElement("aside");
     rail.id = "field-map-rail"; rail.className = "field-map-rail";
     rail.setAttribute("aria-label", "探索マップ");
-    rail.innerHTML = '<strong>MAP</strong><span class="field-map-hint">周囲9×9マスを表示</span><div id="field-minimap-status" class="field-minimap-status"></div><div id="field-minimap-legend" class="field-minimap-legend"><span><i class="mini-player"></i>現在地</span><span><i class="mini-stairs"></i>階段</span><span><i class="mini-chest"></i>宝箱</span><span><i class="mini-gather"></i>採集</span><span><i class="mini-foe"></i>FOE巡回</span><span><i class="mini-chase"></i>FOE追跡</span></div>';
+    rail.innerHTML = '<strong>MAP</strong><span class="field-map-hint">周囲9×9マスを表示</span><div id="field-minimap-status" class="field-minimap-status"></div><div id="field-minimap-legend" class="field-minimap-legend"><span><i class="mini-player"></i>現在地</span><span><i class="mini-stairs"></i>階段</span><span><i class="mini-chest"></i>宝箱</span><span><i class="mini-gather"></i>採集</span><span><i class="mini-puzzle"></i>仕掛け</span><span><i class="mini-secret"></i>隠し通路</span><span><i class="mini-foe"></i>FOE巡回</span><span><i class="mini-chase"></i>FOE追跡</span></div>';
     vp.after(rail);
     const mini = $("field-minimap");
     if (mini) rail.insertBefore(mini, $("field-minimap-status"));
@@ -94,7 +94,7 @@ function fieldRender() {
    ------------------------------------------------------------ */
 const FIELD_MAP_COLORS = { wall: "#3a4160", floor: "#a9b8d6", path: "#c9b98f", grass: "#8fbf7d", water: "#3d78c4", lava: "#e0612a", safe: "#d9e6b8", gate: "#ff5a5a", exit: "#ffffff" };
 function fieldMapColor(a, c) {
-  if (c === "#") return FIELD_MAP_COLORS.wall;
+  if (c === "#" || (typeof fieldWallLike === "function" && fieldWallLike(a, c))) return FIELD_MAP_COLORS.wall;
   if (c === "~") return a.def.theme === "lava" ? FIELD_MAP_COLORS.lava : FIELD_MAP_COLORS.water;
   if (c === ",") return FIELD_MAP_COLORS.path;
   if (c === "*") return FIELD_MAP_COLORS.grass;
@@ -146,9 +146,24 @@ function fieldDrawMap(canvas, cell, full) {
     else if(o.kind==="chest") dot(o.tx,o.ty,fieldState.flags[o.key]?"#7a6a55":"#ff9a3c",.76,"square");
     else if(o.kind==="gather") dot(o.tx,o.ty,(fieldState.gatherUsed[o.key]||0)>=FIELD_GATHER_USES?"#5d7a5d":"#3ee07a",.76);
     else if(o.kind==="npc"||o.kind==="sign") dot(o.tx,o.ty,"#c7a3ff",.72,"square");
+    else if(o.kind==="event"){
+      const done=typeof fieldSideDone==="function"&&fieldSideDone(o.event);
+      if(!o.hidden||done) dot(o.tx,o.ty,done?"#5f7f8f":"#7fd6ff",.72,"square");
+    }
+    else if(o.kind==="switch"){
+      const solved=typeof fieldPuzzleSolved==="function"&&fieldPuzzleSolved(o.puzzle);
+      dot(o.tx,o.ty,solved?"#7a6a8a":"#ff8ad8",.72,"square");
+    }
+    else if(o.kind==="cache"){
+      const opened=!!fieldState.flags["puzzle:"+o.puzzle+":reward"];
+      dot(o.tx,o.ty,opened?"#7a6a55":"#ff9a3c",.76,"square");
+    }
     else if(o.kind==="gate") dot(o.tx,o.ty,"#ff3030",.9);
     else if(o.kind==="exit") dot(o.tx,o.ty,"#fff4c2",.9,"square");
-    else if(o.kind==="door") dot(o.tx,o.ty,o.opened?"#63d6dc":"#f0c36a",.82,"square");
+    else if(o.kind==="door"){
+      const opened=typeof fieldDoorOpen==="function"?fieldDoorOpen(o):!!fieldState.flags["door:"+o.id+":open"];
+      if(!o.hidden||opened) dot(o.tx,o.ty,opened?"#63d6dc":"#f0c36a",.82,o.hidden?"diamond":"square");
+    }
     else if(o.kind==="hiddenPassage"||o.kind==="hidden-passage") dot(o.tx,o.ty,"#c68cff",.82,"diamond");
   }
   for(const foe of fieldState.foes){
