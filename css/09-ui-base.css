@@ -97,3 +97,9 @@ body[data-screen="battle"] #kotama-admin-launcher {
   width: 18px !important; height: 40px !important; padding: 0 !important; font-size: 8px !important;
   writing-mode: vertical-rl; border-radius: 0 5px 5px 0 !important; opacity: .45;
 }
+
+/* 幅380px以下：ナビの5つのボタンを横スクロールなしで1列に収める（「設定」が切れないように） */
+@media (max-width: 380px) {
+  body .topbar .main-nav { gap: 4px; }
+  body .topbar .main-nav button { flex: 1 1 0; min-width: 0; padding: 0 2px !important; font-size: 11px !important; letter-spacing: 0 !important; }
+}
