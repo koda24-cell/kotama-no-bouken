@@ -15,7 +15,7 @@ export const FIELD_3D_DEFAULTS = Object.freeze({
 });
 
 const WALKABLE_TERRAIN = new Set([".", ",", "*", "_", "P", "E", "B", "<", ">"]);
-const SAFE_TERRAIN = new Set(["_", "P", "E", "B", "<", ">", "S"]);
+const SAFE_TERRAIN = new Set(["_", "P", "E", "B", "<", ">", "S"]);\nconst DEFAULT_SOLID_TERRAIN = new Set(["#", "~", "S", "T", "?", "G"]);
 
 function finite(value, fallback = 0) {
   const n = Number(value);
@@ -113,7 +113,7 @@ export function buildField3DSnapshot({
         ? !linkedDoor.doorOpen
         : (typeof isSolidChar === "function"
           ? !!isSolidChar(area, char)
-          : char === "#" || /[a-z]/.test(char));
+          : DEFAULT_SOLID_TERRAIN.has(char) || /[a-z]/.test(char));
       const terrain = char === "#" ? "wall"
         : char === "~" ? "hazard"
         : char === "*" ? "grass"
