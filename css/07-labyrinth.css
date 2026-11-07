@@ -497,3 +497,184 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 .field-screen[data-theme="lava"] .tile-wall{background-image:linear-gradient(180deg,#ff9a5b16,transparent 25%,#00000025),linear-gradient(90deg,transparent 48%,#00000022 49% 51%,transparent 52%),repeating-linear-gradient(0deg,transparent 0 14px,#00000030 15px 16px);}
 .field-screen[data-theme="castle"] .tile-wall{background-image:linear-gradient(180deg,#d5dcff18,transparent 25%,#00000024),linear-gradient(90deg,transparent 48%,#00000022 49% 51%,transparent 52%),repeating-linear-gradient(0deg,transparent 0 14px,#00000030 15px 16px);}
 @media(prefers-reduced-motion:reduce){.field-screen[data-theme="lava"] .tile-water{animation:none!important}}
+
+
+/* ============================================================
+   Labyrinth object dressing — treasure, gathering, stairs and NPCs.
+   Presentation only: object identity, interaction and persistence are untouched.
+   ============================================================ */
+.field-object{
+  display:grid;
+  place-items:center;
+  isolation:isolate;
+}
+.field-object::before{
+  content:"";
+  position:absolute;
+  inset:5px;
+  z-index:0;
+  border:1px solid #d7c18a99;
+  border-radius:4px;
+  background:linear-gradient(145deg,#263747f2,#0a1420f5 72%);
+  box-shadow:0 2px 5px #000b,inset 0 1px 0 #ffffff24,inset 0 -3px 0 #0008;
+}
+.field-object-sprite{
+  z-index:1;
+  inset:2px;
+  font-size:21px;
+  filter:drop-shadow(0 2px 2px #000d);
+}
+.field-object-sprite::before{content:"✦";color:#e8d6a2}
+
+/* Treasure chest: a warm, reinforced container rather than a floating gift. */
+.field-object[data-kind="chest"]::before{
+  inset:6px 4px 5px;
+  border:2px solid #d5a84f;
+  border-radius:4px;
+  background:linear-gradient(180deg,#f2c76a 0 18%,#80501f 19% 31%,#59351c 32% 100%);
+  box-shadow:0 2px 5px #000c,inset 0 0 0 1px #ffe3a255,inset 0 -4px 0 #2a1a12;
+}
+.field-object[data-kind="chest"] .field-object-sprite::before{
+  content:"◆";
+  color:#ffe08a;
+  font-size:15px;
+  text-shadow:0 0 5px #ffcf62,0 1px 2px #281508;
+}
+.field-object[data-kind="chest"].is-opened::before{
+  border-color:#887b65;
+  background:linear-gradient(180deg,#8b8171 0 20%,#4a4035 21% 100%);
+  box-shadow:0 2px 4px #0009,inset 0 0 0 1px #d8c9aa33;
+}
+.field-object[data-kind="chest"].is-opened .field-object-sprite::before{
+  content:"· ·";
+  color:#aaa08c;
+  text-shadow:none;
+}
+
+/* Gathering nodes: mineral / plant-like glints, muted after depletion. */
+.field-object[data-kind="gather"]::before{
+  inset:5px;
+  border-color:#8bd5a5aa;
+  border-radius:50%;
+  background:radial-gradient(circle at 50% 35%,#4b9c70 0 18%,#1b493c 55%,#0b211e 100%);
+  box-shadow:0 0 7px #4bd28a55,inset 0 0 0 2px #b7e8bd22;
+}
+.field-object[data-kind="gather"] .field-object-sprite::before{
+  content:"❖";
+  color:#b7f0c2;
+  font-size:21px;
+  text-shadow:0 0 7px #62e59a,0 1px 2px #001b10;
+}
+.field-object[data-kind="gather"].is-opened::before{
+  border-color:#777f70;
+  background:radial-gradient(circle,#4b554b,#1c2823 75%);
+  box-shadow:inset 0 0 0 2px #ffffff0b;
+}
+.field-object[data-kind="gather"].is-opened .field-object-sprite::before{
+  content:"◇";
+  color:#849486;
+  text-shadow:none;
+  opacity:.65;
+}
+
+/* Stairs: carved stone landing with a clear direction marker. */
+.field-object[data-kind="stairs"]::before{
+  inset:3px;
+  border:2px solid #d8c18b;
+  border-radius:2px;
+  background:repeating-linear-gradient(180deg,#a28a61 0 4px,#4d4437 5px 7px);
+  box-shadow:0 2px 5px #000b,inset 0 0 0 2px #241e18;
+}
+.field-object[data-kind="stairs"] .field-object-sprite::before{
+  content:"⇧";
+  color:#fff0bd;
+  font-size:19px;
+  font-weight:900;
+  text-shadow:0 2px 3px #17100a,0 0 7px #f1d58b;
+}
+.field-object[data-sprite="stairs-down"] .field-object-sprite::before{content:"⇩"}
+
+/* Save point: a small sanctuary-like beacon. */
+.field-object[data-kind="save"]::before{
+  inset:4px;
+  border:1px solid #f3d77c;
+  border-radius:50%;
+  background:radial-gradient(circle,#fff4bd 0 8%,#b88c35 12%,#46331b 52%,#101722 75%);
+  box-shadow:0 0 7px #ffdc6b88,inset 0 0 0 2px #fff2b033;
+}
+.field-object[data-kind="save"] .field-object-sprite::before{
+  content:"✧";
+  color:#fff4b4;
+  font-size:24px;
+  text-shadow:0 0 7px #ffe27a,0 0 14px #ffb800;
+}
+
+/* NPCs and signs: framed, readable silhouettes without changing their symbols. */
+.field-object[data-kind="npc"]::before{
+  inset:5px 6px 4px;
+  border:1px solid #c6b5e8;
+  border-radius:7px 7px 4px 4px;
+  background:linear-gradient(180deg,#5a4777,#201b35 72%);
+  box-shadow:0 2px 5px #000b,inset 0 0 0 1px #ffffff20;
+}
+.field-object[data-kind="npc"] .field-object-sprite{font-size:19px}
+.field-object[data-kind="sign"]::before{
+  inset:7px 4px 5px;
+  border:2px solid #c69a5d;
+  border-radius:2px;
+  background:linear-gradient(180deg,#9a7041,#55371f);
+  box-shadow:0 2px 5px #000b,inset 0 0 0 1px #f3d39a44;
+}
+.field-object[data-kind="sign"] .field-object-sprite::before{
+  content:"文";
+  color:#fff0c5;
+  font-size:15px;
+  font-weight:900;
+  text-shadow:0 1px 2px #24150b;
+}
+
+/* Gates and exits stay visually distinct from interactable loot. */
+.field-object[data-kind="gate"]::before{
+  inset:2px;
+  border:2px solid #d99a72;
+  border-radius:2px;
+  background:repeating-linear-gradient(90deg,#241016 0 4px,#b45b4d 5px 7px,#241016 8px 11px);
+  box-shadow:0 0 8px #f34c4c77,inset 0 0 0 2px #12090b;
+}
+.field-object[data-kind="exit"]::before{
+  inset:3px;
+  border:2px solid #e7d99d;
+  border-radius:50%;
+  background:radial-gradient(circle,#fff6c8 0 10%,#a68b4e 13%,#25352d 68%);
+  box-shadow:0 0 9px #f5e28b88,inset 0 0 0 2px #ffffff33;
+}
+.field-object[data-kind="exit"] .field-object-sprite::before{
+  content:"⇦";
+  color:#fff4c5;
+  font-size:18px;
+  text-shadow:0 0 6px #fff0a8,0 2px 2px #000;
+}
+
+/* Nearby object focus and labels are clear but restrained. */
+.field-object.is-near::before{
+  border-color:#fff0a6;
+  box-shadow:0 0 0 1px #fff0a655,0 0 11px #ffe27a99,inset 0 0 0 1px #ffffff55;
+}
+.field-object.is-near .field-object-label{
+  opacity:1;
+  padding:2px 6px;
+  border:1px solid #d9c18b;
+  background:linear-gradient(180deg,#1b2b38f5,#080f18f5);
+  color:#fff0c4;
+  box-shadow:0 2px 6px #000b;
+  font-size:9px;
+  letter-spacing:.03em;
+}
+.field-object.is-unexplored{opacity:0;pointer-events:none}
+@media(max-width:560px){
+  .field-object-sprite{font-size:19px}
+  .field-object[data-kind="save"] .field-object-sprite{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-object[data-kind="save"] .field-object-sprite::before{animation:none!important}
+}
