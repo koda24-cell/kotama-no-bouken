@@ -74,19 +74,21 @@ export function configureField3DMaterials(THREE, root, {
       for (const key of ["map", "emissiveMap"]) {
         const texture = material[key];
         if (!texture) continue;
-        if (key === "map") texture.colorSpace = THREE.SRGBColorSpace;
+        texture.colorSpace = THREE.SRGBColorSpace;
         textures.add(texture);
       }
       for (const key of ["normalMap", "roughnessMap", "metalnessMap", "aoMap", "bumpMap"]) {
         if (material[key]) textures.add(material[key]);
       }
-      for (const texture of textures) {
-        if ("anisotropy" in texture) texture.anisotropy = anisotropy;
-      }
       material.needsUpdate = true;
       onMaterial?.(material, node);
     }
   });
+
+  for (const texture of textures) {
+    if ("anisotropy" in texture) texture.anisotropy = anisotropy;
+    texture.needsUpdate = true;
+  }
 
   return Object.freeze({
     meshCount,
