@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kotama-no-bouken.invalid/schemas/field-3d-asset-manifest.schema.json",
+  "title": "Kotama B1F 3D Asset Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "area",
+    "coordinateSystem",
+    "assets"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "area": {
+      "type": "string",
+      "minLength": 1
+    },
+    "coordinateSystem": {
+      "type": "object",
+      "required": [
+        "unit",
+        "forward",
+        "origin"
+      ],
+      "properties": {
+        "unit": {
+          "const": "world-unit"
+        },
+        "forward": {
+          "const": "-Z"
+        },
+        "origin": {
+          "const": "floor-center"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assets": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "url",
+          "category",
+          "required",
+          "scale"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "pattern": "\\.glb$"
+          },
+          "category": {
+            "enum": [
+              "environment",
+              "ruins",
+              "nature",
+              "props",
+              "foes"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "scale": {
+            "oneOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "object",
+                "required": [
+                  "x",
+                  "y",
+                  "z"
+                ],
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "y": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "z": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          },
+          "lod": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "lod0",
+                "lod1",
+                "lod2"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "rotation": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "z": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "z": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
