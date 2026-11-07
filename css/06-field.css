@@ -307,3 +307,26 @@
   .field-map-rail::before{font-size:7px}
   .field-map-rail>span{font-size:8px}
 }
+
+/* Adventurer movement: give each grid step a clear, tactile visual response. */
+.field-player[data-moving="true"] .field-player-sprite{
+  animation:field-adventurer-step 140ms cubic-bezier(.2,.72,.32,1) both!important;
+  will-change:translate,scale,filter;
+}
+.field-player[data-moving="true"] .field-player-shadow{
+  animation:field-adventurer-shadow 140ms ease-out both;
+}
+@keyframes field-adventurer-step{
+  0%{translate:0 1px;scale:1 .96;filter:brightness(1.18) drop-shadow(0 0 2px #f5df9a55)}
+  42%{translate:0 -4px;scale:.96 1.05;filter:brightness(1.12) drop-shadow(0 2px 3px #0008)}
+  100%{translate:0 0;scale:1 1;filter:brightness(1) drop-shadow(0 1px 1px #0006)}
+}
+@keyframes field-adventurer-shadow{
+  0%{transform:scaleX(.72);opacity:.42;filter:blur(1px)}
+  45%{transform:scaleX(1.18);opacity:.78;filter:blur(2px)}
+  100%{transform:scaleX(1);opacity:.58;filter:blur(1px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-player[data-moving="true"] .field-player-sprite,
+  .field-player[data-moving="true"] .field-player-shadow{animation:none!important}
+}
