@@ -400,6 +400,7 @@ function fieldUpdate() {
   fieldUpdateVision();
   if (!blocked) fieldCheckFoeContact();
   fieldUpdateNear();
+  fieldUpdateBossPresence();
   fieldUpdateDanger();
 }
 function fieldAfterMove(a, moved) {
@@ -420,6 +421,24 @@ function fieldAfterMove(a, moved) {
     fieldEmit("step", { area: fieldState.area, floor: fieldState.floor, tileX: tx, tileY: ty, steps: fieldState.steps });
     if (fieldState.steps >= fieldState.nextEncounter && !fieldState.lock) { fieldTriggerEncounter(); break; }
   }
+}
+
+function fieldUpdateBossPresence() {
+  const screen = $("field");
+  const player = fieldPlayerTile();
+  if (!screen || !player) return;
+  const gates = document.querySelectorAll('#field-map .field-object[data-kind="gate"]:not(.is-unexplored)');
+  let nearest = Infinity, target = null;
+  for (const gate of gates) {
+    const tx = Number(gate.dataset.tx), ty = Number(gate.dataset.ty);
+    if (!Number.isFinite(tx) || !Number.isFinite(ty)) continue;
+    const distance = Math.abs(player.tx - tx) + Math.abs(player.ty - ty);
+    if (distance < nearest) { nearest = distance; target = gate; }
+  }
+  const approaching = nearest <= 4;
+  screen.classList.toggle("is-boss-approach", approaching);
+  if (target) target.classList.toggle("is-boss-near", approaching);
+  for (const gate of gates) if (gate !== target) gate.classList.remove("is-boss-near");
 }
 function fieldUpdateDanger() {
   const el = $("field-danger"); if (!el) return;
