@@ -28,7 +28,16 @@ const snapshot = buildField3DSnapshot({
   isSolidChar: fieldCharSolid,
   isDoorOpen: fieldDoorOpen,
   // field/field-puzzles.js の実関数。
-  isPuzzleSolved: fieldPuzzleSolved
+  isPuzzleSolved: fieldPuzzleSolved,
+  // 状態表示のみを返す。報酬付与・採集回数更新などの処理は呼ばない。
+  getObjectState: object => ({
+    presentationClass: fieldObjectStateClass(object),
+    lootState: object.kind === "chest"
+      ? (fieldState.flags[object.key] ? "opened" : "unopened")
+      : object.kind === "cache"
+        ? (fieldState.flags[`puzzle:${object.puzzle}:reward`] ? "opened" : "unopened")
+        : object.kind === "gather" ? "tracked" : null
+  })
 });
 const world = buildField3DWorld(THREE, snapshot);
 scene.add(world.group);
@@ -47,7 +56,8 @@ scene.remove(world.group);
 - `fieldState.foes`：既存FOE配列。tx/tyを優先し、未設定時はx/yから算出。
 - `fieldState.explored[area.key]`：既存探索済み配列を読み取り専用コピーとして出力。
 - `fieldState.visible`：既存可視範囲Setを配列化。
-- `fieldState.flags`：このAdapterでは変更しない。宝箱・採集・サブイベントの表示状態は、対応する既存状態関数を特定してから別途マッピングする。現段階では報酬・採集回数のゲーム処理を3D側へ複製しない。
+- `getObjectState`：既存の表示クラスやフラグから、3D側に必要な表示状態だけを渡す。報酬付与・採集回数の更新・イベント進行は呼び出さない。
+- `concealed`：元データの `hidden` を表示上の属性として保持する。ゲーム上の発見条件を3D側で判定しない。
 - 既存の`fieldCharSolid`を渡すことで、扉・壁付き仕掛けなどの判定を重複実装しない。
 
 ## 実マップ変換プレビュー
@@ -58,7 +68,8 @@ scene.remove(world.group);
 - 既存マップの壁・通路記号を利用した移動ブロック
 - 実マップから生成した簡易ミニマップ
 - 既存本編のfieldState・セーブ・イベントには接続しない
-- `area.objects` は空配列であり、NPC・宝箱・採集・扉の3Dオブジェクト描画テストではない
+- B1Fのマップ文字・`FIELD_AREAS[1].objects`・`floors[0].foes` を参照して、オブジェクトとFOEの位置に仮形状を配置する。
+- テストページ内で表示用のオブジェクト記述子を組み立てているため、本編の `fieldArea()` を直接呼び出す統合テストではない。ゲーム内イベント・FOE AI・発見状態の同期は未検証。
 
 ## 未実施の検証
 
