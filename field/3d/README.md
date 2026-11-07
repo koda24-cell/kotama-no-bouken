@@ -439,3 +439,25 @@ console.info(report);
 ```
 
 **重要：** cloneが表示中、または別シーンで共有リソースを使用中に呼び出してはいけない。フロア切替時に個別cloneを破棄する用途ではなく、展示/ゲーム全体を終了し、共有アセットを使う全cloneを除去した後の一括解放用。呼び出し側が所有権と寿命を管理する。
+
+
+## Procedural PBRテクスチャ（B1Fブロックアウト）
+
+`field-3d-procedural-textures.js` はブラウザ内Canvasで、石材・土のタイル可能なColor / Normal / Roughnessテクスチャを生成する。外部画像やGLBが未配置でも、単色ブロックより表面の凹凸・湿った質感を確認できる。
+
+```js
+import { createField3DProceduralTextures } from "./field-3d-procedural-textures.js";
+import { buildField3DWorld } from "./field-3d-world.js";
+
+const pbr = createField3DProceduralTextures(THREE, { resolution: 256, seed: 1701 });
+const world = buildField3DWorld(THREE, snapshot, { proceduralTextures: pbr });
+scene.add(world.group);
+// world.dispose() の後、すべての利用を終えてから
+pbr.dispose();
+```
+
+- 生成サイズは64〜512pxに制限し、展示ページでは256pxを使用。
+- 石床/壁には石材、草地/通常床には土のPBRセットを割り当てる。
+- 同じテクスチャを全InstancedMeshで共有する。ワールドのdisposeは共有テクスチャを破棄せず、生成セット側のdisposeで一度だけ解放する。
+- テクスチャはブロックアウト用の手続き生成であり、完成アートの代替ではない。実際の高品質素材ではアーティスト制作のBase Color / Normal / ORMへ置き換える。
+- iPhone実機でのCanvas生成時間・GPU負荷は未計測。端末負荷が高い場合は解像度128pxまたはPBR生成を無効にして比較する。
