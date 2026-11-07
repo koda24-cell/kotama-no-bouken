@@ -8,7 +8,14 @@
    ------------------------------------------------------------ */
 async function fieldInteract(o) {
   if (fieldState.lock) return;
-  if (o.kind === "npc" || o.kind === "sign") { await fieldPlayScene(o.scene); return; }
+  if (o.kind === "npc" || o.kind === "sign") {
+    await fieldPlayScene(o.scene);
+    if (o.sideEvents && typeof fieldRunNpcSideEvents === "function") await fieldRunNpcSideEvents(o);   // [SIDE]（Claude B）
+    return;
+  }
+  if (o.kind === "event") { if (typeof fieldRunSideEvent === "function") await fieldRunSideEvent(o.event, o); return; }   // [SIDE]（Claude B）
+  if (o.kind === "door" && !o.puzzle) { await fieldDoorInteract(o); return; }   // [DOOR] field/field-puzzles.js
+  if (o.kind === "switch" || o.kind === "door" || o.kind === "cache") { await fieldPuzzleInteract(o); return; }   // [PUZZLE] field/field-puzzles.js
   if (o.kind === "save") { await fieldUseSavePoint(o); return; }
   if (o.kind === "chest") { await fieldOpenChest(o); return; }
   if (o.kind === "gather") { await fieldGather(o); return; }

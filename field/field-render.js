@@ -48,15 +48,16 @@ function fieldBuildDom() {
   map.style.setProperty("--tile", FIELD_TILE + "px");
   const exp = fieldExplored(a), tiles = [];
   for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
-    const c = fieldTileAt(a, tx, ty);
-    const edge = c === "#" && !fieldIsSolidChar(fieldTileAt(a, tx, ty + 1)) ? " is-edge" : "";
+    const c = fieldTileAt(a, tx, ty), wall = c === "#" || fieldWallLike(a, c);   // [PUZZLE] 壁付きの物・未発見の隠し通路は壁として描く
+    const edge = wall && !fieldCharSolid(a, fieldTileAt(a, tx, ty + 1)) ? " is-edge" : "";
     const fog = exp[ty * a.w + tx] ? "" : " is-unexplored";
-    tiles.push(`<i class="field-tile ${FIELD_TILE_CLASS[c] || "tile-floor"}${edge}${fog}" style="left:${tx * FIELD_TILE}px;top:${ty * FIELD_TILE}px"></i>`);
+    tiles.push(`<i class="field-tile ${wall ? "tile-wall" : FIELD_TILE_CLASS[c] || "tile-floor"}${edge}${fog}" style="left:${tx * FIELD_TILE}px;top:${ty * FIELD_TILE}px"></i>`);
   }
   const objs = a.objects.map(o => {
     const opened = (o.kind === "chest" && fieldState.flags[o.key]) || (o.kind === "gather" && (fieldState.gatherUsed[o.key] || 0) >= FIELD_GATHER_USES) ? " is-opened" : "";
     const fog = exp[o.ty * a.w + o.tx] ? "" : " is-unexplored";
-    return `<div class="field-object${opened}${fog}" data-kind="${esc(o.kind)}" data-object-id="${esc(o.id || o.key)}" data-key="${esc(o.key)}" data-sprite="${esc(o.sprite || "")}" data-tx="${o.tx}" data-ty="${o.ty}" style="left:${o.tx * FIELD_TILE}px;top:${o.ty * FIELD_TILE}px"><span class="field-object-sprite"></span>${o.name ? `<b class="field-object-label">${esc(o.name)}</b>` : ""}</div>`;
+    const stateClass = typeof fieldObjectStateClass === "function" ? fieldObjectStateClass(o) : "";   // [PUZZLE]/[DOOR]/[SIDE] の状態クラス
+    return `<div class="field-object${opened}${stateClass}${fog}" data-kind="${esc(o.kind)}" data-object-id="${esc(o.id || o.key)}" data-key="${esc(o.key)}" data-sprite="${esc(o.sprite || "")}" data-tx="${o.tx}" data-ty="${o.ty}" style="left:${o.tx * FIELD_TILE}px;top:${o.ty * FIELD_TILE}px"><span class="field-object-sprite"></span>${o.name ? `<b class="field-object-label">${esc(o.name)}</b>` : ""}</div>`;
   }).join("");
   map.innerHTML = `<div class="field-tiles">${tiles.join("")}</div>${objs}<div id="field-foes" class="field-foes"></div><div id="field-player" class="field-player" data-dir="down" data-moving="false" data-step="0"><span class="field-player-shadow"></span><span class="field-player-sprite"></span></div>`;
   fieldState.built = a.key; fieldState.nearKey = ""; fieldState.lastTileKey = "";
@@ -70,18 +71,19 @@ function fieldViewScale() {
 function fieldRender() {
   const a = fieldArea(), vp = $("field-viewport"), map = $("field-map"), p = $("field-player");
   if (!a || !vp || !map || !p) return;
-  p.style.left = (fieldState.x - 16) + "px";
-  p.style.top = (fieldState.y - 34) + "px";
-  p.style.zIndex = String(10 + Math.floor(fieldState.y));
+  const view = fieldViewPos();   // [GRID] 見た目の位置（移動アニメーション中は補間）
+  p.style.left = (view.x - 16) + "px";
+  p.style.top = (view.y - 34) + "px";
+  p.style.zIndex = String(10 + Math.floor(view.y));
   p.dataset.dir = fieldState.dir; p.dataset.moving = String(fieldState.moving); p.dataset.step = String(fieldState.step);
   const s = fieldViewScale(), vw = vp.clientWidth, vh = vp.clientHeight, mw = a.w * FIELD_TILE * s, mh = a.h * FIELD_TILE * s;
-  const tx = mw <= vw ? (vw - mw) / 2 : -Math.max(0, Math.min(mw - vw, fieldState.x * s - vw / 2));
-  const ty = mh <= vh ? (vh - mh) / 2 : -Math.max(0, Math.min(mh - vh, (fieldState.y - 12) * s - vh / 2));
+  const tx = mw <= vw ? (vw - mw) / 2 : -Math.max(0, Math.min(mw - vw, view.x * s - vw / 2));
+  const ty = mh <= vh ? (vh - mh) / 2 : -Math.max(0, Math.min(mh - vh, (view.y - 12) * s - vh / 2));
   map.style.transform = `translate(${Math.round(tx)}px,${Math.round(ty)}px) scale(${s})`;
   // 視界：主人公を中心に、外側ほど暗くする
   const fog = $("field-fog");
   if (fog) {
-    const cx = Math.round(tx + fieldState.x * s), cy = Math.round(ty + (fieldState.y - 10) * s), r = FIELD_VISION * FIELD_TILE * s;
+    const cx = Math.round(tx + view.x * s), cy = Math.round(ty + (view.y - 10) * s), r = FIELD_VISION * FIELD_TILE * s;
     fog.style.background = `radial-gradient(circle at ${cx}px ${cy}px, transparent ${Math.round(r * .55)}px, rgba(0,0,0,.5) ${Math.round(r * .95)}px, rgba(0,0,0,.66) ${Math.round(r * 1.25)}px)`;
   }
   fieldRenderFoes();
