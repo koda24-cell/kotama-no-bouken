@@ -766,3 +766,89 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 @media(prefers-reduced-motion:reduce){
   .field-fog::before{animation:none!important}
 }
+
+
+/* ============================================================
+   Floor identity — each mapped floor has its own terrain character.
+   Decorative tile materials only; map characters and traversal stay unchanged.
+   ============================================================ */
+.field-screen[data-floor="0"]{
+  --floor-grain:rgba(255,255,255,.055);
+  --floor-seam:rgba(8,15,12,.16);
+  --floor-light:rgba(255,238,177,.09);
+}
+.field-screen[data-floor="1"]{
+  --floor-grain:rgba(8,12,16,.10);
+  --floor-seam:rgba(5,10,14,.25);
+  --floor-light:rgba(174,205,211,.08);
+}
+.field-screen[data-floor="2"]{
+  --floor-grain:rgba(0,0,0,.13);
+  --floor-seam:rgba(0,0,0,.32);
+  --floor-light:rgba(255,213,133,.12);
+}
+.field-screen .tile-floor{
+  background:
+    radial-gradient(ellipse at 18% 22%,var(--floor-light),transparent 62%),
+    repeating-linear-gradient(135deg,transparent 0 10px,var(--floor-grain) 10px 11px),
+    var(--g);
+}
+.field-screen .tile-path{
+  background:
+    repeating-linear-gradient(90deg,transparent 0 15px,var(--floor-seam) 15px 16px),
+    repeating-linear-gradient(0deg,transparent 0 15px,var(--floor-seam) 15px 16px),
+    linear-gradient(135deg,var(--floor-light),transparent 65%),
+    var(--p);
+}
+.field-screen .tile-wall{
+  background:
+    repeating-linear-gradient(0deg,transparent 0 10px,var(--floor-seam) 10px 11px),
+    repeating-linear-gradient(90deg,transparent 0 20px,var(--floor-grain) 20px 21px),
+    linear-gradient(135deg,var(--floor-light),transparent 55%),
+    var(--w);
+}
+.field-screen .tile-grass{
+  background:
+    radial-gradient(ellipse at 22% 28%,var(--floor-light) 0 2px,transparent 7px),
+    repeating-linear-gradient(115deg,transparent 0 8px,var(--floor-grain) 8px 9px),
+    var(--g2);
+  box-shadow:inset 0 -5px 0 var(--floor-seam);
+}
+.field-screen .tile-water{
+  background:
+    repeating-linear-gradient(165deg,transparent 0 8px,var(--floor-light) 8px 10px,transparent 10px 16px),
+    linear-gradient(135deg,var(--floor-grain),transparent 65%),
+    var(--x);
+}
+
+/* Forest: fresh canopy → tangled roots → ancient, sunken grove. */
+.field-screen[data-theme="forest"][data-floor="0"]{--floor-light:rgba(206,255,150,.16);--floor-grain:rgba(225,255,188,.08);--floor-seam:rgba(17,55,22,.18)}
+.field-screen[data-theme="forest"][data-floor="1"]{--floor-light:rgba(143,190,89,.10);--floor-grain:rgba(42,62,24,.13);--floor-seam:rgba(12,34,17,.30)}
+.field-screen[data-theme="forest"][data-floor="2"]{--floor-light:rgba(255,213,133,.16);--floor-grain:rgba(227,183,103,.10);--floor-seam:rgba(43,34,17,.34)}
+/* Goblin wood: rough camp paths → trampled thicket → fortified lair. */
+.field-screen[data-theme="goblin"][data-floor="0"]{--floor-light:rgba(211,197,116,.13);--floor-grain:rgba(215,197,126,.08);--floor-seam:rgba(39,43,17,.22)}
+.field-screen[data-theme="goblin"][data-floor="1"]{--floor-light:rgba(154,174,91,.10);--floor-grain:rgba(88,104,44,.14);--floor-seam:rgba(25,37,17,.30)}
+.field-screen[data-theme="goblin"][data-floor="2"]{--floor-light:rgba(255,180,91,.13);--floor-grain:rgba(177,126,65,.12);--floor-seam:rgba(34,23,12,.38)}
+/* Mist forest: cool dew → layered fog → pale, sealed sanctuary. */
+.field-screen[data-theme="mist"][data-floor="0"]{--floor-light:rgba(205,244,231,.16);--floor-grain:rgba(218,245,238,.09);--floor-seam:rgba(28,62,61,.20)}
+.field-screen[data-theme="mist"][data-floor="1"]{--floor-light:rgba(177,217,218,.13);--floor-grain:rgba(174,212,211,.08);--floor-seam:rgba(20,48,52,.30)}
+.field-screen[data-theme="mist"][data-floor="2"]{--floor-light:rgba(225,237,229,.20);--floor-grain:rgba(234,243,233,.12);--floor-seam:rgba(42,58,58,.34)}
+/* Lava cavern: cooled basalt → scorched rock → glowing caldera rim. */
+.field-screen[data-theme="lava"][data-floor="0"]{--floor-light:rgba(255,166,91,.12);--floor-grain:rgba(227,151,105,.09);--floor-seam:rgba(45,20,16,.28)}
+.field-screen[data-theme="lava"][data-floor="1"]{--floor-light:rgba(255,103,49,.13);--floor-grain:rgba(178,71,43,.12);--floor-seam:rgba(35,12,10,.34)}
+.field-screen[data-theme="lava"][data-floor="2"]{--floor-light:rgba(255,192,93,.19);--floor-grain:rgba(255,127,55,.14);--floor-seam:rgba(44,13,8,.40)}
+/* Demon castle: worn flagstone → cold, haunted masonry → royal black stone. */
+.field-screen[data-theme="castle"][data-floor="0"]{--floor-light:rgba(191,198,224,.12);--floor-grain:rgba(208,211,231,.08);--floor-seam:rgba(17,19,37,.25)}
+.field-screen[data-theme="castle"][data-floor="1"]{--floor-light:rgba(135,151,195,.12);--floor-grain:rgba(111,126,174,.12);--floor-seam:rgba(9,11,27,.34)}
+.field-screen[data-theme="castle"][data-floor="2"]{--floor-light:rgba(220,179,119,.15);--floor-grain:rgba(195,157,110,.10);--floor-seam:rgba(10,8,19,.42)}
+
+/* Final-floor tiles gain a restrained focal glint near the deepest chamber. */
+.field-screen[data-floor="2"] .tile-safe{
+  background:
+    radial-gradient(ellipse at 50% 50%,var(--floor-light),transparent 72%),
+    var(--s);
+  box-shadow:inset 0 0 0 1px var(--floor-grain),inset 0 0 12px var(--floor-seam);
+}
+@media(prefers-reduced-motion:reduce){
+  .field-screen .tile-water{animation:none!important}
+}
