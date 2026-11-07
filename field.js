@@ -148,11 +148,15 @@ function fieldEnsureExtraDom() {
   if (!$("field-floor-label")) {
     const lab = document.createElement("span"); lab.id = "field-floor-label"; lab.className = "field-floor-label";
     $("field-area-name")?.after(lab);
-    const danger = document.createElement("span"); danger.id = "field-danger"; danger.className = "field-danger"; danger.dataset.level = "0"; danger.title = "エンカウントの危険度"; danger.setAttribute("aria-label", "エンカウントの危険度");
+    const danger = document.createElement("span"); danger.id = "field-danger"; danger.className = "field-danger"; danger.dataset.level = "0"; danger.title = "エンカウントの危険度"; danger.setAttribute("aria-label", "エンカウントの危険度"); danger.textContent = "危険度：安全";
     lab.after(danger);
     const mapBtn = document.createElement("button"); mapBtn.id = "field-map-button"; mapBtn.className = "field-map-button"; mapBtn.type = "button"; mapBtn.textContent = "MAP";
     $("field-home-button")?.before(mapBtn);
     mapBtn.addEventListener("click", () => fieldToggleFullMap());
+  }
+  if (!$("field-foe-alert")) {
+    const alert = document.createElement("span"); alert.id = "field-foe-alert"; alert.className = "field-foe-alert"; alert.setAttribute("aria-live", "polite"); alert.setAttribute("aria-atomic", "true");
+    $("field-danger")?.after(alert);
   }
   if (!$("field-minimap")) {
     const mini = document.createElement("canvas"); mini.id = "field-minimap"; mini.className = "field-minimap"; mini.setAttribute("aria-label", "ミニマップ（タップで全体マップ）");
@@ -412,7 +416,11 @@ function fieldUpdateDanger() {
   const el = $("field-danger"); if (!el) return;
   const r = fieldState.nextEncounter ? fieldState.steps / fieldState.nextEncounter : 0;
   const lv = r < .35 ? 0 : r < .6 ? 1 : r < .8 ? 2 : r < .92 ? 3 : 4;
-  if (el.dataset.level !== String(lv)) { el.dataset.level = String(lv); el.title = ["安全", "注意", "警戒", "危険", "非常に危険"][lv]; }
+  const labels = ["安全", "注意", "警戒", "危険", "非常に危険"];
+  if (el.dataset.level !== String(lv)) { el.dataset.level = String(lv); }
+  el.textContent = `危険度：${labels[lv]}`;
+  el.title = `ランダムエンカウント ${labels[lv]}`;
+  el.setAttribute("aria-label", `ランダムエンカウントの危険度：${labels[lv]}`);
 }
 function fieldFacingObject() {
   const a = fieldArea(); if (!a) return null;
@@ -502,6 +510,18 @@ function fieldRenderFoes() {
     el.classList.toggle("is-unexplored", !exp[ty * a.w + tx]);
     el.classList.toggle("is-chasing", f.mode === "chase");
     el.style.left = (f.x - 16) + "px"; el.style.top = (f.y - 20) + "px"; el.style.zIndex = String(10 + Math.floor(f.y));
+  }
+  const visibleFoes = fieldState.foes.filter(f => {
+    if (f.defeated) return false;
+    const tx = Math.floor(f.x / FIELD_TILE), ty = Math.floor(f.y / FIELD_TILE);
+    return fieldState.visible?.has(`${tx},${ty}`);
+  });
+  const chasing = visibleFoes.filter(f => f.mode === "chase").length;
+  const alert = $("field-foe-alert");
+  if (alert) {
+    alert.textContent = chasing ? `FOE 追跡中 ×${chasing}` : visibleFoes.length ? `FOE確認 ×${visibleFoes.length}` : "";
+    alert.dataset.state = chasing ? "chase" : visibleFoes.length ? "sighted" : "none";
+    alert.title = chasing ? "FOEがこちらを追跡しています" : visibleFoes.length ? "視界内に未討伐のFOEがいます" : "";
   }
 }
 function fieldResetFoesAfterBattle(defeatedKey) {
