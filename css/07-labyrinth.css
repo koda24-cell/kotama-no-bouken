@@ -1285,3 +1285,20 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
   .field-viewport{transition:none!important}
   .field-screen[data-danger-level="4"] .field-viewport{animation:none!important;border-color:#c85a61;box-shadow:inset 0 0 0 3px #281116,inset 0 0 38px #a51d2b44,0 5px 18px #0008}
 }
+
+
+/* Boss gate presence: the discovered threshold grows ominous as explorers approach. */
+.field-object[data-kind="gate"].is-boss-near::before{
+  animation:field-boss-gate-warning 1.15s ease-in-out infinite alternate;
+}
+.field-screen.is-boss-approach .field-viewport{
+  border-color:#9f4b43;
+  box-shadow:inset 0 0 0 3px #241116,inset 0 0 34px #a31d2b2e,0 5px 18px #0008;
+}
+@keyframes field-boss-gate-warning{
+  from{border-color:#d99a72;box-shadow:0 0 8px #f34c4c77,inset 0 0 0 2px #12090b}
+  to{border-color:#ffb08c;box-shadow:0 0 5px #ff4c4c,0 0 18px #e52d3d,inset 0 0 0 2px #2a080d}
+}
+@media(prefers-reduced-motion:reduce){
+  .field-object[data-kind="gate"].is-boss-near::before{animation:none!important;border-color:#ffb08c;box-shadow:0 0 12px #e52d3d,inset 0 0 0 2px #2a080d}
+}
