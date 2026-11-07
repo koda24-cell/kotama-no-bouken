@@ -40,6 +40,7 @@ import {inspectField3DSnapshot} from "../field/3d/field-3d-qa.js";
 import {inspectField3DManifest,inspectField3DAssetLoad} from "../field/3d/field-3d-asset-qa.js";
 import {buildField3DSnapshot} from "../field/3d/field-3d-grid-adapter.js";
 import {buildField3DWorld} from "../field/3d/field-3d-world.js";
+import {createField3DProceduralTextures} from "../field/3d/field-3d-procedural-textures.js";
 import {buildField3DAtmosphere} from "../field/3d/field-3d-atmosphere.js";
 import {buildField3DDecorationLayer} from "../field/3d/field-3d-decoration-layer.js";
 import {buildField3DLandmarkLayer} from "../field/3d/field-3d-landmark-layer.js";
@@ -56,6 +57,7 @@ const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-per
 const quality=resolveField3DQualityPreset({profile:"mobile",devicePixelRatio, maxTextureSize:renderer.capabilities.maxTextureSize});
 applyField3DQualityPreset(renderer,quality);renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;host.appendChild(renderer.domElement);
 let layers=[],snapshot=null,grid=[],player={x:1,y:1,dir:0},mapInfo=null,loadedAssets={},assetQa=null;
+const proceduralTextures=createField3DProceduralTextures(THREE,{resolution:256,seed:1701,anisotropy:quality.pixelRatio>1?4:2});
 const ASSET_KEYS={landmark:{brokenColumn:"brokenColumnA",ancientArch:"ancientArchA",rootCurtain:"wallRootA"},decoration:{moss:"mossClusterA",fern:"fernA",glowPlant:"glowPlantA",root:"wallRootA"}};
 async function loadB1FAssets(){
  const manifestUrl=new URL("../assets/field-3d/b1/manifest.json",import.meta.url);
@@ -114,7 +116,7 @@ function loadFloor(index){
  clearScene();const source=defs.floors[index];const built=buildFixture(source,index);snapshot=built.snapshot;player={x:built.start.x,y:built.start.y,dir:0};
  const layout=getB1F3DLayout(index+1);
  const palette={floor:0x59644c,path:0x71654b,grass:0x38583b,safe:0x777c5a,wall:0x34463a,hazard:0x315d64};
- const world=buildField3DWorld(THREE,snapshot,{palette});scene.add(world.group);layers.push(world);
+ const world=buildField3DWorld(THREE,snapshot,{palette,proceduralTextures});scene.add(world.group);layers.push(world);
  const atmosphere=buildField3DAtmosphere(THREE,scene,{fogColor:layout.fogColor,fogDensity:layout.fogDensity,maxPixelRatio:quality.pixelRatio,keyPosition:[snapshot.area.worldWidth*.35,13,snapshot.area.worldDepth*.25],fillPosition:[snapshot.area.worldWidth*.7,5,snapshot.area.worldDepth*.7]});layers.push(atmosphere);
  const decor=buildField3DDecorationLayer(THREE,snapshot,{density:layout.decoration.density,maxPerKind:Math.min(layout.decoration.maxPerKind,quality.maxDecorationPerKind),rootDensity:layout.decoration.rootDensity,palette:layout.palette,assets:loadedAssets,assetKeys:ASSET_KEYS.decoration});scene.add(decor.group);layers.push(decor);
  const placements=planField3DLandmarks(snapshot,{maxCount:Math.min(layout.landmarkLimit,quality.maxVisibleLandmarks),seed:layout.landmarkSeed,...layout.landmarkOptions});
@@ -141,5 +143,6 @@ const assetReport=await loadB1FAssets();
 loadFloor(0);
 status.textContent+=" (GLB "+assetReport.loadedCount+"/"+assetReport.totalCount+" / asset QA "+(assetQa?.ok?"OK":(assetQa?.failed||assetQa?.issues?.length||0)+"件要確認")+")";
 renderer.setAnimationLoop(()=>renderer.render(scene,camera));
+addEventListener("beforeunload",()=>proceduralTextures.dispose(),{once:true});
 </script>
 </body></html>
