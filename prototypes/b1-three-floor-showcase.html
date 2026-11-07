@@ -58,7 +58,7 @@ const quality=resolveField3DQualityPreset({profile:"mobile",devicePixelRatio, ma
 applyField3DQualityPreset(renderer,quality);renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;host.appendChild(renderer.domElement);
 let layers=[],snapshot=null,grid=[],player={x:1,y:1,dir:0},mapInfo=null,loadedAssets={},assetQa=null;
 const proceduralTextures=createField3DProceduralTextures(THREE,{resolution:quality.pixelRatio<=1?128:256,seed:1701,anisotropy:quality.pixelRatio>1?4:2});
-const ASSET_KEYS={landmark:{brokenColumn:"brokenColumnA",ancientArch:"ancientArchA",rootCurtain:"wallRootA"},decoration:{moss:"mossClusterA",fern:"fernA",glowPlant:"glowPlantA",root:"wallRootA"}};
+const ASSET_KEYS={landmark:{brokenColumn:"brokenColumnA",ancientArch:"ancientArchA",rootCurtain:"wallRootA"},decoration:{moss:"mossClusterA",fern:"fernA",glowPlant:"glowPlantA",fungus:"fungusA",root:"wallRootA"}};
 async function loadB1FAssets(){
  const manifestUrl=new URL("../assets/field-3d/b1/manifest.json",import.meta.url);
  try{
