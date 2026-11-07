@@ -6,36 +6,78 @@
 /* ------------------------------------------------------------
    描画（DOM）
    ------------------------------------------------------------ */
+// 地図の凡例（全体地図と、周囲地図の「？」で共通）。色・形は fieldDrawMap の描き方と同じ。意味は従来どおり
+const FIELD_LEGEND_HTML = [
+  ["lg-player", "現在地"], ["lg-stairs", "階段"], ["lg-lamp", "導きの灯"], ["lg-chest", "宝箱"], ["lg-gather", "採集"],
+  ["lg-npc", "人・看板"], ["lg-event", "調べられる物"], ["lg-puzzle", "仕掛け"], ["lg-door", "扉"], ["lg-secret", "隠し通路"],
+  ["lg-foe", "FOE巡回"], ["lg-chase", "FOE追跡"], ["lg-gate", "ボス"], ["lg-exit", "出口"]
+].map(([c, t]) => `<span><i class="${c}"></i>${t}</span>`).join("");
 function fieldEnsureExtraDom() {
   const vp = $("field-viewport"), hud = document.querySelector("#field .field-hud"); if (!vp || !hud) return;
   if (!$("field-floor-label")) {
+    // HUD（1行）：フロア・階層名・危険度・FOE警告・MAP・ホーム
     const lab = document.createElement("span"); lab.id = "field-floor-label"; lab.className = "field-floor-label";
-    $("field-area-name")?.after(lab);
+    $("field-area-name")?.before(lab);
     const danger = document.createElement("span"); danger.id = "field-danger"; danger.className = "field-danger"; danger.dataset.level = "0"; danger.title = "エンカウントの危険度"; danger.setAttribute("aria-label", "エンカウントの危険度");
-    lab.after(danger);
+    $("field-area-name")?.after(danger);
+    const foeAlert = document.createElement("span"); foeAlert.id = "field-foe-alert"; foeAlert.className = "field-foe-alert"; foeAlert.hidden = true; foeAlert.setAttribute("role", "status");
+    danger.after(foeAlert);
     const mapBtn = document.createElement("button"); mapBtn.id = "field-map-button"; mapBtn.className = "field-map-button"; mapBtn.type = "button"; mapBtn.textContent = "MAP";
     $("field-home-button")?.before(mapBtn);
     mapBtn.addEventListener("click", () => fieldToggleFullMap());
   }
   if (!$("field-minimap")) {
-    const mini = document.createElement("canvas"); mini.id = "field-minimap"; mini.className = "field-minimap"; mini.setAttribute("aria-label", "ミニマップ（タップで全体マップ）");
-    vp.appendChild(mini); mini.addEventListener("click", () => fieldToggleFullMap());
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
+    // 正面の案内（対象があるときだけ1行で出す。表示だけで、調べる処理は fieldActionPressed のまま）
+    const near = document.createElement("div"); near.id = "field-near"; near.className = "field-near"; near.hidden = true; near.setAttribute("aria-live", "polite");
+    vp.appendChild(near);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
-    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
+    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend field-legend">${FIELD_LEGEND_HTML}</div>`;
     vp.appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
   }
   if (!$("field-map-rail")) {
+    // 地図の列：スマホでは探索画面の上に重ねる（右上に周囲地図・左上に状態）。PC では右の列（css/10-ui-field.css）
     const rail = document.createElement("aside");
     rail.id = "field-map-rail"; rail.className = "field-map-rail";
     rail.setAttribute("aria-label", "探索マップ");
-    rail.innerHTML = '<strong>MAP</strong><span class="field-map-hint">周囲9×9マスを表示</span><div id="field-minimap-status" class="field-minimap-status"></div><div id="field-minimap-legend" class="field-minimap-legend"><span><i class="mini-player"></i>現在地</span><span><i class="mini-stairs"></i>階段</span><span><i class="mini-chest"></i>宝箱</span><span><i class="mini-gather"></i>採集</span><span><i class="mini-puzzle"></i>仕掛け</span><span><i class="mini-secret"></i>隠し通路</span><span><i class="mini-foe"></i>FOE巡回</span><span><i class="mini-chase"></i>FOE追跡</span></div>';
+    rail.innerHTML = '<strong class="field-map-title">MAP<small class="field-map-hint">周囲9×9マス・タップで全体地図</small></strong>'
+      + '<div class="field-minimap-box"><canvas id="field-minimap" class="field-minimap" aria-label="周囲の地図（タップで全体マップ）"></canvas>'
+      + '<button type="button" id="field-legend-button" class="field-legend-button" aria-expanded="false" aria-controls="field-minimap-legend" aria-label="地図の凡例">？</button>'
+      + `<div id="field-minimap-legend" class="field-minimap-legend field-legend">${FIELD_LEGEND_HTML}</div></div>`
+      + '<div id="field-minimap-status" class="field-minimap-status"></div>';
     vp.after(rail);
-    const mini = $("field-minimap");
-    if (mini) rail.insertBefore(mini, $("field-minimap-status"));
+    $("field-minimap")?.addEventListener("click", () => fieldToggleFullMap());
+    const legendBtn = $("field-legend-button");
+    legendBtn?.addEventListener("click", () => {
+      const open = !rail.classList.contains("is-legend-open");
+      rail.classList.toggle("is-legend-open", open); legendBtn.setAttribute("aria-expanded", String(open));
+    });
   }
+}
+// 正面の対象の案内（表示用の名前と操作）。隠し物は正体を明かさない
+function fieldNearInfo(o) {
+  if (!o) return null;
+  const k = o.kind;
+  if (k === "door" && o.hidden) return { name: "ひびの入った壁", verb: "調べる" };
+  if (k === "event" && o.hidden && !(typeof fieldSideDone === "function" && fieldSideDone(o.event))) return { name: "気になる場所", verb: "調べる" };
+  if (k === "chest") return fieldState.flags[o.key] ? { name: "宝箱（空）", verb: "調べる" } : { name: "宝箱", verb: "開ける" };
+  if (k === "cache") { const id = o.puzzle; return id && fieldState.flags[`puzzle:${id}:reward`] ? { name: (o.name || "宝箱") + "（空）", verb: "調べる" } : { name: o.name || "宝箱", verb: "開ける" }; }
+  if (k === "gather") {
+    let name = o.name || "採集ポイント", verb = "採集する";
+    try { const a = fieldArea(), d = fieldGatherKindDef(fieldGatherKindOf(a, o)); if (d) { name = d.pointName || name; verb = (d.label || "採集") + "する"; } } catch (e) {}
+    return { name, verb };
+  }
+  if (k === "npc") return { name: o.name || "人", verb: "話す" };
+  if (k === "sign") return { name: o.name || "看板", verb: "読む" };
+  return { name: o.name || "何か", verb: "調べる" };
+}
+function fieldRenderNear(o) {
+  const el = $("field-near"); if (!el) return;
+  const info = fieldNearInfo(o);
+  el.hidden = !info;
+  el.innerHTML = info ? `<b>正面：${esc(info.name)}</b><span><kbd>A</kbd>で${esc(info.verb)}</span>` : "";
 }
 function fieldBuildDom() {
   const a = fieldArea(), screen = $("field"), map = $("field-map"); if (!a || !screen || !map) return;
@@ -61,6 +103,7 @@ function fieldBuildDom() {
   }).join("");
   map.innerHTML = `<div class="field-tiles">${tiles.join("")}</div>${objs}<div id="field-foes" class="field-foes"></div><div id="field-player" class="field-player" data-dir="down" data-moving="false" data-step="0"><span class="field-player-shadow"></span><span class="field-player-sprite"></span></div>`;
   fieldState.built = a.key; fieldState.nearKey = ""; fieldState.lastTileKey = "";
+  fieldRenderNear(null);
   fieldSpawnFoes();
   fieldMiniDirty = true;
 }
@@ -173,13 +216,20 @@ function fieldDrawMap(canvas, cell, full) {
     const fx=Math.floor(foe.x/FIELD_TILE),fy=Math.floor(foe.y/FIELD_TILE);
     if(inWindow(fx,fy)&&exp[fy*a.w+fx]) dot(fx,fy,foe.mode==="chase"?"#ff3030":"#ffad45",.94,foe.mode==="chase"?"triangle":"circle");
   }
-  g.save();g.translate((fieldState.x/FIELD_TILE-originX)*cell,(fieldState.y/FIELD_TILE-originY)*cell);
+  // 現在地：自分のマスの中心に、1マスの中へ収まる大きさで描く（隣のマスを隠さない）
+  g.save();g.translate((player.tx-originX+.5)*cell,(player.ty-originY+.5)*cell);
   g.rotate({up:0,right:Math.PI/2,down:Math.PI,left:-Math.PI/2}[fieldState.dir]||0);
-  g.fillStyle="#fff";g.strokeStyle="#000";g.lineWidth=Math.max(1,cell/8);
-  g.beginPath();g.moveTo(0,-cell*.55);g.lineTo(cell*.42,cell*.4);g.lineTo(-cell*.42,cell*.4);g.closePath();g.stroke();g.fill();g.restore();
+  g.fillStyle="#fff";g.strokeStyle="#000";g.lineWidth=Math.max(1,cell/10);g.lineJoin="round";
+  g.beginPath();g.moveTo(0,-cell*.36);g.lineTo(cell*.3,cell*.3);g.lineTo(0,cell*.16);g.lineTo(-cell*.3,cell*.3);g.closePath();g.stroke();g.fill();g.restore();
+}
+// 周囲地図の1マスの大きさ（px）。css/10-ui-field.css の --field-mini-cell（スマホ約10〜11px・PC約20px）
+function fieldMiniCell() {
+  let v = 0;
+  try { const rail = $("field-map-rail"); if (rail && typeof getComputedStyle === "function") v = parseFloat(getComputedStyle(rail).getPropertyValue("--field-mini-cell")); } catch (e) {}
+  return v >= 4 && v <= 40 ? Math.round(v) : 12;
 }
 function fieldDrawMinimap() {
-  fieldDrawMap($("field-minimap"), 12, false);
+  fieldDrawMap($("field-minimap"), fieldMiniCell(), false);
   const a=fieldArea(),status=$("field-minimap-status");
   if(!a||!status)return;
   const {tx,ty}=fieldPlayerTile();
@@ -189,11 +239,21 @@ function fieldDrawMinimap() {
     return fieldState.visible?.has(`${fx},${fy}`);
   });
   const chasing=visible.filter(f=>f.mode==="chase").length;
-  status.textContent=`座標 ${tx+1}, ${ty+1}　/　視界内FOE ${visible.length}（追跡 ${chasing}）`;
+  status.innerHTML=`<span>座標 ${tx+1}, ${ty+1}</span><span>視界内FOE ${visible.length}</span><span class="${chasing?"is-chase":""}">追跡中 ${chasing}</span>`;
+  // HUD の FOE 警告：視界内にFOEがいるときだけ出す（追跡中は赤）
+  const alert=$("field-foe-alert");
+  if(alert){
+    const text=chasing?`FOE追跡中`:visible.length?`FOE接近`:"";
+    if(alert.textContent!==text) alert.textContent=text;
+    alert.hidden=!text; alert.classList.toggle("is-chase",!!chasing);
+  }
 }
 function fieldDrawFullMap() {
   const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
-  const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - 92) / a.h)));
+  // 見出しと凡例の高さを除いた残りに、縦横比を保って収める
+  const full = $("field-fullmap"), head = full?.querySelector(".field-fullmap-head"), legend = full?.querySelector(".field-fullmap-legend");
+  const fw = (full?.clientWidth || vp.clientWidth) - 20, fh = (full?.clientHeight || vp.clientHeight) - (head?.offsetHeight || 24) - (legend?.offsetHeight || 40) - 30;
+  const cell = Math.max(6, Math.floor(Math.min(fw / a.w, fh / a.h)) || 6);
   fieldDrawMap($("field-fullmap-canvas"), cell, true);
   $("field-fullmap-title").textContent = `${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n, a.f)}`;
   $("field-fullmap-rate").textContent = `踏破率 ${fieldExploredRate(a)}%`;
