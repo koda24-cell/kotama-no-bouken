@@ -50,11 +50,13 @@ export function inspectField3DManifest(manifest, { requireGlbExtension = true } 
     }
   }
 
-  const required = entries.filter(([, descriptor]) => descriptor?.required === true).length;
+  const requiredKeys = entries.filter(([, descriptor]) => descriptor?.required === true).map(([key]) => key);
+  const required = requiredKeys.length;
   return Object.freeze({
     ok: issues.length === 0,
     total: entries.length,
     required,
+    requiredKeys: Object.freeze(requiredKeys),
     optional: entries.length - required,
     issues: Object.freeze(issues.map(issue => Object.freeze(issue)))
   });
@@ -64,8 +66,9 @@ export function inspectField3DAssetLoad(manifestReport, loadResult) {
   const issues = [...(manifestReport?.issues || [])];
   const assets = loadResult?.assets || {};
   const errors = loadResult?.errors || [];
+  const requiredKeys = new Set(manifestReport?.requiredKeys || []);
   for (const error of errors) {
-    const descriptorRequired = false;
+    const descriptorRequired = requiredKeys.has(error.key);
     issues.push({
       code: "asset.load-failed",
       key: error.key,
@@ -73,9 +76,7 @@ export function inspectField3DAssetLoad(manifestReport, loadResult) {
       message: error.error?.message || "Asset failed to load."
     });
   }
-  const requiredMissing = (loadResult?.errors || []).filter(error => {
-    return manifestReport?.requiredKeys?.includes?.(error.key);
-  }).length;
+  const requiredMissing = errors.filter(error => requiredKeys.has(error.key)).length;
   return Object.freeze({
     ok: issues.length === 0,
     loaded: Object.keys(assets).length,
