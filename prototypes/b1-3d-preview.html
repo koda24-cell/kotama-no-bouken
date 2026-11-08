@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>B1F 3D素材プレビュー（検証用）</title>
+<style>
+  :root { --bg:#071015; --panel:rgba(8,20,26,.82); --line:rgba(120,200,230,.35); --text:#d8eef5; --accent:#7fe6ff; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--text); font:14px/1.5 "Hiragino Sans","Noto Sans JP",system-ui,sans-serif; overflow:hidden; touch-action:none; }
+  #view { position:fixed; inset:0; }
+  #view canvas { display:block; }
+  .bar { position:fixed; left:0; right:0; top:0; display:flex; gap:6px; padding:calc(env(safe-area-inset-top) + 6px) 8px 6px; background:linear-gradient(var(--panel),transparent); z-index:5; flex-wrap:wrap; align-items:center; }
+  .bar button, .bar select, .pad button, .chips button { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:10px; padding:7px 11px; font:inherit; }
+  .bar button.on, .chips button.on { border-color:var(--accent); color:#fff; box-shadow:0 0 0 1px var(--accent) inset; }
+  .bar .sp { flex:1; }
+  #msg { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 18px; z-index:9; text-align:center; max-width:80vw; }
+  #info { position:fixed; left:8px; top:calc(env(safe-area-inset-top) + 56px); max-width:calc(100vw - 186px) !important; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:6px 10px; font-size:12px; z-index:5; max-width:min(60vw,420px); }
+  .pad { position:fixed; right:10px; bottom:calc(env(safe-area-inset-bottom) + 10px); display:grid; grid-template-columns:repeat(3,54px); grid-template-rows:repeat(2,54px); gap:6px; z-index:6; }
+  .pad button { font-size:20px; padding:0; border-radius:12px; }
+  #mini { position:fixed; right:10px; top:calc(env(safe-area-inset-top) + 56px); width:150px; height:118px; border:1px solid var(--line); border-radius:8px; background:rgba(0,0,0,.45); z-index:5; image-rendering:pixelated; }
+  .chips { position:fixed; left:8px; right:8px; bottom:calc(env(safe-area-inset-bottom) + 8px); display:flex; gap:6px; overflow-x:auto; z-index:5; padding-bottom:4px; }
+  .chips button { white-space:nowrap; font-size:12px; padding:6px 9px; }
+  .hide { display:none !important; }
+  @media (max-width:600px) { #info { font-size:11px; } .bar button, .bar select { padding:6px 8px; font-size:13px; } }
+  body.nomini #info { max-width:calc(100vw - 16px) !important; }
+</style>
+<!-- three.js r180（GPT の first-person 試作と同じ版・同じ配信元） -->
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+<!-- ゲームの迷宮データ（読むだけ。ゲーム本体のコードは読み込まない） -->
+<script src="../data/field-maps.js"></script>
+<script>window.__FIELD_AREAS__ = (typeof FIELD_AREAS !== "undefined") ? FIELD_AREAS : null;</script>
+</head>
+<body>
+<div id="view"></div>
+<div class="bar">
+  <button data-mode="walk" class="on">迷宮</button>
+  <button data-mode="scene">シーン</button>
+  <button data-mode="gallery">素材</button>
+  <select id="floorSel" title="フロア"></select>
+  <span class="sp"></span>
+  <button id="qBtn" title="画質">低画質</button>
+</div>
+<canvas id="mini" width="150" height="118"></canvas>
+<div class="pad" id="pad">
+  <button data-k="strafeL" title="左へ">⇐</button><button data-k="fwd" title="前へ">▲</button><button data-k="strafeR" title="右へ">⇒</button>
+  <button data-k="turnL" title="左を向く">↶</button><button data-k="back" title="後ろへ">▼</button><button data-k="turnR" title="右を向く">↷</button>
+</div>
+<div class="chips hide" id="chips"></div>
+<div id="info"></div>
+<div id="msg">読み込み中…</div>
+
+<script type="module">
+// ─────────────────────────────────────────────────────────────
+// B1F 3D素材プレビュー（検証用。ゲーム本体には組み込んでいない）
+//  ・迷宮を歩く：data/field-maps.js の第1階層のマップを読み、1マス=4m で 3D 素材に置き換えて表示
+//  ・検証シーン：assets/.../scene/b1_test_scene.json の配置
+//  ・素材一覧　：63点を1つずつ回して見る
+// 操作：▲▼で前後、↶↷で向き、⇐⇒で横移動（キーボード：W/S/A/D・矢印・Q/E）
+// ─────────────────────────────────────────────────────────────
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const BASE = '../assets/3d/dungeons/b1_ancient_forest/';
+const $ = (s) => document.querySelector(s);
+const msg = (t) => { $('#msg').textContent = t; $('#msg').classList.toggle('hide', !t); };
+const info = (h) => { $('#info').innerHTML = h; };
+const isMobile = matchMedia('(pointer:coarse)').matches;
+let high = new URLSearchParams(location.search).get('q') === 'high';
+
+// ── 描画の土台 ──
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
+$('#view').appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(70, 1, 0.05, 60);
+const hemi = new THREE.HemisphereLight(0x5a8aa8, 0x141a14, 0.6); scene.add(hemi);
+const key = new THREE.DirectionalLight(0xbfe0ff, 1.2); key.position.set(-20, 40, 10); scene.add(key, key.target);
+let composer = null, bloom = null;
+function applyQuality() {
+  renderer.setPixelRatio(high ? Math.min(2, devicePixelRatio) : (isMobile ? Math.min(1.25, devicePixelRatio) : 1));
+  renderer.shadowMap.enabled = false;
+  $('#qBtn').textContent = high ? '高画質' : '低画質';
+  if (high && !composer) {
+    composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
+    bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.55, 0.82); composer.addPass(bloom); composer.addPass(new OutputPass());
+  }
+  resize(); setLightPool(high ? 24 : 10); updateLights(); requestRender();
+}
+function resize() {
+  const w = innerWidth, h = innerHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
+  if (composer) { composer.setSize(w, h); composer.setPixelRatio(renderer.getPixelRatio()); }
+  requestRender();
+}
+addEventListener('resize', resize);
+
+// ── 点光源の使い回し（近いものから上限数だけ） ──
+let pool = [], lightList = [];
+function setLightPool(n) {
+  for (const p of pool) scene.remove(p);
+  pool = Array.from({ length: n }, () => { const l = new THREE.PointLight(0x7fe6ff, 0, 8, 2); scene.add(l); return l; });
+}
+function updateLights(center = camera.position) {
+  const s = lightList.map((L) => ({ L, d: L.world.distanceToSquared(center) })).sort((a, b) => a.d - b.d);
+  pool.forEach((p, i) => { const e = s[i]; if (!e) { p.intensity = 0; return; } p.position.copy(e.L.world); p.color.setHex(e.L.color); p.intensity = e.L.intensity * 2.4; p.distance = e.L.range * 2.0; });
+}
+
+// ── GLB の読み込み（同じものは1回だけ） ──
+const loader = new GLTFLoader(); const cache = new Map();
+let loadedCount = 0;
+function load(file) {
+  if (!cache.has(file)) cache.set(file, loader.loadAsync(BASE + file).then((g) => { loadedCount++; return g.scene; }));
+  return cache.get(file);
+}
+async function loadAll(files, label) {
+  const list = [...new Set(files)]; let done = 0;
+  msg(`${label}（0 / ${list.length}）`);
+  await Promise.all(list.map((f) => load(f).then(() => msg(`${label}（${++done} / ${list.length}）`))));
+  msg('');
+}
+// 置く（ジオメトリと素材は共有、行列は固定）
+function place(parent, src, x, y, z, ry = 0, s = 1) {
+  const o = src.clone(true); o.position.set(x, y, z); o.rotation.y = ry; o.scale.setScalar(s);
+  parent.add(o); o.updateMatrixWorld(true);
+  o.traverse((m) => {
+    m.matrixAutoUpdate = false;
+    const b1 = m.userData && m.userData.b1;
+    if (b1 && b1.lights) for (const L of b1.lights) lightList.push({ ...L, world: new THREE.Vector3(...L.pos).applyMatrix4(m.matrixWorld) });
+  });
+  return o;
+}
+
+// ── 描画ループ（必要なときだけ描く。電池の節約） ──
+let needRender = true, anim = null, controls = null;
+function requestRender() { needRender = true; }
+function frame(t) {
+  requestAnimationFrame(frame);
+  if (anim) { anim(t); needRender = true; }
+  if (controls && controls.update()) needRender = true;
+  if (!needRender) return;
+  needRender = false;
+  if (high && composer) composer.render(); else renderer.render(scene, camera);
+}
+requestAnimationFrame(frame);
+
+let world = new THREE.Group(); scene.add(world);
+function clearWorld() { scene.remove(world); world = new THREE.Group(); scene.add(world); lightList = []; if (controls) { controls.dispose(); controls = null; } anim = null; }
+
+// ═════════════ 迷宮を歩く ═════════════
+const C = 4, EYE = 1.6;
+const M = (id) => `modules/${id}.glb`, Pp = (id) => `props/${id}.glb`;
+const WALK_FILES = [M('mod_floor_stone_4m'), M('mod_floor_stone_broken_4m'), M('mod_floor_root_soil_4m'), M('mod_wall_4m'), M('mod_wall_mossy_roots_4m'), M('mod_wall_collapsed_4m'),
+  M('mod_ceiling_vault_4m'), M('mod_ceiling_roots_4m'), M('mod_stairs_down'), M('gather_herb_point'), M('gather_mining_point'), M('gather_logging_point'), M('gimmick_root_lever'), M('crystal_wall_vein'),
+  Pp('sealed_treasure_chest'), Pp('fern_cluster'), Pp('ancient_iron_gate'), Pp('blue_wisp_torch'), Pp('ancient_rune_floor_seal'), Pp('ruin_stone_lantern'), Pp('ancient_lantern_post'),
+  Pp('broken_stone_stairs'), Pp('hollow_tree_stump'), Pp('glow_mushroom_cluster'), Pp('hanging_glow_vines'), Pp('moss_boulder_cluster'), Pp('foe_footprint')];
+const hash = (x, z, s = 0) => { let h = (x * 374761393 + z * 668265263 + s * 982451653) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+let map = null, area = null, player = { x: 0, z: 0, dir: 0 }, objects = {};
+const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]]; // 北・東・南・西（-Z が北）
+
+async function buildWalk(floorIdx) {
+  clearWorld();
+  area = window.__FIELD_AREAS__ && window.__FIELD_AREAS__[1];
+  if (!area) { msg('data/field-maps.js を読めませんでした'); return; }
+  const fl = area.floors[floorIdx]; map = fl.map; objects = area.objects || {};
+  await loadAll(WALK_FILES, '素材を読み込み中');
+  const S = {}; for (const f of WALK_FILES) S[f.split('/')[1].replace('.glb', '')] = await load(f);
+  const H = map.length, W = map[0].length;
+  const ch = (x, z) => (z < 0 || z >= H || x < 0 || x >= W) ? '#' : map[z][x];
+  const obj = (c) => objects[c];
+  const solid = (c) => c === '#' || c === '~' || (obj(c) && obj(c).onWall);
+  const wx = (x) => (x - (W - 1) / 2) * C, wz = (z) => (z - (H - 1) / 2) * C;
+  let gi = 0, start = null, exitPos = null, firstOpen = null;
+  for (let z = 0; z < H; z++) for (let x = 0; x < W; x++) {
+    const c = ch(x, z); if (solid(c)) continue;
+    const X = wx(x), Z = wz(z), r = hash(x, z), rot = Math.floor(hash(x, z, 1) * 4) * Math.PI / 2;
+    if (c === 'P') start = { x, z }; if (c === 'E' && !exitPos) exitPos = { x, z }; if (!firstOpen) firstOpen = { x, z };
+    // 床
+    if (c === '>') place(world, S.mod_stairs_down, X, 0, Z, faceOpen(x, z));
+    else if (c === '*') { place(world, S.mod_floor_root_soil_4m, X, 0, Z, rot); place(world, S.fern_cluster, X + (r - 0.5) * 1.6, 0, Z + (hash(x, z, 2) - 0.5) * 1.6, r * 6); }
+    else place(world, r < 0.16 ? S.mod_floor_stone_broken_4m : r < 0.28 ? S.mod_floor_root_soil_4m : S.mod_floor_stone_4m, X, 0, Z, rot);
+    // 天井
+    place(world, hash(x, z, 3) < 0.3 ? S.mod_ceiling_roots_4m : S.mod_ceiling_vault_4m, X, 4, Z, rot);
+    // 壁（隣が固いマスの辺）
+    for (let d = 0; d < 4; d++) {
+      const [dx, dz] = DIRS[d], n = ch(x + dx, z + dz);
+      if (!solid(n)) continue;
+      const ry = [0, -Math.PI / 2, Math.PI, Math.PI / 2][d];
+      const ex = X + dx * C / 2, ez = Z + dz * C / 2, k = hash(x * 4 + d, z, 5);
+      place(world, k < 0.1 ? S.mod_wall_collapsed_4m : k < 0.38 ? S.mod_wall_mossy_roots_4m : S.mod_wall_4m, ex, 0, ez, ry);
+      const o = obj(n);
+      if (o && o.kind === 'switch') place(world, S.gimmick_root_lever, ex - dx * 0.5, 0, ez - dz * 0.5, ry);
+      else if (k > 0.96) place(world, S.crystal_wall_vein, ex, 0, ez, ry);
+      else if (k > 0.9) place(world, S.hanging_glow_vines, X + dx * 1.4, 4, Z + dz * 1.4, ry, 0.5);
+    }
+    // マスの中身
+    const o = obj(c);
+    if (c === 'T' || (o && o.kind === 'cache')) place(world, S.sealed_treasure_chest, X, 0, Z - 0.4, faceOpen(x, z));
+    else if (c === 'G') place(world, [S.gather_herb_point, S.gather_mining_point, S.gather_logging_point][gi++ % 3], X, 0, Z, faceOpen(x, z), 0.8);
+    else if (c === 'S') { place(world, S.ancient_rune_floor_seal, X, 0, Z); place(world, S.blue_wisp_torch, X + 1.2, 0, Z - 1.2); }
+    else if (c === '_') place(world, S.ruin_stone_lantern, X + 1.3, 0, Z - 1.3);
+    else if (c === 'E') place(world, S.ancient_rune_floor_seal, X, 0, Z, 0, 0.9);
+    else if (c === '<') place(world, S.broken_stone_stairs, X, 0, Z, faceOpen(x, z), 0.8);
+    else if (c === 'B' || (o && o.kind === 'door')) place(world, S.ancient_iron_gate, X, 0, Z, isNS(x, z) ? 0 : Math.PI / 2, 1.2);
+    else if (o && o.kind === 'event') place(world, S.hollow_tree_stump, X, 0, Z, r * 6, 0.7);
+    else if (o && o.kind === 'npc') place(world, S.glow_mushroom_cluster, X + 1.2, 0, Z + 1.2);
+    else if (c === '?') place(world, S.ruin_stone_lantern, X, 0, Z - 1.4);
+    else if (c === '.' && r > 0.93) place(world, S.glow_mushroom_cluster, X + (hash(x, z, 7) - 0.5) * 2.4, 0, Z + (hash(x, z, 8) - 0.5) * 2.4, r * 6, 0.7);
+    else if (c === '.' && r > 0.88) place(world, S.moss_boulder_cluster, X + (hash(x, z, 7) > 0.5 ? 1.3 : -1.3), 0, Z, r * 6, 0.35);
+  }
+  // FOE の巡回路の最初の地点に足跡（FOE 本体のモデルは今回の範囲外）
+  for (const f of fl.foes || []) { const [px, pz] = f.path[0]; if (!solid(ch(px, pz))) place(world, S.foe_footprint, wx(px), 0.01, wz(pz), 0.3, 0.8); }
+  function isNS(x, z) { return !solid(ch(x, z - 1)) || !solid(ch(x, z + 1)); }
+  function faceOpen(x, z) { for (let d = 0; d < 4; d++) { const [dx, dz] = DIRS[d]; if (!solid(ch(x + dx, z + dz))) return [Math.PI, Math.PI / 2, 0, -Math.PI / 2][d]; } return 0; }
+  // 開始位置：P（無ければ出口 E、それも無ければ最初の通れるマス）。向きは開いている方向
+  const st = start || exitPos || firstOpen; player = { x: st.x, z: st.z, dir: 0 };
+  for (let d = 0; d < 4; d++) { const [dx, dz] = DIRS[d]; if (!solid(ch(player.x + dx, player.z + dz))) { player.dir = d; break; } }
+  window.__walk = { W, H, wx, wz, solid: (x, z) => solid(ch(x, z)) };
+  scene.fog = new THREE.FogExp2(0x0a161c, 0.045); scene.background = new THREE.Color(0x05090c);
+  camera.far = 34; camera.fov = 70; camera.updateProjectionMatrix();
+  hemi.intensity = 1.1; key.intensity = 0.0; renderer.toneMappingExposure = 1.25;
+  setCam(true); drawMini();
+  info(`第1階層「${area.name}」${floorIdx + 1}F のマップデータ（${W}×${H}マス）を 3D 素材で表示。1マス=4m。<br>宝箱=T、採集=G、導きの灯=S、階段=＞ などを素材に置き換え。FOE・NPC の本体は未配置。`);
+}
+function camPose(p) {
+  const w = window.__walk, [dx, dz] = DIRS[p.dir];
+  return { pos: new THREE.Vector3(w.wx(p.x) - dx * 1.3, EYE, w.wz(p.z) - dz * 1.3), yaw: -p.dir * Math.PI / 2 };
+}
+let curYaw = 0;
+function setCam(instant) {
+  const to = camPose(player);
+  if (instant) { camera.position.copy(to.pos); curYaw = to.yaw; camera.rotation.set(-0.04, curYaw, 0, 'YXZ'); updateLights(); requestRender(); return; }
+  const from = camera.position.clone(), y0 = curYaw; let y1 = to.yaw; while (y1 - y0 > Math.PI) y1 -= Math.PI * 2; while (y1 - y0 < -Math.PI) y1 += Math.PI * 2;
+  const t0 = performance.now(), dur = 210; moving = true;
+  anim = (t) => {
+    const k = Math.min(1, (t - t0) / dur), e = k * k * (3 - 2 * k);
+    camera.position.lerpVectors(from, to.pos, e); curYaw = y0 + (y1 - y0) * e; camera.rotation.set(-0.04, curYaw, 0, 'YXZ');
+    if (k >= 1) { anim = null; moving = false; curYaw = to.yaw; updateLights(); drawMini(); if (queued) { const q = queued; queued = null; act(q); } }
+  };
+}
+let moving = false, queued = null;
+function act(k) {
+  if (mode !== 'walk' || !window.__walk) return;
+  if (moving) { queued = k; return; }
+  const w = window.__walk; const p = { ...player };
+  const f = DIRS[p.dir], r = DIRS[(p.dir + 1) % 4];
+  if (k === 'turnL') p.dir = (p.dir + 3) % 4; else if (k === 'turnR') p.dir = (p.dir + 1) % 4;
+  else { const v = k === 'fwd' ? f : k === 'back' ? [-f[0], -f[1]] : k === 'strafeR' ? r : [-r[0], -r[1]]; const nx = p.x + v[0], nz = p.z + v[1]; if (w.solid(nx, nz)) { bump(v); return; } p.x = nx; p.z = nz; }
+  player = p; setCam(false);
+}
+function bump(v) { const base = camera.position.clone(), t0 = performance.now(); moving = true; anim = (t) => { const k = Math.min(1, (t - t0) / 160), s = Math.sin(k * Math.PI) * 0.12; camera.position.set(base.x + v[0] * s, base.y, base.z + v[1] * s); if (k >= 1) { anim = null; moving = false; camera.position.copy(base); } }; }
+const KEYS = { ArrowUp: 'fwd', KeyW: 'fwd', ArrowDown: 'back', KeyS: 'back', ArrowLeft: 'turnL', KeyQ: 'turnL', ArrowRight: 'turnR', KeyE: 'turnR', KeyA: 'strafeL', KeyD: 'strafeR' };
+addEventListener('keydown', (e) => { const k = KEYS[e.code]; if (k) { e.preventDefault(); act(k); } });
+for (const b of document.querySelectorAll('#pad button')) b.addEventListener('pointerdown', (e) => { e.preventDefault(); act(b.dataset.k); });
+function drawMini() {
+  const cv = $('#mini'), g = cv.getContext('2d'); if (!map) return;
+  const H = map.length, W = map[0].length, s = Math.min(cv.width / W, cv.height / H), ox = (cv.width - W * s) / 2, oy = (cv.height - H * s) / 2;
+  g.clearRect(0, 0, cv.width, cv.height);
+  for (let z = 0; z < H; z++) for (let x = 0; x < W; x++) { const c = map[z][x]; g.fillStyle = c === '#' ? '#1d2a2e' : c === 'T' ? '#e0b050' : c === 'G' ? '#6fd08a' : c === '>' || c === '<' ? '#7fe6ff' : c === '~' ? '#1d4a6a' : '#5a6e72'; g.fillRect(ox + x * s, oy + z * s, s, s); }
+  const cx = ox + (player.x + 0.5) * s, cy = oy + (player.z + 0.5) * s, a = player.dir * Math.PI / 2;
+  g.fillStyle = '#ff6a6a'; g.beginPath(); g.moveTo(cx + Math.sin(a) * s * 0.9, cy - Math.cos(a) * s * 0.9); g.lineTo(cx + Math.sin(a + 2.4) * s * 0.6, cy - Math.cos(a + 2.4) * s * 0.6); g.lineTo(cx + Math.sin(a - 2.4) * s * 0.6, cy - Math.cos(a - 2.4) * s * 0.6); g.fill();
+}
+
+// ═════════════ 検証シーン ═════════════
+let layout = null;
+async function buildScene(camName) {
+  clearWorld();
+  layout = layout || await (await fetch(BASE + 'scene/b1_test_scene.json')).json();
+  await loadAll(Object.values(layout.assetPath), '検証シーンを読み込み中');
+  for (const it of layout.items) place(world, await load(layout.assetPath[it.asset]), ...it.pos, it.rotY, it.scale || 1);
+  scene.fog = new THREE.FogExp2(0x0a151b, 0.02); scene.background = new THREE.Color(0x060d11);
+  hemi.intensity = 0.55; key.intensity = 1.4; renderer.toneMappingExposure = 1.0;
+  const shaft = new THREE.SpotLight(0xbfe6ff, 2600, 0, 0.36, 0.6, 1); shaft.position.set(-6, 26, 4); shaft.target.position.set(-17, 5, -5); world.add(shaft, shaft.target);
+  camera.far = 200; camera.fov = 58; camera.updateProjectionMatrix();
+  controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+  setSceneCam(camName || 'hall_to_stairs');
+  const chips = $('#chips'); chips.innerHTML = '';
+  for (const [k, c] of Object.entries(layout.cameras)) { const b = document.createElement('button'); b.textContent = c.note.replace(/（.*?）/g, ''); b.onclick = () => setSceneCam(k); chips.appendChild(b); }
+  info(`検証用の配置（${layout.items.length}配置）。ドラッグで回転、ピンチ／ホイールで拡大。下のボタンで視点を切り替え。`);
+}
+function setSceneCam(k) {
+  const c = layout.cameras[k]; camera.position.fromArray(c.pos); controls.target.fromArray(c.target); camera.fov = c.fov; camera.updateProjectionMatrix(); controls.update();
+  updateLights(new THREE.Vector3(...c.target)); requestRender();
+}
+
+// ═════════════ 素材一覧 ═════════════
+let manifest = null;
+async function buildGallery(id) {
+  clearWorld();
+  manifest = manifest || await (await fetch(BASE + 'manifest.json')).json();
+  const chips = $('#chips'); chips.innerHTML = '';
+  for (const a of manifest.assets) { const b = document.createElement('button'); b.textContent = a.name_ja; b.dataset.id = a.id; b.onclick = () => buildGallery(a.id); chips.appendChild(b); }
+  const a = manifest.assets.find((x) => x.id === id) || manifest.assets[0];
+  chips.querySelector(`[data-id="${a.id}"]`)?.classList.add('on');
+  msg(`${a.name_ja} を読み込み中`);
+  const o = place(world, await load(a.file), 0, 0, 0); msg('');
+  const box = new THREE.Box3().setFromObject(o), c = box.getCenter(new THREE.Vector3()), R = box.getSize(new THREE.Vector3()).length() / 2;
+  const fl = new THREE.Mesh(new THREE.CircleGeometry(R * 4, 48), new THREE.MeshStandardMaterial({ color: 0x1b2420, roughness: 0.95 })); fl.rotation.x = -Math.PI / 2; fl.position.y = Math.min(0, box.min.y) - 0.002; world.add(fl);
+  scene.fog = new THREE.FogExp2(0x0b161b, 0.12 / R); scene.background = new THREE.Color(0x0a1216);
+  hemi.intensity = 0.6; key.intensity = 1.8; renderer.toneMappingExposure = 1.0; key.position.set(c.x + R * 2, c.y + R * 3, c.z + R * 2.5); key.target.position.copy(c);
+  camera.far = R * 20; camera.fov = 35; camera.updateProjectionMatrix();
+  controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.target.copy(c);
+  camera.position.set(c.x + R * 1.6, c.y + R * 0.8, c.z + R * 2.4); controls.update();
+  updateLights(c); requestRender();
+  info(`<b>${a.name_ja}</b>（${a.file}）<br>${a.desc_ja}<br>${a.sizeMeters.map((v) => v.toFixed(1)).join('×')} m・${a.tris.toLocaleString()} 三角形・${Math.round(a.bytes / 1024)} KB`);
+}
+
+// ═════════════ 切り替え ═════════════
+let mode = 'walk';
+async function setMode(m) {
+  mode = m;
+  for (const b of document.querySelectorAll('[data-mode]')) b.classList.toggle('on', b.dataset.mode === m);
+  $('#pad').classList.toggle('hide', m !== 'walk'); $('#mini').classList.toggle('hide', m !== 'walk'); $('#floorSel').classList.toggle('hide', m !== 'walk');
+  $('#chips').classList.toggle('hide', m === 'walk'); document.body.classList.toggle('nomini', m !== 'walk');
+  try {
+    if (m === 'walk') await buildWalk(+$('#floorSel').value || 0);
+    else if (m === 'scene') await buildScene();
+    else await buildGallery();
+  } catch (e) { console.error(e); msg('読み込みに失敗しました：' + e.message); }
+  window.__ready = true;
+}
+for (const b of document.querySelectorAll('[data-mode]')) b.onclick = () => setMode(b.dataset.mode);
+$('#qBtn').onclick = () => { high = !high; applyQuality(); };
+const fs = $('#floorSel');
+const A1 = window.__FIELD_AREAS__ && window.__FIELD_AREAS__[1];
+(A1 ? A1.floors : []).forEach((_, i) => { const o = document.createElement('option'); o.value = i; o.textContent = `${i + 1}F`; fs.appendChild(o); });
+fs.onchange = () => setMode('walk');
+applyQuality();
+const q = new URLSearchParams(location.search);
+if (q.get('floor')) fs.value = q.get('floor');
+setMode(q.get('mode') || 'walk');
+window.__act = act; // 自動テスト用
+</script>
+</body>
+</html>
