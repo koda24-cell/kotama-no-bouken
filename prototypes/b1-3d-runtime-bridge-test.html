@@ -42,6 +42,10 @@ check("右向きカメラ角度は-pi/2",Math.abs(bridge.getPlayerPose().yaw+Mat
 check("旋回後の前進は既存tryStepへrightを渡す",bridge.moveForward()&&calls.steps.at(-1)?.dir==="right");
 check("後退は現在方向の反対へ委譲",bridge.moveBackward()&&calls.steps.at(-1)?.dir==="left");
 check("調べる操作は既存actionへ委譲",bridge.interact()&&calls.actions===1);
+fieldState.stepUntil=Number.MAX_SAFE_INTEGER;
+check("歩行アニメーション中は追加移動を拒否",bridge.move("up",100)===false&&calls.steps.length===3);
+check("歩行アニメーション中は旋回も拒否",bridge.turnRight()===false&&fieldState.dir==="right");
+fieldState.stepUntil=0;
 fieldState.lock=true;
 check("イベント等でlock中は移動を拒否",bridge.moveForward()===false&&calls.steps.length===3);
 check("lock中は調べる操作も拒否",bridge.interact()===false&&calls.actions===1);
