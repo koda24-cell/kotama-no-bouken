@@ -480,6 +480,7 @@ const bridge = createField3DRuntimeBridge({
   getArea: () => fieldArea(),
   getFieldState: () => fieldState,
   getTilePixels: () => FIELD_TILE,
+  isInputBlocked: () => fieldModalOpen(),
   tryStep: (area, dir, now) => fieldTryStep(area, dir, now),
   action: () => fieldActionPressed(),
   snapshotOptions: {
