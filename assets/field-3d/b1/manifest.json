@@ -33,11 +33,11 @@
       "enabled": false
     },
     "wallRootA": {
-      "url": "./nature/env-root-wall-a.glb",
+      "url": "./nature/env-root-wall-a.gltf",
       "category": "nature",
       "required": false,
       "scale": 1,
-      "enabled": false
+      "enabled": true
     },
     "ceilingRootA": {
       "url": "./nature/env-ceiling-root-a.glb",
@@ -47,18 +47,18 @@
       "enabled": false
     },
     "brokenColumnA": {
-      "url": "./ruins/ruin-column-broken-a.glb",
+      "url": "./ruins/ruin-column-broken-a.gltf",
       "category": "ruins",
       "required": false,
       "scale": 1,
-      "enabled": false
+      "enabled": true
     },
     "ancientArchA": {
-      "url": "./ruins/ruin-arch-a.glb",
+      "url": "./ruins/ruin-arch-a.gltf",
       "category": "ruins",
       "required": false,
       "scale": 1,
-      "enabled": false
+      "enabled": true
     },
     "ancientDoorA": {
       "url": "./ruins/ruin-door-a.glb",
@@ -68,25 +68,25 @@
       "enabled": false
     },
     "mossClusterA": {
-      "url": "./nature/nat-moss-cluster-a.glb",
+      "url": "./nature/nat-moss-cluster-a.gltf",
       "category": "nature",
       "required": false,
       "scale": 1,
-      "enabled": false
+      "enabled": true
     },
     "fernA": {
-      "url": "./nature/nat-fern-a.glb",
+      "url": "./nature/nat-fern-a.gltf",
       "category": "nature",
       "required": false,
       "scale": 1,
-      "enabled": false
+      "enabled": true
     },
     "glowPlantA": {
-      "url": "./nature/nat-glow-plant-a.glb",
+      "url": "./nature/nat-glow-plant-a.gltf",
       "category": "nature",
       "required": false,
       "scale": 1,
-      "enabled": false
+      "enabled": true
     },
     "fungusA": {
       "url": "./nature/nat-fungus-a.glb",
