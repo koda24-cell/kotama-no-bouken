@@ -1348,7 +1348,7 @@ function livingEnemyTargets(enemy){
   return targets;
 }
 function applyDamageToEnemyTarget(enemy,target,amount){
-  if(!target||!target.ref||amount<=0)return 0;
+  if(!target||!target.ref)return 0;
   if(window.kotamaAdminBattleSettings?.oneHitKill){const unit=target.ref,dealt=Math.max(0,Number(unit.hp)||0);unit.hp=0;if(target.kind==="member"&&enemy?.members)enemy.hp=enemy.members.reduce((n,m)=>n+Math.max(0,m.hp),0);else if(target.kind==="main"&&enemy)enemy.hp=0;extEmitDamage(unit.id||"enemy","enemy",dealt,{hpAfter:0,ko:true});return dealt;}
   amount=extEnemyDamageTakenMul(enemy,target,amount);// [EXT] 睡眠中は被ダメージ増
   const value=Math.max(0,Math.floor(amount));
