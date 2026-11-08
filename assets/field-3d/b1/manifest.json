@@ -16,21 +16,21 @@
         "lod0",
         "lod1"
       ],
-      "enabled": false
+      "enabled": true
     },
     "stoneFloorA": {
       "url": "./environment/env-stone-floor-a.gltf",
       "category": "environment",
       "required": false,
       "scale": 1,
-      "enabled": false
+      "enabled": true
     },
     "dirtFloorA": {
       "url": "./environment/env-dirt-floor-a.gltf",
       "category": "environment",
       "required": false,
       "scale": 1,
-      "enabled": false
+      "enabled": true
     },
     "wallRootA": {
       "url": "./nature/env-root-wall-a.gltf",
