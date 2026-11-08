@@ -162,10 +162,9 @@ export function createField3DProceduralTextures(THREE, {
     for (const map of Object.values(set)) map.anisotropy = Math.max(1, Math.min(8, anisotropy));
   }
   return Object.freeze({
-    maps: Object.freeze({
-      stone: Object.freeze(maps.stone),
-      dirt: Object.freeze(maps.dirt)
-    }),
+    maps: Object.freeze(Object.fromEntries(
+      Object.entries(maps).map(([kind, set]) => [kind, Object.freeze(set)])
+    )),
     dispose() {
       const ownedTextures = new Set();
       for (const set of Object.values(maps)) {
