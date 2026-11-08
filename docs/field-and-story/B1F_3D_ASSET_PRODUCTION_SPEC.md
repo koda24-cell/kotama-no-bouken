@@ -193,3 +193,31 @@ manifestのキー名は、配置レイヤーが参照するassetKeyと一致さ�
 - 現段階の検証はJSON構造・glTFバージョン・内包バッファ・manifestパスの確認まで。ブラウザ実機での描画確認は未実施。
 - PBRテクスチャ、UV展開、LOD、法線・シルエットの目視検品、iPhone負荷計測は次工程。
 - 今回のモデル追加は作業ブランチのみ。development / mainへの統合は未実施。
+
+
+## 11. 第1次環境モデル実装状況（2026-11-08）
+
+### 基礎環境モデル
+
+| assetKey | ファイル | 寸法・構成 | ジオメトリ |
+|---|---|---|---:|
+| stoneWallA | environment/env-stone-wall-a.glb | 4×4×4 units、四面に石積みの凹凸 | 1,068 tris |
+| stoneFloorA | environment/env-stone-floor-a.glb | 4×4 units、石畳16枚＋目地 | 492 tris |
+| dirtFloorA | environment/env-dirt-floor-a.glb | 4×4 units、湿った土・埋没石・露出根 | 612 tris |
+
+- GLBはglTF 2.0の自己完結型バイナリとして登録。
+- PBR metallic-roughnessマテリアルと頂点カラーを使用。現段階では独立したBase Color/Normal/ORMテクスチャは未実装。
+- manifestの3キーをenabledにし、world builderへ読み込み済みアセットのGeometry/Materialを渡す。
+- 各InstancedMesh用にGeometry/Materialをcloneし、共有GLTFソースのリソース寿命とワールド再構築時のdisposeを分離する。
+- 壁モデルは1マス内に収まる四面構造。石床・土床は4×4 unitsのタイルとして1マス単位で配置する。
+- 旧来のプロシージャルGeometry/Materialは、素材が読み込めない場合のフォールバックとして残す。
+
+### 未完了の品質工程
+
+- UVを利用した高解像度Base Color / Normal / ORMテクスチャ制作。
+- LOD1/LOD2と距離別切替。
+- 複数タイルを連続配置した際の継ぎ目・法線・色調の確認。
+- GLTFLoaderでのブラウザ読込、3D探索画面での目視確認。
+- iPhone実機での描画負荷・メモリ・読込時間の確認。
+
+**注意：GitHub上にGLBが存在し、manifestで有効化されていることは確認済み。ブラウザ・iPhone上での描画成功を意味しない。**
