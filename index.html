@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="./css/07-labyrinth.css?v=20261107-10">
   <link rel="stylesheet" href="./style.css?v=20261106-13">
   <link rel="stylesheet" href="./css/08-cartography-ui.css?v=20261107-02">
+  <link rel="stylesheet" href="./css/09-field-3d.css?v=20261108-01">
   <script src="./data/battle-rules.js?v=20261106-11" defer></script>
   <script src="./data/progression.js?v=20261106-11" defer></script>
   <script src="./data/skill-trees.js?v=20261106-11" defer></script>
@@ -43,6 +44,7 @@
   <script src="./field/field-navigation.js?v=20261107-21" defer></script>
   <script src="./field/field-persistence.js?v=20261107-22" defer></script>
   <script src="./monster-compendium.js?v=20261106-19" defer></script>
+  <script type="module" src="./field/3d/field-3d-screen.js?v=20261108-01"></script>
 </head>
 <body>
   <div class="game">
@@ -212,6 +214,10 @@
         <div class="field-hud">
           <strong id="field-area-name">はじまりの樹海</strong>
           <span id="field-hint" class="field-hint">移動：矢印/WASD・パッド（1マスずつ）　調べる：Z/Enter・A</span>
+          <div class="field-mode-switch" role="group" aria-label="探索画面の切り替え">
+            <button id="field-mode-2d" type="button" aria-pressed="true">2D</button>
+            <button id="field-mode-3d" type="button" aria-pressed="false">3D</button>
+          </div>
           <button id="field-home-button" class="field-home-button" type="button">ホームへ</button>
         </div>
         <div id="field-viewport" class="field-viewport">
@@ -226,6 +232,17 @@
               <span class="field-dialog-next" aria-hidden="true">▼</span>
             </div>
             <div class="field-dialog-choices" hidden></div>
+          </div>
+        </div>
+        <div id="field-3d-viewport" class="field-3d-viewport" hidden aria-label="一人称3D迷宮">
+          <div id="field-3d-canvas" class="field-3d-canvas"></div>
+          <div id="field-3d-status" class="field-3d-status" aria-live="polite">3Dを準備しています</div>
+          <div class="field-3d-controls" aria-label="3D探索操作">
+            <button type="button" data-3d-action="left" aria-label="左を向く">↶</button>
+            <button type="button" data-3d-action="forward" aria-label="前進">▲</button>
+            <button type="button" data-3d-action="right" aria-label="右を向く">↷</button>
+            <button type="button" data-3d-action="back" aria-label="後退">▼</button>
+            <button type="button" data-3d-action="interact" aria-label="調べる">調べる</button>
           </div>
         </div>
         <div id="field-pad" class="field-pad" aria-label="移動パッド">
