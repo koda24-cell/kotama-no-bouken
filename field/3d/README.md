@@ -74,7 +74,7 @@ if (column) scene.add(column);
 - 読み込み失敗は個別に記録し、他の素材の読み込みを継続する。
 - `clone()` は配置ごとの独立したObject3Dを返す。元の読み込みシーンは変更しない。
 - GLTFLoaderは利用環境に合うものを呼び出し側で用意する。Three.jsのバージョン・CDN・ビルド方式をこのモジュールで固定しない。
-- この段階ではGLB実素材はまだ追加していない。仮素材を完成品として扱わず、素材制作後にmanifestへ登録する。
+- B1F初回素材として古代アーチ・崩れた石柱・壁面根・発光植物・シダ・苔の6モデルを登録済み。初回モデルは手続き生成メッシュで、外部テクスチャ・UV展開・LOD・アニメーションは未実装。最終品質版ではなく、実機表示と形状検品を行うための第1制作版。
 - テクスチャ/ジオメトリの共有リソースを含むため、個別インスタンスの破棄時に共有material/geometryを不用意にdisposeしないこと。アセット全体の解放管理は本編統合時に設計する。
 
 ## スナップショット契約
@@ -261,7 +261,7 @@ atmosphere.dispose();
 
 ## B1F素材マニフェスト
 
-`assets/field-3d/b1/manifest.json` にB1F向け素材キーと相対パスの雛形を追加した。現在は**参照先のGLB実ファイルは未配置**であり、すべて `required:false`。未制作の素材があっても探索画面全体を失敗させず、仮形状へフォールバックする運用とする。
+`assets/field-3d/b1/manifest.json` にB1F向け素材キーと相対パスを登録している。初回6モデル（`ancientArchA` / `brokenColumnA` / `wallRootA` / `glowPlantA` / `fernA` / `mossClusterA`）は `enabled:true`。石壁・床・天井根・扉・菌類・宝箱・採集ポイント・セーブ灯など未制作素材は引き続き無効で、仮形状へフォールバックする。
 
 ```js
 import manifest from "./assets/field-3d/b1/manifest.json";
@@ -283,7 +283,7 @@ const loaded = await loadField3DAssets({
 - `baseUrl` を指定すると、manifest内の相対パスをその基準URLから解決する。
 - `completed` は成功・失敗を問わず処理が完了した件数、`loaded` は読み込み成功数。
 - GLBを追加したらmanifestのキー・パス・スケールを更新し、ライセンス情報も別途記録する。
-- JSONの雛形追加は素材モデルの完成を意味しない。GLB実ファイル、テクスチャ、LODは別途制作・検品が必要。
+- manifest登録済みでも最終完成を意味しない。初回6モデルはglTF 2.0の実ファイルだが、PBRテクスチャ、UV、LOD、実機検品は未完了。
 
 
 ## GLBのPBRマテリアル統一
