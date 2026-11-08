@@ -78,11 +78,21 @@ function frame() {
     raf = requestAnimationFrame(frame);
     return;
   }
-  const snapshot = bridge.getSnapshot();
-  if (snapshot && snapshot.area.key !== currentAreaKey) rebuildWorld();
+  const area = getRuntime().getArea();
+  if (area && area.key !== currentAreaKey) rebuildWorld();
   syncCamera();
   renderer.render(scene, camera);
   raf = requestAnimationFrame(frame);
+}
+function performAction(action) {
+  if (!bridge || !window.__field3DMode) return;
+  let changed = false;
+  if (action === "forward") changed = bridge.moveForward();
+  else if (action === "back") changed = bridge.moveBackward();
+  else if (action === "left") changed = bridge.turnLeft();
+  else if (action === "right") changed = bridge.turnRight();
+  else if (action === "interact") changed = bridge.interact();
+  if (changed && (action === "forward" || action === "back" || action === "interact")) rebuildWorld();
 }
 function setMode(mode) {
   const is3d = mode === "3d";
@@ -115,14 +125,7 @@ document.getElementById("field-mode-2d").addEventListener("click", () => setMode
 document.getElementById("field-mode-3d").addEventListener("click", () => setMode("3d"));
 document.querySelectorAll("[data-3d-action]").forEach(button => {
   const action = button.dataset["3dAction"];
-  const run = () => {
-    if (!bridge || !window.__field3DMode) return;
-    if (action === "forward") bridge.moveForward();
-    else if (action === "back") bridge.moveBackward();
-    else if (action === "left") bridge.turnLeft();
-    else if (action === "right") bridge.turnRight();
-    else if (action === "interact") bridge.interact();
-  };
+  const run = () => performAction(action);
   button.addEventListener("pointerdown", event => { event.preventDefault(); run(); });
 });
 document.addEventListener("keydown", event => {
@@ -136,11 +139,8 @@ document.addEventListener("keydown", event => {
   const action = actions[key];
   if (!action || event.repeat) return;
   event.preventDefault();
-  if (action === "forward") bridge?.moveForward();
-  else if (action === "back") bridge?.moveBackward();
-  else if (action === "left") bridge?.turnLeft();
-  else if (action === "right") bridge?.turnRight();
-  else bridge?.interact();
+  event.stopImmediatePropagation();
+  performAction(action);
 }, { capture: true });
 window.addEventListener("pagehide", () => {
   disposed = true;
