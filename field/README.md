@@ -49,4 +49,6 @@
 - **画質**：localStorage の `kotama.field3d.quality` が `high` か `low`。既定は PC が高画質（光のにじみあり、点光源14）、タッチ端末が低画質（点光源6）。
 - **フォールバック**：three.js の読み込み・WebGL・素材の読み込みのどれかが失敗したら、2D表示のまま遊べる。
 - **素材**：`assets/3d/dungeons/b1_ancient_forest/`（生成は `tools/b1-3d/`）
+- **仕様と制作ルール**：システムの仕様（現状・共通部分と階層固有部分・水やエフェクトの拡張・2層に向けた課題）は `docs/field-and-story/FIELD_3D_SPEC.md`。素材の制作ルール（GPT 向け）は `docs/field-and-story/FIELD_3D_ASSET_GUIDE.md`。
+- **階層を足すとき**：第1階層の値・素材は変えない。1層の回帰確認（`game-test.js`・スクリーンショットの比較・既存テスト）を毎回行う（仕様 §5）。
 - **確認**：`tools/b1-3d/game-test.js` がゲームを開き、第1階層で次を通しで確かめる。移動・旋回・横移動・壁への衝突、採集、宝箱、レバーと扉、階段、2F の導きの灯、3F の NPC・看板・水・ボス門、戦闘への切り替え、2D/3D の切り替え。

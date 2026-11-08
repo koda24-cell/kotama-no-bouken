@@ -31,6 +31,7 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | 9 | `field.js` | 探索共通状態・定数・マップ基礎処理 |
 | 10 | `field/field-*.js` | 探索の描画、移動/FOE、会話、操作、階層遷移、セーブを機能別に分割 |
 | 11 | `monster-compendium.js` | モンスター図鑑 |
+| 12 | `field/field-3d-view.js` | **一人称3D表示（第1階層のみ）**。唯一の ES module（three.js r180 を `index.html` の importmap で CDN から読む）。表示専用で、探索の状態は読むだけ |
 
 **読み込み順は `index.html` が正です。** `defer` の実行順を変えず、依存先より後に読み込まれるようにしてください。
 
@@ -104,6 +105,16 @@ ChatGPT・Gemini・Claude など、複数のAIが同じゲームを開発する�
 | フィールド探索・ランダムエンカウント・ストーリー追加（Claude：処理／GPT：見た目・推敲） | 分担確定。`docs/field-and-story/README.md` を参照 |
 
 **衝突しやすい場所：** `script.js` 全体、`style.css` の末尾、`index.html` の `<head>`（`?v=` の行）、`data/jobs.js` の先頭付近。触る前に、最新の `development` と未マージPRの変更ファイルを確認してください。
+
+## 7-2. 3D迷宮（一人称3D表示）の分担と資料
+
+- 分担：**GPT＝3D素材・背景・エフェクトの制作**、**Claude＝素材の統合・配置・ゲームへの実装**、ユーザー＝確認と最終承認。
+- 資料
+  - 仕様：`docs/field-and-story/FIELD_3D_SPEC.md`（現状・共通部分と階層固有部分・水やエフェクトの拡張・2層に向けた課題）
+  - 素材の制作ルール：`docs/field-and-story/FIELD_3D_ASSET_GUIDE.md`
+  - 探索モジュール内の位置づけ：`field/README.md`
+- 素材：`assets/3d/dungeons/b<階層>_<英名>/`。既存の階層の素材は上書きしない。
+- 2層以降を足すときは、第1階層の表示・動作を変えない。PR ごとに1層の回帰確認を行う（仕様 §5）。
 
 ## 8. 動作確認の最低ライン
 
