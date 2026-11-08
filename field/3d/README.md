@@ -467,3 +467,50 @@ pbr.dispose();
 - 同じテクスチャを全InstancedMeshで共有する。ワールドのdisposeは共有テクスチャを破棄せず、生成セット側のdisposeで一度だけ解放する。
 - テクスチャはブロックアウト用の手続き生成であり、完成アートの代替ではない。実際の高品質素材ではアーティスト制作のBase Color / Normal / ORMへ置き換える。
 - iPhone実機でのCanvas生成時間・GPU負荷は未計測。端末負荷が高い場合は解像度128pxまたはPBR生成を無効にして比較する。
+
+
+## 既存フィールド処理との接続ブリッジ
+
+`field-3d-runtime-bridge.js` は、一人称3D表示から既存の迷宮処理を呼び出す薄い接続層。移動・旋回・調べる操作の入口をまとめる。
+
+```js
+import { createField3DRuntimeBridge } from "./field/3d/field-3d-runtime-bridge.js";
+
+const bridge = createField3DRuntimeBridge({
+  getArea: () => fieldArea(),
+  getFieldState: () => fieldState,
+  getTilePixels: () => FIELD_TILE,
+  tryStep: (area, dir, now) => fieldTryStep(area, dir, now),
+  action: () => fieldActionPressed(),
+  snapshotOptions: {
+    isSolidChar: fieldCharSolid,
+    isDoorOpen: fieldDoorOpen,
+    isPuzzleSolved: fieldPuzzleSolved,
+    getObjectState: object => ({
+      presentationClass: fieldObjectStateClass(object),
+      lootState: object.kind === "chest"
+        ? (fieldState.flags[object.key] ? "opened" : "unopened")
+        : null
+    })
+  }
+});
+
+// 3Dの入力から既存ロジックを呼び出す
+bridge.moveForward();
+bridge.moveBackward();
+bridge.turnLeft();
+bridge.turnRight();
+bridge.interact();
+
+// 描画ループから毎フレーム取得する（状態を変更しない）
+const snapshot = bridge.getSnapshot();
+const playerPose = bridge.getPlayerPose();
+```
+
+- `moveForward/moveBackward/move` は既存の `fieldTryStep(area, dir, now)` に委譲する。壁・扉の通行判定、1歩1ターン、FOE移動・接触、階段・出口・ゲート、歩数・エンカウントの処理を3D側へ複製しない。
+- `interact` は既存の `fieldActionPressed()` に委譲する。宝箱・採集・NPC・扉・仕掛けのイベント処理は既存コードが担当する。
+- 旋回は既存 `fieldState.dir` のみを90度変更し、歩数・FOEターンを進めない。向きの角度は3Dカメラ座標系（上=0、右=-π/2、下=π、左=π/2）に合わせる。
+- `getPlayerPose()` は既存の `fieldState.view` があれば補間中の表示座標を読み、なければ論理座標を読む。位置やセーブデータは書き換えない。
+- `snapshotOptions` には既存の読み取り専用関数を渡す。特に `fieldCharSolid` を省略すると、文字グリッドの既定判定にフォールバックするため、本編接続時は実関数を渡す。
+- このブリッジは本編HTMLへの読み込み登録やThree.jsレンダラーの組み込みまでは行わない。既存の2D画面を残したまま3D画面を切り替える統合UIは次工程。
+- `prototypes/b1-3d-runtime-bridge-test.html` は移動委譲・旋回・向き・ロック・調べる操作を確認する独立テスト。ブラウザで開いて全項目PASSを確認する。これは本編統合テストや実機性能テストの代替ではない。
