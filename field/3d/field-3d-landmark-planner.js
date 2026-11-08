@@ -42,9 +42,11 @@ export function planField3DLandmarks(snapshot, {
     const roll = hash01(cell.tx, cell.ty, seed);
     const toward = adjacent[Math.floor(hash01(cell.tx, cell.ty, seed + 3) * adjacent.length)];
     const position = {
-      x: cell.world.x + toward.dx * scale * 0.54,
+      // Place the root curtain just inside the walkable side of the wall plane.
+      // The slight overlap hides hairline gaps between the root and stone surface.
+      x: cell.world.x + toward.dx * scale * 0.49,
       y: 0,
-      z: cell.world.z + toward.dy * scale * 0.54
+      z: cell.world.z + toward.dy * scale * 0.49
     };
     const rotation = { y: [0, -Math.PI / 2, Math.PI, Math.PI / 2][toward.side] };
     let kind = null;
