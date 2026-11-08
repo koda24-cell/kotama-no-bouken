@@ -1,0 +1,53 @@
+<!doctype html><html><head><meta charset="utf-8"><title>B1F render</title><style>html,body{margin:0;background:#000;overflow:hidden}</style>
+<script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/addons/":"/three/examples/jsm/"}}</script></head><body>
+<script type="module">
+// 素材の確認用レンダリング。実際の GLB を読み込んで描画する（画像は合成ではなく実モデル）。
+// ?f=GLB のパス&az=方位&el=仰角&zoom=倍率&w=&h=
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+const q = new URLSearchParams(location.search);
+const W = +q.get('w') || 960, H = +q.get('h') || 720;
+const r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+r.setSize(W, H); r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = +(q.get('exp') || 1.0);
+r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap; document.body.appendChild(r.domElement);
+const s = new THREE.Scene();
+s.background = new THREE.Color(0x0a1216); s.fog = new THREE.FogExp2(0x0b161b, 0.01);
+const pm = new THREE.PMREMGenerator(r); s.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; s.environmentIntensity = 0.18;
+s.add(new THREE.HemisphereLight(0x6f9fb8, 0x1a1d16, 0.55));
+const key = new THREE.DirectionalLight(0xcfe6ff, 2.4); key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0004; key.shadow.normalBias = 0.02; s.add(key, key.target);
+const rim = new THREE.DirectionalLight(0x58c8ff, 1.6); s.add(rim, rim.target);
+const warm = new THREE.DirectionalLight(0xffc890, 0.35); s.add(warm, warm.target);
+const f = q.get('f');
+const g = await new GLTFLoader().loadAsync(f);
+const o = g.scene; s.add(o);
+let info = { lights: 0 };
+o.traverse((m) => {
+  if (m.isMesh) { m.castShadow = m.receiveShadow = true; }
+  const b1 = m.userData && m.userData.b1;
+  if (b1 && b1.lights) for (const L of b1.lights) { const pl = new THREE.PointLight(L.color, L.intensity * 6, L.range * 1.6, 1.6); pl.position.fromArray(L.pos); m.add(pl); info.lights++; }
+});
+const box = new THREE.Box3().setFromObject(o), c = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
+const R = Math.max(size.x, size.y * 1.1, size.z) * 0.62;
+// 床（暗い石の地面）
+const fl = new THREE.Mesh(new THREE.CircleGeometry(R * 6, 64), new THREE.MeshStandardMaterial({ color: 0x1b2420, roughness: 0.95 }));
+fl.rotation.x = -Math.PI / 2; fl.position.y = Math.min(0, box.min.y) - 0.002; fl.receiveShadow = true; if (q.get('floor') !== '0') s.add(fl);
+const cam = new THREE.PerspectiveCamera(+(q.get('fov') || 32), W / H, 0.05, 800);
+const az = (+(q.get('az') ?? 32)) * Math.PI / 180, el = (+(q.get('el') ?? 18)) * Math.PI / 180;
+const dist = R / Math.tan((cam.fov / 2) * Math.PI / 180) * (+q.get('zoom') || 0.85);
+const tgt = c.clone(); tgt.y = box.min.y + size.y * (+(q.get('ty') || 0.45));
+s.fog.density = +(q.get('fog') || 0.35) / dist;
+cam.position.set(tgt.x + dist * Math.cos(el) * Math.sin(az), tgt.y + dist * Math.sin(el), tgt.z + dist * Math.cos(el) * Math.cos(az)); cam.lookAt(tgt);
+const setL = (L, dir, k) => { L.target.position.copy(c); L.position.copy(c).add(new THREE.Vector3(...dir).normalize().multiplyScalar(R * 4)); };
+setL(key, [Math.sin(az + 0.9) * 0.8, 1.3, Math.cos(az + 0.9) * 0.8]); setL(rim, [-Math.sin(az) , 0.5, -Math.cos(az)]); setL(warm, [Math.sin(az - 1.4), 0.3, Math.cos(az - 1.4)]);
+const sc = key.shadow.camera; sc.left = sc.bottom = -R * 2; sc.right = sc.top = R * 2; sc.near = 0.1; sc.far = R * 10; sc.updateProjectionMatrix();
+const comp = new EffectComposer(r); comp.addPass(new RenderPass(s, cam));
+comp.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), +(q.get('bloom') || 0.4), 0.5, 0.85)); comp.addPass(new OutputPass());
+comp.render();
+let tris = 0; o.traverse((m) => { if (m.isMesh) tris += m.geometry.index.count / 3; });
+window.__info = { ...info, tris, size: size.toArray() }; window.__done = true;
+</script></body></html>

@@ -1,0 +1,46 @@
+<!doctype html><html><head><meta charset="utf-8"><title>B1F asset build</title>
+<script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/addons/":"/three/examples/jsm/"}}</script></head><body>
+<script type="module">
+// B1F 素材の一括生成：各素材を組み立て → 原点を揃える → GLB に書き出す
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { Parts, build } from './lib/geo.js';
+import { makeMaterial } from './lib/tex.js';
+import { ASSETS } from './assets/index.js';
+
+const q = new URLSearchParams(location.search);
+const only = (q.get('only') || '').split(',').filter(Boolean);
+const results = [];
+const exporter = new GLTFExporter();
+for (const [id, a] of Object.entries(ASSETS)) {
+  if (only.length && !only.includes(id)) continue;
+  const t0 = performance.now();
+  try {
+    const P = new Parts(id, a.seed || hashStr(id));
+    a.build(P);
+    const group = build(P, (k) => makeMaterial(k, a.tex || 512));
+    // 原点：既定は「底面の中央」。モジュールなど pivot:'as-built' は組み立てた座標のまま
+    const box = new THREE.Box3().setFromObject(group);
+    if (a.pivot !== 'as-built') {
+      const c = box.getCenter(new THREE.Vector3());
+      const dy = a.pivot === 'ground' ? 0 : -box.min.y;
+      for (const m of group.children) m.geometry.translate(-c.x, dy, -c.z);
+      box.setFromObject(group);
+    }
+    const size = box.getSize(new THREE.Vector3());
+    let tris = 0, verts = 0;
+    group.traverse((m) => { if (m.isMesh) { tris += m.geometry.index ? m.geometry.index.count / 3 : m.geometry.attributes.position.count / 3; verts += m.geometry.attributes.position.count; } });
+    group.userData = { b1: { id, category: a.cat, name_ja: a.name, lights: P.lights, markers: P.markers, unit: 'meter', up: '+Y', front: '+Z', pivot: a.pivot || 'bottom-center' } };
+    const glb = await exporter.parseAsync(group, { binary: true });
+    const b64 = toB64(new Uint8Array(glb));
+    const rec = { id, file: `${a.dir}/${id}.glb`, category: a.cat, name_ja: a.name, desc_ja: a.desc, origin: a.origin || '', status: a.status || 'new', tex: a.tex || 512,
+      size: [size.x, size.y, size.z].map((v) => +v.toFixed(3)), bboxMin: [box.min.x, box.min.y, box.min.z].map((v) => +v.toFixed(3)),
+      tris, verts, materials: group.children.map((m) => m.material.name), lights: P.lights.length, bytes: glb.byteLength, ms: Math.round(performance.now() - t0) };
+    await window.saveFile(rec.file, b64);
+    results.push(rec);
+  } catch (e) { results.push({ id, error: String(e.stack || e) }); }
+}
+window.__results = results; window.__done = true;
+function hashStr(s) { let h = 2166136261; for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; }
+function toB64(u8) { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); }
+</script></body></html>
