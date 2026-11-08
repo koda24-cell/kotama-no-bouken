@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B1F 3D Runtime Bridge Test</title>
+<style>
+body{margin:0;padding:24px;background:#101812;color:#e8efdf;font:15px/1.7 system-ui,sans-serif}
+h1{font-size:20px}#result{white-space:pre-wrap;background:#1d2a20;padding:16px;border-radius:10px}
+.pass{color:#9be0a5}.fail{color:#ff9d91}
+</style>
+</head>
+<body>
+<h1>3D Runtime Bridge 接続テスト</h1>
+<p>既存の移動関数・アクション関数を模したテスト用callbackへ正しく委譲できるか確認します。</p>
+<pre id="result">テスト実行中…</pre>
+<script type="module">
+import { createField3DRuntimeBridge } from "../field/3d/field-3d-runtime-bridge.js";
+
+const output=document.querySelector("#result");
+const checks=[];
+function check(name,condition){checks.push({name,ok:!!condition});}
+const area={n:1,f:0,key:"1-0",w:3,h:3,grid:["###","#.#","###"].map(row=>row.split("")),objects:[],def:{name:"test",theme:"forest"}};
+const fieldState={x:48,y:52,dir:"up",moving:false,lock:false,mapOpen:false,foes:[],explored:{},visible:new Set()};
+const calls={steps:[],actions:0};
+let inputBlocked=false;
+const bridge=createField3DRuntimeBridge({
+ getArea:()=>area,
+ getFieldState:()=>fieldState,
+ getTilePixels:()=>32,
+ isInputBlocked:()=>inputBlocked,
+ tryStep:(a,dir,now)=>{calls.steps.push({area:a,dir,now});return true;},
+ action:()=>{calls.actions++;},
+ snapshotOptions:{isSolidChar:(_area,char)=>char==="#"}
+});
+
+const snapshot=bridge.getSnapshot();
+check("既存グリッドから9セルのsnapshotを生成",snapshot?.cells.length===9);
+check("プレイヤー座標が既存32pxタイルから変換される",bridge.getPlayerPose()?.x===6&&bridge.getPlayerPose()?.z===6);
+check("上向きのカメラ角度が0",bridge.getPlayerPose()?.yaw===0);
+check("前進は既存tryStepへupを渡す",bridge.moveForward()&&calls.steps.at(-1)?.dir==="up");
+check("右旋回は向きだけを変更し、ターン処理を呼ばない",bridge.turnRight()&&fieldState.dir==="right"&&calls.steps.length===1);
+check("右向きカメラ角度は-pi/2",Math.abs(bridge.getPlayerPose().yaw+Math.PI/2)<1e-9);
+check("旋回後の前進は既存tryStepへrightを渡す",bridge.moveForward()&&calls.steps.at(-1)?.dir==="right");
+check("後退は現在方向の反対へ委譲",bridge.moveBackward()&&calls.steps.at(-1)?.dir==="left");
+check("調べる操作は既存actionへ委譲",bridge.interact()&&calls.actions===1);
+fieldState.stepUntil=Number.MAX_SAFE_INTEGER;
+check("歩行アニメーション中は追加移動を拒否",bridge.move("up",100)===false&&calls.steps.length===3);
+check("歩行アニメーション中は旋回も拒否",bridge.turnRight()===false&&fieldState.dir==="right");
+fieldState.stepUntil=0;
+inputBlocked=true;
+check("既存モーダル表示中は入力を拒否",bridge.move("up",100)===false&&calls.steps.length===3);
+inputBlocked=false;
+fieldState.lock=true;
+check("イベント等でlock中は移動を拒否",bridge.moveForward()===false&&calls.steps.length===3);
+check("lock中は調べる操作も拒否",bridge.interact()===false&&calls.actions===1);
+
+const failed=checks.filter(item=>!item.ok);
+output.className=failed.length?"fail":"pass";
+output.textContent=checks.map(item=>`${item.ok?"PASS":"FAIL"}  ${item.name}`).join("\n")
+ + `\n\n結果: ${checks.length-failed.length}/${checks.length} passed`;
+if(failed.length) throw new Error(failed.map(item=>item.name).join(", "));
+</script>
+</body>
+</html>
