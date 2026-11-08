@@ -837,7 +837,7 @@
   "file": "props/sealed_treasure_chest.glb",
   "category": "interact",
   "name_ja": "封印された宝箱",
-  "desc_ja": "幅約1mの木製宝箱。鉄の帯と角金具、丸みのある蓋、錠前に青く光る封印。開閉用に蓋の回転軸を markers に記録（蓋は別メッシュではない）。",
+  "desc_ja": "幅約1mの木製宝箱。鉄の帯と角金具、丸みのある蓋、錠前に青く光る封印。開けた後の見た目は sealed_treasure_chest_open。",
   "origin": "GPT試作40点（名称・用途）を作り直し",
   "status": "new",
   "tex": 512,
@@ -862,7 +862,7 @@
   ],
   "lights": 1,
   "bytes": 525580,
-  "ms": 104
+  "ms": 3841
  },
  "ancient_wooden_door": {
   "id": "ancient_wooden_door",
@@ -1993,5 +1993,163 @@
   "lights": 0,
   "bytes": 576512,
   "ms": 86
+ },
+ "sealed_treasure_chest_open": {
+  "id": "sealed_treasure_chest_open",
+  "file": "props/sealed_treasure_chest_open.glb",
+  "category": "interact",
+  "name_ja": "宝箱（開封後）",
+  "desc_ja": "開けた後の宝箱。蓋が後ろへ開き、封印の光は消えている。ゲームでは開封済みの宝箱をこちらに差し替える。寸法・原点は閉じた宝箱と同じ。",
+  "origin": "Claude 新規",
+  "status": "new",
+  "tex": 512,
+  "size": [
+   1.547,
+   1.189,
+   1.52
+  ],
+  "bboxMin": [
+   -0.773,
+   0,
+   -0.76
+  ],
+  "tris": 1794,
+  "verts": 1044,
+  "materials": [
+   "wood",
+   "wood_dark",
+   "iron",
+   "bronze",
+   "dark_void",
+   "soil"
+  ],
+  "lights": 0,
+  "bytes": 637708,
+  "ms": 4613
+ },
+ "ancient_stone_signpost": {
+  "id": "ancient_stone_signpost",
+  "file": "props/ancient_stone_signpost.glb",
+  "category": "interact",
+  "name_ja": "古い石の道標",
+  "desc_ja": "文字の刻まれた石板の道標（高さ約1.5m）。看板（?）の調べる地点に。刻み文字がかすかに光る。",
+  "origin": "Claude 新規",
+  "status": "new",
+  "tex": 256,
+  "size": [
+   1.107,
+   1.404,
+   0.953
+  ],
+  "bboxMin": [
+   -0.554,
+   0,
+   -0.477
+  ],
+  "tris": 1079,
+  "verts": 843,
+  "materials": [
+   "stone_block",
+   "moss",
+   "stone_pale",
+   "glow_core"
+  ],
+  "lights": 1,
+  "bytes": 155064,
+  "ms": 1421
+ },
+ "npc_woodcutter": {
+  "id": "npc_woodcutter",
+  "file": "props/npc_woodcutter.glb",
+  "category": "npc",
+  "name_ja": "NPC：木こり",
+  "desc_ja": "フードと外套の木こり（高さ約1.75m）。肩に斧、腰に袋。顔はフードの影で見せない（会話の相手の目印）。",
+  "origin": "Claude 新規",
+  "status": "new",
+  "tex": 256,
+  "size": [
+   0.717,
+   1.832,
+   0.725
+  ],
+  "bboxMin": [
+   -0.358,
+   0,
+   -0.363
+  ],
+  "tris": 1032,
+  "verts": 642,
+  "materials": [
+   "cloth_brown",
+   "dark_void",
+   "wood_dark",
+   "iron"
+  ],
+  "lights": 0,
+  "bytes": 101276,
+  "ms": 655
+ },
+ "npc_herb_girl": {
+  "id": "npc_herb_girl",
+  "file": "props/npc_herb_girl.glb",
+  "category": "npc",
+  "name_ja": "NPC：薬草摘み",
+  "desc_ja": "フードの小柄な薬草摘み（高さ約1.45m）。腕に光る薬草の籠。",
+  "origin": "Claude 新規",
+  "status": "new",
+  "tex": 256,
+  "size": [
+   0.597,
+   1.475,
+   0.662
+  ],
+  "bboxMin": [
+   -0.298,
+   0,
+   -0.331
+  ],
+  "tris": 1084,
+  "verts": 701,
+  "materials": [
+   "cloth_green",
+   "dark_void",
+   "wood_dark",
+   "wood",
+   "leaf_glow"
+  ],
+  "lights": 1,
+  "bytes": 150148,
+  "ms": 516
+ },
+ "npc_traveler": {
+  "id": "npc_traveler",
+  "file": "props/npc_traveler.glb",
+  "category": "npc",
+  "name_ja": "NPC：旅人（汎用）",
+  "desc_ja": "フードと外套の旅人（高さ約1.7m）。杖と小さな灯。専用の見た目が無い NPC に使う。",
+  "origin": "Claude 新規",
+  "status": "new",
+  "tex": 256,
+  "size": [
+   0.72,
+   1.907,
+   0.72
+  ],
+  "bboxMin": [
+   -0.36,
+   0,
+   -0.36
+  ],
+  "tris": 1152,
+  "verts": 722,
+  "materials": [
+   "cloth_plain",
+   "dark_void",
+   "wood_dark",
+   "glow_warm"
+  ],
+  "lights": 1,
+  "bytes": 79372,
+  "ms": 215
  }
 }

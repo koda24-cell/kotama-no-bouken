@@ -63,6 +63,7 @@ function fieldBuildDom() {
   fieldState.built = a.key; fieldState.nearKey = ""; fieldState.lastTileKey = "";
   fieldSpawnFoes();
   fieldMiniDirty = true;
+  if (window.KotamaField3D) window.KotamaField3D.build();   // [FIELD-3D] 第1階層の一人称3D表示（field/field-3d-view.js）
 }
 function fieldViewScale() {
   const vp = $("field-viewport"); if (!vp) return 1;
@@ -89,6 +90,7 @@ function fieldRender() {
   fieldRenderFoes();
   const now = performance.now();
   if (fieldMiniDirty || now - fieldMiniTimer > 250) { fieldMiniTimer = now; fieldMiniDirty = false; fieldDrawMinimap(); if (fieldState.mapOpen) fieldDrawFullMap(); }
+  if (window.KotamaField3D) window.KotamaField3D.frame();   // [FIELD-3D]
 }
 
 /* ------------------------------------------------------------

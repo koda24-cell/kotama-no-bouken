@@ -223,14 +223,14 @@ const SURFACES = {
     return { c, h: clamp(0.5 + n * 0.3 - por * 0.15 - crack * 0.3), r: 0.7 };
   },
   // 布（儀式旗）：織り目、色あせ、刺繍の帯、汚れ
-  cloth: ({ seed = 83, tint = 0x1f3a52, trim = 0x9a7a3a } = {}) => (u, v) => {
+  cloth: ({ seed = 83, tint = 0x1f3a52, trim = 0x9a7a3a, plain = false } = {}) => (u, v) => {
     const weave = (Math.sin(u * 512 * Math.PI) * Math.sin(v * 512 * Math.PI)) * 0.5 + 0.5;
     const n = fbm2(u, v, 4, 5, seed) * 0.5 + 0.5;
     const band = smooth(0.0, 0.01, Math.abs(Math.abs(u - 0.5) - 0.4) - 0.02) ;
     const emblemD = Math.hypot(u - 0.5, (v - 0.42) * 1.4);
     const emblem = (1 - smooth(0.17, 0.18, emblemD)) * smooth(0.13, 0.14, emblemD) + (1 - smooth(0.05, 0.06, emblemD));
     let c = mulc(hex(tint), 0.75 + n * 0.45);
-    c = mixc(c, hex(trim), clamp((1 - band) + emblem));
+    if (!plain) c = mixc(c, hex(trim), clamp((1 - band) + emblem));
     c = mixc(c, hex(0x2a2218), smooth(0.55, 0.85, fbm2(u, v, 3, 4, seed + 1) * 0.5 + 0.5) * 0.6 + smooth(0.75, 1, v) * 0.4);
     return { c, h: clamp(0.5 + weave * 0.15 + n * 0.1), r: 0.95 };
   },
@@ -321,6 +321,9 @@ export const MATERIAL_DEFS = {
   soil:         { surf: 'soil', opts: {}, normal: 2.0 },
   bone:         { surf: 'bone', opts: {}, normal: 1.6 },
   cloth:        { surf: 'cloth', opts: {}, normal: 0.8, side: 'double' },
+  cloth_plain:  { surf: 'cloth', opts: { seed: 89, plain: true }, normal: 0.8, side: 'double' },
+  cloth_brown:  { surf: 'cloth', opts: { seed: 85, tint: 0x4a3626, trim: 0x6a5a3a, plain: true }, normal: 0.8, side: 'double' },
+  cloth_green:  { surf: 'cloth', opts: { seed: 87, tint: 0x2f4a32, trim: 0x8a8a5a, plain: true }, normal: 0.8, side: 'double' },
   crystal_cyan: { surf: 'crystal', opts: {}, normal: 1.0, emissive: 1.4 },
   crystal_violet: { surf: 'crystal', opts: { seed: 91, tint: 0x6a4ac8, glow: 0xb08aff }, normal: 1.0, emissive: 1.3 },
   crystal_cursed: { surf: 'crystal', opts: { seed: 93, tint: 0x5a1a3a, glow: 0xff3a6a, k: 1.2 }, normal: 1.0, emissive: 1.3 },
