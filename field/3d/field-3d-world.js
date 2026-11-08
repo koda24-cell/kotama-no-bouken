@@ -40,30 +40,53 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   };
   Object.assign(palette, options.palette || {});
 
-  const floorGeometry = new THREE.PlaneGeometry(scale, scale);
-  floorGeometry.rotateX(-Math.PI / 2);
-  const wallGeometry = new THREE.BoxGeometry(scale, wallHeight, scale);
-  // Vertex colors tint the six box faces by orientation without creating six
-  // materials per wall. Instanced color still provides stable cell variation.
-  addFaceShading(THREE, wallGeometry, options.wallFaceShading);
   const textures = options.proceduralTextures?.maps || options.proceduralTextures || {};
   const stoneMaps = textures.stone || {};
   const dirtMaps = textures.dirt || {};
-  const floorMaterial = new THREE.MeshStandardMaterial({
+  const findAssetMesh = asset => {
+    let found = null;
+    asset?.scene?.traverse?.(node => {
+      if (!found && node.isMesh && node.geometry && node.material && !Array.isArray(node.material)) found = node;
+    });
+    return found;
+  };
+  const environmentAssets = options.environmentAssets || {};
+  const wallAssetMesh = findAssetMesh(environmentAssets.stoneWallA);
+  const stoneFloorAssetMesh = findAssetMesh(environmentAssets.stoneFloorA);
+  const dirtFloorAssetMesh = findAssetMesh(environmentAssets.dirtFloorA);
+
+  const floorGeometry = stoneFloorAssetMesh ? stoneFloorAssetMesh.geometry.clone() : new THREE.PlaneGeometry(scale, scale);
+  if (!stoneFloorAssetMesh) floorGeometry.rotateX(-Math.PI / 2);
+  const dirtGeometry = dirtFloorAssetMesh ? dirtFloorAssetMesh.geometry.clone() : floorGeometry.clone();
+  const wallGeometry = wallAssetMesh ? wallAssetMesh.geometry.clone() : new THREE.BoxGeometry(scale, wallHeight, scale);
+  if (!wallAssetMesh) {
+    // Vertex colors tint the six box faces by orientation without creating six
+    // materials per wall. Instanced color still provides stable cell variation.
+    addFaceShading(THREE, wallGeometry, options.wallFaceShading);
+  }
+
+  const makeAssetMaterial = (mesh, fallback) => {
+    const material = mesh?.material?.clone?.() || fallback();
+    material.color?.set?.(0xffffff);
+    material.vertexColors = true;
+    material.needsUpdate = true;
+    return material;
+  };
+  const floorMaterial = makeAssetMaterial(stoneFloorAssetMesh, () => new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true,
     map: stoneMaps.map || null, normalMap: stoneMaps.normalMap || null,
     roughnessMap: stoneMaps.roughnessMap || null
-  });
-  const dirtFloorMaterial = new THREE.MeshStandardMaterial({
+  }));
+  const dirtFloorMaterial = makeAssetMaterial(dirtFloorAssetMesh, () => new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true,
     map: dirtMaps.map || null, normalMap: dirtMaps.normalMap || null,
     roughnessMap: dirtMaps.roughnessMap || null
-  });
-  const wallMaterial = new THREE.MeshStandardMaterial({
+  }));
+  const wallMaterial = makeAssetMaterial(wallAssetMesh, () => new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: options.wallRoughness ?? 0.88, vertexColors: true,
     map: stoneMaps.map || null, normalMap: stoneMaps.normalMap || null,
     roughnessMap: stoneMaps.roughnessMap || null
-  });
+  }));
 
   const isExplored = cell => !snapshot.explored || !!snapshot.explored[cell.ty * snapshot.area.width + cell.tx];
   // Never render cells the player has not mapped yet. This keeps the first-person
@@ -76,7 +99,7 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     ? new THREE.InstancedMesh(floorGeometry, floorMaterial, stoneCells.length)
     : null;
   const dirtFloorMesh = dirtCells.length
-    ? new THREE.InstancedMesh(floorGeometry, dirtFloorMaterial, dirtCells.length)
+    ? new THREE.InstancedMesh(dirtGeometry, dirtFloorMaterial, dirtCells.length)
     : null;
   const wallMesh = wallCells.length
     ? new THREE.InstancedMesh(wallGeometry, wallMaterial, wallCells.length)
@@ -88,7 +111,8 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     cells.forEach((cell, index) => {
       dummy.position.set(
         cell.world.x,
-        kind === "wall" ? wallHeight / 2 - 0.12 : floorY,
+        kind === "wall" ? (wallAssetMesh ? 0 : wallHeight / 2 - 0.12) :
+          (kind === "floor" && stoneFloorAssetMesh) || (kind === "dirt" && dirtFloorAssetMesh) ? 0 : floorY,
         cell.world.z
       );
       dummy.updateMatrix();
@@ -97,8 +121,12 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
       // Stable coordinate hash avoids flickering or nondeterministic map colors.
       const hash = Math.abs(Math.sin((cell.tx + 17) * 127.1 + (cell.ty + 31) * 311.7));
       const variation = kind === "wall" ? 0.88 + hash * 0.18 : 0.94 + hash * 0.10;
-      const instanceColor = new THREE.Color(palette[colorKey] ?? palette.floor);
-      instanceColor.multiplyScalar(variation);
+      const usesAuthoredAsset = kind === "wall" ? !!wallAssetMesh :
+        kind === "dirt" ? !!dirtFloorAssetMesh : !!stoneFloorAssetMesh;
+      const instanceColor = usesAuthoredAsset
+        ? new THREE.Color(0xffffff)
+        : new THREE.Color(palette[colorKey] ?? palette.floor);
+      instanceColor.multiplyScalar(usesAuthoredAsset ? 0.96 + hash * 0.08 : variation);
       mesh.setColorAt(index, instanceColor);
     });
     mesh.instanceMatrix.needsUpdate = true;
@@ -109,7 +137,7 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   }
 
   placeInstances(floorMesh, stoneCells, "floor");
-  placeInstances(dirtFloorMesh, dirtCells, "floor");
+  placeInstances(dirtFloorMesh, dirtCells, "dirt");
   placeInstances(wallMesh, wallCells, "wall");
 
   const baseGeometry = new THREE.BoxGeometry(snapshot.area.worldWidth, 0.2, snapshot.area.worldDepth);
@@ -122,7 +150,7 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   group.add(base);
 
   group.userData.kotama3d = {
-    floorMesh, dirtFloorMesh, wallMesh, floorGeometry, wallGeometry,
+    floorMesh, dirtFloorMesh, wallMesh, floorGeometry, dirtGeometry, wallGeometry,
     floorMaterial, dirtFloorMaterial, wallMaterial, base
   };
 
