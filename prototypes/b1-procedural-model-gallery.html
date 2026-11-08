@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>B1F Procedural Model Gallery</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#101713;color:#e7eee8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0%,#263b2d,#101713 65%);min-height:100vh}
+header{padding:22px 18px 12px;max-width:1200px;margin:auto}h1{font-size:clamp(20px,4vw,30px);margin:0 0 6px}p{color:#b7c6b9;margin:0;font-size:13px}
+#status{padding:8px 18px;color:#a8c6ad;font-size:12px;max-width:1200px;margin:auto}
+main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;padding:12px 18px 30px;max-width:1200px;margin:auto}
+.card{background:linear-gradient(155deg,#24332a,#151e19);border:1px solid #405345;border-radius:12px;overflow:hidden;min-width:0}
+canvas{display:block;width:100%;height:240px;touch-action:pan-y}
+.name{padding:10px 12px 12px;border-top:1px solid #405345;font-size:14px;font-weight:650}
+.name small{display:block;color:#a9b8aa;font-weight:400;font-size:11px;margin-top:3px}
+footer{padding:0 18px 24px;color:#87998b;font-size:11px;max-width:1200px;margin:auto}
+</style>
+</head>
+<body>
+<header><h1>B1F｜遺跡・自然物 3Dモデルギャラリー</h1><p>高品質優先のプロシージャル試作。ドラッグ/スワイプで各モデルを回転できます。</p></header>
+<div id="status">Three.jsを読み込み中…</div>
+<main id="gallery"></main>
+<footer>このページは素材確認用の独立プロトタイプです。本編のマップ・当たり判定・セーブデータには接続しません。表示は実GLBではなく、Three.jsで生成した仮モデルです。</footer>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+import { createField3DProceduralModel, getField3DProceduralModelKinds } from "../field/3d/field-3d-procedural-models.js";
+const gallery=document.querySelector("#gallery"),status=document.querySelector("#status");
+const labels={brokenColumn:["崩れた石柱","欠けた柱頭・石の段差・苔"],ancientArch:["古代アーチ","組石のアーチ・継ぎ目・苔"],monolith:["古代の石碑","刻印溝・発光紋様"],rootCurtain:["垂れ下がる古木根","太さの異なる根・苔"],canopy:["樹海の樹冠","複数の葉塊で構成"],chest:["古びた宝箱","木箱・鉄帯・金具"],saveLamp:["樹海の灯火","石台・金属支柱・発光結晶"],gather:["採集結晶","結晶群・苔むした台座"],crystal:["発光結晶群","大小の結晶・発光材質"]};
+const scenes=[];
+function makeCard(kind,index){
+ const card=document.createElement("section");card.className="card";const canvas=document.createElement("canvas");const caption=document.createElement("div");caption.className="name";caption.textContent=labels[kind][0];const small=document.createElement("small");small.textContent=labels[kind][1];caption.append(small);card.append(canvas,caption);gallery.append(card);
+ const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(card.clientWidth,240,false);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+ const scene=new THREE.Scene();scene.background=null;scene.fog=new THREE.Fog(0x17251c,9,20);
+ const camera=new THREE.PerspectiveCamera(38,card.clientWidth/240,.1,60);camera.position.set(4.2,3.0,5.4);camera.lookAt(0,1.1,0);
+ scene.add(new THREE.HemisphereLight(0xb9d6c2,0x283329,2.0));
+ const key=new THREE.DirectionalLight(0xffe5bd,3.0);key.position.set(-3,7,4);key.castShadow=true;scene.add(key);
+ const rim=new THREE.DirectionalLight(0x75bba2,1.6);rim.position.set(4,3,-4);scene.add(rim);
+ const floor=new THREE.Mesh(new THREE.CircleGeometry(3.3,48),new THREE.MeshStandardMaterial({color:0x27342a,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-.035;floor.receiveShadow=true;scene.add(floor);
+ const model=createField3DProceduralModel(THREE,kind,{detail:0});scene.add(model);
+ const box=new THREE.Box3().setFromObject(model);const size=box.getSize(new THREE.Vector3());const targetHeight=kind==="canopy"?2.6:kind==="ancientArch"?3.3:kind==="monolith"?3.2:2.2;const s=targetHeight/Math.max(size.y,.01);model.scale.setScalar(s);box.setFromObject(model);model.position.y-=box.min.y;
+ let dragging=false,lastX=0,lastY=0;canvas.addEventListener("pointerdown",e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId)});canvas.addEventListener("pointermove",e=>{if(!dragging)return;model.rotation.y+=(e.clientX-lastX)*.012;model.rotation.x=Math.max(-.25,Math.min(.25,model.rotation.x+(e.clientY-lastY)*.004));lastX=e.clientX;lastY=e.clientY});canvas.addEventListener("pointerup",()=>dragging=false);canvas.addEventListener("pointercancel",()=>dragging=false);
+ scenes.push({renderer,scene,camera,model,canvas,card});
+}
+for(const kind of getField3DProceduralModelKinds())makeCard(kind);
+function resize(){for(const item of scenes){const w=item.card.clientWidth;item.renderer.setSize(w,240,false);item.camera.aspect=w/240;item.camera.updateProjectionMatrix()}}
+window.addEventListener("resize",resize);
+function animate(){requestAnimationFrame(animate);for(const item of scenes){if(!item.canvas.matches(":hover")&&!item.canvas.hasPointerCapture?.(0))item.model.rotation.y+=.0015;item.renderer.render(item.scene,item.camera)}}animate();
+status.textContent="9種類の試作モデルを表示中。各カードをドラッグして形状を確認できます。";
+</script>
+</body>
+</html>
