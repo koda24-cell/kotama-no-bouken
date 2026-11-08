@@ -1687,6 +1687,17 @@ function showHitEffect(kind="slash",targetNode=null){
   const host=targetNode?.isConnected?targetNode:(display.closest(".battle-arena")||display);
   if(host===targetNode){fx.classList.add("hit-effect-local");}
   host.appendChild(fx);
+  const arena=display.closest(".battle-arena")||display;
+  const heavy=safeKind==="samurai"||safeKind==="flame"||safeKind==="lightning";
+  const shakeClass=heavy?"vfx-impact-heavy":"vfx-impact";
+  arena.classList.remove("vfx-impact","vfx-impact-heavy");void arena.offsetWidth;arena.classList.add(shakeClass);
+  clearTimeout(arena._vfxImpactTimer);
+  arena._vfxImpactTimer=setTimeout(()=>arena.classList.remove("vfx-impact","vfx-impact-heavy"),battleDelayMs(360));
+  if(targetNode?.isConnected){
+    targetNode.classList.remove("vfx-target-impact");void targetNode.offsetWidth;targetNode.classList.add("vfx-target-impact");
+    clearTimeout(targetNode._vfxTargetTimer);
+    targetNode._vfxTargetTimer=setTimeout(()=>targetNode.classList.remove("vfx-target-impact"),battleDelayMs(420));
+  }
   const duration=safeKind==="samurai"?760:safeKind==="lightning"?820:safeKind==="flame"?900:680;
   setTimeout(()=>fx.remove(),battleDelayMs(duration));
 }
