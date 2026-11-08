@@ -99,15 +99,27 @@ export function createField3DProceduralModel(THREE, kind, options = {}) {
       box([0.20, 0.035, 0.02], moss, [-0.28 + i * 0.18, 0.48 + i * 0.06, 0.30], [0, 0, -0.18]);
     }
   } else if (kind === "rootCurtain" || kind === "roots") {
-    for (let i = 0; i < (detail === 0 ? 13 : detail === 1 ? 9 : 6); i++) {
-      const x = -1.15 + i * (2.3 / (detail === 0 ? 12 : detail === 1 ? 8 : 5));
-      const length = 1.15 + ((i * 7) % 5) * 0.24;
-      cylinder(0.025, 0.075 + (i % 3) * 0.018, length, 5, root,
-        [x, 2.0 - length / 2, Math.sin(i * 1.7) * 0.10],
+    const rootCount = detail === 0 ? 13 : detail === 1 ? 9 : 6;
+    for (let i = 0; i < rootCount; i++) {
+      const x = -1.15 + i * (2.3 / (rootCount - 1));
+      // Long hanging roots now reach the floor instead of stopping midway up
+      // the wall. The upper ends stay irregular to avoid a fence-like silhouette.
+      const length = 1.85 + ((i * 7) % 5) * 0.20;
+      const sway = Math.sin(i * 1.7) * 0.12;
+      cylinder(0.022, 0.078 + (i % 3) * 0.018, length, detail === 0 ? 7 : 5, root,
+        [x, 2.48 - length / 2, sway],
         [0.08 * Math.sin(i), 0, 0.10 * Math.cos(i * 1.3)]);
+      // Fine lateral roots spread across the stone joint at floor level,
+      // visually fastening the curtain to the wall/floor intersection.
+      if (i % 2 === 0) {
+        const direction = i % 4 === 0 ? -1 : 1;
+        cylinder(0.012, 0.052, 0.58, 5, root,
+          [x + direction * 0.20, 0.22, sway + 0.08],
+          [0, 0, direction * 0.62]);
+      }
       if (i % 3 === 0) {
-        cylinder(0.012, 0.035, 0.62, 5, moss,
-          [x + 0.12, 1.35, 0.08], [0, 0, 0.38]);
+        cylinder(0.012, 0.035, 0.48, 5, moss,
+          [x + 0.12, 0.34, 0.10], [0, 0, 0.38]);
       }
     }
   } else if (kind === "canopy") {
