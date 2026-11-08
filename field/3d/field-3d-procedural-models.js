@@ -151,6 +151,49 @@ export function createField3DProceduralModel(THREE, kind, options = {}) {
     for (let i = 0; i < 3; i++) {
       box([0.12, 0.08, 0.12], moss, [-0.28 + i * 0.26, 0.22, 0.18]);
     }
+  } else if (kind === "door" || kind === "ancientDoor") {
+    // Heavy timber door with stone surround, iron straps and a central ring handle.
+    box([1.62, 2.55, 0.24], dark, [0, 1.28, 0]);
+    box([1.42, 2.34, 0.16], stone, [0, 1.23, 0.03]);
+    box([1.18, 2.02, 0.12], wood, [0, 1.18, 0.13]);
+    for (let i = 0; i < 5; i++) box([0.19, 1.94, 0.035], i % 2 ? wood : dark, [-0.40 + i * 0.20, 1.18, 0.205]);
+    for (const y of [0.48, 1.55, 2.10]) box([1.30, 0.09, 0.07], iron, [0, y, 0.25]);
+    box([0.18, 0.32, 0.08], edge, [0.30, 1.18, 0.28]);
+    mesh(new THREE.TorusGeometry(0.10, 0.025, 6, sides), goldMaterial(), [0.30, 1.05, 0.34], [1, 1, 0.35], [Math.PI / 2, 0, 0]);
+  } else if (kind === "gate") {
+    box([1.75, 2.45, 0.18], dark, [0, 1.22, 0]);
+    for (let i = 0; i < 7; i++) {
+      const x = -0.72 + i * 0.24;
+      cylinder(0.045, 0.055, 2.30, 8, iron, [x, 1.18, 0.12]);
+      mesh(new THREE.ConeGeometry(0.09, 0.20, 6), edge, [x, 2.42, 0.12]);
+    }
+    for (const y of [0.38, 1.95]) box([1.70, 0.13, 0.20], edge, [0, y, 0.12]);
+    box([0.22, 0.32, 0.22], goldMaterial(), [0, 1.12, 0.25]);
+  } else if (kind === "stairs") {
+    for (let i = 0; i < 6; i++) {
+      const depth = 0.42, height = 0.20;
+      box([2.0, height, depth], i % 2 ? stone : edge,
+        [0, height * (i + 0.5), 1.05 - i * depth]);
+    }
+    box([2.15, 0.18, 0.34], dark, [0, 0.09, 1.30]);
+    box([2.15, 0.18, 0.34], dark, [0, 1.29, -1.22]);
+    for (const x of [-0.92, 0.92]) {
+      cylinder(0.10, 0.14, 1.20, sides, moss, [x, 0.68, -0.02]);
+    }
+  } else if (kind === "sign") {
+    cylinder(0.08, 0.11, 1.35, 8, wood, [0, 0.68, 0]);
+    box([1.05, 0.48, 0.12], wood, [0, 1.24, 0]);
+    box([0.88, 0.30, 0.035], edge, [0, 1.24, 0.075]);
+    for (let i = 0; i < 3; i++) box([0.38 - i * 0.06, 0.025, 0.02], dark, [0, 1.31 - i * 0.08, 0.10]);
+    box([0.22, 0.12, 0.16], iron, [0, 0.12, 0]);
+  } else if (kind === "wallTorch") {
+    box([0.30, 0.42, 0.12], dark, [0, 0.22, 0]);
+    cylinder(0.045, 0.075, 0.72, 7, iron, [0, 0.70, 0.08], [0.18, 0, 0]);
+    mesh(new THREE.IcosahedronGeometry(0.20, detail === 0 ? 1 : 0), glow, [0, 1.16, 0.08], [0.8, 1.35, 0.8]);
+    for (let i = 0; i < 3; i++) {
+      const a = i * Math.PI * 2 / 3;
+      cylinder(0.018, 0.035, 0.36, 5, iron, [Math.cos(a) * 0.13, 1.08, 0.08 + Math.sin(a) * 0.13]);
+    }
   } else {
     // Unknown kinds remain visible as a stone marker rather than silently disappearing.
     box([0.8, 1.4, 0.8], stone, [0, 0.7, 0]);
@@ -165,6 +208,6 @@ export function createField3DProceduralModel(THREE, kind, options = {}) {
 export function getField3DProceduralModelKinds() {
   return Object.freeze([
     "brokenColumn", "ancientArch", "monolith", "rootCurtain", "canopy",
-    "chest", "saveLamp", "gather", "crystal"
+    "chest", "saveLamp", "gather", "crystal", "door", "gate", "stairs", "sign", "wallTorch"
   ]);
 }
