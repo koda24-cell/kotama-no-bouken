@@ -65,10 +65,23 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     addFaceShading(THREE, wallGeometry, options.wallFaceShading);
   }
 
-  const makeAssetMaterial = (mesh, fallback) => {
+  const makeAssetMaterial = (mesh, fallback, maps, roughness) => {
     const material = mesh?.material?.clone?.() || fallback();
     material.color?.set?.(0xffffff);
     material.vertexColors = true;
+
+    // Authored GLB materials take the same procedural PBR maps as the fallback
+    // geometry. Apply only when UVs exist; otherwise preserve the authored color.
+    if (mesh?.geometry?.getAttribute?.("uv") && maps) {
+      if (maps.map) material.map = maps.map;
+      if (maps.normalMap) {
+        material.normalMap = maps.normalMap;
+        material.normalScale?.set?.(0.42, 0.42);
+      }
+      if (maps.roughnessMap) material.roughnessMap = maps.roughnessMap;
+      if ("roughness" in material) material.roughness = roughness;
+      if ("metalness" in material) material.metalness = 0.025;
+    }
     material.needsUpdate = true;
     return material;
   };
@@ -76,17 +89,17 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true,
     map: stoneMaps.map || null, normalMap: stoneMaps.normalMap || null,
     roughnessMap: stoneMaps.roughnessMap || null
-  }));
+  }), stoneMaps, options.floorRoughness ?? 0.96);
   const dirtFloorMaterial = makeAssetMaterial(dirtFloorAssetMesh, () => new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true,
     map: dirtMaps.map || null, normalMap: dirtMaps.normalMap || null,
     roughnessMap: dirtMaps.roughnessMap || null
-  }));
+  }), dirtMaps, options.floorRoughness ?? 0.98);
   const wallMaterial = makeAssetMaterial(wallAssetMesh, () => new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: options.wallRoughness ?? 0.88, vertexColors: true,
     map: stoneMaps.map || null, normalMap: stoneMaps.normalMap || null,
     roughnessMap: stoneMaps.roughnessMap || null
-  }));
+  }), stoneMaps, options.wallRoughness ?? 0.92);
 
   const isExplored = cell => !snapshot.explored || !!snapshot.explored[cell.ty * snapshot.area.width + cell.tx];
   // Never render cells the player has not mapped yet. This keeps the first-person
