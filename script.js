@@ -1677,8 +1677,18 @@ async function executeTurn(){
     tutorialState.phase="battle-union-command";tutorialOverlay("ユニオンスキルを使おう","コタマのユニオンゲージが満タンになったよ。通常行動とは異なる特別な技を使ってみよう。");tutorialHighlight("#battle-commands .union-command");tutorialSave();
   }
 }
-function showHitEffect(kind="slash"){
-  const display=displayEnemyNode();if(!display)return;const fx=document.createElement("div");fx.className=`hit-effect hit-${kind}`;fx.textContent=kind==="slash"?"╱╲":kind==="samurai"?"斬":kind==="flame"?"🔥":"✦";display.appendChild(fx);setTimeout(()=>fx.remove(),battleDelayMs(kind==="samurai"?360:520));
+function showHitEffect(kind="slash",targetNode=null){
+  const display=displayEnemyNode();if(!display)return;
+  const safeKind=["slash","samurai","flame","lightning","magic"].includes(kind)?kind:"magic";
+  const fx=document.createElement("div");
+  fx.className=`hit-effect hit-${safeKind}`;
+  fx.setAttribute("aria-hidden","true");
+  fx.innerHTML='<i class="hit-core"></i><i class="hit-ring"></i><i class="hit-particle p1"></i><i class="hit-particle p2"></i><i class="hit-particle p3"></i><i class="hit-particle p4"></i><i class="hit-particle p5"></i>';
+  const host=targetNode?.isConnected?targetNode:(display.closest(".battle-arena")||display);
+  if(host===targetNode){fx.classList.add("hit-effect-local");}
+  host.appendChild(fx);
+  const duration=safeKind==="samurai"?760:safeKind==="lightning"?820:safeKind==="flame"?900:680;
+  setTimeout(()=>fx.remove(),battleDelayMs(duration));
 }
 // 魔術師の魔法は、対象ごとに演出→ダメージ→HP表示更新の順で処理する。
 async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
@@ -1690,7 +1700,7 @@ async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
     const display=displayEnemyNode();
     if(beforeNode){beforeNode.classList.remove("magic-target-hit");void beforeNode.offsetWidth;beforeNode.classList.add("magic-target-hit");}
     else if(display){display.classList.remove("magic-target-active");void display.offsetWidth;display.classList.add("magic-target-active");}
-    showHitEffect(skill.type==="fire"||skill.type==="level-flare"?"flame":"magic");
+    showHitEffect(skill.type==="fire"||skill.type==="level-flare"||skill.element==="炎"?"flame":skill.element==="雷"||skill.type==="thunder"||skill.type==="level-lightning-all"||skill.type==="level-lightning-single"?"lightning":"magic",beforeNode);
     await wait(140);
     const value=applyDamageToEnemyTarget(enemy,target,damage);
     total+=value;
@@ -1749,14 +1759,14 @@ const stats=effectiveStats(actor);if(actor.id==="mage"&&mageCompressionStacks.ma
       const defense=Number.isFinite(target.ref.defense)?target.ref.defense:enemy.defense;
       const d=applyWeaponAttributeDamage(enemy,Math.floor(calcPhysical(effectiveAttackPower(actor),defense)*(1+treeBonus(actor.id,"sp"))),actor);
       const dealt=applyDamageToEnemyTarget(enemy,target,d);if(dealt>0)addBreakDamage(enemy,"sp",getWeaponPhysicalElement(actor),actor);total+=dealt;
-      if(dealt>0){actualHits++;showHitEffect("samurai");flashEnemyDamage();renderBattle();await wait(110);}
+      if(dealt>0){actualHits++;showHitEffect("samurai",target.ref?.id?document.querySelector(`[data-enemy-id="${target.ref.id}"]`):null);flashEnemyDamage();renderBattle();await wait(110);}
     }
     chargeGauge(actor);
     pushLog(`${actor.name}の乱れ斬り！ 生存している敵からランダムに選んだ${actualHits}体へ斬撃！ 合計${total}ダメージ！`);
     if(total>0)combatNumber(displayEnemyNode(),`-${total}`,"damage");
     sound("damage",true);return;
   }
-  if(skill.type==="pierce"){const d=applyWeaponAttributeDamage(enemy,Math.max(1,Math.floor(effectiveAttackPower(actor)*1.8*(1+treeBonus(actor.id,"normal")))),actor);beginEnemyDamagePreview(enemy);const chosen=a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):livingEnemyTargets(enemy)[0];const dealt=chosen?applyDamageToEnemyTarget(enemy,chosen,d):applyDamageToEnemy(enemy,d);let second=0;if(equipment.samurai?.katana1&&equipment.samurai?.katana2&&dealt>0&&enemyHpTotal(enemy)>0){const next=(a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):null)||livingEnemyTargets(enemy)[0];if(next)second=applyDamageToEnemyTarget(enemy,next,d);}if(dealt+second>0)addBreakDamage(enemy,"sp",getWeaponPhysicalElement(actor),actor);chargeGauge(actor);pushLog(`${actor.name}の兜割！ 防御を無視して${dealt}${second?`＋${second}`:""}ダメージ！`);combatNumber(displayEnemyNode(),`-${dealt+second}`,"damage");showHitEffect("slash");flashEnemyDamage();sound("damage",true);return;}
+  if(skill.type==="pierce"){const d=applyWeaponAttributeDamage(enemy,Math.max(1,Math.floor(effectiveAttackPower(actor)*1.8*(1+treeBonus(actor.id,"normal")))),actor);beginEnemyDamagePreview(enemy);const chosen=a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):livingEnemyTargets(enemy)[0];const dealt=chosen?applyDamageToEnemyTarget(enemy,chosen,d):applyDamageToEnemy(enemy,d);let second=0;if(equipment.samurai?.katana1&&equipment.samurai?.katana2&&dealt>0&&enemyHpTotal(enemy)>0){const next=(a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):null)||livingEnemyTargets(enemy)[0];if(next)second=applyDamageToEnemyTarget(enemy,next,d);}if(dealt+second>0)addBreakDamage(enemy,"sp",getWeaponPhysicalElement(actor),actor);chargeGauge(actor);pushLog(`${actor.name}の兜割！ 防御を無視して${dealt}${second?`＋${second}`:""}ダメージ！`);combatNumber(displayEnemyNode(),`-${dealt+second}`,"damage");showHitEffect("slash",chosen?.ref?.id?document.querySelector(`[data-enemy-id="${chosen.ref.id}"]`):null);flashEnemyDamage();sound("damage",true);return;}
   if(skill.type==="spAttack"||skill.type==="charge"){let d=calcSp(effectiveSpAttackPower(actor),Number.isFinite(enemy.spDefense)?enemy.spDefense:Math.floor(enemy.defense/2));if(actor.id==="mage")d=Math.floor(d*BATTLE_RULES.passives.mage.spDamage);d=Math.floor(d*(1+treeBonus(actor.id,"sp")));d=Math.floor(d*(1+treeBonus(actor.id,"element")));d=skill.type==="charge"?applyWeaponAttributeDamage(enemy,d,actor):applyElementalDamage(enemy,d,skill.element);if(actor.id!=="mage"||skill.type==="charge")beginEnemyDamagePreview(enemy);if(skill.target==="allEnemies"){let total=0;for(const t of livingEnemyTargets(enemy)){const v=applyDamageToEnemyTarget(enemy,t,d);total+=v;if(v>0)addBreakDamage(enemy,"sp",skill.type==="charge"?getWeaponPhysicalElement(actor):skill.element,actor);if(enemyHpTotal(enemy)<=0)break;}chargeGauge(actor);pushLog(`${actor.name}の${skill.name}！ 敵全体に${total}ダメージ。`);combatNumber(displayEnemyNode(),`-${total}`,"damage");showHitEffect("magic");flashEnemyDamage();sound("damage",true);return;}const chosen=a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):livingEnemyTargets(enemy)[0];const dealt=chosen?applyDamageToEnemyTarget(enemy,chosen,d):applyDamageToEnemy(enemy,d);let second=0;if(actor.id==="samurai"&&equipment.samurai?.katana1&&equipment.samurai?.katana2&&dealt>0&&enemyHpTotal(enemy)>0){const nextTarget=a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):livingEnemyTargets(enemy)[0];if(nextTarget)second=applyDamageToEnemyTarget(enemy,nextTarget,d);}if(!lastEnemyAttackMissed&&dealt+second>0)addBreakDamage(enemy,"sp",skill.type==="charge"?getWeaponPhysicalElement(actor):skill.element,actor);chargeGauge(actor);if(lastEnemyAttackMissed){pushLog(`${enemy.name}は攻撃を回避した！`);}else{pushLog(`${actor.name}の${skill.name}！ ${enemy.name}に${dealt}${second?`＋${second}`:""}ダメージ。`);combatNumber(displayEnemyNode(),`-${dealt+second}`,"damage");showHitEffect("magic");flashEnemyDamage();}sound("damage",true);return;}
   if(["fire","ice","thunder"].includes(skill.type)){
     let d=calcSp(effectiveSpAttackPower(actor),Number.isFinite(enemy.spDefense)?enemy.spDefense:Math.floor(enemy.defense/2));
