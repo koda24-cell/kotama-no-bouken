@@ -664,10 +664,10 @@ function extWeightedPick(list) {
   return list[list.length - 1];
 }
 function extPickPartyTarget(alive, act) {
-  const taunt = alive.find(c => c.id === battleState.tauntTarget);
-  if (taunt) return taunt;
   const adminTarget=alive.find(c=>c.id===window.kotamaAdminBattleSettings?.enemyTargetId);
   if(adminTarget)return adminTarget;
+  const taunt = alive.find(c => c.id === battleState.tauntTarget);
+  if (taunt) return taunt;
   if (act.target === "rear") { const rear = alive.filter(c => EXT_REAR_IDS.includes(c.id)); if (rear.length) return rear[Math.floor(Math.random() * rear.length)]; }
   return alive[Math.floor(Math.random() * alive.length)];
 }
