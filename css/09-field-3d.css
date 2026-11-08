@@ -1,0 +1,13 @@
+/* First-person 3D exploration layer. 2D remains the default and fallback. */
+.field-mode-switch{display:flex;gap:6px;margin:0 0 6px;justify-content:flex-end}
+.field-mode-switch button{padding:5px 12px;border:1px solid #78917f;border-radius:5px;background:#101d19;color:#d8e8d8;font-size:12px}
+.field-mode-switch button[aria-pressed="true"]{background:#365b43;border-color:#b5d8a6;color:#fff}
+.field-3d-viewport{position:relative;height:min(58vh,560px);min-height:300px;border:2px solid #385545;border-radius:8px;background:#07110e;overflow:hidden}
+.field-3d-viewport[hidden]{display:none}
+.field-3d-canvas{position:absolute;inset:0}
+.field-3d-canvas canvas{display:block;width:100%;height:100%;touch-action:none}
+.field-3d-status{position:absolute;left:10px;top:8px;z-index:2;padding:4px 8px;border-radius:4px;background:#07110dcc;color:#d6e8c3;font-size:11px;pointer-events:none}
+.field-3d-controls{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;z-index:3}
+.field-3d-controls button{min-width:44px;min-height:42px;border:1px solid #a6c59a;border-radius:7px;background:#10251ddf;color:#fff;font-size:18px;touch-action:manipulation}
+.field-3d-controls button[data-3d-action="interact"]{font-size:13px;padding:0 12px}
+@media(max-width:560px){.field-3d-viewport{height:min(58vh,560px);min-height:280px}.field-3d-controls{gap:5px}.field-3d-controls button{min-width:40px;min-height:40px}}
