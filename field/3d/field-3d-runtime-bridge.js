@@ -96,9 +96,10 @@ export function createField3DRuntimeBridge({
     return !!tryStep(current.area, normalizeDir(dir), now);
   }
 
-  function turn(quarterTurns) {
+  function turn(quarterTurns, now = (typeof performance !== "undefined" ? performance.now() : Date.now())) {
     const current = read();
     if (!current || current.fieldState.lock || current.fieldState.mapOpen || isInputBlocked()) return false;
+    if (Number(current.fieldState.stepUntil) > now) return false;
     const amount = Math.trunc(Number(quarterTurns) || 0);
     if (!amount) return false;
     const index = DIR_ORDER.indexOf(normalizeDir(current.fieldState.dir));
