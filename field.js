@@ -187,6 +187,7 @@ window.__kotamaField3D = Object.freeze({
   getArea: () => fieldArea(),
   getFieldState: () => fieldState,
   getTilePixels: () => FIELD_TILE,
+  isSolidChar: (area, char) => fieldCharSolid(area, char),
   isInputBlocked: () => fieldState.lock || fieldState.mapOpen || !!fieldDialogAdvance || !!fieldChoiceState ||
     [...document.querySelectorAll(".game-dialog, #story-event, #tutorial-overlay")].some(el => !el.hidden) ||
     !document.getElementById("list-menu")?.hidden,
