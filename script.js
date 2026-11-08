@@ -1028,8 +1028,11 @@ async function beginStageCore(){
   extResetBattle();// [EXT]
   const resumedBattle=!!pendingBattleResumeEnemy;
   battleState.enemy=pendingBattleResumeEnemy||(battleState.encounterMode&&typeof fieldCreateEnemy==="function"?fieldCreateEnemy(battleState.fieldEnemyGroup||battleState.fieldEnemyId):createEnemy(battleState.stage));// [FIELD] 雑魚戦はフィールドの敵
-  pendingBattleResumeEnemy=null;registerEncounter(battleState.enemy.compendiumAs||battleState.enemy.name);if(typeof compendiumRecordEncounter==="function")compendiumRecordEncounter(battleState.enemy,resumedBattle);// [COMPENDIUM]
-  if(!resumedBattle){const encounterName=battleState.enemy.compendiumAs||battleState.enemy.name;enemyEncounterCounts[encounterName]=(Number(enemyEncounterCounts[encounterName])||0)+1;unlockBgmForEncounter(encounterName,battleState.stage);}
+  pendingBattleResumeEnemy=null;
+  const encounterUnits=battleState.enemy._mixedEncounter?battleState.enemy.members:[battleState.enemy];
+  for(const unit of encounterUnits){registerEncounter(unit.compendiumAs||unit.name);if(typeof compendiumRecordEncounter==="function")compendiumRecordEncounter(unit,resumedBattle);}
+  // [COMPENDIUM] 混成編成は敵個体ごとに図鑑へ記録
+  if(!resumedBattle){for(const unit of encounterUnits){const encounterName=unit.compendiumAs||unit.name;enemyEncounterCounts[encounterName]=(Number(enemyEncounterCounts[encounterName])||0)+1;unlockBgmForEncounter(encounterName,battleState.stage);}}
   battleEmit("start",{partyIds:(state.party||[]).slice(),stage:battleState.stage,enemyName:battleState.enemy.name,resumed:resumedBattle});// [EVT]
   stageEntered[battleState.stage]=true;
   const breakMax=BATTLE_RULES.bosses[battleState.enemy.name]?.break||0;if(breakMax){battleState.enemy._breakMax=breakMax;battleState.enemy._breakCurrent=breakMax;}goblinCharging=false;goblinTeamAttackUsed=false;goblinTeamAttackPending=false;burnedTurns={};specialOmenShown={};battleState.wolfEvasionTurns=0;battleState.wolfHalfHpEvasionUsed=false;battleState.wolfLastTargetId=null;battleState.wolfClones=[];battleState.wolfDisplayOrder=[];battleState.wolfCloneTurns=0;battleState.wolfCloneLastTargetId=null;battleState.wolfSplitPending=false;if(battleState.stage===5&&!battleState.encounterMode&&!battleState.bossBgmChoice)battleState.bossBgmChoice=Math.random()<.5?"arc":"overture";
@@ -1903,7 +1906,12 @@ async function enemyTurn(){
   const alive=livingParty();
   if(!alive.length)return;
   if(e._mixedEncounter&&Array.isArray(e.members)){
-  for(const unit of e.members.filter(m=>m.hp>0)){if(!livingParty().length)break;if(unit.ai)await extVariantAction(unit,turn);}
+  for(const unit of e.members.filter(m=>m.hp>0)){
+    if(!livingParty().length)break;
+    if(extEnemyAilmentTurn(unit)){renderBattle();continue;}
+    if(extEnemyParalyzed(unit)){pushEvent(`${unit.name}は麻痺して動けない！`);continue;}
+    if(unit.ai)await extVariantAction(unit,turn);
+  }
   await applyEnemyTurnStatuses();renderBattle();return;
  }
  if(e.ai){await extVariantAction(e,turn);await applyEnemyTurnStatuses();return;}// [EXT] 敵バリエーションの行動
@@ -2025,7 +2033,7 @@ async function finishStage(){
   if(!e)return;
   battleState.stageFinished=true;
   battleState.busy=true;
-  if(typeof compendiumRecordDefeat==="function")compendiumRecordDefeat(e);// [COMPENDIUM] 雑魚戦・FOE戦もここを通る
+  if(typeof compendiumRecordDefeat==="function")if(battleState.encounterMode&&e._mixedEncounter&&Array.isArray(e.members))e.members.forEach(unit=>compendiumRecordDefeat(unit));else compendiumRecordDefeat(e);// [COMPENDIUM] 雑魚戦・FOE戦もここを通る
   if(battleState.encounterMode&&typeof fieldFinishEncounter==="function"){await fieldFinishEncounter(e);return;}// [FIELD] 雑魚戦：ステージクリア・ランク・スキルポイントは発生しない
   await playEnemyDefeatAnimation();
   battleState.lastRewardGold=e.gold;
