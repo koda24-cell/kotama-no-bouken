@@ -12,7 +12,7 @@
 import { buildField3DSnapshot, FIELD_3D_DEFAULTS } from "./field-3d-grid-adapter.js";
 
 const DIR_ORDER = Object.freeze(["up", "right", "down", "left"]);
-const DIR_YAW = Object.freeze({ up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 });
+const DIR_YAW = Object.freeze({ up: 0, right: -Math.PI / 2, down: Math.PI, left: Math.PI / 2 });
 
 function assertFunction(name, value) {
   if (typeof value !== "function") {
