@@ -1,32 +1,51 @@
-.field-screen{display:grid;grid-template-columns:minmax(0,1fr) 184px;grid-template-areas:"hud hud" "viewport map" "pad pad";align-items:start;column-gap:10px;row-gap:8px}
-.field-screen:not(.active){display:none}
-.field-screen>.field-hud{grid-area:hud;min-width:0}
-.field-screen>.field-viewport{grid-area:viewport;width:100%;min-width:0}
-.field-screen>.field-map-rail{grid-area:map}
-.field-screen>.field-pad{grid-area:pad}
-.field-map-rail{box-sizing:border-box;display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:0;padding:9px;border:1px solid #c3a66a88;border-radius:7px;background:linear-gradient(160deg,#111d2c,#080e18);color:#e7e1d0;box-shadow:inset 0 0 0 1px #ffffff0a,0 3px 10px #0008}
-.field-map-rail>strong{color:#f2d88f;font-size:11px;letter-spacing:.16em;text-align:center}
-.field-map-hint{color:#b7c4d1;font-size:9px;line-height:1.4;text-align:center}
-.field-map-rail .field-minimap{display:block;box-sizing:border-box;width:100%!important;max-width:100%;height:auto!important;aspect-ratio:1;padding:5px;border:1px solid #dfc98f;background:#030912;image-rendering:pixelated;cursor:pointer}
-.field-minimap-status{width:100%;padding:5px 2px;border-block:1px solid #c3a66a55;color:#f0e4c4;font-size:9px;line-height:1.55;text-align:center;font-variant-numeric:tabular-nums}
-.field-minimap-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 5px;width:100%;color:#d5dedb;font-size:9px}
-.field-minimap-legend span{display:flex;align-items:center;gap:4px;min-width:0;white-space:nowrap}
-.field-minimap-legend i{display:inline-block;flex:0 0 9px;width:9px;height:9px;border:1px solid #07111c}
-.field-minimap-legend .mini-player{background:#fff;clip-path:polygon(50% 0,100% 100%,50% 78%,0 100%)}
-.field-minimap-legend .mini-stairs{background:#ffd84a;clip-path:polygon(50% 0,100% 100%,0 100%)}
-.field-minimap-legend .mini-chest{background:#ff9a3c;border-radius:1px}
-.field-minimap-legend .mini-gather{background:#3ee07a;border-radius:50%}
-.field-minimap-legend .mini-foe{background:#ffad45;border-radius:50%}
-.field-minimap-legend .mini-chase{background:#ff3030;clip-path:polygon(50% 0,100% 100%,0 100%)}
-@media(max-width:760px){
-.field-screen{grid-template-columns:minmax(0,1fr);grid-template-areas:"hud" "viewport" "map" "pad";gap:7px}
-.field-map-rail{display:grid;grid-template-columns:minmax(104px,30%) minmax(0,1fr);grid-template-areas:"map title" "map hint" "map status" "map legend";grid-template-rows:auto auto auto 1fr;align-items:center;gap:4px 9px;padding:8px}
-.field-map-rail>strong{grid-area:title;align-self:end;text-align:left}
-.field-map-hint{grid-area:hint;text-align:left;align-self:start}
-.field-map-rail .field-minimap{grid-area:map;align-self:center}
-.field-minimap-status{grid-area:status;text-align:left;padding:3px 0;font-size:8px}
-.field-minimap-legend{grid-area:legend;align-self:start;gap:4px 6px;font-size:8px}
-}
-@media(max-width:380px){.field-map-rail{grid-template-columns:minmax(88px,30%) minmax(0,1fr);gap:3px 6px;padding:6px}.field-minimap-legend span{gap:3px}.field-minimap-legend i{flex-basis:8px;width:8px;height:8px}}
-.field-minimap-legend .mini-puzzle{background:#ff8ad8;transform:rotate(45deg);border-radius:1px}
-.field-minimap-legend .mini-secret{background:#63d6dc;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+/* ============================================================
+   css/08-cartography-ui.css — 迷宮の地図まわりの見た目（周囲地図の枠・状態・凡例の記号）
+   ・配置（スマホは探索画面に重ねる／PC は右の列）は css/10-ui-field.css。
+   ・[UI Phase 2] 以前ここにあった「地図レール」のレイアウトと .field-minimap{width:100%!important} は削除した。
+     css/07 の .field-minimap{position:absolute} と重なり、キャンバスが .field-screen を基準に全面へ広がる原因だった。
+     キャンバスの大きさは fieldDrawMap が「マス数×1マスの大きさ」で決める（拡大・縮小しない）。
+   ============================================================ */
+.field-map-rail{box-sizing:border-box;min-width:0;color:#e7e1d0}
+.field-map-title{display:none;color:#f2d88f;font-size:11px;letter-spacing:.16em}
+.field-map-hint{display:block;margin-top:2px;color:#b7c4d1;font-size:9px;font-weight:600;letter-spacing:0}
+.field-minimap-box{position:relative;box-sizing:border-box;width:max-content;padding:3px;border:1px solid #dfc98fa0;border-radius:6px;background:#030912b8;box-shadow:0 2px 8px #0009}
+.field-minimap-box .field-minimap{border-radius:2px}
+.field-legend-button{position:absolute;left:-26px;top:0;width:24px;height:24px;min-width:0;min-height:0!important;padding:0;border:1px solid #dfc98fa0;border-radius:50%;background:#030912d0;color:#f2d88f;font-size:12px;font-weight:700;line-height:1}
+.field-legend-button[aria-expanded="true"]{background:#f2d88f;color:#101a45}
+.field-minimap-status{display:flex;flex-wrap:wrap;gap:0 8px;color:#f0e4c4;font-size:10px;line-height:1.5;font-variant-numeric:tabular-nums}
+.field-minimap-status .is-chase{color:#ff8a8a}
+.field-minimap-legend{display:none}
+
+/* 凡例（全体地図・周囲地図の「？」共通）。色・形は field/field-render.js の fieldDrawMap と同じ */
+.field-legend{color:#d5dedb;font-size:10px}
+.field-legend span{display:inline-flex;align-items:center;gap:4px;min-width:0;white-space:nowrap}
+.field-legend i{display:inline-block;flex:0 0 9px;width:9px;height:9px}
+.lg-player{background:#fff;clip-path:polygon(50% 0,100% 100%,50% 78%,0 100%)}
+.lg-stairs{background:#ffd84a;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.lg-lamp{background:#ffe27a;border-radius:50%}
+.lg-chest{background:#ff9a3c;border-radius:1px}
+.lg-gather{background:#3ee07a;border-radius:50%}
+.lg-npc{background:#c7a3ff;border-radius:1px}
+.lg-event{background:#7fd6ff;border-radius:1px}
+.lg-puzzle{background:#ff8ad8;border-radius:1px}
+.lg-door{background:linear-gradient(135deg,#f0c36a 50%,#63d6dc 50%);border-radius:1px}
+.lg-secret{background:#63d6dc;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.lg-foe{background:#ffad45;border-radius:50%}
+.lg-chase{background:#ff3030;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.lg-gate{background:#ff3030;border-radius:50%}
+.lg-exit{background:#fff4c2;border-radius:1px}
+
+/* HUD の FOE 警告・正面の案内 */
+.field-foe-alert{flex:0 0 auto;padding:1px 6px;border:1px solid #ffad45;border-radius:9px;background:#4a2a08;color:#ffd08a;font-size:10px;font-weight:700;white-space:nowrap}
+.field-foe-alert.is-chase{border-color:#ff4a4a;background:#5a0d0d;color:#ffd0d0;animation:field-foe-alert .7s ease-in-out infinite alternate}
+@keyframes field-foe-alert{to{box-shadow:0 0 8px #ff3030}}
+@media(prefers-reduced-motion:reduce){.field-foe-alert.is-chase{animation:none}}
+.field-near{position:absolute;left:50%;bottom:8px;z-index:41;transform:translateX(-50%);display:flex;align-items:center;gap:10px;max-width:calc(100% - 16px);padding:4px 12px;border:1px solid #ffd96acc;border-radius:14px;background:#050a1ce6;color:#fff;font-size:12px;line-height:1.4;white-space:nowrap;overflow:hidden;pointer-events:none;box-shadow:0 2px 8px #000a}
+.field-near[hidden]{display:none}
+.field-near b{color:#ffe48a;font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.field-near span{color:#dfe6ff}
+.field-near kbd{display:inline-grid;place-items:center;width:16px;height:16px;margin-right:2px;border:1px solid #d8b45a;border-radius:50%;color:#ffd96a;font:700 10px/1 inherit}
+/* 全体地図は不透明にして、背後の探索画面・周囲地図が透けて見えないようにする */
+#field .field-fullmap{inset:4px;background:#04081e}
+/* 全体地図は不透明にして、背後の探索画面・周囲地図が透けて見えないようにする */
+#field .field-fullmap{inset:4px;background:#04081e}

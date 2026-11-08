@@ -1,0 +1,129 @@
+/* ============================================================
+   css/10-ui-field.css — UI全面改修：迷宮探索画面 — Phase 2（Claude A）
+   共通の変数・ヘッダーは css/09-ui-base.css。画面ごとの切り替えは body[data-screen]。
+   ============================================================ */
+
+/* ---------- 共通：迷宮画面を「ヘッダーの下の残り」いっぱいに収める（ページスクロールなし） ----------
+   body の余白（css/09：スマホ max(8px,safe-area)・PC max(12px,safe-area)）を引いた高さを .game に与え、
+   main → #field → 探索画面（1fr）へ高さを渡す。100dvh は Safari のツールバーの伸縮に合わせて変わる。 */
+body[data-screen="field"] .game {
+  height: calc(100vh - max(8px, var(--ui-safe-t)) - max(8px, var(--ui-safe-b)));
+  height: calc(100dvh - max(8px, var(--ui-safe-t)) - max(8px, var(--ui-safe-b)));
+  min-height: 460px !important;   /* とても低い画面（横向きのスマホ等）では潰さず、ページをスクロールさせる */
+  gap: 0;
+}
+@media (min-width: 701px) {
+  body[data-screen="field"] .game {
+    height: calc(100vh - max(12px, var(--ui-safe-t)) - max(12px, var(--ui-safe-b)));
+    height: calc(100dvh - max(12px, var(--ui-safe-t)) - max(12px, var(--ui-safe-b)));
+  }
+}
+body[data-screen="field"] main { display: flex; flex-direction: column; min-height: 0; }
+body[data-screen="field"] .footer-controls { display: none !important; }   /* 迷宮では使わない（システムメッセージは他の画面で表示） */
+
+#field.field-screen.active {
+  display: grid;                    /* .screen.active{display:block}（css/01）より強く */
+  flex: 1 1 auto; min-height: 0;
+  padding: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "hud" "viewport" "pad";
+  gap: 6px;
+  align-items: stretch;
+}
+
+/* HUD（1行）：フロア｜階層名｜危険度｜FOE警告｜MAP｜ホーム */
+#field .field-hud {
+  grid-area: hud; display: flex; flex-wrap: nowrap; align-items: center; gap: 6px;
+  min-width: 0; min-height: 34px; margin: 0; padding: 3px 6px;
+}
+#field .field-hud #field-area-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 12px; letter-spacing: .02em; }
+#field .field-hud .field-hint { display: none; }
+#field .field-hud .field-floor-label { flex: 0 0 auto; }
+#field .field-hud .field-danger { width: 14px; height: 14px; }
+#field .field-hud .field-map-button,
+#field .field-hud .field-home-button { flex: 0 0 auto; min-height: 28px; padding: 0 9px; font-size: 11px; }
+
+/* 探索画面（主役） */
+#field .field-viewport { grid-area: viewport; width: 100%; height: auto; min-height: 0; }
+
+/* 地図の列。スマホでは探索画面と同じ場所に重ね、子要素だけを押せるようにする */
+#field .field-map-rail {
+  grid-area: viewport; position: relative; z-index: 40;   /* 視界(30)より上、会話(50)・全体地図(60)より下 */
+  pointer-events: none; padding: 0; border: 0; background: none; box-shadow: none;
+  --field-mini-cell: 11;
+}
+#field .field-map-rail > * { pointer-events: auto; }
+#field .field-minimap-box { position: absolute; top: 6px; right: 6px; }
+#field .field-minimap-box .field-minimap { opacity: .94; }
+#field .field-map-rail.is-legend-open .field-minimap-legend {
+  display: grid; grid-template-columns: repeat(2, max-content); gap: 4px 10px;
+  position: absolute; top: calc(100% + 4px); right: 0; padding: 7px 9px;
+  border: 1px solid #dfc98fa0; border-radius: 6px; background: #050a1cf2; box-shadow: 0 4px 12px #000c;
+}
+#field .field-minimap-status {
+  position: absolute; top: 6px; left: 6px; max-width: calc(100% - 150px);
+  flex-direction: column; gap: 0; padding: 3px 7px; border-radius: 5px; background: #030912b0;
+  pointer-events: none; font-size: 10px;
+}
+
+/* 操作：十字キー（左）と A（右）。body の下余白が safe-area を含むので、その内側に収まる */
+#field .field-pad {
+  grid-area: pad; display: flex; justify-content: space-between; align-items: center;
+  margin: 0; padding: 0 6px 2px;
+  --dpad: clamp(44px, 12.8vw, 52px);
+}
+#field .field-dpad { grid-template-columns: repeat(3, var(--dpad)); grid-template-rows: repeat(3, var(--dpad)); gap: 4px; }
+#field .field-dpad button { padding: 0; }
+#field .field-action { width: 64px; height: 64px; margin-right: 6px; flex: 0 0 auto; }
+
+/* 小さい画面（360px 幅など） */
+@media (max-width: 374px) {
+  #field .field-map-rail { --field-mini-cell: 10; }
+  #field .field-minimap-status { max-width: calc(100% - 136px); font-size: 9px; }
+  #field .field-hud { gap: 5px; padding: 3px 5px; }
+  #field .field-hud .field-map-button, #field .field-hud .field-home-button { padding: 0 7px; }
+  #field .field-action { width: 60px; height: 60px; }
+}
+
+/* 低い画面（ツールバーが出ている iPhone など）：十字キーを少し小さくして探索画面を残す */
+@media (max-width: 899px) and (max-height: 700px) {
+  #field .field-pad { --dpad: clamp(40px, 11.5vw, 46px); }
+  #field .field-action { width: 58px; height: 58px; }
+}
+
+/* ---------- PC（幅 900px 以上）：左に探索画面、右に地図の列（周囲地図・状態・凡例）と操作 ---------- */
+@media (min-width: 900px) {
+  #field.field-screen.active {
+    grid-template-columns: minmax(0, 1fr) 224px;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "hud hud" "viewport rail" "viewport pad";
+    column-gap: 10px; row-gap: 8px;
+  }
+  #field .field-hud { min-height: 40px; padding: 5px 10px; gap: 10px; }
+  #field .field-hud #field-area-name { font-size: 14px; flex: 0 1 auto; }
+  #field .field-hud .field-hint { display: block; flex: 1 1 auto; text-align: right; }
+  #field .field-hud .field-map-button, #field .field-hud .field-home-button { min-height: 30px; font-size: 12px; }
+
+  #field .field-map-rail {
+    grid-area: rail; z-index: auto; pointer-events: auto; align-self: start;
+    display: flex; flex-direction: column; align-items: stretch; gap: 8px;
+    padding: 10px; border: 1px solid #c3a66a88; border-radius: 7px;
+    background: linear-gradient(160deg, #111d2c, #080e18); box-shadow: inset 0 0 0 1px #ffffff0a, 0 3px 10px #0008;
+    --field-mini-cell: 21;
+  }
+  #field .field-map-title { display: block; text-align: center; }
+  #field .field-minimap-box { position: relative; top: auto; right: auto; align-self: center; }
+  #field .field-legend-button { display: none; }
+  #field .field-minimap-status {
+    position: static; max-width: none; flex-direction: row; justify-content: center; gap: 0 10px;
+    padding: 5px 2px; border-radius: 0; border-block: 1px solid #c3a66a55; background: none;
+  }
+  #field .field-minimap-legend,
+  #field .field-map-rail.is-legend-open .field-minimap-legend {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px 6px;
+    position: static; padding: 0; border: 0; background: none; box-shadow: none;
+  }
+  #field .field-pad { grid-area: pad; justify-content: space-around; padding: 6px 0 0; opacity: .8; --dpad: 42px; }
+  #field .field-action { width: 56px; height: 56px; margin: 0; }
+}

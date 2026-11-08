@@ -46,7 +46,9 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 .field-screen.is-foe-encounter .field-encounter-flash{animation-duration:.35s;background:#600}
 
 /* ---------- ミニマップ・全体マップ ---------- */
-.field-minimap{position:absolute;top:8px;right:8px;z-index:35;padding:3px;border:1px solid #ffffff66;border-radius:4px;background:#000a;cursor:pointer;image-rendering:pixelated}
+/* [UI Phase 2] 周囲地図は #field-map-rail 内の .field-minimap-box に置く。以前の絶対配置（top/right）は、css/08 の width:100% と重なって
+   キャンバスが .field-screen 全体に広がる原因だったため削除した。置き場所・大きさは css/08（見た目）と css/10（配置）。 */
+.field-minimap{display:block;cursor:pointer;image-rendering:pixelated}
 .field-fullmap{position:absolute;inset:6px;z-index:60;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;border:2px solid #ffffffaa;border-radius:6px;background:#04081ef2;color:#fff}
 .field-fullmap[hidden]{display:none}
 .field-fullmap-head{display:flex;align-items:center;gap:10px;width:100%}
@@ -55,8 +57,7 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 .field-fullmap-head button{padding:4px 10px;border:1px solid #ffffff77;border-radius:4px;background:#17266f;color:#fff;font-size:12px}
 .field-fullmap canvas{flex:0 0 auto;max-width:100%;image-rendering:pixelated;background:#0008}
 .field-fullmap-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 10px;font-size:10px;color:#cfd8ee}
-.field-fullmap-legend i{display:inline-block;width:9px;height:9px;margin-right:3px;vertical-align:-1px;border-radius:2px}
-.lg-player{background:#fff;clip-path:polygon(50% 0,100% 100%,0 100%)}.lg-stairs{background:#ffd84a}.lg-lamp{background:#ffe27a;border-radius:50%!important}.lg-chest{background:#ff9a3c}.lg-gather{background:#3ee07a;border-radius:50%!important}.lg-foe{background:#ff8a1c;border-radius:50%!important}.lg-gate{background:#ff3030;border-radius:50%!important}
+/* 凡例の記号（.lg-*）は css/08-cartography-ui.css にまとめた */
 
 /* ---------- フロア選択（磁軸） ---------- */
 .field-stratum-card{display:grid;gap:3px;text-align:left}
@@ -67,7 +68,6 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 .field-floor-button:disabled{opacity:.35}
 @media(max-width:560px){
   .field-hud{flex-wrap:wrap;gap:6px}
-  .field-minimap{top:6px;right:6px}
 }
 
 /* [SIDE] サブイベントの調べられる物（仮表示：絵文字。GPT が絵を付ける場合は data-sprite ごとに差し替え） */
@@ -84,7 +84,6 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 @keyframes field-side-glint{0%,70%,100%{opacity:.12}80%{opacity:.5}}
 .field-object[data-kind="event"].is-opened .field-object-sprite::before{opacity:.35;filter:grayscale(1)}
 .field-object.is-hidden-event.is-opened .field-object-sprite::before{opacity:0;animation:none}
-.lg-event{background:#7fd6ff;border-radius:50%!important}
 @media(prefers-reduced-motion:reduce){.field-object.is-hidden-event .field-object-sprite::before{animation:none;opacity:.28}}
 
 /* [PUZZLE] 仕掛け（仮表示：絵文字。GPT が絵を付ける場合は data-sprite ごとに差し替え） */
@@ -105,4 +104,3 @@ h3 .lv-badge{margin-left:4px;font-size:11px}
 .field-object[data-kind="cache"] .field-object-sprite::before{content:"🎁"}
 .field-object[data-kind="cache"].is-opened .field-object-sprite::before{content:"📦";opacity:.7}
 .field-object[data-sprite="pz-plaque"] .field-object-sprite::before{content:"📜"}
-.lg-puzzle{background:#ff8ad8}

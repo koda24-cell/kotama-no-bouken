@@ -170,6 +170,7 @@ function fieldUpdateNear() {
   document.querySelectorAll("#field-map .field-object.is-near").forEach(el => el.classList.remove("is-near"));
   if (key) document.querySelector(`#field-map .field-object[data-key="${CSS.escape(key)}"]`)?.classList.add("is-near");
   $("field-action")?.classList.toggle("is-ready", !!key);
+  if (typeof fieldRenderNear === "function") fieldRenderNear(o);   // 正面の案内（表示だけ。field-render.js）
 }
 
 /* ------------------------------------------------------------
