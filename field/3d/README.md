@@ -651,3 +651,17 @@ const playerPose = bridge.getPlayerPose();
 `createField3DProceduralTextures()` は従来の石材・土に加え、苔・樹皮・木材・金属・結晶のシームレスなCanvas生成テクスチャを返す。各カテゴリにBase Color、Normal、ORMを用意し、ORMはR=Occlusion、G=Roughness、B=Metalness。金属のみMetalnessチャンネルを持たせ、苔・樹皮・木材は非金属の粗い表面、結晶は中程度の粗さに設定する。
 
 利用可能なキー：`stone` / `dirt` / `moss` / `bark` / `wood` / `metal` / `crystal`。これらは実行時生成素材であり、PNG画像やGLB内蔵テクスチャとして保存したものではない。現段階では床・壁の標準材質に石材・土を適用し、追加5種は今後の小物・植物・金属装飾の材質接続に使う。色味・タイル密度・ノーマル強度はB1Fの実画面で最終調整する。
+
+
+### 小物・ランドマークへのPBR素材受け渡し
+
+`createField3DProceduralTextures()` の戻り値から `proceduralTextures.maps` を取り出し、ランドマーク層とオブジェクト層の `proceduralTextures` オプションへ渡す。例：
+
+```js
+const surfaceLibrary = createField3DProceduralTextures(THREE);
+const sharedSurfaces = surfaceLibrary.maps;
+buildField3DLandmarkLayer(THREE, placements, { proceduralTextures: sharedSurfaces });
+buildField3DObjectLayer(THREE, snapshot, { proceduralTextures: sharedSurfaces });
+```
+
+モデル側では石=stone、根=bark、苔=moss、木材=wood、鉄=metal、発光結晶=crystalを割り当てる。テクスチャライブラリは複数モデルで共有し、各モデルの破棄時には共有テクスチャを破棄しない。シーン全体の終了時に `surfaceLibrary.dispose()` を一度だけ呼ぶ。
