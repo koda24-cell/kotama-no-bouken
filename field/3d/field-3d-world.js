@@ -113,19 +113,6 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   // A continuous stone canopy closes the first-person corridor and gives the
   // camera a readable ceiling plane. It is presentation-only and follows the
   // same explored-cell mask as the floor.
-  const ceilingGeometry = new THREE.BoxGeometry(scale, 0.18, scale);
-  const ceilingMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    roughness: options.ceilingRoughness ?? 0.96,
-    map: stoneMaps.map || null,
-    normalMap: stoneMaps.normalMap || null,
-    roughnessMap: stoneMaps.ormMap || stoneMaps.roughnessMap || null,
-    metalnessMap: stoneMaps.ormMap || null,
-    side: THREE.DoubleSide
-  });
-  const ceilingMesh = floorCells.length
-    ? new THREE.InstancedMesh(ceilingGeometry, ceilingMaterial, floorCells.length)
-    : null;
   const isExplored = cell => !snapshot.explored || !!snapshot.explored[cell.ty * snapshot.area.width + cell.tx];
   // Never render cells the player has not mapped yet. This keeps the first-person
   // view consistent with the existing labyrinth fog-of-war.
@@ -141,6 +128,20 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     : null;
   const wallMesh = wallCells.length
     ? new THREE.InstancedMesh(wallGeometry, wallMaterial, wallCells.length)
+    : null;
+
+  const ceilingGeometry = new THREE.BoxGeometry(scale, 0.18, scale);
+  const ceilingMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    roughness: options.ceilingRoughness ?? 0.96,
+    map: stoneMaps.map || null,
+    normalMap: stoneMaps.normalMap || null,
+    roughnessMap: stoneMaps.ormMap || stoneMaps.roughnessMap || null,
+    metalnessMap: stoneMaps.ormMap || null,
+    side: THREE.DoubleSide
+  });
+  const ceilingMesh = floorCells.length
+    ? new THREE.InstancedMesh(ceilingGeometry, ceilingMaterial, floorCells.length)
     : null;
 
   const dummy = new THREE.Object3D();
