@@ -108,7 +108,9 @@ export function buildField3DLandmarkLayer(THREE, placements = [], {
         landmarkKind: kind
       };
       group.add(node);
-      if (node.userData.generatedResources) owned.push(node.userData.generatedResources);
+      node.traverse(child => {
+        if (child.userData?.generatedResources) owned.push(child.userData.generatedResources);
+      });
       counts[kind] = (counts[kind] || 0) + 1;
     } catch (error) {
       errors.push({ id: placement.id || null, kind, message: String(error?.message || error) });
