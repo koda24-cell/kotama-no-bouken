@@ -1678,7 +1678,16 @@ async function executeTurn(){
   }
 }
 function showHitEffect(kind="slash"){
-  const display=displayEnemyNode();if(!display)return;const fx=document.createElement("div");fx.className=`hit-effect hit-${kind}`;fx.textContent=kind==="slash"?"╱╲":kind==="samurai"?"斬":kind==="flame"?"🔥":"✦";display.appendChild(fx);setTimeout(()=>fx.remove(),battleDelayMs(kind==="samurai"?360:520));
+  const display=displayEnemyNode();if(!display)return;
+  const arena=display.closest(".battle-arena")||display;
+  const fx=document.createElement("div");
+  const safeKind=["slash","samurai","flame","lightning","magic"].includes(kind)?kind:"magic";
+  fx.className=`hit-effect hit-${safeKind}`;
+  fx.setAttribute("aria-hidden","true");
+  fx.innerHTML='<i class="hit-core"></i><i class="hit-ring"></i><i class="hit-particle p1"></i><i class="hit-particle p2"></i><i class="hit-particle p3"></i><i class="hit-particle p4"></i><i class="hit-particle p5"></i>';
+  arena.appendChild(fx);
+  const duration=safeKind==="samurai"?760:safeKind==="lightning"?820:safeKind==="flame"?900:680;
+  setTimeout(()=>fx.remove(),battleDelayMs(duration));
 }
 // 魔術師の魔法は、対象ごとに演出→ダメージ→HP表示更新の順で処理する。
 async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
@@ -1690,7 +1699,7 @@ async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
     const display=displayEnemyNode();
     if(beforeNode){beforeNode.classList.remove("magic-target-hit");void beforeNode.offsetWidth;beforeNode.classList.add("magic-target-hit");}
     else if(display){display.classList.remove("magic-target-active");void display.offsetWidth;display.classList.add("magic-target-active");}
-    showHitEffect(skill.type==="fire"||skill.type==="level-flare"?"flame":"magic");
+    showHitEffect(skill.type==="fire"||skill.type==="level-flare"||skill.element==="炎"?"flame":skill.element==="雷"||skill.type==="thunder"||skill.type==="level-lightning-all"||skill.type==="level-lightning-single"?"lightning":"magic");
     await wait(140);
     const value=applyDamageToEnemyTarget(enemy,target,damage);
     total+=value;
