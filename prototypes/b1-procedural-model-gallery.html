@@ -26,7 +26,7 @@ footer{padding:0 18px 24px;color:#87998b;font-size:11px;max-width:1200px;margin:
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 import { createField3DProceduralModel, getField3DProceduralModelKinds } from "../field/3d/field-3d-procedural-models.js";
 const gallery=document.querySelector("#gallery"),status=document.querySelector("#status");
-const labels={brokenColumn:["崩れた石柱","欠けた柱頭・石の段差・苔"],ancientArch:["古代アーチ","組石のアーチ・継ぎ目・苔"],monolith:["古代の石碑","刻印溝・発光紋様"],rootCurtain:["垂れ下がる古木根","太さの異なる根・苔"],canopy:["樹海の樹冠","複数の葉塊で構成"],chest:["古びた宝箱","木箱・鉄帯・金具"],saveLamp:["樹海の灯火","石台・金属支柱・発光結晶"],gather:["採集結晶","結晶群・苔むした台座"],crystal:["発光結晶群","大小の結晶・発光材質"]};
+const labels={brokenColumn:["崩れた石柱","欠けた柱頭・石の段差・苔"],ancientArch:["古代アーチ","組石のアーチ・継ぎ目・苔"],monolith:["古代の石碑","刻印溝・発光紋様"],rootCurtain:["垂れ下がる古木根","太さの異なる根・苔"],canopy:["樹海の樹冠","複数の葉塊で構成"],chest:["古びた宝箱","木箱・鉄帯・金具"],saveLamp:["樹海の灯火","石台・金属支柱・発光結晶"],gather:["採集結晶","結晶群・苔むした台座"],crystal:["発光結晶群","大小の結晶・発光材質"],door:["古代の石扉","石枠・木製扉・鉄帯・把手"],gate:["封印の鉄格子","縦格子・尖頭・横桟"],stairs:["遺跡の階段","段差・石材・苔むした側柱"],sign:["古びた案内板","木製看板・支柱・刻み模様"],wallTorch:["壁掛け灯火","金具・発光核"]};
 const scenes=[];
 function makeCard(kind,index){
  const card=document.createElement("section");card.className="card";const canvas=document.createElement("canvas");const caption=document.createElement("div");caption.className="name";caption.textContent=labels[kind][0];const small=document.createElement("small");small.textContent=labels[kind][1];caption.append(small);card.append(canvas,caption);gallery.append(card);
