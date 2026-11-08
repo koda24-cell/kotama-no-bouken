@@ -1,0 +1,46 @@
+{
+  "scene": "B1F 深淵に眠る樹海",
+  "version": "blockout_v1",
+  "units": "meters",
+  "camera": {
+    "type": "perspective",
+    "position": [18, -24, 19],
+    "target": [0, 2, 0],
+    "note": "斜め上方から中央の探索通路と奥の遺跡門を見渡す構図"
+  },
+  "design_rules": {
+    "main_path": "中央は広く空け、プレイヤーが通行できるようにする",
+    "background": "奥側に遺跡門・石壁・守護像を配置",
+    "left_landmark": "左奥に巨木と根の壁",
+    "right_landmark": "右側に階段・祭壇・井戸",
+    "lighting": "青白い発光物を視線誘導として左右に配置",
+    "foe_telegraph": "足跡・爪痕・呪晶で危険区域を示す"
+  },
+  "placements": [
+    {"asset":"ancient_giant_tree","position":[-9,1.5,0],"scale":1.55},
+    {"asset":"root_choked_wall","position":[-8.5,4.5,0],"scale":1.3},
+    {"asset":"fallen_ancient_trunk","position":[-4.2,2.5,0],"scale":1.15},
+    {"asset":"ruin_archway","position":[0,7.8,0],"scale":1.35},
+    {"asset":"ancient_iron_gate","position":[0,8.2,0],"scale":1.15},
+    {"asset":"mossed_ruin_wall","position":[0,8.5,0],"scale":1.8},
+    {"asset":"weathered_guardian_statue","position":[-5,5.3,0],"scale":1},
+    {"asset":"weathered_guardian_statue","position":[5,5.3,0],"scale":1},
+    {"asset":"broken_stone_stairs","position":[6,3,0],"scale":1.25},
+    {"asset":"forest_shrine_altar","position":[7,5,0],"scale":1},
+    {"asset":"mossy_wishing_well","position":[9,-1,0],"scale":1},
+    {"asset":"ancient_sarcophagus","position":[9,4,0],"scale":0.9},
+    {"asset":"sealed_treasure_chest","position":[8,-5,0],"scale":1},
+    {"asset":"ancient_wooden_door","position":[-2,8,0],"scale":0.9},
+    {"asset":"ancient_rune_floor_seal","position":[0,-3.5,0.02],"scale":1.2},
+    {"asset":"foe_footprint","position":[4,-1,0.02],"scale":1.3},
+    {"asset":"foe_claw_marks","position":[5,-1.8,0.02],"scale":1.2},
+    {"asset":"foe_cursed_crystal_cluster","position":[10,6,0],"scale":1},
+    {"asset":"hanging_forest_cocoon","position":[-10,7,0],"scale":1},
+    {"asset":"living_root_arch","position":[0,10,0],"scale":1}
+  ],
+  "floor": {
+    "asset": "ancient_stone_floor_tile",
+    "grid": {"x_from":-3,"x_to":3,"y_from":-2,"y_to":3,"spacing":2}
+  },
+  "status": "visual blockout only; not yet connected to the game runtime"
+}
