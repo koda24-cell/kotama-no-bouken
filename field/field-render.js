@@ -192,7 +192,7 @@ function fieldDrawMinimap() {
   status.textContent=`座標 ${tx+1}, ${ty+1}　/　視界内FOE ${visible.length}（追跡 ${chasing}）`;
 }
 function fieldDrawFullMap() {
-  const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
+  const a = fieldArea(), vp = window.__field3DMode ? $("field-3d-viewport") : $("field-viewport"); if (!a || !vp) return;
   const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - 92) / a.h)));
   fieldDrawMap($("field-fullmap-canvas"), cell, true);
   $("field-fullmap-title").textContent = `${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n, a.f)}`;
