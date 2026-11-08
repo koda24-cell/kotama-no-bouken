@@ -1,4 +1,5 @@
 import { createField3DLOD, getField3DLODAssetLevels } from "./field-3d-lod.js";
+import { createField3DProceduralModel } from "./field-3d-procedural-models.js";
 
 /**
  * field-3d-landmark-layer.js
@@ -15,33 +16,9 @@ const DEFAULTS = Object.freeze({
 });
 
 function createFallback(THREE, kind, config, detail = 0) {
-  const [w, h, d] = config.size;
-  if (kind === "ancientArch") {
-    const group = new THREE.Group();
-    const post = new THREE.BoxGeometry(w * 0.16, h, d);
-    const lintel = new THREE.BoxGeometry(w, h * 0.16, d);
-    const material = new THREE.MeshStandardMaterial({ color: config.color, roughness: 0.94 });
-    const left = new THREE.Mesh(post, material);
-    const right = new THREE.Mesh(post, material);
-    const top = new THREE.Mesh(lintel, material);
-    left.position.x = -w * 0.42;
-    right.position.x = w * 0.42;
-    top.position.y = h * 0.42;
-    group.add(left, right, top);
-    group.userData.generatedResources = { geometries: [post, lintel], materials: [material] };
-    return group;
-  }
-  const geometry = kind === "canopy"
-    ? new THREE.IcosahedronGeometry(1, 1)
-    : kind === "rootCurtain"
-      ? new THREE.CylinderGeometry(0.06, 0.2, 1, 5, 1)
-      : kind === "brokenColumn"
-        ? new THREE.CylinderGeometry(0.32, 0.46, 1, 7, 1)
-        : new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshStandardMaterial({ color: config.color, roughness: 0.94 });
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.userData.generatedResources = { geometries: [geometry], materials: [material] };
-  return mesh;
+  // Prefer detailed, purpose-built procedural models. Unknown kinds still receive
+  // a visible stone marker from the shared model factory.
+  return createField3DProceduralModel(THREE, kind, { detail, definition: config });
 }
 
 export function buildField3DLandmarkLayer(THREE, placements = [], {
