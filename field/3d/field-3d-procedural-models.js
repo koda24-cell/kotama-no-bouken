@@ -199,7 +199,35 @@ export function createField3DProceduralModel(THREE, kind, options = {}) {
     box([0.8, 1.4, 0.8], stone, [0, 0.7, 0]);
   }
 
-  function goldMaterial() { return mat(PALETTE.gold, 0.42, { metalness: 0.72 }); }
+  // Apply the shared B1F procedural PBR library by material role.
+  const surfaceSets = options.textures || {};
+  const applySurface = (material, key, metalness = 0) => {
+    const surface = surfaceSets[key];
+    if (!surface || !material) return;
+    material.map = surface.map || null;
+    material.normalMap = surface.normalMap || null;
+    material.roughnessMap = surface.roughnessMap || null;
+    material.metalnessMap = surface.metalnessMap || null;
+    material.metalness = metalness;
+    material.needsUpdate = true;
+  };
+  [stone, dark, edge].forEach(material => applySurface(material, "stone"));
+  applySurface(moss, "moss");
+  applySurface(root, "bark");
+  applySurface(wood, "wood");
+  applySurface(iron, "metal", 0.62);
+  applySurface(glow, "crystal");
+  materials.filter(material => material !== stone && material !== dark && material !== edge &&
+    material !== moss && material !== root && material !== wood && material !== iron && material !== glow)
+    .forEach(material => {
+      const color = material.color?.getHex?.();
+      if (color === 0x294b35 || color === 0x426b43) applySurface(material, "moss");
+    });
+  function goldMaterial() {
+    const gold = mat(PALETTE.gold, 0.42, { metalness: 0.72 });
+    applySurface(gold, "metal", 0.72);
+    return gold;
+  }
   group.userData.generatedResources = { geometries, materials };
   group.userData.proceduralModel = true;
   return group;
