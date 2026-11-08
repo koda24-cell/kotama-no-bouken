@@ -119,7 +119,8 @@ async function ensureField3DAssets() {
         configureField3DMaterials(THREE, asset.scene, {
           profile: key.toLowerCase().includes("glow") || key.toLowerCase().includes("fungus") ? "glow" :
             key.toLowerCase().includes("moss") || key.toLowerCase().includes("fern") || key.toLowerCase().includes("root") ? "foliage" :
-            key.toLowerCase().includes("column") || key.toLowerCase().includes("arch") || key.toLowerCase().includes("door") ? "stone" : "props",
+            key.toLowerCase().includes("dirt") ? "dirt" :
+            key.toLowerCase().includes("stone") || key.toLowerCase().includes("column") || key.toLowerCase().includes("arch") || key.toLowerCase().includes("door") ? "stone" : "props",
           renderer,
           enableShadows: false,
           castShadow: false,
@@ -148,7 +149,12 @@ function rebuildWorld() {
   const isExplored = cell => !snapshot.explored || !!snapshot.explored[cell.ty * snapshot.area.width + cell.tx];
   const exploredKeys = new Set(snapshot.cells.filter(isExplored).map(cell => cell.tx + "," + cell.ty));
   const visibleSnapshot = { ...snapshot, cells: snapshot.cells.filter(isExplored), objects: (snapshot.objects || []).filter(o => exploredKeys.has(o.tx + "," + o.ty)), foes: (snapshot.foes || []).filter(f => exploredKeys.has(f.tx + "," + f.ty)) };
-  world = buildField3DWorld(THREE, snapshot, { floorRoughness: 0.96, wallRoughness: 0.9, proceduralTextures });
+  world = buildField3DWorld(THREE, snapshot, {
+    floorRoughness: 0.96,
+    wallRoughness: 0.9,
+    proceduralTextures,
+    environmentAssets: loadedAssets?.assets || {}
+  });
   scene.add(world.group);
   const qualityProfile = renderer.userData?.kotama3DQuality || "balanced";
   const mobile = qualityProfile === "mobile";
