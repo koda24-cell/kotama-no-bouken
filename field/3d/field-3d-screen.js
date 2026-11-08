@@ -90,16 +90,20 @@ async function ensureField3DAssets() {
   if (assetLoadPromise) return assetLoadPromise;
   assetLoadPromise = (async () => {
     try {
-      const [{ GLTFLoader }, manifestResponse] = await Promise.all([
-        import("https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"),
-        fetch(new URL("../../assets/field-3d/b1/manifest.json", import.meta.url))
-      ]);
+      const manifestResponse = await fetch(new URL("../../assets/field-3d/b1/manifest.json", import.meta.url));
       if (!manifestResponse.ok) throw new Error("B1F 3D asset manifest could not be loaded: " + manifestResponse.status);
       const manifest = await manifestResponse.json();
+      const enabledAssets = Object.fromEntries(Object.entries(manifest.assets || {}).filter(([, descriptor]) => descriptor?.enabled !== false));
+      if (Object.keys(enabledAssets).length === 0) {
+        statusElement("B1F 3D探索 · GLB未登録（仮素材）");
+        loadedAssets = Object.freeze({ assets: Object.freeze({}), errors: Object.freeze([]), loadedCount: 0, completedCount: 0, totalCount: 0 });
+        return loadedAssets;
+      }
+      const { GLTFLoader } = await import("https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js");
       const baseUrl = new URL("../../assets/field-3d/b1/", import.meta.url).href;
       loadedAssets = await loadField3DAssets({
         GLTFLoader,
-        manifest: manifest.assets || {},
+        manifest: enabledAssets,
         baseUrl,
         onProgress: ({ key, status, completed, total }) => {
           statusElement("3D素材 " + completed + "/" + total + " · " + key + " " + status);
