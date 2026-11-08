@@ -1021,13 +1021,13 @@ function resetTransientBattleState(){
   extResetBattle();burnedTurns={};mageCompressionStacks.mage=0;goblinCharging=false;goblinTeamAttackUsed=false;goblinTeamAttackPending=false;defenseDownFresh=new Set();lastEnemyAttackMissed=false;specialOmenShown={};
   for(const c of characters){c._defenseDown=0;c._defenseDownTurns=0;for(const key of ["_stunTurns","stunTurns","_actionDisabledTurns","actionDisabledTurns"])if(key in c)c[key]=0;for(const key of ["_stunned","stunned","actionDisabled"])if(key in c)c[key]=false;}
   battleState.wolfEvasionTurns=0;battleState.wolfHalfHpEvasionUsed=false;battleState.wolfLastTargetId=null;battleState.wolfClones=[];battleState.wolfDisplayOrder=[];battleState.wolfCloneTurns=0;battleState.wolfCloneLastTargetId=null;battleState.wolfSplitPending=false;battleState.tauntTarget=null;battleState.enemyStunned=false;battleState.defenseCampTurns=0;battleState.magicGuardActive=false;battleState.fullGuardActive=false;battleState.knightFullGuardCooldown=0;battleState.aegisActive=false;battleState.bossBgmChoice=null;
-  battleState.encounterMode=false;battleState.fieldEnemyId=null;battleState.fieldFoeKey=null;// [FIELD]
+  battleState.encounterMode=false;battleState.fieldEnemyId=null;battleState.fieldEnemyGroup=null;battleState.fieldFoeKey=null;// [FIELD]
 }
 function startBattle(stage=1){battleBgmSelections={};stageIntroStoryPending=false;maouIntroBgmPersistent=false;battleState.tutorialMode=false;state.firstStageStarted=true;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));}catch(e){}retryContext=null;battleState.hiddenBossMode=false;battleState.maxStage=5;resetTransientBattleState();battleState.koCount=0;battleState.rankResult=null;battleState.stage=Math.max(1,Math.min(state.maxUnlockedStage||1,Number(stage)||1));battleState.unionGauges={kotama:0,knight:0,healer:0,warrior:0,mage:0,samurai:0};getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});beginStage();}
 async function beginStageCore(){
   extResetBattle();// [EXT]
   const resumedBattle=!!pendingBattleResumeEnemy;
-  battleState.enemy=pendingBattleResumeEnemy||(battleState.encounterMode&&typeof fieldCreateEnemy==="function"?fieldCreateEnemy(battleState.fieldEnemyId):createEnemy(battleState.stage));// [FIELD] 雑魚戦はフィールドの敵
+  battleState.enemy=pendingBattleResumeEnemy||(battleState.encounterMode&&typeof fieldCreateEnemy==="function"?fieldCreateEnemy(battleState.fieldEnemyGroup||battleState.fieldEnemyId):createEnemy(battleState.stage));// [FIELD] 雑魚戦はフィールドの敵
   pendingBattleResumeEnemy=null;registerEncounter(battleState.enemy.compendiumAs||battleState.enemy.name);if(typeof compendiumRecordEncounter==="function")compendiumRecordEncounter(battleState.enemy,resumedBattle);// [COMPENDIUM]
   if(!resumedBattle){const encounterName=battleState.enemy.compendiumAs||battleState.enemy.name;enemyEncounterCounts[encounterName]=(Number(enemyEncounterCounts[encounterName])||0)+1;unlockBgmForEncounter(encounterName,battleState.stage);}
   battleEmit("start",{partyIds:(state.party||[]).slice(),stage:battleState.stage,enemyName:battleState.enemy.name,resumed:resumedBattle});// [EVT]
@@ -1902,7 +1902,11 @@ async function enemyTurn(){
   if(aegisForThisTurn){pushEvent(`${e.name}は「${describeEnemyAction(e,battleState.turnCount+1)}」を仕掛けた！`);pushEvent("イージスの盾が攻撃を防いだ！");sound("guard",true);await applyEnemyTurnStatuses();return;}
   const alive=livingParty();
   if(!alive.length)return;
-  if(e.ai){await extVariantAction(e,turn);await applyEnemyTurnStatuses();return;}// [EXT] 敵バリエーションの行動
+  if(e._mixedEncounter&&Array.isArray(e.members)){
+  for(const unit of e.members.filter(m=>m.hp>0)){if(!livingParty().length)break;if(unit.ai)await extVariantAction(unit,turn);}
+  await applyEnemyTurnStatuses();renderBattle();return;
+ }
+ if(e.ai){await extVariantAction(e,turn);await applyEnemyTurnStatuses();return;}// [EXT] 敵バリエーションの行動
   if(e.name==="混沌の幻影"){
     if(e.hp<=e.maxHp*.5&&!e._transformed){e._transformed=true;e.attack=Math.floor(e.attack*1.2);e.spAttack=Math.floor(e.spAttack*1.2);e.defense=Math.floor(e.defense*1.1);e._chaosWaveBonus=1.2;pushEvent("混沌の幻影は姿を変え、力を増した！","warning");document.querySelector(".battle-arena")?.classList.add("boss-transformed");}
     const roll=Math.random();
