@@ -28,6 +28,10 @@
 - 他AI（Claude・Gemini・ChatGPT）の関連作業や競合
 - 変更範囲、影響範囲、セーブ互換性
 
+## 3D迷宮の素材を作るとき
+
+3D素材・背景・エフェクト（水面・滝など）を作る前に、`docs/field-and-story/FIELD_3D_ASSET_GUIDE.md`（制作ルール）と `docs/field-and-story/FIELD_3D_SPEC.md`（仕様・2層に向けた課題）を確認する。素材のゲームへの組み込みは Claude が担当する。既存の階層の素材（`assets/3d/dungeons/b1_ancient_forest/`）は変更しない。
+
 ## チャットをまたぐ運用
 
 新しいChatGPTチャットでも、このファイルと `AI_DEVELOPMENT_RULES.md` を最初に確認し、この指示を引き継ぐ。会話内の記憶だけに依存しない。ユーザーが明示的に変更を指示しない限り、このルールを継続適用する。
