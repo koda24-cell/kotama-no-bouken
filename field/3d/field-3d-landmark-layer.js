@@ -1,3 +1,5 @@
+import { createField3DLOD, getField3DLODAssetLevels } from "./field-3d-lod.js";
+
 /**
  * field-3d-landmark-layer.js
  * Explicit placement layer for large environmental silhouettes.
@@ -12,7 +14,7 @@ const DEFAULTS = Object.freeze({
   canopy: { color: 0x263f30, size: [3.8, 1.4, 3.8] }
 });
 
-function createFallback(THREE, kind, config) {
+function createFallback(THREE, kind, config, detail = 0) {
   const [w, h, d] = config.size;
   if (kind === "ancientArch") {
     const group = new THREE.Group();
@@ -47,6 +49,8 @@ export function buildField3DLandmarkLayer(THREE, placements = [], {
   definitions = {},
   maxCount = 80,
   floorY = 0,
+  lodDistances = [0, 18, 36],
+  lodHysteresis = 0.08,
   onPlacementError = null
 } = {}) {
   if (!THREE?.Group || !Array.isArray(placements)) {
@@ -64,7 +68,31 @@ export function buildField3DLandmarkLayer(THREE, placements = [], {
     const asset = assets[placement.assetKey || kind];
     let node;
     try {
-      node = asset?.clone ? asset.clone() : createFallback(THREE, kind, config);
+      const variantKeys = placement.lodAssetKeys || null;
+      const variantLevels = variantKeys
+        ? getField3DLODAssetLevels(assets, variantKeys, "landmark")
+        : [];
+      if (variantLevels.length >= 2) {
+        node = createField3DLOD(THREE, variantLevels.map(level => ({
+          object: level.asset.clone(),
+          distance: level.distance,
+          hysteresis: level.hysteresis
+        })), { name: placement.id || "landmark-" + kind, hysteresis: lodHysteresis });
+      } else if (asset?.clone) {
+        // Keep the authored high-quality GLB until matching LOD variants are supplied.
+        node = asset.clone();
+      } else {
+        const distances = lodDistances.length >= 3 ? lodDistances : [0, 18, 36];
+        const levels = [0, 1, 2].map(detail => ({
+          object: createFallback(THREE, kind, config, detail),
+          distance: Number(distances[detail]) || 0,
+          hysteresis: lodHysteresis
+        }));
+        node = createField3DLOD(THREE, levels, {
+          name: placement.id || "landmark-" + kind,
+          hysteresis: lodHysteresis
+        });
+      }
       const pos = placement.position || {};
       node.position.set(Number(pos.x) || 0, Number(pos.y ?? floorY) || 0, Number(pos.z) || 0);
       const rot = placement.rotation || {};
