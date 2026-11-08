@@ -53,11 +53,25 @@ function makeSurface(kind, size, seed) {
       let height = 0.5 + n * 0.16 + broad * 0.12 + fine * 0.06;
 
       if (stone) {
-        const cell = Math.floor(size / 4);
-        const gx = x % cell, gy = y % cell;
-        const joint = gx < 3 || gx >= cell - 3 || gy < 3 || gy >= cell - 3 ? 1 : 0;
-        const chipped = periodicNoise(x, y, size / 8, seed + 5) > 0.94 ? 0.10 : 0;
-        height -= joint * 0.16 + chipped;
+        // Stagger the vertical joints in a four-row repeating pattern. The
+        // pattern repeats exactly at the texture edges so RepeatWrapping stays
+        // seamless while avoiding a rigid square-tile appearance.
+        const block = Math.max(16, Math.floor(size / 4));
+        const row = Math.floor(y / block);
+        const rowOffsets = [0, 0.46, 0.14, 0.62];
+        const shift = Math.floor(block * rowOffsets[row % rowOffsets.length]);
+        const gx = (x + shift) % block;
+        const gy = y % block;
+        const edgeNoise = periodicNoise(x, y, size / 8, seed + 37);
+        const verticalJoint = gx < 2 + Math.max(0, edgeNoise) * 2 ||
+          gx >= block - 2 - Math.max(0, -edgeNoise) * 2;
+        const horizontalJoint = gy < 2 + Math.max(0, edgeNoise) * 2 ||
+          gy >= block - 2 - Math.max(0, -edgeNoise) * 2;
+        const joint = verticalJoint || horizontalJoint ? 1 : 0;
+        const chippedNoise = periodicNoise(x, y, size / 8, seed + 5);
+        const chipped = chippedNoise > 0.88 ? (chippedNoise - 0.88) * 0.9 : 0;
+        const shallowPitting = Math.max(0, periodicNoise(x, y, size / 12, seed + 47) - 0.62) * 0.12;
+        height -= joint * 0.19 + chipped + shallowPitting;
       } else if (fibrous) {
         const grain = Math.sin((x / size) * Math.PI * 64 + periodicNoise(x, y, size / 3, seed + 9) * 2);
         height += grain * (kind === "bark" ? 0.075 : 0.045);
