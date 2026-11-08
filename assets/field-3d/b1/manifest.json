@@ -15,91 +15,106 @@
       "lod": [
         "lod0",
         "lod1"
-      ]
+      ],
+      "enabled": false
     },
     "stoneFloorA": {
       "url": "./environment/env-stone-floor-a.glb",
       "category": "environment",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "dirtFloorA": {
       "url": "./environment/env-dirt-floor-a.glb",
       "category": "environment",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "wallRootA": {
       "url": "./nature/env-root-wall-a.glb",
       "category": "nature",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "ceilingRootA": {
       "url": "./nature/env-ceiling-root-a.glb",
       "category": "nature",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "brokenColumnA": {
       "url": "./ruins/ruin-column-broken-a.glb",
       "category": "ruins",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "ancientArchA": {
       "url": "./ruins/ruin-arch-a.glb",
       "category": "ruins",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "ancientDoorA": {
       "url": "./ruins/ruin-door-a.glb",
       "category": "ruins",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "mossClusterA": {
       "url": "./nature/nat-moss-cluster-a.glb",
       "category": "nature",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "fernA": {
       "url": "./nature/nat-fern-a.glb",
       "category": "nature",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "glowPlantA": {
       "url": "./nature/nat-glow-plant-a.glb",
       "category": "nature",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "fungusA": {
       "url": "./nature/nat-fungus-a.glb",
       "category": "nature",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "chestA": {
       "url": "./props/prop-chest-a.glb",
       "category": "props",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "gatherA": {
       "url": "./props/prop-gather-a.glb",
       "category": "props",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     },
     "saveLampA": {
       "url": "./props/prop-save-lamp-a.glb",
       "category": "props",
       "required": false,
-      "scale": 1
+      "scale": 1,
+      "enabled": false
     }
   }
 }
