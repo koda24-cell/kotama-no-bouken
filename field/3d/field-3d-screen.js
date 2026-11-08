@@ -100,6 +100,11 @@ function setMode(mode) {
   document.getElementById("field-viewport").hidden = is3d;
   document.getElementById("field-pad").hidden = is3d;
   root.hidden = !is3d;
+  const fullMap = document.getElementById("field-fullmap");
+  const mapHost = document.getElementById("field-viewport");
+  if (fullMap && mapHost && fullMap.parentElement !== (is3d ? root : mapHost)) {
+    (is3d ? root : mapHost).appendChild(fullMap);
+  }
   document.getElementById("field-mode-2d").setAttribute("aria-pressed", String(!is3d));
   document.getElementById("field-mode-3d").setAttribute("aria-pressed", String(is3d));
   if (is3d) {
@@ -137,6 +142,14 @@ document.addEventListener("keydown", event => {
     z: "interact", enter: "interact", " ": "interact"
   };
   const action = actions[key];
+  if (getRuntime().getFieldState().mapOpen) {
+    if (["escape", "x", "z", "enter"].includes(key)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.fieldToggleFullMap?.(false);
+    }
+    return;
+  }
   if (!action || event.repeat) return;
   event.preventDefault();
   event.stopImmediatePropagation();
