@@ -129,20 +129,22 @@ export function createField3DProceduralTextures(THREE, {
   const size = Math.max(64, Math.min(512, 2 ** Math.round(Math.log2(resolution))));
   const stone = makeSurface("stone", size, seed);
   const dirt = makeSurface("dirt", size, seed + 101);
+  const stoneOrm = texture(THREE, stone.orm);
+  const dirtOrm = texture(THREE, dirt.orm);
   const maps = {
     stone: {
       map: texture(THREE, stone.color, true),
       normalMap: texture(THREE, stone.normal),
-      roughnessMap: texture(THREE, stone.orm),
-      metalnessMap: texture(THREE, stone.orm),
-      ormMap: texture(THREE, stone.orm)
+      roughnessMap: stoneOrm,
+      metalnessMap: stoneOrm,
+      ormMap: stoneOrm
     },
     dirt: {
       map: texture(THREE, dirt.color, true),
       normalMap: texture(THREE, dirt.normal),
-      roughnessMap: texture(THREE, dirt.orm),
-      metalnessMap: texture(THREE, dirt.orm),
-      ormMap: texture(THREE, dirt.orm)
+      roughnessMap: dirtOrm,
+      metalnessMap: dirtOrm,
+      ormMap: dirtOrm
     }
   };
   for (const set of Object.values(maps)) {
