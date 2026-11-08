@@ -22,7 +22,7 @@ function fieldInputVector() {
 function fieldSetupInput() {
   const keyName = e => e.key.length === 1 ? e.key.toLowerCase() : e.key;
   document.addEventListener("keydown", e => {
-    if (!fieldIsActive() || fieldModalOpen()) return;
+    if (!fieldIsActive() || fieldModalOpen() || window.__field3DMode) return;
     const k = keyName(e);
     if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].includes(k)) e.preventDefault();
     if (fieldChoiceState) { fieldChoiceKey(k); return; }
@@ -83,7 +83,7 @@ function fieldHeldDir() {
 // [GRID] 1入力＝1マス。世界樹の迷宮と同じく、プレイヤーの1歩＝1ターンで、FOEもその1歩に対して動く
 function fieldUpdate(dt) {
   const a = fieldArea(); if (!a) return;
-  const blocked = fieldState.lock || fieldState.mapOpen || fieldModalOpen() || !!fieldDialogAdvance || !!fieldChoiceState;
+  const blocked = window.__field3DMode || fieldState.lock || fieldState.mapOpen || fieldModalOpen() || !!fieldDialogAdvance || !!fieldChoiceState;
   const now = performance.now();
   if (blocked) fieldInput.tap = null;
   if (!blocked && now >= fieldState.stepUntil) {
