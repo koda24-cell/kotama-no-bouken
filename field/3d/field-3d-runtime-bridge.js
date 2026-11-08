@@ -81,7 +81,7 @@ export function createField3DRuntimeBridge({
     return Object.freeze({
       x: (x / tilePixels) * scale,
       y: FIELD_3D_DEFAULTS.playerEyeHeight,
-      z: (y / tilePixels) * scale,
+      z: ((y - 4) / tilePixels) * scale,
       yaw: DIR_YAW[normalizeDir(fieldState.dir)],
       dir: normalizeDir(fieldState.dir),
       moving: !!fieldState.moving
