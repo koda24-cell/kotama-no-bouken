@@ -78,7 +78,14 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
         material.normalMap = maps.normalMap;
         material.normalScale?.set?.(0.42, 0.42);
       }
-      if (maps.roughnessMap) material.roughnessMap = maps.roughnessMap;
+      if (maps.ormMap) {
+        material.roughnessMap = maps.ormMap;
+        material.metalnessMap = maps.ormMap;
+        // AO uses the red channel and requires a second UV set.
+        if (mesh.geometry.getAttribute("uv2")) material.aoMap = maps.ormMap;
+      } else if (maps.roughnessMap) {
+        material.roughnessMap = maps.roughnessMap;
+      }
       if ("roughness" in material) material.roughness = roughness;
       if ("metalness" in material) material.metalness = 0.025;
     }
