@@ -1,0 +1,1298 @@
+{
+ "scene": "B1F 深淵に眠る樹海：検証用シーン",
+ "version": "claude_test_v1",
+ "status": "見た目の検証用。ゲームの移動方式・カメラ・マップデータとは未接続。",
+ "units": "meter（1マス=4m、壁の高さ4m）",
+ "up": "+Y",
+ "front": "+Z",
+ "map": [
+  "   S  ",
+  "OHHHHH",
+  "OHHHHH",
+  "OHHHLL",
+  "   R  ",
+  "  RR  ",
+  "   R  "
+ ],
+ "mapOrigin": {
+  "x": -3,
+  "z": -3,
+  "cell": 4
+ },
+ "legend": {
+  "H": "広間",
+  "R": "通路",
+  "L": "高台（+0.6m）",
+  "S": "下り階段",
+  "O": "樹海側（壁なし）"
+ },
+ "lighting": {
+  "shafts": [
+   {
+    "pos": [
+     -6,
+     26,
+     4
+    ],
+    "target": [
+     -17,
+     5,
+     -5
+    ],
+    "color": 12576511,
+    "intensity": 2600,
+    "angle": 0.36
+   },
+   {
+    "pos": [
+     2,
+     30,
+     -6
+    ],
+    "target": [
+     0,
+     0,
+     -5
+    ],
+    "color": 10473727,
+    "intensity": 260,
+    "angle": 0.28
+   }
+  ],
+  "ambient": "暗い青（半球光）",
+  "fog": "FogExp2 #0a141a",
+  "key": "上方からの冷たい光（樹冠の隙間を想定）",
+  "local": "各 GLB の extras.b1.lights を点光源として使用"
+ },
+ "cameras": {
+  "corridor_eye": {
+   "pos": [
+    0,
+    1.6,
+    13
+   ],
+   "target": [
+    0,
+    1.8,
+    -4
+   ],
+   "fov": 60,
+   "note": "通路から広間を見る（目線の高さ1.6m）"
+  },
+  "hall_to_tree": {
+   "pos": [
+    3.5,
+    1.8,
+    -2.5
+   ],
+   "target": [
+    -15,
+    5.5,
+    -5.5
+   ],
+   "fov": 62,
+   "fog": 0.016,
+   "note": "広間から樹海の巨木を見る"
+  },
+  "hall_to_stairs": {
+   "pos": [
+    0.6,
+    1.7,
+    0.6
+   ],
+   "target": [
+    0,
+    0.4,
+    -12
+   ],
+   "fov": 60,
+   "fog": 0.022,
+   "note": "広間の奥（守護像と下り階段）"
+  },
+  "overview": {
+   "pos": [
+    22,
+    24,
+    26
+   ],
+   "target": [
+    -3,
+    0,
+    -3
+   ],
+   "fov": 42,
+   "fog": 0.008,
+   "exp": 1.5,
+   "lk": 3,
+   "note": "全体の俯瞰"
+  },
+  "plan": {
+   "pos": [
+    -4,
+    70,
+    -1.5
+   ],
+   "target": [
+    -4,
+    0,
+    -1.6
+   ],
+   "fov": 34,
+   "fog": 0.002,
+   "exp": 1.6,
+   "lk": 3,
+   "note": "真上から（配置の確認）"
+  }
+ },
+ "items": [
+  {
+   "asset": "mod_stairs_down",
+   "pos": [
+    0,
+    0,
+    -12
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_root_soil_4m",
+   "pos": [
+    -12,
+    0,
+    -8
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    -8,
+    0,
+    -8
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_broken_4m",
+   "pos": [
+    -4,
+    0,
+    -8
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    0,
+    0,
+    -8
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    4,
+    0,
+    -8
+   ],
+   "rotY": 4.7124,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    8,
+    0,
+    -8
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_root_soil_4m",
+   "pos": [
+    -12,
+    0,
+    -4
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    -8,
+    0,
+    -4
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    -4,
+    0,
+    -4
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    0,
+    0,
+    -4
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    4,
+    0,
+    -4
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    8,
+    0,
+    -4
+   ],
+   "rotY": 4.7124,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_root_soil_4m",
+   "pos": [
+    -12,
+    0,
+    0
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    -8,
+    0,
+    0
+   ],
+   "rotY": 4.7124,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    -4,
+    0,
+    0
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rotY": 4.7124,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_ledge_step",
+   "pos": [
+    4,
+    0,
+    0
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_ledge_step",
+   "pos": [
+    8,
+    0,
+    0
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    0,
+    0,
+    4
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_ceiling_vault_4m",
+   "pos": [
+    0,
+    4,
+    4
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    -4,
+    0,
+    8
+   ],
+   "rotY": 4.7124,
+   "scale": 1
+  },
+  {
+   "asset": "mod_ceiling_vault_4m",
+   "pos": [
+    -4,
+    4,
+    8
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    0,
+    0,
+    8
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_ceiling_vault_4m",
+   "pos": [
+    0,
+    4,
+    8
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_floor_stone_4m",
+   "pos": [
+    0,
+    0,
+    12
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_ceiling_vault_4m",
+   "pos": [
+    0,
+    4,
+    12
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    2,
+    0,
+    -12
+   ],
+   "rotY": -1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    -2,
+    0,
+    -12
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    0,
+    0,
+    -14
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    -8,
+    0,
+    -10
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    -4,
+    0,
+    -10
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_collapsed_4m",
+   "pos": [
+    4,
+    0,
+    -10
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_doorway_4m",
+   "pos": [
+    10,
+    0,
+    -8
+   ],
+   "rotY": -1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "gimmick_sealed_rune_door",
+   "pos": [
+    10.02,
+    0,
+    -8
+   ],
+   "rotY": -1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    8,
+    0,
+    -10
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    10,
+    0,
+    -4
+   ],
+   "rotY": -1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    -8,
+    0,
+    2
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    -4,
+    0,
+    2
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    4,
+    0,
+    2
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    10,
+    0,
+    0
+   ],
+   "rotY": -1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    8,
+    0,
+    2
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    2,
+    0,
+    4
+   ],
+   "rotY": -1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    -2,
+    0,
+    4
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_doorway_4m",
+   "pos": [
+    -6,
+    0,
+    8
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "gimmick_root_curtain_shortcut",
+   "pos": [
+    -5.7,
+    0,
+    8
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    -4,
+    0,
+    10
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    -4,
+    0,
+    6
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_4m",
+   "pos": [
+    2,
+    0,
+    8
+   ],
+   "rotY": -1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    2,
+    0,
+    12
+   ],
+   "rotY": -1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    -2,
+    0,
+    12
+   ],
+   "rotY": 1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "mod_wall_mossy_roots_4m",
+   "pos": [
+    0,
+    0,
+    14
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "mod_pillar_corner",
+   "pos": [
+    -6,
+    0,
+    -10
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_pillar_corner",
+   "pos": [
+    10,
+    0,
+    -10
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_pillar_corner",
+   "pos": [
+    -6,
+    0,
+    2
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_pillar_corner",
+   "pos": [
+    10,
+    0,
+    2
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_pillar_corner",
+   "pos": [
+    -2,
+    0,
+    2
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_pillar_corner",
+   "pos": [
+    2,
+    0,
+    2
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_pillar_corner",
+   "pos": [
+    -2,
+    0,
+    -10
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "mod_pillar_corner",
+   "pos": [
+    2,
+    0,
+    -10
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "ancient_giant_tree",
+   "pos": [
+    -17,
+    0,
+    -5
+   ],
+   "rotY": 0.6,
+   "scale": 1,
+   "note": "左奥のランドマーク。広間の西は壁を外して樹海へ開く"
+  },
+  {
+   "asset": "spreading_root_cluster",
+   "pos": [
+    -11.5,
+    0,
+    -1
+   ],
+   "rotY": 1.2,
+   "scale": 1
+  },
+  {
+   "asset": "spreading_root_cluster",
+   "pos": [
+    -12,
+    0,
+    -8.5
+   ],
+   "rotY": 2.6,
+   "scale": 0.9
+  },
+  {
+   "asset": "moss_boulder_cluster",
+   "pos": [
+    -13.5,
+    0,
+    1
+   ],
+   "rotY": 0.4,
+   "scale": 1
+  },
+  {
+   "asset": "hollow_tree_stump",
+   "pos": [
+    -11,
+    0,
+    -11.5
+   ],
+   "rotY": 0.9,
+   "scale": 0.9
+  },
+  {
+   "asset": "fallen_ancient_trunk",
+   "pos": [
+    -12.5,
+    0,
+    4.5
+   ],
+   "rotY": 0.25,
+   "scale": 0.9
+  },
+  {
+   "asset": "gather_logging_point",
+   "pos": [
+    -11,
+    0,
+    2.2
+   ],
+   "rotY": -0.4,
+   "scale": 1
+  },
+  {
+   "asset": "glow_mushroom_cluster",
+   "pos": [
+    -9.6,
+    0,
+    -4.2
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "glow_mushroom_cluster",
+   "pos": [
+    -13,
+    0,
+    -3
+   ],
+   "rotY": 1.4,
+   "scale": 0.8
+  },
+  {
+   "asset": "fern_cluster",
+   "pos": [
+    -9.5,
+    0,
+    0.5
+   ],
+   "rotY": 0.3,
+   "scale": 1
+  },
+  {
+   "asset": "fern_cluster",
+   "pos": [
+    -10.5,
+    0,
+    -6.5
+   ],
+   "rotY": 1.8,
+   "scale": 1
+  },
+  {
+   "asset": "living_root_arch",
+   "pos": [
+    -8,
+    0,
+    -5
+   ],
+   "rotY": 1.5708,
+   "scale": 1,
+   "note": "広間と樹海の境界"
+  },
+  {
+   "asset": "ancient_lantern_post",
+   "pos": [
+    -1.4,
+    0,
+    13.4
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "ancient_lantern_post",
+   "pos": [
+    1.4,
+    0,
+    13.4
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "ruin_stone_lantern",
+   "pos": [
+    1.4,
+    0,
+    6.6
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "hanging_glow_vines",
+   "pos": [
+    0.9,
+    4,
+    10.5
+   ],
+   "rotY": 0.3,
+   "scale": 0.6
+  },
+  {
+   "asset": "hanging_glow_vines",
+   "pos": [
+    -1,
+    4,
+    5.2
+   ],
+   "rotY": 1.6,
+   "scale": 0.55
+  },
+  {
+   "asset": "glow_moss_floor_patch",
+   "pos": [
+    0,
+    0,
+    9.5
+   ],
+   "rotY": 0.4,
+   "scale": 1
+  },
+  {
+   "asset": "gather_herb_point",
+   "pos": [
+    -5.3,
+    0,
+    7.4
+   ],
+   "rotY": 0,
+   "scale": 0.9,
+   "note": "通路の脇の小部屋（採集）"
+  },
+  {
+   "asset": "fern_cluster",
+   "pos": [
+    -5.2,
+    0,
+    9.3
+   ],
+   "rotY": 0.7,
+   "scale": 1
+  },
+  {
+   "asset": "ruin_rubble_pile",
+   "pos": [
+    -2.9,
+    0,
+    9
+   ],
+   "rotY": 0.5,
+   "scale": 0.5
+  },
+  {
+   "asset": "ruin_archway",
+   "pos": [
+    0,
+    0,
+    2.05
+   ],
+   "rotY": 0,
+   "scale": 0.92,
+   "note": "通路から広間への入口"
+  },
+  {
+   "asset": "ancient_ceremonial_banner",
+   "pos": [
+    -1.85,
+    0,
+    2.6
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "ancient_ceremonial_banner",
+   "pos": [
+    1.85,
+    0,
+    2.6
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "ancient_rune_floor_seal",
+   "pos": [
+    0,
+    0,
+    -4
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "weathered_guardian_statue",
+   "pos": [
+    -2.6,
+    0,
+    -9
+   ],
+   "rotY": 0.25,
+   "scale": 1
+  },
+  {
+   "asset": "weathered_guardian_statue",
+   "pos": [
+    2.6,
+    0,
+    -9
+   ],
+   "rotY": -0.25,
+   "scale": 1
+  },
+  {
+   "asset": "blue_wisp_torch",
+   "pos": [
+    -1.6,
+    0,
+    -9.6
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "blue_wisp_torch",
+   "pos": [
+    1.6,
+    0,
+    -9.6
+   ],
+   "rotY": 0,
+   "scale": 1
+  },
+  {
+   "asset": "fallen_statue_head",
+   "pos": [
+    -4.2,
+    0,
+    -0.6
+   ],
+   "rotY": 0.8,
+   "scale": 0.8
+  },
+  {
+   "asset": "ruin_rubble_pile",
+   "pos": [
+    -3.5,
+    0,
+    -7.5
+   ],
+   "rotY": 1.1,
+   "scale": 0.7
+  },
+  {
+   "asset": "ruined_stone_pillar",
+   "pos": [
+    3.6,
+    0,
+    -5.2
+   ],
+   "rotY": 2.2,
+   "scale": 1
+  },
+  {
+   "asset": "mossy_wishing_well",
+   "pos": [
+    6.5,
+    0,
+    -1.2
+   ],
+   "rotY": -0.6,
+   "scale": 1,
+   "note": "休憩地点の候補"
+  },
+  {
+   "asset": "sealed_treasure_chest",
+   "pos": [
+    8.6,
+    0,
+    -9
+   ],
+   "rotY": -0.3,
+   "scale": 1
+  },
+  {
+   "asset": "crystal_wall_vein",
+   "pos": [
+    10,
+    0,
+    -4.2
+   ],
+   "rotY": -1.5708,
+   "scale": 1,
+   "note": "東の壁に重ねる"
+  },
+  {
+   "asset": "gather_mining_point",
+   "pos": [
+    8.4,
+    0,
+    -4.6
+   ],
+   "rotY": -1.4,
+   "scale": 0.9
+  },
+  {
+   "asset": "bioluminescent_crystal_cluster",
+   "pos": [
+    8.8,
+    0,
+    -6.8
+   ],
+   "rotY": 0.5,
+   "scale": 0.9
+  },
+  {
+   "asset": "forest_shrine_altar",
+   "pos": [
+    6.8,
+    0.6,
+    1
+   ],
+   "rotY": 3.1416,
+   "scale": 0.85
+  },
+  {
+   "asset": "hanging_altar_chains",
+   "pos": [
+    6.8,
+    0.6,
+    2.6
+   ],
+   "rotY": 3.1416,
+   "scale": 0.9
+  },
+  {
+   "asset": "ancient_lantern_post",
+   "pos": [
+    3.2,
+    0.6,
+    2.4
+   ],
+   "rotY": -1.5708,
+   "scale": 1
+  },
+  {
+   "asset": "gimmick_root_lever",
+   "pos": [
+    4.6,
+    0.6,
+    0
+   ],
+   "rotY": 3.1416,
+   "scale": 1
+  },
+  {
+   "asset": "foe_trampled_path",
+   "pos": [
+    3,
+    0.005,
+    -7
+   ],
+   "rotY": 0.1,
+   "scale": 1
+  },
+  {
+   "asset": "foe_trampled_path",
+   "pos": [
+    -1,
+    0.005,
+    -6.6
+   ],
+   "rotY": -0.15,
+   "scale": 1
+  },
+  {
+   "asset": "foe_footprint",
+   "pos": [
+    2,
+    0.005,
+    -7.2
+   ],
+   "rotY": 0.4,
+   "scale": 0.9
+  },
+  {
+   "asset": "foe_claw_marks",
+   "pos": [
+    5,
+    0,
+    -9.98
+   ],
+   "rotY": 0,
+   "scale": 1,
+   "note": "北の壁面に重ねる"
+  },
+  {
+   "asset": "forest_beast_bone_pile",
+   "pos": [
+    4.6,
+    0,
+    -8.2
+   ],
+   "rotY": 2,
+   "scale": 0.8
+  },
+  {
+   "asset": "foe_cursed_crystal_cluster",
+   "pos": [
+    -4.8,
+    0,
+    -8.6
+   ],
+   "rotY": 0.8,
+   "scale": 0.7
+  },
+  {
+   "asset": "hanging_forest_cocoon",
+   "pos": [
+    -4.6,
+    5.2,
+    -3
+   ],
+   "rotY": 0.4,
+   "scale": 1
+  },
+  {
+   "asset": "gimmick_pressure_plate",
+   "pos": [
+    0,
+    0,
+    -0.6
+   ],
+   "rotY": 0,
+   "scale": 1
+  }
+ ],
+ "assetPath": {
+  "mod_stairs_down": "modules/mod_stairs_down.glb",
+  "mod_floor_root_soil_4m": "modules/mod_floor_root_soil_4m.glb",
+  "mod_floor_stone_4m": "modules/mod_floor_stone_4m.glb",
+  "mod_floor_stone_broken_4m": "modules/mod_floor_stone_broken_4m.glb",
+  "mod_floor_ledge_step": "modules/mod_floor_ledge_step.glb",
+  "mod_ceiling_vault_4m": "modules/mod_ceiling_vault_4m.glb",
+  "mod_wall_mossy_roots_4m": "modules/mod_wall_mossy_roots_4m.glb",
+  "mod_wall_4m": "modules/mod_wall_4m.glb",
+  "mod_wall_collapsed_4m": "modules/mod_wall_collapsed_4m.glb",
+  "mod_wall_doorway_4m": "modules/mod_wall_doorway_4m.glb",
+  "gimmick_sealed_rune_door": "modules/gimmick_sealed_rune_door.glb",
+  "gimmick_root_curtain_shortcut": "modules/gimmick_root_curtain_shortcut.glb",
+  "mod_pillar_corner": "modules/mod_pillar_corner.glb",
+  "ancient_giant_tree": "props/ancient_giant_tree.glb",
+  "spreading_root_cluster": "props/spreading_root_cluster.glb",
+  "moss_boulder_cluster": "props/moss_boulder_cluster.glb",
+  "hollow_tree_stump": "props/hollow_tree_stump.glb",
+  "fallen_ancient_trunk": "props/fallen_ancient_trunk.glb",
+  "gather_logging_point": "modules/gather_logging_point.glb",
+  "glow_mushroom_cluster": "props/glow_mushroom_cluster.glb",
+  "fern_cluster": "props/fern_cluster.glb",
+  "living_root_arch": "props/living_root_arch.glb",
+  "ancient_lantern_post": "props/ancient_lantern_post.glb",
+  "ruin_stone_lantern": "props/ruin_stone_lantern.glb",
+  "hanging_glow_vines": "props/hanging_glow_vines.glb",
+  "glow_moss_floor_patch": "props/glow_moss_floor_patch.glb",
+  "gather_herb_point": "modules/gather_herb_point.glb",
+  "ruin_rubble_pile": "props/ruin_rubble_pile.glb",
+  "ruin_archway": "props/ruin_archway.glb",
+  "ancient_ceremonial_banner": "props/ancient_ceremonial_banner.glb",
+  "ancient_rune_floor_seal": "props/ancient_rune_floor_seal.glb",
+  "weathered_guardian_statue": "props/weathered_guardian_statue.glb",
+  "blue_wisp_torch": "props/blue_wisp_torch.glb",
+  "fallen_statue_head": "props/fallen_statue_head.glb",
+  "ruined_stone_pillar": "props/ruined_stone_pillar.glb",
+  "mossy_wishing_well": "props/mossy_wishing_well.glb",
+  "sealed_treasure_chest": "props/sealed_treasure_chest.glb",
+  "crystal_wall_vein": "modules/crystal_wall_vein.glb",
+  "gather_mining_point": "modules/gather_mining_point.glb",
+  "bioluminescent_crystal_cluster": "props/bioluminescent_crystal_cluster.glb",
+  "forest_shrine_altar": "props/forest_shrine_altar.glb",
+  "hanging_altar_chains": "props/hanging_altar_chains.glb",
+  "gimmick_root_lever": "modules/gimmick_root_lever.glb",
+  "foe_trampled_path": "props/foe_trampled_path.glb",
+  "foe_footprint": "props/foe_footprint.glb",
+  "foe_claw_marks": "props/foe_claw_marks.glb",
+  "forest_beast_bone_pile": "props/forest_beast_bone_pile.glb",
+  "foe_cursed_crystal_cluster": "props/foe_cursed_crystal_cluster.glb",
+  "hanging_forest_cocoon": "props/hanging_forest_cocoon.glb",
+  "gimmick_pressure_plate": "modules/gimmick_pressure_plate.glb"
+ }
+}

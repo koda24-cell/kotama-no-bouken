@@ -1,0 +1,58 @@
+<!doctype html><html><head><meta charset="utf-8"><title>B1F test scene</title><style>html,body{margin:0;background:#000;overflow:hidden}</style>
+<script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/addons/":"/three/examples/jsm/"}}</script></head><body>
+<script type="module">
+// B1F 検証用シーンのビューア。配置 JSON に従って実際の GLB を並べて描画する。
+// ?cam=corridor_eye|hall_to_tree|hall_to_stairs|overview|plan &w=&h=&lights=最大点光源数 &orbit=1（マウスで操作）
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+const q = new URLSearchParams(location.search);
+const W = +q.get('w') || innerWidth || 1280, H = +q.get('h') || innerHeight || 720;
+const BASE = '/assets/3d/dungeons/b1_ancient_forest/';
+const layout = await (await fetch(BASE + 'scene/b1_test_scene.json')).json();
+const camDef = layout.cameras[q.get('cam') || 'corridor_eye'];
+const r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+r.setSize(W, H); r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = +(q.get('exp') || camDef.exp || 1.0);
+r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap; document.body.appendChild(r.domElement);
+const s = new THREE.Scene();
+s.background = new THREE.Color(0x060d11); s.fog = new THREE.FogExp2(0x0a151b, +(q.get('fog') || camDef.fog || 0.03));
+s.add(new THREE.HemisphereLight(0x5a8aa8, 0x141a14, 0.55));
+const key = new THREE.DirectionalLight(0xbfe0ff, 1.6); key.position.set(-30, 45, 10); key.target.position.set(-2, 0, -3);
+key.castShadow = true; key.shadow.mapSize.set(4096, 4096); key.shadow.bias = -0.0005; key.shadow.normalBias = 0.03;
+Object.assign(key.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 140 }); s.add(key, key.target);
+// 樹冠の隙間から差す光（巨木を照らす）。配置 JSON の lighting.shafts に従う
+for (const sh of (layout.lighting.shafts || [])) {
+  const sp = new THREE.SpotLight(sh.color, sh.intensity, 0, sh.angle, 0.6, 1.0); sp.position.fromArray(sh.pos); sp.target.position.fromArray(sh.target);
+  sp.castShadow = true; sp.shadow.mapSize.set(2048, 2048); sp.shadow.bias = -0.0005; s.add(sp, sp.target);
+}
+const loader = new GLTFLoader(); const cache = {};
+await Promise.all(Object.entries(layout.assetPath).map(async ([id, f]) => { cache[id] = (await loader.loadAsync(BASE + f)).scene; }));
+const cam = new THREE.PerspectiveCamera(camDef.fov, W / H, 0.05, 400); cam.position.fromArray(camDef.pos); cam.lookAt(new THREE.Vector3(...camDef.target));
+const lights = [];
+for (const it of layout.items) {
+  const o = cache[it.asset].clone(true);
+  o.position.fromArray(it.pos); o.rotation.y = it.rotY; o.scale.setScalar(it.scale || 1);
+  s.add(o); o.updateMatrixWorld(true);
+  o.traverse((m) => {
+    if (m.isMesh) { m.castShadow = !/floor|ceiling/.test(it.asset); m.receiveShadow = true; }
+    const b1 = m.userData && m.userData.b1;
+    if (b1 && b1.lights) for (const L of b1.lights) lights.push({ ...L, world: new THREE.Vector3(...L.pos).applyMatrix4(m.matrixWorld), k: it.scale || 1 });
+  });
+}
+// 点光源は多すぎると重いので、カメラから見て効きの大きいものから上限数だけ使う（残りは発光素材の光だけ）
+const maxL = +(q.get('lights') || 40);
+lights.sort((a, b) => b.intensity / (1 + b.world.distanceTo(cam.position) / 10) - a.intensity / (1 + a.world.distanceTo(cam.position) / 10));
+for (const L of lights.slice(0, maxL)) { const pl = new THREE.PointLight(L.color, L.intensity * (+(q.get('lk') || camDef.lk || 2.2)), L.range * 2.0 * L.k, 2); pl.position.copy(L.world); s.add(pl); }
+if (q.get('orbit')) { const oc = new OrbitControls(cam, r.domElement); oc.target.set(...camDef.target); oc.update(); }
+const comp = new EffectComposer(r); comp.addPass(new RenderPass(s, cam));
+comp.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), +(q.get('bloom') || 0.5), 0.55, 0.82)); comp.addPass(new OutputPass());
+const loop = () => { comp.render(); if (q.get('orbit')) requestAnimationFrame(loop); };
+loop();
+let tris = 0; s.traverse((m) => { if (m.isMesh) tris += m.geometry.index ? m.geometry.index.count / 3 : 0; });
+window.__info = { items: layout.items.length, lightsTotal: lights.length, lightsUsed: Math.min(maxL, lights.length), tris };
+window.__done = true;
+</script></body></html>
