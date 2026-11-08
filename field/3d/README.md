@@ -624,12 +624,17 @@ const playerPose = bridge.getPlayerPose();
 | `chest` | 木箱、丸みのある蓋、鉄帯、金具 |
 | `saveLamp` | 石台、金属支柱、発光結晶 |
 | `gather` / `crystal` | 台座、大小の結晶群、発光材質 |
+| `door` | 石枠、木製扉、鉄帯、把手 |
+| `gate` | 鉄格子、尖頭、横桟 |
+| `stairs` | 段差のある石階段、側柱 |
+| `sign` | 木製案内板、支柱、刻み模様 |
+| `wallTorch` | 壁掛け金具、発光核 |
 
 `createField3DProceduralModel(THREE, kind, { detail })` で生成し、`detail:0/1/2` をLOD段階として使える。各モデルは生成Geometry/Materialを `userData.generatedResources` に記録し、既存ランドマークレイヤーのdispose処理で解放する。ランドマークのGLBがない場合は、従来の簡易箱/円柱フォールバックではなく、この専用形状をLODごとに生成する。
 
 ### 目視確認
 
-`prototypes/b1-procedural-model-gallery.html` を開くと9種類を一覧表示できる。各モデルはドラッグ/スワイプで回転可能。Three.js CDNが必要。これはプロシージャル形状の試作であり、Blender等で制作した完成GLBや、実機での最終品質確認を意味しない。
+`prototypes/b1-procedural-model-gallery.html` を開くと14種類を一覧表示できる。各モデルはドラッグ/スワイプで回転可能。Three.js CDNが必要。これはプロシージャル形状の試作であり、Blender等で制作した完成GLBや、実機での最終品質確認を意味しない。
 
 - オブジェクトレイヤーのフォールバックも、宝箱/隠し宝箱・セーブ灯火・採集地点を専用モデルへ置き換えた。GLBがロードできた場合は引き続きGLBを優先する。
 
