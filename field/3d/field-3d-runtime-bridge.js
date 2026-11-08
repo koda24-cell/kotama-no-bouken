@@ -39,6 +39,7 @@ export function createField3DRuntimeBridge({
   tryStep,
   action,
   getTilePixels = () => 32,
+  isInputBlocked = () => false,
   snapshotOptions = {}
 } = {}) {
   assertFunction("getArea", getArea);
@@ -46,6 +47,7 @@ export function createField3DRuntimeBridge({
   assertFunction("tryStep", tryStep);
   assertFunction("action", action);
   assertFunction("getTilePixels", getTilePixels);
+  assertFunction("isInputBlocked", isInputBlocked);
 
   function read() {
     const area = getArea();
@@ -89,13 +91,14 @@ export function createField3DRuntimeBridge({
   function move(dir, now = (typeof performance !== "undefined" ? performance.now() : Date.now())) {
     const current = read();
     if (!current) return false;
-    if (current.fieldState.lock || current.fieldState.mapOpen) return false;
+    if (current.fieldState.lock || current.fieldState.mapOpen || isInputBlocked()) return false;
+    if (Number(current.fieldState.stepUntil) > now) return false;
     return !!tryStep(current.area, normalizeDir(dir), now);
   }
 
   function turn(quarterTurns) {
     const current = read();
-    if (!current || current.fieldState.lock || current.fieldState.mapOpen) return false;
+    if (!current || current.fieldState.lock || current.fieldState.mapOpen || isInputBlocked()) return false;
     const amount = Math.trunc(Number(quarterTurns) || 0);
     if (!amount) return false;
     const index = DIR_ORDER.indexOf(normalizeDir(current.fieldState.dir));
