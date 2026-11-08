@@ -1,0 +1,105 @@
+/* ============================================================
+   css/09-ui-base.css — UI全面改修 Phase 1：共通UI・レスポンシブ基盤（Claude）
+   仕様：docs/ui-overhaul/WORLD_TREE_UI_OVERHAUL_SPEC.md ／ 調査：docs/ui-overhaul/PHASE0_SURVEY.md
+   ・ヘッダー（.topbar）の配置はこのファイルが正。旧ルール（01・03・04・05・style.css）は Phase 5 で整理する。
+     旧ルールに !important が多いため、ここでも必要な箇所だけ !important を使う。
+   ・画面ごとの切り替えは body[data-screen]（showScreen が設定）で行う。
+   ・チュートリアルの強調対象（.main-nav [data-screen]・#retreat-button など）は消さない・隠さない
+     （迷宮・戦闘ではナビを隠すが、チュートリアル中にナビを使う画面ではない）。
+   ・ゲームの処理・セーブには関係しない。
+   ============================================================ */
+
+:root {
+  --ui-gap: 8px;
+  --ui-gap-s: 6px;
+  --ui-radius: 8px;
+  --ui-tap: 40px;                 /* 押しやすいボタンの最小の高さ */
+  --ui-header-row: 38px;
+  --ui-text-s: 12px;
+  --ui-text: 14px;
+  --ui-safe-t: env(safe-area-inset-top, 0px);
+  --ui-safe-r: env(safe-area-inset-right, 0px);
+  --ui-safe-b: env(safe-area-inset-bottom, 0px);
+  --ui-safe-l: env(safe-area-inset-left, 0px);
+}
+
+/* ---------- 画面全体：safe-area と横はみ出しの防止 ---------- */
+body {
+  padding-top: max(8px, var(--ui-safe-t)) !important;
+  padding-right: max(8px, var(--ui-safe-r)) !important;
+  padding-bottom: max(8px, var(--ui-safe-b)) !important;
+  padding-left: max(8px, var(--ui-safe-l)) !important;
+}
+@media (min-width: 701px) { body { padding: max(12px, var(--ui-safe-t)) max(16px, var(--ui-safe-r)) max(12px, var(--ui-safe-b)) max(16px, var(--ui-safe-l)) !important; } }
+.game, main, .screen { min-width: 0; max-width: 100%; }
+img, canvas, svg, video { max-width: 100%; }
+
+/* ---------- ヘッダー：1段（画面名・GOLD・撤退・☰）＋細いナビ ---------- */
+body .topbar {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  grid-template-areas: "logo gold retreat menu" "nav nav nav nav";
+  align-items: center;
+  gap: var(--ui-gap-s) var(--ui-gap);
+  padding: 6px 8px !important;
+  margin-bottom: var(--ui-gap) !important;
+  min-height: 0 !important;
+  position: relative;
+}
+body .topbar .logo {
+  grid-area: logo; width: auto !important; margin: 0 !important; text-align: left !important;
+  font-size: var(--ui-text-s) !important; letter-spacing: .14em; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+body .topbar .gold-display {
+  grid-area: gold; margin: 0 !important; display: flex; align-items: baseline; gap: 5px; white-space: nowrap;
+}
+body .topbar .gold-display span { font-size: 10px !important; }
+body .topbar .gold-display strong { font-size: 16px !important; }
+body .topbar #list-button {
+  grid-area: menu; position: relative !important; inset: auto !important; transform: none !important;
+  width: var(--ui-header-row) !important; height: var(--ui-header-row) !important; font-size: 20px !important; margin: 0 !important;
+}
+body .topbar #retreat-button.retreat-button {
+  grid-area: retreat; position: relative !important; inset: auto !important; transform: none !important;
+  height: var(--ui-header-row) !important; min-width: 0; padding: 0 12px !important; margin: 0 !important;
+}
+body .topbar .list-menu { position: absolute !important; top: calc(100% + 4px) !important; right: 8px !important; bottom: auto !important; left: auto !important; z-index: 95 !important; }
+body .topbar .main-nav {
+  grid-area: nav; display: flex !important; flex-wrap: nowrap; gap: var(--ui-gap-s);
+  width: 100%; min-width: 0; margin: 0 !important; overflow-x: auto; scrollbar-width: none;
+}
+body .topbar .main-nav::-webkit-scrollbar { display: none; }
+body .topbar .main-nav button {
+  flex: 1 0 auto; width: auto !important; max-width: none !important; min-width: 60px; min-height: 34px !important; height: 34px; padding: 0 8px !important;
+  font-size: var(--ui-text-s) !important; white-space: nowrap; margin: 0 !important;
+}
+@media (min-width: 701px) {
+  body .topbar { grid-template-columns: auto minmax(0, 1fr) auto auto auto; grid-template-areas: "logo nav gold retreat menu"; padding: 8px 12px !important; }
+  body .topbar .main-nav { justify-content: center; }
+  body .topbar .main-nav button { flex: 0 1 140px; }
+}
+/* 迷宮・戦闘：ナビを隠し、ヘッダーを1行に（画面を探索・戦闘に使う） */
+body[data-screen="field"] .topbar .main-nav,
+body[data-screen="battle"] .topbar .main-nav { display: none !important; }
+body[data-screen="field"] .topbar,
+body[data-screen="battle"] .topbar { grid-template-columns: minmax(0, 1fr) auto auto auto !important; grid-template-areas: "logo gold retreat menu" !important; padding: 4px 8px !important; }
+body[data-screen="battle"] .topbar .gold-display { display: none !important; }
+
+/* ---------- 共通の部品 ---------- */
+.page-heading { margin: 0 0 var(--ui-gap) !important; }
+.page-heading p { margin: 0 !important; font-size: var(--ui-text-s); line-height: 1.5; }
+
+/* ---------- DEV ボタン（開発用）：迷宮・戦闘では操作ボタンと重ならない左端の小さなつまみにする ---------- */
+body[data-screen="field"] #kotama-admin-launcher,
+body[data-screen="battle"] #kotama-admin-launcher {
+  left: max(0px, var(--ui-safe-l)) !important; right: auto !important; top: 42% !important; bottom: auto !important;
+  width: 18px !important; height: 40px !important; padding: 0 !important; font-size: 8px !important;
+  writing-mode: vertical-rl; border-radius: 0 5px 5px 0 !important; opacity: .45;
+}
+
+/* 幅380px以下：ナビの5つのボタンを横スクロールなしで1列に収める（「設定」が切れないように） */
+@media (max-width: 380px) {
+  body .topbar .main-nav { gap: 4px; }
+  body .topbar .main-nav button { flex: 1 1 0; min-width: 0; padding: 0 2px !important; font-size: 11px !important; letter-spacing: 0 !important; }
+}
