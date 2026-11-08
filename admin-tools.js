@@ -5,6 +5,35 @@
    ============================================================ */
 // ===== 開発者用管理パネル（確認・バックアップ中心） =====
 let adminActiveTab="player";
+window.kotamaAdminBattleSettings ||= { infiniteResources:false, oneHitKill:false, statOverrides:{}, enemyActions:{}, enemyTargetId:"" };
+function adminBattleSettings(){return window.kotamaAdminBattleSettings;}
+function adminEnemyUnits(){const e=battleState.enemy;return e?(Array.isArray(e.members)?e.members:[e]):[];}
+function adminEnemyKey(e){return e?.id||e?.fieldEnemyId||e?.name||"enemy";}
+function adminRenderBattleControls(){
+ const cfg=adminBattleSettings(),enemy=battleState.enemy,units=adminEnemyUnits(),active=units.find(e=>e.hp>0)||units[0],actorKey=adminEnemyKey(active),party=getParty();
+ const flags='<div class="admin-cheat-grid"><label class="admin-encounter-toggle"><input type="checkbox" data-admin-mode="infiniteResources" '+(cfg.infiniteResources?'checked':'')+'> ゴールド・素材を無限所持（購入・製作・強化で消費しない）</label><label class="admin-encounter-toggle"><input type="checkbox" data-admin-mode="oneHitKill" '+(cfg.oneHitKill?'checked':'')+'> 敵を一撃で倒せるモード</label></div>';
+ const statKeys=[["hp","現在HP"],["sp","現在SP"],["maxHp","最大HP"],["maxSp","最大SP"],["attack","攻撃"],["spAttack","SP攻撃"],["defense","防御"],["spDefense","SP防御"]];
+ const stats=party.map(c=>{const o=cfg.statOverrides[c.id]||{},st=effectiveStats(c);const values={hp:c.hp,sp:c.sp,maxHp:o.maxHp??st.maxHp,maxSp:o.maxSp??st.maxSp,attack:o.attack??st.attack,spAttack:o.spAttack??st.spAttack,defense:o.defense??st.defense,spDefense:o.spDefense??st.spDefense};return '<article class="admin-card admin-stat-editor"><h3>'+esc(c.name)+' <small>戦闘中ステータス</small></h3><div class="admin-stat-inputs">'+statKeys.map(([key,label])=>'<label>'+label+'<input type="number" min="0" max="999999" step="1" data-admin-stat="'+key+'" data-admin-character="'+esc(c.id)+'" value="'+Math.max(0,Math.floor(Number(values[key])||0))+'"></label>').join('')+'</div><button type="button" data-admin-stat-reset="'+esc(c.id)+'">この仲間の補正を解除</button></article>';}).join('');
+ const enemyOptions=units.map(e=>'<option value="'+esc(adminEnemyKey(e))+'" '+(adminEnemyKey(e)===(cfg.enemySelectedActor||actorKey)?'selected':'')+'>'+esc(e.name)+(e.hp<=0?'（撃破）':'')+'</option>').join('');
+ const selected=units.find(e=>adminEnemyKey(e)===(cfg.enemySelectedActor||actorKey))||active;
+ const moveOptions=(selected?.ai||[]).map(a=>'<option value="'+esc(a.name)+'" '+(cfg.enemyActions[adminEnemyKey(selected)]===a.name?'selected':'')+'>'+esc(a.name)+(a.all?'（全体）':'')+'</option>').join('');
+ const targetOptions=party.map(c=>'<option value="'+esc(c.id)+'" '+(cfg.enemyTargetId===c.id?'selected':'')+'>'+esc(c.name)+(c.hp<=0?'（戦闘不能）':'')+'</option>').join('');
+ const battleControls=enemy?'<div class="admin-section"><h3>敵の行動を指定</h3><label class="admin-select-row">行動する敵<select id="admin-enemy-actor">'+enemyOptions+'</select></label><label class="admin-select-row">攻撃技<select id="admin-enemy-action"><option value="">通常AIに任せる</option>'+moveOptions+'</select></label><label class="admin-select-row">単体攻撃の対象<select id="admin-enemy-target"><option value="">通常の対象選択に任せる</option>'+targetOptions+'</select></label><p class="admin-note">指定した敵の次回以降の行動に適用します。全体攻撃では対象指定は無視されます。</p></div>':'<p class="admin-note">敵の攻撃技・対象の指定は戦闘中に利用できます。</p>';
+ const skips=Object.entries(FIELD_AREAS||{}).map(([n,a])=>'<button type="button" data-admin-skip-stage="'+n+'">'+esc(a.name||('第'+n+'階層'))+' の入口へ</button>').join('');
+ return '<div class="admin-section"><h3>開発用モード（複数同時にON可能）</h3>'+flags+'<div class="admin-actions"><button type="button" id="admin-battle-full-heal" '+(state.screen==='battle'?'':'disabled')+'>味方全員を全回復（戦闘中）</button></div><p class="admin-note">全回復はHP・SPと戦闘中の不利な状態異常を回復します。</p></div><div class="admin-section"><h3>マップスキップ移動</h3><p class="admin-note">各階層の入口へ直接移動します。フィールド探索中に使用してください。</p><div class="admin-actions admin-skip-actions">'+skips+'</div></div><div class="admin-section"><h3>味方ステータス書き換え</h3><p class="admin-note">戦闘中の数値を直接変更できます。能力値は戦闘中のみ補正として適用します。</p><div class="admin-grid">'+stats+'</div></div>'+battleControls;
+}
+function adminBindBattleControls(){
+ const content=$("kotama-admin-content"),cfg=adminBattleSettings();if(!content)return;
+ content.querySelectorAll("[data-admin-mode]").forEach(el=>el.addEventListener("change",()=>{cfg[el.dataset.adminMode]=el.checked;renderAdminPanel();}));
+ content.querySelectorAll("[data-admin-stat]").forEach(el=>el.addEventListener("change",()=>{const c=getCharacter(el.dataset.adminCharacter),key=el.dataset.adminStat,n=Math.max(0,Math.min(999999,Math.floor(Number(el.value)||0)));if(!c)return;if(key==="hp"||key==="sp")c[key]=Math.min(n,key==="hp"?effectiveStats(c).maxHp:effectiveStats(c).maxSp);else(cfg.statOverrides[c.id]||={})[key]=n;renderAll();renderAdminPanel();}));
+ content.querySelectorAll("[data-admin-stat-reset]").forEach(el=>el.addEventListener("click",()=>{delete cfg.statOverrides[el.dataset.adminStatReset];renderAll();renderAdminPanel();}));
+ $("admin-enemy-actor")?.addEventListener("change",e=>{cfg.enemySelectedActor=e.target.value;renderAdminPanel();});
+ $("admin-enemy-action")?.addEventListener("change",e=>{const key=$("admin-enemy-actor")?.value;if(!key)return;if(e.target.value)cfg.enemyActions[key]=e.target.value;else delete cfg.enemyActions[key];});
+ $("admin-enemy-target")?.addEventListener("change",e=>{cfg.enemyTargetId=e.target.value;});
+ $("admin-battle-full-heal")?.addEventListener("click",()=>{if(state.screen!=="battle")return;for(const c of getParty()){const st=effectiveStats(c);c.hp=st.maxHp;c.sp=st.maxSp;if(typeof extClearHarmful==="function")extClearHarmful(c);c._stunTurns=0;c._actionDisabledTurns=0;c._stunned=false;c.stunned=false;c.actionDisabled=false;}battleState.koCount=0;renderAll();renderAdminPanel();pushEvent("管理者操作：味方全員のHP・SPと不利な状態異常を全回復した。");});
+ content.querySelectorAll("[data-admin-skip-stage]").forEach(el=>el.addEventListener("click",()=>{const n=Number(el.dataset.adminSkipStage);if(state.screen!=="field"){window.alert("フィールド探索中に使用してください。");return;}fieldEnterArea(n,{floor:0,adminSkip:true});}));
+}
+
 window.kotamaAdminEncounterSettings ||= { disableRandom:false, forceNext:false, selected:{} };
 function adminEncounterSettings(){return window.kotamaAdminEncounterSettings;}
 function adminEncounterEnemyRows(){return Object.entries(FIELD_ENEMIES||{}).filter(([,e])=>!e.foe).map(([id,e])=>{const count=Number(adminEncounterSettings().selected[id])||0;return `<label class="admin-encounter-enemy"><span><input type="checkbox" data-admin-enemy="${esc(id)}" ${count>0?"checked":""}> ${esc(e.name)}</span><input type="number" min="0" max="8" step="1" value="${count}" data-admin-enemy-count="${esc(id)}" aria-label="${esc(e.name)}の出現数"></label>`;}).join("");}
@@ -56,7 +85,7 @@ function adminRenderProgress(){
 function adminRenderBattle(){
   const enemy=battleState.enemy;const party=characters.map(c=>`<article class="admin-card"><h3>${esc(c.name)}</h3>${adminRow("HP / SP",`${c.hp} / ${c.sp}`)}${adminRow("状態",[c._stunTurns>0?`スタン ${c._stunTurns}`:"",c._actionDisabledTurns>0?`行動不能 ${c._actionDisabledTurns}`:"",burnedTurns[c.id]>0?`やけど ${burnedTurns[c.id]}`:"",c._defenseDownTurns>0?`防御低下 ${c._defenseDownTurns}`:""].filter(Boolean).join("・")||"なし")}</article>`).join("");
   const enemyText=enemy?`${enemy.name} ／ HP ${enemy.hp}${enemy.maxHp?` / ${enemy.maxHp}`:""}`:"戦闘中ではありません";
-  return `<div class="admin-section"><h3>現在の戦闘</h3>${adminRow("画面",state.screen)}${adminRow("ステージ",battleState.hiddenBossMode?"HIDDEN BOSS":`STAGE ${battleState.stage} / ${battleState.maxStage}`)}${adminRow("ターン",battleState.turnCount)}${adminRow("敵",enemyText)}${adminRow("敵の攻撃 / 防御",enemy?`${enemy.attack??"—"} / ${enemy.defense??"—"}`:"—")}${adminRow("敵の出現数",enemy?.members?.length|| (enemy?1:0))}${adminRow("戦闘処理",battleState.busy?"処理中":"入力待ち")}</div><div class="admin-grid">${party}</div><p class="admin-note">この初期版では戦闘データは確認専用です。HP・SP変更、敵の差し替え、状態異常付与などの操作機能は、通常戦闘への影響を分離してから追加します。</p>`;
+  return `<div class="admin-section"><h3>現在の戦闘</h3>${adminRow("画面",state.screen)}${adminRow("ステージ",battleState.hiddenBossMode?"HIDDEN BOSS":`STAGE ${battleState.stage} / ${battleState.maxStage}`)}${adminRow("ターン",battleState.turnCount)}${adminRow("敵",enemyText)}${adminRow("敵の攻撃 / 防御",enemy?`${enemy.attack??"—"} / ${enemy.defense??"—"}`:"—")}${adminRow("敵の出現数",enemy?.members?.length|| (enemy?1:0))}${adminRow("戦闘処理",battleState.busy?"処理中":"入力待ち")}</div><div class="admin-grid">${party}</div>${adminRenderBattleControls()}`;
 }
 function adminRenderSave(){
   let data=null,error="";try{data=JSON.parse(localStorage.getItem("fantasyRpgSave")||"null");}catch(e){error="オートセーブのJSONを解析できません。";}
@@ -69,6 +98,7 @@ function renderAdminPanel(){
   content.innerHTML=(renderers[adminActiveTab]||adminRenderPlayer)();
   $("kotama-admin-panel")?.querySelectorAll("[data-admin-tab]").forEach(b=>b.classList.toggle("active",b.dataset.adminTab===adminActiveTab));
   if(adminActiveTab==="encounter")adminBindEncounterControls();
+  if(adminActiveTab==="battle")adminBindBattleControls();
   if(adminActiveTab==="save"){
     $("admin-backup")?.addEventListener("click",adminExportBackup);
     $("admin-restore-trigger")?.addEventListener("click",()=>$("admin-restore-file")?.click());
