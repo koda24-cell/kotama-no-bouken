@@ -1,3 +1,5 @@
+import { createField3DProceduralModel } from "./field-3d-procedural-models.js";
+
 /**
  * field-3d-object-layer.js
  * Presentation-only placement layer for objects in a field-3d-grid-adapter snapshot.
@@ -73,8 +75,18 @@ export function buildField3DObjectLayer(THREE, snapshot, {
   const materials = new Map();
   const placed = [];
   const skipped = [];
+  const ownedResources = [];
 
   function placeholder(kind) {
+    const proceduralKind = kind === "chest" || kind === "cache" ? "chest"
+      : kind === "save" ? "saveLamp"
+      : kind === "gather" ? "gather" : null;
+    if (proceduralKind) {
+      const model = createField3DProceduralModel(THREE, proceduralKind, { detail: 0 });
+      if (model.userData.generatedResources) ownedResources.push(model.userData.generatedResources);
+      model.userData.kotama3dPlaceholder = kind;
+      return model;
+    }
     const size = sizes[kind] || sizes.unknown;
     const geometryKey = size.join(",");
     if (!geometries.has(geometryKey)) {
@@ -146,6 +158,10 @@ export function buildField3DObjectLayer(THREE, snapshot, {
     // Only fallback resources created by this layer are disposed here.
     for (const geometry of geometries.values()) geometry.dispose?.();
     for (const material of materials.values()) material.dispose?.();
+    for (const resource of ownedResources) {
+      resource.geometries.forEach(item => item.dispose?.());
+      resource.materials.forEach(item => item.dispose?.());
+    }
     group.clear();
   }
 
