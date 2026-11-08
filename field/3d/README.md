@@ -631,6 +631,8 @@ const playerPose = bridge.getPlayerPose();
 
 `prototypes/b1-procedural-model-gallery.html` を開くと9種類を一覧表示できる。各モデルはドラッグ/スワイプで回転可能。Three.js CDNが必要。これはプロシージャル形状の試作であり、Blender等で制作した完成GLBや、実機での最終品質確認を意味しない。
 
+- オブジェクトレイヤーのフォールバックも、宝箱/隠し宝箱・セーブ灯火・採集地点を専用モデルへ置き換えた。GLBがロードできた場合は引き続きGLBを優先する。
+
 ### 制作上の注意
 
 - 現時点ではThree.jsコードから生成する試作モデル。完成アート用GLBの代替ではない。
