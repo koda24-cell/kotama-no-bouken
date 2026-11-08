@@ -68,7 +68,7 @@ function ensureRenderer() {
   atmosphere = buildField3DAtmosphere(THREE, scene, { fogDensity: quality.fogDensity, maxPixelRatio: quality.pixelRatio });
   const maxAnisotropy = renderer.capabilities?.getMaxAnisotropy?.() || 1;
   proceduralTextures = createField3DProceduralTextures(THREE, {
-    resolution: qualityProfile === "mobile" ? 128 : 256,
+    resolution: qualityProfile === "mobile" ? 128 : 512,
     seed: 1701,
     anisotropy: Math.min(4, maxAnisotropy)
   });
