@@ -158,7 +158,7 @@ function rebuildWorld() {
   scene.add(world.group);
   const qualityProfile = renderer.userData?.kotama3DQuality || "balanced";
   const mobile = qualityProfile === "mobile";
-  decorationLayer = buildField3DDecorationLayer(THREE, visibleSnapshot, { density: mobile ? 0.62 : 0.88, maxPerKind: mobile ? 140 : 280, includeRoots: true, rootDensity: mobile ? 0.10 : 0.16, floorY: -0.035, assets: loadedAssets?.assets || {}, assetKeys: { moss: "mossClusterA", fern: "fernA", glowPlant: "glowPlantA", fungus: "fungusA", root: "wallRootA" } });
+  decorationLayer = buildField3DDecorationLayer(THREE, visibleSnapshot, { density: mobile ? 0.62 : 0.88, maxPerKind: mobile ? 140 : 280, includeRoots: false, rootDensity: 0, floorY: -0.035, assets: loadedAssets?.assets || {}, assetKeys: { moss: "mossClusterA", fern: "fernA", glowPlant: "glowPlantA", fungus: "fungusA", root: "wallRootA" } });
   scene.add(decorationLayer.group);
   objectLayer = buildField3DObjectLayer(THREE, visibleSnapshot, { fallback: true, hideConcealed: true, floorY: 0.02, assets: loadedAssets?.assets || {}, assetKeys: { door: "ancientDoorA", chest: "chestA", gather: "gatherA", save: "saveLampA" }, proceduralTextures: proceduralTextures?.maps || {} });
   scene.add(objectLayer.group);
