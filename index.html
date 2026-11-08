@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="./css/07-labyrinth.css?v=20261107-10">
   <link rel="stylesheet" href="./style.css?v=20261106-13">
   <link rel="stylesheet" href="./css/08-cartography-ui.css?v=20261107-02">
+  <link rel="stylesheet" href="./css/13-field-3d.css?v=20261108-01">
+  <!-- [FIELD-3D] 一人称3D表示用の three.js r180（CDN）。読めなかった場合は従来の2D表示のまま動く -->
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
   <script src="./data/battle-rules.js?v=20261106-11" defer></script>
   <script src="./data/progression.js?v=20261106-11" defer></script>
   <script src="./data/skill-trees.js?v=20261106-11" defer></script>
@@ -35,13 +38,14 @@
   <script src="./analyze-panel.js?v=20261106-15" defer></script>
   <script src="./level.js?v=20261106-15" defer></script>
   <script src="./field.js?v=20261107-11" defer></script>
-  <script src="./field/field-render.js?v=20261107-10" defer></script>
-  <script src="./field/field-movement-foe.js?v=20261107-11" defer></script>
+  <script src="./field/field-render.js?v=20261108-01" defer></script>
+  <script src="./field/field-movement-foe.js?v=20261108-01" defer></script>
   <script src="./field/field-dialog.js?v=20261107-01" defer></script>
   <script src="./field/field-interactions.js?v=20261107-22" defer></script>
   <script src="./field/field-puzzles.js?v=20261107-10" defer></script>
   <script src="./field/field-navigation.js?v=20261107-21" defer></script>
   <script src="./field/field-persistence.js?v=20261107-22" defer></script>
+  <script type="module" src="./field/field-3d-view.js?v=20261108-01"></script>
   <script src="./monster-compendium.js?v=20261106-19" defer></script>
 </head>
 <body>

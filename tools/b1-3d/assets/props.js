@@ -15,23 +15,41 @@ function bone(P, a, b, r, seed = 0) {
 export default {
   sealed_treasure_chest: {
     dir: 'props', cat: 'interact', origin: GPT, tex: 512,
-    name: '封印された宝箱', desc: '幅約1mの木製宝箱。鉄の帯と角金具、丸みのある蓋、錠前に青く光る封印。開閉用に蓋の回転軸を markers に記録（蓋は別メッシュではない）。',
+    name: '封印された宝箱', desc: '幅約1mの木製宝箱。鉄の帯と角金具、丸みのある蓋、錠前に青く光る封印。開けた後の見た目は sealed_treasure_chest_open。',
+    build(P) { chest(P, false); },
+  },
+  sealed_treasure_chest_open: {
+    dir: 'props', cat: 'interact', origin: 'Claude 新規', tex: 512,
+    name: '宝箱（開封後）', desc: '開けた後の宝箱。蓋が後ろへ開き、封印の光は消えている。ゲームでは開封済みの宝箱をこちらに差し替える。寸法・原点は閉じた宝箱と同じ。',
+    build(P) { chest(P, true); },
+  },
+
+  ancient_stone_signpost: {
+    dir: 'props', cat: 'interact', origin: 'Claude 新規', tex: 256,
+    name: '古い石の道標', desc: '文字の刻まれた石板の道標（高さ約1.5m）。看板（?）の調べる地点に。刻み文字がかすかに光る。',
     build(P) {
-      const body = block(P, 1.0, 0.5, 0.62, { r: 0.03, chip: 0.4, seed: 1, tile: 0.8 }); body.translate(0, 0.25, 0); P.add(body, 'wood');
-      const lid = new THREE.CylinderGeometry(0.31, 0.31, 1.0, 20, 1, false, -Math.PI / 2, Math.PI); lid.rotateX(-Math.PI / 2); lid.rotateY(Math.PI / 2); lid.translate(0, 0.5, 0);
-      P.add(boxUV(lid.toNonIndexed(), 0.8), 'wood');
-      for (const x of [-0.42, 0, 0.42]) {
-        const band = block(P, 0.07, 0.52, 0.66, { r: 0.012, chip: 0.2, seed: x * 10 + 5 }); band.translate(x, 0.25, 0); P.add(band, 'iron');
-        const arc = new THREE.TorusGeometry(0.325, 0.022, 6, 18, Math.PI); arc.rotateY(Math.PI / 2); arc.translate(x, 0.5, 0); P.add(boxUV(arc.toNonIndexed(), 0.3), 'iron');
-      }
-      for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const c = block(P, 0.1, 0.1, 0.1, { r: 0.015, seed: sx + sz * 3 }); c.translate(sx * 0.47, 0.06, sz * 0.29); P.add(c, 'iron'); }
-      const lock = block(P, 0.16, 0.2, 0.06, { r: 0.02, seed: 9 }); lock.translate(0, 0.46, 0.33); P.add(lock, 'bronze');
-      const seal = new THREE.TorusGeometry(0.055, 0.012, 6, 20); seal.translate(0, 0.46, 0.37); P.add(seal, 'glow_core');
-      const gem = new THREE.IcosahedronGeometry(0.03, 1); gem.translate(0, 0.46, 0.37); P.add(gem, 'glow_core');
-      P.light([0, 0.5, 0.55], 0x7fe6ff, 0.4, 2);
-      P.marker('lid_hinge', [0, 0.5, -0.31]); P.marker('interact', [0, 0, 1.0]);
-      const base = rock(P, { r: 0.75, detail: 2, sy: 0.08, rough: 0.2, seed: 3 }); P.add(base, 'soil');
+      const base = block(P, 0.8, 0.25, 0.5, { r: 0.04, chip: 1.2, seed: 1 }); base.translate(0, 0.125, 0); addMossy(P, base, 'stone_block', { up: 0.6 });
+      const slab = block(P, 0.62, 1.15, 0.16, { r: 0.03, chip: 0.8, seed: 2, tile: 1 }); slab.applyMatrix4(M([0, 0.82, 0], [-0.05, 0, 0.03])); addMossy(P, slab, 'stone_pale', { up: 0.8 });
+      for (let i = 0; i < 5; i++) { const ln = new THREE.BoxGeometry(0.34 - (i % 2) * 0.1, 0.022, 0.01); ln.translate(-0.02 + (i % 2) * 0.03, 1.15 - i * 0.12, 0.088); ln.applyMatrix4(M([0, 0, 0], [-0.05, 0, 0.03])); P.add(ln, 'glow_core'); }
+      P.light([0, 1.0, 0.5], 0x7fe6ff, 0.25, 2);
+      pebbles(P, [0, 0, 0], 0.7, 6, { seed: 3 });
     },
+  },
+
+  npc_woodcutter: {
+    dir: 'props', cat: 'npc', origin: 'Claude 新規', tex: 256,
+    name: 'NPC：木こり', desc: 'フードと外套の木こり（高さ約1.75m）。肩に斧、腰に袋。顔はフードの影で見せない（会話の相手の目印）。',
+    build(P) { villager(P, { cloak: 'cloth_brown', tool: 'axe' }); },
+  },
+  npc_herb_girl: {
+    dir: 'props', cat: 'npc', origin: 'Claude 新規', tex: 256,
+    name: 'NPC：薬草摘み', desc: 'フードの小柄な薬草摘み（高さ約1.45m）。腕に光る薬草の籠。',
+    build(P) { villager(P, { cloak: 'cloth_green', tool: 'basket', scale: 0.83 }); },
+  },
+  npc_traveler: {
+    dir: 'props', cat: 'npc', origin: 'Claude 新規', tex: 256,
+    name: 'NPC：旅人（汎用）', desc: 'フードと外套の旅人（高さ約1.7m）。杖と小さな灯。専用の見た目が無い NPC に使う。',
+    build(P) { villager(P, { cloak: 'cloth_plain', tool: 'staff' }); },
   },
 
   ancient_wooden_door: {
@@ -303,5 +321,61 @@ export default {
     },
   },
 };
+
+// 宝箱。open=true は蓋が開き封印が消えた状態（蓋は後ろの蝶番で約110度開く）
+function chest(P, open) {
+  const body = block(P, 1.0, 0.5, 0.62, { r: 0.03, chip: 0.4, seed: 1, tile: 0.8 }); body.translate(0, 0.25, 0); P.add(body, 'wood');
+  const lidM = open ? new THREE.Matrix4().makeTranslation(0, 0.5, -0.31).multiply(new THREE.Matrix4().makeRotationX(-1.9)).multiply(new THREE.Matrix4().makeTranslation(0, -0.5, 0.31)) : new THREE.Matrix4();
+  const lid = new THREE.CylinderGeometry(0.31, 0.31, 1.0, 20, 1, false, -Math.PI / 2, Math.PI); lid.rotateX(-Math.PI / 2); lid.rotateY(Math.PI / 2); lid.translate(0, 0.5, 0);
+  lid.applyMatrix4(lidM); P.add(boxUV(lid.toNonIndexed(), 0.8), 'wood');
+  if (open) {
+    // 開いた蓋の内側（裏面）も見えるよう、内側向きの面を重ねる
+    const inn = new THREE.CylinderGeometry(0.295, 0.295, 0.98, 20, 1, true, -Math.PI / 2, Math.PI); inn.rotateX(-Math.PI / 2); inn.rotateY(Math.PI / 2); inn.translate(0, 0.5, 0);
+    const ni = inn.toNonIndexed(), pp = ni.attributes.position;
+    for (let i = 0; i < pp.count; i += 3) { const x = pp.getX(i + 1), y = pp.getY(i + 1), z = pp.getZ(i + 1); pp.setXYZ(i + 1, pp.getX(i + 2), pp.getY(i + 2), pp.getZ(i + 2)); pp.setXYZ(i + 2, x, y, z); }
+    ni.deleteAttribute('normal'); ni.computeVertexNormals(); ni.applyMatrix4(lidM); P.add(boxUV(ni, 0.8), 'wood_dark');
+  }
+  for (const x of [-0.42, 0, 0.42]) {
+    const band = block(P, 0.07, 0.52, 0.66, { r: 0.012, chip: 0.2, seed: x * 10 + 5 }); band.translate(x, 0.25, 0); P.add(band, 'iron');
+    const arc = new THREE.TorusGeometry(0.325, 0.022, 6, 18, Math.PI); arc.rotateY(Math.PI / 2); arc.translate(x, 0.5, 0); arc.applyMatrix4(lidM); P.add(boxUV(arc.toNonIndexed(), 0.3), 'iron');
+  }
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const c = block(P, 0.1, 0.1, 0.1, { r: 0.015, seed: sx + sz * 3 }); c.translate(sx * 0.47, 0.06, sz * 0.29); P.add(c, 'iron'); }
+  const lock = block(P, 0.16, 0.2, 0.06, { r: 0.02, seed: 9 }); lock.translate(0, 0.46, 0.33); lock.applyMatrix4(open ? lidM : new THREE.Matrix4()); P.add(lock, 'bronze');
+  if (open) {
+    const inner = new THREE.PlaneGeometry(0.86, 0.5); inner.rotateX(-Math.PI / 2); inner.translate(0, 0.503, 0); P.add(inner, 'dark_void');
+  } else {
+    const seal = new THREE.TorusGeometry(0.055, 0.012, 6, 20); seal.translate(0, 0.46, 0.37); P.add(seal, 'glow_core');
+    const gem = new THREE.IcosahedronGeometry(0.03, 1); gem.translate(0, 0.46, 0.37); P.add(gem, 'glow_core');
+    P.light([0, 0.5, 0.55], 0x7fe6ff, 0.4, 2);
+  }
+  P.marker('lid_hinge', [0, 0.5, -0.31]); P.marker('interact', [0, 0, 1.0]);
+  const base = rock(P, { r: 0.75, detail: 2, sy: 0.08, rough: 0.2, seed: 3 }); P.add(base, 'soil');
+}
+
+// フードと外套の人物（顔は見せない）。tool: axe｜basket｜staff
+function villager(P, { cloak = 'cloth', tool = 'staff', scale = 1 } = {}) {
+  const k = scale;
+  const robe = lathe(P, [[0.36 * k, 0], [0.33 * k, 0.4 * k], [0.25 * k, 1.0 * k], [0.22 * k, 1.3 * k], [0.26 * k, 1.42 * k], [0.2 * k, 1.5 * k], [0.08 * k, 1.53 * k]], { seg: 20, noise: 0.06, tile: 0.8, seed: 2 });
+  P.add(robe, cloak);
+  const hood = lathe(P, [[0.17 * k, 1.38 * k], [0.19 * k, 1.52 * k], [0.17 * k, 1.66 * k], [0.09 * k, 1.75 * k], [0.0001, 1.77 * k]], { seg: 18, noise: 0.05, tile: 0.6, phiStart: Math.PI * 0.22, phi: Math.PI * 1.56, seed: 3 });
+  P.add(hood, cloak);
+  const face = new THREE.SphereGeometry(0.12 * k, 12, 10); face.translate(0, 1.57 * k, 0.02 * k); P.add(face, 'dark_void');
+  for (const s of [-1, 1]) P.add(tube(P, [V(s * 0.22 * k, 1.38 * k, 0), V(s * 0.27 * k, 1.1 * k, 0.12 * k), V(s * 0.16 * k, 0.95 * k, 0.24 * k)], 0.065 * k, { radial: 8, bark: 0.02 }), cloak);
+  const belt = new THREE.TorusGeometry(0.24 * k, 0.02 * k, 5, 20); belt.rotateX(Math.PI / 2); belt.translate(0, 0.95 * k, 0); P.add(boxUV(belt.toNonIndexed(), 0.3), 'wood_dark');
+  const pouch = block(P, 0.12 * k, 0.14 * k, 0.07 * k, { r: 0.02, seed: 4 }); pouch.translate(0.2 * k, 0.86 * k, 0.12 * k); P.add(pouch, 'wood_dark');
+  if (tool === 'axe') {
+    P.add(tube(P, [V(-0.05 * k, 0.95 * k, 0.3 * k), V(0.25 * k, 1.75 * k, -0.05 * k)], 0.022 * k, { radial: 6, bark: 0.02 }), 'wood_dark');
+    const head = block(P, 0.06 * k, 0.22 * k, 0.16 * k, { r: 0.01, seed: 5 }); head.applyMatrix4(M([0.25 * k, 1.72 * k, -0.08 * k], [0.4, 0, -0.35])); P.add(head, 'iron');
+  } else if (tool === 'basket') {
+    const b = lathe(P, [[0.0001, 0], [0.12 * k, 0], [0.16 * k, 0.12 * k], [0.15 * k, 0.13 * k]], { seg: 14, tile: 0.3 }); b.translate(0.12 * k, 0.85 * k, 0.28 * k); P.add(b, 'wood');
+    for (let i = 0; i < 5; i++) { const lf = leafBlade(0.12 * k, 0.04 * k, { segs: 3, droop: 0.3 }); lf.applyMatrix4(M([0.12 * k + (i - 2) * 0.04 * k, 0.97 * k, 0.28 * k], [-0.3, i, 0.2])); P.add(lf, 'leaf_glow'); }
+    P.light([0.12 * k, 1.05 * k, 0.3 * k], 0x7fe6ff, 0.25, 1.5);
+  } else {
+    P.add(tube(P, [V(0.3 * k, 0, 0.2 * k), V(0.3 * k, 1.8 * k, 0.18 * k)], 0.025 * k, { radial: 6, bark: 0.05 }), 'wood_dark');
+    const g = new THREE.IcosahedronGeometry(0.05 * k, 1); g.translate(0.3 * k, 1.85 * k, 0.18 * k); P.add(g, 'glow_warm');
+    P.light([0.3 * k, 1.85 * k, 0.2 * k], 0xffb060, 0.35, 2.5);
+  }
+  P.marker('interact', [0, 0, 1.0]);
+}
 
 function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }

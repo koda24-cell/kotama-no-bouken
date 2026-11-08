@@ -87,9 +87,12 @@ function fieldUpdate(dt) {
   const now = performance.now();
   if (blocked) fieldInput.tap = null;
   if (!blocked && now >= fieldState.stepUntil) {
-    const dir = fieldHeldDir() || fieldInput.tap;
-    fieldInput.tap = null;
-    if (dir) fieldTryStep(a, dir, now);
+    if (window.KotamaField3D && window.KotamaField3D.active()) window.KotamaField3D.input(a, now);   // [FIELD-3D] 一人称：前後で進み、左右で向きを変える
+    else {
+      const dir = fieldHeldDir() || fieldInput.tap;
+      fieldInput.tap = null;
+      if (dir) fieldTryStep(a, dir, now);
+    }
   }
   fieldState.moving = now < fieldState.stepUntil;
   if (!fieldState.moving) fieldState.step = 0;

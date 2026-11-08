@@ -1,0 +1,23 @@
+/* ============================================================
+   css/13-field-3d.css — 迷宮の一人称3D表示（field/field-3d-view.js）
+   3D表示中は #field に .is-3d が付く。2Dの地図（#field-map）と視界の暗がり（#field-fog）は隠し、
+   ミニマップ・HUD・会話・パッドはそのまま使う。
+   ============================================================ */
+.field-3d-canvas { position: absolute; inset: 0; display: block; z-index: 0; }
+.field-3d-canvas[hidden] { display: none; }
+.field-screen.is-3d #field-map,
+.field-screen.is-3d #field-fog { visibility: hidden; }
+.field-screen.is-3d .field-viewport { background: #05090c; }
+.field-3d-badge { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); z-index: 30; padding: 6px 12px; border-radius: 999px;
+  background: rgba(6, 18, 24, .82); color: #cdeef7; border: 1px solid rgba(127, 230, 255, .35); font-size: 12px; pointer-events: none; }
+.field-3d-badge[hidden] { display: none; }
+.field-3d-toggle[hidden] { display: none; }
+/* 既存の不具合の修正：右の地図欄（.field-map-rail）に移したミニマップに、旧来の position:absolute（css/07）が残り、
+   画面幅いっぱいに広がって探索画面を覆っていた。欄の中では通常の配置にする。 */
+.field-map-rail .field-minimap { position: relative; top: auto; right: auto; z-index: auto; }
+/* 既存の不具合の修正：.screen.active{display:block}（css/01）が .field-screen{display:grid}（css/08）より強く、
+   地図欄を右に置く本来の2列レイアウトが効いていなかった。探索画面では grid を使う。 */
+.field-screen.active { display: grid; }
+/* PC では3D表示の画面を広めにとる */
+.field-screen.is-3d .field-viewport { height: min(66vh, 720px); min-height: 360px; }
+@media (max-width: 760px) { .field-screen.is-3d .field-viewport { height: min(56vh, 520px); min-height: 300px; } }
