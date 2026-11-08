@@ -80,7 +80,11 @@ export function buildField3DObjectLayer(THREE, snapshot, {
   function placeholder(kind) {
     const proceduralKind = kind === "chest" || kind === "cache" ? "chest"
       : kind === "save" ? "saveLamp"
-      : kind === "gather" ? "gather" : null;
+      : kind === "gather" ? "gather"
+      : kind === "door" ? "door"
+      : kind === "gate" ? "gate"
+      : kind === "stairs" ? "stairs"
+      : kind === "sign" ? "sign" : null;
     if (proceduralKind) {
       const model = createField3DProceduralModel(THREE, proceduralKind, { detail: 0 });
       if (model.userData.generatedResources) ownedResources.push(model.userData.generatedResources);
