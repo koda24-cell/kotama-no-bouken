@@ -561,12 +561,13 @@ async function extDamageSkill(actor, skill, a, x, mult) {
     combatNumber(displayEnemyNode(), `-${dealt}`, "damage"); showHitEffect("slash"); flashEnemyDamage(); sound("damage", true);
     return dealt;
   }
-  const d = extSkillDamage(actor, enemy, x, mult);
   let total = 0;
   const hits = x.hits || 1;
   for (let h = 0; h < hits; h++) {
     for (const t of targets) {
       if (enemyHpTotal(enemy) <= 0) break;
+      // 混成編成では個体ごとの防御力・属性弱点・耐性を適用する。
+      const d = extSkillDamage(actor, t.ref, x, mult);
       const dealt = applyDamageToEnemyTarget(enemy, t, d);
       total += dealt;
       if (dealt > 0) addBreakDamage(enemy, "sp", x.element || "無属性", actor);
