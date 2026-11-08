@@ -230,6 +230,15 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 .admin-data-row span{color:#aebde3;flex:0 0 38%}
 .admin-data-row strong{min-width:0;color:#f3f5ff;text-align:right;overflow-wrap:anywhere;font-weight:650}
 .admin-note{margin:9px 0 0;color:#aebde3;font-size:11px;line-height:1.65}
+.admin-encounter-toggle{display:flex;align-items:center;gap:9px;margin:9px 0;padding:9px 10px;border:1px solid #53699d88;border-radius:6px;background:#172448;color:#edf2ff;font-size:12px;font-weight:750;cursor:pointer}
+.admin-encounter-toggle input,.admin-encounter-enemy input[type=checkbox]{accent-color:#ffe28a;width:16px;height:16px}
+.admin-encounter-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:6px}
+.admin-encounter-enemy{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border:1px solid #405581;border-radius:5px;background:#0c1730;color:#e7edff;font-size:12px}
+.admin-encounter-enemy span{display:flex;align-items:center;gap:7px;min-width:0}
+.admin-encounter-enemy input[type=number]{width:58px;padding:5px;border:1px solid #667bb0;border-radius:4px;background:#080f22;color:#fff;text-align:center}
+.admin-encounter-summary{display:grid;gap:5px;margin-top:10px;padding:10px;border:1px solid #667bb066;border-radius:6px;background:#0b1530;font-size:12px}
+.admin-encounter-summary strong{color:#ffe8a3}
+.admin-encounter-summary span{color:#d7e1ff;overflow-wrap:anywhere}
 .admin-warning{color:#ffb2a6}
 .admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .admin-actions button:first-child{border-color:#d9c27a;color:#ffe8a3}
