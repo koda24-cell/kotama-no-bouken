@@ -552,3 +552,15 @@ const playerPose = bridge.getPlayerPose();
 - それ以外：high。ピクセル比上限1.75、テクスチャ256px、装飾・ランドマーク上限を拡大。
 - `prefers-reduced-motion` は品質設定に渡します。現時点では移動アニメーション自体の変更には未使用です。
 - これは実機計測済みの保証値ではなく、初期負荷を抑えるためのプリセットです。iPhone実機でFPS・発熱・メモリを確認して調整します。
+
+
+## 本編でのGLBロード接続
+
+本編の `field-3d-screen.js` は、3Dモードへ初めて入ったときにB1F manifestを読み、`enabled:true` の素材だけを非同期ロードします。ロード完了後に表示レイヤーを再構築し、対応するassetKeyが存在する配置はGLBへ差し替えます。読み込み失敗・キー未登録は従来の仮形状へフォールバックします。
+
+- manifestの全素材は初期状態で `enabled:false`。GLBファイル未制作の段階で15件の404リクエストが発生しないようにしています。
+- GLBファイルを追加した素材だけmanifestの `enabled:true` に変更してください。
+- 現在の接続キー：`mossClusterA`、`fernA`、`glowPlantA`、`fungusA`、`wallRootA`、`ancientDoorA`、`chestA`、`gatherA`、`saveLampA`、`ancientArchA`、`brokenColumnA`。
+- GLTFLoaderはThree.jsと同じ `0.180.0` のCDNから遅延読込します。manifestに有効素材がない場合はGLTFLoader自体を読み込みません。
+- GLBの共有Geometry/Material/Textureは配置レイヤーの破棄時には解放せず、3D画面終了時に全配置を取り除いた後で一括解放します。
+- 現時点で実GLBファイルは未配置のため、本編は仮形状で表示されます。実ファイルを追加した後にブラウザでロード・描画を検証してください。
