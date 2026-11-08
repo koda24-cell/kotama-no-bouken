@@ -1910,8 +1910,9 @@ async function enemyTurn(){
     if(!livingParty().length)break;
     if(extEnemyAilmentTurn(unit)){renderBattle();continue;}
     if(extEnemyParalyzed(unit)){pushEvent(`${unit.name}は麻痺して動けない！`);continue;}
-    if(unit.ai)await extVariantAction(unit,turn);
+    if(unit.ai)await extVariantAction(unit,turn,{preserveTaunt:true});
   }
+  battleState.tauntTarget=null;
   await applyEnemyTurnStatuses();renderBattle();return;
  }
  if(e.ai){await extVariantAction(e,turn);await applyEnemyTurnStatuses();return;}// [EXT] 敵バリエーションの行動
