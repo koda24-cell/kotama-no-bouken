@@ -669,7 +669,7 @@ function extPickPartyTarget(alive, act) {
   if (act.target === "rear") { const rear = alive.filter(c => EXT_REAR_IDS.includes(c.id)); if (rear.length) return rear[Math.floor(Math.random() * rear.length)]; }
   return alive[Math.floor(Math.random() * alive.length)];
 }
-async function extVariantAction(e, turn) {
+async function extVariantAction(e, turn, opts = {}) {
   const alive = livingParty(); if (!alive.length) return;
   const ratio = enemyHpTotal(e) / e.maxHp;
   const eligible = e.ai.filter(a => (!a.minTurn || turn >= a.minTurn) && (!a.hpBelow || ratio <= a.hpBelow));
@@ -699,7 +699,7 @@ async function extVariantAction(e, turn) {
     if (c.hp > 0 && act.status && extTryStatus(e, c, act.status.type, act.status.chance)) extInflict(c, act.status.type, act.status);
     if (c.hp <= 0) pushEvent(`${c.name}は戦闘不能になった！`);
   }
-  battleState.tauntTarget = null;
+  if (!opts.preserveTaunt) battleState.tauntTarget = null;
 }
 
 /* ============================================================
