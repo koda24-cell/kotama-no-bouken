@@ -39,7 +39,7 @@ async function fieldEnterArea(n, opts = {}) {
   fieldState.area = n; fieldState.floor = f; fieldState.positioned = false;
   fieldState.flags[`floor:${n}-${f}`] = true;
   state.firstStageStarted = true;
-  battleState.encounterMode = false; battleState.fieldEnemyId = null; battleState.fieldFoeKey = null;
+  battleState.encounterMode = false; battleState.fieldEnemyId = null; battleState.fieldEnemyGroup = null; battleState.fieldFoeKey = null;
   battleState.stageFinished = false;
   stageEntered[FIELD_AREAS[n].stage] = true;
   fieldState.built = "";
