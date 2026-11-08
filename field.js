@@ -181,3 +181,18 @@ function fieldExploredRate(a = fieldArea()) {
   return open ? Math.round(seen / open * 100) : 0;
 }
 
+
+/* [FIELD-3D] Read-only accessors for the optional first-person renderer. */
+window.__kotamaField3D = Object.freeze({
+  getArea: () => fieldArea(),
+  getFieldState: () => fieldState,
+  getTilePixels: () => FIELD_TILE,
+  isInputBlocked: () => fieldState.lock || fieldState.mapOpen || !!fieldDialogAdvance || !!fieldChoiceState ||
+    [...document.querySelectorAll(".game-dialog, #story-event, #tutorial-overlay")].some(el => !el.hidden) ||
+    !document.getElementById("list-menu")?.hidden,
+  isDoorOpen: object => typeof fieldDoorOpen === "function" ? fieldDoorOpen(object) : !!fieldState.flags["door:" + object.id + ":open"],
+  isPuzzleSolved: id => typeof fieldPuzzleSolved === "function" && fieldPuzzleSolved(id),
+  isObjectHidden: object => !!object.hidden,
+  getObjectState: () => null,
+  clearInput: () => { fieldInput.keys.clear(); fieldInput.pad.clear(); fieldInput.tap = null; }
+});
