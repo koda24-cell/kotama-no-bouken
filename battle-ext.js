@@ -666,6 +666,8 @@ function extWeightedPick(list) {
 function extPickPartyTarget(alive, act) {
   const taunt = alive.find(c => c.id === battleState.tauntTarget);
   if (taunt) return taunt;
+  const adminTarget=alive.find(c=>c.id===window.kotamaAdminBattleSettings?.enemyTargetId);
+  if(adminTarget)return adminTarget;
   if (act.target === "rear") { const rear = alive.filter(c => EXT_REAR_IDS.includes(c.id)); if (rear.length) return rear[Math.floor(Math.random() * rear.length)]; }
   return alive[Math.floor(Math.random() * alive.length)];
 }
@@ -677,8 +679,10 @@ async function extVariantAction(e, turn, opts = {}) {
   const sealedHead = extHasStatus(e, "bindHead");
   const usable = sealedHead ? eligible.filter(a => a.kind !== "sp") : eligible;
   if (!usable.length) { pushEvent(`${e.name}は頭を封じられていて、術を使えない！`); return; }
+  const adminActionName=window.kotamaAdminBattleSettings?.enemyActions?.[e.id||e.fieldEnemyId||e.name];
+  const adminForced=adminActionName?usable.find(a=>a.name===adminActionName):null;
   const forced = usable.find(a => a.everyTurns && turn % a.everyTurns === 0);
-  const act = forced || extWeightedPick(usable.filter(a => !a.everyTurns).length ? usable.filter(a => !a.everyTurns) : usable);
+  const act = adminForced || forced || extWeightedPick(usable.filter(a => !a.everyTurns).length ? usable.filter(a => !a.everyTurns) : usable);
   if (act.heal) {
     const before = e.hp; e.hp = Math.min(e.maxHp, e.hp + Math.floor(e.maxHp * act.heal));
     pushEvent(`${e.name}は「${act.name}」を唱えた！ HPが${e.hp - before}回復した。`); renderBattle(); return;
