@@ -15,10 +15,10 @@ const DEFAULTS = Object.freeze({
   canopy: { color: 0x263f30, size: [3.8, 1.4, 3.8] }
 });
 
-function createFallback(THREE, kind, config, detail = 0) {
+function createFallback(THREE, kind, config, detail = 0, textures = {}) {
   // Prefer detailed, purpose-built procedural models. Unknown kinds still receive
   // a visible stone marker from the shared model factory.
-  return createField3DProceduralModel(THREE, kind, { detail, definition: config });
+  return createField3DProceduralModel(THREE, kind, { detail, definition: config, textures });
 }
 
 export function buildField3DLandmarkLayer(THREE, placements = [], {
@@ -28,7 +28,8 @@ export function buildField3DLandmarkLayer(THREE, placements = [], {
   floorY = 0,
   lodDistances = [0, 18, 36],
   lodHysteresis = 0.08,
-  onPlacementError = null
+  onPlacementError = null,
+  proceduralTextures = {}
 } = {}) {
   if (!THREE?.Group || !Array.isArray(placements)) {
     throw new TypeError("buildField3DLandmarkLayer: Three.js and a placement array are required.");
@@ -61,7 +62,7 @@ export function buildField3DLandmarkLayer(THREE, placements = [], {
       } else {
         const distances = lodDistances.length >= 3 ? lodDistances : [0, 18, 36];
         const levels = [0, 1, 2].map(detail => ({
-          object: createFallback(THREE, kind, config, detail),
+          object: createFallback(THREE, kind, config, detail, proceduralTextures),
           distance: Number(distances[detail]) || 0,
           hysteresis: lodHysteresis
         }));
