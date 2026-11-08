@@ -39,3 +39,12 @@
 .enemy-group-unit{position:relative}
 .hit-effect-local{position:absolute;left:-18%;top:-18%;width:136%;height:136%;transform:none;z-index:9}
 .hit-effect-local .hit-particle{width:5px;height:5px}
+
+/* Impact feedback: restrained camera shake and target flash */
+.battle-arena.vfx-impact{animation:vfx-camera-tap .22s ease-out}
+.battle-arena.vfx-impact-heavy{animation:vfx-camera-heavy .34s cubic-bezier(.3,.05,.2,1)}
+.enemy-group-unit.vfx-target-impact{animation:vfx-target-hit .36s ease-out}
+@keyframes vfx-camera-tap{0%,100%{transform:translate3d(0,0,0)}25%{transform:translate3d(-2px,1px,0)}55%{transform:translate3d(2px,-1px,0)}}
+@keyframes vfx-camera-heavy{0%,100%{transform:translate3d(0,0,0)}18%{transform:translate3d(-4px,2px,0)}38%{transform:translate3d(3px,-2px,0)}62%{transform:translate3d(-2px,1px,0)}}
+@keyframes vfx-target-hit{0%,100%{filter:brightness(1)}18%{filter:brightness(2.1) drop-shadow(0 0 12px #d9f7ff)}48%{filter:brightness(1.35)}}
+@media(prefers-reduced-motion:reduce){.battle-arena.vfx-impact,.battle-arena.vfx-impact-heavy,.enemy-group-unit.vfx-target-impact{animation:none!important}}
