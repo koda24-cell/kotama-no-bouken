@@ -156,7 +156,11 @@ export function createField3DProceduralTextures(THREE, {
       dirt: Object.freeze(maps.dirt)
     }),
     dispose() {
-      for (const set of Object.values(maps)) for (const map of Object.values(set)) map.dispose();
+      const ownedTextures = new Set();
+      for (const set of Object.values(maps)) {
+        for (const map of Object.values(set)) ownedTextures.add(map);
+      }
+      ownedTextures.forEach(map => map.dispose());
     }
   });
 }
