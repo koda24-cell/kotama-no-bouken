@@ -74,8 +74,8 @@ function adminPanelMarkup(){
 }
 function adminRenderPlayer(){
   const members=characters.map(c=>{const st=effectiveStats(c),slots=equipment[c.id]||{};return `<article class="admin-card"><h3>${esc(c.name)} <small>Lv.${characterLevels[c.id]||1}</small></h3>${adminRow("HP",`${c.hp} / ${st.maxHp}`)}${adminRow("SP",`${c.sp} / ${c.maxSp}`)}${adminRow("攻撃 / 防御",`${st.attack} / ${st.defense}`)}${adminRow("SP攻撃 / SP防御",`${st.spAttack} / ${st.spDefense}`)}${adminRow("武器",getEquippedName(c,"weapon"))}${adminRow("防具",getEquippedName(c,"armor"))}${adminRow("アクセサリ",[slots.accessory1,slots.accessory2].filter(Boolean).map(id=>itemById(id)?.name||id).join(" / ")||"なし")}${adminRow("習得スキル",treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).map(n=>`${n.name} Lv.${getTreeLevel(c.id,n.id)}`).join("、")||"なし")}</article>`;}).join("");
-  const items=Object.entries(inventory).filter(([,n])=>Number(n)>0).map(([id,n])=>`${itemById(id)?.name||id} ×${n}`);const mats=Object.entries(materials).filter(([,n])=>Number(n)>0).map(([id,n])=>`${materialNames[id]||id} ×${n}`);
-  return `<div class="admin-section"><h3>プレイヤー情報</h3>${adminRow("所持ゴールド",`${state.gold} G`)}${adminRow("編成",getParty().map(c=>c.name).join(" / "))}<h3>所持品</h3>${adminRow("アイテム・装備",items.join("、")||"なし")}${adminRow("素材",mats.join("、")||"なし")}</div><div class="admin-grid">${members}</div>`;
+  const items=Object.entries(inventory).filter(([,n])=>Number(n)>0).map(([id,n])=>`${itemById(id)?.name||id} ×${n}`);const mats=Object.entries(materials).filter(([,n])=>Number(n)>0).map(([id,n])=>`${materialNames[id]||id} ×${adminBattleSettings().infiniteResources?"∞":n}`);
+  return `<div class="admin-section"><h3>プレイヤー情報</h3>${adminRow("所持ゴールド",adminBattleSettings().infiniteResources?"∞（無限モード）":`${state.gold} G`)}${adminRow("編成",getParty().map(c=>c.name).join(" / "))}<h3>所持品</h3>${adminRow("アイテム・装備",items.join("、")||"なし")}${adminRow("素材",mats.join("、")||"なし")}</div><div class="admin-grid">${members}</div>`;
 }
 function adminRenderProgress(){
   const names=["樹海の入り口","ゴブリンの森","霧の森","炎竜の巣","魔王の城"];
