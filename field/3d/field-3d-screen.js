@@ -106,6 +106,11 @@ async function ensureField3DAssets() {
         },
         onAssetError: ({ key, url, error }) => console.warn("[field-3d asset fallback]", key, url, error)
       });
+      if (disposed) {
+        disposeField3DAssets(loadedAssets);
+        loadedAssets = null;
+        return null;
+      }
       for (const [key, asset] of Object.entries(loadedAssets.assets)) {
         configureField3DMaterials(THREE, asset.scene, {
           profile: key.toLowerCase().includes("glow") || key.toLowerCase().includes("fungus") ? "glow" :
