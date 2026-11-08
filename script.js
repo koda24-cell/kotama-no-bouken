@@ -1922,9 +1922,9 @@ async function enemyTurn(){
   if(e.name==="混沌の幻影"){
     if(e.hp<=e.maxHp*.5&&!e._transformed){e._transformed=true;e.attack=Math.floor(e.attack*1.2);e.spAttack=Math.floor(e.spAttack*1.2);e.defense=Math.floor(e.defense*1.1);e._chaosWaveBonus=1.2;pushEvent("混沌の幻影は姿を変え、力を増した！","warning");document.querySelector(".battle-arena")?.classList.add("boss-transformed");}
     const roll=Math.random();
-    if(roll<.2){const target=alive[Math.floor(Math.random()*alive.length)];target._stunTurns=2;target._actionDisabledTurns=2;if(target.id==="mage")mageCompressionStacks.mage=0;pushEvent(`混沌の幻影の「ダークバインド」！ ${target.name}は2ターン行動不能になった！`);}
+    if(roll<.2){const target=extPickPartyTarget(alive,{});target._stunTurns=2;target._actionDisabledTurns=2;if(target.id==="mage")mageCompressionStacks.mage=0;pushEvent(`混沌の幻影の「ダークバインド」！ ${target.name}は2ターン行動不能になった！`);}
     else if(roll<.55){pushEvent("混沌の幻影は「カオスウェーブ」を放った！");document.querySelector(".battle-arena")?.classList.add("maou-dark-flames");setTimeout(()=>document.querySelector(".battle-arena")?.classList.remove("maou-dark-flames"),battleDelayMs(850));for(const c of alive.slice()){let d=Math.floor(60*(e._chaosWaveBonus||1));d=Math.floor(d*(1-(battleState.guarding[c.id]||0)));await applyPartyDamageAnimated(c,d,{magic:true});}}
-    else {const target=alive.find(c=>c.id===battleState.tauntTarget)||alive[Math.floor(Math.random()*alive.length)];let d=calcPhysical(e.attack,effectiveStats(target).defense,!!battleState.guarding[target.id]);d=Math.floor(d*(1-(battleState.guarding[target.id]||0)));const dealt=await applyPartyDamageAnimated(target,d,{normalAttack:true});if(dealt>0)pushEvent(`混沌の幻影の「混沌の一撃」！ ${target.name}に${dealt}ダメージ。`);}
+    else {const target=alive.find(c=>c.id===battleState.tauntTarget)||extPickPartyTarget(alive,{});let d=calcPhysical(e.attack,effectiveStats(target).defense,!!battleState.guarding[target.id]);d=Math.floor(d*(1-(battleState.guarding[target.id]||0)));const dealt=await applyPartyDamageAnimated(target,d,{normalAttack:true});if(dealt>0)pushEvent(`混沌の幻影の「混沌の一撃」！ ${target.name}に${dealt}ダメージ。`);}
     battleState.tauntTarget=null;await applyEnemyTurnStatuses();return;
   }
   if(e.name==="ゴブリン"&&e.members){
@@ -1935,7 +1935,7 @@ async function enemyTurn(){
       const totals={};let attacks=0;
       for(let i=0;i<living.length*3;i++){
         const targets=livingParty();if(!targets.length)break;
-        const target=targets[Math.floor(Math.random()*targets.length)];
+        const target=extPickPartyTarget(targets,{});
         const raw=calcPhysical(e.attack,effectiveStats(target).defense,false);
         const d=Math.floor(raw*(1-(battleState.guarding[target.id]||0)));
         const dealt=await applyPartyDamageAnimated(target,d,{normalAttack:true});totals[target.name]=(totals[target.name]||0)+dealt;attacks++;
@@ -1975,7 +1975,7 @@ async function enemyTurn(){
     }
     await applyEnemyTurnStatuses();return;
   }
-  if(e.name==="ゴブリン"&&goblinCharging){const target=alive.find(c=>c.id===battleState.tauntTarget)||alive[Math.floor(Math.random()*alive.length)];const stats=effectiveStats(target);const raw=calcPhysical(e.attack*2.8,stats.defense,false);const d=Math.floor(raw*(1-(battleState.guarding[target.id]||0)));goblinCharging=false;animateEnemyAttack();sound("damage",true);const dealt=await applyPartyDamageAnimated(target,d,{normalAttack:true});if(dealt>0)pushEvent(`ゴブリンの「強打」！ ${target.name}に${dealt}ダメージ。`);await applyEnemyTurnStatuses();return;}
+  if(e.name==="ゴブリン"&&goblinCharging){const target=alive.find(c=>c.id===battleState.tauntTarget)||extPickPartyTarget(alive,{});const stats=effectiveStats(target);const raw=calcPhysical(e.attack*2.8,stats.defense,false);const d=Math.floor(raw*(1-(battleState.guarding[target.id]||0)));goblinCharging=false;animateEnemyAttack();sound("damage",true);const dealt=await applyPartyDamageAnimated(target,d,{normalAttack:true});if(dealt>0)pushEvent(`ゴブリンの「強打」！ ${target.name}に${dealt}ダメージ。`);await applyEnemyTurnStatuses();return;}
   if(e.name==="ゴブリン"){goblinCharging=true;pushEvent("ゴブリンは棍棒を振り上げた！ 次のターンに強打が来る！","warning");await applyEnemyTurnStatuses();return;}
   if(e.name==="魔王"&&[4,8,12].includes(turn)){
     animateEnemyAttack();document.querySelector(".battle-arena")?.classList.add("maou-dark-flames");setTimeout(()=>document.querySelector(".battle-arena")?.classList.remove("maou-dark-flames"),battleDelayMs(850));
@@ -1992,7 +1992,7 @@ async function enemyTurn(){
   const taunt=alive.find(c=>c.id===battleState.tauntTarget);
   const rearIds=new Set(["mage","healer"]);
   const rear=alive.filter(c=>rearIds.has(c.id));
-  let target=taunt||(e.name==="オオカミ"?(alive.find(c=>c.id===battleState.wolfLastTargetId)||rear[Math.floor(Math.random()*Math.max(1,rear.length))]||alive[Math.floor(Math.random()*alive.length)]):alive[Math.floor(Math.random()*alive.length)]);
+  let target=taunt||(e.name==="オオカミ"?(alive.find(c=>c.id===battleState.wolfLastTargetId)||rear[Math.floor(Math.random()*Math.max(1,rear.length))]||extPickPartyTarget(alive,{})):extPickPartyTarget(alive,{}));
   let stats=effectiveStats(target);if(target.id==="kotama"&&target.hp<=stats.maxHp*BATTLE_RULES.passives.kotama.threshold)stats={...stats,defense:Math.floor(stats.defense*BATTLE_RULES.passives.kotama.lowHpDefense)};
   const sp=(e.name==="魔王"&&Math.random()>=.7);
   let damage=sp?calcSp(e.spAttack||0,e.spDefense??Math.floor(e.defense/2),!!battleState.guarding[target.id]):calcPhysical(e.attack,stats.defense,!!battleState.guarding[target.id]);
