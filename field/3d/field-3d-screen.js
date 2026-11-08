@@ -164,7 +164,7 @@ function rebuildWorld() {
   scene.add(objectLayer.group);
   const landmarkLimit = mobile ? 6 : 12;
   const landmarkPlan = planField3DLandmarks(visibleSnapshot, { maxCount: landmarkLimit, includeWallRoots: true, includeBrokenColumns: true, includeArches: true, seed: 1701 });
-  landmarkLayer = buildField3DLandmarkLayer(THREE, landmarkPlan.map(item => ({ ...item, assetKey: item.kind === "ancientArch" ? "ancientArchA" : item.kind === "brokenColumn" ? "brokenColumnA" : "wallRootA" })), { maxCount: landmarkLimit, floorY: 0, assets: loadedAssets?.assets || {}, onPlacementError: error => console.warn("[field-3d landmark]", error) });
+  landmarkLayer = buildField3DLandmarkLayer(THREE, landmarkPlan.map(item => ({ ...item, assetKey: item.kind === "ancientArch" ? "ancientArchA" : item.kind === "brokenColumn" ? "brokenColumnA" : "wallRootA" })), { maxCount: landmarkLimit, floorY: 0, lodDistances: mobile ? [0, 12, 26] : [0, 18, 36], lodHysteresis: 0.08, assets: loadedAssets?.assets || {}, onPlacementError: error => console.warn("[field-3d landmark]", error) });
   scene.add(landmarkLayer.group);
   const decorationCount = Object.values(decorationLayer.counts).reduce((sum, count) => sum + count, 0);
   status.textContent = "B1F 3D探索 · 環境装飾 " + decorationCount + "点";
