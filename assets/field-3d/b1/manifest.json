@@ -8,7 +8,7 @@
   },
   "assets": {
     "stoneWallA": {
-      "url": "./environment/env-stone-wall-a.glb",
+      "url": "./environment/env-stone-wall-a.gltf",
       "category": "environment",
       "required": false,
       "scale": 1,
@@ -19,14 +19,14 @@
       "enabled": false
     },
     "stoneFloorA": {
-      "url": "./environment/env-stone-floor-a.glb",
+      "url": "./environment/env-stone-floor-a.gltf",
       "category": "environment",
       "required": false,
       "scale": 1,
       "enabled": false
     },
     "dirtFloorA": {
-      "url": "./environment/env-dirt-floor-a.glb",
+      "url": "./environment/env-dirt-floor-a.gltf",
       "category": "environment",
       "required": false,
       "scale": 1,
