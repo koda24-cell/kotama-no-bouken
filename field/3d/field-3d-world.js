@@ -88,12 +88,14 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   const floorMaterial = makeAssetMaterial(stoneFloorAssetMesh, () => new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true,
     map: stoneMaps.map || null, normalMap: stoneMaps.normalMap || null,
-    roughnessMap: stoneMaps.roughnessMap || null
+    roughnessMap: stoneMaps.ormMap || stoneMaps.roughnessMap || null,
+    metalnessMap: stoneMaps.ormMap || null
   }), stoneMaps, options.floorRoughness ?? 0.96);
   const dirtFloorMaterial = makeAssetMaterial(dirtFloorAssetMesh, () => new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: options.floorRoughness ?? 0.96, vertexColors: true,
     map: dirtMaps.map || null, normalMap: dirtMaps.normalMap || null,
-    roughnessMap: dirtMaps.roughnessMap || null
+    roughnessMap: dirtMaps.ormMap || dirtMaps.roughnessMap || null,
+    metalnessMap: dirtMaps.ormMap || null
   }), dirtMaps, options.floorRoughness ?? 0.98);
   const wallMaterial = makeAssetMaterial(wallAssetMesh, () => new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: options.wallRoughness ?? 0.88, vertexColors: true,
