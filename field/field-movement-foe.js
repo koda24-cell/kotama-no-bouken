@@ -150,7 +150,12 @@ function fieldAfterMove(a, moved) {
     fieldState.walked -= FIELD_TILE;
     fieldState.steps++;
     fieldEmit("step", { area: fieldState.area, floor: fieldState.floor, tileX: tx, tileY: ty, steps: fieldState.steps });
-    if (fieldState.steps >= fieldState.nextEncounter && !fieldState.lock) { fieldTriggerEncounter(); break; }
+    const adminCfg=window.kotamaAdminEncounterSettings;
+    if(adminCfg?.forceNext&&!fieldState.lock){adminCfg.forceNext=false;fieldTriggerAdminEncounter();break;}
+    if (fieldState.steps >= fieldState.nextEncounter && !fieldState.lock) {
+      if(adminCfg?.disableRandom){fieldRollNextEncounter();continue;}
+      fieldTriggerEncounter();break;
+    }
   }
 }
 function fieldUpdateDanger() {
