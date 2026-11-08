@@ -7,6 +7,7 @@ import { buildField3DDecorationLayer } from "./field-3d-decoration-layer.js";
 import { buildField3DObjectLayer } from "./field-3d-object-layer.js";
 import { planField3DLandmarks } from "./field-3d-landmark-planner.js";
 import { buildField3DLandmarkLayer } from "./field-3d-landmark-layer.js";
+import { resolveField3DQualityPreset, applyField3DQualityPreset } from "./field-3d-quality-presets.js";
 
 const root = document.getElementById("field-3d-viewport");
 const canvasHost = document.getElementById("field-3d-canvas");
@@ -44,16 +45,31 @@ function ensureRenderer() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0b1712);
   camera = new THREE.PerspectiveCamera(72, 1, 0.08, 180);
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  const mobileViewport = window.matchMedia?.("(max-width: 768px)")?.matches ?? false;
+  const lowMemoryDevice = Number(navigator.deviceMemory || 8) <= 4;
+  const qualityProfile = mobileViewport || lowMemoryDevice ? "mobile" : "high";
+  const quality = resolveField3DQualityPreset({
+    profile: qualityProfile,
+    devicePixelRatio: window.devicePixelRatio || 1,
+    maxTextureSize: 4096,
+    reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false
+  });
+  renderer = new THREE.WebGLRenderer({ antialias: quality.antialias, alpha: false, powerPreference: "high-performance" });
+  applyField3DQualityPreset(renderer, quality);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.08;
-  renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   canvasHost.appendChild(renderer.domElement);
-  atmosphere = buildField3DAtmosphere(THREE, scene, { fogDensity: 0.038, maxPixelRatio: 1.5 });
-  proceduralTextures = createField3DProceduralTextures(THREE, { resolution: 256, seed: 1701, anisotropy: 4 });
+  atmosphere = buildField3DAtmosphere(THREE, scene, { fogDensity: quality.fogDensity, maxPixelRatio: quality.pixelRatio });
+  const maxAnisotropy = renderer.capabilities?.getMaxAnisotropy?.() || 1;
+  proceduralTextures = createField3DProceduralTextures(THREE, {
+    resolution: qualityProfile === "mobile" ? 128 : 256,
+    seed: 1701,
+    anisotropy: Math.min(4, maxAnisotropy)
+  });
+  renderer.userData = renderer.userData || {};
+  renderer.userData.kotama3DQuality = qualityProfile;
   resize();
   window.addEventListener("resize", resize, { passive: true });
   status.textContent = "B1F 3D探索";
@@ -74,15 +90,18 @@ function rebuildWorld() {
   if (landmarkLayer) { scene.remove(landmarkLayer.group); landmarkLayer.dispose(); }
   const isExplored = cell => !snapshot.explored || !!snapshot.explored[cell.ty * snapshot.area.width + cell.tx];
   const exploredKeys = new Set(snapshot.cells.filter(isExplored).map(cell => cell.tx + "," + cell.ty));
-  const visibleSnapshot = { ...snapshot, cells: snapshot.cells.filter(isExplored), objects: snapshot.objects.filter(o => exploredKeys.has(o.tx + "," + o.ty)), foes: snapshot.foes.filter(f => exploredKeys.has(f.tx + "," + f.ty)) };
+  const visibleSnapshot = { ...snapshot, cells: snapshot.cells.filter(isExplored), objects: (snapshot.objects || []).filter(o => exploredKeys.has(o.tx + "," + o.ty)), foes: (snapshot.foes || []).filter(f => exploredKeys.has(f.tx + "," + f.ty)) };
   world = buildField3DWorld(THREE, snapshot, { floorRoughness: 0.96, wallRoughness: 0.9, proceduralTextures });
   scene.add(world.group);
-  decorationLayer = buildField3DDecorationLayer(THREE, visibleSnapshot, { density: 0.88, maxPerKind: 280, includeRoots: true, rootDensity: 0.16, floorY: -0.035 });
+  const qualityProfile = renderer.userData?.kotama3DQuality || "balanced";
+  const mobile = qualityProfile === "mobile";
+  decorationLayer = buildField3DDecorationLayer(THREE, visibleSnapshot, { density: mobile ? 0.62 : 0.88, maxPerKind: mobile ? 140 : 280, includeRoots: true, rootDensity: mobile ? 0.10 : 0.16, floorY: -0.035 });
   scene.add(decorationLayer.group);
   objectLayer = buildField3DObjectLayer(THREE, visibleSnapshot, { fallback: true, hideConcealed: true, floorY: 0.02 });
   scene.add(objectLayer.group);
-  const landmarkPlan = planField3DLandmarks(visibleSnapshot, { maxCount: 12, includeWallRoots: true, includeBrokenColumns: true, includeArches: true, seed: 1701 });
-  landmarkLayer = buildField3DLandmarkLayer(THREE, landmarkPlan, { maxCount: 12, floorY: 0, onPlacementError: error => console.warn("[field-3d landmark]", error) });
+  const landmarkLimit = mobile ? 6 : 12;
+  const landmarkPlan = planField3DLandmarks(visibleSnapshot, { maxCount: landmarkLimit, includeWallRoots: true, includeBrokenColumns: true, includeArches: true, seed: 1701 });
+  landmarkLayer = buildField3DLandmarkLayer(THREE, landmarkPlan, { maxCount: landmarkLimit, floorY: 0, onPlacementError: error => console.warn("[field-3d landmark]", error) });
   scene.add(landmarkLayer.group);
   const decorationCount = Object.values(decorationLayer.counts).reduce((sum, count) => sum + count, 0);
   status.textContent = "B1F 3D探索 · 環境装飾 " + decorationCount + "点";
