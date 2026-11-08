@@ -239,6 +239,14 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 .admin-encounter-summary{display:grid;gap:5px;margin-top:10px;padding:10px;border:1px solid #667bb066;border-radius:6px;background:#0b1530;font-size:12px}
 .admin-encounter-summary strong{color:#ffe8a3}
 .admin-encounter-summary span{color:#d7e1ff;overflow-wrap:anywhere}
+.admin-cheat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:6px}
+.admin-stat-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}
+.admin-stat-inputs label,.admin-select-row{display:grid;gap:4px;color:#cbd8f5;font-size:11px}
+.admin-stat-inputs input,.admin-select-row select{width:100%;min-width:0;padding:6px;border:1px solid #667bb0;border-radius:4px;background:#080f22;color:#fff}
+.admin-select-row{grid-template-columns:110px minmax(0,1fr);align-items:center;margin:8px 0}
+.admin-skip-actions{display:flex;flex-wrap:wrap;gap:6px}
+.admin-stat-editor button{margin-top:4px}
+.admin-skip-actions button{font-size:11px}
 .admin-warning{color:#ffb2a6}
 .admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .admin-actions button:first-child{border-color:#d9c27a;color:#ffe8a3}
