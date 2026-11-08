@@ -69,6 +69,9 @@ function makeSurface(kind, size, seed) {
   const roughCanvas = makeCanvas(size);
   const roughContext = roughCanvas.getContext("2d");
   const roughImage = roughContext.createImageData(size, size);
+  const ormCanvas = makeCanvas(size);
+  const ormContext = ormCanvas.getContext("2d");
+  const ormImage = ormContext.createImageData(size, size);
   const strength = stone ? 3.2 : 2.4;
 
   for (let y = 0; y < size; y += 1) {
@@ -90,11 +93,17 @@ function makeSurface(kind, size, seed) {
       const rough = stone ? 205 + roughNoise * 16 : 232 + roughNoise * 11;
       roughImage.data[ni] = roughImage.data[ni + 1] = roughImage.data[ni + 2] = rough;
       roughImage.data[ni + 3] = 255;
+      // glTF-style ORM packing: R=occlusion, G=roughness, B=metalness.
+      ormImage.data[ni] = 255;
+      ormImage.data[ni + 1] = rough;
+      ormImage.data[ni + 2] = 0;
+      ormImage.data[ni + 3] = 255;
     }
   }
   normalContext.putImageData(normalImage, 0, 0);
   roughContext.putImageData(roughImage, 0, 0);
-  return { color: canvas, normal: normalCanvas, roughness: roughCanvas };
+  ormContext.putImageData(ormImage, 0, 0);
+  return { color: canvas, normal: normalCanvas, roughness: roughCanvas, orm: ormCanvas };
 }
 
 function texture(THREE, canvas, color = false) {
@@ -124,12 +133,16 @@ export function createField3DProceduralTextures(THREE, {
     stone: {
       map: texture(THREE, stone.color, true),
       normalMap: texture(THREE, stone.normal),
-      roughnessMap: texture(THREE, stone.roughness)
+      roughnessMap: texture(THREE, stone.orm),
+      metalnessMap: texture(THREE, stone.orm),
+      ormMap: texture(THREE, stone.orm)
     },
     dirt: {
       map: texture(THREE, dirt.color, true),
       normalMap: texture(THREE, dirt.normal),
-      roughnessMap: texture(THREE, dirt.roughness)
+      roughnessMap: texture(THREE, dirt.orm),
+      metalnessMap: texture(THREE, dirt.orm),
+      ormMap: texture(THREE, dirt.orm)
     }
   };
   for (const set of Object.values(maps)) {
