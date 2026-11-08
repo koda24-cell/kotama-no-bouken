@@ -110,6 +110,22 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     roughnessMap: stoneMaps.roughnessMap || null
   }), stoneMaps, options.wallRoughness ?? 0.92);
 
+  // A continuous stone canopy closes the first-person corridor and gives the
+  // camera a readable ceiling plane. It is presentation-only and follows the
+  // same explored-cell mask as the floor.
+  const ceilingGeometry = new THREE.BoxGeometry(scale, 0.18, scale);
+  const ceilingMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    roughness: options.ceilingRoughness ?? 0.96,
+    map: stoneMaps.map || null,
+    normalMap: stoneMaps.normalMap || null,
+    roughnessMap: stoneMaps.ormMap || stoneMaps.roughnessMap || null,
+    metalnessMap: stoneMaps.ormMap || null,
+    side: THREE.DoubleSide
+  });
+  const ceilingMesh = floorCells.length
+    ? new THREE.InstancedMesh(ceilingGeometry, ceilingMaterial, floorCells.length)
+    : null;
   const isExplored = cell => !snapshot.explored || !!snapshot.explored[cell.ty * snapshot.area.width + cell.tx];
   // Never render cells the player has not mapped yet. This keeps the first-person
   // view consistent with the existing labyrinth fog-of-war.
@@ -162,6 +178,21 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   placeInstances(dirtFloorMesh, dirtCells, "dirt");
   placeInstances(wallMesh, wallCells, "wall");
 
+  if (ceilingMesh) {
+    floorCells.forEach((cell, index) => {
+      dummy.position.set(cell.world.x, wallHeight - 0.09, cell.world.z);
+      dummy.updateMatrix();
+      ceilingMesh.setMatrixAt(index, dummy.matrix);
+      const hash = Math.abs(Math.sin((cell.tx + 47) * 91.7 + (cell.ty + 13) * 217.3));
+      ceilingMesh.setColorAt(index, new THREE.Color(0.82 + hash * 0.12));
+    });
+    ceilingMesh.instanceMatrix.needsUpdate = true;
+    if (ceilingMesh.instanceColor) ceilingMesh.instanceColor.needsUpdate = true;
+    ceilingMesh.castShadow = false;
+    ceilingMesh.receiveShadow = true;
+    group.add(ceilingMesh);
+  }
+
   const baseGeometry = new THREE.BoxGeometry(snapshot.area.worldWidth, 0.2, snapshot.area.worldDepth);
   const baseMaterial = new THREE.MeshStandardMaterial({
     color: options.baseColor ?? 0x1b211b, roughness: 1
@@ -172,8 +203,8 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
   group.add(base);
 
   group.userData.kotama3d = {
-    floorMesh, dirtFloorMesh, wallMesh, floorGeometry, dirtGeometry, wallGeometry,
-    floorMaterial, dirtFloorMaterial, wallMaterial, base
+    floorMesh, dirtFloorMesh, wallMesh, ceilingMesh, floorGeometry, dirtGeometry, wallGeometry, ceilingGeometry,
+    floorMaterial, dirtFloorMaterial, wallMaterial, ceilingMaterial, base
   };
 
   function dispose() {
