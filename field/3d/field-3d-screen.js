@@ -45,7 +45,7 @@ function ensureRenderer() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0b1712);
   camera = new THREE.PerspectiveCamera(72, 1, 0.08, 180);
-  const mobileViewport = window.matchMedia?.("(max-width: 768px)")?.matches ?? false;
+  const mobileViewport = (window.matchMedia?.("(max-width: 768px)")?.matches ?? false) || Number(navigator.maxTouchPoints || 0) > 1;
   const lowMemoryDevice = Number(navigator.deviceMemory || 8) <= 4;
   const qualityProfile = mobileViewport || lowMemoryDevice ? "mobile" : "high";
   const quality = resolveField3DQualityPreset({
