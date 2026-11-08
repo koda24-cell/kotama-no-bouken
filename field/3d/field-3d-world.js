@@ -65,8 +65,11 @@ export function buildField3DWorld(THREE, snapshot, options = {}) {
     roughnessMap: stoneMaps.roughnessMap || null
   });
 
-  const floorCells = snapshot.cells.filter(cell => cell.floorVisible);
-  const wallCells = snapshot.cells.filter(cell => cell.solid);
+  const isExplored = cell => !snapshot.explored || !!snapshot.explored[cell.ty * snapshot.area.width + cell.tx];
+  // Never render cells the player has not mapped yet. This keeps the first-person
+  // view consistent with the existing labyrinth fog-of-war.
+  const floorCells = snapshot.cells.filter(cell => cell.floorVisible && isExplored(cell));
+  const wallCells = snapshot.cells.filter(cell => cell.solid && isExplored(cell));
   const dirtCells = floorCells.filter(cell => cell.terrain === "grass" || cell.terrain === "floor");
   const stoneCells = floorCells.filter(cell => cell.terrain !== "grass" && cell.terrain !== "floor");
   const floorMesh = stoneCells.length
