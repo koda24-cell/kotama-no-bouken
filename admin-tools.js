@@ -22,7 +22,7 @@ function adminItemEditor(){
  const cfg=adminBattleSettings(),items=shopItems.filter(i=>i&&i.id),selected=items.find(i=>i.id===(cfg.itemStatSelected||items[0]?.id))||items[0];
  if(!selected)return '';
  const options=items.map(i=>'<option value="'+esc(i.id)+'" '+(i===selected?'selected':'')+'>'+esc(i.name||i.id)+'</option>').join('');
- const keys=[["price","販売価格"],["hpBonus","HP加算"],["maxSpBonus","最大SP加算"],["attackBonus","攻撃加算"],["spAttackBonus","SP攻撃加算"],["defenseBonus","防御加算"],["spDefenseBonus","SP防御加算"],["damageReduction","ダメージ軽減（小数）"],["evasionRate","回避率（小数）"],["hpRate","HP倍率加算（小数）"],["attackRate","攻撃倍率加算（小数）"],["spAttackRate","SP攻撃倍率加算（小数）"],["defenseRate","防御倍率加算（小数）"]];
+ const keys=[["price","販売価格"],["hpBonus","HP加算"],["attackBonus","攻撃加算"],["spAttackBonus","SP攻撃加算"],["defenseBonus","防御加算"],["spDefenseBonus","SP防御加算"],["damageReduction","ダメージ軽減（小数）"],["lowHpReduction","低HP時ダメージ軽減（小数）"],["evasionRate","回避率（小数）"],["hpRate","HP倍率加算（小数）"],["attackRate","攻撃倍率加算（小数）"],["spAttackRate","SP攻撃倍率加算（小数）"]];
  return '<div class="admin-section"><h3>商品のステータス書き換え</h3><label class="admin-select-row">編集する商品<select id="admin-item-stat-select">'+options+'</select></label><div class="admin-stat-inputs">'+keys.map(([key,label])=>'<label>'+label+'<input type="number" step="'+(key.toLowerCase().includes("rate")||key==="damageReduction"||key==="evasionRate"?"0.01":"1")+'" data-admin-item-stat="'+key+'" value="'+(Number.isFinite(selected[key])?selected[key]:0)+'"></label>').join('')+'</div><button type="button" id="admin-item-stat-apply">商品データに適用</button><p class="admin-note">数値変更は現在のゲームセッション中の商品データに反映します。装備効果は再計算されます。</p></div>';
 }
 function adminBattleEquipmentEditor(party){
