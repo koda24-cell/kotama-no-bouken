@@ -31,8 +31,18 @@ function makeSurface(kind, size, seed) {
   const context = canvas.getContext("2d", { willReadFrequently: true });
   const image = context.createImageData(size, size);
   const heights = new Float32Array(size * size);
+  const palettes = {
+    stone: [76, 88, 78], dirt: [73, 66, 45],
+    moss: [48, 79, 48], bark: [75, 51, 34],
+    wood: [105, 75, 47], metal: [72, 82, 83],
+    crystal: [70, 132, 123]
+  };
+  const base = palettes[kind] || palettes.stone;
   const stone = kind === "stone";
-  const base = stone ? [76, 88, 78] : [73, 66, 45];
+  const fibrous = kind === "bark" || kind === "wood";
+  const metallic = kind === "metal";
+  const crystalline = kind === "crystal";
+  const mossy = kind === "moss";
 
   for (let y = 0; y < size; y += 1) {
     for (let x = 0; x < size; x += 1) {
@@ -48,12 +58,19 @@ function makeSurface(kind, size, seed) {
         const joint = gx < 3 || gx >= cell - 3 || gy < 3 || gy >= cell - 3 ? 1 : 0;
         const chipped = periodicNoise(x, y, size / 8, seed + 5) > 0.94 ? 0.10 : 0;
         height -= joint * 0.16 + chipped;
+      } else if (fibrous) {
+        const grain = Math.sin((x / size) * Math.PI * 64 + periodicNoise(x, y, size / 3, seed + 9) * 2);
+        height += grain * (kind === "bark" ? 0.075 : 0.045);
+      } else if (mossy) {
+        height += Math.max(0, periodicNoise(x, y, size / 7, seed + 19)) * 0.13;
+      } else if (crystalline) {
+        height += Math.abs(periodicNoise(x, y, size / 5, seed + 23)) * 0.11;
       } else {
         const pebble = periodicNoise(x, y, size / 8, seed + 19) > 0.78 ? 0.08 : 0;
         height += pebble;
       }
       heights[i] = Math.max(0, Math.min(1, height));
-      const variation = (heights[i] - 0.5) * (stone ? 58 : 46) + fine * 12;
+      const variation = (heights[i] - 0.5) * (stone ? 58 : metallic ? 24 : 46) + fine * (fibrous ? 20 : 12);
       const index = i * 4;
       image.data[index] = Math.max(0, Math.min(255, base[0] + variation));
       image.data[index + 1] = Math.max(0, Math.min(255, base[1] + variation));
@@ -72,7 +89,7 @@ function makeSurface(kind, size, seed) {
   const ormCanvas = makeCanvas(size);
   const ormContext = ormCanvas.getContext("2d");
   const ormImage = ormContext.createImageData(size, size);
-  const strength = stone ? 3.2 : 2.4;
+  const strength = stone ? 3.2 : fibrous ? 2.8 : 2.4;
 
   for (let y = 0; y < size; y += 1) {
     for (let x = 0; x < size; x += 1) {
@@ -90,13 +107,14 @@ function makeSurface(kind, size, seed) {
       normalImage.data[ni + 2] = (1 / length * 0.5 + 0.5) * 255;
       normalImage.data[ni + 3] = 255;
       const roughNoise = periodicNoise(x, y, size / 6, seed + 31);
-      const rough = stone ? 205 + roughNoise * 16 : 232 + roughNoise * 11;
+      const rough = metallic ? 112 + roughNoise * 20 : crystalline ? 145 + roughNoise * 24 : stone ? 205 + roughNoise * 16 : 232 + roughNoise * 11;
       roughImage.data[ni] = roughImage.data[ni + 1] = roughImage.data[ni + 2] = rough;
       roughImage.data[ni + 3] = 255;
       // glTF-style ORM packing: R=occlusion, G=roughness, B=metalness.
-      ormImage.data[ni] = 255;
+      const occlusion = Math.max(150, Math.min(255, 238 - Math.max(0, 0.5 - heights[i]) * 110));
+      ormImage.data[ni] = occlusion;
       ormImage.data[ni + 1] = rough;
-      ormImage.data[ni + 2] = 0;
+      ormImage.data[ni + 2] = metallic ? 165 : 0;
       ormImage.data[ni + 3] = 255;
     }
   }
@@ -127,26 +145,19 @@ export function createField3DProceduralTextures(THREE, {
     throw new TypeError("createField3DProceduralTextures: Three.js is required.");
   }
   const size = Math.max(64, Math.min(512, 2 ** Math.round(Math.log2(resolution))));
-  const stone = makeSurface("stone", size, seed);
-  const dirt = makeSurface("dirt", size, seed + 101);
-  const stoneOrm = texture(THREE, stone.orm);
-  const dirtOrm = texture(THREE, dirt.orm);
-  const maps = {
-    stone: {
-      map: texture(THREE, stone.color, true),
-      normalMap: texture(THREE, stone.normal),
-      roughnessMap: stoneOrm,
-      metalnessMap: stoneOrm,
-      ormMap: stoneOrm
-    },
-    dirt: {
-      map: texture(THREE, dirt.color, true),
-      normalMap: texture(THREE, dirt.normal),
-      roughnessMap: dirtOrm,
-      metalnessMap: dirtOrm,
-      ormMap: dirtOrm
-    }
-  };
+  const kinds = ["stone", "dirt", "moss", "bark", "wood", "metal", "crystal"];
+  const maps = {};
+  kinds.forEach((kind, index) => {
+    const surface = makeSurface(kind, size, seed + index * 101);
+    const orm = texture(THREE, surface.orm);
+    maps[kind] = {
+      map: texture(THREE, surface.color, true),
+      normalMap: texture(THREE, surface.normal),
+      roughnessMap: orm,
+      metalnessMap: orm,
+      ormMap: orm
+    };
+  });
   for (const set of Object.values(maps)) {
     for (const map of Object.values(set)) map.anisotropy = Math.max(1, Math.min(8, anisotropy));
   }
