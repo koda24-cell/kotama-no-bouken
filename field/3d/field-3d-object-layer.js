@@ -60,7 +60,8 @@ export function buildField3DObjectLayer(THREE, snapshot, {
   fallbackColors = {},
   fallbackSizes = {},
   hideConcealed = true,
-  yOffset = 0
+  yOffset = 0,
+  proceduralTextures = {}
 } = {}) {
   if (!THREE?.Group || !THREE?.Mesh || !snapshot?.objects) {
     throw new TypeError("buildField3DObjectLayer: Three.js and a valid snapshot are required.");
@@ -86,7 +87,7 @@ export function buildField3DObjectLayer(THREE, snapshot, {
       : kind === "stairs" ? "stairs"
       : kind === "sign" ? "sign" : null;
     if (proceduralKind) {
-      const model = createField3DProceduralModel(THREE, proceduralKind, { detail: 0 });
+      const model = createField3DProceduralModel(THREE, proceduralKind, { detail: 0, textures: proceduralTextures });
       if (model.userData.generatedResources) ownedResources.push(model.userData.generatedResources);
       model.userData.kotama3dPlaceholder = kind;
       return model;
