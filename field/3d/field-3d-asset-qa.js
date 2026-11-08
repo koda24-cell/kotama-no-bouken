@@ -4,7 +4,7 @@
  * Does not fetch files, mutate gameplay state, or modify loaded assets.
  */
 
-const VALID_CATEGORIES = new Set(["environment", "nature", "ruins", "props", "character", "foe", "ui"]);
+const VALID_CATEGORIES = new Set(["environment", "nature", "ruins", "props", "foes"]);
 const VALID_LOD = new Set(["lod0", "lod1", "lod2"]);
 
 export function inspectField3DManifest(manifest, { requireGlbExtension = true } = {}) {
