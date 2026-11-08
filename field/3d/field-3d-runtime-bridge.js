@@ -109,7 +109,7 @@ export function createField3DRuntimeBridge({
 
   function interact() {
     const current = read();
-    if (!current || current.fieldState.lock || current.fieldState.mapOpen) return false;
+    if (!current || current.fieldState.lock || current.fieldState.mapOpen || isInputBlocked()) return false;
     action();
     return true;
   }
