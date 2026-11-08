@@ -48,3 +48,22 @@
 @keyframes vfx-camera-heavy{0%,100%{transform:translate3d(0,0,0)}18%{transform:translate3d(-4px,2px,0)}38%{transform:translate3d(3px,-2px,0)}62%{transform:translate3d(-2px,1px,0)}}
 @keyframes vfx-target-hit{0%,100%{filter:brightness(1)}18%{filter:brightness(2.1) drop-shadow(0 0 12px #d9f7ff)}48%{filter:brightness(1.35)}}
 @media(prefers-reduced-motion:reduce){.battle-arena.vfx-impact,.battle-arena.vfx-impact-heavy,.enemy-group-unit.vfx-target-impact{animation:none!important}}
+
+/* Union cut-in refresh: party-wide cyan lineup inspired by classic JRPG battle transitions. */
+.union-cutin-layer::before{background:radial-gradient(ellipse at 50% 48%,rgba(0,239,226,.16),rgba(3,12,31,.88) 62%,rgba(0,3,14,.96) 100%);backdrop-filter:blur(3px) saturate(1.25)}
+.union-cutin-swipe{width:min(112vw,1180px);min-height:clamp(230px,42vh,430px);padding:clamp(16px,3vh,30px) clamp(18px,4vw,54px);background:linear-gradient(180deg,rgba(3,23,42,.78),rgba(0,11,28,.94)),radial-gradient(ellipse at 50% 45%,rgba(0,255,235,.28),transparent 65%);border-top:2px solid #67fff2;border-bottom:2px solid #67fff2;box-shadow:0 0 0 1px rgba(8,255,237,.35),0 0 32px rgba(0,245,230,.42),0 18px 60px rgba(0,0,0,.7)}
+.union-cutin-topline,.union-cutin-bottomline{height:2px;background:linear-gradient(90deg,transparent,#6afff4 18%,#fff 50%,#6afff4 82%,transparent);box-shadow:0 0 14px #00fff0}
+.union-cutin-label{text-align:center;color:#75fff4;font:900 clamp(18px,4vw,38px)/1 sans-serif;letter-spacing:.13em;text-shadow:0 0 8px #00fff0,0 0 22px #00cfc8;margin:0 0 8px}
+.union-cutin-members{position:relative;gap:clamp(4px,1.3vw,18px);min-height:clamp(110px,23vh,230px);padding:4px 0 8px}
+.union-cutin-members::before{content:"";position:absolute;inset:8% 0 0;background:linear-gradient(90deg,transparent,rgba(0,255,235,.1) 18%,rgba(0,255,235,.2) 50%,rgba(0,255,235,.1) 82%,transparent);border-top:1px solid rgba(104,255,245,.35);border-bottom:1px solid rgba(104,255,245,.25);transform:skewX(-8deg)}
+.union-cutin-member{position:relative;z-index:1;flex-direction:column;gap:2px;flex:1 1 0;max-width:190px;min-width:0;color:#eaffff;font-size:clamp(10px,1.5vw,17px);text-shadow:0 1px 3px #00151b,0 0 10px #00d9d1;transform:translateY(calc((var(--member-index) - 1) * -3px))}
+.union-cutin-portrait{width:100%;max-width:clamp(62px,12vw,150px);height:clamp(95px,22vh,225px);object-fit:contain;object-position:center bottom;filter:drop-shadow(0 0 5px rgba(0,255,239,.72)) drop-shadow(2px 3px 2px #001018)}
+.union-cutin-member span:last-child{padding:2px 8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-bottom:1px solid rgba(102,255,245,.6)}
+.union-cutin-skill{margin:0 -2vw;padding:8px 12px;color:#f0ffff;background:linear-gradient(90deg,transparent,rgba(0,195,190,.28) 15%,rgba(0,30,54,.94) 50%,rgba(0,195,190,.28) 85%,transparent);border-top:1px solid #72fff3;border-bottom:1px solid #72fff3;text-shadow:0 0 8px #00fff0,0 2px 3px #00121c;box-shadow:0 0 20px rgba(0,255,238,.18);transform:none}
+.union-cutin-swipe::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 35%,rgba(130,255,250,.16) 48%,rgba(255,255,255,.34) 50%,rgba(130,255,250,.12) 52%,transparent 65%);transform:translateX(-120%);animation:union-cutin-energy-sweep 1.05s ease-out .12s both}
+@keyframes union-cutin-energy-sweep{to{transform:translateX(120%)}}
+.union-cutin-count-1 .union-cutin-member{max-width:260px}.union-cutin-count-2 .union-cutin-member{max-width:230px}.union-cutin-count-3 .union-cutin-member{max-width:190px}.union-cutin-count-4 .union-cutin-member,.union-cutin-count-5 .union-cutin-member{max-width:160px}
+.union-cutin-swipe.samurai-cutin{border-color:#ffd68a;box-shadow:0 0 0 1px rgba(255,199,100,.4),0 0 34px rgba(255,149,40,.38),0 18px 60px rgba(0,0,0,.7)}
+.union-cutin-swipe.samurai-cutin .union-cutin-label{color:#ffe0a6;text-shadow:0 0 12px #ff9e32}.union-cutin-swipe.samurai-cutin .union-cutin-skill{border-color:#ffd68a;text-shadow:0 0 10px #ff9e32,0 2px 3px #281100}
+@media(max-width:600px){.union-cutin-swipe{width:118vw;min-height:250px;padding:14px 16px}.union-cutin-members{min-height:clamp(105px,24vh,190px);gap:3px}.union-cutin-portrait{width:100%;height:clamp(88px,20vh,170px)}.union-cutin-member{font-size:clamp(9px,2.5vw,12px)}.union-cutin-skill{font-size:clamp(20px,6vw,34px)}}
+@media(prefers-reduced-motion:reduce){.union-cutin-swipe::after{animation:none!important;opacity:0}}
