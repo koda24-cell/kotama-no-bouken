@@ -48,8 +48,8 @@ async function fieldEnterArea(n, opts = {}) {
   persistAutoSave();
   fieldState.lock = true;
   try {
-    if (n === 1 && !fieldState.flags["prologue"]) await fieldPlayScene("prologue");
-    if (f === 0) await fieldPlayStageIntro(FIELD_AREAS[n].stage);
+    if (!opts.adminSkip && n === 1 && !fieldState.flags["prologue"]) await fieldPlayScene("prologue");
+    if (!opts.adminSkip && f === 0) await fieldPlayStageIntro(FIELD_AREAS[n].stage);
     if ($("bgm-toggle")?.checked) startBgm();
     fieldState.lock = false;
     if (f === 0) await fieldPlayScene(FIELD_AREAS[n].enterScene);
