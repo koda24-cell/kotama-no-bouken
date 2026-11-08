@@ -8,6 +8,9 @@ import { buildField3DObjectLayer } from "./field-3d-object-layer.js";
 import { planField3DLandmarks } from "./field-3d-landmark-planner.js";
 import { buildField3DLandmarkLayer } from "./field-3d-landmark-layer.js";
 import { resolveField3DQualityPreset, applyField3DQualityPreset } from "./field-3d-quality-presets.js";
+import { loadField3DAssets } from "./field-3d-asset-loader.js";
+import { configureField3DMaterials } from "./field-3d-materials.js";
+import { disposeField3DAssets } from "./field-3d-asset-disposal.js";
 
 const root = document.getElementById("field-3d-viewport");
 const canvasHost = document.getElementById("field-3d-canvas");
@@ -16,6 +19,7 @@ const fieldScreen = document.getElementById("field");
 let renderer = null, scene = null, camera = null, atmosphere = null, world = null;
 let decorationLayer = null, objectLayer = null, landmarkLayer = null, proceduralTextures = null;
 let bridge = null, raf = 0, currentAreaKey = "", disposed = false;
+let loadedAssets = null, assetLoadPromise = null;
 
 function getRuntime() {
   const api = window.__kotamaField3D;
@@ -81,6 +85,50 @@ function resize() {
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
+async function ensureField3DAssets() {
+  if (loadedAssets) return loadedAssets;
+  if (assetLoadPromise) return assetLoadPromise;
+  assetLoadPromise = (async () => {
+    try {
+      const [{ GLTFLoader }, manifestResponse] = await Promise.all([
+        import("https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"),
+        fetch(new URL("../../assets/field-3d/b1/manifest.json", import.meta.url))
+      ]);
+      if (!manifestResponse.ok) throw new Error("B1F 3D asset manifest could not be loaded: " + manifestResponse.status);
+      const manifest = await manifestResponse.json();
+      const baseUrl = new URL("../../assets/field-3d/b1/", import.meta.url).href;
+      loadedAssets = await loadField3DAssets({
+        GLTFLoader,
+        manifest: manifest.assets || {},
+        baseUrl,
+        onProgress: ({ key, status, completed, total }) => {
+          statusElement("3D素材 " + completed + "/" + total + " · " + key + " " + status);
+        },
+        onAssetError: ({ key, url, error }) => console.warn("[field-3d asset fallback]", key, url, error)
+      });
+      for (const [key, asset] of Object.entries(loadedAssets.assets)) {
+        configureField3DMaterials(THREE, asset.scene, {
+          profile: key.toLowerCase().includes("glow") || key.toLowerCase().includes("fungus") ? "glow" :
+            key.toLowerCase().includes("moss") || key.toLowerCase().includes("fern") || key.toLowerCase().includes("root") ? "foliage" :
+            key.toLowerCase().includes("column") || key.toLowerCase().includes("arch") || key.toLowerCase().includes("door") ? "stone" : "props",
+          renderer,
+          enableShadows: false,
+          castShadow: false,
+          receiveShadow: false
+        });
+      }
+      return loadedAssets;
+    } catch (error) {
+      console.warn("[field-3d] GLB loading unavailable; using procedural fallback.", error);
+      loadedAssets = Object.freeze({ assets: Object.freeze({}), errors: Object.freeze([{ key: "manifest", error }]), loadedCount: 0, completedCount: 0, totalCount: 0 });
+      return loadedAssets;
+    }
+  })();
+  return assetLoadPromise;
+}
+function statusElement(message) {
+  if (status) status.textContent = message;
+}
 function rebuildWorld() {
   const snapshot = bridge.getSnapshot();
   if (!snapshot) return;
@@ -95,13 +143,13 @@ function rebuildWorld() {
   scene.add(world.group);
   const qualityProfile = renderer.userData?.kotama3DQuality || "balanced";
   const mobile = qualityProfile === "mobile";
-  decorationLayer = buildField3DDecorationLayer(THREE, visibleSnapshot, { density: mobile ? 0.62 : 0.88, maxPerKind: mobile ? 140 : 280, includeRoots: true, rootDensity: mobile ? 0.10 : 0.16, floorY: -0.035 });
+  decorationLayer = buildField3DDecorationLayer(THREE, visibleSnapshot, { density: mobile ? 0.62 : 0.88, maxPerKind: mobile ? 140 : 280, includeRoots: true, rootDensity: mobile ? 0.10 : 0.16, floorY: -0.035, assets: loadedAssets?.assets || {}, assetKeys: { moss: "mossClusterA", fern: "fernA", glowPlant: "glowPlantA", fungus: "fungusA", root: "wallRootA" } });
   scene.add(decorationLayer.group);
-  objectLayer = buildField3DObjectLayer(THREE, visibleSnapshot, { fallback: true, hideConcealed: true, floorY: 0.02 });
+  objectLayer = buildField3DObjectLayer(THREE, visibleSnapshot, { fallback: true, hideConcealed: true, floorY: 0.02, assets: loadedAssets?.assets || {}, assetKeys: { door: "ancientDoorA", chest: "chestA", gather: "gatherA", save: "saveLampA" } });
   scene.add(objectLayer.group);
   const landmarkLimit = mobile ? 6 : 12;
   const landmarkPlan = planField3DLandmarks(visibleSnapshot, { maxCount: landmarkLimit, includeWallRoots: true, includeBrokenColumns: true, includeArches: true, seed: 1701 });
-  landmarkLayer = buildField3DLandmarkLayer(THREE, landmarkPlan, { maxCount: landmarkLimit, floorY: 0, onPlacementError: error => console.warn("[field-3d landmark]", error) });
+  landmarkLayer = buildField3DLandmarkLayer(THREE, landmarkPlan.map(item => ({ ...item, assetKey: item.kind === "ancientArch" ? "ancientArchA" : item.kind === "brokenColumn" ? "brokenColumnA" : "wallRootA" })), { maxCount: landmarkLimit, floorY: 0, assets: loadedAssets?.assets || {}, onPlacementError: error => console.warn("[field-3d landmark]", error) });
   scene.add(landmarkLayer.group);
   const decorationCount = Object.values(decorationLayer.counts).reduce((sum, count) => sum + count, 0);
   status.textContent = "B1F 3D探索 · 環境装飾 " + decorationCount + "点";
@@ -154,6 +202,9 @@ function setMode(mode) {
       rebuildWorld();
       resize();
       syncCamera();
+      ensureField3DAssets().then(() => {
+        if (!disposed && window.__field3DMode) rebuildWorld();
+      });
       if (!raf) raf = requestAnimationFrame(frame);
     } catch (error) {
       console.error("[field-3d]", error);
@@ -203,6 +254,7 @@ window.addEventListener("pagehide", () => {
   decorationLayer?.dispose();
   objectLayer?.dispose();
   landmarkLayer?.dispose();
+  if (loadedAssets) disposeField3DAssets(loadedAssets);
   proceduralTextures?.dispose();
   atmosphere?.dispose();
   renderer?.dispose();
