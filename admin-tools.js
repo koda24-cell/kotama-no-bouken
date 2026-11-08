@@ -5,13 +5,36 @@
    ============================================================ */
 // ===== 開発者用管理パネル（確認・バックアップ中心） =====
 let adminActiveTab="player";
+window.kotamaAdminEncounterSettings ||= { disableRandom:false, forceNext:false, selected:{} };
+function adminEncounterSettings(){return window.kotamaAdminEncounterSettings;}
+function adminEncounterEnemyRows(){return Object.entries(FIELD_ENEMIES||{}).filter(([,e])=>!e.foe).map(([id,e])=>{const count=Number(adminEncounterSettings().selected[id])||0;return `<label class="admin-encounter-enemy"><span><input type="checkbox" data-admin-enemy="${esc(id)}" ${count>0?"checked":""}> ${esc(e.name)}</span><input type="number" min="0" max="8" step="1" value="${count}" data-admin-enemy-count="${esc(id)}" aria-label="${esc(e.name)}の出現数"></label>`;}).join("");}
+function adminRenderEncounter(){
+ const cfg=adminEncounterSettings(),selected=Object.entries(cfg.selected).filter(([,n])=>Number(n)>0),total=selected.reduce((n,[,count])=>n+Number(count),0),summary=selected.map(([id,count])=>`${FIELD_ENEMIES[id]?.name||id} × ${count}`).join(" ／ ")||"未選択";
+ return `<section class="admin-section"><h3>フィールド遭遇制御</h3>
+ <label class="admin-encounter-toggle"><input type="checkbox" id="admin-disable-random" ${cfg.disableRandom?"checked":""}> 通常エンカウントを停止する</label>
+ <label class="admin-encounter-toggle"><input type="checkbox" id="admin-force-next" ${cfg.forceNext?"checked":""}> 次の1歩で即時エンカウント（1回限り）</label>
+ <p class="admin-note">停止はランダム遭遇だけに適用されます。FOE・ボス・イベント接触は停止しません。即時エンカウントは次の移動入力で発動します。</p>
+ <h3>出現する敵の編成</h3><p class="admin-note">異なる種類の敵を同時に選択できます。個体数を0にすると編成から外れます（各種類最大8体）。</p>
+ <div class="admin-encounter-list">${adminEncounterEnemyRows()}</div>
+ <div class="admin-encounter-summary"><strong>現在の編成（合計 ${total}体）</strong><span>${esc(summary)}</span></div>
+ <div class="admin-actions"><button type="button" id="admin-encounter-launch">今すぐこの編成で戦闘開始</button></div>
+ <p class="admin-note">※今すぐ開始はフィールド探索中のみ使用できます。通常の敵テーブルやFOE配置は変更しません。</p></section>`;
+}
+function adminBindEncounterControls(){
+ const content=$("kotama-admin-content");if(!content)return;
+ $("admin-disable-random")?.addEventListener("change",e=>{adminEncounterSettings().disableRandom=e.target.checked;});
+ $("admin-force-next")?.addEventListener("change",e=>{adminEncounterSettings().forceNext=e.target.checked;});
+ content.querySelectorAll("[data-admin-enemy]").forEach(el=>el.addEventListener("change",()=>{const id=el.dataset.adminEnemy,cfg=adminEncounterSettings();if(el.checked)cfg.selected[id]=Math.max(1,Number(cfg.selected[id])||1);else delete cfg.selected[id];renderAdminPanel();}));
+ content.querySelectorAll("[data-admin-enemy-count]").forEach(el=>el.addEventListener("change",()=>{const id=el.dataset.adminEnemyCount,n=Math.max(0,Math.min(8,Math.floor(Number(el.value)||0))),cfg=adminEncounterSettings();if(n)cfg.selected[id]=n;else delete cfg.selected[id];renderAdminPanel();}));
+ $("admin-encounter-launch")?.addEventListener("click",()=>{if(state.screen!=="field"||typeof fieldTriggerAdminEncounter!=="function"){window.alert("フィールド探索中に実行してください。");return;}fieldTriggerAdminEncounter();});
+}
 function adminValue(value){return value===undefined||value===null||value===""?"—":String(value);}
 function adminRow(label,value){return `<div class="admin-data-row"><span>${esc(label)}</span><strong>${esc(adminValue(value))}</strong></div>`;}
 function adminPanelMarkup(){
   if($("kotama-admin-panel"))return;
   const launcher=document.createElement("button");launcher.id="kotama-admin-launcher";launcher.type="button";launcher.textContent="DEV";launcher.title="開発者用管理パネル";launcher.setAttribute("aria-label","開発者用管理パネルを開く");
   const panel=document.createElement("section");panel.id="kotama-admin-panel";panel.hidden=true;panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","true");panel.setAttribute("aria-labelledby","kotama-admin-title");
-  panel.innerHTML=`<div class="kotama-admin-window"><header class="kotama-admin-header"><div><small>DEVELOPER TOOLS</small><h2 id="kotama-admin-title">管理者パネル</h2></div><button type="button" id="kotama-admin-close" aria-label="閉じる">×</button></header><nav class="kotama-admin-tabs" aria-label="管理者パネルのタブ"><button type="button" data-admin-tab="player">プレイヤー</button><button type="button" data-admin-tab="progress">ステージ進行</button><button type="button" data-admin-tab="battle">戦闘テスト</button><button type="button" data-admin-tab="save">セーブ管理</button></nav><div id="kotama-admin-content" class="kotama-admin-content"></div><footer class="kotama-admin-footer"><span>開発者専用・通常プレイのデータ変更は行いません</span><button type="button" id="kotama-admin-close-bottom">閉じる</button></footer></div>`;
+  panel.innerHTML=`<div class="kotama-admin-window"><header class="kotama-admin-header"><div><small>DEVELOPER TOOLS</small><h2 id="kotama-admin-title">管理者パネル</h2></div><button type="button" id="kotama-admin-close" aria-label="閉じる">×</button></header><nav class="kotama-admin-tabs" aria-label="管理者パネルのタブ"><button type="button" data-admin-tab="player">プレイヤー</button><button type="button" data-admin-tab="progress">ステージ進行</button><button type="button" data-admin-tab="battle">戦闘テスト</button><button type="button" data-admin-tab="encounter">エンカウント管理</button><button type="button" data-admin-tab="save">セーブ管理</button></nav><div id="kotama-admin-content" class="kotama-admin-content"></div><footer class="kotama-admin-footer"><span>開発者専用・通常プレイのデータ変更は行いません</span><button type="button" id="kotama-admin-close-bottom">閉じる</button></footer></div>`;
   document.body.append(launcher,panel);
   launcher.addEventListener("click",()=>{renderAdminPanel();panel.hidden=false;document.body.classList.add("admin-panel-open");$("kotama-admin-close")?.focus();});
   const close=()=>{panel.hidden=true;document.body.classList.remove("admin-panel-open");launcher.focus();};
@@ -42,9 +65,10 @@ function adminRenderSave(){
 }
 function renderAdminPanel(){
   const content=$("kotama-admin-content");if(!content)return;
-  const renderers={player:adminRenderPlayer,progress:adminRenderProgress,battle:adminRenderBattle,save:adminRenderSave};
+  const renderers={player:adminRenderPlayer,progress:adminRenderProgress,battle:adminRenderBattle,encounter:adminRenderEncounter,save:adminRenderSave};
   content.innerHTML=(renderers[adminActiveTab]||adminRenderPlayer)();
   $("kotama-admin-panel")?.querySelectorAll("[data-admin-tab]").forEach(b=>b.classList.toggle("active",b.dataset.adminTab===adminActiveTab));
+  if(adminActiveTab==="encounter")adminBindEncounterControls();
   if(adminActiveTab==="save"){
     $("admin-backup")?.addEventListener("click",adminExportBackup);
     $("admin-restore-trigger")?.addEventListener("click",()=>$("admin-restore-file")?.click());
