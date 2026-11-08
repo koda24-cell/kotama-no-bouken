@@ -438,7 +438,7 @@ function fieldAdminEncounterSelection(){
  return Object.entries(selected).filter(([id,count])=>FIELD_ENEMIES[id]&&!FIELD_ENEMIES[id].foe&&Number(count)>0).flatMap(([id,count])=>Array.from({length:Math.max(1,Math.min(8,Math.floor(Number(count)||1)))},()=>id));
 }
 async function fieldTriggerAdminEncounter(){
- if(state.screen!=="field"||fieldState.lock||battleState.busy)return false;
+ if(state.screen!=="field"||fieldState.lock)return false;
  const ids=fieldAdminEncounterSelection();if(!ids.length){window.alert("出現させる敵を1体以上選択してください。");return false;}
  await fieldEncounterEffect(ids[0],{admin:true});fieldStartEncounterBattle(ids,{admin:true});return true;
 }
