@@ -52,7 +52,11 @@ export function createField3DLOD(THREE, levels, {
 
 export function getField3DLODAssetLevels(assets, keys, preset = "landmark") {
   const distances = FIELD_3D_LOD_PRESETS[preset] || FIELD_3D_LOD_PRESETS.landmark;
-  return distances
+  const available = distances
     .map(level => ({ ...level, asset: assets?.[keys?.[level.key]] }))
     .filter(level => level.asset && typeof level.asset.clone === "function");
+  // A farther level without the near/base model is not a valid LOD chain.
+  return available.length >= 2 && available.some(level => level.distance === 0)
+    ? available
+    : [];
 }
