@@ -21,7 +21,7 @@ const output=document.querySelector("#result");
 const checks=[];
 function check(name,condition){checks.push({name,ok:!!condition});}
 const area={n:1,f:0,key:"1-0",w:3,h:3,grid:["###","#.#","###"].map(row=>row.split("")),objects:[],def:{name:"test",theme:"forest"}};
-const fieldState={x:48,y:48,dir:"up",moving:false,lock:false,mapOpen:false,foes:[],explored:{},visible:new Set()};
+const fieldState={x:48,y:52,dir:"up",moving:false,lock:false,mapOpen:false,foes:[],explored:{},visible:new Set()};
 const calls={steps:[],actions:0};
 let inputBlocked=false;
 const bridge=createField3DRuntimeBridge({
