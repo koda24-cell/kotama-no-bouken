@@ -490,3 +490,5 @@ body[data-screen="battle"] .gold-display{display:none!important;}
   .event-log{min-height:38px;max-height:84px;padding:6px 8px}
   .event-window .window-title::after{font-size:8px}
 }
+
+.admin-union-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 0;border-bottom:1px solid rgba(150,170,220,.16)}.admin-union-row span{flex:1;min-width:140px;color:#d7e1ff}.admin-union-row button{min-width:64px}.admin-stat-inputs select{width:100%;min-width:0;padding:6px;border:1px solid #667bb0;border-radius:4px;background:#080f22;color:#fff}.admin-section>.admin-card{margin:8px 0}
