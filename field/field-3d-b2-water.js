@@ -23,7 +23,8 @@ const CHUNK = 8;                                       // まとめる区画（�
 const WATER_KEY = 'kotama.field3d.b2.water';           // 'opaque' で水を不透明にする（半透明が崩れる環境向けの退避）
 
 // 第2階層の空気（第1階層の値とは別。第1階層へ戻ると field-3d-view.js が第1階層の値に戻す）
-export const ENV = { background: 0x07141c, fog: { color: 0x122b36, density: 0.018 }, hemi: { sky: 0x91b8c8, ground: 0x1c3542, high: 1.4, low: 1.65 } };
+// 水源洞窟の岩肌と遠景を視認できるよう、暗部を持ち上げつつ寒色を維持。
+export const ENV = { background: 0x102a36, fog: { color: 0x1b4050, density: 0.011 }, hemi: { sky: 0xb7e4ef, ground: 0x416575, high: 2.0, low: 2.1 } };
 
 /* ------------------------------------------------------------
    素材（GLB の素材名ごとに、ゲームの描画に合わせた値で作り直す）
@@ -272,6 +273,15 @@ function makeProcedural() {
     return { name: 'b2_ceiling_ridge_' + variant,
       parts: [{ geo: g, mat: 'Deep cavern rock' }] };
   });
+  // 天井の氷柱。円錐ではなく細長い多面体にして、冷たい水源らしい輪郭を作る。
+  const iceStalactites = [0, 1, 2].map((variant) => {
+    const height = 0.75 + variant * 0.25;
+    const geo = new THREE.ConeGeometry(0.13 + variant * 0.035, height, 6, 1);
+    geo.rotateX(Math.PI);
+    geo.translate(0, -height * 0.5, 0);
+    return { name: 'b2_ice_stalactite_' + variant,
+      parts: [{ geo, mat: 'Pale mineral stone' }] };
+  });
   const shoreline = [0, 1, 2].map((variant) => {
     const g = new THREE.PlaneGeometry(3.92, 0.84, 24, 6).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
@@ -304,7 +314,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { continuousWall, continuousCeiling, continuousGround, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { continuousWall, continuousCeiling, continuousGround, shoreline, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -456,14 +466,22 @@ export async function createTheme(api) {
     const openCells = new Set();
     const skylightCandidates = [];
     for (let cy = 2; cy < a.h - 2; cy++) for (let cx = 2; cx < a.w - 2; cx++) {
-      let valid = true;
+      let valid = true, waterCount = 0;
       for (let dz = -1; dz <= 1 && valid; dz++) for (let dx = -1; dx <= 1; dx++) {
-        if (wallCell(cx + dx, cy + dz) || objAt.has(`${cx + dx},${cy + dz}`)) valid = false;
+        const tx = cx + dx, ty = cy + dz, cell = ch(tx, ty);
+        if (wallCell(tx, ty) || objAt.has(`${tx},${ty}`)
+            || cell === '>' || cell === '<' || falls.has(`${tx},${ty}`)) valid = false;
+        if (cell === '*') waterCount++;
       }
-      if (valid) skylightCandidates.push({ cx, cy, score: hash(cx, cy, 205) });
+      // 参考画像に合わせ、浅瀬がある広間を優先。候補がなければ通常の広間。
+      if (valid) skylightCandidates.push({
+        cx, cy, score: (waterCount > 0 ? -1 : 0) + hash(cx, cy, 205) * 0.5
+      });
     }
     skylightCandidates.sort((a, b) => a.score - b.score);
-    const sky = null; // 天井の巨大な黒い開口を一旦無効化。自然な洞窟の連続性を優先
+    // 3×3の安全な広間だけに巨大な水源遺跡の吹き抜けを1か所設ける。
+    // 小規模な迷宮や適切な広間がない場合は従来の洞窟天井を維持する。
+    const sky = skylightCandidates.length ? skylightCandidates[0] : null;
     if (sky) {
       for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) openCells.add(`${sky.cx + dx},${sky.cy + dz}`);
       addAtrium(sky.cx * CELL, sky.cy * CELL);
@@ -523,6 +541,15 @@ export async function createTheme(api) {
         B.add('ceiling_details', pick(proc.ceilingRidge, hash(tx, ty, 233)),
           M4(x + ox, 3.66, z + oz, hash(tx, ty, 234) * Math.PI * 2), tx, ty);
       }
+      // 通路中央を避けて、天井付近に控えめな氷柱群を配置。
+      if (!openCells.has(key) && !objAt.has(key) && c !== '>' && c !== '<'
+          && hash(tx, ty, 240) < 0.34) {
+        const side = hash(tx, ty, 241) < 0.5 ? -1 : 1;
+        const ox = side * (1.12 + hash(tx, ty, 242) * 0.42);
+        const oz = (hash(tx, ty, 243) - 0.5) * 2.4;
+        B.add('ice_stalactites', pick(proc.iceStalactites, hash(tx, ty, 244)),
+          M4(x + ox, 3.62, z + oz, hash(tx, ty, 245) * Math.PI * 2), tx, ty);
+      }
       // 壁と、壁ぎわの岩・鉱脈・壁付きの物
       for (const d of DIR_ORDER) {
         const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
@@ -563,10 +590,10 @@ export async function createTheme(api) {
           const inward = 0.45 - piece.size.z * s * 0.5;
           B.add('rocks', piece, M4(ex + along[0] * t - dx * inward, -0.15, ez + along[1] * t - dy * inward, ry + (hash(tx, ty, 28) - 0.5) * 0.5, s), tx, ty);
         }
-        if (k < 0.07) {    // 光る鉱脈
+        if (k < 0.14) {    // 光る鉱脈
           const t = (hash(tx, ty, 29) - 0.5) * 2.4, y = 1.0 + hash(tx, ty, 30) * 1.8;
           B.add('crystals', pick(kit.veins, hash(tx, ty, 31)), M4(ex + along[0] * t - dx * 0.06, y, ez + along[1] * t - dy * 0.06, ry, 1.1), tx, ty);
-          light(ex - dx * 0.4, y, ez - dy * 0.4, 0x67c2d4, 0.55, 3.8);
+          light(ex - dx * 0.4, y, ez - dy * 0.4, 0x83ddf1, 0.85, 5.2);
         }
       }
       // 角の結晶の群れ（二方が壁の角だけ。通路の正面をふさがない）
@@ -574,7 +601,7 @@ export async function createTheme(api) {
         for (let i = 0; i < 4; i++) {
           const d1 = DIR_ORDER[i], d2 = DIR_ORDER[(i + 1) % 4];
           if (!wallCell(tx + DIR_VEC[d1][0], ty + DIR_VEC[d1][1]) || !wallCell(tx + DIR_VEC[d2][0], ty + DIR_VEC[d2][1])) continue;
-          if (hash(tx, ty, 32 + i) > 0.16) continue;
+          if (hash(tx, ty, 32 + i) > 0.24) continue;
           const px = x + (DIR_VEC[d1][0] + DIR_VEC[d2][0]) * 1.3, pz = z + (DIR_VEC[d1][1] + DIR_VEC[d2][1]) * 1.3;
           const piece = pick(kit.crystals, hash(tx, ty, 36 + i)), s = 0.45 + hash(tx, ty, 40) * 0.15;
           B.add('crystals', piece, M4(px, -0.05, pz, hash(tx, ty, 37) * 6, s), tx, ty);
@@ -647,7 +674,7 @@ export async function createTheme(api) {
     // 通路内に柱を立てず、3×3マスの外周だけを装飾する。
     for (let side = 0; side < 4; side++) {
       const axis = side % 2 === 0;
-      const sign = side % 2 === 0 ? -1 : 1;
+      const sign = side < 2 ? -1 : 1;
       const wall = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.4 : 0.9, 18.5, axis ? 0.9 : 12.4), dark);
       wall.position.set(x + (axis ? 0 : sign * 6.1), 13.25, z + (axis ? sign * 6.1 : 0));
       atrium.add(wall);
@@ -661,6 +688,20 @@ export async function createTheme(api) {
         band.position.set(x + (axis ? 0 : sign * 5.56), h, z + (axis ? sign * 5.56 : 0)); atrium.add(band);
       }
     }
+    // 岩盤の縦長シルエットで四角い遺跡壁を崩す。壁の内側ではなく外周に固定。
+    for (let i = 0; i < 12; i++) {
+      const side = i % 4, axis = side % 2 === 0;
+      const sign = side < 2 ? -1 : 1;
+      const along = (hash(i, 8, 252) - 0.5) * 9.6;
+      const height = 5 + hash(i, 9, 253) * 9;
+      const rock = new THREE.Mesh(
+        new THREE.ConeGeometry(0.65 + hash(i, 10, 254) * 0.7, height, 6),
+        dark);
+      rock.position.set(x + (axis ? along : sign * 5.6), 4.2 + height / 2,
+        z + (axis ? sign * 5.6 : along));
+      rock.rotation.z = (hash(i, 11, 255) - 0.5) * 0.15;
+      atrium.add(rock);
+    }
     // 角の崩れた支柱と礎石。上方には段差を付け、直方体の箱に見えにくくする。
     for (const [dx, dz] of [[-5.6,-5.6],[5.6,-5.6],[-5.6,5.6],[5.6,5.6]]) {
       const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.88, 18, 8), stone);
@@ -669,6 +710,24 @@ export async function createTheme(api) {
         const cap = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, 0.4, 8), dark);
         cap.position.set(x + dx, h, z + dz); atrium.add(cap);
       }
+    }
+    // 天頂を岩盤の縁で囲み、明るい水源が暗い矩形の穴に見えないようにする。
+    const rim = new THREE.Mesh(
+      new THREE.TorusGeometry(5.65, 0.62, 7, 28),
+      stone);
+    rim.rotation.x = Math.PI / 2; rim.position.set(x, 22.35, z); atrium.add(rim);
+    // 高所から落ちる細い発光水流。通行範囲には降ろさず水源の高さを演出。
+    const streamMat = new THREE.MeshBasicMaterial({
+      color: 0x65d8f4, transparent: true, opacity: 0.27,
+      depthWrite: false, side: THREE.DoubleSide
+    });
+    for (let i = 0; i < 5; i++) {
+      const angle = i * Math.PI * 2 / 5 + 0.3;
+      const radius = 3.3 + hash(i, 2, 271) * 1.2;
+      const h = 10 + hash(i, 3, 272) * 5;
+      const stream = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.13, h, 6, 1, true), streamMat);
+      stream.position.set(x + Math.cos(angle) * radius, 22 - h / 2, z + Math.sin(angle) * radius);
+      atrium.add(stream);
     }
     // 空洞上部の明るい水色。全体の背景色ではなく、吹き抜け内部だけの光源。
     const opening = new THREE.Mesh(new THREE.CircleGeometry(5.5, 32),
