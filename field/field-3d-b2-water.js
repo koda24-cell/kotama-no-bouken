@@ -326,6 +326,19 @@ function makeProcedural() {
     return { name: 'b2_ice_stalactite_' + variant,
       parts: [{ geo, mat: 'Pale mineral stone' }] };
   });
+  // 浅瀬の壁際に張り出す氷結した岩棚。小さな多面体を組み合わせ、
+  // 水面の水平線と直線的な壁の接点を自然に見せる（通行判定なし）。
+  const frostLedges = [0, 1, 2].map((variant) => {
+    const parts = [];
+    for (let i = 0; i < 3; i++) {
+      const g = new THREE.DodecahedronGeometry(0.52 + i * 0.12 + variant * 0.035, 0);
+      g.scale(1.15 + i * 0.14, 0.20 + variant * 0.035, 0.53 + i * 0.09);
+      g.rotateY((i - 1) * 0.24 + variant * 0.17);
+      g.translate((i - 1) * 0.68, -0.12 + i * 0.045, (i % 2) * 0.14);
+      parts.push({ geo: g, mat: i === 1 ? 'Pale mineral stone' : 'Deep cavern rock' });
+    }
+    return { name: 'b2_frost_ledge_' + variant, parts };
+  });
   const shoreline = [0, 1, 2].map((variant) => {
     const g = new THREE.PlaneGeometry(3.92, 0.84, 24, 6).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
@@ -358,7 +371,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { continuousWall, continuousCeiling, continuousGround, shoreline, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { continuousWall, continuousCeiling, continuousGround, shoreline, frostLedges, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -575,6 +588,19 @@ export async function createTheme(api) {
           const rot = Math.atan2(dx, dz);
           B.add('shoreline', pick(proc.shoreline, hash(tx, ty, 220 + DIR_ORDER.indexOf(d))),
             M4(rx, 0, rz, rot), tx, ty);
+        }
+      }
+      // 水面と洞窟壁が直角に接する場所へ、低い氷結岩棚を追加。
+      // 壁際のみ、階段・橋・イベント・滝は回避。装飾は静的バッチへ統合。
+      if (c === '*' && !onBridge(tx, ty) && !objAt.has(key) && !falls.has(key)) {
+        for (const d of DIR_ORDER) {
+          const [dx, dz] = DIR_VEC[d], di = DIR_ORDER.indexOf(d);
+          if (!wallCell(tx + dx, ty + dz) || hash(tx, ty, 340 + di) >= 0.52) continue;
+          const along = (hash(tx, ty, 345 + di) - 0.5) * 0.95;
+          B.add('frost_ledge', pick(proc.frostLedges, hash(tx, ty, 350 + di)),
+            M4(x + dx * (CELL / 2 - 0.25) + dz * along, -0.015,
+              z + dz * (CELL / 2 - 0.25) + dx * along,
+              Math.atan2(dx, dz), 0.78 + hash(tx, ty, 355 + di) * 0.22), tx, ty);
         }
       }
       // 天井
