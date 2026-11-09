@@ -135,8 +135,14 @@
       ai: d.ai, members: [boss], _snowdriftSummonCount: 0, compendiumAs: "スライム"
     };
   }
-  if (Array.isArray(EXT_BOSS_NAMES) && !EXT_BOSS_NAMES.includes("スノードリフト")) EXT_BOSS_NAMES.push("スノードリフト");
-  if (typeof EXT_ENEMY_SPEED === "object") EXT_ENEMY_SPEED["スノードリフト"] = 78;
+  if (Array.isArray(EXT_BOSS_NAMES)) {
+    for (const name of ["スノードリフト", "ゴブリン隊長と護衛", "ゴブリン親衛隊長"]) if (!EXT_BOSS_NAMES.includes(name)) EXT_BOSS_NAMES.push(name);
+  }
+  if (typeof EXT_ENEMY_SPEED === "object") {
+    EXT_ENEMY_SPEED["スノードリフト"] = 78;
+    EXT_ENEMY_SPEED["ゴブリン隊長と護衛"] = 72;
+    EXT_ENEMY_SPEED["ゴブリン親衛隊長"] = 70;
+  }
 
   // Snowdrift periodically calls one snow wolf, up to three. Existing group damage/targeting handles them.
   wrap("extVariantAction", base => async function (enemy, turn) {
