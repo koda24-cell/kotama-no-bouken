@@ -11,6 +11,9 @@
      ・field/field-render.js  fieldBuildDom() の最後 → KotamaField3D.build()／fieldRender() の最後 → KotamaField3D.frame()
      ・field/field-movement-foe.js  fieldUpdate() の入力 → 3D表示中は KotamaField3D.input()（前後＝進む、左右＝向きを変える）
    素材：assets/3d/dungeons/b1_ancient_forest/（tools/b1-3d で生成した GLB）
+   第2階層（凍てつく水源）：試験表示のみ。field/field-3d-b2-water.js を組み立て時に dynamic import する。
+     有効にする方法：URL に ?f3d=b2、または localStorage kotama.field3d.preview に "2"（管理パネルの「3D表示の試験」）。
+     通常の進行では第2階層は従来の2D表示のまま。第2階層の素材を読めなくても第1階層の3D表示は止めない。
    ============================================================ */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -21,6 +24,9 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const BASE = './assets/3d/dungeons/b1_ancient_forest/';
 const AREAS_3D = new Set([1]);           // いったん第1階層のみ
+const PREVIEW_KEY = 'kotama.field3d.preview';   // 試験表示する階層（例 "2"）。セーブデータには入れない
+// 第1階層の空気（ensureRenderer で使っている値と同じ。第2階層から戻ったときに戻す）
+const ENV_B1 = { background: 0x070d11, fog: { color: 0x0c1a20, density: 0.042 }, hemi: { sky: 0x7aa8c4, ground: 0x1c241c, high: 1.25, low: 1.7 } };
 const CELL = 4, EYE = 1.6, BACK = 1.1;    // 1マス4m、目の高さ、マスの後ろ寄りに立つ距離
 const STEP_MS = 230, TURN_MS = 210;       // 3D表示中の1歩・1回の旋回にかける時間
 const PREF_KEY = 'kotama.field3d', QUALITY_KEY = 'kotama.field3d.quality';
@@ -50,17 +56,27 @@ const g = {
   cache: new Map(), lights: [], pool: [], entries: [], foes: new Map(), texCache: new Map(),
   cam: { pos: new THREE.Vector3(), yaw: 0, ready: false, bump: 0, bumpDir: [0, 0] },
   lastT: 0, lastRender: 0, lastLightKey: '', size: [0, 0], high: readQuality(), near: null, maxFps: readMaxFps(),
+  hemi: null, envArea: 1, theme: null, themePromise: null, themeFailed: false, preview: readPreview(),
 };
 
 function readPref() { try { return localStorage.getItem(PREF_KEY) !== 'off'; } catch (_) { return true; } }
 function readQuality() { try { const q = localStorage.getItem(QUALITY_KEY); if (q) return q !== 'low'; } catch (_) {} return !matchMedia('(pointer:coarse)').matches; }
 // 描画の上限（1秒あたりの回数）。既定は上限なし。検証・省電力用に localStorage kotama.field3d.maxFps で指定できる
 function readMaxFps() { try { return Math.max(0, Number(localStorage.getItem('kotama.field3d.maxFps')) || 0); } catch (_) { return 0; } }
+// 試験表示の階層：URL の ?f3d=b2（その場だけ）か localStorage（管理パネルで切り替え）
+function readPreview() {
+  const set = new Set();
+  try { const q = new URLSearchParams(location.search).get('f3d'); if (q) for (const v of q.split(',')) { const n = Number(String(v).replace(/^b/, '')); if (n) set.add(n); } } catch (_) {}
+  try { for (const v of String(localStorage.getItem(PREVIEW_KEY) || '').split(',')) { const n = Number(v); if (n) set.add(n); } } catch (_) {}
+  return set;
+}
+// 3D表示できる階層：第1階層と、試験表示を有効にした第2階層
+const areaOn = (n) => AREAS_3D.has(n) || (n === 2 && g.preview.has(2) && !g.themeFailed);
 function writePref(on) { try { localStorage.setItem(PREF_KEY, on ? 'on' : 'off'); } catch (_) {} }
 const hash = (x, z, s = 0) => { let h = (x * 374761393 + z * 668265263 + s * 982451653) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
 const fieldOk = () => typeof fieldState !== 'undefined' && typeof fieldArea === 'function';
 // 第1階層は3D専用。設定保存値にかかわらず3Dを優先し、WebGL等の利用不能時だけ既存2Dへフォールバックする。
-const eligible = () => fieldOk() && (g.pref || Number(fieldState.area) === 1) && !g.failed && g.webgl && AREAS_3D.has(Number(fieldState.area));
+const eligible = () => fieldOk() && (g.pref || Number(fieldState.area) === 1) && !g.failed && g.webgl && areaOn(Number(fieldState.area));
 const curKey = () => (fieldOk() ? fieldArea()?.key : '') || '';
 
 /* ------------------------------------------------------------
@@ -75,7 +91,7 @@ function ensureRenderer() {
     g.renderer = r; g.canvas = r.domElement; g.canvas.className = 'field-3d-canvas'; g.canvas.setAttribute('aria-hidden', 'true');
     g.scene = new THREE.Scene();
     g.scene.background = new THREE.Color(0x070d11); g.scene.fog = new THREE.FogExp2(0x0c1a20, 0.042);
-    g.scene.add(new THREE.HemisphereLight(0x7aa8c4, 0x1c241c, g.high ? 1.25 : 1.7));   // 暗所でも形が読める明るさ（点光源の少ない低画質では強め）
+    g.hemi = new THREE.HemisphereLight(0x7aa8c4, 0x1c241c, g.high ? 1.25 : 1.7); g.scene.add(g.hemi);   // 暗所でも形が読める明るさ（点光源の少ない低画質では強め）
     g.camera = new THREE.PerspectiveCamera(68, 1, 0.05, 30);
     g.world = new THREE.Group(); g.dyn = new THREE.Group(); g.scene.add(g.world, g.dyn);
     setPool(g.high ? 14 : 6);   // 点光源は多いほど重い（1画素ごとに全部を計算する）ため、近いものだけ
@@ -118,6 +134,18 @@ const loader = new GLTFLoader();
 function load(file) {
   if (!g.cache.has(file)) g.cache.set(file, loader.loadAsync(BASE + file).then((x) => x.scene));
   return g.cache.get(file);
+}
+// 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
+function applyEnv(area, env) {
+  const E = env || ENV_B1;
+  g.scene.background.setHex(E.background); g.scene.fog.color.setHex(E.fog.color); g.scene.fog.density = E.fog.density;
+  if (g.hemi) { g.hemi.color.setHex(E.hemi.sky); g.hemi.groundColor.setHex(E.hemi.ground); g.hemi.intensity = g.high ? E.hemi.high : E.hemi.low; }
+  g.envArea = area;
+}
+// 第2階層のテーマ（別ファイル）を読み込む。失敗したら第2階層だけ2D表示に戻す
+function loadTheme2() {
+  if (!g.themePromise) g.themePromise = import('./field-3d-b2-water.js?v=20261109-b2').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES })).then((t) => (g.theme = t));
+  return g.themePromise;
 }
 function place(parent, src, x, y, z, ry = 0, s = 1) {
   const o = src.clone(true); o.position.set(x, y, z); o.rotation.y = ry; o.scale.setScalar(s);
@@ -169,6 +197,12 @@ async function buildFloor() {
   const key = a.key, token = ++g.buildToken;
   g.buildingKey = key;
   showBadge('3D表示を準備中…');
+  const area = Number(fieldState.area);
+  let th = null;
+  if (area === 2) {
+    try { th = await loadTheme2(); }
+    catch (e) { console.warn('[field-3d] 第2階層の3D素材を読めなかったため、第2階層は2D表示のままにします:', e); g.themeFailed = true; g.buildingKey = ''; showBadge(''); applyMode(); return; }
+  }
   try {
     const list = Object.values(FILES); let done = 0;
     await Promise.all(list.map((f) => load(f).then(() => { done++; showBadge(`3D表示を準備中… ${done}/${list.length}`); })));
@@ -182,9 +216,13 @@ async function buildFloor() {
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
   g.lights = []; g.entries = []; g.foes.clear();
+  if (g.theme && !th) g.theme.dispose();
+  applyEnv(area, th && th.env);
   const info = cellInfo(a), { ch, def, wallCell, open, facing } = info;
   const X = (tx) => tx * CELL, Z = (ty) => ty * CELL;
   const objAt = new Map(a.objects.map((o) => [`${o.tx},${o.ty}`, o]));
+  if (th) await th.build(a, S, info);   // 第2階層：field-3d-b2-water.js が床・壁・物を組み立てる
+  else {                                // 第1階層：ここから下は従来の組み立て（変更なし）
   // 床・天井・壁
   for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
     if (wallCell(tx, ty)) continue;
@@ -238,6 +276,7 @@ async function buildFloor() {
     }
     if (o.kind !== 'switch') g.entries.push(e);
   }
+  }   // 第1階層の組み立てここまで
   g.sig = doorSig(a);
   g.builtKey = key; g.buildingKey = ''; g.cam.ready = false; g.lastLightKey = '';
   for (const e of g.entries) syncEntry(e, S);
@@ -266,6 +305,7 @@ async function syncEntry(e, S) {
   if (st === e.state) return;
   const first = e.state === null; e.state = st;
   S = S || {};
+  if (g.theme && Number(fieldState.area) === 2 && await g.theme.sync(e, st)) { if (!first) g.lastLightKey = ''; return; }
   const get = async (k) => S[k] || load(FILES[k]);
   if (o.kind === 'chest' || o.kind === 'cache') { removeObj(e.obj); e.obj = place(g.world, await get(st === 'open' ? 'chestOpen' : 'chest'), x, 0, z, e.ry); }
   else if (o.kind === 'gather') {
@@ -416,7 +456,7 @@ function ensureToggle() {
     mapBtn.before(btn);
   }
   const area = fieldOk() ? Number(fieldState.area) : 0;
-  const can = fieldOk() && AREAS_3D.has(area) && g.webgl && !g.failed;
+  const can = fieldOk() && areaOn(area) && g.webgl && !g.failed;
   // 第1階層では表示方式を3Dに固定し、2D/3D切り替えボタンを出さない。
   // ほかの階層で3Dを解放した場合は、従来どおり切り替えられる。
   btn.hidden = !can || area === 1;
@@ -457,6 +497,7 @@ function frame() {
   syncFoes(now);
   updateCamera(dt);
   updatePool(g.camera.position);
+  if (g.theme && g.envArea === 2) g.theme.tick(dt, now, g.camera.position);
   // 正面の調べられる物に目印
   const nk = fieldState.lock ? '' : fieldState.nearKey;
   const ne = nk && g.entries.find((e) => e.o.key === nk);
@@ -465,7 +506,16 @@ function frame() {
   if (g.composer) g.composer.render(); else g.renderer.render(g.scene, g.camera);
 }
 
-window.KotamaField3D = { active, input, build, frame, toggle, isEnabled: () => g.pref };
+// 試験表示の切り替え（管理パネルから）。localStorage だけを書き、セーブデータには触れない
+function setPreview(n, on) {
+  g.preview = readPreview();
+  const list = new Set([...String((() => { try { return localStorage.getItem(PREVIEW_KEY) || ''; } catch (_) { return ''; } })()).split(',').map(Number).filter(Boolean)]);
+  if (on) list.add(n); else list.delete(n);
+  try { if (list.size) localStorage.setItem(PREVIEW_KEY, [...list].join(',')); else localStorage.removeItem(PREVIEW_KEY); } catch (_) {}
+  g.preview = readPreview(); if (on) g.themeFailed = false;
+  if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
+}
+window.KotamaField3D = { active, input, build, frame, toggle, isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info() };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる
 if (fieldOk() && typeof state !== 'undefined' && state.screen === 'field') build();
 else applyModeSafe();
