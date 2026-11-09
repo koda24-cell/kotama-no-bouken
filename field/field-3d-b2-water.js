@@ -611,21 +611,25 @@ export async function createTheme(api) {
         const side = DIR_ORDER.find((d) => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
         if (side) {
           const [dx, dz] = DIR_VEC[side];
-          if (v8.stalagmites.length && hash(tx, ty, 301) < 0.16) {
+          if (v8.stalagmites.length && hash(tx, ty, 301) < 0.27) {
             B.add('v8_stalagmites', pick(v8.stalagmites, hash(tx, ty, 302)),
               M4(x + dx * 1.35, -0.05, z + dz * 1.35, hash(tx, ty, 303) * 6.28), tx, ty);
           }
-          if (v8.erosion.length && hash(tx, ty, 304) < 0.12) {
+          if (v8.erosion.length && hash(tx, ty, 304) < 0.20) {
             B.add('v8_erosion', pick(v8.erosion, hash(tx, ty, 305)),
               M4(x + dx * 1.45, -0.08, z + dz * 1.45, hash(tx, ty, 306) * 6.28), tx, ty);
           }
         }
-        if (!openCells.has(key) && v8.ceilingIce.length && hash(tx, ty, 307) < 0.22) {
+        if (!openCells.has(key) && v8.ceilingIce.length && hash(tx, ty, 307) < 0.42) {
           const ice = pick(v8.ceilingIce, hash(tx, ty, 308));
-          // 原点を底面に戻した部品を、上下反転せず天井付近へ寄せる。
-          B.add('v8_ceiling_ice', ice, M4(x + (hash(tx, ty, 309) - 0.5) * 2,
-            3.85 - ice.size.y, z + (hash(tx, ty, 310) - 0.5) * 2,
-            hash(tx, ty, 311) * 6.28), tx, ty);
+          // v8部品の原点は底面。180度回転して先端を下へ向け、
+          // 岩盤の下面に根元を接続する。高さを抑えて視界と通路を確保。
+          const iceHeight = Math.max(ice.size.y, 0.01);
+          const scale = Math.min(1.35, 1.3 / iceHeight);
+          const ox = (hash(tx, ty, 309) - 0.5) * 2.1;
+          const oz = (hash(tx, ty, 310) - 0.5) * 2.1;
+          B.add('v8_ceiling_ice', ice, M4(x + ox, 3.48, z + oz,
+            hash(tx, ty, 311) * 6.28, scale, Math.PI), tx, ty);
         }
       }
       // 壁と、壁ぎわの岩・鉱脈・壁付きの物
@@ -646,7 +650,7 @@ export async function createTheme(api) {
 
         // v8の結晶を壁際に低頻度で追加。通路・階段・イベントの中央は塞がない。
         if (v8?.crystals?.length && !objAt.has(key) && c !== '>' && c !== '<'
-            && k > 0.86) {
+            && k > 0.77) {
           const gem = pick(v8.crystals, hash(tx, ty, 260 + DIR_ORDER.indexOf(d)));
           B.add('v8_crystals', gem, M4(ex - dx * 0.30 + along[0] * 0.4, -0.04,
             ez - dy * 0.30 + along[1] * 0.4, ry), tx, ty);
