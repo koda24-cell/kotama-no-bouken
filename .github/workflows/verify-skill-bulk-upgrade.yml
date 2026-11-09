@@ -1,0 +1,22 @@
+name: Skill tree bulk upgrade checks
+on:
+  pull_request:
+    paths:
+      - script.js
+      - css/05-progression-and-boss.css
+      - index.html
+      - tools/battle-sim/skill-bulk-upgrade-regression.cjs
+      - .github/workflows/verify-skill-bulk-upgrade.yml
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: node --check script.js
+      - name: Skill regression
+        run: node tools/battle-sim/skill-bulk-upgrade-regression.cjs
