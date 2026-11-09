@@ -1,5 +1,6 @@
 /* Fourth and fifth stratum map-driven 3D placement. Visuals only; map remains authoritative. */
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -48,7 +49,8 @@ export function createTheme(api, area) {
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
-  let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [];
+  let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
+  const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
   const archGeo = localGeo(new THREE.CylinderGeometry(0.22, 0.36, 3.6, 7));
@@ -84,7 +86,7 @@ export function createTheme(api, area) {
       root.add(batch);
     }
   }
-  function build(a, S, info) {
+  async function build(a, S, info) {
     dispose();
     root = new THREE.Group(); root.name = mist ? 'b3_mist_forest_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
     const { ch, wallCell, facing, open } = info;
@@ -148,6 +150,35 @@ export function createTheme(api, area) {
         dynamic.push({ mesh: p, y: p.position.y, phase: hash(tx, ty, 94) * 6.28 });
       }
     }
+    // ボスマスの視覚的ランドマーク。GLBが未展開でも探索は止めない。
+    if (!mist) {
+      let boss = null;
+      for (let ty = 0; ty < a.h && !boss; ty++) for (let tx = 0; tx < a.w; tx++) {
+        if (ch(tx, ty) === 'B') { boss = { tx, ty }; break; }
+      }
+      if (boss) {
+        const x = boss.tx * CELL, z = boss.ty * CELL;
+        mesh(archGeo, mat.metal, x - 1.1, 1.8, z, 0, 1.5, 1.1, 1.5);
+        mesh(archGeo, mat.metal, x + 1.1, 1.8, z, 0, 1.5, 1.1, 1.5);
+        mesh(crystalGeo, mat.glow, x, 2.4, z, Math.PI, 1.8, 2.1, 1.8);
+        ornaments += 3;
+        const file = magma
+          ? './assets/3d/dungeons/b4_dragonfire/models/floor4_corrupted_barrier_v1.glb'
+          : './assets/3d/dungeons/b5_abyssal_star_realm/models/floor5_abyss_throne_refined_v2.glb';
+        try {
+          const gltf = await gltfLoader.loadAsync(file);
+          const model = gltf.scene, bounds = new THREE.Box3().setFromObject(model);
+          const size = bounds.getSize(new THREE.Vector3()), max = Math.max(size.x, size.y, size.z);
+          if (max > 0) {
+            const scale = (magma ? 3.2 : 6.5) / max, center = bounds.getCenter(new THREE.Vector3());
+            model.scale.setScalar(scale);
+            model.position.set(x - center.x * scale, -bounds.min.y * scale, z - center.z * scale);
+            model.name = magma ? 'b4_boss_barrier' : 'b5_demon_throne';
+            root.add(model); landmarkState = 'glb-loaded';
+          } else landmarkState = 'empty-glb';
+        } catch (_) { landmarkState = 'procedural-fallback'; }
+      }
+    }
     batchStatic();
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
@@ -193,5 +224,5 @@ export function createTheme(api, area) {
     }
   }
   async function sync() { return false; }
-  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'procedural-map-placement', sourceAssetsPending: true }) };
+  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState }) };
 }
