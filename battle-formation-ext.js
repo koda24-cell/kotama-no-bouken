@@ -46,7 +46,7 @@
         const rear = alive.filter(c => rowOfParty(c) === "rear");
         if (rear.length) return rear[Math.floor(Math.random() * rear.length)];
       }
-      if (["ゴブリン", "ゴブリンアーチャー", "ゴブリンシャーマン"].includes(battleState.enemy?.name)) {
+      if (String(battleState.enemy?.name || "").includes("ゴブリン")) {
         const min = Math.min(...alive.map(c => effectiveStats(c).defense));
         const candidates = alive.filter(c => effectiveStats(c).defense === min);
         return candidates[Math.floor(Math.random() * candidates.length)];
