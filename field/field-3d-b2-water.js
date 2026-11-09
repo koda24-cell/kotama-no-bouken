@@ -15,7 +15,7 @@
    ============================================================ */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
 export const B2_GLB = B2_BASE + 'models/floor2-water-source-quality-v3.glb';
@@ -192,23 +192,26 @@ function planarUv(geo) {
    手続き型の部品（GLB に無い「迷宮の壁・天井・水底」。素材は GLB の物を使う）
    ------------------------------------------------------------ */
 function makeProcedural() {
-  const walls = [0, 1, 2, 3].map((v) => {
+  const smoothRock = (geo) => { const g = mergeVertices(geo, 1e-3); g.computeVertexNormals(); return g; };
+  const walls = [0, 1, 2, 3, 4, 5, 6, 7].map((v) => {
     // 幅4.3×高さ4.1×厚み0.8。原点は内側の面の下端中央（+Z が通路側）＝第1階層の壁部品と同じ約束
-    const g = new THREE.BoxGeometry(4.3, 4.1, 0.8, 20, 16, 1).toNonIndexed(); g.translate(0, 2.05, -0.4);
+    const g = new THREE.BoxGeometry(4.22, 4.15, 0.75, 32, 24, 1).toNonIndexed(); g.translate(0, 2.05, -0.4);
     const p = g.attributes.position;
     for (let i = 0; i < p.count; i++) {
       const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
       if (z < -0.01) continue;   // 通路側の面だけ凸凹にする
-      const edge = Math.min(1, Math.max(0, (2.15 - Math.abs(x)) / 0.35));   // 左右の端は平らにして隣の壁とつなぐ
-      const n = 0.5 + 0.30 * Math.sin(x * 1.9 + v * 2.1) * Math.sin(y * 1.5 + v) + 0.23 * Math.sin(x * 4.3 + y * 3.7 + v * 5.0) + 0.14 * Math.cos(x * 8.1 - y * 6.4 + v);
-      p.setZ(i, z - n * 0.52 * edge + 0.04);
+      const edge = Math.min(1, Math.max(0, (2.1 - Math.abs(x)) / 0.65));   // 左右の端は平らにして隣の壁とつなぐ
+      const n = 0.42 * Math.sin(x * 0.88 + v * 1.13) * Math.cos(y * 0.67 + v * 0.41)
+        + 0.19 * Math.sin(x * 2.3 + y * 1.2 + v * 2.1)
+        + 0.08 * Math.cos(x * 5.2 - y * 3.6 + v);
+      p.setZ(i, z - n * 0.34 * edge - 0.025);
     }
-    return { name: `cavern_wall_${v}`, parts: [{ geo: prepGeo(g, false), mat: 'Deep cavern rock' }] };
+    return { name: `cavern_wall_${v}`, parts: [{ geo: smoothRock(prepGeo(g, false)), mat: 'Deep cavern rock' }] };
   });
   const ceil = (() => {
-    const g = new THREE.PlaneGeometry(4.25, 4.25, 12, 12).rotateX(Math.PI / 2).toNonIndexed(), p = g.attributes.position;
+    const g = new THREE.PlaneGeometry(4.32, 4.32, 24, 24).rotateX(Math.PI / 2).toNonIndexed(), p = g.attributes.position;
     for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); p.setY(i, -(0.32 + 0.24 * Math.sin(x * 1.3 + 0.7) * Math.cos(z * 1.1 + 0.3) + 0.15 * Math.sin(x * 3.1 + z * 2.3) + 0.10 * Math.cos(x * 5.1 - z * 4.2))); }
-    return { name: 'cavern_ceiling', parts: [{ geo: prepGeo(g, false), mat: 'ceiling' }] };
+    return { name: 'cavern_ceiling', parts: [{ geo: smoothRock(prepGeo(g, false)), mat: 'ceiling' }] };
   })();
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
@@ -368,7 +371,7 @@ export async function createTheme(api) {
       if (valid) skylightCandidates.push({ cx, cy, score: hash(cx, cy, 205) });
     }
     skylightCandidates.sort((a, b) => a.score - b.score);
-    const sky = skylightCandidates[0] || null;
+    const sky = null; // 天井の巨大な黒い開口を一旦無効化。自然な洞窟の連続性を優先
     if (sky) {
       for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) openCells.add(`${sky.cx + dx},${sky.cy + dz}`);
       addAtrium(sky.cx * CELL, sky.cy * CELL);
@@ -395,7 +398,7 @@ export async function createTheme(api) {
         for (const [ox, oz] of [[-0.95, -0.95], [0.95, -0.95], [-0.95, 0.95], [0.95, 0.95]]) {
           if (fall) { const [bx, bz] = DIR_VEC[fall]; if (ox * bx + oz * bz > 0) continue; }   // 滝つぼ側の床板は外す
           const r = hash(tx * 2 + (ox > 0), ty * 2 + (oz > 0), 15);
-          B.add('floor', pick(kit.slabs, r), M4(x + ox, 0, z + oz, Math.floor(hash(tx * 2 + (ox > 0), ty * 2 + (oz > 0), 16) * 4) * Math.PI / 2), tx, ty);
+          B.add('floor', pick(kit.slabs, r), M4(x + ox, -0.035 + hash(tx, ty, 150) * 0.035, z + oz, Math.floor(hash(tx * 2 + (ox > 0), ty * 2 + (oz > 0), 16) * 4) * Math.PI / 2), tx, ty);
         }
         if (c === ',' || c === '_' || c === 'P') {   // 道（, _）には古い象嵌を一筋
           const run = (ch(tx - 1, ty) === c || ch(tx + 1, ty) === c) ? 0 : Math.PI / 2;
