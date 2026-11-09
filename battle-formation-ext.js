@@ -215,8 +215,9 @@
       return { ...d, ...def, fieldEnemyId: id, name: "ゴブリン隊長と護衛", hp: totalHp, maxHp: totalHp, attack: Math.round(d.attack * 1.3), members, gold: def.gold || count * d.gold,
         exp: def.exp || 220, memberCount: count, spDefense: Math.floor(d.defense / 2),
         ai: [
-          { name: "棍棒の一撃", weight: 65, kind: "phys", power: 1 },
-          { name: "ゴブリン連携攻撃", weight: 35, all: true, kind: "phys", power: .5, everyTurns: 3 }
+          { name: "棍棒の一撃", weight: 50, kind: "phys", power: 1 },
+          { name: "石つぶて", weight: 25, kind: "phys", power: .9, target: "rear", ranged: true },
+          { name: "ゴブリン連携攻撃", weight: 25, all: true, kind: "phys", power: .5, everyTurns: 3 }
         ], compendiumAs: "ゴブリン", dropAs: "ゴブリン" };
     }
     if (id !== "fire-slime" && id !== "poison-slime") {
