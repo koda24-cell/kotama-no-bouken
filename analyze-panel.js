@@ -86,6 +86,7 @@ function analyzeEnemyHtml() {
       <span class="analyze-wide">耐性 <b>${list(resist)}</b></span>
     </div>
     <div class="analyze-statuses"><em>状態</em>${statuses.length ? statuses.join("") : `<span class="analyze-none">変化なし</span>`}</div>
+    ${memberDetails}
   </article>`;
 }
 
