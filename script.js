@@ -627,7 +627,7 @@ function openSkillUpgradeDialog(charId,nodeId,returnFocus){
       selectedTrainingSkill=nodeId;renderAll();
       closeSkillUpgradeDialog({focusTarget:focusAfterRender});
       installSkillUpgradeCommitShield();
-      setSystemMessage("強化条件または育成ポイントが変わったため、確定を中止しました。最新の状態を確認してください。");
+      setSystemMessage("強化条件またはSPポイントが変わったため、確定を中止しました。最新の状態を確認してください。");
       return;
     }
     trainingPoints[charId]=latest.points-latest.cost;
