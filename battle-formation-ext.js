@@ -161,10 +161,11 @@
         return;
       }
       if (!bossAlive) {
-        const saved = enemy.ai;
+        const saved = enemy.ai, savedAttack = enemy.attack;
         enemy.ai = [{ name: "雪狼の牙", weight: 100, kind: "phys", power: .9 }];
+        enemy.attack = 58;
         try { return await base.call(this, enemy, turn); }
-        finally { enemy.ai = saved; }
+        finally { enemy.ai = saved; enemy.attack = savedAttack; }
       }
     }
     if (enemy?.formationTag === "fire-slime-pack") {
