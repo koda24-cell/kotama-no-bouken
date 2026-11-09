@@ -227,7 +227,13 @@ async function buildFloor() {
   const info = cellInfo(a), { ch, def, wallCell, open, facing } = info;
   const X = (tx) => tx * CELL, Z = (ty) => ty * CELL;
   const objAt = new Map(a.objects.map((o) => [`${o.tx},${o.ty}`, o]));
-  if (th) await th.build(a, S, info);   // 第2階層：field-3d-b2-water.js が床・壁・物を組み立てる
+  if (th) {
+    try { await th.build(a, S, info); }
+    catch (e) {
+      console.error('[field-3d] 3Dマップの組み立てに失敗:', area, e);
+      g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return;
+    }
+  }
   else {                                // 第1階層：ここから下は従来の組み立て（変更なし）
   // 床・天井・壁
   for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
