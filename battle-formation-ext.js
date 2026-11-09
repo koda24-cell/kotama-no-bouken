@@ -42,7 +42,7 @@
     window.extPickPartyTarget = function (alive, act) {
       const taunt = alive.find(c => c.id === battleState.tauntTarget);
       if (taunt) return taunt;
-      if (act?.target === "rear") {
+      if (act?.target === "rear" || String(battleState.enemy?.name || "").includes("アーチャー")) {
         const rear = alive.filter(c => rowOfParty(c) === "rear");
         if (rear.length) return rear[Math.floor(Math.random() * rear.length)];
       }
