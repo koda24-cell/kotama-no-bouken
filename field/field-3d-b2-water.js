@@ -804,6 +804,21 @@ export async function createTheme(api) {
       stream.position.set(x + Math.cos(angle) * radius, 22 - h / 2, z + Math.sin(angle) * radius);
       atrium.add(stream);
     }
+    // 吹き抜け上部の輪郭を不規則な氷の歯で崩す。床面から十分離し、移動判定には影響しない。
+    // 個別ライトを増やさず、既存の結晶マテリアルで冷光を表現する。
+    const iceGeo = new THREE.ConeGeometry(0.7, 1, 5);
+    const iceMat = mats['Glowing cyan crystal'];
+    for (let i = 0; i < 18; i++) {
+      const angle = (i + hash(i, 31, 402) * 0.32) * Math.PI * 2 / 18;
+      const radius = 4.75 + hash(i, 32, 403) * 0.75;
+      const height = 1.4 + hash(i, 33, 404) * 3.6;
+      const ice = new THREE.Mesh(iceGeo, i % 4 === 0 ? mats['Deep blue crystal'] : iceMat);
+      ice.scale.set(0.55 + hash(i, 34, 405) * 0.75, height, 0.55 + hash(i, 35, 406) * 0.75);
+      ice.rotation.z = Math.PI + (hash(i, 36, 407) - 0.5) * 0.25;
+      ice.position.set(x + Math.cos(angle) * radius, 21.9 - height / 2, z + Math.sin(angle) * radius);
+      ice.name = 'Atrium_Hanging_Ice';
+      atrium.add(ice);
+    }
     // 空洞上部の明るい水色。全体の背景色ではなく、吹き抜け内部だけの光源。
     const opening = new THREE.Mesh(new THREE.CircleGeometry(5.5, 32),
       new THREE.MeshBasicMaterial({ color: 0x6bcde5, side: THREE.DoubleSide, fog: false }));
