@@ -5,7 +5,7 @@
   let opened = false;
   function render() {
     const panel=$("battle-field-map"), grid=$("battle-field-map-grid");
-    if(!panel||!grid||!window.fieldState||!window.fieldArea)return;
+    if(!panel||!grid||typeof fieldState==="undefined"||typeof fieldArea!=="function")return;
     const a=fieldArea(fieldState.area,fieldState.floor); if(!a)return;
     const player=fieldPlayerTile(), cols=a.w, rows=a.h;
     grid.style.setProperty("--map-cols",cols);
