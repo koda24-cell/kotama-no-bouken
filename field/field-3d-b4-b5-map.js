@@ -52,6 +52,10 @@ export function createTheme(api, area) {
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
   const archGeo = localGeo(new THREE.CylinderGeometry(0.22, 0.36, 3.6, 7));
+  const trunkGeo = localGeo(new THREE.CylinderGeometry(0.24, 0.47, 6.8, 7));
+  const canopyGeo = localGeo(new THREE.ConeGeometry(1.6, 4.4, 7));
+  const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4a443b, roughness: 1 });
+  const leafMat = new THREE.MeshStandardMaterial({ color: 0x294d43, roughness: 1, flatShading: true });
   const emberGeo = localGeo(new THREE.IcosahedronGeometry(0.06, 0));
   const crackGeo = localGeo(new THREE.PlaneGeometry(3.4, 0.07).rotateX(-Math.PI / 2));
   const lavaGeo = localGeo(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2));
@@ -120,7 +124,14 @@ export function createTheme(api, area) {
           ornaments++;
         }
       }
-      if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 76) < 0.12) {
+      if (mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, 66) < 0.3) {
+        const sx = x + (hash(tx, ty, 67) > 0.5 ? 1.52 : -1.52);
+        const sz = z + (hash(tx, ty, 68) > 0.5 ? 1.52 : -1.52);
+        mesh(trunkGeo, trunkMat, sx, 3.1, sz, hash(tx, ty, 69) * 6.28, 0.65, 1, 0.65);
+        mesh(canopyGeo, leafMat, sx, 6.8, sz, 0, 1, 1, 1);
+        ornaments++;
+      }
+      if (!mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, 76) < 0.12) {
         const sx = x + (hash(tx, ty, 77) - 0.5) * 2.2;
         const sz = z + (hash(tx, ty, 78) - 0.5) * 2.2;
         mesh(archGeo, mat.metal, sx, 1.8, sz, hash(tx, ty, 79) * 6.28, 1, 1, 1);
