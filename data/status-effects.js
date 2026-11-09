@@ -56,7 +56,7 @@ const EXT_AILMENT_RULES = {
   // 味方：生存者全員が行動不能（睡眠・拘束）になったラウンドが、この回数続いたら、それ以上の行動不能付与を無効にする。
   partyAllLockCap: 1,
   // 階層ボス・特別な敵：行動不能系・封じは、付与に成功するたびに次の付与率が (1 - step) 倍になる（連続ハメ防止）。
-  bossTolerance: { types: ["paralysis", "sleep", "confusion", "bindHead", "bindArm", "bindLeg"], step: .5 },
+  bossTolerance: { types: ["paralysis", "sleep", "confusion", "bindHead", "bindArm", "bindLeg", "petrify"], step: .5 },
   // 階層ボス・特別な敵で ailmentResist に書かれていない状態の、既定の耐性（1.0=通常、0=無効）。
   // 既存の状態（毒・麻痺など）は従来の bossMul で扱うため、ここには新しい状態だけを書く。
   bossDefaultResist: { sleep: .3, confusion: .3, bindHead: .5, bindArm: .5, bindLeg: .5 },
