@@ -125,7 +125,7 @@ const FIELD_AREAS = {
     },
     floors: [
       { encounter: { min: 15, max: 26, scale: 1.0, table: [ { enemy: "water-fish", weight: 55 }, { enemy: "ore-crab", weight: 25 }, { enemy: "water-ray", weight: 20 } ] },
-        chests: [ { item: "potion", count: 3 }, { gold: 90 } ], gathers: [ ["ice_crystal", 45], ["water_scale", 35], ["ore_fragment", 20] ],
+        chests: [ { item: "potion", count: 3 }, { gold: 90 } ], gathers: [ ["monster_fang", 45], ["monster_hide", 35], ["goblin_cloth", 20] ],
         foes: [ { enemy: "foe-crystal-guardian", path: [[22, 9], [25, 8]], sight: 5 } ], map: [
         "###########################",
         "#.......#>#...#....T#.....#",
@@ -150,7 +150,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 14, max: 25, scale: 1.15, table: [ { enemy: "water-fish", weight: 25 }, { enemy: "water-ray", weight: 25 }, { enemy: "ore-crab", weight: 35 }, { enemy: "crystal-golem", weight: 15 } ] },
-        chests: [ { item: "ether", count: 2, materials: [ ["goblin_cloth", 2] ] }, { gold: 110 } ], gathers: [ ["ice_crystal", 40], ["water_scale", 30], ["ore_fragment", 30] ],
+        chests: [ { item: "ether", count: 2, materials: [ ["goblin_cloth", 2] ] }, { gold: 110 } ], gathers: [ ["monster_fang", 40], ["monster_hide", 30], ["goblin_cloth", 30] ],
         foes: [ { enemy: "foe-crystal-guardian", path: [[21, 1], [25, 3]], sight: 5 } ], map: [
         "###########################",
         "#G........................#",
@@ -175,7 +175,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 14, max: 25, scale: 1.3, table: [ { enemy: "water-ray", weight: 30 }, { enemy: "ore-crab", weight: 40 }, { enemy: "crystal-golem", weight: 30 } ] },
-        chests: [ { item: "potion", count: 2 } ], gathers: [ ["ice_crystal", 35], ["water_scale", 35], ["ore_fragment", 30] ], foes: [ { enemy: "foe-crystal-guardian", path: [[24, 2], [24, 8]], sight: 6 } ], map: [
+        chests: [ { item: "potion", count: 2 } ], gathers: [ ["monster_fang", 35], ["monster_hide", 35], ["goblin_cloth", 30] ], foes: [ { enemy: "foe-crystal-guardian", path: [[24, 2], [24, 8]], sight: 6 } ], map: [
         "############################",
         "#__P_,,,,..****....#########",
         "#_<__..,..******...#T..#####",
