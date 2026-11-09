@@ -141,6 +141,19 @@
 
   // Field encounter packs: 1–3 fire/poison slimes. Only three living fire slimes unlock the party-wide blaze.
   wrap("fieldCreateEnemy", base => function (id, scale) {
+    if (id === "foe-goblin-pack") {
+      const def = FIELD_ENEMIES[id], members = [
+        { id:"goblin-pack-leader", name:"ゴブリン隊長", displayName:"ゴブリン隊長", row:"front", hp:1050, maxHp:1050, attack:68, defense:18, spDefense:10, image:def.image, alive:true },
+        { id:"goblin-pack-guard", name:"ゴブリン護衛", displayName:"ゴブリン護衛", row:"front", hp:820, maxHp:820, attack:58, defense:16, spDefense:8, image:def.image, alive:true },
+        { id:"goblin-pack-archer", name:"ゴブリン弓兵", displayName:"ゴブリン弓兵", row:"rear", hp:680, maxHp:680, attack:54, defense:10, spDefense:8, image:def.image, alive:true }
+      ];
+      const total = members.reduce((n,m)=>n+m.hp,0);
+      return { ...def, name:"ゴブリン隊長と護衛", hp:total, maxHp:total, members, gold:70, exp:220, ai:[
+        { name:"号令の一撃", weight:40, kind:"phys", power:1.25 },
+        { name:"石つぶて", weight:25, kind:"phys", power:.9, target:"rear" },
+        { name:"毒刃の乱舞", weight:35, all:true, kind:"phys", power:.52, status:{ type:"poison", chance:.25, turns:2, power:.04 } }
+      ], variantId:"goblin-pack", compendiumAs:"ゴブリン", dropAs:"ゴブリン" };
+    }
     if (id !== "fire-slime" && id !== "poison-slime") {
       const enemy = base.call(this, id, scale);
       if (Array.isArray(enemy?.members)) enemy.members.forEach((m, i) => { m.row = i < 2 ? "front" : "rear"; });
