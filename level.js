@@ -32,16 +32,22 @@ function levelAwardBattleExp(e) {
   if (battleState.tutorialMode) return null;
   const exp = levelEnemyExp(e); if (!exp) return null;
   const ups = [];
-  for (const c of getParty()) {
-    if (c.hp <= 0) continue;
+  // 現在の編成メンバーだけでなく、解放済みの控えメンバーにも同じ経験値を配る。
+  // 戦闘不能の現役メンバーは従来どおり経験値対象外。控えの戦闘不能者は経験値を得るが、HPは0のままにする。
+  const activeIds = new Set((state.party || []).filter(Boolean));
+  for (const c of characters) {
+    const active = activeIds.has(c.id);
+    if (active && c.hp <= 0) continue;
+    if (!active && typeof extIsJobAvailable === "function" && !extIsJobAvailable(c)) continue;
+    const wasAlive = c.hp > 0;
     const from = levelOf(c); let lv = from, cur = levelExpNow(c) + exp;
     while (lv < LEVEL_CAP && cur >= levelExpToNext(lv)) { cur -= levelExpToNext(lv); lv++; }
     if (lv >= LEVEL_CAP) cur = 0;
-    // レベルアップで最大HPが伸びた分だけ、現在HPも増やす
+    // レベルアップで最大HPが伸びた分だけ、HPが残っている仲間の現在HPも増やす。
     const before = effectiveStats(c).maxHp;
     characterLevels[c.id] = lv; levelExp[c.id] = cur;
     if (lv > from) {
-      c.hp = Math.min(effectiveStats(c).maxHp, c.hp + Math.max(0, effectiveStats(c).maxHp - before));
+      if (wasAlive) c.hp = Math.min(effectiveStats(c).maxHp, c.hp + Math.max(0, effectiveStats(c).maxHp - before));
       trainingPoints[c.id] = (trainingPoints[c.id] || 0) + LEVEL_SKILL_POINTS * (lv - from);
       ups.push({ id: c.id, name: c.name, from, to: lv });
     }
