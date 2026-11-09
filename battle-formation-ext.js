@@ -121,19 +121,12 @@
   function makeSnowdrift() {
     const d = SNOWDRIFT_BOSS_DATA, hp = d.hp;
     const boss = {
-      id: "snowdrift", name: "スノードリフト", displayName: "スノードリフト", row: "front",
-      hp, maxHp: hp, attack: 82, defense: 34, spDefense: 28, image: "assets/monsters/ookami.png", alive: true
+      id: "snowdrift", name: d.name, displayName: d.name, row: "front",
+      hp, maxHp: hp, attack: d.attack, defense: d.defense, spDefense: d.spDefense, image: d.image, alive: true
     };
-    const ai = [
-      { name: "氷爪", weight: 45, kind: "phys", power: 1.35 },
-      { name: "白銀の吹雪", weight: 30, all: true, kind: "sp", power: .72, element: "氷", status: { type: "attackDown", chance: .35, turns: 2, power: .15 } },
-      { name: "雪狼の遠吠え", weight: 25, all: true, kind: "sp", power: .48, element: "氷", status: { type: "paralysis", chance: .18, turns: 1 } }
-    ];
     return {
-      name: "スノードリフト", variantId: "snowdrift", element: "氷", weaknesses: ["炎"], resistances: ["氷"],
-      hp, maxHp: hp, attack: 82, spAttack: 76, defense: 34, spDefense: 28, speed: 78,
-      gold: 180, exp: 950, sprite: "wolf", image: "assets/monsters/ookami.png", actionName: "氷爪",
-      ai, members: [boss], _snowdriftSummonCount: 0, compendiumAs: "スノードリフト"
+      ...d, variantId: "snowdrift-boss", hp, maxHp: hp,
+      ai: d.ai, members: [boss], _snowdriftSummonCount: 0, compendiumAs: d.name
     };
   }
   if (Array.isArray(EXT_BOSS_NAMES) && !EXT_BOSS_NAMES.includes("スノードリフト")) EXT_BOSS_NAMES.push("スノードリフト");
