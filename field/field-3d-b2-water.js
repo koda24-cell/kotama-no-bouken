@@ -44,21 +44,49 @@ function makeMaterials(opaqueWater) {
   if (opaqueWater) { water.color.setHex(0x0f4a68); fall.color.setHex(0x2f7fa8); }
   else for (const m of [water, fall]) { m.transparent = true; m.opacity = m === water ? 0.62 : 0.72; m.depthWrite = false; }
   const foam = std({ color: 0xaee8ff, roughness: 0.5, emissive: 0x1f4a59, emissiveIntensity: 1.0, transparent: true, opacity: 0.8, depthWrite: false });
+  // UVのないGLB部品にも使える、繰り返し可能な微細石材テクスチャ。
+  // 大きなGLBを追加せずに床・壁・天井の表面情報を増やす。
+  const rockTex = stoneTexture(256, 13, false);
+  const slateTex = stoneTexture(256, 37, true);
+  const paleTex = stoneTexture(256, 71, false);
+  const rockBump = rockTex.clone(), slateBump = slateTex.clone(), paleBump = paleTex.clone();
+  for (const t of [rockBump, slateBump, paleBump]) { t.colorSpace = THREE.NoColorSpace; t.needsUpdate = true; }
   return {
-    'Wet slate stone': std({ color: 0x7896a3, roughness: 0.53, metalness: 0.04, vertexColors: true }),   // 濡れた暗い石板
+    'Wet slate stone': std({ color: 0x9fb6c0, map: slateTex, bumpMap: slateBump, bumpScale: 0.075, roughness: 0.38, metalness: 0.04, vertexColors: true }),   // 濡れた暗い石板
     'Ancient inlay': std({ color: 0xad8c4a, roughness: 0.42, metalness: 0.55, emissive: 0x2a1c06, emissiveIntensity: 0.6 }),
-    'Deep cavern rock': std({ color: 0x526e7a, roughness: 0.94, metalness: 0.0, vertexColors: true }),
-    'Pale mineral stone': std({ color: 0x8eaebe, roughness: 0.68, metalness: 0.02, vertexColors: true }),  // 淡い鉱物の石
+    'Deep cavern rock': std({ color: 0x8fa6b1, map: rockTex, bumpMap: rockBump, bumpScale: 0.15, roughness: 0.89, metalness: 0.0, vertexColors: true }),
+    'Pale mineral stone': std({ color: 0xb6d2de, map: paleTex, bumpMap: paleBump, bumpScale: 0.095, roughness: 0.57, metalness: 0.02, vertexColors: true }),  // 淡い鉱物の石
     'Glowing cyan crystal': std({ color: 0x3dc7fa, roughness: 0.18, metalness: 0.1, emissive: 0x1aa6e0, emissiveIntensity: 0.75 }),  // 控えめな発光
     'Deep blue crystal': std({ color: 0x3863e0, roughness: 0.2, metalness: 0.1, emissive: 0x1a2f8a, emissiveIntensity: 0.6 }),
     'Violet danger crystal': std({ color: 0x9e4ce0, roughness: 0.25, metalness: 0.05, emissive: 0x5a1a90, emissiveIntensity: 0.9 }), // 紫＝危険
     'Clear blue water': water,
     'Water foam': foam,
     'Aquatic dark teal': std({ color: 0x1d7563, roughness: 0.62, metalness: 0.0 }),
-    ceiling: std({ color: 0x7795a2, roughness: 0.96, metalness: 0.0, emissive: 0x253f4a, emissiveIntensity: 0.7, vertexColors: true, side: THREE.DoubleSide }),   // 下向きの面は環境光が弱いので少し自発光
+    ceiling: std({ color: 0x9bb4c0, map: rockTex, bumpMap: rockBump, bumpScale: 0.16, roughness: 0.91, metalness: 0.0, emissive: 0x253f4a, emissiveIntensity: 0.45, vertexColors: true, side: THREE.DoubleSide }),   // 下向きの面は環境光が弱いので少し自発光
     bed: std({ color: 0x122a3a, roughness: 0.6, metalness: 0.0 }),                                // 水底・床板のすき間
     waterfall: fall,
   };
+}
+// タイル境界で繰り返せる周期関数と決定論的な粒子を合成する。
+function stoneTexture(size, seed, slate) {
+  const tex = tileTexture(size, (c, n) => {
+    const image = c.createImageData(n, n);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const u = x / n * Math.PI * 2, v = y / n * Math.PI * 2;
+      const strata = Math.sin(v * (slate ? 18 : 7) + Math.sin(u * 3) * 0.8) * (slate ? 15 : 9);
+      const grain = Math.sin(u * 13 + Math.cos(v * 9)) * Math.cos(v * 17 - Math.sin(u * 5)) * 13;
+      const fleck = (rnd(x * 19 + y * 127 + seed) - 0.5) * 32;
+      const value = Math.max(75, Math.min(228, 165 + strata + grain + fleck));
+      const i = (y * n + x) * 4;
+      image.data[i] = value * 0.88;
+      image.data[i + 1] = value * 0.96;
+      image.data[i + 2] = value;
+      image.data[i + 3] = 255;
+    }
+    c.putImageData(image, 0, 0);
+  });
+  tex.anisotropy = 4;
+  return tex;
 }
 const rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 function blob(c, s, x, y, r, col) {
@@ -210,6 +238,23 @@ function shade(geo) {
     const big = 0.5 + 0.5 * Math.sin(cx * 0.9 + cz * 0.7) * Math.sin(cy * 1.3 + cz * 0.4);
     const v = 0.72 + 0.22 * big + 0.16 * rnd(Math.floor(cx * 7.3) * 31 + Math.floor(cy * 5.1) * 17 + Math.floor(cz * 6.7));
     for (let k = 0; k < 3 && i + k < n; k++) col.set([v, v, v * 1.03], (i + k) * 3);
+  }
+  // 部品は読み込み時にUVを持たないことがあるため、三角形の法線から
+  // 支配的な投影面を選び、ワールド座標に基づくUVを与える（床・壁・天井共通）。
+  // 水面/滝の既存UVは維持する。
+  if (!geo.attributes.uv) {
+    const uv = new Float32Array(n * 2);
+    for (let i = 0; i < n; i += 3) {
+      const ax = p.getX(i + 1) - p.getX(i), ay = p.getY(i + 1) - p.getY(i), az = p.getZ(i + 1) - p.getZ(i);
+      const bx = p.getX(i + 2) - p.getX(i), by = p.getY(i + 2) - p.getY(i), bz = p.getZ(i + 2) - p.getZ(i);
+      const nx = Math.abs(ay * bz - az * by), ny = Math.abs(az * bx - ax * bz), nz = Math.abs(ax * by - ay * bx);
+      for (let k = 0; k < 3 && i + k < n; k++) {
+        const j = i + k;
+        uv[j * 2] = (ny >= nx && ny >= nz ? p.getX(j) : nx >= nz ? p.getZ(j) : p.getX(j)) / 2.4;
+        uv[j * 2 + 1] = (ny >= nx && ny >= nz ? p.getZ(j) : p.getY(j)) / 2.4;
+      }
+    }
+    geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
   return geo;
