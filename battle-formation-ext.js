@@ -66,10 +66,22 @@
     const reduced = battleState._formationPhysicalHit === true && target?.ref?.row === "rear";
     return base.call(this, enemy, reduced ? Math.max(1, Math.floor(amount * .4)) : amount);
   });
+  wrap("applyDamageToEnemy", base => function (enemy, amount) {
+    const member = enemy?.members?.find(m => m.hp > 0);
+    const reduced = battleState._formationPhysicalHit === true && member?.row === "rear";
+    return base.call(this, enemy, reduced ? Math.max(1, Math.floor(amount * .4)) : amount);
+  });
+  wrap("executeUnion", base => async function (action) {
+    const type = unionSkills[action?.actor]?.type;
+    const previous = battleState._formationPhysicalHit;
+    battleState._formationPhysicalHit = type === "stun" || type === "samurai-slash";
+    try { return await base.call(this, action); }
+    finally { battleState._formationPhysicalHit = previous; }
+  });
   wrap("executeAction", base => async function (action) {
     const actor = getCharacter(action?.actor);
     const skill = action?.type === "skill" ? getCharacterSkills(actor).find(s => s.id === action.skillId) : null;
-    const physical = action?.type === "attack" ||
+    const physical = (action?.type === "attack" && actor?.id !== "mage" && actor?.id !== "gunner") ||
       (action?.type === "skill" && actor?.id !== "mage" && actor?.id !== "gunner" &&
         (skill?.xj?.kind === "phys" || ["burst-blade", "multiSlash", "pierce", "charge"].includes(skill?.type)));
     const previous = battleState._formationPhysicalHit;
@@ -90,7 +102,13 @@
       return makeSnowdrift();
     }
     const enemy = base.call(this, stage);
-    if (Array.isArray(enemy?.members)) enemy.members.forEach((m, i) => { m.row = i < 2 ? "front" : "rear"; });
+    if (Array.isArray(enemy?.members)) {
+      enemy.members.forEach((m, i) => { m.row = i < 2 ? "front" : "rear"; });
+      if (enemy.name === "ゴブリン") enemy.ai = [
+        { name: "棍棒の一撃", weight: 65, kind: "phys", power: 1 },
+        { name: "ゴブリン連携攻撃", weight: 35, all: true, kind: "phys", power: .5, everyTurns: 3 }
+      ];
+    }
     return enemy;
   });
 
