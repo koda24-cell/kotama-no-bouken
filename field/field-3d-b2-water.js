@@ -250,11 +250,13 @@ class Batcher {
 }
 // 面ごとに明るさを少し変える（テクスチャの無い GLB でも岩肌・石板の質感が出る）。位置から決めるので毎回同じ
 function shade(geo) {
+  // スムーズ法線を維持したまま頂点を展開し、三角形単位の色・UVを安全に生成。
+  if (geo.index) { const expanded = geo.toNonIndexed(); geo.dispose(); geo = expanded; }
   const p = geo.attributes.position, n = p.count, col = new Float32Array(n * 3);
   for (let i = 0; i < n; i += 3) {
     const cx = (p.getX(i) + p.getX(i + 1) + p.getX(i + 2)) / 3, cy = (p.getY(i) + p.getY(i + 1) + p.getY(i + 2)) / 3, cz = (p.getZ(i) + p.getZ(i + 1) + p.getZ(i + 2)) / 3;
     const big = 0.5 + 0.5 * Math.sin(cx * 0.9 + cz * 0.7) * Math.sin(cy * 1.3 + cz * 0.4);
-    const v = 0.72 + 0.22 * big + 0.16 * rnd(Math.floor(cx * 7.3) * 31 + Math.floor(cy * 5.1) * 17 + Math.floor(cz * 6.7));
+    const v = 0.88 + 0.08 * big + 0.035 * rnd(Math.floor(cx * 7.3) * 31 + Math.floor(cy * 5.1) * 17 + Math.floor(cz * 6.7));
     for (let k = 0; k < 3 && i + k < n; k++) col.set([v, v, v * 1.03], (i + k) * 3);
   }
   // 部品は読み込み時にUVを持たないことがあるため、三角形の法線から
