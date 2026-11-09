@@ -146,17 +146,26 @@
 
   // Snowdrift periodically calls one snow wolf, up to three. Existing group damage/targeting handles them.
   wrap("extVariantAction", base => async function (enemy, turn) {
-    if (enemy?.variantId === "snowdrift-boss" && turn % 3 === 0 && enemy._snowdriftSummonCount < 3 && enemyHpTotal(enemy) > 0) {
-      const n = ++enemy._snowdriftSummonCount, hp = 430;
-      enemy.members.push({
-        id: `snow-wolf-${n}`, name: "スノーウルフ", displayName: `スノーウルフ ${n}`, row: n === 1 ? "front" : "rear",
-        hp, maxHp: hp, attack: 58, defense: 22, spDefense: 16, image: "assets/monsters/ookami.png", alive: true
-      });
-      enemy.hp = enemyHpTotal(enemy);
-      enemy.maxHp += hp;
-      pushEvent("スノードリフトの遠吠えに応え、スノーウルフが駆けつけた！", "warning");
-      renderBattle();
-      return;
+    if (enemy?.variantId === "snowdrift-boss") {
+      const bossAlive = enemy.members.some(m => m.id === "snowdrift" && m.hp > 0);
+      if (bossAlive && turn % 3 === 0 && enemy._snowdriftSummonCount < 3 && enemyHpTotal(enemy) > 0) {
+        const n = ++enemy._snowdriftSummonCount, hp = 430;
+        enemy.members.push({
+          id: `snow-wolf-${n}`, name: "スノーウルフ", displayName: `スノーウルフ ${n}`, row: n === 1 ? "front" : "rear",
+          hp, maxHp: hp, attack: 58, defense: 22, spDefense: 16, image: "assets/monsters/ookami.png", alive: true
+        });
+        enemy.hp = enemyHpTotal(enemy);
+        enemy.maxHp += hp;
+        pushEvent("スノードリフトの遠吠えに応え、スノーウルフが駆けつけた！", "warning");
+        renderBattle();
+        return;
+      }
+      if (!bossAlive) {
+        const saved = enemy.ai;
+        enemy.ai = [{ name: "雪狼の牙", weight: 100, kind: "phys", power: .9 }];
+        try { return await base.call(this, enemy, turn); }
+        finally { enemy.ai = saved; }
+      }
     }
     if (enemy?.formationTag === "fire-slime-pack") {
       const living = enemy.members.filter(m => m.hp > 0);
