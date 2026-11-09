@@ -86,8 +86,9 @@
     if(typeof originalRender==="function")window.renderBattle=function(...args){
       const members=battleState.enemy?.members;
       if(Array.isArray(members)){const alive=members.filter(m=>m.hp>0);alive.forEach((m,i)=>m.row=i===0?"front":"rear");}
-      return originalRender.apply(this,args);
+      const result=originalRender.apply(this,args);render();return result;
     };
+    if($("battle-field-map-toggle"))$("battle-field-map-toggle").hidden=true;
     $("battle-field-map-toggle")?.addEventListener("click",()=>{opened=!opened;render();});
     $("battle-field-map-close")?.addEventListener("click",()=>{opened=false;render();});
     document.addEventListener("battle:start",render);
