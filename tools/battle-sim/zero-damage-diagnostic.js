@@ -22,9 +22,9 @@ for (const id of ids) for (const grouped of [false, true]) for (const kill of [f
     const physical = calcEnemyPhysicalDamage(enemy, atk);
     const elemental = applyWeaponAttributeDamage(enemy, physical, actor);
     const before = enemyHpTotal(enemy);
-    const dealt = applyDamageToEnemyTarget(enemy, target, elemental);
+    const trace = { fn: String(applyDamageToEnemyTarget).slice(0,250), base: String(applyDamageToEnemy).slice(0,250), same: applyDamageToEnemyTarget === window.applyDamageToEnemyTarget, settings: window.kotamaAdminBattleSettings, target: target && {kind:target.kind,hp:target.ref.hp}, state: {formation:battleState._formationPhysicalHit} };\n    const dealt = applyDamageToEnemyTarget(enemy, target, elemental);
     const after = enemyHpTotal(enemy);
-    return { id, grouped: ${grouped}, kill: ${kill}, atk, physical, elemental, before, dealt, after, targetKind: target?.kind };
+    return { id, grouped: ${grouped}, kill: ${kill}, atk, physical, elemental, before, dealt, after, targetKind: target?.kind, trace };
   })()`);
   const ok = result.dealt > 0 && result.before - result.after === result.dealt &&
     (!kill || result.after === 0);
