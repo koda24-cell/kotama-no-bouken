@@ -300,3 +300,22 @@ body:not([data-screen="battle"]) .retreat-button{display:none}
  .training-skill-main .skill-node-name{font-size:11px}
  .training-skill-main .skill-node-level{min-width:38px;padding:2px 4px;font-size:10px}
 }
+
+/* Second pass: actual skill prerequisite connectors, denser levels, keyboard visibility. */
+.training-skill-main .skill-tree-core{position:relative}
+.training-skill-main .skill-tree-core>.skill-node-select{max-width:360px}
+.training-skill-main .skill-tree-main-link{height:15px;width:calc(50% - 1px);margin:0;border-right:2px solid #62bca9;position:relative;font-size:0}
+.training-skill-main .skill-tree-main-link:after{content:"";position:absolute;right:-4px;bottom:-1px;width:6px;height:6px;border-right:2px solid #62bca9;border-bottom:2px solid #62bca9;transform:rotate(45deg)}
+.training-skill-main .skill-tree-source{position:relative;padding-left:10px}
+.training-skill-main .skill-tree-source:before{content:"";position:absolute;left:0;top:12px;width:8px;border-top:2px solid #62bca9}
+.training-skill-main .skill-expansion-route{position:relative;padding-left:12px}
+.training-skill-main .skill-expansion-route:before{content:"";position:absolute;left:4px;top:6px;bottom:6px;border-left:2px solid #4d9d91}
+.training-skill-main .skill-expansion-route .skill-route-connector{padding-left:9px;position:relative}
+.training-skill-main .skill-expansion-route .skill-route-connector:before{content:"";position:absolute;left:0;top:50%;width:6px;border-top:2px solid #62bca9}
+.training-skill-main .skill-node-level{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.training-skill-main .skill-level-current{color:#9ef0d5}
+.training-skill-main .skill-level-divider{color:#88a6a5}
+.training-skill-main .skill-node-select.selected .skill-level-current{color:#062d32}
+.training-skill-main .skill-node-select:focus-visible{outline:3px solid #f9df8c;outline-offset:2px;z-index:1}
+.training-skill-main .skill-detail-panel{box-shadow:inset 0 1px #ffffff1a}
+@media(max-width:650px){.training-skill-main .skill-tree-main-link{height:12px}.training-skill-main .skill-tree-source{padding-left:7px}.training-skill-main .skill-tree-source:before{width:5px}}
