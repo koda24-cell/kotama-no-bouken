@@ -26,7 +26,7 @@ function tutorialSyncNextButton(){const b=$("tutorial-next");if(!b)return;const 
 function syncTutorialActive(){document.body.classList.toggle("tutorial-active",!!(tutorialState.started&&!tutorialState.completed));}
 // 初期装備：コタマ以外は最初から装備している状態にする（空きスロットのみ補完）。
 function ensureStarterGear(){
-  const starters={knight:{weapon:"sword",armor:"leather-armor"},mage:{weapon:"mage-staff",armor:"leather-armor"},healer:{weapon:"mage-staff",armor:"leather-armor"},samurai:{katana1:"katana",armor:"leather-armor"}};
+  const starters={knight:{weapon:"sword",armor:"leather-armor"},mage:{weapon:"mage-staff",armor:"leather-armor"},healer:{weapon:"mage-staff",armor:"leather-armor"},samurai:{katana1:"katana"}};
   for(const [cid,slots] of Object.entries(starters))for(const [slot,id] of Object.entries(slots))if(equipment[cid]&&!equipment[cid][slot])equipment[cid][slot]=id;
 }
 function updateTutorialSpotlight(){
