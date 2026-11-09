@@ -692,6 +692,7 @@ function renderProgressionPanelUnsafe(){
   <div class="skill-tree-scroll">
    <div class="skill-tree-map">
     <div class="skill-tree-core"><span class="skill-tree-tier">基礎</span>${nodeCard(passive,"passive")}</div>
+    <div class="skill-tree-connector">↓</div>
     <div class="skill-tree-source-row">
      <div class="skill-tree-source"><span class="skill-tree-tier">SP A</span>${nodeCard(a,"branch")}<span class="skill-tree-link-label">── Lv.3 ──</span></div>
      <div class="skill-tree-source"><span class="skill-tree-tier">SP B</span>${nodeCard(b,"branch")}<span class="skill-tree-link-label">── Lv.3 ──</span></div>
