@@ -23,42 +23,79 @@ const CHUNK = 8;                                       // まとめる区画（�
 const WATER_KEY = 'kotama.field3d.b2.water';           // 'opaque' で水を不透明にする（半透明が崩れる環境向けの退避）
 
 // 第2階層の空気（第1階層の値とは別。第1階層へ戻ると field-3d-view.js が第1階層の値に戻す）
-export const ENV = { background: 0x060e16, fog: { color: 0x0c1e2b, density: 0.036 }, hemi: { sky: 0x9ccfee, ground: 0x1a2c38, high: 1.7, low: 2.1 } };
+export const ENV = { background: 0x07141c, fog: { color: 0x15303c, density: 0.027 }, hemi: { sky: 0xb3dce9, ground: 0x263f4b, high: 1.85, low: 2.25 } };
 
 /* ------------------------------------------------------------
    素材（GLB の素材名ごとに、ゲームの描画に合わせた値で作り直す）
    ------------------------------------------------------------ */
 function makeMaterials(opaqueWater) {
   const std = (o) => new THREE.MeshStandardMaterial(o);
-  const waterTex = tileTexture(128, (c, s) => {     // 水面：明るいゆらぎ（水の色は material.color が決める）
-    c.fillStyle = '#9fb8c8'; c.fillRect(0, 0, s, s);
-    for (let i = 0; i < 70; i++) { const x = rnd(i) * s, y = rnd(i + 99) * s, r = 4 + rnd(i + 7) * 16; blob(c, s, x, y, r, `rgba(255,255,255,${0.10 + rnd(i + 3) * 0.22})`); }
+  const waterTex = tileTexture(256, (c, s) => {
+    // 周期的な波紋と細い水流模様。タイル境界をまたいでも連続する。
+    c.fillStyle = '#83b9cc'; c.fillRect(0, 0, s, s);
+    for (let i = 0; i < 240; i++) {
+      const x = rnd(i * 11 + 3) * s, y = rnd(i * 17 + 9) * s;
+      const rx = 4 + rnd(i * 7 + 12) * 22, ry = 0.5 + rnd(i * 13 + 8) * 2.3;
+      c.strokeStyle = `rgba(220,252,255,${0.05 + rnd(i * 19) * 0.21})`;
+      c.lineWidth = 0.5 + rnd(i * 23) * 1.1;
+      for (const ox of [-s, 0, s]) for (const oy of [-s, 0, s]) {
+        c.beginPath(); c.ellipse(x + ox, y + oy, rx, ry, rnd(i + 91) * 0.35, 0, Math.PI * 2); c.stroke();
+      }
+    }
   });
   const fallTex = tileTexture(128, (c, s) => {      // 滝：縦の筋
     c.fillStyle = '#7fa6bf'; c.fillRect(0, 0, s, s);
     for (let i = 0; i < 60; i++) { const x = rnd(i + 5) * s, w = 1 + rnd(i + 11) * 4, a = 0.15 + rnd(i + 17) * 0.45; c.fillStyle = `rgba(235,250,255,${a})`; c.fillRect(x, 0, w, s); if (x + w > s) c.fillRect(x - s, 0, w, s); }
   });
   fallTex.repeat.set(2, 1.4); waterTex.repeat.set(1, 1);
-  const water = std({ color: 0x1a6f9a, map: waterTex, roughness: 0.06, metalness: 0.15, emissive: 0x062a40, emissiveIntensity: 1.0, side: THREE.DoubleSide });
-  const fall = std({ color: 0x4aa8d8, map: fallTex, roughness: 0.1, metalness: 0.05, emissive: 0x0c3f5c, emissiveIntensity: 1.0, side: THREE.DoubleSide });
+  const water = std({ color: 0x3a99bd, map: waterTex, roughness: 0.16, metalness: 0.03, emissive: 0x0a3852, emissiveIntensity: 0.65, side: THREE.DoubleSide });
+  const fall = std({ color: 0x8cddf5, map: fallTex, roughness: 0.24, metalness: 0.0, emissive: 0x18526a, emissiveIntensity: 0.8, side: THREE.DoubleSide });
   if (opaqueWater) { water.color.setHex(0x0f4a68); fall.color.setHex(0x2f7fa8); }
   else for (const m of [water, fall]) { m.transparent = true; m.opacity = m === water ? 0.62 : 0.72; m.depthWrite = false; }
   const foam = std({ color: 0xaee8ff, roughness: 0.5, emissive: 0x1f4a59, emissiveIntensity: 1.0, transparent: true, opacity: 0.8, depthWrite: false });
+  // UVのないGLB部品にも使える、繰り返し可能な微細石材テクスチャ。
+  // 大きなGLBを追加せずに床・壁・天井の表面情報を増やす。
+  const rockTex = stoneTexture(256, 13, false);
+  const slateTex = stoneTexture(256, 37, true);
+  const paleTex = stoneTexture(256, 71, false);
+  const rockBump = rockTex.clone(), slateBump = slateTex.clone(), paleBump = paleTex.clone();
+  for (const t of [rockBump, slateBump, paleBump]) { t.colorSpace = THREE.NoColorSpace; t.needsUpdate = true; }
   return {
-    'Wet slate stone': std({ color: 0x55788a, roughness: 0.34, metalness: 0.08, vertexColors: true }),   // 濡れた暗い石板
+    'Wet slate stone': std({ color: 0x9fb6c0, map: slateTex, bumpMap: slateBump, bumpScale: 0.075, roughness: 0.38, metalness: 0.04, vertexColors: true }),   // 濡れた暗い石板
     'Ancient inlay': std({ color: 0xad8c4a, roughness: 0.42, metalness: 0.55, emissive: 0x2a1c06, emissiveIntensity: 0.6 }),
-    'Deep cavern rock': std({ color: 0x3c5568, roughness: 0.88, metalness: 0.0, vertexColors: true }),
-    'Pale mineral stone': std({ color: 0x8eaebe, roughness: 0.68, metalness: 0.02, vertexColors: true }),  // 淡い鉱物の石
+    'Deep cavern rock': std({ color: 0x8fa6b1, map: rockTex, bumpMap: rockBump, bumpScale: 0.15, roughness: 0.89, metalness: 0.0, vertexColors: true }),
+    'Pale mineral stone': std({ color: 0xb6d2de, map: paleTex, bumpMap: paleBump, bumpScale: 0.095, roughness: 0.57, metalness: 0.02, vertexColors: true }),  // 淡い鉱物の石
     'Glowing cyan crystal': std({ color: 0x3dc7fa, roughness: 0.18, metalness: 0.1, emissive: 0x1aa6e0, emissiveIntensity: 0.75 }),  // 控えめな発光
     'Deep blue crystal': std({ color: 0x3863e0, roughness: 0.2, metalness: 0.1, emissive: 0x1a2f8a, emissiveIntensity: 0.6 }),
     'Violet danger crystal': std({ color: 0x9e4ce0, roughness: 0.25, metalness: 0.05, emissive: 0x5a1a90, emissiveIntensity: 0.9 }), // 紫＝危険
     'Clear blue water': water,
     'Water foam': foam,
     'Aquatic dark teal': std({ color: 0x1d7563, roughness: 0.62, metalness: 0.0 }),
-    ceiling: std({ color: 0x4a6378, roughness: 0.95, metalness: 0.0, emissive: 0x0e1c28, emissiveIntensity: 1.0, vertexColors: true }),   // 下向きの面は環境光が弱いので少し自発光
+    ceiling: std({ color: 0x9bb4c0, map: rockTex, bumpMap: rockBump, bumpScale: 0.16, roughness: 0.91, metalness: 0.0, emissive: 0x253f4a, emissiveIntensity: 0.45, vertexColors: true, side: THREE.DoubleSide }),   // 下向きの面は環境光が弱いので少し自発光
     bed: std({ color: 0x122a3a, roughness: 0.6, metalness: 0.0 }),                                // 水底・床板のすき間
     waterfall: fall,
   };
+}
+// タイル境界で繰り返せる周期関数と決定論的な粒子を合成する。
+function stoneTexture(size, seed, slate) {
+  const tex = tileTexture(size, (c, n) => {
+    const image = c.createImageData(n, n);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const u = x / n * Math.PI * 2, v = y / n * Math.PI * 2;
+      const strata = Math.sin(v * (slate ? 18 : 7) + Math.sin(u * 3) * 0.8) * (slate ? 15 : 9);
+      const grain = Math.sin(u * 13 + Math.cos(v * 9)) * Math.cos(v * 17 - Math.sin(u * 5)) * 13;
+      const fleck = (rnd(x * 19 + y * 127 + seed) - 0.5) * 32;
+      const value = Math.max(75, Math.min(228, 165 + strata + grain + fleck));
+      const i = (y * n + x) * 4;
+      image.data[i] = value * 0.88;
+      image.data[i + 1] = value * 0.96;
+      image.data[i + 2] = value;
+      image.data[i + 3] = 255;
+    }
+    c.putImageData(image, 0, 0);
+  });
+  tex.anisotropy = 4;
+  return tex;
 }
 const rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 function blob(c, s, x, y, r, col) {
@@ -151,20 +188,20 @@ function planarUv(geo) {
 function makeProcedural() {
   const walls = [0, 1, 2, 3].map((v) => {
     // 幅4.3×高さ4.1×厚み0.8。原点は内側の面の下端中央（+Z が通路側）＝第1階層の壁部品と同じ約束
-    const g = new THREE.BoxGeometry(4.3, 4.1, 0.8, 12, 12, 1).toNonIndexed(); g.translate(0, 2.05, -0.4);
+    const g = new THREE.BoxGeometry(4.3, 4.1, 0.8, 20, 16, 1).toNonIndexed(); g.translate(0, 2.05, -0.4);
     const p = g.attributes.position;
     for (let i = 0; i < p.count; i++) {
       const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
       if (z < -0.01) continue;   // 通路側の面だけ凸凹にする
       const edge = Math.min(1, Math.max(0, (2.15 - Math.abs(x)) / 0.35));   // 左右の端は平らにして隣の壁とつなぐ
-      const n = 0.5 + 0.25 * Math.sin(x * 1.9 + v * 2.1) * Math.sin(y * 1.5 + v) + 0.25 * Math.sin(x * 4.3 + y * 3.7 + v * 5.0);
-      p.setZ(i, z - n * 0.32 * edge + 0.04);
+      const n = 0.5 + 0.30 * Math.sin(x * 1.9 + v * 2.1) * Math.sin(y * 1.5 + v) + 0.23 * Math.sin(x * 4.3 + y * 3.7 + v * 5.0) + 0.14 * Math.cos(x * 8.1 - y * 6.4 + v);
+      p.setZ(i, z - n * 0.52 * edge + 0.04);
     }
     return { name: `cavern_wall_${v}`, parts: [{ geo: prepGeo(g, false), mat: 'Deep cavern rock' }] };
   });
   const ceil = (() => {
-    const g = new THREE.PlaneGeometry(4.3, 4.3, 6, 6).rotateX(Math.PI / 2).toNonIndexed(), p = g.attributes.position;
-    for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); p.setY(i, -(0.12 + 0.12 * Math.sin(x * 1.3 + 0.7) * Math.cos(z * 1.1 + 0.3) + 0.08 * Math.sin(x * 3.1 + z * 2.3))); }
+    const g = new THREE.PlaneGeometry(4.25, 4.25, 12, 12).rotateX(Math.PI / 2).toNonIndexed(), p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); p.setY(i, -(0.32 + 0.24 * Math.sin(x * 1.3 + 0.7) * Math.cos(z * 1.1 + 0.3) + 0.15 * Math.sin(x * 3.1 + z * 2.3) + 0.10 * Math.cos(x * 5.1 - z * 4.2))); }
     return { name: 'cavern_ceiling', parts: [{ geo: prepGeo(g, false), mat: 'ceiling' }] };
   })();
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
@@ -211,6 +248,23 @@ function shade(geo) {
     const v = 0.72 + 0.22 * big + 0.16 * rnd(Math.floor(cx * 7.3) * 31 + Math.floor(cy * 5.1) * 17 + Math.floor(cz * 6.7));
     for (let k = 0; k < 3 && i + k < n; k++) col.set([v, v, v * 1.03], (i + k) * 3);
   }
+  // 部品は読み込み時にUVを持たないことがあるため、三角形の法線から
+  // 支配的な投影面を選び、ワールド座標に基づくUVを与える（床・壁・天井共通）。
+  // 水面/滝の既存UVは維持する。
+  if (!geo.attributes.uv) {
+    const uv = new Float32Array(n * 2);
+    for (let i = 0; i < n; i += 3) {
+      const ax = p.getX(i + 1) - p.getX(i), ay = p.getY(i + 1) - p.getY(i), az = p.getZ(i + 1) - p.getZ(i);
+      const bx = p.getX(i + 2) - p.getX(i), by = p.getY(i + 2) - p.getY(i), bz = p.getZ(i + 2) - p.getZ(i);
+      const nx = Math.abs(ay * bz - az * by), ny = Math.abs(az * bx - ax * bz), nz = Math.abs(ax * by - ay * bx);
+      for (let k = 0; k < 3 && i + k < n; k++) {
+        const j = i + k;
+        uv[j * 2] = (ny >= nx && ny >= nz ? p.getX(j) : nx >= nz ? p.getZ(j) : p.getX(j)) / 2.4;
+        uv[j * 2 + 1] = (ny >= nx && ny >= nz ? p.getZ(j) : p.getY(j)) / 2.4;
+      }
+    }
+    geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
   return geo;
 }
@@ -236,7 +290,7 @@ export async function createTheme(api) {
   const proc = makeProcedural();
   const mats = makeMaterials(opaqueWater);
   const { CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g } = api;
-  let made = [], anim = { ripples: [], mists: [] }, root = null, last = { falls: [], bridge: null };
+  let made = [], anim = { ripples: [], mists: [], fishes: [], caustics: [] }, root = null, last = { falls: [], bridge: null };
 
   const light = (x, y, z, color, intensity, range) => g.lights.push({ pos: [x, y, z], color, intensity, range, world: new THREE.Vector3(x, y, z), off: false });
   const pick = (arr, r) => arr[Math.min(arr.length - 1, Math.floor(r * arr.length))];
@@ -263,7 +317,9 @@ export async function createTheme(api) {
     for (const geo of made) geo.dispose(); made = [];
     for (const r of anim.ripples) r.mesh.material.dispose();
     for (const m of anim.mists) { m.points.geometry.dispose(); }
-    anim = { ripples: [], mists: [] }; root = null;
+    for (const f of anim.fishes) f.geometry.dispose();
+    for (const c of anim.caustics) { c.mesh.geometry.dispose(); c.mesh.material.dispose(); c.texture.dispose(); }
+    anim = { ripples: [], mists: [], fishes: [], caustics: [] }; root = null;
   }
 
   async function build(a, S, info) {
@@ -292,6 +348,24 @@ export async function createTheme(api) {
         cands.push({ tx, ty, back, r: hash(tx, ty, 41) });
       }
       cands.sort((p, q) => p.r - q.r).slice(0, 4).forEach((c) => falls.set(`${c.tx},${c.ty}`, c.back));
+    }
+
+    // 天井の吹き抜け：3×3 の歩行可能な広場を優先して、各フロア最大1か所だけ選ぶ。
+    // マップ文字・通行判定・イベントには触れず、見た目だけのランドマークにする。
+    const openCells = new Set();
+    const skylightCandidates = [];
+    for (let cy = 2; cy < a.h - 2; cy++) for (let cx = 2; cx < a.w - 2; cx++) {
+      let valid = true;
+      for (let dz = -1; dz <= 1 && valid; dz++) for (let dx = -1; dx <= 1; dx++) {
+        if (wallCell(cx + dx, cy + dz) || objAt.has(`${cx + dx},${cy + dz}`)) valid = false;
+      }
+      if (valid) skylightCandidates.push({ cx, cy, score: hash(cx, cy, 205) });
+    }
+    skylightCandidates.sort((a, b) => a.score - b.score);
+    const sky = skylightCandidates[0] || null;
+    if (sky) {
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) openCells.add(`${sky.cx + dx},${sky.cy + dz}`);
+      addAtrium(sky.cx * CELL, sky.cy * CELL);
     }
 
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
@@ -323,13 +397,23 @@ export async function createTheme(api) {
         }
       }
       // 天井
-      B.add('ceiling', proc.ceil, M4(x, 4, z, Math.floor(hash(tx, ty, 18) * 4) * Math.PI / 2), tx, ty);
+      if (!openCells.has(key)) B.add('ceiling', proc.ceil, M4(x, 4, z, Math.floor(hash(tx, ty, 18) * 4) * Math.PI / 2), tx, ty);
       // 壁と、壁ぎわの岩・鉱脈・壁付きの物
       for (const d of DIR_ORDER) {
         const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
         const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, k = hash(tx * 4 + DIR_ORDER.indexOf(d), ty, 5), ry = FACE_YAW[d] + Math.PI;
-        B.add('walls', pick(proc.walls, k), M4(ex, 0, ez, ry), tx, ty);
         const along = [dy ? 1 : 0, dx ? 1 : 0];   // 壁に沿う向き（x, z）
+        B.add('walls', pick(proc.walls, k), M4(ex, 0, ez, ry), tx, ty);
+        // 壁と床の境目に低い岩の堆積を置き、直線的な接合部を崩す。
+        // 通路中央やイベントマスを避け、歩行判定には影響させない。
+        if (!objAt.has(key) && c !== '>' && c !== '<' && k < 0.72) {
+          const rim = pick(kit.rocks, hash(tx, ty, 180 + DIR_ORDER.indexOf(d)));
+          const offset = (hash(tx, ty, 184 + DIR_ORDER.indexOf(d)) - 0.5) * 2.0;
+          const scale = 0.22 + hash(tx, ty, 188 + DIR_ORDER.indexOf(d)) * 0.13;
+          B.add('rock_seams', rim, M4(ex - dx * 0.12 + along[0] * offset, -0.20,
+            ez - dy * 0.12 + along[1] * offset, ry + hash(tx, ty, 192) * 0.8, scale), tx, ty);
+        }
+
         const n = def(ch(tx + dx, ty + dy));
         const o = n && n.onWall ? a.objects.find((q) => q.tx === tx + dx && q.ty === ty + dy) : null;
         if (o && o.kind === 'switch') {   // 合図石：壁に埋まった結晶。解くと光が消える（第1階層のレバーと同じ扱い）
@@ -373,9 +457,9 @@ export async function createTheme(api) {
         }
       }
       // 天井から下がる結晶（まれに、壁ぎわ）
-      if (hash(tx, ty, 47) < 0.06) {
+      if (!openCells.has(key) && hash(tx, ty, 47) < 0.19) {
         const d = DIR_ORDER.find((q) => wallCell(tx + DIR_VEC[q][0], ty + DIR_VEC[q][1]));
-        if (d) { const [dx, dy] = DIR_VEC[d]; B.add('crystals', pick(kit.shards, hash(tx, ty, 48)), M4(x + dx * 1.3, 3.95, z + dy * 1.3, hash(tx, ty, 49) * 6, 0.4, Math.PI), tx, ty); }
+        if (d) { const [dx, dy] = DIR_VEC[d]; B.add('crystals', pick(kit.shards, hash(tx, ty, 48)), M4(x + dx * 1.3, 3.82, z + dy * 1.3, hash(tx, ty, 49) * 6, 0.24 + hash(tx, ty, 194) * 0.22, Math.PI), tx, ty); }
       }
     }
     if (bridge) {   // 壊れた橋（6.6m）を3マスに合わせて少し伸ばす。上面が水面のすぐ上に来る高さ
@@ -421,6 +505,80 @@ export async function createTheme(api) {
     last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge };
   }
 
+  // 大空洞の縦方向の景観。天井を抜いた3×3マスに高い石造壁と冷光を加える。
+  // 3D表示の装飾のみ。通路、壁判定、カメラ、マップイベントは変更しない。
+  function addAtrium(x, z) {
+    const atrium = new THREE.Group(); atrium.name = 'b2:open_ceiling_atrium'; root.add(atrium);
+    const stone = mats['Pale mineral stone'], dark = mats['Deep cavern rock'];
+    const trim = mats['Ancient inlay'];
+    const lightMat = new THREE.MeshBasicMaterial({ color: 0x9beaff, transparent: true, opacity: 0.19, depthWrite: false, side: THREE.DoubleSide });
+    const fishMat = new THREE.MeshBasicMaterial({ color: 0x174a65, side: THREE.DoubleSide, transparent: true, opacity: 0.7, depthWrite: false });
+    // 天井4mより上の縦穴を囲む壁。内側が空洞になるよう4面に配置する。
+    // 通路内に柱を立てず、3×3マスの外周だけを装飾する。
+    for (let side = 0; side < 4; side++) {
+      const axis = side % 2 === 0;
+      const sign = side % 2 === 0 ? -1 : 1;
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.4 : 0.9, 18.5, axis ? 0.9 : 12.4), dark);
+      wall.position.set(x + (axis ? 0 : sign * 6.1), 13.25, z + (axis ? sign * 6.1 : 0));
+      atrium.add(wall);
+      // 高い遺跡壁の石造リブと横梁。視線が上へ向かうように縦方向を強調。
+      for (const p of [-4.4, 0, 4.4]) {
+        const rib = new THREE.Mesh(new THREE.BoxGeometry(axis ? 0.46 : 0.72, 17, axis ? 0.72 : 0.46), stone);
+        rib.position.set(x + (axis ? p : sign * 5.55), 13, z + (axis ? sign * 5.55 : p)); atrium.add(rib);
+      }
+      for (const h of [8, 14, 20]) {
+        const band = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.1 : 0.52, 0.36, axis ? 0.52 : 12.1), trim);
+        band.position.set(x + (axis ? 0 : sign * 5.56), h, z + (axis ? sign * 5.56 : 0)); atrium.add(band);
+      }
+    }
+    // 角の崩れた支柱と礎石。上方には段差を付け、直方体の箱に見えにくくする。
+    for (const [dx, dz] of [[-5.6,-5.6],[5.6,-5.6],[-5.6,5.6],[5.6,5.6]]) {
+      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.88, 18, 8), stone);
+      pillar.position.set(x + dx, 13, z + dz); atrium.add(pillar);
+      for (const h of [5.5, 11.5, 17.5, 21.5]) {
+        const cap = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, 0.4, 8), dark);
+        cap.position.set(x + dx, h, z + dz); atrium.add(cap);
+      }
+    }
+    // 空洞上部の明るい水色。全体の背景色ではなく、吹き抜け内部だけの光源。
+    const opening = new THREE.Mesh(new THREE.CircleGeometry(5.5, 32),
+      new THREE.MeshBasicMaterial({ color: 0x6bcde5, side: THREE.DoubleSide, fog: false }));
+    opening.rotation.x = Math.PI / 2; opening.position.set(x, 22.65, z); atrium.add(opening);
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 4.1, 19, 16, 1, true), lightMat);
+    beam.position.set(x, 13, z); beam.renderOrder = 3; atrium.add(beam);
+    // 水面下の床に淡い揺れる光の筋を重ねる。GPU反射を使わない軽量表現。
+    const causticTex = tileTexture(128, (ctx, n) => {
+      ctx.clearRect(0, 0, n, n);
+      for (let i = 0; i < 32; i++) {
+        const px = rnd(i * 13 + 4) * n, py = rnd(i * 17 + 2) * n;
+        ctx.strokeStyle = `rgba(177,245,255,${0.08 + rnd(i * 31) * 0.16})`;
+        ctx.lineWidth = 1 + rnd(i * 7) * 2;
+        ctx.beginPath(); ctx.ellipse(px, py, 6 + rnd(i * 11) * 15, 2 + rnd(i * 19) * 5, rnd(i * 23) * 6, 0, Math.PI * 2); ctx.stroke();
+      }
+    });
+    causticTex.repeat.set(2, 2);
+    const causticMat = new THREE.MeshBasicMaterial({ map: causticTex, transparent: true, opacity: 0.35, depthWrite: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1 });
+    const causticMesh = new THREE.Mesh(new THREE.PlaneGeometry(10.5, 10.5).rotateX(-Math.PI / 2), causticMat);
+    causticMesh.position.set(x, 0.022, z); causticMesh.renderOrder = 3; atrium.add(causticMesh);
+    anim.caustics.push({ mesh: causticMesh, texture: causticTex });
+    // 高所に浮かぶ魚影。装飾のみで移動・当たり判定なし。
+    const fishShape = new THREE.Shape();
+    fishShape.moveTo(-0.75, 0); fishShape.quadraticCurveTo(-0.15, 0.33, 0.55, 0.08);
+    fishShape.lineTo(0.92, 0.32); fishShape.lineTo(0.78, 0);
+    fishShape.lineTo(0.92, -0.32); fishShape.lineTo(0.55, -0.08);
+    fishShape.quadraticCurveTo(-0.15, -0.33, -0.75, 0);
+    const fishGeo = new THREE.ShapeGeometry(fishShape);
+    for (let i = 0; i < 7; i++) {
+      const f = new THREE.Mesh(fishGeo, fishMat);
+      f.position.set(x + (hash(i, 1, 210) - 0.5) * 8, 10 + hash(i, 2, 211) * 9, z + (hash(i, 3, 212) - 0.5) * 8);
+      f.rotation.y = hash(i, 4, 213) * Math.PI * 2; f.scale.setScalar(0.55 + hash(i, 5, 214) * 0.8);
+      atrium.add(f);
+      anim.fishes.push(f);
+    }
+    light(x, 3.4, z, 0x89e8ff, 2.4, 13);
+    light(x, 9.0, z, 0x6acfff, 1.7, 16);
+  }
+
   function addRipple(x, z, r) {
     const piece = kit.ripples[Math.floor(r * kit.ripples.length) % kit.ripples.length];
     const mat = mats['Water foam'].clone(); mat.opacity = 0;
@@ -433,6 +591,13 @@ export async function createTheme(api) {
     const fwd = [Math.sin(ry), Math.cos(ry)];   // 壁から通路へ向かう向き
     B.add('water', kit.waterfall, M4(ex + fwd[0] * 0.12, 0, ez + fwd[1] * 0.12, ry, [sx, sy, 1]), tx, ty);
     B.add('water', proc.poolHalf, M4(ex + fwd[0] * 0.95, -0.07, ez + fwd[1] * 0.95, ry), tx, ty);
+    // 落水点の泡を複数の薄い輪で表現。水面より少し上に配置。
+    for (let i = 0; i < 3; i++) {
+      const foam = kit.ripples[(i + Math.floor(hash(tx, ty, 208) * kit.ripples.length)) % kit.ripples.length];
+      const sc = 0.65 + i * 0.45;
+      B.add('water_foam', foam, M4(ex + fwd[0] * (0.9 + i * 0.18), -0.025 + i * 0.004,
+        ez + fwd[1] * (0.9 + i * 0.18), hash(tx, ty, 209 + i) * 6.28, sc), tx, ty);
+    }
     B.add('rocks', pick(kit.rocks, hash(tx, ty, 50)), M4(ex + fwd[0] * 0.8 + fwd[1] * 1.6, -0.2, ez + fwd[1] * 0.8 - fwd[0] * 1.6, ry, 0.6), tx, ty);
     light(ex + fwd[0] * 1.2, 1.2, ez + fwd[1] * 1.2, 0x6fd4ff, 1.6, 6);
     if (anim.ripples.length < 24) addRipple(ex + fwd[0] * 0.9, ez + fwd[1] * 0.9, hash(tx, ty, 51));
@@ -454,8 +619,18 @@ export async function createTheme(api) {
   function tick(dt, now, camPos) {
     t += dt;
     const w = mats['Clear blue water'].map, f = mats.waterfall.map;
-    if (w) { w.offset.x = (t * 0.02) % 1; w.offset.y = (t * 0.035) % 1; }
+    if (w) { w.offset.x = (t * 0.012) % 1; w.offset.y = (t * 0.022) % 1; }
     if (f) f.offset.y = (t * 0.9) % 1;
+    for (const c of anim.caustics) {
+      c.texture.offset.x = (t * 0.009) % 1;
+      c.texture.offset.y = (t * 0.014) % 1;
+      c.mesh.material.opacity = 0.28 + 0.07 * Math.sin(t * 0.8);
+    }
+    for (let i = 0; i < anim.fishes.length; i++) {
+      const fish = anim.fishes[i];
+      fish.position.x += Math.sin(t * 0.42 + i) * dt * 0.08;
+      fish.rotation.y += Math.sin(t * 0.23 + i) * dt * 0.04;
+    }
     for (const r of anim.ripples) {
       if (camPos && r.mesh.position.distanceToSquared(camPos) > 400) { r.mesh.visible = false; continue; }
       r.mesh.visible = true;
