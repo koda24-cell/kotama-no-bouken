@@ -23,7 +23,8 @@ const CHUNK = 8;                                       // まとめる区画（�
 const WATER_KEY = 'kotama.field3d.b2.water';           // 'opaque' で水を不透明にする（半透明が崩れる環境向けの退避）
 
 // 第2階層の空気（第1階層の値とは別。第1階層へ戻ると field-3d-view.js が第1階層の値に戻す）
-export const ENV = { background: 0x07141c, fog: { color: 0x122b36, density: 0.018 }, hemi: { sky: 0x91b8c8, ground: 0x1c3542, high: 1.4, low: 1.65 } };
+// 水源洞窟の岩肌と遠景を視認できるよう、暗部を持ち上げつつ寒色を維持。
+export const ENV = { background: 0x102a36, fog: { color: 0x1b4050, density: 0.011 }, hemi: { sky: 0xb7e4ef, ground: 0x416575, high: 2.0, low: 2.1 } };
 
 /* ------------------------------------------------------------
    素材（GLB の素材名ごとに、ゲームの描画に合わせた値で作り直す）
@@ -563,10 +564,10 @@ export async function createTheme(api) {
           const inward = 0.45 - piece.size.z * s * 0.5;
           B.add('rocks', piece, M4(ex + along[0] * t - dx * inward, -0.15, ez + along[1] * t - dy * inward, ry + (hash(tx, ty, 28) - 0.5) * 0.5, s), tx, ty);
         }
-        if (k < 0.07) {    // 光る鉱脈
+        if (k < 0.14) {    // 光る鉱脈
           const t = (hash(tx, ty, 29) - 0.5) * 2.4, y = 1.0 + hash(tx, ty, 30) * 1.8;
           B.add('crystals', pick(kit.veins, hash(tx, ty, 31)), M4(ex + along[0] * t - dx * 0.06, y, ez + along[1] * t - dy * 0.06, ry, 1.1), tx, ty);
-          light(ex - dx * 0.4, y, ez - dy * 0.4, 0x67c2d4, 0.55, 3.8);
+          light(ex - dx * 0.4, y, ez - dy * 0.4, 0x83ddf1, 0.85, 5.2);
         }
       }
       // 角の結晶の群れ（二方が壁の角だけ。通路の正面をふさがない）
@@ -574,7 +575,7 @@ export async function createTheme(api) {
         for (let i = 0; i < 4; i++) {
           const d1 = DIR_ORDER[i], d2 = DIR_ORDER[(i + 1) % 4];
           if (!wallCell(tx + DIR_VEC[d1][0], ty + DIR_VEC[d1][1]) || !wallCell(tx + DIR_VEC[d2][0], ty + DIR_VEC[d2][1])) continue;
-          if (hash(tx, ty, 32 + i) > 0.16) continue;
+          if (hash(tx, ty, 32 + i) > 0.24) continue;
           const px = x + (DIR_VEC[d1][0] + DIR_VEC[d2][0]) * 1.3, pz = z + (DIR_VEC[d1][1] + DIR_VEC[d2][1]) * 1.3;
           const piece = pick(kit.crystals, hash(tx, ty, 36 + i)), s = 0.45 + hash(tx, ty, 40) * 0.15;
           B.add('crystals', piece, M4(px, -0.05, pz, hash(tx, ty, 37) * 6, s), tx, ty);
