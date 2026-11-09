@@ -668,7 +668,7 @@ export async function createTheme(api) {
     // 通路内に柱を立てず、3×3マスの外周だけを装飾する。
     for (let side = 0; side < 4; side++) {
       const axis = side % 2 === 0;
-      const sign = side % 2 === 0 ? -1 : 1;
+      const sign = side < 2 ? -1 : 1;
       const wall = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.4 : 0.9, 18.5, axis ? 0.9 : 12.4), dark);
       wall.position.set(x + (axis ? 0 : sign * 6.1), 13.25, z + (axis ? sign * 6.1 : 0));
       atrium.add(wall);
@@ -681,6 +681,20 @@ export async function createTheme(api) {
         const band = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.1 : 0.52, 0.36, axis ? 0.52 : 12.1), trim);
         band.position.set(x + (axis ? 0 : sign * 5.56), h, z + (axis ? sign * 5.56 : 0)); atrium.add(band);
       }
+    }
+    // 岩盤の縦長シルエットで四角い遺跡壁を崩す。壁の内側ではなく外周に固定。
+    for (let i = 0; i < 12; i++) {
+      const side = i % 4, axis = side % 2 === 0;
+      const sign = side < 2 ? -1 : 1;
+      const along = (hash(i, 8, 252) - 0.5) * 9.6;
+      const height = 5 + hash(i, 9, 253) * 9;
+      const rock = new THREE.Mesh(
+        new THREE.ConeGeometry(0.65 + hash(i, 10, 254) * 0.7, height, 6),
+        dark);
+      rock.position.set(x + (axis ? along : sign * 5.6), 4.2 + height / 2,
+        z + (axis ? sign * 5.6 : along));
+      rock.rotation.z = (hash(i, 11, 255) - 0.5) * 0.15;
+      atrium.add(rock);
     }
     // 角の崩れた支柱と礎石。上方には段差を付け、直方体の箱に見えにくくする。
     for (const [dx, dz] of [[-5.6,-5.6],[5.6,-5.6],[-5.6,5.6],[5.6,5.6]]) {
