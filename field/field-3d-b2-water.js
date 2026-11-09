@@ -49,13 +49,25 @@ function makeMaterials(opaqueWater) {
     }
     c.putImageData(img, 0, 0);
   });
-  const fallTex = tileTexture(128, (c, s) => {      // 滝：縦の筋
-    c.fillStyle = '#7fa6bf'; c.fillRect(0, 0, s, s);
-    for (let i = 0; i < 60; i++) { const x = rnd(i + 5) * s, w = 1 + rnd(i + 11) * 4, a = 0.15 + rnd(i + 17) * 0.45; c.fillStyle = `rgba(235,250,255,${a})`; c.fillRect(x, 0, w, s); if (x + w > s) c.fillRect(x - s, 0, w, s); }
+  // 直線的な縦ストライプの滝を、ゆらぐ流線と細かな飛沫へ変更。
+  const fallTex = tileTexture(256, (c, n) => {
+    const img = c.createImageData(n, n);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const u = x / n * Math.PI * 2, v = y / n * Math.PI * 2;
+      const flow = Math.sin(u * 13 + Math.sin(v * 3) * 1.8)
+        + 0.38 * Math.cos(u * 31 - v * 2 + Math.sin(v * 5));
+      const foam = Math.max(0, flow - 0.7);
+      const i = (y * n + x) * 4;
+      img.data[i] = 100 + foam * 46;
+      img.data[i + 1] = 160 + foam * 37;
+      img.data[i + 2] = 186 + foam * 33;
+      img.data[i + 3] = 255;
+    }
+    c.putImageData(img, 0, 0);
   });
   fallTex.repeat.set(2, 1.4); waterTex.repeat.set(1, 1);
   const water = std({ color: 0x7bb4bf, map: waterTex, roughness: 0.09, metalness: 0.08, emissive: 0x061c29, emissiveIntensity: 0.12, side: THREE.DoubleSide });
-  const fall = std({ color: 0x8cddf5, map: fallTex, roughness: 0.24, metalness: 0.0, emissive: 0x18526a, emissiveIntensity: 0.8, side: THREE.DoubleSide });
+  const fall = std({ color: 0xb5dce5, map: fallTex, roughness: 0.19, metalness: 0.0, emissive: 0x17495d, emissiveIntensity: 0.3, side: THREE.DoubleSide });
   if (opaqueWater) { water.color.setHex(0x0f4a68); fall.color.setHex(0x2f7fa8); }
   else for (const m of [water, fall]) { m.transparent = true; m.opacity = m === water ? 0.83 : 0.72; m.depthWrite = false; }
   const foam = std({ color: 0xaee8ff, roughness: 0.5, emissive: 0x1f4a59, emissiveIntensity: 1.0, transparent: true, opacity: 0.8, depthWrite: false });
