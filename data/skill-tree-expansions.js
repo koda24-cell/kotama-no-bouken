@@ -197,7 +197,7 @@ const skillTreeExpansionDefinitions={
         "description": "魔力収束。前段階の技から派生する上位スキル。",
         "xj": {
           "kind": "sp",
-          "mult": 1.9500000000000002,
+          "mult": 1.95,
           "hits": 1,
           "element": "雷",
           "fx": "magic"
@@ -220,7 +220,7 @@ const skillTreeExpansionDefinitions={
         "description": "天雷の印。コタマの戦い方を発展させる技。",
         "xj": {
           "kind": "sp",
-          "mult": 1.5099999999999998,
+          "mult": 1.51,
           "element": "雷",
           "fx": "magic"
         }
@@ -545,7 +545,7 @@ const skillTreeExpansionDefinitions={
         "description": "不動の構え。騎士の戦い方を発展させる技。",
         "xj": {
           "kind": "phys",
-          "mult": 1.5099999999999998,
+          "mult": 1.51,
           "element": "打",
           "fx": "slash"
         }
@@ -872,7 +872,7 @@ const skillTreeExpansionDefinitions={
         "description": "慈愛の誓い。治癒士の戦い方を発展させる技。",
         "xj": {
           "kind": "sp",
-          "mult": 1.5099999999999998,
+          "mult": 1.51,
           "element": "聖",
           "fx": "magic"
         }
@@ -1057,7 +1057,7 @@ const skillTreeExpansionDefinitions={
         "xj": {
           "kind": "sp",
           "mult": 1.27,
-          "element": "炎",
+          "element": "氷",
           "fx": "magic"
         }
       }
@@ -1080,7 +1080,7 @@ const skillTreeExpansionDefinitions={
           "kind": "sp",
           "mult": 1.59,
           "hits": 1,
-          "element": "炎",
+          "element": "氷",
           "fx": "magic"
         }
       }
@@ -1103,7 +1103,7 @@ const skillTreeExpansionDefinitions={
           "kind": "sp",
           "mult": 1.71,
           "hits": 1,
-          "element": "炎",
+          "element": "氷",
           "fx": "magic"
         }
       }
@@ -1125,7 +1125,7 @@ const skillTreeExpansionDefinitions={
         "xj": {
           "kind": "sp",
           "mult": 1.39,
-          "element": "炎",
+          "element": "雷",
           "fx": "magic"
         }
       }
@@ -1148,7 +1148,7 @@ const skillTreeExpansionDefinitions={
           "kind": "sp",
           "mult": 0.72,
           "hits": 2,
-          "element": "炎",
+          "element": "雷",
           "fx": "magic"
         }
       }
@@ -1169,9 +1169,9 @@ const skillTreeExpansionDefinitions={
         "description": "雷槍。前段階の技から派生する上位スキル。",
         "xj": {
           "kind": "sp",
-          "mult": 1.9500000000000002,
+          "mult": 1.95,
           "hits": 1,
-          "element": "炎",
+          "element": "雷",
           "fx": "magic"
         }
       }
@@ -1192,7 +1192,7 @@ const skillTreeExpansionDefinitions={
         "description": "魔力増幅。魔術師の戦い方を発展させる技。",
         "xj": {
           "kind": "sp",
-          "mult": 1.5099999999999998,
+          "mult": 1.51,
           "element": "炎",
           "fx": "magic"
         }
@@ -1491,7 +1491,7 @@ const skillTreeExpansionDefinitions={
         "description": "戦場の雄叫び。前段階の技から派生する上位スキル。",
         "xj": {
           "kind": "phys",
-          "mult": 1.9500000000000002,
+          "mult": 1.95,
           "hits": 1,
           "element": "斬撃",
           "fx": "slash"
@@ -1514,7 +1514,7 @@ const skillTreeExpansionDefinitions={
         "description": "剛力の誓い。戦士の戦い方を発展させる技。",
         "xj": {
           "kind": "phys",
-          "mult": 1.5099999999999998,
+          "mult": 1.51,
           "element": "斬撃",
           "fx": "slash"
         }
@@ -1813,7 +1813,7 @@ const skillTreeExpansionDefinitions={
         "description": "無明斬。前段階の技から派生する上位スキル。",
         "xj": {
           "kind": "phys",
-          "mult": 1.9500000000000002,
+          "mult": 1.95,
           "hits": 1,
           "element": "斬撃",
           "fx": "slash"
@@ -1836,7 +1836,7 @@ const skillTreeExpansionDefinitions={
         "description": "無明の太刀。武士の戦い方を発展させる技。",
         "xj": {
           "kind": "phys",
-          "mult": 1.5099999999999998,
+          "mult": 1.51,
           "element": "斬撃",
           "fx": "slash"
         }
