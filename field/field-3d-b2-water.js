@@ -221,22 +221,28 @@ function planarUv(geo) {
    ------------------------------------------------------------ */
 function makeProcedural() {
   const smoothRock = (geo) => { const src = geo.clone(); src.deleteAttribute('normal'); const g = mergeVertices(src, 1e-3); g.computeVertexNormals(); return g; };
-  const walls = [0, 1, 2, 3, 4, 5, 6, 7].map((v) => {
-    // 幅4.3×高さ4.1×厚み0.8。原点は内側の面の下端中央（+Z が通路側）＝第1階層の壁部品と同じ約束
-    const g = new THREE.BoxGeometry(4.22, 4.15, 0.75, 32, 24, 1).toNonIndexed(); g.translate(0, 2.05, -0.4);
-    const p = g.attributes.position;
+  // 壁面の起伏をワールド座標から求める。隣接する壁でも同じ鉱脈が続く。
+  // 端の変位はゼロに収束させ、直交する壁・天井との裂け目を抑える。
+  const continuousWall = (ex, ez, yaw, cell) => {
+    const geo = new THREE.BoxGeometry(cell + 0.12, 4.15, 0.75, 20, 20, 1);
+    geo.translate(0, 2.05, -0.4);
+    const p = geo.attributes.position;
+    const cs = Math.cos(yaw), sn = Math.sin(yaw);
     for (let i = 0; i < p.count; i++) {
-      const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
-      if (z < -0.01) continue;   // 通路側の面だけ凸凹にする
-      const edge = Math.min(1, Math.max(0, (2.1 - Math.abs(x)) / 0.8));
-      const vertical = Math.min(1, Math.max(0, y / 0.65), Math.max(0, (4.1 - y) / 0.75));   // 左右の端は平らにして隣の壁とつなぐ
-      const n = 0.42 * Math.sin(x * 0.88 + v * 1.13) * Math.cos(y * 0.67 + v * 0.41)
-        + 0.19 * Math.sin(x * 2.3 + y * 1.2 + v * 2.1)
-        + 0.08 * Math.cos(x * 5.2 - y * 3.6 + v);
-      p.setZ(i, z - n * 0.4 * edge * vertical - 0.025);
+      const lx = p.getX(i), y = p.getY(i), lz = p.getZ(i);
+      if (lz < -0.01) continue;
+      const wx = ex + cs * lx + sn * lz;
+      const wz = ez - sn * lx + cs * lz;
+      const edge = Math.max(0, Math.min(1, (cell / 2 - Math.abs(lx)) / 0.42));
+      const vertical = Math.max(0, Math.min(1, y / 0.55, (4.1 - y) / 0.65));
+      const relief = 0.28 * Math.sin(wx * 0.57 + wz * 0.31) * Math.cos(y * 0.67)
+        + 0.11 * Math.sin(wx * 1.63 - wz * 1.11 + y * 1.25)
+        + 0.045 * Math.cos(wx * 3.15 + wz * 2.67 - y * 2.2);
+      p.setZ(i, lz - relief * edge * vertical);
     }
-    return { name: `cavern_wall_${v}`, parts: [{ geo: smoothRock(prepGeo(g, false)), mat: 'Deep cavern rock' }] };
-  });
+    return { name: 'continuous_cavern_wall',
+      parts: [{ geo: smoothRock(prepGeo(geo, false)), mat: 'Deep cavern rock' }] };
+  };
   // 世界座標で天井の起伏を生成し、隣接セル間で位相と高さを一致させる。
   // 下向き法線を保持し、境界を跨いでも同じ岩盤が続くようにする。
   const continuousCeiling = (worldX, worldZ, cell) => {
@@ -298,7 +304,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { walls, continuousCeiling, continuousGround, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { continuousWall, continuousCeiling, continuousGround, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -520,7 +526,7 @@ export async function createTheme(api) {
         const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
         const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, k = hash(tx * 4 + DIR_ORDER.indexOf(d), ty, 5), ry = FACE_YAW[d] + Math.PI;
         const along = [dy ? 1 : 0, dx ? 1 : 0];   // 壁に沿う向き（x, z）
-        B.add('walls', pick(proc.walls, k), M4(ex, 0, ez, ry), tx, ty);
+        B.add('walls', proc.continuousWall(ex, ez, ry, CELL), M4(ex, 0, ez, ry), tx, ty);
         // 壁と床の境目に低い岩の堆積を置き、直線的な接合部を崩す。
         // 通路中央やイベントマスを避け、歩行判定には影響させない。
         if (!objAt.has(key) && c !== '>' && c !== '<' && k < 0.72) {
