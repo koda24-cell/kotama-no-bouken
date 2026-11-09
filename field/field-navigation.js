@@ -34,7 +34,7 @@ async function fieldEnterArea(n, opts = {}) {
   n = Math.max(1, Math.min(Number(n) || 1, Object.keys(FIELD_AREAS).length));
   if (!opts.adminSkip && n > (state.maxUnlockedStage || 1)) n = state.maxUnlockedStage || 1;
   let f = Math.max(0, Math.min(fieldFloorCount(n) - 1, Number(opts.floor) || 0));
-  if (f > 0 && !fieldState.flags[`floor:${n}-${f}`]) f = 0;
+  if (!opts.adminSkip && f > 0 && !fieldState.flags[`floor:${n}-${f}`]) f = 0;
   if (opts.fromHome || opts.afterBoss) { fieldFullHeal(); if (typeof fieldLootOnDeparture === "function") fieldLootOnDeparture(); else fieldState.gatherUsed = {}; fieldState.foeDefeated = {}; }   // [LOOT] 採集点の期限切れを確認
   fieldState.area = n; fieldState.floor = f; fieldState.positioned = false;
   fieldState.flags[`floor:${n}-${f}`] = true;
