@@ -36,7 +36,7 @@ function extInstallItems(shopItems, enhancementMaterials) {
   for (const item of EXT_NEW_ITEMS) if (!known.has(item.id)) shopItems.push(item);
   // 全職業共用の防具・護符・装飾品には、新職業のIDも追加する。
   for (const item of shopItems) {
-    if (Array.isArray(item.classes) && item.classes.includes("samurai") && item.classes.includes("kotama") && item.classes.length >= 6) {
+    if (item.id === "leather-armor" || (Array.isArray(item.classes) && item.classes.includes("samurai") && item.classes.includes("kotama") && item.classes.length >= 6)) {
       for (const id of EXT_NEW_JOB_IDS) if (!item.classes.includes(id)) item.classes.push(id);
     }
   }
