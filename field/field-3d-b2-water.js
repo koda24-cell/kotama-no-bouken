@@ -326,6 +326,23 @@ function makeProcedural() {
     return { name: 'b2_ice_stalactite_' + variant,
       parts: [{ geo, mat: 'Pale mineral stone' }] };
   });
+  // 壁面に埋まった薄い氷脈。独立した小物を増やすのではなく、
+  // 不規則な鉱脈の輪郭を壁そのものに重ねて四角い壁面を崩す。
+  // 薄い奥行き・低ポリゴンで、既存の静的バッチへ統合する。
+  const frostVeins = [0, 1, 2].map((variant) => {
+    const parts = [];
+    const count = 3 + variant;
+    for (let j = 0; j < count; j++) {
+      const length = 0.72 + 0.24 * ((j + variant) % 3);
+      const width = 0.095 + 0.035 * ((j * 2 + variant) % 3);
+      const g = new THREE.OctahedronGeometry(1, 0);
+      g.scale(width, length * 0.5, 0.075);
+      g.rotateZ((j - count / 2) * 0.23 + variant * 0.12);
+      g.translate((j - (count - 1) / 2) * 0.27, (j % 2) * 0.16, 0);
+      parts.push({ geo: g, mat: j % 3 === 0 ? 'Pale mineral stone' : 'Deep cavern rock' });
+    }
+    return { name: 'b2_frost_vein_' + variant, parts };
+  });
   const shoreline = [0, 1, 2].map((variant) => {
     const g = new THREE.PlaneGeometry(3.92, 0.84, 24, 6).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
@@ -358,7 +375,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { continuousWall, continuousCeiling, continuousGround, shoreline, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { continuousWall, continuousCeiling, continuousGround, shoreline, frostVeins, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -634,6 +651,16 @@ export async function createTheme(api) {
             ez - dy * 0.12 + along[1] * offset, ry + hash(tx, ty, 192) * 0.8, scale), tx, ty);
         }
 
+        // 岩盤の氷脈：壁に薄く埋め込み、イベントや滝の視認性を優先。
+        // 既存の結晶群とは独立した決定的配置で、セーブ状態に影響しない。
+        if (!objAt.has(key) && c !== '>' && c !== '<' && fall !== d
+            && hash(tx, ty, 390 + DIR_ORDER.indexOf(d)) < 0.29) {
+          const offset = (hash(tx, ty, 394 + DIR_ORDER.indexOf(d)) - 0.5) * 1.75;
+          const height = 1.45 + hash(tx, ty, 398 + DIR_ORDER.indexOf(d)) * 1.15;
+          B.add('frost_veins', pick(proc.frostVeins, hash(tx, ty, 402 + DIR_ORDER.indexOf(d))),
+            M4(ex - dx * 0.12 + along[0] * offset, height,
+              ez - dy * 0.12 + along[1] * offset, ry, 0.8), tx, ty);
+        }
         // v8の結晶を壁際に低頻度で追加。通路・階段・イベントの中央は塞がない。
         if (v8?.crystals?.length && !objAt.has(key) && c !== '>' && c !== '<'
             && k > 0.86) {
