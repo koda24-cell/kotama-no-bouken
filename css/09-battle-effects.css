@@ -108,3 +108,11 @@
 @keyframes union-impact-ring{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.45)}}
 @keyframes union-impact-slash{0%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scaleX(.1)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scaleX(1.4)}}
 @media(prefers-reduced-motion:reduce){.union-impact-stage i{animation:none!important;opacity:.12}}
+
+/* Hit GIF alignment/visibility fix: keep CSS slash visible even if the GIF is late or dark. */
+.battle-arena .hit-effect-anchored{z-index:35;top:0;left:0;width:clamp(170px,30vw,340px);height:clamp(140px,24vw,260px);max-width:none;transform:translate(-50%,-50%);overflow:visible;isolation:isolate;filter:drop-shadow(0 0 12px currentColor)}
+.battle-arena .hit-effect-anchored .hit-animated-sprite{inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:screen;opacity:1;filter:brightness(1.45) contrast(1.2) drop-shadow(0 0 7px currentColor)}
+.battle-arena .hit-effect-anchored.hit-slash,.battle-arena .hit-effect-anchored.hit-samurai{width:clamp(210px,40vw,430px);height:clamp(170px,29vw,290px)}
+.battle-arena .hit-effect-anchored.hit-slash::before,.battle-arena .hit-effect-anchored.hit-slash::after,.battle-arena .hit-effect-anchored.hit-samurai::before{z-index:6;filter:drop-shadow(0 0 12px #fff);}
+.battle-arena .hit-effect-anchored .hit-core,.battle-arena .hit-effect-anchored .hit-ring,.battle-arena .hit-effect-anchored .hit-particle{z-index:5}
+@media(max-width:620px){.battle-arena .hit-effect-anchored{width:210px;height:180px}.battle-arena .hit-effect-anchored.hit-slash,.battle-arena .hit-effect-anchored.hit-samurai{width:250px;height:200px}}
