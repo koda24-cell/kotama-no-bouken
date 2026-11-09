@@ -63,7 +63,8 @@
 
   // Rear-row party members take 40% of normal melee damage. Magic/ranged actions are untouched.
   wrap("applyPartyDamageAnimated", base => async function (character, damage, options = {}) {
-    const rearMelee = rowOfParty(character) === "rear" && options.normalAttack === true && !options.ranged;
+    const ranged = options.ranged === true || battleState._formationRangedEnemyAttack === true;
+    const rearMelee = rowOfParty(character) === "rear" && options.normalAttack === true && !ranged;
     return base.call(this, character, rearMelee ? Math.max(1, Math.floor(damage * .4)) : damage, options);
   });
 
@@ -146,6 +147,28 @@
 
   // Snowdrift periodically calls one snow wolf, up to three. Existing group damage/targeting handles them.
   wrap("extVariantAction", base => async function (enemy, turn) {
+    const runEnemyAction = async target => {
+      const oldPicker = window.extWeightedPick;
+      const previousRanged = battleState._formationRangedEnemyAttack;
+      const ratio = enemyHpTotal(target) / Math.max(1, target.maxHp || 1);
+      const eligible = (target.ai || []).filter(a => (!a.minTurn || turn >= a.minTurn) && (!a.hpBelow || ratio <= a.hpBelow));
+      const usable = typeof extHasStatus === "function" && extHasStatus(target, "bindHead") ? eligible.filter(a => a.kind !== "sp") : eligible;
+      const forced = usable.find(a => a.everyTurns && turn % a.everyTurns === 0);
+      battleState._formationRangedEnemyAttack = !!forced?.ranged;
+      if (typeof oldPicker === "function") {
+        window.extWeightedPick = function (list) {
+          const chosen = oldPicker.call(this, list);
+          battleState._formationRangedEnemyAttack = !!chosen?.ranged;
+          return chosen;
+        };
+      }
+      try { return await base.call(this, target, turn); }
+      finally {
+        if (typeof oldPicker === "function") window.extWeightedPick = oldPicker;
+        battleState._formationRangedEnemyAttack = previousRanged;
+      }
+    };
+
     if (enemy?.variantId === "snowdrift-boss") {
       const bossAlive = enemy.members.some(m => m.id === "snowdrift" && m.hp > 0);
       if (bossAlive && turn % 3 === 0 && enemy._snowdriftSummonCount < 3 && enemyHpTotal(enemy) > 0) {
@@ -164,7 +187,7 @@
         const saved = enemy.ai, savedAttack = enemy.attack;
         enemy.ai = [{ name: "雪狼の牙", weight: 100, kind: "phys", power: .9 }];
         enemy.attack = 58;
-        try { return await base.call(this, enemy, turn); }
+        try { return await runEnemyAction(enemy); }
         finally { enemy.ai = saved; enemy.attack = savedAttack; }
       }
     }
@@ -172,10 +195,10 @@
       const living = enemy.members.filter(m => m.hp > 0);
       const saved = enemy.ai;
       enemy.ai = living.length === 3 ? saved : saved.filter(a => a.name !== "燃え広がる");
-      try { return await base.call(this, enemy, turn); }
+      try { return await runEnemyAction(enemy); }
       finally { enemy.ai = saved; }
     }
-    return base.call(this, enemy, turn);
+    return runEnemyAction(enemy);
   });
 
   // Field encounter packs: 1–3 fire/poison slimes. Only three living fire slimes unlock the party-wide blaze.
