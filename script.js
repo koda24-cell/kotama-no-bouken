@@ -606,7 +606,7 @@ function openSkillUpgradeDialog(charId,nodeId,returnFocus){
       '<div class="skill-upgrade-effects"><strong>効果の変化</strong>'+
         preview.map(item=>'<div class="skill-upgrade-effect-row"><span>'+esc(item.label)+'</span><b>'+esc(item.before)+' → '+esc(item.after)+'</b></div>').join("")+
       '</div>'+
-      '<div class="skill-upgrade-cost"><span>消費ポイント</span><strong>'+eligibility.cost+'pt</strong><span>確定後の残り</span><strong>'+(eligibility.points-eligibility.cost)+'pt</strong></div>'+
+      '<div class="skill-upgrade-cost"><span>消費SPポイント</span><strong>'+eligibility.cost+'pt</strong><span>確定後の残り</span><strong>'+(eligibility.points-eligibility.cost)+'pt</strong></div>'+
       '<p class="skill-upgrade-note">「強化する」を押すまで、レベル・ポイント・習得状態は変更されません。</p>'+
       '<div class="dialog-actions"><button type="button" class="secondary-button" data-upgrade-cancel>キャンセル</button><button type="button" class="primary-button" data-upgrade-confirm>強化する</button></div>'+
     '</div>';
@@ -667,9 +667,9 @@ function renderProgressionPanelUnsafe(){
  const level=getTreeLevel(c.id,passive.id),la=getTreeLevel(c.id,a.id),lb=getTreeLevel(c.id,b.id),ld=getTreeLevel(c.id,derived.id);
  const selectedNode=treeNodes(c.id).find(n=>n.id===selectedTrainingSkill)||passive;
  const stageForLevel=n=>n===0?1:n<=2?2:n===3?3:n===4?4:5;
- const conditionFor=node=>{const ex=(skillTreeExpansionDefinitions[c.id]||[]).find(n=>n.id===node.id);if(ex)return ex.kind==="root"?"派生元SPスキルLv.3・第4ステージ到達":ex.kind==="branch"?"前段階の派生スキルLv.3・第4ステージ到達":"基礎パッシブLv.1以上・第4ステージ到達";if(!isNewTree){if(node===passive)return "第1ステージ到達・キャラクターLv.1";if(node===a||node===b)return `基礎パッシブ取得後・第${stageForLevel(Math.max(getTreeLevel(c.id,node.id)+1,1))}ステージ到達・キャラクターLv.1以上`;return "SP A・SP Bを両方Lv.3以上・第4ステージ到達";}if(node===passive)return "第1ステージ到達";if(node===a||node===b)return "基礎マスタリーLv.1以上・第2ステージ到達";return "SP A・SP Bを両方習得（Lv.1以上）・第4ステージ到達";};
+ const conditionFor=node=>{const ex=(skillTreeExpansionDefinitions[c.id]||[]).find(n=>n.id===node.id);if(ex)return ex.kind==="root"?"派生元SPスキルLv.3・第4ステージ到達":ex.kind==="branch"?"前段階の派生スキルLv.3・第4ステージ到達":"基礎パッシブLv.1以上・第4ステージ到達";if(!isNewTree){if(node===passive)return "第1ステージ到達・キャラクターLv.1";if(node===a||node===b)return `基礎パッシブ取得後・第${stageForLevel(Math.max(getTreeLevel(c.id,node.id)+1,1))}ステージ到達・キャラクターLv.1以上`;return "SP A・SP Bを両方Lv.3以上・第4ステージ到達";}if(node===passive)return "第1ステージ到達";if(node===a||node===b)return "基礎マスタリーLv.1以上・第2ステージ到達";return "SP A・SP Bを両方Lv.3以上・第4ステージ到達";};
  const canUpgrade=node=>getTrainingUpgradeEligibility(c.id,node.id).allowed;
- const stateLabel=node=>{const lv=getTreeLevel(c.id,node.id),expansion=(skillTreeExpansionDefinitions[c.id]||[]).some(n=>n.id===node.id),max=expansion?1:(isNewTree?10:(node===a||node===b?5:1));if(lv>=max)return "最大レベル";return canUpgrade(node)?(lv>0?"強化可能":"取得可能"):"条件未達成";};
+ const stateLabel=node=>{const lv=getTreeLevel(c.id,node.id),expansion=(skillTreeExpansionDefinitions[c.id]||[]).some(n=>n.id===node.id),max=expansion?(node.kind==="root"?3:1):(isNewTree?10:(node===a||node===b?5:1));if(lv>=max)return "最大レベル";return canUpgrade(node)?(lv>0?"強化可能":"取得可能"):"条件未達成";};
  const nodeCard=(node,kind)=>{
   const lv=getTreeLevel(c.id,node.id),ex=(skillTreeExpansionDefinitions[c.id]||[]).find(n=>n.id===node.id);
   const max=ex?(ex.kind==="root"?3:1):(isNewTree?10:(node===a||node===b?5:1));
@@ -688,7 +688,7 @@ function renderProgressionPanelUnsafe(){
   <div class="training-character-stats"><span>HP <b>${stats.maxHp}</b></span><span>ATK <b>${stats.attack}</b></span><span>DEF <b>${stats.defense}</b></span><span>SP <b>${stats.maxSp}</b></span></div>
  </aside>
  <div class="training-skill-main">
-  <div class="training-section-head"><div><h3>${esc(c.name)}のスキルツリー</h3><p>基礎パッシブを取得し、2系統のSPスキルを育成。両方を習得すると派生スキルが解放されます。</p></div><strong>SPポイント：${points}pt</strong></div>
+  <div class="training-section-head"><div><h3>${esc(c.name)}のスキルツリー</h3><p>基礎パッシブを取得し、2系統のSPスキルを育成。それぞれLv.3にすると、派生スキルが解放されます。</p></div><strong>SPポイント：${points}pt</strong></div>
   <div class="skill-tree-scroll">
    <div class="skill-tree-map">
     <div class="skill-tree-core"><span class="skill-tree-tier">基礎</span>${nodeCard(passive,"passive")}</div>
