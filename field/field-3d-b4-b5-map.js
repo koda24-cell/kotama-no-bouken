@@ -36,6 +36,23 @@ export function createTheme(api, area) {
     metal: new THREE.MeshStandardMaterial({ color: mist ? 0x5a735a : magma ? 0x8b6551 : 0x565877, metalness: 0.55, roughness: 0.5 })
   };
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02);
+  // B5専用：星界の石床に細かな地層と沈んだ亀裂を刻む。
+  // 外周は元の床高さを保ち、マス同士の継ぎ目・通路判定を変えない。
+  // 共有ジオメトリなので既存のInstancedMeshによる軽量描画を維持する。
+  const astralFloorGeo = !mist && !magma ? new THREE.BoxGeometry(4.02, 0.32, 4.02, 16, 1, 16) : null;
+  if (astralFloorGeo) {
+    const p = astralFloorGeo.getAttribute('position');
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+      if (y < 0) continue;
+      const edge = THREE.MathUtils.smoothstep(2.01 - Math.max(Math.abs(x), Math.abs(z)), 0, 0.38);
+      const strata = 0.055 * Math.sin(x * 2.1 + z * 0.9) * Math.cos(z * 2.7 - x * 0.8);
+      const fissure = Math.pow(Math.abs(Math.sin(x * 1.8 - z * 1.35)), 18);
+      p.setY(i, y + edge * (strata - 0.045 * fissure));
+    }
+    p.needsUpdate = true;
+    astralFloorGeo.computeVertexNormals();
+  }
   const wallGeo = new THREE.BoxGeometry(4.08, 4.2, 0.65, 16, 14, 2);
   { const p = wallGeo.getAttribute('position'); for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
@@ -94,7 +111,7 @@ export function createTheme(api, area) {
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
-      mesh(floorGeo, mat.floor, x, -0.17, z);
+      mesh(astralFloorGeo || floorGeo, mat.floor, x, -0.17, z);
       if (magma && (c === '*' || c === '~')) {
         mesh(lavaGeo, mat.glow, x, 0.009, z);
       }
