@@ -56,6 +56,8 @@ export function createTheme(api, area) {
   const lintelGeo = new THREE.BoxGeometry(2.15, 0.24, 0.28);
   const bandGeo = new THREE.BoxGeometry(3.55, 0.065, 0.13);
   const reliefGeo = new THREE.BoxGeometry(0.48, 0.62, 0.095);
+  const gatePostGeo = new THREE.BoxGeometry(0.38, 2.5, 0.42);
+  const gateCrownGeo = new THREE.BoxGeometry(2.45, 0.35, 0.52);
   const ruinMat = new THREE.MeshStandardMaterial({ color: 0x9a9885, roughness: 0.96 });
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
@@ -149,6 +151,16 @@ export function createTheme(api, area) {
             mesh(reliefGeo, mat.metal, ex - dx * 0.23, 2.65, ez - dz * 0.23, ry);
             ornaments += 2;
           }
+        }
+        if (mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, DIR_ORDER.indexOf(d) + 207) < 0.11) {
+          // Shallow ruined gateway silhouette, attached to the wall rather than the path.
+          const gx = ex - dx * 0.16, gz = ez - dz * 0.16;
+          const sideX = Math.cos(ry), sideZ = -Math.sin(ry);
+          for (const side of [-1, 1]) {
+            mesh(gatePostGeo, ruinMat, gx + sideX * side * 1.02, 1.42, gz + sideZ * side * 1.02, ry);
+          }
+          mesh(gateCrownGeo, ruinMat, gx, 2.87, gz, ry);
+          ornaments += 3;
         }
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
