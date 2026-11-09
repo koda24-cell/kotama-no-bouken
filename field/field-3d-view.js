@@ -59,7 +59,8 @@ function readMaxFps() { try { return Math.max(0, Number(localStorage.getItem('ko
 function writePref(on) { try { localStorage.setItem(PREF_KEY, on ? 'on' : 'off'); } catch (_) {} }
 const hash = (x, z, s = 0) => { let h = (x * 374761393 + z * 668265263 + s * 982451653) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
 const fieldOk = () => typeof fieldState !== 'undefined' && typeof fieldArea === 'function';
-const eligible = () => fieldOk() && g.pref && !g.failed && g.webgl && AREAS_3D.has(Number(fieldState.area));
+// 第1階層は3D専用。設定保存値にかかわらず3Dを優先し、WebGL等の利用不能時だけ既存2Dへフォールバックする。
+const eligible = () => fieldOk() && (g.pref || Number(fieldState.area) === 1) && !g.failed && g.webgl && AREAS_3D.has(Number(fieldState.area));
 const curKey = () => (fieldOk() ? fieldArea()?.key : '') || '';
 
 /* ------------------------------------------------------------
@@ -414,8 +415,11 @@ function ensureToggle() {
     btn.addEventListener('click', () => { toggle(); btn.blur(); });
     mapBtn.before(btn);
   }
-  const can = fieldOk() && AREAS_3D.has(Number(fieldState.area)) && g.webgl && !g.failed;
-  btn.hidden = !can;
+  const area = fieldOk() ? Number(fieldState.area) : 0;
+  const can = fieldOk() && AREAS_3D.has(area) && g.webgl && !g.failed;
+  // 第1階層では表示方式を3Dに固定し、2D/3D切り替えボタンを出さない。
+  // ほかの階層で3Dを解放した場合は、従来どおり切り替えられる。
+  btn.hidden = !can || area === 1;
   btn.textContent = g.pref ? '2D表示' : '3D表示';
   btn.title = g.pref ? '見下ろしの2D表示に切り替える' : '一人称の3D表示に切り替える';
 }
