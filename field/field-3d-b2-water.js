@@ -242,10 +242,26 @@ function makeProcedural() {
     geo.computeVertexNormals();
     return { name: 'natural_rock_floor_' + variant, parts: [{ geo, mat: 'Deep cavern rock' }] };
   });
+  // 水際の自然な堆積：薄い岩棚と小石を、水のあるマスに面した陸側だけに敷く。
+  // 当たり判定に影響させず、石板と水面が直角に切れる見た目を緩和する。
+  const shoreline = [0, 1, 2].map((variant) => {
+    const g = new THREE.PlaneGeometry(3.92, 0.84, 24, 6).rotateX(-Math.PI / 2);
+    const p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), z = p.getZ(i);
+      const outer = Math.max(0, 1 - Math.abs(x) / 1.96);
+      const wav = Math.sin(x * 2.7 + variant * 1.7) * 0.055
+        + Math.sin(x * 6.8 + variant * 2.4) * 0.018;
+      p.setY(i, -0.018 + wav * outer);
+      p.setZ(i, z + Math.sin(x * 2.2 + variant) * 0.065 * outer);
+    }
+    g.computeVertexNormals();
+    return { name: 'b2_shoreline_' + variant, parts: [{ geo: g, mat: 'Pale mineral stone' }] };
+  });
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { walls, ceil, ground, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { walls, ceil, ground, shoreline, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -438,6 +454,18 @@ export async function createTheme(api) {
         if (c === ',' || c === '_' || c === 'P') {   // 道（, _）には古い象嵌を一筋
           const run = (ch(tx - 1, ty) === c || ch(tx + 1, ty) === c) ? 0 : Math.PI / 2;
           B.add('floor', pick(kit.inlays, hash(tx, ty, 17)), M4(x, 0.004, z, run, [3.2, 1, 3.2]), tx, ty);
+        }
+      }
+      // 水際の岩棚：陸と浅瀬の境目だけに生成。水路を横切る橋や階段は除外。
+      if (c !== '*' && c !== '>' && c !== '<' && !objAt.has(key)) {
+        for (const d of DIR_ORDER) {
+          const [dx, dz] = DIR_VEC[d];
+          if (ch(tx + dx, ty + dz) !== '*') continue;
+          const rx = x + dx * (CELL / 2 - 0.38);
+          const rz = z + dz * (CELL / 2 - 0.38);
+          const rot = Math.atan2(dx, dz);
+          B.add('shoreline', pick(proc.shoreline, hash(tx, ty, 220 + DIR_ORDER.indexOf(d))),
+            M4(rx, 0, rz, rot), tx, ty);
         }
       }
       // 天井
