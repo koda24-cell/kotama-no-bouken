@@ -250,6 +250,9 @@
       node.textContent = turns ? `⛓${turns}` : "⛓";
       node.title = turns ? `行動不能：残り${turns}ターン` : "行動不能";
     });
+    document.querySelectorAll("#battle-party .member-action-label").forEach(node => {
+      if (node.textContent.trim() === "行動不能") node.hidden = true;
+    });
     return result;
   });
 
