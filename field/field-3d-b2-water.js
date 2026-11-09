@@ -237,11 +237,23 @@ function makeProcedural() {
     }
     return { name: `cavern_wall_${v}`, parts: [{ geo: smoothRock(prepGeo(g, false)), mat: 'Deep cavern rock' }] };
   });
-  const ceil = (() => {
-    const g = new THREE.PlaneGeometry(4.32, 4.32, 32, 32).rotateX(Math.PI / 2).toNonIndexed(), p = g.attributes.position;
-    for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); p.setY(i, -(0.46 + 0.27 * Math.sin(x * 0.9 + 0.7) * Math.cos(z * 1.05 + 0.3) + 0.10 * Math.sin(x * 2.2 + z * 1.9) + 0.045 * Math.cos(x * 4.1 - z * 3.4))); }
-    return { name: 'cavern_ceiling', parts: [{ geo: smoothRock(prepGeo(g, false)), mat: 'ceiling' }] };
-  })();
+  // 世界座標で天井の起伏を生成し、隣接セル間で位相と高さを一致させる。
+  // 下向き法線を保持し、境界を跨いでも同じ岩盤が続くようにする。
+  const continuousCeiling = (worldX, worldZ, cell) => {
+    const geo = new THREE.PlaneGeometry(cell, cell, 16, 16).rotateX(Math.PI / 2);
+    const pos = geo.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const wx = worldX + pos.getX(i), wz = worldZ + pos.getZ(i);
+      const relief = 0.42
+        + 0.20 * Math.sin(wx * 0.37 + 0.7) * Math.cos(wz * 0.42 + 0.3)
+        + 0.10 * Math.sin(wx * 0.83 + wz * 0.56)
+        + 0.035 * Math.cos(wx * 1.91 - wz * 1.47);
+      pos.setY(i, -relief);
+    }
+    geo.computeVertexNormals();
+    return { name: 'continuous_cavern_ceiling',
+      parts: [{ geo, mat: 'ceiling' }] };
+  };
   // 自然石の床：格子状の石板が無限に繰り返される印象を緩和する。
   // マス境界の高さは0に収束させ、隣接マスに隙間を作らない。
   // 水際の自然な堆積：薄い岩棚と小石を、水のあるマスに面した陸側だけに敷く。
@@ -286,7 +298,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { walls, ceil, continuousGround, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { walls, continuousCeiling, continuousGround, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -494,7 +506,7 @@ export async function createTheme(api) {
         }
       }
       // 天井
-      if (!openCells.has(key)) B.add('ceiling', proc.ceil, M4(x, 4, z, Math.floor(hash(tx, ty, 18) * 4) * Math.PI / 2), tx, ty);
+      if (!openCells.has(key)) B.add('ceiling', proc.continuousCeiling(x, z, CELL), M4(x, 4, z), tx, ty);
       // 天井の小規模な鍾乳状の稜線。密集させず、広い空間の端に限る。
       if (!openCells.has(key) && !objAt.has(key) && c !== '>' && c !== '<'
           && hash(tx, ty, 230) < 0.24) {
