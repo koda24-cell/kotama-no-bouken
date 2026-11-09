@@ -6,10 +6,29 @@ export function createTheme(api, area) {
   const ENV = magma
     ? { background: 0x1b0907, fog: { color: 0x2c100a, density: 0.036 }, hemi: { sky: 0xff8750, ground: 0x25101a, high: 1.45, low: 1.8 } }
     : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
+  function rockTexture(seed) {
+    const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
+    const ctx = canvas.getContext('2d'); if (!ctx) return null;
+    const img = ctx.createImageData(128, 128);
+    for (let y = 0; y < 128; y++) for (let x = 0; x < 128; x++) {
+      const coarse = Math.sin(x * 0.12 + seed) * Math.cos(y * 0.1 + seed * 0.4);
+      const grain = Math.sin(x * 0.87 + y * 1.37 + seed) * Math.cos(y * 0.73 - x * 0.31);
+      const veins = Math.abs(Math.sin(x * 0.04 + Math.sin(y * 0.06) * 3 + seed));
+      const v = Math.max(30, Math.min(225, 117 + coarse * 31 + grain * 19 - (veins > 0.98 ? 38 : 0)));
+      const i = (y * 128 + x) * 4;
+      img.data[i] = v; img.data[i + 1] = v * (magma ? 0.84 : 0.91);
+      img.data[i + 2] = v * (magma ? 0.76 : 1.04); img.data[i + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    const t = new THREE.CanvasTexture(canvas); t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(2, 2); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+    return t;
+  }
+  const rockMap = rockTexture(4), floorMap = rockTexture(11);
   const mat = {
-    floor: new THREE.MeshStandardMaterial({ color: magma ? 0x544038 : 0x48445d, roughness: 0.85 }),
-    wall: new THREE.MeshStandardMaterial({ color: magma ? 0x30262a : 0x22233c, roughness: 0.93, flatShading: true }),
-    ceiling: new THREE.MeshStandardMaterial({ color: magma ? 0x281b1a : 0x171729, roughness: 1, side: THREE.DoubleSide }),
+    floor: new THREE.MeshStandardMaterial({ color: magma ? 0x544038 : 0x48445d, roughness: 0.85, map: floorMap }),
+    wall: new THREE.MeshStandardMaterial({ color: magma ? 0x30262a : 0x22233c, roughness: 0.93, flatShading: true, map: rockMap }),
+    ceiling: new THREE.MeshStandardMaterial({ color: magma ? 0x281b1a : 0x171729, roughness: 1, side: THREE.DoubleSide, map: rockMap }),
     glow: new THREE.MeshStandardMaterial({ color: magma ? 0xff4a12 : 0x7950ed, emissive: magma ? 0xff2600 : 0x6437ef, emissiveIntensity: magma ? 1.8 : 1.5, roughness: 0.2 }),
     metal: new THREE.MeshStandardMaterial({ color: magma ? 0x8b6551 : 0x565877, metalness: 0.55, roughness: 0.5 })
   };
