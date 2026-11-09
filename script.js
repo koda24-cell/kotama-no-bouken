@@ -1742,7 +1742,7 @@ async function executeTurn(){
 }
 function showHitEffect(kind="slash",targetNode=null){
   const display=displayEnemyNode();if(!display)return;
-  const safeKind=["slash","samurai","flame","lightning","ice","magic"].includes(kind)?kind:"magic";
+  const safeKind=["slash","samurai","flame","lightning","ice","magic","impact","combo","union"].includes(kind)?kind:"magic";
   const fx=document.createElement("div");
   fx.className=`hit-effect hit-${safeKind}`;
   fx.setAttribute("aria-hidden","true");
@@ -1750,7 +1750,7 @@ function showHitEffect(kind="slash",targetNode=null){
   const host=targetNode?.isConnected?targetNode:(display.closest(".battle-arena")||display);
   if(host===targetNode){fx.classList.add("hit-effect-local");}
   host.appendChild(fx);
-  const animatedAssets={slash:"slash-impact.gif",samurai:"slash-impact.gif",flame:"fire-impact.gif",lightning:"lightning-impact.gif",ice:"ice-impact.gif"};
+  const animatedAssets={slash:"青白い連続斬撃エフェクトアニメーション-2.gif",samurai:"青白い連続斬撃エフェクトアニメーション-2.gif",combo:"青白い連続斬撃エフェクトアニメーション-2.gif",impact:"アニメ風衝撃波エフェクト集-1.gif",union:"魔法陣エネルギー攻撃アニメーション-3.gif",magic:"魔法陣エネルギー攻撃アニメーション-3.gif",flame:"アニメ風の炎爆発アニメーション-1.gif",lightning:"紫電爆発エフェクトアニメーション-2.gif",ice:"青い氷エネルギー爆発アニメーション.gif"};
   const assetName=animatedAssets[safeKind];
   if(assetName&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
     const sprite=document.createElement("img");
@@ -1759,7 +1759,7 @@ function showHitEffect(kind="slash",targetNode=null){
     sprite.decoding="async";
     sprite.onerror=()=>{sprite.remove();fx.classList.remove("hit-has-sprite");};
     sprite.onload=()=>fx.classList.add("hit-has-sprite");
-    sprite.src="assets/effects/battle/"+assetName;
+    sprite.src="assets/"+encodeURIComponent(assetName);
     fx.appendChild(sprite);
   }
   const arena=display.closest(".battle-arena")||display;
@@ -1932,7 +1932,7 @@ async function showUnionAttackImpact(skill){
   stage.setAttribute("aria-hidden","true");
   stage.innerHTML='<i class="union-impact-flare"></i><i class="union-impact-circle"></i><i class="union-impact-cross"></i>';
   arena.appendChild(stage);
-  const effects=type==="cross-break"?[]:type==="samurai-slash"?["samurai"]:type==="meteor"?["flame","magic"]:type==="stun"?["lightning","magic"]:[];
+  const effects=type==="cross-break"?["union"]:type==="samurai-slash"?["samurai"]:type==="meteor"?["union","flame"]:type==="stun"?["union","lightning"]:["union"];
   try{
     if(supportive){await wait(420);}
     else{
@@ -1956,7 +1956,7 @@ async function executeUnion(a){const actor=getCharacter(a.actor),u=unionSkills[a
   battleState.unionGauges[actor.id]=0;
   pushLog(`${actor.name}の「${u.name}」！ 生存者のHP全回復、${revived}人蘇生、SP合計${sp}回復。状態異常も解除した！`);
   sound("heal");
-}else if(u.type==="samurai-slash"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(effectiveStats(actor).attack*4*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);if(dealt>0)addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);pushLog(`${actor.name}の「${u.name}」！ 渾身の一刀で${dealt}ダメージ！（防御無視）`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");showHitEffect("samurai");flashEnemyDamage();sound("damage",true);}else if(u.type==="cross-break"){const partner=getCharacter(a.partner);beginEnemyDamagePreview(e);let total=0;for(let i=0;i<2;i++){const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(actor.spAttack*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0){addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);showHitEffect("slash");combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();await wait(115);}if(enemyHpTotal(e)<=0)break;}if(enemyHpTotal(e)>0){const attack=effectiveStats(partner).attack;const d=applyWeaponAttributeDamage(e,Math.floor(calcEnemyPhysicalDamage(e,attack)*(1+treeBonus(partner.id,"union"))),partner);for(let i=0;i<2;i++){const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0){addBreakDamage(e,"union",getWeaponPhysicalElement(partner),partner);showHitEffect("samurai");combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();await wait(115);}if(enemyHpTotal(e)<=0)break;}}battleState.unionGauges[actor.id]=0;battleState.unionGauges[partner.id]=0;pushLog(`${actor.name}と${partner.name}の「${u.name}」！ 合計${total}ダメージ！`);sound("damage",true);}
+}else if(u.type==="samurai-slash"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(effectiveStats(actor).attack*4*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);if(dealt>0)addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);pushLog(`${actor.name}の「${u.name}」！ 渾身の一刀で${dealt}ダメージ！（防御無視）`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");showHitEffect("samurai");flashEnemyDamage();sound("damage",true);}else if(u.type==="cross-break"){const partner=getCharacter(a.partner);beginEnemyDamagePreview(e);let total=0;for(let i=0;i<2;i++){const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(actor.spAttack*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0){addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);showHitEffect("combo");combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();await wait(115);}if(enemyHpTotal(e)<=0)break;}if(enemyHpTotal(e)>0){const attack=effectiveStats(partner).attack;const d=applyWeaponAttributeDamage(e,Math.floor(calcEnemyPhysicalDamage(e,attack)*(1+treeBonus(partner.id,"union"))),partner);for(let i=0;i<2;i++){const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0){addBreakDamage(e,"union",getWeaponPhysicalElement(partner),partner);showHitEffect("combo");combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();await wait(115);}if(enemyHpTotal(e)<=0)break;}}battleState.unionGauges[actor.id]=0;battleState.unionGauges[partner.id]=0;pushLog(`${actor.name}と${partner.name}の「${u.name}」！ 合計${total}ダメージ！`);sound("damage",true);}
  renderBattle();}
 async function applyEnemyTurnStatuses(){
   // [EXT] スピード順ラウンド中は、全員の行動後（ラウンド終了時）にまとめて処理する。
