@@ -36,6 +36,10 @@ const FIELD_ENEMIES = {
   "fire-slime": { name:"炎スライム", element:"炎", weaknesses:["氷"], resistances:["炎"], hp:210, attack:18, spAttack:30, defense:4, spDefense:30, gold:8, exp:16, speed:40, dropAs:"スライム", image:"assets/monsters/suraimu.png", sprite:"slime" },
   "poison-slime": { name:"毒スライム", element:"無属性", weaknesses:["炎","氷","雷","聖"], resistances:[], physicalResistances:["斬撃","打撃","壊","突"], hp:200, attack:20, spAttack:18, defense:4, spDefense:35, gold:8, exp:16, speed:35, dropAs:"スライム", image:"assets/monsters/suraimu.png", sprite:"slime" },
   "foe-goblin-pack": { foe:true, name:"ゴブリン隊長と護衛", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:0, attack:68, spAttack:20, defense:18, spDefense:10, gold:70, exp:220, speed:72, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin" },
+  "goblin-archer": { name:"ゴブリンアーチャー", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:520, attack:58, defense:10, spDefense:8, gold:14, exp:70, speed:86, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin",
+    ai:[ { name:"狙い撃ち", weight:60, kind:"phys", power:1.2, target:"rear" }, { name:"毒矢", weight:40, kind:"phys", power:.9, target:"rear", status:{ type:"poison", chance:.5, turns:3, power:.05 } } ] },
+  "goblin-shaman": { name:"ゴブリンシャーマン", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:560, attack:30, spAttack:58, defense:10, spDefense:24, gold:16, exp:82, speed:48, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin",
+    ai:[ { name:"火の玉", weight:45, kind:"sp", power:1, element:"炎", status:{ type:"burn", chance:.3, turns:2 } }, { name:"弱体の呪文", weight:30, all:true, kind:"sp", power:.45, status:{ type:"attackDown", chance:.5, turns:2, power:.15 } }, { name:"癒やしの祈り", weight:25, heal:.15, hpBelow:.6 } ] },
 
   /* ---------- FOE（各階層に1種。マップ上を巡回し、近づくと追ってくる） ---------- */
   "foe-bear": { foe:true, name:"森の暴れ熊", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:2000, attack:58, spAttack:10, defense:16, spDefense:8, gold:60, exp:120, speed:40, dropAs:"オオカミ", image:"assets/monsters/ookami.png", sprite:"wolf",
