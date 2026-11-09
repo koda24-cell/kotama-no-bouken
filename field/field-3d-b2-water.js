@@ -283,10 +283,25 @@ function makeProcedural() {
     g.computeVertexNormals();
     return { name: 'b2_shoreline_' + variant, parts: [{ geo: g, mat: 'Pale mineral stone' }] };
   });
+  // 隣接する床マスで高さが一致する世界座標ベースの岩盤。
+  // マス境界で起伏をゼロに戻さないため、正方形パッチの継ぎ目が目立たない。
+  const continuousGround = (tx, ty, cell) => {
+    const g = new THREE.PlaneGeometry(cell, cell, 20, 20).rotateX(-Math.PI / 2);
+    const p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const wx = tx * cell + p.getX(i), wz = ty * cell + p.getZ(i);
+      const y = 0.052 * Math.sin(wx * 0.47) * Math.cos(wz * 0.39)
+        + 0.028 * Math.sin(wx * 1.14 + wz * 0.58)
+        + 0.012 * Math.cos(wx * 2.37 - wz * 1.81);
+      p.setY(i, y);
+    }
+    g.computeVertexNormals();
+    return { name: 'continuous_rock_ground', parts: [{ geo: g, mat: 'Deep cavern rock' }] };
+  };
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { walls, ceil, ground, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { walls, ceil, ground, continuousGround, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -470,7 +485,7 @@ export async function createTheme(api) {
         const naturalGround = c !== 'P' && c !== ',' && c !== '_' && c !== '<'
           && !objAt.has(key) && hash(tx, ty, 215) < 0.70;
         if (naturalGround) {
-          B.add('floor', pick(proc.ground, hash(tx, ty, 216)), M4(x, -0.015, z), tx, ty);
+          B.add('floor', proc.continuousGround(tx, ty, CELL), M4(x, -0.025, z), tx, ty);
         } else for (const [ox, oz] of [[-0.95, -0.95], [0.95, -0.95], [-0.95, 0.95], [0.95, 0.95]]) {
           if (fall) { const [bx, bz] = DIR_VEC[fall]; if (ox * bx + oz * bz > 0) continue; }   // 滝つぼ側の床板は外す
           const r = hash(tx * 2 + (ox > 0), ty * 2 + (oz > 0), 15);
