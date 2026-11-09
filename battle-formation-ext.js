@@ -173,8 +173,8 @@
         row: i < 2 ? "front" : "rear", alive: true
       }));
       const totalHp = count * d.hp;
-      return { ...d, ...def, name: "ゴブリン隊長と護衛", hp: totalHp, maxHp: totalHp, members, gold: count * d.gold,
-        exp: count * d.exp, memberCount: count, spDefense: Math.floor(d.defense / 2),
+      return { ...d, ...def, name: "ゴブリン隊長と護衛", hp: totalHp, maxHp: totalHp, members, gold: def.gold || count * d.gold,
+        exp: def.exp || 220, memberCount: count, spDefense: Math.floor(d.defense / 2),
         ai: [
           { name: "棍棒の一撃", weight: 65, kind: "phys", power: 1 },
           { name: "ゴブリン連携攻撃", weight: 35, all: true, kind: "phys", power: .5, everyTurns: 3 }
