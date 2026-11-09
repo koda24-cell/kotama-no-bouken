@@ -279,6 +279,7 @@ function extEscapeBlocked() { return getParty().some(c => c.hp > 0 && extHasStat
 // 味方の行動直前（スピード順ラウンドのみ）：睡眠・混乱・封じ。行動を取りやめた場合は true。
 async function extPartyAilmentTurn(actor, action) {
   if (!actor || actor.hp <= 0) return false;
+  if (extHasStatus(actor, "petrify")) { extCancelCharge(actor); pushEvent(`${actor.name}は石化して動けない！`); renderBattle(); await wait(600); return true; }
   if (extHasStatus(actor, "sleep")) {
     extCancelCharge(actor); pushEvent(`${actor.name}は眠っていて動けない！`); renderBattle(); await wait(600); return true;
   }
