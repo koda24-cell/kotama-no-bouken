@@ -1941,26 +1941,6 @@ async function showUnionAttackImpact(skill){
     }
   }finally{stage.remove();}
 }
-// Visual-only union attack staging, inspired by EO V's party-wide special attacks.
-async function showUnionAttackImpact(skill){
-  const type=skill?.type||"";
-  const arena=document.querySelector(".battle-arena");
-  if(!arena)return;
-  const supportive=type==="aegis"||type==="full-heal";
-  const stage=document.createElement("div");
-  stage.className="union-impact-stage "+(supportive?"union-impact-support":"union-impact-offense");
-  stage.setAttribute("aria-hidden","true");
-  stage.innerHTML='<i class="union-impact-flare"></i><i class="union-impact-circle"></i><i class="union-impact-cross"></i>';
-  arena.appendChild(stage);
-  const effects=type==="cross-break"?[]:type==="samurai-slash"?["samurai"]:type==="meteor"?["flame","magic"]:type==="stun"?["lightning","magic"]:[];
-  try{
-    if(supportive){await wait(420);}
-    else{
-      for(const kind of effects){showHitEffect(kind);await wait(120);}
-      await wait(180);
-    }
-  }finally{stage.remove();}
-}
 async function executeUnion(a){const actor=getCharacter(a.actor),u=unionSkills[a.actor],e=battleState.enemy;if(actor&&isSkillRestricted(actor)){pushLog(`${actor.name}は装備の適性がないため、ユニオンスキルを使用できない！`);return;}if(!actor||!u||(battleState.unionGauges[actor.id]||0)<u.requiredHits){pushLog("ユニオンゲージが足りません。");return;}const participants=[actor];if(u.type==="cross-break"){const partner=getCharacter(a.partner);if(!partner||partner.hp<=0||(battleState.unionGauges[partner.id]||0)<unionSkills[partner.id].requiredHits){pushLog("協力者のユニオンゲージが不足しています。");return;}participants.push(partner);}participants.forEach(c=>animatePartyIcon(c.id));await showUnionCutin(u,participants);await showUnionAttackImpact(u);if(!battleState.enemy||enemyHpTotal(battleState.enemy)<=0)return;await wait(160);if(u.type==="stun"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const dealt=applyDamageToEnemy(e,Math.floor(u.damage*(1+treeBonus(actor.id,"union"))));if(lastEnemyAttackMissed){pushLog(`${e.name}は「${u.name}」を回避した！`);renderBattle();return;}if(dealt>0)addBreakDamage(e,"union","無属性",actor);battleState.enemyStunned=true;pushLog(`${actor.name}の「${u.name}」！ ${dealt}ダメージ。敵の次の行動を妨害！`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();sound("damage",true);}else if(u.type==="meteor"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const dealt=applyDamageToEnemy(e,Math.floor(u.damage*(1+treeBonus(actor.id,"union"))));if(lastEnemyAttackMissed){pushLog(`${e.name}は「${u.name}」を回避した！`);renderBattle();return;}if(dealt>0)addBreakDamage(e,"union","無属性",actor);pushLog(`${actor.name}の「${u.name}」！ ${dealt}ダメージ！`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();playSe("assets/se/unionskill/聖魔法");}else if(u.type==="aegis"){battleState.aegisActive=true;battleState.unionGauges[actor.id]=0;for(const c of livingParty())c.hp=effectiveStats(c).maxHp;pushLog(`${actor.name}の「${u.name}」！ 生存中の味方全員を全回復し、次の敵ターンを無効化！`);sound("heal");}else if(u.type==="full-heal"){
   let sp=0,revived=0;
   for(const c of getParty()){
