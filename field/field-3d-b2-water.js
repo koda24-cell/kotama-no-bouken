@@ -23,7 +23,7 @@ const CHUNK = 8;                                       // まとめる区画（�
 const WATER_KEY = 'kotama.field3d.b2.water';           // 'opaque' で水を不透明にする（半透明が崩れる環境向けの退避）
 
 // 第2階層の空気（第1階層の値とは別。第1階層へ戻ると field-3d-view.js が第1階層の値に戻す）
-export const ENV = { background: 0x07141c, fog: { color: 0x15303c, density: 0.027 }, hemi: { sky: 0xb3dce9, ground: 0x263f4b, high: 1.85, low: 2.25 } };
+export const ENV = { background: 0x07141c, fog: { color: 0x122b36, density: 0.018 }, hemi: { sky: 0x91b8c8, ground: 0x1c3542, high: 1.4, low: 1.65 } };
 
 /* ------------------------------------------------------------
    素材（GLB の素材名ごとに、ゲームの描画に合わせた値で作り直す）
@@ -79,17 +79,17 @@ function makeMaterials(opaqueWater) {
   const rockBump = rockTex.clone(), slateBump = slateTex.clone(), paleBump = paleTex.clone();
   for (const t of [rockBump, slateBump, paleBump]) { t.colorSpace = THREE.NoColorSpace; t.needsUpdate = true; }
   return {
-    'Wet slate stone': std({ color: 0x9fb6c0, map: slateTex, bumpMap: slateBump, bumpScale: 0.075, roughness: 0.38, metalness: 0.04, vertexColors: true }),   // 濡れた暗い石板
+    'Wet slate stone': std({ color: 0xa7b8b8, map: slateTex, bumpMap: slateBump, bumpScale: 0.045, roughness: 0.48, metalness: 0.04, vertexColors: true }),   // 濡れた暗い石板
     'Ancient inlay': std({ color: 0xad8c4a, roughness: 0.42, metalness: 0.55, emissive: 0x2a1c06, emissiveIntensity: 0.6 }),
-    'Deep cavern rock': std({ color: 0x9babae, map: rockTex, bumpMap: rockBump, bumpScale: 0.055, roughness: 0.89, metalness: 0.0, vertexColors: true }),
-    'Pale mineral stone': std({ color: 0xb6d2de, map: paleTex, bumpMap: paleBump, bumpScale: 0.095, roughness: 0.57, metalness: 0.02, vertexColors: true }),  // 淡い鉱物の石
+    'Deep cavern rock': std({ color: 0xb0b4af, map: rockTex, bumpMap: rockBump, bumpScale: 0.065, roughness: 0.96, metalness: 0.0, vertexColors: true }),
+    'Pale mineral stone': std({ color: 0xc3c9c5, map: paleTex, bumpMap: paleBump, bumpScale: 0.055, roughness: 0.57, metalness: 0.02, vertexColors: true }),  // 淡い鉱物の石
     'Glowing cyan crystal': std({ color: 0x6ad0e7, roughness: 0.18, metalness: 0.1, emissive: 0x1aa6e0, emissiveIntensity: 0.75 }),  // 控えめな発光
     'Deep blue crystal': std({ color: 0x3863e0, roughness: 0.2, metalness: 0.1, emissive: 0x1a2f8a, emissiveIntensity: 0.6 }),
     'Violet danger crystal': std({ color: 0x735ba4, roughness: 0.25, metalness: 0.05, emissive: 0x5a1a90, emissiveIntensity: 0.9 }), // 紫＝危険
     'Clear blue water': water,
     'Water foam': foam,
     'Aquatic dark teal': std({ color: 0x1d7563, roughness: 0.62, metalness: 0.0 }),
-    ceiling: std({ color: 0x9baeb4, map: rockTex, bumpMap: rockBump, bumpScale: 0.06, roughness: 0.91, metalness: 0.0, emissive: 0x253f4a, emissiveIntensity: 0.12, vertexColors: true, side: THREE.DoubleSide }),   // 下向きの面は環境光が弱いので少し自発光
+    ceiling: std({ color: 0x98a6a6, map: rockTex, bumpMap: rockBump, bumpScale: 0.05, roughness: 0.95, metalness: 0.0, emissive: 0x253f4a, emissiveIntensity: 0.12, vertexColors: true, side: THREE.DoubleSide }),   // 下向きの面は環境光が弱いので少し自発光
     bed: std({ color: 0x122a3a, roughness: 0.6, metalness: 0.0 }),                                // 水底・床板のすき間
     waterfall: fall,
   };
