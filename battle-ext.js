@@ -179,7 +179,7 @@ function extTickPartyImmunity() {
   for (const id of Object.keys(extPartyImmunity)) for (const [type, until] of Object.entries(extPartyImmunity[id])) if (until < extCurrentRound()) delete extPartyImmunity[id][type];
 }
 // 確実に行動できない状態（睡眠・既存の拘束）。麻痺・混乱は確率なので含めない。
-function extHardDisabled(c) { return !!c && (extHasStatus(c, "sleep") || (typeof isActionIncapacitated === "function" && isActionIncapacitated(c))); }
+function extHardDisabled(c) { return !!c && (extHasStatus(c, "sleep") || extHasStatus(c, "petrify") || (typeof isActionIncapacitated === "function" && isActionIncapacitated(c))); }
 // ラウンド開始時：生存者全員が行動不能なら連続回数を数える。
 function extUpdatePartyLockStreak() {
   const alive = getParty().filter(c => c.hp > 0);
