@@ -1679,7 +1679,7 @@ async function executeTurn(){
 }
 function showHitEffect(kind="slash",targetNode=null){
   const display=displayEnemyNode();if(!display)return;
-  const safeKind=["slash","samurai","flame","lightning","magic"].includes(kind)?kind:"magic";
+  const safeKind=["slash","samurai","flame","lightning","ice","magic"].includes(kind)?kind:"magic";
   const fx=document.createElement("div");
   fx.className=`hit-effect hit-${safeKind}`;
   fx.setAttribute("aria-hidden","true");
@@ -1687,6 +1687,18 @@ function showHitEffect(kind="slash",targetNode=null){
   const host=targetNode?.isConnected?targetNode:(display.closest(".battle-arena")||display);
   if(host===targetNode){fx.classList.add("hit-effect-local");}
   host.appendChild(fx);
+  const animatedAssets={slash:"slash-impact.gif",samurai:"slash-impact.gif",flame:"fire-impact.gif",lightning:"lightning-impact.gif",ice:"ice-impact.gif"};
+  const assetName=animatedAssets[safeKind];
+  if(assetName&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    const sprite=document.createElement("img");
+    sprite.className="hit-animated-sprite";
+    sprite.alt="";
+    sprite.decoding="async";
+    sprite.onerror=()=>{sprite.remove();fx.classList.remove("hit-has-sprite");};
+    sprite.onload=()=>fx.classList.add("hit-has-sprite");
+    sprite.src="assets/effects/battle/"+assetName;
+    fx.appendChild(sprite);
+  }
   const arena=display.closest(".battle-arena")||display;
   const heavy=safeKind==="samurai"||safeKind==="flame"||safeKind==="lightning";
   const shakeClass=heavy?"vfx-impact-heavy":"vfx-impact";
@@ -1711,7 +1723,7 @@ async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
     const display=displayEnemyNode();
     if(beforeNode){beforeNode.classList.remove("magic-target-hit");void beforeNode.offsetWidth;beforeNode.classList.add("magic-target-hit");}
     else if(display){display.classList.remove("magic-target-active");void display.offsetWidth;display.classList.add("magic-target-active");}
-    showHitEffect(skill.type==="fire"||skill.type==="level-flare"||skill.element==="炎"?"flame":skill.element==="雷"||skill.type==="thunder"||skill.type==="level-lightning-all"||skill.type==="level-lightning-single"?"lightning":"magic",beforeNode);
+    showHitEffect(skill.type==="fire"||skill.type==="level-flare"||skill.element==="炎"?"flame":skill.element==="雷"||skill.type==="thunder"||skill.type==="level-lightning-all"||skill.type==="level-lightning-single"?"lightning":skill.element==="氷"||skill.type==="ice"||skill.type==="freeze"?"ice":"magic",beforeNode);
     await wait(140);
     const value=applyDamageToEnemyTarget(enemy,target,damage);
     total+=value;
