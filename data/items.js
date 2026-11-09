@@ -8,7 +8,7 @@ const shopItems=[
   {id:"knuckles",name:"鍛錬の籠手",category:"weapon",icon:"KNUCKLE",description:"素早い格闘に適した武器。",price:55,effect:"攻撃力 +20",attackBonus:20,physicalElement:"打撃",classes:["kotama","warrior"],unlock:2},
   {id:"katana",name:"旅人の刀",category:"weapon",icon:"KATANA",description:"武士が扱う基本の刀。二刀流用。",price:45,effect:"攻撃力 +20",attackBonus:20,physicalElement:"斬撃",classes:["samurai"],slot:"katana",unlock:1},
   {id:"iron-katana",name:"鋼の刀",category:"weapon",icon:"KATANA",description:"切れ味を高めた刀。",price:130,effect:"攻撃力 +40",attackBonus:40,physicalElement:"斬撃",classes:["samurai"],slot:"katana",unlock:4},
-  {id:"leather-armor",name:"革の鎧",category:"armor",icon:"ARMOR",description:"軽く扱いやすい防具。",price:20,effect:"防御力 +5",defenseBonus:5,classes:["warrior","knight","kotama","mage","healer","samurai"],unlock:1},
+  {id:"leather-armor",name:"革の鎧",category:"armor",icon:"ARMOR",description:"軽く扱いやすい防具。",price:20,effect:"防御力 +5",defenseBonus:5,classes:["warrior","knight","kotama","mage","healer"],unlock:1},
   {id:"iron-armor",name:"鉄の鎧",category:"armor",icon:"ARMOR",description:"頑丈な防具。",price:80,effect:"防御力 +10",defenseBonus:10,classes:["warrior","knight","kotama"],unlock:3},
   {id:"shield",name:"木の盾",category:"armor",icon:"SHIELD",description:"物理・魔法攻撃への備え。",price:55,effect:"防御力 +4／SP防御力 +4",defenseBonus:4,spDefenseBonus:4,classes:["warrior","knight","kotama"],unlock:2},
   {id:"charm-hp",name:"生命の護符",category:"accessory",icon:"CHARM",description:"最大HPを高める護符。",price:45,effect:"最大HP +15",hpBonus:15,classes:["kotama","knight","healer","warrior","mage","samurai"],unlock:1},
