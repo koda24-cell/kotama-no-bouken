@@ -64,6 +64,15 @@ function analyzeEnemyHtml() {
   const speed = typeof extEnemySpeed === "function" ? extEnemySpeed(e) : e.speed;
   const statuses = analyzeEnemyStatuses(e);
   const members = Array.isArray(e.members) ? `<span class="analyze-wide">残り <b>${e.members.filter(m => m.alive !== false && m.hp > 0).length} / ${e.members.length}体</b></span>` : "";
+  const memberDetails = Array.isArray(e.members) ? `<section class="analyze-enemy-members"><strong>個体別情報</strong>${e.members.map(m => {
+    const bag = typeof extStatusBag === "function" ? extStatusBag(m, false) : null;
+    const chips = bag ? Object.entries(bag).filter(([, st]) => st.turns > 0).map(([type, st]) => {
+      const def = EXT_STATUS_DEFS[type] || { label:type, icon:"", harm:true };
+      return analyzeStatusChip(`${def.icon}${def.label}`, st.turns, def.harm);
+    }) : [];
+    if (Number(m._defenseDownTurns) > 0) chips.push(analyzeStatusChip("▼防御力低下", Number(m._defenseDownTurns), true));
+    return `<div class="analyze-enemy-member"><span><b>${esc(m.displayName || m.name || m.id)}</b> ／ ${m.row === "rear" ? "後衛" : "前衛"}</span><small>HP ${known ? `${Math.max(0, Math.floor(m.hp))} / ${Math.floor(m.maxHp || 0)}` : "？？？"}</small><div class="analyze-statuses">${chips.length ? chips.join("") : `<span class="analyze-none">状態変化なし</span>`}</div></div>`;
+  }).join("")}</section>` : "";
   const brk = e._breakMax ? `<span class="analyze-wide">ブレイク <b>${Math.max(0, Math.floor(e._breakCurrent || 0))} / ${e._breakMax}</b></span>` : "";
   return `<article class="analyze-card analyze-enemy ${known ? "is-known" : ""}">
     <header><strong>${esc(e.name)}</strong><small>${known ? "情報開示済み" : "未解析（もう一度遭遇すると開示）"}</small></header>
@@ -77,6 +86,7 @@ function analyzeEnemyHtml() {
       <span class="analyze-wide">耐性 <b>${list(resist)}</b></span>
     </div>
     <div class="analyze-statuses"><em>状態</em>${statuses.length ? statuses.join("") : `<span class="analyze-none">変化なし</span>`}</div>
+    ${memberDetails}
   </article>`;
 }
 
@@ -88,7 +98,7 @@ function analyzePartyHtml() {
     const statuses = analyzePartyStatuses(c);
     const hpRate = Math.max(0, c.hp) / Math.max(1, s.maxHp) * 100, spRate = Math.max(0, c.sp) / Math.max(1, c.maxSp) * 100;
     return `<article class="analyze-card analyze-member ${c.hp <= 0 ? "is-down" : ""}" data-party-id="${esc(c.id)}">
-      <header><strong>${typeof levelBadge === "function" ? levelBadge(c) : ""}${esc(c.name)}</strong><small>${c.hp <= 0 ? "戦闘不能" : ""}</small></header>${typeof levelExpBar === "function" ? levelExpBar(c) : ""}
+      <header><strong>${typeof levelBadge === "function" ? levelBadge(c) : ""}${esc(c.name)}</strong><small>${c.hp <= 0 ? "戦闘不能" : (["mage","healer","princess","gunner"].includes(c.id) ? "後衛" : "前衛")}</small></header>${typeof levelExpBar === "function" ? levelExpBar(c) : ""}
       <div class="analyze-bars">
         <span>HP <b>${Math.max(0, c.hp)} / ${s.maxHp}</b><i><u style="width:${hpRate}%"></u></i></span>
         <span class="is-sp">SP <b>${Math.max(0, c.sp)} / ${c.maxSp}</b><i><u style="width:${spRate}%"></u></i></span>

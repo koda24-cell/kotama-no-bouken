@@ -182,7 +182,7 @@ function extTickPartyImmunity() {
   for (const id of Object.keys(extPartyImmunity)) for (const [type, until] of Object.entries(extPartyImmunity[id])) if (until < extCurrentRound()) delete extPartyImmunity[id][type];
 }
 // 確実に行動できない状態（睡眠・既存の拘束）。麻痺・混乱は確率なので含めない。
-function extHardDisabled(c) { return !!c && (extHasStatus(c, "sleep") || (typeof isActionIncapacitated === "function" && isActionIncapacitated(c))); }
+function extHardDisabled(c) { return !!c && (extHasStatus(c, "sleep") || extHasStatus(c, "petrify") || (typeof isActionIncapacitated === "function" && isActionIncapacitated(c))); }
 // ラウンド開始時：生存者全員が行動不能なら連続回数を数える。
 function extUpdatePartyLockStreak() {
   const alive = getParty().filter(c => c.hp > 0);
@@ -282,6 +282,7 @@ function extEscapeBlocked() { return getParty().some(c => c.hp > 0 && extHasStat
 // 味方の行動直前（スピード順ラウンドのみ）：睡眠・混乱・封じ。行動を取りやめた場合は true。
 async function extPartyAilmentTurn(actor, action) {
   if (!actor || actor.hp <= 0) return false;
+  if (extHasStatus(actor, "petrify")) { extCancelCharge(actor); pushEvent(`${actor.name}は石化して動けない！`); renderBattle(); await wait(600); return true; }
   if (extHasStatus(actor, "sleep")) {
     extCancelCharge(actor); pushEvent(`${actor.name}は眠っていて動けない！`); renderBattle(); await wait(600); return true;
   }

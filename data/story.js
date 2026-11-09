@@ -90,8 +90,8 @@ const STORY_SCENES = {
   },
   "a1-boss": {
     lines: [
-      { who: "narration", text: "道の先で、ぷるぷると揺れる大きな影が行く手をふさいでいる。" },
-      { who: "kotama", text: "あれが噂の大きな魔物……！　みんな、いくよ！" }
+      { who: "narration", text: "霧の奥から、白銀の毛並みを持つ巨大な狼が静かに姿を現した。" },
+      { who: "kotama", text: "あれが樹海の奥を守る狼王……スノードリフト！　みんな、いくよ！" }
     ]
   },
 
@@ -99,15 +99,15 @@ const STORY_SCENES = {
   "a2-enter": {
     once: true,
     lines: [
-      { who: "kotama", text: "木が踏み倒されてる……。ここを通ったのは、ひとりやふたりじゃなさそうだ。" },
-      { who: "warrior", text: "足跡がやたらと揃ってる。群れで動いてるな。", ifParty: true }
+      { who: "kotama", text: "空気がひんやりしてる……。水音が迷宮の奥から響いてくる。" },
+      { who: "warrior", text: "床が凍っている。水辺に棲む魔物の気配もあるな。", ifParty: true }
     ]
   },
   "a2-merchant": {
     lines: [
-      { who: "merchant", text: "ひどい目にあったよ……。ゴブリンどもに荷車ごと荷物を持っていかれちまった。" },
-      { who: "merchant", text: "あいつら、前はもっとバラバラで間抜けだったのに、最近は妙に統率がとれてるんだ。" },
-      { who: "merchant", text: "まるで誰かに命令されてるみたいにな。" },
+      { who: "merchant", text: "この先の水源は凍りついていてね。魚の魔物や鉱石の魔物がうろついているんだ。" },
+      { who: "merchant", text: "鉱石の魔物は硬い殻を持っている。雷の力なら、きっと通るはずさ。" },
+      { who: "merchant", text: "石化の攻撃にも気をつけな。動けなくなったら危険だよ。" },
       { who: "knight", text: "命令……。背後に、群れを操る何者かがいるということでしょうか。", ifParty: true }
     ],
     repeat: [
@@ -116,20 +116,20 @@ const STORY_SCENES = {
   },
   "a2-watchman": {
     lines: [
-      { who: "watchman", text: "ここから先は霧の森だ。魔法の石像は、その霧のいちばん奥にある。" },
-      { who: "watchman", text: "だが、ゴブリンの群れが道をふさいでいる。抜けるなら覚悟していけ。" }
+      { who: "watchman", text: "ここから先は凍てつく水源だ。水路の奥に、巨大な晶石が眠っている。" },
+      { who: "watchman", text: "魚の魔物は氷の術と弱体化を使う。鉱石の魔物は守りが堅く、反撃もしてくるぞ。" }
     ],
     repeat: [
-      { who: "watchman", text: "石像は霧の森の奥だ。群れを抜けてから行け。" }
+      { who: "watchman", text: "水源の最奥にある晶石守を倒せば、この水路も静まるはずだ。" }
     ]
   },
   "a2-sign": {
-    lines: [ { who: "sign", text: "『←ふもとの村　霧の森→／ゴブリン多発につき単独行動禁止』" } ]
+    lines: [ { who: "sign", text: "『凍てつく水源／雷属性が有効。鉱石の魔物の反撃に注意』" } ]
   },
   "a2-boss": {
     lines: [
-      { who: "narration", text: "茂みがいっせいにざわめいた。武器を手にしたゴブリンたちが、こちらを取り囲む！" },
-      { who: "kotama", text: "数が多い……でも、ここを抜けなきゃ石像には会えない！" }
+      { who: "narration", text: "凍った水路の奥で、巨大な晶石が青白く輝き始めた。" },
+      { who: "kotama", text: "あれが水源を守る晶石守……！ 雷の力で切り開こう！" }
     ]
   },
 

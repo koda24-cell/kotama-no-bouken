@@ -1,0 +1,45 @@
+/* Battle formation rows and compact status indicators */
+.battle-member[data-row="front"]{border-bottom:3px solid #d8b45a}
+.battle-member[data-row="rear"]{border-bottom:3px dashed #78b9e8;background:linear-gradient(160deg,#13204d,#101735)}
+.formation-row-label{display:inline-flex;align-items:center;margin-left:5px;padding:0 4px;border:1px solid #ffffff55;border-radius:3px;color:#dce8ff;font-size:9px;font-style:normal;line-height:1.5;white-space:nowrap}
+.battle-member[data-row="rear"] .formation-row-label{border-color:#78b9e8;color:#a9dcff}
+.enemy-group-unit[data-row="rear"]{transform:translateY(-9px) scale(.9);opacity:.88;filter:saturate(.82)}
+.enemy-group-unit[data-row="front"]{transform:translateY(3px);z-index:2}
+.enemy-group-unit .formation-row-label{display:block;width:max-content;margin:3px auto 0;font-size:8px;color:#e7d7a2}
+.enemy-group-unit[data-row="rear"] .formation-row-label{color:#a9dcff;border-color:#78b9e8}
+.status-icon-only{gap:2px;min-width:20px;justify-content:center;padding:0 3px;font-size:.82em}
+.status-icon-only b{font-size:.9em;font-variant-numeric:tabular-nums}
+.enemy-status-list .status-icon-only{display:inline-flex;align-items:center;gap:2px}
+.enemy-status-list .status-icon-only b{font-size:9px}
+#battle-party .member-head{flex-wrap:wrap}
+#battle-party .member-head strong{display:flex;align-items:center;flex-wrap:wrap;gap:2px}
+@media(max-width:620px){.formation-row-label{font-size:8px}.enemy-group-unit[data-row="rear"]{transform:translateY(-5px) scale(.88)}}
+
+.analyze-enemy-members{grid-column:1/-1;margin-top:7px;padding-top:6px;border-top:1px solid #ffffff30}
+.analyze-enemy-members>strong{display:block;margin-bottom:4px;color:#e6d49b;font-size:10px}
+.analyze-enemy-member{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;padding:4px 5px;border-top:1px solid #ffffff18;font-size:10px}
+.analyze-enemy-member>span{color:#e4e9ff}
+.analyze-enemy-member>small{color:#b6c3dc;font-variant-numeric:tabular-nums}
+.analyze-enemy-member .analyze-statuses{grid-column:1/-1;margin-top:0}
+
+#battle-enemy[data-variant="snowdrift-boss"] .enemy-group-unit img{filter:hue-rotate(155deg) saturate(.72) brightness(1.18) drop-shadow(0 0 8px #9bdfff)}
+#battle-enemy[data-variant="snowdrift-boss"] .enemy-group-unit[data-row="front"]{box-shadow:0 0 12px #8bdcff66}
+#battle-enemy[data-variant="snowdrift-boss"] .enemy-group-unit[data-row="rear"]{box-shadow:0 0 8px #8bdcff44}
+
+/* 戦闘中の探索マップ */
+.battle-field-map-toggle{position:absolute;top:8px;left:8px;z-index:18;padding:5px 10px;border:1px solid #8fc9df;border-radius:5px;background:#102d42eF;color:#d9f5ff;font-size:10px;font-weight:800;letter-spacing:.08em}
+.battle-field-map{position:absolute;top:42px;left:8px;z-index:30;width:min(260px,46vw);padding:6px;border:1px solid #8fc9df;border-radius:7px;background:#071927ed;box-shadow:0 5px 18px #0009}
+.battle-field-map[hidden]{display:none}
+.battle-field-map-head{display:flex;align-items:center;gap:8px;margin-bottom:5px;color:#d9f5ff;font-size:10px}
+.battle-field-map-head span{margin-left:auto;color:#9ebdca;font-size:9px}
+.battle-field-map-head button{width:22px;height:22px;border:1px solid #6d99a8;border-radius:4px;background:#18364a;color:white}
+.battle-field-map-grid{display:grid;grid-template-columns:repeat(var(--map-cols,20),1fr);gap:1px;max-height:190px;overflow:hidden}
+.battle-field-map-cell{aspect-ratio:1;background:#4c7c8c}
+.battle-field-map-cell.wall{background:#152b3c}
+.battle-field-map-cell.water{background:#337d9d}
+.battle-field-map-cell.unknown{background:#050c14}
+.battle-field-map-cell.player{background:#f5d66d;box-shadow:0 0 4px #fff}
+.battle-field-map-cell.foe{background:#e65e55;box-shadow:0 0 5px #ff8b7c}
+.battle-field-map-cell.stairs{background:#b8d9e6}
+.battle-field-map-toggle[aria-expanded="true"]{background:#315f75}
+@media(max-width:560px){.battle-field-map{width:min(210px,56vw)}.battle-field-map-grid{max-height:150px}}
