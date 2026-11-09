@@ -226,10 +226,26 @@ function makeProcedural() {
     for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); p.setY(i, -(0.46 + 0.27 * Math.sin(x * 0.9 + 0.7) * Math.cos(z * 1.05 + 0.3) + 0.10 * Math.sin(x * 2.2 + z * 1.9) + 0.045 * Math.cos(x * 4.1 - z * 3.4))); }
     return { name: 'cavern_ceiling', parts: [{ geo: smoothRock(prepGeo(g, false)), mat: 'ceiling' }] };
   })();
+  // 自然石の床：格子状の石板が無限に繰り返される印象を緩和する。
+  // マス境界の高さは0に収束させ、隣接マスに隙間を作らない。
+  const ground = [0, 1, 2, 3].map((variant) => {
+    const geo = new THREE.PlaneGeometry(4.04, 4.04, 24, 24).rotateX(-Math.PI / 2);
+    const pos = geo.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i), z = pos.getZ(i);
+      const fade = Math.max(0, Math.min(1, (2.02 - Math.abs(x)) / 0.45))
+        * Math.max(0, Math.min(1, (2.02 - Math.abs(z)) / 0.45));
+      const wave = 0.08 * Math.sin(x * 1.7 + variant * 1.3) * Math.cos(z * 1.9 - variant)
+        + 0.027 * Math.sin(x * 4.3 + z * 3.6 + variant * 2);
+      pos.setY(i, wave * fade);
+    }
+    geo.computeVertexNormals();
+    return { name: 'natural_rock_floor_' + variant, parts: [{ geo, mat: 'Deep cavern rock' }] };
+  });
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { walls, ceil, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { walls, ceil, ground, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -410,7 +426,11 @@ export async function createTheme(api) {
         }
         if (anim.ripples.length < 8 && hash(tx, ty, 11) < 0.10) addRipple(x + (hash(tx, ty, 12) - 0.5) * 2, z + (hash(tx, ty, 13) - 0.5) * 2, hash(tx, ty, 14));
       } else {
-        for (const [ox, oz] of [[-0.95, -0.95], [0.95, -0.95], [-0.95, 0.95], [0.95, 0.95]]) {
+        const naturalGround = c !== 'P' && c !== ',' && c !== '_' && c !== '<'
+          && !objAt.has(key) && hash(tx, ty, 215) < 0.38;
+        if (naturalGround) {
+          B.add('floor', pick(proc.ground, hash(tx, ty, 216)), M4(x, -0.015, z), tx, ty);
+        } else for (const [ox, oz] of [[-0.95, -0.95], [0.95, -0.95], [-0.95, 0.95], [0.95, 0.95]]) {
           if (fall) { const [bx, bz] = DIR_VEC[fall]; if (ox * bx + oz * bz > 0) continue; }   // 滝つぼ側の床板は外す
           const r = hash(tx * 2 + (ox > 0), ty * 2 + (oz > 0), 15);
           B.add('floor', pick(kit.slabs, r), M4(x + ox, -0.035 + hash(tx, ty, 150) * 0.035, z + oz, Math.floor(hash(tx * 2 + (ox > 0), ty * 2 + (oz > 0), 16) * 4) * Math.PI / 2), tx, ty);
