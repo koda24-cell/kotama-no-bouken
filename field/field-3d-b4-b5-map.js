@@ -149,6 +149,17 @@ export function createTheme(api, area) {
       }
     }
     batchStatic();
+    // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
+    // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
+    for (const o of a.objects) {
+      if (!o.onWall || (o.kind !== 'switch' && o.kind !== 'sign')) continue;
+      const f = facing(o.tx, o.ty), [dx, dz] = DIR_VEC[f];
+      const x = o.tx * CELL + dx * 1.55, z = o.ty * CELL + dz * 1.55;
+      const ry = FACE_YAW[f];
+      const src = o.kind === 'switch' ? S.guardian : S.sign;
+      const obj = place(g.world, src || S.sign, x, 0, z, ry, o.kind === 'switch' ? 0.55 : 0.8);
+      g.entries.push({ o, kind: o.kind, obj, state: null, at: new THREE.Vector3(x, 1.5, z), ry });
+    }
     for (const o of a.objects) {
       const x = o.tx * CELL, z = o.ty * CELL, f = facing(o.tx, o.ty), ry = FACE_YAW[f];
       const e = { o, kind: o.kind, obj: null, state: null, at: new THREE.Vector3(x, 1.2, z), ry };
@@ -166,7 +177,7 @@ export function createTheme(api, area) {
           break;
         default: break;
       }
-      if (o.kind !== 'switch') g.entries.push(e);
+      if (!o.onWall) g.entries.push(e);
     }
   }
   function dispose() {
