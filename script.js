@@ -591,63 +591,82 @@ function installSkillUpgradeCommitShield(){
     document.removeEventListener("click",blockClicks,true);
   },450);
 }
-function openSkillUpgradeDialog(charId,nodeId,returnFocus){
-  const c=getCharacter(charId),eligibility=getTrainingUpgradeEligibility(charId,nodeId);
-  if(!c||!eligibility.node)return;
-  if(!eligibility.allowed){selectedTrainingSkill=nodeId;renderProgressionPanel();setSystemMessage(eligibility.reasons.join(" "));return;}
-  closeSkillUpgradeDialog();
-  const node=eligibility.node,preview=getTrainingEffectPreview(charId,nodeId,eligibility.level,eligibility.nextLevel);
-  const dialog=document.createElement("section");
-  dialog.id="skill-upgrade-dialog";dialog.className="game-dialog skill-upgrade-dialog";
-  dialog.setAttribute("role","dialog");dialog.setAttribute("aria-modal","true");dialog.setAttribute("aria-labelledby","skill-upgrade-title");
-  dialog.innerHTML=
-    '<div class="game-dialog-panel skill-upgrade-dialog-panel">'+
-      '<p class="skill-upgrade-eyebrow">SKILL UPGRADE</p>'+
-      '<h2 id="skill-upgrade-title">スキル強化の確認</h2>'+
-      '<p class="skill-upgrade-name">'+esc(c.name)+' ／ '+esc(node.name)+'</p>'+
-      '<div class="skill-upgrade-level"><span>レベル</span><strong>Lv.'+eligibility.level+' → Lv.'+eligibility.nextLevel+'</strong></div>'+
-      '<div class="skill-upgrade-effects"><strong>効果の変化</strong>'+
-        preview.map(item=>'<div class="skill-upgrade-effect-row"><span>'+esc(item.label)+'</span><b>'+esc(item.before)+' → '+esc(item.after)+'</b></div>').join("")+
-      '</div>'+
-      '<div class="skill-upgrade-cost"><span>消費SPポイント</span><strong>'+eligibility.cost+'pt</strong><span>確定後の残り</span><strong>'+(eligibility.points-eligibility.cost)+'pt</strong></div>'+
-      '<p class="skill-upgrade-note">「強化する」を押すまで、レベル・ポイント・習得状態は変更されません。</p>'+
-      '<div class="dialog-actions"><button type="button" class="secondary-button" data-upgrade-cancel>キャンセル</button><button type="button" class="primary-button" data-upgrade-confirm>強化する</button></div>'+
-    '</div>';
-  dialog._returnFocus=returnFocus||null;
-  document.body.appendChild(dialog);
-  skillUpgradeDialogCleanup=activateSkillUpgradeDialogEnvironment(dialog);
-  const cancel=dialog.querySelector("[data-upgrade-cancel]"),confirm=dialog.querySelector("[data-upgrade-confirm]");
-  let committing=false;
-  const close=()=>closeSkillUpgradeDialog({focusTarget:returnFocus});
-  cancel.onclick=close;
-  dialog.addEventListener("click",event=>{if(event.target===dialog)close();});
-  confirm.onclick=()=>{
-    if(committing)return;
-    committing=true;confirm.disabled=true;
-    const latest=getTrainingUpgradeEligibility(charId,nodeId);
-    const focusAfterRender=()=>[...document.querySelectorAll("#progression-panel [data-select-skill]")].find(button=>button.dataset.selectSkill===nodeId);
-    if(!latest.allowed||latest.level!==eligibility.level||latest.cost!==eligibility.cost||latest.points!==eligibility.points){
-      selectedTrainingSkill=nodeId;renderAll();
-      closeSkillUpgradeDialog({focusTarget:focusAfterRender});
-      installSkillUpgradeCommitShield();
-      setSystemMessage("強化条件またはSPポイントが変わったため、確定を中止しました。最新の状態を確認してください。");
-      return;
-    }
-    trainingPoints[charId]=latest.points-latest.cost;
-    setTreeLevel(charId,nodeId,latest.nextLevel);
-    unlockedSkills[charId]=treeNodes(charId).filter(n=>getTreeLevel(charId,n.id)>0).map(n=>n.id);
-    selectedTrainingSkill=nodeId;
-    renderAll();
-    closeSkillUpgradeDialog({focusTarget:focusAfterRender});
-    installSkillUpgradeCommitShield();
-    setSystemMessage(c.name+"の「"+node.name+"」を"+(node===skillTreeDefinitions[charId].a||node===skillTreeDefinitions[charId].b?"Lv."+getTreeLevel(charId,nodeId)+"に強化":"取得")+"しました。");
-  };
-  cancel.focus({preventScroll:true});
-  const panel=dialog.querySelector(".skill-upgrade-dialog-panel");
-  if(panel)panel.scrollTop=0;
-  dialog.scrollTop=0;
+function getSkillBulkUpgradeOptions(charId,nodeId){
+ const initial=getTrainingUpgradeEligibility(charId,nodeId);
+ if(!initial.allowed)return [];
+ const points=trainingPoints[charId]||0,level=initial.level,options=[];
+ let cost=0;
+ try{
+  for(let count=1;count<=initial.max-level;count++){
+   const next=getTrainingUpgradeEligibility(charId,nodeId);
+   if(!next.allowed)break;
+   cost+=next.cost;
+   trainingPoints[charId]=points-cost;
+   setTreeLevel(charId,nodeId,level+count);
+   options.push({count,level:level+count,cost});
+  }
+ }finally{setTreeLevel(charId,nodeId,level);trainingPoints[charId]=points;}
+ return options;
 }
-
+function openSkillUpgradeDialog(charId,nodeId,returnFocus){
+ const c=getCharacter(charId),eligibility=getTrainingUpgradeEligibility(charId,nodeId);
+ if(!c||!eligibility.node)return;
+ if(!eligibility.allowed){selectedTrainingSkill=nodeId;renderProgressionPanel();setSystemMessage(eligibility.reasons.join(" "));return;}
+ closeSkillUpgradeDialog();
+ const node=eligibility.node,options=getSkillBulkUpgradeOptions(charId,nodeId);
+ if(!options.length)return;
+ let selected=options[0],committing=false;
+ const dialog=document.createElement("section");
+ dialog.id="skill-upgrade-dialog";dialog.className="game-dialog skill-upgrade-dialog";
+ dialog.setAttribute("role","dialog");dialog.setAttribute("aria-modal","true");dialog.setAttribute("aria-labelledby","skill-upgrade-title");
+ dialog.innerHTML='<div class="game-dialog-panel skill-upgrade-dialog-panel">'+
+ '<p class="skill-upgrade-eyebrow">SKILL UPGRADE</p>'+
+ '<h2 id="skill-upgrade-title">スキル習得・強化の確認</h2>'+
+ '<p class="skill-upgrade-name">'+esc(c.name)+' ／ '+esc(node.name)+'</p>'+
+ '<label class="skill-upgrade-quantity">一括で上げるレベル数 <select data-upgrade-count>'+options.map(o=>'<option value="'+o.count+'">+'+o.count+'（Lv.'+o.level+'／'+o.cost+' SP）</option>').join("")+'</select></label>'+
+ '<div class="skill-upgrade-level"><span>レベル</span><strong data-upgrade-level></strong></div>'+
+ '<div class="skill-upgrade-effects"><strong>効果の変化</strong><div data-upgrade-effects></div></div>'+
+ '<div class="skill-upgrade-cost"><span>消費SPポイント</span><strong data-upgrade-cost></strong><span>確定後の残り</span><strong data-upgrade-remaining></strong></div>'+
+ '<p class="skill-upgrade-note">確定するまでスキルレベルとSPポイントは変更されません。</p>'+
+ '<div class="dialog-actions"><button type="button" class="secondary-button" data-upgrade-cancel>キャンセル</button><button type="button" class="primary-button" data-upgrade-confirm>習得・強化する</button></div></div>';
+ dialog._returnFocus=returnFocus||null;
+ document.body.appendChild(dialog);
+ skillUpgradeDialogCleanup=activateSkillUpgradeDialogEnvironment(dialog);
+ const cancel=dialog.querySelector("[data-upgrade-cancel]"),confirm=dialog.querySelector("[data-upgrade-confirm]"),quantity=dialog.querySelector("[data-upgrade-count]");
+ const refreshPreview=()=>{
+  selected=options.find(o=>o.count===Number(quantity.value))||options[0];
+  dialog.querySelector("[data-upgrade-level]").textContent="Lv."+eligibility.level+" → Lv."+selected.level;
+  dialog.querySelector("[data-upgrade-cost]").textContent=selected.cost+"pt";
+  dialog.querySelector("[data-upgrade-remaining]").textContent=(eligibility.points-selected.cost)+"pt";
+  dialog.querySelector("[data-upgrade-effects]").innerHTML=getTrainingEffectPreview(charId,nodeId,eligibility.level,selected.level).map(item=>'<div class="skill-upgrade-effect-row"><span>'+esc(item.label)+'</span><b>'+esc(item.before)+' → '+esc(item.after)+'</b></div>').join("");
+ };
+ quantity.onchange=refreshPreview;refreshPreview();
+ const close=()=>closeSkillUpgradeDialog({focusTarget:returnFocus});
+ cancel.onclick=close;
+ dialog.addEventListener("click",event=>{if(event.target===dialog)close();});
+ confirm.onclick=()=>{
+  if(committing)return;
+  committing=true;confirm.disabled=true;
+  const latest=getTrainingUpgradeEligibility(charId,nodeId);
+  const valid=getSkillBulkUpgradeOptions(charId,nodeId).some(o=>o.count===selected.count&&o.level===selected.level&&o.cost===selected.cost);
+  const focusAfterRender=()=>[...document.querySelectorAll("#progression-panel [data-select-skill]")].find(button=>button.dataset.selectSkill===nodeId);
+  if(!latest.allowed||!valid||latest.level!==eligibility.level||latest.points!==eligibility.points){
+   selectedTrainingSkill=nodeId;renderAll();closeSkillUpgradeDialog({focusTarget:focusAfterRender});
+   installSkillUpgradeCommitShield();setSystemMessage("強化条件またはSPポイントが変わったため、確定を中止しました。");return;
+  }
+  trainingPoints[charId]=latest.points-selected.cost;
+  setTreeLevel(charId,nodeId,selected.level);
+  unlockedSkills[charId]=treeNodes(charId).filter(n=>getTreeLevel(charId,n.id)>0).map(n=>n.id);
+  selectedTrainingSkill=nodeId;renderAll();
+  closeSkillUpgradeDialog({focusTarget:focusAfterRender});
+  installSkillUpgradeCommitShield();
+  setSystemMessage(c.name+"の「"+node.name+"」をLv."+selected.level+"まで"+(eligibility.level?"強化":"習得")+"しました（"+selected.cost+" SP）。");
+ };
+ cancel.focus({preventScroll:true});
+ const panel=dialog.querySelector(".skill-upgrade-dialog-panel");
+ if(panel)panel.scrollTop=0;
+ dialog.scrollTop=0;
+}
 
 function respecCharacterSkillTree(charId){
   const c=getCharacter(charId),level=Math.max(1,Math.floor(Number(characterLevels[charId])||1));
