@@ -22,11 +22,12 @@ Existing starter/reference assets are in `assets/floor2-water-source/`:
 - `ancient-arch.svg`, `ruined-bridge.svg`, `water-gate.svg`
 - `thorn-plant.svg`, `aquatic-thorns.svg`, `stone-floor-tiles.svg`
 
-A higher-detail GLB prototype v3 was generated separately in this handoff conversation:
-- Filename: `floor2-water-source-quality-v3.glb`
+A higher-detail GLB prototype v3 was generated and its ZIP archive is now committed in this branch:
+- Archive: `assets/3d/dungeons/b2_water_source/models/floor2-water-source-quality-v3.zip`
+- After extracting the ZIP, the model is `floor2-water-source-quality-v3.glb`.
 - 222 named meshes; modular blockout, not final art.
 - Contains floor slabs, cavern boulders, crystal outcrops, ancient arch, broken bridge, water gate, water plane/ripples, layered waterfall sheets, foam and thorn plants.
-- The GLB is currently a conversation attachment/download artifact and has **not yet been committed to this repository**. Do not assume it exists under `assets/` until it is supplied/added. If the file is not available in your workspace, continue with scene integration scaffolding and report the missing binary clearly; do not silently substitute the SVG reference art as 3D geometry.
+- Extract the archive into the same `models/` directory before loading the GLB. Do not treat the ZIP itself as a GLB or substitute the SVG reference art as 3D geometry.
 
 ## Required integration work
 
