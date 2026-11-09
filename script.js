@@ -1740,8 +1740,41 @@ async function executeTurn(){
     tutorialState.phase="battle-union-command";tutorialOverlay("ユニオンスキルを使おう","コタマのユニオンゲージが満タンになったよ。通常行動とは異なる特別な技を使ってみよう。");tutorialHighlight("#battle-commands .union-command");tutorialSave();
   }
 }
-function showHitEffect(kind="slash"){
-  const display=displayEnemyNode();if(!display)return;const fx=document.createElement("div");fx.className=`hit-effect hit-${kind}`;fx.textContent=kind==="slash"?"╱╲":kind==="samurai"?"斬":kind==="flame"?"🔥":"✦";display.appendChild(fx);setTimeout(()=>fx.remove(),battleDelayMs(kind==="samurai"?360:520));
+function showHitEffect(kind="slash",targetNode=null){
+  const display=displayEnemyNode();if(!display)return;
+  const safeKind=["slash","samurai","flame","lightning","ice","magic"].includes(kind)?kind:"magic";
+  const fx=document.createElement("div");
+  fx.className=`hit-effect hit-${safeKind}`;
+  fx.setAttribute("aria-hidden","true");
+  fx.innerHTML='<i class="hit-core"></i><i class="hit-ring"></i><i class="hit-particle p1"></i><i class="hit-particle p2"></i><i class="hit-particle p3"></i><i class="hit-particle p4"></i><i class="hit-particle p5"></i>';
+  const host=targetNode?.isConnected?targetNode:(display.closest(".battle-arena")||display);
+  if(host===targetNode){fx.classList.add("hit-effect-local");}
+  host.appendChild(fx);
+  const animatedAssets={slash:"slash-impact.gif",samurai:"slash-impact.gif",flame:"fire-impact.gif",lightning:"lightning-impact.gif",ice:"ice-impact.gif"};
+  const assetName=animatedAssets[safeKind];
+  if(assetName&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    const sprite=document.createElement("img");
+    sprite.className="hit-animated-sprite";
+    sprite.alt="";
+    sprite.decoding="async";
+    sprite.onerror=()=>{sprite.remove();fx.classList.remove("hit-has-sprite");};
+    sprite.onload=()=>fx.classList.add("hit-has-sprite");
+    sprite.src="assets/effects/battle/"+assetName;
+    fx.appendChild(sprite);
+  }
+  const arena=display.closest(".battle-arena")||display;
+  const heavy=safeKind==="samurai"||safeKind==="flame"||safeKind==="lightning";
+  const shakeClass=heavy?"vfx-impact-heavy":"vfx-impact";
+  arena.classList.remove("vfx-impact","vfx-impact-heavy");void arena.offsetWidth;arena.classList.add(shakeClass);
+  clearTimeout(arena._vfxImpactTimer);
+  arena._vfxImpactTimer=setTimeout(()=>arena.classList.remove("vfx-impact","vfx-impact-heavy"),battleDelayMs(360));
+  if(targetNode?.isConnected){
+    targetNode.classList.remove("vfx-target-impact");void targetNode.offsetWidth;targetNode.classList.add("vfx-target-impact");
+    clearTimeout(targetNode._vfxTargetTimer);
+    targetNode._vfxTargetTimer=setTimeout(()=>targetNode.classList.remove("vfx-target-impact"),battleDelayMs(420));
+  }
+  const duration=safeKind==="samurai"?760:safeKind==="lightning"?820:safeKind==="flame"?900:680;
+  setTimeout(()=>fx.remove(),battleDelayMs(duration));
 }
 // 魔術師の魔法は、対象ごとに演出→ダメージ→HP表示更新の順で処理する。
 async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
@@ -1868,15 +1901,18 @@ async function showUnionCutin(skill, participants){
     const portrait=c.id==="samurai"?`<span class="union-cutin-samurai-mark" aria-label="武士">武</span>`:file?`<img class="union-cutin-portrait" src="assets/characters/${file}" alt="">`:"";
     return `<div class="union-cutin-member" style="--member-index:${i}">${portrait}<span>${esc(c.name)}</span></div>`;
   }).join("");
-  layer.innerHTML=`<div class="union-cutin-swipe ${isSamurai?"samurai-cutin":""}"><div class="union-cutin-topline"></div><div class="union-cutin-label">${isSamurai?"SPECIAL UNION ATTACK":"UNION SKILL"}</div><div class="union-cutin-members">${cards}</div><div class="union-cutin-skill">${esc(skill.name)}</div>${isSamurai?'<div class="samurai-cut-line" aria-hidden="true"></div>':""}<div class="union-cutin-bottomline"></div></div>`;
+  layer.innerHTML=`<div class="union-cutin-swipe union-cutin-count-${Math.min(5,participants.length)} ${isSamurai?"samurai-cutin":""} union-v5"><div class="union-cutin-topline"></div><div class="union-cutin-label">${isSamurai?"SPECIAL UNION ATTACK":"UNION SKILL"}</div><div class="union-cutin-members">${cards}</div><div class="union-cutin-skill">${esc(skill.name)}</div><div class="union-v5-charge" aria-hidden="true"><i></i><i></i><i></i></div>${isSamurai?'<div class="samurai-cut-line" aria-hidden="true"></div>':""}<div class="union-cutin-bottomline"></div></div>`;
   if(!layer.isConnected)document.body.appendChild(layer);
-  // Re-trigger animation on each use; participants appear together.
-  layer.classList.remove("is-active","is-exiting");
+  // Re-trigger animation on each use; stagger portraits like an EO V-inspired party cut-in.
+  layer.classList.remove("is-active","is-exiting","is-charging");
   void layer.offsetWidth;
   layer.classList.add("is-active");
   playSe("assets/se/unionskill/居合抜き1");
   await wait(280);
   await wait(800);
+  layer.classList.add("is-charging");
+  await wait(260);
+  layer.classList.remove("is-charging");
   layer.classList.remove("is-active");
   layer.classList.add("is-exiting");
   await wait(280);
@@ -1885,7 +1921,47 @@ async function showUnionCutin(skill, participants){
   layer.innerHTML="";
   battleEmit("union:end",unionDetail);// [EVT]
 }
-async function executeUnion(a){const actor=getCharacter(a.actor),u=unionSkills[a.actor],e=battleState.enemy;if(actor&&isSkillRestricted(actor)){pushLog(`${actor.name}は装備の適性がないため、ユニオンスキルを使用できない！`);return;}if(!actor||!u||(battleState.unionGauges[actor.id]||0)<u.requiredHits){pushLog("ユニオンゲージが足りません。");return;}const participants=[actor];if(u.type==="cross-break"){const partner=getCharacter(a.partner);if(!partner||partner.hp<=0||(battleState.unionGauges[partner.id]||0)<unionSkills[partner.id].requiredHits){pushLog("協力者のユニオンゲージが不足しています。");return;}participants.push(partner);}participants.forEach(c=>animatePartyIcon(c.id));await showUnionCutin(u,participants);if(!battleState.enemy||enemyHpTotal(battleState.enemy)<=0)return;await wait(160);if(u.type==="stun"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const dealt=applyDamageToEnemy(e,Math.floor(u.damage*(1+treeBonus(actor.id,"union"))));if(lastEnemyAttackMissed){pushLog(`${e.name}は「${u.name}」を回避した！`);renderBattle();return;}if(dealt>0)addBreakDamage(e,"union","無属性",actor);battleState.enemyStunned=true;pushLog(`${actor.name}の「${u.name}」！ ${dealt}ダメージ。敵の次の行動を妨害！`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();sound("damage",true);}else if(u.type==="meteor"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const dealt=applyDamageToEnemy(e,Math.floor(u.damage*(1+treeBonus(actor.id,"union"))));if(lastEnemyAttackMissed){pushLog(`${e.name}は「${u.name}」を回避した！`);renderBattle();return;}if(dealt>0)addBreakDamage(e,"union","無属性",actor);pushLog(`${actor.name}の「${u.name}」！ ${dealt}ダメージ！`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();playSe("assets/se/unionskill/聖魔法");}else if(u.type==="aegis"){battleState.aegisActive=true;battleState.unionGauges[actor.id]=0;for(const c of livingParty())c.hp=effectiveStats(c).maxHp;pushLog(`${actor.name}の「${u.name}」！ 生存中の味方全員を全回復し、次の敵ターンを無効化！`);sound("heal");}else if(u.type==="full-heal"){
+// Visual-only union attack staging, inspired by EO V's party-wide special attacks.
+async function showUnionAttackImpact(skill){
+  const type=skill?.type||"";
+  const arena=document.querySelector(".battle-arena");
+  if(!arena)return;
+  const supportive=type==="aegis"||type==="full-heal";
+  const stage=document.createElement("div");
+  stage.className="union-impact-stage "+(supportive?"union-impact-support":"union-impact-offense");
+  stage.setAttribute("aria-hidden","true");
+  stage.innerHTML='<i class="union-impact-flare"></i><i class="union-impact-circle"></i><i class="union-impact-cross"></i>';
+  arena.appendChild(stage);
+  const effects=type==="cross-break"?[]:type==="samurai-slash"?["samurai"]:type==="meteor"?["flame","magic"]:type==="stun"?["lightning","magic"]:[];
+  try{
+    if(supportive){await wait(420);}
+    else{
+      for(const kind of effects){showHitEffect(kind);await wait(120);}
+      await wait(180);
+    }
+  }finally{stage.remove();}
+}
+// Visual-only union attack staging, inspired by EO V's party-wide special attacks.
+async function showUnionAttackImpact(skill){
+  const type=skill?.type||"";
+  const arena=document.querySelector(".battle-arena");
+  if(!arena)return;
+  const supportive=type==="aegis"||type==="full-heal";
+  const stage=document.createElement("div");
+  stage.className="union-impact-stage "+(supportive?"union-impact-support":"union-impact-offense");
+  stage.setAttribute("aria-hidden","true");
+  stage.innerHTML='<i class="union-impact-flare"></i><i class="union-impact-circle"></i><i class="union-impact-cross"></i>';
+  arena.appendChild(stage);
+  const effects=type==="cross-break"?[]:type==="samurai-slash"?["samurai"]:type==="meteor"?["flame","magic"]:type==="stun"?["lightning","magic"]:[];
+  try{
+    if(supportive){await wait(420);}
+    else{
+      for(const kind of effects){showHitEffect(kind);await wait(120);}
+      await wait(180);
+    }
+  }finally{stage.remove();}
+}
+async function executeUnion(a){const actor=getCharacter(a.actor),u=unionSkills[a.actor],e=battleState.enemy;if(actor&&isSkillRestricted(actor)){pushLog(`${actor.name}は装備の適性がないため、ユニオンスキルを使用できない！`);return;}if(!actor||!u||(battleState.unionGauges[actor.id]||0)<u.requiredHits){pushLog("ユニオンゲージが足りません。");return;}const participants=[actor];if(u.type==="cross-break"){const partner=getCharacter(a.partner);if(!partner||partner.hp<=0||(battleState.unionGauges[partner.id]||0)<unionSkills[partner.id].requiredHits){pushLog("協力者のユニオンゲージが不足しています。");return;}participants.push(partner);}participants.forEach(c=>animatePartyIcon(c.id));await showUnionCutin(u,participants);await showUnionAttackImpact(u);if(!battleState.enemy||enemyHpTotal(battleState.enemy)<=0)return;await wait(160);if(u.type==="stun"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const dealt=applyDamageToEnemy(e,Math.floor(u.damage*(1+treeBonus(actor.id,"union"))));if(lastEnemyAttackMissed){pushLog(`${e.name}は「${u.name}」を回避した！`);renderBattle();return;}if(dealt>0)addBreakDamage(e,"union","無属性",actor);battleState.enemyStunned=true;pushLog(`${actor.name}の「${u.name}」！ ${dealt}ダメージ。敵の次の行動を妨害！`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();sound("damage",true);}else if(u.type==="meteor"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const dealt=applyDamageToEnemy(e,Math.floor(u.damage*(1+treeBonus(actor.id,"union"))));if(lastEnemyAttackMissed){pushLog(`${e.name}は「${u.name}」を回避した！`);renderBattle();return;}if(dealt>0)addBreakDamage(e,"union","無属性",actor);pushLog(`${actor.name}の「${u.name}」！ ${dealt}ダメージ！`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();playSe("assets/se/unionskill/聖魔法");}else if(u.type==="aegis"){battleState.aegisActive=true;battleState.unionGauges[actor.id]=0;for(const c of livingParty())c.hp=effectiveStats(c).maxHp;pushLog(`${actor.name}の「${u.name}」！ 生存中の味方全員を全回復し、次の敵ターンを無効化！`);sound("heal");}else if(u.type==="full-heal"){
   let sp=0,revived=0;
   for(const c of getParty()){
     const wasDead=c.hp<=0, before=c.hp, beforeSp=c.sp;
@@ -1900,7 +1976,7 @@ async function executeUnion(a){const actor=getCharacter(a.actor),u=unionSkills[a
   battleState.unionGauges[actor.id]=0;
   pushLog(`${actor.name}の「${u.name}」！ 生存者のHP全回復、${revived}人蘇生、SP合計${sp}回復。状態異常も解除した！`);
   sound("heal");
-}else if(u.type==="samurai-slash"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(effectiveStats(actor).attack*4*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);if(dealt>0)addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);pushLog(`${actor.name}の「${u.name}」！ 渾身の一刀で${dealt}ダメージ！（防御無視）`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");showHitEffect("samurai");flashEnemyDamage();sound("damage",true);}else if(u.type==="cross-break"){const partner=getCharacter(a.partner);beginEnemyDamagePreview(e);let total=0;for(let i=0;i<2;i++){const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(actor.spAttack*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0)addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);if(enemyHpTotal(e)<=0)break;}if(enemyHpTotal(e)>0){const attack=effectiveStats(partner).attack;const d=applyWeaponAttributeDamage(e,Math.floor(calcEnemyPhysicalDamage(e,attack)*(1+treeBonus(partner.id,"union"))),partner);for(let i=0;i<2;i++){const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0)addBreakDamage(e,"union",getWeaponPhysicalElement(partner),partner);if(enemyHpTotal(e)<=0)break;}}battleState.unionGauges[actor.id]=0;battleState.unionGauges[partner.id]=0;pushLog(`${actor.name}と${partner.name}の「${u.name}」！ 合計${total}ダメージ！`);combatNumber(displayEnemyNode(),`-${total}`,"damage");sound("damage",true);}
+}else if(u.type==="samurai-slash"){beginEnemyDamagePreview(e);battleState.unionGauges[actor.id]=0;const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(effectiveStats(actor).attack*4*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);if(dealt>0)addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);pushLog(`${actor.name}の「${u.name}」！ 渾身の一刀で${dealt}ダメージ！（防御無視）`);combatNumber(displayEnemyNode(),`-${dealt}`,"damage");showHitEffect("samurai");flashEnemyDamage();sound("damage",true);}else if(u.type==="cross-break"){const partner=getCharacter(a.partner);beginEnemyDamagePreview(e);let total=0;for(let i=0;i<2;i++){const d=applyWeaponAttributeDamage(e,Math.max(1,Math.floor(actor.spAttack*(1+treeBonus(actor.id,"union")))),actor);const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0){addBreakDamage(e,"union",getWeaponPhysicalElement(actor),actor);showHitEffect("slash");combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();await wait(115);}if(enemyHpTotal(e)<=0)break;}if(enemyHpTotal(e)>0){const attack=effectiveStats(partner).attack;const d=applyWeaponAttributeDamage(e,Math.floor(calcEnemyPhysicalDamage(e,attack)*(1+treeBonus(partner.id,"union"))),partner);for(let i=0;i<2;i++){const dealt=applyDamageToEnemy(e,d);total+=dealt;if(dealt>0){addBreakDamage(e,"union",getWeaponPhysicalElement(partner),partner);showHitEffect("samurai");combatNumber(displayEnemyNode(),`-${dealt}`,"damage");flashEnemyDamage();await wait(115);}if(enemyHpTotal(e)<=0)break;}}battleState.unionGauges[actor.id]=0;battleState.unionGauges[partner.id]=0;pushLog(`${actor.name}と${partner.name}の「${u.name}」！ 合計${total}ダメージ！`);sound("damage",true);}
  renderBattle();}
 async function applyEnemyTurnStatuses(){
   // [EXT] スピード順ラウンド中は、全員の行動後（ラウンド終了時）にまとめて処理する。
