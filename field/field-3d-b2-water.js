@@ -23,7 +23,7 @@ const CHUNK = 8;                                       // まとめる区画（�
 const WATER_KEY = 'kotama.field3d.b2.water';           // 'opaque' で水を不透明にする（半透明が崩れる環境向けの退避）
 
 // 第2階層の空気（第1階層の値とは別。第1階層へ戻ると field-3d-view.js が第1階層の値に戻す）
-export const ENV = { background: 0x060e16, fog: { color: 0x0c1e2b, density: 0.036 }, hemi: { sky: 0x9ccfee, ground: 0x1a2c38, high: 1.7, low: 2.1 } };
+export const ENV = { background: 0x07141c, fog: { color: 0x15303c, density: 0.027 }, hemi: { sky: 0xb3dce9, ground: 0x263f4b, high: 1.85, low: 2.25 } };
 
 /* ------------------------------------------------------------
    素材（GLB の素材名ごとに、ゲームの描画に合わせた値で作り直す）
@@ -45,9 +45,9 @@ function makeMaterials(opaqueWater) {
   else for (const m of [water, fall]) { m.transparent = true; m.opacity = m === water ? 0.62 : 0.72; m.depthWrite = false; }
   const foam = std({ color: 0xaee8ff, roughness: 0.5, emissive: 0x1f4a59, emissiveIntensity: 1.0, transparent: true, opacity: 0.8, depthWrite: false });
   return {
-    'Wet slate stone': std({ color: 0x55788a, roughness: 0.34, metalness: 0.08, vertexColors: true }),   // 濡れた暗い石板
+    'Wet slate stone': std({ color: 0x7896a3, roughness: 0.53, metalness: 0.04, vertexColors: true }),   // 濡れた暗い石板
     'Ancient inlay': std({ color: 0xad8c4a, roughness: 0.42, metalness: 0.55, emissive: 0x2a1c06, emissiveIntensity: 0.6 }),
-    'Deep cavern rock': std({ color: 0x3c5568, roughness: 0.88, metalness: 0.0, vertexColors: true }),
+    'Deep cavern rock': std({ color: 0x526e7a, roughness: 0.94, metalness: 0.0, vertexColors: true }),
     'Pale mineral stone': std({ color: 0x8eaebe, roughness: 0.68, metalness: 0.02, vertexColors: true }),  // 淡い鉱物の石
     'Glowing cyan crystal': std({ color: 0x3dc7fa, roughness: 0.18, metalness: 0.1, emissive: 0x1aa6e0, emissiveIntensity: 0.75 }),  // 控えめな発光
     'Deep blue crystal': std({ color: 0x3863e0, roughness: 0.2, metalness: 0.1, emissive: 0x1a2f8a, emissiveIntensity: 0.6 }),
@@ -55,7 +55,7 @@ function makeMaterials(opaqueWater) {
     'Clear blue water': water,
     'Water foam': foam,
     'Aquatic dark teal': std({ color: 0x1d7563, roughness: 0.62, metalness: 0.0 }),
-    ceiling: std({ color: 0x4a6378, roughness: 0.95, metalness: 0.0, emissive: 0x0e1c28, emissiveIntensity: 1.0, vertexColors: true }),   // 下向きの面は環境光が弱いので少し自発光
+    ceiling: std({ color: 0x7795a2, roughness: 0.96, metalness: 0.0, emissive: 0x253f4a, emissiveIntensity: 0.7, vertexColors: true, side: THREE.DoubleSide }),   // 下向きの面は環境光が弱いので少し自発光
     bed: std({ color: 0x122a3a, roughness: 0.6, metalness: 0.0 }),                                // 水底・床板のすき間
     waterfall: fall,
   };
@@ -151,20 +151,20 @@ function planarUv(geo) {
 function makeProcedural() {
   const walls = [0, 1, 2, 3].map((v) => {
     // 幅4.3×高さ4.1×厚み0.8。原点は内側の面の下端中央（+Z が通路側）＝第1階層の壁部品と同じ約束
-    const g = new THREE.BoxGeometry(4.3, 4.1, 0.8, 12, 12, 1).toNonIndexed(); g.translate(0, 2.05, -0.4);
+    const g = new THREE.BoxGeometry(4.3, 4.1, 0.8, 20, 16, 1).toNonIndexed(); g.translate(0, 2.05, -0.4);
     const p = g.attributes.position;
     for (let i = 0; i < p.count; i++) {
       const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
       if (z < -0.01) continue;   // 通路側の面だけ凸凹にする
       const edge = Math.min(1, Math.max(0, (2.15 - Math.abs(x)) / 0.35));   // 左右の端は平らにして隣の壁とつなぐ
-      const n = 0.5 + 0.25 * Math.sin(x * 1.9 + v * 2.1) * Math.sin(y * 1.5 + v) + 0.25 * Math.sin(x * 4.3 + y * 3.7 + v * 5.0);
-      p.setZ(i, z - n * 0.32 * edge + 0.04);
+      const n = 0.5 + 0.30 * Math.sin(x * 1.9 + v * 2.1) * Math.sin(y * 1.5 + v) + 0.23 * Math.sin(x * 4.3 + y * 3.7 + v * 5.0) + 0.14 * Math.cos(x * 8.1 - y * 6.4 + v);
+      p.setZ(i, z - n * 0.52 * edge + 0.04);
     }
     return { name: `cavern_wall_${v}`, parts: [{ geo: prepGeo(g, false), mat: 'Deep cavern rock' }] };
   });
   const ceil = (() => {
-    const g = new THREE.PlaneGeometry(4.3, 4.3, 6, 6).rotateX(Math.PI / 2).toNonIndexed(), p = g.attributes.position;
-    for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); p.setY(i, -(0.12 + 0.12 * Math.sin(x * 1.3 + 0.7) * Math.cos(z * 1.1 + 0.3) + 0.08 * Math.sin(x * 3.1 + z * 2.3))); }
+    const g = new THREE.PlaneGeometry(4.25, 4.25, 12, 12).rotateX(Math.PI / 2).toNonIndexed(), p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); p.setY(i, -(0.32 + 0.24 * Math.sin(x * 1.3 + 0.7) * Math.cos(z * 1.1 + 0.3) + 0.15 * Math.sin(x * 3.1 + z * 2.3) + 0.10 * Math.cos(x * 5.1 - z * 4.2))); }
     return { name: 'cavern_ceiling', parts: [{ geo: prepGeo(g, false), mat: 'ceiling' }] };
   })();
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
