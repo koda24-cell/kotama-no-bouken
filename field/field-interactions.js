@@ -433,13 +433,26 @@ function fieldPickEnemyId() {
   for (const t of table) { r -= (t.weight || 1); if (r <= 0) return t.enemy; }
   return table.length ? table[table.length - 1].enemy : null;
 }
+function fieldAdminEncounterSelection(){
+ const selected=window.kotamaAdminEncounterSettings?.selected||{};
+ return Object.entries(selected).filter(([id,count])=>FIELD_ENEMIES[id]&&!FIELD_ENEMIES[id].foe&&Number(count)>0).flatMap(([id,count])=>Array.from({length:Math.max(1,Math.min(8,Math.floor(Number(count)||1)))},()=>id));
+}
+async function fieldTriggerAdminEncounter(){
+ if(state.screen!=="field"||fieldState.lock)return false;
+ const ids=fieldAdminEncounterSelection();if(!ids.length){window.alert("出現させる敵を1体以上選択してください。");return false;}
+ await fieldEncounterEffect(ids[0],{admin:true});fieldStartEncounterBattle(ids,{admin:true});return true;
+}
 // script.js の beginStageCore() から呼ばれる（// [FIELD]）。scale はフロアの強さ倍率
 function fieldCreateEnemy(id, scale) {
-  const base = FIELD_ENEMIES[id] || FIELD_ENEMIES[Object.keys(FIELD_ENEMIES)[0]];
-  const e = JSON.parse(JSON.stringify(base));
-  const k = Number.isFinite(scale) ? scale : (Number(battleState.fieldEnemyScale) || 1);
-  if (k !== 1 && !e.foe) for (const key of ["hp", "attack", "spAttack", "defense", "spDefense", "exp", "gold"]) if (Number.isFinite(e[key])) e[key] = Math.round(e[key] * k);
-  return { ...e, fieldEnemyId: id, maxHp: e.hp, spDefense: Number.isFinite(e.spDefense) ? e.spDefense : Math.floor((e.defense || 0) / 2) };
+ const k=Number.isFinite(scale)?scale:(Number(battleState.fieldEnemyScale)||1);
+ if(Array.isArray(id)){
+  const members=[];id.forEach((enemyId,index)=>{const unit=fieldCreateEnemy(enemyId,k);members.push({...unit,id:`admin-${index+1}-${enemyId}`,displayName:unit.name,alive:true});});
+  const sum=key=>members.reduce((n,m)=>n+(Number(m[key])||0),0);
+  return {name:members.length===1?members[0].name:`敵グループ（${members.length}体）`,_mixedEncounter:true,members,hp:sum("hp"),maxHp:sum("maxHp"),attack:Math.round(sum("attack")/members.length),spAttack:Math.round(sum("spAttack")/members.length),defense:Math.round(sum("defense")/members.length),spDefense:Math.round(sum("spDefense")/members.length),gold:sum("gold"),exp:sum("exp"),fieldEnemyId:id[0],image:null};
+ }
+ const base=FIELD_ENEMIES[id]||FIELD_ENEMIES[Object.keys(FIELD_ENEMIES)[0]],e=JSON.parse(JSON.stringify(base));
+ if(k!==1&&!e.foe)for(const key of ["hp","attack","spAttack","defense","spDefense","exp","gold"])if(Number.isFinite(e[key]))e[key]=Math.round(e[key]*k);
+ return {...e,fieldEnemyId:id,maxHp:e.hp,spDefense:Number.isFinite(e.spDefense)?e.spDefense:Math.floor((e.defense||0)/2)};
 }
 async function fieldEncounterEffect(id, extra = {}) {
   fieldState.lock = true; fieldState.moving = false; fieldInput.keys.clear(); fieldInput.pad.clear();
@@ -472,7 +485,7 @@ function fieldStartEncounterBattle(id, opts = {}) {
   retryContext = null;
   battleState.tutorialMode = false; battleState.hiddenBossMode = false; battleState.maxStage = 5;
   resetTransientBattleState();
-  battleState.encounterMode = true; battleState.fieldEnemyId = id;
+  battleState.encounterMode = true; battleState.fieldEnemyId = Array.isArray(id)?id[0]:id; battleState.fieldEnemyGroup = Array.isArray(id)?id.slice():null;
   battleState.fieldEnemyScale = opts.foeKey ? 1 : (a?.floor.encounter?.scale || 1);
   battleState.fieldFoeKey = opts.foeKey || null;
   battleState.koCount = 0; battleState.rankResult = null;
@@ -485,14 +498,12 @@ function fieldStartEncounterBattle(id, opts = {}) {
 // 雑魚戦・FOE戦の勝利（script.js の finishStage() から：// [FIELD]）
 async function fieldFinishEncounter(e) {
   await playEnemyDefeatAnimation();
-  battleState.lastRewardGold = e.gold || 0;
-  registerDefeat(e.compendiumAs || e.name);
-  totalEnemyDefeats += 1;
-  state.gold += e.gold || 0;
-  const turns = Math.max(1, battleState.turnCount + 1);
-  awardVictoryAchievements(e, turns, battleState.koCount || 0);
-  const drops = awardMaterials(e);
-  const levelResult = typeof levelAwardBattleExp === "function" ? levelAwardBattleExp(e) : null;
+  const defeatedUnits=Array.isArray(e.members)?e.members:[e],rewardGold=defeatedUnits.reduce((n,m)=>n+(Number(m.gold)||0),0);
+  battleState.lastRewardGold=rewardGold;defeatedUnits.forEach(m=>registerDefeat(m.compendiumAs||m.name));
+  totalEnemyDefeats+=defeatedUnits.length;state.gold+=rewardGold;
+  const turns=Math.max(1,battleState.turnCount+1);defeatedUnits.forEach(m=>awardVictoryAchievements(m,turns,battleState.koCount||0));
+  const drops=defeatedUnits.flatMap(m=>awardMaterials(m));
+  const levelResult=typeof levelAwardBattleExp==="function"?levelAwardBattleExp({...e,exp:defeatedUnits.reduce((n,m)=>n+(Number(m.exp)||0),0)}):null;
   if (battleState.fieldFoeKey) fieldState.foeDefeated[battleState.fieldFoeKey] = true;
   await showItemDropAnimation(drops);
   persistAutoSave();
@@ -504,10 +515,10 @@ async function fieldFinishEncounter(e) {
   $("battle-result").hidden = false;
   $("retry-stage-button").hidden = true; $("formation-retry-button").hidden = true;
   $("result-title").textContent = battleState.fieldFoeKey ? "FOE撃破！" : "VICTORY!";
-  $("result-message").textContent = `${e.name}を倒した！ ${e.gold || 0}Gを獲得！\n${turns}ターン ／ 戦闘不能 ${battleState.koCount || 0}人` + (levelResult ? `\n${levelResult.text}` : "");
+  $("result-message").textContent = `${e.name}を倒した！ ${rewardGold}Gを獲得！\n${turns}ターン ／ 戦闘不能 ${battleState.koCount || 0}人` + (levelResult ? `\n${levelResult.text}` : "");
   $("next-stage-button").hidden = false; $("next-stage-button").textContent = "迷宮へ戻る";
   $("return-home-button").hidden = false;
-  pushLog(`${e.name}を倒した！ ${e.gold || 0}G獲得。`);
+  pushLog(`${e.name}を倒した！ ${rewardGold}G獲得。`);
 }
 // 雑魚戦・FOE戦の敗北（script.js の finishDefeat() から：// [FIELD]）
 function fieldOnDefeat() {
@@ -520,7 +531,7 @@ function fieldOnDefeat() {
 function fieldReturnFromBattle(opts = {}) {
   const foeKey = battleState.fieldFoeKey;
   const won = !opts.retreat && foeKey && fieldState.foeDefeated[foeKey];
-  battleState.encounterMode = false; battleState.fieldEnemyId = null; battleState.fieldFoeKey = null;
+  battleState.encounterMode = false; battleState.fieldEnemyId = null; battleState.fieldEnemyGroup = null; battleState.fieldFoeKey = null;
   battleStartSnapshot = null;
   if (opts.retreat) setSystemMessage("戦闘から逃げ出した。");
   fieldResetFoesAfterBattle(won ? foeKey : null);
@@ -551,7 +562,7 @@ function fieldSetupRetreatChoice() {
     if (typeof extEscapeBlocked === "function" && extEscapeBlocked()) return;   // 脚封じ中は帰還もできない
     battleEmit("end", { result: "retreat" });
     dlg.hidden = true; battleStartSnapshot = null; battleState.busy = true;
-    battleState.encounterMode = false; battleState.fieldEnemyId = null; battleState.fieldFoeKey = null;
+    battleState.encounterMode = false; battleState.fieldEnemyId = null; battleState.fieldEnemyGroup = null; battleState.fieldFoeKey = null;
     fieldState.positioned = false;
     fieldLeaveToHome("迷宮から撤退し、ホームに戻りました。");
   });

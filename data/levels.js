@@ -10,9 +10,9 @@ const LEVEL_CAP = 50;
 // 次のレベルまでに必要な経験値：floor(mult × Lv^pow + base)
 const LEVEL_EXP_CURVE = { mult: 10, pow: 1.75, base: 10 };
 // 1レベルごとの基礎能力値の成長率（キャラ本来の基礎値に対する割合）
-const LEVEL_GROWTH = { maxHp: .05, attack: .03, spAttack: .03, defense: .03, spDefense: .03 };
+const LEVEL_GROWTH = { maxHp: .05, attack: .03, spAttack: .03, defense: .03, spDefense: .03, speed: .01 };
 // レベルアップ1回で得るスキルポイント
-const LEVEL_SKILL_POINTS = 1;
+const LEVEL_SKILL_POINTS = 3;
 // ボス・既存の敵の経験値（雑魚敵・FOE は data/field-maps.js の exp）
 const LEVEL_ENEMY_EXP = {
   "スライム": 90, "ゴブリン": 130, "オオカミ": 900, "ドラゴン": 2000, "魔王": 3300, "混沌の幻影": 6000,

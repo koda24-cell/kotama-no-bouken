@@ -32,14 +32,14 @@ function fieldPlayStageIntro(stage) {
 // 階層に入る。opts.floor：開始フロア（行ったことのあるフロアのみ）／ fromHome：ホームから（全回復・採取とFOEが復活）／ afterBoss：ボス撃破後
 async function fieldEnterArea(n, opts = {}) {
   n = Math.max(1, Math.min(Number(n) || 1, Object.keys(FIELD_AREAS).length));
-  if (n > (state.maxUnlockedStage || 1)) n = state.maxUnlockedStage || 1;
+  if (!opts.adminSkip && n > (state.maxUnlockedStage || 1)) n = state.maxUnlockedStage || 1;
   let f = Math.max(0, Math.min(fieldFloorCount(n) - 1, Number(opts.floor) || 0));
   if (f > 0 && !fieldState.flags[`floor:${n}-${f}`]) f = 0;
   if (opts.fromHome || opts.afterBoss) { fieldFullHeal(); if (typeof fieldLootOnDeparture === "function") fieldLootOnDeparture(); else fieldState.gatherUsed = {}; fieldState.foeDefeated = {}; }   // [LOOT] 採集点の期限切れを確認
   fieldState.area = n; fieldState.floor = f; fieldState.positioned = false;
   fieldState.flags[`floor:${n}-${f}`] = true;
   state.firstStageStarted = true;
-  battleState.encounterMode = false; battleState.fieldEnemyId = null; battleState.fieldFoeKey = null;
+  battleState.encounterMode = false; battleState.fieldEnemyId = null; battleState.fieldEnemyGroup = null; battleState.fieldFoeKey = null;
   battleState.stageFinished = false;
   stageEntered[FIELD_AREAS[n].stage] = true;
   fieldState.built = "";
@@ -48,12 +48,12 @@ async function fieldEnterArea(n, opts = {}) {
   persistAutoSave();
   fieldState.lock = true;
   try {
-    if (n === 1 && !fieldState.flags["prologue"]) await fieldPlayScene("prologue");
-    if (f === 0) await fieldPlayStageIntro(FIELD_AREAS[n].stage);
+    if (!opts.adminSkip && n === 1 && !fieldState.flags["prologue"]) await fieldPlayScene("prologue");
+    if (!opts.adminSkip && f === 0) await fieldPlayStageIntro(FIELD_AREAS[n].stage);
     if ($("bgm-toggle")?.checked) startBgm();
     fieldState.lock = false;
-    if (f === 0) await fieldPlayScene(FIELD_AREAS[n].enterScene);
-    if (n === 1 && f === 0 && !fieldState.flags["labyrinth-tutorial"]) await fieldPlayScene("labyrinth-tutorial");
+    if (!opts.adminSkip && f === 0) await fieldPlayScene(FIELD_AREAS[n].enterScene);
+    if (!opts.adminSkip && n === 1 && f === 0 && !fieldState.flags["labyrinth-tutorial"]) await fieldPlayScene("labyrinth-tutorial");
   } finally { fieldState.lock = false; }
   persistAutoSave();
 }
