@@ -26,6 +26,9 @@ function monsterCompendiumEntries() {
   (typeof enemyData !== "undefined" ? enemyData : []).forEach((d, i) => {
     list.push({ id: `boss-${i + 1}`, category: "boss", name: d.name, data: () => enemyData[i], where: `STAGE ${i + 1} のボス`, legacyName: d.name });
   });
+  if (typeof SNOWDRIFT_BOSS_DATA !== "undefined") {
+    list.push({ id: "variant:snowdrift-boss", category: "boss", name: SNOWDRIFT_BOSS_DATA.name, data: () => SNOWDRIFT_BOSS_DATA, where: "第1階層 3F のボス" });
+  }
   list.push({ id: "hidden-boss", category: "hidden", name: "混沌の幻影", data: () => (typeof hiddenBossData !== "undefined" ? hiddenBossData : null), where: "隠しステージのボス", legacyName: "混沌の幻影" });
   if (typeof FIELD_ENEMIES !== "undefined") {
     for (const [id, e] of Object.entries(FIELD_ENEMIES)) {
