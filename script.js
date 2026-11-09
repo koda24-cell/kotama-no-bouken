@@ -920,7 +920,7 @@ function setupNavigation(){
     }else if(phase==="equip-hero-sword"){
       tutorialClose();tutorialHighlight('#selected-party select[data-character="kotama"][data-equip="weapon"]');
     }else if(phase==="shop-intro"){
-      tutorialClose();showScreen("shop");shopBuyerId="kotama";currentCategory="armor";renderShop();tutorialState.phase="shop-armor";tutorialOverlay("革の鎧を購入しよう","防具は防御力を高める装備だよ。革の鎧をコタマに購入して装備しよう。");tutorialHighlight('#shop-items [data-buy-item="leather-armor"][data-buy-mode="equip"]');
+      tutorialClose();showScreen("shop");shopBuyerId="kotama";currentCategory="frontArmor";renderShop();tutorialState.phase="shop-armor";tutorialOverlay("革の鎧を購入しよう","防具は防御力を高める装備だよ。革の鎧をコタマに購入して装備しよう。");tutorialHighlight('#shop-items [data-buy-item="leather-armor"][data-buy-mode="equip"]');
     }else if(phase==="shop-armor"){
       tutorialClose();tutorialHighlight('#shop-items [data-buy-item="leather-armor"][data-buy-mode="equip"]');
     }else if(phase==="shop-accessory"){
@@ -943,7 +943,7 @@ function setupNavigation(){
     // 最初の案内：STARTを押すとガイドが消え、そのままチュートリアル戦闘が始まる。
     if((phase==="intro"||phase==="welcome")&&hit("#start-button")){e.preventDefault();e.stopImmediatePropagation();tutorialClose();beginTutorial(false);return;}
     if(phase==="formation-intro"&&hit('.main-nav [data-screen="formation"]')){e.preventDefault();e.stopImmediatePropagation();showScreen("formation");tutorialState.phase="formation-remove";tutorialOverlay("治癒士を外そう","編成中の治癒士の『編成から外す』を押してみよう。");tutorialHighlight('#selected-party [data-remove-character="healer"]');tutorialSave();return;}
-    if(phase==="shop-nav"&&hit('.main-nav [data-screen="shop"]')){e.preventDefault();e.stopImmediatePropagation();showScreen("shop");shopBuyerId="kotama";currentCategory="armor";renderShop();tutorialState.phase="shop-armor";tutorialOverlay("革の鎧を購入しよう","防具は防御力を高める装備だよ。革の鎧をコタマに購入して装備しよう。");tutorialHighlight('#shop-items [data-buy-item="leather-armor"][data-buy-mode="equip"]');tutorialSave();return;}
+    if(phase==="shop-nav"&&hit('.main-nav [data-screen="shop"]')){e.preventDefault();e.stopImmediatePropagation();showScreen("shop");shopBuyerId="kotama";currentCategory="frontArmor";renderShop();tutorialState.phase="shop-armor";tutorialOverlay("革の鎧を購入しよう","防具は防御力を高める装備だよ。革の鎧をコタマに購入して装備しよう。");tutorialHighlight('#shop-items [data-buy-item="leather-armor"][data-buy-mode="equip"]');tutorialSave();return;}
     if(phase==="battle-enemy"&&hit("#battle-enemy")){e.preventDefault();e.stopImmediatePropagation();$("tutorial-next").click();return;}
     if((phase==="battle-event"||phase==="battle-event-warning")&&hit(".event-window")){e.preventDefault();e.stopImmediatePropagation();$("tutorial-next").click();return;}
     if(phase==="battle-party"&&hit("#battle-party")){e.preventDefault();e.stopImmediatePropagation();$("tutorial-next").click();return;}
