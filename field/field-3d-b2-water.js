@@ -290,7 +290,7 @@ export async function createTheme(api) {
   const proc = makeProcedural();
   const mats = makeMaterials(opaqueWater);
   const { CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g } = api;
-  let made = [], anim = { ripples: [], mists: [] }, root = null, last = { falls: [], bridge: null };
+  let made = [], anim = { ripples: [], mists: [], fishes: [], caustics: [] }, root = null, last = { falls: [], bridge: null };
 
   const light = (x, y, z, color, intensity, range) => g.lights.push({ pos: [x, y, z], color, intensity, range, world: new THREE.Vector3(x, y, z), off: false });
   const pick = (arr, r) => arr[Math.min(arr.length - 1, Math.floor(r * arr.length))];
@@ -317,7 +317,9 @@ export async function createTheme(api) {
     for (const geo of made) geo.dispose(); made = [];
     for (const r of anim.ripples) r.mesh.material.dispose();
     for (const m of anim.mists) { m.points.geometry.dispose(); }
-    anim = { ripples: [], mists: [] }; root = null;
+    for (const f of anim.fishes) f.geometry.dispose();
+    for (const c of anim.caustics) { c.mesh.geometry.dispose(); c.mesh.material.dispose(); c.texture.dispose(); }
+    anim = { ripples: [], mists: [], fishes: [], caustics: [] }; root = null;
   }
 
   async function build(a, S, info) {
@@ -400,6 +402,7 @@ export async function createTheme(api) {
       for (const d of DIR_ORDER) {
         const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
         const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, k = hash(tx * 4 + DIR_ORDER.indexOf(d), ty, 5), ry = FACE_YAW[d] + Math.PI;
+        const along = [dy ? 1 : 0, dx ? 1 : 0];   // 壁に沿う向き（x, z）
         B.add('walls', pick(proc.walls, k), M4(ex, 0, ez, ry), tx, ty);
         // 壁と床の境目に低い岩の堆積を置き、直線的な接合部を崩す。
         // 通路中央やイベントマスを避け、歩行判定には影響させない。
@@ -410,7 +413,7 @@ export async function createTheme(api) {
           B.add('rock_seams', rim, M4(ex - dx * 0.12 + along[0] * offset, -0.20,
             ez - dy * 0.12 + along[1] * offset, ry + hash(tx, ty, 192) * 0.8, scale), tx, ty);
         }
-        const along = [dy ? 1 : 0, dx ? 1 : 0];   // 壁に沿う向き（x, z）
+
         const n = def(ch(tx + dx, ty + dy));
         const o = n && n.onWall ? a.objects.find((q) => q.tx === tx + dx && q.ty === ty + dy) : null;
         if (o && o.kind === 'switch') {   // 合図石：壁に埋まった結晶。解くと光が消える（第1階層のレバーと同じ扱い）
@@ -543,6 +546,21 @@ export async function createTheme(api) {
     opening.rotation.x = Math.PI / 2; opening.position.set(x, 22.65, z); atrium.add(opening);
     const beam = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 4.1, 19, 16, 1, true), lightMat);
     beam.position.set(x, 13, z); beam.renderOrder = 3; atrium.add(beam);
+    // 水面下の床に淡い揺れる光の筋を重ねる。GPU反射を使わない軽量表現。
+    const causticTex = tileTexture(128, (ctx, n) => {
+      ctx.clearRect(0, 0, n, n);
+      for (let i = 0; i < 32; i++) {
+        const px = rnd(i * 13 + 4) * n, py = rnd(i * 17 + 2) * n;
+        ctx.strokeStyle = `rgba(177,245,255,${0.08 + rnd(i * 31) * 0.16})`;
+        ctx.lineWidth = 1 + rnd(i * 7) * 2;
+        ctx.beginPath(); ctx.ellipse(px, py, 6 + rnd(i * 11) * 15, 2 + rnd(i * 19) * 5, rnd(i * 23) * 6, 0, Math.PI * 2); ctx.stroke();
+      }
+    });
+    causticTex.repeat.set(2, 2);
+    const causticMat = new THREE.MeshBasicMaterial({ map: causticTex, transparent: true, opacity: 0.35, depthWrite: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1 });
+    const causticMesh = new THREE.Mesh(new THREE.PlaneGeometry(10.5, 10.5).rotateX(-Math.PI / 2), causticMat);
+    causticMesh.position.set(x, 0.022, z); causticMesh.renderOrder = 3; atrium.add(causticMesh);
+    anim.caustics.push({ mesh: causticMesh, texture: causticTex });
     // 高所に浮かぶ魚影。装飾のみで移動・当たり判定なし。
     const fishShape = new THREE.Shape();
     fishShape.moveTo(-0.75, 0); fishShape.quadraticCurveTo(-0.15, 0.33, 0.55, 0.08);
@@ -555,6 +573,7 @@ export async function createTheme(api) {
       f.position.set(x + (hash(i, 1, 210) - 0.5) * 8, 10 + hash(i, 2, 211) * 9, z + (hash(i, 3, 212) - 0.5) * 8);
       f.rotation.y = hash(i, 4, 213) * Math.PI * 2; f.scale.setScalar(0.55 + hash(i, 5, 214) * 0.8);
       atrium.add(f);
+      anim.fishes.push(f);
     }
     light(x, 3.4, z, 0x89e8ff, 2.4, 13);
     light(x, 9.0, z, 0x6acfff, 1.7, 16);
@@ -602,6 +621,16 @@ export async function createTheme(api) {
     const w = mats['Clear blue water'].map, f = mats.waterfall.map;
     if (w) { w.offset.x = (t * 0.012) % 1; w.offset.y = (t * 0.022) % 1; }
     if (f) f.offset.y = (t * 0.9) % 1;
+    for (const c of anim.caustics) {
+      c.texture.offset.x = (t * 0.009) % 1;
+      c.texture.offset.y = (t * 0.014) % 1;
+      c.mesh.material.opacity = 0.28 + 0.07 * Math.sin(t * 0.8);
+    }
+    for (let i = 0; i < anim.fishes.length; i++) {
+      const fish = anim.fishes[i];
+      fish.position.x += Math.sin(t * 0.42 + i) * dt * 0.08;
+      fish.rotation.y += Math.sin(t * 0.23 + i) * dt * 0.04;
+    }
     for (const r of anim.ripples) {
       if (camPos && r.mesh.position.distanceToSquared(camPos) > 400) { r.mesh.visible = false; continue; }
       r.mesh.visible = true;
