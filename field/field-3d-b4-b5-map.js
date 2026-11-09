@@ -49,7 +49,7 @@ export function createTheme(api, area) {
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
-  let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
+  let root = null, lights = [], lavaLights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -91,12 +91,22 @@ export function createTheme(api, area) {
     root = new THREE.Group(); root.name = mist ? 'b3_mist_forest_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
     const { ch, wallCell, facing, open } = info;
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
+    // Keep a small number of lava light sources spread across the map, rather
+    // than placing one expensive light at every molten tile.
+    const lavaLightCells = new Set();
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
       mesh(floorGeo, mat.floor, x, -0.17, z);
       if (magma && (c === '*' || c === '~')) {
         mesh(lavaGeo, mat.glow, x, 0.009, z);
+        const lightChunk = Math.floor(tx / 3) + ',' + Math.floor(ty / 3);
+        if (!lavaLightCells.has(lightChunk) && lavaLights.length < 12) {
+          lavaLightCells.add(lightChunk);
+          const L = { world: new THREE.Vector3(x, 0.65, z), color: 0xff632a,
+            intensity: 1.05, range: 6.5, off: false };
+          g.lights.push(L); lights.push(L); lavaLights.push({ light: L, phase: hash(tx, ty, 130) * Math.PI * 2 });
+        }
       }
       // 地熱の亀裂／古代星界の紋様。通行判定には影響させない。
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
@@ -263,10 +273,15 @@ export function createTheme(api, area) {
   function dispose() {
     if (root) root.parent?.remove(root);
     for (const L of lights) L.off = true;
-    lights = []; dynamic = []; root = null; ornaments = 0;
+    lights = []; lavaLights = []; dynamic = []; root = null; ornaments = 0;
     // 共有ジオメトリを再利用し、フロア切替時にマテリアルを破棄しない。
   }
   function tick(dt, now) {
+    // Gentle, asynchronous heat shimmer. Only B4 owns lavaLights; no changes to B3/B5.
+    for (const { light, phase } of lavaLights) {
+      light.intensity = 0.98 + 0.16 * Math.sin(now * 0.0012 + phase)
+        + 0.07 * Math.sin(now * 0.0027 + phase * 1.7);
+    }
     for (const p of dynamic) {
       p.mesh.position.y = p.y + Math.sin(now * 0.0015 + p.phase) * 0.22;
       p.mesh.scale.setScalar(0.75 + 0.25 * Math.sin(now * 0.003 + p.phase));
