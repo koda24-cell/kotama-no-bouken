@@ -47,6 +47,22 @@ export function createTheme(api, area) {
     const x = p.getX(i), z = p.getZ(i);
     p.setY(i, Math.sin(x * 2.3 + z * 0.8) * Math.cos(z * 2.1 - x) * 0.16);
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
+  // 第5階層のみ：星界の天井を層状岩盤に。端の変位をゼロにして隙間を防止。
+  const abyssCeilingGeo = !mist && !magma ? ceilingGeo.clone() : null;
+  if (abyssCeilingGeo) {
+    const p = abyssCeilingGeo.getAttribute('position');
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), z = p.getZ(i);
+      const edge = Math.min(1, Math.max(0, (2 - Math.abs(x)) / 0.5))
+        * Math.min(1, Math.max(0, (2 - Math.abs(z)) / 0.5));
+      const broad = 0.26 * Math.sin(x * 0.82 + z * 0.37)
+        + 0.17 * Math.cos(z * 1.33 - x * 0.48);
+      const fissure = Math.pow(Math.abs(Math.sin(x * 2.1 - z * 1.65)), 10);
+      p.setY(i, (broad - fissure * 0.13) * edge);
+    }
+    p.needsUpdate = true;
+    abyssCeilingGeo.computeVertexNormals();
+  }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
@@ -104,7 +120,7 @@ export function createTheme(api, area) {
         mesh(crackGeo, mat.glow, x, 0.016, z, angle, 0.65 + hash(tx, ty, 33) * 0.4, 1, 1);
         ornaments++;
       }
-      if (c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, 4.05, z);
+      if (c !== '>' && c !== '<') mesh(abyssCeilingGeo || ceilingGeo, mat.ceiling, x, 4.05, z);
       // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
         const h = 0.8 + hash(tx, ty, 46) * 1.7;
