@@ -56,6 +56,11 @@ export function createTheme(api, area) {
   const lintelGeo = new THREE.BoxGeometry(2.15, 0.24, 0.28);
   const bandGeo = new THREE.BoxGeometry(3.55, 0.065, 0.13);
   const reliefGeo = new THREE.BoxGeometry(0.48, 0.62, 0.095);
+  // B3 facade windows: dark recess + four stone frame pieces, decorative only.
+  const windowRecessGeo = new THREE.BoxGeometry(0.9, 1.02, 0.045);
+  const windowSideGeo = new THREE.BoxGeometry(0.13, 1.18, 0.16);
+  const windowSillGeo = new THREE.BoxGeometry(1.13, 0.13, 0.18);
+  const windowDarkMat = new THREE.MeshStandardMaterial({ color: 0x252a29, roughness: 1 });
   const gatePostGeo = new THREE.BoxGeometry(0.38, 2.5, 0.42);
   const gateCrownGeo = new THREE.BoxGeometry(2.45, 0.35, 0.52);
   const ruinMat = new THREE.MeshStandardMaterial({ color: 0x9a9885, roughness: 0.96 });
@@ -151,6 +156,18 @@ export function createTheme(api, area) {
             mesh(reliefGeo, mat.metal, ex - dx * 0.23, 2.65, ez - dz * 0.23, ry);
             ornaments += 2;
           }
+        }
+        if (mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, DIR_ORDER.indexOf(d) + 233) < 0.19) {
+          // Fake recessed window on an existing solid wall; no hole or collision changes.
+          const wx = ex - dx * 0.19, wz = ez - dz * 0.19;
+          const tangentX = Math.cos(ry), tangentZ = -Math.sin(ry);
+          mesh(windowRecessGeo, windowDarkMat, wx - dx * 0.035, 2.24, wz - dz * 0.035, ry);
+          for (const side of [-1, 1]) {
+            mesh(windowSideGeo, ruinMat, wx + tangentX * side * 0.52, 2.24, wz + tangentZ * side * 0.52, ry);
+          }
+          mesh(windowSillGeo, ruinMat, wx, 1.64, wz, ry);
+          mesh(windowSillGeo, ruinMat, wx, 2.84, wz, ry);
+          ornaments += 5;
         }
         if (mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, DIR_ORDER.indexOf(d) + 207) < 0.11) {
           // Shallow ruined gateway silhouette, attached to the wall rather than the path.
