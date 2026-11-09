@@ -169,7 +169,7 @@
         { name:"号令の一撃", weight:40, kind:"phys", power:1.25 },
         { name:"石つぶて", weight:25, kind:"phys", power:.9, target:"rear" },
         { name:"毒刃の乱舞", weight:35, all:true, kind:"phys", power:.52, status:{ type:"poison", chance:.25, turns:2, power:.04 } }
-      ], variantId:"goblin-pack", compendiumAs:"ゴブリン", dropAs:"ゴブリン" };
+      ], compendiumAs:"ゴブリン", dropAs:"ゴブリン" };
     }
     if (id !== "fire-slime" && id !== "poison-slime") {
       const enemy = base.call(this, id, scale);
