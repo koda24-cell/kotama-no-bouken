@@ -58,7 +58,7 @@ const FIELD_AREAS = {
         "#E#...#...................#",
         "###########################"
       ] },
-      { encounter: { min: 15, max: 26, scale: 1.15, table: [ { enemy: "stray-slime", weight: 35 }, { enemy: "mushroom", weight: 25 }, { enemy: "forest-goblin", weight: 25 }, { enemy: "goblin-scout", weight: 15 } ] },
+      { encounter: { min: 15, max: 26, scale: 1.15, table: [ { enemy: "stray-slime", weight: 25 }, { enemy: "mushroom", weight: 15 }, { enemy: "forest-goblin", weight: 20 }, { enemy: "goblin-scout", weight: 15 }, { enemy: "goblin-archer", weight: 15 }, { enemy: "goblin-shaman", weight: 10 } ] },
         chests: [ { gold: 60, materials: [ ["monster_hide", 2] ] }, { item: "ether", count: 1 } ], gathers: [ ["slime_jelly", 55], ["monster_hide", 30], ["goblin_cloth", 15] ],
         foes: [ { enemy: "foe-bear", path: [[19, 14], [17, 16]] }, { enemy: "foe-goblin-pack", path: [[22, 18], [23, 18]] } ], map: [
         "###########################",
