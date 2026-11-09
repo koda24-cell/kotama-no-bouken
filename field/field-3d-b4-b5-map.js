@@ -47,6 +47,9 @@ export function createTheme(api, area) {
     const x = p.getX(i), z = p.getZ(i);
     p.setY(i, Math.sin(x * 2.3 + z * 0.8) * Math.cos(z * 2.1 - x) * 0.16);
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
+  // B3: flat, slab-built stone ceiling replaces the undulating cave roof.
+  // Keep the original ceiling geometry for B4/B5 to avoid cross-floor changes.
+  const cityCeilingGeo = new THREE.PlaneGeometry(4.02, 4.02).rotateX(Math.PI / 2);
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
   const pavingGeo = new THREE.BoxGeometry(3.8, 0.035, 0.055);
@@ -121,10 +124,12 @@ export function createTheme(api, area) {
       // 地熱の亀裂／古代星界の紋様。通行判定には影響させない。
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
         const angle = hash(tx, ty, 32) * Math.PI;
-        if (!mist) mesh(crackGeo, mat.glow, x, 0.016, z, angle, 0.65 + hash(tx, ty, 33) * 0.4, 1, 1);
-        ornaments++;
+        if (!mist) {
+          mesh(crackGeo, mat.glow, x, 0.016, z, angle, 0.65 + hash(tx, ty, 33) * 0.4, 1, 1);
+          ornaments++;
+        }
       }
-      if (c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, 4.05, z);
+      if (c !== '>' && c !== '<') mesh(mist ? cityCeilingGeo : ceilingGeo, mat.ceiling, x, 4.05, z);
       // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
       if (!mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
         const h = 0.8 + hash(tx, ty, 46) * 1.7;
