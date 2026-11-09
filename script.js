@@ -59,8 +59,8 @@ characters.forEach(c=>equipment[c.id]={weapon:null,armor:null,accessory1:null,ac
 equipment.kotama.weapon="sword";equipment.kotama.armor="leather-armor";
 equipment.knight.weapon="sword";equipment.knight.armor="leather-armor";
 equipment.warrior.weapon="sword";equipment.warrior.armor="leather-armor";
-equipment.mage.weapon="mage-staff";equipment.mage.armor="leather-armor";
-equipment.healer.weapon="mage-staff";equipment.healer.armor="leather-armor";
+equipment.mage.weapon="mage-staff";equipment.mage.armor="linen-robe";
+equipment.healer.weapon="mage-staff";equipment.healer.armor="linen-robe";
 equipment.samurai.katana1="katana";
 // 敵の基本データは data/enemies.js に分離。
 
@@ -383,7 +383,7 @@ function renderFormation(){const selected=$("selected-party"),roster=$("characte
   roster.innerHTML=characters.map(/* インペリアルも表示（未解放時は解放条件を表示） */c=>{const unlocked=extIsJobAvailable(c),chosen=state.party.includes(c.id),full=state.party.filter(Boolean).length>=PARTY_LIMIT,lockNote=!unlocked?extJobUnlockRequirement(c.id):"";return `<article class="character-card selectable ${chosen?"selected":""} ${!unlocked?"locked":""}"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)} ${typeof levelBadge==="function"?levelBadge(c):""}</h3><div class="character-stats"><span>HP ${effectiveStats(c).maxHp}</span><span>攻撃 ${effectiveStats(c).attack}</span><span>防御 ${effectiveStats(c).defense}</span><span>速さ ${effectiveStats(c).speed}</span></div>${lockNote?`<p class="job-unlock-note">${esc(lockNote)}</p>`:""}<button class="${chosen?"secondary-button":"primary-button"}" data-toggle-character="${c.id}" ${!unlocked||(!chosen&&full)?"disabled":""}>${!unlocked?"未解放":chosen?"選択中":"編成に加える"}</button></article>`;}).join("");
   selected.querySelectorAll("[data-remove-character]").forEach(b=>b.onclick=()=>removeCharacter(b.dataset.removeCharacter));selected.querySelectorAll("[data-select-slot]").forEach(b=>b.onclick=()=>{formationTargetSlot=Number(b.dataset.selectSlot);setSystemMessage(`空き枠${formationTargetSlot+1}を選択しました。仲間候補を選んでください。`);});roster.querySelectorAll("[data-toggle-character]").forEach(b=>b.onclick=()=>toggleCharacter(b.dataset.toggleCharacter));selected.querySelectorAll("[data-equip]").forEach(sel=>sel.onchange=()=>equipItem(sel.dataset.character,sel.dataset.equip,sel.value));}
 function equipmentSlots(c){return c.id==="samurai"?[["katana1","刀1"],["katana2","刀2"],["accessory1","装飾品1"],["accessory2","装飾品2"]]:[["weapon","武器"],["armor","防具"],["accessory1","装飾品1"],["accessory2","装飾品2"]];}
-function equipmentOptions(slot,charId){const current=equipment[charId][slot]||"";const cat=(slot==="armor"?"armor":slot.startsWith("accessory")?"accessory":"weapon");const owned=shopItems.filter(i=>i.category===cat&&(inventory[i.id]>0||equipment[charId]?.[slot]===i.id)&&((slot.startsWith("katana")?i.slot==="katana":!i.slot)));return `<option value="" ${!current?"selected":""}>なし</option>`+owned.map(i=>`<option value="${i.id}" ${current===i.id?"selected":""}>${esc(i.name)}</option>`).join("");}
+function equipmentOptions(slot,charId){const current=equipment[charId][slot]||"";const cat=(slot==="armor"?"armor":slot.startsWith("accessory")?"accessory":"weapon");const armorRole=EXT_REAR_IDS.includes(charId)?"back":"front";const owned=shopItems.filter(i=>i.category===cat&&(inventory[i.id]>0||equipment[charId]?.[slot]===i.id)&&((i.classes||[]).includes(charId))&&(slot!=="armor"||i.armorRole===armorRole)&&((slot.startsWith("katana")?i.slot==="katana":!i.slot)));return `<option value="" ${!current?"selected":""}>なし</option>`+owned.map(i=>`<option value="${i.id}" ${current===i.id?"selected":""}>${esc(i.name)}</option>`).join("");}
 function equipItem(charId,slot,newId){const c=getCharacter(charId);if(!c||!equipment[c.id]||!(slot in equipment[c.id]))return;const item=itemById(newId);if(newId&&(!item||!(inventory[newId]>0))){setSystemMessage("所持していない装備です。");sound("error");renderFormation();return;}if(newId&&!(item.classes||[]).includes(charId)&&!window.confirm(`${item.name}は${c.name}の適性装備ではありません。装備するとSPスキルとユニオンスキルが使用できなくなります。装備しますか？`)){renderFormation();return;}const old=equipment[charId][slot];if(old===newId)return;if(old)inventory[old]=(inventory[old]||0)+1;if(newId){inventory[newId]--;if(inventory[newId]<=0)delete inventory[newId];}equipment[charId][slot]=newId||null;renderAll();sound("select");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword"&&charId==="kotama"&&slot==="weapon"&&equipment.kotama?.weapon==="hero-sword"){tutorialState.heroSwordEquipped=true;tutorialState.phase="shop-nav";tutorialOverlay("SHOPへ移動しよう","装備できたね！装備品はSHOPで購入できるよ。画面上部のショップを押して移動しよう。");tutorialHighlight('.main-nav [data-screen="shop"]');tutorialSave();}
   // 勇者の剣を装備するまでは、武器欄の発光を保つ（再描画で対象が作り直されるため付け直す）。
   else if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword")tutorialHighlight('#selected-party select[data-character="kotama"][data-equip="weapon"]');}
@@ -392,7 +392,7 @@ function removeCharacter(id){const slot=state.party.indexOf(id);if(slot>=0)delet
 function shopDisplayCategory(item){
   if(item.category==="accessory")return "accessory";
   if(item.category==="healing")return "other";
-  if(item.category==="armor")return item.icon==="SHIELD"?"shield":"armor";
+  if(item.category==="armor")return item.icon==="SHIELD"?"shield":item.armorRole==="back"?"backArmor":"frontArmor";
   if(item.category==="weapon"){
     if(item.icon==="STAFF")return "staff";
     if(item.icon==="KNUCKLE")return "knuckle";
@@ -403,9 +403,9 @@ function shopDisplayCategory(item){
 function renderShop(){
   const box=$("shop-items");if(!box)return;
   const buyer=getCharacter(shopBuyerId)||characters[0];
-  const categoryNames={weapon:"武器",armor:"防具",shield:"盾",staff:"杖",knuckle:"ナックル",accessory:"アクセサリ",other:"その他"};
+  const categoryNames={weapon:"武器",frontArmor:"前衛防具",backArmor:"後衛防具",armor:"防具",shield:"盾",staff:"杖",knuckle:"ナックル",accessory:"アクセサリ",other:"その他"};
   const availableCategories=[...new Set(shopItems.filter(i=>!i.craftedOnly).map(shopDisplayCategory))];
-  const orderedCategories=["weapon","armor","shield","staff","knuckle","accessory","other"].filter(c=>availableCategories.includes(c));
+  const orderedCategories=["weapon","frontArmor","backArmor","armor","shield","staff","knuckle","accessory","other"].filter(c=>availableCategories.includes(c));
   if(!orderedCategories.includes(currentCategory))currentCategory=orderedCategories[0]||"weapon";
   const tabs=$("shop-category-tabs");
   if(tabs)tabs.innerHTML=orderedCategories.map(c=>`<button data-category="${c}" class="${currentCategory===c?"active":""}">${categoryNames[c]}</button>`).join("");
@@ -774,7 +774,7 @@ function getShopItemSlot(item,charId){
     if(!slots.includes("katana1"))return null;
     return !eq.katana1?"katana1":!eq.katana2?"katana2":"katana1";
   }
-  if(item.category==="armor")return slots.includes("armor")?"armor":null;
+  if(item.category==="armor"){const role=EXT_REAR_IDS.includes(charId)?"back":"front";return slots.includes("armor")&&(item.armorRole===role)&&(item.classes||[]).includes(charId)?"armor":null;}
   if(item.category==="accessory")return !eq.accessory1?"accessory1":"accessory2";
   if(item.category==="weapon")return slots.includes("weapon")?"weapon":null;
   return null;
@@ -996,13 +996,15 @@ function buildEquipmentState(savedEquipment,migrateStarterGear=true){
     for(const [slot,itemId] of Object.entries(saved)){
       if(!(slot in clean[c.id])||typeof itemId!=="string")continue;
       const item=itemById(itemId);if(!item)continue;
-      const valid=slot==="armor"?item.category==="armor":slot.startsWith("accessory")?item.category==="accessory":slot.startsWith("katana")?item.category==="weapon"&&item.slot==="katana":slot==="weapon"&&item.category==="weapon"&&!item.slot;
-      if(valid)clean[c.id][slot]=itemId;
+      const armorRole=EXT_REAR_IDS.includes(c.id)?"back":"front";const valid=slot==="armor"?item.category==="armor"&&item.armorRole===armorRole&&(item.classes||[]).includes(c.id):slot.startsWith("accessory")?item.category==="accessory":slot.startsWith("katana")?item.category==="weapon"&&item.slot==="katana":slot==="weapon"&&item.category==="weapon"&&!item.slot;
+      if(valid)clean[c.id][slot]=itemId;else if(slot==="armor"&&item.category==="armor"){inventory[itemId]=(inventory[itemId]||0)+1;}
     }
   }
   // 旧バージョンのセーブデータだけ、初期装備が空の場合に補完する。
-  const starters={kotama:{weapon:"sword",armor:"leather-armor"},knight:{weapon:"sword",armor:"leather-armor"},warrior:{weapon:"sword",armor:"leather-armor"},mage:{weapon:"mage-staff",armor:"leather-armor"},healer:{weapon:"mage-staff",armor:"leather-armor"},samurai:{katana1:"katana"}};
+  const starters={kotama:{weapon:"sword",armor:"leather-armor"},knight:{weapon:"sword",armor:"leather-armor"},warrior:{weapon:"sword",armor:"leather-armor"},mage:{weapon:"mage-staff",armor:"linen-robe"},healer:{weapon:"mage-staff",armor:"linen-robe"},samurai:{katana1:"katana"}};
   if(migrateStarterGear)for(const [cid,slots] of Object.entries(starters))for(const [slot,id] of Object.entries(slots))if(!clean[cid][slot])clean[cid][slot]=id;
+  // 旧セーブで前衛用防具を着けていた後衛には、互換性のある基本ローブを補完する。
+  for(const cid of EXT_REAR_IDS){if(!clean[cid]?.armor)clean[cid].armor="linen-robe";}
   return clean;
 }
 function createSaveData(){return {saveVersion:12,/* [FIELD] saveVersion 11: gathering state */levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),monsterRecords:(typeof compendiumSerialize==="function"?compendiumSerialize():undefined),/* [COMPENDIUM] */eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
