@@ -95,19 +95,35 @@ function makeMaterials(opaqueWater) {
   };
 }
 // タイル境界で繰り返せる周期関数と決定論的な粒子を合成する。
+// 周期境界を持つ多段の値ノイズ。正弦波だけの規則的な岩肌模様を避ける。
+function periodicNoise(x, y, period, seed) {
+  const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy;
+  const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+  const h = (a, b) => rnd((((a % period) + period) % period) * 173
+    + (((b % period) + period) % period) * 379 + seed * 109);
+  const a = h(ix, iy) * (1 - sx) + h(ix + 1, iy) * sx;
+  const b = h(ix, iy + 1) * (1 - sx) + h(ix + 1, iy + 1) * sx;
+  return a * (1 - sy) + b * sy;
+}
 function stoneTexture(size, seed, slate) {
   const tex = tileTexture(size, (c, n) => {
     const image = c.createImageData(n, n);
     for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
-      const u = x / n * Math.PI * 2, v = y / n * Math.PI * 2;
-      const strata = Math.sin(v * (slate ? 18 : 7) + Math.sin(u * 3) * 0.8) * (slate ? 15 : 9);
-      const grain = Math.sin(u * 13 + Math.cos(v * 9)) * Math.cos(v * 17 - Math.sin(u * 5)) * 13;
-      const fleck = (rnd(x * 19 + y * 127 + seed) - 0.5) * 32;
-      const value = Math.max(75, Math.min(228, 165 + strata + grain + fleck));
+      const u = x / n, v = y / n;
+      const macro = periodicNoise(u * 4, v * 4, 4, seed);
+      const middle = periodicNoise(u * 16, v * 16, 16, seed + 17);
+      const fine = periodicNoise(u * 64, v * 64, 64, seed + 29);
+      const strata = slate
+        ? Math.sin(v * Math.PI * 24 + (macro - 0.5) * 4) * 8
+        : Math.sin(v * Math.PI * 10 + (middle - 0.5) * 2) * 3;
+      const value = Math.max(70, Math.min(225,
+        145 + (macro - 0.5) * 76 + (middle - 0.5) * 37
+        + (fine - 0.5) * 16 + strata));
+      const damp = Math.max(0, Math.min(1, (macro - 0.42) * 2));
       const i = (y * n + x) * 4;
-      image.data[i] = value * 0.88;
-      image.data[i + 1] = value * 0.96;
-      image.data[i + 2] = value;
+      image.data[i] = value * (slate ? 0.78 : 0.85);
+      image.data[i + 1] = value * (0.88 + damp * 0.06);
+      image.data[i + 2] = value * (0.93 + damp * 0.05);
       image.data[i + 3] = 255;
     }
     c.putImageData(image, 0, 0);
