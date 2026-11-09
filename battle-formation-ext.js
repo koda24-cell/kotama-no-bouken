@@ -193,8 +193,7 @@
       { name: "溶解液", weight: 35, kind: "sp", power: .8, status: { type: "defenseDown", chance: .55, turns: 2, power: 4 } }
     ];
     const totalHp = members.reduce((n, m) => n + m.hp, 0);
-    return { ...def, hp: totalHp, maxHp: totalHp, attack, members, ai, formationTag: fire ? "fire-slime-pack" : "poison-slime-pack",
-      variantId: fire ? "fire-slime-pack" : "poison-slime-pack", gold: (def.gold || 8) * count, exp: (def.exp || 12) * count, compendiumAs: "スライム", dropAs: "スライム" };
+    return { ...def, hp: totalHp, maxHp: totalHp, attack, members, ai, formationTag: fire ? "fire-slime-pack" : "poison-slime-pack", gold: (def.gold || 8) * count, exp: (def.exp || 12) * count, compendiumAs: "スライム", dropAs: "スライム" };
   });
 
   // Apply row metadata after the existing renderer has rebuilt the cards.
