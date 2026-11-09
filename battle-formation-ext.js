@@ -173,7 +173,7 @@
         row: i < 2 ? "front" : "rear", alive: true
       }));
       const totalHp = count * d.hp;
-      return { ...d, ...def, name: "ゴブリン隊長と護衛", hp: totalHp, maxHp: totalHp, members, gold: def.gold || count * d.gold,
+      return { ...d, ...def, fieldEnemyId: id, name: "ゴブリン隊長と護衛", hp: totalHp, maxHp: totalHp, members, gold: def.gold || count * d.gold,
         exp: def.exp || 220, memberCount: count, spDefense: Math.floor(d.defense / 2),
         ai: [
           { name: "棍棒の一撃", weight: 65, kind: "phys", power: 1 },
@@ -202,7 +202,7 @@
       { name: "溶解液", weight: 35, kind: "sp", power: .8, status: { type: "defenseDown", chance: .55, turns: 2, power: 4 } }
     ];
     const totalHp = members.reduce((n, m) => n + m.hp, 0);
-    return { ...def, hp: totalHp, maxHp: totalHp, attack, members, ai, formationTag: fire ? "fire-slime-pack" : "poison-slime-pack", gold: (def.gold || 8) * count, exp: (def.exp || 12) * count, compendiumAs: "スライム", dropAs: "スライム" };
+    return { ...def, fieldEnemyId: id, hp: totalHp, maxHp: totalHp, attack, members, ai, formationTag: fire ? "fire-slime-pack" : "poison-slime-pack", gold: (def.gold || 8) * count, exp: (def.exp || 12) * count, compendiumAs: "スライム", dropAs: "スライム" };
   });
 
   // Apply row metadata after the existing renderer has rebuilt the cards.
