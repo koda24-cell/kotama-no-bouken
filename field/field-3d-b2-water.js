@@ -466,11 +466,17 @@ export async function createTheme(api) {
     const openCells = new Set();
     const skylightCandidates = [];
     for (let cy = 2; cy < a.h - 2; cy++) for (let cx = 2; cx < a.w - 2; cx++) {
-      let valid = true;
+      let valid = true, waterCount = 0;
       for (let dz = -1; dz <= 1 && valid; dz++) for (let dx = -1; dx <= 1; dx++) {
-        if (wallCell(cx + dx, cy + dz) || objAt.has(`${cx + dx},${cy + dz}`)) valid = false;
+        const tx = cx + dx, ty = cy + dz, cell = ch(tx, ty);
+        if (wallCell(tx, ty) || objAt.has(`${tx},${ty}`)
+            || cell === '>' || cell === '<' || falls.has(`${tx},${ty}`)) valid = false;
+        if (cell === '*') waterCount++;
       }
-      if (valid) skylightCandidates.push({ cx, cy, score: hash(cx, cy, 205) });
+      // 参考画像に合わせ、浅瀬がある広間を優先。候補がなければ通常の広間。
+      if (valid) skylightCandidates.push({
+        cx, cy, score: (waterCount > 0 ? -1 : 0) + hash(cx, cy, 205) * 0.5
+      });
     }
     skylightCandidates.sort((a, b) => a.score - b.score);
     // 3×3の安全な広間だけに巨大な水源遺跡の吹き抜けを1か所設ける。
@@ -710,6 +716,19 @@ export async function createTheme(api) {
       new THREE.TorusGeometry(5.65, 0.62, 7, 28),
       stone);
     rim.rotation.x = Math.PI / 2; rim.position.set(x, 22.35, z); atrium.add(rim);
+    // 高所から落ちる細い発光水流。通行範囲には降ろさず水源の高さを演出。
+    const streamMat = new THREE.MeshBasicMaterial({
+      color: 0x65d8f4, transparent: true, opacity: 0.27,
+      depthWrite: false, side: THREE.DoubleSide
+    });
+    for (let i = 0; i < 5; i++) {
+      const angle = i * Math.PI * 2 / 5 + 0.3;
+      const radius = 3.3 + hash(i, 2, 271) * 1.2;
+      const h = 10 + hash(i, 3, 272) * 5;
+      const stream = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.13, h, 6, 1, true), streamMat);
+      stream.position.set(x + Math.cos(angle) * radius, 22 - h / 2, z + Math.sin(angle) * radius);
+      atrium.add(stream);
+    }
     // 空洞上部の明るい水色。全体の背景色ではなく、吹き抜け内部だけの光源。
     const opening = new THREE.Mesh(new THREE.CircleGeometry(5.5, 32),
       new THREE.MeshBasicMaterial({ color: 0x6bcde5, side: THREE.DoubleSide, fog: false }));
