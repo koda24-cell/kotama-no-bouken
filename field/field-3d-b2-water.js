@@ -269,24 +269,33 @@ function makeProcedural() {
   // 壁面の起伏をワールド座標から求める。隣接する壁でも同じ鉱脈が続く。
   // 端の変位はゼロに収束させ、直交する壁・天井との裂け目を抑える。
   const continuousWall = (ex, ez, yaw, cell) => {
-    const geo = new THREE.BoxGeometry(cell + 0.12, 4.15, 0.75, 20, 20, 1);
+    // 旧版は正面20分割の箱で、画面全体が平らな直方体に見えていた。
+    // ワールド座標の複数周波数で岩の張り出しと縦の割れ目を形成する。
+    // 両端・床・天井の変位を小さくし、隣接タイルとの隙間を防ぐ。
+    const geo = new THREE.BoxGeometry(cell + 0.12, 4.15, 0.75, 24, 22, 1);
     geo.translate(0, 2.05, -0.4);
-    const p = geo.attributes.position;
-    const cs = Math.cos(yaw), sn = Math.sin(yaw);
+    const p = geo.attributes.position, cs = Math.cos(yaw), sn = Math.sin(yaw);
     for (let i = 0; i < p.count; i++) {
       const lx = p.getX(i), y = p.getY(i), lz = p.getZ(i);
       if (lz < -0.01) continue;
       const wx = ex + cs * lx + sn * lz;
       const wz = ez - sn * lx + cs * lz;
-      const edge = Math.max(0, Math.min(1, (cell / 2 - Math.abs(lx)) / 0.42));
-      const vertical = Math.max(0, Math.min(1, y / 0.55, (4.1 - y) / 0.65));
-      const relief = 0.28 * Math.sin(wx * 0.57 + wz * 0.31) * Math.cos(y * 0.67)
-        + 0.11 * Math.sin(wx * 1.63 - wz * 1.11 + y * 1.25)
-        + 0.045 * Math.cos(wx * 3.15 + wz * 2.67 - y * 2.2);
+      const edge = THREE.MathUtils.smoothstep(cell / 2 - Math.abs(lx), 0, 0.55);
+      const vertical = THREE.MathUtils.smoothstep(y, 0, 0.55)
+        * (1 - THREE.MathUtils.smoothstep(y, 3.35, 4.12));
+      const broad = 0.34 * Math.sin(wx * 0.63 + wz * 0.29 + y * 0.33)
+        + 0.20 * Math.cos(wx * 0.24 - wz * 0.71 + y * 0.58);
+      const strata = 0.16 * Math.sin(wx * 1.47 - wz * 1.05 + y * 1.24)
+        + 0.09 * Math.cos(wx * 2.87 + wz * 1.94 - y * 2.13);
+      const fracture = Math.pow(Math.abs(Math.sin(wx * 1.06 + wz * 0.53 + y * 0.15)), 14);
+      const relief = broad + strata - 0.13 * fracture;
       p.setZ(i, lz - relief * edge * vertical);
     }
+    const prepared = prepGeo(geo, false);
+    const smoothed = smoothRock(prepared);
+    prepared.dispose();
     return { name: 'continuous_cavern_wall', transient: true,
-      parts: [{ geo: smoothRock(prepGeo(geo, false)), mat: 'Deep cavern rock' }] };
+      parts: [{ geo: smoothed, mat: 'Deep cavern rock' }] };
   };
   // 世界座標で天井の起伏を生成し、隣接セル間で位相と高さを一致させる。
   // 下向き法線を保持し、境界を跨いでも同じ岩盤が続くようにする。
@@ -295,10 +304,11 @@ function makeProcedural() {
     const pos = geo.attributes.position;
     for (let i = 0; i < pos.count; i++) {
       const wx = worldX + pos.getX(i), wz = worldZ + pos.getZ(i);
-      const relief = 0.42
-        + 0.20 * Math.sin(wx * 0.37 + 0.7) * Math.cos(wz * 0.42 + 0.3)
-        + 0.10 * Math.sin(wx * 0.83 + wz * 0.56)
-        + 0.035 * Math.cos(wx * 1.91 - wz * 1.47);
+      const relief = 0.52
+        + 0.27 * Math.sin(wx * 0.37 + 0.7) * Math.cos(wz * 0.42 + 0.3)
+        + 0.16 * Math.sin(wx * 0.83 + wz * 0.56)
+        + 0.075 * Math.cos(wx * 1.91 - wz * 1.47)
+        + 0.09 * Math.pow(Math.abs(Math.sin(wx * 0.72 - wz * 0.83)), 9);
       pos.setY(i, -relief);
     }
     geo.computeVertexNormals();
@@ -347,9 +357,9 @@ function makeProcedural() {
     const p = g.attributes.position;
     for (let i = 0; i < p.count; i++) {
       const wx = worldX + p.getX(i), wz = worldZ + p.getZ(i);
-      const y = 0.052 * Math.sin(wx * 0.47) * Math.cos(wz * 0.39)
-        + 0.028 * Math.sin(wx * 1.14 + wz * 0.58)
-        + 0.012 * Math.cos(wx * 2.37 - wz * 1.81);
+      const y = 0.085 * Math.sin(wx * 0.47) * Math.cos(wz * 0.39)
+        + 0.038 * Math.sin(wx * 1.14 + wz * 0.58)
+        + 0.018 * Math.cos(wx * 2.37 - wz * 1.81);
       p.setY(i, y);
     }
     g.computeVertexNormals();
