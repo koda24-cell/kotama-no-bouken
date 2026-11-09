@@ -16,6 +16,7 @@
 const EXT_STATUS_DEFS = {
   burn:        { label:"火傷",   icon:"🔥", harm:true,  kind:"ailment" },
   poison:      { label:"毒",     icon:"☠",  harm:true,  kind:"ailment", fresh:"always" },
+  petrify:     { label:"石化",   icon:"🪨", harm:true,  kind:"ailment", fresh:"party" },
   paralysis:   { label:"麻痺",   icon:"⚡", harm:true,  kind:"ailment", fresh:"party" },
   curse:       { label:"呪い",   icon:"☾",  harm:true,  kind:"ailment", fresh:"party" },
   defenseDown: { label:"防御↓",  icon:"▼",  harm:true,  kind:"debuff", fresh:"party" },
@@ -51,7 +52,7 @@ const EXT_AILMENT_RULES = {
   bindLeg:   { speedMul: .5, evasionMul: 0 },
 
   // 味方：麻痺・睡眠が治った（時間切れ・解除）あと、このラウンド数は同じ状態にならない。
-  partyImmunity: { types: ["paralysis", "sleep"], rounds: 1 },
+  partyImmunity: { types: ["paralysis", "sleep", "petrify"], rounds: 1 },
   // 味方：生存者全員が行動不能（睡眠・拘束）になったラウンドが、この回数続いたら、それ以上の行動不能付与を無効にする。
   partyAllLockCap: 1,
   // 階層ボス・特別な敵：行動不能系・封じは、付与に成功するたびに次の付与率が (1 - step) 倍になる（連続ハメ防止）。
