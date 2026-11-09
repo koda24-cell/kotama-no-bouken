@@ -1742,14 +1742,24 @@ async function executeTurn(){
 }
 function showHitEffect(kind="slash",targetNode=null){
   const display=displayEnemyNode();if(!display)return;
+  const arena=display.closest(".battle-arena")||display;
   const safeKind=["slash","samurai","blunt","flame","lightning","ice","magic"].includes(kind)?kind:"magic";
+  // Always anchor effects to the actual enemy sprite, not a fixed arena percentage.
+  const target=targetNode?.isConnected?targetNode:
+    display.querySelector(".enemy-group-unit,.enemy-image,.enemy-placeholder")||display;
+  const targetVisual=target.querySelector?.(".enemy-image,.enemy-placeholder,img")||target;
+  const arenaRect=arena.getBoundingClientRect();
+  const targetRect=targetVisual.getBoundingClientRect();
+  const valid=arenaRect.width>0&&arenaRect.height>0&&targetRect.width>0&&targetRect.height>0;
+  const centerX=valid?targetRect.left+targetRect.width/2-arenaRect.left:arena.clientWidth/2;
+  const centerY=valid?targetRect.top+targetRect.height/2-arenaRect.top:arena.clientHeight*.43;
   const fx=document.createElement("div");
-  fx.className=`hit-effect hit-${safeKind}`;
+  fx.className=`hit-effect hit-${safeKind} hit-effect-anchored`;
   fx.setAttribute("aria-hidden","true");
+  fx.style.left=`${centerX}px`;
+  fx.style.top=`${centerY}px`;
   fx.innerHTML='<i class="hit-core"></i><i class="hit-ring"></i><i class="hit-particle p1"></i><i class="hit-particle p2"></i><i class="hit-particle p3"></i><i class="hit-particle p4"></i><i class="hit-particle p5"></i>';
-  const host=targetNode?.isConnected?targetNode:(display.closest(".battle-arena")||display);
-  if(host===targetNode){fx.classList.add("hit-effect-local");}
-  host.appendChild(fx);
+  arena.appendChild(fx);
   const animatedAssets={slash:"青白い連続斬撃エフェクトアニメーション-2.gif",samurai:"青白い連続斬撃エフェクトアニメーション-2.gif",blunt:"アニメ風衝撃波エフェクト集-1.gif",flame:"アニメ風の炎爆発アニメーション-1.gif",lightning:"紫電爆発エフェクトアニメーション-2.gif",ice:"青い氷エネルギー爆発アニメーション.gif",magic:"魔法陣エネルギー攻撃アニメーション-3.gif"};
   const assetName=animatedAssets[safeKind];
   if(assetName&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
@@ -1757,15 +1767,13 @@ function showHitEffect(kind="slash",targetNode=null){
     sprite.className="hit-animated-sprite";
     sprite.alt="";
     sprite.decoding="async";
-    sprite.onerror=()=>{sprite.remove();fx.classList.remove("hit-has-sprite");};
-    sprite.onload=()=>fx.classList.add("hit-has-sprite");
+    sprite.onerror=()=>sprite.remove();
     sprite.src="assets/"+assetName;
     fx.appendChild(sprite);
   }
-  const arena=display.closest(".battle-arena")||display;
-  const heavy=safeKind==="samurai"||safeKind==="blunt"||safeKind==="flame"||safeKind==="lightning";
-  const shakeClass=heavy?"vfx-impact-heavy":"vfx-impact";
-  arena.classList.remove("vfx-impact","vfx-impact-heavy");void arena.offsetWidth;arena.classList.add(shakeClass);
+  const heavy=["samurai","blunt","flame","lightning"].includes(safeKind);
+  arena.classList.remove("vfx-impact","vfx-impact-heavy");void arena.offsetWidth;
+  arena.classList.add(heavy?"vfx-impact-heavy":"vfx-impact");
   clearTimeout(arena._vfxImpactTimer);
   arena._vfxImpactTimer=setTimeout(()=>arena.classList.remove("vfx-impact","vfx-impact-heavy"),battleDelayMs(360));
   if(targetNode?.isConnected){
@@ -1773,7 +1781,7 @@ function showHitEffect(kind="slash",targetNode=null){
     clearTimeout(targetNode._vfxTargetTimer);
     targetNode._vfxTargetTimer=setTimeout(()=>targetNode.classList.remove("vfx-target-impact"),battleDelayMs(420));
   }
-  const duration=safeKind==="samurai"?760:safeKind==="lightning"?820:safeKind==="flame"?900:680;
+  const duration=["slash","samurai"].includes(safeKind)?1100:1050;
   setTimeout(()=>fx.remove(),battleDelayMs(duration));
 }
 // 魔術師の魔法は、対象ごとに演出→ダメージ→HP表示更新の順で処理する。
