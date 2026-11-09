@@ -488,23 +488,56 @@ export async function createTheme(api) {
   // 3D表示の装飾のみ。通路、壁判定、カメラ、マップイベントは変更しない。
   function addAtrium(x, z) {
     const atrium = new THREE.Group(); atrium.name = 'b2:open_ceiling_atrium'; root.add(atrium);
-    const stone = mats['Pale mineral stone'];
-    const dark = mats['Deep cavern rock'];
-    const glow = new THREE.MeshBasicMaterial({ color: 0x66e8ff, transparent: true, opacity: 0.25, depthWrite: false, side: THREE.DoubleSide });
-    // 吹き抜けの上部は閉じず、側面の柱と岩肌だけで縦の奥行きを表現する。
-    for (const [dx, dz] of [[-6,-6],[6,-6],[-6,6],[6,6]]) {
-      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.9, 19, 7), stone);
-      pillar.position.set(x + dx, 9.5, z + dz); atrium.add(pillar);
-      for (let h = 3; h <= 16; h += 4) {
-        const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.94, 0.94, 0.28, 8), dark);
-        ring.position.set(x + dx, h, z + dz); atrium.add(ring);
+    const stone = mats['Pale mineral stone'], dark = mats['Deep cavern rock'];
+    const trim = mats['Ancient inlay'];
+    const lightMat = new THREE.MeshBasicMaterial({ color: 0x9beaff, transparent: true, opacity: 0.19, depthWrite: false, side: THREE.DoubleSide });
+    const fishMat = new THREE.MeshBasicMaterial({ color: 0x174a65, side: THREE.DoubleSide, transparent: true, opacity: 0.7, depthWrite: false });
+    // 天井4mより上の縦穴を囲む壁。内側が空洞になるよう4面に配置する。
+    // 通路内に柱を立てず、3×3マスの外周だけを装飾する。
+    for (let side = 0; side < 4; side++) {
+      const axis = side % 2 === 0;
+      const sign = side < 2 ? -1 : 1;
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.4 : 0.9, 18.5, axis ? 0.9 : 12.4), dark);
+      wall.position.set(x + (axis ? 0 : sign * 6.1), 13.25, z + (axis ? sign * 6.1 : 0));
+      atrium.add(wall);
+      // 高い遺跡壁の石造リブと横梁。視線が上へ向かうように縦方向を強調。
+      for (const p of [-4.4, 0, 4.4]) {
+        const rib = new THREE.Mesh(new THREE.BoxGeometry(axis ? 0.46 : 0.72, 17, axis ? 0.72 : 0.46), stone);
+        rib.position.set(x + (axis ? p : sign * 5.55), 13, z + (axis ? sign * 5.55 : p)); atrium.add(rib);
+      }
+      for (const h of [8, 14, 20]) {
+        const band = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.1 : 0.52, 0.36, axis ? 0.52 : 12.1), trim);
+        band.position.set(x + (axis ? 0 : sign * 5.56), h, z + (axis ? sign * 5.56 : 0)); atrium.add(band);
       }
     }
-    // 光柱は視界を塞がない薄い半透明。明るい上空と水面のつながりを表現。
-    const beam = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 4.2, 21, 16, 1, true), glow);
-    beam.position.set(x, 12, z); beam.renderOrder = 3; atrium.add(beam);
-    const upper = new THREE.Mesh(new THREE.CircleGeometry(6.5, 32), new THREE.MeshBasicMaterial({ color: 0x73dfff, side: THREE.DoubleSide }));
-    upper.rotation.x = Math.PI / 2; upper.position.set(x, 22.7, z); atrium.add(upper);
+    // 角の崩れた支柱と礎石。上方には段差を付け、直方体の箱に見えにくくする。
+    for (const [dx, dz] of [[-5.6,-5.6],[5.6,-5.6],[-5.6,5.6],[5.6,5.6]]) {
+      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.88, 18, 8), stone);
+      pillar.position.set(x + dx, 13, z + dz); atrium.add(pillar);
+      for (const h of [5.5, 11.5, 17.5, 21.5]) {
+        const cap = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, 0.4, 8), dark);
+        cap.position.set(x + dx, h, z + dz); atrium.add(cap);
+      }
+    }
+    // 空洞上部の明るい水色。全体の背景色ではなく、吹き抜け内部だけの光源。
+    const opening = new THREE.Mesh(new THREE.CircleGeometry(5.5, 32),
+      new THREE.MeshBasicMaterial({ color: 0x6bcde5, side: THREE.DoubleSide, fog: false }));
+    opening.rotation.x = Math.PI / 2; opening.position.set(x, 22.65, z); atrium.add(opening);
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 4.1, 19, 16, 1, true), lightMat);
+    beam.position.set(x, 13, z); beam.renderOrder = 3; atrium.add(beam);
+    // 高所に浮かぶ魚影。装飾のみで移動・当たり判定なし。
+    const fishShape = new THREE.Shape();
+    fishShape.moveTo(-0.75, 0); fishShape.quadraticCurveTo(-0.15, 0.33, 0.55, 0.08);
+    fishShape.lineTo(0.92, 0.32); fishShape.lineTo(0.78, 0);
+    fishShape.lineTo(0.92, -0.32); fishShape.lineTo(0.55, -0.08);
+    fishShape.quadraticCurveTo(-0.15, -0.33, -0.75, 0);
+    const fishGeo = new THREE.ShapeGeometry(fishShape);
+    for (let i = 0; i < 7; i++) {
+      const f = new THREE.Mesh(fishGeo, fishMat);
+      f.position.set(x + (hash(i, 1, 210) - 0.5) * 8, 10 + hash(i, 2, 211) * 9, z + (hash(i, 3, 212) - 0.5) * 8);
+      f.rotation.y = hash(i, 4, 213) * Math.PI * 2; f.scale.setScalar(0.55 + hash(i, 5, 214) * 0.8);
+      atrium.add(f);
+    }
     light(x, 3.4, z, 0x89e8ff, 2.4, 13);
     light(x, 9.0, z, 0x6acfff, 1.7, 16);
   }
