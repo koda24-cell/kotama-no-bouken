@@ -30,6 +30,26 @@ export function createTheme(api, area) {
     const m = new THREE.Mesh(geo, material);
     m.position.set(x, y, z); m.rotation.y = ry; m.scale.set(sx, sy, sz); root.add(m); return m;
   }
+  function batchStatic() {
+    // 1マスごとの描画呼び出しを同一形状・材質のインスタンスへまとめる。
+    const moving = new Set(dynamic.map(x => x.mesh));
+    const groups = new Map();
+    for (const m of [...root.children]) {
+      if (!m.isMesh || moving.has(m)) continue;
+      const key = m.geometry.uuid + ':' + m.material.uuid;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(m);
+    }
+    for (const items of groups.values()) {
+      if (items.length < 2) continue;
+      const first = items[0], batch = new THREE.InstancedMesh(first.geometry, first.material, items.length);
+      batch.name = 'b' + area + ':instanced:' + first.geometry.type;
+      batch.frustumCulled = false; // 各マスの広い範囲を一括した場合の誤カリングを防ぐ
+      items.forEach((m, i) => { m.updateMatrix(); batch.setMatrixAt(i, m.matrix); root.remove(m); });
+      batch.instanceMatrix.needsUpdate = true;
+      root.add(batch);
+    }
+  }
   function build(a, S, info) {
     dispose();
     root = new THREE.Group(); root.name = magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
@@ -87,6 +107,7 @@ export function createTheme(api, area) {
         dynamic.push({ mesh: p, y: p.position.y, phase: hash(tx, ty, 94) * 6.28 });
       }
     }
+    batchStatic();
     for (const o of a.objects) {
       const x = o.tx * CELL, z = o.ty * CELL, f = facing(o.tx, o.ty), ry = FACE_YAW[f];
       const e = { o, kind: o.kind, obj: null, state: null, at: new THREE.Vector3(x, 1.2, z), ry };
