@@ -160,3 +160,11 @@
   .field-viewport{height:min(52vh,460px)}
   .field-dialog-text{font-size:14px}
 }
+
+/* 第2階層：凍てつく水源 */
+.field-screen[data-theme="water"]{--g:#789ca8;--g2:#8bb4c1;--p:#b5d5df;--w:#31566a;--e:#203d50;--x:#4e9bbd;--s:#b7dce8}
+.field-screen[data-theme="water"] .tile-water{background:linear-gradient(135deg,#6bb9d7,#2d729d);box-shadow:inset 0 0 0 1px #d8f6ff55,inset 0 5px 12px #d9f8ff44}
+.field-screen[data-theme="water"] .field-viewport::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#d8f7ff12,transparent 35%,#1c50651a)}
+/* 強い白フラッシュを使わない、低刺激の暗転＋水色の縁取り */
+@keyframes field-flash{0%{background:#17374600}35%{background:#173746cc}100%{background:#07121ddd}}
+.field-encounter-flash{background:#07121d;animation:field-flash .5s ease-in-out forwards}
