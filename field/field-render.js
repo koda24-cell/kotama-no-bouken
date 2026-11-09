@@ -126,10 +126,33 @@ function fieldDrawMap(canvas, cell, full) {
     if (x<0 || y<0 || x>=a.w || y>=a.h || !exp[y*a.w+x]) continue;
     const visible=fieldState.visible?.has(x+","+y)||false;
     g.fillStyle=fieldMapColor(a,fieldTileAt(a,x,y)); g.fillRect(sx,sy,cell,cell);
-    g.fillStyle=visible?"rgba(255,231,151,.24)":"rgba(2,8,16,.48)"; g.fillRect(sx,sy,cell,cell);
-    g.strokeStyle=visible?"rgba(255,224,125,.86)":"rgba(0,0,0,.28)";
-    g.lineWidth=Math.max(.7,cell*.08); g.strokeRect(sx+.5,sy+.5,Math.max(0,cell-1),Math.max(0,cell-1));
+    // 視界内は地形色をそのまま見せる。視界外の踏破済みマスだけ暗くする。
+    if(!visible){g.fillStyle="rgba(2,8,16,.48)";g.fillRect(sx,sy,cell,cell);}
+    else {
+      // 視界の内側には黄色いマス枠を描かず、後段で外周だけを描画する。
+    }
+    if(!visible){
+      g.strokeStyle="rgba(0,0,0,.28)";
+      g.lineWidth=Math.max(.7,cell*.08);
+      g.strokeRect(sx+.5,sy+.5,Math.max(0,cell-1),Math.max(0,cell-1));
+    }
   }
+  // 現在視界に入っている領域の外周だけを黄色で縁取る（ミニマップ・全体マップ共通）。
+  const visibleAt=(x,y)=>fieldState.visible?.has(x+","+y)||false;
+  g.beginPath();
+  for(let my=0;my<rows;my++) for(let mx=0;mx<cols;mx++){
+    const x=originX+mx,y=originY+my;
+    if(x<0||y<0||x>=a.w||y>=a.h||!visibleAt(x,y)) continue;
+    const sx=mx*cell,sy=my*cell;
+    if(!visibleAt(x,y-1)){g.moveTo(sx,sy);g.lineTo(sx+cell,sy);}
+    if(!visibleAt(x+1,y)){g.moveTo(sx+cell,sy);g.lineTo(sx+cell,sy+cell);}
+    if(!visibleAt(x,y+1)){g.moveTo(sx+cell,sy+cell);g.lineTo(sx,sy+cell);}
+    if(!visibleAt(x-1,y)){g.moveTo(sx,sy+cell);g.lineTo(sx,sy);}
+  }
+  g.strokeStyle="rgba(255,224,125,.95)";
+  g.lineWidth=Math.max(1.2,cell*.12);
+  g.lineJoin="round";
+  g.stroke();
   const dot=(x,y,color,size=.62,shape="circle")=>{
     if(!inWindow(x,y)) return;
     g.fillStyle=color;
