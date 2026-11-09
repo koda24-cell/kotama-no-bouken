@@ -179,6 +179,38 @@ export function createTheme(api, area) {
         } catch (_) { landmarkState = 'procedural-fallback'; }
       }
     }
+    // 第4階層の専用背景素材を、通路の中央ではなく壁面沿いに配置。
+    // モデル単位でのサイズ正規化を行い、既存マップの歩行判定を維持する。
+    if (magma) {
+      const extras = [
+        ['floor4_dragonfire_environment_v1.glb', 5.2, 1],
+        ['floor4_gothic_fortress_addon_v1.glb', 4.8, 2],
+        ['floor4_lavafall_ember_fx_seed_v1.glb', 3.2, 3]
+      ];
+      const spots = [];
+      for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
+        if (wallCell(tx, ty) || a.objects.some(o => o.tx === tx && o.ty === ty)) continue;
+        const walls = DIR_ORDER.filter(d => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
+        if (walls.length && hash(tx, ty, 117) < 0.2) spots.push({ tx, ty, dir: walls[0] });
+      }
+      for (const [file, sizeTarget, index] of extras) {
+        const spot = spots[Math.floor(spots.length * index / 4)];
+        if (!spot) continue;
+        try {
+          const gltf = await gltfLoader.loadAsync('./assets/3d/dungeons/b4_dragonfire/models/' + file);
+          const model = gltf.scene, bounds = new THREE.Box3().setFromObject(model);
+          const dims = bounds.getSize(new THREE.Vector3()), max = Math.max(dims.x, dims.y, dims.z);
+          if (!(max > 0)) continue;
+          const scale = sizeTarget / max, center = bounds.getCenter(new THREE.Vector3());
+          const [dx, dz] = DIR_VEC[spot.dir];
+          model.scale.setScalar(scale);
+          model.position.set(spot.tx * CELL + dx * 1.3 - center.x * scale, -bounds.min.y * scale,
+            spot.ty * CELL + dz * 1.3 - center.z * scale);
+          model.name = 'b4:scenery:' + file;
+          root.add(model);
+        } catch (_) { /* ZIP展開前はプロシージャル背景を維持 */ }
+      }
+    }
     batchStatic();
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
