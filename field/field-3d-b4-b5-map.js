@@ -1,11 +1,11 @@
-/* Fourth and fifth stratum map-driven 3D placement. Visuals only; map remains authoritative. */
+/* Third through fifth stratum map-driven 3D placement. Visuals only; map remains authoritative. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
-  const magma = area === 4, mist = area === 3;
+  const magma = area === 4, mist = area === 3; // B3: ancient ruined city, not forest
   const ENV = mist
-    ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
+    ? { background: 0x292b2a, fog: { color: 0x64695f, density: 0.038 }, hemi: { sky: 0xc5c2a7, ground: 0x383c32, high: 1.55, low: 1.65 } }
     : magma
     ? { background: 0x1b0907, fog: { color: 0x2c100a, density: 0.036 }, hemi: { sky: 0xff8750, ground: 0x25101a, high: 1.45, low: 1.8 } }
     : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
@@ -29,11 +29,11 @@ export function createTheme(api, area) {
   }
   const rockMap = rockTexture(4), floorMap = rockTexture(11);
   const mat = {
-    floor: new THREE.MeshStandardMaterial({ color: mist ? 0x485d4b : magma ? 0x544038 : 0x48445d, roughness: 0.85, map: floorMap }),
-    wall: new THREE.MeshStandardMaterial({ color: mist ? 0x344c42 : magma ? 0x30262a : 0x22233c, roughness: 0.93, flatShading: true, map: rockMap }),
-    ceiling: new THREE.MeshStandardMaterial({ color: mist ? 0x30493c : magma ? 0x281b1a : 0x171729, roughness: 1, side: THREE.DoubleSide, map: rockMap }),
-    glow: new THREE.MeshStandardMaterial({ color: mist ? 0x83d7c1 : magma ? 0xff4a12 : 0x7950ed, emissive: mist ? 0x4aab91 : magma ? 0xff2600 : 0x6437ef, emissiveIntensity: magma ? 1.8 : 1.5, roughness: 0.2 }),
-    metal: new THREE.MeshStandardMaterial({ color: mist ? 0x5a735a : magma ? 0x8b6551 : 0x565877, metalness: 0.55, roughness: 0.5 })
+    floor: new THREE.MeshStandardMaterial({ color: mist ? 0x77776b : magma ? 0x544038 : 0x48445d, roughness: 0.85, map: floorMap }),
+    wall: new THREE.MeshStandardMaterial({ color: mist ? 0x777a70 : magma ? 0x30262a : 0x22233c, roughness: 0.93, flatShading: true, map: rockMap }),
+    ceiling: new THREE.MeshStandardMaterial({ color: mist ? 0x555d54 : magma ? 0x281b1a : 0x171729, roughness: 1, side: THREE.DoubleSide, map: rockMap }),
+    glow: new THREE.MeshStandardMaterial({ color: mist ? 0xd9c18b : magma ? 0xff4a12 : 0x7950ed, emissive: mist ? 0x98733f : magma ? 0xff2600 : 0x6437ef, emissiveIntensity: magma ? 1.8 : 1.5, roughness: 0.2 }),
+    metal: new THREE.MeshStandardMaterial({ color: mist ? 0x77705e : magma ? 0x8b6551 : 0x565877, metalness: 0.55, roughness: 0.5 })
   };
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02);
   const wallGeo = new THREE.BoxGeometry(4.08, 4.2, 0.65, 16, 14, 2);
@@ -49,6 +49,10 @@ export function createTheme(api, area) {
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
+  const pavingGeo = new THREE.BoxGeometry(3.8, 0.035, 0.055);
+  const columnGeo = new THREE.CylinderGeometry(0.26, 0.36, 1, 8);
+  const capitalGeo = new THREE.BoxGeometry(0.76, 0.19, 0.76);
+  const ruinMat = new THREE.MeshStandardMaterial({ color: 0x9a9885, roughness: 0.96 });
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
@@ -88,25 +92,30 @@ export function createTheme(api, area) {
   }
   async function build(a, S, info) {
     dispose();
-    root = new THREE.Group(); root.name = mist ? 'b3_mist_forest_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
+    root = new THREE.Group(); root.name = mist ? 'b3_ruined_city_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
     const { ch, wallCell, facing, open } = info;
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
       mesh(floorGeo, mat.floor, x, -0.17, z);
+      if (mist && !objAt.has(tx + ',' + ty)) {
+        // Sunken paving joints: thin overlays, no physics or map changes.
+        for (const offset of [-1.15, 0.1, 1.35]) mesh(pavingGeo, mat.metal, x, 0.006, z + offset, 0, 1, 1, 1);
+        if (hash(tx, ty, 140) < 0.45) mesh(pavingGeo, mat.metal, x + 0.92, 0.007, z, Math.PI / 2, 0.75, 1, 1);
+      }
       if (magma && (c === '*' || c === '~')) {
         mesh(lavaGeo, mat.glow, x, 0.009, z);
       }
       // 地熱の亀裂／古代星界の紋様。通行判定には影響させない。
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
         const angle = hash(tx, ty, 32) * Math.PI;
-        mesh(crackGeo, mat.glow, x, 0.016, z, angle, 0.65 + hash(tx, ty, 33) * 0.4, 1, 1);
+        if (!mist) mesh(crackGeo, mat.glow, x, 0.016, z, angle, 0.65 + hash(tx, ty, 33) * 0.4, 1, 1);
         ornaments++;
       }
       if (c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, 4.05, z);
       // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
-      if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
+      if (!mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
         const h = 0.8 + hash(tx, ty, 46) * 1.7;
         mesh(shardGeo, mat.wall, x + (hash(tx, ty, 47) - 0.5) * 2.3, 4.0 - h * 0.45, z + (hash(tx, ty, 48) - 0.5) * 2.3, Math.PI, 1.2, h, 1.2);
         ornaments++;
@@ -116,17 +125,25 @@ export function createTheme(api, area) {
         if (!wallCell(tx + dx, ty + dz)) continue;
         const ex = x + dx * 2, ez = z + dz * 2, ry = FACE_YAW[d] + Math.PI;
         mesh(wallGeo, mat.wall, ex, 2, ez, ry);
+        if (mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, DIR_ORDER.indexOf(d) + 151) < 0.43) {
+          // Broken colonnade sits against solid walls, clear of the walkable tile center.
+          const px = ex - dx * 0.13, pz = ez - dz * 0.13;
+          const height = 1.15 + hash(tx, ty, DIR_ORDER.indexOf(d) + 157) * 1.65;
+          mesh(columnGeo, ruinMat, px, height / 2, pz, 0, 1, height, 1);
+          mesh(capitalGeo, ruinMat, px, height + 0.06, pz);
+          ornaments += 2;
+        }
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
           if (lights.length < 28) {
-            const L = { world: new THREE.Vector3(ex - dx * 0.4, 1.2, ez - dz * 0.4), color: mist ? 0x92dfc1 : magma ? 0xff6726 : 0x8d6bff, intensity: 0.9, range: 4, off: false };
+            const L = { world: new THREE.Vector3(ex - dx * 0.4, 1.2, ez - dz * 0.4), color: mist ? 0xffd59b : magma ? 0xff6726 : 0x8d6bff, intensity: 0.9, range: 4, off: false };
             g.lights.push(L); lights.push(L);
           }
           ornaments++;
         }
       }
-      if (mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, 66) < 0.3) {
+      if (false && mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, 66) < 0.3) {
         const sx = x + (hash(tx, ty, 67) > 0.5 ? 1.52 : -1.52);
         const sz = z + (hash(tx, ty, 68) > 0.5 ? 1.52 : -1.52);
         mesh(trunkGeo, trunkMat, sx, 3.1, sz, hash(tx, ty, 69) * 6.28, 0.65, 1, 0.65);
