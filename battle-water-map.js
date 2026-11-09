@@ -61,6 +61,24 @@
     }
     fieldFoePlanAll(a);fieldMiniDirty=true;render();
   };
+  // 鉱石系の反撃：攻撃を受けた鉱石個体が、攻撃者へ物理反撃する。
+  const originalDamage=window.applyDamageToEnemyTarget;
+  if(typeof originalDamage==="function"&&!window.__waterCounterWrapped){
+    window.__waterCounterWrapped=true;
+    window.applyDamageToEnemyTarget=function(enemy,target,amount){
+      const dealt=originalDamage.call(this,enemy,target,amount);
+      const ore=target?.ref;
+      if(dealt>0&&ore?.counterRate>0&&ore.hp>0){
+        const actorId=battleState.actingIds?.[0],actor=actorId&&getCharacter(actorId);
+        if(actor?.hp>0){
+          const counter=Math.max(1,Math.floor(calcPhysical((ore.attack||enemy.attack)*ore.counterRate,effectiveStats(actor).defense,false)));
+          pushEvent(`${ore.name||ore.displayName}の反撃！${actor.name}に${counter}ダメージ！`,"warning");
+          applyPartyDamageAnimated(actor,counter,{normalAttack:true});
+        }
+      }
+      return dealt;
+    };
+  }
   document.addEventListener("DOMContentLoaded",()=>{
     $("battle-field-map-toggle")?.addEventListener("click",()=>{opened=!opened;render();});
     $("battle-field-map-close")?.addEventListener("click",()=>{opened=false;render();});
