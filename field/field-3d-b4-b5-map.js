@@ -61,6 +61,9 @@ export function createTheme(api, area) {
   const emberGeo = localGeo(new THREE.IcosahedronGeometry(0.06, 0));
   const crackGeo = localGeo(new THREE.PlaneGeometry(3.4, 0.07).rotateX(-Math.PI / 2));
   const lavaGeo = localGeo(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2));
+  // B4: floating, dark cooled crust gives otherwise flat lava a readable scale.
+  const crustGeo = localGeo(new THREE.IcosahedronGeometry(0.6, 0));
+  const crustMat = new THREE.MeshStandardMaterial({ color: 0x251b1b, roughness: 1, flatShading: true, emissive: 0x4d1607, emissiveIntensity: 0.16 });
   const flameMat = new THREE.MeshBasicMaterial({ color: mist ? 0xa3ffe4 : magma ? 0xff6b24 : 0xb18cff, transparent: true, opacity: 0.75, depthWrite: false });
   function mesh(geo, material, x, y, z, ry = 0, sx = 1, sy = 1, sz = 1) {
     const m = new THREE.Mesh(geo, material);
@@ -97,6 +100,14 @@ export function createTheme(api, area) {
       mesh(floorGeo, mat.floor, x, -0.17, z);
       if (magma && (c === '*' || c === '~')) {
         mesh(lavaGeo, mat.glow, x, 0.009, z);
+        // Sparse, deterministic crust plates stay visually below walking height.
+        // Purely decorative: no collider, map change, or gameplay effect.
+        if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 141) < 0.38) {
+          const cx = x + (hash(tx, ty, 142) - 0.5) * 1.7;
+          const cz = z + (hash(tx, ty, 143) - 0.5) * 1.7;
+          mesh(crustGeo, crustMat, cx, -0.12, cz, hash(tx, ty, 144) * Math.PI, 0.7 + hash(tx, ty, 145) * 0.6, 0.14, 0.5 + hash(tx, ty, 146) * 0.6);
+          ornaments++;
+        }
       }
       // 地熱の亀裂／古代星界の紋様。通行判定には影響させない。
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
@@ -206,7 +217,7 @@ export function createTheme(api, area) {
       ];
       const spots = [];
       for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
-        if (wallCell(tx, ty) || a.objects.some(o => o.tx === tx && o.ty === ty)) continue;
+        if (wallCell(tx, ty) || objAt.has(tx + ',' + ty)) continue;
         const walls = DIR_ORDER.filter(d => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
         if (walls.length && hash(tx, ty, 117) < 0.2) spots.push({ tx, ty, dir: walls[0] });
       }
