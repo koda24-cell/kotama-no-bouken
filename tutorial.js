@@ -160,7 +160,7 @@ function resumeTutorial(){
   }
   if(tutorialState.phase==="shop-accessory"){showScreen("formation");tutorialOverlay("アクセサリについて","アクセサリは2種類装備できるよ。次は回復薬を購入しよう。");tutorialHighlight('#selected-party select[data-equip^="accessory"]');return;}
   if(tutorialState.phase.startsWith("shop")){
-    showScreen("shop");shopBuyerId="kotama";currentCategory=tutorialState.phase==="shop-potion"?"other":"armor";renderShop();
+    showScreen("shop");shopBuyerId="kotama";currentCategory=tutorialState.phase==="shop-potion"?"other":"frontArmor";renderShop();
     const m=tutorialState.phase==="shop-potion"?["回復薬を購入しよう","その他カテゴリから回復薬を1個購入しよう。"]:tutorialState.phase==="shop-accessory"?["アクセサリについて","アクセサリは2種類装備できるよ。次は回復薬を購入しよう。"]:["革の鎧を購入しよう","防具は防御力を高める装備だよ。革の鎧をコタマに購入して装備しよう。"];
     tutorialOverlay(m[0],m[1]);return;
   }
