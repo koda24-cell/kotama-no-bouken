@@ -169,21 +169,23 @@ const B2_V8_GLB = './assets/b2_cavern_v8.glb';
 async function loadV8Decorations() {
   const gltf = await new GLTFLoader().loadAsync(B2_V8_GLB);
   gltf.scene.updateMatrixWorld(true);
-  const result = { rocks: [], crystals: [] };
+  const result = { rocks: [], crystals: [], stalagmites: [], ceilingIce: [], erosion: [] };
   gltf.scene.traverse((o) => {
     if (!o.isMesh) return;
     const rock = /^23_/.test(o.name), crystal = /^07_crystal_/.test(o.name);
-    if (!rock && !crystal) return;
-    const target = rock ? result.rocks : result.crystals;
-    if (target.length >= (rock ? 12 : 12)) return;
+    const stalagmite = /^04_stalagmite_/.test(o.name), ceilingIce = /^26_ceiling_ice_/.test(o.name);
+    const erosion = /^06_erosion_rock_/.test(o.name);
+    if (!rock && !crystal && !stalagmite && !ceilingIce && !erosion) return;
+    const target = rock ? result.rocks : crystal ? result.crystals : stalagmite ? result.stalagmites : ceilingIce ? result.ceilingIce : result.erosion;
+    if (target.length >= 12) return;
     const geo = o.geometry.clone().applyMatrix4(o.matrixWorld).applyMatrix4(Z_UP_TO_Y_UP);
     // 元のテクスチャ座標は保持しない。ゲーム側の既存マテリアルを適用する。
     const piece = makePiece(o.name, [{ geo: prepGeo(geo, false),
-      mat: rock ? 'Deep cavern rock' : 'Glowing cyan crystal', tag: o.name }]);
+      mat: (crystal || ceilingIce) ? 'Glowing cyan crystal' : 'Deep cavern rock', tag: o.name }]);
     // v8の造形の個体差を残しつつ、迷宮の一マスに収まるサイズに統一する。
     const maxSide = Math.max(piece.size.x, piece.size.z, 0.01);
     const height = Math.max(piece.size.y, 0.01);
-    const scale = Math.min((rock ? 1.1 : 0.65) / maxSide, (rock ? 0.85 : 1.15) / height);
+    const scale = Math.min((rock || erosion ? 1.1 : 0.65) / maxSide, (rock || erosion ? 0.85 : 1.15) / height);
     for (const p of piece.parts) p.geo.scale(scale, scale, scale);
     piece.size.multiplyScalar(scale);
     target.push(piece);
@@ -581,6 +583,28 @@ export async function createTheme(api) {
         B.add('ice_stalactites', pick(proc.iceStalactites, hash(tx, ty, 244)),
           M4(x + ox, 3.62, z + oz, hash(tx, ty, 245) * Math.PI * 2), tx, ty);
       }
+      // v8 の氷柱・石筍を通路の端に控えめに配置。視界とイベントマスを優先する。
+      if (v8 && !objAt.has(key) && c !== '>' && c !== '<' && !falls.has(key)) {
+        const side = DIR_ORDER.find((d) => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
+        if (side) {
+          const [dx, dz] = DIR_VEC[side];
+          if (v8.stalagmites.length && hash(tx, ty, 301) < 0.16) {
+            B.add('v8_stalagmites', pick(v8.stalagmites, hash(tx, ty, 302)),
+              M4(x + dx * 1.35, -0.05, z + dz * 1.35, hash(tx, ty, 303) * 6.28), tx, ty);
+          }
+          if (v8.erosion.length && hash(tx, ty, 304) < 0.12) {
+            B.add('v8_erosion', pick(v8.erosion, hash(tx, ty, 305)),
+              M4(x + dx * 1.45, -0.08, z + dz * 1.45, hash(tx, ty, 306) * 6.28), tx, ty);
+          }
+        }
+        if (!openCells.has(key) && v8.ceilingIce.length && hash(tx, ty, 307) < 0.22) {
+          const ice = pick(v8.ceilingIce, hash(tx, ty, 308));
+          // 原点を底面に戻した部品を、上下反転せず天井付近へ寄せる。
+          B.add('v8_ceiling_ice', ice, M4(x + (hash(tx, ty, 309) - 0.5) * 2,
+            3.85 - ice.size.y, z + (hash(tx, ty, 310) - 0.5) * 2,
+            hash(tx, ty, 311) * 6.28), tx, ty);
+        }
+      }
       // 壁と、壁ぎわの岩・鉱脈・壁付きの物
       for (const d of DIR_ORDER) {
         const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
@@ -900,5 +924,5 @@ export async function createTheme(api) {
     return false;
   }
 
-  return { area: 2, env: ENV, build, sync, tick, dispose, kit, info: () => ({ meshCount: kit.meshCount, v8Decorations: v8 ? { rocks: v8.rocks.length, crystals: v8.crystals.length } : null, omitted: kit.omitted, drawGroups: root ? root.children.map((c) => `${c.name}:${c.children.length}`) : [], ripples: anim.ripples.length, mists: anim.mists.length, ...last }) };
+  return { area: 2, env: ENV, build, sync, tick, dispose, kit, info: () => ({ meshCount: kit.meshCount, v8Decorations: v8 ? { rocks: v8.rocks.length, crystals: v8.crystals.length, stalagmites: v8.stalagmites.length, ceilingIce: v8.ceilingIce.length, erosion: v8.erosion.length } : null, omitted: kit.omitted, drawGroups: root ? root.children.map((c) => `${c.name}:${c.children.length}`) : [], ripples: anim.ripples.length, mists: anim.mists.length, ...last }) };
 }
