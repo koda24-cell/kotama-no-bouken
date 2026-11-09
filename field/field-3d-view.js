@@ -23,7 +23,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const BASE = './assets/3d/dungeons/b1_ancient_forest/';
-const AREAS_3D = new Set([1]);           // いったん第1階層のみ
+const AREAS_3D = new Set([1, 2, 3, 4, 5]); // 第1〜第5階層の探索は3Dを標準表示
 const PREVIEW_KEY = 'kotama.field3d.preview';   // 試験表示する階層（例 "2"）。セーブデータには入れない
 // 第1階層の空気（ensureRenderer で使っている値と同じ。第2階層から戻ったときに戻す）
 const ENV_B1 = { background: 0x070d11, fog: { color: 0x0c1a20, density: 0.042 }, hemi: { sky: 0x7aa8c4, ground: 0x1c241c, high: 1.25, low: 1.7 } };
@@ -71,12 +71,12 @@ function readPreview() {
   return set;
 }
 // 3D表示できる階層：第1階層と、試験表示を有効にした第2階層
-const areaOn = (n) => AREAS_3D.has(n) || (n === 2 && g.preview.has(2) && !g.themeFailed);
+const areaOn = (n) => AREAS_3D.has(n) && (n !== 2 || !g.themeFailed);
 function writePref(on) { try { localStorage.setItem(PREF_KEY, on ? 'on' : 'off'); } catch (_) {} }
 const hash = (x, z, s = 0) => { let h = (x * 374761393 + z * 668265263 + s * 982451653) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
 const fieldOk = () => typeof fieldState !== 'undefined' && typeof fieldArea === 'function';
 // 第1階層は3D専用。設定保存値にかかわらず3Dを優先し、WebGL等の利用不能時だけ既存2Dへフォールバックする。
-const eligible = () => fieldOk() && (g.pref || Number(fieldState.area) === 1) && !g.failed && g.webgl && areaOn(Number(fieldState.area));
+const eligible = () => fieldOk() && (g.pref || AREAS_3D.has(Number(fieldState.area))) && !g.failed && g.webgl && areaOn(Number(fieldState.area));
 const curKey = () => (fieldOk() ? fieldArea()?.key : '') || '';
 
 /* ------------------------------------------------------------
@@ -92,7 +92,7 @@ function ensureRenderer() {
     g.scene = new THREE.Scene();
     g.scene.background = new THREE.Color(0x070d11); g.scene.fog = new THREE.FogExp2(0x0c1a20, 0.042);
     g.hemi = new THREE.HemisphereLight(0x7aa8c4, 0x1c241c, g.high ? 1.25 : 1.7); g.scene.add(g.hemi);   // 暗所でも形が読める明るさ（点光源の少ない低画質では強め）
-    g.camera = new THREE.PerspectiveCamera(68, 1, 0.05, 30);
+    g.camera = new THREE.PerspectiveCamera(68, 1, 0.05, 48);
     g.world = new THREE.Group(); g.dyn = new THREE.Group(); g.scene.add(g.world, g.dyn);
     setPool(g.high ? 14 : 6);   // 点光源は多いほど重い（1画素ごとに全部を計算する）ため、近いものだけ
     if (g.high) {
@@ -144,8 +144,13 @@ function applyEnv(area, env) {
 }
 // 第2階層のテーマ（別ファイル）を読み込む。失敗したら第2階層だけ2D表示に戻す
 function loadTheme2() {
-  if (!g.themePromise) g.themePromise = import('./field-3d-b2-water.js?v=20261109-b2').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES })).then((t) => (g.theme = t));
-  return g.themePromise;
+  // 以前の階層から戻った場合にも、破棄済みのテーマを再利用しない。
+  if (g.theme?.area === 2) return Promise.resolve(g.theme);
+  return import('./field-3d-b2-water.js?v=20261109-b2').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES }));
+}
+async function loadTheme45(area) {
+  const m = await import('./field-3d-b4-b5-map.js?v=20261109-1');
+  return m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES }, area);
 }
 function place(parent, src, x, y, z, ry = 0, s = 1) {
   const o = src.clone(true); o.position.set(x, y, z); o.rotation.y = ry; o.scale.setScalar(s);
@@ -199,9 +204,9 @@ async function buildFloor() {
   showBadge('3D表示を準備中…');
   const area = Number(fieldState.area);
   let th = null;
-  if (area === 2) {
-    try { th = await loadTheme2(); }
-    catch (e) { console.warn('[field-3d] 第2階層の3D素材を読めなかったため、第2階層は2D表示のままにします:', e); g.themeFailed = true; g.buildingKey = ''; showBadge(''); applyMode(); return; }
+  if (area === 2 || area === 3 || area === 4 || area === 5) {
+    try { th = area === 2 ? await loadTheme2() : await loadTheme45(area); }
+    catch (e) { console.warn('[field-3d] 3Dテーマの読み込みに失敗しました:', area, e); if (area === 2) g.themeFailed = true; else g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return; }
   }
   try {
     const list = Object.values(FILES); let done = 0;
@@ -216,12 +221,19 @@ async function buildFloor() {
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
   g.lights = []; g.entries = []; g.foes.clear();
-  if (g.theme && !th) g.theme.dispose();
+  if (g.theme && g.theme !== th) g.theme.dispose();
+  if (th) g.theme = th;
   applyEnv(area, th && th.env);
   const info = cellInfo(a), { ch, def, wallCell, open, facing } = info;
   const X = (tx) => tx * CELL, Z = (ty) => ty * CELL;
   const objAt = new Map(a.objects.map((o) => [`${o.tx},${o.ty}`, o]));
-  if (th) await th.build(a, S, info);   // 第2階層：field-3d-b2-water.js が床・壁・物を組み立てる
+  if (th) {
+    try { await th.build(a, S, info); }
+    catch (e) {
+      console.error('[field-3d] 3Dマップの組み立てに失敗:', area, e);
+      g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return;
+    }
+  }
   else {                                // 第1階層：ここから下は従来の組み立て（変更なし）
   // 床・天井・壁
   for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
@@ -305,7 +317,7 @@ async function syncEntry(e, S) {
   if (st === e.state) return;
   const first = e.state === null; e.state = st;
   S = S || {};
-  if (g.theme && Number(fieldState.area) === 2 && await g.theme.sync(e, st)) { if (!first) g.lastLightKey = ''; return; }
+  if (g.theme && Number(fieldState.area) === g.theme.area && await g.theme.sync(e, st)) { if (!first) g.lastLightKey = ''; return; }
   const get = async (k) => S[k] || load(FILES[k]);
   if (o.kind === 'chest' || o.kind === 'cache') { removeObj(e.obj); e.obj = place(g.world, await get(st === 'open' ? 'chestOpen' : 'chest'), x, 0, z, e.ry); }
   else if (o.kind === 'gather') {
@@ -457,13 +469,14 @@ function ensureToggle() {
   }
   const area = fieldOk() ? Number(fieldState.area) : 0;
   const can = fieldOk() && areaOn(area) && g.webgl && !g.failed;
-  // 第1階層では表示方式を3Dに固定し、2D/3D切り替えボタンを出さない。
+  // 第1〜第5階層では3D表示を固定し、2D/3D切り替えボタンを出さない。
   // ほかの階層で3Dを解放した場合は、従来どおり切り替えられる。
-  btn.hidden = !can || area === 1;
+  btn.hidden = !can || AREAS_3D.has(area);
   btn.textContent = g.pref ? '2D表示' : '3D表示';
   btn.title = g.pref ? '見下ろしの2D表示に切り替える' : '一人称の3D表示に切り替える';
 }
 function toggle(force) {
+  if (fieldOk() && AREAS_3D.has(Number(fieldState.area))) { g.pref = true; build(); return; }
   g.pref = typeof force === 'boolean' ? force : !g.pref; writePref(g.pref);
   if (typeof fieldInput !== 'undefined') { fieldInput.keys.clear(); fieldInput.pad.clear(); fieldInput.tap = null; }
   if (g.pref) build(); else applyMode();
@@ -497,7 +510,7 @@ function frame() {
   syncFoes(now);
   updateCamera(dt);
   updatePool(g.camera.position);
-  if (g.theme && g.envArea === 2) g.theme.tick(dt, now, g.camera.position);
+  if (g.theme && g.envArea === g.theme.area) g.theme.tick(dt, now, g.camera.position);
   // 正面の調べられる物に目印
   const nk = fieldState.lock ? '' : fieldState.nearKey;
   const ne = nk && g.entries.find((e) => e.o.key === nk);

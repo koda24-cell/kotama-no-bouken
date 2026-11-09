@@ -1,0 +1,47 @@
+name: Extract B4 B5 3D assets
+on:
+  push:
+    branches:
+      - feature/gpt-b4-b5-integration-prep
+    paths:
+      - '.github/workflows/extract-b4-b5-assets.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch source ZIP archives from the existing asset PR branches
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feature/gpt-floor4-dragonfire-asset-organization feature/gpt-floor5-abyss-throne-assets
+          mkdir -p assets/3d/dungeons/b4_dragonfire/{models,textures}
+          mkdir -p assets/3d/dungeons/b5_abyssal_star_realm/models
+          git show origin/feature/gpt-floor4-dragonfire-asset-organization:assets/3d/dungeons/b4_dragonfire/models/floor4_Part1_Models.zip > assets/3d/dungeons/b4_dragonfire/models/floor4_Part1_Models.zip
+          git show origin/feature/gpt-floor4-dragonfire-asset-organization:assets/3d/dungeons/b4_dragonfire/textures/floor4_Part2_Textures.zip > assets/3d/dungeons/b4_dragonfire/textures/floor4_Part2_Textures.zip
+          git show origin/feature/gpt-floor5-abyss-throne-assets:assets/3d/dungeons/b5_abyssal_star_realm/models/floor5_abyss_throne_refined_v2.zip > assets/3d/dungeons/b5_abyssal_star_realm/models/floor5_abyss_throne_refined_v2.zip
+      - name: Extract reviewed models and textures
+        run: python tools/extract-floor4-floor5-assets.py
+      - name: Verify expected GLB models
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s assets/3d/dungeons/b4_dragonfire/models/floor4_corrupted_barrier_v1.glb
+          test -s assets/3d/dungeons/b5_abyssal_star_realm/models/floor5_abyss_throne_refined_v2.glb
+          find assets/3d/dungeons/b4_dragonfire assets/3d/dungeons/b5_abyssal_star_realm -type f -name '*.glb' -print
+      - name: Commit extracted assets to this feature branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/3d/dungeons/b4_dragonfire assets/3d/dungeons/b5_abyssal_star_realm
+          if ! git diff --cached --quiet; then
+            git commit -m 'Extract floor 4 and 5 GLB assets for runtime loading'
+            git push origin HEAD:feature/gpt-b4-b5-integration-prep
+          fi
