@@ -6,24 +6,29 @@ A ruined gothic route suspended over a bottomless abyss. The visible walls are a
 The final chamber is a solemn, monumental throne hall: gothic arches, weathered stone, dim violet illumination, torn banners, and a large demon throne.
 
 ## Asset groups
-- Broken stone causeway and floating platforms
-- Ruined pillars, gothic gate, colonnade
-- Torn banners and aged metal fittings
-- Violet flame placeholders
-- Geometric/organic rune pillar placeholders
-- Throne dais, stairs, throne seat/back/arms
-- Placeholder star lights
+- Broken stone causeway and fragmented walkable slabs
+- Layered abyss rim/cliff walls, floating platforms and broken pillars
+- Gothic gate, pointed arch details, colonnade, buttresses and parapets
+- Torn/faded banners, aged metal fittings and chandelier silhouettes
+- Violet flame tongues and ember placeholders
+- Geometric diamond and organic/vine-like rune inlays
+- Distant machine-like towers with cyan emissive windows
+- Starfield point placeholders
+- Throne stairs, dais, throne frame, seat/back/arms and crest
 
-## Prototype status
-A first-pass modular GLB blockout has been generated separately:
-- `floor5_abyss_throne_prototype_v1.glb`
-- 136 named meshes
-- The current file is a geometry/material prototype, not final production art.
+## Current asset pack
+- ZIP: `assets/3d/dungeons/b5_abyssal_star_realm/models/floor5_abyss_throne_refined_v2.zip`
+- GLB inside: `floor5_abyss_throne_refined_v2.glb`
+- 604 named meshes; approximately 407 KB GLB.
+- v2 supersedes the earlier v1 blockout (136 meshes).
 
 ## Renderer-side requirements
 - Build the abyss as a dark depth/background treatment; do not reveal traversable paths behind the cliff walls.
-- Add a separate cosmic sky layer and distant illuminated megastructures.
+- Add a separate cosmic sky/nebula layer, depth fog and distant illuminated megastructures.
 - Animate violet flames and embers with the project's existing particle/animation system.
-- Treat rune meshes as placeholders for carved/inlaid motifs based on the supplied geometric and organic references.
-- Author collision separately from visual meshes.
+- Add rune glow pulses and suitable lighting if supported.
+- Treat visual meshes and collision separately; author and validate the walkable route.
 - Keep Floor 1 and Floor 2 unchanged; isolate Floor 5 behind a test/preview route.
+
+## Status
+Refined geometry/material prototype. Not final production art; renderer-side sky, animation, lighting, collision and in-game validation remain.
