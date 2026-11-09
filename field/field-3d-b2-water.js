@@ -244,21 +244,6 @@ function makeProcedural() {
   })();
   // 自然石の床：格子状の石板が無限に繰り返される印象を緩和する。
   // マス境界の高さは0に収束させ、隣接マスに隙間を作らない。
-  const ground = [0, 1, 2, 3, 4, 5].map((variant) => {
-    const geo = new THREE.PlaneGeometry(4.04, 4.04, 24, 24).rotateX(-Math.PI / 2);
-    const pos = geo.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i), z = pos.getZ(i);
-      const fade = Math.max(0, Math.min(1, (2.02 - Math.abs(x)) / 0.45))
-        * Math.max(0, Math.min(1, (2.02 - Math.abs(z)) / 0.45));
-      const wave = 0.065 * Math.sin(x * 1.1 + variant * 1.3) * Math.cos(z * 1.25 - variant)
-        + 0.035 * Math.sin(x * 2.7 + z * 2.1 + variant * 2)
-        + 0.014 * Math.cos(x * 6.2 - z * 4.4 + variant);
-      pos.setY(i, wave * fade);
-    }
-    geo.computeVertexNormals();
-    return { name: 'natural_rock_floor_' + variant, parts: [{ geo, mat: 'Deep cavern rock' }] };
-  });
   // 水際の自然な堆積：薄い岩棚と小石を、水のあるマスに面した陸側だけに敷く。
   // 当たり判定に影響させず、石板と水面が直角に切れる見た目を緩和する。
   // 天井から下がる小さな岩の稜線。プレイヤーの視界を遮らない高所だけに配置。
@@ -286,7 +271,7 @@ function makeProcedural() {
   // 隣接する床マスで高さが一致する世界座標ベースの岩盤。
   // マス境界で起伏をゼロに戻さないため、正方形パッチの継ぎ目が目立たない。
   const continuousGround = (tx, ty, cell) => {
-    const g = new THREE.PlaneGeometry(cell, cell, 20, 20).rotateX(-Math.PI / 2);
+    const g = new THREE.PlaneGeometry(cell, cell, 12, 12).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
     for (let i = 0; i < p.count; i++) {
       const wx = tx * cell + p.getX(i), wz = ty * cell + p.getZ(i);
@@ -301,7 +286,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { walls, ceil, ground, continuousGround, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { walls, ceil, continuousGround, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
