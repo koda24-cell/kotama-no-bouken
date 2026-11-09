@@ -326,6 +326,23 @@ function makeProcedural() {
     return { name: 'b2_ice_stalactite_' + variant,
       parts: [{ geo, mat: 'Pale mineral stone' }] };
   });
+  // 壁の中腹に張り出す氷結岩塊。低ポリゴンの多面体を複合し、箱型通路の輪郭を崩す。
+  // ローカル+Zが通路側。壁からの突出は約0.3mに抑え、歩行空間を確保する。
+  const wallOutcrops = [0, 1, 2].map((variant) => {
+    const parts = [];
+    const count = 3 + variant;
+    for (let j = 0; j < count; j++) {
+      const geo = new THREE.IcosahedronGeometry(1, 1);
+      const width = 0.55 + 0.16 * ((j + variant) % 3);
+      const height = 0.52 + 0.18 * ((j * 2 + variant) % 3);
+      geo.scale(width, height, 0.22 + 0.06 * (j % 2));
+      geo.rotateZ((j % 2 ? -1 : 1) * (0.18 + 0.07 * variant));
+      geo.translate((j - (count - 1) / 2) * 0.49,
+        (j % 2 ? 0.12 : -0.13) + 0.08 * variant, -0.12);
+      parts.push({ geo, mat: j % 3 === 0 ? 'Pale mineral stone' : 'Deep cavern rock' });
+    }
+    return { name: 'b2_wall_outcrop_' + variant, parts };
+  });
   const shoreline = [0, 1, 2].map((variant) => {
     const g = new THREE.PlaneGeometry(3.92, 0.84, 24, 6).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
@@ -358,7 +375,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { continuousWall, continuousCeiling, continuousGround, shoreline, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { continuousWall, continuousCeiling, continuousGround, shoreline, wallOutcrops, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -624,6 +641,17 @@ export async function createTheme(api) {
         const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, k = hash(tx * 4 + DIR_ORDER.indexOf(d), ty, 5), ry = FACE_YAW[d] + Math.PI;
         const along = [dy ? 1 : 0, dx ? 1 : 0];   // 壁に沿う向き（x, z）
         B.add('walls', proc.continuousWall(ex, ez, ry, CELL), M4(ex, 0, ez, ry), tx, ty);
+        // 中腹の岩の張り出し。壁面が続く場所だけに限定し、イベント/階段/滝を回避。
+        // Batcherに統合してドローコール増加を抑える。
+        if (!objAt.has(key) && c !== '>' && c !== '<' && !falls.has(key)
+            && hash(tx, ty, 410 + DIR_ORDER.indexOf(d)) < 0.38) {
+          const lateral = (hash(tx, ty, 414 + DIR_ORDER.indexOf(d)) - 0.5) * 1.4;
+          const rise = 1.55 + hash(tx, ty, 418 + DIR_ORDER.indexOf(d)) * 0.85;
+          B.add('wall_outcrops',
+            pick(proc.wallOutcrops, hash(tx, ty, 422 + DIR_ORDER.indexOf(d))),
+            M4(ex - dx * 0.13 + along[0] * lateral, rise,
+              ez - dy * 0.13 + along[1] * lateral, ry), tx, ty);
+        }
         // 壁と床の境目に低い岩の堆積を置き、直線的な接合部を崩す。
         // 通路中央やイベントマスを避け、歩行判定には影響させない。
         if (!objAt.has(key) && c !== '>' && c !== '<' && k < 0.72) {
