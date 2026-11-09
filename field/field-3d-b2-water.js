@@ -244,6 +244,13 @@ function makeProcedural() {
   });
   // 水際の自然な堆積：薄い岩棚と小石を、水のあるマスに面した陸側だけに敷く。
   // 当たり判定に影響させず、石板と水面が直角に切れる見た目を緩和する。
+  // 天井から下がる小さな岩の稜線。プレイヤーの視界を遮らない高所だけに配置。
+  const ceilingRidge = [0, 1, 2].map((variant) => {
+    const g = new THREE.ConeGeometry(0.27 + variant * 0.09, 0.65 + variant * 0.21, 7, 4);
+    g.translate(0, -0.33 - variant * 0.105, 0);
+    return { name: 'b2_ceiling_ridge_' + variant,
+      parts: [{ geo: g, mat: 'Deep cavern rock' }] };
+  });
   const shoreline = [0, 1, 2].map((variant) => {
     const g = new THREE.PlaneGeometry(3.92, 0.84, 24, 6).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
@@ -261,7 +268,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { walls, ceil, ground, shoreline, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { walls, ceil, ground, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -470,6 +477,14 @@ export async function createTheme(api) {
       }
       // 天井
       if (!openCells.has(key)) B.add('ceiling', proc.ceil, M4(x, 4, z, Math.floor(hash(tx, ty, 18) * 4) * Math.PI / 2), tx, ty);
+      // 天井の小規模な鍾乳状の稜線。密集させず、広い空間の端に限る。
+      if (!openCells.has(key) && !objAt.has(key) && c !== '>' && c !== '<'
+          && hash(tx, ty, 230) < 0.24) {
+        const ox = (hash(tx, ty, 231) - 0.5) * 2.2;
+        const oz = (hash(tx, ty, 232) - 0.5) * 2.2;
+        B.add('ceiling_details', pick(proc.ceilingRidge, hash(tx, ty, 233)),
+          M4(x + ox, 3.66, z + oz, hash(tx, ty, 234) * Math.PI * 2), tx, ty);
+      }
       // 壁と、壁ぎわの岩・鉱脈・壁付きの物
       for (const d of DIR_ORDER) {
         const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
