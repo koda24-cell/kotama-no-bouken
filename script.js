@@ -58,6 +58,7 @@ characters.forEach(c=>equipment[c.id]={weapon:null,armor:null,accessory1:null,ac
 // 初期装備：新規開始時から最低限の武器・防具を装備している状態にする。
 equipment.kotama.weapon="sword";equipment.kotama.armor="leather-armor";
 equipment.knight.weapon="sword";equipment.knight.armor="leather-armor";
+equipment.warrior.weapon="sword";equipment.warrior.armor="leather-armor";
 equipment.mage.weapon="mage-staff";equipment.mage.armor="leather-armor";
 equipment.healer.weapon="mage-staff";equipment.healer.armor="leather-armor";
 equipment.samurai.katana1="katana";
@@ -1000,7 +1001,7 @@ function buildEquipmentState(savedEquipment,migrateStarterGear=true){
     }
   }
   // 旧バージョンのセーブデータだけ、初期装備が空の場合に補完する。
-  const starters={kotama:{weapon:"sword",armor:"leather-armor"},knight:{weapon:"sword",armor:"leather-armor"},mage:{weapon:"mage-staff",armor:"leather-armor"},healer:{weapon:"mage-staff",armor:"leather-armor"},samurai:{katana1:"katana"}};
+  const starters={kotama:{weapon:"sword",armor:"leather-armor"},knight:{weapon:"sword",armor:"leather-armor"},warrior:{weapon:"sword",armor:"leather-armor"},mage:{weapon:"mage-staff",armor:"leather-armor"},healer:{weapon:"mage-staff",armor:"leather-armor"},samurai:{katana1:"katana"}};
   if(migrateStarterGear)for(const [cid,slots] of Object.entries(starters))for(const [slot,id] of Object.entries(slots))if(!clean[cid][slot])clean[cid][slot]=id;
   return clean;
 }
