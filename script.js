@@ -69,6 +69,8 @@ const esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const getCharacter=id=>characters.find(c=>c.id===id);
 const getParty=()=>state.party.map(getCharacter).filter(Boolean);
 const itemById=id=>shopItems.find(i=>i.id===id);
+// data/items.js より後に battle-ext.js が読み込まれるため、追加職業装備はここで登録する。
+if(typeof extInstallItems==="function")extInstallItems(shopItems,enhancementMaterials);
 let formationTargetSlot=0;
 let currentCategory="weapon", shopBuyerId="kotama", purchasePopupTimer, audioContext=null, bgmTimer=null, bossBgmAudio=null, previewAudio=null, previewTimer=null, bgmStep=0, currentBgmKey="", prioritySoundUntil=0, readyChimeKey="", maouOmenTimer=null, goblinCharging=false, goblinTeamAttackPending=false, burnedTurns={}, specialOmenShown={}, soundtrackPreviewActive=false, storyTypingTimer=null, storyTypingComplete=true, retreatConfirmed=false, lastMp3SeAt=0, stageIntroStoryPending=false, maouIntroBgmPersistent=false, battleBgmSelections={}, lastBattleBgmSelections={};
 let battleState={stage:1,maxStage:5,hiddenBossMode:false,enemy:null,turnCount:0,busy:false,fast:false,turnOrder:[],currentActorIndex:0,actions:[],consumedActors:[],guarding:{},tauntTarget:null,enemyStunned:false,aegisActive:false,defenseCampTurns:0,magicGuardActive:false,fullGuardActive:false,knightFullGuardCooldown:0,unionGauges:{kotama:0,knight:0,healer:0,warrior:0,mage:0,samurai:0},log:[],pending:null,menuMode:"main",targetIds:[],stageFinished:false,lastRewardGold:0,bossBgmChoice:null,koCount:0,rankResult:null,wolfEvasionTurns:0,wolfLastTargetId:null,wolfClones:[],wolfDisplayOrder:[],wolfCloneTurns:0,wolfCloneLastTargetId:null,wolfSplitPending:false,wolfHalfHpEvasionUsed:false,tutorialMode:false};
