@@ -84,7 +84,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 15, max: 26, scale: 1.3, table: [ { enemy: "stray-slime", weight: 40 }, { enemy: "mushroom", weight: 40 }, { enemy: "forest-goblin", weight: 20 } ] },
-        chests: [ { gold: 80 } ], gathers: [ ["slime_jelly", 60], ["monster_hide", 40] ], foes: [], map: [
+        chests: [ { gold: 80 } ], gathers: [ ["slime_jelly", 60], ["monster_hide", 40] ], foes: [ { enemy: "foe-crystal-guardian", path: [[24, 2], [24, 8]], sight: 6 } ], map: [
         "############################",
         "######...****.......##B#####",
         "#####...**####***....#___###",
@@ -107,7 +107,7 @@ const FIELD_AREAS = {
     ]
   },
   2: {
-    stage: 2, name: "ゴブリンの森", theme: "goblin",
+    stage: 2, name: "凍てつく水源", theme: "water",
     bgm: "assets/music/仕分け雨/Digilune.mp3",
     enterScene: "a2-enter", bossScene: "a2-boss", signScene: "a2-sign",
     objects: {
@@ -124,9 +124,9 @@ const FIELD_AREAS = {
       i: { kind: "cache", id: "a2-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a2-twin-stones" }
     },
     floors: [
-      { encounter: { min: 15, max: 26, scale: 1.0, table: [ { enemy: "forest-goblin", weight: 60 }, { enemy: "goblin-scout", weight: 25 }, { enemy: "mushroom", weight: 15 } ] },
+      { encounter: { min: 15, max: 26, scale: 1.0, table: [ { enemy: "water-fish", weight: 55 }, { enemy: "ore-crab", weight: 25 }, { enemy: "water-ray", weight: 20 } ] },
         chests: [ { item: "potion", count: 3 }, { gold: 90 } ], gathers: [ ["goblin_cloth", 50], ["monster_fang", 30], ["monster_hide", 20] ],
-        foes: [ { enemy: "foe-goblin-captain", path: [[22, 9], [25, 8]] } ], map: [
+        foes: [ { enemy: "foe-crystal-guardian", path: [[22, 9], [25, 8]], sight: 5 } ], map: [
         "###########################",
         "#.......#>#...#....T#.....#",
         "#.###.#.#.#.#.#.#.###.###.#",
@@ -149,9 +149,9 @@ const FIELD_AREAS = {
         "#E..#...............#...#c#",
         "###########################"
       ] },
-      { encounter: { min: 14, max: 25, scale: 1.15, table: [ { enemy: "forest-goblin", weight: 50 }, { enemy: "goblin-scout", weight: 50 } ] },
+      { encounter: { min: 14, max: 25, scale: 1.15, table: [ { enemy: "water-fish", weight: 25 }, { enemy: "water-ray", weight: 25 }, { enemy: "ore-crab", weight: 35 }, { enemy: "crystal-golem", weight: 15 } ] },
         chests: [ { item: "ether", count: 2, materials: [ ["goblin_cloth", 2] ] }, { gold: 110 } ], gathers: [ ["goblin_cloth", 45], ["monster_fang", 35], ["monster_hide", 20] ],
-        foes: [ { enemy: "foe-goblin-captain", path: [[21, 1], [25, 3]] } ], map: [
+        foes: [ { enemy: "foe-crystal-guardian", path: [[21, 1], [25, 3]], sight: 5 } ], map: [
         "###########################",
         "#G........................#",
         "#########.###########.###.#",
@@ -174,7 +174,7 @@ const FIELD_AREAS = {
         "#<......#.........#.......#",
         "###########################"
       ] },
-      { encounter: { min: 14, max: 25, scale: 1.3, table: [ { enemy: "forest-goblin", weight: 45 }, { enemy: "goblin-scout", weight: 45 }, { enemy: "mist-bat", weight: 8 } ] },
+      { encounter: { min: 14, max: 25, scale: 1.3, table: [ { enemy: "water-ray", weight: 30 }, { enemy: "ore-crab", weight: 40 }, { enemy: "crystal-golem", weight: 30 } ] },
         chests: [ { item: "potion", count: 2 } ], gathers: [ ["goblin_cloth", 60], ["monster_fang", 40] ], foes: [], map: [
         "############################",
         "#__P_,,,,..****....#########",
