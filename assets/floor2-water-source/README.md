@@ -32,3 +32,10 @@ Beautiful but dangerous: clear water, luminous blue/violet ore, sharp crystal sp
 - `aquatic-thorns.svg`: thorny aquatic foliage
 - `waterfall-mist.svg`: waterfall spray and mist
 - `ore-vein.svg`: mineral seam embedded in rock
+
+## 3D prototype
+A procedural 3D prototype generator is provided:
+- `tools/generate_floor2_water_source.py` — builds a modular GLB with faceted crystal meshes, rock wall chunks, ancient arch stones, water gate bars, and floor slabs. Requires `pip install trimesh numpy`.
+- `tools/import_floor2_glb_to_blender.py` — imports the generated GLB into Blender, organizes it into a collection, and saves an editable `.blend` project.
+
+The initial prototype contains 37 separately named meshes. It is a geometry/material blockout, not a final art pass: inspect scale, normals, material appearance, UV needs, and collision separation before game integration. The GLB generated for this first review is supplied separately as a downloadable artifact; rerun the generator to reproduce it locally.
