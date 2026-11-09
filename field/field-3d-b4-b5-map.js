@@ -2,8 +2,10 @@
 import * as THREE from 'three';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
-  const magma = area === 4;
-  const ENV = magma
+  const magma = area === 4, mist = area === 3;
+  const ENV = mist
+    ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
+    : magma
     ? { background: 0x1b0907, fog: { color: 0x2c100a, density: 0.036 }, hemi: { sky: 0xff8750, ground: 0x25101a, high: 1.45, low: 1.8 } }
     : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
   function rockTexture(seed) {
@@ -16,8 +18,8 @@ export function createTheme(api, area) {
       const veins = Math.abs(Math.sin(x * 0.04 + Math.sin(y * 0.06) * 3 + seed));
       const v = Math.max(30, Math.min(225, 117 + coarse * 31 + grain * 19 - (veins > 0.98 ? 38 : 0)));
       const i = (y * 128 + x) * 4;
-      img.data[i] = v; img.data[i + 1] = v * (magma ? 0.84 : 0.91);
-      img.data[i + 2] = v * (magma ? 0.76 : 1.04); img.data[i + 3] = 255;
+      img.data[i] = v; img.data[i + 1] = v * (mist ? 0.99 : magma ? 0.84 : 0.91);
+      img.data[i + 2] = v * (mist ? 0.86 : magma ? 0.76 : 1.04); img.data[i + 3] = 255;
     }
     ctx.putImageData(img, 0, 0);
     const t = new THREE.CanvasTexture(canvas); t.wrapS = t.wrapT = THREE.RepeatWrapping;
@@ -26,11 +28,11 @@ export function createTheme(api, area) {
   }
   const rockMap = rockTexture(4), floorMap = rockTexture(11);
   const mat = {
-    floor: new THREE.MeshStandardMaterial({ color: magma ? 0x544038 : 0x48445d, roughness: 0.85, map: floorMap }),
-    wall: new THREE.MeshStandardMaterial({ color: magma ? 0x30262a : 0x22233c, roughness: 0.93, flatShading: true, map: rockMap }),
-    ceiling: new THREE.MeshStandardMaterial({ color: magma ? 0x281b1a : 0x171729, roughness: 1, side: THREE.DoubleSide, map: rockMap }),
-    glow: new THREE.MeshStandardMaterial({ color: magma ? 0xff4a12 : 0x7950ed, emissive: magma ? 0xff2600 : 0x6437ef, emissiveIntensity: magma ? 1.8 : 1.5, roughness: 0.2 }),
-    metal: new THREE.MeshStandardMaterial({ color: magma ? 0x8b6551 : 0x565877, metalness: 0.55, roughness: 0.5 })
+    floor: new THREE.MeshStandardMaterial({ color: mist ? 0x485d4b : magma ? 0x544038 : 0x48445d, roughness: 0.85, map: floorMap }),
+    wall: new THREE.MeshStandardMaterial({ color: mist ? 0x344c42 : magma ? 0x30262a : 0x22233c, roughness: 0.93, flatShading: true, map: rockMap }),
+    ceiling: new THREE.MeshStandardMaterial({ color: mist ? 0x30493c : magma ? 0x281b1a : 0x171729, roughness: 1, side: THREE.DoubleSide, map: rockMap }),
+    glow: new THREE.MeshStandardMaterial({ color: mist ? 0x83d7c1 : magma ? 0xff4a12 : 0x7950ed, emissive: mist ? 0x4aab91 : magma ? 0xff2600 : 0x6437ef, emissiveIntensity: magma ? 1.8 : 1.5, roughness: 0.2 }),
+    metal: new THREE.MeshStandardMaterial({ color: mist ? 0x5a735a : magma ? 0x8b6551 : 0x565877, metalness: 0.55, roughness: 0.5 })
   };
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02);
   const wallGeo = new THREE.BoxGeometry(4.08, 4.2, 0.65, 16, 14, 2);
@@ -53,7 +55,7 @@ export function createTheme(api, area) {
   const emberGeo = localGeo(new THREE.IcosahedronGeometry(0.06, 0));
   const crackGeo = localGeo(new THREE.PlaneGeometry(3.4, 0.07).rotateX(-Math.PI / 2));
   const lavaGeo = localGeo(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2));
-  const flameMat = new THREE.MeshBasicMaterial({ color: magma ? 0xff6b24 : 0xb18cff, transparent: true, opacity: 0.75, depthWrite: false });
+  const flameMat = new THREE.MeshBasicMaterial({ color: mist ? 0xa3ffe4 : magma ? 0xff6b24 : 0xb18cff, transparent: true, opacity: 0.75, depthWrite: false });
   function mesh(geo, material, x, y, z, ry = 0, sx = 1, sy = 1, sz = 1) {
     const m = new THREE.Mesh(geo, material);
     m.position.set(x, y, z); m.rotation.y = ry; m.scale.set(sx, sy, sz); root.add(m); return m;
@@ -80,7 +82,7 @@ export function createTheme(api, area) {
   }
   function build(a, S, info) {
     dispose();
-    root = new THREE.Group(); root.name = magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
+    root = new THREE.Group(); root.name = mist ? 'b3_mist_forest_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
     const { ch, wallCell, facing, open } = info;
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
@@ -112,7 +114,7 @@ export function createTheme(api, area) {
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
           if (lights.length < 28) {
-            const L = { world: new THREE.Vector3(ex - dx * 0.4, 1.2, ez - dz * 0.4), color: magma ? 0xff6726 : 0x8d6bff, intensity: 0.9, range: 4, off: false };
+            const L = { world: new THREE.Vector3(ex - dx * 0.4, 1.2, ez - dz * 0.4), color: mist ? 0x92dfc1 : magma ? 0xff6726 : 0x8d6bff, intensity: 0.9, range: 4, off: false };
             g.lights.push(L); lights.push(L);
           }
           ornaments++;
