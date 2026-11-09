@@ -33,6 +33,10 @@ const FIELD_ENEMIES = {
   "wraith": { name:"さまよう亡霊", element:"無属性", weaknesses:["聖","炎"], resistances:["斬撃","突"], hp:1000, attack:52, spAttack:74, defense:28, spDefense:62, gold:32, exp:500, speed:70, image:"assets/monsters/chaos-phantom.svg", sprite:"maou",
     ai:[ { name:"呪いの声", weight:45, all:true, kind:"sp", power:.55, status:{ type:"curse", chance:.25, turns:2 } }, { name:"生命吸収", weight:55, kind:"sp", power:.9, drain:.4 } ] },
 
+  "fire-slime": { name:"炎スライム", element:"炎", weaknesses:["氷"], resistances:["炎"], hp:210, attack:18, spAttack:30, defense:4, spDefense:30, gold:8, exp:16, speed:40, dropAs:"スライム", image:"assets/monsters/suraimu.png", sprite:"slime" },
+  "poison-slime": { name:"毒スライム", element:"無属性", weaknesses:["炎","氷","雷","聖"], resistances:[], physicalResistances:["斬撃","打撃","壊","突"], hp:200, attack:20, spAttack:18, defense:4, spDefense:35, gold:8, exp:16, speed:35, dropAs:"スライム", image:"assets/monsters/suraimu.png", sprite:"slime" },
+  "foe-goblin-pack": { foe:true, name:"ゴブリン隊長と護衛", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:0, attack:68, spAttack:20, defense:18, spDefense:10, gold:70, exp:220, speed:72, dropAs:"ゴブリン", image:"assets/monsters/goburinn.png", sprite:"goblin" },
+
   /* ---------- FOE（各階層に1種。マップ上を巡回し、近づくと追ってくる） ---------- */
   "foe-bear": { foe:true, name:"森の暴れ熊", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:2000, attack:58, spAttack:10, defense:16, spDefense:8, gold:60, exp:120, speed:40, dropAs:"オオカミ", image:"assets/monsters/ookami.png", sprite:"wolf",
     ai:[ { name:"薙ぎ払い", weight:45, all:true, kind:"phys", power:.7 }, { name:"剛腕", weight:55, kind:"phys", power:1.5 } ] },
