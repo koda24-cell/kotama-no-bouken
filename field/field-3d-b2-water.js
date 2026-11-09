@@ -479,7 +479,7 @@ export async function createTheme(api) {
         }
         if (anim.ripples.length < 8 && hash(tx, ty, 11) < 0.10) addRipple(x + (hash(tx, ty, 12) - 0.5) * 2, z + (hash(tx, ty, 13) - 0.5) * 2, hash(tx, ty, 14));
       } else {
-        const naturalGround = c !== 'P' && c !== ',' && c !== '_' && c !== '<'
+        const naturalGround = !fall && c !== 'P' && c !== ',' && c !== '_' && c !== '<'
           && !objAt.has(key) && hash(tx, ty, 215) < 0.70;
         if (naturalGround) {
           B.add('floor', proc.continuousGround(tx, ty, CELL), M4(x, -0.025, z), tx, ty);
