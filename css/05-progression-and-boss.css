@@ -269,3 +269,34 @@ body:not([data-screen="battle"]) .retreat-button{display:none}
 .skill-upgrade-quantity{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#dce5ff}
 .skill-upgrade-quantity select{min-width:150px;max-width:70%;padding:8px;border:1px solid #8497da;border-radius:5px;background:#101b50;color:#fff}
 @media(max-width:700px){.training-skill-main .skill-node-select{min-height:36px;padding:5px 6px}.training-skill-main .skill-tree-map{min-width:0}}
+
+/* Etrian-style dense skill list: slim rows, level capsules, clear branch hierarchy. */
+.training-skill-main .skill-tree-map{gap:3px;padding:6px;background:linear-gradient(145deg,#123d40b8,#102b3ec7);border:1px solid #438e83;border-radius:8px}
+.training-skill-main .skill-tree-core,.training-skill-main .skill-tree-derived-row{gap:6px}
+.training-skill-main .skill-tree-source-row{gap:6px}
+.training-skill-main .skill-tree-source{gap:3px}
+.training-skill-main .skill-node-select{width:100%;max-width:none;min-height:27px;padding:3px 8px;border:0;border-left:3px solid #387a77;border-radius:15px;background:#153d49;color:#d8f2ee;box-shadow:inset 0 1px #ffffff0a}
+.training-skill-main .skill-node-name{flex:1;min-width:0;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
+.training-skill-main .skill-node-level{min-width:48px;padding:2px 7px;border-radius:14px;background:#244d58;color:#b9e9e4;text-align:center;font-size:11px;font-weight:700}
+.training-skill-main .skill-node-select.skill-available{border-left-color:#39d3aa;background:#17605c}
+.training-skill-main .skill-node-select.skill-opened{border-left-color:#49c7ce}
+.training-skill-main .skill-node-select.skill-locked{opacity:.55}
+.training-skill-main .skill-node-select.selected{outline:2px solid #a2f6e0;outline-offset:0;border-color:#a2f6e0;box-shadow:0 0 0 2px #153f43}
+.training-skill-main .skill-node-select.selected .skill-node-level{background:#54bdb5;color:#092b31}
+.training-skill-main .skill-tree-tier{min-width:33px;font-size:10px;color:#9dd8cc}
+.training-skill-main .skill-tree-connector,.training-skill-main .skill-route-connector{line-height:1;font-size:10px;color:#7fcbbd}
+.training-skill-main .skill-tree-link-label{font-size:10px;color:#83bfb5}
+.training-skill-main .skill-expansion-grid{gap:6px}
+.training-skill-main .skill-expansion-route{padding:5px;gap:3px;border:1px solid #316e70;border-radius:4px;background:#092d394f}
+.training-skill-main .skill-expansion-children,.training-skill-main .skill-expansion-solo{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:3px}
+.training-skill-main .skill-expansion-section h4{font-size:11px;color:#a5dfd5}
+.training-skill-main .skill-detail-panel{position:relative;margin-top:7px;border:2px solid #55b7a5;border-radius:7px;background:#123e42;padding:10px 12px}
+.training-skill-main .skill-detail-heading{display:flex;justify-content:space-between;gap:8px}
+.training-skill-main .skill-detail-description{font-size:12px;line-height:1.5}
+@media(max-width:650px){
+ .training-skill-main .skill-tree-source-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .training-skill-main .skill-expansion-grid{grid-template-columns:1fr}
+ .training-skill-main .skill-node-select{min-height:29px;padding:4px 5px}
+ .training-skill-main .skill-node-name{font-size:11px}
+ .training-skill-main .skill-node-level{min-width:38px;padding:2px 4px;font-size:10px}
+}
