@@ -212,17 +212,18 @@ function makeProcedural() {
     for (let i = 0; i < p.count; i++) {
       const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
       if (z < -0.01) continue;   // 通路側の面だけ凸凹にする
-      const edge = Math.min(1, Math.max(0, (2.1 - Math.abs(x)) / 0.65));   // 左右の端は平らにして隣の壁とつなぐ
+      const edge = Math.min(1, Math.max(0, (2.1 - Math.abs(x)) / 0.8));
+      const vertical = Math.min(1, Math.max(0, y / 0.65), Math.max(0, (4.1 - y) / 0.75));   // 左右の端は平らにして隣の壁とつなぐ
       const n = 0.42 * Math.sin(x * 0.88 + v * 1.13) * Math.cos(y * 0.67 + v * 0.41)
         + 0.19 * Math.sin(x * 2.3 + y * 1.2 + v * 2.1)
         + 0.08 * Math.cos(x * 5.2 - y * 3.6 + v);
-      p.setZ(i, z - n * 0.34 * edge - 0.025);
+      p.setZ(i, z - n * 0.4 * edge * vertical - 0.025);
     }
     return { name: `cavern_wall_${v}`, parts: [{ geo: smoothRock(prepGeo(g, false)), mat: 'Deep cavern rock' }] };
   });
   const ceil = (() => {
-    const g = new THREE.PlaneGeometry(4.32, 4.32, 24, 24).rotateX(Math.PI / 2).toNonIndexed(), p = g.attributes.position;
-    for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); p.setY(i, -(0.32 + 0.24 * Math.sin(x * 1.3 + 0.7) * Math.cos(z * 1.1 + 0.3) + 0.15 * Math.sin(x * 3.1 + z * 2.3) + 0.10 * Math.cos(x * 5.1 - z * 4.2))); }
+    const g = new THREE.PlaneGeometry(4.32, 4.32, 32, 32).rotateX(Math.PI / 2).toNonIndexed(), p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); p.setY(i, -(0.46 + 0.27 * Math.sin(x * 0.9 + 0.7) * Math.cos(z * 1.05 + 0.3) + 0.10 * Math.sin(x * 2.2 + z * 1.9) + 0.045 * Math.cos(x * 4.1 - z * 3.4))); }
     return { name: 'cavern_ceiling', parts: [{ geo: smoothRock(prepGeo(g, false)), mat: 'ceiling' }] };
   })();
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
@@ -449,7 +450,11 @@ export async function createTheme(api) {
           g.entries.push({ o, kind: 'sign', obj: pl, state: null, at: new THREE.Vector3(ex - dx * 0.3, 1.5, ez - dy * 0.3) });
           continue;
         }
-        if (fall === d) { addWaterfall(ex, ez, ry, tx, ty, B); continue; }
+        if (fall === d) {
+          addWaterfall(ex, ez, ry, tx, ty, B);
+          light(ex - dx * 0.55, 2.5, ez - dy * 0.55, 0x80cde6, 0.85, 6.5);
+          continue;
+        }
         if (objAt.has(key) || c === '>' || c === '<') continue;
         if (k > 0.73) {   // 壁の根元の岩（通路へのはみ出しは0.5m以内）
           const s = 0.5 + hash(tx, ty + 7 * DIR_ORDER.indexOf(d), 19) * 0.3, t = (hash(tx, ty, 20 + DIR_ORDER.indexOf(d)) - 0.5) * 2.2;
@@ -460,6 +465,7 @@ export async function createTheme(api) {
         if (k < 0.07) {    // 光る鉱脈
           const t = (hash(tx, ty, 29) - 0.5) * 2.4, y = 1.0 + hash(tx, ty, 30) * 1.8;
           B.add('crystals', pick(kit.veins, hash(tx, ty, 31)), M4(ex + along[0] * t - dx * 0.06, y, ez + along[1] * t - dy * 0.06, ry, 1.1), tx, ty);
+          light(ex - dx * 0.4, y, ez - dy * 0.4, 0x67c2d4, 0.55, 3.8);
         }
       }
       // 角の結晶の群れ（二方が壁の角だけ。通路の正面をふさがない）
@@ -471,7 +477,7 @@ export async function createTheme(api) {
           const px = x + (DIR_VEC[d1][0] + DIR_VEC[d2][0]) * 1.3, pz = z + (DIR_VEC[d1][1] + DIR_VEC[d2][1]) * 1.3;
           const piece = pick(kit.crystals, hash(tx, ty, 36 + i)), s = 0.45 + hash(tx, ty, 40) * 0.15;
           B.add('crystals', piece, M4(px, -0.05, pz, hash(tx, ty, 37) * 6, s), tx, ty);
-          light(px, piece.size.y * s * 0.6, pz, 0x4fd6ff, 1.3, 4.5);
+          light(px, piece.size.y * s * 0.6, pz, 0x79d6e8, 1.65, 5.7);
           break;
         }
         // 開けた場所の小岩（壁が1つもないマスのふち）
