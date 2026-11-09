@@ -392,6 +392,15 @@ export async function createTheme(api) {
         const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
         const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, k = hash(tx * 4 + DIR_ORDER.indexOf(d), ty, 5), ry = FACE_YAW[d] + Math.PI;
         B.add('walls', pick(proc.walls, k), M4(ex, 0, ez, ry), tx, ty);
+        // 壁と床の境目に低い岩の堆積を置き、直線的な接合部を崩す。
+        // 通路中央やイベントマスを避け、歩行判定には影響させない。
+        if (!objAt.has(key) && c !== '>' && c !== '<' && k < 0.72) {
+          const rim = pick(kit.rocks, hash(tx, ty, 180 + DIR_ORDER.indexOf(d)));
+          const offset = (hash(tx, ty, 184 + DIR_ORDER.indexOf(d)) - 0.5) * 2.0;
+          const scale = 0.22 + hash(tx, ty, 188 + DIR_ORDER.indexOf(d)) * 0.13;
+          B.add('rock_seams', rim, M4(ex - dx * 0.12 + along[0] * offset, -0.20,
+            ez - dy * 0.12 + along[1] * offset, ry + hash(tx, ty, 192) * 0.8, scale), tx, ty);
+        }
         const along = [dy ? 1 : 0, dx ? 1 : 0];   // 壁に沿う向き（x, z）
         const n = def(ch(tx + dx, ty + dy));
         const o = n && n.onWall ? a.objects.find((q) => q.tx === tx + dx && q.ty === ty + dy) : null;
@@ -436,9 +445,9 @@ export async function createTheme(api) {
         }
       }
       // 天井から下がる結晶（まれに、壁ぎわ）
-      if (hash(tx, ty, 47) < 0.06) {
+      if (!openCells.has(key) && hash(tx, ty, 47) < 0.19) {
         const d = DIR_ORDER.find((q) => wallCell(tx + DIR_VEC[q][0], ty + DIR_VEC[q][1]));
-        if (d) { const [dx, dy] = DIR_VEC[d]; B.add('crystals', pick(kit.shards, hash(tx, ty, 48)), M4(x + dx * 1.3, 3.95, z + dy * 1.3, hash(tx, ty, 49) * 6, 0.4, Math.PI), tx, ty); }
+        if (d) { const [dx, dy] = DIR_VEC[d]; B.add('crystals', pick(kit.shards, hash(tx, ty, 48)), M4(x + dx * 1.3, 3.82, z + dy * 1.3, hash(tx, ty, 49) * 6, 0.24 + hash(tx, ty, 194) * 0.22, Math.PI), tx, ty); }
       }
     }
     if (bridge) {   // 壊れた橋（6.6m）を3マスに合わせて少し伸ばす。上面が水面のすぐ上に来る高さ
