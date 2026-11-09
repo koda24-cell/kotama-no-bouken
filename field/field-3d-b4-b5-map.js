@@ -42,6 +42,25 @@ export function createTheme(api, area) {
     const d = Math.sin(x * 2.6 + y * 1.7) * Math.cos(y * 3.3 - x * 1.4) * 0.12 + Math.sin(x * 6.2 + y * 4.3) * 0.045;
     if (Math.abs(z) > 0.3) p.setZ(i, z + Math.sign(z) * d);
   } p.needsUpdate = true; wallGeo.computeVertexNormals(); }
+  // 第4階層専用：溶岩流で削れた玄武岩の張り出しを追加。
+  // 壁の両端と上下端を固定し、隣接するマスや天井との継ぎ目を抑える。
+  // 第3・第5階層には適用しない。
+  const volcanicWallGeo = magma ? wallGeo.clone() : null;
+  if (volcanicWallGeo) {
+    const p = volcanicWallGeo.getAttribute('position');
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+      if (Math.abs(z) < 0.3) continue;
+      const edge = THREE.MathUtils.smoothstep(2.04 - Math.abs(x), 0, 0.5);
+      const height = THREE.MathUtils.smoothstep(2.1 - Math.abs(y), 0, 0.48);
+      const large = Math.sin(x * 1.19 + y * 0.63) * Math.cos(y * 0.94 - x * 0.36);
+      const small = Math.sin(x * 3.45 - y * 2.18) * Math.cos(y * 1.83 + x * 1.22);
+      const fracture = Math.pow(Math.abs(Math.sin(x * 2.2 + y * 0.7)), 10);
+      p.setZ(i, z + Math.sign(z) * (large * 0.26 + small * 0.11 - fracture * 0.07) * edge * height);
+    }
+    p.needsUpdate = true;
+    volcanicWallGeo.computeVertexNormals();
+  }
   const ceilingGeo = new THREE.PlaneGeometry(4.02, 4.02, 12, 12).rotateX(Math.PI / 2);
   { const p = ceilingGeo.getAttribute('position'); for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), z = p.getZ(i);
@@ -115,7 +134,7 @@ export function createTheme(api, area) {
         const [dx, dz] = DIR_VEC[d];
         if (!wallCell(tx + dx, ty + dz)) continue;
         const ex = x + dx * 2, ez = z + dz * 2, ry = FACE_YAW[d] + Math.PI;
-        mesh(wallGeo, mat.wall, ex, 2, ez, ry);
+        mesh(volcanicWallGeo || wallGeo, mat.wall, ex, 2, ez, ry);
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
@@ -206,7 +225,7 @@ export function createTheme(api, area) {
       ];
       const spots = [];
       for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
-        if (wallCell(tx, ty) || a.objects.some(o => o.tx === tx && o.ty === ty)) continue;
+        if (wallCell(tx, ty) || objAt.has(tx + ',' + ty)) continue;
         const walls = DIR_ORDER.filter(d => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
         if (walls.length && hash(tx, ty, 117) < 0.2) spots.push({ tx, ty, dir: walls[0] });
       }
