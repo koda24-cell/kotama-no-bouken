@@ -540,3 +540,6 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 
 /* Kotama rough portrait: lower the crop only in the battle party card. */
 #battle-party .battle-member[data-party-id="kotama"] .battle-portrait img{object-position:center 0%}
+
+/* 開発用入口はゲーム画面のレイアウトや透明化処理より優先して表示する */
+#kotama-admin-launcher{position:fixed!important;right:max(10px,env(safe-area-inset-right))!important;bottom:max(10px,env(safe-area-inset-bottom))!important;z-index:2147483000!important;display:block!important;visibility:visible!important;opacity:.95!important;min-width:48px!important;min-height:30px!important;background:#14234a!important;color:#ffe8a3!important;border:1px solid #d6b96e!important;}
