@@ -49,6 +49,14 @@ export function createTheme(api, area) {
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
+  // 第5階層のみ：天井の星座状の鉱脈。光源は増やさず発光材で奥行きを演出。
+  // 共有ジオメトリなので batchStatic() が InstancedMesh にまとめる。
+  const starVeinGeo = new THREE.BoxGeometry(0.045, 0.018, 1.05);
+  const starNodeGeo = new THREE.OctahedronGeometry(0.085, 0);
+  const starVeinMat = new THREE.MeshBasicMaterial({ color: 0x6b5da6, transparent: true, opacity: 0.58, depthWrite: false });
+  const starNodeMat = new THREE.MeshStandardMaterial({
+    color: 0xa49aff, emissive: 0x6558dc, emissiveIntensity: 0.95, roughness: 0.35
+  });
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
@@ -105,6 +113,19 @@ export function createTheme(api, area) {
         ornaments++;
       }
       if (c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, 4.05, z);
+      // ボス・階段・イベントマスは空け、通常通路の一部だけに星座鉱脈を刻む。
+      // 天井直下に配置することで視線と移動経路を遮らない。
+      if (!mist && !magma && c !== '>' && c !== '<' && c !== 'B'
+          && !objAt.has(tx + ',' + ty) && hash(tx, ty, 151) < 0.19) {
+        const angle = hash(tx, ty, 152) * Math.PI * 2;
+        const sx = x + (hash(tx, ty, 153) - 0.5) * 1.1;
+        const sz = z + (hash(tx, ty, 154) - 0.5) * 1.1;
+        mesh(starVeinGeo, starVeinMat, sx, 3.94, sz, angle);
+        const dx = Math.sin(angle) * 0.48, dz = Math.cos(angle) * 0.48;
+        mesh(starNodeGeo, starNodeMat, sx - dx, 3.92, sz - dz, 0, 0.75, 0.65, 0.75);
+        mesh(starNodeGeo, starNodeMat, sx + dx, 3.92, sz + dz, 0, 1.2, 0.9, 1.2);
+        ornaments += 3;
+      }
       // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
         const h = 0.8 + hash(tx, ty, 46) * 1.7;
