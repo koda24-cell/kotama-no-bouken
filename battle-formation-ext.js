@@ -99,8 +99,8 @@
   // Assign visible rows to existing scripted group enemies without changing their save format.
   wrap("createEnemy", base => function (stage) {
     // The old 3–5 goblin gate group is relocated to the deep end of first-stratum 2F.
-    // Keep the second-stratum final gate encounter, but use its single captain instead.
-    if (stage === 2 && !battleState.encounterMode && fieldState?.area === 2 && fieldState?.floor === 2) {
+    // Other stage-2 starts retain a single captain instead of duplicating the relocated group.
+    if (stage === 2 && !battleState.encounterMode) {
       const captain = JSON.parse(JSON.stringify(FIELD_ENEMIES["foe-goblin-captain"]));
       return { ...captain, maxHp: captain.hp, spDefense: captain.spDefense ?? Math.floor(captain.defense / 2), compendiumAs: "ゴブリン", dropAs: "ゴブリン" };
     }
