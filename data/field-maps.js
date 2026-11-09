@@ -33,7 +33,7 @@ const FIELD_AREAS = {
       g: { kind: "cache", id: "a1-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a1-lever-gate" }
     },
     floors: [
-      { encounter: { min: 16, max: 28, scale: 1.0, table: [ { enemy: "stray-slime", weight: 70 }, { enemy: "mushroom", weight: 30 } ] },
+      { encounter: { min: 16, max: 28, scale: 1.0, table: [ { enemy: "stray-slime", weight: 45 }, { enemy: "mushroom", weight: 20 }, { enemy: "fire-slime", weight: 18 }, { enemy: "poison-slime", weight: 17 } ] },
         chests: [ { item: "potion", count: 2 }, { gold: 40 } ], gathers: [ ["slime_jelly", 60], ["monster_hide", 25], ["goblin_cloth", 15] ],
         foes: [ { enemy: "foe-bear", path: [[25, 14], [25, 9]] } ], map: [
         "###########################",
@@ -58,9 +58,9 @@ const FIELD_AREAS = {
         "#E#...#...................#",
         "###########################"
       ] },
-      { encounter: { min: 15, max: 26, scale: 1.15, table: [ { enemy: "stray-slime", weight: 50 }, { enemy: "mushroom", weight: 50 } ] },
+      { encounter: { min: 15, max: 26, scale: 1.15, table: [ { enemy: "stray-slime", weight: 35 }, { enemy: "mushroom", weight: 25 }, { enemy: "forest-goblin", weight: 25 }, { enemy: "goblin-scout", weight: 15 } ] },
         chests: [ { gold: 60, materials: [ ["monster_hide", 2] ] }, { item: "ether", count: 1 } ], gathers: [ ["slime_jelly", 55], ["monster_hide", 30], ["goblin_cloth", 15] ],
-        foes: [ { enemy: "foe-bear", path: [[19, 14], [17, 16]] } ], map: [
+        foes: [ { enemy: "foe-bear", path: [[19, 14], [17, 16]] }, { enemy: "foe-goblin-pack", path: [[22, 18], [23, 18]] } ], map: [
         "###########################",
         "#...............#T#.....#>#",
         "#.#############.#.#.#.#.#.#",
