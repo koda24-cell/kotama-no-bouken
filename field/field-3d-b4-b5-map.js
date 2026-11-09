@@ -47,6 +47,24 @@ export function createTheme(api, area) {
     const x = p.getX(i), z = p.getZ(i);
     p.setY(i, Math.sin(x * 2.3 + z * 0.8) * Math.cos(z * 2.1 - x) * 0.16);
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
+  // B4専用：溶岩洞窟の天井に溶融・冷却で生じた段差と細い断層を作る。
+  // 外周の変位を0へ収束させ、隣接するマスの継ぎ目と階段の開口を維持。
+  const magmaCeilingGeo = magma ? new THREE.PlaneGeometry(4.02, 4.02, 20, 20).rotateX(Math.PI / 2) : null;
+  if (magmaCeilingGeo) {
+    const p = magmaCeilingGeo.getAttribute('position');
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), z = p.getZ(i);
+      const edge = THREE.MathUtils.smoothstep(2.01 - Math.max(Math.abs(x), Math.abs(z)), 0, 0.52);
+      const swell = 0.29 * Math.sin(x * 0.93 + z * 0.37)
+        + 0.19 * Math.cos(z * 1.47 - x * 0.44);
+      const strata = 0.105 * Math.sin(x * 2.67 + z * 1.91)
+        + 0.055 * Math.cos(x * 4.31 - z * 3.72);
+      const fault = Math.pow(Math.abs(Math.sin(x * 1.36 - z * 0.81)), 12);
+      p.setY(i, edge * (swell + strata - 0.12 * fault));
+    }
+    p.needsUpdate = true;
+    magmaCeilingGeo.computeVertexNormals();
+  }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
@@ -104,7 +122,7 @@ export function createTheme(api, area) {
         mesh(crackGeo, mat.glow, x, 0.016, z, angle, 0.65 + hash(tx, ty, 33) * 0.4, 1, 1);
         ornaments++;
       }
-      if (c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, 4.05, z);
+      if (c !== '>' && c !== '<') mesh(magma ? magmaCeilingGeo : ceilingGeo, mat.ceiling, x, 4.05, z);
       // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
         const h = 0.8 + hash(tx, ty, 46) * 1.7;
