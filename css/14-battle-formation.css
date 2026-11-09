@@ -21,3 +21,7 @@
 .analyze-enemy-member>span{color:#e4e9ff}
 .analyze-enemy-member>small{color:#b6c3dc;font-variant-numeric:tabular-nums}
 .analyze-enemy-member .analyze-statuses{grid-column:1/-1;margin-top:0}
+
+#battle-enemy[data-variant="snowdrift-boss"] .enemy-group-unit img{filter:hue-rotate(155deg) saturate(.72) brightness(1.18);drop-shadow:0 0 8px #9bdfff}
+#battle-enemy[data-variant="snowdrift-boss"] .enemy-group-unit[data-row="front"]{box-shadow:0 0 12px #8bdcff66}
+#battle-enemy[data-variant="snowdrift-boss"] .enemy-group-unit[data-row="rear"]{box-shadow:0 0 8px #8bdcff44}
