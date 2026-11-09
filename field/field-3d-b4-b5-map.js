@@ -33,8 +33,17 @@ export function createTheme(api, area) {
     metal: new THREE.MeshStandardMaterial({ color: magma ? 0x8b6551 : 0x565877, metalness: 0.55, roughness: 0.5 })
   };
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02);
-  const wallGeo = new THREE.BoxGeometry(4.08, 4.2, 0.65, 8, 8, 1);
-  const ceilingGeo = new THREE.PlaneGeometry(4.02, 4.02).rotateX(Math.PI / 2);
+  const wallGeo = new THREE.BoxGeometry(4.08, 4.2, 0.65, 16, 14, 2);
+  { const p = wallGeo.getAttribute('position'); for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    const d = Math.sin(x * 2.6 + y * 1.7) * Math.cos(y * 3.3 - x * 1.4) * 0.12 + Math.sin(x * 6.2 + y * 4.3) * 0.045;
+    if (Math.abs(z) > 0.3) p.setZ(i, z + Math.sign(z) * d);
+  } p.needsUpdate = true; wallGeo.computeVertexNormals(); }
+  const ceilingGeo = new THREE.PlaneGeometry(4.02, 4.02, 12, 12).rotateX(Math.PI / 2);
+  { const p = ceilingGeo.getAttribute('position'); for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), z = p.getZ(i);
+    p.setY(i, Math.sin(x * 2.3 + z * 0.8) * Math.cos(z * 2.1 - x) * 0.16);
+  } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [];
