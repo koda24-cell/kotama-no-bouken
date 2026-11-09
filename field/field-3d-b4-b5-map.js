@@ -175,6 +175,23 @@ export function createTheme(api, area) {
             model.position.set(x - center.x * scale, -bounds.min.y * scale, z - center.z * scale);
             model.name = magma ? 'b4_boss_barrier' : 'b5_demon_throne';
             root.add(model); landmarkState = 'glb-loaded';
+            if (magma) {
+              try {
+                const dragon = (await gltfLoader.loadAsync('./assets/3d/dungeons/b4_dragonfire/models/floor4_dragon_boss_v1.glb')).scene;
+                const dragonBounds = new THREE.Box3().setFromObject(dragon);
+                const dragonSize = dragonBounds.getSize(new THREE.Vector3());
+                const dragonMax = Math.max(dragonSize.x, dragonSize.y, dragonSize.z);
+                if (dragonMax > 0) {
+                  const dragonScale = 3.4 / dragonMax;
+                  const dragonCenter = dragonBounds.getCenter(new THREE.Vector3());
+                  dragon.scale.setScalar(dragonScale);
+                  dragon.position.set(x - dragonCenter.x * dragonScale, -dragonBounds.min.y * dragonScale, z - dragonCenter.z * dragonScale);
+                  dragon.name = 'b4:dragon-boss-static';
+                  // 竜は戦闘ロジックと連動しない、ボス前の静的な環境演出。
+                  root.add(dragon);
+                }
+              } catch (_) { /* 竜の素材がない場合も探索は継続 */ }
+            }
           } else landmarkState = 'empty-glb';
         } catch (_) { landmarkState = 'procedural-fallback'; }
       }
