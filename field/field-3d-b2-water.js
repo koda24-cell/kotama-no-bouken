@@ -273,6 +273,15 @@ function makeProcedural() {
     return { name: 'b2_ceiling_ridge_' + variant,
       parts: [{ geo: g, mat: 'Deep cavern rock' }] };
   });
+  // 天井の氷柱。円錐ではなく細長い多面体にして、冷たい水源らしい輪郭を作る。
+  const iceStalactites = [0, 1, 2].map((variant) => {
+    const height = 0.75 + variant * 0.25;
+    const geo = new THREE.ConeGeometry(0.13 + variant * 0.035, height, 6, 1);
+    geo.rotateX(Math.PI);
+    geo.translate(0, -height * 0.5, 0);
+    return { name: 'b2_ice_stalactite_' + variant,
+      parts: [{ geo, mat: 'Pale mineral stone' }] };
+  });
   const shoreline = [0, 1, 2].map((variant) => {
     const g = new THREE.PlaneGeometry(3.92, 0.84, 24, 6).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
@@ -305,7 +314,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { continuousWall, continuousCeiling, continuousGround, shoreline, ceilingRidge, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { continuousWall, continuousCeiling, continuousGround, shoreline, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -523,6 +532,15 @@ export async function createTheme(api) {
         const oz = (hash(tx, ty, 232) - 0.5) * 2.2;
         B.add('ceiling_details', pick(proc.ceilingRidge, hash(tx, ty, 233)),
           M4(x + ox, 3.66, z + oz, hash(tx, ty, 234) * Math.PI * 2), tx, ty);
+      }
+      // 通路中央を避けて、天井付近に控えめな氷柱群を配置。
+      if (!openCells.has(key) && !objAt.has(key) && c !== '>' && c !== '<'
+          && hash(tx, ty, 240) < 0.34) {
+        const side = hash(tx, ty, 241) < 0.5 ? -1 : 1;
+        const ox = side * (1.12 + hash(tx, ty, 242) * 0.42);
+        const oz = (hash(tx, ty, 243) - 0.5) * 2.4;
+        B.add('ice_stalactites', pick(proc.iceStalactites, hash(tx, ty, 244)),
+          M4(x + ox, 3.62, z + oz, hash(tx, ty, 245) * Math.PI * 2), tx, ty);
       }
       // 壁と、壁ぎわの岩・鉱脈・壁付きの物
       for (const d of DIR_ORDER) {
