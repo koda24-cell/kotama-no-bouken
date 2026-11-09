@@ -14,3 +14,10 @@
 #battle-party .member-head{flex-wrap:wrap}
 #battle-party .member-head strong{display:flex;align-items:center;flex-wrap:wrap;gap:2px}
 @media(max-width:620px){.formation-row-label{font-size:8px}.enemy-group-unit[data-row="rear"]{transform:translateY(-5px) scale(.88)}}
+
+.analyze-enemy-members{grid-column:1/-1;margin-top:7px;padding-top:6px;border-top:1px solid #ffffff30}
+.analyze-enemy-members>strong{display:block;margin-bottom:4px;color:#e6d49b;font-size:10px}
+.analyze-enemy-member{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;padding:4px 5px;border-top:1px solid #ffffff18;font-size:10px}
+.analyze-enemy-member>span{color:#e4e9ff}
+.analyze-enemy-member>small{color:#b6c3dc;font-variant-numeric:tabular-nums}
+.analyze-enemy-member .analyze-statuses{grid-column:1/-1;margin-top:0}
