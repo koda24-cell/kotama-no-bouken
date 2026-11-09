@@ -74,7 +74,7 @@
   wrap("executeUnion", base => async function (action) {
     const type = unionSkills[action?.actor]?.type;
     const previous = battleState._formationPhysicalHit;
-    battleState._formationPhysicalHit = type === "stun" || type === "samurai-slash";
+    battleState._formationPhysicalHit = type === "stun" || type === "samurai-slash" || type === "cross-break";
     try { return await base.call(this, action); }
     finally { battleState._formationPhysicalHit = previous; }
   });
