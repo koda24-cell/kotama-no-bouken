@@ -52,6 +52,10 @@ export function createTheme(api, area) {
   const pavingGeo = new THREE.BoxGeometry(3.8, 0.035, 0.055);
   const columnGeo = new THREE.CylinderGeometry(0.26, 0.36, 1, 8);
   const capitalGeo = new THREE.BoxGeometry(0.76, 0.19, 0.76);
+  // B3 facade: recessed lintel and masonry bands, kept above walking height.
+  const lintelGeo = new THREE.BoxGeometry(2.15, 0.24, 0.28);
+  const bandGeo = new THREE.BoxGeometry(3.55, 0.065, 0.13);
+  const reliefGeo = new THREE.BoxGeometry(0.48, 0.62, 0.095);
   const ruinMat = new THREE.MeshStandardMaterial({ color: 0x9a9885, roughness: 0.96 });
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
@@ -132,6 +136,19 @@ export function createTheme(api, area) {
           mesh(columnGeo, ruinMat, px, height / 2, pz, 0, 1, height, 1);
           mesh(capitalGeo, ruinMat, px, height + 0.06, pz);
           ornaments += 2;
+        }
+        if (mist && !objAt.has(tx + ',' + ty)) {
+          // Wall-mounted ruined-city architecture; no new collision or blocked passage.
+          const seed = DIR_ORDER.indexOf(d) + 181;
+          if (hash(tx, ty, seed) < 0.62) {
+            mesh(bandGeo, ruinMat, ex - dx * 0.13, 3.62, ez - dz * 0.13, ry);
+            ornaments++;
+          }
+          if (hash(tx, ty, seed + 9) < 0.25) {
+            mesh(lintelGeo, ruinMat, ex - dx * 0.16, 3.14, ez - dz * 0.16, ry);
+            mesh(reliefGeo, mat.metal, ex - dx * 0.23, 2.65, ez - dz * 0.23, ry);
+            ornaments += 2;
+          }
         }
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
