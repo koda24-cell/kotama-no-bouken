@@ -1297,7 +1297,7 @@ const skillTreeExpansionDefinitions={
     {
       "id": "warrior-exp-root-1",
       "name": "猛攻の構え",
-      "desc": "猛攻の構え。戦士の戦い方を発展させる技。",
+      "desc": "猛攻の構え。モンクの戦い方を発展させる技。",
       "kind": "root",
       "sourceNode": "a",
       "group": 1,
@@ -1307,7 +1307,7 @@ const skillTreeExpansionDefinitions={
         "cost": 12,
         "target": "enemy",
         "type": "xj",
-        "description": "猛攻の構え。戦士の戦い方を発展させる技。",
+        "description": "猛攻の構え。モンクの戦い方を発展させる技。",
         "xj": {
           "kind": "phys",
           "mult": 1.15,
@@ -1365,7 +1365,7 @@ const skillTreeExpansionDefinitions={
     {
       "id": "warrior-exp-root-2",
       "name": "破砕の構え",
-      "desc": "破砕の構え。戦士の戦い方を発展させる技。",
+      "desc": "破砕の構え。モンクの戦い方を発展させる技。",
       "kind": "root",
       "sourceNode": "a",
       "group": 2,
@@ -1375,7 +1375,7 @@ const skillTreeExpansionDefinitions={
         "cost": 15,
         "target": "enemy",
         "type": "xj",
-        "description": "破砕の構え。戦士の戦い方を発展させる技。",
+        "description": "破砕の構え。モンクの戦い方を発展させる技。",
         "xj": {
           "kind": "phys",
           "mult": 1.27,
@@ -1433,7 +1433,7 @@ const skillTreeExpansionDefinitions={
     {
       "id": "warrior-exp-root-3",
       "name": "闘志の連鎖",
-      "desc": "闘志の連鎖。戦士の戦い方を発展させる技。",
+      "desc": "闘志の連鎖。モンクの戦い方を発展させる技。",
       "kind": "root",
       "sourceNode": "b",
       "group": 3,
@@ -1443,7 +1443,7 @@ const skillTreeExpansionDefinitions={
         "cost": 18,
         "target": "enemy",
         "type": "xj",
-        "description": "闘志の連鎖。戦士の戦い方を発展させる技。",
+        "description": "闘志の連鎖。モンクの戦い方を発展させる技。",
         "xj": {
           "kind": "phys",
           "mult": 1.39,
@@ -1454,18 +1454,18 @@ const skillTreeExpansionDefinitions={
     },
     {
       "id": "warrior-exp-3-1",
-      "name": "狂戦士の咆哮",
-      "desc": "狂戦士の咆哮。前段階の技から派生する上位スキル。",
+      "name": "狂モンクの咆哮",
+      "desc": "狂モンクの咆哮。前段階の技から派生する上位スキル。",
       "kind": "branch",
       "parentId": "warrior-exp-root-3",
       "group": 3,
       "skill": {
         "id": "warrior-exp-3-1-skill",
-        "name": "狂戦士の咆哮",
+        "name": "狂モンクの咆哮",
         "cost": 28,
         "target": "allEnemies",
         "type": "xj",
-        "description": "狂戦士の咆哮。前段階の技から派生する上位スキル。",
+        "description": "狂モンクの咆哮。前段階の技から派生する上位スキル。",
         "xj": {
           "kind": "phys",
           "mult": 0.72,
@@ -1501,7 +1501,7 @@ const skillTreeExpansionDefinitions={
     {
       "id": "warrior-exp-root-4",
       "name": "剛力の誓い",
-      "desc": "剛力の誓い。戦士の戦い方を発展させる技。",
+      "desc": "剛力の誓い。モンクの戦い方を発展させる技。",
       "kind": "root",
       "sourceNode": "b",
       "group": 4,
@@ -1511,7 +1511,7 @@ const skillTreeExpansionDefinitions={
         "cost": 21,
         "target": "enemy",
         "type": "xj",
-        "description": "剛力の誓い。戦士の戦い方を発展させる技。",
+        "description": "剛力の誓い。モンクの戦い方を発展させる技。",
         "xj": {
           "kind": "phys",
           "mult": 1.51,
