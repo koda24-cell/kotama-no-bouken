@@ -1,0 +1,36 @@
+{
+  "title": "Floor 4 - Dragonfire Caldera",
+  "version": "v1 prototype kit",
+  "textures": [
+    "textures/volcanic_basalt_albedo.png",
+    "textures/ashen_stone_albedo.png",
+    "textures/molten_lava_albedo.png",
+    "textures/blackened_bronze_albedo.png",
+    "textures/volcanic_basalt_normal.png",
+    "textures/volcanic_basalt_roughness.png",
+    "textures/ashen_stone_normal.png",
+    "textures/ashen_stone_roughness.png",
+    "textures/molten_lava_normal.png",
+    "textures/molten_lava_roughness.png",
+    "textures/molten_lava_emissive.png",
+    "textures/blackened_bronze_normal.png",
+    "textures/blackened_bronze_roughness.png"
+  ],
+  "models": [
+    "floor4_dragonfire_environment_v1.glb",
+    "floor4_corrupted_barrier_v1.glb",
+    "floor4_dragon_boss_v1.glb",
+    "floor4_gothic_fortress_addon_v1.glb",
+    "floor4_lavafall_ember_fx_seed_v1.glb"
+  ],
+  "notes": [
+    "GLB materials embed authored image textures.",
+    "Prototype environment kit; not a complete playable dungeon.",
+    "Requires in-game lighting, fog, lava animation, collision and navigation integration.",
+    "Barrier is a separate GLB for event-driven removal/destruction.",
+    "Static stylized dragon boss prototype; textured scale/horn/magma materials; no rig or animation.",
+    "Added fortress/bridge architecture module with gothic arches, lancet windows, dragon gate, flame pylons and relief plaques.",
+    "Added static lavafall strips and ember seed positions; animate particles and flow at runtime.",
+    "Added normal and roughness maps for four materials plus molten lava emissive map; renderer integration required."
+  ]
+}
