@@ -61,6 +61,9 @@ export function createTheme(api, area) {
   const emberGeo = localGeo(new THREE.IcosahedronGeometry(0.06, 0));
   const crackGeo = localGeo(new THREE.PlaneGeometry(3.4, 0.07).rotateX(-Math.PI / 2));
   const lavaGeo = localGeo(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2));
+  // 第4階層専用：六角柱状節理。共有ジオメトリを使いインスタンシング対象にする。
+  // 壁の内側に埋め込んで配置し、通路中央の視認性を保つ。
+  const basaltGeo = magma ? localGeo(new THREE.CylinderGeometry(0.26, 0.34, 1, 6, 1)) : null;
   const flameMat = new THREE.MeshBasicMaterial({ color: mist ? 0xa3ffe4 : magma ? 0xff6b24 : 0xb18cff, transparent: true, opacity: 0.75, depthWrite: false });
   function mesh(geo, material, x, y, z, ry = 0, sx = 1, sy = 1, sz = 1) {
     const m = new THREE.Mesh(geo, material);
@@ -116,6 +119,22 @@ export function createTheme(api, area) {
         if (!wallCell(tx + dx, ty + dz)) continue;
         const ex = x + dx * 2, ez = z + dz * 2, ry = FACE_YAW[d] + Math.PI;
         mesh(wallGeo, mat.wall, ex, 2, ez, ry);
+        if (magma && !objAt.has(tx + ',' + ty) && hash(tx, ty, 151 + DIR_ORDER.indexOf(d)) < 0.29) {
+          // 複数の玄武岩柱を壁沿いに並べ、単調な平面を立体的な柱状節理へ変える。
+          // 柱の中心は壁面から最大0.38m以内。イベント・階段マスには置かない。
+          const tangentX = -dz, tangentZ = dx;
+          for (let j = 0; j < 3; j++) {
+            const offset = (j - 1) * 0.55 + (hash(tx, ty, 160 + j) - 0.5) * 0.12;
+            const height = 2.0 + hash(tx, ty, 165 + j) * 1.9;
+            const inset = 0.13 + hash(tx, ty, 170 + j) * 0.16;
+            mesh(basaltGeo, mat.wall,
+              ex - dx * inset + tangentX * offset, height * 0.5,
+              ez - dz * inset + tangentZ * offset,
+              hash(tx, ty, 175 + j) * Math.PI / 3,
+              0.85 + hash(tx, ty, 180 + j) * 0.35, height, 0.85 + hash(tx, ty, 185 + j) * 0.35);
+          }
+          ornaments += 3;
+        }
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
