@@ -496,7 +496,7 @@ export async function createTheme(api) {
     // 通路内に柱を立てず、3×3マスの外周だけを装飾する。
     for (let side = 0; side < 4; side++) {
       const axis = side % 2 === 0;
-      const sign = side < 2 ? -1 : 1;
+      const sign = side % 2 === 0 ? -1 : 1;
       const wall = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.4 : 0.9, 18.5, axis ? 0.9 : 12.4), dark);
       wall.position.set(x + (axis ? 0 : sign * 6.1), 13.25, z + (axis ? sign * 6.1 : 0));
       atrium.add(wall);
