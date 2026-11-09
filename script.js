@@ -426,8 +426,8 @@ function renderShop(){
 // スキルツリー定義は data/skill-trees.js に分離。
 const skillLevels={};characters.forEach(c=>skillLevels[c.id]={});
 const legacyTreeBonuses={};characters.forEach(c=>legacyTreeBonuses[c.id]={});
-function treeNodes(charId){const t=skillTreeDefinitions[charId];return t?[t.passive,t.a,t.b,t.derived]:[];}
-function getTreeLevel(charId,nodeId){return Math.max(0,Math.min(["kotama","knight","healer","mage"].includes(charId)?10:5,Math.floor(Number(skillLevels[charId]?.[nodeId])||0)));}
+function treeNodes(charId){const t=skillTreeDefinitions[charId];return t?[t.passive,t.a,t.b,t.derived,...(skillTreeExpansionDefinitions[charId]||[])]:[];}
+function getTreeLevel(charId,nodeId){const expansion=(skillTreeExpansionDefinitions[charId]||[]).some(n=>n.id===nodeId);const max=expansion?1:(["kotama","knight","healer","mage"].includes(charId)?10:5);return Math.max(0,Math.min(max,Math.floor(Number(skillLevels[charId]?.[nodeId])||0)));}
 function setTreeLevel(charId,nodeId,level){if(!skillLevels[charId])skillLevels[charId]={};skillLevels[charId][nodeId]=Math.max(0,Math.min(["kotama","knight","healer","mage"].includes(charId)?10:5,Math.floor(level)));}
 function hasTreeSkill(charId,id){const node=treeNodes(charId).find(n=>n.id===id);if(node)return getTreeLevel(charId,id)>0;return (unlockedSkills[charId]||[]).includes(id);}
 function treeBonus(charId,effect){return treeNodes(charId).filter(n=>n.effect===effect||(n.effects||[]).includes(effect)).reduce((v,n)=>v+getTreeLevel(charId,n.id)*.03,0)+(legacyTreeBonuses[charId]?.[effect]||0);}
@@ -439,6 +439,7 @@ function getCharacterSkills(c){
  if(extra&&getTreeLevel(c.id,extra.node)>0)skills.push({...extra.skill,treeLevel:getTreeLevel(c.id,extra.node)});
  if(branchB&&getTreeLevel(c.id,tree.b.id)>0){const lv=getTreeLevel(c.id,tree.b.id);skills.push({...branchB,treeLevel:lv,target:c.id==="healer"&&lv<5?"ally":branchB.target,cost:c.id==="healer"&&lv>=6?Math.max(1,10-lv):branchB.cost});}
  if(derived&&getTreeLevel(c.id,tree.derived.id)>0)skills.push({...derived,treeLevel:getTreeLevel(c.id,tree.derived.id),disabled:c.id==="knight"&&derived.type==="full-guard"&&(battleState.knightFullGuardCooldown||0)>0});
+ for(const node of skillTreeExpansionDefinitions[c.id]||[])if(getTreeLevel(c.id,node.id)>0)skills.push({...node.skill,treeLevel:1});
  return skills;
 }
 function treeStatBonus(charId){const node=skillTreeDefinitions[charId]?.passive;return node&&getTreeLevel(charId,node.id)>0?getTreeLevel(charId,node.id)*.02:0;}
@@ -448,7 +449,9 @@ function getTrainingUpgradeEligibility(charId,nodeId){
   if(!tree||!node)return {allowed:false,reasons:["スキル情報を確認できません。"],cost:1};
   const isNew=newTreeCharacterIds.includes(charId),passive=tree.passive,a=tree.a,b=tree.b,derived=tree.derived;
   const lv=getTreeLevel(charId,nodeId),level=getTreeLevel(charId,passive.id),la=getTreeLevel(charId,a.id),lb=getTreeLevel(charId,b.id);
-  const max=isNew?10:(node===a||node===b?5:1),cost=node===derived&&!isNew?2:1,reasons=[];
+  const expansion=(skillTreeExpansionDefinitions[charId]||[]).find(n=>n.id===nodeId);
+  const max=expansion?1:(isNew?10:(node===a||node===b?5:1)),cost=expansion?2:(node===derived&&!isNew?2:1),reasons=[];
+  if(expansion){if(lv>=1)reasons.push("すでに習得しています。");if(!stageEntered[4])reasons.push("第4ステージに到達していません。");if(expansion.kind==="root"&&getTreeLevel(charId,tree[expansion.sourceNode].id)<1)reasons.push("派生元のスキルをLv.1以上にする必要があります。");if(expansion.kind==="branch"&&getTreeLevel(charId,expansion.parentId)<1)reasons.push("前段階の派生スキルを習得する必要があります。");if(expansion.kind==="solo"&&level<1)reasons.push("基礎パッシブをLv.1以上にする必要があります。");if((trainingPoints[charId]||0)<cost)reasons.push("育成ポイントが不足しています（必要："+cost+"pt／所持："+(trainingPoints[charId]||0)+"pt）。");return {allowed:reasons.length===0,reasons,cost,node,level:lv,nextLevel:1,max,points:trainingPoints[charId]||0};}
   const stageForLevel=n=>n===0?1:n<=2?2:n===3?3:n===4?4:5;
   if(lv>=max)reasons.push("最大レベルに到達しています。");
   else if(node===passive){
@@ -469,6 +472,8 @@ function getTrainingUpgradeEligibility(charId,nodeId){
 function getTrainingEffectPreview(charId,nodeId,level,nextLevel){
   const tree=skillTreeDefinitions[charId],node=treeNodes(charId).find(n=>n.id===nodeId);
   if(!tree||!node)return [];
+  const expansion=(skillTreeExpansionDefinitions[charId]||[]).find(n=>n.id===nodeId);
+  if(expansion)return [{label:"習得スキル",before:level?"習得済み":"未習得",after:expansion.skill.name+"（SP "+expansion.skill.cost+"）"}];
   const isNew=newTreeCharacterIds.includes(charId),a=tree.a,b=tree.b,derived=tree.derived;
   const pct=n=>String(Math.round(n*1000)/10).replace(/\.0$/,"")+"%";
   if(node===tree.passive){
@@ -643,7 +648,7 @@ function renderProgressionPanelUnsafe(){
  const level=getTreeLevel(c.id,passive.id),la=getTreeLevel(c.id,a.id),lb=getTreeLevel(c.id,b.id),ld=getTreeLevel(c.id,derived.id);
  const selectedNode=treeNodes(c.id).find(n=>n.id===selectedTrainingSkill)||passive;
  const stageForLevel=n=>n===0?1:n<=2?2:n===3?3:n===4?4:5;
- const conditionFor=node=>{if(!isNewTree){if(node===passive)return "第1ステージ到達・キャラクターLv.1";if(node===a||node===b)return `基礎パッシブ取得後・第${stageForLevel(Math.max(getTreeLevel(c.id,node.id)+1,1))}ステージ到達・キャラクターLv.1以上`;return "2つの通常SPスキルが両方Lv.2以上・第4ステージ到達";}if(node===passive)return "第1ステージ到達";if(node===a||node===b)return "基礎マスタリーLv.1以上・第2ステージ到達";return "SP A・SP Bを両方習得（Lv.1以上）・第4ステージ到達";};
+ const conditionFor=node=>{const ex=(skillTreeExpansionDefinitions[c.id]||[]).find(n=>n.id===node.id);if(ex)return ex.kind==="root"?"派生元スキルLv.1以上・第4ステージ到達":ex.kind==="branch"?"前段階の派生スキル習得・第4ステージ到達":"基礎パッシブLv.1以上・第4ステージ到達";if(!isNewTree){if(node===passive)return "第1ステージ到達・キャラクターLv.1";if(node===a||node===b)return `基礎パッシブ取得後・第${stageForLevel(Math.max(getTreeLevel(c.id,node.id)+1,1))}ステージ到達・キャラクターLv.1以上`;return "2つの通常SPスキルが両方Lv.2以上・第4ステージ到達";}if(node===passive)return "第1ステージ到達";if(node===a||node===b)return "基礎マスタリーLv.1以上・第2ステージ到達";return "SP A・SP Bを両方習得（Lv.1以上）・第4ステージ到達";};
  const canUpgrade=node=>getTrainingUpgradeEligibility(c.id,node.id).allowed;
  const stateLabel=node=>{const lv=getTreeLevel(c.id,node.id),max=isNewTree?10:(node===a||node===b?5:1);if(lv>=max)return "最大レベル";return canUpgrade(node)?(lv>0?"強化可能":"取得可能"):"条件未達成";};
  const nodeCard=(node,kind)=>{const lv=getTreeLevel(c.id,node.id),max=isNewTree?10:(kind==="branch"?5:1),available=canUpgrade(node),selected=selectedNode.id===node.id,linkedSkill=kind==="branch"?(node===a?skillTreeExtraSkills[c.id].skill.name:skillTreeBranchBSkills[c.id].name):kind==="derived"?skillTreeDerivedSkills[c.id].name:"",cost=node===derived&&!isNewTree?2:1;return `<article class="skill-node skill-${available?"available":lv>0?"opened":"locked"} ${selected?"selected":""}" data-node-kind="${kind}"><span class="skill-node-step">${kind==="passive"?"基礎":kind==="derived"?"派生":node===a?"SP A":"SP B"}</span><strong>${esc(node.name)}</strong><p>${esc(node.desc)}</p><div class="skill-level">${isNewTree?`Lv.${lv}/${max}`:kind==="branch"?`SPスキル（${lv}/5）`:lv?"取得済み":"未取得"}</div>${linkedSkill?`<small>習得SPスキル：${esc(linkedSkill)}</small>`:""}<small>${esc(conditionFor(node))}</small><button type="button" class="skill-detail-button" data-select-skill="${node.id}">詳細</button><button type="button" data-upgrade-skill="${node.id}" ${available?"":"disabled"}>${lv>=max?"最大":lv?"強化する":"取得する"}（${cost}pt）</button></article>`;};
@@ -661,6 +666,7 @@ function renderProgressionPanelUnsafe(){
  <div class="training-skill-main">
   <div class="training-section-head"><div><h3>${esc(c.name)}のスキルツリー</h3><p>基礎パッシブを取得し、2系統のSPスキルを育成。両方を習得すると派生スキルが解放されます。</p></div><strong>育成ポイント：${points}pt</strong></div>
   <div class="skill-tree-scroll"><div class="skill-tree-layout"><div class="skill-tree-passive">${nodeCard(passive,"passive")}</div><div class="skill-tree-branches"><div class="skill-branch-top">${nodeCard(a,"branch")}</div><div class="skill-branch-bottom">${nodeCard(b,"branch")}</div></div><div class="skill-tree-derived">${nodeCard(derived,"derived")}</div></div></div>
+  <section class="skill-expansion-section"><h4>追加派生スキル（4系統）</h4><p>既存SPスキルから派生する4ルート。各ルートの先で2つに分岐します。</p><div class="skill-expansion-grid">${(skillTreeExpansionDefinitions[c.id]||[]).filter(n=>n.kind==="root").map(root=>{const children=(skillTreeExpansionDefinitions[c.id]||[]).filter(n=>n.parentId===root.id);const card=node=>{const lv=getTreeLevel(c.id,node.id),ok=getTrainingUpgradeEligibility(c.id,node.id).allowed;return `<article class="skill-node skill-${ok?"available":lv?"opened":"locked"} ${selectedNode.id===node.id?"selected":""}"><span class="skill-node-step">${node.kind==="root"?"派生元":"派生"}</span><strong>${esc(node.name)}</strong><p>${esc(node.desc)}</p><small>SP ${node.skill.cost} ／ ${lv?"習得済み":"未取得"}</small><button type="button" class="skill-detail-button" data-select-skill="${node.id}">詳細</button><button type="button" data-upgrade-skill="${node.id}" ${ok?"":"disabled"}>${lv?"習得済み":"取得する"}（2pt）</button></article>`;};return `<div class="skill-expansion-route"><small>派生元：${root.sourceNode==="a"?esc(a.name):esc(b.name)}</small>${card(root)}<div class="skill-expansion-children">${children.map(card).join("")}</div></div>`;}).join("")}</div></section><section class="skill-expansion-section"><h4>独立スキル（2つ）</h4><div class="skill-expansion-solo">${(skillTreeExpansionDefinitions[c.id]||[]).filter(n=>n.kind==="solo").map(node=>{const lv=getTreeLevel(c.id,node.id),ok=getTrainingUpgradeEligibility(c.id,node.id).allowed;return `<article class="skill-node skill-${ok?"available":lv?"opened":"locked"} ${selectedNode.id===node.id?"selected":""}"><strong>${esc(node.name)}</strong><p>${esc(node.desc)}</p><small>SP ${node.skill.cost} ／ ${lv?"習得済み":"未取得"}</small><button type="button" class="skill-detail-button" data-select-skill="${node.id}">詳細</button><button type="button" data-upgrade-skill="${node.id}" ${ok?"":"disabled"}>${lv?"習得済み":"取得する"}（2pt）</button></article>`;}).join("")}</div></section>
   <div class="skill-detail-panel"><strong>選択中：${esc(selectedNode.name)}</strong><p>${esc(selectedNode.desc)}</p><small>現在レベル：${selectedLevel}/${selectedMax} ／ 次の強化：${esc(selectedNext)} ／ 取得条件：${esc(conditionFor(selectedNode))} ／ 状態：${stateLabel(selectedNode)}</small>${canUpgrade(selectedNode)?"":`<p class="skill-upgrade-reasons"><strong>強化できない理由：</strong>${getTrainingUpgradeEligibility(c.id,selectedNode.id).reasons.map(esc).join(" ")}</p>`}</div>
  </div>
  </section>
