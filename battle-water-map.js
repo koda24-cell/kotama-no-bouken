@@ -4,8 +4,10 @@
   const $ = id => document.getElementById(id);
   let opened = false;
   function render() {
-    const panel=$("battle-field-map"), grid=$("battle-field-map-grid");
+    const panel=$("battle-field-map"), grid=$("battle-field-map-grid"), toggle=$("battle-field-map-toggle");
     if(!panel||!grid||typeof fieldState==="undefined"||typeof fieldArea!=="function")return;
+    if(toggle)toggle.hidden=fieldState.area!==2||!battleState?.encounterMode;
+    if(fieldState.area!==2){opened=false;panel.hidden=true;return;}
     const a=fieldArea(fieldState.area,fieldState.floor); if(!a)return;
     const player=fieldPlayerTile(), cols=a.w, rows=a.h;
     grid.style.setProperty("--map-cols",cols);
@@ -80,6 +82,12 @@
     };
   }
   document.addEventListener("DOMContentLoaded",()=>{
+    const originalRender=window.renderBattle;
+    if(typeof originalRender==="function")window.renderBattle=function(...args){
+      const members=battleState.enemy?.members;
+      if(Array.isArray(members)){const alive=members.filter(m=>m.hp>0);alive.forEach((m,i)=>m.row=i===0?"front":"rear");}
+      return originalRender.apply(this,args);
+    };
     $("battle-field-map-toggle")?.addEventListener("click",()=>{opened=!opened;render();});
     $("battle-field-map-close")?.addEventListener("click",()=>{opened=false;render();});
     document.addEventListener("battle:start",render);
