@@ -90,8 +90,8 @@ const STORY_SCENES = {
   },
   "a1-boss": {
     lines: [
-      { who: "narration", text: "道の先で、ぷるぷると揺れる大きな影が行く手をふさいでいる。" },
-      { who: "kotama", text: "あれが噂の大きな魔物……！　みんな、いくよ！" }
+      { who: "narration", text: "霧の奥から、白銀の毛並みを持つ巨大な狼が静かに姿を現した。" },
+      { who: "kotama", text: "あれが樹海の奥を守る狼王……スノードリフト！　みんな、いくよ！" }
     ]
   },
 
@@ -128,8 +128,8 @@ const STORY_SCENES = {
   },
   "a2-boss": {
     lines: [
-      { who: "narration", text: "茂みがいっせいにざわめいた。武器を手にしたゴブリンたちが、こちらを取り囲む！" },
-      { who: "kotama", text: "数が多い……でも、ここを抜けなきゃ石像には会えない！" }
+      { who: "narration", text: "茂みの奥から、ゴブリン親衛隊長がゆっくりと姿を現した。" },
+      { who: "kotama", text: "隊長を倒せば、この森の統率も崩れるはず……！" }
     ]
   },
 
