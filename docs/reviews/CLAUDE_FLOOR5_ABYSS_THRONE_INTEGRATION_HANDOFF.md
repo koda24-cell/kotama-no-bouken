@@ -20,19 +20,27 @@ Create an isolated Floor 5 preview in the existing 3D dungeon pipeline. This is 
 7. Ancient ornament references: vertical geometric patterns and flowing organic/vine-like patterns. Use cyan/blue-white as older neutral rune light; shift to violet/magenta near the Demon King.
 8. The final chamber is a grand, symmetrical throne hall with a monumental demon throne, violet lighting and restrained ornament.
 
-## Prototype asset
-A first-pass modular GLB was generated as `floor5_abyss_throne_prototype_v1.glb` (136 named meshes). It is a geometry/material blockout. The cosmic sky and distant illuminated structures should be renderer/background layers, not literal small meshes. Flame meshes are static placeholders; use the existing particle system for motion.
+## Asset pack — current version
+- ZIP: `assets/3d/dungeons/b5_abyssal_star_realm/models/floor5_abyss_throne_refined_v2.zip`
+- Contains `floor5_abyss_throne_refined_v2.glb` and `README_FLOOR5_V2.md`.
+- GLB: 604 named meshes, approximately 407 KB.
+- Includes broken causeway, layered abyss rim/cliff walls, floating ruins, parapets, gothic gate/colonnade, rune inlays, frayed banners, throne frame/dais/throne, chandeliers, violet flame and ember placeholders, starfield points, and distant machine towers with emissive windows.
+- Extract the ZIP before loading. Do not pass the ZIP to the GLB loader.
+- v1 is superseded by v2; use v2 as the integration source.
 
 ## Integration tasks
 - Inspect the current 3D renderer, scene loading, floor selection, camera, movement, collision, and asset conventions.
 - Add a separate Floor 5 scene/config and isolated preview route.
 - Use broken stone slabs as the walkable route; side platforms and debris are visual unless explicitly traversable.
 - Keep abyss-facing walls opaque/occluding so the route beyond is not visible.
-- Add cosmic background and distant mechanical skyline as a separate layer.
+- Add a cosmic sky/nebula background and distant mechanical skyline as a separate renderer layer. Star meshes are only supplementary markers.
 - Use violet fire particles and embers; static fallback is acceptable if no suitable animation system exists.
 - Use torn banners, rune inlays, gothic arches and throne assets as modular pieces.
 - Separate visual meshes from collision; do not make the entire GLB one collider.
 - Test scale, camera framing, occlusion, performance and browser console.
+
+## Known limitations / renderer-side work
+The GLB is a refined geometry/material prototype, not final hand-authored production art. Cosmic sky/nebula, depth fog, dynamic/volumetric lighting, animated flames/embers, rune pulses, collision and route validation remain game-side tasks.
 
 ## Constraints
 - Do not modify Floor 1 or Floor 2.
