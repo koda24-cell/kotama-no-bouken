@@ -257,6 +257,11 @@
           <h1 id="stage-title">STAGE 1 / 5</h1>
           <p id="turn-counter">第1ターン　行動選択</p>
         </div>
+        <div id="battle-field-map" class="battle-field-map" hidden aria-label="探索マップ">
+          <div class="battle-field-map-head"><strong>FIELD MAP</strong><span id="battle-field-map-turn">探索歩数 0</span><button id="battle-field-map-close" type="button" aria-label="閉じる">×</button></div>
+          <div id="battle-field-map-grid" class="battle-field-map-grid"></div>
+        </div>
+        <button id="battle-field-map-toggle" class="battle-field-map-toggle" type="button" aria-expanded="false">MAP</button>
         <div class="battle-arena">
           <div class="stage-stars" aria-hidden="true">*　　 .　　 *　　 .　　 *</div>
           <div id="stage-environment" class="stage-environment-banner" hidden aria-live="polite"></div>
@@ -376,5 +381,6 @@
     </section>
 
   </div>
+  <script src="./battle-water-map.js?v=20261109-01" defer></script>
 </body>
 </html>
