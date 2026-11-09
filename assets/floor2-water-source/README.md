@@ -19,3 +19,16 @@ Beautiful but dangerous: clear water, luminous blue/violet ore, sharp crystal sp
 - Claude: integrate only after checking the current floor rendering pipeline. Keep floor 1 untouched.
 - Waterfall animation can be implemented with a vertical translate/opacity loop; pool shimmer can use a subtle scale/opacity loop.
 - Do not treat the panoramic background as a replacement for the existing navigable 3D dungeon renderer.
+
+
+## Expanded modules
+- `rock-spires.svg`: jagged mineral outcrops
+- `ruined-bridge.svg`: broken stone crossing
+- `water-ripples.svg`: concentric pool ripples
+- `crystal-spikes.svg`: sharp crystal field
+- `water-gate.svg`: ancient sluice gate
+- `stone-floor-tiles.svg`: modular wet stone floor tiles
+- `rock-wall-segment.svg`: cave wall variation
+- `aquatic-thorns.svg`: thorny aquatic foliage
+- `waterfall-mist.svg`: waterfall spray and mist
+- `ore-vein.svg`: mineral seam embedded in rock
