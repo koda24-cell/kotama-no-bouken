@@ -20,20 +20,26 @@
   // Battle HUD status: icon + remaining turns only. Full names remain in ANALYZE.
   window.extStatusBadges = function (unit) {
     const bag = typeof extStatusBag === "function" ? extStatusBag(unit, false) : null;
-    if (!bag) return "";
-    return Object.entries(bag).filter(([, s]) => s.turns > 0).map(([type, s]) => {
+    const html = Object.entries(bag || {}).filter(([, st]) => st.turns > 0).map(([type, st]) => {
       const def = EXT_STATUS_DEFS[type] || { label: type, icon: "•", harm: true };
-      return compactStatus(type, s, def);
-    }).join("");
+      return compactStatus(type, st, def);
+    });
+    if (typeof burnedTurns !== "undefined" && Number(burnedTurns[unit.id]) > 0 && !(bag?.burn?.turns > 0)) html.push(compactStatus("burn", { turns: burnedTurns[unit.id] }, EXT_STATUS_DEFS.burn));
+    if (Number(unit._defenseDownTurns) > 0 && !(bag?.defenseDown?.turns > 0)) html.push(compactStatus("defenseDown", { turns: unit._defenseDownTurns }, EXT_STATUS_DEFS.defenseDown));
+    return html.join("");
   };
   window.extEnemyStatusBadges = function (unit) {
     const bag = typeof extStatusBag === "function" ? extStatusBag(unit, false) : null;
-    if (!bag) return [];
-    return Object.entries(bag).filter(([, s]) => s.turns > 0).map(([type, s]) => {
+    const html = Object.entries(bag || {}).filter(([, st]) => st.turns > 0).map(([type, st]) => {
       const def = EXT_STATUS_DEFS[type] || { label: type, icon: "•", harm: true };
-      const turns = Math.max(0, Math.floor(Number(s.turns) || 0));
+      const turns = Math.max(0, Math.floor(Number(st.turns) || 0));
       return `<span class="${def.harm ? "enemy-status-debuff" : "enemy-status-buff"} status-icon-only" title="${esc(def.label)}：残り${turns}ターン" aria-label="${esc(def.label)} 残り${turns}ターン">${def.icon || "•"}<b>${turns}</b></span>`;
     });
+    if (Number(unit._defenseDownTurns) > 0 && !(bag?.defenseDown?.turns > 0)) {
+      const def = EXT_STATUS_DEFS.defenseDown, turns = unit._defenseDownTurns;
+      html.push(`<span class="enemy-status-debuff status-icon-only" title="${esc(def.label)}：残り${turns}ターン">${def.icon}<b>${turns}</b></span>`);
+    }
+    return html;
   };
 
   // Enemy target policy: taunt and explicit rear targeting take precedence.
