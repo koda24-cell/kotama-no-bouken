@@ -696,7 +696,7 @@ function renderProgressionPanelUnsafe(){
   const lv=getTreeLevel(c.id,node.id),ex=(skillTreeExpansionDefinitions[c.id]||[]).find(n=>n.id===node.id);
   const max=ex?(ex.kind==="root"?3:1):(isNewTree?10:(node===a||node===b?5:1));
   const available=canUpgrade(node),selected=selectedNode.id===node.id;
-  return `<button type="button" class="skill-node-select skill-${available?"available":lv>0?"opened":"locked"} ${selected?"selected":""}" data-select-skill="${node.id}" aria-pressed="${selected}"><span class="skill-node-name">${esc(node.name)}</span><span class="skill-node-level">Lv.${lv}/${max}</span></button>`;
+  return `<button type="button" class="skill-node-select skill-${available?"available":lv>0?"opened":"locked"} ${selected?"selected":""}" data-select-skill="${node.id}" aria-pressed="${selected}" title="${esc(node.name)} Lv.${lv}/${max}"><span class="skill-node-name">${esc(node.name)}</span><span class="skill-node-level"><span class="skill-level-current">${lv}</span><span class="skill-level-divider"> / </span>${max}</span></button>`;
  };
  const mat=Object.entries(materials).map(([id,n])=>`${materialNames[id]||id} ×${n||0}`).join("　／　")||"素材なし";
  const selectedLevel=getTreeLevel(c.id,selectedNode.id),selectedExpansion=(skillTreeExpansionDefinitions[c.id]||[]).find(n=>n.id===selectedNode.id),selectedMax=selectedExpansion?(selectedExpansion.kind==="root"?3:1):(isNewTree?10:selectedNode===a||selectedNode===b?5:1);
@@ -714,10 +714,10 @@ function renderProgressionPanelUnsafe(){
   <div class="skill-tree-scroll">
    <div class="skill-tree-map">
     <div class="skill-tree-core"><span class="skill-tree-tier">基礎</span>${nodeCard(passive,"passive")}</div>
-    <div class="skill-tree-connector">↓</div>
+    <div class="skill-tree-connector skill-tree-main-link" aria-label="基礎スキルからSPスキルへ接続"></div>
     <div class="skill-tree-source-row">
-     <div class="skill-tree-source"><span class="skill-tree-tier">SP A</span>${nodeCard(a,"branch")}<span class="skill-tree-link-label">── Lv.3 ──</span></div>
-     <div class="skill-tree-source"><span class="skill-tree-tier">SP B</span>${nodeCard(b,"branch")}<span class="skill-tree-link-label">── Lv.3 ──</span></div>
+     <div class="skill-tree-source"><span class="skill-tree-tier">SP A</span>${nodeCard(a,"branch")}<span class="skill-tree-link-label">Lv.3で派生</span></div>
+     <div class="skill-tree-source"><span class="skill-tree-tier">SP B</span>${nodeCard(b,"branch")}<span class="skill-tree-link-label">Lv.3で派生</span></div>
     </div>
     <div class="skill-expansion-grid">${(skillTreeExpansionDefinitions[c.id]||[]).filter(n=>n.kind==="root").map(root=>{const children=(skillTreeExpansionDefinitions[c.id]||[]).filter(n=>n.parentId===root.id);const source=root.sourceNode==="a"?a:b;return `<section class="skill-expansion-route"><div class="skill-route-source">${esc(source.name)} Lv.3</div><div class="skill-route-connector">↓ Lv.3で解放</div>${nodeCard(root,"expansion-root")}<div class="skill-route-connector">↓ Lv.3で分岐</div><div class="skill-expansion-children">${children.map(node=>nodeCard(node,"expansion-branch")).join("")}</div></section>`;}).join("")}</div>
     <div class="skill-tree-derived-row"><span class="skill-tree-tier">既存派生（SP A・B Lv.3）</span>${nodeCard(derived,"derived")}</div>
