@@ -74,3 +74,23 @@
 .hit-ice::before{inset:12%;background:radial-gradient(ellipse,#e5ffff 0%,#80dfff 20%,transparent 65%);animation:vfx-flash .65s ease-out both}
 .hit-effect-local .hit-animated-sprite{object-fit:contain}
 @media(prefers-reduced-motion:reduce){.hit-animated-sprite{display:none!important}}
+
+/* Union cut-in v5-inspired choreography: staggered party portraits and converging light. */
+.union-cutin-layer .union-v5 .union-cutin-member{opacity:0;transform:translate3d(calc((var(--member-index) - 2)*12px),18px,0) skewX(-5deg)}
+.union-cutin-layer.is-active .union-v5 .union-cutin-member{animation:union-v5-portrait .48s cubic-bezier(.12,.8,.18,1) calc(.1s + var(--member-index)*.085s) both}
+.union-cutin-layer .union-v5 .union-cutin-label{position:relative;z-index:4;animation:union-v5-title .8s ease-out .3s both}
+.union-cutin-layer .union-v5 .union-cutin-skill{position:relative;z-index:4;animation:union-v5-skill .5s ease-out .55s both}
+.union-cutin-layer .union-v5 .union-v5-charge{position:absolute;z-index:5;inset:0;pointer-events:none;opacity:0;overflow:hidden}
+.union-cutin-layer .union-v5 .union-v5-charge i{position:absolute;left:50%;top:50%;width:120vmax;height:3px;background:linear-gradient(90deg,transparent,#7efff5 43%,#fff 50%,#7efff5 57%,transparent);box-shadow:0 0 24px #43fff1;transform-origin:center;opacity:0}
+.union-cutin-layer .union-v5 .union-v5-charge i:nth-child(1){transform:translate(-50%,-50%) rotate(0deg)}
+.union-cutin-layer .union-v5 .union-v5-charge i:nth-child(2){transform:translate(-50%,-50%) rotate(60deg)}
+.union-cutin-layer .union-v5 .union-v5-charge i:nth-child(3){transform:translate(-50%,-50%) rotate(120deg)}
+.union-cutin-layer.is-charging .union-v5 .union-v5-charge{opacity:1;animation:union-v5-charge-flash .26s ease-out both}
+.union-cutin-layer.is-charging .union-v5 .union-v5-charge i{opacity:1;animation:union-v5-beam .26s ease-in both}
+.union-cutin-layer.is-charging .union-v5 .union-cutin-portrait{filter:brightness(1.8) drop-shadow(0 0 16px #68fff4)}
+@keyframes union-v5-portrait{0%{opacity:0;transform:translate3d(calc((var(--member-index) - 2)*12px),18px,0) skewX(-5deg);filter:brightness(2)}55%{opacity:1}100%{opacity:1;transform:translate3d(0,0,0) skewX(0)}}
+@keyframes union-v5-title{0%{opacity:0;letter-spacing:.5em;filter:blur(6px)}50%{opacity:1}100%{opacity:1;letter-spacing:.13em;filter:blur(0)}}
+@keyframes union-v5-skill{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes union-v5-charge-flash{0%{background:transparent}70%{background:rgba(142,255,248,.2)}100%{background:rgba(240,255,255,.52)}}
+@keyframes union-v5-beam{0%{opacity:0;scale:1 .1}55%{opacity:1}100%{opacity:1;scale:1 2}}
+@media(prefers-reduced-motion:reduce){.union-cutin-layer .union-v5 .union-cutin-member,.union-cutin-layer .union-v5 .union-cutin-label,.union-cutin-layer .union-v5 .union-cutin-skill{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}.union-cutin-layer.is-charging .union-v5 .union-v5-charge{display:none!important}}
