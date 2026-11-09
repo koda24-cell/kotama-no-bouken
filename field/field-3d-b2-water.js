@@ -192,7 +192,7 @@ function planarUv(geo) {
    手続き型の部品（GLB に無い「迷宮の壁・天井・水底」。素材は GLB の物を使う）
    ------------------------------------------------------------ */
 function makeProcedural() {
-  const smoothRock = (geo) => { const g = mergeVertices(geo, 1e-3); g.computeVertexNormals(); return g; };
+  const smoothRock = (geo) => { const src = geo.clone(); src.deleteAttribute('normal'); const g = mergeVertices(src, 1e-3); g.computeVertexNormals(); return g; };
   const walls = [0, 1, 2, 3, 4, 5, 6, 7].map((v) => {
     // 幅4.3×高さ4.1×厚み0.8。原点は内側の面の下端中央（+Z が通路側）＝第1階層の壁部品と同じ約束
     const g = new THREE.BoxGeometry(4.22, 4.15, 0.75, 32, 24, 1).toNonIndexed(); g.translate(0, 2.05, -0.4);
