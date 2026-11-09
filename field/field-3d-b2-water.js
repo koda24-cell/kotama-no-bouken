@@ -30,17 +30,26 @@ export const ENV = { background: 0x07141c, fog: { color: 0x15303c, density: 0.02
    ------------------------------------------------------------ */
 function makeMaterials(opaqueWater) {
   const std = (o) => new THREE.MeshStandardMaterial(o);
-  const waterTex = tileTexture(128, (c, s) => {     // 水面：明るいゆらぎ（水の色は material.color が決める）
-    c.fillStyle = '#9fb8c8'; c.fillRect(0, 0, s, s);
-    for (let i = 0; i < 70; i++) { const x = rnd(i) * s, y = rnd(i + 99) * s, r = 4 + rnd(i + 7) * 16; blob(c, s, x, y, r, `rgba(255,255,255,${0.10 + rnd(i + 3) * 0.22})`); }
+  const waterTex = tileTexture(256, (c, s) => {
+    // 周期的な波紋と細い水流模様。タイル境界をまたいでも連続する。
+    c.fillStyle = '#83b9cc'; c.fillRect(0, 0, s, s);
+    for (let i = 0; i < 240; i++) {
+      const x = rnd(i * 11 + 3) * s, y = rnd(i * 17 + 9) * s;
+      const rx = 4 + rnd(i * 7 + 12) * 22, ry = 0.5 + rnd(i * 13 + 8) * 2.3;
+      c.strokeStyle = `rgba(220,252,255,${0.05 + rnd(i * 19) * 0.21})`;
+      c.lineWidth = 0.5 + rnd(i * 23) * 1.1;
+      for (const ox of [-s, 0, s]) for (const oy of [-s, 0, s]) {
+        c.beginPath(); c.ellipse(x + ox, y + oy, rx, ry, rnd(i + 91) * 0.35, 0, Math.PI * 2); c.stroke();
+      }
+    }
   });
   const fallTex = tileTexture(128, (c, s) => {      // 滝：縦の筋
     c.fillStyle = '#7fa6bf'; c.fillRect(0, 0, s, s);
     for (let i = 0; i < 60; i++) { const x = rnd(i + 5) * s, w = 1 + rnd(i + 11) * 4, a = 0.15 + rnd(i + 17) * 0.45; c.fillStyle = `rgba(235,250,255,${a})`; c.fillRect(x, 0, w, s); if (x + w > s) c.fillRect(x - s, 0, w, s); }
   });
   fallTex.repeat.set(2, 1.4); waterTex.repeat.set(1, 1);
-  const water = std({ color: 0x1a6f9a, map: waterTex, roughness: 0.06, metalness: 0.15, emissive: 0x062a40, emissiveIntensity: 1.0, side: THREE.DoubleSide });
-  const fall = std({ color: 0x4aa8d8, map: fallTex, roughness: 0.1, metalness: 0.05, emissive: 0x0c3f5c, emissiveIntensity: 1.0, side: THREE.DoubleSide });
+  const water = std({ color: 0x3a99bd, map: waterTex, roughness: 0.16, metalness: 0.03, emissive: 0x0a3852, emissiveIntensity: 0.65, side: THREE.DoubleSide });
+  const fall = std({ color: 0x8cddf5, map: fallTex, roughness: 0.24, metalness: 0.0, emissive: 0x18526a, emissiveIntensity: 0.8, side: THREE.DoubleSide });
   if (opaqueWater) { water.color.setHex(0x0f4a68); fall.color.setHex(0x2f7fa8); }
   else for (const m of [water, fall]) { m.transparent = true; m.opacity = m === water ? 0.62 : 0.72; m.depthWrite = false; }
   const foam = std({ color: 0xaee8ff, roughness: 0.5, emissive: 0x1f4a59, emissiveIntensity: 1.0, transparent: true, opacity: 0.8, depthWrite: false });
@@ -563,6 +572,13 @@ export async function createTheme(api) {
     const fwd = [Math.sin(ry), Math.cos(ry)];   // 壁から通路へ向かう向き
     B.add('water', kit.waterfall, M4(ex + fwd[0] * 0.12, 0, ez + fwd[1] * 0.12, ry, [sx, sy, 1]), tx, ty);
     B.add('water', proc.poolHalf, M4(ex + fwd[0] * 0.95, -0.07, ez + fwd[1] * 0.95, ry), tx, ty);
+    // 落水点の泡を複数の薄い輪で表現。水面より少し上に配置。
+    for (let i = 0; i < 3; i++) {
+      const foam = kit.ripples[(i + Math.floor(hash(tx, ty, 208) * kit.ripples.length)) % kit.ripples.length];
+      const sc = 0.65 + i * 0.45;
+      B.add('water_foam', foam, M4(ex + fwd[0] * (0.9 + i * 0.18), -0.025 + i * 0.004,
+        ez + fwd[1] * (0.9 + i * 0.18), hash(tx, ty, 209 + i) * 6.28, sc), tx, ty);
+    }
     B.add('rocks', pick(kit.rocks, hash(tx, ty, 50)), M4(ex + fwd[0] * 0.8 + fwd[1] * 1.6, -0.2, ez + fwd[1] * 0.8 - fwd[0] * 1.6, ry, 0.6), tx, ty);
     light(ex + fwd[0] * 1.2, 1.2, ez + fwd[1] * 1.2, 0x6fd4ff, 1.6, 6);
     if (anim.ripples.length < 24) addRipple(ex + fwd[0] * 0.9, ez + fwd[1] * 0.9, hash(tx, ty, 51));
@@ -584,7 +600,7 @@ export async function createTheme(api) {
   function tick(dt, now, camPos) {
     t += dt;
     const w = mats['Clear blue water'].map, f = mats.waterfall.map;
-    if (w) { w.offset.x = (t * 0.02) % 1; w.offset.y = (t * 0.035) % 1; }
+    if (w) { w.offset.x = (t * 0.012) % 1; w.offset.y = (t * 0.022) % 1; }
     if (f) f.offset.y = (t * 0.9) % 1;
     for (const r of anim.ripples) {
       if (camPos && r.mesh.position.distanceToSquared(camPos) > 400) { r.mesh.visible = false; continue; }
