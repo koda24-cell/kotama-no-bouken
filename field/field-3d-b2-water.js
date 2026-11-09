@@ -326,6 +326,24 @@ function makeProcedural() {
     return { name: 'b2_ice_stalactite_' + variant,
       parts: [{ geo, mat: 'Pale mineral stone' }] };
   });
+  // 湿った岩棚に群生する発光菌。低いシルエットで視界と移動経路を保つ。
+  // 既存のメッシュ統合を利用し、個別のライトやアニメーションは追加しない。
+  const glowFungi = [0, 1, 2].map((variant) => {
+    const parts = [];
+    for (let i = 0; i < 3; i++) {
+      const height = 0.22 + ((i + variant) % 3) * 0.11;
+      const offsetX = (i - 1) * 0.24;
+      const offsetZ = (i === 1 ? -0.12 : 0.10);
+      const stem = new THREE.CylinderGeometry(0.035, 0.06, height, 5);
+      stem.translate(offsetX, height / 2, offsetZ);
+      parts.push({ geo: stem, mat: 'Aquatic dark teal' });
+      const cap = new THREE.SphereGeometry(0.16 + (i % 2) * 0.05, 7, 4);
+      cap.scale(1, 0.32, 1);
+      cap.translate(offsetX, height + 0.025, offsetZ);
+      parts.push({ geo: cap, mat: 'Glowing cyan crystal' });
+    }
+    return { name: 'b2_glow_fungi_' + variant, parts };
+  });
   const shoreline = [0, 1, 2].map((variant) => {
     const g = new THREE.PlaneGeometry(3.92, 0.84, 24, 6).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
@@ -358,7 +376,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { continuousWall, continuousCeiling, continuousGround, shoreline, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { continuousWall, continuousCeiling, continuousGround, shoreline, glowFungi, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -563,6 +581,18 @@ export async function createTheme(api) {
         if (c === ',' || c === '_' || c === 'P') {   // 道（, _）には古い象嵌を一筋
           const run = (ch(tx - 1, ty) === c || ch(tx + 1, ty) === c) ? 0 : Math.PI / 2;
           B.add('floor', pick(kit.inlays, hash(tx, ty, 17)), M4(x, 0.004, z, run, [3.2, 1, 3.2]), tx, ty);
+        }
+      }
+      // 水辺の発光菌群。イベント・階段・橋・滝を避け、陸側の壁ぎわだけに置く。
+      // 高さは最大約0.6m。中央の通路と移動判定には一切干渉しない。
+      if (c !== '*' && c !== '>' && c !== '<' && !objAt.has(key) && !fall && !onBridge(tx, ty)) {
+        const edge = DIR_ORDER.find((d) => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
+        const nearWater = DIR_ORDER.some((d) => ch(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]) === '*');
+        if (edge && nearWater && hash(tx, ty, 351) < 0.38) {
+          const [dx, dz] = DIR_VEC[edge];
+          B.add('glow_fungi', pick(proc.glowFungi, hash(tx, ty, 352)),
+            M4(x + dx * 1.55, 0.015, z + dz * 1.55, hash(tx, ty, 353) * Math.PI * 2,
+              0.75 + hash(tx, ty, 354) * 0.35), tx, ty);
         }
       }
       // 水際の岩棚：陸と浅瀬の境目だけに生成。水路を横切る橋や階段は除外。
