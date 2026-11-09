@@ -18,7 +18,13 @@ export function createTheme(api, area) {
   const ceilingGeo = new THREE.PlaneGeometry(4.02, 4.02).rotateX(Math.PI / 2);
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
-  let root = null, lights = [], ornaments = 0;
+  let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [];
+  const localGeo = geo => (localGeometries.push(geo), geo);
+  const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
+  const archGeo = localGeo(new THREE.CylinderGeometry(0.22, 0.36, 3.6, 7));
+  const emberGeo = localGeo(new THREE.IcosahedronGeometry(0.06, 0));
+  const crackGeo = localGeo(new THREE.PlaneGeometry(3.4, 0.07).rotateX(-Math.PI / 2));
+  const flameMat = new THREE.MeshBasicMaterial({ color: magma ? 0xff6b24 : 0xb18cff, transparent: true, opacity: 0.75, depthWrite: false });
   function mesh(geo, material, x, y, z, ry = 0, sx = 1, sy = 1, sz = 1) {
     const m = new THREE.Mesh(geo, material);
     m.position.set(x, y, z); m.rotation.y = ry; m.scale.set(sx, sy, sz); root.add(m); return m;
@@ -33,9 +39,21 @@ export function createTheme(api, area) {
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
       mesh(floorGeo, mat.floor, x, -0.17, z);
       if (magma && (c === '*' || c === '~')) {
-        mesh(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2), mat.glow, x, 0.009, z);
+        mesh(localGeo(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2)), mat.glow, x, 0.009, z);
+      }
+      // 地熱の亀裂／古代星界の紋様。通行判定には影響させない。
+      if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
+        const angle = hash(tx, ty, 32) * Math.PI;
+        mesh(crackGeo, mat.glow, x, 0.016, z, angle, 0.65 + hash(tx, ty, 33) * 0.4, 1, 1);
+        ornaments++;
       }
       if (c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, 4.05, z);
+      // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
+      if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
+        const h = 0.8 + hash(tx, ty, 46) * 1.7;
+        mesh(shardGeo, mat.wall, x + (hash(tx, ty, 47) - 0.5) * 2.3, 4.0 - h * 0.45, z + (hash(tx, ty, 48) - 0.5) * 2.3, Math.PI, 1.2, h, 1.2);
+        ornaments++;
+      }
       for (const d of DIR_ORDER) {
         const [dx, dz] = DIR_VEC[d];
         if (!wallCell(tx + dx, ty + dz)) continue;
@@ -51,9 +69,21 @@ export function createTheme(api, area) {
           ornaments++;
         }
       }
+      if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 76) < 0.12) {
+        const sx = x + (hash(tx, ty, 77) - 0.5) * 2.2;
+        const sz = z + (hash(tx, ty, 78) - 0.5) * 2.2;
+        mesh(archGeo, mat.metal, sx, 1.8, sz, hash(tx, ty, 79) * 6.28, 1, 1, 1);
+        if (!magma) mesh(crystalGeo, mat.glow, sx, 3.8, sz, 0, 0.55, 0.7, 0.55);
+        ornaments++;
+      }
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 74) < 0.09) {
         mesh(rimGeo, mat.metal, x, 0.05, z, hash(tx, ty, 75) * Math.PI, 1, 1, 1);
         ornaments++;
+      }
+      // 空中に漂う火の粉／星界の魔力片。マップに紐づけて再現可能な位置に配置。
+      if (hash(tx, ty, 90) < 0.16 && dynamic.length < 100) {
+        const p = mesh(emberGeo, flameMat, x + (hash(tx, ty, 91) - 0.5) * 2.8, 0.7 + hash(tx, ty, 92) * 2.4, z + (hash(tx, ty, 93) - 0.5) * 2.8);
+        dynamic.push({ mesh: p, y: p.position.y, phase: hash(tx, ty, 94) * 6.28 });
       }
     }
     for (const o of a.objects) {
@@ -79,9 +109,16 @@ export function createTheme(api, area) {
   function dispose() {
     if (root) root.parent?.remove(root);
     for (const L of lights) L.off = true;
-    lights = []; root = null; ornaments = 0;
+    lights = []; dynamic = []; root = null; ornaments = 0;
+    // 床・壁の共有ジオメトリは再利用する。動的に生成したものだけ破棄する。
+    for (const geo of localGeometries.splice(5)) geo.dispose();
   }
-  function tick() {}
+  function tick(dt, now) {
+    for (const p of dynamic) {
+      p.mesh.position.y = p.y + Math.sin(now * 0.0015 + p.phase) * 0.22;
+      p.mesh.scale.setScalar(0.75 + 0.25 * Math.sin(now * 0.003 + p.phase));
+    }
+  }
   async function sync() { return false; }
   return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'procedural-map-placement', sourceAssetsPending: true }) };
 }
