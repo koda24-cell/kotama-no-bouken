@@ -1552,7 +1552,7 @@ function describeSkill(skill){
   if(skill.type==="revive")return `${skill.name}：戦闘不能の味方を蘇生します。${cost}`;
   if(skill.type==="taunt")return `${skill.name}：敵の攻撃を自身に引きつけます。${cost}`;
   if(skill.type==="multiSlash")return `${skill.name}：連続攻撃で敵に複数回ダメージを与えます。${cost}`;
-  if(skill.type==="fire")return `${skill.name}：炎・属性攻撃で敵を攻撃します。敵の属性耐性に注意しましょう。${cost}`;
+  if(skill.type==="elementalSpell")return `${skill.name}：${skill.element}属性の全体魔法です。3属性魔法は消費SP・基本威力・対象範囲が共通で、属性相性のみが異なります。${cost}`;
   if(skill.type==="charge")return `${skill.name}：HPを消費して強力な攻撃を行います。${cost}`;
   if(skill.type==="pierce"||skill.type==="spAttack")return `${skill.name}：敵の防御力を貫通するSP攻撃です。${cost}`;
   return `${skill.name}：SPを消費して発動するスキルです。${cost}`;
@@ -1752,7 +1752,7 @@ async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
     const display=displayEnemyNode();
     if(beforeNode){beforeNode.classList.remove("magic-target-hit");void beforeNode.offsetWidth;beforeNode.classList.add("magic-target-hit");}
     else if(display){display.classList.remove("magic-target-active");void display.offsetWidth;display.classList.add("magic-target-active");}
-    showHitEffect(skill.type==="fire"||skill.type==="level-flare"?"flame":"magic");
+    showHitEffect(skill.element==="炎"||skill.type==="level-flare"?"flame":"magic");
     await wait(140);
     const value=applyDamageToEnemyTarget(enemy,target,damage);
     total+=value;
@@ -1820,9 +1820,9 @@ const stats=effectiveStats(actor);if(actor.id==="mage"&&mageCompressionStacks.ma
   }
   if(skill.type==="pierce"){const dualSamurai=!!(equipment.samurai?.katana1&&equipment.samurai?.katana2);const mainSlot=equipment.samurai?.katana1?"katana1":"katana2";const d=applyWeaponAttributeDamage(enemy,Math.max(1,Math.floor(effectiveAttackPowerForSamuraiSlot(actor,mainSlot)*1.8*(1+treeBonus(actor.id,"normal")))),actor);beginEnemyDamagePreview(enemy);const chosen=a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):livingEnemyTargets(enemy)[0];const dealt=chosen?applyDamageToEnemyTarget(enemy,chosen,d):applyDamageToEnemy(enemy,d);let second=0;if(dualSamurai&&dealt>0&&enemyHpTotal(enemy)>0){const offhandD=applyWeaponAttributeDamage(enemy,Math.max(1,Math.floor(effectiveAttackPowerForSamuraiSlot(actor,"katana2")*1.8*(1+treeBonus(actor.id,"normal")))),actor);const next=(a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):null)||livingEnemyTargets(enemy)[0];if(next)second=applyDamageToEnemyTarget(enemy,next,offhandD);}if(dealt+second>0)addBreakDamage(enemy,"sp",getWeaponPhysicalElement(actor),actor);chargeGauge(actor);pushLog(`${actor.name}の兜割！ 防御を無視して${dealt}${second?`＋${second}`:""}ダメージ！`);combatNumber(displayEnemyNode(),`-${dealt+second}`,"damage");showHitEffect("slash");flashEnemyDamage();sound("damage",true);return;}
   if(skill.type==="spAttack"||skill.type==="charge"){let d=calcSp(effectiveSpAttackPower(actor),Number.isFinite(enemy.spDefense)?enemy.spDefense:Math.floor(enemy.defense/2));if(actor.id==="mage")d=Math.floor(d*BATTLE_RULES.passives.mage.spDamage);d=Math.floor(d*(1+treeBonus(actor.id,"sp")));d=Math.floor(d*(1+treeBonus(actor.id,"element")));d=skill.type==="charge"?applyWeaponAttributeDamage(enemy,d,actor):applyElementalDamage(enemy,d,skill.element);if(actor.id!=="mage"||skill.type==="charge")beginEnemyDamagePreview(enemy);if(skill.target==="allEnemies"){let total=0;for(const t of livingEnemyTargets(enemy)){const v=applyDamageToEnemyTarget(enemy,t,d);total+=v;if(v>0)addBreakDamage(enemy,"sp",skill.type==="charge"?getWeaponPhysicalElement(actor):skill.element,actor);if(enemyHpTotal(enemy)<=0)break;}chargeGauge(actor);pushLog(`${actor.name}の${skill.name}！ 敵全体に${total}ダメージ。`);combatNumber(displayEnemyNode(),`-${total}`,"damage");showHitEffect("magic");flashEnemyDamage();sound("damage",true);return;}const chosen=a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):livingEnemyTargets(enemy)[0];const dealt=chosen?applyDamageToEnemyTarget(enemy,chosen,d):applyDamageToEnemy(enemy,d);let second=0;if(actor.id==="samurai"&&equipment.samurai?.katana1&&equipment.samurai?.katana2&&dealt>0&&enemyHpTotal(enemy)>0){const nextTarget=a.targetId?livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId):livingEnemyTargets(enemy)[0];if(nextTarget)second=applyDamageToEnemyTarget(enemy,nextTarget,d);}if(!lastEnemyAttackMissed&&dealt+second>0)addBreakDamage(enemy,"sp",skill.type==="charge"?getWeaponPhysicalElement(actor):skill.element,actor);chargeGauge(actor);if(lastEnemyAttackMissed){pushLog(`${enemy.name}は攻撃を回避した！`);}else{pushLog(`${actor.name}の${skill.name}！ ${enemy.name}に${dealt}${second?`＋${second}`:""}ダメージ。`);combatNumber(displayEnemyNode(),`-${dealt+second}`,"damage");showHitEffect("magic");flashEnemyDamage();}sound("damage",true);return;}
-  if(["fire","ice","thunder"].includes(skill.type)){
+  if(skill.type==="elementalSpell"){
     let d;if(actor.id==="mage"){d=calcMageElementalSpellDamage(actor,enemy,skill.element);}else{d=calcSp(effectiveSpAttackPower(actor),Number.isFinite(enemy.spDefense)?enemy.spDefense:Math.floor(enemy.defense/2));d=Math.floor(d*(1+treeBonus(actor.id,"sp")));d=Math.floor(d*(1+treeBonus(actor.id,"element")));d=applyElementalDamage(enemy,d,skill.element);}if(actor.id!=="mage")beginEnemyDamagePreview(enemy);
-    const all=(skill.type==="fire"||skill.target==="allEnemies"),hits=actor.id==="mage"?compressionHits:1;let dealt=0;
+    const all=skill.target==="allEnemies",hits=actor.id==="mage"?compressionHits:1;let dealt=0;
     for(let h=0;h<hits;h++){
       const targets=all?livingEnemyTargets(enemy):[livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId)||livingEnemyTargets(enemy)[0]].filter(Boolean);
       dealt+=await applySequentialMagicHits(enemy,targets,d,skill,actor);
@@ -2185,7 +2185,7 @@ function describeCommand(button){const hint=$("command-hint");if(!hint||!button)
  else if(action==="skill")text="SPを消費して、キャラクター固有の技を使用します。";
  else if(action==="item")text="所持している回復アイテムを使用します。";
  else if(action==="back")text="ひとつ前の選択へ戻ります。";
- else if(skillId){const actor=currentActor(),sk=getCharacterSkills(actor).find(x=>x.id===skillId);if(sk)text=({taunt:"敵の攻撃を引きつけ、仲間を守ります。",heal:"SP攻撃力をもとに、味方1人のHPを回復します。",revive:"倒れた味方1人をHP少量で蘇生します。",spAttack:"魔力を弾丸に変え、敵単体へダメージを与えます。",charge:"HPとSPを代償に、強烈な一撃を放ちます。",fire:`${sk.element||"炎"}属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。${sk.element||"炎"}に弱い敵には威力が上がり、${sk.element||"炎"}に耐性を持つ敵には威力が下がります。`,ice:"氷属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。氷に弱い敵に有効です。",thunder:"雷属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。雷に弱い敵に有効です。"})[sk.type]||describeSkill(sk);}
+ else if(skillId){const actor=currentActor(),sk=getCharacterSkills(actor).find(x=>x.id===skillId);if(sk)text=({taunt:"敵の攻撃を引きつけ、仲間を守ります。",heal:"SP攻撃力をもとに、味方1人のHPを回復します。",revive:"倒れた味方1人をHP少量で蘇生します。",spAttack:"魔力を弾丸に変え、敵単体へダメージを与えます。",charge:"HPとSPを代償に、強烈な一撃を放ちます。",elementalSpell:`${sk.element||"属性"}属性の全体魔法です。敵全体に魔力をもとにしたダメージを与えます。属性相性によって最終ダメージが変化します。`})[sk.type]||describeSkill(sk);}
  else if(itemId){const it=itemById(itemId);if(it)text=it.description;}
  else if(unionType){const actor=currentActor(),u=actor&&unionSkills[actor.id];if(u)text=({stun:"至高の魔弾。敵を貫き、次の行動を封じる必殺の一撃。",aegis:"イージスの大盾。仲間を全快させ、敵の次の攻撃を防ぎます。","full-heal":"フルヒーリング。仲間全員を癒やし、SPも回復します。","cross-break":"クロスブレイク。仲間と連携して連続攻撃を放ちます。",meteor:"メテオ。天より隕石を呼び、666の固定ダメージを与えます。"})[u.type]||u.name;}
  else if(target){const c=getCharacter(target);if(c)text=`${c.name}を対象に選びます。HP ${Math.max(0,c.hp)}/${effectiveStats(c).maxHp}、SP ${c.sp}/${c.maxSp}。`;}
