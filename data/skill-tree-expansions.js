@@ -275,15 +275,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "kotama-exp-solo-1",
       "name": "集中詠唱",
-      "desc": "集中詠唱。派生ルートに属さない独立スキル。",
+      "desc": "集中詠唱。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "kotama-exp-solo-1-skill",
         "name": "集中詠唱",
         "cost": 16,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "集中詠唱。派生ルートに属さない独立スキル。",
+        "description": "集中詠唱。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "attackUp": {
@@ -297,15 +297,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "kotama-exp-solo-2",
       "name": "魔導の護り",
-      "desc": "魔導の護り。派生ルートに属さない独立スキル。",
+      "desc": "魔導の護り。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "kotama-exp-solo-2-skill",
         "name": "魔導の護り",
         "cost": 24,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "魔導の護り。派生ルートに属さない独立スキル。",
+        "description": "魔導の護り。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "attackUp": {
@@ -601,15 +601,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "knight-exp-solo-1",
       "name": "最後の砦",
-      "desc": "最後の砦。派生ルートに属さない独立スキル。",
+      "desc": "最後の砦。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "knight-exp-solo-1-skill",
         "name": "最後の砦",
         "cost": 16,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "最後の砦。派生ルートに属さない独立スキル。",
+        "description": "最後の砦。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "defenseUp": {
@@ -623,15 +623,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "knight-exp-solo-2",
       "name": "戦線鼓舞",
-      "desc": "戦線鼓舞。派生ルートに属さない独立スキル。",
+      "desc": "戦線鼓舞。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "knight-exp-solo-2-skill",
         "name": "戦線鼓舞",
         "cost": 24,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "戦線鼓舞。派生ルートに属さない独立スキル。",
+        "description": "戦線鼓舞。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "defenseUp": {
@@ -740,23 +740,23 @@ const skillTreeExpansionDefinitions={
     },
     {
       "id": "healer-exp-2-1",
-      "name": "癒しの波",
-      "desc": "癒しの波。前段階の技から派生する上位スキル。",
+      "name": "守護の波",
+      "desc": "守護の波。味方全体の防御力を高める。",
       "kind": "branch",
       "parentId": "healer-exp-root-2",
       "group": 2,
       "skill": {
         "id": "healer-exp-2-1-skill",
-        "name": "癒しの波",
+        "name": "守護の波",
         "cost": 24,
         "target": "allAllies",
         "type": "xj",
-        "description": "癒しの波。前段階の技から派生する上位スキル。",
+        "description": "守護の波。味方全体の防御力を高める。",
         "xj": {
           "buff": {
-            "regen": {
+            "defenseUp": {
               "turns": 3,
-              "power": 0.12
+              "power": 0.18
             }
           }
         }
@@ -764,21 +764,21 @@ const skillTreeExpansionDefinitions={
     },
     {
       "id": "healer-exp-2-2",
-      "name": "再生の祈り",
-      "desc": "再生の祈り。前段階の技から派生する上位スキル。",
+      "name": "聖域の祈り",
+      "desc": "聖域の祈り。味方全体の速度を高める。",
       "kind": "branch",
       "parentId": "healer-exp-root-2",
       "group": 2,
       "skill": {
         "id": "healer-exp-2-2-skill",
-        "name": "再生の祈り",
+        "name": "聖域の祈り",
         "cost": 26,
         "target": "allAllies",
         "type": "xj",
-        "description": "再生の祈り。前段階の技から派生する上位スキル。",
+        "description": "聖域の祈り。味方全体の速度を高める。",
         "xj": {
           "buff": {
-            "regen": {
+            "speedUp": {
               "turns": 3,
               "power": 0.15
             }
@@ -810,23 +810,23 @@ const skillTreeExpansionDefinitions={
     },
     {
       "id": "healer-exp-3-1",
-      "name": "浄化の波",
-      "desc": "浄化の波。前段階の技から派生する上位スキル。",
+      "name": "浄化の加護",
+      "desc": "浄化の加護。味方全体の防御力を高める。",
       "kind": "branch",
       "parentId": "healer-exp-root-3",
       "group": 3,
       "skill": {
         "id": "healer-exp-3-1-skill",
-        "name": "浄化の波",
+        "name": "浄化の加護",
         "cost": 28,
         "target": "allAllies",
         "type": "xj",
-        "description": "浄化の波。前段階の技から派生する上位スキル。",
+        "description": "浄化の加護。味方全体の防御力を高める。",
         "xj": {
           "buff": {
-            "regen": {
+            "defenseUp": {
               "turns": 3,
-              "power": 0.12
+              "power": 0.18
             }
           }
         }
@@ -834,23 +834,23 @@ const skillTreeExpansionDefinitions={
     },
     {
       "id": "healer-exp-3-2",
-      "name": "聖光弾",
-      "desc": "聖光弾。前段階の技から派生する上位スキル。",
+      "name": "祈りの鼓舞",
+      "desc": "祈りの鼓舞。味方全体の攻撃力を高める。",
       "kind": "branch",
       "parentId": "healer-exp-root-3",
       "group": 3,
       "skill": {
         "id": "healer-exp-3-2-skill",
-        "name": "聖光弾",
+        "name": "祈りの鼓舞",
         "cost": 30,
         "target": "allAllies",
         "type": "xj",
-        "description": "聖光弾。前段階の技から派生する上位スキル。",
+        "description": "祈りの鼓舞。味方全体の攻撃力を高める。",
         "xj": {
           "buff": {
-            "regen": {
+            "attackUp": {
               "turns": 3,
-              "power": 0.15
+              "power": 0.16
             }
           }
         }
@@ -881,7 +881,7 @@ const skillTreeExpansionDefinitions={
     {
       "id": "healer-exp-4-1",
       "name": "聖域",
-      "desc": "聖域。前段階の技から派生する上位スキル。",
+      "desc": "聖域。味方全体の防御力を高める。",
       "kind": "branch",
       "parentId": "healer-exp-root-4",
       "group": 4,
@@ -891,12 +891,12 @@ const skillTreeExpansionDefinitions={
         "cost": 32,
         "target": "allAllies",
         "type": "xj",
-        "description": "聖域。前段階の技から派生する上位スキル。",
+        "description": "聖域。味方全体の防御力を高める。",
         "xj": {
           "buff": {
-            "regen": {
+            "defenseUp": {
               "turns": 3,
-              "power": 0.12
+              "power": 0.22
             }
           }
         }
@@ -905,7 +905,7 @@ const skillTreeExpansionDefinitions={
     {
       "id": "healer-exp-4-2",
       "name": "慈愛の光",
-      "desc": "慈愛の光。前段階の技から派生する上位スキル。",
+      "desc": "慈愛の光。味方全体の攻撃力を高める。",
       "kind": "branch",
       "parentId": "healer-exp-root-4",
       "group": 4,
@@ -915,12 +915,12 @@ const skillTreeExpansionDefinitions={
         "cost": 34,
         "target": "allAllies",
         "type": "xj",
-        "description": "慈愛の光。前段階の技から派生する上位スキル。",
+        "description": "慈愛の光。味方全体の攻撃力を高める。",
         "xj": {
           "buff": {
-            "regen": {
+            "attackUp": {
               "turns": 3,
-              "power": 0.15
+              "power": 0.18
             }
           }
         }
@@ -928,21 +928,21 @@ const skillTreeExpansionDefinitions={
     },
     {
       "id": "healer-exp-solo-1",
-      "name": "応急処置",
-      "desc": "応急処置。派生ルートに属さない独立スキル。",
+      "name": "聖なる加護",
+      "desc": "聖なる加護。派生ルートに属さない独立スキル。味方全体の防御力を高める。",
       "kind": "solo",
       "skill": {
         "id": "healer-exp-solo-1-skill",
-        "name": "応急処置",
+        "name": "聖なる加護",
         "cost": 16,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "応急処置。派生ルートに属さない独立スキル。",
+        "description": "聖なる加護。派生ルートに属さない独立スキル。味方全体の防御力を高める。",
         "xj": {
           "buff": {
-            "attackUp": {
+            "defenseUp": {
               "turns": 3,
-              "power": 0.28
+              "power": 0.24
             }
           }
         }
@@ -950,25 +950,21 @@ const skillTreeExpansionDefinitions={
     },
     {
       "id": "healer-exp-solo-2",
-      "name": "マナの祈り",
-      "desc": "マナの祈り。派生ルートに属さない独立スキル。",
+      "name": "慈愛の祈り",
+      "desc": "慈愛の祈り。派生ルートに属さない独立スキル。味方全体の速度を高める。",
       "kind": "solo",
       "skill": {
         "id": "healer-exp-solo-2-skill",
-        "name": "マナの祈り",
+        "name": "慈愛の祈り",
         "cost": 24,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "マナの祈り。派生ルートに属さない独立スキル。",
+        "description": "慈愛の祈り。派生ルートに属さない独立スキル。味方全体の速度を高める。",
         "xj": {
           "buff": {
-            "attackUp": {
+            "speedUp": {
               "turns": 3,
-              "power": 0.2
-            },
-            "defenseUp": {
-              "turns": 3,
-              "power": 0.2
+              "power": 0.18
             }
           }
         }
@@ -1251,15 +1247,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "mage-exp-solo-1",
       "name": "属性転換",
-      "desc": "属性転換。派生ルートに属さない独立スキル。",
+      "desc": "属性転換。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "mage-exp-solo-1-skill",
         "name": "属性転換",
         "cost": 16,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "属性転換。派生ルートに属さない独立スキル。",
+        "description": "属性転換。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "attackUp": {
@@ -1273,15 +1269,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "mage-exp-solo-2",
       "name": "マナシールド",
-      "desc": "マナシールド。派生ルートに属さない独立スキル。",
+      "desc": "マナシールド。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "mage-exp-solo-2-skill",
         "name": "マナシールド",
         "cost": 24,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "マナシールド。派生ルートに属さない独立スキル。",
+        "description": "マナシールド。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "attackUp": {
@@ -1573,15 +1569,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "warrior-exp-solo-1",
       "name": "闘争本能",
-      "desc": "闘争本能。派生ルートに属さない独立スキル。",
+      "desc": "闘争本能。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "warrior-exp-solo-1-skill",
         "name": "闘争本能",
         "cost": 16,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "闘争本能。派生ルートに属さない独立スキル。",
+        "description": "闘争本能。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "attackUp": {
@@ -1595,15 +1591,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "warrior-exp-solo-2",
       "name": "鋼の肉体",
-      "desc": "鋼の肉体。派生ルートに属さない独立スキル。",
+      "desc": "鋼の肉体。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "warrior-exp-solo-2-skill",
         "name": "鋼の肉体",
         "cost": 24,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "鋼の肉体。派生ルートに属さない独立スキル。",
+        "description": "鋼の肉体。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "attackUp": {
@@ -1895,15 +1891,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "samurai-exp-solo-1",
       "name": "武士の魂",
-      "desc": "武士の魂。派生ルートに属さない独立スキル。",
+      "desc": "武士の魂。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "samurai-exp-solo-1-skill",
         "name": "武士の魂",
         "cost": 16,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "武士の魂。派生ルートに属さない独立スキル。",
+        "description": "武士の魂。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "attackUp": {
@@ -1917,15 +1913,15 @@ const skillTreeExpansionDefinitions={
     {
       "id": "samurai-exp-solo-2",
       "name": "心眼",
-      "desc": "心眼。派生ルートに属さない独立スキル。",
+      "desc": "心眼。派生ルートに属さない独立スキル。味方全体を強化する。",
       "kind": "solo",
       "skill": {
         "id": "samurai-exp-solo-2-skill",
         "name": "心眼",
         "cost": 24,
-        "target": "self",
+        "target": "allAllies",
         "type": "xj",
-        "description": "心眼。派生ルートに属さない独立スキル。",
+        "description": "心眼。派生ルートに属さない独立スキル。味方全体を強化する。",
         "xj": {
           "buff": {
             "attackUp": {
