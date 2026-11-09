@@ -166,7 +166,17 @@ function makePiece(name, parts, opts = {}) {
 // v8 の造形を迷宮の装飾部品として再利用する。旧GLBのマップ用キットは維持する。
 // v8 は洞窟全体の座標に配置されているため、各メッシュを独立して原点に戻す。
 const B2_V8_GLB = './assets/b2_cavern_v8.glb';
+let v8DecorationsPromise = null;
 async function loadV8Decorations() {
+  // 同じセッションで階層を行き来しても5MB超のGLBを繰り返し解析しない。
+  if (v8DecorationsPromise) return v8DecorationsPromise;
+  v8DecorationsPromise = parseV8Decorations().catch((err) => {
+    v8DecorationsPromise = null; // 一時的なネットワーク障害から再試行できる
+    throw err;
+  });
+  return v8DecorationsPromise;
+}
+async function parseV8Decorations() {
   const gltf = await new GLTFLoader().loadAsync(B2_V8_GLB);
   gltf.scene.updateMatrixWorld(true);
   const result = { rocks: [], crystals: [], stalagmites: [], ceilingIce: [], erosion: [] };
@@ -180,7 +190,9 @@ async function loadV8Decorations() {
     if (target.length >= 12) return;
     const geo = o.geometry.clone().applyMatrix4(o.matrixWorld).applyMatrix4(Z_UP_TO_Y_UP);
     // 元のテクスチャ座標は保持しない。ゲーム側の既存マテリアルを適用する。
-    const piece = makePiece(o.name, [{ geo: prepGeo(geo, false),
+    const prepared = prepGeo(geo, false);
+    if (prepared !== geo) geo.dispose();
+    const piece = makePiece(o.name, [{ geo: prepared,
       mat: (crystal || ceilingIce) ? 'Glowing cyan crystal' : 'Deep cavern rock', tag: o.name }]);
     // v8の造形の個体差を残しつつ、迷宮の一マスに収まるサイズに統一する。
     const maxSide = Math.max(piece.size.x, piece.size.z, 0.01);
@@ -188,6 +200,7 @@ async function loadV8Decorations() {
     const scale = Math.min((rock || erosion ? 1.1 : 0.65) / maxSide, (rock || erosion ? 0.85 : 1.15) / height);
     for (const p of piece.parts) p.geo.scale(scale, scale, scale);
     piece.size.multiplyScalar(scale);
+    prepared.dispose(); // makePiece が複製済みのため一時ジオメトリは解放
     target.push(piece);
   });
   if (!result.rocks.length || !result.crystals.length) throw new Error('v8 装飾部品を検出できません');
