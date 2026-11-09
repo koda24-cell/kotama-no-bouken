@@ -473,7 +473,9 @@ export async function createTheme(api) {
       if (valid) skylightCandidates.push({ cx, cy, score: hash(cx, cy, 205) });
     }
     skylightCandidates.sort((a, b) => a.score - b.score);
-    const sky = null; // 天井の巨大な黒い開口を一旦無効化。自然な洞窟の連続性を優先
+    // 3×3の安全な広間だけに巨大な水源遺跡の吹き抜けを1か所設ける。
+    // 小規模な迷宮や適切な広間がない場合は従来の洞窟天井を維持する。
+    const sky = skylightCandidates.length ? skylightCandidates[0] : null;
     if (sky) {
       for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) openCells.add(`${sky.cx + dx},${sky.cy + dz}`);
       addAtrium(sky.cx * CELL, sky.cy * CELL);
@@ -689,6 +691,11 @@ export async function createTheme(api) {
         cap.position.set(x + dx, h, z + dz); atrium.add(cap);
       }
     }
+    // 天頂を岩盤の縁で囲み、明るい水源が暗い矩形の穴に見えないようにする。
+    const rim = new THREE.Mesh(
+      new THREE.TorusGeometry(5.65, 0.62, 7, 28),
+      stone);
+    rim.rotation.x = Math.PI / 2; rim.position.set(x, 22.35, z); atrium.add(rim);
     // 空洞上部の明るい水色。全体の背景色ではなく、吹き抜け内部だけの光源。
     const opening = new THREE.Mesh(new THREE.CircleGeometry(5.5, 32),
       new THREE.MeshBasicMaterial({ color: 0x6bcde5, side: THREE.DoubleSide, fog: false }));
