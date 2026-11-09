@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B2 洞窟 v8 モデル確認</title>
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#071923;color:#d9f5ff;font-family:system-ui}#info{position:absolute;z-index:2;left:12px;top:12px;background:#071923d9;padding:12px;border-radius:8px;max-width:340px}#status{font-size:13px}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head><body><div id="info"><strong>第2階層・凍てつく水源 / v8</strong><p id="status">モデルを読み込み中…</p><small>ドラッグ：回転　ホイール：拡大縮小　右ドラッグ：移動<br>※これは素材確認専用。ゲームの通行判定には影響しません。</small></div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x0a2532);
+const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.05,1000);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;document.body.append(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xb6eaff,0x19313d,2.2));
+const key=new THREE.DirectionalLight(0xc0efff,3.0);key.position.set(-7,15,9);scene.add(key);
+const fill=new THREE.DirectionalLight(0x4aa6e5,1.5);fill.position.set(10,5,-6);scene.add(fill);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.95;
+const status=document.getElementById('status');
+new GLTFLoader().load('../assets/b2_cavern_v8.glb',gltf=>{
+ const model=gltf.scene;model.rotation.x=-Math.PI/2;scene.add(model);model.updateMatrixWorld(true);
+ const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+ const distance=Math.max(size.x,size.y,size.z)*1.35;
+ controls.target.copy(center);camera.position.copy(center).add(new THREE.Vector3(distance*.7,distance*.55,distance*.85));camera.near=Math.max(.01,distance/2000);camera.far=distance*15;camera.updateProjectionMatrix();controls.update();
+ status.textContent='読み込み完了（'+Math.round(size.x)+' × '+Math.round(size.y)+' × '+Math.round(size.z)+'）';
+},undefined,e=>{status.textContent='読み込み失敗：'+(e?.message||e);console.error(e)});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+</script></body></html>
