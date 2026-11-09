@@ -175,7 +175,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 14, max: 25, scale: 1.3, table: [ { enemy: "water-ray", weight: 30 }, { enemy: "ore-crab", weight: 40 }, { enemy: "crystal-golem", weight: 30 } ] },
-        chests: [ { item: "potion", count: 2 } ], gathers: [ ["monster_fang", 35], ["monster_hide", 35], ["goblin_cloth", 30] ], foes: [ { enemy: "foe-crystal-guardian", path: [[24, 2], [24, 8]], sight: 6 } ], map: [
+        chests: [ { item: "potion", count: 2 } ], gathers: [ ["monster_fang", 35], ["monster_hide", 35], ["goblin_cloth", 30] ], foes: [ { enemy: "foe-crystal-guardian", path: [[22, 9], [23, 10]], sight: 6 } ], map: [
         "############################",
         "#__P_,,,,..****....#########",
         "#_<__..,..******...#T..#####",
