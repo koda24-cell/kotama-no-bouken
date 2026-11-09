@@ -49,6 +49,14 @@ export function createTheme(api, area) {
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
+  // 第5階層専用：奈落の星界に埋め込まれた古代の星環紋章。
+  // 共有ジオメトリ＋インスタンシングで、長い通路でも描画負荷を抑える。
+  const astralRingGeo = localGeo(new THREE.TorusGeometry(0.52, 0.045, 5, 20));
+  const astralCoreGeo = localGeo(new THREE.OctahedronGeometry(0.15, 0));
+  const astralRuneMat = new THREE.MeshStandardMaterial({
+    color: 0x8c81c8, emissive: 0x382c91, emissiveIntensity: 0.65,
+    metalness: 0.45, roughness: 0.34
+  });
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
@@ -116,6 +124,15 @@ export function createTheme(api, area) {
         if (!wallCell(tx + dx, ty + dz)) continue;
         const ex = x + dx * 2, ez = z + dz * 2, ry = FACE_YAW[d] + Math.PI;
         mesh(wallGeo, mat.wall, ex, 2, ez, ry);
+        // 壁面の星環は通路中央を塞がず、イベント／階段／スイッチの近傍を避ける。
+        if (area === 5 && c !== '>' && c !== '<' && !objAt.has(tx + ',' + ty)
+          && hash(tx, ty, 210 + DIR_ORDER.indexOf(d)) < 0.22) {
+          const px = ex - dx * 0.38, pz = ez - dz * 0.38;
+          mesh(astralRingGeo, astralRuneMat, px, 2.12, pz, ry, 1, 1, 1);
+          mesh(astralRingGeo, astralRuneMat, px, 2.12, pz, ry + 0.45, 0.68, 0.68, 0.68);
+          mesh(astralCoreGeo, mat.glow, px - dx * 0.04, 2.12, pz - dz * 0.04);
+          ornaments += 3;
+        }
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
