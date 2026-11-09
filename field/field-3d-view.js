@@ -11,9 +11,9 @@
      ・field/field-render.js  fieldBuildDom() の最後 → KotamaField3D.build()／fieldRender() の最後 → KotamaField3D.frame()
      ・field/field-movement-foe.js  fieldUpdate() の入力 → 3D表示中は KotamaField3D.input()（前後＝進む、左右＝向きを変える）
    素材：assets/3d/dungeons/b1_ancient_forest/（tools/b1-3d で生成した GLB）
-   第2階層（凍てつく水源）：試験表示のみ。field/field-3d-b2-water.js を組み立て時に dynamic import する。
+   第2階層（凍てつく水源）：通常進行で3D表示。field/field-3d-b2-water.js を組み立て時に dynamic import する。
      有効にする方法：URL に ?f3d=b2、または localStorage kotama.field3d.preview に "2"（管理パネルの「3D表示の試験」）。
-     通常の進行では第2階層は従来の2D表示のまま。第2階層の素材を読めなくても第1階層の3D表示は止めない。
+     第2階層も第1階層と同様に3D固定。WebGL・素材読み込み失敗時のみ2Dへフォールバックする。
    ============================================================ */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -23,7 +23,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const BASE = './assets/3d/dungeons/b1_ancient_forest/';
-const AREAS_3D = new Set([1]);           // いったん第1階層のみ
+const AREAS_3D = new Set([1, 2]);         // 第1・第2階層は通常進行で3D表示
 const PREVIEW_KEY = 'kotama.field3d.preview';   // 試験表示する階層（例 "2"）。セーブデータには入れない
 // 第1階層の空気（ensureRenderer で使っている値と同じ。第2階層から戻ったときに戻す）
 const ENV_B1 = { background: 0x070d11, fog: { color: 0x0c1a20, density: 0.042 }, hemi: { sky: 0x7aa8c4, ground: 0x1c241c, high: 1.25, low: 1.7 } };
@@ -71,12 +71,12 @@ function readPreview() {
   return set;
 }
 // 3D表示できる階層：第1階層と、試験表示を有効にした第2階層
-const areaOn = (n) => AREAS_3D.has(n) || (n === 2 && g.preview.has(2) && !g.themeFailed);
+const areaOn = (n) => AREAS_3D.has(n) && (n !== 2 || !g.themeFailed);
 function writePref(on) { try { localStorage.setItem(PREF_KEY, on ? 'on' : 'off'); } catch (_) {} }
 const hash = (x, z, s = 0) => { let h = (x * 374761393 + z * 668265263 + s * 982451653) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
 const fieldOk = () => typeof fieldState !== 'undefined' && typeof fieldArea === 'function';
-// 第1階層は3D専用。設定保存値にかかわらず3Dを優先し、WebGL等の利用不能時だけ既存2Dへフォールバックする。
-const eligible = () => fieldOk() && (g.pref || Number(fieldState.area) === 1) && !g.failed && g.webgl && areaOn(Number(fieldState.area));
+// 第1・第2階層は3D専用。設定保存値にかかわらず3Dを優先し、利用不能時だけ既存2Dへフォールバックする。
+const eligible = () => fieldOk() && (g.pref || AREAS_3D.has(Number(fieldState.area))) && !g.failed && g.webgl && areaOn(Number(fieldState.area));
 const curKey = () => (fieldOk() ? fieldArea()?.key : '') || '';
 
 /* ------------------------------------------------------------
@@ -459,11 +459,12 @@ function ensureToggle() {
   const can = fieldOk() && areaOn(area) && g.webgl && !g.failed;
   // 第1階層では表示方式を3Dに固定し、2D/3D切り替えボタンを出さない。
   // ほかの階層で3Dを解放した場合は、従来どおり切り替えられる。
-  btn.hidden = !can || area === 1;
+  btn.hidden = !can || AREAS_3D.has(area);
   btn.textContent = g.pref ? '2D表示' : '3D表示';
   btn.title = g.pref ? '見下ろしの2D表示に切り替える' : '一人称の3D表示に切り替える';
 }
 function toggle(force) {
+  if (fieldOk() && AREAS_3D.has(Number(fieldState.area))) { g.pref = true; build(); return; }
   g.pref = typeof force === 'boolean' ? force : !g.pref; writePref(g.pref);
   if (typeof fieldInput !== 'undefined') { fieldInput.keys.clear(); fieldInput.pad.clear(); fieldInput.tap = null; }
   if (g.pref) build(); else applyMode();
