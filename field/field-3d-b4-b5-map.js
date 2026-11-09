@@ -49,6 +49,20 @@ export function createTheme(api, area) {
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
+  // B5専用：壁際の高所に浮遊する古代星片。共通ジオメトリをインスタンス化する。
+  const starFragmentGeo = !mist && !magma
+    ? localStarFragmentGeometry()
+    : null;
+  function localStarFragmentGeometry() {
+    const geo = new THREE.OctahedronGeometry(0.5, 0);
+    const p = geo.getAttribute('position');
+    for (let i = 0; i < p.count; i++) {
+      p.setXYZ(i, p.getX(i) * 0.45, p.getY(i) * 1.15, p.getZ(i) * 0.3);
+    }
+    p.needsUpdate = true;
+    geo.computeVertexNormals();
+    return geo;
+  }
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
@@ -116,6 +130,21 @@ export function createTheme(api, area) {
         if (!wallCell(tx + dx, ty + dz)) continue;
         const ex = x + dx * 2, ez = z + dz * 2, ry = FACE_YAW[d] + Math.PI;
         mesh(wallGeo, mat.wall, ex, 2, ez, ry);
+        // B5のみ：壁から少し離した高所に星片を低密度配置。
+        // 床上の歩行空間とイベントセルを避け、固定位置で描画する。
+        if (!mist && !magma && c !== '>' && c !== '<'
+            && !objAt.has(tx + ',' + ty)
+            && hash(tx, ty, DIR_ORDER.indexOf(d) + 181) < 0.21) {
+          const seed = DIR_ORDER.indexOf(d);
+          const offset = (hash(tx, ty, seed + 186) - 0.5) * 1.8;
+          const fx = ex - dx * 0.35 + (dz !== 0 ? offset : 0);
+          const fz = ez - dz * 0.35 + (dx !== 0 ? offset : 0);
+          const fy = 2.8 + hash(tx, ty, seed + 191) * 0.65;
+          const scale = 0.34 + hash(tx, ty, seed + 196) * 0.35;
+          mesh(starFragmentGeo, mat.metal, fx, fy, fz,
+            hash(tx, ty, seed + 201) * Math.PI, scale, scale * 1.5, scale);
+          ornaments++;
+        }
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
