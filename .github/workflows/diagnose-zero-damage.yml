@@ -1,0 +1,17 @@
+name: Diagnose zero damage
+on:
+  push:
+    branches:
+      - gpt/run-zero-damage-diagnostics-20261109
+  workflow_dispatch:
+jobs:
+  damage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run zero damage diagnostic
+        run: node tools/battle-sim/zero-damage-diagnostic.js
