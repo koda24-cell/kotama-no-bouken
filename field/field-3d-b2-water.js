@@ -240,7 +240,7 @@ function makeProcedural() {
         + 0.045 * Math.cos(wx * 3.15 + wz * 2.67 - y * 2.2);
       p.setZ(i, lz - relief * edge * vertical);
     }
-    return { name: 'continuous_cavern_wall',
+    return { name: 'continuous_cavern_wall', transient: true,
       parts: [{ geo: smoothRock(prepGeo(geo, false)), mat: 'Deep cavern rock' }] };
   };
   // 世界座標で天井の起伏を生成し、隣接セル間で位相と高さを一致させる。
@@ -257,7 +257,7 @@ function makeProcedural() {
       pos.setY(i, -relief);
     }
     geo.computeVertexNormals();
-    return { name: 'continuous_cavern_ceiling',
+    return { name: 'continuous_cavern_ceiling', transient: true,
       parts: [{ geo, mat: 'ceiling' }] };
   };
   // 自然石の床：格子状の石板が無限に繰り返される印象を緩和する。
@@ -288,18 +288,18 @@ function makeProcedural() {
   });
   // 隣接する床マスで高さが一致する世界座標ベースの岩盤。
   // マス境界で起伏をゼロに戻さないため、正方形パッチの継ぎ目が目立たない。
-  const continuousGround = (tx, ty, cell) => {
+  const continuousGround = (worldX, worldZ, cell) => {
     const g = new THREE.PlaneGeometry(cell, cell, 12, 12).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
     for (let i = 0; i < p.count; i++) {
-      const wx = tx * cell + p.getX(i), wz = ty * cell + p.getZ(i);
+      const wx = worldX + p.getX(i), wz = worldZ + p.getZ(i);
       const y = 0.052 * Math.sin(wx * 0.47) * Math.cos(wz * 0.39)
         + 0.028 * Math.sin(wx * 1.14 + wz * 0.58)
         + 0.012 * Math.cos(wx * 2.37 - wz * 1.81);
       p.setY(i, y);
     }
     g.computeVertexNormals();
-    return { name: 'continuous_rock_ground', parts: [{ geo: g, mat: 'Deep cavern rock' }] };
+    return { name: 'continuous_rock_ground', transient: true, parts: [{ geo: g, mat: 'Deep cavern rock' }] };
   };
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
@@ -318,6 +318,8 @@ class Batcher {
       const k = `${cat}|${p.mat}|${ck}`; let e = this.b.get(k); if (!e) { e = { cat, mat: p.mat, geos: [] }; this.b.set(k, e); }
       e.geos.push(shade(p.geo.clone().applyMatrix4(matrix)));
     }
+    // Per-cell procedural source geometry is no longer needed after cloning.
+    if (piece.transient) for (const p of piece.parts) p.geo.dispose();
   }
   build(root, mats) {
     const groups = new Map(), made = [];
@@ -488,7 +490,7 @@ export async function createTheme(api) {
         const naturalGround = !fall && c !== 'P' && c !== ',' && c !== '_' && c !== '<'
           && !objAt.has(key) && hash(tx, ty, 215) < 0.70;
         if (naturalGround) {
-          B.add('floor', proc.continuousGround(tx, ty, CELL), M4(x, -0.025, z), tx, ty);
+          B.add('floor', proc.continuousGround(x, z, CELL), M4(x, -0.025, z), tx, ty);
         } else for (const [ox, oz] of [[-0.95, -0.95], [0.95, -0.95], [-0.95, 0.95], [0.95, 0.95]]) {
           if (fall) { const [bx, bz] = DIR_VEC[fall]; if (ox * bx + oz * bz > 0) continue; }   // 滝つぼ側の床板は外す
           const r = hash(tx * 2 + (ox > 0), ty * 2 + (oz > 0), 15);
