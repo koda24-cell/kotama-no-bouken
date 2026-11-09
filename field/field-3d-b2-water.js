@@ -294,6 +294,24 @@ export async function createTheme(api) {
       cands.sort((p, q) => p.r - q.r).slice(0, 4).forEach((c) => falls.set(`${c.tx},${c.ty}`, c.back));
     }
 
+    // 天井の吹き抜け：3×3 の歩行可能な広場を優先して、各フロア最大1か所だけ選ぶ。
+    // マップ文字・通行判定・イベントには触れず、見た目だけのランドマークにする。
+    const openCells = new Set();
+    const skylightCandidates = [];
+    for (let cy = 2; cy < a.h - 2; cy++) for (let cx = 2; cx < a.w - 2; cx++) {
+      let valid = true;
+      for (let dz = -1; dz <= 1 && valid; dz++) for (let dx = -1; dx <= 1; dx++) {
+        if (wallCell(cx + dx, cy + dz) || objAt.has(`${cx + dx},${cy + dz}`)) valid = false;
+      }
+      if (valid) skylightCandidates.push({ cx, cy, score: hash(cx, cy, 205) });
+    }
+    skylightCandidates.sort((a, b) => a.score - b.score);
+    const sky = skylightCandidates[0] || null;
+    if (sky) {
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) openCells.add(`${sky.cx + dx},${sky.cy + dz}`);
+      addAtrium(sky.cx * CELL, sky.cy * CELL);
+    }
+
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const c = ch(tx, ty), x = X(tx), z = Z(ty), key = `${tx},${ty}`;
@@ -323,7 +341,7 @@ export async function createTheme(api) {
         }
       }
       // 天井
-      B.add('ceiling', proc.ceil, M4(x, 4, z, Math.floor(hash(tx, ty, 18) * 4) * Math.PI / 2), tx, ty);
+      if (!openCells.has(key)) B.add('ceiling', proc.ceil, M4(x, 4, z, Math.floor(hash(tx, ty, 18) * 4) * Math.PI / 2), tx, ty);
       // 壁と、壁ぎわの岩・鉱脈・壁付きの物
       for (const d of DIR_ORDER) {
         const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
@@ -419,6 +437,31 @@ export async function createTheme(api) {
     }
     made = B.build(root, mats);
     last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge };
+  }
+
+  // 大空洞の縦方向の景観。天井を抜いた3×3マスに高い石造壁と冷光を加える。
+  // 3D表示の装飾のみ。通路、壁判定、カメラ、マップイベントは変更しない。
+  function addAtrium(x, z) {
+    const atrium = new THREE.Group(); atrium.name = 'b2:open_ceiling_atrium'; root.add(atrium);
+    const stone = mats['Pale mineral stone'];
+    const dark = mats['Deep cavern rock'];
+    const glow = new THREE.MeshBasicMaterial({ color: 0x66e8ff, transparent: true, opacity: 0.25, depthWrite: false, side: THREE.DoubleSide });
+    // 吹き抜けの上部は閉じず、側面の柱と岩肌だけで縦の奥行きを表現する。
+    for (const [dx, dz] of [[-6,-6],[6,-6],[-6,6],[6,6]]) {
+      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.9, 19, 7), stone);
+      pillar.position.set(x + dx, 9.5, z + dz); atrium.add(pillar);
+      for (let h = 3; h <= 16; h += 4) {
+        const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.94, 0.94, 0.28, 8), dark);
+        ring.position.set(x + dx, h, z + dz); atrium.add(ring);
+      }
+    }
+    // 光柱は視界を塞がない薄い半透明。明るい上空と水面のつながりを表現。
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 4.2, 21, 16, 1, true), glow);
+    beam.position.set(x, 12, z); beam.renderOrder = 3; atrium.add(beam);
+    const upper = new THREE.Mesh(new THREE.CircleGeometry(6.5, 32), new THREE.MeshBasicMaterial({ color: 0x73dfff, side: THREE.DoubleSide }));
+    upper.rotation.x = Math.PI / 2; upper.position.set(x, 22.7, z); atrium.add(upper);
+    light(x, 3.4, z, 0x89e8ff, 2.4, 13);
+    light(x, 9.0, z, 0x6acfff, 1.7, 16);
   }
 
   function addRipple(x, z, r) {
