@@ -24,6 +24,7 @@ export function createTheme(api, area) {
   const archGeo = localGeo(new THREE.CylinderGeometry(0.22, 0.36, 3.6, 7));
   const emberGeo = localGeo(new THREE.IcosahedronGeometry(0.06, 0));
   const crackGeo = localGeo(new THREE.PlaneGeometry(3.4, 0.07).rotateX(-Math.PI / 2));
+  const lavaGeo = localGeo(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2));
   const flameMat = new THREE.MeshBasicMaterial({ color: magma ? 0xff6b24 : 0xb18cff, transparent: true, opacity: 0.75, depthWrite: false });
   function mesh(geo, material, x, y, z, ry = 0, sx = 1, sy = 1, sz = 1) {
     const m = new THREE.Mesh(geo, material);
@@ -39,7 +40,7 @@ export function createTheme(api, area) {
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
       mesh(floorGeo, mat.floor, x, -0.17, z);
       if (magma && (c === '*' || c === '~')) {
-        mesh(localGeo(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2)), mat.glow, x, 0.009, z);
+        mesh(lavaGeo, mat.glow, x, 0.009, z);
       }
       // 地熱の亀裂／古代星界の紋様。通行判定には影響させない。
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
@@ -110,8 +111,7 @@ export function createTheme(api, area) {
     if (root) root.parent?.remove(root);
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0;
-    // 床・壁の共有ジオメトリは再利用する。動的に生成したものだけ破棄する。
-    for (const geo of localGeometries.splice(5)) geo.dispose();
+    // 共有ジオメトリを再利用し、フロア切替時にマテリアルを破棄しない。
   }
   function tick(dt, now) {
     for (const p of dynamic) {
