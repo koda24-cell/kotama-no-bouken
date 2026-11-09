@@ -108,7 +108,7 @@
     // Other stage-2 starts retain a single captain instead of duplicating the relocated group.
     if (stage === 2 && !battleState.encounterMode) {
       const captain = JSON.parse(JSON.stringify(FIELD_ENEMIES["foe-goblin-captain"]));
-      return { ...captain, maxHp: captain.hp, spDefense: captain.spDefense ?? Math.floor(captain.defense / 2), compendiumAs: "ゴブリン", dropAs: "ゴブリン" };
+      return { ...captain, foe: false, maxHp: captain.hp, spDefense: captain.spDefense ?? Math.floor(captain.defense / 2), compendiumAs: "ゴブリン", dropAs: "ゴブリン" };
     }
     if (stage === 1 && !battleState.encounterMode && fieldState?.area === 1 && fieldState?.floor === 2) {
       return makeSnowdrift();
