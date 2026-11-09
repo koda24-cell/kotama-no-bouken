@@ -71,7 +71,7 @@ function analyzeEnemyHtml() {
       return analyzeStatusChip(`${def.icon}${def.label}`, st.turns, def.harm);
     }) : [];
     if (Number(m._defenseDownTurns) > 0) chips.push(analyzeStatusChip("▼防御力低下", Number(m._defenseDownTurns), true));
-    return `<div class="analyze-enemy-member"><span><b>${esc(m.displayName || m.name || m.id)}</b> ／ ${m.row === "rear" ? "後衛" : "前衛"}</span><small>HP ${Math.max(0, Math.floor(m.hp))} / ${Math.floor(m.maxHp || 0)}</small><div class="analyze-statuses">${chips.length ? chips.join("") : `<span class="analyze-none">状態変化なし</span>`}</div></div>`;
+    return `<div class="analyze-enemy-member"><span><b>${esc(m.displayName || m.name || m.id)}</b> ／ ${m.row === "rear" ? "後衛" : "前衛"}</span><small>HP ${known ? `${Math.max(0, Math.floor(m.hp))} / ${Math.floor(m.maxHp || 0)}` : "？？？"}</small><div class="analyze-statuses">${chips.length ? chips.join("") : `<span class="analyze-none">状態変化なし</span>`}</div></div>`;
   }).join("")}</section>` : "";
   const brk = e._breakMax ? `<span class="analyze-wide">ブレイク <b>${Math.max(0, Math.floor(e._breakCurrent || 0))} / ${e._breakMax}</b></span>` : "";
   return `<article class="analyze-card analyze-enemy ${known ? "is-known" : ""}">
