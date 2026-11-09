@@ -18,15 +18,16 @@ const context={
  setTreeLevel(id,node,lv){state.levels[node]=lv;}
 };
 vm.createContext(context);vm.runInContext(code,context);
+const normalize=value=>JSON.parse(JSON.stringify(value));
 const options=context.getSkillBulkUpgradeOptions('hero','bolt');
-assert.deepEqual(options.map(o=>[o.count,o.level,o.cost]),[[1,1,2],[2,2,4],[3,3,6]]);
+assert.deepEqual(normalize(options.map(o=>[o.count,o.level,o.cost])),[[1,1,2],[2,2,4],[3,3,6]]);
 assert.equal(state.levels.bolt,0,'level unchanged after preview');
 assert.equal(context.trainingPoints.hero,20,'points unchanged after preview');
 context.trainingPoints.hero=3;
-assert.deepEqual(context.getSkillBulkUpgradeOptions('hero','bolt').map(o=>o.count),[1],'insufficient SP prevents second level');
+assert.deepEqual(normalize(context.getSkillBulkUpgradeOptions('hero','bolt').map(o=>o.count)),[1],'insufficient SP prevents second level');
 assert.equal(context.trainingPoints.hero,3);
 state.levels.bolt=2;context.trainingPoints.hero=20;
-assert.deepEqual(context.getSkillBulkUpgradeOptions('hero','bolt').map(o=>o.level),[3],'stage lock prevents exceeding limit');
+assert.deepEqual(normalize(context.getSkillBulkUpgradeOptions('hero','bolt').map(o=>o.level)),[3],'stage lock prevents exceeding limit');
 assert.equal(state.levels.bolt,2);
 const css=fs.readFileSync('css/05-progression-and-boss.css','utf8');
 assert(css.includes('.skill-upgrade-quantity select'));
