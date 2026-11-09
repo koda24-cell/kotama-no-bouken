@@ -66,6 +66,7 @@ export function createTheme(api, area) {
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
+  if (starFragmentGeo) localGeo(starFragmentGeo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
   const archGeo = localGeo(new THREE.CylinderGeometry(0.22, 0.36, 3.6, 7));
   const trunkGeo = localGeo(new THREE.CylinderGeometry(0.24, 0.47, 6.8, 7));
