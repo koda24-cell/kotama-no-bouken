@@ -254,3 +254,18 @@ body:not([data-screen="battle"]) .retreat-button{display:none}
  .training-skill-main .skill-tree-source-row{grid-template-columns:1fr}
  .training-skill-main .skill-node-select{min-height:38px}
 }
+
+/* Compact EO-style skill tree: skill names and levels live on the map; details below. */
+.training-skill-main .skill-tree-scroll{padding:5px 0 8px;overflow-x:auto}
+.training-skill-main .skill-tree-map{gap:7px;padding:5px;min-width:0}
+.training-skill-main .skill-node-select{min-height:37px;padding:5px 8px;gap:5px;border-radius:5px;font-size:12px;line-height:1.25}
+.training-skill-main .skill-node-name{font-size:12px;line-height:1.3}
+.training-skill-main .skill-node-level{font-size:10px;white-space:nowrap}
+.training-skill-main .skill-tree-tier,.training-skill-main .skill-tree-link-label,.training-skill-main .skill-route-source,.training-skill-main .skill-route-connector{font-size:10px;line-height:1.2}
+.training-skill-main .skill-tree-source-row,.training-skill-main .skill-expansion-grid,.training-skill-main .skill-expansion-children,.training-skill-main .skill-expansion-solo{gap:6px}
+.training-skill-main .skill-expansion-route{gap:5px;padding:6px}
+.training-skill-main .skill-tree-connector{font-size:12px;line-height:1}
+.training-skill-main .skill-detail-panel{margin-top:8px;padding:10px}
+.skill-upgrade-quantity{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#dce5ff}
+.skill-upgrade-quantity select{min-width:150px;max-width:70%;padding:8px;border:1px solid #8497da;border-radius:5px;background:#101b50;color:#fff}
+@media(max-width:700px){.training-skill-main .skill-node-select{min-height:36px;padding:5px 6px}.training-skill-main .skill-tree-map{min-width:0}}
