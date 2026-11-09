@@ -23,7 +23,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const BASE = './assets/3d/dungeons/b1_ancient_forest/';
-const AREAS_3D = new Set([1, 2, 3, 4, 5]);           // いったん第1階層のみ
+const AREAS_3D = new Set([1, 2, 3, 4]);           // いったん第1階層のみ
 const PREVIEW_KEY = 'kotama.field3d.preview';   // 試験表示する階層（例 "2"）。セーブデータには入れない
 // 第1階層の空気（ensureRenderer で使っている値と同じ。第2階層から戻ったときに戻す）
 const ENV_B1 = { background: 0x070d11, fog: { color: 0x0c1a20, density: 0.042 }, hemi: { sky: 0x7aa8c4, ground: 0x1c241c, high: 1.25, low: 1.7 } };
@@ -462,7 +462,7 @@ function ensureToggle() {
   }
   const area = fieldOk() ? Number(fieldState.area) : 0;
   const can = fieldOk() && areaOn(area) && g.webgl && !g.failed;
-  // 第1〜第5階層では3D表示を固定し、2D/3D切り替えボタンを出さない。
+  // 第1〜第4階層では3D表示を固定し、2D/3D切り替えボタンを出さない。
   // ほかの階層で3Dを解放した場合は、従来どおり切り替えられる。
   btn.hidden = !can || AREAS_3D.has(area);
   btn.textContent = g.pref ? '2D表示' : '3D表示';
