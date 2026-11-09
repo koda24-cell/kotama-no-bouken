@@ -11,4 +11,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Reproduce 20 damage scenarios\n        run: node tools/battle-sim/zero-damage-diagnostic.js\n      - name: Independently verify target forwarding and rear-row mitigation\n        run: node tools/battle-sim/formation-target-regression.js\n      - name: Repeat damage scenarios 3 times\n        run: |\n          for i in 1 2 3; do node tools/battle-sim/zero-damage-diagnostic.js > /tmp/damage-run-$i.log || { cat /tmp/damage-run-$i.log; exit 1; }; done\n          echo 'PASS 60 additional damage scenarios'
+      - name: Reproduce 20 damage scenarios
+        run: node tools/battle-sim/zero-damage-diagnostic.js
+      - name: Independently verify target forwarding and rear-row mitigation
+        run: node tools/battle-sim/formation-target-regression.js
+      - name: Repeat damage scenarios 3 times
+        run: |
+          for i in 1 2 3; do node tools/battle-sim/zero-damage-diagnostic.js > /tmp/damage-run-$i.log || { cat /tmp/damage-run-$i.log; exit 1; }; done
+          echo 'PASS 60 additional damage scenarios'
