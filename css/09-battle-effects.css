@@ -94,3 +94,17 @@
 @keyframes union-v5-charge-flash{0%{background:transparent}70%{background:rgba(142,255,248,.2)}100%{background:rgba(240,255,255,.52)}}
 @keyframes union-v5-beam{0%{opacity:0;scale:1 .1}55%{opacity:1}100%{opacity:1;scale:1 2}}
 @media(prefers-reduced-motion:reduce){.union-cutin-layer .union-v5 .union-cutin-member,.union-cutin-layer .union-v5 .union-cutin-label,.union-cutin-layer .union-v5 .union-cutin-skill{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}.union-cutin-layer.is-charging .union-v5 .union-v5-charge{display:none!important}}
+
+/* Union follow-through: offensive impact and defensive/healing seal. */
+.union-impact-stage{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;isolation:isolate}
+.union-impact-stage i{position:absolute;display:block;left:50%;top:44%;pointer-events:none}
+.union-impact-flare{width:min(70%,420px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff 0%,#8ff7ff 12%,#42dce288 32%,transparent 68%);transform:translate(-50%,-50%) scale(.1);animation:union-impact-burst .52s ease-out both}
+.union-impact-circle{width:min(70%,400px);aspect-ratio:1;border:3px solid #9affee;border-radius:50%;box-shadow:0 0 24px #60ffee,inset 0 0 24px #60ffee;transform:translate(-50%,-50%) scale(.2);animation:union-impact-ring .62s ease-out both}
+.union-impact-cross{width:min(75%,450px);height:7px;background:linear-gradient(90deg,transparent,#fff,#86ffff,transparent);box-shadow:0 0 20px #67faff;transform:translate(-50%,-50%) rotate(-30deg) scaleX(.1);animation:union-impact-slash .45s ease-out both}
+.union-impact-support .union-impact-flare{background:radial-gradient(circle,#fff 0%,#b2ffd8 15%,#5bdcb077 35%,transparent 68%)}
+.union-impact-support .union-impact-circle{border-color:#b8ffcb;box-shadow:0 0 24px #7affb4,inset 0 0 24px #7affb4}
+.union-impact-support .union-impact-cross{display:none}
+@keyframes union-impact-burst{0%{opacity:0;transform:translate(-50%,-50%) scale(.1)}25%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}}
+@keyframes union-impact-ring{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.45)}}
+@keyframes union-impact-slash{0%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scaleX(.1)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scaleX(1.4)}}
+@media(prefers-reduced-motion:reduce){.union-impact-stage i{animation:none!important;opacity:.12}}
