@@ -163,6 +163,35 @@ function makePiece(name, parts, opts = {}) {
   const off = new THREE.Matrix4().makeTranslation(-c.x, -(opts.keepY ? 0 : box.min.y), -c.z);
   return { name, size: sz, parts: parts.map((p) => ({ geo: p.geo.clone().applyMatrix4(off), mat: p.mat, tag: p.tag })) };
 }
+// v8 の造形を迷宮の装飾部品として再利用する。旧GLBのマップ用キットは維持する。
+// v8 は洞窟全体の座標に配置されているため、各メッシュを独立して原点に戻す。
+const B2_V8_GLB = './assets/b2_cavern_v8.glb';
+async function loadV8Decorations() {
+  const gltf = await new GLTFLoader().loadAsync(B2_V8_GLB);
+  gltf.scene.updateMatrixWorld(true);
+  const result = { rocks: [], crystals: [] };
+  gltf.scene.traverse((o) => {
+    if (!o.isMesh) return;
+    const rock = /^23_/.test(o.name), crystal = /^07_crystal_/.test(o.name);
+    if (!rock && !crystal) return;
+    const target = rock ? result.rocks : result.crystals;
+    if (target.length >= (rock ? 12 : 12)) return;
+    const geo = o.geometry.clone().applyMatrix4(o.matrixWorld).applyMatrix4(Z_UP_TO_Y_UP);
+    // 元のテクスチャ座標は保持しない。ゲーム側の既存マテリアルを適用する。
+    const piece = makePiece(o.name, [{ geo: prepGeo(geo, false),
+      mat: rock ? 'Deep cavern rock' : 'Glowing cyan crystal', tag: o.name }]);
+    // v8の造形の個体差を残しつつ、迷宮の一マスに収まるサイズに統一する。
+    const maxSide = Math.max(piece.size.x, piece.size.z, 0.01);
+    const height = Math.max(piece.size.y, 0.01);
+    const scale = Math.min((rock ? 1.1 : 0.65) / maxSide, (rock ? 0.85 : 1.15) / height);
+    for (const p of piece.parts) p.geo.scale(scale, scale, scale);
+    piece.size.multiplyScalar(scale);
+    target.push(piece);
+  });
+  if (!result.rocks.length || !result.crystals.length) throw new Error('v8 装飾部品を検出できません');
+  return result;
+}
+
 async function loadKit() {
   const gltf = await new GLTFLoader().loadAsync(B2_GLB);
   const meshes = [];
@@ -398,6 +427,8 @@ function pieceGroup(piece, mats, name) {
 export async function createTheme(api) {
   const opaqueWater = (() => { try { return localStorage.getItem(WATER_KEY) === 'opaque'; } catch (_) { return false; } })();
   const kit = await loadKit();
+  // v8 は任意の見た目拡張。読み込み失敗時も旧B2キットで遊べる。
+  const v8 = await loadV8Decorations().catch((err) => { console.warn('[B2] v8 decoration unavailable; using legacy kit', err); return null; });
   const proc = makeProcedural();
   const mats = makeMaterials(opaqueWater);
   const { CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g } = api;
@@ -559,13 +590,20 @@ export async function createTheme(api) {
         // 壁と床の境目に低い岩の堆積を置き、直線的な接合部を崩す。
         // 通路中央やイベントマスを避け、歩行判定には影響させない。
         if (!objAt.has(key) && c !== '>' && c !== '<' && k < 0.72) {
-          const rim = pick(kit.rocks, hash(tx, ty, 180 + DIR_ORDER.indexOf(d)));
+          const rim = pick(v8?.rocks?.length ? v8.rocks : kit.rocks, hash(tx, ty, 180 + DIR_ORDER.indexOf(d)));
           const offset = (hash(tx, ty, 184 + DIR_ORDER.indexOf(d)) - 0.5) * 2.0;
           const scale = 0.22 + hash(tx, ty, 188 + DIR_ORDER.indexOf(d)) * 0.13;
           B.add('rock_seams', rim, M4(ex - dx * 0.12 + along[0] * offset, -0.20,
             ez - dy * 0.12 + along[1] * offset, ry + hash(tx, ty, 192) * 0.8, scale), tx, ty);
         }
 
+        // v8の結晶を壁際に低頻度で追加。通路・階段・イベントの中央は塞がない。
+        if (v8?.crystals?.length && !objAt.has(key) && c !== '>' && c !== '<'
+            && k > 0.86) {
+          const gem = pick(v8.crystals, hash(tx, ty, 260 + DIR_ORDER.indexOf(d)));
+          B.add('v8_crystals', gem, M4(ex - dx * 0.30 + along[0] * 0.4, -0.04,
+            ez - dy * 0.30 + along[1] * 0.4, ry), tx, ty);
+        }
         const n = def(ch(tx + dx, ty + dy));
         const o = n && n.onWall ? a.objects.find((q) => q.tx === tx + dx && q.ty === ty + dy) : null;
         if (o && o.kind === 'switch') {   // 合図石：壁に埋まった結晶。解くと光が消える（第1階層のレバーと同じ扱い）
@@ -862,5 +900,5 @@ export async function createTheme(api) {
     return false;
   }
 
-  return { area: 2, env: ENV, build, sync, tick, dispose, kit, info: () => ({ meshCount: kit.meshCount, omitted: kit.omitted, drawGroups: root ? root.children.map((c) => `${c.name}:${c.children.length}`) : [], ripples: anim.ripples.length, mists: anim.mists.length, ...last }) };
+  return { area: 2, env: ENV, build, sync, tick, dispose, kit, info: () => ({ meshCount: kit.meshCount, v8Decorations: v8 ? { rocks: v8.rocks.length, crystals: v8.crystals.length } : null, omitted: kit.omitted, drawGroups: root ? root.children.map((c) => `${c.name}:${c.children.length}`) : [], ripples: anim.ripples.length, mists: anim.mists.length, ...last }) };
 }
