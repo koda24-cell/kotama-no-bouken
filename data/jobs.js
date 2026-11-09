@@ -14,8 +14,8 @@ const EXT_DEFENSELESS_MULT = 1.8;  // チャージ中（無防備）に受ける
 const EXT_STARTER_GEAR = {
   highlander:{ weapon:"iron-spear", armor:"leather-armor" },
   assassin:{ weapon:"dagger", armor:"leather-armor" },
-  princess:{ weapon:"princess-rod", armor:"leather-armor" },
-  gunner:{ weapon:"flintlock", armor:"leather-armor" },
+  princess:{ weapon:"princess-rod", armor:"linen-robe" },
+  gunner:{ weapon:"flintlock", armor:"linen-robe" },
   reaper:{ weapon:"scythe", armor:"leather-armor" },
   imperial:{ weapon:"magic-sword", armor:"leather-armor" }
 };
