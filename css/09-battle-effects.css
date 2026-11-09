@@ -67,3 +67,10 @@
 .union-cutin-swipe.samurai-cutin .union-cutin-label{color:#ffe0a6;text-shadow:0 0 12px #ff9e32}.union-cutin-swipe.samurai-cutin .union-cutin-skill{border-color:#ffd68a;text-shadow:0 0 10px #ff9e32,0 2px 3px #281100}
 @media(max-width:600px){.union-cutin-swipe{width:118vw;min-height:250px;padding:14px 16px}.union-cutin-members{min-height:clamp(105px,24vh,190px);gap:3px}.union-cutin-portrait{width:100%;height:clamp(88px,20vh,170px)}.union-cutin-member{font-size:clamp(9px,2.5vw,12px)}.union-cutin-skill{font-size:clamp(20px,6vw,34px)}}
 @media(prefers-reduced-motion:reduce){.union-cutin-swipe::after{animation:none!important;opacity:0}}
+/* Optional eight-frame impact GIF overlay; existing CSS VFX remains fallback. */
+.hit-effect .hit-animated-sprite{position:absolute;display:block;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;z-index:4;mix-blend-mode:screen}
+.hit-effect.hit-has-sprite::before,.hit-effect.hit-has-sprite::after,.hit-effect.hit-has-sprite .hit-core,.hit-effect.hit-has-sprite .hit-ring,.hit-effect.hit-has-sprite .hit-particle{opacity:0!important;animation:none!important}
+.hit-ice{color:#a7edff}
+.hit-ice::before{inset:12%;background:radial-gradient(ellipse,#e5ffff 0%,#80dfff 20%,transparent 65%);animation:vfx-flash .65s ease-out both}
+.hit-effect-local .hit-animated-sprite{object-fit:contain}
+@media(prefers-reduced-motion:reduce){.hit-animated-sprite{display:none!important}}
