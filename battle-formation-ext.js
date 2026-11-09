@@ -119,7 +119,7 @@
   });
 
   function makeSnowdrift() {
-    const hp = 2350;
+    const d = SNOWDRIFT_BOSS_DATA, hp = d.hp;
     const boss = {
       id: "snowdrift", name: "スノードリフト", displayName: "スノードリフト", row: "front",
       hp, maxHp: hp, attack: 82, defense: 34, spDefense: 28, image: "assets/monsters/ookami.png", alive: true
@@ -141,7 +141,7 @@
 
   // Snowdrift periodically calls one snow wolf, up to three. Existing group damage/targeting handles them.
   wrap("extVariantAction", base => async function (enemy, turn) {
-    if (enemy?.variantId === "snowdrift" && turn % 3 === 0 && enemy._snowdriftSummonCount < 3 && enemyHpTotal(enemy) > 0) {
+    if (enemy?.variantId === "snowdrift-boss" && turn % 3 === 0 && enemy._snowdriftSummonCount < 3 && enemyHpTotal(enemy) > 0) {
       const n = ++enemy._snowdriftSummonCount, hp = 430;
       enemy.members.push({
         id: `snow-wolf-${n}`, name: "スノーウルフ", displayName: `スノーウルフ ${n}`, row: n === 1 ? "front" : "rear",
