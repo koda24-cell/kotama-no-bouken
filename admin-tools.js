@@ -168,3 +168,11 @@ function adminImportBackup(event){
 }
 function initAdminTools(){adminPanelMarkup();const overlay=$("tutorial-overlay");if(overlay&&overlay.parentElement!==document.body)document.body.appendChild(overlay);}
 
+
+// 管理者ボタンはゲーム本体の初期化に依存させない。
+// script.js の初期化が途中で失敗しても、管理者パネルの入口だけは表示する。
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initAdminTools, { once: true });
+} else {
+  initAdminTools();
+}
