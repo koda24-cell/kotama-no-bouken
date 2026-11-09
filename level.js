@@ -14,7 +14,7 @@ function levelExpNow(c) { return Math.max(0, Math.floor(Number(levelExp[c?.id ||
 function levelApplyStats(c, raw) {
   const lv = levelOf(c); if (lv <= 1 || !c) return raw;
   const baseSpDef = Number.isFinite(c.spDefense) ? c.spDefense : Math.floor((c.defense || 0) / 2);
-  const base = { maxHp: c.maxHp, attack: c.attack, spAttack: c.spAttack, defense: c.defense, spDefense: baseSpDef };
+  const base = { maxHp: c.maxHp, attack: c.attack, spAttack: c.spAttack, defense: c.defense, spDefense: baseSpDef, speed: Number.isFinite(c.speed) ? c.speed : 50 };
   for (const [key, rate] of Object.entries(LEVEL_GROWTH)) if (Number.isFinite(raw[key])) raw[key] += Math.floor((Number(base[key]) || 0) * rate * (lv - 1));
   return raw;
 }
