@@ -535,3 +535,5 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 .skill-respec-button{margin-top:7px;padding:7px 10px;border:1px solid #b28d70;border-radius:5px;background:#3c2630;color:#ffe3d1;font-size:11px;cursor:pointer}
 .skill-respec-button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:760px){.skill-tree-map{min-width:560px}.skill-expansion-grid{grid-template-columns:1fr}.skill-expansion-route{padding:9px}.skill-node-select{min-height:40px}.skill-expansion-solo{flex-direction:column;align-items:center}.skill-expansion-solo .skill-node-select{width:100%}}
+
+.skill-tree-connector{font-size:15px;line-height:1;color:#9bb8f0;text-shadow:0 0 8px #87aaff}
