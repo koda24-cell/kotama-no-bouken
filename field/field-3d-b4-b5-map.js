@@ -49,6 +49,9 @@ export function createTheme(api, area) {
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
+  let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
+  const gltfLoader = new GLTFLoader();
+  const localGeo = geo => (localGeometries.push(geo), geo);
   // 第5階層専用：奈落の星界に埋め込まれた古代の星環紋章。
   // 共有ジオメトリ＋インスタンシングで、長い通路でも描画負荷を抑える。
   const astralRingGeo = localGeo(new THREE.TorusGeometry(0.52, 0.045, 5, 20));
@@ -57,9 +60,6 @@ export function createTheme(api, area) {
     color: 0x8c81c8, emissive: 0x382c91, emissiveIntensity: 0.65,
     metalness: 0.45, roughness: 0.34
   });
-  let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
-  const gltfLoader = new GLTFLoader();
-  const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
   const archGeo = localGeo(new THREE.CylinderGeometry(0.22, 0.36, 3.6, 7));
   const trunkGeo = localGeo(new THREE.CylinderGeometry(0.24, 0.47, 6.8, 7));
