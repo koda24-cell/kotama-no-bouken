@@ -247,6 +247,7 @@ function makeProcedural() {
   // 天井から下がる小さな岩の稜線。プレイヤーの視界を遮らない高所だけに配置。
   const ceilingRidge = [0, 1, 2].map((variant) => {
     const g = new THREE.ConeGeometry(0.27 + variant * 0.09, 0.65 + variant * 0.21, 7, 4);
+    g.rotateX(Math.PI);
     g.translate(0, -0.33 - variant * 0.105, 0);
     return { name: 'b2_ceiling_ridge_' + variant,
       parts: [{ geo: g, mat: 'Deep cavern rock' }] };
