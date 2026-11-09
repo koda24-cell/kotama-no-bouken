@@ -1,0 +1,16 @@
+/* Battle formation rows and compact status indicators */
+.battle-member[data-row="front"]{border-bottom:3px solid #d8b45a}
+.battle-member[data-row="rear"]{border-bottom:3px dashed #78b9e8;background:linear-gradient(160deg,#13204d,#101735)}
+.formation-row-label{display:inline-flex;align-items:center;margin-left:5px;padding:0 4px;border:1px solid #ffffff55;border-radius:3px;color:#dce8ff;font-size:9px;font-style:normal;line-height:1.5;white-space:nowrap}
+.battle-member[data-row="rear"] .formation-row-label{border-color:#78b9e8;color:#a9dcff}
+.enemy-group-unit[data-row="rear"]{transform:translateY(-9px) scale(.9);opacity:.88;filter:saturate(.82)}
+.enemy-group-unit[data-row="front"]{transform:translateY(3px);z-index:2}
+.enemy-group-unit .formation-row-label{display:block;width:max-content;margin:3px auto 0;font-size:8px;color:#e7d7a2}
+.enemy-group-unit[data-row="rear"] .formation-row-label{color:#a9dcff;border-color:#78b9e8}
+.status-icon-only{gap:2px;min-width:20px;justify-content:center;padding:0 3px;font-size:.82em}
+.status-icon-only b{font-size:.9em;font-variant-numeric:tabular-nums}
+.enemy-status-list .status-icon-only{display:inline-flex;align-items:center;gap:2px}
+.enemy-status-list .status-icon-only b{font-size:9px}
+#battle-party .member-head{flex-wrap:wrap}
+#battle-party .member-head strong{display:flex;align-items:center;flex-wrap:wrap;gap:2px}
+@media(max-width:620px){.formation-row-label{font-size:8px}.enemy-group-unit[data-row="rear"]{transform:translateY(-5px) scale(.88)}}
