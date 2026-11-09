@@ -61,6 +61,12 @@ export function createTheme(api, area) {
   const emberGeo = localGeo(new THREE.IcosahedronGeometry(0.06, 0));
   const crackGeo = localGeo(new THREE.PlaneGeometry(3.4, 0.07).rotateX(-Math.PI / 2));
   const lavaGeo = localGeo(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2));
+  // B4専用：溶岩と歩行可能な岩盤の境界に、黒い冷却縁と細い赤熱線を重ねる。
+  // 既存のマップ判定を変えず、床面とほぼ同じ高さの装飾のみ追加する。
+  const lavaRimGeo = magma ? localGeo(new THREE.PlaneGeometry(3.55, 0.46).rotateX(-Math.PI / 2)) : null;
+  const lavaSeamGeo = magma ? localGeo(new THREE.PlaneGeometry(3.28, 0.105).rotateX(-Math.PI / 2)) : null;
+  const cooledBasaltMat = magma ? new THREE.MeshStandardMaterial({ color: 0x211b1b, roughness: 0.97 }) : null;
+  const lavaSeamMat = magma ? new THREE.MeshBasicMaterial({ color: 0xff5a17, toneMapped: false }) : null;
   const flameMat = new THREE.MeshBasicMaterial({ color: mist ? 0xa3ffe4 : magma ? 0xff6b24 : 0xb18cff, transparent: true, opacity: 0.75, depthWrite: false });
   function mesh(geo, material, x, y, z, ry = 0, sx = 1, sy = 1, sz = 1) {
     const m = new THREE.Mesh(geo, material);
@@ -97,6 +103,17 @@ export function createTheme(api, area) {
       mesh(floorGeo, mat.floor, x, -0.17, z);
       if (magma && (c === '*' || c === '~')) {
         mesh(lavaGeo, mat.glow, x, 0.009, z);
+        // 溶岩に接する非溶岩の通路だけ縁取り。壁・イベント・階段の上には置かない。
+        for (const d of DIR_ORDER) {
+          const [dx, dz] = DIR_VEC[d], nx = tx + dx, nz = ty + dz;
+          if (nx < 0 || nz < 0 || nx >= a.w || nz >= a.h || wallCell(nx, nz)) continue;
+          const neighbor = ch(nx, nz);
+          if (neighbor === '*' || neighbor === '~' || neighbor === '>' || neighbor === '<' || objAt.has(nx + ',' + nz)) continue;
+          const yaw = dx !== 0 ? Math.PI / 2 : 0;
+          mesh(lavaRimGeo, cooledBasaltMat, x + dx * 1.73, 0.024, z + dz * 1.73, yaw);
+          mesh(lavaSeamGeo, lavaSeamMat, x + dx * 1.55, 0.03, z + dz * 1.55, yaw);
+          ornaments += 2;
+        }
       }
       // 地熱の亀裂／古代星界の紋様。通行判定には影響させない。
       if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
