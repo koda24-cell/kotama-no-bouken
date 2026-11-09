@@ -15,7 +15,7 @@ const EXT_ENEMY_VARIANTS = {
   ],
   2: [
     { variantId:"goblin-archer", baseName:"ゴブリン", name:"ゴブリンアーチャー", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:320, attack:40, defense:8, gold:22, sprite:"goblin", speed:70,
-      ai:[ { name:"狙い撃ち", weight:60, kind:"phys", power:1.2, target:"rear" }, { name:"毒矢", weight:40, kind:"phys", power:.9, status:{ type:"poison", chance:.5, turns:3, power:.06 } } ] },
+      ai:[ { name:"狙い撃ち", weight:60, kind:"phys", power:1.2, target:"rear", ranged:true }, { name:"毒矢", weight:40, kind:"phys", power:.9, target:"rear", ranged:true, status:{ type:"poison", chance:.5, turns:3, power:.06 } } ] },
     { variantId:"goblin-shaman", baseName:"ゴブリン", name:"ゴブリンシャーマン", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:340, attack:20, spAttack:46, defense:8, spDefense:25, gold:24, sprite:"goblin", speed:50,
       ai:[ { name:"火の玉", weight:45, kind:"sp", power:1.0, element:"炎", status:{ type:"burn", chance:.35, turns:2 } }, { name:"弱体の呪文", weight:30, all:true, kind:"sp", power:.5, status:{ type:"attackDown", chance:.6, turns:3, power:.2 } }, { name:"癒やしの祈り", weight:35, heal:.18, hpBelow:.6 } ] }
   ],
