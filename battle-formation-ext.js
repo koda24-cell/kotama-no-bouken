@@ -71,7 +71,7 @@
   // A marker scopes rear-row enemy mitigation to the exact physical action.
   wrap("applyDamageToEnemyTarget", base => function (enemy, target, amount) {
     const reduced = battleState._formationPhysicalHit === true && target?.ref?.row === "rear";
-    return base.call(this, enemy, reduced ? Math.max(1, Math.floor(amount * .4)) : amount);
+    return base.call(this, enemy, target, reduced ? Math.max(1, Math.floor(amount * .4)) : amount);
   });
   wrap("applyDamageToEnemy", base => function (enemy, amount) {
     const member = enemy?.members?.find(m => m.hp > 0);

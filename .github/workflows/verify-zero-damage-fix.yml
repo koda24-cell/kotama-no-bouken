@@ -1,0 +1,21 @@
+name: Verify zero damage fix
+on:
+  push:
+    branches: [gpt/fix-zero-damage-argument-20261109]
+jobs:
+  damage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reproduce 20 damage scenarios
+        run: node tools/battle-sim/zero-damage-diagnostic.js
+      - name: Independently verify target forwarding and rear-row mitigation
+        run: node tools/battle-sim/formation-target-regression.js
+      - name: Repeat damage scenarios 3 times
+        run: |
+          for i in 1 2 3; do node tools/battle-sim/zero-damage-diagnostic.js > /tmp/damage-run-$i.log || { cat /tmp/damage-run-$i.log; exit 1; }; done
+          echo 'PASS 60 additional damage scenarios'
