@@ -132,7 +132,7 @@
     };
     return {
       ...d, variantId: "snowdrift-boss", hp, maxHp: hp,
-      ai: d.ai, members: [boss], _snowdriftSummonCount: 0, compendiumAs: d.name
+      ai: d.ai, members: [boss], _snowdriftSummonCount: 0, compendiumAs: "スライム"
     };
   }
   if (Array.isArray(EXT_BOSS_NAMES) && !EXT_BOSS_NAMES.includes("スノードリフト")) EXT_BOSS_NAMES.push("スノードリフト");
