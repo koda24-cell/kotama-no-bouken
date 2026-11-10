@@ -127,6 +127,9 @@ function addStatus(t, type, opts = {}) {
   type = extStatusId(type);
   const def = EXT_STATUS_DEFS[type], bag = extStatusBag(t, true);
   if (!def || !bag) return false;
+  // 同系統の強化・弱体化は相殺する（残存する効果を同時に保持しない）。
+  const opposite = { attackDown:"attackUp", defenseDown:"defenseUp", attackUp:"attackDown", defenseUp:"defenseDown" }[type];
+  if (opposite && bag[opposite]) { extRemoveStatus(t, opposite); return "same"; }
   const turns = Math.max(1, Math.floor(opts.turns ?? def.turns ?? 3));
   const power = Number.isFinite(opts.power) ? opts.power : (def.power ?? 0);
   const party = extIsParty(t);
