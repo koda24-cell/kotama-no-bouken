@@ -416,6 +416,65 @@ export function createB5ThroneProp(THREE, kind, options={}) {
     vaultRib([[1.0,4.4,-3.2],[3.2,5.5,-3.2],[4.9,6.1,-3.1]],0.3,stone);
     roughPiece(-0.1,0.9,-3.5,1.2);
   }
+  // Seventh pass: asymmetric ruined statuary and architectural edge silhouettes.
+  // All forms remain abstract: no new lore, heraldry or character likeness.
+  const buttressCluster=(x,z,side=1)=>{
+    mesh(fracturedColumnGeo,stone,x,1.0,z,0.75,4.4,0.75).rotation.z=side*0.28;
+    beamBetween([x,2.2,z],[x+side*1.8,4.8,z-0.8],0.46,stone);
+    mesh(spike,iron,x+side*1.8,5.4,z-0.8,0.7,1.6,0.7);
+    roughPiece(x+side*1.2,0.1,z+0.7,0.7);
+  };
+  if(kind==='gothicArch'){
+    buttressCluster(-7.0,-2.6,-1);
+    buttressCluster(7.0,-2.6,1);
+    for(let i=0;i<5;i++){
+      const x=(i-2)*1.7;
+      mesh(spike,stone,x,15.2-Math.abs(i-2)*0.9,-1.7,0.6,2.0,0.6);
+    }
+  }
+  if(kind==='ruinedPillar'){
+    buttressCluster(3.3,-2.8,1);
+    buttressCluster(-3.5,2.0,-1);
+    for(let i=0;i<5;i++){
+      const a=i*Math.PI*2/5;
+      roughPiece(Math.cos(a)*2.6,0.2,Math.sin(a)*2.6,0.65+i*0.12);
+    }
+  }
+  if(kind==='fracturedAltar'){
+    buttressCluster(-5.4,-1.5,-1);
+    buttressCluster(5.4,-1.5,1);
+    for(let i=0;i<9;i++){
+      const x=(i-4)*0.9;
+      mesh(spike,stone,x,4.3-Math.abs(i-4)*0.22,-3.1,0.3,1.1+(i%3)*0.25,0.3);
+    }
+  }
+  if(kind==='brokenStair'){
+    buttressCluster(-5.6,-3.4,-1);
+    buttressCluster(6.4,-3.5,1);
+    roughPiece(3.1,2.0,-3.2,1.4);
+  }
+  if(kind==='shatteredRoseWindow'){
+    // Fallen fragments on either side frame the scale of the ruined aperture.
+    buttressCluster(-5.8,0.3,-1);
+    buttressCluster(5.8,0.3,1);
+  }
+  if(kind==='hangingBanner'){
+    // Separate dangling cloth tip, visibly split from the main fabric.
+    const tear=G(new THREE.BufferGeometry());
+    tear.setAttribute('position',new THREE.Float32BufferAttribute([
+      2.0,3.4,0.6,3.0,3.1,0.5,2.7,0.4,0.8,2.4,1.2,0.7,
+      2.2,-0.6,0.5
+    ],3));
+    tear.setIndex([0,1,2,0,2,3,3,2,4]);tear.computeVertexNormals();
+    mesh(tear,fabric,0,0,0);
+  }
+  if(kind==='candleSanctuary'){
+    // Tall off-axis broken shrine posts among candles.
+    for(const [x,z,h] of [[-3.4,-1.8,3.2],[3.0,1.5,4.1],[-0.8,1.8,2.7]]){
+      const post=mesh(fracturedColumnGeo,stone,x,1,z,0.35,h,0.35);
+      post.rotation.z=x>0?0.21:-0.17;
+    }
+  }
   const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
   group.scale.setScalar(scale);
   let disposed=false;
