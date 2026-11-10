@@ -21,40 +21,43 @@ export function createB5AncientGate(THREE,options={}){
  };
  let seed=(options.seed??5081)>>>0;
  const rand=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
- // The open arch leaves a clear central silhouette behind the boss.
- // Right pillar is damaged; left pillar remains taller.
+ // Reference silhouette: horizontal broken lintel and two masonry piers.
+ // There is NO large triangular / pointed arch spanning the gate.
  for(const side of [-1,1]){
-  const x=side*4.5,h=side<0?12.8:10.7;
-  block(x,.7,0,2.3,1.4,2.3);
-  block(x,1.6+h/2,0,1.48,h,1.6);
-  for(const z of [-.83,.83]){
-   block(x,2+h*.45,z,.18,h*.82,.22,trim);
-   block(x,2+h*.45,z+Math.sign(z)*.16,.12,h*.77,.14,cut);
+  const x=side*3.75,h=side<0?9.8:7.1;
+  block(x,.7,0,2.65,1.4,2.5);
+  block(x,1.4+h/2,0,1.85,h,1.75);
+  for(let y=2.3;y<h+1.4;y+=1.65){
+   block(x,y,0,2.14,.25,2.05,trim);
   }
-  for(let y=3;y<h+1;y+=2.6){
-   block(x,y,0,1.95,.26,2.0,trim);
-   block(x,y+.33,-.95,1.55,.12,.15,cut);
+  for(const z of [-1.03,1.03]){
+   // Blind lancet ornament is small and shallow; no oversized apex.
+   block(x,4.2,z,.93,3.6,.10,cut);
+   for(const dx of [-.48,.48])block(x+dx,4.2,z+Math.sign(z)*.07,.14,3.75,.15,trim);
+   for(const dx of [-.28,.28])block(x+dx,4.2,z+Math.sign(z)*.11,.075,3.25,.09,stone);
+   block(x,6.05,z+Math.sign(z)*.06,.94,.18,.18,trim);
+   block(x,3.7,z+Math.sign(z)*.11,.85,.12,.14,trim);
   }
-  block(x,2+h,0,2.35,.55,2.2,trim);
-  // Recessed pointed tracery on the pillar face.
-  for(const z of [-1.02,1.02]){
-   beam([x-.4,4,z],[x,5.2,z],.12,.12,trim);
-   beam([x,5.2,z],[x+.4,4,z],.12,.12,trim);
-  }
+  block(x,1.4+h,0,2.7,.48,2.6,trim);
  }
- // Pointed arch, deliberately incomplete and asymmetric.
- beam([-4.0,10.5,0],[-2.25,13.3,0],1.05,1.55);
- beam([-2.25,13.3,0],[0,15.5,0],.9,1.55);
- beam([0,15.5,0],[2.15,13.4,0],.9,1.55);
- beam([2.15,13.4,0],[3.85,10.9,0],1.0,1.55);
- for(const side of [-1,1]){
-  beam([side*4.1,10.6,-.87],[side*2.2,13.2,-.87],.19,.18,trim);
-  beam([side*2.2,13.2,-.87],[0,15.05,-.87],.18,.18,trim);
+ // Surviving flat lintel sections, with a broken centre and right end.
+ for(const [x,y,w,ang] of [
+  [-3.3,11.45,3.6,0],[-.75,11.45,1.7,-.025],
+  [2.45,9.05,2.7,-.045],[4.15,9.0,1.45,-.11]
+ ]){
+  const stoneBeam=block(x,y,0,w,.78,2.1,stone);stoneBeam.rotation.z=ang;
+  block(x,y+.46,-.02,w+.12,.18,2.3,trim).rotation.z=ang;
  }
- // Surviving horizontal cornice and chipped detached pieces.
- block(-3.6,13.3,0,3.1,.55,2.2,trim);
- block(-4.8,13.65,0,1.8,.22,2.4,cut);
- block(3.95,11.4,0,2.3,.44,2.1,trim).rotation.z=-.12;
+ // Rounded, recessed fragmentary opening beneath the surviving left lintel.
+ // Short shallow curve, not a full triangular gateway.
+ for(let i=0;i<9;i++){
+  const t=i/8,ang=Math.PI*(1-t);
+  const x=-2.55+1.45*Math.cos(ang),y=8.55+1.05*Math.sin(ang);
+  const m=block(x,y,-1.07,.52,.25,.30,trim);
+  m.rotation.z=ang-Math.PI/2;
+ }
+ // A collapsed right cornice creates a distinct asymmetric ruin silhouette.
+ block(4.8,8.9,-.18,1.7,.5,2.2,cut).rotation.z=-.17;
  // Broken silhouette: asymmetrical rubble piles resting on the ground.
  const rock=(x,z,sx,h,sz)=>{
   // Low, broad grounded masonry chunks, with a bevelled shoulder and
@@ -88,171 +91,33 @@ export function createB5AncientGate(THREE,options={}){
  // Detached fragment of a broken right-hand arch, grounded.
  block(6.1,.58,-1.25,1.5,1.05,1.2,stone).rotation.z=.28;
  block(6.65,.24,.4,.8,.45,1.1,cut).rotation.z=-.24;
- // Replace visually harsh rectangular base corners with low polygonal
- // battered stone footings; the original structural cores remain intact.
- const bevelledFooting=(x,z,w,d)=>{
-  const shape=new THREE.Shape();
-  const r=.28;
-  shape.moveTo(-w/2+r,-d/2);
-  shape.lineTo(w/2-r,-d/2);shape.lineTo(w/2,-d/2+r);
-  shape.lineTo(w/2,d/2-r);shape.lineTo(w/2-r,d/2);
-  shape.lineTo(-w/2+r,d/2);shape.lineTo(-w/2,d/2-r);
-  shape.lineTo(-w/2,-d/2+r);shape.closePath();
-  const geo=G(new THREE.ExtrudeGeometry(shape,{depth:.38,bevelEnabled:true,bevelThickness:.09,bevelSize:.11,bevelSegments:2,curveSegments:1}));
-  const obj=add(geo,stone,x,.08,z);
-  obj.rotation.x=-Math.PI/2;
+ // Bevelled polygonal masonry, softened corners rather than spiky slabs.
+ const polygonStone=(x,y,z,w,h,d,mat=stone)=>{
+  const pts=[[-.78,-1],[.77,-1],[1,-.73],[1,.75],[.76,1],[-.8,1],[-1,.76],[-1,-.72]];
+  const vertices=[],indices=[];
+  for(const yy of [-h/2,h/2])for(const [px,pz] of pts)vertices.push(px*w*.5,yy,pz*d*.5);
+  for(let j=0;j<8;j++){const k=(j+1)%8;indices.push(j,k,8+j,k,8+k,8+j);}
+  for(let j=1;j<7;j++){indices.push(0,j+1,j,8,8+j,8+j+1);}
+  const g=G(new THREE.BufferGeometry());g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  g.setIndex(indices);g.computeVertexNormals();return add(g,mat,x,y,z);
  };
- for(const x of [-4.5,4.5])bevelledFooting(x,0,3.0,3.0);
- // High-detail Gothic relief, deliberately modeled rather than painted.
- // Repeated stone ribs make the arch and pillars read from oblique angles.
- const groove=M(new THREE.MeshStandardMaterial({color:0x393640,roughness:1,flatShading:true}));
- const moss=M(new THREE.MeshStandardMaterial({color:0x4a5448,roughness:1,flatShading:true}));
- const rib=(a,b,w=.11,depth=.14,mat=trim)=>beam(a,b,w,depth,mat);
- // Nested pointed arch mouldings, with dark recessed band and light raised trim.
- for(const z of [-.99,-1.19,.98]){
-  for(const offset of [-.32,0,.32]){
-   const x0=-4.0+offset,x1=-2.25+offset,x2=offset,x3=2.15+offset,x4=3.85+offset;
-   const y=offset===0?0:Math.abs(offset)*.26;
-   rib([x0,10.5-y,z],[x1,13.3-y,z],.11,.13,offset===0?trim:cut);
-   rib([x1,13.3-y,z],[x2,15.5-y,z],.11,.13,offset===0?trim:cut);
-   rib([x2,15.5-y,z],[x3,13.4-y,z],.11,.13,offset===0?trim:cut);
-   rib([x3,13.4-y,z],[x4,10.9-y,z],.11,.13,offset===0?trim:cut);
-  }
- }
- // Tall blind pointed-arch windows carved in each pillar face.
  for(const side of [-1,1]){
-  const x=side*4.5,h=side<0?12.8:10.7;
-  for(const z of [-1.045,1.045]){
-   for(const y0 of [3.0,7.3]){
-    const top=Math.min(y0+3.3,h+1.0);
-    block(x,(top+y0)/2,z,.86,top-y0,.035,cut);
-    for(const edge of [-.48,.48]){
-     block(x+edge,(top+y0)/2,z+Math.sign(z)*.055,.105,top-y0,.09,trim);
-    }
-    rib([x-.48,top-.66,z+Math.sign(z)*.08],[x,top,z+Math.sign(z)*.08],.115,.1);
-    rib([x,top,z+Math.sign(z)*.08],[x+.48,top-.66,z+Math.sign(z)*.08],.115,.1);
-    block(x,(top+y0)/2,z+Math.sign(z)*.09,.085,top-y0-.2,.085,trim);
-    block(x,(top+y0)/2,z+Math.sign(z)*.1,.64,.085,.1,trim);
-   }
-  }
-  // Triple-tier cornice and fractured crest above the surviving tower.
-  for(let tier=0;tier<3;tier++){
-   block(x,2+h+.36+tier*.17,0,2.55-tier*.18,.12,2.45-tier*.17,tier===1?cut:trim);
-  }
-  if(side<0){
-   for(let j=0;j<7;j++){
-    const xx=x-1.0+j*.34;
-    const hh=.65+rand()*1.25;
-    block(xx,2+h+.63+hh/2,-.22,.25,hh,.5,j%2?stone:trim);
-   }
-  }else{
-   // Right crest is broken and its upper stonework has slid sideways.
-   const fallen=block(x+.78,2+h+.55,-.18,1.3,.48,1.85,stone);
-   fallen.rotation.z=-.22;
-  }
-  // Thin carved vertical flutes and relief bands on side faces.
-  for(const sx of [-.56,.56]){
-   for(const z of [-.58,.58]){
-    block(x+sx,5.8,z,.1,7.1,.11,trim);
-   }
-  }
- }
- // Shattered horizontal cornice courses, offset with missing pieces.
- for(let i=0;i<7;i++){
-  const x=-3.1+i*.87;
-  if(i===4||i===5)continue;
-  const piece=block(x,12.95+(i%3)*.045,-.68,.8,.22,1.1,i%2?stone:trim);
-  piece.rotation.z=(i%2?-.035:.03);
- }
- // Extra buttress stubs and structural wedges, not free-floating rods.
- for(const side of [-1,1]){
-  const x=side*5.25;
-  block(x,2.15,1.08,1.25,3.1,1.1,cut);
-  rib([x,3.5,1.1],[side*4.5,5.1,.8],.42,.58,stone);
+  const x=side*3.75;
+  polygonStone(x,.36,0,3.1,.72,2.9,stone);
+  polygonStone(x,1.05,0,2.65,.35,2.45,trim);
+  // Small relief courses anchored to the pier, not free-standing sticks.
   for(let i=0;i<3;i++){
-   const h=.4+i*.55;
-   block(x+side*.3,h+.14,1.15,1.1,.28,1.4,i===1?trim:stone);
+   const y=2.5+i*1.7;
+   polygonStone(x,y,-.93,1.75,.24,.25,i%2?cut:trim);
   }
  }
- // Weathering on stone, small localized chips and moss caught in joints.
- for(let i=0;i<28;i++){
-  const side=i%2?-1:1;
-  const x=side*(4.0+rand()*1.1),y=2+rand()*9,z=(rand()-.5)*1.8;
-  if(i%3===0){
-   const chip=block(x,y,z,.22+rand()*.28,.13+rand()*.22,.19,cut);
-   chip.rotation.z=(rand()-.5)*.6;
-  }else{
-   const growth=block(x,y,z,.1+rand()*.19,.04+rand()*.12,.1+rand()*.2,moss);
-   growth.rotation.y=rand()*Math.PI;
-  }
- }
- // A heavier, grounded pile of angular masonry along the base, mixed sizes.
- for(let i=0;i<24;i++){
-  const side=i%2?-1:1,x=side*(3.1+rand()*4.1),z=(rand()-.5)*4.4;
-  rock(x,z,.25+rand()*.88,.12+rand()*.65,.3+rand()*.9);
- }
- // Sculpted masonry pass: thicker stone courses, broken arch shoulders and
- // carved blind niches. These are anchored to the gate, not floating rods.
- const roughBlock=(x,y,z,w,h,d,mat=stone)=>{
-  const corners=[[-1,-1],[-.78,-1],[.85,-1],[1,-.75],[1,.72],[.77,1],[-.83,1],[-1,.74]];
-  const verts=[],idx=[];
-  for(const yy of [-h/2,h/2]){
-   for(const [cx,cz] of corners)verts.push(cx*w*.5,yy,cz*d*.5);
-  }
-  for(let i=0;i<8;i++){
-   const k=(i+1)%8;idx.push(i,k,8+i,k,8+k,8+i);
-  }
-  for(let i=1;i<7;i++){idx.push(0,i+1,i);idx.push(8,8+i,8+i+1);}
-  const g=G(new THREE.BufferGeometry());
-  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
-  g.setIndex(idx);g.computeVertexNormals();
-  return add(g,mat,x,y,z);
- };
- // Architectural courses add mass to the formerly thin square columns.
- for(const side of [-1,1]){
-  const x=side*4.5,h=side<0?12.8:10.7;
-  for(const y of [1.9,4.1,6.3,8.5]){
-   roughBlock(x,y,-.18,1.86,.56,1.93,y===6.3?cut:stone);
-   roughBlock(x,y+.34,-.88,1.56,.16,.32,trim);
-  }
-  // Recessed niche backing with an inner stone lancet and stepped borders.
-  for(const y of [4.0,8.15]){
-   roughBlock(x,y,-1.14,.88,2.35,.12,cut);
-   for(const dx of [-.53,.53]){
-    roughBlock(x+dx,y,-1.22,.18,2.62,.25,trim);
-    roughBlock(x+dx*.8,y,-1.35,.10,2.23,.14,stone);
-   }
-   rib([x-.53,y+1.2,-1.23],[x,y+1.83,-1.23],.21,.24,trim);
-   rib([x,y+1.83,-1.23],[x+.53,y+1.2,-1.23],.21,.24,trim);
-   // Inset diamond relief, deliberately low profile.
-   rib([x,y+.45,-1.28],[x+.26,y,-1.28],.12,.14,stone);
-   rib([x+.26,y,-1.28],[x,y-.45,-1.28],.12,.14,stone);
-   rib([x,y-.45,-1.28],[x-.26,y,-1.28],.12,.14,stone);
-   rib([x-.26,y,-1.28],[x,y+.45,-1.28],.12,.14,stone);
-  }
-  // Broad buttress blocks taper into the column, not thin free-standing rods.
-  roughBlock(x+side*.9,1.15,-.25,1.75,2.3,2.4,stone);
-  roughBlock(x+side*.7,2.6,-.3,1.28,.9,1.8,trim);
- }
- // Damaged voussoirs built along the arch: polygonal pieces overlap the
- // supporting beams to read as carved stone instead of a skeletal frame.
- const archPath=[[-4,10.5],[-2.25,13.3],[0,15.5],[2.15,13.4],[3.85,10.9]];
- for(let seg=0;seg<4;seg++){
-  const a=archPath[seg],b=archPath[seg+1],count=seg===0?5:6;
-  for(let j=0;j<count;j++){
-   if((seg===2&&j===4)||(seg===3&&j===1))continue;
-   const t=(j+.5)/count;
-   const x=a[0]+(b[0]-a[0])*t,y=a[1]+(b[1]-a[1])*t;
-   const piece=roughBlock(x,y,0,.85,.78,1.7,j%4===0?cut:stone);
-   piece.rotation.z=-Math.atan2(b[0]-a[0],b[1]-a[1]);
-  }
- }
- // Missing upper-right masonry, fallen architectural blocks remain grounded.
- for(const [x,z,w,h,d,angle] of [
-  [5.8,-2.3,1.6,.54,1.1,.14],[6.75,-1.65,1.35,.42,1.0,-.19],
-  [3.25,2.25,1.15,.33,1.4,.24],[-5.9,1.8,1.25,.45,1.3,-.12]
+ // Broken masonry lies on the floor, broad flat stones and scattered rubble.
+ for(const [x,z,w,h,d,ang] of [
+  [-5.0,1.5,1.7,.65,1.2,.09],[-4.25,2.2,1.3,.46,1.0,-.08],
+  [4.9,1.6,1.8,.64,1.3,-.14],[5.85,-.8,1.35,.45,1.1,.07],
+  [2.9,2.4,1.2,.38,.85,-.12]
  ]){
-  const piece=roughBlock(x,h*.5,z,w,h,d,stone);piece.rotation.z=angle;
+  polygonStone(x,h*.5,z,w,h,d,stone).rotation.z=ang;
  }
  const scale=Number.isFinite(options.scale)?Math.max(.1,Math.min(4,options.scale)):1;
  group.scale.setScalar(scale);
