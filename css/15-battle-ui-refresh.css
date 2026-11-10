@@ -2152,3 +2152,35 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  min-height:34px!important;
  max-height:48px!important;
 }
+
+
+/* EVENT is a primary battle signal: give its top-row message more room. */
+#battle.battle-ui-preview .battle-preview-top-hud {
+ min-height:58px!important;
+ gap:12px!important;
+}
+#battle.battle-ui-preview .battle-preview-top-hud>.battle-preview-header-event-window {
+ flex:1 1 auto!important;
+ max-width:none!important;
+ min-height:52px!important;
+ gap:10px!important;
+}
+#battle.battle-ui-preview .battle-preview-top-hud>.battle-preview-header-event-window>.window-title {
+ min-height:44px!important;
+ height:44px!important;
+ font-size:17px!important;
+ padding:6px 15px!important;
+}
+#battle.battle-ui-preview .battle-preview-top-hud>.battle-preview-header-event-window #event-log {
+ min-height:48px!important;
+ max-height:72px!important;
+ padding:10px 16px!important;
+ font-size:clamp(16px,1.4vw,21px)!important;
+ line-height:1.5!important;
+ font-weight:750!important;
+ overflow-y:auto!important;
+}
+#battle.battle-ui-preview .battle-preview-top-hud>.battle-preview-header-event-window #event-log p {
+ font-size:inherit!important;
+ line-height:inherit!important;
+}
