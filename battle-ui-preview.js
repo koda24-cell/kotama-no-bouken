@@ -191,8 +191,10 @@
     const meterFill = document.createElement("i");
     meterTrack.appendChild(meterFill);
     meter.append(meterLabel, meterTrack);
-    hud.append(portrait, name, meter);
+    hud.append(portrait, name);
     arena?.appendChild(hud);
+    // Gauge is arena-anchored, not portrait-anchored: ready effects cannot move it.
+    arena?.appendChild(meter);
     function updateHero() {
       if (!battle.classList.contains("active")) return;
       const members = typeof getParty === "function" ? getParty() : [];
