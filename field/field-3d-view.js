@@ -140,6 +140,8 @@ function applyEnv(area, env) {
   const E = env || ENV_B1;
   g.scene.background.setHex(E.background); g.scene.fog.color.setHex(E.fog.color); g.scene.fog.density = E.fog.density;
   if (g.hemi) { g.hemi.color.setHex(E.hemi.sky); g.hemi.groundColor.setHex(E.hemi.ground); g.hemi.intensity = g.high ? E.hemi.high : E.hemi.low; }
+  g.camera.far = area === 5 ? 180 : 48;
+  g.camera.updateProjectionMatrix();
   g.envArea = area;
 }
 // 第2階層のテーマ（別ファイル）を読み込む。失敗したら第2階層だけ2D表示に戻す
@@ -149,7 +151,8 @@ function loadTheme2() {
   return import('./field-3d-b2-water.js?v=20261109-b2').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES }));
 }
 async function loadTheme45(area) {
-  const m = await import('./field-3d-b4-b5-map.js?v=20261110-b4-placement');
+  if (area !== 4 && g.theme?.area === area) return g.theme;
+  const m = await import('./field-3d-b4-b5-map.js?v=20261110-b4-b5-integrated');
   return m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES }, area);
 }
 function place(parent, src, x, y, z, ry = 0, s = 1) {
@@ -215,21 +218,33 @@ async function buildFloor() {
   } catch (e) {
     console.warn('[field-3d] 素材を読めなかったため2D表示に戻します:', e); g.failed = true; showBadge(''); applyMode(); return;
   }
-  if (token !== g.buildToken || curKey() !== key) return;   // 待っている間にフロアが変わった
+  if (token !== g.buildToken || curKey() !== key) {
+    if (th && th !== g.theme) th.dispose({ final: true });
+    if (token === g.buildToken) g.buildingKey = '';
+    return;
+  }   // 待っている間にフロアが変わった
   const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
   // 片付け
-  if (g.envArea === 4) for (const v of g.foes.values()) disposeB4FoeVisual(v);
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
-  g.lights = []; g.entries = []; g.foes.clear();
-  if (g.theme && g.theme !== th) g.theme.dispose();
-  if (th) g.theme = th;
+  g.lights = []; g.entries = [];
+  // FOE textures belong to texCache; only each floor's sprite/ring is owned here.
+  for (const v of g.foes.values()) v.grp.traverse(o => {
+    if (!o.isSprite) o.geometry?.dispose();
+    if (o.material) o.material.dispose();
+  });
+  g.foes.clear();
+  if (g.theme && g.theme !== th) g.theme.dispose({ final: true });
+  g.theme = th;
   applyEnv(area, th && th.env);
   const info = cellInfo(a), { ch, def, wallCell, open, facing } = info;
   const X = (tx) => tx * CELL, Z = (ty) => ty * CELL;
   const objAt = new Map(a.objects.map((o) => [`${o.tx},${o.ty}`, o]));
   if (th) {
-    try { await th.build(a, S, info); }
+    try {
+      await th.build(a, S, info);
+      if (curKey() !== key) { th.dispose(); g.buildingKey = ''; return; }
+    }
     catch (e) {
       console.error('[field-3d] 3Dマップの組み立てに失敗:', area, e);
       g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return;
@@ -370,7 +385,8 @@ function syncFoes(t) {
       g.dyn.add(grp); v = { grp, sp, ring, light, aspectSet: false, pos: null }; g.foes.set(f.key, v);
     }
     if (!v.aspectSet && v.sp.material.map.image) { const im = v.sp.material.map.image; const k = (im.width || 1) / (im.height || 1); v.sp.scale.set(2.6 * k, 2.6, 1); v.aspectSet = true; }
-    v.grp.visible = !f.defeated;
+    const inB5Vision = Number(fieldState.area) !== 5 || fieldState.visible?.has(`${Math.floor(f.x / FIELD_TILE)},${Math.floor(f.y / FIELD_TILE)}`);
+    v.grp.visible = !f.defeated && !!inB5Vision;
     const p = f.view || f, target = new THREE.Vector3(p.x / FIELD_TILE * CELL - CELL / 2, 0, (p.y - 4) / FIELD_TILE * CELL - CELL / 2);
     if (!v.pos) v.pos = target.clone(); else v.pos.lerp(target, 0.25);
     v.grp.position.copy(v.pos);
@@ -496,7 +512,8 @@ function build() {
   mount();
   const key = curKey();
   if (g.builtKey === key && doorSig(fieldArea()) === g.sig) { g.cam.ready = false; applyMode(); return; }
-  if (g.buildingKey === key) return;
+  // Serialize async builds: a floor change is picked up by frame() afterwards.
+  if (g.buildingKey) return;
   g.builtKey = '';
   applyMode();
   buildFloor();
@@ -534,7 +551,7 @@ function setPreview(n, on) {
   g.preview = readPreview(); if (on) g.themeFailed = false;
   if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
 }
-window.KotamaField3D = { active, input, build, frame, toggle, isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info() };
+window.KotamaField3D = { active, input, build, frame, toggle, isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる
 if (fieldOk() && typeof state !== 'undefined' && state.screen === 'field') build();
 else applyModeSafe();
