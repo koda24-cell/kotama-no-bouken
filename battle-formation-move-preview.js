@@ -11,6 +11,19 @@
     return positions.get(character?.id) || (rearJobs.has(character?.id) ? "rear" : "front");
   };
   window.kotamaBattleFormationPositions = positions;
+  window.kotamaBattleExportRows = () => Object.fromEntries(positions);
+  window.kotamaBattleImportRows = data => {
+    positions.clear();
+    if (!data || typeof data !== "object" || Array.isArray(data)) return;
+    const ids = new Set(getParty().map(c => c.id));
+    const counts = {front:0,rear:0};
+    for (const [id,row] of Object.entries(data)) {
+      if (!ids.has(id) || !["front","rear"].includes(row) || counts[row] >= 3) continue;
+      positions.set(id,row);
+      counts[row]++;
+    }
+  };
+
 
   function selectMove(actor) {
     if (!actor || battleState.busy || battleState.tutorialMode) return;
