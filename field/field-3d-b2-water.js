@@ -995,6 +995,8 @@ export async function createTheme(api) {
       const f = new THREE.Mesh(fishGeo, fishMat);
       f.position.set(x + (hash(i, 1, 210) - 0.5) * 8, 10 + hash(i, 2, 211) * 9, z + (hash(i, 3, 212) - 0.5) * 8);
       f.rotation.y = hash(i, 4, 213) * Math.PI * 2; f.scale.setScalar(0.55 + hash(i, 5, 214) * 0.8);
+      // 初期位置と向きを固定しておき、時間積分による漂流を防ぐ。
+      f.userData.b2Swim = { x: f.position.x, y: f.position.y, z: f.position.z, yaw: f.rotation.y };
       atrium.add(f);
       anim.fishes.push(f);
     }
@@ -1051,8 +1053,14 @@ export async function createTheme(api) {
     }
     for (let i = 0; i < anim.fishes.length; i++) {
       const fish = anim.fishes[i];
-      fish.position.x += Math.sin(t * 0.42 + i) * dt * 0.08;
-      fish.rotation.y += Math.sin(t * 0.23 + i) * dt * 0.04;
+      const origin = fish.userData.b2Swim;
+      if (!origin) continue;
+      // 基準位置を中心に緩やかに周回。長時間放置しても吹き抜けから逸脱しない。
+      const phase = t * (0.16 + i * 0.009) + i * 1.7;
+      fish.position.set(origin.x + Math.sin(phase) * 0.75,
+        origin.y + Math.sin(phase * 0.7) * 0.16,
+        origin.z + Math.cos(phase) * 0.55);
+      fish.rotation.y = origin.yaw + Math.sin(phase + Math.PI / 2) * 0.22;
     }
     for (const r of anim.ripples) {
       if (camPos && r.mesh.position.distanceToSquared(camPos) > 400) { r.mesh.visible = false; continue; }
