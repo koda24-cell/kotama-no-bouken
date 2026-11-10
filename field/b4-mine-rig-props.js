@@ -201,6 +201,57 @@ export function createB4MineRigProps() {
     const height=1.2+(i%3)*.75;
     add(fractured,ash,x,height*.35,z,.85+(i%2)*.5,height,.75+(i%3)*.18,a*.2,a*.13);
   }
+  // Sixth pass: collapsed chain hoist, suspended dragon-era mining drill and fractured platform.
+  // Place behind the gantry to preserve the previous silhouette while creating a new high focal point.
+  const hoist=new THREE.Group();hoist.name='b4:collapsed-chain-hoist';
+  hoist.position.set(-1.9,4.35,-2.55);hoist.rotation.z=-.18;root.add(hoist);
+  const hoistAdd=(geo,mat,x,y,z,sx,sy,sz,rz=0,rx=0)=>{
+    const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.rotation.set(rx,0,rz);hoist.add(m);return m;
+  };
+  hoistAdd(cylinder,iron,0,0,0,.75,.3,.75,0,Math.PI/2);
+  for(let i=0;i<12;i++){
+    const a=i*Math.PI/6;
+    hoistAdd(box,iron,Math.cos(a)*.65,Math.sin(a)*.65,0,.28,.22,.3,a);
+  }
+  // Bent hanging chain, visible individual links rather than a single straight line.
+  for(let i=0;i<13;i++){
+    const y=-.28-i*.22,x=Math.sin(i*.38)*.18;
+    hoistAdd(rim,iron,x,y,.12,.13,.24,.13,i%2?Math.PI/2:0,i%2?0:Math.PI/2);
+  }
+  // Large multi-stage broken drill bit with fins and an irregular snapped tip.
+  const drill=new THREE.Group();drill.name='b4:snapped-drill';drill.position.set(-1.65,.75,-3.1);
+  drill.rotation.set(.32,.2,-.65);root.add(drill);
+  const drillAdd=(geo,mat,x,y,z,sx,sy,sz,rz=0,rx=0)=>{
+    const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.rotation.set(rx,0,rz);drill.add(m);
+  };
+  drillAdd(cylinder,iron,0,.85,0,.4,1.7,.4);
+  for(let i=0;i<5;i++){
+    const y=.2+i*.38;
+    drillAdd(rim,iron,0,y,0,.55-(i*.03),.55-(i*.03),.55-(i*.03),i*.23,Math.PI/2);
+  }
+  for(let i=0;i<6;i++){
+    const a=i*Math.PI/3;
+    drillAdd(spike,iron,Math.cos(a)*.4,1.1,Math.sin(a)*.4,.35,.9,.35,a);
+  }
+  drillAdd(shard,iron,.08,-.15,0,.65,.8,.65,.28);
+  // Partially collapsed platform with missing central boards and dangling diagonal support.
+  for(let i=0;i<8;i++){
+    if(i===3||i===4)continue;
+    const x=1.35+i*.43;
+    add(box,wood,x,2.25,-3.55,.37,.14,1.45,(i-4)*.065);
+  }
+  for(const x of [1.55,4.25]){
+    add(box,wood,x,1.25,-3.7,.18,2.6,.18,(x-2.8)*.2);
+    add(box,iron,x,2.75,-4.08,.12,.95,.12,(x-2.8)*.09);
+  }
+  add(box,wood,3.15,1.3,-3.9,.16,2.4,.18,.68);
+  // Strongly silhouetted volcanic shards break through the platform's edge.
+  for(let i=0;i<9;i++){
+    const a=i*2.399963;
+    const h=.65+(i%4)*.38;
+    add(spike,ash,3.4+Math.cos(a)*1.4,.3+h*.42,-4.1+Math.sin(a)*.65,
+      .45+(i%3)*.16,h,.45+(i%3)*.12,Math.sin(a)*.3);
+  }
   root.userData.disposeB4MineRig=()=>{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());};
   return root;
 }
