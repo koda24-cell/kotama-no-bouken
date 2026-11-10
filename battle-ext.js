@@ -552,7 +552,6 @@ function extSkillDamage(actor, enemy, x, mult) {
     d = calcEnemyPhysicalDamage(enemy, effectiveAttackPower(actor) * x.mult * mult);
     d = applyElementalDamage(enemy, d, x.element || getWeaponPhysicalElement(actor));
   }
-  if (x.ailmentBonus && ["poison","paralysis","sleep","confusion","petrify","burn"].some(type => extHasStatus(enemy,type))) d *= x.ailmentBonus;
   return Math.max(0, Math.floor(d));
 }
 function extPickTargets(enemy, a, all) {
