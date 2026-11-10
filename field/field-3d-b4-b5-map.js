@@ -1,6 +1,7 @@
 /* Fourth and fifth stratum map-driven 3D placement. Visuals only; map remains authoritative. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { createRuinedCityKit } from './b3-ruined-city-kit.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -69,6 +70,7 @@ export function createTheme(api, area) {
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
+  let cityKit = null;
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -168,6 +170,81 @@ export function createTheme(api, area) {
         const p = mesh(emberGeo, flameMat, x + (hash(tx, ty, 91) - 0.5) * 2.8, 0.7 + hash(tx, ty, 92) * 2.4, z + (hash(tx, ty, 93) - 0.5) * 2.8);
         dynamic.push({ mesh: p, y: p.position.y, phase: hash(tx, ty, 94) * 6.28 });
       }
+    }
+    // B3 architecture landmarks: wall-mounted only; never alter walkable cells.
+    // Low-density deterministic placement, with objects/stairs excluded.
+    if (mist) {
+      cityKit = createRuinedCityKit(THREE);
+      let placed = 0;
+      const cap = Math.min(24, Math.max(6, Math.floor(a.w * a.h / 28)));
+      for (let ty = 1; ty < a.h - 1 && placed < cap; ty++) {
+        for (let tx = 1; tx < a.w - 1 && placed < cap; tx++) {
+          if (wallCell(tx, ty) || objAt.has(tx + ',' + ty)) continue;
+          const adjacent = DIR_ORDER.filter(d => {
+            const [dx,dz] = DIR_VEC[d]; return wallCell(tx + dx, ty + dz);
+          });
+          if (!adjacent.length || hash(tx,ty,311) > 0.20) continue;
+          const d = adjacent[Math.floor(hash(tx,ty,312)*adjacent.length)];
+          const [dx,dz] = DIR_VEC[d], angle = FACE_YAW[d] + Math.PI;
+          const variant = hash(tx,ty,313);
+          const piece = variant < .12 ? cityKit.arch() :
+            variant < .27 ? cityKit.facade(3,3.4) :
+            variant < .38 ? cityKit.column(2.5,true) :
+            variant < .48 ? cityKit.statue() :
+            variant < .59 ? cityKit.rubble(ty*1009+tx) :
+            variant < .70 ? cityKit.collapsedWall(ty*1009+tx) :
+            variant < .80 ? cityKit.stele() :
+            variant < .88 ? cityKit.stairFragment() :
+            variant < .94 ? cityKit.altar() :
+            variant < .975 ? cityKit.boulderCluster(ty*1009+tx) :
+            variant < .99 ? cityKit.crystalCluster(ty*1009+tx) : cityKit.vines();
+          // Keep meshes as shallow scenery close to a solid wall.
+          // Tall architecture is scaled to fit the existing 4-unit ceiling.
+          const tall = variant < .38;
+          piece.scale.setScalar(tall ? .55 : .48);
+          piece.rotation.y = angle;
+          piece.position.set(tx*CELL + dx*1.72, 0, ty*CELL + dz*1.72);
+          piece.name = 'b3:wall-scenery:' + placed;
+          root.add(piece);
+          placed++; ornaments++;
+        }
+      }
+    }
+    // B3 skyline landmarks. Anchor the center in a SOLID wall tile, never a path tile.
+    // Small scaled silhouettes remain visual-only and do not modify map collision.
+    if (mist && cityKit) {
+      const candidates = [];
+      for (let ty = 2; ty < a.h - 2; ty++) for (let tx = 2; tx < a.w - 2; tx++) {
+        if (!wallCell(tx,ty) || objAt.has(tx+','+ty)) continue;
+        const adjacentWalk = DIR_ORDER.some(d => {
+          const [dx,dz] = DIR_VEC[d];
+          return !wallCell(tx+dx,ty+dz) && !objAt.has((tx+dx)+','+(ty+dz));
+        });
+        if (!adjacentWalk) continue;
+        // Require a thick wall backing for the larger structures.
+        const solidCount = DIR_ORDER.filter(d => {
+          const [dx,dz] = DIR_VEC[d]; return wallCell(tx+dx,ty+dz);
+        }).length;
+        if (solidCount < 2) continue;
+        candidates.push({tx,ty,rank:hash(tx,ty,421)});
+      }
+      candidates.sort((a,b)=>a.rank-b.rank);
+      const selected = [];
+      for (const spot of candidates) {
+        if (selected.length >= 3) break;
+        if (selected.some(p => Math.abs(p.tx-spot.tx)+Math.abs(p.ty-spot.ty)<7)) continue;
+        selected.push(spot);
+      }
+      selected.forEach((spot,i) => {
+        const piece = i===1 ? cityKit.tower() : cityKit.temple();
+        // Temple original footprint 7x5; 0.36 scale stays inside a 4-unit wall cell.
+        // Tower height 5.6 -> 3.08, below the existing 4-unit ceiling.
+        piece.scale.setScalar(i===1 ? .55 : .36);
+        piece.position.set(spot.tx*CELL,0,spot.ty*CELL);
+        piece.rotation.y = Math.floor(hash(spot.tx,spot.ty,422)*4)*Math.PI/2;
+        piece.name = i===1 ? 'b3:skyline:tower' : 'b3:skyline:temple:'+i;
+        root.add(piece); ornaments++;
+      });
     }
     // ボスマスの視覚的ランドマーク。GLBが未展開でも探索は止めない。
     if (!mist) {
@@ -280,6 +357,7 @@ export function createTheme(api, area) {
     }
   }
   function dispose() {
+    if (cityKit) { cityKit.dispose(); cityKit = null; }
     if (root) root.parent?.remove(root);
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0;
