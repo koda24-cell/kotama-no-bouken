@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-27";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-28";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -253,6 +253,20 @@
     primaryRail.appendChild(railTitle);
     let expandedAction = null;
     const railActions = [["攻撃","attack"],["SPスキル","skill"],["防御","guard"],["道具","item"],["編成位置入れ替え","preview-move"],["ユニオンスキル","preview-union-toggle"]];
+    // Keep the previous-character action available when the submenu replaces
+    // the main command list. Its original handler is invoked, not duplicated.
+    const backActorButton = document.createElement("button");
+    backActorButton.type = "button";
+    backActorButton.className = "battle-preview-rail-button battle-preview-back-actor";
+    backActorButton.textContent = "前のキャラへ戻る";
+    backActorButton.addEventListener("click", () => {
+      if (battleState.busy || !(battleState.currentActorIndex > 0)) return;
+      // Restore the original command list and use its existing back handler.
+      if (typeof renderActionMenu === "function") {
+        renderActionMenu();
+        requestAnimationFrame(() => commands?.querySelector('[data-action="back"]')?.click());
+      }
+    });
     for (const [label,action] of railActions) {
       const button = document.createElement("button");
       button.type = "button"; button.className = "battle-preview-rail-button"; button.textContent = label;
@@ -291,6 +305,7 @@
       if (!option) return;
       expandedAction = option.dataset.action || (option.dataset.previewUnionToggle ? "preview-union-toggle" : "preview-move");
     }, true);
+    primaryRail.appendChild(backActorButton);
     const railSync = new MutationObserver(() => { primaryRail.hidden = !battle.classList.contains("battle-preview-side-open"); });
     if (commands) railSync.observe(commands, {childList:true});
     primaryRail.hidden = true;
@@ -304,6 +319,7 @@
       box.classList.toggle("battle-preview-main-menu", main);
       battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
       primaryRail.hidden = main || !!battleState.tutorialMode;
+      backActorButton.hidden = !(battleState.currentActorIndex > 0);
       if (main) expandedAction = null;
       primaryRail.querySelectorAll(".battle-preview-rail-button").forEach(item => {
         const selected = !main && item.dataset.railAction === expandedAction;

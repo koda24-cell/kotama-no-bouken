@@ -1924,3 +1924,28 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  z-index:8!important;
  pointer-events:none!important;
 }
+
+
+/* Compact seven-action rail: no empty space below previous-character action. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview:not(.battle-preview-side-open) .battle-arena>.battle-preview-arena-command,
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail:not([hidden]) {
+  height:334px!important;
+  min-height:334px!important;
+  max-height:334px!important;
+  padding:8px 9px!important;
+  overflow:visible!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail:not([hidden]) {
+  gap:3px!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail .battle-preview-back-actor[hidden] {
+  display:none!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail .battle-preview-rail-button {
+  flex:0 0 38px!important;
+  height:38px!important;
+  min-height:38px!important;
+  max-height:38px!important;
+ }
+}
