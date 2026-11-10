@@ -279,6 +279,58 @@ export function createB3UrbanProps(THREE) {
     }
     return g;
   }
+  // Broken elevated roadway: visible open gap, fallen spans, bent supports.
+  function collapsedOverpass(variant=0) {
+    const v=((variant%3)+3)%3,g=group('collapsed_overpass_'+v);
+    for(const x of [-3.4,3.4]) {
+      beam(g,[x,0,-1],[x+(v===1?.35:0),3.7,-1],.38,concrete);
+      beam(g,[x,0,1],[x+(v===2?-.3:0),3.7,1],.38,concrete);
+      add(g,cube,concrete,x,3.65,0,.85,.42,2.8);
+    }
+    const left=add(g,cube,concrete,-2.55,4.1,0,3.2,.32,3.2);
+    left.rotation.z=v===1?-.13:.06;
+    const right=add(g,cube,concrete,2.8,3.35,.1,2.75,.34,3.2);
+    right.rotation.z=v===2?-.42:-.24;
+    // Gap in bridge deck stays visibly open; rebar hangs between slabs.
+    for(let i=0;i<5;i++) {
+      const z=-1.1+i*.55;
+      beam(g,[-.95,3.95,z],[.1,3.1-i*.08,z+.15],.045,metal);
+      beam(g,[1.5,3.25,z],[.55,2.5+i*.06,z-.15],.045,metal);
+    }
+    for(const x of [-3.9,-2.8,2.5,3.6]) {
+      beam(g,[x,4.3,-1.45],[x+(x>0?.25:0),4.8,-1.45],.065,metal);
+      beam(g,[x,4.3,1.45],[x,4.8,1.45],.065,metal);
+    }
+    for(let i=0;i<7;i++) {
+      const x=-1.3+(i%4)*.83,z=(Math.floor(i/4)-.5)*1.2;
+      const chunk=add(g,cube,concrete,x,.25+(i%3)*.15,z,.8,.28,.65);
+      chunk.rotation.set(i*.13,i*.34,(i%2?.34:-.24));
+    }
+    return g;
+  }
+  // Cratered paving: offset plates and uplifted margins, no physics collision.
+  function sunkenStreet(seed=1) {
+    const g=group('sunken_street_'+seed);
+    let n=seed>>>0;const rnd=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};
+    for(let i=0;i<16;i++) {
+      const x=(i%4-1.5)*.85,z=(Math.floor(i/4)-1.5)*.85;
+      const dist=Math.hypot(x,z), y=dist<1.3?-.28:dist<1.9?-.09:.12;
+      const slab=add(g,cube,concrete,x,y,.0+z,.77,.14,.77);
+      slab.rotation.z=(rnd()-.5)*(dist<1.9?.24:.1);
+      slab.rotation.x=(rnd()-.5)*.16;
+    }
+    for(let i=0;i<10;i++) {
+      const angle=i*2.399,rad=.65+rnd()*1.5;
+      const x=Math.cos(angle)*rad,z=Math.sin(angle)*rad;
+      beam(g,[x,-.18,z],[x*1.27,.08+rnd()*.35,z*1.27],.07,growth);
+    }
+    for(let i=0;i<5;i++) {
+      const angle=i*1.31,rad=1+rnd();
+      const stone=add(g,cube,concrete,Math.cos(angle)*rad,.08,Math.sin(angle)*rad,.4,.24,.3);
+      stone.rotation.set(i*.3,i*.2,i*.17);
+    }
+    return g;
+  }
   function dispose(){geos.forEach(x=>x.dispose());[concrete,metal,dark,growth].forEach(x=>x.dispose());}
-  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,dispose};
+  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,collapsedOverpass,sunkenStreet,dispose};
 }
