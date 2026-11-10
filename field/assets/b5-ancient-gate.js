@@ -185,6 +185,49 @@ export function createB5AncientGate(THREE,options={}){
   const broken=fracturedStone(x-side*1.91,9.46,0,1.22,1.06,1.88,cut,1);
   broken.rotation.z=side*.36;
  }
+ // Fractured cornice / capital sculpt pass. Every stone sits within the
+ // existing lintel silhouette; no new pointed apex or floating decoration.
+ const chippedCap=(x,y,z,w,h,d,mat=stone)=>{
+  const n=12,verts=[],idx=[];
+  const outline=[[-.8,-1],[-.2,-1],[.55,-1],[.94,-.84],[1,-.22],[.91,.65],[.65,1],[.12,1],[-.65,.93],[-1,.69],[-1,.13],[-.95,-.68]];
+  const rings=[[-.5,.88],[-.33,1],[.27,.98],[.5,.79]];
+  for(let k=0;k<rings.length;k++){
+   const [height,scale]=rings[k];
+   for(let j=0;j<n;j++){
+    const [u,v]=outline[j],rough=.024*Math.sin(j*2.3+k*1.8);
+    verts.push(u*w*.5*(scale+rough),height*h+(k===3?.045*h*Math.sin(j*1.7):0),v*d*.5*(scale+rough));
+   }
+  }
+  for(let k=0;k<rings.length-1;k++)for(let j=0;j<n;j++){
+   const a=k*n+j,b=k*n+(j+1)%n,c=(k+1)*n+j,e=(k+1)*n+(j+1)%n;
+   idx.push(a,b,c,b,e,c);
+  }
+  for(let j=1;j<n-1;j++){idx.push(0,j+1,j);idx.push(3*n,3*n+j,3*n+j+1);}
+  const g=G(new THREE.BufferGeometry());g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(idx);g.computeVertexNormals();return add(g,mat,x,y,z);
+ };
+ // Worn mouldings and chipped voussoirs integrated into the surviving beam.
+ for(const [x,y,w] of [[-3.3,11.45,3.6],[-.75,11.45,1.7],[2.45,9.05,2.7]]){
+  const course=chippedCap(x,y-.23,-.72,w*.97,.31,.55,trim);
+  course.rotation.z=x>0?-.045:0;
+  chippedCap(x,y+.29,-.63,w*.90,.22,.62,stone);
+  for(let j=0;j<Math.max(2,Math.floor(w/.72));j++){
+   const px=x-w*.40+j*w*.8/Math.max(1,Math.floor(w/.72)-1);
+   const fragment=chippedCap(px,y-.48,-.72,.48,.20,.43,j%3===0?cut:stone);
+   fragment.rotation.z=(j%2?1:-1)*.055;
+  }
+ }
+ // Heavy weathered capitals: overlapping carved stone plates, not rods.
+ for(const side of [-1,1]){
+  const x=side*3.75,h=side<0?9.8:7.1;
+  for(const [dy,w,thick] of [[-.30,2.38,.28],[.06,2.65,.25],[.34,2.44,.19]]){
+   chippedCap(x,1.4+h+dy,-.08,w,thick,2.45,dy===.06?trim:stone);
+  }
+  // chipped corners on the forward-facing (-Z) capital edge
+  for(const dx of [-.88,.82]){
+   chippedCap(x+dx,1.4+h+.16,-1.12,.49,.31,.38,cut);
+  }
+ }
  // A collapsed right cornice creates a distinct asymmetric ruin silhouette.
  fracturedStone(4.8,8.9,-.18,1.7,.5,2.2,cut,1).rotation.z=-.17;
  // Broken silhouette: asymmetrical rubble piles resting on the ground.
