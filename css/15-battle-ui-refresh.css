@@ -2184,3 +2184,16 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  font-size:inherit!important;
  line-height:inherit!important;
 }
+
+
+/* EVENT moved to the top HUD: remove its now-empty bottom grid row.
+   COMMAND INFO should sit immediately below the party portraits. */
+#battle.battle-ui-preview .battle-bottom.battle-preview-bottom {
+ grid-template-rows:auto!important;
+ row-gap:0!important;
+ padding-top:3px!important;
+}
+#battle.battle-ui-preview .battle-preview-bottom>.command-info-window {
+ grid-row:1!important;
+ margin-top:0!important;
+}
