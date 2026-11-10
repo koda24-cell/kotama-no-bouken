@@ -1,0 +1,20 @@
+/* Battle UI visual prototype; opt-in stylesheet, not enabled by index.html.
+   Existing IDs remain unchanged. No combat rules or saves are modified. */
+#battle.battle-screen { --kotama-ui-cyan:#84e9ff; --kotama-ui-gold:#d7b46c; }
+#battle .battle-window { background-image:url('../assets/ui/battle-panel-frame.svg'); background-size:100% 100%; }
+#battle .battle-commands button:focus-visible { outline:3px solid var(--kotama-ui-gold); outline-offset:2px; }
+@media (min-width: 1000px) {
+  #battle .battle-party { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  #battle .battle-bottom { display:grid; grid-template-columns:minmax(220px,1fr) minmax(0,2fr); gap:12px; }
+  #battle .battle-commands { display:flex; flex-direction:column; gap:6px; }
+  #battle .battle-commands button { min-height:44px; }
+}
+@media (max-width:999px) {
+  #battle .battle-bottom { position:static; }
+  #battle .battle-party { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+  #battle .battle-commands { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+}
+@media (max-width:480px) {
+  #battle .battle-party { grid-template-columns:1fr; }
+  #battle .battle-commands { grid-template-columns:1fr 1fr; }
+}
