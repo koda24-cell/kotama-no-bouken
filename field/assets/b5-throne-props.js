@@ -89,6 +89,88 @@ export function createB5ThroneProp(THREE, kind, options={}) {
       const shard=mesh(oct,stone,Math.cos(a)*(2+rand()*3),rand()*3,Math.sin(a)*(1+rand()),0.35+rand(),0.25+rand(),0.25+rand());
       shard.rotation.z=rand()*3;}
   }
+  // Second-pass geometry: pronounced broken profiles, hanging ornament and clustered wreckage.
+  // This extends the original eight props instead of introducing unrelated assets.
+  const fracturedSlab=G(new THREE.BufferGeometry());
+  fracturedSlab.setAttribute('position',new THREE.Float32BufferAttribute([
+    -1.7,0,-0.7, 1.6,0,-0.8, 2.3,0.5,0.2, 0.6,0.3,1.1,
+    -1.4,0.4,0.8, -0.3,1.2,-0.1, 0.8,1.3,-0.2
+  ],3));
+  fracturedSlab.setIndex([0,1,5,1,6,5,1,2,6,2,3,6,3,4,5,3,5,6,4,0,5]);
+  fracturedSlab.computeVertexNormals();
+  const roughPiece=(x,y,z,s=1)=>{
+    const m=mesh(fracturedSlab,stone,x,y,z,s,s*(0.65+rand()*0.5),s*(0.7+rand()*0.7));
+    m.rotation.set(rand()*0.7,rand()*6.28,(rand()-0.5)*1.5);return m;
+  };
+  if(kind==='ruinedPillar'){
+    // A clearly detached capital and large diagonal broken masonry, not hairline cracks.
+    roughPiece(2.5,8.6,0,1.45).rotation.z=-0.7;
+    roughPiece(-1.1,10.3,0.5,1.0);
+    for(let i=0;i<7;i++)roughPiece((rand()-0.5)*5,0.4,(rand()-0.5)*5,0.5+rand()*0.9);
+  }
+  if(kind==='hangingBanner'){
+    // A second torn sheet, detached cloth tails and heavy bottom ornaments.
+    const tails=G(new THREE.BufferGeometry());
+    tails.setAttribute('position',new THREE.Float32BufferAttribute([
+      0,0,0, 1.2,0,0.15, 1.5,-3.5,0.4, 0.5,-5.7,0.6,
+      2.0,0,0.1, 3.6,0,0.1, 3.1,-4.4,0.5, 2.7,-2.8,0.4
+    ],3));
+    tails.setIndex([0,1,2,0,2,3,4,5,6,4,6,7]);tails.computeVertexNormals();
+    mesh(tails,fabric,0,4.2,0.3);
+    for(let i=0;i<5;i++)mesh(spike,iron,i*0.8,11.35,0,0.38,0.8,0.38);
+  }
+  if(kind==='grandChandelier'){
+    // Oversized serrated crown and a second tier of pendants.
+    for(let i=0;i<16;i++){
+      const a=i*Math.PI/8,x=Math.cos(a)*2.15,z=Math.sin(a)*2.15;
+      mesh(spike,iron,x,5.8,z,0.65,1.9,0.65).rotation.z=Math.PI;
+      mesh(rod,iron,x,7.35,z,0.7,1.3,0.7);
+    }
+    for(let i=0;i<8;i++){
+      const a=i*Math.PI/4;
+      mesh(spike,iron,Math.cos(a)*3.6,7.4,Math.sin(a)*3.6,1.2,2.1,1.2).rotation.z=Math.PI;
+    }
+  }
+  if(kind==='fracturedAltar'){
+    roughPiece(-3.7,1.6,1.3,1.3);
+    roughPiece(3.7,1.2,-0.8,1.5);
+    for(let i=0;i<9;i++)roughPiece((rand()-0.5)*9,0.25,(rand()-0.5)*6,0.45+rand()*0.8);
+  }
+  if(kind==='gothicArch'){
+    // A giant broken keystone with obvious voids and fallen ribs.
+    roughPiece(0,14.4,0,1.8).rotation.z=0.55;
+    for(let i=0;i<5;i++){
+      const x=(i-2)*1.2;
+      const rib=mesh(cube,stone,x,12.5+Math.abs(i-2)*0.3,-0.9,0.3,4.5,0.4);
+      rib.rotation.z=(i-2)*0.22;
+    }
+    roughPiece(5,0.7,2,1.4);
+  }
+  if(kind==='candleSanctuary'){
+    for(let i=0;i<12;i++){
+      const a=i*Math.PI/6;
+      const x=Math.cos(a)*3.1,z=Math.sin(a)*1.8;
+      mesh(spike,iron,x,1.3,z,0.65,1.3,0.65).rotation.z=Math.PI;
+    }
+    roughPiece(-3,0.8,-1.5,0.8);roughPiece(2.8,0.8,1.5,0.8);
+  }
+  if(kind==='brokenStair'){
+    for(let i=0;i<8;i++){
+      roughPiece(4+(rand()-0.5)*6,-0.2+rand()*2,(rand()-0.5)*5,0.5+rand()*0.9);
+    }
+    const slab=mesh(fracturedSlab,stone,5.4,4.7,0,2.2,1.4,1.5);
+    slab.rotation.z=-0.8;
+  }
+  if(kind==='shatteredRoseWindow'){
+    // Large radial shards projecting from the broken outer circumference.
+    for(let i=0;i<11;i++){
+      const a=i*Math.PI*2/11;
+      const x=Math.cos(a)*4.6,y=8+Math.sin(a)*4.6;
+      const m=mesh(spike,stone,x,y,0,0.9,1.8,0.8);
+      m.rotation.z=a-Math.PI/2;
+    }
+    for(let i=0;i<8;i++)roughPiece((rand()-0.5)*8,rand()*1.3,(rand()-0.5)*3,0.4+rand()*0.6);
+  }
   const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
   group.scale.setScalar(scale);
   let disposed=false;
