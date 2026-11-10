@@ -545,3 +545,67 @@
 @media (min-width:900px) and (max-width:1099px) {
  #battle.battle-ui-preview .battle-arena .enemy-display { transform:scale(1.32); }
 }
+
+
+/* Compact horizontal HP/SP status layout and centered 2-member rows. */
+#battle.battle-ui-preview #battle-party {
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:6px 8px;
+}
+#battle.battle-ui-preview #battle-party .battle-member {
+  grid-column:var(--battle-column,auto)!important;
+  grid-row:var(--battle-grid-row,auto)!important;
+  display:grid!important;
+  grid-template-columns:clamp(45px,24%,88px) minmax(0,1fr) minmax(0,1fr)!important;
+  grid-template-rows:minmax(17px,auto) 16px 8px 12px!important;
+  align-content:center;
+  column-gap:8px!important;
+  row-gap:1px!important;
+  height:76px!important;
+  min-height:76px!important;
+  max-height:76px!important;
+  padding:4px 8px!important;
+}
+#battle.battle-ui-preview #battle-party .battle-member>.battle-portrait {
+  grid-column:1!important;
+  grid-row:1 / 5!important;
+  max-height:68px!important;
+}
+#battle.battle-ui-preview #battle-party .battle-member>.member-head {
+  grid-column:2 / 4!important;
+  grid-row:1!important;
+  font-size:11px;
+  min-width:0;
+}
+#battle.battle-ui-preview #battle-party .battle-member>.battle-gauge-label:not(.sp-gauge-label) {
+  grid-column:2!important; grid-row:2!important;
+}
+#battle.battle-ui-preview #battle-party .battle-member>.sp-gauge-label {
+  grid-column:3!important; grid-row:2!important;
+}
+#battle.battle-ui-preview #battle-party .battle-member>.hp-track {
+  grid-column:2!important; grid-row:3!important;
+}
+#battle.battle-ui-preview #battle-party .battle-member>.sp-track {
+  grid-column:3!important; grid-row:3!important;
+}
+#battle.battle-ui-preview #battle-party .battle-member>.union-mini {
+  grid-column:2 / 4!important; grid-row:4!important;
+  font-size:9px; white-space:nowrap; overflow:hidden;
+}
+#battle.battle-ui-preview #battle-party .battle-member .battle-gauge-label {
+  font-size:clamp(9px,.75vw,11px);
+  white-space:nowrap;
+}
+#battle.battle-ui-preview #battle-party .battle-member .battle-gauge-label strong {
+  overflow:hidden; text-overflow:ellipsis;
+}
+@media (max-width:899px) {
+ #battle.battle-ui-preview #battle-party .battle-member {
+   grid-template-columns:clamp(34px,24%,62px) minmax(0,1fr) minmax(0,1fr)!important;
+   column-gap:3px!important; padding:3px 4px!important;
+ }
+ #battle.battle-ui-preview #battle-party .battle-member .battle-gauge-label {
+   font-size:9px;
+ }
+}
