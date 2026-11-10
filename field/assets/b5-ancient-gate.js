@@ -87,23 +87,45 @@ export function createB5AncientGate(THREE,options={}){
   geo.setIndex(indices);geo.computeVertexNormals();
   return add(geo,mat,x,y,z);
  };
+ // Continuous fluted pillar shaft: one closed mesh per pier.
+ // Vertical grooves are cut into its front/back and side cross-sections,
+ // not separate rods glued to the surface.
+ const flutedShaft=(x,bottom,h,w=1.95,d=1.86)=>{
+  const n=64,levels=29,verts=[],idx=[];
+  for(let k=0;k<levels;k++){
+   const t=k/(levels-1),y=bottom+t*h;
+   for(let j=0;j<n;j++){
+    const a=2*Math.PI*j/n,c=Math.cos(a),q=Math.sin(a);
+    const norm=Math.max(Math.abs(c),Math.abs(q));
+    const bx=c/norm*w*.5,bz=q/norm*d*.5;
+    // Grooves run the entire height, following a softly weathered outline.
+    const front=Math.abs(q)>.84;
+    const side=Math.abs(c)>.84;
+    const across=front?bx/(w*.5):bz/(d*.5);
+    const grooves=(front||side)?Math.pow(Math.max(0,Math.cos(across*3*Math.PI)),8)*.11:0;
+    const ripple=.025*Math.sin(t*19+a*3)+.014*Math.sin(t*31-a*5);
+    const edge=1-.055*Math.pow(Math.abs(t-.5)*2,9);
+    const shrink=1+(ripple-grooves)/Math.max(w,d);
+    verts.push(x+bx*edge*shrink,y,bz*edge*shrink);
+   }
+  }
+  for(let k=0;k<levels-1;k++)for(let j=0;j<n;j++){
+   const a=k*n+j,b=k*n+(j+1)%n,c=(k+1)*n+j,d=(k+1)*n+(j+1)%n;
+   idx.push(a,b,c,b,d,c);
+  }
+  for(let j=1;j<n-1;j++){idx.push(0,j+1,j);idx.push((levels-1)*n,(levels-1)*n+j,(levels-1)*n+j+1);}
+  const g=G(new THREE.BufferGeometry());
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(idx);g.computeVertexNormals();
+  return add(g,stone,0,0,0);
+ };
  // Reference silhouette: horizontal broken lintel and two masonry piers.
  // There is NO large triangular / pointed arch spanning the gate.
  for(const side of [-1,1]){
   const x=side*3.75,h=side<0?9.8:7.1;
   weatheredCore(x,.7,0,2.65,1.4,2.5);
-  weatheredCore(x,1.4+h/2,0,1.85,h,1.75);
-  for(let y=2.3;y<h+1.4;y+=1.65){
-   weatheredCore(x,y,0,2.14,.25,2.05,trim);
-  }
-  for(const z of [-1.03,1.03]){
-   // Blind lancet ornament is small and shallow; no oversized apex.
-   block(x,4.2,z,.93,3.6,.10,cut);
-   for(const dx of [-.48,.48])block(x+dx,4.2,z+Math.sign(z)*.07,.14,3.75,.15,trim);
-   for(const dx of [-.28,.28])block(x+dx,4.2,z+Math.sign(z)*.11,.075,3.25,.09,stone);
-   block(x,6.05,z+Math.sign(z)*.06,.94,.18,.18,trim);
-   block(x,3.7,z+Math.sign(z)*.11,.85,.12,.14,trim);
-  }
+  flutedShaft(x,1.4,h);
+  // Capital and plinth remain distinct architectural pieces.
   weatheredCore(x,1.4+h,0,2.7,.48,2.6,trim);
  }
  // Surviving flat lintel sections, with a broken centre and right end.
