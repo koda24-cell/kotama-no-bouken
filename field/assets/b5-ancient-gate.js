@@ -21,14 +21,38 @@ export function createB5AncientGate(THREE,options={}){
  };
  let seed=(options.seed??5081)>>>0;
  const rand=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
+ // Weathered structural stone with rounded bevel rings and gently
+ // undulating faces. No sharp noise peaks; retain the original silhouette.
+ const weatheredCore=(x,y,z,w,h,d,mat=stone)=>{
+  const n=12,verts=[],indices=[];
+  const outline=[[-.78,-1],[-.18,-1],[.66,-1],[1,-.76],[1,-.1],[1,.72],[.75,1],[.14,1],[-.72,1],[-1,.72],[-1,.06],[-1,-.74]];
+  const rings=7;
+  for(let k=0;k<rings;k++){
+   const t=k/(rings-1),yy=(t-.5)*h;
+   const bevel=(k===0||k===rings-1)?.10:(k===1||k===rings-2)?.035:0;
+   for(let j=0;j<n;j++){
+    const [px,pz]=outline[j];
+    const wave=(k>0&&k<rings-1)?(.018*Math.sin(j*2.1+k*.9)+.012*Math.cos(j*.8-k*1.7)):0;
+    const scale=1-bevel+wave;
+    verts.push(px*w*.5*scale,yy,pz*d*.5*scale);
+   }
+  }
+  for(let k=0;k<rings-1;k++)for(let j=0;j<n;j++){
+   const q=(j+1)%n,a=k*n+j,b=k*n+q,c=(k+1)*n+j,e=(k+1)*n+q;
+   indices.push(a,b,c,b,e,c);
+  }
+  for(let j=1;j<n-1;j++){indices.push(0,j+1,j);indices.push((rings-1)*n,(rings-1)*n+j,(rings-1)*n+j+1);}
+  const geo=G(new THREE.BufferGeometry());geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));geo.setIndex(indices);geo.computeVertexNormals();
+  return add(geo,mat,x,y,z);
+ };
  // Reference silhouette: horizontal broken lintel and two masonry piers.
  // There is NO large triangular / pointed arch spanning the gate.
  for(const side of [-1,1]){
   const x=side*3.75,h=side<0?9.8:7.1;
-  block(x,.7,0,2.65,1.4,2.5);
-  block(x,1.4+h/2,0,1.85,h,1.75);
+  weatheredCore(x,.7,0,2.65,1.4,2.5);
+  weatheredCore(x,1.4+h/2,0,1.85,h,1.75);
   for(let y=2.3;y<h+1.4;y+=1.65){
-   block(x,y,0,2.14,.25,2.05,trim);
+   weatheredCore(x,y,0,2.14,.25,2.05,trim);
   }
   for(const z of [-1.03,1.03]){
    // Blind lancet ornament is small and shallow; no oversized apex.
@@ -38,15 +62,15 @@ export function createB5AncientGate(THREE,options={}){
    block(x,6.05,z+Math.sign(z)*.06,.94,.18,.18,trim);
    block(x,3.7,z+Math.sign(z)*.11,.85,.12,.14,trim);
   }
-  block(x,1.4+h,0,2.7,.48,2.6,trim);
+  weatheredCore(x,1.4+h,0,2.7,.48,2.6,trim);
  }
  // Surviving flat lintel sections, with a broken centre and right end.
  for(const [x,y,w,ang] of [
   [-3.3,11.45,3.6,0],[-.75,11.45,1.7,-.025],
   [2.45,9.05,2.7,-.045],[4.15,9.0,1.45,-.11]
  ]){
-  const stoneBeam=block(x,y,0,w,.78,2.1,stone);stoneBeam.rotation.z=ang;
-  block(x,y+.46,-.02,w+.12,.18,2.3,trim).rotation.z=ang;
+  const stoneBeam=weatheredCore(x,y,0,w,.78,2.1,stone);stoneBeam.rotation.z=ang;
+  weatheredCore(x,y+.46,-.02,w+.12,.18,2.3,trim).rotation.z=ang;
  }
  // Rounded, recessed fragmentary opening beneath the surviving left lintel.
  // Short shallow curve, not a full triangular gateway.
@@ -57,7 +81,7 @@ export function createB5AncientGate(THREE,options={}){
   m.rotation.z=ang-Math.PI/2;
  }
  // A collapsed right cornice creates a distinct asymmetric ruin silhouette.
- block(4.8,8.9,-.18,1.7,.5,2.2,cut).rotation.z=-.17;
+ weatheredCore(4.8,8.9,-.18,1.7,.5,2.2,cut).rotation.z=-.17;
  // Broken silhouette: asymmetrical rubble piles resting on the ground.
  const rock=(x,z,sx,h,sz)=>{
   // Low, broad grounded masonry chunks, with a bevelled shoulder and
