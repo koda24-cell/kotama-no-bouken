@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-17";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-18";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -189,6 +189,12 @@
       button.type = "button"; button.className = "battle-preview-rail-button"; button.textContent = label;
       button.addEventListener("click", () => {
         if (battleState.busy) return;
+        // Align the submenu first option just below the selected action row.
+        const arena = battle.querySelector(".battle-arena");
+        if (arena) {
+          const selectedTop = button.getBoundingClientRect().top - arena.getBoundingClientRect().top;
+          battle.style.setProperty("--battle-submenu-top", Math.max(120, Math.min(325, Math.round(selectedTop - 20))) + "px");
+        }
         renderActionMenu();
         requestAnimationFrame(() => {
           const selector = action === "preview-move" ? "[data-preview-move]" : action === "preview-union-toggle" ? "[data-preview-union-toggle]" : "[data-action="+action+"]";
