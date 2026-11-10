@@ -150,6 +150,10 @@ function loadTheme2() {
   if (g.theme?.area === 2) return Promise.resolve(g.theme);
   return import('./field-3d-b2-water.js?v=20261109-b2').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES }));
 }
+function loadTheme3() {
+  if (g.theme?.area === 3) return Promise.resolve(g.theme);
+  return import('./field-3d-b3-city.js?v=20261110-1').then(m => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile }));
+}
 async function loadTheme45(area) {
   if (area !== 4 && g.theme?.area === area) return g.theme;
   const m = await import('./field-3d-b4-b5-map.js?v=20261110-b4-b5-integrated');
@@ -208,7 +212,7 @@ async function buildFloor() {
   const area = Number(fieldState.area);
   let th = null;
   if (area === 2 || area === 3 || area === 4 || area === 5) {
-    try { th = area === 2 ? await loadTheme2() : await loadTheme45(area); }
+    try { th = area === 2 ? await loadTheme2() : area === 3 ? await loadTheme3() : await loadTheme45(area); }
     catch (e) { console.warn('[field-3d] 3Dテーマの読み込みに失敗しました:', area, e); if (area === 2) g.themeFailed = true; else g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return; }
   }
   try {
@@ -227,13 +231,8 @@ async function buildFloor() {
   // 片付け
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
-  g.lights = []; g.entries = [];
-  // FOE textures belong to texCache; only each floor's sprite/ring is owned here.
-  for (const v of g.foes.values()) v.grp.traverse(o => {
-    if (!o.isSprite) o.geometry?.dispose();
-    if (o.material) o.material.dispose();
-  });
-  g.foes.clear();
+  for (const foe of g.foes.values()) disposeFoe(foe);
+  g.lights = []; g.entries = []; g.foes.clear();
   if (g.theme && g.theme !== th) g.theme.dispose({ final: true });
   g.theme = th;
   applyEnv(area, th && th.env);
@@ -364,10 +363,11 @@ function foeTexture(src) {
   if (!g.texCache.has(src)) { const t = new THREE.TextureLoader().load(src); t.colorSpace = THREE.SRGBColorSpace; g.texCache.set(src, t); }
   return g.texCache.get(src);
 }
-function disposeB4FoeVisual(v) {
-  // The sprite texture and THREE's shared Sprite geometry belong to the cache.
-  // Only this FOE's ring geometry and per-instance materials belong to this floor.
+// FOE visuals own these GPU resources; textures remain in the shared cache.
+function disposeFoe(v) {
+  g.dyn.remove(v.grp);
   v.ring.geometry.dispose(); v.ring.material.dispose(); v.sp.material.dispose();
+  v.light.dispose();
 }
 function syncFoes(t) {
   const seen = new Set();
@@ -396,7 +396,7 @@ function syncFoes(t) {
     v.light.intensity = (chase ? 5 : 3) * (0.7 + 0.3 * pulse); v.ring.scale.setScalar(0.92 + 0.12 * pulse);
     v.sp.material.color.setHex(chase ? 0xffc0c0 : 0xffffff);
   }
-  for (const [k, v] of g.foes) if (!seen.has(k)) { if (g.envArea === 4) disposeB4FoeVisual(v); g.dyn.remove(v.grp); g.foes.delete(k); }
+  for (const [k, v] of g.foes) if (!seen.has(k)) { disposeFoe(v); g.foes.delete(k); }
 }
 
 /* ------------------------------------------------------------

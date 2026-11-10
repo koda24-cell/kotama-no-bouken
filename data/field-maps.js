@@ -198,7 +198,7 @@ const FIELD_AREAS = {
     ]
   },
   3: {
-    stage: 3, name: "霧の森", theme: "mist",
+    stage: 3, name: "遺跡都市", theme: "mist",
     bgm: "assets/music/仕分け雨/夜闇に、風に紛れて.mp3",
     enterScene: "a3-enter", bossScene: "a3-boss", signScene: "a3-sign",
     // 最終フロアでは、石像と話すまで霧が晴れず、ボスゲートに入れない

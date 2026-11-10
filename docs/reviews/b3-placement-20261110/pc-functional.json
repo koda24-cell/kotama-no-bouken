@@ -1,0 +1,599 @@
+{
+  "logs": [
+    {
+      "mode": "b3-ruined-city",
+      "floor": "3-0",
+      "motifs": {
+        "collapsedOverpass": 2,
+        "derelictRailCorridor": 2,
+        "collapsedSkybridge": 2,
+        "temple": 2,
+        "tower": 2,
+        "arch": 2,
+        "ruinedBuilding": 85,
+        "vines": 85,
+        "rubble": 85,
+        "radioTower": 19,
+        "rootedPavement": 53,
+        "utilityPole": 12,
+        "steelWreck": 12,
+        "ruinedStreetlamp": 9,
+        "invasiveTree": 23,
+        "abandonedTransitStop": 2
+      },
+      "quality": "high",
+      "sourceMeshes": 21910,
+      "batches": 379,
+      "instances": 21910,
+      "objects": 12,
+      "scenery": 344,
+      "placed": true,
+      "memory": {
+        "geometries": 36,
+        "textures": 60
+      },
+      "overlaps": [],
+      "entryKinds": [
+        {
+          "kind": "switch",
+          "visible": true,
+          "tx": 9,
+          "ty": 0
+        },
+        {
+          "kind": "event",
+          "visible": true,
+          "tx": 25,
+          "ty": 1
+        },
+        {
+          "kind": "switch",
+          "visible": true,
+          "tx": 26,
+          "ty": 5
+        },
+        {
+          "kind": "switch",
+          "visible": true,
+          "tx": 0,
+          "ty": 7
+        },
+        {
+          "kind": "gather",
+          "visible": true,
+          "tx": 19,
+          "ty": 9
+        },
+        {
+          "kind": "gather",
+          "visible": true,
+          "tx": 17,
+          "ty": 11
+        },
+        {
+          "kind": "chest",
+          "visible": true,
+          "tx": 11,
+          "ty": 15
+        },
+        {
+          "kind": "cache",
+          "visible": true,
+          "tx": 23,
+          "ty": 15
+        },
+        {
+          "kind": "sign",
+          "visible": true,
+          "tx": 12,
+          "ty": 16
+        },
+        {
+          "kind": "stairs",
+          "visible": true,
+          "tx": 1,
+          "ty": 17
+        },
+        {
+          "kind": "door",
+          "visible": true,
+          "tx": 14,
+          "ty": 17
+        },
+        {
+          "kind": "exit",
+          "visible": true,
+          "tx": 1,
+          "ty": 19
+        }
+      ],
+      "performance": {
+        "frames": 5,
+        "fps": 1.375137513751353,
+        "calls": 259,
+        "triangles": 258483,
+        "memory": {
+          "geometries": 65,
+          "textures": 134
+        }
+      }
+    },
+    {
+      "mode": "b3-ruined-city",
+      "floor": "3-1",
+      "motifs": {
+        "collapsedOverpass": 2,
+        "derelictRailCorridor": 2,
+        "collapsedSkybridge": 2,
+        "temple": 2,
+        "tower": 2,
+        "arch": 2,
+        "invasiveTree": 23,
+        "rootedPavement": 54,
+        "ruinedBuilding": 89,
+        "vines": 89,
+        "rubble": 89,
+        "ruinedStreetlamp": 9,
+        "steelWreck": 12,
+        "radioTower": 15,
+        "abandonedTransitStop": 7,
+        "utilityPole": 7
+      },
+      "quality": "high",
+      "sourceMeshes": 22279,
+      "batches": 382,
+      "instances": 22279,
+      "objects": 8,
+      "scenery": 352,
+      "placed": true,
+      "memory": {
+        "geometries": 76,
+        "textures": 162
+      },
+      "overlaps": [],
+      "entryKinds": [
+        {
+          "kind": "stairs",
+          "visible": true,
+          "tx": 23,
+          "ty": 1
+        },
+        {
+          "kind": "save",
+          "visible": true,
+          "tx": 5,
+          "ty": 3
+        },
+        {
+          "kind": "chest",
+          "visible": true,
+          "tx": 17,
+          "ty": 3
+        },
+        {
+          "kind": "gather",
+          "visible": true,
+          "tx": 23,
+          "ty": 3
+        },
+        {
+          "kind": "chest",
+          "visible": true,
+          "tx": 17,
+          "ty": 11
+        },
+        {
+          "kind": "gather",
+          "visible": true,
+          "tx": 11,
+          "ty": 13
+        },
+        {
+          "kind": "event",
+          "visible": true,
+          "tx": 19,
+          "ty": 17
+        },
+        {
+          "kind": "stairs",
+          "visible": true,
+          "tx": 1,
+          "ty": 19
+        }
+      ],
+      "performance": {
+        "frames": 6,
+        "fps": 1.501185936890164,
+        "calls": 226,
+        "triangles": 226007,
+        "memory": {
+          "geometries": 76,
+          "textures": 162
+        }
+      }
+    },
+    {
+      "mode": "b3-ruined-city",
+      "floor": "3-2",
+      "motifs": {
+        "collapsedOverpass": 3,
+        "derelictRailCorridor": 3,
+        "collapsedSkybridge": 3,
+        "temple": 3,
+        "tower": 3,
+        "arch": 3,
+        "ruinedBuilding": 21,
+        "vines": 21,
+        "rubble": 21,
+        "radioTower": 2,
+        "invasiveTree": 5,
+        "abandonedTransitStop": 3,
+        "ruinedStreetlamp": 2,
+        "steelWreck": 2,
+        "rootedPavement": 51,
+        "utilityPole": 2
+      },
+      "quality": "high",
+      "sourceMeshes": 12280,
+      "batches": 262,
+      "instances": 12280,
+      "objects": 6,
+      "scenery": 97,
+      "placed": true,
+      "memory": {
+        "geometries": 77,
+        "textures": 169
+      },
+      "overlaps": [],
+      "entryKinds": [
+        {
+          "kind": "gate",
+          "visible": true,
+          "tx": 1,
+          "ty": 1
+        },
+        {
+          "kind": "save",
+          "visible": true,
+          "tx": 3,
+          "ty": 1
+        },
+        {
+          "kind": "chest",
+          "visible": true,
+          "tx": 23,
+          "ty": 1
+        },
+        {
+          "kind": "sign",
+          "visible": true,
+          "tx": 3,
+          "ty": 7
+        },
+        {
+          "kind": "npc",
+          "visible": true,
+          "tx": 10,
+          "ty": 10
+        },
+        {
+          "kind": "stairs",
+          "visible": true,
+          "tx": 8,
+          "ty": 15
+        }
+      ],
+      "performance": {
+        "frames": 7,
+        "fps": 2.0737566100993283,
+        "calls": 171,
+        "triangles": 163479,
+        "memory": {
+          "geometries": 77,
+          "textures": 169
+        }
+      }
+    },
+    {
+      "mode": "b3-ruined-city",
+      "floor": "3-0",
+      "motifs": {
+        "collapsedOverpass": 2,
+        "derelictRailCorridor": 2,
+        "collapsedSkybridge": 2,
+        "temple": 2,
+        "tower": 2,
+        "arch": 2,
+        "ruinedBuilding": 85,
+        "vines": 85,
+        "rubble": 85,
+        "radioTower": 19,
+        "rootedPavement": 53,
+        "utilityPole": 12,
+        "steelWreck": 12,
+        "ruinedStreetlamp": 9,
+        "invasiveTree": 23,
+        "abandonedTransitStop": 2
+      },
+      "quality": "high",
+      "sourceMeshes": 21910,
+      "batches": 379,
+      "instances": 21910,
+      "objects": 12,
+      "scenery": 344,
+      "placed": true,
+      "memory": {
+        "geometries": 78,
+        "textures": 169
+      },
+      "overlaps": [],
+      "entryKinds": [
+        {
+          "kind": "switch",
+          "visible": true,
+          "tx": 9,
+          "ty": 0
+        },
+        {
+          "kind": "event",
+          "visible": true,
+          "tx": 25,
+          "ty": 1
+        },
+        {
+          "kind": "switch",
+          "visible": true,
+          "tx": 26,
+          "ty": 5
+        },
+        {
+          "kind": "switch",
+          "visible": true,
+          "tx": 0,
+          "ty": 7
+        },
+        {
+          "kind": "gather",
+          "visible": true,
+          "tx": 19,
+          "ty": 9
+        },
+        {
+          "kind": "gather",
+          "visible": true,
+          "tx": 17,
+          "ty": 11
+        },
+        {
+          "kind": "chest",
+          "visible": true,
+          "tx": 11,
+          "ty": 15
+        },
+        {
+          "kind": "cache",
+          "visible": true,
+          "tx": 23,
+          "ty": 15
+        },
+        {
+          "kind": "sign",
+          "visible": true,
+          "tx": 12,
+          "ty": 16
+        },
+        {
+          "kind": "stairs",
+          "visible": true,
+          "tx": 1,
+          "ty": 17
+        },
+        {
+          "kind": "door",
+          "visible": true,
+          "tx": 14,
+          "ty": 17
+        },
+        {
+          "kind": "exit",
+          "visible": true,
+          "tx": 1,
+          "ty": 19
+        }
+      ],
+      "performance": {
+        "frames": 6,
+        "fps": 1.7174458145845224,
+        "calls": 257,
+        "triangles": 255807,
+        "memory": {
+          "geometries": 78,
+          "textures": 169
+        }
+      }
+    },
+    {
+      "controls": {
+        "before": {
+          "tile": {
+            "tx": 8,
+            "ty": 19
+          },
+          "dir": "right",
+          "turn": 0,
+          "foes": [
+            {
+              "x": 3,
+              "y": 7
+            }
+          ],
+          "near": ""
+        },
+        "move": {
+          "tile": {
+            "tx": 9,
+            "ty": 19
+          },
+          "dir": "right",
+          "turn": 1,
+          "foes": [
+            {
+              "x": 4,
+              "y": 7
+            }
+          ],
+          "near": ""
+        },
+        "turn": {
+          "tile": {
+            "tx": 9,
+            "ty": 19
+          },
+          "dir": "up",
+          "turn": 1,
+          "foes": [
+            {
+              "x": 4,
+              "y": 7
+            }
+          ],
+          "near": ""
+        },
+        "bump": {
+          "tile": {
+            "tx": 9,
+            "ty": 19
+          },
+          "dir": "up",
+          "turn": 1,
+          "foes": [
+            {
+              "x": 4,
+              "y": 7
+            }
+          ],
+          "near": ""
+        }
+      }
+    },
+    {
+      "interactions": [
+        {
+          "kind": "chest",
+          "before": {
+            "key": "chest:3-0:11:15",
+            "near": "chest:3-0:11:15",
+            "flag": false,
+            "used": 0
+          },
+          "after": {
+            "flag": true,
+            "used": 0,
+            "entry": "open",
+            "progress": {}
+          }
+        },
+        {
+          "kind": "gather",
+          "before": {
+            "key": "gather:3-0:19:9",
+            "near": "gather:3-0:19:9",
+            "flag": false,
+            "used": 0
+          },
+          "after": {
+            "flag": false,
+            "used": 1,
+            "entry": "take:ok",
+            "progress": {}
+          }
+        },
+        {
+          "kind": "switch",
+          "before": {
+            "key": "switch:3:a3-lantern-north",
+            "near": "switch:3:a3-lantern-north",
+            "flag": false,
+            "used": 0
+          },
+          "after": {
+            "flag": false,
+            "used": 0,
+            "entry": "idle",
+            "progress": {
+              "a3-lanterns": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "puzzle": {
+        "solved": true,
+        "door": "open"
+      }
+    },
+    {
+      "lifecycle": [
+        {
+          "area": 1,
+          "far": 48,
+          "roots": 0,
+          "points": 14,
+          "memory": {
+            "geometries": 118,
+            "textures": 320
+          }
+        },
+        {
+          "area": 3,
+          "far": 80,
+          "roots": 1,
+          "points": 4,
+          "memory": {
+            "geometries": 133,
+            "textures": 320
+          }
+        },
+        {
+          "area": 1,
+          "far": 48,
+          "roots": 0,
+          "points": 14,
+          "memory": {
+            "geometries": 118,
+            "textures": 320
+          }
+        },
+        {
+          "area": 3,
+          "far": 80,
+          "roots": 1,
+          "points": 4,
+          "memory": {
+            "geometries": 133,
+            "textures": 320
+          }
+        }
+      ]
+    },
+    {
+      "save": {
+        "same": true,
+        "area": 3,
+        "floor": 0
+      }
+    },
+    {
+      "stairs": {
+        "floor": 1
+      }
+    },
+    {
+      "failures": []
+    }
+  ],
+  "errors": [
+    "Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+}
