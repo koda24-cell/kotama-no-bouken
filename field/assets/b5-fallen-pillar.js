@@ -82,21 +82,28 @@ export function createB5FallenPillar(THREE,options={}){
     geo.setIndex(triangles);geo.computeVertexNormals();
     return mesh(geo,rand()>0.72?shadow:stone,x,0,z);
   };
-  // First layer: large foundation stones, all planted on the floor.
+  // A physical floor is y=0. Support stones occupy the underside and both
+  // flanks of the shaft; nothing is arranged around the camera's front plane.
+  // The ground-contact rocks are not stacked in mid-air.
   const foundations=[
-    [6.6,-1.28,0.88,0.70,0.78],[7.25,1.1,0.82,0.65,0.73],
-    [7.85,-0.18,0.90,0.75,0.85],[5.4,1.1,0.75,0.48,0.65],
-    [3.4,-1.0,0.62,0.42,0.56],[1.1,1.55,0.55,0.40,0.55]
+    [6.85,-0.83,0.77,0.59,0.72],
+    [7.55,0.76,0.81,0.68,0.75],
+    [7.9,-0.05,0.95,0.79,0.89],
+    [5.4,0.88,0.65,0.45,0.58],
+    [4.0,-0.91,0.55,0.39,0.50],
+    [1.0,1.70,0.55,0.35,0.55]
   ];
   foundations.forEach(args=>rock(...args));
-  // Smaller chips spread outward from the impact, still anchored at y=0.
-  for(let i=0;i<25;i++){
-    const nearBreak=i<18;
-    const x=nearBreak?5.3+rand()*3.6:0.4+rand()*6.2;
-    const z=(rand()-0.5)*(nearBreak?4.4:3.8);
-    const sx=0.18+rand()*(nearBreak?0.40:0.25);
-    const sz=0.17+rand()*(nearBreak?0.37:0.25);
-    const h=0.12+rand()*(nearBreak?0.31:0.20);
+  // Scatter the chips on the horizontal XZ plane, outside the shaft footprint.
+  // Their bases all remain at y=0, irrespective of camera orientation.
+  for(let i=0;i<29;i++){
+    const nearBreak=i<21;
+    const x=nearBreak?5.5+rand()*3.7:0.5+rand()*6.0;
+    const side=rand()<0.5?-1:1;
+    const z=side*(0.88+rand()*(nearBreak?1.25:0.85));
+    const sx=0.16+rand()*(nearBreak?0.34:0.21);
+    const sz=0.15+rand()*(nearBreak?0.34:0.21);
+    const h=0.11+rand()*(nearBreak?0.29:0.17);
     rock(x,z,sx,h,sz);
   }
   const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
