@@ -35,45 +35,49 @@ export function createB5BrokenStair(THREE,options={}){
    // Shallow stone courses on exposed risers, not bars sticking out.
    if(i%2===0){add(G(new THREE.BoxGeometry(0.055,0.055,width-0.45)),shade,x-run/2-0.005,h-0.15,0);}
  }
- // ONE continuous broken seam, slightly off-centre. Clearly visible on the
- // horizontal treads AND the vertical risers. No additional cracks.
- const fracture=M(new THREE.MeshStandardMaterial({color:0x110d14,roughness:1,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}));
- const chipped=M(new THREE.MeshStandardMaterial({color:0xb2aab3,roughness:1,side:THREE.DoubleSide}));
- const crackZ=[3.20,3.35,3.10,3.57,3.25,3.68,3.46,3.70];
+ // A single stone fracture: two broken cap edges, with a recessed
+ // dark channel and irregular chipped shoulders. No thick ink-like line.
+ // It crosses five treads and continues over the intervening risers.
+ const fracture=M(new THREE.MeshStandardMaterial({color:0x27232b,roughness:1,side:THREE.DoubleSide}));
+ const innerStone=M(new THREE.MeshStandardMaterial({color:0x514a54,roughness:1,side:THREE.DoubleSide,flatShading:true}));
+ const chipped=M(new THREE.MeshStandardMaterial({color:0x9b949f,roughness:1,side:THREE.DoubleSide}));
+ const crackZ=[3.20,3.30,3.13,3.45,3.28,3.58,3.43,3.65];
  const surface=(pts,mat)=>{
    const g=G(new THREE.BufferGeometry());
    g.setAttribute('position',new THREE.Float32BufferAttribute(pts.flat(),3));
    g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();
    add(g,mat,0,0,0);
  };
- const crackStrip=(a,b,w)=>{
+ // V-shaped trough: a dark bottom lies below chipped edges, with two
+ // inward-sloping exposed rock walls. All surfaces follow the stone step.
+ const seam=(a,b,w)=>{
    const dx=b[0]-a[0],dz=b[2]-a[2],d=Math.hypot(dx,dz)||1;
-   const ox=-dz*w/(2*d),oz=dx*w/(2*d);
-   surface([[a[0]+ox,a[1],a[2]+oz],[a[0]-ox,a[1],a[2]-oz],
-     [b[0]-ox,b[1],b[2]-oz],[b[0]+ox,b[1],b[2]+oz]],fracture);
+   const ox=-dz/d,oz=dx/d;
+   const point=(p,side,dist,y)=>[p[0]+ox*side*dist,y,p[2]+oz*side*dist];
+   const topY=a[1],bottomY=topY-0.032;
+   const l0=point(a,1,w*0.5,topY),l1=point(b,1,w*0.5,topY);
+   const r0=point(a,-1,w*0.5,topY),r1=point(b,-1,w*0.5,topY);
+   const il0=point(a,1,w*0.18,bottomY),il1=point(b,1,w*0.18,bottomY);
+   const ir0=point(a,-1,w*0.18,bottomY),ir1=point(b,-1,w*0.18,bottomY);
+   surface([l0,l1,il1,il0],innerStone);
+   surface([ir0,ir1,r1,r0],innerStone);
+   surface([il0,il1,ir1,ir0],fracture);
+   // Tiny, uneven bright fracture lips, not continuous white outlines.
+   surface([point(a,1,w*0.50,topY+0.002),point(b,1,w*0.54,topY+0.002),
+     point(b,1,w*0.64,topY+0.003),point(a,1,w*0.61,topY+0.003)],chipped);
  };
  for(let i=1;i<=5;i++){
    const h=(i+1)*rise,front=i*run-steps*run/2,back=(i+1)*run-steps*run/2;
    const z0=crackZ[i],z1=crackZ[i+1],mid=(front+back)/2;
-   const zmid=(z0+z1)/2+0.15;
-   // The tread cap is 0.14 thick: its actual upper surface is h+0.14.
    const y=h+0.143;
-   crackStrip([front+0.018,y,z0],[mid,y,zmid],0.30);
-   crackStrip([mid,y,zmid],[back-0.018,y,z1],0.24);
-   // Light broken-stone shoulders reinforce the depth cue without adding lines.
-   for(const side of [-1,1]){
-     surface([[mid-0.26,y+0.003,zmid+side*0.19],
-       [mid+0.08,y+0.003,zmid+side*0.16],
-       [mid+0.20,y+0.003,zmid+side*0.28],
-       [mid-0.12,y+0.003,zmid+side*0.30]],chipped);
-   }
+   seam([front+0.012,y,z0],[mid,y,(z0+z1)/2+0.075],0.16);
+   seam([mid,y,(z0+z1)/2+0.075],[back-0.012,y,z1],0.11);
    if(i<5){
+     // Thin irregular split on the exposed vertical riser at x=back.
      const nh=(i+2)*rise;
-     // Riser at x=back is vertical, visible from the ascending approach.
-     surface([[back+0.012,h+0.135,z1-0.14],
-       [back+0.012,h+0.135,z1+0.14],
-       [back+0.012,nh+0.135,z1+0.14],
-       [back+0.012,nh+0.135,z1-0.14]],fracture);
+     const x=back+0.014;
+     surface([[x,h+0.14,z1-0.075],[x,h+0.14,z1+0.075],
+       [x,nh+0.14,z1+0.055],[x,nh+0.14,z1-0.045]],fracture);
    }
  }
  // Missing tile faces: dark recessed patches with irregular outlines.
