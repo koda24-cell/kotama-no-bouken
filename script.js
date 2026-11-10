@@ -1638,7 +1638,7 @@ function targetEnemy(action){
   if(allMode){action={...action};delete action.all;}
   // Skip redundant target selection for a single living enemy when a skill is chosen.
   // Preserve tutorial target prompts and all-target skill behavior.
-  if(action.type==="skill" && targets.length===1 && !battleState.tutorialMode){
+  if((action.type==="skill" || action.type==="attack") && targets.length===1 && !battleState.tutorialMode){
     const only=targets[0];
     const id=only.kind==="member"||only.kind==="clone"?only.ref.id:only.kind;
     commitAction(allMode?{...action}:{...action,targetId:id});

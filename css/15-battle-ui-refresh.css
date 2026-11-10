@@ -622,3 +622,202 @@
 #battle.battle-ui-preview #battle-party .battle-member>.battle-portrait {
   grid-row:1 / 4!important;
 }
+
+
+/* Reference-HUD pass 2026-11-10. Scoped to opt-in preview. */
+#battle.battle-ui-preview .stage-environment-banner,
+#battle.battle-ui-preview #stage-environment { display:none!important; }
+
+/* Move TURN to the upper left and LOG / ENEMY / ALLY to the Y/L reference row. */
+#battle.battle-ui-preview .battle-preview-top-hud {
+  position:absolute; top:8px; left:16px; right:18px; z-index:12;
+  display:flex; align-items:center; justify-content:space-between;
+  min-height:38px; gap:18px; pointer-events:none;
+}
+#battle.battle-ui-preview .battle-preview-top-hud #turn-counter {
+  position:static!important; margin:0!important;
+  color:#e4f9ff; font-size:clamp(15px,1.5vw,23px);
+  font-weight:900; letter-spacing:.03em;
+  text-shadow:0 2px 6px #001f3d;
+  pointer-events:none;
+}
+#battle.battle-ui-preview .battle-preview-tabs {
+  display:flex; align-items:center; justify-content:flex-end;
+  gap:9px; pointer-events:auto;
+}
+#battle.battle-ui-preview .battle-preview-tabs .analyze-tabs {
+  position:static!important; inset:auto!important;
+  display:flex!important; flex-direction:row!important; gap:8px;
+  width:auto!important; height:auto!important; transform:none!important;
+  background:none!important; border:0!important; box-shadow:none!important;
+}
+#battle.battle-ui-preview .battle-preview-tabs #battle-log-open,
+#battle.battle-ui-preview .battle-preview-tabs .analyze-tab-button {
+  position:static!important; inset:auto!important; transform:none!important;
+  display:inline-flex!important; align-items:center; justify-content:center;
+  width:auto!important; height:31px!important; min-width:62px!important;
+  padding:4px 11px!important; margin:0!important;
+  border:1px solid #8de8ff!important; border-radius:5px!important;
+  background:linear-gradient(130deg,#0b5d7d,#071f3c)!important;
+  color:#e9faff!important; font-size:12px!important; font-weight:800;
+  writing-mode:horizontal-tb!important; box-shadow:inset 0 1px #c9ffff77;
+}
+#battle.battle-ui-preview .battle-preview-tabs button:hover,
+#battle.battle-ui-preview .battle-preview-tabs button:focus-visible {
+  background:linear-gradient(120deg,#dc8b6c,#a84e77)!important;
+}
+#battle.battle-ui-preview .battle-heading #turn-counter { display:none; }
+
+/* Formation cards visually belong to the battle field, not the page background. */
+#battle.battle-ui-preview #battle-party {
+  isolation:isolate;
+  padding:10px 12px 12px;
+  box-sizing:border-box;
+  border:2px solid #6ad9ee;
+  border-top:0;
+  border-radius:0 0 18px 18px;
+  background:linear-gradient(180deg,#07384cfa 0%,#073044ee 66%,#05213ce8 100%);
+  box-shadow:inset 0 -14px 24px #0c84a42a,0 8px 18px #0007;
+}
+#battle.battle-ui-preview #battle-party .battle-member { z-index:1; }
+
+/* Brighter HP/SP with an almost-white highlight toward the right edge. */
+#battle.battle-ui-preview #battle-party .battle-member .hp-track .hp-fill,
+#battle.battle-ui-preview #battle-party .battle-member .hp-track>div:first-child {
+  background:linear-gradient(90deg,#13d780 0%,#43f6ac 42%,#b9ffe0 83%,#f3fff9 100%)!important;
+  box-shadow:0 0 7px #42ffb888;
+}
+#battle.battle-ui-preview #battle-party .battle-member .sp-track .sp-fill,
+#battle.battle-ui-preview #battle-party .battle-member .sp-track>div:first-child {
+  background:linear-gradient(90deg,#1596f8 0%,#37c9ff 42%,#b5f3ff 83%,#f1fdff 100%)!important;
+  box-shadow:0 0 7px #45d5ff88;
+}
+
+/* The main command frame must not resize or shift when a skill submenu opens. */
+@media (min-width:900px) {
+ #battle.battle-ui-preview .battle-preview-primary-rail:not([hidden]) {
+   top:115px!important; left:14px!important;
+   width:var(--battle-command-width)!important;
+   padding:9px 10px!important; gap:6px!important;
+   min-height:0!important;
+   border:2px solid #7ee9fa!important; border-radius:15px 5px 15px 5px!important;
+   background:linear-gradient(120deg,#063c59f2,#00213cf2)!important;
+ }
+ #battle.battle-ui-preview .battle-preview-rail-button {
+   min-height:42px!important;
+   padding:8px 14px!important; border-radius:22px 4px 22px 4px!important;
+   font-size:inherit!important; font-weight:800!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window {
+   top:115px!important;
+   left:calc(24px + var(--battle-command-width))!important;
+   max-height:420px!important;
+ }
+ #battle.battle-ui-preview .battle-arena {
+   padding-top:52px!important;
+ }
+ #battle.battle-ui-preview .battle-arena .enemy-display {
+   position:absolute!important;
+   left:50%!important; bottom:70px!important;
+   margin:0!important;
+   width:min(42%,570px)!important;
+   max-width:570px!important;
+   min-width:160px!important;
+   transform:translateX(-50%)!important;
+   z-index:4!important;
+ }
+ #battle.battle-ui-preview .battle-arena .enemy-image {
+   width:clamp(125px,16vw,255px)!important;
+   height:clamp(120px,19vh,235px)!important;
+   max-width:100%!important;
+ }
+}
+/* Group encounters: maximum 3 columns x 2 depth rows, keeping original enemy IDs. */
+#battle.battle-ui-preview .battle-arena .enemy-group {
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(0,auto);
+  align-items:end; justify-items:center;
+  gap:3px 10px!important; width:100%!important;
+  max-width:100%; margin:auto;
+}
+#battle.battle-ui-preview .battle-arena .enemy-group-unit {
+  width:100%!important; max-width:145px!important;
+  min-width:0!important; margin:0!important;
+}
+#battle.battle-ui-preview .battle-arena .enemy-group-unit img {
+  width:100%!important; height:clamp(72px,9vw,142px)!important;
+  object-fit:contain!important;
+}
+#battle.battle-ui-preview .battle-arena .enemy-group-unit:nth-child(-n+3) {
+  transform:scale(.88); transform-origin:center bottom;
+}
+#battle.battle-ui-preview .battle-arena .enemy-group-unit:nth-child(n+4) {
+  transform:scale(1.06); transform-origin:center bottom;
+}
+#battle.battle-ui-preview .battle-arena .enemy-group-unit:only-child { grid-column:2; transform:none; }
+#battle.battle-ui-preview .battle-arena .enemy-group-unit:nth-child(4):last-child { grid-column:2; }
+#battle.battle-ui-preview .battle-arena .enemy-group-unit:nth-child(4):nth-last-child(2) { grid-column:1; }
+#battle.battle-ui-preview .battle-arena .enemy-group-unit:nth-child(5):last-child { grid-column:3; }
+
+/* Union label and charge-ready effect: bright rim, pulse and shimmering fill. */
+#battle.battle-ui-preview .battle-preview-union {
+  overflow:visible!important;
+  border:2px solid #e3c987!important;
+  background:linear-gradient(160deg,#093a58,#031a30)!important;
+}
+#battle.battle-ui-preview .battle-preview-union>span {
+  position:absolute!important; top:-34px!important;
+  left:50%!important; translate:-50% 0!important;
+  padding:6px 12px!important; width:max-content!important;
+  border:2px solid #e2c682; border-radius:12px 12px 5px 5px;
+  background:linear-gradient(140deg,#0b4767,#041d36);
+  box-shadow:0 0 10px #35e7ff88;
+  color:#f4fbff; font-size:13px!important;
+  text-align:center; white-space:nowrap;
+}
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready {
+  border-color:#fff1ac!important;
+  animation:battleUnionHalo 1.25s ease-in-out infinite alternate;
+}
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready>span {
+  color:#fff7c4; text-shadow:0 0 10px #fff4b5;
+  box-shadow:0 0 15px #f7dd7dcc,0 0 22px #26eaff99;
+}
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready i {
+  background:linear-gradient(90deg,#00a9f5,#6affff 44%,#fff7bc 75%,#ffffff)!important;
+  animation:battleUnionCharge 1s ease-in-out infinite alternate;
+}
+@keyframes battleUnionHalo {
+  from {box-shadow:0 0 9px #1deaffaa,inset 0 0 12px #00eaff66;}
+  to {box-shadow:0 0 26px #ffe989,0 0 40px #21eaffcc,inset 0 0 24px #fff1a866;}
+}
+@keyframes battleUnionCharge {
+  from {filter:brightness(1);box-shadow:0 0 10px #45ecff;}
+  to {filter:brightness(1.55);box-shadow:0 0 23px #fff9b6;}
+}
+@media (prefers-reduced-motion:reduce) {
+ #battle.battle-ui-preview .battle-preview-union.battle-union-ready,
+ #battle.battle-ui-preview .battle-preview-union.battle-union-ready i {animation:none!important;}
+}
+@media (max-width:899px) {
+ #battle.battle-ui-preview .battle-preview-top-hud {left:8px;right:8px;gap:5px;flex-wrap:wrap;}
+ #battle.battle-ui-preview .battle-preview-tabs {gap:3px;}
+ #battle.battle-ui-preview .battle-preview-tabs #battle-log-open,
+ #battle.battle-ui-preview .battle-preview-tabs .analyze-tab-button {
+   min-width:36px!important; height:27px!important; padding:3px 5px!important;font-size:10px!important;
+ }
+ #battle.battle-ui-preview .battle-preview-top-hud #turn-counter {font-size:12px;}
+ #battle.battle-ui-preview .battle-arena .enemy-group-unit img {height:72px!important;}
+ #battle.battle-ui-preview .battle-preview-union>span {font-size:10px!important;padding:4px 6px!important;}
+}
+
+
+#battle.battle-ui-preview .battle-preview-rail-title {
+ display:block; margin:0 0 2px; color:#ffe5a0;
+ font-size:14px; font-weight:900; white-space:nowrap;
+ overflow:hidden; text-overflow:ellipsis;
+}
+#battle.battle-ui-preview .battle-preview-primary-rail:not([hidden]) {
+ box-shadow:0 0 14px #28dbff55,inset 0 0 15px #003956!important;
+}

@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-11";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-12";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -25,6 +25,27 @@
       bottom.classList.add("battle-preview-bottom");
     }
 
+    // Move the original LOG / enemy / ally controls to the reference-style top HUD.
+    // Moving real nodes preserves their event listeners and dialog behavior.
+    const arenaHeader = document.createElement("div");
+    arenaHeader.className = "battle-preview-top-hud";
+    const tabs = document.createElement("nav");
+    tabs.className = "battle-preview-tabs";
+    tabs.setAttribute("aria-label", "戦闘情報");
+    const logButton = document.getElementById("battle-log-open");
+    const analyzeTabs = battle.querySelector(".analyze-tabs");
+    if (logButton) { logButton.textContent = "Y  LOG"; tabs.appendChild(logButton); }
+    if (analyzeTabs) {
+      const enemyTab = analyzeTabs.querySelector("#analyze-enemy-button");
+      const allyTab = analyzeTabs.querySelector("#analyze-party-button") || analyzeTabs.querySelector("#analyze-ally-button") || analyzeTabs.querySelectorAll("button")[1];
+      if (enemyTab) enemyTab.textContent = "L  敵";
+      if (allyTab) allyTab.textContent = "味方";
+      tabs.appendChild(analyzeTabs);
+    }
+    const counter = document.getElementById("turn-counter");
+    if (counter) arenaHeader.appendChild(counter);
+    arenaHeader.appendChild(tabs);
+    battle.querySelector(".battle-arena")?.prepend(arenaHeader);
     // Observe the existing renderer; only set CSS order, never replace cards or handlers.
     function updateRows() {
       const cards = Array.from(party.querySelectorAll(".battle-member"));
@@ -100,6 +121,8 @@
       const percent = skill ? Math.min(100, charge / required * 100) : 0;
       meterLabel.textContent = skill ? "UNION " + Math.round(percent) + "%" : "UNION";
       meterLabel.title = skill ? charge + " / " + required : "未設定";
+      meter.classList.toggle("battle-union-ready", !!skill && percent >= 100);
+      meter.setAttribute("aria-label", skill ? "ユニオンゲージ " + Math.round(percent) + "パーセント" : "ユニオン未設定");
       meterFill.style.width = percent + "%";
       meterTrack.style.setProperty("--battle-union-percent", percent + "%");
     }
@@ -117,6 +140,10 @@
     primaryRail.className = "battle-preview-primary-rail";
     primaryRail.setAttribute("aria-label", "戦闘メインコマンド");
     arena?.appendChild(primaryRail);
+    const railTitle = document.createElement("strong");
+    railTitle.className = "battle-preview-rail-title";
+    railTitle.textContent = document.getElementById("command-title")?.textContent || "どうする？";
+    primaryRail.appendChild(railTitle);
     const railActions = [["攻撃","attack"],["SPスキル","skill"],["防御","guard"],["道具","item"],["編成位置入れ替え","preview-move"],["ユニオンスキル","preview-union-toggle"]];
     for (const [label,action] of railActions) {
       const button = document.createElement("button");
@@ -144,6 +171,7 @@
       box.classList.toggle("battle-preview-main-menu", main);
       battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
       primaryRail.hidden = main || !!battleState.tutorialMode;
+      railTitle.textContent = (typeof currentActor === "function" ? currentActor()?.name : "") + "　どうする？";
       const unionPanel = box.querySelector(".union-panel");
       const existingToggle = box.querySelector("[data-preview-union-toggle]");
       if (!main || !unionPanel) {
