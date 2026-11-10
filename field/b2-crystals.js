@@ -16,10 +16,11 @@ import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
 
 // 色：base＝根元（乳白）、tip＝先端、core＝芯の光
 export const CRYSTAL_PALETTES = {
-  white: { base: 0xf7fbff, tip: 0xdbeeff, core: 0xb8d6ee },    // 透明な水晶（ほぼ無色、少し青白い）
-  cyan: { base: 0xd8f8ff, tip: 0x22ccff, core: 0x2fb8e8 },     // 水色
-  violet: { base: 0xeee2ff, tip: 0x8a48ff, core: 0x8f5cf0 },   // 紫（アメシスト）
-  blue: { base: 0xdfe8ff, tip: 0x2f5cff, core: 0x3f68e8 },     // 青
+  // 先端（tip）は濃く深い色。根元の乳白から先へ向かって一気に濃くなる
+  white: { base: 0xf7fbff, tip: 0xbcdcff, core: 0x9cc4ea },    // 透明な水晶（先端だけ薄い青）
+  cyan: { base: 0xd2f6ff, tip: 0x0096d6, core: 0x0a8cc8 },     // 水色（先端は深い水色）
+  violet: { base: 0xeadcff, tip: 0x5a12c8, core: 0x6a2ad8 },   // 紫（先端は濃いアメシスト）
+  blue: { base: 0xd8e4ff, tip: 0x1230c8, core: 0x2244d8 },     // 青（先端は群青）
 };
 export const CRYSTAL_PARTS = ['shell', 'cloudy', 'fracture', 'core', 'rock'];
 
@@ -92,8 +93,8 @@ function paint(geo, pal, kind, yMin, yMax) {
     const t = THREE.MathUtils.clamp((p.getY(i) - yMin) / Math.max(1e-3, yMax - yMin), 0, 1);
     if (kind === 'core') { c.copy(a).lerp(b, 0.8 + t * 0.2).multiplyScalar(0.7 + t * 0.25); }
     else if (kind === 'fracture') { c.copy(a).lerp(b, Math.pow(t, 0.7) * 0.5).lerp(w, 0.35); }
-    else if (kind === 'cloudy') { c.copy(a).lerp(b, 0.3 + Math.pow(t, 0.9) * 0.55); }
-    else c.copy(a).lerp(b, 0.4 + Math.pow(t, 0.7) * 0.6);   // 根元から色を残す（白く飛ばない）
+    else if (kind === 'cloudy') { c.copy(a).lerp(b, 0.3 + Math.pow(t, 0.6) * 0.7); }
+    else c.copy(a).lerp(b, 0.4 + Math.pow(t, 0.5) * 0.6);   // 根元から色を残し、上半分はほぼ先端の濃い色
     col.set([c.r, c.g, c.b], i * 3);
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
