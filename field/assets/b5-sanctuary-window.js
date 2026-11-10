@@ -129,29 +129,88 @@ export function createB5SanctuaryWindow(THREE, options={}) {
  for(let k=outlineLeft.length-1;k>=0;k--)motifShape.lineTo(outlineLeft[k][0],outlineLeft[k][1]);
  motifShape.closePath();
  add(new THREE.ShapeGeometry(motifShape),glass[1],0,0,-.20);
- // Rooted trunk, sweeping boughs and a small halo: recognizable from afar.
- curve([[0,emblemY-emblemH*.79],[0,emblemY+emblemH*.38]],.10,trim);
- for(const side of [-1,1]){
-  for(const [at,reach,rise] of [[-.37,.60,.03],[-.12,.88,.22],[.13,.76,.43],[.34,.48,.56]]){
-   curve([[0,emblemY+emblemH*at],[side*emblemW*reach*.53,emblemY+emblemH*(at+rise*.42)],[side*emblemW*reach,emblemY+emblemH*(at+rise)]],.048,trim);
+ // Curved, branching ancient tree. Cubic Bezier paths make it read as
+ // carved organic foliage rather than a stick-figure emblem.
+ const bezier=(p0,p1,p2,p3,segments=16)=>{
+  const pts=[];
+  for(let k=0;k<=segments;k++){
+   const t=k/segments,u=1-t;
+   pts.push([
+    u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0],
+    u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]
+   ]);
   }
-  curve([[0,emblemY-emblemH*.62],[side*emblemW*.49,emblemY-emblemH*.91]],.06,trim);
+  return pts;
+ };
+ const trunk=bezier([0,emblemY-emblemH*.83],[-.13,emblemY-emblemH*.34],[.18,emblemY+emblemH*.05],[0,emblemY+emblemH*.58],24);
+ curve(trunk,.12,trim);
+ for(const side of [-1,1]){
+  // Asymmetry between branches gives the tree an ancient living silhouette.
+  for(const [at,reach,rise] of [[-.25,.63,.31],[-.02,.93,.43],[.20,.82,.35],[.41,.52,.19]]){
+   const x=side*emblemW*reach,y=emblemY+emblemH*at;
+   const branch=bezier([0,y],[side*emblemW*.25,y+emblemH*.04],[x*.65,y+emblemH*rise*.95],[x,y+emblemH*rise],18);
+   curve(branch,.047,trim);
+   for(const k of [10,15]){
+    const p=branch[k],tip=[p[0]+side*emblemW*.15,p[1]+emblemH*.14];
+    curve(bezier(p,[p[0]+side*.10,p[1]+.20],[tip[0]-side*.08,tip[1]-.09],tip,8),.023,trim);
+   }
+  }
+  curve(bezier([0,emblemY-emblemH*.66],[side*.30,emblemY-emblemH*.79],[side*emblemW*.33,emblemY-emblemH*.91],[side*emblemW*.56,emblemY-emblemH*.90],12),.064,trim);
  }
- for(let i=0;i<24;i++){
-  const a=i*Math.PI*2/24,b=(i+1)*Math.PI*2/24;
-  curve([[Math.cos(a)*.36,emblemY+emblemH*.55+Math.sin(a)*.36],[Math.cos(b)*.36,emblemY+emblemH*.55+Math.sin(b)*.36]],.065,trim);
+ // Uneven leaf-shaped glass jewels, with leaded vein engravings.
+ for(let i=0;i<22;i++){
+  const angle=i*2.39996,rad=Math.sqrt((i+.5)/22);
+  const x=Math.cos(angle)*emblemW*.78*rad;
+  const y=emblemY+emblemH*(.12+.70*rad)+Math.sin(angle)*emblemH*.09;
+  if(Math.abs(x)>emblemW*.85||y>emblemY+emblemH*.85)continue;
+  const size=.11+(i%4)*.025;
+  const leaf=new THREE.Shape();
+  leaf.moveTo(x,y-size);
+  leaf.quadraticCurveTo(x+size*.7,y,x,y+size);
+  leaf.quadraticCurveTo(x-size*.7,y,x,y-size);
+  add(new THREE.ShapeGeometry(leaf),glass[(i+2)%glass.length],0,0,-.69);
+  curve([[x,y-size*.7],[x,y+size*.7]],.014,dark);
  }
- // Stone quatrefoil recesses in the flanking spandrels.
+ // The outer mandorla receives two concentric sculpted ribs and ornamental
+ // pointed cusps, creating depth rather than a flat circular outline.
+ for(const multiplier of [1.10,1.22]){
+  const left=outlineLeft.map(([x,y])=>[x*multiplier,emblemY+(y-emblemY)*multiplier]);
+  const right=outlineRight.map(([x,y])=>[x*multiplier,emblemY+(y-emblemY)*multiplier]);
+  curve(left,multiplier>1.2?.105:.065,multiplier>1.2?stone:trim);
+  curve(right,multiplier>1.2?.105:.065,multiplier>1.2?stone:trim);
+ }
+ for(const side of [-1,1]){
+  for(const t of [.18,.40,.62,.83]){
+   const idx=Math.round(t*32),p=outlineLeft[idx],q=outlineRight[idx];
+   const edge=side<0?p:q;
+   const x=edge[0]*1.10,y=emblemY+(edge[1]-emblemY)*1.10;
+   const tip=[x+side*.18,y+.25];
+   curve(bezier([x,y],[x+side*.12,y+.08],[tip[0]-side*.07,tip[1]-.06],tip,8),.048,stone);
+  }
+ }
+ // Rose-like halo above the tree canopy, with fine engraved radial rays.
+ const haloY=emblemY+emblemH*.60,haloR=.40;
+ for(let i=0;i<32;i++){
+  const a=i*Math.PI*2/32,b=(i+1)*Math.PI*2/32;
+  curve([[Math.cos(a)*haloR,haloY+Math.sin(a)*haloR],[Math.cos(b)*haloR,haloY+Math.sin(b)*haloR]],.05,trim);
+ }
+ for(let i=0;i<12;i++){
+  const a=i*Math.PI/6;
+  curve([[Math.cos(a)*haloR*.65,haloY+Math.sin(a)*haloR*.65],[Math.cos(a)*haloR*.92,haloY+Math.sin(a)*haloR*.92]],.022,trim);
+ }
+ // Carved quatrefoils surrounded by a second cusped stone frame.
  for(const side of [-1,1]){
   for(const cy of [height*.71,height*.77]){
    const cx=side*width*.43;
-   for(let petal=0;petal<4;petal++){
-    const a=petal*Math.PI/2,pts=[];
-    for(let k=0;k<=12;k++){
-     const t=k*Math.PI*2/12;
-     pts.push([cx+Math.cos(a)*.22+Math.cos(t)*.22,cy+Math.sin(a)*.22+Math.sin(t)*.22]);
+   for(const radius of [.22,.36]){
+    for(let petal=0;petal<4;petal++){
+     const a=petal*Math.PI/2,pts=[];
+     for(let k=0;k<=16;k++){
+      const t=k*Math.PI*2/16;
+      pts.push([cx+Math.cos(a)*radius+Math.cos(t)*radius*.78,cy+Math.sin(a)*radius+Math.sin(t)*radius*.78]);
+     }
+     curve(pts,radius>.3?.065:.045,stone);
     }
-    curve(pts,.055,stone);
    }
   }
  }
