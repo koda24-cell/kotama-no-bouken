@@ -1105,7 +1105,7 @@ function resetTransientBattleState(){
   battleState.wolfEvasionTurns=0;battleState.wolfHalfHpEvasionUsed=false;battleState.wolfLastTargetId=null;battleState.wolfClones=[];battleState.wolfDisplayOrder=[];battleState.wolfCloneTurns=0;battleState.wolfCloneLastTargetId=null;battleState.wolfSplitPending=false;battleState.tauntTarget=null;battleState.enemyStunned=false;battleState.defenseCampTurns=0;battleState.magicGuardActive=false;battleState.fullGuardActive=false;battleState.knightFullGuardCooldown=0;battleState.aegisActive=false;battleState.bossBgmChoice=null;
   battleState.encounterMode=false;battleState.fieldEnemyId=null;battleState.fieldEnemyGroup=null;battleState.fieldFoeKey=null;// [FIELD]
 }
-function startBattle(stage=1){battleBgmSelections={};stageIntroStoryPending=false;maouIntroBgmPersistent=false;battleState.tutorialMode=false;state.firstStageStarted=true;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));}catch(e){}retryContext=null;battleState.hiddenBossMode=false;battleState.maxStage=5;resetTransientBattleState();battleState.koCount=0;battleState.rankResult=null;battleState.stage=Math.max(1,Math.min(state.maxUnlockedStage||1,Number(stage)||1));battleState.unionGauges={kotama:0,knight:0,healer:0,warrior:0,mage:0,samurai:0};getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});beginStage();}
+function startBattle(stage=1){battleState._samuraiFocus={target:null,hits:0};battleBgmSelections={};stageIntroStoryPending=false;maouIntroBgmPersistent=false;battleState.tutorialMode=false;state.firstStageStarted=true;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));}catch(e){}retryContext=null;battleState.hiddenBossMode=false;battleState.maxStage=5;resetTransientBattleState();battleState.koCount=0;battleState.rankResult=null;battleState.stage=Math.max(1,Math.min(state.maxUnlockedStage||1,Number(stage)||1));battleState.unionGauges={kotama:0,knight:0,healer:0,warrior:0,mage:0,samurai:0};getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});beginStage();}
 async function beginStageCore(){
   extResetBattle();// [EXT]
   const resumedBattle=!!pendingBattleResumeEnemy;
@@ -1428,15 +1428,31 @@ function livingEnemyTargets(enemy){
   if(enemy.name==="オオカミ")(battleState.wolfClones||[]).filter(c=>c.hp>0).forEach(clone=>targets.push({kind:"clone",ref:clone}));
   return targets;
 }
+// 武士「研ぎ澄ます刃」：同じ個体への連続命中で次の一撃が強くなる。
+function samuraiFocusDamage(target, amount) {
+  if (!battleState?.actingIds?.includes("samurai") || battleState._statusTick || amount <= 0) return amount;
+  const key = String(target?.ref?.id ?? (target?.kind === "main" ? "main" : "enemy"));
+  const focus = battleState._samuraiFocus || (battleState._samuraiFocus = { target: null, hits: 0 });
+  if (focus.target !== key) { focus.target = key; focus.hits = 0; }
+  return Math.floor(amount * (1 + Math.min(8, focus.hits) * .05));
+}
+function samuraiFocusHit(target, dealt) {
+  if (!battleState?.actingIds?.includes("samurai") || battleState._statusTick || dealt <= 0) return;
+  const key = String(target?.ref?.id ?? (target?.kind === "main" ? "main" : "enemy"));
+  const focus = battleState._samuraiFocus || (battleState._samuraiFocus = { target: key, hits: 0 });
+  if (focus.target !== key) { focus.target = key; focus.hits = 0; }
+  focus.hits = Math.min(8, focus.hits + 1);
+}
 function applyDamageToEnemyTarget(enemy,target,amount){
   if(!target||!target.ref)return 0;
   if(window.kotamaAdminBattleSettings?.oneHitKill){const unit=target.ref,dealt=Math.max(0,Number(unit.hp)||0);unit.hp=0;if(target.kind==="member"&&enemy?.members)enemy.hp=enemy.members.reduce((n,m)=>n+Math.max(0,m.hp),0);else if(target.kind==="main"&&enemy)enemy.hp=0;extEmitDamage(unit.id||"enemy","enemy",dealt,{hpAfter:0,ko:true});return dealt;}
+  amount=samuraiFocusDamage(target,amount);
   amount=extEnemyDamageTakenMul(enemy,target,amount);// [EXT] 睡眠中は被ダメージ増
   const value=Math.max(0,Math.floor(amount));
   if(target.kind==="clone")animateEnemyIcons(target);
-  if(target.kind==="main")return applyDamageToEnemy(enemy,value);
+  if(target.kind==="main"){const dealt=applyDamageToEnemy(enemy,value);samuraiFocusHit(target,dealt);return dealt;}
   if(target.kind==="clone"){
-    const clone=target.ref;const dealt=Math.min(clone.hp,value);clone.hp=Math.max(0,clone.hp-dealt);extEmitDamage(clone.id,"enemy",dealt,{hpAfter:clone.hp,ko:clone.hp<=0});// [EVT]
+    const clone=target.ref;const dealt=Math.min(clone.hp,value);clone.hp=Math.max(0,clone.hp-dealt);samuraiFocusHit(target,dealt);extEmitDamage(clone.id,"enemy",dealt,{hpAfter:clone.hp,ko:clone.hp<=0});// [EVT]
     
     if(dealt>0)flashEnemyDamage(document.querySelector(`[data-enemy-id="${clone.id}"]`));
     if(clone.hp<=0)pushEvent("オオカミの偽物は霧となって消えた……！");
@@ -1445,7 +1461,7 @@ function applyDamageToEnemyTarget(enemy,target,amount){
   const unit=target.ref;
   if(target.kind==="member"){
     animateEnemyIcons(target);
-    const dealt=Math.min(unit.hp,value);unit.hp=Math.max(0,unit.hp-dealt);extEmitDamage(unit.id,"enemy",dealt,{hpAfter:unit.hp,ko:unit.hp<=0});// [EVT]
+    const dealt=Math.min(unit.hp,value);unit.hp=Math.max(0,unit.hp-dealt);samuraiFocusHit(target,dealt);extEmitDamage(unit.id,"enemy",dealt,{hpAfter:unit.hp,ko:unit.hp<=0});// [EVT]
     if(dealt>0)flashEnemyDamage(document.querySelector(`[data-enemy-id="${unit.id}"]`));
     enemy.hp=enemy.members.reduce((n,m)=>n+Math.max(0,m.hp),0);
     return dealt;
