@@ -26,6 +26,7 @@ const EXT_NEW_JOBS = [
     spSkills:[
       { id:"poison-blade", name:"毒刃", cost:12, target:"enemy", type:"xj", description:"斬撃で攻撃し、高確率で敵を毒にする。毒は毎ターン開始時にダメージ。", xj:{ kind:"phys", mult:.9, element:"斬撃", fx:"slash", status:{ type:"poison", chance:.85, turns:4, power:.06, bossMul:.7 } } },
       { id:"paralyze-needle", name:"麻痺針", cost:16, target:"enemy", type:"xj", priority:1, description:"突属性の針で攻撃し、敵を麻痺させる。麻痺した敵は一定確率で行動できない。", xj:{ kind:"phys", mult:.5, element:"突", fx:"slash", status:{ type:"paralysis", chance:.7, turns:3, power:0, bossMul:.4 } } },
+      { id:"shadow-execution", name:"影討ち", cost:28, target:"enemy", type:"xj", description:"急所を狙う。通常敵は8%、ボスは1%で即死。", xj:{kind:"phys",mult:1.2,element:"突",fx:"slash",instaKill:.08,bossInstaKill:.01} },
       { id:"execution", name:"仕留めの一撃", cost:24, target:"enemy", type:"xj", description:"状態異常中の敵に威力が上昇する追撃。", xj:{kind:"phys",mult:1.3,element:"突",fx:"slash",ailmentBonus:1.8} },
       { id:"venom-fog", name:"毒霧", cost:24, target:"allEnemies", type:"xj", description:"毒の霧で敵全体を攻撃し、毒を与える。", xj:{ kind:"phys", mult:.6, element:"無属性", fx:"magic", status:{ type:"poison", chance:.6, turns:3, power:.06, bossMul:.7 } } }
     ] },
@@ -56,7 +57,7 @@ const EXT_NEW_JOBS = [
     spSkills:[
       { id:"curse-blade", name:"呪詛の刃", cost:20, target:"enemy", type:"xj", description:"斬撃で攻撃し、3ターンの間、敵の攻撃力と防御力を20%下げる。", xj:{ kind:"phys", mult:1.0, element:"斬撃", fx:"slash", status:[{ type:"attackDown", chance:.9, turns:3, power:.20, bossMul:.8 }, { type:"defenseDown", chance:.9, turns:3, power:.20, bossMul:.8 }] } },
       { id:"withering-mist", name:"衰弱の霧", cost:26, target:"allEnemies", type:"xj", description:"敵全体を弱らせ、3ターンの間、攻撃力を25%下げる。", xj:{ kind:"sp", mult:.7, element:"無属性", fx:"magic", status:{ type:"attackDown", chance:.9, turns:3, power:.25, bossMul:.8 } } },
-      { id:"reap-soul", name:"首狩り", cost:30, target:"enemy", type:"xj", description:"鎌で斬り、通常敵は10%、ボスは1%の確率で即死させる。", xj:{ kind:"phys", mult:1.8, element:"斬撃", fx:"slash", instaKill:.10, bossInstaKill:.01 } }
+      { id:"reap-soul", name:"首狩り", cost:30, target:"enemy", type:"xj", description:"鎌による斬撃。敵が弱体化しているほど威力が上昇する。", xj:{ kind:"phys", mult:1.8, element:"斬撃", fx:"slash", debuffBonus:1.5 } }
     ] },
   { id:"imperial", name:"インペリアル", image:"", emblem:"魔", speed:50, hp:110, maxHp:110, attack:85, spAttack:400, defense:30, guardCut:.40, sp:100, maxSp:100,
     spSkills:[
