@@ -1225,3 +1225,17 @@
   animation:none!important;
  }
 }
+
+
+/* Retreat remains directly clickable above battle overlays on first pointer action. */
+#battle.battle-ui-preview ~ .topbar #retreat-button,
+body:has(#battle.battle-ui-preview.active) .topbar #retreat-button {
+ position:relative!important;
+ z-index:101!important;
+ pointer-events:auto!important;
+ touch-action:manipulation;
+}
+body:has(#battle.battle-ui-preview.active) .topbar {
+ position:relative!important;
+ z-index:101!important;
+}
