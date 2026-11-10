@@ -23,6 +23,12 @@ export function createB5BrokenStair(THREE,options={}){
       [-run/2,0,-width/2],[run/2,0,-width/2],
       [run/2,0,width/2-1.15],[run/2-0.65,0,width/2],
       [-run/2,0,width/2]
+   ]:(i===1||i===3||i===5)?[
+      // A small corner missing from the top slab, not a raised bump.
+      [-run/2+0.14,0,-width/2], [run/2,0,-width/2],
+      [run/2,0,width/2],[-run/2,0,width/2],
+      [-run/2,0,-width/2+0.13],
+      [-run/2+0.065,0,-width/2+0.07]
    ]:[[-run/2,0,-width/2],[run/2,0,-width/2],[run/2,0,width/2],[-run/2,0,width/2]];
    const verts=[],indices=[];
    for(const y of [0,0.14])for(const [px,pz] of profile)verts.push(px,y,pz);
@@ -44,40 +50,9 @@ export function createB5BrokenStair(THREE,options={}){
    g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();
    add(g,mat,0,0,0);
  };
- // Localized, uneven stone surface. Keep the stair geometry and walking
- // silhouette intact: no uniform noise across every tread.
- // These shallow faceted patches sit ON the existing 0.14-high slab cap.
- const weathered=M(new THREE.MeshStandardMaterial({color:0x67616b,roughness:1,flatShading:true,side:THREE.DoubleSide}));
- const wornEdge=M(new THREE.MeshStandardMaterial({color:0x817985,roughness:1,flatShading:true,side:THREE.DoubleSide}));
- const patch=(i,x,z,sx,sz,height,mat)=>{
-   const y=(i+1)*rise+0.14;
-   const vertices=[
-     x-sx*.55,y+0.001,z-sz*.40,
-     x+sx*.38,y+0.001,z-sz*.52,
-     x+sx*.56,y+0.001,z+sz*.31,
-     x-sx*.28,y+0.001,z+sz*.54,
-     x+sx*.06,y+height,z-sz*.07
-   ];
-   const g=G(new THREE.BufferGeometry());
-   g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
-   g.setIndex([0,1,4,1,2,4,2,3,4,3,0,4]);g.computeVertexNormals();
-   add(g,mat,0,0,0);
- };
- // Uneven clusters: a few worn regions, separated by largely intact stone.
- const wornZones=[
-   [0,-6.0,1.15,.85,.024],[0,5.9,.7,.58,.015],
-   [1,-4.7,.95,1.0,.033],[2,6.2,1.25,.85,.039],
-   [3,-6.8,.85,.72,.025],[3,4.6,1.15,.9,.031],
-   [4,6.8,1.05,.88,.028],[5,-5.5,1.28,1.15,.042],
-   [6,5.6,.95,.95,.024]
- ];
- for(const [i,z,sx,sz,height] of wornZones){
-   const x=(i+0.5)*run-steps*run/2+(rand()-.5)*0.35;
-   patch(i,x,z,sx,sz,height,weathered);
-   // Sparse small raised chips around the same damaged area.
-   if(i%2===0)patch(i,x+0.23,z+0.42,sx*.37,sz*.43,height*.48,wornEdge);
- }
- // Missing tile faces: dark recessed patches with irregular outlines.
+ // No raised wear patches. Slight chips are modeled into selected slab
+ // corners below, rather than placing spikes on the tread surface.
+ // Missing tile faces: subtle recessed-looking patches with irregular outlines.
  // Localized to exposed stone; no carpet is present.
  const recess=M(new THREE.MeshStandardMaterial({color:0x36313b,roughness:0.98,side:THREE.DoubleSide}));
  const tileScars=[
