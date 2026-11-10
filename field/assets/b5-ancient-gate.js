@@ -125,6 +125,17 @@ export function createB5AncientGate(THREE,options={}){
   const x=side*3.75,h=side<0?9.8:7.1;
   weatheredCore(x,.7,0,2.65,1.4,2.5);
   flutedShaft(x,1.4,h);
+  // Preserve the approved stepped stone bands and recessed Gothic relief.
+  for(let y=2.3;y<h+1.4;y+=1.65){
+   weatheredCore(x,y,0,2.14,.25,2.05,trim);
+  }
+  for(const z of [-1.03,1.03]){
+   block(x,4.2,z,.93,3.6,.10,cut);
+   for(const dx of [-.48,.48])block(x+dx,4.2,z+Math.sign(z)*.07,.14,3.75,.15,trim);
+   for(const dx of [-.28,.28])block(x+dx,4.2,z+Math.sign(z)*.11,.075,3.25,.09,stone);
+   block(x,6.05,z+Math.sign(z)*.06,.94,.18,.18,trim);
+   block(x,3.7,z+Math.sign(z)*.11,.85,.12,.14,trim);
+  }
   // Capital and plinth remain distinct architectural pieces.
   weatheredCore(x,1.4+h,0,2.7,.48,2.6,trim);
  }
