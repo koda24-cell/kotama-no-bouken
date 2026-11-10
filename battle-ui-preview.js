@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-5";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-6";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -116,6 +116,7 @@
       if (!box) return;
       const main = battleState.menuMode === "main";
       box.classList.toggle("battle-preview-main-menu", main);
+      battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
       const unionPanel = box.querySelector(".union-panel");
       const existingToggle = box.querySelector("[data-preview-union-toggle]");
       if (!main || !unionPanel) {
