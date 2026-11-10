@@ -34,10 +34,10 @@ const EXT_NEW_JOBS = [
       { id:"ricochet", name:"跳弾", cost:24, target:"allEnemies", type:"xj", description:"弾丸を跳ね返らせ、敵全体に壊属性ダメージを2回与える。", xj:{ kind:"phys", mult:.85, hits:2, element:"壊", fx:"slash" } },
       { id:"cover-fire", name:"援護射撃", cost:18, target:"enemy", type:"xj", description:"敵の足元を撃ち抜き、3ターンの間、敵の防御力を25%下げる。", xj:{ kind:"phys", mult:.6, element:"壊", fx:"slash", status:{ type:"defenseDown", chance:1, turns:3, power:.25, bossMul:1 } } }
     ] },
-  { id:"highlander", name:"ハイランダー", image:"assets/characters/highlander.svg", emblem:"槍", speed:60, hp:120, maxHp:120, attack:110, spAttack:20, defense:40, guardCut:.45, sp:60, maxSp:60,
+  { id:"highlander", name:"ハイランダー", image:"assets/characters/highlander.svg", emblem:"槍", speed:60, hp:120, maxHp:120, attack:90, spAttack:125, defense:40, guardCut:.45, sp:60, maxSp:60,
     spSkills:[
-      { id:"lance-charge", name:"ランスチャージ", cost:15, target:"enemy", type:"xj", description:"突属性の高火力単体攻撃。攻撃力の210%のダメージ。", xj:{ kind:"phys", mult:2.1, element:"突", fx:"slash" } },
-      { id:"sky-pierce", name:"天槍穿ち", cost:32, target:"enemy", type:"xj", description:"全力の突き。攻撃力の340%の突属性ダメージ。", xj:{ kind:"phys", mult:3.4, element:"突", fx:"slash" } }
+      { id:"lance-charge", name:"ランスチャージ", cost:15, target:"enemy", type:"xj", description:"SP攻撃力の210%を基準とする突属性の単体攻撃。", xj:{ kind:"sp", mult:2.1, element:"突", fx:"slash" } },
+      { id:"sky-pierce", name:"天槍穿ち", cost:32, target:"enemy", type:"xj", description:"全力の突き。SP攻撃力の340%を基準とする突属性ダメージ。", xj:{ kind:"sp", mult:3.4, element:"突", fx:"slash" } }
     ] },
   { id:"princess", name:"プリンセス", image:"assets/characters/princess.svg", emblem:"姫", speed:65, hp:90, maxHp:90, attack:10, spAttack:80, defense:12, guardCut:.30, sp:150, maxSp:150,
     spSkills:[
