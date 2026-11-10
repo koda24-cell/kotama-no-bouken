@@ -251,7 +251,9 @@ function extStatusChance(source, target, type, baseChance, opts = {}) {
 // 付与の判定。乱数は付与率に関係なく1回だけ使う（既存の戦闘結果の再現性を保つ）。
 function extTryStatus(source, target, type, baseChance, opts = {}) {
   const { chance, reason } = extStatusChance(source, target, type, baseChance, opts);
-  const hit = Math.random() < chance;
+  const surprise = source?.id === "assassin" && !battleState._assassinHitPreviousTurn && !battleState._assassinHitThisTurn && !battleState._enemyActedThisTurn;
+  const adjustedChance = surprise ? Math.min(1, chance * 1.5) : chance;
+  const hit = Math.random() < adjustedChance;
   if (hit) { if (!extIsParty(target) && extToleranceTarget(battleState.enemy)) extAddTolerance(target, type); return true; }
   battleEmit("status:resist", {
     targetId: extIsParty(target) ? target.id : (target === battleState.enemy ? "enemy" : target?.id ?? "enemy"),
@@ -388,6 +390,10 @@ function extResetBattle() {
   battleState._ailmentTolerance = {};
   battleState._partyLockStreak = 0;
   battleState._statusTick = false;
+  battleState._assassinHitPreviousTurn = false;
+  battleState._assassinHitThisTurn = false;
+  battleState._enemyActedThisTurn = false;
+  battleState._gunnerFlashUsed = false;
   battleState.enemyStatuses = {};
   battleState.enemyUnitStatuses = {};
   for (const c of characters) { c._xjCharge = null; c._heat = 0; c._overheat = false; }
@@ -396,6 +402,9 @@ function extResetBattle() {
 
 /* 毎ターン開始時：毒のダメージ */
 async function extRoundStart() {
+  battleState._assassinHitPreviousTurn = !!battleState._assassinHitThisTurn;
+  battleState._assassinHitThisTurn = false;
+  battleState._enemyActedThisTurn = false;
   const e = battleState.enemy;
   extUpdatePartyLockStreak();
   for (const c of getParty()) {
@@ -412,7 +421,7 @@ async function extRoundStart() {
     for (const target of units) {
       const unit = target.ref;
       if (!unit || unit.hp <= 0 || !extHasStatus(unit, "poison")) continue;
-      const pct = extIsBoss(e) ? Math.min(.025, extStatusPower(unit, "poison") || .025) : (extStatusPower(unit, "poison") || .06);
+      const pct = extStatusPower(unit, "poison") || .06;
       const damage = Math.max(1, Math.floor((unit.maxHp || e.maxHp) * pct));
       beginEnemyDamagePreview(e);
       battleState._statusTick = true;  // 毒のダメージでは睡眠から覚めない
@@ -580,6 +589,7 @@ async function extDamageSkill(actor, skill, a, x, mult) {
   }
   let total = 0;
   const hits = x.hits || 1;
+  const reaperDrain = actor.id === "reaper" && targets.some(t => ["attackDown","defenseDown"].some(type => extHasStatus(t.ref,type)));
   for (let h = 0; h < hits; h++) {
     for (const t of targets) {
       if (enemyHpTotal(enemy) <= 0) break;
@@ -593,6 +603,10 @@ async function extDamageSkill(actor, skill, a, x, mult) {
     }
     if (hits > 1) { showHitEffect(x.fx === "flame" ? "flame" : "magic"); renderBattle(); await wait(180); }
     if (enemyHpTotal(enemy) <= 0) break;
+  }
+  if (reaperDrain && total > 0) {
+    const heal = Math.min(Math.max(0, effectiveStats(actor).maxHp - actor.hp), Math.max(1, Math.floor(total * .15)));
+    if (heal > 0) { actor.hp += heal; pushEvent(`${actor.name}は鎌で生命力を${heal}吸収した！`); }
   }
   animateEnemyIcons(targets[0]);
   if (lastEnemyAttackMissed && total === 0) pushLog(`${enemy.name}は攻撃を回避した！`);
@@ -690,12 +704,13 @@ function extWeightedPick(list) {
   return list[list.length - 1];
 }
 function extPickPartyTarget(alive, act) {
+  const weighted = (pool) => { const weights=pool.map(c=>c.id==="assassin"?.4:1), total=weights.reduce((a,b)=>a+b,0); let roll=Math.random()*total; for(let i=0;i<pool.length;i++){roll-=weights[i];if(roll<0)return pool[i];}return pool[pool.length-1]; };
   const adminTarget=alive.find(c=>c.id===window.kotamaAdminBattleSettings?.enemyTargetId);
   if(adminTarget)return adminTarget;
   const taunt = alive.find(c => c.id === battleState.tauntTarget);
   if (taunt) return taunt;
-  if (act.target === "rear") { const rear = alive.filter(c => EXT_REAR_IDS.includes(c.id)); if (rear.length) return rear[Math.floor(Math.random() * rear.length)]; }
-  return alive[Math.floor(Math.random() * alive.length)];
+  if (act.target === "rear") { const rear = alive.filter(c => EXT_REAR_IDS.includes(c.id)); if (rear.length) return weighted(rear); }
+  return weighted(alive);
 }
 async function extVariantAction(e, turn, opts = {}) {
   const alive = livingParty(); if (!alive.length) return;
@@ -889,6 +904,7 @@ function extEmitEnemyActionStart() {
 
 // ダメージの確定（HPが実際に減った直後）。miss=true は回避・ミスで、ダメージ0。
 function extEmitDamage(targetId, side, amount, extra) {
+  if (side === "party" && targetId === "assassin" && amount > 0) battleState._assassinHitThisTurn = true;
   if (side === "enemy" && extra?.ko && amount > 0) {
     const e = battleState.enemy;
     const unit = (e?.members || []).find(m => String(m.id) === String(targetId)) || (e?.id === targetId ? e : null) || (targetId === "enemy" ? e : null);
