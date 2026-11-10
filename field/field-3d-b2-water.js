@@ -935,6 +935,22 @@ export async function createTheme(api) {
       new THREE.TorusGeometry(5.65, 0.62, 7, 28),
       stone);
     rim.rotation.x = Math.PI / 2; rim.position.set(x, 22.35, z); atrium.add(rim);
+    // 円形の人工的な輪郭を、氷に侵食された不規則な岩塊で部分的に隠す。
+    // すべて天井付近に置き、通路・FOE・イベントの当たり判定には触れない。
+    const rimRockGeo = new THREE.IcosahedronGeometry(1, 1);
+    for (let i = 0; i < 22; i++) {
+      const angle = (i + hash(i, 51, 610) * 0.45) * Math.PI * 2 / 22;
+      const radius = 5.5 + (hash(i, 52, 611) - 0.5) * 0.85;
+      const rock = new THREE.Mesh(rimRockGeo, i % 5 === 0 ? stone : dark);
+      rock.position.set(x + Math.cos(angle) * radius,
+        22.12 + (hash(i, 53, 612) - 0.5) * 0.55,
+        z + Math.sin(angle) * radius);
+      rock.scale.set(0.55 + hash(i, 54, 613) * 0.75,
+        0.42 + hash(i, 55, 614) * 0.6,
+        0.58 + hash(i, 56, 615) * 0.85);
+      rock.rotation.set(hash(i, 57, 616) * 0.5, angle, hash(i, 58, 617) * 0.4);
+      atrium.add(rock);
+    }
     // 高所から落ちる細い発光水流。通行範囲には降ろさず水源の高さを演出。
     const streamMat = new THREE.MeshBasicMaterial({
       color: 0x65d8f4, transparent: true, opacity: 0.27,
