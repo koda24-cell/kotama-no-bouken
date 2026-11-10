@@ -51,6 +51,7 @@ export function createTheme(api, area) {
   // 壁の両端と上下端を固定し、隣接するマスや天井との継ぎ目を抑える。
   // 第3・第5階層には適用しない。
   const volcanicWallGeo = magma ? wallGeo.clone() : null;
+  const recessWallGeo = magma ? new THREE.BoxGeometry(4.08, 4.2, 0.22) : null;
   if (volcanicWallGeo) {
     const p = volcanicWallGeo.getAttribute('position');
     for (let i = 0; i < p.count; i++) {
@@ -145,7 +146,10 @@ export function createTheme(api, area) {
         if (!wallCell(tx + dx, ty + dz)) continue;
         const ex = x + dx * 2, ez = z + dz * 2, ry = FACE_YAW[d] + Math.PI;
         if (b4Plan?.openings.has(faceKey(tx,ty,dx,dz))) continue;
-        mesh(volcanicWallGeo || wallGeo, mat.wall, ex, 2, ez, ry);
+        // Other corridors may touch this same solid cell. Keep their wall skin
+        // outside the recess instead of letting displaced rock cut through its back/sides.
+        const recessSide = b4Plan?.excludedWalls.has(`${tx+dx},${ty+dz}`);
+        mesh(recessSide ? recessWallGeo : (volcanicWallGeo || wallGeo), mat.wall, ex, 2, ez, ry);
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
@@ -280,7 +284,7 @@ export function createTheme(api, area) {
     lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; landmarkState = 'pending';
     // build() can reuse this theme's base resources; theme replacement releases them.
     if (magma && final) {
-      for (const geo of [floorGeo,wallGeo,volcanicWallGeo,ceilingGeo,crystalGeo,rimGeo,...localGeometries]) geo?.dispose();
+      for (const geo of [floorGeo,wallGeo,volcanicWallGeo,recessWallGeo,ceilingGeo,crystalGeo,rimGeo,...localGeometries]) geo?.dispose();
       for (const material of [...Object.values(mat),trunkMat,leafMat,flameMat]) material.dispose();
       rockMap?.dispose(); floorMap?.dispose();
     }
