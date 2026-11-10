@@ -27,3 +27,22 @@
   #battle.battle-ui-preview #battle-party { grid-template-columns:repeat(3,minmax(0,1fr)); gap:3px; }
   #battle.battle-ui-preview #battle-party .battle-member { font-size:clamp(9px,2vw,13px); }
 }
+
+/* Read-only portrait and union meter in the right side of the arena. */
+#battle.battle-ui-preview .battle-arena { position:relative; }
+#battle.battle-ui-preview .battle-preview-hero {
+  position:absolute; right:0; bottom:0; z-index:3; width:clamp(120px,23%,260px);
+  pointer-events:none; display:flex; flex-direction:column; align-items:center;
+  color:#fff; text-shadow:0 2px 5px #001524;
+}
+#battle.battle-ui-preview .battle-preview-hero[hidden] { display:none; }
+#battle.battle-ui-preview .battle-preview-portrait { height:clamp(100px,18vw,235px); width:100%; display:grid; place-items:center; font-size:60px; overflow:hidden; }
+#battle.battle-ui-preview .battle-preview-portrait img { height:100%; width:100%; object-fit:contain; object-position:bottom; filter:drop-shadow(0 4px 8px #00172b); }
+#battle.battle-ui-preview .battle-preview-union { width:90%; padding:5px 9px; border:1px solid #d7b46c; border-radius:12px; background:#08263cde; font-size:12px; }
+#battle.battle-ui-preview .battle-preview-union>div { height:9px; margin-top:4px; border-radius:8px; background:#051b2b; overflow:hidden; }
+#battle.battle-ui-preview .battle-preview-union i { display:block; height:100%; background:linear-gradient(90deg,#248fe0,#86f9ff); transition:width .2s; }
+@media(max-width:620px) {
+  #battle.battle-ui-preview .battle-preview-hero { width:29%; }
+  #battle.battle-ui-preview .battle-preview-portrait { height:110px; }
+  #battle.battle-ui-preview .battle-preview-union { font-size:9px; padding:3px; }
+}
