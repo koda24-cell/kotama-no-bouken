@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-15";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-19";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -25,11 +25,49 @@
       bottom.classList.add("battle-preview-bottom");
     }
 
+    // The old battle-support strip is redundant: COMMAND INFO is the single
+    // description surface. Keep its element for game logic but hide visually.
+    const support = document.getElementById("battle-support");
+    if (support) support.hidden = true;
+    const commandHint = document.getElementById("command-hint");
+    if (commandHint) commandHint.hidden = true;
+    const infoDescription = document.getElementById("command-description");
+    if (infoDescription) {
+      const initialPrompt = "コマンドを選ぶと説明がここに表示されます。";
+      let hasSelectedCommand = false;
+      const markSelected = event => {
+        if (!event.target.closest("#battle-commands button, .battle-preview-primary-rail button")) return;
+        hasSelectedCommand = true;
+      };
+      battle.addEventListener("click", markSelected, true);
+      // Show the guidance only before the first command selection.
+      // Later skill/attack descriptions remain under control of game logic.
+      requestAnimationFrame(() => {
+        if (!hasSelectedCommand && battle.classList.contains("active"))
+          infoDescription.textContent = initialPrompt;
+      });
+    }
+
     // Legacy 3DS-style key badges are removed in preview, without removing buttons.
     const eventTitle = eventWindow?.querySelector(".window-title");
     if (eventTitle) {
       eventTitle.textContent = "EVENT";
       eventTitle.setAttribute("aria-label", "イベントログ");
+    }
+    // Place the EVENT tab beside the action prompt, like the reference HUD.
+    // The log body remains in its existing accessible live region below.
+    const actionWindow = bottom?.querySelector(".command-window");
+    if (eventTitle && actionWindow) {
+      eventTitle.classList.add("battle-event-prompt-tab");
+      actionWindow.prepend(eventTitle);
+    }
+    // Rare slime HP sits above its head; update after enemy changes.
+    const enemyDisplay = document.getElementById("battle-enemy");
+    const enemyName = document.getElementById("enemy-name");
+    if (enemyDisplay && enemyName) {
+      const syncRareSlime = () => enemyDisplay.classList.toggle("battle-rare-slime", /はぐれスライム/.test(enemyName.textContent || ""));
+      new MutationObserver(syncRareSlime).observe(enemyName, {childList:true,subtree:true,characterData:true});
+      syncRareSlime();
     }
     // Move the original LOG / enemy / ally controls to the reference-style top HUD.
     // Moving real nodes preserves their event listeners and dialog behavior.
@@ -140,6 +178,12 @@
       meterLabel.textContent = skill ? "UNION " + Math.round(percent) + "%" : "UNION";
       meterLabel.title = skill ? charge + " / " + required : "未設定";
       meter.classList.toggle("battle-union-ready", !!skill && percent >= 100);
+      // Ready state is shared by the always-visible command and the submenu rail.
+      battle.classList.toggle("battle-preview-union-ready", !!skill && percent >= 100);
+      document.querySelectorAll("#battle-commands [data-preview-union-toggle], .battle-preview-primary-rail .battle-preview-rail-button").forEach(button => {
+        if (button.matches("[data-preview-union-toggle]") || button.textContent.includes("ユニオンスキル"))
+          button.classList.toggle("battle-union-command-ready", !!skill && percent >= 100);
+      });
       meter.setAttribute("aria-label", skill ? "ユニオンゲージ " + Math.round(percent) + "パーセント" : "ユニオン未設定");
       meterFill.style.width = percent + "%";
       meterTrack.style.setProperty("--battle-union-percent", percent + "%");
@@ -168,6 +212,12 @@
       button.type = "button"; button.className = "battle-preview-rail-button"; button.textContent = label;
       button.addEventListener("click", () => {
         if (battleState.busy) return;
+        // Align the submenu first option just below the selected action row.
+        const arena = battle.querySelector(".battle-arena");
+        if (arena) {
+          const selectedTop = button.getBoundingClientRect().top - arena.getBoundingClientRect().top;
+          battle.style.setProperty("--battle-submenu-top", Math.max(120, Math.min(325, Math.round(selectedTop - 20))) + "px");
+        }
         renderActionMenu();
         requestAnimationFrame(() => {
           const selector = action === "preview-move" ? "[data-preview-move]" : action === "preview-union-toggle" ? "[data-preview-union-toggle]" : "[data-action="+action+"]";
@@ -189,6 +239,12 @@
       box.classList.toggle("battle-preview-main-menu", main);
       battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
       primaryRail.hidden = main || !!battleState.tutorialMode;
+      const actor = typeof currentActor === "function" ? currentActor() : null;
+      const union = actor && typeof unionSkills !== "undefined" ? unionSkills[actor.id] : null;
+      const ready = !!union && (Number(battleState.unionGauges?.[actor.id]) || 0) >= union.requiredHits;
+      primaryRail.querySelectorAll(".battle-preview-rail-button").forEach(button => {
+        if (button.textContent.includes("ユニオンスキル")) button.classList.toggle("battle-union-command-ready", ready);
+      });
       railTitle.textContent = (typeof currentActor === "function" ? currentActor()?.name : "") + "　どうする？";
       const unionPanel = box.querySelector(".union-panel");
       const existingToggle = box.querySelector("[data-preview-union-toggle]");
