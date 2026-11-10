@@ -921,6 +921,27 @@ export async function createTheme(api) {
       rock.rotation.z = (hash(i, 11, 255) - 0.5) * 0.15;
       atrium.add(rock);
     }
+    // 高所の岩壁に自然侵食でできた半円状の石橋を重ね、縦穴の奥行きを強調する。
+    // 床から12m以上の装飾。通路やイベントの判定には影響しない。
+    const archRockGeo = new THREE.IcosahedronGeometry(1, 1);
+    for (let arch = 0; arch < 4; arch++) {
+      const side = arch, axis = side % 2 === 0, sign = side < 2 ? -1 : 1;
+      const center = (hash(arch, 70, 811) - 0.5) * 3.4;
+      const baseY = 13.4 + hash(arch, 71, 812) * 2.5;
+      const radius = 1.65 + hash(arch, 72, 813) * 0.65;
+      for (let segment = 0; segment < 9; segment++) {
+        const angle = Math.PI * segment / 8;
+        const along = center + Math.cos(angle) * radius;
+        const rise = Math.sin(angle) * radius;
+        const stonePiece = new THREE.Mesh(archRockGeo, segment % 4 === 0 ? stone : dark);
+        stonePiece.position.set(x + (axis ? along : sign * 5.4), baseY + rise,
+          z + (axis ? sign * 5.4 : along));
+        stonePiece.scale.set(axis ? 0.55 : 0.42, 0.42 + hash(arch, segment, 814) * 0.22,
+          axis ? 0.42 : 0.55);
+        stonePiece.rotation.z = (hash(arch, segment, 815) - 0.5) * 0.45;
+        atrium.add(stonePiece);
+      }
+    }
     // 角の崩れた支柱と礎石。上方には段差を付け、直方体の箱に見えにくくする。
     for (const [dx, dz] of [[-5.6,-5.6],[5.6,-5.6],[-5.6,5.6],[5.6,5.6]]) {
       const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.88, 18, 8), stone);
