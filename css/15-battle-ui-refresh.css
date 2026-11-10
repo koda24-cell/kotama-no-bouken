@@ -609,3 +609,16 @@
    font-size:9px;
  }
 }
+
+
+/* Union is displayed in the right-hand vertical gauge; remove duplicate
+   per-character Union indicators from compact formation cards. */
+#battle.battle-ui-preview #battle-party .battle-member .union-mini {
+  display:none!important;
+}
+#battle.battle-ui-preview #battle-party .battle-member {
+  grid-template-rows:minmax(17px,auto) 16px 8px!important;
+}
+#battle.battle-ui-preview #battle-party .battle-member>.battle-portrait {
+  grid-row:1 / 4!important;
+}
