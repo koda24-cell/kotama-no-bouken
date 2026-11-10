@@ -218,6 +218,29 @@ export function createB3UrbanProps(THREE) {
     }
     return g;
   }
+  // Large overgrown street-block composition, separate from walkable collision map.
+  function ruinedBlock(variant=0) {
+    const v=((variant%3)+3)%3,g=group('ruined_block_'+v);
+    const a=ruinedBuilding(v),b=ruinedBuilding((v+1)%3);
+    a.position.set(-4.3,0,-2.8);a.rotation.y=v*.18;g.add(a);
+    b.position.set(4.2,0,2.3);b.rotation.y=-.35; b.scale.set(.82,.86,.82);g.add(b);
+    const pole=utilityPole(v);pole.position.set(-.8,0,3.1);pole.rotation.z=v===1?.15:0;g.add(pole);
+    const steel=steelWreck(v);steel.position.set(1.2,0,-.9);steel.rotation.y=.55;g.add(steel);
+    for(let i=0;i<5;i++) {
+      const tile=rootedPavement(v*100+i+1);
+      tile.position.set((i%3-1)*2.7,0,(Math.floor(i/3)-.5)*2.5);
+      tile.scale.set(.7,1,.7);g.add(tile);
+    }
+    // Massive root system bridges a street and visibly pushes into the buildings.
+    beam(g,[-5,.15,1],[-3,1.1,1.7],.24,growth);
+    beam(g,[-3,1.1,1.7],[-1.3,.55,2.4],.2,growth);
+    beam(g,[-1.3,.55,2.4],[.8,.22,2.2],.14,growth);
+    // Distant radio silhouette is optional, variants differ in skyline.
+    if(v!==1) {
+      const tower=radioTower(v);tower.position.set(6.2,0,-3.2);tower.scale.set(.55,.75,.55);g.add(tower);
+    }
+    return g;
+  }
   function dispose(){geos.forEach(x=>x.dispose());[concrete,metal,dark,growth].forEach(x=>x.dispose());}
-  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,dispose};
+  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,ruinedBlock,dispose};
 }
