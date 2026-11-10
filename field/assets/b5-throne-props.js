@@ -1,0 +1,98 @@
+/* B5 demon throne room only: geometry-first cathedral prop library.
+ * Visual-only; do not use as collision meshes or spawn automatically.
+ * Caller attaches returned group and disposes it on scene exit.
+ */
+export const B5_THRONE_PROP_KINDS = Object.freeze([
+  'ruinedPillar','hangingBanner','grandChandelier','fracturedAltar',
+  'gothicArch','candleSanctuary','brokenStair','shatteredRoseWindow'
+]);
+export function createB5ThroneProp(THREE, kind, options={}) {
+  if(!B5_THRONE_PROP_KINDS.includes(kind)) throw new Error('Unknown throne prop: '+kind);
+  const group=new THREE.Group(); group.name='b5:throne:'+kind;group.userData.visualOnly=true;
+  const gs=[],ms=[];
+  const G=x=>(gs.push(x),x), M=x=>(ms.push(x),x);
+  const stone=M(new THREE.MeshStandardMaterial({color:0x47444c,roughness:0.92,flatShading:true}));
+  const dark=M(new THREE.MeshStandardMaterial({color:0x28252d,roughness:0.94,flatShading:true}));
+  const iron=M(new THREE.MeshStandardMaterial({color:0x514b4c,metalness:0.65,roughness:0.55}));
+  const fabric=M(new THREE.MeshStandardMaterial({color:0x50343b,roughness:0.9,side:THREE.DoubleSide}));
+  const fire=M(new THREE.MeshBasicMaterial({color:0xffa455}));
+  const cube=G(new THREE.BoxGeometry(1,1,1)),rod=G(new THREE.CylinderGeometry(0.08,0.08,1,6));
+  const oct=G(new THREE.IcosahedronGeometry(1,0)),spike=G(new THREE.ConeGeometry(0.35,1,5));
+  const mesh=(geo,mat,x,y,z,sx=1,sy=1,sz=1,parent=group)=>{
+    const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);parent.add(m);return m;
+  };
+  let seed=(options.seed??505)>>>0;
+  const rand=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
+  const rubble=(n,r)=>{for(let i=0;i<n;i++){const a=rand()*Math.PI*2,d=rand()*r;
+    const m=mesh(oct,stone,Math.cos(a)*d,rand()*0.4,Math.sin(a)*d,0.2+rand()*0.6,0.12+rand()*0.4,0.2+rand()*0.6);
+    m.rotation.set(rand(),rand()*3,rand());}};
+  const pillar=(x,z,h=11,broken=false)=>{
+    mesh(cube,stone,x,0.5,z,2.5,1,2.5);
+    const shaft=mesh(G(new THREE.CylinderGeometry(0.78,1.05,h,9)),stone,x,1+h/2,z);
+    if(broken){shaft.scale.y=0.66;shaft.rotation.z=0.12;mesh(cube,dark,x+1.9,0.9,z,1.8,1.5,1.8).rotation.z=0.65;}
+    mesh(cube,stone,x,1+h*(broken?0.66:1)+0.25,z,2.2,0.5,2.2).rotation.z=broken?0.12:0;
+    for(let i=0;i<4;i++){const a=i*Math.PI/2;mesh(rod,iron,x+Math.cos(a)*0.9,2+h*0.42,z+Math.sin(a)*0.9,1,h*0.75,1);}
+  };
+  if(kind==='ruinedPillar'){pillar(0,0,13,true);rubble(13,4);}
+  if(kind==='hangingBanner'){
+    mesh(rod,iron,0,12,0,2.2,7,2.2);
+    const geo=G(new THREE.BufferGeometry());
+    const p=[0,11,0,4.2,11,0,4.1,4.2,0.6,3.2,1.4,0.2,2.1,2.7,0.5,1.2,1.0,0.2,0,3.7,0];
+    geo.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
+    geo.setIndex([0,1,2,0,2,6,6,2,3,6,3,5,5,3,4]);geo.computeVertexNormals();
+    mesh(geo,fabric,0,0,0);
+    mesh(cube,iron,2.1,11.2,0,4.7,0.22,0.2);
+  }
+  if(kind==='grandChandelier'){
+    const hoop=G(new THREE.TorusGeometry(3.6,0.18,7,28));
+    const hoop2=G(new THREE.TorusGeometry(2.15,0.14,7,22));
+    mesh(hoop,iron,0,8,0).rotation.x=Math.PI/2;
+    mesh(hoop2,iron,0,6.8,0).rotation.x=Math.PI/2;
+    for(let i=0;i<12;i++){const a=i*Math.PI/6,x=Math.cos(a)*3.6,z=Math.sin(a)*3.6;
+      mesh(rod,iron,x/2,10.5,z/2,1,6,1).rotation.z=(i%2?0.13:-0.13);
+      mesh(rod,iron,x,8.45,z,1,1.4,1);
+      mesh(spike,fire,x,9.4,z,0.45,0.65,0.45);}
+    mesh(rod,iron,0,13,0,2.2,10,2.2);
+  }
+  if(kind==='fracturedAltar'){
+    mesh(cube,stone,0,0.7,0,9,1.4,5);
+    mesh(cube,dark,-1.2,2.0,0,4.9,1.2,3.7).rotation.z=-0.12;
+    mesh(cube,stone,2.5,1.6,0.5,3.5,1,3.2).rotation.z=0.28;
+    for(let i=0;i<5;i++){mesh(spike,stone,-3.8+i*1.9,2.7,-2.1,0.7,1.7,0.7);}
+    rubble(18,7);
+  }
+  if(kind==='gothicArch'){
+    pillar(-4,0,12,false);pillar(4,0,10,true);
+    const left=mesh(cube,stone,-2.15,12.2,0,5.6,1.1,2.1);left.rotation.z=0.55;
+    const right=mesh(cube,stone,2.15,12.2,0,5.6,1.1,2.1);right.rotation.z=-0.55;
+    mesh(spike,dark,0,14.5,0,2.5,3.2,2.5);rubble(14,6);
+  }
+  if(kind==='candleSanctuary'){
+    mesh(cube,stone,0,0.5,0,8,1,5);
+    for(let i=0;i<36;i++){const x=(rand()-0.5)*7,z=(rand()-0.5)*4,h=0.25+rand()*1.6;
+      mesh(G(new THREE.CylinderGeometry(0.12,0.16,h,6)),stone,x,1+h/2,z);
+      mesh(spike,fire,x,1+h+0.18,z,0.28,0.36,0.28);}
+  }
+  if(kind==='brokenStair'){
+    for(let i=0;i<9;i++){const x=(i-4)*1.45,y=i*0.52;
+      const m=mesh(cube,stone,x,y,0,1.4,0.5,5.2);m.rotation.z=i>5?0.1*(i-5):0;}
+    for(let i=0;i<4;i++)mesh(cube,stone,5.5+rand()*3,1+rand()*2,(rand()-0.5)*5,1.3,0.5,1.8).rotation.z=rand();
+    rubble(12,9);
+  }
+  if(kind==='shatteredRoseWindow'){
+    const hoop=G(new THREE.TorusGeometry(4.5,0.32,8,28,Math.PI*1.65));
+    mesh(hoop,stone,0,8,0);
+    for(let i=0;i<9;i++){const a=i*Math.PI*2/11;
+      const beam=mesh(cube,iron,Math.cos(a)*1.9,8+Math.sin(a)*1.9,0,0.22,4.1,0.3);
+      beam.rotation.z=a-Math.PI/2;}
+    for(let i=0;i<8;i++){const a=rand()*Math.PI*2;
+      const shard=mesh(oct,stone,Math.cos(a)*(2+rand()*3),rand()*3,Math.sin(a)*(1+rand()),0.35+rand(),0.25+rand(),0.25+rand());
+      shard.rotation.z=rand()*3;}
+  }
+  const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
+  group.scale.setScalar(scale);
+  let disposed=false;
+  return {group,dispose(){if(disposed)return;disposed=true;
+    if(group.parent)group.parent.remove(group);group.clear();
+    gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
+}
