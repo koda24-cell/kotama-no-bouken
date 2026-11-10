@@ -574,10 +574,10 @@ function extIsChargeLocked(c) { return !!c && !!c._xjCharge; }
 /* ============================================================
    3. 新職業のスキル実行
    ============================================================ */
-function extSkillBlocked(actor, skill) { return !!skill.xj && actor._overheat === true; }
+function extSkillBlocked(actor, skill) { return !!skill.xj && actor._overheat === true && !skill.xj.cooldown; }
 function extSkillLabelExtra(actor, skill) {
   if (!skill.xj?.heat) return "";
-  return ` ／ 熱 ${skill.xj.heat}${actor._overheat ? " ／ オーバーヒート" : ""}`;
+  return skill.xj.cooldown ? ` ／ 熱 -${skill.xj.cooldown}` : ` ／ 熱 ${skill.xj.heat}${actor._overheat ? " ／ オーバーヒート" : ""}`;
 }
 function extSkillDamage(actor, enemy, x, mult) {
   let d;
