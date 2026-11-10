@@ -220,6 +220,53 @@ export function createB5AncientGate(THREE,options={}){
   const broken=fracturedStone(x-side*1.91,9.46,0,1.22,1.06,1.88,cut,1);
   broken.rotation.z=side*.36;
  }
+ // Integrated masonry transition from pier to ruined lintel.
+ // A single tapered, chamfered volume per shoulder replaces the visual gap
+ // between stacked blocks; the outer edge is fractured rather than spiky.
+ const gothicHaunch=(x,y,z,side,width=2.6,height=2.25,depth=2.12)=>{
+  const rings=[
+   {y:0,outer:.78,inner:.64},
+   {y:.25,outer:1.05,inner:.68},
+   {y:.57,outer:1.47,inner:.80},
+   {y:.84,outer:1.77,inner:.88},
+   {y:1,outer:1.84,inner:.94}
+  ];
+  const points=[],faces=[];
+  for(let k=0;k<rings.length;k++){
+   const r=rings[k],p=r.y;
+   const outer=x-side*r.outer*width*.5;
+   const inner=x+side*r.inner*width*.5;
+   const erosion=(k===4?.10:0)*Math.sin(k*1.9+side);
+   const yy=y+p*height-erosion;
+   for(const [xx,zz] of [[outer,-depth*.42],[inner,-depth*.43],[inner,depth*.43],[outer,depth*.42]]){
+    points.push(xx,yy,zz+z);
+   }
+  }
+  for(let k=0;k<rings.length-1;k++)for(let j=0;j<4;j++){
+   const a=k*4+j,b=k*4+(j+1)%4,c=(k+1)*4+j,d=(k+1)*4+(j+1)%4;
+   faces.push(a,b,c,b,d,c);
+  }
+  faces.push(0,2,1,0,3,2);
+  const last=(rings.length-1)*4;
+  faces.push(last,last+1,last+2,last,last+2,last+3);
+  const geo=G(new THREE.BufferGeometry());
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(points.flat(),3));
+  geo.setIndex(faces);geo.computeVertexNormals();
+  return add(geo,stone,0,0,0);
+ };
+ // Capitals remain asymmetric in height; support stones emerge directly
+ // from the shaft, overlapping the surviving beam and broken shoulders.
+ for(const side of [-1,1]){
+  const x=side*3.75,top=1.4+(side<0?9.8:7.1);
+  gothicHaunch(x,top-1.65,0,side,2.55,1.78,2.08);
+  // Deep front-facing recessed moulding on the supporting haunch.
+  const front=-1.11;
+  const fillet=weatheredCore(x-side*.52,top-.43,front,1.24,.17,.17,trim);
+  fillet.rotation.z=side*.24;
+  // Small broken course at the outer support edge.
+  const scar=fracturedStone(x-side*1.42,top-.14,-.81,.73,.43,.52,cut,1);
+  scar.rotation.z=side*.18;
+ }
  // Fractured cornice / capital sculpt pass. Every stone sits within the
  // existing lintel silhouette; no new pointed apex or floating decoration.
  const chippedCap=(x,y,z,w,h,d,mat=stone)=>{
