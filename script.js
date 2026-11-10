@@ -1366,7 +1366,7 @@ async function applyPartyDamageAnimated(character,damage,options={}){
       character=knight;
     }
   }
-  if(!options.sureHit&&Math.random()<partyEvasionRate(character)*extEvasionMul(character)){// [EXT] 脚封じ中は回避できない
+  if(!options.sureHit&&Math.random()<Math.min(.95, partyEvasionRate(character)*extEvasionMul(character) + (battleState._gunnerFlashTurns > 0 ? .25 : 0))){// [EXT] 脚封じ中は回避できない
     pushEvent(`${character.name}は攻撃を回避した！`);
     extEmitDamage(character.id,"party",0,{hpAfter:character.hp,ko:false,missed:true});// [EVT]
     renderBattle();
@@ -1708,6 +1708,7 @@ async function executeTurn(){
       if(useRound&&await extEnemyAilmentTurn(battleState.enemy)){renderBattle();await wait(700);continue;}// [EXT] 睡眠・混乱
       if(useRound&&extEnemyParalyzed(battleState.enemy)){pushEvent(`${battleState.enemy.name}は麻痺して動けない！`);renderBattle();await wait(700);continue;}
       extEmitEnemyActionStart();// [EVT]
+      battleState._enemyActedThisTurn = true;
       await enemyTurn();
       extEmitActionEnd();// [EVT]
       renderBattle();
