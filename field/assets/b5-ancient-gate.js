@@ -92,14 +92,38 @@ export function createB5AncientGate(THREE,options={}){
  block(6.1,.58,-1.25,1.5,1.05,1.2,stone).rotation.z=.28;
  block(6.65,.24,.4,.8,.45,1.1,cut).rotation.z=-.24;
  // Bevelled polygonal masonry, softened corners rather than spiky slabs.
+ // Faceted weathered masonry: four bevelled rings, irregular edges,
+ // flat top and side planes. Broad, shallow facets rather than spikes.
  const polygonStone=(x,y,z,w,h,d,mat=stone)=>{
-  const pts=[[-.78,-1],[.77,-1],[1,-.73],[1,.75],[.76,1],[-.8,1],[-1,.76],[-1,-.72]];
-  const vertices=[],indices=[];
-  for(const yy of [-h/2,h/2])for(const [px,pz] of pts)vertices.push(px*w*.5,yy,pz*d*.5);
-  for(let j=0;j<8;j++){const k=(j+1)%8;indices.push(j,k,8+j,k,8+k,8+j);}
-  for(let j=1;j<7;j++){indices.push(0,j+1,j,8,8+j,8+j+1);}
-  const g=G(new THREE.BufferGeometry());g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
-  g.setIndex(indices);g.computeVertexNormals();return add(g,mat,x,y,z);
+  const n=12,verts=[],indices=[];
+  const corners=[[-.76,-1],[-.16,-1],[.64,-1],[1,-.77],[1,-.18],[1,.68],[.73,1],[.12,1],[-.69,1],[-1,.74],[-1,.08],[-1,-.72]];
+  const irregular=corners.map((p,j)=>[
+   p[0]*(.965+.035*rand()),p[1]*(.965+.035*rand())
+  ]);
+  const rings=[
+   {y:-h/2,inset:.085},{y:-h/2+Math.min(h*.20,.18),inset:0},
+   {y:h/2-Math.min(h*.24,.20),inset:0},{y:h/2,inset:.12}
+  ];
+  for(let k=0;k<rings.length;k++){
+   const ring=rings[k];
+   for(let j=0;j<n;j++){
+    const p=irregular[j],scale=1-ring.inset;
+    const perturb=(k===1||k===2)?(rand()-.5)*Math.min(.045,w*.018):0;
+    verts.push(p[0]*w*.5*scale+perturb,ring.y,p[1]*d*.5*scale+perturb);
+   }
+  }
+  for(let k=0;k<rings.length-1;k++)for(let j=0;j<n;j++){
+   const next=(j+1)%n,a=k*n+j,b=k*n+next,c=(k+1)*n+j,e=(k+1)*n+next;
+   indices.push(a,b,c,b,e,c);
+  }
+  for(let j=1;j<n-1;j++){
+   indices.push(0,j+1,j);
+   indices.push(3*n,3*n+j,3*n+j+1);
+  }
+  const g=G(new THREE.BufferGeometry());
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(indices);g.computeVertexNormals();
+  return add(g,mat,x,y,z);
  };
  for(const side of [-1,1]){
   const x=side*3.75;
