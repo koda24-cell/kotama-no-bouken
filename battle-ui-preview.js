@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-26";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-27";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -175,6 +175,7 @@
     });
     observer.observe(party, { childList: true, subtree: true, attributes: true, attributeFilter: ["data-row"] });
     updateRows();
+    window.kotamaBattleRefreshFormationSlots = updateRows;
     // Read-only actor portrait and individual union charge, sourced from existing game state.
     const arena = battle.querySelector(".battle-arena");
     const hud = document.createElement("aside");
