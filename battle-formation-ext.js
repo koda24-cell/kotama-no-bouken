@@ -10,7 +10,7 @@
     next._formationWrapped = true;
     window[name] = next;
   };
-  const rowOfParty = c => REAR_IDS.has(c?.id) ? "rear" : "front";
+  const rowOfParty = c => typeof window.kotamaBattleRowOfParty === "function" ? window.kotamaBattleRowOfParty(c) : (REAR_IDS.has(c?.id) ? "rear" : "front");
   const rowLabel = row => row === "rear" ? "後衛" : "前衛";
   const compactStatus = (type, status, def) => {
     const turns = Math.max(0, Math.floor(Number(status?.turns) || 0));
