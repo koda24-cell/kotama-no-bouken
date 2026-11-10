@@ -1132,7 +1132,7 @@ async function beginStageCore(){
   battleState.log=[];
   battleState.stageFinished=false;
   battleState.lastRewardGold=0;
-  battleState.turnOrder=getParty().filter(c=>c.hp>0).map(c=>c.id);
+  battleState.turnOrder=typeof window.kotamaBattleCommandOrder==="function" ? window.kotamaBattleCommandOrder() : getParty().filter(c=>c.hp>0).map(c=>c.id);
   battleState.currentActorIndex=0;
   readyChimeKey="";
   $("battle-bottom")?.classList.remove("result-shown");
@@ -1774,7 +1774,7 @@ async function executeTurn(){
     else if(tutorialState.battlePhase==="guard")battleState.turnOrder=livingParty().map(c=>c.id);
     else if(tutorialState.battlePhase==="union"){battleState.turnOrder=["kotama"];battleState.unionGauges.kotama=unionSkills.kotama.requiredHits;}
     else battleState.turnOrder=[];
-  }else battleState.turnOrder=livingParty().map(c=>c.id);
+  }else battleState.turnOrder=typeof window.kotamaBattleCommandOrder==="function" ? window.kotamaBattleCommandOrder() : livingParty().map(c=>c.id);
   battleState.currentActorIndex=0;
   battleState.busy=false;
   battleState.guarding={};
