@@ -261,9 +261,7 @@ export function createB5AncientGate(THREE,options={}){
   const geo=G(new THREE.BufferGeometry());
   geo.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
   geo.setIndex(faces);geo.computeVertexNormals();
-  const obj=add(geo,stone,0,0,0);
-  obj.material.side=THREE.DoubleSide;
-  return obj;
+  return add(geo,stone,0,0,0);
  };
  // Capitals remain asymmetric in height; support stones emerge directly
  // from the shaft, overlapping the surviving beam and broken shoulders.
