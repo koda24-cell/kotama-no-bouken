@@ -64,7 +64,7 @@
     }
     // Place the EVENT tab beside the action prompt, like the reference HUD.
     // The log body remains in its existing accessible live region below.
-    const actionWindow = bottom?.querySelector(".command-window");
+    const actionWindow = battle.querySelector(".command-window");
     if (eventTitle && actionWindow) {
       eventTitle.classList.add("battle-event-prompt-tab");
       actionWindow.prepend(eventTitle);
