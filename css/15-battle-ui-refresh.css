@@ -1847,3 +1847,80 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  border-color:#ffda72!important;
  box-shadow:0 0 9px #ffda7288!important;
 }
+
+
+/* Keep EVENT label fully legible and vertically prominent above the log. */
+#battle.battle-ui-preview .battle-preview-bottom>.event-window {
+ overflow:visible!important;
+}
+#battle.battle-ui-preview .battle-preview-bottom>.event-window .window-title {
+ position:relative!important;
+ top:0!important;
+ transform:none!important;
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ box-sizing:border-box!important;
+ min-height:32px!important;
+ height:32px!important;
+ padding:5px 13px!important;
+ margin:0 0 7px 8px!important;
+ line-height:20px!important;
+ overflow:visible!important;
+ z-index:6!important;
+}
+/* Submenu rail title must match the main command title exactly. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail .battle-preview-rail-title,
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command #command-title {
+  font-size:16px!important;
+  font-weight:900!important;
+  line-height:21px!important;
+  height:23px!important;
+  min-height:23px!important;
+  flex:0 0 23px!important;
+  white-space:nowrap!important;
+  letter-spacing:0!important;
+ }
+}
+/* Union gauge position is independent of charge and ready-state effects. */
+#battle.battle-ui-preview .battle-arena>.battle-preview-union,
+#battle.battle-ui-preview .battle-arena>.battle-preview-union.battle-union-ready {
+ position:absolute!important;
+ top:70px!important;
+ right:8px!important;
+ left:auto!important;
+ bottom:auto!important;
+ margin:0!important;
+ translate:none!important;
+ transform:none!important;
+ width:58px!important;
+ min-width:58px!important;
+ max-width:58px!important;
+ height:315px!important;
+ min-height:315px!important;
+ max-height:315px!important;
+ box-sizing:border-box!important;
+}
+#battle.battle-ui-preview .battle-arena>.battle-preview-union.battle-union-ready::before,
+#battle.battle-ui-preview .battle-arena>.battle-preview-union.battle-union-ready::after {
+ transform-origin:center!important;
+}
+/* Show formation destination cards and the third empty slot above the arena. */
+#battle.battle-ui-preview #battle-party.battle-formation-choosing {
+ overflow:visible!important;
+}
+#battle.battle-ui-preview #battle-party.battle-formation-choosing .battle-formation-empty-slot {
+ display:grid!important;
+ visibility:visible!important;
+ opacity:1!important;
+ grid-column:auto;
+ z-index:4!important;
+}
+#battle.battle-ui-preview .formation-slot-option .formation-slot-portrait {display:none!important;}
+
+
+#battle.battle-ui-preview .battle-arena>.battle-preview-union {
+ z-index:8!important;
+ pointer-events:none!important;
+}
