@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-28";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-29";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -290,11 +290,13 @@
             battle.style.setProperty("--battle-submenu-local-top", Math.max(20, Math.min(180, Math.round(relativeTop + 14))) + "px");
           }
         }
+        // renderActionMenu() builds the real buttons synchronously. Dispatch
+        // immediately so switching from SP skills to Attack takes one click;
+        // deferring a frame lets observers rebuild the menu before dispatch.
         renderActionMenu();
-        requestAnimationFrame(() => {
-          const selector = action === "preview-move" ? "[data-preview-move]" : action === "preview-union-toggle" ? "[data-preview-union-toggle]" : "[data-action="+action+"]";
-          commands.querySelector(selector)?.click();
-        });
+        const selector = action === "preview-move" ? "[data-preview-move]" : action === "preview-union-toggle" ? "[data-preview-union-toggle]" : "[data-action="+action+"]";
+        const target = commands.querySelector(selector);
+        if (target && !target.disabled) target.click();
       });
       primaryRail.appendChild(button);
     }
