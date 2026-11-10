@@ -35,40 +35,63 @@ export function createB5BrokenStair(THREE,options={}){
    // Shallow stone courses on exposed risers, not bars sticking out.
    if(i%2===0){add(G(new THREE.BoxGeometry(0.055,0.055,width-0.45)),shade,x-run/2-0.005,h-0.15,0);}
  }
- // One long, narrow fracture on the exposed stone (right of the carpet).
- // The line follows the step surfaces and their risers, not a floating overlay.
- const fracture=M(new THREE.MeshStandardMaterial({color:0x17131b,roughness:1,side:THREE.DoubleSide,depthTest:false,depthWrite:false}));
+ // Single visible fracture on exposed right-hand stone; the dark line follows
+ // the stair treads and risers. Its edges are irregular, not a painted straight bar.
+ const fracture=M(new THREE.MeshStandardMaterial({color:0x100d13,roughness:1,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}));
+ const chipped=M(new THREE.MeshStandardMaterial({color:0xaca4ad,roughness:0.99,side:THREE.DoubleSide}));
  const crackZ=[5.35,5.58,5.34,5.75,5.44,5.87,5.63,5.92];
- const crackWidth=0.19;
- const strip=(a,b)=>{
+ const crackWidth=0.24;
+ const surface=(pts,mat)=>{
+   const g=G(new THREE.BufferGeometry()),flat=pts.flat();
+   g.setAttribute('position',new THREE.Float32BufferAttribute(flat,3));
+   g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();
+   return add(g,mat,0,0,0);
+ };
+ const crackStrip=(a,b,width=crackWidth)=>{
    const dx=b[0]-a[0],dz=b[2]-a[2],d=Math.hypot(dx,dz)||1;
-   const ox=-dz/d*crackWidth/2,oz=dx/d*crackWidth/2;
-   const p=[a[0]+ox,a[1],a[2]+oz,a[0]-ox,a[1],a[2]-oz,
-            b[0]+ox,b[1],b[2]+oz,b[0]-ox,b[1],b[2]-oz];
-   const g=G(new THREE.BufferGeometry());
-   g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
-   g.setIndex([0,1,2,1,3,2]);g.computeVertexNormals();
-   add(g,fracture,0,0,0);
+   const ox=-dz/d*width/2,oz=dx/d*width/2;
+   surface([[a[0]+ox,a[1],a[2]+oz],[a[0]-ox,a[1],a[2]-oz],
+     [b[0]-ox,b[1],b[2]-oz],[b[0]+ox,b[1],b[2]+oz]],fracture);
  };
  for(let i=1;i<=5;i++){
    const h=(i+1)*rise,front=i*run-steps*run/2,back=(i+1)*run-steps*run/2;
    const z0=crackZ[i],z1=crackZ[i+1];
-   strip([front+0.012,h+0.171,z0],[back-0.012,h+0.143,z1]);
+   const mid=(front+back)/2;
+   crackStrip([front+0.02,h+0.177,z0],[mid,h+0.177,(z0+z1)/2+0.07]);
+   crackStrip([mid,h+0.177,(z0+z1)/2+0.07],[back-0.02,h+0.177,z1]);
+   // Visible chipped stone edges flank the dark fissure.
+   for(const side of [-1,1]){
+     const lip=add(G(new THREE.BoxGeometry(run*0.32,0.035,0.08)),chipped,mid,h+0.178,(z0+z1)/2+side*0.19);
+     lip.rotation.y=side*0.13;
+   }
    if(i<5){
-     const nextH=(i+2)*rise;
-     strip([back-0.007,h+0.143,z1],[back-0.007,nextH+0.171,z1]);
+     // Riser is the vertical face at the BACK of this tread.
+     const nh=(i+2)*rise;
+     surface([[back-0.014,h+0.15,z1-0.12],[back-0.014,h+0.15,z1+0.12],
+       [back-0.014,nh+0.14,z1+0.12],[back-0.014,nh+0.14,z1-0.12]],fracture);
    }
  }
- // Pale chipped lips beside the same single crack, not additional cracks.
- const chipped=M(new THREE.MeshStandardMaterial({color:0x99929b,roughness:0.99,side:THREE.DoubleSide,depthTest:false,depthWrite:false}));
- for(let i=1;i<=5;i++){
-   const h=(i+1)*rise,front=i*run-steps*run/2,back=(i+1)*run-steps*run/2;
-   const x=(front+back)/2;
-   for(const side of [-1,1]){
-     const z=(crackZ[i]+crackZ[i+1])/2+side*0.17;
-     const g=G(new THREE.BoxGeometry(run*0.24,0.025,0.07));
-     add(g,chipped,x,h+0.183,z);
-   }
+ // Missing tile faces: dark recessed patches with irregular outlines.
+ // Confined to exposed stone, leaving the red carpet untouched.
+ const recess=M(new THREE.MeshStandardMaterial({color:0x36313b,roughness:0.98,side:THREE.DoubleSide}));
+ const tileScars=[
+   [0,-5.75,0.75,0.70],[1,-6.7,0.95,0.62],
+   [2,7.05,0.84,0.78],[3,-5.9,1.06,0.85],
+   [4,6.9,0.90,0.68],[5,-7.0,0.88,0.90],[6,7.0,0.92,0.65]
+ ];
+ for(const [i,z,sx,sz] of tileScars){
+   const h=(i+1)*rise,x=(i+0.5)*run-steps*run/2;
+   const y=h+0.179;
+   surface([[x-sx*0.48,y,z-sz*0.46],[x+sx*0.43,y,z-sz*0.36],
+     [x+sx*0.50,y,z+sz*0.42],[x-sx*0.32,y,z+sz*0.50]],recess);
+   // Loose triangular shard, resting on its own tread.
+   const g=G(new THREE.BufferGeometry());
+   g.setAttribute('position',new THREE.Float32BufferAttribute([
+     x-sx*0.3,y+0.015,z+sz*0.05,
+     x+sx*0.05,y+0.015,z+sz*0.06,
+     x-sx*0.09,y+0.095,z+sz*0.31
+   ],3));g.setIndex([0,1,2]);g.computeVertexNormals();
+   add(g,chipped,0,0,0);
  }
  // Grounded sidewall buttresses: heavy masses follow the staircase's rise.
  for(const side of [-1,1]){
