@@ -1,0 +1,81 @@
+{
+  "floors": [
+    {
+      "f": 0,
+      "info": {
+        "placed": true,
+        "ornaments": 316,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending"
+      },
+      "sample": {
+        "fps": 0.4986287708800811,
+        "render": {
+          "calls": 24,
+          "triangles": 658396,
+          "memory": {
+            "geometries": 15,
+            "textures": 12
+          }
+        }
+      }
+    },
+    {
+      "f": 1,
+      "info": {
+        "placed": true,
+        "ornaments": 308,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending"
+      },
+      "sample": {
+        "fps": 0.6740418074431093,
+        "render": {
+          "calls": 33,
+          "triangles": 666033,
+          "memory": {
+            "geometries": 65,
+            "textures": 123
+          }
+        }
+      }
+    },
+    {
+      "f": 2,
+      "info": {
+        "placed": true,
+        "ornaments": 170,
+        "mode": "map-driven-3d",
+        "landmarkState": "glb-loaded"
+      },
+      "sample": {
+        "fps": 0.840627528449992,
+        "render": {
+          "calls": 38,
+          "triangles": 194689,
+          "memory": {
+            "geometries": 78,
+            "textures": 131
+          }
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "gameplay": [
+    {
+      "movement": true,
+      "turning": true,
+      "foes": 1
+    },
+    {
+      "knightPuzzle": true,
+      "doorOpen": true,
+      "sideEvent": true
+    }
+  ],
+  "checks": {
+    "saveRoundtrip": true,
+    "saveVersion": 12
+  }
+}
