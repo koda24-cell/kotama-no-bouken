@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-22";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-23";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -225,12 +225,20 @@
     railTitle.className = "battle-preview-rail-title";
     railTitle.textContent = document.getElementById("command-title")?.textContent || "どうする？";
     primaryRail.appendChild(railTitle);
+    let expandedAction = null;
     const railActions = [["攻撃","attack"],["SPスキル","skill"],["防御","guard"],["道具","item"],["編成位置入れ替え","preview-move"],["ユニオンスキル","preview-union-toggle"]];
     for (const [label,action] of railActions) {
       const button = document.createElement("button");
       button.type = "button"; button.className = "battle-preview-rail-button"; button.textContent = label;
+      button.dataset.railAction = action;
       button.addEventListener("click", () => {
         if (battleState.busy) return;
+        expandedAction = action;
+        primaryRail.querySelectorAll(".battle-preview-rail-button").forEach(item => {
+          const selected = item.dataset.railAction === expandedAction;
+          item.classList.toggle("battle-preview-rail-selected", selected);
+          item.setAttribute("aria-pressed", String(selected));
+        });
         // Align the submenu first option just below the selected action row.
         const arena = battle.querySelector(".battle-arena");
         if (arena) {
@@ -250,6 +258,13 @@
       });
       primaryRail.appendChild(button);
     }
+    // A click on the original main menu (before the replacement rail appears)
+    // must also keep the originating command selected in the rail.
+    commands?.addEventListener("click", event => {
+      const option = event.target.closest("#battle-commands.battle-preview-main-menu [data-action], #battle-commands.battle-preview-main-menu [data-preview-union-toggle], #battle-commands.battle-preview-main-menu [data-preview-move]");
+      if (!option) return;
+      expandedAction = option.dataset.action || (option.dataset.previewUnionToggle ? "preview-union-toggle" : "preview-move");
+    }, true);
     const railSync = new MutationObserver(() => { primaryRail.hidden = !battle.classList.contains("battle-preview-side-open"); });
     if (commands) railSync.observe(commands, {childList:true});
     primaryRail.hidden = true;
@@ -263,6 +278,12 @@
       box.classList.toggle("battle-preview-main-menu", main);
       battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
       primaryRail.hidden = main || !!battleState.tutorialMode;
+      if (main) expandedAction = null;
+      primaryRail.querySelectorAll(".battle-preview-rail-button").forEach(item => {
+        const selected = !main && item.dataset.railAction === expandedAction;
+        item.classList.toggle("battle-preview-rail-selected", selected);
+        item.setAttribute("aria-pressed", String(selected));
+      });
       const actor = typeof currentActor === "function" ? currentActor() : null;
       const union = actor && typeof unionSkills !== "undefined" ? unionSkills[actor.id] : null;
       const ready = !!union && (Number(battleState.unionGauges?.[actor.id]) || 0) >= union.requiredHits;
