@@ -63,7 +63,8 @@ export function createB5RuinedGothicWall(THREE,options={}) {
    const voidPocket=center>1.65&&center<4.5&&y>4.05&&y<6.9
      &&center+.57*y>5.0;
    const fallen=center>3.5&&y>2.6&&hash(row*19+col*3)>.54;
-   if(y+h*.42<edge&&!voidPocket&&!fallen){
+   const isolatedRight=center>4.25&&y>2.45;
+   if(y+h*.42<edge&&!voidPocket&&!fallen&&!isolatedRight){
     const stoneWidth=Math.min(w-.035,5.25-center);
     if(stoneWidth>.12){
      const blockY=y+.035*(hash(row*9+col*31)-.5);
@@ -119,20 +120,28 @@ export function createB5RuinedGothicWall(THREE,options={}) {
    }
   }
  }
- // Fractured right arch abutment: the remaining rib terminates in
- // embedded rough masonry, with a short broken springer rather than a
- // complete unsupported triangular outline.
- for(let i=0;i<9;i++){
-  const x=2.2+i*.23,y=5.93-i*.31;
-  const fragment=add(new THREE.DodecahedronGeometry(.20+(i%3)*.08,1),stone,x,y,-.53);
-  fragment.scale.set(1.25,.72,.77);
-  fragment.rotation.set(.11*i,.21*i,.16*i);
- }
- // Worn rubble bridging the arch stump into the wall courses.
- for(let i=0;i<7;i++){
-  const x=3.45+(i%3)*.27,y=2.7+Math.floor(i/3)*.43;
-  const fragment=add(new THREE.DodecahedronGeometry(.27,1),stone,x,y,-.39);
-  fragment.scale.set(1.30,.85,.84);
+ // Unified fractured abutment: a single contiguous irregular stone mass
+ // with a rough broken boundary, replacing the diagonal bead-like fragments.
+ const fractureProfile=[
+  [2.13,6.16],[2.39,6.48],[2.60,6.37],[2.73,5.96],
+  [3.01,5.88],[3.12,5.48],[3.43,5.41],[3.38,4.99],
+  [3.74,4.84],[3.55,4.44],[3.88,4.17],[3.74,3.77],
+  [4.13,3.48],[4.05,2.81],[3.65,2.65],[3.32,2.91],
+  [3.18,3.31],[2.91,3.43],[2.86,4.05],[2.59,4.23],
+  [2.47,4.78],[2.26,5.03]
+ ];
+ const profileShape=new THREE.Shape();
+ fractureProfile.forEach(([x,y],i)=>i?profileShape.lineTo(x,y):profileShape.moveTo(x,y));
+ profileShape.closePath();
+ const abutment=add(new THREE.ExtrudeGeometry(profileShape,{
+  depth:.76,bevelEnabled:true,bevelThickness:.085,bevelSize:.075,
+  bevelSegments:2,steps:1,curveSegments:1
+ }),stone,0,0,-.62);
+ // The exposed edge is a broken surface, not a decorative row of rocks.
+ for(let i=0;i<5;i++){
+  const x=2.61+i*.27,y=5.95-i*.46;
+  const facet=add(new THREE.DodecahedronGeometry(.20+(i%2)*.07,0),highlight,x,y,-.63);
+  facet.scale.set(.9,.52,.28);facet.rotation.z=.27*i;
  }
  // Strong engaged piers connect wall, arch ribs and floor into one structure.
  for(const x of [-4.55,-1.47,1.47,4.55]){
