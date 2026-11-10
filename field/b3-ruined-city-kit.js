@@ -63,14 +63,34 @@ export function createRuinedCityKit(THREE) {
   }
   function temple() {
     const g=group('temple');
-    add(g,cube,stone,0,.25,0,7,.5,5);
-    add(g,cube,stone,0,.55,-.45,6.5,.18,3.8);
-    for(const z of [-1.8,1.8]) for(const x of [-2.5,-.85,.85,2.5]) {
-      const c=column(3.0, x===2.5&&z===1.8); c.position.set(x,.65,z); g.add(c);
+    // Three-level podium, fractured stairs, and an intentionally absent roof quadrant.
+    add(g,cube,stone,0,.22,0,7.6,.44,5.6);
+    add(g,cube,stone,0,.51,-.35,6.8,.16,4.5);
+    for(let step=0;step<4;step++) {
+      const m=add(g,cube,stone,0,.12+step*.16,2.95-step*.45,5.6-step*.38,.24+step*.12,.55);
+      if(step===0) m.rotation.y=.06;
     }
-    add(g,cube,stone,0,3.8,0,7.2,.48,4.8);
-    add(g,cube,stone,0,4.25,0,7.8,.35,5.2);
-    add(g,cube,gold,0,4.28,2.63,2.3,.12,.08);
+    // Asymmetric surviving columns; conspicuous missing supports reveal destruction.
+    for(const z of [-1.95,1.7]) for(const x of [-2.65,-.88,.88,2.65]) {
+      if(x===.88&&z===1.7) continue;
+      const broken=(x===2.65&&z===1.7)||(x===-2.65&&z===-1.95);
+      const c=column(3.05,broken);c.position.set(x,.64,z);g.add(c);
+      if(broken) {
+        const fallen=column(1.6,true);
+        fallen.rotation.z=Math.PI*.46;
+        fallen.position.set(x+(x>0?.45:-.45),.65,z+.35);g.add(fallen);
+      }
+    }
+    // Huge readable roof gap: left and back slabs survive, front-right quadrant gone.
+    add(g,cube,stone,-1.83,3.78,0,3.7,.5,5.0);
+    add(g,cube,stone,1.72,3.78,-1.32,3.25,.5,2.4);
+    add(g,cube,stone,-1.65,4.16,0,4.1,.22,5.25);
+    add(g,cube,stone,1.67,4.16,-1.4,3.45,.22,2.65);
+    // Oversized detached roof blocks: destruction remains legible from a distance.
+    const slab=add(g,cube,stone,2.6,.58,2.45,2.1,.46,1.15);
+    slab.rotation.z=.27;slab.rotation.y=-.22;
+    const fallenStone=add(g,cube,stone,1.1,.32,3.0,1.4,.44,.9);
+    fallenStone.rotation.z=-.34;
     return g;
   }
   function tower() {
