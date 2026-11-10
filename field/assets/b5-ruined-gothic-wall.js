@@ -44,20 +44,43 @@ export function createB5RuinedGothicWall(THREE,options={}) {
  };
  const V=(x,y,z)=>new THREE.Vector3(x,y,z);
  const beam=(a,b,r,mat=highlight)=>{const d=b.clone().sub(a),o=add(new THREE.CylinderGeometry(r,r,d.length(),9),mat);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V(0,1,0),d.normalize());return o;};
- // Wall fabric: course masonry with a large asymmetrical collapsed upper edge.
+ // Irregular ancient ashlar, with staggered non-uniform courses and
+ // a genuine broken silhouette rather than a regular brick grid.
  const width=10.5,height=9.2,depth=1.15;
- for(let row=0;row<12;row++){
-  const y=.32+row*.69,offset=row%2?.43:0;
-  for(let col=0;col<12;col++){
-   const x=-5.15+col*.91+offset;
-   const top=height-1.5+Math.sin(x*1.5)*.32-(x>1.5?Math.max(0,x-1.5)*.48:0);
-   if(y>top || (x>2.5&&y>5.5&&row%3===0))continue;
-   // A large stepped-away collapse cuts through several masonry courses.
-   if(x>1.5&&x<4.8&&y>4.3&&y<7.7&&x+y*.42>5.6)continue;
-   const chipped=.07*Math.sin(col*8.1+row*4.3);
-   const b=wornStone(x,y,.23,.88+chipped,.64,.98,row*17+col);
-   b.rotation.z=.008*Math.sin(col*3+row*7);
+ const rowHeights=[.74,.58,.92,.64,.81,.55,.99,.70,.61,.87,.62,.78];
+ let bottom=0;
+ const hash=n=>{const x=Math.sin(n*127.1+19.7)*43758.5453;return x-Math.floor(x);};
+ for(let row=0;row<rowHeights.length;row++){
+  const h=rowHeights[row],y=bottom+h/2;bottom+=h;
+  let x=-5.4+(row%2?-.22:.14),col=0;
+  while(x<5.3){
+   const w=.66+hash(row*37+col*11)*.92;
+   const center=x+w/2;
+   const edge=7.95-.20*Math.sin(center*1.2)
+     -Math.max(0,center-1.05)*.98
+     -Math.max(0,-center-3.5)*.44
+     -(center>2.3&&center<4.3?.62:0);
+   const voidPocket=center>1.65&&center<4.5&&y>4.05&&y<6.9
+     &&center+.57*y>5.0;
+   const fallen=center>3.5&&y>2.6&&hash(row*19+col*3)>.54;
+   if(y+h*.42<edge&&!voidPocket&&!fallen){
+    const stoneWidth=Math.min(w-.035,5.25-center);
+    if(stoneWidth>.12){
+     const blockY=y+.035*(hash(row*9+col*31)-.5);
+     const rock=wornStone(center,blockY,.23,stoneWidth,h-.045,.98,row*31+col*7);
+     rock.rotation.z=(hash(row*17+col*13)-.5)*.035;
+     rock.rotation.y=(hash(row*7+col*19)-.5)*.025;
+    }
+   }
+   x+=w;col++;
   }
+ }
+ // Broken masonry profiles at the collapsed right edge, embedded in the
+ // wall thickness instead of glued to its front surface.
+ for(let i=0;i<13;i++){
+  const x=1.55+i*.23,y=6.85-i*.22+Math.sin(i*1.7)*.20;
+  const shard=add(new THREE.DodecahedronGeometry(.25+(i%3)*.11,1),stone,x,y,.16);
+  shard.scale.set(1.05,.73,.91);shard.rotation.set(i*.13,i*.17,i*.29);
  }
  // Inset blind lancet niches: recesses read as cavities, not glued-on pentagons.
  for(const cx of [-2.95,0,2.95]){
@@ -89,6 +112,7 @@ export function createB5RuinedGothicWall(THREE,options={}) {
  }
  // Strong engaged piers connect wall, arch ribs and floor into one structure.
  for(const x of [-4.55,-1.47,1.47,4.55]){
+  if(x>4)continue; // missing rightmost pier exposes the silhouette collapse
   block(x,3.4,-.85,.62,6.8,.90);
   for(let i=0;i<3;i++)block(x,1.5+i*2.0,-1.26,.79,.17,.99,highlight);
   for(const dx of [-.19,0,.19])block(x+dx,3.55,-1.36,.07,5.6,.12,highlight);
@@ -98,7 +122,7 @@ export function createB5RuinedGothicWall(THREE,options={}) {
  // Continuous upper moulding, with a collapsed right-hand stretch.
  for(let i=0;i<22;i++){
   const x=-5.0+i*.47;
-  if(i>15&&i<21)continue;
+  if(i>13)continue;
   wornStone(x,7.75+.10*Math.sin(i*1.7),-.55,.46,.25,.87,i,highlight);
  }
  // Broad recessed fracture pocket on the right: uneven stone contours,
