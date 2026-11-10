@@ -171,6 +171,74 @@ export function createB5ThroneProp(THREE, kind, options={}) {
     }
     for(let i=0;i<8;i++)roughPiece((rand()-0.5)*8,rand()*1.3,(rand()-0.5)*3,0.4+rand()*0.6);
   }
+  // Third pass: true silhouette holes and bent metal, rather than surface-only marks.
+  // A broken ring is an open arc with missing sections; a torn pillar has an irregular top.
+  const brokenRing=(radius,start,sweep,tube=0.2)=>{
+    const shape=G(new THREE.TorusGeometry(radius,tube,7,36,sweep));
+    const m=mesh(shape,stone,0,0,0);m.rotation.z=start;return m;
+  };
+  const fracturedColumnGeo=G(new THREE.BufferGeometry());
+  {
+    const sides=9, p=[], idx=[], heights=[];
+    for(let i=0;i<sides;i++)heights.push(0.9+0.55*Math.sin(i*2.2)+0.22*Math.cos(i*4.3));
+    for(let i=0;i<sides;i++){
+      const a=i*2*Math.PI/sides;
+      const x=Math.cos(a),z=Math.sin(a);
+      p.push(x,0,z,x,heights[i],z);
+    }
+    p.push(0,0,0);
+    for(let i=0;i<sides;i++){
+      const j=(i+1)%sides;
+      idx.push(i*2,j*2,i*2+1,j*2,j*2+1,i*2+1);
+      idx.push(sides*2,j*2,i*2);
+    }
+    fracturedColumnGeo.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
+    fracturedColumnGeo.setIndex(idx);fracturedColumnGeo.computeVertexNormals();
+  }
+  if(kind==='ruinedPillar'){
+    const fracture=mesh(fracturedColumnGeo,stone,0,7.2,0,1.1,2.8,1.1);
+    fracture.rotation.z=0.14;
+    for(let i=0;i<3;i++){
+      const fallen=mesh(fracturedColumnGeo,stone,2+i*1.7,0.2,1.1+i*0.7,0.8,1.7,0.8);
+      fallen.rotation.z=1.2+i*0.18;
+    }
+  }
+  if(kind==='gothicArch'){
+    // Detached, partially missing curved ribs make the damage legible at distance.
+    const leftArc=brokenRing(3.8,0.15,Math.PI*0.64,0.28);
+    leftArc.position.set(-0.5,11.2,-1.1);
+    const rightArc=brokenRing(3.8,Math.PI*1.08,Math.PI*0.43,0.28);
+    rightArc.position.set(0.5,11.2,-1.1);
+    mesh(fracturedColumnGeo,stone,3.6,10.3,0,0.7,2.1,0.7).rotation.z=0.55;
+  }
+  if(kind==='shatteredRoseWindow'){
+    // Multiple discontinuous concentric rings: visibly absent masonry sections.
+    for(const [r,start,sweep] of [[3.3,0.2,2.2],[3.3,3.1,1.9],[2.0,1.0,1.8],[2.0,3.6,1.4]]){
+      const arc=brokenRing(r,start,sweep,0.17);arc.position.y=8;arc.position.z=-0.25;
+    }
+  }
+  if(kind==='grandChandelier'){
+    // Additional bent arms with uneven length, not simply repeated vertical rods.
+    for(let i=0;i<12;i++){
+      const a=i*Math.PI/6, r=2.7+(i%3)*0.34;
+      const arm=mesh(rod,iron,Math.cos(a)*r,7.7,Math.sin(a)*r,1,2.5+(i%4)*0.3,1);
+      arm.rotation.z=(i%2?0.35:-0.35);
+      arm.rotation.x=(i%3-1)*0.22;
+    }
+  }
+  if(kind==='brokenStair'){
+    // Two snapped railing posts and an off-axis fallen beam.
+    for(const [x,z,h] of [[-3.5,-2.7,3.7],[3.5,-2.7,2.1]]){
+      const post=mesh(fracturedColumnGeo,stone,x,0.8,z,0.45,h,0.45);
+      post.rotation.z=x>0?0.35:-0.2;
+    }
+    mesh(cube,iron,1.2,2.1,-3,0.35,0.35,7.5).rotation.z=0.45;
+  }
+  if(kind==='fracturedAltar'){
+    // Detached slanted keystone and a recognizable deep altar split.
+    mesh(fracturedColumnGeo,stone,-0.7,2.1,-0.3,1.0,1.4,0.85).rotation.z=-0.6;
+    mesh(fracturedColumnGeo,dark,0.5,1.7,0.4,0.3,1.7,0.9).rotation.z=0.35;
+  }
   const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
   group.scale.setScalar(scale);
   let disposed=false;
