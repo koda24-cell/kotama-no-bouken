@@ -1,7 +1,7 @@
 "use strict";
 /* Opt-in formation move action for battle UI preview.
  * A selected move consumes the actor's action in the current round.
- * No persistent save-schema changes; positions reset when the page reloads.
+ * Positions are optional metadata in battle snapshots; old saves remain valid.
  */
 (function () {
   if (new URLSearchParams(location.search).get("battleUiPreview") !== "1") return;
@@ -16,11 +16,15 @@
     positions.clear();
     if (!data || typeof data !== "object" || Array.isArray(data)) return;
     const ids = new Set(getParty().map(c => c.id));
+    const defaults = id => rearJobs.has(id) ? "rear" : "front";
     const counts = {front:0,rear:0};
+    for (const id of ids) counts[data[id] === "front" || data[id] === "rear" ? data[id] : defaults(id)]++;
     for (const [id,row] of Object.entries(data)) {
-      if (!ids.has(id) || !["front","rear"].includes(row) || counts[row] >= 3) continue;
+      if (!ids.has(id) || !["front","rear"].includes(row)) continue;
+      const previous = defaults(id);
+      if (previous === row) continue;
+      if (counts[row] > 3) continue;
       positions.set(id,row);
-      counts[row]++;
     }
   };
 
