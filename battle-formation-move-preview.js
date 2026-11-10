@@ -88,7 +88,7 @@
     });
     box.innerHTML = '<div class="formation-move-heading">'+label+'：交代する枠を選択</div>'+
       occupants.map(({slot,member}) => '<button class="command-option formation-slot-option" data-move-slot="'+slot+'">'+
-        '<span class="formation-slot-portrait">'+(member && typeof extBattlePortrait === "function" ? extBattlePortrait(member) : '＋')+'</span><span>'+(member ? esc(member.name) : '空欄')+'</span></button>').join("")+
+        '<span>'+(member ? esc(member.name) : '空欄')+'</span></button>').join("")+
       '<button class="command-option" data-action="back">戻る</button>';
     document.getElementById("command-description").textContent = "前衛・後衛の3枠から移動先を選びます。相手がいる場合は位置を交換します。移動はこのターンの行動を消費します。";
     const partyDisplay = document.getElementById("battle-party");
@@ -116,8 +116,9 @@
       clearTarget();
       renderActionMenu();
     });
-    // Reveal all three destination positions as soon as the submenu opens.
-    renderBattle();
+    // Update slot indicators after the menu is visible; rendering the entire
+    // battle here would destroy and recreate the submenu and its listeners.
+    window.kotamaBattleRefreshFormationSlots?.();
   }
   window.kotamaBattleSelectMove = selectMove;
 
