@@ -224,35 +224,46 @@ export function createB5AncientGate(THREE,options={}){
  // A single tapered, chamfered volume per shoulder replaces the visual gap
  // between stacked blocks; the outer edge is fractured rather than spiky.
  const gothicHaunch=(x,y,z,side,width=2.6,height=2.25,depth=2.12)=>{
-  const rings=[
-   {y:0,outer:.78,inner:.64},
-   {y:.25,outer:1.05,inner:.68},
-   {y:.57,outer:1.47,inner:.80},
-   {y:.84,outer:1.77,inner:.88},
-   {y:1,outer:1.84,inner:.94}
-  ];
-  const points=[],faces=[];
-  for(let k=0;k<rings.length;k++){
-   const r=rings[k],p=r.y;
-   const outer=x-side*r.outer*width*.5;
-   const inner=x+side*r.inner*width*.5;
-   const erosion=(k===4?.10:0)*Math.sin(k*1.9+side);
-   const yy=y+p*height-erosion;
-   for(const [xx,zz] of [[outer,-depth*.42],[inner,-depth*.43],[inner,depth*.43],[outer,depth*.42]]){
-    points.push(xx,yy,zz+z);
+  // Rounded multi-section haunch. Each section has a real recessed FRONT
+  // stone face, and the outer silhouette swells gradually into the lintel.
+  const levels=17,across=13,points=[],faces=[];
+  for(let k=0;k<levels;k++){
+   const t=k/(levels-1),ease=t*t*(3-2*t);
+   const outer=x-side*(.78+1.06*ease)*width*.5;
+   const inner=x+side*(.64+.30*t)*width*.5;
+   const yy=y+t*height-.055*Math.sin(t*11+side)*t;
+   for(let j=0;j<across;j++){
+    const u=j/(across-1);
+    const xx=outer+(inner-outer)*u;
+    const arch=.13*Math.sin(Math.PI*u)*Math.sin(Math.PI*t);
+    const notch=Math.exp(-Math.pow((u-.38-.10*Math.sin(t*5))/ .19,2))
+      *Math.exp(-Math.pow((t-.57)/.31,2));
+    const chip=.026*Math.sin(u*17+t*23)+.019*Math.sin(u*29-t*12);
+    // Inset stone directly into the front surface, not raised plates.
+    const frontZ=z-depth*.43+.30*notch+.045*Math.sin(u*13+t*8);
+    points.push(xx,yy+arch+chip,frontZ);
+    points.push(xx,yy+arch+chip,z+depth*.43);
    }
   }
-  for(let k=0;k<rings.length-1;k++)for(let j=0;j<4;j++){
-   const a=k*4+j,b=k*4+(j+1)%4,c=(k+1)*4+j,d=(k+1)*4+(j+1)%4;
-   faces.push(a,b,c,b,d,c);
+  for(let k=0;k<levels-1;k++)for(let j=0;j<across-1;j++){
+   const q=(k*across+j)*2,r=q+2,n=q+across*2,m=n+2;
+   faces.push(q,r,n,r,m,n); // front
+   faces.push(q+1,n+1,r+1,r+1,n+1,m+1); // back
   }
-  faces.push(0,2,1,0,3,2);
-  const last=(rings.length-1)*4;
-  faces.push(last,last+1,last+2,last,last+2,last+3);
+  for(let k=0;k<levels-1;k++)for(const j of [0,across-1]){
+   const a=(k*across+j)*2,b=((k+1)*across+j)*2;
+   faces.push(a,a+1,b,a+1,b+1,b);
+  }
+  for(const k of [0,levels-1])for(let j=0;j<across-1;j++){
+   const a=(k*across+j)*2,b=a+2;
+   faces.push(a,b,a+1,b,b+1,a+1);
+  }
   const geo=G(new THREE.BufferGeometry());
-  geo.setAttribute('position',new THREE.Float32BufferAttribute(points.flat(),3));
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
   geo.setIndex(faces);geo.computeVertexNormals();
-  return add(geo,stone,0,0,0);
+  const obj=add(geo,stone,0,0,0);
+  obj.material.side=THREE.DoubleSide;
+  return obj;
  };
  // Capitals remain asymmetric in height; support stones emerge directly
  // from the shaft, overlapping the surviving beam and broken shoulders.
