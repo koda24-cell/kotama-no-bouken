@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-4";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-5";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -34,9 +34,11 @@
         const index = isRear ? rear++ : front++;
         const order = String((isRear ? 3 : 0) + index);
         const column = String(index + 1);
+        const gridRow = isRear ? "2" : "1";
         const row = isRear ? "rear" : "front";
         if (card.style.getPropertyValue("--battle-row-order") !== order) card.style.setProperty("--battle-row-order", order);
         if (card.style.getPropertyValue("--battle-column") !== column) card.style.setProperty("--battle-column", column);
+        if (card.style.getPropertyValue("--battle-grid-row") !== gridRow) card.style.setProperty("--battle-grid-row", gridRow);
         if (card.dataset.previewRow !== row) card.dataset.previewRow = row;
       }
       if (party.dataset.frontCount !== String(front)) party.dataset.frontCount = String(front);

@@ -188,3 +188,73 @@
   #battle.battle-ui-preview #battle-party .battle-member { min-width:0; }
 }
 #battle.battle-ui-preview #battle-commands .union-panel .union-command small { display:none; }
+
+
+/* 2026-11-10 screenshot QA: keep the 3x2 party completely below the arena.
+   Avoid negative margins and oversized portraits obscuring enemies. */
+@media (min-width:900px) {
+  #battle.battle-ui-preview { --battle-command-width:clamp(220px,25vw,300px); }
+  #battle.battle-ui-preview .battle-arena { min-height:clamp(420px,51vh,590px); }
+  #battle.battle-ui-preview #battle-party {
+    margin:10px 12px 0;
+    width:calc(100% - 24px);
+    position:relative;
+    z-index:3;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-rows:repeat(2,minmax(76px,auto));
+    grid-auto-flow:row;
+    align-items:stretch;
+    gap:8px 10px;
+  }
+  #battle.battle-ui-preview #battle-party .battle-member {
+    box-sizing:border-box;
+    height:92px;
+    max-height:none;
+    min-height:92px;
+    overflow:hidden;
+    grid-row:var(--battle-grid-row,auto);
+    grid-column:var(--battle-column,auto);
+    padding:5px 9px;
+  }
+  #battle.battle-ui-preview .battle-preview-hero {
+    right:7%; bottom:0; height:86%;
+    width:clamp(190px,27%,350px);
+    max-width:calc(100% - var(--battle-command-width) - 100px);
+    pointer-events:none;
+  }
+  #battle.battle-ui-preview .battle-preview-portrait { height:85%; overflow:hidden; }
+  #battle.battle-ui-preview .battle-preview-portrait img {
+    max-width:100%; max-height:100%; object-fit:contain; object-position:center bottom;
+  }
+  #battle.battle-ui-preview .battle-arena .enemy-display {
+    max-width:calc(100% - var(--battle-command-width) - 300px);
+    min-width:120px;
+    margin-left:calc(var(--battle-command-width) + 10px);
+    position:relative; z-index:3;
+  }
+  #battle.battle-ui-preview .battle-preview-union { right:-16%; height:70%; }
+  #battle.battle-ui-preview .battle-preview-bottom>.command-window {
+    top:115px; left:14px; min-height:0; height:clamp(340px,46vh,475px);
+    max-height:none;
+  }
+  #battle.battle-ui-preview #battle-commands {
+    display:flex; flex-direction:column; gap:6px;
+  }
+  #battle.battle-ui-preview #battle-commands>.command-option,
+  #battle.battle-ui-preview #battle-commands>.union-panel { width:100%; min-width:0; }
+  #battle.battle-ui-preview #battle-commands>.command-option { min-height:42px; }
+  #battle.battle-ui-preview .battle-bottom.battle-preview-bottom { margin-top:12px; }
+}
+@media (min-width:900px) and (max-width:1120px) {
+  #battle.battle-ui-preview .battle-arena .enemy-display {
+    margin-left:calc(var(--battle-command-width) + 6px);
+    max-width:calc(100% - var(--battle-command-width) - 210px);
+  }
+  #battle.battle-ui-preview .battle-preview-hero { right:9%; width:24%; }
+}
+@media (max-width:899px) {
+  #battle.battle-ui-preview #battle-party { margin:8px 0 0; width:100%; }
+  #battle.battle-ui-preview #battle-party .battle-member { max-height:none; min-height:90px; overflow:hidden; }
+  #battle.battle-ui-preview .battle-preview-hero { pointer-events:none; }
+}
