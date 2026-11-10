@@ -664,6 +664,12 @@ async function extDamageSkill(actor, skill, a, x, mult) {
 }
 async function extExecuteSkill(actor, skill, a) {
   const x = skill.xj;
+  if (x.cooldown) {
+    actor._heat = Math.max(0, (actor._heat || 0) - x.cooldown);
+    if (actor._heat < EXT_HEAT_LIMIT) actor._overheat = false;
+    pushLog(`${actor.name}のクールダウン！ 熱が${x.cooldown}減少（現在${actor._heat}）。`);
+    renderBattle(); return;
+  }
   if (x.enchant) {
     for (const t of getParty().filter(c => c.hp > 0)) t._princessEnchant = { element:x.enchant.element, turns:x.enchant.turns };
     pushLog(`${actor.name}の${skill.name}！ 味方全体の武器に${x.enchant.element}属性を付与した。`);
