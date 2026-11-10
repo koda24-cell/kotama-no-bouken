@@ -11,8 +11,8 @@ export function createB5FallenPillar(THREE,options={}){
   let seed=(options.seed??505)>>>0;
   const rand=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
   const centerY=1.45;
-  // Fluted shaft along X. The last two rings fracture at varying axial positions.
-  // Different radial sectors end at different positions, creating a real jagged silhouette.
+  // A gently sloping, weathered break: coherent shear plane rather than random spikes.
+  // The lower lip is shorter, as if the upper mass slid away during collapse.
   const segments=32, rings=12, length=6.5, positions=[],indices=[];
   for(let j=0;j<=rings;j++){
     const t=j/rings;
@@ -21,8 +21,10 @@ export function createB5FallenPillar(THREE,options={}){
       const flute=0.075*Math.cos(a*12);
       const wear=(rand()-0.5)*0.027;
       const r=1.07-0.12*t+flute+wear;
-      const jag=(j===rings?(rand()-0.5)*0.9:j===rings-1?(rand()-0.5)*0.15:0);
-      positions.push(0.95+length*t+jag,centerY+Math.cos(a)*r,Math.sin(a)*r);
+      const shear=0.40*Math.cos(a)+0.12*Math.sin(a);
+      const worn=0.055*Math.sin(a*3+0.4)+0.025*Math.cos(a*7);
+      const endX=0.95+length*t+(j===rings?shear+worn:j===rings-1?0.10*(shear+worn):0);
+      positions.push(endX,centerY+Math.cos(a)*r,Math.sin(a)*r);
     }
   }
   for(let j=0;j<rings;j++)for(let k=0;k<segments;k++){
@@ -33,7 +35,8 @@ export function createB5FallenPillar(THREE,options={}){
   const endStart=positions.length/3;
   for(let k=0;k<segments;k++){
     const a=k*Math.PI*2/segments;
-    positions.push(0.95+length+(rand()-0.5)*0.38,centerY+Math.cos(a)*0.45,Math.sin(a)*0.45);
+    const shear=0.40*Math.cos(a)+0.12*Math.sin(a);
+    positions.push(0.95+length-0.13+shear*0.52+0.025*Math.sin(a*3),centerY+Math.cos(a)*0.45,Math.sin(a)*0.45);
     const n=(k+1)%segments;
     indices.push(rings*segments+k,rings*segments+n,endStart+k,
       rings*segments+n,endStart+n,endStart+k);
@@ -52,26 +55,49 @@ export function createB5FallenPillar(THREE,options={}){
   // Worn square base with its lower edge resting on the same ground.
   const base=mesh(G(new THREE.BoxGeometry(0.8,2.8,2.8)),stone,-0.34,1.4,0);
   base.rotation.y=-0.035;
-  // Irregular rubble with bottom vertices at y=0: never float above the ground.
-  const rubbleGeo=G(new THREE.IcosahedronGeometry(1,1));
-  const rock=(x,z,sx,sy,sz)=>{
-    const m=mesh(rubbleGeo,rand()>0.7?shadow:stone,x,sy,z);
-    m.scale.set(sx,sy,sz);m.rotation.y=rand()*Math.PI*2;return m;
+  // Grounded rock geometry: every rock has a flat irregular footprint at y=0.
+  // No spheres or tilted polyhedra with invisible floating bottoms.
+  const rock=(x,z,sx,height,sz)=>{
+    const sides=7,verts=[],triangles=[];
+    const phase=rand()*Math.PI*2;
+    const radii=Array.from({length:sides},()=>0.78+rand()*0.22);
+    for(let i=0;i<sides;i++){
+      const a=phase+i*Math.PI*2/sides;
+      verts.push(Math.cos(a)*sx*radii[i],0,Math.sin(a)*sz*radii[i]);
+    }
+    // Broad fractured crown; all vertices above a continuous grounded perimeter.
+    const crown=verts.length/3;
+    for(let i=0;i<sides;i++){
+      const a=phase+i*Math.PI*2/sides;
+      verts.push(Math.cos(a)*sx*0.32,height*(0.75+rand()*0.25),Math.sin(a)*sz*0.32);
+    }
+    const top=verts.length/3;
+    verts.push((rand()-0.5)*sx*0.2,height,(rand()-0.5)*sz*0.2);
+    for(let i=0;i<sides;i++){
+      const n=(i+1)%sides;
+      triangles.push(i,n,crown+i,n,crown+n,crown+i,crown+i,crown+n,top);
+    }
+    const geo=G(new THREE.BufferGeometry());
+    geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+    geo.setIndex(triangles);geo.computeVertexNormals();
+    return mesh(geo,rand()>0.72?shadow:stone,x,0,z);
   };
-  // Rocks support the shaft visually, concentrating under the broken tip and sides.
-  for(let i=0;i<23;i++){
-    const nearEnd=i<13;
-    const x=nearEnd?5.3+rand()*3.0:0.5+rand()*6.4;
-    const z=(rand()-0.5)*(nearEnd?3.9:3.0);
-    const sx=0.23+rand()*(nearEnd?0.75:0.46);
-    const sy=0.12+rand()*(nearEnd?0.46:0.26);
-    const sz=0.23+rand()*(nearEnd?0.70:0.44);
-    rock(x,z,sx,sy,sz);
-  }
-  // Detached large fragments are clustered at the actual break, not suspended.
-  for(let i=0;i<5;i++){
-    const x=7.1+rand()*1.25,z=(rand()-0.5)*2.3;
-    rock(x,z,0.35+rand()*0.45,0.24+rand()*0.32,0.3+rand()*0.5);
+  // First layer: large foundation stones, all planted on the floor.
+  const foundations=[
+    [6.6,-1.28,0.88,0.70,0.78],[7.25,1.1,0.82,0.65,0.73],
+    [7.85,-0.18,0.90,0.75,0.85],[5.4,1.1,0.75,0.48,0.65],
+    [3.4,-1.0,0.62,0.42,0.56],[1.1,1.55,0.55,0.40,0.55]
+  ];
+  foundations.forEach(args=>rock(...args));
+  // Smaller chips spread outward from the impact, still anchored at y=0.
+  for(let i=0;i<25;i++){
+    const nearBreak=i<18;
+    const x=nearBreak?5.3+rand()*3.6:0.4+rand()*6.2;
+    const z=(rand()-0.5)*(nearBreak?4.4:3.8);
+    const sx=0.18+rand()*(nearBreak?0.40:0.25);
+    const sz=0.17+rand()*(nearBreak?0.37:0.25);
+    const h=0.12+rand()*(nearBreak?0.31:0.20);
+    rock(x,z,sx,h,sz);
   }
   const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
   group.scale.setScalar(scale);
