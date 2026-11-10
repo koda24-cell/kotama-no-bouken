@@ -97,6 +97,50 @@
     const partySync = new MutationObserver(updateHero);
     partySync.observe(party, { childList: true });
     updateHero();
+    // Keep the game's original Union buttons and click handlers intact.
+    // Present them behind a dedicated submenu in main command mode.
+    let unionMenuOpen = false;
+    let commandSyncPending = false;
+    function updateCommandLayout() {
+      if (typeof battleState === "undefined") return;
+      const box = document.getElementById("battle-commands");
+      if (!box) return;
+      const main = battleState.menuMode === "main";
+      box.classList.toggle("battle-preview-main-menu", main);
+      const unionPanel = box.querySelector(".union-panel");
+      const existingToggle = box.querySelector("[data-preview-union-toggle]");
+      if (!main || !unionPanel) {
+        unionMenuOpen = false;
+        existingToggle?.remove();
+        return;
+      }
+      if (!existingToggle) {
+        unionMenuOpen = false;
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "command-option battle-preview-union-toggle";
+        toggle.dataset.previewUnionToggle = "1";
+        toggle.textContent = "ユニオンスキル";
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.addEventListener("click", () => {
+          unionMenuOpen = !unionMenuOpen;
+          unionPanel.hidden = !unionMenuOpen;
+          toggle.setAttribute("aria-expanded", String(unionMenuOpen));
+          toggle.textContent = unionMenuOpen ? "ユニオンを閉じる" : "ユニオンスキル";
+          const info = document.getElementById("command-description");
+          if (info && unionMenuOpen) info.textContent = "発動するユニオンスキルを選択してください。";
+        });
+        box.insertBefore(toggle, unionPanel);
+      }
+      unionPanel.hidden = !unionMenuOpen;
+    }
+    const commandObserver = new MutationObserver(() => {
+      if (commandSyncPending) return;
+      commandSyncPending = true;
+      requestAnimationFrame(() => { commandSyncPending = false; updateCommandLayout(); });
+    });
+    if (commands) commandObserver.observe(commands, {childList:true});
+    updateCommandLayout();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setup, { once: true });
   else setup();
