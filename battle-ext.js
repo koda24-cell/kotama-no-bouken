@@ -457,6 +457,7 @@ async function extEndOfTurnStatuses() {
       }
     }
   }
+  for (const c of getParty()) if (c._princessEnchant && --c._princessEnchant.turns <= 0) delete c._princessEnchant;
   if (battleState.defenseCampTurns > 0) battleState.defenseCampTurns--;
   battleState.magicGuardActive = false; battleState._magicGuardRate = .5;
   battleState.fullGuardActive = false; delete battleState.guarding.knight;
@@ -551,6 +552,7 @@ function extSkillDamage(actor, enemy, x, mult) {
     d = calcEnemyPhysicalDamage(enemy, effectiveAttackPower(actor) * x.mult * mult);
     d = applyElementalDamage(enemy, d, x.element || getWeaponPhysicalElement(actor));
   }
+  if (x.ailmentBonus && ["poison","paralysis","sleep","confusion","petrify","burn"].some(type => extHasStatus(enemy,type))) d *= x.ailmentBonus;
   return Math.max(0, Math.floor(d));
 }
 function extPickTargets(enemy, a, all) {
@@ -578,7 +580,7 @@ async function extDamageSkill(actor, skill, a, x, mult) {
     for (const t of targets) {
       if (enemyHpTotal(enemy) <= 0) break;
       // 混成編成では個体ごとの防御力・属性弱点・耐性を適用する。
-      const d = extSkillDamage(actor, t.ref, x, mult);
+      const d = extSkillDamage(actor, t.ref, x, mult) * (x.ailmentBonus && ["poison","paralysis","sleep","confusion","petrify","burn"].some(type => extHasStatus(t.ref,type)) ? x.ailmentBonus : 1);
       const dealt = applyDamageToEnemyTarget(enemy, t, d);
       total += dealt;
       if (dealt > 0) addBreakDamage(enemy, "sp", x.element || "無属性", actor);
@@ -619,6 +621,11 @@ async function extDamageSkill(actor, skill, a, x, mult) {
 }
 async function extExecuteSkill(actor, skill, a) {
   const x = skill.xj;
+  if (x.enchant) {
+    for (const t of getParty().filter(c => c.hp > 0)) t._princessEnchant = { element:x.enchant.element, turns:x.enchant.turns };
+    pushLog(`${actor.name}の${skill.name}！ 味方全体の武器に${x.enchant.element}属性を付与した。`);
+    sound("heal"); renderBattle(); return;
+  }
   if (x.buff) {
     for (const t of getParty().filter(c => c.hp > 0)) for (const [type, cfg] of Object.entries(x.buff)) addStatus(t, type, cfg);
     pushLog(`${actor.name}の${skill.name}！ 味方全体を強化した。`);
