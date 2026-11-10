@@ -115,6 +115,8 @@
     box.querySelector('[data-action="back"]').addEventListener("click", () => {
       clearTarget();
       renderActionMenu();
+      // Restore centered two-member rows immediately on cancel.
+      window.kotamaBattleRefreshFormationSlots?.();
     });
     // Update slot indicators after the menu is visible; rendering the entire
     // battle here would destroy and recreate the submenu and its listeners.

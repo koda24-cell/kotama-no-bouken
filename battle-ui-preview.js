@@ -105,9 +105,11 @@
     }
     // The original EVENT heading shares the upper HUD row with TURN.
     // Move, do not clone, so the event panel cannot show a second heading.
-    if (eventTitle) {
-      eventTitle.classList.add("battle-preview-header-event");
-      arenaHeader.appendChild(eventTitle);
+    // Move the complete live EVENT panel, including its message, beside TURN.
+    // Moving only the heading left an orphaned event message at the bottom.
+    if (eventWindow) {
+      eventWindow.classList.add("battle-preview-header-event-window");
+      arenaHeader.appendChild(eventWindow);
     }
     arenaHeader.appendChild(tabs);
     battle.querySelector(".battle-arena")?.prepend(arenaHeader);
@@ -135,7 +137,12 @@
         const rowCount = isRear ? totalRear : totalFront;
         // Center two-person rows in ordinary battle; reveal fixed 3-slot
         // alignment only while choosing a formation destination.
-        const start = !moving && rowCount === 2 ? 2 + index * 2 : 1 + slot * 2;
+        const activeActor = typeof currentActor === "function" ? currentActor() : null;
+        const destinationRow = activeActor && window.kotamaBattleRowOfParty
+          ? (window.kotamaBattleRowOfParty(activeActor) === "front" ? "rear" : "front") : null;
+        // Keep the non-target row centered even while choosing a destination.
+        const start = rowCount === 2 && (!moving || (isRear ? "rear" : "front") !== destinationRow)
+          ? 2 + index * 2 : 1 + slot * 2;
         const column = String(start) + " / span 2";
         const gridRow = isRear ? "2" : "1";
         const row = isRear ? "rear" : "front";
@@ -300,6 +307,9 @@
         // immediately so switching from SP skills to Attack takes one click;
         // deferring a frame lets observers rebuild the menu before dispatch.
         renderActionMenu();
+        // The Union toggle is injected by updateCommandLayout. Build it now,
+        // before dispatching, rather than waiting for the observer's next frame.
+        updateCommandLayout();
         const selector = action === "preview-move" ? "[data-preview-move]" : action === "preview-union-toggle" ? "[data-preview-union-toggle]" : "[data-action="+action+"]";
         const target = commands.querySelector(selector);
         if (target && !target.disabled) target.click();
