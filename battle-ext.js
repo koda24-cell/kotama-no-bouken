@@ -407,6 +407,10 @@ async function extRoundStart() {
   battleState._assassinHitThisTurn = false;
   battleState._enemyActedThisTurn = false;
   const e = battleState.enemy;
+  if (!battleState._gunnerFlashUsed && getParty().some(c => c.id === "gunner" && c.hp > 0)) {
+    battleState._gunnerFlashUsed = true;
+    if (Math.random() < .30) { battleState._gunnerFlashTurns = 3; pushEvent("ガンナーの先制閃光弾！ 敵の命中率が3ターン低下！"); }
+  }
   extUpdatePartyLockStreak();
   for (const c of getParty()) {
     if (c.hp <= 0 || !extHasStatus(c, "poison")) continue;
@@ -442,10 +446,6 @@ async function extRoundStart() {
 /* ターン終了時：火傷ダメージ・持続ターンの経過・ガード類の解除・熱の自然冷却 */
 async function extEndOfTurnStatuses() {
   const e = battleState.enemy;
-  if (!battleState._gunnerFlashUsed && getParty().some(c => c.id === "gunner" && c.hp > 0)) {
-    battleState._gunnerFlashUsed = true;
-    if (Math.random() < .30) { battleState._gunnerFlashTurns = 3; pushEvent("ガンナーの先制閃光弾！ 敵の命中率が3ターン低下！"); }
-  }
   for (const c of getParty()) {
     if (c.hp > 0 && extHasStatus(c, "burn")) {
       const dealt = await applyPartyDamageAnimated(c, 10, { sureHit: true, element: "炎", statusDamage: true });
