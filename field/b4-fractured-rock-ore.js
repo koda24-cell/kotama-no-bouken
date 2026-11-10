@@ -2,7 +2,8 @@
  * Purely visual, anchored on wall cells; no game-state or collision changes.
  */
 import * as THREE from 'three';
-export function createB4RockForms({root,map,wallCell,hash,CELL,objects=[]}) {
+import { fitB4Recess, batchB4Scenery, disposeB4Owned } from './b4-placement.js';
+export function createB4RockForms({root,map,wallCell,hash,CELL,objects=[],excludedWalls=new Set()}) {
   if(!root || !map || !wallCell)return 0;
   const group=new THREE.Group();group.name='b4:fractured-rock-and-ore';
   const rock=new THREE.MeshStandardMaterial({color:0x30272b,roughness:1,flatShading:true});
@@ -11,7 +12,7 @@ export function createB4RockForms({root,map,wallCell,hash,CELL,objects=[]}) {
   const materials=[rock,core,ore],geometries=[];
   // Each rock is a jagged asymmetrical icosahedron, with a strongly broken outline.
   const jagged=(seed)=>{
-    const g=new THREE.IcosahedronGeometry(1,1).toNonIndexed(),p=g.getAttribute('position');
+    const g=new THREE.IcosahedronGeometry(1,1),p=g.getAttribute('position');
     for(let i=0;i<p.count;i++){
       const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
       const a=Math.sin(x*8.3+y*3.2+seed)*Math.cos(z*7.1-y*4.7);
@@ -25,17 +26,17 @@ export function createB4RockForms({root,map,wallCell,hash,CELL,objects=[]}) {
   const crystal=new THREE.CylinderGeometry(0,0.62,1,5,1);crystal.translate(0,0.5,0);geometries.push(crystal);
   const mesh=(geo,mat,x,y,z,sx,sy,sz,rx=0,rz=0)=>{
     const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);
-    m.rotation.set(rx,0,rz);group.add(m);return m;
+    m.rotation.set(rx,0,rz);cluster.add(m);return m;
   };
-  const occupied=new Set(objects.map(o=>o.tx+','+o.ty));
-  let clusters=0;
-  for(let ty=1;ty<map.h-1 && clusters<34;ty++)for(let tx=1;tx<map.w-1 && clusters<34;tx++){
-    if(!wallCell(tx,ty) || hash(tx,ty,301)>0.14)continue;
+  let clusters=0, cluster;
+  for(let ty=1;ty<map.h-1 && clusters<20;ty++)for(let tx=1;tx<map.w-1 && clusters<20;tx++){
+    if(excludedWalls.has(tx+','+ty) || !wallCell(tx,ty) || hash(tx,ty,301)>0.14)continue;
     // Only solid wall cells adjacent to a visible walkable cell can host the cluster.
     const sides=[[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dz])=>
-      !wallCell(tx+dx,ty+dz)&&!occupied.has((tx+dx)+','+(ty+dz)));
+      !wallCell(tx+dx,ty+dz)&&objects.every(o=>Math.abs(o.tx-tx-dx)+Math.abs(o.ty-ty-dz)>1));
     if(!sides.length)continue;
-    const [dx,dz]=sides[0],x=tx*CELL,z=ty*CELL;
+    const [dx,dz]=sides[0],x=0,z=0;
+    cluster=new THREE.Group();
     const scale=0.7+hash(tx,ty,302)*1.15;
     // A dominant jagged monolith, two angled shards and small scree.
     mesh(rockGeos[0],rock,x,1.2*scale,z,0.85*scale,1.75*scale,0.8*scale,0.23,-0.24);
@@ -60,9 +61,13 @@ export function createB4RockForms({root,map,wallCell,hash,CELL,objects=[]}) {
         c.rotation.z=Math.cos(a)*0.22;c.rotation.x=Math.sin(a)*0.22;
       }
     }
+    const slot=fitB4Recess(cluster,{tx:tx+dx,ty:ty+dz,dx:-dx,dz:-dz},CELL,[2.65,3.45,.85]);
+    // Wall relief, up to 0.75m from the boundary, leaving the central camera lane clear.
+    cluster.position.z+=.9;
+    group.add(slot);
     clusters++;
   }
-  if(clusters){root.add(group);}else{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());}
-  group.userData.disposeB4RockForms=()=>{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());};
+  if(clusters){batchB4Scenery(group);root.add(group);}else{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());}
+  group.userData.disposeB4RockForms=()=>disposeB4Owned(group);
   return clusters;
 }

@@ -179,5 +179,120 @@
         "mode": "map-driven-3d"
       }
     ]
+  },
+  "latestDevelopmentBase": "d8058c1",
+  "b4b5Integration": {
+    "errors": [],
+    "rapidSwitch": true,
+    "cycles": [
+      {
+        "area": 5,
+        "floor": 0,
+        "render": {
+          "calls": 103,
+          "triangles": 56141,
+          "memory": {
+            "geometries": 49,
+            "textures": 56
+          }
+        }
+      },
+      {
+        "area": 3,
+        "floor": 0,
+        "render": {
+          "calls": 286,
+          "triangles": 291777,
+          "memory": {
+            "geometries": 50,
+            "textures": 88
+          }
+        }
+      },
+      {
+        "area": 5,
+        "floor": 0,
+        "render": {
+          "calls": 103,
+          "triangles": 56141,
+          "memory": {
+            "geometries": 61,
+            "textures": 90
+          }
+        }
+      },
+      {
+        "area": 3,
+        "floor": 2,
+        "render": {
+          "calls": 223,
+          "triangles": 162226,
+          "memory": {
+            "geometries": 66,
+            "textures": 132
+          }
+        }
+      },
+      {
+        "area": 5,
+        "floor": 2,
+        "render": {
+          "calls": 81,
+          "triangles": 93222,
+          "memory": {
+            "geometries": 91,
+            "textures": 140
+          }
+        }
+      },
+      {
+        "area": 1,
+        "floor": 0,
+        "render": {
+          "calls": 1195,
+          "triangles": 3651116,
+          "memory": {
+            "geometries": 104,
+            "textures": 274
+          }
+        }
+      },
+      {
+        "area": 5,
+        "floor": 0,
+        "render": {
+          "calls": 103,
+          "triangles": 56141,
+          "memory": {
+            "geometries": 130,
+            "textures": 276
+          }
+        }
+      },
+      {
+        "area": 4,
+        "floor": 0,
+        "render": {
+          "calls": 57,
+          "triangles": 319419,
+          "memory": {
+            "geometries": 136,
+            "textures": 292
+          }
+        }
+      },
+      {
+        "area": 5,
+        "floor": 0,
+        "render": {
+          "calls": 103,
+          "triangles": 56141,
+          "memory": {
+            "geometries": 135,
+            "textures": 292
+          }
+        }
+      }
+    ]
   }
 }

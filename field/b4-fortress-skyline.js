@@ -1,6 +1,6 @@
 /* B4 volcanic fortress skyline. Visual-only meshes; never changes map or collision. */
 import * as THREE from 'three';
-export function addB4FortressSkyline({root, area, map, wallCell, hash, cellSize, objects}) {
+export function addB4FortressSkyline({root, area, map, wallCell, hash, cellSize, objects, sites}) {
   if (area !== 4 || !root || !map) return 0;
   const blocked = new Set((objects || []).map(o => o.tx + ',' + o.ty));
   const stone = new THREE.MeshStandardMaterial({color:0x211b20,roughness:0.96,flatShading:true});
@@ -15,13 +15,15 @@ export function addB4FortressSkyline({root, area, map, wallCell, hash, cellSize,
     mesh.position.set(x,y,z);mesh.scale.set(sx,sy,sz);group.add(mesh);
   };
   let count=0;
-  // Towers sit at the centers of adjacent wall cells, not in walkable cells.
-  for(let ty=1;ty<map.h-1 && count<8;ty++) for(let tx=1;tx<map.w-1 && count<8;tx++){
-    if(wallCell(tx,ty) || blocked.has(tx+','+ty) || hash(tx,ty,211)>0.055) continue;
-    const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
-    const adjacent=dirs.filter(([dx,dz])=>wallCell(tx+dx,ty+dz));
-    if(!adjacent.length) continue;
-    const [dx,dz]=adjacent[0], x=(tx+dx)*cellSize, z=(ty+dz)*cellSize;
+  // Explicit vista sites keep tall silhouettes outside the closed cave ceiling.
+  const candidates=[];
+  if (!sites) for(let ty=1;ty<map.h-1;ty++)for(let tx=1;tx<map.w-1;tx++){
+    if(wallCell(tx,ty)||blocked.has(tx+','+ty)||hash(tx,ty,211)>.055)continue;
+    const n=[[1,0],[-1,0],[0,1],[0,-1]].find(([dx,dz])=>wallCell(tx+dx,ty+dz));
+    if(n)candidates.push({tx,ty,dx:n[0],dz:n[1]});
+  }
+  for(const {tx,ty,dx,dz} of (sites || candidates).slice(0,8)){
+    const x=(tx+dx)*cellSize, z=(ty+dz)*cellSize;
     const h=5.5+hash(tx,ty,212)*4.5;
     place(cylinder,stone,x,h/2,z,0.95,h,0.95);
     place(cylinder,trim,x,h-0.35,z,1.05,0.38,1.05);
@@ -31,7 +33,10 @@ export function addB4FortressSkyline({root, area, map, wallCell, hash, cellSize,
     place(beam,stone,x-dz*1.1,3.6,z+dx*1.1,2.5,1.1,0.5);
     count++;
   }
-  if(count){root.add(group);}else{group.clear();}
+  if(count){root.add(group);}else{
+    for(const g of [cylinder,spire,beam])g.dispose();
+    for(const m of [stone,trim,ember])m.dispose();
+  }
   // Geometries and materials are owned by this module and disposed by the caller on rebuild.
   group.userData.disposeFortress=()=>{for(const g of [cylinder,spire,beam])g.dispose();for(const m of [stone,trim,ember])m.dispose();};
   return count;

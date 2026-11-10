@@ -155,8 +155,8 @@ function loadTheme3() {
   return import('./field-3d-b3-city.js?v=20261110-1').then(m => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile }));
 }
 async function loadTheme45(area) {
-  if (g.theme?.area === area) return g.theme;
-  const m = await import('./field-3d-b4-b5-map.js?v=20261110-b5-integration');
+  if (area !== 4 && g.theme?.area === area) return g.theme;
+  const m = await import('./field-3d-b4-b5-map.js?v=20261110-b4-b5-integrated');
   return m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES }, area);
 }
 function place(parent, src, x, y, z, ry = 0, s = 1) {
