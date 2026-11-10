@@ -10,7 +10,7 @@ export function createB5BrokenStair(THREE,options={}){
  const add=(g,m,x,y,z)=>{const o=new THREE.Mesh(g,m);o.position.set(x,y,z);group.add(o);return o;};
  let seed=(options.seed??1187)>>>0;
  const rand=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
- const steps=8,run=1.15,rise=0.42,width=5.8;
+ const steps=7,run=1.65,rise=0.22,width=17.5;
  // Each successive step has its own SOLID backing down to the floor.
  // No floating treads: every step is supported by continuous masonry.
  for(let i=0;i<steps;i++){
@@ -18,10 +18,10 @@ export function createB5BrokenStair(THREE,options={}){
    const g=G(new THREE.BoxGeometry(run+0.015,h,width));
    add(g,stone,x,h/2,0);
    // Thin surface slab with a visible chipped outer corner on selected steps.
-   const chip=(i===2||i===5||i===7);
+   const chip=(i===2||i===5||i===6);
    const profile=chip?[
       [-run/2,0,-width/2],[run/2,0,-width/2],
-      [run/2,0,width/2-0.85],[run/2-0.55,0,width/2],
+      [run/2,0,width/2-1.15],[run/2-0.65,0,width/2],
       [-run/2,0,width/2]
    ]:[[-run/2,0,-width/2],[run/2,0,-width/2],[run/2,0,width/2],[-run/2,0,width/2]];
    const verts=[],indices=[];
@@ -58,6 +58,23 @@ export function createB5BrokenStair(THREE,options={}){
    const side=i%2?-1:1;
    const z=side*(width/2+0.7+rand()*1.5);
    rock(x,z,0.18+rand()*0.45,0.12+rand()*0.35,0.19+rand()*0.46);
+ }
+ // Carpet lies on the broad central axis, with a short runner on each step.
+ const carpet=M(new THREE.MeshStandardMaterial({color:0x792b43,roughness:0.98,side:THREE.DoubleSide}));
+ const moss=M(new THREE.MeshStandardMaterial({color:0x344b3e,roughness:0.98,flatShading:true}));
+ const carpetWidth=5.6;
+ for(let i=0;i<steps;i++){
+   const h=(i+1)*rise,x=(i+0.5)*run-steps*run/2;
+   add(G(new THREE.BoxGeometry(run+0.025,0.026,carpetWidth)),carpet,x,h+0.155,0);
+ }
+ // Broken flagstones and sparse ground-hugging growth at the stair edges.
+ for(let i=0;i<32;i++){
+   const x=(rand()-0.5)*steps*run*1.35;
+   const side=i%2?-1:1;
+   const z=side*(width/2+0.35+rand()*2.1);
+   const h=0.09+rand()*0.19;
+   const clump=add(G(new THREE.ConeGeometry(0.12+rand()*0.2,h,5)),moss,x,h/2,z);
+   clump.rotation.y=rand()*Math.PI*2;
  }
  const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
  group.scale.setScalar(scale);
