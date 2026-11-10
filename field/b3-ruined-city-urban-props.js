@@ -379,6 +379,45 @@ export function createB3UrbanProps(THREE) {
     const sign=brokenSign(v);sign.position.set(3.8,0,-.4);g.add(sign);
     return g;
   }
+  // Distinct street-level urban landmarks; keep all props visual-only.
+  function abandonedTransitStop(variant=0) {
+    const v=((variant%3)+3)%3,g=group('abandoned_transit_stop_'+v);
+    const width=v===2?4.4:3.5;
+    for(const x of [-width*.46,width*.46]) {
+      beam(g,[x,0,-.65],[x,v===1?2.1:2.65,-.65],.15);
+      add(g,cube,concrete,x,.2,-.65,.58,.38,.65);
+    }
+    const roof=add(g,cube,concrete,-.15,2.55,-.5,width*.65,.23,1.6);
+    roof.rotation.z=v===0?-.22:.13;roof.rotation.x=.09;
+    const loose=add(g,cube,concrete,width*.37,1.35,-.5,width*.35,.2,1.4);
+    loose.rotation.z=v===1?.8:-.62;
+    beam(g,[-width*.45,2.5,-1.15],[width*.1,2.05,-1.15],.085);
+    for(let i=0;i<4;i++) {
+      const x=-1.2+i*.76;
+      add(g,cube,metal,x,.47,.45,.64,.09,.47).rotation.z=i%2?.17:-.11;
+      beam(g,[x,.1,.3],[x+.12,.45,.3],.065);
+    }
+    const sign=brokenSign(v);sign.position.set(-width*.65,0,-.2);sign.scale.set(.65,.7,.65);g.add(sign);
+    for(let i=0;i<5;i++) {
+      const x=-1.4+i*.65;
+      beam(g,[x,.04,-1.1],[x+.18,.35+(i%2)*.3,-1.25],.045,growth);
+    }
+    return g;
+  }
+  function ruinedStreetlamp(variant=0) {
+    const v=((variant%3)+3)%3,g=group('ruined_streetlamp_'+v),h=v===2?2.6:4.1;
+    beam(g,[0,0,0],[v===1?.7:0,h,0],.12);
+    beam(g,[v===1?.7:0,h,0],[v===1?1.4:1.2,h-.25,0],.08);
+    const head=add(g,cube,dark,v===1?1.45:1.2,h-.35,0,.65,.25,.5);
+    head.rotation.z=v===2?-.55:.1;
+    if(v===2) {
+      beam(g,[.1,h-.5,0],[1.4,1.1,.2],.08);
+      add(g,cube,metal,1.5,.95,.2,.6,.2,.35).rotation.z=.5;
+    }
+    add(g,cube,concrete,0,.18,0,.65,.36,.65);
+    for(let i=0;i<3;i++)beam(g,[.1,.2,0],[Math.cos(i*2.1)*.8,.08,Math.sin(i*2.1)*.8],.07,growth);
+    return g;
+  }
   function dispose(){geos.forEach(x=>x.dispose());[concrete,metal,dark,growth].forEach(x=>x.dispose());}
-  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,collapsedOverpass,sunkenStreet,collapsedSkybridge,ruinedPlaza,dispose};
+  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,collapsedOverpass,sunkenStreet,collapsedSkybridge,ruinedPlaza,abandonedTransitStop,ruinedStreetlamp,dispose};
 }
