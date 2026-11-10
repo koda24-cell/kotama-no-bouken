@@ -138,6 +138,7 @@
       const main = battleState.menuMode === "main";
       box.classList.toggle("battle-preview-main-menu", main);
       battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
+      primaryRail.hidden = main || !!battleState.tutorialMode;
       const unionPanel = box.querySelector(".union-panel");
       const existingToggle = box.querySelector("[data-preview-union-toggle]");
       if (!main || !unionPanel) {
