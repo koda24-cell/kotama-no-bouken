@@ -368,6 +368,54 @@ export function createB5ThroneProp(THREE, kind, options={}) {
       m.rotation.z=a;
     }
   }
+  // Sixth pass: fractured vault canopy and asymmetric relief work.
+  // Shared meshes within each prop instance; no dynamic lights or collisions.
+  const vaultRib=(points,width=0.2,material=stone)=>{
+    for(let i=1;i<points.length;i++)beamBetween(points[i-1],points[i],width,material);
+  };
+  if(kind==='gothicArch'){
+    for(const side of [-1,1]){
+      vaultRib([[side*4.1,9,-1.2],[side*3.2,12.1,-2.6],[side*1.6,14.6,-3.2],[0,15.3,-3.3]],0.32);
+      vaultRib([[side*4.0,9.5,0.9],[side*2.9,12.4,1.9],[side*1.1,14.2,2.3]],0.25);
+    }
+    for(let i=0;i<5;i++)roughPiece((i-2)*1.1,13.7+(i%2)*0.7,-2.8,0.55+(i%3)*0.25);
+  }
+  if(kind==='fracturedAltar'){
+    // Jagged rear retable: tiered sacred architecture without invented iconography.
+    for(let i=0;i<5;i++){
+      const x=(i-2)*1.65,h=2.4+((i+1)%3)*1.2;
+      const m=mesh(fracturedColumnGeo,stone,x,2.0,-2.5,0.5,h,0.45);
+      m.rotation.z=(i-2)*0.08;
+      beamBetween([x,3,-2.8],[x+(i%2?0.4:-0.3),3+h*0.6,-2.8],0.16,iron);
+    }
+    vaultRib([[-4.5,3,-2.6],[-2.6,5.1,-2.8],[0,5.8,-2.9],[2.6,5.1,-2.8],[4.5,3,-2.6]],0.3);
+  }
+  if(kind==='shatteredRoseWindow'){
+    // Off-axis fallen frame fragments make the broken circle less symmetric.
+    vaultRib([[-4.1,5.1,0.5],[-2.3,7.3,0.8],[-0.6,9.2,0.4]],0.24,iron);
+    vaultRib([[2.0,12.4,-0.4],[3.9,11.0,-0.7],[5.0,8.4,-0.2]],0.2,iron);
+    for(let i=0;i<4;i++)roughPiece((i-1.5)*2.0,0.2,(i%2?1.3:-0.8),0.8+i*0.1);
+  }
+  if(kind==='grandChandelier'){
+    // Multi-stage suspended skeletal crown, intentionally irregular and incomplete.
+    for(let i=0;i<10;i++){
+      const a=i*Math.PI/5;
+      const r=1.4+(i%3)*0.45;
+      vaultRib([[0,12.8,0],[Math.cos(a)*r,10.2,Math.sin(a)*r],
+        [Math.cos(a)*(r+1.4),8.2,Math.sin(a)*(r+1.4)]],0.11,iron);
+    }
+  }
+  if(kind==='ruinedPillar'){
+    // Large detached arch segment, suggesting an enormous collapsed roof.
+    vaultRib([[-3.5,8.2,-1.7],[-2.1,10.5,-1.3],[0.1,11.8,-1.1],[2.0,10.8,-0.7]],0.44,stone);
+    roughPiece(-3.5,7.8,-1.8,1.1);
+  }
+  if(kind==='brokenStair'){
+    // Jagged collapsed balustrade with a clear gap and missing intermediate spans.
+    vaultRib([[-4.5,1.6,-3.2],[-2.7,2.5,-3.2],[-1.5,3.1,-3.3]],0.3,stone);
+    vaultRib([[1.0,4.4,-3.2],[3.2,5.5,-3.2],[4.9,6.1,-3.1]],0.3,stone);
+    roughPiece(-0.1,0.9,-3.5,1.2);
+  }
   const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
   group.scale.setScalar(scale);
   let disposed=false;
