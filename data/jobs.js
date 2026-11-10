@@ -51,7 +51,7 @@ const EXT_NEW_JOBS = [
       { id:"withering-mist", name:"衰弱の霧", cost:26, target:"allEnemies", type:"xj", description:"敵全体を弱らせ、3ターンの間、攻撃力を25%下げる。", xj:{ kind:"sp", mult:.7, element:"無属性", fx:"magic", status:{ type:"attackDown", chance:.9, turns:3, power:.25, bossMul:.8 } } },
       { id:"reap-soul", name:"首狩り", cost:30, target:"enemy", type:"xj", description:"斬撃で攻撃し、10%の確率で即死させる。ボスには効かない。", xj:{ kind:"phys", mult:1.8, element:"斬撃", fx:"slash", instaKill:.10 } }
     ] },
-  { id:"imperial", name:"インペリアル", image:"", emblem:"魔", speed:50, hp:110, maxHp:110, attack:85, spAttack:115, defense:30, guardCut:.40, sp:100, maxSp:100,
+  { id:"imperial", name:"インペリアル", image:"", emblem:"魔", speed:50, hp:110, maxHp:110, attack:85, spAttack:200, defense:30, guardCut:.40, sp:100, maxSp:100,
     spSkills:[
       { id:"imp-flame", name:"炎魔剣", cost:18, target:"enemy", type:"xj", description:"【熱2】チャージ後に炎の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:1.7, element:"炎", fx:"flame", charge:true, heat:2 } },
       { id:"imp-frost", name:"氷魔剣", cost:18, target:"enemy", type:"xj", description:"【熱2】チャージ後に氷の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:1.7, element:"氷", fx:"magic", charge:true, heat:2 } },
