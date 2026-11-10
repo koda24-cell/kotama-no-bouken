@@ -88,3 +88,8 @@
 #battle.battle-ui-preview #battle-commands.battle-preview-main-menu>.union-panel .union-list { display:flex; flex-direction:column; gap:6px; }
 #battle.battle-ui-preview #battle-commands.battle-preview-main-menu>.union-panel button { width:100%; }
 #battle.battle-ui-preview #battle-commands .battle-preview-union-toggle { border-color:#d7b46c; }
+
+/* Explicit grid slots prevent automatic placement from mixing rows. */
+#battle.battle-ui-preview #battle-party .battle-member { grid-column:var(--battle-column,auto); }
+#battle.battle-ui-preview #battle-commands .battle-preview-move { font-size:clamp(11px,1.15vw,15px); }
+#battle.battle-ui-preview #battle-commands .battle-preview-move:disabled { opacity:.45; cursor:not-allowed; }
