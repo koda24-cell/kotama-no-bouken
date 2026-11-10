@@ -37,9 +37,9 @@ export function createB5BrokenStair(THREE,options={}){
  }
  // One long, narrow fracture on the exposed stone (right of the carpet).
  // The line follows the step surfaces and their risers, not a floating overlay.
- const fracture=M(new THREE.MeshStandardMaterial({color:0x242129,roughness:1,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
- const crackZ=[5.45,5.58,5.43,5.67,5.61,5.79,5.73,5.86];
- const crackWidth=0.075;
+ const fracture=M(new THREE.MeshStandardMaterial({color:0x17131b,roughness:1,side:THREE.DoubleSide,depthTest:false,depthWrite:false}));
+ const crackZ=[5.35,5.58,5.34,5.75,5.44,5.87,5.63,5.92];
+ const crackWidth=0.19;
  const strip=(a,b)=>{
    const dx=b[0]-a[0],dz=b[2]-a[2],d=Math.hypot(dx,dz)||1;
    const ox=-dz/d*crackWidth/2,oz=dx/d*crackWidth/2;
@@ -53,10 +53,21 @@ export function createB5BrokenStair(THREE,options={}){
  for(let i=1;i<=5;i++){
    const h=(i+1)*rise,front=i*run-steps*run/2,back=(i+1)*run-steps*run/2;
    const z0=crackZ[i],z1=crackZ[i+1];
-   strip([front+0.012,h+0.143,z0],[back-0.012,h+0.143,z1]);
+   strip([front+0.012,h+0.171,z0],[back-0.012,h+0.143,z1]);
    if(i<5){
      const nextH=(i+2)*rise;
-     strip([back-0.007,h+0.143,z1],[back-0.007,nextH+0.143,z1]);
+     strip([back-0.007,h+0.143,z1],[back-0.007,nextH+0.171,z1]);
+   }
+ }
+ // Pale chipped lips beside the same single crack, not additional cracks.
+ const chipped=M(new THREE.MeshStandardMaterial({color:0x99929b,roughness:0.99,side:THREE.DoubleSide,depthTest:false,depthWrite:false}));
+ for(let i=1;i<=5;i++){
+   const h=(i+1)*rise,front=i*run-steps*run/2,back=(i+1)*run-steps*run/2;
+   const x=(front+back)/2;
+   for(const side of [-1,1]){
+     const z=(crackZ[i]+crackZ[i+1])/2+side*0.17;
+     const g=G(new THREE.BoxGeometry(run*0.24,0.025,0.07));
+     add(g,chipped,x,h+0.183,z);
    }
  }
  // Grounded sidewall buttresses: heavy masses follow the staircase's rise.
