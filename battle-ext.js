@@ -516,6 +516,7 @@ function extBuildRoundOrder() {
     const actor = getCharacter(en.action.actor);
     en.priority = extActionPriority(en.action);
     en.speed = actor ? effectiveStats(actor).speed : 0;
+    if (actor?.id === "imperial" && (en.action.type === "imperial-release" || (en.action.type === "skill" && (actor.spSkills || []).some(s => s.id === en.action.skillId && s.xj?.kind === "sp")))) en.speed = Math.max(1, Math.floor(en.speed * .35));
   }
   entries.push({ kind: "enemy", priority: EXT_ACTION_PRIORITY.NONE, speed: extEnemySpeed(battleState.enemy), index: index++ });
   entries.sort((a, b) => b.priority - a.priority || b.speed - a.speed || (a.kind === "enemy" ? 1 : 0) - (b.kind === "enemy" ? 1 : 0) || a.index - b.index);
@@ -566,7 +567,8 @@ async function extDamageSkill(actor, skill, a, x, mult) {
   if (!targets.length) return 0;
   beginEnemyDamagePreview(enemy);
   // 首狩り：ボス以外は一定確率で即死
-  if (x.instaKill && !extIsBoss(enemy) && Math.random() < x.instaKill) {
+  const instantChance = extIsBoss(enemy) ? (x.bossInstaKill || 0) : (x.instaKill || 0);
+  if (instantChance > 0 && Math.random() < instantChance) {
     const t = targets[0];
     const dealt = applyDamageToEnemyTarget(enemy, t, Math.max(1, t.ref.hp));
     pushLog(`${actor.name}の${skill.name}！ ${enemy.name}の魂を刈り取った！（即死）`);
@@ -579,7 +581,9 @@ async function extDamageSkill(actor, skill, a, x, mult) {
     for (const t of targets) {
       if (enemyHpTotal(enemy) <= 0) break;
       // 混成編成では個体ごとの防御力・属性弱点・耐性を適用する。
-      const d = extSkillDamage(actor, t.ref, x, mult) * (x.ailmentBonus && ["poison","paralysis","sleep","confusion","petrify","burn"].some(type => extHasStatus(t.ref,type)) ? x.ailmentBonus : 1);
+      const ailmentBoost = x.ailmentBonus && ["poison","paralysis","sleep","confusion","petrify","burn"].some(type => extHasStatus(t.ref,type)) ? x.ailmentBonus : 1;
+      const debuffBoost = x.debuffBonus && ["attackDown","defenseDown"].some(type => extHasStatus(t.ref,type)) ? x.debuffBonus : 1;
+      const d = extSkillDamage(actor, t.ref, x, mult) * ailmentBoost * debuffBoost;
       const dealt = applyDamageToEnemyTarget(enemy, t, d);
       total += dealt;
       if (dealt > 0) addBreakDamage(enemy, "sp", x.element || "無属性", actor);
