@@ -263,6 +263,7 @@ function extTryStatus(source, target, type, baseChance, opts = {}) {
 // スキルが使う部位："head"／"arm"／null（封じの影響なし）
 function extSkillBodyPart(skill) {
   if (!skill) return null;
+  if (skill.bodyPart === "arm" || skill.bodyPart === "head" || skill.bodyPart === "none") return skill.bodyPart === "none" ? null : skill.bodyPart;
   if (EXT_SKILL_BODY_PART.none.includes(skill.type)) return null;
   if (EXT_SKILL_BODY_PART.arm.includes(skill.type)) return "arm";
   if (skill.xj) return ["phys", "physical"].includes(skill.xj.kind) ? "arm" : "head";
@@ -681,8 +682,13 @@ async function extVariantAction(e, turn, opts = {}) {
   const eligible = e.ai.filter(a => (!a.minTurn || turn >= a.minTurn) && (!a.hpBelow || ratio <= a.hpBelow));
   // 頭封じ：術系の行動（kind:"sp"）は使えない。使える行動が無くなる場合は封じの影響を受けない行動に限る。
   const sealedHead = extHasStatus(e, "bindHead");
-  const usable = sealedHead ? eligible.filter(a => a.kind !== "sp") : eligible;
-  if (!usable.length) { pushEvent(`${e.name}は頭を封じられていて、術を使えない！`); return; }
+  const sealedArm = extHasStatus(e, "bindArm");
+  const sealedLeg = extHasStatus(e, "bindLeg");
+  const usable = eligible.filter(a => {
+    const part = a.bodyPart || (a.kind === "sp" ? "head" : "arm");
+    return !(sealedHead && part === "head") && !(sealedArm && part === "arm") && !(sealedLeg && part === "leg");
+  });
+  if (!usable.length) { pushEvent(`${e.name}は封じによって行動できなかった！`); return; }
   const adminActionName=window.kotamaAdminBattleSettings?.enemyActions?.[e.id||e.fieldEnemyId||e.name];
   const adminForced=adminActionName?usable.find(a=>a.name===adminActionName):null;
   const forced = usable.find(a => a.everyTurns && turn % a.everyTurns === 0);
