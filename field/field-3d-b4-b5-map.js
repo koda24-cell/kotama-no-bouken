@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { addB4FortressSkyline } from './b4-fortress-skyline.js';
+import { addB4CitadelBackdrop } from './b4-citadel-backdrop.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -248,7 +249,10 @@ export function createTheme(api, area) {
         } catch (_) { /* ZIP展開前はプロシージャル背景を維持 */ }
       }
     }
-    if (magma) addB4FortressSkyline({root,area,map:a,wallCell,hash,cellSize:CELL,objects:a.objects});
+    if (magma) {
+      addB4FortressSkyline({root,area,map:a,wallCell,hash,cellSize:CELL,objects:a.objects});
+      addB4CitadelBackdrop({root,area,map:a,cellSize:CELL});
+    }
     batchStatic();
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
