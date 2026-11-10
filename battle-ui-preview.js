@@ -258,6 +258,13 @@
       });
       primaryRail.appendChild(button);
     }
+    // A click on the original main menu (before the replacement rail appears)
+    // must also keep the originating command selected in the rail.
+    commands?.addEventListener("click", event => {
+      const option = event.target.closest("#battle-commands.battle-preview-main-menu [data-action], #battle-commands.battle-preview-main-menu [data-preview-union-toggle], #battle-commands.battle-preview-main-menu [data-preview-move]");
+      if (!option) return;
+      expandedAction = option.dataset.action || (option.dataset.previewUnionToggle ? "preview-union-toggle" : "preview-move");
+    }, true);
     const railSync = new MutationObserver(() => { primaryRail.hidden = !battle.classList.contains("battle-preview-side-open"); });
     if (commands) railSync.observe(commands, {childList:true});
     primaryRail.hidden = true;
