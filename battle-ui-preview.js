@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-20";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-21";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -48,6 +48,25 @@
       });
     }
 
+    // Reference layout: action rail overlays the left side of the arena.
+    // Keep the original command DOM and handlers; calculate its top relative
+    // to battle-bottom so that varying arena heights never push it below.
+    if (bottom) {
+      const alignCommandRail = () => {
+        const arena = battle.querySelector(".battle-arena");
+        if (!arena) return;
+        const top = Math.round(arena.getBoundingClientRect().top + 95 - bottom.getBoundingClientRect().top);
+        bottom.style.setProperty("--battle-command-overlay-top", top + "px");
+        bottom.style.setProperty("--battle-submenu-overlay-top", (top + 45) + "px");
+      };
+      requestAnimationFrame(alignCommandRail);
+      window.addEventListener("resize", alignCommandRail, {passive:true});
+      if (typeof ResizeObserver !== "undefined") {
+        const observer = new ResizeObserver(alignCommandRail);
+        observer.observe(battle.querySelector(".battle-arena") || battle);
+        observer.observe(bottom);
+      }
+    }
     // Legacy 3DS-style key badges are removed in preview, without removing buttons.
     const eventTitle = eventWindow?.querySelector(".window-title");
     if (eventTitle) {
