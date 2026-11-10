@@ -115,6 +115,11 @@ BGM
 - `assets/3d/dungeons/b5_abyssal_star_realm/textures/b5_{basalt,ashlar,paving,iron,cloth}_{albedo,normal,orm}.png`: fifteen 512×512 PBR maps. Generated from this repository's B1 procedural pipeline (`tools/b1-3d/lib/tex.js`, original project assets) using new B5 seeds/palettes and no moss. No external image/material source. Generator: `tools/b5-3d/bake-materials.html` / `bake-materials.cjs`.
 - B1 assets and generators are retained unchanged. B5 reuses existing Three.js r180 utilities; high-quality reflection lighting uses its existing `RoomEnvironment` helper, with no visible external scene or new dependency.
 
+## B3 景観品質の改善（2026-11-10）
+
+- `field/b3-city-surfaces.js`：Codex / GPTによる本プロジェクト用の生成素材。石・コンクリート・錆・樹皮・葉・土の256pxテクスチャ6枚、欠けた舗装、折れ曲がった葉・蔦、雲のある空を実行時に生成。
+- 第1層の表面の描き分け・立体的な植生を品質基準にし、B3専用の表面仕上げとして実装。外部画像・モデル・新規ライブラリは使用していない。既存の形状キットとB1素材は保持。
+
 ## B4 火山洞窟の表示品質（2026-11-10）
 
 - `field/b4-surface-library.js`：既存の `assets/3d/dungeons/b4_dragonfire/textures/` の火山岩・灰色石・黒ずんだ青銅・溶岩の色/法線/粗さ/発光画像を再利用。元画像の削除・上書きなし。

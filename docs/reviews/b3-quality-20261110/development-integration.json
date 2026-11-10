@@ -1,0 +1,133 @@
+{
+  "developmentBase": "739ef1a",
+  "errors": [],
+  "rapidSwitch": true,
+  "cycles": [
+    {
+      "area": 3,
+      "floor": 0,
+      "mode": "b3-ruined-city",
+      "surfaceTextures": 6,
+      "render": {
+        "calls": 315,
+        "triangles": 332081,
+        "memory": {
+          "geometries": 45,
+          "textures": 58
+        }
+      }
+    },
+    {
+      "area": 4,
+      "floor": 0,
+      "mode": "map-driven-3d",
+      "surfaceTextures": null,
+      "render": {
+        "calls": 56,
+        "triangles": 370507,
+        "memory": {
+          "geometries": 65,
+          "textures": 106
+        }
+      }
+    },
+    {
+      "area": 3,
+      "floor": 0,
+      "mode": "b3-ruined-city",
+      "surfaceTextures": 6,
+      "render": {
+        "calls": 315,
+        "triangles": 332081,
+        "memory": {
+          "geometries": 60,
+          "textures": 98
+        }
+      }
+    },
+    {
+      "area": 5,
+      "floor": 0,
+      "mode": "map-driven-3d",
+      "surfaceTextures": null,
+      "render": {
+        "calls": 103,
+        "triangles": 56141,
+        "memory": {
+          "geometries": 66,
+          "textures": 106
+        }
+      }
+    },
+    {
+      "area": 3,
+      "floor": 2,
+      "mode": "b3-ruined-city",
+      "surfaceTextures": 6,
+      "render": {
+        "calls": 242,
+        "triangles": 177200,
+        "memory": {
+          "geometries": 81,
+          "textures": 154
+        }
+      }
+    },
+    {
+      "area": 1,
+      "floor": 0,
+      "mode": null,
+      "surfaceTextures": null,
+      "render": {
+        "calls": 1195,
+        "triangles": 3651116,
+        "memory": {
+          "geometries": 105,
+          "textures": 284
+        }
+      }
+    },
+    {
+      "area": 3,
+      "floor": 0,
+      "mode": "b3-ruined-city",
+      "surfaceTextures": 6,
+      "render": {
+        "calls": 315,
+        "triangles": 332081,
+        "memory": {
+          "geometries": 130,
+          "textures": 290
+        }
+      }
+    },
+    {
+      "area": 4,
+      "floor": 0,
+      "mode": "map-driven-3d",
+      "surfaceTextures": null,
+      "render": {
+        "calls": 56,
+        "triangles": 370507,
+        "memory": {
+          "geometries": 135,
+          "textures": 298
+        }
+      }
+    },
+    {
+      "area": 3,
+      "floor": 0,
+      "mode": "b3-ruined-city",
+      "surfaceTextures": 6,
+      "render": {
+        "calls": 315,
+        "triangles": 332081,
+        "memory": {
+          "geometries": 130,
+          "textures": 290
+        }
+      }
+    }
+  ]
+}
