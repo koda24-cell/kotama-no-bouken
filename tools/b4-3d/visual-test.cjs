@@ -1,7 +1,8 @@
 // Browser screenshots and material/animation checks in the real game.
 // See game-test.cjs for gameplay, camera clearance and resource-lifetime assertions.
 // THREE_DIR=/path/to/three PLAYWRIGHT=/path/to/playwright node visual-test.cjs /tmp/b4-visual
-// Optional QUALITY=high, MOBILE=1, B4_ONLY=1, GAME_ROOT=/path/to/baseline.
+// Optional QUALITY=high, MOBILE=1, B4_ONLY=1, SCENE=b4-lava,
+// or GAME_ROOT=/path/to/baseline BASELINE=1.
 const fs=require('fs'),path=require('path'),http=require('http'),assert=require('assert/strict');
 const {chromium}=require(process.env.PLAYWRIGHT||'/opt/node-tools/node_modules/playwright-core');
 const root=process.env.GAME_ROOT||path.resolve(__dirname,'../..');
@@ -38,7 +39,7 @@ let browser;
     [4,0,3,12,'right','b4-rig'],[4,0,23,8,'right','b4-minecart'],[4,0,13,1,'up','b4-citadel'],
     [4,0,11,7,'up','b4-lava'],[4,1,10,10,'up','b4-lava2'],[4,2,14,8,'up','b4-chamber'],
     [5,0,1,19,'up','b5-entry']
-  ].filter(s=>!process.env.B4_ONLY||s[0]===4);
+  ].filter(s=>(!process.env.B4_ONLY||s[0]===4)&&(!process.env.SCENE||s[5]===process.env.SCENE));
   const reports=[];
   for(const [n,f,x,y,dir,name]of scenes){
     await p.evaluate(([n,f])=>fieldEnterArea(n,{floor:f,adminSkip:true}),[n,f]);
@@ -50,24 +51,32 @@ let browser;
       fieldUpdateVision(true);fieldUpdateNear();performance.now=()=>10000;
       fieldRender();g.renderer.info.autoReset=false;g.renderer.info.reset();KotamaField3D.frame();
     },[x,y,dir]);
-    const check=await p.evaluate(()=>{
+    const check=await p.evaluate(name=>{
       const {g}=__b4visual,materials=new Map();
       g.world.traverse(o=>{if(o.material?.userData.b4SurfaceShared)materials.set(o.material.name,o.material);});
       const basalt=materials.get('b4:basalt'),lava=materials.get('b4:flowing-lava');
-      let animated=false;
+      let animated=false,pixelsAnimated=null;
       if(lava){
         const offset=lava.map.offset.y;g.theme.tick(.1,12000,g.camera.position);
         animated=offset!==lava.map.offset.y;g.theme.tick(.1,10000,g.camera.position);
+        if(name==='b4-lava'){
+          g.renderer.info.reset();KotamaField3D.frame();const before=g.canvas.toDataURL();
+          performance.now=()=>12000;g.renderer.info.reset();KotamaField3D.frame();const after=g.canvas.toDataURL();
+          pixelsAnimated=before!==after;
+          performance.now=()=>10000;g.renderer.info.reset();KotamaField3D.frame();
+        }
       }
       const imageWidths=[];
       for(const m of materials.values())for(const slot of ['map','normalMap','roughnessMap','emissiveMap'])if(m[slot]?.image)imageWidths.push(m[slot].image.width);
-      return {hasSurfaces:!!basalt,basaltPBR:!!(basalt?.map?.image&&basalt?.normalMap?.image&&basalt?.roughnessMap?.image),animated,
+      return {hasSurfaces:!!basalt,basaltPBR:!!(basalt?.map?.image&&basalt?.normalMap?.image&&basalt?.roughnessMap?.image),animated,pixelsAnimated,
         imageWidths,lightPool:g.pool.length,info:KotamaField3D.themeInfo(),render:KotamaField3D.renderInfo()};
-    });
+    },name);
+    if(n===4&&!process.env.BASELINE)assert.ok(check.hasSurfaces);
     if(n===4&&check.hasSurfaces){
       assert.ok(check.basaltPBR);assert.ok(check.imageWidths.every(w=>w>0&&w<=(process.env.QUALITY==='high'?1024:512)));
       assert.equal(check.lightPool,process.env.QUALITY==='high'?14:6);
       if(name.includes('lava')||name.includes('chamber'))assert.ok(check.animated);
+      if(name==='b4-lava')assert.equal(check.pixelsAnimated,true);
     }
     // Page clipping avoids waiting for an element's layout-stability animation;
     // the game's own animation clock and camera are already frozen above.
