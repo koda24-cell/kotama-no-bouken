@@ -130,9 +130,12 @@
       for (const card of cards) {
         const isRear = card.dataset.row === "rear";
         const index = isRear ? rear++ : front++;
-        const order = String((isRear ? 3 : 0) + index);
-        const count = isRear ? totalRear : totalFront;
-        const start = count === 1 ? 3 : count === 2 ? 2 + index * 2 : 1 + index * 2;
+        const member = typeof getCharacter === "function" ? getCharacter(card.dataset.partyId) : null;
+        const slot = typeof window.kotamaBattleSlotOfParty === "function" && member
+          ? window.kotamaBattleSlotOfParty(member) : index;
+        const order = String((isRear ? 3 : 0) + slot);
+        // Preserve the three fixed positions even when a row has only two members.
+        const start = 1 + slot * 2;
         const column = String(start) + " / span 2";
         const gridRow = isRear ? "2" : "1";
         const row = isRear ? "rear" : "front";
