@@ -2013,3 +2013,51 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  margin:0!important;
  padding:0!important;
 }
+
+
+/* EVENT is a single label in the same upper HUD row as TURN. */
+#battle.battle-ui-preview .battle-preview-top-hud>.battle-preview-header-event {
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ position:relative!important;
+ inset:auto!important;
+ transform:none!important;
+ height:32px!important;
+ min-height:32px!important;
+ padding:4px 13px!important;
+ margin:0 8px!important;
+ box-sizing:border-box!important;
+ white-space:nowrap!important;
+ color:#fff0b9!important;
+ background:linear-gradient(100deg,#0a6889,#063453)!important;
+ border:1px solid #a7efff!important;
+ border-radius:5px 15px 5px 5px!important;
+ font-size:15px!important;
+ font-weight:900!important;
+ line-height:22px!important;
+}
+/* Preserve the seventh command slot while making it visibly unavailable. */
+#battle.battle-ui-preview .battle-preview-disabled-back,
+#battle.battle-ui-preview .battle-preview-primary-rail .battle-preview-back-actor:disabled {
+ opacity:.46!important;
+ filter:saturate(.55)!important;
+ cursor:not-allowed!important;
+ pointer-events:none!important;
+}
+#battle.battle-ui-preview .battle-preview-disabled-back::before,
+#battle.battle-ui-preview .battle-preview-primary-rail .battle-preview-back-actor:disabled::before {
+ opacity:0!important;
+}
+/* Both main commands and the persistent rail share identical arena coordinates. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command,
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail:not([hidden]),
+ #battle.battle-ui-preview.battle-preview-side-open .battle-arena>.battle-preview-primary-rail:not([hidden]) {
+  top:100px!important;
+  left:14px!important;
+  margin-top:0!important;
+  transform:none!important;
+  translate:none!important;
+ }
+}
