@@ -108,4 +108,3 @@ export function compactB5Static(group) {
   old.forEach(m => m.removeFromParent());
   return merged;
 }
-
