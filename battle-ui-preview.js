@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-24";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-25";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -48,24 +48,13 @@
       });
     }
 
-    // Reference layout: action rail overlays the left side of the arena.
-    // Keep the original command DOM and handlers; calculate its top relative
-    // to battle-bottom so that varying arena heights never push it below.
-    if (bottom) {
-      const alignCommandRail = () => {
-        const arena = battle.querySelector(".battle-arena");
-        if (!arena) return;
-        const top = Math.round(arena.getBoundingClientRect().top + 95 - bottom.getBoundingClientRect().top);
-        bottom.style.setProperty("--battle-command-overlay-top", top + "px");
-        bottom.style.setProperty("--battle-submenu-overlay-top", (top + 45) + "px");
-      };
-      requestAnimationFrame(alignCommandRail);
-      window.addEventListener("resize", alignCommandRail, {passive:true});
-      if (typeof ResizeObserver !== "undefined") {
-        const observer = new ResizeObserver(alignCommandRail);
-        observer.observe(battle.querySelector(".battle-arena") || battle);
-        observer.observe(bottom);
-      }
+    // Both the main command panel and its submenu are anchored to the
+    // SAME arena coordinate system, regardless of EVENT/INFO panel height.
+    const arenaCommandHost = battle.querySelector(".battle-arena");
+    const commandWindow = bottom?.querySelector(".command-window");
+    if (arenaCommandHost && commandWindow) {
+      arenaCommandHost.appendChild(commandWindow);
+      commandWindow.classList.add("battle-preview-arena-command");
     }
     // Legacy 3DS-style key badges are removed in preview, without removing buttons.
     const eventTitle = eventWindow?.querySelector(".window-title");
@@ -223,7 +212,7 @@
     const primaryRail = document.createElement("nav");
     primaryRail.className = "battle-preview-primary-rail";
     primaryRail.setAttribute("aria-label", "戦闘メインコマンド");
-    (bottom || arena)?.appendChild(primaryRail);
+    (arena || bottom)?.appendChild(primaryRail);
     const railTitle = document.createElement("strong");
     railTitle.className = "battle-preview-rail-title";
     railTitle.textContent = document.getElementById("command-title")?.textContent || "どうする？";
