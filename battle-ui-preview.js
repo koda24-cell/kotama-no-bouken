@@ -217,6 +217,11 @@
         if (arena) {
           const selectedTop = button.getBoundingClientRect().top - arena.getBoundingClientRect().top;
           battle.style.setProperty("--battle-submenu-top", Math.max(120, Math.min(325, Math.round(selectedTop - 20))) + "px");
+          const bottomPanel = document.getElementById("battle-bottom");
+          if (bottomPanel) {
+            const relativeTop = button.getBoundingClientRect().top - bottomPanel.getBoundingClientRect().top;
+            battle.style.setProperty("--battle-submenu-local-top", Math.max(20, Math.min(180, Math.round(relativeTop + 14))) + "px");
+          }
         }
         renderActionMenu();
         requestAnimationFrame(() => {
