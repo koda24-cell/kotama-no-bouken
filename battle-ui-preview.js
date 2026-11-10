@@ -108,6 +108,27 @@
     updateHero();
     // Keep the game's original Union buttons and click handlers intact.
     // Present them behind a dedicated submenu in main command mode.
+    const primaryRail = document.createElement("nav");
+    primaryRail.className = "battle-preview-primary-rail";
+    primaryRail.setAttribute("aria-label", "戦闘メインコマンド");
+    arena?.appendChild(primaryRail);
+    const railActions = [["攻撃","attack"],["SPスキル","skill"],["防御","guard"],["道具","item"],["編成位置入れ替え","preview-move"],["ユニオンスキル","preview-union-toggle"]];
+    for (const [label,action] of railActions) {
+      const button = document.createElement("button");
+      button.type = "button"; button.className = "battle-preview-rail-button"; button.textContent = label;
+      button.addEventListener("click", () => {
+        if (battleState.busy) return;
+        renderActionMenu();
+        requestAnimationFrame(() => {
+          const selector = action === "preview-move" ? "[data-preview-move]" : action === "preview-union-toggle" ? "[data-preview-union-toggle]" : "[data-action="+action+"]";
+          commands.querySelector(selector)?.click();
+        });
+      });
+      primaryRail.appendChild(button);
+    }
+    const railSync = new MutationObserver(() => { primaryRail.hidden = !battle.classList.contains("battle-preview-side-open"); });
+    if (commands) railSync.observe(commands, {childList:true});
+    primaryRail.hidden = true;
     let unionMenuOpen = false;
     let commandSyncPending = false;
     function updateCommandLayout() {
