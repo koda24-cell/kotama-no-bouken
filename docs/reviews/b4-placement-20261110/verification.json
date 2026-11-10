@@ -1,0 +1,91 @@
+{
+  "commit": "d07373bae1e0ca81d69c427e0cb3096fb2dc8397",
+  "baseline": "17f277fbc204d0e7a5cab1908089edf8222ede77",
+  "engine": "Chromium 156 / Three.js r180 / SwiftShader",
+  "final_low": {
+    "checks": [
+      {
+        "floor": 0,
+        "cameraClear": true,
+        "minesBlocked": true,
+        "vistaBlocked": true
+      },
+      {
+        "floor": 1,
+        "cameraClear": true,
+        "minesBlocked": true,
+        "vistaBlocked": true
+      },
+      {
+        "floor": 2,
+        "cameraClear": true,
+        "minesBlocked": true,
+        "vistaBlocked": true
+      }
+    ],
+    "walking": {
+      "moved": true,
+      "tile": {
+        "tx": 1,
+        "ty": 17
+      },
+      "advance": 1,
+      "foes": 1
+    },
+    "compatibility": true,
+    "passage": {
+      "before": false,
+      "after": true,
+      "key": "door:4:a4-crack"
+    },
+    "controls": true,
+    "memory": [
+      {
+        "geometries": 81,
+        "textures": 123
+      },
+      {
+        "geometries": 81,
+        "textures": 123
+      },
+      {
+        "geometries": 81,
+        "textures": 123
+      },
+      {
+        "geometries": 81,
+        "textures": 123
+      }
+    ],
+    "errors": []
+  },
+  "b5_changed_pixels": [
+    0,
+    0,
+    0
+  ],
+  "load_comparison": {
+    "before": {
+      "meshes": 739,
+      "instances": 1393,
+      "render": {
+        "frame": 9,
+        "calls": 9,
+        "triangles": 653880,
+        "points": 0,
+        "lines": 0
+      }
+    },
+    "after": {
+      "meshes": 146,
+      "instances": 2093,
+      "render": {
+        "frame": 12,
+        "calls": 33,
+        "triangles": 292154,
+        "points": 0,
+        "lines": 0
+      }
+    }
+  }
+}
