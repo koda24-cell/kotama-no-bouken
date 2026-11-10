@@ -882,6 +882,11 @@ function extEmitEnemyActionStart() {
 
 // ダメージの確定（HPが実際に減った直後）。miss=true は回避・ミスで、ダメージ0。
 function extEmitDamage(targetId, side, amount, extra) {
+  if (side === "enemy" && extra?.ko && amount > 0) {
+    const e = battleState.enemy;
+    const unit = (e?.members || []).find(m => String(m.id) === String(targetId)) || (e?.id === targetId ? e : null) || (targetId === "enemy" ? e : null);
+    if (unit && ["poison","paralysis","sleep","confusion","petrify","burn"].some(type => extHasStatus(unit,type))) battleState._ailmentKill = true;
+  }
   if (amount > 0) extWakeOnDamage(targetId, side, extra);
   battleEmit(amount > 0 ? "damage:applied" : "damage:missed", Object.assign({ targetId, side, amount, action: battleState._evAction || null }, extra));
 }
