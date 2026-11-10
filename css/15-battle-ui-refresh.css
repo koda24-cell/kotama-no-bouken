@@ -1669,3 +1669,47 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
   text-shadow:0 1px 3px #520e19!important;
  }
 }
+
+
+/* Selected command matches the existing soft coral hover instead of solid red. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview .battle-preview-primary-rail .battle-preview-rail-button.battle-preview-rail-selected,
+ #battle.battle-ui-preview .battle-preview-primary-rail .battle-preview-rail-button.battle-preview-rail-selected:hover {
+  color:#fff!important;
+  border-color:#f3ac9a!important;
+  background:linear-gradient(110deg,#de886a,#b3436b)!important;
+  box-shadow:0 0 7px #d88b9b55!important;
+  text-shadow:0 1px 3px #301526!important;
+ }
+}
+#battle.battle-ui-preview .formation-move-heading {
+ color:#fff1c9;
+ font-weight:800;
+ padding:5px 4px;
+}
+#battle.battle-ui-preview .formation-slot-option {
+ text-align:left!important;
+ white-space:normal!important;
+ min-height:38px!important;
+}
+
+
+#battle.battle-ui-preview .formation-slot-option {
+ display:flex!important;
+ align-items:center!important;
+ gap:8px!important;
+}
+#battle.battle-ui-preview .formation-slot-portrait {
+ display:grid;
+ place-items:center;
+ flex:0 0 31px;
+ width:31px;height:31px;
+ border:1px solid #78cde3;
+ border-radius:5px;
+ overflow:hidden;
+ background:#052b41;
+}
+#battle.battle-ui-preview .formation-slot-portrait img {
+ width:100%!important;height:100%!important;
+ object-fit:contain!important;
+}
