@@ -1713,3 +1713,80 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  width:100%!important;height:100%!important;
  object-fit:contain!important;
 }
+
+
+/* Stable arena-anchored command overlay: never reposition when submenu opens. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command,
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail:not([hidden]) {
+  position:absolute!important;
+  top:100px!important;
+  left:14px!important;
+  right:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  width:260px!important;min-width:260px!important;max-width:260px!important;
+  height:350px!important;min-height:350px!important;max-height:350px!important;
+  padding:9px 10px!important;
+  border:2px solid #7ee9fa!important;
+  border-radius:15px 5px 15px 5px!important;
+  background:linear-gradient(120deg,#063c59f2,#00213cf2)!important;
+  box-shadow:0 0 20px #00c7ff33!important;
+  overflow:visible!important;
+  z-index:35!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail:not([hidden]) {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command #battle-commands.battle-preview-main-menu {
+  display:flex!important;flex-direction:column!important;
+  gap:4px!important;
+  overflow:visible!important;
+  scrollbar-width:none!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command #battle-commands.battle-preview-main-menu>.command-option,
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail .battle-preview-rail-button {
+  box-sizing:border-box!important;
+  width:100%!important;
+  flex:0 0 39px!important;
+  height:39px!important;min-height:39px!important;max-height:39px!important;
+  padding:5px 9px!important;
+  margin:0!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+  transform:none!important;
+  overflow:visible!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command #battle-commands.battle-preview-main-menu>.command-option:hover,
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command #battle-commands.battle-preview-main-menu>.command-option:focus-visible,
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail .battle-preview-rail-button:hover,
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail .battle-preview-rail-button:focus-visible {
+  transform:none!important;
+  position:relative!important;
+  z-index:2!important;
+  box-shadow:0 0 0 2px #f1ad9b88,0 0 8px #db8b9977!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-arena>.battle-preview-arena-command {
+  top:145px!important;
+  left:284px!important;
+  width:300px!important;min-width:300px!important;max-width:300px!important;
+  height:auto!important;min-height:120px!important;max-height:350px!important;
+  overflow:visible!important;
+  z-index:36!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-arena>.battle-preview-primary-rail:not([hidden]) {
+  top:100px!important;
+  left:14px!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command #battle-commands:not(.battle-preview-main-menu) {
+  overflow-y:auto!important;
+  max-height:290px!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command #command-hint {
+  display:none!important;
+ }
+}
