@@ -16,48 +16,83 @@
     const earlier = same.filter(c => party.findIndex(p => p.id === c.id) < rank).length;
     return earlier < 3 ? natural : natural === "front" ? "rear" : "front";
   }
+  // Each row has three stable slots, including an explicit empty third rear slot.
   const positions = new Map();
-  window.kotamaBattleRowOfParty = function (character) {
-    return positions.get(character?.id) || (defaultRow(character?.id));
-  };
+  const slots = new Map();
+  function initializeSlots() {
+    const party = getParty();
+    const ids = new Set(party.map(c => c.id));
+    for (const id of [...slots.keys()]) if (!ids.has(id)) { slots.delete(id); positions.delete(id); }
+    for (const c of party) {
+      if (slots.has(c.id)) continue;
+      const preferred = positions.get(c.id) || defaultRow(c.id);
+      let row = preferred;
+      const free = candidate => [0,1,2].find(n => ![...slots.values()].some(v => v.row === candidate && v.slot === n));
+      let slot = free(row);
+      if (slot === undefined) { row = row === "front" ? "rear" : "front"; slot = free(row); }
+      if (slot !== undefined) { slots.set(c.id,{row,slot}); positions.set(c.id,row); }
+    }
+  }
+  function rowOf(character) {
+    initializeSlots();
+    return slots.get(character?.id)?.row || defaultRow(character?.id);
+  }
+  window.kotamaBattleRowOfParty = rowOf;
   window.kotamaBattleFormationPositions = positions;
-  window.kotamaBattleExportRows = () => Object.fromEntries(positions);
+  window.kotamaBattleSlotOfParty = character => {
+    initializeSlots();
+    return slots.get(character?.id)?.slot ?? 0;
+  };
+  window.kotamaBattleCommandOrder = () => {
+    initializeSlots();
+    return [...getParty()].filter(c => c.hp > 0).sort((a,b) => {
+      const pa=slots.get(a.id),pb=slots.get(b.id);
+      return (pa?.row === "rear" ? 3 : 0)+(pa?.slot ?? 0)-
+             ((pb?.row === "rear" ? 3 : 0)+(pb?.slot ?? 0));
+    }).map(c => c.id);
+  };
+  window.kotamaBattleExportRows = () => {
+    initializeSlots();
+    return Object.fromEntries([...slots].map(([id,p]) => [id,{row:p.row,slot:p.slot}]));
+  };
   window.kotamaBattleImportRows = data => {
-    positions.clear();
+    slots.clear();positions.clear();
     if (!data || typeof data !== "object" || Array.isArray(data)) return;
     const ids = new Set(getParty().map(c => c.id));
-    const defaults = id => defaultRow(id);
-    const counts = {front:0,rear:0};
-    for (const id of ids) counts[defaults(id)]++;
-    for (const [id,row] of Object.entries(data)) {
-      if (!ids.has(id) || !["front","rear"].includes(row)) continue;
-      const previous = positions.get(id) || defaults(id);
-      if (previous === row || counts[row] >= 3) continue;
-      positions.set(id,row);
-      counts[previous]--;
-      counts[row]++;
+    const taken = new Set();
+    for (const [id,value] of Object.entries(data)) {
+      if (!ids.has(id)) continue;
+      const row = typeof value === "string" ? value : value?.row;
+      if (!["front","rear"].includes(row)) continue;
+      const preferred = Number.isInteger(value?.slot) ? value.slot : -1;
+      const choices = preferred >= 0 && preferred <= 2 ? [preferred,0,1,2] : [0,1,2];
+      const slot = choices.find(n => !taken.has(row+":"+n));
+      if (slot === undefined) continue;
+      taken.add(row+":"+slot);slots.set(id,{row,slot});positions.set(id,row);
     }
+    initializeSlots();
   };
-
 
   function selectMove(actor) {
     if (!actor || battleState.busy || battleState.tutorialMode) return;
+    initializeSlots();
     const box = document.getElementById("battle-commands");
-    const current = window.kotamaBattleRowOfParty(actor);
-    const members = getParty().filter(c => c.hp > 0);
-    const count = row => members.filter(c => c.id !== actor.id && window.kotamaBattleRowOfParty(c) === row).length;
+    const current = slots.get(actor.id);
+    const targetRow = current.row === "front" ? "rear" : "front";
+    const label = targetRow === "front" ? "前衛" : "後衛";
     battleState.menuMode = "formation-move";
     document.getElementById("command-title").textContent = actor.name + "：移動先を選択";
-    box.innerHTML = ["front", "rear"].map(row => {
-      const label = row === "front" ? "前衛" : "後衛";
-      const blocked = row === current || count(row) >= 3;
-      return '<button class="command-option" data-move-row="' + row + '"' + (blocked ? ' disabled' : '') + '>' + label + (row === current ? "（現在位置）" : count(row) >= 3 ? "（満員）" : "へ移動") + '</button>';
-    }).join("") + '<button class="command-option" data-action="back">戻る</button>';
-    document.getElementById("command-description").textContent = "移動したキャラクターは、このターン攻撃・防御などの別行動を行えません。";
-    box.querySelectorAll("[data-move-row]").forEach(button => button.addEventListener("click", () => {
-      const row = button.dataset.moveRow;
-      if (row === current || count(row) >= 3) return;
-      commitAction({type:"formation-move",actor:actor.id,row});
+    const occupants = [0,1,2].map(slot => {
+      const member = getParty().find(c => c.id !== actor.id && slots.get(c.id)?.row === targetRow && slots.get(c.id)?.slot === slot);
+      return {slot,member};
+    });
+    box.innerHTML = '<div class="formation-move-heading">'+label+'：交代する枠を選択</div>'+
+      occupants.map(({slot,member}) => '<button class="command-option formation-slot-option" data-move-slot="'+slot+'">'+
+        (slot+1)+'枠目：'+(member ? esc(member.name)+' と交代' : '空欄へ移動')+'</button>').join("")+
+      '<button class="command-option" data-action="back">戻る</button>';
+    document.getElementById("command-description").textContent = "前衛・後衛の3枠から移動先を選びます。相手がいる場合は位置を交換します。移動はこのターンの行動を消費します。";
+    box.querySelectorAll("[data-move-slot]").forEach(button => button.addEventListener("click", () => {
+      commitAction({type:"formation-move",actor:actor.id,row:targetRow,slot:Number(button.dataset.moveSlot)});
     }));
     box.querySelector('[data-action="back"]').addEventListener("click", () => renderActionMenu());
   }
@@ -69,13 +104,16 @@
       if (action?.type !== "formation-move") return originalExecute.apply(this, arguments);
       const actor = getCharacter(action.actor);
       if (!actor || !["front","rear"].includes(action.row)) return;
-      const occupied = getParty().filter(c => c.id !== actor.id && window.kotamaBattleRowOfParty(c) === action.row).length;
-      if (occupied >= 3) {
-        pushEvent(actor.name + "は移動先が満員で移動できなかった。");
-        return;
+      initializeSlots();
+      const source = slots.get(actor.id);
+      const destination = Number(action.slot);
+      if (!source || !Number.isInteger(destination) || destination < 0 || destination > 2 || source.row === action.row) return;
+      const other = getParty().find(c => c.id !== actor.id && slots.get(c.id)?.row === action.row && slots.get(c.id)?.slot === destination);
+      slots.set(actor.id,{row:action.row,slot:destination});positions.set(actor.id,action.row);
+      if (other) {
+        slots.set(other.id,{row:source.row,slot:source.slot});positions.set(other.id,source.row);
       }
-      positions.set(actor.id, action.row);
-      pushEvent(actor.name + "は" + (action.row === "front" ? "前衛" : "後衛") + "へ移動した！");
+      pushEvent(actor.name + "は"+(action.row === "front" ? "前衛" : "後衛")+"の"+(destination+1)+"枠目へ移動"+(other ? "し、"+other.name+"と交代した！" : "した！"));
       renderBattle();
     };
   }
