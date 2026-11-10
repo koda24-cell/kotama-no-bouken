@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-27";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-28";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -129,7 +129,9 @@
         const rowCount = isRear ? totalRear : totalFront;
         // Center two-person rows in ordinary battle; reveal fixed 3-slot
         // alignment only while choosing a formation destination.
-        const start = !moving && rowCount === 2 ? 2 + index * 2 : 1 + slot * 2;
+        const actorRow = typeof currentActor === "function" && window.kotamaBattleRowOfParty ? window.kotamaBattleRowOfParty(currentActor()) : null;
+        const destinationRow = actorRow === "front" ? "rear" : "front";
+        const start = rowCount === 2 && (!moving || row !== destinationRow) ? 2 + index * 2 : 1 + slot * 2;
         const column = String(start) + " / span 2";
         const gridRow = isRear ? "2" : "1";
         const row = isRear ? "rear" : "front";
@@ -253,6 +255,27 @@
     primaryRail.appendChild(railTitle);
     let expandedAction = null;
     const railActions = [["攻撃","attack"],["SPスキル","skill"],["防御","guard"],["道具","item"],["編成位置入れ替え","preview-move"],["ユニオンスキル","preview-union-toggle"]];
+    // Keep the previous-character action available when the submenu replaces
+    // the main command list. Its original handler is invoked, not duplicated.
+    const backActorButton = document.createElement("button");
+    backActorButton.type = "button";
+    backActorButton.className = "battle-preview-rail-button battle-preview-back-actor";
+    backActorButton.textContent = "前のキャラへ戻る";
+    backActorButton.addEventListener("click", () => {
+      if (battleState.busy) return;
+      const original = commands?.querySelector('[data-action="prev"],[data-action="previous"],[data-action="back-actor"],[data-action="prev-actor"]');
+      if (original) { original.click(); return; }
+      // Return to main actions first, then dispatch the existing previous-actor button.
+      if (typeof renderActionMenu === "function") {
+        renderActionMenu();
+        requestAnimationFrame(() => {
+          const button = commands?.querySelector('[data-action="prev"],[data-action="previous"],[data-action="back-actor"],[data-action="prev-actor"]')
+            || [...(commands?.querySelectorAll("button") || [])].find(el => el.textContent.includes("前のキャラ"));
+          button?.click();
+        });
+      }
+    });
+    primaryRail.appendChild(backActorButton);
     for (const [label,action] of railActions) {
       const button = document.createElement("button");
       button.type = "button"; button.className = "battle-preview-rail-button"; button.textContent = label;
