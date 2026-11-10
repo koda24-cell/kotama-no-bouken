@@ -32,11 +32,13 @@
       for (const card of cards) {
         const isRear = card.dataset.row === "rear";
         const index = isRear ? rear++ : front++;
-        card.style.setProperty("--battle-row-order", String((isRear ? 3 : 0) + index));
-        card.setAttribute("data-preview-row", isRear ? "rear" : "front");
+        const order = String((isRear ? 3 : 0) + index);
+        const row = isRear ? "rear" : "front";
+        if (card.style.getPropertyValue("--battle-row-order") !== order) card.style.setProperty("--battle-row-order", order);
+        if (card.dataset.previewRow !== row) card.dataset.previewRow = row;
       }
-      party.dataset.frontCount = String(front);
-      party.dataset.rearCount = String(rear);
+      if (party.dataset.frontCount !== String(front)) party.dataset.frontCount = String(front);
+      if (party.dataset.rearCount !== String(rear)) party.dataset.rearCount = String(rear);
     }
     let scheduled = false;
     const observer = new MutationObserver(() => {
@@ -67,7 +69,8 @@
       if (!battle.classList.contains("active")) return;
       const members = typeof getParty === "function" ? getParty() : [];
       const title = document.getElementById("command-title")?.textContent || "";
-      const actor = members.find(c => title.includes(c.name)) || members[0];
+      const activeId = typeof battleState !== "undefined" ? battleState.turnOrder?.[battleState.currentActorIndex] : null;
+      const actor = members.find(c => c.id === activeId) || members.find(c => title.includes(c.name)) || members[0];
       if (!actor) { hud.hidden = true; return; }
       hud.hidden = false;
       if (hud.dataset.actorId !== actor.id) {
