@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-16";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-17";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -30,6 +30,13 @@
     if (eventTitle) {
       eventTitle.textContent = "EVENT";
       eventTitle.setAttribute("aria-label", "イベントログ");
+    }
+    // Place the EVENT tab beside the action prompt, like the reference HUD.
+    // The log body remains in its existing accessible live region below.
+    const actionWindow = bottom?.querySelector(".command-window");
+    if (eventTitle && actionWindow) {
+      eventTitle.classList.add("battle-event-prompt-tab");
+      actionWindow.prepend(eventTitle);
     }
     // Rare slime HP sits above its head; update after enemy changes.
     const enemyDisplay = document.getElementById("battle-enemy");
