@@ -12,7 +12,8 @@ export function createB4MineRigProps() {
   const branch=new THREE.CylinderGeometry(.05,.16,1,5);
   const rim=new THREE.TorusGeometry(.5,.1,6,12);
   const shard=new THREE.ConeGeometry(.48,1.4,5),rock=new THREE.DodecahedronGeometry(1,0);
-  const geometries=[box,cylinder,branch,rim,shard,rock],materials=[wood,iron,ash,rope];
+  const fractured=new THREE.IcosahedronGeometry(1,0), spike=new THREE.ConeGeometry(.22,1,4);
+  const geometries=[box,cylinder,branch,rim,shard,rock,fractured,spike],materials=[wood,iron,ash,rope];
   const add=(geo,mat,x,y,z,sx=1,sy=1,sz=1,rz=0,rx=0)=>{
     const o=new THREE.Mesh(geo,mat);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.rotation.set(rx,0,rz);root.add(o);return o;
   };
@@ -72,6 +73,37 @@ export function createB4MineRigProps() {
   // Reinforcement hoops around the leaning upright legs.
   for(const side of [-1,1])for(let y=1;y<=3;y++){
     add(box,iron,side*(1.45+(y-2)*.1),y,0,.35,.1,.4,side*.16);
+  }
+  // Third-pass silhouette upgrade: giant roof collapse encroaching from behind the rig.
+  // Rock clusters have asymmetrical overhangs and vertical fractures, not uniform cubes.
+  const archCenters=[[-3.0,3.3,-1.55,1.5,2.6,1.1],[-2.0,4.35,-1.8,1.7,1.45,1.3],
+    [1.85,4.1,-1.7,1.6,1.6,1.2],[3.0,3.15,-1.4,1.6,2.5,1.2]];
+  archCenters.forEach(([x,y,z,sx,sy,sz],i)=>add(fractured,ash,x,y,z,sx,sy,sz,(i-1.5)*.23,i*.19));
+  // Massive broken roof slab and protruding hanging teeth.
+  add(fractured,ash,0,5.65,-2.15,2.55,.72,1.45,.09,.1);
+  for(let i=0;i<7;i++){
+    const x=-2.7+i*.88;
+    const h=.7+(i%3)*.42;
+    add(spike,ash,x,4.95-h*.42,-1.35,.75,h,.9,Math.sin(i*2.1)*.2);
+  }
+  // Deliberately broken track segment buried by the rockfall, ending abruptly.
+  for(const side of [-1,1]){
+    add(box,iron,side*.57,.14,2.05,.1,.12,2.25,side*.09);
+    for(let i=0;i<4;i++)add(box,wood,0,.075,1.05+i*.65,1.65,.13,.16,(i-2)*.06);
+  }
+  add(box,iron,-.62,.27,3.1,.11,.11,.78,-.44);
+  add(box,iron,.69,.2,3.3,.11,.11,.45,.62);
+  // Enlarged crystal outcrop: staggered tall and short spires growing through the fallen rock.
+  for(let i=0;i<15;i++){
+    const angle=i*2.399963,r=.22+Math.sqrt(i)*.22;
+    const h=i%5===0?2.2:(.4+(i%4)*.36);
+    add(shard,iron,-2.6+Math.cos(angle)*r,.25+h*.35,-1.65+Math.sin(angle)*r,.28+h*.12,h,.28+h*.12,
+      Math.sin(angle)*.4,Math.cos(angle)*.34);
+  }
+  // Large exposed fractures, crossing the central collapsed rock face.
+  for(let i=0;i<5;i++){
+    const x=-1.3+i*.67;
+    add(box,ash,x,5.9+(i%2)*.16,-.85,.12,.65+(i%3)*.3,.15,(i-2)*.26);
   }
   root.userData.disposeB4MineRig=()=>{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());};
   return root;
