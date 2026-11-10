@@ -1,6 +1,6 @@
 {
   "commit": "d07373bae1e0ca81d69c427e0cb3096fb2dc8397",
-  "baseline": "17f277fbc204d0e7a5cab1908089edf8222ede77",
+  "baseline": "9892ee69e85c7977fb9836aa84cb8a2031050f75",
   "engine": "Chromium 156 / Three.js r180 / SwiftShader",
   "final_low": {
     "checks": [
@@ -87,5 +87,7 @@
         "lines": 0
       }
     }
-  }
+  },
+  "development_base": "17f277fbc204d0e7a5cab1908089edf8222ede77",
+  "baseline_note": "The later development base adds only B3 handoff/library files; the baseline renderer is identical."
 }
