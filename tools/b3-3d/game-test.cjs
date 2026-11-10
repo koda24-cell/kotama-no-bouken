@@ -11,6 +11,7 @@ const browser=testBrowser=await chromium.launch({executablePath:process.env.CHRO
 const mobile=process.argv.includes('--mobile');
 const context=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1280,height:800},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:1});
 await context.route(/cdn\.jsdelivr\.net\/npm\/three@0\.180\.0\/(.*)/,r=>r.fulfill({path:path.join(process.env.THREE_DIR || path.resolve(path.dirname(require.resolve('three')), '..'),r.request().url().split('three@0.180.0/')[1]),contentType:'text/javascript'}));
+if (process.env.BASELINE_B3_MODULE) await context.route('**/field/field-3d-b3-city.js*', r => r.fulfill({body:fs.readFileSync(process.env.BASELINE_B3_MODULE,'utf8'),contentType:'text/javascript'}));
 await context.route('**/field/field-3d-view.js*', r=>r.fulfill({body:fs.readFileSync(root+'/field/field-3d-view.js','utf8')+'\nwindow.__test3d={g};',contentType:'text/javascript'}));
 const page=await context.newPage(), errors=[];
 
@@ -32,7 +33,7 @@ await page.evaluate(()=>{
  g.renderer.render=(scene,camera)=>{const start=performance.now();render(scene,camera);if(scene===g.scene)window.__perf.push({time:performance.now(),ms:performance.now()-start,calls:g.renderer.info.render.calls,triangles:g.renderer.info.render.triangles});};
 });
 
-for(const floor of [0,1,2,0]){
+for(const floor of (process.argv.includes('--visual-only') ? [0,1,2] : [0,1,2,0])){
 console.log('floor '+floor);
 await page.evaluate(f=>fieldEnterArea(3,{floor:f,adminSkip:true}),floor);
 await page.waitForFunction(f=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.floor===`3-${f}`,floor,{timeout:120000});
@@ -41,7 +42,7 @@ const info=await page.evaluate(()=>{const {placements,...x}=KotamaField3D.themeI
 for(const p of placements)for(let z=0;z<a.h;z++)for(let x=0;x<a.w;x++)if(fieldTileAt(a,x,z)!=='#'&&p.max[0]>x*4-2+0.001&&p.min[0]<x*4+2-0.001&&p.max[2]>z*4-2+0.001&&p.min[2]<z*4+2-0.001)overlaps.push({key:p.key,x,z});
 return {...x,overlaps,entryKinds:__test3d.g.entries.map(e=>({kind:e.kind,visible:!!e.obj,tx:e.o.tx,ty:e.o.ty}))};});logs.push(info);
 const pos=floor===2?[11,12,'up']:floor===1?[9,19,'right']:[8,19,'right'];
-await page.evaluate(([tx,ty,dir])=>{const c=fieldTileCenter(tx,ty);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=dir;fieldState.view=null;fieldUpdateVision(true);},pos);
+await page.evaluate(([tx,ty,dir])=>{const c=fieldTileCenter(tx,ty);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=dir;fieldState.view=null;__test3d.g.cam.ready=false;fieldUpdateVision(true);},pos);
 await page.waitForTimeout(1200);
 await page.screenshot({path:`${out}/${mobile?'mobile':'pc'}-floor${floor}.png`,fullPage:mobile});
 await page.evaluate(()=>window.__perf=[]);await page.waitForTimeout(4000);
@@ -56,7 +57,11 @@ if (process.argv.includes('--visual-only')) {
 const check=async()=>page.evaluate(()=>({tile:fieldPlayerTile(),dir:fieldState.dir,turn:fieldState.turn,foes:fieldState.foes.map(f=>({x:f.tx,y:f.ty})),near:fieldState.nearKey}));
 await page.evaluate(()=>{const c=fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.encounterSteps=0;fieldState.nextEncounter=9999;fieldUpdateVision(true);});
 const key=async k=>{await page.keyboard.down(k);await page.waitForTimeout(100);await page.keyboard.up(k);await page.waitForTimeout(700);};
-const controls={before:await check()};await key('ArrowUp');controls.move=await check();await key('ArrowLeft');controls.turn=await check();await key('ArrowUp');controls.bump=await check();
+const controls={before:await check()};await key('ArrowUp');
+await page.waitForFunction(()=>fieldPlayerTile().tx===9,null,{timeout:30000});controls.move=await check();await key('ArrowLeft');
+await page.waitForFunction(()=>fieldState.dir==='up',null,{timeout:30000});controls.turn=await check();
+const bumpFrame=await page.evaluate(()=>__perf.length);await key('ArrowUp');
+await page.waitForFunction(n=>__perf.length>=n+2,bumpFrame,{timeout:30000});controls.bump=await check();
 logs.push({controls});
 const interactions=[];
 const settle=async()=>{for(let i=0;i<18;i++){await page.evaluate(()=>{if(fieldChoiceState){fieldChoiceKey('z');return;}if(fieldDialogTyping){fieldDialogTyping();return;}if(fieldDialogAdvance){const f=fieldDialogAdvance;fieldDialogAdvance=null;f();}});await page.waitForTimeout(100);}};
@@ -82,10 +87,22 @@ if(mobile){
  await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:out+'/mobile-controls.png',fullPage:true});
 }
 
+const lodCheck=await page.evaluate(()=>{
+ const {g}=__test3d,camera=g.camera.clone();let groups=0,invalid=0,nearTriangles=0,farTriangles=0;
+ g.world.traverse(o=>{if(!o.isLOD)return;groups++;const p=o.getWorldPosition(camera.position);camera.position.copy(p);camera.updateMatrixWorld();o.update(camera);if(o.getCurrentLevel()!==0)invalid++;
+ const near=o.levels[0].object,far=o.levels[1].object;
+ nearTriangles+=(near.geometry.index?.count||near.geometry.attributes.position.count)/3*near.count;
+ if(far.isMesh)farTriangles+=(far.geometry.index?.count||far.geometry.attributes.position.count)/3*far.count;
+ camera.position.x+=100;camera.updateMatrixWorld();o.update(camera);if(o.getCurrentLevel()!==1)invalid++;o.update(g.camera);
+ });return {groups,invalid,nearTriangles,farTriangles};
+});logs.push({lodCheck});
 const lifecycle=[];
 for(const area of [1,3,1,3]) {
  await page.evaluate(n=>fieldEnterArea(n,{floor:0,adminSkip:true}),area);
- await page.waitForFunction(n=>KotamaField3D.active()&&__test3d.g.builtKey===`${n}-0`,area,{timeout:120000});await page.waitForTimeout(500);
+ await page.waitForFunction(n=>KotamaField3D.active()&&__test3d.g.builtKey===`${n}-0`,area,{timeout:120000});
+ const frameStart=await page.evaluate(()=>__perf.length);
+ await page.waitForFunction(n=>__perf.length>=n+2,frameStart,{timeout:120000});
+ if (area === 1 && lifecycle.length === 0) await page.screenshot({path:out+'/'+(mobile?'mobile':'pc')+'-b1-reference.png',fullPage:mobile});
  lifecycle.push(await page.evaluate(()=>({area:fieldState.area,far:__test3d.g.camera.far,roots:__test3d.g.world.children.filter(c=>c.name==='b3_ruined_city_map').length,points:__test3d.g.pool.filter(l=>l.parent).length,memory:{...__test3d.g.renderer.info.memory}})));
 }
 logs.push({lifecycle});
@@ -101,6 +118,7 @@ if(!interactions.find(x=>x.kind==='gather')?.after.used)failures.push('gather');
 if(lifecycle.some(x=>x.roots!==(x.area===3?1:0)||x.far!==(x.area===3?80:48)))failures.push('lifecycle');
 if(lifecycle[1].memory.geometries!==lifecycle[3].memory.geometries)failures.push('geometry leak');
 if(!save.same)failures.push('save roundtrip');
+if(!lodCheck.groups||lodCheck.invalid||lodCheck.nearTriangles<=lodCheck.farTriangles)failures.push('LOD');
 if(!puzzle.solved||puzzle.door!=='open')failures.push('puzzle door');
 if(logs.find(x=>x.touch)&&logs.find(x=>x.touch).touch.after.tile.tx!==9)failures.push('touch');
 if(errors.some(x=>!x.includes('ERR_CERT_AUTHORITY_INVALID')))failures.push('browser errors');
