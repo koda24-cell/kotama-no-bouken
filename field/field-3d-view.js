@@ -148,6 +148,10 @@ function loadTheme2() {
   if (g.theme?.area === 2) return Promise.resolve(g.theme);
   return import('./field-3d-b2-water.js?v=20261109-b2').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES }));
 }
+function loadTheme3() {
+  if (g.theme?.area === 3) return Promise.resolve(g.theme);
+  return import('./field-3d-b3-city.js?v=20261110-1').then(m => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile }));
+}
 async function loadTheme45(area) {
   const m = await import('./field-3d-b4-b5-map.js?v=20261109-1');
   return m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES }, area);
@@ -205,7 +209,7 @@ async function buildFloor() {
   const area = Number(fieldState.area);
   let th = null;
   if (area === 2 || area === 3 || area === 4 || area === 5) {
-    try { th = area === 2 ? await loadTheme2() : await loadTheme45(area); }
+    try { th = area === 2 ? await loadTheme2() : area === 3 ? await loadTheme3() : await loadTheme45(area); }
     catch (e) { console.warn('[field-3d] 3Dテーマの読み込みに失敗しました:', area, e); if (area === 2) g.themeFailed = true; else g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return; }
   }
   try {
@@ -220,9 +224,10 @@ async function buildFloor() {
   // 片付け
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
+  for (const foe of g.foes.values()) disposeFoe(foe);
   g.lights = []; g.entries = []; g.foes.clear();
   if (g.theme && g.theme !== th) g.theme.dispose();
-  if (th) g.theme = th;
+  g.theme = th;
   applyEnv(area, th && th.env);
   const info = cellInfo(a), { ch, def, wallCell, open, facing } = info;
   const X = (tx) => tx * CELL, Z = (ty) => ty * CELL;
@@ -348,6 +353,12 @@ function foeTexture(src) {
   if (!g.texCache.has(src)) { const t = new THREE.TextureLoader().load(src); t.colorSpace = THREE.SRGBColorSpace; g.texCache.set(src, t); }
   return g.texCache.get(src);
 }
+// FOE visuals own these GPU resources; textures remain in the shared cache.
+function disposeFoe(v) {
+  g.dyn.remove(v.grp);
+  v.ring.geometry.dispose(); v.ring.material.dispose(); v.sp.material.dispose();
+  v.light.dispose();
+}
 function syncFoes(t) {
   const seen = new Set();
   for (const f of fieldState.foes || []) {
@@ -374,7 +385,7 @@ function syncFoes(t) {
     v.light.intensity = (chase ? 5 : 3) * (0.7 + 0.3 * pulse); v.ring.scale.setScalar(0.92 + 0.12 * pulse);
     v.sp.material.color.setHex(chase ? 0xffc0c0 : 0xffffff);
   }
-  for (const [k, v] of g.foes) if (!seen.has(k)) { g.dyn.remove(v.grp); g.foes.delete(k); }
+  for (const [k, v] of g.foes) if (!seen.has(k)) { disposeFoe(v); g.foes.delete(k); }
 }
 
 /* ------------------------------------------------------------

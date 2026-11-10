@@ -1,0 +1,31 @@
+{
+  "results": [
+    {
+      "version": "before",
+      "children": 1137,
+      "far": 48,
+      "pool": 6,
+      "background": 462097,
+      "geometries": 56,
+      "sha256": "801462c793c90dec2ff8ef3f51c29376fff4020cbda0b05637b6792e7b6974cb"
+    },
+    {
+      "version": "after",
+      "children": 1137,
+      "far": 48,
+      "pool": 6,
+      "background": 462097,
+      "geometries": 56,
+      "sha256": "151b430532f165137082aa1b8e718a4c045d216e1c163422188a9c7b9fa405dd"
+    }
+  ],
+  "equal": false,
+  "changedPixels": 8,
+  "totalPixels": 407330,
+  "maxChannelDifference": [
+    8,
+    18,
+    4
+  ],
+  "note": "B1 low-quality viewport before/after. Not byte-identical; scene children, far plane, light count and geometry count match."
+}
