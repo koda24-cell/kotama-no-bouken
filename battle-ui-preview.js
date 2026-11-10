@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-9";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-10";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -29,11 +29,15 @@
     function updateRows() {
       const cards = Array.from(party.querySelectorAll(".battle-member"));
       let front = 0, rear = 0;
+      const totalFront = cards.filter(card => card.dataset.row !== "rear").length;
+      const totalRear = cards.length - totalFront;
       for (const card of cards) {
         const isRear = card.dataset.row === "rear";
         const index = isRear ? rear++ : front++;
         const order = String((isRear ? 3 : 0) + index);
-        const column = String(index + 1);
+        const count = isRear ? totalRear : totalFront;
+        const start = count === 1 ? 3 : count === 2 ? 2 + index * 2 : 1 + index * 2;
+        const column = String(start) + " / span 2";
         const gridRow = isRear ? "2" : "1";
         const row = isRear ? "rear" : "front";
         if (card.style.getPropertyValue("--battle-row-order") !== order) card.style.setProperty("--battle-row-order", order);
