@@ -2,7 +2,7 @@
  * Standalone scenery module; integration is left to the B4 scene owner to avoid concurrent edits.
  */
 import * as THREE from 'three';
-export function createB4MineRigProps() {
+export function createB4MineRigProps({ detail = 'high' } = {}) {
   const root=new THREE.Group();root.name='b4:mine-rig-props';
   const wood=new THREE.MeshStandardMaterial({color:0x493329,roughness:1,flatShading:true});
   const iron=new THREE.MeshStandardMaterial({color:0x4a4547,roughness:0.78,metalness:0.25});
@@ -252,6 +252,48 @@ export function createB4MineRigProps() {
     add(spike,ash,3.4+Math.cos(a)*1.4,.3+h*.42,-4.1+Math.sin(a)*.65,
       .45+(i%3)*.16,h,.45+(i%3)*.12,Math.sin(a)*.3);
   }
+  // Seventh pass: sculpt a ruined stone furnace behind the abandoned equipment.
+  // Broken arch opening is kept empty, giving the dense silhouette a readable negative space.
+  const furnace=new THREE.Group();furnace.name='b4:ruined-smelting-furnace';
+  furnace.position.set(0,0,-5.5);root.add(furnace);
+  const furnaceAdd=(geo,mat,x,y,z,sx,sy,sz,rz=0,rx=0)=>{
+    const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.rotation.set(rx,0,rz);furnace.add(m);return m;
+  };
+  // Uneven stone piers, intentionally avoiding a solid wall across the furnace mouth.
+  for(const side of [-1,1]){
+    for(let i=0;i<4;i++){
+      const x=side*(1.2+(i%2)*.13),y=.55+i*.9;
+      furnaceAdd(fractured,ash,x,y,0,.65,.65,.8,side*(i*.07));
+    }
+    furnaceAdd(fractured,ash,side*.95,4.15,0,.85,.6,.8,side*.43);
+    furnaceAdd(spike,ash,side*1.6,4.95,-.15,.65,1.8,.65,side*.22);
+  }
+  furnaceAdd(fractured,ash,0,4.75,0,1.35,.6,.8,.12);
+  // Cracked chimney rises above the mine gantry and loses its upper-right segment.
+  for(let i=0;i<5;i++){
+    if(i===4)continue;
+    const x=.35-i*.08,y=5.45+i*.67;
+    furnaceAdd(fractured,ash,x,y,-.3,.7-(i*.045),.5,.65,(i-2)*.11);
+  }
+  for(let i=0;i<6;i++){
+    const a=i*2.399963;
+    furnaceAdd(shard,ash,.2+Math.cos(a)*.65,8.2+(i%2)*.2,-.4+Math.sin(a)*.42,
+      .25,.65+(i%3)*.3,.3,a*.16);
+  }
+  // Lava runoff trough and broken crucible: pure geometry, not a lighting effect.
+  furnaceAdd(box,iron,0,.18,1.05,1.9,.18,.55,.09);
+  for(const side of [-1,1])furnaceAdd(box,iron,side*.92,.38,1.05,.14,.45,.68,side*.18);
+  furnaceAdd(cylinder,iron,-1.95,.55,1.2,.8,.9,.8,0,Math.PI/2);
+  furnaceAdd(rim,iron,-1.95,1.05,1.2,.82,.82,.82,0,Math.PI/2);
+  // Separate low-detail props from major structures for future FPS tuning.
+  // Geometry remains authored once; low detail omits small loose fragments by visibility.
+  if(detail==='low'){
+    root.traverse(obj=>{
+      if(obj.isMesh && obj.geometry===spike && obj.scale.y<.9)obj.visible=false;
+    });
+  }
+  root.userData.detail=detail;
+  root.userData.majorGroups=['b4:mine-rig-props','b4:buried-ore-cart','b4:ruined-smelting-furnace'];
   root.userData.disposeB4MineRig=()=>{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());};
   return root;
 }
