@@ -125,7 +125,11 @@
           ? window.kotamaBattleSlotOfParty(member) : index;
         const order = String((isRear ? 3 : 0) + slot);
         // Preserve the three fixed positions even when a row has only two members.
-        const start = 1 + slot * 2;
+        const moving = typeof battleState !== "undefined" && battleState.menuMode === "formation-move";
+        const rowCount = isRear ? totalRear : totalFront;
+        // Center two-person rows in ordinary battle; reveal fixed 3-slot
+        // alignment only while choosing a formation destination.
+        const start = !moving && rowCount === 2 ? 2 + index * 2 : 1 + slot * 2;
         const column = String(start) + " / span 2";
         const gridRow = isRear ? "2" : "1";
         const row = isRear ? "rear" : "front";
