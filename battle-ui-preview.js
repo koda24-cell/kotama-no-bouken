@@ -33,8 +33,10 @@
         const isRear = card.dataset.row === "rear";
         const index = isRear ? rear++ : front++;
         const order = String((isRear ? 3 : 0) + index);
+        const column = String(index + 1);
         const row = isRear ? "rear" : "front";
         if (card.style.getPropertyValue("--battle-row-order") !== order) card.style.setProperty("--battle-row-order", order);
+        if (card.style.getPropertyValue("--battle-column") !== column) card.style.setProperty("--battle-column", column);
         if (card.dataset.previewRow !== row) card.dataset.previewRow = row;
       }
       if (party.dataset.frontCount !== String(front)) party.dataset.frontCount = String(front);
