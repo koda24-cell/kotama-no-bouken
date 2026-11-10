@@ -114,13 +114,16 @@ export function createB5AncientGate(THREE,options={}){
   const stoneBeam=fracturedStone(x,y,0,w,.78,2.1,stone,1);stoneBeam.rotation.z=ang;
   weatheredCore(x,y+.46,-.02,w+.12,.18,2.3,trim).rotation.z=ang;
  }
- // Rounded, recessed fragmentary opening beneath the surviving left lintel.
- // Short shallow curve, not a full triangular gateway.
- for(let i=0;i<9;i++){
-  const t=i/8,ang=Math.PI*(1-t);
-  const x=-2.55+1.45*Math.cos(ang),y=8.55+1.05*Math.sin(ang);
-  const m=block(x,y,-1.07,.52,.25,.30,trim);
-  m.rotation.z=ang-Math.PI/2;
+ // Thick broken arch shoulders grow directly out of each pier.
+ // The missing centre remains open, matching the ruined lintel silhouette.
+ for(const side of [-1,1]){
+  const x=side*3.75;
+  const shoulder=weatheredCore(x-side*.63,8.55,0,1.65,1.48,1.88,stone);
+  shoulder.rotation.z=side*.14;
+  const upper=weatheredCore(x-side*1.42,9.18,0,1.72,1.28,1.88,stone);
+  upper.rotation.z=side*.32;
+  const broken=fracturedStone(x-side*1.91,9.46,0,1.22,1.06,1.88,cut,1);
+  broken.rotation.z=side*.36;
  }
  // A collapsed right cornice creates a distinct asymmetric ruin silhouette.
  fracturedStone(4.8,8.9,-.18,1.7,.5,2.2,cut,1).rotation.z=-.17;
