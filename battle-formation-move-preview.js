@@ -18,13 +18,14 @@
     const ids = new Set(getParty().map(c => c.id));
     const defaults = id => rearJobs.has(id) ? "rear" : "front";
     const counts = {front:0,rear:0};
-    for (const id of ids) counts[data[id] === "front" || data[id] === "rear" ? data[id] : defaults(id)]++;
+    for (const id of ids) counts[defaults(id)]++;
     for (const [id,row] of Object.entries(data)) {
       if (!ids.has(id) || !["front","rear"].includes(row)) continue;
-      const previous = defaults(id);
-      if (previous === row) continue;
-      if (counts[row] > 3) continue;
+      const previous = positions.get(id) || defaults(id);
+      if (previous === row || counts[row] >= 3) continue;
       positions.set(id,row);
+      counts[previous]--;
+      counts[row]++;
     }
   };
 
