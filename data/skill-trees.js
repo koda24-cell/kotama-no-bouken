@@ -13,7 +13,7 @@ const skillTreeExtraSkills={
  knight:{node:"knight-defense-camp",skill:{id:"knight-defense-camp-skill",name:"防衛陣地",cost:7,target:"self",type:"defense-camp"}},
  healer:{node:"healer-line-heal",skill:{id:"healer-line-heal-skill",name:"ラインヒール",cost:20,target:"self",type:"line-heal"}},
  mage:{node:"mage-flare",skill:{id:"mage-flare-skill",name:"フレア",cost:15,target:"enemy",type:"level-flare",element:"炎"}},
- warrior:{node:"warrior-branch-a",skill:{id:"warrior-whirlwind",name:"腕封じの拳",cost:18,target:"enemy",type:"xj",bodyPart:"arm",xj:{kind:"sp",mult:1.0,element:"壊",fx:"slash",status:{type:"bindArm",chance:.45,turns:3}}}},
+ warrior:{node:"warrior-branch-a",skill:{id:"warrior-whirlwind",name:"腕封じの拳",cost:18,target:"enemy",type:"xj",bodyPart:"arm",xj:{kind:"sp",mult:1.0,element:"壊",fx:"slash",status:{type:"bindArm",chance:.65,turns:3}}}},
  samurai:{node:"samurai-branch-a",skill:{id:"samurai-iaido",name:"居合",cost:30,target:"enemy",type:"pierce"}}
 };
 const skillTreeBranchBSkills={
@@ -21,7 +21,7 @@ const skillTreeBranchBSkills={
  knight:{id:"knight-magic-guard-skill",name:"マジックガード",cost:3,target:"self",type:"magic-guard"},
  healer:{id:"healer-refresh-skill",name:"リフレッシュ",cost:5,target:"self",type:"refresh"},
  mage:{id:"mage-magic-bomb-skill",name:"マジックボム",cost:10,target:"enemy",type:"level-magic-bomb"},
- warrior:{id:"warrior-double-strike",name:"脚封じの拳",cost:18,target:"enemy",type:"xj",bodyPart:"arm",xj:{kind:"sp",mult:1.0,element:"壊",fx:"slash",status:{type:"bindLeg",chance:.45,turns:3}}},
+ warrior:{id:"warrior-double-strike",name:"脚封じの拳",cost:18,target:"enemy",type:"xj",bodyPart:"arm",xj:{kind:"sp",mult:1.0,element:"壊",fx:"slash",status:{type:"bindLeg",chance:.65,turns:3}}},
  samurai:{id:"samurai-sever",name:"斬鉄",cost:25,target:"enemy",type:"pierce"}
 };
 const skillTreeDerivedSkills={
@@ -29,6 +29,6 @@ const skillTreeDerivedSkills={
  knight:{id:"knight-full-guard-skill",name:"フルガード",cost:30,target:"self",type:"full-guard"},
  healer:{id:"healer-holy-light-skill",name:"聖なる光",cost:15,target:"allEnemies",type:"holy-light",element:"聖"},
  mage:{id:"mage-compression-skill",name:"術式圧縮",cost:10,target:"self",type:"compression"},
- warrior:{id:"warrior-overdrive",name:"頭封じの拳",cost:26,target:"enemy",type:"xj",bodyPart:"arm",xj:{kind:"sp",mult:1.35,element:"壊",fx:"slash",status:{type:"bindHead",chance:.35,turns:3}}},
+ warrior:{id:"warrior-overdrive",name:"頭封じの拳",cost:26,target:"enemy",type:"xj",bodyPart:"arm",xj:{kind:"sp",mult:1.35,element:"壊",fx:"slash",status:{type:"bindHead",chance:.55,turns:3}}},
  samurai:{id:"samurai-mugen",name:"秘剣・無双",cost:50,target:"enemy",type:"multiSlash"}
 };
