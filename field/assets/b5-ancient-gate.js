@@ -452,6 +452,22 @@ export function createB5AncientGate(THREE,options={}){
   polygonStone(x,y,-.06,w,.21,2.26,trim);
   polygonStone(x,y+.17,-.08,w*.88,.12,2.03,stone);
  }
+ // Settle the entire joined masonry structure into the ground as a single
+ // tilted ruin. The beam stays connected to both pillars. Floor rubble is
+ // created AFTER this grouping so it remains on the actual horizontal ground.
+ const settledMasonry=new THREE.Group();
+ settledMasonry.name='gate:leaning-masonry';
+ const builtPieces=[...group.children];
+ builtPieces.forEach(piece=>settledMasonry.attach(piece));
+ group.add(settledMasonry);
+ // Small believable lean; negative Y sinks both column bases into terrain.
+ const lean=Number.isFinite(options.lean)?Math.max(-.09,Math.min(.09,options.lean)):.045;
+ const burial=Number.isFinite(options.burial)?Math.max(.12,Math.min(.75,options.burial)):.38;
+ settledMasonry.rotation.z=lean;
+ settledMasonry.rotation.x=-.025;
+ settledMasonry.position.y=-burial;
+ group.userData.lean=lean;
+ group.userData.burial=burial;
  // Broken masonry lies on the floor, broad flat stones and scattered rubble.
  for(const [x,z,w,h,d,ang] of [
   [-5.0,1.5,1.7,.65,1.2,.09],[-4.25,2.2,1.3,.46,1.0,-.08],
