@@ -1794,7 +1794,6 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
 
 /* Battle screenshot QA: seven command rows must remain inside the left frame. */
 @media(min-width:900px) {
- #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command:not(.battle-preview-side-open *),
  #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail:not([hidden]) {
   height:375px!important;
   min-height:375px!important;
