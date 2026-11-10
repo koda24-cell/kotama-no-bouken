@@ -15,6 +15,16 @@
     const party = document.getElementById("battle-party");
     if (!battle || !party) return;
     battle.classList.add("battle-ui-preview");
+    // Preview-only rearrangement. Move the existing EVENT node instead of
+    // cloning it, preserving aria-live, tutorial selectors and log updates.
+    const bottom = document.getElementById("battle-bottom");
+    const eventWindow = battle.querySelector(".event-window");
+    const infoWindow = bottom?.querySelector(".command-info-window");
+    if (bottom && eventWindow && infoWindow) {
+      bottom.insertBefore(eventWindow, infoWindow);
+      bottom.classList.add("battle-preview-bottom");
+    }
+
     // Observe the existing renderer; only set CSS order, never replace cards or handlers.
     function updateRows() {
       const cards = Array.from(party.querySelectorAll(".battle-member"));
