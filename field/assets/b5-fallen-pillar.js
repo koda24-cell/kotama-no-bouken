@@ -54,7 +54,8 @@ export function createB5FallenPillar(THREE,options={}){
   ring(0.17,1.58,0.17);
   // Worn square base with its lower edge resting on the same ground.
   const base=mesh(G(new THREE.BoxGeometry(0.8,2.8,2.8)),stone,-0.34,1.4,0);
-  base.rotation.y=-0.035;
+  // Keep the base square to the shaft: front/back must have identical proportions.
+  // No view-dependent rotations or duplicated geometry.
   // Grounded rock geometry: every rock has a flat irregular footprint at y=0.
   // No spheres or tilted polyhedra with invisible floating bottoms.
   const rock=(x,z,sx,height,sz)=>{
@@ -99,7 +100,9 @@ export function createB5FallenPillar(THREE,options={}){
   for(let i=0;i<29;i++){
     const nearBreak=i<21;
     const x=nearBreak?5.5+rand()*3.7:0.5+rand()*6.0;
-    const side=rand()<0.5?-1:1;
+    // Mirrored left/right scattering preserves the approved FRONT silhouette
+    // while giving BACK the same ground-supported volume.
+    const side=i%2===0?-1:1;
     const z=side*(0.88+rand()*(nearBreak?1.25:0.85));
     const sx=0.16+rand()*(nearBreak?0.34:0.21);
     const sz=0.15+rand()*(nearBreak?0.34:0.21);
