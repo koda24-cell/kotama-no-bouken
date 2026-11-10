@@ -35,53 +35,50 @@ export function createB5BrokenStair(THREE,options={}){
    // Shallow stone courses on exposed risers, not bars sticking out.
    if(i%2===0){add(G(new THREE.BoxGeometry(0.055,0.055,width-0.45)),shade,x-run/2-0.005,h-0.15,0);}
  }
- // A single stone fracture: two broken cap edges, with a recessed
- // dark channel and irregular chipped shoulders. No thick ink-like line.
- // It crosses five treads and continues over the intervening risers.
- const fracture=M(new THREE.MeshStandardMaterial({color:0x27232b,roughness:1,side:THREE.DoubleSide}));
- const innerStone=M(new THREE.MeshStandardMaterial({color:0x514a54,roughness:1,side:THREE.DoubleSide,flatShading:true}));
- const chipped=M(new THREE.MeshStandardMaterial({color:0x9b949f,roughness:1,side:THREE.DoubleSide}));
- const crackZ=[3.20,3.30,3.13,3.45,3.28,3.58,3.43,3.65];
+ // The previous artificial crack is intentionally REMOVED.
+ // Surface fractures will be handled later in the stone textures.
+ const chipped=M(new THREE.MeshStandardMaterial({color:0x918a94,roughness:1,side:THREE.DoubleSide,flatShading:true}));
  const surface=(pts,mat)=>{
    const g=G(new THREE.BufferGeometry());
    g.setAttribute('position',new THREE.Float32BufferAttribute(pts.flat(),3));
    g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();
    add(g,mat,0,0,0);
  };
- // V-shaped trough: a dark bottom lies below chipped edges, with two
- // inward-sloping exposed rock walls. All surfaces follow the stone step.
- const seam=(a,b,w)=>{
-   const dx=b[0]-a[0],dz=b[2]-a[2],d=Math.hypot(dx,dz)||1;
-   const ox=-dz/d,oz=dx/d;
-   const point=(p,side,dist,y)=>[p[0]+ox*side*dist,y,p[2]+oz*side*dist];
-   const topY=a[1],bottomY=topY-0.032;
-   const l0=point(a,1,w*0.5,topY),l1=point(b,1,w*0.5,topY);
-   const r0=point(a,-1,w*0.5,topY),r1=point(b,-1,w*0.5,topY);
-   const il0=point(a,1,w*0.18,bottomY),il1=point(b,1,w*0.18,bottomY);
-   const ir0=point(a,-1,w*0.18,bottomY),ir1=point(b,-1,w*0.18,bottomY);
-   surface([l0,l1,il1,il0],innerStone);
-   surface([ir0,ir1,r1,r0],innerStone);
-   surface([il0,il1,ir1,ir0],fracture);
-   // Tiny, uneven bright fracture lips, not continuous white outlines.
-   surface([point(a,1,w*0.50,topY+0.002),point(b,1,w*0.54,topY+0.002),
-     point(b,1,w*0.64,topY+0.003),point(a,1,w*0.61,topY+0.003)],chipped);
+ // Localized, uneven stone surface. Keep the stair geometry and walking
+ // silhouette intact: no uniform noise across every tread.
+ // These shallow faceted patches sit ON the existing 0.14-high slab cap.
+ const weathered=M(new THREE.MeshStandardMaterial({color:0x67616b,roughness:1,flatShading:true,side:THREE.DoubleSide}));
+ const wornEdge=M(new THREE.MeshStandardMaterial({color:0x817985,roughness:1,flatShading:true,side:THREE.DoubleSide}));
+ const patch=(i,x,z,sx,sz,height,mat)=>{
+   const y=(i+1)*rise+0.14;
+   const vertices=[
+     x-sx*.55,y+0.001,z-sz*.40,
+     x+sx*.38,y+0.001,z-sz*.52,
+     x+sx*.56,y+0.001,z+sz*.31,
+     x-sx*.28,y+0.001,z+sz*.54,
+     x+sx*.06,y+height,z-sz*.07
+   ];
+   const g=G(new THREE.BufferGeometry());
+   g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+   g.setIndex([0,1,4,1,2,4,2,3,4,3,0,4]);g.computeVertexNormals();
+   add(g,mat,0,0,0);
  };
- for(let i=1;i<=5;i++){
-   const h=(i+1)*rise,front=i*run-steps*run/2,back=(i+1)*run-steps*run/2;
-   const z0=crackZ[i],z1=crackZ[i+1],mid=(front+back)/2;
-   const y=h+0.143;
-   seam([front+0.012,y,z0],[mid,y,(z0+z1)/2+0.075],0.16);
-   seam([mid,y,(z0+z1)/2+0.075],[back-0.012,y,z1],0.11);
-   if(i<5){
-     // Thin irregular split on the exposed vertical riser at x=back.
-     const nh=(i+2)*rise;
-     const x=back+0.014;
-     surface([[x,h+0.14,z1-0.075],[x,h+0.14,z1+0.075],
-       [x,nh+0.14,z1+0.055],[x,nh+0.14,z1-0.045]],fracture);
-   }
+ // Uneven clusters: a few worn regions, separated by largely intact stone.
+ const wornZones=[
+   [0,-6.0,1.15,.85,.024],[0,5.9,.7,.58,.015],
+   [1,-4.7,.95,1.0,.033],[2,6.2,1.25,.85,.039],
+   [3,-6.8,.85,.72,.025],[3,4.6,1.15,.9,.031],
+   [4,6.8,1.05,.88,.028],[5,-5.5,1.28,1.15,.042],
+   [6,5.6,.95,.95,.024]
+ ];
+ for(const [i,z,sx,sz,height] of wornZones){
+   const x=(i+0.5)*run-steps*run/2+(rand()-.5)*0.35;
+   patch(i,x,z,sx,sz,height,weathered);
+   // Sparse small raised chips around the same damaged area.
+   if(i%2===0)patch(i,x+0.23,z+0.42,sx*.37,sz*.43,height*.48,wornEdge);
  }
  // Missing tile faces: dark recessed patches with irregular outlines.
- // Confined to exposed stone, leaving the red carpet untouched.
+ // Localized to exposed stone; no carpet is present.
  const recess=M(new THREE.MeshStandardMaterial({color:0x36313b,roughness:0.98,side:THREE.DoubleSide}));
  const tileScars=[
    [0,-5.75,0.75,0.70],[1,-6.7,0.95,0.62],
@@ -90,7 +87,7 @@ export function createB5BrokenStair(THREE,options={}){
  ];
  for(const [i,z,sx,sz] of tileScars){
    const h=(i+1)*rise,x=(i+0.5)*run-steps*run/2;
-   const y=h+0.179;
+   const y=h+0.141;
    surface([[x-sx*0.48,y,z-sz*0.46],[x+sx*0.43,y,z-sz*0.36],
      [x+sx*0.50,y,z+sz*0.42],[x-sx*0.32,y,z+sz*0.50]],recess);
    // Loose triangular shard, resting on its own tread.
