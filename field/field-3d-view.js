@@ -88,6 +88,7 @@ function ensureRenderer() {
     const r = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.3; r.outputColorSpace = THREE.SRGBColorSpace;
     r.setPixelRatio(g.high ? Math.min(2, devicePixelRatio || 1) : Math.min(1.25, devicePixelRatio || 1));
+    r.info.autoReset = false;
     g.renderer = r; g.canvas = r.domElement; g.canvas.className = 'field-3d-canvas'; g.canvas.setAttribute('aria-hidden', 'true');
     g.scene = new THREE.Scene();
     g.scene.background = new THREE.Color(0x070d11); g.scene.fog = new THREE.FogExp2(0x0c1a20, 0.042);
@@ -148,7 +149,7 @@ function applyEnv(area, env) {
 function loadTheme2() {
   // 以前の階層から戻った場合にも、破棄済みのテーマを再利用しない。
   if (g.theme?.area === 2) return Promise.resolve(g.theme);
-  return import('./field-3d-b2-water.js?v=20261109-b2').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES }));
+  return import('./field-3d-b2-water.js?v=20261110-b2q').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES }));
 }
 function loadTheme3() {
   if (g.theme?.area === 3) return Promise.resolve(g.theme);
@@ -540,6 +541,7 @@ function frame() {
   const ne = nk && g.entries.find((e) => e.o.key === nk);
   if (ne) { g.near.visible = true; g.near.position.set(ne.at.x, ne.at.y + 0.9 + Math.sin(now / 300) * 0.08, ne.at.z); g.near.rotation.y = now / 600; }
   else g.near.visible = false;
+  g.renderer.info.reset();   // 後処理（ブルーム）の分も含めて1フレームの描画数を数える
   if (g.composer) g.composer.render(); else g.renderer.render(g.scene, g.camera);
   // Only dismiss the full-screen loading state after the first actual 3D frame.
   window.Kotama3DLoading?.ready();
@@ -555,7 +557,9 @@ function setPreview(n, on) {
   g.preview = readPreview(); if (on) g.themeFailed = false;
   if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
 }
-window.KotamaField3D = { active, input, build, frame, toggle, isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }) };
+window.KotamaField3D = { active, input, build, frame, toggle, isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
+  // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）
+  stats: () => (g.renderer ? { calls: g.renderer.info.render.calls, triangles: g.renderer.info.render.triangles, geometries: g.renderer.info.memory.geometries, textures: g.renderer.info.memory.textures, lights: g.lights.length } : null) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる
 if (fieldOk() && typeof state !== 'undefined' && state.screen === 'field') build();
 else applyModeSafe();

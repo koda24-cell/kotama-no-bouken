@@ -3,7 +3,7 @@
 // ・tools/b1-3d/game-test.js と同じく、リポジトリを http で配信し、CDN の three.js をローカルの r180 に差し替える。
 // ・URL に ?f3d=b2 を付けて第2階層の試験表示を有効にし、3フロアの見どころを撮る。
 // ・persistAutoSave は無効（ローカルのセーブを汚さない）。localStorage の試験表示の設定は書かない。
-// ・最後に、試験表示を付けずに第2階層へ入ると2D表示のままであること（通常の進行に影響しない）を確かめる。
+// ・各撮影時に描画回数・三角形数（KotamaField3D.stats）を記録し、最後に URL 指定なしでも第2階層が3Dになることを確かめる。
 const path = require('path'), fs = require('fs'), http = require('http');
 const { chromium } = require(process.env.PLAYWRIGHT || '/opt/node-tools/node_modules/playwright-core');
 const ROOT = path.resolve(__dirname, '../..'), THREE_DIR = process.env.THREE_DIR || '/tmp/three', PORT = Number(process.env.PORT || 8774);
@@ -39,7 +39,7 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
   const p = await open('?f3d=b2');
   const skip = async () => { await p.evaluate(() => { for (let i = 0; i < 40; i++) { if (fieldChoiceState) { fieldChoiceKey('z'); continue; } if (fieldDialogTyping) { fieldDialogTyping(); continue; } if (fieldDialogAdvance) { const r = fieldDialogAdvance; fieldDialogAdvance = null; r(); continue; } } document.querySelectorAll('#story-event').forEach((e) => { if (!e.hidden) e.querySelector('button')?.click(); }); }); await p.waitForTimeout(250); };
   const settle = async () => { for (let i = 0; i < 25; i++) { const busy = await p.evaluate(() => fieldState.lock || !!fieldDialogAdvance || !!fieldChoiceState || !!fieldDialogTyping); if (!busy) return; await skip(); await p.waitForTimeout(400); } };
-  const shot = async (name) => { await p.waitForTimeout(1600); await p.screenshot({ path: path.join(out, name + '.jpg'), type: 'jpeg', quality: 84, timeout: 120000 }); };
+  const stats = {}; const shot = async (name) => { await p.waitForTimeout(1600); await p.screenshot({ path: path.join(out, name + '.jpg'), type: 'jpeg', quality: 84, timeout: 120000 }); stats[name] = await p.evaluate(() => window.KotamaField3D.stats && window.KotamaField3D.stats()); };
   const st = () => p.evaluate(() => ({ tile: fieldPlayerTile(), dir: fieldState.dir, active: window.KotamaField3D.active(), near: fieldState.nearKey, floor: fieldState.floor, area: fieldState.area }));
   const key = async (k, n = 1) => { for (let i = 0; i < n; i++) { await p.keyboard.down(k); await p.waitForTimeout(60); await p.keyboard.up(k); await p.waitForTimeout(700); await skip(); } };
   const waitActive = async (label) => { for (let i = 0; i < 240; i++) { if (await p.evaluate(() => window.KotamaField3D.active())) return true; await p.waitForTimeout(500); } errs.push(label + ' で 3D が有効にならない'); return false; };
@@ -55,12 +55,13 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
     if (r) await goto(...r);
     return r;
   };
-  const toFloor = async (f) => { await p.evaluate((f) => { fieldState.floor = f; fieldState.positioned = false; fieldState.built = ''; fieldShow(); }, f); for (let i = 0; i < 4; i++) await skip(); await waitActive(`2-${f + 1}F`); await p.waitForTimeout(1200); };
+  const buildMs = {}; const toFloor = async (f) => { const t0 = Date.now(); await p.evaluate((f) => { fieldState.floor = f; fieldState.positioned = false; fieldState.built = ''; fieldShow(); }, f); for (let i = 0; i < 4; i++) await skip(); await waitActive(`2-${f + 1}F`); buildMs[`2-${f + 1}F`] = Date.now() - t0; await p.waitForTimeout(1200); };
   const info = () => p.evaluate(() => window.KotamaField3D.themeInfo());
   const objs = () => p.evaluate(() => fieldArea().objects.map((o) => ({ kind: o.kind, id: o.id, tx: o.tx, ty: o.ty, onWall: !!o.onWall, dir: o.dir })));
   const visitFalls = async (prefix) => {
     const inf = await info();
     for (const [i, f] of (inf.falls || []).slice(0, 2).entries()) { const [tx, ty] = f.cell.split(',').map(Number); await goto(tx, ty, f.wall); await shot(`${prefix}_waterfall_${i + 1}`); }
+    if (inf.atrium) { const { tx, ty } = inf.atrium; await goto(tx, ty + 1, 'up'); await shot(`${prefix}_atrium_from_south`); await goto(tx, ty, 'up'); await shot(`${prefix}_atrium_center`); }
     if (inf.bridge) { const bd = inf.bridge.ry === 0 ? 'right' : 'down'; const [dx, dy] = bd === 'right' ? [-1, 0] : [0, -1]; await goto(inf.bridge.tx + dx, inf.bridge.ty + dy, bd); await shot(`${prefix}_bridge`); }
     return inf;
   };
@@ -103,15 +104,13 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
   await p.evaluate(() => { fieldState.flags['floor:1-0'] = true; fieldEnterArea(1, { floor: 0, adminSkip: true }); }); for (let i = 0; i < 6; i++) await skip();
   await waitActive('1F（第2階層のあと）'); await p.waitForTimeout(1500); await note('back-to-b1'); await shot('b1_after_b2');
 
-  // ---- 試験表示なしでは第2階層は2D表示のまま
+  // ---- URL 指定なしでも第2階層は3Dが標準（PR #18x 以降）
   const p2 = await open('');
   await p2.evaluate(() => { fieldEnterArea(2, { floor: 0, adminSkip: true }); });
-  await p2.waitForTimeout(5000);
-  report.noPreview = await p2.evaluate(() => ({ area: fieldState.area, active3d: window.KotamaField3D.active(), is3dClass: document.getElementById('field').classList.contains('is-3d'), preview: window.KotamaField3D.previewOn(2), ls: localStorage.getItem('kotama.field3d.preview') }));
-  await p2.screenshot({ path: path.join(out, 'b2_no_preview_2d.jpg'), type: 'jpeg', quality: 80 });
-
-  report.errors = errs; report.missing = [...new Set(missing)]; report.log = log;
+  for (let i = 0; i < 120; i++) { if (await p2.evaluate(() => window.KotamaField3D.active())) break; await p2.waitForTimeout(500); }
+  report.defaultMode = await p2.evaluate(() => ({ area: fieldState.area, active3d: window.KotamaField3D.active() }));
+  report.errors = errs; report.stats = stats; report.buildMs = buildMs; report.missing = [...new Set(missing)]; report.log = log;
   fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
-  console.log(JSON.stringify({ errors: errs, missing: report.missing, noPreview: report.noPreview, floors: report.floors.map((f) => ({ floor: f.floor, meshCount: f.meshCount, omitted: f.omitted, drawGroups: f.drawGroups, ripples: f.ripples, mists: f.mists, falls: f.falls, bridge: f.bridge })) }, null, 1));
+  console.log(JSON.stringify({ errors: errs, missing: report.missing, defaultMode: report.defaultMode, buildMs, stats, floors: report.floors.map((f) => ({ floor: f.floor, meshCount: f.meshCount, omitted: f.omitted, drawGroups: f.drawGroups, ripples: f.ripples, mists: f.mists, falls: f.falls, bridge: f.bridge })) }, null, 1));
   await b.close(); srv.close();
 })().catch((e) => { console.error(e); process.exit(1); });
