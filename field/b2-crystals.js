@@ -16,11 +16,12 @@ import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
 
 // 色：base＝根元（乳白）、tip＝先端、core＝芯の光
 export const CRYSTAL_PALETTES = {
-  // 先端（tip）は濃く深い色。根元の乳白から先へ向かって一気に濃くなる
-  white: { base: 0xf7fbff, tip: 0xbcdcff, core: 0x9cc4ea },    // 透明な水晶（先端だけ薄い青）
-  cyan: { base: 0xd2f6ff, tip: 0x0096d6, core: 0x0a8cc8 },     // 水色（先端は深い水色）
-  violet: { base: 0xeadcff, tip: 0x5a12c8, core: 0x6a2ad8 },   // 紫（先端は濃いアメシスト）
-  blue: { base: 0xd8e4ff, tip: 0x1230c8, core: 0x2244d8 },     // 青（先端は群青）
+  // body：塊全体の色（濃く彩度の高い色。輪郭がはっきりし、ひびの光との差がつく）
+  // tip：結晶の先端だけの色（前回の確認で良かった色味）
+  white: { base: 0xf7fbff, body: 0x8fb8e6, tip: 0xbcdcff, core: 0x9cc4ea },    // 透明な水晶
+  cyan: { base: 0xd2f6ff, body: 0x0070c8, tip: 0x0096d6, core: 0x0a8cc8 },     // 水色
+  violet: { base: 0xeadcff, body: 0x6400c8, tip: 0x5a12c8, core: 0x6a2ad8 },   // 紫
+  blue: { base: 0xd8e4ff, body: 0x0a1ec8, tip: 0x1230c8, core: 0x2244d8 },     // 青
 };
 export const CRYSTAL_PARTS = ['shell', 'cloudy', 'fracture', 'core', 'rock'];
 
@@ -74,7 +75,7 @@ function quartzPoint(T, r, seed, kind, twin) {
   }
   if (twin) { const apex2 = V(-apex.x, -tipH * 0.9, -apex.z); for (let i = 0; i < 6; i++) T.add(faceKind(i + 12), ring0[(i + 1) % 6], apex2, ring0[i]); }
   // 芯：透ける面のある結晶だけ、中に細い発光の芯
-  if (kind === 'clear') {
+  if (false) {   // 芯は使わない（ひびの無い所から内側の光を漏らさない）
     const cr = r * 0.45, ch = bodyH * 0.92;
     for (let i = 0; i < 6; i++) {
       const a0 = (i / 6) * 6.283, a1 = ((i + 1) / 6) * 6.283;
@@ -86,15 +87,15 @@ function quartzPoint(T, r, seed, kind, twin) {
 }
 
 // 頂点の色：根元（y の低い所）は乳白、高い所ほど先端の色。割れ口は白寄り、芯は暗めの先端色
-function paint(geo, pal, kind, yMin, yMax) {
-  const p = geo.attributes.position, col = new Float32Array(p.count * 3);
-  const a = new THREE.Color(pal.base), b = new THREE.Color(kind === 'core' ? pal.core : pal.tip), c = new THREE.Color(), w = new THREE.Color(0xffffff);
+// 頂点の色：塊全体を濃い body 色で塗り、結晶の先端（結晶ごとの高さの上2割）だけ tip 色へ。
+// 割れ口は body を少し明るく。高さは結晶ごとの自分の座標（lpos.y）で見る
+function paint(geo, pal, kind) {
+  const p = geo.attributes.position, L = geo.attributes.lpos, col = new Float32Array(p.count * 3);
+  const body = new THREE.Color(pal.body), tip = new THREE.Color(pal.tip), c = new THREE.Color(), w = new THREE.Color(0xffffff);
   for (let i = 0; i < p.count; i++) {
-    const t = THREE.MathUtils.clamp((p.getY(i) - yMin) / Math.max(1e-3, yMax - yMin), 0, 1);
-    if (kind === 'core') { c.copy(a).lerp(b, 0.8 + t * 0.2).multiplyScalar(0.7 + t * 0.25); }
-    else if (kind === 'fracture') { c.copy(a).lerp(b, Math.pow(t, 0.7) * 0.5).lerp(w, 0.35); }
-    else if (kind === 'cloudy') { c.copy(a).lerp(b, 0.3 + Math.pow(t, 0.6) * 0.7); }
-    else c.copy(a).lerp(b, 0.4 + Math.pow(t, 0.5) * 0.6);   // 根元から色を残し、上半分はほぼ先端の濃い色
+    const y = L ? L.getY(i) : p.getY(i), t = THREE.MathUtils.smoothstep(y, 0.78, 0.98);
+    c.copy(body).lerp(tip, t);
+    if (kind === 'fracture') c.lerp(w, 0.18);
     col.set([c.r, c.g, c.b], i * 3);
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
@@ -180,7 +181,7 @@ export function makeCrystalCluster(seed, paletteName, size = 'large') {
     }
   }
   // 色は群晶全体の高さに対して付ける（根元が乳白、上ほど濃い）
-  for (const k of Object.keys(T.b)) { const g = toGeo(T.b[k], T.l[k]); if (g) out[k].push(paint(g, pal, k, 0, size === 'massive' ? 0.9 : 1.0)); }
+  for (const k of Object.keys(T.b)) { const g = toGeo(T.b[k], T.l[k]); if (g) out[k].push(paint(g, pal, k)); }
   return out;
 }
 
@@ -210,18 +211,26 @@ function crystalShader(m, key, o) {
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvL = lpos;');
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vL;\n' + CRYSTAL_GLSL)
       .replace('#include <color_fragment>', `#include <color_fragment>
-        vec3 cv = _vor(vec3(vL.x * 4.2, vL.y * 2.1, vL.z * 4.2) + vec3(0.0, sin(vL.x * 3.0 + vL.z * 2.0) * 0.35, 0.0));   // ゆがめて不規則な大きめの斑に
-        vec3 cv2 = _vor(vec3(vL.x * 11.0, vL.y * 6.0, vL.z * 11.0));
-        float crack = ((1.0 - smoothstep(0.0, 0.04, cv.y)) * step(0.4, cv.z) + (1.0 - smoothstep(0.0, 0.025, cv2.y)) * 0.3 * step(0.7, cv.z));   // 光のひび（所々だけ。全体を網目にしない）
-        float dark = step(${o.darkCut.toFixed(2)}, cv.z) * (1.0 - crack);   // 暗い内包物の斑
-        float streak = pow(0.5 + 0.5 * sin(vL.x * 31.0 + vL.z * 23.0 + sin(vL.y * 9.0) * 1.5), 8.0);   // 長さ方向の光の筋
-        diffuseColor.rgb *= mix(${o.body.toFixed(2)}, ${(o.body * 0.25).toFixed(2)}, dark);`)
+        float hy = clamp(vL.y, 0.0, 1.0);
+        // ひびの太さ：根元が一番太く、上へ行くほど細い。所々の細胞の境目だけがひびになる
+        float w = mix(${o.wRoot.toFixed(3)}, 0.012, smoothstep(0.0, 0.85, hy));
+        vec3 cv = _vor(vec3(vL.x * 3.6, vL.y * 1.8, vL.z * 3.6) + vec3(0.0, sin(vL.x * 3.0 + vL.z * 2.0) * 0.35, 0.0));
+        vec3 cv2 = _vor(vec3(vL.x * 9.0, vL.y * 5.0, vL.z * 9.0));
+        float big = (1.0 - smoothstep(0.0, w, cv.y)) * step(0.3, cv.z);
+        float fine = (1.0 - smoothstep(0.0, w * 0.35, cv2.y)) * step(0.62, cv2.z) * 0.7;
+        float crack = max(big, fine);
+        float halo = (1.0 - smoothstep(0.0, w * 2.5, cv.y)) * step(0.3, cv.z) * 0.22;   // ひびのまわりににじむ光
+        // ひびの光の色と強さ：根元は青、中心（高さ0.4付近）が一番明るく白に近い、先端へ弱まる
+        float mid = exp(-pow((hy - 0.42) / 0.16, 2.0));
+        vec3 crackCol = mix(vec3(0.08, 0.32, 1.0), vec3(0.8, 0.96, 1.0), mid);
+        float crackI = mix(1.0, 2.2, mid) * (1.0 - smoothstep(0.75, 1.0, hy) * 0.65) * ${o.crack.toFixed(2)};
+        // 本体は暗く濃く（彩度を上げる）：明るさを抑え、灰色に寄った分を色の方向へ押し戻す
+        vec3 bc = diffuseColor.rgb * 0.62; float bl = dot(bc, vec3(0.299, 0.587, 0.114)); bc = clamp(mix(vec3(bl), bc, 1.35), 0.0, 1.0);
+        diffuseColor.rgb = mix(bc, crackCol, crack * 0.5);`)
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
         { float facing = clamp(abs(dot(normal, normalize(vViewPosition))), 0.0, 1.0);
-          float bell = sin(3.14159 * clamp(vL.y, 0.0, 1.0));
-          float center = pow(facing, 4.0) * (0.25 + 0.75 * bell);   // 正面を向いた面の中ほどが最も明るい
-          float glow = ${o.base.toFixed(2)} + center * ${o.center.toFixed(2)} + crack * ${o.crack.toFixed(2)} + streak * 0.18 + pow(1.0 - facing, 2.2) * ${o.rim.toFixed(2)};
-          totalEmissiveRadiance += vColor.rgb * glow * (1.0 - dark * 0.75) + vec3(1.0) * center * crack * ${o.white.toFixed(2)}; }`);
+          // ひびの無い所はほぼ光らない（内側の光を漏らさない）。輪郭のふちだけ本体の色でわずかに光る
+          totalEmissiveRadiance += crackCol * (crack + halo) * crackI + vColor.rgb * (${o.base.toFixed(2)} + pow(1.0 - facing, 3.0) * ${o.rim.toFixed(2)}); }`);
   };
   m.customProgramCacheKey = () => key;
   return m;
@@ -231,13 +240,12 @@ function crystalShader(m, key, o) {
 // shell：透明な面（半透明・強い映り込み） cloudy：濁った面（不透明、内側から光る） fracture：割れ口（白っぽくざらつく）
 // core：透明な結晶の芯（光源に関係なく光る） rock：母岩
 export function makeCrystalMaterials() {
-  const shell = crystalShader(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.05, metalness: 0.0, envMapIntensity: 1.2, transparent: true, opacity: 0.78, flatShading: true }), 'b2crystalShell2',
-    { base: 0.07, center: 1.7, crack: 0.75, rim: 0.3, white: 0.6, body: 0.45, darkCut: 0.6 });
-  const cloudy = crystalShader(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.3, metalness: 0.0, envMapIntensity: 1.0, flatShading: true }), 'b2crystalCloudy2',
-    { base: 0.09, center: 1.0, crack: 0.6, rim: 0.22, white: 0.3, body: 0.5, darkCut: 0.55 });
-  const fracture = crystalShader(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.62, metalness: 0.0, envMapIntensity: 0.8, flatShading: true }), 'b2crystalFracture2',
-    { base: 0.1, center: 0.35, crack: 0.9, rim: 0.15, white: 0.35, body: 0.75, darkCut: 0.85 });
-  const core = new THREE.MeshBasicMaterial({ vertexColors: true });   // 不透明（先に描かれ、半透明の殻を通して見える）
-  const rock = new THREE.MeshStandardMaterial({ color: 0x5a7690, roughness: 0.85, metalness: 0.0, flatShading: true });
+  // 3つとも不透明。つやの違いで面ごとの表情を変える（shell：つやつや／cloudy：少し曇る／fracture：割れ口でざらつき、ひびが多い）
+  const mk = (rough, env, key, o) => crystalShader(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: rough, metalness: 0.0, envMapIntensity: env, flatShading: true }), key, o);
+  const shell = mk(0.14, 0.75, 'b2crystalShell4', { wRoot: 0.11, crack: 0.85, base: 0.1, rim: 0.3 });
+  const cloudy = mk(0.32, 0.55, 'b2crystalCloudy4', { wRoot: 0.1, crack: 0.75, base: 0.1, rim: 0.22 });
+  const fracture = mk(0.6, 0.45, 'b2crystalFracture4', { wRoot: 0.14, crack: 1.05, base: 0.11, rim: 0.12 });
+  const core = new THREE.MeshBasicMaterial({ vertexColors: true });
+  const rock = new THREE.MeshStandardMaterial({ color: 0x4a6278, roughness: 0.85, metalness: 0.0, flatShading: true });
   return { shell, cloudy, fracture, core, rock };
 }
