@@ -171,6 +171,53 @@ export function createB3UrbanProps(THREE) {
     }
     return g;
   }
+  // Three distinct city-block silhouettes, with deliberately missing floors and exposed frames.
+  function ruinedBuilding(variant=0) {
+    const v=((variant%3)+3)%3, g=group('ruined_building_'+v);
+    const floors=v===0?4:v===1?3:5, width=v===1?3.6:4.5, depth=v===2?2.7:3.4;
+    for(let f=0;f<floors;f++) {
+      const y=f*1.5, broken=v===0?(f>=2):v===1?(f===1||f===2):(f>=3);
+      // Floor slabs break away in large, visibly asymmetric sections.
+      if(!broken) add(g,cube,concrete,0,y+.12,0,width,.24,depth);
+      else {
+        const left=add(g,cube,concrete,-width*.3,y+.12,-depth*.1,width*.38,.24,depth*.75);
+        left.rotation.z=(f%2?-.09:.12);
+        if(f%2===0) add(g,cube,concrete,width*.34,y+.02,depth*.24,width*.24,.2,depth*.28).rotation.x=.3;
+      }
+      // Exposed steel columns and broken transverse girders.
+      for(const x of [-width*.43,width*.43]) for(const z of [-depth*.4,depth*.4]) {
+        if(broken&&x>0&&z>0&&f>=floors-2)continue;
+        beam(g,[x,y+.15,z],[x+(broken?.12:0),y+1.45-(broken&&x>0?.35:0),z],.13);
+      }
+      for(const z of [-depth*.4,depth*.4]) {
+        if(!broken||z<0) beam(g,[-width*.43,y+1.4,z],[width*(broken?.02:.43),y+1.4,z],.095);
+      }
+      // Remaining wall chunks: empty openings, not solid box buildings.
+      if(f===0||!broken) {
+        for(const x of [-width*.38,width*.38]) {
+          add(g,cube,concrete,x,y+.65,-depth*.43,width*.2,.9,.18);
+        }
+        add(g,cube,concrete,0,y+1.22,-depth*.43,width*.65,.2,.18);
+      } else {
+        add(g,cube,concrete,-width*.37,y+.6,-depth*.43,width*.23,.85,.18).rotation.z=.18;
+      }
+    }
+    // Fallen slab, collapsed diagonal beams and rubble at the base.
+    add(g,cube,concrete,width*.54,.38,-depth*.45,width*.7,.3,depth*.65).rotation.z=.37;
+    beam(g,[width*.37,.3,depth*.28],[width*.86,2.4,depth*.6],.16);
+    for(let i=0;i<8;i++) {
+      const x=(i%4-1.5)*.55+width*.38,z=(Math.floor(i/4)-.5)*.75-depth*.22;
+      const piece=add(g,cube,i%3===0?metal:concrete,x,.18+(i%3)*.12,z,.4+(i%3)*.19,.25,.38);
+      piece.rotation.set(.12*i,.31*i,.16*i);
+    }
+    // Structural tree roots wrap through the open building, not just painted vines.
+    if(v!==1) {
+      beam(g,[-width*.48,.1,depth*.3],[-width*.32,1.5,depth*.33],.17,growth);
+      beam(g,[-width*.32,1.5,depth*.33],[-width*.1,2.8,depth*.35],.13,growth);
+      for(const i of [-1,1]) beam(g,[-width*.1,2.8,depth*.35],[-width*.1+i*.8,3.6,depth*.35+i*.3],.08,growth);
+    }
+    return g;
+  }
   function dispose(){geos.forEach(x=>x.dispose());[concrete,metal,dark,growth].forEach(x=>x.dispose());}
-  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,dispose};
+  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,dispose};
 }
