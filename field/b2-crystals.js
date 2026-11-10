@@ -19,9 +19,9 @@ export const CRYSTAL_PALETTES = {
   // body：塊全体の色（濃く彩度の高い色。輪郭がはっきりし、ひびの光との差がつく）
   // tip：結晶の先端だけの色（前回の確認で良かった色味）
   white: { base: 0xf7fbff, body: 0x8fb8e6, tip: 0xbcdcff, core: 0x9cc4ea },    // 透明な水晶
-  cyan: { base: 0xd2f6ff, body: 0x0070c8, tip: 0x0096d6, core: 0x0a8cc8 },     // 水色
-  violet: { base: 0xeadcff, body: 0x6400c8, tip: 0x5a12c8, core: 0x6a2ad8 },   // 紫
-  blue: { base: 0xd8e4ff, body: 0x0a1ec8, tip: 0x1230c8, core: 0x2244d8 },     // 青
+  cyan: { base: 0xd2f6ff, body: 0x1a8ad0, tip: 0x0096d6, core: 0x0a8cc8 },     // 水色
+  violet: { base: 0xeadcff, body: 0x6a30d0, tip: 0x5a12c8, core: 0x6a2ad8 },   // 紫
+  blue: { base: 0xd8e4ff, body: 0x2846cc, tip: 0x1230c8, core: 0x2244d8 },     // 青
 };
 export const CRYSTAL_PARTS = ['shell', 'cloudy', 'fracture', 'core', 'rock'];
 
@@ -219,18 +219,24 @@ function crystalShader(m, key, o) {
         float big = (1.0 - smoothstep(0.0, w, cv.y)) * step(0.3, cv.z);
         float fine = (1.0 - smoothstep(0.0, w * 0.35, cv2.y)) * step(0.62, cv2.z) * 0.7;
         float crack = max(big, fine);
-        float halo = (1.0 - smoothstep(0.0, w * 2.5, cv.y)) * step(0.3, cv.z) * 0.22;   // ひびのまわりににじむ光
+        float halo = (1.0 - smoothstep(0.0, w * 2.5, cv.y)) * step(0.3, cv.z) * 0.18;   // ひびのまわりににじむ光
         // ひびの光の色と強さ：根元は青、中心（高さ0.4付近）が一番明るく白に近い、先端へ弱まる
-        float mid = exp(-pow((hy - 0.42) / 0.16, 2.0));
-        vec3 crackCol = mix(vec3(0.08, 0.32, 1.0), vec3(0.8, 0.96, 1.0), mid);
-        float crackI = mix(1.0, 2.2, mid) * (1.0 - smoothstep(0.75, 1.0, hy) * 0.65) * ${o.crack.toFixed(2)};
-        // 本体は暗く濃く（彩度を上げる）：明るさを抑え、灰色に寄った分を色の方向へ押し戻す
-        vec3 bc = diffuseColor.rgb * 0.62; float bl = dot(bc, vec3(0.299, 0.587, 0.114)); bc = clamp(mix(vec3(bl), bc, 1.35), 0.0, 1.0);
-        diffuseColor.rgb = mix(bc, crackCol, crack * 0.5);`)
+        float mid = exp(-pow((hy - 0.42) / 0.2, 2.0));
+        // ひびの光は結晶自身の色（中心ほど少し明るい同じ色。白にはしない）。根元はやや暗い同じ色
+        vec3 own = vColor.rgb;
+        vec3 crackCol = own * (0.75 + 0.55 * mid) + vec3(0.06) * mid;
+        float crackI = mix(0.4, 0.95, mid) * (1.0 - smoothstep(0.75, 1.0, hy) * 0.6) * ${o.crack.toFixed(2)};
+        // 本体：大きな斑ごとに面の明るさを変え（明るい面・暗い面が混ざる）、所々に暗い内包物
+        float patchK = 0.78 + 0.42 * cv.z;
+        float inclusion = step(0.84, cv.z) * (1.0 - big);
+        vec3 bc = own * patchK * mix(1.0, 0.45, inclusion);
+        diffuseColor.rgb = mix(bc, crackCol, crack * 0.35);`)
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
         { float facing = clamp(abs(dot(normal, normalize(vViewPosition))), 0.0, 1.0);
           // ひびの無い所はほぼ光らない（内側の光を漏らさない）。輪郭のふちだけ本体の色でわずかに光る
-          totalEmissiveRadiance += crackCol * (crack + halo) * crackI + vColor.rgb * (${o.base.toFixed(2)} + pow(1.0 - facing, 3.0) * ${o.rim.toFixed(2)}); }`);
+          // 中心の柔らかな輝き：正面を向いた面の、高さの中ほどが結晶自身の色でほのかに光る
+          float centerGlow = pow(facing, 4.0) * mid * ${o.center.toFixed(2)} * (1.0 - inclusion);
+          totalEmissiveRadiance += crackCol * ((crack + halo) * crackI + centerGlow) + own * (${o.base.toFixed(2)} + pow(1.0 - facing, 3.0) * ${o.rim.toFixed(2)}); }`);
   };
   m.customProgramCacheKey = () => key;
   return m;
@@ -242,9 +248,10 @@ function crystalShader(m, key, o) {
 export function makeCrystalMaterials() {
   // 3つとも不透明。つやの違いで面ごとの表情を変える（shell：つやつや／cloudy：少し曇る／fracture：割れ口でざらつき、ひびが多い）
   const mk = (rough, env, key, o) => crystalShader(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: rough, metalness: 0.0, envMapIntensity: env, flatShading: true }), key, o);
-  const shell = mk(0.14, 0.75, 'b2crystalShell4', { wRoot: 0.11, crack: 0.85, base: 0.1, rim: 0.3 });
-  const cloudy = mk(0.32, 0.55, 'b2crystalCloudy4', { wRoot: 0.1, crack: 0.75, base: 0.1, rim: 0.22 });
-  const fracture = mk(0.6, 0.45, 'b2crystalFracture4', { wRoot: 0.14, crack: 1.05, base: 0.11, rim: 0.12 });
+  // 光の強さは控えめ（まぶしくない、落ち着いた光り方）
+  const shell = mk(0.14, 0.9, 'b2crystalShell5', { wRoot: 0.11, crack: 0.8, base: 0.08, rim: 0.22, center: 0.45 });
+  const cloudy = mk(0.32, 0.7, 'b2crystalCloudy5', { wRoot: 0.1, crack: 0.7, base: 0.08, rim: 0.16, center: 0.3 });
+  const fracture = mk(0.6, 0.55, 'b2crystalFracture5', { wRoot: 0.14, crack: 0.9, base: 0.1, rim: 0.1, center: 0.2 });
   const core = new THREE.MeshBasicMaterial({ vertexColors: true });
   const rock = new THREE.MeshStandardMaterial({ color: 0x4a6278, roughness: 0.85, metalness: 0.0, flatShading: true });
   return { shell, cloudy, fracture, core, rock };
