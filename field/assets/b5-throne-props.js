@@ -239,6 +239,54 @@ export function createB5ThroneProp(THREE, kind, options={}) {
     mesh(fracturedColumnGeo,stone,-0.7,2.1,-0.3,1.0,1.4,0.85).rotation.z=-0.6;
     mesh(fracturedColumnGeo,dark,0.5,1.7,0.4,0.3,1.7,0.9).rotation.z=0.35;
   }
+  // Fourth pass: clustered flying buttresses, suspended chainwork and large broken ribs.
+  // Beams are oriented between endpoints; lengths follow their actual span.
+  const beamBetween=(a,b,width=0.24,material=iron)=>{
+    const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b);
+    const delta=end.clone().sub(start);
+    const m=mesh(cube,material,(start.x+end.x)/2,(start.y+end.y)/2,(start.z+end.z)/2,width,delta.length(),width);
+    m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());
+    return m;
+  };
+  if(kind==='gothicArch'){
+    for(const side of [-1,1]){
+      beamBetween([side*4,5,-0.7],[side*6.8,8.2,-2.2],0.55,stone);
+      beamBetween([side*6.8,8.2,-2.2],[side*3.3,12.5,-0.8],0.45,stone);
+      beamBetween([side*4.1,6.5,-0.8],[side*5.7,9.2,-2.0],0.3,iron);
+      mesh(fracturedColumnGeo,stone,side*6.9,7.3,-2.2,0.7,2.1,0.7).rotation.z=side*0.2;
+    }
+  }
+  if(kind==='grandChandelier'){
+    for(let i=0;i<12;i++){
+      const a=i*Math.PI/6,x=Math.cos(a)*3.6,z=Math.sin(a)*3.6;
+      beamBetween([0,13,0],[x,8,z],0.12,iron);
+      if(i%3===0)beamBetween([x,8,z],[x*0.6,5.5,z*0.6],0.16,iron);
+    }
+  }
+  if(kind==='ruinedPillar'){
+    for(let i=0;i<6;i++){
+      const a=i*Math.PI/3,x=Math.cos(a),z=Math.sin(a);
+      beamBetween([x*0.8,2,z*0.8],[x*2.4,5.6,z*2.4],0.26,iron);
+    }
+  }
+  if(kind==='fracturedAltar'){
+    for(let i=0;i<7;i++){
+      const x=-3.5+i*1.1;
+      beamBetween([x,1.4,-2.3],[x+(i%2?0.45:-0.55),3.8+(i%3)*0.5,-2.7],0.18,iron);
+    }
+  }
+  if(kind==='hangingBanner'){
+    for(let i=0;i<4;i++){
+      const x=i*1.1;
+      beamBetween([x,11.2,0],[x+(i%2?0.4:-0.35),6.7-i*0.5,0.25],0.11,iron);
+    }
+  }
+  if(kind==='brokenStair'){
+    for(let i=0;i<5;i++){
+      const x=-4+i*2;
+      beamBetween([x,i*0.45,-2.8],[x+1.1,i*0.45+2.2,-3.2],0.28,stone);
+    }
+  }
   const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
   group.scale.setScalar(scale);
   let disposed=false;
