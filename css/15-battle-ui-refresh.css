@@ -1884,8 +1884,8 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  }
 }
 /* Union gauge position is independent of charge and ready-state effects. */
-#battle.battle-ui-preview .battle-preview-hero .battle-preview-union,
-#battle.battle-ui-preview .battle-preview-hero .battle-preview-union.battle-union-ready {
+#battle.battle-ui-preview .battle-arena>.battle-preview-union,
+#battle.battle-ui-preview .battle-arena>.battle-preview-union.battle-union-ready {
  position:absolute!important;
  top:70px!important;
  right:8px!important;
@@ -1902,8 +1902,8 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  max-height:315px!important;
  box-sizing:border-box!important;
 }
-#battle.battle-ui-preview .battle-preview-hero .battle-preview-union.battle-union-ready::before,
-#battle.battle-ui-preview .battle-preview-hero .battle-preview-union.battle-union-ready::after {
+#battle.battle-ui-preview .battle-arena>.battle-preview-union.battle-union-ready::before,
+#battle.battle-ui-preview .battle-arena>.battle-preview-union.battle-union-ready::after {
  transform-origin:center!important;
 }
 /* Show formation destination cards and the third empty slot above the arena. */
@@ -1918,3 +1918,9 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  z-index:4!important;
 }
 #battle.battle-ui-preview .formation-slot-option .formation-slot-portrait {display:none!important;}
+
+
+#battle.battle-ui-preview .battle-arena>.battle-preview-union {
+ z-index:8!important;
+ pointer-events:none!important;
+}
