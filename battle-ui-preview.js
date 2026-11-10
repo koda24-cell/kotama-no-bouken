@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-2";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-4";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -94,6 +94,7 @@
       const percent = skill ? Math.min(100, charge / required * 100) : 0;
       meterLabel.textContent = skill ? "UNION " + charge + " / " + required : "UNION 未設定";
       meterFill.style.width = percent + "%";
+      meterTrack.style.setProperty("--battle-union-percent", percent + "%");
     }
     const title = document.getElementById("command-title");
     const commands = document.getElementById("battle-commands");
