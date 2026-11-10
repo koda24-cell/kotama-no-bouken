@@ -191,6 +191,69 @@ export function createB5AncientGate(THREE,options={}){
   const side=i%2?-1:1,x=side*(3.1+rand()*4.1),z=(rand()-.5)*4.4;
   rock(x,z,.25+rand()*.88,.12+rand()*.65,.3+rand()*.9);
  }
+ // Sculpted masonry pass: thicker stone courses, broken arch shoulders and
+ // carved blind niches. These are anchored to the gate, not floating rods.
+ const roughBlock=(x,y,z,w,h,d,mat=stone)=>{
+  const corners=[[-1,-1],[-.78,-1],[.85,-1],[1,-.75],[1,.72],[.77,1],[-.83,1],[-1,.74]];
+  const verts=[],idx=[];
+  for(const yy of [-h/2,h/2]){
+   for(const [cx,cz] of corners)verts.push(cx*w*.5,yy,cz*d*.5);
+  }
+  for(let i=0;i<8;i++){
+   const k=(i+1)%8;idx.push(i,k,8+i,k,8+k,8+i);
+  }
+  for(let i=1;i<7;i++){idx.push(0,i+1,i);idx.push(8,8+i,8+i+1);}
+  const g=G(new THREE.BufferGeometry());
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(idx);g.computeVertexNormals();
+  return add(g,mat,x,y,z);
+ };
+ // Architectural courses add mass to the formerly thin square columns.
+ for(const side of [-1,1]){
+  const x=side*4.5,h=side<0?12.8:10.7;
+  for(const y of [1.9,4.1,6.3,8.5]){
+   roughBlock(x,y,-.18,1.86,.56,1.93,y===6.3?cut:stone);
+   roughBlock(x,y+.34,-.88,1.56,.16,.32,trim);
+  }
+  // Recessed niche backing with an inner stone lancet and stepped borders.
+  for(const y of [4.0,8.15]){
+   roughBlock(x,y,-1.14,.88,2.35,.12,cut);
+   for(const dx of [-.53,.53]){
+    roughBlock(x+dx,y,-1.22,.18,2.62,.25,trim);
+    roughBlock(x+dx*.8,y,-1.35,.10,2.23,.14,stone);
+   }
+   rib([x-.53,y+1.2,-1.23],[x,y+1.83,-1.23],.21,.24,trim);
+   rib([x,y+1.83,-1.23],[x+.53,y+1.2,-1.23],.21,.24,trim);
+   // Inset diamond relief, deliberately low profile.
+   rib([x,y+.45,-1.28],[x+.26,y,-1.28],.12,.14,stone);
+   rib([x+.26,y,-1.28],[x,y-.45,-1.28],.12,.14,stone);
+   rib([x,y-.45,-1.28],[x-.26,y,-1.28],.12,.14,stone);
+   rib([x-.26,y,-1.28],[x,y+.45,-1.28],.12,.14,stone);
+  }
+  // Broad buttress blocks taper into the column, not thin free-standing rods.
+  roughBlock(x+side*.9,1.15,-.25,1.75,2.3,2.4,stone);
+  roughBlock(x+side*.7,2.6,-.3,1.28,.9,1.8,trim);
+ }
+ // Damaged voussoirs built along the arch: polygonal pieces overlap the
+ // supporting beams to read as carved stone instead of a skeletal frame.
+ const archPath=[[-4,10.5],[-2.25,13.3],[0,15.5],[2.15,13.4],[3.85,10.9]];
+ for(let seg=0;seg<4;seg++){
+  const a=archPath[seg],b=archPath[seg+1],count=seg===0?5:6;
+  for(let j=0;j<count;j++){
+   if((seg===2&&j===4)||(seg===3&&j===1))continue;
+   const t=(j+.5)/count;
+   const x=a[0]+(b[0]-a[0])*t,y=a[1]+(b[1]-a[1])*t;
+   const piece=roughBlock(x,y,0,.85,.78,1.7,j%4===0?cut:stone);
+   piece.rotation.z=-Math.atan2(b[0]-a[0],b[1]-a[1]);
+  }
+ }
+ // Missing upper-right masonry, fallen architectural blocks remain grounded.
+ for(const [x,z,w,h,d,angle] of [
+  [5.8,-2.3,1.6,.54,1.1,.14],[6.75,-1.65,1.35,.42,1.0,-.19],
+  [3.25,2.25,1.15,.33,1.4,.24],[-5.9,1.8,1.25,.45,1.3,-.12]
+ ]){
+  const piece=roughBlock(x,h*.5,z,w,h,d,stone);piece.rotation.z=angle;
+ }
  const scale=Number.isFinite(options.scale)?Math.max(.1,Math.min(4,options.scale)):1;
  group.scale.setScalar(scale);
  let disposed=false;
