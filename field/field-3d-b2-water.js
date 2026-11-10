@@ -349,6 +349,76 @@ function makeProcedural() {
     }
     return { name: 'b2_frost_ledge_' + variant, parts };
   });
+  // 壁の中腹に張り出す氷結岩塊。低ポリゴンの多面体を複合し、箱型通路の輪郭を崩す。
+  // ローカル+Zが通路側。壁からの突出は約0.3mに抑え、歩行空間を確保する。
+  const wallOutcrops = [0, 1, 2].map((variant) => {
+    const parts = [];
+    const count = 3 + variant;
+    for (let j = 0; j < count; j++) {
+      const geo = new THREE.IcosahedronGeometry(1, 1);
+      const width = 0.55 + 0.16 * ((j + variant) % 3);
+      const height = 0.52 + 0.18 * ((j * 2 + variant) % 3);
+      geo.scale(width, height, 0.22 + 0.06 * (j % 2));
+      geo.rotateZ((j % 2 ? -1 : 1) * (0.18 + 0.07 * variant));
+      geo.translate((j - (count - 1) / 2) * 0.49,
+        (j % 2 ? 0.12 : -0.13) + 0.08 * variant, -0.12);
+      parts.push({ geo, mat: j % 3 === 0 ? 'Pale mineral stone' : 'Deep cavern rock' });
+    }
+    return { name: 'b2_wall_outcrop_' + variant, parts };
+  });
+  // 壁と天井の境界に生える氷結した岩の庇。小さな多面体を重ねて箱状の角を隠す。
+  // 視界を塞がないよう上部0.7mに限定し、壁際へ寄せて配置する。
+  const frostCornices = [0, 1, 2].map((variant) => {
+    const parts = [];
+    for (let j = 0; j < 3; j++) {
+      const width = 0.40 + 0.13 * ((j + variant) % 3);
+      const g = new THREE.IcosahedronGeometry(1, 0);
+      g.scale(width, 0.19 + j * 0.035, 0.25 + (variant % 2) * 0.09);
+      g.rotateZ(0.15 * (j - 1));
+      g.translate((j - 1) * 0.52, -0.11 - j * 0.045, 0.02 + (j % 2) * 0.10);
+      parts.push({ geo: g, mat: j === 1 ? 'Pale mineral stone' : 'Deep cavern rock' });
+    }
+    const ice = new THREE.ConeGeometry(0.13 + variant * 0.025, 0.38 + variant * 0.11, 5, 1);
+    ice.rotateX(Math.PI);
+    ice.translate(0.32 - variant * 0.24, -0.38, 0.15);
+    parts.push({ geo: ice, mat: 'Glowing cyan crystal' });
+    return { name: 'b2_frost_cornice_' + variant, parts };
+  });
+  // 壁面に埋まった薄い氷脈。独立した小物を増やすのではなく、
+  // 不規則な鉱脈の輪郭を壁そのものに重ねて四角い壁面を崩す。
+  // 薄い奥行き・低ポリゴンで、既存の静的バッチへ統合する。
+  const frostVeins = [0, 1, 2].map((variant) => {
+    const parts = [];
+    const count = 3 + variant;
+    for (let j = 0; j < count; j++) {
+      const length = 0.72 + 0.24 * ((j + variant) % 3);
+      const width = 0.095 + 0.035 * ((j * 2 + variant) % 3);
+      const g = new THREE.OctahedronGeometry(1, 0);
+      g.scale(width, length * 0.5, 0.075);
+      g.rotateZ((j - count / 2) * 0.23 + variant * 0.12);
+      g.translate((j - (count - 1) / 2) * 0.27, (j % 2) * 0.16, 0);
+      parts.push({ geo: g, mat: j % 3 === 0 ? 'Pale mineral stone' : 'Deep cavern rock' });
+    }
+    return { name: 'b2_frost_vein_' + variant, parts };
+  });
+  // 湿った岩棚に群生する発光菌。低いシルエットで視界と移動経路を保つ。
+  // 既存のメッシュ統合を利用し、個別のライトやアニメーションは追加しない。
+  const glowFungi = [0, 1, 2].map((variant) => {
+    const parts = [];
+    for (let i = 0; i < 3; i++) {
+      const height = 0.22 + ((i + variant) % 3) * 0.11;
+      const offsetX = (i - 1) * 0.24;
+      const offsetZ = (i === 1 ? -0.12 : 0.10);
+      const stem = new THREE.CylinderGeometry(0.035, 0.06, height, 5);
+      stem.translate(offsetX, height / 2, offsetZ);
+      parts.push({ geo: stem, mat: 'Aquatic dark teal' });
+      const cap = new THREE.SphereGeometry(0.16 + (i % 2) * 0.05, 7, 4);
+      cap.scale(1, 0.32, 1);
+      cap.translate(offsetX, height + 0.025, offsetZ);
+      parts.push({ geo: cap, mat: 'Glowing cyan crystal' });
+    }
+    return { name: 'b2_glow_fungi_' + variant, parts };
+  });
   const shoreline = [0, 1, 2].map((variant) => {
     const g = new THREE.PlaneGeometry(3.92, 0.84, 24, 6).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
@@ -381,7 +451,7 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { continuousWall, continuousCeiling, continuousGround, shoreline, frostLedges, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  return { continuousWall, continuousCeiling, continuousGround, shoreline, glowFungi, frostVeins, frostCornices, wallOutcrops, frostLedges, ceilingRidge, iceStalactites, bed, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -602,6 +672,16 @@ export async function createTheme(api) {
       }
       // 水面と洞窟壁が直角に接する場所へ、低い氷結岩棚を追加。
       // 壁際のみ、階段・橋・イベント・滝は回避。装飾は静的バッチへ統合。
+      if (c !== '*' && c !== '>' && c !== '<' && !objAt.has(key) && !fall && !onBridge(tx, ty)) {
+        const edge = DIR_ORDER.find((d) => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
+        const nearWater = DIR_ORDER.some((d) => ch(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]) === '*');
+        if (edge && nearWater && hash(tx, ty, 351) < 0.38) {
+          const [dx, dz] = DIR_VEC[edge];
+          B.add('glow_fungi', pick(proc.glowFungi, hash(tx, ty, 352)),
+            M4(x + dx * 1.55, 0.015, z + dz * 1.55, hash(tx, ty, 353) * Math.PI * 2,
+              0.75 + hash(tx, ty, 354) * 0.35), tx, ty);
+        }
+      }
       if (c === '*' && !onBridge(tx, ty) && !objAt.has(key) && !falls.has(key)) {
         for (const d of DIR_ORDER) {
           const [dx, dz] = DIR_VEC[d], di = DIR_ORDER.indexOf(d);
@@ -664,6 +744,22 @@ export async function createTheme(api) {
         const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, k = hash(tx * 4 + DIR_ORDER.indexOf(d), ty, 5), ry = FACE_YAW[d] + Math.PI;
         const along = [dy ? 1 : 0, dx ? 1 : 0];   // 壁に沿う向き（x, z）
         B.add('walls', proc.continuousWall(ex, ez, ry, CELL), M4(ex, 0, ez, ry), tx, ty);
+        if (!objAt.has(key) && c !== '>' && c !== '<' && !falls.has(key)
+            && hash(tx, ty, 410 + DIR_ORDER.indexOf(d)) < 0.38) {
+          const lateral = (hash(tx, ty, 414 + DIR_ORDER.indexOf(d)) - 0.5) * 1.4;
+          const rise = 1.55 + hash(tx, ty, 418 + DIR_ORDER.indexOf(d)) * 0.85;
+          B.add('wall_outcrops',
+            pick(proc.wallOutcrops, hash(tx, ty, 422 + DIR_ORDER.indexOf(d))),
+            M4(ex - dx * 0.13 + along[0] * lateral, rise,
+              ez - dy * 0.13 + along[1] * lateral, ry), tx, ty);
+        }
+        if (!openCells.has(key) && !objAt.has(key) && !falls.has(key)
+            && c !== '>' && c !== '<' && hash(tx, ty, 400 + DIR_ORDER.indexOf(d)) < 0.48) {
+          const offset = (hash(tx, ty, 405 + DIR_ORDER.indexOf(d)) - 0.5) * 1.5;
+          B.add('frost_cornices', pick(proc.frostCornices, hash(tx, ty, 410 + DIR_ORDER.indexOf(d))),
+            M4(ex - dx * 0.10 + along[0] * offset, 3.88,
+              ez - dy * 0.10 + along[1] * offset, ry), tx, ty);
+        }
         // 壁と床の境目に低い岩の堆積を置き、直線的な接合部を崩す。
         // 通路中央やイベントマスを避け、歩行判定には影響させない。
         if (!objAt.has(key) && c !== '>' && c !== '<' && k < 0.72) {
@@ -674,6 +770,14 @@ export async function createTheme(api) {
             ez - dy * 0.12 + along[1] * offset, ry + hash(tx, ty, 192) * 0.8, scale), tx, ty);
         }
 
+        if (!objAt.has(key) && c !== '>' && c !== '<' && fall !== d
+            && hash(tx, ty, 390 + DIR_ORDER.indexOf(d)) < 0.29) {
+          const offset = (hash(tx, ty, 394 + DIR_ORDER.indexOf(d)) - 0.5) * 1.75;
+          const height = 1.45 + hash(tx, ty, 398 + DIR_ORDER.indexOf(d)) * 1.15;
+          B.add('frost_veins', pick(proc.frostVeins, hash(tx, ty, 402 + DIR_ORDER.indexOf(d))),
+            M4(ex - dx * 0.12 + along[0] * offset, height,
+              ez - dy * 0.12 + along[1] * offset, ry, 0.8), tx, ty);
+        }
         // v8の結晶を壁際に低頻度で追加。通路・階段・イベントの中央は塞がない。
         if (v8?.crystals?.length && !objAt.has(key) && c !== '>' && c !== '<'
             && k > 0.77) {
