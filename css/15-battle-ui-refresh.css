@@ -843,3 +843,175 @@
     background-position:center,center,53% center;
   }
 }
+
+
+/* Screenshot QA: fixed-size command rail across main / skill / item submenus.
+   Both states now use identical geometry and typography. */
+@media (min-width:900px) {
+ #battle.battle-ui-preview {
+   --battle-command-width:260px;
+ }
+ #battle.battle-ui-preview .battle-preview-primary-rail:not([hidden]),
+ #battle.battle-ui-preview .battle-preview-bottom>.command-window {
+   box-sizing:border-box!important;
+   width:var(--battle-command-width)!important;
+   height:350px!important;
+   min-height:350px!important;
+   max-height:350px!important;
+   border:2px solid #8eeaff!important;
+   border-radius:13px 5px 13px 5px!important;
+   background:linear-gradient(145deg,#064564f0,#062940f0)!important;
+   box-shadow:0 0 13px #32dcff66,inset 0 0 18px #002841!important;
+ }
+ #battle.battle-ui-preview .battle-preview-primary-rail:not([hidden]) {
+   position:absolute!important;
+   top:100px!important;left:14px!important;
+   display:flex!important;flex-direction:column!important;
+   padding:9px 10px!important;
+   gap:5px!important;
+   overflow:hidden!important;
+ }
+ #battle.battle-ui-preview .battle-preview-primary-rail .battle-preview-rail-button {
+   box-sizing:border-box!important;
+   height:40px!important; min-height:40px!important;
+   flex:none!important;
+   width:100%!important;
+   font-size:14px!important;
+   padding:5px 9px!important;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.command-window {
+   top:100px!important;left:14px!important;
+   padding:9px 10px!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window {
+   left:calc(24px + var(--battle-command-width))!important;
+   top:100px!important;
+   width:clamp(240px,23vw,330px)!important;
+   height:auto!important;min-height:140px!important;max-height:350px!important;
+ }
+ #battle.battle-ui-preview .battle-preview-primary-rail .battle-preview-rail-title,
+ #battle.battle-ui-preview .battle-preview-bottom>.command-window #command-title {
+   font-size:14px!important;
+   line-height:20px!important;
+   min-height:20px!important;
+   margin:0 0 3px!important;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.command-window #battle-commands.battle-preview-main-menu {
+   display:flex!important;
+   flex-direction:column!important;
+   gap:5px!important;
+ }
+ #battle.battle-ui-preview #battle-commands.battle-preview-main-menu>.command-option {
+   min-height:40px!important;
+   height:40px!important;
+   flex:none!important;
+   padding:5px 9px!important;
+   font-size:14px!important;
+ }
+}
+
+/* Remove old BATTLE STAGE heading, retain battle functionality. */
+#battle.battle-ui-preview .battle-heading {display:none!important;}
+
+/* Turn indicator: prominent badge and separate phase marker. */
+#battle.battle-ui-preview .battle-preview-top-hud {
+  top:10px!important;
+  align-items:center!important;
+}
+#battle.battle-ui-preview .battle-preview-top-hud #turn-counter {
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:10px;
+  padding:6px 13px!important;
+  border:2px solid #8fe9ff!important;
+  border-left:5px solid #e8ca82!important;
+  border-radius:5px 18px 18px 5px!important;
+  background:linear-gradient(110deg,#082e50ee,#086587d9)!important;
+  box-shadow:inset 0 1px #baf8ff88,0 0 12px #2fcfffa3!important;
+  color:#f6fcff!important;
+  font-size:20px!important;
+  letter-spacing:.07em!important;
+  font-variant-numeric:tabular-nums;
+}
+#battle.battle-ui-preview .battle-preview-top-hud #turn-counter:after {
+  content:attr(data-phase);
+  display:inline-block;
+  padding:3px 9px;
+  border-radius:14px;
+  background:#06223e;
+  border:1px solid #8de3f5;
+  color:#f3d99c;
+  font-size:11px;
+  letter-spacing:0;
+}
+#battle.battle-ui-preview .battle-preview-tabs .analyze-tab-button,
+#battle.battle-ui-preview .battle-preview-tabs #battle-log-open {
+  min-width:70px!important;
+  font-size:13px!important;
+}
+
+/* Continue the same forest environment behind the party portrait strip. */
+#battle.battle-ui-preview .battle-arena[data-environment="forest"] ~ #battle-party,
+#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) #battle-party {
+  background-image:
+    linear-gradient(180deg,#05253de0,#032b42d7 55%,#02192fe8),
+    url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+  background-position:center,center 88%!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+  border-top:1px solid #8ae5ed!important;
+  box-shadow:inset 0 0 28px #22adca33,0 6px 18px #0009!important;
+}
+
+/* EVENT is the primary readable narrative: generous spacing and contrast. */
+#battle.battle-ui-preview .battle-preview-bottom>.event-window {
+  min-height:112px!important;
+  padding:12px 15px 14px!important;
+  background:linear-gradient(135deg,#063b57f9,#071f3ef7)!important;
+  border:2px solid #b2f3ff!important;
+  box-shadow:inset 0 0 18px #1c94cb66,0 0 12px #4ddfff44!important;
+}
+#battle.battle-ui-preview .battle-preview-bottom>.event-window .window-title {
+  display:inline-block;
+  padding:4px 16px!important;
+  margin-bottom:8px!important;
+  border:1px solid #a7efff;
+  border-radius:5px 15px 5px 5px;
+  background:linear-gradient(100deg,#0a6889,#063453);
+  color:#fff0b9!important;
+  font-size:15px!important;
+  font-weight:900!important;
+  letter-spacing:.06em;
+}
+#battle.battle-ui-preview .battle-preview-bottom>.event-window #event-log {
+  box-sizing:border-box;
+  min-height:57px!important;
+  max-height:145px!important;
+  padding:9px 15px!important;
+  border:1px solid #74d4ef!important;
+  border-left:4px solid #f5d88a!important;
+  border-radius:5px!important;
+  background:#081b37ee!important;
+  color:#f9fcff!important;
+  font-size:clamp(15px,1.15vw,18px)!important;
+  font-weight:650!important;
+  line-height:1.55!important;
+  letter-spacing:.01em;
+  overflow-y:auto!important;
+}
+#battle.battle-ui-preview .battle-preview-bottom>.event-window #event-log p {
+  margin:0 0 4px!important;
+  font-size:inherit!important;
+  line-height:inherit!important;
+}
+@media(max-width:899px) {
+ #battle.battle-ui-preview .battle-preview-top-hud #turn-counter {
+   font-size:13px!important;padding:4px 6px!important;gap:4px;
+ }
+ #battle.battle-ui-preview .battle-preview-top-hud #turn-counter:after {
+   font-size:9px;padding:2px 4px;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.event-window #event-log {
+   font-size:14px!important;
+ }
+}
