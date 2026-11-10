@@ -104,9 +104,49 @@ export function createRuinedCityKit(THREE) {
     }
     return g;
   }
+  // Compact wall-side ruin details. These are decorative, not interactive stairs.
+  function stairFragment() {
+    const g=group('stair_fragment');
+    for(let i=0;i<4;i++) {
+      const w=2.3-i*.22, d=.65;
+      add(g,cube,stone,0,.12+i*.18,-.9+i*.52,w,.24+i*.12,d);
+    }
+    add(g,cube,moss,-.73,.42,.08,.25,.06,.34);
+    return g;
+  }
+  function stele() {
+    const g=group('stele');
+    add(g,cube,stone,0,.18,0,1.35,.36,.78);
+    add(g,cube,stone,0,1.15,0,.93,1.68,.32);
+    add(g,cube,shadow,0,1.2,.174,.62,.86,.025);
+    for(let i=0;i<3;i++) add(g,cube,gold,0,1.5-i*.28,.195,.38,.045,.026);
+    add(g,cube,stone,0,2.03,0,1.12,.16,.48);
+    return g;
+  }
+  function altar() {
+    const g=group('altar');
+    add(g,cube,stone,0,.15,0,2.8,.3,1.7);
+    add(g,cube,stone,0,.48,0,2.15,.36,1.35);
+    add(g,cube,stone,0,.81,0,1.65,.3,1.0);
+    add(g,cube,gold,0,.98,0,.85,.05,.62);
+    for(const x of [-1.15,1.15]) add(g,cube,stone,x,.7,-.5,.2,.8,.2);
+    return g;
+  }
+  function collapsedWall(seed=1) {
+    const g=group('collapsed_wall');
+    let n=seed>>>0;
+    const rnd=()=>{n=(Math.imul(n,1103515245)+12345)>>>0;return n/4294967296;};
+    for(let row=0;row<4;row++) for(let col=0;col<5;col++) {
+      if(row>1 && rnd()<.43) continue;
+      const x=(col-2)*.58+(row%2)*.16;
+      const m=add(g,cube,row===3?moss:stone,x,.22+row*.43,0,.56,.41,.42);
+      m.rotation.z=(rnd()-.5)*.13;
+    }
+    return g;
+  }
   function dispose() {
     geometries.forEach(g=>g.dispose());
     [stone,shadow,moss,gold].forEach(m=>m.dispose());
   }
-  return { column, arch, facade, temple, tower, rubble, statue, vines, dispose };
+  return { column, arch, facade, temple, tower, rubble, statue, vines, stairFragment, stele, altar, collapsedWall, dispose };
 }
