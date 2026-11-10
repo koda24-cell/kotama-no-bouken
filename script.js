@@ -1638,10 +1638,10 @@ function targetEnemy(action){
   if(allMode){action={...action};delete action.all;}
   // Skip redundant target selection for a single living enemy when a skill is chosen.
   // Preserve tutorial target prompts and all-target skill behavior.
-  if(action.type==="skill" && !allMode && targets.length===1 && !battleState.tutorialMode){
+  if(action.type==="skill" && targets.length===1 && !battleState.tutorialMode){
     const only=targets[0];
     const id=only.kind==="member"||only.kind==="clone"?only.ref.id:only.kind;
-    commitAction({...action,targetId:id});
+    commitAction(allMode?{...action}:{...action,targetId:id});
     return;
   }
   box.innerHTML=allMode?`<button class="command-option" data-enemy-target="all">敵全体 <small>全体攻撃</small></button><button class="command-option" data-action="back">戻る</button>`:targets.map(t=>{const label=t.kind==="member"?(battleState.tutorialMode?`スライムa ${Number(t.ref.id.split("-").pop())}`:`ゴブリン ${Number(t.ref.id.split("-").pop())}`):t.kind==="clone"?"オオカミ":e.name==="オオカミ"?"オオカミ":e.name;const id=t.kind==="member"||t.kind==="clone"?t.ref.id:t.kind;return `<button class="command-option" data-enemy-target="${esc(id)}">${esc(label)} <small>HP ${Math.max(0,t.ref.hp)}/${t.ref.maxHp}</small></button>`;}).join("")+`<button class="command-option" data-action="back">戻る</button>`;
