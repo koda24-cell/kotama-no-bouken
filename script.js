@@ -1434,14 +1434,14 @@ function samuraiFocusDamage(target, amount) {
   const key = String(target?.ref?.id ?? (target?.kind === "main" ? "main" : "enemy"));
   const focus = battleState._samuraiFocus || (battleState._samuraiFocus = { target: null, hits: 0 });
   if (focus.target !== key) { focus.target = key; focus.hits = 0; }
-  return Math.floor(amount * (1 + Math.min(8, focus.hits) * .05));
+  return Math.floor(amount * (1 + Math.min(20, focus.hits) * .05));
 }
 function samuraiFocusHit(target, dealt) {
   if (!battleState?.actingIds?.includes("samurai") || battleState._statusTick || dealt <= 0) return;
   const key = String(target?.ref?.id ?? (target?.kind === "main" ? "main" : "enemy"));
   const focus = battleState._samuraiFocus || (battleState._samuraiFocus = { target: key, hits: 0 });
   if (focus.target !== key) { focus.target = key; focus.hits = 0; }
-  focus.hits = Math.min(8, focus.hits + 1);
+  focus.hits = Math.min(20, focus.hits + 1);
 }
 function applyDamageToEnemyTarget(enemy,target,amount){
   if(!target||!target.ref)return 0;
