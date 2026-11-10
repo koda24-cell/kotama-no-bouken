@@ -1620,9 +1620,9 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
   width:260px!important;
   min-width:260px!important;
   max-width:260px!important;
-  height:330px!important;
-  min-height:330px!important;
-  max-height:330px!important;
+  height:350px!important;
+  min-height:350px!important;
+  max-height:350px!important;
   box-sizing:border-box!important;
   padding:9px 10px!important;
   border:2px solid #7ee9fa!important;
