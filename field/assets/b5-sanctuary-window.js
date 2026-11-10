@@ -66,13 +66,37 @@ export function createB5SanctuaryWindow(THREE, options={}) {
   const x0=-inner+i*slot+.09,x1=x0+slot-.18,xc=(x0+x1)/2;
   const glassTop=Math.min(archY(xc)-.78,height*.82);
   const points=[[x0,base+.52],[x1,base+.52],[x1,glassTop-.72],[xc,glassTop],[x0,glassTop-.72]];
-  // independent triangular stained glass panes, kept behind front masonry
-  const center=[xc,(base+glassTop)/2],cz=.22;
-  for(let j=0;j<points.length;j++){
-   const a=points[j],b=points[(j+1)%points.length];
-   const shape=new THREE.Shape();shape.moveTo(center[0],center[1]);shape.lineTo(a[0],a[1]);shape.lineTo(b[0],b[1]);shape.closePath();
-   const pane=add(new THREE.ShapeGeometry(shape),glass[(i+j)%glass.length],0,0,cz);
-   pane.material.side=THREE.DoubleSide;
+  // Leaded glass mosaic: alternating small diamond and lancet-shaped panes,
+  // with a luminous central axis rather than four flat color triangles.
+  const bottom=base+.52,top=glassTop-.72,cz=.22;
+  const rows=15,cols=5;
+  const lead=(ax,ay,bx,by)=>beam(V(ax,ay,-.29),V(bx,by,-.29),.022,dark,6);
+  for(let row=0;row<rows;row++){
+   const ya=bottom+(top-bottom)*row/rows;
+   const yb=bottom+(top-bottom)*(row+1)/rows;
+   const shift=row%2===0?0:.11;
+   for(let col=0;col<cols;col++){
+    const xa=x0+(x1-x0)*col/cols;
+    const xb=x0+(x1-x0)*(col+1)/cols;
+    const mid=(xa+xb)/2+shift*(col%2?1:-1);
+    const midY=(ya+yb)/2;
+    const vertices=[[xa,ya],[xb,ya],[mid,midY],[xb,yb],[xa,yb]];
+    for(let p=0;p<3;p++){
+     const v0=vertices[0],v1=vertices[p+1],v2=vertices[p+2];
+     const shape=new THREE.Shape();
+     shape.moveTo(v0[0],v0[1]);shape.lineTo(v1[0],v1[1]);shape.lineTo(v2[0],v2[1]);shape.closePath();
+     add(new THREE.ShapeGeometry(shape),glass[(i*2+row+col*3+p)%glass.length],0,0,cz);
+    }
+    lead(xa,ya,mid,midY);lead(mid,midY,xb,yb);
+    lead(xa,ya,xa,yb);
+   }
+  }
+  // Gothic tracery at the lancet crown.
+  const head=new THREE.Shape();
+  head.moveTo(x0,top);head.lineTo(x1,top);head.lineTo(xc,glassTop);head.closePath();
+  add(new THREE.ShapeGeometry(head),glass[(i+3)%glass.length],0,0,cz);
+  for(const dx of [-.28,0,.28]){
+   lead(xc+dx,top,xc,glassTop);
   }
   // strong continuous Gothic lancet frames
   beam(V(x0,base+.45),V(x0,glassTop-.72),.15,trim);
@@ -84,21 +108,37 @@ export function createB5SanctuaryWindow(THREE, options={}) {
    beam(V(x0+.1,y,-.30),V(x1-.1,y,-.30),.047,dark,6);
   }
  }
- // Large rose-tracery circle in upper tympanum, stone ring + radial petals.
+ // Cathedral rose window: layered stone circles, 12 petal tracery,
+ // colored radial glass wedges and a gilded central medallion.
  const roseY=height*.85,roseR=Math.min(W*.40,height*.10);
- const arc=(radius,start,end,material,segments=48)=>{
+ const arc=(radius,start,end,material,segments=72,z=-.62,thickness=.085)=>{
   for(let i=0;i<segments;i++){
    const a=start+(end-start)*i/segments,b=start+(end-start)*(i+1)/segments;
-   beam(V(Math.cos(a)*radius,roseY+Math.sin(a)*radius,-.61),V(Math.cos(b)*radius,roseY+Math.sin(b)*radius,-.61),.095,material,7);
+   beam(V(Math.cos(a)*radius,roseY+Math.sin(a)*radius,z),V(Math.cos(b)*radius,roseY+Math.sin(b)*radius,z),thickness,material,7);
   }
  };
- arc(roseR,0,Math.PI*2,trim);
- arc(roseR*.40,0,Math.PI*2,trim);
- for(let i=0;i<10;i++){
-  const a=i*Math.PI/5;
-  beam(V(Math.cos(a)*roseR*.40,roseY+Math.sin(a)*roseR*.40,-.61),V(Math.cos(a)*roseR,roseY+Math.sin(a)*roseR,-.61),.09,trim);
+ for(const radius of [roseR,roseR*.79,roseR*.39,roseR*.19])arc(radius,0,Math.PI*2,trim);
+ const petals=12;
+ for(let i=0;i<petals;i++){
+  const a=i*Math.PI*2/petals,b=(i+1)*Math.PI*2/petals,mid=(a+b)/2;
+  const inner=roseR*.40,outer=roseR*.77;
+  const shape=new THREE.Shape();
+  shape.moveTo(Math.cos(a)*inner,roseY+Math.sin(a)*inner);
+  shape.lineTo(Math.cos(a)*outer,roseY+Math.sin(a)*outer);
+  shape.lineTo(Math.cos(mid)*roseR*.97,roseY+Math.sin(mid)*roseR*.97);
+  shape.lineTo(Math.cos(b)*outer,roseY+Math.sin(b)*outer);
+  shape.lineTo(Math.cos(b)*inner,roseY+Math.sin(b)*inner);
+  shape.closePath();
+  add(new THREE.ShapeGeometry(shape),glass[(i*5+2)%glass.length],0,0,.16);
+  beam(V(Math.cos(a)*inner,roseY+Math.sin(a)*inner,-.65),V(Math.cos(a)*outer,roseY+Math.sin(a)*outer,-.65),.065,trim);
+  beam(V(Math.cos(a)*outer,roseY+Math.sin(a)*outer,-.65),V(Math.cos(mid)*roseR*.97,roseY+Math.sin(mid)*roseR*.97,-.65),.065,trim);
+  beam(V(Math.cos(mid)*roseR*.97,roseY+Math.sin(mid)*roseR*.97,-.65),V(Math.cos(b)*outer,roseY+Math.sin(b)*outer,-.65),.065,trim);
  }
- const disk=add(new THREE.CircleGeometry(roseR*.98,60),glass[0],0,roseY,.16);
+ const medallion=add(new THREE.CircleGeometry(roseR*.36,48),glass[3],0,roseY,.19);
+ for(let i=0;i<8;i++){
+  const a=i*Math.PI/4;
+  beam(V(0,roseY,-.67),V(Math.cos(a)*roseR*.34,roseY+Math.sin(a)*roseR*.34,-.67),.045,trim);
+ }
  // Ruined bottom sill and masonry grounded on floor.
  slab(0,.36,0,width+2.4,.72,1.65,stone);
  slab(0,.79,-.61,width+.6,.20,1.8,trim);
