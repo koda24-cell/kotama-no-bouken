@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { addB4AbandonedMine } from './b4-abandoned-mine.js?v=20261110-placement';
+import { addB4AbandonedMine } from './b4-abandoned-mine.js?v=20261110-quality';
 import { createB4MineRigProps } from './b4-mine-rig-props.js';
 import { addB4FortressSkyline } from './b4-fortress-skyline.js?v=20261110-placement';
-import { addB4CitadelBackdrop } from './b4-citadel-backdrop.js?v=20261110-placement';
-import { planB4Scenery, fitB4Recess, batchB4Scenery } from './b4-placement.js';
+import { addB4CitadelBackdrop } from './b4-citadel-backdrop.js?v=20261110-quality';
+import { planB4Scenery, fitB4Recess, batchB4Scenery } from './b4-placement.js?v=20261110-quality';
 
-export function addB4GameScenery({ root, map, ch, wallCell, hash, CELL }) {
+export function addB4GameScenery({ root, map, ch, wallCell, hash, CELL, surfaces }) {
   const plan = planB4Scenery(map, ch, wallCell, hash);
   const scenery = new THREE.Group(); scenery.name = 'b4:owned-scenery';
   scenery.userData.b4Owned = true; root.add(scenery);
@@ -20,11 +20,17 @@ export function addB4GameScenery({ root, map, ch, wallCell, hash, CELL }) {
     alcove.userData.site = s;
     alcove.position.set((s.tx+s.dx/2)*CELL,0,(s.ty+s.dz/2)*CELL);
     alcove.rotation.y = Math.atan2(-s.dx,-s.dz); scenery.add(alcove);
+    // The boss-floor cavern is taller; close the rock above the same 4m recess/window.
+    if(map.f===2)put(alcove,stone,0,6.05,0,vista ? 12 : 4,4.1,.3);
     if (vista) {
-      put(alcove,stone,0,.4,0,12,.8,.5); // visibly impassable, matching the unchanged solid cell
+      for(let i=0;i<12;i++){
+        put(alcove,stone,-5.5+i,.14,0,.98,.28,.5);
+        put(alcove,stone,-5.5+i,.405,0,.98,.25,.56);
+      } // visibly impassable, matching the unchanged solid cell
       for (const x of [-5.75,5.75]) put(alcove,stone,x,2,0,.5,4,.65);
       put(alcove,stone,0,3.8,0,12,.4,.65);
-      for (const x of [-4.6,-2.3,0,2.3,4.6]) put(alcove,iron,x,.9,.05,.12,.35,.14);
+      for (const x of [-4.6,-2.3,0,2.3,4.6]) put(alcove,iron,x,.65,.05,.12,.35,.14);
+      put(alcove,iron,0,.82,.05,11.5,.10,.14);
     } else {
       put(alcove,stone,0,-.17,-1.8,4,.32,4);
       put(alcove,stone,0,2,-3.7,4,4,.2);
@@ -47,6 +53,7 @@ export function addB4GameScenery({ root, map, ch, wallCell, hash, CELL }) {
       sites:[{tx:-3,ty:0,dx:0,dz:-1},{tx:3,ty:0,dx:0,dz:-1}]});
     skyline.position.set(x,-2,z-8); skyline.scale.setScalar(.65); scenery.add(skyline);
   }
+  surfaces?.apply(scenery);
   batchB4Scenery(scenery);
   const vistaFaces=plan.vista ? [-1,0,1].map(offset=>({...plan.vista,tx:plan.vista.tx+offset,wx:plan.vista.wx+offset,key:`${plan.vista.tx+offset},${plan.vista.ty}:0,-1`})) : [];
   const lights = plan.mines.map(s => ({world:new THREE.Vector3((s.tx+s.dx*.32)*CELL,2.6,(s.ty+s.dz*.32)*CELL),

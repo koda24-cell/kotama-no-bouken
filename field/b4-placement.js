@@ -82,7 +82,7 @@ export function disposeB4Owned(group) {
   group.traverse(o => {
     if (o.isInstancedMesh) o.dispose();
     if (o.geometry) geometries.add(o.geometry);
-    for (const m of (Array.isArray(o.material) ? o.material : [o.material])) if (m) materials.add(m);
+    for (const m of (Array.isArray(o.material) ? o.material : [o.material])) if (m && !m.userData.b4SurfaceShared) materials.add(m);
   });
   for (const m of materials) {
     for (const value of Object.values(m)) if (value?.isTexture) textures.add(value);
