@@ -1476,6 +1476,7 @@ function partyEvasionRate(character){return Math.min(.5,uniqueEquippedItems(char
 function partyElementalDamageReduction(character,element){const values=uniqueEquippedItems(character).map(item=>{if(item.elementResistances?.includes(element))return Number(item.elementDamageReduction)||0;if(element==="炎")return Number(item.fireDamageReduction)||0;return 0;});return Math.min(.5,values.reduce((a,b)=>a+b,0));}
 function getWeaponPhysicalElement(character){
   if(!character)return "無属性";
+  if(character._princessEnchant?.turns > 0)return character._princessEnchant.element;
   const slots=equipment[character.id]||{};
   const weaponId=slots.weapon||slots.katana1||slots.katana2;
   const weapon=itemById(weaponId);
