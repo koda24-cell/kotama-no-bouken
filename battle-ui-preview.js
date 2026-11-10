@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-15";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-16";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -30,6 +30,14 @@
     if (eventTitle) {
       eventTitle.textContent = "EVENT";
       eventTitle.setAttribute("aria-label", "イベントログ");
+    }
+    // Rare slime HP sits above its head; update after enemy changes.
+    const enemyDisplay = document.getElementById("battle-enemy");
+    const enemyName = document.getElementById("enemy-name");
+    if (enemyDisplay && enemyName) {
+      const syncRareSlime = () => enemyDisplay.classList.toggle("battle-rare-slime", /はぐれスライム/.test(enemyName.textContent || ""));
+      new MutationObserver(syncRareSlime).observe(enemyName, {childList:true,subtree:true,characterData:true});
+      syncRareSlime();
     }
     // Move the original LOG / enemy / ally controls to the reference-style top HUD.
     // Moving real nodes preserves their event listeners and dialog behavior.
@@ -140,6 +148,12 @@
       meterLabel.textContent = skill ? "UNION " + Math.round(percent) + "%" : "UNION";
       meterLabel.title = skill ? charge + " / " + required : "未設定";
       meter.classList.toggle("battle-union-ready", !!skill && percent >= 100);
+      // Ready state is shared by the always-visible command and the submenu rail.
+      battle.classList.toggle("battle-preview-union-ready", !!skill && percent >= 100);
+      document.querySelectorAll("#battle-commands [data-preview-union-toggle], .battle-preview-primary-rail .battle-preview-rail-button").forEach(button => {
+        if (button.matches("[data-preview-union-toggle]") || button.textContent.includes("ユニオンスキル"))
+          button.classList.toggle("battle-union-command-ready", !!skill && percent >= 100);
+      });
       meter.setAttribute("aria-label", skill ? "ユニオンゲージ " + Math.round(percent) + "パーセント" : "ユニオン未設定");
       meterFill.style.width = percent + "%";
       meterTrack.style.setProperty("--battle-union-percent", percent + "%");
@@ -189,6 +203,12 @@
       box.classList.toggle("battle-preview-main-menu", main);
       battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
       primaryRail.hidden = main || !!battleState.tutorialMode;
+      const actor = typeof currentActor === "function" ? currentActor() : null;
+      const union = actor && typeof unionSkills !== "undefined" ? unionSkills[actor.id] : null;
+      const ready = !!union && (Number(battleState.unionGauges?.[actor.id]) || 0) >= union.requiredHits;
+      primaryRail.querySelectorAll(".battle-preview-rail-button").forEach(button => {
+        if (button.textContent.includes("ユニオンスキル")) button.classList.toggle("battle-union-command-ready", ready);
+      });
       railTitle.textContent = (typeof currentActor === "function" ? currentActor()?.name : "") + "　どうする？";
       const unionPanel = box.querySelector(".union-panel");
       const existingToggle = box.querySelector("[data-preview-union-toggle]");

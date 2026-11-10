@@ -1135,3 +1135,107 @@
 #battle.battle-ui-preview .battle-preview-tabs .analyze-tab-button {
  font-size:13px!important;letter-spacing:0!important;
 }
+
+
+/* Rare slime: put its name and HP gauge above the image/head. */
+#battle.battle-ui-preview #battle-enemy.battle-rare-slime {
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+}
+#battle.battle-ui-preview #battle-enemy.battle-rare-slime #enemy-name {
+ order:-3!important;
+ position:relative!important;
+ margin:0 0 4px!important;
+ z-index:3;
+}
+#battle.battle-ui-preview #battle-enemy.battle-rare-slime > .hp-track {
+ order:-2!important;
+ position:relative!important;
+ margin:0 auto 7px!important;
+ width:min(190px,78%)!important;
+ z-index:3;
+}
+#battle.battle-ui-preview #battle-enemy.battle-rare-slime #enemy-hp-text {
+ order:-1!important;
+ position:relative!important;
+ margin:0!important;
+}
+#battle.battle-ui-preview #battle-enemy.battle-rare-slime > .enemy-image,
+#battle.battle-ui-preview #battle-enemy.battle-rare-slime > .enemy-placeholder {
+ order:0!important;
+}
+/* Full Union: no strobe/flash; soft, slowly drifting blue-gold mist. */
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready,
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready i {
+ animation:none!important;
+ filter:none!important;
+}
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready {
+ position:relative!important;
+ isolation:isolate;
+ border-color:#c6e9de!important;
+ box-shadow:inset 0 0 14px #9df7df55,0 0 11px #6ee9e155!important;
+}
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready::before,
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready::after {
+ content:"";
+ display:block;
+ position:absolute;
+ pointer-events:none;
+ z-index:3;
+ left:-20px;right:-20px;
+ top:20%;bottom:7%;
+ border-radius:50%;
+ background:radial-gradient(ellipse at 50% 45%,#a2f4ed66,transparent 67%);
+ filter:blur(13px);
+ opacity:.6;
+ animation:battleUnionMist 6s ease-in-out infinite alternate!important;
+}
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready::after {
+ top:40%;bottom:-5%;
+ background:radial-gradient(ellipse at 45% 60%,#ffe8b855,transparent 70%);
+ animation-duration:8s!important;
+ animation-delay:-3s!important;
+}
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready>span {
+ box-shadow:none!important;
+ text-shadow:0 0 7px #9ff8e988!important;
+}
+#battle.battle-ui-preview .battle-preview-union.battle-union-ready i {
+ background:linear-gradient(90deg,#1ba5d5,#76dcd6,#d6e9d1)!important;
+ box-shadow:0 0 8px #9cebe888!important;
+}
+@keyframes battleUnionMist {
+ from {transform:translate(-7px,7px) scale(.88);opacity:.28;}
+ to {transform:translate(8px,-8px) scale(1.12);opacity:.7;}
+}
+/* A ready Union action is visibly selectable, without flashing. */
+#battle.battle-ui-preview .battle-union-command-ready,
+#battle.battle-ui-preview #battle-commands [data-preview-union-toggle].battle-union-command-ready {
+ border-color:#e5d29b!important;
+ color:#fff7db!important;
+ background:linear-gradient(110deg,#075d76,#186c78 55%,#806e4a)!important;
+ box-shadow:inset 0 0 12px #9fead544,0 0 13px #a9e7c177!important;
+ text-shadow:0 0 6px #f6e4b777!important;
+}
+@media(prefers-reduced-motion:reduce) {
+ #battle.battle-ui-preview .battle-preview-union.battle-union-ready::before,
+ #battle.battle-ui-preview .battle-preview-union.battle-union-ready::after {
+  animation:none!important;
+ }
+}
+
+
+/* Retreat remains directly clickable above battle overlays on first pointer action. */
+#battle.battle-ui-preview ~ .topbar #retreat-button,
+body:has(#battle.battle-ui-preview.active) .topbar #retreat-button {
+ position:relative!important;
+ z-index:101!important;
+ pointer-events:auto!important;
+ touch-action:manipulation;
+}
+body:has(#battle.battle-ui-preview.active) .topbar {
+ position:relative!important;
+ z-index:101!important;
+}
