@@ -195,7 +195,9 @@ export function createTheme(api, area) {
             variant < .70 ? cityKit.collapsedWall(ty*1009+tx) :
             variant < .80 ? cityKit.stele() :
             variant < .88 ? cityKit.stairFragment() :
-            variant < .95 ? cityKit.altar() : cityKit.vines();
+            variant < .94 ? cityKit.altar() :
+            variant < .975 ? cityKit.boulderCluster(ty*1009+tx) :
+            variant < .99 ? cityKit.crystalCluster(ty*1009+tx) : cityKit.vines();
           // Keep meshes as shallow scenery close to a solid wall.
           // Tall architecture is scaled to fit the existing 4-unit ceiling.
           const tall = variant < .38;
