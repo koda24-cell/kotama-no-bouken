@@ -187,14 +187,18 @@ export function createTheme(api, area) {
           const d = adjacent[Math.floor(hash(tx,ty,312)*adjacent.length)];
           const [dx,dz] = DIR_VEC[d], angle = FACE_YAW[d] + Math.PI;
           const variant = hash(tx,ty,313);
-          const piece = variant < .17 ? cityKit.arch() :
-            variant < .38 ? cityKit.facade(3,3.4) :
-            variant < .52 ? cityKit.column(2.5,true) :
-            variant < .67 ? cityKit.statue() :
-            variant < .82 ? cityKit.rubble(ty*1009+tx) : cityKit.vines();
+          const piece = variant < .12 ? cityKit.arch() :
+            variant < .27 ? cityKit.facade(3,3.4) :
+            variant < .38 ? cityKit.column(2.5,true) :
+            variant < .48 ? cityKit.statue() :
+            variant < .59 ? cityKit.rubble(ty*1009+tx) :
+            variant < .70 ? cityKit.collapsedWall(ty*1009+tx) :
+            variant < .80 ? cityKit.stele() :
+            variant < .88 ? cityKit.stairFragment() :
+            variant < .95 ? cityKit.altar() : cityKit.vines();
           // Keep meshes as shallow scenery close to a solid wall.
           // Tall architecture is scaled to fit the existing 4-unit ceiling.
-          const tall = variant < .52;
+          const tall = variant < .38;
           piece.scale.setScalar(tall ? .55 : .48);
           piece.rotation.y = angle;
           piece.position.set(tx*CELL + dx*1.72, 0, ty*CELL + dz*1.72);
