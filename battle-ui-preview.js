@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-16";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-19";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -25,11 +25,41 @@
       bottom.classList.add("battle-preview-bottom");
     }
 
+    // The old battle-support strip is redundant: COMMAND INFO is the single
+    // description surface. Keep its element for game logic but hide visually.
+    const support = document.getElementById("battle-support");
+    if (support) support.hidden = true;
+    const commandHint = document.getElementById("command-hint");
+    if (commandHint) commandHint.hidden = true;
+    const infoDescription = document.getElementById("command-description");
+    if (infoDescription) {
+      const initialPrompt = "コマンドを選ぶと説明がここに表示されます。";
+      let hasSelectedCommand = false;
+      const markSelected = event => {
+        if (!event.target.closest("#battle-commands button, .battle-preview-primary-rail button")) return;
+        hasSelectedCommand = true;
+      };
+      battle.addEventListener("click", markSelected, true);
+      // Show the guidance only before the first command selection.
+      // Later skill/attack descriptions remain under control of game logic.
+      requestAnimationFrame(() => {
+        if (!hasSelectedCommand && battle.classList.contains("active"))
+          infoDescription.textContent = initialPrompt;
+      });
+    }
+
     // Legacy 3DS-style key badges are removed in preview, without removing buttons.
     const eventTitle = eventWindow?.querySelector(".window-title");
     if (eventTitle) {
       eventTitle.textContent = "EVENT";
       eventTitle.setAttribute("aria-label", "イベントログ");
+    }
+    // Place the EVENT tab beside the action prompt, like the reference HUD.
+    // The log body remains in its existing accessible live region below.
+    const actionWindow = bottom?.querySelector(".command-window");
+    if (eventTitle && actionWindow) {
+      eventTitle.classList.add("battle-event-prompt-tab");
+      actionWindow.prepend(eventTitle);
     }
     // Rare slime HP sits above its head; update after enemy changes.
     const enemyDisplay = document.getElementById("battle-enemy");
@@ -182,6 +212,12 @@
       button.type = "button"; button.className = "battle-preview-rail-button"; button.textContent = label;
       button.addEventListener("click", () => {
         if (battleState.busy) return;
+        // Align the submenu first option just below the selected action row.
+        const arena = battle.querySelector(".battle-arena");
+        if (arena) {
+          const selectedTop = button.getBoundingClientRect().top - arena.getBoundingClientRect().top;
+          battle.style.setProperty("--battle-submenu-top", Math.max(120, Math.min(325, Math.round(selectedTop - 20))) + "px");
+        }
         renderActionMenu();
         requestAnimationFrame(() => {
           const selector = action === "preview-move" ? "[data-preview-move]" : action === "preview-union-toggle" ? "[data-preview-union-toggle]" : "[data-action="+action+"]";

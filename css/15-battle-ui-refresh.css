@@ -1239,3 +1239,159 @@ body:has(#battle.battle-ui-preview.active) .topbar {
  position:relative!important;
  z-index:101!important;
 }
+
+
+/* Scene continuity: one outer frame from forest arena through COMMAND INFO. */
+#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) {
+ position:relative;
+ isolation:isolate;
+ border:2px solid #74d7e8!important;
+ border-radius:16px!important;
+ background-image:
+   linear-gradient(180deg,rgba(3,20,32,.04) 0%,rgba(3,24,39,.20) 57%,rgba(2,17,30,.78) 100%),
+   url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+ background-size:cover!important;
+ background-position:center top!important;
+ background-repeat:no-repeat!important;
+ box-shadow:0 0 20px #3bcbe933,inset 0 0 16px #001b2d!important;
+}
+#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) .battle-arena {
+ border-bottom:0!important;
+ border-radius:14px 14px 0 0!important;
+}
+#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) #battle-party {
+ border-left:0!important;border-right:0!important;border-bottom:0!important;
+ border-radius:0!important;
+ background-image:linear-gradient(180deg,#02243b36,#03233c94)!important;
+ box-shadow:none!important;
+}
+#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) .battle-preview-bottom {
+ position:relative;
+ padding:12px!important;
+ margin:0!important;
+ border:0!important;
+ background:linear-gradient(180deg,#03253a80,#031e33bb)!important;
+ border-radius:0 0 14px 14px!important;
+}
+/* EVENT tab belongs at the top-left action prompt, not above the log. */
+#battle.battle-ui-preview .battle-event-prompt-tab {
+ position:relative!important;
+ display:inline-flex!important;
+ align-items:center!important;
+ width:max-content!important;
+ padding:3px 12px!important;
+ margin:0 0 4px!important;
+ font-size:12px!important;
+ font-weight:900!important;
+ color:#ffe8a0!important;
+ border:1px solid #8be6f6!important;
+ border-radius:5px 12px 5px 5px!important;
+ background:linear-gradient(90deg,#0c5572,#093047)!important;
+ box-shadow:0 0 7px #4ddfff55!important;
+}
+/* The log text stays visible in the dedicated lower panel. */
+#battle.battle-ui-preview .battle-preview-bottom>.event-window {
+ padding-top:10px!important;
+}
+/* Soft, transparent contact shadows; each enemy image casts its own ellipse. */
+#battle.battle-ui-preview .battle-arena .enemy-display {
+ isolation:isolate;
+}
+#battle.battle-ui-preview .battle-arena .enemy-display:not(:has(.enemy-group))::before {
+ content:"";
+ position:absolute;
+ left:50%;
+ bottom:5px;
+ width:clamp(65px,48%,220px);
+ height:clamp(12px,3.2vh,30px);
+ border-radius:50%;
+ background:radial-gradient(ellipse,#07131b99 0%,#07131b66 35%,#07131b00 75%);
+ filter:blur(4px);
+ transform:translateX(-50%);
+ pointer-events:none;
+ z-index:-1;
+}
+#battle.battle-ui-preview .battle-arena .enemy-group-unit {
+ position:relative!important;
+ isolation:isolate;
+ max-width:175px!important;
+}
+#battle.battle-ui-preview .battle-arena .enemy-group-unit::before {
+ content:"";
+ position:absolute;
+ left:50%;bottom:26px;
+ width:76%;height:20px;
+ border-radius:50%;
+ background:radial-gradient(ellipse,#06131c99,#07131b55 42%,transparent 75%);
+ filter:blur(3px);
+ transform:translateX(-50%);
+ pointer-events:none;
+ z-index:-1;
+}
+/* Enlarge enemy sprites without changing the six-enemy 3x2 layout. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview .battle-arena .enemy-image {
+   width:clamp(160px,20vw,310px)!important;
+   height:clamp(155px,25vh,290px)!important;
+ }
+ #battle.battle-ui-preview .battle-arena .enemy-group-unit img {
+   height:clamp(90px,11vw,172px)!important;
+ }
+ #battle.battle-ui-preview .battle-arena .enemy-group-unit:nth-child(-n+3) {
+   transform:scale(.96)!important;
+ }
+ #battle.battle-ui-preview .battle-arena .enemy-group-unit:nth-child(n+4) {
+   transform:scale(1.10)!important;
+ }
+}
+@media(max-width:899px) {
+ #battle.battle-ui-preview .battle-arena .enemy-image {
+   width:min(45vw,230px)!important;
+   height:min(28vh,240px)!important;
+ }
+}
+
+
+/* Submenu follows the selected command vertically; the first option starts
+   slightly below its parent action, while the left action rail never resizes. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window {
+   top:var(--battle-submenu-top,160px)!important;
+   max-height:min(350px,calc(100% - var(--battle-submenu-top,160px) - 12px))!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window #battle-commands {
+   align-content:start!important;
+   overflow-y:auto;
+ }
+}
+
+
+/* COMMAND INFO replaces the old standalone battle-support/hint strips. */
+#battle.battle-ui-preview #battle-support,
+#battle.battle-ui-preview #command-hint,
+body:has(#battle.active.battle-ui-preview) #battle-support {
+ display:none!important;
+}
+
+
+/* Final screenshot pass: legible white character names and subdued forest. */
+#battle.battle-ui-preview #battle-party .battle-member>.member-head,
+#battle.battle-ui-preview #battle-party .battle-member>.member-head .member-name,
+#battle.battle-ui-preview #battle-party .battle-member>.member-head strong {
+ color:#fff!important;
+ font-size:clamp(13px,1.15vw,17px)!important;
+ font-weight:900!important;
+ line-height:1.2!important;
+ text-shadow:0 1px 4px #00111c,0 0 8px #00111ccc!important;
+}
+#battle.battle-ui-preview .battle-arena[data-environment="forest"] {
+ background-image:
+  linear-gradient(90deg,rgba(0,11,21,.64),rgba(0,15,26,.45) 48%,rgba(0,11,21,.58)),
+  linear-gradient(0deg,rgba(0,9,19,.54),rgba(0,12,23,.34)),
+  url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+}
+#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) {
+ background-image:
+  linear-gradient(180deg,rgba(0,12,23,.34),rgba(0,12,23,.52) 52%,rgba(0,11,22,.82)),
+  url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+}
