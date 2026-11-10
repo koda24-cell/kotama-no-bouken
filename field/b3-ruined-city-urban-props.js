@@ -418,6 +418,31 @@ export function createB3UrbanProps(THREE) {
     for(let i=0;i<3;i++)beam(g,[.1,.2,0],[Math.cos(i*2.1)*.8,.08,Math.sin(i*2.1)*.8],.07,growth);
     return g;
   }
+  // Visual-only city scenery cluster: no pathfinding or collision changes.
+  function abandonedIntersection(variant=0) {
+    const v=((variant%3)+3)%3,g=group('abandoned_intersection_'+v);
+    const lampA=ruinedStreetlamp(v);lampA.position.set(-4.2,0,-2.8);g.add(lampA);
+    const lampB=ruinedStreetlamp((v+1)%3);lampB.position.set(4.1,0,2.8);lampB.rotation.y=Math.PI;g.add(lampB);
+    const stop=abandonedTransitStop(v);stop.position.set(3.3,0,-3.2);stop.rotation.y=-Math.PI/2;g.add(stop);
+    const wreck=steelWreck((v+2)%3);wreck.position.set(-3.3,0,2.8);wreck.scale.set(.9,.9,.9);g.add(wreck);
+    for(let i=0;i<5;i++) {
+      const tile=rootedPavement(3000+v*17+i);
+      tile.position.set((i%3-1)*2.2,0,(Math.floor(i/3)-.5)*2.3);
+      tile.scale.set(.7,.85,.7);g.add(tile);
+    }
+    // One road corner is completely lost beneath a huge fallen facade.
+    const facade=add(g,cube,concrete,-4.2,.55,1.3,2.8,.28,1.8);
+    facade.rotation.z=v===1?.47:-.38;facade.rotation.y=.3;
+    for(let i=0;i<7;i++) {
+      const x=-4.7+(i%4)*.65,z=1.1+Math.floor(i/4)*.7;
+      const stone=add(g,cube,concrete,x,.15+(i%3)*.14,z,.4+(i%2)*.24,.28,.48);
+      stone.rotation.set(.12*i,.22*i,-.2*i);
+    }
+    // Root bridge pushes through road edge; clear central space for visual sightline.
+    beam(g,[-4.5,.1,-.9],[-3.6,.75,-.65],.2,growth);
+    beam(g,[-3.6,.75,-.65],[-2.5,.18,-.4],.13,growth);
+    return g;
+  }
   function dispose(){geos.forEach(x=>x.dispose());[concrete,metal,dark,growth].forEach(x=>x.dispose());}
-  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,collapsedOverpass,sunkenStreet,collapsedSkybridge,ruinedPlaza,abandonedTransitStop,ruinedStreetlamp,dispose};
+  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,collapsedOverpass,sunkenStreet,collapsedSkybridge,ruinedPlaza,abandonedTransitStop,ruinedStreetlamp,abandonedIntersection,dispose};
 }
