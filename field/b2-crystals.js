@@ -87,15 +87,16 @@ function quartzPoint(T, r, seed, kind, twin) {
 }
 
 // 頂点の色：根元（y の低い所）は乳白、高い所ほど先端の色。割れ口は白寄り、芯は暗めの先端色
-// 頂点の色：塊全体を濃い body 色で塗り、結晶の先端（結晶ごとの高さの上2割）だけ tip 色へ。
-// 割れ口は body を少し明るく。高さは結晶ごとの自分の座標（lpos.y）で見る
-function paint(geo, pal, kind) {
-  const p = geo.attributes.position, L = geo.attributes.lpos, col = new Float32Array(p.count * 3);
-  const body = new THREE.Color(pal.body), tip = new THREE.Color(pal.tip), c = new THREE.Color(), w = new THREE.Color(0xffffff);
+// 頂点の色（ユーザーが選んだ色味）：群晶・塊の根元は乳白、上へ行くほど先端の濃い色。
+// 割れ口は白寄り。高さは群晶全体の高さ（position.y / yMax）で見る
+function paint(geo, pal, kind, yMax) {
+  const p = geo.attributes.position, col = new Float32Array(p.count * 3);
+  const a = new THREE.Color(pal.base), b = new THREE.Color(pal.tip), c = new THREE.Color(), w = new THREE.Color(0xffffff);
   for (let i = 0; i < p.count; i++) {
-    const y = L ? L.getY(i) : p.getY(i), t = THREE.MathUtils.smoothstep(y, 0.78, 0.98);
-    c.copy(body).lerp(tip, t);
-    if (kind === 'fracture') c.lerp(w, 0.18);
+    const t = THREE.MathUtils.clamp(p.getY(i) / yMax, 0, 1);
+    if (kind === 'fracture') c.copy(a).lerp(b, Math.pow(t, 0.7) * 0.5).lerp(w, 0.35);
+    else if (kind === 'cloudy') c.copy(a).lerp(b, 0.3 + Math.pow(t, 0.6) * 0.7);
+    else c.copy(a).lerp(b, 0.4 + Math.pow(t, 0.5) * 0.6);
     col.set([c.r, c.g, c.b], i * 3);
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
@@ -181,7 +182,7 @@ export function makeCrystalCluster(seed, paletteName, size = 'large') {
     }
   }
   // 色は群晶全体の高さに対して付ける（根元が乳白、上ほど濃い）
-  for (const k of Object.keys(T.b)) { const g = toGeo(T.b[k], T.l[k]); if (g) out[k].push(paint(g, pal, k)); }
+  for (const k of Object.keys(T.b)) { const g = toGeo(T.b[k], T.l[k]); if (g) out[k].push(paint(g, pal, k, size === 'massive' ? 0.9 : 1.0)); }
   return out;
 }
 
