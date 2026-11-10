@@ -166,9 +166,51 @@ export function createRuinedCityKit(THREE) {
     }
     return g;
   }
+  // Angular, asymmetric rock mesh: actual silhouette deformation, not a cube texture.
+  function jaggedRock(seed=1, radius=1) {
+    let n=seed>>>0;
+    const rnd=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};
+    const g=new THREE.IcosahedronGeometry(radius,1);
+    const p=g.getAttribute('position');
+    for(let i=0;i<p.count;i++) {
+      const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+      const a=.62+rnd()*.85;
+      p.setXYZ(i,x*a*(.8+rnd()*.5),y*a*(.65+rnd()*.8),z*a*(.75+rnd()*.6));
+    }
+    g.toNonIndexed?.();
+    g.computeVertexNormals();geometries.push(g);
+    return g;
+  }
+  function boulderCluster(seed=1) {
+    const g=group('boulder_cluster');
+    let n=seed>>>0;
+    const rnd=()=>{n=(Math.imul(n,1103515245)+12345)>>>0;return n/4294967296;};
+    for(let i=0;i<9;i++) {
+      const size=i===0?1.75:i<3?1.05:.25+rnd()*.55;
+      const rock=jaggedRock(seed*31+i,size);
+      const x=i===0?0:(rnd()-.5)*3.6,z=i===0?0:(rnd()-.5)*2.6;
+      const m=add(g,rock,stone,x,size*.38,z);
+      m.rotation.set(rnd()*.5,rnd()*6.28,rnd()*.55);
+    }
+    return g;
+  }
+  function crystalCluster(seed=1) {
+    const g=group('crystal_cluster');
+    let n=seed>>>0;
+    const rnd=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};
+    for(let i=0;i<12;i++) {
+      const height=i===0?3.6:i<4?1.7+rnd()*1.1:.35+rnd()*1.1;
+      const radius=height*(i===0?.24:.17+rnd()*.07);
+      const geo=cylinder(0,radius,height,5);
+      const x=i===0?0:(rnd()-.5)*2.8,z=i===0?0:(rnd()-.5)*2.8;
+      const m=add(g,geo,i%4===0?gold:stone,x,height*.46,z);
+      m.rotation.z=(rnd()-.5)*.65;m.rotation.x=(rnd()-.5)*.65;
+    }
+    return g;
+  }
   function dispose() {
     geometries.forEach(g=>g.dispose());
     [stone,shadow,moss,gold].forEach(m=>m.dispose());
   }
-  return { column, arch, facade, temple, tower, rubble, statue, vines, stairFragment, stele, altar, collapsedWall, dispose };
+  return { column, arch, facade, temple, tower, rubble, statue, vines, stairFragment, stele, altar, collapsedWall, boulderCluster, crystalCluster, dispose };
 }
