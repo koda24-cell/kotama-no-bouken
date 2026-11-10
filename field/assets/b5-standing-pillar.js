@@ -75,42 +75,46 @@ export function createB5StandingPillar(THREE,options={}){
  }
  // Weathered Gothic abacus: continuous stone solids with chipped, rounded
  // corners and one clearly missing quadrant. No floating shard ornaments.
+ // One substantial, continuous capstone instead of a stack of thin sheets.
+ // Its front-right corner is broken away; the fracture travels through the
+ // full stone thickness, with a broad worn diagonal rather than spikes.
  const wornSlab=(y,w,h,d,damage=1)=>{
   const outline=[
-   [-.91,-1],[-.28,-1],[.55,-1],[.87,-.95],
-   [1,-.69],[1,.21],[.91,.69],[.62,.95],
-   [.24,1],[-.46,1],[-.85,.93],[-1,.68],[-1,-.44]
+   [-1,-.82],[-.88,-1],[.34,-1],
+   [.49,-.95],[.56,-.76],[.79,-.55],
+   [.95,-.42],[1,-.19],[1,.78],
+   [.85,1],[-.82,1],[-1,.83]
   ];
   const n=outline.length,verts=[],faces=[];
-  for(let layer=0;layer<4;layer++){
-   const t=layer/3;
+  for(let layer=0;layer<5;layer++){
+   const t=layer/4;
    for(let i=0;i<n;i++){
     const [ox,oz]=outline[i];
-    const cornerDamage=(ox>.5&&oz<-.4)?damage*(.12+.11*Math.sin(i*1.7)):0;
-    const rounding=.035*Math.sin(i*2.9+layer*1.8);
-    const edge=1-cornerDamage-rounding;
-    const x=ox*w*.5*edge,z=oz*d*.5*edge;
-    const yy=(t-.5)*h-(layer===3?.075*damage*Math.max(0,Math.sin(i*2.3)):0);
+    const broken=ox>.3&&oz<-.15;
+    const wear=(broken?.025:.008)*Math.sin(i*2.4+layer*1.9);
+    const x=ox*w*.5*(1+wear),z=oz*d*.5*(1+wear);
+    const chippedTop=broken&&layer===4?damage*.10*(.5+.5*Math.sin(i*2.2)):0;
+    const yy=(t-.5)*h-chippedTop;
     verts.push(x,yy,z);
    }
   }
-  for(let layer=0;layer<3;layer++)for(let i=0;i<n;i++){
-   const a=layer*n+i,b=layer*n+(i+1)%n,c=(layer+1)*n+i,e=(layer+1)*n+(i+1)%n;
-   faces.push(a,c,b,b,c,e);
+  for(let layer=0;layer<4;layer++)for(let i=0;i<n;i++){
+   const p=layer*n+i,q=layer*n+(i+1)%n,r=(layer+1)*n+i,v=(layer+1)*n+(i+1)%n;
+   faces.push(p,r,q,q,r,v);
   }
   for(let i=1;i<n-1;i++){
    faces.push(0,i+1,i);
-   const t=3*n;faces.push(t,t+i,t+i+1);
+   const t=4*n;faces.push(t,t+i,t+i+1);
   }
   const g=G(new THREE.BufferGeometry());
   g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
   g.setIndex(faces);g.computeVertexNormals();
   return add(g,0,y,0);
  };
- wornSlab(top+1.51,3.35,.31,3.35,.65);
- wornSlab(top+1.76,3.72,.22,3.72,1);
- wornSlab(top+1.30,3.90,.09,3.90,.7);
- wornSlab(top+1.91,3.90,.09,3.90,1);
+ // Lower carved courses are deliberately narrower and visibly supporting
+ // the heavy, thick monolithic capstone.
+ wornSlab(top+1.36,3.14,.20,3.14,.25);
+ wornSlab(top+1.78,3.76,.67,3.76,1);
  // Weathered stone pockets on the capital bell itself. They recess into
  // the upper profile instead of being separate angular protrusions.
  const capPos=capital.geometry.attributes.position;
