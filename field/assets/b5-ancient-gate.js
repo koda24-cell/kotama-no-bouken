@@ -224,31 +224,50 @@ export function createB5AncientGate(THREE,options={}){
  // A single tapered, chamfered volume per shoulder replaces the visual gap
  // between stacked blocks; the outer edge is fractured rather than spiky.
  const gothicHaunch=(x,y,z,side,width=2.6,height=2.25,depth=2.12)=>{
-  // Rounded multi-section haunch. Each section has a real recessed FRONT
-  // stone face, and the outer silhouette swells gradually into the lintel.
-  const levels=17,across=13,points=[],faces=[];
+  // Single continuous sculpted support: Gothic recessed flutes and worn edges
+  // are cut into the FRONT (-Z), not applied as separate decorative objects.
+  const levels=49,across=57,points=[],faces=[];
+  const smooth=v=>{v=Math.max(0,Math.min(1,v));return v*v*(3-2*v);};
   for(let k=0;k<levels;k++){
-   const t=k/(levels-1),ease=t*t*(3-2*t);
+   const t=k/(levels-1),ease=smooth(t);
    const outer=x-side*(.78+1.06*ease)*width*.5;
    const inner=x+side*(.64+.30*t)*width*.5;
    const yy=y+t*height-.055*Math.sin(t*11+side)*t;
    for(let j=0;j<across;j++){
     const u=j/(across-1);
     const xx=outer+(inner-outer)*u;
+    // Worn, softly rounded corners, with localized missing stone.
+    const edge=Math.min(u,1-u);
+    const edgeWear=(1-smooth(edge/.10))*
+      (.065+.038*Math.sin(t*17+u*31+side)+.025*Math.sin(t*37-u*14));
+    const topWear=(1-smooth((1-t)/.11))*.065*(.5+.5*Math.sin(u*21+side));
     const arch=.13*Math.sin(Math.PI*u)*Math.sin(Math.PI*t);
-    const notch=Math.exp(-Math.pow((u-.38-.10*Math.sin(t*5))/ .19,2))
-      *Math.exp(-Math.pow((t-.57)/.31,2));
-    const chip=.026*Math.sin(u*17+t*23)+.019*Math.sin(u*29-t*12);
-    // Inset stone directly into the front surface, not raised plates.
-    const frontZ=z-depth*.43+.30*notch+.045*Math.sin(u*13+t*8);
-    points.push(xx,yy+arch+chip,frontZ);
-    points.push(xx,yy+arch+chip,z+depth*.43);
+    const chip=.018*Math.sin(u*17+t*23)+.014*Math.sin(u*29-t*12);
+    // Three deep, vertically flowing Gothic flute channels, interrupted by
+    // erosion. The arch-shaped termination is sculpted into the same mesh.
+    const fluteCenters=[.23,.50,.77];
+    let recess=0;
+    for(let m=0;m<fluteCenters.length;m++){
+     const center=fluteCenters[m]+.035*Math.sin(t*3.8+m*.6);
+     const distance=Math.abs(u-center);
+     const channel=1-smooth((distance-.032)/.048);
+     const archEnd=smooth((t-.10-.065*Math.abs(u-center)*7)/.10)*
+       (1-smooth((t-.91+.035*Math.abs(u-center)*7)/.075));
+     const damage=.76+.24*Math.sin(t*13+m*2.1);
+     recess=Math.max(recess,.34*channel*archEnd*damage);
+    }
+    const erosion=Math.exp(-Math.pow((u-.39-.08*Math.sin(t*5))/.15,2))*
+      Math.exp(-Math.pow((t-.58)/.22,2))*.17;
+    const frontZ=z-depth*.43+recess+erosion+edgeWear*.50+topWear*.40;
+    const localY=yy+arch+chip-edgeWear*.34-topWear;
+    points.push(xx,localY,frontZ);
+    points.push(xx,localY,z+depth*.43);
    }
   }
   for(let k=0;k<levels-1;k++)for(let j=0;j<across-1;j++){
    const q=(k*across+j)*2,r=q+2,n=q+across*2,m=n+2;
-   faces.push(q,r,n,r,m,n); // front
-   faces.push(q+1,n+1,r+1,r+1,n+1,m+1); // back
+   faces.push(q,n,r,r,n,m); // front, outward toward -Z
+   faces.push(q+1,r+1,n+1,r+1,m+1,n+1);
   }
   for(let k=0;k<levels-1;k++)for(const j of [0,across-1]){
    const a=(k*across+j)*2,b=((k+1)*across+j)*2;
