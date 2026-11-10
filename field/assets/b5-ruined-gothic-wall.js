@@ -84,21 +84,30 @@ export function createB5RuinedGothicWall(THREE,options={}) {
  }
  // Inset blind lancet niches: recesses read as cavities, not glued-on pentagons.
  for(const cx of [-2.95,0,2.95]){
-  block(cx,3.95,-.37,1.54,4.9,.12,recess);
+  const ruined=cx>2;
+  if(!ruined)block(cx,3.95,-.37,1.54,4.9,.12,recess);
+  else block(cx,2.78,-.37,1.54,2.55,.12,recess);
   const pts=[[cx-.78,6.22],[cx,7.3],[cx+.78,6.22]];
-  for(let i=0;i<2;i++)beam(V(pts[i][0],pts[i][1],-.69),V(pts[i+1][0],pts[i+1][1],-.69),.18);
+  for(let i=0;i<2;i++){
+   if(ruined&&i===1)continue;
+   if(ruined)beam(V(cx-.78,6.22,-.69),V(cx-.36,6.80,-.69),.18);
+   else beam(V(pts[i][0],pts[i][1],-.69),V(pts[i+1][0],pts[i+1][1],-.69),.18);
+  }
   for(const side of [-1,1]){
-   block(cx+side*.84,3.83,-.73,.24,4.72,.44,highlight);
-   block(cx+side*1.13,3.8,-.56,.16,5.0,.33,stone);
+   if(!ruined||side<0)block(cx+side*.84,3.83,-.73,.24,4.72,.44,highlight);
+   else wornStone(cx+side*.84,2.18,-.73,.24,1.45,.44,71,highlight);
+   if(!ruined||side<0)block(cx+side*1.13,3.8,-.56,.16,5.0,.33,stone);
   }
   // layered carved pointed trefoil at niche crown
   for(const side of [-1,1]){
+   if(ruined)continue;
    const x=cx+side*.37;
    beam(V(cx,6.86,-.80),V(x,6.28,-.80),.08,highlight);
   }
   block(cx,1.25,-.75,1.7,.25,.62,highlight);
   // Raised sculpted quatrefoil and inset arch ribs.
   for(const side of [-1,1]){
+   if(ruined)continue;
    const center=V(cx+side*.32,5.96,-.95);
    for(let j=0;j<4;j++){
     const a=j*Math.PI/2,pts=[];
@@ -109,6 +118,21 @@ export function createB5RuinedGothicWall(THREE,options={}) {
     for(let k=1;k<pts.length;k++)beam(pts[k-1],pts[k],.032,highlight);
    }
   }
+ }
+ // Fractured right arch abutment: the remaining rib terminates in
+ // embedded rough masonry, with a short broken springer rather than a
+ // complete unsupported triangular outline.
+ for(let i=0;i<9;i++){
+  const x=2.2+i*.23,y=5.93-i*.31;
+  const fragment=add(new THREE.DodecahedronGeometry(.20+(i%3)*.08,1),stone,x,y,-.53);
+  fragment.scale.set(1.25,.72,.77);
+  fragment.rotation.set(.11*i,.21*i,.16*i);
+ }
+ // Worn rubble bridging the arch stump into the wall courses.
+ for(let i=0;i<7;i++){
+  const x=3.45+(i%3)*.27,y=2.7+Math.floor(i/3)*.43;
+  const fragment=add(new THREE.DodecahedronGeometry(.27,1),stone,x,y,-.39);
+  fragment.scale.set(1.30,.85,.84);
  }
  // Strong engaged piers connect wall, arch ribs and floor into one structure.
  for(const x of [-4.55,-1.47,1.47,4.55]){
