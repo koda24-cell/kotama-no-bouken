@@ -78,7 +78,7 @@
       if (hud.dataset.actorId !== actor.id) {
         hud.dataset.actorId = actor.id;
         portrait.replaceChildren();
-        const portraitSrc = typeof getCharacterImage === "function" ? getCharacterImage(actor) : actor.image;
+        const portraitSrc = actor.image;
         if (portraitSrc) {
           const img = document.createElement("img");
           img.src = portraitSrc;
