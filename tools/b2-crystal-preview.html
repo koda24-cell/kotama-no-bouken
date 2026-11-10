@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第2階層 結晶の確認</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#06131c;color:#d9f5ff;font-family:system-ui}#info{position:absolute;left:12px;top:10px;font-size:13px;background:#06131cc0;padding:8px 10px;border-radius:6px}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head><body><div id="info">第2階層・結晶の確認（ゲームの通行判定とは無関係）　ドラッグで回転／?view=row|grotto|close</div>
+<script type="module">
+// 結晶（field/b2-crystals.js）だけを、ゲームに近い照明で見るための確認ページ
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { makeCrystalCluster, makeCrystalMaterials } from '../field/b2-crystals.js';
+const q = new URLSearchParams(location.search), view = q.get('view') || 'row';
+const r = new THREE.WebGLRenderer({ antialias: true }); r.setPixelRatio(Math.min(2, devicePixelRatio)); r.setSize(innerWidth, innerHeight);
+r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.45; r.outputColorSpace = THREE.SRGBColorSpace; document.body.append(r.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0e4a66); scene.fog = new THREE.FogExp2(0x1b86ad, 0.05);
+scene.add(new THREE.HemisphereLight(0x9af2ff, 0x123e5c, 1.0));
+// ゲームと同じ作り方の環境マップ
+{ const cv = document.createElement('canvas'); cv.width = 256; cv.height = 128; const c = cv.getContext('2d'); const gr = c.createLinearGradient(0, 0, 0, 128);
+  gr.addColorStop(0, '#5f9fb2'); gr.addColorStop(0.42, '#22566a'); gr.addColorStop(0.55, '#14394a'); gr.addColorStop(1, '#050f15'); c.fillStyle = gr; c.fillRect(0, 0, 256, 128);
+  for (let i = 0; i < 9; i++) { const x = (i * 97) % 256, y = 50 + (i * 37) % 20, rr = 8 + (i * 13) % 12; const g2 = c.createRadialGradient(x, y, 0, x, y, rr); g2.addColorStop(0, 'rgba(190,245,255,0.95)'); g2.addColorStop(1, 'rgba(190,245,255,0)'); c.fillStyle = g2; c.fillRect(x - rr, y - rr, rr * 2, rr * 2); }
+  const eq = new THREE.CanvasTexture(cv); eq.mapping = THREE.EquirectangularReflectionMapping; eq.colorSpace = THREE.SRGBColorSpace;
+  const pm = new THREE.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(eq).texture; }
+const floor = new THREE.Mesh(new THREE.CircleGeometry(14, 48).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x2c5a78, roughness: 0.5 })); scene.add(floor);
+const mats = makeCrystalMaterials(), buckets = { shell: [], core: [], rock: [] };
+const add = (seed, pal, size, x, z, s, yaw = 0) => {
+  const c = makeCrystalCluster(seed, pal, size), m = new THREE.Matrix4().compose(new THREE.Vector3(x, 0, z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw), new THREE.Vector3(s, s, s));
+  for (const k of ['shell', 'core', 'rock']) for (const g of c[k]) buckets[k].push(g.applyMatrix4(m));
+};
+const cam = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.05, 100);
+if (view === 'row' || view === 'close') {
+  ['white', 'cyan', 'violet', 'blue'].forEach((p, i) => { add(11 + i * 7, p, 'large', (i - 1.5) * 1.6, 0, 1.2, i); add(51 + i, p, 'small', (i - 1.5) * 1.6 + 0.55, 0.45, 1.0, i * 2); add(71 + i, p, 'small', (i - 1.5) * 1.6 - 0.5, 0.35, 0.8, i * 3); });
+  if (view === 'close') { cam.position.set(-2.1, 1.1, 1.6); } else cam.position.set(0, 1.6, 4.6);
+} else {   // 結晶の溜まり場（ゲームで「特定の範囲に多く」生える場合のイメージ）
+  const pals = ['cyan', 'cyan', 'white', 'blue', 'violet'];
+  for (let i = 0; i < 26; i++) { const a = i * 2.399, d = 0.6 + Math.sqrt(i) * 0.75, size = i < 4 ? 'large' : i < 12 ? 'medium' : 'small';
+    add(200 + i, pals[i % pals.length], size, Math.cos(a) * d, Math.sin(a) * d - 1, size === 'large' ? 1.6 + (i % 2) * 0.5 : size === 'medium' ? 1.0 : 0.8, a); }
+  cam.position.set(0, 1.6, 5.2);
+}
+for (const k of ['shell', 'core', 'rock']) { const g = mergeGeometries(buckets[k], false); const mesh = new THREE.Mesh(g, mats[k]); if (k === 'shell') mesh.renderOrder = 2; scene.add(mesh); }
+for (const [x, z, c] of [[-2.5, 1.2, 0x7fe8ff], [2.5, 1.0, 0xb98cff], [0, -1.5, 0x6f98ff]]) { const L = new THREE.PointLight(c, 6, 9, 2); L.position.set(x, 1.4, z); scene.add(L); }
+const camL = new THREE.PointLight(0xbff4ff, 4, 10, 2); scene.add(camL);
+const controls = new OrbitControls(cam, r.domElement); controls.target.set(0, view === 'close' ? 0.5 : 0.6, view === 'grotto' ? -1 : 0); controls.update();
+const comp = new EffectComposer(r); comp.addPass(new RenderPass(scene, cam)); comp.addPass(new UnrealBloomPass(new THREE.Vector2(256, 256), 0.45, 0.5, 0.84)); comp.addPass(new OutputPass());
+addEventListener('resize', () => { cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); r.setSize(innerWidth, innerHeight); comp.setSize(innerWidth, innerHeight); });
+const tri = (k) => buckets[k].reduce((s, g) => s + g.attributes.position.count / 3, 0);
+window.__crystalStats = { shell: tri('shell'), core: tri('core'), rock: tri('rock') };
+r.setAnimationLoop(() => { controls.update(); camL.position.copy(cam.position); comp.render(); window.__ready = true; });
+</script></body></html>
