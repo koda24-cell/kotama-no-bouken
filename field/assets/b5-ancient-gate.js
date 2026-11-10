@@ -45,6 +45,48 @@ export function createB5AncientGate(THREE,options={}){
   const geo=G(new THREE.BufferGeometry());geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));geo.setIndex(indices);geo.computeVertexNormals();
   return add(geo,mat,x,y,z);
  };
+ // Eroded fracture faces: uneven but broadly planar chipped ends.
+ // The fractured cross-section is a real cap with bevelled rim, not spikes.
+ const fracturedStone=(x,y,z,w,h,d,mat=stone,brokenEnd=1)=>{
+  const nx=9,nz=7,verts=[],indices=[];
+  const at=(i,j)=>j*nx+i;
+  const xs=Array.from({length:nx},(_,i)=>i/(nx-1));
+  const zs=Array.from({length:nz},(_,j)=>j/(nz-1));
+  const top=[],bottom=[];
+  for(let j=0;j<nz;j++)for(let i=0;i<nx;i++){
+   const u=xs[i],v=zs[j],edge=Math.min(u,1-u,v,1-v);
+   const erode=Math.min(1,edge*9);
+   const chips=(Math.sin(i*2.17+j*1.3)+Math.sin(i*.83-j*2.4))*.024*h*erode;
+   const fracture=brokenEnd*(u>.68?(u-.68)/.32:0)*(.12+.08*Math.sin(v*6.28))*h;
+   const xx=(u-.5)*w,zz=(v-.5)*d;
+   bottom.push([xx,-h/2,zz]);
+   top.push([xx,h/2-fracture+chips,zz]);
+  }
+  for(const p of bottom)verts.push(...p);
+  for(const p of top)verts.push(...p);
+  const topOffset=nx*nz;
+  for(let j=0;j<nz-1;j++)for(let i=0;i<nx-1;i++){
+   const a=topOffset+at(i,j),b=topOffset+at(i+1,j),c=topOffset+at(i,j+1),e=topOffset+at(i+1,j+1);
+   indices.push(a,c,b,b,c,e);
+  }
+  const ring=[];
+  for(let i=0;i<nx;i++)ring.push(at(i,0));
+  for(let j=1;j<nz;j++)ring.push(at(nx-1,j));
+  for(let i=nx-2;i>=0;i--)ring.push(at(i,nz-1));
+  for(let j=nz-2;j>0;j--)ring.push(at(0,j));
+  for(let k=0;k<ring.length;k++){
+   const a=ring[k],b=ring[(k+1)%ring.length];
+   indices.push(a,b,topOffset+a,b,topOffset+b,topOffset+a);
+  }
+  for(let j=1;j<nz-1;j++)for(let i=1;i<nx-1;i++){
+   const a=at(i,j),b=at(i+1,j),c=at(i,j+1),e=at(i+1,j+1);
+   indices.push(a,b,c,b,e,c);
+  }
+  const geo=G(new THREE.BufferGeometry());
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  geo.setIndex(indices);geo.computeVertexNormals();
+  return add(geo,mat,x,y,z);
+ };
  // Reference silhouette: horizontal broken lintel and two masonry piers.
  // There is NO large triangular / pointed arch spanning the gate.
  for(const side of [-1,1]){
@@ -69,7 +111,7 @@ export function createB5AncientGate(THREE,options={}){
   [-3.3,11.45,3.6,0],[-.75,11.45,1.7,-.025],
   [2.45,9.05,2.7,-.045],[4.15,9.0,1.45,-.11]
  ]){
-  const stoneBeam=weatheredCore(x,y,0,w,.78,2.1,stone);stoneBeam.rotation.z=ang;
+  const stoneBeam=fracturedStone(x,y,0,w,.78,2.1,stone,1);stoneBeam.rotation.z=ang;
   weatheredCore(x,y+.46,-.02,w+.12,.18,2.3,trim).rotation.z=ang;
  }
  // Rounded, recessed fragmentary opening beneath the surviving left lintel.
@@ -81,7 +123,7 @@ export function createB5AncientGate(THREE,options={}){
   m.rotation.z=ang-Math.PI/2;
  }
  // A collapsed right cornice creates a distinct asymmetric ruin silhouette.
- weatheredCore(4.8,8.9,-.18,1.7,.5,2.2,cut).rotation.z=-.17;
+ fracturedStone(4.8,8.9,-.18,1.7,.5,2.2,cut,1).rotation.z=-.17;
  // Broken silhouette: asymmetrical rubble piles resting on the ground.
  const rock=(x,z,sx,h,sz)=>{
   // Low, broad grounded masonry chunks, with a bevelled shoulder and
@@ -197,7 +239,7 @@ export function createB5AncientGate(THREE,options={}){
   [4.9,1.6,1.8,.64,1.3,-.14],[5.85,-.8,1.35,.45,1.1,.07],
   [2.9,2.4,1.2,.38,.85,-.12]
  ]){
-  polygonStone(x,h*.5,z,w,h,d,stone).rotation.z=ang;
+  fracturedStone(x,h*.5,z,w,h,d,stone,1).rotation.z=ang;
  }
  const scale=Number.isFinite(options.scale)?Math.max(.1,Math.min(4,options.scale)):1;
  group.scale.setScalar(scale);
