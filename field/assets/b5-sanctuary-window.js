@@ -108,6 +108,53 @@ export function createB5SanctuaryWindow(THREE, options={}) {
    beam(V(x0+.1,y,-.30),V(x1-.1,y,-.30),.047,dark,6);
   }
  }
+ // Central sanctuary emblem: a luminous ancient tree within a pointed
+ // stone mandorla. Abstract architectural symbol, not assigned game lore.
+ // It deliberately breaks the regular mosaic grid and spans two lancets.
+ const emblemY=height*.43,emblemW=width*.235,emblemH=height*.245;
+ const ornamentZ=-.84;
+ const curve=(points,r,mat=trim)=>{
+  for(let k=1;k<points.length;k++)beam(V(points[k-1][0],points[k-1][1],ornamentZ),V(points[k][0],points[k][1],ornamentZ),r,mat,8);
+ };
+ const outlineLeft=[],outlineRight=[];
+ for(let k=0;k<=32;k++){
+  const t=k/32,yy=emblemY-emblemH+2*emblemH*t;
+  const half=emblemW*Math.pow(Math.max(0,1-Math.pow(2*t-1,2)),.70)*(1-.24*t);
+  outlineLeft.push([-half,yy]);outlineRight.push([half,yy]);
+ }
+ curve(outlineLeft,.115,trim);curve(outlineRight,.115,trim);
+ const motifShape=new THREE.Shape();
+ motifShape.moveTo(0,emblemY-emblemH);
+ for(const [x,y] of outlineRight)motifShape.lineTo(x,y);
+ for(let k=outlineLeft.length-1;k>=0;k--)motifShape.lineTo(outlineLeft[k][0],outlineLeft[k][1]);
+ motifShape.closePath();
+ add(new THREE.ShapeGeometry(motifShape),glass[1],0,0,-.20);
+ // Rooted trunk, sweeping boughs and a small halo: recognizable from afar.
+ curve([[0,emblemY-emblemH*.79],[0,emblemY+emblemH*.38]],.10,trim);
+ for(const side of [-1,1]){
+  for(const [at,reach,rise] of [[-.37,.60,.03],[-.12,.88,.22],[.13,.76,.43],[.34,.48,.56]]){
+   curve([[0,emblemY+emblemH*at],[side*emblemW*reach*.53,emblemY+emblemH*(at+rise*.42)],[side*emblemW*reach,emblemY+emblemH*(at+rise)]],.048,trim);
+  }
+  curve([[0,emblemY-emblemH*.62],[side*emblemW*.49,emblemY-emblemH*.91]],.06,trim);
+ }
+ for(let i=0;i<24;i++){
+  const a=i*Math.PI*2/24,b=(i+1)*Math.PI*2/24;
+  curve([[Math.cos(a)*.36,emblemY+emblemH*.55+Math.sin(a)*.36],[Math.cos(b)*.36,emblemY+emblemH*.55+Math.sin(b)*.36]],.065,trim);
+ }
+ // Stone quatrefoil recesses in the flanking spandrels.
+ for(const side of [-1,1]){
+  for(const cy of [height*.71,height*.77]){
+   const cx=side*width*.43;
+   for(let petal=0;petal<4;petal++){
+    const a=petal*Math.PI/2,pts=[];
+    for(let k=0;k<=12;k++){
+     const t=k*Math.PI*2/12;
+     pts.push([cx+Math.cos(a)*.22+Math.cos(t)*.22,cy+Math.sin(a)*.22+Math.sin(t)*.22]);
+    }
+    curve(pts,.055,stone);
+   }
+  }
+ }
  // Cathedral rose window: layered stone circles, 12 petal tracery,
  // colored radial glass wedges and a gilded central medallion.
  const roseY=height*.85,roseR=Math.min(W*.40,height*.10);
