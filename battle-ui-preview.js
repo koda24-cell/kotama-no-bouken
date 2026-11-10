@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-29";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-30";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -102,6 +102,12 @@
       const turnObserver = new MutationObserver(formatTurn);
       turnObserver.observe(counter, {childList:true,characterData:true,subtree:true});
       formatTurn();
+    }
+    // The original EVENT heading shares the upper HUD row with TURN.
+    // Move, do not clone, so the event panel cannot show a second heading.
+    if (eventTitle) {
+      eventTitle.classList.add("battle-preview-header-event");
+      arenaHeader.appendChild(eventTitle);
     }
     arenaHeader.appendChild(tabs);
     battle.querySelector(".battle-arena")?.prepend(arenaHeader);
@@ -321,7 +327,20 @@
       box.classList.toggle("battle-preview-main-menu", main);
       battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
       primaryRail.hidden = main || !!battleState.tutorialMode;
-      backActorButton.hidden = !(battleState.currentActorIndex > 0);
+      const firstActor = !(battleState.currentActorIndex > 0);
+      backActorButton.hidden = false;
+      backActorButton.disabled = firstActor;
+      backActorButton.setAttribute("aria-disabled", String(firstActor));
+      // Main commands must also reserve the seventh slot for the first actor.
+      if (main && firstActor && !box.querySelector(".battle-preview-disabled-back")) {
+        const disabledBack = document.createElement("button");
+        disabledBack.type = "button";
+        disabledBack.className = "command-option back-option battle-preview-disabled-back";
+        disabledBack.textContent = "前のキャラへ戻る";
+        disabledBack.disabled = true;
+        disabledBack.setAttribute("aria-disabled", "true");
+        box.appendChild(disabledBack);
+      }
       if (main) expandedAction = null;
       primaryRail.querySelectorAll(".battle-preview-rail-button").forEach(item => {
         const selected = !main && item.dataset.railAction === expandedAction;
