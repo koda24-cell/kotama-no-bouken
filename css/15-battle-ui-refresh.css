@@ -1790,3 +1790,60 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
   display:none!important;
  }
 }
+
+
+/* Battle screenshot QA: seven command rows must remain inside the left frame. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail:not([hidden]) {
+  height:375px!important;
+  min-height:375px!important;
+  max-height:375px!important;
+ }
+ #battle.battle-ui-preview:not(.battle-preview-side-open) .battle-arena>.battle-preview-arena-command {
+  height:375px!important;min-height:375px!important;max-height:375px!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-arena>.battle-preview-arena-command {
+  height:auto!important;min-height:120px!important;max-height:350px!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command #battle-commands.battle-preview-main-menu {
+  gap:3px!important;
+  margin:0!important;
+  padding:0!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-arena-command #battle-commands.battle-preview-main-menu>.command-option {
+  height:38px!important;min-height:38px!important;max-height:38px!important;flex:0 0 38px!important;
+ }
+ #battle.battle-ui-preview .battle-arena>.battle-preview-primary-rail .battle-preview-rail-button {
+  height:38px!important;min-height:38px!important;max-height:38px!important;flex:0 0 38px!important;
+ }
+}
+/* The original EVENT title stays attached to the event log, never the submenu. */
+#battle.battle-ui-preview .battle-arena>.battle-preview-arena-command>.battle-event-prompt-tab {
+ display:none!important;
+}
+/* A visible empty third slot exists only while selecting formation moves. */
+#battle.battle-ui-preview #battle-party .battle-formation-empty-slot {
+ min-height:76px;
+ border:2px dashed #8ec6d5;
+ border-radius:7px;
+ background:#052b4166;
+ color:#b7dce7;
+ display:grid;
+ place-items:center;
+ box-sizing:border-box;
+ font-weight:700;
+}
+#battle.battle-ui-preview #battle-party .battle-member.battle-formation-target,
+#battle.battle-ui-preview #battle-party .battle-formation-empty-slot.battle-formation-target {
+ border:2px solid #ffda72!important;
+ outline:3px solid #f4b75c!important;
+ outline-offset:2px;
+ background-color:#65502cbb!important;
+ box-shadow:0 0 20px #ffce68aa!important;
+ z-index:8!important;
+}
+#battle.battle-ui-preview .formation-slot-option:hover,
+#battle.battle-ui-preview .formation-slot-option:focus-visible {
+ border-color:#ffda72!important;
+ box-shadow:0 0 9px #ffda7288!important;
+}

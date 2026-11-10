@@ -88,13 +88,36 @@
     });
     box.innerHTML = '<div class="formation-move-heading">'+label+'：交代する枠を選択</div>'+
       occupants.map(({slot,member}) => '<button class="command-option formation-slot-option" data-move-slot="'+slot+'">'+
-        '<span class="formation-slot-portrait">'+(member && typeof extBattlePortrait === "function" ? extBattlePortrait(member) : '＋')+'</span><span>'+(slot+1)+'枠目：'+(member ? esc(member.name)+' と交代' : '空欄へ移動')+'</span></button>').join("")+
+        '<span class="formation-slot-portrait">'+(member && typeof extBattlePortrait === "function" ? extBattlePortrait(member) : '＋')+'</span><span>'+(member ? esc(member.name) : '空欄')+'</span></button>').join("")+
       '<button class="command-option" data-action="back">戻る</button>';
     document.getElementById("command-description").textContent = "前衛・後衛の3枠から移動先を選びます。相手がいる場合は位置を交換します。移動はこのターンの行動を消費します。";
-    box.querySelectorAll("[data-move-slot]").forEach(button => button.addEventListener("click", () => {
-      commitAction({type:"formation-move",actor:actor.id,row:targetRow,slot:Number(button.dataset.moveSlot)});
-    }));
-    box.querySelector('[data-action="back"]').addEventListener("click", () => renderActionMenu());
+    const partyDisplay = document.getElementById("battle-party");
+    const clearTarget = () => partyDisplay?.querySelectorAll(".battle-formation-target").forEach(el => el.classList.remove("battle-formation-target"));
+    const highlightSlot = slot => {
+      clearTarget();
+      const member = occupants.find(item => item.slot === slot)?.member;
+      const card = member
+        ? [...(partyDisplay?.querySelectorAll(".battle-member") || [])].find(el => el.dataset.partyId === member.id)
+        : partyDisplay?.querySelector('.battle-formation-empty-slot[data-slot-key="' + targetRow + '-' + slot + '"]');
+      card?.classList.add("battle-formation-target");
+    };
+    box.querySelectorAll("[data-move-slot]").forEach(button => {
+      const slot = Number(button.dataset.moveSlot);
+      button.addEventListener("mouseenter", () => highlightSlot(slot));
+      button.addEventListener("focus", () => highlightSlot(slot));
+      button.addEventListener("mouseleave", clearTarget);
+      button.addEventListener("blur", clearTarget);
+      button.addEventListener("click", () => {
+        clearTarget();
+        commitAction({type:"formation-move",actor:actor.id,row:targetRow,slot});
+      });
+    });
+    box.querySelector('[data-action="back"]').addEventListener("click", () => {
+      clearTarget();
+      renderActionMenu();
+    });
+    // Reveal all three destination positions as soon as the submenu opens.
+    renderBattle();
   }
   window.kotamaBattleSelectMove = selectMove;
 

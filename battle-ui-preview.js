@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-25";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-26";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -62,13 +62,8 @@
       eventTitle.textContent = "EVENT";
       eventTitle.setAttribute("aria-label", "イベントログ");
     }
-    // Place the EVENT tab beside the action prompt, like the reference HUD.
-    // The log body remains in its existing accessible live region below.
-    const actionWindow = battle.querySelector(".command-window");
-    if (eventTitle && actionWindow) {
-      eventTitle.classList.add("battle-event-prompt-tab");
-      actionWindow.prepend(eventTitle);
-    }
+    // EVENT belongs only to the log panel. Do not move its title into the
+    // action window, which is reused as the skill submenu.
     // Rare slime HP sits above its head; update after enemy changes.
     const enemyDisplay = document.getElementById("battle-enemy");
     const enemyName = document.getElementById("enemy-name");
@@ -113,6 +108,12 @@
     // Observe the existing renderer; only set CSS order, never replace cards or handlers.
     function updateRows() {
       const cards = Array.from(party.querySelectorAll(".battle-member"));
+      const choosingMove = typeof battleState !== "undefined" && battleState.menuMode === "formation-move";
+      party.classList.toggle("battle-formation-choosing", choosingMove);
+      if (!choosingMove) {
+        party.querySelectorAll(".battle-formation-empty-slot").forEach(el => el.remove());
+        party.querySelectorAll(".battle-member").forEach(el => el.classList.remove("battle-formation-target"));
+      }
       let front = 0, rear = 0;
       const totalFront = cards.filter(card => card.dataset.row !== "rear").length;
       const totalRear = cards.length - totalFront;
@@ -124,7 +125,11 @@
           ? window.kotamaBattleSlotOfParty(member) : index;
         const order = String((isRear ? 3 : 0) + slot);
         // Preserve the three fixed positions even when a row has only two members.
-        const start = 1 + slot * 2;
+        const moving = typeof battleState !== "undefined" && battleState.menuMode === "formation-move";
+        const rowCount = isRear ? totalRear : totalFront;
+        // Center two-person rows in ordinary battle; reveal fixed 3-slot
+        // alignment only while choosing a formation destination.
+        const start = !moving && rowCount === 2 ? 2 + index * 2 : 1 + slot * 2;
         const column = String(start) + " / span 2";
         const gridRow = isRear ? "2" : "1";
         const row = isRear ? "rear" : "front";
@@ -132,6 +137,32 @@
         if (card.style.getPropertyValue("--battle-column") !== column) card.style.setProperty("--battle-column", column);
         if (card.style.getPropertyValue("--battle-grid-row") !== gridRow) card.style.setProperty("--battle-grid-row", gridRow);
         if (card.dataset.previewRow !== row) card.dataset.previewRow = row;
+      }
+      if (choosingMove && typeof window.kotamaBattleRowOfParty === "function") {
+        const actor = typeof currentActor === "function" ? currentActor() : null;
+        const targetRow = actor && window.kotamaBattleRowOfParty(actor) === "front" ? "rear" : "front";
+        const taken = new Set(cards.filter(card => card.dataset.previewRow === targetRow).map(card => {
+          const member = typeof getCharacter === "function" ? getCharacter(card.dataset.partyId) : null;
+          return member && typeof window.kotamaBattleSlotOfParty === "function" ? window.kotamaBattleSlotOfParty(member) : -1;
+        }));
+        for (let slot = 0; slot < 3; slot++) {
+          const key = targetRow + "-" + slot;
+          let placeholder = party.querySelector('.battle-formation-empty-slot[data-slot-key="' + key + '"]');
+          if (!taken.has(slot)) {
+            if (!placeholder) {
+              placeholder = document.createElement("div");
+              placeholder.className = "battle-formation-empty-slot";
+              placeholder.dataset.slotKey = key;
+              placeholder.textContent = "空欄";
+              party.appendChild(placeholder);
+            }
+            placeholder.style.gridColumn = (slot * 2 + 1) + " / span 2";
+            placeholder.style.gridRow = targetRow === "rear" ? "2" : "1";
+          } else placeholder?.remove();
+        }
+        party.querySelectorAll(".battle-formation-empty-slot").forEach(el => {
+          if (!el.dataset.slotKey.startsWith(targetRow + "-")) el.remove();
+        });
       }
       if (party.dataset.frontCount !== String(front)) party.dataset.frontCount = String(front);
       if (party.dataset.rearCount !== String(rear)) party.dataset.rearCount = String(rear);
