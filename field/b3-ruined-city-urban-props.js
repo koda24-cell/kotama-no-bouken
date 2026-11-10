@@ -39,6 +39,20 @@ export function createB3UrbanProps(THREE) {
       beam(g,[x,4.4,0],[x+.35,3.95,.35],.035,dark);
       beam(g,[x+.35,3.95,.35],[x+.7,3.65,.42],.035,dark);
     }
+    // Add heavy base plates, cable clamps, and visible torn wire bundles.
+    add(g,cube,concrete,0,.16,0,.72,.32,.72);
+    for(let j=0;j<3;j++) {
+      const y=.65+j*.5;
+      add(g,cylinder,metal,0,y,0,.28,.08,.28);
+    }
+    for(const x of [-.5,.5]) {
+      beam(g,[x,3.7,.1],[x*1.3,3.1,.35],.065,dark);
+      beam(g,[x*1.3,3.1,.35],[x*1.65,2.65,.5],.05,dark);
+    }
+    if(v===2) {
+      beam(g,[.7,2.7,0],[1.8,1.4,.35],.12);
+      add(g,cube,metal,1.85,1.25,.35,.65,.16,.3).rotation.z=.48;
+    }
     return g;
   }
   function radioTower(variant=0) {
@@ -71,6 +85,19 @@ export function createB3UrbanProps(THREE) {
       add(g,cube,dark,0,2.4,0,1.5,.16,1.5);
       add(g,cube,dark,0,4.2,0,1.1,.16,1.1);
     }
+    // Antenna frames, maintenance ladder and asymmetric dish silhouettes.
+    for(let j=0;j<levels-1;j++) {
+      beam(g,[-.7,j*1.3+.3,1],[-.7,j*1.3+1.1,1],.035);
+      for(const dy of [.4,.75,1.1]) beam(g,[-.83,j*1.3+dy,1],[-.57,j*1.3+dy,1],.025);
+    }
+    if(v!==1) {
+      const dish=add(g,cylinder,metal,1.05,height-.65,0,.95,.13,.95);
+      dish.rotation.z=Math.PI/2.6;
+      beam(g,[.55,height-1.1,0],[1.1,height-.65,0],.07);
+    } else {
+      beam(g,[-.9,height-.3,0],[-1.9,height-1.9,.7],.12);
+      add(g,cube,metal,-1.9,height-1.85,.7,.65,.12,.4).rotation.z=.6;
+    }
     return g;
   }
   function steelWreck(variant=0) {
@@ -83,6 +110,16 @@ export function createB3UrbanProps(THREE) {
     }
     if(v===1)beam(g,[-1.3,2.7,0],[1.2,2.1,.2],.17);
     if(v===2)for(let i=0;i<3;i++)beam(g,[-1.1,i*.45+.4,-.5],[1.1,i*.45+.4,.5],.07);
+    // Broken concrete floor slab and protruding rebar make this a wreckage pile.
+    const slab=add(g,cube,concrete,0,.42,.05,2.6,.28,1.8);
+    slab.rotation.z=v===1?.28:-.16;
+    for(let i=0;i<6;i++) {
+      const x=-1.15+i*.42;
+      beam(g,[x,.35,-.7],[x+(i%2?.35:-.2),1.15+i*.12,-.95],.04);
+    }
+    for(const x of [-1.25,1.15]) {
+      add(g,cube,concrete,x,.19,.85,.65,.4,.55).rotation.y=x>0?.4:-.35;
+    }
     return g;
   }
   function brokenSign(variant=0) {
@@ -93,6 +130,16 @@ export function createB3UrbanProps(THREE) {
     if(variant%3===2) {
       add(g,cube,dark,.45,1.94,.08,.38,.22,.12);
       beam(g,[.55,1.85,0],[.9,1.5,.1],.06);
+    }
+    // Thick frame, bolt heads, bent supporting bracket and dangling plate.
+    for(const y of [1.91,2.59]) beam(g,[-.7,y,.08],[.7,y,.08],.04);
+    for(const x of [-.5,.5]) {
+      add(g,cylinder,dark,x,2.25,.095,.09,.035,.09).rotation.x=Math.PI/2;
+    }
+    beam(g,[0,1.8,0],[.8,1.65,.15],.07);
+    if(variant%3===1) {
+      beam(g,[.7,2.15,.1],[1.2,1.35,.2],.045);
+      add(g,cube,metal,1.25,1.1,.2,.45,.6,.08).rotation.z=.4;
     }
     return g;
   }
@@ -107,6 +154,20 @@ export function createB3UrbanProps(THREE) {
     for(let i=0;i<7;i++) {
       const x=(rnd()-.5)*2.4,z=(rnd()-.5)*2.4;
       beam(g,[x,.12,z],[x+(rnd()-.5)*.9,.25+rnd()*.25,z+(rnd()-.5)*.8],.07,growth);
+    }
+    // Raised slab edges, deep gaps, thick roots and clusters of sprouting blades.
+    for(let i=0;i<5;i++) {
+      const x=(i-2)*.52;
+      beam(g,[x-.35,.15,-1.25],[x,.45+(i%2)*.14,-.2],.12,growth);
+      beam(g,[x,.45+(i%2)*.14,-.2],[x+.45,.12,.9],.09,growth);
+    }
+    for(let i=0;i<12;i++) {
+      const x=(rnd()-.5)*2.5,z=(rnd()-.5)*2.5;
+      beam(g,[x,.18,z],[x+(rnd()-.5)*.35,.4+rnd()*.45,z+(rnd()-.5)*.3],.025,growth);
+    }
+    for(let i=0;i<3;i++) {
+      const rock=add(g,cube,concrete,(rnd()-.5)*2.4,.23,(rnd()-.5)*2.4,.42,.35,.48);
+      rock.rotation.set(rnd()*.4,rnd()*3,rnd()*.6);
     }
     return g;
   }
