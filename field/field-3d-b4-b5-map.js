@@ -1,9 +1,11 @@
 /* Fourth and fifth stratum map-driven 3D placement. Visuals only; map remains authoritative. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-placement';
-import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-placement';
-import { faceKey, disposeB4Owned } from './b4-placement.js';
+import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-quality';
+import { createB4SurfaceLibrary } from './b4-surface-library.js';
+import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
+import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
+import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
@@ -11,7 +13,7 @@ export function createTheme(api, area) {
   const ENV = mist
     ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
     : magma
-    ? { background: 0x1b0907, fog: { color: 0x2c100a, density: 0.036 }, hemi: { sky: 0xffb887, ground: 0x76645b, high: 2.0, low: 2.4 } }
+    ? { background: 0x171216, fog: { color: 0x302329, density: 0.022 }, hemi: { sky: 0xb9b7ba, ground: 0x6a4540, high: 2.2, low: 2.6 } }
     : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
   function rockTexture(seed) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
@@ -31,7 +33,8 @@ export function createTheme(api, area) {
     t.repeat.set(2, 2); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
     return t;
   }
-  const rockMap = rockTexture(4), floorMap = rockTexture(11);
+  const surfaces = magma ? createB4SurfaceLibrary({high:g.high}) : null;
+  const rockMap = magma ? null : rockTexture(4), floorMap = magma ? null : rockTexture(11);
   const mat = {
     floor: new THREE.MeshStandardMaterial({ color: mist ? 0x485d4b : magma ? 0x544038 : 0x48445d, roughness: 0.85, map: floorMap }),
     wall: new THREE.MeshStandardMaterial({ color: mist ? 0x344c42 : magma ? 0x30262a : 0x22233c, roughness: 0.93, flatShading: true, map: rockMap }),
@@ -39,7 +42,20 @@ export function createTheme(api, area) {
     glow: new THREE.MeshStandardMaterial({ color: mist ? 0x83d7c1 : magma ? 0xff4a12 : 0x7950ed, emissive: mist ? 0x4aab91 : magma ? 0xff2600 : 0x6437ef, emissiveIntensity: magma ? 1.8 : 1.5, roughness: 0.2 }),
     metal: new THREE.MeshStandardMaterial({ color: mist ? 0x5a735a : magma ? 0x8b6551 : 0x565877, metalness: 0.55, roughness: 0.5 })
   };
-  const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02);
+  if (surfaces) {
+    for (const [name,material] of Object.entries({floor:surfaces.ash,wall:surfaces.basalt,ceiling:surfaces.ceiling,glow:surfaces.ember,metal:surfaces.iron})) {
+      mat[name].dispose(); mat[name]=material;
+    }
+  }
+  const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02, magma ? 4 : 1, 1, magma ? 4 : 1);
+  if (magma) {
+    const p=floorGeo.getAttribute('position');
+    for(let i=0;i<p.count;i++)if(p.getY(i)>0){
+      const x=p.getX(i),z=p.getZ(i),edge=Math.max(0,1-Math.pow(Math.abs(x)/2.01,4))*Math.max(0,1-Math.pow(Math.abs(z)/2.01,4));
+      p.setY(i,p.getY(i)+Math.sin(x*2.3+z*.7)*Math.cos(z*2.8-x)*.075*edge);
+    }
+    floorGeo.computeVertexNormals();
+  }
   // B4's large rock relief supplies the silhouette detail; avoid spending nearly
   // a million triangles on dense copies of the underlying wall panels.
   const wallGeo = new THREE.BoxGeometry(4.08, 4.2, 0.65, magma ? 8 : 16, magma ? 8 : 14, 2);
@@ -73,11 +89,12 @@ export function createTheme(api, area) {
   const ceilingGeo = new THREE.PlaneGeometry(4.02, 4.02, 12, 12).rotateX(Math.PI / 2);
   { const p = ceilingGeo.getAttribute('position'); for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), z = p.getZ(i);
-    p.setY(i, Math.sin(x * 2.3 + z * 0.8) * Math.cos(z * 2.1 - x) * 0.16);
+    const edge = magma ? Math.max(0,1-Math.pow(Math.abs(x)/2.01,4))*Math.max(0,1-Math.pow(Math.abs(z)/2.01,4)) : 1;
+    p.setY(i, Math.sin(x * 2.3 + z * 0.8) * Math.cos(z * 2.1 - x) * (magma ? .28 : .16)*edge);
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
-  let b4Plan = null;
+  let b4Plan = null, volcanicDetail = null, cameraLamp = null;
   let dressing = null, ownedModels = [], ownedModelGeometry = [];
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
@@ -90,7 +107,7 @@ export function createTheme(api, area) {
   const leafMat = new THREE.MeshStandardMaterial({ color: 0x294d43, roughness: 1, flatShading: true });
   const emberGeo = localGeo(new THREE.IcosahedronGeometry(0.06, 0));
   const crackGeo = localGeo(new THREE.PlaneGeometry(3.4, 0.07).rotateX(-Math.PI / 2));
-  const lavaGeo = localGeo(new THREE.PlaneGeometry(3.85, 3.85).rotateX(-Math.PI / 2));
+  const lavaGeo = localGeo(new THREE.PlaneGeometry(magma ? 4.05 : 3.85, magma ? 4.05 : 3.85).rotateX(-Math.PI / 2));
   const flameMat = new THREE.MeshBasicMaterial({ color: mist ? 0xa3ffe4 : magma ? 0xff6b24 : 0xb18cff, transparent: true, opacity: 0.75, depthWrite: false });
   function mesh(geo, material, x, y, z, ry = 0, sx = 1, sy = 1, sz = 1) {
     const m = new THREE.Mesh(geo, material);
@@ -117,33 +134,39 @@ export function createTheme(api, area) {
     }
   }
   async function build(a, S, info) {
+    if (surfaces) await surfaces.ready;
     dispose();
     root = new THREE.Group(); root.name = mist ? 'b3_mist_forest_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
     const { ch, wallCell, facing, open } = info;
     const buildRoot = root;
     const b5 = area === 5, hall = b5 && isB5Hall(a, ch);
+    const b4Vault = magma && a.f === 2;
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
-    b4Plan = magma ? addB4GameScenery({root,map:a,ch,wallCell,hash,CELL}) : null;
-    if (b4Plan) { lights.push(...b4Plan.lights); g.lights.push(...b4Plan.lights); }
+    b4Plan = magma ? addB4GameScenery({root,map:a,ch,wallCell,hash,CELL,surfaces}) : null;
+    if (b4Plan) {
+      cameraLamp={world:new THREE.Vector3(),color:0xffdec0,intensity:4.5,range:6,off:false};
+      lights.push(cameraLamp,...b4Plan.lights); g.lights.push(cameraLamp,...b4Plan.lights);
+    }
     if (b4Plan) for (const s of [...b4Plan.mines, ...b4Plan.vistaFaces]) objAt.add(s.tx+','+s.ty);
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
       mesh(floorGeo, mat.floor, x, -0.17, z);
       if (magma && (c === '*' || c === '~')) {
-        mesh(lavaGeo, mat.glow, x, 0.009, z);
+        mesh(lavaGeo, surfaces.lava, x, 0.009, z);
       }
       // 地熱の亀裂／古代星界の紋様。通行判定には影響させない。
-      if (!b5 && !objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
+      if (!b5 && !magma && !objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
         const angle = hash(tx, ty, 32) * Math.PI;
         mesh(crackGeo, mat.glow, x, 0.016, z, angle, 0.65 + hash(tx, ty, 33) * 0.4, 1, 1);
         ornaments++;
       }
-      if ((!b5 || hall) && c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, hall ? 16 : 4.05, z);
+      if ((!b5 || hall) && c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, hall ? 16 : b4Vault ? 8.1 : 4.05, z);
       // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
       if (!b5 && !objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
-        const h = 0.8 + hash(tx, ty, 46) * 1.7;
-        mesh(shardGeo, mat.wall, x + (hash(tx, ty, 47) - 0.5) * 2.3, 4.0 - h * 0.45, z + (hash(tx, ty, 48) - 0.5) * 2.3, Math.PI, 1.2, h, 1.2);
+        const h = magma ? .5 + hash(tx,ty,46)*1.1 : 0.8 + hash(tx, ty, 46) * 1.7;
+        const hanging = mesh(shardGeo, mat.wall, x + (hash(tx, ty, 47) - 0.5) * 2.3, (b4Vault ? 8 : 4) - h * 0.45, z + (hash(tx, ty, 48) - 0.5) * 2.3, Math.PI, 1.2, h, 1.2);
+        if (magma) hanging.rotation.x=Math.PI;
         ornaments++;
       }
       for (const d of DIR_ORDER) {
@@ -155,10 +178,13 @@ export function createTheme(api, area) {
         // outside the recess instead of letting displaced rock cut through its back/sides.
         const recessSide = b4Plan?.excludedWalls.has(`${tx+dx},${ty+dz}`);
         const tallHallWall = hall && (tx + dx <= 3 || tx + dx >= a.w - 4 || ty + dz === 0 || ty + dz >= a.h - 1);
-        mesh(recessSide ? recessWallGeo : (b5WallGeo || volcanicWallGeo || wallGeo), mat.wall, ex, b5 ? (tallHallWall ? 7.3 : 0.35) : 2, ez, ry, 1, b5 ? (tallHallWall ? 3.5 : 0.25) : 1, 1);
+        mesh(recessSide ? recessWallGeo : (b5WallGeo || volcanicWallGeo || wallGeo), mat.wall, ex, b5 ? (tallHallWall ? 7.3 : 0.35) : b4Vault ? 4 : 2, ez, ry, 1, b5 ? (tallHallWall ? 3.5 : 0.25) : b4Vault ? 2 : 1, 1);
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (!b5 && k < 0.17 && !objAt.has(tx + ',' + ty)) {
-          mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
+          mesh(crystalGeo, magma ? surfaces.crystal : mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
+          if (magma) for(const side of [-1,1]) {
+            const c=mesh(crystalGeo,surfaces.crystal,ex-dx*.48+dz*side*.24,.35,ez-dz*.48-dx*side*.24,ry,.32,.65,.32);c.rotation.z=side*.16;
+          }
           if (lights.length < 28) {
             const L = { world: new THREE.Vector3(ex - dx * 0.4, 1.2, ez - dz * 0.4), color: mist ? 0x92dfc1 : magma ? 0xff6726 : 0x8d6bff, intensity: 0.9, range: 4, off: false };
             g.lights.push(L); lights.push(L);
@@ -185,7 +211,7 @@ export function createTheme(api, area) {
         ornaments++;
       }
       // 空中に漂う火の粉／星界の魔力片。マップに紐づけて再現可能な位置に配置。
-      if (hash(tx, ty, 90) < 0.16 && dynamic.length < 100) {
+      if (!magma && hash(tx, ty, 90) < 0.16 && dynamic.length < 100) {
         const p = mesh(emberGeo, flameMat, x + (hash(tx, ty, 91) - 0.5) * 2.8, 0.7 + hash(tx, ty, 92) * 2.4, z + (hash(tx, ty, 93) - 0.5) * 2.8);
         dynamic.push({ mesh: p, y: p.position.y, phase: hash(tx, ty, 94) * 6.28 });
       }
@@ -248,7 +274,11 @@ export function createTheme(api, area) {
     }
     // Authored procedural scenery replaces three unbounded GLB environment overlays.
     // Those overlays crossed corridor cells and duplicated the mine/citadel silhouettes.
-    if (magma) createB4RockForms({root,map:a,wallCell,hash,CELL,objects:a.objects,excludedWalls:b4Plan.excludedWalls});
+    if (magma) createB4RockForms({root,map:a,wallCell,hash,CELL,objects:a.objects,excludedWalls:b4Plan.excludedWalls,surfaces});
+    if (magma) {
+      volcanicDetail=addB4VolcanicDetail({root,map:a,ch,wallCell,hash,CELL,plan:b4Plan,surfaces});
+      lights.push(...volcanicDetail.lights);g.lights.push(...volcanicDetail.lights);
+    }
     if (b5) dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall });
     batchStatic();
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
@@ -308,20 +338,25 @@ export function createTheme(api, area) {
     }
     dressing?.dispose(); dressing = null; ownedModels = []; ownedModelGeometry = [];
     for (const L of lights) L.off = true;
-    lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; landmarkState = 'pending';
+    lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; volcanicDetail = null; cameraLamp = null; landmarkState = 'pending';
     // build() can reuse this theme's base resources; theme replacement releases them.
     if (final) {
       for (const geo of [floorGeo,wallGeo,volcanicWallGeo,recessWallGeo,b5WallGeo,ceilingGeo,crystalGeo,rimGeo,...localGeometries]) geo?.dispose();
-      for (const material of [...Object.values(mat),trunkMat,leafMat,flameMat]) material.dispose();
+      for (const material of [...Object.values(mat),trunkMat,leafMat,flameMat]) if (!material.userData.b4SurfaceShared) material.dispose();
+      surfaces?.dispose();
       rockMap?.dispose(); floorMap?.dispose();
     }
   }
-  function tick(dt, now) {
+  function tick(dt, now, camera) {
+    if (surfaces) {
+      surfaces.tick(now); volcanicDetail?.tick(now);
+      if (cameraLamp && camera) { cameraLamp.world.copy(camera);cameraLamp.world.y+=.75; }
+    }
     for (const p of dynamic) {
       p.mesh.position.y = p.y + Math.sin(now * 0.0015 + p.phase) * 0.22;
       p.mesh.scale.setScalar(0.75 + 0.25 * Math.sin(now * 0.003 + p.phase));
     }
   }
   async function sync() { return false; }
-  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null } } : {}) }) };
+  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info } } : {}) }) };
 }

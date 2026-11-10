@@ -72,3 +72,9 @@ Chromium + SwiftShaderの**CPUソフトウェア描画**、DPR 1、各視点約4
 | 9F 広場 | [画像](b3-quality-20261110/before-pc-9f.png) | [画像](b3-quality-20261110/after-pc-9f.png) | [画像](b3-quality-20261110/after-mobile-9f.png) |
 
 [壁スイッチと注目マーカー](b3-quality-20261110/wall-switch.png)
+
+## developmentマージ時の再検証
+
+ユーザーの追加指示でdevelopmentへのマージを承認。先行したPR #213（B4の画質改善、development `739ef1a`）を取り込み、素材クレジットは双方を保持し、キャッシュ番号を `20261110-b3-b4-quality-5` に統一。B4のテーマ更新と光源更新順序を維持した。
+
+B3→B4→B3、B3→B5、B1/B3往復、B5高速フロア切替を実ゲームで再実行し、ブラウザエラー0・高速切替成功。B4から戻ったB3でも専用の生成テクスチャ6枚と専用テーマが配置済みであることを確認。スキル一括強化の回帰9項目と変更JSの構文検査も通過。要約は `b3-quality-20261110/development-integration.json`。mainは統合対象外。

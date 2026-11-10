@@ -1,0 +1,1406 @@
+{
+  "baseline": "b1d654ab1c0b11c6041e109fb7f98cbfb3f7b442",
+  "code_commit": "494018065b23e32be910b9689ceab091e1b1cbaf",
+  "low_gameplay": {
+    "checks": [
+      {
+        "floor": 0,
+        "cameraClear": true,
+        "minesBlocked": true,
+        "vistaBlocked": true
+      },
+      {
+        "floor": 1,
+        "cameraClear": true,
+        "minesBlocked": true,
+        "vistaBlocked": true
+      },
+      {
+        "floor": 2,
+        "cameraClear": true,
+        "minesBlocked": true,
+        "vistaBlocked": true
+      }
+    ],
+    "walking": {
+      "moved": true,
+      "tile": {
+        "tx": 1,
+        "ty": 17
+      },
+      "advance": 1,
+      "foes": 1
+    },
+    "compatibility": true,
+    "passage": {
+      "before": false,
+      "after": true,
+      "key": "door:4:a4-crack"
+    },
+    "controls": true,
+    "memory": [
+      {
+        "geometries": 87,
+        "textures": 136
+      },
+      {
+        "geometries": 87,
+        "textures": 136
+      },
+      {
+        "geometries": 87,
+        "textures": 136
+      },
+      {
+        "geometries": 87,
+        "textures": 136
+      }
+    ],
+    "errors": []
+  },
+  "mobile_gameplay": {
+    "checks": [
+      {
+        "floor": 0,
+        "cameraClear": true,
+        "minesBlocked": true,
+        "vistaBlocked": true
+      },
+      {
+        "floor": 1,
+        "cameraClear": true,
+        "minesBlocked": true,
+        "vistaBlocked": true
+      },
+      {
+        "floor": 2,
+        "cameraClear": true,
+        "minesBlocked": true,
+        "vistaBlocked": true
+      }
+    ],
+    "compatibility": true,
+    "memory": [
+      {
+        "geometries": 64,
+        "textures": 80
+      },
+      {
+        "geometries": 64,
+        "textures": 80
+      },
+      {
+        "geometries": 64,
+        "textures": 80
+      },
+      {
+        "geometries": 64,
+        "textures": 80
+      }
+    ],
+    "errors": []
+  },
+  "b5_entry_changed_pixels": 0,
+  "visual_low": {
+    "quality": "low",
+    "mobile": false,
+    "reports": [
+      {
+        "name": "b4-rig",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "lightPool": 6,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 23,
+                "ty": 8,
+                "dx": 1,
+                "dz": 0,
+                "wx": 24,
+                "wy": 8,
+                "key": "23,8:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 48,
+              "embers": 32
+            }
+          }
+        },
+        "render": {
+          "calls": 69,
+          "triangles": 363496,
+          "memory": {
+            "geometries": 63,
+            "textures": 73
+          }
+        }
+      },
+      {
+        "name": "b4-minecart",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "lightPool": 6,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 23,
+                "ty": 8,
+                "dx": 1,
+                "dz": 0,
+                "wx": 24,
+                "wy": 8,
+                "key": "23,8:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 48,
+              "embers": 32
+            }
+          }
+        },
+        "render": {
+          "calls": 24,
+          "triangles": 341074,
+          "memory": {
+            "geometries": 63,
+            "textures": 73
+          }
+        }
+      },
+      {
+        "name": "b4-citadel",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "lightPool": 6,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 23,
+                "ty": 8,
+                "dx": 1,
+                "dz": 0,
+                "wx": 24,
+                "wy": 8,
+                "key": "23,8:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 48,
+              "embers": 32
+            }
+          }
+        },
+        "render": {
+          "calls": 40,
+          "triangles": 345504,
+          "memory": {
+            "geometries": 63,
+            "textures": 73
+          }
+        }
+      },
+      {
+        "name": "b4-lava",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "lightPool": 6,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 23,
+                "ty": 8,
+                "dx": 1,
+                "dz": 0,
+                "wx": 24,
+                "wy": 8,
+                "key": "23,8:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 48,
+              "embers": 32
+            }
+          }
+        },
+        "render": {
+          "calls": 46,
+          "triangles": 347576,
+          "memory": {
+            "geometries": 68,
+            "textures": 85
+          }
+        }
+      },
+      {
+        "name": "b4-lava2",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "lightPool": 6,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 8,
+                "ty": 17,
+                "dx": 0,
+                "dz": -1,
+                "wx": 8,
+                "wy": 16,
+                "key": "8,17:0,-1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 60,
+              "embers": 40
+            }
+          }
+        },
+        "render": {
+          "calls": 50,
+          "triangles": 352685,
+          "memory": {
+            "geometries": 80,
+            "textures": 120
+          }
+        }
+      },
+      {
+        "name": "b4-chamber",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          256,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "lightPool": 6,
+        "info": {
+          "placed": true,
+          "ornaments": 122,
+          "mode": "map-driven-3d",
+          "landmarkState": "glb-loaded",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 0,
+                "dz": 1,
+                "wx": 3,
+                "wy": 13,
+                "key": "3,12:0,1"
+              },
+              {
+                "tx": 2,
+                "ty": 9,
+                "dx": 0,
+                "dz": -1,
+                "wx": 2,
+                "wy": 8,
+                "key": "2,9:0,-1"
+              },
+              {
+                "tx": 25,
+                "ty": 13,
+                "dx": 0,
+                "dz": -1,
+                "wx": 25,
+                "wy": 12,
+                "key": "25,13:0,-1"
+              },
+              {
+                "tx": 21,
+                "ty": 6,
+                "dx": 1,
+                "dz": 0,
+                "wx": 22,
+                "wy": 6,
+                "key": "21,6:1,0"
+              }
+            ],
+            "vista": {
+              "tx": 14,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 14,
+              "wy": 0,
+              "key": "14,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 2,
+              "coolingPlates": 150,
+              "embers": 180
+            }
+          }
+        },
+        "render": {
+          "calls": 41,
+          "triangles": 180828,
+          "memory": {
+            "geometries": 71,
+            "textures": 120
+          }
+        }
+      }
+    ],
+    "errors": []
+  },
+  "visual_high": {
+    "quality": "high",
+    "mobile": false,
+    "reports": [
+      {
+        "name": "b4-rig",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          1024,
+          1024,
+          1024,
+          512,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024
+        ],
+        "lightPool": 14,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 23,
+                "ty": 8,
+                "dx": 1,
+                "dz": 0,
+                "wx": 24,
+                "wy": 8,
+                "key": "23,8:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 48,
+              "embers": 32
+            }
+          }
+        },
+        "render": {
+          "calls": 83,
+          "triangles": 363510,
+          "memory": {
+            "geometries": 64,
+            "textures": 86
+          }
+        }
+      },
+      {
+        "name": "b4-minecart",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          1024,
+          1024,
+          1024,
+          512,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024
+        ],
+        "lightPool": 14,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 23,
+                "ty": 8,
+                "dx": 1,
+                "dz": 0,
+                "wx": 24,
+                "wy": 8,
+                "key": "23,8:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 48,
+              "embers": 32
+            }
+          }
+        },
+        "render": {
+          "calls": 38,
+          "triangles": 341088,
+          "memory": {
+            "geometries": 64,
+            "textures": 86
+          }
+        }
+      },
+      {
+        "name": "b4-citadel",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          1024,
+          1024,
+          1024,
+          512,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024
+        ],
+        "lightPool": 14,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 23,
+                "ty": 8,
+                "dx": 1,
+                "dz": 0,
+                "wx": 24,
+                "wy": 8,
+                "key": "23,8:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 48,
+              "embers": 32
+            }
+          }
+        },
+        "render": {
+          "calls": 54,
+          "triangles": 345518,
+          "memory": {
+            "geometries": 64,
+            "textures": 86
+          }
+        }
+      },
+      {
+        "name": "b4-lava",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          1024,
+          1024,
+          1024,
+          512,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024
+        ],
+        "lightPool": 14,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 23,
+                "ty": 8,
+                "dx": 1,
+                "dz": 0,
+                "wx": 24,
+                "wy": 8,
+                "key": "23,8:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 48,
+              "embers": 32
+            }
+          }
+        },
+        "render": {
+          "calls": 60,
+          "triangles": 347590,
+          "memory": {
+            "geometries": 69,
+            "textures": 98
+          }
+        }
+      },
+      {
+        "name": "b4-lava2",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          1024,
+          1024,
+          1024,
+          512,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024
+        ],
+        "lightPool": 14,
+        "info": {
+          "placed": true,
+          "ornaments": 189,
+          "mode": "map-driven-3d",
+          "landmarkState": "pending",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "wx": 4,
+                "wy": 12,
+                "key": "3,12:1,0"
+              },
+              {
+                "tx": 19,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "wx": 19,
+                "wy": 2,
+                "key": "19,1:0,1"
+              },
+              {
+                "tx": 8,
+                "ty": 17,
+                "dx": 0,
+                "dz": -1,
+                "wx": 8,
+                "wy": 16,
+                "key": "8,17:0,-1"
+              },
+              {
+                "tx": 10,
+                "ty": 5,
+                "dx": 0,
+                "dz": -1,
+                "wx": 10,
+                "wy": 4,
+                "key": "10,5:0,-1"
+              }
+            ],
+            "vista": {
+              "tx": 13,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 13,
+              "wy": 0,
+              "key": "13,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 46,
+              "coolingPlates": 60,
+              "embers": 40
+            }
+          }
+        },
+        "render": {
+          "calls": 64,
+          "triangles": 352699,
+          "memory": {
+            "geometries": 81,
+            "textures": 133
+          }
+        }
+      },
+      {
+        "name": "b4-chamber",
+        "hasSurfaces": true,
+        "basaltPBR": true,
+        "animated": true,
+        "imageWidths": [
+          1024,
+          1024,
+          1024,
+          512,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          512,
+          512,
+          256,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024,
+          1024
+        ],
+        "lightPool": 14,
+        "info": {
+          "placed": true,
+          "ornaments": 122,
+          "mode": "map-driven-3d",
+          "landmarkState": "glb-loaded",
+          "scenery": {
+            "mines": [
+              {
+                "tx": 3,
+                "ty": 12,
+                "dx": 0,
+                "dz": 1,
+                "wx": 3,
+                "wy": 13,
+                "key": "3,12:0,1"
+              },
+              {
+                "tx": 2,
+                "ty": 9,
+                "dx": 0,
+                "dz": -1,
+                "wx": 2,
+                "wy": 8,
+                "key": "2,9:0,-1"
+              },
+              {
+                "tx": 25,
+                "ty": 13,
+                "dx": 0,
+                "dz": -1,
+                "wx": 25,
+                "wy": 12,
+                "key": "25,13:0,-1"
+              },
+              {
+                "tx": 21,
+                "ty": 6,
+                "dx": 1,
+                "dz": 0,
+                "wx": 22,
+                "wy": 6,
+                "key": "21,6:1,0"
+              }
+            ],
+            "vista": {
+              "tx": 14,
+              "ty": 1,
+              "dx": 0,
+              "dz": -1,
+              "wx": 14,
+              "wy": 0,
+              "key": "14,1:0,-1"
+            },
+            "detail": {
+              "basaltPanels": 2,
+              "coolingPlates": 150,
+              "embers": 180
+            }
+          }
+        },
+        "render": {
+          "calls": 55,
+          "triangles": 180842,
+          "memory": {
+            "geometries": 72,
+            "textures": 133
+          }
+        }
+      }
+    ],
+    "errors": []
+  },
+  "motion": {
+    "name": "b4-lava",
+    "hasSurfaces": true,
+    "basaltPBR": true,
+    "animated": true,
+    "pixelsAnimated": true,
+    "imageWidths": [
+      1024,
+      1024,
+      1024,
+      512,
+      512,
+      512,
+      256,
+      1024,
+      1024,
+      512,
+      512,
+      256,
+      1024,
+      1024,
+      1024,
+      1024,
+      1024,
+      1024,
+      1024,
+      1024,
+      1024,
+      1024
+    ],
+    "lightPool": 14,
+    "info": {
+      "placed": true,
+      "ornaments": 189,
+      "mode": "map-driven-3d",
+      "landmarkState": "pending",
+      "scenery": {
+        "mines": [
+          {
+            "tx": 3,
+            "ty": 12,
+            "dx": 1,
+            "dz": 0,
+            "wx": 4,
+            "wy": 12,
+            "key": "3,12:1,0"
+          },
+          {
+            "tx": 23,
+            "ty": 8,
+            "dx": 1,
+            "dz": 0,
+            "wx": 24,
+            "wy": 8,
+            "key": "23,8:1,0"
+          },
+          {
+            "tx": 19,
+            "ty": 1,
+            "dx": 0,
+            "dz": 1,
+            "wx": 19,
+            "wy": 2,
+            "key": "19,1:0,1"
+          },
+          {
+            "tx": 10,
+            "ty": 5,
+            "dx": 0,
+            "dz": -1,
+            "wx": 10,
+            "wy": 4,
+            "key": "10,5:0,-1"
+          }
+        ],
+        "vista": {
+          "tx": 13,
+          "ty": 1,
+          "dx": 0,
+          "dz": -1,
+          "wx": 13,
+          "wy": 0,
+          "key": "13,1:0,-1"
+        },
+        "detail": {
+          "basaltPanels": 46,
+          "coolingPlates": 48,
+          "embers": 32
+        }
+      }
+    },
+    "render": {
+      "calls": 60,
+      "triangles": 347590,
+      "memory": {
+        "geometries": 60,
+        "textures": 80
+      }
+    }
+  }
+}
