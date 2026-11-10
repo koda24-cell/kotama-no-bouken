@@ -93,7 +93,7 @@ function makeMaterials(opaqueWater) {
     puddle: std({ color: 0x7fe2f6, roughness: 0.05, metalness: 0.1, emissive: 0x2ab4e0, emissiveIntensity: 0.6, envMapIntensity: 1.5 }),
     stream: new THREE.MeshBasicMaterial({ color: 0x8ff2ff, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }),   // 天井から落ちる光る細い水流
     'Pale mineral stone': std({ color: 0xb2e2f0, map: pale.map, normalMap: pale.normal, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 0.6, metalness: 0.0, envMapIntensity: 0.45, vertexColors: true }),  // 淡い鉱物の石
-    'Glowing cyan crystal': std({ color: 0xa8f2ff, roughness: 0.1, metalness: 0.05, emissive: 0x22c8ff, emissiveIntensity: 1.5, envMapIntensity: 1.3 }),  // 控えめな発光
+    'Glowing cyan crystal': std({ color: 0x7fe0ff, roughness: 0.08, metalness: 0.05, emissive: 0x1cb6f0, emissiveIntensity: 1.0, envMapIntensity: 1.4, flatShading: true }),   // 白飛びしない強さ  // 控えめな発光
     'Deep blue crystal': std({ color: 0x4a76e8, roughness: 0.12, metalness: 0.05, emissive: 0x1a3596, emissiveIntensity: 0.7, envMapIntensity: 1.3 }),
     'Violet danger crystal': std({ color: 0x8a6cc4, roughness: 0.2, metalness: 0.05, emissive: 0x5a1a90, emissiveIntensity: 0.9 }), // 紫＝危険
     'Clear blue water': water,
@@ -103,6 +103,9 @@ function makeMaterials(opaqueWater) {
     bed: std({ color: 0x3a5560, map: rock.map, roughness: 0.75, metalness: 0.0, vertexColors: true }),   // 床板のすき間（目地）。旧版は黒い隙間で、通路の中央の目地が正面に立つ黒い棒に見えた
     shallowBed: std({ color: 0x8fd6ea, map: pale.map, roughness: 0.7, metalness: 0.0, vertexColors: true }),   // 浅瀬の底（明るい小石。水を通して青緑に見える）
     ice,                                                                                          // 氷柱
+    crystalIce: std({ color: 0x86e2fb, roughness: 0.04, metalness: 0.0, emissive: 0x1898d0, emissiveIntensity: 0.55, envMapIntensity: 1.8, flatShading: true }),   // 白く飛ばず水色が残る強さ
+    frost: std({ color: 0xa8ecff, roughness: 0.15, metalness: 0.0, emissive: 0x1a86b8, emissiveIntensity: 0.35, envMapIntensity: 1.2, transparent: true, opacity: 0.8, depthWrite: false }),   // 霜の花（少し透ける）   // 小さな結晶・霜の花・氷のかけら（面ごとにきらめく）
+    crystalDeep: std({ color: 0x7fb6ff, roughness: 0.06, metalness: 0.0, emissive: 0x2a62e0, emissiveIntensity: 0.8, envMapIntensity: 1.6, flatShading: true }),
     fish: new THREE.MeshStandardMaterial({ color: 0x0d2c38, roughness: 0.5, metalness: 0.2, side: THREE.DoubleSide }),
     waterfall: fall,
   };
@@ -191,6 +194,20 @@ function stoneSet(n, seed, kind) {
 const ceilDrop = (wx, wz) => 0.45 + 0.3 * Math.sin(wx * 0.37 + 0.7) * Math.cos(wz * 0.42 + 0.3) + 0.18 * Math.sin(wx * 0.83 + wz * 0.56)
   + 0.06 * Math.cos(wx * 1.91 - wz * 1.47) + 0.12 * Math.pow(Math.abs(Math.sin(wx * 0.72 - wz * 0.83)), 9);
 const ceilY = (wx, wz) => CEIL_H - ceilDrop(wx, wz);
+// 壁の面の前後のずれ（+が通路側、最大0.2m）。wx, wz は壁の面上の位置、lx は壁の中心からの横位置、y は高さ。
+// 壁の形と、壁に貼る霜の花の位置の両方で使う（花が壁に埋まったり浮いたりしない）
+function wallZ(wx, wz, lx, y, cell) {
+  const hz = wx * 0.7 + wz * 0.7;   // 壁に沿う座標（隣の壁と続く）
+  const edge = THREE.MathUtils.smoothstep(cell / 2 - Math.abs(lx), 0, 0.55);
+  const vertical = THREE.MathUtils.smoothstep(y, -0.1, 0.5) * (1 - THREE.MathUtils.smoothstep(y, CEIL_H - 0.9, CEIL_H + 0.1));
+  const broad = 0.34 * Math.sin(wx * 0.63 + wz * 0.29 + y * 0.23) + 0.20 * Math.cos(wx * 0.24 - wz * 0.71 + y * 0.38);
+  const strata = 0.12 * Math.sin(wx * 1.47 - wz * 1.05 + y * 1.24) + 0.07 * Math.cos(wx * 2.87 + wz * 1.94 - y * 2.13);
+  // 縦の襞：上ほど深い（天井から垂れる鍾乳石の幕）
+  const drape = Math.pow(Math.abs(Math.sin(hz * 2.3 + Math.sin(y * 0.45 + hz) * 0.6)), 2.2) * (0.25 + 0.35 * THREE.MathUtils.smoothstep(y, 1.5, CEIL_H));
+  const fracture = Math.pow(Math.abs(Math.sin(wx * 1.06 + wz * 0.53 + y * 0.15)), 14);
+  const relief = (broad + strata + drape - 0.2 - 0.13 * fracture) * edge * vertical;
+  return Math.max(-1.0, Math.min(0.2, -relief * 1.15));
+}
 // 岩盤の床の高さ（-0.1〜+0.16m 程度のなだらかな起伏）。隣のマスと同じ式なので継ぎ目が出ない
 const groundY = (wx, wz) => 0.03 + 0.09 * Math.sin(wx * 0.47) * Math.cos(wz * 0.39) + 0.04 * Math.sin(wx * 1.14 + wz * 0.58) + 0.02 * Math.cos(wx * 2.37 - wz * 1.81);
 const rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
@@ -337,16 +354,7 @@ function makeProcedural() {
     const p = geo.attributes.position, cs = Math.cos(yaw), sn = Math.sin(yaw);
     for (let i = 0; i < p.count; i++) {
       const lx = p.getX(i), y = p.getY(i);
-      const wx = ex + cs * lx, wz = ez - sn * lx, hz = wx * 0.7 + wz * 0.7;   // 壁に沿う座標（隣の壁と続く）
-      const edge = THREE.MathUtils.smoothstep(cell / 2 - Math.abs(lx), 0, 0.55);
-      const vertical = THREE.MathUtils.smoothstep(y, -0.1, 0.5) * (1 - THREE.MathUtils.smoothstep(y, CEIL_H - 0.9, CEIL_H + 0.1));
-      const broad = 0.34 * Math.sin(wx * 0.63 + wz * 0.29 + y * 0.23) + 0.20 * Math.cos(wx * 0.24 - wz * 0.71 + y * 0.38);
-      const strata = 0.12 * Math.sin(wx * 1.47 - wz * 1.05 + y * 1.24) + 0.07 * Math.cos(wx * 2.87 + wz * 1.94 - y * 2.13);
-      // 縦の襞：上ほど深い（天井から垂れる鍾乳石の幕）
-      const drape = Math.pow(Math.abs(Math.sin(hz * 2.3 + Math.sin(y * 0.45 + hz) * 0.6)), 2.2) * (0.25 + 0.35 * THREE.MathUtils.smoothstep(y, 1.5, CEIL_H));
-      const fracture = Math.pow(Math.abs(Math.sin(wx * 1.06 + wz * 0.53 + y * 0.15)), 14);
-      const relief = (broad + strata + drape - 0.2 - 0.13 * fracture) * edge * vertical;
-      p.setZ(i, Math.max(-1.0, Math.min(0.2, -relief * 1.15)));
+      p.setZ(i, wallZ(ex + cs * lx, ez - sn * lx, lx, y, cell));
     }
     const prepared = prepGeo(geo, false);
     geo.dispose();
@@ -729,6 +737,7 @@ export async function createTheme(api) {
     for (const m of extraMats) m.dispose(); extraMats = []; frostCache.clear();
     if (g.scene && envTex && g.scene.environment === envTex) g.scene.environment = null;
     if (lantern) { lantern.parent?.remove(lantern); lantern = null; }
+    if (glitter) { glitter.parent?.remove(glitter); glitter = null; }
     if (motes) { motes.parent?.remove(motes); motes.geometry.dispose(); motes.material.dispose(); motes = null; }
     if (g.renderer && prevExposure !== null) { g.renderer.toneMappingExposure = prevExposure; prevExposure = null; }
     anim = { ripples: [], mists: [], fishes: [], caustics: [] }; root = null;
@@ -754,7 +763,7 @@ export async function createTheme(api) {
     root = new THREE.Group(); root.name = 'b2_water_source'; g.world.add(root);
     ensureEnv(); if (envTex) g.scene.environment = envTex;
     if (g.renderer) { if (prevExposure === null) prevExposure = g.renderer.toneMappingExposure; g.renderer.toneMappingExposure = EXPOSURE; }
-    addMotes();
+    addMotes(); addGlitter();
     lantern = new THREE.PointLight(LANTERN.color, g.high ? LANTERN.high : LANTERN.low, LANTERN.range, 2); lantern.name = 'b2_lantern'; g.scene.add(lantern);
     const isWet = (tx, ty) => !wallCell(tx, ty) && ch(tx, ty) === '*' && !objAt.has(`${tx},${ty}`);
 
@@ -1271,6 +1280,18 @@ export async function createTheme(api) {
     const mesh = new THREE.Mesh(piece.parts[0].geo, mat); mesh.position.set(x, -0.05, z); mesh.renderOrder = 3; mesh.name = piece.name;
     root.add(mesh); anim.ripples.push({ mesh, phase: r, speed: 0.22 + r * 0.12, base: 1.6 / Math.max(0.5, piece.size.x) });
   }
+  // 宙に漂う水色の光の粒（氷のかけらの代わり）。カメラの周り 18m の範囲で繰り返し、1粒ずつ明滅する
+  let glitter = null;
+  function addGlitter() {
+    const N = 240, pos = new Float32Array(N * 3), col = new Float32Array(N * 3), seed = new Float32Array(N * 4);
+    for (let i = 0; i < N * 4; i++) seed[i] = rnd(i * 2.3 + 11);
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    const tex = tileTexture(32, (c, n) => { c.clearRect(0, 0, n, n); const gr = c.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, n / 2); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.25, 'rgba(160,240,255,0.8)'); gr.addColorStop(1, 'rgba(90,200,255,0)'); c.fillStyle = gr; c.fillRect(0, 0, n, n); });
+    const mat = new THREE.PointsMaterial({ map: tex, size: 0.11, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+    glitter = new THREE.Points(geo, mat); glitter.name = 'b2_glitter'; glitter.frustumCulled = false; glitter.renderOrder = 5; glitter.userData.seed = seed;
+    g.scene.add(glitter); extraMats.push(tex, mat); extraGeos.push(geo);
+  }
+  const _gc = new THREE.Color(), _gA = new THREE.Color(0x5fd8ff), _gB = new THREE.Color(0xbff6ff);
   // 浅瀬の魚：水中（水面と底の間）をマスの中で回遊する暗い影。当たり判定なし
   let fishGeo = null;   // 作り直し時に extraGeos で破棄するので、組み立てのたびに作り直す
   function addFish(x, z, r, count) {
@@ -1330,6 +1351,20 @@ export async function createTheme(api) {
       P.needsUpdate = true;
     }
     mats.stream.opacity = 0.45 + 0.1 * Math.sin(t * 3.1);
+    if (glitter && camPos) {
+      const P = glitter.geometry.attributes.position, C = glitter.geometry.attributes.color, S = glitter.userData.seed, B = 18;
+      const wrap = (v, c) => c + ((((v - c) % B) + B * 1.5) % B) - B / 2;
+      for (let i = 0; i < P.count; i++) {
+        const a = S[i * 4], b = S[i * 4 + 1], c = S[i * 4 + 2], d = S[i * 4 + 3];
+        // ゆっくり上へ漂い、横に小さく揺れる
+        const x = a * B + Math.sin(t * (0.2 + d * 0.3) + i) * 0.35, z = c * B + Math.cos(t * (0.17 + a * 0.3) + i * 1.7) * 0.35, y = 0.5 + ((b * 4.2 + t * (0.05 + d * 0.08)) % 4.2);
+        P.setXYZ(i, wrap(x, camPos.x), y, wrap(z, camPos.z));
+        // 明滅：ふだんは淡く、ときどき強く光る
+        const tw = Math.pow(0.5 + 0.5 * Math.sin(t * (1.2 + d * 2.5) + i * 7.1), 6), k = 0.35 + tw * 1.4;
+        _gc.copy(_gA).lerp(_gB, tw).multiplyScalar(k); C.setXYZ(i, _gc.r, _gc.g, _gc.b);
+      }
+      P.needsUpdate = true; C.needsUpdate = true;
+    }
     for (const e of g.entries) if (e.obj && (e.kind === 'chest' || e.kind === 'cache' || e.kind === 'gather' || e.kind === 'event')) frostify(e.obj);
     const w = mats['Clear blue water'].map, f = mats.waterfall.map;
     if (w) { w.offset.x = (t * 0.012) % 1; w.offset.y = (t * 0.022) % 1; }
