@@ -1372,3 +1372,26 @@ body:has(#battle.battle-ui-preview.active) .topbar {
 body:has(#battle.active.battle-ui-preview) #battle-support {
  display:none!important;
 }
+
+
+/* Final screenshot pass: legible white character names and subdued forest. */
+#battle.battle-ui-preview #battle-party .battle-member>.member-head,
+#battle.battle-ui-preview #battle-party .battle-member>.member-head .member-name,
+#battle.battle-ui-preview #battle-party .battle-member>.member-head strong {
+ color:#fff!important;
+ font-size:clamp(13px,1.15vw,17px)!important;
+ font-weight:900!important;
+ line-height:1.2!important;
+ text-shadow:0 1px 4px #00111c,0 0 8px #00111ccc!important;
+}
+#battle.battle-ui-preview .battle-arena[data-environment="forest"] {
+ background-image:
+  linear-gradient(90deg,rgba(0,11,21,.64),rgba(0,15,26,.45) 48%,rgba(0,11,21,.58)),
+  linear-gradient(0deg,rgba(0,9,19,.54),rgba(0,12,23,.34)),
+  url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+}
+#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) {
+ background-image:
+  linear-gradient(180deg,rgba(0,12,23,.34),rgba(0,12,23,.52) 52%,rgba(0,11,22,.82)),
+  url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+}
