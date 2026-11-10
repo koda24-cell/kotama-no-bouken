@@ -373,3 +373,124 @@
   #battle.battle-ui-preview #battle-party .battle-member { grid-template-columns:clamp(45px,27%,85px) minmax(0,1fr); column-gap:5px; }
   #battle.battle-ui-preview .battle-arena .enemy-display { transform:scale(1.13); transform-origin:center; }
 }
+
+
+/* Reference comparison pass 2: visual hierarchy, full-width formation, active
+   selection, ornamentation and readable nested commands. Preview-scoped only. */
+#battle.battle-ui-preview {
+  --battle-glow:#7defff;
+  --battle-ink:#061a33;
+}
+#battle.battle-ui-preview .battle-arena {
+  background-color:#071b2c;
+  background-blend-mode:normal;
+}
+#battle.battle-ui-preview .battle-preview-hero>strong { display:none!important; }
+#battle.battle-ui-preview .battle-preview-union {
+  border:2px solid #d5b86e!important;
+  box-shadow:inset 0 0 13px #12cce855,0 0 12px #0bdbff66;
+}
+#battle.battle-ui-preview .battle-preview-union>span {
+  writing-mode:horizontal-tb!important;
+  font-family:inherit;
+  font-weight:900;
+  text-shadow:0 1px 4px #001e38;
+}
+#battle.battle-ui-preview .battle-preview-union>div {
+  background:linear-gradient(90deg,#00162b,#063a55);
+  box-shadow:inset 0 0 7px #000a,0 0 7px #38dfff55;
+}
+#battle.battle-ui-preview .battle-preview-union i {
+  display:block;
+  min-height:0;
+  border-radius:12px;
+  background:linear-gradient(90deg,#008cc5,#64edff 52%,#c4ffff);
+  box-shadow:0 0 10px #39e8ff;
+  transition:height .25s ease;
+}
+#battle.battle-ui-preview #battle-party .battle-member {
+  border:2px solid #7fddec!important;
+  border-left:4px solid #b6f5ff!important;
+  background:linear-gradient(120deg,#053c56f2,#082d4fe9 55%,#001d35f2)!important;
+  box-shadow:inset 0 1px #b4ffff99,0 3px 12px #00152199;
+}
+#battle.battle-ui-preview #battle-party .battle-member.active-turn {
+  border-color:#f2c775!important;
+  box-shadow:0 0 12px #ffd76e99,inset 0 0 16px #d4ad4433!important;
+}
+#battle.battle-ui-preview #battle-party .battle-member>.battle-portrait {
+  border-right:1px solid #77d4e6a8;
+  background:radial-gradient(ellipse at 50% 45%,#267b9b88,#001b31a8 85%);
+}
+#battle.battle-ui-preview #battle-party .battle-member>.member-head strong {
+  display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+#battle.battle-ui-preview #battle-party .battle-member .battle-gauge-label {
+  display:flex; justify-content:space-between; gap:6px;
+  font-size:11px; line-height:1.2;
+}
+#battle.battle-ui-preview #battle-party .battle-member .hp-track,
+#battle.battle-ui-preview #battle-party .battle-member .sp-track {
+  height:7px!important; border-radius:6px; overflow:hidden;
+}
+#battle.battle-ui-preview #battle-party .battle-member .union-mini {
+  font-size:10px; line-height:1.15;
+}
+#battle.battle-ui-preview .battle-preview-bottom>.event-window,
+#battle.battle-ui-preview .battle-preview-bottom>.command-info-window {
+  position:relative;
+  border-color:#8aeaff;
+  box-shadow:inset 0 0 18px #0b9bca3d,0 2px 8px #0008;
+}
+#battle.battle-ui-preview .battle-preview-bottom>.event-window:before,
+#battle.battle-ui-preview .battle-preview-bottom>.command-info-window:before {
+  content:""; position:absolute; inset:5px;
+  border:1px solid #58b8d24d; border-radius:12px 3px 12px 3px;
+  pointer-events:none;
+}
+@media (min-width:900px) {
+  #battle.battle-ui-preview #battle-party {
+    width:calc(100% - 24px);
+    max-width:none;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    justify-content:stretch;
+  }
+  #battle.battle-ui-preview #battle-party .battle-member {
+    grid-template-columns:clamp(65px,30%,110px) minmax(0,1fr);
+    height:102px; min-height:102px;
+  }
+  #battle.battle-ui-preview .battle-preview-bottom>.command-window {
+    box-shadow:0 0 14px #28dbff55,inset 0 0 15px #003956;
+  }
+  #battle.battle-ui-preview #battle-commands>.command-option {
+    position:relative;
+    border:1px solid #79ddeb;
+    box-shadow:inset 0 1px #b5f6ff88,0 2px 4px #001c2c99;
+  }
+  #battle.battle-ui-preview #battle-commands>.command-option:focus-visible,
+  #battle.battle-ui-preview #battle-commands>.command-option:hover {
+    border-color:#ffdf98;
+    background:linear-gradient(110deg,#d27b66,#a74a70)!important;
+  }
+  #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window {
+    top:145px;
+    max-height:calc(100% - 200px);
+    border-color:#a2f4ff;
+  }
+  #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window:before {
+    content:""; position:absolute; top:-2px; left:22px;
+    border-left:9px solid transparent; border-right:9px solid transparent;
+    border-bottom:8px solid #a2f4ff;
+  }
+  #battle.battle-ui-preview.battle-preview-side-open #battle-commands>.command-option:focus-visible,
+  #battle.battle-ui-preview.battle-preview-side-open #battle-commands>.command-option:hover {
+    background:linear-gradient(110deg,#d88c69,#a94d76)!important;
+  }
+}
+@media (max-width:620px) {
+  #battle.battle-ui-preview #battle-party .battle-member {
+    grid-template-columns:38% minmax(0,1fr);
+    column-gap:3px; padding:4px;
+  }
+  #battle.battle-ui-preview #battle-party .battle-member .battle-gauge-label { font-size:9px; }
+}
