@@ -921,6 +921,23 @@ export async function createTheme(api) {
       rock.rotation.z = (hash(i, 11, 255) - 0.5) * 0.15;
       atrium.add(rock);
     }
+    // 岩壁の中腹に自然な層状の張り出しを重ね、円錐だけの単純な輪郭を緩和する。
+    // 壁の内周側には0.5m程度だけ突出させ、3×3マスの探索空間には置かない。
+    const ledgeGeo = new THREE.IcosahedronGeometry(1, 1);
+    for (let i = 0; i < 28; i++) {
+      const side = i % 4, axis = side % 2 === 0;
+      const sign = side < 2 ? -1 : 1;
+      const along = (hash(i, 61, 721) - 0.5) * 9.4;
+      const height = 7.0 + hash(i, 62, 722) * 13.0;
+      const ledge = new THREE.Mesh(ledgeGeo, i % 6 === 0 ? stone : dark);
+      ledge.position.set(x + (axis ? along : sign * 5.65), height,
+        z + (axis ? sign * 5.65 : along));
+      ledge.scale.set(axis ? 0.65 + hash(i, 63, 723) * 1.0 : 0.42 + hash(i, 64, 724) * 0.45,
+        0.30 + hash(i, 65, 725) * 0.52,
+        axis ? 0.42 + hash(i, 64, 724) * 0.45 : 0.65 + hash(i, 63, 723) * 1.0);
+      ledge.rotation.y = hash(i, 66, 726) * 0.35;
+      atrium.add(ledge);
+    }
     // 角の崩れた支柱と礎石。上方には段差を付け、直方体の箱に見えにくくする。
     for (const [dx, dz] of [[-5.6,-5.6],[5.6,-5.6],[-5.6,5.6],[5.6,5.6]]) {
       const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.88, 18, 8), stone);
