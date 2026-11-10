@@ -109,3 +109,9 @@ BGM
 - `field/field-3d-b3-city.js`：既存のB3形状キットを配置し、舗装・草・石片をThree.jsの基本形状から生成。GPT / Codexによる本プロジェクト用の手続き型描画コード。外部の画像・モデル・サービスの追加なし。
 - 再利用：`field/b3-ruined-city-kit.js`、`field/b3-ruined-city-urban-props.js`（PR #204で統合済み）。既存素材の削除・上書きなし。
 - 最終的な色・テクスチャ・質感の調整はClaude担当。今回の対象は形状、配置、シルエットと描画・動作検証。
+
+## B4 火山洞窟の表示品質（2026-11-10）
+
+- `field/b4-surface-library.js`：既存の `assets/3d/dungeons/b4_dragonfire/textures/` の火山岩・灰色石・黒ずんだ青銅・溶岩の色/法線/粗さ/発光画像を再利用。元画像の削除・上書きなし。
+- `field/b4-volcanic-detail.js`：柱状節理、破砕岩、冷却岩殻、爪痕、火の粉をThree.jsの基本形状から生成。GPT / Codexによる本プロジェクト用のオリジナル描画コード。
+- 炭化坑木の木目と城塞の灰煙・溶岩の照り返しの背景は、同コード内で数式とCanvasから生成。外部の画像・モデル・ライブラリ・サービスの追加なし。第三者素材からの転用なし。
