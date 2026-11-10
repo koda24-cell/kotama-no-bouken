@@ -53,6 +53,8 @@ export function createB5StandingPillar(THREE,options={}){
  for(let face=0;face<4;face++){
   const a=face*Math.PI/2,rad=1.36;
   for(const u of [-.47,0,.47]){
+   // A missing north-east carving exposes the eroded stone beneath.
+   if(face===1&&u===.47)continue;
    const px=Math.sin(a)*rad+Math.cos(a)*u;
    const pz=Math.cos(a)*rad-Math.sin(a)*u;
    const well=relief(G(new THREE.BoxGeometry(.24,.49,.035)),px,top+.69,pz);
@@ -65,17 +67,62 @@ export function createB5StandingPillar(THREE,options={}){
  for(let corner=0;corner<4;corner++){
   const a=Math.PI/4+corner*Math.PI/2;
   for(let leaf=0;leaf<3;leaf++){
+   if(corner===1&&leaf>0)continue;
    const r=1.16+leaf*.085,yy=top+.45+leaf*.21;
    const m=add(G(new THREE.SphereGeometry(.24,.11,12,8)),Math.cos(a)*r,yy,Math.sin(a)*r);
    m.rotation.y=-a;m.rotation.z=.34*(leaf-1);
   }
  }
- // Wide, tiered abacus with bevelled stone edges.
- const abacus=add(G(new THREE.BoxGeometry(3.35,.31,3.35)),0,top+1.51,0);
- const crown=add(G(new THREE.BoxGeometry(3.72,.22,3.72)),0,top+1.76,0);
- for(const y of [top+1.30,top+1.91]){
-  add(G(new THREE.BoxGeometry(3.9,.09,3.9)),0,y,0);
+ // Weathered Gothic abacus: continuous stone solids with chipped, rounded
+ // corners and one clearly missing quadrant. No floating shard ornaments.
+ const wornSlab=(y,w,h,d,damage=1)=>{
+  const outline=[
+   [-.91,-1],[-.28,-1],[.55,-1],[.87,-.95],
+   [1,-.69],[1,.21],[.91,.69],[.62,.95],
+   [.24,1],[-.46,1],[-.85,.93],[-1,.68],[-1,-.44]
+  ];
+  const n=outline.length,verts=[],faces=[];
+  for(let layer=0;layer<4;layer++){
+   const t=layer/3;
+   for(let i=0;i<n;i++){
+    const [ox,oz]=outline[i];
+    const cornerDamage=(ox>.5&&oz<-.4)?damage*(.12+.11*Math.sin(i*1.7)):0;
+    const rounding=.035*Math.sin(i*2.9+layer*1.8);
+    const edge=1-cornerDamage-rounding;
+    const x=ox*w*.5*edge,z=oz*d*.5*edge;
+    const yy=(t-.5)*h-(layer===3?.075*damage*Math.max(0,Math.sin(i*2.3)):0);
+    verts.push(x,yy,z);
+   }
+  }
+  for(let layer=0;layer<3;layer++)for(let i=0;i<n;i++){
+   const a=layer*n+i,b=layer*n+(i+1)%n,c=(layer+1)*n+i,e=(layer+1)*n+(i+1)%n;
+   faces.push(a,c,b,b,c,e);
+  }
+  for(let i=1;i<n-1;i++){
+   faces.push(0,i+1,i);
+   const t=3*n;faces.push(t,t+i,t+i+1);
+  }
+  const g=G(new THREE.BufferGeometry());
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(faces);g.computeVertexNormals();
+  return add(g,0,y,0);
+ };
+ wornSlab(top+1.51,3.35,.31,3.35,.65);
+ wornSlab(top+1.76,3.72,.22,3.72,1);
+ wornSlab(top+1.30,3.90,.09,3.90,.7);
+ wornSlab(top+1.91,3.90,.09,3.90,1);
+ // Weathered stone pockets on the capital bell itself. They recess into
+ // the upper profile instead of being separate angular protrusions.
+ const capPos=capital.geometry.attributes.position;
+ for(let i=0;i<capPos.count;i++){
+  const x=capPos.getX(i),y=capPos.getY(i),z=capPos.getZ(i);
+  const theta=Math.atan2(z,x);
+  const d=Math.atan2(Math.sin(theta-.76),Math.cos(theta-.76));
+  const cut=Math.exp(-Math.pow(d/.36,2))*Math.exp(-Math.pow((y-.29)/.35,2))*.24;
+  const r=Math.hypot(x,z);
+  if(r>1e-6){capPos.setX(i,x*(1-cut));capPos.setZ(i,z*(1-cut));}
  }
+ capPos.needsUpdate=true;capital.geometry.computeVertexNormals();
 
  const scale=Number.isFinite(options.scale)?Math.max(.1,Math.min(4,options.scale)):1;
  group.scale.setScalar(scale);
