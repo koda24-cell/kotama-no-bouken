@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-7";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-8";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -94,7 +94,8 @@
       const required = Math.max(1, Number(skill?.requiredHits) || 1);
       const charge = typeof battleState !== "undefined" ? Math.max(0, Number(battleState.unionGauges?.[actor.id]) || 0) : 0;
       const percent = skill ? Math.min(100, charge / required * 100) : 0;
-      meterLabel.textContent = skill ? "UNION " + charge + " / " + required : "UNION 未設定";
+      meterLabel.textContent = skill ? "UNION " + Math.round(percent) + "%" : "UNION";
+      meterLabel.title = skill ? charge + " / " + required : "未設定";
       meterFill.style.width = percent + "%";
       meterTrack.style.setProperty("--battle-union-percent", percent + "%");
     }
