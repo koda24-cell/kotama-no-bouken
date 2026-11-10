@@ -131,15 +131,47 @@ export function createB5RuinedGothicWall(THREE,options={}) {
   [1.62,3.17],[1.47,3.59],[1.66,4.05],[1.55,4.53],
   [1.74,4.96],[1.62,5.45]
  ];
- const profileShape=new THREE.Shape();
- fractureProfile.forEach(([x,y],i)=>i?profileShape.lineTo(x,y):profileShape.moveTo(x,y));
- profileShape.closePath();
- const abutment=add(new THREE.ExtrudeGeometry(profileShape,{
-  depth:.76,bevelEnabled:true,bevelThickness:.085,bevelSize:.075,
-  bevelSegments:2,steps:1,curveSegments:1
- }),stone,0,0,-.12);
- // Embedded stone transition overlaps the surviving lower wall courses.
- // These low facets stay inside the abutment instead of forming a loose row.
+ // One watertight-looking sculpted rock mass: shared perimeter, but
+ // triangulated into many depth-varying facets instead of a flat extruded plate.
+ // All vertices are deterministic so FRONT/BACK match between sessions.
+ const boundary=fractureProfile;
+ const center=[2.78,4.25];
+ const rings=4,segments=boundary.length;
+ const verts=[],faces=[];
+ const rough=(i,j)=>Math.sin(i*2.73+j*4.81)*.5+Math.sin(i*5.19-j*1.37)*.5;
+ for(let r=0;r<=rings;r++){
+  const t=r/rings;
+  for(let i=0;i<segments;i++){
+   const [bx,by]=boundary[i];
+   const x=center[0]+(bx-center[0])*t;
+   const y=center[1]+(by-center[1])*t;
+   // Front depth varies across faces. The edge stays recessed into the wall.
+   const z=-.38-.16*(1-t)+.15*rough(i,r)*(1-t*.25);
+   verts.push(x,y,z);
+  }
+ }
+ for(let r=0;r<rings;r++)for(let i=0;i<segments;i++){
+  const next=(i+1)%segments,a=r*segments+i,b=r*segments+next;
+  const c=(r+1)*segments+i,d=(r+1)*segments+next;
+  if((i+r)%2){faces.push(a,c,b,b,c,d);}
+  else {faces.push(a,c,d,a,d,b);}
+ }
+ // Back cap is recessed behind the surviving wall stones.
+ const backOffset=verts.length/3;
+ for(const [x,y] of boundary)verts.push(x,y,.46);
+ for(let i=0;i<segments;i++){
+  const j=(i+1)%segments;
+  faces.push(rings*segments+i,rings*segments+j,backOffset+j);
+  faces.push(rings*segments+i,backOffset+j,backOffset+i);
+ }
+ const backCenter=verts.length/3;verts.push(center[0],center[1],.46);
+ for(let i=0;i<segments;i++)faces.push(backCenter,backOffset+(i+1)%segments,backOffset+i);
+ const rockGeo=new THREE.BufferGeometry();
+ rockGeo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+ rockGeo.setIndex(faces);rockGeo.computeVertexNormals();
+ const abutment=add(rockGeo,stone);
+ abutment.name='integrated-faceted-arch-break';
+ // Low-profile worn stone seams, embedded at the foot of the damaged area.
  for(let i=0;i<6;i++){
   const x=2.06+(i%3)*.43,y=2.23+Math.floor(i/3)*.38;
   const facet=add(new THREE.DodecahedronGeometry(.26+(i%2)*.05,0),stone,x,y,.11);
