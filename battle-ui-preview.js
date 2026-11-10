@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-13";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-14";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -34,16 +34,28 @@
     tabs.setAttribute("aria-label", "戦闘情報");
     const logButton = document.getElementById("battle-log-open");
     const analyzeTabs = battle.querySelector(".analyze-tabs");
-    if (logButton) { logButton.textContent = "Y  LOG"; tabs.appendChild(logButton); }
+    if (logButton) { logButton.textContent = "LOG"; tabs.appendChild(logButton); }
     if (analyzeTabs) {
       const enemyTab = analyzeTabs.querySelector("#analyze-enemy-button");
       const allyTab = analyzeTabs.querySelector("#analyze-party-button") || analyzeTabs.querySelector("#analyze-ally-button") || analyzeTabs.querySelectorAll("button")[1];
-      if (enemyTab) enemyTab.textContent = "L  敵";
+      if (enemyTab) enemyTab.textContent = "敵";
       if (allyTab) allyTab.textContent = "味方";
       tabs.appendChild(analyzeTabs);
     }
     const counter = document.getElementById("turn-counter");
-    if (counter) arenaHeader.appendChild(counter);
+    if (counter) {
+      arenaHeader.appendChild(counter);
+      const formatTurn = () => {
+        const turn = typeof battleState !== "undefined" ? Math.max(1, (Number(battleState.turnCount) || 0) + 1) : 1;
+        const label = "TURN " + turn;
+        const phase = typeof battleState !== "undefined" && battleState.busy ? "行動中" : "行動選択";
+        if (counter.textContent !== label) counter.textContent = label;
+        if (counter.dataset.phase !== phase) counter.dataset.phase = phase;
+      };
+      const turnObserver = new MutationObserver(formatTurn);
+      turnObserver.observe(counter, {childList:true,characterData:true,subtree:true});
+      formatTurn();
+    }
     arenaHeader.appendChild(tabs);
     battle.querySelector(".battle-arena")?.prepend(arenaHeader);
     // Observe the existing renderer; only set CSS order, never replace cards or handlers.
