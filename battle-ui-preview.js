@@ -125,9 +125,13 @@
         move.className = "command-option battle-preview-move";
         move.dataset.previewMove = "1";
         move.textContent = "編成位置入れ替え";
-        move.disabled = true;
-        move.title = "ターン消費と保存処理の実装待ち";
-        move.setAttribute("aria-label", "編成位置入れ替え：未実装");
+        move.disabled = typeof window.kotamaBattleSelectMove !== "function" || !!battleState.tutorialMode;
+        move.title = "このターンの行動を使って前衛・後衛を移動";
+        move.addEventListener("click", () => {
+          const id = battleState.turnOrder?.[battleState.currentActorIndex];
+          const actor = typeof getCharacter === "function" ? getCharacter(id) : null;
+          window.kotamaBattleSelectMove?.(actor);
+        });
         box.insertBefore(move, unionPanel);
       }
       if (!existingToggle) {
