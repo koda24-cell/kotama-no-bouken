@@ -91,7 +91,7 @@ export function createB5AncientGate(THREE,options={}){
  // Vertical grooves are cut into its front/back and side cross-sections,
  // not separate rods glued to the surface.
  const flutedShaft=(x,bottom,h,w=1.95,d=1.86)=>{
-  const n=64,levels=29,verts=[],idx=[];
+  const n=96,levels=85,verts=[],idx=[];
   for(let k=0;k<levels;k++){
    const t=k/(levels-1),y=bottom+t*h;
    for(let j=0;j<n;j++){
@@ -105,7 +105,31 @@ export function createB5AncientGate(THREE,options={}){
     const grooves=(front||side)?Math.pow(Math.max(0,Math.cos(across*3*Math.PI)),8)*.11:0;
     const ripple=.025*Math.sin(t*19+a*3)+.014*Math.sin(t*31-a*5);
     const edge=1-.055*Math.pow(Math.abs(t-.5)*2,9);
-    const shrink=1+(ripple-grooves)/Math.max(w,d);
+    // Broad, irregular erosion pockets actually REMOVE shaft volume.
+    // Four asymmetrical damaged regions; no added surface plates.
+    const faceCoord=(Math.abs(q)>.84)?bx/(w*.5):bz/(d*.5);
+    const onFace=Math.max(Math.abs(q),Math.abs(c));
+    const scars=[
+     [-.22,.25,.30,.11,.19],
+     [.30,.42,.29,.13,.24],
+     [-.10,.63,.35,.12,.21],
+     [.23,.80,.25,.09,.17]
+    ];
+    let recess=0;
+    if(onFace>.82){
+     for(let si=0;si<scars.length;si++){
+      const [u,v,rx,ry,depth]=scars[si];
+      const yy=t+(si%2===0?.012:-.016)*Math.sin(faceCoord*9+si);
+      const du=(faceCoord-u)/rx,dv=(yy-v)/ry;
+      const irregular=1+.17*Math.sin(faceCoord*13+t*31+si*2.1)+.09*Math.cos(faceCoord*21-t*17);
+      const r=Math.sqrt(du*du+dv*dv)*irregular;
+      // Rounded, chipped boundary and uneven eroded floor.
+      const bowl=Math.max(0,Math.min(1,(1.15-r)/.55));
+      const variation=.85+.15*Math.sin(faceCoord*18+t*27);
+      recess=Math.max(recess,depth*bowl*bowl*(3-2*bowl)*variation);
+     }
+    }
+    const shrink=1+(ripple-grooves-recess)/Math.max(w,d);
     verts.push(x+bx*edge*shrink,y,bz*edge*shrink);
    }
   }
@@ -264,55 +288,8 @@ export function createB5AncientGate(THREE,options={}){
    block(x+sx*.87,4.65,-1.02,.08,4.68,.12,stone);
   }
  }
- // Broken pillar faces inspired by the approved eroded masonry reference.
- // Large broad stone islands alternate with recessed fracture channels;
- // each face is a shallow solid with chipped multi-ring edges, not a decal.
- const fracturePlate=(x,y,z,w,h,depth,front=1,material=stone,seedOffset=0)=>{
-  const n=11,verts=[],idx=[],phase=seedOffset*.83;
-  const radii=Array.from({length:n},(_,i)=>.82+.13*Math.sin(i*2.7+phase)+.05*Math.cos(i*4.1+phase));
-  for(const [scale,offset] of [[.78,0],[1,.085],[.93,depth]]){
-   for(let i=0;i<n;i++){
-    const a=Math.PI*2*i/n;
-    const xx=Math.cos(a)*w*.5*radii[i]*scale;
-    const yy=Math.sin(a)*h*.5*radii[i]*scale;
-    verts.push(xx,yy,front*offset);
-   }
-  }
-  for(let ring=0;ring<2;ring++)for(let i=0;i<n;i++){
-   const j=(i+1)%n,a=ring*n+i,b=ring*n+j,c=(ring+1)*n+i,d=(ring+1)*n+j;
-   idx.push(a,b,c,b,d,c);
-  }
-  for(let i=1;i<n-1;i++)idx.push(2*n,2*n+i,2*n+i+1);
-  const geo=G(new THREE.BufferGeometry());
-  geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
-  geo.setIndex(idx);geo.computeVertexNormals();
-  const plate=add(geo,material,x,y,z);return plate;
- };
- for(const side of [-1,1]){
-  const x=side*3.75;
-  for(const facing of [-1,1]){
-   // Both FRONT and BACK carry the same depth of broken masonry.
-   const z=facing*1.09;
-   const scars=[
-    {dx:-.17,y:2.75,w:1.33,h:1.52,rot:-.12},
-    {dx:.12,y:4.18,w:1.56,h:1.78,rot:.16},
-    {dx:-.10,y:5.76,w:1.41,h:1.43,rot:-.09},
-    {dx:.19,y:7.05,w:1.32,h:1.19,rot:.13}
-   ];
-   for(let i=0;i<scars.length;i++){
-    const p=scars[i];
-    // Dark fracture recess reads as a genuine missing layer.
-    fracturePlate(x+p.dx,p.y,z,p.w*1.10,p.h*1.10,.025,facing,cut,i+side*3);
-    const island=fracturePlate(x+p.dx,p.y,z+facing*.048,p.w,p.h,.15,facing,i%3===0?trim:stone,i+side*5);
-    island.rotation.z=p.rot;
-   }
-   // Broad gouges crossing between surviving islands.
-   for(const [y,dx,angle] of [[3.52,-.24,-.28],[5.06,.19,.22],[6.46,-.12,-.19]]){
-    const gouge=block(x+dx,y,z+facing*.11,.66,.11,.12,cut);
-    gouge.rotation.z=angle;
-   }
-  }
- }
+ // Damage is now carved directly into the continuous flutedShaft mesh.
+ // Former pentagonal fracturePlate overlays and protruding gouge bars removed.
  // Layered capstones, with small missing pieces on the surviving lintel.
  for(const [x,y,w] of [[-3.3,11.94,3.58],[-.75,11.94,1.66],[2.45,9.54,2.65]]){
   polygonStone(x,y,-.06,w,.21,2.26,trim);
