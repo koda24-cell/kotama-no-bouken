@@ -2,8 +2,8 @@
  * Purely visual, anchored on wall cells; no game-state or collision changes.
  */
 import * as THREE from 'three';
-import { fitB4Recess, batchB4Scenery, disposeB4Owned } from './b4-placement.js';
-export function createB4RockForms({root,map,wallCell,hash,CELL,objects=[],excludedWalls=new Set()}) {
+import { fitB4Recess, batchB4Scenery, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
+export function createB4RockForms({root,map,wallCell,hash,CELL,objects=[],excludedWalls=new Set(),surfaces}) {
   if(!root || !map || !wallCell)return 0;
   const group=new THREE.Group();group.name='b4:fractured-rock-and-ore';
   const rock=new THREE.MeshStandardMaterial({color:0x30272b,roughness:1,flatShading:true});
@@ -67,7 +67,7 @@ export function createB4RockForms({root,map,wallCell,hash,CELL,objects=[],exclud
     group.add(slot);
     clusters++;
   }
-  if(clusters){batchB4Scenery(group);root.add(group);}else{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());}
+  if(clusters){surfaces?.apply(group);batchB4Scenery(group);root.add(group);}else{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());}
   group.userData.disposeB4RockForms=()=>disposeB4Owned(group);
   return clusters;
 }

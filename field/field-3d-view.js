@@ -158,7 +158,7 @@ function loadTheme3() {
 }
 async function loadTheme45(area) {
   if (area !== 4 && g.theme?.area === area) return g.theme;
-  const m = await import('./field-3d-b4-b5-map.js?v=20261110-b5-closed-quality');
+  const m = await import('./field-3d-b4-b5-map.js?v=20261110-b4-b5-quality-integrated');
   return m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES }, area);
 }
 function place(parent, src, x, y, z, ry = 0, s = 1) {
@@ -534,8 +534,9 @@ function frame() {
   for (const e of g.entries) syncEntry(e);
   syncFoes(now);
   updateCamera(dt);
-  updatePool(g.camera.position);
-  if (g.theme && g.envArea === g.theme.area) g.theme.tick(dt, now, g.camera.position);
+  if (g.theme?.area === 4 && g.envArea === 4) g.theme.tick(dt, now, g.camera.position);
+  updatePool(g.camera.position, g.envArea === 4);
+  if (g.theme && g.envArea === g.theme.area && g.envArea !== 4) g.theme.tick(dt, now, g.camera.position);
   // 正面の調べられる物に目印
   const nk = fieldState.lock ? '' : fieldState.nearKey;
   const ne = nk && g.entries.find((e) => e.o.key === nk);

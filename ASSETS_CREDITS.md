@@ -114,3 +114,9 @@ BGM
 - `field/b5-architecture.js`: project-authored bevelled basalt/armour walls, opaque blind bays, coffered ceilings, paving, Gothic ribs, practical lamps and exit portal (Codex).
 - `assets/3d/dungeons/b5_abyssal_star_realm/textures/b5_{basalt,ashlar,paving,iron,cloth}_{albedo,normal,orm}.png`: fifteen 512×512 PBR maps. Generated from this repository's B1 procedural pipeline (`tools/b1-3d/lib/tex.js`, original project assets) using new B5 seeds/palettes and no moss. No external image/material source. Generator: `tools/b5-3d/bake-materials.html` / `bake-materials.cjs`.
 - B1 assets and generators are retained unchanged. B5 reuses existing Three.js r180 utilities; high-quality reflection lighting uses its existing `RoomEnvironment` helper, with no visible external scene or new dependency.
+
+## B4 火山洞窟の表示品質（2026-11-10）
+
+- `field/b4-surface-library.js`：既存の `assets/3d/dungeons/b4_dragonfire/textures/` の火山岩・灰色石・黒ずんだ青銅・溶岩の色/法線/粗さ/発光画像を再利用。元画像の削除・上書きなし。
+- `field/b4-volcanic-detail.js`：柱状節理、破砕岩、冷却岩殻、爪痕、火の粉をThree.jsの基本形状から生成。GPT / Codexによる本プロジェクト用のオリジナル描画コード。
+- 炭化坑木の木目と城塞の灰煙・溶岩の照り返しの背景は、同コード内で数式とCanvasから生成。外部の画像・モデル・ライブラリ・サービスの追加なし。第三者素材からの転用なし。
