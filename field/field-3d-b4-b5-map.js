@@ -204,6 +204,42 @@ export function createTheme(api, area) {
         }
       }
     }
+    // B3 skyline landmarks. Anchor the center in a SOLID wall tile, never a path tile.
+    // Small scaled silhouettes remain visual-only and do not modify map collision.
+    if (mist && cityKit) {
+      const candidates = [];
+      for (let ty = 2; ty < a.h - 2; ty++) for (let tx = 2; tx < a.w - 2; tx++) {
+        if (!wallCell(tx,ty) || objAt.has(tx+','+ty)) continue;
+        const adjacentWalk = DIR_ORDER.some(d => {
+          const [dx,dz] = DIR_VEC[d];
+          return !wallCell(tx+dx,ty+dz) && !objAt.has((tx+dx)+','+(ty+dz));
+        });
+        if (!adjacentWalk) continue;
+        // Require a thick wall backing for the larger structures.
+        const solidCount = DIR_ORDER.filter(d => {
+          const [dx,dz] = DIR_VEC[d]; return wallCell(tx+dx,ty+dz);
+        }).length;
+        if (solidCount < 2) continue;
+        candidates.push({tx,ty,rank:hash(tx,ty,421)});
+      }
+      candidates.sort((a,b)=>a.rank-b.rank);
+      const selected = [];
+      for (const spot of candidates) {
+        if (selected.length >= 3) break;
+        if (selected.some(p => Math.abs(p.tx-spot.tx)+Math.abs(p.ty-spot.ty)<7)) continue;
+        selected.push(spot);
+      }
+      selected.forEach((spot,i) => {
+        const piece = i===1 ? cityKit.tower() : cityKit.temple();
+        // Temple original footprint 7x5; 0.36 scale stays inside a 4-unit wall cell.
+        // Tower height 5.6 -> 3.08, below the existing 4-unit ceiling.
+        piece.scale.setScalar(i===1 ? .55 : .36);
+        piece.position.set(spot.tx*CELL,0,spot.ty*CELL);
+        piece.rotation.y = Math.floor(hash(spot.tx,spot.ty,422)*4)*Math.PI/2;
+        piece.name = i===1 ? 'b3:skyline:tower' : 'b3:skyline:temple:'+i;
+        root.add(piece); ornaments++;
+      });
+    }
     // ボスマスの視覚的ランドマーク。GLBが未展開でも探索は止めない。
     if (!mist) {
       let boss = null;
