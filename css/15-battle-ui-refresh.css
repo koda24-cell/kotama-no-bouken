@@ -1545,3 +1545,43 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
   grid-column:2!important;grid-row:2!important;
  }
 }
+
+
+/* Screenshot regression: both persistent rail and submenu share bottom positioning. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview .battle-preview-bottom>.battle-preview-primary-rail:not([hidden]) {
+  position:absolute!important;
+  top:var(--battle-command-overlay-top,-630px)!important;
+  left:12px!important;
+  width:260px!important;min-width:260px!important;max-width:260px!important;
+  height:310px!important;min-height:310px!important;max-height:310px!important;
+  display:flex!important;flex-direction:column!important;
+  box-sizing:border-box!important;
+  z-index:35!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window {
+  z-index:34!important;
+ }
+ /* Eliminate the giant empty grid row between EVENT and COMMAND INFO. */
+ #battle.battle-ui-preview .battle-bottom.battle-preview-bottom {
+  display:grid!important;
+  grid-template-columns:260px minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  align-content:start!important;
+  align-items:start!important;
+  row-gap:7px!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:10px 12px 12px!important;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.event-window {
+  grid-column:2!important;grid-row:1!important;
+  height:auto!important;min-height:76px!important;
+  margin:0!important;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.command-info-window {
+  grid-column:2!important;grid-row:2!important;
+  height:auto!important;min-height:76px!important;
+  margin:0!important;
+ }
+}
