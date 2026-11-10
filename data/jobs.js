@@ -61,12 +61,12 @@ const EXT_NEW_JOBS = [
     ] },
   { id:"imperial", name:"インペリアル", image:"", emblem:"魔", speed:50, hp:110, maxHp:110, attack:85, spAttack:200, defense:30, guardCut:.40, sp:100, maxSp:100,
     spSkills:[
-      { id:"imp-flame", name:"炎魔剣", cost:18, target:"enemy", type:"xj", description:"【熱2】チャージ後に炎の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:1.7, element:"炎", fx:"flame", charge:true, heat:3 } },
-      { id:"imp-frost", name:"氷魔剣", cost:18, target:"enemy", type:"xj", description:"【熱2】チャージ後に氷の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:1.7, element:"氷", fx:"magic", charge:true, heat:3 } },
+      { id:"imp-flame", name:"炎魔剣", cost:18, target:"enemy", type:"xj", description:"【熱3】チャージ後に炎の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:1.7, element:"炎", fx:"flame", charge:true, heat:3 } },
+      { id:"imp-frost", name:"氷魔剣", cost:18, target:"enemy", type:"xj", description:"【熱3】チャージ後に氷の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:1.7, element:"氷", fx:"magic", charge:true, heat:3 } },
       { id:"imp-thunder", name:"雷魔剣", cost:26, target:"enemy", type:"xj", description:"【熱3】チャージ後に雷の魔法剣を放つ。チャージ中は無防備。", xj:{ kind:"sp", mult:2.3, element:"雷", fx:"magic", charge:true, heat:3 } },
       { id:"imp-neutral", name:"無属性ドライブ", cost:30, target:"enemy", type:"xj", description:"【熱3】チャージ後に無属性SP攻撃。属性耐性に左右されない。", xj:{ kind:"sp", mult:2.0, element:"無属性", fx:"magic", charge:true, heat:3 } },
-      { id:"imp-cooldown", name:"クールダウン", cost:0, target:"self", type:"xj", description:"1ターン使って熱を2減らす。オーバーヒート中も使用可能。", xj:{ cooldown:2 } },
-      { id:"imp-nova", name:"煌魔断", cost:38, target:"allEnemies", type:"xj", description:"【熱4】チャージ後に聖なる光で敵全体を斬る。チャージ中は無防備。", xj:{ kind:"sp", mult:1.9, element:"聖", fx:"magic", charge:true, heat:3 } }
+      { id:"imp-cooldown", name:"クールダウン", cost:0, target:"self", type:"xj", description:"1ターン使って熱を2減らす。オーバーヒート中は使用不可。", xj:{ cooldown:2 } },
+      { id:"imp-nova", name:"煌魔断", cost:38, target:"allEnemies", type:"xj", description:"【熱3】チャージ後に聖なる光で敵全体を斬る。チャージ中は無防備。", xj:{ kind:"sp", mult:1.9, element:"聖", fx:"magic", charge:true, heat:3 } }
     ] }
 ];
 
