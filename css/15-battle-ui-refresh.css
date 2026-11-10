@@ -1364,3 +1364,11 @@ body:has(#battle.battle-ui-preview.active) .topbar {
    overflow-y:auto;
  }
 }
+
+
+/* COMMAND INFO replaces the old standalone battle-support/hint strips. */
+#battle.battle-ui-preview #battle-support,
+#battle.battle-ui-preview #command-hint,
+body:has(#battle.active.battle-ui-preview) #battle-support {
+ display:none!important;
+}
