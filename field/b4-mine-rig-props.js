@@ -152,6 +152,55 @@ export function createB4MineRigProps() {
     add(box,rope,x,2.6,-3.0,.035,1.6+(i%2)*.5,.035,(i-1)*.12);
     add(shard,wood,x,1.7-(i%2)*.25,-3.0,.18,.52,.18,(i-1)*.38);
   }
+  // Fifth pass: a broken ventilation shaft and mine cage emerging from the same cave-in.
+  // The segmented duct is kinked and partly crushed, rather than a smooth cylinder.
+  const duct=new THREE.Group();duct.name='b4:crushed-ventilation';duct.position.set(-3.25,1.1,-2.8);
+  duct.rotation.z=-.28;root.add(duct);
+  const ductAdd=(geo,mat,x,y,z,sx,sy,sz,rz=0)=>{
+    const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.rotation.z=rz;duct.add(m);
+  };
+  for(let i=0;i<6;i++){
+    const y=i*.58;
+    const bend=i>=3?(i-2)*.17:0;
+    ductAdd(cylinder,iron,bend,y,0,.58-(i===4?.17:0),.52,.58-(i===4?.12:0),(i-2)*.11);
+    ductAdd(rim,iron,bend,y+.26,0,.64-(i===4?.15:0),.64,.64-(i===4?.15:0),(i-2)*.12);
+  }
+  // Jagged lip around the torn duct opening.
+  for(let i=0;i<9;i++){
+    const a=i*Math.PI*2/9;
+    ductAdd(spike,iron,.5+Math.cos(a)*.43,3.15,Math.sin(a)*.43,.25,.48+(i%3)*.2,.25,(i-4)*.2);
+  }
+  // Half-fallen iron cage and protective bars, leaning against the collapsed mine.
+  const cage=new THREE.Group();cage.name='b4:broken-mine-cage';
+  cage.position.set(3.4,.65,-2.35);cage.rotation.set(.15,-.3,.32);root.add(cage);
+  const cageAdd=(geo,mat,x,y,z,sx,sy,sz,rz=0)=>{
+    const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.rotation.z=rz;cage.add(m);
+  };
+  cageAdd(box,iron,0,0,0,1.6,.18,1.5);
+  for(const x of [-.7,.7])for(const z of [-.65,.65]){
+    cageAdd(box,iron,x,1.2,z,.11,2.4,.11,(x+z)*.07);
+  }
+  for(const y of [.8,1.7,2.4]){
+    for(const z of [-.65,.65])cageAdd(box,iron,0,y,z,1.6,.09,.11,(y-1.5)*.08);
+    if(y!==1.7)for(const x of [-.7,.7])cageAdd(box,iron,x,y,0,.11,.09,1.5);
+  }
+  // One side has been torn open: bars splay outward, leaving a conspicuous gap.
+  for(let i=0;i<3;i++){
+    cageAdd(box,iron,.8+i*.2,1.35-i*.28,.4+i*.18,.08,1.25,.08,-.48-i*.13);
+  }
+  // Fallen rock wedged into the cage, emphasizing scale and structural damage.
+  for(let i=0;i<5;i++){
+    const a=i*2.4;
+    cageAdd(fractured,ash,Math.cos(a)*.4,.3+(i%2)*.28,Math.sin(a)*.4,
+      .45+(i%2)*.15,.35+(i%3)*.14,.38+(i%2)*.13,a*.16);
+  }
+  // Large fractured cave lip encloses the new wreckage into a single silhouette.
+  for(let i=0;i<8;i++){
+    const a=i*2.399963;
+    const x=Math.cos(a)*4.1,z=-1.5+Math.sin(a)*2.4;
+    const height=1.2+(i%3)*.75;
+    add(fractured,ash,x,height*.35,z,.85+(i%2)*.5,height,.75+(i%3)*.18,a*.2,a*.13);
+  }
   root.userData.disposeB4MineRig=()=>{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());};
   return root;
 }
