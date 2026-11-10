@@ -1,0 +1,258 @@
+{
+  "errors": [],
+  "cancelledRequests": [
+    "http://localhost:8775/assets/music/%E4%BB%95%E5%88%86%E3%81%91%E9%9B%A8/%E3%81%82%E3%82%84%E3%81%97%E3%81%84%E3%81%8A%E5%BA%97.mp3: net::ERR_ABORTED",
+    "http://localhost:8775/assets/music/%E4%BB%95%E5%88%86%E3%81%91%E9%9B%A8/%E8%92%BC%E7%8D%A3%E3%82%B7%E3%83%BC%E3%82%AC%E3%83%BC.mp3: net::ERR_ABORTED"
+  ],
+  "cycles": [
+    {
+      "area": 5,
+      "floor": 2,
+      "render": {
+        "quality": "high",
+        "lightPool": 6,
+        "reflectionEnvironment": true,
+        "calls": 1,
+        "triangles": 1,
+        "memory": {
+          "geometries": 64,
+          "textures": 76
+        }
+      },
+      "info": {
+        "placed": true,
+        "ornaments": 0,
+        "mode": "map-driven-3d",
+        "landmarkState": "glb-loaded",
+        "dressing": {
+          "hall": true,
+          "mergedDraws": 31,
+          "propCount": 12,
+          "propKinds": [
+            "ruinedPillar",
+            "hangingBanner",
+            "grandChandelier"
+          ]
+        },
+        "architecture": {
+          "height": 16,
+          "opaqueFaces": 116,
+          "materials": "512px albedo / normal / ORM",
+          "reflections": true,
+          "batches": 267,
+          "nicheCount": 51
+        }
+      }
+    },
+    {
+      "area": 5,
+      "floor": 1,
+      "render": {
+        "quality": "high",
+        "lightPool": 6,
+        "reflectionEnvironment": true,
+        "calls": 1,
+        "triangles": 1,
+        "memory": {
+          "geometries": 72,
+          "textures": 130
+        }
+      },
+      "info": {
+        "placed": true,
+        "ornaments": 0,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "dressing": {
+          "hall": false,
+          "mergedDraws": 36,
+          "propCount": 16,
+          "propKinds": [
+            "swordField",
+            "brokenWarMachine",
+            "brokenBridge",
+            "debrisHeap"
+          ]
+        },
+        "architecture": {
+          "height": 6.4,
+          "opaqueFaces": 504,
+          "materials": "512px albedo / normal / ORM",
+          "reflections": true,
+          "batches": 502,
+          "nicheCount": 87
+        }
+      }
+    },
+    {
+      "area": 5,
+      "floor": 0,
+      "render": {
+        "quality": "high",
+        "lightPool": 6,
+        "reflectionEnvironment": true,
+        "calls": 1,
+        "triangles": 1,
+        "memory": {
+          "geometries": 88,
+          "textures": 163
+        }
+      },
+      "info": {
+        "placed": true,
+        "ornaments": 0,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "dressing": {
+          "hall": false,
+          "mergedDraws": 36,
+          "propCount": 16,
+          "propKinds": [
+            "swordField",
+            "brokenWarMachine",
+            "brokenBridge",
+            "debrisHeap"
+          ]
+        },
+        "architecture": {
+          "height": 6.4,
+          "opaqueFaces": 492,
+          "materials": "512px albedo / normal / ORM",
+          "reflections": true,
+          "batches": 493,
+          "nicheCount": 90
+        }
+      }
+    },
+    {
+      "area": 1,
+      "floor": 0,
+      "render": {
+        "quality": "high",
+        "lightPool": 14,
+        "reflectionEnvironment": false,
+        "calls": 1,
+        "triangles": 1,
+        "memory": {
+          "geometries": 108,
+          "textures": 298
+        }
+      }
+    },
+    {
+      "area": 4,
+      "floor": 0,
+      "render": {
+        "quality": "high",
+        "lightPool": 14,
+        "reflectionEnvironment": false,
+        "calls": 1,
+        "triangles": 1,
+        "memory": {
+          "geometries": 138,
+          "textures": 312
+        }
+      },
+      "info": {
+        "placed": true,
+        "ornaments": 189,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "scenery": {
+          "mines": [
+            {
+              "tx": 3,
+              "ty": 12,
+              "dx": 1,
+              "dz": 0,
+              "wx": 4,
+              "wy": 12,
+              "key": "3,12:1,0"
+            },
+            {
+              "tx": 23,
+              "ty": 8,
+              "dx": 1,
+              "dz": 0,
+              "wx": 24,
+              "wy": 8,
+              "key": "23,8:1,0"
+            },
+            {
+              "tx": 19,
+              "ty": 1,
+              "dx": 0,
+              "dz": 1,
+              "wx": 19,
+              "wy": 2,
+              "key": "19,1:0,1"
+            },
+            {
+              "tx": 10,
+              "ty": 5,
+              "dx": 0,
+              "dz": -1,
+              "wx": 10,
+              "wy": 4,
+              "key": "10,5:0,-1"
+            }
+          ],
+          "vista": {
+            "tx": 13,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "wx": 13,
+            "wy": 0,
+            "key": "13,1:0,-1"
+          },
+          "detail": {
+            "basaltPanels": 46,
+            "coolingPlates": 48,
+            "embers": 32
+          }
+        }
+      }
+    },
+    {
+      "area": 5,
+      "floor": 2,
+      "render": {
+        "quality": "high",
+        "lightPool": 6,
+        "reflectionEnvironment": true,
+        "calls": 1,
+        "triangles": 1,
+        "memory": {
+          "geometries": 149,
+          "textures": 311
+        }
+      },
+      "info": {
+        "placed": true,
+        "ornaments": 0,
+        "mode": "map-driven-3d",
+        "landmarkState": "glb-loaded",
+        "dressing": {
+          "hall": true,
+          "mergedDraws": 31,
+          "propCount": 12,
+          "propKinds": [
+            "ruinedPillar",
+            "hangingBanner",
+            "grandChandelier"
+          ]
+        },
+        "architecture": {
+          "height": 16,
+          "opaqueFaces": 116,
+          "materials": "512px albedo / normal / ORM",
+          "reflections": true,
+          "batches": 267,
+          "nicheCount": 51
+        }
+      }
+    }
+  ],
+  "artifactNote": "Repeated placements are summarized; generated by the documented test setup after B3/B4 integration."
+}
