@@ -166,13 +166,48 @@ export function createB5AncientGate(THREE,options={}){
   // Capital and plinth remain distinct architectural pieces.
   weatheredCore(x,1.4+h,0,2.7,.48,2.6,trim);
  }
- // Surviving flat lintel sections, with a broken centre and right end.
- for(const [x,y,w,ang] of [
-  [-3.3,11.45,3.6,0],[-.75,11.45,1.7,-.025],
-  [2.45,9.05,2.7,-.045],[4.15,9.0,1.45,-.11]
+ // Ruined lintel: closed, multi-section stone geometry with broad
+ // missing bites, bevelled edges and an uneven fracture cap.
+ // The broken beam rests over the piers rather than floating between them.
+ const ruinedLintel=(x,y,z,w,h,d,seed=0)=>{
+  const sections=25,ring=12,vertices=[],faces=[];
+  const outline=[[-.88,-1],[-.28,-1],[.55,-1],[.94,-.77],[1,-.25],[1,.58],[.76,1],[.14,1],[-.62,1],[-1,.70],[-1,.09],[-.96,-.70]];
+  for(let i=0;i<sections;i++){
+   const t=i/(sections-1),xx=(t-.5)*w;
+   const fracture=Math.max(0,(t-.77)/.23);
+   const loss=(.13*Math.sin(t*17+seed)+.08*Math.sin(t*31-seed))*h;
+   const notch=Math.exp(-Math.pow((t-.38-seed*.035)/.105,2))*.24*h;
+   const endFall=fracture*(.12+.26*Math.sin(seed+1.4))*h;
+   for(let j=0;j<ring;j++){
+    const [vy,vz]=outline[j];
+    const bevel=1-.06*Math.sin(t*8+j*1.7+seed);
+    const yy=vy*h*.5*bevel-loss*(vy>.1?1:.22)-notch*(vy>.1?1:.12)-endFall*(vy>.1?1:.4);
+    const zz=vz*d*.5*(1-.07*Math.sin(t*12+j*.9+seed));
+    vertices.push(xx,yy,zz);
+   }
+  }
+  for(let i=0;i<sections-1;i++)for(let j=0;j<ring;j++){
+   const a=i*ring+j,b=i*ring+(j+1)%ring,c=(i+1)*ring+j,e=(i+1)*ring+(j+1)%ring;
+   faces.push(a,b,c,b,e,c);
+  }
+  // end caps follow the irregular fractured cross-section.
+  for(let j=1;j<ring-1;j++){
+   faces.push(0,j+1,j);
+   const end=(sections-1)*ring;faces.push(end,end+j,end+j+1);
+  }
+  const geo=G(new THREE.BufferGeometry());
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  geo.setIndex(faces);geo.computeVertexNormals();
+  return add(geo,stone,x,y,z);
+ };
+ for(const [x,y,w,ang,seed] of [
+  [-3.3,11.45,3.6,0,.4],[-.75,11.45,1.7,-.025,1.8],
+  [2.45,9.05,2.7,-.045,2.7],[4.15,9.0,1.45,-.11,3.9]
  ]){
-  const stoneBeam=fracturedStone(x,y,0,w,.78,2.1,stone,1);stoneBeam.rotation.z=ang;
-  weatheredCore(x,y+.46,-.02,w+.12,.18,2.3,trim).rotation.z=ang;
+  const beam=ruinedLintel(x,y,0,w,.78,2.1,seed);
+  beam.rotation.z=ang;
+  // The old full-length rectangular cornice is intentionally removed:
+  // worn partial mouldings follow the surviving stone below.
  }
  // Thick broken arch shoulders grow directly out of each pier.
  // The missing centre remains open, matching the ruined lintel silhouette.
