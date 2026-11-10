@@ -126,8 +126,8 @@ export function createB5RuinedGothicWall(THREE,options={}) {
   [2.13,6.16],[2.39,6.48],[2.60,6.37],[2.73,5.96],
   [3.01,5.88],[3.12,5.48],[3.43,5.41],[3.38,4.99],
   [3.74,4.84],[3.55,4.44],[3.88,4.17],[3.74,3.77],
-  [4.13,3.48],[4.05,2.81],[3.65,2.65],[3.32,2.91],
-  [3.18,3.31],[2.91,3.43],[2.86,4.05],[2.59,4.23],
+  [4.02,3.48],[3.92,2.62],[3.74,2.25],[3.34,2.12],
+  [2.86,2.24],[2.52,2.63],[2.40,3.19],[2.59,4.23],
   [2.47,4.78],[2.26,5.03]
  ];
  const profileShape=new THREE.Shape();
@@ -136,12 +136,13 @@ export function createB5RuinedGothicWall(THREE,options={}) {
  const abutment=add(new THREE.ExtrudeGeometry(profileShape,{
   depth:.76,bevelEnabled:true,bevelThickness:.085,bevelSize:.075,
   bevelSegments:2,steps:1,curveSegments:1
- }),stone,0,0,-.62);
- // The exposed edge is a broken surface, not a decorative row of rocks.
- for(let i=0;i<5;i++){
-  const x=2.61+i*.27,y=5.95-i*.46;
-  const facet=add(new THREE.DodecahedronGeometry(.20+(i%2)*.07,0),highlight,x,y,-.63);
-  facet.scale.set(.9,.52,.28);facet.rotation.z=.27*i;
+ }),stone,0,0,-.19);
+ // Embedded stone transition overlaps the surviving lower wall courses.
+ // These low facets stay inside the abutment instead of forming a loose row.
+ for(let i=0;i<6;i++){
+  const x=2.67+(i%3)*.37,y=2.35+Math.floor(i/3)*.43;
+  const facet=add(new THREE.DodecahedronGeometry(.26+(i%2)*.05,0),stone,x,y,.11);
+  facet.scale.set(1.28,.68,.72);facet.rotation.z=.17*i;
  }
  // Strong engaged piers connect wall, arch ribs and floor into one structure.
  for(const x of [-4.55,-1.47,1.47,4.55]){
@@ -158,17 +159,7 @@ export function createB5RuinedGothicWall(THREE,options={}) {
   if(i>13)continue;
   wornStone(x,7.75+.10*Math.sin(i*1.7),-.55,.46,.25,.87,i,highlight);
  }
- // Broad recessed fracture pocket on the right: uneven stone contours,
- // not pointed outward-facing inserts.
- const fracture=add(new THREE.DodecahedronGeometry(1,1),recess,3.9,5.8,-.57);
- fracture.scale.set(.68,1.25,.08);fracture.rotation.z=-.3;
- // Worn stone chips along the broken rim, and scattered masonry at the foot.
- for(let i=0;i<21;i++){
-  const a=i*2.3999,rad=.23+(i%5)*.13;
-  const x=3.9+Math.cos(a)*rad,y=5.8+Math.sin(a)*rad*1.3;
-  const rock=add(new THREE.DodecahedronGeometry(.24+(i%4)*.05,1),stone,x,y,-.68);
-  rock.scale.set(1.1,.66,.38);rock.rotation.z=a;
- }
+ // Loose rubble is confined to the foot; no suspended fragments.
  for(let i=0;i<19;i++){
   const x=-4.8+(i*7%19)*.52,z=-.8-(i%5)*.32;
   const rock=add(new THREE.DodecahedronGeometry(.28+(i%4)*.10,1),stone,x,.24,z);
