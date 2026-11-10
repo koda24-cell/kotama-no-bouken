@@ -247,15 +247,8 @@ function extStatusChance(source, target, type, baseChance, opts = {}) {
 }
 // 付与の判定。乱数は付与率に関係なく1回だけ使う（既存の戦闘結果の再現性を保つ）。
 function extTryStatus(source, target, type, baseChance, opts = {}) {
-  const result = extStatusChance(source, target, type, baseChance, opts);
-  const bindBuildUp = opts.bindBuildUp && ["bindHead","bindArm","bindLeg"].includes(extStatusId(type)) && !extIsParty(target);
-  const key = bindBuildUp ? `${extToleranceKey(target)}:${extStatusId(type)}` : null;
-  const attempts = bindBuildUp ? (battleState._monkBindFailures ||= {}) : null;
-  const bonus = bindBuildUp ? Math.min(.24, (attempts[key] || 0) * .08) : 0;
-  const chance = result.reason === "immune" ? 0 : Math.min(.95, result.chance + bonus * extAilmentResist(target,type) * (extToleranceTarget(battleState.enemy) ? Math.pow(1 - (EXT_AILMENT_RULES.bossTolerance.step ?? .5), extToleranceCount(target,type)) : 1));
-  const reason = result.reason;
+  const { chance, reason } = extStatusChance(source, target, type, baseChance, opts);
   const hit = Math.random() < chance;
-  if (bindBuildUp) attempts[key] = hit ? 0 : Math.min(3, (attempts[key] || 0) + 1);
   if (hit) { if (!extIsParty(target) && extToleranceTarget(battleState.enemy)) extAddTolerance(target, type); return true; }
   battleEmit("status:resist", {
     targetId: extIsParty(target) ? target.id : (target === battleState.enemy ? "enemy" : target?.id ?? "enemy"),
@@ -450,6 +443,12 @@ async function extEndOfTurnStatuses() {
     for (const type of Object.keys(bag)) {
       const s = bag[type];
       if (s.fresh) { s.fresh = false; continue; }
+      // 封じは各ターン終了時に解除判定。経過するほど解除率が上昇する。
+      if (["bindHead","bindArm","bindLeg"].includes(type) && s.progressiveRelease) {
+        s.bindElapsed = (s.bindElapsed || 0) + 1;
+        const releaseChance = Math.min(.9, .15 + (s.bindElapsed - 1) * .20);
+        if (Math.random() < releaseChance) s.turns = 1;
+      }
       s.turns--;
       if (s.turns <= 0) {
         extRemoveStatus(holder, type);
@@ -605,9 +604,10 @@ async function extDamageSkill(actor, skill, a, x, mult) {
         if (!unit || unit.hp <= 0) continue;
         const unitName = unit.displayName || unit.name || enemy.name;
         // 付与率は extStatusChance() の1か所で決める（bossMul・敵の耐性・ボスの耐性上昇）。
-        if (extTryStatus(actor, unit, st.type, st.chance, { bossMul: st.bossMul, bindBuildUp: actor.id === "warrior" })) {
-          const bindDuration = actor.id === "warrior" && ["bindHead","bindArm","bindLeg"].includes(st.type) ? 2 + Math.floor(Math.random() * 3) : st.turns;
-          const r = addStatus(unit, st.type, { turns: bindDuration, power: st.power });
+        if (extTryStatus(actor, unit, st.type, st.chance, { bossMul: st.bossMul })) {
+          const monkBind = actor.id === "warrior" && ["bindHead","bindArm","bindLeg"].includes(st.type);
+          const r = addStatus(unit, st.type, { turns: monkBind ? 6 : st.turns, power: st.power });
+          if (monkBind && (r === "new" || r === "refresh")) { const rec = extStatusBag(unit, false)?.[st.type]; if (rec) { rec.progressiveRelease = true; rec.bindElapsed = 0; } }
           if (r === "new" || r === "refresh") pushEvent(`${unitName}は${label}状態になった！`);
           else pushEvent(`${unitName}の${label}は変わらなかった。`);
         } else pushEvent(`${unitName}には${label}が効かなかった。`);
