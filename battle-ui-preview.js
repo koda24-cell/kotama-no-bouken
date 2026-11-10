@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-18";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-19";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -23,6 +23,29 @@
     if (bottom && eventWindow && infoWindow) {
       bottom.insertBefore(eventWindow, infoWindow);
       bottom.classList.add("battle-preview-bottom");
+    }
+
+    // The old battle-support strip is redundant: COMMAND INFO is the single
+    // description surface. Keep its element for game logic but hide visually.
+    const support = document.getElementById("battle-support");
+    if (support) support.hidden = true;
+    const commandHint = document.getElementById("command-hint");
+    if (commandHint) commandHint.hidden = true;
+    const infoDescription = document.getElementById("command-description");
+    if (infoDescription) {
+      const initialPrompt = "コマンドを選ぶと説明がここに表示されます。";
+      let hasSelectedCommand = false;
+      const markSelected = event => {
+        if (!event.target.closest("#battle-commands button, .battle-preview-primary-rail button")) return;
+        hasSelectedCommand = true;
+      };
+      battle.addEventListener("click", markSelected, true);
+      // Show the guidance only before the first command selection.
+      // Later skill/attack descriptions remain under control of game logic.
+      requestAnimationFrame(() => {
+        if (!hasSelectedCommand && battle.classList.contains("active"))
+          infoDescription.textContent = initialPrompt;
+      });
     }
 
     // Legacy 3DS-style key badges are removed in preview, without removing buttons.
