@@ -1,4 +1,4 @@
-/* Battle UI visual prototype; opt-in stylesheet, not enabled by index.html.
+/* Battle UI visual prototype; loaded only with ?battleUiPreview=1.
    Existing IDs remain unchanged. No combat rules or saves are modified. */
 #battle.battle-screen { --kotama-ui-cyan:#84e9ff; --kotama-ui-gold:#d7b46c; }
 #battle .battle-window { background-image:url('../assets/ui/battle-panel-frame.svg'); background-size:100% 100%; }
@@ -17,4 +17,13 @@
 @media (max-width:480px) {
   #battle .battle-party { grid-template-columns:1fr; }
   #battle .battle-commands { grid-template-columns:1fr 1fr; }
+}
+/* Three positions per row; gaps remain empty when the current party has fewer members. */
+#battle.battle-ui-preview #battle-party { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+#battle.battle-ui-preview #battle-party .battle-member { min-width:0; order:var(--battle-row-order,0); }
+#battle.battle-ui-preview #battle-party .battle-member[data-preview-row="rear"] { grid-row:2; }
+#battle.battle-ui-preview #battle-party .battle-member[data-preview-row="front"] { grid-row:1; }
+@media (max-width:620px) {
+  #battle.battle-ui-preview #battle-party { grid-template-columns:repeat(3,minmax(0,1fr)); gap:3px; }
+  #battle.battle-ui-preview #battle-party .battle-member { font-size:clamp(9px,2vw,13px); }
 }
