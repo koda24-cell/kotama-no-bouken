@@ -394,6 +394,7 @@ function extResetBattle() {
   battleState._assassinHitThisTurn = false;
   battleState._enemyActedThisTurn = false;
   battleState._gunnerFlashUsed = false;
+  battleState._gunnerFlashTurns = 0;
   battleState.enemyStatuses = {};
   battleState.enemyUnitStatuses = {};
   for (const c of characters) { c._xjCharge = null; c._heat = 0; c._overheat = false; }
@@ -441,6 +442,10 @@ async function extRoundStart() {
 /* ターン終了時：火傷ダメージ・持続ターンの経過・ガード類の解除・熱の自然冷却 */
 async function extEndOfTurnStatuses() {
   const e = battleState.enemy;
+  if (!battleState._gunnerFlashUsed && getParty().some(c => c.id === "gunner" && c.hp > 0)) {
+    battleState._gunnerFlashUsed = true;
+    if (Math.random() < .30) { battleState._gunnerFlashTurns = 3; pushEvent("ガンナーの先制閃光弾！ 敵の命中率が3ターン低下！"); }
+  }
   for (const c of getParty()) {
     if (c.hp > 0 && extHasStatus(c, "burn")) {
       const dealt = await applyPartyDamageAnimated(c, 10, { sureHit: true, element: "炎", statusDamage: true });
@@ -470,6 +475,7 @@ async function extEndOfTurnStatuses() {
     }
   }
   for (const c of getParty()) if (c._princessEnchant && --c._princessEnchant.turns <= 0) delete c._princessEnchant;
+  if (battleState._gunnerFlashTurns > 0) battleState._gunnerFlashTurns--;
   if (battleState.defenseCampTurns > 0) battleState.defenseCampTurns--;
   battleState.magicGuardActive = false; battleState._magicGuardRate = .5;
   battleState.fullGuardActive = false; delete battleState.guarding.knight;
