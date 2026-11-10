@@ -77,3 +77,14 @@
   #battle.battle-ui-preview .battle-preview-bottom>.command-info-window { grid-column:1; grid-row:3; }
   #battle.battle-ui-preview .battle-preview-bottom>#battle-result { grid-column:1; grid-row:4; }
 }
+
+/* Union submenu: existing buttons are retained, with names as primary labels. */
+#battle.battle-ui-preview #battle-commands.battle-preview-main-menu>.union-panel[hidden] { display:none!important; }
+#battle.battle-ui-preview #battle-commands.battle-preview-main-menu>.union-panel {
+  grid-column:1 / -1; min-width:0; border:1px solid #d7b46c; padding:8px; border-radius:8px;
+  background:linear-gradient(160deg,#092e49,#08182e);
+}
+#battle.battle-ui-preview #battle-commands.battle-preview-main-menu>.union-panel .window-title { font-size:12px; }
+#battle.battle-ui-preview #battle-commands.battle-preview-main-menu>.union-panel .union-list { display:flex; flex-direction:column; gap:6px; }
+#battle.battle-ui-preview #battle-commands.battle-preview-main-menu>.union-panel button { width:100%; }
+#battle.battle-ui-preview #battle-commands .battle-preview-union-toggle { border-color:#d7b46c; }
