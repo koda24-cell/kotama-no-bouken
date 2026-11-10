@@ -79,10 +79,10 @@ export function createB5BrokenStair(THREE,options={}){
  }
  // Irregular angular rubble with a footprint exactly on the floor.
  const rock=(x,z,sx,h,sz)=>{
-   const n=7,p=[],idx=[],phase=rand()*Math.PI*2;
-   for(let j=0;j<n;j++){const a=phase+j*Math.PI*2/n;p.push(sx*Math.cos(a)*(0.8+rand()*0.2),0,sz*Math.sin(a)*(0.8+rand()*0.2));}
-   for(let j=0;j<n;j++){const a=phase+j*Math.PI*2/n;p.push(sx*0.35*Math.cos(a),h*(0.72+rand()*0.28),sz*0.35*Math.sin(a));}
-   p.push(0,h,0);
+   const n=8,p=[],idx=[],phase=rand()*Math.PI*2,rad=Array.from({length:n},()=>0.52+rand()*0.48);
+   for(let j=0;j<n;j++){const a=phase+j*Math.PI*2/n;p.push(sx*Math.cos(a)*rad[j],0,sz*Math.sin(a)*rad[j]);}
+   for(let j=0;j<n;j++){const a=phase+j*Math.PI*2/n;p.push(sx*(0.18+rand()*0.30)*Math.cos(a),h*(0.48+rand()*0.52),sz*(0.18+rand()*0.30)*Math.sin(a));}
+   p.push((rand()-0.5)*sx*0.38,h,(rand()-0.5)*sz*0.38);
    for(let j=0;j<n;j++){const k=(j+1)%n;idx.push(j,k,n+j,k,n+k,n+j,n+j,n+k,2*n);}
    const g=G(new THREE.BufferGeometry());g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setIndex(idx);g.computeVertexNormals();
    add(g,rand()>0.6?shade:stone,x,0,z);
