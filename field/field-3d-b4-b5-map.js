@@ -1,6 +1,7 @@
 /* Fourth and fifth stratum map-driven 3D placement. Visuals only; map remains authoritative. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { createRuinedCityKit } from './b3-ruined-city-kit.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -69,6 +70,7 @@ export function createTheme(api, area) {
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
+  let cityKit = null;
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -167,6 +169,39 @@ export function createTheme(api, area) {
       if (hash(tx, ty, 90) < 0.16 && dynamic.length < 100) {
         const p = mesh(emberGeo, flameMat, x + (hash(tx, ty, 91) - 0.5) * 2.8, 0.7 + hash(tx, ty, 92) * 2.4, z + (hash(tx, ty, 93) - 0.5) * 2.8);
         dynamic.push({ mesh: p, y: p.position.y, phase: hash(tx, ty, 94) * 6.28 });
+      }
+    }
+    // B3 architecture landmarks: wall-mounted only; never alter walkable cells.
+    // Low-density deterministic placement, with objects/stairs excluded.
+    if (mist) {
+      cityKit = createRuinedCityKit(THREE);
+      let placed = 0;
+      const cap = Math.min(24, Math.max(6, Math.floor(a.w * a.h / 28)));
+      for (let ty = 1; ty < a.h - 1 && placed < cap; ty++) {
+        for (let tx = 1; tx < a.w - 1 && placed < cap; tx++) {
+          if (wallCell(tx, ty) || objAt.has(tx + ',' + ty)) continue;
+          const adjacent = DIR_ORDER.filter(d => {
+            const [dx,dz] = DIR_VEC[d]; return wallCell(tx + dx, ty + dz);
+          });
+          if (!adjacent.length || hash(tx,ty,311) > 0.20) continue;
+          const d = adjacent[Math.floor(hash(tx,ty,312)*adjacent.length)];
+          const [dx,dz] = DIR_VEC[d], angle = FACE_YAW[d] + Math.PI;
+          const variant = hash(tx,ty,313);
+          const piece = variant < .17 ? cityKit.arch() :
+            variant < .38 ? cityKit.facade(3,3.4) :
+            variant < .52 ? cityKit.column(2.5,true) :
+            variant < .67 ? cityKit.statue() :
+            variant < .82 ? cityKit.rubble(ty*1009+tx) : cityKit.vines();
+          // Keep meshes as shallow scenery close to a solid wall.
+          // Tall architecture is scaled to fit the existing 4-unit ceiling.
+          const tall = variant < .52;
+          piece.scale.setScalar(tall ? .55 : .48);
+          piece.rotation.y = angle;
+          piece.position.set(tx*CELL + dx*1.72, 0, ty*CELL + dz*1.72);
+          piece.name = 'b3:wall-scenery:' + placed;
+          root.add(piece);
+          placed++; ornaments++;
+        }
       }
     }
     // ボスマスの視覚的ランドマーク。GLBが未展開でも探索は止めない。
@@ -280,6 +315,7 @@ export function createTheme(api, area) {
     }
   }
   function dispose() {
+    if (cityKit) { cityKit.dispose(); cityKit = null; }
     if (root) root.parent?.remove(root);
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0;
