@@ -210,11 +210,47 @@ export function createB3UrbanProps(THREE) {
       const piece=add(g,cube,i%3===0?metal:concrete,x,.18+(i%3)*.12,z,.4+(i%3)*.19,.25,.38);
       piece.rotation.set(.12*i,.31*i,.16*i);
     }
+    // Large torn facade slabs, projecting broken floor and exposed dangling steel.
+    const ripped=add(g,cube,concrete,-width*.51,1.9,depth*.34,.34,2.5,depth*.65);
+    ripped.rotation.z=.22; ripped.rotation.y=-.24;
+    const hanging=add(g,cube,concrete,width*.45,2.85,-depth*.17,width*.55,.22,depth*.55);
+    hanging.rotation.z=-.33; hanging.rotation.x=.14;
+    for(let i=0;i<4;i++) {
+      const x=width*.2+i*.27;
+      beam(g,[x,2.7,-depth*.36],[x+.22,1.6-i*.12,-depth*.43],.052,metal);
+    }
+    // Pile of large broken floor fragments rather than evenly scattered cubes.
+    for(let i=0;i<6;i++) {
+      const x=width*.4+(i%3-1)*.6,z=depth*.5+Math.floor(i/3)*.56;
+      const fragment=add(g,cube,concrete,x,.22+(i%3)*.17,z,.9+(i%2)*.4,.23,.6);
+      fragment.rotation.set(i*.19,i*.31,i%2?.45:-.35);
+    }
     // Structural tree roots wrap through the open building, not just painted vines.
     if(v!==1) {
       beam(g,[-width*.48,.1,depth*.3],[-width*.32,1.5,depth*.33],.17,growth);
       beam(g,[-width*.32,1.5,depth*.33],[-width*.1,2.8,depth*.35],.13,growth);
       for(const i of [-1,1]) beam(g,[-width*.1,2.8,depth*.35],[-width*.1+i*.8,3.6,depth*.35+i*.3],.08,growth);
+    }
+    return g;
+  }
+  function invasiveTree(variant=0) {
+    const v=((variant%3)+3)%3,g=group('invasive_tree_'+v);
+    const h=v===1?5.3:7.2;
+    beam(g,[0,0,0],[.15,h*.42,0],.43,growth);
+    beam(g,[.15,h*.42,0],[v===2?1.2:.4,h*.79,.15],.34,growth);
+    for(let i=0;i<6;i++) {
+      const angle=i*Math.PI/3;
+      beam(g,[0,.35,0],[Math.cos(angle)*2,.06,Math.sin(angle)*1.7],.15,growth);
+    }
+    for(let i=0;i<7;i++) {
+      const angle=i*2.4, y=h*(.56+(i%3)*.13);
+      const a=[Math.sin(angle)*.45,y,Math.cos(angle)*.3];
+      const b=[Math.sin(angle)*2.3,y+.5+(i%2)*.5,Math.cos(angle)*2.1];
+      beam(g,a,b,.13,growth);
+      for(let j=0;j<3;j++) {
+        const leaf=add(g,cube,growth,b[0]+(j-1)*.3,b[1]+(j%2)*.3,b[2],.7,.4,.65);
+        leaf.rotation.set(j*.25,angle,j*.32);
+      }
     }
     return g;
   }
@@ -231,6 +267,8 @@ export function createB3UrbanProps(THREE) {
       tile.position.set((i%3-1)*2.7,0,(Math.floor(i/3)-.5)*2.5);
       tile.scale.set(.7,1,.7);g.add(tile);
     }
+    const tree=invasiveTree(v);tree.position.set(-5.4,0,1.9);tree.scale.set(.9,.8,.9);g.add(tree);
+    const tree2=invasiveTree((v+1)%3);tree2.position.set(4.9,0,3.1);tree2.scale.set(.65,.72,.65);g.add(tree2);
     // Massive root system bridges a street and visibly pushes into the buildings.
     beam(g,[-5,.15,1],[-3,1.1,1.7],.24,growth);
     beam(g,[-3,1.1,1.7],[-1.3,.55,2.4],.2,growth);
@@ -242,5 +280,5 @@ export function createB3UrbanProps(THREE) {
     return g;
   }
   function dispose(){geos.forEach(x=>x.dispose());[concrete,metal,dark,growth].forEach(x=>x.dispose());}
-  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,ruinedBlock,dispose};
+  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,dispose};
 }
