@@ -26,12 +26,16 @@ const EXT_NEW_JOBS = [
     spSkills:[
       { id:"poison-blade", name:"毒刃", cost:12, target:"enemy", type:"xj", description:"斬撃で攻撃し、高確率で敵を毒にする。毒は毎ターン開始時にダメージ。", xj:{ kind:"phys", mult:.9, element:"斬撃", fx:"slash", status:{ type:"poison", chance:.85, turns:4, power:.06, bossMul:.7 } } },
       { id:"paralyze-needle", name:"麻痺針", cost:16, target:"enemy", type:"xj", priority:1, description:"突属性の針で攻撃し、敵を麻痺させる。麻痺した敵は一定確率で行動できない。", xj:{ kind:"phys", mult:.5, element:"突", fx:"slash", status:{ type:"paralysis", chance:.7, turns:3, power:0, bossMul:.4 } } },
+      { id:"execution", name:"仕留めの一撃", cost:24, target:"enemy", type:"xj", description:"状態異常中の敵に威力が上昇する追撃。", xj:{kind:"phys",mult:1.3,element:"突",fx:"slash",ailmentBonus:1.8} },
       { id:"venom-fog", name:"毒霧", cost:24, target:"allEnemies", type:"xj", description:"毒の霧で敵全体を攻撃し、毒を与える。", xj:{ kind:"phys", mult:.6, element:"無属性", fx:"magic", status:{ type:"poison", chance:.6, turns:3, power:.06, bossMul:.7 } } }
     ] },
   { id:"gunner", name:"ガンナー", image:"assets/characters/gunner.svg", emblem:"銃", speed:75, hp:90, maxHp:90, attack:95, spAttack:30, defense:15, guardCut:.30, sp:70, maxSp:70,
     spSkills:[
       { id:"snipe", name:"狙撃", cost:15, target:"enemy", type:"xj", priority:1, description:"壊属性の遠距離攻撃。攻撃力の230%の単体ダメージ。", xj:{ kind:"phys", mult:2.3, element:"壊", fx:"slash" } },
       { id:"ricochet", name:"跳弾", cost:24, target:"allEnemies", type:"xj", description:"弾丸を跳ね返らせ、敵全体に壊属性ダメージを2回与える。", xj:{ kind:"phys", mult:.85, hits:2, element:"壊", fx:"slash" } },
+      { id:"flame-shot", name:"火炎弾", cost:17, target:"enemy", type:"xj", description:"後衛から敵後衛にも威力が落ちない炎属性の単体射撃。", xj:{ kind:"phys", mult:1.65, element:"炎", fx:"flame", ranged:true } },
+      { id:"frost-shot", name:"氷結弾", cost:17, target:"enemy", type:"xj", description:"後衛から敵後衛にも威力が落ちない氷属性の単体射撃。", xj:{ kind:"phys", mult:1.65, element:"氷", fx:"magic", ranged:true } },
+      { id:"thunder-shot", name:"雷撃弾", cost:17, target:"enemy", type:"xj", description:"後衛から敵後衛にも威力が落ちない雷属性の単体射撃。", xj:{ kind:"phys", mult:1.65, element:"雷", fx:"magic", ranged:true } },
       { id:"cover-fire", name:"援護射撃", cost:18, target:"enemy", type:"xj", description:"敵の足元を撃ち抜き、3ターンの間、敵の防御力を25%下げる。", xj:{ kind:"phys", mult:.6, element:"壊", fx:"slash", status:{ type:"defenseDown", chance:1, turns:3, power:.25, bossMul:1 } } }
     ] },
   { id:"highlander", name:"ハイランダー", image:"assets/characters/highlander.svg", emblem:"槍", speed:60, hp:120, maxHp:120, attack:90, spAttack:125, defense:40, guardCut:.45, sp:60, maxSp:60,
@@ -43,6 +47,9 @@ const EXT_NEW_JOBS = [
     spSkills:[
       { id:"inspire-song", name:"鼓舞の歌", cost:25, target:"allAllies", type:"xj", description:"味方全体の攻撃力とSP攻撃力を3ターンの間30%上げる。", xj:{ buff:{ attackUp:{ turns:3, power:.30 } } } },
       { id:"guardian-dance", name:"守りの舞", cost:25, target:"allAllies", type:"xj", priority:3, description:"味方全体の防御力とSP防御力を3ターンの間40%上げる。", xj:{ buff:{ defenseUp:{ turns:3, power:.40 } } } },
+      { id:"flame-enchant", name:"炎の加護", cost:20, target:"allAllies", type:"xj", description:"味方全体の通常攻撃に3ターン炎属性を付与する。", xj:{ enchant:{element:"炎",turns:3} } },
+      { id:"frost-enchant", name:"氷の加護", cost:20, target:"allAllies", type:"xj", description:"味方全体の通常攻撃に3ターン氷属性を付与する。", xj:{ enchant:{element:"氷",turns:3} } },
+      { id:"thunder-enchant", name:"雷の加護", cost:20, target:"allAllies", type:"xj", description:"味方全体の通常攻撃に3ターン雷属性を付与する。", xj:{ enchant:{element:"雷",turns:3} } },
       { id:"victory-hymn", name:"凱歌", cost:45, target:"allAllies", type:"xj", description:"味方全体の攻撃・防御を25%、スピードを30%、3ターンの間上げる。", xj:{ buff:{ attackUp:{ turns:3, power:.25 }, defenseUp:{ turns:3, power:.25 }, speedUp:{ turns:3, power:.30 } } } }
     ] },
   { id:"reaper", name:"リーパー", image:"assets/characters/reaper.svg", emblem:"鎌", speed:55, hp:95, maxHp:95, attack:105, spAttack:60, defense:18, guardCut:.30, sp:70, maxSp:70,
