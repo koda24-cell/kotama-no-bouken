@@ -111,6 +111,38 @@ export function createB5AncientGate(THREE,options={}){
    polygonStone(x,y,-.93,1.75,.24,.25,i%2?cut:trim);
   }
  }
+ // Carved pier detail pass: recessed panels and chamfered masonry bands.
+ // Keep the broken horizontal silhouette unchanged.
+ for(const side of [-1,1]){
+  const x=side*3.75;
+  for(const z of [-1.09,1.09]){
+   const facing=Math.sign(z);
+   for(const y of [3.1,5.0]){
+    // Three stepped layers give the inset an actual architectural depth.
+    polygonStone(x,y,z,1.35,1.48,.11,trim);
+    polygonStone(x,y,z+facing*.075,1.09,1.22,.085,cut);
+    polygonStone(x,y,z+facing*.128,.74,.94,.07,stone);
+    for(const dx of [-.46,.46]){
+     block(x+dx,y,z+facing*.19,.085,1.05,.09,trim);
+    }
+    block(x,y,z+facing*.20,.87,.085,.1,trim);
+   }
+  }
+  // Stone course divisions and shallow stepped corner chamfers.
+  for(const y of [2.1,3.95,5.85,7.5]){
+   polygonStone(x,y,-.01,2.16,.19,2.04,trim);
+   block(x,y+.14,-1.04,1.62,.07,.13,cut);
+  }
+  for(const sx of [-.77,.77]){
+   block(x+sx,4.65,-.88,.17,5.05,.16,trim);
+   block(x+sx*.87,4.65,-1.02,.08,4.68,.12,stone);
+  }
+ }
+ // Layered capstones, with small missing pieces on the surviving lintel.
+ for(const [x,y,w] of [[-3.3,11.94,3.58],[-.75,11.94,1.66],[2.45,9.54,2.65]]){
+  polygonStone(x,y,-.06,w,.21,2.26,trim);
+  polygonStone(x,y+.17,-.08,w*.88,.12,2.03,stone);
+ }
  // Broken masonry lies on the floor, broad flat stones and scattered rubble.
  for(const [x,z,w,h,d,ang] of [
   [-5.0,1.5,1.7,.65,1.2,.09],[-4.25,2.2,1.3,.46,1.0,-.08],
