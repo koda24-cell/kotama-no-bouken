@@ -1,3 +1,4 @@
+import {createB5BrokenStair} from './b5-broken-stair.js';
 /* B5 demon throne room only: geometry-first cathedral prop library.
  * Visual-only; do not use as collision meshes or spawn automatically.
  * Caller attaches returned group and disposes it on scene exit.
@@ -8,6 +9,7 @@ export const B5_THRONE_PROP_KINDS = Object.freeze([
 ]);
 export function createB5ThroneProp(THREE, kind, options={}) {
   if(!B5_THRONE_PROP_KINDS.includes(kind)) throw new Error('Unknown throne prop: '+kind);
+  if(kind==='brokenStair') return createB5BrokenStair(THREE,options);
   const group=new THREE.Group(); group.name='b5:throne:'+kind;group.userData.visualOnly=true;
   const gs=[],ms=[];
   const G=x=>(gs.push(x),x), M=x=>(ms.push(x),x);
