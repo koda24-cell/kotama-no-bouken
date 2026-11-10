@@ -123,12 +123,13 @@ export function createB5RuinedGothicWall(THREE,options={}) {
  // Unified fractured abutment: a single contiguous irregular stone mass
  // with a rough broken boundary, replacing the diagonal bead-like fragments.
  const fractureProfile=[
-  [2.13,6.16],[2.39,6.48],[2.60,6.37],[2.73,5.96],
-  [3.01,5.88],[3.12,5.48],[3.43,5.41],[3.38,4.99],
-  [3.74,4.84],[3.55,4.44],[3.88,4.17],[3.74,3.77],
-  [4.02,3.48],[3.92,2.62],[3.74,2.25],[3.34,2.12],
-  [2.86,2.24],[2.52,2.63],[2.40,3.19],[2.59,4.23],
-  [2.47,4.78],[2.26,5.03]
+  [1.64,6.18],[1.91,6.53],[2.29,6.48],[2.57,6.21],
+  [2.82,5.95],[3.22,5.83],[3.34,5.43],[3.70,5.21],
+  [3.65,4.77],[3.98,4.50],[3.81,4.10],[4.08,3.72],
+  [4.02,3.23],[4.15,2.82],[3.91,2.31],[3.49,2.06],
+  [2.91,1.96],[2.33,2.03],[1.88,2.27],[1.53,2.69],
+  [1.62,3.17],[1.47,3.59],[1.66,4.05],[1.55,4.53],
+  [1.74,4.96],[1.62,5.45]
  ];
  const profileShape=new THREE.Shape();
  fractureProfile.forEach(([x,y],i)=>i?profileShape.lineTo(x,y):profileShape.moveTo(x,y));
@@ -136,13 +137,13 @@ export function createB5RuinedGothicWall(THREE,options={}) {
  const abutment=add(new THREE.ExtrudeGeometry(profileShape,{
   depth:.76,bevelEnabled:true,bevelThickness:.085,bevelSize:.075,
   bevelSegments:2,steps:1,curveSegments:1
- }),stone,0,0,-.19);
+ }),stone,0,0,-.12);
  // Embedded stone transition overlaps the surviving lower wall courses.
  // These low facets stay inside the abutment instead of forming a loose row.
  for(let i=0;i<6;i++){
-  const x=2.67+(i%3)*.37,y=2.35+Math.floor(i/3)*.43;
+  const x=2.06+(i%3)*.43,y=2.23+Math.floor(i/3)*.38;
   const facet=add(new THREE.DodecahedronGeometry(.26+(i%2)*.05,0),stone,x,y,.11);
-  facet.scale.set(1.28,.68,.72);facet.rotation.z=.17*i;
+  facet.scale.set(1.45,.68,.72);facet.rotation.z=.17*i;
  }
  // Strong engaged piers connect wall, arch ribs and floor into one structure.
  for(const x of [-4.55,-1.47,1.47,4.55]){
