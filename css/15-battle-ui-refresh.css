@@ -1350,3 +1350,17 @@ body:has(#battle.battle-ui-preview.active) .topbar {
    height:min(28vh,240px)!important;
  }
 }
+
+
+/* Submenu follows the selected command vertically; the first option starts
+   slightly below its parent action, while the left action rail never resizes. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window {
+   top:var(--battle-submenu-top,160px)!important;
+   max-height:min(350px,calc(100% - var(--battle-submenu-top,160px) - 12px))!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window #battle-commands {
+   align-content:start!important;
+   overflow-y:auto;
+ }
+}
