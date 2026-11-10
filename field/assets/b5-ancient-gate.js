@@ -57,12 +57,28 @@ export function createB5AncientGate(THREE,options={}){
  block(3.95,11.4,0,2.3,.44,2.1,trim).rotation.z=-.12;
  // Broken silhouette: asymmetrical rubble piles resting on the ground.
  const rock=(x,z,sx,h,sz)=>{
-  const n=7,verts=[],idx=[],phase=rand()*Math.PI*2;
-  for(let j=0;j<n;j++){const a=phase+j*2*Math.PI/n,r=.65+rand()*.35;verts.push(Math.cos(a)*sx*r,0,Math.sin(a)*sz*r);}
-  for(let j=0;j<n;j++){const a=phase+j*2*Math.PI/n;verts.push(Math.cos(a)*sx*.3,h*(.55+rand()*.45),Math.sin(a)*sz*.3);}
-  verts.push((rand()-.5)*sx*.3,h,(rand()-.5)*sz*.3);
-  for(let j=0;j<n;j++){const k=(j+1)%n;idx.push(j,k,n+j,k,n+k,n+j,n+j,n+k,2*n);}
-  const geo=G(new THREE.BufferGeometry());geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));geo.setIndex(idx);geo.computeVertexNormals();
+  // Low, broad grounded masonry chunks, with a bevelled shoulder and
+  // irregular broad top. No sharp central apex or spike-like silhouette.
+  const n=9,verts=[],idx=[],phase=rand()*Math.PI*2;
+  const radial=Array.from({length:n},()=>0.82+rand()*.18);
+  const topH=Array.from({length:n},()=>h*(0.67+rand()*.13));
+  for(let j=0;j<n;j++){
+   const a=phase+j*2*Math.PI/n;
+   verts.push(Math.cos(a)*sx*radial[j],0,Math.sin(a)*sz*radial[j]);
+  }
+  for(let j=0;j<n;j++){
+   const a=phase+j*2*Math.PI/n;
+   verts.push(Math.cos(a)*sx*radial[j]*.74,topH[j],Math.sin(a)*sz*radial[j]*.74);
+  }
+  // broad flattened upper surface, not a single pointed peak
+  for(let j=1;j<n-1;j++)idx.push(n,n+j,n+j+1);
+  for(let j=0;j<n;j++){
+   const k=(j+1)%n;
+   idx.push(j,k,n+j,k,n+k,n+j);
+  }
+  const geo=G(new THREE.BufferGeometry());
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  geo.setIndex(idx);geo.computeVertexNormals();
   add(geo,rand()>.5?cut:stone,x,0,z);
  };
  for(let i=0;i<35;i++){
@@ -72,6 +88,21 @@ export function createB5AncientGate(THREE,options={}){
  // Detached fragment of a broken right-hand arch, grounded.
  block(6.1,.58,-1.25,1.5,1.05,1.2,stone).rotation.z=.28;
  block(6.65,.24,.4,.8,.45,1.1,cut).rotation.z=-.24;
+ // Replace visually harsh rectangular base corners with low polygonal
+ // battered stone footings; the original structural cores remain intact.
+ const bevelledFooting=(x,z,w,d)=>{
+  const shape=new THREE.Shape();
+  const r=.28;
+  shape.moveTo(-w/2+r,-d/2);
+  shape.lineTo(w/2-r,-d/2);shape.lineTo(w/2,-d/2+r);
+  shape.lineTo(w/2,d/2-r);shape.lineTo(w/2-r,d/2);
+  shape.lineTo(-w/2+r,d/2);shape.lineTo(-w/2,d/2-r);
+  shape.lineTo(-w/2,-d/2+r);shape.closePath();
+  const geo=G(new THREE.ExtrudeGeometry(shape,{depth:.38,bevelEnabled:true,bevelThickness:.09,bevelSize:.11,bevelSegments:2,curveSegments:1}));
+  const obj=add(geo,stone,x,.08,z);
+  obj.rotation.x=-Math.PI/2;
+ };
+ for(const x of [-4.5,4.5])bevelledFooting(x,0,3.0,3.0);
  // High-detail Gothic relief, deliberately modeled rather than painted.
  // Repeated stone ribs make the arch and pillars read from oblique angles.
  const groove=M(new THREE.MeshStandardMaterial({color:0x393640,roughness:1,flatShading:true}));
