@@ -1982,3 +1982,34 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
   opacity:1!important;
  }
 }
+
+
+/* One EVENT heading and one event frame: remove the legacy duplicate pseudo tab. */
+#battle.battle-ui-preview .battle-preview-bottom>.event-window::after,
+#battle.battle-ui-preview .battle-preview-bottom>.event-window::before {
+ content:none!important;
+ display:none!important;
+}
+#battle.battle-ui-preview .battle-preview-bottom>.event-window .window-title {
+ display:inline-flex!important;
+}
+/* The EVENT window is already framed; enemy-turn text needs no second box. */
+#battle.battle-ui-preview .battle-preview-bottom>.event-window #event-log {
+ border:0!important;
+ border-left:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ background:transparent!important;
+ padding:5px 9px!important;
+ min-height:34px!important;
+}
+#battle.battle-ui-preview .battle-preview-bottom>.event-window #event-log p,
+#battle.battle-ui-preview .battle-preview-bottom>.event-window #event-log p[class] {
+ border:0!important;
+ outline:0!important;
+ box-shadow:none!important;
+ background:transparent!important;
+ border-radius:0!important;
+ margin:0!important;
+ padding:0!important;
+}
