@@ -921,6 +921,44 @@ export async function createTheme(api) {
       rock.rotation.z = (hash(i, 11, 255) - 0.5) * 0.15;
       atrium.add(rock);
     }
+    // 岩壁の中腹に自然な層状の張り出しを重ね、円錐だけの単純な輪郭を緩和する。
+    // 壁の内周側には0.5m程度だけ突出させ、3×3マスの探索空間には置かない。
+    const ledgeGeo = new THREE.IcosahedronGeometry(1, 1);
+    for (let i = 0; i < 28; i++) {
+      const side = i % 4, axis = side % 2 === 0;
+      const sign = side < 2 ? -1 : 1;
+      const along = (hash(i, 61, 721) - 0.5) * 9.4;
+      const height = 7.0 + hash(i, 62, 722) * 13.0;
+      const ledge = new THREE.Mesh(ledgeGeo, i % 6 === 0 ? stone : dark);
+      ledge.position.set(x + (axis ? along : sign * 5.65), height,
+        z + (axis ? sign * 5.65 : along));
+      ledge.scale.set(axis ? 0.65 + hash(i, 63, 723) * 1.0 : 0.42 + hash(i, 64, 724) * 0.45,
+        0.30 + hash(i, 65, 725) * 0.52,
+        axis ? 0.42 + hash(i, 64, 724) * 0.45 : 0.65 + hash(i, 63, 723) * 1.0);
+      ledge.rotation.y = hash(i, 66, 726) * 0.35;
+      atrium.add(ledge);
+    }
+    // 高所の岩壁に自然侵食でできた半円状の石橋を重ね、縦穴の奥行きを強調する。
+    // 床から12m以上の装飾。通路やイベントの判定には影響しない。
+    const archRockGeo = new THREE.IcosahedronGeometry(1, 1);
+    for (let arch = 0; arch < 4; arch++) {
+      const side = arch, axis = side % 2 === 0, sign = side < 2 ? -1 : 1;
+      const center = (hash(arch, 70, 811) - 0.5) * 3.4;
+      const baseY = 13.4 + hash(arch, 71, 812) * 2.5;
+      const radius = 1.65 + hash(arch, 72, 813) * 0.65;
+      for (let segment = 0; segment < 9; segment++) {
+        const angle = Math.PI * segment / 8;
+        const along = center + Math.cos(angle) * radius;
+        const rise = Math.sin(angle) * radius;
+        const stonePiece = new THREE.Mesh(archRockGeo, segment % 4 === 0 ? stone : dark);
+        stonePiece.position.set(x + (axis ? along : sign * 5.4), baseY + rise,
+          z + (axis ? sign * 5.4 : along));
+        stonePiece.scale.set(axis ? 0.55 : 0.42, 0.42 + hash(arch, segment, 814) * 0.22,
+          axis ? 0.42 : 0.55);
+        stonePiece.rotation.z = (hash(arch, segment, 815) - 0.5) * 0.45;
+        atrium.add(stonePiece);
+      }
+    }
     // 角の崩れた支柱と礎石。上方には段差を付け、直方体の箱に見えにくくする。
     for (const [dx, dz] of [[-5.6,-5.6],[5.6,-5.6],[-5.6,5.6],[5.6,5.6]]) {
       const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.88, 18, 8), stone);
@@ -935,6 +973,22 @@ export async function createTheme(api) {
       new THREE.TorusGeometry(5.65, 0.62, 7, 28),
       stone);
     rim.rotation.x = Math.PI / 2; rim.position.set(x, 22.35, z); atrium.add(rim);
+    // 円形の人工的な輪郭を、氷に侵食された不規則な岩塊で部分的に隠す。
+    // すべて天井付近に置き、通路・FOE・イベントの当たり判定には触れない。
+    const rimRockGeo = new THREE.IcosahedronGeometry(1, 1);
+    for (let i = 0; i < 22; i++) {
+      const angle = (i + hash(i, 51, 610) * 0.45) * Math.PI * 2 / 22;
+      const radius = 5.5 + (hash(i, 52, 611) - 0.5) * 0.85;
+      const rock = new THREE.Mesh(rimRockGeo, i % 5 === 0 ? stone : dark);
+      rock.position.set(x + Math.cos(angle) * radius,
+        22.12 + (hash(i, 53, 612) - 0.5) * 0.55,
+        z + Math.sin(angle) * radius);
+      rock.scale.set(0.55 + hash(i, 54, 613) * 0.75,
+        0.42 + hash(i, 55, 614) * 0.6,
+        0.58 + hash(i, 56, 615) * 0.85);
+      rock.rotation.set(hash(i, 57, 616) * 0.5, angle, hash(i, 58, 617) * 0.4);
+      atrium.add(rock);
+    }
     // 高所から落ちる細い発光水流。通行範囲には降ろさず水源の高さを演出。
     const streamMat = new THREE.MeshBasicMaterial({
       color: 0x65d8f4, transparent: true, opacity: 0.27,
@@ -995,6 +1049,8 @@ export async function createTheme(api) {
       const f = new THREE.Mesh(fishGeo, fishMat);
       f.position.set(x + (hash(i, 1, 210) - 0.5) * 8, 10 + hash(i, 2, 211) * 9, z + (hash(i, 3, 212) - 0.5) * 8);
       f.rotation.y = hash(i, 4, 213) * Math.PI * 2; f.scale.setScalar(0.55 + hash(i, 5, 214) * 0.8);
+      // 初期位置と向きを固定しておき、時間積分による漂流を防ぐ。
+      f.userData.b2Swim = { x: f.position.x, y: f.position.y, z: f.position.z, yaw: f.rotation.y };
       atrium.add(f);
       anim.fishes.push(f);
     }
@@ -1051,8 +1107,14 @@ export async function createTheme(api) {
     }
     for (let i = 0; i < anim.fishes.length; i++) {
       const fish = anim.fishes[i];
-      fish.position.x += Math.sin(t * 0.42 + i) * dt * 0.08;
-      fish.rotation.y += Math.sin(t * 0.23 + i) * dt * 0.04;
+      const origin = fish.userData.b2Swim;
+      if (!origin) continue;
+      // 基準位置を中心に緩やかに周回。長時間放置しても吹き抜けから逸脱しない。
+      const phase = t * (0.16 + i * 0.009) + i * 1.7;
+      fish.position.set(origin.x + Math.sin(phase) * 0.75,
+        origin.y + Math.sin(phase * 0.7) * 0.16,
+        origin.z + Math.cos(phase) * 0.55);
+      fish.rotation.y = origin.yaw + Math.sin(phase + Math.PI / 2) * 0.22;
     }
     for (const r of anim.ripples) {
       if (camPos && r.mesh.position.distanceToSquared(camPos) > 400) { r.mesh.visible = false; continue; }
