@@ -1504,3 +1504,44 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
 #battle.battle-ui-preview #battle-enemy.battle-rare-slime > .hp-track {
  bottom:calc(100% - 22px)!important;
 }
+
+
+/* Restore the reference composition: commands overlay arena LEFT, not below party. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview .battle-bottom.battle-preview-bottom {
+  position:relative!important;
+  grid-template-columns:260px minmax(0,1fr)!important;
+  grid-template-rows:minmax(88px,auto) minmax(90px,auto)!important;
+  overflow:visible!important;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.command-window {
+  position:absolute!important;
+  inset:auto!important;
+  top:var(--battle-command-overlay-top,-630px)!important;
+  left:12px!important;
+  width:260px!important;min-width:260px!important;max-width:260px!important;
+  height:310px!important;min-height:310px!important;max-height:310px!important;
+  margin:0!important;
+  z-index:25!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window {
+  top:var(--battle-submenu-overlay-top,-585px)!important;
+  left:284px!important;
+  width:300px!important;min-width:300px!important;max-width:300px!important;
+  height:auto!important;min-height:120px!important;max-height:350px!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-primary-rail:not([hidden]) {
+  position:absolute!important;
+  top:var(--battle-command-overlay-top,-630px)!important;
+  left:12px!important;
+  width:260px!important;height:310px!important;
+  min-height:310px!important;max-height:310px!important;
+  z-index:26!important;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.event-window {
+  grid-column:2!important;grid-row:1!important;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.command-info-window {
+  grid-column:2!important;grid-row:2!important;
+ }
+}
