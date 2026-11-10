@@ -443,6 +443,42 @@ export function createB3UrbanProps(THREE) {
     beam(g,[-3.6,.75,-.65],[-2.5,.18,-.4],.13,growth);
     return g;
   }
+  // Broken elevated rail corridor, separate from collision and navigation.
+  function derelictRailCorridor(variant=0) {
+    const v=((variant%3)+3)%3,g=group('derelict_rail_corridor_'+v);
+    const length=v===2?11:8.5, height=v===1?2.4:3.3;
+    for(const x of [-length*.42,0,length*.42]) {
+      for(const z of [-.8,.8])beam(g,[x,0,z],[x,height,z],.19);
+      beam(g,[x,height,-.85],[x,height,.85],.12);
+    }
+    // Trackbed is discontinuous: broken segments cantilever over a missing center.
+    for(const side of [-1,1]) {
+      const piece=add(g,cube,concrete,side*length*.29,height+.08,0,length*.38,.25,2.4);
+      piece.rotation.z=side*(v===0?.18:.3);
+      for(const z of [-.53,.53]) {
+        beam(g,[side*length*.48,height+.25,z],[side*length*.13,height+.25-side*.2,z],.075);
+      }
+      for(let i=0;i<5;i++) {
+        const x=side*(length*.13+i*length*.065);
+        add(g,cube,metal,x,height+.22,0,.13,.12,1.35).rotation.z=side*.15;
+      }
+    }
+    // Dangling rails and fallen sleeper clusters.
+    for(let i=0;i<4;i++) {
+      const x=(i-1.5)*.35;
+      beam(g,[x,height-.1,-.53],[x+(i%2?.5:-.4),height-1.6-i*.15,-.5],.06);
+    }
+    for(let i=0;i<7;i++) {
+      const x=(i-3)*.53,z=(i%3-1)*.75;
+      const sleeper=add(g,cube,concrete,x,.15+i%3*.09,z,.55,.2,1.2);
+      sleeper.rotation.y=i*.23;sleeper.rotation.z=i%2?.25:-.21;
+    }
+    for(const x of [-length*.42,length*.42]) {
+      beam(g,[x,.05,1],[x+.45,1.25,.92],.11,growth);
+      beam(g,[x+.45,1.25,.92],[x+.2,2.3,.9],.07,growth);
+    }
+    return g;
+  }
   function dispose(){geos.forEach(x=>x.dispose());[concrete,metal,dark,growth].forEach(x=>x.dispose());}
-  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,collapsedOverpass,sunkenStreet,collapsedSkybridge,ruinedPlaza,abandonedTransitStop,ruinedStreetlamp,abandonedIntersection,dispose};
+  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,collapsedOverpass,sunkenStreet,collapsedSkybridge,ruinedPlaza,abandonedTransitStop,ruinedStreetlamp,abandonedIntersection,derelictRailCorridor,dispose};
 }
