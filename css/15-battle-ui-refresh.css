@@ -811,3 +811,13 @@
  #battle.battle-ui-preview .battle-arena .enemy-group-unit img {height:72px!important;}
  #battle.battle-ui-preview .battle-preview-union>span {font-size:10px!important;padding:4px 6px!important;}
 }
+
+
+#battle.battle-ui-preview .battle-preview-rail-title {
+ display:block; margin:0 0 2px; color:#ffe5a0;
+ font-size:14px; font-weight:900; white-space:nowrap;
+ overflow:hidden; text-overflow:ellipsis;
+}
+#battle.battle-ui-preview .battle-preview-primary-rail:not([hidden]) {
+ box-shadow:0 0 14px #28dbff55,inset 0 0 15px #003956!important;
+}
