@@ -15,13 +15,13 @@ export function addB4FortressSkyline({root, area, map, wallCell, hash, cellSize,
     mesh.position.set(x,y,z);mesh.scale.set(sx,sy,sz);group.add(mesh);
   };
   let count=0;
-  // Towers are background silhouettes on wall-facing edges, never in the walking-cell center.
+  // Towers sit at the centers of adjacent wall cells, not in walkable cells.
   for(let ty=1;ty<map.h-1 && count<8;ty++) for(let tx=1;tx<map.w-1 && count<8;tx++){
     if(wallCell(tx,ty) || blocked.has(tx+','+ty) || hash(tx,ty,211)>0.055) continue;
     const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
     const adjacent=dirs.filter(([dx,dz])=>wallCell(tx+dx,ty+dz));
     if(!adjacent.length) continue;
-    const [dx,dz]=adjacent[0], x=(tx+dx*0.47)*cellSize, z=(ty+dz*0.47)*cellSize;
+    const [dx,dz]=adjacent[0], x=(tx+dx)*cellSize, z=(ty+dz)*cellSize;
     const h=5.5+hash(tx,ty,212)*4.5;
     place(cylinder,stone,x,h/2,z,0.95,h,0.95);
     place(cylinder,trim,x,h-0.35,z,1.05,0.38,1.05);
