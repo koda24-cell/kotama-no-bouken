@@ -149,7 +149,7 @@ function loadTheme2() {
   return import('./field-3d-b2-water.js?v=20261109-b2').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES }));
 }
 async function loadTheme45(area) {
-  const m = await import('./field-3d-b4-b5-map.js?v=20261109-1');
+  const m = await import('./field-3d-b4-b5-map.js?v=20261110-b4-placement');
   return m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES }, area);
 }
 function place(parent, src, x, y, z, ry = 0, s = 1) {
@@ -218,6 +218,7 @@ async function buildFloor() {
   if (token !== g.buildToken || curKey() !== key) return;   // 待っている間にフロアが変わった
   const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
   // 片付け
+  if (g.envArea === 4) for (const v of g.foes.values()) disposeB4FoeVisual(v);
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
   g.lights = []; g.entries = []; g.foes.clear();
@@ -348,6 +349,11 @@ function foeTexture(src) {
   if (!g.texCache.has(src)) { const t = new THREE.TextureLoader().load(src); t.colorSpace = THREE.SRGBColorSpace; g.texCache.set(src, t); }
   return g.texCache.get(src);
 }
+function disposeB4FoeVisual(v) {
+  // The sprite texture and THREE's shared Sprite geometry belong to the cache.
+  // Only this FOE's ring geometry and per-instance materials belong to this floor.
+  v.ring.geometry.dispose(); v.ring.material.dispose(); v.sp.material.dispose();
+}
 function syncFoes(t) {
   const seen = new Set();
   for (const f of fieldState.foes || []) {
@@ -374,7 +380,7 @@ function syncFoes(t) {
     v.light.intensity = (chase ? 5 : 3) * (0.7 + 0.3 * pulse); v.ring.scale.setScalar(0.92 + 0.12 * pulse);
     v.sp.material.color.setHex(chase ? 0xffc0c0 : 0xffffff);
   }
-  for (const [k, v] of g.foes) if (!seen.has(k)) { g.dyn.remove(v.grp); g.foes.delete(k); }
+  for (const [k, v] of g.foes) if (!seen.has(k)) { if (g.envArea === 4) disposeB4FoeVisual(v); g.dyn.remove(v.grp); g.foes.delete(k); }
 }
 
 /* ------------------------------------------------------------

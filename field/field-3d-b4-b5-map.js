@@ -1,14 +1,16 @@
 /* Fourth and fifth stratum map-driven 3D placement. Visuals only; map remains authoritative. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { createB4RockForms } from './b4-fractured-rock-ore.js';
+import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-placement';
+import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-placement';
+import { faceKey, disposeB4Owned } from './b4-placement.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
   const ENV = mist
     ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
     : magma
-    ? { background: 0x1b0907, fog: { color: 0x2c100a, density: 0.036 }, hemi: { sky: 0xff8750, ground: 0x25101a, high: 1.45, low: 1.8 } }
+    ? { background: 0x1b0907, fog: { color: 0x2c100a, density: 0.036 }, hemi: { sky: 0xffb887, ground: 0x76645b, high: 2.0, low: 2.4 } }
     : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
   function rockTexture(seed) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
@@ -37,7 +39,9 @@ export function createTheme(api, area) {
     metal: new THREE.MeshStandardMaterial({ color: mist ? 0x5a735a : magma ? 0x8b6551 : 0x565877, metalness: 0.55, roughness: 0.5 })
   };
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02);
-  const wallGeo = new THREE.BoxGeometry(4.08, 4.2, 0.65, 16, 14, 2);
+  // B4's large rock relief supplies the silhouette detail; avoid spending nearly
+  // a million triangles on dense copies of the underlying wall panels.
+  const wallGeo = new THREE.BoxGeometry(4.08, 4.2, 0.65, magma ? 8 : 16, magma ? 8 : 14, 2);
   { const p = wallGeo.getAttribute('position'); for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
     const d = Math.sin(x * 2.6 + y * 1.7) * Math.cos(y * 3.3 - x * 1.4) * 0.12 + Math.sin(x * 6.2 + y * 4.3) * 0.045;
@@ -69,6 +73,7 @@ export function createTheme(api, area) {
   } p.needsUpdate = true; ceilingGeo.computeVertexNormals(); }
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
+  let b4Plan = null;
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
@@ -107,10 +112,14 @@ export function createTheme(api, area) {
     }
   }
   async function build(a, S, info) {
-    dispose();
+    dispose(false);
     root = new THREE.Group(); root.name = mist ? 'b3_mist_forest_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
     const { ch, wallCell, facing, open } = info;
+    const buildRoot = root;
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
+    b4Plan = magma ? addB4GameScenery({root,map:a,ch,wallCell,hash,CELL}) : null;
+    if (b4Plan) { lights.push(...b4Plan.lights); g.lights.push(...b4Plan.lights); }
+    if (b4Plan) for (const s of [...b4Plan.mines, ...b4Plan.vistaFaces]) objAt.add(s.tx+','+s.ty);
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
@@ -135,6 +144,7 @@ export function createTheme(api, area) {
         const [dx, dz] = DIR_VEC[d];
         if (!wallCell(tx + dx, ty + dz)) continue;
         const ex = x + dx * 2, ez = z + dz * 2, ry = FACE_YAW[d] + Math.PI;
+        if (b4Plan?.openings.has(faceKey(tx,ty,dx,dz))) continue;
         mesh(volcanicWallGeo || wallGeo, mat.wall, ex, 2, ez, ry);
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (k < 0.17 && !objAt.has(tx + ',' + ty)) {
@@ -153,14 +163,14 @@ export function createTheme(api, area) {
         mesh(canopyGeo, leafMat, sx, 6.8, sz, 0, 1, 1, 1);
         ornaments++;
       }
-      if (!mist && !objAt.has(tx + ',' + ty) && hash(tx, ty, 76) < 0.12) {
+      if (!mist && !magma && !objAt.has(tx + ',' + ty) && hash(tx, ty, 76) < 0.12) {
         const sx = x + (hash(tx, ty, 77) - 0.5) * 2.2;
         const sz = z + (hash(tx, ty, 78) - 0.5) * 2.2;
         mesh(archGeo, mat.metal, sx, 1.8, sz, hash(tx, ty, 79) * 6.28, 1, 1, 1);
         if (!magma) mesh(crystalGeo, mat.glow, sx, 3.8, sz, 0, 0.55, 0.7, 0.55);
         ornaments++;
       }
-      if (!objAt.has(tx + ',' + ty) && hash(tx, ty, 74) < 0.09) {
+      if (!magma && !objAt.has(tx + ',' + ty) && hash(tx, ty, 74) < 0.09) {
         mesh(rimGeo, mat.metal, x, 0.05, z, hash(tx, ty, 75) * Math.PI, 1, 1, 1);
         ornaments++;
       }
@@ -187,6 +197,8 @@ export function createTheme(api, area) {
           : './assets/3d/dungeons/b5_abyssal_star_realm/models/floor5_abyss_throne_refined_v2.glb';
         try {
           const gltf = await gltfLoader.loadAsync(file);
+          if (magma && root !== buildRoot) { disposeB4Owned(gltf.scene); return; }
+          if (magma) gltf.scene.userData.b4Owned = true;
           const model = gltf.scene, bounds = new THREE.Box3().setFromObject(model);
           const size = bounds.getSize(new THREE.Vector3()), max = Math.max(size.x, size.y, size.z);
           if (max > 0) {
@@ -198,6 +210,8 @@ export function createTheme(api, area) {
             if (magma) {
               try {
                 const dragon = (await gltfLoader.loadAsync('./assets/3d/dungeons/b4_dragonfire/models/floor4_dragon_boss_v1.glb')).scene;
+                if (root !== buildRoot) { disposeB4Owned(dragon); return; }
+                dragon.userData.b4Owned = true;
                 const dragonBounds = new THREE.Box3().setFromObject(dragon);
                 const dragonSize = dragonBounds.getSize(new THREE.Vector3());
                 const dragonMax = Math.max(dragonSize.x, dragonSize.y, dragonSize.z);
@@ -216,39 +230,9 @@ export function createTheme(api, area) {
         } catch (_) { landmarkState = 'procedural-fallback'; }
       }
     }
-    // 第4階層の専用背景素材を、通路の中央ではなく壁面沿いに配置。
-    // モデル単位でのサイズ正規化を行い、既存マップの歩行判定を維持する。
-    if (magma) {
-      const extras = [
-        ['floor4_dragonfire_environment_v1.glb', 5.2, 1],
-        ['floor4_gothic_fortress_addon_v1.glb', 4.8, 2],
-        ['floor4_lavafall_ember_fx_seed_v1.glb', 3.2, 3]
-      ];
-      const spots = [];
-      for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
-        if (wallCell(tx, ty) || objAt.has(tx + ',' + ty)) continue;
-        const walls = DIR_ORDER.filter(d => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
-        if (walls.length && hash(tx, ty, 117) < 0.2) spots.push({ tx, ty, dir: walls[0] });
-      }
-      for (const [file, sizeTarget, index] of extras) {
-        const spot = spots[Math.floor(spots.length * index / 4)];
-        if (!spot) continue;
-        try {
-          const gltf = await gltfLoader.loadAsync('./assets/3d/dungeons/b4_dragonfire/models/' + file);
-          const model = gltf.scene, bounds = new THREE.Box3().setFromObject(model);
-          const dims = bounds.getSize(new THREE.Vector3()), max = Math.max(dims.x, dims.y, dims.z);
-          if (!(max > 0)) continue;
-          const scale = sizeTarget / max, center = bounds.getCenter(new THREE.Vector3());
-          const [dx, dz] = DIR_VEC[spot.dir];
-          model.scale.setScalar(scale);
-          model.position.set(spot.tx * CELL + dx * 1.3 - center.x * scale, -bounds.min.y * scale,
-            spot.ty * CELL + dz * 1.3 - center.z * scale);
-          model.name = 'b4:scenery:' + file;
-          root.add(model);
-        } catch (_) { /* ZIP展開前はプロシージャル背景を維持 */ }
-      }
-    }
-    if (magma) createB4RockForms({root,map:a,wallCell,hash,CELL,objects:a.objects});
+    // Authored procedural scenery replaces three unbounded GLB environment overlays.
+    // Those overlays crossed corridor cells and duplicated the mine/citadel silhouettes.
+    if (magma) createB4RockForms({root,map:a,wallCell,hash,CELL,objects:a.objects,excludedWalls:b4Plan.excludedWalls});
     batchStatic();
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
@@ -281,11 +265,25 @@ export function createTheme(api, area) {
       if (!o.onWall) g.entries.push(e);
     }
   }
-  function dispose() {
-    if (root) { root.traverse(o => { if (o.userData?.disposeB4RockForms) o.userData.disposeB4RockForms(); }); root.parent?.remove(root); }
+  function dispose(final = true) {
+    if (root) {
+      if (magma) {
+        // Owned scenery/GLBs never contain cached gameplay assets placed under g.world.
+        for (const child of root.children) {
+          if (child.userData.b4Owned || child.userData.disposeB4RockForms) disposeB4Owned(child);
+          else if (child.isInstancedMesh) child.dispose();
+        }
+      } else root.traverse(o => { if (o.userData?.disposeB4RockForms) o.userData.disposeB4RockForms(); });
+      root.parent?.remove(root);
+    }
     for (const L of lights) L.off = true;
-    lights = []; dynamic = []; root = null; ornaments = 0;
-    // 共有ジオメトリを再利用し、フロア切替時にマテリアルを破棄しない。
+    lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; landmarkState = 'pending';
+    // build() can reuse this theme's base resources; theme replacement releases them.
+    if (magma && final) {
+      for (const geo of [floorGeo,wallGeo,volcanicWallGeo,ceilingGeo,crystalGeo,rimGeo,...localGeometries]) geo?.dispose();
+      for (const material of [...Object.values(mat),trunkMat,leafMat,flameMat]) material.dispose();
+      rockMap?.dispose(); floorMap?.dispose();
+    }
   }
   function tick(dt, now) {
     for (const p of dynamic) {
@@ -294,5 +292,5 @@ export function createTheme(api, area) {
     }
   }
   async function sync() { return false; }
-  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState }) };
+  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null } } : {}) }) };
 }
