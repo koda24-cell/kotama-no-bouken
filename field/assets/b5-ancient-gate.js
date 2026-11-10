@@ -1,6 +1,8 @@
 /* B5 throne hall: ancient ruined Gothic gate behind the Demon King.
  * Standalone visual prop, not a traversable portal or collision surface.
  * Coordinate system: X horizontal, Y up, Z depth. Ground is Y=0.
+ * Canonical FRONT / camera side = -Z. Deep carved faces point toward -Z.
+ * Canonical BACK = +Z. The gate is visual-only behind the Demon King.
  */
 export function createB5AncientGate(THREE,options={}){
  const group=new THREE.Group();group.name='b5:throne:ancientGate';group.userData.visualOnly=true;
@@ -99,10 +101,11 @@ export function createB5AncientGate(THREE,options={}){
     const norm=Math.max(Math.abs(c),Math.abs(q));
     const bx=c/norm*w*.5,bz=q/norm*d*.5;
     // Grooves run the entire height, following a softly weathered outline.
-    const front=Math.abs(q)>.84;
+    const front=q<-.84;
+    const back=q>.84;
     const side=Math.abs(c)>.84;
-    const across=front?bx/(w*.5):bz/(d*.5);
-    const grooves=(front||side)?Math.pow(Math.max(0,Math.cos(across*3*Math.PI)),8)*.11:0;
+    const across=(front||back)?bx/(w*.5):bz/(d*.5);
+    const grooves=(front||side)?Math.pow(Math.max(0,Math.cos(across*3*Math.PI)),8)*(front?.19:.07):0;
     const ripple=.025*Math.sin(t*19+a*3)+.014*Math.sin(t*31-a*5);
     const edge=1-.055*Math.pow(Math.abs(t-.5)*2,9);
     // Broad, irregular erosion pockets actually REMOVE shaft volume.
@@ -116,7 +119,7 @@ export function createB5AncientGate(THREE,options={}){
      [.23,.80,.25,.09,.17]
     ];
     let recess=0;
-    if(onFace>.82){
+    if(front || side){
      for(let si=0;si<scars.length;si++){
       const [u,v,rx,ry,depth]=scars[si];
       const yy=t+(si%2===0?.012:-.016)*Math.sin(faceCoord*9+si);
@@ -126,7 +129,7 @@ export function createB5AncientGate(THREE,options={}){
       // Rounded, chipped boundary and uneven eroded floor.
       const bowl=Math.max(0,Math.min(1,(1.15-r)/.55));
       const variation=.85+.15*Math.sin(faceCoord*18+t*27);
-      recess=Math.max(recess,depth*bowl*bowl*(3-2*bowl)*variation);
+      recess=Math.max(recess,depth*(front?1.75:.45)*bowl*bowl*(3-2*bowl)*variation);
      }
     }
     const shrink=1+(ripple-grooves-recess)/Math.max(w,d);
@@ -288,6 +291,7 @@ export function createB5AncientGate(THREE,options={}){
    block(x+sx*.87,4.65,-1.02,.08,4.68,.12,stone);
   }
  }
+ // FRONT (-Z) has deeper carved recesses than BACK (+Z).
  // Damage is now carved directly into the continuous flutedShaft mesh.
  // Former pentagonal fracturePlate overlays and protruding gouge bars removed.
  // Layered capstones, with small missing pieces on the surviving lintel.
@@ -305,6 +309,8 @@ export function createB5AncientGate(THREE,options={}){
  }
  const scale=Number.isFinite(options.scale)?Math.max(.1,Math.min(4,options.scale)):1;
  group.scale.setScalar(scale);
+ group.userData.frontDirection=[0,0,-1];
+ group.userData.backDirection=[0,0,1];
  let disposed=false;
  return {group,dispose(){if(disposed)return;disposed=true;group.parent?.remove(group);group.clear();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());}};
 }
