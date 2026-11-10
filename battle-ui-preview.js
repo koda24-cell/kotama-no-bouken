@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-21";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-22";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -220,7 +220,7 @@
     const primaryRail = document.createElement("nav");
     primaryRail.className = "battle-preview-primary-rail";
     primaryRail.setAttribute("aria-label", "戦闘メインコマンド");
-    arena?.appendChild(primaryRail);
+    (bottom || arena)?.appendChild(primaryRail);
     const railTitle = document.createElement("strong");
     railTitle.className = "battle-preview-rail-title";
     railTitle.textContent = document.getElementById("command-title")?.textContent || "どうする？";
