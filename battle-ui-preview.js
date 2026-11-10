@@ -140,6 +140,10 @@
     primaryRail.className = "battle-preview-primary-rail";
     primaryRail.setAttribute("aria-label", "戦闘メインコマンド");
     arena?.appendChild(primaryRail);
+    const railTitle = document.createElement("strong");
+    railTitle.className = "battle-preview-rail-title";
+    railTitle.textContent = document.getElementById("command-title")?.textContent || "どうする？";
+    primaryRail.appendChild(railTitle);
     const railActions = [["攻撃","attack"],["SPスキル","skill"],["防御","guard"],["道具","item"],["編成位置入れ替え","preview-move"],["ユニオンスキル","preview-union-toggle"]];
     for (const [label,action] of railActions) {
       const button = document.createElement("button");
@@ -167,6 +171,7 @@
       box.classList.toggle("battle-preview-main-menu", main);
       battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
       primaryRail.hidden = main || !!battleState.tutorialMode;
+      railTitle.textContent = (typeof currentActor === "function" ? currentActor()?.name : "") + "　どうする？";
       const unionPanel = box.querySelector(".union-panel");
       const existingToggle = box.querySelector("[data-preview-union-toggle]");
       if (!main || !unionPanel) {
