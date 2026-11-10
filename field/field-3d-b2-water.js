@@ -720,7 +720,7 @@ export async function createTheme(api) {
   };
   tpl.gateNormal = tpl.gate(false); tpl.gateBoss = tpl.gate(true);
 
-  function dispose() {
+  function dispose(opts) {
     for (const geo of made) geo.dispose(); made = [];
     for (const r of anim.ripples) r.mesh.material.dispose();
     for (const m of anim.mists) { m.points.geometry.dispose(); }
@@ -732,6 +732,17 @@ export async function createTheme(api) {
     if (motes) { motes.parent?.remove(motes); motes.geometry.dispose(); motes.material.dispose(); motes = null; }
     if (g.renderer && prevExposure !== null) { g.renderer.toneMappingExposure = prevExposure; prevExposure = null; }
     anim = { ripples: [], mists: [], fishes: [], caustics: [] }; root = null;
+    // 階層を離れるとき（field-3d-view.js が final を付けて呼ぶ）は、素材・テクスチャ・部品の形もすべて破棄する
+    if (opts && opts.final) {
+      const tex = new Set();
+      for (const m of Object.values(mats)) { for (const k of ['map', 'normalMap', 'emissiveMap', 'bumpMap']) if (m[k]) tex.add(m[k]); m.dispose(); }
+      for (const t of tex) t.dispose();
+      if (mistTex) { mistTex.dispose(); mistTex = null; }
+      if (envTex) { envTex.dispose(); envTex = null; }
+      const geos = new Set(), walk = (v) => { if (!v || typeof v !== 'object') return; if (v.isBufferGeometry) { geos.add(v); return; } if (Array.isArray(v)) v.forEach(walk); else if (v.parts) v.parts.forEach((p) => geos.add(p.geo)); else for (const k of Object.keys(v)) if (k !== 'size') walk(v[k]); };
+      walk(kit); walk(proc);
+      for (const geo of geos) if (geo && geo.dispose) geo.dispose();
+    }
   }
 
   async function build(a, S, info) {
