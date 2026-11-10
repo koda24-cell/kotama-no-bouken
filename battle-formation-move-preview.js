@@ -6,9 +6,19 @@
 (function () {
   if (new URLSearchParams(location.search).get("battleUiPreview") !== "1") return;
   const rearJobs = new Set(["mage", "healer", "princess", "gunner"]);
+  // Five-person parties must still fit the 3-front / 3-rear formation.
+  function defaultRow(id) {
+    const party = getParty();
+    const natural = rearJobs.has(id) ? "rear" : "front";
+    const same = party.filter(c => c.id !== id && (rearJobs.has(c.id) ? "rear" : "front") === natural);
+    if (same.length < 3) return natural;
+    const rank = party.findIndex(c => c.id === id);
+    const earlier = same.filter(c => party.findIndex(p => p.id === c.id) < rank).length;
+    return earlier < 3 ? natural : natural === "front" ? "rear" : "front";
+  }
   const positions = new Map();
   window.kotamaBattleRowOfParty = function (character) {
-    return positions.get(character?.id) || (rearJobs.has(character?.id) ? "rear" : "front");
+    return positions.get(character?.id) || (defaultRow(character?.id));
   };
   window.kotamaBattleFormationPositions = positions;
   window.kotamaBattleExportRows = () => Object.fromEntries(positions);
@@ -16,7 +26,7 @@
     positions.clear();
     if (!data || typeof data !== "object" || Array.isArray(data)) return;
     const ids = new Set(getParty().map(c => c.id));
-    const defaults = id => rearJobs.has(id) ? "rear" : "front";
+    const defaults = id => defaultRow(id);
     const counts = {front:0,rear:0};
     for (const id of ids) counts[defaults(id)]++;
     for (const [id,row] of Object.entries(data)) {
