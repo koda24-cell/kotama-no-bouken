@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-10";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-11";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
