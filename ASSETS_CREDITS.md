@@ -109,3 +109,8 @@ BGM
 - `field/field-3d-b3-city.js`：既存のB3形状キットを配置し、舗装・草・石片をThree.jsの基本形状から生成。GPT / Codexによる本プロジェクト用の手続き型描画コード。外部の画像・モデル・サービスの追加なし。
 - 再利用：`field/b3-ruined-city-kit.js`、`field/b3-ruined-city-urban-props.js`（PR #204で統合済み）。既存素材の削除・上書きなし。
 - 最終的な色・テクスチャ・質感の調整はClaude担当。今回の対象は形状、配置、シルエットと描画・動作検証。
+
+## B5 closed architecture / PBR surfaces (2026-11-10)
+- `field/b5-architecture.js`: project-authored bevelled basalt/armour walls, opaque blind bays, coffered ceilings, paving, Gothic ribs, practical lamps and exit portal (Codex).
+- `assets/3d/dungeons/b5_abyssal_star_realm/textures/b5_{basalt,ashlar,paving,iron,cloth}_{albedo,normal,orm}.png`: fifteen 512×512 PBR maps. Generated from this repository's B1 procedural pipeline (`tools/b1-3d/lib/tex.js`, original project assets) using new B5 seeds/palettes and no moss. No external image/material source. Generator: `tools/b5-3d/bake-materials.html` / `bake-materials.cjs`.
+- B1 assets and generators are retained unchanged. B5 reuses existing Three.js r180 utilities; high-quality reflection lighting uses its existing `RoomEnvironment` helper, with no visible external scene or new dependency.

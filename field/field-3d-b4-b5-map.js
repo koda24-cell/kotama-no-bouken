@@ -4,7 +4,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-placement';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-placement';
 import { faceKey, disposeB4Owned } from './b4-placement.js';
-import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
+import { createB5Architecture } from './b5-architecture.js?v=20261110-closed-1';
+import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js?v=20261110-closed-1';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -12,7 +13,7 @@ export function createTheme(api, area) {
     ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
     : magma
     ? { background: 0x1b0907, fog: { color: 0x2c100a, density: 0.036 }, hemi: { sky: 0xffb887, ground: 0x76645b, high: 2.0, low: 2.4 } }
-    : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
+    : { background: 0x080d18, fog: { color: 0x172130, density: 0.018 }, hemi: { sky: 0x90a5bd, ground: 0x2e3240, high: 1.2, low: 1.55 } };
   function rockTexture(seed) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
     const ctx = canvas.getContext('2d'); if (!ctx) return null;
@@ -68,8 +69,6 @@ export function createTheme(api, area) {
     p.needsUpdate = true;
     volcanicWallGeo.computeVertexNormals();
   }
-  // B5 parapets/tall flat hall walls do not need the cave mesh's 16×14 grid.
-  const b5WallGeo = area === 5 ? new THREE.BoxGeometry(4.08, 4.2, 0.65, 2, 2, 1) : null;
   const ceilingGeo = new THREE.PlaneGeometry(4.02, 4.02, 12, 12).rotateX(Math.PI / 2);
   { const p = ceilingGeo.getAttribute('position'); for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), z = p.getZ(i);
@@ -78,6 +77,7 @@ export function createTheme(api, area) {
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
   let b4Plan = null;
+  let architecture = null;
   let dressing = null, ownedModels = [], ownedModelGeometry = [];
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
@@ -123,13 +123,14 @@ export function createTheme(api, area) {
     const buildRoot = root;
     const b5 = area === 5, hall = b5 && isB5Hall(a, ch);
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
+    if (b5) architecture = createB5Architecture({ root, a, ch, wallCell, hash, CELL, hall, g });
     b4Plan = magma ? addB4GameScenery({root,map:a,ch,wallCell,hash,CELL}) : null;
     if (b4Plan) { lights.push(...b4Plan.lights); g.lights.push(...b4Plan.lights); }
     if (b4Plan) for (const s of [...b4Plan.mines, ...b4Plan.vistaFaces]) objAt.add(s.tx+','+s.ty);
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
-      mesh(floorGeo, mat.floor, x, -0.17, z);
+      if (!b5) mesh(floorGeo, mat.floor, x, -0.17, z);
       if (magma && (c === '*' || c === '~')) {
         mesh(lavaGeo, mat.glow, x, 0.009, z);
       }
@@ -139,7 +140,7 @@ export function createTheme(api, area) {
         mesh(crackGeo, mat.glow, x, 0.016, z, angle, 0.65 + hash(tx, ty, 33) * 0.4, 1, 1);
         ornaments++;
       }
-      if ((!b5 || hall) && c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, hall ? 16 : 4.05, z);
+      if (!b5 && c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, hall ? 16 : 4.05, z);
       // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
       if (!b5 && !objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
         const h = 0.8 + hash(tx, ty, 46) * 1.7;
@@ -149,13 +150,13 @@ export function createTheme(api, area) {
       for (const d of DIR_ORDER) {
         const [dx, dz] = DIR_VEC[d];
         if (!wallCell(tx + dx, ty + dz)) continue;
+        if (b5) continue; // B5 architecture supplies full-height opaque wall faces.
         const ex = x + dx * 2, ez = z + dz * 2, ry = FACE_YAW[d] + Math.PI;
         if (b4Plan?.openings.has(faceKey(tx,ty,dx,dz))) continue;
         // Other corridors may touch this same solid cell. Keep their wall skin
         // outside the recess instead of letting displaced rock cut through its back/sides.
         const recessSide = b4Plan?.excludedWalls.has(`${tx+dx},${ty+dz}`);
-        const tallHallWall = hall && (tx + dx <= 3 || tx + dx >= a.w - 4 || ty + dz === 0 || ty + dz >= a.h - 1);
-        mesh(recessSide ? recessWallGeo : (b5WallGeo || volcanicWallGeo || wallGeo), mat.wall, ex, b5 ? (tallHallWall ? 7.3 : 0.35) : 2, ez, ry, 1, b5 ? (tallHallWall ? 3.5 : 0.25) : 1, 1);
+        mesh(recessSide ? recessWallGeo : (volcanicWallGeo || wallGeo), mat.wall, ex, 2, ez, ry);
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (!b5 && k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
@@ -249,17 +250,18 @@ export function createTheme(api, area) {
     // Authored procedural scenery replaces three unbounded GLB environment overlays.
     // Those overlays crossed corridor cells and duplicated the mine/citadel silhouettes.
     if (magma) createB4RockForms({root,map:a,wallCell,hash,CELL,objects:a.objects,excludedWalls:b4Plan.excludedWalls});
-    if (b5) dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall });
+    if (b5) dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall, architecture });
     batchStatic();
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
     for (const o of a.objects) {
       if (!o.onWall || (o.kind !== 'switch' && o.kind !== 'sign')) continue;
       const f = facing(o.tx, o.ty), [dx, dz] = DIR_VEC[f];
-      const x = o.tx * CELL + dx * 1.55, z = o.ty * CELL + dz * 1.55;
+      const offset = b5 ? 2.08 : 1.55;
+      const x = o.tx * CELL + dx * offset, z = o.ty * CELL + dz * offset;
       const ry = FACE_YAW[f];
       const src = o.kind === 'switch' ? S.guardian : S.sign;
-      const obj = place(g.world, src || S.sign, x, 0, z, ry, o.kind === 'switch' ? 0.55 : 0.8);
+      const obj = b5 && o.kind === 'switch' ? architecture.wallKnight(o.id, x, z, ry) : place(g.world, src || S.sign, x, 0, z, ry, o.kind === 'switch' ? 0.55 : 0.8);
       g.entries.push({ o, kind: o.kind, obj, state: null, at: new THREE.Vector3(x, 1.5, z), ry });
     }
     for (const o of a.objects) {
@@ -272,7 +274,7 @@ export function createTheme(api, area) {
           place(g.world, S.seal, x, 0.005, z, 0, 0.8); e.obj = place(g.world, S.torch, x, 0, z); e.at.y = 1.9; break;
         case 'sign': e.obj = place(g.world, S.sign, x, 0, z, ry); e.at.y = 1.8; break;
         case 'gate': e.obj = place(g.world, S.runeDoor, x - DIR_VEC[f][0] * 1.9, 0, z - DIR_VEC[f][1] * 1.9, ry); break;
-        case 'exit': e.obj = place(g.world, S.rootArch, x, 0, z, (f === 'up' || f === 'down') ? 0 : Math.PI / 2, 0.92); break;
+        case 'exit': e.obj = b5 ? architecture.exitPortal(x - DIR_VEC[f][0] * 1.7, z - DIR_VEC[f][1] * 1.7, (f === 'up' || f === 'down') ? 0 : Math.PI / 2) : place(g.world, S.rootArch, x, 0, z, (f === 'up' || f === 'down') ? 0 : Math.PI / 2, 0.92); break;
         case 'npc': e.obj = place(g.world, S.npcTraveler, x, 0, z, ry); e.at.y = 2.2; break;
         case 'door':
           if (!o.hidden) e.ry = open(o.tx, o.ty - 1) || open(o.tx, o.ty + 1) ? 0 : Math.PI / 2;
@@ -296,6 +298,8 @@ export function createTheme(api, area) {
       geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose());
       ownedModels = [];
     }
+    dressing?.dispose(); dressing = null;
+    architecture?.dispose(); architecture = null;
     if (root) {
       if (magma) {
         // Owned scenery/GLBs never contain cached gameplay assets placed under g.world.
@@ -306,22 +310,23 @@ export function createTheme(api, area) {
       } else root.traverse(o => { if (o.isInstancedMesh) o.dispose(); });
       root.parent?.remove(root);
     }
-    dressing?.dispose(); dressing = null; ownedModels = []; ownedModelGeometry = [];
+    ownedModels = []; ownedModelGeometry = [];
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; landmarkState = 'pending';
     // build() can reuse this theme's base resources; theme replacement releases them.
     if (final) {
-      for (const geo of [floorGeo,wallGeo,volcanicWallGeo,recessWallGeo,b5WallGeo,ceilingGeo,crystalGeo,rimGeo,...localGeometries]) geo?.dispose();
+      for (const geo of [floorGeo,wallGeo,volcanicWallGeo,recessWallGeo,ceilingGeo,crystalGeo,rimGeo,...localGeometries]) geo?.dispose();
       for (const material of [...Object.values(mat),trunkMat,leafMat,flameMat]) material.dispose();
       rockMap?.dispose(); floorMap?.dispose();
     }
   }
-  function tick(dt, now) {
+  function tick(dt, now, camera) {
+    if (architecture && camera) architecture.updateVisibility(camera);
     for (const p of dynamic) {
       p.mesh.position.y = p.y + Math.sin(now * 0.0015 + p.phase) * 0.22;
       p.mesh.scale.setScalar(0.75 + 0.25 * Math.sin(now * 0.003 + p.phase));
     }
   }
   async function sync() { return false; }
-  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null } } : {}) }) };
+  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), architecture: architecture?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null } } : {}) }) };
 }

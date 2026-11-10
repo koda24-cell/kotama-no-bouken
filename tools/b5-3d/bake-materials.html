@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8"><title>B5 PBR material bake</title>
+<script type="importmap">{"imports":{"three":"/three/build/three.module.js"}}</script>
+<script type="module">
+import { MATERIAL_DEFS, materialPreviewCanvases } from '../b1-3d/lib/tex.js';
+// Reuse B1's authored PBR pipeline, with B5-specific seeds, stone and NO moss.
+Object.assign(MATERIAL_DEFS, {
+ b5_basalt: {surf:'stone_rough',opts:{seed:505,moss:-1,tint:0x59616a},normal:3},
+ b5_ashlar: {surf:'stone_masonry',opts:{seed:551,rows:3,cols:2,moss:-1,tint:0x81817c},normal:2.6},
+ b5_paving: {surf:'stone_paving',opts:{seed:527,cells:4,moss:-1},normal:2.4},
+ b5_iron: {surf:'iron',opts:{seed:536,rust:0.42},normal:1.8},
+ b5_cloth: {surf:'cloth',opts:{seed:553,tint:0x50343b,trim:0x78694e,plain:true},normal:0.8}
+});
+window.baked={};
+for(const key of ['b5_basalt','b5_ashlar','b5_paving','b5_iron','b5_cloth']) {
+ const only=new URLSearchParams(location.search).get('only');if(only&&key!==only)continue;
+ const maps=materialPreviewCanvases(key,512);
+ for(const channel of ['albedo','normal','orm']) window.baked[key+'_'+channel]=maps[channel].toDataURL('image/png');
+}
+window.done=true;
+</script>

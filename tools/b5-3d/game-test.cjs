@@ -19,13 +19,13 @@ await p.goto('http://localhost:8775/index.html');await p.waitForFunction(()=>!!w
 await p.evaluate(()=>{try{tutorialFinish();tutorialClose()}catch{}; tutorialState.phase='complete';tutorialState.completed=true;tutorialState.started=false;document.querySelectorAll('#tutorial-overlay').forEach(e=>e.hidden=true);document.body.classList.remove('tutorial-home-focus','tutorial-active');state.firstStageStarted=true;state.maxUnlockedStage=5;fieldState.flags.prologue=true;fieldState.flags['labyrinth-tutorial']=true;for(const e of stageEvents||[])eventRead[e.id]=true;window.persistAutoSave=()=>true;if(window.kotamaAdminEncounterSettings)window.kotamaAdminEncounterSettings.disableRandom=true;});
 async function skip(){await p.evaluate(()=>{for(let i=0;i<40;i++){if(fieldChoiceState){fieldChoiceKey('z');continue}if(fieldDialogTyping){fieldDialogTyping();continue}if(fieldDialogAdvance){const r=fieldDialogAdvance;fieldDialogAdvance=null;r();continue}}document.querySelectorAll('#story-event').forEach(e=>{if(!e.hidden)e.querySelector('button')?.click()});});}
 async function floor(f,area=5){await p.evaluate(([f,area])=>fieldEnterArea(area,{floor:f,adminSkip:true}),[f,area]);for(let i=0;i<5;i++){await skip();await p.waitForTimeout(200)}await p.waitForFunction(()=>KotamaField3D.active(),null,{timeout:120000});await skip();console.log('state',await p.evaluate(()=>({screen:state.screen,lock:fieldState.lock,modal:fieldModalOpen(),modals:[...document.querySelectorAll('.game-dialog, #story-event, #tutorial-overlay, #list-menu')].filter(e=>!e.hidden).map(e=>e.id)})));}
-async function go(x,y,dir){await p.evaluate(([x,y,dir])=>{const c=fieldTileCenter(x,y);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=dir;fieldState.view=null;fieldUpdateVision(true)},[x,y,dir]);await p.waitForTimeout(1200)}
+async function go(x,y,dir){await p.evaluate(([x,y,dir])=>{const c=fieldTileCenter(x,y);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=dir;fieldState.view=null;fieldUpdateVision(true)},[x,y,dir]);await p.evaluate(()=>new Promise(resolve=>{let n=0;function step(){if(++n===7)resolve();else requestAnimationFrame(step)}requestAnimationFrame(step)}))}
 const report={floors:[],errors,cancelledRequests,gameplay:[]};
 for(let f=0;f<3;f++){
  await floor(f); const info=await p.evaluate(()=>KotamaField3D.themeInfo());
  console.log('FLOOR',f,info.dressing?.placements.length || 0);
  if(f===0){await go(1,19,'up');}if(f===1){await go(3,19,'right')}if(f===2){await go(13,14,'up')}
- await p.screenshot({path:`${OUT}/b5-f${f+1}-entry.png`});
+ await p.screenshot({timeout:120000,path:`${OUT}/b5-f${f+1}-entry.png`});
  const sample=await p.evaluate(()=>new Promise(resolve=>{let times=[],last=performance.now();function tick(t){times.push(t-last);last=t;if(times.length===8)resolve({fps:1000/(times.reduce((a,b)=>a+b,0)/times.length),render:KotamaField3D.renderInfo()});else requestAnimationFrame(tick)}requestAnimationFrame(tick)}));
  report.floors.push({f,info,sample});
  if(f===0){
@@ -51,9 +51,9 @@ for(let f=0;f<3;f++){
    }finally{fieldPlayScene=oldScene;fieldSay=oldSay;fieldAsk=oldAsk;}
   });report.gameplay.push(checks);
  }
- if(f<2&&info.dressing?.placements.length){const v=info.dressing.placements[0];const pos=await p.evaluate(([x,z])=>{const a=fieldArea();const tx=x/4,ty=z/4;for(const [dx,dy,dir] of [[0,1,'up'],[0,-1,'down'],[1,0,'left'],[-1,0,'right']])if(!fieldCharSolid(a,fieldTileAt(a,tx+dx,ty+dy)))return [tx+dx,ty+dy,dir]},[v.x,v.z]);if(pos){await go(...pos);await p.screenshot({path:`${OUT}/b5-f${f+1}-prop.png`})}}
+ if(f<2&&info.dressing?.placements.length){const v=info.dressing.placements[0];if(v.view){await go(v.view.tx,v.view.ty,v.view.dir);await p.screenshot({timeout:120000,path:`${OUT}/b5-f${f+1}-prop.png`})}}
 }
-await p.setViewportSize({width:390,height:844});await go(13,14,'up');await p.screenshot({path:`${OUT}/b5-hall-mobile.png`});
+await p.setViewportSize({width:390,height:844});await go(13,14,'up');await p.screenshot({timeout:120000,path:`${OUT}/b5-hall-mobile.png`});
 console.log('starting checks');
 if(!process.env.BASELINE)report.geometry=await p.evaluate(async()=>{
  const THREE=await import('three'), {createB5Dressing,isB5Hall}=await import('./field/b5-scene-dressing.js');
@@ -82,5 +82,5 @@ if(!process.env.BASELINE)report.geometry=await p.evaluate(async()=>{
  return results;
 });
 report.checks=await p.evaluate(async()=>{ const saved=fieldSerialize();fieldDeserialize(saved);const roundtrip=fieldSerialize(); return {saveRoundtrip:JSON.stringify(saved)===JSON.stringify(roundtrip),saveVersion:createSaveData().saveVersion}; });
-fs.writeFileSync(OUT+'/report.json',JSON.stringify(report,null,2));console.log('REPORT',JSON.stringify(report));if(errors.length)process.exitCode=1;await b.close();server.close();
+fs.writeFileSync(OUT+'/report.json',JSON.stringify(report,null,2));console.log('REPORT',JSON.stringify({errors,checks:report.checks,gameplay:report.gameplay,floors:report.floors.map(v=>({f:v.f,sample:v.sample}))}));if(errors.length)process.exitCode=1;await b.close();server.close();
 })().catch(e=>{console.error(e);process.exit(1)});

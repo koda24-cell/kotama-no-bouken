@@ -1,0 +1,155 @@
+{
+  "errors": [],
+  "cancelledRequests": [],
+  "floors": [
+    {
+      "f": 0,
+      "info": {
+        "placed": true,
+        "ornaments": 0,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "dressing": {
+          "hall": false,
+          "mergedDraws": 36,
+          "propCount": 16,
+          "propKinds": [
+            "swordField",
+            "brokenWarMachine",
+            "brokenBridge",
+            "debrisHeap"
+          ]
+        },
+        "architecture": {
+          "height": 6.4,
+          "opaqueFaces": 492,
+          "materials": "512px albedo / normal / ORM",
+          "reflections": false,
+          "batches": 493,
+          "nicheCount": 90
+        }
+      },
+      "render": {
+        "quality": "low",
+        "lightPool": 2,
+        "reflectionEnvironment": false,
+        "calls": 183,
+        "triangles": 113652,
+        "memory": {
+          "geometries": 73,
+          "textures": 84
+        }
+      }
+    },
+    {
+      "f": 1,
+      "info": {
+        "placed": true,
+        "ornaments": 0,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "dressing": {
+          "hall": false,
+          "mergedDraws": 36,
+          "propCount": 16,
+          "propKinds": [
+            "swordField",
+            "brokenWarMachine",
+            "brokenBridge",
+            "debrisHeap"
+          ]
+        },
+        "architecture": {
+          "height": 6.4,
+          "opaqueFaces": 504,
+          "materials": "512px albedo / normal / ORM",
+          "reflections": false,
+          "batches": 502,
+          "nicheCount": 87
+        }
+      },
+      "render": {
+        "quality": "low",
+        "lightPool": 2,
+        "reflectionEnvironment": false,
+        "calls": 205,
+        "triangles": 136234,
+        "memory": {
+          "geometries": 98,
+          "textures": 136
+        }
+      }
+    },
+    {
+      "f": 2,
+      "info": {
+        "placed": true,
+        "ornaments": 0,
+        "mode": "map-driven-3d",
+        "landmarkState": "glb-loaded",
+        "dressing": {
+          "hall": true,
+          "mergedDraws": 31,
+          "propCount": 12,
+          "propKinds": [
+            "ruinedPillar",
+            "hangingBanner",
+            "grandChandelier"
+          ]
+        },
+        "architecture": {
+          "height": 16,
+          "opaqueFaces": 116,
+          "materials": "512px albedo / normal / ORM",
+          "reflections": false,
+          "batches": 267,
+          "nicheCount": 51
+        }
+      },
+      "render": {
+        "quality": "low",
+        "lightPool": 2,
+        "reflectionEnvironment": false,
+        "calls": 44,
+        "triangles": 45883,
+        "memory": {
+          "geometries": 106,
+          "textures": 149
+        }
+      }
+    }
+  ],
+  "occlusion": [
+    {
+      "f": 0,
+      "faces": 492,
+      "rays": 5904,
+      "blockedPixels": 0,
+      "controlPixels": 16384,
+      "freedGeo": 5,
+      "freedMat": 6,
+      "freedTex": 9
+    },
+    {
+      "f": 1,
+      "faces": 504,
+      "rays": 6048,
+      "blockedPixels": 0,
+      "controlPixels": 16384,
+      "freedGeo": 5,
+      "freedMat": 6,
+      "freedTex": 9
+    },
+    {
+      "f": 2,
+      "faces": 116,
+      "rays": 1392,
+      "blockedPixels": 0,
+      "controlPixels": 16384,
+      "freedGeo": 5,
+      "freedMat": 6,
+      "freedTex": 9
+    }
+  ],
+  "artifactNote": "Repeated placement arrays are summarized; rerun the documented tool for complete coordinates."
+}
