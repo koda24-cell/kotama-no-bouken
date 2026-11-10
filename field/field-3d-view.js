@@ -152,7 +152,7 @@ function loadTheme2() {
 }
 function loadTheme3() {
   if (g.theme?.area === 3) return Promise.resolve(g.theme);
-  return import('./field-3d-b3-city.js?v=20261110-1').then(m => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile }));
+  return import('./field-3d-b3-city.js?v=20261110-quality-1').then(m => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile }));
 }
 async function loadTheme45(area) {
   if (area !== 4 && g.theme?.area === area) return g.theme;

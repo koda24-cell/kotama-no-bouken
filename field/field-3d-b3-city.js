@@ -2,15 +2,16 @@
 import * as THREE from 'three';
 import { createRuinedCityKit } from './b3-ruined-city-kit.js';
 import { createB3UrbanProps } from './b3-ruined-city-urban-props.js';
+import { createCitySurfaces } from './b3-city-surfaces.js?v=20261110-1';
 
 export function createTheme(api) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile } = api;
   const originalFar = g.camera.far;
   const daylightPool = g.pool.slice(g.high ? 4 : 2);
   const env = { background: 0x9aa9aa, fog: { color: 0x9aa9aa, density: 0.012 },
-    hemi: { sky: 0xd7e0dc, ground: 0x555147, high: 2.1, low: 2.3 } };
-  let root, city, urban, materials = [], geometries = [], batches = [], placements = [], stats = {};
-  const prototypes = new Map(), lowMaterials = new Map();
+    hemi: { sky: 0xb4d0ce, ground: 0x28382e, high: 1.05, low: 1.25 } };
+  let root, city, urban, finish, skyMesh, materials = [], geometries = [], batches = [], placements = [], stats = {};
+  const prototypes = new Map();
   const geo = x => (geometries.push(x), x);
   const mat = x => { const m = g.high ? new THREE.MeshStandardMaterial(x) : new THREE.MeshLambertMaterial({ color: x.color, flatShading: x.flatShading }); materials.push(m); return m; };
   function add(shape, material, x, y, z, sx, sy, sz, ry = 0) {
@@ -18,14 +19,7 @@ export function createTheme(api) {
   }
   function prototype(key, make) {
     if (!prototypes.has(key)) {
-      const model = make();
-      // Low quality uses vertex lighting on scenery; interactive GLBs keep their materials.
-      if (!g.high) model.traverse(m => {
-        if (!m.isMesh) return;
-        const source = m.material;
-        if (!lowMaterials.has(source.uuid)) lowMaterials.set(source.uuid, mat({ color: source.color, flatShading: source.flatShading }));
-        m.material = lowMaterials.get(source.uuid);
-      });
+      const model = finish.dress(make(), key);
       prototypes.set(key, model);
     }
     return prototypes.get(key).clone(true);
@@ -54,17 +48,32 @@ export function createTheme(api) {
       if (!groups.has(key)) groups.set(key, []); groups.get(key).push(m);
     }
     stats.sourceMeshes = meshes.length;
+    stats.lodPairs = 0;
     for (const items of groups.values()) {
       const first = items[0], batch = new THREE.InstancedMesh(first.geometry, first.material, items.length);
       batch.name = 'b3:city-batch';
       items.forEach((m, i) => batch.setMatrixAt(i, m.matrixWorld));
       batch.computeBoundingSphere(); batch.instanceMatrix.needsUpdate = true;
-      root.add(batch); batches.push(batch);
+      batches.push(batch);
+      if (finish.lodGeometries.has(first.geometry)) {
+        const coarse = finish.lodGeometries.get(first.geometry), lod = new THREE.LOD();
+        const center = batch.boundingSphere.center;
+        lod.position.copy(center); batch.position.copy(center).multiplyScalar(-1);
+        lod.addLevel(batch, 0);
+        if (coarse) {
+          const far = new THREE.InstancedMesh(coarse, first.material, items.length);
+          far.instanceMatrix.array.set(batch.instanceMatrix.array); far.instanceMatrix.needsUpdate = true;
+          far.boundingSphere = batch.boundingSphere.clone(); far.position.copy(batch.position);
+          lod.addLevel(far, g.high ? 32 : 26); batches.push(far);
+        } else lod.addLevel(new THREE.Group(), g.high ? 32 : 26);
+        lod.userData.b3Batch = true; root.add(lod); stats.lodPairs++;
+      } else root.add(batch);
     }
     // Drop empty factory hierarchies as well as individual meshes after baking transforms.
-    for (const child of [...root.children]) if (!child.isInstancedMesh) root.remove(child);
-    stats.batches = batches.length;
-    stats.instances = batches.reduce((n, b) => n + b.count, 0);
+    for (const child of [...root.children]) if (!child.isInstancedMesh && !child.userData.b3Batch) root.remove(child);
+    stats.batches = groups.size;
+    stats.allocatedBatches = batches.length;
+    stats.instances = meshes.length;
   }
   async function build(a, S, info) {
     dispose();
@@ -73,14 +82,12 @@ export function createTheme(api) {
     daylightPool.forEach(light => g.scene.remove(light));
     g.camera.far = 80; g.camera.updateProjectionMatrix();
     city = createRuinedCityKit(THREE); urban = createB3UrbanProps(THREE);
+    finish = createCitySurfaces(THREE, g.high);
     const cube = geo(new THREE.BoxGeometry(1, 1, 1));
-    const paving = [0x898779, 0x777a72, 0x959184].map(color => mat({ color, roughness: 1 }));
-    const stone = mat({ color: 0x77766f, roughness: 1 }), soil = mat({ color: 0x494c3d, roughness: 1 });
-    const steel = mat({ color: 0x42494a, roughness: 0.85, metalness: 0.25 });
-    const grass = mat({ color: 0x526548, roughness: 1, flatShading: true });
-    const tuft = geo(new THREE.ConeGeometry(0.14, 0.55, 3));
+    const { paving, stone, soil, rust: steel, leaf: grass } = finish.palette;
+    const tuft = finish.fern;
     const chip = geo(new THREE.IcosahedronGeometry(0.18, 0));
-    const water = mat({ color: 0x465f60, roughness: 0.3, metalness: 0.1 });
+    const water = mat({ color: 0x354f4b, roughness: 0.22, metalness: 0.1 });
     const { ch, wallCell, open, facing } = info;
     const reserved = new Set();
     for (const o of a.objects) for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) reserved.add(`${o.tx + dx},${o.ty + dz}`);
@@ -136,7 +143,7 @@ export function createTheme(api) {
       for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
         const k = hash(x * n + i, z * n + j, 202), edge = i === 0 || j === 0 || i === n - 1 || j === n - 1;
         // Small surface relief only; avoid a false impassable crater on traversable tiles.
-        const slab = add(cube, paving[Math.floor(k * 3)], px + (i + 0.5) * unit - 2, -0.07 + (safe ? 0 : k * 0.07), pz + (j + 0.5) * unit - 2, unit - 0.045, 0.14, unit - 0.045);
+        const slab = add(finish.slabs[Math.floor(k * 3)], paving[Math.floor(k * 3)], px + (i + 0.5) * unit - 2, -0.07 + (safe ? 0 : k * 0.07), pz + (j + 0.5) * unit - 2, unit - 0.045, 0.14, unit - 0.045);
         if (!safe && !edge) slab.rotation.z = (k - 0.5) * 0.07;
       }
       if (!safe && r < 0.2) {
@@ -173,7 +180,8 @@ export function createTheme(api) {
       }
     }
     batchStatic();
-    const sun = new THREE.DirectionalLight(0xffe6ba, 2.4);
+    skyMesh = finish.sky(); root.add(skyMesh);
+    const sun = new THREE.DirectionalLight(0xffe3ac, 3.0);
     sun.position.set(a.w * 2 - 35, 65, a.h * 2 - 25);
     sun.target.position.set(a.w * 2, 0, a.h * 2); root.add(sun, sun.target);
     // Keep the established entry/sync contract for all interactive objects.
@@ -187,7 +195,7 @@ export function createTheme(api) {
         case 'sign': e.obj = place(g.world, S.sign, x, 0, z, ry); e.at.y = 1.8; break;
         case 'switch': e.obj = place(g.world, S.lever, x, 0, z, ry, 0.85); e.at.y = 1.7; break;
         case 'gate': e.obj = place(g.world, S.runeDoor, x - dx * 1.9, 0, z - dz * 1.9, ry); break;
-        case 'exit': e.obj = place(g.world, S.rootArch, x, 0, z, f === 'up' || f === 'down' ? 0 : Math.PI / 2, 0.92); break;
+        case 'exit': e.obj = place(g.world, prototype('exitArch', () => city.arch(3.2, 3.5)), x - DIR_VEC[f][0] * 1.7, 0, z - DIR_VEC[f][1] * 1.7, f === 'up' || f === 'down' ? 0 : Math.PI / 2, 0.92); break;
         case 'npc': e.obj = place(g.world, o.id === 'statue' ? prototype('statue', () => city.statue()) : await load(npcFile(o)), x, 0, z, ry); e.at.y = 2.2; break;
         case 'door': if (!o.hidden) e.ry = open(o.tx, o.ty - 1) || open(o.tx, o.ty + 1) ? 0 : Math.PI / 2; break;
         default: break;
@@ -201,10 +209,10 @@ export function createTheme(api) {
     daylightPool.forEach(light => g.scene.add(light));
     g.camera.far = originalFar; g.camera.updateProjectionMatrix();
     for (const batch of batches) batch.dispose();
-    city?.dispose(); urban?.dispose();
+    city?.dispose(); urban?.dispose(); finish?.dispose(); finish = null; skyMesh = null;
     geometries.forEach(x => x.dispose()); materials.forEach(x => x.dispose());
-    root = city = urban = null; batches = []; geometries = []; materials = []; placements = []; prototypes.clear(); lowMaterials.clear(); stats = {};
+    root = city = urban = null; batches = []; geometries = []; materials = []; placements = []; prototypes.clear(); stats = {};
   }
-  return { area: 3, env, build, dispose, tick() {}, async sync() { return false; },
-    info: () => ({ ...stats, placed: !!root, placements, memory: { ...g.renderer.info.memory } }) };
+  return { area: 3, env, build, dispose, tick() { if (skyMesh) skyMesh.position.copy(g.camera.position); }, async sync() { return false; },
+    info: () => ({ ...stats, placed: !!root, surfaceTextures: finish?.textureCount || 0, placements, memory: { ...g.renderer.info.memory } }) };
 }
