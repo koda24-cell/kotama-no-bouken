@@ -123,18 +123,25 @@ function extEnemyStatEffect(rec, type, apply, target) {
   }
 }
 // 戻り値："new"（新規）／"refresh"（持続か強さを更新）／"same"（変化なし）／false（付与できない）
+let extModifierOrder = 0;
 function addStatus(t, type, opts = {}) {
   type = extStatusId(type);
   const def = EXT_STATUS_DEFS[type], bag = extStatusBag(t, true);
   if (!def || !bag) return false;
-  // 同系統の強化・弱体化は相殺する（残存する効果を同時に保持しない）。
-  const opposite = { attackDown:"attackUp", defenseDown:"defenseUp", attackUp:"attackDown", defenseUp:"defenseDown" }[type];
-  if (opposite && bag[opposite]) { extRemoveStatus(t, opposite); return "same"; }
   const turns = Math.max(1, Math.floor(opts.turns ?? def.turns ?? 3));
   const power = Number.isFinite(opts.power) ? opts.power : (def.power ?? 0);
   const party = extIsParty(t);
+  const isModifier = /^(attackUp|defenseUp|speedUp|attackDown|defenseDown)$/.test(type);
   const cur = bag[type];
   if (cur) {
+    if (isModifier) {
+      // 同系統の再使用は効果量と持続時間を加算。上限9ターン。
+      if (!party) extEnemyStatEffect(cur, type, false, t);
+      cur.turns = Math.min(9, cur.turns + turns);
+      cur.power += power;
+      if (!party) extEnemyStatEffect(cur, type, true, t);
+      return "refresh";
+    }
     const changed = turns > cur.turns || power > cur.power;
     cur.turns = Math.max(cur.turns, turns);
     if (power > cur.power) {
@@ -144,7 +151,16 @@ function addStatus(t, type, opts = {}) {
     }
     return changed ? "refresh" : "same";
   }
-  const rec = { turns, power, fresh: def.fresh === "always" || (def.fresh === "party" && party) };
+  if (isModifier) {
+    const category = type.endsWith("Up") ? "Up" : "Down";
+    const active = Object.keys(bag).filter(k => k.endsWith(category) && /^(attackUp|defenseUp|speedUp|attackDown|defenseDown)$/.test(k));
+    if (active.length >= 3) {
+      const oldest = active.reduce((a,b) => (bag[a].appliedOrder || 0) <= (bag[b].appliedOrder || 0) ? a : b);
+      extRemoveStatus(t, oldest);
+    }
+  }
+  const rec = { turns: isModifier ? Math.min(9, turns) : turns, power, fresh: def.fresh === "always" || (def.fresh === "party" && party) };
+  if (isModifier) rec.appliedOrder = ++extModifierOrder;
   bag[type] = rec;
   if (!party) extEnemyStatEffect(rec, type, true, t);
   return "new";
@@ -385,6 +401,7 @@ function extBattlePortrait(c) {
 }
 
 function extResetBattle() {
+  extModifierOrder = 0;
   extPartyStatuses = {};
   extPartyImmunity = {};
   battleState._ailmentTolerance = {};
