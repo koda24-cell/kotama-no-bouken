@@ -258,3 +258,50 @@
   #battle.battle-ui-preview #battle-party .battle-member { max-height:none; min-height:90px; overflow:hidden; }
   #battle.battle-ui-preview .battle-preview-hero { pointer-events:none; }
 }
+
+
+/* Side-by-side command submenu: primary actions left, selection right. */
+@media (min-width:900px) {
+ #battle.battle-ui-preview .battle-preview-primary-rail:not([hidden]) {
+   position:absolute; z-index:7; left:14px; top:115px;
+   width:var(--battle-command-width); box-sizing:border-box;
+   display:flex; flex-direction:column; gap:6px;
+   padding:13px 10px;
+   border:2px solid #7ee9fa; border-radius:15px 5px 15px 5px;
+   background:linear-gradient(120deg,#063c59f2,#00213cf2);
+   box-shadow:0 0 20px #00c7ff33;
+ }
+ #battle.battle-ui-preview .battle-preview-rail-button {
+   width:100%; min-height:43px; padding:8px 14px;
+   border:1px solid #79e9fa; border-radius:22px 4px 22px 4px;
+   color:#e9fbff; font-weight:800; text-align:left;
+   background:linear-gradient(110deg,#0a6e92,#00324e);
+   cursor:pointer;
+ }
+ #battle.battle-ui-preview .battle-preview-rail-button:hover,
+ #battle.battle-ui-preview .battle-preview-rail-button:focus-visible {
+   background:linear-gradient(110deg,#de886a,#b3436b);
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window {
+   left:calc(24px + var(--battle-command-width));
+   top:155px;
+   width:clamp(220px,26vw,330px);
+   height:auto; min-height:150px; max-height:400px;
+   z-index:8; overflow-y:auto;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open #battle-commands {
+   display:flex; flex-direction:column; gap:6px;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open #battle-commands>.command-option {
+   min-height:40px; width:100%; padding:8px 12px; text-align:left;
+   background:linear-gradient(110deg,#0b5576,#072943);
+   border:1px solid #6dd9ee; border-radius:18px 4px 18px 4px;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open #battle-commands>.command-option:hover,
+ #battle.battle-ui-preview.battle-preview-side-open #battle-commands>.command-option:focus-visible {
+   background:linear-gradient(110deg,#db8c64,#ac4168);
+ }
+}
+@media (max-width:899px) {
+ #battle.battle-ui-preview .battle-preview-primary-rail { display:none!important; }
+}
