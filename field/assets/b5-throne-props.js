@@ -287,6 +287,87 @@ export function createB5ThroneProp(THREE, kind, options={}) {
       beamBetween([x,i*0.45,-2.8],[x+1.1,i*0.45+2.2,-3.2],0.28,stone);
     }
   }
+  // Fifth pass: secondary ornament silhouettes, damaged balustrades and masonry layers.
+  // Detail can be reduced for distant instances without altering the public API.
+  const detail=options.detail==='low'?'low':'high';
+  const ornamentalCrown=(x,y,z,scale=1)=>{
+    mesh(cube,stone,x,y,z,2.1*scale,0.35*scale,1.6*scale);
+    for(let i=0;i<5;i++){
+      const px=x+(i-2)*0.43*scale;
+      mesh(spike,iron,px,y+0.55*scale,z,0.32*scale,(i===2?1.5:0.9)*scale,0.32*scale);
+    }
+  };
+  if(kind==='gothicArch'){
+    ornamentalCrown(0,15.6,-0.4,1.7);
+    for(const side of [-1,1]){
+      const finial=mesh(fracturedColumnGeo,stone,side*5.8,9.1,-2.2,0.5,2.6,0.5);
+      finial.rotation.z=side*0.24;
+      for(let i=0;i<3;i++)mesh(spike,iron,side*(4.9+i*0.5),11.5-i*0.7,-2.1,0.45,1.4,0.45);
+    }
+  }
+  if(kind==='ruinedPillar'){
+    ornamentalCrown(0,10.6,0,1.0);
+    if(detail==='high')for(let i=0;i<8;i++){
+      const a=i*Math.PI/4;
+      const x=Math.cos(a)*1.1,z=Math.sin(a)*1.1;
+      beamBetween([x,2.2,z],[x*1.15,6.7,z*1.15],0.13,iron);
+    }
+  }
+  if(kind==='hangingBanner'){
+    // Hanging chains and asymmetrically broken ornamental end weights.
+    for(let i=0;i<7;i++){
+      const x=0.3+i*0.53;
+      const y=11.0-(i%3)*0.3;
+      mesh(spike,iron,x,y,0.12,0.3,0.65+(i%2)*0.4,0.3).rotation.z=Math.PI;
+    }
+    if(detail==='high')for(let i=0;i<8;i++){
+      const y=9.8-i*0.58;
+      beamBetween([0,y,0.25],[0.12+(i%2)*0.1,y-0.5,0.25],0.055,iron);
+    }
+  }
+  if(kind==='grandChandelier'){
+    ornamentalCrown(0,13.9,0,0.85);
+    if(detail==='high')for(let i=0;i<24;i++){
+      const a=i*Math.PI/12;
+      const x=Math.cos(a)*3.65,z=Math.sin(a)*3.65;
+      mesh(spike,iron,x,7.6-(i%3)*0.35,z,0.22,0.85+(i%4)*0.2,0.22).rotation.z=Math.PI;
+    }
+  }
+  if(kind==='fracturedAltar'){
+    ornamentalCrown(0,3.7,-1.5,1.5);
+    for(let i=0;i<6;i++){
+      const x=(i-2.5)*1.45;
+      const h=1.2+(i%3)*0.6;
+      mesh(fracturedColumnGeo,stone,x,1.3,-2.3,0.34,h,0.4).rotation.z=(i%2?0.3:-0.25);
+    }
+  }
+  if(kind==='candleSanctuary'){
+    // Tall reliquary-like silhouette and ring of raised candle stands.
+    ornamentalCrown(0,3.4,0,1.15);
+    mesh(fracturedColumnGeo,stone,0,1.05,0,0.65,2.4,0.65);
+    for(let i=0;i<8;i++){
+      const a=i*Math.PI/4,x=Math.cos(a)*3.4,z=Math.sin(a)*2.0;
+      mesh(rod,iron,x,1.7,z,1.4,1.5,1.4);
+      mesh(spike,fire,x,2.7,z,0.35,0.55,0.35);
+    }
+  }
+  if(kind==='brokenStair'){
+    for(let i=0;i<7;i++){
+      const x=-4.6+i*1.35,y=0.4+i*0.52;
+      const post=mesh(fracturedColumnGeo,stone,x,y,-2.6,0.28,0.85+(i%3)*0.3,0.28);
+      post.rotation.z=(i%2?0.18:-0.3);
+    }
+    ornamentalCrown(5.5,5.5,-2.5,0.75);
+  }
+  if(kind==='shatteredRoseWindow'){
+    ornamentalCrown(0,13.4,0,0.9);
+    // Additional empty spans: detached fragments form an interrupted outer tracery.
+    for(let i=0;i<7;i++){
+      const a=0.2+i*0.76,x=Math.cos(a)*5.1,y=8+Math.sin(a)*5.1;
+      const m=mesh(fracturedColumnGeo,stone,x,y,-0.5,0.27,0.9,0.27);
+      m.rotation.z=a;
+    }
+  }
   const scale=Number.isFinite(options.scale)?Math.max(0.1,Math.min(4,options.scale)):1;
   group.scale.setScalar(scale);
   let disposed=false;
