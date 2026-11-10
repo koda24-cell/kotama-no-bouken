@@ -78,9 +78,10 @@
       if (hud.dataset.actorId !== actor.id) {
         hud.dataset.actorId = actor.id;
         portrait.replaceChildren();
-        if (actor.image) {
+        const portraitSrc = typeof getCharacterImage === "function" ? getCharacterImage(actor) : actor.image;
+        if (portraitSrc) {
           const img = document.createElement("img");
-          img.src = actor.image;
+          img.src = portraitSrc;
           img.alt = "";
           img.onerror = () => { img.remove(); portrait.textContent = actor.emblem || "◇"; };
           portrait.appendChild(img);
@@ -119,8 +120,7 @@
         existingToggle?.remove();
         return;
       }
-      // Show the sixth requested command without pretending a turn-consuming
-      // formation action exists in the current combat engine.
+      // Add the formation move command only in the opt-in preview.
       if (!box.querySelector("[data-preview-move]")) {
         const move = document.createElement("button");
         move.type = "button";
