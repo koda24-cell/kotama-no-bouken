@@ -63,7 +63,7 @@
     window.renderBattle = function () {
       const result = originalRender.apply(this, arguments);
       document.querySelectorAll("#battle-party .battle-member").forEach(card => {
-        const id = card.dataset.characterId || card.dataset.character || card.dataset.id;
+        const id = card.dataset.partyId;
         if (id) card.dataset.row = window.kotamaBattleRowOfParty(getCharacter(id));
       });
       return result;
