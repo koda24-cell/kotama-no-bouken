@@ -331,6 +331,54 @@ export function createB3UrbanProps(THREE) {
     }
     return g;
   }
+  // Street-scale collapsed skybridge: exaggerated silhouette with broken spans.
+  function collapsedSkybridge(variant=0) {
+    const v=((variant%3)+3)%3,g=group('collapsed_skybridge_'+v);
+    const height=v===1?3.3:4.6,span=v===2?8.5:6.8;
+    for(const x of [-span*.48,span*.48]) {
+      beam(g,[x,0,-.9],[x,height-.2,-.9],.23);
+      beam(g,[x,0,.9],[x,height-.2,.9],.23);
+      beam(g,[x,height-.3,-.9],[x,height-.3,.9],.14);
+    }
+    // Bridge is not a solid beam: left section hangs, middle is absent.
+    const left=add(g,cube,concrete,-span*.29,height-.1,0,span*.4,.32,2.2);
+    left.rotation.z=v===0?-.24:-.12;
+    const right=add(g,cube,concrete,span*.37,height-.55,0,span*.26,.3,2);
+    right.rotation.z=v===1?.42:-.33;
+    for(const z of [-.85,.85]) {
+      beam(g,[-span*.46,height+.15,z],[-span*.13,height-.35,z],.095);
+      beam(g,[span*.23,height-.8,z],[span*.49,height-.22,z],.1);
+      for(let i=0;i<3;i++) {
+        const x=-span*.12+i*.32;
+        beam(g,[x,height-.1,z],[x+.17,height-.95-i*.18,z],.04);
+      }
+    }
+    for(let i=0;i<7;i++) {
+      const x=(i%4-1.5)*.8,z=(Math.floor(i/4)-.5)*1.5;
+      const slab=add(g,cube,concrete,x,.16+(i%3)*.13,z,.75,.22,.65);
+      slab.rotation.set(i*.14,i*.25,(i%2?.4:-.3));
+    }
+    // Vines climb surviving piers.
+    for(const x of [-span*.48,span*.48]) {
+      beam(g,[x-.4,.1,.95],[x-.2,1.6,.97],.11,growth);
+      beam(g,[x-.2,1.6,.97],[x+.1,2.9,.95],.075,growth);
+    }
+    return g;
+  }
+  // Deliberately non-walkable landmark composition; caller controls placement.
+  function ruinedPlaza(variant=0) {
+    const v=((variant%3)+3)%3,g=group('ruined_plaza_'+v);
+    for(let i=0;i<7;i++) {
+      const tile=rootedPavement(1000+v*31+i);
+      tile.position.set((i%3-1)*2.15,0,(Math.floor(i/3)-1)*2.1);
+      tile.scale.set(.65,.85,.65);g.add(tile);
+    }
+    const bridge=collapsedSkybridge(v);bridge.position.set(0,0,-3.5);bridge.rotation.y=v*.22;g.add(bridge);
+    const wreck=steelWreck(v);wreck.position.set(2.6,0,1.8);wreck.scale.set(1.15,1.2,1.15);g.add(wreck);
+    const tree=invasiveTree(v);tree.position.set(-3,0,1.8);tree.scale.set(.85,.9,.85);g.add(tree);
+    const sign=brokenSign(v);sign.position.set(3.8,0,-.4);g.add(sign);
+    return g;
+  }
   function dispose(){geos.forEach(x=>x.dispose());[concrete,metal,dark,growth].forEach(x=>x.dispose());}
-  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,collapsedOverpass,sunkenStreet,dispose};
+  return {utilityPole,radioTower,steelWreck,brokenSign,rootedPavement,ruinedBuilding,invasiveTree,ruinedBlock,collapsedOverpass,sunkenStreet,collapsedSkybridge,ruinedPlaza,dispose};
 }
