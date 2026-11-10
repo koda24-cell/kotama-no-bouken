@@ -31,12 +31,20 @@ export function createRuinedCityKit(THREE) {
   }
   function arch(width=3.4,height=3.6) {
     const g=group('arch');
-    for(const s of [-1,1]) {
-      add(g,cube,stone,s*width*.5,height*.44,0,.68,height*.88,.76);
-      add(g,cube,stone,s*width*.5,.18,0,.95,.36,.95);
+    const spring=height*.56, rise=height-spring, radius=width*.5;
+    // Voussoirs follow a semicircular arc; the opening stays clear.
+    for(const side of [-1,1]) {
+      add(g,cube,stone,side*radius,spring*.5,0,.52,spring,.76);
+      add(g,cube,stone,side*radius,.18,0,.86,.36,.94);
     }
-    add(g,cube,stone,0,height-.22,0,width+.9,.44,.86);
-    for(let i=0;i<5;i++) add(g,cube,gold,(i-2)*width/5,height-.5,.46,width/5-.07,.10,.05);
+    const n=11;
+    for(let i=0;i<n;i++) {
+      const a=Math.PI*i/(n-1);
+      const x=Math.cos(a)*radius, y=spring+Math.sin(a)*rise;
+      const m=add(g,cube,i===5?gold:stone,x,y,0,.42,.49,.78);
+      m.rotation.z=a-Math.PI/2;
+    }
+    for(const side of [-1,1]) add(g,cube,stone,side*(radius+.31),height-.1,0,.64,.22,.88);
     return g;
   }
   function facade(width=5,height=3.8) {
@@ -67,13 +75,27 @@ export function createRuinedCityKit(THREE) {
   }
   function tower() {
     const g=group('tower');
-    for(let y=0;y<5;y++) {
-      const w=y>3?2.4:2.8;
-      add(g,cube,stone,0,y+.5,0,w,.96,w);
-      add(g,cube,shadow,0,y+.5, w/2+.014,.24,.38,.025);
-      if(y<4) add(g,cube,stone,0,y+.96,0,w+.2,.10,w+.2);
+    // Stepped octagonal masonry core, distinct floors and open parapet.
+    const coreGeo=cylinder(1.34,1.55,1,8);
+    const corniceGeo=cylinder(1.55,1.55,.16,8);
+    for(let level=0;level<4;level++) {
+      const radius=1.48-level*.08;
+      add(g,coreGeo,stone,0,.55+level*1.08,0,radius/1.55,1.04,radius/1.55,Math.PI/8);
+      add(g,corniceGeo,stone,0,1.08+level*1.08,0,(radius+.13)/1.55,1,(radius+.13)/1.55,Math.PI/8);
+      for(let side=0;side<8;side++) {
+        const a=(side+.5)*Math.PI/4, rr=radius*.89;
+        const recess=add(g,cube,shadow,Math.sin(a)*rr,.56+level*1.08,Math.cos(a)*rr,.32,.56,.06,a);
+        recess.rotation.y=a;
+        add(g,cube,stone,Math.sin(a)*rr,.91+level*1.08,Math.cos(a)*rr,.44,.12,.14,a);
+      }
     }
-    for(const x of [-1.05,1.05]) add(g,cube,stone,x,5.3,0,.6,.6,2.8);
+    // Jagged, interrupted crenellations produce a broken skyline.
+    for(let side=0;side<8;side++) {
+      if(side===2||side===5) continue;
+      const a=side*Math.PI/4;
+      add(g,cube,stone,Math.sin(a)*1.25,4.7,Math.cos(a)*1.25,.55,.6,.4,a);
+    }
+    add(g,cube,shadow,0,4.4,0,1.45,.08,1.45);
     return g;
   }
   function rubble(seed=1) {
