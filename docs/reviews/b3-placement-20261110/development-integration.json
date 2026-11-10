@@ -1,0 +1,183 @@
+{
+  "developmentBase": "03df831",
+  "b3": {
+    "puzzle": {
+      "solved": true,
+      "door": "open"
+    },
+    "lifecycle": [
+      {
+        "area": 1,
+        "far": 48,
+        "roots": 0,
+        "points": 6,
+        "memory": {
+          "geometries": 114,
+          "textures": 301
+        }
+      },
+      {
+        "area": 3,
+        "far": 80,
+        "roots": 1,
+        "points": 2,
+        "memory": {
+          "geometries": 121,
+          "textures": 301
+        }
+      },
+      {
+        "area": 1,
+        "far": 48,
+        "roots": 0,
+        "points": 6,
+        "memory": {
+          "geometries": 114,
+          "textures": 301
+        }
+      },
+      {
+        "area": 3,
+        "far": 80,
+        "roots": 1,
+        "points": 2,
+        "memory": {
+          "geometries": 121,
+          "textures": 301
+        }
+      }
+    ],
+    "save": {
+      "same": true,
+      "area": 3,
+      "floor": 0
+    },
+    "stairs": {
+      "floor": 1
+    },
+    "failures": []
+  },
+  "b5": {
+    "errors": [],
+    "rapidSwitch": true,
+    "cycles": [
+      {
+        "area": 5,
+        "floor": 0,
+        "render": {
+          "calls": 103,
+          "triangles": 56141,
+          "memory": {
+            "geometries": 49,
+            "textures": 56
+          }
+        },
+        "mode": "map-driven-3d"
+      },
+      {
+        "area": 3,
+        "floor": 0,
+        "render": {
+          "calls": 286,
+          "triangles": 291777,
+          "memory": {
+            "geometries": 50,
+            "textures": 88
+          }
+        },
+        "mode": "b3-ruined-city"
+      },
+      {
+        "area": 5,
+        "floor": 0,
+        "render": {
+          "calls": 103,
+          "triangles": 56141,
+          "memory": {
+            "geometries": 61,
+            "textures": 90
+          }
+        },
+        "mode": "map-driven-3d"
+      },
+      {
+        "area": 3,
+        "floor": 2,
+        "render": {
+          "calls": 223,
+          "triangles": 162226,
+          "memory": {
+            "geometries": 66,
+            "textures": 132
+          }
+        },
+        "mode": "b3-ruined-city"
+      },
+      {
+        "area": 5,
+        "floor": 2,
+        "render": {
+          "calls": 81,
+          "triangles": 93222,
+          "memory": {
+            "geometries": 91,
+            "textures": 140
+          }
+        },
+        "mode": "map-driven-3d"
+      },
+      {
+        "area": 1,
+        "floor": 0,
+        "render": {
+          "calls": 1195,
+          "triangles": 3651116,
+          "memory": {
+            "geometries": 104,
+            "textures": 274
+          }
+        },
+        "mode": null
+      },
+      {
+        "area": 5,
+        "floor": 0,
+        "render": {
+          "calls": 103,
+          "triangles": 56141,
+          "memory": {
+            "geometries": 130,
+            "textures": 276
+          }
+        },
+        "mode": "map-driven-3d"
+      },
+      {
+        "area": 4,
+        "floor": 0,
+        "render": {
+          "calls": 137,
+          "triangles": 678663,
+          "memory": {
+            "geometries": 123,
+            "textures": 292
+          }
+        },
+        "mode": "map-driven-3d"
+      },
+      {
+        "area": 5,
+        "floor": 0,
+        "render": {
+          "calls": 103,
+          "triangles": 56141,
+          "memory": {
+            "geometries": 135,
+            "textures": 292
+          }
+        },
+        "mode": "map-driven-3d"
+      }
+    ]
+  }
+}
