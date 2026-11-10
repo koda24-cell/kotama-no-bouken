@@ -774,6 +774,14 @@ function awardMaterials(enemy){
   const table={"スライム":[["slime_jelly",.5]],"オオカミ":[["monster_fang",.4],["monster_hide",.2]],"ゴブリン":[["goblin_cloth",.4]],"ドラゴン":[["dragon_scale",1],["dragon_claw",.5]],"魔王":[["maou_crystal",1],["maou_horn",.5]]}[name]||[];
   const attempts=name==="ゴブリン"&&Array.isArray(enemy.members)?enemy.members.length:1;
   for(let n=0;n<attempts;n++)for(const [id,chance] of table){if(Math.random()<chance){materials[id]=(materials[id]||0)+1;const existing=drops.find(x=>x.id===id);if(existing)existing.count++;else drops.push({id,name:materialNames[id],count:1});}}
+  // 状態異常が残ったまま撃破した場合の条件付き素材。通常ドロップと別枠。
+  if(battleState._ailmentKill){
+    const id="ailment_essence";
+    materialNames[id]="異常の残滓";
+    materials[id]=(materials[id]||0)+1;
+    drops.push({id,name:materialNames[id],count:1});
+    battleState._ailmentKill=false;
+  }
   if(drops.length)pushLog(`素材を入手：${drops.map(x=>`${x.name}×${x.count}`).join("、")}`);
   return drops;
 }
