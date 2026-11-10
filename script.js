@@ -1835,7 +1835,7 @@ function showHitEffect(kind="slash",targetNode=null){
   setTimeout(()=>fx.remove(),battleDelayMs(duration));
 }
 // 魔術師の魔法は、対象ごとに演出→ダメージ→HP表示更新の順で処理する。
-async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
+async function applySequentialMagicHits(enemy,targets,damage,skill,actor,fastCompression=false){
   let total=0;
   for(const target of targets){
     if(!target||enemyHpTotal(enemy)<=0)break;
@@ -1845,7 +1845,7 @@ async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
     if(beforeNode){beforeNode.classList.remove("magic-target-hit");void beforeNode.offsetWidth;beforeNode.classList.add("magic-target-hit");}
     else if(display){display.classList.remove("magic-target-active");void display.offsetWidth;display.classList.add("magic-target-active");}
     showHitEffect(skill.element==="炎"||skill.type==="level-flare"?"flame":skill.element==="雷"?"lightning":skill.element==="氷"?"ice":"magic",beforeNode);
-    await wait(140);
+    await wait(fastCompression?70:140);
     const value=applyDamageToEnemyTarget(enemy,target,damage);
     total+=value;
     if(value>0){
@@ -1860,7 +1860,7 @@ async function applySequentialMagicHits(enemy,targets,damage,skill,actor){
     }else if(lastEnemyAttackMissed){
       pushLog(`${target.ref.displayName||target.ref.name||enemy.name}は魔法攻撃を回避した！`);
     }
-    await wait(260);
+    await wait(fastCompression?130:260);
     if(display)display.classList.remove("magic-target-active");
     renderBattle();
   }
@@ -1885,7 +1885,7 @@ const stats=effectiveStats(actor);if(actor.id==="mage"&&mageCompressionStacks.ma
      const all=skill.target==="allEnemies",hits=magical?compressionHits:1;let total=0;if(!magical)beginEnemyDamagePreview(enemy);
      for(let h=0;h<hits;h++){
        const targets=all?livingEnemyTargets(enemy):[livingEnemyTargets(enemy).find(t=>t.ref.id===a.targetId||t.kind===a.targetId)||livingEnemyTargets(enemy)[0]].filter(Boolean);
-       if(magical){total+=await applySequentialMagicHits(enemy,targets,Math.max(1,Math.floor(raw)),skill,actor);}
+       if(magical){total+=await applySequentialMagicHits(enemy,targets,Math.max(1,Math.floor(raw)),skill,actor,actor.id==="mage"&&compressionHits>=6);}
        else{for(const target of targets){const targetDamage=applyWeaponAttributeDamage(enemy,calcPhysical(raw,Number.isFinite(target.ref.defense)?target.ref.defense:enemy.defense),actor);const dealt=applyDamageToEnemyTarget(enemy,target,Math.max(1,Math.floor(targetDamage)));total+=dealt;if(dealt>0)addBreakDamage(enemy,"sp",getWeaponPhysicalElement(actor),actor);if(enemyHpTotal(enemy)<=0)break;}}
        if(enemyHpTotal(enemy)<=0)break;
      }
