@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-23";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-24";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -323,12 +323,21 @@
         toggle.textContent = "ユニオンスキル";
         toggle.setAttribute("aria-expanded", "false");
         toggle.addEventListener("click", () => {
-          unionMenuOpen = !unionMenuOpen;
-          unionPanel.hidden = !unionMenuOpen;
-          toggle.setAttribute("aria-expanded", String(unionMenuOpen));
-          toggle.textContent = unionMenuOpen ? "ユニオンを閉じる" : "ユニオンスキル";
+          // Move the existing live Union buttons into the right-hand submenu.
+          // Moving (not cloning) retains all original click handlers.
+          const choices = [...unionPanel.querySelectorAll(".union-list button")];
+          battleState.menuMode = "union-preview";
+          document.getElementById("command-title").textContent = (typeof currentActor === "function" ? currentActor()?.name : "") + "のユニオンスキル";
+          box.replaceChildren(...choices);
+          const back = document.createElement("button");
+          back.type = "button";
+          back.className = "command-option back-option";
+          back.textContent = "戻る";
+          back.addEventListener("click", () => renderActionMenu());
+          box.appendChild(back);
           const info = document.getElementById("command-description");
-          if (info && unionMenuOpen) info.textContent = "発動するユニオンスキルを選択してください。";
+          if (info) info.textContent = "発動するユニオンスキルを選択してください。";
+          updateCommandLayout();
         });
         box.insertBefore(toggle, unionPanel);
       }
