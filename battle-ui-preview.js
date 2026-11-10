@@ -267,7 +267,6 @@
         requestAnimationFrame(() => commands?.querySelector('[data-action="back"]')?.click());
       }
     });
-    primaryRail.appendChild(backActorButton);
     for (const [label,action] of railActions) {
       const button = document.createElement("button");
       button.type = "button"; button.className = "battle-preview-rail-button"; button.textContent = label;
@@ -306,6 +305,7 @@
       if (!option) return;
       expandedAction = option.dataset.action || (option.dataset.previewUnionToggle ? "preview-union-toggle" : "preview-move");
     }, true);
+    primaryRail.appendChild(backActorButton);
     const railSync = new MutationObserver(() => { primaryRail.hidden = !battle.classList.contains("battle-preview-side-open"); });
     if (commands) railSync.observe(commands, {childList:true});
     primaryRail.hidden = true;
