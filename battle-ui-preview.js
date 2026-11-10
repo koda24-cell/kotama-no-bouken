@@ -117,6 +117,19 @@
         existingToggle?.remove();
         return;
       }
+      // Show the sixth requested command without pretending a turn-consuming
+      // formation action exists in the current combat engine.
+      if (!box.querySelector("[data-preview-move]")) {
+        const move = document.createElement("button");
+        move.type = "button";
+        move.className = "command-option battle-preview-move";
+        move.dataset.previewMove = "1";
+        move.textContent = "編成位置入れ替え";
+        move.disabled = true;
+        move.title = "ターン消費と保存処理の実装待ち";
+        move.setAttribute("aria-label", "編成位置入れ替え：未実装");
+        box.insertBefore(move, unionPanel);
+      }
       if (!existingToggle) {
         unionMenuOpen = false;
         const toggle = document.createElement("button");
