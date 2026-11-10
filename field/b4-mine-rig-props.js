@@ -105,6 +105,53 @@ export function createB4MineRigProps() {
     const x=-1.3+i*.67;
     add(box,ash,x,5.9+(i%2)*.16,-.85,.12,.65+(i%3)*.3,.15,(i-2)*.26);
   }
+  // Fourth pass: a half-buried, tipped ore cart grows directly out of the existing rail collapse.
+  // Wheels are not just dots: they have hubs, rims and visible spokes.
+  const cart=new THREE.Group();cart.name='b4:buried-ore-cart';cart.position.set(.65,.55,2.25);
+  cart.rotation.set(-.2,.34,-.24);root.add(cart);
+  const cartAdd=(geo,mat,x,y,z,sx=1,sy=1,sz=1,rz=0,rx=0)=>{
+    const o=new THREE.Mesh(geo,mat);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.rotation.set(rx,0,rz);cart.add(o);
+  };
+  cartAdd(box,iron,0,.25,0,1.55,.22,1.35);
+  for(const side of [-1,1]){
+    cartAdd(box,iron,side*.69,.69,0,.16,.8,1.43,side*.19);
+    cartAdd(box,iron,0,.68,side*.6,1.45,.7,.14,side*.12);
+    for(const z of [-.43,.43]){
+      cartAdd(cylinder,iron,side*.85,-.1,z,.37,.16,.37,0,Math.PI/2);
+      cartAdd(rim,iron,side*.95,-.1,z,.36,.36,.36,0,Math.PI/2);
+      for(let j=0;j<5;j++){
+        const a=j*Math.PI*2/5;
+        cartAdd(box,iron,side*.98,-.1+Math.sin(a)*.17,z+Math.cos(a)*.17,.035,.31,.035,a);
+      }
+    }
+  }
+  // Ore heap spills out of the damaged cart, with one exaggerated protruding boulder.
+  for(let i=0;i<13;i++){
+    const a=i*2.399963,r=.2+Math.sqrt(i)*.22;
+    const x=Math.cos(a)*r,z=Math.sin(a)*r;
+    const size=i===0?1.05:.2+(i%4)*.12;
+    cartAdd(fractured,ash,x,.95+size*.25,z,size,size*.8,size*.7,a*.17,a*.13);
+  }
+  for(let i=0;i<6;i++){
+    const a=i*2.399963;
+    add(fractured,ash,1.45+Math.cos(a)*(1.1+i*.1),.18,-.2+Math.sin(a)*(.65+i*.1),
+      .35+(i%3)*.16,.3+(i%2)*.13,.35+(i%3)*.16,a*.1);
+  }
+  // A snapped overhead catwalk, with uneven surviving planks and a hanging rail.
+  for(let i=0;i<6;i++){
+    const x=-2.3+i*.75;
+    if(i===3)continue; // a clear, oversized missing section
+    add(box,wood,x,3.45,-2.75,.62,.16,1.2,(i-2)*.08);
+    if(i%2===0)add(box,iron,x,4.0,-3.15,.08,1.15,.08,(i-2)*.11);
+  }
+  add(box,iron,2.1,2.4,-3.12,.08,2.7,.08,.55);
+  add(box,wood,2.35,1.85,-3.0,.28,2.8,.26,-.5);
+  // Rope and timber dangling from the destroyed catwalk.
+  for(let i=0;i<3;i++){
+    const x=-1.6+i*1.55;
+    add(box,rope,x,2.6,-3.0,.035,1.6+(i%2)*.5,.035,(i-1)*.12);
+    add(shard,wood,x,1.7-(i%2)*.25,-3.0,.18,.52,.18,(i-1)*.38);
+  }
   root.userData.disposeB4MineRig=()=>{geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());};
   return root;
 }
