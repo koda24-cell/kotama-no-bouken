@@ -31,6 +31,14 @@
       eventTitle.textContent = "EVENT";
       eventTitle.setAttribute("aria-label", "イベントログ");
     }
+    // Rare slime HP sits above its head; update after enemy changes.
+    const enemyDisplay = document.getElementById("battle-enemy");
+    const enemyName = document.getElementById("enemy-name");
+    if (enemyDisplay && enemyName) {
+      const syncRareSlime = () => enemyDisplay.classList.toggle("battle-rare-slime", /はぐれスライム/.test(enemyName.textContent || ""));
+      new MutationObserver(syncRareSlime).observe(enemyName, {childList:true,subtree:true,characterData:true});
+      syncRareSlime();
+    }
     // Move the original LOG / enemy / ally controls to the reference-style top HUD.
     // Moving real nodes preserves their event listeners and dialog behavior.
     const arenaHeader = document.createElement("div");
