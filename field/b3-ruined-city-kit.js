@@ -24,8 +24,14 @@ export function createRuinedCityKit(THREE) {
     add(g,shaft,stone,0,.32+h/2,0,1,h,1);
     if(!broken) add(g,cap,stone,0,.32+h+.08,0);
     else {
-      const chip=add(g,cube,shadow,.06,.32+h,0,.54,.10,.48);
-      chip.rotation.z=.18;
+      // Irregular tilted stump and displaced chunks instead of a flat cut.
+      const jagged=cylinder(.26,.37,.22,5);
+      const tip=add(g,jagged,stone,.06,.32+h,0,1,1,1);
+      tip.rotation.z=.31;
+      const chip=add(g,cube,stone,.36,.18,-.18,.42,.29,.37);
+      chip.rotation.set(.16,.42,.55);
+      const chip2=add(g,cube,stone,-.26,.13,.24,.24,.19,.35);
+      chip2.rotation.z=-.45;
     }
     return g;
   }
