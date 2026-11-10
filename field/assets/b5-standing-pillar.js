@@ -39,7 +39,44 @@ export function createB5StandingPillar(THREE,options={}){
  }
  // Same 2.8-wide square stone base as the fallen model, set upright.
  add(G(new THREE.BoxGeometry(2.8,.8,2.8)),0,.4,0);
- add(G(new THREE.BoxGeometry(2.8,.8,2.8)),0,1.15+height+.72,0);
+ // Ornate Gothic capital: a stone bell, four pointed blind-arcade panels,
+ // carved corner leaves, and stepped abacus supporting the upper slab.
+ const top=1.15+height;
+ const capital=add(G(new THREE.CylinderGeometry(1.46,.96,1.15,48,5)),0,top+.64,0);
+ const lip=(y,r,th)=>band(y,r,th);
+ lip(top+.13,1.18,.12);
+ lip(top+1.12,1.51,.16);
+ lip(top+1.36,1.64,.14);
+ const dark=M(new THREE.MeshStandardMaterial({color:0x45414b,roughness:.97,flatShading:true}));
+ const relief=(geometry,x,y,z)=>{const m=new THREE.Mesh(geometry,dark);m.position.set(x,y,z);group.add(m);return m;};
+ // Four recessed lancet niches: narrow dark wells framed by stone ribs.
+ for(let face=0;face<4;face++){
+  const a=face*Math.PI/2,rad=1.36;
+  for(const u of [-.47,0,.47]){
+   const px=Math.sin(a)*rad+Math.cos(a)*u;
+   const pz=Math.cos(a)*rad-Math.sin(a)*u;
+   const well=relief(G(new THREE.BoxGeometry(.24,.49,.035)),px,top+.69,pz);
+   well.rotation.y=a;
+   const point=relief(G(new THREE.ConeGeometry(.14,.23,4)),px,top+1.035,pz);
+   point.rotation.y=a+Math.PI/4;
+  }
+ }
+ // Four foliage clusters are stone carvings, not separate floating spikes.
+ for(let corner=0;corner<4;corner++){
+  const a=Math.PI/4+corner*Math.PI/2;
+  for(let leaf=0;leaf<3;leaf++){
+   const r=1.16+leaf*.085,yy=top+.45+leaf*.21;
+   const m=add(G(new THREE.SphereGeometry(.24,.11,12,8)),Math.cos(a)*r,yy,Math.sin(a)*r);
+   m.rotation.y=-a;m.rotation.z=.34*(leaf-1);
+  }
+ }
+ // Wide, tiered abacus with bevelled stone edges.
+ const abacus=add(G(new THREE.BoxGeometry(3.35,.31,3.35)),0,top+1.51,0);
+ const crown=add(G(new THREE.BoxGeometry(3.72,.22,3.72)),0,top+1.76,0);
+ for(const y of [top+1.30,top+1.91]){
+  add(G(new THREE.BoxGeometry(3.9,.09,3.9)),0,y,0);
+ }
+
  const scale=Number.isFinite(options.scale)?Math.max(.1,Math.min(4,options.scale)):1;
  group.scale.setScalar(scale);
  let disposed=false;
