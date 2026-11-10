@@ -19,7 +19,7 @@ const shopItems=[
   {id:"ether",name:"SPエーテル",category:"healing",icon:"ETHER",description:"味方1人のSPを30回復。",price:15,effect:"SP +30",kind:"sp",amount:30,unlock:2}
 ];
 // 第2段階：素材・製作・強化・育成データ
-const materialNames={chaos_crystal:"混沌の結晶",slime_jelly:"スライムゼリー",monster_fang:"魔物の牙",goblin_cloth:"ゴブリンの布",monster_hide:"魔物の皮",dragon_scale:"炎竜の鱗",dragon_claw:"炎竜の爪",maou_crystal:"魔王の結晶",maou_horn:"魔王の角"};
+const materialNames={ailment_essence:"異常の残滓",chaos_crystal:"混沌の結晶",slime_jelly:"スライムゼリー",monster_fang:"魔物の牙",goblin_cloth:"ゴブリンの布",monster_hide:"魔物の皮",dragon_scale:"炎竜の鱗",dragon_claw:"炎竜の爪",maou_crystal:"魔王の結晶",maou_horn:"魔王の角"};
 const recipes=[
 {id:"slime-rod",name:"スライムロッド",icon:"STAFF",classes:["mage","healer","kotama"],spAttackBonus:20,physicalElement:"打撃",cost:100,needs:{slime_jelly:1}},
 {id:"wolf-fang-sword",name:"狼牙の剣",icon:"SWORD",classes:["warrior","kotama","knight"],attackBonus:30,physicalElement:"斬撃",cost:150,needs:{monster_fang:1}},
