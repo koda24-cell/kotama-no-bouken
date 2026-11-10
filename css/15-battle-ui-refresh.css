@@ -1015,3 +1015,123 @@
    font-size:14px!important;
  }
 }
+
+
+/* 2026-11-10 visual QA: eight targeted HUD corrections. */
+@media(min-width:900px) {
+ #battle.battle-ui-preview { --battle-command-width:260px; }
+ /* Identical frame geometry and fixed 7-command spacing in both modes. */
+ #battle.battle-ui-preview .battle-preview-primary-rail:not([hidden]),
+ #battle.battle-ui-preview .battle-preview-bottom>.command-window:not(.battle-preview-submenu) {
+   box-sizing:border-box!important;
+   width:260px!important;
+   height:350px!important; min-height:350px!important; max-height:350px!important;
+   padding:9px 10px!important;
+   border:2px solid #8eeaff!important;
+   border-radius:13px 5px 13px 5px!important;
+   background:linear-gradient(145deg,#064564f0,#062940f0)!important;
+ }
+ #battle.battle-ui-preview .battle-preview-primary-rail:not([hidden]) {
+   top:100px!important;left:14px!important;
+   display:flex!important;flex-direction:column!important;
+   gap:3px!important;overflow:hidden!important;
+ }
+ #battle.battle-ui-preview .battle-preview-primary-rail .battle-preview-rail-button {
+   flex:0 0 36px!important;
+   height:36px!important;min-height:36px!important;
+   line-height:22px!important;
+   padding:4px 9px!important;
+   margin:0!important;
+   font-size:13px!important;
+ }
+ #battle.battle-ui-preview .battle-preview-primary-rail .battle-preview-rail-title {
+   flex:0 0 20px!important;min-height:20px!important;line-height:20px!important;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.command-window {
+   top:100px!important;
+   box-sizing:border-box!important;
+ }
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-bottom>.command-window {
+   left:284px!important;
+   width:300px!important;
+   min-width:300px!important;max-width:300px!important;
+   max-height:350px!important;
+ }
+ #battle.battle-ui-preview .battle-preview-bottom>.command-window:not([hidden]):not(.battle-preview-side-open) {
+   overflow:hidden!important;
+ }
+ /* Never let a submenu change the geometry of the fixed left rail. */
+ #battle.battle-ui-preview.battle-preview-side-open .battle-preview-primary-rail {
+   flex-shrink:0!important;
+ }
+}
+/* The redundant command hint belongs in COMMAND INFO, not inside the rail. */
+#battle.battle-ui-preview .battle-preview-bottom>.command-window #command-hint,
+#battle.battle-ui-preview .battle-preview-bottom>.command-window #command-description,
+#battle.battle-ui-preview .battle-preview-primary-rail .command-hint,
+#battle.battle-ui-preview .battle-preview-primary-rail .command-description {
+ display:none!important;
+}
+/* No scrollbars on the fixed main-action panel; submenus can scroll if needed. */
+#battle.battle-ui-preview #battle-commands.battle-preview-main-menu {
+ overflow:hidden!important; scrollbar-width:none!important;
+}
+#battle.battle-ui-preview #battle-commands.battle-preview-main-menu::-webkit-scrollbar,
+#battle.battle-ui-preview .battle-preview-primary-rail::-webkit-scrollbar {
+ display:none!important;
+}
+/* Hide level badges only inside combat party cards. */
+#battle.battle-ui-preview #battle-party .battle-member .level-badge,
+#battle.battle-ui-preview #battle-party .battle-member .level-chip,
+#battle.battle-ui-preview #battle-party .battle-member [class*="level-badge"],
+#battle.battle-ui-preview #battle-party .battle-member [class*="level-tag"] {
+ display:none!important;
+}
+/* Unified battle scenery behind both the arena and the two party rows. */
+#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) #battle-party {
+ margin-top:-12px!important;
+ border:2px solid #6ad9ee!important;
+ border-top:0!important;
+ border-radius:0 0 16px 16px!important;
+ background-image:
+   linear-gradient(180deg,rgba(2,24,39,.22),rgba(2,24,39,.65)),
+   url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+ background-size:cover!important;
+ background-position:center,center 88%!important;
+}
+/* Top-right Union label is part of the gauge, not a floating overflow tab. */
+#battle.battle-ui-preview .battle-preview-union {
+ overflow:visible!important;
+}
+#battle.battle-ui-preview .battle-preview-union>span {
+ top:7px!important;
+ left:50%!important;
+ translate:-50% 0!important;
+ box-sizing:border-box!important;
+ padding:4px 5px!important;
+ width:calc(100% + 18px)!important;
+ min-width:0!important;
+ max-width:94px!important;
+ border:1px solid #e2c682!important;
+ border-radius:8px!important;
+ font-size:11px!important;
+ letter-spacing:0!important;
+ white-space:nowrap!important;
+ text-align:center!important;
+ z-index:2;
+}
+#battle.battle-ui-preview .battle-preview-union>div {
+ margin-top:34px!important;
+ max-height:calc(100% - 48px)!important;
+}
+/* Remove obsolete CURRENT EVENT subtitle and legacy key glyphs. */
+#battle.battle-ui-preview .event-window .window-title::after,
+#battle.battle-ui-preview .event-window .window-title::before,
+#battle.battle-ui-preview .event-window [class*="current-event"],
+#battle.battle-ui-preview .battle-preview-tabs button::before {
+ content:none!important;display:none!important;
+}
+#battle.battle-ui-preview .battle-preview-tabs #battle-log-open,
+#battle.battle-ui-preview .battle-preview-tabs .analyze-tab-button {
+ font-size:13px!important;letter-spacing:0!important;
+}

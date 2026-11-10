@@ -8,7 +8,7 @@
   if (!enabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-14";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-15";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
@@ -25,6 +25,12 @@
       bottom.classList.add("battle-preview-bottom");
     }
 
+    // Legacy 3DS-style key badges are removed in preview, without removing buttons.
+    const eventTitle = eventWindow?.querySelector(".window-title");
+    if (eventTitle) {
+      eventTitle.textContent = "EVENT";
+      eventTitle.setAttribute("aria-label", "イベントログ");
+    }
     // Move the original LOG / enemy / ally controls to the reference-style top HUD.
     // Moving real nodes preserves their event listeners and dialog behavior.
     const arenaHeader = document.createElement("div");
@@ -34,12 +40,12 @@
     tabs.setAttribute("aria-label", "戦闘情報");
     const logButton = document.getElementById("battle-log-open");
     const analyzeTabs = battle.querySelector(".analyze-tabs");
-    if (logButton) { logButton.textContent = "LOG"; tabs.appendChild(logButton); }
+    if (logButton) { logButton.replaceChildren(document.createTextNode("LOG")); tabs.appendChild(logButton); }
     if (analyzeTabs) {
       const enemyTab = analyzeTabs.querySelector("#analyze-enemy-button");
       const allyTab = analyzeTabs.querySelector("#analyze-party-button") || analyzeTabs.querySelector("#analyze-ally-button") || analyzeTabs.querySelectorAll("button")[1];
-      if (enemyTab) enemyTab.textContent = "敵";
-      if (allyTab) allyTab.textContent = "味方";
+      if (enemyTab) enemyTab.replaceChildren(document.createTextNode("敵"));
+      if (allyTab) allyTab.replaceChildren(document.createTextNode("味方"));
       tabs.appendChild(analyzeTabs);
     }
     const counter = document.getElementById("turn-counter");
