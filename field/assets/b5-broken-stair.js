@@ -35,40 +35,45 @@ export function createB5BrokenStair(THREE,options={}){
    // Shallow stone courses on exposed risers, not bars sticking out.
    if(i%2===0){add(G(new THREE.BoxGeometry(0.055,0.055,width-0.45)),shade,x-run/2-0.005,h-0.15,0);}
  }
- // Single visible fracture on exposed right-hand stone; the dark line follows
- // the stair treads and risers. Its edges are irregular, not a painted straight bar.
- const fracture=M(new THREE.MeshStandardMaterial({color:0x100d13,roughness:1,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}));
- const chipped=M(new THREE.MeshStandardMaterial({color:0xaca4ad,roughness:0.99,side:THREE.DoubleSide}));
- const crackZ=[5.35,5.58,5.34,5.75,5.44,5.87,5.63,5.92];
- const crackWidth=0.24;
+ // ONE continuous broken seam, slightly off-centre. Clearly visible on the
+ // horizontal treads AND the vertical risers. No additional cracks.
+ const fracture=M(new THREE.MeshStandardMaterial({color:0x110d14,roughness:1,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}));
+ const chipped=M(new THREE.MeshStandardMaterial({color:0xb2aab3,roughness:1,side:THREE.DoubleSide}));
+ const crackZ=[3.20,3.35,3.10,3.57,3.25,3.68,3.46,3.70];
  const surface=(pts,mat)=>{
-   const g=G(new THREE.BufferGeometry()),flat=pts.flat();
-   g.setAttribute('position',new THREE.Float32BufferAttribute(flat,3));
+   const g=G(new THREE.BufferGeometry());
+   g.setAttribute('position',new THREE.Float32BufferAttribute(pts.flat(),3));
    g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();
-   return add(g,mat,0,0,0);
+   add(g,mat,0,0,0);
  };
- const crackStrip=(a,b,width=crackWidth)=>{
+ const crackStrip=(a,b,w)=>{
    const dx=b[0]-a[0],dz=b[2]-a[2],d=Math.hypot(dx,dz)||1;
-   const ox=-dz/d*width/2,oz=dx/d*width/2;
+   const ox=-dz*w/(2*d),oz=dx*w/(2*d);
    surface([[a[0]+ox,a[1],a[2]+oz],[a[0]-ox,a[1],a[2]-oz],
      [b[0]-ox,b[1],b[2]-oz],[b[0]+ox,b[1],b[2]+oz]],fracture);
  };
  for(let i=1;i<=5;i++){
    const h=(i+1)*rise,front=i*run-steps*run/2,back=(i+1)*run-steps*run/2;
-   const z0=crackZ[i],z1=crackZ[i+1];
-   const mid=(front+back)/2;
-   crackStrip([front+0.02,h+0.177,z0],[mid,h+0.177,(z0+z1)/2+0.07]);
-   crackStrip([mid,h+0.177,(z0+z1)/2+0.07],[back-0.02,h+0.177,z1]);
-   // Visible chipped stone edges flank the dark fissure.
+   const z0=crackZ[i],z1=crackZ[i+1],mid=(front+back)/2;
+   const zmid=(z0+z1)/2+0.15;
+   // The tread cap is 0.14 thick: its actual upper surface is h+0.14.
+   const y=h+0.143;
+   crackStrip([front+0.018,y,z0],[mid,y,zmid],0.30);
+   crackStrip([mid,y,zmid],[back-0.018,y,z1],0.24);
+   // Light broken-stone shoulders reinforce the depth cue without adding lines.
    for(const side of [-1,1]){
-     const lip=add(G(new THREE.BoxGeometry(run*0.32,0.035,0.08)),chipped,mid,h+0.178,(z0+z1)/2+side*0.19);
-     lip.rotation.y=side*0.13;
+     surface([[mid-0.26,y+0.003,zmid+side*0.19],
+       [mid+0.08,y+0.003,zmid+side*0.16],
+       [mid+0.20,y+0.003,zmid+side*0.28],
+       [mid-0.12,y+0.003,zmid+side*0.30]],chipped);
    }
    if(i<5){
-     // Riser is the vertical face at the BACK of this tread.
      const nh=(i+2)*rise;
-     surface([[back-0.014,h+0.15,z1-0.12],[back-0.014,h+0.15,z1+0.12],
-       [back-0.014,nh+0.14,z1+0.12],[back-0.014,nh+0.14,z1-0.12]],fracture);
+     // Riser at x=back is vertical, visible from the ascending approach.
+     surface([[back+0.012,h+0.135,z1-0.14],
+       [back+0.012,h+0.135,z1+0.14],
+       [back+0.012,nh+0.135,z1+0.14],
+       [back+0.012,nh+0.135,z1-0.14]],fracture);
    }
  }
  // Missing tile faces: dark recessed patches with irregular outlines.
