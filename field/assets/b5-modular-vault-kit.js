@@ -810,6 +810,40 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    }
   });
  }
+ // PASS: broad intersecting groin ribs. Each rib is a closed four-sided
+ // masonry prism following a curved vault path, not a row of cylinders.
+ // Root and crown sections are continuous; the original arches remain.
+ if(['basic-vault','collapsed-vault','royal-vault'].includes(kind)){
+  const ruined=kind==='collapsed-vault',regal=kind==='royal-vault';
+  const rib=(axis,sign)=>{
+   const sections=24,verts=[],faces=[];
+   for(let i=0;i<=sections;i++){
+    const t=i/sections;
+    const x=axis==='x'?-2.92+5.84*t:sign*(2.80-5.60*t);
+    const z=axis==='x'?sign*1.20:-2.30+4.60*t;
+    const u=axis==='x'?x/3:z/2.5;
+    const y=5.48+.72*(1-Math.pow(Math.abs(u),1.55));
+    const w=regal?.23:.19;
+    for(const [a,b] of [[-1,-1],[1,-1],[1,1],[-1,1]]){
+     verts.push(x+(axis==='x'?0:a*w),y+b*.17,z+(axis==='x'?a*w:0));
+    }
+   }
+   for(let i=0;i<sections;i++){
+    const t=(i+.5)/sections;
+    // Keep the ruined northeast ceiling void genuinely open.
+    if(ruined && (axis==='x'?sign>0&&t>.67:sign<0&&t>.58))continue;
+    for(let j=0;j<4;j++){
+     const a=i*4+j,b=i*4+(j+1)%4,c=(i+1)*4+j,d=(i+1)*4+(j+1)%4;
+     faces.push(a,c,b,b,c,d);
+    }
+   }
+   const g=new THREE.BufferGeometry();
+   g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+   g.setIndex(faces);g.computeVertexNormals();add(g,regal?trim:stone);
+  };
+  rib('x',-1);rib('x',1);
+  rib('z',-1);rib('z',1);
+ }
  // PASS: tapered stone buttresses physically join the standalone pier to
  // the springing fan. Broad closed masonry faces replace an unsupported
  // collection of thin diagonal struts without removing legacy geometry.
