@@ -8,7 +8,14 @@ from trimesh.transformations import rotation_matrix
 scene=trimesh.Scene()
 GREEN=[66,75,57,255];EDGE=[47,57,45,255];RUST=[104,66,48,255];STEEL=[96,99,89,255];CONCRETE=[143,140,126,255];YELLOW=[169,125,50,255]
 def add(name,mesh,color):
-    # Taper from broad machinery/root (+X) toward narrow free tip (-X).\n    vertices=mesh.vertices.copy()\n    factor=np.clip((vertices[:,0]+9.0)/18.0,0,1)\n    vertices[:,1]*=(0.48+0.72*factor)\n    vertices[:,2]=3.25+(vertices[:,2]-3.25)*(0.64+0.47*factor)\n    mesh.vertices=vertices\n    mesh.visual.vertex_colors=color\n    scene.add_geometry(mesh,geom_name=name)
+    # Taper from broad machinery/root (+X) toward narrow free tip (-X).
+    vertices=mesh.vertices.copy()
+    factor=np.clip((vertices[:,0]+9.0)/18.0,0,1)
+    vertices[:,1]*=(0.48+0.72*factor)
+    vertices[:,2]=3.25+(vertices[:,2]-3.25)*(0.64+0.47*factor)
+    mesh.vertices=vertices
+    mesh.visual.vertex_colors=color
+    scene.add_geometry(mesh,geom_name=name)
 def box(name,center,size,color=GREEN):
     mesh=trimesh.creation.box(extents=size);mesh.apply_translation(center);add(name,mesh,color)
 def beam(name,a,b,width=.11,depth=.14,color=GREEN):
