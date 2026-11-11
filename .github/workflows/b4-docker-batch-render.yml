@@ -11,6 +11,7 @@ on:
       - feature/b4-rail-bracing-v7-20261112
       - feature/b4-cart-wheel-spokes-v8-20261112
       - feature/b4-cart-silhouette-v9-20261112
+      - feature/b4-mine-hoist-v1-20261112
 jobs:
   render:
     runs-on: ubuntu-latest
