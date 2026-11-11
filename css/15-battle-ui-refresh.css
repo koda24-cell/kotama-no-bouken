@@ -2238,3 +2238,5 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  padding:9px 14px!important;
  min-height:48px!important;
 }
+
+#battle.battle-ui-preview .battle-preview-top-hud #turn-counter{white-space:nowrap!important;flex:0 0 auto!important;min-width:max-content!important;}
