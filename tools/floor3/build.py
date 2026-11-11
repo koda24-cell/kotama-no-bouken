@@ -188,4 +188,41 @@ for i,(x,y,z,w,h) in enumerate([
     (4.02,1.86,3.87,.72,.32),(4.27,2.38,3.88,.53,.29)]):
     box(f'side_collapse_fragment_{i}',(x,y,z),(w,.46,h),con)
 
+
+# Sixth pass: exposed broken floor cantilevers and hanging reinforcement.
+# These project beyond the original straight slab edge, visually interrupting
+# its uniform outline without deleting the underlying structural geometry.
+def fracture_cantilever(name, points, bottom, top, col):
+    n=len(points)
+    vertices=[[x,y,z] for z in (bottom,top) for x,y in points]
+    faces=[]
+    for i in range(1,n-1):
+        faces.extend([[0,i+1,i],[n,n+i,n+i+1]])
+    for i in range(n):
+        j=(i+1)%n
+        faces.extend([[i,j,n+j],[i,n+j,n+i]])
+    mesh=trimesh.Trimesh(vertices=vertices,faces=faces,process=False)
+    mesh.visual.vertex_colors=col
+    s.add_geometry(mesh,geom_name=name)
+
+# Three independent floor fractures: broken tongues have varied footprints.
+for floor,z in enumerate([3.65,7.05,10.45]):
+    shapes=[
+      [(-5.65,-3.08),(-4.15,-3.08),(-4.23,-3.67),(-4.56,-3.91),(-4.91,-3.69),(-5.23,-4.13),(-5.65,-3.72)],
+      [(-3.32,-3.07),(-1.86,-3.07),(-1.91,-3.58),(-2.18,-3.77),(-2.57,-3.51),(-2.91,-3.98),(-3.32,-3.55)],
+      [(-.75,-3.07),(.22,-3.07),(.06,-3.45),(-.27,-3.81),(-.52,-3.58),(-.75,-3.72)]
+    ]
+    outline=shapes[floor]
+    fracture_cantilever(f'broken_floor_cantilever_{floor}',outline,z-.28,z+.04,[128,125,116,255])
+    for j in range(4):
+        x=outline[0][0]+.22+j*.27
+        y=-3.57-.12*(j%2)
+        rod(f'hanging_slab_rebar_{floor}_{j}',(x,y,z-.1),
+            (x+.09,y-.24,z-.72-.12*(j%3)),.029,rust)
+    # Sheared fragments below the same break, not evenly scattered.
+    for j in range(3):
+        x=outline[0][0]+.3+j*.41
+        box(f'falling_slab_chunk_{floor}_{j}',(x,-3.9-j*.11,z-.58-j*.17),
+            (.31+.09*j,.32,.23+.05*j),[137,133,124,255])
+
 s.export('ruined_building_prototype.glb')
