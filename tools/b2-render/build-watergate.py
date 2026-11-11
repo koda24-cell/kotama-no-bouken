@@ -200,9 +200,58 @@ for side in [-1,1]:
   x=side*random.uniform(3.95,5.0);z=random.uniform(.8,7.5)
   cube('Adhered frost ledge',(x,-.87,z),(random.uniform(.16,.43),.18,random.uniform(.08,.22)),frost)
 
+
+# v06: reinforce mechanical load paths and frozen architectural silhouette
+for side in [-1,1]:
+ x=side*5.6
+ for dx in [-.57,.57]:
+  beam('Counterweight slide track',(x+dx,-.24,1.05),(x+dx,-.24,5.95),.085,bronze,12)
+ for z in [1.1,5.85]:
+  cube('Counterweight track bracket',(x,-.24,z),(1.42,.66,.25),iron)
+ cube('Stone pillar footing',(side*4.5,.15,.15),(2.3,2.25,.38),dark)
+ for k in range(7):
+  z=.7+k*.85
+  beam('Frost masonry fracture',(side*4.5-.45,-.88,z),(side*4.5+.25,-.89,z+.13),.024,frost,6)
+cube('Gate threshold sill',(0,-.95,.38),(6.25,.8,.28),dark)
+cube('Gate suspension lintel',(0,-.98,5.23),(6.15,.34,.38),bronze)
+for x in [-2.3,2.3]:
+ cube('Suspension clevis plate',(x,-1.18,5.34),(.52,.22,.55),iron)
+ for z in [5.13,5.5]:
+  beam('Clevis pin',(x,-1.3,z),(x,-1.42,z),.07,bronze,10)
+for side in [-1,1]:
+ for j in range(10):
+  x=side*(.7+j*.73)
+  o=cube('Fractured canal coping',(x,-4.25,random.uniform(.32,.58)),(.55,random.uniform(.28,.6),random.uniform(.24,.42)),stone)
+  o.rotation_euler[1]=random.uniform(-.22,.22)
+for j in range(18):
+ x=random.uniform(-7.4,7.4);y=random.uniform(-3.6,-1.3)
+ o=cube('Fractured ice sheet',(x,y,.115),(random.uniform(.3,.9),random.uniform(.25,.75),.055),frost)
+ o.rotation_euler[2]=random.uniform(-.7,.7)
+for j in range(25):
+ a=.18+(math.pi-.36)*j/24
+ x=3.6*math.cos(a);z=4+3.6*math.sin(a);length=random.uniform(.25,.95)
+ bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=0,radius2=random.uniform(.07,.15),depth=length,location=(x,-1.05,z-length*.5))
+ bpy.context.object.name='Front hanging icicle';bpy.context.object.data.materials.append(ice)
+for x,z,r in [(0,5.1,1.12),(-6.2,3.2,1.38)]:
+ for j in range(12):
+  a=2*math.pi*j/12
+  o=cube('Frozen gear rim deposit',(x+r*math.cos(a),-1.69,z+r*math.sin(a)),(.17,.11,.12),frost)
+  o.rotation_euler[1]=-a
+# Deterministic mesh triangle audit before export
+bpy.context.view_layer.update()
+triangles=0;objects=0
+for obj in bpy.context.scene.objects:
+ if obj.type=='MESH':
+  mesh=obj.data
+  mesh.calc_loop_triangles()
+  triangles+=len(mesh.loop_triangles);objects+=1
+with open(out+'/mesh_stats.txt','w') as fp:
+ fp.write('version=v06\\nmesh_objects=%d\\ntriangles=%d\\n'%(objects,triangles))
+print('B2 v06 mesh objects',objects,'triangles',triangles)
+
 # Save native Blender and GLB before adding render-only helpers
-bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v05.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v05.glb',export_format='GLB')
+bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v06.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v06.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.035,.07,.13,1)
 def area(loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,3))-o.location).to_track_quat('-Z','Y').to_euler()
@@ -212,4 +261,4 @@ bpy.context.scene.render.resolution_x=1000;bpy.context.scene.render.resolution_y
 for name,pos in [('front',(0,-23,10)),('side',(22,-3,10)),('angle',(17,-21,12))]:
  bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,3.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=20;bpy.context.scene.camera=cam
  bpy.context.scene.render.filepath=out+'/'+name+'.png';bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
-print('B2 watergate v05 Blender/GLB/3 renders exported')
+print('B2 watergate v06 Blender/GLB/3 renders exported')
