@@ -191,19 +191,19 @@ function fieldDrawMap(canvas, cell, full) {
     if(o.kind==="stairs") dot(o.tx,o.ty,"#ffd84a",.84,o.dir==="up"?"triangle":"triangle-down",o.dir==="up"?"stairs_up":"stairs_down");
     else if(o.kind==="save") dot(o.tx,o.ty,"#ffe27a",.8,"circle","save");
     else if(o.kind==="chest") dot(o.tx,o.ty,fieldState.flags[o.key]?"#7a6a55":"#ff9a3c",.76,"square",fieldState.flags[o.key]?"chest_open":"chest");
-    else if(o.kind==="gather") dot(o.tx,o.ty,(fieldState.gatherUsed[o.key]||0)>=FIELD_GATHER_USES?"#5d7a5d":"#3ee07a",.76);
-    else if(o.kind==="npc"||o.kind==="sign") dot(o.tx,o.ty,"#c7a3ff",.72,"square");
+    else if(o.kind==="gather") dot(o.tx,o.ty,(fieldState.gatherUsed[o.key]||0)>=FIELD_GATHER_USES?"#5d7a5d":"#3ee07a",.76,"circle",/ore|mine|鉱/i.test(String(o.name||o.key))?"gather_ore":/wood|log|木/i.test(String(o.name||o.key))?"gather_wood":"gather_herb");
+    else if(o.kind==="npc"||o.kind==="sign") dot(o.tx,o.ty,"#c7a3ff",.72,"square",o.kind==="sign"?"inspect":"event");
     else if(o.kind==="event"){
       const done=typeof fieldSideDone==="function"&&fieldSideDone(o.event);
-      if(!o.hidden||done) dot(o.tx,o.ty,done?"#5f7f8f":"#7fd6ff",.72,"square");
+      if(!o.hidden||done) dot(o.tx,o.ty,done?"#5f7f8f":"#7fd6ff",.72,"square","event");
     }
     else if(o.kind==="switch"){
       const solved=typeof fieldPuzzleSolved==="function"&&fieldPuzzleSolved(o.puzzle);
-      dot(o.tx,o.ty,solved?"#7a6a8a":"#ff8ad8",.72,"square");
+      dot(o.tx,o.ty,solved?"#7a6a8a":"#ff8ad8",.72,"square","inspect");
     }
     else if(o.kind==="cache"){
       const opened=!!fieldState.flags["puzzle:"+o.puzzle+":reward"];
-      dot(o.tx,o.ty,opened?"#7a6a55":"#ff9a3c",.76,"square");
+      dot(o.tx,o.ty,opened?"#7a6a55":"#ff9a3c",.76,"square",opened?"chest_open":"chest");
     }
     else if(o.kind==="gate") dot(o.tx,o.ty,"#ff3030",.9,"circle","boss");
     else if(o.kind==="exit") dot(o.tx,o.ty,"#fff4c2",.9,"square","stairs_down");
