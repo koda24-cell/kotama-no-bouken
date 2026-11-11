@@ -94,4 +94,56 @@ for i in range(23):
   if j%2==0:box(f'ivy_leaf_{i}_{j}',pt,(.28,.2,.16),green)
   prev=pt
 
+
+# Fourth pass: large torn facade remnants with physically thick jagged edges.
+# Keep the existing beams, columns, stairs and small facade fragments intact.
+def torn_wall(name, xz, y=-3.32, thickness=.32):
+    n=len(xz)
+    vertices=[[x,yy,z] for yy in (y-thickness/2,y+thickness/2) for x,z in xz]
+    faces=[]
+    for i in range(1,n-1):
+        faces.extend([[0,i,i+1],[n,n+i+1,n+i]])
+    for i in range(n):
+        j=(i+1)%n
+        faces.extend([[i,j,n+j],[i,n+j,n+i]])
+    mesh=trimesh.Trimesh(vertices=vertices,faces=faces,process=False)
+    mesh.visual.vertex_colors=[137,136,127,255]
+    s.add_geometry(mesh,geom_name=name)
+
+# Broad but incomplete concrete planes: different fracture profiles per storey.
+torn_wall('major_torn_wall_ground_left',[
+ (-5.95,.35),(-3.78,.35),(-3.42,.72),(-3.66,1.08),
+ (-3.15,1.42),(-3.44,1.89),(-3.20,2.15),(-3.72,2.72),
+ (-4.08,2.44),(-4.48,3.14),(-5.95,3.18)])
+torn_wall('major_torn_wall_middle_left',[
+ (-5.95,3.76),(-3.45,3.76),(-3.15,4.14),(-3.59,4.57),
+ (-3.31,4.94),(-3.86,5.18),(-3.61,5.58),(-4.18,6.46),
+ (-4.52,6.16),(-4.89,6.72),(-5.95,6.73)])
+torn_wall('major_torn_wall_upper_left',[
+ (-5.95,7.18),(-4.26,7.18),(-3.93,7.51),(-4.28,7.89),
+ (-3.84,8.18),(-4.52,8.71),(-4.23,9.05),(-4.96,9.64),
+ (-5.95,9.78)])
+torn_wall('major_torn_wall_ground_right',[
+ (1.18,.36),(3.62,.36),(3.62,3.25),(2.66,3.24),
+ (2.36,2.91),(2.62,2.45),(2.08,2.13),(2.34,1.72),
+ (1.77,1.31),(1.98,.84)])
+torn_wall('major_torn_wall_middle_right',[
+ (2.45,3.78),(3.62,3.78),(3.62,6.69),(2.87,6.63),
+ (2.55,6.21),(2.87,5.86),(2.35,5.41),(2.72,4.95),
+ (2.30,4.46)])
+# Structural fracture reinforcement: rods originate at the broken edges.
+for idx,(x,z) in enumerate([(-3.44,1.89),(-3.72,2.72),(-3.59,4.57),
+                           (-3.86,5.18),(-4.52,8.71),(2.62,2.45),
+                           (2.87,5.86),(2.35,5.41)]):
+    for j in range(3):
+        dz=.11*j
+        rod(f'torn_edge_rebar_{idx}_{j}',(x,-3.3,z+dz),
+            (x+.25+.07*j,-3.43,z+dz-.23),.026,rust)
+# Fractured floor rim with exposed reinforcement, avoiding the intact central stairs.
+for k,z in enumerate((3.65,7.05,10.45)):
+    for j in range(5):
+        x=-5.35+j*.62
+        rod(f'floor_edge_rebar_{k}_{j}',(x,-3.4,z),
+            (x+.08,-3.88,z-.12-.08*(j%3)),.035,rust)
+
 s.export('ruined_building_prototype.glb')
