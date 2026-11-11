@@ -1,0 +1,55 @@
+name: Promote approved B4 3D asset
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Successful B4 Docker Batch Render run ID'
+        required: true
+        type: string
+      asset:
+        description: 'Asset to preserve permanently'
+        required: true
+        type: choice
+        options:
+          - cart
+          - furnace
+          - mine-rig
+      approval:
+        description: 'Type APPROVE after reviewing PNG renders'
+        required: true
+        type: string
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+jobs:
+  promote:
+    if: ${{ inputs.approval == 'APPROVE' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: development
+          persist-credentials: true
+      - name: Download and validate reviewed artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.source_run_id }}
+          ASSET: ${{ inputs.asset }}
+        run: bash tools/b4-render/promote-approved.sh
+      - name: Create review PR against development
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.source_run_id }}
+          ASSET: ${{ inputs.asset }}
+        run: |
+          branch="assets/b4-${ASSET}-approved-run-${RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add "assets/models/floor4/${ASSET}.glb" "assets/models/floor4/reviews/${ASSET}/"
+          git commit -m "Preserve reviewed B4 ${ASSET} from Actions run ${RUN_ID}"
+          git push origin "$branch"
+          gh pr create --base development --head "$branch" --draft \
+            --title "B4 approved asset: ${ASSET} (run ${RUN_ID})" \
+            --body "Reviewed candidate from B4 Docker Batch Render run ${RUN_ID}. Contains approved GLB and front/side/angle PNGs. Requires final PR review; not merged automatically."
