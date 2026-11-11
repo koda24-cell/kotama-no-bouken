@@ -1,0 +1,36 @@
+name: B5 Gothic Arch Docker Preview
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/b5-gothic-arch-docker-preview-20261112]
+    paths:
+      - 'field/assets/b5-gothic-arch-detail-additions.js'
+      - 'tools/b5-render/**'
+      - '.github/workflows/b5-gothic-arch-docker-preview.yml'
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - name: Export existing and enhanced arch to GLB
+        run: node tools/b5-render/export-gothic-arch.mjs
+      - name: Render real GLBs in Blender Docker
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
+            set -e
+            for file in render-output/b5-gothic-arch-*.glb; do
+              blender -b -t 2 --python tools/b5-render/render-gothic-arch.py -- "$file" render-output
+            done
+          '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-gothic-arch-before-after
+          path: render-output/
+          retention-days: 14
