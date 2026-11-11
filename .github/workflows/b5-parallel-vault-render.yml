@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/b5-vault-five-parallel-20261112
+      - 'feature/b5-vault-*'
     paths:
       - 'field/assets/b5-modular-vault-kit.js'
       - 'tools/b5-vault-render/**'
