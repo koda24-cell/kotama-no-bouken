@@ -541,6 +541,9 @@ function frame() {
   if (ne) { g.near.visible = true; g.near.position.set(ne.at.x, ne.at.y + 0.9 + Math.sin(now / 300) * 0.08, ne.at.z); g.near.rotation.y = now / 600; }
   else g.near.visible = false;
   if (g.composer) g.composer.render(); else g.renderer.render(g.scene, g.camera);
+  // Only dismiss the full-screen loading state after the first actual 3D frame.
+  window.Kotama3DLoading?.ready();
+
 }
 
 // 試験表示の切り替え（管理パネルから）。localStorage だけを書き、セーブデータには触れない
