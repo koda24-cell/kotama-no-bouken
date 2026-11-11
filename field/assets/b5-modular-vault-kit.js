@@ -156,9 +156,14 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
   for(let ix=0;ix<10;ix++)for(let iz=0;iz<8;iz++){
    const x=-2.95+(ix+.5)*5.9/10,z=-2.42+(iz+.5)*4.84/8;
    if(broken&&(ix>5&&iz>2||ix===3&&iz===6))continue;
-   const yy=5.40+.56*(1-Math.abs(x)/3)+.28*(1-Math.abs(z)/2.5);
-   const p=box(x,yy,z,.56,.13,.59,ix%4===0?trim:stone);
-   p.rotation.z=.035*Math.sin(ix*1.8+iz);p.rotation.x=.03*Math.cos(iz*1.1+ix);
+   // Each web stone follows a shallow groin-vault curve rather than forming
+   // a level checkerboard. Alternating courses meet without overlapping.
+   const profileX=1-Math.pow(Math.abs(x)/3,1.55);
+   const profileZ=1-Math.pow(Math.abs(z)/2.5,1.8);
+   const yy=5.13+.66*Math.max(0,profileX)+.42*Math.max(0,profileZ);
+   const p=box(x,yy,z,.535,.19,.565,ix%4===0?trim:stone);
+   p.rotation.z=-.20*Math.sign(x)*Math.pow(Math.abs(x)/3,.55);
+   p.rotation.x=.15*Math.sign(z)*Math.pow(Math.abs(z)/2.5,.65);
   }
   if(broken){
    for(let i=0;i<10;i++){
