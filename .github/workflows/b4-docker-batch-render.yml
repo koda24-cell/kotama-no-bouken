@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - feature/b4-docker-batch-render-20261112
+      - feature/b4-cart-rails-quality-v2-20261112
+      - feature/b4-rails-curve-quality-v4-20261112
+      - feature/b4-rails-breakage-quality-v5-20261112
+      - feature/b4-rail-collapse-v6-20261112
+      - feature/b4-rail-bracing-v7-20261112
+      - feature/b4-cart-wheel-spokes-v8-20261112
+      - feature/b4-cart-silhouette-v9-20261112
+      - feature/b4-mine-hoist-v1-20261112
 jobs:
   render:
     runs-on: ubuntu-latest
