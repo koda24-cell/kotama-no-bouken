@@ -132,6 +132,27 @@ export function createB4DetailedRails({length=5,broken=false,curve=0}={}) {
    rock.position.set(x,-.12,z);rock.rotation.set(i*.7,i*.4,i*.2);root.add(rock);
   }
  }
+ // V7: structural rail-foot clamps and transverse tie braces, visible in oblique views.
+ // These sit beside the existing rail meshes; no legacy geometry is removed.
+ const clampIron=new THREE.MeshStandardMaterial({color:0x654b3c,metalness:.48,roughness:.84});
+ for(let i=1;i<Math.ceil(length/.42);i+=3){
+  const z=-length/2+i*.42;
+  if(z>length/2-.12)continue;
+  const yaw=-Math.atan(slope(z));
+  // A pair of low, wide rail-foot clamps fasten the track to the timber.
+  for(const side of [-1,1]){
+   const p=railPoint(z,side);
+   const foot=box(root,p.x,-.09,p.z,.32,.055,.23,clampIron,yaw);
+   const outer=box(root,p.x+side*.18,-.038,p.z,.045,.13,.19,clampIron,yaw);
+   for(const dz of [-.065,.065]){
+    const bolt=new THREE.Mesh(new THREE.CylinderGeometry(.032,.032,.024,6),steel);
+    bolt.position.set(p.x+side*.20,.045,p.z+dz);
+    root.add(bolt);
+   }
+  }
+  // Low steel brace spans the inner gap, emphasizing the rail gauge at distance.
+  box(root,center(z),-.125,z,1.02,.045,.065,clampIron,yaw);
+ }
  root.userData={asset:'B4 modular mine rails',variant:broken?'broken':curve?'curved':'straight'};
  return root;
 }
