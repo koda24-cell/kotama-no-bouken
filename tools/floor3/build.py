@@ -146,4 +146,46 @@ for k,z in enumerate((3.65,7.05,10.45)):
         rod(f'floor_edge_rebar_{k}_{j}',(x,-3.4,z),
             (x+.08,-3.88,z-.12-.08*(j%3)),.035,rust)
 
+
+# Fifth pass: structural side-wall ruins. These are additive, not replacements.
+# The exposed right flank was previously an open regular steel frame.
+def torn_side_wall(name, yz, x=3.68, thickness=.34):
+    n=len(yz)
+    verts=[[xx,y,z] for xx in (x-thickness/2,x+thickness/2) for y,z in yz]
+    faces=[]
+    for i in range(1,n-1):
+        faces.extend([[0,i,i+1],[n,n+i+1,n+i]])
+    for i in range(n):
+        j=(i+1)%n
+        faces.extend([[i,j,n+j],[i,n+j,n+i]])
+    mesh=trimesh.Trimesh(vertices=verts,faces=faces,process=False)
+    mesh.visual.vertex_colors=[143,140,132,255]
+    s.add_geometry(mesh,geom_name=name)
+
+# Broken right flank, leaving large openings to read the internal stairs.
+torn_side_wall('side_wall_ground_remnant',[
+ (-3.18,.34),(-1.02,.34),(-.78,.73),(-1.12,1.06),
+ (-.71,1.45),(-1.18,1.83),(-.94,2.18),
+ (-1.62,2.53),(-1.95,3.13),(-3.18,3.13)])
+torn_side_wall('side_wall_middle_remnant',[
+ (1.00,3.79),(3.12,3.79),(3.12,6.65),(2.23,6.65),
+ (1.86,6.27),(2.06,5.92),(1.53,5.44),
+ (1.83,5.05),(1.29,4.61)])
+torn_side_wall('side_wall_top_spandrel',[
+ (-3.16,9.35),(-2.57,9.12),(-2.13,9.42),(-1.76,9.02),
+ (-1.24,9.46),(-.71,9.17),(-.35,9.78),(.35,9.61),
+ (.75,10.23),(-3.16,10.23)])
+# Distinctive broken reinforced concrete edge, with rods emerging outward
+# from the exposed side-wall fracture rather than floating in space.
+for i,(y,z) in enumerate([(-1.12,1.06),(-1.18,1.83),(-1.62,2.53),
+                         (1.86,6.27),(1.53,5.44),(-1.76,9.02)]):
+    for j in range(2):
+        rod(f'side_fracture_rebar_{i}_{j}',
+            (3.69,y,z+.12*j),(4.08+.09*j,y+.12,z-.24+.12*j),.028,rust)
+# Dislodged side-wall concrete fragments resting below the corresponding breaks.
+for i,(x,y,z,w,h) in enumerate([
+    (4.17,-1.50,.47,.85,.65),(4.63,-2.15,.30,.64,.43),
+    (4.02,1.86,3.87,.72,.32),(4.27,2.38,3.88,.53,.29)]):
+    box(f'side_collapse_fragment_{i}',(x,y,z),(w,.46,h),con)
+
 s.export('ruined_building_prototype.glb')
