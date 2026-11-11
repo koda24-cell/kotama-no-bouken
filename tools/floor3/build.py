@@ -35,4 +35,24 @@ for i in range(85):
  x=random.choice([-5.9,-1,3.6])+random.uniform(-.35,.35);y=random.uniform(-3.3,3.3);z=random.uniform(.5,10.6);box(f'ivy_{i}',(x,y,z),(.22,.18,.32),green)
 for i in range(70):
  x=random.uniform(-7,6);y=random.uniform(-5,5);rod(f'grass_{i}',(x,y,.1),(x+.12,y,.5),.035,green)
+
+# Second-pass structural detail
+for k in range(3):
+ z=k*3.4
+ for step in range(11):
+  box(f'stair_{k}_{step}',(-.1,1.8-step*.35,z+.2+step*.29),(1.3,.38,.24),con)
+ for side in [-.75,.65]:
+  rod(f'rail_{k}_{side}',(side,2.2,z+.55),(side,-1.7,z+3.5),.045,rust)
+ for x in [-5.7,-4.5,-2.6,-1.1]:
+  if (k,x) in [(1,-2.6),(2,-4.5)]:continue
+  rod(f'window_vertical_{k}_{x}',(x+.48,-3.42,z+.65),(x+.48,-3.42,z+2.6),.035,rust)
+  rod(f'window_sill_{k}_{x}',(x+.15,-3.42,z+.7),(x+.9,-3.42,z+.7),.035,rust)
+for i in range(35):
+ x=random.uniform(-5.6,4.7);y=random.choice([-3.3,3.3]);z=random.choice([3.65,7.05,10.45]);box(f'broken_edge_{i}',(x,y,z+random.uniform(-.2,.2)),(random.uniform(.18,.65),random.uniform(.2,.7),random.uniform(.12,.4)),con)
+for i in range(20):
+ x=random.uniform(1,4.5);y=random.uniform(-3,3);z=random.uniform(.6,10);rod(f'steel_bolt_{i}',(x,y,z),(x+.16,y,z),.05,rust)
+for x in [-4.7,-3.1]:
+ for y in [1.5,2.9]:rod(f'tank_leg_{x}_{y}',(x,y,10.7),(x,y,12.1),.09,rust)
+rod('tank_body_vertical',(-3.9,2.2,11.8),(-3.9,2.2,13.2),.7,rust)
+
 s.export('ruined_building_prototype.glb')
