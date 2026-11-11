@@ -1,0 +1,68 @@
+import bpy, math, random, os, sys
+from mathutils import Vector
+random.seed(24)
+bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
+out='/work/render-output/b2-watergate'; os.makedirs(out,exist_ok=True)
+def mat(name,color,metal=0,rough=.7):
+ m=bpy.data.materials.new(name); m.diffuse_color=(*color,1); m.use_nodes=True
+ p=m.node_tree.nodes.get('Principled BSDF'); p.inputs['Base Color'].default_value=(*color,1);p.inputs['Metallic'].default_value=metal;p.inputs['Roughness'].default_value=rough
+ return m
+stone=mat('Cold worn limestone',(.34,.42,.51));dark=mat('Weathered seams',(.17,.23,.3));iron=mat('Oxidized iron',(.16,.21,.26),.75);ice=mat('Frozen cyan crystal',(.08,.58,.86),.15,.16);water=mat('Icy water',(.06,.26,.43),.3,.12)
+def cube(name,loc,scale,material):
+ bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.dimensions=scale;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(material);return o
+def beam(name,a,b,r,material,verts=12):
+ a,b=Vector(a),Vector(b);d=b-a
+ bpy.ops.mesh.primitive_cylinder_add(vertices=verts,radius=r,depth=d.length,location=(a+b)/2);o=bpy.context.object;o.name=name;o.rotation_euler=d.to_track_quat('Z','Y').to_euler();o.data.materials.append(material);return o
+for s in [-1,1]:
+ x=s*4.5
+ for j in range(9):cube('Pillar masonry %s %s'%(s,j),(x,0,.5+j*.8),(1.65,1.65,.76),stone if j%3 else dark)
+ for h in [1.2,3.6,6.4,7.65]:cube('Pillar cornice',(x,0,h),(2,1.95,.22),dark)
+ for k in range(9):cube('Broken parapet',(s*(5.6+k*.31),.35,random.uniform(2.4,4.8)),(.36,1.3,random.uniform(.4,1.2)),stone)
+for i in range(28):
+ a=math.pi*i/28;b=math.pi*(i+1)/28
+ v=[]
+ for y in [-.82,.82]:
+  for r,t in [(3.05,a),(3.95,a),(3.95,b),(3.05,b)]:v.append((r*math.cos(t),y,4.0+r*math.sin(t)))
+ faces=[(0,1,2,3),(4,7,6,5),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)]
+ mesh=bpy.data.meshes.new('arch stone');mesh.from_pydata(v,[],faces);mesh.update();o=bpy.data.objects.new('Segmented arch voussoir %02d'%i,mesh);bpy.context.collection.objects.link(o);o.data.materials.append(stone if i%4 else dark)
+for i in range(16):
+ x=-2.85+i*.38;top=4+math.sqrt(max(0,3**2-x*x))-.55
+ beam('Portcullis bar %02d'%i,(x,-.95,.45),(x,-.95,top),.073,iron)
+for z in [1.3,2.5,3.7,4.9]:cube('Gate horizontal brace',(0,-1,z),(5.8,.18,.18),iron)
+for name,x,y,z,r in [('Main drive',0,-1.45,5.1,1.12),('Side drive',-6.2,-1.25,3.2,1.38)]:
+ beam(name+' axle',(x,y-.25,z),(x,y+.25,z),.24,iron)
+ for i in range(16):
+  a=i*2*math.pi/16;b=(i+1)*2*math.pi/16
+  beam(name+' spoke',(x,y,z),(x+r*math.cos(a),y,z+r*math.sin(a)),.085,iron)
+  beam(name+' rim',(x+r*math.cos(a),y,z+r*math.sin(a)),(x+r*math.cos(b),y,z+r*math.sin(b)),.13,iron)
+  cube(name+' tooth',(x+(r+.1)*math.cos(a),y,z+(r+.1)*math.sin(a)),(.21,.35,.21),dark)
+for s in [-1,1]:
+ for i in range(10):
+  a=(s*2.5,-1.2,6.5-i*.35);b=(s*2.5+math.sin(i*.6)*.11,-1.2,6.15-i*.35)
+  beam('Suspension chain',a,b,.055,iron,8)
+for i in range(22):
+ x=-8+i*.75
+ cube('Broken canal stone',(x,-2.5,random.uniform(.05,.22)),(.69,2.2,.35),stone if i%4 else dark)
+cube('Water channel',(0,-2.6,.05),(15,3.8,.08),water)
+for i in range(55):
+ x=random.choice([-1,1])*random.uniform(4.8,8.6);y=random.uniform(-2.9,2)
+ cube('Collapsed masonry',(x,y,random.uniform(.12,.42)),(random.uniform(.2,.8),random.uniform(.25,.8),random.uniform(.2,.6)),stone)
+for i in range(65):
+ x=random.choice([-1,1])*random.uniform(4.6,8.3);y=random.uniform(-3.0,1.7)
+ bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=random.uniform(.1,.32),radius2=0,depth=random.uniform(.35,1.7),location=(x,y,.8));bpy.context.object.name='Blue ice crystal';bpy.context.object.data.materials.append(ice)
+for i in range(34):
+ a=random.uniform(.15,math.pi-.15);x=3.5*math.cos(a);z=4+3.5*math.sin(a)
+ bpy.ops.mesh.primitive_cone_add(vertices=7,radius1=0,radius2=random.uniform(.07,.16),depth=random.uniform(.3,1.2),location=(x,-.85,z-.4));bpy.context.object.name='Arch hanging icicle';bpy.context.object.data.materials.append(ice)
+# Save native Blender and GLB before adding render-only helpers
+bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v02.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v02.glb',export_format='GLB')
+world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.035,.07,.13,1)
+def area(loc,power,size):
+ bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,3))-o.location).to_track_quat('-Z','Y').to_euler()
+area((1,-5,12),2100,9);area((-8,2,7),1200,7)
+bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=24
+bpy.context.scene.render.resolution_x=1000;bpy.context.scene.render.resolution_y=760;bpy.context.scene.render.resolution_percentage=100
+for name,pos in [('front',(0,-23,10)),('side',(22,-3,10)),('angle',(17,-21,12))]:
+ bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,3.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=20;bpy.context.scene.camera=cam
+ bpy.context.scene.render.filepath=out+'/'+name+'.png';bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
+print('B2 watergate Blender/GLB/3 renders exported')
