@@ -303,5 +303,34 @@ export function enhanceB5GothicArch(THREE, root) {
   const m=new THREE.Mesh(geometry,i%2?paleStone:archMasonry);
   m.position.z=-1.59;m.name='b5:gothicArch:bondedBrokenCrest';extra.add(m);
  }
+
+ // Tenth pass: correct the two oversized central crest elements observed in
+ // the actual 2026-11-12 high-angle Blender render. Both original meshes stay
+ // alive; only their transforms change, leaving the Gothic opening readable.
+ let crestRepositioned=0;
+ for(const part of root.children){
+  if(!part.isMesh)continue;
+  const p=part.position,s=part.scale;
+  // The original second-pass fractured slab was hovering across the apex
+  // like a large triangular sheet, obscuring the pointed arch silhouette.
+  if(Math.abs(p.x)<.02&&Math.abs(p.y-14.4)<.02&&Math.abs(p.z)<.02&&
+     Math.abs(s.x-1.8)<.02&&part.geometry?.isBufferGeometry&&!part.geometry?.isBoxGeometry){
+   p.set(-4.62,13.85,-.18);
+   s.set(.96,.78,1.1);
+   part.rotation.set(.12,-.28,.24);
+   part.name='b5:gothicArch:relocatedBrokenCrestSlab';
+   crestRepositioned++;
+  }
+  // The central cone read as a huge freestanding spike, not a keystone.
+  // Scale it to a short damaged crown embedded between the two arch shoulders.
+  if(Math.abs(p.x)<.02&&Math.abs(p.y-14.5)<.02&&Math.abs(p.z)<.02&&
+     Math.abs(s.x-2.5)<.02&&Math.abs(s.y-3.2)<.02){
+   p.set(0,14.56,0);
+   s.set(.9,1.2,1.45);
+   part.name='b5:gothicArch:reducedCrownCore';
+   crestRepositioned++;
+  }
+ }
+ extra.userData.crestRepositioned=crestRepositioned;
  root.add(extra);return root;
 }
