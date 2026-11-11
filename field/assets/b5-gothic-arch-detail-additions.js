@@ -279,5 +279,29 @@ export function enhanceB5GothicArch(THREE, root) {
   const m=new THREE.Mesh(geo,course%2?stone:archMasonry);
   m.position.z=-1.55;m.name='b5:gothicArch:fullDepthWallBlock';extra.add(m);
  }
+
+ // Ninth pass: the broken upper shoulders need solid bonded stone, not another
+ // thin front-facing sheet. These irregular crest blocks bridge the full depth.
+ // Keep them outside the central lancet and leave an uneven collapsed skyline.
+ const shoulderCourses=[
+  {x:3.45,y:14.15,w:.62,h:.48},
+  {x:3.95,y:14.62,w:.55,h:.42},
+  {x:3.28,y:14.91,w:.43,h:.32},
+  {x:4.45,y:14.12,w:.48,h:.55}
+ ];
+ for(const side of [-1,1])for(let i=0;i<shoulderCourses.length;i++){
+  if(side>0&&i===2)continue; // visibly collapsed right-hand crest
+  const {x,y,w,h}=shoulderCourses[i];
+  const cx=side*x,chip=.09+(i%2)*.04;
+  const profile=[[cx-side*w,y-h+chip],[cx-side*(w-chip),y-h],
+   [cx+side*(w-.08),y-h+.04],[cx+side*w,y-h+.16],
+   [cx+side*(w-.06),y+h-chip],[cx+side*(w-.19),y+h],
+   [cx-side*(w-.08),y+h-.05],[cx-side*w,y+h-.17]];
+  const s=new THREE.Shape();profile.forEach(([px,py],j)=>j?s.lineTo(px,py):s.moveTo(px,py));s.closePath();
+  const geometry=new THREE.ExtrudeGeometry(s,{depth:3.18,steps:1,
+   bevelEnabled:true,bevelThickness:.065,bevelSize:.055,bevelSegments:2});
+  const m=new THREE.Mesh(geometry,i%2?paleStone:archMasonry);
+  m.position.z=-1.59;m.name='b5:gothicArch:bondedBrokenCrest';extra.add(m);
+ }
  root.add(extra);return root;
 }
