@@ -24,6 +24,14 @@ jobs:
           python tools/floor3/build.py
           mv ruined_building_prototype.glb render-output/
           test -s render-output/ruined_building_prototype.glb
+      - name: Verify exported GLB
+        run: |
+          python - <<'PY'
+          import trimesh
+          scene = trimesh.load('render-output/ruined_building_prototype.glb', force='scene')
+          assert len(scene.geometry) > 100, 'Unexpectedly small scene'
+          print('GLB_GEOMETRIES', len(scene.geometry))
+          PY
       - name: Pull Blender Docker image
         run: docker pull lscr.io/linuxserver/blender:latest
       - name: Render front side and angle using Blender
