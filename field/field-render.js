@@ -153,7 +153,27 @@ function fieldDrawMap(canvas, cell, full) {
   g.lineWidth=Math.max(1.2,cell*.12);
   g.lineJoin="round";
   g.stroke();
-  const dot=(x,y,color,size=.62,shape="circle")=>{
+  // 手描きマップアイコン。画像が未読み込みの場合は既存の記号を描画する。
+  const iconNames={stairs_up:"stairs_up",stairs_down:"stairs_down",save:"save",chest:"chest",chest_open:"chest_open",gather:"gather_herb",event:"event",npc:"event",sign:"inspect",switch:"inspect",cache:"chest",gate:"boss",exit:"stairs_down",door:"door",locked_door:"locked_door",hidden:"marker",foe:"foe",foe_chase:"strong_enemy"};
+  const iconCache=window.__kotamaMapIconCache||(window.__kotamaMapIconCache={});
+  const iconAt=(x,y,name,size=.95)=>{
+    if(!inWindow(x,y)||!name)return false;
+    const filename=iconNames[name]||name;
+    let img=iconCache[filename];
+    if(!img){
+      img=new Image();iconCache[filename]=img;
+      img.onload=()=>{if(typeof fieldDrawMinimap==="function")fieldDrawMinimap();if(fieldState.mapOpen&&typeof fieldDrawFullMap==="function")fieldDrawFullMap();};
+      img.onerror=()=>{img.dataset.iconFailed="1";};
+      img.src="assets/map-icons/"+filename+".png";
+      return false;
+    }
+    if(!img.complete||!img.naturalWidth)return false;
+    const px=(x-originX+.5)*cell,py=(y-originY+.5)*cell,wh=cell*size;
+    g.save();g.globalAlpha=.98;g.drawImage(img,px-wh/2,py-wh/2,wh,wh);g.restore();
+    return true;
+  };
+  const dot=(x,y,color,size=.62,shape="circle",iconName)=>{
+    if(iconAt(x,y,iconName,Math.min(1,size*1.25)))return;
     if(!inWindow(x,y)) return;
     g.fillStyle=color;
     const cx=(x-originX+.5)*cell,cy=(y-originY+.5)*cell,rad=cell*size/2;
@@ -168,9 +188,9 @@ function fieldDrawMap(canvas, cell, full) {
   };
   for(const o of a.objects){
     if(!inWindow(o.tx,o.ty)||!exp[o.ty*a.w+o.tx]) continue;
-    if(o.kind==="stairs") dot(o.tx,o.ty,"#ffd84a",.84,o.dir==="up"?"triangle":"triangle-down");
-    else if(o.kind==="save") dot(o.tx,o.ty,"#ffe27a",.8);
-    else if(o.kind==="chest") dot(o.tx,o.ty,fieldState.flags[o.key]?"#7a6a55":"#ff9a3c",.76,"square");
+    if(o.kind==="stairs") dot(o.tx,o.ty,"#ffd84a",.84,o.dir==="up"?"triangle":"triangle-down",o.dir==="up"?"stairs_up":"stairs_down");
+    else if(o.kind==="save") dot(o.tx,o.ty,"#ffe27a",.8,"circle","save");
+    else if(o.kind==="chest") dot(o.tx,o.ty,fieldState.flags[o.key]?"#7a6a55":"#ff9a3c",.76,"square",fieldState.flags[o.key]?"chest_open":"chest");
     else if(o.kind==="gather") dot(o.tx,o.ty,(fieldState.gatherUsed[o.key]||0)>=FIELD_GATHER_USES?"#5d7a5d":"#3ee07a",.76);
     else if(o.kind==="npc"||o.kind==="sign") dot(o.tx,o.ty,"#c7a3ff",.72,"square");
     else if(o.kind==="event"){
@@ -185,18 +205,18 @@ function fieldDrawMap(canvas, cell, full) {
       const opened=!!fieldState.flags["puzzle:"+o.puzzle+":reward"];
       dot(o.tx,o.ty,opened?"#7a6a55":"#ff9a3c",.76,"square");
     }
-    else if(o.kind==="gate") dot(o.tx,o.ty,"#ff3030",.9);
-    else if(o.kind==="exit") dot(o.tx,o.ty,"#fff4c2",.9,"square");
+    else if(o.kind==="gate") dot(o.tx,o.ty,"#ff3030",.9,"circle","boss");
+    else if(o.kind==="exit") dot(o.tx,o.ty,"#fff4c2",.9,"square","stairs_down");
     else if(o.kind==="door"){
       const opened=typeof fieldDoorOpen==="function"?fieldDoorOpen(o):!!fieldState.flags["door:"+o.id+":open"];
-      if(!o.hidden||opened) dot(o.tx,o.ty,opened?"#63d6dc":"#f0c36a",.82,o.hidden?"diamond":"square");
+      if(!o.hidden||opened) dot(o.tx,o.ty,opened?"#63d6dc":"#f0c36a",.82,o.hidden?"diamond":"square",opened?"door":"locked_door");
     }
-    else if(o.kind==="hiddenPassage"||o.kind==="hidden-passage") dot(o.tx,o.ty,"#c68cff",.82,"diamond");
+    else if(o.kind==="hiddenPassage"||o.kind==="hidden-passage") dot(o.tx,o.ty,"#c68cff",.82,"diamond","marker");
   }
   for(const foe of fieldState.foes){
     if(foe.defeated) continue;
     const fx=Math.floor(foe.x/FIELD_TILE),fy=Math.floor(foe.y/FIELD_TILE);
-    if(inWindow(fx,fy)&&exp[fy*a.w+fx]) dot(fx,fy,foe.mode==="chase"?"#ff3030":"#ffad45",.94,foe.mode==="chase"?"triangle":"circle");
+    if(inWindow(fx,fy)&&exp[fy*a.w+fx]) dot(fx,fy,foe.mode==="chase"?"#ff3030":"#ffad45",.94,foe.mode==="chase"?"triangle":"circle",foe.mode==="chase"?"strong_enemy":"foe");
   }
   g.save();g.translate((fieldState.x/FIELD_TILE-originX)*cell,(fieldState.y/FIELD_TILE-originY)*cell);
   g.rotate({up:0,right:Math.PI/2,down:Math.PI,left:-Math.PI/2}[fieldState.dir]||0);

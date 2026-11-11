@@ -1,0 +1,44 @@
+name: Extract hand-drawn map icons
+on:
+  push:
+    branches: [development]
+    paths:
+      - 'assets/kotama_map_icons_png.zip'
+      - '.github/workflows/extract-map-icons.yml'
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: development
+          persist-credentials: true
+      - name: Validate and extract approved map icon PNGs
+        run: |
+          python3 - <<'PY'
+          import zipfile, pathlib, json
+          archive=pathlib.Path("assets/kotama_map_icons_png.zip")
+          dest=pathlib.Path("assets/map-icons")
+          dest.mkdir(parents=True,exist_ok=True)
+          with zipfile.ZipFile(archive) as z:
+              members=[m for m in z.infolist() if m.filename.endswith(".png")]
+              assert len(members)==45, f"Expected 45 PNG icons, got {len(members)}"
+              for m in members:
+                  name=pathlib.PurePosixPath(m.filename).name
+                  assert m.filename.startswith("assets/map-icons/") and name.endswith(".png")
+                  data=z.read(m)
+                  assert data.startswith(bytes.fromhex("89504e470d0a1a0a")), name
+                  (dest/name).write_bytes(data)
+          (dest/"README.md").write_text("# 手描きマップアイコン\n\n元データ: `assets/kotama_map_icons_png.zip`。45種類の透過PNGを展開したもの。\nマップ描画: `field/field-render.js`。未読み込み時は既存マーカーにフォールバック。\n",encoding="utf-8")
+          PY
+      - name: Commit extracted icons
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/map-icons/
+          if ! git diff --cached --quiet; then
+            git commit -m "assets: extract 45 hand-drawn map icons"
+            git push origin HEAD:development
+          fi
