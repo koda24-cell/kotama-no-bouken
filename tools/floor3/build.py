@@ -225,4 +225,39 @@ for floor,z in enumerate([3.65,7.05,10.45]):
         box(f'falling_slab_chunk_{floor}_{j}',(x,-3.9-j*.11,z-.58-j*.17),
             (.31+.09*j,.32,.23+.05*j),[137,133,124,255])
 
+
+# Seventh pass: partial progressive floor collapse at the exposed right-hand bay.
+# A tilted heavy slab remains attached to the floor rim; broken joists and the
+# matching debris below make gravity and the failure direction readable.
+def displaced_slab(name, center, size, pitch_deg, color):
+    mesh=trimesh.creation.box(extents=size)
+    rot=trimesh.transformations.rotation_matrix(np.radians(pitch_deg),[1,0,0])
+    mesh.apply_transform(rot)
+    mesh.apply_translation(center)
+    mesh.visual.vertex_colors=color
+    s.add_geometry(mesh,geom_name=name)
+
+# Each failure is offset, so the damage does not repeat as a rigid pattern.
+for level,(x,y,z,angle) in enumerate([
+    (2.25,-3.55,3.15,-26),
+    (1.78,-3.62,6.38,-34),
+    (2.62,-3.34,9.95,-19),
+]):
+    displaced_slab(f'sagging_floor_plate_{level}',(x,y,z),
+                   (2.05,1.32,.35),angle,[125,122,114,255])
+    for j in range(4):
+        xx=x-.75+j*.47
+        rod(f'sagging_plate_exposed_rebar_{level}_{j}',
+            (xx,y-.5,z-.2),(xx+.06,y-.85,z-.65-.1*(j%2)),.033,rust)
+    # Broken concrete chunks are concentrated below the same structural failure.
+    for j in range(5):
+        xx=x-.9+j*.4
+        yy=-4.0-.19*(j%3)
+        box(f'collapse_foot_debris_{level}_{j}',
+            (xx,yy,.22+.08*(j%2)),(.55+.11*(j%2),.52,.36),con)
+    rod(f'fractured_joist_{level}_a',(x-1.05,-2.9,z+.35),
+        (x-.65,-3.8,z-.28),.085,rust)
+    rod(f'fractured_joist_{level}_b',(x+.95,-2.9,z+.35),
+        (x+.53,-3.68,z-.35),.085,rust)
+
 s.export('ruined_building_prototype.glb')
