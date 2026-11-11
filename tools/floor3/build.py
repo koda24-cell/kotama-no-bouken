@@ -260,4 +260,28 @@ for level,(x,y,z,angle) in enumerate([
     rod(f'fractured_joist_{level}_b',(x+.95,-2.9,z+.35),
         (x+.53,-3.68,z-.35),.085,rust)
 
+
+# Eighth pass: roofline failure and fallen beam fragments.
+# Existing roof beams stay intact to preserve prior geometry; fracture caps and
+# visibly displaced heavy members create an asymmetric broken silhouette.
+for idx,(x,y,z,ang) in enumerate([
+    (-4.85,-3.05,10.92,-22),(-3.35,-3.15,10.72,31),
+    (2.35,2.98,10.65,-38), (3.85,2.96,10.27,47)]):
+    displaced_slab(f'roof_sheared_concrete_{idx}',(x,y,z),
+                   (1.18,.66,.44),ang,[127,124,116,255])
+    for j in range(3):
+        rod(f'roof_break_rebar_{idx}_{j}',
+            (x-.35+j*.28,y,z-.17),
+            (x-.42+j*.32,y-.34,z-.55-.13*j),.034,rust)
+# Detached upper structural fragments have varied angles and mass.
+for idx,(a,b) in enumerate([
+    ((-5.45,-3.05,10.83),(-4.56,-3.68,9.58)),
+    ((-3.18,-3.03,10.76),(-2.63,-3.87,9.21)),
+    ((3.62,2.93,10.64),(4.33,3.59,9.16))]):
+    rod(f'roof_dangling_steel_{idx}',a,b,.105,rust)
+for idx,(x,y,w,h) in enumerate([
+    (-4.87,-4.12,1.23,.73),(-3.24,-4.52,.91,.55),
+    (3.94,3.69,1.13,.82),(4.55,3.41,.78,.47)]):
+    box(f'roof_collapse_ground_rubble_{idx}',(x,y,h/2),(w,.75,h),con)
+
 s.export('ruined_building_prototype.glb')
