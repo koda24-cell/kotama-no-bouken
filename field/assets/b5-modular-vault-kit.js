@@ -222,6 +222,136 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    }
   }
  }
+ // Reference-sheet pass: structural ribs converge at the Gothic boss,
+ // and the upper shell reads as a vault rather than flat stacked tiles.
+ // Preserve all prior geometry: these are independent additive meshes.
+ const curveRib=(points,width,material=stone)=>{
+  for(let k=0;k<points.length-1;k++)beam(points[k],points[k+1],width,material);
+ };
+ const traceryLobe=(cx,cy,cz,r,material=trim)=>{
+  // Pointed, open quatrefoil: Gothic cusps instead of circular beads.
+  for(let p=0;p<4;p++){
+   const a=p*Math.PI/2,centerX=cx+Math.cos(a)*r*.48,centerY=cy+Math.sin(a)*r*.48;
+   const pts=[];
+   for(let k=0;k<=12;k++){
+    const t=(k/12)*2*Math.PI;
+    pts.push([centerX+Math.cos(t)*r*.30,
+      centerY+Math.sin(t)*r*.30,cz]);
+   }
+   curveRib(pts,.026,material);
+  }
+  for(let p=0;p<4;p++){
+   const a=p*Math.PI/2,b=(p+1)*Math.PI/2;
+   curveRib([
+     [cx+Math.cos(a)*r*.87,cy+Math.sin(a)*r*.87,cz],
+     [cx+Math.cos((a+b)/2)*r*.73,cy+Math.sin((a+b)/2)*r*.73,cz],
+     [cx+Math.cos(b)*r*.87,cy+Math.sin(b)*r*.87,cz]],.034,material);
+  }
+ };
+ if(['basic-vault','collapsed-vault','royal-vault'].includes(kind)){
+  const damaged=kind==='collapsed-vault',luxury=kind==='royal-vault';
+  // Four diagonal ribs originate at real corner capitals and end at the
+  // central vault boss. A single arc radius is not reused for all ribs.
+  for(const sx of [-1,1])for(const sz of [-1,1]){
+   const points=[];
+   for(let i=0;i<=24;i++){
+    if(damaged&&sx===1&&sz===1&&i>=12)break;
+    const t=i/24;
+    points.push([sx*(3.17*(1-t)),4.79+1.69*Math.sin(t*Math.PI*.50),
+      sz*(2.41*(1-t))]);
+   }
+   curveRib(points,luxury?.095:.11,luxury?trim:stone);
+   if(luxury){
+    const parallel=points.map(p=>[p[0]*.96,p[1]+.135,p[2]*.97]);
+    curveRib(parallel,.042,trim);
+   }
+  }
+  // Interior groin rib: curve between the four springers and boss.
+  for(const sx of [-1,1])for(const sz of [-1,1]){
+   if(damaged&&sx===1&&sz===1)continue;
+   curveRib([[sx*2.98,4.88,sz*2.34],[sx*2.13,5.68,sz*1.54],
+     [sx*1.03,6.28,sz*.78],[0,6.49,0]],luxury?.072:.085,stone);
+  }
+  if(luxury){
+   // Monumental carved rosette and descending Gothic blind-arcade along
+   // each visible spandrel. The shapes occupy previously plain empty spans.
+   for(const z of [-2.77,2.45]){
+    traceryLobe(0,6.02,z,.43);
+    for(const sx of [-1,1]){
+     traceryLobe(sx*1.60,5.23,z,.25);
+     for(let j=0;j<3;j++){
+      const cx=sx*(.83+j*.54);
+      curveRib([[cx-.22,5.03,z],[cx-.18,5.32,z],
+        [cx,5.48,z],[cx+.18,5.32,z],[cx+.22,5.03,z]],.049,trim);
+     }
+    }
+   }
+   // Central boss has a layered stone pendant and faceted spurs,
+   // supported directly beneath the crossing ribs.
+   box(0,6.48,0,.53,.28,.53,trim);
+   for(let j=0;j<8;j++){
+    const a=j*Math.PI/4;
+    beam([0,6.47,0],[Math.cos(a)*.55,6.49,Math.sin(a)*.55],.045,trim);
+   }
+   chip(0,6.27,0,.31,.34,.31,21);
+   for(const x of [-3.21,3.21])for(const z of [-2.50,2.50]){
+    for(let i=0;i<3;i++){
+     const yy=4.76+i*.19;
+     box(x,yy,z-.42,1.02-i*.12,.12,1.00-i*.10,i===1?trim:stone);
+    }
+    // Fan-shaped rib sockets visibly grow from the enlarged capital.
+    for(const side of [-1,1]){
+     beam([x,4.97,z],[x+side*.50,5.35,z],.095,trim);
+    }
+   }
+  }
+  if(damaged){
+   // Larger asymmetrical collapsed upper-edge fragments, with broad
+   // contact surfaces; edges remain organically jagged in the silhouette.
+   for(let j=0;j<7;j++){
+    const x=1.03+j*.31,z=.85+(j%2)*.36;
+    const y=5.92-(j%3)*.12;
+    const r=chip(x,y,z,.22+(j%3)*.10,.18,.27,j+20);
+    r.rotation.z=(j%2?.24:-.17);
+   }
+  }
+ }
+ if(kind==='vault-support'){
+  // Rib support is a fan springing from the top of the intact column;
+  // the lobe mouldings read as part of the capital, not separate beads.
+  for(const sx of [-1,1])for(const sz of [-1,1]){
+   curveRib([[sx*.29,4.81,sz*.14],[sx*.72,5.14,sz*.24],
+     [sx*1.45,5.62,sz*.32],[sx*2.15,5.70,sz*.35]],.095,trim);
+  }
+  for(let j=0;j<4;j++){
+   const a=j*Math.PI/2;
+   box(Math.cos(a)*.34,4.60,Math.sin(a)*.34,.25,.42,.25,trim);
+  }
+ }
+ if(kind==='fallen-vault-rubble'){
+  // Recognisable shattered cathedral ribs: angular thick segments whose
+  // fractured ends bear carved moulding, and a partial floral tracery.
+  for(let j=0;j<7;j++){
+   const x=-2.25+j*.69,z=.24+(j%3)*.34;
+   const a=box(x,.18,z,.58,.33,.34,j%3?stone:trim);
+   a.rotation.y=.19+j*.23;a.rotation.z=j%2?.07:-.09;
+   // Three stone flutes on a surviving sculpted fragment.
+   for(let k=0;k<3;k++){
+    box(x-.19+k*.17,.345,z-.16,.065,.05,.052,trim);
+   }
+  }
+  // Lost rose tracery lies flat; separate segments imply a fractured ring.
+  for(let j=0;j<13;j++){
+   if(j===3||j===4||j===10)continue;
+   const a=j*2*Math.PI/16,b=(j+1)*2*Math.PI/16;
+   beam([1.58+.50*Math.cos(a),.16,1.36+.50*Math.sin(a)],
+        [1.58+.50*Math.cos(b),.16,1.36+.50*Math.sin(b)],.075,trim);
+  }
+  for(let j=0;j<10;j++){
+   const a=j*2.3999,r=1.45+(j%3)*.24;
+   fractureStone(Math.cos(a)*r,Math.sin(a)*r,.35+(j%2)*.20,.25+(j%3)*.09,.12+j%4*.055,j+70);
+  }
+ }
  let disposed=false;
  return {group,dispose(){if(disposed)return;disposed=true;group.parent?.remove(group);
   group.clear(); gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
