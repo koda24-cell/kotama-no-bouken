@@ -50,10 +50,36 @@ export function createB4DetailedRails({length=5,broken=false,curve=0}={}) {
    for(const dx of [-.085,.085])box(root,x+dx,.175,z,.025,.02,.025,steel);
   }
  }
- if(broken)for(let i=0;i<12;i++){
-  const z=-length/2+length*(.55+i*.035),x=center(z)+Math.sin(i*7)*.9;
-  const rock=new THREE.Mesh(new THREE.IcosahedronGeometry(.09+(i%3)*.055,0),stone);
-  rock.position.set(x,-.12,z);rock.rotation.set(i*.7,i*.4,i*.2);root.add(rock);
+ if(broken){
+  // A visible collapse zone: displaced ties, snapped iron, and jagged timber shards.
+  // All details are additive, leaving the existing rail sections untouched.
+  const fracturedWood=new THREE.MeshStandardMaterial({color:0x80664c,roughness:1,flatShading:true});
+  const brokenIron=new THREE.MeshStandardMaterial({color:0x51433c,metalness:.43,roughness:.9,flatShading:true});
+  const shardShape=new THREE.ConeGeometry(.09,.52,3);
+  for(let i=0;i<7;i++){
+   const z=length*(.12+i*.065),x=center(z);
+   const tie=box(root,x+(i%2?-.12:.18),-.09,z,1.45-(i%3)*.14,.14,.21,wood,-.12+(i%4)*.10);
+   tie.rotation.z=(i%2?1:-1)*.07;
+   for(const side of [-1,1]){
+    const shard=new THREE.Mesh(shardShape,fracturedWood);
+    shard.position.set(x+side*(.62-(i%3)*.09),-.035,z+(i%2)*.08);
+    shard.rotation.set(Math.PI/2+(i%3)*.17,0,side*.35);
+    root.add(shard);
+   }
+  }
+  // Two heavy rail fragments thrown outward, rather than small rocks alone.
+  for(const side of [-1,1]){
+   const z=length*(.27+side*.075),x=center(z)+side*.71;
+   const piece=box(root,x,.12,z,.23,.13,.88,brokenIron,side*.34);
+   piece.rotation.z=side*.12;
+   const brokenEnd=new THREE.Mesh(new THREE.IcosahedronGeometry(.105,0),rust);
+   brokenEnd.position.set(x+side*.15,.12,z+.43);root.add(brokenEnd);
+  }
+  for(let i=0;i<18;i++){
+   const z=-length/2+length*(.55+i*.025),x=center(z)+Math.sin(i*7)*.9;
+   const rock=new THREE.Mesh(new THREE.IcosahedronGeometry(.085+(i%4)*.045,0),stone);
+   rock.position.set(x,-.12,z);rock.rotation.set(i*.7,i*.4,i*.2);root.add(rock);
+  }
  }
  root.userData={asset:'B4 modular mine rails',variant:broken?'broken':curve?'curved':'straight'};
  return root;
