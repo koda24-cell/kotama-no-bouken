@@ -4,7 +4,7 @@
  * Positions are optional metadata in battle snapshots; old saves remain valid.
  */
 (function () {
-  if (new URLSearchParams(location.search).get("battleUiPreview") !== "1") return;
+  if (new URLSearchParams(location.search).get("battleUiPreview") === "0") return;
   const rearJobs = new Set(["mage", "healer", "princess", "gunner"]);
   // Five-person parties must still fit the 3-front / 3-rear formation.
   function defaultRow(id) {
