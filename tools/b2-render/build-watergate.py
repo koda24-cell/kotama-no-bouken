@@ -157,9 +157,52 @@ for side in [-1,1]:
     (random.uniform(.4,.9),random.uniform(.35,.85),random.uniform(.25,.6)),stone)
   o.rotation_euler[1]=random.uniform(-.25,.25)
 
+
+# v05: physically legible lifting drum and sculpted stone damage
+# A paired overhead winch assembly links both counterweights to the gate
+for side in [-1,1]:
+ x=side*2.3
+ beam('Overhead winch drum axle',(x,-.72,7.05),(x,.62,7.05),.21,iron,20)
+ for y in [-.63,.58]:
+  ring('Winch flange',x,y,7.05,.54,.11,bronze)
+ for j in range(18):
+  a=2*math.pi*j/18
+  beam('Winch barrel stave',(x+.35*math.cos(a),-.55,7.05+.35*math.sin(a)),
+       (x+.35*math.cos(a),.55,7.05+.35*math.sin(a)),.065,dark,8)
+ for k in range(12):
+  a=math.pi*1.6*k/12
+  beam('Wound lifting cable',(x+.43*math.cos(a),-.49+k*.085,7.05+.43*math.sin(a)),
+       (x+.43*math.cos(a+.28),-.44+k*.085,7.05+.43*math.sin(a+.28)),.043,iron,8)
+ # cable visibly descends to the iron gate beam
+ beam('Gate lifting cable',(x,-.79,6.55),(x,-.91,5.0),.052,iron,10)
+ cube('Gate lifting eye',(x,-.94,5.0),(.36,.22,.34),bronze)
+# Horizontal structural courses behind the arch connect the side pylons
+for z in [6.85,7.35,8.0]:
+ for side in [-1,1]:
+  cube('Arch spandrel bonded course',(side*3.7,.65,z),(2.15,1.3,.31),stone)
+# Individual chipped stonework with angled fractured edges; retain all old stones
+for side in [-1,1]:
+ for j in range(12):
+  x=side*(4.9+j*.28);z=5.8+random.uniform(-.6,.8)
+  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(x,random.uniform(.3,.8),z))
+  o=bpy.context.object;o.name='Irregular broken wall core'
+  o.scale=(random.uniform(.18,.42),random.uniform(.24,.46),random.uniform(.16,.45))
+  o.rotation_euler=(random.uniform(-.3,.3),random.uniform(-.5,.5),random.uniform(-.4,.4))
+  o.data.materials.append(stone if j%3 else dark)
+# Angled braces make the counterweight frames look load bearing
+for side in [-1,1]:
+ x=side*5.6
+ for z in [3.0,4.3]:
+  beam('Diagonal frame brace',(x-.43,-.68,z-.52),(x+.43,-.68,z+.52),.11,iron,10)
+# Irregular frost shelves where ice meets masonry, not free-standing cones
+for side in [-1,1]:
+ for j in range(15):
+  x=side*random.uniform(3.95,5.0);z=random.uniform(.8,7.5)
+  cube('Adhered frost ledge',(x,-.87,z),(random.uniform(.16,.43),.18,random.uniform(.08,.22)),frost)
+
 # Save native Blender and GLB before adding render-only helpers
-bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v04.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v04.glb',export_format='GLB')
+bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v05.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v05.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.035,.07,.13,1)
 def area(loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,3))-o.location).to_track_quat('-Z','Y').to_euler()
@@ -169,4 +212,4 @@ bpy.context.scene.render.resolution_x=1000;bpy.context.scene.render.resolution_y
 for name,pos in [('front',(0,-23,10)),('side',(22,-3,10)),('angle',(17,-21,12))]:
  bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,3.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=20;bpy.context.scene.camera=cam
  bpy.context.scene.render.filepath=out+'/'+name+'.png';bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
-print('B2 watergate v04 Blender/GLB/3 renders exported')
+print('B2 watergate v05 Blender/GLB/3 renders exported')
