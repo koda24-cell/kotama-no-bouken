@@ -7,8 +7,11 @@ bpy.ops.import_scene.gltf(filepath=os.path.abspath(src))
 meshes=[o for o in bpy.context.scene.objects if o.type=='MESH']
 if not meshes:raise RuntimeError('No mesh in '+src)
 corners=[o.matrix_world@Vector(v) for o in meshes for v in o.bound_box]
-min_y=min(v.y for v in corners)
+min_z=min(v.z for v in corners)
 center=sum(corners,Vector())/len(corners)
+# glTF import converts Three.js Y-up to Blender Z-up. The gate opening faces Blender +/-Y.
+# Use a stable target slightly above ground, not the centroid of scattered rubble.
+center.z=min_z+(max(v.z for v in corners)-min_z)*.48
 size=max(max(v[i] for v in corners)-min(v[i] for v in corners) for i in range(3))
 size=max(size,.1)
 clay=bpy.data.materials.new('neutral_clay')
@@ -32,13 +35,13 @@ mix.inputs[0].default_value=.23
 ground.node_tree.links.new(transparent.outputs[0],mix.inputs[1])
 ground.node_tree.links.new(diffuse.outputs[0],mix.inputs[2])
 ground.node_tree.links.new(mix.outputs[0],output.inputs['Surface'])
-bpy.ops.mesh.primitive_plane_add(size=2,location=(center.x,min_y-.04,center.z))
+bpy.ops.mesh.primitive_plane_add(size=2,location=(center.x,center.y,min_z-.04))
 plane=bpy.context.object
 plane.name='ground_reference'
 plane.scale=(size*.68,size*.68,1)
 plane.data.materials.append(ground)
 # Blender plane is XY by default; rotate to XZ.
-plane.rotation_euler[0]=1.57079632679
+plane.rotation_euler[0]=0.0
 edge=bpy.data.materials.new('ground_outline')
 edge.diffuse_color=(.18,.65,.8,1)
 def frame_line(a,b):
@@ -49,20 +52,24 @@ def frame_line(a,b):
  obj=bpy.data.objects.new('ground_frame',curve);bpy.context.collection.objects.link(obj)
  obj.data.materials.append(edge)
 r=size*.68
-pts=[(center.x-r,min_y-.02,center.z-r),(center.x+r,min_y-.02,center.z-r),(center.x+r,min_y-.02,center.z+r),(center.x-r,min_y-.02,center.z+r)]
+pts=[(center.x-r,center.y-r,min_z-.02),(center.x+r,center.y-r,min_z-.02),(center.x+r,center.y+r,min_z-.02),(center.x-r,center.y+r,min_z-.02)]
 for i in range(4):frame_line(pts[i],pts[(i+1)%4])
 bpy.ops.object.camera_add()
 camera=bpy.context.object;camera.data.type='ORTHO';camera.data.ortho_scale=size*1.85
 bpy.context.scene.camera=camera
-for vec,power in [((3,-4,6),850),((-4,2,4),550)]:
+for vec,power in [((-2,-3,5),1100),((3,2,4),850)]:
  bpy.ops.object.light_add(type='AREA',location=center+Vector(vec)*size)
  light=bpy.context.object;light.data.energy=power*max(size,1);light.data.size=size*2;aim(light,center)
-scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=20
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=32
+scene.world.color=(.35,.35,.35)
+scene.view_settings.view_transform='Standard'
+scene.view_settings.look='Medium High Contrast'
+scene.view_settings.exposure=1.0
 scene.render.resolution_x=960;scene.render.resolution_y=720;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 os.makedirs(outdir,exist_ok=True)
 stem=os.path.splitext(os.path.basename(src))[0]
-for label,direction in [('front',(0,.18,1)),('back',(0,.18,-1)),('high-angle',(1,1.15,1))]:
+for label,direction in [('front',(0,-1,.12)),('back',(0,1,.12)),('high-angle',(1,-1,1.15))]:
  camera.location=center+Vector(direction).normalized()*size*3.5
  aim(camera,center)
  scene.render.filepath=os.path.abspath(os.path.join(outdir,stem+'-'+label+'.png'))
