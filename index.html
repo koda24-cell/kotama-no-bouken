@@ -53,7 +53,7 @@
 
   <script src="./monster-compendium.js?v=20261109-01" defer></script>
   <script src="./battle-formation-ext.js?v=20261109-01" defer></script>
-  <script src="./battle-formation-move-preview.js?v=20261110-5" defer></script>
+  <script src="./battle-formation-move-preview.js?v=20261112-02" defer></script>
   <script src="./battle-ui-preview.js?v=20261112-01" defer></script>
   <link rel="stylesheet" href="./css/09-battle-effects.css?v=20261109-04">
   <style>
@@ -66,6 +66,10 @@
     #kotama-3d-loading button{margin-top:20px;padding:10px 22px;cursor:pointer}
     @keyframes kotama-loading-spin{to{transform:rotate(360deg)}}
     @media(prefers-reduced-motion:reduce){#kotama-3d-loading .loading-spinner{animation:none}}
+    #kotama-3d-loading{background:#000!important;color:#fff!important;align-items:flex-end!important;justify-content:flex-end!important;padding:0 30px 26px!important}
+    #kotama-3d-loading .loading-inner{width:auto!important;text-align:right!important}
+    #kotama-3d-loading .loading-spinner,#kotama-3d-loading [data-loading-message]{display:none!important}
+    #kotama-3d-loading h2{color:#fff!important;font-size:20px!important;font-weight:500!important;margin:0!important}
   </style>
   <script>
   (function(){
