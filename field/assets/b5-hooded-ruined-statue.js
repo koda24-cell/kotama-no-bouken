@@ -173,6 +173,78 @@ export function createB5HoodedStatue(THREE, options={}) {
  const forearm=rock(1.17,.25,-1.07,.52,.19,.24,11);
  forearm.rotation.z=-.18;
  rock(1.48,.17,-1.20,.30,.14,.22,13);
+ // PASS 3 — additive sculpting. The approved hood, arm pose and
+ // broad body remain unchanged. Details sit close to their parent fabric.
+ // Flowing layered stole in a continuous, lightly rippled stone sheet.
+ const drapeSheet=(side,seed=0)=>{
+  const rows=26,cols=9,positions=[],indices=[];
+  for(let j=0;j<=rows;j++){
+   const t=j/rows,yy=4.79-2.65*t;
+   const width=.17+.12*Math.sin(Math.PI*t)+.055*t;
+   const cx=side*(.35+.16*Math.sin(t*3.8+seed)+.12*t);
+   const cz=-.61-.12*Math.sin(t*Math.PI);
+   for(let k=0;k<=cols;k++){
+    const u=k/cols*2-1;
+    const edgeFold=.065*Math.sin(t*15+u*3+seed);
+    positions.push(cx+width*u, yy+.075*Math.sin(t*8+u*2+seed)*u,
+      cz+.075*(1-u*u)*Math.sin(t*11+seed)+edgeFold);
+   }
+  }
+  for(let j=0;j<rows;j++)for(let k=0;k<cols;k++){
+   const a=j*(cols+1)+k,b=a+1,c=a+cols+1,d=c+1;
+   indices.push(a,c,b,b,c,d);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  g.setIndex(indices);g.computeVertexNormals();
+  add(g,stone);
+  rod([[side*.26,4.80,-.62],[side*.46,4.32,-.71],
+    [side*.53,3.72,-.67],[side*.52,3.08,-.68],
+    [side*.58,2.20,-.64]],.025,pale);
+ };
+ drapeSheet(-1,.4);drapeSheet(1,1.7);
+ // Layered neck folds support the fabric around the shoulders without
+ // creating a padded, fur-like rim around the face.
+ for(const side of [-1,1]){
+  rod([[side*.47,4.93,-.39],[side*.64,4.78,-.46],
+    [side*.73,4.52,-.44],[side*.63,4.28,-.47]],.055,stone);
+ }
+ // Engraved devotional motif below the hood: restrained geometric stone
+ // carving, kept shallow enough to avoid looking like applied armor.
+ const medallion=add(new THREE.CylinderGeometry(.22,.22,.075,32),stone,0,4.35,-.70);
+ medallion.rotation.x=Math.PI/2;
+ for(let i=0;i<8;i++){
+  const a=i*Math.PI/4,b=(i+1)*Math.PI/4;
+  rod([[.15*Math.cos(a),4.35+.15*Math.sin(a),-.75],
+    [.15*Math.cos(b),4.35+.15*Math.sin(b),-.75]],.018,pale);
+ }
+ rod([[0,4.46,-.76],[.06,4.38,-.76],[0,4.28,-.76],
+   [-.06,4.38,-.76],[0,4.46,-.76]],.022,pale);
+ // Fine, gravity-led chiseled folds traveling down the robe, varying
+ // length and curvature rather than evenly spaced straight ridges.
+ for(const [x,y,z,lean] of [
+  [-.43,3.95,-.56,-.14],[-.10,3.56,-.61,.12],
+  [.28,3.78,-.58,-.11],[-.55,2.73,-.59,.16],[.42,2.62,-.58,-.12]
+ ]){
+  rod([[x,y,z],[x+lean*.5,y-.36,z-.045],
+    [x+lean,y-.87,z-.025],[x+lean*.76,y-1.29,z+.04]],.023,stone);
+ }
+ // Fracture surface weathering: small inset seams and shallow chipped
+ // edges on the pre-existing missing shoulder, no protruding rubble balls.
+ for(const line of [
+  [[.56,4.94,-.34],[.70,4.78,-.25],[.78,4.64,-.17]],
+  [[.80,4.93,-.25],[.84,4.73,-.18],[.93,4.63,-.13]],
+  [[.60,4.48,-.32],[.75,4.55,-.21],[.83,4.41,-.18]]
+ ])rod(line,.013,dark);
+ // Sculpted pedestal inscription bands, restrained and partly weathered.
+ for(const side of [-1,1]){
+  for(let i=0;i<5;i++){
+   const x=side*(.35+i*.24);
+   if(i===3&&side>0)continue; // lost carving
+   rod([[x-.07,.77,-1.091],[x,.87,-1.092],
+     [x+.07,.77,-1.091]],.016,pale);
+  }
+ }
  // Sculpted chips on the robe hem and damaged pedestal.
  for(let i=0;i<9;i++){
   const a=i*2.3999;
