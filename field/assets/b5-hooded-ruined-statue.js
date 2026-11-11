@@ -361,6 +361,70 @@ export function createB5HoodedStatue(THREE, options={}) {
   [[-.76,3.07,-.73],[-.68,3.00,-.74],[-.56,2.96,-.71]],
   [[-.83,3.18,-.67],[-.75,3.10,-.74],[-.62,3.07,-.74]]
  ])rod(curve,.020,stone);
+ // PASS 6 — additive sculptural details. None of the accepted silhouettes
+ // is replaced: the new stonework rides on the garment and mantle.
+ // Draped mantle panels spring from shoulder and arc down the torso.
+ const mantlePanel=(side,back=false)=>{
+  const rows=30,cols=13,positions=[],triangles=[];
+  for(let j=0;j<=rows;j++){
+   const t=j/rows,y=4.93-1.83*t;
+   const centerX=side*(.58+.18*Math.sin(t*2.6)+.10*t);
+   const width=.16+.17*Math.sin(Math.PI*t)+.035*t;
+   for(let k=0;k<=cols;k++){
+    const u=2*k/cols-1;
+    const x=centerX+side*width*u*.92;
+    const dy=.09*u*u*Math.sin(t*9+side*.5);
+    const z=(back?.38:-.58)+(back?1:-1)*
+      (.13*Math.sin(t*Math.PI)*Math.cos(u*2.5)+.07*(1-u*u)*Math.sin(t*15+u*4));
+    positions.push(x,y+dy,z);
+   }
+  }
+  for(let j=0;j<rows;j++)for(let k=0;k<cols;k++){
+   const a=j*(cols+1)+k,b=a+1,c=a+cols+1,d=c+1;
+   triangles.push(a,c,b,b,c,d);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  g.setIndex(triangles);g.computeVertexNormals();
+  const item=add(g,stone);
+  item.name=(back?'rear':'front')+(side<0?'-left':'-right')+'-mantle-layer';
+ };
+ mantlePanel(-1,false);mantlePanel(1,false);
+ mantlePanel(-1,true);mantlePanel(1,true);
+ // Broad crescent folds connect hood base into shoulders. Keep face opening
+ // untouched and avoid fur-like repeated tubes around the face.
+ for(const side of [-1,1]){
+  rod([[side*.27,5.01,-.47],[side*.45,4.91,-.51],
+    [side*.64,4.77,-.53],[side*.78,4.54,-.49]],.070,stone);
+  rod([[side*.36,4.87,-.53],[side*.53,4.76,-.57],
+    [side*.70,4.60,-.52]],.028,pale);
+ }
+ // Two chiseled ceremonial clasps on intact mantle, kept shallow and
+ // embedded in drapery so they are not floating stones.
+ const clasp=(x,y,z)=>{
+  const ring=add(new THREE.TorusGeometry(.12,.022,7,20),pale,x,y,z);
+  ring.name='carved-mantle-clasp';
+  rod([[x,y+.09,z-.025],[x+.065,y,z-.025],[x,y-.095,z-.025],
+    [x-.065,y,z-.025],[x,y+.09,z-.025]],.015,stone);
+ };
+ clasp(-.64,4.69,-.63);
+ clasp(.53,4.68,-.60);
+ // A chipped rectangular bas-relief plate on the front of the base.
+ // Shallow inlay with one missing corner rather than a stuck-on block.
+ const reliefOutline=[
+  [-.48,.42],[-.39,.52],[.27,.52],[.48,.36],[.48,.21],
+  [.35,.17],[-.42,.17],[-.50,.25]
+ ];
+ for(let i=0;i<reliefOutline.length;i++){
+  const a=reliefOutline[i],b=reliefOutline[(i+1)%reliefOutline.length];
+  rod([[a[0],a[1],-1.247],[b[0],b[1],-1.247]],.019,pale);
+ }
+ rod([[-.24,.26,-1.258],[0,.42,-1.258],[.24,.26,-1.258]],.024,pale);
+ // Weathering on the grounded shoulder fragments, without new airborne debris.
+ for(const [x,y,z] of [[1.12,.20,-1.19],[1.38,.16,-1.02]]){
+  const fragment=rock(x,y,z,.14,.09,.16,29,stone);
+  fragment.rotation.z=.17;
+ }
  // Sculpted chips on the robe hem and damaged pedestal.
  for(let i=0;i<9;i++){
   const a=i*2.3999;
