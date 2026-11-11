@@ -153,6 +153,32 @@ export function createB4DetailedRails({length=5,broken=false,curve=0}={}) {
   // Low steel brace spans the inner gap, emphasizing the rail gauge at distance.
   box(root,center(z),-.125,z,1.02,.045,.065,clampIron,yaw);
  }
+ // V10: full-length, curved track joint assemblies. Reinforcing fishplates
+ // are tangent-aligned at each joint and sit outside the running surface.
+ // No existing rails, ties, or clamps are removed.
+ const jointIron=new THREE.MeshStandardMaterial({color:0x58453b,metalness:.55,roughness:.84});
+ for(const side of [-1,1])for(const z of [-length/4,length/4]){
+  if(broken&&z>length*.15)continue;
+  const p=railPoint(z,side),ang=Math.atan(slope(z));
+  const joint=new THREE.Group();joint.position.set(p.x,.035,p.z);joint.rotation.y=ang;root.add(joint);
+  for(const outward of [-1,1]){
+   const plate=new THREE.Mesh(new THREE.BoxGeometry(.043,.16,.48),jointIron);
+   plate.position.set(outward*.135,0,0);joint.add(plate);
+   for(const dz of [-.155,.155]){
+    const bolt=new THREE.Mesh(new THREE.CylinderGeometry(.033,.033,.03,6),rust);
+    bolt.rotation.z=Math.PI/2;bolt.position.set(outward*.165,.025,dz);joint.add(bolt);
+   }
+  }
+  // A split saddle below the rail foot gives the joint visible load transfer.
+  const saddle=new THREE.Mesh(new THREE.BoxGeometry(.40,.055,.36),iron);saddle.position.y=-.14;joint.add(saddle);
+ }
+ // Extra transverse metal strap at alternating ties, aligned to local curvature.
+ for(let i=2;i<Math.ceil(length/.42);i+=4){
+  const z=-length/2+i*.42;
+  if(z>=length/2-.1)continue;
+  const tieBrace=box(root,center(z),-.19,z,1.59,.045,.095,jointIron,-Math.atan(slope(z)));
+  tieBrace.position.y=-.18;
+ }
  root.userData={asset:'B4 modular mine rails',variant:broken?'broken':curve?'curved':'straight'};
  return root;
 }
