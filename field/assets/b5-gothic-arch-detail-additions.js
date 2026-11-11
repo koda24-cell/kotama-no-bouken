@@ -132,5 +132,32 @@ export function enhanceB5GothicArch(THREE, root) {
   m.position.set(x,.16+(i%2)*.07,z);
   m.scale.set(1.4,.55,1.1);m.rotation.y=i*.83;extra.add(m);
  }
+
+ // Structural pass: two shallow, broken stone spandrels visually consolidate
+ // the busy upper beamwork into masonry. The pointed central void remains open.
+ const spandrelMaterial=new THREE.MeshStandardMaterial({color:0x655e68,roughness:.98,flatShading:true,side:THREE.DoubleSide});
+ const brokenSpandrel=(side,z)=>{
+  const outline=[
+   [3.48,9.6],[4.58,9.5],[5.02,10.75],[4.78,11.3],
+   [5.17,12.15],[4.7,12.6],[4.95,13.45],[4.28,13.8],
+   [4.15,14.7],[3.32,14.48],[2.76,15.05],[1.95,14.96],
+   [1.37,15.37],[.42,15.04],[.42,14.69],
+   [1.14,14.04],[1.94,13.11],[2.58,12.05],[3.05,10.95]
+  ];
+  const shape=new THREE.Shape();
+  outline.forEach(([x,y],i)=>i?shape.lineTo(side*x,y):shape.moveTo(side*x,y));
+  shape.closePath();
+  const geo=new THREE.ExtrudeGeometry(shape,{depth:.28,bevelEnabled:false,curveSegments:1});
+  const mesh=new THREE.Mesh(geo,spandrelMaterial);
+  mesh.position.z=z;mesh.name='b5:gothicArch:brokenMasonrySpandrel';extra.add(mesh);
+  // Shallow, irregular block joints are deliberately restricted to the solid wall.
+  for(let i=0;i<4;i++){
+   const x=side*(3.75+(i%2)*.42),y=10.65+i*1.03;
+   const joint=box(x,y,z+(z<0?-.04:.32),.65,.07,.07,shadow);
+   joint.rotation.z=side*(i%2?.11:-.08);
+  }
+ };
+ brokenSpandrel(-1,-2.07);
+ brokenSpandrel(1,1.79);
  root.add(extra);return root;
 }
