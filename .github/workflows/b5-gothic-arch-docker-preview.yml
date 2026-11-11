@@ -26,7 +26,7 @@ jobs:
           docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
             set -e
             for file in render-output/b5-gothic-arch-*.glb; do
-              blender -b -t 2 --python tools/b4-render/render-batch.py -- "$file" render-output
+              blender -b -t 2 --python tools/b5-render/render-gothic-arch.py -- "$file" render-output
             done
           '
       - uses: actions/upload-artifact@v4
