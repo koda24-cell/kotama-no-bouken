@@ -53,9 +53,64 @@ for i in range(65):
 for i in range(34):
  a=random.uniform(.15,math.pi-.15);x=3.5*math.cos(a);z=4+3.5*math.sin(a)
  bpy.ops.mesh.primitive_cone_add(vertices=7,radius1=0,radius2=random.uniform(.07,.16),depth=random.uniform(.3,1.2),location=(x,-.85,z-.4));bpy.context.object.name='Arch hanging icicle';bpy.context.object.data.materials.append(ice)
+
+# v03: Structural additions retained on top of v02 geometry
+bronze=mat('Ancient bronze mechanical fittings',(.32,.23,.13),.7,.42)
+frost=mat('Layered frost deposits',(.62,.83,.92),.05,.32)
+def ring(name,x,y,z,r,thickness,material):
+ for j in range(32):
+  a=2*math.pi*j/32;b=2*math.pi*(j+1)/32
+  beam(name,(x+r*math.cos(a),y,z+r*math.sin(a)),(x+r*math.cos(b),y,z+r*math.sin(b)),thickness,material,10)
+# Mechanism gains layered wheel rims, shaft bearings, bolted plates and actual teeth
+for name,x,y,z,r in [('Main drive',0,-1.45,5.1,1.12),('Side drive',-6.2,-1.25,3.2,1.38)]:
+ for depth,rad in [(-.17,r*.78),(.19,r*.92)]:
+  ring(name+' layered rim',x,y+depth,z,rad,.085,bronze)
+ for offset in [-.3,.3]:
+  beam(name+' shaft collar',(x,y+offset-.06,z),(x,y+offset+.06,z),.34,bronze,20)
+ for j in range(16):
+  a=2*math.pi*j/16
+  bx=x+r*math.cos(a);bz=z+r*math.sin(a)
+  beam(name+' face rivet',(bx,y-.23,bz),(bx,y-.32,bz),.045,bronze,8)
+  beam(name+' tooth depth',(bx,y-.19,bz),(bx,y+.2,bz),.11,iron,8)
+# Reinforced gate: hinges, pointed iron bar ends and bracing plates
+for i in range(16):
+ x=-2.85+i*.38
+ cube('Gate iron spike', (x,-.96,.38),(.19,.19,.26),bronze)
+for z in [1.3,2.5,3.7,4.9]:
+ for x in [-2.4,-1.2,0,1.2,2.4]:
+  beam('Gate brace rivet',(x,-1.13,z),(x,-1.23,z),.075,bronze,10)
+for s in [-1,1]:
+ for z in [1.1,3.3,5.8]:
+  cube('Stone wall buttress',(s*5.6,.55,z),(1.05,1.65,.6),stone)
+  cube('Recessed carved stone panel',(s*4.5,-.91,z),(.82,.11,.65),dark)
+  for k in range(3):
+   cube('Panel relief grooves',(s*4.5+(k-1)*.21,-.99,z),(.045,.07,.48),frost)
+# Repair floating ruins by linking outer pieces to structural retaining courses
+for side in [-1,1]:
+ for j in range(9):
+  x=side*(5.3+j*.34)
+  cube('Ruined outer retaining wall',(x,.48,1.25+j*.13),(.39,1.6,.55),stone)
+ for j in range(8):
+  x=side*(5.6+j*.36)
+  cube('Collapsed upper masonry',(x,.65,4.7+random.uniform(-.4,.4)),(.38,1.25,.5),dark if j%3==0 else stone)
+# Varied broken canal walls with a visibly stepped bed
+for j in range(12):
+ x=-7.2+j*1.3
+ cube('Raised watercourse edging',(x,-3.5,.43),(.96,.4,.65),stone)
+ if j%3==0:
+  cube('Broken canal cap',(x,-3.5,.83),(.55,.62,.19),dark)
+# Fewer uniform crystal silhouettes by clustering smaller angled prismatic formations
+for side in [-1,1]:
+ for group in range(5):
+  cx=side*(5.1+group*.6);cy=random.uniform(-2.2,1.3)
+  for k in range(4):
+   x=cx+random.uniform(-.28,.28);y=cy+random.uniform(-.3,.3)
+   bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=random.uniform(.11,.23),radius2=0,depth=random.uniform(.35,1.25),location=(x,y,.8))
+   obj=bpy.context.object;obj.name='Clustered irregular ice prism';obj.rotation_euler[1]=random.uniform(-.25,.25);obj.data.materials.append(ice)
+
 # Save native Blender and GLB before adding render-only helpers
-bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v02.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v02.glb',export_format='GLB')
+bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v03.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v03.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.035,.07,.13,1)
 def area(loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,3))-o.location).to_track_quat('-Z','Y').to_euler()
@@ -65,4 +120,4 @@ bpy.context.scene.render.resolution_x=1000;bpy.context.scene.render.resolution_y
 for name,pos in [('front',(0,-23,10)),('side',(22,-3,10)),('angle',(17,-21,12))]:
  bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,3.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=20;bpy.context.scene.camera=cam
  bpy.context.scene.render.filepath=out+'/'+name+'.png';bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
-print('B2 watergate Blender/GLB/3 renders exported')
+print('B2 watergate v03 Blender/GLB/3 renders exported')
