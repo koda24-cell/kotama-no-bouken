@@ -27,5 +27,37 @@ export function enhanceB5GothicArch(THREE, root) {
   const geo=new THREE.DodecahedronGeometry(.5+(i%3)*.14,0);
   const m=new THREE.Mesh(geo,stone);m.position.set(x,.22+(i%3)*.06,z);m.scale.set(1.2,.5,.82);m.rotation.set(i*.31,i*.77,i*.13);extra.add(m);
  }
+
+ // Readable architectural silhouette: inner lancet mouldings and an open central void.
+ // These ribs sit at the front and back of the existing masonry, without replacing it.
+ for(const z of [-1.28,1.28]){
+  const leftRib=[[-3.35,9.65,z],[-2.85,11.15,z],[-2.0,12.85,z],[-.55,14.65,z]];
+  const rightRib=[[3.35,9.65,z],[2.85,11.15,z],[2.0,12.85,z],[.55,14.65,z]];
+  for(const path of [leftRib,rightRib])for(let i=0;i<path.length-1;i++){
+   // Keep a missing segment on the rear-right archivolt to show structural collapse.
+   if(z>0&&path===rightRib&&i===1)continue;
+   between(path[i],path[i+1],.48,.32);
+  }
+  // Capital and springer stones emphasize where the pointed arch rises.
+  for(const x of [-3.5,3.5]){
+   box(x,9.85,z,.9,.36,.52);
+   box(x,10.3,z,.62,.45,.45,shadow);
+  }
+ }
+ // Deep, individually readable channels in the face of both stone pillars.
+ for(const x of [-4,4])for(const z of [-1.38,1.38]){
+  for(let i=0;i<3;i++){
+   const dx=(i-1)*.34;
+   box(x+dx,5.5,z,.13,6.6,.11,shadow);
+   box(x+dx+.12,5.5,z,.075,6.6,.13);
+  }
+ }
+ // Broken flying buttress fragments, low to avoid obscuring the central passage.
+ for(const s of [-1,1]){
+  between([s*5.7,2.0,-.5],[s*4.7,6.6,-.6],.55,.68);
+  between([s*5.7,2.0,.5],[s*4.7,6.6,.6],.45,.58);
+  box(s*5.7,1.0,0,1.0,2.0,1.8);
+  for(let i=0;i<3;i++)box(s*(4.2+i*.42),.2+i*.1,2.3+i*.5,.9,.4,.8);
+ }
  root.add(extra);return root;
 }
