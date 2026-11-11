@@ -1,0 +1,32 @@
+name: B4 Blender Cart Render
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/floor4-prop-shape-preview-20261112]
+    paths:
+      - 'field/b4-cart-detail-additions.js'
+      - 'tools/b4-render/**'
+      - '.github/workflows/b4-blender-cart-render.yml'
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Three.js
+        run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - name: Export actual Three.js cart to GLB
+        run: node tools/b4-render/export-cart.mjs
+      - name: Install Blender
+        run: sudo apt-get update && sudo apt-get install -y blender
+      - name: Render before
+        run: blender -b -t 2 --python tools/b4-render/render.py -- render-output/b4-cart-before.glb render-output/b4-cart-before.png
+      - name: Render after
+        run: blender -b -t 2 --python tools/b4-render/render.py -- render-output/b4-cart-after.glb render-output/b4-cart-after.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b4-cart-blender-before-after
+          path: render-output/
