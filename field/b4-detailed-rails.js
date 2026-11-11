@@ -75,6 +75,57 @@ export function createB4DetailedRails({length=5,broken=false,curve=0}={}) {
    const brokenEnd=new THREE.Mesh(new THREE.IcosahedronGeometry(.105,0),rust);
    brokenEnd.position.set(x+side*.15,.12,z+.43);root.add(brokenEnd);
   }
+  // V6: real splintered tie-end silhouettes, not only superficial grain lines.
+  // The core V5 geometry remains in place. Jagged wedge caps overlap its exposed ends.
+  const splinterShape=new THREE.BufferGeometry();
+  const verts=new Float32Array([
+   -.13,-.075,-.12,  .13,-.075,-.12,  -.08,.085,-.12,
+   .13,-.075,-.12,   .09,.025,.13,    -.08,.085,-.12,
+   -.13,-.075,-.12, -.08,.085,-.12,   -.10,-.045,.16,
+   -.08,.085,-.12,   .09,.025,.13,    -.10,-.045,.16,
+   -.13,-.075,-.12, -.10,-.045,.16,   .13,-.075,-.12,
+   .13,-.075,-.12,  -.10,-.045,.16,    .09,.025,.13
+  ]);
+  splinterShape.setAttribute('position',new THREE.BufferAttribute(verts,3));
+  splinterShape.computeVertexNormals();
+  for(let i=0;i<8;i++){
+   const z=.65+i*.22;
+   const x=center(z);
+   for(const side of [-1,1]){
+    const chip=new THREE.Mesh(splinterShape,fracturedWood);
+    chip.position.set(x+side*(.69+(i%3)*.035),-.085,z+(i%2)*.055);
+    chip.rotation.y=side*(.22+i*.07);
+    chip.scale.set(1+(i%3)*.22,1+(i%2)*.32,1);
+    root.add(chip);
+    // Split-off timber fibres protrude from the break, deliberately uneven.
+    for(let j=0;j<2;j++){
+     const fibre=box(root,x+side*(.74+j*.085),-.035+j*.035,z+.06,
+       .025,.025,.23+(i%3)*.045,j?wood:fracturedWood,side*.12);
+     fibre.rotation.z=side*(.15+j*.12);
+    }
+   }
+  }
+  // Rusted fishplate and exposed bolt heads around the fractured rail joint.
+  for(const side of [-1,1]){
+   const z=1.46, p=railPoint(z,side);
+   const plate=box(root,p.x+side*.105,.035,p.z,.055,.18,.38,brokenIron,side*.13);
+   plate.rotation.z=side*.12;
+   for(const dz of [-.12,.12]){
+    const bolt=new THREE.Mesh(new THREE.CylinderGeometry(.043,.043,.028,8),rust);
+    bolt.rotation.z=Math.PI/2;
+    bolt.position.set(p.x+side*.15,.055,p.z+dz);
+    root.add(bolt);
+   }
+  }
+  // Loose chips and rock scatter around the failure, inside the actual track bounds.
+  for(let i=0;i<16;i++){
+   const z=.65+(i%8)*.23, x=center(z)+Math.sin(i*2.43)*1.12;
+   const chip=new THREE.Mesh(new THREE.IcosahedronGeometry(.045+(i%4)*.019,0),
+     i%3===0?fracturedWood:stone);
+   chip.position.set(x,-.17,z);
+   chip.rotation.set(i*.31,i*.69,i*.23);
+   root.add(chip);
+  }
   for(let i=0;i<18;i++){
    const z=-length/2+length*(.55+i*.025),x=center(z)+Math.sin(i*7)*.9;
    const rock=new THREE.Mesh(new THREE.IcosahedronGeometry(.085+(i%4)*.045,0),stone);
