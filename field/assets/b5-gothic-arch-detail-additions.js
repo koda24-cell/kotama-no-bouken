@@ -147,18 +147,22 @@ export function enhanceB5GothicArch(THREE, root) {
   const shape=new THREE.Shape();
   outline.forEach(([x,y],i)=>i?shape.lineTo(side*x,y):shape.moveTo(side*x,y));
   shape.closePath();
-  const geo=new THREE.ExtrudeGeometry(shape,{depth:.28,bevelEnabled:false,curveSegments:1});
+  const geo=new THREE.ExtrudeGeometry(shape,{depth:3.08,bevelEnabled:true,bevelSize:.035,bevelThickness:.035,bevelSegments:2,curveSegments:1});
   const mesh=new THREE.Mesh(geo,spandrelMaterial);
   mesh.position.z=z;mesh.name='b5:gothicArch:brokenMasonrySpandrel';extra.add(mesh);
   // Shallow, irregular block joints are deliberately restricted to the solid wall.
   for(let i=0;i<4;i++){
    const x=side*(3.75+(i%2)*.42),y=10.65+i*1.03;
-   const joint=box(x,y,z+(z<0?-.04:.32),.65,.07,.07,shadow);
-   joint.rotation.z=side*(i%2?.11:-.08);
+   // Recessed joint marks on both masonry faces, not floating mid-wall.
+   for(const face of [-1,1]){
+    const joint=box(x,y,face<0?-1.62:1.61,.65,.07,.045,shadow);
+    joint.rotation.z=side*(i%2?.11:-.08);
+   }
   }
  };
- brokenSpandrel(-1,-2.07);
- brokenSpandrel(1,1.79);
+ // One continuous masonry volume per shoulder replaces two paper-thin skins.
+ brokenSpandrel(-1,-1.54);
+ brokenSpandrel(1,-1.54);
 
  // High-detail structural masonry: actual bevelled and chipped mesh geometry,
  // not a texture or a subdivision of flat rectangular decorative strips.
