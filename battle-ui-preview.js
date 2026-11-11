@@ -1,14 +1,15 @@
 "use strict";
-/* Optional battle UI preview. Enable only with ?battleUiPreview=1.
-   No battle rules, saves, party size or command handlers are modified. */
+/* Updated battle UI is the default on development.
+   ?battleUiPreview=0 temporarily disables it for regression comparison.
+   Battle rules, saves, party size and command handlers are unchanged. */
 (function () {
-  let enabled = false;
-  try { enabled = new URLSearchParams(location.search).get("battleUiPreview") === "1"; }
-  catch (_) { return; }
-  if (!enabled) return;
+  let disabled = false;
+  try { disabled = new URLSearchParams(location.search).get("battleUiPreview") === "0"; }
+  catch (_) { /* Keep the updated UI enabled if URL parsing is unavailable. */ }
+  if (disabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261110-30";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261112-01";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
