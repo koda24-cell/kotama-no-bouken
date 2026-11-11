@@ -201,7 +201,7 @@ for side in [-1,1]:
   cube('Adhered frost ledge',(x,-.87,z),(random.uniform(.16,.43),.18,random.uniform(.08,.22)),frost)
 
 
-# v06: reinforce mechanical load paths and frozen architectural silhouette
+# v07: reinforce mechanical load paths and frozen architectural silhouette
 for side in [-1,1]:
  x=side*5.6
  for dx in [-.57,.57]:
@@ -237,6 +237,74 @@ for x,z,r in [(0,5.1,1.12),(-6.2,3.2,1.38)]:
   a=2*math.pi*j/12
   o=cube('Frozen gear rim deposit',(x+r*math.cos(a),-1.69,z+r*math.sin(a)),(.17,.11,.12),frost)
   o.rotation_euler[1]=-a
+
+# v07: large-scale architectural massing, functional spillway and true broken profiles
+# Existing components remain intact; these are independent added mesh objects.
+def prism(name, verts, faces, material):
+ mesh=bpy.data.meshes.new(name+' geometry')
+ mesh.from_pydata(verts,[],faces);mesh.update()
+ ob=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(ob)
+ ob.data.materials.append(material);return ob
+# Long stone abutments connect outer ruins to the central load-bearing pillars.
+for side in (-1,1):
+ for tier in range(4):
+  z=.4+tier*.86
+  for j in range(5):
+   x=side*(5.35+j*.69)
+   cube('Bonded abutment block',(x,.92,z),(.67,1.7,.79),stone if (j+tier)%5 else dark)
+ # Capstones fractured along a jagged upper silhouette rather than random hovering rubble
+ for j in range(9):
+  x=side*(5.05+j*.42)
+  h=5.65+random.uniform(-.45,.55)
+  w=.39
+  verts=[(x-w,-.12,h-.72),(x+w,-.12,h-.72),(x+w,-.12,h-.14),
+         (x+random.uniform(-.1,.1),-.12,h+.14),(x-w,-.12,h-.08),
+         (x-w,1.22,h-.72),(x+w,1.22,h-.72),(x+w,1.22,h-.14),
+         (x+random.uniform(-.1,.1),1.22,h+.14),(x-w,1.22,h-.08)]
+  faces=[(0,1,2,3,4),(5,9,8,7,6),(0,5,6,1),(1,6,7,2),(2,7,8,3),(3,8,9,4),(4,9,5,0)]
+  prism('Fractured parapet stone',verts,faces,stone if j%4 else dark)
+# Arch's crown is backed by courses with visibly chipped keystone and uneven joint rhythm.
+for j in range(13):
+ x=(j-6)*.53
+ z=7.82-abs(x)*.12
+ cube('Arch crown backing course',(x,.72,z),(.51,1.48,.44),stone if j%3 else dark)
+# Mechanical coupling: overhead winch drums are tied to a central cross-shaft and pulley supports.
+beam('Overhead coupled drive shaft',(-3.25,.65,7.05),(3.25,.65,7.05),.19,iron,20)
+for x in (-2.3,0,2.3):
+ cube('Winch bearing stone saddle',(x,.87,6.85),(.67,.85,.55),dark)
+ for dx in (-.2,.2):
+  cube('Bearing mounting plate',(x+dx,.37,6.85),(.13,.13,.44),bronze)
+for side in (-1,1):
+ x=side*2.3
+ for j in range(8):
+  a=j*math.pi/4
+  beam('Cable guide pulley rim',(x+.34*math.cos(a),-.89,6.55+.34*math.sin(a)),
+       (x+.34*math.cos(a+math.pi/4),-.89,6.55+.34*math.sin(a+math.pi/4)),.085,bronze,10)
+ beam('Suspended cable guide',(x,-.91,6.25),(x,-.91,5.25),.055,iron,10)
+# A recessed, terraced spillway gives the canal an obvious height transition.
+for j in range(9):
+ y=-1.1-j*.56
+ width=5.8+j*.68
+ z=.26-j*.028
+ cube('Spillway stepped stone bed',(0,y,z),(width,.55,.22),stone if j%3 else dark)
+ for side in (-1,1):
+  x=side*(width*.5+.23)
+  cube('Spillway broken curb',(x,y,z+.24),(.42,.54,.49),stone)
+# Angular ice over the lower cascade, with small gaps for water visibility
+for j in range(16):
+ y=-1.2-j*.28
+ x=random.uniform(-3.5,3.5)
+ ob=cube('Spillway shattered ice slab',(x,y,.4-j*.008),
+          (random.uniform(.36,.85),random.uniform(.18,.43),.065),frost)
+ ob.rotation_euler[2]=random.uniform(-.35,.35)
+# Crystalline growth rooted in masonry joints, not scattered in open space.
+for side in (-1,1):
+ for j in range(16):
+  z=random.uniform(1.1,7.25);x=side*random.uniform(4.1,4.98)
+  bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=random.uniform(.06,.16),radius2=0,
+       depth=random.uniform(.26,.75),location=(x,-.98,z))
+  ob=bpy.context.object;ob.name='Wall-joint ice growth';ob.rotation_euler[0]=random.uniform(-.65,.65);ob.data.materials.append(ice)
+
 # Deterministic mesh triangle audit before export
 bpy.context.view_layer.update()
 triangles=0;objects=0
@@ -246,12 +314,12 @@ for obj in bpy.context.scene.objects:
   mesh.calc_loop_triangles()
   triangles+=len(mesh.loop_triangles);objects+=1
 with open(out+'/mesh_stats.txt','w') as fp:
- fp.write('version=v06\\nmesh_objects=%d\\ntriangles=%d\\n'%(objects,triangles))
-print('B2 v06 mesh objects',objects,'triangles',triangles)
+ fp.write('version=v07\\nmesh_objects=%d\\ntriangles=%d\\n'%(objects,triangles))
+print('B2 v07 mesh objects',objects,'triangles',triangles)
 
 # Save native Blender and GLB before adding render-only helpers
-bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v06.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v06.glb',export_format='GLB')
+bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v07.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v07.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.035,.07,.13,1)
 def area(loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,3))-o.location).to_track_quat('-Z','Y').to_euler()
@@ -261,4 +329,4 @@ bpy.context.scene.render.resolution_x=1000;bpy.context.scene.render.resolution_y
 for name,pos in [('front',(0,-23,10)),('side',(22,-3,10)),('angle',(17,-21,12))]:
  bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,3.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=20;bpy.context.scene.camera=cam
  bpy.context.scene.render.filepath=out+'/'+name+'.png';bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
-print('B2 watergate v06 Blender/GLB/3 renders exported')
+print('B2 watergate v07 Blender/GLB/3 renders exported')
