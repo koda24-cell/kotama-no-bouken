@@ -159,5 +159,55 @@ export function enhanceB5GothicArch(THREE, root) {
  };
  brokenSpandrel(-1,-2.07);
  brokenSpandrel(1,1.79);
+
+ // High-detail structural masonry: actual bevelled and chipped mesh geometry,
+ // not a texture or a subdivision of flat rectangular decorative strips.
+ const carvedStone=new THREE.MeshStandardMaterial({color:0x77717a,roughness:.97,flatShading:true});
+ const cutStone=(outline,z,depth,material=carvedStone)=>{
+  const shape=new THREE.Shape();
+  outline.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));
+  shape.closePath();
+  const geometry=new THREE.ExtrudeGeometry(shape,{depth,steps:2,bevelEnabled:true,bevelThickness:.045,bevelSize:.05,bevelSegments:3,curveSegments:2});
+  const mesh=new THREE.Mesh(geometry,material);mesh.position.z=z;
+  mesh.name='b5:gothicArch:sculptedStone';extra.add(mesh);return mesh;
+ };
+ // Irregular interlocking voussoirs have radial cuts and real volume.
+ // Keep the interior of the pointed opening unobstructed.
+ const archLine=[[3.48,9.7],[3.1,10.85],[2.63,11.96],[2.0,13.04],[1.23,13.94],[.38,14.57]];
+ for(const side of [-1,1])for(const z of [-1.99,1.7]){
+  for(let i=0;i<archLine.length-1;i++){
+   const [x0,y0]=archLine[i],[x1,y1]=archLine[i+1];
+   const dx=x1-x0,dy=y1-y0,length=Math.hypot(dx,dy),nx=dy/length,ny=-dx/length;
+   const segments=3;
+   for(let j=0;j<segments;j++){
+    if(side===1&&z>0&&i===2&&j===1)continue; // ruined missing block
+    const t0=j/segments+.012,t1=(j+1)/segments-.012;
+    const ax=x0+dx*t0,ay=y0+dy*t0,bx=x0+dx*t1,by=y0+dy*t1;
+    const inner=.19,outer=.77+(i%2)*.07;
+    const poly=[[ax+nx*inner,ay+ny*inner],[bx+nx*inner,by+ny*inner],
+      [bx+nx*outer,by+ny*outer],[ax+nx*outer,ay+ny*outer]];
+    cutStone(poly.map(([x,y])=>[side*x,y]),z,.3,j%4===0?paleStone:carvedStone);
+   }
+  }
+ }
+ // Chipped cornerstones on the surviving outer piers: each block has an
+ // asymmetric 8-point perimeter, bevelled edges and shallow depth.
+ for(const side of [-1,1])for(const z of [-1.94,1.68]){
+  for(let course=0;course<9;course++){
+   const y=1.2+course*.91,x=side*(4.15+(course%2)*.09);
+   const w=.6,h=.39;
+   const poly=[[x-w,y-h+.08],[x-w+.11,y-h],[x+w-.08,y-h],
+     [x+w,y-h+.11],[x+w,y+h-.07],[x+w-.13,y+h],
+     [x-w+.07,y+h],[x-w,y+h-.09]];
+   cutStone(poly,z,.26,course%3===0?paleStone:carvedStone);
+  }
+ }
+ // Real polygonal fractured caps on both outer wall ends, not thin spikes.
+ for(const side of [-1,1])for(const z of [-1.96,1.68]){
+  const poly=[[3.78,13.9],[4.16,14.3],[4.3,14.92],
+    [4.58,14.77],[4.78,15.24],[4.95,14.88],[5.13,14.42],
+    [4.91,14.08],[4.99,13.65],[4.51,13.48]].map(([x,y])=>[side*x,y]);
+  cutStone(poly,z,.28,stone);
+ }
  root.add(extra);return root;
 }
