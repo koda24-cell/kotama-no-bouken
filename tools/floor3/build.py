@@ -284,4 +284,34 @@ for idx,(x,y,w,h) in enumerate([
     (3.94,3.69,1.13,.82),(4.55,3.41,.78,.47)]):
     box(f'roof_collapse_ground_rubble_{idx}',(x,y,h/2),(w,.75,h),con)
 
+
+# Ninth pass: a continuous load-bearing fractured front pier and fallen parapet.
+# Unlike isolated decoration, these are broad masonry remnants that tie floor
+# slabs together, create a recognizable three-storey facade, and have a broken
+# stepped silhouette. Preserve all pre-existing geometry.
+torn_wall('front_loadbearing_pier_lower',[
+ (-1.65,.35),(-.16,.35),(-.16,3.28),(-.53,3.27),
+ (-.69,2.89),(-.38,2.56),(-.85,2.22),(-.54,1.94),
+ (-1.09,1.59),(-.81,1.13),(-1.65,.91)],y=-3.46,thickness=.49)
+torn_wall('front_loadbearing_pier_upper',[
+ (-1.64,3.75),(-.18,3.75),(-.18,6.72),(-.68,6.72),
+ (-.96,6.43),(-.65,6.11),(-1.16,5.79),(-.83,5.42),
+ (-1.32,5.09),(-1.04,4.62),(-1.64,4.28)],y=-3.46,thickness=.43)
+# Upper facade has collapsed diagonally: left part remains tall, right part
+# has a much lower jagged skyline; the old roof frame stays visible behind.
+torn_wall('roof_broken_parapet_front',[
+ (-5.92,10.44),(-5.92,11.67),(-5.42,11.81),(-5.08,11.48),
+ (-4.78,11.72),(-4.39,11.34),(-4.02,11.47),(-3.72,10.99),
+ (-3.28,11.14),(-2.95,10.63),(-2.43,10.91),(-1.91,10.45)],
+ y=-3.38,thickness=.37)
+for idx,(x,z) in enumerate([(-.85,2.22),(-1.16,5.79),(-4.39,11.34),(-3.28,11.14)]):
+ for j in range(3):
+  rod(f'loadbearing_fracture_rebar_{idx}_{j}',
+      (x,-3.44,z+.09*j),(x+.21+.06*j,-3.77,z-.21+.07*j),.032,rust)
+# Corresponding concrete mass lies immediately below the fractured facade.
+for idx,(x,y,dx,dy,dz) in enumerate([
+ (-1.01,-4.12,1.10,.73,.58),(-.48,-4.48,.82,.58,.39),
+ (-3.86,-4.07,1.24,.81,.63),(-2.89,-4.63,.96,.63,.47)]):
+ box(f'front_facade_heavy_debris_{idx}',(x,y,dz/2),(dx,dy,dz),con)
+
 s.export('ruined_building_prototype.glb')
