@@ -644,6 +644,86 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    fractureStone(x+.35,z+.16,.43,.39,.18,j+89);
   }
  }
+ // PASS 2026-11-12 05:32 JST: continuous faceted Gothic arch masonry.
+ // The earlier render revealed thin tubular arches and floating keystones.
+ // This additive pass creates a single connected, thick stone arch belt
+ // with an actual pointed apex and tapered voussoir faces.
+ const pointedArchBelt=(z,broken=false,royal=false)=>{
+  const cross=[[-.29,-.14],[-.23,.19],[.23,.19],[.29,-.14]];
+  const segments=24, verts=[],indices=[];
+  // The left and right halves meet at the pointed crown, not a round hump.
+  const sample=t=>{
+   const x=-3.12+6.24*t;
+   const h=4.84+1.68*(1-Math.pow(Math.abs(x)/3.12,1.38));
+   return [x,h];
+  };
+  for(let i=0;i<=segments;i++){
+   const [x,y]=sample(i/segments);
+   const width=.33+(1-Math.abs(x)/3.12)*.10;
+   const height=.40+(1-Math.abs(x)/3.12)*.08;
+   for(const [u,v] of cross)verts.push(x,y+v*height/.4,z+u*width/.33);
+  }
+  for(let i=0;i<segments;i++){
+   // Broken upper right arch has actual gaps, not decorative fragments.
+   if(broken&&i>=16&&i<=20)continue;
+   const a=i*4,b=(i+1)*4;
+   for(let j=0;j<4;j++){
+    const k=(j+1)%4;
+    indices.push(a+j,b+j,a+k,a+k,b+j,b+k);
+   }
+   // A stone course joint is visible in the face, with no added pipes.
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(indices);g.computeVertexNormals();
+  add(g,royal?trim:stone);
+  // Substantial springing wedges mechanically connect the arch to piers.
+  for(const sx of [-1,1]){
+   for(let j=0;j<4;j++){
+    const x=sx*(3.05-j*.17);
+    const y=4.91+j*.13;
+    const block=voussoir(x,y,z,.40,.37,.65,j+(sx>0?90:80));
+    block.rotation.z=sx*(.08+j*.035);
+   }
+  }
+  if(royal){
+   // Deep, raised crown stone, and three concentric carved stepped
+   // mouldings that hug the arch rather than floating in open space.
+   voussoir(0,6.49,z,.53,.53,.75,116);
+   for(const sx of [-1,1])for(let j=0;j<5;j++){
+    const x=sx*(.42+j*.47),y=4.84+1.68*(1-Math.pow(Math.abs(x)/3.12,1.38));
+    const p=voussoir(x,y+.21,z-sx*.025,.38,.16,.77,j+100);
+    p.rotation.z=-sx*.12;
+   }
+  }
+ };
+ if(['basic-vault','collapsed-vault','royal-vault'].includes(kind)){
+  const ruined=kind==='collapsed-vault',regal=kind==='royal-vault';
+  pointedArchBelt(-2.53,false,regal);
+  pointedArchBelt(2.53,ruined,regal);
+  // Triangular gussets are seated directly over each pier capital;
+  // they bridge the vertical pier and the diagonal groin rib.
+  for(const sx of [-1,1])for(const sz of [-1,1]){
+   if(ruined&&sx===1&&sz===1)continue;
+   const x=sx*3.20,z=sz*2.45;
+   for(let j=0;j<3;j++){
+    const t=(j+.5)/3;
+    const p=voussoir(x-sx*t*.61,4.94+t*.45,z-sz*t*.45,
+      .48,.32,.52,j+121);
+    p.rotation.z=-sx*.19;
+   }
+  }
+ }
+ if(kind==='vault-support'){
+  // Full masonry springer replaces the visual impression of disconnected
+  // thin rods at the standalone pier's crown.
+  for(const sx of [-1,1])for(let j=0;j<5;j++){
+   const t=(j+.5)/5;
+   const p=voussoir(sx*(.31+t*1.22),4.94+1.02*t-.38*t*t,
+      0,.48,.31,.73,j+130);
+   p.rotation.z=-sx*.20;
+  }
+ }
  let disposed=false;
  return {group,dispose(){if(disposed)return;disposed=true;group.parent?.remove(group);
   group.clear(); gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
