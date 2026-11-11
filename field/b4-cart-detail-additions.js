@@ -83,6 +83,28 @@ export function enhanceB4MineCart(root) {
   for(const side of [-1,1])for(const z of [-.64,.64]){
     bar(side*.80,1.05,z,.15,.23,.16,darkIron,side*.12);
   }
+  // V8: properly radial, load-bearing spokes in the YZ wheel plane.
+  // Earlier bars were visually offset; these connect the hub to the inner rim.
+  const spokeGeo=new THREE.CylinderGeometry(.025,.032,.205,6);geometries.push(spokeGeo);
+  const spokeAxis=new THREE.Vector3(0,1,0);
+  for(const side of [-1,1])for(const z of [-.43,.43]){
+    const cx=side*1.065,cy=-.1;
+    for(let k=0;k<8;k++){
+      const a=(k+.5)*Math.PI/4;
+      const dir=new THREE.Vector3(0,Math.cos(a),Math.sin(a));
+      const spoke=new THREE.Mesh(spokeGeo,darkIron);
+      spoke.position.set(cx,cy+dir.y*.135,z+dir.z*.135);
+      spoke.quaternion.setFromUnitVectors(spokeAxis,dir);
+      details.add(spoke);
+    }
+    // Two concentric raised hub flanges and small axle-fastener geometry.
+    const flangeGeo=new THREE.CylinderGeometry(.092,.092,.028,12);geometries.push(flangeGeo);
+    const flange=new THREE.Mesh(flangeGeo,iron);
+    flange.rotation.z=Math.PI/2;flange.position.set(side*1.115,cy,z);details.add(flange);
+    const pinGeo=new THREE.CylinderGeometry(.037,.037,.03,6);geometries.push(pinGeo);
+    const pin=new THREE.Mesh(pinGeo,darkIron);
+    pin.rotation.z=Math.PI/2;pin.position.set(side*1.135,cy,z);details.add(pin);
+  }
   details.userData.dispose=()=>{geometries.forEach(g=>g.dispose());iron.dispose();wood.dispose();darkIron.dispose();agedWood.dispose();};
   return root;
 }
