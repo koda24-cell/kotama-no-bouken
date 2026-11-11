@@ -228,5 +228,56 @@ export function enhanceB5GothicArch(THREE, root) {
   part.rotation.set(.15+(index%3)*.24,index*.57,side*(.95+(index%2)*.27));
   if(isHangingRib)part.scale.set(.42,2.0,.54);
  }
+
+ // Eighth pass: full-depth, bonded Gothic voussoirs. Previous arch faces
+ // were only 0.3 deep and looked like disconnected plates from oblique angles.
+ // These keystone blocks span the entire masonry thickness, with beveled
+ // silhouette edges and staggered radial joints.
+ const archMasonry=new THREE.MeshStandardMaterial({color:0x68616b,roughness:.98,flatShading:true,side:THREE.DoubleSide});
+ const archCourse=[[3.43,9.8],[3.09,10.86],[2.63,11.96],[2.0,13.04],[1.23,13.94],[.38,14.57]];
+ for(const side of [-1,1])for(let k=0;k<archCourse.length-1;k++){
+  const [x0,y0]=archCourse[k],[x1,y1]=archCourse[k+1];
+  const dx=x1-x0,dy=y1-y0,L=Math.hypot(dx,dy);
+  const nx=dy/L,ny=-dx/L;
+  for(let j=0;j<3;j++){
+   // A broken-out block on the right upper shoulder reads as actual damage.
+   if(side===1&&k===3&&j===2)continue;
+   const t0=j/3+.014,t1=(j+1)/3-.014;
+   const a=[x0+dx*t0,y0+dy*t0],b=[x0+dx*t1,y0+dy*t1];
+   const inner=.12,outer=.82+(k%2)*.07;
+   const contour=[[a[0]+nx*inner,a[1]+ny*inner],
+    [b[0]+nx*inner,b[1]+ny*inner],
+    [b[0]+nx*outer,b[1]+ny*outer],
+    [a[0]+nx*outer,a[1]+ny*outer]];
+   const outline=contour.map(([x,y])=>[side*x,y]);
+   const shape=new THREE.Shape();
+   outline.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));
+   shape.closePath();
+   const geo=new THREE.ExtrudeGeometry(shape,{
+    depth:3.34,steps:1,bevelEnabled:true,bevelSize:.035,
+    bevelThickness:.035,bevelSegments:2,curveSegments:1
+   });
+   const block=new THREE.Mesh(geo,archMasonry);
+   block.position.z=-1.67;
+   block.name='b5:gothicArch:fullDepthVoussoir';
+   extra.add(block);
+  }
+ }
+ // Deep outer-wall masonry connects the two previously separate facade skins.
+ // Short irregular blocks stop the top reading as a paper-thin polygon sheet.
+ for(const side of [-1,1])for(let course=0;course<5;course++){
+  const y=9.9+course*.83,x=side*(4.46+(course%2)*.08);
+  const w=.63,h=.35;
+  const poly=[[x-w,y-h+.07],[x-w+.08,y-h],[x+w-.09,y-h],
+   [x+w,y-h+.08],[x+w,y+h-.06],[x+w-.1,y+h],
+   [x-w+.08,y+h],[x-w,y+h-.08]];
+  const shape=new THREE.Shape();
+  poly.forEach(([px,py],i)=>i?shape.lineTo(px,py):shape.moveTo(px,py));
+  shape.closePath();
+  const geo=new THREE.ExtrudeGeometry(shape,{depth:3.1,
+   bevelEnabled:true,bevelSize:.04,bevelThickness:.04,bevelSegments:2});
+  const m=new THREE.Mesh(geo,course%2?stone:archMasonry);
+  m.position.z=-1.55;m.name='b5:gothicArch:fullDepthWallBlock';extra.add(m);
+ }
  root.add(extra);return root;
 }
