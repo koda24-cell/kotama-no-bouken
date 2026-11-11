@@ -43,6 +43,68 @@ export function enhanceB4MineCart(root) {
   for(const side of [-1,1])for(const z of [-.48,0,.48])for(const y of [.42,.87]){
     const rivet=new THREE.Mesh(rivetGeo,iron);rivet.position.set(side*.86,y,z);details.add(rivet);
   }
-  details.userData.dispose=()=>{geometries.forEach(g=>g.dispose());iron.dispose();wood.dispose();};
+
+  // V3: silhouette-first detailing, retaining the existing cart and its ore.
+  // Strongly readable external iron corner gussets and timber end-board seams.
+  const darkIron=new THREE.MeshStandardMaterial({color:0x383737,metalness:.48,roughness:.77,flatShading:true});
+  const agedWood=new THREE.MeshStandardMaterial({color:0x68503a,roughness:1,flatShading:true});
+  for(const z of [-.69,.69]){
+    for(let i=0;i<4;i++){
+      const y=.35+i*.19;
+      bar(0,y,z,1.43,.145,.065,i%2?agedWood:wood);
+    }
+    for(const x of [-.68,.68]){
+      bar(x,.72,z*1.07,.105,.83,.075,darkIron);
+      for(const y of [.43,.68,.94]){
+        const rivet=new THREE.Mesh(rivetGeo,iron);
+        rivet.position.set(x,y,z*1.14);details.add(rivet);
+      }
+    }
+  }
+  // Outer wheel rim bands: make the running gear visually substantial.
+  for(const side of [-1,1])for(const z of [-.43,.43]){
+    const rimGeo=new THREE.TorusGeometry(.295,.052,7,18);geometries.push(rimGeo);
+    const rim=new THREE.Mesh(rimGeo,darkIron);
+    rim.rotation.y=Math.PI/2;rim.position.set(side*1.04,-.1,z);details.add(rim);
+    const innerGeo=new THREE.TorusGeometry(.20,.019,5,14);geometries.push(innerGeo);
+    const inner=new THREE.Mesh(innerGeo,iron);
+    inner.rotation.y=Math.PI/2;inner.position.copy(rim.position);details.add(inner);
+    const capGeo=new THREE.CylinderGeometry(.067,.067,.045,10);geometries.push(capGeo);
+    const cap=new THREE.Mesh(capGeo,darkIron);cap.rotation.z=Math.PI/2;
+    cap.position.set(side*1.10,-.1,z);details.add(cap);
+  }
+  // Longitudinal chassis members and underbody axle supports.
+  for(const side of [-1,1]){
+    bar(side*.61,.08,0,.13,.16,1.52,darkIron);
+    for(const z of [-.43,.43])bar(side*.61,-.11,z,.37,.12,.12,darkIron);
+  }
+  for(const z of [-.43,.43])bar(0,-.10,z,2.03,.09,.095,darkIron);
+  // Corner plates protrude above timber to clarify the trapezoid tub outline.
+  for(const side of [-1,1])for(const z of [-.64,.64]){
+    bar(side*.80,1.05,z,.15,.23,.16,darkIron,side*.12);
+  }
+  // V8: properly radial, load-bearing spokes in the YZ wheel plane.
+  // Earlier bars were visually offset; these connect the hub to the inner rim.
+  const spokeGeo=new THREE.CylinderGeometry(.025,.032,.205,6);geometries.push(spokeGeo);
+  const spokeAxis=new THREE.Vector3(0,1,0);
+  for(const side of [-1,1])for(const z of [-.43,.43]){
+    const cx=side*1.065,cy=-.1;
+    for(let k=0;k<8;k++){
+      const a=(k+.5)*Math.PI/4;
+      const dir=new THREE.Vector3(0,Math.cos(a),Math.sin(a));
+      const spoke=new THREE.Mesh(spokeGeo,darkIron);
+      spoke.position.set(cx,cy+dir.y*.135,z+dir.z*.135);
+      spoke.quaternion.setFromUnitVectors(spokeAxis,dir);
+      details.add(spoke);
+    }
+    // Two concentric raised hub flanges and small axle-fastener geometry.
+    const flangeGeo=new THREE.CylinderGeometry(.092,.092,.028,12);geometries.push(flangeGeo);
+    const flange=new THREE.Mesh(flangeGeo,iron);
+    flange.rotation.z=Math.PI/2;flange.position.set(side*1.115,cy,z);details.add(flange);
+    const pinGeo=new THREE.CylinderGeometry(.037,.037,.03,6);geometries.push(pinGeo);
+    const pin=new THREE.Mesh(pinGeo,darkIron);
+    pin.rotation.z=Math.PI/2;pin.position.set(side*1.135,cy,z);details.add(pin);
+  }
+  details.userData.dispose=()=>{geometries.forEach(g=>g.dispose());iron.dispose();wood.dispose();darkIron.dispose();agedWood.dispose();};
   return root;
 }
