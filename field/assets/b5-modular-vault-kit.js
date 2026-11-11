@@ -352,6 +352,119 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    fractureStone(Math.cos(a)*r,Math.sin(a)*r,.35+(j%2)*.20,.25+(j%3)*.09,.12+j%4*.055,j+70);
   }
  }
+ // PASS 2026-11-12: reinforce existing masonry with architectural
+ // attachments rather than replacing approved silhouettes.
+ const carvedPierCapital=(x,z)=>{
+  // The crown rises in three continuous courses, then flares into the
+  // radial springers. Deep inset tracery faces are on FRONT (-Z).
+  for(let layer=0;layer<4;layer++){
+   const y=4.68+layer*.13;
+   box(x,y,z,.91+layer*.10,.12,.88+layer*.09,layer%2?trim:stone);
+  }
+  for(const sx of [-1,1]){
+   curveRib([[x+sx*.17,4.87,z-.51],[x+sx*.39,5.05,z-.51],
+     [x+sx*.52,5.27,z-.48],[x+sx*.66,5.34,z-.43]],.052,trim);
+  }
+  for(let k=0;k<3;k++){
+   const dx=(k-1)*.24;
+   curveRib([[x+dx-.10,4.72,z-.58],[x+dx-.08,4.85,z-.58],
+      [x+dx,4.93,z-.58],[x+dx+.08,4.85,z-.58],
+      [x+dx+.10,4.72,z-.58]],.018,dark);
+  }
+ };
+ // Gothic voussoir stone: a quadrangular chamfered stone with slanted
+ // fracture edge. Useful as a connecting mass beneath broken rib ends.
+ const voussoir=(x,y,z,w,h,d,seed=0)=>{
+  const verts=[],faces=[];
+  const levels=[[-h*.5,1.0],[h*.5,.85]];
+  for(const [yy,r] of levels){
+   for(const [dx,dz] of [[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]]){
+    verts.push(dx*w*r + .055*Math.sin(seed*2.3+yy+dx*3),
+       yy+.045*Math.cos(seed+dx*7+dz*4),dz*d*r);
+   }
+  }
+  for(const side of [[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7],[0,3,2,1],[4,5,6,7]]){
+   faces.push(side[0],side[1],side[2],side[0],side[2],side[3]);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(faces);g.computeVertexNormals();
+  const o=add(g,stone);o.position.set(x,y,z);return o;
+ };
+ if(kind==='royal-vault'){
+  // Visible weight and readable Gothic capitals, rather than tiny
+  // beads that disappear at typical gameplay camera distances.
+  for(const x of [-3.25,3.25])for(const z of [-2.5,2.5]){
+   carvedPierCapital(x,z);
+  }
+  // Curved ribs fan from each capital into the nave. Multiple layers add
+  // depth while keeping the central crossing boss intact.
+  for(const sx of [-1,1])for(const sz of [-1,1]){
+   for(let band=0;band<3;band++){
+    const pts=[];
+    for(let j=0;j<=20;j++){
+     const t=j/20;
+     pts.push([
+      sx*(3.24-3.24*t),
+      4.97+1.46*Math.sin(t*Math.PI*.5)+band*.075,
+      sz*(2.50-2.50*t)+band*.075*sz]);
+    }
+    curveRib(pts,band===0?.095:.034,band===1?trim:stone);
+   }
+  }
+  // Gothic spandrel carvings: shallow lancets beneath the roof ridge,
+  // anchored at their bottom edges rather than hovering in the void.
+  for(const z of [-2.78,2.46]){
+   for(const sx of [-1,1]){
+    for(let j=0;j<3;j++){
+     const x=sx*(.72+j*.73);
+     const top=5.71-j*.13;
+     curveRib([[x-.21,5.10,z],[x-.19,top-.17,z],
+      [x,top,z],[x+.19,top-.17,z],[x+.21,5.10,z]],.048,trim);
+     box(x,5.09,z,.43,.09,.16,stone);
+    }
+   }
+  }
+ }
+ if(kind==='collapsed-vault'){
+  // Structural support below the existing detached-looking stones.
+  // A deliberately discontinuous broken web connects them to the roof
+  // but preserves the hole through which the abyss is visible.
+  for(let j=0;j<5;j++){
+   const x=1.01+j*.31,z=.81+(j%2)*.33;
+   voussoir(x,5.78,z,.50,.27,.43,j+4);
+  }
+  for(let j=0;j<7;j++){
+   const x=1.03+j*.31,z=.85+(j%2)*.36;
+   beam([x,5.68,z],[x+.12,5.91,z],.085,stone);
+  }
+  // Endstones step down to the surviving right pier capital.
+  for(let j=0;j<4;j++){
+   voussoir(2.16+j*.24,5.60-j*.23,1.21+j*.19,.46,.25,.41,j+25);
+  }
+ }
+ if(kind==='fallen-vault-rubble'){
+  // Stone blocks excavated from a collapsed vault: fractured cuboid
+  // sections with chipped ends, not tubular pebbles.
+  for(let j=0;j<11;j++){
+   const a=j*2.399963,r=1.02+(j%4)*.34;
+   const x=Math.cos(a)*r,z=Math.sin(a)*r;
+   const h=.18+(j%3)*.07;
+   const o=voussoir(x,h*.5,z,.46+(j%4)*.17,h,.35+(j%3)*.14,j+36);
+   o.rotation.y=j*.47;
+   fractureStone(x+.22,z+.13,.21,.25,.09,j+39,dark);
+  }
+  // Broken rib sections retain paired carved mouldings on their outer
+  // side, providing a recognizable architectural origin.
+  for(let j=0;j<5;j++){
+   const x=-2.10+j*.87,z=-1.32+(j%2)*.31;
+   const o=voussoir(x,.17,z,.74,.35,.39,j+60);
+   o.rotation.y=.15*j;
+   for(const offset of [-.11,.11]){
+    beam([x-.30,.37,z+offset],[x+.30,.37,z+offset],.035,trim);
+   }
+  }
+ }
  let disposed=false;
  return {group,dispose(){if(disposed)return;disposed=true;group.parent?.remove(group);
   group.clear(); gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
