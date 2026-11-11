@@ -339,5 +339,29 @@ export function enhanceB5GothicArch(THREE, root) {
   }
  }
  extra.userData.crestRepositioned=crestRepositioned;
+ // Eleventh pass: remove the visibly artificial spike fence and horizontal
+ // floating crown from the upper silhouette. Retain every source mesh by
+ // relocating it as ground-level architectural debris outside the doorway.
+ let crownSalvaged=0;
+ for(const part of root.children){
+  if(!part.isMesh)continue;
+  const p=part.position,s=part.scale;
+  const isCrownSlab=part.geometry?.isBoxGeometry&&
+   Math.abs(p.x)<.02&&Math.abs(p.y-15.6)<.02&&
+   Math.abs(p.z+.4)<.02&&Math.abs(s.x-3.57)<.03;
+  const isCrownSpike=part.geometry?.type==='ConeGeometry'&&
+   Math.abs(p.z+.4)<.02&&p.y>16.1&&p.y<17.4&&Math.abs(p.x)<2;
+  const isRearSpike=part.geometry?.type==='ConeGeometry'&&
+   Math.abs(p.z+1.7)<.02&&p.y>13.1&&p.y<15.5&&Math.abs(p.x)<3.5;
+  if(!isCrownSlab&&!isCrownSpike&&!isRearSpike)continue;
+  const n=crownSalvaged++;
+  const side=n%2===0?-1:1;
+  p.set(side*(6.2+(n%4)*.36),.18+(n%3)*.08,1.9+(n%3)*.55);
+  part.rotation.set(.32+n*.09,n*.48,.8+(n%3)*.19);
+  if(isCrownSlab)part.scale.set(2.1,.28,1.15);
+  else part.scale.set(.45,.42,.5);
+  part.name='b5:gothicArch:salvagedCrownDebris';
+ }
+ extra.userData.crownSalvaged=crownSalvaged;
  root.add(extra);return root;
 }
