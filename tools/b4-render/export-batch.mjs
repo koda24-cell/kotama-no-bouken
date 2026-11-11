@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import * as THREE from 'three';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {createB4MineRigProps} from '../../field/b4-mine-rig-props.js';
+import {enhanceB4Furnace} from '../../field/b4-furnace-detail-additions.js';
 import {enhanceB4MineCart} from '../../field/b4-cart-detail-additions.js';
 class NodeFileReader {
  result=null;onloadend=null;onerror=null;
@@ -12,7 +13,7 @@ globalThis.FileReader=NodeFileReader;
 fs.mkdirSync('render-output',{recursive:true});
 for(const enhanced of [false,true]){
  const root=createB4MineRigProps();
- if(enhanced)enhanceB4MineCart(root);
+ if(enhanced){enhanceB4MineCart(root);enhanceB4Furnace(root);}
  const cart=root.getObjectByName('b4:buried-ore-cart');
  const furnace=root.getObjectByName('b4:ruined-smelting-furnace');
  const items=[['cart',cart],['furnace',furnace],['mine-rig',root]];
