@@ -30,6 +30,47 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
   o.position.set(x,y,z);o.scale.set(w,h,d);
   o.rotation.set(seed*.27,seed*.13,seed*.22);return o;
  };
+ // Broad planar fracture facets: deliberately avoid rounded dodecahedrons.
+ // Each rock has an irregular multi-plane perimeter, chipped sidewall and a
+ // broken plateau, with local ground at y=0.
+ const fractureStone=(x,z,w,d,h,seed=0,material=stone)=>{
+  const n=9,vertices=[],indices=[];
+  const rnd=(i,j)=>.5*Math.sin((i+1)*7.23+(seed+3)*2.19+j*3.1)
+   +.5*Math.cos((i+5)*3.93-(seed+1)*1.72+j*6.1);
+  for(let level=0;level<3;level++){
+   const scale=level===0?.89:level===1?1:.62;
+   for(let i=0;i<n;i++){
+    const a=i*2*Math.PI/n,r=scale*(1+.20*rnd(i,0));
+    vertices.push(w*.5*r*Math.cos(a),level===0?0:level===1?h*(.37+.13*rnd(i,1)):h*(.77+.16*rnd(i,2)),d*.5*r*Math.sin(a));
+   }
+  }
+  for(let level=0;level<2;level++)for(let i=0;i<n;i++){
+   const j=(i+1)%n,a=level*n+i,b=level*n+j,c=(level+1)*n+i,e=(level+1)*n+j;
+   indices.push(a,c,b,b,c,e);
+  }
+  // The top forms broad triangular fractured planes rather than a dome.
+  const topIndex=vertices.length/3;
+  vertices.push(-.08*w,h*.87,.04*d);
+  for(let i=0;i<n;i++)indices.push(2*n+i,topIndex,2*n+(i+1)%n);
+  for(let i=1;i<n-1;i++)indices.push(0,i+1,i);
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  geo.setIndex(indices);geo.computeVertexNormals();
+  const o=add(geo,material);o.position.set(x,0,z);o.rotation.y=seed*.67;
+  return o;
+ };
+ const segmentOrnament=(x,y,z,r=.3)=>{
+  // One cusped Gothic quatrefoil is an actual raised carved stone form.
+  for(let petal=0;petal<4;petal++){
+   const a=petal*Math.PI/2,pts=[];
+   for(let i=0;i<=10;i++){
+    const t=i/10*Math.PI*2;
+    pts.push([x+r*.42*Math.cos(a)+r*.30*Math.cos(t),
+      y+r*.42*Math.sin(a)+r*.30*Math.sin(t),z]);
+   }
+   for(let i=1;i<pts.length;i++)beam(pts[i-1],pts[i],.023,trim);
+  }
+ };
  const arch=(z,side=1,detail=true,broken=false)=>{
   // Radial rising ribs connect the left and right supporting masonry.
   for(let layer=0;layer<(detail?3:2);layer++){
@@ -52,14 +93,12 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
   for(let i=0;i<3;i++)chip(x+(-.35+i*.24),H+.02,z-.13,.21,.16,.22,i+Math.floor(x*3));
  };
  const rubble=()=>{
-  // Every shard has a flattened bottom and a broad irregular top;
-  // no isolated spiky crystals or rounded beads.
-  for(let i=0;i<25;i++){
-   const a=i*2.399963,r=1.1+(i%7)*.24;
+  // Scattered grounded asymmetric chipped blocks, no pebble silhouettes.
+  for(let i=0;i<30;i++){
+   const a=i*2.399963,r=1.04+(i%7)*.28;
    const x=Math.cos(a)*r,z=Math.sin(a)*r-.2;
-   const w=.2+(i%5)*.13,h=.08+(i%4)*.07,d=.18+(i%3)*.14;
-   const obj=chip(x,h*.7,z,w,h,d,i);
-   obj.rotation.x*=.22;obj.rotation.z*=.22;
+   const w=.29+(i%5)*.14,h=.13+(i%4)*.075,d=.24+(i%3)*.16;
+   fractureStone(x,z,w,d,h,i);
   }
  };
  if(kind==='vault-support'){
@@ -86,7 +125,19 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    const x=-2.6+i*.42,y=.26+.18*Math.sin(i*.45),z=-1.1+.17*Math.sin(i*.41);
    beam([x,y,z],[x+.39,y+.06,z+.05],.16,i%3?stone:trim);
   }
-  for(let i=0;i<5;i++)chip(-2.4+i*.9,.13,1.8,.26,.12,.3,i+15);
+  for(let i=0;i<5;i++)fractureStone(-2.4+i*.9,1.8,.52,.4,.19,i+15);
+  // Large broken architectural fragments, distinct from natural rocks.
+  for(let i=0;i<4;i++){
+   const x=-1.9+i*1.12,z=.45+(i%2)*.75;
+   const slab=box(x,.17,z,.94,.34,.74,i%2?trim:stone);
+   slab.rotation.y=i*.26;slab.rotation.z=(i%2?.11:-.08);
+   for(let j=0;j<3;j++)box(x-.28+j*.26,.35,z-.37,.09,.075,.08,trim);
+  }
+  // A toppled fluted column section with a visibly broken end.
+  const fallen=box(1.73,.23,1.29,1.62,.42,.56,stone);
+  fallen.rotation.y=.26;
+  for(let i=0;i<4;i++)beam([1.06+i*.0,.26,1.08+(i-1.5)*.13],[2.35,.26,1.08+(i-1.5)*.13],.037,trim);
+  fractureStone(2.38,1.35,.65,.58,.27,66);
  }else{
   const broken=kind==='collapsed-vault',royal=kind==='royal-vault';
   for(const x of [-3.25,3.25])for(const z of [-2.5,2.5])stonePier(x,z,broken&&x>0&&z>0);
@@ -132,6 +183,43 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    }
    const keystone=chip(0,6.65,-2.62,.34,.39,.32,0);
    keystone.rotation.set(0,0,.13);
+   // Additional moulded arc bands follow the original vault outline.
+   // Gothic cusps and quatrefoils occupy the spandrels, not empty air.
+   for(const z of [-2.74,2.28]){
+    const archTop=x=>4.5+2*(1-Math.pow(Math.abs(x)/3,1.55));
+    for(let side of [-1,1]){
+     for(let j=0;j<16;j++){
+      const x0=side*(.45+j*2.35/16),x1=side*(.45+(j+1)*2.35/16);
+      beam([x0,archTop(x0)+.34,z],[x1,archTop(x1)+.34,z],.048,trim);
+     }
+     for(let j=0;j<3;j++){
+      const cx=side*(1.10+j*.74),cy=5.44-.24*j;
+      segmentOrnament(cx,cy,z-.035,.22-j*.014);
+     }
+    }
+    segmentOrnament(0,6.26,z-.035,.30);
+    for(let i=0;i<5;i++){
+     const x=-2.48+i*1.24;
+     const y=archTop(x)-.44;
+     // Shallow layered stone hanging cusps with triangular supports.
+     beam([x-.18,y+.20,z],[x,y-.16,z],.055,trim);
+     beam([x,y-.16,z],[x+.18,y+.20,z],.055,trim);
+    }
+   }
+   // Ceiling webbing carries additional staggered carved stone ribs.
+   for(const x of [-2.45,-1.12,1.12,2.45]){
+    for(let iz=0;iz<18;iz++){
+     const z=-2.33+iz*4.66/18,next=-2.33+(iz+1)*4.66/18;
+     const y=5.92+.22*(1-Math.abs(x)/3);
+     beam([x,y,z],[x,y,next],.044,trim);
+    }
+   }
+   // Capitals with visible stepped dentils instead of plain block ends.
+   for(const x of [-3.24,3.24])for(const z of [-2.5,2.5]){
+    for(let i=0;i<5;i++){
+     box(x-.34+i*.17,4.83,z-.48,.115,.18,.16,trim);
+    }
+   }
   }
  }
  let disposed=false;
