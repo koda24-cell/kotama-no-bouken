@@ -95,5 +95,42 @@ export function enhanceB5GothicArch(THREE, root) {
    between([x,3.3,1.55],[x,7.9,1.55],.12,.16,carved);
   }
  }
+
+ // Seventh pass: readable stone construction rather than a tangle of rods.
+ // Individual voussoirs follow the outer pointed arch and leave the doorway empty.
+ const paleStone=new THREE.MeshStandardMaterial({color:0x716a73,roughness:.98,flatShading:true});
+ for(const z of [-1.72,1.72]){
+  for(const side of [-1,1]){
+   const archPoints=[[3.42,9.8],[3.05,10.9],[2.58,12.0],[1.94,13.08],[1.14,14.0],[.32,14.58]];
+   for(let i=0;i<archPoints.length-1;i++){
+    const [ax,ay]=archPoints[i],[bx,by]=archPoints[i+1];
+    const p=[side*ax,ay,z],q=[side*bx,by,z];
+    // Visible joints between blocks; shallow depth avoids masking the tracery.
+    between(p,q,.57,.32,paleStone);
+    const joint=box(side*bx,by,z,.63,.095,.35,shadow);
+    joint.rotation.z=side*.16;
+   }
+   // Outer jamb masonry: alternating rectangular courses and recessed joint lines.
+   for(let i=0;i<7;i++){
+    const y=1.55+i*1.14;
+    box(side*4.03,y,z,.98,.91,.29,i%3===0?paleStone:stone);
+    box(side*4.03,y+.51,z,.99,.075,.32,shadow);
+    const shift=(i%2?-.22:.22);
+    box(side*4.03+shift,y,z+.175,.08,.86,.055,shadow);
+   }
+   // Two surviving carved capitals and projecting moulding bands.
+   for(const y of [3.1,8.85]){
+    box(side*4.02,y,z,1.34,.26,.46,paleStone);
+    box(side*4.02,y+.23,z,1.12,.15,.38,shadow);
+   }
+  }
+ }
+ // Eroded masonry scattered outside the central passage, not inside the arch.
+ for(const side of [-1,1])for(let i=0;i<7;i++){
+  const x=side*(5.3+(i%3)*.46),z=(i-3)*.54;
+  const m=new THREE.Mesh(new THREE.DodecahedronGeometry(.3+(i%3)*.13,0),i%2?paleStone:stone);
+  m.position.set(x,.16+(i%2)*.07,z);
+  m.scale.set(1.4,.55,1.1);m.rotation.y=i*.83;extra.add(m);
+ }
  root.add(extra);return root;
 }
