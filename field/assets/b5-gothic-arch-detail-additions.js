@@ -325,9 +325,12 @@ export function enhanceB5GothicArch(THREE, root) {
   // Scale it to a short damaged crown embedded between the two arch shoulders.
   if(Math.abs(p.x)<.02&&Math.abs(p.y-14.5)<.02&&Math.abs(p.z)<.02&&
      Math.abs(s.x-2.5)<.02&&Math.abs(s.y-3.2)<.02){
-   p.set(0,14.56,0);
-   s.set(.9,1.2,1.45);
-   part.name='b5:gothicArch:reducedCrownCore';
+   // A detached cone at the central apex still reads as a freestanding spike.
+   // Salvage it as a chipped fallen finial on the left outer shoulder instead.
+   p.set(-4.88,13.74,.18);
+   s.set(.72,.82,1.02);
+   part.rotation.set(.31,-.22,-.58);
+   part.name='b5:gothicArch:salvagedOuterCrestFinial';
    crestRepositioned++;
   }
  }
