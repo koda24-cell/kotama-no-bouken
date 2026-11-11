@@ -245,6 +245,55 @@ export function createB5HoodedStatue(THREE, options={}) {
      [x+.07,.77,-1.091]],.016,pale);
   }
  }
+ // PASS 4: broader overlapping cloak folds, built ON TOP of the approved
+ // narrow drapes. Contoured surfaces grow from the mantle and settle into
+ // the robe instead of reading as independent straight ribbon strips.
+ const broadFold=(side,seed)=>{
+  const rows=37,cols=18,vertices=[],triangles=[];
+  for(let j=0;j<=rows;j++){
+   const t=j/rows,y=4.78-t*2.75;
+   const breadth=.23+.20*Math.sin(Math.PI*t)+.085*t;
+   const cx=side*(.52+.065*Math.sin(t*5+seed)+.07*t);
+   for(let k=0;k<=cols;k++){
+    const u=k/cols*2-1;
+    // Rolled edge and two broad gravity-led creases, naturally tapered.
+    const roll=.11*Math.pow(Math.abs(u),5);
+    const fold=.14*Math.sin((u+.12)*Math.PI*1.6+t*5.2+seed)
+      *Math.sin(Math.PI*(.12+.84*t));
+    const z=-.66-.14*Math.sin(Math.PI*t)+fold+roll;
+    const hemDrop=.10*Math.sin(t*13+seed)*u*u;
+    vertices.push(cx+breadth*u,y+hemDrop,z);
+   }
+  }
+  for(let j=0;j<rows;j++)for(let k=0;k<cols;k++){
+   const a=j*(cols+1)+k,b=a+1,c=a+cols+1,d=c+1;
+   triangles.push(a,c,b,b,c,d);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  g.setIndex(triangles);g.computeVertexNormals();
+  const surface=add(g,stone);
+  surface.name=side<0?'left-broad-cloak-fold':'right-broad-cloak-fold';
+  // Embossed long seam follows the lateral fold, not the face opening.
+  rod([[side*.68,4.67,-.59],[side*.75,4.23,-.67],
+    [side*.82,3.62,-.74],[side*.78,2.89,-.69],
+    [side*.79,2.11,-.59]],.035,pale);
+ };
+ broadFold(-1,.35);
+ broadFold(1,1.62);
+ // Sculpted inset cuff edge on the surviving sleeve.
+ rod([[-.47,2.99,-.73],[-.62,2.91,-.77],[-.81,2.98,-.69],
+      [-.90,3.10,-.58]],.060,stone);
+ rod([[-.50,3.12,-.68],[-.69,3.02,-.71],[-.84,3.08,-.61]],.025,pale);
+ // Uneven lower-robe scallops and shallow falling folds, asymmetric.
+ for(const [x,z,dy] of [[-.61,-.56,.08],[-.29,-.72,-.09],[.18,-.74,.12],[.58,-.49,-.04]]){
+  rod([[x,2.48,z],[x*.94,2.12,z-.035],[x*1.04,1.62+dy,z+.03]],.033,stone);
+ }
+ // Additional light engraving on the existing broken right shoulder.
+ for(const points of [
+  [[.65,4.91,-.29],[.77,4.81,-.23],[.81,4.70,-.20]],
+  [[.53,4.64,-.35],[.65,4.53,-.26],[.72,4.47,-.24]]
+ ])rod(points,.016,stone);
  // Sculpted chips on the robe hem and damaged pedestal.
  for(let i=0;i<9;i++){
   const a=i*2.3999;
