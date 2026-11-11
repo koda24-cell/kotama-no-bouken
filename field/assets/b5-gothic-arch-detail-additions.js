@@ -209,5 +209,24 @@ export function enhanceB5GothicArch(THREE, root) {
     [4.91,14.08],[4.99,13.65],[4.51,13.48]].map(([x,y])=>[side*x,y]);
   cutStone(poly,z,.28,stone);
  }
+
+ // Silhouette correction: reposition, never delete, the original five hanging
+ // vertical ribs and two oversized diagonal slabs into plausible fallen masonry.
+ // Operates only on this standalone Gothic-arch instance, not shared source props.
+ const near=(a,b)=>Math.abs(a-b)<.015;
+ let salvaged=0;
+ for(const part of root.children){
+  if(!part.isMesh||!part.geometry?.isBoxGeometry)continue;
+  const p=part.position,s=part.scale;
+  const isUpperSlab=near(Math.abs(p.x),2.15)&&near(p.y,12.2)&&near(s.x,5.6)&&near(s.y,1.1);
+  const isHangingRib=near(p.z,-.9)&&near(s.x,.3)&&near(s.y,4.5)&&p.y>12.4&&p.y<13.2;
+  if(!isUpperSlab&&!isHangingRib)continue;
+  const side=p.x<0?-1:1;
+  const index=salvaged++;
+  // Each piece survives as fallen architectural debris outside the doorway.
+  p.set(side*(6.0+(index%3)*.54),.28+(index%2)*.12,-1.1+(index%4)*.8);
+  part.rotation.set(.15+(index%3)*.24,index*.57,side*(.95+(index%2)*.27));
+  if(isHangingRib)part.scale.set(.42,2.0,.54);
+ }
  root.add(extra);return root;
 }
