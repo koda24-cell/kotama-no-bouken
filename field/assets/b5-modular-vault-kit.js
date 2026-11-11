@@ -465,6 +465,95 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    }
   }
  }
+ // PASS: true faceted stone ribs, with a tapered six-vertex Gothic
+ // section, in place of yet more round pipes. All prior meshes preserved.
+ const gothicRib=(points,halfWidth=.16,depth=.24,material=stone)=>{
+  const verts=[],indices=[];
+  // Cross-section across the span: a broad shoulder, bevelled cheeks,
+  // and a pointed downward arris. Reorient per segment tangent in XZ.
+  const section=[[-1,0],[-.78,-.30],[-.35,-.62],[0,-1],
+                 [.35,-.62],[.78,-.30],[1,0]];
+  for(let i=0;i<points.length;i++){
+   const p=new THREE.Vector3(...points[i]);
+   const prev=new THREE.Vector3(...points[Math.max(0,i-1)]);
+   const next=new THREE.Vector3(...points[Math.min(points.length-1,i+1)]);
+   const tangent=next.sub(prev).normalize();
+   let lateral=new THREE.Vector3(-tangent.z,0,tangent.x).normalize();
+   if(lateral.lengthSq()<.1)lateral.set(1,0,0);
+   for(const [u,v] of section){
+    const pt=p.clone().addScaledVector(lateral,u*halfWidth);
+    pt.y+=v*depth;
+    verts.push(pt.x,pt.y,pt.z);
+   }
+  }
+  const n=section.length;
+  for(let i=0;i<points.length-1;i++)for(let k=0;k<n-1;k++){
+   const a=i*n+k,b=(i+1)*n+k;
+   indices.push(a,b,a+1,a+1,b,b+1);
+  }
+  // Closed top surface, ensuring substantial stone mass rather than a
+  // dangling open moulding. Flat-shaded bevels reveal the section.
+  for(let i=0;i<points.length-1;i++){
+   const a=i*n,b=(i+1)*n;
+   indices.push(a,a+n-1,b,b,a+n-1,b+n-1);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(indices);g.computeVertexNormals();
+  return add(g,material);
+ };
+ if(['basic-vault','collapsed-vault','royal-vault'].includes(kind)){
+  const damaged=kind==='collapsed-vault',luxury=kind==='royal-vault';
+  // Diagonal load-bearing Gothic arrises converge at the central boss.
+  // Do not span the collapsed north-east opening.
+  for(const sx of [-1,1])for(const sz of [-1,1]){
+   if(damaged&&sx===1&&sz===1)continue;
+   const pts=[];
+   for(let i=0;i<=20;i++){
+    const t=i/20;
+    pts.push([sx*(3.10*(1-t)),4.91+1.55*Math.sin(t*Math.PI/2),
+              sz*(2.40*(1-t))]);
+   }
+   gothicRib(pts,luxury?.19:.16,luxury?.30:.25,luxury?trim:stone);
+  }
+  // Transverse voussoir ribs: shaped as load-bearing sections rather
+  // than an evenly spaced set of cylinders.
+  for(const z of [-2.47,2.47]){
+   const pts=[];
+   for(let i=0;i<=32;i++){
+    const x=-3+6*i/32;
+    const y=4.54+1.98*(1-Math.pow(Math.abs(x)/3,1.55));
+    pts.push([x,y,z]);
+   }
+   gothicRib(pts,luxury?.21:.17,luxury?.28:.24,stone);
+  }
+  // Cross-vault groin seams, thicker near the springing and recessed
+  // into the roof rather than hovering above the existing tile courses.
+  for(const x of [-2.96,2.96]){
+   const pts=[];
+   for(let i=0;i<=20;i++){
+    const z=-2.35+i*4.7/20;
+    const y=4.66+1.62*(1-Math.pow(Math.abs(z)/2.5,1.8));
+    pts.push([x,y,z]);
+   }
+   if(!damaged||x<0)gothicRib(pts,.13,.19,stone);
+  }
+ }
+ if(kind==='vault-support'){
+  // A faceted, weight-bearing fan with a pointed underside makes the
+  // standalone support read as masonry instead of four metal rods.
+  for(const sx of [-1,1])for(const sz of [-1,1]){
+   gothicRib([[sx*.18,4.93,sz*.15],[sx*.48,5.18,sz*.22],
+     [sx*1.02,5.55,sz*.31],[sx*1.62,5.72,sz*.35],
+     [sx*2.15,5.70,sz*.35]],.14,.22,stone);
+  }
+  // Sculpted crown blocks overlap the springer sockets, removing the
+  // visual gap between the square pier and its flared Gothic support.
+  for(const y of [4.69,4.83,4.97]){
+   const scale=1+(y-4.69)*.60;
+   box(0,y,0,scale,.12,scale,stone);
+  }
+ }
  let disposed=false;
  return {group,dispose(){if(disposed)return;disposed=true;group.parent?.remove(group);
   group.clear(); gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
