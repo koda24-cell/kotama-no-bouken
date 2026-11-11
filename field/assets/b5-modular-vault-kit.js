@@ -810,6 +810,37 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    }
   });
  }
+ // PASS: tapered stone buttresses physically join the standalone pier to
+ // the springing fan. Broad closed masonry faces replace an unsupported
+ // collection of thin diagonal struts without removing legacy geometry.
+ if(kind==='vault-support'){
+  const buttress=(sx,sz)=>{
+   const stations=[
+    {x:.29,y:4.48,z:.24,w:.40,d:.37},
+    {x:.58,y:4.96,z:.31,w:.38,d:.32},
+    {x:1.04,y:5.36,z:.36,w:.30,d:.27},
+    {x:1.55,y:5.60,z:.38,w:.23,d:.22}
+   ];
+   const verts=[],indices=[];
+   for(const q of stations){
+    const x=sx*q.x,z=sz*q.z;
+    for(const [u,v] of [[-1,-1],[1,-1],[1,1],[-1,1]])
+     verts.push(x+u*q.w/2,q.y+(v>0?.10:-.13),z+v*q.d/2);
+   }
+   for(let i=0;i<stations.length-1;i++)for(let j=0;j<4;j++){
+    const a=i*4+j,b=i*4+(j+1)%4,c=(i+1)*4+j,d=(i+1)*4+(j+1)%4;
+    indices.push(a,b,c,b,d,c);
+   }
+   indices.push(0,2,1,0,3,2);
+   const k=(stations.length-1)*4;
+   indices.push(k,k+1,k+2,k,k+2,k+3);
+   const g=new THREE.BufferGeometry();
+   g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+   g.setIndex(indices);g.computeVertexNormals();
+   add(g,stone);
+  };
+  for(const sx of [-1,1])for(const sz of [-1,1])buttress(sx,sz);
+ }
  let disposed=false;
  return {group,dispose(){if(disposed)return;disposed=true;group.parent?.remove(group);
   group.clear(); gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
