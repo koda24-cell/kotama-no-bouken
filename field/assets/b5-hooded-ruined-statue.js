@@ -95,32 +95,84 @@ export function createB5HoodedStatue(THREE, options={}) {
   g.setIndex(faces);g.computeVertexNormals();
   add(g,stone);
  }
- // Shoulder fracture is carved as a broad recessed irregular surface,
- // not a cluster of fitted-on pebbles. The missing arm lies below.
- rock(-.71,4.66,.02,.43,.44,.45,2);
- rock(-.93,4.30,-.05,.29,.32,.31,5);
- const fracturePts=[
-  [.41,4.96,-.31],[.77,5.03,-.18],[.98,4.79,-.06],
-  [1.03,4.43,.08],[.77,4.28,-.18],[.48,4.40,-.28],
-  [.58,4.70,-.46]
+ // Sculpted arms and shoulders: avoid visible sphere/cylinder seams.
+ // Build each surviving cloth sleeve as a smoothly lofted, elliptical
+ // continuous mesh with an irregular hanging silhouette.
+ const sleeve=(sections,mat=stone,radial=18)=>{
+  const vertices=[],indices=[];
+  for(let j=0;j<sections.length;j++){
+   const [cx,cy,cz,rx,rz,turn]=sections[j];
+   for(let i=0;i<radial;i++){
+    const a=i*2*Math.PI/radial;
+    const flap=1+.055*Math.sin(a*5+j*.81)+.035*Math.sin(a*9-j*1.7);
+    const x=rx*Math.cos(a)*flap,z=rz*Math.sin(a)*flap;
+    vertices.push(cx+x*Math.cos(turn)-z*Math.sin(turn),cy,cz+x*Math.sin(turn)+z*Math.cos(turn));
+   }
+  }
+  for(let j=0;j<sections.length-1;j++)for(let i=0;i<radial;i++){
+   const p=j*radial+i,q=j*radial+(i+1)%radial,r=(j+1)*radial+i,t=(j+1)*radial+(i+1)%radial;
+   indices.push(p,r,q,q,r,t);
+  }
+  for(let i=1;i<radial-1;i++){
+   indices.push(0,i,i+1);
+   const base=(sections.length-1)*radial;
+   indices.push(base,base+i+1,base+i);
+  }
+  const mesh=new THREE.BufferGeometry();
+  mesh.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  mesh.setIndex(indices);mesh.computeVertexNormals();
+  return add(mesh,mat);
+ };
+ // Mantle overlaps the shoulders and runs into the robe, following drapery.
+ // Asymmetric cloth contours create the sloped human shoulder line.
+ const mantleSections=[
+  [0,5.04,-.02,.47,.48,0],
+  [0,4.89,-.02,.67,.59,0],
+  [0,4.67,-.03,.84,.63,0],
+  [0,4.47,.01,.77,.59,0],
+  [0,4.26,.03,.66,.56,0]
  ];
- const fractureVerts=[];
- for(const p of fracturePts)fractureVerts.push(...p);
- fractureVerts.push(.70,4.66,-.12); // irregular recessed center
- const faceCenter=fracturePts.length;
- const faces=[];
- for(let i=0;i<fracturePts.length;i++)faces.push(i,(i+1)%fracturePts.length,faceCenter);
- const g=new THREE.BufferGeometry();
- g.setAttribute('position',new THREE.Float32BufferAttribute(fractureVerts,3));
- g.setIndex(faces);g.computeVertexNormals();
- add(g,pale);
- // A small partial fractured edge follows the outline without adding spikes.
- rod([[.43,4.95,-.31],[.77,5.02,-.18],[.98,4.79,-.06]],.05,stone);
- // Remaining arm draped over front; opposite arm is broken on the ground.
- rod([[-.70,4.62,-.12],[-.92,3.99,-.25],[-.74,3.28,-.51],[-.52,2.75,-.60]],.25);
- rod([[-.53,2.75,-.60],[-.28,2.56,-.66]],.18,pale);
- rock(1.17,.30,-1.05,.52,.23,.27,11);
- rock(1.48,.19,-1.22,.30,.18,.26,13);
+ sleeve(mantleSections,stone,32);
+ // Left arm: single connected, folded sleeve that tapers and bends inwards.
+ sleeve([
+  [-.61,4.67,-.13,.39,.39,-.04],
+  [-.88,4.46,-.15,.37,.35,-.10],
+  [-1.01,4.18,-.19,.33,.32,-.14],
+  [-1.04,3.86,-.25,.29,.29,-.23],
+  [-.96,3.57,-.34,.26,.27,-.28],
+  [-.84,3.30,-.44,.25,.24,-.32],
+  [-.70,3.04,-.50,.23,.22,-.37],
+  [-.54,2.88,-.57,.21,.19,-.39]
+ ],stone,24);
+ // Sleeve folds start at the mantle and flow along the bent elbow.
+ for(const pts of [
+  [[-.72,4.63,-.51],[-.92,4.29,-.49],[-1.03,3.95,-.54],[-.88,3.45,-.56]],
+  [[-.64,4.61,.27],[-.94,4.21,.18],[-.98,3.71,-.03],[-.75,3.13,-.24]],
+  [[-.79,4.53,-.43],[-1.12,4.14,-.40],[-1.13,3.85,-.38]]
+ ])rod(pts,.035,pale);
+ // The opposite shoulder is missing: an inset fracture cap follows the
+ // curved shoulder profile, with an uneven but non-spiky eroded boundary.
+ const rim=[
+  [.42,4.93,-.35],[.61,5.02,-.32],[.84,4.98,-.21],
+  [1.00,4.78,-.15],[.98,4.54,-.12],[.83,4.35,-.20],
+  [.63,4.32,-.29],[.46,4.50,-.42]
+ ];
+ const fractureVertices=[];
+ for(const point of rim)fractureVertices.push(...point);
+ fractureVertices.push(.67,4.67,-.14);
+ const fractureFaces=[];
+ for(let i=0;i<rim.length;i++)fractureFaces.push(i,(i+1)%rim.length,rim.length);
+ const fractureGeo=new THREE.BufferGeometry();
+ fractureGeo.setAttribute('position',new THREE.Float32BufferAttribute(fractureVertices,3));
+ fractureGeo.setIndex(fractureFaces);fractureGeo.computeVertexNormals();
+ add(fractureGeo,pale);
+ // Draped damaged shoulder lip, integrated with the upper cloak.
+ rod([[.43,4.92,-.37],[.59,5.02,-.34],[.84,4.97,-.23],[.99,4.76,-.18]],.062,stone);
+ // Fallen limb: its two broken pieces are grounded and partly obscured
+ // by rubble. No separate spherical joints remain on the figure.
+ const forearm=rock(1.17,.25,-1.07,.52,.19,.24,11);
+ forearm.rotation.z=-.18;
+ rock(1.48,.17,-1.20,.30,.14,.22,13);
  // Sculpted chips on the robe hem and damaged pedestal.
  for(let i=0;i<9;i++){
   const a=i*2.3999;
