@@ -294,6 +294,73 @@ export function createB5HoodedStatue(THREE, options={}) {
   [[.65,4.91,-.29],[.77,4.81,-.23],[.81,4.70,-.20]],
   [[.53,4.64,-.35],[.65,4.53,-.26],[.72,4.47,-.24]]
  ])rod(points,.016,stone);
+ // PASS 5: the cathedral statue's ceremonial stole folds diagonally
+ // from the intact left shoulder across the chest. Additive geometry only.
+ // Both faces are sculpted in the same grey stone and keep the face clear.
+ const sweepingDrape=(rear=false)=>{
+  const rows=38,cols=16,positions=[],indices=[];
+  for(let i=0;i<=rows;i++){
+   const t=i/rows;
+   const x=rear?-.58+1.10*t:-.73+1.24*t;
+   const y=rear?4.84-2.20*t:4.82-1.62*t;
+   const centerZ=rear?.46:-.88;
+   const half=.18+.24*Math.sin(Math.PI*t)+.08*t;
+   for(let j=0;j<=cols;j++){
+    const u=2*j/cols-1;
+    const ripple=.12*Math.sin(u*3.4+t*10.5)*(1-.3*t);
+    const rolled=.045*Math.pow(Math.abs(u),6);
+    positions.push(
+     x+u*half*.63,
+     y+u*half*.66-.07*t*t+.045*Math.sin(u*3+t*9),
+     centerZ+(rear?1:-1)*(ripple+rolled+.04*Math.sin(t*16+u*2.5))
+    );
+   }
+  }
+  for(let i=0;i<rows;i++)for(let j=0;j<cols;j++){
+   const a=i*(cols+1)+j,b=a+1,c=a+cols+1,d=c+1;
+   indices.push(a,c,b,b,c,d);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  g.setIndex(indices);g.computeVertexNormals();
+  const m=add(g,stone);m.name=rear?'back-diagonal-stole':'front-diagonal-stole';
+  // Cloth border follows the visible lower edge of the continuous sheet.
+  const border=[];
+  for(let i=0;i<=24;i++){
+   const t=i/24,u=.88;
+   const half=.18+.24*Math.sin(Math.PI*t)+.08*t;
+   const x=(rear?-.58+1.10*t:-.73+1.24*t)+u*half*.63;
+   const y=(rear?4.84-2.20*t:4.82-1.62*t)+u*half*.66-.07*t*t+.045*Math.sin(u*3+t*9);
+   const z=(rear?.46:-.88)+(rear?1:-1)*(.12*Math.sin(u*3.4+t*10.5)*(1-.3*t)+.045*Math.pow(Math.abs(u),6)+.04*Math.sin(t*16+u*2.5));
+   border.push([x,y,z+(rear?.018:-.018)]);
+  }
+  rod(border,.020,pale);
+ };
+ sweepingDrape(false);sweepingDrape(true);
+ // Chipped embroidered band around the stone robe hem, deliberately
+ // discontinuous where the original sculpture has lost material.
+ const hemBand=(front=true)=>{
+  const z=front?-.78:.75;
+  for(let i=0;i<16;i++){
+   if(i===5||i===6||i===12)continue;
+   const x=-.75+i*.10;
+   rod([[x,1.27,z],[x+.04,1.34,z],[x+.08,1.27,z]],.019,pale);
+  }
+ };
+ hemBand(true);hemBand(false);
+ // Shallow gothic tracery on pedestal, avoiding raised spherical ornaments.
+ for(const z of [-1.238,1.238]){
+  for(let i=0;i<5;i++){
+   const x=(i-2)*.46;
+   rod([[x-.16,.22,z],[x-.12,.41,z],[x,.51,z],
+        [x+.12,.41,z],[x+.16,.22,z]],.022,pale);
+  }
+ }
+ // Tiny worn stone seams at the foot of the surviving sleeve.
+ for(const curve of [
+  [[-.76,3.07,-.73],[-.68,3.00,-.74],[-.56,2.96,-.71]],
+  [[-.83,3.18,-.67],[-.75,3.10,-.74],[-.62,3.07,-.74]]
+ ])rod(curve,.020,stone);
  // Sculpted chips on the robe hem and damaged pedestal.
  for(let i=0;i<9;i++){
   const a=i*2.3999;
