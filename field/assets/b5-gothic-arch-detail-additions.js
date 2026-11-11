@@ -54,9 +54,19 @@ export function enhanceB5GothicArch(THREE, root) {
  }
  // Broken flying buttress fragments, low to avoid obscuring the central passage.
  for(const s of [-1,1]){
-  between([s*5.7,2.0,-.5],[s*4.7,6.6,-.6],.55,.68);
-  between([s*5.7,2.0,.5],[s*4.7,6.6,.6],.45,.58);
-  box(s*5.7,1.0,0,1.0,2.0,1.8);
+  // Twelfth pass: the former long, exposed diagonal braces looked like
+  // scaffolding rather than load-bearing Gothic stone. Build a compact,
+  // stepped masonry buttress with a broad grounded foot instead.
+  // This only alters additive detail meshes; the approved source is untouched.
+  box(s*5.65,1.25,0,1.65,2.5,2.2);
+  box(s*5.46,3.05,0,1.35,1.25,1.92);
+  box(s*5.22,4.23,0,1.13,1.15,1.65);
+  box(s*5.02,5.18,0,.92,.84,1.42);
+  // Stone offsets visually tie the buttress into the outer pier.
+  for(const y of [2.5,3.75,4.8]){
+   box(s*5.36,y,-.96,1.32,.14,.18,shadow);
+   box(s*5.36,y,.96,1.32,.14,.18,shadow);
+  }
   for(let i=0;i<3;i++)box(s*(4.2+i*.42),.2+i*.1,2.3+i*.5,.9,.4,.8);
  }
 
