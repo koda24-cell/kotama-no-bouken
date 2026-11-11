@@ -170,7 +170,7 @@ export function createB4DetailedRails({length=5,broken=false,curve=0}={}) {
    }
   }
   // A split saddle below the rail foot gives the joint visible load transfer.
-  const saddle=new THREE.Mesh(new THREE.BoxGeometry(.40,.055,.36),iron);saddle.position.y=-.14;joint.add(saddle);
+  const saddle=new THREE.Mesh(new THREE.BoxGeometry(.40,.055,.36),steel);saddle.position.y=-.14;joint.add(saddle);
  }
  // Extra transverse metal strap at alternating ties, aligned to local curvature.
  for(let i=2;i<Math.ceil(length/.42);i+=4){
