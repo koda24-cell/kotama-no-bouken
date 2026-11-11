@@ -140,7 +140,9 @@ function applyEnv(area, env) {
   const E = env || ENV_B1;
   g.scene.background.setHex(E.background); g.scene.fog.color.setHex(E.fog.color); g.scene.fog.density = E.fog.density;
   if (g.hemi) { g.hemi.color.setHex(E.hemi.sky); g.hemi.groundColor.setHex(E.hemi.ground); g.hemi.intensity = g.high ? E.hemi.high : E.hemi.low; }
-  g.camera.far = area === 5 ? 180 : 48;
+  const lightCount = area === 5 ? (g.high ? 6 : 2) : (g.high ? 14 : 6);
+  if (g.pool.length !== lightCount) { setPool(lightCount); g.lastLightKey = ''; }
+  g.camera.far = area === 5 ? 120 : 48;
   g.camera.updateProjectionMatrix();
   g.envArea = area;
 }
@@ -156,7 +158,7 @@ function loadTheme3() {
 }
 async function loadTheme45(area) {
   if (area !== 4 && g.theme?.area === area) return g.theme;
-  const m = await import('./field-3d-b4-b5-map.js?v=20261110-b4-quality');
+  const m = await import('./field-3d-b4-b5-map.js?v=20261110-b4-b5-quality-integrated');
   return m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES }, area);
 }
 function place(parent, src, x, y, z, ry = 0, s = 1) {
@@ -552,7 +554,7 @@ function setPreview(n, on) {
   g.preview = readPreview(); if (on) g.themeFailed = false;
   if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
 }
-window.KotamaField3D = { active, input, build, frame, toggle, isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }) };
+window.KotamaField3D = { active, input, build, frame, toggle, isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ quality:g.high?'high':'low', lightPool:g.pool.length, reflectionEnvironment:!!g.scene?.environment, calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる
 if (fieldOk() && typeof state !== 'undefined' && state.screen === 'field') build();
 else applyModeSafe();

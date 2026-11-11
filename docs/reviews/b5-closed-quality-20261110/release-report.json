@@ -1,0 +1,50 @@
+{
+  "errors": [],
+  "cancelledRequests": [],
+  "gameplay": {
+    "statueKeyboardInteraction": true,
+    "knightPuzzle": true,
+    "doorOpen": true,
+    "sideEvent": true,
+    "saveRoundtrip": true
+  },
+  "clothTextures": [
+    {
+      "url": "http://localhost:8775/assets/3d/dungeons/b5_abyssal_star_realm/textures/b5_cloth_orm.png",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8775/assets/3d/dungeons/b5_abyssal_star_realm/textures/b5_cloth_albedo.png",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8775/assets/3d/dungeons/b5_abyssal_star_realm/textures/b5_cloth_normal.png",
+      "status": 200
+    }
+  ],
+  "render": {
+    "quality": "low",
+    "lightPool": 2,
+    "reflectionEnvironment": false,
+    "calls": 118,
+    "triangles": 103678,
+    "memory": {
+      "geometries": 96,
+      "textures": 152
+    }
+  },
+  "sample": {
+    "fps": 0.7844444662347406,
+    "render": {
+      "quality": "low",
+      "lightPool": 2,
+      "reflectionEnvironment": false,
+      "calls": 118,
+      "triangles": 103678,
+      "memory": {
+        "geometries": 96,
+        "textures": 152
+      }
+    }
+  }
+}
