@@ -964,6 +964,8 @@ function setupNavigation(){
   document.addEventListener("click",e=>{
     if(!tutorialState.started||tutorialState.completed)return;
     const target=e.target instanceof Element?e.target:null;if(!target)return;
+    // Do not intercept the retreat button in ordinary battles.
+    if(!battleState.tutorialMode&&target.closest("#retreat-button"))return;
     if(target.closest("#tutorial-overlay .tutorial-panel"))return;
     const phase=tutorialState.phase;
     const hit=(selector)=>!!target.closest(selector);
