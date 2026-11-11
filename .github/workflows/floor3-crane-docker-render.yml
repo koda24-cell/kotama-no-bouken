@@ -38,7 +38,12 @@ jobs:
           docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
             -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
             -b -t 2 --python tools/floor3/crane/render.py -- render-output/industrial_truss_crane.glb render-output
-          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \\\n            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \\\n            -b -t 2 --python tools/floor3/crane/render.py -- render-output/industrial_truss_crane_tapered.glb render-output\n          for stem in industrial_truss_crane industrial_truss_crane_tapered; do\n            for view in front side angle; do test -s "render-output/${stem}-${view}.png"; done\n          done
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+            -b -t 2 --python tools/floor3/crane/render.py -- render-output/industrial_truss_crane_tapered.glb render-output
+          for stem in industrial_truss_crane industrial_truss_crane_tapered; do
+            for view in front side angle; do test -s "render-output/${stem}-${view}.png"; done
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
