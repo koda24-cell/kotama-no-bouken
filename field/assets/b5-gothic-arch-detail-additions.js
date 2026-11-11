@@ -59,5 +59,41 @@ export function enhanceB5GothicArch(THREE, root) {
   box(s*5.7,1.0,0,1.0,2.0,1.8);
   for(let i=0;i<3;i++)box(s*(4.2+i*.42),.2+i*.1,2.3+i*.5,.9,.4,.8);
  }
+
+ // Concept-sheet-inspired tracery: paired Gothic lancets and a quatrefoil.
+ // Geometry is additive and deliberately kept inside the arch head.
+ const tracer=new THREE.Group();tracer.name='b5:gothicArch:quatrefoilTracery';
+ const carved=new THREE.MeshStandardMaterial({color:0x918995,roughness:.91,flatShading:true});
+ const tube=(points,r=.11,mat=carved)=>{const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const mesh=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.max(8,points.length*5),r,5,false),mat);tracer.add(mesh);return mesh;};
+ for(const z of [-1.52,1.52]){
+  // A pointed Gothic cusped window in the tympanum, legible from front and back.
+  tube([[-1.28,11.5,z],[-1.25,12.25,z],[-.88,13.0,z],[0,13.95,z],[.88,13.0,z],[1.25,12.25,z],[1.28,11.5,z]],.13);
+  // Four circular lobes make a carved quatrefoil instead of a plain ring.
+  for(let k=0;k<4;k++){
+   const a=k*Math.PI/2;
+   const cx=Math.cos(a)*.29,cy=12.72+Math.sin(a)*.29;
+   const pts=[];
+   for(let i=0;i<=12;i++){const t=i*Math.PI*2/12;pts.push([cx+Math.cos(t)*.34,cy+Math.sin(t)*.34,z]);}
+   tube(pts,.085);
+  }
+  // Delicate descending cusps, retaining a walkable central opening below.
+  for(const s of [-1,1])tube([[s*1.3,11.5,z],[s*1.0,11.22,z],[s*.78,11.52,z],[s*.55,11.5,z]],.095);
+ }
+ extra.add(tracer);
+ // Decorative finials and eroded pinnacles: one is broken off near its crown.
+ for(const s of [-1,1]){
+  for(const z of [-1.05,1.05]){
+   box(s*4.3,10.3,z,.92,.58,.84);
+   box(s*4.3,11.12,z,.58,1.1,.58);
+   const pinnacle=new THREE.Mesh(new THREE.ConeGeometry(.43,s<0?1.18:.62,5),stone);
+   pinnacle.position.set(s*4.3,s<0?12.15:11.91,z);extra.add(pinnacle);
+  }
+  // Short vertical blind-arcade ribs along the exterior jamb.
+  for(let i=0;i<3;i++){
+   const x=s*(4.65+i*.28);
+   between([x,3.3,-1.55],[x,7.9,-1.55],.12,.16,carved);
+   between([x,3.3,1.55],[x,7.9,1.55],.12,.16,carved);
+  }
+ }
  root.add(extra);return root;
 }
