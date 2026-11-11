@@ -136,5 +136,5 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
  }
  let disposed=false;
  return {group,dispose(){if(disposed)return;disposed=true;group.parent?.remove(group);
-  group.traverse(o=>{if(o.isMesh)o.parent?.remove(o)}); gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
+  group.clear(); gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
 }
