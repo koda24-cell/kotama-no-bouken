@@ -201,7 +201,7 @@ for side in [-1,1]:
   cube('Adhered frost ledge',(x,-.87,z),(random.uniform(.16,.43),.18,random.uniform(.08,.22)),frost)
 
 
-# v08: reinforce mechanical load paths and frozen architectural silhouette
+# v09: reinforce mechanical load paths and frozen architectural silhouette
 for side in [-1,1]:
  x=side*5.6
  for dx in [-.57,.57]:
@@ -238,7 +238,7 @@ for x,z,r in [(0,5.1,1.12),(-6.2,3.2,1.38)]:
   o=cube('Frozen gear rim deposit',(x+r*math.cos(a),-1.69,z+r*math.sin(a)),(.17,.11,.12),frost)
   o.rotation_euler[1]=-a
 
-# v08: large-scale architectural massing, functional spillway and true broken profiles
+# v09: large-scale architectural massing, functional spillway and true broken profiles
 # Existing components remain intact; these are independent added mesh objects.
 def prism(name, verts, faces, material):
  mesh=bpy.data.meshes.new(name+' geometry')
@@ -305,7 +305,7 @@ for side in (-1,1):
        depth=random.uniform(.26,.75),location=(x,-.98,z))
   ob=bpy.context.object;ob.name='Wall-joint ice growth';ob.rotation_euler[0]=random.uniform(-.65,.65);ob.data.materials.append(ice)
 
-# v08: dramatic, deliberately non-uniform icicle clusters.
+# v09: dramatic, deliberately non-uniform icicle clusters.
 # Preserve earlier ice meshes; add distinct large silhouettes and subordinate needles.
 def hanging_icicle(name, x, y, ceiling_z, length, radius, lean_x=0, lean_y=0, material=ice):
     # Narrow tip below, broad root above. Six-sided crystal with tapered offset.
@@ -329,7 +329,7 @@ for cluster,(cx,angle,length,root_radius) in enumerate([
     (-2.72,2.43,3.45,.43),(-1.12,1.89,2.15,.32),
     (.64,1.38,3.95,.49),(2.47,.78,2.75,.38)]):
     x=3.53*math.cos(angle);z=4+3.53*math.sin(angle)
-    hanging_icicle('v08 monumental icicle %d'%cluster,x,-1.21,z,length,root_radius,
+    hanging_icicle('v09 monumental icicle %d'%cluster,x,-1.21,z,length,root_radius,
                    random.uniform(-.34,.34),random.uniform(-.16,.2))
     # Grouped small and medium needles, deliberately uneven rather than regularly spaced.
     for k in range(11):
@@ -338,7 +338,7 @@ for cluster,(cx,angle,length,root_radius) in enumerate([
         sz=4+3.53*math.sin(a)-random.uniform(0,.16)
         l=random.choice([random.uniform(.12,.38),random.uniform(.45,.95),
                          random.uniform(1.05,1.85)])
-        hanging_icicle('v08 satellite needle %d %d'%(cluster,k),sx,
+        hanging_icicle('v09 satellite needle %d %d'%(cluster,k),sx,
                        -1.16+random.uniform(-.16,.12),sz,l,
                        random.uniform(.035,.14),random.uniform(-.22,.22),0,
                        frost if k%5==0 else ice)
@@ -349,7 +349,7 @@ for side in (-1,1):
         z=7.51+random.uniform(-.08,.07)
         length=(random.uniform(1.5,3.3) if j in (2,7,11) else
                 random.uniform(.14,.53) if j%3==0 else random.uniform(.55,1.45))
-        hanging_icicle('v08 cornice ice fang',x,-1.05+random.uniform(-.2,.1),
+        hanging_icicle('v09 cornice ice fang',x,-1.05+random.uniform(-.2,.1),
                        z,length,random.uniform(.06,.2) if length<1.5 else .29,
                        random.uniform(-.18,.18),random.uniform(-.15,.15),
                        ice if j%4 else frost)
@@ -358,9 +358,57 @@ for j in range(25):
     side=random.choice((-1,1))
     x=side*random.uniform(5.15,8.1)
     z=random.uniform(3.9,5.8)
-    hanging_icicle('v08 rubble icicle',x,-.35+random.uniform(-.1,.2),z,
+    hanging_icicle('v09 rubble icicle',x,-.35+random.uniform(-.1,.2),z,
                    random.uniform(.16,1.12),random.uniform(.025,.09),
                    random.uniform(-.16,.16))
+
+# v09: fractured multi-branch ice curtains and large irregular masses.
+# Previous crystals remain. These are asymmetric layered additions to break repeated cone silhouettes.
+glacial=mat('Deep glacial translucent blue',(.035,.32,.52),.05,.24)
+pale_ice=mat('Pale ice fractured edge',(.47,.82,.95),.04,.28)
+def jagged_curtain(name,x,y,z,width,height,material):
+    # An irregular fused ice sheet, with a cracked crown and serrated lower profile.
+    slices=7;verts=[]
+    for i in range(slices):
+        u=i/(slices-1)
+        xx=x+(u-.5)*width
+        upper=z+random.uniform(-.09,.12)
+        lower=z-height*(.4+.6*random.random())
+        # front and back stagger to create actual thickness and an uneven crystalline face
+        verts.extend([(xx,y-.13,upper),(xx,y-.12,lower),
+                      (xx+random.uniform(-.06,.06),y+.16,upper-.07),
+                      (xx+random.uniform(-.06,.06),y+.12,lower+.13)])
+    faces=[]
+    for i in range(slices-1):
+        a=i*4;b=(i+1)*4
+        faces.extend([(a,b,b+1,a+1),(a+2,a+3,b+3,b+2),
+                      (a,a+2,b+2,b),(a+1,b+1,b+3,a+3)])
+    faces.extend([(0,1,3,2),((slices-1)*4,(slices-1)*4+2,(slices-1)*4+3,(slices-1)*4+1)])
+    return prism(name,verts,faces,material)
+
+# Three dominant irregular ice formations: varied scale, location, orientation and hue.
+for j,(x,y,z,w,h) in enumerate([
+    (-3.75,-1.25,7.52,1.05,3.25),
+    (.15,-1.33,7.52,1.42,2.15),
+    (3.84,-1.27,7.48,.85,3.6),
+    (-1.48,-1.32,7.42,.62,1.2),
+    (2.06,-1.38,7.32,.58,1.45)]):
+    jagged_curtain('v09 fused icicle curtain %d'%j,x,y,z,w,h,glacial if j%2 else pale_ice)
+    for k in range(7):
+        length=random.uniform(.16,.48) if k%3==0 else random.uniform(.7,2.5)
+        hanging_icicle('v09 curtain splinter',x+random.uniform(-w*.48,w*.48),
+                        y-random.uniform(.05,.24),z,length,random.uniform(.035,.14),
+                        random.uniform(-.3,.3),random.uniform(-.14,.14),
+                        ice if k%2 else pale_ice)
+# Fused sheets are deliberately rare, so the iron gate and mechanical workings stay readable.
+# Jagged frost clusters on side abutments at different elevations.
+for side in (-1,1):
+    for k in range(6):
+        x=side*(5.15+k*.48)
+        z=random.uniform(3.8,5.7)
+        jagged_curtain('v09 abutment ice',x,-.27,z,
+                       random.uniform(.25,.62),random.uniform(.45,1.8),
+                       glacial if k%3==0 else ice)
 
 # Deterministic mesh triangle audit before export
 bpy.context.view_layer.update()
@@ -371,12 +419,12 @@ for obj in bpy.context.scene.objects:
   mesh.calc_loop_triangles()
   triangles+=len(mesh.loop_triangles);objects+=1
 with open(out+'/mesh_stats.txt','w') as fp:
- fp.write('version=v08\\nmesh_objects=%d\\ntriangles=%d\\n'%(objects,triangles))
-print('B2 v08 mesh objects',objects,'triangles',triangles)
+ fp.write('version=v09\\nmesh_objects=%d\\ntriangles=%d\\n'%(objects,triangles))
+print('B2 v09 mesh objects',objects,'triangles',triangles)
 
 # Save native Blender and GLB before adding render-only helpers
-bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v08.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v08.glb',export_format='GLB')
+bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v09.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v09.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.035,.07,.13,1)
 def area(loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,3))-o.location).to_track_quat('-Z','Y').to_euler()
@@ -386,4 +434,4 @@ bpy.context.scene.render.resolution_x=1000;bpy.context.scene.render.resolution_y
 for name,pos in [('front',(0,-23,10)),('side',(22,-3,10)),('angle',(17,-21,12))]:
  bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,3.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=20;bpy.context.scene.camera=cam
  bpy.context.scene.render.filepath=out+'/'+name+'.png';bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
-print('B2 watergate v08 Blender/GLB/3 renders exported')
+print('B2 watergate v09 Blender/GLB/3 renders exported')
