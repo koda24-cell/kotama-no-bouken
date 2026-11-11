@@ -70,15 +70,48 @@ for k in range(40):
  x=random.choice((-8.5,-2.55,2.55,8.5))+random.uniform(-.6,.6)
  y=random.uniform(-1.4,1.4);L=random.uniform(.4,1.9)
  icefang(x,y,L+.15,L,random.uniform(.1,.3))
-cube('Frozen pool',(0,-2,.035),(23,5,.07),water)
+# v0.2: Japanese masonry bridge reference: layered spandrel stonework, railings and warm lanterns
+bronze=mat('Weathered lantern bronze',(.12,.11,.10),.7,.32)
+glow=mat('Amber lantern glass',(1,.48,.13),.1,.22)
+glow.use_nodes=True
+gp=glow.node_tree.nodes.get('Principled BSDF')
+gp.inputs['Emission Color'].default_value=(1,.32,.055,1)
+gp.inputs['Emission Strength'].default_value=4.0
+for cx in (-6,0,6):
+ for side in (-1,1):
+  y=side*1.18
+  # The arch-ring remains visible: stone courses occupy the spandrels above each arch.
+  for row in range(3):
+   z=7.55+row*.34
+   for k in range(13):
+    x=cx-2.85+k*.47+(.23 if row%2 else 0)
+    if abs(x-cx)<(1.55-row*.28):continue
+    cube('Staggered spandrel masonry',(x,y,z),(.44,.26,.3),stone if (k+row)%5 else seam)
+# Continuous pedestrian bridge restoration over the previous broken channel, with fractured seams retained underneath
+for j in range(23):
+ x=-10.65+j*.95
+ cube('Bridge walking surface',(x,0,8.82),(.9,2.42,.18),stone if j%7 else seam)
+ for y in (-1.46,1.46):
+  cube('Bridge coping stone',(x,y,9.07),(.93,.38,.24),stone)
+  for n in range(3):
+   cube('Balustrade upright',(x-.31+n*.31,y,9.47),(.13,.24,.63),stone if n!=1 else seam)
+  cube('Upper stone handrail',(x,y,9.83),(.94,.37,.22),stone)
+# Warm lights attached to bridge piers, contrasting with the cold blue ice
+for x in (-8.8,-3.1,2.9,8.6):
+ for y in (-1.6,1.6):
+  cube('Lantern wall bracket',(x,y,6.65),(.16,.48,.12),bronze)
+  cube('Lantern metal cap',(x,y*1.12,6.98),(.46,.42,.15),bronze)
+  cube('Lantern luminous amber core',(x,y*1.12,6.67),(.3,.27,.48),glow)
+  cube('Lantern lower base',(x,y*1.12,6.39),(.4,.38,.13),bronze)
+\ncube('Frozen pool',(0,-2,.035),(23,5,.07),water)
 bpy.context.view_layer.update()
 tri=0;count=0
 for o in bpy.context.scene.objects:
  if o.type=='MESH':
   o.data.calc_loop_triangles();tri+=len(o.data.loop_triangles);count+=1
-with open(out+'/mesh_stats.txt','w') as f:f.write('version=v01\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
-print('AQUEDUCT V01',count,tri)
-bpy.ops.wm.save_as_mainfile(filepath=out+'/ruined_aqueduct_v01.blend')
+with open(out+'/mesh_stats.txt','w') as f:f.write('version=v02\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
+print('ICE BRIDGE V02',count,tri)
+bpy.ops.wm.save_as_mainfile(filepath=out+'/ancient_ice_bridge_v02.blend')
 bpy.ops.export_scene.gltf(filepath=out+'/ruined_aqueduct_v01.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.03,.06,.12,1)
 for loc,power in [((1,-8,15),2600),((-10,4,10),1600)]:
