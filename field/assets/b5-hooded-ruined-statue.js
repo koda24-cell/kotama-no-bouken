@@ -41,23 +41,81 @@ export function createB5HoodedStatue(THREE, options={}) {
        [rad(3.6)*Math.cos(a-.05),3.6,rad(3.6)*Math.sin(a-.05)*.77],
        [.52*Math.cos(a+.09),4.65,.42*Math.sin(a+.09)]],.045,i%3===0?pale:stone);
  }
- // Hood with a deep black facial recess, framed by heavy stone cowl.
- const hood=add(new THREE.SphereGeometry(.69,18,12,0,Math.PI*2,0,Math.PI),stone,0,5.37,-.06);
- hood.scale.set(1.12,1.15,.92);
- const opening=add(new THREE.SphereGeometry(.48,16,10),dark,0,5.30,-.60);
- opening.scale.set(.82,1.04,.24);
+ // Hood is a true deep, thick sculpted cowl. The front opening lies
+ // behind its heavy rolled stone lip, with a curved back silhouette.
+ const hoodGeo=(()=>{
+  const segments=32,levels=13,verts=[],idx=[];
+  for(let j=0;j<=levels;j++){
+   const t=j/levels,theta=t*Math.PI;
+   const ry=.83*(1-.08*Math.sin(theta*3)),rx=.70*(1+.075*Math.sin(theta*2));
+   for(let k=0;k<segments;k++){
+    const a=k*2*Math.PI/segments;
+    const x=Math.sin(theta)*Math.cos(a)*rx;
+    const y=5.36+Math.cos(theta)*ry;
+    const z=-.08+.66*Math.sin(theta)*Math.sin(a);
+    verts.push(x,y,z);
+   }
+  }
+  for(let j=0;j<levels;j++)for(let k=0;k<segments;k++){
+   const a=j*segments+k,b=j*segments+(k+1)%segments,c=(j+1)*segments+k,d=(j+1)*segments+(k+1)%segments;
+   idx.push(a,c,b,b,c,d);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(idx);g.computeVertexNormals();return g;
+ })();
+ add(hoodGeo,stone);
+ const opening=add(new THREE.SphereGeometry(.49,20,14),dark,0,5.34,-.685);
+ opening.scale.set(.80,1.04,.19);
+ // A profiled continuous rim gives real cowl thickness and curved corners.
  for(const side of [-1,1]){
-  rod([[side*.37,5.83,-.48],[side*.55,5.56,-.62],[side*.43,5.15,-.69],[side*.25,4.94,-.66]],.115,pale);
+  rod([[side*.21,6.02,-.45],[side*.48,5.90,-.55],[side*.59,5.63,-.63],[side*.53,5.29,-.73],[side*.36,5.02,-.77],[side*.22,4.94,-.66]],.15,pale);
+  rod([[side*.52,5.84,-.39],[side*.70,5.61,-.34],[side*.66,5.27,-.31],[side*.52,5.03,-.40]],.09,stone);
  }
- rod([[-.39,5.84,-.50],[0,5.94,-.59],[.39,5.84,-.50]],.10,pale);
- // One shoulder is broken away, with irregular inset fracture facets.
+ rod([[-.27,6.03,-.48],[0,6.13,-.51],[.27,6.03,-.48]],.15,pale);
+ // Overlapping chiseled fabric surfaces emerge from the hood and settle
+ // into the robe. These are continuous curved sheets, not floating bands.
+ for(const side of [-1,1]){
+  const points=[],faces=[],rows=13,cols=6;
+  for(let j=0;j<=rows;j++){
+   const t=j/rows,y=5.03-t*3.15;
+   for(let k=0;k<=cols;k++){
+    const u=k/cols;
+    const x=side*(.30+.64*u+.08*Math.sin(t*8+u*3));
+    const z=-.39-.24*Math.sin(t*Math.PI)*Math.sin(u*Math.PI)+.10*u;
+    points.push(x,y,z+.026*Math.sin(t*25+u*8));
+   }
+  }
+  for(let j=0;j<rows;j++)for(let k=0;k<cols;k++){
+   const a=j*(cols+1)+k,b=a+1,c=a+(cols+1),d=c+1;
+   faces.push(a,c,b,b,c,d);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
+  g.setIndex(faces);g.computeVertexNormals();
+  add(g,stone);
+ }
+ // Shoulder fracture is carved as a broad recessed irregular surface,
+ // not a cluster of fitted-on pebbles. The missing arm lies below.
  rock(-.71,4.66,.02,.43,.44,.45,2);
  rock(-.93,4.30,-.05,.29,.32,.31,5);
- rock(.68,4.63,.02,.40,.23,.39,7,dark);
- for(let i=0;i<7;i++){
-  const a=i*2.4;
-  rock(.63+Math.cos(a)*.20,4.53+Math.sin(a)*.16,-.14,.13,.13,.13,i,pale);
- }
+ const fracturePts=[
+  [.41,4.96,-.31],[.77,5.03,-.18],[.98,4.79,-.06],
+  [1.03,4.43,.08],[.77,4.28,-.18],[.48,4.40,-.28],
+  [.58,4.70,-.46]
+ ];
+ const fractureVerts=[];
+ for(const p of fracturePts)fractureVerts.push(...p);
+ fractureVerts.push(.70,4.66,-.12); // irregular recessed center
+ const faceCenter=fracturePts.length;
+ const faces=[];
+ for(let i=0;i<fracturePts.length;i++)faces.push(i,(i+1)%fracturePts.length,faceCenter);
+ const g=new THREE.BufferGeometry();
+ g.setAttribute('position',new THREE.Float32BufferAttribute(fractureVerts,3));
+ g.setIndex(faces);g.computeVertexNormals();
+ add(g,pale);
+ // A small partial fractured edge follows the outline without adding spikes.
+ rod([[.43,4.95,-.31],[.77,5.02,-.18],[.98,4.79,-.06]],.05,stone);
  // Remaining arm draped over front; opposite arm is broken on the ground.
  rod([[-.70,4.62,-.12],[-.92,3.99,-.25],[-.74,3.28,-.51],[-.52,2.75,-.60]],.25);
  rod([[-.53,2.75,-.60],[-.28,2.56,-.66]],.18,pale);
