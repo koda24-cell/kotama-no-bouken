@@ -108,9 +108,58 @@ for side in [-1,1]:
    bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=random.uniform(.11,.23),radius2=0,depth=random.uniform(.35,1.25),location=(x,y,.8))
    obj=bpy.context.object;obj.name='Clustered irregular ice prism';obj.rotation_euler[1]=random.uniform(-.25,.25);obj.data.materials.append(ice)
 
+
+# v04: mechanical load path and architectural depth; all v03 geometry retained
+# Rear-facing guide rails and two horizontal load-transfer axles
+for side in [-1,1]:
+ x=side*2.9
+ for z in [1.0,2.6,4.2,5.8]:
+  cube('Gate sliding guide clamp',(x,-.38,z),(.44,.85,.28),bronze)
+ beam('Continuous gate guide rail',(x,-.37,.45),(x,-.37,6.55),.15,iron,12)
+ for z in [2.0,5.65]:
+  cube('Guide rail mounting socket',(x,-.1,z),(.65,.7,.48),dark)
+for z in [5.6,6.45]:
+ beam('Cross-shaft reinforcement',(-3.3,.3,z),(3.3,.3,z),.14,iron,16)
+ for x in [-2.9,0,2.9]:
+  cube('Cross shaft bearing block',(x,.3,z),(.58,.66,.56),bronze)
+# Counterweight frames physically anchored to the outer pylons
+for side in [-1,1]:
+ x=side*5.6
+ for z in [2.4,4.6]:
+  cube('Counterweight wall anchor',(x,-.48,z),(.8,.9,.45),dark)
+ for y in [-.55,.12]:
+  beam('Counterweight suspension', (x,y,5.8),(x,y,2.05),.085,iron,12)
+ cube('Heavy counterweight',(x,-.22,1.9),(.95,.95,1.6),dark)
+ for z in [1.3,2.55]:
+  cube('Counterweight band',(x,-.22,z),(1.07,1.07,.17),bronze)
+# Recessed architectural arches add real wall thickness behind the main arch
+for depth,rad in [(.48,4.08),(.95,4.35)]:
+ for i in range(28):
+  a=math.pi*i/28;b=math.pi*(i+1)/28
+  beam('Rear arch masonry course',(rad*math.cos(a),depth,4+rad*math.sin(a)),
+       (rad*math.cos(b),depth,4+rad*math.sin(b)),.22,stone,8)
+# Frost deposits on lintels, bearing blocks, gate and canal
+for side in [-1,1]:
+ x=side*4.5
+ for k in range(12):
+  xx=x+random.uniform(-.75,.75)
+  bpy.ops.mesh.primitive_cone_add(vertices=7,radius1=0,radius2=random.uniform(.05,.12),
+      depth=random.uniform(.2,.75),location=(xx,-.87,7.4-random.uniform(.1,.4)))
+  bpy.context.object.name='Pillar frost icicle';bpy.context.object.data.materials.append(frost)
+for j in range(24):
+ x=-7.2+j*.6
+ cube('Canal rim frost',(x,-3.55,.91),(.35,.43,random.uniform(.05,.14)),frost)
+# Rockfall embedded into broken wall bases, not floating independent debris
+for side in [-1,1]:
+ for k in range(18):
+  x=side*random.uniform(5.1,8.3);y=random.uniform(-.1,1.2)
+  o=cube('Embedded fallen voussoir',(x,y,random.uniform(.2,.65)),
+    (random.uniform(.4,.9),random.uniform(.35,.85),random.uniform(.25,.6)),stone)
+  o.rotation_euler[1]=random.uniform(-.25,.25)
+
 # Save native Blender and GLB before adding render-only helpers
-bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v03.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v03.glb',export_format='GLB')
+bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v04.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v04.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.035,.07,.13,1)
 def area(loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,3))-o.location).to_track_quat('-Z','Y').to_euler()
@@ -120,4 +169,4 @@ bpy.context.scene.render.resolution_x=1000;bpy.context.scene.render.resolution_y
 for name,pos in [('front',(0,-23,10)),('side',(22,-3,10)),('angle',(17,-21,12))]:
  bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,3.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=20;bpy.context.scene.camera=cam
  bpy.context.scene.render.filepath=out+'/'+name+'.png';bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
-print('B2 watergate v03 Blender/GLB/3 renders exported')
+print('B2 watergate v04 Blender/GLB/3 renders exported')
