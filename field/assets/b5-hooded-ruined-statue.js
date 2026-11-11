@@ -18,12 +18,57 @@ export function createB5HoodedStatue(THREE, options={}) {
   const path=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p)));
   return add(new THREE.TubeGeometry(path,Math.max(12,pts.length*6),r,7,false),mat);
  };
+ // Ground-contact rubble uses a faceted irregular stone mesh with a flat
+ // bearing plane at local y=0. Unlike spheres, these pieces sit on the floor.
+ const groundShard=(x,z,w,d,h,seed,angle=0)=>{
+  const n=11,vertices=[],faces=[];
+  const noise=(i,j)=>Math.sin(seed*8.71+i*2.43+j*5.37)*.5+
+    Math.cos(seed*1.91+i*5.31-j*3.79)*.5;
+  // Two asymmetrically bevelled perimeter rings; no needle-like tips.
+  for(let level=0;level<3;level++){
+   const t=level/2;
+   for(let i=0;i<n;i++){
+    const a=i*Math.PI*2/n;
+    const irregular=1+.17*noise(i,0);
+    const radial=(level===2?.68:level===1?1:.88)*irregular;
+    const xx=Math.cos(a)*w*.5*radial,zz=Math.sin(a)*d*.5*radial;
+    const yy=level===0?0:level===1?h*(.25+.12*noise(i,1)):h*(.78+.18*noise(i,2));
+    vertices.push(xx,yy,zz);
+   }
+  }
+  // Central top: broad sloping broken face, not a single pointed summit.
+  const topStart=vertices.length/3;
+  for(let i=0;i<5;i++){
+   const a=i*Math.PI*2/5;
+   vertices.push(Math.cos(a)*w*.21,h*(.82+.10*noise(i,4)),Math.sin(a)*d*.21);
+  }
+  for(let ring=0;ring<2;ring++)for(let i=0;i<n;i++){
+   const a=ring*n+i,b=ring*n+(i+1)%n,c=(ring+1)*n+i,e=(ring+1)*n+(i+1)%n;
+   faces.push(a,c,b,b,c,e);
+  }
+  for(let i=0;i<n;i++){
+   const j=(i+1)%n,inner=topStart+Math.floor(i*5/n)%5,innerNext=topStart+Math.floor(j*5/n)%5;
+   faces.push(2*n+i,inner,2*n+j);
+   if(inner!==innerNext)faces.push(2*n+j,inner,innerNext);
+  }
+  for(let i=1;i<n-1;i++)faces.push(0,i+1,i);
+  for(let i=1;i<4;i++)faces.push(topStart,topStart+i,topStart+i+1);
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  geo.setIndex(faces);geo.computeVertexNormals();
+  const fragment=add(geo,stone,x,0,z);
+  fragment.rotation.y=angle;fragment.name='grounded-chipped-stone';
+  return fragment;
+ };
  // Broad worn pedestal and damaged plinth.
  box(0,.32,0,3.2,.64,2.45);box(0,.77,0,2.85,.26,2.15,pale);
  box(0,1.0,0,2.52,.22,1.93);
+ // Uneven fragments of fallen coping and statue, concentrated on the
+ // floor around the plinth. Some large blocks, some chipped flat fragments.
  for(let i=0;i<14;i++){
-  const a=i*2.3999,r=1.3+(i%4)*.19;
-  rock(Math.cos(a)*r,.15,Math.sin(a)*r, .20+(i%3)*.10,.15,.22,i);
+  const a=i*2.3999,r=1.42+(i%4)*.25;
+  const w=.30+(i%4)*.20,d=.28+(i%3)*.13,h=.15+(i%5)*.075;
+  groundShard(Math.cos(a)*r,Math.sin(a)*r,w,d,h,i+2,a*.4);
  }
  // Robed body: tapered irregular silhouette, more sculptural than boxes.
  const pts=[
@@ -170,9 +215,9 @@ export function createB5HoodedStatue(THREE, options={}) {
  rod([[.43,4.92,-.37],[.59,5.02,-.34],[.84,4.97,-.23],[.99,4.76,-.18]],.062,stone);
  // Fallen limb: its two broken pieces are grounded and partly obscured
  // by rubble. No separate spherical joints remain on the figure.
- const forearm=rock(1.17,.25,-1.07,.52,.19,.24,11);
- forearm.rotation.z=-.18;
- rock(1.48,.17,-1.20,.30,.14,.22,13);
+ // Fallen arm fragment and smaller chipped companion rest flat on y=0.
+ groundShard(1.17,-1.48,1.05,.52,.37,11,-.3);
+ groundShard(1.49,-1.79,.43,.32,.19,13,.26);
  // PASS 3 — additive sculpting. The approved hood, arm pose and
  // broad body remain unchanged. Details sit close to their parent fabric.
  // Flowing layered stole in a continuous, lightly rippled stone sheet.
@@ -421,9 +466,22 @@ export function createB5HoodedStatue(THREE, options={}) {
  }
  rod([[-.24,.26,-1.258],[0,.42,-1.258],[.24,.26,-1.258]],.024,pale);
  // Weathering on the grounded shoulder fragments, without new airborne debris.
- for(const [x,y,z] of [[1.12,.20,-1.19],[1.38,.16,-1.02]]){
-  const fragment=rock(x,y,z,.14,.09,.16,29,stone);
-  fragment.rotation.z=.17;
+ for(const [x,z,w,d,h] of [[1.62,-1.38,.29,.25,.12],[1.76,-1.68,.22,.31,.11]]){
+  groundShard(x,z,w,d,h,29,x*.4);
+ }
+ // Recovered stonework from the ruined monument: one broad fractured
+ // ornamental plate and a short column-flute remnant, both grounded.
+ const plate=groundShard(-1.85,-1.53,1.00,.58,.26,54,-.32);
+ // A shallow incised face sits just above the plate's raised top surface.
+ for(let i=0;i<3;i++){
+  groundShard(-1.95+i*.26,-1.78,.22,.26,.11,60+i,.18*i);
+ }
+ // A spread of small chips at realistic ground contact, with clear gaps.
+ for(let i=0;i<12;i++){
+  const a=i*2.3999,r=1.7+.16*(i%5);
+  const x=Math.cos(a)*r,z=-.55+Math.sin(a)*r*.72;
+  if(Math.abs(x)<1.5&&z>-.9)continue; // don't bury the plinth facade
+  groundShard(x,z,.12+(i%3)*.07,.14+(i%4)*.045,.06+(i%3)*.04,90+i,a);
  }
  // Sculpted chips on the robe hem and damaged pedestal.
  for(let i=0;i<9;i++){
