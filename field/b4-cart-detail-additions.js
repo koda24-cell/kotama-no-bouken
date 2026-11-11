@@ -105,6 +105,25 @@ export function enhanceB4MineCart(root) {
     const pin=new THREE.Mesh(pinGeo,darkIron);
     pin.rotation.z=Math.PI/2;pin.position.set(side*1.135,cy,z);details.add(pin);
   }
+  // V9: taller, stepped external sideboards frame the oversized ore heap.
+  // All members sit outside the original tub and do not alter ore or wheel meshes.
+  for(const side of [-1,1]){
+    for(const y of [1.22,1.40]){
+      bar(side*.87,y,0,.085,.145,1.45,agedWood,side*.045);
+    }
+    for(const z of [-.61,0,.61]){
+      bar(side*.94,1.23,z,.11,.47,.115,darkIron,side*.075);
+      for(const y of [1.16,1.42]){
+        const stud=new THREE.Mesh(rivetGeo,iron);
+        stud.position.set(side*1.01,y,z);details.add(stud);
+      }
+    }
+  }
+  // Raised end lips remain below the tallest ore, retaining its silhouette.
+  for(const z of [-.72,.72]){
+    bar(0,1.33,z,1.55,.11,.105,darkIron);
+    for(const x of [-.55,.55])bar(x,1.20,z*1.045,.12,.38,.075,agedWood);
+  }
   details.userData.dispose=()=>{geometries.forEach(g=>g.dispose());iron.dispose();wood.dispose();darkIron.dispose();agedWood.dispose();};
   return root;
 }
