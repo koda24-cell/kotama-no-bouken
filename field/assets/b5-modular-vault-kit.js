@@ -554,6 +554,96 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    box(0,y,0,scale,.12,scale,stone);
   }
  }
+ // PASS 2026-11-12 04:37 JST: actual stone vault webs, not extra rods.
+ // Broad, curved ashlar surfaces join the ribs into structural masonry.
+ const ashlarWeb=(xa,xb,za,zb,seed=0)=>{
+  const nx=4,nz=4,vertices=[],indices=[];
+  const roof=(x,z)=>5.37+.62*(1-Math.pow(Math.abs(x)/3.30,1.6))
+    +.24*(1-Math.pow(Math.abs(z)/2.65,1.7));
+  const irregular=(u,v)=>.035*Math.sin((seed+3)*2.7+u*7.2+v*5.3);
+  for(let k=0;k<2;k++)for(let iz=0;iz<=nz;iz++)for(let ix=0;ix<=nx;ix++){
+   const u=ix/nx,v=iz/nz;
+   const x=xa+(xb-xa)*u,z=za+(zb-za)*v;
+   vertices.push(x,roof(x,z)-k*.23+irregular(u,v),z);
+  }
+  const stride=(nx+1)*(nz+1);
+  for(let iz=0;iz<nz;iz++)for(let ix=0;ix<nx;ix++){
+   const a=iz*(nx+1)+ix,b=a+1,c=a+nx+1,d=c+1;
+   indices.push(a,c,b,b,c,d);
+   const A=a+stride,B=b+stride,C=c+stride,D=d+stride;
+   indices.push(A,B,C,B,D,C);
+  }
+  // close four outer edges: this is a thick slab with curved surfaces.
+  for(let side=0;side<4;side++){
+   const edge=[];
+   for(let t=0;t<=(side<2?nx:nz);t++){
+    edge.push(side===0?t:side===1?nz*(nx+1)+t:side===2?t*(nx+1):t*(nx+1)+nx);
+   }
+   for(let j=0;j<edge.length-1;j++){
+    const a=edge[j],b=edge[j+1],A=a+stride,B=b+stride;
+    indices.push(a,b,A,b,B,A);
+   }
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  g.setIndex(indices);g.computeVertexNormals();
+  return add(g,seed%5===0?trim:stone);
+ };
+ if(['basic-vault','collapsed-vault','royal-vault'].includes(kind)){
+  const ruined=kind==='collapsed-vault',regal=kind==='royal-vault';
+  // A staggered set of large curved voussoirs. Keep the missing
+  // north-east quarter truly open, instead of filling it with tiles.
+  for(let row=0;row<5;row++){
+   const z0=-2.38+row*.94,z1=z0+.89;
+   for(let col=0;col<6;col++){
+    const x0=-2.96+col*.985+(row%2?.09:0);
+    const x1=Math.min(2.96,x0+.93);
+    if(x0>=2.95)continue;
+    if(ruined && (col>=4&&row>=2 || col===3&&row===4))continue;
+    ashlarWeb(x0,x1,z0,z1,row*11+col);
+   }
+  }
+  // Curved stone courses become visible at the gable. Individual
+  // keystones have mass, unlike the former flat floating tiles.
+  for(const z of [-2.49,2.49])for(let i=0;i<12;i++){
+   if(ruined&&z>0&&i>=7)continue;
+   const x=-2.78+i*.49;
+   const y=4.58+1.91*(1-Math.pow(Math.abs(x)/3,1.55));
+   const p=voussoir(x,y-.14,z,.49,.27,.35,i+14);
+   p.rotation.z=(i-5.5)*-.028;
+  }
+  if(regal){
+   // Raised, joined architrave courses beneath the front ornament:
+   // strong masonry mass, not another floating decorative pipe.
+   for(const z of [-2.82,2.58])for(let i=0;i<10;i++){
+    const x=-2.70+i*.60;
+    const y=4.61+1.91*(1-Math.pow(Math.abs(x)/3,1.55));
+    const p=voussoir(x,y+.17,z,.54,.29,.37,i+41);
+    p.rotation.z=(i-4.5)*-.027;
+   }
+  }
+ }
+ if(kind==='vault-support'){
+  // Springing blocks widen progressively into the diagonal ribs.
+  for(const sx of [-1,1])for(const sz of [-1,1]){
+   for(let j=0;j<4;j++){
+    const t=(j+.5)/4;
+    const p=voussoir(sx*(.39+t*.76),4.94+t*.49,
+      sz*(.24+t*.15),.42+t*.12,.22,.46,j+13);
+    p.rotation.z=-sx*.18;
+   }
+  }
+ }
+ if(kind==='fallen-vault-rubble'){
+  // A heavy fallen arch section: irregular fractured ends and broad
+  // masonry faces, deliberately touching the ground.
+  for(let j=0;j<5;j++){
+   const x=-2.35+j*1.10,z=1.68+(j%2)*.24;
+   const p=voussoir(x,.24,z,.82,.46,.58,j+75);
+   p.rotation.y=j*.21;p.rotation.z=(j%2?.07:-.05);
+   fractureStone(x+.35,z+.16,.43,.39,.18,j+89);
+  }
+ }
  let disposed=false;
  return {group,dispose(){if(disposed)return;disposed=true;group.parent?.remove(group);
   group.clear(); gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
