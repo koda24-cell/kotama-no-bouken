@@ -10,7 +10,7 @@ class NodeFileReader {result=null;onloadend=null;onerror=null;
 globalThis.FileReader=NodeFileReader;
 fs.mkdirSync('render-output',{recursive:true});
 for(const [label,enhanced] of [['before',false],['after',true]]){
- const model=createB5ThroneProp(THREE,'gothicArch',{seed:505});
+ const {group:model}=createB5ThroneProp(THREE,'gothicArch',{seed:505});
  if(enhanced)enhanceB5GothicArch(THREE,model);
  model.updateMatrixWorld(true);
  const buffer=await new GLTFExporter().parseAsync(model,{binary:true,onlyVisible:true});
