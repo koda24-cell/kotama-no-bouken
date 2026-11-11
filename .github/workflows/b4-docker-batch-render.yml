@@ -1,0 +1,32 @@
+name: B4 Docker Batch Render
+on:
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Three.js
+        run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - name: Export B4 cart, furnace and mine-rig (before and after)
+        run: node tools/b4-render/export-batch.mjs
+      - name: Pull Blender-ready Docker image
+        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: Render 3 angles for every GLB in Blender container
+        run: |
+          for glb in render-output/*.glb; do
+            echo "Rendering $glb"
+            docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+              -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+              -b -t 2 --python tools/b4-render/render-batch.py -- "$glb" render-output
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-blender-docker-batch
+          path: render-output/
+          retention-days: 14
