@@ -724,6 +724,87 @@ export function createB5VaultAsset(THREE,kind='basic-vault'){
    p.rotation.z=-sx*.20;
   }
  }
+ // PASS 2026-11-12 06:33 JST: fractured vault masonry with a genuine
+ // irregular silhouette and broken, non-rounded cut faces.
+ // These are new connected masses; no original geometry is removed.
+ const fracturePanel=(outline,thickness=.24,material=stone)=>{
+  // Irregular planar masonry shard: polygon top and bottom with all side
+  // walls closed. This reads as a broken roof course rather than pebbles.
+  const verts=[],faces=[],n=outline.length;
+  for(const yoff of [0,-thickness])for(const p of outline)
+   verts.push(p[0],p[1]+yoff,p[2]);
+  for(let i=1;i<n-1;i++){
+   faces.push(0,i,i+1);
+   faces.push(n,n+i+1,n+i);
+  }
+  for(let i=0;i<n;i++){
+   const j=(i+1)%n;
+   faces.push(i,j,n+i,j,n+j,n+i);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(faces);g.computeVertexNormals();
+  return add(g,material);
+ };
+ if(kind==='collapsed-vault'){
+  // A visibly torn diagonal edge along the surviving left side of the
+  // northeast hole. Shards overlap existing roof web, so their roots are
+  // structurally embedded, but their jagged tips remain exposed.
+  const rim=[
+   [[.46,5.91,.36],[.93,5.99,.36],[1.10,5.93,.75],
+    [.91,5.87,1.02],[.55,5.92,.89],[.33,5.90,.67]],
+   [[.94,5.97,.91],[1.47,5.96,.86],[1.63,5.89,1.24],
+    [1.34,5.88,1.55],[1.03,5.92,1.39],[.84,5.94,1.16]],
+   [[1.51,5.89,1.40],[1.94,5.83,1.39],[2.12,5.69,1.73],
+    [1.88,5.77,2.02],[1.59,5.86,1.85],[1.40,5.88,1.64]],
+   [[2.05,5.73,1.80],[2.42,5.56,1.85],[2.60,5.40,2.15],
+    [2.39,5.51,2.37],[2.11,5.68,2.20],[1.96,5.71,2.01]]
+  ];
+  rim.forEach((poly,i)=>fracturePanel(poly,.29+(i%2)*.08,i%3?stone:trim));
+  // The exposed thickness is emphasized with occasional snapped blocks,
+  // deliberately uneven rather than a repeated rounded bead chain.
+  for(let j=0;j<5;j++){
+   const x=.68+j*.42,z=1.04+j*.23;
+   const p=voussoir(x,5.73-j*.085,z,.37+j%2*.10,.30,.42,j+173);
+   p.rotation.z=-.10-j*.035;
+  }
+ }
+ if(kind==='royal-vault'){
+  // A real three-dimensional stone fan between capital and diagonal rib.
+  // Wide rooted facets converge into a thinner upper socket, reducing
+  // the 'loose metal pipes on square posts' appearance.
+  for(const sx of [-1,1])for(const sz of [-1,1]){
+   const x=sx*3.23,z=sz*2.48;
+   fracturePanel([
+    [x-sx*.04,4.84,z-sz*.02],
+    [x-sx*.47,5.13,z-sz*.20],
+    [x-sx*.78,5.44,z-sz*.42],
+    [x-sx*.56,5.47,z-sz*.51],
+    [x-sx*.20,5.18,z-sz*.33],
+    [x+sx*.12,4.91,z-sz*.14]
+   ],.20,trim);
+  }
+ }
+ if(kind==='fallen-vault-rubble'){
+  // Distinct, broad broken roof plates are grounded: base is y=0,
+  // with raised jagged upper profiles and exposed fracture side walls.
+  const plates=[
+   [[-2.7,.18,-.66],[-2.13,.30,-.80],[-1.79,.22,-.45],
+    [-2.03,.11,-.11],[-2.55,.09,-.19]],
+   [[.28,.24,-1.92],[.93,.32,-1.83],[1.22,.21,-1.38],
+    [.86,.13,-1.19],[.41,.11,-1.43]],
+   [[-1.21,.28,1.43],[-.62,.36,1.30],[-.30,.22,1.69],
+    [-.72,.13,1.99],[-1.17,.11,1.87]]
+  ];
+  plates.forEach((poly,i)=>{
+   // Build from ground so no visual floating even when the top varies.
+   fracturePanel(poly,.11, i===1?trim:stone);
+   for(let k=0;k<poly.length;k++){
+    const a=poly[k],b=poly[(k+1)%poly.length];
+    if(k%2===0)beam([a[0],.08,a[2]],[b[0],.08,b[2]],.034,dark);
+   }
+  });
+ }
  let disposed=false;
  return {group,dispose(){if(disposed)return;disposed=true;group.parent?.remove(group);
   group.clear(); gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}};
