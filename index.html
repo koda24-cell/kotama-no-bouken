@@ -70,6 +70,13 @@
     #kotama-3d-loading .loading-inner{width:auto!important;text-align:right!important}
     #kotama-3d-loading .loading-spinner,#kotama-3d-loading [data-loading-message]{display:none!important}
     #kotama-3d-loading h2{color:#fff!important;font-size:20px!important;font-weight:500!important;margin:0!important}
+
+    #kotama-3d-loading .loading-inner{display:flex!important;align-items:center!important;gap:12px!important}
+    #kotama-3d-loading .loading-spinner{display:block!important;width:19px!important;height:19px!important;border:2px solid #777!important;border-top-color:#fff!important;margin:0!important;animation:kotama-loading-spin .8s linear infinite!important}
+    #kotama-3d-loading .loading-dots{display:inline-block;min-width:3ch;text-align:left}
+    #kotama-3d-loading .loading-dots::after{content:'';animation:kotama-loading-dots 1.4s steps(1,end) infinite}
+    @keyframes kotama-loading-dots{0%,100%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+    @media(prefers-reduced-motion:reduce){#kotama-3d-loading .loading-spinner{animation:none!important}#kotama-3d-loading .loading-dots::after{animation:none!important;content:'...'!important}}
   </style>
   <script>
   (function(){
@@ -101,7 +108,7 @@
 </head>
 <body>
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
-    <div class="loading-inner"><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING...</h2><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p><button type="button" data-loading-dismiss hidden>探索画面を表示</button></div>
+    <div class="loading-inner"><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p><button type="button" data-loading-dismiss hidden>探索画面を表示</button></div>
   </div>
   <div class="game">
 
