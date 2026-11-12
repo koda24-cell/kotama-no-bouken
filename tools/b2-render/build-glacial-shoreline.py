@@ -45,9 +45,12 @@ def irregular_slab(name,x,y,z,radius,thick,material,seed):
  return mesh(name,verts,faces,material)
 def crystal_cluster(x,y,z,scale,seed):
  rng=random.Random(seed)
- for k in range(rng.randint(3,7)):
+ for k in range(rng.randint(2,9)):
   dx=rng.uniform(-.35,.35)*scale;dy=rng.uniform(-.3,.3)*scale
-  h=rng.uniform(.35,1.35)*scale;r=rng.uniform(.09,.23)*scale
+  h=rng.uniform(.18,2.6)*scale;r=rng.uniform(.055,.34)*scale
+  if k==0:h*=rng.uniform(1.45,2.3);r*=1.3
+  elif k%3==0:h*=rng.uniform(.35,.65)
+  elif k%4==0:h*=rng.uniform(.65,1.6)
   verts=[]
   for zz,rr in [(z,r),(z+h*.75,r*.7),(z+h,0.003)]:
    for j in range(6):
@@ -85,9 +88,10 @@ for i in range(5):
  o.rotation_euler[2]=random.uniform(-.7,.7)
  for t in (-.4,.4):cube('Column ring molding',(x,y+t,-.1),(.65,.13,.54),stone,.04)
 # Ice crystal clusters near banks, varied heights.
-for i in range(17):
- x=-9.8+i*1.2;y=(-1)**i*random.uniform(2.3,2.9)
- crystal_cluster(x,y,.12,random.uniform(.5,1.4),700+i)
+for i in range(21):
+ x=-9.8+i*.97+random.uniform(-.45,.45);y=(-1)**i*random.uniform(2.15,3.25)
+ scale=random.choices([random.uniform(.25,.5),random.uniform(.6,1.15),random.uniform(1.45,2.15)],[5,11,5])[0]
+ crystal_cluster(x,y,.12,scale,700+i)
 # Scattered pebbles and erosion fragments.
 for i in range(90):
  x=random.uniform(-10.5,10.5);y=random.choice((-1,1))*random.uniform(1.8,3.1)
@@ -104,9 +108,9 @@ tri=0;count=0
 for o in bpy.context.scene.objects:
  if o.type=='MESH':
   o.data.calc_loop_triangles();tri+=len(o.data.loop_triangles);count+=1
-with open(out+'/mesh_stats.txt','w') as f:f.write('version=v01\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
+with open(out+'/mesh_stats.txt','w') as f:f.write('version=v02\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
 print('B2 SHORELINE',count,tri)
-bpy.ops.wm.save_as_mainfile(filepath=out+'/b2_glacial_shoreline_v01.blend')
+bpy.ops.wm.save_as_mainfile(filepath=out+'/b2_glacial_shoreline_v02.blend')
 bpy.ops.export_scene.gltf(filepath=out+'/b2_glacial_shoreline_v01.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('Cavern');bpy.context.scene.world=world
 world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.045,.085,.14,1)
