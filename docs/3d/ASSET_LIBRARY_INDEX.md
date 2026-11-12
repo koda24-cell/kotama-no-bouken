@@ -21,7 +21,7 @@
 | 凍結した巨大滝・開放洞窟（V5試作） | [PR #282](https://github.com/koda24-cell/kotama-no-bouken/pull/282) / [Blenderレンダー #43152347095](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43152347095) / `tools/floor2/waterfall/build.py`・`render.py` | 最新レンダー成功。品質未承認、GLB/PNGはActions一時保管、正式Git保存・ゲーム統合は未実施 |
 | 氷河の水辺セット v0.4 | [PR #286](https://github.com/koda24-cell/kotama-no-bouken/pull/286) / [レンダー #43151778906](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151778906) | ユーザー完成承認、GLB/PNGはActions一時保管。正式Git保存未確認 |
 | 氷結した古代祭壇 | [PR #285](https://github.com/koda24-cell/kotama-no-bouken/pull/285) | 制作PR、採用・正式保存は別途確認 |
-| 氷結した古代石柱3種（通常・崩壊・氷結）V3 | [制作PR #289](https://github.com/koda24-cell/kotama-no-bouken/pull/289) / [完成素材保存PR #292](https://github.com/koda24-cell/kotama-no-bouken/pull/292) / [Blender実レンダー #43151444460](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151444460) | **2026-11-12 ユーザー完成承認済み**。GLB 3点・レビューPNG 9枚を生成確認。正式フォルダへのGit保存はPR #292で管理（状態はPRのFiles changedで確認） |
+| 氷結した古代石柱3種（通常・崩壊・氷結）V3 | [制作PR #289](https://github.com/koda24-cell/kotama-no-bouken/pull/289) / [完成素材保存PR #292](https://github.com/koda24-cell/kotama-no-bouken/pull/292) / [Blender実レンダー #43151444460](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151444460) | **完成承認・Git保存済み**（保存用PR #292のブランチ）。GLB 3点＋レビューPNG 9枚を実ファイル確認済み。**development未統合** |
 | 氷結水車の中庭 | [PR #283](https://github.com/koda24-cell/kotama-no-bouken/pull/283) | 制作PR、採用・正式保存は別途確認 |
 | 古代の氷橋 | [PR #278](https://github.com/koda24-cell/kotama-no-bouken/pull/278) | 承認版の保存PR。マージ状態を確認 |
 | 凍結した古代水路橋と滝 | [PR #268](https://github.com/koda24-cell/kotama-no-bouken/pull/268) | 制作PR |
@@ -34,9 +34,9 @@
 - **氷結した石柱**：氷の層・長短の異なる氷垂れ・発光結晶。V3時点6/10、ユーザー完成承認。
 - **制作バージョン**： [V1 PR #284](https://github.com/koda24-cell/kotama-no-bouken/pull/284) → [V2 PR #287](https://github.com/koda24-cell/kotama-no-bouken/pull/287) → [完成V3 PR #289](https://github.com/koda24-cell/kotama-no-bouken/pull/289)。従来版は履歴として保持。
 - **実レンダリング**：[GitHub Actions #43151444460](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151444460)（成功）、Artifact `13914630076`（3 GLB・9 PNG）。Actionsのみの保存は一時的。
-- **正式保存用PR**：[PR #292](https://github.com/koda24-cell/kotama-no-bouken/pull/292)。完成承認済みで、ゲーム配置・`development`統合は別管理。
-- **GLBの予定・確認先**：`assets/models/floor2/b2-ancient-pillar-v3.glb`、`b2-ruined-pillar-v3.glb`、`b2-glaciated-pillar-v3.glb`。
-- **PNGの予定・確認先**：`assets/models/floor2/reviews/<GLB名（拡張子なし）>/{front,side,angle}.png`。PR #292でGitHubに実ファイルが保存されていることを確認して使用する。
+- **Gitへの保存**：[PR #292](https://github.com/koda24-cell/kotama-no-bouken/pull/292)のブランチにGLB 3点・PNG 9枚が存在することを確認（保存Actions [#43153006434](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43153006434) 成功）。**未マージでゲーム配置も未実施**。
+- **保存済みGLB**：[通常](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/b2-ancient-pillar-v3.glb) / [崩壊](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/b2-ruined-pillar-v3.glb) / [氷結](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/b2-glaciated-pillar-v3.glb)。
+- **保存済み確認用PNG**：[通常3方向](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/reviews/b2-ancient-pillar-v3) / [崩壊3方向](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/reviews/b2-ruined-pillar-v3) / [氷結3方向](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/reviews/b2-glaciated-pillar-v3)。各`front.png`・`side.png`・`angle.png` を確認。
 - **Blender造形コード**：`tools/b2-3d/create-frozen-pillars-v3.py`（V2とV1のコードも別ファイルに保持）。
 
 ### 凍結した巨大滝の制作履歴
