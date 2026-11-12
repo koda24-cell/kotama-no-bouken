@@ -40,35 +40,15 @@ for i in range(n):j=(i+1)%n;faces.append((i,j,j+n,i+n))
 headstone=mesh("asymmetric fractured upright stone",verts,faces,stone)
 block("lower cracked plinth",(0,0,.15),(1.14,.48,.30),stone,.055)
 block("upper chipped plinth",(-.02,0,.34),(1.0,.37,.16),edge,.035)
-# V10: actual concave erosion cut into the headstone mesh, rather than
-# light-colored strips laid over its surface. Keep the silhouette and inscription.
-# V11: connected narrow fracture trenches with real boolean subtraction.
-# Overlapping cutters follow one continuous polyline, rather than round isolated holes.
-def carve_trench(name,pts,width):
- for i,(p,q) in enumerate(zip(pts,pts[1:])):
-  x1,z1=p;x2,z2=q;dx=x2-x1;dz=z2-z1
-  length=math.hypot(dx,dz)
-  bpy.ops.mesh.primitive_cube_add(size=1,location=((x1+x2)/2,-.132,(z1+z2)/2))
-  cutter=bpy.context.object;cutter.name=name+" cutter "+str(i)
-  cutter.dimensions=(width,.115,length+width*.9)
-  cutter.rotation_euler[1]=math.atan2(dx,dz)
-  bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
-  bpy.context.view_layer.objects.active=headstone
-  mod=headstone.modifiers.new(name+" "+str(i),"BOOLEAN")
-  mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=cutter
-  bpy.ops.object.modifier_apply(modifier=mod.name)
-  bpy.data.objects.remove(cutter,do_unlink=True)
-for i,pts in enumerate([
- [(-.34,1.47),(-.29,1.34),(-.33,1.24),(-.26,1.10),(-.31,.96)],
- [(.36,1.44),(.28,1.34),(.31,1.20),(.25,1.10),(.32,.98)],
- [(.09,1.57),(.02,1.48),(.07,1.39),(.015,1.29)]
-]):
- carve_trench("V11 connected stone fracture %d"%i,pts,.021)
+# V12 safety: preserve the original continuous gravestone front and back faces.
+# Boolean operations on this large non-planar ngon caused catastrophic holes in V11.
+# Instead use narrow shadow channels slightly behind the front silhouette.
+# No destructive Boolean is applied until a triangulated solid passes validation.
 # cracks as recessed dark narrow grooves with branching zigzags, surface attached
 def groove(name,points,width=.012):
  for i,(a,b) in enumerate(zip(points,points[1:])):
   ax,az=a;bx,bz=b;dx=bx-ax;dz=bz-az
-  o=block(name+" "+str(i),((ax+bx)/2,-.149,(az+bz)/2),(width,.008,math.hypot(dx,dz)),engrave,0)
+  o=block(name+" "+str(i),((ax+bx)/2,-.145,(az+bz)/2),(width,.003,math.hypot(dx,dz)),engrave,0)
   o.rotation_euler[1]=math.atan2(dx,dz)
 groove("major fractured fissure",[(.04,1.57),(-.035,1.34),(.07,1.16),(-.02,.94),(.04,.76),(-.10,.51)],.018)
 groove("branch fissure",[(.07,1.16),(.20,1.09),(.30,.91)],.012)
@@ -179,6 +159,12 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
   direction=nearest.co.normalized()
   displacement=radius*random.uniform(-.022,.035)
   nearest.co+=direction*displacement
+ # Cut broad asymmetric notches and low-frequency ridges into the rock geometry.
+ for v in o.data.vertices:
+  if v.co.z>radius*.15 and v.co.x>radius*.25:
+   v.co.z-=radius*.35*min(1,(v.co.x/radius-.25))
+  if v.co.x<-radius*.3 and v.co.y<0:
+   v.co.x+=radius*.25*min(1,(-v.co.x/radius-.3))
  # Gentle Laplacian smoothing of local spikes; retain the large eroded silhouette.
  adjacency=[set() for _ in o.data.vertices]
  for e in o.data.edges:
@@ -189,23 +175,22 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
    neighbors=adjacency[vi]
    if neighbors:
     avg=sum((old[n] for n in neighbors),Vector((0,0,0)))/len(neighbors)
-    v.co=old[vi].lerp(avg,.38)
+    v.co=old[vi].lerp(avg,.22)
  o.scale=(random.uniform(.96,1.36),random.uniform(.72,1.12),random.uniform(.48,.78))
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
  assert len(o.data.polygons)>=320
-# V11: thin moss fibers on each rounded foundation rock (not just the plinth).
-# Sample actual upper mesh vertices, so the fibers sit on the rock surface.
+# V12: dense low-profile moss patches directly on rock vertices.
+# Keep roots anchored to the real surface; avoid detached needle-like spikes.
 for rock in [ob for ob in bpy.context.scene.objects if ob.name.startswith("V8 reference weathered foundation rock")]:
  bpy.context.view_layer.update()
  upper=[v for v in rock.data.vertices if v.co.z>0]
- for k in range(85):
-  v=random.choice(upper)
-  pos=rock.matrix_world @ v.co
-  bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=random.uniform(.0015,.004),
-   radius2=0,depth=random.uniform(.008,.021),
-   location=(pos.x,pos.y,pos.z+.006))
-  tuft=bpy.context.object;tuft.name="V11 rock moss fiber %s_%d"%(rock.name[-2:],k)
+ for k in range(90):
+  v=random.choice(upper);pos=rock.matrix_world @ v.co
+  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=random.uniform(.006,.014),
+   location=(pos.x,pos.y,pos.z+.003))
+  tuft=bpy.context.object;tuft.name="V12 rock moss pad %s_%d"%(rock.name[-2:],k)
+  tuft.scale=(1.35,1.35,.23)
   tuft.data.materials.append(moss)
 # Tiny clustered moss nodules: irregular patch distribution, never blanket cover.
 for patch in range(20):
@@ -302,9 +287,9 @@ for vine_id in range(3):
  for j in range(2,25,2):
   x,y,z=points[j]
   for side in (-1,1):
-   # leaf center is attached to the vine; blade expands sideways from the stem
+   # Each leaf root is precisely at the sampled vine point, not offset into space.
    ivy_leaf("V7 attached ivy leaf %d_%d_%d"%(vine_id,j,side),
-    x,y-.003,z,random.uniform(.019,.034),side*random.uniform(.05,.20))
+    x,y,z,random.uniform(.015,.025),0)
 # English epitaph. Deliberately weathered and tiny; not required to be legible.
 epitaph=[
  "THE HERO OF OUR AGE",
@@ -316,9 +301,9 @@ epitaph=[
  "BORN OF THIS AGE."
 ]
 for i,line in enumerate(epitaph):
- bpy.ops.object.text_add(location=(-.31,-.194,1.10-i*.070))
+ bpy.ops.object.text_add(location=(-.30,-.205,1.09-i*.073))
  o=bpy.context.object;o.name="weathered epitaph %02d"%i
- o.data.body=line;o.data.size=.043;o.data.extrude=.0006;o.data.space_character=1.0
+ o.data.body=line;o.data.size=.045;o.data.extrude=.0006;o.data.space_character=1.0
  o.rotation_euler=(math.pi/2,0,0)
  o.data.materials.append(engrave)
 # Lean the monument and its attached details backward by 12 degrees.
