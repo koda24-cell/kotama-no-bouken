@@ -25,7 +25,7 @@
 
 | 素材 | 探す場所 | 状態 |
 | --- | --- | --- |
-| 氷結水車の中庭 | [PR #283](https://github.com/koda24-cell/kotama-no-bouken/pull/283) | 制作PR、採用・正式保存は別途確認 |
+| 氷結水車の中庭（完成版） | [制作PR #297](https://github.com/koda24-cell/kotama-no-bouken/pull/297) / [実Blenderレンダー #43156109788](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43156109788) / [保存済みGLB](https://github.com/koda24-cell/kotama-no-bouken/blob/docs/asset-library-index-20261112/assets/models/floor2/b2-frozen-waterwheel-courtyard.glb) / [3方向PNG](https://github.com/koda24-cell/kotama-no-bouken/tree/docs/asset-library-index-20261112/assets/models/floor2/reviews/b2-frozen-waterwheel-courtyard) | **ユーザー完成承認、正式素材フォルダへGit保存済み**（索引ブランチ、development未統合・ゲーム未配置） |
 
 ### 氷結した古代祭壇（完成承認：V4）
 
@@ -34,6 +34,19 @@
 - **実レンダー**：[Actions #43152745995](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43152745995)（成功）、Artifact ID `13914164378`。正面・側面・斜め上PNGを確認。
 - **正式素材保存**：[PR #298](https://github.com/koda24-cell/kotama-no-bouken/pull/298) の専用ブランチ `feature/b2-frozen-altar-approved-archive-20261112`。GLB: `assets/models/floor2/b2-frozen-ancient-altar.glb`、画像: `assets/models/floor2/reviews/b2-frozen-ancient-altar/{front,side,angle}.png`。
 - **備考**：既存の古代氷橋とは別素材。保存・承認はゲーム内設置を意味せず、`development` へのマージは別作業。
+
+
+### 氷結した古代水車の正式保存履歴
+
+- **素材名**：氷結した古代水車（中庭・岩盤・氷塊を含む）
+- **承認**：2026-11-12、ユーザーの「おけ」により今回のモデルを完成扱い
+- **最終造形ソース**：[PR #297](https://github.com/koda24-cell/kotama-no-bouken/pull/297)、`field/assets/b2-frozen-waterwheel-scene.js`
+- **確認済み実レンダリング**：[Actions #43156109788](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43156109788)（成功）、Artifact `13915538575`（Three.jsから実際に出力したGLB＋Blenderによる正面・背面・斜め上PNG）
+- **保存用Actions**：[Actions #43156837864](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43156837864)（成功）
+- **正式保存GLB**：[`assets/models/floor2/b2-frozen-waterwheel-courtyard.glb`](https://github.com/koda24-cell/kotama-no-bouken/blob/docs/asset-library-index-20261112/assets/models/floor2/b2-frozen-waterwheel-courtyard.glb)
+- **正式保存PNG**：[`front.png`](https://github.com/koda24-cell/kotama-no-bouken/blob/docs/asset-library-index-20261112/assets/models/floor2/reviews/b2-frozen-waterwheel-courtyard/front.png) / [`back.png`](https://github.com/koda24-cell/kotama-no-bouken/blob/docs/asset-library-index-20261112/assets/models/floor2/reviews/b2-frozen-waterwheel-courtyard/back.png) / [`angle.png`](https://github.com/koda24-cell/kotama-no-bouken/blob/docs/asset-library-index-20261112/assets/models/floor2/reviews/b2-frozen-waterwheel-courtyard/angle.png)
+- **検証**：保存先にGLB 1点（3,503,680 bytes）・PNG 3点が存在することを確認。レンダー画像はGitHub Actionsの実Blender出力であり、チャット内で先に表示したVTK再構成プレビューと同一画像ではありません。
+- **保存範囲**：素材ライブラリの作業ブランチ `docs/asset-library-index-20261112` に保管。PR #293から `development` に統合されるまでは開発統合先に未反映。ゲームへの配置も未実施。
 
 ### 古代遺跡の石柱セット（完成承認：V3、3種類）
 
