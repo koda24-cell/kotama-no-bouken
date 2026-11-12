@@ -570,7 +570,9 @@ class Batcher {
     const ck = `${Math.floor(tx / CHUNK)},${Math.floor(ty / CHUNK)}`;
     for (const p of piece.parts) {
       const k = `${cat}|${p.mat}|${ck}`; let e = this.b.get(k); if (!e) { e = { cat, mat: p.mat, geos: [] }; this.b.set(k, e); }
-      e.geos.push(shade(p.geo.clone().applyMatrix4(matrix)));
+      const gm = p.geo.clone().applyMatrix4(matrix);
+      if (matrix.determinant() < 0) flipWinding(gm);   // 左右反転して置いた物は、三角形の向きを戻す（裏面になって消えない）
+      e.geos.push(shade(gm));
     }
     // Per-cell procedural source geometry is no longer needed after cloning.
     if (piece.transient) for (const p of piece.parts) p.geo.dispose();
@@ -629,6 +631,15 @@ function shade(geo) {
   if (!geo.attributes.color) geo.setAttribute('color', new THREE.BufferAttribute(col, 3));   // 結晶など、自分で色を持つ形は上書きしない
   return geo;
 }
+function flipWinding(geo) {
+  if (geo.index) { const ni = geo.toNonIndexed(); for (const k of Object.keys(ni.attributes)) geo.setAttribute(k, ni.attributes[k]); geo.setIndex(null); }
+  for (const k of Object.keys(geo.attributes)) {
+    const a = geo.attributes[k], n = a.itemSize;
+    for (let i = 0; i + 2 < a.count; i += 3) for (let c = 0; c < n; c++) { const t = a.array[(i + 1) * n + c]; a.array[(i + 1) * n + c] = a.array[(i + 2) * n + c]; a.array[(i + 2) * n + c] = t; }
+    a.needsUpdate = true;
+  }
+  return geo;
+}
 const M4 = (x, y, z, ry = 0, s = 1, rx = 0) => {
   const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, ry, 0, 'YXZ'));
   const sv = typeof s === 'number' ? new THREE.Vector3(s, s, s) : new THREE.Vector3(...s);
@@ -683,6 +694,10 @@ export async function createTheme(api) {
     pillarA: './assets/models/floor2/b2-ancient-pillar-v3.glb',
     pillarR: './assets/models/floor2/b2-ruined-pillar-v3.glb',
     pillarG: './assets/models/floor2/b2-glaciated-pillar-v3.glb',
+    // PR #299 で Git に保存された候補素材（承認前の扱い。巨大滝 v05 は未完成に見えるため使わない）
+    aqueduct: './assets/models/floor2/candidates/ruined_aqueduct_v01.glb',
+    watergate: './assets/models/floor2/candidates/frozen_watergate_v09.glb',
+    shoreline: './assets/models/floor2/candidates/b2_glacial_shoreline_v04.glb',
   };
   const assetCache = new Map();
   function adaptMaterial(m) {
@@ -719,7 +734,7 @@ export async function createTheme(api) {
         const merged = mergeGeometries(geos, false); geos.forEach((g2) => g2.dispose());
         const key = `asset:${name}:${i++}`; mats[key] = adaptMaterial(m);
         merged.computeBoundingBox(); box.union(merged.boundingBox);
-        parts.push({ geo: merged, mat: key });
+        parts.push({ geo: merged, mat: key, src: m.name || '' });
       }
       const c = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
       const off = new THREE.Matrix4().makeTranslation(-c.x, -box.min.y, -c.z);
@@ -840,6 +855,7 @@ export async function createTheme(api) {
       if (envTex) { envTex.dispose(); envTex = null; }
       const geos = new Set(), walk = (v) => { if (!v || typeof v !== 'object') return; if (v.isBufferGeometry) { geos.add(v); return; } if (Array.isArray(v)) v.forEach(walk); else if (v.parts) v.parts.forEach((p) => geos.add(p.geo)); else for (const k of Object.keys(v)) if (k !== 'size') walk(v[k]); };
       walk(kit); walk(proc); walk(xtal);
+      if (aqTrim) { aqTrim.parts.forEach((pt) => pt.geo.dispose()); aqTrim = null; }
       for (const job of assetCache.values()) job.then((pc) => pc.parts.forEach((pt) => pt.geo.dispose())).catch(() => {});
       assetCache.clear();
       for (const geo of geos) if (geo && geo.dispose) geo.dispose();
@@ -883,6 +899,7 @@ export async function createTheme(api) {
     // マップ文字・通行判定・イベントには触れず、見た目だけのランドマークにする。
     const openCells = new Set();
     let streamCount = 0, pillarCount = 0;
+    keepClear = new Set();
     const skylightCandidates = [];
     for (let cy = 2; cy < a.h - 2; cy++) for (let cx = 2; cx < a.w - 2; cx++) {
       let valid = true, waterCount = 0;
@@ -948,14 +965,31 @@ export async function createTheme(api) {
       return best;
     };
     if (floorNo === 2) {
-      for (const [name, sizes, minOpen] of [['bridge', [[5, 2], [2, 5]], 0.95], ['waterwheel', [[4, 3], [3, 4]], 0.55], ['altar', [[3, 2], [2, 3]], 0.8]]) {
+      for (const [name, sizes, minOpen] of [['bridge', [[5, 2], [2, 5]], 0.95], ['waterwheel', [[4, 3], [3, 4]], 0.55], ['altar', [[3, 2], [2, 3]], 0.8]]) {   // bridge の塊は水路橋の中央になる
         const bl = findBlock(sizes, minOpen); if (!bl) continue;
         monuments.push({ name, ...bl });
         for (let j = 0; j < bl.h; j++) for (let i = 0; i < bl.w; i++) monumentCells.add(`${bl.x + i},${bl.y + j}`);
       }
     }
+    // 氷結した古代水門：大広間の外壁に埋め込む（正面の1辺だけが通路に面した、奥行き2マスの壁の並び）。3Fだけ・1回
+    if (floorNo === 2) {
+      let best = null;
+      for (let y = 1; y < a.h; y++) for (let x = 1; x + 4 <= a.w - 1; x++) {
+        // 正面が北（y-1 の行が4マスとも通路）、奥行き2マス（y, y+1）が壁。モニュメントのマスとは重ねない
+        let ok = true; for (let j = 0; j < 2 && ok; j++) for (let i = 0; i < 4; i++) { const cx = x + i, cy = y + j; if (!wallCell(cx, cy) || monumentCells.has(`${cx},${cy}`) || cx <= 0 || cx >= a.w - 1) { ok = false; break; } }
+        if (!ok) continue;
+        let front = 0; for (let i = 0; i < 4; i++) if (!wallCell(x + i, y - 1) && !objAt.has(`${x + i},${y - 1}`)) front++;
+        if (front < 4) continue;
+        if (monuments.some((m) => Math.abs((m.x + m.w / 2) - (x + 2)) < 3 && Math.abs((m.y + m.h / 2) - (y + 1)) < 4)) continue;   // 水路橋の真後ろは避ける
+        const score = hash(x, y, 830);
+        if (!best || score > best.score) best = { x, y, w: 4, h: 2, score };
+      }
+      if (best) { monuments.push({ name: 'watergate', niche: true, ...best }); for (let j = 0; j < 2; j++) for (let i = 0; i < 4; i++) monumentCells.add(`${best.x + i},${best.y + j}`); }
+    }
     const assets = {};
-    await Promise.all([...new Set([...monuments.map((m) => m.name), 'pillarA', 'pillarR', 'pillarG'])].map(async (nm) => {
+    const wantAssets = [...monuments.map((m) => m.name), 'pillarA', 'pillarR', 'pillarG'];
+    if (monuments.some((m) => m.name === 'bridge')) wantAssets.push('aqueduct', 'shoreline');
+    await Promise.all([...new Set(wantAssets)].map(async (nm) => {
       try { assets[nm] = await loadAsset(nm); } catch (e) { console.warn('[field-3d] 第2階層の追加素材を読めなかったため置きません:', nm, e); }
     }));
     monumentCellsRef = monumentCells;
@@ -1170,12 +1204,17 @@ export async function createTheme(api) {
       }
     }
     for (const z of zones) addCrystalZone(z, B);
-    for (const m of monuments) addMonument(m, assets[m.name], B);
+    for (const m of monuments) {
+      if (m.name === 'bridge') addAqueduct(m, assets, B, { wallCell, objAt, ch });
+      else addMonument(m, assets[m.name], B);
+    }
     addPillars(a, B, assets, { ch, wallCell, objAt, zoneCells, falls, openCells });
     // 柱：4マスが通れる角（マスとマスの間の点）に、床から天井まで届く柱。プレイヤーが通るマスの中心と辺の中点から2m離れている
     for (let ty = 1; ty < a.h; ty++) for (let tx = 1; tx < a.w; tx++) {
       const cells = [[tx - 1, ty - 1], [tx, ty - 1], [tx - 1, ty], [tx, ty]];
       if (cells.some(([cx, cy]) => wallCell(cx, cy) || objAt.has(`${cx},${cy}`) || openCells.has(`${cx},${cy}`) || '<>'.includes(ch(cx, cy)) || falls.has(`${cx},${cy}`))) continue;
+      // モニュメント・水路橋のまわり（1マス以内）には柱を立てない（正面をふさがない）
+      if (cells.some(([cx, cy]) => { for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (monumentCells.has(`${cx + i},${cy + j}`) || keepClear.has(`${cx + i},${cy + j}`)) return true; return false; })) continue;
       if (hash(tx, ty, 590) > 0.3) continue;
       const px = tx * CELL - CELL / 2, pz = ty * CELL - CELL / 2, sc = 0.8 + hash(tx, ty, 591) * 0.5;
       // 開けた場所の角の一部は、追加素材の石柱（古代の石柱・氷結した石柱・崩れた石柱）にする（フロアあたり最大6本）
@@ -1280,16 +1319,13 @@ export async function createTheme(api) {
     const cx = (m.x + (m.w - 1) / 2) * CELL, cz = (m.y + (m.h - 1) / 2) * CELL, along = m.w >= m.h, ry = along ? 0 : Math.PI / 2;
     const W = (along ? m.w : m.h) * CELL, D = (along ? m.h : m.w) * CELL;
     const sc = Math.min((W - 0.6) / piece.size.x, (D - 0.6) / piece.size.z, 6.0 / piece.size.y);
-    for (let j = 0; j < m.h; j++) for (let i = 0; i < m.w; i++) {
-      const tx = m.x + i, ty = m.y + j, x = tx * CELL, z = ty * CELL;
-      B.add('floor', proc.continuousGround(x, z, CELL), M4(x, 0, z), tx, ty);
-      B.add('ceiling', proc.continuousCeiling(x, z, CELL), M4(x, CEIL_H, z), tx, ty);
-      for (const d of DIR_ORDER) {
-        const [dx, dy] = DIR_VEC[d], nx = tx + dx, ny = ty + dy;
-        if (!wallCellAt(nx, ny) || monumentCellsRef.has(`${nx},${ny}`)) continue;
-        const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, wr = FACE_YAW[d] + Math.PI;
-        B.add('walls', proc.continuousWall(ex, ez, wr, CELL), M4(ex, 0, ez, wr), tx, ty);
-      }
+    addMonumentGround(m, B);
+    if (m.niche) {   // 壁に埋め込む：模型の正面（+Z）を北の通路へ向け、正面を塊の北の縁にそろえる
+      const s2 = Math.min((W - 0.4) / piece.size.x, (D - 0.2) / piece.size.z, 6.0 / piece.size.y);
+      const frontZ = (m.y - 0.5) * CELL;
+      placeAsset(B, 'monuments', piece, cx, 0, frontZ + piece.size.z * s2 / 2, Math.PI, s2, m.x, m.y);
+      light(cx, 2.6, frontZ - 1.2, 0x8fdcff, 1.5, 8);
+      return;
     }
     placeAsset(B, 'monuments', piece, cx, 0, cz, ry, sc, m.x, m.y);
     // 両端の余り（2.5m以上）を岩で埋める
@@ -1340,6 +1376,129 @@ export async function createTheme(api) {
         // 回転0で +X、回転90°で -Z へ倒れているので、倒れた部分がマスの中に収まるよう根元を反対側へ0.9mずらす
         placeAsset(B, 'pillars', assets.pillarR, tx * CELL + bx * 1.0 + (bz ? -0.9 : 0), -0.05, ty * CELL + bz * 1.0 + (bx ? 0.9 : 0), bz ? 0 : Math.PI / 2, 0.6, tx, ty);
         return;
+      }
+    }
+  }
+  // 水路橋：中央（通れない壁の塊の中）に古代の氷橋、その左右に崩れた水路橋を1基ずつ続け、両端は新しく作った橋台でしめる。
+  // 橋脚の間隔（約5.75m）を0.7倍して約4mにそろえ、橋脚がマスの角（通り道から2m離れた点）に立つよう置く。
+  // 橋の線はマスの境目の上なので、東西の通り道は橋の両側、南北の通り道はアーチの下を抜ける（当たり判定は変えない）
+  const AQ_S = [0.7, 0.58, 0.7];
+  function filterPiece(piece, keep, dropMat) {
+    // 床に散らばる小さな瓦礫・床の水面（通り道にかかる物）を除いた複製を作る
+    const parts = [];
+    for (const pt of piece.parts) {
+      if (dropMat && dropMat.test(pt.src)) continue;
+      const P = pt.geo.attributes.position, N = pt.geo.attributes.normal, keepIdx = [];
+      for (let i = 0; i + 2 < P.count; i += 3) {
+        const cx = (P.getX(i) + P.getX(i + 1) + P.getX(i + 2)) / 3, cy = (P.getY(i) + P.getY(i + 1) + P.getY(i + 2)) / 3, cz = (P.getZ(i) + P.getZ(i + 1) + P.getZ(i + 2)) / 3;
+        if (keep(cx, cy, cz)) keepIdx.push(i);
+      }
+      if (!keepIdx.length) continue;
+      const pos = new Float32Array(keepIdx.length * 9), nor = new Float32Array(keepIdx.length * 9);
+      keepIdx.forEach((i, k) => { for (let v = 0; v < 3; v++) { pos.set([P.getX(i + v), P.getY(i + v), P.getZ(i + v)], k * 9 + v * 3); nor.set([N.getX(i + v), N.getY(i + v), N.getZ(i + v)], k * 9 + v * 3); } });
+      const g2 = new THREE.BufferGeometry(); g2.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g2.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+      parts.push({ geo: g2, mat: pt.mat, src: pt.src });
+    }
+    return { name: piece.name + '_trim', parts, size: piece.size, lights: piece.lights, transient: false };
+  }
+  let aqTrim = null, keepClear = new Set();
+  function addAqueduct(m, assets, B, ctx) {
+    const { wallCell, objAt } = ctx;
+    const along = m.w >= m.h, cx = (m.x + (m.w - 1) / 2) * CELL, cz = (m.y + (m.h - 1) / 2) * CELL;
+    // 中央の塊：床・天井・内向きの壁（モニュメントと同じ）＋氷河の水辺を敷き、その上に古代の氷橋
+    addMonumentGround(m, B);
+    if (assets.shoreline) {
+      const sh = assets.shoreline, L = (along ? m.w : m.h) * CELL - 0.6, Dp = (along ? m.h : m.w) * CELL - 0.6;
+      placeAsset(B, 'monuments', sh, cx, 0, cz, along ? 0 : Math.PI / 2, [L / sh.size.x, 0.6, Dp / sh.size.z], m.x, m.y);
+    }
+    const ry = along ? 0 : Math.PI / 2, ax = along ? 1 : 0, az = along ? 0 : 1;
+    placeAsset(B, 'monuments', assets.bridge, cx, 0, cz, ry, AQ_S, m.x, m.y);
+    // 左右へ崩れた水路橋を1基ずつ（右側は左右反転）。下のマスが通路（物なし）のときだけ
+    const unitLen = 16;   // 0.7倍した1基の長さ（約16m＝4マス）
+    let ends = [];
+    if (assets.aqueduct) {
+      // 通り道にかかる床の瓦礫と床の水面は除く（橋脚の根元と、高さ0.9m以上の部分は残す）
+      aqTrim = aqTrim || filterPiece(assets.aqueduct, (x, y, z) => y > 0.9 || Math.abs(z) < 1.7, /water/i);
+      for (const side of [-1, 1]) {
+        const ux = cx + ax * side * unitLen, uz = cz + az * side * unitLen;
+        // 1基の下にあたるマス（長さ方向に4マス×橋の両側2列）がすべて通路か
+        let ok = true;
+        for (let k = -2; k <= 2 && ok; k++) for (const o of [0, 1]) {
+          const tx = along ? Math.round(ux / CELL) + k : m.x + o, ty = along ? m.y + o : Math.round(uz / CELL) + k;
+          if (monumentCellsRef.has(`${tx},${ty}`)) continue;   // 中央の塊に重なる分はかまわない
+          if (wallCell(tx, ty) || objAt.has(`${tx},${ty}`)) ok = false;
+        }
+        if (!ok) { ends.push({ x: cx + ax * side * 10, z: cz + az * side * 10, side }); continue; }
+        const sc = side > 0 ? [-AQ_S[0], AQ_S[1], AQ_S[2]] : AQ_S;
+        for (let k = -2; k <= 3; k++) for (const o of [0, 1]) keepClear.add(along ? `${Math.round(ux / CELL) + k * side},${m.y + o}` : `${m.x + o},${Math.round(uz / CELL) + k * side}`);   // 水路橋の下と橋台のまわり
+        placeAsset(B, 'monuments', aqTrim, ux, 0, uz, ry, sc, Math.round(ux / CELL), Math.round(uz / CELL));
+        ends.push({ x: ux + ax * side * 10, z: uz + az * side * 10, side });
+      }
+    } else ends = [-1, 1].map((side) => ({ x: cx + ax * side * 10, z: cz + az * side * 10, side }));
+    const stone = (assets.bridge.parts.find((pt) => /icy limestone/i.test(pt.src)) || assets.bridge.parts[0]).mat;
+    for (const e of ends) addAbutment(e.x, e.z, ry, e.side, stone, B, Math.round(e.x / CELL), Math.round(e.z / CELL));
+  }
+  // 橋台（新規の造形）：切石を積んだ柱（2.0×2.4m）が水路橋の高さまで立ち、上は崩れて不揃い。
+  // 橋の側へ迫り出す持ち送りの石、足もとの瓦礫・岩・石筍、垂れ下がる氷柱で、洞窟の床となじませる。通り道から0.8m以上離す
+  function addAbutment(x, z, ry, side, stoneMat, B, tx, ty) {
+    const parts = [], H = 10.18 * AQ_S[1] * 0.92, seed = Math.round(x * 7 + z * 13);
+    const course = 0.46;
+    // 切石：段ごとに石の幅をばらつかせ、目地を段ごとにずらす（同じ大きさの立方体の格子に見せない）。上ほど石が欠け、細る
+    for (let c = 0; c * course < H; c++) {
+      const y0 = c * course, taper = 1 - y0 / H * 0.14, Wd = 2.0 * taper, Dd = 2.4 * taper;
+      for (const face of [0, 1]) {   // 0：橋の向きの石の列（表と裏の2列）、1：中を埋める石
+        let u = -Wd / 2 + (c % 2 ? 0.28 : 0);
+        while (u < Wd / 2 - 0.05) {
+          const len = Math.min(Wd / 2 - u, 0.45 + rnd(seed + c * 31 + Math.round(u * 50) + face * 7) * 0.6);
+          const r = rnd(seed + c * 13 + Math.round(u * 40) + face * 3);
+          if (!(y0 > H * 0.6 && r < (y0 / H - 0.58) * 1.7)) {
+            const depth = face ? Dd * 0.55 : Dd, out = (rnd(seed + c * 7 + Math.round(u * 30)) - 0.5) * 0.06;
+            const gbox = new THREE.BoxGeometry(len * 0.95, course * 0.92, depth * (face ? 1 : 0.96));
+            gbox.rotateY((rnd(seed + c + Math.round(u * 20)) - 0.5) * 0.04);
+            gbox.translate(u + len / 2 + out, y0 + course / 2, face ? 0 : out * 0.5);
+            parts.push({ geo: gbox, mat: stoneMat });
+          }
+          u += len;
+        }
+      }
+    }
+    // 崩れたアーチの迫石（橋の側へ弧を描いて数個だけ残る）と、その上の持ち送り
+    const R = 1.9, cxA = -side * (1.0 + R), yA = H * 0.52;
+    for (let k = 0; k < 5; k++) {
+      const t = (k + 0.5) / 7 * (Math.PI / 2), px = cxA + side * Math.cos(t) * R, py = yA + Math.sin(t) * R;
+      if (k === 4 && rnd(seed + 77) < 0.5) break;   // 最後の1個は落ちていることも
+      const gb = new THREE.BoxGeometry(0.55, 0.32, 1.7); gb.rotateZ(side * (Math.PI / 2 - t)); gb.translate(px, py, 0);
+      parts.push({ geo: gb, mat: stoneMat });
+    }
+    for (let k = 0; k < 2; k++) { const gb = new THREE.BoxGeometry(0.8 + k * 0.4, 0.38, 2.0); gb.translate(-side * (1.05 + k * 0.35), H * 0.86 + k * 0.38, 0); parts.push({ geo: gb, mat: stoneMat }); }
+    const piece = { name: 'b2_aqueduct_abutment', parts, transient: true };
+    B.add('monuments', piece, M4(x, -0.02, z, ry), tx, ty);
+    for (const pt of parts) pt.geo.dispose();
+    // 足もと：瓦礫（橋台の周り1.4m以内）、岩、石筍。上から氷柱
+    const cs = Math.cos(ry), sn = Math.sin(ry);
+    const W2 = (lx, lz) => [x + cs * lx + sn * lz, z - sn * lx + cs * lz];
+    for (let k = 0; k < 6; k++) {
+      const a = rnd(seed + k * 11) * 6.28, d = 1.1 + rnd(seed + k * 13) * 0.25, [px, pz] = W2(Math.cos(a) * d, Math.sin(a) * d * 0.85);   // 橋の線と直角の向きは1.2m以内（通り道にかからない）
+      B.add('rocks', pick(kit.rocks, rnd(seed + k * 3)), M4(px, -0.1, pz, a, [0.35 + rnd(seed + k) * 0.25, 0.3, 0.35 + rnd(seed + k * 2) * 0.25]), tx, ty);
+    }
+    const [bx, bz] = W2(side * 0.9, 0.9);
+    B.add('spires', pick(proc.stalagmites, rnd(seed + 41)), M4(bx, 0, bz, rnd(seed + 42) * 6.28, [1.2, 1.6, 1.2]), tx, ty);
+    for (let k = 0; k < 3; k++) {
+      const [ix, iz] = W2(-side * (1.3 + k * 0.4), (rnd(seed + 50 + k) - 0.5) * 1.6);
+      B.add('ice_stalactites', pick(proc.iceStalactites, rnd(seed + 53 + k)), M4(ix, H * 0.8 - 0.2, iz, rnd(seed + 56 + k) * 6.28, 0.8 + rnd(seed + 59 + k) * 0.5), tx, ty);
+    }
+    light(x, 1.0, z, 0xffb070, 0.7, 4);   // 橋の灯りと同じ色の、ほのかな灯り
+  }
+  function addMonumentGround(m, B) {
+    for (let j = 0; j < m.h; j++) for (let i = 0; i < m.w; i++) {
+      const tx = m.x + i, ty = m.y + j, x = tx * CELL, z = ty * CELL;
+      B.add('floor', proc.continuousGround(x, z, CELL), M4(x, 0, z), tx, ty);
+      B.add('ceiling', proc.continuousCeiling(x, z, CELL), M4(x, CEIL_H, z), tx, ty);
+      for (const d of DIR_ORDER) {
+        const [dx, dy] = DIR_VEC[d], nx = tx + dx, ny = ty + dy;
+        if (!wallCellAt(nx, ny) || monumentCellsRef.has(`${nx},${ny}`)) continue;
+        const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, wr = FACE_YAW[d] + Math.PI;
+        B.add('walls', proc.continuousWall(ex, ez, wr, CELL), M4(ex, 0, ez, wr), tx, ty);
       }
     }
   }

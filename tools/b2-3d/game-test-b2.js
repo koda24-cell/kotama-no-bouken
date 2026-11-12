@@ -61,6 +61,16 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
   const visitFalls = async (prefix) => {
     const inf = await info();
     for (const [i, f] of (inf.falls || []).slice(0, 2).entries()) { const [tx, ty] = f.cell.split(',').map(Number); await goto(tx, ty, f.wall); await shot(`${prefix}_waterfall_${i + 1}`); }
+    for (const m of (inf.monuments || []).filter((q) => q.name === 'bridge')) {   // 水路橋：北側の通路から、左右の続きと両端の橋台を見る
+      const cx = m.x + Math.floor(m.w / 2);
+      for (const [dx, tag] of [[-6, 'west'], [6, 'east'], [-10, 'west_end'], [10, 'east_end']]) {
+        const tx = cx + dx, ty = m.y - 2;
+        const ok = await p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [tx, ty]);
+        if (ok) { await goto(tx, ty, 'down'); await shot(`${prefix}_aqueduct_${tag}`); }
+      }
+      // アーチの下を南北に抜ける位置（橋の線の上のマス）
+      await goto(cx - 4, m.y, 'down'); await shot(`${prefix}_aqueduct_under_arch`);
+    }
     for (const m of (inf.monuments || [])) {   // モニュメント：塊の南（と北）に2マス離れて立ち、塊を見る
       const cx = m.x + Math.floor(m.w / 2);
       for (const [ty, dir, tag] of [[m.y + m.h + 1, 'up', 's'], [m.y - 2, 'down', 'n']]) {
