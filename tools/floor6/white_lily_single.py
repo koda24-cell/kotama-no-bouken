@@ -27,7 +27,7 @@ tube("curved stalk",[(0,0,0),(.01,0,.15),(.03,0,.32),(0,0,.50)],.013,green)
 # 150 explicit parametric control coordinates: 6 petals, each 5 longitudinal x 5 transverse.
 all_points=[]
 for k in range(6):
- angle=math.tau*k/6+.08
+ angle=math.tau*k/6+.08 + (.055 if k%2 else -.045)
  u=Vector((math.cos(angle),math.sin(angle),0))
  v=Vector((-math.sin(angle),math.cos(angle),0))
  verts=[]
@@ -35,10 +35,10 @@ for k in range(6):
   t=i/4
   for j in range(5):
    q=(j-2)/2
-   spread=.02+.29*(math.sin(math.pi*(.08+.86*t))**.85)
+   spread=(.006 + (.125 if k%2==0 else .102) * (math.sin(math.pi*t)**.85)) * (1-.12*t)
    # Lily tepals open horizontally, then curl backwards at tips.
-   distance=.055+.49*t+.14*t*t
-   height=.54+.20*math.sin(math.pi*t)-.24*t*t + .06*q*q*math.sin(math.pi*t)
+   distance=.045 + (.48 + .045*math.sin(k*2.4))*t + .19*t*t
+   height=.54 + (.23 if k%2==0 else .19)*math.sin(math.pi*t) - (.31 + .055*math.sin(k*1.7))*t*t + .027*q*q*math.sin(math.pi*t) + .014*q*math.sin(math.pi*t)
    p=u*distance+v*(q*spread)+Vector((0,0,height))
    verts.append(tuple(p));all_points.append(tuple(p))
  faces=[]
@@ -49,7 +49,7 @@ for k in range(6):
  ob=bpy.data.objects.new("lily petal %d"%(k+1),me);bpy.context.collection.objects.link(ob)
  me.materials.append(ivory)
  # Add solidify for actual petal thickness, smooth shading.
- mod=ob.modifiers.new("subtle petal thickness","SOLIDIFY");mod.thickness=.0025
+ mod=ob.modifiers.new("subtle petal thickness","SOLIDIFY");mod.thickness=.0015
  for poly in me.polygons:poly.use_smooth=True
 assert len(all_points)==150
 for i in range(6):
@@ -76,7 +76,7 @@ light("rim softbox",(-2,2,3),350,2)
 bpy.ops.object.camera_add()
 cam=bpy.context.object;bpy.context.scene.camera=cam
 scene=bpy.context.scene
-scene.render.engine='CYCLES';scene.cycles.samples=24
+scene.render.engine='CYCLES';scene.cycles.samples=32
 scene.render.resolution_x=960;scene.render.resolution_y=960;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 for name,loc in [('angle',(1.5,-2.1,1.5)),('front',(0,-2.6,.95)),('side',(2.6,0,1.0)),('top',(0,-.01,3.0))]:
