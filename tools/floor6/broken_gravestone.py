@@ -37,9 +37,30 @@ for y in [-.13,.13]:
  for x,z in outline: verts.append((x+random.uniform(-.012,.012),y+random.uniform(-.013,.013),z))
 faces=[tuple(range(n-1,-1,-1)),tuple(range(n,n*2))]
 for i in range(n):j=(i+1)%n;faces.append((i,j,j+n,i+n))
-mesh("asymmetric fractured upright stone",verts,faces,stone)
+headstone=mesh("asymmetric fractured upright stone",verts,faces,stone)
 block("lower cracked plinth",(0,0,.15),(1.14,.48,.30),stone,.055)
 block("upper chipped plinth",(-.02,0,.34),(1.0,.37,.16),edge,.035)
+# V10: actual concave erosion cut into the headstone mesh, rather than
+# light-colored strips laid over its surface. Keep the silhouette and inscription.
+def carve_stone(name,x,z,radius,depth):
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,
+   location=(x,-.13-depth*.20,z))
+ tool=bpy.context.object;tool.name=name
+ tool.scale=(radius,depth,radius*random.uniform(1.15,2.1))
+ bpy.context.view_layer.objects.active=headstone
+ mod=headstone.modifiers.new(name,"BOOLEAN");mod.operation='DIFFERENCE'
+ mod.solver='EXACT';mod.object=tool
+ bpy.ops.object.modifier_apply(modifier=mod.name)
+ bpy.data.objects.remove(tool,do_unlink=True)
+# Three jagged, branching erosion channels, formed from overlapping gouges.
+for path_id,pts in enumerate([
+ [(-.31,1.37),(-.25,1.23),(-.30,1.08),(-.21,.94),(-.27,.80)],
+ [(.30,1.44),(.25,1.30),(.33,1.15),(.27,1.02),(.32,.86)],
+ [(.04,1.55),(-.01,1.43),(.06,1.29),(-.02,1.16)]
+]):
+ for j,(x,z) in enumerate(pts):
+  carve_stone("V10 true carved erosion %d_%d"%(path_id,j),
+   x+random.uniform(-.012,.012),z,random.uniform(.022,.041),.095)
 # cracks as recessed dark narrow grooves with branching zigzags, surface attached
 def groove(name,points,width=.012):
  for i,(a,b) in enumerate(zip(points,points[1:])):
@@ -108,17 +129,8 @@ for i in range(25):
  weathering_coords.append((.33-.14*math.sin(t*math.pi*1.5)+random.uniform(-.023,.023),
                             1.17-.69*t+random.uniform(-.02,.02)))
 assert len(weathering_coords)==100
-for i,(x,z) in enumerate(weathering_coords):
- length=random.uniform(.025,.10)
- bend=random.uniform(-.025,.025)
- # dark fine fracture and an adjacent pale fractured lip form visible erosion
- groove("V4 erosion groove %03d"%i,[(x,z),(x+bend,z-length*.45),
-   (x+bend+random.uniform(-.012,.012),z-length)],random.uniform(.004,.012))
- if i%3==0:
-  lip=block("V4 exposed chipped edge %03d"%i,
-    (x+.013,-.154,z-length*.4),
-    (random.uniform(.014,.033),.012,random.uniform(.025,.075)),edge,.004)
-  lip.rotation_euler[1]=random.uniform(-.6,.6)
+# V10: remove former bright protruding chip strips; recesses are real booleans.
+# Preserve weathering coordinates as metadata for future surface painting.
 # V7: fracture network follows interlocking polygonal plates, inspired by the
 # reference's fractured boulder. No central hole or disconnected overlay rods.
 # 48 added irregular crack coordinates, with forks and changing line width.
@@ -142,10 +154,12 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
  o=bpy.context.object;o.name="V8 reference weathered foundation rock %02d"%i
  # Shape the entire surface into uneven planar chipped facets.
  for v in o.data.vertices:
-  factor=random.uniform(.77,1.21)
-  v.co.x*=factor*random.uniform(.87,1.12)
-  v.co.y*=factor*random.uniform(.84,1.14)
-  v.co.z*=factor*random.uniform(.68,1.08)
+  # broad low-frequency erosion instead of independent sharp random spikes
+  x0,y0,z0=v.co
+  factor=1+.11*math.sin(7*x0+4*y0)*math.cos(5*z0-3*y0)
+  v.co.x*=factor*1.04
+  v.co.y*=factor*.98
+  v.co.z*=factor*.92
  # One hundred deterministic sculpting locations per rock; each modifies the
  # nearest actual mesh vertex, with local falloff to adjacent vertices.
  # This changes the rock's geometry rather than placing floating decorations.
@@ -160,8 +174,19 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
   nearest=min(o.data.vertices,key=lambda v:
    (v.co.x/radius-sx)**2+(v.co.y/radius-sy)**2+(v.co.z/radius-sz)**2)
   direction=nearest.co.normalized()
-  displacement=radius*random.uniform(-.085,.12)
+  displacement=radius*random.uniform(-.022,.035)
   nearest.co+=direction*displacement
+ # Gentle Laplacian smoothing of local spikes; retain the large eroded silhouette.
+ adjacency=[set() for _ in o.data.vertices]
+ for e in o.data.edges:
+  a,b=e.vertices;adjacency[a].add(b);adjacency[b].add(a)
+ for iteration in range(2):
+  old=[v.co.copy() for v in o.data.vertices]
+  for vi,v in enumerate(o.data.vertices):
+   neighbors=adjacency[vi]
+   if neighbors:
+    avg=sum((old[n] for n in neighbors),Vector((0,0,0)))/len(neighbors)
+    v.co=old[vi].lerp(avg,.38)
  o.scale=(random.uniform(.96,1.36),random.uniform(.72,1.12),random.uniform(.48,.78))
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
@@ -202,7 +227,7 @@ for patch in range(375):  # half the V5 moss clusters, keep spatial distribution
  for k in range(random.randint(6,13)):
   z=base_z+random.gauss(0,.023)
   if z<.24 or z>1.52:continue
-  rad=random.uniform(.008,.026) # retain doubled V4 nodule size
+  rad=random.uniform(.005,.015) # smaller moss microtufts, avoid gravel appearance
   if side=="front":
    x=base_x+random.gauss(0,.029)
    if abs(x)>.49 or (z>.78 and abs(x)<.26):continue
@@ -222,32 +247,14 @@ moss_batch("V4 dense lower moss",lower_moss)
 ledge_moss=[]
 for patch in range(475): # half the V5 ledge moss; still densely carpeted
  x=random.uniform(-.56,.56);y=random.uniform(-.21,.18);z=random.uniform(.30,.37)
- rad=random.uniform(.018,.048) # 2x prior .009-.024
- ledge_moss.append((x,y,z,rad*1.25,rad*.85,rad*.36))
+ rad=random.uniform(.010,.027) # smaller and flatter ledge moss
+ ledge_moss.append((x,y,z,rad*1.55,rad*.95,rad*.22))
 moss_batch("V4 dense ledge moss",ledge_moss)
 # V6: carved-looking chipped erosion with actual irregular faceted surface patches.
 # Reference has missing stone wedges and fractured strata, NOT a central hole.
 # 36 irregular depressions on front and side edges, concentrated around existing cracks.
-chip_mat=material("deep fractured recess",(.085,.093,.086))
-for i in range(36):
- z=random.uniform(.50,1.63)
- x=random.choice([-1,1])*random.uniform(.23,.43) if i%3 else random.uniform(-.28,.28)
- w=random.uniform(.018,.063);h=random.uniform(.025,.085)
- # recessed dark faceted polygon, placed slightly behind stone surface;
- # bright uneven lips around it convey a chipped depression.
- points=[(x-w,z-h*.4),(x-w*.55,z+h*.6),(x+w*.2,z+h),(x+w,z+h*.25),(x+w*.65,z-h)]
- front_y=-.148
- verts_chip=[(px,front_y,pz) for px,pz in points]
- verts_chip.append((x,front_y-.004,z))
- chip=mesh("V6 faceted erosion recess %02d"%i,verts_chip,
-  [(5,j,(j+1)%5) for j in range(5)],chip_mat)
- for j in (0,2,3):
-  a=points[j];b=points[(j+1)%5]
-  dx=b[0]-a[0];dz=b[1]-a[1]
-  lip=block("V6 fractured lip %02d_%d"%(i,j),
-    ((a[0]+b[0])/2,-.156,(a[1]+b[1])/2),
-    (random.uniform(.009,.020),.012,math.hypot(dx,dz)),edge,.002)
-  lip.rotation_euler[1]=math.atan2(dx,dz)
+# V10: previous surface-mounted faceted chips and white lips removed.
+# Existing Boolean gouges above now provide physical depth.
 # Three climbing vines on the right front, crossing the edge onto the side.
 vine_mat=material("dark olive vine stems",(.085,.105,.035))
 leaf_mat=material("ivy leaf green",(.11,.22,.075))
