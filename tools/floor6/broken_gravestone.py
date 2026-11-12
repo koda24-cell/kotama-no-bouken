@@ -131,7 +131,7 @@ block("lower frame rail",(0,-.158,.43),(.78,.065,.052),edge,.009)
 # V8: reference upper-left mossy boulder: asymmetric, broad broken rock.
 # Double each rock's original V7 radius, keep six distinct large/small variants.
 # Add 100 sculpt coordinates PER rock and subdivide to 320 faces for genuine geometric detail.
-rock_specs=[(-.52,-.30,.115,.21),(-.47,.29,.11,.105),(.52,-.28,.12,.19),(.47,.28,.10,.09),(-.16,-.38,.09,.085),(.16,.37,.105,.16)]
+rock_specs=[(-.52,-.30,.115,.21),(-.47,.29,.11,.105),(.52,-.28,.12,.19),(.47,.28,.10,.09),(-.16,-.38,.09,.085),(.16,.37,.105,.16),(-.35,-.03,.10,.105),(.36,.035,.105,.115),(-.08,.06,.095,.09),(.06,-.16,.09,.105)]
 for i,(x,y,z,radius) in enumerate(rock_specs):
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3,radius=radius*2.0,location=(x,y,z))
  o=bpy.context.object;o.name="V8 reference weathered foundation rock %02d"%i
@@ -180,18 +180,37 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
  assert len(o.data.polygons)>=320
-# V12: dense low-profile moss patches directly on rock vertices.
-# Keep roots anchored to the real surface; avoid detached needle-like spikes.
-for rock in [ob for ob in bpy.context.scene.objects if ob.name.startswith("V8 reference weathered foundation rock")]:
+# V13 moss pad batch: shallow smooth surfaces instead of raised dots.
+def moss_batch(name,placements):
+ verts=[];faces=[]
+ for x,y,z,rx,ry,rz in placements:
+  base=len(verts)
+  verts.extend([(x-rx,y-ry,z),(x+rx,y-ry,z),(x+rx,y+ry,z),
+                (x-rx,y+ry,z),(x,y,z+rz)])
+  faces.extend([tuple(base+t for t in tri) for tri in
+                [(0,1,4),(1,2,4),(2,3,4),(3,0,4)]])
+ return mesh(name,verts,faces,moss)
+# V13: cohesive moss blankets on selected upper-facing rock patches,
+# with sparse isolated growth elsewhere. Avoid random green polka dots.
+for rock_index,rock in enumerate([ob for ob in bpy.context.scene.objects if ob.name.startswith("V8 reference weathered foundation rock")]):
  bpy.context.view_layer.update()
  upper=[v for v in rock.data.vertices if v.co.z>0]
- for k in range(90):
-  v=random.choice(upper);pos=rock.matrix_world @ v.co
-  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=random.uniform(.006,.014),
-   location=(pos.x,pos.y,pos.z+.003))
-  tuft=bpy.context.object;tuft.name="V12 rock moss pad %s_%d"%(rock.name[-2:],k)
-  tuft.scale=(1.35,1.35,.23)
-  tuft.data.materials.append(moss)
+ if not upper:continue
+ # A contiguous moss cap covers a selected region; neighboring rocks remain sparse.
+ cx=random.uniform(-.10,.10);cy=random.uniform(-.10,.10)
+ moss_positions=[]
+ for v in upper:
+  x,y,z=v.co
+  dist=math.hypot(x-cx,y-cy)
+  blanket=(rock_index%3!=2 and dist<.15 and z>.04)
+  sparse=(rock_index%3==2 and random.random()<.035)
+  if not (blanket or sparse):continue
+  pos=rock.matrix_world @ v.co
+  rad=random.uniform(.018,.032) if blanket else random.uniform(.007,.012)
+  moss_positions.append((pos.x,pos.y,pos.z+.001,rad,rad,rad*.15))
+ if moss_positions:
+  # merge into one mesh per rock, avoid separate pebbly particles
+  moss_batch("V13 cohesive rock moss %02d"%rock_index,moss_positions)
 # Tiny clustered moss nodules: irregular patch distribution, never blanket cover.
 for patch in range(20):
  cx=random.uniform(-.38,.38);cz=random.choice([random.uniform(.42,.70),random.uniform(1.02,1.43)])
