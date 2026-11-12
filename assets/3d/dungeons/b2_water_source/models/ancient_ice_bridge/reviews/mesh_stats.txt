@@ -1,1 +1,1 @@
-version=v02\nmesh_objects=808\ntriangles=13088\n
+version=v04\nmesh_objects=970\ntriangles=92808\n
