@@ -14,74 +14,16 @@
 
 正式保存は `docs/3d/ASSET_PROMOTION_POLICY.md` に従い、実レンダリング・承認後に行う。
 
-## 第2階層｜氷と水源
+## 階層別の素材一覧
 
-| 素材 | 探す場所 | 状態 |
-| --- | --- | --- |
-| 凍結した巨大滝・開放洞窟（V5試作） | [PR #282](https://github.com/koda24-cell/kotama-no-bouken/pull/282) / [Blenderレンダー #43152347095](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43152347095) / `tools/floor2/waterfall/build.py`・`render.py` | 最新レンダー成功。品質未承認、GLB/PNGはActions一時保管、正式Git保存・ゲーム統合は未実施 |
-| 氷河の水辺セット v0.4 | [PR #286](https://github.com/koda24-cell/kotama-no-bouken/pull/286) / [レンダー #43151778906](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151778906) | ユーザー完成承認、GLB/PNGはActions一時保管。正式Git保存未確認 |
-| 氷結した古代祭壇 | [PR #285](https://github.com/koda24-cell/kotama-no-bouken/pull/285) | 制作PR、採用・正式保存は別途確認 |
-| 氷結した古代石柱3種（通常・崩壊・氷結）V3 | [制作PR #289](https://github.com/koda24-cell/kotama-no-bouken/pull/289) / [完成素材保存PR #292](https://github.com/koda24-cell/kotama-no-bouken/pull/292) / [Blender実レンダー #43151444460](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151444460) | **完成承認・Git保存済み**（保存用PR #292のブランチ）。GLB 3点＋レビューPNG 9枚を実ファイル確認済み。**development未統合** |
-| 氷結水車の中庭 | [PR #283](https://github.com/koda24-cell/kotama-no-bouken/pull/283) | 制作PR、採用・正式保存は別途確認 |
-| 古代の氷橋 | [PR #278](https://github.com/koda24-cell/kotama-no-bouken/pull/278) | 承認版の保存PR。マージ状態を確認 |
-| 凍結した古代水路橋と滝 | [PR #268](https://github.com/koda24-cell/kotama-no-bouken/pull/268) | 制作PR |
-| 氷結した古代水門 | [PR #258](https://github.com/koda24-cell/kotama-no-bouken/pull/258) | 制作PR |
-
-### 古代遺跡の石柱セット（完成承認：V3、3種類）
-
-- **通常の石柱**：石材ドラム、彫刻・浮き彫り・石材の風化。品質評価V3時点5/10だがユーザー判断により完成。
-- **崩壊した石柱**：一体メッシュの斜め破断面、倒壊した上部・瓦礫。V3時点6/10、ユーザー完成承認。
-- **氷結した石柱**：氷の層・長短の異なる氷垂れ・発光結晶。V3時点6/10、ユーザー完成承認。
-- **制作バージョン**： [V1 PR #284](https://github.com/koda24-cell/kotama-no-bouken/pull/284) → [V2 PR #287](https://github.com/koda24-cell/kotama-no-bouken/pull/287) → [完成V3 PR #289](https://github.com/koda24-cell/kotama-no-bouken/pull/289)。従来版は履歴として保持。
-- **実レンダリング**：[GitHub Actions #43151444460](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151444460)（成功）、Artifact `13914630076`（3 GLB・9 PNG）。Actionsのみの保存は一時的。
-- **Gitへの保存**：[PR #292](https://github.com/koda24-cell/kotama-no-bouken/pull/292)のブランチにGLB 3点・PNG 9枚が存在することを確認（保存Actions [#43153006434](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43153006434) 成功）。**未マージでゲーム配置も未実施**。
-- **保存済みGLB**：[通常](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/b2-ancient-pillar-v3.glb) / [崩壊](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/b2-ruined-pillar-v3.glb) / [氷結](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/b2-glaciated-pillar-v3.glb)。
-- **保存済み確認用PNG**：[通常3方向](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/reviews/b2-ancient-pillar-v3) / [崩壊3方向](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/reviews/b2-ruined-pillar-v3) / [氷結3方向](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b2-frozen-pillars-v3-approved-archive-20261112/assets/models/floor2/reviews/b2-glaciated-pillar-v3)。各`front.png`・`side.png`・`angle.png` を確認。
-- **Blender造形コード**：`tools/b2-3d/create-frozen-pillars-v3.py`（V2とV1のコードも別ファイルに保持）。
-
-### 凍結した巨大滝の制作履歴
-
-- V1〜V4：同じ[PR #282](https://github.com/koda24-cell/kotama-no-bouken/pull/282)のコミット履歴に残る試作。岩の単純さ、滝の横倒し表示、人工的な滝壺などの問題を確認。
-- V5：GLB→Blender読み込み時のY-up/Z-up変換を検証・修正。最新[Actions #43152347095](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43152347095)は成功。ただし画像の品質評価・ユーザー承認は別途必要。
-- 生成元：`tools/floor2/waterfall/build.py`、`tools/floor2/waterfall/render.py`、`.github/workflows/floor2-waterfall-render.yml`。設計メモ：`docs/3d/FLOOR2_OPEN_CAVERN_WATERFALL_PLAN.md`。
-- GLB/PNGはActions Artifactsに期限付きで保存。**正式素材フォルダへの保存済みとは扱わない**。
-
-## 第3階層｜遺跡都市
-
-| 素材 | 探す場所 |
+| 階層 | 専用ページ |
 | --- | --- |
-| 鉄骨クレーン | [PR #270](https://github.com/koda24-cell/kotama-no-bouken/pull/270) |
-| 遺跡都市素材の統合 | [PR #204](https://github.com/koda24-cell/kotama-no-bouken/pull/204) |
-| 遺跡都市の配置 | [PR #207](https://github.com/koda24-cell/kotama-no-bouken/pull/207) |
-| 遺跡都市の視覚改善 | [PR #214](https://github.com/koda24-cell/kotama-no-bouken/pull/214) |
+| 第2階層｜氷と水源 | [第2階層の素材一覧](assets/FLOOR2_ASSETS.md) |
+| 第3階層｜遺跡都市 | [第3階層の素材一覧](assets/FLOOR3_ASSETS.md) |
+| 第4階層｜溶岩洞窟・廃坑 | [第4階層の素材一覧](assets/FLOOR4_ASSETS.md) |
+| 第5階層｜魔王城・ゴシック遺跡 | [第5階層の素材一覧](assets/FLOOR5_ASSETS.md) |
 
-## 第4階層｜溶岩洞窟・廃坑
-
-| 素材 | 探す場所 |
-| --- | --- |
-| 溶岩岩壁 v3（制作休止中） | [PR #280](https://github.com/koda24-cell/kotama-no-bouken/pull/280) / [再開手順](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/b4-lava-rockwall-v3-20261112/docs/3d/FLOOR4_LAVA_ROCKWALL_PAUSED_2026-11-12.md) |
-| 溶岩岩壁 V2（保存候補） | [GLB・PNG保存PR #276](https://github.com/koda24-cell/kotama-no-bouken/pull/276) |
-| 溶岩岩壁 初期案 | [PR #271](https://github.com/koda24-cell/kotama-no-bouken/pull/271) |
-| 廃坑巻上機 | [PR #265](https://github.com/koda24-cell/kotama-no-bouken/pull/265) |
-| 廃坑レール・補強 | [PR #257](https://github.com/koda24-cell/kotama-no-bouken/pull/257) / [PR #262](https://github.com/koda24-cell/kotama-no-bouken/pull/262) |
-| トロッコ・炉・採掘設備のBlender環境 | [PR #253](https://github.com/koda24-cell/kotama-no-bouken/pull/253) |
-| 廃坑小物 | [PR #199](https://github.com/koda24-cell/kotama-no-bouken/pull/199) |
-| ゲームへの配置 | [PR #205](https://github.com/koda24-cell/kotama-no-bouken/pull/205) |
-
-## 第5階層｜魔王城・ゴシック遺跡
-
-| 素材 | 探す場所 |
-| --- | --- |
-| ゴシック天井5種・承認保存 | [PR #279](https://github.com/koda24-cell/kotama-no-bouken/pull/279) |
-| ゴシック門・承認保存 | [PR #277](https://github.com/koda24-cell/kotama-no-bouken/pull/277) |
-| ゴシック門形状の修正 | [PR #281](https://github.com/koda24-cell/kotama-no-bouken/pull/281) |
-| 崩壊したシャンデリア | [PR #275](https://github.com/koda24-cell/kotama-no-bouken/pull/275) |
-| 交差リブ天井 | [PR #272](https://github.com/koda24-cell/kotama-no-bouken/pull/272) |
-| ゴシック天井5種・制作 | [PR #255](https://github.com/koda24-cell/kotama-no-bouken/pull/255) |
-| ゴシック門・制作 | [PR #254](https://github.com/koda24-cell/kotama-no-bouken/pull/254) |
-| 魔王の間の建築・装飾 | [PR #201](https://github.com/koda24-cell/kotama-no-bouken/pull/201) / [PR #200](https://github.com/koda24-cell/kotama-no-bouken/pull/200) |
-| 戦争遺跡の装飾 | [PR #196](https://github.com/koda24-cell/kotama-no-bouken/pull/196) |
-| ゲームへの配置 | [PR #206](https://github.com/koda24-cell/kotama-no-bouken/pull/206) |
+各階層の素材一覧には、モデル名・制作PR・GLB・確認用PNG・承認状況を記録します。完成素材は階層別の `assets/models/floorN/` に保存し、他階層の素材と混在させません。
 
 ## 探し方・取り出し方
 
