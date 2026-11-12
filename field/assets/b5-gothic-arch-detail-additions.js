@@ -377,5 +377,51 @@ export function enhanceB5GothicArch(THREE, root) {
   part.name='b5:gothicArch:salvagedCrownDebris';
  }
  extra.userData.crownSalvaged=crownSalvaged;
+ // Front-first masonry variation: three unmistakable pockets of MUCH smaller
+ // individual bricks. Keep all original stones and add sculpted mini courses.
+ // Facing the front camera means negative Z in the original Three.js scene.
+ // The new stones project forward beyond existing carved masonry, not inside it.
+ const tinyStoneA=new THREE.MeshStandardMaterial({color:0x918992,roughness:.98,flatShading:true});
+ const tinyStoneB=new THREE.MeshStandardMaterial({color:0x5e5762,roughness:.98,flatShading:true});
+ const tinyJoint=new THREE.MeshStandardMaterial({color:0x25232a,roughness:1});
+ const frontBrick=(x,y,w,h,depth,course,index)=>{
+  // Each small block has its own irregular chipped silhouette, bevel and depth.
+  const c=.035+(index%3)*.016;
+  const shape=new THREE.Shape();
+  const poly=[[-w/2+c,-h/2], [w/2-c,-h/2], [w/2,-h/2+c],
+   [w/2-c*.55,h/2-c], [w/2-c*1.8,h/2],
+   [-w/2+c,h/2],[-w/2,h/2-c*1.5],[-w/2,-h/2+c]];
+  poly.forEach(([px,py],i)=>i?shape.lineTo(px,py):shape.moveTo(px,py));
+  shape.closePath();
+  const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{
+   depth,bevelEnabled:true,bevelSize:.014,bevelThickness:.018,bevelSegments:2
+  }),index%5===0?tinyStoneA:index%4===0?tinyStoneB:carvedStone);
+  mesh.position.set(x,y,-2.34-(course%2)*.025);
+  mesh.name='b5:gothicArch:frontSmallBrick';
+  extra.add(mesh);
+ };
+ const brickPatch=(cx,cy,width,height,cols,rows,seed)=>{
+  // Dark backing makes the mortar joints visibly different from the old
+  // near-uniform large blocks, even at full front elevation.
+  box(cx,cy,-2.24,width+.12,height+.1,.12,tinyJoint);
+  const bw=width/cols,bh=height/rows;
+  for(let row=0;row<rows;row++){
+   const offset=row%2?bw*.48:0;
+   for(let col=0;col<=cols;col++){
+    const x=cx-width/2+col*bw+offset+bw*.5;
+    if(x>cx+width/2-bw*.22||x<cx-width/2+bw*.22)continue;
+    const y=cy-height/2+(row+.5)*bh;
+    const vary=((seed+row*7+col*11)%5-2)*.014;
+    frontBrick(x,y,bw*.87+vary,bh*.82-vary,.17,row,seed+row*cols+col);
+   }
+  }
+ };
+ // Distinct, asymmetric placement: left lower jamb, right upper jamb,
+ // and the left shoulder near the arch springing. These are not repeated
+ // uniformly around the doorway; each is a dramatic local change of scale.
+ brickPatch(-4.02,4.35,1.12,2.12,4,7,3);
+ brickPatch(4.03,7.25,1.16,1.78,4,6,19);
+ brickPatch(-4.18,11.25,1.13,1.56,4,5,37);
+ extra.userData.frontSmallBrickZones=3;
  root.add(extra);return root;
 }
