@@ -118,7 +118,7 @@ area((3,-4,6),450,5);area((-3,2,4),250,4)
 scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=48
 scene.render.resolution_x=900;scene.render.resolution_y=900;scene.render.resolution_percentage=100
 scene.view_settings.view_transform='AgX'
-scene.view_settings.look='Medium High Contrast'
+scene.view_settings.look='AgX - Medium High Contrast'
 for name,loc in [('front',(0,-4.8,1.65)),('side',(4.8,0,1.6)),('angle',(3.3,-4.0,2.25))]:
  bpy.ops.object.camera_add(location=loc);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=2.75;scene.camera=cam
  scene.render.filepath="render-output/floor6/broken_gravestone_v1_"+name+".png";bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
