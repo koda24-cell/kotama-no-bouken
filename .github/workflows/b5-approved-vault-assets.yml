@@ -48,16 +48,16 @@ jobs:
                   for filename in expected:
                       b=archive.read(files[filename])
                       assert len(b)>1024,filename
-                      assert b[:4]==(b'glTF' if filename.endswith('.glb') else b'\\x89PNG'),filename
+                      assert b[:4]==(b'glTF' if filename.endswith('.glb') else b'\x89PNG'),filename
                       dest=target/filename if filename.endswith('.glb') else review/filename
                       dest.write_bytes(b)
                       print('SAVED',dest,len(b),'bytes')
           (pathlib.Path('assets/models/floor5')/'APPROVED_VAULT_SOURCE.md').write_text(
-              '# Approved B5 Gothic vault assets\\n\\n'
-              'User approved the five vaulted-ceiling models on 2026-11-12.\\n\\n'
-              'Source GitHub Actions run: https://github.com/'+repo+'/actions/runs/'+os.environ['SOURCE_RUN']+'\\n'
-              'GLB files are in this directory; FRONT/BACK/TOP-OBLIQUE PNGs are in reviews/<kind>/.\\n'
-              'This branch is for permanent asset storage review; no game runtime integration.\\n')
+              '# Approved B5 Gothic vault assets\n\n'
+              'User approved the five vaulted-ceiling models on 2026-11-12.\n\n'
+              'Source GitHub Actions run: https://github.com/'+repo+'/actions/runs/'+os.environ['SOURCE_RUN']+'\n'
+              'GLB files are in this directory; FRONT/BACK/TOP-OBLIQUE PNGs are in reviews/<kind>/.\n'
+              'This branch is for permanent asset storage review; no game runtime integration.\n')
           PY
       - name: Commit GLB and PNG to dedicated promotion branch
         run: |
