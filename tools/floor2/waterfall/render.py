@@ -23,9 +23,10 @@ print('AXIS_CHECK hero_world_extent_xyz',list(extent))
 if extent.y>extent.z*1.45 and extent.y>extent.x*.7:
  from mathutils import Matrix
  rotation=Matrix.Rotation(1.5707963267948966,4,'X')
- for o in list(bpy.context.scene.objects):
-  if o.parent is None:
-   o.matrix_world=rotation@o.matrix_world
+ for o in meshes:
+  original_world=o.matrix_world.copy()
+  o.parent=None
+  o.matrix_world=rotation@original_world
  hlo,hhi=bounds(hero)
  extent=hhi-hlo
  print('AXIS_CORRECTED hero_world_extent_xyz',list(extent))
