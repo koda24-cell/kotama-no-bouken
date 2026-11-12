@@ -133,19 +133,36 @@ for i in range(8):
  groove("V7 branching fracture %02d"%i,points,random.uniform(.004,.009))
 # Lower transverse ornamental frame band
 block("lower frame rail",(0,-.158,.43),(.78,.065,.052),edge,.009)
-# V7: six large/small foundation rocks with twice the former vertex density.
-# Icosphere subdivision 2 = 80 triangular faces (vs subdivision 1 = 20).
-# Perturb vertices radially for asymmetric chipped rock silhouettes.
-rock_specs=[(-.62,-.30,.14,.21),(-.42,.30,.13,.105),(.58,-.27,.12,.19),(.49,.31,.11,.09),(-.12,-.48,.10,.085),(.12,.44,.10,.16)]
+# V8: reference upper-left mossy boulder: asymmetric, broad broken rock.
+# Double each rock's original V7 radius, keep six distinct large/small variants.
+# Add 50 explicitly indexed sculpt coordinates PER rock, not just extra smooth faces.
+rock_specs=[(-.82,-.46,.23,.21),(-.62,.46,.20,.105),(.81,-.43,.22,.19),(.66,.48,.18,.09),(-.18,-.66,.17,.085),(.20,.64,.21,.16)]
 for i,(x,y,z,radius) in enumerate(rock_specs):
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=radius,location=(x,y,z))
- o=bpy.context.object;o.name="V7 irregular foundation rock %02d"%i
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=radius*2.0,location=(x,y,z))
+ o=bpy.context.object;o.name="V8 reference weathered foundation rock %02d"%i
+ # Shape the entire surface into uneven planar chipped facets.
  for v in o.data.vertices:
-  factor=random.uniform(.79,1.22)
-  v.co.x*=factor*random.uniform(.92,1.08)
-  v.co.y*=factor*random.uniform(.85,1.12)
-  v.co.z*=factor*random.uniform(.75,1.08)
- o.scale=(random.uniform(.85,1.3),random.uniform(.7,1.15),random.uniform(.55,.9))
+  factor=random.uniform(.77,1.21)
+  v.co.x*=factor*random.uniform(.87,1.12)
+  v.co.y*=factor*random.uniform(.84,1.14)
+  v.co.z*=factor*random.uniform(.68,1.08)
+ # Fifty new deterministic sculpting locations per rock; each modifies the
+ # nearest actual mesh vertex, with local falloff to adjacent vertices.
+ # This changes the rock's geometry rather than placing floating decorations.
+ sculpt_coords=[]
+ for k in range(50):
+  theta=2*math.pi*((k*.61803398875)%1.0)
+  vertical=1-2*((k+.5)/50)
+  radial=math.sqrt(max(0,1-vertical*vertical))
+  sculpt_coords.append((radial*math.cos(theta),radial*math.sin(theta),vertical))
+ assert len(sculpt_coords)==50
+ for k,(sx,sy,sz) in enumerate(sculpt_coords):
+  nearest=min(o.data.vertices,key=lambda v:
+   (v.co.x/radius-sx)**2+(v.co.y/radius-sy)**2+(v.co.z/radius-sz)**2)
+  direction=nearest.co.normalized()
+  displacement=radius*random.uniform(-.075,.095)
+  nearest.co+=direction*displacement
+ o.scale=(random.uniform(.96,1.36),random.uniform(.72,1.12),random.uniform(.52,.84))
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
  assert len(o.data.polygons)>=40
