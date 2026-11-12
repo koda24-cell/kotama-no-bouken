@@ -45,20 +45,47 @@ def irregular_slab(name,x,y,z,radius,thick,material,seed):
  return mesh(name,verts,faces,material)
 def crystal_cluster(x,y,z,scale,seed):
  rng=random.Random(seed)
- for k in range(rng.randint(2,9)):
-  dx=rng.uniform(-.35,.35)*scale;dy=rng.uniform(-.3,.3)*scale
-  h=rng.uniform(.18,2.6)*scale;r=rng.uniform(.055,.34)*scale
-  if k==0:h*=rng.uniform(1.45,2.3);r*=1.3
-  elif k%3==0:h*=rng.uniform(.35,.65)
-  elif k%4==0:h*=rng.uniform(.65,1.6)
+ # Each cluster has a broad fractured ice foot fused to shoreline rock.
+ irregular_slab('Frozen ice root embedded in shoreline',x,y,z-.035,scale*rng.uniform(.38,.72),scale*.16,ice,seed+2000)
+ irregular_slab('Opaque frost at crystal root',x,y,z+.018,scale*rng.uniform(.23,.42),scale*.06,pale,seed+2100)
+ count=rng.randint(3,8)
+ for k in range(count):
+  dx=rng.uniform(-.45,.45)*scale;dy=rng.uniform(-.35,.35)*scale
+  category=rng.choices(['stub','chunk','spire'],weights=[4,5,1])[0]
+  if k==0:category=rng.choice(['chunk','spire'])
+  if category=='stub':
+   h=rng.uniform(.16,.48)*scale;radius=rng.uniform(.18,.35)*scale
+  elif category=='chunk':
+   h=rng.uniform(.45,1.15)*scale;radius=rng.uniform(.25,.52)*scale
+  else:
+   h=rng.uniform(1.2,2.0)*scale;radius=rng.uniform(.34,.58)*scale
+  # Broad root, asymmetric shoulders, irregular truncated or chipped tips.
+  n=rng.choice([5,6,7]);phase=rng.uniform(0,math.tau)
+  leanx=rng.uniform(-.22,.22)*h;leany=rng.uniform(-.18,.18)*h
+  base_z=z-rng.uniform(.035,.12)*scale
+  top_ratio=rng.uniform(.09,.28) if category!='stub' else rng.uniform(.28,.48)
+  heights=[0,.22,.58,.82,1.0]
+  widths=[1.3,1.08,rng.uniform(.67,.94),rng.uniform(.38,.68),top_ratio]
   verts=[]
-  for zz,rr in [(z,r),(z+h*.75,r*.7),(z+h,0.003)]:
-   for j in range(6):
-    a=j*math.tau/6
-    verts.append((x+dx+math.cos(a)*rr,y+dy+math.sin(a)*rr,zz))
-  faces=[(j,(j+1)%6,6+(j+1)%6,6+j) for j in range(6)]
-  faces += [(6+j,6+(j+1)%6,12+j) for j in range(6)]
-  mesh('Uneven hexagonal blue ice crystal',verts,faces,crystal)
+  angular=[rng.uniform(.78,1.18) for _ in range(n)]
+  for level,(f,w) in enumerate(zip(heights,widths)):
+   for j in range(n):
+    theta=phase+math.tau*j/n
+    radial=radius*w*angular[j]*rng.uniform(.93,1.07)
+    ox=leanx*f+(.04*scale if level==3 else 0)
+    oy=leany*f
+    zz=base_z+h*f+(rng.uniform(-.09,.09)*h if level==4 else 0)
+    verts.append((x+dx+ox+math.cos(theta)*radial,y+dy+oy+math.sin(theta)*radial,zz))
+  faces=[tuple(range(n-1,-1,-1))]
+  for level in range(len(heights)-1):
+   for j in range(n):
+    nj=(j+1)%n
+    faces.append((level*n+j,level*n+nj,(level+1)*n+nj,(level+1)*n+j))
+  # Flat irregular fractured top instead of every crystal terminating at a needle.
+  faces.append(tuple((len(heights)-1)*n+j for j in range(n)))
+  mesh('Asymmetric fractured broad ice formation',verts,faces,crystal if category=='spire' else ice)
+  if category=='chunk' and rng.random()<.5:
+   irregular_slab('Broken crystalline shoulder shelf',x+dx+leanx*.45,y+dy+leany*.45,base_z+h*.4,radius*.8,.06*scale,pale,seed*17+k)
 # Ground contours: uneven overlapping shale banks, central navigable water channel.
 for i in range(36):
  x=-10.4+i*.59
@@ -108,10 +135,10 @@ tri=0;count=0
 for o in bpy.context.scene.objects:
  if o.type=='MESH':
   o.data.calc_loop_triangles();tri+=len(o.data.loop_triangles);count+=1
-with open(out+'/mesh_stats.txt','w') as f:f.write('version=v02\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
+with open(out+'/mesh_stats.txt','w') as f:f.write('version=v03\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
 print('B2 SHORELINE',count,tri)
-bpy.ops.wm.save_as_mainfile(filepath=out+'/b2_glacial_shoreline_v02.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/b2_glacial_shoreline_v02.glb',export_format='GLB')
+bpy.ops.wm.save_as_mainfile(filepath=out+'/b2_glacial_shoreline_v03.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/b2_glacial_shoreline_v03.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('Cavern');bpy.context.scene.world=world
 world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.045,.085,.14,1)
 for loc,power,size in [((2,-9,13),2600,10),((-9,5,11),1700,8)]:
