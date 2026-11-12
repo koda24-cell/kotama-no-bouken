@@ -4,6 +4,7 @@ import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {createB4MineRigProps} from '../../field/b4-mine-rig-props.js';
 import {enhanceB4Furnace} from '../../field/b4-furnace-detail-additions.js';
 import {createB4DetailedRails} from '../../field/b4-detailed-rails.js';
+import {enhanceB4RailsV11} from '../../field/b4-rail-v11-additions.js';
 import {enhanceB4MineCart} from '../../field/b4-cart-detail-additions.js';
 class NodeFileReader {
  result=null;onloadend=null;onerror=null;
@@ -33,5 +34,14 @@ for(const [variant,opts] of [['straight',{}],['curved',{curve:.9}],['broken',{br
  rails.updateMatrixWorld(true);
  const data=await new GLTFExporter().parseAsync(rails,{binary:true,onlyVisible:true});
  const path='render-output/b4-rails-'+variant+'.glb';
+ fs.writeFileSync(path,Buffer.from(data));console.log(path);
+}
+
+// Export V11 variants separately so V10 assets remain a genuine before baseline.
+for(const [variant,opts] of [['straight',{}],['curved',{curve:.9}],['broken',{broken:true}]]){
+ const rails=enhanceB4RailsV11(createB4DetailedRails(opts),opts);
+ rails.updateMatrixWorld(true);
+ const data=await new GLTFExporter().parseAsync(rails,{binary:true,onlyVisible:true});
+ const path='render-output/b4-rails-v11-'+variant+'.glb';
  fs.writeFileSync(path,Buffer.from(data));console.log(path);
 }
