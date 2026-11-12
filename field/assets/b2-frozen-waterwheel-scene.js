@@ -346,5 +346,50 @@ export function createB2FrozenWaterwheelScene(THREE) {
   b.scale.set(1.4,.55,1.1);b.rotation.y=i*.47;
  }
 
+
+ // PASS 6: continuous stratified cave walls, with irregular recessed bays and overhangs.
+ // Wall silhouette varies in all three dimensions instead of repeating flat columns.
+ function caveWall(side){
+  const nx=26,ny=12,verts=[],tris=[];
+  for(let j=0;j<=ny;j++){
+   const t=j/ny, y=-.26+t*7.65;
+   for(let i=0;i<=nx;i++){
+    const q=i/nx,z=-6.2+12.4*q;
+    const ridge=Math.sin(q*17.1+side*.7)*.48+Math.sin(q*37.4+t*9.1)*.22;
+    const layered=Math.sin(t*17.8+q*8.5)*.19;
+    const x=side*(8.45-.95*Math.sin(Math.PI*t)+ridge+layered);
+    const warpedY=y+.18*Math.sin(q*21+t*4);
+    verts.push(x,warpedY,z);
+   }
+  }
+  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
+   const a=j*(nx+1)+i,b=a+1,c=a+(nx+1),d=c+1;
+   if(side>0)tris.push(a,c,b,b,c,d);
+   else tris.push(a,b,c,b,d,c);
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  geo.setIndex(tris);geo.computeVertexNormals();
+  const m=add(geo,darkStone);
+  m.material.side=THREE.DoubleSide;
+ }
+ caveWall(-1);caveWall(1);
+ // Long ridges link cliff feet to ceiling, breaking up the uniform wall silhouette.
+ for(const side of [-1,1])for(let i=0;i<8;i++){
+  const z=-5.3+i*1.5,offset=Math.sin(i*2.37)*.55;
+  const a=[side*(7.9+offset),-.18,z];
+  const b=[side*(8.25+offset*.7),3.3+(i%3)*.38,z+.35];
+  const c=[side*(7.65+offset*.5),6.75-(i%4)*.24,z+.68];
+  beam(a,b,.31+(i%3)*.11,darkStone);
+  beam(b,c,.24+(i%2)*.12,stone);
+ }
+ // Ceiling connection: broken broad stone shelves rather than isolated suspended rocks.
+ for(let i=0;i<9;i++){
+  const z=-5.2+i*1.3;
+  const x=Math.sin(i*1.7)*1.7;
+  const roof=add(new THREE.DodecahedronGeometry(1.1+(i%3)*.24,1),darkStone,x,7.35+Math.sin(i)*.3,z);
+  roof.scale.set(3.4,.65,1.5);roof.rotation.set(.04*i,.13*i,.03*i);
+ }
+
  return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost,oldTimber,paleIce])mat.dispose()}};
 }
