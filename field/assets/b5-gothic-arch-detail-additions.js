@@ -240,6 +240,10 @@ export function enhanceB5GothicArch(THREE, root) {
   // Each piece survives as fallen architectural debris outside the doorway.
   p.set(side*(6.0+(index%3)*.54),.28+(index%2)*.12,-1.1+(index%4)*.8);
   part.rotation.set(.15+(index%3)*.24,index*.57,side*(.95+(index%2)*.27));
+  // The relocated 5.6-unit slab remained a huge tilted plate at ground level.
+  // Keep its source mesh but reduce its exposed footprint into a plausible
+  // chipped fallen block; do not alter the shared source or doorway.
+  if(isUpperSlab)part.scale.set(1.65,.62,1.12);
   if(isHangingRib)part.scale.set(.42,2.0,.54);
  }
 
