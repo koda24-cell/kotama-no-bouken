@@ -26,7 +26,7 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
             set -eu
-            blender -b -t 2 --python tools/b5-vault-render/render.py -- render-output/b5-chandelier/ruined-gothic-chandelier.glb render-output/b5-chandelier
+            blender -b -t 2 --python tools/b5-chandelier-render/render.py -- render-output/b5-chandelier/ruined-gothic-chandelier.glb render-output/b5-chandelier
           '
       - name: Validate GLB and three PNG
         run: |
