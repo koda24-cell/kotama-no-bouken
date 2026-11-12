@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feature/b2-frozen-waterwheel-scene-20261112
+      - feature/b2-waterwheel-geometry-pass2-20261112
   workflow_dispatch:
 permissions:
   contents: read
