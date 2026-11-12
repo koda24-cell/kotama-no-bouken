@@ -8,6 +8,7 @@ on:
       - feature/b2-waterwheel-organic-ice-pass4-20261112
       - feature/b2-waterwheel-silhouette-pass5-20261112
       - feature/b2-waterwheel-cave-ridges-pass6-20261112
+      - feature/b2-waterwheel-deep-recess-pass7-20261112
   workflow_dispatch:
 permissions:
   contents: read
