@@ -1,0 +1,65 @@
+name: Promote approved F6 gravestone V19
+on:
+  push:
+    paths:
+      - .github/workflows/f6-gravestone-promote-approved.yml
+    branches:
+      - feature/f6-broken-gravestone-20261112
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download user-approved V19 artifact from successful render
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/runs/43223467100 --jq '.conclusion' | grep -qx success
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/13947301249/zip > /tmp/f6-v19.zip
+          mkdir -p /tmp/f6-v19
+          unzip -q /tmp/f6-v19.zip -d /tmp/f6-v19
+          find /tmp/f6-v19 -type f -maxdepth 3
+      - name: Verify exact V19 GLB and three PNG files
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/f6-v19')
+          for name in ['broken_gravestone_v1.glb','broken_gravestone_v1_front.png','broken_gravestone_v1_side.png','broken_gravestone_v1_angle.png']:
+              matches=list(p.rglob(name))
+              assert len(matches)==1, (name,matches)
+              f=matches[0]
+              assert f.stat().st_size>1000
+              header=f.read_bytes()[:4]
+              assert header==(b'glTF' if name.endswith('.glb') else b'\\x89PNG'),(name,header)
+              assert f.stat().st_size<100_000_000,(name,'GitHub 100MB limit')
+              print(name, f.stat().st_size)
+          PY
+      - name: Commit approved assets to feature branch
+        run: |
+          set -euo pipefail
+          mkdir -p assets/models/floor6/reviews/broken-gravestone-v19
+          cp "$(find /tmp/f6-v19 -name broken_gravestone_v1.glb -print -quit)" assets/models/floor6/broken_gravestone_v19.glb
+          for view in front side angle; do
+            cp "$(find /tmp/f6-v19 -name broken_gravestone_v1_${view}.png -print -quit)" "assets/models/floor6/reviews/broken-gravestone-v19/${view}.png"
+          done
+          cat > assets/models/floor6/reviews/broken-gravestone-v19/README.md <<'EOF'
+          # Floor 6 — Broken gravestone V19 (approved)
+          User approved the V19 appearance on 2026-11-12.
+          Source Blender generator: tools/floor6/broken_gravestone.py
+          Source GitHub Actions render: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43223467100
+          Source commit: 91829d08067540ec2c8cdfcde522d685f3b185b6
+          Model: ../../broken_gravestone_v19.glb
+          Reviews: front.png, side.png, angle.png
+          Approval applies to visual quality; game placement and performance optimization are separate.
+          EOF
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models/floor6
+          git commit -m 'Promote user-approved floor 6 gravestone V19 GLB and review renders'
+          git push origin HEAD:feature/f6-broken-gravestone-20261112
