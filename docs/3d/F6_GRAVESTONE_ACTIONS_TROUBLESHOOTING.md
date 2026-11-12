@@ -86,3 +86,9 @@ Actions: https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f6-gr
 - 正面・側面・斜めを実際にレンダリングし、画像ファイルの妥当性と見た目をレビューする。
 - 検査未実施・失敗はそのまま明記する。Actionsの構文検査は二重防御とし、最初の検査にしない。
 - この方針は第6層の墓石に限らず、今後の全階層の3D生成・修正に適用する。
+
+## V2 Blender 5.0.1設定値エラー（2026-11-12）
+- Run `43196340360` はPython構文検査とGLB生成を通過したが、レンダリング直前の `scene.view_settings.look='Medium High Contrast'` で停止。
+- 実ログの `TypeError` によりBlender 5.0.1の列挙値には `AgX - Medium High Contrast` が必要と判明。
+- 修正コミット `8152cdfada0e816c37dad3c94b7e9ff5d48e34a0` で対応。
+- 再発防止: Python構文検査だけではBlender APIの列挙値を検証できない。Blender本体で設定値を検査するプリフライトを追加すべき。修正後のレンダリング成功は別途確認する。
