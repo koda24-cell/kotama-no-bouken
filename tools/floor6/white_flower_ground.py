@@ -42,9 +42,9 @@ def add_flower(x,y,h,size,group):
   # Two curved quad segments per petal, with broader outer silhouette.
   base_left=c+v*size*.09
   base_right=c-v*size*.09
-  mid_left=c+u*size*.48+v*size*.43+Vector((0,0,size*.11))
+  mid_left=c+u*size*.48+v*size*.58+Vector((0,0,size*.11))
   mid_right=c+u*size*.48-v*size*.43+Vector((0,0,size*.11))
-  tip_left=c+u*size*.98+v*size*.13+Vector((0,0,size*.17))
+  tip_left=c+u*size*.98+v*size*.19+Vector((0,0,size*.17))
   tip_right=c+u*size*.98-v*size*.13+Vector((0,0,size*.17))
   add_quad(petals[group],tuple(base_left),tuple(mid_left),tuple(mid_right),tuple(base_right))
   add_quad(petals[group],tuple(mid_left),tuple(tip_left),tuple(tip_right),tuple(mid_right))
@@ -65,7 +65,7 @@ for i in range(NX):
  for j in range(NY):
   x=-1+(i+.5+random.uniform(-.37,.37))*2/NX
   y=-1+(j+.5+random.uniform(-.37,.37))*2/NY
-  add_flower(x,y,random.uniform(.055,.17),random.uniform(.038,.061),random.randrange(3))
+  add_flower(x,y,random.uniform(.045,.11),random.uniform(.068,.095),random.randrange(3))
 for k in range(194):
  x=random.uniform(-.99,.99);y=random.uniform(-.99,.99);h=random.uniform(.055,.15)
  batch=stems[k%3]
@@ -77,11 +77,12 @@ mesh("flower centers",*centers,yellow)
 poly_count=sum(len(o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH')
 assert poly_count==5000, f'Expected 5000 polygons, got {poly_count}'
 print('SOURCE_POLYGON_COUNT:',poly_count,flush=True)
+print('FLOWER_COUNT: 300',flush=True)
 # Export only geometry, never studio equipment.
 bpy.ops.object.select_all(action='DESELECT')
 for ob in bpy.context.scene.objects:
  if ob.type=='MESH':ob.select_set(True)
-bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,"white_flower_ground_v2.glb"),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,"white_flower_ground_v3.glb"),export_format='GLB',use_selection=True)
 bpy.ops.object.select_all(action='DESELECT')
 world=bpy.context.scene.world;world.color=(.28,.28,.28)
 world.use_nodes=True;world.node_tree.nodes["Background"].inputs["Strength"].default_value=.75
