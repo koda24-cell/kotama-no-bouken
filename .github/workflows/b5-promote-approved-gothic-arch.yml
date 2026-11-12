@@ -34,7 +34,7 @@ jobs:
           assert struct.unpack_from('<I',b,8)[0] == len(b)
           for name in ('front','back','high-angle'):
               b=pathlib.Path(f'/tmp/b5-approved/b5-gothic-arch-after-{name}.png').read_bytes()
-              assert b[:8] == b'\x89PNG\r\n\x1a\n'
+              assert b[:8] == bytes.fromhex('89504e470d0a1a0a')
           PY
       - name: Save approved files on isolated promotion branch
         run: |
