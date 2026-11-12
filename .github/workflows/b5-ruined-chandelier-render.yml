@@ -1,4 +1,5 @@
 name: B5 Ruined Gothic Chandelier Render
+# Render verification retry: source model unchanged.
 on:
   workflow_dispatch:
   push:
