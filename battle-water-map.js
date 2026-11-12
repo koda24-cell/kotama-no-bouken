@@ -82,6 +82,19 @@
     };
   }
   document.addEventListener("DOMContentLoaded",()=>{
+    // Place the battle map controls immediately above the right-side party area.
+    // Keep the original elements and handlers intact; only move their container.
+    const party=$("battle-party"), panel=$("battle-field-map"), toggle=$("battle-field-map-toggle");
+    if(party&&panel&&toggle){
+      let dock=$("battle-field-map-dock");
+      if(!dock){
+        dock=document.createElement("div");
+        dock.id="battle-field-map-dock";
+        dock.className="battle-field-map-dock";
+        party.before(dock);
+      }
+      dock.append(toggle,panel);
+    }
     const originalRender=window.renderBattle;
     if(typeof originalRender==="function")window.renderBattle=function(...args){
       const members=battleState.enemy?.members;
