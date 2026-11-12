@@ -16,8 +16,21 @@ def block(name,loc,scale,mat,bevel=.035):
  bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.dimensions=scale;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(mat)
  if bevel: mod=o.modifiers.new("worn stone edges","BEVEL");mod.width=bevel;mod.segments=2;o.modifiers.new("weighted normals","WEIGHTED_NORMAL")
  return o
-# Irregular headstone perimeter; front y negative
-outline=[(-.43,.36),(-.47,.68),(-.43,1.12),(-.36,1.44),(-.23,1.67),(-.09,1.73),(.015,1.62),(.11,1.47),(.18,1.49),(.24,1.31),(.34,1.25),(.39,1.11),(.45,.82),(.42,.36)]
+# Reference image silhouette sampled at ~3x previous point density (48 vertices).
+# Main shape retained; stepped shoulders and ornamental lobes added.
+outline=[
+ (-.43,.36),(-.45,.46),(-.46,.58),(-.47,.73),(-.47,.92),
+ (-.48,1.12),(-.47,1.22),(-.49,1.30),(-.53,1.34),
+ (-.55,1.39),(-.54,1.45),(-.51,1.50),(-.46,1.53),
+ (-.41,1.53),(-.37,1.51),(-.34,1.55),(-.32,1.61),
+ (-.28,1.67),(-.22,1.71),(-.15,1.74),(-.08,1.75),
+ (-.01,1.74),(.06,1.70),(.12,1.65),(.17,1.58),
+ (.19,1.52),(.24,1.54),(.30,1.54),(.35,1.51),
+ (.39,1.47),(.41,1.42),(.40,1.37),(.37,1.33),
+ (.35,1.29),(.39,1.25),(.42,1.20),(.44,1.12),
+ (.45,1.02),(.45,.91),(.44,.81),(.43,.70),
+ (.43,.60),(.42,.50),(.42,.40),(.42,.36)
+]
 # chipped upper right portion with broken zigzag profile
 n=len(outline);verts=[]
 for y in [-.13,.13]:
@@ -55,6 +68,29 @@ for i in range(len(outline)-1):
  seg=block("raised gravestone frame %02d"%i,((a[0]+b[0])/2,-.158,(a[1]+b[1])/2),
            (.058,.068,math.hypot(dx,dz)+.012),edge,.008)
  seg.rotation_euler[1]=math.atan2(dx,dz)
+# Reference-derived relief grooves: triple-density sampling of shoulders, arch, and frame.
+# These are surface-mounted recessed-looking lines, not destructive booleans.
+def sampled_arc(name,cx,cz,rx,rz,start,stop,count,width):
+ pts=[(cx+rx*math.cos(start+(stop-start)*i/(count-1)),
+       cz+rz*math.sin(start+(stop-start)*i/(count-1))) for i in range(count)]
+ groove(name,pts,width)
+# Main concentric arch: 33 samples, 3x the former coarse perimeter rhythm.
+sampled_arc("inner arched relief",-.04,1.38,.265,.245,.08,math.pi-.08,33,.012)
+sampled_arc("outer arched relief",-.04,1.38,.335,.315,.10,math.pi-.10,33,.008)
+# Circular shoulder scroll carvings, sampled at 24 points each.
+for side,cx in [("left",-.41),("right",.32)]:
+ sampled_arc(side+" shoulder volute",cx,1.41,.065,.069,0,math.pi*1.86,24,.010)
+ sampled_arc(side+" inner volute",cx,1.41,.033,.036,0,math.pi*1.75,18,.007)
+# Inner rectangular frame: 3x sampled edges with weathered offsets.
+for side,x in [("left",-.345),("right",.335)]:
+ pts=[(x+random.uniform(-.003,.003),.48+(1.01*i/29)) for i in range(30)]
+ groove("inner frame "+side,pts,.009)
+# Mineral runoff and stone scratches, concentrated below ornamental scrolls.
+for k in range(26):
+ x=random.uniform(-.35,.35);top=random.uniform(.83,1.44)
+ length=random.uniform(.055,.22)
+ pts=[(x+random.uniform(-.009,.009),top-length*i/5) for i in range(6)]
+ groove("eroded vertical streak %02d"%k,pts,.0035)
 # Lower transverse ornamental frame band
 block("lower frame rail",(0,-.158,.43),(.78,.065,.052),edge,.009)
 # Six differently sized fractured rocks. Icospheres subdivision 1 => 20 triangular faces each.
@@ -77,6 +113,30 @@ for patch in range(20):
   o=bpy.context.object;o.name="fine lumpy moss %02d_%02d"%(patch,k)
   o.scale=(1,random.uniform(.45,.9),random.uniform(.5,1.6))
   o.data.materials.append(moss)
+# Reference: heavier, irregular moss on plinth and near the lower side edges.
+# ~3x more moss clusters than V2, with 3-6 tiny nodules per micro-cluster.
+for patch in range(75):
+ base_x=random.uniform(-.54,.54)
+ base_z=random.choices([random.uniform(.27,.53),random.uniform(.53,1.55)],[.72,.28])[0]
+ if base_z>.60 and abs(base_x)<.26: continue  # keep central epitaph partially exposed
+ base_y=-.185 if base_z>.38 else -.28
+ for k in range(random.randint(6,13)):
+  x=base_x+random.gauss(0,.028)
+  z=base_z+random.gauss(0,.022)
+  if abs(x)>.55: continue
+  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,
+     radius=random.uniform(.004,.013),location=(x,base_y-random.uniform(0,.012),z))
+  o=bpy.context.object;o.name="reference moss tuft %02d_%02d"%(patch,k)
+  o.scale=(random.uniform(.8,1.4),random.uniform(.45,.8),random.uniform(.6,1.6))
+  o.data.materials.append(moss)
+# Dense green clumps atop the base ledge.
+for patch in range(95):
+ x=random.uniform(-.55,.55);y=random.uniform(-.20,.18)
+ z=random.uniform(.305,.365)
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=random.uniform(.009,.024),
+   location=(x,y,z))
+ o=bpy.context.object;o.name="ledge moss tuft %03d"%patch
+ o.scale=(1.4,1.0,random.uniform(.45,1.2));o.data.materials.append(moss)
 # English epitaph. Deliberately weathered and tiny; not required to be legible.
 epitaph=[
  "THE HERO OF OUR AGE",
@@ -98,7 +158,7 @@ for i,line in enumerate(epitaph):
 attached=[o for o in bpy.context.scene.objects if (
  o.name.startswith(("asymmetric fractured","raised gravestone frame","lower frame rail",
  "major fractured","branch fissure","secondary fissure","worn rune","moss patch",
- "fine lumpy moss","weathered epitaph","upper chipped plinth","lower cracked plinth")))]
+ "fine lumpy moss","reference moss tuft","ledge moss tuft","weathered epitaph","upper chipped plinth","lower cracked plinth")))]
 pivot=bpy.data.objects.new("leaning gravestone pivot",None)
 bpy.context.collection.objects.link(pivot);pivot.location=(0,0,.12)
 for o in attached:
