@@ -213,40 +213,38 @@ for rock_index,rock in enumerate([ob for ob in bpy.context.scene.objects
   if normal.z<.05:continue
   candidates.append((center,normal))
  if not candidates:continue
- # V18: two dense growth centers per rock, upper-facing and irregular.
- # Density decays nonlinearly from each center, leaving exposed rock edges.
- seeds=random.sample(candidates,min(2,len(candidates)))
- placements=[]
- # Keep total exactly 2x V17 by first generating V17-equivalent candidates,
- # then distributing twice as many nodules around weighted cluster centers.
+ # V19: eliminate polka-dot moss by packing existing nodules into
+ # 2-3 contiguous irregular colonies per boulder. Preserve total nodule count.
+ # Do not distribute single isolated particles on distant rock faces.
+ seeds=random.sample(candidates,min(3,len(candidates)))
  v17_total=sum(random.randint(2,5)*5 for center,normal in candidates
                if min((center-seed).length for seed,_ in seeds)<.18)
  target=v17_total*2
- weighted=[]
- for center,normal in candidates:
-  dist=min((center-seed).length for seed,_ in seeds)
-  # Slightly uneven radius avoids circular moss patches.
-  noise=.022*math.sin(center.x*37+rock_index)*math.cos(center.y*29)
-  radius=.22+noise
-  if dist>radius:continue
-  weight=max(.02,(1-dist/radius)**2.2)
-  weighted.append((center,normal,weight))
- if weighted and target:
-  total_weight=sum(w for _,_,w in weighted)
+ # Keep only face centers near a colony seed, with a strong preference
+ # for the seed's local surface orientation and upper-facing faces.
+ colonies=[]
+ for seed_center,seed_normal in seeds:
+  neighborhood=[]
+  for center,normal in candidates:
+   d=(center-seed_center).length
+   alignment=normal.dot(seed_normal)
+   if d<.115 and alignment>.70:
+    neighborhood.append((center,normal))
+  if neighborhood:colonies.append(neighborhood)
+ placements=[]
+ if colonies and target:
   for k in range(target):
-   pick=random.random()*total_weight
-   for center,normal,weight in weighted:
-    pick-=weight
-    if pick<=0:break
-   # Tight moss clumps at the core, sparse fine outliers at the edges.
-   spread=random.uniform(.004,.010)
+   neighborhood=colonies[k%len(colonies)]
+   center,normal=random.choice(neighborhood)
+   # Micro-nodules overlap to form one moss carpet rather than isolated dots.
+   spread=.0035
    offset=Vector((random.gauss(0,spread),random.gauss(0,spread),
-                  random.gauss(0,.002)))
+                  random.gauss(0,.001)))
    offset-=normal*offset.dot(normal)
-   rad=random.uniform(.005,.012)
-   placements.append((center+offset+normal*.0015,normal,rad))
+   rad=random.uniform(.009,.016)
+   placements.append((center+offset+normal*.001,normal,rad))
  if placements:
-  rock_moss_cluster("V18 double dense graded rock moss %02d"%rock_index,placements)
+  rock_moss_cluster("V19 contiguous rock moss colonies %02d"%rock_index,placements)
 # Tiny clustered moss nodules: irregular patch distribution, never blanket cover.
 for patch in range(20):
  cx=random.uniform(-.38,.38);cz=random.choice([random.uniform(.42,.70),random.uniform(1.02,1.43)])
