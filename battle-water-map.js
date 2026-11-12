@@ -6,8 +6,8 @@
   function render() {
     const panel=$("battle-field-map"), grid=$("battle-field-map-grid"), toggle=$("battle-field-map-toggle");
     if(!panel||!grid||typeof fieldState==="undefined"||typeof fieldArea!=="function")return;
-    if(toggle)toggle.hidden=fieldState.area!==2||!battleState?.encounterMode;
-    if(fieldState.area!==2){opened=false;panel.hidden=true;return;}
+    if(toggle)toggle.hidden=!battleState?.encounterMode;
+    if(!battleState?.encounterMode){opened=false;panel.hidden=true;return;}
     const a=fieldArea(fieldState.area,fieldState.floor); if(!a)return;
     const player=fieldPlayerTile(), cols=a.w, rows=a.h;
     grid.style.setProperty("--map-cols",cols);
@@ -137,6 +137,6 @@
     document.addEventListener("battle:start",render);
     document.addEventListener("turn:end",render);
     const observer=new MutationObserver(()=>{if(!document.querySelector("#battle.active"))opened=false;});
-    const battle=$("battle");if(battle)observer.observe(battle,{attributes:true,attributeFilter:["class"]});
+    if(battle)observer.observe(battle,{attributes:true,attributeFilter:["class"]});
   });
 })();
