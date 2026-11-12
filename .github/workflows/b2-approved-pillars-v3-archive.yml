@@ -27,8 +27,8 @@ jobs:
             mkdir -p "assets/models/floor2/reviews/$asset"
             cp "/tmp/b2-v3/$asset.glb" "assets/models/floor2/$asset.glb"
             for view in front side angle; do
-              test -s "/tmp/b2-v3/$asset-$view.png"
-              cp "/tmp/b2-v3/$asset-$view.png" "assets/models/floor2/reviews/$asset/$view.png"
+              test -s "/tmp/b2-v3/${asset%-v3}-$view.png"
+              cp "/tmp/b2-v3/${asset%-v3}-$view.png" "assets/models/floor2/reviews/$asset/$view.png"
             done
           done
           cat > assets/models/floor2/README.md <<'EOF'
