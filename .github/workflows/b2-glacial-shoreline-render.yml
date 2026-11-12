@@ -1,0 +1,29 @@
+name: B2 Glacial Shoreline Blender Render
+on:
+  push:
+    branches:
+      - feature/b2-glacial-shoreline-20261112
+    paths:
+      - tools/b2-render/build-glacial-shoreline.py
+      - .github/workflows/b2-glacial-shoreline-render.yml
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull Blender Docker
+        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: Generate GLB and three actual PNG renders
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b2-shoreline
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python tools/b2-render/build-glacial-shoreline.py
+          for f in b2_glacial_shoreline_v01.glb front.png side.png angle.png mesh_stats.txt; do
+            test -s "render-output/b2-shoreline/$f"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b2-glacial-shoreline-v01
+          path: render-output/b2-shoreline/
+          if-no-files-found: error
+          retention-days: 14
