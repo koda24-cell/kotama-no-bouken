@@ -81,7 +81,7 @@ print('SOURCE_POLYGON_COUNT:',poly_count,flush=True)
 bpy.ops.object.select_all(action='DESELECT')
 for ob in bpy.context.scene.objects:
  if ob.type=='MESH':ob.select_set(True)
-bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,"white_flower_ground_v1.glb"),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,"white_flower_ground_v2.glb"),export_format='GLB',use_selection=True)
 bpy.ops.object.select_all(action='DESELECT')
 world=bpy.context.scene.world;world.color=(.28,.28,.28)
 world.use_nodes=True;world.node_tree.nodes["Background"].inputs["Strength"].default_value=.75
@@ -98,6 +98,6 @@ scene.view_settings.view_transform='Standard';scene.view_settings.look='Medium H
 for view,loc in [('front',(0,-3,1.25)),('side',(3,0,1.3)),('angle',(2.6,-3,2.4)),('top',(0,-.001,4))]:
  cam.location=loc;direction=Vector((0,0,.05))-cam.location
  cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
- scene.render.filepath=os.path.join(OUT,"white_flower_ground_v1_"+view+".png")
+ scene.render.filepath=os.path.join(OUT,"white_flower_ground_v2_"+view+".png")
  bpy.ops.render.render(write_still=True)
 print("WHITE_FLOWER_GROUND_DONE")
