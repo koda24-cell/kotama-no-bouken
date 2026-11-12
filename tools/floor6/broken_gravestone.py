@@ -176,41 +176,48 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
    if neighbors:
     avg=sum((old[n] for n in neighbors),Vector((0,0,0)))/len(neighbors)
     v.co=old[vi].lerp(avg,.22)
+ # V14: preserve broad, readable rock facets instead of an egg-like silhouette.
+ # Coalesce many tiny triangles into larger planar regions while keeping irregular chips.
+ bpy.context.view_layer.objects.active=o
+ dec=o.modifiers.new("V14 broad erosion facets","DECIMATE")
+ dec.decimate_type='COLLAPSE';dec.ratio=.31
+ bpy.ops.object.modifier_apply(modifier=dec.name)
+ for face in o.data.polygons:face.use_smooth=False
  o.scale=(random.uniform(.96,1.36),random.uniform(.72,1.12),random.uniform(.48,.78))
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
- assert len(o.data.polygons)>=320
-# V13 moss pad batch: shallow smooth surfaces instead of raised dots.
-def moss_batch(name,placements):
- verts=[];faces=[]
- for x,y,z,rx,ry,rz in placements:
-  base=len(verts)
-  verts.extend([(x-rx,y-ry,z),(x+rx,y-ry,z),(x+rx,y+ry,z),
-                (x-rx,y+ry,z),(x,y,z+rz)])
-  faces.extend([tuple(base+t for t in tri) for tri in
-                [(0,1,4),(1,2,4),(2,3,4),(3,0,4)]])
- return mesh(name,verts,faces,moss)
-# V13: cohesive moss blankets on selected upper-facing rock patches,
-# with sparse isolated growth elsewhere. Avoid random green polka dots.
-for rock_index,rock in enumerate([ob for ob in bpy.context.scene.objects if ob.name.startswith("V8 reference weathered foundation rock")]):
+ assert len(o.data.polygons)>=180
+# V14: continuous, face-following moss covering the upper ~60% of each
+# foundation rock by vertical height. No independent point-like moss particles.
+# Moss triangles follow the original stone polygons with a tiny normal offset.
+for rock_index,rock in enumerate([ob for ob in bpy.context.scene.objects
+                                   if ob.name.startswith("V8 reference weathered foundation rock")]):
  bpy.context.view_layer.update()
- upper=[v for v in rock.data.vertices if v.co.z>0]
- if not upper:continue
- # A contiguous moss cap covers a selected region; neighboring rocks remain sparse.
- cx=random.uniform(-.10,.10);cy=random.uniform(-.10,.10)
- moss_positions=[]
- for v in upper:
-  x,y,z=v.co
-  dist=math.hypot(x-cx,y-cy)
-  blanket=(rock_index%3!=2 and dist<.15 and z>.04)
-  sparse=(rock_index%3==2 and random.random()<.035)
-  if not (blanket or sparse):continue
-  pos=rock.matrix_world @ v.co
-  rad=random.uniform(.018,.032) if blanket else random.uniform(.007,.012)
-  moss_positions.append((pos.x,pos.y,pos.z+.001,rad,rad,rad*.15))
- if moss_positions:
-  # merge into one mesh per rock, avoid separate pebbly particles
-  moss_batch("V13 cohesive rock moss %02d"%rock_index,moss_positions)
+ world=rock.matrix_world
+ coords=[world @ v.co for v in rock.data.vertices]
+ zmin=min(v.z for v in coords);zmax=max(v.z for v in coords)
+ cutoff=zmin+.40*(zmax-zmin)
+ # Mostly contiguous coverage on upper faces; leave occasional exposed patches.
+ moss_verts=[];moss_faces=[];lookup={}
+ for face in rock.data.polygons:
+  center=world @ face.center
+  if center.z<cutoff:continue
+  normal=(world.to_3x3() @ face.normal).normalized()
+  if normal.z<-.10:continue
+  # Small scattered bare stone windows, not a repeated dotted pattern.
+  if math.sin(center.x*14+rock_index)*math.cos(center.y*11)>.88:continue
+  face_ids=[]
+  for vi in face.vertices:
+   if vi not in lookup:
+    pos=coords[vi]+normal*.0025
+    lookup[vi]=len(moss_verts)
+    moss_verts.append(tuple(pos))
+   face_ids.append(lookup[vi])
+  if len(face_ids)>=3:moss_faces.append(tuple(face_ids))
+ if moss_faces:
+  cover=mesh("V14 upper 60 percent rock moss %02d"%rock_index,
+             moss_verts,moss_faces,moss)
+  # Surface remains thin and hugs each rock; no floating green gravel.
 # Tiny clustered moss nodules: irregular patch distribution, never blanket cover.
 for patch in range(20):
  cx=random.uniform(-.38,.38);cz=random.choice([random.uniform(.42,.70),random.uniform(1.02,1.43)])
