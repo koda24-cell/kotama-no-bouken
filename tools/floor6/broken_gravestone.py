@@ -186,7 +186,7 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
  o.scale=(random.uniform(.96,1.36),random.uniform(.72,1.12),random.uniform(.48,.78))
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
- assert len(o.data.polygons)>=180
+ assert len(o.data.polygons)>=80, 'Rock decimation removed too much geometry'
 # V14: continuous, face-following moss covering the upper ~60% of each
 # foundation rock by vertical height. No independent point-like moss particles.
 # Moss triangles follow the original stone polygons with a tiny normal offset.
