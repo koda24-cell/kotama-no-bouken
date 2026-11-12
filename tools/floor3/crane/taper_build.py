@@ -178,5 +178,41 @@ for k in range(12):
             box(f'v3_vine_leaf_{k}_{j}',(xx+.09,yy,z),(.21,.09,.13),MOSS2)
         lastx,lasty,lastz=xx,yy,z
 
+
+# V4: dense root-focused organic growth and readable drooping service cables.
+# Existing structural meshes remain untouched.
+MOSS_DARK=[38,68,35,255]; MOSS_LIGHT=[85,111,56,255]
+for side,y in enumerate((-1.32,1.32)):
+    # Irregular moss cushions along the lower frame, counterweight and pillar bases.
+    for i in range(165):
+        x=4.45+(i%15)*.285 + .065*math.sin(i*1.7)
+        z=.27+((i*11)%19)*.112
+        yy=y+(.045 if y>0 else -.045)*math.sin(i*2.9)
+        if z>1.85 and i%4: continue
+        mesh=trimesh.creation.icosphere(subdivisions=1,radius=1)
+        mesh.apply_scale([.14+.075*(i%4),.045+.018*(i%3),.085+.045*(i%5)])
+        mesh.apply_translation((x,yy,z))
+        add(f'v4_moss_cushion_{side}_{i}',mesh,MOSS_DARK if i%3 else MOSS_LIGHT)
+    # Multiple climbing creepers coil around support columns.
+    for k in range(8):
+        x=5.05+k*.46
+        points=[]
+        for j in range(22):
+            t=j/21
+            points.append((x+.13*math.sin(t*14+k),y+.075*math.cos(t*12+k),.32+3.05*t))
+        for j in range(21):
+            cylinder(f'v4_climber_{side}_{k}_{j}',points[j],points[j+1],.037,VINE,7)
+        for j in range(2,20,3):
+            px,py,pz=points[j]
+            leaf=trimesh.creation.icosphere(subdivisions=1,radius=1)
+            leaf.apply_scale([.23,.065,.12])
+            leaf.apply_translation((px+.10,py,pz))
+            add(f'v4_climber_leaf_{side}_{k}_{j}',leaf,MOSS_LIGHT)
+# Additional U loops on exposed near-facing edge: clear even in distant full-object renders.
+for i in range(5):
+    x=-7.1+i*3.05
+    cable_curve(f'v4_power_loop_{i}',(x,-1.42,4.30),(x+2.4,-1.42,4.30),1.52+.22*(i%2),r=.037)
+    cable_curve(f'v4_power_loop_pair_{i}',(x,-1.49,4.38),(x+2.4,-1.49,4.38),1.32+.18*(i%2),r=.021)
+
 scene.export('industrial_truss_crane_tapered.glb')
 print('geometry_count',len(scene.geometry))
