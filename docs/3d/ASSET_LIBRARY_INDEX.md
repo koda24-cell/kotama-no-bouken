@@ -18,6 +18,7 @@
 
 | 素材 | 探す場所 | 状態 |
 | --- | --- | --- |
+| 凍結した巨大滝・開放洞窟（V5試作） | [PR #282](https://github.com/koda24-cell/kotama-no-bouken/pull/282) / [Blenderレンダー #43152347095](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43152347095) / `tools/floor2/waterfall/build.py`・`render.py` | 最新レンダー成功。品質未承認、GLB/PNGはActions一時保管、正式Git保存・ゲーム統合は未実施 |
 | 氷河の水辺セット v0.4 | [PR #286](https://github.com/koda24-cell/kotama-no-bouken/pull/286) / [レンダー #43151778906](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151778906) | ユーザー完成承認、GLB/PNGはActions一時保管。正式Git保存未確認 |
 | 氷結した古代祭壇 | [PR #285](https://github.com/koda24-cell/kotama-no-bouken/pull/285) | 制作PR、採用・正式保存は別途確認 |
 | 氷結した古代石柱3種 | [PR #284](https://github.com/koda24-cell/kotama-no-bouken/pull/284) | 制作PR、採用・正式保存は別途確認 |
@@ -25,6 +26,13 @@
 | 古代の氷橋 | [PR #278](https://github.com/koda24-cell/kotama-no-bouken/pull/278) | 承認版の保存PR。マージ状態を確認 |
 | 凍結した古代水路橋と滝 | [PR #268](https://github.com/koda24-cell/kotama-no-bouken/pull/268) | 制作PR |
 | 氷結した古代水門 | [PR #258](https://github.com/koda24-cell/kotama-no-bouken/pull/258) | 制作PR |
+
+### 凍結した巨大滝の制作履歴
+
+- V1〜V4：同じ[PR #282](https://github.com/koda24-cell/kotama-no-bouken/pull/282)のコミット履歴に残る試作。岩の単純さ、滝の横倒し表示、人工的な滝壺などの問題を確認。
+- V5：GLB→Blender読み込み時のY-up/Z-up変換を検証・修正。最新[Actions #43152347095](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43152347095)は成功。ただし画像の品質評価・ユーザー承認は別途必要。
+- 生成元：`tools/floor2/waterfall/build.py`、`tools/floor2/waterfall/render.py`、`.github/workflows/floor2-waterfall-render.yml`。設計メモ：`docs/3d/FLOOR2_OPEN_CAVERN_WATERFALL_PLAN.md`。
+- GLB/PNGはActions Artifactsに期限付きで保存。**正式素材フォルダへの保存済みとは扱わない**。
 
 ## 第3階層｜遺跡都市
 
