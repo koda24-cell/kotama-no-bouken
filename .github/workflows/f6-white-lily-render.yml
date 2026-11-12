@@ -15,6 +15,7 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y blender
       - name: Generate single lily GLB and 4 renders
         run: |
+          set -euo pipefail
           mkdir -p render-output/floor6/white-lily-study
           blender -b -t 2 --python tools/floor6/white_lily_single.py 2>&1 | tee render-output/floor6/white-lily-study/blender.log
           grep -q 'WHITE_LILY_DONE' render-output/floor6/white-lily-study/blender.log
