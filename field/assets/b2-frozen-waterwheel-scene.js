@@ -202,5 +202,101 @@ export function createB2FrozenWaterwheelScene(THREE) {
   }
  }
 
- return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost])mat.dispose()}};
+
+ // PASS 4: large readable silhouettes, fractured wooden paddles, continuous masonry,
+ // and massive fused ice bodies. Additive: previous meshes remain unchanged.
+ const oldTimber=new THREE.MeshStandardMaterial({color:0x514b47,roughness:1});
+ const paleIce=new THREE.MeshStandardMaterial({color:0x84b8cd,roughness:.33,transparent:true,opacity:.92});
+ function irregularPrism(points,depth,mat){
+  const shape=new THREE.Shape();
+  shape.moveTo(points[0][0],points[0][1]);
+  for(let i=1;i<points.length;i++)shape.lineTo(points[i][0],points[i][1]);
+  shape.closePath();
+  const g=new THREE.ExtrudeGeometry(shape,{depth,steps:1,bevelEnabled:true,bevelThickness:.025,bevelSize:.022,bevelSegments:1});
+  return add(g,mat);
+ }
+ // Broken, large plank silhouette: several paddles have jagged missing outer thirds.
+ // Deliberately overlay fractured planks across the earlier simple wheel paddles.
+ for(const i of [1,2,7,8,10,11]){
+  const a=(i+.5)*Math.PI*2/spokes;
+  const y=cy+R*Math.cos(a),z=cz+R*Math.sin(a);
+  const intact=i%3===0;
+  const plank=irregularPrism([
+   [-.67,y-.12],[-.67,y+.10],[-.28,y+.20],
+   [.08,y+(intact?.16:.035)],[.32,y+(intact?.10:-.16)],
+   [.67,y+(intact?.08:-.28)],[.67,y-.12]
+  ],.17,oldTimber);
+  plank.position.z=z-.085;
+  plank.rotation.x=-a*.12;
+  if(!intact){
+   const snapped=add(new THREE.TetrahedronGeometry(.29,0),oldTimber,(i%2?-.45:.46),y-.27,z);
+   snapped.rotation.set(a*.2,i*.4,a*.5);
+  }
+ }
+ // Broad continuous stone arch backing: narrow voussoir seams remain visible on its face.
+ // This softens the old straight-beam silhouette without deleting original support geometry.
+ for(const z of [-5.25,5.25])for(const x of [-5.75,5.75]){
+  for(const side of [-1,1]){
+   const pts=[];
+   for(let k=0;k<=18;k++){
+    const t=k/18,u=1-t;
+    const bx=x+side*1.07;
+    const xx=u*u*bx+2*u*t*(bx+side*.10)+t*t*x;
+    const yy=u*u*3.25+2*u*t*4.05+t*t*4.45;
+    pts.push([xx,yy]);
+   }
+   const outline=[...pts.map(p=>[p[0],p[1]+.13]),...pts.slice().reverse().map(p=>[p[0],p[1]-.13])];
+   const m=irregularPrism(outline,.86,stone);
+   m.position.z=z-.43;
+  }
+  // Tapered spandrel mass links the arch to adjacent ruin, rather than floating trim.
+  for(const side of [-1,1]){
+   const x0=x+side*1.02;
+   const pier=add(new THREE.DodecahedronGeometry(.64,1),darkStone,x0,3.33,z);
+   pier.scale.set(.75,1.2,.8);pier.rotation.z=side*.12;
+  }
+ }
+ // Fused jagged ice masses: asymmetric multi-section meshes, not identical cones.
+ function iceMass(cx0,cz0,baseY,height,rx,rz,seed,mat){
+  const rings=6,segments=9,positions=[],indices=[];
+  for(let j=0;j<rings;j++){
+   const t=j/(rings-1);
+   const spread=[1,1.13,.89,.63,.34,.035][j];
+   const centerX=cx0+Math.sin(seed*1.31+j*.83)*rx*.19*t;
+   const centerZ=cz0+Math.cos(seed*.91+j*.71)*rz*.16*t;
+   for(let k=0;k<segments;k++){
+    const a=2*Math.PI*k/segments;
+    const noise=1+.20*Math.sin(k*2.37+seed)+.13*Math.cos(k*3.4+j*1.4+seed);
+    positions.push(centerX+Math.cos(a)*rx*spread*noise,
+      baseY+height*t+Math.sin(k*2.1+seed)*.035,
+      centerZ+Math.sin(a)*rz*spread*noise);
+   }
+  }
+  for(let j=0;j<rings-1;j++)for(let k=0;k<segments;k++){
+   const a=j*segments+k,b=j*segments+(k+1)%segments,c=(j+1)*segments+k,d=(j+1)*segments+(k+1)%segments;
+   indices.push(a,b,c,b,d,c);
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  geo.setIndex(indices);geo.computeVertexNormals();
+  return add(geo,mat);
+ }
+ // Ice grows out of the wall, bridges across masonry and climbs the wheel supports.
+ for(const side of [-1,1]){
+  for(let i=0;i<4;i++){
+   const x=side*(3.6+i*.78),z=(i-1.5)*1.25;
+   iceMass(x,z,.03,1.55+i*.56,.45+i*.11,.48+i*.06,3+i*2,paleIce);
+   iceMass(x+side*.29,z+.22,.35,.7+i*.28,.44,.52,7+i,ice);
+  }
+ }
+ // One large frozen spillway cluster rises from the channel near the wheel.
+ iceMass(1.32,1.55,-.08,2.35,.85,.94,11,paleIce);
+ iceMass(.76,1.88,-.08,1.65,.64,.75,15,ice);
+ iceMass(1.91,1.85,-.08,1.43,.55,.62,19,paleIce);
+ // A jagged frozen curtain is attached to the rear arch and cave rock.
+ for(let i=0;i<5;i++){
+  iceMass(-5.1+i*.49,-4.88,2.5,1.25+(i%3)*.62,.35,.42,25+i, i%2?ice:paleIce);
+ }
+
+ return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost,oldTimber,paleIce])mat.dispose()}};
 }
