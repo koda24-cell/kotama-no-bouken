@@ -18,12 +18,12 @@ jobs:
           set -euo pipefail
           mkdir -p render-output/b2-shoreline
           docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python tools/b2-render/build-glacial-shoreline.py
-          for f in b2_glacial_shoreline_v01.glb front.png side.png angle.png mesh_stats.txt; do
+          for f in b2_glacial_shoreline_v02.glb front.png side.png angle.png mesh_stats.txt; do
             test -s "render-output/b2-shoreline/$f"
           done
       - uses: actions/upload-artifact@v4
         with:
-          name: b2-glacial-shoreline-v01
+          name: b2-glacial-shoreline-v02
           path: render-output/b2-shoreline/
           if-no-files-found: error
           retention-days: 14
