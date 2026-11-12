@@ -67,7 +67,7 @@ mesh("flower centers",*centers,yellow)
 # Mandatory preflight: exactly 5000 source mesh polygons, including the ground.
 poly_count=sum(len(o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH')
 assert poly_count==5000, f'Expected 5000 polygons, got {poly_count}'
-print('SOURCE_POLYGON_COUNT:',poly_count)
+print('SOURCE_POLYGON_COUNT:',poly_count,flush=True)
 # Export only geometry, never studio equipment.
 bpy.ops.object.select_all(action='DESELECT')
 for ob in bpy.context.scene.objects:
