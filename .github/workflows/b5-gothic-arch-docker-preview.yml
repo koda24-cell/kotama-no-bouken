@@ -2,7 +2,7 @@ name: B5 Gothic Arch Docker Preview
 on:
   workflow_dispatch:
   push:
-    branches: [feature/b5-gothic-arch-docker-preview-20261112]
+    branches: [feature/b5-gothic-arch-docker-preview-20261112, feature/b5-gothic-arch-slab-proportions-20261112]
     paths:
       - 'field/assets/b5-gothic-arch-detail-additions.js'
       - 'tools/b5-render/**'
