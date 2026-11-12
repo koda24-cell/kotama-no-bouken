@@ -103,7 +103,8 @@ for x in (-8.8,-3.1,2.9,8.6):
   cube('Lantern metal cap',(x,y*1.12,6.98),(.46,.42,.15),bronze)
   cube('Lantern luminous amber core',(x,y*1.12,6.67),(.3,.27,.48),glow)
   cube('Lantern lower base',(x,y*1.12,6.39),(.4,.38,.13),bronze)
-\ncube('Frozen pool',(0,-2,.035),(23,5,.07),water)
+
+cube('Frozen pool',(0,-2,.035),(23,5,.07),water)
 bpy.context.view_layer.update()
 tri=0;count=0
 for o in bpy.context.scene.objects:
