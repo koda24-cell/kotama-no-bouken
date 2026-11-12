@@ -1,0 +1,86 @@
+name: Archive Approved B2 Frozen Waterwheel
+on:
+  push:
+    branches:
+      - docs/asset-library-index-20261112
+    paths:
+      - .github/workflows/b2-approved-waterwheel-archive.yml
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Archive verified GLB and Blender screenshots without overwriting existing files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Source PR #297; successful Blender run #43156109788; Artifact #13915538575.
+          curl -fL --retry 3 \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/13915538575/zip" \
+            -o /tmp/b2-waterwheel-verified.zip
+          mkdir -p /tmp/b2-waterwheel-verified
+          unzip -q /tmp/b2-waterwheel-verified.zip -d /tmp/b2-waterwheel-verified
+          find /tmp/b2-waterwheel-verified -type f -print
+
+          SOURCE=/tmp/b2-waterwheel-verified
+          GLB="$SOURCE/frozen-waterwheel-courtyard.glb"
+          PNG="$SOURCE/png"
+          MODEL=assets/models/floor2/b2-frozen-waterwheel-courtyard.glb
+          REVIEWS=assets/models/floor2/reviews/b2-frozen-waterwheel-courtyard
+          test -s "$GLB"
+          test -s "$PNG/frozen-waterwheel-courtyard-front.png"
+          test -s "$PNG/frozen-waterwheel-courtyard-back.png"
+          test -s "$PNG/frozen-waterwheel-courtyard-top-oblique.png"
+          for path in "$MODEL" "$REVIEWS/front.png" "$REVIEWS/back.png" "$REVIEWS/angle.png"; do
+            if test -e "$path"; then
+              echo "Already exists; refusing to overwrite: $path" >&2
+              exit 1
+            fi
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          source = Path('/tmp/b2-waterwheel-verified')
+          glb = source / 'frozen-waterwheel-courtyard.glb'
+          assert glb.read_bytes()[:4] == b'glTF', "Invalid GLB header"
+          pngs = [
+              source / 'png' / f'frozen-waterwheel-courtyard-{view}.png'
+              for view in ['front', 'back', 'top-oblique']
+          ]
+          for png in pngs:
+              assert png.read_bytes()[:8] == b'\x89PNG\r\n\x1a\n', f'Invalid PNG: {png}'
+          print('Verified GLB + 3 authentic Blender PNGs')
+          PY
+          mkdir -p "$(dirname "$MODEL")" "$REVIEWS"
+          cp "$GLB" "$MODEL"
+          cp "$PNG/frozen-waterwheel-courtyard-front.png" "$REVIEWS/front.png"
+          cp "$PNG/frozen-waterwheel-courtyard-back.png" "$REVIEWS/back.png"
+          cp "$PNG/frozen-waterwheel-courtyard-top-oblique.png" "$REVIEWS/angle.png"
+          cat > "$REVIEWS/README.md" <<'EOF'
+          # 氷結した古代水車 / 第2階層・正式素材保存
+
+          ユーザー完成承認: 2026-11-12。
+
+          - GLB: ../../b2-frozen-waterwheel-courtyard.glb
+          - レンダリング: front.png（正面）、back.png（背面）、angle.png（斜め上）
+          - 最終造形PR: https://github.com/koda24-cell/kotama-no-bouken/pull/297
+          - 実Blender成功run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43156109788
+          - Artifact ID: 13915538575
+
+          保存ファイルはGitHub ActionsでThree.jsソースからGLB変換・Blender描画したもの。
+          チャット内のVTK再構成プレビューとは同一ではありません。
+          この保存PRはゲームへの実配置を含みません。
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$MODEL" "$REVIEWS"
+          git commit -m "Archive approved B2 waterwheel GLB and 3 verified Blender previews"
+          git push origin HEAD:docs/asset-library-index-20261112
