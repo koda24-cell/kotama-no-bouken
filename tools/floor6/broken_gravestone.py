@@ -159,7 +159,7 @@ def moss_batch(name,placements):
   faces.extend(tuple(base+v for v in face) for face in ico_faces)
  return mesh(name,verts,faces,moss)
 lower_moss=[]
-for patch in range(750):  # retain V4's moss population, redistribute across all sides
+for patch in range(375):  # half the V5 moss clusters, keep spatial distribution
  side=random.choices(["front","back","left","right"],[.28,.28,.22,.22])[0]
  base_z=random.choices([random.uniform(.27,.67),random.uniform(.67,1.45)],[.74,.26])[0]
  base_x=random.uniform(-.45,.45)
@@ -184,11 +184,67 @@ for patch in range(750):  # retain V4's moss population, redistribute across all
   lower_moss.append((x,y,z,rx,ry,rz))
 moss_batch("V4 dense lower moss",lower_moss)
 ledge_moss=[]
-for patch in range(950): # 10x previous 95 clumps
+for patch in range(475): # half the V5 ledge moss; still densely carpeted
  x=random.uniform(-.56,.56);y=random.uniform(-.21,.18);z=random.uniform(.30,.37)
  rad=random.uniform(.018,.048) # 2x prior .009-.024
  ledge_moss.append((x,y,z,rad*1.2,rad*.85,rad*.75))
 moss_batch("V4 dense ledge moss",ledge_moss)
+# V6: carved-looking chipped erosion with actual irregular faceted surface patches.
+# Reference has missing stone wedges and fractured strata, NOT a central hole.
+# 36 irregular depressions on front and side edges, concentrated around existing cracks.
+chip_mat=material("deep fractured recess",(.085,.093,.086))
+for i in range(36):
+ z=random.uniform(.50,1.63)
+ x=random.choice([-1,1])*random.uniform(.23,.43) if i%3 else random.uniform(-.28,.28)
+ w=random.uniform(.018,.063);h=random.uniform(.025,.085)
+ # recessed dark faceted polygon, placed slightly behind stone surface;
+ # bright uneven lips around it convey a chipped depression.
+ points=[(x-w,z-h*.4),(x-w*.55,z+h*.6),(x+w*.2,z+h),(x+w,z+h*.25),(x+w*.65,z-h)]
+ front_y=-.148
+ verts_chip=[(px,front_y,pz) for px,pz in points]
+ verts_chip.append((x,front_y-.004,z))
+ chip=mesh("V6 faceted erosion recess %02d"%i,verts_chip,
+  [(5,j,(j+1)%5) for j in range(5)],chip_mat)
+ for j in (0,2,3):
+  a=points[j];b=points[(j+1)%5]
+  dx=b[0]-a[0];dz=b[1]-a[1]
+  lip=block("V6 fractured lip %02d_%d"%(i,j),
+    ((a[0]+b[0])/2,-.156,(a[1]+b[1])/2),
+    (random.uniform(.009,.020),.012,math.hypot(dx,dz)),edge,.002)
+  lip.rotation_euler[1]=math.atan2(dx,dz)
+# Three climbing vines on the right front, crossing the edge onto the side.
+vine_mat=material("dark olive vine stems",(.085,.105,.035))
+leaf_mat=material("ivy leaf green",(.11,.22,.075))
+leaf_dark=material("aged ivy leaves",(.065,.14,.045))
+def ivy_leaf(name,x,y,z,size,angle):
+ # Five-vertex pointed ivy blade, not a sphere; mild bend creates dimensionality.
+ v=[(x,y,z+size),(x-size*.52,y-.002,z+size*.17),
+    (x-size*.34,y-.004,z-size*.42),(x,y-.008,z-size*.70),
+    (x+size*.43,y-.002,z-size*.34),(x+size*.55,y,z+size*.18)]
+ o=mesh(name,v,[(0,1,2,3),(0,3,4,5)],leaf_mat if random.random()>.3 else leaf_dark)
+ o.rotation_euler[1]=angle
+ return o
+for vine_id in range(3):
+ points=[]
+ for i in range(26):
+  t=i/25
+  z=.34+t*(1.17+vine_id*.10)
+  x=.27+.13*math.sin(t*math.pi*2.0+vine_id*.8)+vine_id*.025
+  y=-.195 if x<.43 else -.13+min(.15,(x-.43)*1.9)
+  points.append((x,y,z))
+ # smooth 3D tube stems, wrapping right edge where x exceeds .43
+ curve=bpy.data.curves.new("ivy stem curve %d"%vine_id,'CURVE');curve.dimensions='3D'
+ curve.bevel_depth=.006;curve.bevel_resolution=2
+ spline=curve.splines.new('POLY');spline.points.add(len(points)-1)
+ for p,xyz in zip(spline.points,points):p.co=(*xyz,1)
+ obj=bpy.data.objects.new("V6 climbing vine %d"%vine_id,curve)
+ bpy.context.collection.objects.link(obj);obj.data.materials.append(vine_mat)
+ for j in range(2,25,2):
+  x,y,z=points[j]
+  for side in (-1,1):
+   ivy_leaf("V6 ivy leaf %d_%d_%d"%(vine_id,j,side),
+    x+side*random.uniform(.024,.065),y-.007,z+random.uniform(-.025,.025),
+    random.uniform(.025,.050),side*random.uniform(.05,.35))
 # English epitaph. Deliberately weathered and tiny; not required to be legible.
 epitaph=[
  "THE HERO OF OUR AGE",
@@ -210,7 +266,7 @@ for i,line in enumerate(epitaph):
 attached=[o for o in bpy.context.scene.objects if (
  o.name.startswith(("asymmetric fractured","raised gravestone frame","lower frame rail",
  "major fractured","branch fissure","secondary fissure","worn rune","moss patch",
- "fine lumpy moss","V4 dense lower moss","V4 dense ledge moss","V4 erosion groove","V4 exposed chipped edge","weathered epitaph","upper chipped plinth","lower cracked plinth")))]
+ "fine lumpy moss","V4 dense lower moss","V4 dense ledge moss","V4 erosion groove","V4 exposed chipped edge","V6 faceted erosion","V6 fractured lip","V6 climbing vine","V6 ivy leaf","weathered epitaph","upper chipped plinth","lower cracked plinth")))]
 pivot=bpy.data.objects.new("leaning gravestone pivot",None)
 bpy.context.collection.objects.link(pivot);pivot.location=(0,0,.12)
 for o in attached:
