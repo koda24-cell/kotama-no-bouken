@@ -104,16 +104,61 @@ for x in (-8.8,-3.1,2.9,8.6):
   cube('Lantern luminous amber core',(x,y*1.12,6.67),(.3,.27,.48),glow)
   cube('Lantern lower base',(x,y*1.12,6.39),(.4,.38,.13),bronze)
 
+# v0.3: sculptural broken stone skins, chipped faces and deep fault clefts.
+# Existing load-bearing pier blocks, arch rings, ice and railings remain untouched.
+chipstone=mat('Fresh fractured limestone',(.46,.53,.57),0,.82)
+shadowstone=mat('Deep stone fracture interior',(.095,.14,.18),0,.92)
+def fractured_face(n,x,y,z,w,h,depth,seed):
+ rng=random.Random(seed)
+ verts=[]
+ # irregular eight-point silhouette with inset central gouge
+ outline=[(-w*.5,-h*.46),(-w*.2,-h*.52),(w*.27,-h*.47),(w*.5,-h*.2),
+          (w*.43,h*.43),(w*.08,h*.53),(-w*.35,h*.45),(-w*.53,h*.09)]
+ for dx,dz in outline:
+  verts.append((x+dx+rng.uniform(-.06,.06),y,z+dz+rng.uniform(-.08,.08)))
+ verts.append((x+rng.uniform(-.15,.15),y-depth,z+rng.uniform(-.2,.2)))
+ faces=[(i,(i+1)%8,8) for i in range(8)]
+ prism(n,verts,faces,chipstone)
+ # dark fracture cleft cutout illusion with real recessed triangular walls
+ v=[(x-w*.15,y-.014,z+h*.42),(x+w*.13,y-.014,z-h*.34),
+    (x+w*.27,y-.012,z-h*.44),(x-w*.01,y-depth*.7,z-h*.08)]
+ prism('Recessed jagged split',v,[(0,1,3),(1,2,3)],shadowstone)
+# Damage is intentionally asymmetrical: bridge piers have distinct scars.
+for idx,(x,side) in enumerate([(-8.55,-1),(-3.45,1),(-2.55,-1),(2.55,1),(3.45,-1),(8.55,1)]):
+ for tier in (2,4,6):
+  z=.55+tier*.8
+  y=side*1.23
+  fractured_face('Chipped structural pier stone',x+(.13 if tier%2 else -.17),y,z,
+                 1.04,.68,.16,idx*31+tier)
+  # Angular detached spalls inside fracture: deliberately not spherical rubble
+  for k in range(3):
+   rng=random.Random(idx*100+tier*13+k)
+   px=x+rng.uniform(-.44,.44);pz=z+rng.uniform(-.3,.3)
+   vs=[(px-.11,y+side*.02,pz-.08),(px+.16,y+side*.035,pz-.04),
+       (px+.04,y+side*.15,pz+.13),(px-.06,y-side*.04,pz+.04)]
+   prism('Splintered stone chip',vs,[(0,1,2),(0,2,3),(0,3,1),(1,3,2)],chipstone)
+# Interrupted sculpted bands and cracked keystone-like detail on each arch.
+for cx in (-6,0,6):
+ for side in (-1,1):
+  y=side*1.24
+  for z,w in ((.55,1.58),(1.03,1.48),(7.55,1.62)):
+   for x in (cx-2.55,cx+2.55):
+    cube('Moulded pier fascia',(x,y,z),(w,.13,.12),stone)
+  for j in (3,8,13):
+   a=math.pi*(j+.5)/18
+   x=cx+2.77*math.cos(a);z=4.65+2.77*math.sin(a)
+   fractured_face('Arch ring chisel fracture',x,y,z,.36,.29,.075,99+int(cx)*13+j)
+
 cube('Frozen pool',(0,-2,.035),(23,5,.07),water)
 bpy.context.view_layer.update()
 tri=0;count=0
 for o in bpy.context.scene.objects:
  if o.type=='MESH':
   o.data.calc_loop_triangles();tri+=len(o.data.loop_triangles);count+=1
-with open(out+'/mesh_stats.txt','w') as f:f.write('version=v02\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
-print('ICE BRIDGE V02',count,tri)
-bpy.ops.wm.save_as_mainfile(filepath=out+'/ancient_ice_bridge_v02.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/ruined_aqueduct_v01.glb',export_format='GLB')
+with open(out+'/mesh_stats.txt','w') as f:f.write('version=v03\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
+print('ICE BRIDGE V03',count,tri)
+bpy.ops.wm.save_as_mainfile(filepath=out+'/ancient_ice_bridge_v03.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/ancient_ice_bridge_v03.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.03,.06,.12,1)
 for loc,power in [((1,-8,15),2600),((-10,4,10),1600)]:
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=9;o.rotation_euler=(Vector((0,0,4))-o.location).to_track_quat('-Z','Y').to_euler()
