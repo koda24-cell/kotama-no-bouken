@@ -6,6 +6,11 @@ on:
     paths:
       - 'tools/floor6/**'
       - '.github/workflows/f6-gravestone-render.yml'
+  pull_request:
+    branches: [development]
+    paths:
+      - 'tools/floor6/**'
+      - '.github/workflows/f6-gravestone-render.yml'
   workflow_dispatch:
 jobs:
   render:
@@ -19,6 +24,8 @@ jobs:
           echo "Event: $GITHUB_EVENT_NAME"
           echo "Ref: $GITHUB_REF"
           echo "SHA: $GITHUB_SHA"
+          echo "Run URL: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          echo "Run URL: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> "$GITHUB_STEP_SUMMARY"
           sudo apt-get update
           sudo apt-get install -y blender
           blender --version
