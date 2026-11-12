@@ -218,13 +218,17 @@ for rock_index,rock in enumerate([ob for ob in bpy.context.scene.objects
  for center,normal in candidates:
   # Broad clustered growth, not a uniform green shell or point distribution.
   if min((center-seed).length for seed,_ in seeds)>.18:continue
-  for k in range(random.randint(2,5)):
+  # V17: exactly 5x the V16 moss nodule count per accepted rock face.
+  # Keep the original 2-5 cluster size and multiply it, rather than
+  # scattering isolated spots over the entire boulder.
+  original_count=random.randint(2,5)
+  for k in range(original_count*5):
    offset=Vector((random.gauss(0,.010),random.gauss(0,.010),random.gauss(0,.004)))
    offset-=normal*offset.dot(normal)
    rad=random.uniform(.006,.014)
    placements.append((center+offset+normal*.002,normal,rad))
  if placements:
-  rock_moss_cluster("V16 gravestone-style rock moss %02d"%rock_index,placements)
+  rock_moss_cluster("V17 fivefold clustered rock moss %02d"%rock_index,placements)
 # Tiny clustered moss nodules: irregular patch distribution, never blanket cover.
 for patch in range(20):
  cx=random.uniform(-.38,.38);cz=random.choice([random.uniform(.42,.70),random.uniform(1.02,1.43)])
