@@ -135,10 +135,10 @@ for i in range(8):
 block("lower frame rail",(0,-.158,.43),(.78,.065,.052),edge,.009)
 # V8: reference upper-left mossy boulder: asymmetric, broad broken rock.
 # Double each rock's original V7 radius, keep six distinct large/small variants.
-# Add 50 explicitly indexed sculpt coordinates PER rock, not just extra smooth faces.
-rock_specs=[(-.82,-.46,.23,.21),(-.62,.46,.20,.105),(.81,-.43,.22,.19),(.66,.48,.18,.09),(-.18,-.66,.17,.085),(.20,.64,.21,.16)]
+# Add 100 sculpt coordinates PER rock and subdivide to 320 faces for genuine geometric detail.
+rock_specs=[(-.52,-.30,.115,.21),(-.47,.29,.11,.105),(.52,-.28,.12,.19),(.47,.28,.10,.09),(-.16,-.38,.09,.085),(.16,.37,.105,.16)]
 for i,(x,y,z,radius) in enumerate(rock_specs):
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=radius*2.0,location=(x,y,z))
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3,radius=radius*2.0,location=(x,y,z))
  o=bpy.context.object;o.name="V8 reference weathered foundation rock %02d"%i
  # Shape the entire surface into uneven planar chipped facets.
  for v in o.data.vertices:
@@ -146,26 +146,26 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
   v.co.x*=factor*random.uniform(.87,1.12)
   v.co.y*=factor*random.uniform(.84,1.14)
   v.co.z*=factor*random.uniform(.68,1.08)
- # Fifty new deterministic sculpting locations per rock; each modifies the
+ # One hundred deterministic sculpting locations per rock; each modifies the
  # nearest actual mesh vertex, with local falloff to adjacent vertices.
  # This changes the rock's geometry rather than placing floating decorations.
  sculpt_coords=[]
- for k in range(50):
+ for k in range(100):
   theta=2*math.pi*((k*.61803398875)%1.0)
-  vertical=1-2*((k+.5)/50)
+  vertical=1-2*((k+.5)/100)
   radial=math.sqrt(max(0,1-vertical*vertical))
   sculpt_coords.append((radial*math.cos(theta),radial*math.sin(theta),vertical))
- assert len(sculpt_coords)==50
+ assert len(sculpt_coords)==100
  for k,(sx,sy,sz) in enumerate(sculpt_coords):
   nearest=min(o.data.vertices,key=lambda v:
    (v.co.x/radius-sx)**2+(v.co.y/radius-sy)**2+(v.co.z/radius-sz)**2)
   direction=nearest.co.normalized()
-  displacement=radius*random.uniform(-.075,.095)
+  displacement=radius*random.uniform(-.085,.12)
   nearest.co+=direction*displacement
- o.scale=(random.uniform(.96,1.36),random.uniform(.72,1.12),random.uniform(.52,.84))
+ o.scale=(random.uniform(.96,1.36),random.uniform(.72,1.12),random.uniform(.48,.78))
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
- assert len(o.data.polygons)>=40
+ assert len(o.data.polygons)>=320
 # Tiny clustered moss nodules: irregular patch distribution, never blanket cover.
 for patch in range(20):
  cx=random.uniform(-.38,.38);cz=random.choice([random.uniform(.42,.70),random.uniform(1.02,1.43)])
@@ -207,7 +207,7 @@ for patch in range(375):  # half the V5 moss clusters, keep spatial distribution
    x=base_x+random.gauss(0,.029)
    if abs(x)>.49 or (z>.78 and abs(x)<.26):continue
    y=-.19-random.uniform(0,.009)
-   rx,ry,rz=rad*1.1,rad*.60,rad*random.uniform(.7,1.4)
+   rx,ry,rz=rad*1.2,rad*.30,rad*random.uniform(.7,1.4)
   elif side=="back":
    x=base_x+random.gauss(0,.029)
    if abs(x)>.49:continue
@@ -216,14 +216,14 @@ for patch in range(375):  # half the V5 moss clusters, keep spatial distribution
   else:
    x=(-.455 if side=="left" else .455)+random.uniform(-.009,.009)
    y=random.uniform(-.13,.13)
-   rx,ry,rz=rad*.60,rad*1.1,rad*random.uniform(.7,1.4)
+   rx,ry,rz=rad*.30,rad*1.2,rad*random.uniform(.7,1.4)
   lower_moss.append((x,y,z,rx,ry,rz))
 moss_batch("V4 dense lower moss",lower_moss)
 ledge_moss=[]
 for patch in range(475): # half the V5 ledge moss; still densely carpeted
  x=random.uniform(-.56,.56);y=random.uniform(-.21,.18);z=random.uniform(.30,.37)
  rad=random.uniform(.018,.048) # 2x prior .009-.024
- ledge_moss.append((x,y,z,rad*1.2,rad*.85,rad*.75))
+ ledge_moss.append((x,y,z,rad*1.25,rad*.85,rad*.36))
 moss_batch("V4 dense ledge moss",ledge_moss)
 # V6: carved-looking chipped erosion with actual irregular faceted surface patches.
 # Reference has missing stone wedges and fractured strata, NOT a central hole.
@@ -281,7 +281,7 @@ for vine_id in range(3):
   for side in (-1,1):
    # leaf center is attached to the vine; blade expands sideways from the stem
    ivy_leaf("V7 attached ivy leaf %d_%d_%d"%(vine_id,j,side),
-    x,y-.003,z,random.uniform(.024,.043),side*random.uniform(.05,.25))
+    x,y-.003,z,random.uniform(.019,.034),side*random.uniform(.05,.20))
 # English epitaph. Deliberately weathered and tiny; not required to be legible.
 epitaph=[
  "THE HERO OF OUR AGE",
