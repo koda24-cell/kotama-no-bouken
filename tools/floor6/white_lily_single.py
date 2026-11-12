@@ -1,4 +1,4 @@
-"""Single white lily study: six sculpted petals x 25 control coordinates = 150.
+"""Single white lily study: six sculpted petals with 1000 surface and silhouette coordinates.
 Blender 4/5 compatible. Does NOT replace approved game assets.
 """
 import bpy, math, os
@@ -24,34 +24,50 @@ def tube(name,points,radius,mat,segments=6):
  ob=bpy.data.objects.new(name,curve);bpy.context.collection.objects.link(ob);ob.data.materials.append(mat)
  return ob
 tube("curved stalk",[(0,0,0),(.01,0,.15),(.03,0,.32),(0,0,.50)],.013,green)
-# 150 explicit parametric control coordinates: 6 petals, each 5 longitudinal x 5 transverse.
+# 1000 sculpting coordinates: six 10x16 surface lattices (960) + 40 independent silhouette guides.
+# Full six-tepal trumpet: wide shoulders, narrow throat, gently ribbed cup, recurved tips.
 all_points=[]
 for k in range(6):
- angle=math.tau*k/6+.08 + (.055 if k%2 else -.045)
+ angle=math.tau*k/6 + (.035 if k%2 else -.045)
  u=Vector((math.cos(angle),math.sin(angle),0))
  v=Vector((-math.sin(angle),math.cos(angle),0))
  verts=[]
- for i in range(5):
-  t=i/4
-  for j in range(5):
-   q=(j-2)/2
-   spread=(.006 + (.125 if k%2==0 else .102) * (math.sin(math.pi*t)**.85)) * (1-.12*t)
-   # Lily tepals open horizontally, then curl backwards at tips.
-   distance=.045 + (.48 + .045*math.sin(k*2.4))*t + .19*t*t
-   height=.54 + (.23 if k%2==0 else .19)*math.sin(math.pi*t) - (.31 + .055*math.sin(k*1.7))*t*t + .027*q*q*math.sin(math.pi*t) + .014*q*math.sin(math.pi*t)
-   p=u*distance+v*(q*spread)+Vector((0,0,height))
+ for i in range(16):
+  t=i/15
+  for j in range(10):
+   q=(j-4.5)/4.5
+   # Narrow base; generous shoulder at 55-75% length; tip converges to a curled point.
+   width=(.010 + (.235 + .028*math.sin(1.7*k)) * (math.sin(math.pi*t)**.82)) * (1-.09*t)
+   distance=.035 + (.29+.027*math.sin(k*1.3))*t + .34*t*t
+   # Upward trumpet cup transitioning to a sharply recurved, lowered tip.
+   height=.535 + .37*t - .15*t*t - .40*(max(0,(t-.66)/.34)**1.7)
+   height+= .085*q*q*math.sin(math.pi*t) + .012*q*math.sin(math.pi*t*2+k)
+   # Longitudinal veins: slight surface relief without hard corrugation.
+   height+=.0055*math.cos(q*math.pi*4)*math.sin(math.pi*t)**2
+   p=u*distance+v*(q*width)+Vector((0,0,height))
    verts.append(tuple(p));all_points.append(tuple(p))
  faces=[]
- for i in range(4):
-  for j in range(4):
-   a=i*5+j;faces.append((a,a+1,a+6,a+5))
+ for i in range(15):
+  for j in range(9):
+   a=i*10+j;faces.append((a,a+1,a+11,a+10))
  me=bpy.data.meshes.new("lily petal mesh");me.from_pydata(verts,[],faces);me.update()
  ob=bpy.data.objects.new("lily petal %d"%(k+1),me);bpy.context.collection.objects.link(ob)
  me.materials.append(ivory)
- # Add solidify for actual petal thickness, smooth shading.
- mod=ob.modifiers.new("subtle petal thickness","SOLIDIFY");mod.thickness=.0015
+ mod=ob.modifiers.new("thin tepal edge","SOLIDIFY");mod.thickness=.0014
  for poly in me.polygons:poly.use_smooth=True
-assert len(all_points)==150
+# Extra outline samples define a smooth visual contour independent of the surface grid.
+for k in range(6):
+ angle=math.tau*k/6 + (.035 if k%2 else -.045)
+ u=Vector((math.cos(angle),math.sin(angle),0));v=Vector((-math.sin(angle),math.cos(angle),0))
+ count=7 if k<4 else 6
+ for h in range(count):
+  t=(h+1)/(count+1)
+  width=(.010 + (.235+.028*math.sin(1.7*k))*math.sin(math.pi*t)**.82)*(1-.09*t)
+  distance=.035+(.29+.027*math.sin(k*1.3))*t+.34*t*t
+  height=.535+.37*t-.15*t*t-.40*(max(0,(t-.66)/.34)**1.7)+.085*math.sin(math.pi*t)
+  q=1 if h%2 else -1
+  all_points.append(tuple(u*distance+v*(q*width)+Vector((0,0,height))))
+assert len(all_points)==1000
 for i in range(6):
  a=math.tau*i/6+.2
  r=.075
@@ -85,9 +101,9 @@ for name,loc in [('angle',(1.5,-2.1,1.5)),('front',(0,-2.6,.95)),('side',(2.6,0,
  cam.data.type='ORTHO';cam.data.ortho_scale=1.8
  scene.render.filepath=os.path.join(out,"white_lily_"+name+".png")
  bpy.ops.render.render(write_still=True)
-with open(os.path.join(out,"control_points_150.csv"),'w') as f:
+with open(os.path.join(out,"control_points_1000.csv"),'w') as f:
  f.write("petal,point,x,y,z\n")
  for n,p in enumerate(all_points):
-  f.write("%d,%d,%.6f,%.6f,%.6f\n"%(n//25+1,n%25+1,*p))
-print("LILY_CONTROL_POINTS: 150",flush=True)
+  f.write("%d,%d,%.6f,%.6f,%.6f\n"%((n//160+1 if n<960 else (n-960)//7+1),(n%160+1 if n<960 else n-959),*p))
+print("LILY_CONTROL_POINTS: 1000",flush=True)
 print("WHITE_LILY_DONE",flush=True)
