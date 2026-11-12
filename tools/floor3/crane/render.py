@@ -31,7 +31,7 @@ scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 os.makedirs(outdir,exist_ok=True)
 stem=os.path.splitext(os.path.basename(src))[0]
-for label,direction in [('front',(0,-1,.22)),('side',(1,0,.20)),('angle',(1,-1,.55))]:
+for label,direction in [('front',(0,-1,.22)),('angle',(1,-1,.55))]:
  camera.location=center+Vector(direction).normalized()*size*3
  aim(camera,center)
  scene.render.filepath=os.path.abspath(os.path.join(outdir,stem+'-'+label+'.png'))
