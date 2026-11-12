@@ -143,50 +143,40 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
   v.co.x*=factor*1.04
   v.co.y*=factor*.98
   v.co.z*=factor*.92
- # One hundred deterministic sculpting locations per rock; each modifies the
- # nearest actual mesh vertex, with local falloff to adjacent vertices.
- # This changes the rock's geometry rather than placing floating decorations.
+ # V15: 200 sampled sculpt coordinates per rock (previously 100).
+ # Distinct broad fracture planes create broken angular blocks, not eggs.
  sculpt_coords=[]
- for k in range(100):
+ for k in range(200):
   theta=2*math.pi*((k*.61803398875)%1.0)
-  vertical=1-2*((k+.5)/100)
+  vertical=1-2*((k+.5)/200)
   radial=math.sqrt(max(0,1-vertical*vertical))
-  sculpt_coords.append((radial*math.cos(theta),radial*math.sin(theta),vertical))
- assert len(sculpt_coords)==100
- for k,(sx,sy,sz) in enumerate(sculpt_coords):
-  nearest=min(o.data.vertices,key=lambda v:
-   (v.co.x/radius-sx)**2+(v.co.y/radius-sy)**2+(v.co.z/radius-sz)**2)
-  direction=nearest.co.normalized()
-  displacement=radius*random.uniform(-.022,.035)
-  nearest.co+=direction*displacement
- # Cut broad asymmetric notches and low-frequency ridges into the rock geometry.
+  sculpt_coords.append(Vector((radial*math.cos(theta),radial*math.sin(theta),vertical)))
+ assert len(sculpt_coords)==200
+ # Build an asymmetric, low-poly broken-rock envelope from multiple intersecting
+ # oblique planes. These cuts alter the actual surface geometry.
+ planes=[]
+ for j in range(9):
+  n=Vector((random.uniform(-1,1),random.uniform(-1,1),random.uniform(-1,1))).normalized()
+  planes.append((n,radius*random.uniform(.82,1.33)))
  for v in o.data.vertices:
-  if v.co.z>radius*.15 and v.co.x>radius*.25:
-   v.co.z-=radius*.35*min(1,(v.co.x/radius-.25))
-  if v.co.x<-radius*.3 and v.co.y<0:
-   v.co.x+=radius*.25*min(1,(-v.co.x/radius-.3))
- # Gentle Laplacian smoothing of local spikes; retain the large eroded silhouette.
- adjacency=[set() for _ in o.data.vertices]
- for e in o.data.edges:
-  a,b=e.vertices;adjacency[a].add(b);adjacency[b].add(a)
- for iteration in range(2):
-  old=[v.co.copy() for v in o.data.vertices]
-  for vi,v in enumerate(o.data.vertices):
-   neighbors=adjacency[vi]
-   if neighbors:
-    avg=sum((old[n] for n in neighbors),Vector((0,0,0)))/len(neighbors)
-    v.co=old[vi].lerp(avg,.22)
- # V14: preserve broad, readable rock facets instead of an egg-like silhouette.
- # Coalesce many tiny triangles into larger planar regions while keeping irregular chips.
- bpy.context.view_layer.objects.active=o
- dec=o.modifiers.new("V14 broad erosion facets","DECIMATE")
- dec.decimate_type='COLLAPSE';dec.ratio=.31
- bpy.ops.object.modifier_apply(modifier=dec.name)
+  p=v.co.copy()
+  for n,limit in planes:
+   excess=p.dot(n)-limit
+   if excess>0:p-=n*excess
+  v.co=p
+ # Two hundred sculpt samples alter the nearest vertices, with modest
+ # displacement to retain sharp but non-spiky fractured surfaces.
+ for sample in sculpt_coords:
+  nearest=min(o.data.vertices,key=lambda v:(v.co-sample*radius*2).length_squared)
+  n=nearest.co.normalized()
+  nearest.co+=n*radius*random.uniform(-.045,.035)
+ # Remove the old smoothing + decimate combination: it rounded off the rocks.
+ # Retain hundreds of polygon faces, flat-shaded for distinct stone planes.
  for face in o.data.polygons:face.use_smooth=False
  o.scale=(random.uniform(.96,1.36),random.uniform(.72,1.12),random.uniform(.48,.78))
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
- assert len(o.data.polygons)>=80, 'Rock decimation removed too much geometry'
+ assert len(o.data.polygons)>=300, 'V15 rock lost angular surface detail'
 # V14: continuous, face-following moss covering the upper ~60% of each
 # foundation rock by vertical height. No independent point-like moss particles.
 # Moss triangles follow the original stone polygons with a tiny normal offset.
