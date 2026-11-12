@@ -7,7 +7,7 @@ on:
     branches: [development]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   issues: write
   pull-requests: write
 jobs:
@@ -94,3 +94,47 @@ jobs:
               report
             ].join('\\n');
             await github.rest.issues.createComment({owner, repo, issue_number: pr.number, body});
+
+      - name: Promote user-approved V19 from verified prior run
+        if: github.event_name == 'push' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/runs/43223467100 --jq '.conclusion' | grep -qx success
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/13947301249/zip > /tmp/approved-v19.zip
+          mkdir -p /tmp/approved-v19
+          unzip -q /tmp/approved-v19.zip -d /tmp/approved-v19
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          src=Path('/tmp/approved-v19')
+          dest=Path('assets/models/floor6')
+          review=dest/'reviews/broken-gravestone-v19'
+          review.mkdir(parents=True,exist_ok=True)
+          for source,target in [('broken_gravestone_v1.glb',dest/'broken_gravestone_v19.glb'),
+            ('broken_gravestone_v1_front.png',review/'front.png'),
+            ('broken_gravestone_v1_side.png',review/'side.png'),
+            ('broken_gravestone_v1_angle.png',review/'angle.png')]:
+            matches=list(src.rglob(source))
+            assert len(matches)==1,(source,matches)
+            f=matches[0]
+            assert 1000<f.stat().st_size<100_000_000,(source,f.stat().st_size)
+            assert f.open('rb').read(4)==(b'glTF' if source.endswith('.glb') else b'\\x89PNG')
+            shutil.copyfile(f,target)
+          (review/'README.md').write_text(
+            '# Approved Floor 6 gravestone V19\\n\\n'
+            'Approved by user on 2026-11-12.\\n'
+            'Source run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43223467100\\n'
+            'Source commit: 91829d08067540ec2c8cdfcde522d685f3b185b6\\n'
+            'Model: assets/models/floor6/broken_gravestone_v19.glb\\n'
+            'Review images: front.png, side.png, angle.png\\n'
+            'Game integration and optimization are separate tasks.\\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models/floor6
+          if ! git diff --cached --quiet; then
+            git commit -m 'Promote approved floor 6 gravestone V19 assets'
+            git push origin HEAD:feature/f6-broken-gravestone-20261112
+          fi
