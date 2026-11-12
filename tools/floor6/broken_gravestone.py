@@ -177,37 +177,54 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
  assert len(o.data.polygons)>=300, 'V15 rock lost angular surface detail'
-# V14: continuous, face-following moss covering the upper ~60% of each
-# foundation rock by vertical height. No independent point-like moss particles.
-# Moss triangles follow the original stone polygons with a tiny normal offset.
+# V16: use the same clustered micro-nodule moss construction as the
+# gravestone, rather than the flat green face overlay from V14.
+# Preserve V15 rock shapes and positions unchanged.
+def rock_moss_cluster(name, placements):
+ verts=[];faces=[]
+ phi=(1+math.sqrt(5))/2
+ unit=[(-1,phi,0),(1,phi,0),(-1,-phi,0),(1,-phi,0),
+       (0,-1,phi),(0,1,phi),(0,-1,-phi),(0,1,-phi),
+       (phi,0,-1),(phi,0,1),(-phi,0,-1),(-phi,0,1)]
+ tris=[(0,11,5),(0,5,1),(0,1,7),(0,7,10),(0,10,11),
+       (1,5,9),(5,11,4),(11,10,2),(10,7,6),(7,1,8),
+       (3,9,4),(3,4,2),(3,2,6),(3,6,8),(3,8,9),
+       (4,9,5),(2,4,11),(6,2,10),(8,6,7),(9,8,1)]
+ for center,normal,rad in placements:
+  base=len(verts)
+  for vx,vy,vz in unit:
+   local=Vector((vx,vy,vz))*(rad/phi)
+   local-=normal*local.dot(normal)*.65
+   verts.append(tuple(center+local))
+  faces.extend(tuple(base+t for t in tri) for tri in tris)
+ return mesh(name,verts,faces,moss)
 for rock_index,rock in enumerate([ob for ob in bpy.context.scene.objects
                                    if ob.name.startswith("V8 reference weathered foundation rock")]):
  bpy.context.view_layer.update()
  world=rock.matrix_world
- coords=[world @ v.co for v in rock.data.vertices]
- zmin=min(v.z for v in coords);zmax=max(v.z for v in coords)
- cutoff=zmin+.40*(zmax-zmin)
- # Mostly contiguous coverage on upper faces; leave occasional exposed patches.
- moss_verts=[];moss_faces=[];lookup={}
+ world_vertices=[world @ v.co for v in rock.data.vertices]
+ zmin=min(p.z for p in world_vertices);zmax=max(p.z for p in world_vertices)
+ # Upper 60% is the growth zone, but clustered patches leave visible stone.
+ candidates=[]
  for face in rock.data.polygons:
   center=world @ face.center
-  if center.z<cutoff:continue
+  if center.z<zmin+.4*(zmax-zmin):continue
   normal=(world.to_3x3() @ face.normal).normalized()
-  if normal.z<-.10:continue
-  # Small scattered bare stone windows, not a repeated dotted pattern.
-  if math.sin(center.x*14+rock_index)*math.cos(center.y*11)>.88:continue
-  face_ids=[]
-  for vi in face.vertices:
-   if vi not in lookup:
-    pos=coords[vi]+normal*.0025
-    lookup[vi]=len(moss_verts)
-    moss_verts.append(tuple(pos))
-   face_ids.append(lookup[vi])
-  if len(face_ids)>=3:moss_faces.append(tuple(face_ids))
- if moss_faces:
-  cover=mesh("V14 upper 60 percent rock moss %02d"%rock_index,
-             moss_verts,moss_faces,moss)
-  # Surface remains thin and hugs each rock; no floating green gravel.
+  if normal.z<.05:continue
+  candidates.append((center,normal))
+ if not candidates:continue
+ seeds=random.sample(candidates,min(5,len(candidates)))
+ placements=[]
+ for center,normal in candidates:
+  # Broad clustered growth, not a uniform green shell or point distribution.
+  if min((center-seed).length for seed,_ in seeds)>.18:continue
+  for k in range(random.randint(2,5)):
+   offset=Vector((random.gauss(0,.010),random.gauss(0,.010),random.gauss(0,.004)))
+   offset-=normal*offset.dot(normal)
+   rad=random.uniform(.006,.014)
+   placements.append((center+offset+normal*.002,normal,rad))
+ if placements:
+  rock_moss_cluster("V16 gravestone-style rock moss %02d"%rock_index,placements)
 # Tiny clustered moss nodules: irregular patch distribution, never blanket cover.
 for patch in range(20):
  cx=random.uniform(-.38,.38);cz=random.choice([random.uniform(.42,.70),random.uniform(1.02,1.43)])
