@@ -82,18 +82,48 @@
     };
   }
   document.addEventListener("DOMContentLoaded",()=>{
-    // Place the battle map controls immediately above the right-side party area.
-    // Keep the original elements and handlers intact; only move their container.
-    const party=$("battle-party"), panel=$("battle-field-map"), toggle=$("battle-field-map-toggle");
-    if(party&&panel&&toggle){
-      let dock=$("battle-field-map-dock");
-      if(!dock){
-        dock=document.createElement("div");
-        dock.id="battle-field-map-dock";
-        dock.className="battle-field-map-dock";
-        party.before(dock);
+    // Battle UI is absolutely layered: position MAP relative to the UNION gauge,
+    // not in the old heading flow where it overlaps TURN.
+    const battle=$("battle"), party=$("battle-party"), panel=$("battle-field-map"), toggle=$("battle-field-map-toggle");
+    function positionBattleMap(){
+      if(!battle||!party||!panel||!toggle)return;
+      const root=battle.getBoundingClientRect(), partyRect=party.getBoundingClientRect();
+      const gauge=battle.querySelector(".battle-preview-union-gauge, .battle-union-gauge, #union-gauge, .union-gauge");
+      const gaugeRect=gauge?.getBoundingClientRect();
+      const arena=battle.querySelector(".battle-arena");
+      const arenaRect=arena?.getBoundingClientRect();
+      // Place the button near the right side, just below UNION, above the party.
+      const buttonTop=Math.max(70,Math.min(partyRect.top-root.top-52,
+        gaugeRect ? gaugeRect.bottom-root.top+12 : partyRect.top-root.top-155));
+      const buttonRight=Math.max(14,root.right-partyRect.right+78);
+      const mapTop=Math.max(75,(arenaRect?.top??root.top)-root.top+100);
+      const mapRight=Math.max(14,root.right-partyRect.right+120);
+      toggle.style.setProperty("position","absolute","important");
+      toggle.style.setProperty("top",buttonTop+"px","important");
+      toggle.style.setProperty("right",buttonRight+"px","important");
+      toggle.style.setProperty("left","auto","important");
+      toggle.style.setProperty("bottom","auto","important");
+      toggle.style.setProperty("transform","none","important");
+      toggle.style.setProperty("z-index","75","important");
+      panel.style.setProperty("position","absolute","important");
+      panel.style.setProperty("top",mapTop+"px","important");
+      panel.style.setProperty("right",mapRight+"px","important");
+      panel.style.setProperty("left","auto","important");
+      panel.style.setProperty("bottom","auto","important");
+      panel.style.setProperty("transform","none","important");
+      panel.style.setProperty("z-index","76","important");
+      panel.style.setProperty("max-width","min(370px,85vw)","important");
+    }
+    if(battle&&party&&panel&&toggle){
+      battle.append(toggle,panel);
+      positionBattleMap();
+      window.addEventListener("resize",positionBattleMap);
+      document.addEventListener("battle:start",()=>requestAnimationFrame(positionBattleMap));
+      if(typeof ResizeObserver!=="undefined"){
+        const observer=new ResizeObserver(()=>positionBattleMap());
+        observer.observe(battle);
+        observer.observe(party);
       }
-      dock.append(toggle,panel);
     }
     const originalRender=window.renderBattle;
     if(typeof originalRender==="function")window.renderBattle=function(...args){
@@ -102,7 +132,7 @@
       const result=originalRender.apply(this,args);render();return result;
     };
     if($("battle-field-map-toggle"))$("battle-field-map-toggle").hidden=true;
-    $("battle-field-map-toggle")?.addEventListener("click",()=>{opened=!opened;render();});
+    $("battle-field-map-toggle")?.addEventListener("click",()=>{opened=!opened;positionBattleMap();render();});
     $("battle-field-map-close")?.addEventListener("click",()=>{opened=false;render();});
     document.addEventListener("battle:start",render);
     document.addEventListener("turn:end",render);
