@@ -30,42 +30,46 @@ centers=([],[])
 def add_quad(batch,p0,p1,p2,p3):
  vs,fs=batch;start=len(vs);vs.extend([p0,p1,p2,p3]);fs.append((start,start+1,start+2,start+3))
 def add_flower(x,y,h,size,group):
- # Stem as crossed grass strips; petals sit at different heights.
- stem=stems[group];w=.003
+ # 48 quads per flower: 2 crossed stem quads, 5 petals x 8 curved
+ # quads (4 longitudinal sections x 2 halves), 6 raised center quads.
+ stem=stems[group];w=.004
  add_quad(stem,(x-w,y,0),(x+w,y,0),(x+w,y,h),(x-w,y,h))
  add_quad(stem,(x,y-w,0),(x,y+w,0),(x,y+w,h),(x,y-w,h))
  for k in range(5):
-  a=2*math.pi*k/5+random.uniform(-.13,.13)
+  a=2*math.pi*k/5+random.uniform(-.10,.10)
   u=Vector((math.cos(a),math.sin(a),0))
   v=Vector((-math.sin(a),math.cos(a),0))
   c=Vector((x,y,h))
-  # Two curved quad segments per petal, with broader outer silhouette.
-  base_left=c+v*size*.09
-  base_right=c-v*size*.09
-  mid_left=c+u*size*.48+v*size*.58+Vector((0,0,size*.11))
-  mid_right=c+u*size*.48-v*size*.43+Vector((0,0,size*.11))
-  tip_left=c+u*size*.98+v*size*.19+Vector((0,0,size*.17))
-  tip_right=c+u*size*.98-v*size*.13+Vector((0,0,size*.17))
-  add_quad(petals[group],tuple(base_left),tuple(mid_left),tuple(mid_right),tuple(base_right))
-  add_quad(petals[group],tuple(mid_left),tuple(tip_left),tuple(tip_right),tuple(mid_right))
- # Four center facets form a small raised yellow disk.
- r=size*.16
- for k in range(4):
-  a0=k*math.pi/2;a1=(k+1)*math.pi/2
-  b0=Vector((x+r*math.cos(a0),y+r*math.sin(a0),h+.004))
-  b1=Vector((x+r*math.cos(a1),y+r*math.sin(a1),h+.004))
-  m0=Vector((x+r*.38*math.cos(a0),y+r*.38*math.sin(a0),h+.009))
-  m1=Vector((x+r*.38*math.cos(a1),y+r*.38*math.sin(a1),h+.009))
-  add_quad(centers,tuple(m0),tuple(b0),tuple(b1),tuple(m1))
-# Dense jittered lattice with periodic boundary-safe distribution.
-# 20 x 15 = 300 flowers, 16 polygons each (2 stems + 10 petal + 4 center),
-# 194 grass blades and 6 ground faces: 300*16 + 194 + 6 = 5000.
-NX,NY=20,15
+  # Broad overlapping petals, subtly cupped and irregular in height.
+  stations=[]
+  for t in (0,.27,.54,.78,1.):
+   width=size*(.10+.78*math.sin(math.pi*t)**.75)
+   lift=size*(.06*math.sin(math.pi*t)+.13*t*t)
+   left=c+u*size*t+v*width+Vector((0,0,lift))
+   mid=c+u*size*t+Vector((0,0,lift-size*.09*math.sin(math.pi*t)))
+   right=c+u*size*t-v*width+Vector((0,0,lift))
+   stations.append((left,mid,right))
+  for i in range(4):
+   p,q=stations[i],stations[i+1]
+   add_quad(petals[group],tuple(p[0]),tuple(q[0]),tuple(q[1]),tuple(p[1]))
+   add_quad(petals[group],tuple(p[1]),tuple(q[1]),tuple(q[2]),tuple(p[2]))
+ # Six golden facets with a raised center.
+ radius=size*.17
+ for k in range(6):
+  a0=k*math.tau/6;a1=(k+1)*math.tau/6
+  edge0=(x+radius*math.cos(a0),y+radius*math.sin(a0),h+.005)
+  edge1=(x+radius*math.cos(a1),y+radius*math.sin(a1),h+.005)
+  inner0=(x+radius*.3*math.cos(a0),y+radius*.3*math.sin(a0),h+.018)
+  inner1=(x+radius*.3*math.cos(a1),y+radius*.3*math.sin(a1),h+.018)
+  add_quad(centers,inner0,edge0,edge1,inner1)
+# 10 x 10 = 100 flowers; 48 polygons per flower; 194 grass; 6 ground.
+# Exactly 100*48 + 194 + 6 = 5000 source quads.
+NX,NY=10,10
 for i in range(NX):
  for j in range(NY):
-  x=-1+(i+.5+random.uniform(-.37,.37))*2/NX
-  y=-1+(j+.5+random.uniform(-.37,.37))*2/NY
-  add_flower(x,y,random.uniform(.045,.11),random.uniform(.068,.095),random.randrange(3))
+  x=-1+(i+.5+random.uniform(-.38,.38))*2/NX
+  y=-1+(j+.5+random.uniform(-.38,.38))*2/NY
+  add_flower(x,y,random.uniform(.035,.085),random.uniform(.12,.17),random.randrange(3))
 for k in range(194):
  x=random.uniform(-.99,.99);y=random.uniform(-.99,.99);h=random.uniform(.055,.15)
  batch=stems[k%3]
@@ -77,12 +81,12 @@ mesh("flower centers",*centers,yellow)
 poly_count=sum(len(o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH')
 assert poly_count==5000, f'Expected 5000 polygons, got {poly_count}'
 print('SOURCE_POLYGON_COUNT:',poly_count,flush=True)
-print('FLOWER_COUNT: 300',flush=True)
+print('FLOWER_COUNT: 100',flush=True)
 # Export only geometry, never studio equipment.
 bpy.ops.object.select_all(action='DESELECT')
 for ob in bpy.context.scene.objects:
  if ob.type=='MESH':ob.select_set(True)
-bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,"white_flower_ground_v3.glb"),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,"white_flower_ground_v4.glb"),export_format='GLB',use_selection=True)
 bpy.ops.object.select_all(action='DESELECT')
 world=bpy.context.scene.world;world.color=(.28,.28,.28)
 world.use_nodes=True;world.node_tree.nodes["Background"].inputs["Strength"].default_value=.75
