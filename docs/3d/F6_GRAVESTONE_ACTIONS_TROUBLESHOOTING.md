@@ -46,3 +46,11 @@ Actions: https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f6-gr
 - Blender起動前に `python3 -m py_compile tools/floor6/broken_gravestone.py` を実行し、Python構文エラーを切り分けられるようにした。
 - **重要な限界**: これらは実行の確実性と診断性の改善であり、GitHub連携に「Push実行一覧の取得」機能を追加するものではない。GitHub側でActionsが無効化されている、ワークフローがGitHubに登録されていない、あるいは権限・ブランチ保護により実行されない場合は、別途その設定を調べる必要がある。
 - 画像が取得できない場合は、`未レンダリング` と断定せず `実行結果未取得` と報告する。
+
+## 実行結果の取得経路を追加（2026-11-12）
+- Actionsワークフローの最後に `actions/github-script@v7` を追加し、`if: always()` でレンダリングの成功・失敗に関係なくPRへ結果コメントを投稿する設計とした。
+- コメントにはコミットSHA、実行URL（Run IDを含む）、Artifact名、`verification.md` の内容を掲載する。
+- GitHub連携の `fetch_pr_comments` でPR #302のコメントを取得できるため、Push起動の実行一覧APIがなくてもRun IDを追跡する代替経路となる。Run IDを得たら `fetch_workflow_run_jobs` と `fetch_workflow_run_artifacts` に進む。
+- PRコメント投稿に必要な `issues: write`、`pull-requests: write` を当該ワークフローに限定して明示。リポジトリ設定で書き込みトークンが制限されている場合はコメント投稿が失敗するため、実際の成功確認が必要。
+- PRコメントに実行結果がない場合、GitHub Actions自体が起動していない・ワークフロー登録に問題がある・コメント権限がない、などを切り分ける。コメントがないことだけでBlender実行失敗と断定しない。
+- この変更は「GitHub連携で実行結果を追跡できるようにする」ための改善であり、まだ成功したレンダリング画像を取得した証拠ではない。
