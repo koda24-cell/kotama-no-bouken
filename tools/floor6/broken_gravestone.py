@@ -194,6 +194,19 @@ for i,(x,y,z,radius) in enumerate(rock_specs):
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
  assert len(o.data.polygons)>=320
+# V11: thin moss fibers on each rounded foundation rock (not just the plinth).
+# Sample actual upper mesh vertices, so the fibers sit on the rock surface.
+for rock in [ob for ob in bpy.context.scene.objects if ob.name.startswith("V8 reference weathered foundation rock")]:
+ bpy.context.view_layer.update()
+ upper=[v for v in rock.data.vertices if v.co.z>0]
+ for k in range(85):
+  v=random.choice(upper)
+  pos=rock.matrix_world @ v.co
+  bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=random.uniform(.0015,.004),
+   radius2=0,depth=random.uniform(.008,.021),
+   location=(pos.x,pos.y,pos.z+.006))
+  tuft=bpy.context.object;tuft.name="V11 rock moss fiber %s_%d"%(rock.name[-2:],k)
+  tuft.data.materials.append(moss)
 # Tiny clustered moss nodules: irregular patch distribution, never blanket cover.
 for patch in range(20):
  cx=random.uniform(-.38,.38);cz=random.choice([random.uniform(.42,.70),random.uniform(1.02,1.43)])
