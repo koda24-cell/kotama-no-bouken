@@ -1,0 +1,24 @@
+name: F6 Broken Gravestone Blender Render
+on:
+  push:
+    branches: [feature/f6-broken-gravestone-20261112]
+    paths:
+      - 'tools/floor6/**'
+      - '.github/workflows/f6-gravestone-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: sudo apt-get update && sudo apt-get install -y blender
+      - name: Generate GLB and three rendered views
+        run: blender -b -t 2 --python tools/floor6/broken_gravestone.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: floor6-broken-gravestone-v1
+          path: render-output/floor6/
+          retention-days: 14
