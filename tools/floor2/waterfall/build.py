@@ -92,5 +92,62 @@ for i in range(15):
  rock.apply_translation([x,1.8+rng.uniform(-.5,.5),11.3+rng.uniform(-.4,.4)])
  put(f'fractured_overhang_{i}',rock,ROCK)
 
+
+# V3 silhouette-first redesign: the ice curtain dominates the entire composition.
+# Retain V1/V2 geometry as source code; remove only clutter from this preview scene.
+for name in list(S.geometry):
+ if name.startswith(('fractured_overhang_','cavern_wall_','fractured_ledge_','cliff_ledge_','bank_rock_','frozen_flow_ribbon_','waterfall_ice_tusk_','overhang_icicle_','upper_rock_shelf','rock_backdrop')):
+  S.delete_geometry(name)
+def ice_curtain(name,x,width,front,top,bottom,seed,color):
+ rr=np.random.default_rng(seed)
+ verts=[];faces=[]
+ for row in range(28):
+  z=bottom+(top-bottom)*row/27
+  for col in range(9):
+   u=col/8
+   xx=x+width*(u-.5)+.14*np.sin(z*.95+u*8+seed)
+   yy=front+.18*np.sin(u*18+z*.7+seed)+.13*np.sin(z*1.9+u*9)
+   verts.append([xx,yy,z+.11*np.sin(u*12+seed)])
+ for row in range(27):
+  for col in range(8):
+   a=row*9+col
+   faces.extend([[a,a+1,a+9],[a+1,a+10,a+9]])
+ mesh=trimesh.Trimesh(vertices=verts,faces=faces,process=False)
+ put(name,mesh,color)
+# 12m-wide waterfall: multiple staggered ice draperies and blue crevices.
+ice_curtain('MAIN_ICE_WATERFALL',0,12.8,-3.8,12.1,.75,101,LIGHT)
+for i in range(19):
+ x=-6.1+i*.68
+ ice_curtain(f'ice_fold_{i}',x,.72,-4.05-.17*np.sin(i),11.5+rng.uniform(-.5,.6),1+rng.uniform(-.5,.7),i+120,ICE if i%3 else DEEP)
+for i in range(27):
+ x=rng.uniform(-6.3,6.3)
+ top=rng.uniform(7.2,12.2)
+ spike(f'front_icicle_{i}',(x,-4.35,top),(x+rng.uniform(-.35,.35),-4.5,top-rng.uniform(1.4,4.7)),rng.uniform(.12,.42),LIGHT if i%3 else DEEP)
+# Framing cliffs: sparse angular stratified shelves, not pebble piles.
+for side in (-1,1):
+ for level in range(5):
+  x=side*(8.5+level*.18)
+  z=level*2.5+1.1
+  rock=trimesh.creation.box(extents=[3.0,3.5,2.4])
+  rock.apply_transform(trimesh.transformations.rotation_matrix(side*(.12+level*.05),[0,1,0]))
+  rock.apply_translation([x,1.1,z])
+  put(f'side_cliff_stratum_{side}_{level}',rock,ROCK if level%2 else STONE)
+# Wider, visibly stepped frozen plunge pool and spacious foreground.
+for name in list(S.geometry):
+ if name.startswith('frozen_pool_'):S.delete_geometry(name)
+for i in range(8):
+ basin=trimesh.creation.cylinder(radius=8.5-i*.48,height=.09,sections=64)
+ basin.apply_scale([1.1,.67,1])
+ basin.apply_translation([0,-5.4,.12+i*.09])
+ put(f'plunge_pool_terrace_{i}',basin,DEEP if i%2 else ICE)
+# Broken radial surface plates distinguish frozen water from a featureless disk.
+for i in range(16):
+ theta=2*np.pi*i/16
+ x=5.7*np.cos(theta);y=-5.4+3.4*np.sin(theta)
+ plate=trimesh.creation.box(extents=[rng.uniform(.8,2.1),rng.uniform(.4,1.1),.08])
+ plate.apply_transform(trimesh.transformations.rotation_matrix(theta,[0,0,1]))
+ plate.apply_translation([x,y,.85])
+ put(f'fractured_ice_shelf_{i}',plate,FROST)
+
 S.export('floor2_frozen_waterfall.glb')
 print('GEOMETRIES',len(S.geometry))
