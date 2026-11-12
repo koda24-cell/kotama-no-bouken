@@ -1,0 +1,44 @@
+name: B2 Frozen Waterwheel Blender Render
+on:
+  push:
+    branches:
+      - feature/b2-frozen-waterwheel-scene-20261112
+      - feature/b2-waterwheel-geometry-pass2-20261112
+      - feature/b2-waterwheel-curved-arches-pass3-20261112
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Export actual scene GLB
+        run: |
+          npm install --no-save --no-package-lock three@0.181.2
+          node tools/b2-waterwheel-render/export.mjs
+      - name: Render in Blender Docker
+        run: |
+          mkdir -p render-output/b2-waterwheel/png
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-render/render.py -- render-output/b2-waterwheel/frozen-waterwheel-courtyard.glb render-output/b2-waterwheel/png
+      - name: Validate GLB and three actual PNGs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('render-output/b2-waterwheel')
+          g=p/'frozen-waterwheel-courtyard.glb'
+          assert g.exists() and g.read_bytes()[:4]==b'glTF'
+          pngs=list((p/'png').glob('*.png'))
+          assert len(pngs)>=3, [str(x) for x in pngs]
+          for f in pngs: assert f.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          print('verified',g,*pngs)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b2-frozen-waterwheel-courtyard-glb-png
+          path: render-output/b2-waterwheel/
+          retention-days: 14
