@@ -1,0 +1,59 @@
+name: Promote approved B5 Gothic Arch assets
+on:
+  push:
+    branches:
+      - feature/b5-gothic-arch-approved-assets-20261112
+    paths:
+      - .github/workflows/b5-promote-approved-gothic-arch.yml
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Retrieve verified render artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/b5-approved
+          gh run download 43121088495 --repo "${{ github.repository }}" --name b5-gothic-arch-before-after --dir /tmp/b5-approved
+          test -s /tmp/b5-approved/b5-gothic-arch-after.glb
+          for view in front back high-angle; do
+            test -s "/tmp/b5-approved/b5-gothic-arch-after-${view}.png"
+          done
+          python3 - <<'PY'
+          import struct, pathlib
+          p=pathlib.Path('/tmp/b5-approved/b5-gothic-arch-after.glb')
+          b=p.read_bytes()
+          assert b[:4] == b'glTF'
+          assert struct.unpack_from('<I',b,4)[0] == 2
+          assert struct.unpack_from('<I',b,8)[0] == len(b)
+          for name in ('front','back','high-angle'):
+              b=pathlib.Path(f'/tmp/b5-approved/b5-gothic-arch-after-{name}.png').read_bytes()
+              assert b[:8] == b'\x89PNG\r\n\x1a\n'
+          PY
+      - name: Save approved files on isolated promotion branch
+        run: |
+          set -euo pipefail
+          mkdir -p assets/models/floor5/reviews/gothic-arch
+          cp /tmp/b5-approved/b5-gothic-arch-after.glb assets/models/floor5/gothic-arch.glb
+          for view in front back high-angle; do
+            cp "/tmp/b5-approved/b5-gothic-arch-after-${view}.png" "assets/models/floor5/reviews/gothic-arch/${view}.png"
+          done
+          cat > assets/models/floor5/reviews/gothic-arch/SOURCE.md <<'EOF'
+          # B5 Gothic Arch approved model
+          User approved permanent Git storage on 2026-11-12.
+          Source: GitHub Actions run 43121088495, artifact b5-gothic-arch-before-after.
+          Source commit: 6a5e3af6875b55617ff5fe56779526766b9586c0 (PR #254).
+          Files: gothic-arch.glb and front/back/high-angle Blender renders.
+          This promotion branch is for asset review; no game runtime integration and no main merge.
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/models/floor5
+          git commit -m "Promote approved B5 Gothic Arch GLB and review PNGs" 
+          git push origin HEAD:feature/b5-gothic-arch-approved-assets-20261112
