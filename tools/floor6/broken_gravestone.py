@@ -91,6 +91,34 @@ for k in range(26):
  length=random.uniform(.055,.22)
  pts=[(x+random.uniform(-.009,.009),top-length*i/5) for i in range(6)]
  groove("eroded vertical streak %02d"%k,pts,.0035)
+# V4: 100 individually indexed weathering coordinates mapped from the reference
+# column's three fracture zones: upper crushed crown (40), left fissure (35),
+# right lower erosion (25). Coordinates are normalized to this gravestone face.
+weathering_coords=[]
+for i in range(40):
+ t=i/39
+ weathering_coords.append((-.39+.73*t+random.uniform(-.023,.023),
+                            1.48-.22*abs(math.sin(t*math.pi*2))+random.uniform(-.025,.025)))
+for i in range(35):
+ t=i/34
+ weathering_coords.append((-.37+.16*math.sin(t*math.pi*2)+random.uniform(-.025,.025),
+                            1.22-.76*t+random.uniform(-.015,.015)))
+for i in range(25):
+ t=i/24
+ weathering_coords.append((.33-.14*math.sin(t*math.pi*1.5)+random.uniform(-.023,.023),
+                            1.17-.69*t+random.uniform(-.02,.02)))
+assert len(weathering_coords)==100
+for i,(x,z) in enumerate(weathering_coords):
+ length=random.uniform(.025,.10)
+ bend=random.uniform(-.025,.025)
+ # dark fine fracture and an adjacent pale fractured lip form visible erosion
+ groove("V4 erosion groove %03d"%i,[(x,z),(x+bend,z-length*.45),
+   (x+bend+random.uniform(-.012,.012),z-length)],random.uniform(.004,.012))
+ if i%3==0:
+  lip=block("V4 exposed chipped edge %03d"%i,
+    (x+.013,-.154,z-length*.4),
+    (random.uniform(.014,.033),.012,random.uniform(.025,.075)),edge,.004)
+  lip.rotation_euler[1]=random.uniform(-.6,.6)
 # Lower transverse ornamental frame band
 block("lower frame rail",(0,-.158,.43),(.78,.065,.052),edge,.009)
 # Six differently sized fractured rocks. Icospheres subdivision 1 => 20 triangular faces each.
@@ -113,30 +141,40 @@ for patch in range(20):
   o=bpy.context.object;o.name="fine lumpy moss %02d_%02d"%(patch,k)
   o.scale=(1,random.uniform(.45,.9),random.uniform(.5,1.6))
   o.data.materials.append(moss)
-# Reference: heavier, irregular moss on plinth and near the lower side edges.
-# ~3x more moss clusters than V2, with 3-6 tiny nodules per micro-cluster.
-for patch in range(75):
+# V4: 10x V3 moss coverage in the existing lower growth zone, with 2x nodule radii.
+# Batch geometry into two meshes to avoid thousands of Blender objects.
+phi=(1+math.sqrt(5))/2
+ico_verts=[(-1,phi,0),(1,phi,0),(-1,-phi,0),(1,-phi,0),
+ (0,-1,phi),(0,1,phi),(0,-1,-phi),(0,1,-phi),
+ (phi,0,-1),(phi,0,1),(-phi,0,-1),(-phi,0,1)]
+ico_faces=[(0,11,5),(0,5,1),(0,1,7),(0,7,10),(0,10,11),
+ (1,5,9),(5,11,4),(11,10,2),(10,7,6),(7,1,8),
+ (3,9,4),(3,4,2),(3,2,6),(3,6,8),(3,8,9),
+ (4,9,5),(2,4,11),(6,2,10),(8,6,7),(9,8,1)]
+def moss_batch(name,placements):
+ verts=[];faces=[]
+ for x,y,z,rx,ry,rz in placements:
+  base=len(verts)
+  verts.extend((x+vx*rx/phi,y+vy*ry/phi,z+vz*rz/phi) for vx,vy,vz in ico_verts)
+  faces.extend(tuple(base+v for v in face) for face in ico_faces)
+ return mesh(name,verts,faces,moss)
+lower_moss=[]
+for patch in range(750):  # 10x previous 75 patches
  base_x=random.uniform(-.54,.54)
- base_z=random.choices([random.uniform(.27,.53),random.uniform(.53,1.55)],[.72,.28])[0]
- if base_z>.60 and abs(base_x)<.26: continue  # keep central epitaph partially exposed
- base_y=-.185 if base_z>.38 else -.28
+ base_z=random.choices([random.uniform(.27,.53),random.uniform(.53,.84)],[.88,.12])[0]
  for k in range(random.randint(6,13)):
-  x=base_x+random.gauss(0,.028)
-  z=base_z+random.gauss(0,.022)
-  if abs(x)>.55: continue
-  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,
-     radius=random.uniform(.004,.013),location=(x,base_y-random.uniform(0,.012),z))
-  o=bpy.context.object;o.name="reference moss tuft %02d_%02d"%(patch,k)
-  o.scale=(random.uniform(.8,1.4),random.uniform(.45,.8),random.uniform(.6,1.6))
-  o.data.materials.append(moss)
-# Dense green clumps atop the base ledge.
-for patch in range(95):
- x=random.uniform(-.55,.55);y=random.uniform(-.20,.18)
- z=random.uniform(.305,.365)
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=random.uniform(.009,.024),
-   location=(x,y,z))
- o=bpy.context.object;o.name="ledge moss tuft %03d"%patch
- o.scale=(1.4,1.0,random.uniform(.45,1.2));o.data.materials.append(moss)
+  x=base_x+random.gauss(0,.029);z=base_z+random.gauss(0,.023)
+  if abs(x)>.55:continue
+  y=-.188 if z>.38 else -.28
+  rad=random.uniform(.008,.026) # 2x prior .004-.013
+  lower_moss.append((x,y-random.uniform(0,.009),z,rad*1.1,rad*.60,rad*random.uniform(.7,1.4)))
+moss_batch("V4 dense lower moss",lower_moss)
+ledge_moss=[]
+for patch in range(950): # 10x previous 95 clumps
+ x=random.uniform(-.56,.56);y=random.uniform(-.21,.18);z=random.uniform(.30,.37)
+ rad=random.uniform(.018,.048) # 2x prior .009-.024
+ ledge_moss.append((x,y,z,rad*1.2,rad*.85,rad*.75))
+moss_batch("V4 dense ledge moss",ledge_moss)
 # English epitaph. Deliberately weathered and tiny; not required to be legible.
 epitaph=[
  "THE HERO OF OUR AGE",
@@ -158,7 +196,7 @@ for i,line in enumerate(epitaph):
 attached=[o for o in bpy.context.scene.objects if (
  o.name.startswith(("asymmetric fractured","raised gravestone frame","lower frame rail",
  "major fractured","branch fissure","secondary fissure","worn rune","moss patch",
- "fine lumpy moss","reference moss tuft","ledge moss tuft","weathered epitaph","upper chipped plinth","lower cracked plinth")))]
+ "fine lumpy moss","V4 dense lower moss","V4 dense ledge moss","V4 erosion groove","V4 exposed chipped edge","weathered epitaph","upper chipped plinth","lower cracked plinth")))]
 pivot=bpy.data.objects.new("leaning gravestone pivot",None)
 bpy.context.collection.objects.link(pivot);pivot.location=(0,0,.12)
 for o in attached:
