@@ -357,7 +357,10 @@ export function createB2FrozenWaterwheelScene(THREE) {
     const q=i/nx,z=-6.2+12.4*q;
     const ridge=Math.sin(q*17.1+side*.7)*.48+Math.sin(q*37.4+t*9.1)*.22;
     const layered=Math.sin(t*17.8+q*8.5)*.19;
-    const x=side*(8.45-.95*Math.sin(Math.PI*t)+ridge+layered);
+    const deepPocket=2.55*Math.exp(-Math.pow((q-.42)/.16,2))*Math.exp(-Math.pow((t-.50)/.38,2));
+    const secondaryPocket=1.65*Math.exp(-Math.pow((q-.79)/.12,2))*Math.exp(-Math.pow((t-.43)/.29,2));
+    const overhang=1.35*Math.exp(-Math.pow((q-.59)/.19,2))*Math.exp(-Math.pow((t-.81)/.16,2));
+    const x=side*(8.45-.95*Math.sin(Math.PI*t)+ridge+layered+deepPocket+secondaryPocket-overhang);
     const warpedY=y+.18*Math.sin(q*21+t*4);
     verts.push(x,warpedY,z);
    }
@@ -383,13 +386,19 @@ export function createB2FrozenWaterwheelScene(THREE) {
   beam(a,b,.31+(i%3)*.11,darkStone);
   beam(b,c,.24+(i%2)*.12,stone);
  }
- // Ceiling connection: broken broad stone shelves rather than isolated suspended rocks.
- for(let i=0;i<9;i++){
-  const z=-5.2+i*1.3;
-  const x=Math.sin(i*1.7)*1.7;
-  const roof=add(new THREE.DodecahedronGeometry(1.1+(i%3)*.24,1),darkStone,x,7.35+Math.sin(i)*.3,z);
-  roof.scale.set(3.4,.65,1.5);roof.rotation.set(.04*i,.13*i,.03*i);
- }
 
- return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost,oldTimber,paleIce])mat.dispose()}};
+ // PASS 7: no overhead ceiling stones. The cave remains open above the waterwheel.
+ // A single massive lateral ledge is anchored in the RIGHT wall, not floating overhead.
+ for(let j=0;j<5;j++){
+  const z=-2.8+j*1.38;
+  const ledge=add(new THREE.DodecahedronGeometry(1.05+(j%2)*.16,1),darkStone,6.75,4.8+j*.14,z);
+  ledge.scale.set(2.4,.63,1.45);
+  ledge.rotation.set(.12*j,-.18,.15);
+ }
+ // Recess shadows emphasize a tunnel-like retreat behind the ancient wheel.
+ const recessStone=new THREE.MeshStandardMaterial({color:0x292e34,roughness:1,side:THREE.DoubleSide});
+ const recess=add(new THREE.PlaneGeometry(4.1,4.5),recessStone,0,3.55,-6.18);
+ recess.rotation.y=Math.PI;
+
+ return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost,oldTimber,paleIce,recessStone])mat.dispose()}};
 }
