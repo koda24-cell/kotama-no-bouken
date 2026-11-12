@@ -45,7 +45,7 @@ jobs:
           name: f6-white-flower-ground-v4
           path: render-output/floor6/white-flower-ground/
           retention-days: 14
-      - name: Render single white lily (150 control coordinates)
+      - name: Render single white lily (1000 control coordinates)
         if: always()
         run: |
           set -euo pipefail
@@ -53,7 +53,7 @@ jobs:
           mkdir -p render-output/floor6/white-lily-study
           blender -b -t 2 --python tools/floor6/white_lily_single.py 2>&1 | tee render-output/floor6/white-lily-study/blender.log
           grep -q WHITE_LILY_DONE render-output/floor6/white-lily-study/blender.log
-      - name: Validate single lily GLB PNG and 150 coordinates
+      - name: Validate single lily GLB PNG and 1000 coordinates
         if: always()
         run: |
           python3 - <<'PY'
@@ -64,8 +64,8 @@ jobs:
           for v in ('angle','front','side','top'):
               f=p/('white_lily_'+v+'.png')
               assert f.stat().st_size>1000 and f.read_bytes()[:4]==bytes([137,80,78,71]),str(f)
-          with (p/'control_points_150.csv').open() as f:
-              assert len(list(csv.DictReader(f)))==150
+          with (p/'control_points_1000.csv').open() as f:
+              assert len(list(csv.DictReader(f)))==1000
           PY
       - uses: actions/upload-artifact@v4
         if: always()
