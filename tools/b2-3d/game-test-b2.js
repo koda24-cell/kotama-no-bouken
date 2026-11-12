@@ -61,6 +61,19 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
   const visitFalls = async (prefix) => {
     const inf = await info();
     for (const [i, f] of (inf.falls || []).slice(0, 2).entries()) { const [tx, ty] = f.cell.split(',').map(Number); await goto(tx, ty, f.wall); await shot(`${prefix}_waterfall_${i + 1}`); }
+    for (const m of (inf.monuments || [])) {   // モニュメント：塊の南（と北）に2マス離れて立ち、塊を見る
+      const cx = m.x + Math.floor(m.w / 2);
+      for (const [ty, dir, tag] of [[m.y + m.h + 1, 'up', 's'], [m.y - 2, 'down', 'n']]) {
+        const ok = await p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [cx, ty]);
+        if (ok) { await goto(cx, ty, dir); await shot(`${prefix}_monument_${m.name}_${tag}`); }
+      }
+    }
+    for (const [i, z] of (inf.crystalZones || []).entries()) {   // 結晶の溜まり場：1マス手前から奥を見る（角は斜めなので、壁の1つへ向く）
+      const dir = z.bx > 0 ? 'right' : z.bx < 0 ? 'left' : z.bz > 0 ? 'down' : 'up';
+      const back = { right: [-1, 0], left: [1, 0], down: [0, -1], up: [0, 1] }[dir];
+      const ok = await p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [z.tx + back[0], z.ty + back[1]]);
+      await goto(ok ? z.tx + back[0] : z.tx, ok ? z.ty + back[1] : z.ty, dir); await shot(`${prefix}_crystals_${i + 1}_${z.pal}`);
+    }
     if (inf.atrium) { const { tx, ty } = inf.atrium; await goto(tx, ty + 1, 'up'); await shot(`${prefix}_atrium_from_south`); await goto(tx, ty, 'up'); await shot(`${prefix}_atrium_center`); }
     if (inf.bridge) { const bd = inf.bridge.ry === 0 ? 'right' : 'down'; const [dx, dy] = bd === 'right' ? [-1, 0] : [0, -1]; await goto(inf.bridge.tx + dx, inf.bridge.ty + dy, bd); await shot(`${prefix}_bridge`); }
     return inf;

@@ -126,7 +126,7 @@ function addChunk(T, seed, R, H) {
     pts.push(V(Math.cos(a) * d, y, Math.sin(a) * d));
   }
   pts.push(V(0, H * 1.05, 0));
-  const g = new ConvexGeometry(pts).toNonIndexed(), p = g.attributes.position;
+  const g = new ConvexGeometry(pts), p = g.attributes.position;   // ConvexGeometry は最初から頂点を共有しない形
   for (let i = 0; i < p.count; i += 3) {
     const A = V(p.getX(i), p.getY(i), p.getZ(i)), B = V(p.getX(i + 1), p.getY(i + 1), p.getZ(i + 1)), C = V(p.getX(i + 2), p.getY(i + 2), p.getZ(i + 2));
     const n = B.clone().sub(A).cross(C.clone().sub(A)).normalize(), x = rnd(seed * 11 + Math.round((A.x + B.y + C.z) * 37));
