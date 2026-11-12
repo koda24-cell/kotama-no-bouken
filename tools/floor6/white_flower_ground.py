@@ -38,25 +38,34 @@ def add_flower(x,y,h,size,group):
   a=2*math.pi*k/5+random.uniform(-.13,.13)
   u=Vector((math.cos(a),math.sin(a),0))
   v=Vector((-math.sin(a),math.cos(a),0))
-  c=Vector((x,y,h));tip=c+u*size
-  left=c+u*size*.32+v*size*.37
-  right=c+u*size*.32-v*size*.37
-  vs,fs=petals[group];start=len(vs)
-  vs.extend([tuple(c),tuple(left),tuple(tip+Vector((0,0,size*.13))),tuple(right)])
-  fs.append(tuple(range(start,start+4)))
- vs,fs=centers;start=len(vs)
- r=size*.14
- vs.extend([(x-r,y-r,h+.002),(x+r,y-r,h+.002),(x+r,y+r,h+.002),(x-r,y+r,h+.002)])
- fs.append(tuple(range(start,start+4)))
+  c=Vector((x,y,h))
+  # Two curved quad segments per petal, with broader outer silhouette.
+  base_left=c+v*size*.09
+  base_right=c-v*size*.09
+  mid_left=c+u*size*.48+v*size*.43+Vector((0,0,size*.11))
+  mid_right=c+u*size*.48-v*size*.43+Vector((0,0,size*.11))
+  tip_left=c+u*size*.98+v*size*.13+Vector((0,0,size*.17))
+  tip_right=c+u*size*.98-v*size*.13+Vector((0,0,size*.17))
+  add_quad(petals[group],tuple(base_left),tuple(mid_left),tuple(mid_right),tuple(base_right))
+  add_quad(petals[group],tuple(mid_left),tuple(tip_left),tuple(tip_right),tuple(mid_right))
+ # Four center facets form a small raised yellow disk.
+ r=size*.16
+ for k in range(4):
+  a0=k*math.pi/2;a1=(k+1)*math.pi/2
+  b0=Vector((x+r*math.cos(a0),y+r*math.sin(a0),h+.004))
+  b1=Vector((x+r*math.cos(a1),y+r*math.sin(a1),h+.004))
+  m0=Vector((x+r*.38*math.cos(a0),y+r*.38*math.sin(a0),h+.009))
+  m1=Vector((x+r*.38*math.cos(a1),y+r*.38*math.sin(a1),h+.009))
+  add_quad(centers,tuple(m0),tuple(b0),tuple(b1),tuple(m1))
 # Dense jittered lattice with periodic boundary-safe distribution.
-# 25 x 24 = 600 flowers, 8 polygons per flower, 194 grass blades, 6 ground faces.
-# Total = 600*8 + 194 + 6 = exactly 5000 mesh polygons.
-NX,NY=25,24
+# 20 x 15 = 300 flowers, 16 polygons each (2 stems + 10 petal + 4 center),
+# 194 grass blades and 6 ground faces: 300*16 + 194 + 6 = 5000.
+NX,NY=20,15
 for i in range(NX):
  for j in range(NY):
   x=-1+(i+.5+random.uniform(-.37,.37))*2/NX
   y=-1+(j+.5+random.uniform(-.37,.37))*2/NY
-  add_flower(x,y,random.uniform(.055,.17),random.uniform(.020,.037),random.randrange(3))
+  add_flower(x,y,random.uniform(.055,.17),random.uniform(.038,.061),random.randrange(3))
 for k in range(194):
  x=random.uniform(-.99,.99);y=random.uniform(-.99,.99);h=random.uniform(.055,.15)
  batch=stems[k%3]
