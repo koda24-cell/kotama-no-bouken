@@ -43,6 +43,17 @@ def irregular_slab(name,x,y,z,radius,thick,material,seed):
  faces=[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]
  for j in range(n):faces.append((j,(j+1)%n,(j+1)%n+n,j+n))
  return mesh(name,verts,faces,material)
+def river_center(x):
+ return .52*math.sin(x*.37)+.24*math.sin(x*.81+.6)
+def river_halfwidth(x):
+ return 1.75+.18*math.sin(x*.52+1.2)
+def river_strip(name,z,material):
+ verts=[];faces=[];segments=88
+ for i in range(segments+1):
+  x=-11+22*i/segments;cy=river_center(x);hw=river_halfwidth(x)
+  verts.extend([(x,cy-hw,z),(x,cy+hw,z)])
+  if i<segments:faces.append((2*i,2*i+1,2*i+3,2*i+2))
+ return mesh(name,verts,faces,material)
 def crystal_cluster(x,y,z,scale,seed):
  rng=random.Random(seed)
  # Each cluster has a broad fractured ice foot fused to shoreline rock.
@@ -67,14 +78,18 @@ def crystal_cluster(x,y,z,scale,seed):
   heights=[0,.22,.58,.82,1.0]
   widths=[1.3,1.08,rng.uniform(.67,.94),rng.uniform(.38,.68),top_ratio]
   verts=[]
-  angular=[rng.uniform(.78,1.18) for _ in range(n)]
+  angular=[rng.uniform(.64,1.3) for _ in range(n)]
+  notch_j=rng.randrange(n);angular[notch_j]*=rng.uniform(.36,.65)
+  ridge_shift=[rng.uniform(-.16,.16) for _ in range(n)]
   for level,(f,w) in enumerate(zip(heights,widths)):
    for j in range(n):
     theta=phase+math.tau*j/n
-    radial=radius*w*angular[j]*rng.uniform(.93,1.07)
-    ox=leanx*f+(.04*scale if level==3 else 0)
+    radial=radius*w*angular[j]*rng.uniform(.84,1.15)
+    if level==2 and j==notch_j:radial*=.63
+    if level==3 and j==(notch_j+1)%n:radial*=1.25
+    ox=leanx*f+ridge_shift[j]*scale*f+(.04*scale if level==3 else 0)
     oy=leany*f
-    zz=base_z+h*f+(rng.uniform(-.09,.09)*h if level==4 else 0)
+    zz=base_z+h*f+(rng.uniform(-.19,.12)*h if level==4 else 0)
     verts.append((x+dx+ox+math.cos(theta)*radial,y+dy+oy+math.sin(theta)*radial,zz))
   faces=[tuple(range(n-1,-1,-1))]
   for level in range(len(heights)-1):
@@ -90,55 +105,62 @@ def crystal_cluster(x,y,z,scale,seed):
 for i in range(36):
  x=-10.4+i*.59
  for side in (-1,1):
-  y=side*(2.3+random.uniform(-.4,.4))
+  y=river_center(x)+side*(river_halfwidth(x)+.45+random.uniform(-.24,.24))
   irregular_slab('Worn sloping rock shoreline',x,y,-.13,random.uniform(.75,1.3),.28,rock,i*2+(side+1))
   if i%3==0:
-   irregular_slab('Translucent shelf ice on shoreline',x,side*1.9,.08,random.uniform(.65,1.3),.11,ice,200+i*7+side)
+   irregular_slab('Translucent shelf ice on shoreline',x,river_center(x)+side*(river_halfwidth(x)+.06),.08,random.uniform(.65,1.3),.11,ice,200+i*7+side)
   if i%4==0:
-   irregular_slab('Snow frost over ice lip',x,side*2.15,.13,random.uniform(.32,.62),.035,pale,300+i*5+side)
+   irregular_slab('Snow frost over ice lip',x,river_center(x)+side*(river_halfwidth(x)+.27),.13,random.uniform(.32,.62),.035,pale,300+i*5+side)
 # Water is flat for placement; decorative geometry can be integrated without changing collision.
-cube('Turquoise water channel',(0,0,-.26),(22,4.35,.06),water)
+river_strip('Meandering turquoise water channel',-.22,water)
+# Ice/stone transition shelves overlap bank geometry rather than floating as separate ornaments.
+for i in range(48):
+ x=-10.7+i*.45
+ for side in (-1,1):
+  cy=river_center(x);edge=river_halfwidth(x)
+  irregular_slab('Interlocked wet shale under ice edge',x,cy+side*(edge+.14),-.065,random.uniform(.28,.62),.14,rock,3200+i*3+side)
+  if i%2==0:irregular_slab('Ice feather fused over shale',x,cy+side*(edge+.08),.018,random.uniform(.25,.56),.055,ice,3400+i*3+side)
 # Floating jagged ice floes, with varied tilt and true thickness.
 for i in range(24):
- x=random.uniform(-10.2,10.2);y=random.uniform(-1.55,1.55)
+ x=random.uniform(-10.2,10.2);y=river_center(x)+random.uniform(-1.3,1.3)
  o=irregular_slab('Broken floating glacial plate',x,y,.04,random.uniform(.38,1.05),random.uniform(.08,.2),ice,400+i)
  o.rotation_euler=(random.uniform(-.09,.09),random.uniform(-.09,.09),random.uniform(-.3,.3))
  if i%3==0:irregular_slab('Opaque frost center',x,y,.10,.25,.025,pale,500+i)
 # Submerged masonry, carved worn stones and columns under water.
 for i in range(20):
- x=random.uniform(-9.5,9.5);y=random.uniform(-1.6,1.6)
+ x=random.uniform(-9.5,9.5);y=river_center(x)+random.uniform(-1.25,1.25)
  o=cube('Submerged ruined stone block',(x,y,-.19),(random.uniform(.25,.8),random.uniform(.25,.55),random.uniform(.13,.35)),stone,.06)
  o.rotation_euler[2]=random.uniform(-.65,.65)
 for i in range(5):
- x=-8.2+i*4.1;y=(-1)**i*1.25
+ x=-8.2+i*4.1;y=river_center(x)+(-1)**i*1.1
  o=cube('Fallen ancient carved column',(x,y,-.11),(.5,1.2,.42),stone,.09)
  o.rotation_euler[2]=random.uniform(-.7,.7)
  for t in (-.4,.4):cube('Column ring molding',(x,y+t,-.1),(.65,.13,.54),stone,.04)
 # Ice crystal clusters near banks, varied heights.
 for i in range(21):
- x=-9.8+i*.97+random.uniform(-.45,.45);y=(-1)**i*random.uniform(2.15,3.25)
+ x=-9.8+i*.97+random.uniform(-.45,.45);y=river_center(x)+(-1)**i*(river_halfwidth(x)+random.uniform(.38,1.12))
  scale=random.choices([random.uniform(.25,.5),random.uniform(.6,1.15),random.uniform(1.45,2.15)],[5,11,5])[0]
  crystal_cluster(x,y,.12,scale,700+i)
 # Scattered pebbles and erosion fragments.
 for i in range(90):
- x=random.uniform(-10.5,10.5);y=random.choice((-1,1))*random.uniform(1.8,3.1)
+ x=random.uniform(-10.5,10.5);y=river_center(x)+random.choice((-1,1))*(river_halfwidth(x)+random.uniform(.1,1.2))
  irregular_slab('Eroded shoreline gravel',x,y,.035,random.uniform(.07,.23),.06,sand,900+i)
 # Foam patches along ice edge; keep mesh simple for game use.
 foam=mat('Pale river foam',(.75,.94,.96),.45,0,.78)
 for i in range(22):
  x=-10.2+i*.96
  for side in (-1,1):
-  y=side*random.uniform(1.5,1.9)
+  y=river_center(x)+side*(river_halfwidth(x)+random.uniform(-.12,.13))
   irregular_slab('Small water-edge foam patch',x,y,.015,random.uniform(.15,.34),.012,foam,1100+i*2+side)
 bpy.context.view_layer.update()
 tri=0;count=0
 for o in bpy.context.scene.objects:
  if o.type=='MESH':
   o.data.calc_loop_triangles();tri+=len(o.data.loop_triangles);count+=1
-with open(out+'/mesh_stats.txt','w') as f:f.write('version=v03\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
+with open(out+'/mesh_stats.txt','w') as f:f.write('version=v04\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
 print('B2 SHORELINE',count,tri)
-bpy.ops.wm.save_as_mainfile(filepath=out+'/b2_glacial_shoreline_v03.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/b2_glacial_shoreline_v03.glb',export_format='GLB')
+bpy.ops.wm.save_as_mainfile(filepath=out+'/b2_glacial_shoreline_v04.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/b2_glacial_shoreline_v04.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('Cavern');bpy.context.scene.world=world
 world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.045,.085,.14,1)
 for loc,power,size in [((2,-9,13),2600,10),((-9,5,11),1700,8)]:
