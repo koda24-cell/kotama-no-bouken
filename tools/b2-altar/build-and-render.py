@@ -82,6 +82,11 @@ for x,y,h in columns:
  cube('column shaft',(x,y,1.27+h*.36),(.57,.59,h*.72),stone[2],.055)
  cube('cracked column capital',(x,y,1.31+h*.72),(.86,.85,.30),stone[1],.07)
  cube('frost cap on column',(x,y,1.5+h*.72),(.77,.78,.09),snow,.035)
+# Distressed walking surface: missing stone tiles, raised cracked fragments and exposed debris
+for i in range(36):
+ a=random.uniform(0,math.tau);r=random.uniform(1.45,3.45)
+ x,y=r*math.cos(a),r*math.sin(a)
+ cube('fractured uneven floor splinter',(x,y,.95+random.uniform(-.08,.07)),(.14+random.random()*.30,.12+random.random()*.28,.045+random.random()*.075),random.choice(stone),.016,random.uniform(-.7,.7))
 # chipped stone corners, dark fracture lines and lichen pockets
 for i in range(125):
  a=random.random()*math.tau;rr=random.choice([2.95,3.83,4.4])
@@ -97,22 +102,47 @@ for i in range(8):
 for i in range(12):
  a=i*math.tau/12
  cube('stone relief plaques',(1.11*math.cos(a),1.11*math.sin(a),1.065),(.22,.14,.075),stone[(i+2)%len(stone)],.015,a)
-cylinder('central pedestal',(0,0,1.20),.34,.43,stone[1],12)
-crystal('altar sacred broken core',(0,0,1.40),.29,1.12,ice2)
-# one half-ruined arc spanning rear-left pillars
-for i in range(10):
- t=i/9; x=-3.05+2.0*t; y=1.35+1.0*t
- z=4.45+.72*math.sin(math.pi*t)
- if i in (7,8,9):continue
- # stone wedges are rotated along arch tangent, not stacked square bricks
- tangent=math.atan2(.72*math.pi*math.cos(math.pi*t),2.0)
- o=cube('radial wedge voussoir',(x,y,z),(.61,.77,.51+random.random()*.14),random.choice(stone),.045,math.atan2(1,2))
- o.rotation_euler[1]=tangent*.35
- cube('stone joint and chipped edge',(x+.07,y-.03,z+.24),(.31,.28,.10),stone[0],.018,math.atan2(1,2))
-# tall asymmetric crystal mass behind altar
-for i in range(24):
- x=random.gauss(.65,.9); y=random.gauss(2.25,.43)
- crystal('asymmetric rear glacier spire',(x,y,.97),random.uniform(.22,.65),random.uniform(1.2,5.3),ice if i%3 else ice2)
+cylinder('central pedestal',(0,0,1.26),.46,.54,stone[1],12)
+crystal('altar sacred broken core',(0,0,1.58),.41,1.55,ice2)
+# Broken arch: true curved, radial stone voussoirs in the XZ plane, not box steps
+def curved_voussoir(i,n,theta0,theta1):
+ cx,cy,cz=-2.0,2.05,3.45
+ inner,outer=1.35,1.86
+ vertices=[]
+ for radius in (inner,outer):
+  for t in (theta0,theta1):
+   for yy in (-.38,.38):
+    vertices.append((cx+radius*math.cos(t),cy+yy,cz+radius*math.sin(t)))
+ faces=[(0,1,3,2),(4,6,7,5),(0,4,5,1),(2,3,7,6),(0,2,6,4),(1,5,7,3)]
+ mesh=bpy.data.meshes.new('wedge mesh');mesh.from_pydata(vertices,[],faces);mesh.update()
+ o=bpy.data.objects.new('arched radial masonry voussoir',mesh);bpy.context.collection.objects.link(o);o.data.materials.append(random.choice(stone))
+ bevel=o.modifiers.new('worn masonry corners','BEVEL');bevel.width=.045;bevel.segments=2
+ o.modifiers.new('weighted stone normals','WEIGHTED_NORMAL')
+for i in range(12):
+ if i in (9,10,11):continue
+ t0=.04+i*(math.pi*.89/12);t1=.04+(i+1)*(math.pi*.89/12)-.018
+ curved_voussoir(i,12,t0,t1)
+# broken arch crown rubble on ground, not floating above the arch
+for i in range(8):
+ cube('fallen arch wedge fragment',(-3.4+random.uniform(-.6,.6),2.5+random.uniform(-.5,.5),.28),(.25+random.random()*.35,.3+random.random()*.3,.17+random.random()*.22),random.choice(stone),.045,random.uniform(-.7,.7))
+# Main glacier: broad, layered jagged ice sheets grow behind, not through the altar
+def glacier_wall(name,xc,yc,width,height,depth,material):
+ # irregular 3D polygon, width substantial compared with height
+ pts=[(-.5,0),(-.5,.18),(-.38,.55),(-.25,.77),(-.08,.95),(.09,.81),(.20,1),(.36,.73),(.48,.42),(.5,.12),(.5,0)]
+ verts=[]
+ for yy in (-depth/2,depth/2):
+  verts += [(xc+width*u,yc+yy,.84+height*v) for u,v in pts]
+ n=len(pts)
+ faces=[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]
+ for i in range(n):faces.append((i,(i+1)%n,(i+1)%n+n,i+n))
+ mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update()
+ o=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(o);o.data.materials.append(material)
+glacier_wall('broad fractured glacier main mass',.95,3.0,3.35,3.65,.85,ice)
+glacier_wall('overlapping deep ice shelf',-.65,3.32,2.45,2.8,.70,ice2)
+glacier_wall('offset frozen sheet',1.85,3.42,1.85,2.55,.65,ice)
+for i in range(9):
+ x=random.uniform(-1.55,2.8);y=random.uniform(2.85,3.8)
+ crystal('irregular splinter near glacier',(x,y,.90),random.uniform(.13,.38),random.uniform(.65,2.0),random.choice([ice,ice2]))
 # smaller crystals cluster at uneven outer positions
 for center in [(-3.95,.3),(3.7,2.1),(-2.7,3.1),(2.95,-2.9),(-4.15,-2.4)]:
  for i in range(random.randint(4,7)):
