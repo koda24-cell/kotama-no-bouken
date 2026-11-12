@@ -145,5 +145,62 @@ export function createB2FrozenWaterwheelScene(THREE) {
   block.position.y=.18;
  }
 
+
+ // PASS 3: genuine curved stone arch voussoirs (extruded wedge geometry).
+ function curvedVoussoir(x0,z0,side,t0,t1,material){
+  // Curved pointed arch: each side is a quadratic Bezier, meeting at the crown.
+  const base=side<0?x0-1.07:x0+1.07,top=x0;
+  function pt(t){const u=1-t;return [u*u*base+2*u*t*(base+side*.10)+t*t*top, u*u*3.27+2*u*t*4.04+t*t*4.45]}
+  const pts=[];const steps=6;
+  for(let i=0;i<=steps;i++)pts.push(pt(t0+(t1-t0)*i/steps));
+  const outline=[...pts.map(p=>[p[0],p[1]+.21]),...pts.slice().reverse().map(p=>[p[0],p[1]-.21])];
+  const shape=new THREE.Shape();shape.moveTo(...outline[0]);for(let i=1;i<outline.length;i++)shape.lineTo(...outline[i]);shape.closePath();
+  const g=new THREE.ExtrudeGeometry(shape,{depth:.65,bevelEnabled:true,bevelThickness:.045,bevelSize:.025,bevelSegments:1,curveSegments:8});
+  const m=add(g,material,0,0,z0-.325);return m;
+ }
+ for(const z of [-5.25,5.25])for(const x of [-5.75,5.75]){
+  for(const side of [-1,1])for(let j=0;j<7;j++){
+   // Slight gaps and alternating stone tint make individual radial joints visible.
+   const t0=j/7+.003,t1=(j+1)/7-.003;
+   curvedVoussoir(x,z,side,t0,t1,(j+Math.round(x))%3?stone:darkStone);
+  }
+  // Crown cap and corbel tie the curved arch into its masonry supports.
+  box(x,4.43,z,.44,.32,.83,stone);
+  for(const dx of [-1.06,1.06])box(x+dx,3.24,z,.6,.37,.85,darkStone);
+ }
+ // Uneven rim outline: warped plank segments, missing edge teeth and ice that bridges gaps.
+ // Original wheel spokes and circular frame remain as a structural core.
+ for(const side of [-.42,.42]){
+  for(let i=0;i<spokes;i++){
+   const a=i*Math.PI*2/spokes;
+   const outer=R+((i*7)%5)*.065;
+   const x=side+(i%3-1)*.025;
+   if(i===3||i===9){
+    const chip=add(new THREE.TetrahedronGeometry(.19),wood,x,cy+outer*Math.cos(a),outer*Math.sin(a));
+    chip.rotation.set(i*.33,i*.2,i*.4);
+    continue;
+   }
+   const p=[x,cy+(outer-.12)*Math.cos(a), (outer-.12)*Math.sin(a)];
+   const q=[x,cy+(outer+.18+(i%4)*.055)*Math.cos(a+.065), (outer+.18+(i%4)*.055)*Math.sin(a+.065)];
+   beam(p,q,.09+(i%3)*.025,i%4===0?darkStone:wood);
+   if(i%5===0){
+    const c=add(new THREE.IcosahedronGeometry(.35+(i%3)*.12,0),ice,x,cy+R*Math.cos(a),R*Math.sin(a));
+    c.scale.set(.65,1.2,.8);c.rotation.x=a;
+   }
+  }
+ }
+ // Interlock cave outcrops with ruined wall piers; remove isolated-rock appearance.
+ for(const z of [-5.25,5.25])for(const side of [-1,1]){
+  for(let i=0;i<6;i++){
+   const x=side*(4.1+i*.78);
+   const h=2.15+(i%4)*.57;
+   const rock=add(new THREE.DodecahedronGeometry(1,1),darkStone,x,h*.52,z+(side*.35));
+   rock.scale.set(.8+(i%3)*.2,h*.68,.78+(i%2)*.2);
+   rock.rotation.set(.05*i,.21*i,.11*side);
+   const glaze=add(new THREE.DodecahedronGeometry(.55,0),ice,x,h*.88,z+side*.7);
+   glaze.scale.set(.85,.35,.6);
+  }
+ }
+
  return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost])mat.dispose()}};
 }
