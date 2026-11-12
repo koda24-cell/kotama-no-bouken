@@ -3,21 +3,19 @@ on:
   push:
     branches:
       - feature/f6-broken-gravestone-20261112
-    paths:
-      - 'tools/floor6/**'
-      - '.github/workflows/f6-gravestone-render.yml'
   pull_request:
     branches: [development]
-    paths:
-      - 'tools/floor6/**'
-      - '.github/workflows/f6-gravestone-render.yml'
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   render:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - name: Validate Blender script syntax
+        run: python3 -m py_compile tools/floor6/broken_gravestone.py
       - name: Diagnose runner and Blender availability
         run: |
           set -euxo pipefail
