@@ -72,5 +72,78 @@ export function createB2FrozenWaterwheelScene(THREE) {
    beam([x,4.4,z],[x+1.1,3.3,z],.24,stone);
   }
  }
- return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water])mat.dispose()}};
+
+ // PASS 2: irregular frozen mechanical decay and architectural depth. Preserve original geometry.
+ const iron=new THREE.MeshStandardMaterial({color:0x515d65,roughness:.83,metalness:.26});
+ const frost=new THREE.MeshStandardMaterial({color:0xc5e2e8,roughness:.45,transparent:true,opacity:.88});
+ // Uneven broken wheel paddles, iron fasteners and frost accumulation.
+ for(let i=0;i<spokes;i++){
+  const a=(i+.5)*Math.PI*2/spokes,y=cy+R*Math.cos(a),z=cz+R*Math.sin(a);
+  for(const x of [-.55,.55]){
+   const rivet=add(new THREE.IcosahedronGeometry(.09,0),iron,x,y,z);
+   rivet.scale.set(.45,1,1);
+  }
+  if(i===2||i===8||i===11){
+   const split=add(new THREE.TetrahedronGeometry(.25+(i%3)*.1),wood,Math.sin(i)*.3,y+.22,z+.1);
+   split.rotation.set(i*.3,i*.2,i*.55);
+  }
+  if(i%3===1){
+   const icePatch=add(new THREE.IcosahedronGeometry(.24+(i%4)*.09,0),ice,-.36+(i%2)*.7,y,z);
+   icePatch.scale.set(.85,1.8,.6);icePatch.rotation.set(i*.2,0,i*.3);
+  }
+ }
+ // Staggered masonry joints and projecting caps on both wheel supports.
+ for(const x of [-3.25,3.25]){
+  for(let level=0;level<4;level++){
+   for(let k=0;k<3;k++){
+    const offset=(level%2)*.16;
+    box(x-.49+k*.48+offset,.37+level*.47,.86,.42,.075,.19,level%2?stone:darkStone);
+   }
+  }
+  box(x,2.63,-.05,1.72,.19,1.98,darkStone);
+  for(const side of [-1,1]){
+   beam([x+side*.68,.25,-.7],[x+side*.85,1.9,-.95],.13,stone);
+  }
+ }
+ // Pointed arcade stone ribs: actual segmented masonry arch instead of two long poles.
+ for(const z of [-5.25,5.25]){
+  for(const x of [-5.75,5.75]){
+   const left=[x-1.07,3.27,z],apex=[x,4.45,z],right=[x+1.07,3.27,z];
+   for(const [p,q] of [[left,apex],[apex,right]]){
+    for(let k=0;k<5;k++){
+     const t=k/5,u=(k+1)/5;
+     const a=p.map((v,j)=>v+(q[j]-v)*t),b=p.map((v,j)=>v+(q[j]-v)*u);
+     beam(a,b,.25+(k%2)*.018,k%3?stone:darkStone);
+    }
+   }
+   box(x,4.46,z,.34,.23,.84,darkStone);
+  }
+ }
+ // Jagged overhanging cave ledges, ice shelves and varied hanging ice clusters.
+ for(let side of [-1,1]){
+  for(let i=0;i<9;i++){
+   const x=side*(5.8+(i%3)*1.05),z=-4.8+i*1.18;
+   const ledge=add(new THREE.DodecahedronGeometry(.6+(i%4)*.15,0),darkStone,x,5.7+Math.sin(i)*.35,z);
+   ledge.scale.set(1.65,.45,1.3);ledge.rotation.set(i*.1,i*.31,i*.07);
+   for(let j=0;j<2+(i%3);j++){
+    const h=.55+((i*3+j*5)%8)*.24;
+    const spike=add(new THREE.ConeGeometry(.13+j*.06,h,5),j%3?ice:frost,x+(j-1)*.28,5.43-h*.48,z+Math.sin(j+i)*.27);
+    spike.rotation.z=Math.PI+Math.sin(i+j)*.11;
+   }
+  }
+ }
+ // Broad, fractured ice sheets around water's edge, with irregular boundaries.
+ for(let i=0;i<18;i++){
+  const x=(i%2?1:-1)*(1.75+(i%4)*.21),z=-4.6+i*.52;
+  const shard=add(new THREE.TetrahedronGeometry(.36+(i%4)*.12),i%3?ice:frost,x,.17,z);
+  shard.scale.set(1.6,.22,1.15);shard.rotation.set(.13,i*.49,.05);
+ }
+ // Broken stone lintels grounded on ruined floor rather than floating.
+ for(let i=0;i<7;i++){
+  const x=-7.3+i*2.25,z=i%2?4.8:-4.6;
+  const block=box(x,.22,z,.72+(i%3)*.25,.33,.42,darkStone,[i*.09,i*.28,i*.07]);
+  block.position.y=.18;
+ }
+
+ return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost])mat.dispose()}};
 }
