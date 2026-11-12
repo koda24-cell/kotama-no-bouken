@@ -15,7 +15,7 @@
 
 | 素材 | 探す場所 | 状態 |
 | --- | --- | --- |
-| 氷結した古代祭壇 | [PR #285](https://github.com/koda24-cell/kotama-no-bouken/pull/285) | 制作PR、採用・正式保存は別途確認 |
+| 氷結した古代祭壇（V4・完成承認） | [制作PR #285](https://github.com/koda24-cell/kotama-no-bouken/pull/285) / [正式保存PR #298](https://github.com/koda24-cell/kotama-no-bouken/pull/298) / [Blender実レンダー #43152745995](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43152745995) | **ユーザー完成承認済み**。GLB＋3方向PNGを第2階層の専用保存PR #298でアーカイブ。development未統合 |
 | 氷結した古代石柱3種（通常・崩壊・氷結）V3 | [制作PR #289](https://github.com/koda24-cell/kotama-no-bouken/pull/289) / [完成素材保存PR #292](https://github.com/koda24-cell/kotama-no-bouken/pull/292) / [Blender実レンダー #43151444460](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151444460) | **完成承認・Git保存済み**（保存用PR #292のブランチ）。GLB 3点＋レビューPNG 9枚を実ファイル確認済み。**development未統合** |
 | 古代の氷橋 | [PR #278](https://github.com/koda24-cell/kotama-no-bouken/pull/278) | 承認版の保存PR。マージ状態を確認 |
 | 凍結した古代水路橋と滝 | [PR #268](https://github.com/koda24-cell/kotama-no-bouken/pull/268) | 制作PR |
@@ -26,6 +26,14 @@
 | 素材 | 探す場所 | 状態 |
 | --- | --- | --- |
 | 氷結水車の中庭 | [PR #283](https://github.com/koda24-cell/kotama-no-bouken/pull/283) | 制作PR、採用・正式保存は別途確認 |
+
+### 氷結した古代祭壇（完成承認：V4）
+
+- **採用バージョン**：V4。アーチの浮き修正（支持柱と柱頭追加）後のユーザー完成承認。
+- **造形元**：[PR #285](https://github.com/koda24-cell/kotama-no-bouken/pull/285)、造形コード `tools/b2-altar/build-and-render.py`。
+- **実レンダー**：[Actions #43152745995](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43152745995)（成功）、Artifact ID `13914164378`。正面・側面・斜め上PNGを確認。
+- **正式素材保存**：[PR #298](https://github.com/koda24-cell/kotama-no-bouken/pull/298) の専用ブランチ `feature/b2-frozen-altar-approved-archive-20261112`。GLB: `assets/models/floor2/b2-frozen-ancient-altar.glb`、画像: `assets/models/floor2/reviews/b2-frozen-ancient-altar/{front,side,angle}.png`。
+- **備考**：既存の古代氷橋とは別素材。保存・承認はゲーム内設置を意味せず、`development` へのマージは別作業。
 
 ### 古代遺跡の石柱セット（完成承認：V3、3種類）
 
