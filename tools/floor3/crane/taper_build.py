@@ -88,5 +88,34 @@ for i in range(len(pts)-1):cylinder(f'hook_{i}',pts[i],pts[i+1],.073,RUST,10)
 for i,x in enumerate([-7.5,-3.5,3.5]):
     cylinder(f'lamp_cable_{i}',(x,0,2.1),(x,0,1.83),.027,RUST)
     box(f'lamp_housing_{i}',(x,0,1.75),(.35,.35,.15),STEEL)
+
+# V2: weathered abandoned-city crane: added structural detail without removing original meshes.
+# Railings, rivet heads, broken maintenance deck, cable drums, and climbing vegetation.
+for side,y in enumerate((-1.22,1.22)):
+    for i in range(12):
+        x=-8.7+i*1.45
+        for z in (2.13,4.55):
+            cylinder(f'v2_rivet_{side}_{i}_{z}',(x,y,z),(x,y+(.08 if y>0 else -.08),z),.065,RUST,10)
+    for i in range(8):
+        x=3.2+i*.55
+        beam(f'v2_guardrail_post_{side}_{i}',(x,y,4.75),(x,y,5.48),.055,.055,STEEL)
+    beam(f'v2_guardrail_top_{side}',(3.2,y,5.48),(7.05,y,5.48),.06,.06,RUST)
+for i in range(9):
+    x=3.1+i*.49
+    if i not in (2,6):
+        box(f'v2_deck_plank_{i}',(x,0,4.66),(.42,2.2,.055),RUST if i%3==0 else STEEL)
+for i in range(4):
+    x=6.55+i*.33
+    cylinder(f'v2_winch_drum_{i}',(x,-.45,5.28),(x,.45,5.28),.20,STEEL,16)
+    cylinder(f'v2_winch_axle_{i}',(x,-.60,5.28),(x,.60,5.28),.055,RUST,12)
+# Corroded bracing and vegetation rooted in the machinery end.
+for i in range(16):
+    x=5.0+(i%5)*.55
+    y=(-1 if i%2 else 1)*(1.0+.12*(i%3))
+    z=2.05+(i//5)*.78
+    cylinder(f'v2_vine_stem_{i}',(x,y,z),(x+.12*math.sin(i*2.1),y*.92,z+.7),.025,[56,76,44,255],7)
+    for j in range(2):
+        box(f'v2_vine_leaf_{i}_{j}',(x+.09*j,y,z+.28+.24*j),(.23,.07,.12),[65,87,47,255])
+
 scene.export('industrial_truss_crane_tapered.glb')
 print('geometry_count',len(scene.geometry))
