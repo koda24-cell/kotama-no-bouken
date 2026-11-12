@@ -40,7 +40,9 @@ for k in range(6):
    width=(.010 + (.235 + .028*math.sin(1.7*k)) * (math.sin(math.pi*t)**.82)) * (1-.09*t)
    distance=.035 + (.29+.027*math.sin(k*1.3))*t + .34*t*t
    # Upward trumpet cup transitioning to a sharply recurved, lowered tip.
-   height=.535 + .37*t - .15*t*t - .40*(max(0,(t-.66)/.34)**1.7)
+   curl_t=max(0.0,min(1.0,(t-.20)/.80))
+   curl=curl_t*curl_t*curl_t*(10-15*curl_t+6*curl_t*curl_t)
+   height=.535 + .31*t - .12*t*t - .29*curl
    height+= .085*q*q*math.sin(math.pi*t) + .012*q*math.sin(math.pi*t*2+k)
    # Longitudinal veins: slight surface relief without hard corrugation.
    height+=.0055*math.cos(q*math.pi*4)*math.sin(math.pi*t)**2
@@ -64,7 +66,9 @@ for k in range(6):
   t=(h+1)/(count+1)
   width=(.010 + (.235+.028*math.sin(1.7*k))*math.sin(math.pi*t)**.82)*(1-.09*t)
   distance=.035+(.29+.027*math.sin(k*1.3))*t+.34*t*t
-  height=.535+.37*t-.15*t*t-.40*(max(0,(t-.66)/.34)**1.7)+.085*math.sin(math.pi*t)
+  curl_t=max(0.0,min(1.0,(t-.20)/.80))
+  curl=curl_t*curl_t*curl_t*(10-15*curl_t+6*curl_t*curl_t)
+  height=.535+.31*t-.12*t*t-.29*curl+.085*math.sin(math.pi*t)
   q=1 if h%2 else -1
   all_points.append(tuple(u*distance+v*(q*width)+Vector((0,0,height))))
 assert len(all_points)==1000
