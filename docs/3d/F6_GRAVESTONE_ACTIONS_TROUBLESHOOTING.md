@@ -61,3 +61,12 @@ Actions: https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f6-gr
 - このためGLBのエクスポート時点で処理が止まり、3方向レンダリングにも進めず、検証が全FAILとなっていた。
 - 対応: Runnerのaptインストールに `python3-numpy` を追加し、Blender自身のPythonから `import numpy` できるか事前検査する。
 - この修正はコミット済み。ただし**修正後の成功は別途Actionsの実ログ・Artifactsで検証する必要がある**。
+
+## NumPy問題の解決確認・次回引き継ぎ（2026-11-12）
+- **解決確認済み**: 修正コミット `1ccb9fc6ab59081446a2332bf19f1cd6c00f5884` のActions実行 `43194369018` で、GLBと正面・側面・斜めPNGの4ファイルすべてが `PASS`。
+- 成果物: `broken_gravestone_v1.glb` 77,240 bytes、`broken_gravestone_v1_front.png` 448,778 bytes、`broken_gravestone_v1_side.png` 388,507 bytes、`broken_gravestone_v1_angle.png` 396,007 bytes。
+- 成功したArtifact ID: `13932057998`、名前 `floor6-broken-gravestone-v1`、保存期限は2026-11-26。実行URL: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43194369018
+- GitHub連携でPRコメント→Run ID→Artifacts一覧→ZIPダウンロードの経路を実証した。今後はPush実行一覧が空でもPRコメントからRun IDを追跡できる。
+- NumPyはBlenderのglTFエクスポータが必要とするPython数値計算ライブラリ。導入で書き出しエラーが解消したが、導入だけでレンダリング速度やゲーム実行速度が向上するわけではない。
+- **品質課題**: 初回レンダリングでは石材が白く飛んで見える、苔や細かな傷が見えにくい、側面の破損凹凸が弱いとの評価。次はマテリアルのノード設定、照明・露出、正面破断形状、側面の凹凸を改善し、必ず3方向を再レンダリングして比較する。
+- **未完了**: V1造形品質の承認、正式素材フォルダへの昇格、developmentへのマージ。成功したActions Artifactsは一時保存であり、正式素材としては扱わない。
