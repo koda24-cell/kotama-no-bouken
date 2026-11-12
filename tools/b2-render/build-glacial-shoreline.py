@@ -111,7 +111,7 @@ for o in bpy.context.scene.objects:
 with open(out+'/mesh_stats.txt','w') as f:f.write('version=v02\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
 print('B2 SHORELINE',count,tri)
 bpy.ops.wm.save_as_mainfile(filepath=out+'/b2_glacial_shoreline_v02.blend')
-bpy.ops.export_scene.gltf(filepath=out+'/b2_glacial_shoreline_v01.glb',export_format='GLB')
+bpy.ops.export_scene.gltf(filepath=out+'/b2_glacial_shoreline_v02.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('Cavern');bpy.context.scene.world=world
 world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.045,.085,.14,1)
 for loc,power,size in [((2,-9,13),2600,10),((-9,5,11),1700,8)]:
