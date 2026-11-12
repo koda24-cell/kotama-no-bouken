@@ -748,7 +748,9 @@ export async function createTheme(api) {
     return job;
   }
   // 部品を置き、発光部の光も登録する
+  let placedLog = [];   // 診断用：置いた素材の名前と位置（themeInfo().placed）
   function placeAsset(B, cat, piece, x, y, z, ry, sc, tx, ty) {
+    placedLog.push({ name: piece.name, x: +(x / CELL).toFixed(2), z: +(z / CELL).toFixed(2), ry: +ry.toFixed(2) });
     B.add(cat, piece, M4(x, y, z, ry, sc), tx, ty);
     const cs = Math.cos(ry), sn = Math.sin(ry), k = typeof sc === 'number' ? [sc, sc, sc] : sc;
     for (const L of piece.lights) {
@@ -869,6 +871,7 @@ export async function createTheme(api) {
     const objAt = new Map(a.objects.map((o) => [`${o.tx},${o.ty}`, o]));
     const B = new Batcher();
     root = new THREE.Group(); root.name = 'b2_water_source'; g.world.add(root);
+    placedLog = [];
     ensureEnv(); if (envTex) g.scene.environment = envTex;
     if (g.renderer) { if (prevExposure === null) prevExposure = g.renderer.toneMappingExposure; g.renderer.toneMappingExposure = EXPOSURE; }
     addMotes(); addGlitter();
@@ -1270,7 +1273,7 @@ export async function createTheme(api) {
       g.entries.push(e);
     }
     made = B.build(root, mats);
-    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })) };
+    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), placed: placedLog.slice(), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })) };
   }
 
   // 大空洞の縦方向の景観。天井を抜いた3×3マスに高い石造壁と冷光を加える。
@@ -1441,6 +1444,7 @@ export async function createTheme(api) {
   // 橋台（新規の造形）：切石を積んだ柱（2.0×2.4m）が水路橋の高さまで立ち、上は崩れて不揃い。
   // 橋の側へ迫り出す持ち送りの石、足もとの瓦礫・岩・石筍、垂れ下がる氷柱で、洞窟の床となじませる。通り道から0.8m以上離す
   function addAbutment(x, z, ry, side, stoneMat, B, tx, ty) {
+    placedLog.push({ name: 'abutment', x: +(x / CELL).toFixed(2), z: +(z / CELL).toFixed(2), ry });
     const parts = [], H = 10.18 * AQ_S[1] * 0.92, seed = Math.round(x * 7 + z * 13);
     const course = 0.46;
     // 切石：段ごとに石の幅をばらつかせ、目地を段ごとにずらす（同じ大きさの立方体の格子に見せない）。上ほど石が欠け、細る
