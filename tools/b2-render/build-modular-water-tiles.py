@@ -76,7 +76,7 @@ def tile(mask):
  for k in range(4):
   x=rng.uniform(-.28,.28);y=rng.uniform(-.28,.28)
   if coast(x,y)<.08:continue
-  slab('glint' on water surface',x,y,.014,rng.uniform(.045,.13),.008,.001,ripple,mask*2000+k)
+  slab('glint on water surface',x,y,.014,rng.uniform(.045,.13),.008,.001,ripple,mask*2000+k)
  if mask in [0,1,4,8,2,5,10]:
   for k in range(3):
    x=rng.uniform(-.24,.24);y=rng.uniform(-.24,.24)
