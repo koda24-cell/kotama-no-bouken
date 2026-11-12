@@ -120,7 +120,7 @@ jobs:
             assert len(matches)==1,(source,matches)
             f=matches[0]
             assert 1000<f.stat().st_size<100_000_000,(source,f.stat().st_size)
-            assert f.open('rb').read(4)==(b'glTF' if source.endswith('.glb') else b'\\x89PNG')
+            assert f.open('rb').read(4)==(b'glTF' if source.endswith('.glb') else bytes([137,80,78,71]))
             shutil.copyfile(f,target)
           (review/'README.md').write_text(
             '# Approved Floor 6 gravestone V19\\n\\n'
