@@ -1,0 +1,1 @@
+version=v02\nmesh_objects=808\ntriangles=13088\n
