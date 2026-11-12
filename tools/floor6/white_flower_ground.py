@@ -49,20 +49,25 @@ def add_flower(x,y,h,size,group):
  vs.extend([(x-r,y-r,h+.002),(x+r,y-r,h+.002),(x+r,y+r,h+.002),(x-r,y+r,h+.002)])
  fs.append(tuple(range(start,start+4)))
 # Dense jittered lattice with periodic boundary-safe distribution.
-# 28x28 = 784 distinct flowers per tile, plus 180 short blades.
-N=28
-for i in range(N):
- for j in range(N):
-  x=-1+(i+.5+random.uniform(-.37,.37))*2/N
-  y=-1+(j+.5+random.uniform(-.37,.37))*2/N
+# 25 x 24 = 600 flowers, 8 polygons per flower, 194 grass blades, 6 ground faces.
+# Total = 600*8 + 194 + 6 = exactly 5000 mesh polygons.
+NX,NY=25,24
+for i in range(NX):
+ for j in range(NY):
+  x=-1+(i+.5+random.uniform(-.37,.37))*2/NX
+  y=-1+(j+.5+random.uniform(-.37,.37))*2/NY
   add_flower(x,y,random.uniform(.055,.17),random.uniform(.020,.037),random.randrange(3))
-for k in range(180):
+for k in range(194):
  x=random.uniform(-.99,.99);y=random.uniform(-.99,.99);h=random.uniform(.055,.15)
  batch=stems[k%3]
  add_quad(batch,(x-.012,y,0),(x+.012,y,0),(x+.002,y,h),(x-.002,y,h))
 for i,(v,f) in enumerate(stems):mesh("grass stems batch %d"%i,v,f,green[i])
 for i,(v,f) in enumerate(petals):mesh("white petals batch %d"%i,v,f,white[i])
 mesh("flower centers",*centers,yellow)
+# Mandatory preflight: exactly 5000 source mesh polygons, including the ground.
+poly_count=sum(len(o.data.polygons) for o in bpy.context.scene.objects if o.type=='MESH')
+assert poly_count==5000, f'Expected 5000 polygons, got {poly_count}'
+print('SOURCE_POLYGON_COUNT:',poly_count)
 # Export only geometry, never studio equipment.
 bpy.ops.object.select_all(action='DESELECT')
 for ob in bpy.context.scene.objects:
