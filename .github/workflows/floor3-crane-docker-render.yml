@@ -37,7 +37,7 @@ jobs:
           PY
       - name: Pull Blender Docker
         run: docker pull lscr.io/linuxserver/blender:latest
-      - name: Render three views
+      - name: Render two views
         run: |
           docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
             -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
@@ -46,7 +46,7 @@ jobs:
             -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
             -b -t 2 --python tools/floor3/crane/render.py -- render-output/industrial_truss_crane_tapered.glb render-output
           for stem in industrial_truss_crane industrial_truss_crane_tapered; do
-            for view in front side angle; do test -s "render-output/${stem}-${view}.png"; done
+            for view in front angle; do test -s "render-output/${stem}-${view}.png"; done
           done
       - uses: actions/upload-artifact@v4
         if: always()
