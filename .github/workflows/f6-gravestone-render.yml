@@ -1,7 +1,8 @@
 name: F6 Broken Gravestone Blender Render
 on:
   push:
-    branches: [feature/f6-broken-gravestone-20261112]
+    branches:
+      - feature/f6-broken-gravestone-20261112
     paths:
       - 'tools/floor6/**'
       - '.github/workflows/f6-gravestone-render.yml'
@@ -9,16 +10,53 @@ on:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Install Blender
-        run: sudo apt-get update && sudo apt-get install -y blender
+      - name: Diagnose runner and Blender availability
+        run: |
+          set -euxo pipefail
+          echo "Event: $GITHUB_EVENT_NAME"
+          echo "Ref: $GITHUB_REF"
+          echo "SHA: $GITHUB_SHA"
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+          test -f tools/floor6/broken_gravestone.py
       - name: Generate GLB and three rendered views
-        run: blender -b -t 2 --python tools/floor6/broken_gravestone.py
+        run: |
+          set -euxo pipefail
+          mkdir -p render-output/floor6
+          blender -b -t 2 --python tools/floor6/broken_gravestone.py 2>&1 | tee render-output/floor6/blender.log
+      - name: Validate outputs and publish summary
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          base=Path("render-output/floor6")
+          names=["broken_gravestone_v1.glb"]+[f"broken_gravestone_v1_{view}.png" for view in ("front","side","angle")]
+          lines=["## Floor 6 broken gravestone render verification", ""]
+          failed=False
+          for name in names:
+              p=base/name
+              ok=p.is_file() and p.stat().st_size>100
+              if ok:
+                  header=p.open("rb").read(12)
+                  ok=header[:4]==(b"glTF" if p.suffix==".glb" else b"\x89PNG")
+              failed |= not ok
+              lines.append(f"- {'PASS' if ok else 'FAIL'}: {name} ({p.stat().st_size if p.exists() else 0} bytes)")
+          report="\n".join(lines)+"\n"
+          base.mkdir(parents=True,exist_ok=True)
+          (base/"verification.md").write_text(report)
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:f.write(report)
+          if failed: raise SystemExit("GLB/PNG validation failed; inspect blender.log")
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: floor6-broken-gravestone-v1
           path: render-output/floor6/
+          if-no-files-found: warn
           retention-days: 14
