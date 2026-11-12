@@ -52,12 +52,12 @@ for side in (-1,1):
  for level in range(7):
   for depth in range(2):
    rock('angular_cliff_%s_%s_%s'%(side,level,depth),
-    (side*(8.0+rng.uniform(.2,2.3)),4.8+depth*2.1,1.0+level*2.0),
+    (side*(10.8+rng.uniform(.2,2.3)),7.0+depth*2.1,1.0+level*2.0),
     (rng.uniform(1.0,2.3),rng.uniform(1.0,1.8),rng.uniform(1.3,2.4)),
     STONE if level%3==0 else ROCK)
 for i in range(16):
  x=-7.7+i*1.02
- rock('broken_overhang_%02d'%i,(x,4.6+rng.uniform(-.4,.5),13.4+rng.uniform(-.3,.5)),(.8,1.4,.7),ROCK)
+ rock('broken_overhang_%02d'%i,(x,7.0+rng.uniform(-.4,.5),13.4+rng.uniform(-.3,.5)),(.8,1.4,.7),ROCK)
 # Single non-circular, uneven frozen basin mesh, no stacked disks.
 rings=8;segments=48
 verts=[];faces=[]
