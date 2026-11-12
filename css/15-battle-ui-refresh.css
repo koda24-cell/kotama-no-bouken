@@ -2240,3 +2240,9 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
 }
 
 #battle.battle-ui-preview .battle-preview-top-hud #turn-counter{white-space:nowrap!important;flex:0 0 auto!important;min-width:max-content!important;}
+
+/* Battle map lives above the party portraits, never on the TURN HUD. */
+#battle.battle-ui-preview .battle-field-map-dock{position:relative!important;display:flex!important;justify-content:flex-end!important;align-items:center!important;min-height:38px!important;padding:3px 12px!important;box-sizing:border-box!important;z-index:20!important;}
+#battle.battle-ui-preview .battle-field-map-dock #battle-field-map-toggle{position:static!important;inset:auto!important;transform:none!important;margin:0!important;}
+#battle.battle-ui-preview .battle-field-map-dock #battle-field-map{position:absolute!important;top:100%!important;right:12px!important;left:auto!important;bottom:auto!important;transform:none!important;z-index:30!important;max-width:min(360px,90vw)!important;}
+#battle.battle-ui-preview .battle-field-map-dock #battle-field-map[hidden],#battle.battle-ui-preview .battle-field-map-dock #battle-field-map-toggle[hidden]{display:none!important;}
