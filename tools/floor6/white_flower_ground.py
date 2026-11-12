@@ -103,6 +103,6 @@ scene.view_settings.view_transform='Standard';scene.view_settings.look='Medium H
 for view,loc in [('front',(0,-3,1.25)),('side',(3,0,1.3)),('angle',(2.6,-3,2.4)),('top',(0,-.001,4))]:
  cam.location=loc;direction=Vector((0,0,.05))-cam.location
  cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
- scene.render.filepath=os.path.join(OUT,"white_flower_ground_v2_"+view+".png")
+ scene.render.filepath=os.path.join(OUT,"white_flower_ground_v4_"+view+".png")
  bpy.ops.render.render(write_still=True)
 print("WHITE_FLOWER_GROUND_DONE")
