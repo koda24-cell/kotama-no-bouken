@@ -117,5 +117,66 @@ for i in range(16):
     for j in range(2):
         box(f'v2_vine_leaf_{i}_{j}',(x+.09*j,y,z+.28+.24*j),(.23,.07,.12),[65,87,47,255])
 
+
+# V3: reinforced load paths and organically draped electrical cables.
+MOSS=[55,83,43,255];MOSS2=[78,101,55,255];VINE=[48,70,39,255]
+def cable_curve(name,a,b,drop=.9,yoffset=0,segments=22,r=.024):
+    ax,ay,az=a;bx,by,bz=b
+    points=[]
+    for j in range(segments+1):
+        t=j/segments
+        points.append((ax+(bx-ax)*t,ay+(by-ay)*t+yoffset*math.sin(math.pi*t),az+(bz-az)*t-4*drop*t*(1-t)))
+    for j in range(segments):
+        cylinder(f'{name}_{j}',points[j],points[j+1],r,[52,52,47,255],7)
+# Main reinforcement: triangulated struts from the root machinery to the underside.
+for side,y in enumerate((-1.04,1.04)):
+    for i in range(5):
+        x=3.1+i*1.05
+        beam(f'v3_root_column_{side}_{i}',(x,y,1.82),(x,y,4.66),.17,.18,STEEL)
+        if i<4:
+            beam(f'v3_root_diagonal_{side}_{i}',(x,y,1.86),(x+1.05,y,4.62),.11,.13,EDGE)
+            beam(f'v3_root_sill_{side}_{i}',(x,y,1.86),(x+1.05,y,1.86),.16,.17,RUST)
+    for i in range(4):
+        x=4.0+i*.95
+        beam(f'v3_machine_bracket_{side}_{i}',(x,y,4.55),(x+.5,y,5.2),.11,.13,STEEL)
+for i in range(7):
+    x=-6.9+i*2.2
+    beam(f'v3_cross_tie_{i}',(x,-1.05,2.22),(x,1.05,2.22),.11,.14,EDGE)
+# U-shaped thin hanging cables: visible drape from both side and front.
+for i,(a,b,drop) in enumerate([
+    ((-7.0,-1.19,4.3),(-4.0,-1.19,4.3),1.25),
+    ((-3.8,-1.19,4.25),(-.7,-1.19,4.25),1.65),
+    ((.2,-1.19,4.3),(3.8,-1.19,4.3),1.35),
+    ((4.3,-1.2,5.15),(7.1,-1.2,5.15),.95),
+    ((-6.5,1.19,4.25),(-3.4,1.19,4.25),1.05),
+    ((-2.5,1.19,4.3),(1.3,1.19,4.3),1.5),
+    ((2.4,1.19,4.25),(6.0,1.19,4.25),1.35),
+]):
+    cable_curve(f'v3_wire_u_{i}',a,b,drop,0,.021)
+# Additional smaller signal wires, slightly offset in depth.
+for i in range(5):
+    x=-6.2+i*2.65
+    cable_curve(f'v3_signal_wire_{i}',(x,-1.27,3.85),(x+1.85,-1.27,3.85),.55,.10,.012)
+# Root-focused moss on lower braces and concrete counterweight, not on upper boom.
+for i in range(110):
+    x=5.1+(i%11)*.29
+    y=(-1 if (i//11)%2 else 1)*(1.13+.035*((i*7)%4))
+    z=.35+((i*13)%23)*.092
+    box(f'v3_moss_root_{i}',(x,y,z),(.18+.08*(i%3),.05,.10+.045*(i%4)),MOSS if i%3 else MOSS2)
+# Climbing tendrils winding up the base columns, tapering in frequency toward the top.
+for k in range(12):
+    x=5.35+(k%6)*.51
+    y=(-1 if k%2 else 1)*1.19
+    start=.48+(k%3)*.16
+    for j in range(12):
+        z=start+j*.18
+        xx=x+.12*math.sin(j*.8+k)
+        yy=y+.055*math.cos(j*.9+k)
+        if j:
+            cylinder(f'v3_vine_{k}_{j}',(lastx,lasty,lastz),(xx,yy,z),.028,VINE,7)
+        if j%3==0:
+            box(f'v3_vine_leaf_{k}_{j}',(xx+.09,yy,z),(.21,.09,.13),MOSS2)
+        lastx,lasty,lastz=xx,yy,z
+
 scene.export('industrial_truss_crane_tapered.glb')
 print('geometry_count',len(scene.geometry))
