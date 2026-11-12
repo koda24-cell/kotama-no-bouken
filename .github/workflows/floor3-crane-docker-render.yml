@@ -22,14 +22,18 @@ jobs:
         run: |
           mkdir -p render-output
           python tools/floor3/crane/build.py
-          mv industrial_truss_crane.glb render-output/\n          python tools/floor3/crane/taper_build.py\n          mv industrial_truss_crane_tapered.glb render-output/
+          mv industrial_truss_crane.glb render-output/
+          python tools/floor3/crane/taper_build.py
+          mv industrial_truss_crane_tapered.glb render-output/
       - name: Verify GLB
         run: |
           python - <<'PY'
           import trimesh
           scene=trimesh.load('render-output/industrial_truss_crane.glb',force='scene')
           assert len(scene.geometry)>150, len(scene.geometry)
-          print('GEOMETRIES',len(scene.geometry))\n          tapered=trimesh.load('render-output/industrial_truss_crane_tapered.glb',force='scene')\n          assert len(tapered.geometry)>150, len(tapered.geometry)
+          print('GEOMETRIES',len(scene.geometry))
+          tapered=trimesh.load('render-output/industrial_truss_crane_tapered.glb',force='scene')
+          assert len(tapered.geometry)>150, len(tapered.geometry)
           PY
       - name: Pull Blender Docker
         run: docker pull lscr.io/linuxserver/blender:latest
