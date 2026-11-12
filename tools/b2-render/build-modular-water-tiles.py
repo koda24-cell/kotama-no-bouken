@@ -81,7 +81,7 @@ def tile(mask):
   for k in range(3):
    x=rng.uniform(-.24,.24);y=rng.uniform(-.24,.24)
    if coast(x,y)<.11:continue
-   slab('floating' broken ice',x,y,.027,rng.uniform(.09,.2),rng.uniform(.08,.18),.035,ice,mask*3000+k)
+   slab('floating broken ice',x,y,.027,rng.uniform(.09,.2),rng.uniform(.08,.18),.035,ice,mask*3000+k)
  objects=[o for o in bpy.context.scene.objects if o not in start]
  bpy.ops.object.select_all(action='DESELECT')
  for o in objects:o.select_set(True)
@@ -90,6 +90,17 @@ def tile(mask):
  for o in objects:
   o.location.x+=(mask%4)*1.32-1.98;o.location.y+=(mask//4)*1.32-1.98
  return objects
+for mask in range(16):tile(mask)
+# A compact, repeatable three-view review sheet.
+world=bpy.context.scene.world or bpy.data.worlds.new('Blue cavern');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.06,.12,.19,1)
+for loc,power,size in [((0,-5,9),1600,7),((-4,4,7),950,6)]:
+ bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.size=size;o.rotation_euler=(Vector((0,0,0))-o.location).to_track_quat('-Z','Y').to_euler()
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=24
+scene.render.resolution_x=1300;scene.render.resolution_y=1100;scene.render.resolution_percentage=100
+for name,pos,scale in [('top',(0,0,12),7.3),('angle',(7,-9,10),8.2),('side',(0,-12,5),8.4)]:
+ bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,0))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=scale;scene.camera=cam
+ scene.render.filepath=OUT+'/'+name+'.png';bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
+with open(OUT+'/README.txt','w') as f:f.write('16 water tile GLBs. Bitmask N=8 E=2 S=1 W=4. 1x1 tile, centered at origin; shorelines on disconnected edges. Geometry only; not integrated into game.\\n')
 for mask in range(16):tile(mask)
 # A compact, repeatable three-view review sheet.
 world=bpy.context.scene.world or bpy.data.worlds.new('Blue cavern');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.06,.12,.19,1)
