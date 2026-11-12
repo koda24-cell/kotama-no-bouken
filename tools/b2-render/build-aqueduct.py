@@ -149,15 +149,48 @@ for cx in (-6,0,6):
    x=cx+2.77*math.cos(a);z=4.65+2.77*math.sin(a)
    fractured_face('Arch ring chisel fracture',x,y,z,.36,.29,.075,99+int(cx)*13+j)
 
+# v0.4: soften mechanically square silhouette without losing structural stone joints.
+# Apply geometry bevels (not just smooth shading) to existing blocks and voussoirs.
+# Edge wear varies deterministically so neighboring blocks never look machine-identical.
+bevelled=0
+for obj in list(bpy.context.scene.objects):
+ if obj.type!='MESH' or len(obj.data.vertices)<4:continue
+ if obj.name.startswith(('Uneven fused ice fang','Recessed jagged split','Splintered stone chip')):
+  continue
+ is_rock=any(term in obj.name for term in (
+  'pier','Pier','stone','Stone','masonry','Masonry','limestone',
+  'voussoir','Voussoir','parapet','Parapet','Bridge','bridge',
+  'Balustrade','handrail','coping','fascia','Fascia','Fractured'))
+ if not is_rock:continue
+ dims=obj.dimensions
+ shortest=min(dims)
+ if shortest<.12:continue
+ rng=random.Random(1207+sum(ord(c) for c in obj.name)+int(obj.location.x*37)+int(obj.location.z*17))
+ width=min(.115,shortest*(.16+rng.uniform(-.035,.045)))
+ mod=obj.modifiers.new('Irregular worn stone edge rounding','BEVEL')
+ mod.width=width
+ mod.segments=3 if shortest>.34 else 2
+ mod.affect='EDGES'
+ mod.loop_slide=True
+ mod.profile=.62+rng.uniform(-.08,.08)
+ # Apply for GLB compatibility and ensure exported geometry actually rounded.
+ bpy.context.view_layer.objects.active=obj
+ bpy.ops.object.select_all(action='DESELECT')
+ obj.select_set(True)
+ bpy.ops.object.modifier_apply(modifier=mod.name)
+ obj.select_set(False)
+ bevelled+=1
+print('V04 rounded stone meshes',bevelled)
+
 cube('Frozen pool',(0,-2,.035),(23,5,.07),water)
 bpy.context.view_layer.update()
 tri=0;count=0
 for o in bpy.context.scene.objects:
  if o.type=='MESH':
   o.data.calc_loop_triangles();tri+=len(o.data.loop_triangles);count+=1
-with open(out+'/mesh_stats.txt','w') as f:f.write('version=v03\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
-print('ICE BRIDGE V03',count,tri)
-bpy.ops.wm.save_as_mainfile(filepath=out+'/ancient_ice_bridge_v03.blend')
+with open(out+'/mesh_stats.txt','w') as f:f.write('version=v04\\nmesh_objects=%s\\ntriangles=%s\\n'%(count,tri))
+print('ICE BRIDGE V04',count,tri)
+bpy.ops.wm.save_as_mainfile(filepath=out+'/ancient_ice_bridge_v04.blend')
 bpy.ops.export_scene.gltf(filepath=out+'/ancient_ice_bridge_v03.glb',export_format='GLB')
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.03,.06,.12,1)
 for loc,power in [((1,-8,15),2600),((-10,4,10),1600)]:
