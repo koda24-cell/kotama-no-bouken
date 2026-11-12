@@ -119,9 +119,16 @@ def curved_voussoir(i,n,theta0,theta1):
  bevel=o.modifiers.new('worn masonry corners','BEVEL');bevel.width=.045;bevel.segments=2
  o.modifiers.new('weighted stone normals','WEIGHTED_NORMAL')
 for i in range(12):
- if i in (9,10,11):continue
+ if i in (5,):continue
  t0=.04+i*(math.pi*.89/12);t1=.04+(i+1)*(math.pi*.89/12)-.018
  curved_voussoir(i,12,t0,t1)
+# Structural piers directly beneath both springing points; arch cannot float
+for x in (-3.85,-.15):
+ cube('arch load bearing foundation',(x,2.05,1.08),(1.02,1.08,.46),stone[0],.075)
+ cube('arch connected supporting pier',(x,2.05,2.30),(.74,.82,2.22),stone[2],.065)
+ cube('arch capital connecting springer',(x,2.05,3.40),(.95,.98,.28),stone[1],.06)
+ for z in (1.6,2.45,3.0):
+  cube('weathered structural pier crack',(x+.37,1.63,z),(.035,.035,.25),crack,.008)
 # broken arch crown rubble on ground, not floating above the arch
 for i in range(8):
  cube('fallen arch wedge fragment',(-3.4+random.uniform(-.6,.6),2.5+random.uniform(-.5,.5),.28),(.25+random.random()*.35,.3+random.random()*.3,.17+random.random()*.22),random.choice(stone),.045,random.uniform(-.7,.7))
