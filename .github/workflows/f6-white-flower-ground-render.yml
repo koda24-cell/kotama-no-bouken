@@ -45,3 +45,31 @@ jobs:
           name: f6-white-flower-ground-v4
           path: render-output/floor6/white-flower-ground/
           retention-days: 14
+      - name: Render single white lily (150 control coordinates)
+        if: always()
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/floor6/white_lily_single.py
+          mkdir -p render-output/floor6/white-lily-study
+          blender -b -t 2 --python tools/floor6/white_lily_single.py 2>&1 | tee render-output/floor6/white-lily-study/blender.log
+          grep -q WHITE_LILY_DONE render-output/floor6/white-lily-study/blender.log
+      - name: Validate single lily GLB PNG and 150 coordinates
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import csv
+          p=Path('render-output/floor6/white-lily-study')
+          assert (p/'white_lily_single.glb').read_bytes()[:4]==b'glTF'
+          for v in ('angle','front','side','top'):
+              f=p/('white_lily_'+v+'.png')
+              assert f.stat().st_size>1000 and f.read_bytes()[:4]==bytes([137,80,78,71]),str(f)
+          with (p/'control_points_150.csv').open() as f:
+              assert len(list(csv.DictReader(f)))==150
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-white-lily-single-study
+          path: render-output/floor6/white-lily-study/
+          retention-days: 14
