@@ -119,17 +119,36 @@ for i,(x,z) in enumerate(weathering_coords):
     (x+.013,-.154,z-length*.4),
     (random.uniform(.014,.033),.012,random.uniform(.025,.075)),edge,.004)
   lip.rotation_euler[1]=random.uniform(-.6,.6)
+# V7: fracture network follows interlocking polygonal plates, inspired by the
+# reference's fractured boulder. No central hole or disconnected overlay rods.
+# 48 added irregular crack coordinates, with forks and changing line width.
+for i in range(8):
+ start_x=random.uniform(-.36,.35);start_z=random.uniform(.61,1.55)
+ x,z=start_x,start_z
+ points=[(x,z)]
+ for j in range(6):
+  x+=random.uniform(-.038,.038)
+  z-=random.uniform(.025,.075)
+  points.append((x,z))
+ groove("V7 branching fracture %02d"%i,points,random.uniform(.004,.009))
 # Lower transverse ornamental frame band
 block("lower frame rail",(0,-.158,.43),(.78,.065,.052),edge,.009)
-# Six differently sized fractured rocks. Icospheres subdivision 1 => 20 triangular faces each.
-rock_specs=[(-.62,-.30,.14,.19),(-.42,.30,.13,.15),(.58,-.27,.12,.17),(.49,.31,.11,.12),(-.12,-.48,.10,.105),(.12,.44,.10,.14)]
+# V7: six large/small foundation rocks with twice the former vertex density.
+# Icosphere subdivision 2 = 80 triangular faces (vs subdivision 1 = 20).
+# Perturb vertices radially for asymmetric chipped rock silhouettes.
+rock_specs=[(-.62,-.30,.14,.21),(-.42,.30,.13,.105),(.58,-.27,.12,.19),(.49,.31,.11,.09),(-.12,-.48,.10,.085),(.12,.44,.10,.16)]
 for i,(x,y,z,radius) in enumerate(rock_specs):
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=radius,location=(x,y,z))
- o=bpy.context.object;o.name="ten-plus-face root rock %02d"%i
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=radius,location=(x,y,z))
+ o=bpy.context.object;o.name="V7 irregular foundation rock %02d"%i
+ for v in o.data.vertices:
+  factor=random.uniform(.79,1.22)
+  v.co.x*=factor*random.uniform(.92,1.08)
+  v.co.y*=factor*random.uniform(.85,1.12)
+  v.co.z*=factor*random.uniform(.75,1.08)
  o.scale=(random.uniform(.85,1.3),random.uniform(.7,1.15),random.uniform(.55,.9))
  o.rotation_euler=(random.uniform(-.5,.5),random.uniform(-.5,.5),random.uniform(-1,1))
  o.data.materials.append(edge if i%2 else stone)
- assert len(o.data.polygons)>=10
+ assert len(o.data.polygons)>=40
 # Tiny clustered moss nodules: irregular patch distribution, never blanket cover.
 for patch in range(20):
  cx=random.uniform(-.38,.38);cz=random.choice([random.uniform(.42,.70),random.uniform(1.02,1.43)])
@@ -239,12 +258,13 @@ for vine_id in range(3):
  for p,xyz in zip(spline.points,points):p.co=(*xyz,1)
  obj=bpy.data.objects.new("V6 climbing vine %d"%vine_id,curve)
  bpy.context.collection.objects.link(obj);obj.data.materials.append(vine_mat)
+ # V7: place leaves directly on stem coordinates; no unsupported floating offsets.
  for j in range(2,25,2):
   x,y,z=points[j]
   for side in (-1,1):
-   ivy_leaf("V6 ivy leaf %d_%d_%d"%(vine_id,j,side),
-    x+side*random.uniform(.024,.065),y-.007,z+random.uniform(-.025,.025),
-    random.uniform(.025,.050),side*random.uniform(.05,.35))
+   # leaf center is attached to the vine; blade expands sideways from the stem
+   ivy_leaf("V7 attached ivy leaf %d_%d_%d"%(vine_id,j,side),
+    x,y-.003,z,random.uniform(.024,.043),side*random.uniform(.05,.25))
 # English epitaph. Deliberately weathered and tiny; not required to be legible.
 epitaph=[
  "THE HERO OF OUR AGE",
@@ -266,7 +286,7 @@ for i,line in enumerate(epitaph):
 attached=[o for o in bpy.context.scene.objects if (
  o.name.startswith(("asymmetric fractured","raised gravestone frame","lower frame rail",
  "major fractured","branch fissure","secondary fissure","worn rune","moss patch",
- "fine lumpy moss","V4 dense lower moss","V4 dense ledge moss","V4 erosion groove","V4 exposed chipped edge","V6 faceted erosion","V6 fractured lip","V6 climbing vine","V6 ivy leaf","weathered epitaph","upper chipped plinth","lower cracked plinth")))]
+ "fine lumpy moss","V4 dense lower moss","V4 dense ledge moss","V4 erosion groove","V7 branching fracture","V4 exposed chipped edge","V6 faceted erosion","V6 fractured lip","V6 climbing vine","V6 ivy leaf","V7 attached ivy leaf","weathered epitaph","upper chipped plinth","lower cracked plinth")))]
 pivot=bpy.data.objects.new("leaning gravestone pivot",None)
 bpy.context.collection.objects.link(pivot);pivot.location=(0,0,.12)
 for o in attached:
