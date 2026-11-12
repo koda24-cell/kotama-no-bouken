@@ -12,6 +12,7 @@ on:
       - feature/b4-cart-wheel-spokes-v8-20261112
       - feature/b4-cart-silhouette-v9-20261112
       - feature/b4-rail-joints-v10-20261112
+      - feature/b4-rail-fracture-v11-20261112
 jobs:
   render:
     runs-on: ubuntu-latest
