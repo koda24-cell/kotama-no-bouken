@@ -8,12 +8,13 @@ def mat(name,col,rough=.6,metal=0,alpha=1):
  p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*col,alpha);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal;p.inputs['Alpha'].default_value=alpha
  if alpha<1:m.surface_render_method='DITHERED'
  return m
-water=mat('Deep blue turquoise water',(.025,.32,.48),.13,.18,.86)
-ripple=mat('Soft turquoise water caustic lines',(.15,.76,.91),.23,0,.48)
+water=mat('Deep blue turquoise water',(.018,.19,.31),.075,.12,.95)
+ripple=mat('Soft turquoise water caustic lines',(.13,.56,.69),.21,0,.19)
 stone=mat('Cold dark carved stone',(.17,.27,.34),.84)
 wet=mat('Waterlogged slate',(.12,.24,.31),.25)
 ice=mat('Translucent icy edge',(.39,.76,.89),.24,.05,.8)
-frost=mat('Frosted white ice',(.77,.91,.95),.62)
+frost=mat('Frosted white ice',(.62,.81,.87),.62)
+puddle=mat('Thin water film on weathered stone',(.045,.24,.31),.18,.06,.58)
 def objmesh(name,vs,fs,material):
  mesh=bpy.data.meshes.new(name);mesh.from_pydata(vs,[],fs);mesh.update();o=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(o);o.data.materials.append(material);return o
 def slab(name,x,y,z,sx,sy,th,material,seed):
@@ -27,48 +28,60 @@ def slab(name,x,y,z,sx,sy,th,material,seed):
  return objmesh(name,vs,fs,material)
 def tile(mask):
  rng=random.Random(9000+mask);start=set(bpy.context.scene.objects)
- # N=8 E=2 S=1 W=4; four-way edge-matched water.
- n=25;vs=[];fs=[]
+ # Connected-edge bitmask N=8 E=2 S=1 W=4. 2D shoreline field
+ # is shared by water, submerged stone and wet-shelf geometry.
+ def coast(x,y):
+  # Signed water occupancy; positive inside the water, negative on land.
+  limits=[]
+  for bit,coord in [(8,y),(1,-y),(2,x),(4,-x)]:
+   if not mask&bit:
+    along=x if bit in (8,1) else y
+    wobble=.025*math.sin(along*17+bit*2)+.013*math.sin(along*29+bit)
+    limits.append(.32-coord+wobble)
+  return min(limits) if limits else 1.
+ n=49;vs=[];fs=[];land_vs=[];land_fs=[]
  for j in range(n):
   y=-.5+j/(n-1)
   for i in range(n):
-   x=-.5+i/(n-1)
-   z=.005*math.sin(x*24+y*13)+.003*math.sin(y*33-x*12)
+   x=-.5+i/(n-1);d=coast(x,y)
+   z=.003*math.sin(x*21+y*13)+.002*math.sin(y*26-x*11)
    vs.append((x,y,z))
+   land_vs.append((x,y,.012+.014*max(0,-d)+.004*math.sin(x*29+y*17)))
    if i<n-1 and j<n-1:
-    a=j*n+i;fs.append((a,a+1,a+1+n,a+n))
- objmesh('continuous water tile %02d'%mask,vs,fs,water)
- # Land-facing banks are inset to keep the water edges connected only where intended.
+    a=j*n+i
+    corners=[(x,y),(x+1/(n-1),y),(x+1/(n-1),y+1/(n-1)),(x,y+1/(n-1))]
+    center=(x+.5/(n-1),y+.5/(n-1))
+    if coast(*center)>=0:fs.append((a,a+1,a+1+n,a+n))
+    else:land_fs.append((a,a+1,a+1+n,a+n))
+ objmesh('deep water cut to shoreline %02d'%mask,vs,fs,water)
+ objmesh('single continuous dark slate shoreline',land_vs,land_fs,stone)
+ # Wet stone and shallow puddles flow onto land without adding a pebble fence.
  for bit,side in [(8,'N'),(2,'E'),(1,'S'),(4,'W')]:
   if mask&bit:continue
-  for i in range(9):
-   t=-.47+i*.115
-   if side=='N':x,y=t,.435
-   elif side=='S':x,y=t,-.435
-   elif side=='E':x,y=.435,t
-   else:x,y=-.435,t
-   sx,sy=(.16,.14) if side in ('N','S') else (.14,.16)
-   slab('eroded stone shoreline',x,y,.036,sx,sy,.06,stone,mask*100+i*7+bit)
-   if i%2==0:
-    slab('interlocking ice lip',x+rng.uniform(-.03,.03),y+rng.uniform(-.03,.03),.055,sx*.9,sy*.8,.025,ice,mask*200+i*11+bit)
+  for i in range(6):
+   t=-.4+i*.16
+   x,y=(t,.39) if side=='N' else ((t,-.39) if side=='S' else ((.39,t) if side=='E' else (-.39,t)))
+   slab('irregular wet stone film',x,y,.031,.17,.14,.008,puddle,mask*100+i*7+bit)
    if i%3==0:
-    slab('frost deposit',x,y,.064,sx*.6,sy*.65,.015,frost,mask*300+i*13+bit)
-  # Thin wet areas between rock and the water; visually blend into shallow puddles.
-  for i in range(5):
-   t=-.38+i*.19
-   x,y=(t,.33) if side=='N' else ((t,-.33) if side=='S' else ((.33,t) if side=='E' else (-.33,t)))
-   slab('shallow flooded stone shelf',x,y,.012,.12,.11,.01,wet,mask*400+i*17+bit)
+    slab('frost embedded in bank',x,y,.038,.12,.10,.012,ice,mask*200+i*11+bit)
+  for i in range(3):
+   t=-.29+i*.28
+   x,y=(t,.46) if side=='N' else ((t,-.46) if side=='S' else ((.46,t) if side=='E' else (-.46,t)))
+   slab('thin puddle extending into dry ground',x,y,.037,.19,.08,.004,puddle,mask*300+i*13+bit)
  # Water-only decorations never cross the tile boundary, so adjacent tiles remain seamless.
- for k in range(12):
-  x=rng.uniform(-.39,.39);y=rng.uniform(-.39,.39)
+ for k in range(9):
+  x=rng.uniform(-.29,.29);y=rng.uniform(-.29,.29)
+  if coast(x,y)<.04:continue
   slab('submerged gravel',x,y,-.017,rng.uniform(.025,.09),rng.uniform(.025,.09),.016,stone,mask*1000+k)
- for k in range(7):
-  x=rng.uniform(-.35,.35);y=rng.uniform(-.35,.35)
-  slab('glint on water surface',x,y,.014,rng.uniform(.045,.13),.008,.001,ripple,mask*2000+k)
+ for k in range(4):
+  x=rng.uniform(-.28,.28);y=rng.uniform(-.28,.28)
+  if coast(x,y)<.08:continue
+  slab('glint' on water surface',x,y,.014,rng.uniform(.045,.13),.008,.001,ripple,mask*2000+k)
  if mask in [0,1,4,8,2,5,10]:
   for k in range(3):
    x=rng.uniform(-.24,.24);y=rng.uniform(-.24,.24)
-   slab('floating broken ice',x,y,.027,rng.uniform(.09,.2),rng.uniform(.08,.18),.035,ice,mask*3000+k)
+   if coast(x,y)<.11:continue
+   slab('floating' broken ice',x,y,.027,rng.uniform(.09,.2),rng.uniform(.08,.18),.035,ice,mask*3000+k)
  objects=[o for o in bpy.context.scene.objects if o not in start]
  bpy.ops.object.select_all(action='DESELECT')
  for o in objects:o.select_set(True)
