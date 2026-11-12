@@ -152,11 +152,11 @@ for i,(a,b,drop) in enumerate([
     ((-2.5,1.19,4.3),(1.3,1.19,4.3),1.5),
     ((2.4,1.19,4.25),(6.0,1.19,4.25),1.35),
 ]):
-    cable_curve(f'v3_wire_u_{i}',a,b,drop,0,.021)
+    cable_curve(f'v3_wire_u_{i}',a,b,drop,r=.021)
 # Additional smaller signal wires, slightly offset in depth.
 for i in range(5):
     x=-6.2+i*2.65
-    cable_curve(f'v3_signal_wire_{i}',(x,-1.27,3.85),(x+1.85,-1.27,3.85),.55,.10,.012)
+    cable_curve(f'v3_signal_wire_{i}',(x,-1.27,3.85),(x+1.85,-1.27,3.85),.55,.10,r=.012)
 # Root-focused moss on lower braces and concrete counterweight, not on upper boom.
 for i in range(110):
     x=5.1+(i%11)*.29
