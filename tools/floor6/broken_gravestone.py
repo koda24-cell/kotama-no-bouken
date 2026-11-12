@@ -159,15 +159,29 @@ def moss_batch(name,placements):
   faces.extend(tuple(base+v for v in face) for face in ico_faces)
  return mesh(name,verts,faces,moss)
 lower_moss=[]
-for patch in range(750):  # 10x previous 75 patches
- base_x=random.uniform(-.54,.54)
- base_z=random.choices([random.uniform(.27,.53),random.uniform(.53,.84)],[.88,.12])[0]
+for patch in range(750):  # retain V4's moss population, redistribute across all sides
+ side=random.choices(["front","back","left","right"],[.28,.28,.22,.22])[0]
+ base_z=random.choices([random.uniform(.27,.67),random.uniform(.67,1.45)],[.74,.26])[0]
+ base_x=random.uniform(-.45,.45)
  for k in range(random.randint(6,13)):
-  x=base_x+random.gauss(0,.029);z=base_z+random.gauss(0,.023)
-  if abs(x)>.55:continue
-  y=-.188 if z>.38 else -.28
-  rad=random.uniform(.008,.026) # 2x prior .004-.013
-  lower_moss.append((x,y-random.uniform(0,.009),z,rad*1.1,rad*.60,rad*random.uniform(.7,1.4)))
+  z=base_z+random.gauss(0,.023)
+  if z<.24 or z>1.52:continue
+  rad=random.uniform(.008,.026) # retain doubled V4 nodule size
+  if side=="front":
+   x=base_x+random.gauss(0,.029)
+   if abs(x)>.49 or (z>.78 and abs(x)<.26):continue
+   y=-.19-random.uniform(0,.009)
+   rx,ry,rz=rad*1.1,rad*.60,rad*random.uniform(.7,1.4)
+  elif side=="back":
+   x=base_x+random.gauss(0,.029)
+   if abs(x)>.49:continue
+   y=.19+random.uniform(0,.009)
+   rx,ry,rz=rad*1.1,rad*.60,rad*random.uniform(.7,1.4)
+  else:
+   x=(-.455 if side=="left" else .455)+random.uniform(-.009,.009)
+   y=random.uniform(-.13,.13)
+   rx,ry,rz=rad*.60,rad*1.1,rad*random.uniform(.7,1.4)
+  lower_moss.append((x,y,z,rx,ry,rz))
 moss_batch("V4 dense lower moss",lower_moss)
 ledge_moss=[]
 for patch in range(950): # 10x previous 95 clumps
