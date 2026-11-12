@@ -27,8 +27,9 @@ jobs:
           echo "Run URL: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           echo "Run URL: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> "$GITHUB_STEP_SUMMARY"
           sudo apt-get update
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
           blender --version
+          blender -b --python-expr 'import numpy; print("Blender numpy:", numpy.__version__)'
           test -f tools/floor6/broken_gravestone.py
       - name: Generate GLB and three rendered views
         run: |
