@@ -51,3 +51,19 @@ pushトリガーでも自動実行される。実行ページ下のArtifactsか�
 
 ## 新しいチャットへの依頼文（コピー用）
 「GitHub `koda24-cell/kotama-no-bouken` の `AGENTS.md` と `docs/3d/BLENDER_DOCKER_HANDOFF.md` を読み、PR #253のDocker一括レンダリングの最新実行結果を確認して、4層の3D小物品質改善を引き継いでください。既存形状は保持し、追加造形・GLB・3方向PNG比較を行い、development向けPRで管理してください。」
+
+## 3D制作の事前確認事項・再発防止台帳（2026-11-12以降、全階層共通）
+**運用ルール:** 新たな構文エラー、Blender APIの不一致、環境依存、出力失敗を発見したら、実ログ・原因・修正・事前検査方法をこの節（またはリンク先のトラブルシュート資料）へ追記する。次の3D生成作業では過去の失敗をチェックリストとして先に確認する。未検証の項目は「未検証」と明記する。
+
+### 既知の失敗と必須の予防検査
+1. **Python改行エスケープ混入**: ソースに文字列 `\\n` を改行として挿入し `SyntaxError: unexpected character after line continuation character`。**予防:** コミット前に `python3 -m py_compile <script.py>` または `ast.parse` を実行。置換後の該当行を再確認。
+2. **Blender glTFエクスポータのNumPy不足**: `ModuleNotFoundError: No module named 'numpy'`。**予防:** Blender本体のPythonから `import numpy` を事前実行し、ランナーに `python3-numpy` が入っていることを検証。OS側のPythonだけで確認して終わらない。
+3. **Blender 5.0.1の色管理enum不一致**: `scene.view_settings.look='Medium High Contrast'` は `TypeError`。対応する値は `AgX - Medium High Contrast`。**予防:** 実行するBlenderバージョンのAPI enumを確認し、Blender本体で設定を代入するスモークテストを実施。構文検査だけでは検出できない。
+4. **レンダリング失敗時の成果物誤認**: 検証レポートやZIPだけ存在してもGLB/PNGが0 bytesの可能性。**予防:** ファイル存在、サイズ、GLB/PNGヘッダ、実レンダリング画像の取得・目視を確認。成功した過去runと新runを混同しない。
+
+### 各作業の必須ゲート
+- **コミット前:** 構文・エスケープ・インデント・依存関係の静的検査。
+- **Blender起動後:** API設定値のスモークテスト、生成メッシュの頂点数・面数・寸法・配置を検証。
+- **出力後:** GLB形式と再読込可能性、PNG3方向の正常出力、造形と材質の目視評価。
+- **報告前:** 実行run ID、コミットSHA、検証済み成果物を対応付ける。未成功なら「未完了」と報告。
+- 新しい失敗が出たら**原因を台帳に追記してから**次回の生成へ進む。個別の墓石実ログは `docs/3d/F6_GRAVESTONE_ACTIONS_TROUBLESHOOTING.md` を参照。
