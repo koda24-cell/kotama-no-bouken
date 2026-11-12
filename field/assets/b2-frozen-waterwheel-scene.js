@@ -39,6 +39,8 @@ export function createB2FrozenWaterwheelScene(THREE) {
   const y=cy+R*Math.cos(a),z=cz+R*Math.sin(a);
   const paddle=box(0,y,z,1.23,.16,.58,wood);
   paddle.rotation.x=-a;
+  // Preserve source mesh but omit major broken paddles from export/render.
+  if([1,2,7,8,10,11].includes(i)) paddle.visible=false;
   if(i%4===0){box(.05,y+.16,z,1.15,.19,.51,ice,[a*.14,0,0])}
  }
  // Broad irregular ice wedges, unequal icicles and natural stalactite clusters.
@@ -296,6 +298,52 @@ export function createB2FrozenWaterwheelScene(THREE) {
  // A jagged frozen curtain is attached to the rear arch and cave rock.
  for(let i=0;i<5;i++){
   iceMass(-5.1+i*.49,-4.88,2.5,1.25+(i%3)*.62,.35,.42,25+i, i%2?ice:paleIce);
+ }
+
+
+ // PASS 5: join previously suspended cave ledges to the floor with continuous cliff masses.
+ // The stone arches and wheel remain independent objects inside an integrated cave silhouette.
+ function cliff(x,z,height,rx,rz,seed){
+  const verts=[],faces=[],n=11,layers=7;
+  for(let j=0;j<layers;j++){
+   const t=j/(layers-1),radius=(1-.35*t)*(1+.09*Math.sin(seed+j));
+   for(let k=0;k<n;k++){
+    const a=k*2*Math.PI/n;
+    const wobble=1+.17*Math.sin(k*2.3+seed+j*.7);
+    verts.push(x+Math.cos(a)*rx*radius*wobble,
+      -.25+height*t+.10*Math.sin(k*1.9+seed)*t,
+      z+Math.sin(a)*rz*radius*wobble);
+   }
+  }
+  for(let j=0;j<layers-1;j++)for(let k=0;k<n;k++){
+   const a=j*n+k,b=j*n+(k+1)%n,c=(j+1)*n+k,d=(j+1)*n+(k+1)%n;
+   faces.push(a,b,c,b,d,c);
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  geo.setIndex(faces);geo.computeVertexNormals();
+  add(geo,darkStone);
+ }
+ for(const side of [-1,1]){
+  for(let i=0;i<7;i++){
+   const x=side*(6.0+(i%3)*.88),z=-4.55+i*1.48;
+   cliff(x,z,5.8+Math.sin(i*1.7)*.38,1.0,.9,i+side*13);
+  }
+ }
+ // Jagged fractured plank stumps create large gaps where whole paddles have fallen away.
+ for(const i of [1,2,7,8,10,11]){
+  const a=(i+.5)*Math.PI*2/spokes;
+  const y=cy+R*Math.cos(a),z=R*Math.sin(a);
+  for(const x of [-.45,.45]){
+   const stump=add(new THREE.TetrahedronGeometry(.38+(i%3)*.13),oldTimber,x,y,z);
+   stump.scale.set(.7,.65,1.35);stump.rotation.set(a*.5,i*.35,a*.7);
+  }
+ }
+ // Layered cliff-foot boulders connect cave walls with the arcade bases.
+ for(const side of [-1,1])for(let i=0;i<12;i++){
+  const x=side*(5.4+(i%4)*.8),z=-4.8+Math.floor(i/4)*4.6;
+  const b=add(new THREE.DodecahedronGeometry(.74+(i%3)*.16,1),i%3?darkStone:stone,x,.34,z);
+  b.scale.set(1.4,.55,1.1);b.rotation.y=i*.47;
  }
 
  return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost,oldTimber,paleIce])mat.dispose()}};
