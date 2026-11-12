@@ -1,0 +1,1 @@
+# Approved Floor 6 gravestone V19\n\nApproved by user on 2026-11-12.\nSource run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43223467100\nSource commit: 91829d08067540ec2c8cdfcde522d685f3b185b6\nModel: assets/models/floor6/broken_gravestone_v19.glb\nReview images: front.png, side.png, angle.png\nGame integration and optimization are separate tasks.\n
