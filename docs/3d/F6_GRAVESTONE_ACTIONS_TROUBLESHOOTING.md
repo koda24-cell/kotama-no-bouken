@@ -54,3 +54,10 @@ Actions: https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f6-gr
 - PRコメント投稿に必要な `issues: write`、`pull-requests: write` を当該ワークフローに限定して明示。リポジトリ設定で書き込みトークンが制限されている場合はコメント投稿が失敗するため、実際の成功確認が必要。
 - PRコメントに実行結果がない場合、GitHub Actions自体が起動していない・ワークフロー登録に問題がある・コメント権限がない、などを切り分ける。コメントがないことだけでBlender実行失敗と断定しない。
 - この変更は「GitHub連携で実行結果を追跡できるようにする」ための改善であり、まだ成功したレンダリング画像を取得した証拠ではない。
+
+## 実ログで確定した原因と修正（2026-11-12）
+- PRコメント経由でRun IDを取得できた。例: `43192549484`、Job ID `131095254285`。GitHub連携の `fetch_workflow_run_jobs` と `fetch_workflow_job_logs` が動作した。
+- 実ログ: `tools/floor6/broken_gravestone.py` の `bpy.ops.export_scene.gltf(...)` 呼び出し時、Blender 5.0.1のglTFエクスポータが `import numpy as np` で `ModuleNotFoundError: No module named 'numpy'` を発生。
+- このためGLBのエクスポート時点で処理が止まり、3方向レンダリングにも進めず、検証が全FAILとなっていた。
+- 対応: Runnerのaptインストールに `python3-numpy` を追加し、Blender自身のPythonから `import numpy` できるか事前検査する。
+- この修正はコミット済み。ただし**修正後の成功は別途Actionsの実ログ・Artifactsで検証する必要がある**。
