@@ -350,12 +350,12 @@ export function createB2FrozenWaterwheelScene(THREE) {
  // PASS 6: continuous stratified cave walls, with irregular recessed bays and overhangs.
  // Wall silhouette varies in all three dimensions instead of repeating flat columns.
  function caveWall(side){
-  const nx=26,ny=12,verts=[],tris=[];
+  const nx=80,ny=40,verts=[],tris=[];
   for(let j=0;j<=ny;j++){
    const t=j/ny, y=-.26+t*7.65;
    for(let i=0;i<=nx;i++){
     const q=i/nx,z=-6.2+12.4*q;
-    const ridge=Math.sin(q*17.1+side*.7)*.48+Math.sin(q*37.4+t*9.1)*.22;
+    const ridge=Math.sin(q*17.1+side*.7)*.48+Math.sin(q*37.4+t*9.1)*.22+Math.sin(q*83.2+t*41.7)*.075;
     const layered=Math.sin(t*17.8+q*8.5)*.19;
     const deepPocket=2.55*Math.exp(-Math.pow((q-.42)/.16,2))*Math.exp(-Math.pow((t-.50)/.38,2));
     const secondaryPocket=1.65*Math.exp(-Math.pow((q-.79)/.12,2))*Math.exp(-Math.pow((t-.43)/.29,2));
@@ -373,8 +373,8 @@ export function createB2FrozenWaterwheelScene(THREE) {
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
   geo.setIndex(tris);geo.computeVertexNormals();
-  const m=add(geo,darkStone);
-  m.material.side=THREE.DoubleSide;
+  const wallMaterial=darkStone.clone();wallMaterial.side=THREE.DoubleSide;
+  add(geo,wallMaterial);
  }
  caveWall(-1);caveWall(1);
  // Long ridges link cliff feet to ceiling, breaking up the uniform wall silhouette.
@@ -395,10 +395,7 @@ export function createB2FrozenWaterwheelScene(THREE) {
   ledge.scale.set(2.4,.63,1.45);
   ledge.rotation.set(.12*j,-.18,.15);
  }
- // Recess shadows emphasize a tunnel-like retreat behind the ancient wheel.
- const recessStone=new THREE.MeshStandardMaterial({color:0x292e34,roughness:1,side:THREE.DoubleSide});
- const recess=add(new THREE.PlaneGeometry(4.1,4.5),recessStone,0,3.55,-6.18);
- recess.rotation.y=Math.PI;
+ // No free-floating backdrop plane: recess depth is formed by the wall surface itself.
 
- return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost,oldTimber,paleIce,recessStone])mat.dispose()}};
+ return {group:root,dispose(){for(const m of meshes){m.geometry.dispose()}for(const mat of [stone,darkStone,wood,ice,water,iron,frost,oldTimber,paleIce])mat.dispose()}};
 }
