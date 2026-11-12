@@ -56,5 +56,41 @@ for side in [-1,1]:
   block(f'bank_rock_{side}_{i}',(x,y,rng.uniform(.2,.6)),(rng.uniform(.8,1.7),rng.uniform(.6,1.8),rng.uniform(.5,1.4)),STONE)
   if i%2==0:
    spike(f'bank_crystal_{side}_{i}',(x,y,.8),(x+rng.uniform(-.5,.5),y,2.2+rng.uniform(0,2)),rng.uniform(.2,.6),LIGHT)
+
+# V2: open the central vista and replace cuboid cliff silhouette with faceted rock.
+for name, geom in list(S.geometry.items()):
+ if name.startswith('rock_backdrop') or name.startswith('upper_rock_shelf'):
+  S.delete_geometry(name)
+ elif name.startswith('cliff_ledge_') or name.startswith('bank_rock_'):
+  bounds=geom.bounds
+  center=bounds.mean(axis=0)
+  scale=(bounds[1]-bounds[0])*.68
+  rock=trimesh.creation.icosphere(subdivisions=1,radius=1)
+  rock.apply_scale(scale)
+  rock.apply_translation(center)
+  S.delete_geometry(name)
+  put(name+'_faceted',rock,STONE)
+ elif name.startswith('frozen_flow_ribbon_'):
+  geom.apply_translation([0,-2.8,0])
+ elif name.startswith('waterfall_ice_tusk_'):
+  geom.apply_translation([0,-2.8,0])
+# Large natural stone walls framing the waterfall, not blocking its front.
+for side in (-1,1):
+ for row in range(3):
+  for level in range(4):
+   x=side*(6.3+row*1.3+rng.uniform(-.4,.4))
+   y=2.5+rng.uniform(-1,1)
+   z=1.4+level*2.7+rng.uniform(-.6,.6)
+   rock=trimesh.creation.icosphere(subdivisions=1,radius=1)
+   rock.apply_scale([rng.uniform(1.0,2.0),rng.uniform(.8,1.5),rng.uniform(1.2,2.3)])
+   rock.apply_translation([x,y,z])
+   put(f'cavern_wall_{side}_{row}_{level}',rock,ROCK if row%2 else STONE)
+for i in range(15):
+ x=-7+i
+ rock=trimesh.creation.icosphere(subdivisions=1,radius=1)
+ rock.apply_scale([rng.uniform(.7,1.4),rng.uniform(.7,1.4),rng.uniform(.5,1.1)])
+ rock.apply_translation([x,1.8+rng.uniform(-.5,.5),11.3+rng.uniform(-.4,.4)])
+ put(f'fractured_overhang_{i}',rock,ROCK)
+
 S.export('floor2_frozen_waterfall.glb')
 print('GEOMETRIES',len(S.geometry))
