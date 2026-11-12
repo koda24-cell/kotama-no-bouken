@@ -14,7 +14,7 @@ def aim(o,target):o.rotation_euler=(Vector(target)-o.location).to_track_quat('-Z
 bpy.ops.object.camera_add()
 camera=bpy.context.object
 camera.data.type='ORTHO'
-camera.data.ortho_scale=size*1.9
+camera.data.ortho_scale=size*1.48
 bpy.context.scene.camera=camera
 for vec,power in [((3,-4,6),850),((-4,2,4),550)]:
  bpy.ops.object.light_add(type='AREA',location=center+Vector(vec)*size)
@@ -24,14 +24,14 @@ for vec,power in [((3,-4,6),850),((-4,2,4),550)]:
  aim(light,center)
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
-scene.cycles.samples=24
-scene.render.resolution_x=960
-scene.render.resolution_y=720
+scene.cycles.samples=48
+scene.render.resolution_x=1100
+scene.render.resolution_y=820
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 os.makedirs(outdir,exist_ok=True)
 stem=os.path.splitext(os.path.basename(src))[0]
-for label,direction in [('front',(0,-1,.22)),('side',(1,0,.20)),('angle',(1,-1,.55))]:
+for label,direction in [('front',(0,-1,.12)),('side',(1,-.2,.14)),('angle',(.72,-1,.36))]:
  camera.location=center+Vector(direction).normalized()*size*3
  aim(camera,center)
  scene.render.filepath=os.path.abspath(os.path.join(outdir,stem+'-'+label+'.png'))
