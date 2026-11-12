@@ -70,3 +70,10 @@ Actions: https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f6-gr
 - NumPyはBlenderのglTFエクスポータが必要とするPython数値計算ライブラリ。導入で書き出しエラーが解消したが、導入だけでレンダリング速度やゲーム実行速度が向上するわけではない。
 - **品質課題**: 初回レンダリングでは石材が白く飛んで見える、苔や細かな傷が見えにくい、側面の破損凹凸が弱いとの評価。次はマテリアルのノード設定、照明・露出、正面破断形状、側面の凹凸を改善し、必ず3方向を再レンダリングして比較する。
 - **未完了**: V1造形品質の承認、正式素材フォルダへの昇格、developmentへのマージ。成功したActions Artifactsは一時保存であり、正式素材としては扱わない。
+
+## V2構文エラーの原因と修正（2026-11-12）
+- Run `43195180922` はBlender実行前の `python3 -m py_compile tools/floor6/broken_gravestone.py` で失敗した。
+- エラーは120行目の `SyntaxError: unexpected character after line continuation character`。レンダリング設定に改行コードではなく文字列 `\\n` が混入していた。
+- 修正コミット `05928d2326a7516221299344012b96c943bdb4b6` で実際の改行に直し、不要な式を除去した。
+- **再発防止**: コード生成・置換時はPython構文検査を実施し、文字列内の `\\n` と実際の改行を混同しない。GitHub Actionsの構文検査は今回、Blender起動前の失敗検出に成功した。
+- 修正後のGLB・PNG成功は別のActions実行で確認すること。過去V1の成功をV2成功として報告しない。
