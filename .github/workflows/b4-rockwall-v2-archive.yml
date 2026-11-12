@@ -1,0 +1,44 @@
+name: Archive B4 rockwall V2 GLB and review PNGs
+on:
+  push:
+    branches:
+      - feature/b4-lava-rockwall-v2-archive-20261112
+permissions:
+  contents: write
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified V2 render artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl -fLsS -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/13902727433/zip" -o /tmp/b4-rockwall.zip
+          mkdir -p /tmp/b4-rockwall
+          unzip -q /tmp/b4-rockwall.zip -d /tmp/b4-rockwall
+          test -s /tmp/b4-rockwall/b4-lava-rockwall-v2.glb
+          for angle in front side angle; do test -s "/tmp/b4-rockwall/b4-lava-rockwall-v2-$angle.png"; done
+          mkdir -p assets/models/floor4/reviews/lava-rockwall-v2
+          cp /tmp/b4-rockwall/b4-lava-rockwall-v2.glb assets/models/floor4/lava-rockwall-v2.glb
+          for angle in front side angle; do cp "/tmp/b4-rockwall/b4-lava-rockwall-v2-$angle.png" "assets/models/floor4/reviews/lava-rockwall-v2/$angle.png"; done
+          cat > assets/models/floor4/reviews/lava-rockwall-v2/README.md <<'EOF'
+          # Lava rockwall V2 — review candidate, not approved
+          - Source workflow run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43124940569
+          - Artifact: b4-lava-rockwall-v2-comparison (13902727433)
+          - Files: GLB and Blender front, side, angle PNGs
+          - Quality: 4.5/10 preliminary; needs silhouette, fracture and colored-emission improvements
+          - No game runtime integration. Do not merge without explicit user quality approval.
+          EOF
+      - name: Commit review candidate assets to isolated branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/models/floor4/lava-rockwall-v2.glb assets/models/floor4/reviews/lava-rockwall-v2/
+          git commit -m "Archive B4 lava rockwall V2 GLB and three Blender review PNGs"
+          git push origin HEAD:feature/b4-lava-rockwall-v2-archive-20261112
