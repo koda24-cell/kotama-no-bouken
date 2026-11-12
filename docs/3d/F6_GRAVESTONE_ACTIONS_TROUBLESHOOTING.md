@@ -39,3 +39,10 @@ Actions: https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f6-gr
 - PRイベントでワークフローが実際に検出されるか、GitHub側の権限やActions設定による。今回の修正の効果は実行結果取得後に判定する。
 - 第4層専用の素材昇格ワークフローを第6層に流用しない。
 - 本修正はゲーム本体やdevelopment/mainの変更を含まない。
+
+## 追加改善（2026-11-12）
+- **ワークフローの `paths` フィルタをPush/PR両方から撤去**。ブランチ更新に文書変更しか含まれない場合など、イベントが静かにスキップされる可能性を除去した。PRイベントはdevelopment向けのみ、Pushイベントは専用ブランチのみ。
+- `permissions: contents: read` を明示して、レンダリングジョブが不要な書き込み権限を持たないようにした。
+- Blender起動前に `python3 -m py_compile tools/floor6/broken_gravestone.py` を実行し、Python構文エラーを切り分けられるようにした。
+- **重要な限界**: これらは実行の確実性と診断性の改善であり、GitHub連携に「Push実行一覧の取得」機能を追加するものではない。GitHub側でActionsが無効化されている、ワークフローがGitHubに登録されていない、あるいは権限・ブランチ保護により実行されない場合は、別途その設定を調べる必要がある。
+- 画像が取得できない場合は、`未レンダリング` と断定せず `実行結果未取得` と報告する。
