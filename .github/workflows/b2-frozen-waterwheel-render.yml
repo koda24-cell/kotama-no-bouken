@@ -5,6 +5,7 @@ on:
       - feature/b2-frozen-waterwheel-scene-20261112
       - feature/b2-waterwheel-geometry-pass2-20261112
       - feature/b2-waterwheel-curved-arches-pass3-20261112
+      - feature/b2-waterwheel-organic-ice-pass4-20261112
   workflow_dispatch:
 permissions:
   contents: read
