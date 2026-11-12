@@ -1,0 +1,45 @@
+name: B2 Approved Pillars V3 Archive
+on:
+  push:
+    branches:
+      - feature/b2-frozen-pillars-v3-approved-archive-20261112
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch verified V3 Blender output and save to approved asset folder
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/13914630076/zip" -o /tmp/b2-v3.zip
+          mkdir -p /tmp/b2-v3
+          unzip -q /tmp/b2-v3.zip -d /tmp/b2-v3
+          for asset in b2-ancient-pillar-v3 b2-ruined-pillar-v3 b2-glaciated-pillar-v3; do
+            test -s "/tmp/b2-v3/$asset.glb"
+            mkdir -p "assets/models/floor2/reviews/$asset"
+            cp "/tmp/b2-v3/$asset.glb" "assets/models/floor2/$asset.glb"
+            for view in front side angle; do
+              test -s "/tmp/b2-v3/${asset%-v3}-$view.png"
+              cp "/tmp/b2-v3/${asset%-v3}-$view.png" "assets/models/floor2/reviews/$asset/$view.png"
+            done
+          done
+          cat > assets/models/floor2/README.md <<'EOF'
+          # 第2階層 古代遺跡の柱セット V3（完成承認済み）
+          ユーザーが2026-11-12にV3の3種類（通常・崩壊・氷結）を完成承認。
+          元のDocker Blender成功run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43151444460
+          Artifact: 13914630076。各GLBと正面・側面・斜めPNGを保管。
+          このPRは正式素材の保存を目的とし、ゲーム配置・ランタイム変更は含まない。
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/models/floor2
+          git commit -m "Archive user-approved B2 pillar V3 GLBs and review PNGs"
+          git push origin HEAD:feature/b2-frozen-pillars-v3-approved-archive-20261112
