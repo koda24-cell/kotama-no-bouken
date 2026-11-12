@@ -135,3 +135,33 @@ for name,pos,scale in [('top',(0,0,12),7.3),('angle',(7,-9,10),8.2),('side',(0,-
  bpy.data.objects.remove(cam,do_unlink=True)
 with open(OUT+'/README.txt','w') as f:
  f.write('16 water tile GLBs. Bitmask N=8 E=2 S=1 W=4. Geometry only.\\n')
+for mask in range(16):
+ tile(mask)
+world=bpy.context.scene.world or bpy.data.worlds.new('Blue cavern')
+bpy.context.scene.world=world
+world.use_nodes=True
+world.node_tree.nodes['Background'].inputs['Color'].default_value=(.06,.12,.19,1)
+for loc,power,size in [((0,-5,9),1600,7),((-4,4,7),950,6)]:
+ bpy.ops.object.light_add(type='AREA',location=loc)
+ o=bpy.context.object
+ o.data.energy=power
+ o.data.size=size
+ o.rotation_euler=(Vector((0,0,0))-o.location).to_track_quat('-Z','Y').to_euler()
+scene=bpy.context.scene
+scene.render.engine='CYCLES'
+scene.cycles.samples=24
+scene.render.resolution_x=1300
+scene.render.resolution_y=1100
+scene.render.resolution_percentage=100
+for name,pos,scale in [('top',(0,0,12),7.3),('angle',(7,-9,10),8.2),('side',(0,-12,5),8.4)]:
+ bpy.ops.object.camera_add(location=pos)
+ cam=bpy.context.object
+ cam.rotation_euler=(Vector((0,0,0))-cam.location).to_track_quat('-Z','Y').to_euler()
+ cam.data.type='ORTHO'
+ cam.data.ortho_scale=scale
+ scene.camera=cam
+ scene.render.filepath=OUT+'/'+name+'.png'
+ bpy.ops.render.render(write_still=True)
+ bpy.data.objects.remove(cam,do_unlink=True)
+with open(OUT+'/README.txt','w') as f:
+ f.write('16 water tile GLBs. Bitmask N=8 E=2 S=1 W=4. Geometry only.\\n')
