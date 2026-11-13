@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "stage": 3,
+  "asset_id": "industrial_truss_crane_v4",
+  "status": "user_approved_pending_permanent_git_promotion",
+  "source": {
+    "pr": 270,
+    "workflow_run_id": 43346955760,
+    "artifact_id": 14001992253
+  },
+  "variants": [
+    {
+      "id": "standard",
+      "glb": "industrial_truss_crane.glb",
+      "intended_git_path": "assets/models/floor3/industrial_truss_crane.glb"
+    },
+    {
+      "id": "tapered",
+      "glb": "industrial_truss_crane_tapered.glb",
+      "intended_git_path": "assets/models/floor3/industrial_truss_crane_tapered.glb"
+    }
+  ],
+  "preview_views": [
+    "front",
+    "angle"
+  ],
+  "units": "not_yet_verified",
+  "anchor_points": [],
+  "grid_placement": "one-cell modular attachments planned; scale and anchors must be measured",
+  "usage": "GLTFLoader in Three.js; Blender not required for placement",
+  "handoff": "docs/3d/FLOOR3_CRANE_CLAUDE_HANDOFF.md"
+}
