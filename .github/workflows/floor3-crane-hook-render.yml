@@ -1,0 +1,37 @@
+name: Floor3 Crane Hook Blender Render
+on:
+  push:
+    branches: [feature/floor3-crane-hook-20261113]
+    paths:
+      - 'tools/floor3/hook/**'
+      - '.github/workflows/floor3-crane-hook-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Blender render and GLB export in Docker
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/out"
+          for i in 1 2 3; do
+            docker pull lscr.io/linuxserver/blender:latest && break
+            sleep $((i * 15))
+          done
+          docker run --rm --user "$(id -u):$(id -g)" \
+            -v "$GITHUB_WORKSPACE:/work" \
+            -e OUTPUT_DIR=/work/out \
+            lscr.io/linuxserver/blender:latest \
+            blender -b -t 2 --python /work/tools/floor3/hook/build.py
+      - name: Verify files
+        run: |
+          test -s out/floor3_crane_hook_v1.glb
+          for a in front side angle; do test -s "out/floor3_crane_hook_v1-$a.png"; done
+          ls -lh out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: floor3-crane-hook-v1
+          path: out/
+          retention-days: 14
