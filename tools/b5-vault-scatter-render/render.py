@@ -18,14 +18,46 @@ lo=[min(v[i] for v in corners) for i in range(3)]
 hi=[max(v[i] for v in corners) for i in range(3)]
 center=Vector([(lo[i]+hi[i])/2 for i in range(3)])
 size=max([hi[i]-lo[i] for i in range(3)]+[.1])
-neutral=bpy.data.materials.new('B5_clay_gray')
-neutral.diffuse_color=(.66,.66,.68,1)
-neutral.use_nodes=True
-p=neutral.node_tree.nodes.get('Principled BSDF')
-p.inputs['Base Color'].default_value=(.64,.64,.67,1)
-p.inputs['Roughness'].default_value=.94
+# CC0 Poly Haven rock texture: deterministic mapping by model type.
+# Keep metal separate and bake the selected stone image into exported GLB.
+import pathlib
+texroot=pathlib.Path('tools/third_party_cc0/polyhaven')
+choices={
+ 'fallen-rib':'aerial_rocks_01',
+ 'pointed-arch-fragment':'aerial_rocks_01',
+ 'carved-block':'aerial_ground_rock',
+ 'broken-vault-panel':'aerial_ground_rock',
+ 'hanging-iron':'aerial_rocks_01',
+ 'small-rubble':'aerial_rocks_01',
+}
+stem=os.path.splitext(os.path.basename(src))[0]
+asset=choices.get(stem,'aerial_rocks_01')
+texture=texroot/asset/'diffuse_1k.jpg'
+if not texture.is_file():raise RuntimeError('Missing CC0 texture: '+str(texture))
+image=bpy.data.images.load(str(texture.resolve()),check_existing=True)
+image.pack()
+rock=bpy.data.materials.new('CC0_PolyHaven_'+asset)
+rock.use_nodes=True
+nodes=rock.node_tree.nodes;links=rock.node_tree.links
+bsdf=nodes.get('Principled BSDF')
+bsdf.inputs['Roughness'].default_value=.94
+tex=nodes.new('ShaderNodeTexImage');tex.image=image;tex.interpolation='Linear'
+coord=nodes.new('ShaderNodeTexCoord')
+mapping=nodes.new('ShaderNodeVectorMath');mapping.operation='SCALE';mapping.inputs[3].default_value=(2.2,2.2,2.2)
+links.new(coord.outputs['Generated'],mapping.inputs[0])
+links.new(mapping.outputs['Vector'],tex.inputs['Vector'])
+links.new(tex.outputs['Color'],bsdf.inputs['Base Color'])
 for obj in meshes:
- obj.data.materials.clear();obj.data.materials.append(neutral)
+ original=list(obj.data.materials)
+ metal=any((m and ('iron' in m.name.lower() or 'metal' in m.name.lower() or 'chain' in m.name.lower())) for m in original)
+ if metal:continue
+ obj.data.materials.clear();obj.data.materials.append(rock)
+# Export reviewed, texture-embedded GLB. Keep original source as raw comparison.
+textured=os.path.join(outdir,stem+'-textured.glb')
+bpy.ops.export_scene.gltf(filepath=textured,export_format='GLB',export_apply=True,use_selection=False,
+    export_extras=True)
+if not os.path.isfile(textured) or os.path.getsize(textured)<1024:raise RuntimeError('Textured GLB missing')
+print('TEXTURED_GLB_OK',textured,os.path.getsize(textured),flush=True)
 # Distinct floor reference lies below the model's lowest Z in Blender.
 floor=bpy.data.materials.new('B5_floor')
 floor.diffuse_color=(.17,.18,.20,1)
