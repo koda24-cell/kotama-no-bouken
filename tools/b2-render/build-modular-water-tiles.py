@@ -8,7 +8,14 @@ def mat(name,col,rough=.6,metal=0,alpha=1):
  p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*col,alpha);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal;p.inputs['Alpha'].default_value=alpha
  if alpha<1:m.surface_render_method='DITHERED'
  return m
-water=mat('Deep blue turquoise water v04',(.009,.105,.17),.32,0,1)
+water=mat('Clear glacial turquoise water',(.045,.36,.44),.16,0,.52)
+water.use_nodes=True
+wp=water.node_tree.nodes.get('Principled BSDF')
+wp.inputs['Transmission Weight'].default_value=.34
+wp.inputs['IOR'].default_value=1.333
+water.surface_render_method='DITHERED'
+shallow=mat('Pale mineral shallows',(.16,.38,.39),.88)
+deepbed=mat('Deep riverbed teal',(.025,.10,.12),.91)
 ripple=mat('Soft turquoise water caustic lines',(.07,.32,.41),.22,0,.10)
 stone=mat('Cold dark carved stone',(.085,.13,.17),.92)
 wet=mat('Waterlogged slate',(.12,.24,.31),.25)
@@ -39,44 +46,53 @@ def tile(mask):
     wobble=.047*math.sin(along*12+bit*2)+.024*math.sin(along*23+bit)+.009*math.sin(along*43+bit*.7)
     limits.append(.32-coord+wobble)
   return min(limits) if limits else 1.
- n=109;vs=[];fs=[];land_vs=[];land_fs=[]
+ n=109;vs=[];fs=[];land_vs=[];land_fs=[];bed_vs=[];bed_fs=[];shoal_fs=[]
  for j in range(n):
   y=-.5+j/(n-1)
   for i in range(n):
    x=-.5+i/(n-1);d=coast(x,y)
-   z=.0015*math.sin(x*21+y*13)+.001*math.sin(y*26-x*11)
+   z=.0012*math.sin(x*13+y*9)+.0008*math.sin(y*31-x*17)+.0004*math.sin(x*59+y*37)
    vs.append((x,y,z))
    land_vs.append((x,y,.007+.015*max(0,-d)+.004*math.sin(x*29+y*17)))
+   depth=.025+.13*min(1,max(0,d)/.23)
+   bed_vs.append((x,y,-depth+.006*math.sin(x*17+y*11)+.004*math.sin(y*37-x*21)))
    if i<n-1 and j<n-1:
     a=j*n+i
     corners=[(x,y),(x+1/(n-1),y),(x+1/(n-1),y+1/(n-1)),(x,y+1/(n-1))]
     center=(x+.5/(n-1),y+.5/(n-1))
-    if coast(*center)>=0:fs.append((a,a+1,a+1+n,a+n))
+    if coast(*center)>=0:
+     fs.append((a,a+1,a+1+n,a+n))
+     if coast(*center)<.085:shoal_fs.append((a,a+1,a+1+n,a+n))
+     else:bed_fs.append((a,a+1,a+1+n,a+n))
     else:land_fs.append((a,a+1,a+1+n,a+n))
- objmesh('deep water cut to shoreline %02d'%mask,vs,fs,water)
+ objmesh('glacial water surface %02d'%mask,vs,fs,water)
+ objmesh('submerged mineral riverbed',bed_vs,bed_fs,deepbed)
+ objmesh('visible shallow mineral shelves',bed_vs,shoal_fs,shallow)
  objmesh('single continuous dark slate shoreline',land_vs,land_fs,stone)
- # Distinct larger, asymmetric rock shelves; thin water patches stay inside tile.
+ # Fractured shoreline blocks are positioned by aperiodic hashed offsets.
+ # Rocks follow the signed shore field instead of regular three-per-edge rows.
  for bit,side in [(8,'N'),(2,'E'),(1,'S'),(4,'W')]:
   if mask&bit:continue
-  for i in range(3):
-   t=-.34+i*.34
-   x,y=(t,.40) if side=='N' else ((t,-.40) if side=='S' else ((.40,t) if side=='E' else (-.40,t)))
-   sx,sy=(.32,.16) if side in ('N','S') else (.16,.32)
-   slab('large fractured bank shelf',x,y,.024,sx,sy,.023,stone,mask*123+i*31+bit)
-   if i!=1:
-    slab('irregular shallow water in rock fissure',x,y,.037,sx*.63,sy*.65,.002,puddle,mask*173+i*37+bit)
-  # Broad wet fringe, not regularly spaced pebbles.
-  for i in range(2):
-   t=-.23+i*.46
-   x,y=(t,.455) if side=='N' else ((t,-.455) if side=='S' else ((.455,t) if side=='E' else (-.455,t)))
-   sx,sy=(.30,.07) if side in ('N','S') else (.07,.30)
-   slab('receding thin puddle on shore',x,y,.031,sx,sy,.001,puddle,mask*219+i*41+bit)
- # Water-only decorations never cross the tile boundary, so adjacent tiles remain seamless.
- for k in range(9):
-  x=rng.uniform(-.29,.29);y=rng.uniform(-.29,.29)
-  if coast(x,y)<.04:continue
-  slab('submerged gravel',x,y,-.017,rng.uniform(.025,.09),rng.uniform(.025,.09),.016,stone,mask*1000+k)
- # No white overlay glints or floating ice; avoid distracting striped speculars.
+  for k in range(5):
+   t=-.43+(k+.28*rng.uniform(-1,1))*.20
+   depth=.31+.05*rng.uniform(-1,1)
+   x,y=(t,depth) if side=='N' else ((t,-depth) if side=='S' else ((depth,t) if side=='E' else (-depth,t)))
+   if coast(x,y)<-.11:continue
+   sx=rng.uniform(.14,.29);sy=rng.uniform(.12,.26)
+   if side in ('N','S'):sx*=1.3
+   else:sy*=1.3
+   slab('fractured irregular glacial bank',x,y,.018+rng.uniform(-.007,.008),sx,sy,rng.uniform(.012,.035),stone,mask*911+k*79+bit)
+  for k in range(3):
+   t=rng.uniform(-.38,.38)
+   depth=.405+rng.uniform(-.035,.045)
+   x,y=(t,depth) if side=='N' else ((t,-depth) if side=='S' else ((depth,t) if side=='E' else (-depth,t)))
+   sx=rng.uniform(.11,.26);sy=rng.uniform(.065,.14)
+   slab('irregular waterlogged bank pocket',x,y,.026,sx,sy,.001,puddle,mask*631+k*37+bit)
+ # Sparse submerged boulders remain below the water plane, avoiding white bands.
+ for k in range(5):
+  x=rng.uniform(-.30,.30);y=rng.uniform(-.30,.30)
+  if coast(x,y)<.13:continue
+  slab('underwater worn boulder',x,y,-.052,rng.uniform(.04,.10),rng.uniform(.035,.09),.026,stone,mask*1009+k)
  objects=[o for o in bpy.context.scene.objects if o not in start]
  bpy.ops.object.select_all(action='DESELECT')
  for o in objects:o.select_set(True)
@@ -99,7 +115,7 @@ for loc,power,size in [((0,-5,9),750,7),((-4,4,7),420,6)]:
  o.rotation_euler=(Vector((0,0,0))-o.location).to_track_quat('-Z','Y').to_euler()
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
-scene.cycles.samples=36
+scene.cycles.samples=40
 scene.view_settings.view_transform='Standard'
 scene.view_settings.look='Medium High Contrast'
 scene.view_settings.exposure=-0.5
@@ -117,4 +133,4 @@ for name,pos,scale in [('top',(0,0,12),7.3),('angle',(7,-9,10),8.2),('side',(0,-
  bpy.ops.render.render(write_still=True)
  bpy.data.objects.remove(cam,do_unlink=True)
 with open(OUT+'/README.txt','w') as f:
- f.write('v0.4: matte opaque dark turquoise water; large broken slate banks, broad shallow puddles; no white glints; 109x109 water grid; 16 tiles N8 E2 S1 W4. Awaiting approval.\\n')
+ f.write('v0.5: translucent glacial water with shallow/deep riverbed geometry, multi-frequency wave normals, irregular shoreline rocks, 16 masks. Awaiting approval.\\n')
