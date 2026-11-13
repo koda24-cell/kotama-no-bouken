@@ -81,7 +81,7 @@ for y in (-.12,.12):
 
 # Groundless standalone object: origin is its attachment footprint at Z=0.
 # Export GLB. Blender glTF exporter converts Z-up scene to Y-up glTF.
-out=os.environ.get('OUTPUT_DIR','/tmp/floor3-hook')
+out='/work/out'
 os.makedirs(out,exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=os.path.join(out,'floor3_crane_hook_v1.glb'),export_format='GLB',use_selection=False)
 # Studio render from front and 3/4 view, without changing exported geometry.
