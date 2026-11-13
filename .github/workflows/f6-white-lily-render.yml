@@ -1,0 +1,40 @@
+name: F6 Single White Lily Blender Render
+on:
+  push:
+    branches: [feature/f6-white-flower-ground-20261112]
+    paths:
+      - tools/floor6/white_lily_single.py
+      - .github/workflows/f6-white-lily-render.yml
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender
+      - name: Generate single lily GLB and 4 renders
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/floor6/white-lily-study
+          blender -b -t 2 --python tools/floor6/white_lily_single.py 2>&1 | tee render-output/floor6/white-lily-study/blender.log
+          grep -q 'WHITE_LILY_DONE' render-output/floor6/white-lily-study/blender.log
+      - name: Validate actual outputs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import csv
+          p=Path('render-output/floor6/white-lily-study')
+          assert (p/'white_lily_single.glb').read_bytes()[:4]==b'glTF'
+          for v in ('angle','front','side','top'):
+              f=p/('white_lily_'+v+'.png')
+              assert f.stat().st_size>1000 and f.read_bytes()[:4]==bytes([137,80,78,71])
+          with (p/'control_points_150.csv').open() as f:
+              assert len(list(csv.DictReader(f)))==150
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-white-lily-single-study
+          path: render-output/floor6/white-lily-study/
+          retention-days: 14
