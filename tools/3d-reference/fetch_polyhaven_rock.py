@@ -5,7 +5,7 @@ import json
 import os
 import re
 from urllib.parse import urljoin
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from urllib.request import Request, urlopen
 
 OUT = Path("tools/3d-reference/cc0-rocks/polyhaven")
@@ -64,9 +64,10 @@ if fmt == "gltf":
         uri = item.get("uri")
         if not uri or uri.startswith("data:"):
             continue
-        if "/" in uri or ".." in uri:
+        if PurePosixPath(uri).is_absolute() or ".." in PurePosixPath(uri).parts or "\\" in uri:
             raise RuntimeError("Unexpected GLTF dependency path: " + uri)
         payload = fetch(urljoin(url, uri))
+        (OUT / uri).parent.mkdir(parents=True, exist_ok=True)
         (OUT / uri).write_bytes(payload)
         dependencies.append({"file": uri, "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()})
 manifest = {
