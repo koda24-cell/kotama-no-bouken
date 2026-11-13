@@ -40,10 +40,10 @@ jobs:
           test -s output/assassin-head/assassin_head.blend
           test -s output/assassin-head/geometry_report.txt
           cat output/assassin-head/geometry_report.txt
-          grep -q 'skin_vertices=5000' output/assassin-head/geometry_report.txt
+          grep -q 'skin_vertices=15360' output/assassin-head/geometry_report.txt
           grep -q 'hair_vertices=10000' output/assassin-head/geometry_report.txt
-          grep -q 'skin_triangles=9900' output/assassin-head/geometry_report.txt
-          grep -q 'hair_triangles=4900' output/assassin-head/geometry_report.txt
+          grep -q 'skin_quads=15264' output/assassin-head/geometry_report.txt
+          grep -q 'hair_quads=4900' output/assassin-head/geometry_report.txt
           file output/assassin-head/*.png
       - uses: actions/upload-artifact@v4
         if: always()
