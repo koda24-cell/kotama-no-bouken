@@ -1,0 +1,33 @@
+name: B4 Lava Rockwall V2 Docker Comparison
+on:
+  push:
+    branches:
+      - feature/b4-lava-rockwall-v2-20261112
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Three.js
+        run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - name: Export before and after GLB
+        run: node tools/b4-render/export-rockwall-v2.mjs
+      - name: Render front side and angle with Docker Blender
+        run: |
+          docker pull lscr.io/linuxserver/blender:latest
+          for glb in render-output/*.glb; do
+            docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+              -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+              -b -t 2 --python tools/b4-render/render-batch.py -- "$glb" render-output
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-lava-rockwall-v2-comparison
+          path: render-output/
+          retention-days: 14
