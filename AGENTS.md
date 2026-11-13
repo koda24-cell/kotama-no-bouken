@@ -3,6 +3,7 @@
 This file is an entry point for ChatGPT, Claude and other AI development sessions.
 
 ## Start here
+0. For any 3D model generation, modification, or reference research, **read `docs/3d/MODEL_REFERENCE_GUIDE.md` before beginning**. This is a cross-stage, cross-chat rule. Check CC0 sources and the Pinterest reference-library handoff; do not treat game reference imagery as redistributable assets.
 1. Read `docs/3d/BLENDER_DOCKER_HANDOFF.md` for 3D asset creation, Blender Docker render, workflow URLs, verification and troubleshooting.
 2. Inspect the latest GitHub `development` branch, related feature branches and PRs before editing. Do not assume a previous chat's state is current.
 3. Preserve all existing game functionality, assets, combat logic, save data and stage presentation. Avoid editing shared runtime files for standalone asset experiments.
