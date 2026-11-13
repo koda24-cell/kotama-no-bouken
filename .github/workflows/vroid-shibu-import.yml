@@ -31,7 +31,7 @@ jobs:
         run: |
           test -s output/vroid-shibu/vroid_shibu_import.blend
           test -s output/vroid-shibu/source_manifest.json
-          for view in front right_side left_side three_quarter; do test -s "output/vroid-shibu/$view.png"; done
+          for view in front back right_side left_side three_quarter; do test -s "output/vroid-shibu/$view.png"; done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
