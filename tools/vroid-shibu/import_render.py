@@ -169,11 +169,11 @@ if face:
  hair=bpy.data.materials.new('Assassin_silver_lavender_hair')
  hair.diffuse_color=(.72,.68,.82,1)
  strand=make_fringe('Assassin_near_eye_swept_fringe',[
-  V(fc.x+fw*.12,fmax.y+fs.y*.14,fmax.z-fh*.10),
-  V(fc.x+fw*.28,fmax.y+fs.y*.20,fmax.z-fh*.25),
-  V(fc.x+fw*.29,fmax.y+fs.y*.22,fmax.z-fh*.45),
-  V(fc.x+fw*.21,fmax.y+fs.y*.19,fmax.z-fh*.64),
-  V(fc.x+fw*.17,fmax.y+fs.y*.12,fmax.z-fh*.76)],
+  V((fc.x+fw*.12,fmax.y+fs.y*.14,fmax.z-fh*.10)),
+  V((fc.x+fw*.28,fmax.y+fs.y*.20,fmax.z-fh*.25)),
+  V((fc.x+fw*.29,fmax.y+fs.y*.22,fmax.z-fh*.45)),
+  V((fc.x+fw*.21,fmax.y+fs.y*.19,fmax.z-fh*.64)),
+  V((fc.x+fw*.17,fmax.y+fs.y*.12,fmax.z-fh*.76))],
   [fw*.38,fw*.43,fw*.38,fw*.26,fw*.04])
  strand.data.materials.append(hair)
  manifest['face_review']['assassin_fringe']={'name':strand.name,'side':'camera-near +X','note':'first geometry prototype; check eye occlusion in rendered image'}
