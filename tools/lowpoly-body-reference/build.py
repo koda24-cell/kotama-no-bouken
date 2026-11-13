@@ -26,9 +26,9 @@ def rings(name,rows,n=8):
  return o
 # Front widths are derived from silhouette: head 90px, shoulders 105px,
 # waist 62px, hips 125px, ankles ~20px. Side depth at chest ~75px, hips ~62px.
-rings('01_HEAD',[(5.88,0,0,.31,.29),(6.18,0,0,.42,.39),(6.55,0,0,.48,.40),(6.83,0,0,.46,.39),(7.00,0,0,.30,.31)],8)
-rings('02_NECK',[(5.61,0,0,.13,.15),(5.82,0,0,.16,.16),(5.99,0,0,.15,.15)],8)
-rings('03_TORSO_PELVIS',[(3.70,0,.015,.35,.31),(4.04,0,.005,.66,.34),(4.43,0,0,.55,.32),(4.73,0,0,.32,.27),(5.12,0,0,.33,.32),(5.40,0,0,.42,.38),(5.62,0,0,.56,.38)],8)
+rings('01_HEAD',[(5.83,0,-.075,.08,.12),(5.94,0,-.055,.25,.27),(6.14,0,-.015,.37,.40),(6.32,0,.005,.44,.46),(6.53,0,.025,.48,.48),(6.76,0,.040,.45,.46),(6.92,0,.045,.31,.35),(7.00,0,.055,.10,.15)],12)
+rings('02_NECK',[(5.52,0,.025,.16,.16),(5.75,0,.025,.17,.18),(5.93,0,.025,.19,.20)],8)
+rings('03_TORSO_PELVIS',[(3.55,0,.015,.48,.33),(3.87,0,.005,.64,.37),(4.18,0,0,.58,.35),(4.45,0,0,.47,.32),(4.73,0,0,.35,.29),(5.12,0,0,.40,.36),(5.40,0,0,.57,.41),(5.61,0,0,.72,.42)],10)
 # Arms: diagonal to wrists in front view, slightly backward in side view.
 for side in [-1,1]:
  rings(('04_LEFT_ARM' if side<0 else '05_RIGHT_ARM'),[(3.36,side*1.72,.05,.11,.12),(3.65,side*1.57,.04,.13,.14),(4.10,side*1.22,.03,.14,.15),(4.56,side*.93,.01,.16,.18),(5.02,side*.70,0,.20,.21),(5.43,side*.55,0,.24,.23)],8)
@@ -38,7 +38,41 @@ for side in [-1,1]:
  rings(('10_LEFT_FOOT' if side<0 else '11_RIGHT_FOOT'),[(.04,side*.37,-.17,.20,.36),(.19,side*.37,-.10,.18,.32),(.42,side*.37,.01,.13,.17)],8)
 # Ears as two low-poly faceted side lobes.
 for side in [-1,1]:
- rings('EAR_'+str(side),[(5.98,side*.48,0,.07,.09),(6.24,side*.49,0,.08,.10)],6)
+ rings('EAR_'+str(side),[(6.12,side*.455,-.005,.105,.125),(6.33,side*.465,-.005,.11,.13),(6.48,side*.45,-.005,.07,.095)],8)
+# Face profile is sculpted directly into the head mesh: visible nasal bridge/tip,
+# posterior cranium, cheeks, tapered chin and jaw. No detached nose object.
+head=bpy.data.objects['01_HEAD']
+for v in head.data.vertices:
+ x,y,z=v.co
+ front=max(0,(-y+.03)/.50)
+ mid=max(0,1-abs(x)/.20)
+ if z>6.12 and z<6.55 and x*x<.06 and y<-.18:
+  v.co.y-=.12*math.exp(-((z-6.28)/.18)**2)*mid*front
+ if 6.04<z<6.30 and abs(x)<.12 and y<-.17:
+  v.co.y-=.18*math.exp(-((z-6.15)/.085)**2)*mid*front
+ if z<6.10:
+  v.co.x*=.82
+# Join all anatomically overlapping parts, voxel-union to remove open gaps
+# at shoulder, hip, ear and neck; then decimate back to a low-poly silhouette.
+parts=[o for o in bpy.context.scene.objects if o.type=='MESH']
+bpy.ops.object.select_all(action='DESELECT')
+for o in parts:o.select_set(True)
+bpy.context.view_layer.objects.active=head
+bpy.ops.object.join()
+head.name='LOWPOLY_UNIFIED_BODY'
+bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+rem=head.modifiers.new('Seamless_body_union','REMESH')
+rem.mode='VOXEL';rem.voxel_size=.055
+bpy.context.view_layer.objects.active=head
+bpy.ops.object.modifier_apply(modifier=rem.name)
+dec=head.modifiers.new('Low_poly_retopology','DECIMATE')
+dec.decimate_type='COLLAPSE'
+dec.ratio=min(1.0,650/max(1,len(head.data.polygons)))
+bpy.ops.object.modifier_apply(modifier=dec.name)
+for p in head.data.polygons:p.use_smooth=False
+counts.clear()
+counts['LOWPOLY_UNIFIED_BODY']=(len(head.data.vertices),len(head.data.polygons))
+assert len([o for o in bpy.context.scene.objects if o.type=='MESH'])==1
 # Material override creates solid clay; edge overlay is a separate Freestyle pass.
 sc=bpy.context.scene
 engines={e.identifier for e in bpy.types.RenderSettings.bl_rna.properties['engine'].enum_items}
