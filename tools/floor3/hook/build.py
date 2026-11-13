@@ -72,12 +72,28 @@ path += [(0, .025,.40),(0,.095,.275),(0,.215,.195),(0,.35,.18),
          (0,.465,.62),(0,.415,.645)]
 tube('single forged recurved crane hook',path,.09,iron,20)
 # Distinct tapered pointed beak, smooth continuation, not a closed ring
-tube('tapered hook tip',[(0,.415,.645),(0,.38,.66),(0,.345,.675)],.055,edge,16)
+tube('tapered hook tip',[(0,.415,.645),(0,.38,.66),(0,.345,.675),(0,.315,.685)],.040,edge,16)
 cyl('hook collar',(0,0,.94),.145,.115,edge,'Z')
 cyl('swivel boss',(0,0,1.045),.12,.09,rust,'Z')
 # Hanging steel cable ends are attachable but keep modular hook usable alone.
-for y in (-.12,.12):
-    tube('short hanging wire',[(0,y,1.79),(0,y,1.95),(0,y,2.10)],.026,dark,10)
+# Continuous steel wire ropes routed through the pulley and into the upper clamp.
+for y in (-.17,.17):
+    tube('pulley rope',[(0,y,1.47),(0,y,1.70),(0,y,1.91),(0,y,2.28)],.030,dark,12)
+# Independent connection hardware: forged clevis cheeks, axle and clamp.
+for x in (-.23,.23):
+    cube('suspension clevis cheek',(x,0,1.98),(.085,.37,.45),iron,.045)
+    cyl('clevis retaining bolt',(x*1.14,0,2.05),.075,.035,edge,'X',16)
+cyl('clevis cross-pin',(0,0,2.05),.085,.60,edge,'X',24)
+cube('top cable termination clamp',(0,0,2.30),(.52,.33,.13),iron,.045)
+for x in (-.17,.17):
+    cyl('termination clamp bolt',(x,0,2.375),.033,.035,rust,'Z',12)
+ring=[]
+for k in range(49):
+    t=2*pi*k/48
+    ring.append((0,.18*cos(t),2.53+.20*sin(t)))
+tube('upper crane connector eye',ring,.052,edge,14)
+for x in (-.20,.20):
+    cube('lower clevis gusset',(x,0,1.77),(.065,.33,.17),rust,.02)
 
 # Groundless standalone object: origin is its attachment footprint at Z=0.
 # Export GLB. Blender glTF exporter converts Z-up scene to Y-up glTF.
