@@ -20,11 +20,11 @@ for clump in range(4):
   for blade in range(count):
    if blade%4!=material_index:continue
    angle=blade*2.399963+clump*.7+random.uniform(-.22,.22)
-   radius=random.uniform(.006,.19)
+   radius=random.uniform(.006,[.12,.19,.25,.21][clump])
    origin=base+Vector((radius*math.cos(angle),radius*math.sin(angle),0))
-   length=random.uniform(.15,.42)*(1.15 if clump==2 else 1)
-   lean=random.uniform(.08,.31)
-   width=random.uniform(.008,.023)
+   length=random.uniform(*[(.11,.24),(.18,.38),(.25,.52),(.13,.43)][clump])
+   lean=random.uniform(.07,.22 if clump==0 else .38)
+   width=random.uniform(.009,.028)
    tangent=Vector((math.cos(angle),math.sin(angle),0));side=Vector((-tangent.y,tangent.x,0))
    sway=random.uniform(-.045,.045);twist=random.uniform(-.35,.35)
    start=len(verts)
@@ -46,7 +46,7 @@ for clump in range(4):
 bpy.ops.object.select_all(action='DESELECT')
 for ob in bpy.context.scene.objects:
  if ob.type=='MESH':ob.select_set(True)
-bpy.ops.export_scene.gltf(filepath=os.path.join(out,'f6_garden_grass_clumps_v2.glb'),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'f6_garden_grass_clumps_v3.glb'),export_format='GLB',use_selection=True)
 bpy.ops.object.select_all(action='DESELECT')
 world=bpy.context.scene.world;world.color=(.22,.27,.22)
 def light(loc,power,size):
