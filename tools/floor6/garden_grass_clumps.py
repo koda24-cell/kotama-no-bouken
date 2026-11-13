@@ -1,0 +1,65 @@
+"""Floor 6 garden: modular stylized grass clumps; separate GLB and four renders."""
+import bpy, math, os, random
+from mathutils import Vector
+random.seed(614)
+bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
+out=os.path.abspath('render-output/floor6/garden-grass'); os.makedirs(out,exist_ok=True)
+def mat(name,color):
+ m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True
+ m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*color,1)
+ m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.82
+ return m
+colors=[mat('soft moss green',(.12,.27,.075)),mat('sunlit grass',(.30,.48,.105)),mat('forest grass',(.065,.18,.055)),mat('warm meadow',(.39,.43,.12))]
+# Four independent BOTW-inspired modular grass clumps: many narrow, flexible, curved blades with varied heights.
+# Each clump occupies a sub-cell of the presentation layout and can be reused alone.
+for clump in range(4):
+ count=[90,140,220,120][clump]
+ base=Vector((((clump%2)-.5)*1.4,((clump//2)-.5)*1.4,0))
+ for material_index in range(4):
+  verts=[];faces=[]
+  for blade in range(count):
+   if blade%4!=material_index:continue
+   angle=blade*2.399963+clump*.7+random.uniform(-.22,.22)
+   radius=random.uniform(.006,[.12,.19,.25,.21][clump])
+   origin=base+Vector((radius*math.cos(angle),radius*math.sin(angle),0))
+   length=random.uniform(*[(.08,.29),(.13,.47),(.17,.62),(.10,.52)][clump]) * random.choice((.68,.87,1.0,1.12))
+   lean=random.uniform(.10,.30 if clump==0 else .48)
+   width=random.uniform(.008,.023)
+   tangent=Vector((math.cos(angle),math.sin(angle),0));side=Vector((-tangent.y,tangent.x,0))
+   sway=random.uniform(-.09,.09);twist=random.uniform(-.65,.65)
+   start=len(verts)
+   for step in range(10):
+    t=step/9
+    center=origin+tangent*(lean*(.14*t+.86*t**2.5))+side*(sway*(t**1.8))+Vector((0,0,length*(t-.30*t**3)))
+    half=width*(math.sin(math.pi*(.06+.90*t))**.7)*(1-t)**.75
+    fold=Vector((0,0,.006*math.sin(math.pi*t)))
+    for q in (-1,0,1):verts.append(tuple(center+side*(q*half)+tangent*(twist*t*q*.012)+fold*(1-q*q)))
+   for step in range(9):
+    a=start+3*step
+    faces.extend([(a,a+1,a+4,a+3),(a+1,a+2,a+5,a+4)])
+  if not verts:continue
+  mesh=bpy.data.meshes.new('grass blade mesh');mesh.from_pydata(verts,[],faces);mesh.update()
+  ob=bpy.data.objects.new('grass_clump_%02d_color_%d'%(clump+1,material_index),mesh)
+  bpy.context.collection.objects.link(ob);mesh.materials.append(colors[material_index])
+  for face in mesh.polygons:face.use_smooth=True
+# Export all 4 as a modular set, with object names identifying the clumps.
+bpy.ops.object.select_all(action='DESELECT')
+for ob in bpy.context.scene.objects:
+ if ob.type=='MESH':ob.select_set(True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'f6_garden_grass_clumps_v5.glb'),export_format='GLB',use_selection=True)
+bpy.ops.object.select_all(action='DESELECT')
+world=bpy.context.scene.world;world.color=(.22,.27,.22)
+def light(loc,power,size):
+ data=bpy.data.lights.new('softbox','AREA');data.energy=power;data.shape='DISK';data.size=size
+ obj=bpy.data.objects.new('softbox',data);bpy.context.collection.objects.link(obj);obj.location=loc
+ obj.rotation_euler=(Vector((0,0,.15))-obj.location).to_track_quat('-Z','Y').to_euler()
+light((2,-3,4),600,4);light((-2,2,3),400,3)
+camdata=bpy.data.cameras.new('camera');cam=bpy.data.objects.new('camera',camdata);bpy.context.collection.objects.link(cam);bpy.context.scene.camera=cam
+camdata.type='ORTHO';camdata.ortho_scale=3.0
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=64
+scene.render.resolution_x=960;scene.render.resolution_y=960;scene.render.resolution_percentage=100
+for view,loc in [('angle',(3,-4,3)),('front',(0,-5,1.4)),('side',(5,0,1.4)),('top',(0,-.01,5))]:
+ cam.location=loc;cam.rotation_euler=(Vector((0,0,.15))-cam.location).to_track_quat('-Z','Y').to_euler()
+ scene.render.filepath=os.path.join(out,'f6_garden_grass_'+view+'.png')
+ bpy.ops.render.render(write_still=True)
+print('F6_GARDEN_GRASS_DONE',flush=True)
