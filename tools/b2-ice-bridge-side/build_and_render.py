@@ -39,15 +39,30 @@ def create(side):
   x=-.77+i*.38
   cube("frozen_stone_underlay_%02d"%i,(x,0,-.37),(.35,1.7,.25),slate,.055)
  # one bank edge is sculpturally rough; inner side remains flush to adjoining bridge tile
- for i in range(9):
-  x=-.86+i*.21; y=sign*(.76+(.1 if i%2 else 0))
-  shard("eroded_bank_boulder_%02d"%i,(x,y,-.20),(.22,.25,.43 if i%3 else .65),rock,i+50)
+ # Irregular large overlapping eroded masses replace the repetitive bead-like row.
+ # Keep both X end planes free of overhang for seamless modular connection.
+ for i,(x,y,z,sx,sy,sz) in enumerate([
+  (-.68,.78,-.31,.57,.46,.59),(-.26,.92,-.35,.71,.54,.74),
+  (.30,.80,-.29,.68,.43,.64),(.73,.92,-.37,.43,.51,.71),
+  (-.47,1.02,-.48,.56,.44,.50),(.43,1.07,-.47,.55,.41,.58)
+ ]):
+  o=shard("large_eroded_bank_mass_%02d"%i,(x,sign*y,z),(sx,sy,sz),rock,i+550)
+  o.rotation_euler=(.12*i,.06*i,sign*(i-2)*.11)
+ for i in range(8):
+  x=-.78+i*.22+(.035 if i%3==0 else -.025)
+  y=sign*(.76+.12*math.sin(i*2.2))
+  shard("small_transition_stone_%02d"%i,(x,y,-.17),(.15,.18,.26+(i%3)*.05),slate,i+50)
  for i in range(12):
   x=-.85+(i%6)*.34;y=sign*(.63+(i//6)*.22)
   shard("ice_fang_%02d"%i,(x,y,-.04),(.10,.13,.30+((i*7)%5)*.075),ice,i+120)
- for i in range(7):
-  x=-.83+i*.28;y=sign*(.73+(i%3)*.09)
-  cube("frost_crust_%02d"%i,(x,y,.015),(.22,.12,.035),snow,.025)
+ # Patchy frost follows the eroded stone instead of evenly spaced rectangles.
+ for i,(x,y,w,d) in enumerate([(-.70,.72,.31,.15),(-.35,.88,.25,.13),(.09,.72,.38,.12),(.47,.95,.20,.16),(.78,.78,.18,.11)]):
+  frost=cube("uneven_frost_patch_%02d"%i,(x,sign*y,.035),(w,d,.026),snow,.015)
+  frost.rotation_euler.z=sign*(i-2)*.13
+ # Irregular shallow cracks, intentionally inset from both tile joins.
+ for i,(x,y,w) in enumerate([(-.51,-.18,.25),(-.12,.22,.32),(.34,-.24,.28)]):
+  fissure=cube("surface_fissure_%02d"%i,(x,y,-.002),(w,.018,.007),slate,.003)
+  fissure.rotation_euler.z=.31*(i-1)
  # two flush ends remain clean: bridge tiles can join at x +/-1
  originals=[o for o in bpy.context.scene.objects if o.type=="MESH"]
  bpy.ops.object.select_all(action="DESELECT")
