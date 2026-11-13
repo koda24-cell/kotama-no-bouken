@@ -59,6 +59,29 @@ if skin:
    k=tuple(sorted(key));edge_uses[k]=edge_uses.get(k,0)+1
  manifest['skin_boundary_edges']=sum(v==1 for v in edge_uses.values())
  manifest['skin_nonmanifold_edges']=sum(v>2 for v in edge_uses.values())
+# Locate boundary-edge components without modifying the original skin.
+if skin:
+ from collections import defaultdict
+ edge_faces=defaultdict(int)
+ for poly in skin.data.polygons:
+  for edge in poly.edge_keys:edge_faces[tuple(sorted(edge))]+=1
+ boundary=[e for e,n in edge_faces.items() if n==1]
+ adjacency=defaultdict(set)
+ for a,b in boundary:adjacency[a].add(b);adjacency[b].add(a)
+ unseen=set(adjacency);components=[]
+ while unseen:
+  seed=unseen.pop();stack=[seed];component={seed}
+  while stack:
+   for nxt in adjacency[stack.pop()]:
+    if nxt not in component:
+     component.add(nxt);unseen.discard(nxt);stack.append(nxt)
+  points=[skin.data.vertices[i].co for i in component]
+  lo=[min(p[k] for p in points) for k in range(3)]
+  hi=[max(p[k] for p in points) for k in range(3)]
+  components.append({'vertices':len(component),'bounds_min':lo,'bounds_max':hi,
+                     'closed_loop':all(len(adjacency[v])==2 for v in component)})
+ manifest['boundary_components']=sorted(components,key=lambda x:x['vertices'],reverse=True)
+ manifest['boundary_component_count']=len(components)
 visible=[o for o in bpy.context.scene.objects if o.type=='MESH' and not o.hide_render]
 if not visible:raise RuntimeError('Body-only filtering removed all meshes')
 # World-space bounds and calibrated camera framing, no destructive geometry edits.
