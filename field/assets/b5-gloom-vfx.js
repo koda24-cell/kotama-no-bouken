@@ -81,6 +81,24 @@ export function createB5GloomPatch(THREE,{seed=1,animate=true}={}){
   tube.geometry.dispose();tube.geometry=tapered;
   tube.name='gloom-tendril';group.add(tube);
  }
+ // Flattened asymmetric ribbons: tapered widths and ragged shoulders, not round pipes.
+ function makeCreepRibbon(points,width,material,name){
+  const curve=new THREE.CatmullRomCurve3(points),verts=[],faces=[],segments=28;
+  for(let j=0;j<=segments;j++){
+   const t=j/segments,p=curve.getPoint(t),dir=curve.getTangent(t);
+   const side=new THREE.Vector3(-dir.z,0,dir.x).normalize();
+   const taper=Math.pow(Math.max(0,1-t),1.25),w=width*(.2+.8*taper)*(1+.18*Math.sin(t*31+seed));
+   for(let q=0;q<3;q++){
+    const offset=(q-1)*w*(q===0?.83:q===2?1.12:0);
+    verts.push(p.x+side.x*offset,p.y+(q===1?.004:.0005),p.z+side.z*offset);
+   }
+  }
+  for(let j=0;j<segments;j++)for(let q=0;q<2;q++){
+   const a=j*3+q,b=a+3;faces.push(a,b,a+1,a+1,b,b+1);
+  }
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));g.setIndex(faces);g.computeVertexNormals();
+  const mesh=new THREE.Mesh(g,material);mesh.name=name;group.add(mesh);
+ }
  // Creeping infection: branching, low-profile black ridges crawl toward tile edges.
  // These are separate geometry so the approved puddle and tendrils remain intact.
  const infectionMat=new THREE.MeshStandardMaterial({color:0x09080d,roughness:.36,metalness:.02,side:THREE.DoubleSide});
@@ -92,14 +110,12 @@ export function createB5GloomPatch(THREE,{seed=1,animate=true}={}){
    pathPoints.push(new THREE.Vector3(Math.cos(angle)*r,.012+.004*Math.sin(t*9+k),Math.sin(angle)*r));
   }
   const curve=new THREE.CatmullRomCurve3(pathPoints);
-  const ridge=new THREE.Mesh(new THREE.TubeGeometry(curve,22,.007+random()*.006,5,false),infectionMat);
-  ridge.name='gloom-creeping-root';group.add(ridge);
+  makeCreepRibbon(pathPoints,.019+random()*.013,infectionMat,'gloom-creeping-ribbon');
   // Tiny offshoots make the contamination less geometrically radial.
   for(let q=0;q<2;q++){
    const t=.35+random()*.45,origin=curve.getPoint(t),angle=a+(q?1:-1)*(.4+random()*.5);
    const end=origin.clone().add(new THREE.Vector3(Math.cos(angle)*(.06+random()*.08),0,Math.sin(angle)*(.06+random()*.08)));
-   const twig=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([origin,origin.clone().lerp(end,.55).add(new THREE.Vector3(0,.009,0)),end]),10,.0035,4,false),infectionMat);
-   twig.name='gloom-root-offshoot';group.add(twig);
+   makeCreepRibbon([origin,origin.clone().lerp(end,.55).add(new THREE.Vector3(0,.004,0)),end],.008,infectionMat,'gloom-ribbon-offshoot');
   }
  }
  const particles=[];
