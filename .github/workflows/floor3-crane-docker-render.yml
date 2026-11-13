@@ -36,7 +36,14 @@ jobs:
           assert len(tapered.geometry)>150, len(tapered.geometry)
           PY
       - name: Pull Blender Docker
-        run: docker pull lscr.io/linuxserver/blender:latest
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if docker pull lscr.io/linuxserver/blender:latest; then exit 0; fi
+            echo "Blender registry throttled or unavailable; retry $attempt/5"
+            sleep $((attempt * 20))
+          done
+          echo 'Docker image pull failed after five attempts' >&2
+          exit 1
       - name: Render two views
         run: |
           docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
