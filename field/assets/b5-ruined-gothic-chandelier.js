@@ -38,40 +38,53 @@ export function createRuinedChandelier(T){
  for(let i=0;i<12;i++){const a=i*Math.PI/6;beam([2.25*Math.cos(a),2.98,2.25*Math.sin(a)],[2.25*Math.cos(a),2.63-(i%3)*.12,2.25*Math.sin(a)],.085,.008)}
  beam([0,4.5,0],[0,3.08,0],.20,.13);prism(0,2.89,0,.24,.35,9);beam([0,2.72,0],[0,2.28,0],.13,.015);
 
- // Vine-inspired wrought-iron tracery: 50 distinct sculpted strands x 100
- // sampled spatial coordinates = exactly 5,000 ADDITIONAL control points.
- // Original radial frame and damaged geometry remain unchanged.
+ // Silhouette pass: retain 5,000 sampled vine coordinates, but relocate the
+ // tendrils into distinct OUTER scrollwork bays with generous negative space.
+ // Preserve all original structural arms, rings, fractures, and debris.
  const vineMetal=new T.MeshStandardMaterial({color:0x494b4b,metalness:.62,roughness:.44,side:T.DoubleSide});
  const vinePointCount=100,vineStrandCount=50;
  root.userData.addedVineCoordinates=vinePointCount*vineStrandCount;
+ root.userData.vineSilhouettePass='outer-scrollwork-v2';
  for(let strand=0;strand<vineStrandCount;strand++){
-   const sector=strand%12,layer=Math.floor(strand/12);
-   const theta=(sector+.5)*Math.PI/6;
-   const direction=layer%2===0?1:-1;
-   const anchorRadius=[1.40,1.73,1.97,1.53,2.09][layer];
-   const anchorHeight=[3.58,3.76,3.36,3.95,3.17][layer];
-   const spread=[.23,.30,.19,.34,.25][layer];
+   const bay=strand%10,layer=Math.floor(strand/10);
+   const theta=(bay+.5)*Math.PI/5;
+   const handed=bay%2===0?1:-1;
    const samples=[];
    for(let k=0;k<vinePointCount;k++){
      const t=k/(vinePointCount-1);
-     // Curled vine tendril with an elongated S-bend, tapering into a tight spiral.
-     const bend=Math.sin(t*Math.PI*1.8+layer*.43)*spread*(.45+.55*t);
-     const spiralT=Math.max(0,(t-.60)/.40);
-     const spiral=spiralT*spiralT;
-     const angle=theta+direction*(bend+spiral*2.25);
-     const radius=anchorRadius+(.27*Math.sin(t*Math.PI))-.28*spiral;
-     const y=anchorHeight+.31*Math.sin(t*Math.PI*1.45+layer*.34)
-       +direction*.10*Math.sin(t*Math.PI*3)+.17*spiral;
-     samples.push(new T.Vector3(radius*Math.cos(angle),y,radius*Math.sin(angle)));
+     // The first 58% of each strand rises outward into a broad leaf-like
+     // S-shaped silhouette; the tip spirals back without crossing the center.
+     const curl=Math.max(0,(t-.58)/.42);
+     const phi=theta+handed*(.13*Math.sin(t*Math.PI*1.45)+curl*curl*Math.PI*1.62);
+     const flare=[.42,.70,.53,.85,.63][layer];
+     const radial=2.05+flare*Math.sin(Math.PI*t*.88)-.21*curl;
+     const yBase=[3.13,3.38,3.65,3.88,4.10][layer];
+     const y=yBase+[.58,.72,.49,.64,.52][layer]*Math.sin(Math.PI*t*.90)
+       +.13*Math.sin(t*Math.PI*2.1+layer*.7)-.11*curl;
+     samples.push(new T.Vector3(radial*Math.cos(phi),y,radial*Math.sin(phi)));
    }
-   // The 100 spatial samples are the actual path vertices driving the curve.
    const curve=new T.CatmullRomCurve3(samples,false,'centripetal',.45);
-   const tube=mesh(new T.TubeGeometry(curve,120,layer===4?.021:.030,5,false),vineMetal);
-   tube.name='vine-tracery-'+String(strand).padStart(2,'0');
+   const tube=mesh(new T.TubeGeometry(curve,130,layer===3?.036:.029,6,false),vineMetal);
+   tube.name='outer-vine-scroll-'+String(strand).padStart(2,'0');
+ }
+ // Six high, asymmetric crown scrolls make the upper silhouette feel
+ // suspended and cathedral-like rather than a compact horizontal wire nest.
+ for(let i=0;i<6;i++){
+   const a=(i+.5)*Math.PI/3;
+   const p=[];
+   for(let j=0;j<=80;j++){
+     const t=j/80;
+     const radius=1.00+.56*Math.sin(t*Math.PI)+.19*t;
+     const theta=a+.30*Math.sin(t*Math.PI*1.4);
+     const y=4.35+1.02*Math.sin(t*Math.PI*.90)+.20*t;
+     p.push(new T.Vector3(radius*Math.cos(theta),y,radius*Math.sin(theta)));
+   }
+   const o=mesh(new T.TubeGeometry(new T.CatmullRomCurve3(p),100,.047,7,false),vineMetal);
+   o.name='crown-scroll-'+i;
  }
  // Fallen detached ring fragments and chipped stone pieces rest on y=0.
  for(let i=0;i<9;i++){const a=i*2.399,r=.75+(i%4)*.46;chip(Math.cos(a)*r,0,Math.sin(a)*r,.25+(i%3)*.11,.15+(i%4)*.07,.27+(i%2)*.13,i+4)}
  // Bent broken arc rests on floor, not suspended.
  for(let i=0;i<6;i++){const a=.3+i*.12,b=a+.12;beam([1.2*Math.cos(a),.12,1.2*Math.sin(a)],[1.2*Math.cos(b),.12,1.2*Math.sin(b)],.105,.10,dark)}
- return {group:root,dispose(){for(const o of meshes)o.geometry.dispose();stone.dispose();dark.dispose()}};
+ return {group:root,dispose(){for(const o of meshes)o.geometry.dispose();stone.dispose();dark.dispose();vineMetal.dispose()}};
 }
