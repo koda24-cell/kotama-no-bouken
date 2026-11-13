@@ -161,6 +161,10 @@ if face:
   return obj
  # Face front is +Y in the existing front camera; the +X side is nearer
  # the three-quarter camera. Proportions are relative to the face bounds.
+ face_bounds=[face.matrix_world @ Vector(c) for c in face.bound_box]
+ fmin=Vector(tuple(min(v[i] for v in face_bounds) for i in range(3)))
+ fmax=Vector(tuple(max(v[i] for v in face_bounds) for i in range(3)))
+ fc=(fmin+fmax)/2;fs=fmax-fmin
  fw=fs.x;fh=fs.z
  hair=bpy.data.materials.new('Assassin_silver_lavender_hair')
  hair.diffuse_color=(.72,.68,.82,1)
