@@ -143,6 +143,33 @@ if skin:
   bpy.ops.render.render(write_still=True)
   bpy.data.objects.remove(cam,do_unlink=True)
  repaired.hide_render=True;skin.hide_render=False
+# Face-focused stage: preserve source, isolate the head for high-resolution review.
+face=next((o for o in meshes if o.name.lower()=='face'),None)
+if face:
+ manifest['face_review']={'source_mesh':face.name,'vertices':len(face.data.vertices),
+                         'faces':len(face.data.polygons),'materials':next((m['materials'] for m in manifest['meshes'] if m['name']==face.name),[])}
+ prior={o.name:o.hide_render for o in bpy.context.scene.objects if o.type=='MESH'}
+ for obj in bpy.context.scene.objects:
+  if obj.type=='MESH':obj.hide_render=(obj!=face)
+ face_bounds=[face.matrix_world @ Vector(c) for c in face.bound_box]
+ fmin=Vector(tuple(min(v[i] for v in face_bounds) for i in range(3)))
+ fmax=Vector(tuple(max(v[i] for v in face_bounds) for i in range(3)))
+ fc=(fmin+fmax)/2;fs=fmax-fmin
+ manifest['face_review']['bounds_min']=list(fmin)
+ manifest['face_review']['bounds_max']=list(fmax)
+ scene.render.resolution_x=960;scene.render.resolution_y=960
+ for name,offset in [('front',(0,1,0)),('side',(1,0,0)),('three_quarter',(1,1,.16))]:
+  bpy.ops.object.camera_add(location=fc+max(2,fs.length*5)*Vector(offset).normalized())
+  cam=bpy.context.object
+  cam.rotation_euler=(fc-cam.location).to_track_quat('-Z','Y').to_euler()
+  cam.data.type='ORTHO';cam.data.ortho_scale=max(fs.z*1.5,fs.x*1.5,fs.y*2.0,.18)
+  scene.camera=cam
+  scene.render.filepath=os.path.join(out,'face_'+name+'.png')
+  bpy.ops.render.render(write_still=True)
+  bpy.data.objects.remove(cam,do_unlink=True)
+ for obj in bpy.context.scene.objects:
+  if obj.type=='MESH':obj.hide_render=prior[obj.name]
+ scene.render.resolution_x=720;scene.render.resolution_y=900
 with open(os.path.join(out,'source_manifest.json'),'w') as f:json.dump(manifest,f,ensure_ascii=False,indent=2)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'vroid_shibu_import.blend'))
 bpy.ops.object.select_all(action='DESELECT')
