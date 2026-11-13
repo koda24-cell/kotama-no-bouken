@@ -2,6 +2,8 @@ name: F6 Flower Garden Grass Render
 on:
   push:
     branches: [feature/f6-flower-garden-grass-20261113]
+  pull_request:
+    branches: [development]
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,6 +36,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: f6-garden-grass-v1
+          name: f6-garden-grass-v4
           path: render-output/floor6/garden-grass/
           retention-days: 14
