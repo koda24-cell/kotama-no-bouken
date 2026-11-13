@@ -32,7 +32,7 @@ for clump in range(4):
     t=step/5
     center=origin+tangent*(lean*t*t)+side*(sway*t*t)+Vector((0,0,length*(t-.13*t*t)))
     half=width*(math.sin(math.pi*(.08+.84*t))**.6)*(1-t)**.45
-    fold=Vector((0,0,.006*math.sin(math.pi*t))
+    fold=Vector((0,0,.006*math.sin(math.pi*t)))
     for q in (-1,0,1):verts.append(tuple(center+side*(q*half)+tangent*(twist*t*q*.012)+fold*(1-q*q)))
    for step in range(5):
     a=start+3*step
@@ -46,7 +46,7 @@ for clump in range(4):
 bpy.ops.object.select_all(action='DESELECT')
 for ob in bpy.context.scene.objects:
  if ob.type=='MESH':ob.select_set(True)
-bpy.ops.export_scene.gltf(filepath=os.path.join(out,'f6_garden_grass_clumps_v1.glb'),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'f6_garden_grass_clumps_v2.glb'),export_format='GLB',use_selection=True)
 bpy.ops.object.select_all(action='DESELECT')
 world=bpy.context.scene.world;world.color=(.22,.27,.22)
 def light(loc,power,size):
