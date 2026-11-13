@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Preflight Python syntax
-        run: python3 -m py_compile tools/floor6/white_flower_ground.py
+        run: python3 -m py_compile tools/floor6/white_flower_ground.py tools/floor6/white_lily_single.py
       - name: Install Blender and glTF dependencies
         run: |
           sudo apt-get update
@@ -46,7 +46,6 @@ jobs:
           path: render-output/floor6/white-flower-ground/
           retention-days: 14
       - name: Render single white lily (1000 control coordinates)
-        if: always()
         run: |
           set -euo pipefail
           python3 -m py_compile tools/floor6/white_lily_single.py
@@ -54,7 +53,6 @@ jobs:
           blender -b -t 2 --python tools/floor6/white_lily_single.py 2>&1 | tee render-output/floor6/white-lily-study/blender.log
           grep -q WHITE_LILY_DONE render-output/floor6/white-lily-study/blender.log
       - name: Validate single lily GLB PNG and 1000 coordinates
-        if: always()
         run: |
           python3 - <<'PY'
           from pathlib import Path
