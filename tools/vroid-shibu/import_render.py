@@ -94,6 +94,23 @@ for name,offset in [('front',(0,1,0)),('back',(0,-1,0)),('right_side',(1,0,0)),(
  scene.render.filepath=os.path.join(out,name+'.png')
  bpy.ops.render.render(write_still=True)
  bpy.data.objects.remove(cam,do_unlink=True)
+# Compare original skin and reduced candidate using identical cameras and lighting.
+if skin:
+ candidate.data.materials.clear();candidate.data.materials.append(mat)
+ skin.hide_render=True
+ candidate.hide_render=False
+ for name,offset in [('front',(0,1,0)),('right_side',(1,0,0)),('three_quarter',(1,1,.22))]:
+  bpy.ops.object.camera_add(location=center+distance*Vector(offset).normalized())
+  cam=bpy.context.object
+  cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
+  cam.data.type='ORTHO'
+  cam.data.ortho_scale=max(span.z*1.16,span.x*1.7,span.y*1.7,.5)
+  scene.camera=cam
+  scene.render.filepath=os.path.join(out,'lowpoly_'+name+'.png')
+  bpy.ops.render.render(write_still=True)
+  bpy.data.objects.remove(cam,do_unlink=True)
+ candidate.hide_render=True
+ skin.hide_render=False
 with open(os.path.join(out,'source_manifest.json'),'w') as f:json.dump(manifest,f,ensure_ascii=False,indent=2)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'vroid_shibu_import.blend'))
 bpy.ops.object.select_all(action='DESELECT')
