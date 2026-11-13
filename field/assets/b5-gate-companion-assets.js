@@ -69,7 +69,47 @@ export function createB5GateCompanion(THREE,variant='broken-pillar',seed=1){
    }
   }
  }
- if(variant==='standing-pillar')pillar(1.25,false);
+ if(variant==='standing-pillar'){
+  // Taller architectural silhouette: stepped pedestal, fluted shaft,
+  // layered Gothic capital, chamfered crown and sculpted corner supports.
+  // Keep this entirely isolated from the approved gate and other variants.
+  box(.78,.10,.78,0,.05,0,dark,'foundation-course');
+  box(.71,.09,.71,0,.145,0,stone,'pedestal-lower');
+  box(.62,.10,.62,0,.24,0,light,'pedestal-moulding');
+  box(.51,.20,.51,0,.39,0,stone,'pedestal-core');
+  box(.57,.07,.57,0,.525,0,light,'pedestal-upper');
+  const baseY=.56,shaftH=1.53;
+  shaft(.205,shaftH,0,baseY,0,false);
+  // Eight vertical recessed grooves; actual raised border ribs on the shaft.
+  for(let i=0;i<8;i++){
+   const a=i*Math.PI/4;
+   const rib=mesh(new THREE.CylinderGeometry(.022,.026,shaftH*.93,5),
+    i%2?light:stone,'vertical-flute-ridge',
+    Math.cos(a)*.19,baseY+shaftH*.5,Math.sin(a)*.19);
+   rib.rotation.y=a;
+  }
+  const crownY=baseY+shaftH;
+  box(.45,.085,.45,0,crownY+.045,0,light,'capital-neck');
+  box(.54,.09,.54,0,crownY+.135,0,stone,'capital-lower-moulding');
+  for(let i=0;i<8;i++){
+   const a=i*Math.PI/4,dist=.235;
+   const leaf=mesh(new THREE.ConeGeometry(.095,.30,5),i%2?stone:light,
+    'gothic-capital-carved-leaf',Math.cos(a)*dist,crownY+.235,Math.sin(a)*dist);
+   leaf.rotation.z=-Math.cos(a)*.30;
+   leaf.rotation.x=Math.sin(a)*.30;
+  }
+  box(.67,.105,.67,0,crownY+.35,0,light,'capital-abacus');
+  box(.75,.065,.75,0,crownY+.425,0,dark,'capital-crown-top');
+  // Corner scroll bosses and shallow fracture chips for aged silhouette.
+  for(let i=0;i<4;i++){
+   const x=(i%2?.305:-.305),z=(i<2?.305:-.305);
+   const boss=mesh(new THREE.SphereGeometry(.077,7,5),stone,
+    'capital-corner-boss',x,crownY+.31,z);
+   boss.scale.set(1,.62,1);
+  }
+  group.userData.standingPillarDetail={shaftHeight:shaftH,fluteRibs:8,
+   capitalLeaves:8,capitalCornerBosses:4};
+ }
  if(variant==='broken-pillar')pillar(.69,true);
  if(variant==='fallen-column'){
   shaft(.18,.82,0,.19,0,true);
