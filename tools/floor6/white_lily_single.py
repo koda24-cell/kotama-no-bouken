@@ -130,27 +130,39 @@ for obj in head_parts: obj.location.z+=1.50
 for obj in bpy.context.scene.objects:
  if obj.type=="MESH" and obj.name.startswith("Sphere") and abs(obj.location.z-.845)<.001:
   obj.location.z+=1.50
-# V7: gently bow the entire living plant toward +X, with a modest droop at the flower.
-# Bend all stem/leaf/head components consistently, including the filaments and stigma.\n# Use complete object matrices: anther/stigma meshes have local scaling and rotation.
-# Original flower petal topology and local curvature are retained.
+# V9: stem/leaf bend is continuous, while the complete flower head is a rigid
+# assembly. Rotate petals, stamens, anthers, pistil and stigma TOGETHER about
+# the flower throat to align with the tangent of the curved stalk.
 def plant_bend(p):
  z=p.z
  t=max(0.0,z/2.4)
  return Vector((p.x+.32*t*t, p.y, z-.15*t*t*t))
+head_anchor=Vector((0,0,2.035))
+# Tangent of the actual stalk bend at the attachment height.
+t=head_anchor.z/2.4
+stem_tangent=Vector((.64*t/2.4,0,1-.45*t*t/2.4)).normalized()
+head_rotation=Vector((0,0,1)).rotation_difference(stem_tangent)
+def head_aligned(p):
+ return plant_bend(head_anchor)+head_rotation @ (p-head_anchor)
+def is_flower_part(obj):
+ return (obj.name.startswith(("lily petal ","filament ","rust anther ","central pistil"))
+         or (obj.type=="MESH" and obj.name.startswith("Sphere") and abs(obj.location.z-2.345)<.02))
 for obj in list(bpy.context.scene.objects):
+ deform=head_aligned if is_flower_part(obj) else plant_bend
+ inv=obj.matrix_world.inverted()
  if obj.type=="MESH":
   for vert in obj.data.vertices:
    original=obj.matrix_world @ vert.co
-   vert.co=obj.matrix_world.inverted() @ plant_bend(original)
+   vert.co=inv @ deform(original)
   obj.data.update()
  elif obj.type=="CURVE":
   for spline in obj.data.splines:
    if spline.type=="POLY":
     for pt in spline.points:
      original=obj.matrix_world @ Vector(pt.co[:3])
-     bent=obj.matrix_world.inverted() @ plant_bend(original)
+     bent=inv @ deform(original)
      pt.co=(*bent,1)
-print("LILY_V7_BENT_STEM_AND_THIN_LEAVES",flush=True)
+print("LILY_V9_STEM_TANGENT_HEAD_ALIGNMENT",flush=True)
 # Export actual mesh, then render studio views.
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.export_scene.gltf(filepath=os.path.join(out,"white_lily_single.glb"),export_format='GLB')
