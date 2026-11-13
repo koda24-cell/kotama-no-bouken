@@ -18,18 +18,46 @@ def mesh(name,verts,faces,material):
  ob=bpy.data.objects.new(name,me);bpy.context.collection.objects.link(ob);ob.data.materials.append(material)
  for p in me.polygons:p.use_smooth=True
  return ob
-verts=[];faces=[];R=100;S=50
+# Five-pass quad topology design (see docs/3d/ASSASSIN_FACE_QUAD_ANALYSIS_20261113.md).
+# 160 latitude rings x 96 longitudinal samples = 15,360 surface vertices.
+# UV parameterization is quad-only, with explicit anatomical deformation fields.
+# Coordinates: X left/right, Y front negative, Z up. 1 Blender unit ~= 1 head unit.
+verts=[];faces=[];R=160;S=96
+def gaussian(x,mu,sigma):
+ return math.exp(-0.5*((x-mu)/sigma)**2)
 for i in range(R):
- z=-.73+1.77*i/(R-1);t=(z+.73)/1.77
- width=(.06+.59*(max(0,math.sin(math.pi*(.05+.88*t)))**.72))*(1-.10*max(0,(t-.58)/.42))
+ z=-.73+1.77*i/(R-1)
+ t=(z+.73)/1.77
+ # skull, cheekbones, temples, tapering jaw and soft chin
+ width=(.085+.535*max(0,math.sin(math.pi*(.035+.92*t)))**.72)
+ width+=.044*gaussian(z,.21,.17)  # cheekbone flare
+ width-=.068*gaussian(z,-.43,.18) # jaw taper
+ width+=.018*gaussian(z,.61,.16)  # temples
  for j in range(S):
-  a=2*math.pi*j/S;x=width*math.sin(a)
-  y=.20*math.cos(a)-.065-.075*math.exp(-((z+.10)/.30)**2)*max(0,math.cos(a))
+  a=2*math.pi*j/S
+  sn=math.sin(a);cs=math.cos(a)
+  x=width*sn
+  # Skull depth follows a flattened oval, with facial plane toward negative Y.
+  depth=.278+.025*gaussian(z,.43,.28)
+  y=-.052+depth*cs
+  front=max(0,-cs)**5
+  # Brow ridge, eye socket depression, nasal bridge and lips are geometry, not stickers.
+  eye_x=gaussian(abs(x),.245,.135)
+  y-=front*(.018*gaussian(z,.49,.055) - .026*gaussian(z,.315,.095)*eye_x)
+  y-=front*.080*gaussian(x,0,.070)*gaussian(z,.09,.235)  # nose bridge
+  y-=front*.066*gaussian(x,0,.085)*gaussian(z,-.005,.065) # nose tip
+  y-=front*.021*gaussian(x,0,.110)*gaussian(z,-.205,.033) # upper lip
+  y-=front*.014*gaussian(x,0,.115)*gaussian(z,-.258,.027) # lower lip
+  y-=front*.026*gaussian(x,0,.165)*gaussian(z,-.485,.085) # chin projection
+  # cheek and jaw volumes follow bilateral symmetric, smooth Gaussian fields
+  y-=front*.022*gaussian(abs(x),.39,.115)*gaussian(z,.13,.18)
   verts.append((x,y,z))
 for i in range(R-1):
  for j in range(S):
-  k=i*S+j;q=i*S+(j+1)%S;faces.extend([(k,q,q+S),(k,q+S,k+S)])
-face=mesh('SKIN_FACE__5000_vertices',verts,faces,skin)
+  a=i*S+j;b=i*S+(j+1)%S
+  faces.append((a,b,b+S,a+S))
+assert len(verts)==15360 and len(faces)==15264
+face=mesh('SKIN_FACE__15360_vertices_15264_quads',verts,faces,skin)
 # Quad hair cards: 100 strips x 50 rows x 2 vertices = 10,000 hair vertices.
 # Each adjacent pair of rows is one four-corner polygon (quad).
 # Broad overlapping sheets replace the previous diamond-tube strands.
@@ -118,7 +146,7 @@ bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'assassin_head.blend'))
 for required in ('front.png','right_side.png','left_side.png','three_quarter.png'):
  assert os.path.getsize(os.path.join(out,required)) > 1000, 'Missing or empty render: '+required
 with open(os.path.join(out,'geometry_report.txt'),'w') as f:
- f.write('skin_vertices=%d\nhair_vertices=%d\nskin_triangles=%d\nhair_triangles=%d\n' % (len(face.data.vertices),len(hair.data.vertices),len(face.data.polygons),len(hair.data.polygons)))
-assert len(face.data.vertices)==5000 and len(hair.data.vertices)==10000
-assert len(face.data.polygons)==9900 and len(hair.data.polygons)==4900
+ f.write('skin_vertices=%d\nhair_vertices=%d\nskin_quads=%d\nhair_quads=%d\n' % (len(face.data.vertices),len(hair.data.vertices),len(face.data.polygons),len(hair.data.polygons)))
+assert len(face.data.vertices)==15360 and len(hair.data.vertices)==10000
+assert len(face.data.polygons)==15264 and len(hair.data.polygons)==4900
 print('COUNTS',len(face.data.vertices),len(hair.data.vertices))
