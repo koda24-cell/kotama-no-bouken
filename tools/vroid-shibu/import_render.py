@@ -40,25 +40,6 @@ if body:
  body.hide_render=True
  manifest['hidden'].append('Body')
 skin=next((o for o in bpy.context.scene.objects if o.type=='MESH' and o.name=='Body_skin'),None)
-if skin:
- candidate=skin.copy();candidate.data=skin.data.copy()
- bpy.context.collection.objects.link(candidate)
- candidate.name='Body_skin_lowpoly_candidate'
- candidate.hide_render=True
- before_faces=len(candidate.data.polygons)
- modifier=candidate.modifiers.new('Trial_reduction_50pct','DECIMATE')
- modifier.ratio=.5
- bpy.context.view_layer.objects.active=candidate
- candidate.select_set(True)
- bpy.ops.object.modifier_apply(modifier=modifier.name)
- candidate.select_set(False)
- manifest['lowpoly_trial']={'before_faces':before_faces,'after_faces':len(candidate.data.polygons),'vertices':len(candidate.data.vertices),'note':'non-destructive duplicate; not approved'}
- edge_uses={}
- for poly in skin.data.polygons:
-  for key in poly.edge_keys:
-   k=tuple(sorted(key));edge_uses[k]=edge_uses.get(k,0)+1
- manifest['skin_boundary_edges']=sum(v==1 for v in edge_uses.values())
- manifest['skin_nonmanifold_edges']=sum(v>2 for v in edge_uses.values())
 # Locate boundary-edge components without modifying the original skin.
 if skin:
  from collections import defaultdict
@@ -82,6 +63,38 @@ if skin:
                      'closed_loop':all(len(adjacency[v])==2 for v in component)})
  manifest['boundary_components']=sorted(components,key=lambda x:x['vertices'],reverse=True)
  manifest['boundary_component_count']=len(components)
+# Geometry-first trial: close only small simple boundary loops on a copy.
+# Large openings under garments must be sculpted, never capped automatically.
+if skin:
+ import bmesh
+ repaired=skin.copy();repaired.data=skin.data.copy()
+ bpy.context.collection.objects.link(repaired)
+ repaired.name='Body_skin_small_hole_repair_trial'
+ repaired.hide_render=True
+ bm=bmesh.new();bm.from_mesh(repaired.data)
+ boundary_edges=[e for e in bm.edges if e.is_boundary]
+ seen=set();filled=[]
+ for edge in boundary_edges:
+  if edge in seen:continue
+  group={edge};todo=[edge];seen.add(edge)
+  while todo:
+   current=todo.pop()
+   for v in current.verts:
+    for nxt in v.link_edges:
+     if nxt.is_boundary and nxt not in seen:
+      seen.add(nxt);group.add(nxt);todo.append(nxt)
+  verts={v for e in group for v in e.verts}
+  if len(group)!=len(verts) or len(verts)>16:continue
+  # Only very small, near-planar loops; never bridge garment-sized openings.
+  xs=[v.co.x for v in verts];ys=[v.co.y for v in verts];zs=[v.co.z for v in verts]
+  diagonal=((max(xs)-min(xs))**2+(max(ys)-min(ys))**2+(max(zs)-min(zs))**2)**.5
+  if diagonal>.08:continue
+  try:
+   bmesh.ops.holes_fill(bm,edges=list(group),sides=0)
+   filled.append({'vertices':len(verts),'diagonal':diagonal})
+  except Exception:pass
+ bm.to_mesh(repaired.data);bm.free();repaired.data.update()
+ manifest['small_hole_repair_trial']={'filled_loops':filled,'faces':len(repaired.data.polygons),'vertices':len(repaired.data.vertices),'note':'review candidate; large openings untouched'}
 visible=[o for o in bpy.context.scene.objects if o.type=='MESH' and not o.hide_render]
 if not visible:raise RuntimeError('Body-only filtering removed all meshes')
 # World-space bounds and calibrated camera framing, no destructive geometry edits.
@@ -117,23 +130,19 @@ for name,offset in [('front',(0,1,0)),('back',(0,-1,0)),('right_side',(1,0,0)),(
  scene.render.filepath=os.path.join(out,name+'.png')
  bpy.ops.render.render(write_still=True)
  bpy.data.objects.remove(cam,do_unlink=True)
-# Compare original skin and reduced candidate using identical cameras and lighting.
 if skin:
- candidate.data.materials.clear();candidate.data.materials.append(mat)
- skin.hide_render=True
- candidate.hide_render=False
+ repaired.data.materials.clear();repaired.data.materials.append(mat)
+ skin.hide_render=True;repaired.hide_render=False
  for name,offset in [('front',(0,1,0)),('right_side',(1,0,0)),('three_quarter',(1,1,.22))]:
   bpy.ops.object.camera_add(location=center+distance*Vector(offset).normalized())
   cam=bpy.context.object
   cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
-  cam.data.type='ORTHO'
-  cam.data.ortho_scale=max(span.z*1.16,span.x*1.7,span.y*1.7,.5)
+  cam.data.type='ORTHO';cam.data.ortho_scale=max(span.z*1.16,span.x*1.7,span.y*1.7,.5)
   scene.camera=cam
-  scene.render.filepath=os.path.join(out,'lowpoly_'+name+'.png')
+  scene.render.filepath=os.path.join(out,'repair_'+name+'.png')
   bpy.ops.render.render(write_still=True)
   bpy.data.objects.remove(cam,do_unlink=True)
- candidate.hide_render=True
- skin.hide_render=False
+ repaired.hide_render=True;skin.hide_render=False
 with open(os.path.join(out,'source_manifest.json'),'w') as f:json.dump(manifest,f,ensure_ascii=False,indent=2)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'vroid_shibu_import.blend'))
 bpy.ops.object.select_all(action='DESELECT')
