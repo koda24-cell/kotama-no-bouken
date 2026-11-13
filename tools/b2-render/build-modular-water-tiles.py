@@ -25,22 +25,48 @@ puddle=mat('Thin water film on weathered stone',(.02,.12,.16),.46,0,1)
 def objmesh(name,vs,fs,material):
  mesh=bpy.data.meshes.new(name);mesh.from_pydata(vs,[],fs);mesh.update();o=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(o);o.data.materials.append(material);return o
 def slab(name,x,y,z,sx,sy,th,material,seed):
- # Angular broken rock: irregular radial distances, sharp faceted corners,
- # uneven upper/lower rings and tilted bedding planes, never smooth ellipses.
- rng=random.Random(seed);n=rng.choice([9,11,13,15]);vs=[]
+ rng=random.Random(seed)
+ rock=material==stone
+ n=rng.choice([11,13,15,17]) if rock else rng.choice([9,11,13,15])
  phase=rng.uniform(-.4,.4)
- radii=[rng.uniform(.72,1.19) for _ in range(n)]
- for layer in [0,1]:
-  for i in range(n):
-   a=phase+i*math.tau/n+rng.uniform(-.11,.11)
-   r=radii[i]*(1 if layer==0 else rng.uniform(.82,1.04))
-   rx=math.cos(a)*sx*.5*r
-   ry=math.sin(a)*sy*.5*r
-   # Flat angular ledges, fractured edge faces, no smoothed normals.
-   height=rng.uniform(-.006,.012) if layer==0 else -th+rng.uniform(-.012,.002)
-   vs.append((x+rx,y+ry,z+height+.10*rx-.08*ry))
- fs=[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]
- for i in range(n):fs.append((i,(i+1)%n,(i+1)%n+n,i+n))
+ boundary=[]
+ for i in range(n):
+  angle=phase+i*math.tau/n+rng.uniform(-.1,.1)
+  boundary.append((math.cos(angle)*sx*.5*rng.uniform(.72,1.19),math.sin(angle)*sy*.5*rng.uniform(.72,1.19)))
+ if not rock:
+  vs=[]
+  for layer in [0,1]:
+   for rx,ry in boundary:vs.append((x+rx,y+ry,z-layer*th+rng.uniform(-.003,.003)))
+  fs=[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]
+  for i in range(n):fs.append((i,(i+1)%n,(i+1)%n+n,i+n))
+  return objmesh(name,vs,fs,material)
+ # Dense surface only on stone: four radial rings and 3 angular subdivisions.
+ seg=3;rings=4;count=n*seg;vs=[];fs=[]
+ high=rng.uniform(.065,.135);phase2=rng.uniform(0,math.tau)
+ for ring in range(rings+1):
+  radius=ring/rings
+  for j in range(count):
+   k=j//seg;frac=(j%seg)/seg
+   bx=boundary[k][0]*(1-frac)+boundary[(k+1)%n][0]*frac
+   by=boundary[k][1]*(1-frac)+boundary[(k+1)%n][1]*frac
+   rx=bx*radius;ry=by*radius
+   angle=math.atan2(ry,rx)
+   ridge=math.sin(angle*3+phase2)*.027+math.cos(angle*7+radius*8)*.015
+   jag=rng.uniform(-.016,.021)*(1-.35*radius)
+   height=high*(1-radius**1.5)+ridge*(1-.5*radius)+jag
+   if ring==rings:height=rng.uniform(-.007,.012)
+   vs.append((x+rx,y+ry,z+height+.12*rx-.10*ry))
+ for j in range(count):
+  rx=vs[rings*count+j][0]-x;ry=vs[rings*count+j][1]-y
+  vs.append((x+rx*rng.uniform(.76,.91),y+ry*rng.uniform(.76,.91),z-th-rng.uniform(.016,.04)))
+ for ring in range(rings):
+  for j in range(count):
+   k=(j+1)%count;a=ring*count+j;b=ring*count+k;c=(ring+1)*count+j;d=(ring+1)*count+k
+   fs.extend([(a,c,d),(a,d,b)])
+ for j in range(count):
+  k=(j+1)%count
+  fs.extend([(rings*count+j,(rings+1)*count+j,(rings+1)*count+k),(rings*count+j,(rings+1)*count+k,rings*count+k)])
+ fs.append(tuple(range((rings+1)*count,(rings+2)*count)))
  return objmesh(name,vs,fs,material)
 def tile(mask):
  rng=random.Random(9000+mask);start=set(bpy.context.scene.objects)
@@ -148,4 +174,4 @@ for name,pos,scale in [('top',(0,0,12),7.3),('angle',(7,-9,10),8.2),('side',(0,-
  bpy.ops.render.render(write_still=True)
  bpy.data.objects.remove(cam,do_unlink=True)
 with open(OUT+'/README.txt','w') as f:
- f.write('v0.6: faceted fractured rock geometry, nonuniform angular corners, erosion water fingers and detached puddles beyond shore; 16 masks. Awaiting approval.\\n')
+ f.write('v0.7: dense rock-only triangulation and exaggerated uplift; 16 masks. Awaiting approval.\\n')
