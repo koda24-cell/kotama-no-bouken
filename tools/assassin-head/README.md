@@ -47,3 +47,10 @@
 - 従来の Cycles 24 samples から、Blender 3.x は EEVEE、4.x は EEVEE_NEXT に切り替え、CPUレンダリング負荷の軽減を狙う（品質確認前の試験設定）。
 - 4枚のPNGファイルサイズ、顔5,000/9,900、髪10,000/19,600 の頂点・三角形数をBlenderスクリプト内でも assert。
 - **未検証**: GitHub Actions のrun結果、Blenderバージョン互換性、実際の画像品質。成功と記載しない。失敗したらrun ID/ログを参照して修正する。
+
+## 2026-11-13 再調査：実行状況とCPUレンダリング対策
+- GitHub接続でコミットの combined statuses と PRトリガーの workflow runs を調査したが、どちらも空。これだけでは push 起動の有無や失敗理由は判定できない。
+- 公開GitHub Actionsページの直接取得は環境のアクセス制限で失敗し、run ID/ジョブログを取得できなかった。原因の確定には実際のrun URLが必要。
+- 先のEevee切り替えはヘッドレス環境のGPU/OpenGLやBlender版によるエンジン名の互換性問題を生む可能性がある。**原因としては仮説**。
+- 診断目的でBlenderのCPU Cycles、8サンプル、512×512に変更（commit `11a015dd`）。4方向PNGの生成確認を優先し、品質確認後に解像度とサンプル数を戻す。
+- Blender/Actions実行成功・PNG実物は未確認。次回はActionsのrun IDと失敗ジョブログを取得し、失敗ステップ別に修正する。
