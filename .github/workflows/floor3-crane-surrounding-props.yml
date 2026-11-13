@@ -15,9 +15,9 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/out"
           docker pull lscr.io/linuxserver/blender:latest
           docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/crane_props/build.py
-      - name: Verify all three assets and nine renders
+      - name: Verify six variants and eighteen renders
         run: |
-          for asset in cable_reel counterweight fallen_truss; do
+          for asset in cable_reel counterweight fallen_truss cable_reel_v2 counterweight_v2 fallen_truss_v2; do
             test -s "out/floor3_crane_$asset.glb"
             for view in front side angle; do test -s "out/floor3_crane_$asset-$view.png"; done
           done
