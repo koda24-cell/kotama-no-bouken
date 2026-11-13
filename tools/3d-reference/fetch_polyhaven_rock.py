@@ -29,7 +29,7 @@ for asset_id, meta in choices[:35]:
     try:
         files = json.loads(fetch("https://api.polyhaven.com/files/" + asset_id))
         # Model assets normally expose gltf/1k/glb or gltf/1k/gltf.
-        for category in ("gltf", "glb", "fbx", "blend"):
+        for category in ("fbx", "blend", "gltf", "glb"):
             resolutions = files.get(category, {})
             if not isinstance(resolutions, dict):
                 continue
