@@ -24,6 +24,46 @@ def tube(name,points,radius,mat,segments=6):
  ob=bpy.data.objects.new(name,curve);bpy.context.collection.objects.link(ob);ob.data.materials.append(mat)
  return ob
 tube("curved stalk",[(0,0,0),(.01,0,.15),(.03,0,.32),(0,0,.50)],.013,green)
+
+# V5: preserve the approved flower head unchanged; add three slender lanceolate leaves.
+# Each leaf starts inside the existing stalk and bends naturally outwards.
+leaf_green=material("lily leaf satin green",(.115,.295,.105),.56)
+leaf_vein=material("lily leaf midrib green",(.17,.37,.13),.67)
+def make_leaf(index,angle,base_z,length,spread,twist):
+ u=Vector((math.cos(angle),math.sin(angle),0))
+ v=Vector((-math.sin(angle),math.cos(angle),0))
+ verts=[]
+ rows,cols=18,7
+ for i in range(rows):
+  t=i/(rows-1)
+  reach=spread*(t**.87)
+  z=base_z+length*(.30*t-.28*t*t)+.025*math.sin(math.pi*t)
+  halfwidth=.065*(math.sin(math.pi*t)**.9)*(1-.2*t)
+  for j in range(cols):
+   q=(j-(cols-1)/2)/((cols-1)/2)
+   pos=u*reach+v*(q*halfwidth+twist*t*t*q*.025)+Vector((0,0,z+.018*(1-q*q)*math.sin(math.pi*t)))
+   verts.append(tuple(pos))
+ faces=[]
+ for i in range(rows-1):
+  for j in range(cols-1):
+   a=i*cols+j
+   faces.append((a,a+1,a+cols+1,a+cols))
+ mesh=bpy.data.meshes.new("lily lanceolate leaf mesh")
+ mesh.from_pydata(verts,[],faces);mesh.update()
+ obj=bpy.data.objects.new("lily leaf %d"%index,mesh)
+ bpy.context.collection.objects.link(obj);mesh.materials.append(leaf_green)
+ for poly in mesh.polygons:poly.use_smooth=True
+ solid=obj.modifiers.new("thin leaf lamina","SOLIDIFY");solid.thickness=.0016
+ mid=[]
+ for i in range(rows):
+  mid.append(verts[i*cols+cols//2])
+ tube("leaf midrib %d"%index,mid,.0018,leaf_vein)
+# Three leaves, staggered along the stem rather than a symmetrical rosette.
+make_leaf(1,.20,.16,.29,.31,.12)
+make_leaf(2,2.55,.245,.25,.26,-.11)
+make_leaf(3,4.65,.095,.23,.24,.08)
+print("LILY_LEAF_COUNT: 3",flush=True)
+
 # 1000 sculpting coordinates: six 10x16 surface lattices (960) + 40 independent silhouette guides.
 # Full six-tepal trumpet: wide shoulders, narrow throat, gently ribbed cup, recurved tips.
 all_points=[]
