@@ -5,7 +5,6 @@ export function createB5GloomPatch(THREE,{seed=1,animate=true}={}){
  group.userData={floor:5,variant:'gloom-floor-patch',seed,license:'original'};
  let state=(seed>>>0)||1;const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296};
  const black=new THREE.MeshStandardMaterial({color:0x07070b,roughness:.21,metalness:.06,side:THREE.DoubleSide});
- const rim=new THREE.MeshStandardMaterial({color:0x100b12,roughness:.78,side:THREE.DoubleSide});
  const glow=new THREE.MeshStandardMaterial({color:0x651025,emissive:0x8b0b25,emissiveIntensity:1.1,roughness:.8});
  const tendrilMat=new THREE.MeshStandardMaterial({color:0x08070b,roughness:.52,side:THREE.DoubleSide});
  // Jagged, non-circular puddle with three concentric elevation rings.
@@ -23,9 +22,34 @@ export function createB5GloomPatch(THREE,{seed=1,animate=true}={}){
  }
  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));geo.setIndex(indices);geo.computeVertexNormals();
  const pool=new THREE.Mesh(geo,black);pool.name='gloom-viscous-pool';group.add(pool);
- // Irregular raised shoreline, made from a tube rather than a flat decal.
- const outline=[];for(let i=0;i<=64;i++){const a=i*Math.PI*2/64;const noise=.055*Math.sin(a*5+seed)+.036*Math.sin(a*11+seed*.31)+.021*Math.sin(a*17+seed*.17);outline.push(new THREE.Vector3(Math.cos(a)*.47*(1+noise),.015,Math.sin(a)*.47*(1+noise)))}
- group.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(outline),128,.012,5,false),rim));
+ // Broken, feathered shore: no continuous tubular outline or uniform rubber ring.
+ // Triangulated ragged films and detached droplets dissolve the silhouette into stone.
+ const shoreMat=new THREE.MeshStandardMaterial({color:0x09080e,roughness:.64,metalness:0,side:THREE.DoubleSide});
+ const shorePositions=[],shoreIndices=[];
+ const sectors=128;
+ for(let i=0;i<sectors;i++){
+  const a=i*2*Math.PI/sectors;
+  const noise=.055*Math.sin(a*5+seed)+.036*Math.sin(a*11+seed*.31)+.021*Math.sin(a*17+seed*.17);
+  const base=.46*(1+noise), ragged=.022+.04*Math.pow(Math.sin(a*13+seed)*.5+.5,3)+random()*.036;
+  const spread=base+ragged*(.4+random());
+  shorePositions.push(Math.cos(a)*base,.008,Math.sin(a)*base,Math.cos(a)*spread,.004+random()*.004,Math.sin(a)*spread);
+ }
+ for(let i=0;i<sectors;i++){
+  const a=i*2,b=((i+1)%sectors)*2;
+  if(random()<.15)continue;
+  shoreIndices.push(a,a+1,b,a+1,b+1,b);
+ }
+ const shoreGeo=new THREE.BufferGeometry();
+ shoreGeo.setAttribute('position',new THREE.Float32BufferAttribute(shorePositions,3));
+ shoreGeo.setIndex(shoreIndices);shoreGeo.computeVertexNormals();
+ const shore=new THREE.Mesh(shoreGeo,shoreMat);shore.name='gloom-fractured-shore';group.add(shore);
+ for(let i=0;i<26;i++){
+  const a=random()*Math.PI*2,r=.46+random()*.15;
+  const droplet=new THREE.Mesh(new THREE.IcosahedronGeometry(.006+random()*.017,1),shoreMat);
+  droplet.scale.set(1+random()*1.6,.18,.55+random()*.8);
+  droplet.rotation.y=a;droplet.position.set(Math.cos(a)*r,.006,Math.sin(a)*r);
+  droplet.name='gloom-detached-islet';group.add(droplet);
+ }
  // Organic branching red-purple veins on top of the pool.
  for(let k=0;k<7;k++){
   const a=k*2.39996+random()*.4,points=[],rmax=.18+random()*.18;
