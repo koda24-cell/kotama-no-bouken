@@ -20,13 +20,14 @@ links.new(shader.outputs['BSDF'],out.inputs['Surface'])
 mat.diffuse_color=(.035,.025,.045,.65)
 if hasattr(mat,'surface_render_method'):mat.surface_render_method='DITHERED'
 elif hasattr(mat,'blend_method'):mat.blend_method='BLEND'
-for i in range(24):
- a=i*2.399; r=.08+.26*(i%4)/3
- x=math.cos(a)*r;y=math.sin(a)*r;z=.055+.026*(i%5)
+random.seed(5105)
+for i in range(30):
+ a=i*2.399+random.uniform(-.3,.3); r=.05+.39*(i%6)/5
+ x=math.cos(a)*r;y=math.sin(a)*r;z=.035+.026*(i%6)
  bpy.ops.mesh.primitive_plane_add(size=.34,location=(x,y,z))
  obj=bpy.context.object;obj.name='kenney-cc0-smoke-card-'+str(i)
- obj.rotation_euler=(math.pi/2,0,a)
- obj.scale=(1.35,1.5,1)
+ obj.rotation_euler=(math.pi/2+random.uniform(-.18,.18),0,a+random.uniform(-.3,.3))
+ obj.scale=(random.uniform(.85,1.8),random.uniform(1.0,1.8),1)
  obj.data.materials.append(mat)
 # Reference tile and stage lighting.
 floor=bpy.data.materials.new('dark_stone');floor.diffuse_color=(.11,.10,.14,1)
