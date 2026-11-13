@@ -43,7 +43,7 @@ bsdf=nodes.get('Principled BSDF')
 bsdf.inputs['Roughness'].default_value=.94
 tex=nodes.new('ShaderNodeTexImage');tex.image=image;tex.interpolation='Linear'
 coord=nodes.new('ShaderNodeTexCoord')
-mapping=nodes.new('ShaderNodeVectorMath');mapping.operation='SCALE';mapping.inputs[3].default_value=(2.2,2.2,2.2)
+mapping=nodes.new('ShaderNodeVectorMath');mapping.operation='SCALE';mapping.inputs['Scale'].default_value=2.2
 links.new(coord.outputs['Generated'],mapping.inputs[0])
 links.new(mapping.outputs['Vector'],tex.inputs['Vector'])
 links.new(tex.outputs['Color'],bsdf.inputs['Base Color'])
