@@ -23,7 +23,7 @@ def tube(name,points,radius,mat,segments=6):
  for p,xyz in zip(spl.points,points):p.co=(*xyz,1)
  ob=bpy.data.objects.new(name,curve);bpy.context.collection.objects.link(ob);ob.data.materials.append(mat)
  return ob
-tube("curved stalk",[(0,0,0),(.01,0,.40),(.03,0,.85),(.02,0,1.30),(.015,0,1.70),(.004,0,1.96),(0,0,2.055)],.013,green)
+tube("curved stalk",[(0,0,0),(.01,0,.40),(.03,0,.85),(.02,0,1.30),(.015,0,1.70),(.004,0,1.96),(0,0,2.035)],.013,green)
 
 # V5: preserve the approved flower head unchanged; add three slender lanceolate leaves.
 # Each leaf starts inside the existing stalk and bends naturally outwards.
@@ -138,7 +138,7 @@ def plant_bend(p):
  t=max(0.0,z/2.4)
  return Vector((p.x+.32*t*t, p.y, z-.15*t*t*t))
 head_anchor=Vector((0,0,2.035))
-# Stem extends 0.020 above the petal throat so the two geometries physically overlap.
+# The stalk TERMINATES at the blossom throat. Never extend it through the petals.
 # Tangent of the actual stalk bend at the attachment height.
 t=head_anchor.z/2.4
 stem_tangent=Vector((.64*t/2.4,0,1-.45*t*t/2.4)).normalized()
@@ -163,7 +163,30 @@ for obj in list(bpy.context.scene.objects):
      original=obj.matrix_world @ Vector(pt.co[:3])
      bent=inv @ deform(original)
      pt.co=(*bent,1)
-print("LILY_V9_STEM_TANGENT_HEAD_ALIGNMENT",flush=True)
+# V11: compact, tapered receptacle under the six tepals. Its upper rim
+# meets the radial tepal roots (~0.035), without a green rod crossing the cup.
+# The cap is defined in the unbent flower frame and transformed rigidly with it.
+receptacle_verts=[]
+receptacle_faces=[]
+for i,(dz,radius) in enumerate([(-.065,.016),(-.038,.026),(-.014,.034),(0,.038)]):
+ for j in range(16):
+  a=math.tau*j/16
+  p=head_aligned(head_anchor+Vector((radius*math.cos(a),radius*math.sin(a),dz)))
+  receptacle_verts.append(tuple(p))
+for i in range(3):
+ for j in range(16):
+  k=i*16+j;kn=i*16+(j+1)%16
+  receptacle_faces.append((k,kn,kn+16,k+16))
+receptacle_mesh=bpy.data.meshes.new("lily throat receptacle mesh")
+receptacle_mesh.from_pydata(receptacle_verts,[],receptacle_faces)
+receptacle_mesh.update()
+receptacle_obj=bpy.data.objects.new("lily throat receptacle",receptacle_mesh)
+bpy.context.collection.objects.link(receptacle_obj)
+receptacle_mesh.materials.append(green)
+for poly in receptacle_mesh.polygons: poly.use_smooth=True
+# Deterministic geometry assertions: stalk tip and blossom throat share a point.
+assert (plant_bend(Vector((0,0,2.035)))-head_aligned(head_anchor)).length<1e-6
+print("LILY_V11_STALK_TERMINATES_AT_FLOWER_THROAT",flush=True)
 # Export actual mesh, then render studio views.
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.export_scene.gltf(filepath=os.path.join(out,"white_lily_single.glb"),export_format='GLB')
