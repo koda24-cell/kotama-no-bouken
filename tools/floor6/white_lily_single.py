@@ -130,6 +130,8 @@ for obj in head_parts: obj.location.z+=1.50
 for obj in bpy.context.scene.objects:
  if obj.type=="MESH" and obj.name.startswith("Sphere") and abs(obj.location.z-.845)<.001:
   obj.location.z+=1.50
+# Ensure object matrix_world includes the +1.50 head translation before converting vertices.
+bpy.context.view_layer.update()
 # V9: stem/leaf bend is continuous, while the complete flower head is a rigid
 # assembly. Rotate petals, stamens, anthers, pistil and stigma TOGETHER about
 # the flower throat to align with the tangent of the curved stalk.
@@ -191,6 +193,8 @@ join_obj=bpy.data.objects.new("continuous stalk to flower throat",join_mesh)
 bpy.context.collection.objects.link(join_obj)
 join_mesh.materials.append(green)
 for poly in join_mesh.polygons: poly.use_smooth=True
+# Refresh evaluated object matrices before checking actual world-space petal roots.
+bpy.context.view_layer.update()
 # Check the *real* petal root coordinates (object transforms included).
 roots=[]
 for obj in bpy.context.scene.objects:
