@@ -25,11 +25,20 @@ puddle=mat('Thin water film on weathered stone',(.02,.12,.16),.46,0,1)
 def objmesh(name,vs,fs,material):
  mesh=bpy.data.meshes.new(name);mesh.from_pydata(vs,[],fs);mesh.update();o=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(o);o.data.materials.append(material);return o
 def slab(name,x,y,z,sx,sy,th,material,seed):
- rng=random.Random(seed);n=40;vs=[]
+ # Angular broken rock: irregular radial distances, sharp faceted corners,
+ # uneven upper/lower rings and tilted bedding planes, never smooth ellipses.
+ rng=random.Random(seed);n=rng.choice([9,11,13,15]);vs=[]
+ phase=rng.uniform(-.4,.4)
+ radii=[rng.uniform(.72,1.19) for _ in range(n)]
  for layer in [0,1]:
   for i in range(n):
-   a=i*math.tau/n;rx=math.cos(a)*sx*.5*rng.uniform(.86,1.12);ry=math.sin(a)*sy*.5*rng.uniform(.86,1.12)
-   vs.append((x+rx,y+ry,z-layer*th+rng.uniform(-.008,.008)))
+   a=phase+i*math.tau/n+rng.uniform(-.11,.11)
+   r=radii[i]*(1 if layer==0 else rng.uniform(.82,1.04))
+   rx=math.cos(a)*sx*.5*r
+   ry=math.sin(a)*sy*.5*r
+   # Flat angular ledges, fractured edge faces, no smoothed normals.
+   height=rng.uniform(-.006,.012) if layer==0 else -th+rng.uniform(-.012,.002)
+   vs.append((x+rx,y+ry,z+height+.10*rx-.08*ry))
  fs=[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]
  for i in range(n):fs.append((i,(i+1)%n,(i+1)%n+n,i+n))
  return objmesh(name,vs,fs,material)
@@ -43,7 +52,7 @@ def tile(mask):
   for bit,coord in [(8,y),(1,-y),(2,x),(4,-x)]:
    if not mask&bit:
     along=x if bit in (8,1) else y
-    wobble=.047*math.sin(along*12+bit*2)+.024*math.sin(along*23+bit)+.009*math.sin(along*43+bit*.7)
+    wobble=.052*math.sin(along*12+bit*2)+.031*math.sin(along*23+bit)+.015*math.sin(along*43+bit*.7)
     limits.append(.32-coord+wobble)
   return min(limits) if limits else 1.
  n=109;vs=[];fs=[];land_vs=[];land_fs=[];bed_vs=[];bed_fs=[];shoal_fs=[]
@@ -69,25 +78,31 @@ def tile(mask):
  objmesh('submerged mineral riverbed',bed_vs,bed_fs,deepbed)
  objmesh('visible shallow mineral shelves',bed_vs,shoal_fs,shallow)
  objmesh('single continuous dark slate shoreline',land_vs,land_fs,stone)
- # Fractured shoreline blocks are positioned by aperiodic hashed offsets.
- # Rocks follow the signed shore field instead of regular three-per-edge rows.
+ # Shoreline erosion: broad rock shelves with angular cuts, variable scale.
  for bit,side in [(8,'N'),(2,'E'),(1,'S'),(4,'W')]:
   if mask&bit:continue
+  for k in range(4):
+   t=rng.uniform(-.43,.43)
+   depth=rng.uniform(.27,.43)
+   x,y=(t,depth) if side=='N' else ((t,-depth) if side=='S' else ((depth,t) if side=='E' else (-depth,t)))
+   sx=rng.uniform(.13,.33);sy=rng.uniform(.11,.30)
+   if side in ('N','S'):sx*=1.2
+   else:sy*=1.2
+   slab('angular fractured shoreline ledge',x,y,.015+rng.uniform(-.008,.012),sx,sy,rng.uniform(.018,.055),stone,mask*911+k*79+bit)
+  # Shallow water fingers extend over land; no periodic row of puddles.
   for k in range(5):
-   t=-.43+(k+.28*rng.uniform(-1,1))*.20
-   depth=.31+.05*rng.uniform(-1,1)
+   t=rng.uniform(-.44,.44)
+   depth=rng.uniform(.36,.51)
    x,y=(t,depth) if side=='N' else ((t,-depth) if side=='S' else ((depth,t) if side=='E' else (-depth,t)))
-   if coast(x,y)<-.11:continue
-   sx=rng.uniform(.14,.29);sy=rng.uniform(.12,.26)
-   if side in ('N','S'):sx*=1.3
-   else:sy*=1.3
-   slab('fractured irregular glacial bank',x,y,.018+rng.uniform(-.007,.008),sx,sy,rng.uniform(.012,.035),stone,mask*911+k*79+bit)
-  for k in range(3):
-   t=rng.uniform(-.38,.38)
-   depth=.405+rng.uniform(-.035,.045)
+   sx=rng.uniform(.08,.26);sy=rng.uniform(.04,.16)
+   if side in ('E','W'):sx,sy=sy,sx
+   slab('erosion water finger above land',x,y,.031+rng.uniform(-.004,.004),sx,sy,.001,puddle,mask*631+k*37+bit)
+  # Detached pools extend beyond main water body, into bank fissures.
+  for k in range(2):
+   t=rng.uniform(-.40,.40)
+   depth=rng.uniform(.40,.48)
    x,y=(t,depth) if side=='N' else ((t,-depth) if side=='S' else ((depth,t) if side=='E' else (-depth,t)))
-   sx=rng.uniform(.11,.26);sy=rng.uniform(.065,.14)
-   slab('irregular waterlogged bank pocket',x,y,.026,sx,sy,.001,puddle,mask*631+k*37+bit)
+   slab('isolated flooded rock depression',x,y,.030,rng.uniform(.09,.18),rng.uniform(.08,.17),.001,water,mask*1331+k*61+bit)
  # Sparse submerged boulders remain below the water plane, avoiding white bands.
  for k in range(5):
   x=rng.uniform(-.30,.30);y=rng.uniform(-.30,.30)
@@ -133,4 +148,4 @@ for name,pos,scale in [('top',(0,0,12),7.3),('angle',(7,-9,10),8.2),('side',(0,-
  bpy.ops.render.render(write_still=True)
  bpy.data.objects.remove(cam,do_unlink=True)
 with open(OUT+'/README.txt','w') as f:
- f.write('v0.5: translucent glacial water with shallow/deep riverbed geometry, multi-frequency wave normals, irregular shoreline rocks, 16 masks. Awaiting approval.\\n')
+ f.write('v0.6: faceted fractured rock geometry, nonuniform angular corners, erosion water fingers and detached puddles beyond shore; 16 masks. Awaiting approval.\\n')
