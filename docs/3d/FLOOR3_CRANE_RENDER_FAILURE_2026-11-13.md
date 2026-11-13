@@ -20,3 +20,8 @@
 2. Artifactsに両方のGLBと正面・斜めPNG（通常版と先細り版）が存在。
 3. **実際のPNGをチャット内で表示**し、暗部・植物・ワイヤーを目視評価。
 4. 未承認GLBは正式素材へ昇格せず、development/mainへマージしない。
+
+## 追加障害：再実行 #43336247684
+- Docker取得は成功したが、Blender 5.3.0 の `scene.view_settings.look='Medium High Contrast'` が無効なenum値で停止。
+- 実ログ: `TypeError: enum "Medium High Contrast" not found`。正しい値は `AgX - Medium High Contrast`。
+- `tools/floor3/crane/render.py` を修正。再実行でPNG出力の有無を確認すること。
