@@ -137,6 +137,29 @@ for vertex in head.data.vertices:
  if 6.05<z<6.29 and abs(x)<.10 and y<-.20:
   vertex.co.y-=.018*math.exp(-((z-6.17)/.08)**2)
 # Maintain existing height alignment for all views.
+# Iteration 4: joint-aware cleanup using smooth local influence, not global scaling.
+# Reduce protruding shoulder corners and squared-off pelvis, and retain leg volume.
+def smooth01(t):
+ t=max(0.0,min(1.0,t))
+ return t*t*(3-2*t)
+for vertex in head.data.vertices:
+ x,y,z=vertex.co
+ # shoulder corner only: pull the lateral upper-arm ridge inward,
+ # while leaving neck and center chest untouched.
+ shoulder=smooth01((abs(x)-.49)/.36)*smooth01((z-5.18)/.28)*(1-smooth01((z-5.66)/.20))
+ if shoulder:
+  vertex.co.x=x*(1-.085*shoulder)
+  vertex.co.z=z-.035*shoulder
+ # pelvis: smooth hard lateral shelf without thinning the groin or thigh.
+ hip=smooth01((abs(x)-.43)/.29)*smooth01((z-3.47)/.20)*(1-smooth01((z-4.05)/.27))
+ if hip:vertex.co.x*=1-.075*hip
+ # jaw: widen lower cheeks slightly; taper only the chin tip.
+ if 5.85<z<6.22 and abs(x)<.40:
+  cheek=max(0,1-abs(z-6.07)/.23)
+  vertex.co.x*=1+.065*cheek
+ # ear width: reduce excess projection beyond skull.
+ if 6.08<z<6.48 and abs(x)>.47:
+  vertex.co.x*=.965
 # Do not change Z: reference front and side use exactly the same height scale.
 # Material override creates solid clay; edge overlay is a separate Freestyle pass.
 sc=bpy.context.scene
