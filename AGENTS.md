@@ -17,3 +17,7 @@ Stage 2: ice/water source. Stage 3: overgrown ruined city. Stage 5: abyssal ruin
 
 ## Handoff
 When continuing from a different chat, explicitly inspect `docs/3d/BLENDER_DOCKER_HANDOFF.md`, PR #252 and PR #253, plus current GitHub Actions runs. Do not assume automation or workflow is operational until checked.
+
+## Shared stylized 3D research (GPT + Claude, all stages)
+Before generating or improving any 3D asset, read [docs/3d/STYLIZED_GAME_TECH_LIBRARY.md](docs/3d/STYLIZED_GAME_TECH_LIBRARY.md). Select only techniques relevant to the asset, record what was actually applied, and distinguish tested tools from reference-only links. This includes character, hair, architecture, nature, rocks, industrial props and effects; the library is optional per technique, mandatory as a reference checkpoint.
+For Pinterest image references, follow [koda24-cell/pinterest-reference-library](https://github.com/koda24-cell/pinterest-reference-library) AGENTS.md and handoff instructions. Never assume external game assets can be copied or redistributed.
