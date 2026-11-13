@@ -95,7 +95,7 @@ def area(name,loc,power,size):
     direction=Vector((0,0,1))-o.location;o.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
 area('key',(3,-4,6),850,5);area('fill',(-4,1,4),650,5)
 bpy.ops.object.camera_add();camera=bpy.context.object;bpy.context.scene.camera=camera
-scene=bpy.context.scene;scene.render.engine='BLENDER_EEVEE_NEXT'
+scene=bpy.context.scene;scene.render.engine='BLENDER_EEVEE'
 scene.render.resolution_x=1000;scene.render.resolution_y=1000;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 for label,position in [('front',(4,-6,2.8)),('side',(6,0,2.8)),('angle',(4,-4,3.5))]:
