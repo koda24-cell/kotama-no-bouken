@@ -43,14 +43,22 @@ bsdf=nodes.get('Principled BSDF')
 bsdf.inputs['Roughness'].default_value=.94
 tex=nodes.new('ShaderNodeTexImage');tex.image=image;tex.interpolation='Linear'
 coord=nodes.new('ShaderNodeTexCoord')
-mapping=nodes.new('ShaderNodeVectorMath');mapping.operation='SCALE';mapping.inputs['Scale'].default_value=2.2
-links.new(coord.outputs['Generated'],mapping.inputs[0])
-links.new(mapping.outputs['Vector'],tex.inputs['Vector'])
+links.new(coord.outputs['UV'],tex.inputs['Vector'])
 links.new(tex.outputs['Color'],bsdf.inputs['Base Color'])
 for obj in meshes:
  original=list(obj.data.materials)
  metal=any((m and ('iron' in m.name.lower() or 'metal' in m.name.lower() or 'chain' in m.name.lower())) for m in original)
  if metal:continue
+ # Per-face cube UVs preserve texture aspect ratio on long side faces.
+ # Use actual mesh coordinates, not normalized Generated bounds. UVs export to GLB.
+ bpy.ops.object.select_all(action='DESELECT')
+ bpy.context.view_layer.objects.active=obj
+ obj.select_set(True)
+ bpy.ops.object.mode_set(mode='EDIT')
+ bpy.ops.mesh.select_all(action='SELECT')
+ bpy.ops.uv.cube_project(cube_size=1.2,correct_aspect=True,clip_to_bounds=False,scale_to_bounds=False)
+ bpy.ops.object.mode_set(mode='OBJECT')
+ obj.select_set(False)
  obj.data.materials.clear();obj.data.materials.append(rock)
 # Export reviewed, texture-embedded GLB. Keep original source as raw comparison.
 textured=os.path.join(outdir,stem+'-textured.glb')
