@@ -23,7 +23,7 @@ def tube(name,points,radius,mat,segments=6):
  for p,xyz in zip(spl.points,points):p.co=(*xyz,1)
  ob=bpy.data.objects.new(name,curve);bpy.context.collection.objects.link(ob);ob.data.materials.append(mat)
  return ob
-tube("curved stalk",[(0,0,0),(.01,0,.40),(.03,0,.85),(.02,0,1.30),(.015,0,1.70),(0,0,2.00)],.013,green)
+tube("curved stalk",[(0,0,0),(.01,0,.40),(.03,0,.85),(.02,0,1.30),(.015,0,1.70),(.004,0,1.96),(0,0,2.055)],.013,green)
 
 # V5: preserve the approved flower head unchanged; add three slender lanceolate leaves.
 # Each leaf starts inside the existing stalk and bends naturally outwards.
@@ -137,7 +137,7 @@ def plant_bend(p):
  z=p.z
  t=max(0.0,z/2.4)
  return Vector((p.x+.32*t*t, p.y, z-.15*t*t*t))
-head_anchor=Vector((0,0,2.035))
+head_anchor=Vector((0,0,2.035))\n# Stem extends 0.020 above the petal throat so the two geometries physically overlap.
 # Tangent of the actual stalk bend at the attachment height.
 t=head_anchor.z/2.4
 stem_tangent=Vector((.64*t/2.4,0,1-.45*t*t/2.4)).normalized()
