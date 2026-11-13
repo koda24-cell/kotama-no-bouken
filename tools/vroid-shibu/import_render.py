@@ -151,16 +151,29 @@ if face:
  # Assassin-specific front fringe prototype: near-camera (+X) eye occlusion.
  # Build a separate editable mesh; never modify the VRoid source face.
  from mathutils import Vector as V
- def make_fringe(name,points,widths):
+ # Blender-native curve workflow: volumetric strands built as tapered mesh rings.
+ # This is portable across Blender 5.0 and needs no paid/third-party addon.
+ from math import sin,cos,pi
+ def make_strand(name,points,widths,depth_ratio=.27,segments=10):
   verts=[];faces=[]
-  for p,w in zip(points,widths):
-   verts.extend([(p.x-w/2,p.y,p.z),(p.x+w/2,p.y,p.z)])
-  for i in range(len(points)-1):faces.append((2*i,2*i+1,2*i+3,2*i+2))
+  for i,(p,w) in enumerate(zip(points,widths)):
+   tangent=(points[min(i+1,len(points)-1)]-points[max(i-1,0)]).normalized()
+   across=tangent.cross(V((0,1,0))).normalized()
+   if across.length<.01:across=V((1,0,0))
+   depth=tangent.cross(across).normalized()
+   for k in range(segments):
+    a=2*pi*k/segments
+    q=p+across*(cos(a)*w*.5)+depth*(sin(a)*w*depth_ratio*.5)
+    verts.append(tuple(q))
+  for i in range(len(points)-1):
+   for k in range(segments):
+    a=i*segments+k;b=i*segments+(k+1)%segments
+    faces.append((a,b,b+segments,a+segments))
+  faces.extend([tuple(reversed(range(segments))),tuple((len(points)-1)*segments+k for k in range(segments))])
   mesh=bpy.data.meshes.new(name+'_mesh');mesh.from_pydata(verts,[],faces);mesh.update()
   obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
+  for poly in mesh.polygons:poly.use_smooth=True
   return obj
- # Face front is +Y in the existing front camera; the +X side is nearer
- # the three-quarter camera. Proportions are relative to the face bounds.
  face_bounds=[face.matrix_world @ Vector(c) for c in face.bound_box]
  fmin=Vector(tuple(min(v[i] for v in face_bounds) for i in range(3)))
  fmax=Vector(tuple(max(v[i] for v in face_bounds) for i in range(3)))
@@ -168,18 +181,23 @@ if face:
  fw=fs.x;fh=fs.z
  hair=bpy.data.materials.new('Assassin_silver_lavender_hair')
  hair.diffuse_color=(.72,.68,.82,1)
- strand=make_fringe('Assassin_near_eye_swept_fringe',[
-  V((fc.x+fw*.12,fmax.y+fs.y*.14,fmax.z-fh*.10)),
-  V((fc.x+fw*.28,fmax.y+fs.y*.20,fmax.z-fh*.25)),
-  V((fc.x+fw*.29,fmax.y+fs.y*.22,fmax.z-fh*.45)),
-  V((fc.x+fw*.21,fmax.y+fs.y*.19,fmax.z-fh*.64)),
-  V((fc.x+fw*.17,fmax.y+fs.y*.12,fmax.z-fh*.76))],
-  [fw*.38,fw*.43,fw*.38,fw*.26,fw*.04])
- strand.data.materials.append(hair)
+ strands=[]
+ for idx,(shift,scale,drop) in enumerate([(-.10,.50,.02),(.00,.62,.0),(.12,.42,-.035),(.23,.25,-.065)]):
+  pts=[
+   V((fc.x+fw*(.06+shift),fmax.y+fs.y*.10,fmax.z-fh*(.06+drop))),
+   V((fc.x+fw*(.16+shift),fmax.y+fs.y*.20,fmax.z-fh*(.22+drop))),
+   V((fc.x+fw*(.24+shift),fmax.y+fs.y*.25,fmax.z-fh*(.40+drop))),
+   V((fc.x+fw*(.24+shift),fmax.y+fs.y*.23,fmax.z-fh*(.57+drop))),
+   V((fc.x+fw*(.16+shift),fmax.y+fs.y*.15,fmax.z-fh*(.74+drop)))]
+  obj=make_strand('Assassin_layered_bang_%02d'%idx,pts,[fw*scale*q for q in (.55,1,.9,.65,.025)])
+  obj.data.materials.append(hair);strands.append(obj)
+ strand=strands[0]
+ manifest['face_review']['assassin_fringe']={'names':[o.name for o in strands],'side':'camera-near +X','construction':'layered tapered volumetric meshes, Blender-native; Geometry Nodes compatible','note':'inspect actual occlusion before approval'}
+
  manifest['face_review']['assassin_fringe']={'name':strand.name,'side':'camera-near +X','note':'first geometry prototype; check eye occlusion in rendered image'}
  prior={o.name:o.hide_render for o in bpy.context.scene.objects if o.type=='MESH'}
  for obj in bpy.context.scene.objects:
-  if obj.type=='MESH':obj.hide_render=(obj!=face and obj!=strand)
+  if obj.type=='MESH':obj.hide_render=(obj!=face and obj not in strands)
  face_bounds=[face.matrix_world @ Vector(c) for c in face.bound_box]
  fmin=Vector(tuple(min(v[i] for v in face_bounds) for i in range(3)))
  fmax=Vector(tuple(max(v[i] for v in face_bounds) for i in range(3)))
