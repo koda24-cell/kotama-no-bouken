@@ -86,8 +86,7 @@ def paste_mask_and_extract(name,center,rows):
  # High resolution crop focuses on silhouette without stretching vertical alignment.
  xlo,xhi=(0,375) if name=='front' else (375,563)
  crop=output.crop((xlo,25,xhi,720))
- crop.resize((crop.width*2,crop.height*2),Image.Resampling.NEAREST).save(
-  os.path.join(folder,name+'_overlay_zoom.png'))
+ crop.save(os.path.join(folder,name+'_overlay_zoom.png'))
  return {'landmark_count':len(measurements),'mean_absolute_edge_error_px':round(mae,2) if mae is not None else None,
          'note':'Proxy error against hand-traced outer bounds, not full mesh correspondence'}
 report={}
