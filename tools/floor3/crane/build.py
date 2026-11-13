@@ -1,0 +1,212 @@
+"""Stage 3 industrial lattice crane: original procedural geometry, GLB output.
+Reference: user-supplied WW2-era industrial crane photograph. Coordinate: Z up.
+"""
+import math
+import numpy as np
+import trimesh
+from trimesh.transformations import rotation_matrix
+scene=trimesh.Scene()
+GREEN=[66,75,57,255];EDGE=[47,57,45,255];RUST=[104,66,48,255];STEEL=[96,99,89,255];CONCRETE=[143,140,126,255];YELLOW=[169,125,50,255]
+def add(name,mesh,color):
+    mesh.visual.vertex_colors=color
+    scene.add_geometry(mesh,geom_name=name)
+def box(name,center,size,color=GREEN):
+    mesh=trimesh.creation.box(extents=size);mesh.apply_translation(center);add(name,mesh,color)
+def beam(name,a,b,width=.11,depth=.14,color=GREEN):
+    a=np.array(a,float);b=np.array(b,float);d=b-a;L=np.linalg.norm(d)
+    if L<1e-5:return
+    mesh=trimesh.creation.box(extents=[width,depth,L])
+    mesh.apply_transform(trimesh.geometry.align_vectors([0,0,1],d/L))
+    mesh.apply_translation((a+b)/2)
+    add(name,mesh,color)
+def cylinder(name,a,b,r=.05,color=RUST,sections=8):
+    a=np.array(a,float);b=np.array(b,float);d=b-a;L=np.linalg.norm(d)
+    mesh=trimesh.creation.cylinder(radius=r,height=L,sections=sections)
+    mesh.apply_transform(trimesh.geometry.align_vectors([0,0,1],d/L))
+    mesh.apply_translation((a+b)/2);add(name,mesh,color)
+# 18m-long, 2.5m-deep suspended steel crane girder with real volumetric truss.
+# Tapered left nose, machinery at the right; two separated truss walls.
+L=18; bays=12
+def top(i):return 4.5+.15*i/12
+def bottom(i):return 2.0 if i>2 else 3.4-.7*i
+for side,y in enumerate([-1.15,1.15]):
+    for i in range(bays+1):
+        x=-9+i*1.5
+        beam(f'top_chord_{side}_{i}',(x-.14,y,top(i)),(x+.14,y,top(i)),.25,.24,EDGE)
+        beam(f'bottom_chord_joint_{side}_{i}',(x-.13,y,bottom(i)),(x+.13,y,bottom(i)),.22,.2,EDGE)
+        if i<bays:
+            x2=x+1.5
+            beam(f'upper_chord_{side}_{i}',(x,y,top(i)),(x2,y,top(i+1)),.23,.2)
+            beam(f'lower_chord_{side}_{i}',(x,y,bottom(i)),(x2,y,bottom(i+1)),.20,.19)
+            beam(f'vertical_{side}_{i}',(x,y,bottom(i)),(x,y,top(i)),.12,.14)
+            beam(f'diagonal_{side}_{i}',(x,y,bottom(i)),(x2,y,top(i+1)),.14,.12)
+            if i%2==0:
+                beam(f'reverse_diagonal_{side}_{i}',(x,y,top(i)),(x2,y,bottom(i+1)),.09,.11,EDGE)
+            # Riveted triangular gussets; structural nodes not random detail.
+            for z in [top(i),bottom(i)]:
+                box(f'gusset_{side}_{i}_{round(z,2)}',(x,y,z),(.42,.055,.42),EDGE)
+# Cross members, roof decking and underfloor bracing provide depth.
+for i in range(bays+1):
+    x=-9+1.5*i
+    beam(f'top_cross_{i}',(x,-1.15,top(i)),(x,1.15,top(i)),.14,.14,STEEL)
+    beam(f'bottom_cross_{i}',(x,-1.15,bottom(i)),(x,1.15,bottom(i)),.13,.13,STEEL)
+    if i<bays:
+        x2=x+1.5
+        beam(f'roof_x_a_{i}',(x,-1.15,top(i)),(x2,1.15,top(i+1)),.07,.09,EDGE)
+        beam(f'roof_x_b_{i}',(x,1.15,top(i)),(x2,-1.15,top(i+1)),.07,.09,EDGE)
+        if i%2==0:
+            beam(f'floor_x_{i}',(x,-1.15,bottom(i)),(x2,1.15,bottom(i+1)),.08,.09,STEEL)
+# Heavier right-end machine housing and counterweight.
+box('motor_house',(7.45,0,5.03),(2.5,2.5,.95),GREEN)
+box('motor_top',(7.5,0,5.65),(1.75,1.8,.3),EDGE)
+box('counterweight',(7.6,0,1.05),(2.55,2.65,1.75),CONCRETE)
+for y in [-.83,.83]:
+    for x in [6.3,7.1,8.0]:
+        beam(f'housing_support_{x}_{y}',(x,y,2.1),(x,y,4.55),.16,.17,STEEL)
+# Running rails, overhead trolley, pulley and hanging hook.
+for y in [-.57,.57]:
+    beam(f'trolley_rail_{y}',(-7.8,y,2.25),(6.4,y,2.25),.10,.13,STEEL)
+box('trolley',(0,0,1.94),(1.55,1.5,.33),EDGE)
+for y in [-.48,.48]:
+    for x in [-.56,.56]:
+        cylinder(f'trolley_wheel_{x}_{y}',(x,y-.12,1.9),(x,y+.12,1.9),.19,RUST,12)
+for x in [-.27,.27]:
+    cylinder(f'pulley_{x}',(x,-.35,1.62),(x,.35,1.62),.29,STEEL,16)
+for y in [-.24,.24]:
+    cylinder(f'cable_{y}',(0,y,1.6),(0,y,.08),.027,RUST)
+box('hook_block',(0,0,.02),(.48,.45,.46),YELLOW)
+# Curved steel hook approximated with connected short segments.
+pts=[(0,0,-.20),(.07,0,-.43),(.23,0,-.56),(.38,0,-.47),(.40,0,-.32)]
+for i in range(len(pts)-1):cylinder(f'hook_{i}',pts[i],pts[i+1],.073,RUST,10)
+# Small industrial lamps under the truss, restrained detail.
+for i,x in enumerate([-7.5,-3.5,3.5]):
+    cylinder(f'lamp_cable_{i}',(x,0,2.1),(x,0,1.83),.027,RUST)
+    box(f'lamp_housing_{i}',(x,0,1.75),(.35,.35,.15),STEEL)
+
+# V2: weathered abandoned-city crane: added structural detail without removing original meshes.
+# Railings, rivet heads, broken maintenance deck, cable drums, and climbing vegetation.
+for side,y in enumerate((-1.22,1.22)):
+    for i in range(12):
+        x=-8.7+i*1.45
+        for z in (2.13,4.55):
+            cylinder(f'v2_rivet_{side}_{i}_{z}',(x,y,z),(x,y+(.08 if y>0 else -.08),z),.065,RUST,10)
+    for i in range(8):
+        x=3.2+i*.55
+        beam(f'v2_guardrail_post_{side}_{i}',(x,y,4.75),(x,y,5.48),.055,.055,STEEL)
+    beam(f'v2_guardrail_top_{side}',(3.2,y,5.48),(7.05,y,5.48),.06,.06,RUST)
+for i in range(9):
+    x=3.1+i*.49
+    if i not in (2,6):
+        box(f'v2_deck_plank_{i}',(x,0,4.66),(.42,2.2,.055),RUST if i%3==0 else STEEL)
+for i in range(4):
+    x=6.55+i*.33
+    cylinder(f'v2_winch_drum_{i}',(x,-.45,5.28),(x,.45,5.28),.20,STEEL,16)
+    cylinder(f'v2_winch_axle_{i}',(x,-.60,5.28),(x,.60,5.28),.055,RUST,12)
+# Corroded bracing and vegetation rooted in the machinery end.
+for i in range(16):
+    x=5.0+(i%5)*.55
+    y=(-1 if i%2 else 1)*(1.0+.12*(i%3))
+    z=2.05+(i//5)*.78
+    cylinder(f'v2_vine_stem_{i}',(x,y,z),(x+.12*math.sin(i*2.1),y*.92,z+.7),.025,[56,76,44,255],7)
+    for j in range(2):
+        box(f'v2_vine_leaf_{i}_{j}',(x+.09*j,y,z+.28+.24*j),(.23,.07,.12),[65,87,47,255])
+
+
+# V3: reinforced load paths and organically draped electrical cables.
+MOSS=[55,83,43,255];MOSS2=[78,101,55,255];VINE=[48,70,39,255]
+def cable_curve(name,a,b,drop=.9,yoffset=0,segments=22,r=.024):
+    ax,ay,az=a;bx,by,bz=b
+    points=[]
+    for j in range(segments+1):
+        t=j/segments
+        points.append((ax+(bx-ax)*t,ay+(by-ay)*t+yoffset*math.sin(math.pi*t),az+(bz-az)*t-4*drop*t*(1-t)))
+    for j in range(segments):
+        cylinder(f'{name}_{j}',points[j],points[j+1],r,[52,52,47,255],7)
+# Main reinforcement: triangulated struts from the root machinery to the underside.
+for side,y in enumerate((-1.04,1.04)):
+    for i in range(5):
+        x=3.1+i*1.05
+        beam(f'v3_root_column_{side}_{i}',(x,y,1.82),(x,y,4.66),.17,.18,STEEL)
+        if i<4:
+            beam(f'v3_root_diagonal_{side}_{i}',(x,y,1.86),(x+1.05,y,4.62),.11,.13,EDGE)
+            beam(f'v3_root_sill_{side}_{i}',(x,y,1.86),(x+1.05,y,1.86),.16,.17,RUST)
+    for i in range(4):
+        x=4.0+i*.95
+        beam(f'v3_machine_bracket_{side}_{i}',(x,y,4.55),(x+.5,y,5.2),.11,.13,STEEL)
+for i in range(7):
+    x=-6.9+i*2.2
+    beam(f'v3_cross_tie_{i}',(x,-1.05,2.22),(x,1.05,2.22),.11,.14,EDGE)
+# U-shaped thin hanging cables: visible drape from both side and front.
+for i,(a,b,drop) in enumerate([
+    ((-7.0,-1.19,4.3),(-4.0,-1.19,4.3),1.25),
+    ((-3.8,-1.19,4.25),(-.7,-1.19,4.25),1.65),
+    ((.2,-1.19,4.3),(3.8,-1.19,4.3),1.35),
+    ((4.3,-1.2,5.15),(7.1,-1.2,5.15),.95),
+    ((-6.5,1.19,4.25),(-3.4,1.19,4.25),1.05),
+    ((-2.5,1.19,4.3),(1.3,1.19,4.3),1.5),
+    ((2.4,1.19,4.25),(6.0,1.19,4.25),1.35),
+]):
+    cable_curve(f'v3_wire_u_{i}',a,b,drop,r=.021)
+# Additional smaller signal wires, slightly offset in depth.
+for i in range(5):
+    x=-6.2+i*2.65
+    cable_curve(f'v3_signal_wire_{i}',(x,-1.27,3.85),(x+1.85,-1.27,3.85),.55,.10,r=.012)
+# Root-focused moss on lower braces and concrete counterweight, not on upper boom.
+for i in range(110):
+    x=5.1+(i%11)*.29
+    y=(-1 if (i//11)%2 else 1)*(1.13+.035*((i*7)%4))
+    z=.35+((i*13)%23)*.092
+    box(f'v3_moss_root_{i}',(x,y,z),(.18+.08*(i%3),.05,.10+.045*(i%4)),MOSS if i%3 else MOSS2)
+# Climbing tendrils winding up the base columns, tapering in frequency toward the top.
+for k in range(12):
+    x=5.35+(k%6)*.51
+    y=(-1 if k%2 else 1)*1.19
+    start=.48+(k%3)*.16
+    for j in range(12):
+        z=start+j*.18
+        xx=x+.12*math.sin(j*.8+k)
+        yy=y+.055*math.cos(j*.9+k)
+        if j:
+            cylinder(f'v3_vine_{k}_{j}',(lastx,lasty,lastz),(xx,yy,z),.028,VINE,7)
+        if j%3==0:
+            box(f'v3_vine_leaf_{k}_{j}',(xx+.09,yy,z),(.21,.09,.13),MOSS2)
+        lastx,lasty,lastz=xx,yy,z
+
+
+# V4: dense root-focused organic growth and readable drooping service cables.
+# Existing structural meshes remain untouched.
+MOSS_DARK=[38,68,35,255]; MOSS_LIGHT=[85,111,56,255]
+for side,y in enumerate((-1.32,1.32)):
+    # Irregular moss cushions along the lower frame, counterweight and pillar bases.
+    for i in range(165):
+        x=4.45+(i%15)*.285 + .065*math.sin(i*1.7)
+        z=.27+((i*11)%19)*.112
+        yy=y+(.045 if y>0 else -.045)*math.sin(i*2.9)
+        if z>1.85 and i%4: continue
+        mesh=trimesh.creation.icosphere(subdivisions=1,radius=1)
+        mesh.apply_scale([.14+.075*(i%4),.045+.018*(i%3),.085+.045*(i%5)])
+        mesh.apply_translation((x,yy,z))
+        add(f'v4_moss_cushion_{side}_{i}',mesh,MOSS_DARK if i%3 else MOSS_LIGHT)
+    # Multiple climbing creepers coil around support columns.
+    for k in range(8):
+        x=5.05+k*.46
+        points=[]
+        for j in range(22):
+            t=j/21
+            points.append((x+.13*math.sin(t*14+k),y+.075*math.cos(t*12+k),.32+3.05*t))
+        for j in range(21):
+            cylinder(f'v4_climber_{side}_{k}_{j}',points[j],points[j+1],.037,VINE,7)
+        for j in range(2,20,3):
+            px,py,pz=points[j]
+            leaf=trimesh.creation.icosphere(subdivisions=1,radius=1)
+            leaf.apply_scale([.23,.065,.12])
+            leaf.apply_translation((px+.10,py,pz))
+            add(f'v4_climber_leaf_{side}_{k}_{j}',leaf,MOSS_LIGHT)
+# Additional U loops on exposed near-facing edge: clear even in distant full-object renders.
+for i in range(5):
+    x=-7.1+i*3.05
+    cable_curve(f'v4_power_loop_{i}',(x,-1.42,4.30),(x+2.4,-1.42,4.30),1.52+.22*(i%2),r=.037)
+    cable_curve(f'v4_power_loop_pair_{i}',(x,-1.49,4.38),(x+2.4,-1.49,4.38),1.32+.18*(i%2),r=.021)
+
+scene.export('industrial_truss_crane.glb')
+print('geometry_count',len(scene.geometry))
