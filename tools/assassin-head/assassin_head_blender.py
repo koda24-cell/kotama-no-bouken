@@ -30,6 +30,9 @@ for i in range(R-1):
  for j in range(S):
   k=i*S+j;q=i*S+(j+1)%S;faces.extend([(k,q,q+S),(k,q+S,k+S)])
 face=mesh('SKIN_FACE__5000_vertices',verts,faces,skin)
+# Each strand has 25 longitudinal rings x 4 cross-section vertices = 100 vertices.
+# Closed four-sided volumetric cross sections, triangulated side faces.
+# 100 strands x 100 vertices = exactly 10,000 hair mesh vertices.
 hv=[];hf=[]
 for strand in range(100):
  if strand<45:
@@ -45,15 +48,28 @@ for strand in range(100):
   length=1.05+.42*f;endx=.67+.20*math.sin(math.pi*f);endz=rootz-length
   rooty=.21;endy=.43+.09*f
  base=len(hv)
- for k in range(50):
-  u=k/49;ease=u*u*(3-2*u)
+ for k in range(25):
+  u=k/24;ease=u*u*(3-2*u)
   x=rootx+(endx-rootx)*ease+.045*math.sin(u*math.pi*1.6+strand*.23)*u
-  z=rootz+(endz-rootz)*u;y=rooty+(endy-rooty)*u-.10*math.sin(math.pi*u)
-  w=(.022+.016*math.sin(math.pi*u))*(1-u**3)+.001
-  hv.extend([(x-w,y,z),(x+w,y-.008,z)])
+  z=rootz+(endz-rootz)*u
+  y=rooty+(endy-rooty)*u-.10*math.sin(math.pi*u)
+  # Nonzero depth gives each hair clump genuine 3D volume.
+  taper=max(.012,(1-u**2)**1.3)
+  width=(.026+.018*math.sin(math.pi*u))*taper
+  depth=(.018+.011*math.sin(math.pi*u))*taper
+  # Diamond-shaped four-vertex cross section (x/y plane).
+  hv.extend([(x-width,y,z),(x,y-depth,z),(x+width,y,z),(x,y+depth,z)])
   if k:
-   a=base+2*(k-1);b=a+1;c=base+2*k;d=c+1
-   hf.extend([(a,b,d),(a,d,c)])
+   prev=base+4*(k-1);cur=base+4*k
+   for j in range(4):
+    a=prev+j;b=prev+(j+1)%4;c=cur+(j+1)%4;d=cur+j
+    hf.extend([(a,b,c),(a,c,d)])
+ # End caps are triangles and use existing vertices.
+ hf.extend([(base,base+2,base+1),(base,base+3,base+2)])
+ tip=base+4*24
+ hf.extend([(tip,tip+1,tip+2),(tip,tip+2,tip+3)])
+assert len(hv)==10000
+assert all(len(t)==3 for t in hf)
 hair=mesh('HAIR_10000_vertices_100_strands',hv,hf,hairmat)
 def sphere(name,loc,scale,material):
  bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=12,location=loc)
@@ -89,5 +105,5 @@ render('side.png',(5,0,.3))
 render('three_quarter.png',(3,-4,.4))
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'assassin_head.blend'))
 with open(os.path.join(out,'geometry_report.txt'),'w') as f:
- f.write('skin_vertices=%d\nhair_vertices=%d\n' % (len(face.data.vertices),len(hair.data.vertices)))
+ f.write('skin_vertices=%d\nhair_vertices=%d\nskin_triangles=%d\nhair_triangles=%d\n' % (len(face.data.vertices),len(hair.data.vertices),len(face.data.polygons),len(hair.data.polygons)))
 print('COUNTS',len(face.data.vertices),len(hair.data.vertices))
