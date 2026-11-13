@@ -16,7 +16,7 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender xvfb libgl1-mesa-dri mesa-utils
           command -v blender
           blender --version
       - name: Check Python syntax
@@ -30,7 +30,7 @@ jobs:
       - name: Render face and hair
         run: |
           mkdir -p output/assassin-head
-          blender -b -noaudio -t 2 --factory-startup --python-exit-code 1 --python tools/assassin-head/assassin_head_blender.py -- --out output/assassin-head
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1280x1024x24' blender -b -noaudio -t 2 --factory-startup --python-exit-code 1 --python tools/assassin-head/assassin_head_blender.py -- --out output/assassin-head
       - name: Verify geometry and outputs
         run: |
           test -s output/assassin-head/front.png
