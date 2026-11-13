@@ -20,7 +20,26 @@ for obj in meshes:
  if hide:
   obj.hide_render=True
   manifest['hidden'].append(obj.name)
-visible=[o for o in meshes if not o.hide_render]
+# Separate material-tagged clothing into independent meshes, preserving source.
+body=next((o for o in meshes if o.name=='Body'),None)
+if body:
+ import bmesh
+ for label,keep_skin in [('skin',True),('clothing',False)]:
+  clone=body.copy();clone.data=body.data.copy()
+  bpy.context.collection.objects.link(clone);clone.name='Body_'+label
+  bm=bmesh.new();bm.from_mesh(clone.data)
+  mats=list(clone.data.materials)
+  remove=[]
+  for face in bm.faces:
+   name=mats[face.material_index].name.upper() if face.material_index<len(mats) and mats[face.material_index] else ''
+   if ('SKIN' in name)!=keep_skin:remove.append(face)
+  bmesh.ops.delete(bm,geom=remove,context='FACES')
+  bm.to_mesh(clone.data);bm.free();clone.data.update()
+  clone.hide_render=not keep_skin
+  manifest['meshes'].append({'name':clone.name,'vertices':len(clone.data.vertices),'polygons':len(clone.data.polygons),'hidden':clone.hide_render})
+ body.hide_render=True
+ manifest['hidden'].append('Body')
+visible=[o for o in bpy.context.scene.objects if o.type=='MESH' and not o.hide_render]
 if not visible:raise RuntimeError('Body-only filtering removed all meshes')
 # World-space bounds and calibrated camera framing, no destructive geometry edits.
 coords=[o.matrix_world @ Vector(corner) for o in visible for corner in o.bound_box]
