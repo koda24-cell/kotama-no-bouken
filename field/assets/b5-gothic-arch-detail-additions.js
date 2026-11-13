@@ -507,6 +507,37 @@ export function enhanceB5GothicArch(THREE, root) {
    repairedGroundSlabs++;
   }
  }
+ // Thirty additional brick-shaped fallen masonry blocks. Each is a thick,
+ // irregularly chipped rectangular stone (not a thin plate). Concentrate
+ // around both collapsed jambs and leave the central doorway open.
+ const fallenBrickMaterial=[rubbleMat,rubblePale,rubbleDark];
+ for(let i=0;i<30;i++){
+  const side=i<15?-1:1,local=i%15;
+  const tier=Math.floor(local/5),slot=local%5;
+  const x=side*(4.65+tier*.77+slot*.22);
+  const z=-3.45+slot*1.38+(tier%2)*.32;
+  const w=.42+((i*7)%5)*.075;
+  const h=.25+((i*11)%4)*.075;
+  const d=.55+((i*13)%5)*.065;
+  const outline=new THREE.Shape();
+  const pts=[[-w*.5+.045,-d*.5], [w*.5-.04,-d*.5],
+   [w*.5,-d*.5+.06],[w*.5-.035,d*.5-.045],
+   [w*.5-.095,d*.5],[-w*.5+.045,d*.5],
+   [-w*.5,d*.5-.07],[-w*.5,-d*.5+.055]];
+  pts.forEach(([px,py],j)=>j?outline.lineTo(px,py):outline.moveTo(px,py));
+  outline.closePath();
+  const geom=new THREE.ExtrudeGeometry(outline,{
+   depth:h,bevelEnabled:true,bevelSize:.025,bevelThickness:.035,bevelSegments:1
+  });
+  // Extrusion axis is local Z. Turn the block so thickness stands vertically.
+  geom.rotateX(-Math.PI/2);
+  const brick=new THREE.Mesh(geom,fallenBrickMaterial[(i+Math.floor(i/7))%3]);
+  brick.position.set(x,.07,z);
+  brick.rotation.set(((i%5)-2)*.055,i*1.37,((i%7)-3)*.065);
+  brick.name='b5:gothicArch:fallenMasonryBrick30';
+  extra.add(brick);
+ }
+ extra.userData.additionalFallenBrickCount=30;
  extra.userData.rubbleRefinement={fracturedBlocks:40,groundSlabsAdjusted:repairedGroundSlabs};
  root.add(extra);return root;
 }
