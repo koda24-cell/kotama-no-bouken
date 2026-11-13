@@ -51,7 +51,9 @@ for strand in range(100):
   z=rootz+(endz-rootz)*u;y=rooty+(endy-rooty)*u-.10*math.sin(math.pi*u)
   w=(.022+.016*math.sin(math.pi*u))*(1-u**3)+.001
   hv.extend([(x-w,y,z),(x+w,y-.008,z)])
-  if k:\n   a=base+2*(k-1);b=a+1;c=base+2*k;d=c+1\n   hf.extend([(a,b,d),(a,d,c)])
+  if k:
+   a=base+2*(k-1);b=a+1;c=base+2*k;d=c+1
+   hf.extend([(a,b,d),(a,d,c)])
 hair=mesh('HAIR_10000_vertices_100_strands',hv,hf,hairmat)
 def sphere(name,loc,scale,material):
  bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=12,location=loc)
