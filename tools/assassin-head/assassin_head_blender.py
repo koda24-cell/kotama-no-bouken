@@ -30,47 +30,44 @@ for i in range(R-1):
  for j in range(S):
   k=i*S+j;q=i*S+(j+1)%S;faces.extend([(k,q,q+S),(k,q+S,k+S)])
 face=mesh('SKIN_FACE__5000_vertices',verts,faces,skin)
-# Each strand has 25 longitudinal rings x 4 cross-section vertices = 100 vertices.
-# Closed four-sided volumetric cross sections, triangulated side faces.
-# 100 strands x 100 vertices = exactly 10,000 hair mesh vertices.
+# Quad hair cards: 100 strips x 50 rows x 2 vertices = 10,000 hair vertices.
+# Each adjacent pair of rows is one four-corner polygon (quad).
+# Broad overlapping sheets replace the previous diamond-tube strands.
 hv=[];hf=[]
 for strand in range(100):
- if strand<45:
-  f=strand/44;rootx=-.51+1.02*f;rootz=1.03-.08*abs(f-.55)
-  length=.66+.42*(1-f)**1.5;endx=rootx+.23+.14*(1-f);endz=rootz-length
-  rooty=-.08-.10*math.cos((f-.5)*math.pi);endy=-.28
- elif strand<75:
-  f=(strand-45)/29;side=-1 if strand%2 else 1;rootx=side*(.34+.19*f);rootz=.85-.12*f
-  length=1.18+.50*f;endx=rootx+side*(.13+.10*f);endz=rootz-length
-  rooty=-.01+.12*f;endy=-.01+.08*f
+ if strand<42:
+  f=strand/41;rootx=-.56+1.12*f;rootz=1.045-.10*abs(f-.48)
+  rooty=-.065-.12*math.cos((f-.5)*math.pi)
+  length=.57+.42*(1-f)**1.2
+  endx=rootx+.19+.20*(1-f);endz=rootz-length;endy=-.35
+  w=.075+.025*math.sin(math.pi*f)
+ elif strand<76:
+  f=(strand-42)/33;side=-1 if strand%2 else 1
+  rootx=side*(.33+.22*f);rootz=.89-.17*f;rooty=-.01+.12*f
+  length=1.10+.47*f;endx=rootx+side*(.13+.10*f);endz=rootz-length
+  endy=.02+.10*f;w=.105
  else:
-  f=(strand-75)/24;rootx=.28+.19*(f-.5);rootz=1.02+.12*math.sin(math.pi*f)
-  length=1.05+.42*f;endx=.67+.20*math.sin(math.pi*f);endz=rootz-length
-  rooty=.21;endy=.43+.09*f
+  f=(strand-76)/23;rootx=.23+.24*(f-.5);rootz=1.04+.10*math.sin(math.pi*f)
+  rooty=.20;length=.95+.49*f
+  endx=.72+.19*math.sin(math.pi*f);endz=rootz-length
+  endy=.43+.09*f;w=.115
  base=len(hv)
- for k in range(25):
-  u=k/24;ease=u*u*(3-2*u)
-  x=rootx+(endx-rootx)*ease+.045*math.sin(u*math.pi*1.6+strand*.23)*u
+ for k in range(50):
+  u=k/49;ease=u*u*(3-2*u)
+  x=rootx+(endx-rootx)*ease+.065*math.sin(u*math.pi*1.5+strand*.17)*u
   z=rootz+(endz-rootz)*u
-  y=rooty+(endy-rooty)*u-.10*math.sin(math.pi*u)
-  # Nonzero depth gives each hair clump genuine 3D volume.
-  taper=max(.012,(1-u**2)**1.3)
-  width=(.026+.018*math.sin(math.pi*u))*taper
-  depth=(.018+.011*math.sin(math.pi*u))*taper
-  # Diamond-shaped four-vertex cross section (x/y plane).
-  hv.extend([(x-width,y,z),(x,y-depth,z),(x+width,y,z),(x,y+depth,z)])
+  y=rooty+(endy-rooty)*ease-.10*math.sin(math.pi*u)
+  # Cards have broad roots and a sharp, gently curved tip.
+  width=w*(max(.012,(1-u**2)**.78))
+  # Face camera-facing sheets in front, with curved lateral layering.
+  hv.extend([(x-width,y+.015*math.sin(u*math.pi),z),
+             (x+width,y-.015*math.sin(u*math.pi),z)])
   if k:
-   prev=base+4*(k-1);cur=base+4*k
-   for j in range(4):
-    a=prev+j;b=prev+(j+1)%4;c=cur+(j+1)%4;d=cur+j
-    hf.extend([(a,b,c),(a,c,d)])
- # End caps are triangles and use existing vertices.
- hf.extend([(base,base+2,base+1),(base,base+3,base+2)])
- tip=base+4*24
- hf.extend([(tip,tip+1,tip+2),(tip,tip+2,tip+3)])
+   a=base+2*(k-1);b=a+1;c=base+2*k+1;d=base+2*k
+   hf.append((a,b,c,d))
 assert len(hv)==10000
-assert all(len(t)==3 for t in hf)
-hair=mesh('HAIR_10000_vertices_100_strands',hv,hf,hairmat)
+assert all(len(poly)==4 for poly in hf)
+hair=mesh('HAIR_10000_vertices_4900_quads',hv,hf,hairmat)
 # Additional scalp shell closes the previously exposed crown between hair clumps.
 # This is a separate supplemental mesh; the 10,000-vertex hair budget stays unchanged.
 bpy.ops.mesh.primitive_uv_sphere_add(segments=64,ring_count=32,location=(0,.055,.72))
@@ -123,5 +120,5 @@ for required in ('front.png','right_side.png','left_side.png','three_quarter.png
 with open(os.path.join(out,'geometry_report.txt'),'w') as f:
  f.write('skin_vertices=%d\nhair_vertices=%d\nskin_triangles=%d\nhair_triangles=%d\n' % (len(face.data.vertices),len(hair.data.vertices),len(face.data.polygons),len(hair.data.polygons)))
 assert len(face.data.vertices)==5000 and len(hair.data.vertices)==10000
-assert len(face.data.polygons)==9900 and len(hair.data.polygons)==19600
+assert len(face.data.polygons)==9900 and len(hair.data.polygons)==4900
 print('COUNTS',len(face.data.vertices),len(hair.data.vertices))
