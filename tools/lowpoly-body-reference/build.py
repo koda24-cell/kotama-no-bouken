@@ -69,6 +69,25 @@ dec=head.modifiers.new('Low_poly_retopology','DECIMATE')
 dec.decimate_type='COLLAPSE'
 dec.ratio=min(1.0,650/max(1,len(head.data.polygons)))
 bpy.ops.object.modifier_apply(modifier=dec.name)
+# Iteration 7: replace triangle-heavy voxel-decimation topology with
+# quad-dominant QuadriFlow retopology. Keep voxel-unified body as fallback.
+# Preserve original anatomy when retopology fails, and log the outcome.
+retopo_result='fallback_voxel_decimated'
+try:
+ bpy.ops.object.select_all(action='DESELECT')
+ head.select_set(True)
+ bpy.context.view_layer.objects.active=head
+ bpy.ops.object.quadriflow_remesh(mode='FACES',target_faces=1100,
+                                 preserve_sharp=False,preserve_boundary=False,
+                                 use_mesh_symmetry=True)
+ retopo_result='quadriflow_1100_faces'
+except Exception as exc:
+ retopo_result='fallback: '+str(exc)[:160]
+with open(os.path.join(out,'iteration7_retopology.txt'),'w') as log:
+ log.write(retopo_result+'\\n')
+ log.write('vertices='+str(len(head.data.vertices))+'\\n')
+ log.write('faces='+str(len(head.data.polygons))+'\\n')
+ log.write('quads='+str(sum(len(p.vertices)==4 for p in head.data.polygons))+'\\n')
 for p in head.data.polygons:p.use_smooth=False
 counts.clear()
 counts['LOWPOLY_UNIFIED_BODY']=(len(head.data.vertices),len(head.data.polygons))
