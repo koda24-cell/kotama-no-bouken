@@ -13,7 +13,7 @@ colors=[mat('soft moss green',(.16,.32,.10)),mat('sunlit grass',(.34,.49,.16)),m
 # Four independent BOTW-inspired modular grass clumps: many narrow, flexible, curved blades with varied heights.
 # Each clump occupies a sub-cell of the presentation layout and can be reused alone.
 for clump in range(4):
- count=[28,44,66,38][clump]
+ count=[90,140,220,120][clump]
  base=Vector((((clump%2)-.5)*1.4,((clump//2)-.5)*1.4,0))
  for material_index in range(4):
   verts=[];faces=[]
@@ -28,13 +28,13 @@ for clump in range(4):
    tangent=Vector((math.cos(angle),math.sin(angle),0));side=Vector((-tangent.y,tangent.x,0))
    sway=random.uniform(-.045,.045);twist=random.uniform(-.35,.35)
    start=len(verts)
-   for step in range(6):
-    t=step/5
+   for step in range(10):
+    t=step/9
     center=origin+tangent*(lean*t*t)+side*(sway*t*t)+Vector((0,0,length*(t-.13*t*t)))
     half=width*(math.sin(math.pi*(.08+.84*t))**.6)*(1-t)**.45
     fold=Vector((0,0,.006*math.sin(math.pi*t)))
     for q in (-1,0,1):verts.append(tuple(center+side*(q*half)+tangent*(twist*t*q*.012)+fold*(1-q*q)))
-   for step in range(5):
+   for step in range(9):
     a=start+3*step
     faces.extend([(a,a+1,a+4,a+3),(a+1,a+2,a+5,a+4)])
   if not verts:continue
@@ -46,7 +46,7 @@ for clump in range(4):
 bpy.ops.object.select_all(action='DESELECT')
 for ob in bpy.context.scene.objects:
  if ob.type=='MESH':ob.select_set(True)
-bpy.ops.export_scene.gltf(filepath=os.path.join(out,'f6_garden_grass_clumps_v3.glb'),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'f6_garden_grass_clumps_v4.glb'),export_format='GLB',use_selection=True)
 bpy.ops.object.select_all(action='DESELECT')
 world=bpy.context.scene.world;world.color=(.22,.27,.22)
 def light(loc,power,size):
@@ -56,7 +56,7 @@ def light(loc,power,size):
 light((2,-3,4),600,4);light((-2,2,3),400,3)
 camdata=bpy.data.cameras.new('camera');cam=bpy.data.objects.new('camera',camdata);bpy.context.collection.objects.link(cam);bpy.context.scene.camera=cam
 camdata.type='ORTHO';camdata.ortho_scale=3.0
-scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=24
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=64
 scene.render.resolution_x=960;scene.render.resolution_y=960;scene.render.resolution_percentage=100
 for view,loc in [('angle',(3,-4,3)),('front',(0,-5,1.4)),('side',(5,0,1.4)),('top',(0,-.01,5))]:
  cam.location=loc;cam.rotation_euler=(Vector((0,0,.15))-cam.location).to_track_quat('-Z','Y').to_euler()
