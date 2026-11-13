@@ -209,7 +209,10 @@ for pass_no in range(3):
   v.co.y=y*(1-blend)+avg.y*blend
   # Keep Z unchanged: both reference projections share pixel heights.
 # Confirm manifold state; keep a quantitative trace in the output.
-nonmanifold=sum(1 for e in head.data.edges if not e.is_manifold)
+edge_use={tuple(sorted(e.vertices)):0 for e in head.data.edges}
+for poly in head.data.polygons:
+ for key in poly.edge_keys:edge_use[tuple(sorted(key))]+=1
+nonmanifold=sum(1 for n in edge_use.values() if n!=2)
 with open(os.path.join(out,'iteration6_geometry.txt'),'w') as log:
  log.write('iteration=6\\nmethod=local_adjacency_relaxation\\n')
  log.write('nonmanifold_edges='+str(nonmanifold)+'\\n')
