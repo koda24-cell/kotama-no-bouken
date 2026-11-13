@@ -46,7 +46,7 @@ scene.render.engine='BLENDER_EEVEE_NEXT' if 'BLENDER_EEVEE_NEXT' in engines else
 scene.render.resolution_x=720;scene.render.resolution_y=900;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 distance=max(3.0,span.length*2.4)
-for name,offset in [('front',(0,-1,0)),('right_side',(1,0,0)),('left_side',(-1,0,0)),('three_quarter',(1,-1,.22))]:
+for name,offset in [('front',(0,1,0)),('back',(0,-1,0)),('right_side',(1,0,0)),('left_side',(-1,0,0)),('three_quarter',(1,1,.22))]:
  bpy.ops.object.camera_add(location=center+distance*Vector(offset).normalized())
  cam=bpy.context.object
  cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
