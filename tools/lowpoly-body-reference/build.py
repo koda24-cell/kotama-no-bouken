@@ -65,35 +65,42 @@ rem=head.modifiers.new('Seamless_body_union','REMESH')
 rem.mode='VOXEL';rem.voxel_size=.055
 bpy.context.view_layer.objects.active=head
 bpy.ops.object.modifier_apply(modifier=rem.name)
-dec=head.modifiers.new('Low_poly_retopology','DECIMATE')
-dec.decimate_type='COLLAPSE'
-dec.ratio=min(1.0,650/max(1,len(head.data.polygons)))
-bpy.ops.object.modifier_apply(modifier=dec.name)
-# Iteration 7: replace triangle-heavy voxel-decimation topology with
-# quad-dominant QuadriFlow retopology. Keep voxel-unified body as fallback.
-# Preserve original anatomy when retopology fails, and log the outcome.
-retopo_result='fallback_voxel_decimated'
-old_counts=(len(head.data.vertices),len(head.data.polygons))
+# Iteration 8: first retopologize the dense, watertight voxel surface.
+# QuadriFlow on the already decimated 652-vertex mesh returned CANCELLED.
+retopo_result='not_started'
+dense_counts=(len(head.data.vertices),len(head.data.polygons))
 try:
  bpy.ops.object.select_all(action='DESELECT')
  head.select_set(True)
  bpy.context.view_layer.objects.active=head
  operation=bpy.ops.object.quadriflow_remesh(mode='FACES',target_faces=1100,
-                                 use_mesh_symmetry=True)
- # Operators can replace the mesh datablock; always refresh the active object.
+                                           use_mesh_symmetry=False)
  candidate=bpy.context.view_layer.objects.active
  if candidate is not None and candidate.type=='MESH':head=candidate
- quad_count=sum(len(p.vertices)==4 for p in head.data.polygons)
- new_counts=(len(head.data.vertices),len(head.data.polygons))
- if 'FINISHED' not in operation or quad_count<.60*len(head.data.polygons):
-  retopo_result='failed_quality_gate: '+str(operation)+'; quads='+str(quad_count)
- else:
+ q=sum(len(p.vertices)==4 for p in head.data.polygons)
+ if 'FINISHED' in operation and q>=.60*len(head.data.polygons):
   retopo_result='quadriflow_verified'
+ else:
+  retopo_result='quadriflow_cancelled_or_low_quad_ratio: '+str(operation)
 except Exception as exc:
- retopo_result='fallback: '+str(exc)[:160]
+ retopo_result='quadriflow_exception: '+str(exc)[:160]
+if retopo_result!='quadriflow_verified':
+ # Robust fallback: triangle-pair conversion on the unified mesh, with
+ # conservative angle constraints to avoid changing the silhouette.
+ dec=head.modifiers.new('Low_poly_retopology','DECIMATE')
+ dec.decimate_type='COLLAPSE'
+ dec.ratio=min(1.0,650/max(1,len(head.data.polygons)))
+ bpy.context.view_layer.objects.active=head
+ bpy.ops.object.modifier_apply(modifier=dec.name)
+ bpy.ops.object.mode_set(mode='EDIT')
+ bpy.ops.mesh.select_all(action='SELECT')
+ bpy.ops.mesh.tris_convert_to_quads(face_threshold=0.698132,
+                                    shape_threshold=0.698132)
+ bpy.ops.object.mode_set(mode='OBJECT')
+ retopo_result+='; triangle_pair_quad_fallback'
 with open(os.path.join(out,'iteration7_retopology.txt'),'w') as log:
  log.write(retopo_result+'\\n')
- log.write('before='+str(old_counts)+'\\n')
+ log.write('dense_before='+str(dense_counts)+'\\n')
  log.write('after='+str((len(head.data.vertices),len(head.data.polygons)))+'\\n')
  log.write('quads='+str(sum(len(p.vertices)==4 for p in head.data.polygons))+'\\n')
 for p in head.data.polygons:p.use_smooth=False
