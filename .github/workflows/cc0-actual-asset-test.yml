@@ -1,0 +1,92 @@
+name: CC0 Actual Asset Import Test
+on:
+  push:
+    branches: [chore/cc0-download-network-probe-20261114]
+  workflow_dispatch:
+jobs:
+  fetch-and-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download actual CC0 texture from Poly Haven API
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p cc0-test
+          python3 - <<'PY'
+          import json,urllib.request,hashlib,pathlib
+          def get(url):
+              req=urllib.request.Request(url,headers={"User-Agent":"Kotama-CC0-Asset-Test/1.0"})
+              return urllib.request.urlopen(req,timeout=45).read()
+          catalog=json.loads(get("https://api.polyhaven.com/assets?t=textures"))
+          ids=[k for k in catalog if "rock" in k.lower() or "stone" in k.lower()]
+          if not ids: raise RuntimeError("No rock or stone texture in API catalog")
+          chosen=None
+          for asset in ids[:30]:
+              files=json.loads(get("https://api.polyhaven.com/files/"+asset))
+              for key in ("Diffuse","diffuse","Color","color"):
+                  if key in files:
+                      variants=files[key]
+                      for resolution in ("1k","2k"):
+                          for fmt in ("png","jpg","jpeg"):
+                              v=variants.get(resolution,{}).get(fmt)
+                              if isinstance(v,dict) and v.get("url"):
+                                  chosen=(asset,v["url"],key,resolution,fmt)
+                                  break
+                          if chosen:break
+                  if chosen:break
+              if chosen:break
+          if not chosen:raise RuntimeError("No downloadable rock/stone diffuse image")
+          asset,url,key,res,fmt=chosen
+          data=get(url)
+          if len(data)<1000:raise RuntimeError("Download too small")
+          out=pathlib.Path("cc0-test/stone_texture."+fmt)
+          out.write_bytes(data)
+          meta={"asset_id":asset,"asset_page":"https://polyhaven.com/a/"+asset,"download_url":url,"license":"CC0 - verify on source page","size":len(data),"sha256":hashlib.sha256(data).hexdigest(),"channel":key,"resolution":res}
+          pathlib.Path("cc0-test/SOURCE.json").write_text(json.dumps(meta,indent=2))
+          print(json.dumps(meta,indent=2))
+          PY
+      - name: Install Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender libegl1 libgl1 libopengl0 libx11-6 libxrender1 libxi6 libxxf86vm1 libsm6
+      - name: Import texture and render proof
+        run: |
+          cat > cc0-test/render.py <<'PY'
+          import bpy,glob,math
+          from mathutils import Vector
+          bpy.ops.object.select_all(action='SELECT')
+          bpy.ops.object.delete(use_global=False)
+          img=bpy.data.images.load(glob.glob('/home/runner/work/*/*/cc0-test/stone_texture.*')[0])
+          mat=bpy.data.materials.new("Downloaded CC0 stone texture")
+          mat.use_nodes=True
+          nodes=mat.node_tree.nodes
+          tex=nodes.new('ShaderNodeTexImage');tex.image=img
+          mat.node_tree.links.new(tex.outputs['Color'],nodes.get('Principled BSDF').inputs['Base Color'])
+          bpy.ops.mesh.primitive_cube_add(size=2)
+          obj=bpy.context.object
+          obj.name="CC0 texture proof on stone block"
+          obj.data.materials.append(mat)
+          bpy.ops.object.camera_add(location=(4,-6,4))
+          cam=bpy.context.object
+          direction=Vector((0,0,0))-cam.location
+          cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
+          bpy.context.scene.camera=cam
+          bpy.ops.object.light_add(type='AREA',location=(0,-3,5))
+          bpy.context.object.data.energy=900
+          scene=bpy.context.scene
+          scene.render.engine='BLENDER_EEVEE'
+          scene.render.resolution_x=640
+          scene.render.resolution_y=480
+          scene.render.resolution_percentage=100
+          scene.render.image_settings.file_format='PNG'
+          scene.render.filepath='/home/runner/work/kotama-no-bouken/kotama-no-bouken/cc0-test/preview.png'
+          bpy.ops.render.render(write_still=True)
+          bpy.ops.export_scene.gltf(filepath='/home/runner/work/kotama-no-bouken/kotama-no-bouken/cc0-test/stone_texture_proof.glb',export_format='GLB')
+          PY
+          blender -b --python cc0-test/render.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cc0-actual-asset-import-proof
+          path: cc0-test/
+          retention-days: 14

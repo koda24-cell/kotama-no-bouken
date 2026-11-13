@@ -1,0 +1,48 @@
+name: CC0 Asset Network Probe
+on:
+  push:
+    branches:
+      - chore/cc0-download-network-probe-20261114
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check DNS, HTTPS, and CC0 provider endpoints
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p render-output/cc0-network
+          {
+            echo "# CC0 network diagnostic"
+            echo "run: $GITHUB_RUN_ID"
+            echo "date: $(date -u +%FT%TZ)"
+            echo "runner: $RUNNER_OS"
+            for host in polyhaven.com api.polyhaven.com ambientcg.com kenney.nl raw.githubusercontent.com; do
+              echo
+              echo "## $host"
+              getent ahostsv4 "$host" | head -3 || true
+              curl -L -I --max-time 20 --retry 2 --retry-delay 2 -sS -o /dev/null -w "http=%{http_code} remote_ip=%{remote_ip} ssl_verify=%{ssl_verify_result}\n" "https://$host/" || true
+            done
+            echo
+            echo "## Small actual content download test"
+            curl --fail --location --retry 2 --max-time 30 --silent --show-error \
+              --output render-output/cc0-network/polyhaven-license.html \
+              https://polyhaven.com/license
+            status=$?
+            echo "license_download_exit=$status"
+            if [ "$status" -eq 0 ]; then
+              wc -c render-output/cc0-network/polyhaven-license.html
+              sha256sum render-output/cc0-network/polyhaven-license.html
+            fi
+          } 2>&1 | tee render-output/cc0-network/diagnostic.txt
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cc0-network-probe
+          path: render-output/cc0-network/
+          if-no-files-found: warn
+          retention-days: 14
