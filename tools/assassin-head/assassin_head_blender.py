@@ -125,10 +125,16 @@ def light(loc,power,size):
  o.rotation_euler=(Vector((0,0,.15))-o.location).to_track_quat('-Z','Y').to_euler()
 light((3,-4,5),650,5);light((-3,1,3),450,4)
 sc=bpy.context.scene
-# CPU Cycles avoids headless Eevee/OpenGL and version-dependent engine identifiers.
-sc.render.engine='CYCLES'
-sc.cycles.device='CPU'
-sc.cycles.samples=8
+# Eevee clay/solid-look render: uniform matte material, shape-first inspection.
+# Blender 3.x uses BLENDER_EEVEE; Blender 4.2+ uses BLENDER_EEVEE_NEXT.
+engine_ids={e.identifier for e in bpy.types.RenderSettings.bl_rna.properties['engine'].enum_items}
+engine='BLENDER_EEVEE_NEXT' if 'BLENDER_EEVEE_NEXT' in engine_ids else 'BLENDER_EEVEE'
+sc.render.engine=engine
+clay=mat('SOLID_CLAY_unified_matte',(.66,.70,.76))
+clay.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value=1.0
+sc.view_layers[0].material_override=clay
+sc.render.image_settings.color_mode='RGBA'
+print('RENDER_ENGINE',sc.render.engine,'SOLID_MATERIAL_OVERRIDE',clay.name)
 sc.render.film_transparent=False
 sc.render.resolution_x=512;sc.render.resolution_y=512;sc.render.resolution_percentage=100
 sc.render.image_settings.file_format='PNG'
