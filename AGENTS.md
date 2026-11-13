@@ -17,3 +17,6 @@ Stage 2: ice/water source. Stage 3: overgrown ruined city. Stage 5: abyssal ruin
 
 ## Handoff
 When continuing from a different chat, explicitly inspect `docs/3d/BLENDER_DOCKER_HANDOFF.md`, PR #252 and PR #253, plus current GitHub Actions runs. Do not assume automation or workflow is operational until checked.
+
+## CC0 rock / Blender 5 import troubleshooting
+Before importing FBX rock references, read `docs/3d/CC0_ROCK_BLENDER_FAILURES_20261114.md`. It records missing NumPy, broken legacy FBX importer, Blender 5 native import fix, and mandatory PNG/GLB artifact validation. Do not report success solely from Blender's exit code.

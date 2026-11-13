@@ -1,0 +1,39 @@
+name: Fetch CC0 Rock Reference Asset
+on:
+  push:
+    branches: [feature/cc0-rock-reference-kit-20261114]
+    paths:
+      - tools/3d-reference/fetch_polyhaven_rock.py
+      - .github/workflows/cc0-rock-reference-fetch.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch Poly Haven rock with provenance
+        run: python3 tools/3d-reference/fetch_polyhaven_rock.py
+      - name: Commit reference source to feature branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A tools/3d-reference/cc0-rocks/polyhaven/
+          if git diff --cached --quiet; then
+            echo "No asset changes"
+          else
+            git commit -m "Add Poly Haven CC0 rock reference model and provenance"
+            git push origin HEAD:feature/cc0-rock-reference-kit-20261114
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cc0-rock-reference-source
+          path: tools/3d-reference/cc0-rocks/polyhaven/
+          retention-days: 14
