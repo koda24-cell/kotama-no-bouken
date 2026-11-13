@@ -99,9 +99,13 @@ def light(loc,power,size):
  o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size
  o.rotation_euler=(Vector((0,0,.15))-o.location).to_track_quat('-Z','Y').to_euler()
 light((3,-4,5),650,5);light((-3,1,3),450,4)
-sc=bpy.context.scene;sc.render.engine='BLENDER_EEVEE' if bpy.app.version[0] < 4 else 'BLENDER_EEVEE_NEXT'
+sc=bpy.context.scene
+# CPU Cycles avoids headless Eevee/OpenGL and version-dependent engine identifiers.
+sc.render.engine='CYCLES'
+sc.cycles.device='CPU'
+sc.cycles.samples=8
 sc.render.film_transparent=False
-sc.render.resolution_x=768;sc.render.resolution_y=768;sc.render.resolution_percentage=100
+sc.render.resolution_x=512;sc.render.resolution_y=512;sc.render.resolution_percentage=100
 sc.render.image_settings.file_format='PNG'
 def render(name,loc):
  bpy.ops.object.camera_add(location=loc);cam=bpy.context.object
