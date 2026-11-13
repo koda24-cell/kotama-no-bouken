@@ -1,0 +1,35 @@
+name: B2 Ice Bridge Left Right Tile Preview
+on:
+  push:
+    branches: [feature/b2-ice-bridge-side-tiles-20261114]
+    paths:
+      - tools/b2-ice-bridge-side/**
+      - .github/workflows/b2-ice-bridge-side-preview.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1 libopengl0
+      - name: Render GLBs and 6 views
+        run: blender -b --python tools/b2-ice-bridge-side/build_and_render.py
+      - name: Validate
+        run: |
+          set -euo pipefail
+          cd tools/b2-ice-bridge-side/reviews
+          for side in left right; do
+            for view in front side angle; do test -s "ice_bridge_${side}_${view}.png"; done
+            test -s "ice_bridge_${side}_bank.glb"
+          done
+          sha256sum *.png *.glb > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-ice-bridge-side-tile-review
+          path: tools/b2-ice-bridge-side/reviews/
+          retention-days: 14
