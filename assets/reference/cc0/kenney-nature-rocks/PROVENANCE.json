@@ -1,0 +1,54 @@
+{
+  "license": "CC0-1.0",
+  "source": "https://kenney.nl/assets/nature-kit",
+  "models": [
+    {
+      "file": "cliff-large-rock.glb",
+      "bytes": 3560,
+      "sha256": "f9bf79cd3a76bbe11f4887053655585e467e14f2528678215a820896669e4e8e",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-large-rock.glb"
+    },
+    {
+      "file": "cliff-cave-rock.glb",
+      "bytes": 5480,
+      "sha256": "2d83296b0166ad0e980152ad4f45b4e45349e932a6b6c2adbe7eb606a6472d8d",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-cave-rock.glb"
+    },
+    {
+      "file": "cliff-corner-rock.glb",
+      "bytes": 2360,
+      "sha256": "4a22b80e18ac1798035867b7ff6e4d78161fa25b507112c903ad6f80765cf181",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-corner-rock.glb"
+    },
+    {
+      "file": "cliff-diagonal-rock.glb",
+      "bytes": 4296,
+      "sha256": "648bdb3118cda8900bad55e281f56c245a1a0252cc1c0e1bf4fa085d8ef75a0b",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-diagonal-rock.glb"
+    },
+    {
+      "file": "cliff-block-rock.glb",
+      "bytes": 2776,
+      "sha256": "2f31de8502288d6adcdae4d5605cfe65d4bcd4369dd0decd116c2615b9d3d01f",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-block-rock.glb"
+    },
+    {
+      "file": "cliff-blockslope-rock.glb",
+      "bytes": 6720,
+      "sha256": "82fe2e0477c7ce2c5994435f44074022cb2a36f56ff40bd34598cbfc87286885",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-blockslope-rock.glb"
+    },
+    {
+      "file": "cliff-rock.glb",
+      "bytes": 3556,
+      "sha256": "64b555b394b4312938ccd389862d5c01beb3fc417100aa41bb1e5e96a9889de0",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-rock.glb"
+    },
+    {
+      "file": "cliff-top-rock.glb",
+      "bytes": 5312,
+      "sha256": "8c3b4d37fad0bacf39d0315a51850dfe9c55eea03de74854e3d92ce4157bbebb",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-top-rock.glb"
+    }
+  ]
+}
