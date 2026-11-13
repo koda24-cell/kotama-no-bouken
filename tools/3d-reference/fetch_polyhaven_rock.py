@@ -3,6 +3,8 @@
 import hashlib
 import json
 import os
+import re
+from urllib.parse import urljoin
 from pathlib import Path
 from urllib.request import Request, urlopen
 
@@ -15,7 +17,7 @@ def fetch(url):
         return r.read()
 
 catalog = json.loads(fetch("https://api.polyhaven.com/assets?t=models"))
-choices = [(key, val) for key, val in catalog.items() if any(word in (key + " " + str(val.get("name", ""))).lower() for word in ("rock", "boulder", "stone"))]
+choices = [(key, val) for key, val in catalog.items() if re.search(r"(^|[^a-z])(rock|rocks|boulder|stone)([^a-z]|$)", (key + " " + str(val.get("name", ""))).lower())]
 print("Rock candidates:", [k for k, _ in choices[:30]])
 if not choices:
     raise RuntimeError("No rock candidates in Poly Haven model catalog")
@@ -53,6 +55,18 @@ if len(data) < 1000 or len(data) > 85_000_000:
     raise RuntimeError(f"Unexpected model size {len(data)} bytes")
 filename = "source_rock." + fmt
 (OUT / filename).write_bytes(data)
+dependencies = []
+if fmt == "gltf":
+    document = json.loads(data)
+    for item in document.get("buffers", []) + document.get("images", []):
+        uri = item.get("uri")
+        if not uri or uri.startswith("data:"):
+            continue
+        if "/" in uri or ".." in uri:
+            raise RuntimeError("Unexpected GLTF dependency path: " + uri)
+        payload = fetch(urljoin(url, uri))
+        (OUT / uri).write_bytes(payload)
+        dependencies.append({"file": uri, "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()})
 manifest = {
     "provider": "Poly Haven",
     "asset_id": asset_id,
@@ -66,6 +80,7 @@ manifest = {
     "format": fmt,
     "bytes": len(data),
     "sha256": hashlib.sha256(data).hexdigest(),
+    "dependencies": dependencies,
     "status": "Unapproved reference source; not integrated into game",
 }
 (OUT / "SOURCE.json").write_text(json.dumps(manifest, indent=2) + "\n")
