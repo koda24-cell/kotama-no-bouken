@@ -65,3 +65,10 @@ pushトリガーでも自動実行される。実行ページ下のArtifactsか�
 ### 2026-11-13 追加：Blender直接実行の見かけ上の成功に注意
 - run #43336789602 はActions全体がsuccessでも、ArtifactにはGLB 3点のみでPNGが0点。ログには `ModuleNotFoundError: No module named 'numpy'` があり、Blender 5.0.1のglTF importerが失敗した。**Actions成功をレンダリング成功と判断しないこと**。
 - 対策: `python3-numpy` をインストールし、Blender側からnumpy importを事前検証。`blender --python-exit-code 1` を付けてPython例外をジョブ失敗として伝播させる。実レンダリングの成功とPNG存在は修正後に別途確認する。
+
+## 2026-11-13 V6 Blender 5 AgX設定名の修正（第4階層・溶岩岩壁）
+- 対象: [PR #308](https://github.com/koda24-cell/kotama-no-bouken/pull/308)、[失敗run #43346775600](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43346775600)。Node/Three.jsでV6 GLBは生成成功したが、Blenderレンダリングで `TypeError: ... enum "Medium High Contrast" not found` が発生しPNG未生成。
+- 原因: Blender 5.0.1の `scene.view_settings.look` は `Medium High Contrast` ではなく `AgX - Medium High Contrast` を要求する。造形エラーではない。
+- 対処: `tools/b4-render/render-rockwall-v6-bright.py` の設定を `scene.view_settings.look='AgX - Medium High Contrast'` に変更。露出 `+1.1` と追加照明を維持。修正コミット `c485681d6eae381f66787d7f8690de3fe0f06d0e`。
+- 検証: [修正後run #43352949692](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43352949692) はActions成功。実PNGとGLBの目視・構成確認は別途必要。
+- 再発防止: Blenderのバージョン依存のenumは実際の `scene.view_settings.bl_rna.properties['look'].enum_items` 等で確認し、`--python-exit-code 1` とPNG枚数チェックを必ず維持する。
