@@ -26,7 +26,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           p=Path('render-output/floor6/garden-grass')
-          for name in ['f6_garden_grass_clumps_v3.glb']+['f6_garden_grass_'+x+'.png' for x in ['angle','front','side','top']]:
+          for name in ['f6_garden_grass_clumps_v4.glb']+['f6_garden_grass_'+x+'.png' for x in ['angle','front','side','top']]:
               f=p/name
               assert f.exists() and f.stat().st_size>1000,name
               assert f.read_bytes()[:4]==(b'glTF' if name.endswith('.glb') else bytes([137,80,78,71])),name
