@@ -44,7 +44,7 @@ export function createRuinedChandelier(T){
  // Image pixels were NOT accessible in this environment, so this is a
  // hand-authored vector silhouette, NOT a traced image contour.
  const vineMetal=new T.MeshStandardMaterial({color:0x494b4b,metalness:.62,roughness:.44,side:T.DoubleSide});
- root.userData.vineSilhouettePass='sixfold-inward-curls-v6';
+ root.userData.vineSilhouettePass='sixfold-flat-forged-scrollwork-v7';
  root.userData.symmetrySegments=6;
  root.userData.referenceOutlineStatus='manual-vector-proxy-not-image-traced';
  // A profile is defined in the radial / vertical plane: [radius, height].
@@ -69,7 +69,10 @@ export function createRuinedChandelier(T){
      const def=profilePaths[k];
      const tangential=[0,.12,-.10,.08,-.08,.05][k];
      const points=def.pts.map(([r,y])=>new T.Vector3(r,y,tangential));
-     const geometry=new T.TubeGeometry(new T.CatmullRomCurve3(points,false,'centripetal',.3),Math.max(96,points.length*14),def.width,8,false);
+     // Preserve the exact curl centerline, but flatten the round tube
+     // into a forged-metal strip: 85% radius and 42% local depth.
+     const geometry=new T.TubeGeometry(new T.CatmullRomCurve3(points,false,'centripetal',.3),Math.max(96,points.length*14),def.width*.85,12,false);
+     geometry.scale(1,1,.42);
      const obj=new T.Mesh(geometry,vineMetal);obj.name=def.name;panel.add(obj);meshes.push(obj);
    }
    // Two clean straight connectors establish a repeatable Gothic truss.
@@ -78,7 +81,7 @@ export function createRuinedChandelier(T){
      [[2.78,3.75,0],[2.78,3.18,0]]
    ]){
      const A=new T.Vector3(...a),B=new T.Vector3(...b),d=B.clone().sub(A);
-     const o=new T.Mesh(new T.CylinderGeometry(.046,.046,d.length(),8),vineMetal);
+     const o=new T.Mesh(new T.CylinderGeometry(.032,.032,d.length(),10),vineMetal);
      o.position.copy(A).add(B).multiplyScalar(.5);
      o.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),d.normalize());
      o.name='panel-truss';panel.add(o);meshes.push(o);
