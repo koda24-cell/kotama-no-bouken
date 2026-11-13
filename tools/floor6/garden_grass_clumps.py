@@ -9,30 +9,31 @@ def mat(name,color):
  m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*color,1)
  m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.82
  return m
-colors=[mat('soft moss green',(.19,.36,.12)),mat('sunlit grass',(.31,.47,.17)),mat('forest grass',(.12,.27,.11)),mat('warm meadow',(.41,.49,.22))]
-# Four independent modular grass clumps with broad tapered, gently folded blades.
+colors=[mat('soft moss green',(.16,.32,.10)),mat('sunlit grass',(.34,.49,.16)),mat('forest grass',(.11,.25,.09)),mat('warm meadow',(.40,.47,.18))]
+# Four independent BOTW-inspired modular grass clumps: many narrow, flexible, curved blades with varied heights.
 # Each clump occupies a sub-cell of the presentation layout and can be reused alone.
 for clump in range(4):
- count=[9,15,22,12][clump]
+ count=[28,44,66,38][clump]
  base=Vector((((clump%2)-.5)*1.4,((clump//2)-.5)*1.4,0))
  for material_index in range(4):
   verts=[];faces=[]
   for blade in range(count):
    if blade%4!=material_index:continue
    angle=blade*2.399963+clump*.7+random.uniform(-.22,.22)
-   radius=random.uniform(.012,.095)
+   radius=random.uniform(.006,.19)
    origin=base+Vector((radius*math.cos(angle),radius*math.sin(angle),0))
-   length=random.uniform(.24,.52)*(1.2 if clump==2 else 1)
-   lean=random.uniform(.10,.34)
-   width=random.uniform(.022,.055)
+   length=random.uniform(.15,.42)*(1.15 if clump==2 else 1)
+   lean=random.uniform(.08,.31)
+   width=random.uniform(.008,.023)
    tangent=Vector((math.cos(angle),math.sin(angle),0));side=Vector((-tangent.y,tangent.x,0))
+   sway=random.uniform(-.045,.045);twist=random.uniform(-.35,.35)
    start=len(verts)
    for step in range(6):
     t=step/5
-    center=origin+tangent*(lean*t*t)+Vector((0,0,length*(t-.09*t*t)))
-    half=width*(1-t)**.8*(.85+.15*math.sin(math.pi*t))
-    fold=Vector((0,0,.009*math.sin(math.pi*t)))
-    for q in (-1,0,1):verts.append(tuple(center+side*(q*half)+fold*(1-q*q)))
+    center=origin+tangent*(lean*t*t)+side*(sway*t*t)+Vector((0,0,length*(t-.13*t*t)))
+    half=width*(math.sin(math.pi*(.08+.84*t))**.6)*(1-t)**.45
+    fold=Vector((0,0,.006*math.sin(math.pi*t))
+    for q in (-1,0,1):verts.append(tuple(center+side*(q*half)+tangent*(twist*t*q*.012)+fold*(1-q*q)))
    for step in range(5):
     a=start+3*step
     faces.extend([(a,a+1,a+4,a+3),(a+1,a+2,a+5,a+4)])
