@@ -18,11 +18,12 @@ jobs:
       - name: Install Blender without container registry rate limits
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
+          blender -b --python-exit-code 1 --python-expr 'import numpy; print("NUMPY_OK", numpy.__version__)'
       - name: Blender front side angle render
         run: |
           for glb in render-output/*.glb; do
-            blender -b -t 2 --python tools/b4-render/render-rockwall-color.py -- "$glb" render-output
+            blender -b -t 2 --python-exit-code 1 --python tools/b4-render/render-rockwall-color.py -- "$glb" render-output
           done
       - uses: actions/upload-artifact@v4
         if: always()
