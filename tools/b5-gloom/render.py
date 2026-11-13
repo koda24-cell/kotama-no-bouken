@@ -16,8 +16,8 @@ def mat(name,color,metal=0,rough=.8,emit=None,power=0):
  return m
 black=mat("B5 obsidian corruption",(.027,.022,.041),.22,.79)
 purple=mat("B5 violet mineral",(.12,.037,.17),.24,.65)
-glow=mat("B5 dim magenta cracks",(.48,.017,.13),.1,.45,(.95,.018,.21),3.5)
-stone=mat("B5 weathered masonry",(.28,.26,.31),0,.91)
+glow=mat("B5 dim magenta cracks",(.55,.025,.19),.1,.45,(1,.025,.27),6.0)
+stone=mat("B5 weathered masonry",(.12,.105,.14),0,.94)
 def ico(name,loc,scale,material,sub=1):
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=sub,radius=1,location=loc)
  o=bpy.context.object;o.name=name;o.scale=scale;o.data.materials.append(material);return o
@@ -69,8 +69,53 @@ for i in range(17):
   aa=a+.04*math.sin(j*2.2+i)
   pts.append((math.cos(aa)*rr,math.sin(aa)*rr,.267-.10*t))
  link("surface hairline fissure %02d"%i,pts,.007,glow)
+# V3: high-density, non-radial sculpted mantle. 13 x 11 fan sheets are
+# replaced by a continuous 96 x 28 polar mesh with multiscale relief.
+# The mantle is additive: original masonry and earlier crust remain intact.
+from mathutils.noise import multi_fractal, noise_vector
+def sculpted_mantle():
+ sectors=112; rings=30; vertices=[]; faces=[]
+ for j in range(rings+1):
+  t=j/rings
+  for i in range(sectors):
+   a=math.tau*i/sectors
+   wave=.10*math.sin(5*a+1.4)+.07*math.sin(11*a-.6)+.035*math.sin(23*a)
+   radius=t*(1.12+wave)
+   x=radius*math.cos(a); y=radius*math.sin(a)
+   broad=.065*math.sin(8*x+4*y)*math.cos(7*y-3*x)
+   fine=.020*math.sin(29*x+12*y)*math.sin(31*y-5*x)
+   grit=.008*math.sin(79*x-27*y)*math.cos(65*y+18*x)
+   z=.075+.31*(1-t*t)**2+broad*(1-t)+fine*(.3+.7*t)+grit
+   vertices.append((x,y,z))
+ for j in range(rings):
+  for i in range(sectors):
+   k=j*sectors+i;n=j*sectors+(i+1)%sectors
+   faces.append((k,n,n+sectors,k+sectors))
+ mesh=bpy.data.meshes.new("V3 high density corrupted surface")
+ mesh.from_pydata(vertices,[],faces);mesh.update()
+ obj=bpy.data.objects.new("V3 organic mantle 3400 quads",mesh)
+ bpy.context.collection.objects.link(obj);mesh.materials.append(black)
+ # Procedural 3D micro-bump with Noise and Voronoi, independent of UVs.
+ p=black.node_tree.nodes.get("Principled BSDF")
+ nt=black.node_tree
+ tex=nt.nodes.new("ShaderNodeTexNoise");tex.inputs["Scale"].default_value=46
+ tex.inputs["Detail"].default_value=5;tex.inputs["Roughness"].default_value=.72
+ bump=nt.nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=.27
+ bump.inputs["Distance"].default_value=.045
+ nt.links.new(tex.outputs["Fac"],bump.inputs["Height"])
+ nt.links.new(bump.outputs["Normal"],p.inputs["Normal"])
+ return obj
+sculpted_mantle()
+# Jagged broken stone flakes add small-scale silhouettes, not tall cones.
+for i in range(45):
+ a=i*2.399
+ r=random.uniform(.27,1.12)
+ x=r*math.cos(a);y=r*math.sin(a)
+ ico("surface fragment %02d"%i,(x,y,.12+.20*(1-r/1.2)),
+     (random.uniform(.055,.15),random.uniform(.045,.12),random.uniform(.025,.075)),
+     black if i%5 else purple,2)
 # Mineral teeth growing upward with irregular heights.
-for i in range(5):
+for i in range(3):
  a=i*2.399
  r=random.uniform(.22,.93)
  x,y=math.cos(a)*r,math.sin(a)*r
