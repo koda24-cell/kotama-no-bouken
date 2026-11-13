@@ -131,7 +131,7 @@ for obj in bpy.context.scene.objects:
  if obj.type=="MESH" and obj.name.startswith("Sphere") and abs(obj.location.z-.845)<.001:
   obj.location.z+=1.50
 # V7: gently bow the entire living plant toward +X, with a modest droop at the flower.
-# Bend all stem/leaf/head components consistently, including the filaments and stigma.
+# Bend all stem/leaf/head components consistently, including the filaments and stigma.\n# Use complete object matrices: anther/stigma meshes have local scaling and rotation.
 # Original flower petal topology and local curvature are retained.
 def plant_bend(p):
  z=p.z
@@ -140,15 +140,15 @@ def plant_bend(p):
 for obj in list(bpy.context.scene.objects):
  if obj.type=="MESH":
   for vert in obj.data.vertices:
-   original=Vector(vert.co)+obj.location
-   vert.co=plant_bend(original)-obj.location
+   original=obj.matrix_world @ vert.co
+   vert.co=obj.matrix_world.inverted() @ plant_bend(original)
   obj.data.update()
  elif obj.type=="CURVE":
   for spline in obj.data.splines:
    if spline.type=="POLY":
     for pt in spline.points:
-     original=Vector(pt.co[:3])+obj.location
-     bent=plant_bend(original)-obj.location
+     original=obj.matrix_world @ Vector(pt.co[:3])
+     bent=obj.matrix_world.inverted() @ plant_bend(original)
      pt.co=(*bent,1)
 print("LILY_V7_BENT_STEM_AND_THIN_LEAVES",flush=True)
 # Export actual mesh, then render studio views.
