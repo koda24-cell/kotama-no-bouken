@@ -29,3 +29,8 @@ VRM import may not preserve VRM-specific shader/rig behavior using generic glTF 
 - Workflow hygiene: always initialize geometry-dependent dimensions before generating derived meshes; include face PNG presence in the output validation step once the face stage is stable.
 
 - Follow-up failure (run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43480789914): `TypeError: mathutils.Vector(): takes at most 1 argument (3 given)` at the first `V(fc.x, ..., ...)` fringe point. Blender's `Vector` constructor requires one sequence argument. Fixed all five fringe points to `V((x, y, z))` in commit `1f21817eee15dd7c75c8444f4ad8607986ee42cf`. Render verification still pending; inspect face images before marking success.
+
+## Layered hair geometry trial (2026-11-14)
+- Commit `e5f0a92662c02ab860977c0de63ab5776f69f72f`: replaced a single flat fringe polygon strip with four independent, closed, smooth-shaded tapered mesh strands, each built from 10-vertex elliptical cross-section rings. Original Face mesh is unchanged. Render isolation now includes all four strands.
+- Goal: obscure the camera-near eye while preserving the far eye, and avoid a visibly planar hair sheet. This is a Blender-native mesh prototype; it does **not** claim the third-party HairMesh addon or Geometry Nodes modifier is installed. Geometry Nodes-based generation and addon compatibility testing remain future steps.
+- Verify the new workflow run succeeds and inspect front, side and three-quarter PNGs before claiming quality improvement. Do not promote assets before user approval.
