@@ -163,30 +163,46 @@ for obj in list(bpy.context.scene.objects):
      original=obj.matrix_world @ Vector(pt.co[:3])
      bent=inv @ deform(original)
      pt.co=(*bent,1)
-# V11: compact, tapered receptacle under the six tepals. Its upper rim
-# meets the radial tepal roots (~0.035), without a green rod crossing the cup.
-# The cap is defined in the unbent flower frame and transformed rigidly with it.
-receptacle_verts=[]
-receptacle_faces=[]
-for i,(dz,radius) in enumerate([(-.055,.014),(-.032,.020),(-.010,.025),(0,.028)]):
- for j in range(16):
-  a=math.tau*j/16
-  p=head_aligned(head_anchor+Vector((radius*math.cos(a),radius*math.sin(a),dz)))
-  receptacle_verts.append(tuple(p))
-for i in range(3):
- for j in range(16):
-  k=i*16+j;kn=i*16+(j+1)%16
-  receptacle_faces.append((k,kn,kn+16,k+16))
-receptacle_mesh=bpy.data.meshes.new("lily throat receptacle mesh")
-receptacle_mesh.from_pydata(receptacle_verts,[],receptacle_faces)
-receptacle_mesh.update()
-receptacle_obj=bpy.data.objects.new("lily throat receptacle",receptacle_mesh)
-bpy.context.collection.objects.link(receptacle_obj)
-receptacle_mesh.materials.append(green)
-for poly in receptacle_mesh.polygons: poly.use_smooth=True
-# Deterministic geometry assertions: stalk tip and blossom throat share a point.
-assert (plant_bend(Vector((0,0,2.035)))-head_aligned(head_anchor)).length<1e-6
-print("LILY_V12_CURVED_STEM_TANGENT_AND_SMALL_RECEPTACLE",flush=True)
+# V13: join the stalk to the actual six-tepal throat, not merely to a
+# mathematical point. The petal root ring is radius ~0.035 at z=2.035.
+# Use one continuous flared mesh from inside the stalk to the petal roots.
+# The lowest rings follow the *actual bent stalk*; the upper rings follow
+# the rigid flower orientation. Overlap the last stalk segment by 0.11.
+join_rings=[
+ (plant_bend(Vector((.002,0,1.925))),.012),
+ (plant_bend(Vector((0,0,1.975))),.014),
+ (plant_bend(Vector((0,0,2.015))),.020),
+ (head_aligned(head_anchor+Vector((0,0,-.008))),.031),
+ (head_aligned(head_anchor+Vector((0,0,.003))),.039),
+]
+join_verts=[];join_faces=[]
+for center,radius in join_rings:
+ for j in range(24):
+  a=math.tau*j/24
+  offset=head_rotation @ Vector((radius*math.cos(a),radius*math.sin(a),0))
+  join_verts.append(tuple(center+offset))
+for i in range(len(join_rings)-1):
+ for j in range(24):
+  a=i*24+j;b=i*24+(j+1)%24
+  join_faces.append((a,b,b+24,a+24))
+join_mesh=bpy.data.meshes.new("continuous stalk to flower throat mesh")
+join_mesh.from_pydata(join_verts,[],join_faces);join_mesh.update()
+join_obj=bpy.data.objects.new("continuous stalk to flower throat",join_mesh)
+bpy.context.collection.objects.link(join_obj)
+join_mesh.materials.append(green)
+for poly in join_mesh.polygons: poly.use_smooth=True
+# Check the *real* petal root coordinates (object transforms included).
+roots=[]
+for obj in bpy.context.scene.objects:
+ if obj.name.startswith("lily petal "):
+  roots.extend([obj.matrix_world @ obj.data.vertices[j].co for j in range(10)])
+assert len(roots)==60
+throat=head_aligned(head_anchor)
+root_distances=[(p-throat).length for p in roots]
+assert max(root_distances)<.055,("Petal root outside joining collar",max(root_distances))
+assert (join_rings[-1][0]-throat).length<.004
+assert (plant_bend(Vector((0,0,2.035)))-throat).length<1e-6
+print("LILY_V13_CONNECTED_THROAT_ROOTS",min(root_distances),max(root_distances),flush=True)
 # Export actual mesh, then render studio views.
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.export_scene.gltf(filepath=os.path.join(out,"white_lily_single.glb"),export_format='GLB')
