@@ -53,11 +53,11 @@ def make_leaf(index,angle,base_z,length,spread,twist):
  obj=bpy.data.objects.new("lily leaf %d"%index,mesh)
  bpy.context.collection.objects.link(obj);mesh.materials.append(leaf_green)
  for poly in mesh.polygons:poly.use_smooth=True
- solid=obj.modifiers.new("thin leaf lamina","SOLIDIFY");solid.thickness=.0016
+ solid=obj.modifiers.new("thin leaf lamina","SOLIDIFY");solid.thickness=.00065
  mid=[]
  for i in range(rows):
   mid.append(verts[i*cols+cols//2])
- tube("leaf midrib %d"%index,mid,.0018,leaf_vein)
+ tube("leaf midrib %d"%index,mid,.0011,leaf_vein)
 # Three leaves, staggered along the stem rather than a symmetrical rosette.
 make_leaf(1,.20,.53,.85,.69,.12)
 make_leaf(2,2.55,1.13,.72,.58,-.11)
@@ -130,6 +130,27 @@ for obj in head_parts: obj.location.z+=1.50
 for obj in bpy.context.scene.objects:
  if obj.type=="MESH" and obj.name.startswith("Sphere") and abs(obj.location.z-.845)<.001:
   obj.location.z+=1.50
+# V7: gently bow the entire living plant toward +X, with a modest droop at the flower.
+# Bend all stem/leaf/head components consistently, including the filaments and stigma.
+# Original flower petal topology and local curvature are retained.
+def plant_bend(p):
+ z=p.z
+ t=max(0.0,z/2.4)
+ return Vector((p.x+.32*t*t, p.y, z-.15*t*t*t))
+for obj in list(bpy.context.scene.objects):
+ if obj.type=="MESH":
+  for vert in obj.data.vertices:
+   original=Vector(vert.co)+obj.location
+   vert.co=plant_bend(original)-obj.location
+  obj.data.update()
+ elif obj.type=="CURVE":
+  for spline in obj.data.splines:
+   if spline.type=="POLY":
+    for pt in spline.points:
+     original=Vector(pt.co[:3])+obj.location
+     bent=plant_bend(original)-obj.location
+     pt.co=(*bent,1)
+print("LILY_V7_BENT_STEM_AND_THIN_LEAVES",flush=True)
 # Export actual mesh, then render studio views.
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.export_scene.gltf(filepath=os.path.join(out,"white_lily_single.glb"),export_format='GLB')
