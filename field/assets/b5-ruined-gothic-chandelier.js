@@ -38,64 +38,67 @@ export function createRuinedChandelier(T){
  for(let i=0;i<12;i++){const a=i*Math.PI/6;beam([2.25*Math.cos(a),2.98,2.25*Math.sin(a)],[2.25*Math.cos(a),2.63-(i%3)*.12,2.25*Math.sin(a)],.085,.008)}
  beam([0,4.5,0],[0,3.08,0],.20,.13);prism(0,2.89,0,.24,.35,9);beam([0,2.72,0],[0,2.28,0],.13,.015);
 
- // Pinterest reference study (pin IDs 504614333272681285,
- // 755127062554384715, 1017813584553469412): emphasize forged-vine
- // silhouettes, open negative spaces, and upward branching candle arms.
- // Exactly 50 vines x 100 sampled control coordinates = 5,000 points.
+ // Silhouette V4: tall narrow crown -> shoulders -> widest midline ->
+ // two separated drooping lower lobes, as specified by the user's pixel sketch.
+ // Original chandelier structure remains intact as an inner historical core.
  const vineMetal=new T.MeshStandardMaterial({color:0x494b4b,metalness:.62,roughness:.44,side:T.DoubleSide});
  const vinePointCount=100,vineStrandCount=50;
  root.userData.addedVineCoordinates=vinePointCount*vineStrandCount;
- root.userData.vineSilhouettePass='pinterest-outer-leaf-scroll-v3';
+ root.userData.vineSilhouettePass='tall-shouldered-drooping-lobes-v4';
+ function sculpt(points,r=.065,name='silhouette-branch'){
+   const o=mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)),false,'centripetal',.4),Math.max(80,points.length*2),r,7,false),vineMetal);
+   o.name=name;return o;
+ }
+ // 10 radial major branches: the widest tips reach radius 4.35 at mid-height.
+ // Deliberately offset the lower hanging elements to leave the middle empty.
+ for(let i=0;i<10;i++){
+   const a=i*Math.PI/5,c=Math.cos(a),s=Math.sin(a);
+   const profile=[[.42,4.74],[.9,4.52],[1.55,4.14],[2.35,3.80],[3.28,3.46],[4.25,3.40],[4.43,3.53],[4.36,3.74]];
+   sculpt(profile.map(([r,y])=>[r*c,y,r*s]),.095,'wide-candelabrum-arm-'+i);
+   if(i%2===0){
+     const drop=[[3.38,3.43],[3.75,3.06],[3.85,2.58],[3.66,2.12],[3.37,1.86],[3.15,2.01],[3.22,2.28]];
+     sculpt(drop.map(([r,y])=>[r*c,y,r*s]),.067,'hanging-lobe-'+i);
+   }
+ }
+ // Compact upper shoulder canopy, visibly smaller than the central wings.
+ for(let i=0;i<8;i++){
+   const a=(i+.5)*Math.PI/4,c=Math.cos(a),s=Math.sin(a);
+   sculpt([[.24,5.20],[.75,5.13],[1.38,4.94],[1.95,4.61],[2.20,4.53],[2.30,4.70]]
+     .map(([r,y])=>[r*c,y,r*s]),.069,'shoulder-scroll-'+i);
+ }
+ // 50 thin vines, 100 control points each, follow five separate vertical
+ // bands rather than forming five nearly horizontal tire-like rings.
  for(let strand=0;strand<vineStrandCount;strand++){
    const bay=strand%10,layer=Math.floor(strand/10);
-   const theta=(bay+.5)*Math.PI/5;
-   const handed=bay%2===0?1:-1;
-   const samples=[];
-   for(let k=0;k<vinePointCount;k++){
-     const t=k/(vinePointCount-1);
-     // Broad open S-stem (first 68%), then a small terminal curl.
-     // Separate height bands avoid the previous tangled horizontal nest.
-     const curl=Math.max(0,(t-.68)/.32);
-     const thetaOffset=handed*(.045*Math.sin(t*Math.PI*1.4)+.19*Math.sin(t*Math.PI*.8)+curl*curl*1.85);
-     const phi=theta+thetaOffset;
-     const outward=[.39,.64,.48,.78,.55][layer];
-     const radial=2.00+outward*Math.sin(t*Math.PI*.83)-.15*curl;
-     const base=[3.02,3.30,3.57,3.86,4.12][layer];
-     const lift=[.62,.76,.57,.83,.68][layer];
-     const y=base+lift*Math.sin(t*Math.PI*.80)+.22*t-.10*curl;
-     samples.push(new T.Vector3(radial*Math.cos(phi),y,radial*Math.sin(phi)));
+   const a=(bay+.20)*Math.PI/5,hand=bay%2?1:-1;
+   const pts=[];
+   for(let j=0;j<vinePointCount;j++){
+     const t=j/(vinePointCount-1),curl=Math.max(0,(t-.78)/.22);
+     const r0=[.55,1.25,2.12,3.02,3.57][layer];
+     const spread=[.46,.55,.65,.63,.48][layer];
+     const r=r0+spread*Math.sin(t*Math.PI*.78)-.18*curl;
+     const y0=[5.20,4.83,4.28,3.66,2.94][layer];
+     const y=y0-[.62,.74,.80,.71,.88][layer]*t+.16*Math.sin(t*Math.PI*1.35);
+     const angle=a+hand*(.075*Math.sin(t*Math.PI)+curl*curl*1.15);
+     pts.push(new T.Vector3(r*Math.cos(angle),y,r*Math.sin(angle)));
    }
-   const curve=new T.CatmullRomCurve3(samples,false,'centripetal',.45);
-   const tube=mesh(new T.TubeGeometry(curve,135,layer===3?.039:.033,6,false),vineMetal);
-   tube.name='pinterest-vine-'+String(strand).padStart(2,'0');
+   const o=mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts,false,'centripetal',.45),130,.027,6,false),vineMetal);
+   o.name='vertical-vine-'+String(strand).padStart(2,'0');
  }
- // Five large, widely spaced sweeping branches create the primary
- // silhouette at viewing distance. Their curled tips stay distinct.
- for(let i=0;i<5;i++){
-   const a=(i+.25)*Math.PI*2/5,points=[];
-   for(let j=0;j<=120;j++){
-     const t=j/120,tip=Math.max(0,(t-.76)/.24);
-     const radius=.82+1.65*Math.sin(t*Math.PI*.63)-.27*tip;
-     const phi=a+.10*Math.sin(t*Math.PI)+tip*tip*.65;
-     const y=4.35+1.55*Math.sin(t*Math.PI*.78)+.24*t;
-     points.push(new T.Vector3(radius*Math.cos(phi),y,radius*Math.sin(phi)));
-   }
-   const o=mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points),140,.067,7,false),vineMetal);
-   o.name='major-branch-'+i;
- }
- // Distinct forged leaves near the outer edge: flat tapered blade shapes
- // with a central ridge, not more circular rings.
+ // Larger leaf silhouettes on the outer hanging branches, avoiding the
+ // tiny edge-on blades from V3. Use solid low-poly tapered leaf meshes.
  for(let i=0;i<20;i++){
-   const a=(i+.35)*Math.PI/10;
-   const r=2.42+(i%3)*.10,y=3.40+(i%5)*.26;
-   const c=Math.cos(a),s=Math.sin(a),w=.105,h=.34;
-   const verts=[r*c,y,r*s,(r+w)*c,y+h*.45,(r+w)*s,(r+.08)*c,y+h,(r+.08)*s,(r-w)*c,y+h*.45,(r-w)*s,
-     (r+.04)*c,y+h*.45+.075,(r+.04)*s];
-   const geo=new T.BufferGeometry();
-   geo.setAttribute('position',new T.Float32BufferAttribute(verts,3));
-   geo.setIndex([0,1,4,1,2,4,2,3,4,3,0,4]);
-   geo.computeVertexNormals();
-   const leaf=mesh(geo,vineMetal);leaf.name='forged-leaf-'+i;
+   const a=(i+.35)*Math.PI/10,c=Math.cos(a),s=Math.sin(a);
+   const r=3.55+(i%3)*.12,y=2.26+(i%5)*.25;
+   const tang=[-s,c],w=.24,h=.58;
+   const v=[r*c,y,r*s,
+     r*c+tang[0]*w,y+h*.40,r*s+tang[1]*w,
+     (r+.14)*c,y+h,(r+.14)*s,
+     r*c-tang[0]*w,y+h*.40,r*s-tang[1]*w,
+     (r+.09)*c,y+h*.46,(r+.09)*s];
+   const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(v,3));
+   g.setIndex([0,1,4,1,2,4,2,3,4,3,0,4]);g.computeVertexNormals();
+   mesh(g,vineMetal).name='large-forged-leaf-'+i;
  }
  // Fallen detached ring fragments and chipped stone pieces rest on y=0.
  for(let i=0;i<9;i++){const a=i*2.399,r=.75+(i%4)*.46;chip(Math.cos(a)*r,0,Math.sin(a)*r,.25+(i%3)*.11,.15+(i%4)*.07,.27+(i%2)*.13,i+4)}
