@@ -1,7 +1,7 @@
 """Floor 6 garden: modular stylized grass clumps; separate GLB and four renders."""
 import bpy, math, os, random
 from mathutils import Vector
-random.seed(613)
+random.seed(614)
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
 out=os.path.abspath('render-output/floor6/garden-grass'); os.makedirs(out,exist_ok=True)
 def mat(name,color):
@@ -9,7 +9,7 @@ def mat(name,color):
  m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*color,1)
  m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.82
  return m
-colors=[mat('soft moss green',(.16,.32,.10)),mat('sunlit grass',(.34,.49,.16)),mat('forest grass',(.11,.25,.09)),mat('warm meadow',(.40,.47,.18))]
+colors=[mat('soft moss green',(.12,.27,.075)),mat('sunlit grass',(.30,.48,.105)),mat('forest grass',(.065,.18,.055)),mat('warm meadow',(.39,.43,.12))]
 # Four independent BOTW-inspired modular grass clumps: many narrow, flexible, curved blades with varied heights.
 # Each clump occupies a sub-cell of the presentation layout and can be reused alone.
 for clump in range(4):
@@ -22,16 +22,16 @@ for clump in range(4):
    angle=blade*2.399963+clump*.7+random.uniform(-.22,.22)
    radius=random.uniform(.006,[.12,.19,.25,.21][clump])
    origin=base+Vector((radius*math.cos(angle),radius*math.sin(angle),0))
-   length=random.uniform(*[(.11,.24),(.18,.38),(.25,.52),(.13,.43)][clump])
-   lean=random.uniform(.07,.22 if clump==0 else .38)
-   width=random.uniform(.009,.028)
+   length=random.uniform(*[(.08,.29),(.13,.47),(.17,.62),(.10,.52)][clump]) * random.choice((.68,.87,1.0,1.12))
+   lean=random.uniform(.10,.30 if clump==0 else .48)
+   width=random.uniform(.008,.023)
    tangent=Vector((math.cos(angle),math.sin(angle),0));side=Vector((-tangent.y,tangent.x,0))
-   sway=random.uniform(-.045,.045);twist=random.uniform(-.35,.35)
+   sway=random.uniform(-.09,.09);twist=random.uniform(-.65,.65)
    start=len(verts)
    for step in range(10):
     t=step/9
-    center=origin+tangent*(lean*t*t)+side*(sway*t*t)+Vector((0,0,length*(t-.13*t*t)))
-    half=width*(math.sin(math.pi*(.08+.84*t))**.6)*(1-t)**.45
+    center=origin+tangent*(lean*(.14*t+.86*t**2.5))+side*(sway*(t**1.8))+Vector((0,0,length*(t-.30*t**3)))
+    half=width*(math.sin(math.pi*(.06+.90*t))**.7)*(1-t)**.75
     fold=Vector((0,0,.006*math.sin(math.pi*t)))
     for q in (-1,0,1):verts.append(tuple(center+side*(q*half)+tangent*(twist*t*q*.012)+fold*(1-q*q)))
    for step in range(9):
@@ -46,7 +46,7 @@ for clump in range(4):
 bpy.ops.object.select_all(action='DESELECT')
 for ob in bpy.context.scene.objects:
  if ob.type=='MESH':ob.select_set(True)
-bpy.ops.export_scene.gltf(filepath=os.path.join(out,'f6_garden_grass_clumps_v4.glb'),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'f6_garden_grass_clumps_v5.glb'),export_format='GLB',use_selection=True)
 bpy.ops.object.select_all(action='DESELECT')
 world=bpy.context.scene.world;world.color=(.22,.27,.22)
 def light(loc,power,size):
