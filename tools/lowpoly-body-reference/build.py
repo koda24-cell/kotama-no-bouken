@@ -78,7 +78,6 @@ try:
  head.select_set(True)
  bpy.context.view_layer.objects.active=head
  bpy.ops.object.quadriflow_remesh(mode='FACES',target_faces=1100,
-                                 preserve_sharp=False,preserve_boundary=False,
                                  use_mesh_symmetry=True)
  retopo_result='quadriflow_1100_faces'
 except Exception as exc:
