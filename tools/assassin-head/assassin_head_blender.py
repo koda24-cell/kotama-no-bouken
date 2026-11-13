@@ -28,7 +28,7 @@ for i in range(R):
   verts.append((x,y,z))
 for i in range(R-1):
  for j in range(S):
-  k=i*S+j;q=i*S+(j+1)%S;faces.append((k,q,q+S,k+S))
+  k=i*S+j;q=i*S+(j+1)%S;faces.extend([(k,q,q+S),(k,q+S,k+S)])
 face=mesh('SKIN_FACE__5000_vertices',verts,faces,skin)
 hv=[];hf=[]
 for strand in range(100):
@@ -51,7 +51,7 @@ for strand in range(100):
   z=rootz+(endz-rootz)*u;y=rooty+(endy-rooty)*u-.10*math.sin(math.pi*u)
   w=(.022+.016*math.sin(math.pi*u))*(1-u**3)+.001
   hv.extend([(x-w,y,z),(x+w,y-.008,z)])
-  if k:hf.append((base+2*(k-1),base+2*(k-1)+1,base+2*k+1,base+2*k))
+  if k:\n   a=base+2*(k-1);b=a+1;c=base+2*k;d=c+1\n   hf.extend([(a,b,d),(a,d,c)])
 hair=mesh('HAIR_10000_vertices_100_strands',hv,hf,hairmat)
 def sphere(name,loc,scale,material):
  bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=12,location=loc)
