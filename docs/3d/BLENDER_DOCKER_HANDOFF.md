@@ -51,3 +51,17 @@ pushトリガーでも自動実行される。実行ページ下のArtifactsか�
 
 ## 新しいチャットへの依頼文（コピー用）
 「GitHub `koda24-cell/kotama-no-bouken` の `AGENTS.md` と `docs/3d/BLENDER_DOCKER_HANDOFF.md` を読み、PR #253のDocker一括レンダリングの最新実行結果を確認して、4層の3D小物品質改善を引き継いでください。既存形状は保持し、追加造形・GLB・3方向PNG比較を行い、development向けPRで管理してください。」
+
+
+## 2026-11-13 追記：B4 V4 の Docker レジストリ制限と回避策
+
+- 対象: [PR #301](https://github.com/koda24-cell/kotama-no-bouken/pull/301)、[失敗したActions run #43187606098](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43187606098)。
+- **確認済みの事実**: Node.js の `tools/b4-render/export-rockwall-v4.mjs` は正常終了し、V3・V4通常岩壁・V4マグマ岩壁の3つのGLBをエクスポートした。失敗したのは次の `docker pull lscr.io/linuxserver/blender:latest`。ログ末尾は `error from registry: retry-after: 1.151084ms, allowed: 44000/minute`、exit code 1。したがって**今回の失敗を造形・GLB生成の失敗と混同しない**。
+- **対処**: V4専用ワークフロー `.github/workflows/b4-lava-rockwall-v4-render.yml` の Docker pull/run を `sudo apt-get update -qq`、`sudo apt-get install -y blender`、ホスト上の `blender -b -t 2 --python tools/b4-render/render-rockwall-color.py -- "$glb" render-output` に変更。修正コミット `d8fc55f2dffe20cecc2a637de7121e2fdd42c493`。
+- **検証状態**: 修正コミットは作成済み。ただし、このメモ記録時点で**修正後のActions成功・PNGの実在・レンダリング品質は未確認**。成功を宣言しない。
+- **次回の確認**: PR #301 の最新Actions実行を確認し、3モデルの正面・側面・斜めのPNGとGLBを照合する。UbuntuパッケージのBlenderはDocker版とバージョンが異なる可能性があるため、スクリプト互換性・材質・カメラ・レンダリング結果を検証する。
+- **再発防止**: レジストリ制限時に同じ `docker pull` を繰り返す前に、ホストBlenderまたは固定バージョンの代替導入方法を検討する。既存の他ワークフローは勝手に変更しない。
+
+### 2026-11-13 追加：Blender直接実行の見かけ上の成功に注意
+- run #43336789602 はActions全体がsuccessでも、ArtifactにはGLB 3点のみでPNGが0点。ログには `ModuleNotFoundError: No module named 'numpy'` があり、Blender 5.0.1のglTF importerが失敗した。**Actions成功をレンダリング成功と判断しないこと**。
+- 対策: `python3-numpy` をインストールし、Blender側からnumpy importを事前検証。`blender --python-exit-code 1` を付けてPython例外をジョブ失敗として伝播させる。実レンダリングの成功とPNG存在は修正後に別途確認する。
