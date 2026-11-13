@@ -57,6 +57,27 @@ export function createB5GloomPatch(THREE,{seed=1,animate=true}={}){
   tube.geometry.dispose();tube.geometry=tapered;
   tube.name='gloom-tendril';group.add(tube);
  }
+ // Creeping infection: branching, low-profile black ridges crawl toward tile edges.
+ // These are separate geometry so the approved puddle and tendrils remain intact.
+ const infectionMat=new THREE.MeshStandardMaterial({color:0x09080d,roughness:.36,metalness:.02,side:THREE.DoubleSide});
+ for(let k=0;k<13;k++){
+  const a=k*2.39996+random()*.45, reach=.36+random()*.28;
+  const pathPoints=[];
+  for(let j=0;j<7;j++){
+   const t=j/6,angle=a+.13*Math.sin(t*8+k),r=.30+t*reach;
+   pathPoints.push(new THREE.Vector3(Math.cos(angle)*r,.012+.004*Math.sin(t*9+k),Math.sin(angle)*r));
+  }
+  const curve=new THREE.CatmullRomCurve3(pathPoints);
+  const ridge=new THREE.Mesh(new THREE.TubeGeometry(curve,22,.007+random()*.006,5,false),infectionMat);
+  ridge.name='gloom-creeping-root';group.add(ridge);
+  // Tiny offshoots make the contamination less geometrically radial.
+  for(let q=0;q<2;q++){
+   const t=.35+random()*.45,origin=curve.getPoint(t),angle=a+(q?1:-1)*(.4+random()*.5);
+   const end=origin.clone().add(new THREE.Vector3(Math.cos(angle)*(.06+random()*.08),0,Math.sin(angle)*(.06+random()*.08)));
+   const twig=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([origin,origin.clone().lerp(end,.55).add(new THREE.Vector3(0,.009,0)),end]),10,.0035,4,false),infectionMat);
+   twig.name='gloom-root-offshoot';group.add(twig);
+  }
+ }
  const particles=[];
  if(animate){
   const particleMat=new THREE.MeshBasicMaterial({color:0x912c61,transparent:true,opacity:.46,depthWrite:false});
