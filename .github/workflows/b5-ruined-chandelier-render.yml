@@ -1,0 +1,67 @@
+name: B5 Ruined Gothic Chandelier Render
+# Render verification retry: source model unchanged.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feature/b5-ruined-chandelier-*'
+    paths:
+      - 'field/assets/b5-ruined-gothic-chandelier.js'
+      - 'tools/b5-chandelier-render/**'
+      - '.github/workflows/b5-ruined-chandelier-render.yml'
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - name: Export GLB
+        run: node tools/b5-chandelier-render/export.mjs
+      - name: Blender Docker three-direction gray renders
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
+            set -eu
+            blender -b -t 2 --python tools/b5-chandelier-render/render.py -- render-output/b5-chandelier/ruined-gothic-chandelier.glb render-output/b5-chandelier
+          '
+      - name: Validate GLB and three PNG
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('render-output/b5-chandelier')
+          for name in ['ruined-gothic-chandelier.glb']+[f'ruined-gothic-chandelier-{v}.png' for v in ['front','back','top-oblique']]:
+            f=p/name
+            assert f.exists() and f.stat().st_size>1024,name
+            assert f.read_bytes()[:4]==(b'glTF' if name.endswith('.glb') else b'\x89PNG'),name
+            print(name,f.stat().st_size)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-ruined-gothic-chandelier-glb-png
+          path: render-output/b5-chandelier/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Preserve approved V7 GLB and review PNG in repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          target="assets/models/floor5"
+          mkdir -p "$target/reviews/ruined-gothic-chandelier"
+          cp render-output/b5-chandelier/ruined-gothic-chandelier.glb "$target/ruined-gothic-chandelier.glb"
+          cp render-output/b5-chandelier/ruined-gothic-chandelier-*.png "$target/reviews/ruined-gothic-chandelier/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          if git diff --cached --quiet; then
+            echo "Approved V7 assets already preserved."
+          else
+            git commit -m "assets(b5): preserve approved chandelier V7 GLB and review PNG"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
