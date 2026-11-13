@@ -33,33 +33,62 @@ for i in range(8):
  a=i*math.tau/8
  ico("original-style masonry %02d"%i,(math.cos(a)*.87,math.sin(a)*.75,.18),(.49,.42,.27),stone,1)
 # Root masses and crusty uneven silhouettes, asymmetrical to avoid perfect rosettes.
-for i in range(19):
+for i in range(8):
  a=i*2.399+random.uniform(-.3,.3)
  rad=random.uniform(.12,1.0)
- z=random.uniform(.22,.53)
+ z=random.uniform(.13,.27)
  ico("black growth %02d"%i,(math.cos(a)*rad,math.sin(a)*rad,z),
-     (random.uniform(.20,.48),random.uniform(.18,.42),random.uniform(.18,.55)),
+     (random.uniform(.29,.53),random.uniform(.25,.48),random.uniform(.09,.19)),
      black if i%4 else purple,2)
+# V2: low, broad irregular crust sheets; edges feather into the existing masonry.
+# Each polygon has an uneven outer boundary, avoiding a circular ore pile.
+def crust_sheet(index,theta,reach):
+ n=11; verts=[]; faces=[]
+ cx=.18*math.cos(theta);cy=.18*math.sin(theta)
+ for ring in (0,1):
+  for j in range(n):
+   a=theta+(j/(n-1)-.5)*1.22
+   rr=(.22 if ring==0 else reach)*(1+.12*math.sin(j*2.7+index))
+   z=.25 if ring==0 else .10+.025*math.sin(j*3.1+index)
+   verts.append((cx+rr*math.cos(a),cy+rr*math.sin(a),z))
+ for j in range(n-1):faces.append((j,j+1,n+j+1,n+j))
+ mesh=bpy.data.meshes.new("corruption crust mesh")
+ mesh.from_pydata(verts,[],faces);mesh.update()
+ obj=bpy.data.objects.new("creeping crust sheet %02d"%index,mesh)
+ bpy.context.collection.objects.link(obj);mesh.materials.append(black if index%3 else purple)
+for i in range(13):
+ crust_sheet(i,i*2.399,random.uniform(.78,1.33))
+# Tiny discontinuous fissures on top of low crust, rather than tall glowing wires.
+for i in range(17):
+ a=i*2.399+.31
+ r0=random.uniform(.32,.76)
+ pts=[]
+ for j in range(5):
+  t=j/4
+  rr=r0+t*.25
+  aa=a+.04*math.sin(j*2.2+i)
+  pts.append((math.cos(aa)*rr,math.sin(aa)*rr,.267-.10*t))
+ link("surface hairline fissure %02d"%i,pts,.007,glow)
 # Mineral teeth growing upward with irregular heights.
-for i in range(14):
+for i in range(5):
  a=i*2.399
  r=random.uniform(.22,.93)
  x,y=math.cos(a)*r,math.sin(a)*r
- height=random.uniform(.25,.92)
- bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=random.uniform(.12,.23),radius2=.008,depth=height,location=(x,y,.37+height/2))
+ height=random.uniform(.20,.52)
+ bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=random.uniform(.12,.23),radius2=.008,depth=height,location=(x,y,.18+height/2))
  o=bpy.context.object;o.name="jagged mineral tooth %02d"%i
  o.rotation_euler=(random.uniform(-.24,.24),random.uniform(-.22,.22),a)
  o.data.materials.append(black if i%3 else purple)
 # Glowing fissures run along top of the black crust; not neon tubes in empty space.
-for i in range(9):
- a=i*math.tau/9+.22
+for i in range(3):
+ a=i*math.tau/3+.22
  r=random.uniform(.12,.35)
  pts=[]
  for j in range(6):
   t=j/5
-  rr=r+t*random.uniform(.55,.72)
+  rr=r+t*random.uniform(.35,.47)
   aa=a+math.sin(t*8+i)*.10
-  pts.append((math.cos(aa)*rr,math.sin(aa)*rr,.68-.22*t+.025*math.sin(t*14+i)))
+  pts.append((math.cos(aa)*rr,math.sin(aa)*rr,.30-.09*t+.012*math.sin(t*14+i)))
  link("embedded fissure %02d"%i,pts,.012,glow)
 # Thin hooked roots crawling outward.
 for i in range(8):
