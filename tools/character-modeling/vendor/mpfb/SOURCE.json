@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/makehumancommunity/mpfb2",
+  "commit": "9de0707fdc88438d7c53a1a2ac7937d9221e2431",
+  "path": "src/mpfb/data/3dobjs/base.obj",
+  "license": "CC0-1.0 (mesh only; upstream code GPL-3.0-or-later)",
+  "sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c",
+  "retrieved_date": "2026-11-14"
+}
