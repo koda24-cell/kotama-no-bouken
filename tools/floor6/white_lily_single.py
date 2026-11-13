@@ -23,7 +23,7 @@ def tube(name,points,radius,mat,segments=6):
  for p,xyz in zip(spl.points,points):p.co=(*xyz,1)
  ob=bpy.data.objects.new(name,curve);bpy.context.collection.objects.link(ob);ob.data.materials.append(mat)
  return ob
-tube("curved stalk",[(0,0,0),(.01,0,.15),(.03,0,.32),(0,0,.50)],.013,green)
+tube("curved stalk",[(0,0,0),(.01,0,.40),(.03,0,.85),(.02,0,1.30),(.015,0,1.70),(0,0,2.00)],.013,green)
 
 # V5: preserve the approved flower head unchanged; add three slender lanceolate leaves.
 # Each leaf starts inside the existing stalk and bends naturally outwards.
@@ -36,12 +36,12 @@ def make_leaf(index,angle,base_z,length,spread,twist):
  rows,cols=18,7
  for i in range(rows):
   t=i/(rows-1)
-  reach=spread*(t**.87)
-  z=base_z+length*(.30*t-.28*t*t)+.025*math.sin(math.pi*t)
-  halfwidth=.065*(math.sin(math.pi*t)**.9)*(1-.2*t)
+  reach=spread*(.12*t+.88*(t**1.38))
+  z=base_z+length*(.73*t-.51*t*t)+.095*math.sin(math.pi*t)
+  halfwidth=.105*(math.sin(math.pi*t)**.85)*(1-.15*t)
   for j in range(cols):
    q=(j-(cols-1)/2)/((cols-1)/2)
-   pos=u*reach+v*(q*halfwidth+twist*t*t*q*.025)+Vector((0,0,z+.018*(1-q*q)*math.sin(math.pi*t)))
+   pos=u*reach+v*(q*halfwidth+twist*t*t*q*.025)+Vector((0,0,z+.040*(1-q*q)*math.sin(math.pi*t)))
    verts.append(tuple(pos))
  faces=[]
  for i in range(rows-1):
@@ -59,9 +59,9 @@ def make_leaf(index,angle,base_z,length,spread,twist):
   mid.append(verts[i*cols+cols//2])
  tube("leaf midrib %d"%index,mid,.0018,leaf_vein)
 # Three leaves, staggered along the stem rather than a symmetrical rosette.
-make_leaf(1,.20,.16,.29,.31,.12)
-make_leaf(2,2.55,.245,.25,.26,-.11)
-make_leaf(3,4.65,.095,.23,.24,.08)
+make_leaf(1,.20,.53,.85,.69,.12)
+make_leaf(2,2.55,1.13,.72,.58,-.11)
+make_leaf(3,4.65,.24,.68,.55,.08)
 print("LILY_LEAF_COUNT: 3",flush=True)
 
 # 1000 sculpting coordinates: six 10x16 surface lattices (960) + 40 independent silhouette guides.
@@ -122,6 +122,14 @@ for i in range(6):
 tube("central pistil",[(0,0,.54),(0,0,.70),(0,0,.84)],.005,pale)
 bpy.ops.mesh.primitive_uv_sphere_add(segments=12,ring_count=8,radius=.015,location=(0,0,.845))
 bpy.context.object.data.materials.append(pale)
+# Keep the V4 flower geometry completely unchanged: translate only the entire head to the top of the 4x stem.
+head_parts=[o for o in bpy.context.scene.objects if o.name.startswith(("lily petal ","filament ","rust anther ","central pistil"))]
+# Pistil tip is the sole unlabelled mesh from the flower; explicitly tag it below if needed.
+for obj in head_parts: obj.location.z+=1.50
+# Translate the pistil stigma mesh as well (its original center is z=.845).
+for obj in bpy.context.scene.objects:
+ if obj.type=="MESH" and obj.name.startswith("Sphere") and abs(obj.location.z-.845)<.001:
+  obj.location.z+=1.50
 # Export actual mesh, then render studio views.
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.export_scene.gltf(filepath=os.path.join(out,"white_lily_single.glb"),export_format='GLB')
@@ -130,7 +138,7 @@ world.color=(.13,.16,.2)
 def light(name,loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc)
  ob=bpy.context.object;ob.name=name;ob.data.energy=power;ob.data.shape='DISK';ob.data.size=size
- direction=Vector((0,0,.46))-ob.location;ob.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
+ direction=Vector((0,0,1.30))-ob.location;ob.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
 light("large softbox",(2,-3,4),500,3)
 light("rim softbox",(-2,2,3),350,2)
 bpy.ops.object.camera_add()
@@ -139,10 +147,10 @@ scene=bpy.context.scene
 scene.render.engine='CYCLES';scene.cycles.samples=32
 scene.render.resolution_x=960;scene.render.resolution_y=960;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
-for name,loc in [('angle',(1.5,-2.1,1.5)),('front',(0,-2.6,.95)),('side',(2.6,0,1.0)),('top',(0,-.01,3.0))]:
+for name,loc in [('angle',(3.0,-4.2,3.3)),('front',(0,-5.0,2.25)),('side',(5.0,0,2.25)),('top',(0,-.01,5.5))]:
  cam.location=loc
- cam.rotation_euler=(Vector((0,0,.49))-cam.location).to_track_quat('-Z','Y').to_euler()
- cam.data.type='ORTHO';cam.data.ortho_scale=1.8
+ cam.rotation_euler=(Vector((0,0,1.28))-cam.location).to_track_quat('-Z','Y').to_euler()
+ cam.data.type='ORTHO';cam.data.ortho_scale=3.1
  scene.render.filepath=os.path.join(out,"white_lily_"+name+".png")
  bpy.ops.render.render(write_still=True)
 with open(os.path.join(out,"control_points_1000.csv"),'w') as f:
