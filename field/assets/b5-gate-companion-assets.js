@@ -87,15 +87,37 @@ export function createB5GateCompanion(THREE,variant='broken-pillar',seed=1){
    }
   }
  }
+ // Profiled square stone: four stepped bevel rings across top/bottom edges.
+ // The rounded corners and horizontal bands are real geometry, not a texture.
+ function profiledSquare(w,h,d,x,y,z,mat,name){
+  const shape=new THREE.Shape(),c=Math.min(w,d)*.105;
+  shape.moveTo(-w/2+c,-d/2);shape.lineTo(w/2-c,-d/2);
+  shape.quadraticCurveTo(w/2,-d/2,w/2,-d/2+c);
+  shape.lineTo(w/2,d/2-c);shape.quadraticCurveTo(w/2,d/2,w/2-c,d/2);
+  shape.lineTo(-w/2+c,d/2);shape.quadraticCurveTo(-w/2,d/2,-w/2,d/2-c);
+  shape.lineTo(-w/2,-d/2+c);shape.quadraticCurveTo(-w/2,-d/2,-w/2+c,-d/2);
+  const g=new THREE.ExtrudeGeometry(shape,{depth:h,steps:2,curveSegments:5,
+   bevelEnabled:true,bevelSegments:4,
+   bevelSize:Math.min(w,d)*.045,bevelThickness:Math.min(h*.23,.025)});
+  g.rotateX(-Math.PI/2);
+  const body=mesh(g,mat,name,x,y-h/2,z);
+  // Thin carved setbacks at both lips create readable edge facets.
+  for(const sign of [-1,1]){
+   const lip=box(w*.955,Math.min(h*.14,.025),d*.955,x,
+    y+sign*(h*.5-Math.min(h*.10,.016)),z,sign>0?light:dark,name+'-edge-moulding');
+   lip.userData.isEdgeMoulding=true;
+  }
+  return body;
+ }
  if(variant==='standing-pillar'){
   // Taller architectural silhouette: stepped pedestal, fluted shaft,
   // layered Gothic capital, chamfered crown and sculpted corner supports.
   // Keep this entirely isolated from the approved gate and other variants.
-  box(.78,.10,.78,0,.05,0,dark,'foundation-course');
-  box(.71,.09,.71,0,.145,0,stone,'pedestal-lower');
-  box(.62,.10,.62,0,.24,0,light,'pedestal-moulding');
-  box(.51,.20,.51,0,.39,0,stone,'pedestal-core');
-  box(.57,.07,.57,0,.525,0,light,'pedestal-upper');
+  profiledSquare(.78,.10,.78,0,.05,0,dark,'foundation-course');
+  profiledSquare(.71,.09,.71,0,.145,0,stone,'pedestal-lower');
+  profiledSquare(.62,.10,.62,0,.24,0,light,'pedestal-moulding');
+  profiledSquare(.51,.20,.51,0,.39,0,stone,'pedestal-core');
+  profiledSquare(.57,.07,.57,0,.525,0,light,'pedestal-upper');
   const baseY=.56,shaftH=1.53;
   shaft(.205,shaftH,0,baseY,0,false);
   // Eight vertical recessed grooves; actual raised border ribs on the shaft.
@@ -137,8 +159,8 @@ export function createB5GateCompanion(THREE,variant='broken-pillar',seed=1){
     'shaft-branch-fracture');
   }
   const crownY=baseY+shaftH;
-  box(.45,.085,.45,0,crownY+.045,0,light,'capital-neck');
-  box(.54,.09,.54,0,crownY+.135,0,stone,'capital-lower-moulding');
+  profiledSquare(.45,.085,.45,0,crownY+.045,0,light,'capital-neck');
+  profiledSquare(.54,.09,.54,0,crownY+.135,0,stone,'capital-lower-moulding');
   for(let i=0;i<8;i++){
    const a=i*Math.PI/4,dist=.235;
    const leaf=mesh(new THREE.ConeGeometry(.095,.30,5),i%2?stone:light,
@@ -146,8 +168,8 @@ export function createB5GateCompanion(THREE,variant='broken-pillar',seed=1){
    leaf.rotation.z=-Math.cos(a)*.30;
    leaf.rotation.x=Math.sin(a)*.30;
   }
-  box(.67,.105,.67,0,crownY+.35,0,light,'capital-abacus');
-  box(.75,.065,.75,0,crownY+.425,0,dark,'capital-crown-top');
+  profiledSquare(.67,.105,.67,0,crownY+.35,0,light,'capital-abacus');
+  profiledSquare(.75,.065,.75,0,crownY+.425,0,dark,'capital-crown-top');
   // Corner scroll bosses and shallow fracture chips for aged silhouette.
   for(let i=0;i<4;i++){
    const x=(i%2?.305:-.305),z=(i<2?.305:-.305);
