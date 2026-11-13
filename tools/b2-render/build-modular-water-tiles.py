@@ -8,13 +8,13 @@ def mat(name,col,rough=.6,metal=0,alpha=1):
  p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*col,alpha);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal;p.inputs['Alpha'].default_value=alpha
  if alpha<1:m.surface_render_method='DITHERED'
  return m
-water=mat('Deep blue turquoise water',(.012,.145,.24),.055,.08,.96)
+water=mat('Deep blue turquoise water v04',(.009,.105,.17),.32,0,1)
 ripple=mat('Soft turquoise water caustic lines',(.07,.32,.41),.22,0,.10)
-stone=mat('Cold dark carved stone',(.17,.27,.34),.84)
+stone=mat('Cold dark carved stone',(.085,.13,.17),.92)
 wet=mat('Waterlogged slate',(.12,.24,.31),.25)
-ice=mat('Translucent icy edge',(.39,.76,.89),.24,.05,.8)
+ice=mat('Translucent icy edge',(.25,.51,.60),.47,0,1)
 frost=mat('Frosted white ice',(.46,.69,.76),.62)
-puddle=mat('Thin water film on weathered stone',(.035,.17,.23),.12,.04,.55)
+puddle=mat('Thin water film on weathered stone',(.02,.12,.16),.46,0,1)
 def objmesh(name,vs,fs,material):
  mesh=bpy.data.meshes.new(name);mesh.from_pydata(vs,[],fs);mesh.update();o=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(o);o.data.materials.append(material);return o
 def slab(name,x,y,z,sx,sy,th,material,seed):
@@ -55,33 +55,28 @@ def tile(mask):
     else:land_fs.append((a,a+1,a+1+n,a+n))
  objmesh('deep water cut to shoreline %02d'%mask,vs,fs,water)
  objmesh('single continuous dark slate shoreline',land_vs,land_fs,stone)
- # Wet stone and shallow puddles flow onto land without adding a pebble fence.
+ # Distinct larger, asymmetric rock shelves; thin water patches stay inside tile.
  for bit,side in [(8,'N'),(2,'E'),(1,'S'),(4,'W')]:
   if mask&bit:continue
-  for i in range(6):
-   t=-.4+i*.16
-   x,y=(t,.39) if side=='N' else ((t,-.39) if side=='S' else ((.39,t) if side=='E' else (-.39,t)))
-   slab('irregular wet stone film',x,y,.019,.23,.18,.004,puddle,mask*100+i*7+bit)
-   if i%4==0:
-    slab('frost embedded in bank',x,y,.025,.12,.10,.008,ice,mask*200+i*11+bit)
   for i in range(3):
-   t=-.29+i*.28
-   x,y=(t,.46) if side=='N' else ((t,-.46) if side=='S' else ((.46,t) if side=='E' else (-.46,t)))
-   slab('thin puddle extending into dry ground',x,y,.024,.28,.12,.003,puddle,mask*300+i*13+bit)
+   t=-.34+i*.34
+   x,y=(t,.40) if side=='N' else ((t,-.40) if side=='S' else ((.40,t) if side=='E' else (-.40,t)))
+   sx,sy=(.32,.16) if side in ('N','S') else (.16,.32)
+   slab('large fractured bank shelf',x,y,.024,sx,sy,.023,stone,mask*123+i*31+bit)
+   if i!=1:
+    slab('irregular shallow water in rock fissure',x,y,.037,sx*.63,sy*.65,.002,puddle,mask*173+i*37+bit)
+  # Broad wet fringe, not regularly spaced pebbles.
+  for i in range(2):
+   t=-.23+i*.46
+   x,y=(t,.455) if side=='N' else ((t,-.455) if side=='S' else ((.455,t) if side=='E' else (-.455,t)))
+   sx,sy=(.30,.07) if side in ('N','S') else (.07,.30)
+   slab('receding thin puddle on shore',x,y,.031,sx,sy,.001,puddle,mask*219+i*41+bit)
  # Water-only decorations never cross the tile boundary, so adjacent tiles remain seamless.
  for k in range(9):
   x=rng.uniform(-.29,.29);y=rng.uniform(-.29,.29)
   if coast(x,y)<.04:continue
   slab('submerged gravel',x,y,-.017,rng.uniform(.025,.09),rng.uniform(.025,.09),.016,stone,mask*1000+k)
- for k in range(2):
-  x=rng.uniform(-.28,.28);y=rng.uniform(-.28,.28)
-  if coast(x,y)<.08:continue
-  slab('subtle water glimmer',x,y,.009,rng.uniform(.03,.08),.004,.001,ripple,mask*2000+k)
- if mask in [0,1,4,8,2,5,10]:
-  for k in range(3):
-   x=rng.uniform(-.24,.24);y=rng.uniform(-.24,.24)
-   if coast(x,y)<.11:continue
-   slab('floating broken ice',x,y,.027,rng.uniform(.09,.2),rng.uniform(.08,.18),.035,ice,mask*3000+k)
+ # No white overlay glints or floating ice; avoid distracting striped speculars.
  objects=[o for o in bpy.context.scene.objects if o not in start]
  bpy.ops.object.select_all(action='DESELECT')
  for o in objects:o.select_set(True)
@@ -96,7 +91,7 @@ world=bpy.context.scene.world or bpy.data.worlds.new('Blue cavern')
 bpy.context.scene.world=world
 world.use_nodes=True
 world.node_tree.nodes['Background'].inputs['Color'].default_value=(.06,.12,.19,1)
-for loc,power,size in [((0,-5,9),1600,7),((-4,4,7),950,6)]:
+for loc,power,size in [((0,-5,9),750,7),((-4,4,7),420,6)]:
  bpy.ops.object.light_add(type='AREA',location=loc)
  o=bpy.context.object
  o.data.energy=power
@@ -104,7 +99,10 @@ for loc,power,size in [((0,-5,9),1600,7),((-4,4,7),950,6)]:
  o.rotation_euler=(Vector((0,0,0))-o.location).to_track_quat('-Z','Y').to_euler()
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
-scene.cycles.samples=32
+scene.cycles.samples=36
+scene.view_settings.view_transform='Standard'
+scene.view_settings.look='Medium High Contrast'
+scene.view_settings.exposure=-0.5
 scene.render.resolution_x=1300
 scene.render.resolution_y=1100
 scene.render.resolution_percentage=100
@@ -119,4 +117,4 @@ for name,pos,scale in [('top',(0,0,12),7.3),('angle',(7,-9,10),8.2),('side',(0,-
  bpy.ops.render.render(write_still=True)
  bpy.data.objects.remove(cam,do_unlink=True)
 with open(OUT+'/README.txt','w') as f:
- f.write('v0.3: water grids 109x109 vs 49x49 (4.95x vertices); shoreline slab outlines 40 vs 8 (5x). 16 tiles; N=8 E=2 S=1 W=4. Not yet approved.\\n')
+ f.write('v0.4: matte opaque dark turquoise water; large broken slate banks, broad shallow puddles; no white glints; 109x109 water grid; 16 tiles N8 E2 S1 W4. Awaiting approval.\\n')
