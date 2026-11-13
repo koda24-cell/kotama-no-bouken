@@ -136,12 +136,12 @@ for obj in bpy.context.scene.objects:
 def plant_bend(p):
  z=p.z
  t=max(0.0,z/2.4)
- return Vector((p.x+.32*t*t, p.y, z-.15*t*t*t))
+ return Vector((p.x+.62*t*t, p.y, z-.34*t*t*t))
 head_anchor=Vector((0,0,2.035))
 # The stalk TERMINATES at the blossom throat. Never extend it through the petals.
 # Tangent of the actual stalk bend at the attachment height.
 t=head_anchor.z/2.4
-stem_tangent=Vector((.64*t/2.4,0,1-.45*t*t/2.4)).normalized()
+stem_tangent=Vector((1.24*t/2.4,0,1-1.02*t*t/2.4)).normalized()
 head_rotation=Vector((0,0,1)).rotation_difference(stem_tangent)
 def head_aligned(p):
  return plant_bend(head_anchor)+head_rotation @ (p-head_anchor)
@@ -168,7 +168,7 @@ for obj in list(bpy.context.scene.objects):
 # The cap is defined in the unbent flower frame and transformed rigidly with it.
 receptacle_verts=[]
 receptacle_faces=[]
-for i,(dz,radius) in enumerate([(-.065,.016),(-.038,.026),(-.014,.034),(0,.038)]):
+for i,(dz,radius) in enumerate([(-.055,.014),(-.032,.020),(-.010,.025),(0,.028)]):
  for j in range(16):
   a=math.tau*j/16
   p=head_aligned(head_anchor+Vector((radius*math.cos(a),radius*math.sin(a),dz)))
@@ -186,7 +186,7 @@ receptacle_mesh.materials.append(green)
 for poly in receptacle_mesh.polygons: poly.use_smooth=True
 # Deterministic geometry assertions: stalk tip and blossom throat share a point.
 assert (plant_bend(Vector((0,0,2.035)))-head_aligned(head_anchor)).length<1e-6
-print("LILY_V11_STALK_TERMINATES_AT_FLOWER_THROAT",flush=True)
+print("LILY_V12_CURVED_STEM_TANGENT_AND_SMALL_RECEPTACLE",flush=True)
 # Export actual mesh, then render studio views.
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.export_scene.gltf(filepath=os.path.join(out,"white_lily_single.glb"),export_format='GLB')
