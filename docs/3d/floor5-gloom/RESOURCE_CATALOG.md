@@ -42,3 +42,12 @@
 - GLB/PNGは実際の生成・レンダリング・ユーザー承認後に正式保存する。
 - 既存ゴシック門・直立柱の完成形状を変更しない。
 - ゲーム本体への統合・重さの最適化は別作業。まず造形品質を優先する。
+
+
+## V5 production research — 2026-11-14
+- **Implemented:** Replaced outer cylindrical TubeGeometry creeping roots and offshoots with 3-column, tapered, asymmetrical low-profile mesh ribbons. Existing central pool, tendrils, smoke and particles retained. Pending actual render review.
+- **Blender Geometry Nodes / Displace Geometry:** Procedural displacement on a subdivided mesh for irregular shoreline; official reference https://docs.staging.blender.org/manual/en/latest/modeling/geometry_nodes/geometry/operations/displace_geometry.html . Research only, not installed or run.
+- **Blender Displacement and Bump:** Large-scale silhouette displacement combined with subtle bump for fine breakup; official https://docs.staging.blender.org/manual/en/latest/render/materials/components/displacement.html . Research only.
+- **Blender SDF Grid Boolean:** Smooth union of spreading lobes before mesh extraction, possible future organic shoreline generator; official https://docs.staging.blender.org/manual/en/latest/modeling/geometry_nodes/volume/operations/sdf_grid_boolean.html . Research only, Blender-version dependent.
+- **Three.js alphaMap:** Fade outer boundary via grayscale texture and alphaTest rather than raised piping; official https://threejs.org/docs/pages/MeshStandardMaterial.html . Research only; requires UV/texture integration and GLB compatibility tests.
+- **Decision:** First verify mesh ribbons in Blender from three angles, then consider noise displacement and alpha fading. Do not add untested addons or claim them installed. Maintain original model and approved asset promotion policy.
