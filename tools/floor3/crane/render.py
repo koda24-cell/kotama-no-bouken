@@ -16,7 +16,7 @@ camera=bpy.context.object
 camera.data.type='ORTHO'
 camera.data.ortho_scale=size*1.9
 bpy.context.scene.camera=camera
-for vec,power in [((3,-4,6),850),((-4,2,4),550)]:
+for vec,power in [((3,-4,6),1350),((-4,2,4),950),((0,5,3),650)]:
  bpy.ops.object.light_add(type='AREA',location=center+Vector(vec)*size)
  light=bpy.context.object
  light.data.energy=power*max(size,1)
@@ -24,7 +24,18 @@ for vec,power in [((3,-4,6),850),((-4,2,4),550)]:
  aim(light,center)
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
-scene.cycles.samples=24
+scene.cycles.samples=32
+# Bright neutral studio setup to reveal dark steel, moss and cable silhouettes.
+world=bpy.data.worlds.new('Bright neutral studio')
+scene.world=world
+world.use_nodes=True
+bg=world.node_tree.nodes.get('Background')
+bg.inputs['Color'].default_value=(0.72,0.78,0.82,1)
+bg.inputs['Strength'].default_value=0.85
+scene.view_settings.view_transform='AgX'
+scene.view_settings.look='Medium High Contrast'
+scene.view_settings.exposure=0.75
+scene.view_settings.gamma=1.0
 scene.render.resolution_x=960
 scene.render.resolution_y=720
 scene.render.resolution_percentage=100
