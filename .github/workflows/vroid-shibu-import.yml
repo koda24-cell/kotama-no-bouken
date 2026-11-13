@@ -1,0 +1,40 @@
+name: VRoid CC0 Shibu base import and Eevee preview
+on:
+  push:
+    branches:
+      - feature/vroid-cc0-shibu-base-20261114
+    paths:
+      - 'tools/vroid-shibu/**'
+      - '.github/workflows/vroid-shibu-import.yml'
+  workflow_dispatch:
+jobs:
+  import-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender xvfb
+      - name: Download official CC0 sample mirror
+        run: |
+          mkdir -p output/vroid-shibu
+          curl --fail --location --retry 3 --max-time 180 -o /tmp/Sendagaya_Shibu.vrm 'https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/beta/Sendagaya_Shibu.vrm'
+          test "$(stat -c%s /tmp/Sendagaya_Shibu.vrm)" -gt 1000000
+          sha256sum /tmp/Sendagaya_Shibu.vrm | tee output/vroid-shibu/source.sha256
+          cp /tmp/Sendagaya_Shibu.vrm output/vroid-shibu/Sendagaya_Shibu.vrm
+      - name: Import and Eevee render
+        run: |
+          xvfb-run -a blender -b -t 2 --python tools/vroid-shibu/import_render.py
+      - name: Validate outputs
+        run: |
+          test -s output/vroid-shibu/vroid_shibu_import.blend
+          test -s output/vroid-shibu/source_manifest.json
+          for view in front right_side left_side three_quarter; do test -s "output/vroid-shibu/$view.png"; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vroid-cc0-shibu-base-preview
+          path: output/vroid-shibu/
+          retention-days: 7
