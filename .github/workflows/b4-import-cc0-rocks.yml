@@ -1,0 +1,35 @@
+name: Import CC0 rock reference GLBs
+on:
+  push:
+    branches:
+      - feature/b4-cc0-rock-model-library-20261114
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download and validate GLBs
+        run: python tools/b4-render/fetch-cc0-rocks.py
+      - name: Commit imported references
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/reference/cc0/kenney-nature-rocks/
+          if ! git diff --cached --quiet; then
+            git commit -m "Import verified Kenney CC0 rock reference GLBs"
+            git push origin HEAD:feature/b4-cc0-rock-model-library-20261114
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cc0-rock-reference-library
+          path: assets/reference/cc0/kenney-nature-rocks/
+          retention-days: 14
