@@ -100,7 +100,7 @@ scene.render.image_settings.file_format='PNG';scene.world.color=(.2,.2,.2)
 scene.view_settings.view_transform='AgX';scene.view_settings.look='AgX - Medium High Contrast';scene.view_settings.exposure=1.35
 for label,direction in [('front-lit',(0,1,.12)),('front-level',(0,1,0)),('angle-lit',(1,1,.28)),('side-lit',(1,0,.12)),('back-lit',(0,-1,.12))]:
  cam.location=center+Vector(direction).normalized()*size*2.7;aim(cam,center)
- scene.render.filepath=os.path.abspath(os.path.join(outdir,'b4-v14-'+label+'.png'))
+ scene.render.filepath=os.path.abspath(os.path.join(outdir,'b4-v15-'+label+'.png'))
  bpy.ops.render.render(write_still=True)
  if not os.path.exists(scene.render.filepath):raise RuntimeError('Missing '+label)
  print('RENDER_OK',label)
