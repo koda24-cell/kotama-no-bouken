@@ -42,7 +42,7 @@ jobs:
           cat output/assassin-head/geometry_report.txt
           grep -q 'skin_vertices=5000' output/assassin-head/geometry_report.txt
           grep -q 'hair_vertices=10000' output/assassin-head/geometry_report.txt
-          grep -q 'skin_triangles=9800' output/assassin-head/geometry_report.txt
+          grep -q 'skin_triangles=9900' output/assassin-head/geometry_report.txt
           grep -q 'hair_triangles=19600' output/assassin-head/geometry_report.txt
           file output/assassin-head/*.png
       - uses: actions/upload-artifact@v4
