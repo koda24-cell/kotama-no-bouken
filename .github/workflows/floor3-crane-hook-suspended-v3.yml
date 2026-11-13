@@ -1,0 +1,30 @@
+name: Floor3 Suspended Crane Hook V3 Render
+on:
+  push:
+    branches: [feature/floor3-crane-hook-20261113]
+    paths:
+      - 'tools/floor3/hook/build_suspended_v3.py'
+      - '.github/workflows/floor3-crane-hook-suspended-v3.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render suspended hook in Blender Docker
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/out"
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/hook/build_suspended_v3.py
+      - name: Verify
+        run: |
+          test -s out/floor3_crane_hook_suspended_v3.glb
+          for a in front side angle; do test -s "out/floor3_crane_hook_suspended_v3-$a.png"; done
+          ls -lh out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: floor3-crane-hook-suspended-v3
+          path: out/
+          retention-days: 14
