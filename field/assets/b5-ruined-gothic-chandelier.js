@@ -44,18 +44,18 @@ export function createRuinedChandelier(T){
  // Image pixels were NOT accessible in this environment, so this is a
  // hand-authored vector silhouette, NOT a traced image contour.
  const vineMetal=new T.MeshStandardMaterial({color:0x494b4b,metalness:.62,roughness:.44,side:T.DoubleSide});
- root.userData.vineSilhouettePass='sixfold-geometric-panel-v5';
+ root.userData.vineSilhouettePass='sixfold-inward-curls-v6';
  root.userData.symmetrySegments=6;
  root.userData.referenceOutlineStatus='manual-vector-proxy-not-image-traced';
  // A profile is defined in the radial / vertical plane: [radius, height].
  // Symmetric arch shoulders, a broad horizontal candle arm, and two
  // descending scrolls form a crisp, readable 1/6 module.
  const profilePaths=[
-   {name:'main-shoulder',width:.105,pts:[[.24,5.10],[.52,5.03],[.88,4.91],[1.25,4.71],[1.63,4.47],[1.97,4.18],[2.34,3.93],[2.78,3.75],[3.23,3.66],[3.68,3.66],[4.12,3.70]]},
-   {name:'outer-hook',width:.078,pts:[[4.12,3.70],[4.32,3.81],[4.38,4.03],[4.26,4.17],[4.08,4.14],[4.03,3.99]]},
-   {name:'lower-sweep',width:.084,pts:[[2.34,3.93],[2.60,3.57],[2.91,3.23],[3.18,2.91],[3.37,2.57],[3.43,2.25],[3.31,2.03],[3.09,2.03],[3.01,2.21]]},
-   {name:'inner-scroll',width:.061,pts:[[1.63,4.47],[1.71,4.14],[1.85,3.84],[2.02,3.62],[2.23,3.51],[2.40,3.58],[2.43,3.74],[2.31,3.84]]},
-   {name:'lower-lobe',width:.076,pts:[[3.43,2.25],[3.57,1.99],[3.63,1.74],[3.53,1.55],[3.33,1.53],[3.20,1.70]]},
+   {name:'main-shoulder',width:.105,pts:[[.24,5.10],[.52,5.03],[.88,4.91],[1.25,4.71],[1.63,4.47],[1.97,4.18],[2.25,3.97],[2.52,3.82],[2.77,3.76],[2.94,3.79],[3.02,3.91]]},
+   {name:'outer-hook',width:.083,pts:[[3.02,3.91],[3.10,4.12],[3.07,4.36],[2.91,4.51],[2.67,4.51],[2.47,4.36],[2.44,4.14],[2.56,3.98],[2.74,3.98],[2.84,4.10],[2.80,4.23],[2.69,4.27]]},
+   {name:'lower-sweep',width:.084,pts:[[2.25,3.97],[2.47,3.62],[2.67,3.31],[2.80,3.03],[2.82,2.78],[2.69,2.59],[2.48,2.57],[2.32,2.70],[2.34,2.91],[2.48,3.01],[2.61,2.95]]},
+   {name:'inner-scroll',width:.065,pts:[[1.63,4.47],[1.71,4.14],[1.85,3.84],[2.02,3.62],[2.21,3.55],[2.36,3.65],[2.34,3.84],[2.20,3.91],[2.08,3.82],[2.10,3.71]]},
+   {name:'lower-lobe',width:.079,pts:[[2.69,2.59],[2.80,2.33],[2.80,2.06],[2.67,1.87],[2.43,1.86],[2.27,2.03],[2.31,2.24],[2.48,2.32],[2.59,2.22],[2.56,2.09]]},
    {name:'crown-scroll',width:.064,pts:[[.35,5.14],[.64,5.34],[.98,5.44],[1.28,5.41],[1.46,5.28],[1.43,5.11],[1.29,5.07]]}
  ];
  // Catmull-Rom interpolates the exact same profile for each sector.
