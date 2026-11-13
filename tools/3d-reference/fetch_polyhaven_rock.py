@@ -10,6 +10,8 @@ from urllib.request import Request, urlopen
 
 OUT = Path("tools/3d-reference/cc0-rocks/polyhaven")
 OUT.mkdir(parents=True, exist_ok=True)
+for old in OUT.iterdir():
+    if old.is_file(): old.unlink()
 
 def fetch(url):
     req = Request(url, headers={"User-Agent": "Kotama-CC0-Rock-Research/1.0"})
