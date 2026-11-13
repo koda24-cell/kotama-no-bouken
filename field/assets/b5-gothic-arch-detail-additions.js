@@ -446,5 +446,67 @@ export function enhanceB5GothicArch(THREE, root) {
  extra.userData.frontSmallBrickZones=3;
  extra.userData.frontSmallBrickCount=smallBrickCount;
  extra.userData.frontBrickOutlineControlPoints=40;
+ // Pinterest-informed ground rubble refinement ONLY. Existing gate, arch,
+ // facade, and all above-ground masonry remain unchanged.
+ // Reference shapes: broken wall stone courses, temple collapse, scattered
+ // thick angular masonry (see pinterest-reference-library handoff).
+ const rubbleMat=new THREE.MeshStandardMaterial({color:0x69636d,roughness:.99,flatShading:true});
+ const rubblePale=new THREE.MeshStandardMaterial({color:0x89818a,roughness:.98,flatShading:true});
+ const rubbleDark=new THREE.MeshStandardMaterial({color:0x4d4752,roughness:1,flatShading:true});
+ const fracturedRubble=(x,z,rx,ry,rz,seed,mat)=>{
+  // 12-point irregular footprint with independent top/bottom ring vertices.
+  // Side walls have volume, uneven fracture planes and no paper-thin slabs.
+  const n=12,verts=[],indices=[];
+  for(let ring=0;ring<2;ring++)for(let i=0;i<n;i++){
+   const a=i*Math.PI*2/n,perturb=.79+((seed*17+i*13)%9)*.045;
+   const px=Math.cos(a)*rx*perturb,pz=Math.sin(a)*rz*(.8+((i*7+seed)%6)*.06);
+   const y=ring===0?.045:ry*(.74+((i*11+seed*3)%9)*.055);
+   verts.push(px,y,pz);
+  }
+  for(let i=1;i<n-1;i++){indices.push(0,i+1,i);indices.push(n,n+i,n+i+1);}
+  for(let i=0;i<n;i++){const j=(i+1)%n;indices.push(i,j,n+j,i,n+j,n+i);}
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  geo.setIndex(indices);geo.computeVertexNormals();
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.position.set(x,0,z);mesh.rotation.y=seed*1.618;
+  mesh.name='b5:gothicArch:thickFracturedGroundRubble';
+  extra.add(mesh);return mesh;
+ };
+ // Place a few major collapsed voussoirs with smaller rubble around them.
+ // Keep the center of the doorway clear for player navigation.
+ for(const side of [-1,1]){
+  for(let i=0;i<5;i++){
+   const x=side*(5.25+(i%3)*.7),z=-2.5+(i%4)*1.35;
+   fracturedRubble(x,z,.44+(i%2)*.22,.35+(i%3)*.12,
+    .47+(i%3)*.16,21+i+(side+1)*5,i%3===0?rubblePale:rubbleMat);
+   for(let j=0;j<3;j++){
+    const a=(i*3+j)*2.39996;
+    fracturedRubble(x+Math.cos(a)*(.55+j*.13),
+     z+Math.sin(a)*(.5+j*.12),.13+j*.06,.12+j*.045,
+     .18+j*.04,51+i*3+j,rubbleDark);
+   }
+  }
+ }
+ // Former relocated flat source slabs at ground level still looked like
+ // oversized plates. Preserve their meshes, change only their proportions
+ // and lay them into thick angular fallen stone positions.
+ let repairedGroundSlabs=0;
+ for(const part of root.children){
+  if(!part.isMesh||part.position.y>1.1)continue;
+  if(part.name==='b5:gothicArch:salvagedCrownDebris'&&part.geometry?.isBoxGeometry){
+   part.scale.set(.95,.62,.86);
+   part.position.y=.29;
+   part.rotation.set(.19,.42,.27);
+   repairedGroundSlabs++;
+  }else if(part.geometry?.isBoxGeometry&&
+    Math.abs(part.scale.x-1.65)<.02&&Math.abs(part.scale.y-.62)<.02){
+   part.scale.set(1.02,.86,.95);
+   part.position.y=.34;
+   part.rotation.set(.12,.51,.22);
+   repairedGroundSlabs++;
+  }
+ }
+ extra.userData.rubbleRefinement={fracturedBlocks:40,groundSlabsAdjusted:repairedGroundSlabs};
  root.add(extra);return root;
 }
