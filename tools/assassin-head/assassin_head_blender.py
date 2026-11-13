@@ -26,19 +26,19 @@ verts=[];faces=[];R=160;S=96
 def gaussian(x,mu,sigma):
  return math.exp(-0.5*((x-mu)/sigma)**2)
 for i in range(R):
- z=-.73+1.77*i/(R-1)
- t=(z+.73)/1.77
+ z=-.60+1.64*i/(R-1)
+ t=(z+.60)/1.64
  # skull, cheekbones, temples, tapering jaw and soft chin
- width=(.085+.535*max(0,math.sin(math.pi*(.035+.92*t)))**.72)
+ width=(.145+.475*max(0,math.sin(math.pi*(.07+.85*t)))**.58)
  width+=.044*gaussian(z,.21,.17)  # cheekbone flare
- width-=.068*gaussian(z,-.43,.18) # jaw taper
- width+=.018*gaussian(z,.61,.16)  # temples
+ width-=.035*gaussian(z,-.37,.18) # jaw taper
+ width+=.026*gaussian(z,.61,.16)  # temples
  for j in range(S):
   a=2*math.pi*j/S
   sn=math.sin(a);cs=math.cos(a)
   x=width*sn
   # Skull depth follows a flattened oval, with facial plane toward negative Y.
-  depth=.278+.025*gaussian(z,.43,.28)
+  depth=.300+.030*gaussian(z,.40,.27)
   y=-.052+depth*cs
   front=max(0,-cs)**5
   # Brow ridge, eye socket depression, nasal bridge and lips are geometry, not stickers.
@@ -48,9 +48,9 @@ for i in range(R):
   y-=front*.066*gaussian(x,0,.085)*gaussian(z,-.005,.065) # nose tip
   y-=front*.021*gaussian(x,0,.110)*gaussian(z,-.205,.033) # upper lip
   y-=front*.014*gaussian(x,0,.115)*gaussian(z,-.258,.027) # lower lip
-  y-=front*.026*gaussian(x,0,.165)*gaussian(z,-.485,.085) # chin projection
+  y-=front*.048*gaussian(x,0,.18)*gaussian(z,-.43,.09) # chin projection
   # cheek and jaw volumes follow bilateral symmetric, smooth Gaussian fields
-  y-=front*.022*gaussian(abs(x),.39,.115)*gaussian(z,.13,.18)
+  y-=front*.048*gaussian(abs(x),.36,.125)*gaussian(z,.11,.19)
   verts.append((x,y,z))
 for i in range(R-1):
  for j in range(S):
@@ -65,28 +65,28 @@ hv=[];hf=[]
 for strand in range(100):
  if strand<42:
   f=strand/41;rootx=-.56+1.12*f;rootz=1.045-.10*abs(f-.48)
-  rooty=-.065-.12*math.cos((f-.5)*math.pi)
-  length=.57+.42*(1-f)**1.2
-  endx=rootx+.19+.20*(1-f);endz=rootz-length;endy=-.35
-  w=.075+.025*math.sin(math.pi*f)
+  rooty=-.14-.10*math.cos((f-.5)*math.pi)
+  length=.33+.22*(1-f)**1.2
+  endx=rootx+.19+.20*(1-f);endz=rootz-length;endy=-.235
+  w=.067+.022*math.sin(math.pi*f)
  elif strand<76:
   f=(strand-42)/33;side=-1 if strand%2 else 1
   rootx=side*(.33+.22*f);rootz=.89-.17*f;rooty=-.01+.12*f
   length=1.10+.47*f;endx=rootx+side*(.13+.10*f);endz=rootz-length
-  endy=.02+.10*f;w=.105
+  endy=.10+.10*f;w=.092
  else:
   f=(strand-76)/23;rootx=.23+.24*(f-.5);rootz=1.04+.10*math.sin(math.pi*f)
   rooty=.20;length=.95+.49*f
   endx=.72+.19*math.sin(math.pi*f);endz=rootz-length
-  endy=.43+.09*f;w=.115
+  endy=.43+.09*f;w=.095
  base=len(hv)
  for k in range(50):
   u=k/49;ease=u*u*(3-2*u)
   x=rootx+(endx-rootx)*ease+.065*math.sin(u*math.pi*1.5+strand*.17)*u
   z=rootz+(endz-rootz)*u
-  y=rooty+(endy-rooty)*ease-.10*math.sin(math.pi*u)
+  y=rooty+(endy-rooty)*ease-.045*math.sin(math.pi*u)+.024*math.sin(math.pi*2*u+strand*.1)
   # Cards have broad roots and a sharp, gently curved tip.
-  width=w*(max(.012,(1-u**2)**.78))
+  width=w*(max(.012,(1-u**2)**.62))
   # Face camera-facing sheets in front, with curved lateral layering.
   hv.extend([(x-width,y+.015*math.sin(u*math.pi),z),
              (x+width,y-.015*math.sin(u*math.pi),z)])
@@ -108,14 +108,14 @@ def sphere(name,loc,scale,material):
  bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=12,location=loc)
  o=bpy.context.object;o.name=name;o.scale=scale;o.data.materials.append(material);bpy.ops.object.shade_smooth()
 for side in (-1,1):
- sphere('eye white',(.245*side,-.276,.31),(.178,.030,.087),white)
- sphere('iris',(.245*side,-.309,.305),(.072,.020,.080),iris)
- sphere('pupil',(.245*side,-.331,.303),(.030,.011,.063),dark)
- sphere('upper eyelid',(.245*side,-.301,.397),(.187,.021,.018),dark)
- sphere('eyebrow',(.245*side,-.275,.49),(.153,.013,.015),shadow)
+ sphere('eye white',(.245*side,-.365,.31),(.166,.036,.078),white)
+ sphere('iris',(.245*side,-.403,.305),(.066,.021,.071),iris)
+ sphere('pupil',(.245*side,-.425,.303),(.027,.012,.058),dark)
+ sphere('upper eyelid',(.245*side,-.393,.397),(.177,.026,.021),dark)
+ sphere('eyebrow',(.245*side,-.345,.49),(.153,.016,.015),shadow)
  sphere('ear',(.605*side,.015,.16),(.078,.070,.15),skin)
-sphere('small nose',(0,-.308,.065),(.043,.040,.055),skin)
-sphere('mouth',(0,-.270,-.22),(.09,.009,.010),blush)
+sphere('small nose',(0,-.407,.055),(.052,.052,.061),skin)
+sphere('mouth',(0,-.365,-.22),(.096,.012,.013),blush)
 sphere('ponytail tie',(.38,.25,1.01),(.13,.12,.13),ribbon)
 for side in (-1,1):sphere('bow loop',(.38+side*.16,.29,1.04),(.19,.045,.13),ribbon)
 world=bpy.context.scene.world;world.color=(.8,.8,.8)
