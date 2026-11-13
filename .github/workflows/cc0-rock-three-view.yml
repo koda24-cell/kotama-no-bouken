@@ -15,9 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install headless Blender and graphics libraries
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender libegl1 libgl1 libopengl0 libx11-6 libxrender1 libxi6 libxxf86vm1 libsm6
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1 libopengl0 libx11-6 libxrender1 libxi6 libxxf86vm1 libsm6
       - name: Render actual boulder front side angle and export GLB
-        run: blender -b --python tools/3d-reference/render_cc0_rock.py
+        run: |
+          blender -b --python-expr "import numpy; print('NumPy', numpy.__version__)"
+          blender -b --python tools/3d-reference/render_cc0_rock.py
       - name: Validate output files
         run: |
           set -euo pipefail
