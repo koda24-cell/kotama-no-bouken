@@ -7,7 +7,11 @@ OUT = ROOT / "cc0-rocks/polyhaven/reviews"
 OUT.mkdir(parents=True, exist_ok=True)
 bpy.ops.object.select_all(action="SELECT")
 bpy.ops.object.delete(use_global=False)
-bpy.ops.import_scene.fbx(filepath=str(SOURCE))
+# Blender 5 native importer avoids legacy io_scene_fbx compatibility issues.
+if hasattr(bpy.ops.wm, "fbx_import"):
+    bpy.ops.wm.fbx_import(filepath=str(SOURCE))
+else:
+    bpy.ops.import_scene.fbx(filepath=str(SOURCE))
 objects = [o for o in bpy.context.scene.objects if o.type == "MESH"]
 if not objects: raise RuntimeError("FBX import produced no meshes")
 print("IMPORTED_MESHES", len(objects), "VERTICES", sum(len(o.data.vertices) for o in objects))
