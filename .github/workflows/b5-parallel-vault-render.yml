@@ -1,0 +1,62 @@
+name: B5 Parallel Vault Model Render
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/b5-vault-five-parallel-20261112
+    paths:
+      - 'field/assets/b5-modular-vault-kit.js'
+      - 'tools/b5-vault-render/**'
+      - '.github/workflows/b5-parallel-vault-render.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  b5-vault-render:
+    name: B5 / ${{ matrix.asset }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        asset:
+          - basic-vault
+          - collapsed-vault
+          - royal-vault
+          - vault-support
+          - fallen-vault-rubble
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated Three.js exporter dependency
+        run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - name: Export actual geometry to GLB
+        run: node tools/b5-vault-render/export.mjs "${{ matrix.asset }}"
+      - name: Render GLB via Docker Blender in three directions
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
+            set -eu
+            blender -b -t 2 --python tools/b5-vault-render/render.py -- "render-output/b5-vault/${{ matrix.asset }}/${{ matrix.asset }}.glb" "render-output/b5-vault/${{ matrix.asset }}"
+          '
+      - name: Validate GLB and three real PNG outputs
+        run: |
+          node -e '
+          const fs=require("fs");
+          const kind=process.argv[1],base="render-output/b5-vault/"+kind+"/";
+          for(const file of [kind+".glb",...["front","back","top-oblique"].map(s=>kind+"-"+s+".png")]){
+            const p=base+file;if(!fs.existsSync(p)||fs.statSync(p).size<1024)throw Error("Missing or invalid: "+p);
+            const buf=fs.readFileSync(p);if(file.endsWith(".glb")&&buf.toString("ascii",0,4)!=="glTF")throw Error("Invalid GLB");
+            if(file.endsWith(".png")&&!buf.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])))throw Error("Invalid PNG");
+            console.log(file,fs.statSync(p).size);
+          }' "${{ matrix.asset }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-vault-${{ matrix.asset }}-glb-png
+          path: render-output/b5-vault/${{ matrix.asset }}/
+          if-no-files-found: error
+          retention-days: 14
