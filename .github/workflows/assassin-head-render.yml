@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/assassin-head-render.yml'
       - 'tools/assassin-head/**'
+      - 'docs/3d/ASSASSIN_HEAD_HAIR_FIX_20261113.md'
   workflow_dispatch:
 jobs:
   render:
@@ -14,15 +15,22 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Blender
         run: |
-          sudo apt-get update
-          sudo apt-get install -y blender
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender
+          command -v blender
           blender --version
       - name: Check Python syntax
         run: python -m py_compile tools/assassin-head/assassin_head_blender.py
+      - name: Report render environment
+        run: |
+          python --version
+          df -h .
+          free -h
+          blender -b -noaudio --factory-startup --python-expr "import bpy; print('BLENDER_API_VERSION', bpy.app.version_string)"
       - name: Render face and hair
         run: |
           mkdir -p output/assassin-head
-          blender -b -t 2 --python tools/assassin-head/assassin_head_blender.py -- --out output/assassin-head
+          blender -b -noaudio -t 2 --factory-startup --python-exit-code 1 --python tools/assassin-head/assassin_head_blender.py -- --out output/assassin-head
       - name: Verify geometry and outputs
         run: |
           test -s output/assassin-head/front.png
@@ -34,6 +42,9 @@ jobs:
           cat output/assassin-head/geometry_report.txt
           grep -q 'skin_vertices=5000' output/assassin-head/geometry_report.txt
           grep -q 'hair_vertices=10000' output/assassin-head/geometry_report.txt
+          grep -q 'skin_triangles=9800' output/assassin-head/geometry_report.txt
+          grep -q 'hair_triangles=19600' output/assassin-head/geometry_report.txt
+          file output/assassin-head/*.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
