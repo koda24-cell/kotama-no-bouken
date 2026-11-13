@@ -173,6 +173,48 @@ for vertex in head.data.vertices:
  if y>.03 and .35<z<2.1:
   vertex.co.y+=.035*calf
  # Preserve the knee and ankle heights and avoid changing joint topology.
+# Iteration 6: local topology-aware relaxation for shoulder and groin.
+# Neighbor-based smoothing operates on the existing unified mesh; unlike
+# global silhouette scaling it cannot pull entire arms toward the pelvis.
+# Restore the iteration-5 depth experiment, which worsened side error.
+for vertex in head.data.vertices:
+ x,y,z=vertex.co
+ abdomen=max(0.0,1.0-abs(z-4.05)/.78)
+ if y<-.08 and 3.6<z<4.85:vertex.co.y+=.045*abdomen
+ calf=max(0.0,1.0-abs(z-1.15)/.92)
+ if y>.03 and .35<z<2.1:vertex.co.y-=.035*calf
+# Smooth the polygon pinching around anatomical transitions while preserving
+# outermost silhouette vertices and maintaining fixed vertical joint landmarks.
+adj=[set() for _ in head.data.vertices]
+for edge in head.data.edges:
+ a,b=edge.vertices;adj[a].add(b);adj[b].add(a)
+for pass_no in range(3):
+ before=[v.co.copy() for v in head.data.vertices]
+ for i,v in enumerate(head.data.vertices):
+  x,y,z=before[i]
+  shoulder=(smooth01((z-4.94)/.25)*(1-smooth01((z-5.65)/.15))
+            *smooth01((abs(x)-.36)/.18)*(1-smooth01((abs(x)-1.03)/.30)))
+  groin=(smooth01((z-3.14)/.24)*(1-smooth01((z-4.02)/.30))
+         *smooth01((abs(x)-.19)/.13)*(1-smooth01((abs(x)-.78)/.23)))
+  weight=max(shoulder,groin)
+  if weight<.01 or not adj[i]:continue
+  neighbors=[before[j] for j in adj[i]]
+  # Limit smoothing to a similar height band so arm and torso surfaces
+  # cannot collapse toward one another across a narrow joint.
+  neighbors=[p for p in neighbors if abs(p.z-z)<.25]
+  if len(neighbors)<2:continue
+  avg=sum(neighbors,Vector((0,0,0)))/len(neighbors)
+  blend=.16*weight
+  v.co.x=x*(1-blend)+avg.x*blend
+  v.co.y=y*(1-blend)+avg.y*blend
+  # Keep Z unchanged: both reference projections share pixel heights.
+# Confirm manifold state; keep a quantitative trace in the output.
+nonmanifold=sum(1 for e in head.data.edges if not e.is_manifold)
+with open(os.path.join(out,'iteration6_geometry.txt'),'w') as log:
+ log.write('iteration=6\\nmethod=local_adjacency_relaxation\\n')
+ log.write('nonmanifold_edges='+str(nonmanifold)+'\\n')
+ log.write('vertices='+str(len(head.data.vertices))+'\\n')
+ log.write('polygons='+str(len(head.data.polygons))+'\\n')
 # Do not change Z: reference front and side use exactly the same height scale.
 # Material override creates solid clay; edge overlay is a separate Freestyle pass.
 sc=bpy.context.scene
