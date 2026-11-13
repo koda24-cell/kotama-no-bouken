@@ -16,7 +16,7 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y blender xvfb
+          sudo apt-get install -y blender xvfb python3-numpy
       - name: Download official CC0 sample mirror
         run: |
           mkdir -p output/vroid-shibu
