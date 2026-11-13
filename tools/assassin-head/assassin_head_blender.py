@@ -71,6 +71,14 @@ for strand in range(100):
 assert len(hv)==10000
 assert all(len(t)==3 for t in hf)
 hair=mesh('HAIR_10000_vertices_100_strands',hv,hf,hairmat)
+# Additional scalp shell closes the previously exposed crown between hair clumps.
+# This is a separate supplemental mesh; the 10,000-vertex hair budget stays unchanged.
+bpy.ops.mesh.primitive_uv_sphere_add(segments=64,ring_count=32,location=(0,.055,.72))
+scalp=bpy.context.object
+scalp.name='SCALP_SUPPLEMENT_under_hair'
+scalp.scale=(.64,.285,.43)
+scalp.data.materials.append(hairmat)
+bpy.ops.object.shade_smooth()
 def sphere(name,loc,scale,material):
  bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=12,location=loc)
  o=bpy.context.object;o.name=name;o.scale=scale;o.data.materials.append(material);bpy.ops.object.shade_smooth()
@@ -101,7 +109,8 @@ def render(name,loc):
  sc.render.filepath=os.path.join(out,name);bpy.ops.render.render(write_still=True)
  bpy.data.objects.remove(cam,do_unlink=True)
 render('front.png',(0,-5,.3))
-render('side.png',(5,0,.3))
+render('right_side.png',(5,0,.3))
+render('left_side.png',(-5,0,.3))
 render('three_quarter.png',(3,-4,.4))
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'assassin_head.blend'))
 with open(os.path.join(out,'geometry_report.txt'),'w') as f:
