@@ -1,0 +1,33 @@
+name: Low-poly reference full-body Eevee render
+on:
+  push:
+    branches: [feature/lowpoly-body-orthographic-20261113]
+    paths: ['tools/lowpoly-body-reference/**','.github/workflows/lowpoly-body-reference.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender xvfb libgl1-mesa-dri
+      - name: Eevee solid four-view
+        run: |
+          python -m py_compile tools/lowpoly-body-reference/build.py
+          mkdir -p output/lowpoly-body
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1280x1024x24' blender -b -noaudio -t 2 --factory-startup --python-exit-code 1 --python tools/lowpoly-body-reference/build.py -- --out output/lowpoly-body
+      - name: Validate
+        run: |
+          for f in front right_side left_side three_quarter; do test -s "output/lowpoly-body/$f.png"; done
+          test -s output/lowpoly-body/lowpoly_human.blend
+          cat output/lowpoly-body/topology.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lowpoly-body-orthographic-eevee
+          path: output/lowpoly-body/
+          retention-days: 14
