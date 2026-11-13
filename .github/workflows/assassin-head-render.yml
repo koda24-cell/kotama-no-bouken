@@ -1,0 +1,39 @@
+name: Assassin head Blender 3-view render
+on:
+  push:
+    branches: [feature/assassin-head-render-20261113]
+    paths:
+      - '.github/workflows/assassin-head-render.yml'
+      - 'tools/assassin-head/**'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Render face and hair
+        run: |
+          mkdir -p output/assassin-head
+          blender -b -t 2 --python tools/assassin-head/assassin_head_blender.py -- --out output/assassin-head
+      - name: Verify geometry and outputs
+        run: |
+          test -s output/assassin-head/front.png
+          test -s output/assassin-head/side.png
+          test -s output/assassin-head/three_quarter.png
+          test -s output/assassin-head/assassin_head.blend
+          test -s output/assassin-head/geometry_report.txt
+          cat output/assassin-head/geometry_report.txt
+          grep -q 'skin_vertices=5000' output/assassin-head/geometry_report.txt
+          grep -q 'hair_vertices=10000' output/assassin-head/geometry_report.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assassin-head-three-view
+          path: output/assassin-head/
+          retention-days: 14
