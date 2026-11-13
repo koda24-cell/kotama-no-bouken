@@ -41,3 +41,9 @@
 - [AGENTS.md](../../AGENTS.md)
 - [BLENDER_DOCKER_HANDOFF.md](../../docs/3d/BLENDER_DOCKER_HANDOFF.md)
 - [ASSET_PROMOTION_POLICY.md](../../docs/3d/ASSET_PROMOTION_POLICY.md)
+
+## 2026-11-13 再チャレンジ
+- 4方向レンダリングの処理を再実行対象としてコード更新（commit `1d68013c`）。pushトリガーに該当する `tools/assassin-head/assassin_head_blender.py` を変更。
+- 従来の Cycles 24 samples から、Blender 3.x は EEVEE、4.x は EEVEE_NEXT に切り替え、CPUレンダリング負荷の軽減を狙う（品質確認前の試験設定）。
+- 4枚のPNGファイルサイズ、顔5,000/9,900、髪10,000/19,600 の頂点・三角形数をBlenderスクリプト内でも assert。
+- **未検証**: GitHub Actions のrun結果、Blenderバージョン互換性、実際の画像品質。成功と記載しない。失敗したらrun ID/ログを参照して修正する。
