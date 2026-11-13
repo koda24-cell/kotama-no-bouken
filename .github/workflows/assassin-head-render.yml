@@ -1,4 +1,4 @@
-name: Assassin head Blender 3-view render
+name: Assassin head Blender 4-view render
 on:
   push:
     branches: [feature/assassin-head-render-20261113]
@@ -17,6 +17,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y blender
           blender --version
+      - name: Check Python syntax
+        run: python -m py_compile tools/assassin-head/assassin_head_blender.py
       - name: Render face and hair
         run: |
           mkdir -p output/assassin-head
@@ -24,7 +26,8 @@ jobs:
       - name: Verify geometry and outputs
         run: |
           test -s output/assassin-head/front.png
-          test -s output/assassin-head/side.png
+          test -s output/assassin-head/right_side.png
+          test -s output/assassin-head/left_side.png
           test -s output/assassin-head/three_quarter.png
           test -s output/assassin-head/assassin_head.blend
           test -s output/assassin-head/geometry_report.txt
@@ -34,6 +37,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: assassin-head-three-view
+          name: assassin-head-four-view
           path: output/assassin-head/
           retention-days: 14
