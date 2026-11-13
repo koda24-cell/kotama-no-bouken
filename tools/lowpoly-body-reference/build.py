@@ -160,6 +160,19 @@ for vertex in head.data.vertices:
  # ear width: reduce excess projection beyond skull.
  if 6.08<z<6.48 and abs(x)>.47:
   vertex.co.x*=.965
+# Iteration 5: small, bounded profile corrections driven by overlay landmark errors.
+# Reference profile is fuller at abdomen and rear calves; do not globally scale.
+for vertex in head.data.vertices:
+ x,y,z=vertex.co
+ # On the front-facing side, add depth around abdomen (reference y=250..350).
+ abdomen=max(0.0,1.0-abs(z-4.05)/.78)
+ if y<-.08 and 3.6<z<4.85:
+  vertex.co.y-=.045*abdomen
+ # Calf silhouette is too narrow in the side view; restore rear volume.
+ calf=max(0.0,1.0-abs(z-1.15)/.92)
+ if y>.03 and .35<z<2.1:
+  vertex.co.y+=.035*calf
+ # Preserve the knee and ankle heights and avoid changing joint topology.
 # Do not change Z: reference front and side use exactly the same height scale.
 # Material override creates solid clay; edge overlay is a separate Freestyle pass.
 sc=bpy.context.scene
