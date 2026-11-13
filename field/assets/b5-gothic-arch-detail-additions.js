@@ -384,44 +384,67 @@ export function enhanceB5GothicArch(THREE, root) {
  const tinyStoneA=new THREE.MeshStandardMaterial({color:0x918992,roughness:.98,flatShading:true});
  const tinyStoneB=new THREE.MeshStandardMaterial({color:0x5e5762,roughness:.98,flatShading:true});
  const tinyJoint=new THREE.MeshStandardMaterial({color:0x25232a,roughness:1});
+ // Each brick uses 40 explicit outline control points (previously 8):
+ // five times the original contour resolution without scaling the whole gate.
  const frontBrick=(x,y,w,h,depth,course,index)=>{
-  // Each small block has its own irregular chipped silhouette, bevel and depth.
-  const c=.035+(index%3)*.016;
-  const shape=new THREE.Shape();
-  const poly=[[-w/2+c,-h/2], [w/2-c,-h/2], [w/2,-h/2+c],
-   [w/2-c*.55,h/2-c], [w/2-c*1.8,h/2],
-   [-w/2+c,h/2],[-w/2,h/2-c*1.5],[-w/2,-h/2+c]];
-  poly.forEach(([px,py],i)=>i?shape.lineTo(px,py):shape.moveTo(px,py));
-  shape.closePath();
-  const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{
-   depth,bevelEnabled:true,bevelSize:.014,bevelThickness:.018,bevelSegments:2
-  }),index%5===0?tinyStoneA:index%4===0?tinyStoneB:carvedStone);
-  mesh.position.set(x,y,-2.34-(course%2)*.025);
-  mesh.name='b5:gothicArch:frontSmallBrick';
-  extra.add(mesh);
- };
- const brickPatch=(cx,cy,width,height,cols,rows,seed)=>{
-  // Dark backing makes the mortar joints visibly different from the old
-  // near-uniform large blocks, even at full front elevation.
-  box(cx,cy,-2.24,width+.12,height+.1,.12,tinyJoint);
-  const bw=width/cols,bh=height/rows;
-  for(let row=0;row<rows;row++){
-   const offset=row%2?bw*.48:0;
-   for(let col=0;col<=cols;col++){
-    const x=cx-width/2+col*bw+offset+bw*.5;
-    if(x>cx+width/2-bw*.22||x<cx-width/2+bw*.22)continue;
-    const y=cy-height/2+(row+.5)*bh;
-    const vary=((seed+row*7+col*11)%5-2)*.014;
-    frontBrick(x,y,bw*.87+vary,bh*.82-vary,.17,row,seed+row*cols+col);
+  const base=[[-w/2+.025,-h/2],[w/2-.03,-h/2],[w/2,-h/2+.035],
+   [w/2-.015,h/2-.025],[w/2-.065,h/2],
+   [-w/2+.035,h/2],[-w/2,h/2-.055],[-w/2,-h/2+.025]];
+  const outline=[];
+  for(let k=0;k<base.length;k++){
+   const a=base[k],b=base[(k+1)%base.length];
+   for(let j=0;j<5;j++){
+    const t=j/5,edgeX=a[0]+(b[0]-a[0])*t,edgeY=a[1]+(b[1]-a[1])*t;
+    // Chipped edges and slightly staggered facets; no random nondeterminism.
+    const dent=(j===0?0:((index*13+k*7+j*11)%7-3)*.0038);
+    const cx=(a[0]+b[0])*.5,cy=(a[1]+b[1])*.5;
+    outline.push([edgeX-Math.sign(edgeX||cx)*dent,edgeY-Math.sign(edgeY||cy)*dent]);
    }
   }
+  const shape=new THREE.Shape();
+  outline.forEach(([px,py],i)=>i?shape.lineTo(px,py):shape.moveTo(px,py));
+  shape.closePath();
+  const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{
+   depth,bevelEnabled:true,bevelSize:.008,bevelThickness:.013,bevelSegments:3
+  }),index%5===0?tinyStoneA:index%4===0?tinyStoneB:carvedStone);
+  mesh.position.set(x,y,-2.95-(course%2)*.035);
+  mesh.name='b5:gothicArch:frontSmallBrick40Point';
+  extra.add(mesh);
+  // Individually sculpted short fracture line across a subset of front faces.
+  if(index%4===0){
+   const crack=between([x-w*.24,y+h*.12,-2.966],
+    [x+w*.12,y-h*.22,-2.966],.018,.025,tinyJoint);
+   crack.name='b5:gothicArch:brickSurfaceFracture';
+  }
  };
- // Distinct, asymmetric placement: left lower jamb, right upper jamb,
- // and the left shoulder near the arch springing. These are not repeated
- // uniformly around the doorway; each is a dramatic local change of scale.
- brickPatch(-4.02,4.35,1.12,2.12,4,7,3);
- brickPatch(4.03,7.25,1.16,1.78,4,6,19);
- brickPatch(-4.18,11.25,1.13,1.56,4,5,37);
+ const brickPatch=(cx,cy,width,height,cols,rows,seed)=>{
+  // Forward-mounted bonded patch, fully readable from the front. A shallow
+  // stepped border and shadowed mortar emphasize the contrast in block size.
+  box(cx,cy,-2.83,width+.14,height+.12,.17,tinyJoint);
+  const bw=width/cols,bh=height/rows;
+  let count=0;
+  for(let row=0;row<rows;row++){
+   const offset=row%2?bw*.43:0;
+   for(let col=0;col<=cols;col++){
+    const x=cx-width/2+col*bw+offset+bw*.5;
+    if(x>cx+width/2-bw*.21||x<cx-width/2+bw*.21)continue;
+    const y=cy-height/2+(row+.5)*bh;
+    const vary=((seed+row*7+col*11)%5-2)*.008;
+    frontBrick(x,y,bw*.88+vary,bh*.82-vary,.23,row,seed+row*cols+col);
+    count++;
+   }
+  }
+  return count;
+ };
+ // Three prominent regions, larger facade patches with markedly smaller
+ // individual units. Asymmetry makes them readable in the front silhouette.
+ const smallBrickCount=[
+  brickPatch(-4.03,4.25,1.58,2.70,6,11,3),
+  brickPatch(4.03,7.42,1.58,2.45,6,10,19),
+  brickPatch(-4.23,11.32,1.55,1.86,6,8,37)
+ ].reduce((a,b)=>a+b,0);
  extra.userData.frontSmallBrickZones=3;
+ extra.userData.frontSmallBrickCount=smallBrickCount;
+ extra.userData.frontBrickOutlineControlPoints=40;
  root.add(extra);return root;
 }
