@@ -48,7 +48,7 @@ jobs:
           print(json.dumps(meta,indent=2))
           PY
       - name: Install Blender
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender libegl1 libgl1 libopengl0 libx11-6 libxrender1 libxi6 libxxf86vm1 libsm6
       - name: Import texture and render proof
         run: |
           cat > cc0-test/render.py <<'PY'
