@@ -109,41 +109,34 @@ def target_bounds(pixel_y,arm=False):
   l,r=interpolate(arm_bounds,pixel_y)
  back,forward=interpolate(side_bounds,pixel_y)
  return (l-197)*PX,(r-197)*PX,-(forward-442)*PX,-(back-442)*PX
-# Iteration 2: protect torso width while independently fitting arms. Previous
-# global envelope enlarged the torso to match the outstretched hand silhouette.
-original=[tuple(v.co) for v in head.data.vertices]
-def envelope(z,region):
- neighbors=[p for p in original if abs(p[2]-z)<.09]
- if len(neighbors)<8:neighbors=sorted(original,key=lambda p:abs(p[2]-z))[:48]
- if region=='torso':
-  candidates=[p for p in neighbors if abs(p[0])<.80]
- elif region=='arms':
-  candidates=[p for p in neighbors if abs(p[0])>.67]
- else:candidates=neighbors
- if len(candidates)<8:candidates=neighbors
- return (min(p[0] for p in candidates),max(p[0] for p in candidates),
-         min(p[1] for p in candidates),max(p[1] for p in candidates))
-for v,p in zip(head.data.vertices,original):
- x,y,z=p;py=705-z/PX
- # Smoothly blend body-to-arm targets over shoulder width.
- arm_band=max(0,min(1,(abs(x)-.57)/.28)) if 3.2<z<5.65 else 0
- body=target_bounds(py,False);arm=target_bounds(py,True)
- xl=body[0]*(1-arm_band)+arm[0]*arm_band
- xr=body[1]*(1-arm_band)+arm[1]*arm_band
- yf,yb=body[2],body[3]
- region='arms' if arm_band>.5 else ('torso' if 3.2<z<5.65 else 'all')
- oxl,oxr,oyf,oyb=envelope(z,region)
- if x>=0:v.co.x=x*xr/max(.03,oxr)
- else:v.co.x=x*abs(xl)/max(.03,abs(oxl))
- if y<0:v.co.y=y*abs(yf)/max(.03,abs(oyf))
- else:v.co.y=y*yb/max(.03,oyb)
- # Avoid flattening the chin/forehead by preserving a rounded taper.
- if z>5.75 and z<6.25:
-  taper=max(0,1-abs(z-5.96)/.25)
-  v.co.x*=1-.10*taper
- # Small nose protrusion only at front center, not a beak.
- if 6.04<z<6.32 and abs(v.co.x)<.13 and v.co.y<-.15:
-  v.co.y-=.035*math.exp(-((z-6.18)/.085)**2)*max(0,1-abs(v.co.x)/.13)
+# Iteration 3: restrained, anatomical silhouette correction.
+# Earlier global envelope fitting severely distorted shoulders and hips.
+# Keep unified mesh topology and adjust only within local anatomical bands.
+# Never fit an arm against the whole torso silhouette.
+for vertex in head.data.vertices:
+ x,y,z=vertex.co
+ # shoulder width, chest, waist and hips use bounded multipliers.
+ if 4.9<=z<=5.65:
+  t=max(0,1-abs(z-5.35)/.47)
+  vertex.co.x*=1-.055*t
+ elif 4.3<=z<4.9:
+  t=max(0,1-abs(z-4.65)/.35)
+  vertex.co.x*=1-.035*t
+ elif 3.35<=z<4.3:
+  t=max(0,1-abs(z-3.83)/.49)
+  vertex.co.x*=1-.085*t
+ # Arm exterior: preserve volume, do not pull any points across the body.
+ if 3.1<z<5.5 and abs(x)>.83:
+  vertex.co.x=x*(.985)
+ # Legs stay symmetric and maintain clearance at the groin.
+ if .4<z<3.2 and abs(x)>.25:
+  vertex.co.x=x*.995
+ # Face: slight extra back-of-head volume; no exaggerated beak.
+ if 6.1<z<6.85 and y>.10:
+  vertex.co.y=y*1.065
+ if 6.05<z<6.29 and abs(x)<.10 and y<-.20:
+  vertex.co.y-=.018*math.exp(-((z-6.17)/.08)**2)
+# Maintain existing height alignment for all views.
 # Do not change Z: reference front and side use exactly the same height scale.
 # Material override creates solid clay; edge overlay is a separate Freestyle pass.
 sc=bpy.context.scene
