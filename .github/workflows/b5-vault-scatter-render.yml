@@ -1,0 +1,51 @@
+name: B5 Gothic Vault Scatter Render
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/b5-vault-scatter-props-20261113]
+    paths:
+      - 'field/assets/b5-vault-scatter-props.js'
+      - 'tools/b5-vault-scatter-render/**'
+      - 'tools/third_party_cc0/polyhaven/**'
+      - '.github/workflows/b5-vault-scatter-render.yml'
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        kind: [fallen-rib, pointed-arch-fragment, carved-block, broken-vault-panel, hanging-iron, small-rubble]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - run: node tools/b5-vault-scatter-render/export.mjs "${{ matrix.kind }}"
+      - name: Blender front back oblique
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
+            set -eu
+            blender -b -t 2 --python tools/b5-vault-scatter-render/render.py -- "render-output/b5-vault-scatter/${{ matrix.kind }}/${{ matrix.kind }}.glb" "render-output/b5-vault-scatter/${{ matrix.kind }}"
+          '
+      - name: Validate
+        run: |
+          python3 - <<'PY'
+          import pathlib
+          k="${{ matrix.kind }}"
+          p=pathlib.Path("render-output/b5-vault-scatter")/k
+          for f in [k+".glb",k+"-textured.glb"]+[k+"-"+v+".png" for v in ("front","back","top-oblique")]:
+            b=(p/f).read_bytes()
+            assert len(b)>1024 and b.startswith(b"glTF" if f.endswith(".glb") else b"\x89PNG"),f
+            print(f,len(b))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-vault-scatter-${{ matrix.kind }}-glb-png
+          path: render-output/b5-vault-scatter/${{ matrix.kind }}/
+          retention-days: 14
+          if-no-files-found: error
