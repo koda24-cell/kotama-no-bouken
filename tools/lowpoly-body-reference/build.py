@@ -73,19 +73,28 @@ bpy.ops.object.modifier_apply(modifier=dec.name)
 # quad-dominant QuadriFlow retopology. Keep voxel-unified body as fallback.
 # Preserve original anatomy when retopology fails, and log the outcome.
 retopo_result='fallback_voxel_decimated'
+old_counts=(len(head.data.vertices),len(head.data.polygons))
 try:
  bpy.ops.object.select_all(action='DESELECT')
  head.select_set(True)
  bpy.context.view_layer.objects.active=head
- bpy.ops.object.quadriflow_remesh(mode='FACES',target_faces=1100,
+ operation=bpy.ops.object.quadriflow_remesh(mode='FACES',target_faces=1100,
                                  use_mesh_symmetry=True)
- retopo_result='quadriflow_1100_faces'
+ # Operators can replace the mesh datablock; always refresh the active object.
+ candidate=bpy.context.view_layer.objects.active
+ if candidate is not None and candidate.type=='MESH':head=candidate
+ quad_count=sum(len(p.vertices)==4 for p in head.data.polygons)
+ new_counts=(len(head.data.vertices),len(head.data.polygons))
+ if 'FINISHED' not in operation or quad_count<.60*len(head.data.polygons):
+  retopo_result='failed_quality_gate: '+str(operation)+'; quads='+str(quad_count)
+ else:
+  retopo_result='quadriflow_verified'
 except Exception as exc:
  retopo_result='fallback: '+str(exc)[:160]
 with open(os.path.join(out,'iteration7_retopology.txt'),'w') as log:
  log.write(retopo_result+'\\n')
- log.write('vertices='+str(len(head.data.vertices))+'\\n')
- log.write('faces='+str(len(head.data.polygons))+'\\n')
+ log.write('before='+str(old_counts)+'\\n')
+ log.write('after='+str((len(head.data.vertices),len(head.data.polygons)))+'\\n')
  log.write('quads='+str(sum(len(p.vertices)==4 for p in head.data.polygons))+'\\n')
 for p in head.data.polygons:p.use_smooth=False
 counts.clear()
