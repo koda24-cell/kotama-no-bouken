@@ -30,3 +30,12 @@ PR: https://github.com/koda24-cell/kotama-no-bouken/pull/309
 - 右側面と左側面を別々に撮影するように変更し、正面・両側面・斜めの4方向へ拡張。
 - Actionsの事前検証に `python -m py_compile` を追加し、4枚のPNGを必須成果物に指定。
 - 実際のBlender実行・画像の出来栄えは未検証。頭皮カバーは暫定形状であり、参照画像への一致を保証しない。
+
+## 2026-11-13: Actions 失敗診断と改善
+- 最新のGitHub接続では該当コミットの pull_request-triggered workflow run が空。これは push/workflow_dispatch の失敗ログがないことを証明しない。実際の失敗原因は未特定。
+- `--python-exit-code 1` を付け、Blender内Python例外をCI失敗として扱う。
+- Blenderバージョン、実行パス、API起動、空き容量、メモリをログ出力。
+- 正面・左右側面・斜めの4枚のPNGとBlend、頂点数・三角形面数を検証。
+- 顔は100段×50頂点の開いたリングで9,900三角形、髪は100束×(24段間×8三角形+両端4三角形)=19,600三角形。どちらも全三角形。
+- docs/3d/ASSASSIN_HEAD_HAIR_FIX_20261113.md の変更でもpush workflowが起動するようパスフィルタに追加。
+- Blenderの実行結果やPNGの実物は未確認。ログ取得後に原因を再分類すること。
