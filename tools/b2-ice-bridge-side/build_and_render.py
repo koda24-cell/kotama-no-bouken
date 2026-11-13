@@ -45,17 +45,52 @@ def create(side):
  bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
  sign=-1 if side=="left" else 1
  # x runs along bridge; edge at +/- 1. Each tile is 2x2 with flush 2m end.
- # Angular fractured glacial slab rather than rounded translucent jelly.
- core=cube("walkable_ice_bridge_core",(0,0,-.15),(2,1.38,.28),ice,.012)
- # Broad frost plate across the middle; visually reads as opaque ice.
- cube("central_opaque_frosted_plate",(0,0,.002),(1.88,1.15,.025),snow,.008)
- # Edge plates with unequal heights and broken silhouettes.
- for j,(x,y,w,d) in enumerate([(-.66,-.47,.48,.30),(-.18,.48,.53,.31),(.47,-.45,.61,.27),(.76,.36,.31,.33)]):
-  slab=cube("fractured_glacial_plate_%02d"%j,(x,y,.029+j*.004),(w,d,.055),ice,.006)
-  slab.rotation_euler.z=[-.14,.08,.19,-.11][j]
- for i in range(5):
-  x=-.77+i*.38
-  cube("frozen_stone_underlay_%02d"%i,(x,0,-.37),(.35,1.7,.25),slate,.055)
+ # V4: a continuous, triangulated eroded ice shelf; no rectangular top plates.
+ def terrain_shelf(name,mat,half_width,top,bottom,seed):
+  rng=random.Random(seed);nx=22;ny=14;verts=[];faces=[]
+  for layer,zbase in enumerate((top,bottom)):
+   for ix in range(nx+1):
+    x=-1+2*ix/nx
+    for iy in range(ny+1):
+     v=-1+2*iy/ny
+     # Both end cross sections are identical for X-direction tile continuity.
+     boundary=half_width*(1+.045*math.sin(6*x+2*v)+.025*math.cos(11*x-3*v))
+     y=v*boundary
+     wave=.035*math.sin(8*x+5*y)+.023*math.sin(17*x-9*y)+rng.uniform(-.012,.012)
+     if ix in (0,nx):wave=0
+     z=zbase+(wave if layer==0 else wave*.36)
+     verts.append((x,y,z))
+  n=(nx+1)*(ny+1)
+  for ix in range(nx):
+   for iy in range(ny):
+    a=ix*(ny+1)+iy;b=a+ny+1
+    for offset,reverse in ((0,False),(n,True)):
+     q=(a+offset,b+offset,b+offset+1,a+offset+1)
+     faces.append(q[::-1] if reverse else q)
+  for ix in range(nx):
+   for iy in (0,ny):
+    a=ix*(ny+1)+iy;b=(ix+1)*(ny+1)+iy
+    faces.append((a,b,b+n,a+n))
+  for iy in range(ny):
+   for ix in (0,nx):
+    a=ix*(ny+1)+iy;b=a+1
+    faces.append((a,b,b+n,a+n))
+  mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update()
+  obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj);obj.data.materials.append(mat)
+  return obj
+ terrain_shelf("continuous_fractured_ice_shelf",ice,.72,-.01,-.30,74)
+ terrain_shelf("eroded_rock_bed",slate,.84,-.31,-.60,85)
+ # Frost is a subtle mottled material effect, not rectangular white patches.
+ # Dark blue inset fissures follow uneven polylines on the top surface.
+ def fissure(name,points):
+  cu=bpy.data.curves.new(name,"CURVE");cu.dimensions="3D";cu.bevel_depth=.008;cu.bevel_resolution=1
+  poly=cu.splines.new("POLY");poly.points.add(len(points)-1)
+  for p,(x,y) in zip(poly.points,points):
+   z=.004+.035*math.sin(8*x+5*y)+.023*math.sin(17*x-9*y)
+   p.co=(x,y,z,1)
+  ob=bpy.data.objects.new(name,cu);bpy.context.collection.objects.link(ob);cu.materials.append(slate)
+ fissure("branching_glacial_fissure_A",[(-.74,-.23),(-.48,-.17),(-.26,-.32),(.03,-.25),(.27,-.36)])
+ fissure("branching_glacial_fissure_B",[(-.29,.28),(-.08,.18),(.18,.31),(.47,.21),(.74,.32)])
  # one bank edge is sculpturally rough; inner side remains flush to adjoining bridge tile
  # Irregular large overlapping eroded masses replace the repetitive bead-like row.
  # Keep both X end planes free of overhang for seamless modular connection.
@@ -73,14 +108,6 @@ def create(side):
  # Fewer larger fractured ice projections; avoid candy-like evenly spaced spikes.
  for i,(x,y,h,w) in enumerate([(-.67,.77,.43,.15),(-.19,.96,.27,.18),(.38,.78,.56,.19),(.73,.89,.34,.14)]):
   shard("fractured_ice_projection_%02d"%i,(x,sign*y,-.12),(w,.19,h),ice,i+120)
- # Patchy frost follows the eroded stone instead of evenly spaced rectangles.
- for i,(x,y,w,d) in enumerate([(-.70,.72,.31,.15),(-.35,.88,.25,.13),(.09,.72,.38,.12),(.47,.95,.20,.16),(.78,.78,.18,.11)]):
-  frost=cube("uneven_frost_patch_%02d"%i,(x,sign*y,.035),(w,d,.026),snow,.015)
-  frost.rotation_euler.z=sign*(i-2)*.13
- # Irregular shallow cracks, intentionally inset from both tile joins.
- for i,(x,y,w) in enumerate([(-.51,-.18,.25),(-.12,.22,.32),(.34,-.24,.28)]):
-  fissure=cube("surface_fissure_%02d"%i,(x,y,-.002),(w,.018,.007),slate,.003)
-  fissure.rotation_euler.z=.31*(i-1)
  # two flush ends remain clean: bridge tiles can join at x +/-1
  originals=[o for o in bpy.context.scene.objects if o.type=="MESH"]
  bpy.ops.object.select_all(action="DESELECT")
