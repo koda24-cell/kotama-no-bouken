@@ -73,6 +73,65 @@ for p in head.data.polygons:p.use_smooth=False
 counts.clear()
 counts['LOWPOLY_UNIFIED_BODY']=(len(head.data.vertices),len(head.data.polygons))
 assert len([o for o in bpy.context.scene.objects if o.type=='MESH'])==1
+# Pixel-calibrated two-view silhouette fitting from the traced Pinterest outlines.
+# Front image x0=197; side image y-axis pixel center=442, front points to right.
+# The lists are sampled from the visible contours; interpolate between landmarks.
+PX=7.0/660.0
+front_bounds=[
+ (705,152,242),(654,158,229),(609,158,231),(555,154,237),
+ (499,153,240),(456,148,250),(411,142,256),(370,134,261),
+ (350,137,261),(319,145,251),(296,163,233),(270,169,225),
+ (247,166,229),(221,158,237),(199,145,251),(179,167,228),
+ (156,183,211),(125,163,227),(105,147,246),(93,152,243),
+ (69,153,243),(47,168,226)]
+# Include arms in outer front envelope from shoulder through hand.
+arm_bounds=[(396,20,371),(367,30,353),(343,43,353),(313,67,331),
+ (283,92,308),(250,117,269),(220,151,237),(193,145,251),(179,167,228)]
+side_bounds=[
+ (705,406,495),(663,407,467),(608,407,440),(555,410,452),
+ (498,410,465),(463,413,467),(430,410,471),(386,405,475),
+ (352,414,491),(321,414,502),(287,414,499),(251,413,491),
+ (221,414,487),(195,412,452),(174,418,446),(156,421,447),
+ (131,404,482),(117,389,482),(94,383,482),(70,387,474),
+ (46,428,452)]
+def interpolate(rows,pixel_y):
+ rows=sorted(rows,key=lambda t:t[0])
+ if pixel_y<=rows[0][0]:return rows[0][1:]
+ if pixel_y>=rows[-1][0]:return rows[-1][1:]
+ for i in range(len(rows)-1):
+  y0,a0,b0=rows[i];y1,a1,b1=rows[i+1]
+  if y0<=pixel_y<=y1:
+   t=(pixel_y-y0)/(y1-y0)
+   return a0+(a1-a0)*t,b0+(b1-b0)*t
+def target_bounds(pixel_y):
+ l,r=interpolate(front_bounds,pixel_y)
+ if 179<=pixel_y<=396:
+  al,ar=interpolate(arm_bounds,pixel_y)
+  l=min(l,al);r=max(r,ar)
+ back,forward=interpolate(side_bounds,pixel_y)
+ return (l-197)*PX,(r-197)*PX,-(forward-442)*PX,-(back-442)*PX
+# Fit each horizontal cross-section by normalizing against the current model's
+# local envelope. This preserves a connected mesh and silhouette in both views.
+original=[tuple(v.co) for v in head.data.vertices]
+def envelope(z):
+ neighbors=[p for p in original if abs(p[2]-z)<.085]
+ if len(neighbors)<8:
+  neighbors=sorted(original,key=lambda p:abs(p[2]-z))[:32]
+ return (min(p[0] for p in neighbors),max(p[0] for p in neighbors),
+         min(p[1] for p in neighbors),max(p[1] for p in neighbors))
+for v,p in zip(head.data.vertices,original):
+ x,y,z=p;py=705-z/PX
+ xl,xr,yf,yb=target_bounds(py)
+ oxl,oxr,oyf,oyb=envelope(z)
+ if x>=0:
+  v.co.x= x*xr/max(.03,oxr)
+ else:
+  v.co.x= x*abs(xl)/max(.03,abs(oxl))
+ if y<0:
+  v.co.y= y*abs(yf)/max(.03,abs(oyf))
+ else:
+  v.co.y= y*yb/max(.03,oyb)
+# Do not change Z: reference front and side use exactly the same height scale.
 # Material override creates solid clay; edge overlay is a separate Freestyle pass.
 sc=bpy.context.scene
 engines={e.identifier for e in bpy.types.RenderSettings.bl_rna.properties['engine'].enum_items}
