@@ -6,7 +6,7 @@ on:
     branches: [development]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -35,6 +35,22 @@ jobs:
               assert f.exists() and f.stat().st_size>1000,name
               assert f.read_bytes()[:4]==(b'glTF' if name.endswith('.glb') else bytes([137,80,78,71])),name
           PY
+      - name: Preserve approved V5 GLB and review renders in Git
+        if: success()
+        run: |
+          set -euo pipefail
+          src=render-output/floor6/garden-grass
+          dst=assets/models/floor6
+          mkdir -p "$dst/reviews/garden-grass-v5"
+          cp "$src/f6_garden_grass_clumps_v5.glb" "$dst/"
+          cp "$src"/f6_garden_grass_{angle,front,side,top}.png "$dst/reviews/garden-grass-v5/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dst/f6_garden_grass_clumps_v5.glb" "$dst/reviews/garden-grass-v5"
+          if ! git diff --cached --quiet; then
+            git commit -m "Promote approved floor 6 garden grass V5 GLB and renders"
+            git push origin HEAD:feature/f6-flower-garden-grass-20261113
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
