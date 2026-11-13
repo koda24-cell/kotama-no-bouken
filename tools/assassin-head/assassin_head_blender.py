@@ -99,7 +99,8 @@ def light(loc,power,size):
  o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size
  o.rotation_euler=(Vector((0,0,.15))-o.location).to_track_quat('-Z','Y').to_euler()
 light((3,-4,5),650,5);light((-3,1,3),450,4)
-sc=bpy.context.scene;sc.render.engine='CYCLES';sc.cycles.samples=24
+sc=bpy.context.scene;sc.render.engine='BLENDER_EEVEE' if bpy.app.version[0] < 4 else 'BLENDER_EEVEE_NEXT'
+sc.render.film_transparent=False
 sc.render.resolution_x=768;sc.render.resolution_y=768;sc.render.resolution_percentage=100
 sc.render.image_settings.file_format='PNG'
 def render(name,loc):
@@ -113,6 +114,10 @@ render('right_side.png',(5,0,.3))
 render('left_side.png',(-5,0,.3))
 render('three_quarter.png',(3,-4,.4))
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'assassin_head.blend'))
+for required in ('front.png','right_side.png','left_side.png','three_quarter.png'):
+ assert os.path.getsize(os.path.join(out,required)) > 1000, 'Missing or empty render: '+required
 with open(os.path.join(out,'geometry_report.txt'),'w') as f:
  f.write('skin_vertices=%d\nhair_vertices=%d\nskin_triangles=%d\nhair_triangles=%d\n' % (len(face.data.vertices),len(hair.data.vertices),len(face.data.polygons),len(hair.data.polygons)))
+assert len(face.data.vertices)==5000 and len(hair.data.vertices)==10000
+assert len(face.data.polygons)==9900 and len(hair.data.polygons)==19600
 print('COUNTS',len(face.data.vertices),len(hair.data.vertices))
