@@ -103,34 +103,47 @@ def interpolate(rows,pixel_y):
   if y0<=pixel_y<=y1:
    t=(pixel_y-y0)/(y1-y0)
    return a0+(a1-a0)*t,b0+(b1-b0)*t
-def target_bounds(pixel_y):
+def target_bounds(pixel_y,arm=False):
  l,r=interpolate(front_bounds,pixel_y)
- if 179<=pixel_y<=396:
-  al,ar=interpolate(arm_bounds,pixel_y)
-  l=min(l,al);r=max(r,ar)
+ if arm and 179<=pixel_y<=396:
+  l,r=interpolate(arm_bounds,pixel_y)
  back,forward=interpolate(side_bounds,pixel_y)
  return (l-197)*PX,(r-197)*PX,-(forward-442)*PX,-(back-442)*PX
-# Fit each horizontal cross-section by normalizing against the current model's
-# local envelope. This preserves a connected mesh and silhouette in both views.
+# Iteration 2: protect torso width while independently fitting arms. Previous
+# global envelope enlarged the torso to match the outstretched hand silhouette.
 original=[tuple(v.co) for v in head.data.vertices]
-def envelope(z):
- neighbors=[p for p in original if abs(p[2]-z)<.085]
- if len(neighbors)<8:
-  neighbors=sorted(original,key=lambda p:abs(p[2]-z))[:32]
- return (min(p[0] for p in neighbors),max(p[0] for p in neighbors),
-         min(p[1] for p in neighbors),max(p[1] for p in neighbors))
+def envelope(z,region):
+ neighbors=[p for p in original if abs(p[2]-z)<.09]
+ if len(neighbors)<8:neighbors=sorted(original,key=lambda p:abs(p[2]-z))[:48]
+ if region=='torso':
+  candidates=[p for p in neighbors if abs(p[0])<.80]
+ elif region=='arms':
+  candidates=[p for p in neighbors if abs(p[0])>.67]
+ else:candidates=neighbors
+ if len(candidates)<8:candidates=neighbors
+ return (min(p[0] for p in candidates),max(p[0] for p in candidates),
+         min(p[1] for p in candidates),max(p[1] for p in candidates))
 for v,p in zip(head.data.vertices,original):
  x,y,z=p;py=705-z/PX
- xl,xr,yf,yb=target_bounds(py)
- oxl,oxr,oyf,oyb=envelope(z)
- if x>=0:
-  v.co.x= x*xr/max(.03,oxr)
- else:
-  v.co.x= x*abs(xl)/max(.03,abs(oxl))
- if y<0:
-  v.co.y= y*abs(yf)/max(.03,abs(oyf))
- else:
-  v.co.y= y*yb/max(.03,oyb)
+ # Smoothly blend body-to-arm targets over shoulder width.
+ arm_band=max(0,min(1,(abs(x)-.57)/.28)) if 3.2<z<5.65 else 0
+ body=target_bounds(py,False);arm=target_bounds(py,True)
+ xl=body[0]*(1-arm_band)+arm[0]*arm_band
+ xr=body[1]*(1-arm_band)+arm[1]*arm_band
+ yf,yb=body[2],body[3]
+ region='arms' if arm_band>.5 else ('torso' if 3.2<z<5.65 else 'all')
+ oxl,oxr,oyf,oyb=envelope(z,region)
+ if x>=0:v.co.x=x*xr/max(.03,oxr)
+ else:v.co.x=x*abs(xl)/max(.03,abs(oxl))
+ if y<0:v.co.y=y*abs(yf)/max(.03,abs(oyf))
+ else:v.co.y=y*yb/max(.03,oyb)
+ # Avoid flattening the chin/forehead by preserving a rounded taper.
+ if z>5.75 and z<6.25:
+  taper=max(0,1-abs(z-5.96)/.25)
+  v.co.x*=1-.10*taper
+ # Small nose protrusion only at front center, not a beak.
+ if 6.04<z<6.32 and abs(v.co.x)<.13 and v.co.y<-.15:
+  v.co.y-=.035*math.exp(-((z-6.18)/.085)**2)*max(0,1-abs(v.co.x)/.13)
 # Do not change Z: reference front and side use exactly the same height scale.
 # Material override creates solid clay; edge overlay is a separate Freestyle pass.
 sc=bpy.context.scene
