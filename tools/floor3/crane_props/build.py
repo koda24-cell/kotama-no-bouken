@@ -130,4 +130,68 @@ for x in (-1.25,1.25):
     for y in (-.23,.23):
         cyl('end plate bolt',(x,y,.50),.04,.14,edge,'X',12)
 export_prop('floor3_crane_fallen_truss')
-print('CRANE_SURROUNDING_PROPS_COMPLETE')
+# V2 enhancements: additional damage, plausible loosened components and ground clutter.
+# Cable reel: trailing loose wire, bent rim braces and fragmented support.
+new_prop('floor3_crane_cable_reel_v2')
+for x in (-.58,.58):
+    cyl('reel flange',(x,0,.83),.72,.085,iron,'X',40)
+    cyl('rusty concentric ring',(x+(.052 if x>0 else -.052),0,.83),.63,.04,rust,'X',40)
+    for k in range(8):
+        t=2*pi*k/8
+        cyl('rim rivet',(x+(.095 if x>0 else -.095),.47*cos(t),.83+.47*sin(t)),.038,.03,edge,'X',12)
+cyl('barrel',(0,0,.83),.39,1.12,dark,'X',36)
+cyl('axle',(0,0,.83),.15,1.48,edge,'X',24)
+for x in [-.43,-.29,-.15,-.01,.13,.27,.41]:
+    tube('wound cable',[(x,.42*cos(2*pi*k/48),.83+.42*sin(2*pi*k/48)) for k in range(49)],.038,edge,12)
+for x in (-.45,.45):
+    cube('reel support',(x,0,.12),(.21,1.24,.24),rust,.025)
+tube('loose cable dragging on ground',[(.41,.42,.83),(.53,.62,.65),(.64,.83,.36),(.78,1.04,.12),(1.04,1.14,.07),(1.31,.92,.07),(1.44,.63,.07),(1.31,.44,.08)],.034,dark,12)
+for k in range(5):
+    t=2*pi*k/5
+    cube('rust patch on reel',( .62,.57*cos(t),.83+.57*sin(t)),(.024,.13,.075),rust,.01)
+cube('broken support plank',(.8,-.22,.09),(.65,.15,.13),dark,.025)
+export_prop('floor3_crane_cable_reel_v2')
+
+# Counterweight: visibly cracked armour, exposed anchor plates, uneven rubble.
+new_prop('floor3_crane_counterweight_v2')
+cube('weight core',(0,0,.72),(1.85,1.20,1.32),dark,.11)
+for x in (-.68,.68):
+    cube('armour plate',(x,0,.74),(.16,1.25,1.37),iron,.035)
+for y in (-.45,.45):
+    cube('rusty strap',(0,y,.72),(1.85,.09,1.42),rust,.025)
+for x in (-.48,.48):
+    tube('lifting eye',[(x-.15,0,1.37),(x-.15,0,1.57),(x,0,1.73),(x+.15,0,1.57),(x+.15,0,1.37)],.07,edge,16)
+for x in (-.52,.52):
+    tube('front deep fracture',[(x,-.63,1.17),(x+.13,-.64,.91),(x-.035,-.64,.72),(x+.17,-.64,.40)],.026,rust,10)
+    tube('branch crack',[(x+.13,-.65,.91),(x+.34,-.65,.79),(x+.29,-.65,.61)],.013,edge,8)
+for x in (-.76,.76):
+    for z in (.27,1.04):
+        cyl('strap anchor',(x,-.63,z),.045,.06,edge,'Y',12)
+for x,y,size in [(-1.02,-.58,.24),(1.07,.31,.31),(.76,-.77,.19)]:
+    cube('fallen concrete fragment',(x,y,.12),(size,size*.82,size*.62),dark,.035)
+export_prop('floor3_crane_counterweight_v2')
+
+# Fallen truss: original chords retained, plus bent and disconnected metal.
+new_prop('floor3_crane_fallen_truss_v2')
+for y in (-.32,.32):
+    for z in (.23,.78):
+        cube('original long beam chord',(0,y,z),(2.8,.10,.10),iron,.025)
+for x in (-1.30,-.65,0,.65,1.20):
+    for y in (-.32,.32):
+        cube('original vertical post',(x,y,.50),(.075,.09,.55),rust,.018)
+for y in (-.32,.32):
+    for i in range(4):
+        x=-1.25+i*.66
+        tube('original lattice diagonal',[(x,y,.23),(x+.65,y,.78)],.045,edge,10)
+for x in (-1.25,1.25):
+    cube('original end plate',(x,0,.50),(.10,.76,.67),rust,.02)
+    for y in (-.23,.23):
+        cyl('end bolt',(x,y,.50),.04,.14,edge,'X',12)
+for y in (-.32,.32):
+    tube('buckled secondary brace',[(-1.22,y,.77),(-.90,y+.06,.69),(-.58,y-.10,.46),(-.23,y,.23)],.055,rust,12)
+    tube('hanging torn steel',[(.58,y,.78),(.72,y+.04,.60),(.84,y+.16,.35),(1.02,y+.24,.13)],.042,dark,10)
+for x,y in [(-1.34,-.43),(1.43,.39),(.86,-.66)]:
+    cube('fallen joint scrap',(x,y,.10),(.24,.16,.11),rust,.02)
+export_prop('floor3_crane_fallen_truss_v2')
+print('CRANE_SURROUNDING_PROPS_V2_COMPLETE')
+
