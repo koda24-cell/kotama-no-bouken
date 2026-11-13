@@ -61,3 +61,7 @@ pushトリガーでも自動実行される。実行ページ下のArtifactsか�
 - **検証状態**: 修正コミットは作成済み。ただし、このメモ記録時点で**修正後のActions成功・PNGの実在・レンダリング品質は未確認**。成功を宣言しない。
 - **次回の確認**: PR #301 の最新Actions実行を確認し、3モデルの正面・側面・斜めのPNGとGLBを照合する。UbuntuパッケージのBlenderはDocker版とバージョンが異なる可能性があるため、スクリプト互換性・材質・カメラ・レンダリング結果を検証する。
 - **再発防止**: レジストリ制限時に同じ `docker pull` を繰り返す前に、ホストBlenderまたは固定バージョンの代替導入方法を検討する。既存の他ワークフローは勝手に変更しない。
+
+### 2026-11-13 追加：Blender直接実行の見かけ上の成功に注意
+- run #43336789602 はActions全体がsuccessでも、ArtifactにはGLB 3点のみでPNGが0点。ログには `ModuleNotFoundError: No module named 'numpy'` があり、Blender 5.0.1のglTF importerが失敗した。**Actions成功をレンダリング成功と判断しないこと**。
+- 対策: `python3-numpy` をインストールし、Blender側からnumpy importを事前検証。`blender --python-exit-code 1` を付けてPython例外をジョブ失敗として伝播させる。実レンダリングの成功とPNG存在は修正後に別途確認する。
