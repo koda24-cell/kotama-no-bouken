@@ -1,0 +1,42 @@
+{
+  "source": "Kenney Nature Kit",
+  "license": "CC0-1.0",
+  "official": "https://kenney.nl/assets/nature-kit",
+  "githubMirror": "https://github.com/Hidencod/tge-assets",
+  "files": [
+    {
+      "name": "cliff-large-rock.glb",
+      "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-large-rock.glb"
+    },
+    {
+      "name": "cliff-cave-rock.glb",
+      "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-cave-rock.glb"
+    },
+    {
+      "name": "cliff-corner-rock.glb",
+      "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-corner-rock.glb"
+    },
+    {
+      "name": "cliff-diagonal-rock.glb",
+      "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-diagonal-rock.glb"
+    },
+    {
+      "name": "cliff-block-rock.glb",
+      "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-block-rock.glb"
+    },
+    {
+      "name": "cliff-blockslope-rock.glb",
+      "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-blockslope-rock.glb"
+    },
+    {
+      "name": "cliff-rock.glb",
+      "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-rock.glb"
+    },
+    {
+      "name": "cliff-top-rock.glb",
+      "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/cliff-top-rock.glb"
+    }
+  ],
+  "status": "download_pending_workflow",
+  "use": "reference library only; not approved for in-game asset promotion"
+}
