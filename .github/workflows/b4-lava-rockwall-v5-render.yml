@@ -1,0 +1,32 @@
+name: B4 V5 Reference 5000 Control Points Render
+on:
+  push:
+    branches:
+      - feature/b4-rockwall-v5-reference-5000-20261113
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - run: node tools/b4-render/export-rockwall-v5.mjs
+      - name: Install Blender and numpy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+          blender -b --python-exit-code 1 --python-expr 'import numpy; print("NUMPY_OK")'
+      - name: Render front side and angle
+        run: |
+          blender -b -t 2 --python-exit-code 1 --python tools/b4-render/render-rockwall-color.py -- render-output/b4-lava-rockwall-v5-reference-5000.glb render-output
+          test "$(find render-output -name '*.png' | wc -l)" -eq 3
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-rockwall-v5-reference-5000
+          path: render-output/
+          retention-days: 14
