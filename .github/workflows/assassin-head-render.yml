@@ -1,0 +1,53 @@
+name: Assassin head Blender 4-view render
+on:
+  push:
+    branches: [feature/assassin-head-render-20261113]
+    paths:
+      - '.github/workflows/assassin-head-render.yml'
+      - 'tools/assassin-head/**'
+      - 'docs/3d/ASSASSIN_HEAD_HAIR_FIX_20261113.md'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender xvfb libgl1-mesa-dri mesa-utils
+          command -v blender
+          blender --version
+      - name: Check Python syntax
+        run: python -m py_compile tools/assassin-head/assassin_head_blender.py
+      - name: Report render environment
+        run: |
+          python --version
+          df -h .
+          free -h
+          blender -b -noaudio --factory-startup --python-expr "import bpy; print('BLENDER_API_VERSION', bpy.app.version_string)"
+      - name: Render face and hair
+        run: |
+          mkdir -p output/assassin-head
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1280x1024x24' blender -b -noaudio -t 2 --factory-startup --python-exit-code 1 --python tools/assassin-head/assassin_head_blender.py -- --out output/assassin-head
+      - name: Verify geometry and outputs
+        run: |
+          test -s output/assassin-head/front.png
+          test -s output/assassin-head/right_side.png
+          test -s output/assassin-head/left_side.png
+          test -s output/assassin-head/three_quarter.png
+          test -s output/assassin-head/assassin_head.blend
+          test -s output/assassin-head/geometry_report.txt
+          cat output/assassin-head/geometry_report.txt
+          grep -q 'skin_vertices=15360' output/assassin-head/geometry_report.txt
+          grep -q 'hair_vertices=10000' output/assassin-head/geometry_report.txt
+          grep -q 'skin_quads=15264' output/assassin-head/geometry_report.txt
+          grep -q 'hair_quads=4900' output/assassin-head/geometry_report.txt
+          file output/assassin-head/*.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assassin-head-four-view
+          path: output/assassin-head/
+          retention-days: 14
