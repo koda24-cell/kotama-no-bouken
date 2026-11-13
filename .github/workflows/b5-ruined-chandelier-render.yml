@@ -10,7 +10,7 @@ on:
       - 'tools/b5-chandelier-render/**'
       - '.github/workflows/b5-ruined-chandelier-render.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -46,3 +46,22 @@ jobs:
           path: render-output/b5-chandelier/
           if-no-files-found: error
           retention-days: 14
+
+      - name: Preserve approved V7 GLB and review PNG in repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          target="assets/models/floor5"
+          mkdir -p "$target/reviews/ruined-gothic-chandelier"
+          cp render-output/b5-chandelier/ruined-gothic-chandelier.glb "$target/ruined-gothic-chandelier.glb"
+          cp render-output/b5-chandelier/ruined-gothic-chandelier-*.png "$target/reviews/ruined-gothic-chandelier/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          if git diff --cached --quiet; then
+            echo "Approved V7 assets already preserved."
+          else
+            git commit -m "assets(b5): preserve approved chandelier V7 GLB and review PNG"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
