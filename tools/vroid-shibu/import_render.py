@@ -148,9 +148,34 @@ face=next((o for o in meshes if o.name.lower()=='face'),None)
 if face:
  manifest['face_review']={'source_mesh':face.name,'vertices':len(face.data.vertices),
                          'faces':len(face.data.polygons),'materials':next((m['materials'] for m in manifest['meshes'] if m['name']==face.name),[])}
+ # Assassin-specific front fringe prototype: near-camera (+X) eye occlusion.
+ # Build a separate editable mesh; never modify the VRoid source face.
+ from mathutils import Vector as V
+ def make_fringe(name,points,widths):
+  verts=[];faces=[]
+  for p,w in zip(points,widths):
+   verts.extend([(p.x-w/2,p.y,p.z),(p.x+w/2,p.y,p.z)])
+  for i in range(len(points)-1):faces.append((2*i,2*i+1,2*i+3,2*i+2))
+  mesh=bpy.data.meshes.new(name+'_mesh');mesh.from_pydata(verts,[],faces);mesh.update()
+  obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
+  return obj
+ # Face front is +Y in the existing front camera; the +X side is nearer
+ # the three-quarter camera. Proportions are relative to the face bounds.
+ fw=fs.x;fh=fs.z
+ hair=bpy.data.materials.new('Assassin_silver_lavender_hair')
+ hair.diffuse_color=(.72,.68,.82,1)
+ strand=make_fringe('Assassin_near_eye_swept_fringe',[
+  V(fc.x+fw*.12,fmax.y+fs.y*.14,fmax.z-fh*.10),
+  V(fc.x+fw*.28,fmax.y+fs.y*.20,fmax.z-fh*.25),
+  V(fc.x+fw*.29,fmax.y+fs.y*.22,fmax.z-fh*.45),
+  V(fc.x+fw*.21,fmax.y+fs.y*.19,fmax.z-fh*.64),
+  V(fc.x+fw*.17,fmax.y+fs.y*.12,fmax.z-fh*.76)],
+  [fw*.38,fw*.43,fw*.38,fw*.26,fw*.04])
+ strand.data.materials.append(hair)
+ manifest['face_review']['assassin_fringe']={'name':strand.name,'side':'camera-near +X','note':'first geometry prototype; check eye occlusion in rendered image'}
  prior={o.name:o.hide_render for o in bpy.context.scene.objects if o.type=='MESH'}
  for obj in bpy.context.scene.objects:
-  if obj.type=='MESH':obj.hide_render=(obj!=face)
+  if obj.type=='MESH':obj.hide_render=(obj!=face and obj!=strand)
  face_bounds=[face.matrix_world @ Vector(c) for c in face.bound_box]
  fmin=Vector(tuple(min(v[i] for v in face_bounds) for i in range(3)))
  fmax=Vector(tuple(max(v[i] for v in face_bounds) for i in range(3)))
