@@ -137,7 +137,8 @@ def plant_bend(p):
  z=p.z
  t=max(0.0,z/2.4)
  return Vector((p.x+.32*t*t, p.y, z-.15*t*t*t))
-head_anchor=Vector((0,0,2.035))\n# Stem extends 0.020 above the petal throat so the two geometries physically overlap.
+head_anchor=Vector((0,0,2.035))
+# Stem extends 0.020 above the petal throat so the two geometries physically overlap.
 # Tangent of the actual stalk bend at the attachment height.
 t=head_anchor.z/2.4
 stem_tangent=Vector((.64*t/2.4,0,1-.45*t*t/2.4)).normalized()
