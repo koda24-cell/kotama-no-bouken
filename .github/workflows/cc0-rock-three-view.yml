@@ -1,0 +1,33 @@
+name: CC0 Boulder Blender Three View
+on:
+  push:
+    branches: [feature/cc0-rock-reference-kit-20261114]
+    paths:
+      - tools/3d-reference/render_cc0_rock.py
+      - .github/workflows/cc0-rock-three-view.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install headless Blender and graphics libraries
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender libegl1 libgl1 libopengl0 libx11-6 libxrender1 libxi6 libxxf86vm1 libsm6
+      - name: Render actual boulder front side angle and export GLB
+        run: blender -b --python tools/3d-reference/render_cc0_rock.py
+      - name: Validate output files
+        run: |
+          set -euo pipefail
+          cd tools/3d-reference/cc0-rocks/polyhaven/reviews
+          for f in front.png side.png angle.png rock_geometry_review.glb; do test -s "$f"; done
+          file front.png side.png angle.png rock_geometry_review.glb
+          sha256sum front.png side.png angle.png rock_geometry_review.glb > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cc0-boulder-three-view
+          path: tools/3d-reference/cc0-rocks/polyhaven/reviews/
+          retention-days: 14
