@@ -1,0 +1,41 @@
+name: Assassin head scratch rebuild Eevee clay render
+on:
+  push:
+    branches: [feature/assassin-head-rebuild-20261113]
+    paths:
+      - 'tools/assassin-rebuild/**'
+      - '.github/workflows/assassin-rebuild-eevee.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and headless OpenGL
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender xvfb libgl1-mesa-dri mesa-utils
+          blender --version
+      - name: Syntax check
+        run: python -m py_compile tools/assassin-rebuild/rebuild.py
+      - name: Eevee solid four-view render
+        run: |
+          mkdir -p output/assassin-rebuild
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1280x1024x24' blender -b -noaudio -t 2 --factory-startup --python-exit-code 1 --python tools/assassin-rebuild/rebuild.py -- --out output/assassin-rebuild
+      - name: Verify output
+        run: |
+          for f in front right_side left_side three_quarter; do test -s "output/assassin-rebuild/$f.png"; done
+          test -s output/assassin-rebuild/assassin_rebuild.blend
+          grep -q 'head_vertices=16128' output/assassin-rebuild/geometry_report.txt
+          grep -q 'hair_vertices=16368' output/assassin-rebuild/geometry_report.txt
+          grep -q 'engine=BLENDER_EEVEE' output/assassin-rebuild/geometry_report.txt
+          cat output/assassin-rebuild/geometry_report.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assassin-rebuild-eevee-solid
+          path: output/assassin-rebuild/
+          retention-days: 14
