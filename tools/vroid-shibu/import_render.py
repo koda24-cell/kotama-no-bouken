@@ -181,20 +181,25 @@ if face:
  fw=fs.x;fh=fs.z
  hair=bpy.data.materials.new('Assassin_silver_lavender_hair')
  hair.diffuse_color=(.72,.68,.82,1)
+ # Anchor roots closer to the scalp and follow the forehead surface.
+ # Keep the camera-near (+X) eye covered while the far eye remains visible.
  strands=[]
- for idx,(shift,scale,drop) in enumerate([(-.10,.50,.02),(.00,.62,.0),(.12,.42,-.035),(.23,.25,-.065)]):
+ for idx,(shift,scale,drop) in enumerate([(-.06,.25,.015),(.02,.29,.0),(.11,.22,-.02),(.19,.15,-.035),(.27,.12,-.045)]):
+  x0=.05+shift
   pts=[
-   V((fc.x+fw*(.06+shift),fmax.y+fs.y*.10,fmax.z-fh*(.06+drop))),
-   V((fc.x+fw*(.16+shift),fmax.y+fs.y*.20,fmax.z-fh*(.22+drop))),
-   V((fc.x+fw*(.24+shift),fmax.y+fs.y*.25,fmax.z-fh*(.40+drop))),
-   V((fc.x+fw*(.24+shift),fmax.y+fs.y*.23,fmax.z-fh*(.57+drop))),
-   V((fc.x+fw*(.16+shift),fmax.y+fs.y*.15,fmax.z-fh*(.74+drop)))]
-  obj=make_strand('Assassin_layered_bang_%02d'%idx,pts,[fw*scale*q for q in (.55,1,.9,.65,.025)])
+   V((fc.x+fw*x0, fmax.y-fs.y*.035, fmax.z-fh*(.015+drop))),
+   V((fc.x+fw*(x0+.055), fmax.y+fs.y*.025, fmax.z-fh*(.12+drop))),
+   V((fc.x+fw*(x0+.105), fmax.y+fs.y*.065, fmax.z-fh*(.26+drop))),
+   V((fc.x+fw*(x0+.13), fmax.y+fs.y*.095, fmax.z-fh*(.41+drop))),
+   V((fc.x+fw*(x0+.12), fmax.y+fs.y*.08, fmax.z-fh*(.56+drop))),
+   V((fc.x+fw*(x0+.08), fmax.y+fs.y*.045, fmax.z-fh*(.69+drop)))]
+  obj=make_strand('Assassin_layered_bang_%02d'%idx,pts,[fw*scale*q for q in (.55,.9,1,.85,.58,.018)],depth_ratio=.44,segments=12)
   obj.data.materials.append(hair);strands.append(obj)
- strand=strands[0]
- manifest['face_review']['assassin_fringe']={'names':[o.name for o in strands],'side':'camera-near +X','construction':'layered tapered volumetric meshes, Blender-native; Geometry Nodes compatible','note':'inspect actual occlusion before approval'}
-
- manifest['face_review']['assassin_fringe']={'name':strand.name,'side':'camera-near +X','note':'first geometry prototype; check eye occlusion in rendered image'}
+ manifest['face_review']['assassin_fringe']={
+  'names':[o.name for o in strands],
+  'side':'camera-near +X',
+  'construction':'five tapered volumetric strands with scalp-rooted curves and reduced projection',
+  'note':'review actual front, side, three-quarter images for face intersection and occlusion'}
  prior={o.name:o.hide_render for o in bpy.context.scene.objects if o.type=='MESH'}
  for obj in bpy.context.scene.objects:
   if obj.type=='MESH':obj.hide_render=(obj!=face and obj not in strands)
