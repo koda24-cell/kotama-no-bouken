@@ -14,12 +14,16 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender xvfb libgl1-mesa-dri
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender xvfb libgl1-mesa-dri python3-pil
       - name: Eevee solid four-view
         run: |
           python -m py_compile tools/lowpoly-body-reference/build.py
           mkdir -p output/lowpoly-body
           LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1280x1024x24' blender -b -noaudio -t 2 --factory-startup --python-exit-code 1 --python tools/lowpoly-body-reference/build.py -- --out output/lowpoly-body
+      - name: Fetch Pinterest reference and create silhouette overlays
+        run: |
+          curl --fail --location --retry 3 -o output/lowpoly-body/reference.jpg 'https://i.pinimg.com/564x/b0/82/96/b0829602451a59a429f19d5455b5b22a.jpg'
+          /usr/bin/python3 tools/lowpoly-body-reference/overlay.py output/lowpoly-body/reference.jpg output/lowpoly-body
       - name: Validate
         run: |
           for f in front right_side left_side three_quarter; do test -s "output/lowpoly-body/$f.png"; done
