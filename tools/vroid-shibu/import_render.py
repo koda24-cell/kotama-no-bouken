@@ -39,6 +39,26 @@ if body:
   manifest['meshes'].append({'name':clone.name,'vertices':len(clone.data.vertices),'polygons':len(clone.data.polygons),'hidden':clone.hide_render})
  body.hide_render=True
  manifest['hidden'].append('Body')
+skin=next((o for o in bpy.context.scene.objects if o.type=='MESH' and o.name=='Body_skin'),None)
+if skin:
+ candidate=skin.copy();candidate.data=skin.data.copy()
+ bpy.context.collection.objects.link(candidate)
+ candidate.name='Body_skin_lowpoly_candidate'
+ candidate.hide_render=True
+ before_faces=len(candidate.data.polygons)
+ modifier=candidate.modifiers.new('Trial_reduction_50pct','DECIMATE')
+ modifier.ratio=.5
+ bpy.context.view_layer.objects.active=candidate
+ candidate.select_set(True)
+ bpy.ops.object.modifier_apply(modifier=modifier.name)
+ candidate.select_set(False)
+ manifest['lowpoly_trial']={'before_faces':before_faces,'after_faces':len(candidate.data.polygons),'vertices':len(candidate.data.vertices),'note':'non-destructive duplicate; not approved'}
+ edge_uses={}
+ for poly in skin.data.polygons:
+  for key in poly.edge_keys:
+   k=tuple(sorted(key));edge_uses[k]=edge_uses.get(k,0)+1
+ manifest['skin_boundary_edges']=sum(v==1 for v in edge_uses.values())
+ manifest['skin_nonmanifold_edges']=sum(v>2 for v in edge_uses.values())
 visible=[o for o in bpy.context.scene.objects if o.type=='MESH' and not o.hide_render]
 if not visible:raise RuntimeError('Body-only filtering removed all meshes')
 # World-space bounds and calibrated camera framing, no destructive geometry edits.
@@ -76,4 +96,9 @@ for name,offset in [('front',(0,1,0)),('back',(0,-1,0)),('right_side',(1,0,0)),(
  bpy.data.objects.remove(cam,do_unlink=True)
 with open(os.path.join(out,'source_manifest.json'),'w') as f:json.dump(manifest,f,ensure_ascii=False,indent=2)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'vroid_shibu_import.blend'))
+bpy.ops.object.select_all(action='DESELECT')
+for obj in visible:obj.select_set(True)
+bpy.context.view_layer.objects.active=visible[0]
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'skin_only_review.glb'),export_format='GLB',use_selection=True)
+bpy.ops.object.select_all(action='DESELECT')
 print('IMPORTED_MESHES',len(meshes),'VISIBLE',len(visible))
