@@ -16,7 +16,7 @@ for vec,power,scale in [((2,-3,4),2500,1.6),((-4,-2,2),1800,1.9),((1,3,4),1100,1
 scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=40
 scene.render.resolution_x=960;scene.render.resolution_y=720;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG';scene.world.color=(.2,.2,.2)
-scene.view_settings.view_transform='AgX';scene.view_settings.look='Medium High Contrast';scene.view_settings.view_settings if False else None
+scene.view_settings.view_transform='AgX';scene.view_settings.look='AgX - Medium High Contrast'
 scene.view_settings.exposure=1.1
 os.makedirs(outdir,exist_ok=True);stem=os.path.splitext(os.path.basename(src))[0]
 for label,direction in [('front',(0,-1,.25)),('side',(1,-.12,.22)),('angle',(1,-1,.52))]:
