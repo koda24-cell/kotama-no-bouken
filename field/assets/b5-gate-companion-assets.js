@@ -118,7 +118,7 @@ export function createB5GateCompanion(THREE,variant='broken-pillar',seed=1){
   profiledSquare(.62,.10,.62,0,.24,0,light,'pedestal-moulding');
   profiledSquare(.51,.20,.51,0,.39,0,stone,'pedestal-core');
   profiledSquare(.57,.07,.57,0,.525,0,light,'pedestal-upper');
-  const baseY=.56,shaftH=1.53;
+  const baseY=.56,shaftH=1.53*1.5; // Extend only central shaft; base and capital sizes unchanged.
   shaft(.205,shaftH,0,baseY,0,false);
   // Eight vertical recessed grooves; actual raised border ribs on the shaft.
   for(let i=0;i<8;i++){
@@ -147,12 +147,12 @@ export function createB5GateCompanion(THREE,variant='broken-pillar',seed=1){
    mesh(geo,crackMat,label);
   }
   for(let k=0;k<4;k++){
-   const a=.32+k*1.49,start=baseY+.24+k*.22;
+   const a=.32+k*1.49,start=baseY+(.24+k*.22)*1.5;
    const pts=[];
    for(let j=0;j<9;j++){
     const t=j/8;
     pts.push([a+t*.29+Math.sin(j*2.4+k)*.028,
-      start+t*(.27+k%2*.09),.020+(j%3)*.005]);
+      start+t*(.27+k%2*.09)*1.5,.020+(j%3)*.005]);
    }
    crack(pts,'shaft-weathered-fracture');
    if(k%2===0)crack(pts.slice(3,7).map(([a,y,w],j)=>[a-.06-j*.035,y+j*.012,w*.68]),
