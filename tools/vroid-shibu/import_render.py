@@ -14,9 +14,9 @@ manifest={'source':'Sendagaya_Shibu.vrm','license':'CC0 per pixiv beta AvatarSam
 # obvious hair, garment, eye and accessory objects when named separately.
 for obj in meshes:
  name=obj.name.lower()
- hide=any(token in name for token in ('hair','skirt','dress','cloth','outfit','shoe','accessory','ribbon'))
+ hide=name=='icosphere' or any(token in name for token in ('hair','skirt','dress','cloth','outfit','shoe','accessory','ribbon'))
  manifest['meshes'].append({'name':obj.name,'vertices':len(obj.data.vertices),
-                           'polygons':len(obj.data.polygons),'hidden':hide})
+                           'polygons':len(obj.data.polygons),'hidden':hide, 'materials':[{'index':i,'name':m.name if m else 'None','faces':sum(1 for p in obj.data.polygons if p.material_index==i)} for i,m in enumerate(obj.data.materials)]})
  if hide:
   obj.hide_render=True
   manifest['hidden'].append(obj.name)
