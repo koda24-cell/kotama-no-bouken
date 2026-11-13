@@ -31,12 +31,12 @@ for i in range(24):
 # Reference tile and stage lighting.
 floor=bpy.data.materials.new('dark_stone');floor.diffuse_color=(.11,.10,.14,1)
 bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,-.055))
-tile=bpy.context.object;tile.name='one_tile_ground';tile.scale=(.5,.5,.045);tile.data.materials.append(floor)
+tile=bpy.context.object;tile.name='one_tile_ground';tile.scale=(.68,.68,.045);tile.data.materials.append(floor)
 world=bpy.context.scene.world;world.color=(.13,.11,.16)
 def aim(o,target):o.rotation_euler=(Vector(target)-o.location).to_track_quat('-Z','Y').to_euler()
 for loc,power,color in [((1,-2,3),260,(.7,.72,.85)),((-2,1,2),140,(.7,.08,.18))]:
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.color=color;o.data.shape='DISK';o.data.size=3;aim(o,(0,0,.1))
-bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.type='ORTHO';cam.data.ortho_scale=1.7;bpy.context.scene.camera=cam
+bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.type='ORTHO';cam.data.ortho_scale=2.0;bpy.context.scene.camera=cam
 scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=32
 scene.view_settings.view_transform='Standard';scene.view_settings.exposure=0
 scene.render.resolution_x=960;scene.render.resolution_y=720;scene.render.resolution_percentage=100
