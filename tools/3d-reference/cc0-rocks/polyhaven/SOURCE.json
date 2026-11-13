@@ -1,0 +1,15 @@
+{
+  "provider": "Poly Haven",
+  "asset_id": "Rockingchair_01",
+  "asset_name": "Rockingchair 01",
+  "asset_page": "https://polyhaven.com/a/Rockingchair_01",
+  "license_page": "https://polyhaven.com/license",
+  "license": "CC0 (provider-wide; verify individual page before promotion)",
+  "download_url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/Rockingchair_01/Rockingchair_01_1k.gltf",
+  "source_category": "gltf",
+  "resolution": "1k",
+  "format": "gltf",
+  "bytes": 2712,
+  "sha256": "eb8c3a8f9c2c1bd6ca6d76804b8361dd0fd779498249d554536e5683e08f565b",
+  "status": "Unapproved reference source; not integrated into game"
+}
