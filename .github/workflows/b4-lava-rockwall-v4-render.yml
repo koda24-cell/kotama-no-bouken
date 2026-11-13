@@ -1,0 +1,33 @@
+name: B4 Lava Rockwall V4 Dry and Magma Render
+on:
+  push:
+    branches:
+      - feature/b4-lava-rockwall-v4-20261112
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - run: node tools/b4-render/export-rockwall-v4.mjs
+      - name: Install Blender without container registry rate limits
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+          blender -b --python-exit-code 1 --python-expr 'import numpy; print("NUMPY_OK", numpy.__version__)'
+      - name: Blender front side angle render
+        run: |
+          for glb in render-output/*.glb; do
+            blender -b -t 2 --python-exit-code 1 --python tools/b4-render/render-rockwall-color.py -- "$glb" render-output
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-lava-rockwall-v4-review
+          path: render-output/
+          retention-days: 14

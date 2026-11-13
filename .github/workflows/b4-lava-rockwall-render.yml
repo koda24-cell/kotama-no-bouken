@@ -1,0 +1,31 @@
+name: B4 Lava Rockwall Docker Render
+on:
+  push:
+    branches:
+      - feature/b4-lava-rockwall-v1-20261112
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Three.js
+        run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - name: Export GLB
+        run: node tools/b4-render/export-rockwall.mjs
+      - name: Docker Blender
+        run: |
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+            -b -t 2 --python tools/b4-render/render-batch.py -- render-output/b4-lava-rockwall-v1.glb render-output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-lava-rockwall-v1
+          path: render-output/
+          retention-days: 14
