@@ -40,3 +40,27 @@
 ## 2026-11-15 共通無料VFX素材
 
 [CC0 VFX素材ライブラリ](VFX_CC0_ASSET_LIBRARY_20261115.md) を参照。Kenney Particle/Smoke、Brackeys Bundle、旧OpenGameArt、第三者GitHub索引を出典・ライセンス・導入状況別に整理。**新規のPNG本体取得・ゲーム導入は未検証**。
+
+## 2026-11-15 ユーザー選定の瘴気・煙参考画像と全階層共通化
+
+ユーザーが第5層V13岩盤の次工程として、**流れる暗紫色の霧**と**連続フレームの煙**を有望と判断。次の2画像を**ビジュアル参考資料**として共有する（素材本体の取得・ライセンス確認・ゲーム採用を意味しない）。
+
+1. **暗い霧・闇の雰囲気** — [Easy-Peasy.AI掲載の画像（ユーザー提供）](https://images.openai.com/static-rsc-4/A49FY9kfqCgjh5aRalCt8phnrMsyxsIt-Nez2JuYuQ9lXyaY37kWkZv56D_V-1NGnhNEXv7t0QlNriMa5_md_9XD9ZJ6N4vziUxhTzB5fCLdB42dW3cGTjl87aGw1nh4oGhwUd9P5PsLdJKuA-DKXt1Nnd4N1Mv-t-tzU3AZNNc?purpose=inline)。参考ポイント：低彩度、濃淡の大きな塊、暗部を残す奥行き。**画像の再利用権限は未確認**。制作では独自ノイズのThree.js ShaderMaterialを用い、画像そのものをテクスチャに流用しない。
+2. **煙のフレームアニメーション** — [PNGkey掲載 Smoke30frames / Poof Smoke Spritesheet（ユーザー提供）](https://images.openai.com/static-rsc-4/JndogMtZnDgh3evLpZyizAozwXR2WI5K34XvRlQ6RedIyBwTrLoZQmP5MHCr7eS44OKR2drVvWVXJPbmR3PZO845df8C4AVDMF68XoLkS5IX6BCj0jQ-d69O-Zws293db8lYrDVMMBM5dwWEbhxbFb9uO0VsOTHiV4bhPU6ZC18?purpose=inline)。参考ポイント：コマ送りの煙の膨張・拡散・フェード。**PNGkeyの画像はCC0と確認できていない**ためゲームに取り込まない。実用には公式CC0のKenney Smoke / Brackeys VFX Bundleから適切な素材を選ぶ。
+
+### 共通VFXプリセットの設計案（未実装）
+
+| プリセット | 主な用途 | 方式 |
+| --- | --- | --- |
+| `dark-miasma` | 5F瘴気・敵の毒霧 | ノイズを2〜3層流すShaderMaterial＋低密度の煙スプライト、紫発光を非同期に明滅 |
+| `cold-mist` | 2F水源・氷岸 | 同じシェーダーの青白色版、流速を遅くし地面に低く漂わせる |
+| `forest-haze` | 1F樹海・6F花園 | 薄い白緑の霧、遮蔽が少ない箇所だけ表示 |
+| `volcanic-steam` | 4F溶岩洞 | 灰色の噴気と少量の発光粒子、上昇速度を速める |
+| `impact-smoke` | 戦闘・魔法・破壊演出 | ライセンス確認済みの煙flipbook、短時間で消滅 |
+
+### 制作・実装分離
+- 岩の**V13 GLBは変更せず**、瘴気は独立したThree.js VFXコンポーネントとして重ねる。
+- プリセット化するのは `color` / `opacity` / `speed` / `scale` / `seed` / `flashRate` / `particleBudget`。他階層では設定だけ差し替える。
+- 迷宮の1マス単位で位置・遮蔽を管理し、視界外は更新停止。モバイルでは煙の枚数を減らす。
+- 検証順序は、**資料共有 → CC0原本・LICENSE・SHA確認 → 独立プレビューで動作・FPS確認 → 承認 → ゲーム統合**。現時点で参考画像2点のローカル保存・素材採用・V13との合成レンダリングは未実施。
+- GPT/Claude共通入口: `AGENTS.md`、本書、`VFX_CC0_ASSET_LIBRARY_20261115.md`。既存PR #354の試作コードを優先的に調査し、同機能を重複実装しない。
