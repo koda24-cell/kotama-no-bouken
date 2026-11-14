@@ -3,22 +3,23 @@ from mathutils import Vector
 out='output/vroid-shibu/head-rebuild'
 os.makedirs(out,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
-# Use exact head meshes from the two earlier CC0 Blender exports.
-shibu='output/vroid-shibu/bare_head_review.glb'
-vita='output/vroid-shibu/vita-comparison/vita_bare_head.glb'
-if not os.path.isfile(shibu) or not os.path.isfile(vita):
- raise RuntimeError('Missing bare head review GLB inputs')
+# Import original CC0 VRMs within this same workflow run; never rely on prior artifacts.
 def import_head(path,prefix):
+ if not os.path.isfile(path):raise RuntimeError('Source VRM missing: '+path)
  before=set(bpy.context.scene.objects)
  bpy.ops.import_scene.gltf(filepath=path)
  objects=[o for o in bpy.context.scene.objects if o not in before and o.type=='MESH']
- for o in objects:o.name=prefix+'_'+o.name
- pts=[o.matrix_world@Vector(v) for o in objects for v in o.bound_box]
+ face=next((o for o in objects if o.name.lower()=='face'),None)
+ if face is None:raise RuntimeError('Face mesh not found in '+path)
+ for o in objects:
+  o.name=prefix+'_'+o.name
+  o.hide_render=(o!=face)
+ pts=[face.matrix_world@Vector(v.co) for v in face.data.vertices]
  lo=Vector([min(p[i] for p in pts) for i in range(3)])
  hi=Vector([max(p[i] for p in pts) for i in range(3)])
- return objects,lo,hi
-shibu_objs,smn,smx=import_head(shibu,'Shibu')
-vita_objs,vmn,vmx=import_head(vita,'Vita')
+ return [face],lo,hi
+shibu_objs,smn,smx=import_head('/tmp/Sendagaya_Shibu.vrm','Shibu')
+vita_objs,vmn,vmx=import_head('/tmp/Vita.vrm','Vita')
 for o in vita_objs:o.hide_render=True
 # Blender glTF import uses X horizontal, Y depth, Z vertical.
 # Scale Vita's observed head proportions to Shibu's face width.
