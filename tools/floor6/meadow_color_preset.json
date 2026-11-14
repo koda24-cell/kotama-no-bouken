@@ -1,12 +1,15 @@
 {
   "version": 1,
-  "name": "F6 Meadow Anime V5",
-  "root": "#729A39",
-  "middle": "#648F32",
-  "tip": "#A4C94A",
-  "ground": "#607F31",
+  "name": "F6 Meadow Pastel Wind V6",
+  "root": "#A3B984",
+  "middle": "#B8CDA0",
+  "tip": "#D6E4AE",
+  "ground": "#91A875",
   "shadowFloor": 0.38,
   "emission": 0.25,
   "roughness": 0.88,
-  "notes": "Colors are sRGB hex. shadowFloor mixes material with unlit vertex color to keep dark areas green; emission is an additional subtle lift."
+  "notes": "Lower saturation, higher brightness. Wind angle measured counterclockwise from +X, with local jitter; static lean represents wind snapshot, not animation.",
+  "windDirectionDegrees": 32,
+  "windSpreadDegrees": 19,
+  "windLean": 0.14
 }
