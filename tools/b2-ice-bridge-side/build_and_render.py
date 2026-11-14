@@ -25,7 +25,7 @@ def glacier_color(mat):
  ramp.color_ramp.elements[1].position=.79;ramp.color_ramp.elements[1].color=(.62,.78,.79,1)
  links.new(tex.outputs["Fac"],ramp.inputs["Fac"])
  links.new(ramp.outputs["Color"],nodes.get("Principled BSDF").inputs["Base Color"])
-glacier_color(ice)
+# Preserve glacier_color as optional study; no noisy ramp on clear ice.
 # Procedural PBR detail: two-scale Noise -> Bump, with matte ice and stone.
 def rough_surface(mat,scale,strength,distance):
  nodes=mat.node_tree.nodes;links=mat.node_tree.links
@@ -35,8 +35,8 @@ def rough_surface(mat,scale,strength,distance):
  links.new(bump.outputs["Normal"],nodes.get("Principled BSDF").inputs["Normal"])
 rough_surface(rock,10,.58,.12)
 rough_surface(slate,24,.24,.028)
-rough_surface(ice,18,.32,.039)
-rough_surface(deep_ice,13,.38,.047)
+rough_surface(ice,18,.035,.002)
+rough_surface(deep_ice,13,.06,.004)
 rough_surface(snow,32,.23,.012)
 def cube(name,loc,scale,mat,bevel=0):
  bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.dimensions=scale;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(mat)
@@ -138,6 +138,39 @@ def create(side):
  bpy.ops.object.camera_add();cam=bpy.context.object;bpy.context.scene.camera=cam
  sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=24;sc.render.resolution_x=800;sc.render.resolution_y=600;sc.render.resolution_percentage=100
  sc.world.color=(.22,.25,.28)
+ # Test three ice shaders on the same original bank geometry.
+ bs=ice.node_tree.nodes.get("Principled BSDF")
+ output=ice.node_tree.nodes.get("Material Output")
+ for variant,color,rough,trans,density in [
+  ("clear",(.43,.76,.88),.10,.82,0),
+  ("blue_depth",(.32,.66,.82),.16,.66,.12),
+  ("frosted",(.62,.84,.90),.30,.35,.04)
+ ]:
+  bs.inputs["Base Color"].default_value=(*color,1)
+  bs.inputs["Roughness"].default_value=rough
+  bs.inputs["Transmission Weight"].default_value=trans
+  bs.inputs["IOR"].default_value=1.31
+  for link in list(output.inputs["Volume"].links):ice.node_tree.links.remove(link)
+  if density:
+   vol=ice.node_tree.nodes.get("Ice Depth Absorption")
+   if vol is None:
+    vol=ice.node_tree.nodes.new("ShaderNodeVolumeAbsorption")
+    vol.name="Ice Depth Absorption"
+   vol.inputs["Color"].default_value=(.34,.70,.88,1)
+   vol.inputs["Density"].default_value=density
+   ice.node_tree.links.new(vol.outputs["Volume"],output.inputs["Volume"])
+  bpy.ops.object.select_all(action="DESELECT")
+  for o in originals:o.select_set(True)
+  bpy.context.view_layer.objects.active=originals[0]
+  bpy.ops.export_scene.gltf(filepath=str(OUT/f"ice_bridge_{side}_{variant}.glb"),export_format="GLB",use_selection=True)
+  cam.location=(3,-4,3.2)
+  cam.rotation_euler=(Vector((0,0,-.1))-cam.location).to_track_quat("-Z","Y").to_euler()
+  sc.render.filepath=str(OUT/f"ice_bridge_{side}_{variant}_angle.png")
+  bpy.ops.render.render(write_still=True)
+ bs.inputs["Base Color"].default_value=(.43,.76,.88,1)
+ bs.inputs["Roughness"].default_value=.10
+ bs.inputs["Transmission Weight"].default_value=.82
+ for link in list(output.inputs["Volume"].links):ice.node_tree.links.remove(link)
  for name,pos in {"front":(0,-4,2.4),"side":(4,0,2.4),"angle":(3,-4,3.2)}.items():
   cam.location=pos;cam.rotation_euler=(Vector((0,0,-.1))-cam.location).to_track_quat("-Z","Y").to_euler()
   sc.render.filepath=str(OUT/f"ice_bridge_{side}_{name}.png");bpy.ops.render.render(write_still=True)
