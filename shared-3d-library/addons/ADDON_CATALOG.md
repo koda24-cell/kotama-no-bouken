@@ -6,11 +6,12 @@
 | Blender Geometry Nodes / Hair Curves | https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/hair/generation/interpolate_hair_curves.html | Bundled Blender functionality | Interpolate hair from scalp guide curves | available in Blender generally; integration not tested |
 | Rokoko Blender Retargeting | https://github.com/Rokoko/rokoko-studio-live-blender | check repository before redistribution | Retarget motion to humanoid rigs | catalogued; not installed |
 
+| GBH Tool | https://github.com/GixoXYZ/BlenderGBHTool | verify upstream license before redistribution | Geometry Nodes-based hair tools | source downloaded; import succeeded, direct register failed with KeyError 'gbh_tool' in run #43600753519; enable via Blender addon manager and retest |
+
 **Compatibility:** upstream declares Blender 5.1+; source registration smoke test nevertheless passed on Blender 5.0.1 (GitHub Actions run #43600753519). This does NOT establish that its operators work correctly on 5.0.1. Upgrade and exercise actual hair creation in isolated tests before production use.
 
 **License note:** GPL covers the HairMesh addon source; the author's distribution page says the hair meshes made with it belong to the creator. Do not copy third-party addon source into this repository before license notices and provenance are recorded.
 
-| GBH Tool | https://github.com/GixoXYZ/BlenderGBHTool | verify upstream license before redistribution | Geometry Nodes-based hair tools | source downloaded; import succeeded, direct register failed with KeyError 'gbh_tool' in run #43600753519; enable via Blender addon manager and retest |
 
 ## Verified workflow evidence (2026-11-14)
 - Addon registration probe: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43600753519
