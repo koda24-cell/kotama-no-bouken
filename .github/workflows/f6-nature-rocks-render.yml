@@ -16,10 +16,12 @@ jobs:
       - name: Check Python script
         run: python3 -m py_compile tools/floor6/nature_rocks_v1.py
       - name: Install Blender
-        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy && blender --version
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy libegl1 libgl1 libopengl0 libgl1-mesa-dri && blender --version
       - name: Export GLB and render four angles
         run: |
           set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1
+          export EGL_PLATFORM=surfaceless
           blender -b -t 2 --python tools/floor6/nature_rocks_v1.py 2>&1 | tee /tmp/rocks.log
           test "$(grep -c F6_ROCK_DONE /tmp/rocks.log)" -eq 3
       - name: Validate GLB PNG and manifest
