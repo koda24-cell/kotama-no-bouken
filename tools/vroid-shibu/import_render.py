@@ -148,6 +148,40 @@ face=next((o for o in meshes if o.name.lower()=='face'),None)
 if face:
  manifest['face_review']={'source_mesh':face.name,'vertices':len(face.data.vertices),
                          'faces':len(face.data.polygons),'materials':next((m['materials'] for m in manifest['meshes'] if m['name']==face.name),[])}
+ # V10 gate: render the original bare head and BACK before any hair is generated.
+ # The imported source is preserved. This stage must be visually approved first.
+ if os.environ.get('HAIR_STAGE','bare_head')=='bare_head':
+  head_candidates=[o for o in meshes if o==face or any(t in o.name.lower() for t in ('head','scalp'))]
+  hair_candidates=[o for o in meshes if 'hair' in o.name.lower()]
+  # Exclude every hair-labelled mesh even when its name also mentions scalp/head.
+  head_candidates=[o for o in head_candidates if o not in hair_candidates]
+  if face not in head_candidates:head_candidates.insert(0,face)
+  manifest['bare_head_gate']={'visible_meshes':[o.name for o in head_candidates],
+    'excluded_original_hair':[o.name for o in hair_candidates],
+    'stage':'bare_head_only; no synthetic hair or sphere created'}
+  for o in bpy.context.scene.objects:
+   if o.type=='MESH':o.hide_render=(o not in head_candidates)
+  fb=[face.matrix_world @ Vector(c) for c in face.bound_box]
+  lo=Vector(tuple(min(v[i] for v in fb) for i in range(3)))
+  hi=Vector(tuple(max(v[i] for v in fb) for i in range(3)))
+  mid=(lo+hi)/2;size=hi-lo
+  scene.render.resolution_x=960;scene.render.resolution_y=960
+  for name,offset in [('front',(0,1,0)),('side',(1,0,0)),('three_quarter',(1,1,.16)),('back',(0,-1,0)),('back_upper',(0,-1,.55))]:
+   bpy.ops.object.camera_add(location=mid+max(2,size.length*5)*Vector(offset).normalized())
+   cam=bpy.context.object
+   cam.rotation_euler=(mid-cam.location).to_track_quat('-Z','Y').to_euler()
+   cam.data.type='ORTHO';cam.data.ortho_scale=max(size.z*1.5,size.x*1.5,size.y*2,.18)
+   scene.camera=cam
+   scene.render.filepath=os.path.join(out,'bare_head_'+name+'.png')
+   bpy.ops.render.render(write_still=True)
+   bpy.data.objects.remove(cam,do_unlink=True)
+  bpy.ops.object.select_all(action='DESELECT')
+  for o in head_candidates:o.select_set(True)
+  bpy.context.view_layer.objects.active=face
+  bpy.ops.export_scene.gltf(filepath=os.path.join(out,'bare_head_review.glb'),export_format='GLB',use_selection=True)
+  with open(os.path.join(out,'source_manifest.json'),'w') as f:json.dump(manifest,f,ensure_ascii=False,indent=2)
+  print('BARE_HEAD_GATE',manifest['bare_head_gate'])
+  raise SystemExit(0)
  # Assassin-specific front fringe prototype: near-camera (+X) eye occlusion.
  # Build a separate editable mesh; never modify the VRoid source face.
  from mathutils import Vector as V
