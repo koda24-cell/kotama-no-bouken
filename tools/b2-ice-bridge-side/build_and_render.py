@@ -35,8 +35,8 @@ def rough_surface(mat,scale,strength,distance):
  links.new(bump.outputs["Normal"],nodes.get("Principled BSDF").inputs["Normal"])
 rough_surface(rock,10,.58,.12)
 rough_surface(slate,24,.24,.028)
-rough_surface(ice,18,.035,.002)
-rough_surface(deep_ice,13,.06,.004)
+# V11: remove high-frequency microbump from transparent ice completely.
+# V11: retain the original mesh but eliminate granular normal noise on deep ice.
 rough_surface(snow,32,.23,.012)
 def cube(name,loc,scale,mat,bevel=0):
  bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.dimensions=scale;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(mat)
@@ -136,7 +136,7 @@ def create(side):
  # review cameras and lighting only after exporting geometry
  bpy.ops.object.light_add(type="AREA",location=(3,-4,6));bpy.context.object.data.energy=800;bpy.context.object.data.size=4
  bpy.ops.object.camera_add();cam=bpy.context.object;bpy.context.scene.camera=cam
- sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=24;sc.render.resolution_x=800;sc.render.resolution_y=600;sc.render.resolution_percentage=100
+ sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=48;sc.render.resolution_x=800;sc.render.resolution_y=600;sc.render.resolution_percentage=100
  sc.world.color=(.22,.25,.28)
  # Test three ice shaders on the same original bank geometry.
  bs=ice.node_tree.nodes.get("Principled BSDF")
@@ -145,7 +145,9 @@ def create(side):
   ("clear",(.43,.76,.88),.10,.82,0),
   ("blue_depth",(.32,.66,.82),.16,.66,.12),
   ("frosted",(.62,.84,.90),.30,.35,.04),
-  ("v10_glacial_blue",(.24,.57,.77),.095,.78,.22)
+  ("v10_glacial_blue",(.24,.57,.77),.095,.78,.22),
+  ("v11_smooth_clear",(.58,.82,.91),.035,.94,.025),
+  ("v11_smooth_depth",(.48,.75,.88),.065,.88,.095)
  ]:
   bs.inputs["Base Color"].default_value=(*color,1)
   bs.inputs["Roughness"].default_value=rough
@@ -168,9 +170,9 @@ def create(side):
   cam.rotation_euler=(Vector((0,0,-.1))-cam.location).to_track_quat("-Z","Y").to_euler()
   sc.render.filepath=str(OUT/f"ice_bridge_{side}_{variant}_angle.png")
   bpy.ops.render.render(write_still=True)
- bs.inputs["Base Color"].default_value=(.24,.57,.77,1)
- bs.inputs["Roughness"].default_value=.095
- bs.inputs["Transmission Weight"].default_value=.78
+ bs.inputs["Base Color"].default_value=(.58,.82,.91,1)
+ bs.inputs["Roughness"].default_value=.035
+ bs.inputs["Transmission Weight"].default_value=.94
  for link in list(output.inputs["Volume"].links):ice.node_tree.links.remove(link)
  for name,pos in {"front":(0,-4,2.4),"side":(4,0,2.4),"angle":(3,-4,3.2)}.items():
   cam.location=pos;cam.rotation_euler=(Vector((0,0,-.1))-cam.location).to_track_quat("-Z","Y").to_euler()
