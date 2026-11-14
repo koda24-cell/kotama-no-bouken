@@ -226,6 +226,25 @@ for obj in bpy.context.scene.objects:
 for obj in bpy.context.scene.objects:
  if obj.type=="CURVE" and ("fissure" in obj.name):
   obj.data.bevel_depth*=.72
+# V7: composition cleanup. The original scan rocks and their V5
+# conforming invasion are preserved. Remove only old PROCEDURAL add-ons
+# that formed an artificial plate, rosette, and spiky silhouette.
+remove_prefixes=(
+ "creeping crust sheet", "V3 organic mantle",
+ "surface fragment", "jagged mineral tooth",
+ "black growth", "original-style masonry"
+)
+removed=[]
+for ob in list(bpy.context.scene.objects):
+ if ob.name.startswith(remove_prefixes):
+  removed.append(ob.name)
+  bpy.data.objects.remove(ob,do_unlink=True)
+print("V7_PROCEDURAL_CLEANUP",len(removed),removed[:8],flush=True)
+# The scan remains dominant; keep fissures subdued and short.
+for ob in bpy.context.scene.objects:
+ if ob.type=="CURVE" and ob.name.startswith("creeping root"):
+  ob.data.bevel_depth*=.55
+# Less pink light, more directional shading to reveal actual scan relief.
 # V4 high-density variant: triple the actual triangle count of each mesh.
 # Triangulate then poke each triangle into three; existing silhouettes stay intact.
 # Displace only newly created centers very slightly for physical micro-relief.
@@ -260,7 +279,7 @@ bpy.ops.mesh.primitive_plane_add(size=200,location=(0,0,-.09));bpy.context.objec
 world=bpy.context.scene.world
 world.color=(.09,.07,.12)
 def aim(obj,pt):obj.rotation_euler=(Vector(pt)-obj.location).to_track_quat("-Z","Y").to_euler()
-for loc,energy,color in [((-3,-4,6),850,(.65,.65,1)),((4,3,4),600,(1,.22,.4))]:
+for loc,energy,color in [((-3,-4,6),850,(.65,.65,1)),((4,3,4),310,(.72,.35,.53))]:
  bpy.ops.object.light_add(type="AREA",location=loc);o=bpy.context.object;o.data.energy=energy;o.data.color=color;o.data.shape="DISK";o.data.size=5;aim(o,(0,0,.4))
 bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.type="ORTHO";cam.data.ortho_scale=3.8;bpy.context.scene.camera=cam
 scene=bpy.context.scene;scene.render.engine="CYCLES";scene.cycles.samples=24
