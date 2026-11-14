@@ -20,7 +20,9 @@ jobs:
         run: |
           mkdir -p "$GITHUB_WORKSPACE/out"
           docker pull lscr.io/linuxserver/blender:latest
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/elevated_bridge/build_v2.py
+          set -o pipefail
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/elevated_bridge/build_v2.py 2>&1 | tee "$GITHUB_WORKSPACE/blender-render.log"
+          grep -q 'V2_RENDER_COMPLETE' "$GITHUB_WORKSPACE/blender-render.log"
       - name: Verify V1 and V2 GLBs and renders
         run: |
           for tile in straight end collapse support; do
