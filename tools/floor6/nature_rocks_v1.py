@@ -71,6 +71,6 @@ def make_asset(asset,idx):
  for p in sorted(target.iterdir()):
   if p.suffix in ('.glb','.png'):
    files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
- (target/'manifest.json').write_text(json.dumps(dict(asset_id=asset,status='preview_unapproved',tile_size=[1,1],source='tools/floor6/nature_rocks_v1.py',files=files),indent=2)+'\\n')
+ (target/'manifest.json').write_text(json.dumps(dict(asset_id=asset,status='preview_unapproved',tile_size=[1,1],source='tools/floor6/nature_rocks_v1.py',files=files),indent=2)+'\n')
  print('F6_ROCK_DONE',asset)
 for idx,name in enumerate(('rock_small','rock_medium','rock_large')):make_asset(name,idx)
