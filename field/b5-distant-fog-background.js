@@ -55,14 +55,32 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
       col+=vec3(.065,.012,.09)*smoothstep(.35,.7,warp);
       vec3 lights=windows(uv);
       if(uUseWindowMap>.5){
-        vec2 wuv=vec2(fract(uv.x*2.0),fract(uv.y*1.0));
+        // Break the original regular facade into irregular patches.
+        // Most lights form small clusters; a few isolated windows survive.
+        vec2 regionGrid=vec2(12.,4.);
+        vec2 region=floor(uv*regionGrid);
+        vec2 local=fract(uv*regionGrid);
+        float regionSeed=hash(region+uSeed*1.71);
+        float active=step(.37,regionSeed);
+        float sparse=step(.79,regionSeed);
+        // Each patch samples a different part of the original CC0 emission map.
+        vec2 offset=vec2(hash(region*2.13+uSeed),hash(region*3.71+uSeed));
+        vec2 wuv=fract(local*vec2(1.1+hash(region+8.)*.7,1.2+hash(region+13.)*.9)+offset);
         vec3 realLight=texture2D(uWindowMap,wuv).rgb;
-        float mask=step(.09,max(max(realLight.r,realLight.g),realLight.b));
-        vec2 grid=floor(uv*vec2(110.,50.));
+        float mask=smoothstep(.075,.23,max(max(realLight.r,realLight.g),realLight.b));
+        vec2 grid=floor(uv*vec2(138.,62.));
         float windowSeed=hash(grid+uSeed);
+        float clusterNoise=fbm(region*.42+local*vec2(2.2,1.7)+uSeed*.01);
+        float groupMask=smoothstep(.33,.57,clusterNoise);
+        // Broad dark gaps prevent an uninterrupted wall of windows.
+        float shape=length((local-vec2(.5,.5))*vec2(1.2,1.45));
+        float edgeFade=1.-smoothstep(.34,.68,shape);
+        float keep=step(.31,hash(grid*1.37+region+uSeed));
+        float few=step(.94,hash(grid*2.71+uSeed));
+        float visibility=active*edgeFade*mix(groupMask*keep,few,sparse);
         float pulse=pow(max(0.,sin(uTime*(.22+windowSeed*.8)+windowSeed*6.283)),22.);
         float flicker=.58+.22*sin(uTime*.18+windowSeed*6.283)+.7*pulse;
-        lights=realLight*mask*vec3(1.,.55,.74)*1.45*flicker;
+        lights=realLight*mask*visibility*vec3(1.,.55,.74)*1.65*flicker;
       }
       float farFog=fbm(uv*vec2(3.7,2.1)+vec2(uTime*.016,0.));
       col+=lights*(.42+.38*farFog);
