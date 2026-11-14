@@ -8,6 +8,7 @@ import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
+import { createB5ArcaneSparks } from './b5-vfx-presets.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -136,7 +137,7 @@ export function createTheme(api, area) {
   }
   // Visual-only backdrop: follows the camera, remains behind physical walls,
   // and never modifies collision, visibility, map cells or saved state.
-  let b5Fog = null, b5FogTexture = null, b5FogBuild = 0;
+  let b5Fog = null, b5FogTexture = null, b5FogBuild = 0, b5Sparks = null;
   const b5FogPath = './field/assets/b5-distant/facade020c-windows.png';
   function installB5Fog() {
     if (area !== 5 || !g.scene) return;
@@ -145,6 +146,8 @@ export function createTheme(api, area) {
     b5Fog.mesh.name = 'b5:v5-distant-miasma';
     b5Fog.mesh.frustumCulled = false;
     g.scene.add(b5Fog.mesh);
+    b5Sparks = createB5ArcaneSparks({count:g.high?42:16});
+    g.scene.add(b5Sparks.points);
     new THREE.TextureLoader().load(b5FogPath, texture => {
       if (token !== b5FogBuild || !b5Fog) { texture.dispose(); return; }
       texture.colorSpace = THREE.SRGBColorSpace;
@@ -160,6 +163,7 @@ export function createTheme(api, area) {
     ++b5FogBuild;
     if (b5Fog) { b5Fog.mesh.parent?.remove(b5Fog.mesh); b5Fog.dispose(); b5Fog = null; }
     b5FogTexture?.dispose(); b5FogTexture = null;
+    if (b5Sparks) { b5Sparks.points.parent?.remove(b5Sparks.points); b5Sparks.dispose(); b5Sparks = null; }
   }
   async function build(a, S, info) {
     if (surfaces) await surfaces.ready;
@@ -383,6 +387,7 @@ export function createTheme(api, area) {
       b5Fog.mesh.position.copy(eye.position).addScaledVector(forward, 90);
       b5Fog.mesh.quaternion.copy(eye.quaternion);
       b5Fog.update(now * .001);
+      b5Sparks?.update(now * .001,eye.position);
     }
     if (surfaces) {
       surfaces.tick(now); volcanicDetail?.tick(now);
