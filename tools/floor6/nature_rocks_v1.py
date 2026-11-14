@@ -32,6 +32,24 @@ def rock_part(name,loc,scale,seed,materials):
  for m in materials:obj.data.materials.append(m)
  for poly in obj.data.polygons:poly.material_index=rng.choices(range(len(materials)),weights=[8]+[2]*(len(materials)-1))[0]
  return obj
+def angular_shard(name, location, radius, height, seed):
+ rng=random.Random(seed)
+ bpy.ops.mesh.primitive_cone_add(vertices=5, radius1=radius, radius2=radius*.22, depth=height, location=location)
+ obj=bpy.context.object;obj.name=name
+ obj.rotation_euler=(rng.uniform(-.5,.5),rng.uniform(-.5,.5),rng.uniform(-3.14,3.14))
+ obj.data.materials.append(stone[seed%len(stone)])
+ return obj
+def surface_patch(name,center,sx,sy,seed):
+ rng=random.Random(seed)
+ verts=[]
+ for i in range(7):
+  a=math.tau*i/7
+  verts.append((center[0]+math.cos(a)*sx*rng.uniform(.7,1.15),center[1]+math.sin(a)*sy*rng.uniform(.7,1.15),center[2]+rng.uniform(-.003,.003)))
+ verts.append(center)
+ mesh=bpy.data.meshes.new(name+'_mesh');mesh.from_pydata(verts,[],[(7,i,(i+1)%7) for i in range(7)]);mesh.update()
+ obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
+ obj.data.materials.append(moss[seed%len(moss)])
+ return obj
 def make_asset(asset,idx):
  rng=random.Random(711+idx)
  bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
@@ -42,12 +60,23 @@ def make_asset(asset,idx):
   pieces.append(rock_part(asset+'_fracture',(-sx*.38,sy*.23,sz*.66),(sx*.48,sy*.63,sz*.76),idx+22,stone))
  if idx==2:
   pieces.append(rock_part(asset+'_shoulder',(sx*.48,-sy*.27,sz*.52),(sx*.47,sy*.56,sz*.59),idx+33,stone))
+ # Extra angular fractures and sharp rock protrusions; original core remains intact
+ for i in range([3,6,10][idx]):
+  a=rng.uniform(0,math.tau);rr=rng.uniform(.45,.87)
+  x=math.cos(a)*sx*rr;y=math.sin(a)*sy*rr
+  pieces.append(angular_shard(asset+'_shard_%02d'%i,(x,y,sz*.64+sz*.4),rng.uniform(.035,.09),rng.uniform(.10,.22)*(idx+1)/2,idx*40+i))
+ # Flat irregular moss patches, conforming approximately to the upper rock surface
+ for i in range([5,9,14][idx]):
+  a=rng.uniform(0,math.tau);rr=rng.uniform(.08,.68)
+  x=math.cos(a)*sx*rr;y=math.sin(a)*sy*rr
+  z=sz*.64+sz*math.sqrt(max(.05,1-rr*rr))*.90
+  pieces.append(surface_patch(asset+'_moss_patch_%02d'%i,(x,y,z),sx*rng.uniform(.055,.12),sy*rng.uniform(.06,.15),idx*80+i))
  # moss clusters embedded into upper rock surface, not floating foliage
  for i in range([7,14,24][idx]):
   theta=rng.uniform(0,math.tau);rr=rng.uniform(.1,.78)
   x=rr*math.cos(theta)*sx;y=rr*math.sin(theta)*sy
   z=sz*.64+sz*math.sqrt(max(.05,1-rr*rr))*.88
-  obj=rock_part(asset+'_moss_%02d'%i,(x,y,z),(rng.uniform(.025,.055),rng.uniform(.025,.065),rng.uniform(.006,.013)),idx*100+i,moss)
+  obj=rock_part(asset+'_moss_%02d'%i,(x,y,z),(rng.uniform(.014,.028),rng.uniform(.014,.032),rng.uniform(.002,.005)),idx*100+i,moss)
   pieces.append(obj)
  bpy.ops.object.select_all(action='DESELECT')
  for obj in pieces:obj.select_set(True)
