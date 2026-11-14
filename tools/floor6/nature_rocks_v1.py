@@ -6,7 +6,7 @@ OUT = Path('render-output/floor6/nature')
 OUT.mkdir(parents=True, exist_ok=True)
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
-bpy.context.scene.render.engine='BLENDER_EEVEE'
+bpy.context.scene.render.engine = 'BLENDER_EEVEE_NEXT' if bpy.app.version >= (4, 2, 0) else 'BLENDER_EEVEE'
 bpy.context.scene.render.resolution_x=960
 bpy.context.scene.render.resolution_y=960
 bpy.context.scene.render.resolution_percentage=100
