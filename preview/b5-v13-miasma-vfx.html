@@ -1,0 +1,49 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V13岩盤＋流れる瘴気VFX</title><style>body{margin:0;background:#09070d;color:#eee0f0;font:15px system-ui}main{max-width:1100px;margin:auto;padding:16px}canvas{width:100%;height:65vh;min-height:360px;display:block;border:1px solid #5a345f;border-radius:10px}label{margin-right:16px}button{padding:8px 14px;background:#3d244d;color:white;border:1px solid #875b95;border-radius:6px}</style></head><body><main><h2>第5層 V13岩盤＋黒紫の瘴気</h2><p>V13 GLBに独立VFXを重ねた検証用。岩盤は未改変・ゲーム未統合。</p><div id="host"></div><p><button id="toggle">停止</button> <label>濃度 <input id="density" type="range" min="0" max="100" value="70"></label><label>速度 <input id="speed" type="range" min="0" max="200" value="100"></label></p><p id="status">岩盤を読み込み中…</p></main><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"}}</script><script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const host=document.querySelector('#host'),renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(host.clientWidth,Math.max(360,innerHeight*.65));renderer.setClearColor(0x090711);renderer.outputColorSpace=THREE.SRGBColorSpace;host.append(renderer.domElement);
+const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x0c0915,.035);
+const camera=new THREE.PerspectiveCamera(42,host.clientWidth/Math.max(360,innerHeight*.65),.1,100);camera.position.set(2.0,-3.1,2.05);camera.lookAt(0,0,.4);
+const orbit=new OrbitControls(camera,renderer.domElement);orbit.target.set(0,0,.4);orbit.update();orbit.enableDamping=true;
+scene.add(new THREE.HemisphereLight(0xcbb7d4,0x241725,2.9));const key=new THREE.DirectionalLight(0xf3d7d9,3.8);key.position.set(-3,-4,7);scene.add(key);const rim=new THREE.PointLight(0x8d257d,9,6);rim.position.set(1,1,1);scene.add(rim);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshStandardMaterial({color:0x16111c,roughness:1}));floor.position.z=-.25;floor.visible=false;scene.add(floor);
+let rockLoaded=false;
+try{const gltf=await new GLTFLoader().loadAsync('./assets/b5-v13-rock.glb');scene.add(gltf.scene);rockLoaded=true;document.querySelector('#status').textContent='V13 GLB読込成功・VFX描画中';document.body.dataset.rock='loaded';}catch(e){document.querySelector('#status').textContent='V13 GLB未取得：'+e.message;document.body.dataset.rock='missing';}
+const vertex=`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
+const fragment=`precision highp float;varying vec2 vUv;uniform float uTime;uniform float uOpacity;uniform float uSeed;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}
+float fbm(vec2 p){float a=.5,v=0.;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.07+vec2(11.3,7.9);a*=.5;}return v;}
+void main(){vec2 uv=vUv;vec2 q=uv*vec2(2.8,1.7);float w=fbm(q+vec2(uTime*.07+uSeed,-uTime*.022));float f=fbm(q*2.1+vec2(-uTime*.095,uTime*.045)+w*.8);float shape=smoothstep(.29,.69,f*.68+w*.52);float edge=pow(max(0.,1.-abs(uv.x-.5)*1.85),.65)*smoothstep(.0,.26,uv.y)*(1.-smoothstep(.69,1.,uv.y));float alpha=shape*edge*uOpacity;vec3 color=mix(vec3(.025,.014,.034),vec3(.19,.055,.23),smoothstep(.42,.75,w));gl_FragColor=vec4(color,alpha);}`;
+const fog=[];for(let i=0;i<5;i++){const uniforms={uTime:{value:0},uOpacity:{value:.72},uSeed:{value:i*7.23}};const mat=new THREE.ShaderMaterial({vertexShader:vertex,fragmentShader:fragment,uniforms,transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.NormalBlending});const mesh=new THREE.Mesh(new THREE.PlaneGeometry(2.9,1.95),mat);const a=i*Math.PI*2/5;mesh.position.set(Math.cos(a)*.35,Math.sin(a)*.35,.31+i*.12);mesh.rotation.z=a;mesh.rotation.x=Math.PI/2.5;mesh.renderOrder=10+i;scene.add(mesh);fog.push({mesh,uniforms});}
+const wisps=[];for(let i=0;i<12;i++){const a=i*2.399,rad=.28+(i%5)*.13;const mesh=new THREE.Sprite(new THREE.SpriteMaterial({color:i%4===0?0x74317a:0x24142b,transparent:true,opacity:.075,depthWrite:false}));mesh.position.set(Math.cos(a)*rad,Math.sin(a)*rad,.23+(i%4)*.13);mesh.scale.set(.43,.43,1);scene.add(mesh);wisps.push(mesh);}
+
+// V2 independent crimson corruption flames: animated, non-physical emissive tongues.
+const flameFragment=`precision highp float;varying vec2 vUv;uniform float uTime;uniform float uSeed;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
+float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*n(p);p=p*2.04+vec2(4.3,9.1);a*=.5;}return v;}
+void main(){
+ vec2 uv=vUv;float y=uv.y;float time=uTime;
+ float warp=fb(vec2(uv.x*5.+uSeed,uv.y*3.4-time*1.3));
+ float drift=.09*sin(y*9.-time*2.1+uSeed)+.16*(warp-.5)*y;
+ float xx=uv.x-.5+drift;
+ float width=.29*pow(1.-y,1.35)+.013;
+ float central=1.-smoothstep(width*.25,width,abs(xx));
+ float split=sin(uv.x*23.+time*1.5+uSeed)*sin(y*11.-time*2.6);
+ float breakup=fb(vec2(uv.x*9.+uSeed,y*7.-time*1.8));
+ float body=central*smoothstep(.22,.48,breakup+.23*split);
+ float tips=smoothstep(.09,.45,fb(vec2(uv.x*12.+uSeed,y*4.-time*1.9)))*(1.-smoothstep(.55,.99,y));
+ float alpha=body*tips*pow(1.-y,.52)*.83;
+ float core=exp(-abs(xx)*23.)*(1.-smoothstep(.05,.52,y));
+ vec3 c=mix(vec3(.21,.009,.045),vec3(.94,.045,.025),smoothstep(.06,.75,breakup));
+ c=mix(c,vec3(1.,.31,.065),core*.62);
+ gl_FragColor=vec4(c,alpha);
+}`;
+const flames=[];for(let i=0;i<14;i++){const a=i*2.39996,r=.20+(i%5)*.13;const uniforms={uTime:{value:0},uSeed:{value:i*3.7}};const mat=new THREE.ShaderMaterial({vertexShader:vertex,fragmentShader:flameFragment,uniforms,transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});const mesh=new THREE.Mesh(new THREE.PlaneGeometry(.24+(i%4)*.085,.57+(i%5)*.12),mat);mesh.position.set(Math.cos(a)*r,Math.sin(a)*r,.23+(i%4)*.08);mesh.rotation.set(Math.PI/2.6,0,a*.5);mesh.renderOrder=20+i;scene.add(mesh);flames.push({mesh,uniforms});}
+const firelight=new THREE.PointLight(0xef2410,7,3);firelight.position.set(0,0,.48);scene.add(firelight);
+let running=true,t=0,prev=performance.now();document.querySelector('#toggle').onclick=()=>{running=!running;document.querySelector('#toggle').textContent=running?'停止':'再開';};
+function frame(now){const dt=Math.min(.08,(now-prev)/1000);prev=now;if(running)t+=dt*Number(document.querySelector('#speed').value)/100;const d=Number(document.querySelector('#density').value)/100;fog.forEach((f,i)=>{f.uniforms.uTime.value=t;f.uniforms.uOpacity.value=d*(.62+.12*Math.sin(t*.37+i));f.mesh.position.z=.31+i*.12+.07*Math.sin(t*.45+i);});wisps.forEach((s,i)=>{s.position.z=.23+(i%4)*.13+.06*Math.sin(t*.6+i);s.material.opacity=d*(.08+.035*Math.sin(t*.45+i));});flames.forEach((f,i)=>{f.uniforms.uTime.value=t;f.mesh.scale.y=.78+.23*Math.sin(t*1.7+i);});firelight.intensity=5+2*Math.sin(t*2.1);rim.intensity=6+3*Math.pow(Math.max(0,Math.sin(t*.67)),12);orbit.update();renderer.render(scene,camera);requestAnimationFrame(frame);}requestAnimationFrame(frame);
+addEventListener('resize',()=>{const w=host.clientWidth,h=Math.max(360,innerHeight*.65);renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();});
+</script></body></html>

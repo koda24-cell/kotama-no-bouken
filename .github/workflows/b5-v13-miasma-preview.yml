@@ -1,0 +1,41 @@
+name: B5 V13 Miasma Overlay Preview
+on:
+  push:
+    branches: [feature/b5-v13-miasma-vfx-preview-20261115]
+    paths:
+      - 'preview/b5-v13-miasma-vfx.html'
+      - 'tools/b5-vfx-preview/**'
+      - '.github/workflows/b5-v13-miasma-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  render-vfx:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download actual approved-for-preview V13 rock artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p preview/assets render-output/b5-v13-vfx
+          gh run download 43607312319 -R ${{ github.repository }} -n b5-v4-cc0-scan-gloom-glb-and-renders -D /tmp/b5-v13
+          find /tmp/b5-v13 -type f -maxdepth 4
+          ROCK=$(find /tmp/b5-v13 -type f -name 'b5-gloom-corruption-prototype.glb' -print -quit)
+          test -n "$ROCK"
+          cp "$ROCK" preview/assets/b5-v13-rock.glb
+          test -s preview/assets/b5-v13-rock.glb
+      - name: Install and render with Playwright Chromium
+        run: |
+          npm install --no-save --ignore-scripts --no-package-lock playwright@1.56.1
+          docker pull mcr.microsoft.com/playwright:v1.56.1-noble
+          python3 -m http.server 8765 --bind 0.0.0.0 &
+          docker run --rm --ipc=host --network host -v "$PWD:/work" -w /work mcr.microsoft.com/playwright:v1.56.1-noble node tools/b5-vfx-preview/check-preview.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b5-v13-miasma-vfx-preview
+          path: render-output/b5-v13-vfx/
+          retention-days: 14
