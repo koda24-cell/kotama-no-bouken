@@ -6,7 +6,7 @@ out='render-output/floor6/meadow-floor';os.makedirs(out,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 def material(name,c):
  m=bpy.data.materials.new(name);m.diffuse_color=(*c,1);m.use_nodes=True;m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*c,1);return m
-# Anime-like unified palette: bright lime roots, original muted green tips.
+# V5 anime palette: subdued natural-green roots, bright yellow-green tips; soften dark occlusion.
 colors=[]
 for ci in range(4):
  m=material('anime meadow %d'%ci,(.45,.65,.20))
@@ -15,6 +15,9 @@ for ci in range(4):
  bsdf=nodes.get('Principled BSDF')
  links.new(attr.outputs['Color'],bsdf.inputs['Base Color'])
  bsdf.inputs['Roughness'].default_value=.88
+ # A small amount of self-lit color keeps overlapping blades from becoming black.
+ links.new(attr.outputs['Color'],bsdf.inputs['Emission Color'])
+ bsdf.inputs['Emission Strength'].default_value=.30
  colors.append(m)
 def z(x,y):return .02*math.sin(x*4+1)*math.cos(y*4)+.01*math.sin(7*x+5*y)
 v=[];f=[];n=24
@@ -24,7 +27,7 @@ for j in range(n+1):
 for j in range(n):
  for i in range(n):
   a=j*(n+1)+i;f.append((a,a+1,a+n+2,a+n+1))
-mesh=bpy.data.meshes.new('ground');mesh.from_pydata(v,[],f);mesh.update();ob=bpy.data.objects.new('meadow_ground',mesh);bpy.context.collection.objects.link(ob);mesh.materials.append(material('ground',(.35,.52,.10)))
+mesh=bpy.data.meshes.new('ground');mesh.from_pydata(v,[],f);mesh.update();ob=bpy.data.objects.new('meadow_ground',mesh);bpy.context.collection.objects.link(ob);mesh.materials.append(material('ground',(.27,.43,.11)))
 for ci in range(4):
  v=[];f=[];vertex_t=[]
  for k in range(6400):
@@ -38,15 +41,15 @@ for ci in range(4):
   for j in range(6):
    a=start+j*2;f.append((a,a+1,a+3,a+2))
  mesh=bpy.data.meshes.new('grass');mesh.from_pydata(v,[],f);mesh.update();ob=bpy.data.objects.new('meadow_grass_%d'%ci,mesh);bpy.context.collection.objects.link(ob);mesh.materials.append(colors[ci])
- # Root: vivid yellow-green. Tip: the previous subdued green. Smooth color interpolation.
+ # Root is restrained green; upper half turns into warm yellow-green highlights.
  layer=mesh.vertex_colors.new(name='COLOR_0')
  for poly in mesh.polygons:
   for loop_index in poly.loop_indices:
    t=vertex_t[mesh.loops[loop_index].vertex_index]
-   root=(.49,.76,.15)
-   tips=[(.095,.215,.055),(.115,.245,.065),(.145,.275,.075),(.175,.295,.085)]
+   root=(.22,.39,.095)
+   tips=[(.34,.55,.11),(.37,.58,.12),(.40,.61,.13),(.43,.63,.14)]
    tip=tips[ci]
-   # Hold lime close to the ground; smoothly blend into the established upper palette.
+   # Blend toward brighter tips without harsh yellow saturation.
    u=max(0.,min(1.,(t-.10)/.90));u=u*u*(3.-2.*u)
    rgb=tuple(root[k]*(1-u)+tip[k]*u for k in range(3))
    layer.data[loop_index].color=(*rgb,1)
