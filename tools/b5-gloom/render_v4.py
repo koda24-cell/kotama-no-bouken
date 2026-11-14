@@ -163,6 +163,33 @@ for ob in scan_objects:
  ob.scale=(.60,.60,.50)
  ob.rotation_euler[2]=.27
  print("SCAN_MESH",ob.name,len(ob.data.polygons),flush=True)
+# V4 high-density variant: triple the actual triangle count of each mesh.
+# Triangulate then poke each triangle into three; existing silhouettes stay intact.
+# Displace only newly created centers very slightly for physical micro-relief.
+import bmesh
+triangles_before=0
+triangles_after=0
+for obj in list(bpy.context.scene.objects):
+ if obj.type!="MESH":continue
+ mesh=obj.data.copy()
+ obj.data=mesh
+ bm=bmesh.new();bm.from_mesh(mesh)
+ bmesh.ops.triangulate(bm,faces=list(bm.faces))
+ before=len(bm.faces)
+ triangles_before+=before
+ faces=list(bm.faces)
+ result=bmesh.ops.poke(bm,faces=faces,offset=0)
+ # Controlled center-only micro-relief on procedural mantle, not on scan rocks.
+ if obj.name.startswith("V3 organic mantle"):
+  for v in result["verts"]:
+   v.co.z+=.003*math.sin(v.co.x*83+v.co.y*49)
+ bm.to_mesh(mesh);bm.free();mesh.update()
+ after=len(mesh.polygons)
+ triangles_after+=after
+ assert after==before*3,(obj.name,before,after)
+ print("TRIANGLE_DENSITY",obj.name,before,after,flush=True)
+print("TOTAL_TRIANGLES",triangles_before,triangles_after,flush=True)
+assert triangles_after==triangles_before*3
 # Export only geometry; preview plane/lights created later.
 bpy.ops.export_scene.gltf(filepath=os.path.join(out,"b5-gloom-corruption-prototype.glb"),export_format="GLB",export_apply=True)
 floor=mat("preview floor",(.11,.105,.14),0,.96)
