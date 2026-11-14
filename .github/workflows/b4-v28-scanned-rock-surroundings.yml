@@ -2,7 +2,7 @@ name: B4 V28 Fire Cave Basalt
 on:
   push:
     branches:
-      - feature/b4-v28-scanned-rock-surroundings-20261114
+      - feature/b4-v28-scanned-rock-surroundings-20261115
   workflow_dispatch:
 jobs:
   render:
