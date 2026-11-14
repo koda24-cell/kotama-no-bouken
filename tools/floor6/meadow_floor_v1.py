@@ -47,15 +47,15 @@ for j in range(n):
 mesh=bpy.data.meshes.new('ground');mesh.from_pydata(v,[],f);mesh.update();ob=bpy.data.objects.new('meadow_ground',mesh);bpy.context.collection.objects.link(ob);mesh.materials.append(material('ground',srgb(preset['ground'])))
 for ci in range(4):
  v=[];f=[];vertex_t=[]
- for k in range(6400):
+ for k in range(3200):
   if k%4!=ci:continue
   x=random.uniform(-.51,.51);y=random.uniform(-.51,.51)
   # Keep the dense undergrowth, but lift the upper canopy above a lawn-like silhouette.
-  h=random.uniform(.035,.105) if k<4400 else random.uniform(.14,.28)
+  h=random.uniform(.035,.105) if k<1200 else random.uniform(.14,.28)
   # Wind shares a prevailing direction, with subtle organic deviations.
   a=math.radians(float(preset.get('windDirectionDegrees',32))+random.gauss(0,float(preset.get('windSpreadDegrees',19))))
-  bend=(random.uniform(.04,.085) if k<4400 else random.uniform(.11,.19))*float(preset.get('windLean',.14))/.14
-  w=random.uniform(.006,.014) if k<4400 else random.uniform(.006,.012)
+  bend=(random.uniform(.04,.085) if k<1200 else random.uniform(.11,.19))*float(preset.get('windLean',.14))/.14
+  w=random.uniform(.006,.014) if k<1200 else random.uniform(.006,.012)
   start=len(v)
   for j in range(7):
    t=j/6;px=x+math.cos(a)*bend*t*t;py=y+math.sin(a)*bend*t*t;half=w*(1-t)**.7
@@ -80,6 +80,34 @@ for ci in range(4):
     blend=(u-.5)*2;blend=blend*blend*(3-2*blend)
     rgb=tuple((middle[k]*(1-blend)+tip[k]*blend)*scale for k in range(3))
    layer.data[loop_index].color=(*rgb,1)
+# V7: broad overlapping low-canopy ribbons replace thousands of individual root blades.
+# These layered leaf masses follow the same wind direction as the visible tall tips.
+for ci in range(4):
+ v=[];faces=[];vt=[]
+ for k in range(440):
+  if k%4!=ci:continue
+  x=random.uniform(-.51,.51);y=random.uniform(-.51,.51)
+  a=math.radians(float(preset.get('windDirectionDegrees',32))+random.gauss(0,12))
+  length=random.uniform(.055,.13);width=random.uniform(.018,.042)
+  h=random.uniform(.022,.055);start=len(v)
+  for j in range(5):
+   t=j/4
+   px=x+math.cos(a)*length*t;py=y+math.sin(a)*length*t
+   half=width*(.85-.55*t)
+   for q in (-1,1):
+    v.append((px-q*math.sin(a)*half,py+q*math.cos(a)*half,z(x,y)+h*(.4+.6*math.sin(t*math.pi*.8))))
+    vt.append(.16+.52*t)
+  for j in range(4):
+   idx=start+j*2;faces.append((idx,idx+1,idx+3,idx+2))
+ mesh=bpy.data.meshes.new('canopy_ribbon');mesh.from_pydata(v,[],faces);mesh.update()
+ obj=bpy.data.objects.new('meadow_canopy_layer_%d'%ci,mesh);bpy.context.collection.objects.link(obj)
+ mesh.materials.append(colors[ci])
+ layer=mesh.vertex_colors.new(name='COLOR_0')
+ for poly in mesh.polygons:
+  for li in poly.loop_indices:
+   t=vt[mesh.loops[li].vertex_index]
+   u=min(1.,max(0.,t*2));u=u*u*(3-2*u)
+   layer.data[li].color=(*(root[c]*(1-u)+middle[c]*u for c in range(3)),1)
 bpy.ops.object.select_all(action='DESELECT')
 for o in bpy.context.scene.objects:
  if o.type=='MESH':o.select_set(True)
