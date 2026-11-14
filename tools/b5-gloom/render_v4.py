@@ -399,6 +399,42 @@ for i in range(8):
  sculpt_rock_v12(22+i,(r*math.cos(a),r*math.sin(a),rng.uniform(.30,.46)),
                  (rng.uniform(.20,.38),rng.uniform(.20,.36),rng.uniform(.30,.58)))
 print("V12_BLENDER_NATIVE_ROCK_SCULPT",30,flush=True)
+# V13: fix only the outer starburst / triangular fins.
+# Keep V12 boulders, source rock and all original objects unchanged.
+# Recede each radial crust sheet beneath the stone rim; do not delete it.
+for ob in bpy.context.scene.objects:
+ if ob.type!="MESH":continue
+ if ob.name.startswith("creeping crust sheet"):
+  ob.data=ob.data.copy()
+  for v in ob.data.vertices:
+   p=v.co
+   radius=(p.x*p.x+p.y*p.y)**.5
+   if radius>.44:
+    # Compress the long radial fins into short uneven embedded seams.
+    k=.44+.48*(radius-.44)
+    p.x*=k/max(radius,1e-6);p.y*=k/max(radius,1e-6)
+    p.z-=.12*min(1,(radius-.44)/.6)
+  ob.data.materials.clear();ob.data.materials.append(black)
+  ob.data.update()
+ elif ob.name.startswith("surface fragment"):
+  # Keep the chips but embed their visible tips in the rocky silhouette.
+  ob.scale.z*=.58
+ elif ob.name.startswith("jagged mineral tooth"):
+  ob.scale.z*=.55
+# The continuous mantle should disappear under the boulders at the outer
+# boundary, rather than ending in a sharp flat black sawtooth edge.
+for ob in bpy.context.scene.objects:
+ if ob.type=="MESH" and ob.name.startswith("V3 organic mantle"):
+  ob.data=ob.data.copy()
+  for v in ob.data.vertices:
+   p=v.co
+   radius=(p.x*p.x+p.y*p.y)**.5
+   if radius>.76:
+    fade=min(1,(radius-.76)/.40)
+    p.z-=.18*fade
+    p.x*=1-.07*fade;p.y*=1-.07*fade
+  ob.data.update()
+print("V13_OUTER_STARBURST_EMBEDDED",len(bpy.context.scene.objects),flush=True)
 # V4 high-density variant: triple the actual triangle count of each mesh.
 # Triangulate then poke each triangle into three; existing silhouettes stay intact.
 # Displace only newly created centers very slightly for physical micro-relief.
