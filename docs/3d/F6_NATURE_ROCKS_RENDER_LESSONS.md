@@ -30,3 +30,8 @@
 - 原因はバージョン番号だけでEEVEE_NEXTを選んだこと。Blender 5.0.1では `BLENDER_EEVEE` が有効。
 - `tools/floor6/nature_rocks_v1.py` の描画エンジンを `BLENDER_EEVEE` に変更した。修正後の成功・PNG出力はまだ未検証。
 - 再発防止: バージョン番号から列挙値を推測せず、実行環境の利用可能な列挙値か実ログを根拠に設定する。
+
+## 実行 #43608225715：EGLランタイム欠落
+- Blender 5.0.1で最初のGLBエクスポートまでは成功。PNGレンダリング開始時に `Couldn't open libEGL.so.1`、exit 134。
+- GitHub Actionsに `libegl1 libgl1 libopengl0 libgl1-mesa-dri` を追加し、`LIBGL_ALWAYS_SOFTWARE=1` と `EGL_PLATFORM=surfaceless` を設定。
+- 原因と修正は実ログに基づく。修正後のPNG出力は別途成功確認が必要。
