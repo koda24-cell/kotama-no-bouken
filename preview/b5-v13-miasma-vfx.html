@@ -17,16 +17,33 @@ float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(ha
 float fbm(vec2 p){float a=.5,v=0.;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.07+vec2(11.3,7.9);a*=.5;}return v;}
 void main(){vec2 uv=vUv;vec2 q=uv*vec2(2.8,1.7);float w=fbm(q+vec2(uTime*.07+uSeed,-uTime*.022));float f=fbm(q*2.1+vec2(-uTime*.095,uTime*.045)+w*.8);float shape=smoothstep(.29,.69,f*.68+w*.52);float edge=pow(max(0.,1.-abs(uv.x-.5)*1.85),.65)*smoothstep(.0,.26,uv.y)*(1.-smoothstep(.69,1.,uv.y));float alpha=shape*edge*uOpacity;vec3 color=mix(vec3(.025,.014,.034),vec3(.19,.055,.23),smoothstep(.42,.75,w));gl_FragColor=vec4(color,alpha);}`;
 const fog=[];for(let i=0;i<5;i++){const uniforms={uTime:{value:0},uOpacity:{value:.72},uSeed:{value:i*7.23}};const mat=new THREE.ShaderMaterial({vertexShader:vertex,fragmentShader:fragment,uniforms,transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.NormalBlending});const mesh=new THREE.Mesh(new THREE.PlaneGeometry(2.9,1.95),mat);const a=i*Math.PI*2/5;mesh.position.set(Math.cos(a)*.35,Math.sin(a)*.35,.31+i*.12);mesh.rotation.z=a;mesh.rotation.x=Math.PI/2.5;mesh.renderOrder=10+i;scene.add(mesh);fog.push({mesh,uniforms});}
-const wisps=[];for(let i=0;i<12;i++){const a=i*2.399,rad=.28+(i%5)*.13;const mesh=new THREE.Sprite(new THREE.SpriteMaterial({color:i%4===0?0x7d397e:0x25142d,transparent:true,opacity:.11,depthWrite:false}));mesh.position.set(Math.cos(a)*rad,Math.sin(a)*rad,.23+(i%4)*.13);mesh.scale.set(.43,.43,1);scene.add(mesh);wisps.push(mesh);}
+const wisps=[];for(let i=0;i<12;i++){const a=i*2.399,rad=.28+(i%5)*.13;const mesh=new THREE.Sprite(new THREE.SpriteMaterial({color:i%4===0?0x74317a:0x24142b,transparent:true,opacity:.075,depthWrite:false}));mesh.position.set(Math.cos(a)*rad,Math.sin(a)*rad,.23+(i%4)*.13);mesh.scale.set(.43,.43,1);scene.add(mesh);wisps.push(mesh);}
 
 // V2 independent crimson corruption flames: animated, non-physical emissive tongues.
 const flameFragment=`precision highp float;varying vec2 vUv;uniform float uTime;uniform float uSeed;
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
-void main(){vec2 uv=vUv;float y=uv.y;float turbulence=n(vec2(uv.x*4.5+uSeed,uv.y*3.-uTime*1.35));float wave=sin(y*12.-uTime*2.7+uSeed)*.10;float width=mix(.35,.018,y);float x=abs(uv.x-.5+wave+(.5-turbulence)*.21);float mask=1.-smoothstep(width*.55,width,x);float tongues=step(y,.58+.35*n(vec2(uv.x*5.+uSeed,uTime*.65)));float alpha=mask*tongues*pow(1.-y,.65)*.87;vec3 dark=vec3(.26,.006,.025),red=vec3(1.,.055,.018),core=vec3(1.,.37,.06);vec3 c=mix(dark,red,smoothstep(.12,.7,y));c=mix(c,core,(1.-smoothstep(.0,.12,x))*(1.-y)*.66);gl_FragColor=vec4(c,alpha);}`;
-const flames=[];for(let i=0;i<10;i++){const a=i*2.39996,r=.24+(i%4)*.15;const uniforms={uTime:{value:0},uSeed:{value:i*3.7}};const mat=new THREE.ShaderMaterial({vertexShader:vertex,fragmentShader:flameFragment,uniforms,transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});const mesh=new THREE.Mesh(new THREE.PlaneGeometry(.30+(i%3)*.1,.70+(i%4)*.13),mat);mesh.position.set(Math.cos(a)*r,Math.sin(a)*r,.30+(i%3)*.09);mesh.rotation.set(Math.PI/2.7,0,a*.5);mesh.renderOrder=20+i;scene.add(mesh);flames.push({mesh,uniforms});}
+float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*n(p);p=p*2.04+vec2(4.3,9.1);a*=.5;}return v;}
+void main(){
+ vec2 uv=vUv;float y=uv.y;float time=uTime;
+ float warp=fb(vec2(uv.x*5.+uSeed,uv.y*3.4-time*1.3));
+ float drift=.09*sin(y*9.-time*2.1+uSeed)+.16*(warp-.5)*y;
+ float xx=uv.x-.5+drift;
+ float width=.29*pow(1.-y,1.35)+.013;
+ float central=1.-smoothstep(width*.25,width,abs(xx));
+ float split=sin(uv.x*23.+time*1.5+uSeed)*sin(y*11.-time*2.6);
+ float breakup=fb(vec2(uv.x*9.+uSeed,y*7.-time*1.8));
+ float body=central*smoothstep(.22,.48,breakup+.23*split);
+ float tips=smoothstep(.09,.45,fb(vec2(uv.x*12.+uSeed,y*4.-time*1.9)))*(1.-smoothstep(.55,.99,y));
+ float alpha=body*tips*pow(1.-y,.52)*.83;
+ float core=exp(-abs(xx)*23.)*(1.-smoothstep(.05,.52,y));
+ vec3 c=mix(vec3(.21,.009,.045),vec3(.94,.045,.025),smoothstep(.06,.75,breakup));
+ c=mix(c,vec3(1.,.31,.065),core*.62);
+ gl_FragColor=vec4(c,alpha);
+}`;
+const flames=[];for(let i=0;i<14;i++){const a=i*2.39996,r=.20+(i%5)*.13;const uniforms={uTime:{value:0},uSeed:{value:i*3.7}};const mat=new THREE.ShaderMaterial({vertexShader:vertex,fragmentShader:flameFragment,uniforms,transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});const mesh=new THREE.Mesh(new THREE.PlaneGeometry(.24+(i%4)*.085,.57+(i%5)*.12),mat);mesh.position.set(Math.cos(a)*r,Math.sin(a)*r,.23+(i%4)*.08);mesh.rotation.set(Math.PI/2.6,0,a*.5);mesh.renderOrder=20+i;scene.add(mesh);flames.push({mesh,uniforms});}
 const firelight=new THREE.PointLight(0xef2410,7,3);firelight.position.set(0,0,.48);scene.add(firelight);
 let running=true,t=0,prev=performance.now();document.querySelector('#toggle').onclick=()=>{running=!running;document.querySelector('#toggle').textContent=running?'停止':'再開';};
-function frame(now){const dt=Math.min(.08,(now-prev)/1000);prev=now;if(running)t+=dt*Number(document.querySelector('#speed').value)/100;const d=Number(document.querySelector('#density').value)/100;fog.forEach((f,i)=>{f.uniforms.uTime.value=t;f.uniforms.uOpacity.value=d*(.62+.12*Math.sin(t*.37+i));f.mesh.position.z=.31+i*.12+.07*Math.sin(t*.45+i);});wisps.forEach((s,i)=>{s.position.z=.23+(i%4)*.13+.06*Math.sin(t*.6+i);s.material.opacity=d*(.08+.035*Math.sin(t*.45+i));});flames.forEach((f,i)=>{f.uniforms.uTime.value=t;f.mesh.scale.y=.85+.16*Math.sin(t*1.7+i);});firelight.intensity=5+2*Math.sin(t*2.1);rim.intensity=6+3*Math.pow(Math.max(0,Math.sin(t*.67)),12);orbit.update();renderer.render(scene,camera);requestAnimationFrame(frame);}requestAnimationFrame(frame);
+function frame(now){const dt=Math.min(.08,(now-prev)/1000);prev=now;if(running)t+=dt*Number(document.querySelector('#speed').value)/100;const d=Number(document.querySelector('#density').value)/100;fog.forEach((f,i)=>{f.uniforms.uTime.value=t;f.uniforms.uOpacity.value=d*(.62+.12*Math.sin(t*.37+i));f.mesh.position.z=.31+i*.12+.07*Math.sin(t*.45+i);});wisps.forEach((s,i)=>{s.position.z=.23+(i%4)*.13+.06*Math.sin(t*.6+i);s.material.opacity=d*(.08+.035*Math.sin(t*.45+i));});flames.forEach((f,i)=>{f.uniforms.uTime.value=t;f.mesh.scale.y=.78+.23*Math.sin(t*1.7+i);});firelight.intensity=5+2*Math.sin(t*2.1);rim.intensity=6+3*Math.pow(Math.max(0,Math.sin(t*.67)),12);orbit.update();renderer.render(scene,camera);requestAnimationFrame(frame);}requestAnimationFrame(frame);
 addEventListener('resize',()=>{const w=host.clientWidth,h=Math.max(360,innerHeight*.65);renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();});
 </script></body></html>
