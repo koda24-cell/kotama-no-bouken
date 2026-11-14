@@ -242,6 +242,53 @@ for ob in bpy.context.scene.objects:
  if ob.name.startswith("surface fragment"):
   ob.scale.z*=.72
 print("V9_RESTORED_ORIGINAL_GEOMETRY",len(bpy.context.scene.objects),flush=True)
+# V10: strongly exaggerated broad-to-small ROCK relief, without deleting
+# any restored object. Use real vertex displacement (not only shader bump).
+from mathutils.noise import noise as v10_noise
+for ob in bpy.context.scene.objects:
+ if ob.type!="MESH":continue
+ if ob.name.startswith("V3 organic mantle"):
+  mesh=ob.data
+  for v in mesh.vertices:
+   p=v.co.copy()
+   r=(p.x*p.x+p.y*p.y)**.5
+   macro=v10_noise(p*3.1)*.115
+   mid=v10_noise(p*12.7)*.065
+   sharp=v10_noise(p*36.0)*.022
+   v.co.z+=(macro+mid+sharp)*(.35+.65*min(1,r/.8))
+  mesh.update()
+ elif ob.name.startswith("CC0 Poly Haven rock"):
+  mesh=ob.data
+  for v in mesh.vertices:
+   p=v.co.copy();n=v.normal.copy()
+   v.co+=n*(v10_noise(p*2.7)*.09+v10_noise(p*13.4)*.045+v10_noise(p*40)*.012)
+  mesh.update()
+# Make the invasion a deeply black, matte material with fractured relief.
+invader=bpy.data.materials.get("B5 matte invasive crust")
+if invader:
+ nodes=invader.node_tree.nodes
+ links=invader.node_tree.links
+ principled=nodes.get("Principled BSDF")
+ principled.inputs["Base Color"].default_value=(.003,.002,.008,1)
+ principled.inputs["Roughness"].default_value=.96
+ noise=nodes.new("ShaderNodeTexNoise")
+ noise.inputs["Scale"].default_value=24
+ noise.inputs["Detail"].default_value=6
+ noise.inputs["Roughness"].default_value=.76
+ bump=nodes.new("ShaderNodeBump")
+ bump.inputs["Strength"].default_value=.68
+ bump.inputs["Distance"].default_value=.085
+ links.new(noise.outputs["Fac"],bump.inputs["Height"])
+ links.new(bump.outputs["Normal"],principled.inputs["Normal"])
+# Darken the underlying stone; reduce purple flat facets.
+rockmat=bpy.data.materials.get("B5 weathered masonry")
+if rockmat:
+ rockmat.node_tree.nodes.get("Principled BSDF").inputs["Base Color"].default_value=(.047,.044,.052,1)
+# Preserve all source geometry; increase the visual size of dark growth.
+for ob in bpy.context.scene.objects:
+ if ob.name.startswith("black growth"):
+  ob.scale.x*=1.20;ob.scale.y*=1.20
+print("V10_EXAGGERATED_RELIEF",len(bpy.context.scene.objects),flush=True)
 # V4 high-density variant: triple the actual triangle count of each mesh.
 # Triangulate then poke each triangle into three; existing silhouettes stay intact.
 # Displace only newly created centers very slightly for physical micro-relief.
