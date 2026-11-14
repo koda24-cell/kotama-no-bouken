@@ -118,6 +118,46 @@ export function createB5GloomPatch(THREE,{seed=1,animate=true}={}){
    makeCreepRibbon([origin,origin.clone().lerp(end,.55).add(new THREE.Vector3(0,.004,0)),end],.008,infectionMat,'gloom-ribbon-offshoot');
   }
  }
+ // V6: microrelief islands, fractured dark scabs and small capillary fractures.
+ // Separate lightweight geometry keeps the V5 silhouette and all existing meshes.
+ const scabMat=new THREE.MeshStandardMaterial({color:0x111017,roughness:.94,metalness:0,flatShading:true,side:THREE.DoubleSide});
+ const crustMat=new THREE.MeshStandardMaterial({color:0x1c1720,roughness:.98,metalness:0,flatShading:true});
+ const veinDark=new THREE.MeshStandardMaterial({color:0x310d1c,emissive:0x20040c,emissiveIntensity:.28,roughness:.86});
+ // Jagged plaques emerging from the viscous surface: varied size and irregular tilt.
+ for(let k=0;k<72;k++){
+  const a=random()*Math.PI*2,r=Math.sqrt(random())*.385;
+  const x=Math.cos(a)*r,z=Math.sin(a)*r;
+  const radius=.006+Math.pow(random(),2)*.024;
+  const shard=new THREE.Mesh(new THREE.IcosahedronGeometry(radius,0),k%5===0?crustMat:scabMat);
+  shard.scale.set(.75+random()*1.8,.10+random()*.32,.45+random()*1.2);
+  shard.rotation.set(random()*.28,random()*6.28,random()*.22);
+  shard.position.set(x,.052+random()*.007,z);shard.name='gloom-crusted-plaque';group.add(shard);
+ }
+ // Pin-sized pores with subdued red interiors, deliberately sparse and irregular.
+ const poreMat=new THREE.MeshStandardMaterial({color:0x290713,emissive:0x34050d,emissiveIntensity:.38,roughness:1});
+ for(let k=0;k<39;k++){
+  const a=random()*6.283,r=Math.sqrt(random())*.37;
+  const m=new THREE.Mesh(new THREE.IcosahedronGeometry(.0025+random()*.004,0),poreMat);
+  m.scale.set(1,.17,1.3+random());m.position.set(Math.cos(a)*r,.061,Math.sin(a)*r);
+  m.name='gloom-surface-pore';group.add(m);
+ }
+ // Thin, branching capillaries across the surface, tapering rather than thick piping.
+ for(let k=0;k<22;k++){
+  const a=random()*Math.PI*2,r=.08+random()*.24;
+  const start=new THREE.Vector3(Math.cos(a)*r,.063,Math.sin(a)*r);
+  const length=.026+random()*.065;
+  const dir=a+(.4+random()*.8)*(random()<.5?-1:1);
+  const end=new THREE.Vector3(start.x+Math.cos(dir)*length,.063,start.z+Math.sin(dir)*length);
+  makeCreepRibbon([start,start.clone().lerp(end,.48).add(new THREE.Vector3(0,.001,0)),end],.002+random()*.002,veinDark,'gloom-micro-capillary');
+ }
+ // Fractured sediment embedded in the outer contamination, distinct from round blobs.
+ for(let k=0;k<45;k++){
+  const a=random()*Math.PI*2,r=.44+random()*.23;
+  const chip=new THREE.Mesh(new THREE.TetrahedronGeometry(.004+random()*.012,0),k%4===0?crustMat:scabMat);
+  chip.scale.set(1.4+random()*2,.12+random()*.25,.5+random());
+  chip.rotation.y=random()*6.28;chip.position.set(Math.cos(a)*r,.011,Math.sin(a)*r);
+  chip.name='gloom-outer-sediment';group.add(chip);
+ }
  const particles=[];
  if(animate){
   const particleMat=new THREE.MeshBasicMaterial({color:0x912c61,transparent:true,opacity:.46,depthWrite:false});
