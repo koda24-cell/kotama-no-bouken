@@ -297,15 +297,27 @@ for source in scan_objects:
  overlay=next((o for o in bpy.context.scene.objects
    if o.name.startswith("V5 scan-conforming black invasion ") and o.name.endswith(source.name)),None)
  if overlay is None:continue
- src=source.data;dst=overlay.data
- synced=0
- for v in dst.vertices:
-  if v.index<len(src.vertices):
-   p=src.vertices[v.index].co
-   v.co=p+src.vertices[v.index].normal*(.018+.005*math.sin(p.x*31+p.z*17))
-   synced+=1
- dst.update()
- print("V11_SCAN_CRUST_SYNC",source.name,synced,len(dst.vertices),flush=True)
+ # Recreate the selected-face shell from the FINAL displaced scan mesh,
+ # rather than relying on vertex indices changed by bmesh face deletion.
+ mesh=source.data.copy()
+ bm=bmesh.new();bm.from_mesh(mesh)
+ remove=[]
+ for face in bm.faces:
+  center=face.calc_center_median()
+  signal=(math.sin(center.x*8.3+center.y*4.7+center.z*3.1)
+          +.58*math.sin(center.x*19.7-center.z*11.3)
+          +.38*math.cos(center.y*23.1+center.z*6.2))
+  if signal<-.85:remove.append(face)
+ bmesh.ops.delete(bm,geom=remove,context="FACES")
+ bm.normal_update()
+ for vertex in bm.verts:
+  p=vertex.co.copy()
+  vertex.co+=vertex.normal*(.018+.005*math.sin(p.x*31+p.z*17))
+ bm.to_mesh(mesh);bm.free();mesh.update()
+ mesh.materials.clear();mesh.materials.append(crust)
+ overlay.data=mesh
+ overlay.matrix_world=source.matrix_world.copy()
+ print("V11_SCAN_CRUST_REBUILT",source.name,len(mesh.polygons),flush=True)
 # The original radial crust sheets are preserved, but their exaggerated
 # purple wedges should no longer dominate the rock silhouette.
 for ob in bpy.context.scene.objects:
