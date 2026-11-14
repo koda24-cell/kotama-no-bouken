@@ -1,0 +1,37 @@
+name: Generate and commit floor4 basalt PBR textures
+on:
+  push:
+    branches:
+      - feature/b4-procedural-basalt-pbr-library-20261114
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tools/b4-render/generate-basalt-pbr.py
+      - name: Validate PNG signatures
+        run: |
+          for f in assets/textures/floor4/basalt-charcoal-01/*.png; do test -s "$f"; done
+          python -c "from pathlib import Path; assert all(p.read_bytes().startswith(bytes.fromhex('89504e470d0a1a0a')) for p in Path('assets/textures/floor4/basalt-charcoal-01').glob('*.png'))"
+      - name: Commit texture maps to review branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/textures/floor4/basalt-charcoal-01/
+          if ! git diff --cached --quiet; then
+            git commit -m "assets: generated original tileable basalt PBR maps"
+            git push
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: floor4-basalt-pbr-maps
+          path: assets/textures/floor4/basalt-charcoal-01/*.png
+          retention-days: 14
