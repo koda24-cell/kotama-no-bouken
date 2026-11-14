@@ -1,0 +1,35 @@
+name: B2 Bridge Rubble Frozen Pillar Variant Renders
+on:
+  push:
+    branches: [feature/b2-bridge-v04-vfx-20261115]
+    paths:
+      - tools/b2-render/build-bridge-variants.py
+      - .github/workflows/b2-bridge-variants-render.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1 libopengl0
+      - name: Render three bridge variants
+        run: blender -b -t 2 --python tools/b2-render/build-bridge-variants.py
+      - name: Validate 3 GLBs and 9 PNGs
+        run: |
+          set -euo pipefail
+          cd render-output/b2-bridge-variants
+          for variant in 01_rubble 02_frozen 03_pillar_debris; do
+            test -s "${variant}.glb"
+            for angle in front side angle; do test -s "${variant}_${angle}.png"; done
+          done
+          sha256sum *.glb *.png > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-bridge-variants-renders
+          path: render-output/b2-bridge-variants/
+          retention-days: 14
