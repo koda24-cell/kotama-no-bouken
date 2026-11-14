@@ -36,3 +36,7 @@
 - `docs/3d/B5_GLOOM_TOOLS_AND_LESSONS.md`
 - `docs/3d/floor5-gloom/CLAUDE_HANDOFF.md`（PR #331）
 - https://github.com/koda24-cell/kotama-no-bouken/pull/354
+
+## 2026-11-15 共通無料VFX素材
+
+[CC0 VFX素材ライブラリ](VFX_CC0_ASSET_LIBRARY_20261115.md) を参照。Kenney Particle/Smoke、Brackeys Bundle、旧OpenGameArt、第三者GitHub索引を出典・ライセンス・導入状況別に整理。**新規のPNG本体取得・ゲーム導入は未検証**。
