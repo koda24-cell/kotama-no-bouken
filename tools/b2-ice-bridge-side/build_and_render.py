@@ -15,6 +15,17 @@ slate=material("Glacial dark slate",(0.15,.25,.32))
 ice=material("Weathered opaque glacier ice",(.48,.72,.77),.48,.0,0)
 snow=material("Frost crust",(.68,.83,.87),.82)
 rock=material("Cold eroded stone",(.28,.38,.43))
+deep_ice=material("Compressed blue glacial ice",(.19,.39,.49),.34)
+# Spatially varied glacier coloration without external image dependencies.
+def glacier_color(mat):
+ nodes=mat.node_tree.nodes;links=mat.node_tree.links
+ tex=nodes.new("ShaderNodeTexNoise");tex.inputs["Scale"].default_value=3.8;tex.inputs["Detail"].default_value=5
+ ramp=nodes.new("ShaderNodeValToRGB")
+ ramp.color_ramp.elements[0].position=.23;ramp.color_ramp.elements[0].color=(.16,.36,.43,1)
+ ramp.color_ramp.elements[1].position=.79;ramp.color_ramp.elements[1].color=(.62,.78,.79,1)
+ links.new(tex.outputs["Fac"],ramp.inputs["Fac"])
+ links.new(ramp.outputs["Color"],nodes.get("Principled BSDF").inputs["Base Color"])
+glacier_color(ice)
 # Procedural PBR detail: two-scale Noise -> Bump, with matte ice and stone.
 def rough_surface(mat,scale,strength,distance):
  nodes=mat.node_tree.nodes;links=mat.node_tree.links
@@ -25,6 +36,7 @@ def rough_surface(mat,scale,strength,distance):
 rough_surface(rock,10,.58,.12)
 rough_surface(slate,24,.24,.028)
 rough_surface(ice,18,.32,.039)
+rough_surface(deep_ice,13,.38,.047)
 rough_surface(snow,32,.23,.012)
 def cube(name,loc,scale,mat,bevel=0):
  bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.dimensions=scale;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(mat)
@@ -86,6 +98,10 @@ def create(side):
   return obj
  terrain_shelf("continuous_fractured_ice_shelf",ice,.72,-.01,-.30,74)
  terrain_shelf("eroded_rock_bed",slate,.84,-.31,-.60,85)
+ # Compressed ice strata emerge from the eroded rock rather than repeating blocks.
+ for j,(x,y,z,w,d,h) in enumerate([(-.58,.57,-.31,.42,.31,.23),(.18,-.63,-.35,.53,.25,.19),(.64,.62,-.42,.32,.34,.28)]):
+  o=shard("compressed_ice_in_rock_%02d"%j,(x,y,z),(w,d,h),deep_ice,890+j)
+  o.rotation_euler.z=.3*j
  # Frost is a subtle mottled material effect, not rectangular white patches.
  # Dark blue inset fissures follow uneven polylines on the top surface.
  def fissure(name,points):
@@ -107,10 +123,8 @@ def create(side):
  ]):
   o=shard("large_eroded_bank_mass_%02d"%i,(x,sign*y,z),(sx,sy,sz),rock,i+550)
   o.rotation_euler=(.12*i,.06*i,sign*(i-2)*.11)
- for i in range(8):
-  x=-.78+i*.22+(.035 if i%3==0 else -.025)
-  y=sign*(.76+.12*math.sin(i*2.2))
-  shard("small_transition_stone_%02d"%i,(x,y,-.17),(.15,.18,.26+(i%3)*.05),slate,i+50)
+ for i,(x,y,z,w,d,h) in enumerate([(-.76,.73,-.24,.20,.21,.30),(-.36,.81,-.22,.27,.22,.22),(.13,.74,-.20,.18,.29,.32),(.59,.79,-.27,.26,.24,.26)]):
+  shard("irregular_rock_transition_%02d"%i,(x,sign*y,z),(w,d,h),slate,i+50)
  # Fewer larger fractured ice projections; avoid candy-like evenly spaced spikes.
  for i,(x,y,h,w) in enumerate([(-.67,.77,.43,.15),(-.19,.96,.27,.18),(.38,.78,.56,.19),(.73,.89,.34,.14)]):
   shard("fractured_ice_projection_%02d"%i,(x,sign*y,-.12),(w,.19,h),ice,i+120)
