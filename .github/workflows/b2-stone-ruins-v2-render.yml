@@ -1,0 +1,35 @@
+name: B2 Stone Ruins Props V2 Render
+on:
+  push:
+    branches: [feature/b2-bridge-v04-vfx-20261115]
+    paths:
+      - tools/b2-render/build-stone-ruins-v2.py
+      - .github/workflows/b2-stone-ruins-v2-render.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1 libopengl0
+      - name: Render sandstone ruin props
+        run: blender -b -t 2 --python tools/b2-render/build-stone-ruins-v2.py
+      - name: Validate outputs
+        run: |
+          set -euo pipefail
+          cd render-output/b2-stone-ruins-v2
+          for variant in broken_parapet fallen_pillar embedded_spire rubble_ice_scatter; do
+            test -s "${variant}.glb"
+            for view in front side angle; do test -s "${variant}_${view}.png"; done
+          done
+          sha256sum *.glb *.png > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-stone-ruins-v2
+          path: render-output/b2-stone-ruins-v2/
+          retention-days: 14
