@@ -22,9 +22,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p out
+          mkdir -p tools/floor3/ruined_connector/source
+          curl --fail --location --retry 3 --output tools/floor3/ruined_connector/source/concrete_stair_set.glb https://cdn.3dassets.dev/assets/33523/v1/model.glb
+          test $(stat -c%s tools/floor3/ruined_connector/source/concrete_stair_set.glb) -gt 1000
           docker pull lscr.io/linuxserver/blender:latest
           docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build.py 2>&1 | tee blender.log
           grep -q 'FLOOR3_CONNECTOR_RENDER_COMPLETE' blender.log
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_real_stair.py 2>&1 | tee blender-real.log
+          grep -q 'FLOOR3_REAL_STAIR_RENDER_COMPLETE' blender-real.log
           docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_kenney.py 2>&1 | tee kenney-render.log
           grep -q 'FLOOR3_KENNEY_STAIRS_RENDER_COMPLETE' kenney-render.log
       - name: Verify files
@@ -41,6 +46,6 @@ jobs:
           done
       - uses: actions/upload-artifact@v4
         with:
-          name: floor3-ruined-connector-v1-kenney
+          name: floor3-ruined-connector-real-v2-kenney
           path: out/
           retention-days: 14
