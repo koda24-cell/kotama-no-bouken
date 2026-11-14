@@ -209,7 +209,7 @@ if face:
    V((fc.x+fw*tipx,fmax.y-fs.y*.015+fs.y*(forward-.01),fmax.z-fh*tipz))]
   obj=make_strand('Assassin_swept_bang_%02d'%idx,pts,[fw*wide*q for q in (.70,1,1,.78,.43,.09)],depth_ratio=.50,segments=24)
   obj.data.materials.append(hair);strands.append(obj)
- # V6 layered temple locks: additional nonparallel curves wrap around each side of the head.
+ # V7 layered temple locks: additional nonparallel curves wrap around each side of the head.
  for idx,(side,zend) in enumerate([(1,.72),(1,.86),(-1,.58),(-1,.72)]):
   pts=[
    V((fc.x+side*fw*.40,fc.y,fmax.z+fh*.06)),
@@ -220,11 +220,23 @@ if face:
    V((fc.x+side*fw*.45,fc.y+fs.y*.13,fmax.z-fh*zend))]
   obj=make_strand('Assassin_temple_lock_%02d'%idx,pts,[fw*.11*q for q in (.8,1,.94,.75,.4,.12)],depth_ratio=.62,segments=24)
   obj.data.materials.append(hair);strands.append(obj)
+ # V7 additional crown-to-back overlapping tapered locks. Keep original face mesh intact.
+ for idx,(side,shift,length) in enumerate([
+  (-.36,-.06,.63),(-.20,-.09,.77),(-.04,-.12,.87),(.13,-.09,.82),(.28,-.06,.72),(.40,-.03,.57)]):
+  pts=[
+   V((fc.x+fw*side*.70,fc.y-fs.y*.08,fmax.z+fh*.08)),
+   V((fc.x+fw*(side+shift*.2),fmin.y+fs.y*.12,fmax.z+fh*.02)),
+   V((fc.x+fw*(side+shift*.5),fmin.y-fs.y*.02,fmax.z-fh*.16)),
+   V((fc.x+fw*(side+shift),fmin.y-fs.y*.05,fmax.z-fh*.34)),
+   V((fc.x+fw*(side+shift*.9),fmin.y+fs.y*.02,fmax.z-fh*(length-.12))),
+   V((fc.x+fw*(side+shift*.8),fmin.y+fs.y*.07,fmax.z-fh*length))]
+  obj=make_strand('Assassin_back_layer_%02d'%idx,pts,[fw*.16*q for q in (.68,1,1,.8,.48,.07)],depth_ratio=.55,segments=24)
+  obj.data.materials.append(hair);strands.append(obj)
  manifest['face_review']['assassin_fringe']={
   'names':[o.name for o in strands],
   'side':'camera-near +X',
-  'construction':'V6 flattened scalp volume, nine swept bangs and four temple locks; 24 sides and subdivision level 2',
-  'note':'V6 Blender native mesh curves; test front side and angle; HairMesh addon not installed'}
+  'construction':'V7 layered sculpt: nine bangs, four temple locks, six crown-to-back locks, scalp volume',
+  'note':'V7 native mesh curves; HairMesh/GBH compatibility probed separately, not used to create these strands'}
  prior={o.name:o.hide_render for o in bpy.context.scene.objects if o.type=='MESH'}
  for obj in bpy.context.scene.objects:
   if obj.type=='MESH':obj.hide_render=(obj!=face and obj not in strands)
@@ -244,6 +256,13 @@ if face:
   scene.render.filepath=os.path.join(out,'face_'+name+'.png')
   bpy.ops.render.render(write_still=True)
   bpy.data.objects.remove(cam,do_unlink=True)
+ # Export review GLB for the additive hair and source face, before restoring visibility.
+ bpy.ops.object.select_all(action='DESELECT')
+ for obj in [face]+strands:
+  obj.select_set(True)
+ bpy.context.view_layer.objects.active=face
+ bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_hair_v7_review.glb'),export_format='GLB',use_selection=True)
+ bpy.ops.object.select_all(action='DESELECT')
  for obj in bpy.context.scene.objects:
   if obj.type=='MESH':obj.hide_render=prior[obj.name]
  scene.render.resolution_x=720;scene.render.resolution_y=900
