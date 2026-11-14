@@ -1,0 +1,61 @@
+name: Promote approved B2 ice bank V11 assets
+on:
+  push:
+    branches:
+      - feature/b2-ice-bank-v11-approved-assets-20261115
+    paths:
+      - .github/workflows/b2-ice-bank-v11-promote.yml
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified V11 artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/b2-ice-v11
+          gh run download 43607068046 --repo ${{ github.repository }} --name b2-ice-bridge-side-tile-review --dir /tmp/b2-ice-v11
+          cd /tmp/b2-ice-v11
+          sha256sum -c SHA256SUMS.txt
+      - name: Promote GLB and PNG plus machine-readable manifest
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,shutil
+          src=pathlib.Path('/tmp/b2-ice-v11')
+          dst=pathlib.Path('assets/models/floor2/ice-bridge-banks/v11')
+          dst.mkdir(parents=True,exist_ok=True)
+          names=[]
+          for side in ('left','right'):
+              for variant in ('v11_smooth_depth','v11_smooth_clear'):
+                  names.extend([f'ice_bridge_{side}_{variant}.glb',f'ice_bridge_{side}_{variant}_angle.png'])
+              for view in ('front','side','angle'):
+                  names.append(f'ice_bridge_{side}_{view}.png')
+          files=[]
+          for name in names:
+              source=src/name
+              if not source.is_file() or source.stat().st_size==0:raise RuntimeError(f'missing {name}')
+              shutil.copy2(source,dst/name)
+              data=source.read_bytes()
+              files.append({'path':name,'sha256':hashlib.sha256(data).hexdigest(),'bytes':len(data)})
+          (dst/'SHA256SUMS.txt').write_text(''.join(f"{f['sha256']}  {f['path']}\\n" for f in files))
+          manifest={'asset_id':'b2_ice_bridge_bank_v11','approval':'user_approved_2026-11-15','source_commit':'de48ba2d93019d2e43cfcdb3aa8cb2d3e84c8227','source_run_id':43607068046,'source_artifact_id':14119060785,'default_variant':'v11_smooth_depth','alternates':['v11_smooth_clear'],'tile_size_m':[2,2],'sides':['left','right'],'claude_usage':'GLTFLoader only; inspect PNG and seams; do not use Blender','game_integration':'not_started','files':files}
+          (dst/'manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\\n')
+          print('PROMOTED',len(files),'files')
+          PY
+      - name: Commit approved assets to review branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models/floor2/ice-bridge-banks/v11/
+          git diff --cached --quiet && exit 0
+          git commit -m 'assets(b2): save approved V11 ice banks with renders and manifest'
+          git push origin HEAD:${{ github.ref_name }}
