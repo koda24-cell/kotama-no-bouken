@@ -3,6 +3,7 @@ on:
   push:
     branches: [feature/b5-gloom-vfx-resource-catalog-20261114]
     paths:
+      - 'field/assets/b5-gloom-vfx.js'
       - 'tools/b5-render/export-gloom.mjs'
       - 'tools/b5-render/render-gloom.py'
       - '.github/workflows/b5-gloom-cc0-render.yml'
