@@ -34,6 +34,17 @@ rear_depth=min(max((vd/vw)*sw*.52,sd*.34),sd*.85)
 seam_y=smn.y+sd*.45
 rx=sw*.485
 rz=sh*.485
+# V11: sample face geometry near the posterior seam, avoiding protruding side rims.
+face_obj=shibu_objs[0]
+source_vertices=[face_obj.matrix_world @ v.co for v in face_obj.data.vertices]
+def silhouette(z,side):
+ band=max(sh*.022,.002)
+ candidates=[v for v in source_vertices if abs(v.z-z)<band and (v.x-cx)*side>=0]
+ if not candidates:
+  candidates=sorted((v for v in source_vertices if (v.x-cx)*side>=0),key=lambda v:abs(v.z-z))[:12]
+ rear=sorted(candidates,key=lambda v:v.y)[:max(3,len(candidates)//3)]
+ return max(rear,key=lambda v:(v.x-cx)*side)
+
 # Construct a HALF-ELLIPSOID surface with open front, not a scalp sphere.
 # theta controls height, phi runs from left seam to back to right seam.
 rows=32;cols=32;verts=[];faces=[]
@@ -41,21 +52,28 @@ for i in range(rows+1):
  theta=math.pi*(.025+(.95*i/rows))
  for j in range(cols+1):
   phi=math.pi*j/cols
-  x=cx+rx*math.sin(theta)*math.cos(phi)
-  y=seam_y-rear_depth*math.sin(theta)*math.sin(phi)
   z=cz+rz*math.cos(theta)
+  left=silhouette(z,-1);right=silhouette(z,1)
+  t=j/cols
+  rim_x=right.x*(1-t)+left.x*t
+  rim_y=right.y*(1-t)+left.y*t
+  x=cx+(rim_x-cx)*(1-.08*math.sin(math.pi*t))
+  y=rim_y-rear_depth*math.sin(math.pi*t)*math.sin(theta)
   verts.append((x,y,z))
 for i in range(rows):
  for j in range(cols):
   a=i*(cols+1)+j;b=a+cols+1
   faces.append((a,b,b+1,a+1))
 mesh=bpy.data.meshes.new('Posterior_shell_mesh');mesh.from_pydata(verts,[],faces);mesh.update()
-head=bpy.data.objects.new('Assassin_posterior_shell_V10',mesh)
+head=bpy.data.objects.new('Assassin_posterior_shell_V11',mesh)
 bpy.context.collection.objects.link(head)
 for poly in mesh.polygons:poly.use_smooth=True
-mat=bpy.data.materials.new('Head_neutral_clay')
-mat.diffuse_color=(.75,.71,.70,1)
-head.data.materials.append(mat)
+if face_obj.data.materials:
+ head.data.materials.append(face_obj.data.materials[0])
+else:
+ mat=bpy.data.materials.new('Head_neutral_clay')
+ mat.diffuse_color=(.75,.71,.70,1)
+ head.data.materials.append(mat)
 # Keep original Shibu face and its materials; no hair or scalp sphere generated.
 scene=bpy.context.scene;scene.render.engine='BLENDER_EEVEE'
 scene.render.resolution_x=960;scene.render.resolution_y=960
@@ -75,10 +93,10 @@ for name,offset in [('front',(0,1,0)),('back',(0,-1,0)),('side',(1,0,0)),('back_
 bpy.ops.object.select_all(action='DESELECT')
 for o in shibu_objs+[head]:o.select_set(True)
 bpy.context.view_layer.objects.active=head
-bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_head_posterior_v10_review.glb'),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_head_posterior_v11_review.glb'),export_format='GLB',use_selection=True)
 with open(os.path.join(out,'geometry_measurements.json'),'w') as f:
  json.dump({'shibu_bounds':[list(smn),list(smx)],'vita_bounds':[list(vmn),list(vmx)],
  'shibu_width':sw,'vita_width':vw,'shibu_depth':sd,'vita_depth':vd,
  'shibu_height':sh,'vita_height':vh,'rear_depth':rear_depth,
  'rear_seam_y':seam_y,'new_vertices':len(verts),'new_faces':len(faces),
- 'construction':'open posterior half-shell only; no sphere, no hair; unapproved review candidate'},f,indent=2)
+ 'construction':'V11 face-sampled seam and posterior shell; no sphere, no hair; unapproved review candidate'},f,indent=2)
