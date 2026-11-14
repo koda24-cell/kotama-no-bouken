@@ -24,3 +24,6 @@ When continuing from a different chat, explicitly inspect `docs/3d/BLENDER_DOCKE
 - Claude must first check the asset manifest and PNG previews, load the GLB directly in the browser via Three.js/GLTFLoader, and check size/origin/materials/tile seams/performance. If modeling or new renders are needed, hand the request back to GPT/Blender workflow rather than claiming to perform Blender work.
 - Do not rely on expiring Actions Artifacts as permanent storage. Check that approved GLB/PNG are committed to the repository; if missing, report that they are not yet permanently saved.
 - For floor 6 meadow V7, read `docs/3d/F6_MEADOW_V7_CLAUDE_HANDOFF.md` and `docs/3d/F6_COMPLETED_ASSETS.md`.
+
+## B5 gloom 3D tooling and lessons (required for B5 corruption-rock work)
+Before modifying B5 gloom/corruption rock or reusing its Blender tools, read `docs/3d/B5_GLOOM_TOOLS_AND_LESSONS.md`. It records CC0 scan sources, Blender/Actions workflows, verified versus unverified resources, V4–V10 failures, and Claude handoff. Preserve existing meshes; do not promote unfinished prototype assets.
