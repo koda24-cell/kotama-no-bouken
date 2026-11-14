@@ -12,6 +12,11 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - name: Download source CC0 Kenney stairs GLB
+        run: |
+          mkdir -p tools/floor3/ruined_connector/external
+          curl -fL --retry 3 'https://api.flockbay.com/bootstrap/library/models/v1/14c4e8ef1cef29be590af0a6672206ba25afd5897e28d6a8aa5c0eaf317ee6f5/stairs.glb' -o tools/floor3/ruined_connector/external/kenney-stairs.glb
+          test -s tools/floor3/ruined_connector/external/kenney-stairs.glb
       - name: Render GLB and three views
         shell: bash
         run: |
@@ -20,6 +25,8 @@ jobs:
           docker pull lscr.io/linuxserver/blender:latest
           docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build.py 2>&1 | tee blender.log
           grep -q 'FLOOR3_CONNECTOR_RENDER_COMPLETE' blender.log
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_kenney.py 2>&1 | tee kenney-render.log
+          grep -q 'FLOOR3_KENNEY_STAIRS_RENDER_COMPLETE' kenney-render.log
       - name: Verify files
         run: |
           for kind in stairs ramp landing; do
@@ -28,8 +35,12 @@ jobs:
               test -s "out/floor3_ruined_connector_${kind}-${view}.png"
             done
           done
+          test -s out/floor3_ruined_connector_kenney_cc0_stairs.glb
+          for view in front side angle; do
+            test -s "out/floor3_ruined_connector_kenney_cc0_stairs-${view}.png"
+          done
       - uses: actions/upload-artifact@v4
         with:
-          name: floor3-ruined-connector-v1
+          name: floor3-ruined-connector-v1-kenney
           path: out/
           retention-days: 14
