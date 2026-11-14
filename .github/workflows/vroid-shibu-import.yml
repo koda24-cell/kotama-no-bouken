@@ -50,7 +50,7 @@ jobs:
           xvfb-run -a blender -b -t 2 --python tools/vroid-shibu/import_render.py
       - name: Validate outputs
         run: |
-          test -s output/vroid-shibu/head-rebuild/assassin_head_posterior_v10_review.glb
+          test -s output/vroid-shibu/head-rebuild/assassin_head_posterior_v11_review.glb
           test -s output/vroid-shibu/head-rebuild/back.png
           test -s output/vroid-shibu/head-rebuild/side.png
           test -s output/vroid-shibu/head-rebuild/geometry_measurements.json
