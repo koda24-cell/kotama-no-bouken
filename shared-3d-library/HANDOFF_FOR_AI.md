@@ -8,7 +8,7 @@
 ## 現在の保存先（重要）
 - リポジトリ: https://github.com/koda24-cell/kotama-no-bouken
 - 作業ブランチ: feature/shared-3d-library-20261114
-- PR: https://github.com/koda24-cell/kotama-no-bouken/pull/347 （Draft / development向け）
+- PR: https://github.com/koda24-cell/kotama-no-bouken/pull/347 （development向け、マージ状態はGitHubで確認）
 - フォルダ: shared-3d-library/
 - **独立したGitHubリポジトリは未作成**。現在はコタマ内の独立用途の作業フォルダ。将来、ディレクトリ構造を保って別リポジトリへ移す。
 
@@ -22,13 +22,13 @@
 ## 現状と未完了
 - フォルダと**リンク・利用方針の文書**はGitHubにコミット済み。
 - 外部アドオン本体、PBRテクスチャ、アニメーションアーカイブのこのフォルダへの取り込みは**未実施**。
-- HairMeshはBlender 5.1以降が必要。アサシンの従来ActionsはBlender 5.0で実行されており、アドオン導入と互換性テストは未実施。
+- HairMeshの上流要求はBlender 5.1+。Blender 5.0.1でimport/register/unregisterのスモークテスト成功（run #43600753519）、ただし毛束生成機能の動作は未検証。GBH Toolは直接registerでKeyErrorが出たため通常のアドオン有効化経路で再検証が必要。
 - 過去のQuaterniusアニメーションZIP分割・PR #328の状況は別途GitHub最新状態を確認すること。ここに本体があると仮定しない。
-- コタマのアサシン髪の作業はPR #335、別ブランチ feature/vroid-cc0-shibu-base-20261114。V5の3方向実レンダまで進んだが未承認。
+- コタマのアサシン髪の作業はPR #335、別ブランチ feature/vroid-cc0-shibu-base-20261114。V8の4方向実レンダ成功（run #43602563759）、V9は元の髪を非表示にした再生成をコミット済み。V9の実行状態・画像はその都度確認。いずれも未承認。
 
 ## 次の作業（優先順）
 1. 独立した3D専用GitHubリポジトリの作成方法を確認し、作成できる環境でこのフォルダを移行。作成前に移行完了と報告しない。
-2. HairMeshの配布元・ライセンス・Blender 5.1+対応を検証し、実際にダウンロードしてテストレンダリング。
+2. HairMeshの毛束生成オペレーターとGBH Toolの通常登録をBlenderで実行検証。単なるimport/register成功と実造形を区別する。
 3. Quaternius等の既存アニメーション本体をGitHub上で再確認し、SHA-256を検証して共通ライブラリへ移行。
 4. CC0 PBRテクスチャを実体取得し、ライセンス・原本URL・ハッシュを保存。
 5. キャラ用の髪・顔・衣装・人体生成補助を増やし、Blenderで3方向の実レンダリングとGLB再読込を確認。
