@@ -1,0 +1,58 @@
+name: B5 Promote Approved Gloom V6
+on:
+  push:
+    branches: [feature/b5-gloom-vfx-resource-catalog-20261114]
+    paths: ['.github/workflows/b5-gloom-promote-approved-v6.yml']
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified successful V6 render
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run download 43555983186 --repo "${{ github.repository }}" --name b5-gloom-cc0-kenney-glb-png --dir /tmp/b5-approved
+      - name: Validate and preserve GLB, renders, CC0 attribution
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+          p=Path('/tmp/b5-approved')
+          glb=p/'b5-gloom-patch.glb'
+          assert glb.read_bytes()[:4]==b'glTF'
+          assert struct.unpack('<I',glb.read_bytes()[8:12])[0]==glb.stat().st_size
+          for n in ('front','side','high-angle'):
+              f=p/f'b5-gloom-patch-{n}.png'
+              assert f.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          assert (p/'third-party/kenney/smoke_04.png').read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          assert 'Creative Commons Zero' in (p/'third-party/kenney/LICENSE.txt').read_text()
+          PY
+          mkdir -p assets/models/floor5/reviews/gloom-v6 assets/models/floor5/third-party/kenney
+          cp /tmp/b5-approved/b5-gloom-patch.glb assets/models/floor5/gloom-v6.glb
+          cp /tmp/b5-approved/b5-gloom-patch-*.png assets/models/floor5/reviews/gloom-v6/
+          cp /tmp/b5-approved/third-party/kenney/{smoke_04.png,LICENSE.txt} assets/models/floor5/third-party/kenney/
+          sha256sum assets/models/floor5/gloom-v6.glb assets/models/floor5/reviews/gloom-v6/*.png > assets/models/floor5/reviews/gloom-v6/SHA256SUMS.txt
+          cat > assets/models/floor5/reviews/gloom-v6/README.md <<'EOF'
+          # Floor 5 gloom V6 — user approved 2026-11-14
+          Source Blender render: GitHub Actions run 43555983186, successful.
+          Original model: field/assets/b5-gloom-vfx.js.
+          GLB: assets/models/floor5/gloom-v6.glb.
+          PNG: front, side, high-angle. Review assets only, not integrated into game runtime.
+          Kenney smoke sprite: CC0, LICENSE.txt preserved.
+          EOF
+      - name: Commit to existing feature branch for development PR review
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models/floor5/
+          git diff --cached --quiet && exit 0
+          git commit -m "Promote user-approved B5 gloom V6 GLB, renders and CC0 attribution"
+          git push origin HEAD:feature/b5-gloom-vfx-resource-catalog-20261114

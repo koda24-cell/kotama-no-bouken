@@ -1,0 +1,44 @@
+name: B5 Gloom CC0 Blender Render
+on:
+  push:
+    branches: [feature/b5-gloom-vfx-resource-catalog-20261114]
+    paths:
+      - 'field/assets/b5-gloom-vfx.js'
+      - 'tools/b5-render/export-gloom.mjs'
+      - 'tools/b5-render/render-gloom.py'
+      - '.github/workflows/b5-gloom-cc0-render.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - name: Export gloom GLB
+        run: node tools/b5-render/export-gloom.mjs
+      - name: Fetch original Kenney CC0 smoke image and license
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/third-party/kenney
+          base=https://raw.githubusercontent.com/Calinou/kenney-particle-pack/master
+          curl -fL --retry 3 "$base/addons/kenney_particle_pack/smoke_04.png" -o render-output/third-party/kenney/smoke_04.png
+          curl -fL --retry 3 "$base/LICENSE.txt" -o render-output/third-party/kenney/LICENSE.txt
+          test "$(od -An -tx1 -N8 render-output/third-party/kenney/smoke_04.png | tr -d ' \n')" = "89504e470d0a1a0a"
+          grep -q 'Creative Commons Zero' render-output/third-party/kenney/LICENSE.txt
+      - name: Blender Docker render with Kenney smoke texture
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
+            set -e
+            blender -b -t 2 --python tools/b5-render/render-gloom.py -- render-output/b5-gloom-patch.glb render-output render-output/third-party/kenney/smoke_04.png
+          '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-gloom-cc0-kenney-glb-png
+          path: render-output/
+          retention-days: 14

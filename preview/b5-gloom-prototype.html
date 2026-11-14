@@ -1,0 +1,13 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B5 Gloom Preview</title><style>html,body{margin:0;height:100%;background:#100c16;color:#ddd;font:14px sans-serif}#label{position:absolute;top:14px;left:16px;pointer-events:none}canvas{display:block}</style></head><body><div id="label">第5階層・黒い瘴気 / 試作（マウスドラッグで回転）</div><script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
+import {createB5GloomPatch} from '../field/assets/b5-gloom-vfx.js';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x100c16);
+const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.01,100);camera.position.set(1.25,1.5,1.65);camera.lookAt(0,.06,0);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.toneMapping=THREE.ACESFilmicToneMapping;document.body.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0x9483ae,0x21131e,2));const key=new THREE.DirectionalLight(0xe6bbd9,2.4);key.position.set(2,4,3);scene.add(key);
+const floor=new THREE.Mesh(new THREE.BoxGeometry(1,.08,1),new THREE.MeshStandardMaterial({color:0x38343d,roughness:1}));floor.position.y=-.045;scene.add(floor);
+const {group,update}=createB5GloomPatch(THREE,{seed:11});scene.add(group);
+let drag=false,last=0,az=.6;renderer.domElement.addEventListener('pointerdown',e=>{drag=true;last=e.clientX;renderer.domElement.setPointerCapture(e.pointerId)});renderer.domElement.addEventListener('pointerup',()=>drag=false);renderer.domElement.addEventListener('pointermove',e=>{if(drag){az+=(e.clientX-last)*.008;last=e.clientX}});
+function frame(t){const r=2.3;camera.position.set(Math.cos(az)*r,1.5,Math.sin(az)*r);camera.lookAt(0,.08,0);update(t*.001);renderer.render(scene,camera);requestAnimationFrame(frame)}requestAnimationFrame(frame);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+</script></body></html>
