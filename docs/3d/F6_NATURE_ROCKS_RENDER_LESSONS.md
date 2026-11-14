@@ -23,3 +23,10 @@
 - Actionsの起動状態を単一のPR限定APIの空結果だけで判断しない。
 - Blender/Pythonの構文チェック、実行ログ、成果物の存在、実画像の確認をそれぞれ別の検証段階として報告。
 - Claudeへは完成GLB/PNG/manifestのみ渡す。ClaudeにBlenderを操作させない。
+
+## 実ログによる原因確定（run #43607486089）
+- GitHub Actions runnerにBlender **5.0.1** が正常インストールされた。
+- `Export GLB and render four angles` で `TypeError: enum "BLENDER_EEVEE_NEXT" not found in ('BLENDER_EEVEE', 'BLENDER_WORKBENCH', 'CYCLES')` が発生。
+- 原因はバージョン番号だけでEEVEE_NEXTを選んだこと。Blender 5.0.1では `BLENDER_EEVEE` が有効。
+- `tools/floor6/nature_rocks_v1.py` の描画エンジンを `BLENDER_EEVEE` に変更した。修正後の成功・PNG出力はまだ未検証。
+- 再発防止: バージョン番号から列挙値を推測せず、実行環境の利用可能な列挙値か実ログを根拠に設定する。
