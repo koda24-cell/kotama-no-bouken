@@ -33,3 +33,6 @@ Before modifying B5 gloom/corruption rock or reusing its Blender tools, read `do
 - When discovering or introducing a new tool, add-on, texture source, helper or technique, **record and share it immediately during the current task**; do not wait for model completion or visual approval. Information-only changes should be promptly merged to `development` through a reviewable PR if safe. Do not auto-merge unverified executable code, assets or game changes.
 - After actual installation, execution, Blender render, licensing check or failure, append verification details, evidence URLs and status to the same catalog entry. Never claim unverified integration.
 - This is an in-session workflow rule, not a claim that cross-chat background monitoring is already installed.
+
+## Shared VFX reference and reuse
+- Before implementing smoke, mist, fog, miasma or battle particles for any floor, read `docs/3d/VFX_TOOL_CATALOG.md` and `docs/3d/VFX_CC0_ASSET_LIBRARY_20261115.md`. Distinguish user-supplied visual references from redistributable CC0 assets. Reuse the shared VFX preset design rather than duplicating effects per floor.
