@@ -51,3 +51,6 @@ pushトリガーでも自動実行される。実行ページ下のArtifactsか�
 
 ## 新しいチャットへの依頼文（コピー用）
 「GitHub `koda24-cell/kotama-no-bouken` の `AGENTS.md` と `docs/3d/BLENDER_DOCKER_HANDOFF.md` を読み、PR #253のDocker一括レンダリングの最新実行結果を確認して、4層の3D小物品質改善を引き継いでください。既存形状は保持し、追加造形・GLB・3方向PNG比較を行い、development向けPRで管理してください。」
+
+## Claude への受け渡し（全3D素材に適用）
+**ClaudeはBlenderを直接操作できない前提**で作業を分担する。GPT/Blender実行環境が造形・GLB書き出し・実レンダリングを担当し、Claudeは正式保存されたGLBとPNG、manifestを読み、Three.js/GLTFLoaderでゲーム実装・検証する。Claudeに.blendの操作やBlenderレンダリングを要求しない。修正が必要ならGPT側へ差し戻す。Actions Artifactsだけの保存は一時的であり、正式フォルダへのGitコミットを確認する。全作業開始時にAGENTS.mdも確認する。

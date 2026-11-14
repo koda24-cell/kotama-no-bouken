@@ -17,3 +17,10 @@ Stage 2: ice/water source. Stage 3: overgrown ruined city. Stage 5: abyssal ruin
 
 ## Handoff
 When continuing from a different chat, explicitly inspect `docs/3d/BLENDER_DOCKER_HANDOFF.md`, PR #252 and PR #253, plus current GitHub Actions runs. Do not assume automation or workflow is operational until checked.
+
+## 3D handoff: Claude cannot operate Blender (mandatory for every session)
+- Claude's role is **GLB/PNG consumer and game integration**, not Blender modeling/rendering. Do not instruct Claude to open .blend files, run Blender, edit Blender scenes, or visually inspect a 3D asset in Blender.
+- GPT/Blender-capable workflows produce the approved `.glb` plus actual `front/side/angle` (and `top` where available) PNG renders and a machine-readable `manifest.json` with file hashes, source commit, workflow run, and approval status.
+- Claude must first check the asset manifest and PNG previews, load the GLB directly in the browser via Three.js/GLTFLoader, and check size/origin/materials/tile seams/performance. If modeling or new renders are needed, hand the request back to GPT/Blender workflow rather than claiming to perform Blender work.
+- Do not rely on expiring Actions Artifacts as permanent storage. Check that approved GLB/PNG are committed to the repository; if missing, report that they are not yet permanently saved.
+- For floor 6 meadow V7, read `docs/3d/F6_MEADOW_V7_CLAUDE_HANDOFF.md` and `docs/3d/F6_COMPLETED_ASSETS.md`.
