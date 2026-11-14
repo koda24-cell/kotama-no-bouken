@@ -24,6 +24,13 @@ jobs:
           test "$(stat -c%s /tmp/Sendagaya_Shibu.vrm)" -gt 1000000
           sha256sum /tmp/Sendagaya_Shibu.vrm | tee output/vroid-shibu/source.sha256
           cp /tmp/Sendagaya_Shibu.vrm output/vroid-shibu/Sendagaya_Shibu.vrm
+      - name: Download Vita CC0 sample for bare-head comparison
+        run: |
+          curl --fail --location --retry 3 --max-time 180 -o /tmp/Vita.vrm 'https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/beta/Vita.vrm'
+          test "$(stat -c%s /tmp/Vita.vrm)" -gt 1000000
+          sha256sum /tmp/Vita.vrm | tee output/vroid-shibu/vita-source.sha256
+      - name: Render Vita hairless head comparison
+        run: xvfb-run -a blender -b -t 2 --python tools/vroid-shibu/vita_compare.py
       - name: Acquire addon sources for compatibility inspection
         run: |
           curl --fail --location --retry 2 --max-time 90 -o /tmp/hairmesh.zip https://github.com/riel-gab/hairmesh/archive/refs/heads/main.zip
