@@ -1,0 +1,60 @@
+name: Promote approved F6 meadow V7
+on:
+  push:
+    branches: [feature/f6-wind-meadow-floor-20261114]
+    paths: [.github/workflows/f6-meadow-v7-promote.yml]
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified approved artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api -H "Accept: application/vnd.github+json" /repos/${{ github.repository }}/actions/artifacts/14117056247/zip > /tmp/f6-v7.zip
+          echo '371afe6c8c8ca54eb4198f9d90d4edadad6c0b5303eb225bc6f7153ff59171ae  /tmp/f6-v7.zip' | sha256sum -c -
+          mkdir -p /tmp/f6-v7
+          unzip -q /tmp/f6-v7.zip -d /tmp/f6-v7
+      - name: Promote GLB and review PNGs with manifest
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,shutil
+          from pathlib import Path
+          src=Path('/tmp/f6-v7')
+          base=Path('assets/models/floor6')
+          review=base/'reviews/f6_meadow_floor_v7'
+          review.mkdir(parents=True,exist_ok=True)
+          mapping={'f6_meadow_floor_v1.glb':base/'f6_meadow_floor_v7.glb'}
+          for view in ['angle','front','side','top']:
+              mapping[f'f6_meadow_{view}.png']=review/f'{view}.png'
+          entries=[]
+          for name,target in mapping.items():
+              data=(src/name).read_bytes()
+              assert len(data)>1000,name
+              assert data[:4]==(b'glTF' if name.endswith('.glb') else b'\\x89PNG'),name
+              target.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copyfile(src/name,target)
+              entries.append({'path':str(target),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+          manifest={'asset_id':'floor6_meadow_floor_v7','status':'user_approved','approved_date':'2026-11-14','source_commit':'6a19623ff4dff32e05cac3a295aecdc98589148f','source_run_id':43602069517,'source_artifact_id':14117056247,'zip_sha256':'371afe6c8c8ca54eb4198f9d90d4edadad6c0b5303eb225bc6f7153ff59171ae','tile_size':[1,1],'files':entries,'notes':'GLB static tile; preview PNGs are actual Blender renders; game integration pending'}
+          (review/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\\n')
+          print(json.dumps(manifest,indent=2))
+          PY
+      - name: Commit approved binaries to feature branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models/floor6/
+          git diff --cached --quiet && exit 0
+          git commit -m "Promote approved F6 meadow V7 GLB and Blender review renders"
+          git push origin HEAD:${{ github.ref_name }}
