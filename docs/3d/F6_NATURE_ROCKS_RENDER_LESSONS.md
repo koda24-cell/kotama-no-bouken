@@ -35,3 +35,9 @@
 - Blender 5.0.1で最初のGLBエクスポートまでは成功。PNGレンダリング開始時に `Couldn't open libEGL.so.1`、exit 134。
 - GitHub Actionsに `libegl1 libgl1 libopengl0 libgl1-mesa-dri` を追加し、`LIBGL_ALWAYS_SOFTWARE=1` と `EGL_PLATFORM=surfaceless` を設定。
 - 原因と修正は実ログに基づく。修正後のPNG出力は別途成功確認が必要。
+
+## V2 造形改善（未レンダリング検証）
+- 既存のcore/fracture/shoulderメッシュは維持。岩の外周に5角錐ベースの不規則な突出岩片を追加し、丸い輪郭を崩す。
+- 上面に不規則な7角扇形の薄い苔パッチを追加し、既存の苔粒を薄く小さくする。
+- 残課題：パッチのZ座標は近似式のため岩肌から浮く可能性がある。次の4方向PNGで確認し、必要ならレイキャストによる表面追従に改める。亀裂溝の実造形はまだ未実装。
+- このコミットは形状改善コードの保存のみ。Blender Actions成功と実画像目視まで品質改善を確定しない。
