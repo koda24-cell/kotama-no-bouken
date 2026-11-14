@@ -2,7 +2,7 @@ name: B4 V25 Basalt Surface Material
 on:
   push:
     branches:
-      - feature/b4-v25-basalt-surface-material-20261114
+      - feature/b4-v25-fix-vertex-normal-20261114
   workflow_dispatch:
 jobs:
   render:
