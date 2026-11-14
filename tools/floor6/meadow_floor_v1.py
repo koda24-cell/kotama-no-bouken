@@ -6,7 +6,7 @@ out='render-output/floor6/meadow-floor';os.makedirs(out,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 def material(name,c):
  m=bpy.data.materials.new(name);m.diffuse_color=(*c,1);m.use_nodes=True;m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*c,1);return m
-colors=[material('deep green',(.06,.17,.04)),material('moss green',(.12,.28,.06)),material('spring green',(.27,.40,.09)),material('sunlit',(.36,.39,.12))]
+colors=[material('deep green',(.095,.215,.055)),material('moss green',(.115,.245,.065)),material('spring green',(.145,.275,.075)),material('sunlit',(.175,.295,.085))]
 def z(x,y):return .02*math.sin(x*4+1)*math.cos(y*4)+.01*math.sin(7*x+5*y)
 v=[];f=[];n=24
 for j in range(n+1):
@@ -17,16 +17,25 @@ for j in range(n):
   a=j*(n+1)+i;f.append((a,a+1,a+n+2,a+n+1))
 mesh=bpy.data.meshes.new('ground');mesh.from_pydata(v,[],f);mesh.update();ob=bpy.data.objects.new('meadow_ground',mesh);bpy.context.collection.objects.link(ob);mesh.materials.append(material('ground',(.085,.20,.045)))
 for ci in range(4):
- v=[];f=[]
+ v=[];f=[];vertex_t=[]
  for k in range(6400):
   if k%4!=ci:continue
   x=random.uniform(-.51,.51);y=random.uniform(-.51,.51);h=random.uniform(.025,.095) if k<4400 else random.uniform(.10,.23);a=random.uniform(0,math.tau);bend=random.uniform(.015,.065) if k<4400 else random.uniform(.025,.10);w=random.uniform(.007,.017) if k<4400 else random.uniform(.005,.013);start=len(v)
   for j in range(7):
    t=j/6;px=x+math.cos(a)*bend*t*t;py=y+math.sin(a)*bend*t*t;half=w*(1-t)**.7
-   for q in (-1,1):v.append((px-q*math.sin(a)*half,py+q*math.cos(a)*half,z(x,y)+h*(t-.15*t**3)))
+   for q in (-1,1):
+    v.append((px-q*math.sin(a)*half,py+q*math.cos(a)*half,z(x,y)+h*(t-.15*t**3)))
+    vertex_t.append(t)
   for j in range(6):
    a=start+j*2;f.append((a,a+1,a+3,a+2))
  mesh=bpy.data.meshes.new('grass');mesh.from_pydata(v,[],f);mesh.update();ob=bpy.data.objects.new('meadow_grass_%d'%ci,mesh);bpy.context.collection.objects.link(ob);mesh.materials.append(colors[ci])
+ # Shared subdued palette, with subtle root-to-tip gradient via vertex colors.
+ layer=mesh.vertex_colors.new(name='COLOR_0')
+ for poly in mesh.polygons:
+  for loop_index in poly.loop_indices:
+   t=vertex_t[mesh.loops[loop_index].vertex_index]
+   shade=.72+.28*t
+   layer.data[loop_index].color=(shade,shade,shade,1)
 bpy.ops.object.select_all(action='DESELECT')
 for o in bpy.context.scene.objects:
  if o.type=='MESH':o.select_set(True)
