@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "F6 Meadow Anime V5",
+  "root": "#729A39",
+  "middle": "#648F32",
+  "tip": "#A4C94A",
+  "ground": "#607F31",
+  "shadowFloor": 0.38,
+  "emission": 0.25,
+  "roughness": 0.88,
+  "notes": "Colors are sRGB hex. shadowFloor mixes material with unlit vertex color to keep dark areas green; emission is an additional subtle lift."
+}
