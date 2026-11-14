@@ -1,0 +1,35 @@
+name: B4 V20 Integrated Dark Basalt Cliff
+on:
+  push:
+    branches:
+      - feature/b4-v20-integrated-cliff-20261114
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - run: node tools/b4-render/export-rockwall-v13.mjs
+      - name: Download CC0 scanned rock
+        run: |
+          mkdir -p render-input
+          curl -fL --retry 3 -o render-input/rock_face_02_1k.glb https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/feature/b4-polyhaven-rock-face-reference-20261114/assets/reference/cc0/polyhaven-rock-face-02/rock_face_02_1k.glb
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Render eight views and export GLB
+        run: |
+          blender -b -t 2 --python-exit-code 1 --python tools/b4-render/render-rockwall-v20-natural.py -- render-output/b4-lava-rockwall-v13-light-and-facets.glb render-input/rock_face_02_1k.glb render-output
+          test "$(find render-output -name 'b4-v20-*.png' | wc -l)" -eq 8
+          test -s render-output/b4-v20-polyhaven-rockwall-composite.glb
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-v20-integrated-cliff
+          path: render-output/
+          retention-days: 14
