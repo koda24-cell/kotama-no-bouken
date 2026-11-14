@@ -189,8 +189,8 @@ if face:
  strands=[]
  cap=bpy.ops.mesh.primitive_uv_sphere_add(segments=48,ring_count=24,location=(fc.x,fc.y,fmax.z-fh*.095))
  cap=bpy.context.object
- cap.name='Assassin_scalp_volume'
- cap.scale=(fw*.53,fs.y*.54,fh*.25)
+ cap.name='Assassin_scalp_volume_V6'
+ cap.scale=(fw*.515,fs.y*.515,fh*.17)
  cap.data.materials.append(hair)
  for poly in cap.data.polygons:poly.use_smooth=True
  strands.append(cap)
@@ -202,18 +202,29 @@ if face:
   # The roots begin inside the cap, preventing a visible floating seam.
   pts=[
    V((fc.x+fw*rootx,fc.y+fs.y*.06,fmax.z+fh*.10)),
-   V((fc.x+fw*(rootx*.74+tipx*.26),fmax.y-fs.y*.14,fmax.z+fh*.045)),
-   V((fc.x+fw*(rootx*.44+tipx*.56),fmax.y-fs.y*.065,fmax.z-fh*.11)),
-   V((fc.x+fw*(rootx*.20+tipx*.80),fmax.y+fs.y*forward,fmax.z-fh*.29)),
-   V((fc.x+fw*(tipx+.015),fmax.y+fs.y*(forward+.018),fmax.z-fh*(tipz-.12))),
-   V((fc.x+fw*tipx,fmax.y+fs.y*(forward-.01),fmax.z-fh*tipz))]
+   V((fc.x+fw*(rootx*.74+tipx*.26),fmax.y-fs.y*.25,fmax.z+fh*.045)),
+   V((fc.x+fw*(rootx*.44+tipx*.56),fmax.y-fs.y*.19,fmax.z-fh*.11)),
+   V((fc.x+fw*(rootx*.20+tipx*.80),fmax.y-fs.y*.09+fs.y*forward,fmax.z-fh*.29)),
+   V((fc.x+fw*(tipx+.015),fmax.y-fs.y*.025+fs.y*(forward+.018),fmax.z-fh*(tipz-.12))),
+   V((fc.x+fw*tipx,fmax.y-fs.y*.015+fs.y*(forward-.01),fmax.z-fh*tipz))]
   obj=make_strand('Assassin_swept_bang_%02d'%idx,pts,[fw*wide*q for q in (.70,1,1,.78,.43,.09)],depth_ratio=.50,segments=24)
+  obj.data.materials.append(hair);strands.append(obj)
+ # V6 layered temple locks: additional nonparallel curves wrap around each side of the head.
+ for idx,(side,zend) in enumerate([(1,.72),(1,.86),(-1,.58),(-1,.72)]):
+  pts=[
+   V((fc.x+side*fw*.40,fc.y,fmax.z+fh*.06)),
+   V((fc.x+side*fw*.49,fc.y+fs.y*.20,fmax.z-fh*.08)),
+   V((fc.x+side*fw*.51,fc.y+fs.y*.27,fmax.z-fh*.24)),
+   V((fc.x+side*fw*.49,fc.y+fs.y*.23,fmax.z-fh*.43)),
+   V((fc.x+side*fw*.47,fc.y+fs.y*.17,fmax.z-fh*(zend-.10))),
+   V((fc.x+side*fw*.45,fc.y+fs.y*.13,fmax.z-fh*zend))]
+  obj=make_strand('Assassin_temple_lock_%02d'%idx,pts,[fw*.11*q for q in (.8,1,.94,.75,.4,.12)],depth_ratio=.62,segments=24)
   obj.data.materials.append(hair);strands.append(obj)
  manifest['face_review']['assassin_fringe']={
   'names':[o.name for o in strands],
   'side':'camera-near +X',
-  'construction':'scalp volume plus nine staggered swept strands, 24 sides and subdivision level 2',
-  'note':'V5: inspect scalp coverage, front eye occlusion, side intersections and swept silhouette'}
+  'construction':'V6 flattened scalp volume, nine swept bangs and four temple locks; 24 sides and subdivision level 2',
+  'note':'V6 Blender native mesh curves; test front side and angle; HairMesh addon not installed'}
  prior={o.name:o.hide_render for o in bpy.context.scene.objects if o.type=='MESH'}
  for obj in bpy.context.scene.objects:
   if obj.type=='MESH':obj.hide_render=(obj!=face and obj not in strands)
