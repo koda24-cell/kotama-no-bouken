@@ -12,21 +12,27 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+      - name: Acquire CC0 textures (fallback procedural if unavailable)
+        run: |
+          mkdir -p tools/floor3/elevated_bridge/textures
+          python3 tools/floor3/elevated_bridge/fetch_textures.py
       - name: Blender render
         run: |
           mkdir -p "$GITHUB_WORKSPACE/out"
           docker pull lscr.io/linuxserver/blender:latest
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/elevated_bridge/build.py
-      - name: Verify 4 GLB and 12 PNG
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/elevated_bridge/build_v2.py
+      - name: Verify V1 and V2 GLBs and renders
         run: |
           for tile in straight end collapse support; do
             test -s "out/floor3_elevated_bridge_${tile}.glb"
+            test -s "out/floor3_elevated_bridge_${tile}_v2.glb"
             for view in front side angle; do
               test -s "out/floor3_elevated_bridge_${tile}-${view}.png"
+              test -s "out/floor3_elevated_bridge_${tile}_v2-${view}.png"
             done
           done
       - uses: actions/upload-artifact@v4
         with:
-          name: floor3-elevated-bridge-tiles-v1
+          name: floor3-elevated-bridge-tiles-v1-v2
           path: out/
           retention-days: 14
