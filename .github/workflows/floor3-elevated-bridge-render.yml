@@ -23,18 +23,22 @@ jobs:
           set -o pipefail
           docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/elevated_bridge/build_v2.py 2>&1 | tee "$GITHUB_WORKSPACE/blender-render.log"
           grep -q 'V2_RENDER_COMPLETE' "$GITHUB_WORKSPACE/blender-render.log"
-      - name: Verify V1 and V2 GLBs and renders
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/elevated_bridge/build_v3.py 2>&1 | tee "$GITHUB_WORKSPACE/blender-v3-render.log"
+          grep -q 'V3_RENDER_COMPLETE' "$GITHUB_WORKSPACE/blender-v3-render.log"
+      - name: Verify V1 V2 and V3 GLBs and renders
         run: |
           for tile in straight end collapse support; do
             test -s "out/floor3_elevated_bridge_${tile}.glb"
             test -s "out/floor3_elevated_bridge_${tile}_v2.glb"
+            test -s "out/floor3_elevated_bridge_${tile}_v3.glb"
             for view in front side angle; do
               test -s "out/floor3_elevated_bridge_${tile}-${view}.png"
               test -s "out/floor3_elevated_bridge_${tile}_v2-${view}.png"
+              test -s "out/floor3_elevated_bridge_${tile}_v3-${view}.png"
             done
           done
       - uses: actions/upload-artifact@v4
         with:
-          name: floor3-elevated-bridge-tiles-v1-v2
+          name: floor3-elevated-bridge-tiles-v1-v2-v3
           path: out/
           retention-days: 14
