@@ -1,7 +1,7 @@
 """Floor 6: one-square dense meadow tile, exported GLB and four actual Blender renders."""
 import bpy,math,random,os
 from mathutils import Vector
-random.seed(6142)
+random.seed(6143)
 out='render-output/floor6/meadow-floor';os.makedirs(out,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 def material(name,c):
@@ -15,12 +15,12 @@ for j in range(n+1):
 for j in range(n):
  for i in range(n):
   a=j*(n+1)+i;f.append((a,a+1,a+n+2,a+n+1))
-mesh=bpy.data.meshes.new('ground');mesh.from_pydata(v,[],f);mesh.update();ob=bpy.data.objects.new('meadow_ground',mesh);bpy.context.collection.objects.link(ob);mesh.materials.append(material('ground',(.13,.21,.07)))
+mesh=bpy.data.meshes.new('ground');mesh.from_pydata(v,[],f);mesh.update();ob=bpy.data.objects.new('meadow_ground',mesh);bpy.context.collection.objects.link(ob);mesh.materials.append(material('ground',(.085,.20,.045)))
 for ci in range(4):
  v=[];f=[]
- for k in range(1600):
+ for k in range(6400):
   if k%4!=ci:continue
-  x=random.uniform(-.51,.51);y=random.uniform(-.51,.51);h=random.uniform(.045,.21);a=random.uniform(0,math.tau);bend=random.uniform(.01,.09);w=random.uniform(.004,.012);start=len(v)
+  x=random.uniform(-.51,.51);y=random.uniform(-.51,.51);h=random.uniform(.025,.095) if k<4400 else random.uniform(.10,.23);a=random.uniform(0,math.tau);bend=random.uniform(.015,.065) if k<4400 else random.uniform(.025,.10);w=random.uniform(.007,.017) if k<4400 else random.uniform(.005,.013);start=len(v)
   for j in range(7):
    t=j/6;px=x+math.cos(a)*bend*t*t;py=y+math.sin(a)*bend*t*t;half=w*(1-t)**.7
    for q in (-1,1):v.append((px-q*math.sin(a)*half,py+q*math.cos(a)*half,z(x,y)+h*(t-.15*t**3)))
