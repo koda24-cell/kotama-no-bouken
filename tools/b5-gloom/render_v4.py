@@ -289,6 +289,56 @@ for ob in bpy.context.scene.objects:
  if ob.name.startswith("black growth"):
   ob.scale.x*=1.20;ob.scale.y*=1.20
 print("V10_EXAGGERATED_RELIEF",len(bpy.context.scene.objects),flush=True)
+# V11: non-destructive material and geometry alignment pass.
+# V6/V10 changed the source scan after the V5 crust copy was made. Rebuild
+# the existing crust vertices from the displaced source using vertex indices,
+# preserving V5's irregular face selection and all existing objects.
+for source in scan_objects:
+ overlay=next((o for o in bpy.context.scene.objects
+   if o.name.startswith("V5 scan-conforming black invasion ") and o.name.endswith(source.name)),None)
+ if overlay is None:continue
+ src=source.data;dst=overlay.data
+ synced=0
+ for v in dst.vertices:
+  if v.index<len(src.vertices):
+   p=src.vertices[v.index].co
+   v.co=p+src.vertices[v.index].normal*(.018+.005*math.sin(p.x*31+p.z*17))
+   synced+=1
+ dst.update()
+ print("V11_SCAN_CRUST_SYNC",source.name,synced,len(dst.vertices),flush=True)
+# The original radial crust sheets are preserved, but their exaggerated
+# purple wedges should no longer dominate the rock silhouette.
+for ob in bpy.context.scene.objects:
+ if ob.name.startswith("creeping crust sheet"):
+  ob.scale.z*=.65
+# Apply a deep graphite palette to existing rock materials, retaining
+# separate emissive cracks and dark invasive crust.
+for name,color in [
+ ("B5 violet mineral",(.037,.025,.052,1)),
+ ("B5 obsidian corruption",(.012,.011,.019,1)),
+ ("B5 weathered masonry",(.055,.050,.060,1))]:
+ material=bpy.data.materials.get(name)
+ if material and material.use_nodes:
+  bsdf=material.node_tree.nodes.get("Principled BSDF")
+  bsdf.inputs["Base Color"].default_value=color
+  bsdf.inputs["Roughness"].default_value=.94
+# Add physical-looking granular micro-relief to stone shader, not just the
+# dark invasion shader. Keep all existing meshes and source geometry.
+for name in ("B5 weathered masonry","B5 violet mineral"):
+ material=bpy.data.materials.get(name)
+ if not material or not material.use_nodes:continue
+ nodes=material.node_tree.nodes;links=material.node_tree.links
+ bsdf=nodes.get("Principled BSDF")
+ tex=nodes.new("ShaderNodeTexNoise")
+ tex.inputs["Scale"].default_value=32
+ tex.inputs["Detail"].default_value=5
+ tex.inputs["Roughness"].default_value=.73
+ bump=nodes.new("ShaderNodeBump")
+ bump.inputs["Strength"].default_value=.57
+ bump.inputs["Distance"].default_value=.065
+ links.new(tex.outputs["Fac"],bump.inputs["Height"])
+ links.new(bump.outputs["Normal"],bsdf.inputs["Normal"])
+print("V11_PRESERVED_OBJECTS",len(bpy.context.scene.objects),flush=True)
 # V4 high-density variant: triple the actual triangle count of each mesh.
 # Triangulate then poke each triangle into three; existing silhouettes stay intact.
 # Displace only newly created centers very slightly for physical micro-relief.
