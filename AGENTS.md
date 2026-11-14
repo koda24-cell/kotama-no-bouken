@@ -27,3 +27,9 @@ When continuing from a different chat, explicitly inspect `docs/3d/BLENDER_DOCKE
 
 ## B5 gloom 3D tooling and lessons (required for B5 corruption-rock work)
 Before modifying B5 gloom/corruption rock or reusing its Blender tools, read `docs/3d/B5_GLOOM_TOOLS_AND_LESSONS.md`. It records CC0 scan sources, Blender/Actions workflows, verified versus unverified resources, V4–V10 failures, and Claude handoff. Preserve existing meshes; do not promote unfinished prototype assets.
+
+## Shared tool/addon information: immediate registration (mandatory)
+- Before any 3D, 2D, animation, music, texture or AI tool work, read `docs/3d/TOOLING_AUTO_SHARE_POLICY.md` and `docs/3d/SHARED_TOOLING_CATALOG.md` (and the applicable domain docs).
+- When discovering or introducing a new tool, add-on, texture source, helper or technique, **record and share it immediately during the current task**; do not wait for model completion or visual approval. Information-only changes should be promptly merged to `development` through a reviewable PR if safe. Do not auto-merge unverified executable code, assets or game changes.
+- After actual installation, execution, Blender render, licensing check or failure, append verification details, evidence URLs and status to the same catalog entry. Never claim unverified integration.
+- This is an in-session workflow rule, not a claim that cross-chat background monitoring is already installed.
