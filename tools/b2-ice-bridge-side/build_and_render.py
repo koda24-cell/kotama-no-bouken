@@ -22,9 +22,9 @@ def rough_surface(mat,scale,strength,distance):
  bump=nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=strength;bump.inputs["Distance"].default_value=distance
  links.new(noise.outputs["Fac"],bump.inputs["Height"])
  links.new(bump.outputs["Normal"],nodes.get("Principled BSDF").inputs["Normal"])
-rough_surface(rock,15,.38,.085)
+rough_surface(rock,10,.58,.12)
 rough_surface(slate,24,.24,.028)
-rough_surface(ice,22,.24,.025)
+rough_surface(ice,18,.32,.039)
 rough_surface(snow,32,.23,.012)
 def cube(name,loc,scale,mat,bevel=0):
  bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.dimensions=scale;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(mat)
@@ -54,11 +54,17 @@ def create(side):
     for iy in range(ny+1):
      v=-1+2*iy/ny
      # Both end cross sections are identical for X-direction tile continuity.
-     boundary=half_width*(1+.045*math.sin(6*x+2*v)+.025*math.cos(11*x-3*v))
+     # Preserve the exact two tile-end profiles while heavily eroding the long sides.
+     edge_taper=math.sin(math.pi*ix/nx)**2
+     cliff_break=.16*math.sin(8*x+1.1)+.10*math.sin(17*x-1.5)+.065*math.cos(29*x+2)
+     boundary=half_width*(1+edge_taper*cliff_break*(abs(v)**3))
      y=v*boundary
      wave=.035*math.sin(8*x+5*y)+.023*math.sin(17*x-9*y)+rng.uniform(-.012,.012)
      if ix in (0,nx):wave=0
-     z=zbase+(wave if layer==0 else wave*.36)
+     # Deep undercuts and fractures along the long banks; smooth enough to walk centrally.
+     bank_factor=max(0,(abs(v)-.52)/.48)
+     cut=.095*bank_factor*math.sin(13*x+5*v)+.075*bank_factor*math.cos(23*x-3*v)
+     z=zbase+(wave+cut if layer==0 else wave*.36-.12*bank_factor)
      verts.append((x,y,z))
   n=(nx+1)*(ny+1)
   for ix in range(nx):
@@ -95,9 +101,9 @@ def create(side):
  # Irregular large overlapping eroded masses replace the repetitive bead-like row.
  # Keep both X end planes free of overhang for seamless modular connection.
  for i,(x,y,z,sx,sy,sz) in enumerate([
-  (-.68,.78,-.31,.57,.46,.59),(-.26,.92,-.35,.71,.54,.74),
-  (.30,.80,-.29,.68,.43,.64),(.73,.92,-.37,.43,.51,.71),
-  (-.47,1.02,-.48,.56,.44,.50),(.43,1.07,-.47,.55,.41,.58)
+  (-.61,.82,-.40,.62,.53,.73),(-.21,.95,-.48,.68,.59,.84),
+  (.31,.83,-.37,.72,.48,.77),(.65,.99,-.48,.47,.56,.88),
+  (-.43,1.05,-.61,.60,.50,.67),(.40,1.10,-.57,.59,.46,.74)
  ]):
   o=shard("large_eroded_bank_mass_%02d"%i,(x,sign*y,z),(sx,sy,sz),rock,i+550)
   o.rotation_euler=(.12*i,.06*i,sign*(i-2)*.11)
