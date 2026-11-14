@@ -351,6 +351,54 @@ for name in ("B5 weathered masonry","B5 violet mineral"):
  links.new(tex.outputs["Fac"],bump.inputs["Height"])
  links.new(bump.outputs["Normal"],bsdf.inputs["Normal"])
 print("V11_PRESERVED_OBJECTS",len(bpy.context.scene.objects),flush=True)
+# V12: Blender-native rock sculpt workflow. Built-in Subdivision Surface,
+# Displace (Musgrave-like Clouds/Voronoi textures) and Decimate modifiers.
+# No external addon download required, fully reproducible on GitHub Actions.
+# Preserve every existing object; build independent angular rock formations.
+rng=random.Random(512)
+rock_material=bpy.data.materials.get("B5 weathered masonry")
+def sculpt_rock_v12(idx,loc,scale):
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=loc)
+ ob=bpy.context.object;ob.name="V12 sculpted fractured boulder %02d"%idx
+ ob.scale=scale
+ bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+ ob.rotation_euler=(rng.uniform(-.38,.38),rng.uniform(-.4,.4),rng.uniform(0,6.28))
+ ob.data.materials.append(rock_material)
+ # Physical large fractures from a sharp Voronoi distance field.
+ tex=bpy.data.textures.new("V12 Voronoi fracture %02d"%idx,type="VORONOI")
+ tex.noise_scale=rng.uniform(.32,.53)
+ tex.intensity=1
+ tex.distance_metric="DISTANCE_SQUARED"
+ disp=ob.modifiers.new("V12 broad chipped rock","DISPLACE")
+ disp.texture=tex;disp.strength=rng.uniform(.20,.34);disp.mid_level=.48
+ bpy.context.view_layer.objects.active=ob
+ bpy.ops.object.modifier_apply(modifier=disp.name)
+ # Second, finer erosion layer with coherent Clouds.
+ sub=ob.modifiers.new("V12 surface tessellation","SUBSURF")
+ sub.levels=1;sub.render_levels=1
+ bpy.ops.object.modifier_apply(modifier=sub.name)
+ grit=bpy.data.textures.new("V12 Clouds erosion %02d"%idx,type="CLOUDS")
+ grit.noise_scale=rng.uniform(.09,.16)
+ grit.noise_depth=3
+ micro=ob.modifiers.new("V12 stone micro-chips","DISPLACE")
+ micro.texture=grit;micro.strength=.065;micro.mid_level=.50
+ bpy.ops.object.modifier_apply(modifier=micro.name)
+ # Flat face shading is essential: prevent smooth plastic-looking boulders.
+ for face in ob.data.polygons:face.use_smooth=False
+ return ob
+# Two irregular overlapping rings with no symmetric radial pattern.
+for i in range(22):
+ a=(i/22)*math.tau+rng.uniform(-.28,.28)
+ r=rng.uniform(.48,1.03)
+ z=rng.uniform(.12,.29)
+ sx=rng.uniform(.23,.45);sy=rng.uniform(.20,.40);sz=rng.uniform(.21,.51)
+ sculpt_rock_v12(i,(r*math.cos(a),r*math.sin(a),z),(sx,sy,sz))
+# Angular outcroppings rising through the center to break the flat top.
+for i in range(8):
+ a=rng.uniform(0,math.tau);r=rng.uniform(.12,.53)
+ sculpt_rock_v12(22+i,(r*math.cos(a),r*math.sin(a),rng.uniform(.30,.46)),
+                 (rng.uniform(.20,.38),rng.uniform(.20,.36),rng.uniform(.30,.58)))
+print("V12_BLENDER_NATIVE_ROCK_SCULPT",30,flush=True)
 # V4 high-density variant: triple the actual triangle count of each mesh.
 # Triangulate then poke each triangle into three; existing silhouettes stay intact.
 # Displace only newly created centers very slightly for physical micro-relief.
