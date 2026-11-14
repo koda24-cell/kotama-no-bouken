@@ -1,0 +1,63 @@
+name: VRoid CC0 Shibu base import and Eevee preview
+on:
+  push:
+    branches:
+      - feature/vroid-cc0-shibu-base-20261114
+    paths:
+      - 'tools/vroid-shibu/**'
+      - '.github/workflows/vroid-shibu-import.yml'
+  workflow_dispatch:
+jobs:
+  import-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender xvfb python3-numpy
+      - name: Download official CC0 sample mirror
+        run: |
+          mkdir -p output/vroid-shibu
+          curl --fail --location --retry 3 --max-time 180 -o /tmp/Sendagaya_Shibu.vrm 'https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/beta/Sendagaya_Shibu.vrm'
+          test "$(stat -c%s /tmp/Sendagaya_Shibu.vrm)" -gt 1000000
+          sha256sum /tmp/Sendagaya_Shibu.vrm | tee output/vroid-shibu/source.sha256
+          cp /tmp/Sendagaya_Shibu.vrm output/vroid-shibu/Sendagaya_Shibu.vrm
+      - name: Download Vita CC0 sample for bare-head comparison
+        run: |
+          curl --fail --location --retry 3 --max-time 180 -o /tmp/Vita.vrm 'https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/beta/Vita.vrm'
+          test "$(stat -c%s /tmp/Vita.vrm)" -gt 1000000
+          sha256sum /tmp/Vita.vrm | tee output/vroid-shibu/vita-source.sha256
+      - name: Render Vita hairless head comparison
+        run: xvfb-run -a blender -b -t 2 --python tools/vroid-shibu/vita_compare.py
+      - name: Render posterior head reconstruction from both CC0 meshes
+        run: xvfb-run -a blender -b -t 2 --python tools/vroid-shibu/head_posterior_rebuild.py
+      - name: Acquire addon sources for compatibility inspection
+        run: |
+          curl --fail --location --retry 2 --max-time 90 -o /tmp/hairmesh.zip https://github.com/riel-gab/hairmesh/archive/refs/heads/main.zip
+          curl --fail --location --retry 2 --max-time 90 -o /tmp/gbh.zip https://github.com/GixoXYZ/BlenderGBHTool/archive/refs/heads/main.zip
+          mkdir -p /tmp/hairmesh-upstream /tmp/BlenderGBHTool-upstream
+          unzip -q /tmp/hairmesh.zip -d /tmp/hairmesh-upstream
+          unzip -q /tmp/gbh.zip -d /tmp/BlenderGBHTool-upstream
+          mv /tmp/hairmesh-upstream/hairmesh-main/* /tmp/hairmesh-upstream/
+          mv /tmp/BlenderGBHTool-upstream/BlenderGBHTool-main/* /tmp/BlenderGBHTool-upstream/
+          sha256sum /tmp/hairmesh.zip /tmp/gbh.zip | tee output/vroid-shibu/addon_sources.sha256
+      - name: Probe addon versions and entrypoints
+        run: xvfb-run -a blender -b -t 2 --python tools/vroid-shibu/addon_probe.py
+      - name: Import and Eevee render
+        run: |
+          xvfb-run -a blender -b -t 2 --python tools/vroid-shibu/import_render.py
+      - name: Validate outputs
+        run: |
+          test -s output/vroid-shibu/head-rebuild/assassin_head_posterior_v11_review.glb
+          test -s output/vroid-shibu/head-rebuild/back.png
+          test -s output/vroid-shibu/head-rebuild/side.png
+          test -s output/vroid-shibu/head-rebuild/geometry_measurements.json
+          for view in front back side back_upper three_quarter; do test -s "output/vroid-shibu/head-rebuild/$view.png"; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vroid-cc0-shibu-base-preview
+          path: output/vroid-shibu/
+          retention-days: 7
