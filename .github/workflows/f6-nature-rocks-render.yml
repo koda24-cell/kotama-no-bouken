@@ -1,0 +1,40 @@
+name: F6 Nature Rocks Render
+on:
+  push:
+    branches: [feature/f6-nature-props-20261114]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Python script
+        run: python3 -m py_compile tools/floor6/nature_rocks_v1.py
+      - name: Install Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy
+      - name: Export GLB and render four angles
+        run: |
+          set -euo pipefail
+          blender -b -t 2 --python tools/floor6/nature_rocks_v1.py 2>&1 | tee /tmp/rocks.log
+          test "$(grep -c F6_ROCK_DONE /tmp/rocks.log)" -eq 3
+      - name: Validate GLB PNG and manifest
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          for asset in ['rock_small','rock_medium','rock_large']:
+              base=Path('render-output/floor6/nature')/asset
+              for name in [asset+'.glb','front.png','side.png','angle.png','top.png','manifest.json']:
+                  p=base/name
+                  assert p.exists() and p.stat().st_size>100,name
+                  if name.endswith('.glb'):assert p.read_bytes()[:4]==b'glTF'
+                  if name.endswith('.png'):assert p.read_bytes()[:4]==bytes([137,80,78,71])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-nature-rocks-v1-review
+          path: render-output/floor6/nature/
+          retention-days: 14
