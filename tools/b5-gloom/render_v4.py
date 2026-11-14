@@ -226,60 +226,22 @@ for obj in bpy.context.scene.objects:
 for obj in bpy.context.scene.objects:
  if obj.type=="CURVE" and ("fissure" in obj.name):
   obj.data.bevel_depth*=.72
-# V7: composition cleanup. The original scan rocks and their V5
-# conforming invasion are preserved. Remove only old PROCEDURAL add-ons
-# that formed an artificial plate, rosette, and spiky silhouette.
-remove_prefixes=(
- "creeping crust sheet", "V3 organic mantle",
- "surface fragment", "jagged mineral tooth",
- "black growth", "original-style masonry"
-)
-removed=[]
-for ob in list(bpy.context.scene.objects):
- if ob.name.startswith(remove_prefixes):
-  removed.append(ob.name)
-  bpy.data.objects.remove(ob,do_unlink=True)
-print("V7_PROCEDURAL_CLEANUP",len(removed),removed[:8],flush=True)
-# The scan remains dominant; keep fissures subdued and short.
+# V9: restore ALL V6 procedural geometry; no object deletion.
+# Increase the real scan rock prominence, with its black conforming shell
+# following the same world transform. Keep the old foundations intact.
+for source_obj in scan_objects:
+ overlay=next((o for o in bpy.context.scene.objects if o.name.startswith("V5 scan-conforming black invasion ") and o.name.endswith(source_obj.name)),None)
+ source_obj.scale*=1.65
+ source_obj.location.z-=.13
+ if overlay is not None:
+  overlay.matrix_world=source_obj.matrix_world.copy()
+# Retain original pieces but reduce visual dominance of their harsh silhouette.
 for ob in bpy.context.scene.objects:
- if ob.type=="CURVE" and ob.name.startswith("creeping root"):
-  ob.data.bevel_depth*=.55
-# Less pink light, more directional shading to reveal actual scan relief.
-# V8: make a continuous rock bed from the preserved CC0 scan meshes.
-# Duplicate the original rock together with its matching black invasion;
-# geometry stays unchanged and every copy remains paired with its overlay.
-from mathutils import Matrix
-base_scan=list(scan_objects)
-base_overlays=[o for o in bpy.context.scene.objects if o.name.startswith("V5 scan-conforming black invasion")]
-rock_pair=list(zip(base_scan,base_overlays))
-for rock,inv in rock_pair:
- # Move the original pair to the center-left; reuse scan meshes for neighbors.
- rock.location=(-.52,-.10,.13)
- inv.matrix_world=rock.matrix_world.copy()
- for idx,(x,y,z,scale,angle) in enumerate([
-  (.43,-.22,.08,.88,.82),(-.12,.58,.05,.78,-.48),
-  (.84,.42,.09,.77,1.64),(-.82,.45,.04,.68,2.18),
-  (.15,-.72,.05,.69,-1.22)]):
-  for template in (rock,inv):
-   copy=template.copy();copy.data=template.data.copy()
-   bpy.context.collection.objects.link(copy)
-   copy.name="V8 rockbed %02d "%idx+template.name
-   copy.location=(x,y,z)
-   copy.rotation_euler=(0,0,angle)
-   copy.scale=(.60*scale,.60*scale,.50*scale)
-# The old standalone curves were floating in space after the plate was removed.
-# Remove only these unattached decorative roots/fissures; rock and invasion remain.
-for ob in list(bpy.context.scene.objects):
- if ob.type=="CURVE" and ("root" in ob.name or "fissure" in ob.name):
-  bpy.data.objects.remove(ob,do_unlink=True)
-# Dark irregular soil bed underneath the rocks, with actual displaced mesh relief.
-bpy.ops.mesh.primitive_grid_add(x_subdivisions=47,y_subdivisions=47,size=2.65,location=(0,0,-.13))
-bed=bpy.context.object;bed.name="V8 irregular rocky ground"
-for vert in bed.data.vertices:
- x,y=vert.co.x,vert.co.y
- vert.co.z+=.034*math.sin(x*9+y*3)*math.cos(y*11-x*4)
-bed.data.materials.append(crust)
-print("V8_ROCKBED",len(rock_pair),len([o for o in bpy.context.scene.objects if o.name.startswith("V8 rockbed")]),flush=True)
+ if ob.name.startswith("jagged mineral tooth"):
+  ob.scale*=.55
+ if ob.name.startswith("surface fragment"):
+  ob.scale.z*=.72
+print("V9_RESTORED_ORIGINAL_GEOMETRY",len(bpy.context.scene.objects),flush=True)
 # V4 high-density variant: triple the actual triangle count of each mesh.
 # Triangulate then poke each triangle into three; existing silhouettes stay intact.
 # Displace only newly created centers very slightly for physical micro-relief.
@@ -314,7 +276,7 @@ bpy.ops.mesh.primitive_plane_add(size=200,location=(0,0,-.09));bpy.context.objec
 world=bpy.context.scene.world
 world.color=(.09,.07,.12)
 def aim(obj,pt):obj.rotation_euler=(Vector(pt)-obj.location).to_track_quat("-Z","Y").to_euler()
-for loc,energy,color in [((-3,-4,6),850,(.65,.65,1)),((4,3,4),310,(.72,.35,.53))]:
+for loc,energy,color in [((-3,-4,6),850,(.65,.65,1)),((4,3,4),600,(1,.22,.4))]:
  bpy.ops.object.light_add(type="AREA",location=loc);o=bpy.context.object;o.data.energy=energy;o.data.color=color;o.data.shape="DISK";o.data.size=5;aim(o,(0,0,.4))
 bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.type="ORTHO";cam.data.ortho_scale=3.8;bpy.context.scene.camera=cam
 scene=bpy.context.scene;scene.render.engine="CYCLES";scene.cycles.samples=24
