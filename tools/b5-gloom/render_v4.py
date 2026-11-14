@@ -115,7 +115,7 @@ for i in range(45):
      (random.uniform(.055,.15),random.uniform(.045,.12),random.uniform(.025,.075)),
      black if i%5 else purple,2)
 # Mineral teeth growing upward with irregular heights.
-for i in range(3):
+for i in range(1):
  a=i*2.399
  r=random.uniform(.22,.93)
  x,y=math.cos(a)*r,math.sin(a)*r
@@ -167,7 +167,7 @@ for ob in scan_objects:
 # Preserve the original CC0 scan, while placing a selectively retained
 # offset copy over its existing triangles. This avoids disconnected tubes.
 import bmesh
-dark_rock=mat("B5 charcoal rock",(.055,.051,.064),.05,.96)
+dark_rock=mat("B5 charcoal rock",(.038,.037,.044),.05,.96)
 crust=mat("B5 matte invasive crust",(.009,.006,.016),.04,.93)
 for source_obj in scan_objects:
  if source_obj.type!="MESH":continue
@@ -189,12 +189,12 @@ for source_obj in scan_objects:
   signal=(math.sin(center.x*8.3+center.y*4.7+center.z*3.1)
           +.58*math.sin(center.x*19.7-center.z*11.3)
           +.38*math.cos(center.y*23.1+center.z*6.2))
-  if signal<-.13:remove.append(face)
+  if signal<-.85:remove.append(face)
  bmesh.ops.delete(bm,geom=remove,context="FACES")
  # Small offset along scan normals prevents z-fighting; organic surface remains
  # physically conforming to the actual rock silhouette.
  for vertex in bm.verts:
-  vertex.co+=vertex.normal*.009
+  vertex.co+=vertex.normal*(.012+.004*math.sin(vertex.co.x*31+vertex.co.z*17))
  bm.to_mesh(overlay_mesh);bm.free();overlay_mesh.update()
  overlay_mesh.materials.clear();overlay_mesh.materials.append(crust)
  print("V5_SCAN_INVASION",overlay.name,len(overlay_mesh.polygons),flush=True)
@@ -202,6 +202,30 @@ for source_obj in scan_objects:
 for obj in bpy.context.scene.objects:
  if obj.type=="CURVE" and obj.name.startswith("creeping root"):
   obj.data.bevel_depth*=.36
+# V6: use dense mesh geometry for genuine relief, not just subdivided flat faces.
+# Apply multi-scale surface displacement on the scan, preserving the overall
+# silhouette and avoiding the spiky radial fragments of earlier prototypes.
+from mathutils.noise import noise as spatial_noise
+for obj in scan_objects:
+ mesh=obj.data
+ for vert in mesh.vertices:
+  p=vert.co
+  n=vert.normal.copy()
+  broad=spatial_noise(p*3.8)*.028
+  detail=spatial_noise(p*17.0)*.008
+  vert.co+=n*(broad+detail)
+ mesh.update()
+# The radial procedural flakes and upright teeth looked like spikes.
+# Retain their objects but hide the worst offenders in this variant.
+for obj in bpy.context.scene.objects:
+ if obj.name.startswith("jagged mineral tooth"):
+  obj.scale*=.38
+ if obj.name.startswith("surface fragment"):
+  obj.scale.z*=.52
+# Discontinuous dim red fissures, rather than fluorescent tubes.
+for obj in bpy.context.scene.objects:
+ if obj.type=="CURVE" and ("fissure" in obj.name):
+  obj.data.bevel_depth*=.72
 # V4 high-density variant: triple the actual triangle count of each mesh.
 # Triangulate then poke each triangle into three; existing silhouettes stay intact.
 # Displace only newly created centers very slightly for physical micro-relief.
