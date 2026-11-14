@@ -84,10 +84,20 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
         float edgeX=1.-smoothstep(extentX-.08,extentX+.07,abs(skew.x));
         float edgeY=1.-smoothstep(extentY-.08,extentY+.07,abs(skew.y));
         float tornEdge=edgeX*edgeY;
-        float groupMask=smoothstep(.31,.59,clusterNoise*.72+fineNoise*.28);
-        float keep=step(.30,hash(grid*1.37+region+uSeed));
-        float few=step(.965,hash(grid*2.71+uSeed));
-        float visibility=regionEnabled*tornEdge*mix(groupMask*keep,few,sparse);
+        float groupMask=smoothstep(.29,.61,clusterNoise*.72+fineNoise*.28);
+        // Internal missing sections: broad irregular dark holes, smaller torn
+        // patches, and unlit individual windows within every visible cluster.
+        vec2 holeWarp=uv*vec2(23.,11.)+vec2(
+          noise(uv*vec2(8.,4.)+uSeed*.07),
+          noise(uv*vec2(6.,7.)+uSeed*.11)
+        )*1.6;
+        float holes=fbm(holeWarp+vec2(7.,13.));
+        float holeCut=smoothstep(.39,.59,holes);
+        float secondaryCut=smoothstep(.38,.64,fbm(uv*vec2(42.,19.)+uSeed*.09));
+        float keep=step(.48,hash(grid*1.37+region+uSeed));
+        float few=step(.977,hash(grid*2.71+uSeed));
+        float internalMask=holeCut*mix(.25,1.,secondaryCut);
+        float visibility=regionEnabled*tornEdge*mix(groupMask*internalMask*keep,few,sparse);
                 float pulse=pow(max(0.,sin(uTime*(.22+windowSeed*.8)+windowSeed*6.283)),22.);
         float flicker=.58+.22*sin(uTime*.18+windowSeed*6.283)+.7*pulse;
         lights=realLight*mask*visibility*vec3(1.,.55,.74)*1.65*flicker;
