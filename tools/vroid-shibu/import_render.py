@@ -184,25 +184,36 @@ if face:
  fw=fs.x;fh=fs.z
  hair=bpy.data.materials.new('Assassin_silver_lavender_hair')
  hair.diffuse_color=(.72,.68,.82,1)
- # Anchor roots closer to the scalp and follow the forehead surface.
- # Keep the camera-near (+X) eye covered while the far eye remains visible.
+ # Hair V5: scalp cap and staggered, swept strands instead of parallel spikes.
+ # The cap and locks are additive and keep the imported Face mesh unchanged.
  strands=[]
- for idx,(shift,scale,drop) in enumerate([(-.06,.25,.015),(.02,.29,.0),(.11,.22,-.02),(.19,.15,-.035),(.27,.12,-.045)]):
-  x0=.05+shift
+ cap=bpy.ops.mesh.primitive_uv_sphere_add(segments=48,ring_count=24,location=(fc.x,fc.y,fmax.z-fh*.095))
+ cap=bpy.context.object
+ cap.name='Assassin_scalp_volume'
+ cap.scale=(fw*.53,fs.y*.54,fh*.25)
+ cap.data.materials.append(hair)
+ for poly in cap.data.polygons:poly.use_smooth=True
+ strands.append(cap)
+ # Sweep from crown toward the camera-near (+X) eye; varied tips avoid a comb-like silhouette.
+ for idx,(rootx,tipx,tipz,wide,forward) in enumerate([
+  (-.31,.12,.61,.24,.035),(-.23,.24,.72,.24,.045),(-.12,.34,.66,.26,.06),
+  (-.02,.39,.77,.23,.05),(.09,.44,.57,.22,.035),(.19,.43,.48,.18,.015),
+  (.30,.46,.40,.15,.01),(-.40,-.19,.37,.17,.005),(-.36,-.30,.46,.14,.0)]):
+  # The roots begin inside the cap, preventing a visible floating seam.
   pts=[
-   V((fc.x+fw*x0, fmax.y-fs.y*.035, fmax.z-fh*(.015+drop))),
-   V((fc.x+fw*(x0+.055), fmax.y+fs.y*.025, fmax.z-fh*(.12+drop))),
-   V((fc.x+fw*(x0+.105), fmax.y+fs.y*.065, fmax.z-fh*(.26+drop))),
-   V((fc.x+fw*(x0+.13), fmax.y+fs.y*.095, fmax.z-fh*(.41+drop))),
-   V((fc.x+fw*(x0+.12), fmax.y+fs.y*.08, fmax.z-fh*(.56+drop))),
-   V((fc.x+fw*(x0+.08), fmax.y+fs.y*.045, fmax.z-fh*(.69+drop)))]
-  obj=make_strand('Assassin_layered_bang_%02d'%idx,pts,[fw*scale*q for q in (.55,.9,1,.85,.58,.018)],depth_ratio=.44,segments=24)
+   V((fc.x+fw*rootx,fc.y+fs.y*.06,fmax.z+fh*.10)),
+   V((fc.x+fw*(rootx*.74+tipx*.26),fmax.y-fs.y*.14,fmax.z+fh*.045)),
+   V((fc.x+fw*(rootx*.44+tipx*.56),fmax.y-fs.y*.065,fmax.z-fh*.11)),
+   V((fc.x+fw*(rootx*.20+tipx*.80),fmax.y+fs.y*forward,fmax.z-fh*.29)),
+   V((fc.x+fw*(tipx+.015),fmax.y+fs.y*(forward+.018),fmax.z-fh*(tipz-.12))),
+   V((fc.x+fw*tipx,fmax.y+fs.y*(forward-.01),fmax.z-fh*tipz))]
+  obj=make_strand('Assassin_swept_bang_%02d'%idx,pts,[fw*wide*q for q in (.70,1,1,.78,.43,.09)],depth_ratio=.50,segments=24)
   obj.data.materials.append(hair);strands.append(obj)
  manifest['face_review']['assassin_fringe']={
   'names':[o.name for o in strands],
   'side':'camera-near +X',
-  'construction':'five tapered volumetric strands, 24 radial segments, Catmull-Clark subdivision level 2',
-  'note':'review actual front, side, three-quarter images for face intersection and occlusion'}
+  'construction':'scalp volume plus nine staggered swept strands, 24 sides and subdivision level 2',
+  'note':'V5: inspect scalp coverage, front eye occlusion, side intersections and swept silhouette'}
  prior={o.name:o.hide_render for o in bpy.context.scene.objects if o.type=='MESH'}
  for obj in bpy.context.scene.objects:
   if obj.type=='MESH':obj.hide_render=(obj!=face and obj not in strands)
