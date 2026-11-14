@@ -61,7 +61,7 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
         vec2 region=floor(uv*regionGrid);
         vec2 local=fract(uv*regionGrid);
         float regionSeed=hash(region+uSeed*1.71);
-        float active=step(.37,regionSeed);
+        float regionEnabled=step(.37,regionSeed);
         float sparse=step(.79,regionSeed);
         // Each patch samples a different part of the original CC0 emission map.
         vec2 offset=vec2(hash(region*2.13+uSeed),hash(region*3.71+uSeed));
@@ -77,7 +77,7 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
         float edgeFade=1.-smoothstep(.34,.68,shape);
         float keep=step(.31,hash(grid*1.37+region+uSeed));
         float few=step(.94,hash(grid*2.71+uSeed));
-        float visibility=active*edgeFade*mix(groupMask*keep,few,sparse);
+        float visibility=regionEnabled*edgeFade*mix(groupMask*keep,few,sparse);
         float pulse=pow(max(0.,sin(uTime*(.22+windowSeed*.8)+windowSeed*6.283)),22.);
         float flicker=.58+.22*sin(uTime*.18+windowSeed*6.283)+.7*pulse;
         lights=realLight*mask*visibility*vec3(1.,.55,.74)*1.65*flicker;
