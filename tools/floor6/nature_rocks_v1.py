@@ -19,14 +19,40 @@ def mat(name,color,rough=0.95):
  return m
 stone=[mat('granite_gray',(0.26,0.29,0.27)),mat('slate_shadow',(0.17,0.20,0.19)),mat('warm_rock',(0.32,0.31,0.26))]
 moss=[mat('moss_sage',(0.23,0.36,0.18)),mat('moss_olive',(0.19,0.29,0.13))]
+# Deterministic baked image textures: image nodes are portable in exported GLB.
+def textured_material(material, base, seed):
+ rng=random.Random(seed)
+ image=bpy.data.images.new(material.name+'_albedo',width=128,height=128,alpha=True)
+ pixels=[]
+ for y in range(128):
+  for x in range(128):
+   coarse=math.sin(x*.13+seed)*math.cos(y*.17-seed)*.065
+   grain=rng.uniform(-.035,.035)
+   v=max(.55,min(1.4,1+coarse+grain))
+   pixels.extend([min(1,base[0]*v),min(1,base[1]*v),min(1,base[2]*v),1])
+ image.pixels[:]=pixels
+ image.pack()
+ nodes=material.node_tree.nodes
+ tex=nodes.new('ShaderNodeTexImage');tex.image=image
+ bsdf=nodes.get('Principled BSDF')
+ material.node_tree.links.new(tex.outputs['Color'],bsdf.inputs['Base Color'])
+for i,m in enumerate(stone): textured_material(m,[(.30,.32,.30),(.22,.24,.23),(.34,.31,.27)][i],110+i)
+for i,m in enumerate(moss): textured_material(m,[(.20,.32,.16),(.17,.26,.12)][i],210+i)
+def add_uv(obj):
+ bpy.ops.object.select_all(action='DESELECT')
+ obj.select_set(True);bpy.context.view_layer.objects.active=obj
+ bpy.ops.object.mode_set(mode='EDIT')
+ bpy.ops.mesh.select_all(action='SELECT')
+ bpy.ops.uv.smart_project(island_margin=.02)
+ bpy.ops.object.mode_set(mode='OBJECT')
 def rock_part(name,loc,scale,seed,materials):
  rng=random.Random(seed)
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3, radius=1, location=loc)
  obj=bpy.context.object;obj.name=name
  for v in obj.data.vertices:
   co=v.co;angle=math.atan2(co.y,co.x)
-  macro=1+0.18*math.sin(angle*3+seed)+0.12*math.cos(co.z*4+seed*0.7)
-  micro=rng.uniform(-0.09,0.09)
+  macro=1+0.30*math.sin(angle*2.7+seed)+0.19*math.cos(co.z*3.8+seed*0.7)\n  # A directional fracture trench with depth on one face\n  trench=math.exp(-((co.x*.8+co.y*.6-.12)**2)/.009) * max(0,1-abs(co.z)*.65)\n  macro-=.25*trench
+  micro=rng.uniform(-0.15,0.15)
   v.co=(co.x*(macro+micro),co.y*(macro+micro),co.z*(1+micro*0.55))
  obj.scale=scale
  for m in materials:obj.data.materials.append(m)
@@ -72,7 +98,7 @@ def make_asset(asset,idx):
   z=sz*.64+sz*math.sqrt(max(.05,1-rr*rr))*.90
   pieces.append(surface_patch(asset+'_moss_patch_%02d'%i,(x,y,z),sx*rng.uniform(.055,.12),sy*rng.uniform(.06,.15),idx*80+i))
  # moss clusters embedded into upper rock surface, not floating foliage
- for i in range([7,14,24][idx]):
+ for i in range([2,3,4][idx]):
   theta=rng.uniform(0,math.tau);rr=rng.uniform(.1,.78)
   x=rr*math.cos(theta)*sx;y=rr*math.sin(theta)*sy
   z=sz*.64+sz*math.sqrt(max(.05,1-rr*rr))*.88
