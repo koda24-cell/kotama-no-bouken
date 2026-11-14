@@ -6,6 +6,7 @@ on:
       - 'field/b5-distant-fog-background.js'
       - 'preview/b5-distant-fog-background.html'
       - 'tools/b5-fog-test/**'
+      - 'docs/3d/floor5-real-window-textures.md'
       - '.github/workflows/b5-fog-preview.yml'
 permissions:
   contents: read
@@ -22,6 +23,10 @@ jobs:
         run: |
           npm install --no-save --ignore-scripts --no-package-lock playwright@1.56.1
           docker pull mcr.microsoft.com/playwright:v1.56.1-noble
+      - name: Fetch CC0 real window emission textures
+        run: |
+          python3 -m pip install --break-system-packages Pillow
+          python3 tools/b5-fog-test/fetch-real-windows.py
       - name: Render and check animated shader
         run: |
           docker run --rm --ipc=host -v "$PWD:/work" -w /work mcr.microsoft.com/playwright:v1.56.1-noble node tools/b5-fog-test/check-preview.mjs
@@ -29,5 +34,7 @@ jobs:
         if: always()
         with:
           name: b5-fog-browser-preview
-          path: render-output/b5-fog/
+          path: |
+            render-output/b5-fog/
+            field/assets/b5-distant/
           retention-days: 14
