@@ -1,0 +1,41 @@
+{
+  "asset_id": "floor6_meadow_floor_v7",
+  "status": "user_approved",
+  "approved_date": "2026-11-14",
+  "source_commit": "6a19623ff4dff32e05cac3a295aecdc98589148f",
+  "source_run_id": 43602069517,
+  "source_artifact_id": 14117056247,
+  "zip_sha256": "371afe6c8c8ca54eb4198f9d90d4edadad6c0b5303eb225bc6f7153ff59171ae",
+  "tile_size": [
+    1,
+    1
+  ],
+  "files": [
+    {
+      "path": "assets/models/floor6/f6_meadow_floor_v7.glb",
+      "bytes": 3150828,
+      "sha256": "d24b74af5a9d7d1da0180ae2604a69f899439bd42dc4ebd66ad06db2e52a6031"
+    },
+    {
+      "path": "assets/models/floor6/reviews/f6_meadow_floor_v7/angle.png",
+      "bytes": 620888,
+      "sha256": "ed8c2c3b1b8838445fbdaf6a83e22b44f6605a64d3d11782ec4fc6d3516ec51c"
+    },
+    {
+      "path": "assets/models/floor6/reviews/f6_meadow_floor_v7/front.png",
+      "bytes": 503134,
+      "sha256": "0fb14801c46cc144a1c650347b2b2f9bc006fc8d303d821696948ac0accabac6"
+    },
+    {
+      "path": "assets/models/floor6/reviews/f6_meadow_floor_v7/side.png",
+      "bytes": 450605,
+      "sha256": "f60b01ebeb88a205019d4c8d4ea36c5203c1920bd3c2fcc4ad36c9f4c3363483"
+    },
+    {
+      "path": "assets/models/floor6/reviews/f6_meadow_floor_v7/top.png",
+      "bytes": 810726,
+      "sha256": "0dbd6087376bdba1cb6ff7995b0f56bb37ce6a589e1900507ed7a98547f64444"
+    }
+  ],
+  "notes": "GLB static tile; preview PNGs are actual Blender renders; game integration pending"
+}\n
