@@ -6,7 +6,7 @@ import * as THREE from 'three';
  * @param {{width?:number,height?:number,seed?:number}} opts
  * @returns {{mesh:THREE.Mesh,update:(seconds:number)=>void,dispose:()=>void}}
  */
-export function createB5DistantFogBackground({width=24,height=12,seed=514}={}) {
+export function createB5DistantFogBackground({width=24,height=12,seed=514,windowTexture=null}={}) {
   const vertexShader=`
     varying vec2 vUv;
     void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}
@@ -16,6 +16,8 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514}={}) {
     varying vec2 vUv;
     uniform float uTime;
     uniform float uSeed;
+    uniform sampler2D uWindowMap;
+    uniform float uUseWindowMap;
     float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}
     float noise(vec2 p){
       vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
@@ -45,6 +47,12 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514}={}) {
       float redVein=pow(max(0.,fbm(uv*vec2(8.,5.)+uTime*.005)-.56)*3.,2.);
       col+=vec3(.18,.022,.14)*redVein;
       vec3 lights=windows(uv);
+      if(uUseWindowMap>.5){
+        vec2 wuv=vec2(fract(uv.x*2.0),fract(uv.y*1.0));
+        vec3 realLight=texture2D(uWindowMap,wuv).rgb;
+        float mask=step(.09,max(max(realLight.r,realLight.g),realLight.b));
+        lights=realLight*mask*vec3(1.,.55,.74)*1.45;
+      }
       float farFog=fbm(uv*vec2(3.7,2.1)+vec2(uTime*.016,0.));
       col+=lights*(.42+.38*farFog);
       float fog1=smoothstep(.36,.73,cloud)*.56;
@@ -55,7 +63,7 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514}={}) {
       gl_FragColor=vec4(col,1.);
     }
   `;
-  const uniforms={uTime:{value:0},uSeed:{value:seed}};
+  const uniforms={uTime:{value:0},uSeed:{value:seed},uWindowMap:{value:windowTexture},uUseWindowMap:{value:windowTexture?1:0}};
   const material=new THREE.ShaderMaterial({vertexShader,fragmentShader,uniforms,depthWrite:false,depthTest:true,side:THREE.DoubleSide});
   const geometry=new THREE.PlaneGeometry(width,height);
   const mesh=new THREE.Mesh(geometry,material);
