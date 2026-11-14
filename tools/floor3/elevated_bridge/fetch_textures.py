@@ -1,6 +1,6 @@
 """Download CC0 Poly Haven texture maps via documented API; no hardcoded asset URLs."""
 import json,urllib.request,os
-root='/work/tools/floor3/elevated_bridge/textures'
+root=os.path.join(os.path.dirname(os.path.abspath(__file__)),'textures')
 os.makedirs(root,exist_ok=True)
 def get(url):
  with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'kotama-asset-research/1.0'}),timeout=25) as r:return r.read()
