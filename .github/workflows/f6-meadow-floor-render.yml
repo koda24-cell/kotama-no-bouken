@@ -42,7 +42,6 @@ jobs:
 
   # User-approved V7 asset archival; independent from render job.
   promote:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
