@@ -174,7 +174,7 @@ for obj in mother:
   n=Vector((p.x*9.2,p.y*9.2,p.z*9.2))
   coarse=rock_noise.noise(n)
   fine=rock_noise.noise(n*2.4)
-  normal=p.normal.copy()
+  normal=v.normal.copy()
   if normal.length>.01:
    p+=normal.normalized()*(.023*coarse+.008*fine)
  obj.data.update()
