@@ -1,0 +1,32 @@
+name: Floor3 Elevated Bridge Modular Render
+on:
+  push:
+    branches: [feature/floor3-elevated-ruin-tiles-20261114]
+    paths:
+      - 'tools/floor3/elevated_bridge/**'
+      - '.github/workflows/floor3-elevated-bridge-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Blender render
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/out"
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/elevated_bridge/build.py
+      - name: Verify 4 GLB and 12 PNG
+        run: |
+          for tile in straight end collapse support; do
+            test -s "out/floor3_elevated_bridge_${tile}.glb"
+            for view in front side angle; do
+              test -s "out/floor3_elevated_bridge_${tile}-${view}.png"
+            done
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: floor3-elevated-bridge-tiles-v1
+          path: out/
+          retention-days: 14
