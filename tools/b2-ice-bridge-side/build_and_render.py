@@ -11,11 +11,11 @@ def material(name,color,rough=.75,metal=0,trans=0):
  bs=m.node_tree.nodes.get("Principled BSDF");bs.inputs["Base Color"].default_value=(*color,1);bs.inputs["Roughness"].default_value=rough;bs.inputs["Metallic"].default_value=metal
  if trans:bs.inputs["Transmission Weight"].default_value=trans
  return m
-slate=material("Glacial dark slate",(0.15,.25,.32))
+slate=material("Glacial dark slate",(0.095,.115,.125))
 ice=material("Weathered opaque glacier ice",(.48,.72,.77),.48,.0,0)
 snow=material("Frost crust",(.68,.83,.87),.82)
-rock=material("Cold eroded stone",(.28,.38,.43))
-deep_ice=material("Compressed blue glacial ice",(.19,.39,.49),.34)
+rock=material("Cold eroded stone",(.19,.20,.19))
+deep_ice=material("Compressed blue glacial ice",(.12,.34,.52),.34)
 # Spatially varied glacier coloration without external image dependencies.
 def glacier_color(mat):
  nodes=mat.node_tree.nodes;links=mat.node_tree.links
@@ -60,7 +60,7 @@ def create(side):
  # V4: a continuous, triangulated eroded ice shelf; no rectangular top plates.
  def terrain_shelf(name,mat,half_width,top,bottom,seed):
   rng=random.Random(seed);nx=22;ny=14;verts=[];faces=[]
-  for layer,zbase in enumerate((top,bottom)):
+  for layer,zbase in enumerate((top,(top+bottom)*.54,bottom)):
    for ix in range(nx+1):
     x=-1+2*ix/nx
     for iy in range(ny+1):
@@ -76,19 +76,19 @@ def create(side):
      # Deep undercuts and fractures along the long banks; smooth enough to walk centrally.
      bank_factor=max(0,(abs(v)-.52)/.48)
      cut=.095*bank_factor*math.sin(13*x+5*v)+.075*bank_factor*math.cos(23*x-3*v)
-     z=zbase+(wave+cut if layer==0 else wave*.36-.12*bank_factor)
+     z=zbase+(wave+cut if layer==0 else (wave*.65-.08*bank_factor+.055*math.sin(14*x+4*v) if layer==1 else wave*.36-.12*bank_factor))
      verts.append((x,y,z))
   n=(nx+1)*(ny+1)
   for ix in range(nx):
    for iy in range(ny):
     a=ix*(ny+1)+iy;b=a+ny+1
-    for offset,reverse in ((0,False),(n,True)):
+    for offset,reverse in ((0,False),(2*n,True)):
      q=(a+offset,b+offset,b+offset+1,a+offset+1)
      faces.append(q[::-1] if reverse else q)
   for ix in range(nx):
    for iy in (0,ny):
     a=ix*(ny+1)+iy;b=(ix+1)*(ny+1)+iy
-    faces.append((a,b,b+n,a+n))
+    faces.append((a,b,b+n,a+n));faces.append((a+n,b+n,b+2*n,a+2*n))
   for iy in range(ny):
    for ix in (0,nx):
     a=ix*(ny+1)+iy;b=a+1
@@ -117,12 +117,11 @@ def create(side):
  # Irregular large overlapping eroded masses replace the repetitive bead-like row.
  # Keep both X end planes free of overhang for seamless modular connection.
  for i,(x,y,z,sx,sy,sz) in enumerate([
-  (-.61,.82,-.40,.62,.53,.73),(-.21,.95,-.48,.68,.59,.84),
-  (.31,.83,-.37,.72,.48,.77),(.65,.99,-.48,.47,.56,.88),
-  (-.43,1.05,-.61,.60,.50,.67),(.40,1.10,-.57,.59,.46,.74)
+  (-.57,.83,-.50,.94,.64,.52),(.16,.98,-.57,1.06,.69,.61),
+  (.66,.86,-.47,.58,.65,.43),(-.18,1.11,-.65,.79,.58,.42)
  ]):
   o=shard("large_eroded_bank_mass_%02d"%i,(x,sign*y,z),(sx,sy,sz),rock,i+550)
-  o.rotation_euler=(.12*i,.06*i,sign*(i-2)*.11)
+  o.rotation_euler=(.31+.11*i,.22*i,sign*(i-2)*.29)
  for i,(x,y,z,w,d,h) in enumerate([(-.76,.73,-.24,.20,.21,.30),(-.36,.81,-.22,.27,.22,.22),(.13,.74,-.20,.18,.29,.32),(.59,.79,-.27,.26,.24,.26)]):
   shard("irregular_rock_transition_%02d"%i,(x,sign*y,z),(w,d,h),slate,i+50)
  # Fewer larger fractured ice projections; avoid candy-like evenly spaced spikes.
