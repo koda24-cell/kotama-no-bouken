@@ -220,26 +220,19 @@ if face:
    V((fc.x+side*fw*.45,fc.y+fs.y*.13,fmax.z-fh*zend))]
   obj=make_strand('Assassin_temple_lock_%02d'%idx,pts,[fw*.11*q for q in (.8,1,.94,.75,.4,.12)],depth_ratio=.62,segments=24)
   obj.data.materials.append(hair);strands.append(obj)
- # V7 additional crown-to-back overlapping tapered locks. Keep original face mesh intact.
- for idx,(side,shift,length) in enumerate([
-  (-.36,-.06,.63),(-.20,-.09,.77),(-.04,-.12,.87),(.13,-.09,.82),(.28,-.06,.72),(.40,-.03,.57)]):
-  pts=[
-   V((fc.x+fw*side*.70,fc.y-fs.y*.08,fmax.z+fh*.08)),
-   V((fc.x+fw*(side+shift*.2),fmin.y+fs.y*.12,fmax.z+fh*.02)),
-   V((fc.x+fw*(side+shift*.5),fmin.y-fs.y*.02,fmax.z-fh*.16)),
-   V((fc.x+fw*(side+shift),fmin.y-fs.y*.05,fmax.z-fh*.34)),
-   V((fc.x+fw*(side+shift*.9),fmin.y+fs.y*.02,fmax.z-fh*(length-.12))),
-   V((fc.x+fw*(side+shift*.8),fmin.y+fs.y*.07,fmax.z-fh*length))]
-  obj=make_strand('Assassin_back_layer_%02d'%idx,pts,[fw*.16*q for q in (.68,1,1,.8,.48,.07)],depth_ratio=.55,segments=24)
-  obj.data.materials.append(hair);strands.append(obj)
+ # V8: use imported original rear hair geometry, not V7 synthetic rear locks.
+ original_hair=[o for o in meshes if o!=face and 'hair' in o.name.lower()]
+ for obj in original_hair:
+  obj.hide_render=False
+ manifest['face_review']['original_hair_meshes']=[o.name for o in original_hair]
  manifest['face_review']['assassin_fringe']={
   'names':[o.name for o in strands],
   'side':'camera-near +X',
-  'construction':'V7 layered sculpt: nine bangs, four temple locks, six crown-to-back locks, scalp volume',
+  'construction':'V8 original imported rear hair plus nine bangs, four temple locks and scalp volume',
   'note':'V7 native mesh curves; HairMesh/GBH compatibility probed separately, not used to create these strands'}
  prior={o.name:o.hide_render for o in bpy.context.scene.objects if o.type=='MESH'}
  for obj in bpy.context.scene.objects:
-  if obj.type=='MESH':obj.hide_render=(obj!=face and obj not in strands)
+  if obj.type=='MESH':obj.hide_render=(obj!=face and obj not in strands and obj not in original_hair)
  face_bounds=[face.matrix_world @ Vector(c) for c in face.bound_box]
  fmin=Vector(tuple(min(v[i] for v in face_bounds) for i in range(3)))
  fmax=Vector(tuple(max(v[i] for v in face_bounds) for i in range(3)))
@@ -247,7 +240,7 @@ if face:
  manifest['face_review']['bounds_min']=list(fmin)
  manifest['face_review']['bounds_max']=list(fmax)
  scene.render.resolution_x=960;scene.render.resolution_y=960
- for name,offset in [('front',(0,1,0)),('side',(1,0,0)),('three_quarter',(1,1,.16))]:
+ for name,offset in [('front',(0,1,0)),('side',(1,0,0)),('three_quarter',(1,1,.16)),('back',(0,-1,0))]:
   bpy.ops.object.camera_add(location=fc+max(2,fs.length*5)*Vector(offset).normalized())
   cam=bpy.context.object
   cam.rotation_euler=(fc-cam.location).to_track_quat('-Z','Y').to_euler()
@@ -258,10 +251,10 @@ if face:
   bpy.data.objects.remove(cam,do_unlink=True)
  # Export review GLB for the additive hair and source face, before restoring visibility.
  bpy.ops.object.select_all(action='DESELECT')
- for obj in [face]+strands:
+ for obj in [face]+strands+original_hair:
   obj.select_set(True)
  bpy.context.view_layer.objects.active=face
- bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_hair_v7_review.glb'),export_format='GLB',use_selection=True)
+ bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_hair_v8_original_back_review.glb'),export_format='GLB',use_selection=True)
  bpy.ops.object.select_all(action='DESELECT')
  for obj in bpy.context.scene.objects:
   if obj.type=='MESH':obj.hide_render=prior[obj.name]
