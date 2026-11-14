@@ -37,3 +37,6 @@
 3. 既存の草むら単体V5と本タイルV7を混同しない
 4. 既存のマップ・戦闘・セーブ等を変更せず、必要な場合は別PRで実装
 5. 完成済み造形を無断で変更しない
+
+## Claudeの実行環境に関する必須注意
+ClaudeはBlenderを操作できない。**この引き継ぎはBlenderで再生成する依頼ではない**。Claudeは上記GLBをThree.jsの`GLTFLoader`で読み込み、PNGで造形・色を確認し、manifestのSHA-256とバージョンを検証する。Blender固有の修正・再レンダリングはGPT/Blender Actions担当に依頼する。正式フォルダにGLB/PNGが存在しない間は、生成元Actions Artifactだけを完成データの恒久保存と見なさない。
