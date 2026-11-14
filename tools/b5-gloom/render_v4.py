@@ -85,7 +85,7 @@ def sculpted_mantle():
    broad=.065*math.sin(8*x+4*y)*math.cos(7*y-3*x)
    fine=.020*math.sin(29*x+12*y)*math.sin(31*y-5*x)
    grit=.008*math.sin(79*x-27*y)*math.cos(65*y+18*x)
-   z=.075+.31*(1-t*t)**2+broad*(1-t)+fine*(.3+.7*t)+grit
+   z=.075+.31*(1-t*t)**2+1.8*broad*(1-t)+2.2*fine*(.3+.7*t)+grit
    vertices.append((x,y,z))
  for j in range(rings):
   for i in range(sectors):
@@ -163,6 +163,45 @@ for ob in scan_objects:
  ob.scale=(.60,.60,.50)
  ob.rotation_euler[2]=.27
  print("SCAN_MESH",ob.name,len(ob.data.polygons),flush=True)
+# V5: physically conforming fragmented black crust on scanned rock surfaces.
+# Preserve the original CC0 scan, while placing a selectively retained
+# offset copy over its existing triangles. This avoids disconnected tubes.
+import bmesh
+dark_rock=mat("B5 charcoal rock",(.055,.051,.064),.05,.96)
+crust=mat("B5 matte invasive crust",(.009,.006,.016),.04,.93)
+for source_obj in scan_objects:
+ if source_obj.type!="MESH":continue
+ # Scan textures can render unnaturally violet under magenta lights.
+ # Darken through material only, keeping every source vertex unchanged.
+ source_obj.data=source_obj.data.copy()
+ source_obj.data.materials.clear()
+ source_obj.data.materials.append(dark_rock)
+ overlay_mesh=source_obj.data.copy()
+ overlay=bpy.data.objects.new("V5 scan-conforming black invasion "+source_obj.name,overlay_mesh)
+ bpy.context.collection.objects.link(overlay)
+ overlay.matrix_world=source_obj.matrix_world.copy()
+ bm=bmesh.new();bm.from_mesh(overlay_mesh)
+ bm.faces.ensure_lookup_table()
+ # Connected irregular clusters on the rock, rather than one large black shell.
+ remove=[]
+ for face in bm.faces:
+  center=face.calc_center_median()
+  signal=(math.sin(center.x*8.3+center.y*4.7+center.z*3.1)
+          +.58*math.sin(center.x*19.7-center.z*11.3)
+          +.38*math.cos(center.y*23.1+center.z*6.2))
+  if signal<-.13:remove.append(face)
+ bmesh.ops.delete(bm,geom=remove,context="FACES")
+ # Small offset along scan normals prevents z-fighting; organic surface remains
+ # physically conforming to the actual rock silhouette.
+ for vertex in bm.verts:
+  vertex.co+=vertex.normal*.009
+ bm.to_mesh(overlay_mesh);bm.free();overlay_mesh.update()
+ overlay_mesh.materials.clear();overlay_mesh.materials.append(crust)
+ print("V5_SCAN_INVASION",overlay.name,len(overlay_mesh.polygons),flush=True)
+# Replace pipe-like surface roots with a smaller radius (keep geometry).
+for obj in bpy.context.scene.objects:
+ if obj.type=="CURVE" and obj.name.startswith("creeping root"):
+  obj.data.bevel_depth*=.36
 # V4 high-density variant: triple the actual triangle count of each mesh.
 # Triangulate then poke each triangle into three; existing silhouettes stay intact.
 # Displace only newly created centers very slightly for physical micro-relief.
