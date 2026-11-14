@@ -23,11 +23,14 @@ try{
   await page.goto('http://127.0.0.1:8765/preview/b5-distant-fog-background.html',{waitUntil:'networkidle',timeout:60000});
   await page.waitForSelector('canvas',{timeout:15000});
   await page.waitForTimeout(1800);
+  console.log('Window texture source:',await page.locator('body').getAttribute('data-window-source'));
   await mkdir('render-output/b5-fog',{recursive:true});
   await page.locator('canvas').screenshot({path:'render-output/b5-fog/fog-initial.png'});
-  const a=await page.locator('canvas').evaluate(c=>Array.from(c.getContext('webgl2')?.readPixels?[]:[]));
+  // Save an additional late frame to inspect slow fog drift and randomized lights.
   await page.waitForTimeout(2500);
   await page.locator('canvas').screenshot({path:'render-output/b5-fog/fog-animated.png'});
+  await page.waitForTimeout(3200);
+  await page.locator('canvas').screenshot({path:'render-output/b5-fog/fog-late.png'});
   await page.locator('#toggle').click();
   const label=await page.locator('#toggle').textContent();
   if(!label.includes('再開'))throw Error('pause button did not toggle');
