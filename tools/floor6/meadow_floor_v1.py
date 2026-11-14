@@ -49,7 +49,14 @@ for ci in range(4):
  v=[];f=[];vertex_t=[]
  for k in range(6400):
   if k%4!=ci:continue
-  x=random.uniform(-.51,.51);y=random.uniform(-.51,.51);h=random.uniform(.025,.095) if k<4400 else random.uniform(.10,.23);a=random.uniform(0,math.tau);bend=random.uniform(.015,.065) if k<4400 else random.uniform(.025,.10);w=random.uniform(.007,.017) if k<4400 else random.uniform(.005,.013);start=len(v)
+  x=random.uniform(-.51,.51);y=random.uniform(-.51,.51)
+  # Keep the dense undergrowth, but lift the upper canopy above a lawn-like silhouette.
+  h=random.uniform(.035,.105) if k<4400 else random.uniform(.14,.28)
+  # Wind shares a prevailing direction, with subtle organic deviations.
+  a=math.radians(float(preset.get('windDirectionDegrees',32))+random.gauss(0,float(preset.get('windSpreadDegrees',19))))
+  bend=(random.uniform(.04,.085) if k<4400 else random.uniform(.11,.19))*float(preset.get('windLean',.14))/.14
+  w=random.uniform(.006,.014) if k<4400 else random.uniform(.006,.012)
+  start=len(v)
   for j in range(7):
    t=j/6;px=x+math.cos(a)*bend*t*t;py=y+math.sin(a)*bend*t*t;half=w*(1-t)**.7
    for q in (-1,1):
