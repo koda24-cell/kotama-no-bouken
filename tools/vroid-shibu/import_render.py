@@ -154,7 +154,7 @@ if face:
  # Blender-native curve workflow: volumetric strands built as tapered mesh rings.
  # This is portable across Blender 5.0 and needs no paid/third-party addon.
  from math import sin,cos,pi
- def make_strand(name,points,widths,depth_ratio=.27,segments=10):
+ def make_strand(name,points,widths,depth_ratio=.27,segments=24):
   verts=[];faces=[]
   for i,(p,w) in enumerate(zip(points,widths)):
    tangent=(points[min(i+1,len(points)-1)]-points[max(i-1,0)]).normalized()
@@ -173,6 +173,9 @@ if face:
   mesh=bpy.data.meshes.new(name+'_mesh');mesh.from_pydata(verts,[],faces);mesh.update()
   obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
   for poly in mesh.polygons:poly.use_smooth=True
+  # Catmull-Clark subdivision rounds both lengthwise and radial hair silhouette.
+  sub=obj.modifiers.new('Hair_curve_smoothing','SUBSURF')
+  sub.subdivision_type='CATMULL_CLARK';sub.levels=2;sub.render_levels=2
   return obj
  face_bounds=[face.matrix_world @ Vector(c) for c in face.bound_box]
  fmin=Vector(tuple(min(v[i] for v in face_bounds) for i in range(3)))
@@ -193,12 +196,12 @@ if face:
    V((fc.x+fw*(x0+.13), fmax.y+fs.y*.095, fmax.z-fh*(.41+drop))),
    V((fc.x+fw*(x0+.12), fmax.y+fs.y*.08, fmax.z-fh*(.56+drop))),
    V((fc.x+fw*(x0+.08), fmax.y+fs.y*.045, fmax.z-fh*(.69+drop)))]
-  obj=make_strand('Assassin_layered_bang_%02d'%idx,pts,[fw*scale*q for q in (.55,.9,1,.85,.58,.018)],depth_ratio=.44,segments=12)
+  obj=make_strand('Assassin_layered_bang_%02d'%idx,pts,[fw*scale*q for q in (.55,.9,1,.85,.58,.018)],depth_ratio=.44,segments=24)
   obj.data.materials.append(hair);strands.append(obj)
  manifest['face_review']['assassin_fringe']={
   'names':[o.name for o in strands],
   'side':'camera-near +X',
-  'construction':'five tapered volumetric strands with scalp-rooted curves and reduced projection',
+  'construction':'five tapered volumetric strands, 24 radial segments, Catmull-Clark subdivision level 2',
   'note':'review actual front, side, three-quarter images for face intersection and occlusion'}
  prior={o.name:o.hide_render for o in bpy.context.scene.objects if o.type=='MESH'}
  for obj in bpy.context.scene.objects:
