@@ -1,0 +1,32 @@
+name: B5 Fetch CC0 Scan Source
+on:
+  push:
+    branches: [feature/b5-gloom-corruption-prototype-20261114]
+    paths: ['tools/b5-gloom/fetch_cc0_scan.py', '.github/workflows/b5-fetch-cc0-scan.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch official CC0 scanned rock with SHA256 manifest
+        run: python3 tools/b5-gloom/fetch_cc0_scan.py
+      - name: Validate source file and manifest
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          p=pathlib.Path('render-output/b5-scan-source')
+          m=json.loads((p/'manifest.json').read_text())
+          f=p/m['file']
+          assert f.exists() and f.stat().st_size==m['bytes']
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==m['sha256']
+          print('VALIDATED',f,m['bytes'],m['sha256'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-polyhaven-rock-07-cc0-source
+          path: render-output/b5-scan-source/
+          retention-days: 14
