@@ -41,7 +41,7 @@ jobs:
           for name,target in mapping.items():
               data=(src/name).read_bytes()
               assert len(data)>1000,name
-              assert data[:4]==(b'glTF' if name.endswith('.glb') else b'\\x89PNG'),name
+              assert data[:4]==(b'glTF' if name.endswith('.glb') else bytes([137,80,78,71])),name
               target.parent.mkdir(parents=True,exist_ok=True)
               shutil.copyfile(src/name,target)
               entries.append({'path':str(target),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
