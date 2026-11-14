@@ -245,6 +245,41 @@ for ob in bpy.context.scene.objects:
  if ob.type=="CURVE" and ob.name.startswith("creeping root"):
   ob.data.bevel_depth*=.55
 # Less pink light, more directional shading to reveal actual scan relief.
+# V8: make a continuous rock bed from the preserved CC0 scan meshes.
+# Duplicate the original rock together with its matching black invasion;
+# geometry stays unchanged and every copy remains paired with its overlay.
+from mathutils import Matrix
+base_scan=list(scan_objects)
+base_overlays=[o for o in bpy.context.scene.objects if o.name.startswith("V5 scan-conforming black invasion")]
+rock_pair=list(zip(base_scan,base_overlays))
+for rock,inv in rock_pair:
+ # Move the original pair to the center-left; reuse scan meshes for neighbors.
+ rock.location=(-.52,-.10,.13)
+ inv.matrix_world=rock.matrix_world.copy()
+ for idx,(x,y,z,scale,angle) in enumerate([
+  (.43,-.22,.08,.88,.82),(-.12,.58,.05,.78,-.48),
+  (.84,.42,.09,.77,1.64),(-.82,.45,.04,.68,2.18),
+  (.15,-.72,.05,.69,-1.22)]):
+  for template in (rock,inv):
+   copy=template.copy();copy.data=template.data.copy()
+   bpy.context.collection.objects.link(copy)
+   copy.name="V8 rockbed %02d "%idx+template.name
+   copy.location=(x,y,z)
+   copy.rotation_euler=(0,0,angle)
+   copy.scale=(.60*scale,.60*scale,.50*scale)
+# The old standalone curves were floating in space after the plate was removed.
+# Remove only these unattached decorative roots/fissures; rock and invasion remain.
+for ob in list(bpy.context.scene.objects):
+ if ob.type=="CURVE" and ("root" in ob.name or "fissure" in ob.name):
+  bpy.data.objects.remove(ob,do_unlink=True)
+# Dark irregular soil bed underneath the rocks, with actual displaced mesh relief.
+bpy.ops.mesh.primitive_grid_add(x_subdivisions=47,y_subdivisions=47,size=2.65,location=(0,0,-.13))
+bed=bpy.context.object;bed.name="V8 irregular rocky ground"
+for vert in bed.data.vertices:
+ x,y=vert.co.x,vert.co.y
+ vert.co.z+=.034*math.sin(x*9+y*3)*math.cos(y*11-x*4)
+bed.data.materials.append(crust)
+print("V8_ROCKBED",len(rock_pair),len([o for o in bpy.context.scene.objects if o.name.startswith("V8 rockbed")]),flush=True)
 # V4 high-density variant: triple the actual triangle count of each mesh.
 # Triangulate then poke each triangle into three; existing silhouettes stay intact.
 # Displace only newly created centers very slightly for physical micro-relief.
