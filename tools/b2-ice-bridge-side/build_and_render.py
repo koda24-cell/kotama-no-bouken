@@ -144,7 +144,8 @@ def create(side):
  for variant,color,rough,trans,density in [
   ("clear",(.43,.76,.88),.10,.82,0),
   ("blue_depth",(.32,.66,.82),.16,.66,.12),
-  ("frosted",(.62,.84,.90),.30,.35,.04)
+  ("frosted",(.62,.84,.90),.30,.35,.04),
+  ("v10_glacial_blue",(.24,.57,.77),.095,.78,.22)
  ]:
   bs.inputs["Base Color"].default_value=(*color,1)
   bs.inputs["Roughness"].default_value=rough
@@ -167,9 +168,9 @@ def create(side):
   cam.rotation_euler=(Vector((0,0,-.1))-cam.location).to_track_quat("-Z","Y").to_euler()
   sc.render.filepath=str(OUT/f"ice_bridge_{side}_{variant}_angle.png")
   bpy.ops.render.render(write_still=True)
- bs.inputs["Base Color"].default_value=(.43,.76,.88,1)
- bs.inputs["Roughness"].default_value=.10
- bs.inputs["Transmission Weight"].default_value=.82
+ bs.inputs["Base Color"].default_value=(.24,.57,.77,1)
+ bs.inputs["Roughness"].default_value=.095
+ bs.inputs["Transmission Weight"].default_value=.78
  for link in list(output.inputs["Volume"].links):ice.node_tree.links.remove(link)
  for name,pos in {"front":(0,-4,2.4),"side":(4,0,2.4),"angle":(3,-4,3.2)}.items():
   cam.location=pos;cam.rotation_euler=(Vector((0,0,-.1))-cam.location).to_track_quat("-Z","Y").to_euler()
