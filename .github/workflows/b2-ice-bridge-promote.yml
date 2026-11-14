@@ -1,0 +1,46 @@
+name: Promote B2 Ice Bridge Verified Render
+on:
+  push:
+    branches:
+      - feature/b2-ice-bridge-asset-promotion-20261112
+    paths:
+      - .github/workflows/b2-ice-bridge-promote.yml
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified successful Blender render artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run view 43127965428 --repo "${{ github.repository }}" --json conclusion --jq '.conclusion' | grep -qx success
+          mkdir -p /tmp/b2-bridge
+          gh run download 43127965428 --repo "${{ github.repository }}" --name b2-ruined-aqueduct-blender --dir /tmp/b2-bridge
+          for f in ancient_ice_bridge_v03.glb ancient_ice_bridge_v04.blend front.png side.png angle.png mesh_stats.txt; do
+            test -s "/tmp/b2-bridge/$f"
+          done
+          file /tmp/b2-bridge/ancient_ice_bridge_v03.glb
+          file /tmp/b2-bridge/front.png
+      - name: Commit verified GLB and review PNG to isolated promotion branch
+        run: |
+          set -euo pipefail
+          target=assets/3d/dungeons/b2_water_source/models/ancient_ice_bridge
+          mkdir -p "$target/reviews"
+          cp /tmp/b2-bridge/ancient_ice_bridge_v03.glb "$target/ancient_ice_bridge_v04.glb"
+          cp /tmp/b2-bridge/ancient_ice_bridge_v04.blend "$target/ancient_ice_bridge_v04.blend"
+          cp /tmp/b2-bridge/front.png "$target/reviews/front.png"
+          cp /tmp/b2-bridge/side.png "$target/reviews/side.png"
+          cp /tmp/b2-bridge/angle.png "$target/reviews/angle.png"
+          cp /tmp/b2-bridge/mesh_stats.txt "$target/reviews/mesh_stats.txt"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          git commit -m "Save approved B2 ancient ice bridge v0.4 GLB, blend and review PNGs [skip ci]"
+          git push origin HEAD:feature/b2-ice-bridge-asset-promotion-20261112
