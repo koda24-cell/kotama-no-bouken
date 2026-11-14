@@ -21,9 +21,10 @@ jobs:
       - name: Install Playwright and Chromium
         run: |
           npm install --no-save --ignore-scripts --no-package-lock playwright@1.56.1
-          npx playwright install --with-deps chromium
+          docker pull mcr.microsoft.com/playwright:v1.56.1-noble
       - name: Render and check animated shader
-        run: node tools/b5-fog-test/check-preview.mjs
+        run: |
+          docker run --rm --ipc=host -v "$PWD:/work" -w /work mcr.microsoft.com/playwright:v1.56.1-noble node tools/b5-fog-test/check-preview.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
