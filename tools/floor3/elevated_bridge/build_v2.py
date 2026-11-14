@@ -16,7 +16,7 @@ def texture(mat,filename,scale=2.5):
   bump=nt.nodes.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.28;bump.inputs['Distance'].default_value=.035
   nt.links.new(tex.outputs['Fac'],bump.inputs['Height']);nt.links.new(bump.outputs['Normal'],p.inputs['Normal'])
   return
- uv=nt.nodes.new('ShaderNodeTexCoord');mapping=nt.nodes.new('ShaderNodeVectorMath');mapping.operation='SCALE';mapping.inputs[3].default_value=(scale,scale,scale)
+ uv=nt.nodes.new('ShaderNodeTexCoord');mapping=nt.nodes.new('ShaderNodeVectorMath');mapping.operation='SCALE';mapping.inputs[3].default_value=scale
  nt.links.new(uv.outputs['Generated'],mapping.inputs[0]);nt.links.new(mapping.outputs['Vector'],tex.inputs['Vector'])
  nt.links.new(tex.outputs['Color'],p.inputs['Base Color'])
  bw=nt.nodes.new('ShaderNodeRGBToBW');nt.links.new(tex.outputs['Color'],bw.inputs[0])
