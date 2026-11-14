@@ -1,0 +1,32 @@
+name: B5 Fog Backdrop Browser Preview
+on:
+  push:
+    branches: [feature/b5-fog-window-background-20261114]
+    paths:
+      - 'field/b5-distant-fog-background.js'
+      - 'preview/b5-distant-fog-background.html'
+      - 'tools/b5-fog-test/**'
+      - '.github/workflows/b5-fog-preview.yml'
+permissions:
+  contents: read
+jobs:
+  browser-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save --ignore-scripts --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Render and check animated shader
+        run: node tools/b5-fog-test/check-preview.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b5-fog-browser-preview
+          path: render-output/b5-fog/
+          retention-days: 14
