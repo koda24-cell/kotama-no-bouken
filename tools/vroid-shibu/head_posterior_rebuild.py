@@ -34,8 +34,8 @@ rear_depth=min(max((vd/vw)*sw*.52,sd*.34),sd*.85)
 seam_y=smn.y+sd*.45
 rx=sw*.485
 rz=sh*.485
-# V13: continuous posterior cross-sections, fitted to smoothed side contours.
-# The V13 linear interpolation made a flat ribbon with large holes.
+# V14: continuous posterior cross-sections, fitted to smoothed side contours.
+# The V14 linear interpolation made a flat ribbon with large holes.
 face_obj=shibu_objs[0]
 source_vertices=[face_obj.matrix_world @ v.co for v in face_obj.data.vertices]
 # Sample several vertical slices, then smooth the edge contour across heights.
@@ -95,12 +95,12 @@ for top in (False,True):
   if top:faces.append((indices[j],indices[j+1],cap))
   else:faces.append((indices[j+1],indices[j],cap))
 mesh=bpy.data.meshes.new('Posterior_shell_mesh');mesh.from_pydata(verts,[],faces);mesh.update()
-head=bpy.data.objects.new('Assassin_posterior_shell_V13',mesh)
+head=bpy.data.objects.new('Assassin_posterior_shell_V14',mesh)
 bpy.context.collection.objects.link(head)
 for poly in mesh.polygons:poly.use_smooth=True
 if face_obj.data.materials:
  # Original face uses textured shader: sample the visible base tint for an even review clay.
- skin=bpy.data.materials.new('V13_posterior_skin_review')
+ skin=bpy.data.materials.new('V14_posterior_skin_review')
  skin.diffuse_color=(0.82,0.69,0.63,1)
  skin.use_nodes=True
  skin.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(0.82,0.69,0.63,1)
@@ -128,10 +128,78 @@ for name,offset in [('front',(0,1,0)),('back',(0,-1,0)),('side',(1,0,0)),('back_
 bpy.ops.object.select_all(action='DESELECT')
 for o in shibu_objs+[head]:o.select_set(True)
 bpy.context.view_layer.objects.active=head
-bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_head_posterior_v13_review.glb'),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_head_posterior_v14_review.glb'),export_format='GLB',use_selection=True)
 with open(os.path.join(out,'geometry_measurements.json'),'w') as f:
  json.dump({'shibu_bounds':[list(smn),list(smx)],'vita_bounds':[list(vmn),list(vmx)],
  'shibu_width':sw,'vita_width':vw,'shibu_depth':sd,'vita_depth':vd,
  'shibu_height':sh,'vita_height':vh,'rear_depth':rear_depth,
  'rear_seam_y':seam_y,'new_vertices':len(verts),'new_faces':len(faces),
- 'construction':'V13 face-sampled seam and posterior shell; no sphere, no hair; unapproved review candidate'},f,indent=2)
+ 'construction':'V14 face-sampled seam and posterior shell; no sphere, no hair; unapproved review candidate'},f,indent=2)# V14: rounded anatomical posterior shell; stable ellipse per horizontal section.
+# V14's per-height side samples created a cone and striped shading.
+face_obj=shibu_objs[0]
+rows=64;cols=64;verts=[];faces=[]
+# Preserve the face; put the seam near its side/rear and taper smoothly.
+top=smx.z+sh*.005
+bottom=smn.z+sh*.13
+midz=(top+bottom)/2
+radius_z=(top-bottom)/2
+radius_x=sw*.475
+# The source face extends forward (+Y); posterior shell bulges toward -Y.
+seam_y=smn.y+sd*.32
+for i in range(rows+1):
+ theta=math.pi*i/rows
+ z=midz+radius_z*math.cos(theta)
+ section=math.sin(theta)
+ # Rounded dome: no straight cone segments or arbitrary height-sampled spikes.
+ for j in range(cols+1):
+  phi=math.pi*j/cols
+  x=cx+radius_x*section*math.cos(phi)
+  y=seam_y-rear_depth*section*math.sin(phi)
+  verts.append((x,y,z))
+for i in range(rows):
+ for j in range(cols):
+  a=i*(cols+1)+j;b=a+cols+1
+  faces.append((a,b,b+1,a+1))
+# Degenerate poles share coordinates, weld them to avoid top pinholes.
+# Preserve the open facial seam for later vertex-accurate stitching.
+mesh=bpy.data.meshes.new('Posterior_shell_mesh');mesh.from_pydata(verts,[],faces);mesh.update()
+head=bpy.data.objects.new('Assassin_posterior_shell_V14',mesh)
+bpy.context.collection.objects.link(head)
+for poly in mesh.polygons:poly.use_smooth=True
+if face_obj.data.materials:
+ # Original face uses textured shader: sample the visible base tint for an even review clay.
+ skin=bpy.data.materials.new('V14_posterior_skin_review')
+ skin.diffuse_color=(0.82,0.69,0.63,1)
+ skin.use_nodes=True
+ skin.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(0.82,0.69,0.63,1)
+ head.data.materials.append(skin)
+else:
+ mat=bpy.data.materials.new('Head_neutral_clay')
+ mat.diffuse_color=(.75,.71,.70,1)
+ head.data.materials.append(mat)
+# Keep original Shibu face and its materials; no hair or scalp sphere generated.
+scene=bpy.context.scene;scene.render.engine='BLENDER_EEVEE'
+scene.render.resolution_x=960;scene.render.resolution_y=960
+scene.render.resolution_percentage=100;scene.render.image_settings.file_format='PNG'
+world=bpy.data.worlds.new('Neutral');scene.world=world;world.color=(.65,.65,.65)
+center=Vector((cx,(smn.y+smx.y)/2,cz))
+bpy.ops.object.light_add(type='AREA',location=center+Vector((2,3,4)))
+lamp=bpy.context.object;lamp.data.energy=700;lamp.data.size=4
+lamp.rotation_euler=(center-lamp.location).to_track_quat('-Z','Y').to_euler()
+for name,offset in [('front',(0,1,0)),('back',(0,-1,0)),('side',(1,0,0)),('back_upper',(0,-1,.55)),('three_quarter',(1,1,.16))]:
+ bpy.ops.object.camera_add(location=center+Vector(offset).normalized()*max(2,sh*5))
+ cam=bpy.context.object;cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
+ cam.data.type='ORTHO';cam.data.ortho_scale=max(sh*1.5,sw*1.5,sd*2,.18)
+ scene.camera=cam;scene.render.filepath=os.path.join(out,name+'.png')
+ bpy.ops.render.render(write_still=True)
+ bpy.data.objects.remove(cam,do_unlink=True)
+bpy.ops.object.select_all(action='DESELECT')
+for o in shibu_objs+[head]:o.select_set(True)
+bpy.context.view_layer.objects.active=head
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_head_posterior_v14_review.glb'),export_format='GLB',use_selection=True)
+with open(os.path.join(out,'geometry_measurements.json'),'w') as f:
+ json.dump({'shibu_bounds':[list(smn),list(smx)],'vita_bounds':[list(vmn),list(vmx)],
+ 'shibu_width':sw,'vita_width':vw,'shibu_depth':sd,'vita_depth':vd,
+ 'shibu_height':sh,'vita_height':vh,'rear_depth':rear_depth,
+ 'rear_seam_y':seam_y,'new_vertices':len(verts),'new_faces':len(faces),
+ 'construction':'V14 face-sampled seam and posterior shell; no sphere, no hair; unapproved review candidate'},f,indent=2)
