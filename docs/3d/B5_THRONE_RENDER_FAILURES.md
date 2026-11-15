@@ -13,3 +13,12 @@
 - **状態**: 初回失敗原因を記録しコード修正済み。再実行の成否は別途確認する。
 
 このファイルはGPT/Claudeの共通引継ぎ用。レンダリング失敗を造形完成や素材承認と混同しない。
+
+## 2026-11-15 V1 2回目失敗：glTFエクスポータ依存不足
+- Run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43727012505
+- 正面・側面・斜めのBlenderレンダリング処理は成功したが、GLBエクスポートで `ModuleNotFoundError: No module named 'numpy'` が発生。
+- その結果、成果物の存在検証に失敗。PNGのみの成功を「GLB+PNG完成」と報告しない。
+- 修正: Actionsのaptインストールに `python3-numpy` を追加し、Blender内で `import numpy` を実行する依存チェックをGLB出力前に設置。
+- ログの `Draco mesh compression is not available` は併記された警告。主因はNumPy欠如。圧縮を明示的に使用していない場合は混同しない。
+- 教訓: **レンダリング成功、GLB書き出し成功、ファイル検証成功は別段階**。環境のPythonモジュールはBlender実行環境内で検証する。
+- 修正コード: PR #383。再実行の成否は別途確認する。
