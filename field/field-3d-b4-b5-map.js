@@ -8,7 +8,7 @@ import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
-import { createB5ArcaneSparks } from './b5-vfx-presets.js';
+import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -16,7 +16,7 @@ export function createTheme(api, area) {
     ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
     : magma
     ? { background: 0x171216, fog: { color: 0x302329, density: 0.022 }, hemi: { sky: 0xb9b7ba, ground: 0x6a4540, high: 2.2, low: 2.6 } }
-    : { background: 0x050514, fog: { color: 0x10102a, density: 0.014 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
+    : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
   function rockTexture(seed) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
     const ctx = canvas.getContext('2d'); if (!ctx) return null;
@@ -38,7 +38,7 @@ export function createTheme(api, area) {
   const surfaces = magma ? createB4SurfaceLibrary({high:g.high}) : null;
   const rockMap = magma ? null : rockTexture(4), floorMap = magma ? null : rockTexture(11);
   const mat = {
-    floor: new THREE.MeshStandardMaterial({ color: mist ? 0x485d4b : magma ? 0x544038 : 0x48445d, roughness: 0.85, map: floorMap, emissive: magma ? 0x000000 : mist ? 0x000000 : 0x21152d, emissiveIntensity: magma || mist ? 0 : 0.34 }),
+    floor: new THREE.MeshStandardMaterial({ color: mist ? 0x485d4b : magma ? 0x544038 : 0x48445d, roughness: 0.85, map: floorMap }),
     wall: new THREE.MeshStandardMaterial({ color: mist ? 0x344c42 : magma ? 0x30262a : 0x22233c, roughness: 0.93, flatShading: true, map: rockMap }),
     ceiling: new THREE.MeshStandardMaterial({ color: mist ? 0x30493c : magma ? 0x281b1a : 0x171729, roughness: 1, side: THREE.DoubleSide, map: rockMap }),
     glow: new THREE.MeshStandardMaterial({ color: mist ? 0x83d7c1 : magma ? 0xff4a12 : 0x7950ed, emissive: mist ? 0x4aab91 : magma ? 0xff2600 : 0x6437ef, emissiveIntensity: magma ? 1.8 : 1.5, roughness: 0.2 }),
@@ -137,7 +137,7 @@ export function createTheme(api, area) {
   }
   // Visual-only backdrop: follows the camera, remains behind physical walls,
   // and never modifies collision, visibility, map cells or saved state.
-  let b5Fog = null, b5FogTexture = null, b5FogBuild = 0, b5Sparks = null;
+  let b5Fog = null, b5FogTexture = null, b5FogBuild = 0, b5Sparks = null, b5EdgeMist = null;
   const b5FogPath = './field/assets/b5-distant/facade020c-windows.png';
   function installB5Fog() {
     if (area !== 5 || !g.scene) return;
@@ -148,6 +148,8 @@ export function createTheme(api, area) {
     g.scene.add(b5Fog.mesh);
     b5Sparks = createB5ArcaneSparks({count:g.high?42:16});
     g.scene.add(b5Sparks.points);
+    b5EdgeMist = createB5PathEdgeMist();
+    g.scene.add(b5EdgeMist.mesh);
     new THREE.TextureLoader().load(b5FogPath, texture => {
       if (token !== b5FogBuild || !b5Fog) { texture.dispose(); return; }
       texture.colorSpace = THREE.SRGBColorSpace;
@@ -164,6 +166,7 @@ export function createTheme(api, area) {
     if (b5Fog) { b5Fog.mesh.parent?.remove(b5Fog.mesh); b5Fog.dispose(); b5Fog = null; }
     b5FogTexture?.dispose(); b5FogTexture = null;
     if (b5Sparks) { b5Sparks.points.parent?.remove(b5Sparks.points); b5Sparks.dispose(); b5Sparks = null; }
+    if (b5EdgeMist) { b5EdgeMist.mesh.parent?.remove(b5EdgeMist.mesh); b5EdgeMist.dispose(); b5EdgeMist = null; }
   }
   async function build(a, S, info) {
     if (surfaces) await surfaces.ready;
@@ -388,6 +391,7 @@ export function createTheme(api, area) {
       b5Fog.mesh.quaternion.copy(eye.quaternion);
       b5Fog.update(now * .001);
       b5Sparks?.update(now * .001,eye.position);
+      b5EdgeMist?.update(now * .001,eye);
     }
     if (surfaces) {
       surfaces.tick(now); volcanicDetail?.tick(now);
