@@ -1,0 +1,31 @@
+name: B5 Ruined Throne V1 Render
+on:
+  push:
+    branches: [feature/b5-ruined-throne-v1-20261115]
+    paths:
+      - 'tools/b5-throne/**'
+      - '.github/workflows/b5-throne-render.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy
+      - name: Render GLB and three views
+        run: |
+          blender -b -t 2 --python-expr 'import numpy; print("numpy available:", numpy.__version__)'
+          blender -b -t 2 --python tools/b5-throne/build_v1.py
+      - name: Verify output
+        run: |
+          test -s render-output/b5-throne-v1/b5-ruined-throne-v1.glb
+          for view in front side angle; do test -s render-output/b5-throne-v1/$view.png; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-ruined-throne-v1-glb-and-renders
+          path: render-output/b5-throne-v1/
+          retention-days: 14
