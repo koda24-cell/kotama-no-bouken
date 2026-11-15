@@ -1,6 +1,8 @@
 """Collect measured, individually verified assets; never invent missing output."""
+import ast
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -41,6 +43,23 @@ for asset_id,name in NAMES.items():
     source=ROOT/'tools/f1-sacred-forest/assets'/('build_'+asset_id+'.py')
     m['buildScript']='tools/f1-sacred-forest/assets/'+source.name
     m['buildScriptSha256']=hashlib.sha256(source.read_bytes()).hexdigest()
+    # A successful old render must not silently stand in for a revised model.
+    dependencies={source,ROOT/'tools/f1-sacred-forest/common.py'}
+    pending=list(dependencies)
+    while pending:
+        dep=pending.pop()
+        for node in ast.walk(ast.parse(dep.read_text())):
+            if not isinstance(node,ast.ImportFrom) or not node.module:continue
+            for directory in (source.parent,source.parent.parent):
+                local=directory/(node.module.replace('.','/')+'.py')
+                if local.is_file() and local not in dependencies:
+                    dependencies.add(local);pending.append(local)
+    m['buildDependencies']={}
+    for dep in sorted(dependencies):
+        rel=str(dep.relative_to(ROOT));now=dep.read_bytes()
+        recorded=subprocess.check_output(['git','show',m['sourceCommit']+':'+rel],cwd=ROOT)
+        assert recorded==now,f'{asset_id}: rebuild required after changing {rel}'
+        m['buildDependencies'][rel]=hashlib.sha256(now).hexdigest()
     m['evidenceHashes']={r:hashlib.sha256((OUT/r).read_bytes()).hexdigest() for r in m['renders']}
     assets.append(m)
 

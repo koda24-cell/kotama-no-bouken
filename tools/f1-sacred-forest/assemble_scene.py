@@ -73,6 +73,10 @@ VIEWS = {
         "position": (.0, 11.0, 1.6), "target": (0.0, 18.0, 1.70),
         "lens": 25.8, "description": "目高1.6m。中庭の開放感から石造回廊への圧縮。",
     },
+    "shrine_detail": {
+        "position": (-2.0, 4.8, 1.6), "target": (-4.8, 8.5, 1.35),
+        "lens": 40.0, "description": "目高1.6m。小祠の屋根板・格子・基壇と周囲の植生を接写。",
+    },
     "birdseye": {
         "position": (31.0, -38.0, 37.5), "target": (1.0, 2.0, .0),
         "ortho_scale": 59.0, "description": "配置検証用鳥瞰。外側の背景用forest beltも含む。ゲーム視点の証拠とは区別。",
