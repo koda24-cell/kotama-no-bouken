@@ -18,4 +18,4 @@ const SNOWDRIFT_BOSS_DATA = {
 };
 
 // 隠しボス「混沌の幻影」。戦闘（script.js の createEnemy）と図鑑（monster-compendium.js）の両方がこの値を参照する。
-const hiddenBossData={name:"混沌の幻影",element:"無属性",weaknesses:[],resistances:["炎","氷","雷","聖","斬撃","打撃","壊","突"],hp:7200,attack:145,defense:155,spAttack:165,spDefense:95,gold:0,sprite:"maou",image:"assets/紫煙を纏う影の亡霊アニメーション.gif",actionName:"混沌の一撃"};
+const hiddenBossData={name:"混沌の幻影",element:"無属性",weaknesses:[],resistances:["炎","氷","雷","聖","斬撃","打撃","壊","突"],hp:7200,attack:145,defense:155,spAttack:165,spDefense:95,gold:0,sprite:"maou",image:"assets/monsters/chaos-phantom-standing-v1.png",actionName:"混沌の一撃"};

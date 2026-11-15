@@ -120,3 +120,7 @@ BGM
 - `field/b4-surface-library.js`：既存の `assets/3d/dungeons/b4_dragonfire/textures/` の火山岩・灰色石・黒ずんだ青銅・溶岩の色/法線/粗さ/発光画像を再利用。元画像の削除・上書きなし。
 - `field/b4-volcanic-detail.js`：柱状節理、破砕岩、冷却岩殻、爪痕、火の粉をThree.jsの基本形状から生成。GPT / Codexによる本プロジェクト用のオリジナル描画コード。
 - 炭化坑木の木目と城塞の灰煙・溶岩の照り返しの背景は、同コード内で数式とCanvasから生成。外部の画像・モデル・ライブラリ・サービスの追加なし。第三者素材からの転用なし。
+
+## 敵立ち絵 2026-11-15
+
+`assets/monsters/*-standing-v1.png`（6枚）は本チャットでOpenAI画像生成により制作した静止画。ユーザー依頼により保存・対応敵imageへ設定。第三者のPinterest参考画像そのものは同梱していない。対応・出典・ハッシュは `standing-art-manifest.json` と `docs/ENEMY_STANDING_ART_HANDOFF_20261115.md` を参照。
