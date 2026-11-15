@@ -1,0 +1,31 @@
+name: B2 Frozen Ancient Altar Blender Preview
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/b2-frozen-ancient-altar-20261112]
+    paths:
+      - 'tools/b2-altar/**'
+      - '.github/workflows/b2-frozen-ancient-altar.yml'
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate GLB and three real Blender renders
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
+            set -e
+            blender -b -t 2 --python tools/b2-altar/build-and-render.py
+          '
+      - name: Check output
+        run: |
+          test -s render-output/b2-frozen-ancient-altar.glb
+          for view in front side high-angle; do test -s "render-output/b2-frozen-ancient-altar-$view.png"; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b2-frozen-ancient-altar-preview
+          path: render-output/
+          retention-days: 14
