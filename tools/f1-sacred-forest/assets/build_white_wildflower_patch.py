@@ -20,22 +20,35 @@ def flower(center, radius, angle, maturity):
     for k in range(5):
         a=angle+k*math.tau/5
         d=Vector((math.cos(a),math.sin(a),0));side=Vector((-d.y,d.x,0))
-        b=c+d*radius*.10
-        p1=c+d*radius*.49+Vector((0,0,radius*.16))
-        p2=c+d*radius*.88+Vector((0,0,radius*.12))
-        tip=c+d*radius+Vector((0,0,radius*.06))
-        w=radius*.36
-        verts=[b,p1,p2,tip,p1-side*w,p2-side*w*.71,
-               p1+side*w,p2+side*w*.71]
-        o=mesh('cupped fivefold petal',[tuple(v) for v in verts],
-               [(0,4,1),(1,4,5,2),(2,5,3),(0,1,6),(1,2,7,6),(2,3,7)],petal)
+        # Smooth teardrop perimeter and a shallow real cup replace an eight-point
+        # paper-like petal. Single end vertices avoid degenerate tip triangles.
+        steps=12;across=4
+        verts=[tuple(c+d*radius*.10)]
+        coords=[(.5,0)]
+        for row in range(1,steps):
+            t=row/steps
+            width=radius*.39*math.sin(math.pi*t)**.58*(.82+.18*t)
+            for column in range(across+1):
+                u=-1+2*column/across
+                z=radius*(.12*math.sin(math.pi*t)+.06*t+.035*u*u*math.sin(math.pi*t))
+                verts.append(tuple(c+d*radius*(.10+.90*t)+side*(u*width)+Vector((0,0,z))))
+                coords.append(((u+1)/2,t))
+        tip_index=len(verts)
+        verts.append(tuple(c+d*radius+Vector((0,0,radius*.06))))
+        coords.append((.5,1))
+        faces=[(0,1+j,1+j+1) for j in range(across)]
+        for row in range(steps-2):
+            start=1+row*(across+1);next_start=start+across+1
+            for column in range(across):
+                faces.append((start+column,next_start+column,next_start+column+1,start+column+1))
+        last_start=1+(steps-2)*(across+1)
+        faces.extend((last_start+j,tip_index,last_start+j+1) for j in range(across))
+        o=mesh('rounded cupped fivefold petal',verts,faces,petal)
         uv=o.data.uv_layers.new(name='UVMap')
         o.data.uv_layers.active=uv
         uv.active_render=True
-        coords=[(.5,0),(.5,.4),(.5,.8),(.5,1),(0,.4),(.1,.8),(1,.4),(.9,.8)]
-        for l in o.data.loops:uv.data[l.index].uv=coords[l.vertex_index]
-        # Fine radial petal fold is geometry, readable on the side view.
-        for p in o.data.polygons:p.use_smooth=True
+        for loop in o.data.loops:uv.data[loop.index].uv=coords[loop.vertex_index]
+        for polygon in o.data.polygons:polygon.use_smooth=True
         # Five narrow green sepals beneath the blossom.
         leaf('pointed calyx sepal',c-Vector((0,0,.012)),c+d*radius*.50-Vector((0,0,.015)),
              radius*.19,m['leaf'],curve=.004)
