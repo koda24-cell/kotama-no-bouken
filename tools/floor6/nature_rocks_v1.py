@@ -52,14 +52,15 @@ def rock_part(name,loc,scale,seed,materials):
  for v in obj.data.vertices:
   co=v.co;angle=math.atan2(co.y,co.x)
   macro=1+0.30*math.sin(angle*2.7+seed)+0.19*math.cos(co.z*3.8+seed*0.7)
-   # A directional fracture trench with depth on one face
-   trench=math.exp(-((co.x*.8+co.y*.6-.12)**2)/.009) * max(0,1-abs(co.z)*.65)
-   macro-=.25*trench
+  # A directional fracture trench with depth on one face
+  trench=math.exp(-((co.x*.8+co.y*.6-.12)**2)/.009) * max(0,1-abs(co.z)*.65)
+  macro-=.25*trench
   micro=rng.uniform(-0.15,0.15)
   v.co=(co.x*(macro+micro),co.y*(macro+micro),co.z*(1+micro*0.55))
  obj.scale=scale
  for m in materials:obj.data.materials.append(m)
  for poly in obj.data.polygons:poly.material_index=rng.choices(range(len(materials)),weights=[8]+[2]*(len(materials)-1))[0]
+ add_uv(obj)
  return obj
 def angular_shard(name, location, radius, height, seed):
  rng=random.Random(seed)
