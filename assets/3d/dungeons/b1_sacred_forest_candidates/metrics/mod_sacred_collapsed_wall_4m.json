@@ -1,0 +1,53 @@
+{
+  "bytes": 1883680,
+  "sha256": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+  "tris": 4164,
+  "verts": 10731,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "sacred_fresh_fracture",
+    "sacred_root_bark",
+    "sacred_velvet_moss",
+    "sacred_weathered_stone"
+  ],
+  "textureCount": 12,
+  "textureBytes": 1336382,
+  "sizeMeters": [
+    4.0394,
+    3.9663,
+    0.778
+  ],
+  "bboxMin": [
+    -2.0394,
+    0.0,
+    -0.79
+  ],
+  "bboxMax": [
+    2.0,
+    3.9663,
+    -0.012
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "mod_sacred_collapsed_wall_4m",
+  "file": "modules/mod_sacred_collapsed_wall_4m.glb",
+  "category": "modules",
+  "desc_ja": "4m footprint wall with a genuinely missing asymmetric crown. Highest surviving corner under 4m, solid lower retaining wall, wet ledges and roots exploit actual masonry fractures. Inner face Y=0; depth 0.8m.",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "44caff1614e97853190d4a10a1db2ef7dc6c7850",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/mod_sacred_collapsed_wall_4m.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/mod_sacred_collapsed_wall_4m/front.png",
+    "renders/mod_sacred_collapsed_wall_4m/side.png",
+    "renders/mod_sacred_collapsed_wall_4m/angle.png",
+    "renders/mod_sacred_collapsed_wall_4m/top.png"
+  ]
+}

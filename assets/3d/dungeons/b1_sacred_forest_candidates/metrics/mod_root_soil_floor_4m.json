@@ -1,0 +1,53 @@
+{
+  "bytes": 1224048,
+  "sha256": "1806bab101b7114bbdf9989ffb05d7b2de77b830c635d31b84592c27c7cb0af5",
+  "tris": 1992,
+  "verts": 3970,
+  "meshes": 5,
+  "drawCalls": 5,
+  "materials": [
+    "sacred_damp_forest_soil",
+    "sacred_old_leaf_litter",
+    "sacred_root_bark",
+    "sacred_velvet_moss",
+    "sacred_weathered_stone"
+  ],
+  "textureCount": 15,
+  "textureBytes": 1076850,
+  "sizeMeters": [
+    4.0,
+    0.3789,
+    4.0
+  ],
+  "bboxMin": [
+    -2.0,
+    -0.22,
+    -2.0
+  ],
+  "bboxMax": [
+    2.0,
+    0.1589,
+    2.0
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "id": "mod_root_soil_floor_4m",
+  "file": "modules/mod_root_soil_floor_4m.glb",
+  "category": "modules",
+  "desc_ja": "4m level forest soil with buried processional slabs; 1.7m clear central walking strip, roots confined to side margins; boundary surface Z=0.",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "affaa558df53d0dbdbd3d05aa2a5388e90fa2acd",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/mod_root_soil_floor_4m.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/mod_root_soil_floor_4m/front.png",
+    "renders/mod_root_soil_floor_4m/side.png",
+    "renders/mod_root_soil_floor_4m/angle.png",
+    "renders/mod_root_soil_floor_4m/top.png"
+  ]
+}

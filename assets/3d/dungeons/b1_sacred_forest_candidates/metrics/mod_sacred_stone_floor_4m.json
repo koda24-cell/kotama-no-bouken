@@ -1,0 +1,51 @@
+{
+  "bytes": 939220,
+  "sha256": "bda106dd121dc64cd45e37af87db168a2eb3dfbc5b159125f35af0592e56adca",
+  "tris": 3380,
+  "verts": 6735,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "sacred_earth_mortar",
+    "sacred_velvet_moss",
+    "sacred_weathered_stone"
+  ],
+  "textureCount": 9,
+  "textureBytes": 698299,
+  "sizeMeters": [
+    4.0,
+    0.2302,
+    4.0
+  ],
+  "bboxMin": [
+    -2.0,
+    -0.21,
+    -2.0
+  ],
+  "bboxMax": [
+    2.0,
+    0.0202,
+    2.0
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "id": "mod_sacred_stone_floor_4m",
+  "file": "modules/mod_sacred_stone_floor_4m.glb",
+  "category": "modules",
+  "desc_ja": "4m shrine paving; perimeter top Z=0, true chipped slab corners, sheltered seam moss. Blender Z-up / glTF Y-up. Ground placement.",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "affaa558df53d0dbdbd3d05aa2a5388e90fa2acd",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/mod_sacred_stone_floor_4m.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/mod_sacred_stone_floor_4m/front.png",
+    "renders/mod_sacred_stone_floor_4m/side.png",
+    "renders/mod_sacred_stone_floor_4m/angle.png",
+    "renders/mod_sacred_stone_floor_4m/top.png"
+  ]
+}
