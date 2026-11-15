@@ -1,0 +1,62 @@
+name: Preserve approved B4 V33 magma wall
+on:
+  push:
+    branches:
+      - assets/b4-v33-approved-20261115
+    paths:
+      - '.github/workflows/b4-v33-approved-save.yml'
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified V33 output
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p render-input
+          gh run download 43723072680 --repo koda24-cell/kotama-no-bouken -n b4-v33-three-magma-streams -D render-input
+          ls -lh render-input
+      - name: Validate and prepare GLB, PNG, manifest
+        run: |
+          python3 - <<'PY'
+          import os,glob,shutil,hashlib,json,struct
+          source='render-input'
+          glbs=glob.glob(source+'/*.glb')
+          pngs=glob.glob(source+'/b4-v33-*.png')
+          assert len(glbs)==1,(glbs,pngs)
+          assert len(pngs)==5,(glbs,pngs)
+          with open(glbs[0],'rb') as f:assert f.read(4)==b'glTF'
+          for p in pngs:
+           with open(p,'rb') as f:assert f.read(8)==b'\x89PNG\r\n\x1a\n'
+          dst='assets/models/floor4'
+          rev=dst+'/reviews/b4-v33-magma-rockwall'
+          os.makedirs(rev,exist_ok=True)
+          target=dst+'/b4-v33-magma-rockwall.glb'
+          shutil.copy2(glbs[0],target)
+          for p in pngs:shutil.copy2(p,rev+'/'+os.path.basename(p))
+          files=[target]+sorted(glob.glob(rev+'/*.png'))
+          manifest={
+           'asset':'b4-v33-magma-rockwall','approval_status':'user-approved-2026-11-15',
+           'source_run_id':43723072680,'source_pr':379,'source_branch':'feature/b4-v33-three-magma-streams-20261115',
+           'format':'glTF 2.0 binary (GLB)','animated':False,
+           'license_notes':'Original V13 + Poly Haven Rock Face 02 CC0 reference',
+           'files':[{'path':p,'size_bytes':os.stat(p).st_size,'sha256':hashlib.sha256(open(p,'rb').read()).hexdigest()} for p in files]
+          }
+          with open(rev+'/manifest.json','w') as f:json.dump(manifest,f,indent=2,ensure_ascii=False)
+          print(json.dumps(manifest,indent=2))
+          PY
+      - name: Commit approved assets to review branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models/floor4/b4-v33-magma-rockwall.glb assets/models/floor4/reviews/b4-v33-magma-rockwall
+          git diff --cached --stat
+          git commit -m 'Preserve user-approved B4 V33 GLB, 5 PNGs and manifest'
+          git push origin HEAD:assets/b4-v33-approved-20261115
