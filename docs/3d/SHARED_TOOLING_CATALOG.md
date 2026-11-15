@@ -112,3 +112,12 @@
 - 実検証: 初期敷石/林床GLBをvalidateBytesで検査、error0。normal map使用時のtangent未収録warning3/5を検出。
 - 対応: Blender exporterにexport_tangents=True、n-gon/Boolean capsを明示triangulateする修正コードを制作ブランチ8ab87e1へ。新GLBでのwarning解消確認と全17点検査はまだ。形式検査をアート品質・性能承認の代用にしない。
 - 担当/日付: GPT / 2026-11-16 JST。tools/f1-sacred-forest/validate_glbs.cjs。
+
+### 一層自然素材: 独自針葉カード/曲面葉と実画像QA (2026-11-16 JST)
+- Blender5.3 official exporterのsearch_node_tree.py detect_alpha_clipをソース確認。image Alpha→Math GREATER_THAN(.45)→Principled Alphaで標準glTF MASK/cutoffを出力する実装を制作。blend設定だけのBLEND化を避ける。
+- 古杉: 自作512px針葉spray PNG/normal/ORM、湾曲カード498枚・30主枝/240副枝。画像の針葉silhouetteを実視認、script静的確認済。新GLBのMASK/密度は最終再build待ち。旧広葉/疎冠を完成版にしない。
+- その他の葉: 256px独自葉脈PBR v2＋1葉36triの滑らかなカップ。単一pole/明示UV/正しい表面normal。共通helper7171fa4でfreeze、全自然6点を最終再buildする。
+- 実GLB画像QAで石碑Boolean後の本体消失を発見。Khronos形式合格だけでは造形成立を保証しない。outward winding＋直線凸cutter＋stroke毎のvolume guardで修正し、1.8m本体/実陰刻を4方向実画像で再確認成功。
+- 製品GLBのsource commitと現在のscript/common/helperを照合し、古いモデル/画像の混在を拒否するmanifest gateを追加。PNGから実寸/サンプル数、GLB/blend/画像hashを記録する。
+- Blender5.3 blendは標準Zstandard圧縮containerを利用するため、先頭BLENDER文字だけで形式を否定しない。編集ソースとゲームGLBは分離。
+- 出典/権利: 針葉/葉脈/木塗膜は独自画像。写真は既存記録のCC0。参照Pinterest画像の再配布なし。制作PR https://github.com/koda24-cell/kotama-no-bouken/pull/391 。最終全景/全17点検査/ゲーム統合はまだ。
