@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "asset_set": "b2_stone_ruins_v4",
+  "approved": true,
+  "branch": "feature/b2-bridge-v04-vfx-20261115",
+  "base_path": "assets/3d/dungeons/b2_water_source/models/stone_ruins_v4",
+  "editor_notes": "Claude can edit Three.js transforms/materials and text Python source; Blender execution/rendering is GPT/Actions responsibility.",
+  "units": "GLB scene units; confirm game tile scale before use",
+  "assets": [
+    {
+      "id": "broken_parapet",
+      "file": "broken_parapet.glb",
+      "kind": "damaged_masonry_parapet",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "material_tint_hex": "#FFFFFF",
+      "front_png": "reviews/broken_parapet_front.png",
+      "side_png": "reviews/broken_parapet_side.png",
+      "angle_png": "reviews/broken_parapet_angle.png"
+    },
+    {
+      "id": "fallen_pillar",
+      "file": "fallen_pillar.glb",
+      "kind": "collapsed_column",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "material_tint_hex": "#FFFFFF",
+      "front_png": "reviews/fallen_pillar_front.png",
+      "side_png": "reviews/fallen_pillar_side.png",
+      "angle_png": "reviews/fallen_pillar_angle.png"
+    },
+    {
+      "id": "embedded_spire",
+      "file": "embedded_spire.glb",
+      "kind": "standing_ruined_column",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "material_tint_hex": "#FFFFFF",
+      "front_png": "reviews/embedded_spire_front.png",
+      "side_png": "reviews/embedded_spire_side.png",
+      "angle_png": "reviews/embedded_spire_angle.png"
+    },
+    {
+      "id": "rubble_ice_scatter",
+      "file": "rubble_ice_scatter.glb",
+      "kind": "stone_rubble_no_ice",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "material_tint_hex": "#FFFFFF",
+      "front_png": "reviews/rubble_ice_scatter_front.png",
+      "side_png": "reviews/rubble_ice_scatter_side.png",
+      "angle_png": "reviews/rubble_ice_scatter_angle.png"
+    }
+  ],
+  "source_script": "tools/b2-render/build-stone-ruins-v4.py",
+  "render_workflow": ".github/workflows/b2-stone-ruins-v4-render.yml",
+  "approval_run": 43723453333
+}
