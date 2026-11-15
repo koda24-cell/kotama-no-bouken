@@ -56,13 +56,62 @@ bpy.ops.object.modifier_apply(modifier=mod.name);bpy.data.objects.remove(cutter,
 turned('finial_pedestal',[(1.42,.11),(1.47,.115),(1.49,.075)],stone,10)
 turned('weathered_round_finial',[(1.475,.055),(1.50,.075),(1.54,.066),(1.58,.035),(1.60,.006)],stone,12)
 
-# Moss follows the upward-facing roof slope, never filling the firebox aperture.
-for j in range(26):
-    a=rng.uniform(0,math.tau);r=rng.uniform(.095,.25)
-    x=r*math.cos(a);y=r*math.sin(a)
-    if x>.12 and y<-.12:continue
-    z=1.435-(r-.10)*.30
-    tube('roof_moss_cushion',[(x-.018,y,z),(x,y+.008,z+.017),(x+.021,y,z+.003)],[.018,.023,.011],moss,6)
+# Four square hips are axis-aligned because the turned roof's corner rings
+# start at pi/4. Follow their exact piecewise surface, rather than a cone or
+# radial approximation that would leave moss hovering over the stone.
+def roof_surface_z(x,y):
+    r=max(abs(x),abs(y))*math.sqrt(2)
+    if r<=.13:return 1.43
+    if r<=.30:return 1.43-(r-.13)*(.05/.17)
+    return 1.38-(r-.30)*(.065/.13)
+
+
+def roof_moss_patch(index,cx,cy,radius):
+    count=13
+    phase=rng.uniform(0,math.tau)
+    aspect=rng.uniform(.67,.94)
+    rotation=rng.uniform(0,math.tau)
+    rim=[]
+    for j in range(count):
+        a=j*math.tau/count
+        # Uneven lobes and short missing bites avoid little disks or pebbles.
+        organic=.76+.16*math.sin(a*3+phase)+.08*math.cos(a*5-phase)
+        dx=radius*organic*math.cos(a);dy=radius*organic*math.sin(a)*aspect
+        x=cx+dx*math.cos(rotation)-dy*math.sin(rotation)
+        y=cy+dx*math.sin(rotation)+dy*math.cos(rotation)
+        rim.append((x,y))
+    # Thin mat: foot is 0.3mm above stone, centre loft 1.8-3.7mm;
+    # the body follows every roof hip and does not make a rounded tube bundle.
+    thickness=rng.uniform(.0018,.0037)
+    verts=[(cx,cy,roof_surface_z(cx,cy)+thickness)]
+    verts.extend((x,y,roof_surface_z(x,y)+rng.uniform(.0010,.0018)) for x,y in rim)
+    verts.extend((x,y,roof_surface_z(x,y)+.0003) for x,y in rim)
+    faces=[]
+    for j in range(count):
+        a=1+j;b=1+(j+1)%count
+        faces.append((0,a,b))
+        faces.append((a,count+a,count+b,b))
+    faces.append(tuple(count+j for j in reversed(range(1,count+1))))
+    return mesh('surface_conforming_roof_moss_%02d'%index,verts,faces,moss)
+
+
+# Broken front-right eave remains exposed. Shade and retained moisture near
+# the rear and left hip transitions favour irregular clustered growth.
+clouds=[(-.135,.135,.039),(.055,.205,.030),(-.205,-.025,.035)]
+accepted=0
+for attempt in range(120):
+    cx,cy,spread=clouds[rng.randrange(len(clouds))]
+    x=cx+rng.gauss(0,spread);y=cy+rng.gauss(0,spread)
+    radius=rng.uniform(.015,.035)
+    # Keep every patch on the unbroken upper roof, away from the finial.
+    if max(abs(x),abs(y))+radius>.299:continue
+    if max(abs(x),abs(y))-radius<.105:continue
+    if x+radius>.105 and y-radius<-.105:continue
+    roof_moss_patch(accepted,x,y,radius)
+    accepted+=1
+    if accepted==18:break
+
+# The base growth is retained; this revision changes only the roof mats.
 for x,y in [(-.24,-.07),(-.2,.14),(.2,.13)]:
     tube('base_moss',[(x-.035,y,.18),(x,y,.19),(x+.03,y+.015,.17)],[.014,.025,.013],moss,6)
 
