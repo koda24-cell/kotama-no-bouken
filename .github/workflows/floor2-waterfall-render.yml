@@ -1,0 +1,47 @@
+name: Floor 2 Frozen Waterfall Blender Render
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/floor2-frozen-waterfall-open-cavern-20261112
+    paths:
+      - 'tools/floor2/waterfall/**'
+      - '.github/workflows/floor2-waterfall-render.yml'
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install 'numpy>=1.26,<3' 'trimesh>=4,<5'
+      - name: Build GLB
+        run: |
+          mkdir -p render-output
+          python tools/floor2/waterfall/build.py
+          mv floor2_frozen_waterfall.glb render-output/
+          python - <<'PY'
+          import trimesh
+          s=trimesh.load('render-output/floor2_frozen_waterfall.glb',force='scene')
+          assert len(s.geometry)>50,len(s.geometry)
+          print('GEOMETRIES',len(s.geometry))
+          PY
+      - name: Pull Blender Docker
+        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: Render front side angle
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+            -b -t 2 --python tools/floor2/waterfall/render.py -- render-output/floor2_frozen_waterfall.glb render-output
+          for view in front side angle; do
+            test -s "render-output/floor2_frozen_waterfall-${view}.png"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: floor2-frozen-waterfall-preview
+          path: render-output/
+          retention-days: 14
