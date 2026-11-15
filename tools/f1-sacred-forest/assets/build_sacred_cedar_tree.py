@@ -5,6 +5,7 @@ import random
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from natural import *
+from cedar_crown import cedar_spray_material, spray_card
 from common import reset_scene, finish
 
 reset_scene()
@@ -60,11 +61,14 @@ for i in range(11):
         stem('fine root fork %02d'%i,[pts[2],tuple(end+side*.3),tuple(end+d*.35+side*.45-Vector((0,0,.03)))],
              [.08,.035,.008],m['bark'],6)
 
-# High crown: irregular lateral limb hierarchy, ascending small upper tiers.
-for i in range(24):
-    z = 3.65+i*.235+rng.uniform(-.12,.12)
+# Fine needle sprays replace the broad leaf blades of the first review.
+# Each primary limb carries real wooden secondary shoots; the fine terminal
+# needles use cutout images on bowed cards, at two different 3D attitudes.
+spray_mat=cedar_spray_material()
+for i in range(30):
+    z = 3.65+i*.187+rng.uniform(-.10,.10)
     a = i*2.39996+rng.uniform(-.18,.18)
-    length = (2.75-(z-3.65)*.33)*rng.uniform(.83,1.13)
+    length = (2.42-(z-3.65)*.29)*rng.uniform(.87,1.12)
     d = Vector((math.cos(a),math.sin(a),0))
     tangent = Vector((-d.y,d.x,0))
     start = Vector((.05*math.sin(z),-.04,z))
@@ -72,8 +76,8 @@ for i in range(24):
               start+d*(length*.70)+tangent*.13+Vector((0,0,.26)),
               start+d*length+Vector((0,0,.10))]
     stem('primary cedar limb %02d'%i,points,[.13*(10-z)/7+.025,.085,.045,.008],m['bark'],8)
-    for j in range(7):
-        t = .26+j*.105
+    for j in range(8):
+        t = .20+j*.098
         anchor = start+d*length*t+Vector((0,0,.24))
         sign = -1 if j%2 else 1
         span = length*.37*(1-t*.5)
@@ -81,20 +85,22 @@ for i in range(24):
         mid = anchor.lerp(tip,.6)+Vector((0,0,.08))
         stem('secondary fan %02d %02d'%(i,j),[anchor,mid,tip],[.027,.014,.003],m['bark'],5)
         axis = tip-anchor
-        for k in range(12):
-            u = .08+k*.073
-            base = anchor+axis*u+Vector((0,0,.04*math.sin(u*math.pi)))
-            side = -1 if k%2 else 1
-            leafdir = (d*.6+tangent*sign*.35+tangent*side*.6).normalized()
-            blade_tip = base+leafdir*rng.uniform(.19,.31)+Vector((0,0,-.025))
-            leaf('cedar scale spray',base,blade_tip,.07,m['leaf_light'] if k%7==0 else m['leaf'],
-                 roll=rng.uniform(-.35,.35),curve=.012)
+        for k in range(2):
+            base=anchor+axis*(.17+k*.29)
+            direction=(axis.normalized()*.73+d*.44+tangent*sign*.16).normalized()
+            card_length=(.70+(1-t)*.27)*rng.uniform(.85,1.08)
+            card_tip=base+direction*card_length+Vector((0,0,-.12+rng.random()*.08))
+            spray_card('cedar fine terminal fan',base,card_tip,
+                       card_length*.80,spray_mat,
+                       roll=(.55 if k else -.35)+rng.uniform(-.26,.26),bend=.06)
 
 # Terminal leader has sprays, with a visible irregular rather than blunt tip.
-for j in range(12):
-    z = 9.1+j*.065; a=j*2.4
-    base=Vector((0,-.04,z));d=Vector((math.cos(a),math.sin(a),.15))
-    leaf('leader spray',base,base+d*(.45-(z-9.1)*.37),.11,m['leaf_light'],curve=.018)
+for j in range(18):
+    z = 9.0+j*.048; a=j*2.4
+    base=Vector((0,-.04,z));d=Vector((math.cos(a),math.sin(a),.30)).normalized()
+    length=.49-(z-9)*.29
+    spray_card('fine leader spray',base,base+d*length,length*.67,spray_mat,
+               roll=rng.uniform(-.8,.8),bend=.025)
 
 # Damp side receives isolated moss at root saddles, not a uniform green coat.
 for i in range(16):
@@ -103,4 +109,4 @@ for i in range(16):
 
 print('BARK_PHOTO_AVAILABLE', object_texture_state())
 finish('sacred_cedar_tree','props',
-       '約10mの根張り古杉。基部原点、樹皮縦UV、実形状の幹裂け・根の張り・不規則な枝階層と針葉の透いた樹冠。')
+       '約10mの根張り古杉。基部原点、実形状の幹裂け・根張りを保持。枝階層と独自512px針葉sprayの湾曲alphaMASKカードで密度のある樹冠。')
