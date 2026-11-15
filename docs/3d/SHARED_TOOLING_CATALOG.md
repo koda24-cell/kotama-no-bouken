@@ -52,3 +52,63 @@
 - ACE-Step CPU BF16 60秒新版を実生成: https://github.com/koda24-cell/music-ai-studio/actions/runs/43728689924 。Artifact 14167877749のZIP hash/CRC、WAV hash・60秒/48kHz stereo PCM16・finite/非無音をローカルで確認。再解析95.7 BPM / G minor候補。聴感・楽器・歌声・音楽的ループは未確認。
 - runnerで実際のディスク不足を確認し、使い捨て環境の未使用SDK削除＋uv cache整理で対処。swap追加。公式コードの ACESTEP_GENERATION_TIMEOUT=1800 をCPU用に指定。関連失敗runと修正根拠は music-ai-studio PR #4 の最新版状態記録へ保存。
 - ループ端は5ms raised-cosineのデクリック。速度・音程の変更なし。元の65秒生成/5秒重ね合わせ案は採用せず、既存成功と同じ60秒負荷を採用。波形連続性は音楽的品質の承認と別。
+
+## 追加候補: 一層後半の自然神域・PBR素材の公式調査 (2026-11-16 JST)
+
+- 担当: GPT / environment_art_plan。
+- 新規外部アドオンの導入なし。下記はライセンス/メタデータを確認したテクスチャ候補情報であり、取得/Blender描画/GLB実装は未実施。
+- 既存Poly Haven台帳エントリへの追記対象。新しくAPI実行を検証したとは記載しない。
+
+### Poly Haven Mossy Rock / Forest Leaves 02
+- 公式URL: https://polyhaven.com/a/mossy_rock / https://polyhaven.com/a/forest_leaves_02
+- 目的: 一層後半の岩/湿潤な林床の素材候補。既存stage3遺跡都市やstage5深淵城との美術的な区別を維持。
+- ライセンス: 公式 https://polyhaven.com/license を2026-11-16 JSTに確認。配布アセットはCC0、商用/改変/再配布可。サイト一般コンテンツ・例示レンダーを同じ許諾と扱わない。
+- 確認状態: Mossy Rock公式本文で3m幅、Diffuse/Normal GL・DX/Rough/AO/Height/ARMの一覧を確認。Forest Leaves 02は公式検索情報の候補発見まで。
+- 導入状態: 未導入。実ファイル/画像目視/レンダリング未検証。
+- 次の作業: 正規配布ファイルを個別取得、作者/日付/ファイルhashを記録、中立光とThree.js ACES露出1.3で比較。苔入り画像は方向が固定されるので別苔マスクと使い分ける。
+- 証拠/関連資料: `docs/3d/` に採用される設計書/本タスク共有PRを追記する。Actionsなし。
+
+### ambientCG PBR textures (Bark014 / Rock059 / Ground024)
+- 公式URL: https://ambientcg.com/view?id=Bark014 / https://ambientcg.com/view?id=Rock059 / https://ambientcg.com/view?id=Ground024
+- 対象: 樹皮/崖岩/林床。マテリアルの粒度と実寸比較の候補。
+- ライセンス: 公式 https://docs.ambientcg.com/license/ を2026-11-16 JSTに確認。CC0 1.0、商用・改変・再配布・ゲームへの元ファイル同梱を許可。
+- 情報状態: Bark014の公式本文から約1.2m四方、フォトグラメトリ、Firタグを確認。Rock059/Ground024は公式検索メタデータによる候補発見まで。
+- 導入状態: 未導入。画像目視/ダウンロード/Blender/GLB動作は未検証。
+- 導入手順: 採用時のみ公式個別ページから必要解像度を取得。元ファイルと採用マップを台帳登録。全アセット8K化はしない。
+- 注意: 樹種の形状資料と樹皮テクスチャの素材候補を区別。Blender proceduralノードのままGLBに渡ると仮定せず、必要マップへベイクする。
+- PR/Actions/実行ログ: 本タスク情報共有PRに紐付け予定。Actions未実施。
+
+### 実取得の検証追記 (2026-11-16 JST)
+- Poly Haven API `https://api.polyhaven.com/files/mossy_rock` / forest_leaves_02 はHTTP403で失敗。API利用成功とは記載しない。
+- Mossy Rock 4K PNGのdiff/nor_gl/roughは公式直配布URLから取得成功。Pillow13.0.0で4096x4096を全デコード、512/1024 JPEGへLanczos縮小し、全派生画像を再オープン/verify成功。URL/hash/変換条件は正式素材フォルダ `assets/3d/dungeons/b1_sacred_forest_candidates/textures/texture-sources.json` を参照。
+- ambientCG Bark014 / Ground024のgetリンクおよびBark014公式CDNリンクはHTTP403。導入失敗として保持。代わりにPoly Haven Bark Brown01 / Forest Ground01を候補登録して実取得を試行中。
+- 代替候補公式URL: https://polyhaven.com/a/bark_brown_01 / https://polyhaven.com/a/forrest_ground_01 。CC0確認。前者は深い縦溝樹皮、後者は落葉/小枝を含む林床。導入完了はまだこの段階では未確認。
+- 取得スクリプトはscratch側 `/workspace/work/research/fetch-textures.py` と `fetch-texture-fallbacks.py` 。ゲーム実装や実レンダリングはまだ検証していない。
+
+### Blender Lab official MCP / Blender 5.3 cloud workspace
+- 公式: https://www.blender.org/lab/mcp-server/ / https://projects.blender.org/lab/blender_mcp
+- 用途: 一層後半候補を一素材ずつ制作・検査。既存b1原本を変更しない。
+- ライセンス: Blender GPL、official add-on GPL-3.0-or-later(source SPDX確認)。MCP repo取得済み。第三者サイトの絵はテクスチャへ転用しない。
+- 状態: cloud環境更新で前セッションの設置が消失。5.3.0公式tarのSHA256照合後再展開済み、server1.0.2を専用venvへ再インストール成功。今回の接続/レンダ検証は未実施。
+- 設置: /workspace/tools。プロセス/ローカルファイルの永続性は環境寿命に依存。完了候補はGitブランチ保存予定。
+- 制作方式: geometry実欠損＋埋込画像MR/normal、GLB再読込レンダ、メートル/4mセル/目高1.6m。common.pyは実装中で未検証。
+- 実取得: Poly Haven mossy_rockのcolor/normal/roughness画像を取得して512/1024JPEG化、Pillowデコード成功。Blender画質は未検証。ambientCG Bark014/Ground024は403失敗、使用済みと扱わない。
+- 調査: Tailwind接続確認、公開Pinterest候補20件、10画像目視。保存/投稿なし。画像再配布許諾未確認のため参照URL/観察文のみ共有。
+- 担当/日付: GPT team / 2026-11-16 JST。関連実装は別candidate PRで検証後追記。
+
+### 一層神域: 実取得・接続・PBR葉脈の検証追記 (2026-11-16 JST)
+- Poly Haven Mossy Rock / Bark Brown 01 / Forrest Ground 01: 写真color/OpenGLnormal/roughnessを取得し、全画像をPillowデコード/目視確認、512/1024JPEGとhash/原URL/CC0記録を作成。ambientCG403失敗は残し、利用していない。
+- 16bit roughnessを8bitへ変換する際の飽和を検出しdivide257で正規化。normal/roughnessはNon-Color、元losslessは作業領域に保持。派生だけをゲーム候補へ同梱予定。
+- 色調派生: 原写真保持、sRGB→linear→Rec709彩度/湿り露出factor→sRGBの再現可能な派生画像。stone .80/.72、bark .70/.72、soil .65/.73 (exposure/saturation)。metadataにhashと変換を記録。モデル承認とは別。
+- 独自葉脈画像: UV中央主脈/斜行二次脈/弱い黄化/微細斑点のオリジナル256px PBR。3色+共有normal/ORMの5JPEG。数値finite/normal正規化とsyntax確認済み、Blenderでの実生成はまだ。外部参照写真を転用しない。
+- Blender Lab official MCP1.0.2→localhost:9876→Blender5.3.0再接続成功、execute_blender_codeからversion/objects取得。今回クラウド環境での事実でありチャットのツールパレットへ自動登録したとの意味ではない。
+- 実GLB再import＋4方向Cycles画像: 敷石/林床で試験成功。白化を検出しstudio照明とThree中立光を調整。古い照明での試験画像は最終証拠にしない。全16素材は未完了。
+- Three r180/Chromium SwiftShader: 暫定2素材の実読込/UV/normal/embedded texture/tri/bytes/bbox/床4辺height0と2×2接続成功、console errors0。実GPUや携帯FPSの保証ではない。
+- 追跡先: feature/ai-gpt-f1-sacred-forest-20261116、tools/f1-sacred-forest/、候補フォルダb1_sacred_forest_candidates。未承認/ゲーム未統合。実装や資産は本情報共有PRへ含めない。
+
+### Khronos glTF-Validator (一層候補の形式検査)
+- 公式: https://github.com/KhronosGroup/glTF-Validator 、npm gltf-validator 2.0.0-dev.3.10 / Apache-2.0 (npm metadata実確認)。
+- 導入: 専用作業領域/workspace/work/browser/node_modulesのみ。ゲーム依存関係は追加していない。
+- 実検証: 初期敷石/林床GLBをvalidateBytesで検査、error0。normal map使用時のtangent未収録warning3/5を検出。
+- 対応: Blender exporterにexport_tangents=True、n-gon/Boolean capsを明示triangulateする修正コードを制作ブランチ8ab87e1へ。新GLBでのwarning解消確認と全17点検査はまだ。形式検査をアート品質・性能承認の代用にしない。
+- 担当/日付: GPT / 2026-11-16 JST。tools/f1-sacred-forest/validate_glbs.cjs。
