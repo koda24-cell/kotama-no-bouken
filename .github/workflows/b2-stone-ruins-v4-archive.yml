@@ -1,0 +1,51 @@
+name: Archive Approved B2 Stone Ruins V4
+on:
+  push:
+    branches: [feature/b2-bridge-v04-vfx-20261115]
+    paths: [.github/workflows/b2-stone-ruins-v4-archive.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Retrieve approved V4 render artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/approved-v4
+          gh run download 43721313749 --repo "${{ github.repository }}" --name b2-stone-ruins-v4-bridge-colors --dir /tmp/approved-v4
+          test -s /tmp/approved-v4/broken_parapet.glb
+          test -s /tmp/approved-v4/broken_parapet_front.png
+      - name: Archive GLB and 3-angle PNGs for Claude and later integration
+        run: |
+          set -euo pipefail
+          target=assets/3d/dungeons/b2_water_source/models/stone_ruins_v4
+          mkdir -p "$target/reviews"
+          for item in broken_parapet fallen_pillar embedded_spire rubble_ice_scatter; do
+            cp "/tmp/approved-v4/$item.glb" "$target/$item.glb"
+            for view in front side angle; do
+              cp "/tmp/approved-v4/${item}_${view}.png" "$target/reviews/${item}_${view}.png"
+            done
+          done
+          cp /tmp/approved-v4/manifest.json "$target/render_manifest.json"
+          (cd "$target" && sha256sum *.glb reviews/*.png > SHA256SUMS.txt)
+          cat > "$target/APPROVAL.md" <<'EOF'
+          # B2 Stone Ruins V4 — approved review archive
+          User approval: 2026-11-15 ("okとします。次に行こう")
+          Blender workflow run: 43721313749
+          Original bridge and V1-V3 assets preserved.
+          Four standalone GLBs and front/side/angle PNGs archived for Claude/browser integration.
+          Status: approved geometry review; not yet integrated into game runtime.
+          EOF
+      - name: Commit approved assets to review branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/3d/dungeons/b2_water_source/models/stone_ruins_v4
+          git commit -m "Archive approved B2 stone ruins V4 GLBs and renders" || exit 0
+          git push
