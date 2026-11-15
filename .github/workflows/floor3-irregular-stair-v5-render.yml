@@ -1,0 +1,35 @@
+name: Floor3 Irregular Stair V5 Render
+on:
+  push:
+    branches: [feature/floor3-ruined-stair-connector-20261115]
+    paths:
+      - 'tools/floor3/ruined_connector/build_irregular_v5.py'
+      - '.github/workflows/floor3-irregular-stair-v5-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - name: Render irregular stair
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_irregular_v5.py 2>&1 | tee blender.log
+          grep -q 'FLOOR3_IRREGULAR_V5_COMPLETE' blender.log
+      - name: Verify output
+        run: |
+          for kind in stairs ramp landing; do
+            test -s "out/floor3_ruined_connector_${kind}_v5.glb"
+            for view in front side angle; do
+              test -s "out/floor3_ruined_connector_${kind}_v5-${view}.png"
+            done
+          done
+      - uses: actions/upload-artifact@v5
+        with:
+          name: floor3-irregular-stair-v5
+          path: out/
+          retention-days: 14
