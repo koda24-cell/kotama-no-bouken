@@ -1,0 +1,31 @@
+name: B2 Ice Bridge Adjacent Modules Render
+on:
+  push:
+    branches:
+      - feature/b2-ice-bridge-adjacent-tiles-20261113
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull Blender Docker
+        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: Generate modules and three review angles
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b2-bridge-tiles
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+            -b -t 2 --python tools/b2-render/build-bridge-adjacent.py
+          test -s render-output/b2-bridge-tiles/bridge_tile_00.glb
+          test -s render-output/b2-bridge-tiles/bridge_tile_01.glb
+          test -s render-output/b2-bridge-tiles/bridge_tile_02.glb
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-ice-bridge-adjacent-v01
+          path: render-output/b2-bridge-tiles/
+          if-no-files-found: error
+          retention-days: 14
