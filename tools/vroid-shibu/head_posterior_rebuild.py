@@ -34,14 +34,14 @@ rear_depth=min(max((vd/vw)*sw*.52,sd*.34),sd*.85)
 seam_y=smn.y+sd*.45
 rx=sw*.485
 rz=sh*.485
-# V12: continuous posterior cross-sections, fitted to smoothed side contours.
-# The V12 linear interpolation made a flat ribbon with large holes.
+# V13: continuous posterior cross-sections, fitted to smoothed side contours.
+# The V13 linear interpolation made a flat ribbon with large holes.
 face_obj=shibu_objs[0]
 source_vertices=[face_obj.matrix_world @ v.co for v in face_obj.data.vertices]
 # Sample several vertical slices, then smooth the edge contour across heights.
 N=48
 zlo=smn.z+sh*.035
-zhi=smx.z-sh*.035
+zhi=smx.z+sh*.015
 def edge_at(z,side):
  band=max(sh*.055,.003)
  candidates=[v for v in source_vertices if abs(v.z-z)<band and (v.x-cx)*side>0]
@@ -68,13 +68,15 @@ for i in range(rows+1):
  mid=(lx+rrx)*.5
  half=max((rrx-lx)*.5,.003)
  norm=(z-zlo)/(zhi-zlo)
- crown=max(.10,math.sin(math.pi*norm)**.42)
+ crown=max(.045,math.sin(math.pi*norm)**.55)
  depth=rear_depth*crown
  for j in range(cols+1):
   phi=math.pi*j/cols
   # An actual curved rear half of the head, not a flattened strip.
   x=mid+half*math.cos(phi)
   y=ry*(1-j/cols)+ly*(j/cols)-depth*math.sin(phi)
+  # Blend upper and lower cross-sections toward the center to round the crown.
+  x=mid+(x-mid)*(.30+.70*math.sin(math.pi*norm)**.30)
   verts.append((x,y,z))
 for i in range(rows):
  for j in range(cols):
@@ -93,11 +95,16 @@ for top in (False,True):
   if top:faces.append((indices[j],indices[j+1],cap))
   else:faces.append((indices[j+1],indices[j],cap))
 mesh=bpy.data.meshes.new('Posterior_shell_mesh');mesh.from_pydata(verts,[],faces);mesh.update()
-head=bpy.data.objects.new('Assassin_posterior_shell_V12',mesh)
+head=bpy.data.objects.new('Assassin_posterior_shell_V13',mesh)
 bpy.context.collection.objects.link(head)
 for poly in mesh.polygons:poly.use_smooth=True
 if face_obj.data.materials:
- head.data.materials.append(face_obj.data.materials[0])
+ # Original face uses textured shader: sample the visible base tint for an even review clay.
+ skin=bpy.data.materials.new('V13_posterior_skin_review')
+ skin.diffuse_color=(0.82,0.69,0.63,1)
+ skin.use_nodes=True
+ skin.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(0.82,0.69,0.63,1)
+ head.data.materials.append(skin)
 else:
  mat=bpy.data.materials.new('Head_neutral_clay')
  mat.diffuse_color=(.75,.71,.70,1)
@@ -121,10 +128,10 @@ for name,offset in [('front',(0,1,0)),('back',(0,-1,0)),('side',(1,0,0)),('back_
 bpy.ops.object.select_all(action='DESELECT')
 for o in shibu_objs+[head]:o.select_set(True)
 bpy.context.view_layer.objects.active=head
-bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_head_posterior_v12_review.glb'),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_head_posterior_v13_review.glb'),export_format='GLB',use_selection=True)
 with open(os.path.join(out,'geometry_measurements.json'),'w') as f:
  json.dump({'shibu_bounds':[list(smn),list(smx)],'vita_bounds':[list(vmn),list(vmx)],
  'shibu_width':sw,'vita_width':vw,'shibu_depth':sd,'vita_depth':vd,
  'shibu_height':sh,'vita_height':vh,'rear_depth':rear_depth,
  'rear_seam_y':seam_y,'new_vertices':len(verts),'new_faces':len(faces),
- 'construction':'V12 face-sampled seam and posterior shell; no sphere, no hair; unapproved review candidate'},f,indent=2)
+ 'construction':'V13 face-sampled seam and posterior shell; no sphere, no hair; unapproved review candidate'},f,indent=2)
