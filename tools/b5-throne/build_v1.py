@@ -10,7 +10,7 @@ def mat(name,color,metal=0,rough=.8,emit=None):
 stone=mat('Basalt carved stone',(.085,.083,.105));edge=mat('Pale worn edges',(.17,.16,.18));iron=mat('Black oxidized iron',(.042,.039,.05),.8,.4);red=mat('Deep crimson enamel',(.23,.018,.028),.45,.35);glow=mat('Subtle infernal seams',(.23,.014,.028),.1,.4,(.6,.025,.045))
 def cube(name,loc,scale,material,bevel=0):
  bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.dimensions=scale;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(material)
- if bevel:mod=o.modifiers.new('Chipped stone edges','BEVEL');mod.width=bevel;mod.segments=2;o.modifiers.new('Weighted normals','WEIGHTED_NORMAL')
+ if bevel:mod=o.modifiers.new('Chipped stone edges','BEVEL');mod.width=bevel;mod.segments=2;o.data.use_auto_smooth=True;o.modifiers.new('Weighted normals','WEIGHTED_NORMAL')
  return o
 def beam(name,a,b,width,depth,material):
  mid=(Vector(a)+Vector(b))/2;d=Vector(b)-Vector(a);o=cube(name,mid,(width,depth,d.length),material,.025);o.rotation_euler=d.to_track_quat('Z','Y').to_euler();return o
@@ -52,7 +52,7 @@ def camera(name,loc,target):
 def area(loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,1.7))-o.location).to_track_quat('-Z','Y').to_euler()
 area((2,-4,6),1100,5);area((-3,2,4),850,4)
-scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=24
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=24;scene.cycles.use_denoising=False;scene.render.image_settings.color_mode='RGBA'
 scene.render.resolution_x=960;scene.render.resolution_y=960;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG';scene.render.film_transparent=True
 out=os.environ.get('THRONE_OUTPUT','render-output/b5-throne-v1');os.makedirs(out,exist_ok=True)
