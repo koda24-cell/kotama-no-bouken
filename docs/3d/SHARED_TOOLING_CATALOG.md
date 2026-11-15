@@ -47,3 +47,8 @@
 - ACE-Step 1.5: 既存CPU BF16成功経路を再利用し、新しい寂しさのある探索BGMを別branchで生成。今回の生成成否はActionsで別途確認。参考曲そのものをモデルへ送信せず、Gitにも収録しない。
 - 詳細/実行スクリプト/数値: https://github.com/koda24-cell/music-ai-studio/pull/4 、docs/F1_REFERENCE_ANALYSIS_20261115.md と docs/F1_REFERENCE_MEASUREMENTS_20261115.json。
 - Actions: https://github.com/koda24-cell/music-ai-studio/actions/runs/43726183372 （開始確認済み、完成は未確認）。
+
+### 音楽CPU生成の実動作追記（2026-11-16 JST）
+- ACE-Step CPU BF16 60秒新版を実生成: https://github.com/koda24-cell/music-ai-studio/actions/runs/43728689924 。Artifact 14167877749のZIP hash/CRC、WAV hash・60秒/48kHz stereo PCM16・finite/非無音をローカルで確認。再解析95.7 BPM / G minor候補。聴感・楽器・歌声・音楽的ループは未確認。
+- runnerで実際のディスク不足を確認し、使い捨て環境の未使用SDK削除＋uv cache整理で対処。swap追加。公式コードの ACESTEP_GENERATION_TIMEOUT=1800 をCPU用に指定。関連失敗runと修正根拠は music-ai-studio PR #4 の最新版状態記録へ保存。
+- ループ端は5ms raised-cosineのデクリック。速度・音程の変更なし。元の65秒生成/5秒重ね合わせ案は採用せず、既存成功と同じ60秒負荷を採用。波形連続性は音楽的品質の承認と別。
