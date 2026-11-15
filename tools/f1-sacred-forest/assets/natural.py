@@ -126,20 +126,11 @@ def botanical_materials():
 def stem(name, points, radius, mat, sides=7):
     """Use longitudinal UVs rather than projecting bark across ring cuts."""
     obj = tube(name, points, radius, mat, sides=sides)
-    uv = obj.data.uv_layers.new(name='UVMap')
-    distances = [0]
-    for a, b in zip(points, points[1:]):
-        distances.append(distances[-1] + (Vector(b)-Vector(a)).length)
-    for poly in obj.data.polygons:
-        js = [obj.data.loops[i].vertex_index % sides for i in poly.loop_indices]
-        seam = max(js)-min(js) > sides/2
-        for loop in poly.loop_indices:
-            vi = obj.data.loops[loop].vertex_index
-            j, row = vi % sides, vi // sides
-            u = j / sides
-            if seam and j == 0:
-                u = 1
-            uv.data[loop].uv = (u, distances[row] / .7)
+    # common.tube already supplies metre-scale cylindrical UVs. A second UV
+    # layer can make the normal texture use a different exported channel.
+    uv = obj.data.uv_layers.active
+    if uv is not None:
+        uv.active_render = True
     return obj
 
 
@@ -165,8 +156,12 @@ def leaf(name, base, tip, width, mat, roll=0, curve=.03, bite=False):
              c2+side*width*.38-normal*curve*.4]
     faces = [(0, 4, 1), (1, 4, 5), (1, 5, 2), (2, 5, 3),
              (0, 1, 6), (1, 2, 7, 6), (2, 3, 7)]
+    # Positive normal points toward the geometric raised midrib.
+    faces = [tuple(reversed(f)) for f in faces]
     obj = mesh(name, [tuple(v) for v in verts], faces, mat)
     uv = obj.data.uv_layers.new(name='UVMap')
+    obj.data.uv_layers.active = uv
+    uv.active_render = True
     coords = [(.5, 0), (.5, .36), (.5, .72), (.5, 1),
               (0, .36), (.1, .72), (1, .36), (.9, .72)]
     for loop in obj.data.loops:

@@ -34,6 +34,8 @@ for row in range(len(zs)-1):
 faces += [tuple(reversed(range(sides))), tuple((len(zs)-1)*sides+i for i in range(sides))]
 trunk = mesh('fluted ancient trunk with recessed split', verts, faces, m['bark'])
 uv = trunk.data.uv_layers.new(name='UVMap')
+trunk.data.uv_layers.active=uv
+uv.active_render=True
 for p in trunk.data.polygons:
     p.use_smooth = True
     ids = [trunk.data.loops[li].vertex_index % sides for li in p.loop_indices]
@@ -41,7 +43,7 @@ for p in trunk.data.polygons:
         vi = trunk.data.loops[li].vertex_index; j = vi % sides; row = vi // sides
         u = j/sides
         if max(ids)-min(ids)>sides/2 and j==0: u=1
-        uv.data[li].uv = (u*2, zs[row]/1.5)
+        uv.data[li].uv = (u*math.tau*rs[row], zs[row])
 
 # Buttress roots are broad at the trunk and become exposed tapered roots.
 for i in range(11):

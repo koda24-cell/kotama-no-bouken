@@ -30,6 +30,8 @@ def flower(center, radius, angle, maturity):
         o=mesh('cupped fivefold petal',[tuple(v) for v in verts],
                [(0,4,1),(1,4,5,2),(2,5,3),(0,1,6),(1,2,7,6),(2,3,7)],petal)
         uv=o.data.uv_layers.new(name='UVMap')
+        o.data.uv_layers.active=uv
+        uv.active_render=True
         coords=[(.5,0),(.5,.4),(.5,.8),(.5,1),(0,.4),(.1,.8),(1,.4),(.9,.8)]
         for l in o.data.loops:uv.data[l.index].uv=coords[l.vertex_index]
         # Fine radial petal fold is geometry, readable on the side view.

@@ -27,6 +27,8 @@ for i in range(rows-1):
         faces.append((i*sides+j,i*sides+(j+1)%sides,(i+1)*sides+(j+1)%sides,(i+1)*sides+j))
 obj=mesh('fallen trunk bark shell',verts,faces,m['bark'])
 uv=obj.data.uv_layers.new(name='UVMap')
+obj.data.uv_layers.active=uv
+uv.active_render=True
 for p in obj.data.polygons:
     p.use_smooth=True
     js=[obj.data.loops[q].vertex_index%sides for q in p.loop_indices]
