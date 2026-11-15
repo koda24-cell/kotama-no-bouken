@@ -31,13 +31,24 @@ export function createB5PathEdgeMist(){
       float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
       void main(){
         vec2 uv=vUv;
-        float drift=n(uv*vec2(6.,4.)+vec2(uTime*.08,-uTime*.035));
-        float detail=n(uv*vec2(14.,7.)+vec2(-uTime*.06,uTime*.025));
-        float side=smoothstep(.15,.55,abs(uv.x-.5)+(.5-drift)*.09);
-        float nearFloor=1.-smoothstep(.43,.75,uv.y);
-        float centralOpening=1.-smoothstep(.06,.31,abs(uv.x-.5));
-        float opacity=(.035+.15*drift+.075*detail)*side*nearFloor;
-        opacity*=1.-centralOpening*.88;
+        // Domain-warp the boundary at two scales so no straight silhouette remains.
+        float broad=n(uv*vec2(3.2,2.7)+vec2(uTime*.035,-uTime*.022));
+        float medium=n(uv*vec2(8.1,5.4)+vec2(-uTime*.061,uTime*.027));
+        float fine=n(uv*vec2(19.,12.)+vec2(uTime*.093,-uTime*.041));
+        float displacement=(broad-.5)*.24+(medium-.5)*.115+(fine-.5)*.035;
+        float x=abs(uv.x-.5);
+        float raggedEdge=.22+displacement;
+        float side=smoothstep(raggedEdge-.115,raggedEdge+.095,x);
+        // Break up the upper edge into drifting, nonuniform wisps.
+        float upperNoise=n(uv*vec2(5.3,4.7)+vec2(-uTime*.043,uTime*.032));
+        float upperFine=n(uv*vec2(13.,8.)+vec2(uTime*.074,-uTime*.019));
+        float upperHeight=.59+(upperNoise-.5)*.31+(upperFine-.5)*.13;
+        float heightMask=1.-smoothstep(upperHeight-.17,upperHeight+.16,uv.y);
+        float wisps=smoothstep(.24,.72,broad*.47+medium*.34+fine*.19);
+        float holes=n(uv*vec2(10.,7.)+vec2(uTime*.03,uTime*.016));
+        float opacity=(.055+.20*wisps)*side*heightMask*(.62+.38*holes);
+        // Keep the actual walkable corridor visible; no changes to its geometry.
+        opacity*=1.-(1.-smoothstep(.045,.25,x))*.88;
         gl_FragColor=vec4(vec3(.24,.065,.34),clamp(opacity,0.,.24));
       }`
   });
