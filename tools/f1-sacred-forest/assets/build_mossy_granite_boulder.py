@@ -10,8 +10,6 @@ from common import reset_scene, material, finish, uv_world, OUT
 reset_scene()
 t=OUT/'textures'
 stone=material('sacred_granite',(.32,.31,.27),.88,{'basecolor':t/'stone_color_graded.jpg','normal':t/'stone_normal.jpg','roughness':t/'stone_roughness.jpg'})
-moss=material('sheltered_boulder_moss',(.075,.105,.027),.97)
-lichen=material('mineral_lichen',(.23,.255,.165),.96)
 fresh=material('old_granite_fracture',(.22,.225,.20),.92)
 
 # A continuous sculpt, with flat seating and a distinct planar fracture shoulder.
@@ -29,15 +27,13 @@ for v in rock.data.vertices:
     v.co.z=max(.012,z)
     if v.co.x>.81 and v.co.z>.72:
         v.co.x=min(v.co.x,1.10-.34*(v.co.z-.72))
-rock.data.materials.append(stone);rock.data.materials.append(moss);rock.data.materials.append(lichen)
+rock.data.materials.append(stone)
 rock.data.update()
 for face in rock.data.polygons:
-    c=face.center;n=face.normal
-    damp=noise(c*5.5,noise_basis='PERLIN_ORIGINAL')
-    if n.z>.48 and c.y>.02 and damp>.40:
-        face.material_index=1
-    elif n.z>.05 and noise(c*14.8,noise_basis='PERLIN_ORIGINAL')>.74:
-        face.material_index=2
+    # The licensed photograph already contains irregular lichen and moss.
+    # Keep its continuous colour/normal boundary rather than colouring whole
+    # triangles into polygonal green decals over that photographic surface.
+    face.material_index=0
     face.use_smooth=True
 
 # Remove actual geometry at the front shoulder. This is not a painted chip.
