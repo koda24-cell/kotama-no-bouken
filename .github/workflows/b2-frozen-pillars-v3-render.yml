@@ -1,0 +1,25 @@
+name: B2 Frozen Ancient Pillars V3 Blender
+on:
+  push:
+    branches:
+      - feature/b2-frozen-ruin-pillars-v3-20261112
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render V3 GLBs and 3-view PNGs
+        run: |
+          mkdir -p render-output
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+            -b -t 2 --python tools/b2-3d/create-frozen-pillars-v3.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-frozen-ancient-pillars-v3-review
+          path: render-output/
+          retention-days: 14
