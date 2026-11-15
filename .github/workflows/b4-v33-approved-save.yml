@@ -28,7 +28,7 @@ jobs:
           python3 - <<'PY'
           import os,glob,shutil,hashlib,json,struct
           source='render-input'
-          glbs=glob.glob(source+'/**/*.glb',recursive=True)
+          glbs=glob.glob(source+'/**/b4-v33-polyhaven-rockwall-composite.glb',recursive=True)
           pngs=glob.glob(source+'/**/*.png',recursive=True)
           print('DISCOVERED',glbs,pngs,flush=True)
           assert len(glbs)==1,(glbs,pngs)
