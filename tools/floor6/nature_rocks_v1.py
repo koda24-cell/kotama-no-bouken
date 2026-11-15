@@ -58,9 +58,11 @@ def rock_part(name,loc,scale,seed,materials):
   micro=(0.050*math.sin(co.x*17+seed)*math.cos(co.y*15-seed)+0.025*math.sin(co.z*27+co.x*9+seed))
   v.co=(co.x*(macro+micro),co.y*(macro+micro),co.z*(1+micro*0.55))
  obj.scale=scale
- for m in materials:obj.data.materials.append(m)
+ # Use one continuous albedo texture per rock mesh instead of random per-face materials.
+ # Random material IDs produced visible triangle mosaics even with smooth normals.
+ obj.data.materials.append(materials[seed % len(materials)])
  for poly in obj.data.polygons:
-  poly.material_index=rng.choices(range(len(materials)),weights=[8]+[2]*(len(materials)-1))[0]
+  poly.material_index=0
   poly.use_smooth=True
  add_uv(obj)
  return obj
