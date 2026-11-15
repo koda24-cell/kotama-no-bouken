@@ -5,6 +5,9 @@ on:
     paths:
       - 'field/b5-distant-fog-background.js'
       - 'preview/b5-distant-fog-background.html'
+      - 'preview/b5-v5-combined-scene.html'
+      - 'field/field-3d-b4-b5-map.js'
+      - 'field/b5-vfx-presets.js'
       - 'tools/b5-fog-test/**'
       - 'docs/3d/floor5-real-window-textures.md'
       - '.github/workflows/b5-fog-preview.yml'
