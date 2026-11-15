@@ -38,3 +38,12 @@
 - 実行ログ・PR・Actions・レンダリング:
 - 既知問題/次の作業:
 ```
+
+## 音楽参考解析（2026-11-15）
+- 担当: GPT。ユーザー提供録画をFFmpegで全デコードし、librosaでonset/beat/chroma解析を実行済み。主観的聴取・厳密採譜・楽器同定は未検証。
+- FFmpeg https://ffmpeg.org/ : 導入済み。198秒/48kHz stereo AACのデコード成功。ビルドの個別ライセンス構成は未確認。
+- librosa https://librosa.org/ : 1.0.1 / ISC、ローカル隔離先へ導入。テンポ候補95.7/143.6 BPM、G minor仮説を区間別にクロスチェック。相関は確率ではない。SoundFile 0.14.0 / BSD-3-Clause、NumPy 2.5.4併用。パッケージメタデータで確認。
+- yt-dlp https://github.com/yt-dlp/yt-dlp : メタデータ取得は成功したが、YouTube音声は無効195byte応答で失敗。取得成功と記録しない。ライセンス個別確認未了、コードの再配布なし。
+- ACE-Step 1.5: 既存CPU BF16成功経路を再利用し、新しい寂しさのある探索BGMを別branchで生成。今回の生成成否はActionsで別途確認。参考曲そのものをモデルへ送信せず、Gitにも収録しない。
+- 詳細/実行スクリプト/数値: https://github.com/koda24-cell/music-ai-studio/pull/4 、docs/F1_REFERENCE_ANALYSIS_20261115.md と docs/F1_REFERENCE_MEASUREMENTS_20261115.json。
+- Actions: https://github.com/koda24-cell/music-ai-studio/actions/runs/43726183372 （開始確認済み、完成は未確認）。
