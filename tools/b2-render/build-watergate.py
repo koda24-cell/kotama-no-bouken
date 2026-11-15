@@ -1,0 +1,437 @@
+import bpy, math, random, os, sys
+from mathutils import Vector
+random.seed(24)
+bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
+out='/work/render-output/b2-watergate'; os.makedirs(out,exist_ok=True)
+def mat(name,color,metal=0,rough=.7):
+ m=bpy.data.materials.new(name); m.diffuse_color=(*color,1); m.use_nodes=True
+ p=m.node_tree.nodes.get('Principled BSDF'); p.inputs['Base Color'].default_value=(*color,1);p.inputs['Metallic'].default_value=metal;p.inputs['Roughness'].default_value=rough
+ return m
+stone=mat('Cold worn limestone',(.34,.42,.51));dark=mat('Weathered seams',(.17,.23,.3));iron=mat('Oxidized iron',(.16,.21,.26),.75);ice=mat('Frozen cyan crystal',(.08,.58,.86),.15,.16);water=mat('Icy water',(.06,.26,.43),.3,.12)
+def cube(name,loc,scale,material):
+ bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.dimensions=scale;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(material);return o
+def beam(name,a,b,r,material,verts=12):
+ a,b=Vector(a),Vector(b);d=b-a
+ bpy.ops.mesh.primitive_cylinder_add(vertices=verts,radius=r,depth=d.length,location=(a+b)/2);o=bpy.context.object;o.name=name;o.rotation_euler=d.to_track_quat('Z','Y').to_euler();o.data.materials.append(material);return o
+for s in [-1,1]:
+ x=s*4.5
+ for j in range(9):cube('Pillar masonry %s %s'%(s,j),(x,0,.5+j*.8),(1.65,1.65,.76),stone if j%3 else dark)
+ for h in [1.2,3.6,6.4,7.65]:cube('Pillar cornice',(x,0,h),(2,1.95,.22),dark)
+ for k in range(9):cube('Broken parapet',(s*(5.6+k*.31),.35,random.uniform(2.4,4.8)),(.36,1.3,random.uniform(.4,1.2)),stone)
+for i in range(28):
+ a=math.pi*i/28;b=math.pi*(i+1)/28
+ v=[]
+ for y in [-.82,.82]:
+  for r,t in [(3.05,a),(3.95,a),(3.95,b),(3.05,b)]:v.append((r*math.cos(t),y,4.0+r*math.sin(t)))
+ faces=[(0,1,2,3),(4,7,6,5),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)]
+ mesh=bpy.data.meshes.new('arch stone');mesh.from_pydata(v,[],faces);mesh.update();o=bpy.data.objects.new('Segmented arch voussoir %02d'%i,mesh);bpy.context.collection.objects.link(o);o.data.materials.append(stone if i%4 else dark)
+for i in range(16):
+ x=-2.85+i*.38;top=4+math.sqrt(max(0,3**2-x*x))-.55
+ beam('Portcullis bar %02d'%i,(x,-.95,.45),(x,-.95,top),.073,iron)
+for z in [1.3,2.5,3.7,4.9]:cube('Gate horizontal brace',(0,-1,z),(5.8,.18,.18),iron)
+for name,x,y,z,r in [('Main drive',0,-1.45,5.1,1.12),('Side drive',-6.2,-1.25,3.2,1.38)]:
+ beam(name+' axle',(x,y-.25,z),(x,y+.25,z),.24,iron)
+ for i in range(16):
+  a=i*2*math.pi/16;b=(i+1)*2*math.pi/16
+  beam(name+' spoke',(x,y,z),(x+r*math.cos(a),y,z+r*math.sin(a)),.085,iron)
+  beam(name+' rim',(x+r*math.cos(a),y,z+r*math.sin(a)),(x+r*math.cos(b),y,z+r*math.sin(b)),.13,iron)
+  cube(name+' tooth',(x+(r+.1)*math.cos(a),y,z+(r+.1)*math.sin(a)),(.21,.35,.21),dark)
+for s in [-1,1]:
+ for i in range(10):
+  a=(s*2.5,-1.2,6.5-i*.35);b=(s*2.5+math.sin(i*.6)*.11,-1.2,6.15-i*.35)
+  beam('Suspension chain',a,b,.055,iron,8)
+for i in range(22):
+ x=-8+i*.75
+ cube('Broken canal stone',(x,-2.5,random.uniform(.05,.22)),(.69,2.2,.35),stone if i%4 else dark)
+cube('Water channel',(0,-2.6,.05),(15,3.8,.08),water)
+for i in range(55):
+ x=random.choice([-1,1])*random.uniform(4.8,8.6);y=random.uniform(-2.9,2)
+ cube('Collapsed masonry',(x,y,random.uniform(.12,.42)),(random.uniform(.2,.8),random.uniform(.25,.8),random.uniform(.2,.6)),stone)
+for i in range(65):
+ x=random.choice([-1,1])*random.uniform(4.6,8.3);y=random.uniform(-3.0,1.7)
+ bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=random.uniform(.1,.32),radius2=0,depth=random.uniform(.35,1.7),location=(x,y,.8));bpy.context.object.name='Blue ice crystal';bpy.context.object.data.materials.append(ice)
+for i in range(34):
+ a=random.uniform(.15,math.pi-.15);x=3.5*math.cos(a);z=4+3.5*math.sin(a)
+ bpy.ops.mesh.primitive_cone_add(vertices=7,radius1=0,radius2=random.uniform(.07,.16),depth=random.uniform(.3,1.2),location=(x,-.85,z-.4));bpy.context.object.name='Arch hanging icicle';bpy.context.object.data.materials.append(ice)
+
+# v03: Structural additions retained on top of v02 geometry
+bronze=mat('Ancient bronze mechanical fittings',(.32,.23,.13),.7,.42)
+frost=mat('Layered frost deposits',(.62,.83,.92),.05,.32)
+def ring(name,x,y,z,r,thickness,material):
+ for j in range(32):
+  a=2*math.pi*j/32;b=2*math.pi*(j+1)/32
+  beam(name,(x+r*math.cos(a),y,z+r*math.sin(a)),(x+r*math.cos(b),y,z+r*math.sin(b)),thickness,material,10)
+# Mechanism gains layered wheel rims, shaft bearings, bolted plates and actual teeth
+for name,x,y,z,r in [('Main drive',0,-1.45,5.1,1.12),('Side drive',-6.2,-1.25,3.2,1.38)]:
+ for depth,rad in [(-.17,r*.78),(.19,r*.92)]:
+  ring(name+' layered rim',x,y+depth,z,rad,.085,bronze)
+ for offset in [-.3,.3]:
+  beam(name+' shaft collar',(x,y+offset-.06,z),(x,y+offset+.06,z),.34,bronze,20)
+ for j in range(16):
+  a=2*math.pi*j/16
+  bx=x+r*math.cos(a);bz=z+r*math.sin(a)
+  beam(name+' face rivet',(bx,y-.23,bz),(bx,y-.32,bz),.045,bronze,8)
+  beam(name+' tooth depth',(bx,y-.19,bz),(bx,y+.2,bz),.11,iron,8)
+# Reinforced gate: hinges, pointed iron bar ends and bracing plates
+for i in range(16):
+ x=-2.85+i*.38
+ cube('Gate iron spike', (x,-.96,.38),(.19,.19,.26),bronze)
+for z in [1.3,2.5,3.7,4.9]:
+ for x in [-2.4,-1.2,0,1.2,2.4]:
+  beam('Gate brace rivet',(x,-1.13,z),(x,-1.23,z),.075,bronze,10)
+for s in [-1,1]:
+ for z in [1.1,3.3,5.8]:
+  cube('Stone wall buttress',(s*5.6,.55,z),(1.05,1.65,.6),stone)
+  cube('Recessed carved stone panel',(s*4.5,-.91,z),(.82,.11,.65),dark)
+  for k in range(3):
+   cube('Panel relief grooves',(s*4.5+(k-1)*.21,-.99,z),(.045,.07,.48),frost)
+# Repair floating ruins by linking outer pieces to structural retaining courses
+for side in [-1,1]:
+ for j in range(9):
+  x=side*(5.3+j*.34)
+  cube('Ruined outer retaining wall',(x,.48,1.25+j*.13),(.39,1.6,.55),stone)
+ for j in range(8):
+  x=side*(5.6+j*.36)
+  cube('Collapsed upper masonry',(x,.65,4.7+random.uniform(-.4,.4)),(.38,1.25,.5),dark if j%3==0 else stone)
+# Varied broken canal walls with a visibly stepped bed
+for j in range(12):
+ x=-7.2+j*1.3
+ cube('Raised watercourse edging',(x,-3.5,.43),(.96,.4,.65),stone)
+ if j%3==0:
+  cube('Broken canal cap',(x,-3.5,.83),(.55,.62,.19),dark)
+# Fewer uniform crystal silhouettes by clustering smaller angled prismatic formations
+for side in [-1,1]:
+ for group in range(5):
+  cx=side*(5.1+group*.6);cy=random.uniform(-2.2,1.3)
+  for k in range(4):
+   x=cx+random.uniform(-.28,.28);y=cy+random.uniform(-.3,.3)
+   bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=random.uniform(.11,.23),radius2=0,depth=random.uniform(.35,1.25),location=(x,y,.8))
+   obj=bpy.context.object;obj.name='Clustered irregular ice prism';obj.rotation_euler[1]=random.uniform(-.25,.25);obj.data.materials.append(ice)
+
+
+# v04: mechanical load path and architectural depth; all v03 geometry retained
+# Rear-facing guide rails and two horizontal load-transfer axles
+for side in [-1,1]:
+ x=side*2.9
+ for z in [1.0,2.6,4.2,5.8]:
+  cube('Gate sliding guide clamp',(x,-.38,z),(.44,.85,.28),bronze)
+ beam('Continuous gate guide rail',(x,-.37,.45),(x,-.37,6.55),.15,iron,12)
+ for z in [2.0,5.65]:
+  cube('Guide rail mounting socket',(x,-.1,z),(.65,.7,.48),dark)
+for z in [5.6,6.45]:
+ beam('Cross-shaft reinforcement',(-3.3,.3,z),(3.3,.3,z),.14,iron,16)
+ for x in [-2.9,0,2.9]:
+  cube('Cross shaft bearing block',(x,.3,z),(.58,.66,.56),bronze)
+# Counterweight frames physically anchored to the outer pylons
+for side in [-1,1]:
+ x=side*5.6
+ for z in [2.4,4.6]:
+  cube('Counterweight wall anchor',(x,-.48,z),(.8,.9,.45),dark)
+ for y in [-.55,.12]:
+  beam('Counterweight suspension', (x,y,5.8),(x,y,2.05),.085,iron,12)
+ cube('Heavy counterweight',(x,-.22,1.9),(.95,.95,1.6),dark)
+ for z in [1.3,2.55]:
+  cube('Counterweight band',(x,-.22,z),(1.07,1.07,.17),bronze)
+# Recessed architectural arches add real wall thickness behind the main arch
+for depth,rad in [(.48,4.08),(.95,4.35)]:
+ for i in range(28):
+  a=math.pi*i/28;b=math.pi*(i+1)/28
+  beam('Rear arch masonry course',(rad*math.cos(a),depth,4+rad*math.sin(a)),
+       (rad*math.cos(b),depth,4+rad*math.sin(b)),.22,stone,8)
+# Frost deposits on lintels, bearing blocks, gate and canal
+for side in [-1,1]:
+ x=side*4.5
+ for k in range(12):
+  xx=x+random.uniform(-.75,.75)
+  bpy.ops.mesh.primitive_cone_add(vertices=7,radius1=0,radius2=random.uniform(.05,.12),
+      depth=random.uniform(.2,.75),location=(xx,-.87,7.4-random.uniform(.1,.4)))
+  bpy.context.object.name='Pillar frost icicle';bpy.context.object.data.materials.append(frost)
+for j in range(24):
+ x=-7.2+j*.6
+ cube('Canal rim frost',(x,-3.55,.91),(.35,.43,random.uniform(.05,.14)),frost)
+# Rockfall embedded into broken wall bases, not floating independent debris
+for side in [-1,1]:
+ for k in range(18):
+  x=side*random.uniform(5.1,8.3);y=random.uniform(-.1,1.2)
+  o=cube('Embedded fallen voussoir',(x,y,random.uniform(.2,.65)),
+    (random.uniform(.4,.9),random.uniform(.35,.85),random.uniform(.25,.6)),stone)
+  o.rotation_euler[1]=random.uniform(-.25,.25)
+
+
+# v05: physically legible lifting drum and sculpted stone damage
+# A paired overhead winch assembly links both counterweights to the gate
+for side in [-1,1]:
+ x=side*2.3
+ beam('Overhead winch drum axle',(x,-.72,7.05),(x,.62,7.05),.21,iron,20)
+ for y in [-.63,.58]:
+  ring('Winch flange',x,y,7.05,.54,.11,bronze)
+ for j in range(18):
+  a=2*math.pi*j/18
+  beam('Winch barrel stave',(x+.35*math.cos(a),-.55,7.05+.35*math.sin(a)),
+       (x+.35*math.cos(a),.55,7.05+.35*math.sin(a)),.065,dark,8)
+ for k in range(12):
+  a=math.pi*1.6*k/12
+  beam('Wound lifting cable',(x+.43*math.cos(a),-.49+k*.085,7.05+.43*math.sin(a)),
+       (x+.43*math.cos(a+.28),-.44+k*.085,7.05+.43*math.sin(a+.28)),.043,iron,8)
+ # cable visibly descends to the iron gate beam
+ beam('Gate lifting cable',(x,-.79,6.55),(x,-.91,5.0),.052,iron,10)
+ cube('Gate lifting eye',(x,-.94,5.0),(.36,.22,.34),bronze)
+# Horizontal structural courses behind the arch connect the side pylons
+for z in [6.85,7.35,8.0]:
+ for side in [-1,1]:
+  cube('Arch spandrel bonded course',(side*3.7,.65,z),(2.15,1.3,.31),stone)
+# Individual chipped stonework with angled fractured edges; retain all old stones
+for side in [-1,1]:
+ for j in range(12):
+  x=side*(4.9+j*.28);z=5.8+random.uniform(-.6,.8)
+  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(x,random.uniform(.3,.8),z))
+  o=bpy.context.object;o.name='Irregular broken wall core'
+  o.scale=(random.uniform(.18,.42),random.uniform(.24,.46),random.uniform(.16,.45))
+  o.rotation_euler=(random.uniform(-.3,.3),random.uniform(-.5,.5),random.uniform(-.4,.4))
+  o.data.materials.append(stone if j%3 else dark)
+# Angled braces make the counterweight frames look load bearing
+for side in [-1,1]:
+ x=side*5.6
+ for z in [3.0,4.3]:
+  beam('Diagonal frame brace',(x-.43,-.68,z-.52),(x+.43,-.68,z+.52),.11,iron,10)
+# Irregular frost shelves where ice meets masonry, not free-standing cones
+for side in [-1,1]:
+ for j in range(15):
+  x=side*random.uniform(3.95,5.0);z=random.uniform(.8,7.5)
+  cube('Adhered frost ledge',(x,-.87,z),(random.uniform(.16,.43),.18,random.uniform(.08,.22)),frost)
+
+
+# v09: reinforce mechanical load paths and frozen architectural silhouette
+for side in [-1,1]:
+ x=side*5.6
+ for dx in [-.57,.57]:
+  beam('Counterweight slide track',(x+dx,-.24,1.05),(x+dx,-.24,5.95),.085,bronze,12)
+ for z in [1.1,5.85]:
+  cube('Counterweight track bracket',(x,-.24,z),(1.42,.66,.25),iron)
+ cube('Stone pillar footing',(side*4.5,.15,.15),(2.3,2.25,.38),dark)
+ for k in range(7):
+  z=.7+k*.85
+  beam('Frost masonry fracture',(side*4.5-.45,-.88,z),(side*4.5+.25,-.89,z+.13),.024,frost,6)
+cube('Gate threshold sill',(0,-.95,.38),(6.25,.8,.28),dark)
+cube('Gate suspension lintel',(0,-.98,5.23),(6.15,.34,.38),bronze)
+for x in [-2.3,2.3]:
+ cube('Suspension clevis plate',(x,-1.18,5.34),(.52,.22,.55),iron)
+ for z in [5.13,5.5]:
+  beam('Clevis pin',(x,-1.3,z),(x,-1.42,z),.07,bronze,10)
+for side in [-1,1]:
+ for j in range(10):
+  x=side*(.7+j*.73)
+  o=cube('Fractured canal coping',(x,-4.25,random.uniform(.32,.58)),(.55,random.uniform(.28,.6),random.uniform(.24,.42)),stone)
+  o.rotation_euler[1]=random.uniform(-.22,.22)
+for j in range(18):
+ x=random.uniform(-7.4,7.4);y=random.uniform(-3.6,-1.3)
+ o=cube('Fractured ice sheet',(x,y,.115),(random.uniform(.3,.9),random.uniform(.25,.75),.055),frost)
+ o.rotation_euler[2]=random.uniform(-.7,.7)
+for j in range(25):
+ a=.18+(math.pi-.36)*j/24
+ x=3.6*math.cos(a);z=4+3.6*math.sin(a);length=random.uniform(.25,.95)
+ bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=0,radius2=random.uniform(.07,.15),depth=length,location=(x,-1.05,z-length*.5))
+ bpy.context.object.name='Front hanging icicle';bpy.context.object.data.materials.append(ice)
+for x,z,r in [(0,5.1,1.12),(-6.2,3.2,1.38)]:
+ for j in range(12):
+  a=2*math.pi*j/12
+  o=cube('Frozen gear rim deposit',(x+r*math.cos(a),-1.69,z+r*math.sin(a)),(.17,.11,.12),frost)
+  o.rotation_euler[1]=-a
+
+# v09: large-scale architectural massing, functional spillway and true broken profiles
+# Existing components remain intact; these are independent added mesh objects.
+def prism(name, verts, faces, material):
+ mesh=bpy.data.meshes.new(name+' geometry')
+ mesh.from_pydata(verts,[],faces);mesh.update()
+ ob=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(ob)
+ ob.data.materials.append(material);return ob
+# Long stone abutments connect outer ruins to the central load-bearing pillars.
+for side in (-1,1):
+ for tier in range(4):
+  z=.4+tier*.86
+  for j in range(5):
+   x=side*(5.35+j*.69)
+   cube('Bonded abutment block',(x,.92,z),(.67,1.7,.79),stone if (j+tier)%5 else dark)
+ # Capstones fractured along a jagged upper silhouette rather than random hovering rubble
+ for j in range(9):
+  x=side*(5.05+j*.42)
+  h=5.65+random.uniform(-.45,.55)
+  w=.39
+  verts=[(x-w,-.12,h-.72),(x+w,-.12,h-.72),(x+w,-.12,h-.14),
+         (x+random.uniform(-.1,.1),-.12,h+.14),(x-w,-.12,h-.08),
+         (x-w,1.22,h-.72),(x+w,1.22,h-.72),(x+w,1.22,h-.14),
+         (x+random.uniform(-.1,.1),1.22,h+.14),(x-w,1.22,h-.08)]
+  faces=[(0,1,2,3,4),(5,9,8,7,6),(0,5,6,1),(1,6,7,2),(2,7,8,3),(3,8,9,4),(4,9,5,0)]
+  prism('Fractured parapet stone',verts,faces,stone if j%4 else dark)
+# Arch's crown is backed by courses with visibly chipped keystone and uneven joint rhythm.
+for j in range(13):
+ x=(j-6)*.53
+ z=7.82-abs(x)*.12
+ cube('Arch crown backing course',(x,.72,z),(.51,1.48,.44),stone if j%3 else dark)
+# Mechanical coupling: overhead winch drums are tied to a central cross-shaft and pulley supports.
+beam('Overhead coupled drive shaft',(-3.25,.65,7.05),(3.25,.65,7.05),.19,iron,20)
+for x in (-2.3,0,2.3):
+ cube('Winch bearing stone saddle',(x,.87,6.85),(.67,.85,.55),dark)
+ for dx in (-.2,.2):
+  cube('Bearing mounting plate',(x+dx,.37,6.85),(.13,.13,.44),bronze)
+for side in (-1,1):
+ x=side*2.3
+ for j in range(8):
+  a=j*math.pi/4
+  beam('Cable guide pulley rim',(x+.34*math.cos(a),-.89,6.55+.34*math.sin(a)),
+       (x+.34*math.cos(a+math.pi/4),-.89,6.55+.34*math.sin(a+math.pi/4)),.085,bronze,10)
+ beam('Suspended cable guide',(x,-.91,6.25),(x,-.91,5.25),.055,iron,10)
+# A recessed, terraced spillway gives the canal an obvious height transition.
+for j in range(9):
+ y=-1.1-j*.56
+ width=5.8+j*.68
+ z=.26-j*.028
+ cube('Spillway stepped stone bed',(0,y,z),(width,.55,.22),stone if j%3 else dark)
+ for side in (-1,1):
+  x=side*(width*.5+.23)
+  cube('Spillway broken curb',(x,y,z+.24),(.42,.54,.49),stone)
+# Angular ice over the lower cascade, with small gaps for water visibility
+for j in range(16):
+ y=-1.2-j*.28
+ x=random.uniform(-3.5,3.5)
+ ob=cube('Spillway shattered ice slab',(x,y,.4-j*.008),
+          (random.uniform(.36,.85),random.uniform(.18,.43),.065),frost)
+ ob.rotation_euler[2]=random.uniform(-.35,.35)
+# Crystalline growth rooted in masonry joints, not scattered in open space.
+for side in (-1,1):
+ for j in range(16):
+  z=random.uniform(1.1,7.25);x=side*random.uniform(4.1,4.98)
+  bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=random.uniform(.06,.16),radius2=0,
+       depth=random.uniform(.26,.75),location=(x,-.98,z))
+  ob=bpy.context.object;ob.name='Wall-joint ice growth';ob.rotation_euler[0]=random.uniform(-.65,.65);ob.data.materials.append(ice)
+
+# v09: dramatic, deliberately non-uniform icicle clusters.
+# Preserve earlier ice meshes; add distinct large silhouettes and subordinate needles.
+def hanging_icicle(name, x, y, ceiling_z, length, radius, lean_x=0, lean_y=0, material=ice):
+    # Narrow tip below, broad root above. Six-sided crystal with tapered offset.
+    verts=[]
+    for dz,scale,drift in [(0,1.0,0),(-length*.22,.78,.18),(-length*.73,.26,.72),(-length,.015,1.0)]:
+        for k in range(6):
+            a=2*math.pi*k/6
+            verts.append((x+lean_x*drift+radius*scale*math.cos(a),
+                          y+lean_y*drift+radius*scale*math.sin(a),ceiling_z+dz))
+    faces=[]
+    for j in range(3):
+        for k in range(6):
+            a=j*6+k;b=j*6+(k+1)%6
+            faces.append((a,b,b+6,a+6))
+    faces.append(tuple(reversed(range(6))))
+    faces.append(tuple(range(18,24)))
+    return prism(name,verts,faces,material)
+
+# A few enormous ice masses dominate the silhouette; smaller satellites emphasize scale.
+for cluster,(cx,angle,length,root_radius) in enumerate([
+    (-2.72,2.43,3.45,.43),(-1.12,1.89,2.15,.32),
+    (.64,1.38,3.95,.49),(2.47,.78,2.75,.38)]):
+    x=3.53*math.cos(angle);z=4+3.53*math.sin(angle)
+    hanging_icicle('v09 monumental icicle %d'%cluster,x,-1.21,z,length,root_radius,
+                   random.uniform(-.34,.34),random.uniform(-.16,.2))
+    # Grouped small and medium needles, deliberately uneven rather than regularly spaced.
+    for k in range(11):
+        a=angle+random.uniform(-.22,.22)
+        sx=3.53*math.cos(a)+random.uniform(-.17,.17)
+        sz=4+3.53*math.sin(a)-random.uniform(0,.16)
+        l=random.choice([random.uniform(.12,.38),random.uniform(.45,.95),
+                         random.uniform(1.05,1.85)])
+        hanging_icicle('v09 satellite needle %d %d'%(cluster,k),sx,
+                       -1.16+random.uniform(-.16,.12),sz,l,
+                       random.uniform(.035,.14),random.uniform(-.22,.22),0,
+                       frost if k%5==0 else ice)
+# Highly asymmetrical curtain below the left cornice and sparse giant fangs on the right.
+for side in (-1,1):
+    for j in range(14):
+        x=side*4.5+random.uniform(-.73,.73)
+        z=7.51+random.uniform(-.08,.07)
+        length=(random.uniform(1.5,3.3) if j in (2,7,11) else
+                random.uniform(.14,.53) if j%3==0 else random.uniform(.55,1.45))
+        hanging_icicle('v09 cornice ice fang',x,-1.05+random.uniform(-.2,.1),
+                       z,length,random.uniform(.06,.2) if length<1.5 else .29,
+                       random.uniform(-.18,.18),random.uniform(-.15,.15),
+                       ice if j%4 else frost)
+# Long thin isolated needles along the damaged outer wall provide contrast.
+for j in range(25):
+    side=random.choice((-1,1))
+    x=side*random.uniform(5.15,8.1)
+    z=random.uniform(3.9,5.8)
+    hanging_icicle('v09 rubble icicle',x,-.35+random.uniform(-.1,.2),z,
+                   random.uniform(.16,1.12),random.uniform(.025,.09),
+                   random.uniform(-.16,.16))
+
+# v09: fractured multi-branch ice curtains and large irregular masses.
+# Previous crystals remain. These are asymmetric layered additions to break repeated cone silhouettes.
+glacial=mat('Deep glacial translucent blue',(.035,.32,.52),.05,.24)
+pale_ice=mat('Pale ice fractured edge',(.47,.82,.95),.04,.28)
+def jagged_curtain(name,x,y,z,width,height,material):
+    # An irregular fused ice sheet, with a cracked crown and serrated lower profile.
+    slices=7;verts=[]
+    for i in range(slices):
+        u=i/(slices-1)
+        xx=x+(u-.5)*width
+        upper=z+random.uniform(-.09,.12)
+        lower=z-height*(.4+.6*random.random())
+        # front and back stagger to create actual thickness and an uneven crystalline face
+        verts.extend([(xx,y-.13,upper),(xx,y-.12,lower),
+                      (xx+random.uniform(-.06,.06),y+.16,upper-.07),
+                      (xx+random.uniform(-.06,.06),y+.12,lower+.13)])
+    faces=[]
+    for i in range(slices-1):
+        a=i*4;b=(i+1)*4
+        faces.extend([(a,b,b+1,a+1),(a+2,a+3,b+3,b+2),
+                      (a,a+2,b+2,b),(a+1,b+1,b+3,a+3)])
+    faces.extend([(0,1,3,2),((slices-1)*4,(slices-1)*4+2,(slices-1)*4+3,(slices-1)*4+1)])
+    return prism(name,verts,faces,material)
+
+# Three dominant irregular ice formations: varied scale, location, orientation and hue.
+for j,(x,y,z,w,h) in enumerate([
+    (-3.75,-1.25,7.52,1.05,3.25),
+    (.15,-1.33,7.52,1.42,2.15),
+    (3.84,-1.27,7.48,.85,3.6),
+    (-1.48,-1.32,7.42,.62,1.2),
+    (2.06,-1.38,7.32,.58,1.45)]):
+    jagged_curtain('v09 fused icicle curtain %d'%j,x,y,z,w,h,glacial if j%2 else pale_ice)
+    for k in range(7):
+        length=random.uniform(.16,.48) if k%3==0 else random.uniform(.7,2.5)
+        hanging_icicle('v09 curtain splinter',x+random.uniform(-w*.48,w*.48),
+                        y-random.uniform(.05,.24),z,length,random.uniform(.035,.14),
+                        random.uniform(-.3,.3),random.uniform(-.14,.14),
+                        ice if k%2 else pale_ice)
+# Fused sheets are deliberately rare, so the iron gate and mechanical workings stay readable.
+# Jagged frost clusters on side abutments at different elevations.
+for side in (-1,1):
+    for k in range(6):
+        x=side*(5.15+k*.48)
+        z=random.uniform(3.8,5.7)
+        jagged_curtain('v09 abutment ice',x,-.27,z,
+                       random.uniform(.25,.62),random.uniform(.45,1.8),
+                       glacial if k%3==0 else ice)
+
+# Deterministic mesh triangle audit before export
+bpy.context.view_layer.update()
+triangles=0;objects=0
+for obj in bpy.context.scene.objects:
+ if obj.type=='MESH':
+  mesh=obj.data
+  mesh.calc_loop_triangles()
+  triangles+=len(mesh.loop_triangles);objects+=1
+with open(out+'/mesh_stats.txt','w') as fp:
+ fp.write('version=v09\\nmesh_objects=%d\\ntriangles=%d\\n'%(objects,triangles))
+print('B2 v09 mesh objects',objects,'triangles',triangles)
+
+# Save native Blender and GLB before adding render-only helpers
+bpy.ops.wm.save_as_mainfile(filepath=out+'/frozen_watergate_v09.blend')
+bpy.ops.export_scene.gltf(filepath=out+'/frozen_watergate_v09.glb',export_format='GLB')
+world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.035,.07,.13,1)
+def area(loc,power,size):
+ bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,3))-o.location).to_track_quat('-Z','Y').to_euler()
+area((1,-5,12),2100,9);area((-8,2,7),1200,7)
+bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=24
+bpy.context.scene.render.resolution_x=1000;bpy.context.scene.render.resolution_y=760;bpy.context.scene.render.resolution_percentage=100
+for name,pos in [('front',(0,-23,10)),('side',(22,-3,10)),('angle',(17,-21,12))]:
+ bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,3.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=20;bpy.context.scene.camera=cam
+ bpy.context.scene.render.filepath=out+'/'+name+'.png';bpy.ops.render.render(write_still=True);bpy.data.objects.remove(cam,do_unlink=True)
+print('B2 watergate v09 Blender/GLB/3 renders exported')
