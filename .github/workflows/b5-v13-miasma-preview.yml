@@ -8,7 +8,7 @@ on:
       - '.github/workflows/b5-v13-miasma-preview.yml'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   actions: read
 jobs:
   render-vfx:
@@ -33,6 +33,39 @@ jobs:
           docker pull mcr.microsoft.com/playwright:v1.56.1-noble
           python3 -m http.server 8765 --bind 0.0.0.0 &
           docker run --rm --ipc=host --network host -v "$PWD:/work" -w /work mcr.microsoft.com/playwright:v1.56.1-noble node tools/b5-vfx-preview/check-preview.mjs
+      - name: Permanently save approved V5 GLB and verified PNGs for Claude
+        if: success()
+        run: |
+          set -euo pipefail
+          DEST=assets/models/floor5/b5-gloom-v5
+          mkdir -p "$DEST/reviews"
+          cp preview/assets/b5-v13-rock.glb "$DEST/b5-gloom-v13-rock.glb"
+          cp render-output/b5-v13-vfx/animated-fog-t0.png "$DEST/reviews/v5-animated-t0.png"
+          cp render-output/b5-v13-vfx/animated-fog-t1.png "$DEST/reviews/v5-animated-t1.png"
+          cp render-output/b5-v13-vfx/fog-low-density.png "$DEST/reviews/v5-low-density.png"
+          python3 - <<'PY'
+          import json,hashlib,pathlib,datetime
+          root=pathlib.Path('assets/models/floor5/b5-gloom-v5')
+          files=[root/'b5-gloom-v13-rock.glb',*sorted((root/'reviews').glob('*.png'))]
+          assert len(files)==4 and all(p.stat().st_size>0 for p in files)
+          manifest={
+            'asset_id':'b5-gloom-v5','stage':5,'status':'user-approved-preview',
+            'approved_on':'2026-11-15',
+            'source_glb_run':43607312319,
+            'vfx_render_run':int('${{ github.run_id }}'),
+            'source_commit':'${{ github.sha }}',
+            'glb':str(files[0]),'vfx_source':'preview/b5-v13-miasma-vfx.html',
+            'coordinate_system':'GLB glTF Y-up; preview rotates X +90 degrees into Z-up scene',
+            'runtime':'Three.js 0.160.1 GLTFLoader + ShaderMaterial; not yet integrated into game',
+            'files':[{'path':str(p),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in files],
+            'notes':'Approved visual V5: floor rock with crimson flame and purple fog. Review PNGs are actual browser screenshots.'
+          }
+          (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git diff --cached --quiet || { git commit -m "assets(b5): preserve approved V5 GLB, PNG renders and Claude manifest [skip ci]"; git push origin HEAD:${{ github.ref_name }}; }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
