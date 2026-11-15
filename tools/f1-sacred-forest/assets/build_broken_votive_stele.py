@@ -21,8 +21,10 @@ moss=material('stele_cushion_moss',(.043,.064,.019,1),.99)
 def slab(name,outline,depth,mat):
     n=len(outline)
     vs=[(x,-depth/2,z) for x,z in outline]+[(x,depth/2,z) for x,z in outline]
-    fs=[tuple(reversed(range(n))),tuple(n+i for i in range(n))]
-    fs.extend((i,(i+1)%n,(i+1)%n+n,i+n) for i in range(n))
+    # Counter-clockwise X/Z outline faces -Y at the front; closed outward
+    # winding is required before any Exact Boolean, not only at final export.
+    fs=[tuple(range(n)),tuple(reversed([n+i for i in range(n)]))]
+    fs.extend((i,n+i,n+(i+1)%n,(i+1)%n) for i in range(n))
     return mesh(name,vs,fs,mat)
 
 
@@ -54,6 +56,11 @@ def carve_recess(name,points,radius,centre_y=-.127):
     if hasattr(mod,'material_mode'):mod.material_mode='INDEX'
     bpy.ops.object.modifier_apply(modifier=mod.name)
     bpy.data.objects.remove(cutter,do_unlink=True)
+    # Format validation alone cannot detect a vanished hero monolith.
+    import bmesh
+    bm=bmesh.new();bm.from_mesh(body.data)
+    remaining_volume=abs(bm.calc_volume(signed=True));bm.free()
+    assert remaining_volume>.15, 'Inscription Boolean removed stone body: %.6f m3'%remaining_volume
 
 # V-shaped side losses created by subtraction; no floating dark chip decals.
 for loc,size,ang in [((-.37,-.115,.58),(.16,.11,.20),(.21,.14,.25)),
