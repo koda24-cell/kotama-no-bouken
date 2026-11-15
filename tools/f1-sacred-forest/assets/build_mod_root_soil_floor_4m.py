@@ -6,9 +6,9 @@ from common import reset_scene,cube,mesh,tube,material,finish,OUT
 from architecture_details import stone_materials,prism,chipped_rect,moss_lobe
 
 reset_scene()
-stone,fracture,earth,moss,root=stone_materials()
+stone,fracture,earth,moss,root=stone_materials("soil_module_stone","soil_module_bark")
 t=OUT/'textures'
-soiltex={'basecolor':t/'soil_color.jpg','normal':t/'soil_normal.jpg','roughness':t/'soil_roughness.jpg'}
+soiltex={'basecolor':t/'soil_color_graded.jpg','normal':t/'soil_normal.jpg','roughness':t/'soil_roughness.jpg'}
 soil=material('sacred_damp_forest_soil',(.17,.15,.10,1),.94,soiltex if all(p.exists() for p in soiltex.values()) else None)
 leafmat=material('sacred_old_leaf_litter',(.24,.18,.08,1),.95)
 cube('level_four_metre_soil',(0,0,-.11),(4,4,.22),soil,bevel=0)

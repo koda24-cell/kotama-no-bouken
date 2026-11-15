@@ -10,7 +10,7 @@ from common import reset_scene, material, mesh, cube, tube, finish, OUT
 reset_scene()
 rng=random.Random(52)
 tex=OUT/'textures'
-source={k:tex/v for k,v in {'basecolor':'stone_color.jpg','normal':'stone_normal.jpg','roughness':'stone_roughness.jpg'}.items()}
+source={k:tex/v for k,v in {'basecolor':'stone_color_graded.jpg','normal':'stone_normal.jpg','roughness':'stone_roughness.jpg'}.items()}
 stone=material('lantern_weathered_stone',(.255,.25,.22,1),.9,
                texture_set=source if all(p.exists() for p in source.values()) else None)
 fracture=material('lantern_pale_fracture',(.30,.29,.25,1),.96)
@@ -68,5 +68,10 @@ for x,y in [(-.24,-.07),(-.2,.14),(.2,.13)]:
 
 # The lost roof chip lies on the ground; not an attached protrusion masquerading as damage.
 mesh('fallen_roof_fragment',[(.26,-.26,.005),(.40,-.25,.005),(.35,-.38,.005),(.30,-.29,.08)],[(0,2,1),(0,1,3),(1,2,3),(2,0,3)],fracture)
+
+# Match the 3m real-world scan scale used by the architecture kit.
+from common import uv_world
+for obj in list(bpy.context.scene.objects):
+    if obj.type=='MESH' and any(m and m.name=='lantern_weathered_stone' for m in obj.data.materials):uv_world(obj,scale=3.0)
 
 finish('moss_stone_lantern',description='高さ1.6mの石灯籠。底面中央原点、正面+Z。独立した台座/竿/中台/火袋/笠/宝珠。火袋窓は実開口、笠角は実欠損。苔は上向き面へ限定。光源なし。')

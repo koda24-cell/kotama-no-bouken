@@ -21,13 +21,14 @@ async function main(){
  page.on('requestfailed',r=>{if(!r.url().includes('favicon.ico'))errors.push('requestfailed: '+r.url()+' '+r.failure()?.errorText);});
  try{
   await page.goto(`http://127.0.0.1:${PORT}/preview/f1-sacred-forest.html`,{waitUntil:'domcontentloaded',timeout:60000});
-  await page.waitForFunction(()=>window.F1Review?.ready,{timeout:120000});
+  await page.waitForFunction(()=>window.F1Review?.ready,null,{timeout:120000});
   const manifest=JSON.parse(fs.readFileSync(path.join(BASE,'manifest.json'),'utf8'));
   assert.ok(manifest.assets.length>0);
   for(const a of manifest.assets){
    console.error('[GLB]',a.id);
    const stat=await page.evaluate(id=>window.F1Review.loadAsset(id),a.id);
    assert.ok(stat&&stat.meshes>0,a.id+': no mesh');assert.ok(stat.triangles>0,a.id+': no triangles');assert.deepEqual(stat.invalid,[],a.id+': invalid geometry or texture');
+   for(const im of stat.imageDims)assert.ok([256,512,1024].includes(im.width)&&[256,512,1024].includes(im.height),a.id+': image outside supported 256/512/1024 dimensions '+JSON.stringify(im));
    assert.ok(stat.sizeMeters.every(v=>Number.isFinite(v)&&v>=0),a.id+': invalid dimensions');
    if(a.sizeMeters)for(let i=0;i<3;i++)assert.ok(Math.abs(a.sizeMeters[i]-stat.sizeMeters[i])<.08,`${a.id}: bbox mismatch axis ${i}, declared=${a.sizeMeters[i]} actual=${stat.sizeMeters[i]}`);
    if(a.tris)assert.equal(a.tris,stat.triangles,a.id+': triangles mismatch');
@@ -39,11 +40,13 @@ async function main(){
     const seam=await page.evaluate(()=>window.F1Review.setSeams(true));
     assert.equal(seam.triangles,stat.triangles*4,a.id+': 2x2 did not clone four tiles');
     assert.ok(Math.abs(seam.sizeMeters[0]-8)<.08,a.id+': X seam dimensions');assert.ok(Math.abs(seam.sizeMeters[2]-8)<.08,a.id+': Z seam dimensions');
+    seam.edgeHeights=await page.evaluate(()=>window.F1Review.floorEdgeReport());
+    for(const [edge,data] of Object.entries(seam.edgeHeights)){assert.ok(data.vertices>0,a.id+': no boundary vertices '+edge);assert.ok(Math.abs(data.topMax)<.045,a.id+': boundary top not at y=0 '+edge+' '+data.topMax);}
     await page.screenshot({path:path.join(OUT,a.id+'-seams.png'),timeout:120000});seams.push(seam);await page.evaluate(()=>window.F1Review.setSeams(false));
    }
   }
   if(process.env.VERIFY_SCENE==='1'&&fs.existsSync(path.join(BASE,'scene/sacred_forest_scene.glb'))){
-   await page.click('#scene-button');await page.waitForFunction(()=>!window.F1Review.busy,{timeout:180000});scene=await page.evaluate(()=>window.F1Review.stats());assert.equal(scene.id,'sacred_forest_scene');assert.deepEqual(scene.invalid,[]);await page.screenshot({path:path.join(OUT,'scene-browser.png'),timeout:180000});
+   await page.click('#scene-button');await page.waitForFunction(()=>!window.F1Review.busy,null,{timeout:180000});scene=await page.evaluate(()=>window.F1Review.stats());assert.equal(scene.id,'sacred_forest_scene');assert.deepEqual(scene.invalid,[]);await page.screenshot({path:path.join(OUT,'scene-browser.png'),timeout:180000});
   }
   const userErrors=await page.evaluate(()=>window.F1Review.errors);errors.push(...userErrors);
   assert.deepEqual(errors,[],'Browser errors');

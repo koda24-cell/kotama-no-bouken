@@ -6,10 +6,10 @@ from mathutils import Vector
 from common import mesh, cube, tube, material, OUT
 
 
-def stone_materials():
+def stone_materials(texture_prefix="stone",bark_prefix="bark"):
     t=OUT/'textures'
-    tex={'basecolor':t/'stone_color.jpg','normal':t/'stone_normal.jpg','roughness':t/'stone_roughness.jpg'}
-    bark={'basecolor':t/'bark_color.jpg','normal':t/'bark_normal.jpg','roughness':t/'bark_roughness.jpg'}
+    tex={'basecolor':t/(texture_prefix+'_color_graded.jpg'),'normal':t/(texture_prefix+'_normal.jpg'),'roughness':t/(texture_prefix+'_roughness.jpg')}
+    bark={'basecolor':t/(bark_prefix+'_color_graded.jpg'),'normal':t/(bark_prefix+'_normal.jpg'),'roughness':t/(bark_prefix+'_roughness.jpg')}
     return (material('sacred_weathered_stone',(.40,.39,.33,1),.85,tex),
             material('sacred_fresh_fracture',(.34,.32,.265,1),.91),
             material('sacred_earth_mortar',(.115,.117,.081,1),.96),

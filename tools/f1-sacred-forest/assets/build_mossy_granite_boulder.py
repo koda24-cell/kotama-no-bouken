@@ -9,7 +9,7 @@ from common import reset_scene, material, finish, uv_world, OUT
 
 reset_scene()
 t=OUT/'textures'
-stone=material('sacred_granite',(.32,.31,.27),.88,{'basecolor':t/'stone_color.jpg','normal':t/'stone_normal.jpg','roughness':t/'stone_roughness.jpg'})
+stone=material('sacred_granite',(.32,.31,.27),.88,{'basecolor':t/'stone_color_graded.jpg','normal':t/'stone_normal.jpg','roughness':t/'stone_roughness.jpg'})
 moss=material('sheltered_boulder_moss',(.075,.105,.027),.97)
 lichen=material('mineral_lichen',(.23,.255,.165),.96)
 fresh=material('old_granite_fracture',(.22,.225,.20),.92)

@@ -10,7 +10,7 @@ from common import reset_scene, material, mesh, cube, tube, finish, OUT
 reset_scene()
 rng=random.Random(901)
 tex=OUT/'textures'
-source={k:tex/v for k,v in {'basecolor':'stone_color.jpg','normal':'stone_normal.jpg','roughness':'stone_roughness.jpg'}.items()}
+source={k:tex/v for k,v in {'basecolor':'stone_color_graded.jpg','normal':'stone_normal.jpg','roughness':'stone_roughness.jpg'}.items()}
 stone=material('stele_weathered_stone',(.24,.235,.205,1),.89,
                texture_set=source if all(p.exists() for p in source.values()) else None)
 fresh=material('stele_old_fracture',(.29,.275,.23,1),.93)
@@ -71,5 +71,10 @@ for x,y,z,scale in [(-.38,-.15,.204,.075),(-.20,-.13,.223,.05),(.27,.04,.228,.07
 # A detached fragment rests at the foot, with a new silhouette but old surface.
 fragment=slab('detached_small_stele_shard',[(-.09,0),(.11,0),(.08,.09),(-.04,.13),(-.12,.05)],.13,fresh)
 fragment.location=(.42,-.25,0);fragment.rotation_euler[2]=.35
+
+# Match the 3m real-world scan scale used by the architecture kit.
+from common import uv_world
+for obj in list(bpy.context.scene.objects):
+    if obj.type=='MESH' and any(m and m.name=='stele_weathered_stone' for m in obj.data.materials):uv_world(obj,scale=3.0)
 
 finish('broken_votive_stele',description='高さ1.8mの欠損石碑。底面中央原点、正面+Z。失われた肩/角の実欠損、架空の角形紋様、割れと苔。実宗教の文字・札は複製していない。')
