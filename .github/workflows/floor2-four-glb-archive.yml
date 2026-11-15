@@ -1,0 +1,67 @@
+name: Archive four Floor 2 GLBs in Git
+on:
+  push:
+    branches:
+      - feature/floor2-four-glb-archive-20261112
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download four verified Blender artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/floor2-artifacts
+          for entry in "13898283966 aqueduct" "13897119466 watergate" "13913762600 shoreline" "13914442455 waterfall"; do
+            read -r id label <<< "$entry"
+            curl --fail --location --retry 3 --silent --show-error \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/koda24-cell/kotama-no-bouken/actions/artifacts/$id/zip" \
+              -o "/tmp/floor2-artifacts/$label.zip"
+            mkdir -p "/tmp/floor2-artifacts/$label"
+            unzip -q "/tmp/floor2-artifacts/$label.zip" -d "/tmp/floor2-artifacts/$label"
+          done
+      - name: Copy and validate GLB plus three-view previews
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import shutil, struct
+          root=Path('/tmp/floor2-artifacts')
+          out=Path('assets/models/floor2/candidates')
+          specs={
+            'aqueduct':('ruined_aqueduct_v01.glb','ruined_aqueduct_v01'),
+            'watergate':('frozen_watergate_v09.glb','frozen_watergate_v09'),
+            'shoreline':('b2_glacial_shoreline_v04.glb','b2_glacial_shoreline_v04'),
+            'waterfall':('floor2_frozen_waterfall.glb','floor2_frozen_waterfall_v05'),
+          }
+          for label,(source,stem) in specs.items():
+            base=root/label
+            src=base/source
+            data=src.read_bytes()
+            assert len(data)>10000, (label,len(data))
+            assert data[:4]==b'glTF', (label,'not GLB')
+            assert struct.unpack_from('<I',data,8)[0]==len(data),(label,'invalid length')
+            target=out/(stem+'.glb')
+            target.parent.mkdir(parents=True,exist_ok=True)
+            shutil.copy2(src,target)
+            review=out/'reviews'/stem
+            review.mkdir(parents=True,exist_ok=True)
+            for view in ['front','side','angle']:
+              png=base/(f'floor2_frozen_waterfall-{view}.png' if label=='waterfall' else f'{view}.png')
+              assert png.read_bytes()[:8]==b'\x89PNG\r\n\x1a\n', (label,view)
+              shutil.copy2(png,review/(view+'.png'))
+            print(label,target,len(data))
+          PY
+      - name: Commit archive to isolated feature branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/models/floor2/candidates
+          git commit -m "assets(floor2): archive four GLBs and three-view renders"
+          git push origin HEAD:feature/floor2-four-glb-archive-20261112
