@@ -117,11 +117,22 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
       vec2 flashPos=vec2(.12+.76*hash(vec2(flashCell,5.)),.25+.5*hash(vec2(flashCell,9.)));
       float halo=exp(-dot((uv-flashPos)*vec2(2.3,3.1),(uv-flashPos)*vec2(2.3,3.1))*9.);
       col+=vec3(.36,.13,.62)*flash*halo;
-      gl_FragColor=vec4(col,1.);
+      // Dissolve the distant VFX plane into the scene rather than revealing
+      // its rectangular bottom/side edges. Multi-scale noise disrupts the
+      // cutoff while a broad feather avoids a hard horizontal seam.
+      float edgeBroad=fbm(uv*vec2(4.2,3.1)+vec2(uTime*.009,-uTime*.006));
+      float edgeFine=fbm(uv*vec2(12.7,8.3)+vec2(-uTime*.017,uTime*.011));
+      float edgeWarp=(edgeBroad-.5)*.20+(edgeFine-.5)*.085;
+      float bottom=smoothstep(.015,.34,uv.y+edgeWarp);
+      float left=smoothstep(.0,.19,uv.x+edgeWarp*.65);
+      float right=smoothstep(.0,.19,1.-uv.x-edgeWarp*.65);
+      float top=smoothstep(.0,.17,1.-uv.y+edgeWarp*.35);
+      float alpha=bottom*left*right*top;
+      gl_FragColor=vec4(col,alpha);
     }
   `;
   const uniforms={uTime:{value:0},uSeed:{value:seed},uWindowMap:{value:windowTexture},uUseWindowMap:{value:windowTexture?1:0},uFlashStrength:{value:1}};
-  const material=new THREE.ShaderMaterial({vertexShader,fragmentShader,uniforms,depthWrite:false,depthTest:true,side:THREE.DoubleSide});
+  const material=new THREE.ShaderMaterial({vertexShader,fragmentShader,uniforms,transparent:true,depthWrite:false,depthTest:true,side:THREE.DoubleSide});
   const geometry=new THREE.PlaneGeometry(width,height);
   const mesh=new THREE.Mesh(geometry,material);
   mesh.name='b5-distant-window-fog-background';
