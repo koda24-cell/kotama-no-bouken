@@ -278,6 +278,44 @@ def _apply_and_join():
     return result
 
 
+def repair_zero_tangents(path):
+    """Repair only undefined MikkTSpace bases on collapsed-UV bevel corners.
+
+    The exporter emits zero XYZ on these few vertices. A normal-orthogonal
+    unit basis is the well-defined fallback where UV derivatives are singular.
+    Positions, UVs, normals, ordinary tangents and handedness remain unchanged.
+    """
+    data=bytearray(Path(path).read_bytes())
+    size,kind=struct.unpack_from('<II',data,12)
+    gltf=json.loads(data[20:20+size]);binary_start=28+size
+    repaired=0;visited=set()
+    for model in gltf.get('meshes',[]):
+        for primitive in model['primitives']:
+            attributes=primitive['attributes']
+            if 'TANGENT' not in attributes:continue
+            pair=(attributes['TANGENT'],attributes['NORMAL'])
+            if pair in visited:continue
+            visited.add(pair)
+            t,n=(gltf['accessors'][a] for a in pair)
+            assert t['componentType']==5126 and n['componentType']==5126
+            tv,nv=(gltf['bufferViews'][a['bufferView']] for a in (t,n))
+            to=binary_start+tv.get('byteOffset',0)+t.get('byteOffset',0)
+            no=binary_start+nv.get('byteOffset',0)+n.get('byteOffset',0)
+            for i in range(t['count']):
+                offset=to+i*tv.get('byteStride',16)
+                x,y,z,w=struct.unpack_from('<4f',data,offset)
+                if x*x+y*y+z*z>1e-12:continue
+                normal=Vector(struct.unpack_from('<3f',data,no+i*nv.get('byteStride',12)))
+                assert normal.length>.5,'Invalid normal cannot define a tangent basis'
+                normal.normalize()
+                axis=Vector((1,0,0)) if abs(normal.x)<.8 else Vector((0,1,0))
+                tangent=normal.cross(axis).normalized()
+                struct.pack_into('<4f',data,offset,*tangent,-1.0 if w<0 else 1.0)
+                repaired+=1
+    if repaired:Path(path).write_bytes(data)
+    return repaired
+
+
 def _gltf_metrics(path):
     data=path.read_bytes()
     magic,version,total=struct.unpack_from('<III',data,0)
@@ -388,7 +426,9 @@ def finish(asset_id, category='props', description='', render=True):
         export_yup=True,export_texcoords=True,export_normals=True,export_tangents=True,export_vertex_color='NONE',
         export_materials='EXPORT',export_image_format='AUTO',export_cameras=False,export_lights=False,
         export_extras=True,export_animations=False)
+    tangent_repairs=repair_zero_tangents(path)
     metrics=_gltf_metrics(path)
+    metrics['zeroTangentFallbackVertices']=tangent_repairs
     metrics.update(id=asset_id,file=str(path.relative_to(OUT)),category=category,desc_ja=description,
         approvalStatus='pending_visual_review',sourceCommit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         workflowRun=None,verificationEnvironment='Local Blender '+bpy.app.version_string,
