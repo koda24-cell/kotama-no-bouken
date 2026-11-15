@@ -1,0 +1,28 @@
+name: B2 Ruined Aqueduct Blender Docker
+on:
+  push:
+    branches:
+      - feature/b2-ruined-aqueduct-20261112
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull Blender Docker
+        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: Build B2 aqueduct and render 3 views
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b2-aqueduct
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+            -b -t 2 --python tools/b2-render/build-aqueduct.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-ruined-aqueduct-blender
+          path: render-output/b2-aqueduct/
+          if-no-files-found: error
+          retention-days: 14
