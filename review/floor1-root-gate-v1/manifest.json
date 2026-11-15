@@ -1,0 +1,21 @@
+{
+  "asset": "f1-root-gate-v1",
+  "approval": "pending",
+  "integration": false,
+  "units": "meters",
+  "opening_width": 2.2,
+  "triangles": 33444,
+  "mesh_count": 13,
+  "renderer": "4.3.2",
+  "render_environment": "local Blender Cycles CPU",
+  "workflow_run": null,
+  "files_sha256": {
+    "root-gate-v1.glb": "76a737926734e115ab9ffbdb82fd48b943d25c2b44d75f40d715d7a8a18eef43",
+    "front.png": "fae041716b6115e7fce535bccb9c3bf7c877094be294b81e3723fd3d9a6c5451",
+    "side.png": "08cf728fdb0fc38634235cb54440ad63d873c041c9fd8a37e5ce0bd0a1cad14f",
+    "angle.png": "190ffe18d780f53bb593a0b5a8c7c6d7cce5642e572eeae9688191957ae8d77f"
+  },
+  "source_commit": "5921dc21ef19f114a1d9ba4a434152ed69e76eef",
+  "png_postprocess": "128-color PNG optimization",
+  "validation": "GLB v2 header, declared length, 13 meshes, Blender reimport passed"
+}
