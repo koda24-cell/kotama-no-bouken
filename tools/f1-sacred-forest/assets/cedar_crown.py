@@ -132,7 +132,7 @@ def spray_card(name,base,tip,width,mat,roll=0,bend=.06):
     faces=[]
     for j in range(2):
         for i in range(2):
-            k=j*3+i;faces.append((k,k+3,k+4,k+1))
+            k=j*3+i;faces.append((k+1,k+4,k+3,k))
     obj=mesh(name,vertices,faces,mat)
     uv=obj.data.uv_layers.new(name='UVMap');uv.active_render=True;obj.data.uv_layers.active=uv
     for loop in obj.data.loops:
