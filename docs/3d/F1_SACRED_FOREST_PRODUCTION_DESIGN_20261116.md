@@ -26,3 +26,10 @@
 
 ## 状態
 事前設計。Pinterest実画像調査と技術資料は別記録で追補。未承認素材をゲーム本体へ統合しない。承認状態はpending_user_review。最高品質という到達を文書だけで宣言しない。
+
+## 制作中の設計追補
+- 主空間24×32m。外側の背景床2列と古杉8本をdressing_onlyとして配置し、空の地平線/床の切れ端を隠す。歩行領域を拡張したものではない。
+- 独立17点目として朽ちた小祠を追加。鳥居と紙札だけでなく、祀る空間の核となる木葺き屋根/内部祭壇を設ける。
+- [配置図](f1-sacred-forest-layout.svg)はassemble_scene.pyの実配置リストから生成する。実レンダリング画像とは区別。
+- [アセット別の実画像QA](F1_SACRED_FOREST_ASSET_REVIEW.md)で過照明・裏芯・coplanar面・木塗膜の改善を追跡する。
+- glTF公式validatorを導入。MikkTSpaceの退化UV箇所のゼロ接線にはnormal直交basisを数値フォールバックし、修復頂点数をmetricへ記録。geometry/UV/正常接線を変更せず、最終GLBで再検査する。
