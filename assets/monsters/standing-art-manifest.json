@@ -1,0 +1,78 @@
+{
+  "sourceBranch": "development",
+  "baseCommit": "8a038c4124aa1d1cfc7da9461d738b39e5e4438e",
+  "assets": [
+    {
+      "enemyId": "dark-knight",
+      "path": "assets/monsters/knight-standing-v1.png",
+      "size": [
+        1427,
+        1102
+      ],
+      "sha256": "e2f4adb228dc315951eb796b42a4b27981a9bc1ed30011bf93d93a218238a0ca",
+      "source": "OpenAI image generation, this conversation",
+      "status": "user authorized saving and mapping",
+      "animated": false
+    },
+    {
+      "enemyId": "wraith",
+      "path": "assets/monsters/wraith-standing-v1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "9c2947b3b7736e1017bf1f6c094d0deae3db941f55062ce685537640e78b0271",
+      "source": "OpenAI image generation, this conversation",
+      "status": "user authorized saving and mapping",
+      "animated": false
+    },
+    {
+      "enemyId": "hiddenBossData",
+      "path": "assets/monsters/chaos-phantom-standing-v1.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "583d2216d58699f376201209045fb35be60609f6f13efa33f77eef445dfd0a24",
+      "source": "OpenAI image generation, this conversation",
+      "status": "user authorized saving and mapping",
+      "animated": false
+    },
+    {
+      "enemyId": "mushroom",
+      "path": "assets/monsters/mushroom-standing-v1.png",
+      "size": [
+        1312,
+        1199
+      ],
+      "sha256": "9a81f6b8a236a7c8472390073204cba848ac1c34776dd4a0968a21ad9b75da5d",
+      "source": "OpenAI image generation, this conversation",
+      "status": "user authorized saving and mapping",
+      "animated": false
+    },
+    {
+      "enemyId": "mist-bat",
+      "path": "assets/monsters/mist-bat-standing-v1.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "0b9a9af1f32490725126fb7a917795eaaaded3477ec084770c1dd0ef6d06af75",
+      "source": "OpenAI image generation, this conversation",
+      "status": "user authorized saving and mapping",
+      "animated": false
+    },
+    {
+      "enemyId": "ore-crab",
+      "path": "assets/monsters/ore-crab-standing-v1.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "55c128783498d579ffdbe79349f3f43ccc47c20602e582f381e349e32fe08d74",
+      "source": "OpenAI image generation, this conversation",
+      "status": "user authorized saving and mapping",
+      "animated": false
+    }
+  ]
+}
