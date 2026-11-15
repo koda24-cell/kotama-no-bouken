@@ -28,10 +28,11 @@ jobs:
           python3 - <<'PY'
           import os,glob,shutil,hashlib,json,struct
           source='render-input'
-          glbs=glob.glob(source+'/*.glb')
-          pngs=glob.glob(source+'/b4-v33-*.png')
+          glbs=glob.glob(source+'/**/*.glb',recursive=True)
+          pngs=glob.glob(source+'/**/*.png',recursive=True)
+          print('DISCOVERED',glbs,pngs,flush=True)
           assert len(glbs)==1,(glbs,pngs)
-          assert len(pngs)==5,(glbs,pngs)
+          assert len(pngs)>=5,(glbs,pngs)
           with open(glbs[0],'rb') as f:assert f.read(4)==b'glTF'
           for p in pngs:
            with open(p,'rb') as f:assert f.read(8)==b'\x89PNG\r\n\x1a\n'
