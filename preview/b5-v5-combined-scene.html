@@ -10,7 +10,8 @@ const light=new THREE.PointLight(0x9955ee,12,30);light.position.set(0,5,-9);scen
 const stone=new THREE.MeshStandardMaterial({color:0x302a42,roughness:.92});
 const trim=new THREE.MeshStandardMaterial({color:0x4a3b60,roughness:.75});
 function box(w,h,d,x,y,z,m=stone){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);scene.add(o);return o;}
-box(13,.35,32,0,-.2,-13);
+// Extend the preview-only floor past the fog backdrop: no visible rectangular cut at z=-29.
+box(13,.35,210,0,-.2,-101);
 
 for(const side of [-1,1]){for(let k=0;k<4;k++){const z=-5-k*7;box(1.4,6.5,1.5,side*5.2,3.25,z);box(2.2,.5,2.3,side*5.2,6.45,z,trim);box(.45,1.6,.6,side*4.7,4.2,z+.2,trim);}}
 for(let k=0;k<6;k++){const z=-4-k*4.5;box(.15,.08,12,0,.04,z,trim);}
