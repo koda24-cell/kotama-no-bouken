@@ -8,8 +8,8 @@ from architecture_details import stone_materials,wall_block,prism,moss_lobe
 reset_scene()
 stone,fracture,earth,moss,root=stone_materials()
 # The truncated core follows the broken silhouette rather than hiding a full rectangular wall.
-outline=[(-2,0),(2,0),(2,3.05),(1.77,3.08),(1.70,2.80),(1.28,2.74),(1.16,2.42),(.63,2.39),(.54,2.18),(.08,2.18),(-.10,2.57),(-.52,2.55),(-.70,3.04),(-1.1,3.08),(-1.15,3.55),(-1.64,3.62),(-1.72,4),(-2,3.94)]
-prism('collapsed_solid_wall_core',outline,.65,.8,earth,axis='y',bevel=0)
+outline=[(-2,0),(2,0),(2,2.96),(1.79,3.0),(1.74,2.78),(1.68,2.71),(1.40,2.64),(1.27,2.67),(1.23,2.33),(1.17,2.33),(.87,2.28),(.65,2.34),(.53,2.09),(.46,2.09),(.16,2.05),(-.12,2.43),(-.41,2.46),(-.57,2.50),(-.73,2.93),(-1.08,2.96),(-1.17,2.82),(-1.20,3.05),(-1.38,3.43),(-1.71,3.52),(-1.75,3.92),(-2,3.86)]
+prism('collapsed_solid_wall_core',outline,.65,.79,stone,axis='y',bevel=.008)
 rows=[(0,.59,[-2,-.78,.47,2]),(.62,1.27,[-2,-1.36,-.13,1.04,2]),(1.30,1.96,[-2,-.86,.34,1.51,2])]
 for row,(za,zb,xs) in enumerate(rows):
     for col in range(len(xs)-1):wall_block('surviving_lower_course_%d_%d'%(row,col),xs[col]+(.012 if col else 0),xs[col+1]-(.012 if col<len(xs)-2 else 0),za,zb,stone,710+row*11+col,front=.012,back=.68,damage=.05)
