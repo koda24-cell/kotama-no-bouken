@@ -41,7 +41,7 @@ def _leaf_texture_arrays():
     broad /= max(broad.std(), 1e-6)
     grain = rng.normal(0, 1, (n, n))
     # OpenGL (+Y) normals derived from the height field, with normalized XYZ.
-    height = midrib*.0016+veins*.00048+cells*.000035+broad*.00004
+    height = midrib*.0024+veins*.0011+cells*.00005+broad*.00006
     dy, dxh = np.gradient(height, 1/(n-1), 1/(n-1))
     normals = np.stack((-dxh, -dy, np.ones_like(height)), axis=-1)
     normals /= np.linalg.norm(normals, axis=-1, keepdims=True)
@@ -49,7 +49,7 @@ def _leaf_texture_arrays():
     normal[:, :, :3] = normals*.5+.5
     orm = np.ones_like(normal)
     orm[:, :, 0] = np.clip(.985-veins*.012, .94, 1)
-    orm[:, :, 1] = np.clip(.81+broad*.014+grain*.003-veins*.018, .71, .90)
+    orm[:, :, 1] = np.clip(.82+broad*.019+grain*.003-veins*.095-midrib*.065, .65, .92)
     orm[:, :, 2] = 0
     tip_age = np.clip((v-.72)/.28, 0, 1)**2
     edge_age = np.clip((np.abs(u-.5)-.37)/.13, 0, 1)**2
@@ -63,7 +63,7 @@ def _leaf_texture_arrays():
         base = np.array(rgb, dtype=float)
         rgb = np.broadcast_to(base, (n, n, 3)).copy()
         # Pigment variation, mild vein lightening, rare restrained age freckles.
-        rgb *= (1+broad*.035+grain*.008+midrib*.055+veins*.035)[:, :, None]
+        rgb *= (1+broad*.075+grain*.008+midrib*.15+veins*.075)[:, :, None]
         age = aging*(tip_age*.7+edge_age*.3)
         rgb[:, :, 0] *= 1+age*.40
         rgb[:, :, 1] *= 1-age*.10
@@ -83,8 +83,8 @@ def leaf_texture_sets():
     import bpy
     cache = OUT / 'sources' / 'generated_materials'
     cache.mkdir(parents=True, exist_ok=True)
-    shared = {k: cache / ('woodland_leaf_veins_v1_'+k+'.jpg') for k in ('normal', 'orm')}
-    sets = {key: dict(shared, basecolor=cache / ('woodland_'+key+'_veins_v1_basecolor.jpg'))
+    shared = {k: cache / ('woodland_leaf_veins_v2_'+k+'.jpg') for k in ('normal', 'orm')}
+    sets = {key: dict(shared, basecolor=cache / ('woodland_'+key+'_veins_v2_basecolor.jpg'))
             for key in ('leaf', 'leaf_light', 'leaf_old')}
     paths = [*shared.values(), *(p['basecolor'] for p in sets.values())]
     if not all(p.exists() for p in paths):
@@ -135,10 +135,11 @@ def stem(name, points, radius, mat, sides=7):
 
 
 def leaf(name, base, tip, width, mat, roll=0, curve=.03, bite=False):
-    """Six triangle lanceolate/ovate blade with a raised central midrib.
+    """Smooth 36-triangle blade with longitudinal bow and a raised midrib.
 
-    The outer edge can have an actual small feeding notch rather than merely
-    a painted dot. Geometry is double-sided through the material, not alpha.
+    Eleven longitudinal samples shape the ovate/lanceolate outline, instead
+    of the old few-point diamond. Fern width remains caller-controlled. A
+    feeding notch is a small local outline loss, never a large angular bite.
     """
     a, b = Vector(base), Vector(tip)
     axis = b-a
@@ -149,21 +150,35 @@ def leaf(name, base, tip, width, mat, roll=0, curve=.03, bite=False):
     normal = side.cross(axis.normalized()).normalized()
     side = side*math.cos(roll)+normal*math.sin(roll)
     normal = side.cross(axis.normalized()).normalized()
-    c1, c2 = a+axis*.36+normal*curve, a+axis*.72+normal*curve*.8
-    verts = [a, c1, c2, b, c1-side*width*.52-normal*curve*.45,
-             c2-side*width*.38-normal*curve*.4,
-             c1+side*width*(.29 if bite else .52)-normal*curve*.4,
-             c2+side*width*.38-normal*curve*.4]
-    faces = [(0, 4, 1), (1, 4, 5), (1, 5, 2), (2, 5, 3),
-             (0, 1, 6), (1, 2, 7, 6), (2, 3, 7)]
-    # Positive normal points toward the geometric raised midrib.
-    faces = [tuple(reversed(f)) for f in faces]
+    samples=[0,.07,.16,.27,.39,.51,.63,.75,.85,.93,1]
+    # A deterministic leaf-local phase produces restrained non-identical rims.
+    phase=math.sin(a.x*17+a.y*11+b.z*23)*2.4
+    verts=[tuple(a)];coords=[(.5,0)]
+    for t in samples[1:-1]:
+        profile=(math.sin(math.pi*t)**.78)*(1-.20*t)*1.11
+        half_width=width*.52*profile
+        arch=curve*(math.sin(math.pi*t)**.85)
+        tip_curl=-curve*.40*(max(0,(t-.76)/.24)**2)
+        c=a+axis*t+normal*(arch+tip_curl)
+        ripple=.018*math.sin(t*math.pi*7+phase)+.009*math.sin(t*math.pi*15-phase)
+        notch=.12*math.exp(-((t-.84)/.065)**2) if bite else 0
+        left=c-side*half_width*(1+ripple)-normal*curve*.27*profile
+        right=c+side*half_width*(1-ripple-notch)-normal*curve*.30*profile
+        verts += [tuple(left),tuple(c),tuple(right)]
+        coords += [(0,t),(.5,t),(1,t)]
+    verts.append(tuple(b-normal*curve*.40));coords.append((.5,1))
+    # U grows from left to right; the winding points toward the raised midrib.
+    faces=[(0,2,1),(0,3,2)]
+    for row in range(8):
+        start=1+row*3;next_start=start+3
+        faces += [(start,start+1,next_start+1,next_start),
+                  (start+1,start+2,next_start+2,next_start+1)]
+    tip_index=len(verts)-1;last=1+8*3
+    faces += [(last,last+1,tip_index),(last+1,last+2,tip_index)]
     obj = mesh(name, [tuple(v) for v in verts], faces, mat)
     uv = obj.data.uv_layers.new(name='UVMap')
     obj.data.uv_layers.active = uv
     uv.active_render = True
-    coords = [(.5, 0), (.5, .36), (.5, .72), (.5, 1),
-              (0, .36), (.1, .72), (1, .36), (.9, .72)]
     for loop in obj.data.loops:
         uv.data[loop.index].uv = coords[loop.vertex_index]
     for p in obj.data.polygons:
