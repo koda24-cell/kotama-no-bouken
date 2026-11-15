@@ -1,0 +1,50 @@
+{
+  "bytes": 154196,
+  "sha256": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048",
+  "tris": 540,
+  "verts": 1420,
+  "meshes": 1,
+  "drawCalls": 1,
+  "materials": [
+    "original_fictional_ofuda_paper"
+  ],
+  "textureCount": 3,
+  "textureBytes": 80619,
+  "sizeMeters": [
+    0.6101,
+    0.6005,
+    0.0588
+  ],
+  "bboxMin": [
+    -0.305,
+    -0.0004,
+    -0.0013
+  ],
+  "bboxMax": [
+    0.305,
+    0.6001,
+    0.0575
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "ofuda_seal_cluster",
+  "file": "props/ofuda_seal_cluster.glb",
+  "category": "props",
+  "desc_ja": "壁用の貼り札5枚、約0.6m高。壁面下端中央原点、正面+Z。紙端の破れ/折れ/反りと独自描画の架空墨紋様。実宗教の札・文字・印章を複製していない。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "78d9f8b46726e22c3b3ce22e9778f93644846753",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/ofuda_seal_cluster.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/ofuda_seal_cluster/front.png",
+    "renders/ofuda_seal_cluster/side.png",
+    "renders/ofuda_seal_cluster/angle.png",
+    "renders/ofuda_seal_cluster/top.png"
+  ]
+}
