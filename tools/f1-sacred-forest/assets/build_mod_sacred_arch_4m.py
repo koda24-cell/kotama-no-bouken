@@ -10,7 +10,7 @@ stone,fracture,earth,moss,root=stone_materials()
 # Structural jambs. The inner jamb planes remain exactly at +/-1m.
 for side in (-1,1):
     xa,xb=(-2,-1) if side<0 else (1,2)
-    cube('continuous_jamb_core_'+str(side),((xa+xb)/2,.73,1.5),(1,.14,3),earth,bevel=0)
+    cube('continuous_jamb_core_'+str(side),((xa+xb)/2,.725,1.495),(.98,.13,2.99),earth,bevel=0)
     for row,(za,zb) in enumerate([(0,.47),(.49,1.07),(1.09,1.72),(1.74,2.33),(2.35,2.98)]):
         # Individual split stone faces, shallow outer-edge breakage only.
         poly=[(xa+.018,za),(xb-.018,za),(xb,za+.055),(xb,zb-.045),(xb-.055,zb),(xa+.06,zb),(xa,zb-.085),(xa,za+.047)]
@@ -18,8 +18,8 @@ for side in (-1,1):
 # A shallow arch does not reduce the specified rectangular clearance.
 def inner(x):return 3.0+.42*math.sqrt(max(0,1-x*x))
 curve=[(-1+2*i/16,inner(-1+2*i/16)) for i in range(17)]
-backer=[(-2,3),(-1,3)]+curve[1:]+[(2,3),(2,4),(-2,4)]
-prism('solid_arch_backing_above_clearance',backer,.65,.8,earth,axis='y',bevel=0)
+backer=[(-1.99,3),(-1,3)]+curve[1:]+[(1.99,3),(1.99,3.98),(-1.99,3.98)]
+prism('solid_arch_backing_above_clearance',backer,.65,.79,earth,axis='y',bevel=0)
 # Seven differently proportioned voussoirs build the real opening silhouette.
 cuts=[-1,-.77,-.48,-.17,.17,.48,.77,1]
 for i,(a,b) in enumerate(zip(cuts,cuts[1:])):

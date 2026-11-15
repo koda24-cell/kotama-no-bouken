@@ -270,6 +270,10 @@ def _apply_and_join():
         # All geometry has coherent outward normals, including boolean caps.
         bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT')
         bpy.ops.mesh.normals_make_consistent(inside=False);bpy.ops.object.mode_set(mode='OBJECT')
+        # Explicit triangles make MikkTSpace tangent export reliable for the
+        # chipped n-gons and Boolean fracture caps authored by individual artists.
+        tri=obj.modifiers.new('portable triangulated surface','TRIANGULATE')
+        bpy.ops.object.modifier_apply(modifier=tri.name)
         result.append(obj)
     return result
 
@@ -381,7 +385,7 @@ def finish(asset_id, category='props', description='', render=True):
     src=OUT/'sources'/(asset_id+'.blend');bpy.ops.wm.save_as_mainfile(filepath=str(src))
     path=OUT/category/(asset_id+'.glb')
     bpy.ops.export_scene.gltf(filepath=str(path),export_format='GLB',use_selection=True,
-        export_yup=True,export_texcoords=True,export_normals=True,export_vertex_color='NONE',
+        export_yup=True,export_texcoords=True,export_normals=True,export_tangents=True,export_vertex_color='NONE',
         export_materials='EXPORT',export_image_format='AUTO',export_cameras=False,export_lights=False,
         export_extras=True,export_animations=False)
     metrics=_gltf_metrics(path)

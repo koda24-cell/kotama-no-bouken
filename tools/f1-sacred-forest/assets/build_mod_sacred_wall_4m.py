@@ -8,7 +8,7 @@ from architecture_details import stone_materials,wall_block,prism,moss_lobe,chip
 reset_scene()
 stone,fracture,earth,moss,root=stone_materials()
 # The backing guarantees no cracks reveal the void or light leaks across joined cells.
-cube('solid_mortar_core',(0,.72,2),(4,.16,4),earth,bevel=0)
+cube('solid_mortar_core',(0,.72,1.99),(3.98,.14,3.98),earth,bevel=0)
 rows=[(0,.58,[-2,-.76,.38,2]),(.61,1.24,[-2,-1.35,-.10,1.05,2]),(1.27,1.98,[-2,-.92,.24,1.38,2]),(2.01,2.67,[-2,-1.25,.04,1.23,2]),(2.70,3.35,[-2,-.76,.55,2]),(3.38,3.81,[-2,-1.19,.08,1.25,2])]
 for row,(za,zb,xs) in enumerate(rows):
     for col in range(len(xs)-1):

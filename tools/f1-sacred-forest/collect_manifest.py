@@ -22,6 +22,7 @@ NAMES={
  'white_wildflower_patch':'白花と蕾の草叢',
  'hanging_forest_vines':'垂れつると巻きひげ',
  'mossy_granite_boulder':'欠損した苔の花崗岩',
+ 'sacred_hokora_shrine':'朽ちた鎮守の小祠',
 }
 
 assets=[]
@@ -35,7 +36,7 @@ for asset_id,name in NAMES.items():
     assert all((OUT/r).is_file() and (OUT/r).stat().st_size>1000 for r in m['renders'])
     m.update(name_ja=name,approvalStatus='pending_user_review',
              origin='top attachment' if asset_id=='hanging_forest_vines' else 'surface top centre' if 'floor_4m' in asset_id else 'floor-centred',
-             expectedByteBudget=4194304 if asset_id=='sacred_cedar_tree' else 1048576)
+             expectedByteBudget=4194304 if asset_id in ('sacred_cedar_tree','sacred_hokora_shrine') else 1048576)
     m['budgetStatus']='within_target' if m['bytes']<=m['expectedByteBudget'] else 'above_target_review_required'
     source=ROOT/'tools/f1-sacred-forest/assets'/('build_'+asset_id+'.py')
     m['buildScript']='tools/f1-sacred-forest/assets/'+source.name
