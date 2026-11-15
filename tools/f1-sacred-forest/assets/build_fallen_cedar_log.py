@@ -76,9 +76,34 @@ for x,a,size in [(-1.15,.55,.43),(-.30,1.5,.35),(.8,2.3,.28),(1.3,.95,.22)]:
     tip=base+Vector((-.12,.20*math.cos(a),size))
     stem('old branch stub',[base,base.lerp(tip,.7),tip],[.13,.09,.055],m['bark'],8)
     stem('stub torn pale end',[tip-Vector((.025,0,.015)),tip+Vector((.025,0,.025))],[.055,.025],m['heart'],7)
+# Moss conforms to the actual bark shell rather than floating as flat green fans.
+from mathutils.bvhtree import BVHTree
+bark_bvh=BVHTree.FromPolygons([Vector(v) for v in verts],faces,all_triangles=False)
+def bark_height(x,y):
+    hit,normal,index,distance=bark_bvh.ray_cast(Vector((x,y,2)),Vector((0,0,-1)),3)
+    return hit.z if hit is not None else .48
 for i in range(13):
-    x=rng.uniform(-1.65,1.55); y=rng.uniform(-.20,.20)
-    moss_patch('top damp moss',(x,y,.48+math.sqrt(max(.12,.39**2-y*y))+.012),rng.uniform(.11,.22),m['moss'],rng)
+    cx=rng.uniform(-1.65,1.55); cy=rng.uniform(-.18,.18); radius=rng.uniform(.10,.19)
+    count=32; boundary=[rng.uniform(.73,1.12) for _ in range(count)]
+    v=[(cx,cy,bark_height(cx,cy)+.004)]
+    for fraction in (.5,1):
+        for j in range(count):
+            a=j*math.tau/count;r=radius*boundary[j]*fraction
+            x=cx+math.cos(a)*r;y=cy+math.sin(a)*r*.62
+            v.append((x,y,bark_height(x,y)+(.003 if fraction<1 else .0007)))
+    fs=[(0,1+j,1+(j+1)%count) for j in range(count)]
+    fs.extend((1+j,1+count+j,1+count+(j+1)%count,1+(j+1)%count) for j in range(count))
+    patch=mesh('bark_conforming_velvet_moss_%02d'%i,v,fs,m['moss'])
+    for polygon in patch.data.polygons:polygon.use_smooth=True
+    # Short frayed shoots break the cut-paper edge without large pebble clumps.
+    shoots=[];sf=[]
+    for j in range(24):
+        a=rng.uniform(0,math.tau);r=radius*math.sqrt(rng.random())*.85
+        x=cx+math.cos(a)*r;y=cy+math.sin(a)*r*.62;z=bark_height(x,y)+.002
+        width=rng.uniform(.0008,.0015);height=rng.uniform(.003,.006)
+        k=len(shoots);shoots.extend([(x-width,y,z),(x+width,y,z),(x+.001,y+.001,z+height)])
+        sf.append((k,k+1,k+2))
+    mesh('fine_moss_shoots_%02d'%i,shoots,sf,m['moss'])
 
 # The irregular shell, not an arbitrary primitive radius, defines contact.
 lowest=min((o.matrix_world@Vector(c)).z for o in bpy.context.scene.objects
