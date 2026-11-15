@@ -46,21 +46,30 @@ def carve_recess(name,points,radius,centre_y=-.127):
     the thinner tapered fissure is centred 1mm behind to intersect the face.
     All x/z path positions are retained, including the four original rows.
     """
-    cutter=tube('temporary_'+name,[(x,centre_y,z) for x,_,z in points],radius,None,4)
-    cutter.data.materials.append(stone)
-    cutter.data.materials.append(dark)
-    for polygon in cutter.data.polygons:polygon.material_index=1
-    bpy.context.view_layer.objects.active=body
-    mod=body.modifiers.new('actual_v_groove_'+name,'BOOLEAN')
-    mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=cutter
-    if hasattr(mod,'material_mode'):mod.material_mode='INDEX'
-    bpy.ops.object.modifier_apply(modifier=mod.name)
-    bpy.data.objects.remove(cutter,do_unlink=True)
-    # Format validation alone cannot detect a vanished hero monolith.
+    # A bent closed tube can self-intersect at angular glyph corners. Subtract
+    # one convex diamond prism per straight stroke instead of that invalid solid.
     import bmesh
-    bm=bmesh.new();bm.from_mesh(body.data)
-    remaining_volume=abs(bm.calc_volume(signed=True));bm.free()
-    assert remaining_volume>.15, 'Inscription Boolean removed stone body: %.6f m3'%remaining_volume
+    for segment,(a,b) in enumerate(zip(points,points[1:])):
+        ra=radius[segment] if isinstance(radius,(list,tuple)) else radius
+        rb=radius[segment+1] if isinstance(radius,(list,tuple)) else radius
+        cutter=tube('temporary_'+name+'_'+str(segment),
+                    [(a[0],centre_y,a[2]),(b[0],centre_y,b[2])],[ra,rb],None,4)
+        bm=bmesh.new();bm.from_mesh(cutter.data)
+        bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+        bm.to_mesh(cutter.data);bm.free()
+        cutter.data.materials.append(stone)
+        cutter.data.materials.append(dark)
+        for polygon in cutter.data.polygons:polygon.material_index=1
+        bpy.context.view_layer.objects.active=body
+        mod=body.modifiers.new('actual_v_groove_'+name,'BOOLEAN')
+        mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=cutter
+        if hasattr(mod,'material_mode'):mod.material_mode='INDEX'
+        bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.objects.remove(cutter,do_unlink=True)
+        # Format validation alone cannot detect a vanished hero monolith.
+        bm=bmesh.new();bm.from_mesh(body.data)
+        remaining_volume=abs(bm.calc_volume(signed=True));bm.free()
+        assert remaining_volume>.15, 'Inscription Boolean removed stone body: %.6f m3'%remaining_volume
 
 # V-shaped side losses created by subtraction; no floating dark chip decals.
 for loc,size,ang in [((-.37,-.115,.58),(.16,.11,.20),(.21,.14,.25)),
