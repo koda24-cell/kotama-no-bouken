@@ -34,38 +34,66 @@ rear_depth=min(max((vd/vw)*sw*.52,sd*.34),sd*.85)
 seam_y=smn.y+sd*.45
 rx=sw*.485
 rz=sh*.485
-# V11: sample face geometry near the posterior seam, avoiding protruding side rims.
+# V12: continuous posterior cross-sections, fitted to smoothed side contours.
+# The V12 linear interpolation made a flat ribbon with large holes.
 face_obj=shibu_objs[0]
 source_vertices=[face_obj.matrix_world @ v.co for v in face_obj.data.vertices]
-def silhouette(z,side):
- band=max(sh*.022,.002)
- candidates=[v for v in source_vertices if abs(v.z-z)<band and (v.x-cx)*side>=0]
+# Sample several vertical slices, then smooth the edge contour across heights.
+N=48
+zlo=smn.z+sh*.035
+zhi=smx.z-sh*.035
+def edge_at(z,side):
+ band=max(sh*.055,.003)
+ candidates=[v for v in source_vertices if abs(v.z-z)<band and (v.x-cx)*side>0]
  if not candidates:
-  candidates=sorted((v for v in source_vertices if (v.x-cx)*side>=0),key=lambda v:abs(v.z-z))[:12]
- rear=sorted(candidates,key=lambda v:v.y)[:max(3,len(candidates)//3)]
- return max(rear,key=lambda v:(v.x-cx)*side)
-
-# Construct a HALF-ELLIPSOID surface with open front, not a scalp sphere.
-# theta controls height, phi runs from left seam to back to right seam.
-rows=32;cols=32;verts=[];faces=[]
+  candidates=sorted((v for v in source_vertices if (v.x-cx)*side>0),key=lambda v:abs(v.z-z))[:20]
+ if not candidates:raise RuntimeError('Face lacks vertices on one side')
+ # Choose lateral face edge; use robust median of outermost samples.
+ candidates.sort(key=lambda v:abs(v.x-cx),reverse=True)
+ edge=candidates[:max(4,len(candidates)//8)]
+ return (sum(v.x for v in edge)/len(edge),sum(v.y for v in edge)/len(edge))
+raw=[]
+for i in range(N+1):
+ z=zlo+(zhi-zlo)*i/N
+ lx,ly=edge_at(z,-1);rx0,ry=edge_at(z,1)
+ raw.append((z,lx,ly,rx0,ry))
+def smooth(i,k):
+ vals=[raw[max(0,min(N,i+d))][k] for d in (-3,-2,-1,0,1,2,3)]
+ return sum(vals)/len(vals)
+# Back curvature is smooth and widest around the cranium, narrower at jaw.
+rows=N;cols=48;verts=[];faces=[]
 for i in range(rows+1):
- theta=math.pi*(.025+(.95*i/rows))
+ z=raw[i][0]
+ lx,ly,rrx,ry=[smooth(i,k) for k in (1,2,3,4)]
+ mid=(lx+rrx)*.5
+ half=max((rrx-lx)*.5,.003)
+ norm=(z-zlo)/(zhi-zlo)
+ crown=max(.10,math.sin(math.pi*norm)**.42)
+ depth=rear_depth*crown
  for j in range(cols+1):
   phi=math.pi*j/cols
-  z=cz+rz*math.cos(theta)
-  left=silhouette(z,-1);right=silhouette(z,1)
-  t=j/cols
-  rim_x=right.x*(1-t)+left.x*t
-  rim_y=right.y*(1-t)+left.y*t
-  x=cx+(rim_x-cx)*(1-.08*math.sin(math.pi*t))
-  y=rim_y-rear_depth*math.sin(math.pi*t)*math.sin(theta)
+  # An actual curved rear half of the head, not a flattened strip.
+  x=mid+half*math.cos(phi)
+  y=ry*(1-j/cols)+ly*(j/cols)-depth*math.sin(phi)
   verts.append((x,y,z))
 for i in range(rows):
  for j in range(cols):
   a=i*(cols+1)+j;b=a+cols+1
   faces.append((a,b,b+1,a+1))
+# Close the crown and lower posterior skull without any extra sphere.
+for top in (False,True):
+ ring=rows if top else 0
+ indices=[ring*(cols+1)+j for j in range(cols+1)]
+ centroid=Vector((0,0,0))
+ for idx in indices:centroid+=Vector(verts[idx])
+ centroid/=len(indices)
+ cap=len(verts)
+ verts.append(tuple(centroid))
+ for j in range(cols):
+  if top:faces.append((indices[j],indices[j+1],cap))
+  else:faces.append((indices[j+1],indices[j],cap))
 mesh=bpy.data.meshes.new('Posterior_shell_mesh');mesh.from_pydata(verts,[],faces);mesh.update()
-head=bpy.data.objects.new('Assassin_posterior_shell_V11',mesh)
+head=bpy.data.objects.new('Assassin_posterior_shell_V12',mesh)
 bpy.context.collection.objects.link(head)
 for poly in mesh.polygons:poly.use_smooth=True
 if face_obj.data.materials:
@@ -93,10 +121,10 @@ for name,offset in [('front',(0,1,0)),('back',(0,-1,0)),('side',(1,0,0)),('back_
 bpy.ops.object.select_all(action='DESELECT')
 for o in shibu_objs+[head]:o.select_set(True)
 bpy.context.view_layer.objects.active=head
-bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_head_posterior_v11_review.glb'),export_format='GLB',use_selection=True)
+bpy.ops.export_scene.gltf(filepath=os.path.join(out,'assassin_head_posterior_v12_review.glb'),export_format='GLB',use_selection=True)
 with open(os.path.join(out,'geometry_measurements.json'),'w') as f:
  json.dump({'shibu_bounds':[list(smn),list(smx)],'vita_bounds':[list(vmn),list(vmx)],
  'shibu_width':sw,'vita_width':vw,'shibu_depth':sd,'vita_depth':vd,
  'shibu_height':sh,'vita_height':vh,'rear_depth':rear_depth,
  'rear_seam_y':seam_y,'new_vertices':len(verts),'new_faces':len(faces),
- 'construction':'V11 face-sampled seam and posterior shell; no sphere, no hair; unapproved review candidate'},f,indent=2)
+ 'construction':'V12 face-sampled seam and posterior shell; no sphere, no hair; unapproved review candidate'},f,indent=2)
