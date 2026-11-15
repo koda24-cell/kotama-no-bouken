@@ -1,0 +1,62 @@
+name: Archive Approved B2 Frozen Ancient Altar
+on:
+  push:
+    branches:
+      - feature/b2-frozen-altar-approved-archive-20261112
+    paths:
+      - .github/workflows/b2-frozen-altar-approved-archive.yml
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify and archive user-approved B2 ancient altar GLB and PNG previews
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/13914164378/zip" -o /tmp/b2-altar-approved.zip
+          mkdir -p /tmp/b2-altar-approved
+          unzip -q /tmp/b2-altar-approved.zip -d /tmp/b2-altar-approved
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/b2-altar-approved')
+          glb=p/'b2-frozen-ancient-altar.glb'
+          assert glb.is_file() and glb.stat().st_size>10000
+          assert glb.read_bytes()[:4]==b'glTF', 'Invalid GLB signature'
+          for v in ('front','side','high-angle'):
+              f=p/f'b2-frozen-ancient-altar-{v}.png'
+              assert f.is_file() and f.stat().st_size>10000
+              assert f.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a'), f'Invalid PNG: {f}'
+          print('Approved GLB and 3 PNGs validated')
+          PY
+          mkdir -p assets/models/floor2/reviews/b2-frozen-ancient-altar
+          cp /tmp/b2-altar-approved/b2-frozen-ancient-altar.glb assets/models/floor2/b2-frozen-ancient-altar.glb
+          cp /tmp/b2-altar-approved/b2-frozen-ancient-altar-front.png assets/models/floor2/reviews/b2-frozen-ancient-altar/front.png
+          cp /tmp/b2-altar-approved/b2-frozen-ancient-altar-side.png assets/models/floor2/reviews/b2-frozen-ancient-altar/side.png
+          cp /tmp/b2-altar-approved/b2-frozen-ancient-altar-high-angle.png assets/models/floor2/reviews/b2-frozen-ancient-altar/angle.png
+          cat > assets/models/floor2/reviews/b2-frozen-ancient-altar/README.md <<'EOF'
+          # 第2階層｜氷結した古代祭壇（完成承認済み）
+          
+          ユーザー完成承認：2026-11-12
+          
+          - 元造形PR: https://github.com/koda24-cell/kotama-no-bouken/pull/285
+          - 元のBlender成功run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43152745995
+          - Artifact ID: `13914164378`
+          - 元造形コード: `tools/b2-altar/build-and-render.py` （元の制作PRに保持）
+          - このフォルダには正面、側面、斜め上の実レンダリングPNGを保存。
+          - 本保存はGLB・PNGの恒久保存候補のみ。ゲームへの配置・developmentマージは別途。
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/models/floor2/b2-frozen-ancient-altar.glb assets/models/floor2/reviews/b2-frozen-ancient-altar
+          if ! git diff --cached --quiet; then
+            git commit -m "Archive approved B2 frozen ancient altar GLB and three Blender render views"
+            git push origin HEAD:feature/b2-frozen-altar-approved-archive-20261112
+          fi
