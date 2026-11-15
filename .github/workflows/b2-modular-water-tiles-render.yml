@@ -1,0 +1,28 @@
+name: B2 Modular Water Tiles Blender Render
+on:
+  push:
+    branches:
+      - feature/b2-modular-water-tiles-20261112
+    paths:
+      - tools/b2-render/build-modular-water-tiles.py
+      - .github/workflows/b2-modular-water-tiles-render.yml
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull Blender Docker
+        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: Export 16 modular GLBs and three renders
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b2-water-tiles
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python tools/b2-render/build-modular-water-tiles.py
+          for i in $(seq -w 0 15); do test -s "render-output/b2-water-tiles/water_tile_$i.glb"; done
+          for f in top.png side.png angle.png README.txt; do test -s "render-output/b2-water-tiles/$f"; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b2-modular-water-tiles-v01
+          path: render-output/b2-water-tiles/
+          if-no-files-found: error
+          retention-days: 14
