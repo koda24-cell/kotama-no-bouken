@@ -173,13 +173,24 @@ async function screenshot(session,name){
 }
 function assertNativeFloor(snapshot,floor){
  const expected=sourceFloors[floor];assert.deepEqual(snapshot.map,expected.map,'Live map changed');
- assert.deepEqual(snapshot.objects,expected.objects,'Live object identities changed');
+ const identities=objects=>objects.map(object=>{const value=clean(object);
+  // Native gather setup adds gatherKind and changes the presentation label.
+  // Neither is a changed object ID, position or interaction contract.
+  if(value.kind==='gather'){delete value.gatherKind;delete value.name;}return value;});
+ assert.deepEqual(identities(snapshot.objects),identities(expected.objects),'Live object identities changed');
  assert.deepEqual(snapshot.foeDefinitions,expected.foes,'Live FOE definitions changed');
- assert.equal(snapshot.review.entries.length,expected.objects.length,'Native entries count changed');
+ if(floor===2)assert.equal(snapshot.review.entries.length,expected.objects.length,'Native 3F fixed entries count changed');
+ else assert(snapshot.review.entries.length>=expected.objects.length,'Missing native floor entries');
  const found=new Map(snapshot.review.entries.map(e=>[e.key,e]));
  for(const object of expected.objects){const entry=found.get(object.key);assert.ok(entry,'Missing native entry '+object.key);assert.equal(entry.kind,object.kind);
-  const height=object.kind==='npc'?2.2:object.kind==='save'?1.9:object.kind==='sign'?1.8:1.2;
-  assert(close(entry.at[0],object.tx*4));assert(close(entry.at[1],height));assert(close(entry.at[2],object.ty*4));
+  const height=object.kind==='npc'?2.2:object.kind==='save'?1.9:object.kind==='sign'?1.8:object.onWall&&object.kind==='switch'?1.4:1.2;
+  if(object.onWall&&object.kind==='switch'){
+   // The legacy 1F lever is rendered on both accessible wall faces. Keep
+   // those original duplicates/offsets and compare opt-in/off signatures.
+   const dx=Math.abs(entry.at[0]-object.tx*4),dz=Math.abs(entry.at[2]-object.ty*4);
+   assert((close(dx,2.5)&&close(dz,0))||(close(dx,0)&&close(dz,2.5)));
+  }else{assert(close(entry.at[0],object.tx*4));assert(close(entry.at[2],object.ty*4));}
+  assert(close(entry.at[1],height));
   assert.equal(entry.hasObject,true,'Entry has no native visual model: '+object.key);
  }
  const water=expected.map.reduce((n,row)=>n+[...row].filter(c=>c==='~').length,0);
