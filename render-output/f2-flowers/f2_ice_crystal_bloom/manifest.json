@@ -1,7 +1,7 @@
 {
   "asset": "f2_ice_crystal_bloom",
   "blender": "4.2.3 LTS",
-  "triangles": 16590,
+  "triangles": 16598,
   "objects": [
     "f2_ice_crystal_bloom"
   ],
@@ -17,22 +17,22 @@
     "crystal_stem_leaf"
   ],
   "bbox_m": [
-    0.2459,
-    0.1625,
-    0.2315
+    0.2157,
+    0.1628,
+    0.2047
   ],
   "origin": "bottom-center",
   "glb": "f2_ice_crystal_bloom.glb",
-  "glb_bytes": 1225556,
+  "glb_bytes": 1226580,
   "sha256": {
-    "f2_ice_crystal_bloom.glb": "2ff129e654b64425f16f220a43d688e0d56e4f41a3461393998667edba95b6ff",
-    "f2_ice_crystal_bloom_cave_front.png": "1b25f6f32b6eee260b21cf58c6cdd17ff2691d37328cd780f319662a6a0ea399",
-    "f2_ice_crystal_bloom_cave_side.png": "0077be81a404b6fd242ad90fa7297011e2a87af9cfc60f4c1d75ebfb0778dde7",
-    "f2_ice_crystal_bloom_cave_angle.png": "5ddb4d9b755086f04e885fee3343297d65a453dbce0253604b21e3ea3d09fd3f",
-    "f2_ice_crystal_bloom_cave_top.png": "4b763e36d9814c8f31e884c884633d5c2769def9900d4f473efcb37254d0cd6e",
-    "f2_ice_crystal_bloom_cave_close.png": "61a04a88faf0e678df8251a0f3c804562a6d99460a01a5070055b046e236187e",
-    "f2_ice_crystal_bloom_studio_front.png": "ebdf7c2e15dd32fec592847ff03c27f249d881b46b76f5ce078b2eafae6a842f",
-    "f2_ice_crystal_bloom_studio_angle.png": "dc8760d1c0bd7a9c4692057f7912533bc9c673b6c367800391ea130b72e8784e"
+    "f2_ice_crystal_bloom.glb": "3fe14b3107b1b0c03254704c3fb04acb0f87bf15a63d85c0094e59497577f87c",
+    "f2_ice_crystal_bloom_cave_front.png": "9a9418e8c6acd228a1220f03c5b208a420b499fe637dbe1195b2139d2e75fcbe",
+    "f2_ice_crystal_bloom_cave_side.png": "0ee75c92fad1d9a8ade60a874ebe8f8b5032a13edbf7783a227cf52e5db5776c",
+    "f2_ice_crystal_bloom_cave_angle.png": "bbf1af5e8563e55fd0e74f877aa68d4bc49761c0c5f01f686993560f3abc3124",
+    "f2_ice_crystal_bloom_cave_top.png": "6f3d592434027cb0bb531f87e359b072c601f28ea0346bf27041ca1ccf204975",
+    "f2_ice_crystal_bloom_cave_close.png": "2e7178c9f791e92e6d84ff1b3f30ff11b96065660a915ec175a371d0039053b1",
+    "f2_ice_crystal_bloom_studio_front.png": "a3986ed697dd93e8d61b84b8289de59240dd6f0a02c1888d18d689857bf0b503",
+    "f2_ice_crystal_bloom_studio_angle.png": "bfa29ba6ef93c0bd497030a7534198a072e43cf9265993f15f5f9a7f7b07845d"
   },
   "renders": [
     "f2_ice_crystal_bloom_cave_front.png",
