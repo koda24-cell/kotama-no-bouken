@@ -142,3 +142,17 @@
 - 石材のNoise/BumpはBlenderプレビューのみでGLB未ベイク。美観未承認、正式素材・ゲーム統合なし。
 - VISION_API_URL/KEY/MODELの値は未提供、登録も実AI通信も未実施。有料API利用なし。GitHub連携ツールにSecrets/Variables更新機能がなく、利用先と費用条件の決定が必要。GitHub Models不使用。
 - 詳細: PR #404内 docs/3d/B5_THRONE_WORK_SETUP_20261116.md。新規Actions実行の成功は未確認、ローカル検証と区別する。
+
+### 一層神域候補: 全17素材・形式/ブラウザ/MCP/編集ソースの実検証追記（2026-11-16 JST）
+
+- 担当: GPT team。一層神域の上記「未完了」「再build待ち」は各追記時点の記録。本節は今回実行済みの範囲を更新し、アート承認やゲーム統合の完了を意味しない。
+- 証拠・実装追跡: [制作候補PR #391](https://github.com/koda24-cell/kotama-no-bouken/pull/391)。検査記録は同PRの `assets/3d/dungeons/b1_sacred_forest_candidates/verification/`、個別結果は `metrics/`、レビューは `docs/3d/F1_SACRED_FOREST_ASSET_REVIEW.md`。本情報共有変更には実コード・GLB・blend・画像を含めない。
+- 個別制作: 全17個別GLB、合計 **21,305,008 bytes / 136,665 triangles**。各GLBを再importした4方向の実Cycles PNG計68枚。script/common/再帰helperの保存時点とGLB・blend・画像hashを照合するmanifest gateを通過。コンセプト画像を実モデル検査の証拠にしていない。
+- Khronos glTF-Validator 2.0.0-dev.3.10: `validate_glbs.cjs` により個別17＋全景1の**18GLBすべて errors 0 / warnings 0**。結果 `verification/khronos-validation.json`。初期検査でのtangent警告は最終GLBで解消を確認した。形式合格は美観・実機性能承認と別。
+- Three.js r180 GLTFLoader / Chromium SwiftShader: 個別17素材、床2種類の2×2継ぎ目、全景を実読込して **errors 0**。床4辺の上端高さ0、UV/normal/埋込画像/寸法を検査。個別読込後、全景更新時にも全素材hashを再照合。結果 `verification/browser-verification.json` と `verification/browser/`。ゲームの実装画面や実機GPUのFPS検証ではない。
+- 全景の負荷診断: SwiftShaderで **4,432,376 triangles / 1,475 draw calls**。これはレビュー用全景の測定であり、実機FPSや携帯向け性能の承認値ではない。ゲームへの配置/カリング/表示予算は統合時の別検証が必要。
+- Official Blender Lab MCP 1.0.2 → localhost:9876 → Blender 5.3.0: `mcp_inspect_scene.py` から全景の**17 asset IDs・5カメラ・195 packed images**を実取得し、外部画像依存なしを確認。結果 `verification/mcp-scene-readback.json`。チャットのツールパレットへの自動登録を意味しない。
+- 編集ソースの画像埋込: `pack_sources.py` はBlender画像の遅延読込を考慮し、未読込状態の `has_data` だけで失敗扱いにせず、実ファイルをreload/packする。全17 `.blend` を保存後に再openし、**外部に存在しない相対画像パスからpacked bytesで全保持画像をデコード**、全メッシュ参照画像の埋込、geometry fingerprint不変を確認。GLBやモデル形状を再生成する工程ではない。結果 `verification/source-packaging.json`。
+- 権利/導入境界: Blender/MCP/Validatorのライセンス・写真CC0・独自葉/針葉/木塗膜画像の既存記録を維持。新しい外部素材・有料APIの導入なし。元Pinterest画像は参考に限り、再配布・テクスチャ流用なし。
+- **進行中**: 5カメラの全景写真は記録時点で入口/中庭の2枚が完了、残り3枚はレンダリング進行中。5枚すべて完了とは記載しない。
+- **未完了/未承認**: 美観の最終承認、ゲーム本体への統合、実機性能・操作動線の承認。候補は `pending_user_review`、既存 `b1_ancient_forest` とゲームランタイムを置換していない。
