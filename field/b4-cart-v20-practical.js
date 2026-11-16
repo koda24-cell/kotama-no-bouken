@@ -259,7 +259,7 @@ export function enhanceB4CartPractical(root,variant=20) {
    ];
    for(const f of fragments){
      const x=f.side*(X-.035);
-     beam([x,f.y,f.z],[x+f.side*.025,f.y+f.042,f.z+f.len],.028,.031,brownWood);
+     beam([x,f.y,f.z],[x+f.side*.025,f.y+.042,f.z+f.len],.028,.031,brownWood);
      const chip=new THREE.Mesh(new THREE.TetrahedronGeometry(.065,0),brownWood);
      chip.position.set(x,f.y+.005,f.z+f.len*.54);chip.rotation.set(.27,.12,f.ang);group.add(chip);
    }
