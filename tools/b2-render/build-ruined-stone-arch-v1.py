@@ -5,12 +5,42 @@ OUT=os.path.abspath("render-output/b2-ruined-stone-arch-v1")
 os.makedirs(OUT,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 def material(name,color):
+ # Deterministic, authored stone-albedo texture; embedded in GLB for Three.js.
+ # No external images or unverified licenses. Large value changes emulate
+ # mineral bands; small variation creates rough, aged stone instead of flat paint.
  m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True
- p=m.node_tree.nodes.get("Principled BSDF");p.inputs["Base Color"].default_value=(*color,1);p.inputs["Roughness"].default_value=.91
- noise=m.node_tree.nodes.new("ShaderNodeTexNoise");noise.inputs["Scale"].default_value=22;noise.inputs["Detail"].default_value=3
- bump=m.node_tree.nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=.22;bump.inputs["Distance"].default_value=.075
+ p=m.node_tree.nodes.get("Principled BSDF");p.inputs["Base Color"].default_value=(*color,1);p.inputs["Roughness"].default_value=.97
+ image=bpy.data.images.new(name+"_baked_albedo",width=256,height=256,alpha=True)
+ pixels=[]
+ grain=random.Random(9923+sum(ord(c) for c in name))
+ phase=grain.random()*6.283
+ for y in range(256):
+  for x in range(256):
+   broad=.20*math.sin(x*.048+y*.034+phase)+.12*math.sin(x*.117-y*.09+phase*2)
+   fine=.055*math.sin(x*.69+y*.41)+grain.uniform(-.075,.075)
+   v=max(.60,min(1.37,1+broad+fine))
+   pixels.extend((min(.92,color[0]*v),min(.90,color[1]*v),min(.85,color[2]*v),1.0))
+ image.pixels.foreach_set(pixels)
+ image.filepath_raw=os.path.join(OUT,name.replace(" ","_")+"_albedo.png")
+ image.file_format="PNG";image.save()
+ tex=m.node_tree.nodes.new("ShaderNodeTexImage");tex.name="Baked stone albedo (GLB-compatible)";tex.image=image
+ m.node_tree.links.new(tex.outputs["Color"],p.inputs["Base Color"])
+ noise=m.node_tree.nodes.new("ShaderNodeTexNoise");noise.inputs["Scale"].default_value=42;noise.inputs["Detail"].default_value=4
+ bump=m.node_tree.nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=.35;bump.inputs["Distance"].default_value=.05
  m.node_tree.links.new(noise.outputs["Fac"],bump.inputs["Height"]);m.node_tree.links.new(bump.outputs["Normal"],p.inputs["Normal"])
  return m
+def planar_uv(mesh):
+ # Explicit per-face planar UVs, rather than relying on Blender-only Generated
+ # coordinates that would disappear from GLB exports.
+ uv=mesh.uv_layers.new(name="StoneTexUV")
+ for poly in mesh.polygons:
+  normal=poly.normal
+  dominant=max(range(3),key=lambda i:abs(normal[i]))
+  axes=([1,2] if dominant==0 else [0,2] if dominant==1 else [0,1])
+  for loopidx in poly.loop_indices:
+   v=mesh.vertices[mesh.loops[loopidx].vertex_index].co
+   uv.data[loopidx].uv=(v[axes[0]]/1.05+.5,v[axes[1]]/1.05+.5)
+
 mats=[material("weathered gray sandstone",(.36,.33,.28)),material("dark weathered joints",(.25,.24,.22)),material("warm aged stone",(.45,.39,.30)),material("pale worn face",(.50,.47,.40))]
 def stone(name,center,size,mat,rotation=None):
  dx,dy,dz=size;verts=[]
@@ -19,7 +49,7 @@ def stone(name,center,size,mat,rotation=None):
    for x in [-1,1]:
     verts.append((x*dx*.5+rng.uniform(-.035,.035),y*dy*.5+rng.uniform(-.028,.028),z*dz*.5+rng.uniform(-.035,.035)))
  faces=[(0,1,3,2),(4,6,7,5),(0,4,5,1),(2,3,7,6),(0,2,6,4),(1,5,7,3)]
- mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update()
+ mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update();planar_uv(mesh)
  obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
  obj.location=center;obj.rotation_euler=rotation or (rng.uniform(-.025,.025),rng.uniform(-.025,.025),rng.uniform(-.04,.04))
  mesh.materials.append(mat);b=obj.modifiers.new("eroded edges","BEVEL");b.width=.035;b.segments=2
@@ -82,6 +112,46 @@ for n,(x,y,w,h,d) in enumerate([
 ]):
  stone("fallen chipped edge %02d"%n,(x,y,h*.38),(w,d,h),mats[(n+2)%len(mats)],(.09*n,-.10,.15*(n-1)))
 
+# PASS V2: dramatic broken masonry, separated as additive meshes, preserving V1.
+# Silhouette: deep diagonal shears and one collapsed wall mass. Not a regular frame.
+def fracture(name,location,scale,mat,rotation):
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=location)
+ ob=bpy.context.object;ob.name=name
+ # faceted ancient blocks with sharp, chipped intersections
+ ob.scale=scale;ob.rotation_euler=rotation
+ ob.data.materials.append(mat);planar_uv(ob.data)
+ return ob
+
+# Split upper left wall: two staggered massive remnants offset in depth.
+stone("left overhanging broken buttress",(-1.97,-.12,2.22),(.73,.79,.44),mats[1],(.12,-.13,-.26))
+fracture("left outer shattered fracture",(-2.05,-.36,2.56),(.47,.39,.38),mats[0],(.08,-.33,.4))
+stone("left fallen pier header",(-2.07,.57,.60),(.88,.57,.36),mats[2],(.31,-.19,-.46))
+# Right pier breaks outward as a heavy fractured corner, partly embedded in the
+# upper courses, with no floating parts.
+stone("right split pier face",(1.91,-.19,2.02),(.76,.72,.52),mats[0],(-.12,.1,.29))
+fracture("right jagged pier breach",(1.96,-.35,2.48),(.42,.33,.39),mats[1],(.1,.44,-.22))
+# Damaged arch crest, offset shards straddling the original ring; don't rebuild
+# missing stones into a pristine arch.
+for idx,radial,tilt in [(4,.21,-.37),(6,.32,.21),(8,.25,.29),(11,.18,-.28)]:
+ theta=math.pi-idx*math.pi/12
+ x=(radius+radial)*math.cos(theta);z=2.77+(radius+radial)*math.sin(theta)
+ fracture("arch rim spall %02d"%idx,(x,-.17,z),(.36,.27,.23),mats[idx%4],(.24,theta*.17,tilt))
+# Large, identifiable fallen arch segments on the ground, not confetti.
+for n,(x,y,z,sx,sy,sz,rx,ry,rz) in enumerate([
+ (-2.10,-.64,.31,.88,.63,.59,.09,.20,-.28),
+ (-1.10,.99,.24,.70,.50,.42,.31,-.12,.40),
+ ( 1.94,.71,.28,.95,.60,.46,-.17,.18,.44),
+ ( 1.24,-.92,.23,.67,.62,.36,.22,-.12,-.32),
+ (.34,1.09,.16,.57,.49,.28,.26,.08,.21)
+]):
+ fracture("large collapsed voussoir %02d"%n,(x,y,z),(sx,sy,sz),mats[(n+1)%4],(rx,ry,rz))
+# Narrow gouges and mineral deposits are subordinate to the large fracture.
+for n in range(12):
+ side=-1 if n<7 else 1
+ level=.49+(n%7)*.31
+ x=side*(1.72+.02*(n%3));y=-.59-(n%2)*.012
+ stone("uneven exposed stone seam %02d"%n,(x,y,level),(.14,.08,.07),mats[(n+1)%4],(0,.12,(n%5-2)*.18))
+
 # Broken rubble on ground, one side heavier than other
 for i in range(26):
  x=rng.uniform(-2.15,2.15);y=rng.uniform(-1.1,1.1);s=rng.uniform(.08,.34)
@@ -122,6 +192,6 @@ for file in files:
  checksums[file]=hashlib.sha256(payload).hexdigest()
 manifest={"name":"ruined_stone_arch_v1","status":"NOT_APPROVED","files":files,"sha256":checksums,
  "mesh_count":len([o for o in bpy.data.objects if o.type=="MESH" and not o.name.startswith("preview_")]),
- "source":"tools/b2-render/build-ruined-stone-arch-v1.py","notes":"Old V1 retained; additive weathering, rubble and partial arch supports. Blender three-view visual QA pending."}
+ "source":"tools/b2-render/build-ruined-stone-arch-v1.py","notes":"Old V1 arch silhouette retained; dramatic chipped buttresses/large grounded rubble, UV and embedded procedural albedo. Blender three-view visual QA pending."}
 with open(os.path.join(OUT,"manifest.json"),"w") as f:json.dump(manifest,f,indent=2)
 print("OUTPUT_VALIDATED",len(files),"files",flush=True)
