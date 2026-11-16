@@ -1,0 +1,49 @@
+{
+  "asset": "f2_ice_crystal_bloom",
+  "blender": "4.2.3 LTS",
+  "triangles": 17364,
+  "objects": [
+    "f2_ice_crystal_bloom"
+  ],
+  "materials": [
+    "crystal_calyx",
+    "crystal_core_glow",
+    "crystal_frost",
+    "crystal_ice_clear",
+    "crystal_ice_mid",
+    "crystal_ice_milky",
+    "crystal_rock",
+    "crystal_rock_ice",
+    "crystal_stem_leaf"
+  ],
+  "bbox_m": [
+    0.234,
+    0.1696,
+    0.195
+  ],
+  "origin": "bottom-center",
+  "glb": "f2_ice_crystal_bloom.glb",
+  "glb_bytes": 1393980,
+  "sha256": {
+    "f2_ice_crystal_bloom.glb": "826aa9491ff46b89f2206ca8ba154e6926157ebeae19f8c0372b096a90cc7dae",
+    "f2_ice_crystal_bloom_cave_front.png": "77f83662ce7dc71f871f35d2764151ec16772a6c32ebe42d647553daa2e1d1f7",
+    "f2_ice_crystal_bloom_cave_side.png": "216dfba8cf8e6ea372cee000e966c50ff7cab067f7ffa38d9ecfc19e20331dc1",
+    "f2_ice_crystal_bloom_cave_angle.png": "f22413dc816cdf36a85e1c7d6e02529b181f6cfbe00a63232398079f8fa549f7",
+    "f2_ice_crystal_bloom_cave_top.png": "b085b85c61e795322f4a578499815e98e0ec6c3264d2082be628f5c144d41017",
+    "f2_ice_crystal_bloom_cave_close.png": "8b4ca5b7c256016f08a41a104253fbc900f9c0407e68c9678604ed9ce618c957",
+    "f2_ice_crystal_bloom_studio_front.png": "dc34c3415d8e11a01b009c58f01af177227141e72e07ed481f15af4075c847ec",
+    "f2_ice_crystal_bloom_studio_angle.png": "13f9064affce207809cd0cba058590153634727f8f8fca6f6f8d20dd261f0eb1"
+  },
+  "renders": [
+    "f2_ice_crystal_bloom_cave_front.png",
+    "f2_ice_crystal_bloom_cave_side.png",
+    "f2_ice_crystal_bloom_cave_angle.png",
+    "f2_ice_crystal_bloom_cave_top.png",
+    "f2_ice_crystal_bloom_cave_close.png",
+    "f2_ice_crystal_bloom_studio_front.png",
+    "f2_ice_crystal_bloom_studio_angle.png"
+  ],
+  "samples": 64,
+  "notes": "氷晶花: 低い岩の割れ目から花3（φ90/70/50mm）＋つぼみ1。花弁は2層×11枚の披針形クリスタル（断面8角ひし形・中央稜・フラットシェード）、付け根乳白→先端透明の3段材質＋頂点色。芯は濃紺の萼＋発光氷柱14本（#7FE3FF）。葉・花弁・岩の縁に実メッシュの霜。画像テクスチャなし",
+  "approval": "NOT_APPROVED"
+}
