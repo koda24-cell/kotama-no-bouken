@@ -185,3 +185,10 @@
 - 上記5視点とgate完了は第1版の検証結果。実画像で見えた土床反復・背景の開き・回廊出口の見通しを受け、[第2改訂PR #428](https://github.com/koda24-cell/kotama-no-bouken/pull/428)で配置/部分引用を改訂中。個別17GLBは保持、改訂後の全景成功はまだ未確認。
 - 既存GLBの部分利用はsource SHA・node/material名・祖先transformの保持を明示する。実3F配置候補schema2は全274床に明示profile（石187/soil-only87）、未対応・不一致で拒否しfullGLBへ暗黙fallbackしない。土壌ノード選択の実GLB構造検証と候補生成は成功、runtime consumerは未実装・ゲーム未統合。
 - MCP再読込の証拠を強化するため、actualMCP内で開いたblendのSHA256を返し、最終gateで一致を要求する実装を追加。新レシートは改訂後に取り直す。新外部ツール・有料API導入なし。低解像Cyclesの構図確認を先に行い、最終1600×1000/48samplesの実写真と区別する。
+
+### 一層神域 第2改訂: 実検証とCLI/MCPの注意点
+- [PR #428](https://github.com/koda24-cell/kotama-no-bouken/pull/428): 個別17GLB不変、改訂全景263配置/4,480,724tri/1,012draw calls（旧1,475）。GLB20,934,320B。18Khronos errors/warnings 0、Three errors0、officialMCP内で開いたblend SHAと実ファイル一致、中央2×3m/Y−14..+22 clearance通過。最終1600×1000/48samplesの5視点は撮影中で、完了とは扱わない。実機FPS/美術承認/ゲーム統合は未完了。
+- 土壌専用メッシュ利用で反復する敷石/根の全面配置をやめた。回廊上の細い明点は実ray_castで空へ抜ける点を確認し、既存屋根を6mm段差の重ねで伸ばした後、同じ7pixel rayが形状へ当たることと実Cycles previewで消失を確認。局所検査であり全画像品質保証ではない。
+- Blender5.3 CLIはPython例外でも既定exit code 0となる例を実確認（clearance未通過時）。gate用は `--python-exit-code 1` を付け、receiptのpassed・source hashも確認する。低解像previewのpersistent cacheは `scene.render.use_persistent_data` が正しく、`scene.cycles.use_persistent_data` はAttributeErrorとなったため修正。修正後の実preview成功。
+- official MCP execute_blender_codeの `result` はdictが必要。listではstructuredContent.status=errorだがisError=falseの場合を実確認。クライアントは両方を検査し、片方だけで成功判定しない。既存mcp-call helperはこの例を失敗として検出した。
+- 各最終写真にscene blend SHA/loaded source commit/cameraを記録し、撮影前後のsource不変を確認するgateを追加。改訂版の最終5枚照合はまだ未実行。外部ツール/有料API導入なし、実行コードや資産はこの情報共有変更へ含めない。
