@@ -119,7 +119,7 @@ def fracture(name,location,scale,mat,rotation):
  # Blender-native subdivided cube, displaced corners and bevels; GLB-compatible UV.
  bpy.ops.mesh.primitive_cube_add(size=1,location=location)
  ob=bpy.context.object;ob.name=name
- ob.scale=scale;ob.rotation_euler=rotation
+ ob.scale=tuple(v*1.65 for v in scale);ob.rotation_euler=rotation
  # Apply transforms so scale-dependent damage is consistent.
  bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
  bpy.ops.object.mode_set(mode='EDIT')
@@ -171,6 +171,10 @@ for n,(x,y,z) in enumerate([(-1.74,-.56,1.48),(-1.70,-.57,1.78),
                               (1.73,-.56,1.32),(1.69,-.55,1.63)]):
  stone("wide fissure boundary %02d"%n,(x,y,z),(.12,.09,.38),
        mats[1],(.14,.08,.25*(-1)**n))
+# Embedded broken masonry on each pier, shaped as part of the larger collapse.
+fracture("left chipped springer backing",(-1.15,.33,2.89),(.34,.24,.27),mats[2],(.13,-.32,.24))
+fracture("embedded eroded left pier face",(-1.73,-.29,1.44),(.28,.22,.31),mats[0],(.10,-.13,0))
+fracture("embedded eroded right pier face",(1.68,-.24,.91),(.24,.22,.34),mats[1],(.10,-.13,.23))
 # Narrow gouges and mineral deposits are subordinate to the large fracture.
 for n in range(12):
  side=-1 if n<7 else 1
