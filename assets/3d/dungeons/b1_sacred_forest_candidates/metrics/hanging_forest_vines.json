@@ -1,0 +1,111 @@
+{
+  "bytes": 351536,
+  "sha256": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a",
+  "tris": 6632,
+  "verts": 5424,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "forest_flexible_stem",
+    "forest_leaf",
+    "forest_new_leaf"
+  ],
+  "textureCount": 7,
+  "textureBytes": 46092,
+  "sizeMeters": [
+    1.3232,
+    2.4826,
+    0.2357
+  ],
+  "bboxMin": [
+    -0.6812,
+    -2.4802,
+    -0.0631
+  ],
+  "bboxMax": [
+    0.642,
+    0.0024,
+    0.1726
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "hanging_forest_vines",
+  "file": "props/hanging_forest_vines.glb",
+  "category": "props",
+  "desc_ja": "上端取り付け原点・下方約2.5mの蔓。異長の主蔓、交互の葉柄、節からの枝分岐・巻きひげを造形。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "5fa16d7d03e5f452afde469fa2ad1cef998b22d0",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/hanging_forest_vines.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/hanging_forest_vines/front.png",
+    "renders/hanging_forest_vines/side.png",
+    "renders/hanging_forest_vines/angle.png",
+    "renders/hanging_forest_vines/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "hanging_forest_vines",
+    "file": "sources/hanging_forest_vines.blend",
+    "sha256": "63ea791e6bd38b973292f48102d080f324ab16e031152888c7d688845c3485dc",
+    "bytes": 301763,
+    "imagesPacked": 7,
+    "imagesDecoded": 7,
+    "unusedImagesPruned": 13,
+    "geometryPreserved": true,
+    "geometryFingerprint": "4ccd4f9d8300e45939692a8f869833cca6418accd5079936fc74a06040be1cd7",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6925
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6739
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6213
+      },
+      {
+        "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5425
+      },
+      {
+        "name": "woodland_leaf_veins_v2_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4923
+      },
+      {
+        "name": "woodland_leaf_veins_v2_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 7140
+      },
+      {
+        "name": "woodland_leaf_veins_v2_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 8727
+      }
+    ]
+  }
+}

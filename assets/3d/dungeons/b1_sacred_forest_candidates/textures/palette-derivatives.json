@@ -1,0 +1,85 @@
+{
+  "dateJst": "2026-11-16",
+  "records": [
+    {
+      "file": "stone_color_graded.jpg",
+      "source": "stone_color.jpg",
+      "sourceSha256": "b308579b8b11ede4db6d56ea0c2ade84742b2fdb9df547986c2b58765c88d3cc",
+      "sha256": "4c0e1b81e7c8ba73b6977fac8bde96ee3f8c4874b5fed23587420bfdb1b2c7c6",
+      "license": "CC0-1.0",
+      "method": "sRGB to linear, Rec709 luminance-relative saturation, linear exposure multiply, back to sRGB JPEG90",
+      "linearExposureFactor": 0.8,
+      "saturation": 0.72,
+      "normalRoughness": "unchanged data maps"
+    },
+    {
+      "file": "stone_color_graded_hero.jpg",
+      "source": "stone_color_hero.jpg",
+      "sourceSha256": "efdea70ebc5710fbe2ab739e4c8d53c2baa19c3aec7939e6374783cb3bc5cb22",
+      "sha256": "d5b1e6685fafc2e0f2d96e59695f7910be4d59b42dadba5bfc02680c8610dbbf",
+      "license": "CC0-1.0",
+      "method": "sRGB to linear, Rec709 luminance-relative saturation, linear exposure multiply, back to sRGB JPEG90",
+      "linearExposureFactor": 0.8,
+      "saturation": 0.72,
+      "normalRoughness": "unchanged data maps"
+    },
+    {
+      "file": "soil_module_stone_color_graded.jpg",
+      "source": "stone_color_graded.jpg",
+      "sha256": "45417aa0d5d9e75b1d9744da98630e14efe2b462f9c8b868c482b997ebb642ef",
+      "license": "CC0-1.0",
+      "method": "256px ancillary-map derivative; source photographed albedo retained"
+    },
+    {
+      "file": "bark_color_graded.jpg",
+      "source": "bark_color.jpg",
+      "sourceSha256": "908b51158a7d62946c212ebb4c707753293b05a68b2f89eff6952ee83e301fe1",
+      "sha256": "180e8267c9f4418d5599d7e57378d4cdecf71e745abd0d5f476e1bff768c5d0b",
+      "license": "CC0-1.0",
+      "method": "sRGB to linear, Rec709 luminance-relative saturation, linear exposure multiply, back to sRGB JPEG90",
+      "linearExposureFactor": 0.7,
+      "saturation": 0.72,
+      "normalRoughness": "unchanged data maps"
+    },
+    {
+      "file": "bark_color_graded_hero.jpg",
+      "source": "bark_color_hero.jpg",
+      "sourceSha256": "5b94439c79edd0acd84853051d8a5cdd8e7360f7909ad3f6aaa9021053819dea",
+      "sha256": "6b833ded7f0e0718e0d4347c01ae5f2c000c65ed7b910c5bad14c4e83577a8aa",
+      "license": "CC0-1.0",
+      "method": "sRGB to linear, Rec709 luminance-relative saturation, linear exposure multiply, back to sRGB JPEG90",
+      "linearExposureFactor": 0.7,
+      "saturation": 0.72,
+      "normalRoughness": "unchanged data maps"
+    },
+    {
+      "file": "soil_module_bark_color_graded.jpg",
+      "source": "bark_color_graded.jpg",
+      "sha256": "5b7022451632aaa655704ab89ac37259657b05093de4caee5c703104b6054103",
+      "license": "CC0-1.0",
+      "method": "256px ancillary-map derivative; source photographed albedo retained"
+    },
+    {
+      "file": "soil_color_graded.jpg",
+      "source": "soil_color.jpg",
+      "sourceSha256": "662322224fc815a5648492dd60d80fbded1f65eca10316cad8f1336abd8bde99",
+      "sha256": "c6d64243f099c3c18e429a361c4185cb8c03d24cd149c448993de398520392f2",
+      "license": "CC0-1.0",
+      "method": "sRGB to linear, Rec709 luminance-relative saturation, linear exposure multiply, back to sRGB JPEG90",
+      "linearExposureFactor": 0.65,
+      "saturation": 0.73,
+      "normalRoughness": "unchanged data maps"
+    },
+    {
+      "file": "soil_color_graded_hero.jpg",
+      "source": "soil_color_hero.jpg",
+      "sourceSha256": "bdc14073d2f93d417d27cf08d8e4affae7fda5392a103c68a2e76134c58fdb55",
+      "sha256": "3ba189dc0e2b0d3c93c9398722e5a889cd9acae20af78e3d023c8cdad2e2878d",
+      "license": "CC0-1.0",
+      "method": "sRGB to linear, Rec709 luminance-relative saturation, linear exposure multiply, back to sRGB JPEG90",
+      "linearExposureFactor": 0.65,
+      "saturation": 0.73,
+      "normalRoughness": "unchanged data maps"
+    }
+  ]
+}

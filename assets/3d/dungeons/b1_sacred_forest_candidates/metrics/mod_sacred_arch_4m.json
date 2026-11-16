@@ -1,0 +1,142 @@
+{
+  "bytes": 1936680,
+  "sha256": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1",
+  "tris": 4560,
+  "verts": 11830,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "sacred_earth_mortar",
+    "sacred_root_bark",
+    "sacred_velvet_moss",
+    "sacred_weathered_stone"
+  ],
+  "textureCount": 12,
+  "textureBytes": 1334308,
+  "sizeMeters": [
+    4.0,
+    4.0,
+    0.8
+  ],
+  "bboxMin": [
+    -2.0,
+    0.0,
+    -0.8
+  ],
+  "bboxMax": [
+    2.0,
+    4.0,
+    0.0
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 6,
+  "id": "mod_sacred_arch_4m",
+  "file": "modules/mod_sacred_arch_4m.glb",
+  "category": "modules",
+  "desc_ja": "4m-wide / 4m-high shallow sanctuary arch, exact unobstructed 2m-wide by 3m-high opening. Interior is -Y (glTF +Z), wall behind face Y=0..0.8. Worn voussoirs and split cornice, peripheral root.",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "f4e9d70191ffb4542161707ca02cdc4da769bd7e",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/mod_sacred_arch_4m.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/mod_sacred_arch_4m/front.png",
+    "renders/mod_sacred_arch_4m/side.png",
+    "renders/mod_sacred_arch_4m/angle.png",
+    "renders/mod_sacred_arch_4m/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "mod_sacred_arch_4m",
+    "file": "sources/mod_sacred_arch_4m.blend",
+    "sha256": "1cfcda0b4d34d3be95a3bf40bbc078b6ccdeac73365a3ddd692489b2089d7021",
+    "bytes": 1214283,
+    "imagesPacked": 12,
+    "imagesDecoded": 12,
+    "unusedImagesPruned": 0,
+    "geometryPreserved": true,
+    "geometryFingerprint": "13d394103c2a9451d120076120b08bcd6b3e782a92e22e8cd4e2bc21377fe9b8",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "bark_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122111
+      },
+      {
+        "name": "bark_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 309795
+      },
+      {
+        "name": "bark_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 53978
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 7369
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6815
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6163
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 7562
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6860
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6273
+      },
+      {
+        "name": "stone_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 147023
+      },
+      {
+        "name": "stone_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 214271
+      },
+      {
+        "name": "stone_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122001
+      }
+    ]
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "bytes": 590244,
+  "sha256": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
+  "tris": 7338,
+  "verts": 7449,
+  "meshes": 6,
+  "drawCalls": 6,
+  "materials": [
+    "aged_vermilion_wood",
+    "exposed_cedar_wood",
+    "rain_darkened_wood",
+    "straw_shimenawa",
+    "torii_moss",
+    "worn_rice_paper"
+  ],
+  "textureCount": 16,
+  "textureBytes": 178235,
+  "sizeMeters": [
+    3.8,
+    3.8026,
+    0.4529
+  ],
+  "bboxMin": [
+    -1.9,
+    -0.0026,
+    -0.185
+  ],
+  "bboxMax": [
+    1.9,
+    3.8,
+    0.2679
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "weathered_torii_gate",
+  "file": "props/weathered_torii_gate.glb",
+  "category": "props",
+  "desc_ja": "退色した木造鳥居。幅3.8m高さ3.8m、底面中央原点/正面+Z。笠木の反り、貫の木組、実欠損、しめ縄と紙垂。中央幅2m高さ3mの通行空間を保持。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "2507adf4f29e1885accb794a5a0c7058050c23ca",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/weathered_torii_gate.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/weathered_torii_gate/front.png",
+    "renders/weathered_torii_gate/side.png",
+    "renders/weathered_torii_gate/angle.png",
+    "renders/weathered_torii_gate/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "weathered_torii_gate",
+    "file": "sources/weathered_torii_gate.blend",
+    "sha256": "9f36ca385289292d74778d13f336d09675e017fe449d9d0bcd96a66fec75fb39",
+    "bytes": 451720,
+    "imagesPacked": 16,
+    "imagesDecoded": 16,
+    "unusedImagesPruned": 0,
+    "geometryPreserved": true,
+    "geometryFingerprint": "581ddd0739610dfd6e31c0394f0c33803abccf7c5d75696db48658881168f8be",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "straw_shimenawa_3090d98ab39a_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 8838
+      },
+      {
+        "name": "straw_shimenawa_3090d98ab39a_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6765
+      },
+      {
+        "name": "straw_shimenawa_3090d98ab39a_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5821
+      },
+      {
+        "name": "torii_moss_6ed9c4c63c7f_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6161
+      },
+      {
+        "name": "torii_moss_6ed9c4c63c7f_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6697
+      },
+      {
+        "name": "torii_moss_6ed9c4c63c7f_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4455
+      },
+      {
+        "name": "torii_weathering_v2_grain_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 16415
+      },
+      {
+        "name": "torii_weathering_v2_paint_basecolor.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 27388
+      },
+      {
+        "name": "torii_weathering_v2_paint_orm.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 29267
+      },
+      {
+        "name": "torii_weathering_v2_silvered_basecolor.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 25255
+      },
+      {
+        "name": "torii_weathering_v2_silvered_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5276
+      },
+      {
+        "name": "torii_weathering_v2_soaked_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6693
+      },
+      {
+        "name": "torii_weathering_v2_soaked_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5303
+      },
+      {
+        "name": "worn_rice_paper_8a581b77d99a_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 10999
+      },
+      {
+        "name": "worn_rice_paper_8a581b77d99a_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6720
+      },
+      {
+        "name": "worn_rice_paper_8a581b77d99a_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6182
+      }
+    ]
+  }
+}

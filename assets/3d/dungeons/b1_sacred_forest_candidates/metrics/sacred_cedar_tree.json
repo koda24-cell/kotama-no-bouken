@@ -1,0 +1,123 @@
+{
+  "bytes": 1822596,
+  "sha256": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+  "tris": 14712,
+  "verts": 14958,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "cedar_fine_needle_spray",
+    "cedar_shade_moss",
+    "cedar_weathered_bark"
+  ],
+  "textureCount": 9,
+  "textureBytes": 1010825,
+  "sizeMeters": [
+    5.7287,
+    10.0,
+    5.3498
+  ],
+  "bboxMin": [
+    -2.8983,
+    0.0,
+    -2.4807
+  ],
+  "bboxMax": [
+    2.8305,
+    10.0,
+    2.8691
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "sacred_cedar_tree",
+  "file": "props/sacred_cedar_tree.glb",
+  "category": "props",
+  "desc_ja": "約10mの根張り古杉。基部原点、実形状の幹裂け・根張りを保持。枝階層と独自512px針葉sprayの湾曲alphaMASKカードで密度のある樹冠。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/sacred_cedar_tree.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/sacred_cedar_tree/front.png",
+    "renders/sacred_cedar_tree/side.png",
+    "renders/sacred_cedar_tree/angle.png",
+    "renders/sacred_cedar_tree/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "sacred_cedar_tree",
+    "file": "sources/sacred_cedar_tree.blend",
+    "sha256": "b7630d4e923be5b0117665705165bf44aba3f4dcee791ba0675c9eca393913e4",
+    "bytes": 1359301,
+    "imagesPacked": 9,
+    "imagesDecoded": 9,
+    "unusedImagesPruned": 14,
+    "geometryPreserved": true,
+    "geometryFingerprint": "b14378826a54da943af23c6960c11d9f4f4e3dd95f05dec8bac2501aaa836b3b",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "bark_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122111
+      },
+      {
+        "name": "bark_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 309795
+      },
+      {
+        "name": "bark_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 53978
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5484
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4011
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4841
+      },
+      {
+        "name": "cedar_spray_v1_basecolor.png",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 345550
+      },
+      {
+        "name": "cedar_spray_v1_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 9361
+      },
+      {
+        "name": "cedar_spray_v1_orm.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 5569
+      }
+    ]
+  }
+}

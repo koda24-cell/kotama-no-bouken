@@ -1,0 +1,142 @@
+{
+  "bytes": 1000656,
+  "sha256": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191",
+  "tris": 6420,
+  "verts": 5779,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "cedar_cavity_shadow",
+    "cedar_old_heartwood",
+    "cedar_shade_moss",
+    "cedar_weathered_bark"
+  ],
+  "textureCount": 12,
+  "textureBytes": 677319,
+  "sizeMeters": [
+    4.2933,
+    1.1442,
+    0.9517
+  ],
+  "bboxMin": [
+    -2.1472,
+    0.0,
+    -0.4943
+  ],
+  "bboxMax": [
+    2.1461,
+    1.1442,
+    0.4574
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "fallen_cedar_log",
+  "file": "props/fallen_cedar_log.glb",
+  "category": "props",
+  "desc_ja": "約4mの倒木。接地原点。樹皮の縦UV、両端の空洞・不連続年輪・放射割れ・折れ枝と上面の部分的な苔。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/fallen_cedar_log.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/fallen_cedar_log/front.png",
+    "renders/fallen_cedar_log/side.png",
+    "renders/fallen_cedar_log/angle.png",
+    "renders/fallen_cedar_log/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "fallen_cedar_log",
+    "file": "sources/fallen_cedar_log.blend",
+    "sha256": "3b468056c4fd017bef964f1a36aa4f55a2068dd0d654a69918ce30bd3468059a",
+    "bytes": 780148,
+    "imagesPacked": 12,
+    "imagesDecoded": 12,
+    "unusedImagesPruned": 8,
+    "geometryPreserved": true,
+    "geometryFingerprint": "f18259a1017e1af18965336d3c58f5af06c924858046b2cbbaf649d11de0fa1e",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "bark_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122111
+      },
+      {
+        "name": "bark_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 309795
+      },
+      {
+        "name": "bark_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 53978
+      },
+      {
+        "name": "cedar_cavity_shadow_d7c3795db051_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 3961
+      },
+      {
+        "name": "cedar_cavity_shadow_d7c3795db051_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 3965
+      },
+      {
+        "name": "cedar_cavity_shadow_d7c3795db051_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4249
+      },
+      {
+        "name": "cedar_old_heartwood_13c02feb653d_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5843
+      },
+      {
+        "name": "cedar_old_heartwood_13c02feb653d_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4057
+      },
+      {
+        "name": "cedar_old_heartwood_13c02feb653d_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4899
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5484
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4011
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4841
+      }
+    ]
+  }
+}

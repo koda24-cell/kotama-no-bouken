@@ -1,0 +1,516 @@
+{
+  "schema_version": 1,
+  "normal_convention": "OpenGL +Y; normal maps are non-color data; JPEG compression used per requested runtime delivery, original lossless sources retained in work folder",
+  "records": [
+    {
+      "material": "stone",
+      "role": "color",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/4k/mossy_rock/mossy_rock_diff_4k.png",
+      "resolved_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/4k/mossy_rock/mossy_rock_diff_4k.png",
+      "source_sha256": "bbd0401e580fc23c7e9defde18123a41cbce8a133646dbbf76ed887cda4c6814",
+      "source_bytes": 34686323,
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "acquired_jst": "2026-11-16",
+      "status": "downloaded, Pillow decoded, derivatives verified",
+      "files": [
+        {
+          "file": "stone_color.jpg",
+          "role": "color",
+          "size": [
+            512,
+            512
+          ],
+          "original_size": [
+            4096,
+            4096
+          ],
+          "sha256": "b308579b8b11ede4db6d56ea0c2ade84742b2fdb9df547986c2b58765c88d3cc",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        },
+        {
+          "file": "stone_color_hero.jpg",
+          "role": "color",
+          "size": [
+            1024,
+            1024
+          ],
+          "original_size": [
+            4096,
+            4096
+          ],
+          "sha256": "efdea70ebc5710fbe2ab739e4c8d53c2baa19c3aec7939e6374783cb3bc5cb22",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        }
+      ],
+      "provider": "Poly Haven",
+      "author": "Rob Tuytel",
+      "asset_id": "mossy_rock",
+      "asset_url": "https://polyhaven.com/a/mossy_rock",
+      "physical_width_m": 3,
+      "visual_check": "Downloaded color/normal/roughness displayed in contact sheet; bark/soil 16-bit roughness conversion fixed and nonconstant values verified"
+    },
+    {
+      "material": "stone",
+      "role": "normal",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/4k/mossy_rock/mossy_rock_nor_gl_4k.png",
+      "resolved_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/4k/mossy_rock/mossy_rock_nor_gl_4k.png",
+      "source_sha256": "d9b98748bf2c3bc9ed8a3d896c51454c869ca56fb34fa3924789c68149b15eb3",
+      "source_bytes": 35638067,
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "acquired_jst": "2026-11-16",
+      "status": "downloaded, Pillow decoded, derivatives verified",
+      "files": [
+        {
+          "file": "stone_normal.jpg",
+          "role": "normal",
+          "size": [
+            512,
+            512
+          ],
+          "original_size": [
+            4096,
+            4096
+          ],
+          "sha256": "b32eeb4d14bc638b347e818734a30e8a254c9066251e8a24757550aa09052196",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        },
+        {
+          "file": "stone_normal_hero.jpg",
+          "role": "normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "original_size": [
+            4096,
+            4096
+          ],
+          "sha256": "794dff662701f13c5d66dae7ecd1d2988bd82ab8e5597467559b2a44abbd2766",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        }
+      ],
+      "provider": "Poly Haven",
+      "author": "Rob Tuytel",
+      "asset_id": "mossy_rock",
+      "asset_url": "https://polyhaven.com/a/mossy_rock",
+      "physical_width_m": 3,
+      "visual_check": "Downloaded color/normal/roughness displayed in contact sheet; bark/soil 16-bit roughness conversion fixed and nonconstant values verified"
+    },
+    {
+      "material": "stone",
+      "role": "roughness",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/4k/mossy_rock/mossy_rock_rough_4k.png",
+      "resolved_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/4k/mossy_rock/mossy_rock_rough_4k.png",
+      "source_sha256": "d00662894ee668fd1f51e52a2e3b4b48d55371aa7ba2c3134630a1294f76c0e1",
+      "source_bytes": 11680083,
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "acquired_jst": "2026-11-16",
+      "status": "downloaded, Pillow decoded, derivatives verified",
+      "files": [
+        {
+          "file": "stone_roughness.jpg",
+          "role": "roughness",
+          "size": [
+            512,
+            512
+          ],
+          "original_size": [
+            4096,
+            4096
+          ],
+          "sha256": "e7242541627866f75feb708c408b0733232b509c7656f3539af55a00b302dcf6",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        },
+        {
+          "file": "stone_roughness_hero.jpg",
+          "role": "roughness",
+          "size": [
+            1024,
+            1024
+          ],
+          "original_size": [
+            4096,
+            4096
+          ],
+          "sha256": "87aecd12e89f4070cd506e402429f40b2d6b3b1a8c0d89b59522896eef465a63",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        }
+      ],
+      "provider": "Poly Haven",
+      "author": "Rob Tuytel",
+      "asset_id": "mossy_rock",
+      "asset_url": "https://polyhaven.com/a/mossy_rock",
+      "physical_width_m": 3,
+      "visual_check": "Downloaded color/normal/roughness displayed in contact sheet; bark/soil 16-bit roughness conversion fixed and nonconstant values verified"
+    },
+    {
+      "material": "bark",
+      "role": "zip",
+      "url": "https://ambientcg.com/get?file=Bark014_2K-PNG.zip",
+      "status": "failed",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "material": "soil",
+      "role": "zip",
+      "url": "https://ambientcg.com/get?file=Ground024_2K-PNG.zip",
+      "status": "failed",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "material": "bark",
+      "role": "color",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_01/bark_brown_01_diff_2k.png",
+      "resolved_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_01/bark_brown_01_diff_2k.png",
+      "source_sha256": "617985520504f73226bb54d7f64891687c8073b6efd30348008c7a1d241e04ca",
+      "source_bytes": 8393792,
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "acquired_jst": "2026-11-16",
+      "status": "downloaded, Pillow decoded, derivatives verified",
+      "files": [
+        {
+          "file": "bark_color.jpg",
+          "role": "color",
+          "size": [
+            512,
+            512
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "908b51158a7d62946c212ebb4c707753293b05a68b2f89eff6952ee83e301fe1",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        },
+        {
+          "file": "bark_color_hero.jpg",
+          "role": "color",
+          "size": [
+            1024,
+            1024
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "5b94439c79edd0acd84853051d8a5cdd8e7360f7909ad3f6aaa9021053819dea",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        }
+      ],
+      "provider": "Poly Haven",
+      "author": "Rob Tuytel",
+      "asset_id": "bark_brown_01",
+      "asset_url": "https://polyhaven.com/a/bark_brown_01",
+      "physical_width_m": 1,
+      "visual_check": "Downloaded color/normal/roughness displayed in contact sheet; bark/soil 16-bit roughness conversion fixed and nonconstant values verified"
+    },
+    {
+      "material": "bark",
+      "role": "normal",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_01/bark_brown_01_nor_gl_2k.png",
+      "resolved_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_01/bark_brown_01_nor_gl_2k.png",
+      "source_sha256": "c5d2c162ee3e30a36dfb717fde6703e0202ab9c49fbfe205da521a48d7a5a595",
+      "source_bytes": 8953179,
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "acquired_jst": "2026-11-16",
+      "status": "downloaded, Pillow decoded, derivatives verified",
+      "files": [
+        {
+          "file": "bark_normal.jpg",
+          "role": "normal",
+          "size": [
+            512,
+            512
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "08145c5bbea3bcd871853220dfa0f88cc637c0b30eb286f45f670c53d5dcf209",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        },
+        {
+          "file": "bark_normal_hero.jpg",
+          "role": "normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "f4bd8e030f7b4df3143a0f67ec4037f23d0bc25a2941ea57bdaef0ba1f1b9502",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        }
+      ],
+      "provider": "Poly Haven",
+      "author": "Rob Tuytel",
+      "asset_id": "bark_brown_01",
+      "asset_url": "https://polyhaven.com/a/bark_brown_01",
+      "physical_width_m": 1,
+      "visual_check": "Downloaded color/normal/roughness displayed in contact sheet; bark/soil 16-bit roughness conversion fixed and nonconstant values verified"
+    },
+    {
+      "material": "bark",
+      "role": "roughness",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_01/bark_brown_01_rough_2k.png",
+      "resolved_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_01/bark_brown_01_rough_2k.png",
+      "source_sha256": "d7990a8319db5beb185d6fd36b1d9acef82556e2d942d68583ce3a505907cab2",
+      "source_bytes": 7228983,
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "acquired_jst": "2026-11-16",
+      "status": "downloaded, Pillow decoded, derivatives verified",
+      "files": [
+        {
+          "file": "bark_roughness.jpg",
+          "role": "roughness",
+          "size": [
+            512,
+            512
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "9beefe4c2ce133cccad4f498ed0574acd771439f147374085f27d443995272a1",
+          "conversion": "Pillow13.0.0 source I;16 normalized 0..65535 to 0..255 (divide257), L mode, Lanczos resize, JPEG quality94; no gamma transform",
+          "mean": 230.1302719116211,
+          "stddev": 5.031255767712106
+        },
+        {
+          "file": "bark_roughness_hero.jpg",
+          "role": "roughness",
+          "size": [
+            1024,
+            1024
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "b055252c7c820798c388f37c82bae80a87542d8c74fc91eb5c554e58763fb21b",
+          "conversion": "Pillow13.0.0 source I;16 normalized 0..65535 to 0..255 (divide257), L mode, Lanczos resize, JPEG quality94; no gamma transform",
+          "mean": 230.13096809387207,
+          "stddev": 5.361706120667821
+        }
+      ],
+      "provider": "Poly Haven",
+      "author": "Rob Tuytel",
+      "asset_id": "bark_brown_01",
+      "asset_url": "https://polyhaven.com/a/bark_brown_01",
+      "physical_width_m": 1,
+      "visual_check": "Downloaded color/normal/roughness displayed in contact sheet; bark/soil 16-bit roughness conversion fixed and nonconstant values verified"
+    },
+    {
+      "material": "soil",
+      "role": "color",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forrest_ground_01/forrest_ground_01_diff_2k.png",
+      "resolved_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forrest_ground_01/forrest_ground_01_diff_2k.png",
+      "source_sha256": "06a7c3c4a3916fd96821c4f4d21b4a38c333e931bfc66856e19dab720a22ffa5",
+      "source_bytes": 26253635,
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "acquired_jst": "2026-11-16",
+      "status": "downloaded, Pillow decoded, derivatives verified",
+      "files": [
+        {
+          "file": "soil_color.jpg",
+          "role": "color",
+          "size": [
+            512,
+            512
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "662322224fc815a5648492dd60d80fbded1f65eca10316cad8f1336abd8bde99",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        },
+        {
+          "file": "soil_color_hero.jpg",
+          "role": "color",
+          "size": [
+            1024,
+            1024
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "bdc14073d2f93d417d27cf08d8e4affae7fda5392a103c68a2e76134c58fdb55",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        }
+      ],
+      "provider": "Poly Haven",
+      "author": "Rob Tuytel",
+      "asset_id": "forrest_ground_01",
+      "asset_url": "https://polyhaven.com/a/forrest_ground_01",
+      "physical_width_m": 2,
+      "visual_check": "Downloaded color/normal/roughness displayed in contact sheet; bark/soil 16-bit roughness conversion fixed and nonconstant values verified"
+    },
+    {
+      "material": "soil",
+      "role": "normal",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forrest_ground_01/forrest_ground_01_nor_gl_2k.png",
+      "resolved_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forrest_ground_01/forrest_ground_01_nor_gl_2k.png",
+      "source_sha256": "bfc3e06ea31c3de513c9421a8fbbb4a540ebe32fada1bbb545286c1abc96e313",
+      "source_bytes": 27037479,
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "acquired_jst": "2026-11-16",
+      "status": "downloaded, Pillow decoded, derivatives verified",
+      "files": [
+        {
+          "file": "soil_normal.jpg",
+          "role": "normal",
+          "size": [
+            512,
+            512
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "d1d63b58b9636e7abbac601efae6e0ffa0186f71d5e97bac23c190db5d982f21",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        },
+        {
+          "file": "soil_normal_hero.jpg",
+          "role": "normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "0b6a2d5bfcb86f03b89f759931b58e07a89df6e812c39854ff86042d5d46f21d",
+          "conversion": "Pillow 13.0.0 RGB, Lanczos resize, JPEG quality94 subsampling0; no color correction"
+        }
+      ],
+      "provider": "Poly Haven",
+      "author": "Rob Tuytel",
+      "asset_id": "forrest_ground_01",
+      "asset_url": "https://polyhaven.com/a/forrest_ground_01",
+      "physical_width_m": 2,
+      "visual_check": "Downloaded color/normal/roughness displayed in contact sheet; bark/soil 16-bit roughness conversion fixed and nonconstant values verified"
+    },
+    {
+      "material": "soil",
+      "role": "roughness",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forrest_ground_01/forrest_ground_01_rough_2k.png",
+      "resolved_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forrest_ground_01/forrest_ground_01_rough_2k.png",
+      "source_sha256": "b69fd13c094fd8dda54825f228517faf93ac2763785e097e00a8bbe6f3df200d",
+      "source_bytes": 7262563,
+      "license": "CC0-1.0",
+      "license_url": "https://polyhaven.com/license",
+      "acquired_jst": "2026-11-16",
+      "status": "downloaded, Pillow decoded, derivatives verified",
+      "files": [
+        {
+          "file": "soil_roughness.jpg",
+          "role": "roughness",
+          "size": [
+            512,
+            512
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "e63384cd9f3b4a27143b34e319c1fbfa6929a4e5f0942522b4ac1d75476e1ac4",
+          "conversion": "Pillow13.0.0 source I;16 normalized 0..65535 to 0..255 (divide257), L mode, Lanczos resize, JPEG quality94; no gamma transform",
+          "mean": 238.2990837097168,
+          "stddev": 7.42693391009664
+        },
+        {
+          "file": "soil_roughness_hero.jpg",
+          "role": "roughness",
+          "size": [
+            1024,
+            1024
+          ],
+          "original_size": [
+            2048,
+            2048
+          ],
+          "sha256": "7bf15adc9a64ad22e1a5872a8885a902843ed925c0468e86ee1d29508e85a943",
+          "conversion": "Pillow13.0.0 source I;16 normalized 0..65535 to 0..255 (divide257), L mode, Lanczos resize, JPEG quality94; no gamma transform",
+          "mean": 238.3130121231079,
+          "stddev": 7.791207012006564
+        }
+      ],
+      "provider": "Poly Haven",
+      "author": "Rob Tuytel",
+      "asset_id": "forrest_ground_01",
+      "asset_url": "https://polyhaven.com/a/forrest_ground_01",
+      "physical_width_m": 2,
+      "visual_check": "Downloaded color/normal/roughness displayed in contact sheet; bark/soil 16-bit roughness conversion fixed and nonconstant values verified"
+    }
+  ],
+  "asset_specific_derivatives": [
+    {
+      "file": "soil_module_stone_color.jpg",
+      "source_file": "stone_color.jpg",
+      "source_sha256": "b308579b8b11ede4db6d56ea0c2ade84742b2fdb9df547986c2b58765c88d3cc",
+      "sha256": "b429bfa0d9cd3bb7961581e5d8933139ecf487e869aff54637f642a47ea46c49",
+      "conversion": "Pillow Lanczos 256px, JPEG quality91 subsampling0; no color correction",
+      "purpose": "soil floor module secondary stone/root texture budget; primary soil remains512",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "soil_module_stone_normal.jpg",
+      "source_file": "stone_normal.jpg",
+      "source_sha256": "b32eeb4d14bc638b347e818734a30e8a254c9066251e8a24757550aa09052196",
+      "sha256": "8e75c6e2e6eff61939b8265df861ea1a7fb8d3056b3e70851ab45894c738dba8",
+      "conversion": "Pillow Lanczos 256px, JPEG quality91 subsampling0; no color correction",
+      "purpose": "soil floor module secondary stone/root texture budget; primary soil remains512",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "soil_module_stone_roughness.jpg",
+      "source_file": "stone_roughness.jpg",
+      "source_sha256": "e7242541627866f75feb708c408b0733232b509c7656f3539af55a00b302dcf6",
+      "sha256": "4e7839d90f03c46a876a96b21fa1463fda2523340a0d19f1c4ffb9851678a2be",
+      "conversion": "Pillow Lanczos 256px, JPEG quality91 subsampling0; no color correction",
+      "purpose": "soil floor module secondary stone/root texture budget; primary soil remains512",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "soil_module_bark_color.jpg",
+      "source_file": "bark_color.jpg",
+      "source_sha256": "908b51158a7d62946c212ebb4c707753293b05a68b2f89eff6952ee83e301fe1",
+      "sha256": "97fb0883eb1250384134f97b47252e8c55574873221dbab6082e0409b674a268",
+      "conversion": "Pillow Lanczos 256px, JPEG quality91 subsampling0; no color correction",
+      "purpose": "soil floor module secondary stone/root texture budget; primary soil remains512",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "soil_module_bark_normal.jpg",
+      "source_file": "bark_normal.jpg",
+      "source_sha256": "08145c5bbea3bcd871853220dfa0f88cc637c0b30eb286f45f670c53d5dcf209",
+      "sha256": "d0e4f7e15ef3be2815a3b45595cab790c74e2d54e26515446a71cb3cfbb51d79",
+      "conversion": "Pillow Lanczos 256px, JPEG quality91 subsampling0; no color correction",
+      "purpose": "soil floor module secondary stone/root texture budget; primary soil remains512",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "soil_module_bark_roughness.jpg",
+      "source_file": "bark_roughness.jpg",
+      "source_sha256": "9beefe4c2ce133cccad4f498ed0574acd771439f147374085f27d443995272a1",
+      "sha256": "86fc3035434cad5ad81689fc7881205d0c55ebdd7de96fd3ab33f0ebe4ce7cea",
+      "conversion": "Pillow Lanczos 256px, JPEG quality91 subsampling0; no color correction",
+      "purpose": "soil floor module secondary stone/root texture budget; primary soil remains512",
+      "license": "CC0-1.0"
+    }
+  ]
+}

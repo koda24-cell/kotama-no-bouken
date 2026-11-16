@@ -1,0 +1,98 @@
+{
+  "status": "candidate_verified_pending_user_review",
+  "gameIntegrated": false,
+  "generatedAtUTC": "2026-11-16T15:34:02.798666+00:00",
+  "sourceRevision": "85a234a23d381a244bd7870e26d926361a1d410b",
+  "assets": 17,
+  "individualTriangles": 136665,
+  "individualGlbBytes": 21305008,
+  "individualEvidenceImages": 68,
+  "sceneGlb": {
+    "file": "scene/sacred_forest_scene.glb",
+    "sha256": "1895d3342031eff60299af97583aa7574c43ac1031b9ad7fa87941b8c6fa7804",
+    "bytes": 20939944,
+    "triangles": 4480724,
+    "drawCalls": 1012
+  },
+  "sceneSource": {
+    "file": "scene/scene.blend",
+    "sha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
+    "packedImages": 195
+  },
+  "gameLayoutCandidate": {
+    "file": "scene/game-layout-candidate.json",
+    "sha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0",
+    "floors": 274,
+    "props": 129,
+    "dressingGround": 177,
+    "presentationRevision": "soil_surface_v2_authored_forest_pockets",
+    "requiredCapabilities": [
+      "explicit_floor_render_profiles_v1",
+      "gltf_node_material_selection_v1",
+      "non_navigation_dressing_ground_v1",
+      "source_sha256_pins_v1"
+    ]
+  },
+  "views": {
+    "entry": {
+      "file": "renders/scene/entry.png",
+      "sha256": "51513b648da67e8561d58bf9679b1bae3b80bae80b5a90e64d92386abce6b663",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_entry"
+    },
+    "courtyard": {
+      "file": "renders/scene/courtyard.png",
+      "sha256": "a24304569ffacdde23a2903d13442857992392f21cd1d538ad3a02dcf51d9a07",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_courtyard"
+    },
+    "sealed_corridor": {
+      "file": "renders/scene/sealed_corridor.png",
+      "sha256": "f3c420757132e582e348554dbaa8c1704f62673be97bfa1182ab6a7b676d4667",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_sealed_corridor"
+    },
+    "shrine_detail": {
+      "file": "renders/scene/shrine_detail.png",
+      "sha256": "05d342ecc7ae15bc86dd2923a8f02771cd8fa6e7e6b5b47f3fa3fd1c7ea9b0ed",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_shrine_detail"
+    },
+    "birdseye": {
+      "file": "renders/scene/birdseye.png",
+      "sha256": "5aa18967686fb6b307a2edcc0defc9e3017705b6deece57db058347a883ad05b",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_birdseye"
+    }
+  },
+  "conformanceFiles": 18,
+  "conformanceErrors": 0,
+  "conformanceWarnings": 0,
+  "browserErrors": 0,
+  "gameLayoutBrowserReview": {
+    "file": "docs/reviews/f1-sacred-forest-game-layout/browser-verification.json",
+    "sha256": "9ad1b8221d356479853d106b05d6e494bbf034e9ede7b637768b709bd5edbdbe",
+    "eyeHeightViews": 3,
+    "errors": 0,
+    "warnings": 0
+  },
+  "sourcePortabilityVerified": true,
+  "centralRouteClearanceVerified": true,
+  "realDevicePerformanceApproved": false,
+  "artApproval": "pending_user_review",
+  "notes": [
+    "Standalone review environment and unapplied game-layout candidate.",
+    "Cycles lighting/sky is not embedded as game runtime behaviour in GLB.",
+    "CPU SwiftShader readback is not a device FPS guarantee."
+  ]
+}
