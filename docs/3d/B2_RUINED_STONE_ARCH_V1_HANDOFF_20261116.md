@@ -32,3 +32,14 @@ developmentの最新状態と `AGENTS.md`、`docs/3d/BLENDER_DOCKER_HANDOFF.md`�
 - **修正後のGitHub Actions成功・実レンダリングPNGの目視・モデルの造形品質は未確認。** PRをマージせず、正式アセット保存・ゲーム統合も未実施。
 - 次の確認: 最新の `B2 Ruined Stone Arch V1 Render` runを確認し、成功時にArtifact中のGLB/BLEND/manifest/front/side/angle PNGを直接取得・表示。画像で迫石のつながり、欠損、左右の石柱と敷石を確認し、必要な再造形を行う。ユーザー承認後、Claude閲覧用GLB/3 PNG/manifest/制作メモを正式素材ディレクトリに保存。
 - ClaudeはGLB・PNG・manifestでゲーム内検証。Blenderの編集担当はGPT側。ソーススクリプトは引継ぎ可能。
+
+## 2026-11-16 破損強化＋テクスチャ検討（GPT / ユーザー要望）
+- ユーザー指定: V1原型の半円アーチと左右非対称柱を維持しつつ、破損をより大げさにし、テクスチャも利用。レンダリングを反復して品質を上げる。
+- 現行Blenderソース: `tools/b2-render/build-ruined-stone-arch-v1.py` (ブランチ `feature/b2-ruined-stone-arch-20261116`)。既存V1の石材・アーチはソースに残し、独立した破損石柱/迫石破片/転落大型ブロック/亀裂境界を追加。
+- Blender側のテクスチャ: 4種の256×256決定論的な砂岩アルベドPNGを生成。UVをメッシュに設定し、画像テクスチャをPrincipled Base Colorへ接続。Noise/BumpはBlenderでの凹凸表示用であり、GLBにノーマルとしてベイク済みとは見なさない。UVマップ付きカラー画像はGLBエクスポート対象。
+- Blender用の最後の更新コミット: `69eb261d194563abdf24b36703c4d245b83c83c0`。
+- 別途、**過去に実際に生成された旧GLB**を保持してVTKレンダラーで7段階×3方向＝**21枚の形状/質感プレビュー**を生成。これは旧GLB+追加造形を用いた**別レンダラーによる近似評価**であり、Blenderスクリプトそのものを実行した結果ではない。最終段階のレビュー用GLBは旧74メッシュを保持し追加メッシュを重ねた計108メッシュ。外部画像の無断転載なし、アルベドは自動生成テクスチャ。
+- ローカル確認フォルダ: `/mnt/data/arch_review_v2/`、review-only ZIP: `/mnt/data/b2_ruined_arch_seven_pass_review.zip`（このチャットの一時的ローカルパス。GitHub正式保存ではない）。
+- 段階比較の所見: Pass 1よりPass 5–7のほうが大きな欠損が読める。球状岩より**角張った崩落石**が適切。巨大な落石は主役アーチを隠さないよう量・位置を調整。浮岩・石材の継ぎ目・石柱の固定感は今後の重点検査点。
+- **未検証**: 新しいBlender Actions runの成功、新Blender三方向PNG、生成GLBのゲーム内読み込み、アセットのユーザー承認・正式保存。プレビュー画像をBlenderレンダーと誤記しない。
+- 次にやること: PR #401 のpush workflow（`.github/workflows/b2-ruined-stone-arch-v1-render.yml`）の最新run取得→実際のBlender GLB/BLEND/PNG/manifestを検査→正面/側面/斜めの見た目を評価→必要に応じ改修と再実行。正式素材は承認後のみ保存。Claudeへは承認済GLB・PNG・manifestで引き継ぐ。
