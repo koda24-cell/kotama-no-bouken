@@ -1,0 +1,58 @@
+name: B4 Cart Quality Iterations
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-refine-v12-20261116
+    paths:
+      - 'field/b4-cart-v12-additions.js'
+      - 'tools/b4-render/export-cart-quality.mjs'
+      - 'tools/b4-render/render-cart-quality.py'
+      - '.github/workflows/b4-cart-quality-iterations.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Three.js and Blender
+        run: |
+          npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Export 3 preserved source iterations
+        run: node tools/b4-render/export-cart-quality.mjs
+      - name: Render material-preserving 3 viewpoints and checkpoint each iteration
+        run: |
+          set -euo pipefail
+          mkdir -p render-review
+          for index in 0 1 2; do
+            blender -b -t 2 --python tools/b4-render/render-cart-quality.py -- "render-output/b4-cart-quality-${index}.glb" render-review
+            for view in front side angle; do
+              test -s "render-review/b4-cart-quality-${index}-${view}.png"
+            done
+            test -s "render-review/b4-cart-quality-${index}.blend"
+          done
+          test "$(find render-review -name '*.png' | wc -l)" -eq 9
+      - name: Record checksums and review status
+        run: |
+          python3 - <<'PY'
+          import glob,os,hashlib,json
+          files=sorted(glob.glob('render-output/b4-cart-quality-*.glb')+glob.glob('render-review/*'))
+          data={'asset':'b4-cart-quality','approval_status':'NOT_APPROVED','images':9,'iterations':[0,1,2],'files':[{'path':f,'bytes':os.stat(f).st_size,'sha256':hashlib.sha256(open(f,'rb').read()).hexdigest()} for f in files]}
+          open('render-review/manifest.json','w').write(json.dumps(data,indent=2))
+          print(json.dumps(data,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-cart-quality-iterations-review
+          path: |
+            render-output/b4-cart-quality-*.glb
+            render-review/
+          retention-days: 14
