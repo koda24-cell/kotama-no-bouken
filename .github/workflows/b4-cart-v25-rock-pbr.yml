@@ -1,0 +1,72 @@
+name: B4 Cart V26 V28 Fine Facet Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-structural-v20-20261116
+    paths:
+      - '.github/workflows/b4-cart-v25-rock-pbr.yml'
+      - 'tools/b4-render/bake-cart-pbr-v25.py'
+      - 'tools/b4-render/bake-cart-pbr-v26.py'
+      - 'tools/b4-render/export-cart-practical-v20.mjs'
+      - 'field/b4-cart-v20-practical.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Blender and Three
+        run: |
+          npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Export source and revised candidate
+        run: node tools/b4-render/export-cart-practical-v20.mjs
+      - name: Embed original wood metal and ore rock PBR into GLB
+        run: |
+          set -euo pipefail
+          mkdir -p render-review
+          blender -b -t 2 --python tools/b4-render/bake-cart-pbr-v26.py -- render-output/b4-cart-practical-v26.glb render-output/b4-cart-practical-v26-pbr.glb render-review/b4-cart-practical-v26-pbr-source.blend
+          blender -b -t 2 --python tools/b4-render/bake-cart-pbr-v26.py -- render-output/b4-cart-practical-v28.glb render-output/b4-cart-practical-v28-pbr.glb render-review/b4-cart-practical-v28-pbr-source.blend
+      - name: Blender Cycles comparison on shadow ground
+        run: |
+          set -euo pipefail
+          for v in 26 28; do
+            blender -b -t 2 --python tools/b4-render/render-cart-grounded-v24.py -- "render-output/b4-cart-practical-v${v}-pbr.glb" render-review
+            test -s "render-review/b4-cart-practical-v${v}-pbr.blend"
+            for d in front side angle; do
+              test -s "render-review/b4-cart-practical-v${v}-pbr-${d}.png"
+            done
+          done
+          test "$(find render-review -name '*.png' | wc -l)" -eq 6
+      - name: Manifest and embedded textures verification
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import glob,os,struct,json,hashlib
+          tex={}
+          for v in [26,28]:
+            p=f'render-output/b4-cart-practical-v{v}-pbr.glb'
+            if os.path.isfile(p):
+              with open(p,'rb') as f:f.seek(12);n,k=struct.unpack('<II',f.read(8));data=json.loads(f.read(n))
+              tex[str(v)]=len(data.get('images',[]))
+          paths=sorted(glob.glob('render-output/*.glb')+glob.glob('render-review/*.png')+glob.glob('render-review/*.blend'))
+          manifest={'approval':'NOT_APPROVED','source_sha':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'images':tex,'files':[{'path':p,'size':os.stat(p).st_size,'sha256':hashlib.sha256(open(p,'rb').read()).hexdigest()} for p in paths]}
+          os.makedirs('render-review',exist_ok=True)
+          open('render-review/manifest.json','w').write(json.dumps(manifest,indent=2))
+          if tex.get('28',0)<9:raise ValueError('Expected original 3-map rock image PBR')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-cart-v28-faceted-ore-review
+          path: |
+            render-output/*.glb
+            render-review/
+          retention-days: 14
