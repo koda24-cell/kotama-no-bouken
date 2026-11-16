@@ -144,6 +144,7 @@ function fieldAfterMove(a, moved) {
     if (c === ">") { fieldOnStairs("down"); return; }
     if (c === "<") { fieldOnStairs("up"); return; }
   }
+  if (typeof fieldA1OnStep === "function" && fieldA1OnStep(a, tx, ty)) return;
   if (FIELD_SAFE.has(c)) return;
   fieldState.walked += moved * (c === "*" ? 1.5 : 1);
   while (fieldState.walked >= FIELD_TILE) {
