@@ -14,7 +14,7 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
     const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.rotation.z=rz;parent.add(m);return m;
   };
   const reserved=map.objects || [],safe=(x,y)=>reserved.every(o=>Math.abs(o.tx-x)+Math.abs(o.ty-y)>1);
-  let panels=0,crust=0;const used=new Set(),lavaLights=[];
+  let panels=0,crust=0;const used=new Set(),lavaLights=[],lavaFalls=[];
   for(let y=1;y<map.h-1;y++)for(let x=1;x<map.w-1;x++){
     if(wallCell(x,y))continue;
     const c=ch(x,y),wx=x*CELL,wz=y*CELL;
@@ -22,15 +22,19 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
       // An unbroken lava sheet under the cooling plates hides the old black tile grid.
       for(let i=0;i<3 && crust<150;i++){
         const size=.32+hash(x,y,713+i)*.58;
-        const m=put(group,rock,surfaces.basalt,wx+(hash(x,y,723+i)-.5)*3.1,.035,wz+(hash(x,y,733+i)-.5)*3.1,size,.10+size*.06,size*.8);
-        m.rotation.y=hash(x,y,743+i)*6.28;crust++;
+        // Chunky, slightly tilted crust rafts read as cooled rock, not floating boards.
+        const m=put(group,rock,surfaces.basaltPlain,wx+(hash(x,y,723+i)-.5)*3.1,.02,wz+(hash(x,y,733+i)-.5)*3.1,size,.12+size*.16,size*(.6+hash(x,y,744+i)*.4),(hash(x,y,745+i)-.5)*.22);
+        m.rotation.y=hash(x,y,743+i)*6.28;m.rotation.x=(hash(x,y,746+i)-.5)*.2;crust++;
       }
       if(hash(x,y,750)<.24)lavaLights.push({world:new THREE.Vector3(wx,.6,wz),color:0xff6a22,intensity:5.2,range:7,off:false});
       for(const [dx,dz]of[[0,-1],[1,0],[0,1],[-1,0]]){
         if(wallCell(x+dx,y+dz)||['*','~'].includes(ch(x+dx,y+dz)))continue;
-        for(let i=0;i<3;i++){
-          const t=(i-1)*1.15;
-          put(group,rock,surfaces.basalt,wx+dx*1.9+dz*t,.015,wz+dz*1.9-dx*t,.65,.12,.58);
+        // Irregular shoreline: mixed boulders sunk into the ash, banked towards the dry side.
+        for(let i=0;i<4;i++){
+          const k=hash(x*3+dx,y*3+dz,901+i),t=(i-1.5)*1.0+(hash(x,y,905+i+dx*7+dz*13)-.5)*.5;
+          const out=1.78+hash(x,y,911+i+dx*5+dz*11)*.36,sz=.26+k*.3;
+          const m=put(group,rock,surfaces.basaltPlain,wx+dx*out+dz*t,-.03+k*.05,wz+dz*out-dx*t,sz,.08+k*.12,sz*(.7+hash(x,y,921+i)*.5),(k-.5)*.3);
+          m.rotation.y=hash(x,y,931+i+dx*3+dz*9)*6.28;
         }
       }
     }
@@ -59,18 +63,59 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
       panels++;break;
     }
   }
+  // Lavafalls: thin molten sheets spilling down rock faces into adjacent lava pools.
+  // Placed on the solid-cell boundary (<=0.5m into the lava cell), far outside the camera lane.
+  // Tapered, ragged-edged sheet: narrow at the spill lip, fanning out and bulging at the foot.
+  const fallGeo=new THREE.PlaneGeometry(1,1,6,16);
+  {const q=fallGeo.getAttribute('position');for(let i=0;i<q.count;i++){
+    const x=q.getX(i),yy=q.getY(i)+.5,edge=Math.abs(x*2);
+    const w=.42+.58*Math.pow(1-yy,.8);
+    q.setX(i,x*w+Math.sin(yy*13+x*5)*.07*edge+Math.sin(yy*5.3)*.05);
+    q.setZ(i,Math.pow(1-yy,2.2)*.38+Math.sin(yy*9+x*4)*.035-edge*.05);
+  }fallGeo.computeVertexNormals();}
+  let falls=0;
+  for(let y=1;y<map.h-1 && falls<6;y++)for(let x=1;x<map.w-1 && falls<6;x++){
+    if(!['*','~'].includes(ch(x,y)) || hash(x,y,970)>.5)continue;
+    for(const [dx,dz]of[[0,-1],[1,0],[0,1],[-1,0]]){
+      const wallKey=`${x+dx},${y+dz}`;
+      if(!wallCell(x+dx,y+dz)||ch(x+dx,y+dz)!=='#'||used.has(wallKey)||plan.excludedWalls.has(wallKey))continue;
+      if(falls && lavaFalls.some(l=>Math.hypot(l.x-x,l.y-y)<4))break;
+      used.add(wallKey);
+      const H=map.f===2?7.7:3.95;
+      const face=new THREE.Group();face.name='b4:lavafall';face.position.set(x*CELL+dx*2,0,y*CELL+dz*2);face.rotation.y=Math.atan2(-dx,-dz);group.add(face);
+      const main=put(face,fallGeo,surfaces.lava,(hash(x,y,971)-.5)*.8,H*.5,.42,.8+hash(x,y,972)*.35,H,1);
+      main.name='b4:lavafall-sheet';
+      put(face,fallGeo,surfaces.lava,main.position.x+(hash(x,y,973)>.5?.72:-.72),H*.36,.40,.26,H*.72,1);
+      // Dark lip at the spill point and a cooled splash apron at the base.
+      put(face,rock,surfaces.basaltPlain,main.position.x,H+.02,.32,.9,.22,.4);
+      for(let i=0;i<4;i++)put(face,rock,surfaces.basaltPlain,main.position.x+(i-1.5)*.55,.03,.55+hash(x+i,y,974)*.3,.24+hash(x,y+i,975)*.16,.1,.22,(i-1.5)*.2);
+      lavaFalls.push({x,y});
+      lavaLights.push({world:new THREE.Vector3(x*CELL+dx*.9,1.6,y*CELL+dz*.9),color:0xff7a2a,intensity:2.6,range:6.5,off:false,fall:true});
+      falls++;break;
+    }
+  }
   // Original charcoal boulders break the smooth square frames of the mine entrances.
   for(const s of plan.mines){
     const edge=new THREE.Group();edge.position.set((s.tx+s.dx/2)*CELL,0,(s.ty+s.dz/2)*CELL);edge.rotation.y=Math.atan2(-s.dx,-s.dz);group.add(edge);
-    for(const side of [-1,1])for(let i=0;i<6;i++){
-      put(edge,rock,surfaces.basalt,side*1.85,.32+i*.64,-.10,.28+(i%2)*.08,.42,.32,(i-2)*.07);
+    // Uneven jambs: varied boulder sizes and offsets avoid a bead-chain silhouette.
+    for(const side of [-1,1]){
+      let yy=.05;
+      for(let i=0;i<7 && yy<3.75;i++){
+        const k=hash(s.wx+side,s.wy+i,951),h=.28+k*.34;
+        const m=put(edge,rock,surfaces.basalt,side*(1.8+(hash(s.wx,s.wy+i,953+side)-.5)*.14),yy+h,-.06-k*.1,.22+k*.2,h,.26+k*.14,(hash(s.wx+i,s.wy,955)-.5)*.6);
+        m.rotation.y=k*6.28;yy+=h*1.55;
+      }
     }
-    for(let i=0;i<5;i++)put(edge,rock,surfaces.basalt,-1.65+i*.82,3.92,-.10,.53,.27,.38,(i-2)*.05);
+    for(let i=0;i<5;i++){
+      const k=hash(s.wx+i,s.wy,961);
+      const m=put(edge,rock,surfaces.basalt,-1.65+i*.82+(k-.5)*.25,3.86+k*.1,-.10,.4+k*.25,.2+k*.14,.34,(k-.5)*.4);m.rotation.y=k*6.28;
+    }
   }
   // Spread candidates over the whole stratum rather than exhausting the quota in the first rows.
   lavaLights.sort((a,b)=>hash(a.world.x,a.world.z,840)-hash(b.world.x,b.world.z,840));
   const distributed=[];
-  for(const light of lavaLights)if(distributed.length<24 && distributed.every(l=>l.world.distanceTo(light.world)>=CELL*2.2))distributed.push(light);
+  for(const light of lavaLights.filter(l=>l.fall))distributed.push(light);
+  for(const light of lavaLights)if(!light.fall && distributed.length<24 && distributed.every(l=>l.world.distanceTo(light.world)>=CELL*2.2))distributed.push(light);
   lavaLights.length=0;lavaLights.push(...distributed);
   batchB4Scenery(group);
   // A single Points draw replaces scores of individually animated ember meshes.
@@ -83,7 +128,7 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
   const particles=new THREE.Points(particleGeo,particleMat);particles.name='b4:embers';group.add(particles);
   particleGeo.computeBoundingSphere();if(particleGeo.boundingSphere)particleGeo.boundingSphere.radius+=3;
   const original=new Float32Array(positions);
-  return {lights:lavaLights,info:{basaltPanels:panels,coolingPlates:crust,embers:positions.length/3},
+  return {lights:lavaLights,info:{basaltPanels:panels,lavafalls:falls,coolingPlates:crust,embers:positions.length/3},
     tick(now){const t=now*.001,attr=particleGeo.getAttribute('position');
       for(let i=0;i<attr.count;i++)attr.setY(i,.3+(original[i*3+1]+t*.35)%3);attr.needsUpdate=true;
       lavaLights.forEach((l,i)=>{l.intensity=5.1+Math.sin(t*1.3+i*2.4)*.35;});
