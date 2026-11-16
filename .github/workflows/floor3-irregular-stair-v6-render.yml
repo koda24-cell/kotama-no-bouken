@@ -42,6 +42,8 @@ jobs:
           for kind in ("stairs","ramp","landing"):
               stem=f"floor3_ruined_connector_{kind}_v6"
               glb=root/(stem+".glb")
+              blend=root/(stem+".blend")
+              assert blend.is_file() and blend.stat().st_size>512, f"missing Blender checkpoint: {blend}"
               data=glb.read_bytes()
               assert data[:4]==b"glTF" and struct.unpack_from("<I",data,8)[0]==len(data), glb
               json_length,json_type=struct.unpack_from("<II",data,12)
@@ -50,7 +52,7 @@ jobs:
               assert asset.get("meshes") and asset.get("materials"), glb
               assert asset.get("images") and asset.get("textures"), f"no embedded normal image: {glb}"
               assert any("normalTexture" in m for m in asset["materials"]), f"no normalTexture: {glb}"
-              for p in [glb]+[root/(stem+"-"+view+".png") for view in ("front","side","angle")]:
+              for p in [glb,blend]+[root/(stem+"-"+view+".png") for view in ("front","side","angle")]:
                   raw=p.read_bytes()
                   if p.suffix==".png":
                       assert raw.startswith(bytes.fromhex("89504e470d0a1a0a")), p
