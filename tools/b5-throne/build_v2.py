@@ -13,7 +13,10 @@ v1=source.read_text(encoding="utf-8")
 cut=v1.index("world=bpy.context.scene.world")
 # The V1 modeling preamble is used verbatim. Rendering/export code is isolated.
 exec(compile(v1[:cut], str(source), "exec"))
-rng=random.Random(2068)
+variant=int(os.environ.get("THRONE_VARIANT", "0"))
+if variant not in range(0, 8):
+    raise ValueError("THRONE_VARIANT must be 0..7")
+rng=random.Random(2068 + variant * 71)
 def irregular_block(name, loc, dimensions, material, seed, damage=0.13):
     """Faceted block with uneven beveled outline; original meshes unchanged."""
     rr=random.Random(seed)
@@ -63,7 +66,7 @@ for sign in (-1,1):
              (sign*(.13+t*.39),.105,1.45+t*.95),
              .010,iron)
 # Unequal crack seams crossing otherwise rectangular V1 stone panels.
-for i in range(14):
+for i in range(14 + variant * 2):
     x=rng.uniform(-.72,.72)
     z=rng.uniform(.92,2.85)
     y=.039 if z>1.3 else -.64
@@ -72,7 +75,7 @@ for i in range(14):
          rng.uniform(.009,.022),iron)
 # Break silhouette via physically irregular attached stone facets on buttresses,
 # arch and left-hand broken armrest; embed them into the host stone.
-for i in range(26):
+for i in range(26 + variant * 3):
     side=-1 if i%3 else 1
     z=rng.uniform(1.2,3.07)
     x=side*rng.uniform(.79,1.04)
@@ -81,7 +84,7 @@ for i in range(26):
         (x,y,z),(rng.uniform(.09,.24),rng.uniform(.09,.24),rng.uniform(.10,.39)),
         stone if i%4 else edge,2068+i,.18)
     part.rotation_euler[1]=rng.uniform(-.26,.26)
-for i in range(9):
+for i in range(9 + variant):
     # Loose missing-looking pieces embedded along the front rim; no floaters.
     x=rng.uniform(-1.10,1.10)
     y=-.80+rng.uniform(-.04,.04)
@@ -97,7 +100,7 @@ for i in range(5):
         (.18+rng.random()*.14,.24+rng.random()*.13,.12+rng.random()*.14),
         edge if i==0 else stone,3900+i,.22)
 # Big irregular rubble only; no decorative small pebbles.
-for i in range(10):
+for i in range(10 + variant):
     x=rng.uniform(-1.7,1.7);y=rng.uniform(-1.35,1.0)
     if abs(x)<1.05 and y>-.75: y=-1.15
     size=(rng.uniform(.23,.54),rng.uniform(.22,.43),rng.uniform(.15,.35))
@@ -125,6 +128,7 @@ area((-3,2,4),850,4)
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
 scene.cycles.samples=24
+scene.view_settings.exposure=float(os.environ.get("THRONE_EXPOSURE", "0"))
 scene.cycles.use_denoising=False
 scene.render.image_settings.color_mode="RGBA"
 scene.render.resolution_x=960
@@ -143,3 +147,6 @@ for o in list(bpy.data.objects):
         bpy.data.objects.remove(o,do_unlink=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/"b5-ruined-throne-v2.blend"))
 bpy.ops.export_scene.gltf(filepath=str(out/"b5-ruined-throne-v2.glb"),export_format="GLB")
+import json
+mesh_objects=[o for o in bpy.data.objects if o.type=="MESH"]
+(out/"geometry.json").write_text(json.dumps({"variant":variant,"mesh_count":len(mesh_objects),"vertex_count":sum(len(o.data.vertices) for o in mesh_objects),"object_names":[o.name for o in mesh_objects],"approval":"NOT_APPROVED"},indent=2),encoding="utf-8")
