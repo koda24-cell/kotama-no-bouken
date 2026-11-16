@@ -151,7 +151,7 @@ M_STEM = C.mat_leaf("snowdrop_stem", hexlin("#6E9474"), rough=0.45, sss=0.2, coa
 M_OVARY = C.mat_leaf("snowdrop_ovary", hexlin("#6FA44A"), rough=0.45, sss=0.2, coat=0.15)
 M_SPATHE = C.mat_leaf("snowdrop_spathe", hexlin("#93B486"), rough=0.5, sss=0.35, coat=0.05)
 M_LEAF = C.mat_leaf("snowdrop_leaf", hexlin("#5E8A7A"), rough=0.55, sss=0.15, coat=0.12, vcol=True)
-M_SNOW = C.mat_petal("snowdrop_snow_mound", hexlin("#E8F0F6"), rough=0.75, sss=0.35,
+M_SNOW = C.mat_petal("snowdrop_snow_mound", hexlin("#E8F0F6"), rough=0.7, sss=0.2,
                      sss_radius=(0.6, 0.8, 1.0), sheen=0.15, vcol=True)
 M_ICE = C.mat_ice("snowdrop_ice_shard", rgb=(0.80, 0.92, 1.0), rough=0.05, trans=0.9)
 M_FROST = C.mat_ice("snowdrop_frost_crystal", rgb=(0.90, 0.96, 1.0), rough=0.12, trans=0.4,
@@ -196,7 +196,8 @@ def mound_color(co, n):
     a = math.atan2(co.y, co.x)
     r = min(1.0, math.hypot(co.x, co.y) / mound_rb(a))
     top = sstep(0.2, 0.95, n.z) * (1 - 0.5 * sstep(0.75, 1.0, r))
-    return mix(hexlin("#8FB0CC"), hexlin("#E8F0F6"), 0.15 + 0.85 * top)
+    # 花が最も明るく見えるよう、盛り土は上面だけ霜の白、側面と縁は青い陰に落とす
+    return mix(hexlin("#6F8FAE"), hexlin("#D9E5EE"), 0.1 + 0.9 * top ** 1.5)
 
 
 def build_mound():
@@ -461,5 +462,5 @@ ob = C.join(objs, "f2_frost_snowdrop")
 C.set_origin_bottom(ob)
 
 C.finish("f2_frost_snowdrop", notes=(
-    "霜鈴草 v1: スノードロップ基準。6花茎（0.22-0.34m）、鉤状花柄・苞・子房、外花被3（椀状・縦筋・先端氷化の頂点色）、"
+    "霜鈴草 v6: スノードロップ基準。6花茎（0.22-0.34m）、鉤状花柄・苞・子房、外花被3（椀状・縦筋・先端氷化の頂点色）、"
     "内花被3（筒・緑の逆V字の頂点色）、各株2枚の帯状葉（粉白の中央帯）、盛り土φ0.16m、縁に沿った氷晶。画像テクスチャなし"))
