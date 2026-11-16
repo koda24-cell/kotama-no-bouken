@@ -72,17 +72,19 @@ def surface(name, S, nu, nv, M, thickness=0.0, color_fn=None):
         mod.use_even_offset = True
         C.apply_mods(ob)
     if color_fn:
-        paint_uv(ob, color_fn)
+        paint_uv(ob, color_fn, M.col[2].xyz.normalized())
     return ob
 
 
-def paint_uv(ob, fn):
+def paint_uv(ob, fn, zdir):
+    """UV(u,v) と表裏（頂点法線が曲面の+Z側か）で頂点色を塗る"""
     me = ob.data
     attr = me.color_attributes.new("Col", "BYTE_COLOR", "CORNER")
     uv = me.uv_layers["UVMap"].data
     for li in range(len(me.loops)):
         q = uv[li].uv
-        attr.data[li].color = (*fn(q[1], q[0] * 2 - 1), 1.0)
+        side = 1 if me.vertices[me.loops[li].vertex_index].normal.dot(zdir) > 0 else -1
+        attr.data[li].color = (*fn(q[1], q[0] * 2 - 1, side), 1.0)
     me.color_attributes.active_color = attr
 
 
@@ -191,7 +193,7 @@ def mound_color(co, n):
     a = math.atan2(co.y, co.x)
     r = min(1.0, math.hypot(co.x, co.y) / mound_rb(a))
     top = sstep(0.2, 0.95, n.z) * (1 - 0.5 * sstep(0.75, 1.0, r))
-    return mix(hexlin("#AFC9DD"), hexlin("#EEF4F8"), 0.35 + 0.65 * top)
+    return mix(hexlin("#8FB0CC"), hexlin("#E8F0F6"), 0.15 + 0.85 * top)
 
 
 def build_mound():
@@ -247,7 +249,7 @@ def outer_S(L, W, cup, curl):
         if u < 0.6:
             return 0.2 + 0.8 * math.sin(math.pi * 0.5 * u / 0.6)
         t = (u - 0.6) / 0.4
-        return max(0.0, math.sqrt(max(0.0, 1 - t * t)) * 0.88 + (1 - t) * 0.12)
+        return max(0.0, math.sqrt(max(0.0, 1 - t * t)) * 0.95 + (1 - t) * 0.05)
 
     def S(u, v):
         w = wf(u) * W * 0.5
@@ -261,10 +263,12 @@ def outer_S(L, W, cup, curl):
     return S
 
 
-def outer_color(u, v):
+def outer_color(u, v, side=1):
     groove = abs(math.cos(v * math.pi * 2.5)) * sstep(0.1, 0.45, u) * 0.6
     c = mix(WHITE, GROOVE, groove)
-    c = mix(c, hexlin("#E4EEDF"), 1 - sstep(0.0, 0.12, u))   # 付け根ほんのり緑白
+    if side > 0:  # 椀の内側: 付け根ほど青灰に陰る（鐘の奥行き）
+        c = mix(c, hexlin("#B9C9D8"), 0.55 * (1 - sstep(0.05, 0.7, u)) * (1 - 0.5 * abs(v)))
+    c = mix(c, hexlin("#DCE8D2"), 1 - sstep(0.0, 0.14, u))   # 付け根ほんのり緑白
     edge = sstep(0.7, 1.0, abs(v)) * sstep(0.5, 0.9, u) * 0.35
     tip = sstep(0.86, 0.97, u)
     return mix(c, ICE_TIP, max(tip, edge))
@@ -283,9 +287,9 @@ def inner_S(L, W, cup, flare):
     return S
 
 
-def inner_color(u, v):
+def inner_color(u, v, side=1):
     # 先端の切れ込みにかかる緑の逆V字（中央ほど付け根側へ伸びるアーチ）
-    edge = 0.64 + 0.18 * abs(v) ** 1.3
+    edge = 0.54 + 0.24 * abs(v) ** 1.3
     g = sstep(edge - 0.05, edge + 0.05, u)
     g *= 1 - 0.6 * sstep(0.88, 1.0, abs(v)) * sstep(0.9, 1.0, u)
     c = mix(WHITE, hexlin("#E6F0E0"), 1 - sstep(0.0, 0.2, u))
@@ -300,11 +304,11 @@ def build_flower(tag, d, A, Lout, alpha, spin):
     for k in range(3):
         th = spin + k * math.tau / 3
         e = a * math.cos(th) + b * math.sin(th)
-        al = math.radians(alpha + R.uniform(-5, 5) + 9)
+        al = math.radians(alpha + R.uniform(-4, 4) + 7)
         y = d * math.cos(al) + e * math.sin(al)
         z = d * math.sin(al) - e * math.cos(al)
         L = Lout * R.uniform(0.95, 1.04)
-        S = outer_S(L, 0.0104, cup=0.62, curl=0.12)
+        S = outer_S(L, 0.0104, cup=0.55, curl=0.07)
         M = basis(A + e * 0.0021, y, z)
         ob = surface(f"{tag}_outer{k}", S, 12, 10, M, thickness=0.0013, color_fn=outer_color)
         C.assign(ob, M_OUTER)
@@ -316,7 +320,7 @@ def build_flower(tag, d, A, Lout, alpha, spin):
         al = math.radians(4)
         y = d * math.cos(al) + e * math.sin(al)
         z = d * math.sin(al) - e * math.cos(al)
-        S = inner_S(0.0118 * Lout / 0.025, 0.0076, cup=0.5, flare=0.35)
+        S = inner_S(0.0120 * Lout / 0.025, 0.0078, cup=0.5, flare=0.5)
         M = basis(A + d * 0.0006 + e * 0.0016, y, z)
         ob = surface(f"{tag}_inner{k}", S, 7, 6, M, thickness=0.0009, color_fn=inner_color)
         C.assign(ob, M_INNER)
@@ -355,7 +359,7 @@ def leaf_S(L, W, keel, bend, twist):
     return S
 
 
-def leaf_color(u, v):
+def leaf_color(u, v, side=1):
     c = mix(LEAF_GLAUC, LEAF, sstep(0.05, 0.55, abs(v)))
     c = mix(c, LEAF_BASE, 1 - sstep(0.0, 0.12, u))
     return mix(c, LEAF_FROST, sstep(0.8, 1.0, abs(v)) * sstep(0.3, 0.8, u) * 0.45)
@@ -430,12 +434,12 @@ def build_plant(i, x, y, H, az, beta, alpha, Lout, lean, leaf_az, leaf_len):
 
 # x, y, 高さ, 花の向き(deg), 下向きからの傾き β, 開き角 α, 外花被長, 茎の傾き, 葉の向き, 葉長
 PLANTS = [
-    (0.004, 0.003, 0.335, 20, 16, 24, 0.028, 2, 110, 0.18),
+    (0.004, 0.003, 0.335, 20, 16, 26, 0.028, 2, 110, 0.18),
     (-0.027, 0.015, 0.290, 150, 28, 34, 0.026, 4, 60, 0.16),
     (0.025, -0.020, 0.268, -40, 12, 18, 0.025, 3, 20, 0.155),
-    (-0.011, -0.030, 0.246, -115, 34, 38, 0.024, 5, -160, 0.145),
-    (0.031, 0.023, 0.306, 65, 22, 28, 0.027, 3, 150, 0.17),
-    (-0.035, -0.007, 0.222, 205, 30, 26, 0.023, 6, -80, 0.14),
+    (-0.011, -0.030, 0.246, -115, 34, 35, 0.024, 5, -160, 0.145),
+    (0.031, 0.023, 0.306, 65, 22, 30, 0.027, 3, 150, 0.17),
+    (-0.035, -0.007, 0.222, 205, 30, 24, 0.023, 6, -80, 0.14),
 ]
 
 objs = [build_mound()]
