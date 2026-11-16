@@ -254,7 +254,7 @@ async function buildFloor() {
   }
   else {                                // 第1階層：ここから下は従来の組み立て（変更なし）
   let sacred = false;
-  if (area === 1 && a.f === 2 && new URLSearchParams(location.search).get('f1sacred') === '1') {
+  if (area === 1 && a.f === 2 && (new URLSearchParams(location.search).get('f1sacred') === '1' || window.KotamaSacredPlaytest === true)) {
     try {
       const { buildSacredForestTrial } = await import('./field-3d-b1-sacred-trial.js?v=20261117-1');
       const trial = await buildSacredForestTrial({ world: g.world, area: a,
