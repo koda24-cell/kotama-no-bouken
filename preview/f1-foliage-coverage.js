@@ -1,0 +1,19 @@
+/* Preserve cutout foliage coverage in distant mip levels; source GLBs stay intact. */
+import * as THREE from 'three';
+const cache=new WeakMap(),bindings=new WeakMap();
+const linear=Array.from({length:256},(_,n)=>{const s=n/255;return s<=.04045?s/12.92:((s+.055)/1.055)**2.4;});
+const encoded=x=>Math.round(255*(x<=.0031308?12.92*x:1.055*x**(1/2.4)-.055));
+function coverage(data,cutoff,scale=1){let count=0;for(let i=3;i<data.length;i+=4)if(Math.min(255,data[i]*scale)>=cutoff*255)count++;return count/(data.length/4);}
+function downsample(input,w,h){const nw=Math.max(1,w>>1),nh=Math.max(1,h>>1),out=new Uint8Array(nw*nh*4);for(let y=0;y<nh;y++)for(let x=0;x<nw;x++){let a=0,r=0,g=0,b=0,n=0;for(let dy=0;dy<2;dy++)for(let dx=0;dx<2;dx++){const sx=Math.min(w-1,x*2+dx),sy=Math.min(h-1,y*2+dy),i=(sy*w+sx)*4,alpha=input[i+3]/255;a+=alpha;r+=linear[input[i]]*alpha;g+=linear[input[i+1]]*alpha;b+=linear[input[i+2]]*alpha;n++;}const i=(y*nw+x)*4;out[i]=a?encoded(r/a):0;out[i+1]=a?encoded(g/a):0;out[i+2]=a?encoded(b/a):0;out[i+3]=Math.round(255*a/n);}return {data:out,width:nw,height:nh};}
+function correctedMap(original,cutoff){
+ let byCutoff=cache.get(original);if(!byCutoff){byCutoff=new Map();cache.set(original,byCutoff);}if(byCutoff.has(cutoff))return byCutoff.get(cutoff);
+ const image=original.image,w=image.width,h=image.height,canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(image,0,0);
+ let raw=new Uint8Array(ctx.getImageData(0,0,w,h).data),width=w,height=h;
+ const reference=coverage(raw,cutoff),levels=[{data:raw.slice(),width,height}],stats=[{width,height,rawCoverage:reference,correctedCoverage:reference,scale:1}];
+ while(width>1||height>1){const next=downsample(raw,width,height);raw=next.data;width=next.width;height=next.height;const rawCoverage=coverage(raw,cutoff);let lo=0,hi=32,best=1,error=Math.abs(rawCoverage-reference);for(let k=0;k<24;k++){const mid=(lo+hi)/2,c=coverage(raw,cutoff,mid),e=Math.abs(c-reference);if(e<error){best=mid;error=e;}if(c<reference)lo=mid;else hi=mid;}
+  const adjusted=raw.slice();for(let i=3;i<adjusted.length;i+=4)adjusted[i]=Math.min(255,Math.round(adjusted[i]*best));levels.push({data:adjusted,width,height});stats.push({width,height,rawCoverage,correctedCoverage:coverage(adjusted,cutoff),scale:best});
+ }
+ const tex=new THREE.DataTexture(levels[0].data,w,h,THREE.RGBAFormat,THREE.UnsignedByteType);tex.name=original.name+'_coverage_mips';tex.colorSpace=original.colorSpace;tex.flipY=original.flipY;tex.wrapS=original.wrapS;tex.wrapT=original.wrapT;tex.magFilter=original.magFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;tex.anisotropy=original.anisotropy;tex.offset.copy(original.offset);tex.repeat.copy(original.repeat);tex.center.copy(original.center);tex.rotation=original.rotation;tex.matrix.copy(original.matrix);tex.matrixAutoUpdate=original.matrixAutoUpdate;tex.mipmaps=levels;tex.generateMipmaps=false;tex.needsUpdate=true;
+ const result={texture:tex,stats,cutoff,sourceCoverage:reference,sourceWidth:w,sourceHeight:h};byCutoff.set(cutoff,result);return result;
+}
+export function setFoliageCoverage(root,enabled){const reports=[];const seen=new Set();root.traverse(o=>{if(!o.isMesh)return;for(const mat of Array.isArray(o.material)?o.material:[o.material]){if(seen.has(mat))continue;seen.add(mat);if(!mat.map||!(mat.alphaTest>0))continue;let binding=bindings.get(mat);if(!binding){binding={original:mat.map,derived:correctedMap(mat.map,mat.alphaTest)};bindings.set(mat,binding);}mat.map=enabled?binding.derived.texture:binding.original;mat.needsUpdate=true;reports.push({material:mat.name,enabled,alphaCutoffUnchanged:mat.alphaTest===binding.derived.cutoff,cutoff:mat.alphaTest,sourceCoverage:binding.derived.sourceCoverage,levels:binding.derived.stats});}});return reports;}
