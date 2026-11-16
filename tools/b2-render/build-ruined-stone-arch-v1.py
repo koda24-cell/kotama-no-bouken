@@ -49,11 +49,13 @@ for i in range(13):
 # The early V1 left gaps at arch indices 2,3,10; the detached middle span
 # appeared to float. Reintroduce deliberately chipped, staggered support stones
 # rather than removing or replacing any original voussoir.
-for idx,scale,shift in [(2,.88,-.045),(3,.83,.035),(10,.90,-.018)]:
+# Retain the visible broken gaps from the admired old V1: repairs are partial,
+# not complete replacement of missing voussoir slots.
+for idx,scale,shift in [(2,.52,-.115),(3,.46,.145),(10,.50,.135)]:
  theta=math.pi-idx*math.pi/12
  x=radius*math.cos(theta)
  z=2.77+radius*math.sin(theta)
- m=stone("additive fractured support voussoir %02d"%idx,(x+shift,0,z-.025),(.38*scale,.86,.40*scale),mats[(idx+1)%len(mats)],(0,-(theta-math.pi/2),rng.uniform(-.035,.035)))
+ m=stone("additive fractured support voussoir %02d"%idx,(x+shift,0,z-.025),(.38*scale,.72,.40*scale),mats[(idx+1)%len(mats)],(0,-(theta-math.pi/2),rng.uniform(-.035,.035)))
  m.scale=(1.0,.92,.90)
 # Right shoulder supports the lower curve where the original pier is shorter.
 stone("right shoulder bridging masonry",(1.34,0,2.49),(.62,.84,.43),mats[0],(0,-.08,.035))
@@ -108,4 +110,18 @@ for name,loc in [('front',(0,-8,4)),('side',(8,0,3.5)),('angle',(6,-8,5.5))]:
  cam.location=loc;direction=target-cam.location;cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
  scene.render.filepath=os.path.join(OUT,"ruined_stone_arch_v1_"+name+".png");bpy.ops.render.render(write_still=True)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT,"ruined_stone_arch_v1.blend"))
-with open(os.path.join(OUT,"manifest.json"),"w") as f:json.dump({"name":"ruined_stone_arch_v1","status":"prototype awaiting user approval","files":["ruined_stone_arch_v1.glb","ruined_stone_arch_v1.blend"]+["ruined_stone_arch_v1_"+x+".png" for x in ("front","side","angle")],"source":"tools/b2-render/build-ruined-stone-arch-v1.py"},f,indent=2)
+# Validate saved outputs and record file hashes for Claude/browser handoff.
+files=["ruined_stone_arch_v1.glb","ruined_stone_arch_v1.blend"]+["ruined_stone_arch_v1_"+x+".png" for x in ("front","side","angle")]
+checksums={}
+for file in files:
+ path=os.path.join(OUT,file)
+ with open(path,"rb") as inp: payload=inp.read()
+ if len(payload)<1024:raise RuntimeError("Missing or undersized output: "+file)
+ if file.endswith(".png") and not payload.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):raise RuntimeError("Invalid PNG header: "+file)
+ if file.endswith(".glb") and not payload.startswith(b"glTF"):raise RuntimeError("Invalid GLB header")
+ checksums[file]=hashlib.sha256(payload).hexdigest()
+manifest={"name":"ruined_stone_arch_v1","status":"NOT_APPROVED","files":files,"sha256":checksums,
+ "mesh_count":len([o for o in bpy.data.objects if o.type=="MESH" and not o.name.startswith("preview_")]),
+ "source":"tools/b2-render/build-ruined-stone-arch-v1.py","notes":"Old V1 retained; additive weathering, rubble and partial arch supports. Blender three-view visual QA pending."}
+with open(os.path.join(OUT,"manifest.json"),"w") as f:json.dump(manifest,f,indent=2)
+print("OUTPUT_VALIDATED",len(files),"files",flush=True)
