@@ -410,6 +410,10 @@ async function fieldOnGate() {
   if (fieldState.lock) return;
   const a = fieldArea(), req = a.def.gateRequires;
   if (req && !fieldState.flags[req.flag]) { if (req.scene) await fieldPlayScene(req.scene); else await fieldSay("この先へは、まだ進めないようだ。"); return; }
+  // 3Fの通過シーンを踏まずにゲートへ到達しても、重要会話を飛ばさない。
+  if (a.n === 1 && a.f === 2 && !fieldState.flags["a1:besieged"] && typeof fieldA1Once === "function") {
+    await fieldA1Once("a1:besieged", "a1-f3-besieged");
+  }
   await fieldPlayScene(a.def.bossScene);
   const choice = await fieldAsk("この先には強大な魔物の気配がする。進みますか？", ["進む", "やめる"]);
   if (choice !== 0) return;
