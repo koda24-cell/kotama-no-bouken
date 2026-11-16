@@ -12,7 +12,7 @@
         "uri": "modules/mod_sacred_stone_floor_4m.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:53:59.574Z",
+        "validatedAt": "2026-11-16T03:32:25.478Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -156,7 +156,7 @@
         "uri": "modules/mod_root_soil_floor_4m.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:53:59.660Z",
+        "validatedAt": "2026-11-16T03:32:25.664Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -370,7 +370,7 @@
         "uri": "modules/mod_sacred_wall_4m.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:53:59.775Z",
+        "validatedAt": "2026-11-16T03:32:26.000Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -549,7 +549,7 @@
         "uri": "modules/mod_sacred_collapsed_wall_4m.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:53:59.848Z",
+        "validatedAt": "2026-11-16T03:32:26.235Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -728,7 +728,7 @@
         "uri": "modules/mod_sacred_arch_4m.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:53:59.898Z",
+        "validatedAt": "2026-11-16T03:32:26.395Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -907,7 +907,7 @@
         "uri": "props/weathered_torii_gate.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:53:59.954Z",
+        "validatedAt": "2026-11-16T03:32:26.471Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -1126,7 +1126,7 @@
         "uri": "props/broken_votive_stele.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:53:59.971Z",
+        "validatedAt": "2026-11-16T03:32:26.569Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -1303,7 +1303,7 @@
         "uri": "props/moss_stone_lantern.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:53:59.995Z",
+        "validatedAt": "2026-11-16T03:32:26.644Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -1480,7 +1480,7 @@
         "uri": "props/ofuda_seal_cluster.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:00.002Z",
+        "validatedAt": "2026-11-16T03:32:26.660Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -1556,7 +1556,7 @@
         "uri": "props/sacred_cedar_tree.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:00.078Z",
+        "validatedAt": "2026-11-16T03:32:26.870Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -1702,7 +1702,7 @@
         "uri": "props/fallen_cedar_log.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:00.102Z",
+        "validatedAt": "2026-11-16T03:32:26.962Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -1879,7 +1879,7 @@
         "uri": "props/forest_fern_cluster.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:00.256Z",
+        "validatedAt": "2026-11-16T03:32:27.189Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -2010,7 +2010,7 @@
         "uri": "props/forest_shrub_cluster.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:00.348Z",
+        "validatedAt": "2026-11-16T03:32:27.286Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -2165,7 +2165,7 @@
         "uri": "props/white_wildflower_patch.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:00.460Z",
+        "validatedAt": "2026-11-16T03:32:27.372Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -2384,7 +2384,7 @@
         "uri": "props/hanging_forest_vines.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:00.479Z",
+        "validatedAt": "2026-11-16T03:32:27.469Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -2504,7 +2504,7 @@
         "uri": "props/mossy_granite_boulder.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:00.550Z",
+        "validatedAt": "2026-11-16T03:32:27.498Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -2615,7 +2615,7 @@
         "uri": "props/sacred_hokora_shrine.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:00.673Z",
+        "validatedAt": "2026-11-16T03:32:27.771Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -2919,12 +2919,12 @@
     {
       "id": "sacred_forest_scene",
       "file": "scene/sacred_forest_scene.glb",
-      "sha256": "02f40a252a67d393a9695cc03b4ace203366716e9d813ac7a0df3b2ecde994ce",
+      "sha256": "2004c4b72ddcf7dbfee719467eb596a065683b22a25bd4fc44370356ff3a29a3",
       "report": {
         "uri": "scene/sacred_forest_scene.glb",
         "mimeType": "model/gltf-binary",
         "validatorVersion": "2.0.0-dev.3.10",
-        "validatedAt": "2026-11-16T02:54:01.781Z",
+        "validatedAt": "2026-11-16T03:32:30.279Z",
         "issues": {
           "numErrors": 0,
           "numWarnings": 0,
@@ -2941,7 +2941,7 @@
               "pointer": "/buffers/0",
               "mimeType": "application/gltf-buffer",
               "storage": "glb",
-              "byteLength": 21183348
+              "byteLength": 21184500
             },
             {
               "pointer": "/images/0",
@@ -3806,8 +3806,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -3817,20 +3817,22 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
             },
             {
               "pointer": "/images/78",
-              "mimeType": "image/jpeg",
+              "mimeType": "image/png",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -3905,8 +3907,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -3916,22 +3918,20 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
             },
             {
               "pointer": "/images/87",
-              "mimeType": "image/png",
+              "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
-                "primaries": "srgb",
-                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -3973,8 +3973,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -3984,22 +3984,20 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
             },
             {
               "pointer": "/images/93",
-              "mimeType": "image/png",
+              "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
-                "primaries": "srgb",
-                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -4019,8 +4017,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4038,12 +4036,14 @@
             },
             {
               "pointer": "/images/97",
-              "mimeType": "image/jpeg",
+              "mimeType": "image/png",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -4074,8 +4074,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4093,6 +4093,17 @@
             },
             {
               "pointer": "/images/102",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/103",
               "mimeType": "image/png",
               "storage": "buffer-view",
               "image": {
@@ -4101,17 +4112,6 @@
                 "format": "rgb",
                 "primaries": "srgb",
                 "transfer": "srgb",
-                "bits": 8
-              }
-            },
-            {
-              "pointer": "/images/103",
-              "mimeType": "image/jpeg",
-              "storage": "buffer-view",
-              "image": {
-                "width": 256,
-                "height": 256,
-                "format": "rgb",
                 "bits": 8
               }
             },
@@ -4153,22 +4153,20 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
             },
             {
               "pointer": "/images/108",
-              "mimeType": "image/png",
+              "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
-                "primaries": "srgb",
-                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -4177,8 +4175,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4207,12 +4205,14 @@
             },
             {
               "pointer": "/images/112",
-              "mimeType": "image/jpeg",
+              "mimeType": "image/png",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -4243,8 +4243,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4262,6 +4262,17 @@
             },
             {
               "pointer": "/images/117",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/118",
               "mimeType": "image/png",
               "storage": "buffer-view",
               "image": {
@@ -4274,23 +4285,12 @@
               }
             },
             {
-              "pointer": "/images/118",
-              "mimeType": "image/jpeg",
-              "storage": "buffer-view",
-              "image": {
-                "width": 256,
-                "height": 256,
-                "format": "rgb",
-                "bits": 8
-              }
-            },
-            {
               "pointer": "/images/119",
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4300,8 +4300,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4311,8 +4311,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4344,8 +4344,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4374,12 +4374,14 @@
             },
             {
               "pointer": "/images/127",
-              "mimeType": "image/jpeg",
+              "mimeType": "image/png",
               "storage": "buffer-view",
               "image": {
                 "width": 512,
                 "height": 512,
                 "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -4388,8 +4390,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4399,8 +4401,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4454,8 +4456,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4465,8 +4467,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4476,8 +4478,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4487,8 +4489,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4498,8 +4500,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4509,8 +4511,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4542,8 +4544,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4553,22 +4555,20 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
             },
             {
               "pointer": "/images/144",
-              "mimeType": "image/png",
+              "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
-                "primaries": "srgb",
-                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -4654,8 +4654,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4665,20 +4665,22 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
             },
             {
               "pointer": "/images/154",
-              "mimeType": "image/jpeg",
+              "mimeType": "image/png",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -4753,8 +4755,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4764,8 +4766,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4775,8 +4777,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4797,8 +4799,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4929,8 +4931,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4940,22 +4942,20 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 512,
-                "height": 512,
+                "width": 256,
+                "height": 256,
                 "format": "rgb",
                 "bits": 8
               }
             },
             {
               "pointer": "/images/179",
-              "mimeType": "image/png",
+              "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
                 "width": 512,
                 "height": 512,
                 "format": "rgb",
-                "primaries": "srgb",
-                "transfer": "srgb",
                 "bits": 8
               }
             },
@@ -4964,8 +4964,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4975,8 +4975,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -4997,8 +4997,8 @@
               "mimeType": "image/jpeg",
               "storage": "buffer-view",
               "image": {
-                "width": 256,
-                "height": 256,
+                "width": 512,
+                "height": 512,
                 "format": "rgb",
                 "bits": 8
               }
@@ -5131,9 +5131,9 @@
           "hasSkins": false,
           "hasTextures": true,
           "hasDefaultScene": true,
-          "drawCallCount": 69,
-          "totalVertexCount": 181579,
-          "totalTriangleCount": 136665,
+          "drawCallCount": 70,
+          "totalVertexCount": 181603,
+          "totalTriangleCount": 136677,
           "maxUVs": 1,
           "maxInfluences": 0,
           "maxAttributes": 4

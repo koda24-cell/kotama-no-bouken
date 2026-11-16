@@ -1,0 +1,20 @@
+{
+  "method": "conservative triangle AABB against central two-metre route; no game physics changes",
+  "authoringAxes": "Blender X/Y ground, Z up",
+  "routeMin": [
+    -1,
+    -14,
+    0.03
+  ],
+  "routeMax": [
+    1,
+    18,
+    3
+  ],
+  "objectsChecked": 8,
+  "trianglesChecked": 11298,
+  "conflicts": [],
+  "sceneBlendSha256": "879ad2ee873da1a81019c897c36f6df1199a94485e0a9e9f56e834f25863a127",
+  "sceneGlbSha256": "2004c4b72ddcf7dbfee719467eb596a065683b22a25bd4fc44370356ff3a29a3",
+  "passed": true
+}
