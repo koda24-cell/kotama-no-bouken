@@ -21,7 +21,7 @@ SC.render.resolution_percentage=100
 SC.render.image_settings.file_format='PNG'
 SC.render.film_transparent=False
 SC.view_settings.view_transform='AgX'
-SC.view_settings.look='Medium High Contrast'
+SC.view_settings.look='AgX - Medium High Contrast'
 WORLD=bpy.data.worlds.new('neutral-grey-studio')
 SC.world=WORLD;WORLD.use_nodes=True
 WORLD.node_tree.nodes['Background'].inputs['Color'].default_value=(.64,.65,.67,1)
