@@ -2,13 +2,15 @@
 import * as THREE from 'three';
 import { createRuinedCityKit } from './b3-ruined-city-kit.js';
 import { createB3UrbanProps } from './b3-ruined-city-urban-props.js';
-import { createCitySurfaces } from './b3-city-surfaces.js?v=20261110-1';
+import { createCitySurfaces } from './b3-city-surfaces.js?v=20261116-4';
 
 export function createTheme(api) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile } = api;
   const originalFar = g.camera.far;
   const daylightPool = g.pool.slice(g.high ? 4 : 2);
-  const env = { background: 0x9aa9aa, fog: { color: 0x9aa9aa, density: 0.012 },
+  // Overcast: fog equals the sky horizon so distant blocks recede in aerial perspective.
+  const SKY_HAZE = 0x8f9a9b;
+  const env = { background: SKY_HAZE, fog: { color: SKY_HAZE, density: 0.014 },
     hemi: { sky: 0xb4d0ce, ground: 0x28382e, high: 1.05, low: 1.25 } };
   let root, city, urban, finish, skyMesh, materials = [], geometries = [], batches = [], placements = [], stats = {};
   const prototypes = new Map();
@@ -84,7 +86,10 @@ export function createTheme(api) {
     city = createRuinedCityKit(THREE); urban = createB3UrbanProps(THREE);
     finish = createCitySurfaces(THREE, g.high);
     const cube = geo(new THREE.BoxGeometry(1, 1, 1));
-    const { paving, stone, soil, rust: steel, leaf: grass } = finish.palette;
+    const { paving, stone, soil, masonry, rust: steel, leaf: grass } = finish.palette;
+    // One ground sheet under the whole district: wall cells have no paving, so without it the
+    // sky showed through as a white seam below every wall base.
+    add(cube, soil, (a.w - 1) * CELL / 2, -0.2, (a.h - 1) * CELL / 2, a.w * CELL + 6, 0.1, a.h * CELL + 6);
     const tuft = finish.fern;
     const chip = geo(new THREE.IcosahedronGeometry(0.18, 0));
     const water = mat({ color: 0x354f4b, roughness: 0.22, metalness: 0.1 });
@@ -170,8 +175,23 @@ export function createTheme(api) {
         const [dx, dz] = DIR_VEC[d]; if (!wallCell(x + dx, z + dz)) continue;
         const ry = FACE_YAW[d] + Math.PI, ex = px + dx * 2.12, ez = pz + dz * 2.12;
         // Continuous base identifies every solid boundary, including closed shortcuts.
-        add(cube, stone, ex, 0.55, ez, 4.02, 1.1, 0.24, ry);
-        for (const side of [-1, 1]) add(cube, stone, ex + Math.cos(ry) * side * 1.83, 1.4 + r * 0.5, ez - Math.sin(ry) * side * 1.83, 0.32, 1.8 + r * 2, 0.27, ry);
+        // It is sunk below the paving and a protruding plinth course covers the slab edge seam.
+        const ax = Math.cos(ry), az = -Math.sin(ry);
+        add(cube, masonry, ex, 0.42, ez, 4.02, 1.14, 0.26, ry);
+        add(cube, masonry, ex - dx * 0.04, 0.05, ez - dz * 0.04, 4.02, 0.3, 0.32, ry);
+        // Coping stones with chipped / missing pieces; a missing one drops a stone at the foot.
+        for (let s = 0; s < 4; s++) {
+          const k = hash(x * 4 + s, z * 4 + DIR_ORDER.indexOf(d), 230), off = (s - 1.5) * 1.0;
+          if (k < 0.2) { if (!safe) add(chip, stone, ex + ax * off - dx * 0.32, 0.06, ez + az * off - dz * 0.32, 1.2, 0.8, 1.3, k * 30); continue; }
+          const cap = add(cube, masonry, ex + ax * off - dx * 0.01, 1.04 + k * 0.03, ez + az * off - dz * 0.01, 0.94 - (k > 0.85 ? 0.3 : 0), 0.13 + k * 0.05, 0.34, ry);
+          cap.rotation.z = (k - 0.5) * 0.06;
+        }
+        for (const side of [-1, 1]) {
+          const ph = 1.8 + r * 2, py = 1.4 + r * 0.5, cx = ex + ax * side * 1.83, cz = ez + az * side * 1.83;
+          add(cube, masonry, cx, py, cz, 0.32, ph, 0.27, ry);
+          add(cube, masonry, cx - dx * 0.02, py + ph / 2 + 0.06, cz - dz * 0.02, 0.42, 0.13, 0.36, ry);
+          add(cube, masonry, cx - dx * 0.02, 0.32, cz - dz * 0.02, 0.4, 0.5, 0.34, ry);
+        }
         if (r > 0.5) add(cube, steel, ex, 2.6 + r, ez, r > 0.8 ? 4 : 2.5, 0.16, 0.28, ry);
         if (!safe && r < 0.35) {
           const obj = prototype('wallRoots', () => city.vines());
@@ -180,7 +200,7 @@ export function createTheme(api) {
       }
     }
     batchStatic();
-    skyMesh = finish.sky(); root.add(skyMesh);
+    skyMesh = finish.sky(SKY_HAZE, [-35, 65, -25]); root.add(skyMesh);
     const sun = new THREE.DirectionalLight(0xffe3ac, 3.0);
     sun.position.set(a.w * 2 - 35, 65, a.h * 2 - 25);
     sun.target.position.set(a.w * 2, 0, a.h * 2); root.add(sun, sun.target);
