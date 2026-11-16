@@ -1,0 +1,21 @@
+{
+  "name": "sample_slime",
+  "output_dir": "assets/generated/sample_slime",
+  "source": {
+    "type": "primitives",
+    "objects": [
+      { "type": "sphere", "name": "Body", "size": 1.6, "location": [0, 0, 0.55], "scale": [1, 1, 0.7], "color": [0.25, 0.65, 1.0, 1], "roughness": 0.35 },
+      { "type": "sphere", "name": "EyeL", "size": 0.22, "location": [-0.28, -0.62, 0.75], "color": [0.05, 0.05, 0.08, 1] },
+      { "type": "sphere", "name": "EyeR", "size": 0.22, "location": [0.28, -0.62, 0.75], "color": [0.05, 0.05, 0.08, 1] },
+      { "type": "sphere", "name": "Shine", "size": 0.25, "location": [-0.4, -0.45, 1.0], "color": [1, 1, 1, 1], "emission": [1, 1, 1, 1] }
+    ]
+  },
+  "views": [
+    { "name": "front", "yaw": 0, "pitch": 12 },
+    { "name": "left", "yaw": -35, "pitch": 12 }
+  ],
+  "resolution": 512,
+  "pixel_size": 4,
+  "samples": 24,
+  "outline": { "enabled": true, "thickness": 2.0 }
+}
