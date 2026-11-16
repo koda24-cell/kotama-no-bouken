@@ -189,6 +189,7 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
     await Promise.all(Array.from({ length: Math.min(4, queue.length) }, async () => {
       while (next < queue.length) {
         const [file, hash] = queue[next++], { entry, record } = await sharedSource(file, hash);
+        if (disposed) return; // Another worker failed; never retain resources after rollback.
         if (!retained.has(entry)) { entry.refs++; retained.add(entry); }
         records.set(file, record);
       }
@@ -204,6 +205,7 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
       const profile = useProfile ? layout.floorRenderProfiles?.[row.renderProfile] : null;
       if (useProfile) {
         check(profile && profile.sourceAssetId === row.assetId && profile.sourceFile === row.file, 'unknown/mismatched floor profile');
+        check(Array.isArray(row.tile) && row.tile.length === 2 && row.tile.every(Number.isInteger), 'invalid floor tile');
         if (profile.requireExplicitTileWhitelist) check((layout.fullRootsoilTileWhitelist || []).some(t => stable(t) === stable(row.tile)), 'full rootsoil tile is not whitelisted');
         const [x, z] = row.tile || [], letter = before.map[z]?.[x] ?? '#';
         check(letter !== '~' && row.sourceCharUnchanged === letter, 'floor source map/water mismatch');
