@@ -210,3 +210,9 @@
 - 色調補正: `tools/b5-knights/tone_photo.py`。原本写真は保持し、Pillowでグレースケールから冷灰紫色にマッピングした新しいJPEGを生成。派生画像SHA256=`1d6adcab3189cf25afbd402df6a3465c75d5a70d05f2dc32788d68f6f3adbc12`。
 - V13成功run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43891093819、V14成功run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43891804429 。Blender/GLB/3方向PNG/manifest・ハッシュ照合成功。写真は実適用確認済み、ただし**NormalGLは取得のみ・GLB内の正しい法線マップ動作は未検証**。
 - V10〜14で実メッシュの7頭身比率は6.886を確認。数値QAは美術品質・人体解剖学品質を保証しない。**モデルは未承認、ゲーム正式保存・マージ未実施**。
+
+### 一層神域: 目高レビューと針葉coverage mip試験（2026-11-17 JST）
+- 第2改訂の1600×1000/48samples・実景5枚とdelivery gateは完了。個別17GLBは不変、ゲーム未統合/美術承認待ち。[PR #428](https://github.com/koda24-cell/kotama-no-bouken/pull/428)。実3F独立viewerは274床/178壁/129props（杉25）/非歩行土床177を実読込し、9不一致拒否・source pin・上面/変換を確認。
+- 目高1.6mの近景で祠が壁に隠れる問題を発見し、既存崩壊壁2面を低い囲いとしてinstance縦scale0.32で利用。位置/厚み/map/blocked状態を保ち、実画像とwall rayで3近景の見通しを再確認。原本GLBへの形状変更なし。
+- 新規試験: 元のalphaMASK/alphaCutoffを変えず、縮小mipごとのcutout被覆率を元画像へ近づける `preview/f1-foliage-coverage.js`。Three.js標準DataTextureの明示mipを用い、RGBはlinear/premultiplied alphaで縮小、alphaだけcoverage補正する。source画像/GLB不変、独立viewerだけのsampling補助。新外部ツール/有料APIなし、構文確認済み、実GPU upload/ブラウザ比較は進行中で成功扱いにしない。実機FPS・遠景LOD全般の承認ではない。
+- 最新developmentとの比較ではmap等6sourceは同一だが共有rendererの統計/B2 cache更新を確認。全7source一致とは呼ばず、承認後の統合時に完全SHAを `F1_LAYOUT_BASELINE` で指定してsource一致を再検証する。
