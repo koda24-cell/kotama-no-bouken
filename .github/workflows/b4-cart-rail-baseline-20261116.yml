@@ -21,8 +21,9 @@ jobs:
         run: |
           npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
           sudo apt-get update
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
           blender --version
+          blender -b --python-expr 'import numpy; print("NUMPY_OK", numpy.__version__)'
       - name: Export existing untouched V11 geometry
         run: node tools/b4-render/export-batch.mjs
       - name: Blender 3-view baseline renders
@@ -30,6 +31,8 @@ jobs:
           for glb in render-output/b4-cart-after.glb render-output/b4-rails-v11-straight.glb render-output/b4-rails-v11-curved.glb render-output/b4-rails-v11-broken.glb; do
             echo "Rendering $glb"
             blender -b -t 2 --python tools/b4-render/render-batch.py -- "$glb" render-output
+            stem="$(basename "${glb%.glb}")"
+            for view in front side angle; do test -s "render-output/${stem}-${view}.png"; done
           done
       - name: Validate and list outputs
         if: always()
