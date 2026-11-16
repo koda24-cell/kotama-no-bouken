@@ -1,0 +1,39 @@
+name: B5 Ruined Throne V2 Render
+on:
+  push:
+    branches: [feature/gpt-b5-ruined-throne-v2-20261116]
+    paths:
+      - 'tools/b5-throne/**'
+      - '.github/workflows/b5-throne-v2-render.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and export dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender --version
+      - name: Render V2 from V1 preserved source
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-throne/build_v2.py
+      - name: Verify exported files exist
+        run: |
+          set -euo pipefail
+          root=render-output/b5-throne-v2
+          for name in b5-ruined-throne-v2.blend b5-ruined-throne-v2.glb front.png side.png angle.png; do
+            test -s "$root/$name"
+            sha256sum "$root/$name"
+          done
+      - name: Upload V2 candidate only (not approved)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-ruined-throne-v2-unapproved
+          path: render-output/b5-throne-v2/
+          if-no-files-found: warn
+          retention-days: 14
