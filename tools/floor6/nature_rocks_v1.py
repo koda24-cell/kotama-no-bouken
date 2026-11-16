@@ -48,7 +48,7 @@ def textured_material(material, base, seed):
  for y in range(128):
   for x in range(128):
    dx=(height_at((x+1)%128,y)-height_at((x-1)%128,y))*.22
-   dy=(height_at(x,(y+1)%128)-height_at(x,(y-1)%128))*.85
+   dy=(height_at(x,(y+1)%128)-height_at(x,(y-1)%128))*.22
    length=math.sqrt(dx*dx+dy*dy+1)
    normal_pixels.extend([(-dx/length+1)*.5,(-dy/length+1)*.5,(1/length+1)*.5,1])
  normal_image.pixels[:]=normal_pixels
