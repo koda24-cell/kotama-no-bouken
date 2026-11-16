@@ -25,14 +25,14 @@
   "glb": "f2_ice_mizubasho.glb",
   "glb_bytes": 697488,
   "sha256": {
-    "f2_ice_mizubasho.glb": "f56b203a3c7f2bca43dd6671bce08b116c1ca9b7e6279f136329a4e6a15a934c",
-    "f2_ice_mizubasho_cave_front.png": "fd359fedbd47e556ffab715382579237a0fd780860bb109bda90e46274b40142",
-    "f2_ice_mizubasho_cave_side.png": "89f90243ff9108d10910c0d600c86ff932231ac7e92136d87df5d2f31aec0fa7",
-    "f2_ice_mizubasho_cave_angle.png": "002468b6d16d3a5b2eec744537602b40910e97ba67004771468569bf45ae4097",
-    "f2_ice_mizubasho_cave_top.png": "eedb92ba3520099b59a82853621275b5405f39eb37fd762f9626b5b83b7f44be",
-    "f2_ice_mizubasho_cave_close.png": "3f7f6b2c9503ba130bce065bfc3dce3f28967a4d7f300568be62d3a2c796a336",
-    "f2_ice_mizubasho_studio_front.png": "5a2998abae95264ac4606bb12b6e028742cdf72436cfe3e030626ee6c70d97d4",
-    "f2_ice_mizubasho_studio_angle.png": "cd266eac3e8f030211efe2976cfab2892e84578bd14b90004defee1460d5b445"
+    "f2_ice_mizubasho.glb": "bc5ed91a556f0d9374ba384b702428cdc00b0be22401c8dd97ab4741234e490a",
+    "f2_ice_mizubasho_cave_front.png": "dd581962a46c18145a625a11b895f256c3fa01398daab4b574f42a8832b45ccc",
+    "f2_ice_mizubasho_cave_side.png": "96fad53d548b87362dc94dcde32aa4f2e7e3874fab3024e32a0dae2b8d1a6b60",
+    "f2_ice_mizubasho_cave_angle.png": "c9cbefc1f3271d5ed7ec83d5f510c17ea24bf072558b8bd14c9189161cb8904b",
+    "f2_ice_mizubasho_cave_top.png": "fe8b476e8c7524b6fe0908e0ad1d7e39d8921c24d014c1e96d929323d5cad78a",
+    "f2_ice_mizubasho_cave_close.png": "6cabc9e935532285a3cca1c8589b47e4bbed342081188dd55c7ed41ecda81e57",
+    "f2_ice_mizubasho_studio_front.png": "fe99ecdee954fa30b776123be5fc1c6094ab4c7ac8fd97fedc36d2d6436c0947",
+    "f2_ice_mizubasho_studio_angle.png": "4e7389ade70d100d9ce8add7258af147352966505a3964187b3523e43281c035"
   },
   "renders": [
     "f2_ice_mizubasho_cave_front.png",
