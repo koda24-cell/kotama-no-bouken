@@ -1,0 +1,59 @@
+name: B4 V32 Approved Asset Archive
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-v29-material-details-20261116
+    paths:
+      - '.github/workflows/b4-v32-approved-archive.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/gpt-b4-cart-v29-material-details-20261116
+          persist-credentials: true
+      - name: Download verified Blender artifact from exact run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 43893048261 -R "${{ github.repository }}" -n b4-cart-v29-detail-review -D /tmp/b4-v32
+      - name: Verify SHA256 manifest, pack approved V32 GLB and review PNGs
+        run: |
+          python3 - <<'PY'
+          import os,json,hashlib,shutil
+          root='/tmp/b4-v32'
+          manifest=json.load(open(root+'/render-review/manifest.json'))
+          assert manifest['run_id']=='43893048261'
+          assert manifest['source_sha']=='6af57ddb9202eff0f82464de47d4405abeeca6c0'
+          assert manifest['images']['32']>=9
+          bypath={x['path']:x for x in manifest['files']}
+          srcs={
+            'render-output/b4-cart-practical-v32-pbr.glb':'assets/models/floor4/b4-minecart-v32.glb',
+            'render-review/b4-cart-practical-v32-pbr-front.png':'assets/models/floor4/reviews/b4-minecart-v32/front.png',
+            'render-review/b4-cart-practical-v32-pbr-side.png':'assets/models/floor4/reviews/b4-minecart-v32/side.png',
+            'render-review/b4-cart-practical-v32-pbr-angle.png':'assets/models/floor4/reviews/b4-minecart-v32/angle.png',
+            'render-review/b4-cart-practical-v32-pbr-source.blend':'assets/models/floor4/reviews/b4-minecart-v32/source.blend'
+          }
+          for src,dst in srcs.items():
+            p=root+'/'+src
+            assert os.path.isfile(p) and os.path.getsize(p)>0,src
+            assert hashlib.sha256(open(p,'rb').read()).hexdigest()==bypath[src]['sha256'],src
+            os.makedirs(os.path.dirname(dst),exist_ok=True)
+            shutil.copyfile(p,dst)
+          manifest['approval']='APPROVED_BY_USER_2026-11-17'
+          manifest['approved_variant']=32
+          manifest['archived_files']=srcs
+          with open('assets/models/floor4/reviews/b4-minecart-v32/manifest.json','w') as f:json.dump(manifest,f,indent=2)
+          print('V32 verified and archived',len(srcs),'assets')
+          PY
+      - name: Commit approved GLB PNG Blend and manifest to PR branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/models/floor4/b4-minecart-v32.glb assets/models/floor4/reviews/b4-minecart-v32/
+          git commit -m "Archive user-approved B4 minecart V32 GLB and 3-view render evidence"
+          git push origin HEAD:feature/gpt-b4-cart-v29-material-details-20261116
