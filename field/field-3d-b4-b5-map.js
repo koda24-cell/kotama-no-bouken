@@ -16,7 +16,7 @@ export function createTheme(api, area) {
     ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
     : magma
     ? { background: 0x171216, fog: { color: 0x302329, density: 0.022 }, hemi: { sky: 0xb9b7ba, ground: 0x6a4540, high: 2.2, low: 2.6 } }
-    : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
+    : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x9d9bd6, ground: 0x292541, high: 1.75, low: 2.05 } };
   function rockTexture(seed) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
     const ctx = canvas.getContext('2d'); if (!ctx) return null;
