@@ -1,7 +1,7 @@
 name: B5 Throne Bounded Auto QA Loop
 on:
   push:
-    branches: [feature/gpt-b5-ruined-throne-v2-20261116]
+    branches: [feature/gpt-b5-ruined-throne-v2-20261116, feature/gpt-b5-throne-recovery-vision-20261116]
     paths:
       - 'tools/b5-throne/**'
       - '.github/workflows/b5-throne-auto-loop.yml'
@@ -11,6 +11,11 @@ on:
         description: 'Earlier run ID with b5-throne-auto-checkpoint artifact (optional)'
         required: false
         type: string
+      enable_vision:
+        description: 'Use configured external visual AI (may incur provider charges); default OFF'
+        required: false
+        default: false
+        type: boolean
       max_iterations:
         description: 'Maximum total iterations (1-8)'
         required: false
@@ -45,6 +50,10 @@ jobs:
       - name: Run bounded automatic Blender cycles
         env:
           MAX_ITERATIONS: ${{ inputs.max_iterations || '4' }}
+          ENABLE_VISION: ${{ inputs.enable_vision || 'false' }}
+          VISION_API_URL: ${{ secrets.VISION_API_URL }}
+          VISION_API_KEY: ${{ secrets.VISION_API_KEY }}
+          VISION_MODEL: ${{ vars.VISION_MODEL }}
         run: |
           set -euo pipefail
           /usr/bin/python3 tools/b5-throne/auto_loop.py --iterations "$MAX_ITERATIONS" --minutes 35
