@@ -45,7 +45,7 @@ jobs:
           github-token: ${{ github.token }}
       - name: Generate disposable demo scene for default test
         if: ${{ inputs.source_blend == '' }}
-        run: blender -b -t 2 --python tools/blender-qa/make_demo.py
+        run: blender -b -t 2 --python-exit-code 1 --python tools/blender-qa/make_demo.py
       - name: Run bounded QA (preserve files even on quality failure)
         shell: bash
         env:
@@ -57,7 +57,7 @@ jobs:
           if [[ "$SOURCE_BLEND" = /* || "$SOURCE_BLEND" == *".."* || "$SOURCE_BLEND" != *.blend ]]; then
             echo "Unsafe or invalid scene path"; exit 2
           fi
-          blender -b -t 2 --python tools/blender-qa/qa_loop.py -- \
+          blender -b -t 2 --python-exit-code 1 --python tools/blender-qa/qa_loop.py -- \
             --source "$SOURCE_BLEND" --out qa-output \
             --max-iterations "$MAX_ITERATIONS" --max-seconds 2400
       - name: Upload checkpoints, GLB, renders and progress
