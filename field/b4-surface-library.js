@@ -72,21 +72,24 @@ export function createB4SurfaceLibrary({high=true}={}) {
     // World-space branching fissures (independent of texture mip level): thin
     // anti-aliased lines, broken up by a low-frequency mask, hottest near the floor.
     vec3 b4P=vB4World;
-    float b4Warp=sin(b4P.x*0.9+b4P.z*0.7)*2.2+sin((b4P.x-b4P.z)*2.3+b4P.y*1.1)*0.55;
-    float b4L1=abs(sin(b4P.y*1.25+b4Warp));
-    float b4L2=abs(sin((b4P.x+b4P.z)*0.95-b4P.y*0.6+sin(b4P.y*2.1+b4P.x*1.3)*1.4));
-    float b4W1=fwidth(b4L1)*1.2+0.012,b4W2=fwidth(b4L2)*1.2+0.010;
-    float b4Vein=max(1.0-smoothstep(0.0,b4W1,b4L1),0.7*(1.0-smoothstep(0.0,b4W2,b4L2)));
-    float b4Mask=smoothstep(0.15,0.75,sin(b4P.x*0.43+b4P.z*0.61+1.7)*sin(b4P.y*0.7+b4P.x*0.27-b4P.z*0.33)+0.35);
-    float b4Heat=0.3+0.7*exp(-b4H*0.6);
-    totalEmissiveRadiance+=vec3(1.0,0.30,0.05)*b4Vein*b4Mask*b4Heat*b4Fissure;
+    // Jagged warp (several octaves) so fissures zig-zag like cracked rock.
+    float b4Warp=sin(b4P.x*0.9+b4P.z*0.7)*1.6+sin((b4P.x-b4P.z)*2.9+b4P.y*1.7)*0.45
+      +sin((b4P.x+b4P.z)*7.3-b4P.y*5.1)*0.16+sin((b4P.z-b4P.x)*13.1+b4P.y*11.3)*0.06;
+    float b4L1=abs(sin(b4P.y*1.6+b4Warp));
+    float b4W1=fwidth(b4L1)*0.9+0.006;
+    float b4Vein=1.0-smoothstep(0.0,b4W1,b4L1);
+    // Sparse: only short broken runs survive the mask, hottest in the lowest metre.
+    float b4Mask=smoothstep(0.55,0.95,sin(b4P.x*0.51+b4P.z*0.67+1.7)*sin(b4P.y*0.9+b4P.x*0.31-b4P.z*0.41+0.6)+0.45)
+      *smoothstep(0.2,0.6,0.5+0.5*sin((b4P.x+b4P.z)*3.7+b4P.y*2.3));
+    float b4Heat=exp(-b4H*1.15)+0.06;
+    totalEmissiveRadiance+=vec3(1.0,0.26,0.04)*b4Vein*b4Mask*b4Heat*b4Fissure;
   }`);
     };
     m.customProgramCacheKey=()=>'b4-underglow-'+m.name;
   };
-  underglow(basalt,{bounce:.085,fissure:1.1,falloff:1.05});
-  underglow(grotto,{bounce:.07,fissure:.8,falloff:.9});
-  underglow(ceiling,{bounce:.05,fissure:.25,falloff:.35});
+  underglow(basalt,{bounce:.085,fissure:1.4,falloff:1.05});
+  underglow(grotto,{bounce:.07,fissure:.5,falloff:.9});
+  underglow(ceiling,{bounce:.05,fissure:0,falloff:.35});
   const ember=material('ember-seams',{color:0xf49646,emissive:0xff4b09,emissiveIntensity:1.6,roughness:1});
   const timberCanvas=document.createElement('canvas');timberCanvas.width=timberCanvas.height=256;
   const ctx=timberCanvas.getContext('2d'),data=ctx.createImageData(256,256);

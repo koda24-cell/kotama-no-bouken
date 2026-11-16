@@ -90,7 +90,7 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
       put(face,rock,surfaces.basaltPlain,main.position.x,H+.02,.32,.9,.22,.4);
       for(let i=0;i<4;i++)put(face,rock,surfaces.basaltPlain,main.position.x+(i-1.5)*.55,.03,.55+hash(x+i,y,974)*.3,.24+hash(x,y+i,975)*.16,.1,.22,(i-1.5)*.2);
       lavaFalls.push({x,y});
-      lavaLights.push({world:new THREE.Vector3(x*CELL+dx*1.3,1.1,y*CELL+dz*1.3),color:0xff7a2a,intensity:3.6,range:6.5,off:false,fall:true});
+      lavaLights.push({world:new THREE.Vector3(x*CELL+dx*.9,1.6,y*CELL+dz*.9),color:0xff7a2a,intensity:2.6,range:6.5,off:false,fall:true});
       falls++;break;
     }
   }
