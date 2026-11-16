@@ -988,8 +988,8 @@ export async function createTheme(api) {
       const wyOf = (tx, ty) => (ch(tx, ty) === '*' ? -0.08 : 0);
 
       // 規則P1：柱V3は部屋（room/shore/water・template）の「本当の角」だけ。直交する二方が壁で、その間の斜めも壁のマス。通路・道・行き止まりには置かない
-      // 規則P2：1つの部屋に2本（部屋が20マス以上なら4本）まで。同じ部屋は同じ種類の柱でそろえ、4本目以降の1本だけ折れた柱にしてよい
-      // 規則P3：柱どうし・他の大物から2マス以上（チェビシェフ）。物（宝箱・NPC・門など）の8近傍、祭壇の口の隣、固定エリアには置かない。全体で8本まで
+      // 規則P2：1つの部屋に2本まで。20マス以上の部屋は 2×round(マス数/25)本（4〜6本）まで。同じ部屋は同じ種類の柱でそろえ、4本目だけ折れた柱
+      // 規則P3：柱どうし・他の大物から2マス以上（チェビシェフ）。物（宝箱・NPC・門など）の8近傍、祭壇の口の隣、固定エリアには置かない。全体で10本まで
       const pillarStyles = [P.pillarAncient, P.pillarGlaciated, P.pillarRuined];
       const byRegion = new Map();
       for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
@@ -1006,14 +1006,14 @@ export async function createTheme(api) {
         byRegion.get(id).push({ tx, ty, ws, r: H(tx, ty, 520) });
       }
       for (const [id, list] of [...byRegion].sort((p, q) => H(p[0], 3, 523) - H(q[0], 3, 523))) {
-        const size = regions[id].cells.length, cap = size >= 20 ? 4 : 2, style = Math.floor(H(id, 7, 524) * 2);   // 0:古代 1:氷結（そろえる基本の柱）
+        const size = regions[id].cells.length, cap = size >= 20 ? Math.min(6, 2 * Math.max(2, Math.round(size / 25))) : 2, style = Math.floor(H(id, 7, 524) * 2);   // 0:古代 1:氷結（そろえる基本の柱）
         let n = 0;
         list.sort((p, q) => p.r - q.r);
         for (const cn of list) {
-          if (placed.pillars >= 8 || n >= cap) break;
+          if (placed.pillars >= 10 || n >= cap) break;
           if (nearProp(cn.tx, cn.ty, 2)) continue;
           const v0 = vec(cn.ws[0]), v1 = vec(cn.ws[1]), px = X(cn.tx) + (v0[0] + v1[0]) * 1.22, pz = Z(cn.ty) + (v0[1] + v1[1]) * 1.22;
-          const kind = n === 3 ? 2 : style;
+          const kind = n % 4 === 3 ? 2 : style;
           const ry = kind === 2 ? yawAlong(-v1[0], -v1[1]) : kind === 0 ? Math.floor(H(cn.tx, cn.ty, 522) * 4) * Math.PI / 2 : H(cn.tx, cn.ty, 522) * 6.28;
           if (addProp('props_pillars', pillarStyles[kind] || P.pillarAncient, px, wyOf(cn.tx, cn.ty), pz, ry, kind === 1 ? 0.56 : 0.6, cn.tx, cn.ty, 'pillars')) { propCells.add(`${cn.tx},${cn.ty}`); n++; }
         }
