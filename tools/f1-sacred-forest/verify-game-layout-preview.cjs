@@ -70,7 +70,7 @@ async function main(){
  page.on('requestfailed',request=>errors.push('requestfailed: '+request.url()+' '+request.failure()?.errorText));
  const report={scope:'Independent 3F candidate GLTFLoader reviewer; not gameplay, collision, regression or FPS approval',
   engine:'Chromium SwiftShader / Three.js r180 GLTFLoader',candidateSha256:sha(fs.readFileSync(CANDIDATE)),
-  assetHashes,errors,warnings};
+  assetHashes,errors,warnings,reviewerSha256:sha(fs.readFileSync(path.join(ROOT,'preview/f1-game-layout-candidate.html'))),foliageHelperSha256:sha(fs.readFileSync(path.join(ROOT,'preview/f1-foliage-coverage.js')))};
  try{
   console.error('[game-layout] Loading actual 3F floor/wall/prop layout');
   await page.goto(`http://127.0.0.1:${PORT}/preview/f1-game-layout-candidate.html`,{waitUntil:'domcontentloaded',timeout:60000});
@@ -159,6 +159,22 @@ async function main(){
    return result;
   });
   assert.equal(negativeChecks.length,9);assert(negativeChecks.every(c=>c.rejected));
+  const foliageCoverage=await page.evaluate(()=>window.F1GameLayoutReview.foliageCoverageReport());
+  assert(foliageCoverage.length>0,'No cutout foliage sampling was checked');
+  for(const material of foliageCoverage){
+   assert(material.alphaCutoffUnchanged,'Source alpha cutoff must remain unchanged');
+   assert.equal(material.enabled,true);
+   for(const level of material.levels.filter(l=>l.width>=8&&l.height>=8)){
+    const tolerance=1/(level.width*level.height)+.001;
+    assert(Math.abs(level.correctedCoverage-material.sourceCoverage)<=Math.abs(level.rawCoverage-material.sourceCoverage)+tolerance,'Mip coverage must not degrade');
+   }
+  }
+  report.foliageCoverage=foliageCoverage;
+  await page.evaluate(()=>window.F1GameLayoutReview.setFocus('approach'));
+  await page.evaluate(()=>{const input=document.getElementById('foliage-coverage');input.checked=false;input.dispatchEvent(new Event('change'));});
+  await page.screenshot({path:path.join(OUT,'needle-raw.png')});
+  await page.evaluate(()=>{const input=document.getElementById('foliage-coverage');input.checked=true;input.dispatchEvent(new Event('change'));});
+  await page.screenshot({path:path.join(OUT,'needle-coverage.png')});
   const nearViews={};
   for(const kind of ['approach','shrine','water']){
    const result=await page.evaluate(k=>window.F1GameLayoutReview.setFocus(k),kind);
@@ -183,6 +199,8 @@ async function main(){
   errors.push(...await page.evaluate(()=>window.F1GameLayoutReview.errors));
   assert.deepEqual(errors,[],'Browser errors');
   assert.deepEqual(snapshotFiles(manifest),fileBefore,'Assets, source runtime or candidate JSON changed during review');
+  assert.equal(sha(fs.readFileSync(path.join(ROOT,'preview/f1-game-layout-candidate.html'))),report.reviewerSha256);
+  assert.equal(sha(fs.readFileSync(path.join(ROOT,'preview/f1-foliage-coverage.js'))),report.foliageHelperSha256);
   Object.assign(report,{verifiedAt:new Date().toISOString(),initial,withCeilings,final:await page.evaluate(()=>window.F1GameLayoutReview.snapshot()),
    floors,ground,seams,negativeChecks,sources,assembledCost,performanceEstimate:candidate.performanceEstimate,
    authoredForestDensity:candidate.authoredForestDensity,unchangedFiles:fileBefore,
