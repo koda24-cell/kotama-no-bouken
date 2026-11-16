@@ -187,7 +187,7 @@ async function fieldPuzzleOpenCache(o, pz) {
      fieldFloorSummary / fieldStratumSummary / fieldLootList / fieldMaterialSources。未発見は返さない・数えない。
    ============================================================ */
 const FIELD_LOOT_KINDS = new Set(["chest", "cache", "gather"]);
-let fieldLootIndexCache = null;
+let fieldLootIndexCache = null, fieldLootIndexSig = "";
 function fieldGatherKindDef(kind) {
   const defs = typeof FIELD_GATHER_KINDS !== "undefined" ? FIELD_GATHER_KINDS : null;
   return (defs && (defs[kind] || defs.take)) || { label: "採取", pointName: "採取ポイント", verb: "採取した", emptyText: "もう何も採れそうにない。" };
@@ -197,7 +197,7 @@ function fieldGatherKindAt(floorKey, tx, ty) { const p = fieldGatherPointRaw(flo
 function fieldGatherKindOf(a, o) { return o.gatherKind || fieldGatherKindAt(a.key, o.tx, o.ty); }
 // 採集点の定義（種別・テーブル・回数）。data/field-gathering.js に無い点はフロアの gathers を使う「採取」
 function fieldGatherPointDef(a, o) {
-  const p = fieldGatherPointRaw(a.key, o.tx, o.ty) || {};
+  const p = o.gatherDef || fieldGatherPointRaw(a.key, o.tx, o.ty) || {};   // [RANDOM-MAZE] ランダム階は採集点の番号ごとの定義
   const table = Array.isArray(p.table) && p.table.length ? p.table : (Array.isArray(a.floor.gathers) && a.floor.gathers.length ? a.floor.gathers : [["slime_jelly", 1]]);
   const uses = Math.max(1, Math.floor(Number(p.uses) || FIELD_GATHER_USES));
   return { kind: fieldGatherKindOf(a, o), table, uses };
@@ -240,7 +240,9 @@ function fieldGatherPick(table) {
 // 全フロアの宝箱・採集点・扉の奥の宝箱の一覧（キー → { a, o }）。
 // 採集点には種別（gatherKind）と、種別に応じた名前（採取／伐採／採掘ポイント）をここで付ける（fieldArea は変えない）
 function fieldLootIndex() {
-  if (fieldLootIndexCache) return fieldLootIndexCache;
+  const sig = typeof fieldRandomMazeSig === "function" ? fieldRandomMazeSig() : "";   // [RANDOM-MAZE] 探索回数が変わると5F・6Fの宝箱・採集点が変わる
+  if (fieldLootIndexCache && fieldLootIndexSig === sig) return fieldLootIndexCache;
+  fieldLootIndexSig = sig;
   const idx = new Map();
   for (const n of Object.keys(FIELD_AREAS).map(Number)) for (let f = 0; f < fieldFloorCount(n); f++) {
     const a = fieldArea(n, f); if (!a) continue;

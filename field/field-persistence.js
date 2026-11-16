@@ -40,12 +40,15 @@ function fieldDeserialize(d) {
   if (d.flags && typeof d.flags === "object") for (const [k, v] of Object.entries(d.flags)) if (v === true) fieldState.flags[k] = true;
   // 旧版（フロア導入前）のセーブ：最終フロアにいたものとして扱い、そのフロアまで行ける
   if (d.floor === undefined) { for (let n = 1; n <= areaCount; n++) if (n <= (state.maxUnlockedStage || 1)) for (let f = 0; f < fieldFloorCount(n); f++) if (stageCleared[FIELD_AREAS[n].stage]) fieldState.flags[`floor:${n}-${f}`] = true; fieldState.floor = 0; }
+  fieldState.expedition = Math.max(0, Math.floor(Number(d.expedition) || 0));   // [RANDOM-MAZE] 5F・6Fの形は expedition で決まるので、マップより先に読む
   if (d.maps && typeof d.maps === "object") for (const [key, str] of Object.entries(d.maps)) {
     const [n, f] = key.split("-").map(Number); const a = FIELD_AREAS[n] && fieldArea(n, f);
     if (a && typeof str === "string") fieldState.explored[key] = fieldDecodeBits(str, a.w * a.h);
   }
+  if (typeof fieldRandomMazeOnLoad === "function") fieldRandomMazeOnLoad();   // [RANDOM-MAZE] 旧セーブの5F・6Fの踏破マップは捨てる
   const a = fieldArea();
-  if (d.positioned && d.floor !== undefined && Number.isFinite(Number(d.x)) && !fieldBoxBlocked(a, Number(d.x), Number(d.y))) { fieldState.x = Number(d.x); fieldState.y = Number(d.y); fieldState.positioned = true; }
+  const posOk = typeof fieldRandomMazePosOk !== "function" || fieldRandomMazePosOk(a, Number(d.x), Number(d.y));   // [RANDOM-MAZE] 壁の中・門の奥なら開始位置へ
+  if (d.positioned && d.floor !== undefined && Number.isFinite(Number(d.x)) && !fieldBoxBlocked(a, Number(d.x), Number(d.y)) && posOk) { fieldState.x = Number(d.x); fieldState.y = Number(d.y); fieldState.positioned = true; }
   if (d.enemyEncounters && typeof d.enemyEncounters === "object") for (const [name, count] of Object.entries(d.enemyEncounters)) enemyEncounterCounts[name] = Math.max(0, Math.floor(Number(count) || 0));
   fieldLootDeserialize(d);   // [LOOT] フラグ・踏破ビットを読み込んだ後に行う
 }
@@ -69,7 +72,8 @@ function fieldLootSerialize() {
   return { gatherUsed, gatherTimes, discovered, expedition: Math.max(0, Math.floor(Number(fieldState.expedition) || 0)) };
 }
 function fieldLootDeserialize(d) {
-  fieldState.gatherUsed = {}; fieldState.gatherTimes = {}; fieldState.discovered = {}; fieldState.expedition = 0;
+  fieldState.gatherUsed = {}; fieldState.gatherTimes = {}; fieldState.discovered = {};
+  fieldState.expedition = d && typeof d === "object" ? Math.max(0, Math.floor(Number(d.expedition) || 0)) : 0;   // [RANDOM-MAZE] 一覧（5F・6Fのキー）より先に決める
   if (typeof fieldLootIndex !== "function") return;
   const idx = fieldLootIndex();
   if (d && typeof d === "object") {
