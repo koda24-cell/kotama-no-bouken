@@ -1,0 +1,49 @@
+{
+  "asset": "f2_frost_snowdrop",
+  "blender": "4.2.3 LTS",
+  "triangles": 24164,
+  "objects": [
+    "f2_frost_snowdrop"
+  ],
+  "materials": [
+    "snowdrop_frost_crystal",
+    "snowdrop_ice_shard",
+    "snowdrop_inner_tepal",
+    "snowdrop_leaf",
+    "snowdrop_outer_tepal",
+    "snowdrop_ovary",
+    "snowdrop_snow_mound",
+    "snowdrop_spathe",
+    "snowdrop_stem"
+  ],
+  "bbox_m": [
+    0.238,
+    0.1853,
+    0.3347
+  ],
+  "origin": "bottom-center",
+  "glb": "f2_frost_snowdrop.glb",
+  "glb_bytes": 1019352,
+  "sha256": {
+    "f2_frost_snowdrop.glb": "92a64ee1c2d7d5884398aef085a79c9b83973054f6b4ece2e01e710f195d3ab3",
+    "f2_frost_snowdrop_cave_front.png": "88d0812e13f1ae9abbb0c255229016c5fe7c18c98e2c213a82c9a47a5969702f",
+    "f2_frost_snowdrop_cave_side.png": "05954289c1388c4d1855a6a70ff1f18ac06833935afc45fe8e72de237a19f8e6",
+    "f2_frost_snowdrop_cave_angle.png": "a4d7063ccf69df77f2ce34f49a5589fe442d8c39a25eb5309c2d67482c868fc4",
+    "f2_frost_snowdrop_cave_top.png": "9b4b7737a64b70ff549c78e174abcf05644a5d2de199a08c1dc96ff18c2603db",
+    "f2_frost_snowdrop_cave_close.png": "0a7dbbf3dd50fad8c298287972a0a7be96d11446888810e83df809b0c7de8c9b",
+    "f2_frost_snowdrop_studio_front.png": "d3486e6dba2a13c641f8a94d9bf2f50bc20cc1cb92e745b054e6af81dc25304d",
+    "f2_frost_snowdrop_studio_angle.png": "48208bd70b0bf55adb2e4e25d090f1c71e19ed11375304b048564df58e3bafb6"
+  },
+  "renders": [
+    "f2_frost_snowdrop_cave_front.png",
+    "f2_frost_snowdrop_cave_side.png",
+    "f2_frost_snowdrop_cave_angle.png",
+    "f2_frost_snowdrop_cave_top.png",
+    "f2_frost_snowdrop_cave_close.png",
+    "f2_frost_snowdrop_studio_front.png",
+    "f2_frost_snowdrop_studio_angle.png"
+  ],
+  "samples": 64,
+  "notes": "霜鈴草 v1: スノードロップ基準。6花茎（0.22-0.34m）、鉤状花柄・苞・子房、外花被3（椀状・縦筋・先端氷化の頂点色）、内花被3（筒・緑の逆V字の頂点色）、各株2枚の帯状葉（粉白の中央帯）、盛り土φ0.16m、縁に沿った氷晶。画像テクスチャなし",
+  "approval": "NOT_APPROVED"
+}
