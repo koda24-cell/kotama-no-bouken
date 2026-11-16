@@ -57,7 +57,7 @@ def textured_material(material, base, seed):
  normal_image.colorspace_settings.name='Non-Color'
  normal_image.pack()
  normal_tex=nodes.new('ShaderNodeTexImage');normal_tex.image=normal_image
- normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.60
+ normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.28
  material.node_tree.links.new(normal_tex.outputs['Color'],normal_map.inputs['Color'])
  material.node_tree.links.new(normal_map.outputs['Normal'],bsdf.inputs['Normal'])
 for i,m in enumerate(stone): textured_material(m,[(.37,.39,.36),(.36,.38,.36),(.39,.36,.32)][i],110+i)
@@ -90,7 +90,7 @@ def rock_part(name,loc,scale,seed,materials):
   # A directional fracture trench with depth on one face
   trench=math.exp(-((co.x*.8+co.y*.6-.12)**2)/.009) * max(0,1-abs(co.z)*.65)
   macro-=.25*trench
-  micro=(0.050*math.sin(co.x*17+seed)*math.cos(co.y*15-seed)+0.025*math.sin(co.z*27+co.x*9+seed)+0.012*math.sin(co.x*53+seed)*math.cos(co.y*47-co.z*23))
+  micro=(0.050*math.sin(co.x*17+seed)*math.cos(co.y*15-seed)+0.025*math.sin(co.z*27+co.x*9+seed)+0.017*math.sin(co.x*29+seed)*math.cos(co.y*27-co.z*19))
   v.co=(co.x*(macro+micro),co.y*(macro+micro),co.z*(1+micro*0.55))
  obj.scale=scale
  # Use one continuous albedo texture per rock mesh instead of random per-face materials.
@@ -168,7 +168,7 @@ def make_asset(asset,idx):
  bpy.ops.object.select_all(action='DESELECT')
  # camera and lighting only for PNG review
  light_data=bpy.data.lights.new('softbox','AREA');light=bpy.data.objects.new('softbox',light_data);bpy.context.collection.objects.link(light);light.location=(2,-3,5);light_data.energy=480;light_data.size=4
- fill_data=bpy.data.lights.new('soft_fill','AREA');fill=bpy.data.objects.new('soft_fill',fill_data);bpy.context.collection.objects.link(fill);fill.location=(-2,2,3);fill_data.energy=220;fill_data.size=5
+ fill_data=bpy.data.lights.new('soft_fill','AREA');fill=bpy.data.objects.new('soft_fill',fill_data);bpy.context.collection.objects.link(fill);fill.location=(-2,2,3);fill_data.energy=420;fill_data.size=5
  world=bpy.context.scene.world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(0.35,0.39,0.43,1)
  def camera_at(name,position):
   cam_data=bpy.data.cameras.new('review_'+name);cam=bpy.data.objects.new('review_'+name,cam_data);bpy.context.collection.objects.link(cam)
