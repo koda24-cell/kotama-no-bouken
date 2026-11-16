@@ -17,7 +17,7 @@ const cp = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '../..');
 const OUT = path.join(ROOT, 'assets/3d/dungeons/b1_sacred_forest_candidates');
-const DEST = path.join(OUT, 'scene/game-layout-candidate.json');
+const DEST = process.env.F1_LAYOUT_OUTPUT ? path.resolve(ROOT, process.env.F1_LAYOUT_OUTPUT) : path.join(OUT, 'scene/game-layout-candidate.json');
 const BASELINE = process.env.F1_LAYOUT_BASELINE || 'ae7995ae9ab7c36a547c6dbd7a5d601d3fc4bea5';
 if (!/^[0-9a-f]{40}$/i.test(BASELINE)) throw new Error('F1_LAYOUT_BASELINE must name an explicit full commit SHA.');
 const EXISTING = 'assets/3d/dungeons/b1_ancient_forest/';
