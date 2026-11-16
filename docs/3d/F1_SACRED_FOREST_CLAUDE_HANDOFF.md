@@ -75,3 +75,15 @@ FOE・階段・戦闘復帰・セーブ再開・他階層からの帰還を検�
 今回のbaselineゲームテストは部分実行で、全回帰完走を主張していません。
 既存の`b1_ancient_forest/`を上書き・改名・削除しません。
 mainへはユーザーの明示承認なしにマージしません。
+
+## 第2改訂の受け渡し（現行）
+
+改訂PR #428。デモ5視点は1600×1000/48samplesを完了し、各画像のscene blend SHA/source commit/cameraを照合済み。`verification/delivery-summary.json`が現行です。デモ263配置/4,480,724tri/1,012calls、元17GLBと68個別画像は不変です。
+
+実3F候補は274床（石187/soil-only87）、178壁、129props（杉25）、177非歩行支持床。`floorRenderProfiles`とrequiredCapabilities全4件を実装し、SHA/node/materialの不一致や非対応を拒否してください。soilだけを選び祖先変換を保持し、fullGLBへ暗黙fallbackしません。`dressingGroundPlacements`を歩行マスへ変換しません。旧vault ceiling17枚は各行のSHAでpinした既存素材です。
+
+`preview/f1-game-layout-candidate.html`と`docs/reviews/f1-sacred-forest-game-layout/`が独立GLTFLoaderでの実証です。全域3,911,334tri/概算2,092材質drawはコスト資料であり実機FPSではありません。水/固定object7点/FOEは独立ビューで描画していません。地形起伏・遠景の針葉LOD・一部背景の抜けは残るため、美術承認を技術検査の合格から推測しないでください。
+
+### 開発ブランチ更新への対応
+
+2026-11-17にdevelopment `7708b03` と比較し、map・field・移動/FOE・操作・保存・puzzleの6 sourceは一致。共有rendererには描画統計とB2 cache版の変更があるため、7 source全一致とは扱わない。`verification/development-baseline-check.json`を参照。統合時は最新development側の変更を保持し、確認した完全commit SHAを `F1_LAYOUT_BASELINE=<40桁SHA> node tools/f1-sacred-forest/build_game_layout.cjs --require-assets` に指定して再生成・ブラウザ検証する。指定したbaselineと実sourceが違えば生成を拒否する。デフォルトの保存済み候補は元baseline ae7995aのまま。
