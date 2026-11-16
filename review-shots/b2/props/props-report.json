@@ -1,0 +1,670 @@
+{
+  "floors": [
+    {
+      "floor": 1,
+      "centerHits": [],
+      "placedCount": 5,
+      "buildKey": "2-0",
+      "random": false,
+      "layout": {
+        "flowers": 14,
+        "flowerSpots": 68,
+        "flowerClusters": [
+          "3,9:snowdrop:down",
+          "21,2:snowdrop:right",
+          "17,13:snowdrop:up",
+          "13,15:snowdrop:up",
+          "1,16:mizubasho:left",
+          "1,4:snowdrop:right",
+          "15,7:mizubasho:right",
+          "21,13:mizubasho:down",
+          "3,19:snowdrop:right",
+          "13,1:snowdrop:up",
+          "7,4:snowdrop:right",
+          "16,19:snowdrop:up",
+          "25,1:snowdrop:up",
+          "25,12:snowdrop:right"
+        ]
+      },
+      "extras": {
+        "snowdrop": true,
+        "mizubasho": true,
+        "bloom": true
+      },
+      "falls": [
+        {
+          "cell": "5,19",
+          "wall": "left"
+        },
+        {
+          "cell": "21,5",
+          "wall": "right"
+        }
+      ],
+      "monuments": [],
+      "crystalZones": [
+        {
+          "tx": 3,
+          "ty": 3,
+          "pal": "blue",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": -1
+        },
+        {
+          "tx": 5,
+          "ty": 13,
+          "pal": "violet",
+          "deadEnd": false,
+          "bx": 1,
+          "bz": 1
+        },
+        {
+          "tx": 23,
+          "ty": 9,
+          "pal": "white",
+          "deadEnd": false,
+          "bx": 1,
+          "bz": -1
+        }
+      ],
+      "drawGroups": [
+        "b2:open_ceiling_atrium:8",
+        "Water_Ripple_Ring_2:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_1:0",
+        "b2_fish:1",
+        "Water_Ripple_Ring_2:0",
+        "Waterfall_Mist:0",
+        "b2:atrium:5",
+        "b2:floor:18",
+        "b2:ceiling:12",
+        "b2:ice_stalactites:24",
+        "b2:walls:12",
+        "b2:spires:12",
+        "b2:rock_seams:12",
+        "b2:frost_cornices:36",
+        "b2:frost_veins:24",
+        "b2:puddles:24",
+        "b2:v8_stalagmites:12",
+        "b2:v8_erosion:11",
+        "b2:streams:5",
+        "b2:rocks:15",
+        "b2:ceiling_details:11",
+        "b2:water:10",
+        "b2:water_foam:2",
+        "b2:shoreline:5",
+        "b2:frost_ledge:4",
+        "b2:crystal_zone:12",
+        "b2:pillars:13",
+        "b2:flowers:26"
+      ]
+    },
+    {
+      "floor": 2,
+      "centerHits": [],
+      "placedCount": 16,
+      "buildKey": "2-1@e0s6z3iok",
+      "random": true,
+      "layout": {
+        "altar": {
+          "cell": "22,11",
+          "niche": "22,10",
+          "open": "up",
+          "sight": 2
+        },
+        "pillars": 2,
+        "ruins": 5,
+        "ruinClusters": 3,
+        "banks": 0,
+        "cells": {
+          "pillar": [
+            "13,5:up+left",
+            "19,13:down+left"
+          ],
+          "ruin": [
+            "17,10:right",
+            "6,13:down",
+            "2,1:up"
+          ],
+          "bank": []
+        },
+        "flowers": 14,
+        "flowerSpots": 70,
+        "flowerClusters": [
+          "13,9:bloom:right",
+          "23,9:bloom:left",
+          "9,3:snowdrop:up",
+          "9,13:mizubasho:down",
+          "21,13:snowdrop:down",
+          "18,3:snowdrop:up",
+          "10,7:snowdrop:up",
+          "5,10:snowdrop:right",
+          "15,13:snowdrop:left",
+          "24,3:snowdrop:up",
+          "16,19:snowdrop:up",
+          "1,15:snowdrop:up",
+          "5,15:snowdrop:up",
+          "4,19:snowdrop:up"
+        ]
+      },
+      "extras": {
+        "snowdrop": true,
+        "mizubasho": true,
+        "bloom": true,
+        "ruinFallen": true,
+        "ruinSpire": true,
+        "ruinRubble": true,
+        "ruinParapet": true,
+        "bankL": true,
+        "bankR": true,
+        "shrine": true
+      },
+      "falls": [
+        {
+          "cell": "21,15",
+          "wall": "right"
+        },
+        {
+          "cell": "5,5",
+          "wall": "left"
+        },
+        {
+          "cell": "5,17",
+          "wall": "right"
+        },
+        {
+          "cell": "1,1",
+          "wall": "left"
+        }
+      ],
+      "monuments": [
+        {
+          "name": "watergate",
+          "x": 2,
+          "y": 20,
+          "w": 4,
+          "h": 2
+        }
+      ],
+      "crystalZones": [
+        {
+          "tx": 5,
+          "ty": 13,
+          "pal": "violet",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": 1
+        },
+        {
+          "tx": 23,
+          "ty": 9,
+          "pal": "white",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": 1
+        },
+        {
+          "tx": 13,
+          "ty": 9,
+          "pal": "white",
+          "deadEnd": false,
+          "bx": 1,
+          "bz": 1
+        }
+      ],
+      "drawGroups": [
+        "b2:open_ceiling_atrium:8",
+        "Water_Ripple_Ring_3:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_1:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_1:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_2:0",
+        "Waterfall_Mist:0",
+        "b2:atrium:5",
+        "b2:floor:15",
+        "b2:ceiling:12",
+        "b2:walls:12",
+        "b2:extras:11",
+        "b2:pillars:31",
+        "b2:spires:12",
+        "b2:rock_seams:12",
+        "b2:water:11",
+        "b2:water_foam:3",
+        "b2:rocks:14",
+        "b2:puddles:24",
+        "b2:ice_stalactites:24",
+        "b2:v8_stalagmites:12",
+        "b2:frost_cornices:36",
+        "b2:frost_veins:22",
+        "b2:v8_erosion:9",
+        "b2:streams:5",
+        "b2:ceiling_details:12",
+        "b2:shoreline:2",
+        "b2:crystal_zone:12",
+        "b2:monuments:9",
+        "b2:landmarks:3",
+        "b2:flowers:30"
+      ]
+    },
+    {
+      "floor": 3,
+      "centerHits": [],
+      "placedCount": 23,
+      "buildKey": "2-2@e0slaqk9v",
+      "random": true,
+      "layout": {
+        "altar": {
+          "cell": "14,2",
+          "niche": "14,1",
+          "open": "up",
+          "sight": 8
+        },
+        "pillars": 4,
+        "ruins": 7,
+        "ruinClusters": 3,
+        "banks": 4,
+        "cells": {
+          "pillar": [
+            "5,1:up+right",
+            "8,7:right+down",
+            "8,14:right+down",
+            "1,6:down+left"
+          ],
+          "ruin": [
+            "26,8:right",
+            "11,6:down",
+            "2,12:left"
+          ],
+          "bank": [
+            "20,3:up",
+            "26,6:right",
+            "16,10:up",
+            "2,14:left"
+          ]
+        },
+        "flowers": 14,
+        "flowerSpots": 47,
+        "flowerClusters": [
+          "15,9:mizubasho:right",
+          "19,2:bloom:right",
+          "9,6:mizubasho:down",
+          "7,15:snowdrop:down",
+          "24,5:snowdrop:up",
+          "18,13:snowdrop:down",
+          "25,15:bloom:right",
+          "15,15:snowdrop:down",
+          "1,5:snowdrop:up",
+          "2,15:mizubasho:down",
+          "10,2:mizubasho:up",
+          "1,1:bloom:left",
+          "25,10:snowdrop:right",
+          "21,14:snowdrop:down"
+        ]
+      },
+      "extras": {
+        "snowdrop": true,
+        "mizubasho": true,
+        "bloom": true,
+        "ruinFallen": true,
+        "ruinSpire": true,
+        "ruinRubble": true,
+        "ruinParapet": true,
+        "bankL": true,
+        "bankR": true,
+        "shrine": true
+      },
+      "falls": [
+        {
+          "cell": "17,15",
+          "wall": "down"
+        },
+        {
+          "cell": "25,12",
+          "wall": "right"
+        },
+        {
+          "cell": "23,4",
+          "wall": "up"
+        }
+      ],
+      "monuments": [
+        {
+          "name": "watergate",
+          "x": 19,
+          "y": 15,
+          "w": 4,
+          "h": 2
+        }
+      ],
+      "crystalZones": [
+        {
+          "tx": 19,
+          "ty": 2,
+          "pal": "blue",
+          "deadEnd": false,
+          "bx": 1,
+          "bz": -1
+        },
+        {
+          "tx": 1,
+          "ty": 1,
+          "pal": "blue",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": -1
+        },
+        {
+          "tx": 25,
+          "ty": 14,
+          "pal": "blue",
+          "deadEnd": false,
+          "bx": 1,
+          "bz": -1
+        }
+      ],
+      "drawGroups": [
+        "b2:open_ceiling_atrium:8",
+        "Water_Ripple_Ring_2:0",
+        "b2_fish:1",
+        "b2_fish:1",
+        "Water_Ripple_Ring_2:0",
+        "Waterfall_Mist:0",
+        "b2_fish:1",
+        "b2_fish:1",
+        "b2_fish:1",
+        "Water_Ripple_Ring_2:0",
+        "b2_fish:1",
+        "b2_fish:1",
+        "b2_fish:1",
+        "Water_Ripple_Ring_1:0",
+        "b2_fish:1",
+        "b2_fish:1",
+        "b2_fish:1",
+        "b2_fish:1",
+        "b2_fish:1",
+        "b2_fish:1",
+        "Water_Ripple_Ring_3:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_1:0",
+        "Water_Ripple_Ring_1:0",
+        "Water_Ripple_Ring_1:0",
+        "Waterfall_Mist:0",
+        "b2:atrium:5",
+        "b2:floor:18",
+        "b2:ceiling:10",
+        "b2:walls:10",
+        "b2:extras:22",
+        "b2:pillars:27",
+        "b2:ice_stalactites:16",
+        "b2:rock_seams:8",
+        "b2:frost_cornices:27",
+        "b2:frost_veins:16",
+        "b2:puddles:16",
+        "b2:v8_stalagmites:6",
+        "b2:spires:9",
+        "b2:v8_erosion:5",
+        "b2:streams:3",
+        "b2:rocks:17",
+        "b2:ceiling_details:8",
+        "b2:shoreline:8",
+        "b2:water:14",
+        "b2:frost_ledge:6",
+        "b2:water_foam:3",
+        "b2:crystal_zone:12",
+        "b2:monuments:9",
+        "b2:landmarks:3",
+        "b2:flowers:31"
+      ]
+    }
+  ],
+  "rebuild": {
+    "sameKeySameLayout": true,
+    "memory": [
+      {
+        "geometries": 395,
+        "textures": 144
+      },
+      {
+        "geometries": 107,
+        "textures": 143,
+        "buildKey": "2-2@e1sfnnh90",
+        "ownedDisposed": 2159
+      },
+      {
+        "geometries": 109,
+        "textures": 143,
+        "buildKey": "2-2@e2s1pkc03u",
+        "ownedDisposed": 2590
+      },
+      {
+        "geometries": 107,
+        "textures": 143,
+        "buildKey": "2-2@e3s16f8qg",
+        "ownedDisposed": 2994
+      },
+      {
+        "geometries": 110,
+        "textures": 143,
+        "buildKey": "2-2@e4sfm2j3p",
+        "ownedDisposed": 3413
+      }
+    ]
+  },
+  "stats": {
+    "b2f1_props_flower_1_snowdrop": {
+      "calls": 197,
+      "triangles": 601877,
+      "geometries": 230,
+      "textures": 51,
+      "lights": 32
+    },
+    "b2f1_props_flower_2_snowdrop": {
+      "calls": 71,
+      "triangles": 196283,
+      "geometries": 263,
+      "textures": 51,
+      "lights": 32
+    },
+    "b2f1_props_flower_3_snowdrop": {
+      "calls": 197,
+      "triangles": 706629,
+      "geometries": 319,
+      "textures": 64,
+      "lights": 32
+    },
+    "b2f2_props_flower_1_bloom": {
+      "calls": 223,
+      "triangles": 674249,
+      "geometries": 343,
+      "textures": 110,
+      "lights": 49
+    },
+    "b2f2_props_flower_2_bloom": {
+      "calls": 210,
+      "triangles": 746176,
+      "geometries": 370,
+      "textures": 110,
+      "lights": 49
+    },
+    "b2f2_props_flower_3_snowdrop": {
+      "calls": 56,
+      "triangles": 210944,
+      "geometries": 376,
+      "textures": 110,
+      "lights": 49
+    },
+    "b2f2_props_flower_4_mizubasho": {
+      "calls": 148,
+      "triangles": 546956,
+      "geometries": 393,
+      "textures": 110,
+      "lights": 49
+    },
+    "b2f2_props_crystals_1_violet": {
+      "calls": 95,
+      "triangles": 394137,
+      "geometries": 394,
+      "textures": 110,
+      "lights": 49
+    },
+    "b2f2_props_crystals_2_white": {
+      "calls": 210,
+      "triangles": 746176,
+      "geometries": 394,
+      "textures": 110,
+      "lights": 49
+    },
+    "b2f2_props_waterfall_1": {
+      "calls": 140,
+      "triangles": 265886,
+      "geometries": 408,
+      "textures": 129,
+      "lights": 49
+    },
+    "b2f2_props_altar": {
+      "calls": 139,
+      "triangles": 434977,
+      "geometries": 412,
+      "textures": 129,
+      "lights": 49
+    },
+    "b2f2_props_pillar_1": {
+      "calls": 86,
+      "triangles": 409795,
+      "geometries": 412,
+      "textures": 129,
+      "lights": 49
+    },
+    "b2f2_props_pillar_2": {
+      "calls": 161,
+      "triangles": 451126,
+      "geometries": 412,
+      "textures": 129,
+      "lights": 49
+    },
+    "b2f2_props_ruin_1": {
+      "calls": 184,
+      "triangles": 497034,
+      "geometries": 412,
+      "textures": 129,
+      "lights": 49
+    },
+    "b2f2_props_ruin_2": {
+      "calls": 141,
+      "triangles": 509667,
+      "geometries": 412,
+      "textures": 129,
+      "lights": 49
+    },
+    "b2f3_props_flower_1_mizubasho": {
+      "calls": 228,
+      "triangles": 475313,
+      "geometries": 272,
+      "textures": 129,
+      "lights": 46
+    },
+    "b2f3_props_flower_2_bloom": {
+      "calls": 141,
+      "triangles": 246342,
+      "geometries": 283,
+      "textures": 129,
+      "lights": 46
+    },
+    "b2f3_props_flower_3_mizubasho": {
+      "calls": 224,
+      "triangles": 511571,
+      "geometries": 374,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_flower_4_snowdrop": {
+      "calls": 54,
+      "triangles": 122187,
+      "geometries": 374,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_crystals_1_blue": {
+      "calls": 141,
+      "triangles": 246342,
+      "geometries": 374,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_crystals_2_blue": {
+      "calls": 45,
+      "triangles": 92244,
+      "geometries": 381,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_waterfall_1": {
+      "calls": 70,
+      "triangles": 175684,
+      "geometries": 382,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_altar": {
+      "calls": 37,
+      "triangles": 58435,
+      "geometries": 385,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_pillar_1": {
+      "calls": 41,
+      "triangles": 74390,
+      "geometries": 390,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_pillar_2": {
+      "calls": 209,
+      "triangles": 484367,
+      "geometries": 392,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_ruin_1": {
+      "calls": 59,
+      "triangles": 42669,
+      "geometries": 395,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_ruin_2": {
+      "calls": 232,
+      "triangles": 543862,
+      "geometries": 395,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_bank_1": {
+      "calls": 57,
+      "triangles": 106187,
+      "geometries": 395,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_bank_2": {
+      "calls": 56,
+      "triangles": 39154,
+      "geometries": 395,
+      "textures": 144,
+      "lights": 46
+    },
+    "b2f3_props_monument_watergate_n": {
+      "calls": 100,
+      "triangles": 189005,
+      "geometries": 395,
+      "textures": 144,
+      "lights": 46
+    }
+  },
+  "errors": [],
+  "missing": []
+}
