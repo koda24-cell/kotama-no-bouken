@@ -567,7 +567,8 @@ function makeProcedural() {
 class Batcher {
   constructor() { this.b = new Map(); }
   add(cat, piece, matrix, tx, ty) {
-    const ck = `${Math.floor(tx / CHUNK)},${Math.floor(ty / CHUNK)}`;
+    const cs = cat === 'flowers' ? 4 : CHUNK;   // 花は重い（1株約2万三角形）ので小さな区画でまとめ、画面外の株を描かない
+    const ck = `${Math.floor(tx / cs)},${Math.floor(ty / cs)}`;
     for (const p of piece.parts) {
       const k = `${cat}|${p.mat}|${ck}`; let e = this.b.get(k); if (!e) { e = { cat, mat: p.mat, geos: [] }; this.b.set(k, e); }
       const gm = p.geo.clone().applyMatrix4(matrix);
@@ -712,9 +713,15 @@ export async function createTheme(api) {
     }
     return mm;
   }
+  // 同じ GLB を2つの用途（6Fのモニュメントの祭壇と、5F・6Fの行き止まりの祭壇など）で使うときも、ファイルは1回だけ読む
+  const gltfCache = new Map();
+  function loadGltf(url) {
+    if (!gltfCache.has(url)) gltfCache.set(url, new GLTFLoader().loadAsync(url).catch((e) => { gltfCache.delete(url); throw e; }));
+    return gltfCache.get(url);
+  }
   async function loadAsset(name) {
     if (assetCache.has(name)) return assetCache.get(name);
-    const job = new GLTFLoader().loadAsync(ASSET_FILES[name]).then((gltf) => {
+    const job = loadGltf(ASSET_FILES[name]).then((gltf) => {
       gltf.scene.updateMatrixWorld(true);
       const byMat = new Map(), glow = [];
       gltf.scene.traverse((o) => {
@@ -758,9 +765,96 @@ export async function createTheme(api) {
       light(x + cs * lx + sn * lz, y + L.p.y * k[1], z - sn * lx + cs * lz, L.c.getHex() || 0x8fe0ff, 1.1, 5);
     }
   }
+  // ---- 追加の素材（#203 で未使用だった GPT の第2階層素材と、Claude の花）----
+  // 石造遺跡V4・氷岸V11・凍った祭壇（行き止まり用）・花3種。#203 の空気（明るいシアンの霧・鮮やかな青い岩・霜の白・控えめな発光）に
+  // 合わせ、GLB の素材をそのまま使わずに「洞窟の素材の仲間」へ振り分ける（形は変えない）。
+  //  ・茶色／灰色の石 → 青い岩（洞窟の岩のテクスチャ・法線）／霜色の淡い石
+  //  ・透過（transmission）の氷 → #203 の結晶の氷（crystalIce・crystalDeep。透過の重い描画を使わない）
+  //  ・花 → 頂点色に元の素材の色を焼き込み、緑を霜の青緑へ寄せ、ほのかに発光させる（3種で素材3つにまとめ、描画回数を抑える）
+  // 読めない素材は置かないだけ（try/catch）。読み込みは1回、作り直しでは複製してまとめるだけ。
+  const B2_RUINS = './assets/3d/dungeons/b2_water_source/models/stone_ruins_v4/';
+  const B2_BANKS = './assets/models/floor2/ice-bridge-banks/v11/';
+  const B2_FLOWERS = './assets/models/floor2/claude-flowers-candidates/';
+  const EXTRA_FILES = {
+    ruinFallen: B2_RUINS + 'fallen_pillar.glb', ruinSpire: B2_RUINS + 'embedded_spire.glb', ruinRubble: B2_RUINS + 'rubble_ice_scatter.glb', ruinParapet: B2_RUINS + 'broken_parapet.glb',
+    bankL: B2_BANKS + 'ice_bridge_left_v11_smooth_depth.glb', bankR: B2_BANKS + 'ice_bridge_right_v11_smooth_depth.glb',
+    shrine: ASSET_FILES.altar,
+    snowdrop: B2_FLOWERS + 'f2_frost_snowdrop.glb', mizubasho: B2_FLOWERS + 'f2_ice_mizubasho.glb', bloom: B2_FLOWERS + 'f2_ice_crystal_bloom.glb',
+  };
+  const FLOWER = new Set(['snowdrop', 'mizubasho', 'bloom']);
+  function extraMat(key) {
+    if (mats[key]) return key;
+    const std = (o) => new THREE.MeshStandardMaterial(o), rockM = mats['Deep cavern rock'], paleM = mats['Pale mineral stone'];
+    const make = {
+      'x:stoneDark': () => std({ color: 0x4f86b8, map: rockM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(1.2, 1.2), roughness: 0.78, emissive: 0x041a2e, emissiveIntensity: 1.0, envMapIntensity: 0.6, vertexColors: true }),
+      'x:stoneMid': () => std({ color: 0x74a8d4, map: paleM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 0.62, emissive: 0x062a44, emissiveIntensity: 1.0, envMapIntensity: 0.55, vertexColors: true }),
+      'x:snow': () => std({ color: 0xd6f4ff, roughness: 0.85, emissive: 0x1a5a7a, emissiveIntensity: 0.45, envMapIntensity: 0.5, vertexColors: true }),
+      'x:flower': () => std({ color: 0xffffff, vertexColors: true, roughness: 0.48, metalness: 0.0, emissive: 0x0e4c6a, emissiveIntensity: 0.55, envMapIntensity: 1.0, side: THREE.DoubleSide }),
+      'x:flowerIce': () => std({ color: 0xffffff, vertexColors: true, roughness: 0.08, metalness: 0.0, emissive: 0x1898d0, emissiveIntensity: 0.6, envMapIntensity: 1.7, side: THREE.DoubleSide }),
+      'x:flowerGlow': () => std({ color: 0xffffff, vertexColors: true, roughness: 0.3, emissive: 0x3cc4ff, emissiveIntensity: 1.1, envMapIntensity: 1.0 }),
+    };
+    mats[key] = make[key]();
+    return key;
+  }
+  // GLB の素材名から、#203 の素材の仲間を選ぶ
+  function extraClass(name, m) {
+    const nm = (m.name || '').toLowerCase(), trans = (m.transmission || 0) > 0 || m.transparent;
+    if (FLOWER.has(name)) return /core_glow/.test(nm) ? 'x:flowerGlow' : (trans || /ice|frost/.test(nm)) && !/mud|crack|grass/.test(nm) ? 'x:flowerIce' : 'x:flower';
+    if (/snow/.test(nm)) return 'x:snow';
+    if (/cobalt|compressed/.test(nm)) return 'crystalDeep';
+    if (trans || /ice|glacier/.test(nm)) return 'crystalIce';
+    if (/dust|chipped/.test(nm)) return 'Pale mineral stone';
+    if (/dark|fissure|groove|eroded|slate|weathering/.test(nm)) return 'x:stoneDark';
+    return 'x:stoneMid';
+  }
+  const extraCache = new Map();
+  function loadExtra(name) {
+    if (extraCache.has(name)) return extraCache.get(name);
+    const job = loadGltf(EXTRA_FILES[name]).then((gltf) => {
+      gltf.scene.updateMatrixWorld(true);
+      const flower = FLOWER.has(name), byKey = new Map(), _c = new THREE.Color();
+      gltf.scene.traverse((o) => {
+        if (!o.isMesh || !o.geometry?.attributes?.position) return;
+        const m = Array.isArray(o.material) ? o.material[0] : o.material, key = extraMat(extraClass(name, m));
+        let geo = o.geometry.clone().applyMatrix4(o.matrixWorld);
+        if (geo.index) { const ni = geo.toNonIndexed(); geo.dispose(); geo = ni; }
+        const src = geo.attributes.color, n = geo.attributes.position.count;
+        for (const k of Object.keys(geo.attributes)) if (k !== 'position' && k !== 'normal') geo.deleteAttribute(k);
+        if (!geo.attributes.normal) geo.computeVertexNormals();
+        if (flower) {   // 頂点色 × 素材の色。緑（葉・茎）は霜の青緑へ寄せる
+          const col = new Float32Array(n * 3), base = m.color || new THREE.Color(1, 1, 1);
+          for (let i = 0; i < n; i++) {
+            _c.setRGB(src ? src.getX(i) : 1, src ? src.getY(i) : 1, src ? src.getZ(i) : 1).multiply(base);
+            const lum = _c.r * 0.299 + _c.g * 0.587 + _c.b * 0.114, green = Math.max(0, Math.min(1, (_c.g - Math.max(_c.r, _c.b)) * 6));
+            const k = 0.25 + 0.45 * green;
+            col[i * 3] = _c.r * (1 - k) + lum * 0.78 * k; col[i * 3 + 1] = _c.g * (1 - k) + lum * 1.0 * k; col[i * 3 + 2] = _c.b * (1 - k) + lum * 1.18 * k;
+          }
+          geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+        }
+        if (!byKey.has(key)) byKey.set(key, []);
+        byKey.get(key).push(geo);
+      });
+      const parts = [], box = new THREE.Box3();
+      for (const [key, geos] of byKey) {
+        const merged = geos.length > 1 ? mergeGeometries(geos, false) : geos[0];
+        if (geos.length > 1) geos.forEach((g2) => g2.dispose());
+        if (!merged) continue;
+        merged.computeBoundingBox(); box.union(merged.boundingBox);
+        parts.push({ geo: merged, mat: key });
+      }
+      if (!parts.length) throw new Error('empty GLB ' + name);
+      const c = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
+      const off = new THREE.Matrix4().makeTranslation(-c.x, -box.min.y, -c.z);
+      for (const pt of parts) pt.geo.applyMatrix4(off);
+      return { name, parts, size, lights: [] };
+    });
+    extraCache.set(name, job);
+    return job;
+  }
   const { CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g } = api;
   let made = [], anim = { ripples: [], mists: [], fishes: [], caustics: [] }, root = null, last = { falls: [], bridge: null };
   let extraGeos = [], extraMats = [];   // 組み立てごとに作る物（作り直すときに破棄する）
+  let ownedDisposed = 0;                // 診断用：作り直しで破棄した形・素材の累計（themeInfo().ownedDisposed）
 
   // 映り込み用の環境マップ（濡れた石・水面・結晶のつや）。小さなグラデーション画像から作るので軽い
   let envTex = null, lantern = null, motes = null, prevExposure = null;
@@ -836,6 +930,7 @@ export async function createTheme(api) {
   tpl.gateNormal = tpl.gate(false); tpl.gateBoss = tpl.gate(true);
 
   function dispose(opts) {
+    ownedDisposed += made.length + extraGeos.length + extraMats.length;
     for (const geo of made) geo.dispose(); made = [];
     for (const r of anim.ripples) r.mesh.material.dispose();
     for (const m of anim.mists) { m.points.geometry.dispose(); }
@@ -860,6 +955,8 @@ export async function createTheme(api) {
       if (aqTrim) { aqTrim.parts.forEach((pt) => pt.geo.dispose()); aqTrim = null; }
       for (const job of assetCache.values()) job.then((pc) => pc.parts.forEach((pt) => pt.geo.dispose())).catch(() => {});
       assetCache.clear();
+      for (const job of extraCache.values()) job.then((pc) => pc.parts.forEach((pt) => pt.geo.dispose())).catch(() => {});
+      extraCache.clear(); gltfCache.clear();
       for (const geo of geos) if (geo && geo.dispose) geo.dispose();
     }
   }
@@ -878,6 +975,15 @@ export async function createTheme(api) {
     lantern = new THREE.PointLight(LANTERN.color, g.high ? LANTERN.high : LANTERN.low, LANTERN.range, 2); lantern.name = 'b2_lantern'; g.scene.add(lantern);
     wallCellAt = wallCell; objAtB = (tx, ty) => objAt.has(`${tx},${ty}`);
     const isWet = (tx, ty) => !wallCell(tx, ty) && ch(tx, ty) === '*' && !objAt.has(`${tx},${ty}`);
+    // [RANDOM-MAZE] ランダム階（5F・6F）は生成器の役割 a.tileRoles を使って見せ場の素材を足す。4F（固定）は roles=null で #203 のまま
+    const roles = a.tileRoles && a.random ? a.tileRoles : null;
+    const role = (tx, ty) => (roles && roles[ty] && roles[ty][tx]) || 'wall';
+    const salt = roles ? ((a.random.seed >>> 0) % 100003) + 1 : 0;
+    const H = (x, y, s) => hash(x, y, s + salt);   // 足した素材の乱数（同じ迷宮＝同じ seed なら同じ見た目）
+    const propCells = new Set();                   // 足した大物（祭壇・遺跡・柱・氷岸）のマス。#203 の壁ぎわの石筍・根元の岩はここでは出さない（重なり防止）
+    const extrasJob = Promise.all([...FLOWER, ...(roles ? ['ruinFallen', 'ruinSpire', 'ruinRubble', 'ruinParapet', 'bankL', 'bankR', 'shrine'] : [])]
+      .map((nm) => loadExtra(nm).then((pc) => [nm, pc]).catch((e) => { console.warn('[field-3d] 第2階層の追加素材を読めなかったため置きません:', nm, e); return [nm, null]; })))
+      .then((l) => Object.fromEntries(l));
 
     // 壊れた橋：浅瀬（*）が横か縦に3マス以上続く最初の場所に1つだけ（足場の見た目。通行は変えない）
     let bridge = null;
@@ -955,7 +1061,7 @@ export async function createTheme(api) {
     // 通れない場所に置くので、見た目と通行判定は食い違わない。塊は地図から探す（地図が変わって合う塊が無ければ置かない）
     const monuments = [], monumentCells = new Set();
     const floorNo = (() => { try { return Number(fieldState.floor); } catch (_) { return -1; } })();
-    const allWall = (x0, y0, w, h) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (!wallCell(x0 + i, y0 + j) || x0 + i <= 0 || y0 + j <= 0 || x0 + i >= a.w - 1 || y0 + j >= a.h - 1 || monumentCells.has(`${x0 + i},${y0 + j}`)) return false; return true; };
+    const allWall = (x0, y0, w, h) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (!wallCell(x0 + i, y0 + j) || x0 + i <= 0 || y0 + j <= 0 || x0 + i >= a.w - 1 || y0 + j >= a.h - 1 || monumentCells.has(`${x0 + i},${y0 + j}`) || (roles && objAt.has(`${x0 + i},${y0 + j}`))) return false; return true; };   // [RANDOM-MAZE] 合図石・立て札の付いた壁は塊にしない
     const openRatio = (x0, y0, w, h) => { let o = 0, n = 0; for (let i = -1; i <= w; i++) for (const j of [-1, h]) { n++; if (!wallCell(x0 + i, y0 + j)) o++; } for (let j = 0; j < h; j++) for (const i of [-1, w]) { n++; if (!wallCell(x0 + i, y0 + j)) o++; } return o / n; };
     const findBlock = (sizes, minOpen) => {
       let best = null;
@@ -967,7 +1073,8 @@ export async function createTheme(api) {
       }
       return best;
     };
-    if (floorNo === 2) {
+    const monumentFloor = floorNo === 2 || (roles && floorNo === 1);   // [RANDOM-MAZE] 5F（ランダム）も、合う壁の塊があれば置く
+    if (monumentFloor) {
       for (const [name, sizes, minOpen] of [['bridge', [[5, 2], [2, 5]], 0.95], ['waterwheel', [[4, 3], [3, 4]], 0.55], ['altar', [[3, 2], [2, 3]], 0.8]]) {   // bridge の塊は水路橋の中央になる
         const bl = findBlock(sizes, minOpen); if (!bl) continue;
         monuments.push({ name, ...bl });
@@ -975,11 +1082,11 @@ export async function createTheme(api) {
       }
     }
     // 氷結した古代水門：大広間の外壁に埋め込む（正面の1辺だけが通路に面した、奥行き2マスの壁の並び）。3Fだけ・1回
-    if (floorNo === 2) {
+    if (monumentFloor) {
       let best = null;
       for (let y = 1; y < a.h; y++) for (let x = 1; x + 4 <= a.w - 1; x++) {
         // 正面が北（y-1 の行が4マスとも通路）、奥行き2マス（y, y+1）が壁。モニュメントのマスとは重ねない
-        let ok = true; for (let j = 0; j < 2 && ok; j++) for (let i = 0; i < 4; i++) { const cx = x + i, cy = y + j; if (!wallCell(cx, cy) || monumentCells.has(`${cx},${cy}`) || cx <= 0 || cx >= a.w - 1) { ok = false; break; } }
+        let ok = true; for (let j = 0; j < 2 && ok; j++) for (let i = 0; i < 4; i++) { const cx = x + i, cy = y + j; if (!wallCell(cx, cy) || monumentCells.has(`${cx},${cy}`) || cx <= 0 || cx >= a.w - 1 || (roles && objAt.has(`${cx},${cy}`))) { ok = false; break; } }
         if (!ok) continue;
         let front = 0; for (let i = 0; i < 4; i++) if (!wallCell(x + i, y - 1) && !objAt.has(`${x + i},${y - 1}`)) front++;
         if (front < 4) continue;
@@ -997,6 +1104,237 @@ export async function createTheme(api) {
     }));
     monumentCellsRef = monumentCells;
     for (let k = monuments.length - 1; k >= 0; k--) if (!assets[monuments[k].name]) { const m = monuments[k]; for (let j = 0; j < m.h; j++) for (let i = 0; i < m.w; i++) monumentCells.delete(`${m.x + i},${m.y + j}`); monuments.splice(k, 1); }
+    const EX = await extrasJob;
+    const layout = roles ? planRandomExtras() : null;
+    const flowerSpots = [];   // 花の候補（#203 の光るキノコ・荊の位置と、ランダム階の水辺・部屋の隅・結晶の脇）。最後に数を絞って置く
+    const flowerLog = [];
+
+    // 花：Claude の花（霜鈴草・氷水芭蕉・氷晶花。1株 1.7〜2.4万三角形）を、#203 の光るキノコ・荊の位置に置き換える（4F〜6F）。
+    // 4F は候補の位置・向きを変えず、物だけ差し替える（数は下の上限で絞る）。
+    // ランダム階（5F・6F）は候補を足す：水辺（shore の壁ぎわ）＝氷水芭蕉、部屋の隅＝霜鈴草、結晶の溜まり場の脇＝氷晶花。
+    // 重いので 1階14株まで・株どうし3マス以上（チェビシェフ）離す。区画ごとに素材3つ（花・花の氷・光る芯）へまとめて描画回数を抑える
+    function placeFlowers() {
+      const vec = (d) => DIR_VEC[d];
+      if (roles) {
+        const wallsOf = (tx, ty) => DIR_ORDER.filter((d) => wallCell(tx + vec(d)[0], ty + vec(d)[1]));
+        const free = (tx, ty) => { const k = `${tx},${ty}`, c = ch(tx, ty); return !wallCell(tx, ty) && !objAt.has(k) && c !== '<' && c !== '>' && c !== '*' && !falls.has(k) && !openCells.has(k) && !propCells.has(k) && role(tx, ty) !== 'fixed'; };
+        // 結晶の溜まり場の脇：溜まり場のマスの、奥の壁に沿った左右の床際（中央から1.55m）
+        for (const zq of zones) {
+          const len = Math.hypot(zq.bx, zq.bz), bx = zq.bx / len, bz = zq.bz / len;
+          for (const side of [-1, 1]) {
+            const px = X(zq.tx) - bz * side * 1.6 - bx * 0.9, pz = Z(zq.ty) + bx * side * 1.6 - bz * 0.9;
+            flowerSpots.push({ kind: 'bloom', x: px, y: groundY(px, pz), z: pz, ry: H(zq.tx, zq.ty, 610 + side) * 6.28, r: H(zq.tx, zq.ty, 612 + side), tx: zq.tx, ty: zq.ty, d: zq.deadEnd ? DIR_ORDER[(DIR_ORDER.indexOf(zq.openD) + 2) % 4] : DIR_ORDER.find((d) => vec(d)[0] === Math.sign(zq.bx) && vec(d)[1] === 0) || DIR_ORDER.find((d) => vec(d)[1] === Math.sign(zq.bz)), pri: -0.3 });
+          }
+        }
+        for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
+          if (!free(tx, ty)) continue;
+          const r0 = role(tx, ty), ws = wallsOf(tx, ty); if (!ws.length) continue;
+          const isCorner = ws.length === 2 && (DIR_ORDER.indexOf(ws[1]) - DIR_ORDER.indexOf(ws[0])) % 2 !== 0;
+          let kind = null;
+          if (r0 === 'shore') kind = 'mizubasho';
+          else if ((r0 === 'room' || r0 === 'template') && isCorner) kind = 'snowdrop';
+          if (!kind || H(tx, ty, 620) > 0.5) continue;
+          const d = ws[Math.floor(H(tx, ty, 621) * ws.length)], [dx, dz] = vec(d), al = (H(tx, ty, 622) - 0.5) * 1.6;
+          const px = X(tx) + dx * 1.5 + (dz ? al : 0), pz = Z(ty) + dz * 1.5 + (dx ? al : 0);
+          flowerSpots.push({ kind, x: px, y: groundY(px, pz), z: pz, ry: H(tx, ty, 623) * 6.28, r: H(tx, ty, 624), tx, ty, d, pri: kind === 'mizubasho' ? -0.15 : 0 });
+        }
+      }
+      // 優先順は位置から決まる乱数（同じ迷宮なら同じ）。株どうしを離して、フロア全体に散らす
+      const order = flowerSpots.map((sp, i) => ({ sp, k: (roles ? H(sp.tx * 5 + i % 5, sp.ty, 630) : hash(sp.tx * 5 + i % 5, sp.ty, 630)) + (sp.pri || 0) })).sort((p, q) => p.k - q.k);
+      const chosen = [];
+      for (const { sp } of order) {
+        if (chosen.length >= 14) break;
+        if (!EX[sp.kind]) continue;
+        if (chosen.some((q) => Math.max(Math.abs(q.tx - sp.tx), Math.abs(q.ty - sp.ty)) < 3)) continue;
+        const pc = EX[sp.kind];
+        // 原寸（0.2〜0.5m）では一人称の目の高さ1.6mから小さすぎるので拡大する（形は変えない）
+        const s = sp.kind === 'mizubasho' ? (1.8 + sp.r * 0.4) / Math.max(pc.size.x, pc.size.z, 0.01)
+          : sp.kind === 'bloom' ? (0.72 + sp.r * 0.2) / Math.max(pc.size.y, 0.01) : (1.0 + sp.r * 0.3) / Math.max(pc.size.y, 0.01);
+        const push = sp.kind === 'mizubasho' && sp.d ? 0.3 : 0, px = sp.x + (sp.d ? vec(sp.d)[0] * push : 0), pz = sp.z + (sp.d ? vec(sp.d)[1] * push : 0);   // 大きな葉が通り道へ出ないよう壁へ寄せる
+        B.add('flowers', pc, M4(px, sp.y - 0.02, pz, sp.ry, s), sp.tx, sp.ty);
+        chosen.push(sp); flowerLog.push(`${sp.tx},${sp.ty}:${sp.kind}:${sp.d}`);
+        if (sp.kind === 'bloom') light(sp.x, 0.5, sp.z, 0x6fd8ff, 0.6, 3);
+      }
+    }
+
+    // [RANDOM-MAZE] ランダム階だけ：役割から見せ場の素材を置く（規則は B2_RANDOM_MAZE_SPEC.md §8.1。番号はそこと対応）
+    // #203 の見せ場（滝・吹き抜け・結晶の溜まり場・モニュメント・石柱・門柱）は上の #203 の処理がそのまま選ぶ。ここでは足すだけ
+    function planRandomExtras() {
+      const out = { altar: null, pillars: 0, ruins: 0, ruinClusters: 0, banks: 0, cells: { pillar: [], ruin: [], bank: [] } };
+      const vec = (d) => DIR_VEC[d];
+      const cheb = (p, q) => Math.max(Math.abs(p.tx - q.tx), Math.abs(p.ty - q.ty));
+      const yawAlong = (vx, vz) => Math.atan2(-vz, vx);   // 部品のローカル +X を世界の (vx, vz) へ向ける回転
+      const wallsOf = (tx, ty) => DIR_ORDER.filter((d) => wallCell(tx + vec(d)[0], ty + vec(d)[1]));
+      const blocked = (tx, ty) => { const k = `${tx},${ty}`, c = ch(tx, ty); return wallCell(tx, ty) || objAt.has(k) || c === '<' || c === '>' || falls.has(k) || openCells.has(k) || zoneCells.has(k) || role(tx, ty) === 'fixed'; };
+      const nearObj = (tx, ty) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (objAt.has(`${tx + dx},${ty + dy}`)) return true; return false; };
+      const nearProp = (tx, ty, r) => { for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (propCells.has(`${tx + dx},${ty + dy}`) || monumentCells.has(`${tx + dx},${ty + dy}`) || keepClear.has(`${tx + dx},${ty + dy}`)) return true; return false; };
+      const isCorner = (ws) => ws.length === 2 && (DIR_ORDER.indexOf(ws[1]) - DIR_ORDER.indexOf(ws[0])) % 2 !== 0;
+      const sightOf = (tx, ty, d) => { let s = 0; for (let x = tx + vec(d)[0], y = ty + vec(d)[1]; s < 8 && !wallCell(x, y); x += vec(d)[0], y += vec(d)[1]) s++; return s; };
+      // 大きさを「幅 w × 奥行き dpt × 高さ h（m）」に収める倍率
+      const fit = (pc, w, dpt, h) => Math.min(w / Math.max(pc.size.x, 0.01), dpt / Math.max(pc.size.z, 0.01), h / Math.max(pc.size.y, 0.01));
+      const put = (nm, x, y, z, ry, s, tx, ty) => { const pc = EX[nm]; if (!pc) return false; placeAsset(B, 'extras', pc, x, y, z, ry, s, tx, ty); return true; };
+      // 部屋のまとまり（room/shore/water を1つ、template は別）
+      const ROOMISH = new Set(['room', 'shore', 'water']);
+      const regionOf = new Map(), regions = [];
+      for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
+        const r0 = role(tx, ty), k0 = `${tx},${ty}`;
+        if (regionOf.has(k0) || wallCell(tx, ty) || (!ROOMISH.has(r0) && r0 !== 'template')) continue;
+        const tplR = r0 === 'template', reg = { id: regions.length, cells: [] }, st = [[tx, ty]];
+        regionOf.set(k0, reg.id);
+        while (st.length) {
+          const [x, y] = st.pop(); reg.cells.push([x, y]);
+          for (const d of DIR_ORDER) {
+            const nx = x + vec(d)[0], ny = y + vec(d)[1], nk = `${nx},${ny}`, nr = role(nx, ny);
+            if (regionOf.has(nk) || wallCell(nx, ny) || (tplR ? nr !== 'template' : !ROOMISH.has(nr))) continue;
+            regionOf.set(nk, reg.id); st.push([nx, ny]);
+          }
+        }
+        regions.push(reg);
+      }
+      const regSize = (tx, ty) => { const id = regionOf.get(`${tx},${ty}`); return id === undefined ? 0 : regions[id].cells.length; };
+
+      // 規則A1〜A3：凍った祭壇は各階1個。6Fでモニュメントの祭壇を置いた階には置かない。
+      // 祭壇（約10×11m の素材）は1マスの通路には収まらないので、役割 shrine-candidate（三方が壁・一方だけ床に面した壁のマス）を「祠」にする：
+      // その壁のマスの床・天井・内側の3面の壁を作り（#203 のモニュメントと同じ addMonumentGround）、マスいっぱい（3.5m角・高さ約1.6m）に祭壇を置く。
+      // 祠のマスはもともと通れない壁なので、見た目（祭壇でふさがった祠）と通行判定が一致する。
+      // 口（祠の前の床）が滝・結晶の溜まり場・物・階段・浅瀬・吹き抜け・固定エリア・仕掛け部屋なら不可。行き止まりの奥の祠、口から通路がまっすぐ見通せる所（長いほど・6で頭打ち）を優先。
+      // 滝から3マス以内は他に候補が無いときだけ。合図石・立て札の付いた壁と、モニュメントの隣は使わない
+      if (EX.shrine && !monuments.some((m) => m.name === 'altar')) {
+        const cs = [];
+        for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
+          if (role(tx, ty) !== 'shrine-candidate' || !wallCell(tx, ty) || objAt.has(`${tx},${ty}`) || nearProp(tx, ty, 1)) continue;
+          const dF = DIR_ORDER.find((d) => !wallCell(tx + vec(d)[0], ty + vec(d)[1])); if (!dF) continue;
+          if (DIR_ORDER.filter((d) => !wallCell(tx + vec(d)[0], ty + vec(d)[1])).length !== 1) continue;
+          const fx = tx + vec(dF)[0], fy = ty + vec(dF)[1];
+          if (blocked(fx, fy) || ch(fx, fy) === '*' || role(fx, fy) === 'template' || propCells.has(`${fx},${fy}`)) continue;
+          const sight = sightOf(fx, fy, dF);
+          const nearFall = [...falls.keys()].some((k) => { const [qx, qy] = k.split(',').map(Number); return cheb({ tx: qx, ty: qy }, { tx: fx, ty: fy }) <= 3; });
+          cs.push({ tx, ty, fx, fy, dF, sight, score: (role(fx, fy) === 'deadend' ? 0 : 2) - Math.min(sight, 6) + (nearFall ? 100 : 0) + H(tx, ty, 501) * 0.9 });
+        }
+        cs.sort((p, q) => p.score - q.score);
+        const al = cs[0];
+        if (al) {
+          const pc = EX.shrine, sc = Math.min(3.5 / pc.size.x, 3.5 / pc.size.z, 3.0 / pc.size.y), x = X(al.tx), z = Z(al.ty);
+          monumentCells.add(`${al.tx},${al.ty}`);   // 口の側の壁を立てない（祠の口が開く）
+          addMonumentGround({ x: al.tx, y: al.ty, w: 1, h: 1 }, B);
+          put('shrine', x, 0, z, FACE_YAW[al.dF], sc, al.tx, al.ty);
+          light(x + vec(al.dF)[0] * 1.6, 1.8, z + vec(al.dF)[1] * 1.6, 0x86e2ff, 1.6, 7);
+          propCells.add(`${al.fx},${al.fy}`);
+          out.altar = { cell: `${al.fx},${al.fy}`, niche: `${al.tx},${al.ty}`, open: DIR_ORDER[(DIR_ORDER.indexOf(al.dF) + 2) % 4], sight: al.sight };
+        }
+      }
+
+      // 規則P1〜P3：部屋の本当の角（二方が壁＋その間の斜めも壁）に石柱V3。通路・道・行き止まりには置かない。
+      // 1部屋2本まで・全体4本まで（#203 の「4マスが通れる角」の柱・門柱とは別に数える）。同じ部屋は同じ種類、4本目は崩れた柱。
+      // 他の大物・モニュメントから2マス以上。物の8近傍・固定エリアは不可。角へ1.72m寄せる（通れるマスの中央は空ける）
+      if (assets.pillarA || assets.pillarG) {
+        const styles = [assets.pillarA ? 'pillarA' : 'pillarG', assets.pillarG ? 'pillarG' : 'pillarA', assets.pillarR ? 'pillarR' : 'pillarA'];
+        const byRegion = new Map();
+        for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
+          const r0 = role(tx, ty);
+          if ((!ROOMISH.has(r0) && r0 !== 'template') || blocked(tx, ty) || propCells.has(`${tx},${ty}`) || nearObj(tx, ty)) continue;
+          const ws = wallsOf(tx, ty); if (!isCorner(ws)) continue;
+          const v0 = vec(ws[0]), v1 = vec(ws[1]); if (!wallCell(tx + v0[0] + v1[0], ty + v0[1] + v1[1])) continue;
+          const id = regionOf.get(`${tx},${ty}`); if (id === undefined) continue;
+          if (!byRegion.has(id)) byRegion.set(id, []);
+          byRegion.get(id).push({ tx, ty, ws, r: H(tx, ty, 530) });
+        }
+        for (const [id, list] of [...byRegion].sort((p, q) => H(p[0], 3, 531) - H(q[0], 3, 531))) {
+          const style = H(id, 7, 532) < 0.6 ? 0 : 1;
+          let n = 0;
+          for (const cn of list.sort((p, q) => p.r - q.r)) {
+            if (out.pillars >= 4 || n >= 2) break;
+            if (nearProp(cn.tx, cn.ty, 2)) continue;
+            const v0 = vec(cn.ws[0]), v1 = vec(cn.ws[1]), px = X(cn.tx) + (v0[0] + v1[0]) * 1.22, pz = Z(cn.ty) + (v0[1] + v1[1]) * 1.22;
+            const kind = out.pillars === 3 ? 2 : style, nm = styles[kind];
+            const ry = kind === 2 ? yawAlong(-v1[0], -v1[1]) : H(cn.tx, cn.ty, 533) * 6.28;
+            const y0 = ch(cn.tx, cn.ty) === '*' ? -0.07 : -0.05;
+            if (assets[nm]) { placeAsset(B, 'pillars', assets[nm], px, y0, pz, ry, kind === 2 ? 0.6 : 0.72, cn.tx, cn.ty); if (nm === 'pillarG') light(px, 2.4, pz, 0x5fd0ff, 1.0, 4.5); propCells.add(`${cn.tx},${cn.ty}`); n++; out.pillars++; out.cells.pillar.push(`${cn.tx},${cn.ty}:${cn.ws.join('+')}`); }
+          }
+        }
+      }
+
+      // 規則R1〜R3：石造遺跡V4は (a) 12マス以上の部屋のふち（一方だけ壁、反対側の左右が開いている room/shore）と
+      // (b) 行き止まりの手前の通路（deadend に隣接し、平行な二方が壁の corridor/road）だけ。群れで置く：中心＋仲間（部屋2・通路1、中心から2〜3マス）。
+      // 群れの中心どうし6マス以上・群れは3つ・全体7個まで。中心は他の大物から2マス、仲間は1マス以上。物の8近傍・浅瀬・固定・テンプレートは不可。壁ぎわへ1.2〜1.3m
+      if (EX.ruinFallen || EX.ruinSpire || EX.ruinRubble || EX.ruinParapet) {
+        const cands = [];
+        for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
+          const r0 = role(tx, ty);
+          if (blocked(tx, ty) || propCells.has(`${tx},${ty}`) || nearObj(tx, ty) || ch(tx, ty) === '*' || r0 === 'template') continue;
+          const ws = wallsOf(tx, ty);
+          if ((r0 === 'room' || r0 === 'shore') && ws.length === 1 && regSize(tx, ty) >= 12) {
+            const v = vec(ws[0]), side = [Math.abs(v[1]), Math.abs(v[0])];
+            if (!wallCell(tx - v[0] + side[0], ty - v[1] + side[1]) && !wallCell(tx - v[0] - side[0], ty - v[1] - side[1])) cands.push({ tx, ty, ws, type: 'edge', r: H(tx, ty, 540) });
+          } else if ((r0 === 'corridor' || r0 === 'road') && ws.length === 2 && !isCorner(ws)
+              && DIR_ORDER.some((d) => role(tx + vec(d)[0], ty + vec(d)[1]) === 'deadend')) {
+            cands.push({ tx, ty, ws, type: 'corr', r: H(tx, ty, 540) });
+          }
+        }
+        cands.sort((p, q) => p.r - q.r);
+        const placeRuin = (c, kind) => {
+          const x = X(c.tx), z = Z(c.ty), v = vec(c.ws[c.type === 'corr' && H(c.tx, c.ty, 541) < 0.5 ? 1 : 0]), al = [Math.abs(v[1]), Math.abs(v[0])];
+          const lat = c.type === 'corr' ? 0 : (H(c.tx, c.ty, 543) - 0.5) * 1.0;
+          const pc = EX[kind] || EX.ruinRubble; if (!pc) return false;
+          // 壁ぎわの帯に置く（手前の端はマスの中央から1.05m以上。奥は壁の面の裏へ少し入ってよい＝壁に半ば埋もれた遺跡）。長い物（倒れた柱・欄干）は壁に沿わせる
+          const along = kind === 'ruinFallen' || kind === 'ruinParapet';
+          const s = kind === 'ruinSpire' ? fit(pc, 2.0, 2.0, 4.0) : kind === 'ruinRubble' ? fit(pc, 2.6, 2.4, 1.0) : fit(pc, 3.6, 2.0, 1.8);
+          const dpt = along ? pc.size.z * s : Math.hypot(pc.size.x, pc.size.z) * s * 0.8, off = Math.max(1.05 + dpt / 2, 2.15 - dpt / 2);
+          const ry = along ? yawAlong(al[0], al[1]) + (H(c.tx, c.ty, 544) < 0.5 ? Math.PI : 0) : H(c.tx, c.ty, 545) * 6.28;
+          return put(kind in EX && EX[kind] ? kind : 'ruinRubble', x + v[0] * off + al[0] * lat, -0.04, z + v[1] * off + al[1] * lat, ry, s, c.tx, c.ty);
+        };
+        const anchors = [];
+        for (const c of cands) {
+          if (anchors.length >= 3 || out.ruins >= 7) break;
+          if (propCells.has(`${c.tx},${c.ty}`) || nearProp(c.tx, c.ty, 2) || anchors.some((q) => cheb(q, c) < 6)) continue;
+          const head = c.type === 'corr' ? (H(c.tx, c.ty, 546) < 0.5 ? 'ruinParapet' : 'ruinRubble') : (H(c.tx, c.ty, 547) < 0.55 ? 'ruinFallen' : 'ruinSpire');
+          if (!placeRuin(c, head)) continue;
+          propCells.add(`${c.tx},${c.ty}`); anchors.push(c); out.ruins++; out.cells.ruin.push(`${c.tx},${c.ty}:${c.ws[0]}`);
+          let m = 0; const maxM = c.type === 'corr' ? 1 : 2;
+          for (const q of cands) {
+            if (m >= maxM || out.ruins >= 7) break;
+            const dd = cheb(q, c);
+            if (q === c || dd < 2 || dd > 3 || propCells.has(`${q.tx},${q.ty}`) || nearProp(q.tx, q.ty, 1)) continue;
+            if (c.type === 'edge' && regionOf.get(`${q.tx},${q.ty}`) !== regionOf.get(`${c.tx},${c.ty}`)) continue;
+            if (placeRuin(q, m === 0 ? 'ruinRubble' : (head === 'ruinFallen' ? 'ruinParapet' : 'ruinFallen'))) { propCells.add(`${q.tx},${q.ty}`); m++; out.ruins++; }
+          }
+          out.ruinClusters++;
+        }
+      }
+
+      // 規則W1〜W3：氷岸V11（岩の台に氷が載った約3m角・高さ1.8mの岸）は、浅瀬（*）の壁ぎわに「水から立ち上がる氷の岸」として置く。
+      // 縮めて約1.6m角、水面から約0.5m。壁の面の裏へ少し入れ、手前の端はマスの中央から1.05m以上（通れるマスの中央は空ける）。
+      // 塊6マス以上は2つ、2〜5マスは1つ、1マスは無し、1階4つまで。同じ塊の氷岸どうし3マス以上。橋のある塊・物・滝・大物のマスは不可
+      if (EX.bankL || EX.bankR) {
+        const seen = new Set();
+        for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
+          if (seen.has(`${tx},${ty}`) || ch(tx, ty) !== '*' || wallCell(tx, ty)) continue;
+          const cells = [], st = [[tx, ty]]; seen.add(`${tx},${ty}`);
+          while (st.length) { const [x, y] = st.pop(); cells.push([x, y]); for (const d of DIR_ORDER) { const nx = x + vec(d)[0], ny = y + vec(d)[1], nk = `${nx},${ny}`; if (!seen.has(nk) && ch(nx, ny) === '*' && !wallCell(nx, ny)) { seen.add(nk); st.push([nx, ny]); } } }
+          if (cells.length < 2 || cells.some(([x, y]) => onBridge(x, y))) continue;
+          const edges = [];
+          for (const [wx, wz] of cells) for (const d of DIR_ORDER) {
+            if (!wallCell(wx + vec(d)[0], wz + vec(d)[1]) || objAt.has(`${wx},${wz}`) || falls.has(`${wx},${wz}`) || propCells.has(`${wx},${wz}`) || role(wx, wz) === 'fixed' || monumentCells.has(`${wx + vec(d)[0]},${wz + vec(d)[1]}`)) continue;
+            const bd = def(ch(wx + vec(d)[0], wz + vec(d)[1])); if (bd && bd.onWall) continue;
+            edges.push({ tx: wx, ty: wz, d, r: H(wx * 3 + DIR_ORDER.indexOf(d), wz, 550) });
+          }
+          edges.sort((p, q) => p.r - q.r);
+          const cap = cells.length >= 6 ? 2 : 1, got = [];
+          for (const e of edges) {
+            if (got.length >= cap || out.banks >= 4) break;
+            if (got.some((q) => cheb(q, e) < 3) || nearProp(e.tx, e.ty, 1)) continue;
+            const v = vec(e.d), lat = [Math.abs(v[1]), Math.abs(v[0])], sh = (H(e.tx, e.ty, 551) - 0.5) * 1.2;
+            const id = H(e.tx, e.ty, 552) < 0.5 ? (EX.bankL ? 'bankL' : 'bankR') : (EX.bankR ? 'bankR' : 'bankL'), pc = EX[id];
+            const sc = Math.min(1.6 / Math.max(pc.size.x, pc.size.z, 0.01), 0.95 / Math.max(pc.size.y, 0.01)), half = Math.max(pc.size.x, pc.size.z) * sc / 2;
+            const off = Math.max(1.05 + half, 2.2 - half);
+            if (put(id, X(e.tx) + v[0] * off + lat[0] * sh, -0.45, Z(e.ty) + v[1] * off + lat[1] * sh, yawAlong(lat[0], lat[1]) + (H(e.tx, e.ty, 553) < 0.5 ? Math.PI : 0), sc, e.tx, e.ty)) {
+              got.push(e); out.banks++; out.cells.bank.push(`${e.tx},${e.ty}:${e.d}`); propCells.add(`${e.tx},${e.ty}`);
+            }
+          }
+        }
+      }
+      return out;
+    }
 
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
@@ -1013,7 +1351,8 @@ export async function createTheme(api) {
           B.add('rocks', pick(kit.rocks, hash(tx, ty, 2)), M4(x + (hash(tx, ty, 3) - 0.5) * 1.6, -0.3, z + (hash(tx, ty, 4) - 0.5) * 1.6, hash(tx, ty, 5) * 6, [0.7, 0.35, 0.7]), tx, ty);
           // 荊（紫のとげ＝危険の目印）を壁ぎわに
           const side = DIR_ORDER.find((d) => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
-          if (side && hash(tx, ty, 6) < 0.6) { const [dx, dy] = DIR_VEC[side]; B.add('thorns', pick(kit.thorns, hash(tx, ty, 7)), M4(x + dx * 1.45 + (hash(tx, ty, 8) - 0.5) * (dy ? 2 : 0), -0.08, z + dy * 1.45 + (hash(tx, ty, 8) - 0.5) * (dx ? 2 : 0), hash(tx, ty, 9) * 6, 0.75 + hash(tx, ty, 10) * 0.3), tx, ty); }
+          // 旧：荊（紫のとげの簡易な植物）→ 水の中の氷水芭蕉の候補（位置・向きはそのまま）
+          if (side && hash(tx, ty, 6) < 0.6) { const [dx, dy] = DIR_VEC[side]; flowerSpots.push({ kind: 'mizubasho', water: true, x: x + dx * 1.45 + (hash(tx, ty, 8) - 0.5) * (dy ? 2 : 0), y: -0.1, z: z + dy * 1.45 + (hash(tx, ty, 8) - 0.5) * (dx ? 2 : 0), ry: hash(tx, ty, 9) * 6, r: hash(tx, ty, 10), tx, ty, d: side }); }
         }
         if (anim.ripples.length < 8 && hash(tx, ty, 11) < 0.10) addRipple(x + (hash(tx, ty, 12) - 0.5) * 2, z + (hash(tx, ty, 13) - 0.5) * 2, hash(tx, ty, 14));
         if (!onBridge(tx, ty) && anim.fishes.length < 14 && hash(tx, ty, 60) < 0.3) addFish(x, z, hash(tx, ty, 61), 1 + Math.floor(hash(tx, ty, 62) * 2));
@@ -1045,9 +1384,8 @@ export async function createTheme(api) {
         const nearWater = DIR_ORDER.some((d) => ch(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]) === '*');
         if (edge && nearWater && hash(tx, ty, 351) < 0.38) {
           const [dx, dz] = DIR_VEC[edge];
-          B.add('glow_fungi', pick(proc.glowFungi, hash(tx, ty, 352)),
-            M4(x + dx * 1.55, groundY(x + dx * 1.55, z + dz * 1.55), z + dz * 1.55, hash(tx, ty, 353) * Math.PI * 2,
-              1.1 + hash(tx, ty, 354) * 0.7), tx, ty);
+          // 旧：光るキノコ（簡易な手続きの形）→ 氷水芭蕉の候補（位置・向きはそのまま。数は placeFlowers で絞る）
+          if (!propCells.has(key)) flowerSpots.push({ kind: 'mizubasho', x: x + dx * 1.55, y: groundY(x + dx * 1.55, z + dz * 1.55), z: z + dz * 1.55, ry: hash(tx, ty, 353) * Math.PI * 2, r: hash(tx, ty, 354), tx, ty, d: edge });
         }
       }
       if (c === '*' && !onBridge(tx, ty) && !objAt.has(key) && !falls.has(key)) {
@@ -1120,7 +1458,9 @@ export async function createTheme(api) {
         const d = DIR_ORDER.find((q) => wallCell(tx + DIR_VEC[q][0], ty + DIR_VEC[q][1]));
         if (d) {
           const [dx, dz] = DIR_VEC[d], al = (hash(tx, ty, 581) - 0.5) * 2.4, mx = x + dx * 1.45 + (dz ? al : 0), mz = z + dz * 1.45 + (dx ? al : 0);
-          B.add('glow_fungi', pick(proc.glowFungi, hash(tx, ty, 582)), M4(mx, groundY(mx, mz), mz, hash(tx, ty, 583) * 6.28, 1.1 + hash(tx, ty, 584) * 0.9), tx, ty);
+          // 旧：光るキノコ → 霜鈴草（結晶の溜まり場の隣のマスなら氷晶花）の候補（位置・向きはそのまま）
+          const nearZone = zones.some((zq) => Math.max(Math.abs(zq.tx - tx), Math.abs(zq.ty - ty)) <= 1);
+          if (!propCells.has(key)) flowerSpots.push({ kind: nearZone ? 'bloom' : 'snowdrop', x: mx, y: groundY(mx, mz), z: mz, ry: hash(tx, ty, 583) * 6.28, r: hash(tx, ty, 584), tx, ty, d });
         }
       }
       // 壁と、壁ぎわの岩・鉱脈・壁付きの物
@@ -1132,7 +1472,7 @@ export async function createTheme(api) {
         B.add('walls', proc.continuousWall(ex, ez, ry, CELL), M4(ex, 0, ez, ry), tx, ty);
         { // 壁ぎわの石筍（床から）と鍾乳石（天井から）。大きさに幅を持たせて空洞の大きさを感じさせる
           const di = DIR_ORDER.indexOf(d), nn = def(ch(tx + dx, ty + dy));
-          const wallThing = (nn && nn.onWall) || objAt.has(key) || zoneCells.has(key);   // 合図石・立て札の壁と、物（門・宝箱・NPC など）のあるマスはふさがない
+          const wallThing = (nn && nn.onWall) || objAt.has(key) || zoneCells.has(key) || propCells.has(key);   // [RANDOM-MAZE] 足した大物のマスも（4F は常に空）   // 合図石・立て札の壁と、物（門・宝箱・NPC など）のあるマスはふさがない
           for (let q = 0; q < 2; q++) {   // 1つの壁に最大2か所ずつ
             const sd = di * 2 + q * 97;
             if (!wallThing && fall !== d && c !== '>' && c !== '<' && hash(tx, ty, 500 + sd) < (q ? 0.45 : 0.75)) {
@@ -1157,7 +1497,7 @@ export async function createTheme(api) {
         }
         // 壁と床の境目に低い岩の堆積を置き、直線的な接合部を崩す。
         // 通路中央やイベントマスを避け、歩行判定には影響させない。
-        if (!objAt.has(key) && c !== '>' && c !== '<' && k < 0.72) {
+        if (!objAt.has(key) && !propCells.has(key) && c !== '>' && c !== '<' && k < 0.72) {
           const rim = pick(v8?.rocks?.length ? v8.rocks : kit.rocks, hash(tx, ty, 180 + DIR_ORDER.indexOf(d)));
           const offset = (hash(tx, ty, 184 + DIR_ORDER.indexOf(d)) - 0.5) * 2.0;
           const scale = 0.22 + hash(tx, ty, 188 + DIR_ORDER.indexOf(d)) * 0.13;
@@ -1191,7 +1531,7 @@ export async function createTheme(api) {
           continue;
         }
         if (objAt.has(key) || c === '>' || c === '<') continue;
-        if (k > 0.73) {   // 壁の根元の岩（通路へのはみ出しは0.5m以内）
+        if (k > 0.73 && !propCells.has(key)) {   // 壁の根元の岩（通路へのはみ出しは0.5m以内）
           const s = 0.5 + hash(tx, ty + 7 * DIR_ORDER.indexOf(d), 19) * 0.3, t = (hash(tx, ty, 20 + DIR_ORDER.indexOf(d)) - 0.5) * 2.2;
           const piece = pick(kit.boulders, hash(tx, ty, 24 + DIR_ORDER.indexOf(d)));
           const inward = 0.45 - piece.size.z * s * 0.5;
@@ -1219,6 +1559,7 @@ export async function createTheme(api) {
       // モニュメント・水路橋のまわり（1マス以内）には柱を立てない（正面をふさがない）
       if (cells.some(([cx, cy]) => { for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (monumentCells.has(`${cx + i},${cy + j}`) || keepClear.has(`${cx + i},${cy + j}`)) return true; return false; })) continue;
       if (hash(tx, ty, 590) > 0.3) continue;
+      if (cells.some(([cx, cy]) => propCells.has(`${cx},${cy}`))) continue;   // [RANDOM-MAZE] 足した大物のマスの角には立てない（4F は常に空）
       const px = tx * CELL - CELL / 2, pz = ty * CELL - CELL / 2, sc = 0.8 + hash(tx, ty, 591) * 0.5;
       // 開けた場所の角の一部は、追加素材の石柱（古代の石柱・氷結した石柱・崩れた石柱）にする（フロアあたり最大6本）
       if (pillarCount < 6 && hash(tx, ty, 594) < 0.45 && assets.pillarA) {
@@ -1272,8 +1613,9 @@ export async function createTheme(api) {
       }
       g.entries.push(e);
     }
+    placeFlowers();
     made = B.build(root, mats);
-    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), placed: placedLog.slice(), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })) };
+    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), placed: placedLog.slice(), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })), buildKey: a.buildKey || a.key, random: !!roles, layout: { ...(layout || {}), flowers: flowerLog.length, flowerSpots: flowerSpots.length, flowerClusters: flowerLog.slice() }, extras: Object.fromEntries(Object.entries(EX).map(([k, v]) => [k, !!v])), ownedDisposed };
   }
 
   // 大空洞の縦方向の景観。天井を抜いた3×3マスに高い石造壁と冷光を加える。

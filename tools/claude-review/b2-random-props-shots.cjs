@@ -52,26 +52,39 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
   const OPP = { up: 'down', down: 'up', left: 'right', right: 'left' };
   const report = { floors: [], rebuild: {} };
 
+  const stats = {};
+  const shotS = async (name) => { await shot(name); stats[name] = await p.evaluate(() => window.KotamaField3D.stats && window.KotamaField3D.stats()); };
   await p.evaluate(() => { fieldEnterArea(2, { floor: 0, adminSkip: true }); });
   for (let i = 0; i < 8; i++) await skip();
-  for (const f of [1, 2]) {
+  for (const f of [0, 1, 2]) {
     await p.evaluate((f) => { fieldState.floor = f; fieldState.positioned = false; fieldState.built = ''; fieldShow(); }, f);
     for (let i = 0; i < 4; i++) await skip();
     await waitBuilt(`floor ${f}`); await p.waitForTimeout(1200);
     const inf = await info(), L = inf.layout || {}, pre = `b2f${f + 1}_props`;
-    report.floors.push({ floor: f + 1, buildKey: inf.buildKey, layout: L, extras: inf.extras, extrasLoaded: inf.extrasLoaded, falls: inf.falls, drawGroups: inf.drawGroups });
-    for (const [i, s] of (L.v8Showcase || []).entries()) {
-      const [cell, kind] = s.split(':'), [tx, ty] = cell.split(',').map(Number);
-      if (kind === 'deadend') await look(tx, ty, OPP[await openDir(tx, ty)]);
-      else { const od = await openDir(tx, ty); await look(tx, ty, OPP[od]); }
-      await shot(`${pre}_v8_${i + 1}`);
+    // 足した物・柱の中心が、通れるマスの中央から 1.0m（0.25マス）以内に無いか
+    const centerHits = await p.evaluate((placed) => { const a = fieldArea(), out = []; for (const q of placed || []) { const tx = Math.round(q.x), ty = Math.round(q.z), c = fieldTileAt(a, tx, ty); if (!c || c === '#' || fieldCharSolid(a, c)) continue; const d = Math.hypot(q.x - tx, q.z - ty) * 4; if (d < 1.0) out.push({ ...q, d: +d.toFixed(2) }); } return out; }, inf.placed);
+    report.floors.push({ floor: f + 1, centerHits, placedCount: (inf.placed || []).length, buildKey: inf.buildKey, random: inf.random, layout: L, extras: inf.extras, falls: inf.falls, monuments: inf.monuments, crystalZones: inf.crystalZones, drawGroups: inf.drawGroups });
+    // 花（4F も：光るキノコ・荊の位置の差し替え）
+    for (const [i, s] of (L.flowerClusters || []).slice(0, f === 0 ? 3 : 4).entries()) { const [cell, kind, d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shotS(`${pre}_flower_${i + 1}_${kind}`); }
+    if (f === 0) continue;
+    for (const [i, z] of (inf.crystalZones || []).slice(0, 2).entries()) {
+      const dir = z.bx > 0 ? 'right' : z.bx < 0 ? 'left' : z.bz > 0 ? 'down' : 'up';
+      await look(z.tx, z.ty, dir); await shotS(`${pre}_crystals_${i + 1}_${z.pal}`);
     }
-    if (L.altar) { const [tx, ty] = L.altar.cell.split(',').map(Number); await look(tx, ty, OPP[L.altar.open]); await shot(`${pre}_altar`); }
-    for (const [i, s] of (L.cells?.pillar || []).slice(0, 2).entries()) { const [cell, ws] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, ws.split('+')[0]); await shot(`${pre}_pillar_${i + 1}`); }
-    for (const [i, s] of (L.cells?.ruin || []).slice(0, 2).entries()) { const [cell, d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shot(`${pre}_ruin_${i + 1}`); }
-    for (const [i, s] of (L.cells?.bank || []).slice(0, 2).entries()) { const [cell, d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shot(`${pre}_bank_${i + 1}`); }
-    for (const [i, s] of (L.flowerClusters || []).slice(0, 3).entries()) { const [cell, , d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shot(`${pre}_flower_${i + 1}`); }
+    for (const [i, fl] of (inf.falls || []).slice(0, 1).entries()) { const [tx, ty] = fl.cell.split(',').map(Number); await look(tx, ty, fl.wall); await shotS(`${pre}_waterfall_${i + 1}`); }
+    if (L.altar) { const [tx, ty] = (L.altar.niche || L.altar.cell).split(',').map(Number); await look(tx, ty, L.altar.open); await shotS(`${pre}_altar`); }
+    for (const [i, s] of (L.cells?.pillar || []).slice(0, 2).entries()) { const [cell, ws] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, ws.split('+')[0]); await shotS(`${pre}_pillar_${i + 1}`); }
+    for (const [i, s] of (L.cells?.ruin || []).slice(0, 2).entries()) { const [cell, d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shotS(`${pre}_ruin_${i + 1}`); }
+    for (const [i, s] of (L.cells?.bank || []).slice(0, 2).entries()) { const [cell, d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shotS(`${pre}_bank_${i + 1}`); }
+    for (const m of (inf.monuments || []).slice(0, 2)) {
+      const cx = m.x + Math.floor(m.w / 2);
+      for (const [ty, dir, tag] of [[m.y + m.h + 1, 'up', 's'], [m.y - 2, 'down', 'n']]) {
+        const ok = await p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [cx, ty]);
+        if (ok) { await look(cx, ty, dir); await shotS(`${pre}_monument_${m.name}_${tag}`); break; }
+      }
+    }
   }
+  report.stats = stats;
   // 同じ迷宮の作り直し → 同じ配置。探索回数を変えて作り直し → メモリが増え続けない
   {
     const L0 = JSON.stringify((await info()).layout), m0 = await mem();
@@ -90,6 +103,6 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
   }
   report.errors = errs; report.missing = [...new Set(missing)];
   fs.writeFileSync(path.join(out, 'props-report.json'), JSON.stringify(report, null, 2));
-  console.log(JSON.stringify({ errors: errs, missing: report.missing, rebuild: report.rebuild, floors: report.floors.map((f) => ({ floor: f.floor, layout: f.layout, extras: f.extras })) }, null, 1));
+  console.log(JSON.stringify({ errors: errs, missing: report.missing, rebuild: report.rebuild, stats, floors: report.floors.map((f) => ({ floor: f.floor, centerHits: f.centerHits, placedCount: f.placedCount, layout: f.layout, extras: f.extras, monuments: f.monuments })) }, null, 1));
   await b.close(); srv.close();
 })().catch((e) => { console.error(e); process.exit(1); });
