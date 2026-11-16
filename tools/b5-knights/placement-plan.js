@@ -26,7 +26,7 @@ export function planB5Knights({a,ch,wallCell,hash,CELL=4,hall=false,maxCount=hal
     chosen.push({
       variant,tx:s.tx,ty:s.ty,x,z,
       yaw:Math.atan2(-s.dx,-s.dz),
-      scale:.91+hash(s.tx,s.ty,603)*.13,
+      scale:.72+hash(s.tx,s.ty,603)*.06,
       seed:Math.floor(hash(s.tx,s.ty,604)*1e6),
       decorativeOnly:true
     });
