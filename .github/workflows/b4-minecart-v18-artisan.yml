@@ -1,0 +1,56 @@
+name: B4 Minecart V18 Artisan Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-v18-artisan-20261116
+    paths:
+      - '.github/workflows/b4-minecart-v18-artisan.yml'
+      - 'tools/b4-render/build-v18-artisan.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-and-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and NumPy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+          blender -b --python-expr 'import numpy; print("NumPy available")'
+      - name: Render two physically proportioned V18 candidate minecarts
+        run: |
+          set -euo pipefail
+          for variant in a b; do
+            echo "Build variant $variant"
+            blender -b -t 2 --python tools/b4-render/build-v18-artisan.py -- render-review-v18 "$variant"
+            for view in front side angle gauge; do
+              test -s "render-review-v18/b4-minecart-v18-${variant}-${view}.png"
+            done
+            test -s "render-review-v18/b4-minecart-v18-${variant}.glb"
+            test -s "render-review-v18/b4-minecart-v18-${variant}.blend"
+            test -s "render-review-v18/b4-minecart-v18-${variant}-metrics.json"
+          done
+      - name: Assert GLB and visual review evidence exists and hash outputs
+        run: |
+          python3 - <<'PY'
+          import os,glob,json,hashlib
+          pngs=glob.glob('render-review-v18/*.png')
+          assert len([x for x in pngs if 'minecart-v18-' in x])==8,len(pngs)
+          data=[]
+          for p in sorted(glob.glob('render-review-v18/*')):
+            if not os.path.isfile(p): continue
+            with open(p,'rb') as f: digest=hashlib.file_digest(f,'sha256').hexdigest()
+            data.append({'path':p,'bytes':os.path.getsize(p),'sha256':digest})
+          with open('render-review-v18/manifest.json','w') as f:
+            json.dump({'approval':'NOT_APPROVED','stage':'4','type':'minecart','files':data},f,indent=2)
+          print('FILES',len(data),'PNG_COUNT',len(pngs))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-minecart-v18-review-unapproved
+          path: render-review-v18/
+          retention-days: 14
