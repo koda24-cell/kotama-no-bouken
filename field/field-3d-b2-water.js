@@ -355,7 +355,7 @@ function loadApproved() {
 }
 // 透過（transmission）は描画が重いので、通常の半透明の氷に置き換える
 // 素材ごとの明るさ合わせ：白いレンダー用の石色が、冷たい照明の洞窟で白く飛ばないように
-const GLB_TINT = { parapet: 0.5, fallen: 0.55, spire: 0.55, rubble: 0.5, pillarAncient: 0.78, pillarRuined: 0.78, pillarGlaciated: 0.82, altar: 0.74 };
+const GLB_TINT = { parapet: 0.42, fallen: 0.55, spire: 0.55, rubble: 0.5, pillarAncient: 0.78, pillarRuined: 0.78, pillarGlaciated: 0.82, altar: 0.74 };
 function convertGlbMaterial(src, id) {
   const c = src?.color ? src.color.clone() : new THREE.Color(0x8899aa);
   if (GLB_TINT[id] && !((src?.transmission || 0) > 0)) c.multiply(new THREE.Color(GLB_TINT[id] * 0.96, GLB_TINT[id], GLB_TINT[id] * 1.06));
@@ -1016,6 +1016,18 @@ export async function createTheme(api) {
       }
       // 天井
       if (!openCells.has(key)) B.add('ceiling', proc.continuousCeiling(x, z, CELL), M4(x, 4, z), tx, ty);
+      else for (const d of DIR_ORDER) {   // 吹き抜けのふち：隣の天井（起伏あり）から縦穴の壁（4m）までの隙間を岩の垂れ壁でふさぐ
+        const [dx, dz] = DIR_VEC[d], nk = `${tx + dx},${ty + dz}`;
+        if (openCells.has(nk) || wallCell(tx + dx, ty + dz)) continue;
+        const ex = x + dx * CELL / 2, ez = z + dz * CELL / 2, sx = dz ? CELL / 2 : 0, sz = dx ? CELL / 2 : 0;
+        const sk = new THREE.PlaneGeometry(1, 1, 10, 1), sp = sk.attributes.position;
+        for (let i = 0; i < sp.count; i++) {
+          const u = sp.getX(i) + 0.5, wx = ex - sx + 2 * sx * u, wz = ez - sz + 2 * sz * u;
+          sp.setXYZ(i, wx, sp.getY(i) > 0 ? 4.7 : ceilY(wx, wz) - 0.03, wz);
+        }
+        sk.deleteAttribute('uv'); sk.computeVertexNormals();
+        B.add('ceiling', { name: 'atrium_skirt', transient: true, parts: [{ geo: sk, mat: 'ceiling' }] }, new THREE.Matrix4(), tx, ty);
+      }
       // 天井の小さな鍾乳状の稜線：根元を天井の起伏の高さに合わせる（浮かせない）
       if (!openCells.has(key) && !objAt.has(key) && c !== '>' && c !== '<' && hash(tx, ty, 230) < 0.24) {
         const px = x + (hash(tx, ty, 231) - 0.5) * 2.2, pz = z + (hash(tx, ty, 232) - 0.5) * 2.2;
@@ -1147,8 +1159,8 @@ export async function createTheme(api) {
       const cx = X(bridge.tx), cz = Z(bridge.ty);
       for (const end of [-1, 1]) {
         const ex = cx + ax * end * 5.2, ez = cz + az * end * 5.2;
-        addProp('props_banks', P.bankL, ex + lz[0] * 2.1, -0.12, ez + lz[1] * 2.1, ryA, 0.9, bridge.tx, bridge.ty, 'banks');
-        addProp('props_banks', P.bankR, ex - lz[0] * 2.1, -0.12, ez - lz[1] * 2.1, ryA, 0.9, bridge.tx, bridge.ty, 'banks');
+        addProp('props_banks', P.bankL, ex + lz[0] * 2.2, 0.02, ez + lz[1] * 2.2, ryA, 1.05, bridge.tx, bridge.ty, 'banks');
+        addProp('props_banks', P.bankR, ex - lz[0] * 2.2, 0.02, ez - lz[1] * 2.2, ryA, 1.05, bridge.tx, bridge.ty, 'banks');
       }
       addProp('props_ruins', P.parapet, cx - ax * 2.0 + lz[0] * 1.6, -0.2, cz - az * 2.0 + lz[1] * 1.6, ryA, 0.5, bridge.tx, bridge.ty, 'parapets');
       addProp('props_ruins', P.parapet, cx + ax * 2.3 - lz[0] * 1.6, -0.2, cz + az * 2.3 - lz[1] * 1.6, ryA + Math.PI, 0.5, bridge.tx, bridge.ty, 'parapets');
@@ -1205,9 +1217,8 @@ export async function createTheme(api) {
     for (let side = 0; side < 4; side++) {
       const axis = side % 2 === 0;
       const sign = side < 2 ? -1 : 1;
-      // 下端を周囲の天井（2.9〜4m）より下まで伸ばし、外の通路から縦穴の外の暗い隙間が見えないようにする
-      const wall = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.4 : 0.9, 20.2, axis ? 0.9 : 12.4), dark);
-      wall.position.set(x + (axis ? 0 : sign * 6.1), 12.4, z + (axis ? sign * 6.1 : 0));
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(axis ? 12.4 : 0.9, 18.5, axis ? 0.9 : 12.4), dark);
+      wall.position.set(x + (axis ? 0 : sign * 6.1), 13.25, z + (axis ? sign * 6.1 : 0));
       atrium.add(wall);
       // 高い遺跡壁の石造リブと横梁。視線が上へ向かうように縦方向を強調。
       for (const p of [-4.4, 0, 4.4]) {
@@ -1398,10 +1409,10 @@ export async function createTheme(api) {
   let mistTex = null;
   function addMist(x, z, ry) {
     mistTex = mistTex || tileTexture(64, (c, s) => { c.clearRect(0, 0, s, s); const gr = c.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2); gr.addColorStop(0, 'rgba(220,245,255,0.9)'); gr.addColorStop(1, 'rgba(220,245,255,0)'); c.fillStyle = gr; c.fillRect(0, 0, s, s); });
-    const N = 64, pos = new Float32Array(N * 3), seed = new Float32Array(N);
+    const N = 22, pos = new Float32Array(N * 3), seed = new Float32Array(N);
     for (let i = 0; i < N; i++) seed[i] = rnd(i + x * 3 + z * 7);
     const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    const mat = new THREE.PointsMaterial({ map: mistTex, size: 0.42, transparent: true, opacity: 0.17, depthWrite: false, color: 0xcff2ff, sizeAttenuation: true });
+    const mat = new THREE.PointsMaterial({ map: mistTex, size: 0.24, transparent: true, opacity: 0.16, depthWrite: false, color: 0xcff2ff, sizeAttenuation: true });
     const pts = new THREE.Points(geo, mat); pts.name = 'Waterfall_Mist'; pts.frustumCulled = false; pts.renderOrder = 4; root.add(pts);
     anim.mists.push({ points: pts, seed, x, z, ax: Math.cos(ry), az: -Math.sin(ry), fx: Math.sin(ry), fz: Math.cos(ry) });
   }
@@ -1448,8 +1459,8 @@ export async function createTheme(api) {
       const pos = m.points.geometry.attributes.position;
       for (let i = 0; i < m.seed.length; i++) {
         const sd = m.seed[i], p = (sd * 7 + t * (0.25 + sd * 0.2)) % 1;
-        const side = (rnd(i * 3.1 + sd) - 0.5) * (1.8 + p * 1.2), out = p * 1.5 * (0.6 + sd * 0.6);
-        pos.setXYZ(i, m.x + m.ax * side + m.fx * out, 0.05 + p * (1.2 + sd * 1.6), m.z + m.az * side + m.fz * out);
+        const side = (rnd(i * 3.1 + sd) - 0.5) * 1.9, out = p * 0.9 * (0.6 + sd * 0.6);
+        pos.setXYZ(i, m.x + m.ax * side + m.fx * out, 0.05 + p * (0.5 + sd * 0.6), m.z + m.az * side + m.fz * out);
       }
       pos.needsUpdate = true;
     }
