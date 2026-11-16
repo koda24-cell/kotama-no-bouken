@@ -1,8 +1,8 @@
 {
   "status": "candidate_verified_pending_user_review",
   "gameIntegrated": false,
-  "generatedAtUTC": "2026-11-16T15:30:52.476099+00:00",
-  "sourceRevision": "ce3c236b70528e03b124330346fda528a8153f82",
+  "generatedAtUTC": "2026-11-16T15:34:02.798666+00:00",
+  "sourceRevision": "85a234a23d381a244bd7870e26d926361a1d410b",
   "assets": 17,
   "individualTriangles": 136665,
   "individualGlbBytes": 21305008,
@@ -79,6 +79,13 @@
   "conformanceErrors": 0,
   "conformanceWarnings": 0,
   "browserErrors": 0,
+  "gameLayoutBrowserReview": {
+    "file": "docs/reviews/f1-sacred-forest-game-layout/browser-verification.json",
+    "sha256": "9ad1b8221d356479853d106b05d6e494bbf034e9ede7b637768b709bd5edbdbe",
+    "eyeHeightViews": 3,
+    "errors": 0,
+    "warnings": 0
+  },
   "sourcePortabilityVerified": true,
   "centralRouteClearanceVerified": true,
   "realDevicePerformanceApproved": false,
