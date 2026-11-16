@@ -1,0 +1,62 @@
+name: B4 Practical Cart V20-V21 Blender Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-structural-v20-20261116
+    paths:
+      - 'field/b4-cart-v20-practical.js'
+      - 'tools/b4-render/export-cart-practical-v20.mjs'
+      - 'tools/b4-render/render-cart-quality.py'
+      - '.github/workflows/b4-cart-practical-v20.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Blender and Three
+        run: |
+          npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Export original and two structural candidates
+        run: node tools/b4-render/export-cart-practical-v20.mjs
+      - name: Cycles 3-direction render and per-asset checkpoints
+        run: |
+          set -euo pipefail
+          mkdir -p render-review
+          for v in 14 20 21; do
+            blender -b -t 2 --python tools/b4-render/render-cart-quality.py -- "render-output/b4-cart-practical-v${v}.glb" render-review
+            for view in front side angle; do
+              test -s "render-review/b4-cart-practical-v${v}-${view}.png"
+            done
+            test -s "render-review/b4-cart-practical-v${v}.blend"
+          done
+          test "$(find render-review -name '*.png' | wc -l)" -eq 9
+      - name: Record manifest and hashes
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import glob,os,hashlib,json
+          paths=sorted(glob.glob('render-output/b4-cart-practical-v*.glb')+glob.glob('render-review/*.png')+glob.glob('render-review/*.blend'))
+          data={'approval':'NOT_APPROVED','versions':[14,20,21],'source_sha':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'files':[]}
+          for p in paths:
+            data['files'].append({'path':p,'size':os.stat(p).st_size,'sha256':hashlib.sha256(open(p,'rb').read()).hexdigest()})
+          os.makedirs('render-review',exist_ok=True)
+          with open('render-review/manifest.json','w') as f:json.dump(data,f,indent=2)
+          print(json.dumps({'count':len(paths),'source_sha':data['source_sha']}))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-cart-v20-v21-review
+          retention-days: 14
+          path: |
+            render-output/b4-cart-practical-v*.glb
+            render-review/
