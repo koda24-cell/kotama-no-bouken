@@ -16,12 +16,14 @@ jobs:
       - name: Install Blender
         run: sudo apt-get update -qq && sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1 libopengl0
       - name: Build and render ruined stone arch
-        run: blender -b -t 2 --python tools/b2-render/build-ruined-stone-arch-v1.py
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b2-render/build-ruined-stone-arch-v1.py
       - name: Validate model and 3 views
         run: |
           set -euo pipefail
           cd render-output/b2-ruined-stone-arch-v1
           test -s ruined_stone_arch_v1.glb
+          test -s ruined_stone_arch_v1.blend
+          test -s manifest.json
           for view in front side angle; do test -s "ruined_stone_arch_v1_${view}.png"; done
           sha256sum *.glb *.png > SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
