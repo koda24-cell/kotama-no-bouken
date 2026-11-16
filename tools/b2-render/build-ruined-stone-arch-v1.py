@@ -45,6 +45,22 @@ for i in range(13):
  # stones are wedge-like by rotated weathered block and broken edge profiles
  obj=stone("voussoir %02d"%i,(x,0,z),(.40,.88,.43),mats[i%len(mats)],(0,-(theta-math.pi/2),rng.uniform(-.025,.025)))
  if i==6:obj.name="large weathered keystone"
+# V1 additive connection repairs: retain original mesh blocks and missing-slot history.
+# The early V1 left gaps at arch indices 2,3,10; the detached middle span
+# appeared to float. Reintroduce deliberately chipped, staggered support stones
+# rather than removing or replacing any original voussoir.
+for idx,scale,shift in [(2,.88,-.045),(3,.83,.035),(10,.90,-.018)]:
+ theta=math.pi-idx*math.pi/12
+ x=radius*math.cos(theta)
+ z=2.77+radius*math.sin(theta)
+ m=stone("additive fractured support voussoir %02d"%idx,(x+shift,0,z-.025),(.38*scale,.86,.40*scale),mats[(idx+1)%len(mats)],(0,-(theta-math.pi/2),rng.uniform(-.035,.035)))
+ m.scale=(1.0,.92,.90)
+# Right shoulder supports the lower curve where the original pier is shorter.
+stone("right shoulder bridging masonry",(1.34,0,2.49),(.62,.84,.43),mats[0],(0,-.08,.035))
+# Uneven extra blocks create stepped edges; the original columns remain intact.
+stone("left broken outer cap",(-1.78,.05,2.70),(.31,.76,.29),mats[2],(0,.06,-.11))
+stone("right uneven outer cap",(1.76,-.035,2.17),(.32,.76,.34),mats[1],(.03,-.08,.09))
+
 # Broken rubble on ground, one side heavier than other
 for i in range(26):
  x=rng.uniform(-2.15,2.15);y=rng.uniform(-1.1,1.1);s=rng.uniform(.08,.34)
