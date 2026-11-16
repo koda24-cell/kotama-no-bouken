@@ -133,3 +133,12 @@
 - GitHub Models推論APIは2026-07-30に終了済みのため使用しない: https://docs.github.com/en/github-models
 - 関連PR: 玉座V1 #383、玉座V2 #395。新規実装PRは別途公開後記録。
 - 注意: 画像の数値検査は美観評価ではない。AI評価が成功しても原形状破壊防止・人間の最終承認必須。ジョブ異常終了時のArtifact保全は無保証。接続先の従量課金を勝手に発生させない。
+
+
+### 玉座Work設定の検証追記（2026-11-16 JST）
+- PR #404: Work以外のActions/CLI実行手順、通信なし設定チェック、非有限数の無効化、子BlenderへのVISION_*非継承、各反復の未承認manifestを追加。実装はDraftで未統合。
+- run 43794997803の両ジョブsuccess、resume-passログの1→2再開・NOT_APPROVED、Artifact 14194068097の存在を今回再確認。ZIP自体のローカル取得はCLI未認証で未完了。
+- ローカルBlender4.3.2: 旧use_auto_smooth属性で失敗し互換修正後、現行/改善版の3方向PNG・GLB書出し成功、実画像目視済み。支持台・背面厚み・曲線組石を追加、原メッシュ保持。6件のoffline vision tests成功。
+- 石材のNoise/BumpはBlenderプレビューのみでGLB未ベイク。美観未承認、正式素材・ゲーム統合なし。
+- VISION_API_URL/KEY/MODELの値は未提供、登録も実AI通信も未実施。有料API利用なし。GitHub連携ツールにSecrets/Variables更新機能がなく、利用先と費用条件の決定が必要。GitHub Models不使用。
+- 詳細: PR #404内 docs/3d/B5_THRONE_WORK_SETUP_20261116.md。新規Actions実行の成功は未確認、ローカル検証と区別する。
