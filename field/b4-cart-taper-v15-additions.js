@@ -4,18 +4,18 @@ import * as THREE from 'three';
 export function enhanceB4CartTaper(root, variant=1) {
  const cart=root.getObjectByName('b4:buried-ore-cart');
  if(!cart)throw Error('Missing preserved cart');
- const name='b4:cart-taper-v'+(variant===1?'15':'16');
+ const name='b4:cart-taper-v'+(variant===1?'15':variant===2?'16':'17');
  if(cart.getObjectByName(name))return root;
  const g=new THREE.Group();g.name=name;cart.add(g);
  const dark=new THREE.MeshStandardMaterial({color:0x4d3c32,roughness:.94,metalness:.10,side:THREE.DoubleSide});
  const frame=new THREE.MeshStandardMaterial({color:0x383a3b,roughness:.81,metalness:.5});
  const weathered=new THREE.MeshStandardMaterial({color:0x655142,roughness:.92,metalness:.15});
  const seam=new THREE.MeshStandardMaterial({color:0x947258,roughness:1});
- const topX=variant===1?1.02:1.13;
+ const topX=variant===1?1.02:variant===2?1.13:1.075;
  const botX=.72;
- const topZ=variant===1?1.13:1.27;
+ const topZ=variant===1?1.13:variant===2?1.27:1.20;
  const botZ=.87;
- const baseY=.30, topY=variant===1?1.32:1.39;
+ const baseY=.30, topY=variant===1?1.32:variant===2?1.39:1.36;
  const wallT=.075;
  function block(x,y,z,sx,sy,sz,mat=frame) {
   const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);
@@ -42,9 +42,18 @@ export function enhanceB4CartTaper(root, variant=1) {
   geo.computeVertexNormals();
   const m=new THREE.Mesh(geo,material);g.add(m);return m;
  }
+ function wallSegments(face) {
+  const intervals=variant===3?[[.025,.305],[.355,.64],[.69,.975]]:[[0,1]];
+  for(const [t0,t1] of intervals) {
+   const y0=baseY+(topY-baseY)*t0, y1=baseY+(topY-baseY)*t1;
+   const x0=botX+(topX-botX)*t0,x1=botX+(topX-botX)*t1;
+   const z0=botZ+(topZ-botZ)*t0,z1=botZ+(topZ-botZ)*t1;
+   if(face==='side')for(const side of [-1,1]) panel([side*x0,y0,-z0],[side*x0,y0,z0],[side*x1,y1,-z1],[side*x1,y1,z1],wallT,dark);
+   if(face==='end')for(const side of [-1,1]) panel([-x0,y0,side*z0],[x0,y0,side*z0],[-x1,y1,side*z1],[x1,y1,side*z1],wallT,dark);
+  }
+ }
+ wallSegments('side');
  for (const side of [-1,1]) {
-  panel([side*botX,baseY,-botZ],[side*botX,baseY,botZ],
-        [side*topX,topY,-topZ],[side*topX,topY,topZ],wallT,dark);
   // One long tapered reinforcement strut across each end, rather than many tiny patches.
   for (const zSide of [-1,1]) {
    bar([side*(botX+.055),baseY,zSide*botZ],
@@ -58,9 +67,8 @@ export function enhanceB4CartTaper(root, variant=1) {
    bar([side*(x+.045),y,-z*.88],[side*(x+.045),y,z*.88],.035,.045, t===.32?weathered:seam);
   }
  }
+ wallSegments('end');
  for(const side of [-1,1]) {
-  panel([-botX,baseY,side*botZ],[botX,baseY,side*botZ],
-        [-topX,topY,side*topZ],[topX,topY,side*topZ],wallT,dark);
   bar([-topX,topY,side*topZ],[topX,topY,side*topZ],.10,.11,frame);
   bar([-.5,baseY,side*(botZ+.07)],[-.63,topY,side*(topZ+.045)],.095,.075,frame);
   bar([.5,baseY,side*(botZ+.07)],[.63,topY,side*(topZ+.045)],.095,.075,frame);
