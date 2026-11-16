@@ -6,6 +6,8 @@
 | --- | --- | --- | --- |
 | 草原床（1マスタイル）V7 | **ユーザー採用済み（2026-11-14）**。正式保存ワークフロー検証中 | `assets/models/floor6/f6_meadow_floor_v7.glb`（昇格成功後） | [F6_MEADOW_V7_CLAUDE_HANDOFF.md](F6_MEADOW_V7_CLAUDE_HANDOFF.md) |
 
+| 自然岩3種（小・中・大）V15 | **ユーザー承認済み（2026-11-16）** | `assets/models/floor6/nature/rock_{small,medium,large}.glb` | [F6_NATURE_ROCKS_V15_CLAUDE_HANDOFF.md](F6_NATURE_ROCKS_V15_CLAUDE_HANDOFF.md) |
+
 ## 草原床 V7
 - 色: 淡い黄緑・低彩度・高明度
 - 風向き: おおむね32°、適度なばらつき
