@@ -8,13 +8,13 @@
   ],
   "routeMax": [
     1,
-    18,
+    22,
     3
   ],
-  "objectsChecked": 8,
-  "trianglesChecked": 11298,
+  "objectsChecked": 10,
+  "trianglesChecked": 21938,
   "conflicts": [],
-  "sceneBlendSha256": "879ad2ee873da1a81019c897c36f6df1199a94485e0a9e9f56e834f25863a127",
-  "sceneGlbSha256": "2004c4b72ddcf7dbfee719467eb596a065683b22a25bd4fc44370356ff3a29a3",
+  "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
+  "sceneGlbSha256": "1895d3342031eff60299af97583aa7574c43ac1031b9ad7fa87941b8c6fa7804",
   "passed": true
 }

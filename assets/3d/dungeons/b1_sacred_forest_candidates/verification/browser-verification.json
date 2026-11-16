@@ -1,8 +1,8 @@
 {
-  "verifiedAt": "2026-11-16T03:27:02.369Z",
+  "verifiedAt": "2026-11-16T10:08:24.096Z",
   "assetGeometryVerifiedAt": "2026-11-16T02:54:50.642Z",
-  "assetHashesVerifiedAt": "2026-11-16T03:27:02.369Z",
-  "sceneVerifiedAt": "2026-11-16T03:27:02.369Z",
+  "assetHashesVerifiedAt": "2026-11-16T10:08:24.096Z",
+  "sceneVerifiedAt": "2026-11-16T10:08:24.096Z",
   "mode": "scene_only_with_all_asset_hash_recheck",
   "engine": "Chromium SwiftShader / Three.js r180 GLTFLoader",
   "scope": "Standalone candidate review, not game integration or real-device performance",
@@ -2415,10 +2415,10 @@
       "fill": 0.4,
       "exposure": 1
     },
-    "nodes": 2171,
-    "meshes": 1473,
-    "geometries": 70,
-    "materials": 69,
+    "nodes": 1538,
+    "meshes": 1010,
+    "geometries": 65,
+    "materials": 65,
     "materialNames": [
       "lantern_pale_fracture",
       "lantern_roof_moss",
@@ -2430,11 +2430,6 @@
       "cedar_fine_needle_spray",
       "cedar_shade_moss",
       "cedar_weathered_bark",
-      "sacred_damp_forest_soil",
-      "sacred_old_leaf_litter",
-      "sacred_root_bark",
-      "sacred_velvet_moss.001",
-      "sacred_weathered_stone.001",
       "sacred_fresh_fracture",
       "sacred_root_bark.002",
       "sacred_velvet_moss.003",
@@ -2443,6 +2438,7 @@
       "sacred_root_bark.001",
       "sacred_velvet_moss.002",
       "sacred_weathered_stone.002",
+      "sacred_damp_forest_soil",
       "sacred_earth_mortar",
       "sacred_velvet_moss",
       "sacred_weathered_stone",
@@ -2490,8 +2486,8 @@
       "torii_moss",
       "worn_rice_paper"
     ],
-    "textures": 195,
-    "images": 195,
+    "textures": 183,
+    "images": 183,
     "imageDims": [
       {
         "name": "lantern_pale_fracture_f3ab1ea2accb_basecolor",
@@ -2634,81 +2630,6 @@
         "height": 512
       },
       {
-        "name": "soil_color_graded",
-        "width": 512,
-        "height": 512
-      },
-      {
-        "name": "soil_normal",
-        "width": 512,
-        "height": 512
-      },
-      {
-        "name": "soil_roughness",
-        "width": 512,
-        "height": 512
-      },
-      {
-        "name": "sacred_old_leaf_litter_505ec0d469d6_basecolor",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "sacred_old_leaf_litter_505ec0d469d6_orm",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "sacred_old_leaf_litter_505ec0d469d6_normal",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "soil_module_bark_color_graded",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "soil_module_bark_normal",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "soil_module_bark_roughness",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "sacred_velvet_moss_240e5b7b849b_basecolor.001",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "sacred_velvet_moss_240e5b7b849b_orm.001",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "sacred_velvet_moss_240e5b7b849b_normal.001",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "soil_module_stone_color_graded",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "soil_module_stone_normal",
-        "width": 256,
-        "height": 256
-      },
-      {
-        "name": "soil_module_stone_roughness",
-        "width": 256,
-        "height": 256
-      },
-      {
         "name": "sacred_fresh_fracture_393b30e024f7_basecolor",
         "width": 256,
         "height": 256
@@ -2825,6 +2746,21 @@
       },
       {
         "name": "stone_roughness.001",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "soil_color_graded",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "soil_normal",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "soil_roughness",
         "width": 512,
         "height": 512
       },
@@ -3469,11 +3405,11 @@
         "height": 256
       }
     ],
-    "triangles": 4432376,
-    "vertices": 4291980,
+    "triangles": 4480724,
+    "vertices": 3993759,
     "bboxMin": [
       -70,
-      -0.44499997794628143,
+      -0.23199999891221523,
       -70
     ],
     "bboxMax": [
@@ -3483,24 +3419,24 @@
     ],
     "sizeMeters": [
       140,
-      16.54500012099743,
+      16.332000141963363,
       140
     ],
     "renderer": {
-      "calls": 1475,
-      "triangles": 4432376,
+      "calls": 1012,
+      "triangles": 4480724,
       "memory": {
-        "geometries": 73,
-        "textures": 195
+        "geometries": 68,
+        "textures": 183
       },
-      "submitMs": 17.9,
+      "submitMs": 11.5,
       "pixelRatio": 1
     },
     "seams": false,
     "invalid": [],
-    "bytes": 21582100,
-    "sha256": "2004c4b72ddcf7dbfee719467eb596a065683b22a25bd4fc44370356ff3a29a3",
-    "sourceCommit": "bab8a7e05af30ed8d0a45c281be8d11236b34c8c",
+    "bytes": 20939944,
+    "sha256": "1895d3342031eff60299af97583aa7574c43ac1031b9ad7fa87941b8c6fa7804",
+    "sourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
     "rootExtraAssetIds": [
       "broken_votive_stele",
       "fallen_cedar_log",

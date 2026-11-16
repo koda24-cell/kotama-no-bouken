@@ -1,0 +1,104 @@
+{
+  "status": "sampled_rays_hit_geometry",
+  "camera": "camera_sealed_corridor",
+  "imageResolution": [
+    640,
+    400
+  ],
+  "method": "Blender evaluated scene ray_cast at the observed cornice bright point and neighbouring pixels; not a whole-image proof",
+  "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
+  "rays": [
+    {
+      "pixel": [
+        359,
+        50
+      ],
+      "hit": true,
+      "object": "inner_seal_arch__sacred_weathered_stone_surface.004",
+      "position": [
+        0.5886979103088379,
+        17.803325653076172,
+        3.9255290031433105
+      ]
+    },
+    {
+      "pixel": [
+        359,
+        49
+      ],
+      "hit": true,
+      "object": "inner_seal_arch__sacred_weathered_stone_surface.004",
+      "position": [
+        0.5887124538421631,
+        17.803281784057617,
+        3.940488338470459
+      ]
+    },
+    {
+      "pixel": [
+        360,
+        50
+      ],
+      "hit": true,
+      "object": "corridor_stone_soffit_16__sacred_weathered_stone_surface",
+      "position": [
+        0.624488890171051,
+        18.03874969482422,
+        4.006000995635986
+      ]
+    },
+    {
+      "pixel": [
+        358,
+        50
+      ],
+      "hit": true,
+      "object": "inner_seal_arch__sacred_weathered_stone_surface.004",
+      "position": [
+        0.5735136270523071,
+        17.799999237060547,
+        3.924391269683838
+      ]
+    },
+    {
+      "pixel": [
+        355,
+        50
+      ],
+      "hit": true,
+      "object": "inner_seal_arch__sacred_weathered_stone_surface.004",
+      "position": [
+        0.5288241505622864,
+        17.799999237060547,
+        3.9243907928466797
+      ]
+    },
+    {
+      "pixel": [
+        359,
+        55
+      ],
+      "hit": true,
+      "object": "inner_seal_arch__sacred_weathered_stone_surface.004",
+      "position": [
+        0.5888371467590332,
+        17.805999755859375,
+        3.8515501022338867
+      ]
+    },
+    {
+      "pixel": [
+        359,
+        45
+      ],
+      "hit": true,
+      "object": "corridor_stone_soffit_16__sacred_weathered_stone_surface",
+      "position": [
+        0.5901602506637573,
+        17.81915855407715,
+        4.006000518798828
+      ]
+    }
+  ],
+  "artApproval": "pending_user_review"
+}
