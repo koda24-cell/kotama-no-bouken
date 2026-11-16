@@ -117,7 +117,7 @@ for file in files:
  path=os.path.join(OUT,file)
  with open(path,"rb") as inp: payload=inp.read()
  if len(payload)<1024:raise RuntimeError("Missing or undersized output: "+file)
- if file.endswith(".png") and not payload.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):raise RuntimeError("Invalid PNG header: "+file)
+ if file.endswith(".png") and not payload.startswith(bytes.fromhex("89504e470d0a1a0a")):raise RuntimeError("Invalid PNG header: "+file)
  if file.endswith(".glb") and not payload.startswith(b"glTF"):raise RuntimeError("Invalid GLB header")
  checksums[file]=hashlib.sha256(payload).hexdigest()
 manifest={"name":"ruined_stone_arch_v1","status":"NOT_APPROVED","files":files,"sha256":checksums,
