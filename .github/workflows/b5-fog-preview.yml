@@ -35,7 +35,9 @@ jobs:
           docker run --rm --ipc=host -v "$PWD:/work" -w /work mcr.microsoft.com/playwright:v1.56.1-noble node tools/b5-fog-test/check-preview.mjs
       - name: Verify actual front side angle PNG and write manifest
         if: success()
-        run: python3 tools/b5-fog-test/check-three-views.py
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" render-output/b5-fog
+          python3 tools/b5-fog-test/check-three-views.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
