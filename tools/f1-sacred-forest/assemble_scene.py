@@ -299,16 +299,15 @@ def planned_placements():
             add("mod_sacred_wall_4m", "corridor_wall_%+d_%02d" % (side, y),
                 side * 2.0, y, angle=angle, zone="sealed_corridor", role="structural_wall")
     # The already completed paving module is reused upside-down as a level
-    # stone soffit. Its top surface becomes the ceiling underside at exactly
-    # 4m; all slab thickness remains above that, preserving head clearance.
-    # The source floor footprint is exactly 4x4m. Scale only X/Y so each
-    # soffit overlaps side-wall tops by 4cm. The un-bevelled, exact 4m
-    # source perimeter joins at Y=14 without coplanar overlap;
-    # original Z thickness and the structural underside datum Z=4 stay fixed.
+    # stone soffit. The original Z thickness remains above the 4m datum.
+    # Both sides overlap the wall by 4cm. The rear also covers the split
+    # cornice; its 6mm step avoids coplanar faces along the roof lap.
     # This is kit reuse, not newly generated ceiling geometry.
     for y in (12.0, 16.0):
+        rear=y==16.0
         add("mod_sacred_stone_floor_4m", "corridor_stone_soffit_%02d" % y,
-            0, y, 4.0, scale=(1.02,1,1), zone="sealed_corridor", role="ceiling")
+            0, y, 4.006 if rear else 4.0,
+            scale=(1.02,1.18 if rear else 1,1), zone="sealed_corridor", role="ceiling")
         placements[-1]['rotation_x_degrees'] = 180
     add("mod_sacred_arch_4m", "inner_seal_arch", 0, 17.8,
         zone="sealed_corridor", role="gateway")
@@ -518,10 +517,10 @@ def build():
                             'note':'12mm below paving prevents coplanar surfaces; do not import this wide surface as a game map'},
         'corridorJointCoverage': {'source':'modules/mod_sacred_stone_floor_4m.glb',
                                  'sourceFootprintMeters':[4,4],
-                                 'soffitScaleXYZ':[1.02,1,1],
-                                 'structuralUndersideZ':4,'sideOverlapMeters':.04,
-                                 'betweenSoffitsOverlapMeters':0,
-                                 'longitudinalJoinY':14,'joinMethod':'exact un-bevelled 4m source perimeter, no coplanar overlap',
+                                 'frontSoffitScaleXYZ':[1.02,1,1],'rearSoffitScaleXYZ':[1.02,1.18,1],
+                                 'structuralUndersideZRange':[4,4.006],'sideOverlapMeters':.04,
+                                 'betweenSoffitsOverlapMeters':.36,'rearRoofStepMeters':.006,
+                                 'rearRoofEndY':18.36,'joinMethod':'6mm stepped lap; no coplanar overlap',
                                  'geometryEdited':False},
         'refinementScope': ['omit decorated soil repetition','irregular two-depth side vegetation belts',
                             'clear portal extension to Y22','overlap existing soffit kit at wall/seams'],
@@ -536,7 +535,7 @@ def build():
                   'One continuous soil-only source mesh replaces decorated soil tiles and their ring; UV-only data copy preserves metre-scale repeats. No new terrain asset is generated.',
                   'The original 17 individual GLBs are not edited. Source hash, selected meshes and transforms are recorded per placement.',
                   'The two western paving tiles are a visual votive forecourt, not a newly integrated game-side traversable path.',
-                  'Corridor soffits reuse the paving GLB upside-down at structural Z=4, expanded only in X to overlap side walls; the exact 4m source perimeter joins lengthwise without overlapping faces; no ceiling geometry is generated.'],
+                  'Corridor soffits reuse the paving GLB upside-down at Z=4..4.006; the rear is extended over the split cornice and its 6mm lap prevents coplanar faces. No ceiling geometry is generated.'],
         'renders': {},
     }
     scene['candidate_status'] = 'pending_user_review'
