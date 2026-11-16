@@ -67,6 +67,17 @@ for name in view_names:
 game=read(BASE/'scene/game-layout-candidate.json')
 assert game['scope']=='candidate_not_applied' and game['approvalStatus']=='pending_user_review'
 assert game['runtimeModified'] is False and game['mapModified'] is False and game['saveMigrationRequired'] is False
+assert game['schemaVersion']==2 and game['presentationRevision']=='soil_surface_v2'
+assert 'gltf_node_material_selection_v1' in game['requiredCapabilities']
+assert game['consumerContract']['implicitFullAssetFallback'] is False
+profiles=game['floorRenderProfiles']
+assert game['fullRootsoilTileWhitelist']==[]
+for profile in profiles.values():
+    assert profile['sourceSha256']==next(a['sha256'] for a in manifest['assets'] if a['id']==profile['sourceAssetId'])
+    assert profile['onMismatch']=='reject_candidate'
+for floor in game['floorPlacements']:
+    assert floor['renderProfile'] in profiles
+    if floor['assetId']=='mod_root_soil_floor_4m':assert floor['renderProfile']=='soil_surface_only'
 for source in game['expectedSourceBaseline']['sourceFiles']:
     assert source['baselineMatch'] is True and sha(ROOT/source['file'])==source['sha256']==source['expectedBaselineSha256'],source['file']
 summary=dict(status='candidate_verified_pending_user_review',gameIntegrated=False,
