@@ -95,6 +95,17 @@ patch=r""" # V6 repair railing: remove legacy posts whose bases do not match dec
   normal.inputs['Strength'].default_value=.76
   links.new(tex.outputs['Color'],normal.inputs['Color'])
   links.new(normal.outputs['Normal'],nodes.get('Principled BSDF').inputs['Normal'])
+ # Explicit UV unwrap is required for image normal maps on custom polygon meshes.
+ # Primitive posts may already have UVs; leave those intact.
+ for obj in [o for o in bpy.context.scene.objects if o.type=='MESH']:
+  if len(obj.data.uv_layers)==0:
+   bpy.ops.object.select_all(action='DESELECT')
+   obj.select_set(True)
+   bpy.context.view_layer.objects.active=obj
+   bpy.ops.object.mode_set(mode='EDIT')
+   bpy.ops.mesh.select_all(action='SELECT')
+   bpy.ops.uv.smart_project(island_margin=.015)
+   bpy.ops.object.mode_set(mode='OBJECT')
  # Export stays non-destructive to V5 as a separate artifact family.
  export('floor3_ruined_connector_'+kind+'_v6')"""
 source=source.replace(needle,patch)
