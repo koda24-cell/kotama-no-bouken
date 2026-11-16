@@ -50,6 +50,9 @@
         1024,
         1024,
         1024,
+        1024,
+        1024,
+        1024,
         1024
       ],
       "lightPool": 14,
@@ -114,8 +117,8 @@
         }
       },
       "render": {
-        "calls": 86,
-        "triangles": 365506,
+        "calls": 88,
+        "triangles": 366186,
         "memory": {
           "geometries": 119,
           "textures": 236
@@ -144,6 +147,9 @@
         512,
         512,
         256,
+        1024,
+        1024,
+        1024,
         1024,
         1024,
         1024,
@@ -218,7 +224,7 @@
       },
       "render": {
         "calls": 40,
-        "triangles": 342486,
+        "triangles": 339162,
         "memory": {
           "geometries": 120,
           "textures": 236
@@ -256,6 +262,9 @@
         1024,
         1024,
         1024,
+        1024,
+        1024,
+        1024,
         1024
       ],
       "lightPool": 14,
@@ -320,8 +329,8 @@
         }
       },
       "render": {
-        "calls": 55,
-        "triangles": 346318,
+        "calls": 57,
+        "triangles": 346998,
         "memory": {
           "geometries": 120,
           "textures": 236
@@ -359,6 +368,9 @@
         1024,
         1024,
         1024,
+        1024,
+        1024,
+        1024,
         1024
       ],
       "lightPool": 14,
@@ -423,8 +435,8 @@
         }
       },
       "render": {
-        "calls": 63,
-        "triangles": 349586,
+        "calls": 65,
+        "triangles": 350266,
         "memory": {
           "geometries": 126,
           "textures": 248
@@ -453,6 +465,9 @@
         512,
         512,
         256,
+        1024,
+        1024,
+        1024,
         1024,
         1024,
         1024,
@@ -526,8 +541,8 @@
         }
       },
       "render": {
-        "calls": 67,
-        "triangles": 354695,
+        "calls": 69,
+        "triangles": 355635,
         "memory": {
           "geometries": 137,
           "textures": 283
@@ -556,6 +571,9 @@
         512,
         512,
         256,
+        1024,
+        1024,
+        1024,
         1024,
         1024,
         1024,
@@ -629,8 +647,8 @@
         }
       },
       "render": {
-        "calls": 56,
-        "triangles": 181642,
+        "calls": 58,
+        "triangles": 184182,
         "memory": {
           "geometries": 125,
           "textures": 283
