@@ -43,3 +43,12 @@ developmentの最新状態と `AGENTS.md`、`docs/3d/BLENDER_DOCKER_HANDOFF.md`�
 - 段階比較の所見: Pass 1よりPass 5–7のほうが大きな欠損が読める。球状岩より**角張った崩落石**が適切。巨大な落石は主役アーチを隠さないよう量・位置を調整。浮岩・石材の継ぎ目・石柱の固定感は今後の重点検査点。
 - **未検証**: 新しいBlender Actions runの成功、新Blender三方向PNG、生成GLBのゲーム内読み込み、アセットのユーザー承認・正式保存。プレビュー画像をBlenderレンダーと誤記しない。
 - 次にやること: PR #401 のpush workflow（`.github/workflows/b2-ruined-stone-arch-v1-render.yml`）の最新run取得→実際のBlender GLB/BLEND/PNG/manifestを検査→正面/側面/斜めの見た目を評価→必要に応じ改修と再実行。正式素材は承認後のみ保存。Claudeへは承認済GLB・PNG・manifestで引き継ぐ。
+
+## 2026-11-16 20:12 JST — 3系統レビュー・12枚レンダー（GPT）
+- 制作チームの**役割を分けた評価工程**として (1)構造/破損、(2)石材色/材質、(3)3方向撮影と検証を実施。独立した外部AIエージェントが並列実行したという意味ではない。
+- 以前のArtifact `14186804619` の旧V1 GLB (74メッシュ) を取得済み。既存ジオメトリに追加メッシュのみ足した2案を作り、計12枚（2造形案×2色条件×正面/側面/斜め）を**ローカルVTK**で実レンダリング。
+- 追加メッシュ: variant 1 = 10、variant 2 = 15。元74メッシュを維持。GLB候補はチャットローカルに `/mnt/data/b2_team_review/b2_ruined_arch_variant_{1,2}_review.glb` として生成（リポジトリの正式保存先には未登録）。レビューZIP: `/mnt/data/b2_team_review_12renders.zip`。このパスは同チャット環境内の一時保存に限る。
+- 視覚判定: 大きな崩落石の重量感は改善。ただしアーチ上部が浮いて見え、柱の規則的な段積みが残る。テクスチャを本格適用する前に、支持されていない迫石と積石の破断面を改善する。
+- **今回の実画像はBlenderではなくVTK出力**。古いGLB+参考追加ジオメトリであり、GitHubの現行Blender Python V2スクリプトと同一形状であるという保証はない。
+- GitHub Actionsの現行V2 Blender3方向PNGは、このセッションでは取得/成功検証できていない。美観判定、Three.js表示、正式保存・ユーザー承認は全て未完了。
+- 次の優先事項: V2ソースのBlenderレンダリング（PR #401）を成功させ、実PNGを出す。支持形状が不自然な石を先に修正してから、CC0石材PBR/BaseColor/Normal/Roughnessを採用検証。破断・浮石・タイル接続を正面/側面/斜めで評価する。
