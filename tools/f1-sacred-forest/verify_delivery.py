@@ -49,6 +49,8 @@ assert clearance['sceneBlendSha256']==sha(BASE/'scene/scene.blend')
 views={}
 for name in view_names:
     record=layout['renders'][name];p=BASE/record['file'];data=p.read_bytes()
+    assert record['sceneBlendSha256']==sha(BASE/'scene/scene.blend')
+    assert record['sceneSourceCommit']==layout['sourceCommit'] and record['camera']=='camera_'+name
     assert sha(p)==record['sha256']
     assert data[:8]==b'\x89PNG\r\n\x1a\n'
     assert struct.unpack_from('>II',data,16)==(1600,1000)

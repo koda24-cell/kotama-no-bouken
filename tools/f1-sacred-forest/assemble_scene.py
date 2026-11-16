@@ -551,6 +551,10 @@ def render_view(name, args):
     if str(Path(bpy.data.filepath)) != str(SCENE_FILE):
         bpy.ops.wm.open_mainfile(filepath=str(SCENE_FILE))
     scene = bpy.context.scene
+    layout = json.loads(LAYOUT_FILE.read_text())
+    if scene.get('source_commit') != layout['sourceCommit']:
+        raise RuntimeError('Loaded scene differs from the assembly revision; reopen the blend')
+    source_hash = file_hash(SCENE_FILE)
     scene.camera = bpy.data.objects['camera_' + name]
     scene.cycles.samples = args.samples
     scene.render.resolution_x = args.width
@@ -562,12 +566,16 @@ def render_view(name, args):
     bpy.ops.render.render(write_still=True)
     if not path.is_file():
         raise RuntimeError('Render produced no file: ' + str(path))
+    if file_hash(SCENE_FILE) != source_hash:
+        raise RuntimeError('Scene source changed during photography')
     layout = json.loads(LAYOUT_FILE.read_text())
     layout.setdefault('renders', {})[name] = {
         'file': str(path.relative_to(OUT)), 'sha256': file_hash(path),
         'width': args.width, 'height': args.height, 'samples': args.samples,
         'renderer': 'Cycles CPU', 'geometrySource': 'reimported individual GLBs',
         'blenderVersion': bpy.app.version_string,
+        'sceneBlendSha256': source_hash, 'sceneSourceCommit': scene['source_commit'],
+        'camera': scene.camera.name,
     }
     LAYOUT_FILE.write_text(json.dumps(layout, ensure_ascii=False, indent=2) + '\n')
     print('F1_SCENE_RENDERED ' + json.dumps(layout['renders'][name], ensure_ascii=False))
