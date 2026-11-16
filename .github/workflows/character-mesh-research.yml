@@ -29,10 +29,18 @@ jobs:
           for model in HairSample_Female HairSample_Male Sendagaya_Shibu; do
             xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/analyze_character.py -- "/tmp/character-sources/$model.vrm" "output/character-mesh-research/$model.json"
           done
+      - name: Render head comparison six views per sample
+        run: |
+          for model in HairSample_Female HairSample_Male Sendagaya_Shibu; do
+            xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/render_head.py -- "/tmp/character-sources/$model.vrm" "output/character-mesh-research/renders/$model"
+          done
       - name: Validate results
         run: |
           for model in HairSample_Female HairSample_Male Sendagaya_Shibu; do
             test -s "output/character-mesh-research/$model.json"
+          done
+          for model in HairSample_Female HairSample_Male Sendagaya_Shibu; do
+            for view in front back left right three_quarter back_upper; do test -s "output/character-mesh-research/renders/$model/$view.png"; done
           done
           python3 - <<'PY'
           import json
