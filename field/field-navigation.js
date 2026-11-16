@@ -16,6 +16,7 @@ function fieldShow({ returning = false } = {}) {
   fieldInput.keys.clear(); fieldInput.pad.clear();
   showScreen("field");
   fieldUpdateVision(true);
+  if (typeof fieldA1MarkSetup === "function") fieldA1MarkSetup();
   fieldRender();
   fieldStartLoop();
   fieldEmit("enter", { area: a.n, floor: a.f, floorLabel: fieldFloorLabel(a.n, a.f), areaName: a.def.name, theme: a.def.theme, x: fieldState.x, y: fieldState.y, returning });
@@ -58,6 +59,7 @@ async function fieldEnterArea(n, opts = {}) {
     fieldState.lock = false;
     if (!opts.adminSkip && f === 0) await fieldPlayScene(FIELD_AREAS[n].enterScene);
     if (!opts.adminSkip && n === 1 && f === 0 && !fieldState.flags["labyrinth-tutorial"]) await fieldPlayScene("labyrinth-tutorial");
+    if (!opts.adminSkip && typeof fieldA1OnEnter === "function") await fieldA1OnEnter();
   } finally { fieldState.lock = false; }
   persistAutoSave();
 }
