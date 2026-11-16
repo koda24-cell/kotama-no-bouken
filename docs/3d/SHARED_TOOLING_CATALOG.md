@@ -192,3 +192,13 @@
 - Blender5.3 CLIはPython例外でも既定exit code 0となる例を実確認（clearance未通過時）。gate用は `--python-exit-code 1` を付け、receiptのpassed・source hashも確認する。低解像previewのpersistent cacheは `scene.render.use_persistent_data` が正しく、`scene.cycles.use_persistent_data` はAttributeErrorとなったため修正。修正後の実preview成功。
 - official MCP execute_blender_codeの `result` はdictが必要。listではstructuredContent.status=errorだがisError=falseの場合を実確認。クライアントは両方を検査し、片方だけで成功判定しない。既存mcp-call helperはこの例を失敗として検出した。
 - 各最終写真にscene blend SHA/loaded source commit/cameraを記録し、撮影前後のsource不変を確認するgateを追加。改訂版の最終5枚照合はまだ未実行。外部ツール/有料API導入なし、実行コードや資産はこの情報共有変更へ含めない。
+
+### 第2層石造アーチ・写真PBR / Photo-PBR pipeline (2026-11-16)
+- 技術: [Poly Haven Public API](https://polyhaven.com/our-api) / [Rock Surface](https://polyhaven.com/a/rock_surface) のCC0写真ベースのPBRセットを取得し、Blender画像テクスチャ（Color/Normal GL/Roughness）からGLBへ渡す方式。
+- 公式公開API: https://api.polyhaven.com/files/rock_surface 。APIでの利用条件/クレジットは公式 https://github.com/Poly-Haven/Public-API を確認。著作権上の素材の利用条件は CC0。
+- 目的: 第2層の崩れた石造アーチを三角形の陰影が目立つローポリから、風化・ひび割れ・石材の粒子を持った石造物へ段階的に品質改善。
+- 実装: PR #401 `tools/b2-render/fetch-stone-photo-pbr.py` がPoly Haven公式APIのレスポンスから画像URLを取り、PNG/JPEGシグネチャとSHA256を確認してArtifactへ保存。Blender側`build-ruined-stone-arch-v1.py`がBase Color/Normal/Roughnessへ接続し、UVを保持。Blender環境では追加メッシュ表面細分化も適用。
+- 情報確認: 2026-11-16、Poly Haven公式サイトでRock Surfaceの写真素材・CC0ライセンス・各PBRマップを確認。APIは一般利用可能。
+- **実導入/検証状態: コード追加のみ / 未検証。** このチャットのコンテナは素材CDNへのDNSアクセス不能。GitHub Actions側でのダウンロード・Blenderレンダー・GLB材質・3方向PNG・写真テクスチャの見え方は未確認。Actions側では写真が得られない場合にエラー停止させ、手続きテクスチャを成功扱いにしない。
+- 関連: `feature/b2-ruined-stone-arch-20261116` / PR #401。承認前のGLB/PNGは正式素材ではない。画像ライセンスとダウンロード元URL・SHA256はsource_manifestへ記録する。
+- 他候補: [Mossy Stone Wall](https://polyhaven.com/a/mossy_stone_wall)（人工物の経年劣化）、[ambientCG Rock059](https://ambientcg.com/view?id=Rock059)（灰緑の湿り岩）。CC0だが**未取得・未適用**。
