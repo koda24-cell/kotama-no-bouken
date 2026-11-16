@@ -41,3 +41,6 @@ Before modifying B5 gloom/corruption rock or reusing its Blender tools, read `do
 - Before continuing any Blender automation or rendering across chats, read `docs/3d/BLENDER_SHARED_EXECUTION_ENTRYPOINT.md` and follow its links to the **latest** applicable branch/PR and run.
 - GitHub Actions Blender rendering and job-to-job checkpoint resume have verified examples. Dedicated Blender MCP is **not automatically available** in every ChatGPT session; API-driven vision aesthetic revision is **not yet verified/connected**.
 - Use draft/unapproved assets only for review, never promote them without explicit user approval; preserve base meshes and distinguish technical QA from artistic acceptance.
+
+## Blender session timeout safety (mandatory for 3D work)
+Before running long Blender/Actions iteration loops, follow `docs/3d/BLENDER_SHARED_EXECUTION_ENTRYPOINT.md` section 「GPT応答タイムアウト前の安全停止・引き継ぎ」. Use short bounded cycles, save actual outputs and source/manifest/checkpoints during each cycle, stop new heavy work with sufficient margin, and report resumable state before conversation timeout. Do not imply that GPT can precisely detect its remaining time. Approval is still required for formal asset promotion.
