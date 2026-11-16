@@ -25,7 +25,25 @@ jobs:
           test -s ruined_stone_arch_v1.blend
           test -s manifest.json
           for view in front side angle; do test -s "ruined_stone_arch_v1_${view}.png"; done
-          sha256sum *.glb *.png > SHA256SUMS.txt
+          python3 - <<'PY'
+          import json, pathlib, struct, hashlib
+          p=pathlib.Path('.')
+          manifest=json.loads((p/'manifest.json').read_text())
+          assert manifest["status"]=="NOT_APPROVED"
+          assert len(manifest.get("textures", []))==4
+          for name in manifest["files"]:
+              data=(p/name).read_bytes()
+              assert len(data)>1024, name
+              assert hashlib.sha256(data).hexdigest()==manifest["sha256"][name], name
+              if name.endswith(".png"):
+                  assert data[:8]==bytes.fromhex("89504e470d0a1a0a"), name
+                  w,h=struct.unpack(">II",data[16:24])
+                  assert w>=256 and h>=256, (name,w,h)
+          glb=(p/'ruined_stone_arch_v1.glb').read_bytes()
+          assert glb[:4]==b'glTF'
+          print("VERIFIED_B2_ARCH",len(manifest["files"]),"files; views and texture hashes checked")
+          PY
+          sha256sum *.glb *.blend *.png manifest.json > SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
