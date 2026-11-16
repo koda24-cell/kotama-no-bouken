@@ -1,0 +1,46 @@
+name: B4 Minecart V19 Weathering Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-v19-weathering-20261116
+    paths:
+      - '.github/workflows/b4-minecart-v19-weathering.yml'
+      - 'tools/b4-render/build-v18-artisan.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Create V19 cart PBR GLB and four Blender reviews
+        run: |
+          set -euo pipefail
+          blender -b -t 2 --python tools/b4-render/build-v18-artisan.py -- v19-output c
+          for view in front side angle gauge; do
+            test -s "v19-output/b4-minecart-v18-c-${view}.png"
+          done
+          test -s v19-output/b4-minecart-v18-c.glb
+          test -s v19-output/b4-minecart-v18-c.blend
+          test -s v19-output/b4-minecart-v18-c-metrics.json
+      - name: Save review manifest and file hashes
+        run: |
+          python3 - <<'PY'
+          import os,glob,json,hashlib
+          paths=sorted(p for p in glob.glob('v19-output/*') if os.path.isfile(p))
+          data=[{'path':p,'bytes':os.stat(p).st_size,'sha256':hashlib.sha256(open(p,'rb').read()).hexdigest()} for p in paths]
+          open('v19-output/manifest.json','w').write(json.dumps({'approval':'NOT_APPROVED','version':'19','files':data},indent=2))
+          print('CHECKED',len(data))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-minecart-v19-review-unapproved
+          path: v19-output/
+          retention-days: 14
