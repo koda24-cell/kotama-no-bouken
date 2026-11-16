@@ -17,6 +17,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p out
+          python3 -m py_compile tools/floor3/ruined_connector/build_irregular_v6.py
+          echo "V6 source: $GITHUB_SHA; Actions run: $GITHUB_RUN_ID"
           printf '{"stage":"floor3","version":"v6","approval":"NOT_APPROVED","phase":"RENDER_STARTED","source_commit":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/progress.json
           docker pull lscr.io/linuxserver/blender:latest
           docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_irregular_v6.py 2>&1 | tee blender.log
