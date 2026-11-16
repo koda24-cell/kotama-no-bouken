@@ -36,3 +36,8 @@ Before modifying B5 gloom/corruption rock or reusing its Blender tools, read `do
 
 ## Shared VFX reference and reuse
 - Before implementing smoke, mist, fog, miasma or battle particles for any floor, read `docs/3d/VFX_TOOL_CATALOG.md` and `docs/3d/VFX_CC0_ASSET_LIBRARY_20261115.md`. Distinguish user-supplied visual references from redistributable CC0 assets. Reuse the shared VFX preset design rather than duplicating effects per floor.
+
+## Shared Blender execution entrypoint (all ChatGPT / Work / Claude sessions)
+- Before continuing any Blender automation or rendering across chats, read `docs/3d/BLENDER_SHARED_EXECUTION_ENTRYPOINT.md` and follow its links to the **latest** applicable branch/PR and run.
+- GitHub Actions Blender rendering and job-to-job checkpoint resume have verified examples. Dedicated Blender MCP is **not automatically available** in every ChatGPT session; API-driven vision aesthetic revision is **not yet verified/connected**.
+- Use draft/unapproved assets only for review, never promote them without explicit user approval; preserve base meshes and distinguish technical QA from artistic acceptance.
