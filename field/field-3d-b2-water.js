@@ -1208,7 +1208,9 @@ export async function createTheme(api) {
   // 3D表示の装飾のみ。通路、壁判定、カメラ、マップイベントは変更しない。
   function addAtrium(x, z) {
     const atrium = new THREE.Group(); atrium.name = 'b2:open_ceiling_atrium'; root.add(atrium);
-    const stone = mats['Pale mineral stone'], dark = mats['Deep cavern rock'];
+    // 頂点色を持たない Box/Cone などに vertexColors の素材を使うと真っ黒になるため、頂点色なしの複製を使う
+    if (!mats._atriumStone) { mats._atriumStone = mats['Pale mineral stone'].clone(); mats._atriumDark = mats['Deep cavern rock'].clone(); mats._atriumStone.vertexColors = false; mats._atriumDark.vertexColors = false; }
+    const stone = mats._atriumStone, dark = mats._atriumDark;
     const trim = mats['Ancient inlay'];
     const lightMat = new THREE.MeshBasicMaterial({ color: 0x9beaff, transparent: true, opacity: 0.19, depthWrite: false, side: THREE.DoubleSide });
     const fishMat = new THREE.MeshBasicMaterial({ color: 0x174a65, side: THREE.DoubleSide, transparent: true, opacity: 0.7, depthWrite: false });
