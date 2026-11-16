@@ -18,3 +18,10 @@
 
 ## 玉座V2への引継ぎ
 玉座V1はPR #383で未承認。V1のレンダ成功run #43727373990 と既存 `assets/3d/dungeons/b5_abyssal_star_realm/models/floor5_abyss_throne_refined_v2.glb` を比較する。MCP通信が検証できた後に追加造形・3方向レンダへ進む。
+
+## 2026-11-16: 共通3D基盤への移管
+- 共通の制作機能の正本: https://github.com/koda24-cell/3d-asset-studio
+- 共通基盤のDraft PR: https://github.com/koda24-cell/3d-asset-studio/pull/1
+- 他チャットの入口: 上記リポジトリの `AGENTS.md`、`docs/HANDOFF.md`、`docs/TOOLS_CATALOG.md`
+- このゲーム側の素材・固有造形コードは保持し、承認・確認のない削除や移動はしない。
+- Blender 5.3.0起動は成功(run 43780697418)。公式MCP GitサーバーへのアクセスはHTTP 403で失敗。MCP実通信は未検証。
