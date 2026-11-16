@@ -1,5 +1,5 @@
 {
-  "status": "final_photography_in_progress",
+  "status": "verified_pending_user_review",
   "artApproval": "pending_user_review",
   "gameIntegrated": false,
   "sceneSourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
@@ -22,5 +22,5 @@
     "shrine_detail",
     "birdseye"
   ],
-  "note": "Old renders/scene photographs and delivery-summary refer to revision one until final photographs and the final gate are renewed."
+  "note": "Revision two photographs and final gate complete; visual acceptance and game integration remain pending."
 }
