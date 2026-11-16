@@ -266,7 +266,8 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
 
     def recurve_fn(s, a):
         e = max(0.0, (abs(a) - 0.7) / 0.3) ** 2
-        return e * L * 0.025 * sstep(0.35, 0.6, s) * (1 - 0.6 * sstep(0.8, 1.0, s))
+        wav = 1 + 0.6 * math.sin(s * 17 + (2.1 if a > 0 else 0.0) + asym * 3)
+        return e * L * 0.025 * wav * sstep(0.35, 0.6, s) * (1 - 0.6 * sstep(0.8, 1.0, s))
 
     def col_fn(s, a):
         g = 1 - sstep(0.0, 0.22, s)
@@ -441,7 +442,7 @@ def build_leaf(tag, ground, ang, hp, alpha, Lb, wmax, bend=(16, 38), roll=0.0, t
             f = 0.85 * math.sqrt(max(0.0, 1 - t ** 2.4)) * (1 - 0.12 * t) + 0.15 * (1 - t)
         return 0.5 * wmax * f
 
-    nv = 7
+    nv = 6
     verts, cols = [], []
     ph = rnd.random()
     for i in range(res_u + 1):
@@ -452,8 +453,8 @@ def build_leaf(tag, ground, ang, hp, alpha, Lb, wmax, bend=(16, 38), roll=0.0, t
         for j in range(res_v + 1):
             v = -1 + 2 * j / res_v
             av = abs(v)
-            phase = 2 * math.pi * (nv * u - 1.3 * av + ph)
-            corr = 0.0026 * sstep(0.05, 0.3, av) * (1 - av ** 4) * math.cos(phase) * sstep(0.03, 0.15, u)
+            phase = 2 * math.pi * (nv * u - 0.5 * av + ph)
+            corr = 0.0018 * sstep(0.12, 0.35, av) * (1 - av ** 3) * math.cos(phase) * sstep(0.03, 0.15, u)
             wave = 0.003 * math.sin(u * 21 + (1.7 if v > 0 else 0.0)) * av ** 4 * sstep(0.2, 0.5, u)
             zoff = w * (fold * av + 0.08 * v * v) + corr + wave
             verts.append(cl[i] + S * (v * w) + N * zoff)
@@ -725,12 +726,12 @@ def build_collars():
 build_ground()
 GZ = 0.008
 # 仏炎苞（大・中・小）: 向きと高さをばらす
-build_spathe("L", L=0.18, wmax=0.15, rs=0.007, Ls=0.064, base=(-0.042, -0.04, 0.03),
-             yaw=-18, lean=-8, roll=4, ground=None, seed=1)
-build_spathe("M", L=0.155, wmax=0.13, rs=0.0064, Ls=0.056, base=(0.052, -0.032, 0.024),
-             yaw=40, lean=4, roll=-6, ground=None, seed=2)
-build_spathe("S", L=0.128, wmax=0.105, rs=0.0058, Ls=0.047, base=(0.006, -0.082, 0.016),
-             yaw=14, lean=-14, roll=14, ground=None, seed=3)
+build_spathe("L", L=0.18, wmax=0.15, rs=0.007, Ls=0.064, base=(-0.06, -0.034, 0.03),
+             yaw=-24, lean=-8, roll=6, ground=None, seed=1)
+build_spathe("M", L=0.155, wmax=0.13, rs=0.0064, Ls=0.056, base=(0.064, -0.03, 0.024),
+             yaw=34, lean=2, roll=-8, ground=None, seed=2)
+build_spathe("S", L=0.128, wmax=0.105, rs=0.0058, Ls=0.047, base=(0.0, -0.09, 0.016),
+             yaw=6, lean=-14, roll=12, ground=None, seed=3)
 # 葉（後ろ側に広がる櫂形 3 枚 + 後方中央の若い巻き葉）。開花期なので葉は苞より少し控えめ
 build_leaf("A", ground=(-0.008, 0.02, GZ), ang=118, hp=0.09, alpha=12, Lb=0.27, wmax=0.14,
            bend=(14, 32), roll=math.radians(-8), twist=0.22, seed=4)
