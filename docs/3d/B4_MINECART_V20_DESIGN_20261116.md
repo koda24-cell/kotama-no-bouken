@@ -32,3 +32,27 @@ Pinterest調査は共有リポジトリ `koda24-cell/pinterest-reference-library
 
 ## タイムアウトと中断
 - 各反復は小さく保存してから次へ進む。停止ボタン押下後の追加保存はできない。GitHub側に保存済みのソースと成功済みArtifactsのみ復元可能。
+
+## 実制作・実レンダ履歴（2026-11-16）
+以下の結果は実際にGitHub Actionsの成功とArtifactsのファイル内容・3方向PNGを確認済み（ユーザー承認はまだ）。
+- V20/V21構造改善: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43824041252 （V14比較、GLB/Blend/PNG各3方向）。長手拡張と車輪移動が有効。ただし傾いた廃墟用配置のまま。
+- V22画像PBR導入: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43824911258 （GLBに木・鉄の6画像を実埋込、再読込Cycles成功）。赤茶が強く端のカプラーが浮く。
+- V23調整: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43825499744 （6画像確認）。木材トーン暗色化、カプラー座標修正。ただし車体全体の転倒感。
+- V24水平・接地レンダ: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43826098650 （水平置き候補を元の転倒モデルと分離、確認地面はGLBに含めず、6画像確認）。まだカプラー飛び出し。
+- V25短縮カプラー＋鉱石PBR: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43826947846 （9埋込画像）。カプラー改善、鉱石が明るすぎる問題を確認。**V25不採用**。
+- V26暗色の岩・車輪拡幅: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43827649140 （9画像/GLB/Blend/PNG確認）。鉱石は暗く戻ったが、大きな三角面が残る。
+- V27は元の礫石メッシュを消去しない球面分割の追加シェルで三角面を抑える候補。Actionsが成功し画像確認できるまでは実証済みと書かない。
+
+## 破損と品質検査の追跡
+- V20/V21から原型の長さ・幅・車輪間隔を調整。**追加の4輪を生成しない**。
+- V24以降は独立GLBだけ水平配置。元の転倒廃墟トロッコはそのまま別候補として保持。
+- V22以降は自作画像PBRの実GLB埋込を確認。写真PBRの取得やライセンス済みの外部画像使用とは別。
+- V25画像が明るくなりすぎた問題を目視で検出し、V26で修正。
+- 「世界基準の完成品」やゲーム実装品質の認定は**未完了**。現在は大きな鉱石の輪郭、足回りの小さい接続物、木板の欠損形状や立体的な破断、GLBのブラウザ実機負荷・地面との当たり判定、4Fマップとの色調統一を評価待ち。
+- 全候補 `NOT_APPROVED`。Artifactsは14日で期限切れ。ユーザーの完成承認なく正式素材フォルダへ昇格しない。
+
+## 再開の最短経路
+1. PR #423、`AGENTS.md`、`docs/3d/BLENDER_SHARED_EXECUTION_ENTRYPOINT.md` と本書を読む。
+2. 最新Actionsの`b4-cart-v25-rock-pbr.yml`（名称はV26/V27比較に変更済み）を確認し、ソースSHAが一致するPNG3/GLB/.blend/manifestを取得。
+3. 実レンダリング画像の欠陥を1種類ずつ直す。不要な工程は破壊せず候補別に残す。
+4. ユーザーの明示的承認後のみ正式素材昇格を検討。Claudeには承認済みGLBとPNG/manifestを渡す。
