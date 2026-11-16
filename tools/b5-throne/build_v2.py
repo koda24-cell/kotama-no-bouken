@@ -17,6 +17,11 @@ variant=int(os.environ.get("THRONE_VARIANT", "0"))
 if variant not in range(0, 8):
     raise ValueError("THRONE_VARIANT must be 0..7")
 rng=random.Random(2068 + variant * 71)
+relief_delta=max(-3,min(3,int(os.environ.get("THRONE_RELIEF_DELTA","0"))))
+rubble_delta=max(-3,min(3,int(os.environ.get("THRONE_RUBBLE_DELTA","0"))))
+back_depth_delta=max(-.15,min(.15,float(os.environ.get("THRONE_BACK_DEPTH_DELTA","0"))))
+arch_curvature_delta=max(-.2,min(.2,float(os.environ.get("THRONE_ARCH_CURVATURE_DELTA","0"))))
+
 def irregular_block(name, loc, dimensions, material, seed, damage=0.13):
     """Faceted block with uneven beveled outline; original meshes unchanged."""
     rr=random.Random(seed)
@@ -47,8 +52,8 @@ def band(name, a, b, width, material):
     return ob
 
 # Back: inset vertical stone reliefs and concentric pointed shrine motif.
-for i in range(11):
-    x=-.53+i*.106
+for i in range(max(6,11+relief_delta)):
+    x=-.53+i*(1.06/max(1,10+relief_delta))
     z=1.37+abs(x)*.32
     band(f"V2 eroded relief spine {i:02d}",(x,.155,z),(x+rng.uniform(-.02,.02),.15,2.78-abs(x)*.50),
          .012+rng.random()*.017,edge if i%3==0 else iron)
@@ -100,13 +105,29 @@ for i in range(5):
         (.18+rng.random()*.14,.24+rng.random()*.13,.12+rng.random()*.14),
         edge if i==0 else stone,3900+i,.22)
 # Big irregular rubble only; no decorative small pebbles.
-for i in range(10 + variant):
+for i in range(max(4,10 + variant + rubble_delta)):
     x=rng.uniform(-1.7,1.7);y=rng.uniform(-1.35,1.0)
     if abs(x)<1.05 and y>-.75: y=-1.15
     size=(rng.uniform(.23,.54),rng.uniform(.22,.43),rng.uniform(.15,.35))
     ob=irregular_block(f"V2 fallen masonry {i:02d}",(x,y,size[2]*.30),
                       size,stone if i%4 else edge,4900+i,.23)
     ob.rotation_euler=(rng.uniform(-.13,.22),rng.uniform(-.3,.3),rng.uniform(-.7,.7))
+# Apply visual feedback as ADDED geometry, never destructive edits.
+if back_depth_delta > 0:
+    cube("V2 feedback backing depth", (0,.47 + back_depth_delta/2,1.97),
+         (1.40,back_depth_delta,2.1),stone,.03)
+# Curved fan of small segments approximates a non-rectilinear inner arch.
+arch_strength=.10+arch_curvature_delta
+if arch_strength > 0:
+    for sign in (-1,1):
+        previous=None
+        for j in range(9):
+            t=j/8
+            point=(sign*(.70*(1-t)-arch_strength*math.sin(math.pi*t)),
+                   .065,2.50+0.63*t+arch_strength*math.sin(math.pi*t))
+            if previous is not None:
+                band(f"V2 feedback curved arch {sign} {j}",previous,point,.024,edge)
+            previous=point
 # Restore rendering in V2 without mutating any V1 source file.
 world=bpy.context.scene.world
 world.color=(.12,.11,.15)
