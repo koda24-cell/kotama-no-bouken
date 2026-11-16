@@ -93,6 +93,15 @@ for ceiling in game['ceilingPlacements']:
     if 'sourceSha256' in ceiling:assert sha(ROOT/ceiling['file'])==ceiling['sourceSha256']
 for source in game['expectedSourceBaseline']['sourceFiles']:
     assert source['baselineMatch'] is True and sha(ROOT/source['file'])==source['sha256']==source['expectedBaselineSha256'],source['file']
+map_review_file=ROOT/'docs/reviews/f1-sacred-forest-game-layout/browser-verification.json'
+map_review=read(map_review_file)
+assert map_review['passed'] and map_review['errors']==[] and map_review['warnings']==[]
+assert map_review['candidateSha256']==sha(BASE/'scene/game-layout-candidate.json')
+assert map_review['reviewerSha256']==sha(ROOT/'preview/f1-game-layout-candidate.html')
+assert map_review['foliageHelperSha256']==sha(ROOT/'preview/f1-foliage-coverage.js')
+assert set(map_review['nearViews'])=={'approach','shrine','water'}
+for near in map_review['nearViews'].values():assert not near['wallOccluded'] and abs(near['eye'][1]-1.6)<1e-5
+assert map_review['foliageCoverage'] and all(m['alphaCutoffUnchanged'] for m in map_review['foliageCoverage'])
 summary=dict(status='candidate_verified_pending_user_review',gameIntegrated=False,
  generatedAtUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),
  sourceRevision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
@@ -106,6 +115,7 @@ summary=dict(status='candidate_verified_pending_user_review',gameIntegrated=Fals
                           dressingGround=len(game.get('dressingGroundPlacements',[])),
                           presentationRevision=game['presentationRevision'],requiredCapabilities=game['requiredCapabilities']),
  views=views,conformanceFiles=18,conformanceErrors=0,conformanceWarnings=0,browserErrors=0,
+ gameLayoutBrowserReview=dict(file=str(map_review_file.relative_to(ROOT)),sha256=sha(map_review_file),eyeHeightViews=3,errors=0,warnings=0),
  sourcePortabilityVerified=True,centralRouteClearanceVerified=True,
  realDevicePerformanceApproved=False,artApproval='pending_user_review',
  notes=['Standalone review environment and unapplied game-layout candidate.',
