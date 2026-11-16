@@ -871,7 +871,7 @@ export async function createTheme(api) {
         }
       }
 
-      // 規則V1〜V3：v8 の結晶の塊（見せ場）。紫の背の高い結晶3本の芯＋水色の中・小の結晶4〜5本＋根元の岩を、奥の壁ぎわ（中央から1.15m以上）に寄せた群れ。
+      // 規則V1〜V3：v8 の結晶の塊（見せ場）。紫の背の高い結晶5本の芯＋水色の中・小の結晶4〜5本＋根元の岩を、奥の壁ぎわ（中央から1.15m以上）に寄せた群れ。
       // 置き場：残りの行き止まりを優先し、足りなければ部屋の本当の角、さらに通路の曲がり角（角の外側の斜めも壁）。1階に2〜3か所、群れどうし6マス以上（チェビシェフ）、祭壇から4マス以上
       if (v8 && v8.crystals.length) {
         const violet = (pc) => ({ ...pc, parts: pc.parts.map((p) => ({ ...p, mat: 'Violet danger crystal' })) });
@@ -897,12 +897,13 @@ export async function createTheme(api) {
           const mx = x + dx * reach, mz = z + dz * reach;
           const UP = v8.crystalsUpright.length ? v8.crystalsUpright : v8.crystals;
           const R = (k) => H(c.tx, c.ty, 512 + k);
+          // v8 の結晶は細身なので、塊に見えるよう太さだけ1.5倍（形はそのまま）
           const crystal = (k, px, pz, height, tilt, mat) => {
-            const pc = pick(UP, R(k)), piece = mat ? { ...pc, parts: pc.parts.map((p) => ({ ...p, mat })) } : pc;
-            B.add('v8_crystals', piece, M4(px, -0.1, pz, R(k + 1) * 6.28, height / Math.max(pc.size.y, 0.01), tilt), c.tx, c.ty);
+            const pc = pick(UP, R(k)), piece = mat ? { ...pc, parts: pc.parts.map((p) => ({ ...p, mat })) } : pc, sc = height / Math.max(pc.size.y, 0.01);
+            B.add('v8_crystals', piece, M4(px, -0.1, pz, R(k + 1) * 6.28, [sc * 1.5, sc, sc * 1.5], tilt), c.tx, c.ty);
           };
-          // 芯：紫の背の高い結晶3本を寄せて立てる（少しずつ傾ける）
-          const core = [[0, 0, 1.75], [0.28, -0.12, 1.35], [-0.26, 0.1, 1.05]];
+          // 芯：紫の背の高い結晶5本を寄せて立てる（少しずつ傾ける）
+          const core = [[0, 0, 1.8], [0.3, -0.12, 1.4], [-0.28, 0.1, 1.15], [0.12, 0.25, 0.9], [-0.1, -0.22, 1.0]];
           for (const [i, [ox, oz, hh]] of core.entries()) {
             const latV = corner ? [dz * 0.7, -dx * 0.7] : lat, inV = corner ? [dx * 0.7, dz * 0.7] : [dx, dz];   // 壁に沿う向き・壁へ向かう向き
             const sx = latV[0] * ox - inV[0] * Math.abs(oz), sz2 = latV[1] * ox - inV[1] * Math.abs(oz);
