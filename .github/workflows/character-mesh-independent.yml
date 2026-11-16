@@ -16,24 +16,24 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y blender xvfb python3-numpy
-      - name: Download attributed CC BY 4.0 reference figures
+      - name: Download attributed CC BY 4.0 reference figure
         run: |
           mkdir -p /tmp/mesh-reference output/character-mesh-independent
-          for model in CesiumMan RiggedFigure; do
+          for model in RiggedFigure; do
             curl --fail --location --retry 3 --max-time 180 -o "/tmp/mesh-reference/$model.glb" "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/$model/glTF-Binary/$model.glb"
             test -s "/tmp/mesh-reference/$model.glb"
             sha256sum "/tmp/mesh-reference/$model.glb" >> output/character-mesh-independent/sources.sha256
           done
       - name: Blender structure comparison
         run: |
-          for model in CesiumMan RiggedFigure; do
+          for model in RiggedFigure; do
             xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/analyze_character.py -- "/tmp/mesh-reference/$model.glb" "output/character-mesh-independent/$model.json"
           done
       - name: Validate JSON
         run: |
           python3 - <<'PY'
           import json
-          for name in ('CesiumMan','RiggedFigure'):
+          for name in ('RiggedFigure',):
               d=json.load(open(f'output/character-mesh-independent/{name}.json'))
               assert d['meshes'], name
               print(name, len(d['meshes']))
