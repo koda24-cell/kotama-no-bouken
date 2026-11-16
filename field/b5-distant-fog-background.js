@@ -17,6 +17,7 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
   const fragmentShader=`
     precision highp float;
     #define OCTAVES ${Math.max(2,Math.min(5,octaves|0))}
+    #define LITE ${octaves<5?1:0}
     varying vec2 vUv;
     uniform float uTime;
     uniform float uSeed;
@@ -58,8 +59,12 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
       float redVein=pow(max(0.,fbm(uv*vec2(8.,5.)+uTime*.005)-.56)*3.,2.);
       col+=vec3(.18,.022,.14)*redVein;
       // Warp both fog layers slowly to mimic organic rolling and drifting.
+      #if LITE==0
       vec2 drift=vec2(fbm(uv*vec2(2.5,3.)+uTime*.018),fbm(uv*vec2(3.,2.5)-uTime*.014));
       float warp=fbm(uv*vec2(6.,4.)+drift*.9+vec2(uTime*.026,-uTime*.009));
+      #else
+      float warp=fbm(uv*vec2(6.,4.)+wisps*.9+vec2(uTime*.026,-uTime*.009));
+      #endif
       col+=vec3(.065,.012,.09)*smoothstep(.35,.7,warp);
       vec3 lights=windows(uv);
       if(uUseWindowMap>.5){
@@ -128,8 +133,14 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
       // Dissolve the distant VFX plane into the scene rather than revealing
       // its rectangular bottom/side edges. Multi-scale noise disrupts the
       // cutoff while a broad feather avoids a hard horizontal seam.
+      #if LITE==0
       float edgeBroad=fbm(uv*vec2(4.2,3.1)+vec2(uTime*.009,-uTime*.006));
       float edgeFine=fbm(uv*vec2(12.7,8.3)+vec2(-uTime*.017,uTime*.011));
+      #else
+      // Low quality: reuse the existing cloud fields for the edge dissolve.
+      float edgeBroad=wisps;
+      float edgeFine=noise(uv*vec2(12.7,8.3)+vec2(-uTime*.017,uTime*.011));
+      #endif
       float edgeWarp=(edgeBroad-.5)*.20+(edgeFine-.5)*.085;
       float bottom=smoothstep(.015,.34,uv.y+edgeWarp);
       float left=smoothstep(.0,.19,uv.x+edgeWarp*.65);
