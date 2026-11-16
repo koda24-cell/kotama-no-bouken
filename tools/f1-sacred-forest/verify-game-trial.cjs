@@ -332,10 +332,10 @@ async function main(){
   args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--autoplay-policy=no-user-gesture-required']});
  try{
   if(process.argv.includes('--water-review')){
-   report.scope='Supplementary real index.html west-facing water review; not the full gameplay suite';
+   report.scope='Supplementary real index.html north-facing water review; not the full gameplay suite';
    const session=await createSession('water-review',true);
    const snapshot=await enter(session,2,true);assertNativeFloor(snapshot,2);
-   await teleport(session,21,10,'left');await screenshot(session,'14-trial-water-facing-west');
+   await teleport(session,14,11,'up');await screenshot(session,'14-trial-water-facing-north');
    await storageProof(session);
    assert.deepEqual(session.record.pageErrors,[]);assert.deepEqual(session.record.consoleErrors,[]);
    assert.deepEqual(frozenInputs(),sourceRecord.inputs,'Inputs changed during water review');
