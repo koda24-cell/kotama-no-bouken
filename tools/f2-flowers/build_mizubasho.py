@@ -181,10 +181,10 @@ C._set(node(M_SPADIX), "Emission Color", (*lin("FFD65A"), 1))
 C._set(node(M_SPADIX), "Emission Strength", 0.25)
 
 M_LEAF = C.mat_leaf("mz_leaf", lin("4E7F3A"), rough=0.42, sss=0.15, coat=0.3, vcol=True)
-M_ICE = C.mat_ice("mz_ice", lin("BFDDEB"), rough=0.07, trans=0.85)
+M_ICE = C.mat_ice("mz_ice", lin("CFE6F0"), rough=0.04, trans=0.92)
 M_ICE_RIM = C.mat_ice("mz_ice_rim", lin("D9ECF4"), rough=0.22, trans=0.55)
 M_FROST = C.mat_ice("mz_frost", lin("EAF6FF"), rough=0.12, trans=0.45)
-M_CRACK = C.mat_basic("mz_ice_crack", lin("D6E6F0"), rough=0.5)
+M_CRACK = C.mat_basic("mz_ice_crack", lin("BCD6E6"), rough=0.35)
 M_MUD = C.mat_basic("mz_mud", lin("2E2820"), rough=0.32)
 C._use_vcol(M_MUD, node(M_MUD))
 M_GRASS = C.mat_basic("mz_dead_grass", lin("8E7A52"), rough=0.75)
@@ -238,14 +238,14 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
     asym = rnd.uniform(-1, 1)
 
     def phi_fn(s):
-        return math.pi * (1.08 - 0.33 * sstep(0.05, 0.22, s) - 0.2 * sstep(0.22, 0.55, s) - 0.17 * sstep(0.62, 1.0, s))
+        return math.pi * (1.08 - 0.36 * sstep(0.04, 0.2, s) - 0.12 * sstep(0.2, 0.55, s) - 0.18 * sstep(0.6, 1.0, s))
 
     def blade_w(s):
-        if s < 0.6:
-            f = sstep(0.0, 0.58, s) ** 0.6
+        if s < 0.48:
+            f = sstep(0.0, 0.48, s) ** 0.55
         else:
-            t = (s - 0.6) / 0.4
-            f = (1 - t) * (1 + 1.25 * t) / (1 + 0.0) * (1 - 0.18 * t * t)
+            t = (s - 0.48) / 0.52
+            f = (1 - t) * (1 + 1.4 * t) * (1 - 0.25 * t * t)
         return wmax * 0.5 * 1.25 * f
 
     def w_fn(s):
@@ -265,7 +265,7 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
 
     def recurve_fn(s, a):
         e = max(0.0, (abs(a) - 0.7) / 0.3) ** 2
-        return e * L * 0.04 * sstep(0.3, 0.55, s) * (1 - 0.6 * sstep(0.8, 1.0, s))
+        return e * L * 0.025 * sstep(0.35, 0.6, s) * (1 - 0.6 * sstep(0.8, 1.0, s))
 
     def col_fn(s, a):
         g = 1 - sstep(0.02, 0.26, s)
@@ -277,7 +277,7 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
     M = (Matrix.Translation(Vector(base)) @ Matrix.Rotation(math.radians(yaw), 4, "Z")
          @ Matrix.Rotation(math.radians(lean), 4, "X") @ Matrix.Rotation(math.radians(roll), 4, "Y"))
 
-    verts, cols, faces, edge = rolled_sheet(24, 20, phi_fn, R_fn, spine_fn, spiral_fn, recurve_fn, col_fn)
+    verts, cols, faces, edge = rolled_sheet(24, 18, phi_fn, R_fn, spine_fn, spiral_fn, recurve_fn, col_fn)
     verts = [M @ v for v in verts]
     ob = make_mesh(f"spathe_{tag}", verts, faces, cols)
     solidify(ob, thick)
@@ -317,7 +317,7 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
             cf.append((k * sides + s, k * sides + (s + 1) % sides, (k + 1) * sides + (s + 1) % sides, (k + 1) * sides + s))
     cf.append(tuple(reversed(range(sides))))
     # 小花
-    pitch = 0.0034 * (rs / 0.0068) ** 0.6
+    pitch = 0.0038 * (rs / 0.0068) ** 0.6
     fr = pitch * 0.5
     YEL_TOP = lin("E6CC4C")
     YEL = lin("D8C24A")
@@ -333,6 +333,8 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
         for i in range(n):
             a = 2 * math.pi * (i + 0.5 * (k % 2)) / n + rnd.uniform(-0.05, 0.05)
             rad = Vector((math.cos(a), math.sin(a), 0))
+            if rad.y > 0.5:      # 苞の背に面した側は見えないので省く
+                continue
             places.append((ax + rad * r0 + Vector((0, 0, z)), rad, (z - zstart) / (zc - zstart)))
         z += dz
         k += 1
@@ -346,6 +348,8 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
         for i in range(n):
             a = 2 * math.pi * (i + 0.5 * (k % 2)) / n
             rad = Vector((math.cos(a), math.sin(a), 0))
+            if rad.y > 0.6 and beta < 0.9:
+                continue
             nrm = rad * math.cos(beta) + Z * math.sin(beta)
             places.append((ax + Vector((0, 0, zc)) + nrm * dome, nrm, 1.0))
         k += 1
@@ -405,7 +409,7 @@ PET = lin("6E9944")
 
 
 def build_leaf(tag, ground, ang, hp, alpha, Lb, wmax, bend=(16, 38), roll=0.0, twist=0.0,
-               res_u=32, res_v=12, seed=0):
+               res_u=30, res_v=12, seed=0):
     rnd = random.Random(seed)
     D = Vector((math.cos(math.radians(ang)), math.sin(math.radians(ang)), 0))
 
@@ -520,7 +524,7 @@ def build_rolled_leaf(tag, ground, H, R0, yaw, lean, seed):
         c = mix(FRESH_PALE, FRESH, sstep(0.0, 0.25, s))
         return mix(c, EDGE, max(0.0, (a - 0.6) / 0.4))
 
-    verts, cols, faces, edge = rolled_sheet(26, 16, phi_fn, R_fn, spine_fn, lambda s: 0.24,
+    verts, cols, faces, edge = rolled_sheet(22, 14, phi_fn, R_fn, spine_fn, lambda s: 0.24,
                                             lambda s, a: 0.0, col_fn)
     verts = [M @ v for v in verts]
     ob = make_mesh(f"leaf_young_{tag}", verts, faces, cols)
@@ -631,9 +635,9 @@ def build_ground():
     for i in range(8):
         a0 = 2 * math.pi * i / 8 + rnd.uniform(-0.3, 0.3)
         st = Vector((math.cos(a0), math.sin(a0), 0)) * 0.068
-        pts = crack(st, a0, 9, 0.016, 0.0009)
+        pts = crack(st, a0, 9, 0.016, 0.0006)
         if len(pts) > 4 and rnd.random() < 0.7:
-            crack(pts[len(pts) // 2], a0 + rnd.choice((-0.9, 0.9)), 5, 0.012, 0.0006)
+            crack(pts[len(pts) // 2], a0 + rnd.choice((-0.9, 0.9)), 5, 0.012, 0.0004)
     cr = make_mesh("ice_cracks", cv, cf, smooth=False, recalc=True)
     C.assign(cr, M_CRACK)
 
@@ -693,7 +697,7 @@ def build_collars():
     for g, r in collars:
         b = len(tv)
         zc = ice_top(g.x, g.y) - 0.0015
-        rm = 0.0045 + r * 0.35
+        rm = 0.0032 + r * 0.3
         Rm = r + rm * 0.55
         ph0 = rnd.random() * 6.28
         for i in range(nu):
@@ -720,18 +724,18 @@ def build_collars():
 build_ground()
 GZ = 0.008
 # 仏炎苞（大・中・小）: 向きと高さをばらす
-build_spathe("L", L=0.165, wmax=0.13, rs=0.0068, Ls=0.06, base=(-0.022, -0.036, 0.034),
-             yaw=-12, lean=-8, roll=4, ground=None, seed=1)
-build_spathe("M", L=0.14, wmax=0.11, rs=0.0062, Ls=0.052, base=(0.038, -0.022, 0.026),
-             yaw=46, lean=4, roll=-6, ground=None, seed=2)
-build_spathe("S", L=0.118, wmax=0.092, rs=0.0056, Ls=0.044, base=(-0.044, 0.006, 0.02),
-             yaw=-80, lean=10, roll=5, ground=None, seed=3)
-# 葉（後ろ側に広がる櫂形 3 枚 + 後方中央の若い巻き葉）
-build_leaf("A", ground=(-0.008, 0.018, GZ), ang=118, hp=0.10, alpha=12, Lb=0.30, wmax=0.15,
+build_spathe("L", L=0.18, wmax=0.15, rs=0.007, Ls=0.064, base=(-0.042, -0.04, 0.03),
+             yaw=-18, lean=-8, roll=4, ground=None, seed=1)
+build_spathe("M", L=0.155, wmax=0.13, rs=0.0064, Ls=0.056, base=(0.052, -0.032, 0.024),
+             yaw=40, lean=4, roll=-6, ground=None, seed=2)
+build_spathe("S", L=0.128, wmax=0.105, rs=0.0058, Ls=0.047, base=(-0.058, 0.02, 0.02),
+             yaw=-72, lean=12, roll=5, ground=None, seed=3)
+# 葉（後ろ側に広がる櫂形 3 枚 + 後方中央の若い巻き葉）。開花期なので葉は苞より少し控えめ
+build_leaf("A", ground=(-0.008, 0.02, GZ), ang=118, hp=0.09, alpha=12, Lb=0.27, wmax=0.14,
            bend=(14, 32), roll=math.radians(-8), twist=0.22, seed=4)
-build_leaf("B", ground=(0.014, 0.014, GZ), ang=50, hp=0.085, alpha=17, Lb=0.27, wmax=0.14,
+build_leaf("B", ground=(0.014, 0.016, GZ), ang=52, hp=0.08, alpha=17, Lb=0.25, wmax=0.13,
            bend=(18, 40), roll=math.radians(10), twist=-0.18, seed=5)
-build_leaf("C", ground=(0.022, 0.0, GZ), ang=4, hp=0.06, alpha=24, Lb=0.23, wmax=0.12,
+build_leaf("C", ground=(0.022, 0.004, GZ), ang=8, hp=0.055, alpha=26, Lb=0.21, wmax=0.11,
            bend=(20, 44), roll=math.radians(-6), twist=0.15, seed=6)
 build_rolled_leaf("Y", ground=(0.0, 0.03, GZ - 0.002), H=0.27, R0=0.0105, yaw=8, lean=-5, seed=7)
 collars.append((Vector((0.0, 0.03 - 0.0105, GZ)), 0.0115))
