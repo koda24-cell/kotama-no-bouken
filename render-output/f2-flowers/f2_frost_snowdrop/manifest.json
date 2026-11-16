@@ -1,7 +1,7 @@
 {
   "asset": "f2_frost_snowdrop",
   "blender": "4.2.3 LTS",
-  "triangles": 24164,
+  "triangles": 23436,
   "objects": [
     "f2_frost_snowdrop"
   ],
@@ -17,22 +17,22 @@
     "snowdrop_stem"
   ],
   "bbox_m": [
-    0.238,
-    0.1853,
+    0.1933,
+    0.1916,
     0.3347
   ],
   "origin": "bottom-center",
   "glb": "f2_frost_snowdrop.glb",
-  "glb_bytes": 1019352,
+  "glb_bytes": 962068,
   "sha256": {
-    "f2_frost_snowdrop.glb": "92a64ee1c2d7d5884398aef085a79c9b83973054f6b4ece2e01e710f195d3ab3",
-    "f2_frost_snowdrop_cave_front.png": "88d0812e13f1ae9abbb0c255229016c5fe7c18c98e2c213a82c9a47a5969702f",
-    "f2_frost_snowdrop_cave_side.png": "05954289c1388c4d1855a6a70ff1f18ac06833935afc45fe8e72de237a19f8e6",
-    "f2_frost_snowdrop_cave_angle.png": "a4d7063ccf69df77f2ce34f49a5589fe442d8c39a25eb5309c2d67482c868fc4",
-    "f2_frost_snowdrop_cave_top.png": "9b4b7737a64b70ff549c78e174abcf05644a5d2de199a08c1dc96ff18c2603db",
-    "f2_frost_snowdrop_cave_close.png": "0a7dbbf3dd50fad8c298287972a0a7be96d11446888810e83df809b0c7de8c9b",
-    "f2_frost_snowdrop_studio_front.png": "d3486e6dba2a13c641f8a94d9bf2f50bc20cc1cb92e745b054e6af81dc25304d",
-    "f2_frost_snowdrop_studio_angle.png": "48208bd70b0bf55adb2e4e25d090f1c71e19ed11375304b048564df58e3bafb6"
+    "f2_frost_snowdrop.glb": "98fd10643a7caf14cea317b74b0c3944acfd7a0cdc588b1a48aa40a092230d8b",
+    "f2_frost_snowdrop_cave_front.png": "7882190ec7928635878ea19586bacb00f01971f22c9e59bb4b96e6a3811b3749",
+    "f2_frost_snowdrop_cave_side.png": "92f9546727b05a247c478d398cb0ab6d257768933cc653e857541c7eb7eb7faf",
+    "f2_frost_snowdrop_cave_angle.png": "bbb2b38e21ca4906674fc9a48ab22812a6c4fe9083d92150b92bdb16668d1e55",
+    "f2_frost_snowdrop_cave_top.png": "649e53e18588c78b5ed6259b8b29e806b930f0f02002f21725b39cf0463bda3b",
+    "f2_frost_snowdrop_cave_close.png": "a5578f38f20249cede4744a424f6d66bb8fe3f55044c032438af19cd7069224c",
+    "f2_frost_snowdrop_studio_front.png": "8fd506cb21d8f371d55ea36a6d6c548fee283e6df9c0bee0718bd24e56013b24",
+    "f2_frost_snowdrop_studio_angle.png": "27ae30c8d12593b0a3abfb34d7a38859225c12a4f94b56e392d0b8c6f20b1b8b"
   },
   "renders": [
     "f2_frost_snowdrop_cave_front.png",
