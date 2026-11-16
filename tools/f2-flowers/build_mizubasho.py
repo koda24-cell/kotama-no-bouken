@@ -192,6 +192,7 @@ C._use_vcol(M_GRASS, node(M_GRASS))
 
 objs = []
 frost_items = []
+collars = []   # (地面の点, 茎の半径) → 付け根の氷の縁
 
 
 # ---------------------------------------------------------------------------
@@ -237,11 +238,11 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
     asym = rnd.uniform(-1, 1)
 
     def phi_fn(s):
-        return math.pi * (1.08 - 0.50 * sstep(0.16, 0.5, s) - 0.18 * sstep(0.62, 1.0, s))
+        return math.pi * (1.08 - 0.33 * sstep(0.05, 0.22, s) - 0.2 * sstep(0.22, 0.55, s) - 0.17 * sstep(0.62, 1.0, s))
 
     def blade_w(s):
         if s < 0.6:
-            f = sstep(0.0, 0.6, s) ** 0.75
+            f = sstep(0.0, 0.58, s) ** 0.6
         else:
             t = (s - 0.6) / 0.4
             f = (1 - t) * (1 + 1.25 * t) / (1 + 0.0) * (1 - 0.18 * t * t)
@@ -249,34 +250,34 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
 
     def w_fn(s):
         wt = phi_fn(s) * R0 * (1 + 0.1 * s / 0.2)
-        return max(5e-4, wt + (blade_w(s) - wt) * sstep(0.1, 0.4, s))
+        return max(5e-4, wt + (blade_w(s) - wt) * sstep(0.04, 0.3, s))
 
     def R_fn(s):
         return w_fn(s) / phi_fn(s)
 
     def spine_fn(s):
-        y = L * (0.22 * s * s - 0.9 * max(0.0, s - 0.7) ** 2)
+        y = L * (0.25 * s * s - 1.3 * max(0.0, s - 0.62) ** 2)
         x = L * 0.035 * asym * math.sin(math.pi * s) * s
         return Vector((x, y, s * L))
 
     def spiral_fn(s):
-        return 0.16 * (1 - sstep(0.16, 0.42, s))
+        return 0.16 * (1 - sstep(0.04, 0.2, s))
 
     def recurve_fn(s, a):
         e = max(0.0, (abs(a) - 0.7) / 0.3) ** 2
         return e * L * 0.04 * sstep(0.3, 0.55, s) * (1 - 0.6 * sstep(0.8, 1.0, s))
 
     def col_fn(s, a):
-        g = 1 - sstep(0.03, 0.34, s)
+        g = 1 - sstep(0.02, 0.26, s)
         c = mix(SP_WHITE, SP_GREEN, g)
-        keel = max(0.0, 1 - abs(a) / 0.2) * (1 - sstep(0.1, 0.55, s)) * 0.6
+        keel = max(0.0, 1 - abs(a) / 0.2) * (1 - sstep(0.05, 0.45, s)) * 0.5
         c = mix(c, SP_GREEN_DEEP, keel + (1 - sstep(0.0, 0.08, s)) * 0.5)
         return c
 
     M = (Matrix.Translation(Vector(base)) @ Matrix.Rotation(math.radians(yaw), 4, "Z")
          @ Matrix.Rotation(math.radians(lean), 4, "X") @ Matrix.Rotation(math.radians(roll), 4, "Y"))
 
-    verts, cols, faces, edge = rolled_sheet(26, 22, phi_fn, R_fn, spine_fn, spiral_fn, recurve_fn, col_fn)
+    verts, cols, faces, edge = rolled_sheet(24, 20, phi_fn, R_fn, spine_fn, spiral_fn, recurve_fn, col_fn)
     verts = [M @ v for v in verts]
     ob = make_mesh(f"spathe_{tag}", verts, faces, cols)
     solidify(ob, thick)
@@ -284,12 +285,12 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
     objs.append(ob)
     R3 = M.to_3x3()
     for s, p, d in edge:
-        if 0.45 < s < 0.97 and rnd.random() < 0.45:
+        if 0.5 < s < 0.95 and rnd.random() < 0.22:
             frost_items.append((M @ p, R3 @ (d + Vector((0, 0, 0.4)))))
 
     # --- 肉穂花序（芯 + 六角の小花） ---
     ax = Vector((0, -R0, 0))                      # 筒の中心軸
-    z0, z1 = 0.006 * (L / 0.16), 0.03 * L + Ls    # 芯の下端・上端
+    z0, z1 = 0.006 * (L / 0.16), 0.07 * L + Ls    # 芯の下端・上端
     r0 = rs - fh * 0.45                           # 芯の半径
     dome = r0 * 0.95
     zc = z1 - dome
@@ -323,7 +324,7 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
     YGRN = lin("B9B347")
     GAP = lin("8F9038")
     places = []
-    zstart = 0.17 * L
+    zstart = 0.085 * L
     dz = pitch * 0.866
     k = 0
     z = zstart
@@ -379,8 +380,9 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
     top = M @ (ax + Vector((0, 0, 0.012)))
     bot = M @ (ax + Vector((0, 0, -0.004)))
     up = (top - bot).normalized()
-    g = Vector(ground)
+    g = Vector((bot.x * 0.85, bot.y * 0.85, GZ))
     h = (bot - g).length
+    collars.append((g, R0 * 1.1))
     pts = bezier(g, g + Z * h * 0.45, bot - up * h * 0.35, bot, 10) + [top]
     STALK_LO = lin("C9D3A6")
     STALK = lin("8DAE5A")
@@ -403,7 +405,7 @@ PET = lin("6E9944")
 
 
 def build_leaf(tag, ground, ang, hp, alpha, Lb, wmax, bend=(16, 38), roll=0.0, twist=0.0,
-               res_u=34, res_v=12, seed=0):
+               res_u=32, res_v=12, seed=0):
     rnd = random.Random(seed)
     D = Vector((math.cos(math.radians(ang)), math.sin(math.radians(ang)), 0))
 
@@ -427,11 +429,11 @@ def build_leaf(tag, ground, ang, hp, alpha, Lb, wmax, bend=(16, 38), roll=0.0, t
         frames.append((T, s, T.cross(s)))
 
     def wfn(u):
-        if u < 0.6:
-            f = 0.09 + 0.91 * math.sin(math.pi / 2 * u / 0.6) ** 0.8
+        if u < 0.55:
+            f = 0.09 + 0.91 * math.sin(math.pi / 2 * u / 0.55) ** 0.75
         else:
-            t = (u - 0.6) / 0.4
-            f = 0.7 * math.sqrt(max(0.0, 1 - t * t)) * (1 - 0.25 * t) + 0.3 * (1 - t)
+            t = (u - 0.55) / 0.45
+            f = 0.85 * math.sqrt(max(0.0, 1 - t ** 2.4)) * (1 - 0.12 * t) + 0.15 * (1 - t)
         return 0.5 * wmax * f
 
     nv = 7
@@ -446,18 +448,16 @@ def build_leaf(tag, ground, ang, hp, alpha, Lb, wmax, bend=(16, 38), roll=0.0, t
             v = -1 + 2 * j / res_v
             av = abs(v)
             phase = 2 * math.pi * (nv * u - 1.3 * av + ph)
-            corr = 0.0017 * sstep(0.05, 0.3, av) * (1 - av ** 4) * math.cos(phase) * sstep(0.03, 0.15, u)
+            corr = 0.0026 * sstep(0.05, 0.3, av) * (1 - av ** 4) * math.cos(phase) * sstep(0.03, 0.15, u)
             wave = 0.003 * math.sin(u * 21 + (1.7 if v > 0 else 0.0)) * av ** 4 * sstep(0.2, 0.5, u)
             zoff = w * (fold * av + 0.08 * v * v) + corr + wave
             verts.append(cl[i] + S * (v * w) + N * zoff)
             c = LF
-            c = mix(c, LF_VEIN, 0.55 * max(0.0, math.cos(phase)) ** 3 * sstep(0.1, 0.3, av))
+            c = mix(c, LF_VEIN, 0.8 * max(0.0, math.cos(phase)) ** 3 * sstep(0.1, 0.3, av))
             c = mix(c, LF_DARK, sstep(0.8, 1.0, av) * 0.7)
             c = mix(c, LF_RIB, 1 - sstep(0.04, 0.2, av))
             c = mix(c, LF_BASE, (1 - sstep(0.0, 0.15, u)) * 0.6)
             cols.append(c)
-            if j in (0, res_v) and 0.45 < u < 0.95 and rnd.random() < 0.3:
-                frost_items.append((verts[-1].copy(), S * v + N * 0.3))
     blade = make_mesh(f"leaf_{tag}", verts, grid_faces(res_u, res_v), cols)
     solidify(blade, 0.0013)
     C.assign(blade, M_LEAF)
@@ -494,6 +494,7 @@ def build_leaf(tag, ground, ang, hp, alpha, Lb, wmax, bend=(16, 38), roll=0.0, t
         return mix(PET, LF_RIB, sstep(split, split + 0.1, t))
 
     rib = sweep(f"rib_{tag}", pts, rfn, sides=8, normals=nrms, section=section, cols_fn=cfn)
+    collars.append((G, 0.0078))
     C.assign(rib, M_LEAF)
     objs.extend([blade, rib])
 
@@ -606,34 +607,6 @@ def build_ground():
     ice = make_mesh("ice_disc", verts, faces, recalc=True)
     C.assign(ice, M_ICE)
 
-    # 茎の付け根の盛り上がった氷の縁（凸凹のトーラス）
-    nu, nvv = 36, 8
-    tv, tf = [], []
-    for i in range(nu):
-        th = 2 * math.pi * i / nu
-        Rm = 0.05 * (1 + 0.12 * math.sin(3 * th + 0.7) + 0.06 * math.sin(7 * th))
-        rm = 0.011 * (1 + 0.35 * math.sin(5 * th + 1.1) * math.sin(2 * th))
-        cx, cy = math.cos(th) * Rm, math.sin(th) * Rm
-        cz = ice_top(cx, cy) - 0.003
-        for j in range(nvv):
-            ph = 2 * math.pi * j / nvv
-            rr = Rm + math.cos(ph) * rm * 1.3
-            tv.append(Vector((math.cos(th) * rr, math.sin(th) * rr, cz + math.sin(ph) * rm * 0.55)))
-    for i in range(nu):
-        for j in range(nvv):
-            a = i * nvv + j
-            b = ((i + 1) % nu) * nvv + j
-            tf.append((a, b, ((i + 1) % nu) * nvv + (j + 1) % nvv, i * nvv + (j + 1) % nvv))
-    ring = make_mesh("ice_collar", tv, tf, recalc=True)
-    C.assign(ring, M_ICE_RIM)
-    rr_items = []
-    rnd = random.Random(9)
-    for _ in range(34):
-        v = tv[rnd.randrange(len(tv))]
-        if v.z > ice_top(v.x, v.y) - 0.001:
-            rr_items.append((v.copy(), Vector((v.x, v.y, 0)).normalized() + Z * 1.2))
-    frost_items.extend(rr_items)
-
     # 氷の割れ目（白い細線）
     rnd = random.Random(21)
     cv, cf = [], []
@@ -708,8 +681,38 @@ def build_ground():
         blade(bezier(base, mid, mid.lerp(tip, 0.5), tip, 5), 0.0016)
     grass = make_mesh("dead_grass", gv, gf, gc)
     C.assign(grass, M_GRASS)
-    objs.extend([ice, mud, ring, cr, grass])
+    objs.extend([ice, mud, cr, grass])
 
+
+
+def build_collars():
+    """茎・葉柄の付け根ごとに盛り上がった薄氷の縁（凸凹のリング）"""
+    rnd = random.Random(17)
+    tv, tf = [], []
+    nu, nvv = 14, 5
+    for g, r in collars:
+        b = len(tv)
+        zc = ice_top(g.x, g.y) - 0.0015
+        rm = 0.0045 + r * 0.35
+        Rm = r + rm * 0.55
+        ph0 = rnd.random() * 6.28
+        for i in range(nu):
+            th = 2 * math.pi * i / nu
+            k = 1 + 0.35 * math.sin(3 * th + ph0) * math.sin(2 * th + 1.0)
+            for j in range(nvv):
+                ph = math.pi * j / (nvv - 1)          # 0..π 外側→内側（上に盛り上がる半断面）
+                rr = Rm + math.cos(ph) * rm * 1.5 * k
+                tv.append(Vector((g.x + math.cos(th) * rr, g.y + math.sin(th) * rr,
+                                  zc + math.sin(ph) * rm * 0.9 * k)))
+                if j == 2 and rnd.random() < 0.35:
+                    frost_items.append((tv[-1].copy(), Vector((math.cos(th), math.sin(th), 1.6))))
+        for i in range(nu):
+            for j in range(nvv - 1):
+                i2 = (i + 1) % nu
+                tf.append((b + i * nvv + j, b + i2 * nvv + j, b + i2 * nvv + j + 1, b + i * nvv + j + 1))
+    ob = make_mesh("ice_collars", tv, tf, recalc=True)
+    C.assign(ob, M_ICE_RIM)
+    objs.append(ob)
 
 # ---------------------------------------------------------------------------
 # 組み立て
@@ -717,23 +720,28 @@ def build_ground():
 build_ground()
 GZ = 0.008
 # 仏炎苞（大・中・小）: 向きと高さをばらす
-build_spathe("L", L=0.165, wmax=0.105, rs=0.0068, Ls=0.058, base=(-0.028, -0.048, 0.06),
-             yaw=-12, lean=-6, roll=4, ground=(-0.01, -0.012, GZ), seed=1)
-build_spathe("M", L=0.14, wmax=0.09, rs=0.0062, Ls=0.05, base=(0.052, -0.028, 0.042),
-             yaw=48, lean=6, roll=-6, ground=(0.012, -0.008, GZ), seed=2)
-build_spathe("S", L=0.118, wmax=0.075, rs=0.0056, Ls=0.043, base=(-0.058, 0.004, 0.03),
-             yaw=-78, lean=10, roll=5, ground=(-0.014, 0.0, GZ), seed=3)
+build_spathe("L", L=0.165, wmax=0.13, rs=0.0068, Ls=0.06, base=(-0.022, -0.036, 0.034),
+             yaw=-12, lean=-8, roll=4, ground=None, seed=1)
+build_spathe("M", L=0.14, wmax=0.11, rs=0.0062, Ls=0.052, base=(0.038, -0.022, 0.026),
+             yaw=46, lean=4, roll=-6, ground=None, seed=2)
+build_spathe("S", L=0.118, wmax=0.092, rs=0.0056, Ls=0.044, base=(-0.044, 0.006, 0.02),
+             yaw=-80, lean=10, roll=5, ground=None, seed=3)
 # 葉（後ろ側に広がる櫂形 3 枚 + 後方中央の若い巻き葉）
-build_leaf("A", ground=(-0.008, 0.016, GZ), ang=118, hp=0.10, alpha=12, Lb=0.30, wmax=0.13,
-           bend=(14, 34), roll=math.radians(-8), twist=0.22, seed=4)
-build_leaf("B", ground=(0.014, 0.012, GZ), ang=48, hp=0.085, alpha=17, Lb=0.27, wmax=0.12,
-           bend=(18, 42), roll=math.radians(10), twist=-0.18, seed=5)
-build_leaf("C", ground=(0.02, -0.004, GZ), ang=-24, hp=0.065, alpha=26, Lb=0.23, wmax=0.10,
-           bend=(20, 46), roll=math.radians(-6), twist=0.15, seed=6)
+build_leaf("A", ground=(-0.008, 0.018, GZ), ang=118, hp=0.10, alpha=12, Lb=0.30, wmax=0.15,
+           bend=(14, 32), roll=math.radians(-8), twist=0.22, seed=4)
+build_leaf("B", ground=(0.014, 0.014, GZ), ang=50, hp=0.085, alpha=17, Lb=0.27, wmax=0.14,
+           bend=(18, 40), roll=math.radians(10), twist=-0.18, seed=5)
+build_leaf("C", ground=(0.022, 0.0, GZ), ang=4, hp=0.06, alpha=24, Lb=0.23, wmax=0.12,
+           bend=(20, 44), roll=math.radians(-6), twist=0.15, seed=6)
 build_rolled_leaf("Y", ground=(0.0, 0.03, GZ - 0.002), H=0.27, R0=0.0105, yaw=8, lean=-5, seed=7)
+collars.append((Vector((0.0, 0.03 - 0.0105, GZ)), 0.0115))
+build_collars()
 
-objs.append(frost_mesh("frost", frost_items, 0.0024, 33, M_FROST))
+objs.append(frost_mesh("frost", frost_items, 0.002, 33, M_FROST))
 
+for o in objs:
+    o.data.calc_loop_triangles()
+    C.log(f"tris {o.name}: {len(o.data.loop_triangles)}")
 ob = C.join(objs, "f2_ice_mizubasho")
 C.set_origin_bottom(ob)
 
