@@ -33,3 +33,14 @@ Pinterest候補と引継ぎ: https://github.com/koda24-cell/pinterest-reference-
 
 ## 現在の制作順
 sentinel V1 -> レンダリング目視 -> 形状修正 -> 承認待ち -> kneeling -> shield -> fallen -> マップ表示検証
+
+## 制作実績と品質判定（2026-11-16）
+- V1〜V6は全て作業ブランチ内に独立コードとして保持。ユーザー承認・ゲーム組み込みは未実施。
+- 成功した最新のBlender実行: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43826564411
+- Artifact: 14206468671 `b5-knight-sentinel-v6-review-NOT-APPROVED`（14日間の一時保存）
+- 実画像: `front.png`, `side.png`, `angle.png` 各800×800。GLB `sentinel_v6.glb`、編集用 `sentinel_v6.blend`、`manifest.json`、SHA-256を確認。
+- V6 GLB: 1,104,764 bytes。149個のメッシュ。BBox実測 x=2.312m, y=3.727m, z=1.593m (glTF y-up)。4mセルへは0.72〜0.78倍で縮小するDraft配置コードを用意。通路側の残り幅・壁遮蔽はゲーム未検証。
+- V3/V4不具合: Blender生成normal mapのGLB埋込PNGが黒一色でエクスポートされ、石材が暗くつぶれた。実際にGLB内の画像bufferViewを開き色平均0を確認。V5/V6は不正Normal Mapを未接続、GLBのメッシュ法線を使用。カラーテクスチャは埋込み済み。**正常なNormal Map実装・美術品質は別途再検証**。
+- V6の見た目: V1より鎧の彫刻・肩甲・胸甲は増え、暗灰色の材質が見える。ただし依然、角張ったシルエットが強く、実世界水準の彫像としては品質改善余地あり。正式保存とゲーム反映はしない。
+- 配置計画: `tools/b5-knights/placement-plan.js`。通行可能セルを削除せず、壁の1方向だけが通路に面するセルを抽出。周辺イベント回避・4種分配・離隔制御を設計。まだ実ゲームに呼び出していない。
+- 次: 参考ピンの実画像を確認→V6石表面・人体比率・真の破断を改善→レビュー承認後に次のkneelingなどを個別制作→4種揃ってから実ゲーム配置テスト。
