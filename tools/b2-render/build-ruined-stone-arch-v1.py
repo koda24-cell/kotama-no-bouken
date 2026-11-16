@@ -115,11 +115,26 @@ for n,(x,y,w,h,d) in enumerate([
 # PASS V2: dramatic broken masonry, separated as additive meshes, preserving V1.
 # Silhouette: deep diagonal shears and one collapsed wall mass. Not a regular frame.
 def fracture(name,location,scale,mat,rotation):
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=location)
+ # Angular ancient building stones rather than smooth floating boulders.
+ # Blender-native subdivided cube, displaced corners and bevels; GLB-compatible UV.
+ bpy.ops.mesh.primitive_cube_add(size=1,location=location)
  ob=bpy.context.object;ob.name=name
- # faceted ancient blocks with sharp, chipped intersections
  ob.scale=scale;ob.rotation_euler=rotation
- ob.data.materials.append(mat);planar_uv(ob.data)
+ # Apply transforms so scale-dependent damage is consistent.
+ bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+ bpy.ops.object.mode_set(mode='EDIT')
+ bpy.ops.mesh.select_all(action='SELECT')
+ bpy.ops.mesh.subdivide(number_cuts=1)
+ bpy.ops.object.mode_set(mode='OBJECT')
+ for v in ob.data.vertices:
+  v.co.x+=rng.uniform(-.10,.10)*scale[0]
+  v.co.y+=rng.uniform(-.10,.10)*scale[1]
+  v.co.z+=rng.uniform(-.10,.10)*scale[2]
+ ob.data.update();planar_uv(ob.data)
+ ob.data.materials.append(mat)
+ b=ob.modifiers.new("large chipped masonry corners","BEVEL")
+ b.width=.024;b.segments=1
+ ob.modifiers.new("weighted fracture normals","WEIGHTED_NORMAL")
  return ob
 
 # Split upper left wall: two staggered massive remnants offset in depth.
@@ -145,6 +160,17 @@ for n,(x,y,z,sx,sy,sz,rx,ry,rz) in enumerate([
  (.34,1.09,.16,.57,.49,.28,.26,.08,.21)
 ]):
  fracture("large collapsed voussoir %02d"%n,(x,y,z),(sx,sy,sz),mats[(n+1)%4],(rx,ry,rz))
+# More dramatic masonry silhouette, keeping V1 mesh and recognisable opening.
+stone("diagonal shattered outer left cap",(-2.16,.02,2.51),(.56,.65,.31),mats[2],(.02,.18,-.38))
+fracture("right broken corner outcrop",(2.01,.12,2.32),(.44,.44,.42),mats[0],(.24,.17,-.24))
+stone("fallen large pier lintel",(1.83,1.02,.22),(.86,.53,.35),mats[1],(.26,.15,-.4))
+stone("fallen crown keystone",(.15,-.79,.27),(.85,.62,.34),mats[2],(.12,.22,.33))
+fracture("left sheared shoulder wedge",(-2.08,-.02,2.81),(.38,.36,.35),mats[0],(-.13,.21,.32))
+# Distinct large vertical cracks instead of swarms of tiny pebbles.
+for n,(x,y,z) in enumerate([(-1.74,-.56,1.48),(-1.70,-.57,1.78),
+                              (1.73,-.56,1.32),(1.69,-.55,1.63)]):
+ stone("wide fissure boundary %02d"%n,(x,y,z),(.12,.09,.38),
+       mats[1],(.14,.08,.25*(-1)**n))
 # Narrow gouges and mineral deposits are subordinate to the large fracture.
 for n in range(12):
  side=-1 if n<7 else 1
