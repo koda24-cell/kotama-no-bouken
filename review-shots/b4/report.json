@@ -111,16 +111,17 @@
           },
           "detail": {
             "basaltPanels": 46,
+            "lavafalls": 2,
             "coolingPlates": 48,
             "embers": 32
           }
         }
       },
       "render": {
-        "calls": 88,
-        "triangles": 366186,
+        "calls": 89,
+        "triangles": 366466,
         "memory": {
-          "geometries": 119,
+          "geometries": 120,
           "textures": 236
         }
       }
@@ -217,6 +218,7 @@
           },
           "detail": {
             "basaltPanels": 46,
+            "lavafalls": 2,
             "coolingPlates": 48,
             "embers": 32
           }
@@ -226,7 +228,7 @@
         "calls": 40,
         "triangles": 339162,
         "memory": {
-          "geometries": 120,
+          "geometries": 121,
           "textures": 236
         }
       }
@@ -323,6 +325,7 @@
           },
           "detail": {
             "basaltPanels": 46,
+            "lavafalls": 2,
             "coolingPlates": 48,
             "embers": 32
           }
@@ -330,9 +333,9 @@
       },
       "render": {
         "calls": 57,
-        "triangles": 346998,
+        "triangles": 347198,
         "memory": {
-          "geometries": 120,
+          "geometries": 121,
           "textures": 236
         }
       }
@@ -429,16 +432,17 @@
           },
           "detail": {
             "basaltPanels": 46,
+            "lavafalls": 2,
             "coolingPlates": 48,
             "embers": 32
           }
         }
       },
       "render": {
-        "calls": 65,
-        "triangles": 350266,
+        "calls": 66,
+        "triangles": 350546,
         "memory": {
-          "geometries": 126,
+          "geometries": 127,
           "textures": 248
         }
       }
@@ -535,16 +539,17 @@
           },
           "detail": {
             "basaltPanels": 46,
+            "lavafalls": 2,
             "coolingPlates": 60,
             "embers": 40
           }
         }
       },
       "render": {
-        "calls": 69,
-        "triangles": 355635,
+        "calls": 70,
+        "triangles": 355915,
         "memory": {
-          "geometries": 137,
+          "geometries": 138,
           "textures": 283
         }
       }
@@ -641,16 +646,17 @@
           },
           "detail": {
             "basaltPanels": 2,
+            "lavafalls": 6,
             "coolingPlates": 150,
             "embers": 180
           }
         }
       },
       "render": {
-        "calls": 58,
-        "triangles": 184182,
+        "calls": 59,
+        "triangles": 185022,
         "memory": {
-          "geometries": 125,
+          "geometries": 126,
           "textures": 283
         }
       }
