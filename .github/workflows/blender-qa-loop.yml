@@ -48,10 +48,10 @@ jobs:
           run-id: ${{ inputs.resume_run_id }}
           github-token: ${{ github.token }}
       - name: Generate disposable demo scene for default test
-        if: ${{ inputs.source_blend == '' }}
+        if: ${{ inputs.source_blend == '' && inputs.resume_run_id == '' }}
         run: blender -b -t 2 --python-exit-code 1 --python tools/blender-qa/make_demo.py
       - name: Make isolated rock candidates (skip when resuming)
-        if: ${{ inputs.resume_run_id == ''' }}
+        if: ${{ inputs.resume_run_id == '' }}
         env:
           SOURCE_BLEND: ${{ inputs.source_blend }}
           ROCK_TARGET: ${{ inputs.rock_target }}
