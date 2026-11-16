@@ -62,6 +62,17 @@ jobs:
           if [[ "$SOURCE_BLEND" = /* || "$SOURCE_BLEND" == *".."* || "$SOURCE_BLEND" != *.blend ]]; then exit 2; fi
           blender -b -t 2 --python-exit-code 1 --python tools/blender-qa/rock_candidates.py -- \
             --source "$SOURCE_BLEND" --target "$ROCK_TARGET" --out qa-output/rock-variants --candidates 4
+      - name: Render and rate all four candidate views
+        if: ${{ inputs.resume_run_id == '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for candidate in qa-output/rock-variants/candidate_*/candidate.blend; do
+            label="$(basename "$(dirname "$candidate")")"
+            blender -b -t 2 --python-exit-code 1 --python tools/blender-qa/qa_loop.py -- \
+              --source "$candidate" --out "qa-output/variant-reviews/$label" \
+              --max-iterations 1 --max-seconds 700
+          done
       - name: Run bounded QA (preserve files even on quality failure)
         shell: bash
         env:
