@@ -27,6 +27,8 @@ const FIELD_AREAS = {
       // [A1] 2F：先輩冒険者と巡回衛兵。3F：孤立した衛兵と先行冒険者。
       h: { kind: "npc", id: "a1-senior-pair", name: "先輩冒険者", sprite: "npc-girl", scene: "a1-senior-pair" },
       i: { kind: "npc", id: "a1-patrol", name: "巡回衛兵", sprite: "npc-woodcutter", scene: "a1-patrol" },
+      j: { kind: "npc", id: "a1-knights", name: "騎士団の伝令", sprite: "npc-woodcutter", scene: "a1-knights" },
+      k: { kind: "npc", id: "a1-rival-party", name: "別ギルドの冒険者", sprite: "npc-girl", scene: "a1-rival-party" },
       // [SIDE] サブイベント（1F：調査隊の記録袋／2F：補給袋）
       c: { kind: "event", id: "a1-old-stump", name: "古い切り株", sprite: "ev-stump", event: "a1-old-stump" },
       d: { kind: "event", id: "a1-root-cache", name: "", sprite: "ev-hidden", event: "a1-root-cache", hidden: true },
@@ -66,7 +68,7 @@ const FIELD_AREAS = {
         foes: [ { enemy: "foe-bear", path: [[19, 14], [17, 16]] }, { enemy: "foe-goblin-pack", path: [[22, 19], [23, 19]] } ], map: [
         "###########################",
         "#...............#T#.....#>#",
-        "#.#############.#.#.#.#.#.#",
+        "#.#############.#j#.#.#.#.#",
         "#.#...........#.#...#.#...#",
         "#.#.#########.#.#####.#####",
         "#.#.#.....#...#.....#.....#",
@@ -75,7 +77,7 @@ const FIELD_AREAS = {
         "#.#.#.#########.#######.#.#",
         "#.#.#.........#......*..#.#",
         "#.#.#########.#####***###.#",
-        "#.....#.....#...#.#**.#G#.#",
+        "#.....#.....#...#k#**.#G#.#",
         "#####.#.###.###.#.#..*#.#.#",
         "#....*..#T....#.#.**.*#...#",
         "#.#***#########.#**.###.#.#",
