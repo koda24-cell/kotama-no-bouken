@@ -238,7 +238,7 @@ export function enhanceB4CartPractical(root,variant=20) {
 
  // V29: structural close-up pass. No substitute shells over the ore; preserve
  // V26 dark ore and all four running wheels.
- if(variant>=29){
+ if(variant===29){
    const darkSteel = new THREE.MeshStandardMaterial({name:'B4_BlackIron',color:0x2f3235,metalness:.72,roughness:.70});
    const wearSteel = new THREE.MeshStandardMaterial({name:'B4_RustedIron',color:0x575048,metalness:.48,roughness:.85});
    const brownWood = new THREE.MeshStandardMaterial({name:'B4_WoodBoard2',color:0x554639,metalness:0,roughness:.98,side:THREE.DoubleSide});
@@ -267,6 +267,39 @@ export function enhanceB4CartPractical(root,variant=20) {
    for(const side of [-1,1])for(const z of [-L*.71,-L*.03,L*.56]){
      const rivet=new THREE.Mesh(new THREE.CylinderGeometry(.027,.027,.034,10),wearSteel);
      rivet.rotation.z=Math.PI/2;rivet.position.set(side*(X+.058),top-.07,z);group.add(rivet);
+   }
+ }
+
+ // V30: grounded repair-and-axle pass after actual V29 render review.
+ // Scale and position are based on the existing four 0.3-radius running wheels,
+ // not extra wheel bodies. The original V26 body and ore are untouched.
+ if(variant>=30){
+   const edgeIron=new THREE.MeshStandardMaterial({name:'B4_BlackIron',color:0x34373a,metalness:.62,roughness:.78});
+   const sootSteel=new THREE.MeshStandardMaterial({name:'B4_RustedIron',color:0x524a42,metalness:.36,roughness:.90});
+   const darkTimber=new THREE.MeshStandardMaterial({name:'B4_WoodBoard2',color:0x514639,roughness:.99,metalness:.01});
+   // True visible bearing seat: vertical housing and diagonal underbody ties.
+   for(const side of [-1,1])for(const z of [-axleZ,axleZ]){
+     beam([side*.58,.28,z*.78],[side*.83,-.055,z],.095,.085,edgeIron);
+     block(side*.81,-.010,z,.20,.14,.25,edgeIron);
+     const hub=new THREE.Mesh(new THREE.CylinderGeometry(.108,.108,.028,14),sootSteel);
+     hub.rotation.z=Math.PI/2;hub.position.set(side*1.14,-.10,z);group.add(hub);
+     // Axle cap sits flush with the wheel, not a detached duplicate ring.
+     const pin=new THREE.Mesh(new THREE.CylinderGeometry(.039,.039,.040,10),edgeIron);
+     pin.rotation.z=Math.PI/2;pin.position.set(side*1.165,-.10,z);group.add(pin);
+   }
+   // Irregular, recessed plank checks. Only two sections, not a row of bright scratches.
+   for(const [side,z0,z1,y] of [[1,-L*.56,-L*.36,.78],[-1,L*.23,L*.51,.98]]){
+     const x=side*(X*.86);
+     beam([x,y,z0],[x+side*.01,y+.015,z1],.012,.014,darkTimber);
+   }
+   // Compact repair plate located over a wood seam, bolted to the steel upright.
+   for(const side of [-1,1]){
+     const z=side===1?L*.34:-L*.21;
+     const plate=block(side*(X+.033),.70,z,.037,.25,.20,sootSteel);
+     for(const yy of [.61,.78]){
+       const bolt=new THREE.Mesh(new THREE.CylinderGeometry(.028,.028,.025,8),edgeIron);
+       bolt.rotation.z=Math.PI/2;bolt.position.set(side*(X+.061),yy,z);group.add(bolt);
+     }
    }
  }
  cart.userData={...cart.userData,practical:{variant,topWidth:X*2,topLength:L*2,wheelbase:axleZ*2,sourceGeometryPreserved:true}};
