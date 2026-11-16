@@ -155,7 +155,7 @@ M_SNOW = C.mat_petal("snowdrop_snow_mound", hexlin("#E8F0F6"), rough=0.75, sss=0
                      sss_radius=(0.6, 0.8, 1.0), sheen=0.15, vcol=True)
 M_ICE = C.mat_ice("snowdrop_ice_shard", rgb=(0.80, 0.92, 1.0), rough=0.05, trans=0.9)
 M_FROST = C.mat_ice("snowdrop_frost_crystal", rgb=(0.90, 0.96, 1.0), rough=0.12, trans=0.4,
-                    emit=(0.70, 0.88, 1.0), emit_strength=0.25)
+                    emit=(0.70, 0.88, 1.0), emit_strength=0.55)
 
 WHITE = hexlin("#F4F7FA")
 ICE_TIP = hexlin("#CFE8FF")
@@ -249,9 +249,9 @@ def build_mound():
 # ---------------------------------------------------------------------------
 def outer_S(L, W, cup, curl):
     def wf(u):
-        if u < 0.6:
-            return 0.26 + 0.74 * math.sin(math.pi * 0.5 * u / 0.6)
-        t = (u - 0.6) / 0.4
+        if u < 0.64:  # 付け根は細い爪状（隙間から内花被の筒が覗く）
+            return 0.22 + 0.78 * math.sin(math.pi * 0.5 * u / 0.64) ** 2.0
+        t = (u - 0.64) / 0.36
         return max(0.0, math.sqrt(max(0.0, 1 - t * t)) * 0.95 + (1 - t) * 0.05)
 
     def S(u, v):
@@ -273,7 +273,7 @@ def outer_color(u, v, side=1):
         c = mix(c, hexlin("#B9C9D8"), 0.55 * (1 - sstep(0.05, 0.7, u)) * (1 - 0.5 * abs(v)))
     c = mix(c, hexlin("#DCE8D2"), 1 - sstep(0.0, 0.14, u))   # 付け根ほんのり緑白
     edge = sstep(0.7, 1.0, abs(v)) * sstep(0.5, 0.9, u) * 0.35
-    tip = sstep(0.86, 0.97, u)
+    tip = sstep(0.8, 0.96, u)
     return mix(c, ICE_TIP, max(tip, edge))
 
 
@@ -316,14 +316,14 @@ def build_flower(tag, d, A, Lout, alpha, spin):
         ob = surface(f"{tag}_outer{k}", S, 12, 10, M, thickness=0.0013, color_fn=outer_color)
         C.assign(ob, M_OUTER)
         parts.append(ob)
-        frost_edges(S, M, R.randint(9, 12), 0.3, 0.00085)
+        frost_edges(S, M, R.randint(9, 12), 0.3, 0.0011)
     for k in range(3):
         th = spin + math.pi / 3 + k * math.tau / 3
         e = a * math.cos(th) + b * math.sin(th)
         al = math.radians(4)
         y = d * math.cos(al) + e * math.sin(al)
         z = d * math.sin(al) - e * math.cos(al)
-        S = inner_S(0.0120 * Lout / 0.025, 0.0080, cup=0.6, flare=0.5)
+        S = inner_S(0.0112 + 0.006 * (Lout - 0.025), 0.0080, cup=0.6, flare=0.5)
         M = basis(A + d * 0.0006 + e * 0.0019, y, z)
         ob = surface(f"{tag}_inner{k}", S, 7, 6, M, thickness=0.0009, color_fn=inner_color)
         C.assign(ob, M_INNER)
