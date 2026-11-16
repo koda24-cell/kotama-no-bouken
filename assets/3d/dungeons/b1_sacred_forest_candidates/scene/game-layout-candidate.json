@@ -25,7 +25,7 @@
   "expectedSourceBaseline": {
     "branch": "development",
     "commit": "ae7995ae9ab7c36a547c6dbd7a5d601d3fc4bea5",
-    "checkedOutCommit": "1991a91dac120885e5c28ec186d5f840ee0021df",
+    "checkedOutCommit": "f5b163434bba58a620026b7bd0c2c8e154b27dd6",
     "sourceFingerprintSha256": "b1565e6ee71a1dcea537523ade6f56ecdcec5dda4e08e8bd59ef2e676ded0512",
     "sourceFiles": [
       {
@@ -21723,7 +21723,7 @@
       "rotationY": 1.570796,
       "scale": [
         1,
-        1,
+        0.32,
         1
       ],
       "zone": "sacred_courtyard",
@@ -21737,7 +21737,9 @@
         0,
         0
       ],
-      "collisionSource": "unchanged source map; visual damage creates no new passage"
+      "collisionSource": "unchanged blocked island and wall footprint; low stone enclosure reveals the shrine, no new passage",
+      "artVariant": "low_altar_enclosure",
+      "navigationSolidUnchanged": true
     },
     {
       "id": "wall_21_3_up",
@@ -22241,7 +22243,7 @@
       "rotationY": 0,
       "scale": [
         1,
-        1,
+        0.32,
         1
       ],
       "zone": "sacred_courtyard",
@@ -22255,7 +22257,9 @@
         0,
         -1
       ],
-      "collisionSource": "unchanged source map; visual damage creates no new passage"
+      "collisionSource": "unchanged blocked island and wall footprint; low stone enclosure reveals the shrine, no new passage",
+      "artVariant": "low_altar_enclosure",
+      "navigationSolidUnchanged": true
     },
     {
       "id": "wall_13_4_down",

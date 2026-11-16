@@ -24,3 +24,9 @@ node tools/f1-sacred-forest/verify-game-layout-preview.cjs
 ```
 
 ブラウザ検証の出力先は `/workspace/work/f1-game-layout-review/`。本フォルダは実行成功後のコピーであり、凍結したデモ5視点・68個別PNG・scene GLB/Blend・既存verificationとは別の記録。
+
+## 目高と遠景samplingの追検査（2026-11-17）
+
+[参道](near-approach.png) / [祠](near-shrine.png) / [水際](near-water.png)は元の歩行セル中心・目高1.6mからの独立ビュー。祠の正面2面を低い石囲いにした後、全3視点で壁による遮蔽なしをrayと実画像で確認。map・壁の位置/厚み・blocked状態は保持しています。
+
+[元の葉のsampling](needle-raw.png) / [coverage mip補正](needle-coverage.png)。元GLBとalphaCutoffを変更せず、独立viewerのThree DataTextureで縮小時のcutout被覆率を保ちます。補正前後を切替可能。実GPU upload・3視点・9不一致拒否・上面/変換検査を含む再実行はerror/warning0。補正は描画補助であり、元GLBに焼き込んだ修正や遠景LOD全般の承認ではありません。

@@ -1,8 +1,8 @@
 {
   "status": "candidate_verified_pending_user_review",
   "gameIntegrated": false,
-  "generatedAtUTC": "2026-11-16T10:48:25.599746+00:00",
-  "sourceRevision": "eb2926a312b491bd9d280d9d5d9784b7b3c116f9",
+  "generatedAtUTC": "2026-11-16T15:30:52.476099+00:00",
+  "sourceRevision": "ce3c236b70528e03b124330346fda528a8153f82",
   "assets": 17,
   "individualTriangles": 136665,
   "individualGlbBytes": 21305008,
@@ -21,7 +21,7 @@
   },
   "gameLayoutCandidate": {
     "file": "scene/game-layout-candidate.json",
-    "sha256": "9a34890bf730c6f86d1c5608fe0b445c99975cf1821f02716c552dca43013a3d",
+    "sha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0",
     "floors": 274,
     "props": 129,
     "dressingGround": 177,

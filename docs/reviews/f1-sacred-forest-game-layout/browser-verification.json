@@ -1,7 +1,7 @@
 {
   "scope": "Independent 3F candidate GLTFLoader reviewer; not gameplay, collision, regression or FPS approval",
   "engine": "Chromium SwiftShader / Three.js r180 GLTFLoader",
-  "candidateSha256": "9a34890bf730c6f86d1c5608fe0b445c99975cf1821f02716c552dca43013a3d",
+  "candidateSha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0",
   "assetHashes": [
     {
       "id": "mod_sacred_stone_floor_4m",
@@ -108,14 +108,156 @@
   ],
   "errors": [],
   "warnings": [],
-  "verifiedAt": "2026-11-16T10:46:15.000Z",
+  "reviewerSha256": "b6012247e004418bd5275fce73de429aab94d3bf6c80942b722778373e8beeb8",
+  "foliageHelperSha256": "f29684256637e8a29c1ef20cda7fb50dec38c56a3f8833a324daeae60ad9fca2",
+  "foliageCoverage": [
+    {
+      "material": "cedar_fine_needle_spray",
+      "enabled": true,
+      "alphaCutoffUnchanged": true,
+      "cutoff": 0.44999998807907104,
+      "sourceCoverage": 0.15114974975585938,
+      "levels": [
+        {
+          "width": 512,
+          "height": 512,
+          "rawCoverage": 0.15114974975585938,
+          "correctedCoverage": 0.15114974975585938,
+          "scale": 1
+        },
+        {
+          "width": 256,
+          "height": 256,
+          "rawCoverage": 0.15570068359375,
+          "correctedCoverage": 0.1510772705078125,
+          "scale": 0.953125
+        },
+        {
+          "width": 128,
+          "height": 128,
+          "rawCoverage": 0.15673828125,
+          "correctedCoverage": 0.1512451171875,
+          "scale": 0.953125
+        },
+        {
+          "width": 64,
+          "height": 64,
+          "rawCoverage": 0.154052734375,
+          "correctedCoverage": 0.151123046875,
+          "scale": 0.9765625
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "rawCoverage": 0.154296875,
+          "correctedCoverage": 0.150390625,
+          "scale": 0.96875
+        },
+        {
+          "width": 16,
+          "height": 16,
+          "rawCoverage": 0.15234375,
+          "correctedCoverage": 0.15234375,
+          "scale": 1
+        },
+        {
+          "width": 8,
+          "height": 8,
+          "rawCoverage": 0.0625,
+          "correctedCoverage": 0.140625,
+          "scale": 1.15625
+        },
+        {
+          "width": 4,
+          "height": 4,
+          "rawCoverage": 0,
+          "correctedCoverage": 0.125,
+          "scale": 1.1875
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "rawCoverage": 0,
+          "correctedCoverage": 0.25,
+          "scale": 3
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "rawCoverage": 0,
+          "correctedCoverage": 0,
+          "scale": 1
+        }
+      ]
+    }
+  ],
+  "nearViews": {
+    "approach": {
+      "tile": [
+        5,
+        15
+      ],
+      "eye": [
+        20,
+        1.6000000000000005,
+        60
+      ],
+      "target": [
+        28,
+        1.7,
+        60
+      ],
+      "targetId": "root_approach_torii",
+      "wallOccluded": false,
+      "scope": "static candidate view, not game camera or collision proof"
+    },
+    "shrine": {
+      "tile": [
+        14,
+        5
+      ],
+      "eye": [
+        56,
+        1.5999999999999999,
+        20
+      ],
+      "target": [
+        52,
+        1.35,
+        12
+      ],
+      "targetId": "courtyard_hokora_shrine",
+      "wallOccluded": false,
+      "scope": "static candidate view, not game camera or collision proof"
+    },
+    "water": {
+      "tile": [
+        16,
+        4
+      ],
+      "eye": [
+        64,
+        1.6000000000000005,
+        16
+      ],
+      "target": [
+        70.42,
+        0.8,
+        22.42
+      ],
+      "targetId": "corner_white_wildflower_patch_18_6",
+      "wallOccluded": false,
+      "scope": "static candidate view, not game camera or collision proof"
+    }
+  },
+  "verifiedAt": "2026-11-16T15:29:52.876Z",
   "initial": {
     "ready": true,
     "busy": false,
     "scope": "standalone_candidate_review_not_game",
     "schemaVersion": 2,
     "presentationRevision": "soil_surface_v2_authored_forest_pockets",
-    "candidateSha256": "9a34890bf730c6f86d1c5608fe0b445c99975cf1821f02716c552dca43013a3d",
+    "candidateSha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0",
     "capabilities": [
       "explicit_floor_render_profiles_v1",
       "gltf_node_material_selection_v1",
@@ -156,7 +298,7 @@
     "scope": "standalone_candidate_review_not_game",
     "schemaVersion": 2,
     "presentationRevision": "soil_surface_v2_authored_forest_pockets",
-    "candidateSha256": "9a34890bf730c6f86d1c5608fe0b445c99975cf1821f02716c552dca43013a3d",
+    "candidateSha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0",
     "capabilities": [
       "explicit_floor_render_profiles_v1",
       "gltf_node_material_selection_v1",
@@ -197,7 +339,7 @@
     "scope": "standalone_candidate_review_not_game",
     "schemaVersion": 2,
     "presentationRevision": "soil_surface_v2_authored_forest_pockets",
-    "candidateSha256": "9a34890bf730c6f86d1c5608fe0b445c99975cf1821f02716c552dca43013a3d",
+    "candidateSha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0",
     "capabilities": [
       "explicit_floor_render_profiles_v1",
       "gltf_node_material_selection_v1",
@@ -221,14 +363,14 @@
     "ceilingCount": 17,
     "ceilingsVisible": false,
     "propsVisible": true,
-    "planView": true,
+    "planView": false,
     "omittedWaterCells": 11,
     "omittedFixedObjects": 7,
     "foesRendered": false,
     "sourceCount": 17,
     "renderer": {
-      "calls": 2041,
-      "triangles": 3823002
+      "calls": 420,
+      "triangles": 822407
     },
     "errors": []
   },
@@ -13009,23 +13151,6 @@
       }
     },
     {
-      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb",
-      "sha256": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
-      "bytes": 1335328,
-      "manifestHashVerified": true,
-      "explicitPins": [
-        "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788"
-      ],
-      "geometry": {
-        "geometries": 5,
-        "materials": 5,
-        "triangles": 1992,
-        "vertices": 4950,
-        "textures": 15,
-        "invalid": []
-      }
-    },
-    {
       "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb",
       "sha256": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
       "bytes": 590244,
@@ -13058,17 +13183,36 @@
       }
     },
     {
-      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb",
-      "sha256": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
-      "bytes": 2069064,
+      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb",
+      "sha256": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+      "bytes": 1822596,
       "manifestHashVerified": true,
-      "explicitPins": [],
+      "explicitPins": [
+        "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb"
+      ],
       "geometry": {
-        "geometries": 4,
-        "materials": 4,
-        "triangles": 5424,
-        "vertices": 14480,
-        "textures": 12,
+        "geometries": 3,
+        "materials": 3,
+        "triangles": 14712,
+        "vertices": 14958,
+        "textures": 9,
+        "invalid": []
+      }
+    },
+    {
+      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb",
+      "sha256": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
+      "bytes": 1335328,
+      "manifestHashVerified": true,
+      "explicitPins": [
+        "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788"
+      ],
+      "geometry": {
+        "geometries": 5,
+        "materials": 5,
+        "triangles": 1992,
+        "vertices": 4950,
+        "textures": 15,
         "invalid": []
       }
     },
@@ -13090,23 +13234,6 @@
       }
     },
     {
-      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb",
-      "sha256": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
-      "bytes": 1822596,
-      "manifestHashVerified": true,
-      "explicitPins": [
-        "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb"
-      ],
-      "geometry": {
-        "geometries": 3,
-        "materials": 3,
-        "triangles": 14712,
-        "vertices": 14958,
-        "textures": 9,
-        "invalid": []
-      }
-    },
-    {
       "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb",
       "sha256": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
       "bytes": 825896,
@@ -13120,23 +13247,6 @@
         "triangles": 1433,
         "vertices": 1985,
         "textures": 12,
-        "invalid": []
-      }
-    },
-    {
-      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb",
-      "sha256": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
-      "bytes": 1547392,
-      "manifestHashVerified": true,
-      "explicitPins": [
-        "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0"
-      ],
-      "geometry": {
-        "geometries": 4,
-        "materials": 4,
-        "triangles": 33804,
-        "vertices": 26809,
-        "textures": 8,
         "invalid": []
       }
     },
@@ -13158,19 +13268,17 @@
       }
     },
     {
-      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb",
-      "sha256": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
-      "bytes": 1181524,
+      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb",
+      "sha256": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
+      "bytes": 2069064,
       "manifestHashVerified": true,
-      "explicitPins": [
-        "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d"
-      ],
+      "explicitPins": [],
       "geometry": {
         "geometries": 4,
         "materials": 4,
-        "triangles": 10656,
-        "vertices": 8928,
-        "textures": 10,
+        "triangles": 5424,
+        "vertices": 14480,
+        "textures": 12,
         "invalid": []
       }
     },
@@ -13192,19 +13300,36 @@
       }
     },
     {
-      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb",
-      "sha256": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
-      "bytes": 919316,
+      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb",
+      "sha256": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
+      "bytes": 1547392,
       "manifestHashVerified": true,
       "explicitPins": [
-        "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a"
+        "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0"
       ],
       "geometry": {
-        "geometries": 2,
-        "materials": 2,
-        "triangles": 5350,
-        "vertices": 4265,
-        "textures": 6,
+        "geometries": 4,
+        "materials": 4,
+        "triangles": 33804,
+        "vertices": 26809,
+        "textures": 8,
+        "invalid": []
+      }
+    },
+    {
+      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb",
+      "sha256": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+      "bytes": 1181524,
+      "manifestHashVerified": true,
+      "explicitPins": [
+        "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d"
+      ],
+      "geometry": {
+        "geometries": 4,
+        "materials": 4,
+        "triangles": 10656,
+        "vertices": 8928,
+        "textures": 10,
         "invalid": []
       }
     },
@@ -13222,6 +13347,23 @@
         "triangles": 9632,
         "vertices": 8584,
         "textures": 16,
+        "invalid": []
+      }
+    },
+    {
+      "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb",
+      "sha256": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+      "bytes": 919316,
+      "manifestHashVerified": true,
+      "explicitPins": [
+        "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a"
+      ],
+      "geometry": {
+        "geometries": 2,
+        "materials": 2,
+        "triangles": 5350,
+        "vertices": 4265,
+        "textures": 6,
         "invalid": []
       }
     },
@@ -13446,7 +13588,7 @@
   "unchangedFiles": [
     {
       "file": "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-candidate.json",
-      "sha256": "9a34890bf730c6f86d1c5608fe0b445c99975cf1821f02716c552dca43013a3d"
+      "sha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0"
     },
     {
       "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb",

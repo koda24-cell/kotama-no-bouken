@@ -87,3 +87,5 @@ mainへはユーザーの明示承認なしにマージしません。
 ### 開発ブランチ更新への対応
 
 2026-11-17にdevelopment `7708b03` と比較し、map・field・移動/FOE・操作・保存・puzzleの6 sourceは一致。共有rendererには描画統計とB2 cache版の変更があるため、7 source全一致とは扱わない。`verification/development-baseline-check.json`を参照。統合時は最新development側の変更を保持し、確認した完全commit SHAを `F1_LAYOUT_BASELINE=<40桁SHA> node tools/f1-sacred-forest/build_game_layout.cjs --require-assets` に指定して再生成・ブラウザ検証する。指定したbaselineと実sourceが違えば生成を拒否する。デフォルトの保存済み候補は元baseline ae7995aのまま。
+
+近景reviewは元walkセル中心/目高1.6m。祠の正面2壁は既存collapsed wallを縦0.32の低い囲いとし、178壁/通行不可は維持する。`preview/f1-foliage-coverage.js`は独立viewerの任意sampling補助で、source alphaCutoffを保持してmip coverageを補正する。採用する場合はGPUでのmip upload・テーマ破棄時のtexture lifetimeを対象環境で検証する。既にゲームへ導入したとは扱わない。
