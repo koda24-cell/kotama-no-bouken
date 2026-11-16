@@ -180,9 +180,10 @@ M_SPADIX = C.mat_petal("mz_spadix", lin("D8C24A"), rough=0.6, sss=0.12, sheen=0.
 C._set(node(M_SPADIX), "Emission Color", (*lin("FFD65A"), 1))
 C._set(node(M_SPADIX), "Emission Strength", 0.25)
 
-M_LEAF = C.mat_leaf("mz_leaf", lin("4E7F3A"), rough=0.42, sss=0.15, coat=0.3, vcol=True)
+M_LEAF = C.mat_leaf("mz_leaf", lin("4E7F3A"), rough=0.5, sss=0.15, coat=0.3, vcol=True)
+C._set(node(M_LEAF), "Coat Roughness", 0.32)
 M_ICE = C.mat_ice("mz_ice", lin("CFE6F0"), rough=0.04, trans=0.92)
-M_ICE_RIM = C.mat_ice("mz_ice_rim", lin("D9ECF4"), rough=0.22, trans=0.55)
+M_ICE_RIM = C.mat_ice("mz_ice_rim", lin("D6EAF3"), rough=0.14, trans=0.72)
 M_FROST = C.mat_ice("mz_frost", lin("EAF6FF"), rough=0.12, trans=0.45)
 M_CRACK = C.mat_basic("mz_ice_crack", lin("BCD6E6"), rough=0.35)
 M_MUD = C.mat_basic("mz_mud", lin("2E2820"), rough=0.32)
@@ -238,19 +239,19 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
     asym = rnd.uniform(-1, 1)
 
     def phi_fn(s):
-        return math.pi * (1.08 - 0.36 * sstep(0.04, 0.2, s) - 0.12 * sstep(0.2, 0.55, s) - 0.18 * sstep(0.6, 1.0, s))
+        return math.pi * (1.08 - 0.36 * sstep(0.02, 0.15, s) - 0.12 * sstep(0.15, 0.5, s) - 0.18 * sstep(0.6, 1.0, s))
 
     def blade_w(s):
-        if s < 0.48:
-            f = sstep(0.0, 0.48, s) ** 0.55
+        if s < 0.44:
+            f = sstep(-0.06, 0.44, s) ** 0.5
         else:
-            t = (s - 0.48) / 0.52
+            t = (s - 0.44) / 0.56
             f = (1 - t) * (1 + 1.4 * t) * (1 - 0.25 * t * t)
         return wmax * 0.5 * 1.25 * f
 
     def w_fn(s):
         wt = phi_fn(s) * R0 * (1 + 0.1 * s / 0.2)
-        return max(5e-4, wt + (blade_w(s) - wt) * sstep(0.04, 0.3, s))
+        return max(5e-4, wt + (blade_w(s) - wt) * sstep(0.02, 0.22, s))
 
     def R_fn(s):
         return w_fn(s) / phi_fn(s)
@@ -261,14 +262,14 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
         return Vector((x, y, s * L))
 
     def spiral_fn(s):
-        return 0.16 * (1 - sstep(0.04, 0.2, s))
+        return 0.16 * (1 - sstep(0.02, 0.15, s))
 
     def recurve_fn(s, a):
         e = max(0.0, (abs(a) - 0.7) / 0.3) ** 2
         return e * L * 0.025 * sstep(0.35, 0.6, s) * (1 - 0.6 * sstep(0.8, 1.0, s))
 
     def col_fn(s, a):
-        g = 1 - sstep(0.02, 0.26, s)
+        g = 1 - sstep(0.0, 0.22, s)
         c = mix(SP_WHITE, SP_GREEN, g)
         keel = max(0.0, 1 - abs(a) / 0.2) * (1 - sstep(0.05, 0.45, s)) * 0.5
         c = mix(c, SP_GREEN_DEEP, keel + (1 - sstep(0.0, 0.08, s)) * 0.5)
@@ -290,7 +291,7 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
 
     # --- 肉穂花序（芯 + 六角の小花） ---
     ax = Vector((0, -R0, 0))                      # 筒の中心軸
-    z0, z1 = 0.006 * (L / 0.16), 0.07 * L + Ls    # 芯の下端・上端
+    z0, z1 = 0.006 * (L / 0.16), 0.05 * L + Ls    # 芯の下端・上端
     r0 = rs - fh * 0.45                           # 芯の半径
     dome = r0 * 0.95
     zc = z1 - dome
@@ -324,7 +325,7 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
     YGRN = lin("B9B347")
     GAP = lin("8F9038")
     places = []
-    zstart = 0.085 * L
+    zstart = 0.06 * L
     dz = pitch * 0.866
     k = 0
     z = zstart
@@ -399,7 +400,7 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
 # ---------------------------------------------------------------------------
 # 葉（櫂形）: 葉柄+中央脈は1本の管、葉身は中心線に沿ったリボン
 # ---------------------------------------------------------------------------
-LF = lin("4E7F3A")
+LF = lin("487A36")
 LF_DARK = lin("3C6A2C")
 LF_RIB = lin("A2C25C")
 LF_VEIN = lin("6A9A45")
@@ -409,7 +410,7 @@ PET = lin("6E9944")
 
 
 def build_leaf(tag, ground, ang, hp, alpha, Lb, wmax, bend=(16, 38), roll=0.0, twist=0.0,
-               res_u=30, res_v=12, seed=0):
+               res_u=28, res_v=12, seed=0):
     rnd = random.Random(seed)
     D = Vector((math.cos(math.radians(ang)), math.sin(math.radians(ang)), 0))
 
@@ -558,7 +559,7 @@ def ice_top(x, y):
 
 
 def build_ground():
-    NA = 56
+    NA = 44
     # 泥（氷の外側にはみ出す濡れた泥の縁）
     verts, cols, faces = [Vector((0, 0, MUD_TOP))], [lin("2A251E")], []
     rings = [0.3, 0.6, 0.85, 1.0, 1.06, 1.13]
@@ -693,21 +694,21 @@ def build_collars():
     """茎・葉柄の付け根ごとに盛り上がった薄氷の縁（凸凹のリング）"""
     rnd = random.Random(17)
     tv, tf = [], []
-    nu, nvv = 14, 5
+    nu, nvv = 12, 5
     for g, r in collars:
         b = len(tv)
         zc = ice_top(g.x, g.y) - 0.0015
-        rm = 0.0032 + r * 0.3
-        Rm = r + rm * 0.55
+        rm = 0.0026 + r * 0.22
+        Rm = r + rm * 0.35
         ph0 = rnd.random() * 6.28
         for i in range(nu):
             th = 2 * math.pi * i / nu
             k = 1 + 0.35 * math.sin(3 * th + ph0) * math.sin(2 * th + 1.0)
             for j in range(nvv):
                 ph = math.pi * j / (nvv - 1)          # 0..π 外側→内側（上に盛り上がる半断面）
-                rr = Rm + math.cos(ph) * rm * 1.5 * k
+                rr = Rm + math.cos(ph) * rm * 1.2 * k
                 tv.append(Vector((g.x + math.cos(th) * rr, g.y + math.sin(th) * rr,
-                                  zc + math.sin(ph) * rm * 0.9 * k)))
+                                  zc + math.sin(ph) * rm * 1.25 * k)))
                 if j == 2 and rnd.random() < 0.35:
                     frost_items.append((tv[-1].copy(), Vector((math.cos(th), math.sin(th), 1.6))))
         for i in range(nu):
@@ -728,8 +729,8 @@ build_spathe("L", L=0.18, wmax=0.15, rs=0.007, Ls=0.064, base=(-0.042, -0.04, 0.
              yaw=-18, lean=-8, roll=4, ground=None, seed=1)
 build_spathe("M", L=0.155, wmax=0.13, rs=0.0064, Ls=0.056, base=(0.052, -0.032, 0.024),
              yaw=40, lean=4, roll=-6, ground=None, seed=2)
-build_spathe("S", L=0.128, wmax=0.105, rs=0.0058, Ls=0.047, base=(-0.058, 0.02, 0.02),
-             yaw=-72, lean=12, roll=5, ground=None, seed=3)
+build_spathe("S", L=0.128, wmax=0.105, rs=0.0058, Ls=0.047, base=(0.006, -0.082, 0.016),
+             yaw=14, lean=-14, roll=14, ground=None, seed=3)
 # 葉（後ろ側に広がる櫂形 3 枚 + 後方中央の若い巻き葉）。開花期なので葉は苞より少し控えめ
 build_leaf("A", ground=(-0.008, 0.02, GZ), ang=118, hp=0.09, alpha=12, Lb=0.27, wmax=0.14,
            bend=(14, 32), roll=math.radians(-8), twist=0.22, seed=4)
