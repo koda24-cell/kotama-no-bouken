@@ -44,7 +44,7 @@ def textured_material(material, base, seed):
   return (0.34*math.sin(3*u+seed)*math.cos(4*v-seed)
           +0.15*math.sin(9*u+5*v+seed*.2)
           +0.07*math.cos(17*u-13*v+seed*.4)
-          +0.038*math.sin(37*u+23*v+seed)*math.cos(19*v-11*u))
+          +0.072*math.sin(37*u+23*v+seed)*math.cos(19*v-11*u))
  normal_image=bpy.data.images.new(material.name+'_normal',width=256,height=256,alpha=True)
  normal_pixels=[]
  for y in range(256):
@@ -57,10 +57,10 @@ def textured_material(material, base, seed):
  normal_image.colorspace_settings.name='Non-Color'
  normal_image.pack()
  normal_tex=nodes.new('ShaderNodeTexImage');normal_tex.image=normal_image
- normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.32
+ normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.60
  material.node_tree.links.new(normal_tex.outputs['Color'],normal_map.inputs['Color'])
  material.node_tree.links.new(normal_map.outputs['Normal'],bsdf.inputs['Normal'])
-for i,m in enumerate(stone): textured_material(m,[(.34,.36,.34),(.27,.29,.28),(.37,.34,.30)][i],110+i)
+for i,m in enumerate(stone): textured_material(m,[(.37,.39,.36),(.36,.38,.36),(.39,.36,.32)][i],110+i)
 for i,m in enumerate(moss): textured_material(m,[(.20,.32,.16),(.17,.26,.12)][i],210+i)
 def add_uv(obj):
  # Continuous cylindrical UVs for natural rock bodies: smart_project used to
@@ -90,7 +90,7 @@ def rock_part(name,loc,scale,seed,materials):
   # A directional fracture trench with depth on one face
   trench=math.exp(-((co.x*.8+co.y*.6-.12)**2)/.009) * max(0,1-abs(co.z)*.65)
   macro-=.25*trench
-  micro=(0.050*math.sin(co.x*17+seed)*math.cos(co.y*15-seed)+0.025*math.sin(co.z*27+co.x*9+seed))
+  micro=(0.050*math.sin(co.x*17+seed)*math.cos(co.y*15-seed)+0.025*math.sin(co.z*27+co.x*9+seed)+0.012*math.sin(co.x*53+seed)*math.cos(co.y*47-co.z*23))
   v.co=(co.x*(macro+micro),co.y*(macro+micro),co.z*(1+micro*0.55))
  obj.scale=scale
  # Use one continuous albedo texture per rock mesh instead of random per-face materials.
@@ -103,7 +103,7 @@ def rock_part(name,loc,scale,seed,materials):
  return obj
 def angular_shard(name, location, radius, height, seed):
  rng=random.Random(seed)
- bpy.ops.mesh.primitive_cone_add(vertices=5, radius1=radius, radius2=radius*.22, depth=height, location=location)
+ bpy.ops.mesh.primitive_cone_add(vertices=7, radius1=radius, radius2=radius*.43, depth=height*.82, location=location)
  obj=bpy.context.object;obj.name=name
  obj.rotation_euler=(rng.uniform(-.5,.5),rng.uniform(-.5,.5),rng.uniform(-3.14,3.14))
  obj.data.materials.append(stone[seed%len(stone)])
