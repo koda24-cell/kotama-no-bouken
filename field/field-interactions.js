@@ -387,8 +387,9 @@ async function fieldOnStairs(dir) {
   if (target < 0 || target >= fieldFloorCount(fieldState.area)) return;
   const choice = await fieldAsk(`${fieldFloorLabel(fieldState.area, target)}へ${dir === "down" ? "降り" : "上り"}ますか？`, [dir === "down" ? "降りる" : "上る", "やめる"]);
   if (choice !== 0) return;
+  if (typeof fieldA1BeforeStairs === "function" && !(await fieldA1BeforeStairs(dir))) return;
   if (typeof sound === "function") sound("select");
-  fieldGoFloor(target, dir === "down" ? "up" : "down");
+  await fieldGoFloor(target, dir === "down" ? "up" : "down");
 }
 // 別のフロアへ。arriveAt：到着する階段（"up"=上り階段の上、"down"=下り階段の上、"start"=開始位置）
 async function fieldGoFloor(f, arriveAt = "start") {
@@ -403,6 +404,7 @@ async function fieldGoFloor(f, arriveAt = "start") {
   fieldBuildDom();
   fieldShow();
   persistAutoSave();
+  if (typeof fieldA1OnEnter === "function") await fieldA1OnEnter();
 }
 async function fieldOnGate() {
   if (fieldState.lock) return;
@@ -412,6 +414,7 @@ async function fieldOnGate() {
   const choice = await fieldAsk("この先には強大な魔物の気配がする。進みますか？", ["進む", "やめる"]);
   if (choice !== 0) return;
   fieldState.lock = true;
+  if (typeof fieldA1BeforeBoss === "function") fieldA1BeforeBoss();
   fieldEmit("boss:gate", { area: fieldState.area, floor: fieldState.floor, stage: a.def.stage });
   fieldEmit("leave", { area: fieldState.area, floor: fieldState.floor, reason: "boss" });
   startBattle(a.def.stage);
