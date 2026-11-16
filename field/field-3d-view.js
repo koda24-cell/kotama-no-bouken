@@ -582,9 +582,9 @@ function setPreview(n, on) {
 function gameReviewState() {
   return { builtKey:g.builtKey, buildingKey:g.buildingKey,
     camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
-    entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
+    entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
     waterMeshCount:g.world.children.filter(o=>o.isMesh&&o.geometry===waterGeo).length,
-    foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type})),
+    foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image})),
     staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
 }
 window.KotamaField3D = { active, input, build, frame, toggle, gameReviewState, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
