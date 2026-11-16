@@ -1,0 +1,70 @@
+name: B4 Cart V22 Embedded PBR Cycles Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-structural-v20-20261116
+    paths:
+      - 'tools/b4-render/bake-cart-pbr-v22.py'
+      - '.github/workflows/b4-cart-pbr-v22.yml'
+      - 'field/b4-cart-v20-practical.js'
+      - 'tools/b4-render/export-cart-practical-v20.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install required Blender and Three tools
+        run: |
+          npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: GLB export original and practical candidates
+        run: node tools/b4-render/export-cart-practical-v20.mjs
+      - name: Create original PBR images and export candidate GLB
+        run: |
+          mkdir -p render-review
+          blender -b -t 2 --python tools/b4-render/bake-cart-pbr-v22.py --             render-output/b4-cart-practical-v22.glb render-output/b4-cart-practical-v22-pbr.glb             render-review/b4-cart-practical-v22-pbr-source.blend
+          test -s render-output/b4-cart-practical-v22-pbr.glb
+      - name: Cycles 3 views after reimporting image-textured GLB
+        run: |
+          set -euo pipefail
+          for file in render-output/b4-cart-practical-v21.glb render-output/b4-cart-practical-v22-pbr.glb; do
+            blender -b -t 2 --python tools/b4-render/render-cart-quality.py -- "$file" render-review
+          done
+          test "$(find render-review -name '*.png' | wc -l)" -eq 6
+          test -s render-review/b4-cart-practical-v21.blend
+          test -s render-review/b4-cart-practical-v22-pbr.blend
+      - name: Check embedded texture and manifest
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os,glob,hashlib,json,struct
+          p='render-output/b4-cart-practical-v22-pbr.glb'
+          check={'pbr_glb_exists':os.path.isfile(p),'pbr_images_embedded':0}
+          if os.path.isfile(p):
+            with open(p,'rb') as f:
+              f.seek(12); n,typ=struct.unpack('<II',f.read(8))
+              gltf=json.loads(f.read(n))
+            check['pbr_images_embedded']=len(gltf.get('images',[]))
+          files=sorted(glob.glob('render-output/*.glb')+glob.glob('render-review/*.png')+glob.glob('render-review/*.blend'))
+          manifest={'approval':'NOT_APPROVED','source_sha':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'verification':check,'files':[{'path':f,'size':os.stat(f).st_size,'sha256':hashlib.sha256(open(f,'rb').read()).hexdigest()} for f in files]}
+          os.makedirs('render-review',exist_ok=True)
+          open('render-review/manifest.json','w').write(json.dumps(manifest,indent=2))
+          print(json.dumps(check,indent=2))
+          if not check['pbr_images_embedded']:raise ValueError('No embedded images in exported GLB')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-cart-v22-pbr-review
+          retention-days: 14
+          path: |
+            render-output/*.glb
+            render-review/
