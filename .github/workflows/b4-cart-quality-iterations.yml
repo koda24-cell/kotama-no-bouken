@@ -6,6 +6,7 @@ on:
     paths:
       - 'field/b4-cart-v12-additions.js'
       - 'field/b4-cart-v14-additions.js'
+      - 'field/b4-cart-taper-v15-additions.js'
       - 'tools/b4-render/export-cart-quality.mjs'
       - 'tools/b4-render/render-cart-quality.py'
       - '.github/workflows/b4-cart-quality-iterations.yml'
@@ -32,20 +33,20 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p render-review
-          for index in 0 1 2 3; do
+          for index in 0 1 2 3 4 5; do
             blender -b -t 2 --python tools/b4-render/render-cart-quality.py -- "render-output/b4-cart-quality-${index}.glb" render-review
             for view in front side angle; do
               test -s "render-review/b4-cart-quality-${index}-${view}.png"
             done
             test -s "render-review/b4-cart-quality-${index}.blend"
           done
-          test "$(find render-review -name '*.png' | wc -l)" -eq 12
+          test "$(find render-review -name '*.png' | wc -l)" -eq 18
       - name: Record checksums and review status
         run: |
           python3 - <<'PY'
           import glob,os,hashlib,json
           files=sorted(glob.glob('render-output/b4-cart-quality-*.glb')+glob.glob('render-review/*'))
-          data={'asset':'b4-cart-quality','approval_status':'NOT_APPROVED','images':12,'iterations':[0,1,2,3],'files':[{'path':f,'bytes':os.stat(f).st_size,'sha256':hashlib.sha256(open(f,'rb').read()).hexdigest()} for f in files]}
+          data={'asset':'b4-cart-quality','approval_status':'NOT_APPROVED','images':18,'iterations':[0,1,2,3,4,5],'files':[{'path':f,'bytes':os.stat(f).st_size,'sha256':hashlib.sha256(open(f,'rb').read()).hexdigest()} for f in files]}
           open('render-review/manifest.json','w').write(json.dumps(data,indent=2))
           print(json.dumps(data,indent=2))
           PY
