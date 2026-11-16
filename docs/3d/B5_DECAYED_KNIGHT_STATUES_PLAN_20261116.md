@@ -58,3 +58,12 @@ sentinel V1 -> レンダリング目視 -> 形状修正 -> 承認待ち -> kneel
 - 撮影は高さに合わせ ortho scale 5.2 → 6.1、注視点約2.2mへ変更。既存V9のBlender/GLB/PNGを保持。
 - PBR写真テクスチャ候補（未取得・未使用）: [ambientCG Rock063](https://ambientcg.com/view?id=Rock063) 2026年2月公開、CC0、写真測量由来の灰色の風化岩。自然岩表現の参考には有効だが、人工彫像の筋/面を覆い隠さないようマスクを調整。GLBに実画像を取り込む際は原本hash、CC0確認、正しいUV/normal GL仕様、レンダ比較が必須。
 - 実制作・品質判定を混同しない。前処理・写真系PBR適用は技術的な候補にとどまり、未確認のうちは『適用済み』と記録しない。
+
+## V10–V13 7頭身・実写真PBR比較（2026-11-16）
+- V10: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43888936019 。Artifact `14234513834` 。台座を除く実メッシュ比約 **6.886頭身**。脚の縦長化と頭部縮小。GLB/Blend/PNG3枚のhash一致。見た目は依然ずんぐり感が残る。
+- V11: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43889626292 。Artifact `14236791099` 。肩を狭め、脚と剣をわずかに非対称化。比率6.886。GLB/Blend/PNG3枚のhash一致。旧版との差は小さい。
+- V12: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43890338792 。Artifact `14235499089` 。ambientCG Rock063の**実CC0写真測量PBR**を公式から取得成功、Color/Roughnessの写真を取り込み、全メッシュUVを作成、Blender3方向/GLB/Blend出力、manifest/画像hash一致。写真由来の黄緑が強すぎ、**芸術的には不採用**。NormalGLのファイルは取得・同梱したが、黒画像化の回帰を避けるためモデルへは未接続。
+- V13: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43891093819 。Artifact `14237047268` 。元のCC0写真はそのまま残し、実写真Colorをグレースケール＋冷灰色に色補正した `Color_ColdStone.jpg` を生成して使用。変換後画像のhash `1d6adcab3189cf25afbd402df6a3465c75d5a70d05f2dc32788d68f6f3adbc12`。比率6.886、GLB/Blend/PNG3枚のhash一致。魔王城らしいトーンへ戻ったが、面/破損の不自然さが残るため**未承認**。
+- 同梱 `photo_source/source.json` に公式URL、ライセンス、採用Color/Normal/Roughnessのhashを記録。原本Rock063はCC0、別途調色画像は派生物。公式 https://ambientcg.com/view?id=Rock063
+- 素材昇格・ゲーム組み込み・developmentマージは行わない。全バージョン独立の生成コードとActions成果物を残す。
+- 次は部品の追加のみでなく、実人体の7頭身を意識した肩甲/胴腰/脚/外套の**大きな形状再設計**が必要。V13は完成ではない。
