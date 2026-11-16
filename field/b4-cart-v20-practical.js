@@ -159,6 +159,30 @@ export function enhanceB4CartPractical(root,variant=20) {
   beam([side*.98,.67,-L*.57],[side*1.025,.84,-L*.39],.028,.023,highlight);
   beam([side*1.07,1.06,L*.14],[side*1.081,1.19,L*.31],.016,.016,woodGrain);
  }
+ // V27: non-destructive rock surface shells. The coarse source ore meshes remain
+ // inside the overlay, not deleted or overwritten, and can be restored by not using V27.
+ if(variant>=27){
+   const rockSurface=new THREE.MeshStandardMaterial({name:'B4_CaveOre',color:0x343536,metalness:0,roughness:.96});
+   let index=0;
+   for(const ore of [...cart.children]){
+     if(!ore.isMesh || ore.geometry?.type!=='IcosahedronGeometry' || ore.scale.x<.41)continue;
+     const geo=new THREE.SphereGeometry(1,40,28);
+     const a=geo.getAttribute('position');
+     for(let i=0;i<a.count;i++){
+       const x=a.getX(i),y=a.getY(i),z=a.getZ(i);
+       const r=1.055+
+        .035*Math.sin(x*9.3+z*3.1+index*2.4)*Math.cos(y*7.2-x*2.1)+
+        .025*Math.sin(y*13.5+z*5.4+index*.7)+
+        .018*Math.cos(z*17.2+x*9.6-index*1.9);
+       a.setXYZ(i,x*r,y*r,z*r);
+     }
+     a.needsUpdate=true;geo.computeVertexNormals();
+     const shell=new THREE.Mesh(geo,rockSurface);
+     shell.name='B4_ORIGINAL_ORE_PRESERVED_SMOOTH_SURFACE_'+index;
+     shell.position.copy(ore.position);shell.rotation.copy(ore.rotation);shell.scale.copy(ore.scale);
+     group.add(shell);index++;
+   }
+ }
  cart.userData={...cart.userData,practical:{variant,topWidth:X*2,topLength:L*2,wheelbase:axleZ*2,sourceGeometryPreserved:true}};
  return root;
 }
