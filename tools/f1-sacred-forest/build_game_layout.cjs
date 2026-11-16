@@ -21,6 +21,11 @@ const DEST = path.join(OUT, 'scene/game-layout-candidate.json');
 const BASELINE = 'ae7995ae9ab7c36a547c6dbd7a5d601d3fc4bea5';
 const EXISTING = 'assets/3d/dungeons/b1_ancient_forest/';
 const CANDIDATE = 'assets/3d/dungeons/b1_sacred_forest_candidates/';
+const SOIL_SURFACE_SOURCE_SHA256 = 'a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788';
+// Adding a full root-and-slab module is an explicit art decision, not a fallback
+// for a loader that cannot select the soil-only node. Any future entry must be
+// checked against all unchanged movement sweeps, including its low roots.
+const fullRootsoilTileWhitelist = [];
 const requireAssets = process.argv.includes('--require-assets');
 const sha = value => crypto.createHash('sha256').update(value).digest('hex');
 const read = name => fs.readFileSync(path.join(ROOT, name), 'utf8');
@@ -125,6 +130,7 @@ for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
   if (visualWall(x, y)) continue;
   if (c !== '~') floors.push({ id: `floor_${x}_${y}`, assetId: floorId(c),
     file: CANDIDATE + 'modules/' + floorId(c) + '.glb', tile: [x, y],
+    renderProfile: c === '*' ? 'soil_surface_only' : 'stone_full_asset',
     position: [x * 4, 0, y * 4], rotationY: ((x + y) % 4) * Math.PI / 2,
     scale: [1, 1, 1], zone: z.id, sourceCharUnchanged: c });
   if (z.ceiling) ceilings.push({ id: `ceiling_${x}_${y}`,
@@ -243,6 +249,95 @@ function glbGeometry(assetId) {
   const result = { triangles, bounds: boundsOf(positions), file: path.relative(ROOT, file), sha256: sha(bytes) };
   actual.set(assetId, result);
   return result;
+}
+
+function checkedFloorAsset(assetId) {
+  const file = path.join(OUT, 'modules', assetId + '.glb');
+  const bytes = fs.readFileSync(file);
+  if (bytes.readUInt32LE(0) !== 0x46546c67 || bytes.readUInt32LE(4) !== 2 || bytes.readUInt32LE(8) !== bytes.length || bytes.readUInt32LE(16) !== 0x4e4f534a) {
+    throw new Error('Invalid source GLB for mandatory floor render profile: ' + file);
+  }
+  const json = JSON.parse(bytes.subarray(20, 20 + bytes.readUInt32LE(12)));
+  return { file: path.relative(ROOT, file), sha256: sha(bytes), json };
+}
+const soilSource = checkedFloorAsset('mod_root_soil_floor_4m');
+if (soilSource.sha256 !== SOIL_SURFACE_SOURCE_SHA256) {
+  throw new Error('Soil profile source hash changed; review the source and selector before updating the candidate.');
+}
+const stoneSource = checkedFloorAsset('mod_sacred_stone_floor_4m');
+const soilNodeName = 'sacred_damp_forest_soil_surface';
+const soilMaterialName = 'sacred_damp_forest_soil';
+const matchedSoilNodes = soilSource.json.nodes.map((node, nodeIndex) => ({ node, nodeIndex }))
+  .filter(({ node }) => node.name === soilNodeName);
+if (matchedSoilNodes.length !== 1) throw new Error('Expected exactly one named soil surface node.');
+const { node: soilNode, nodeIndex: soilNodeIndex } = matchedSoilNodes[0];
+if (soilNode.mesh === undefined || soilNode.children?.length) throw new Error('Soil-only node must contain one mesh without children.');
+const soilPrimitives = soilSource.json.meshes[soilNode.mesh].primitives;
+const matchedSoilPrimitives = soilPrimitives.map((primitive, primitiveIndex) => ({ primitive, primitiveIndex }))
+  .filter(({ primitive }) => soilSource.json.materials[primitive.material]?.name === soilMaterialName);
+if (soilPrimitives.length !== 1 || matchedSoilPrimitives.length !== 1) {
+  throw new Error('The named soil surface must resolve to exactly one primitive with the exact soil material.');
+}
+const soilPrimitive = matchedSoilPrimitives[0].primitive;
+if (soilPrimitive.attributes.NORMAL === undefined || soilPrimitive.attributes.TEXCOORD_0 === undefined || soilPrimitive.attributes.COLOR_0 !== undefined) {
+  throw new Error('Selected soil primitive must retain normals/UV and must not use vertex colour.');
+}
+let selectedSoilWorldBounds = null;
+function inspectSoilNode(index, parent) {
+  const node = soilSource.json.nodes[index], matrix = mul(parent, nodeMatrix(node));
+  if (index === soilNodeIndex) {
+    const position = soilSource.json.accessors[soilPrimitive.attributes.POSITION];
+    if (!position.min || !position.max) throw new Error('Missing soil position bounds.');
+    selectedSoilWorldBounds = boundsOf(corners({ min: position.min, max: position.max }).map(p => point(matrix, p)));
+  }
+  for (const child of node.children || []) inspectSoilNode(child, matrix);
+}
+for (const root of soilSource.json.scenes[soilSource.json.scene || 0].nodes) inspectSoilNode(root, identity());
+if (!selectedSoilWorldBounds || Math.abs(selectedSoilWorldBounds.max[1]) > 1e-5 ||
+    Math.abs(selectedSoilWorldBounds.max[0] - selectedSoilWorldBounds.min[0] - 4) > 1e-5 ||
+    Math.abs(selectedSoilWorldBounds.max[2] - selectedSoilWorldBounds.min[2] - 4) > 1e-5) {
+  throw new Error('Selected soil surface must retain its original ancestor transform, 4m footprint and level Y=0 top.');
+}
+const floorRenderProfiles = {
+  stone_full_asset: {
+    sourceAssetId: 'mod_sacred_stone_floor_4m', sourceFile: stoneSource.file, sourceSha256: stoneSource.sha256,
+    selection: { mode: 'all', preserveAncestorTransforms: true },
+    onMismatch: 'reject_candidate', uvScale: [1, 1], walkSurfaceY: 0,
+  },
+  soil_surface_only: {
+    sourceAssetId: 'mod_root_soil_floor_4m', sourceFile: soilSource.file, sourceSha256: soilSource.sha256,
+    selection: { mode: 'node_and_material_exact', node: soilNodeName, material: soilMaterialName,
+      expectedNodeMatches: 1, expectedPrimitiveMatches: 1, includeDescendants: false,
+      preserveAncestorTransforms: true },
+    onMismatch: 'reject_candidate', uvScale: [1, 1], walkSurfaceY: 0,
+    excludedComponents: ['sacred_old_leaf_litter_surface', 'sacred_root_bark_surface',
+      'sacred_velvet_moss_surface', 'sacred_weathered_stone_surface'],
+    validation: { status: 'verified_actual_glb_json', sourceSha256: soilSource.sha256,
+      nodeIndex: soilNodeIndex, meshIndex: soilNode.mesh,
+      primitiveIndex: matchedSoilPrimitives[0].primitiveIndex, materialIndex: soilPrimitive.material,
+      nodeMatches: matchedSoilNodes.length, primitiveMatches: matchedSoilPrimitives.length,
+      originalWorldBounds: selectedSoilWorldBounds,
+      indicesAreEvidenceOnly: true,
+      note: 'Select by exact names and source hash; retain node/ancestor transforms. Do not render the entire GLB.' },
+  },
+  full_rootsoil_local: {
+    sourceAssetId: 'mod_root_soil_floor_4m', sourceFile: soilSource.file, sourceSha256: soilSource.sha256,
+    selection: { mode: 'all', preserveAncestorTransforms: true },
+    onMismatch: 'reject_candidate', uvScale: [1, 1], walkSurfaceY: 0,
+    requireExplicitTileWhitelist: true, whitelistField: 'fullRootsoilTileWhitelist',
+    requiresRouteClearanceRecheck: true,
+    note: 'Local root/slab accents only after explicit placement and low-detail clearance review; not a fallback profile.',
+  },
+};
+for (const floor of floors) {
+  const profile = floorRenderProfiles[floor.renderProfile];
+  if (!profile || floor.assetId !== profile.sourceAssetId || floor.file !== profile.sourceFile) {
+    throw new Error('Every floor must resolve its explicit source-compatible render profile: ' + floor.id);
+  }
+  if (charAt(...floor.tile) === '~') throw new Error('Do not place any soil or stone floor on source water.');
+  if (floor.renderProfile === 'full_rootsoil_local' && !fullRootsoilTileWhitelist.some(tile => stable(tile) === stable(floor.tile))) {
+    throw new Error('Full rootsoil module not explicitly whitelisted: ' + floor.id);
+  }
 }
 
 const proposed = [];
@@ -377,7 +472,14 @@ const saveCritical = { area: 1, floor: 2, floorKey: area.key, width: w, height: 
   areaStage: area.def.stage, enterScene: area.def.enterScene, bossScene: area.def.bossScene, signScene: area.def.signScene,
   objectDefinitions: area.def.objects };
 const layout = {
-  schemaVersion: 1,
+  schemaVersion: 2,
+  presentationRevision: 'soil_surface_v2',
+  requiredCapabilities: ['explicit_floor_render_profiles_v1', 'gltf_node_material_selection_v1'],
+  consumerContract: { runtimeImplementation: 'not_implemented_by_this_candidate',
+    onUnsupportedSchema: 'reject_candidate', onUnsupportedCapability: 'reject_candidate',
+    onUnknownRenderProfile: 'reject_candidate', onSelectionMismatch: 'reject_candidate',
+    implicitFullAssetFallback: false, defaultFloorRenderProfile: null,
+    sourceHashVerification: 'required_before_geometry_selection' },
   scope: 'candidate_not_applied', approvalStatus: 'pending_user_review',
   runtimeModified: false, mapModified: false, saveMigrationRequired: false,
   expectedSourceBaseline: { branch: 'development', commit: BASELINE,
@@ -397,6 +499,7 @@ const layout = {
     preservedWaterTiles: cells.filter(c => c.water).map(c => c.tile),
     reservedObjectAndFoeNeighbourhoods: [...reserved].sort().map(k => k.split(',').map(Number)),
     clearanceSweptRectangles: walkRectangles },
+  floorRenderProfiles, fullRootsoilTileWhitelist,
   floorPlacements: floors, ceilingPlacements: ceilings, boundaryWallPlacements: walls,
   fixedObjects,
   preservedFoes: { definitions: clean(area.floor.foes),
@@ -415,6 +518,10 @@ const layout = {
     'Reuse fixed object identity keys, IDs, source files and existing state synchronization exactly.',
     'Do not apply the independent 24x32m hero scene as a replacement for this 28x18-cell gameplay map.',
     'Re-run with --require-assets after all individual GLBs finish. Review omitted unsafe placements; never bypass clearance.',
+    'Schema 2 floor render profiles are mandatory. Reject unsupported selection capabilities; never silently render the full rootsoil GLB.',
+    'For soil_surface_only, verify the source hash, select the exact node AND material once, and retain ancestor transforms and original metre-scale UVs.',
+    'Full rootsoil modules require an explicit tile whitelist and a fresh low-detail route clearance check; the initial whitelist is empty.',
+    'Use soil-only copies per non-water 4m tile. Do not carry the independent scene giant earth backdrop across gameplay water cells.',
     'Ceiling flags are zone-specific. Omit ceilings in gardens; reuse the existing 4m vault in sealed_corridor.',
     'Visual wall damage never grants passage through source navigation-solid cells.',
     'Preserve grass encounter factors, safe tiles, chest rewards, NPCs, stairs, boss and FOE turn behaviour.',
@@ -422,10 +529,14 @@ const layout = {
   ],
 };
 for (const { file, sha256 } of sourceFingerprints) if (sha(fs.readFileSync(path.join(ROOT, file))) !== sha256) throw new Error('Source mutated during generation: ' + file);
+if (stable(fixedObjects.map(object => object.identity)) !== stable(area.objects)) throw new Error('Fixed object identities changed.');
+if (stable(layout.preservedFoes.definitions) !== stable(area.floor.foes)) throw new Error('FOE definitions changed.');
+if (stable(layout.beforeFingerprint.saveCriticalData.map) !== stable(map)) throw new Error('Source map changed.');
 if (requireAssets && pendingAssets.size) throw new Error('Missing actual GLBs: ' + [...pendingAssets].join(', '));
 fs.mkdirSync(path.dirname(DEST), { recursive: true });
 fs.writeFileSync(DEST, JSON.stringify(layout, (_key, value) => typeof value === 'number' ? round(value) : value, 2) + '\n');
 console.log(JSON.stringify({ output: path.relative(ROOT, DEST), mapSha256: layout.beforeFingerprint.mapSha256,
   walkableTiles: layout.navigation.walkableTileCount, floors: floors.length, ceilings: ceilings.length, walls: walls.length,
   acceptedProps: accepted.length, rejectedProps: rejected.length, pendingAssets: [...pendingAssets],
+  floorRenderProfiles: floors.reduce((counts, floor) => ((counts[floor.renderProfile] = (counts[floor.renderProfile] || 0) + 1), counts), {}),
   fixedObjects: fixedObjects.length, scope: layout.scope }, null, 2));
