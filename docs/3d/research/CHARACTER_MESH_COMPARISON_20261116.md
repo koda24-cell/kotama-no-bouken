@@ -34,3 +34,22 @@ V15の失敗は、顔・耳など複数の境界を高さごとに平均して�
 
 ## 状態
 本ファイルは研究台帳。複数モデルの新規ダウンロード・解析・レンダリングはまだ未実施。解析コードの実動作も別途検証が必要。
+
+## 第1段階：VRoid旧βモデルの出典確認（2026-11-16）
+
+公式VRoidヘルプ https://vroid.pixiv.help/hc/ja/articles/4402614652569 によると、旧β版の HairSample_Male / HairSample_Female / β Ver AvatarSample_1〜4 はCC0。個別条件のある AvatarSample_A〜C は別扱い。現行の AvatarSample A〜Z はCC0ではない。
+
+第三者のミラー https://github.com/madjin/vrm-samples/tree/master/vroid/beta の実ディレクトリを確認し、次のファイルの存在・サイズを確認した（モデルの同一性・ライセンスは個体別に照合する）。
+
+| ファイル | GitHub上のサイズ | 状態 |
+|---|---:|---|
+| Sendagaya_Shibu.vrm | 17,049,284 bytes | 既存ワークフローで読込実績。公式β Ver AvatarSample_1ページでCC0確認 https://vroid.pixiv.help/hc/ja/articles/360012381793 |
+| Sendagaya_Shino.vrm | 15,074,328 bytes | ファイル存在確認・未ダウンロード・未解析 |
+| Sakurada_Fumiriya.vrm | 19,342,280 bytes | ファイル存在確認・未ダウンロード・未解析 |
+| HairSample_Female.vrm | 17,518,216 bytes | 公式CC0対象名称と一致・未ダウンロード・未解析 |
+| HairSample_Male.vrm | 18,481,892 bytes | 公式CC0対象名称と一致・未ダウンロード・未解析 |
+| Darkness_Shibu.vrm | 20,423,112 bytes | ファイル存在確認・未ダウンロード・未解析 |
+
+注意: ミラーはpixiv公式の配布元ではない。個別モデルの出所と元の利用条件を確認してから実利用する。ShibuとVitaの既存読込実績を、新規6件の解析完了と混同しない。
+
+次の実作業: HairSample_Female → Sendagaya_Shino → Sakurada_Fumiriya の順にBlender実読込し、メッシュ名・頭部境界・各断面・接続を記録する。現時点では新規読込は未実施。
