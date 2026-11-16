@@ -1,4 +1,4 @@
-import bpy, math, random, os, json, hashlib
+import bpy, bmesh, math, random, os, json, hashlib
 from mathutils import Vector
 rng=random.Random(20261116)
 OUT=os.path.abspath("render-output/b2-ruined-stone-arch-v1")
@@ -86,10 +86,23 @@ def stone(name,center,size,mat,rotation=None):
    for x in [-1,1]:
     verts.append((x*dx*.5+rng.uniform(-.035,.035),y*dy*.5+rng.uniform(-.028,.028),z*dz*.5+rng.uniform(-.035,.035)))
  faces=[(0,1,3,2),(4,6,7,5),(0,4,5,1),(2,3,7,6),(0,2,6,4),(1,5,7,3)]
- mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update();planar_uv(mesh)
+ mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update()
+ # Retain the 8 old corner coordinates and the stone's outline, but introduce
+ # enough internal topology for non-uniform stone grain under actual lighting.
+ # Changes are local to new candidate output; never mutate the approved GLB.
+ bm=bmesh.new();bm.from_mesh(mesh)
+ bm.verts.ensure_lookup_table()
+ bmesh.ops.subdivide_edges(bm,edges=list(bm.edges),cuts=3,use_grid_fill=True)
+ for v in bm.verts:
+  if len(v.link_edges)>=3:
+   n=v.normal.normalized()
+   offset=(.012*math.sin(v.co.x*31+v.co.y*17+v.co.z*29)+
+           .008*math.sin(v.co.x*77-v.co.y*42+v.co.z*63))
+   v.co+=n*offset
+ bm.to_mesh(mesh);bm.free();mesh.update();planar_uv(mesh)
  obj=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(obj)
  obj.location=center;obj.rotation_euler=rotation or (rng.uniform(-.025,.025),rng.uniform(-.025,.025),rng.uniform(-.04,.04))
- mesh.materials.append(mat);b=obj.modifiers.new("eroded edges","BEVEL");b.width=.035;b.segments=2
+ mesh.materials.append(mat);b=obj.modifiers.new("eroded edges","BEVEL");b.width=.052;b.segments=3
  obj.modifiers.new("weighted normals","WEIGHTED_NORMAL")
  return obj
 # Two asymmetrical piers with interlocking masonry courses and visible mortar joints.
