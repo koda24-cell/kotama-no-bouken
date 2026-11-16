@@ -24,3 +24,13 @@ Status: **NOT_APPROVED**. Production promotion and game integration prohibited u
 
 ## Claude handoff after approval only
 Deliver approved GLB, PNG3, sha256 manifest, source commit, workflow run, origin/scale/bbox and material notes. Claude uses GLTFLoader to check wheel clearance, rail connection, runtime performance, collision/tiles, and data persistence; Claude must not operate Blender.
+
+
+## 逆台形修正 V15–V17（2026-11-16 続編）
+- 参照：前会話で選んだ、上が広く底が狭い古い鉱山トロッコの形状。外部画像自体の再配布・テクスチャ転用はしていない。
+- V14原本と各追加部品は保持。`field/b4-cart-taper-v15-additions.js` に独立した逆台形の側板・長い荷台・四隅の補強を追加。
+- V15: 緩やかに上広がり。V16: 上端拡幅。V17: 中間幅＋側板を3段に分割し、従来の細かな補強部品が見えるよう修正。
+- 実レンダーrun V15/V16: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43809232301 （成功、Artifact 14199936486、18 PNG、6 GLB/Blend checkpoint）
+- 実レンダーrun V17比較: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43809835096 （成功、Artifact 14200366416、12 PNG、4 GLB/Blend checkpoint）。画像を実取得し目視比較した。
+- 目視結果: V15/V16とも箱型から逆台形への改善が顕著。V16は大型の一枚板で部品が隠れる。V17はV16の傾斜感とV14/V15のパーツ視認性を両立し、現時点の次の制作基準に最適。ただし鉱石の大きさ、接合部のめり込み、木材と金属の本格的な画像PBRテクスチャは未解決。
+- **NOT_APPROVED**: 保存はActions Artifact限定、assets/models/floor4正式フォルダへの追加・マージ・ゲーム統合なし。Claudeへの引き渡しはユーザー承認後。
