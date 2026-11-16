@@ -121,3 +121,15 @@
 - 製品GLBのsource commitと現在のscript/common/helperを照合し、古いモデル/画像の混在を拒否するmanifest gateを追加。PNGから実寸/サンプル数、GLB/blend/画像hashを記録する。
 - Blender5.3 blendは標準Zstandard圧縮containerを利用するため、先頭BLENDER文字だけで形式を否定しない。編集ソースとゲームGLBは分離。
 - 出典/権利: 針葉/葉脈/木塗膜は独自画像。写真は既存記録のCC0。参照Pinterest画像の再配布なし。制作PR https://github.com/koda24-cell/kotama-no-bouken/pull/391 。最終全景/全17点検査/ゲーム統合はまだ。
+
+
+## 玉座V2のチェックポイント復旧・視覚AI評価 (2026-11-16 追加)
+- 名称: B5 Throne Checkpoint Resume Integration Test + optional image VLM review
+- 担当: GPT。用途: Blender Actionsの2ジョブ間チェックポイント復元検証および正面・側面・斜めの画像評価を造形パラメータへ反映する安全な補助機能。
+- 公式技術: GitHub Actions https://docs.github.com/en/actions ; Blender https://www.blender.org/ ; Pillow https://python-pillow.github.io/ ; REST HTTPS chat/completions （接続先ごとの提供条件・料金・画像送信取扱は未確認）。
+- ライセンス: GitHub Actionsホステッドランナーの利用条件に従う。Blender GPL、Pillow HPND。利用する外部AIサービスは未選択・ライセンス/料金未確認。
+- 情報状態: コード保存確認。検証状態: **新規Actionsテストは結果未確認、実AI通信未検証**。
+- 導入手順: `feature/gpt-b5-throne-recovery-vision-20261116` の `tools/b5-throne/vision_review.py` と `.github/workflows/b5-throne-resume-test.yml` を参照。視覚AIは初期OFF。明示的な使用許可とHTTPS推論API設定が必要。
+- GitHub Models推論APIは2026-07-30に終了済みのため使用しない: https://docs.github.com/en/github-models
+- 関連PR: 玉座V1 #383、玉座V2 #395。新規実装PRは別途公開後記録。
+- 注意: 画像の数値検査は美観評価ではない。AI評価が成功しても原形状破壊防止・人間の最終承認必須。ジョブ異常終了時のArtifact保全は無保証。接続先の従量課金を勝手に発生させない。
