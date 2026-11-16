@@ -9,7 +9,7 @@ on:
     branches: [development]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -53,3 +53,12 @@ jobs:
           path: render-output/floor6/gravel/gravel_sparse/
           retention-days: 14
           if-no-files-found: error
+      - name: Preserve unapproved V1 checkpoint on feature branch
+        if: github.event_name == 'push' && success()
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add render-output/floor6/gravel/gravel_sparse/
+          git commit -m "checkpoint(f6): preserve unapproved gravel_sparse V1 GLB blend PNG and manifest"
+          git push origin HEAD:feature/gpt-f6-gravel-sparse-v1-20261116
