@@ -180,3 +180,8 @@
 - カラーテクスチャのGLB埋込みは画像bufferViewのPNGを開いてRGB平均がゼロでないことを確認済み。法線テクスチャの有効性をGLB輸出前後で検証するゲートを今後設ける。
 - V6成功: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43826564411 。ArtifactsにGLB、Blend、front/side/angle、manifest。技術テストの成功は美観承認ではない。
 - 外部アドオン・外部有料APIの新規導入なし。Blender標準機能とPythonによる自作画像のみ。
+
+### 一層神域: 第2改訂の開始と検証境界
+- 上記5視点とgate完了は第1版の検証結果。実画像で見えた土床反復・背景の開き・回廊出口の見通しを受け、[第2改訂PR #428](https://github.com/koda24-cell/kotama-no-bouken/pull/428)で配置/部分引用を改訂中。個別17GLBは保持、改訂後の全景成功はまだ未確認。
+- 既存GLBの部分利用はsource SHA・node/material名・祖先transformの保持を明示する。実3F配置候補schema2は全274床に明示profile（石187/soil-only87）、未対応・不一致で拒否しfullGLBへ暗黙fallbackしない。土壌ノード選択の実GLB構造検証と候補生成は成功、runtime consumerは未実装・ゲーム未統合。
+- MCP再読込の証拠を強化するため、actualMCP内で開いたblendのSHA256を返し、最終gateで一致を要求する実装を追加。新レシートは改訂後に取り直す。新外部ツール・有料API導入なし。低解像Cyclesの構図確認を先に行い、最終1600×1000/48samplesの実写真と区別する。
