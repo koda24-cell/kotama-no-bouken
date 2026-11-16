@@ -358,7 +358,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "up",
+      "dir": "right",
       "active": true,
       "near": "",
       "floor": 0,
@@ -370,7 +370,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "down",
+      "dir": "left",
       "active": true,
       "near": "",
       "floor": 0,
@@ -420,7 +420,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "gather:2-0:17:7",
+      "near": "chest:2-0:5:5",
       "floor": 0,
       "area": 2
     },
@@ -504,7 +504,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "save:2-1:15:7",
+      "near": "switch:2:a2-stone-east",
       "floor": 1,
       "area": 2
     },
@@ -576,7 +576,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "save:2-2:24:15",
+      "near": "npc:2:watchman",
       "floor": 2,
       "area": 2
     },
@@ -588,7 +588,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "",
+      "near": "save:2-2:24:15",
       "floor": 2,
       "area": 2
     },
