@@ -22,3 +22,13 @@
 
 ## 開始時の必須確認
 developmentの最新状態と `AGENTS.md`、`docs/3d/BLENDER_DOCKER_HANDOFF.md`、`docs/3d/ASSET_PROMOTION_POLICY.md` を再読。作業ブランチ・未マージPRも確認。正面・側面・斜めの実レンダリング、ユーザー承認後にGLB・PNG・完成メモを正式保存。ClaudeにはGLB/PNGとPythonソース・手順を共有。
+
+
+## 2026-11-16 再開・障害調査と修正（GPT）
+- 旧run 43779259689 / job 133012504740 のログで、Blender 5.0.1のレンダーエンジン設定が `BLENDER_EEVEE_NEXT` でTypeErrorとなったと確認。使用可能な値は `BLENDER_EEVEE`, `BLENDER_WORKBENCH`, `CYCLES`。GLBだけが出力され、PNGなしで検証失敗。
+- `tools/b2-render/build-ruined-stone-arch-v1.py` のEevee名を修正し、編集可能な `ruined_stone_arch_v1.blend` の保存処理を追加。GLBと元の石積み構造は維持。
+- Actionsコマンドに `--python-exit-code 1` を追加。GLB/BLEND/manifest/3方向PNGをファイル存在チェック。
+- 修正コミット: `d658f9d` / `bafd5ed`。検証PR: https://github.com/koda24-cell/kotama-no-bouken/pull/401 (Draft → development)。
+- **修正後のGitHub Actions成功・実レンダリングPNGの目視・モデルの造形品質は未確認。** PRをマージせず、正式アセット保存・ゲーム統合も未実施。
+- 次の確認: 最新の `B2 Ruined Stone Arch V1 Render` runを確認し、成功時にArtifact中のGLB/BLEND/manifest/front/side/angle PNGを直接取得・表示。画像で迫石のつながり、欠損、左右の石柱と敷石を確認し、必要な再造形を行う。ユーザー承認後、Claude閲覧用GLB/3 PNG/manifest/制作メモを正式素材ディレクトリに保存。
+- ClaudeはGLB・PNG・manifestでゲーム内検証。Blenderの編集担当はGPT側。ソーススクリプトは引継ぎ可能。
