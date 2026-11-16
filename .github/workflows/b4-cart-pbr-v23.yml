@@ -1,0 +1,72 @@
+name: B4 Cart V23 Material and Coupler Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-structural-v20-20261116
+    paths:
+      - 'tools/b4-render/bake-cart-pbr-v23.py'
+      - '.github/workflows/b4-cart-pbr-v23.yml'
+      - 'field/b4-cart-v20-practical.js'
+      - 'tools/b4-render/export-cart-practical-v20.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Dependencies
+        run: |
+          npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: GLB export original shapes
+        run: node tools/b4-render/export-cart-practical-v20.mjs
+      - name: Bake original procedural PBR images into two GLBs
+        run: |
+          set -euo pipefail
+          mkdir -p render-review
+          blender -b -t 2 --python tools/b4-render/bake-cart-pbr-v22.py -- render-output/b4-cart-practical-v22.glb render-output/b4-cart-practical-v22-pbr.glb render-review/b4-cart-practical-v22-pbr-source.blend
+          blender -b -t 2 --python tools/b4-render/bake-cart-pbr-v23.py -- render-output/b4-cart-practical-v23.glb render-output/b4-cart-practical-v23-pbr.glb render-review/b4-cart-practical-v23-pbr-source.blend
+      - name: Blender Cycles 3-camera source GLB reimport renders
+        run: |
+          set -euo pipefail
+          for v in 22 23; do
+            blender -b -t 2 --python tools/b4-render/render-cart-quality.py -- "render-output/b4-cart-practical-v${v}-pbr.glb" render-review
+            test -s "render-review/b4-cart-practical-v${v}-pbr.blend"
+            for d in front side angle; do
+              test -s "render-review/b4-cart-practical-v${v}-pbr-${d}.png"
+            done
+          done
+          test "$(find render-review -name '*.png' | wc -l)" -eq 6
+      - name: Validate image inclusion and checksums
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import glob,os,hashlib,json,struct
+          tex={}
+          for v in [22,23]:
+            p=f'render-output/b4-cart-practical-v{v}-pbr.glb'
+            if not os.path.isfile(p): continue
+            with open(p,'rb') as f:f.seek(12);n,k=struct.unpack('<II',f.read(8));gltf=json.loads(f.read(n))
+            tex[str(v)]=len(gltf.get('images',[]))
+          files=sorted(glob.glob('render-output/*.glb')+glob.glob('render-review/*.png')+glob.glob('render-review/*.blend'))
+          data={'approval':'NOT_APPROVED','source_sha':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'pbr_images':tex,'files':[{'path':p,'size':os.stat(p).st_size,'sha256':hashlib.sha256(open(p,'rb').read()).hexdigest()} for p in files]}
+          os.makedirs('render-review',exist_ok=True)
+          open('render-review/manifest.json','w').write(json.dumps(data,indent=2))
+          print('PBR_MATERIALS',tex)
+          if tex.get('23',0)<6:raise ValueError('V23 embedded PBR missing')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-cart-v23-pbr-review
+          path: |
+            render-output/*.glb
+            render-review/
+          retention-days: 14
