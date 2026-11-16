@@ -156,3 +156,9 @@
 - 権利/導入境界: Blender/MCP/Validatorのライセンス・写真CC0・独自葉/針葉/木塗膜画像の既存記録を維持。新しい外部素材・有料APIの導入なし。元Pinterest画像は参考に限り、再配布・テクスチャ流用なし。
 - **進行中**: 5カメラの全景写真は記録時点で入口/中庭の2枚が完了、残り3枚はレンダリング進行中。5枚すべて完了とは記載しない。
 - **未完了/未承認**: 美観の最終承認、ゲーム本体への統合、実機性能・操作動線の承認。候補は `pending_user_review`、既存 `b1_ancient_forest` とゲームランタイムを置換していない。
+
+### 一層神域候補: 全景5方向と最終delivery gateの完了追記（2026-11-16 JST）
+- 前節の「全景2枚完了/3枚進行中」はその時点の履歴。以後、入口・中庭・封印回廊・祠詳細・俯瞰の**全5枚を1600×1000px / Cycles 48 samplesで実レンダリング完了**し、制作担当が実画像を確認した。
+- `verify_delivery.py` の最終gateはpass。[delivery-summary.json](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/ai-gpt-f1-sacred-forest-20261116/assets/3d/dungeons/b1_sacred_forest_candidates/verification/delivery-summary.json) の17個別GLB・68個別証拠PNG・5全景画像、全18GLBのKhronos errors/warnings 0、browser errors 0、編集ソース画像埋込/再open、中央経路clearance、各証拠hashを照合。公開証拠は引き続き[制作候補PR #391](https://github.com/koda24-cell/kotama-no-bouken/pull/391)。
+- 到達状態は `candidate_verified_pending_user_review`。**ゲーム未統合・美術承認待ち・実機性能未承認**は維持。既知の美術留意点は回廊の見通し、天井の細い明線、祠背景の包囲感。全景の計算負荷を実機FPS承認へ読み替えない。
+- 本追記は検証情報のみ。コード・素材・画像をdevelopmentへ統合する変更ではない。
