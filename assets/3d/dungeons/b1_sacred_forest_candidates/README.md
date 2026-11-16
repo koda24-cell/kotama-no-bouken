@@ -21,6 +21,21 @@
 全景は個別に完成したGLBの配置からレンダリングします。コンセプト画像を
 完成した3Dの証拠として使っていません。鳥瞰図は構造の確認用です。
 
+## 検証済みの成果と範囲
+
+- 個別アセット17点、GLB合計21,305,008 bytes / 136,665 triangles。
+- 各GLBをBlenderで再読込した4方向PNG、計68枚。
+- 個別GLBを用いた全景349配置（背景支持面1件を含む）。主要部24×32mと外周装飾を持ちます。
+- 個別17点＋全景1点の計18 GLBをKhronos Validatorで検査し、errors 0 / warnings 0。
+- Three.js r180の実GLB読込、床2×2接続、公式MCP経由の全景再読込を確認。
+- 全景ブラウザ計測は4,432,376 triangles / 1,475 draw calls。これは完成候補の確認用密度で、ゲームの描画予算を達成したとの判定ではありません。
+
+全景撮影はentry / courtyard / corridor / shrine_detail / birdseyeの5視点、
+Cycles CPU・1600×1000px・48 samplesを使用します。各画像の完了記録とhashは
+`scene/assembly-layout.json`と`manifest.json`を参照してください。
+
+ゲーム未統合の静的素材です。実機FPSは未検証で、ユーザーの品質承認も未取得です。
+
 ## データ
 
 - `modules/`, `props/`: 1素材1GLB、画像PBRを埋め込み。
@@ -63,7 +78,7 @@ blender -b --python tools/f1-sacred-forest/pack_sources.py -- --asset weathered_
 
 ```sh
 blender -b --python tools/f1-sacred-forest/assemble_scene.py -- --build --export-glb
-blender -b --python tools/f1-sacred-forest/assemble_scene.py -- --render-view courtyard --width 1600 --height 1000 --samples 64
+blender -b --python tools/f1-sacred-forest/assemble_scene.py -- --render-view courtyard --width 1600 --height 1000 --samples 48
 blender -b --python tools/f1-sacred-forest/pack_sources.py
 python tools/f1-sacred-forest/collect_manifest.py
 ```

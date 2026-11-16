@@ -15,6 +15,22 @@
 Claudeへの受け渡しはGLB/PNG/manifestです。Blenderの直接操作や再レンダを
 Claudeへ要求せず、造形修正があればGPT/Blender担当へ返します。
 
+## 最終候補の規模と検証範囲
+
+個別17アセット、GLB合計21,305,008 bytes / 136,665 triangles、単体4方向PNG計68枚。
+全景は349配置（背景支持面1件を含む）です。Khronos検査は個別17点＋全景1点の
+計18 GLBでerrors 0 / warnings 0。Three.js r180 GLTFLoaderの実読込、床2×2接続、
+公式MCP経由の全景再読込も確認しています。実施時点と対象hashは各検証JSONを正とします。
+
+全景の確認用ブラウザ計測は4,432,376 triangles / 1,475 draw callsです。
+SwiftShaderでの提出時間を実機FPSへ換算しません。ゲーム未統合の静的素材であり、
+距離カリング・共有インスタンス・密度調整と、実機での性能評価が統合時に必要です。
+風・草の接触・扉開閉のアニメーション、ゲームイベント、粒子VFXは含みません。
+
+全景撮影はentry / courtyard / corridor / shrine_detail / birdseyeの5視点を対象とし、
+Cycles CPU・1600×1000px・48 samplesで行います。個々の完成状態とhashは
+`scene/assembly-layout.json`の`renders`、画像自体、manifestを突き合わせてください。
+
 ## 空間の狙い
 
 同じ低天井廊下の飾り替えに留めず、根の参道→鳥居→空の見える中庭→小祠→

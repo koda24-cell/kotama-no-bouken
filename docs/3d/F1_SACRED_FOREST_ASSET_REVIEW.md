@@ -156,4 +156,16 @@ angle/topを実見。2.449m高の小祠、流れの長い屋根、葺板の重�
 | weathered_torii_gate | 590244 | 7338 | 6 | 2507adf |
 | white_wildflower_patch | 573968 | 9632 | 6 | fb665c8 |
 
-個別GLB合計 21305008 bytes / 136665 triangles。2026-11-16 JST、ソース本体/再帰local helper/commonのgit保存時点と現在の一致、GLB SHA-256、4方向再import evidenceを17点で読取検査。差異 0 件。portable blend画像pack、Khronos/Three.js、全景/継ぎ目/目線/性能の統合検証は親担当へ引継ぎ。
+個別GLB合計 21,305,008 bytes / 136,665 triangles。2026-11-16 JST、ソース本体/再帰local helper/commonのgit保存時点と現在の一致、GLB SHA-256、4方向再import evidenceを17点で読取検査。差異0件。単体4方向PNGは計68枚です。
+
+## 全景・形式検証への引き継ぎ結果
+
+- portable blendは画像のpackと再デコードを行い、形状維持を検査。対応hash/個別結果はmanifestを参照。
+- Khronos Validator: 個別17点＋全景1点の計18 GLB、errors 0 / warnings 0。
+- Three.js r180 GLTFLoader: 個別実読込、床2×2接続、全景実描画を確認。公式MCPでも全景を開き直して読取成功。
+- 全景349配置（背景支持面1件を含む）、確認用ブラウザ計測4,432,376 triangles / 1,475 draw calls。
+- 中央2m幅・高さ3mの設計歩行帯は保守的triangle AABB検査でconflicts 0。ただしゲーム内移動/当たり判定/全回帰の成功を意味しない。
+- 全景のentry / courtyard / corridor / shrine_detail / birdseyeはCycles CPU・1600×1000px・48 samplesで撮影。完了済み画像とhashはassembly-layoutのrenders/manifestを正とする。
+
+ゲーム未統合・静的素材・実機FPS未検証・pending_user_reviewを維持します。
+全景は確認用の高密度配置であり、画質の最終承認や実機性能の合格を形式検査から推定しません。
