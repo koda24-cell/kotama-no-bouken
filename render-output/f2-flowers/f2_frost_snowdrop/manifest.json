@@ -23,16 +23,16 @@
   ],
   "origin": "bottom-center",
   "glb": "f2_frost_snowdrop.glb",
-  "glb_bytes": 962100,
+  "glb_bytes": 962112,
   "sha256": {
-    "f2_frost_snowdrop.glb": "c0cd03b592060c5d5528cbbe981429e5fae4f2e40d043a86f15811424eed3bf9",
-    "f2_frost_snowdrop_cave_front.png": "5cdf7fb9f0d89acb6dbaa29206ca0f14252f80941caecb3d9b942577fe54cd74",
-    "f2_frost_snowdrop_cave_side.png": "9b9aca36ead48e121906705a99502dcb27c03d639d0e16af3956aa93724c85ea",
-    "f2_frost_snowdrop_cave_angle.png": "e157421d1cf0de5910354f7789ff82e5111780bc09c9bfba30e3f61ead1c79e9",
-    "f2_frost_snowdrop_cave_top.png": "be5d7226dc81584c1b1f702e3a25a6fa0219cec87fe851623a75dd622b898a49",
-    "f2_frost_snowdrop_cave_close.png": "da4b834248c8d175921b3b75dd9e7cf6103b5da7d60b045f01fb66a7979c2909",
-    "f2_frost_snowdrop_studio_front.png": "156013c85cd773e70f6652a1304b149edeff1b8bf9330639b3254c17ca6da410",
-    "f2_frost_snowdrop_studio_angle.png": "d33a78a3a8e140fb8ee10dada1af112c77e3556df9deaaa46c6156256dbf6655"
+    "f2_frost_snowdrop.glb": "d6dab6ec851c98607b3eeff7b14dcab613268e6aea0d515f2cbf498aee9085de",
+    "f2_frost_snowdrop_cave_front.png": "0a2a0517f18e0cf2e7f3dd68517990fb4136d3184e00acd4a6b8d2b145eb92b4",
+    "f2_frost_snowdrop_cave_side.png": "7da8ad6598797fc92fbb57273704fc42a813b3cc65c120441113c92d173db513",
+    "f2_frost_snowdrop_cave_angle.png": "d35e7824cf4053c70c8b230b55007ba035a8e6c6703f2cd925475ee53af19765",
+    "f2_frost_snowdrop_cave_top.png": "f44f287f8db391532bd3914b4ec282981f9103847d234096b2b0b986882482d6",
+    "f2_frost_snowdrop_cave_close.png": "27b29128dbbcd346fd2fcc91b124e54c6a0b4015f2157d96bc29c7e0f6003e2d",
+    "f2_frost_snowdrop_studio_front.png": "f1998297270663d92fe191bca8ef422d9c915e6f6e2d9273b5f1157df32a7d43",
+    "f2_frost_snowdrop_studio_angle.png": "4415f055b48a9795f8302bbcb270ce3702098e888ae8be9d1b55e19ee2d8ef8a"
   },
   "renders": [
     "f2_frost_snowdrop_cave_front.png",
@@ -44,6 +44,6 @@
     "f2_frost_snowdrop_studio_angle.png"
   ],
   "samples": 64,
-  "notes": "霜鈴草 v1: スノードロップ基準。6花茎（0.22-0.34m）、鉤状花柄・苞・子房、外花被3（椀状・縦筋・先端氷化の頂点色）、内花被3（筒・緑の逆V字の頂点色）、各株2枚の帯状葉（粉白の中央帯）、盛り土φ0.16m、縁に沿った氷晶。画像テクスチャなし",
+  "notes": "霜鈴草 v6: スノードロップ基準。6花茎（0.22-0.34m）、鉤状花柄・苞・子房、外花被3（椀状・縦筋・先端氷化の頂点色）、内花被3（筒・緑の逆V字の頂点色）、各株2枚の帯状葉（粉白の中央帯）、盛り土φ0.16m、縁に沿った氷晶。画像テクスチャなし",
   "approval": "NOT_APPROVED"
 }
