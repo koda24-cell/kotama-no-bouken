@@ -23,7 +23,7 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
       for(let i=0;i<3 && crust<150;i++){
         const size=.32+hash(x,y,713+i)*.58;
         // Chunky, slightly tilted crust rafts read as cooled rock, not floating boards.
-        const m=put(group,rock,surfaces.basaltPlain,wx+(hash(x,y,723+i)-.5)*3.1,.02,wz+(hash(x,y,733+i)-.5)*3.1,size,.12+size*.16,size*(.6+hash(x,y,744+i)*.4),(hash(x,y,745+i)-.5)*.22);
+        const m=put(group,rock,surfaces.basaltCrust,wx+(hash(x,y,723+i)-.5)*3.1,.02,wz+(hash(x,y,733+i)-.5)*3.1,size,.12+size*.16,size*(.6+hash(x,y,744+i)*.4),(hash(x,y,745+i)-.5)*.22);
         m.rotation.y=hash(x,y,743+i)*6.28;m.rotation.x=(hash(x,y,746+i)-.5)*.2;crust++;
       }
       if(hash(x,y,750)<.24)lavaLights.push({world:new THREE.Vector3(wx,.6,wz),color:0xff6a22,intensity:5.2,range:7,off:false});
@@ -33,7 +33,7 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
         for(let i=0;i<4;i++){
           const k=hash(x*3+dx,y*3+dz,901+i),t=(i-1.5)*1.0+(hash(x,y,905+i+dx*7+dz*13)-.5)*.5;
           const out=1.78+hash(x,y,911+i+dx*5+dz*11)*.36,sz=.26+k*.3;
-          const m=put(group,rock,surfaces.basaltPlain,wx+dx*out+dz*t,-.03+k*.05,wz+dz*out-dx*t,sz,.08+k*.12,sz*(.7+hash(x,y,921+i)*.5),(k-.5)*.3);
+          const m=put(group,rock,surfaces.basaltCrust,wx+dx*out+dz*t,-.03+k*.05,wz+dz*out-dx*t,sz,.08+k*.12,sz*(.7+hash(x,y,921+i)*.5),(k-.5)*.3);
           m.rotation.y=hash(x,y,931+i+dx*3+dz*9)*6.28;
         }
       }
@@ -87,8 +87,8 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
       main.name='b4:lavafall-sheet';
       put(face,fallGeo,surfaces.lava,main.position.x+(hash(x,y,973)>.5?.72:-.72),H*.36,.40,.26,H*.72,1);
       // Dark lip at the spill point and a cooled splash apron at the base.
-      put(face,rock,surfaces.basaltPlain,main.position.x,H+.02,.32,.9,.22,.4);
-      for(let i=0;i<4;i++)put(face,rock,surfaces.basaltPlain,main.position.x+(i-1.5)*.55,.03,.55+hash(x+i,y,974)*.3,.24+hash(x,y+i,975)*.16,.1,.22,(i-1.5)*.2);
+      put(face,rock,surfaces.basaltCrust,main.position.x,H+.02,.32,.9,.22,.4);
+      for(let i=0;i<4;i++)put(face,rock,surfaces.basaltCrust,main.position.x+(i-1.5)*.55,.03,.55+hash(x+i,y,974)*.3,.24+hash(x,y+i,975)*.16,.1,.22,(i-1.5)*.2);
       lavaFalls.push({x,y});
       lavaLights.push({world:new THREE.Vector3(x*CELL+dx*.9,1.6,y*CELL+dz*.9),color:0xff7a2a,intensity:2.6,range:6.5,off:false,fall:true});
       falls++;break;
