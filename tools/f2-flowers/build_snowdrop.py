@@ -127,33 +127,34 @@ def frost_edges(S, M, count, umin, size, sides=(-1, 1)):
         p, n, du, dv = frame_at(S, u, s * 1.0)
         out = dv * s + du * (0.9 * sstep(0.85, 1.0, u))
         flip = R.choice((-1, 1))
-        d = out * 0.85 + n * flip * R.uniform(0.15, 0.75) + du * R.uniform(-0.35, 0.45)
-        d += Vector((R.uniform(-1, 1), R.uniform(-1, 1), R.uniform(-1, 1))) * 0.25
-        L = size * R.uniform(0.55, 1.5)
+        # 縁に沿って寝かせる（主に縁の接線方向＋わずかに外/表裏）→ 棘ではなく粒の列に見せる
+        d = du * R.choice((-1, 1)) * R.uniform(0.6, 1.0) + out * R.uniform(0.25, 0.6) + n * flip * R.uniform(0.1, 0.5)
+        d += Vector((R.uniform(-1, 1), R.uniform(-1, 1), R.uniform(-1, 1))) * 0.2
+        L = size * R.uniform(0.6, 1.4)
         dw = (R3 @ d).normalized()
-        crystal(FROST, M @ p - dw * L * 0.12, dw, L, L * R.uniform(0.16, 0.26))
+        crystal(FROST, M @ p - dw * L * 0.35, dw, L, L * R.uniform(0.32, 0.48))
 
 
 # ---------------------------------------------------------------------------
 # 材質
 # ---------------------------------------------------------------------------
-M_OUTER = C.mat_petal("snowdrop_outer_tepal", hexlin("#F4F7FA"), rough=0.42, sss=0.6,
+M_OUTER = C.mat_petal("snowdrop_outer_tepal", hexlin("#F4F7FA"), rough=0.5, sss=0.4,
                       sss_radius=(1.0, 0.95, 0.9), sheen=0.35, vcol=True)
 M_INNER = C.mat_petal("snowdrop_inner_tepal", hexlin("#F4F7FA"), rough=0.4, sss=0.45,
                       sss_radius=(0.9, 1.0, 0.8), sheen=0.25, vcol=True)
 M_STEM = C.mat_leaf("snowdrop_stem", hexlin("#6E9474"), rough=0.45, sss=0.2, coat=0.15)
-M_OVARY = C.mat_leaf("snowdrop_ovary", hexlin("#6FA44A"), rough=0.35, sss=0.25, coat=0.35)
+M_OVARY = C.mat_leaf("snowdrop_ovary", hexlin("#6FA44A"), rough=0.45, sss=0.2, coat=0.15)
 M_SPATHE = C.mat_leaf("snowdrop_spathe", hexlin("#93B486"), rough=0.5, sss=0.35, coat=0.05)
 M_LEAF = C.mat_leaf("snowdrop_leaf", hexlin("#5E8A7A"), rough=0.55, sss=0.15, coat=0.12, vcol=True)
-M_SNOW = C.mat_petal("snowdrop_snow_mound", hexlin("#E8F0F6"), rough=0.8, sss=0.3,
-                     sss_radius=(0.6, 0.8, 1.0), sheen=0.1)
+M_SNOW = C.mat_petal("snowdrop_snow_mound", hexlin("#E8F0F6"), rough=0.75, sss=0.35,
+                     sss_radius=(0.6, 0.8, 1.0), sheen=0.15, vcol=True)
 M_ICE = C.mat_ice("snowdrop_ice_shard", rgb=(0.80, 0.92, 1.0), rough=0.05, trans=0.9)
 M_FROST = C.mat_ice("snowdrop_frost_crystal", rgb=(0.90, 0.96, 1.0), rough=0.12, trans=0.4,
                     emit=(0.70, 0.88, 1.0), emit_strength=0.25)
 
 WHITE = hexlin("#F4F7FA")
 ICE_TIP = hexlin("#CFE8FF")
-GROOVE = hexlin("#DCE6EE")
+GROOVE = hexlin("#CCD9E4")
 GREEN_V = hexlin("#5E9A3E")
 LEAF = hexlin("#5E8A7A")
 LEAF_GLAUC = hexlin("#8FB3AA")
@@ -167,27 +168,44 @@ LEAF_FROST = hexlin("#C2D8DC")
 MR, MH = 0.08, 0.026
 
 
+LUMPS = [(0.035, 0.030, 0.016, 0.006), (-0.040, 0.020, 0.018, 0.005), (0.010, -0.045, 0.015, 0.005),
+         (-0.030, -0.035, 0.014, 0.004), (0.050, -0.010, 0.012, 0.004), (-0.005, 0.045, 0.016, 0.005)]
+
+
+def mound_rb(a):
+    return MR * (1 + 0.06 * math.sin(3 * a + 1.0) + 0.04 * math.sin(5 * a + 2.3) + 0.02 * math.sin(9 * a + 0.4))
+
+
 def mound_h(x, y):
-    r = math.hypot(x, y) / MR
+    a = math.atan2(y, x)
+    r = math.hypot(x, y) / mound_rb(a)
     if r >= 1:
         return 0.0
-    a = math.atan2(y, x)
-    n = 1 + 0.18 * math.sin(3 * a + 0.7) + 0.10 * math.sin(7 * a + 2.1) + 0.08 * math.sin(11 * a + r * 6)
-    return MH * (1 - r * r) ** 0.75 * n
+    h = MH * (1 - r ** 2.4) ** 0.55 * (1 + 0.08 * math.sin(4 * a + r * 5))
+    for lx, ly, lr, lh in LUMPS:  # 雪の塊の凹凸
+        h += lh * math.exp(-((x - lx) ** 2 + (y - ly) ** 2) / (lr * lr)) * (1 - r ** 4)
+    return h
+
+
+def mound_color(co, n):
+    a = math.atan2(co.y, co.x)
+    r = min(1.0, math.hypot(co.x, co.y) / mound_rb(a))
+    top = sstep(0.2, 0.95, n.z) * (1 - 0.5 * sstep(0.75, 1.0, r))
+    return mix(hexlin("#AFC9DD"), hexlin("#EEF4F8"), 0.35 + 0.65 * top)
 
 
 def build_mound():
     bm = bmesh.new()
-    seg, rings = 28, 6
+    seg, rings = 36, 7
     center = bm.verts.new((0, 0, mound_h(0, 0)))
     grid = []
     for k in range(1, rings + 1):
-        rr = MR * (k / rings) ** 0.85
+        t = (k / rings) ** 0.62
         row = []
         for s in range(seg):
             a = math.tau * s / seg + (0.5 * math.tau / seg if k % 2 else 0)
-            wob = 1 + 0.06 * math.sin(5 * a + 1.3) if k == rings else 1
-            x, y = math.cos(a) * rr * wob, math.sin(a) * rr * wob
+            rr = mound_rb(a) * min(t, 0.9999 if k < rings else 1.0)
+            x, y = math.cos(a) * rr, math.sin(a) * rr
             row.append(bm.verts.new((x, y, mound_h(x, y) if k < rings else 0.0)))
         grid.append(row)
     for s in range(seg):
@@ -199,13 +217,15 @@ def build_mound():
             f.smooth = True
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     ob = C._obj_from_bm(bm, "mound")
+    ob.data.update()
+    C.vcol_paint(ob, mound_color)
     C.assign(ob, M_SNOW)
     # 盛り土表面の霜（上向きの粗い結晶）と透明な氷片
-    for _ in range(36):
+    for _ in range(22):
         a, rr = R.random() * math.tau, MR * math.sqrt(R.random()) * 0.92
         x, y = math.cos(a) * rr, math.sin(a) * rr
         p = Vector((x, y, mound_h(x, y) - 0.0005))
-        d = UP + Vector((x, y, 0)) * 8 + Vector((R.uniform(-1, 1), R.uniform(-1, 1), 0)) * 0.6
+        d = UP + Vector((x, y, 0)) * 6 + Vector((R.uniform(-1, 1), R.uniform(-1, 1), 0)) * 0.6
         L = R.uniform(0.0018, 0.0042)
         crystal(FROST, p, d, L, L * 0.22)
     for i in range(6):
@@ -284,19 +304,19 @@ def build_flower(tag, d, A, Lout, alpha, spin):
         y = d * math.cos(al) + e * math.sin(al)
         z = d * math.sin(al) - e * math.cos(al)
         L = Lout * R.uniform(0.95, 1.04)
-        S = outer_S(L, 0.0102, cup=0.42, curl=0.11)
+        S = outer_S(L, 0.0104, cup=0.62, curl=0.12)
         M = basis(A + e * 0.0021, y, z)
-        ob = surface(f"{tag}_outer{k}", S, 12, 10, M, thickness=0.0011, color_fn=outer_color)
+        ob = surface(f"{tag}_outer{k}", S, 12, 10, M, thickness=0.0013, color_fn=outer_color)
         C.assign(ob, M_OUTER)
         parts.append(ob)
-        frost_edges(S, M, R.randint(9, 12), 0.35, 0.0013)
+        frost_edges(S, M, R.randint(9, 12), 0.3, 0.00085)
     for k in range(3):
         th = spin + math.pi / 3 + k * math.tau / 3
         e = a * math.cos(th) + b * math.sin(th)
         al = math.radians(4)
         y = d * math.cos(al) + e * math.sin(al)
         z = d * math.sin(al) - e * math.cos(al)
-        S = inner_S(0.0112 * Lout / 0.025, 0.0074, cup=0.5, flare=0.25)
+        S = inner_S(0.0118 * Lout / 0.025, 0.0076, cup=0.5, flare=0.35)
         M = basis(A + d * 0.0006 + e * 0.0016, y, z)
         ob = surface(f"{tag}_inner{k}", S, 7, 6, M, thickness=0.0009, color_fn=inner_color)
         C.assign(ob, M_INNER)
@@ -376,12 +396,12 @@ def build_plant(i, x, y, H, az, beta, alpha, Lout, lean, leaf_az, leaf_len):
     C.assign(spa, M_SPATHE)
     parts.append(spa)
     # 子房（緑の小球、軸方向に少し長い）
-    ov_r, ov_l = 0.0035, 0.0045
+    ov_r, ov_l = 0.0029, 0.0044
     O = P3 + d * ov_l * 0.7
     a = d.orthogonal().normalized()
     b = d.cross(a).normalized()
     bm = bmesh.new()
-    bmesh.ops.create_uvsphere(bm, u_segments=10, v_segments=7, radius=1.0)
+    bmesh.ops.create_uvsphere(bm, u_segments=9, v_segments=7, radius=1.0)
     Mo = Matrix(((a.x * ov_r, b.x * ov_r, d.x * ov_l, O.x),
                  (a.y * ov_r, b.y * ov_r, d.y * ov_l, O.y),
                  (a.z * ov_r, b.z * ov_r, d.z * ov_l, O.z), (0, 0, 0, 1)))
@@ -399,23 +419,23 @@ def build_plant(i, x, y, H, az, beta, alpha, Lout, lean, leaf_az, leaf_len):
         o = Vector((math.cos(math.radians(la)), math.sin(math.radians(la)), 0))
         ly = rot_toward(UP, o, math.radians(R.uniform(8, 18)))
         L = leaf_len * R.uniform(0.85, 1.05)
-        S = leaf_S(L, R.uniform(0.0085, 0.0100), keel=0.28, bend=R.uniform(0.22, 0.36), twist=R.uniform(-0.5, 0.5))
+        S = leaf_S(L, R.uniform(0.0085, 0.0100), keel=0.28, bend=R.uniform(0.17, 0.3), twist=R.uniform(-0.5, 0.5))
         M = basis(base + o * 0.0024 + UP * 0.001, ly, -o)
-        lf = surface(f"p{i}_leaf{k}", S, 14, 4, M, thickness=0.0009, color_fn=leaf_color)
+        lf = surface(f"p{i}_leaf{k}", S, 12, 4, M, thickness=0.0009, color_fn=leaf_color)
         C.assign(lf, M_LEAF)
         parts.append(lf)
-        frost_edges(S, M, 10, 0.3, 0.0019)
+        frost_edges(S, M, 8, 0.3, 0.0013)
     return parts
 
 
 # x, y, 高さ, 花の向き(deg), 下向きからの傾き β, 開き角 α, 外花被長, 茎の傾き, 葉の向き, 葉長
 PLANTS = [
-    (0.004, 0.003, 0.335, 20, 16, 20, 0.027, 2, 110, 0.19),
-    (-0.027, 0.015, 0.290, 150, 28, 30, 0.025, 4, 60, 0.17),
-    (0.025, -0.020, 0.268, -40, 12, 16, 0.024, 3, 20, 0.16),
-    (-0.011, -0.030, 0.246, -115, 34, 34, 0.023, 5, -160, 0.15),
-    (0.031, 0.023, 0.306, 65, 22, 25, 0.026, 3, 150, 0.18),
-    (-0.035, -0.007, 0.222, 205, 30, 22, 0.022, 6, -80, 0.14),
+    (0.004, 0.003, 0.335, 20, 16, 24, 0.028, 2, 110, 0.18),
+    (-0.027, 0.015, 0.290, 150, 28, 34, 0.026, 4, 60, 0.16),
+    (0.025, -0.020, 0.268, -40, 12, 18, 0.025, 3, 20, 0.155),
+    (-0.011, -0.030, 0.246, -115, 34, 38, 0.024, 5, -160, 0.145),
+    (0.031, 0.023, 0.306, 65, 22, 28, 0.027, 3, 150, 0.17),
+    (-0.035, -0.007, 0.222, 205, 30, 26, 0.023, 6, -80, 0.14),
 ]
 
 objs = [build_mound()]
