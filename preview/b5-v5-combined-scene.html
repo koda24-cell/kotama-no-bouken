@@ -8,6 +8,12 @@ const camera=new THREE.PerspectiveCamera(68,1100/620,.05,180);camera.position.se
 scene.add(new THREE.HemisphereLight(0xa4a0d9,0x35304f,2.05));
 const light=new THREE.PointLight(0xa07ad9,16,35);light.position.set(0,5,-9);scene.add(light);
 const fill=new THREE.PointLight(0x777aa8,10,19);fill.position.set(0,3,-3);scene.add(fill);
+// Localized, neutral-violet fill makes stone faces and the near floor legible
+// without brightening the distant fog, window shader, or entire background.
+const faceFill=new THREE.SpotLight(0xb4a3d7,42,23,Math.PI/3.4,.78,1.45);
+faceFill.position.set(0,5,1.5);faceFill.target.position.set(0,1.2,-10);scene.add(faceFill,faceFill.target);
+const floorFill=new THREE.SpotLight(0x8e86b9,24,17,Math.PI/3.8,.9,1.6);
+floorFill.position.set(0,3.5,2);floorFill.target.position.set(0,0,-8);scene.add(floorFill,floorFill.target);
 const stone=new THREE.MeshStandardMaterial({color:0x302a42,roughness:.92});
 const trim=new THREE.MeshStandardMaterial({color:0x4a3b60,roughness:.75});
 function box(w,h,d,x,y,z,m=stone){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);scene.add(o);return o;}
