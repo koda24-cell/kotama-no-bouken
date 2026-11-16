@@ -162,3 +162,12 @@
 - `verify_delivery.py` の最終gateはpass。[delivery-summary.json](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/ai-gpt-f1-sacred-forest-20261116/assets/3d/dungeons/b1_sacred_forest_candidates/verification/delivery-summary.json) の17個別GLB・68個別証拠PNG・5全景画像、全18GLBのKhronos errors/warnings 0、browser errors 0、編集ソース画像埋込/再open、中央経路clearance、各証拠hashを照合。公開証拠は引き続き[制作候補PR #391](https://github.com/koda24-cell/kotama-no-bouken/pull/391)。
 - 到達状態は `candidate_verified_pending_user_review`。**ゲーム未統合・美術承認待ち・実機性能未承認**は維持。既知の美術留意点は回廊の見通し、天井の細い明線、祠背景の包囲感。全景の計算負荷を実機FPS承認へ読み替えない。
 - 本追記は検証情報のみ。コード・素材・画像をdevelopmentへ統合する変更ではない。
+
+## B4トロッコ・オリジナルPBR画像をGLBへパックする手順（2026-11-16 検証済み）
+- 名称: Blender Python / bpy による自作wood/oxidized-iron画像マップ生成・埋込GLB再エクスポート。
+- 公式ツール: Blender https://www.blender.org/ （GPL。B4用Pythonコードはこのリポジトリ内の新規自作コード。第三者画像なし）。
+- 対象分野: 第4層トロッコの木目、金属、法線マップ、粗さ・色情報のゲーム用GLBへの埋込。
+- 技術: Blender Image.pixels foreach_set、pack、ShaderNodeTexImage、ShaderNodeNormalMap、UV補完、export_scene.gltf(export_format='GLB')。外部PBR画像・Pinterest画像は直接流用しない。
+- 導入状況: `feature/gpt-b4-cart-structural-v20-20261116` / `tools/b4-render/bake-cart-pbr-v22.py`、`bake-cart-pbr-v23.py`。開発ブランチへの本体導入は**未承認**。
+- 実検証: 2026-11-16 GitHub Actions run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43824911258 および https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43825499744 成功。実ダウンロードしたGLBを解析して各6枚の埋込画像を確認、GLB再読み込みBlender/Cycles正面・側面・斜めPNGを目視。実ゲームThree.js性能・操作、GLTF validator、全メッシュのUV品質は未検証。
+- 制限: 手続き的な自作PBRはフォトグラメトリではない。古い鉱石形状・元の転倒ポーズは別課題。正式素材フォルダへの昇格はユーザー承認後のみ。参考画像候補リンクは `koda24-cell/pinterest-reference-library` に別管理。
