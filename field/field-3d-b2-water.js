@@ -861,12 +861,15 @@ export async function createTheme(api) {
       const cands = [];
       for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
         if (role(tx, ty) !== 'deadend' || objAt.has(`${tx},${ty}`) || '<>*'.includes(ch(tx, ty))) continue;
+        // 第1候補：三方が壁。第2候補：三方のうち1つが宝箱などの物で、開いた向きの反対（奥）が壁
         const ws = DIR_ORDER.filter((d) => wallCell(tx + DIR_VEC[d][0], ty + DIR_VEC[d][1]));
-        if (ws.length !== 3) continue;
-        const openD = DIR_ORDER.find((d) => !ws.includes(d)), back = DIR_ORDER[(DIR_ORDER.indexOf(openD) + 2) % 4];
+        const opens = DIR_ORDER.filter((d) => !ws.includes(d) && !objAt.has(`${tx + DIR_VEC[d][0]},${ty + DIR_VEC[d][1]}`));
+        if (opens.length !== 1) continue;
+        const back = DIR_ORDER[(DIR_ORDER.indexOf(opens[0]) + 2) % 4];
+        if (!ws.includes(back)) continue;
         const bd = def(ch(tx + DIR_VEC[back][0], ty + DIR_VEC[back][1]));
         if (bd && bd.onWall) continue;
-        cands.push({ tx, ty, back, r: H(tx, ty, 41) });
+        cands.push({ tx, ty, back, r: H(tx, ty, 41) + (ws.length === 3 ? 0 : 1) });
       }
       cands.sort((p, q) => p.r - q.r);
       const want = H(0, 0, 42) < 0.5 ? 2 : 3, chosen = [];
@@ -931,7 +934,7 @@ export async function createTheme(api) {
     if (P.altar && roles) {
       // 規則A1：祭壇は役割 shrine-candidate（外周でない壁・三方が壁・一方だけ床）に各階1個
       // 規則A2：祠の口（手前の床）から祠と反対向きにまっすぐ通れるマスが3以上続く＝通路から見通せる位置を優先（長いほど優先、最大6で頭打ち）
-      // 規則A3：口が滝・物・階段・浅瀬・吹き抜けのマスなら不可。滝から3マス以内（チェビシェフ）も不可（ランドマークを重ねない）
+      // 規則A3：口が滝・物・階段・浅瀬・吹き抜けのマスなら不可。滝から3マス以内（チェビシェフ）は他に候補が無いときだけ（ランドマークを重ねない）
       const cands = [], fallList = [...falls.keys()].map((k) => { const [x, y] = k.split(',').map(Number); return { tx: x, ty: y }; });
       for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
         if (role(tx, ty) !== 'shrine-candidate' || ch(tx, ty) !== '#') continue;
@@ -939,10 +942,10 @@ export async function createTheme(api) {
         if (opens.length !== 1) continue;
         const d = opens[0], nx = tx + vec(d)[0], ny = ty + vec(d)[1];
         if (blockedCell(nx, ny) || ch(nx, ny) === '*' || role(nx, ny) === 'fixed') continue;
-        if (fallList.some((f) => cheb(f, { tx: nx, ty: ny }) <= 3)) continue;
+        const nearFall = fallList.some((f) => cheb(f, { tx: nx, ty: ny }) <= 3);   // 候補がこれしか無いときだけ使う
         let sight = 0;
         for (let k = 0, x = nx, y = ny; k < 12 && !wallCell(x, y) && !objAt.has(`${x},${y}`); k++, x += vec(d)[0], y += vec(d)[1]) sight++;
-        cands.push({ tx, ty, d: DIR_ORDER[(DIR_ORDER.indexOf(d) + 2) % 4], open: d, nx, ny, sight, score: (sight >= 3 ? -Math.min(sight, 6) : 10 - sight) + H(tx, ty, 501) * 0.9 });
+        cands.push({ tx, ty, d: DIR_ORDER[(DIR_ORDER.indexOf(d) + 2) % 4], open: d, nx, ny, sight, score: (sight >= 3 ? -Math.min(sight, 6) : 10 - sight) + (nearFall ? 100 : 0) + H(tx, ty, 501) * 0.9 });
       }
       cands.sort((p, q) => p.score - q.score);
       if (cands.length) { alcove = cands[0]; propCells.add(`${alcove.nx},${alcove.ny}`); }
