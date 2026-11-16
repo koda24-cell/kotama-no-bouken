@@ -212,6 +212,12 @@ def planned_placements():
     for i,(x,y) in enumerate([(-8,27),(-3.5,27),(1.0,29),(5.5,28),(9.5,27)]):
         add('forest_shrub_cluster','distant_understory_%02d'%i,x,y,
             angle=i*71,scale=1.7,zone='background_forest',role='dressing_only')
+    add('sacred_cedar_tree','portal_midstory_left',-1.3,24.3,angle=124,scale=.74,
+        zone='background_forest',role='dressing_only')
+    add('sacred_cedar_tree','portal_midstory_right',1.6,28.7,angle=291,scale=.60,
+        zone='background_forest',role='dressing_only')
+    add('forest_shrub_cluster','portal_deep_understory',.3,22,angle=37,scale=2.3,
+        zone='background_forest',role='dressing_only')
     add("fallen_cedar_log", "fallen_trunk_east", 6.9, -3.2, angle=-27, scale=.96)
     add("broken_votive_stele", "western_votive_stele", -3.6, 2.9, angle=18, scale=1.04, role="landmark")
     add("sacred_hokora_shrine", "quiet_hokora_shrine", -4.8, 8.5,
