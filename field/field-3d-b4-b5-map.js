@@ -7,6 +7,8 @@ import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
+import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
+import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -14,7 +16,7 @@ export function createTheme(api, area) {
     ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
     : magma
     ? { background: 0x171216, fog: { color: 0x302329, density: 0.022 }, hemi: { sky: 0xb9b7ba, ground: 0x6a4540, high: 2.2, low: 2.6 } }
-    : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
+    : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x9d9bd6, ground: 0x292541, high: 1.75, low: 2.05 } };
   function rockTexture(seed) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
     const ctx = canvas.getContext('2d'); if (!ctx) return null;
@@ -132,6 +134,39 @@ export function createTheme(api, area) {
       batch.instanceMatrix.needsUpdate = true;
       root.add(batch);
     }
+  }
+  // Visual-only backdrop: follows the camera, remains behind physical walls,
+  // and never modifies collision, visibility, map cells or saved state.
+  let b5Fog = null, b5FogTexture = null, b5FogBuild = 0, b5Sparks = null, b5EdgeMist = null;
+  const b5FogPath = './field/assets/b5-distant/facade020c-windows.png';
+  function installB5Fog() {
+    if (area !== 5 || !g.scene) return;
+    const token = ++b5FogBuild;
+    b5Fog = createB5DistantFogBackground({width:230,height:135,seed:514});
+    b5Fog.mesh.name = 'b5:v5-distant-miasma';
+    b5Fog.mesh.frustumCulled = false;
+    g.scene.add(b5Fog.mesh);
+    b5Sparks = createB5ArcaneSparks({count:g.high?42:16});
+    g.scene.add(b5Sparks.points);
+    b5EdgeMist = createB5PathEdgeMist();
+    g.scene.add(b5EdgeMist.mesh);
+    new THREE.TextureLoader().load(b5FogPath, texture => {
+      if (token !== b5FogBuild || !b5Fog) { texture.dispose(); return; }
+      texture.colorSpace = THREE.SRGBColorSpace;
+      b5FogTexture = texture;
+      b5Fog.mesh.material.uniforms.uWindowMap.value = texture;
+      b5Fog.mesh.material.uniforms.uUseWindowMap.value = 1;
+    }, undefined, () => {
+      // The procedural fallback keeps the dungeon playable if the optional
+      // CC0 texture has not yet been promoted to the repository.
+    });
+  }
+  function clearB5Fog() {
+    ++b5FogBuild;
+    if (b5Fog) { b5Fog.mesh.parent?.remove(b5Fog.mesh); b5Fog.dispose(); b5Fog = null; }
+    b5FogTexture?.dispose(); b5FogTexture = null;
+    if (b5Sparks) { b5Sparks.points.parent?.remove(b5Sparks.points); b5Sparks.dispose(); b5Sparks = null; }
+    if (b5EdgeMist) { b5EdgeMist.mesh.parent?.remove(b5EdgeMist.mesh); b5EdgeMist.dispose(); b5EdgeMist = null; }
   }
   async function build(a, S, info) {
     if (surfaces) await surfaces.ready;
@@ -279,7 +314,7 @@ export function createTheme(api, area) {
       volcanicDetail=addB4VolcanicDetail({root,map:a,ch,wallCell,hash,CELL,plan:b4Plan,surfaces});
       lights.push(...volcanicDetail.lights);g.lights.push(...volcanicDetail.lights);
     }
-    if (b5) dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall });
+    if (b5) { dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall }); installB5Fog(); }
     batchStatic();
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
@@ -313,6 +348,7 @@ export function createTheme(api, area) {
     }
   }
   function dispose({ final = false } = {}) {
+    clearB5Fog();
     if (!magma) {
       const geometries = new Set(), materials = new Set(), textures = new Set();
       for (const model of ownedModels) model.traverse(o => {
@@ -348,6 +384,15 @@ export function createTheme(api, area) {
     }
   }
   function tick(dt, now, camera) {
+    if (b5Fog && g.camera) {
+      const eye = g.camera;
+      const forward = new THREE.Vector3(0,0,-1).applyQuaternion(eye.quaternion);
+      b5Fog.mesh.position.copy(eye.position).addScaledVector(forward, 90);
+      b5Fog.mesh.quaternion.copy(eye.quaternion);
+      b5Fog.update(now * .001);
+      b5Sparks?.update(now * .001,eye.position);
+      b5EdgeMist?.update(now * .001,eye);
+    }
     if (surfaces) {
       surfaces.tick(now); volcanicDetail?.tick(now);
       if (cameraLamp && camera) { cameraLamp.world.copy(camera);cameraLamp.world.y+=.75; }
