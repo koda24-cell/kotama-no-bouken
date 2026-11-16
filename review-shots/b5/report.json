@@ -278,7 +278,7 @@
         }
       },
       "sample": {
-        "fps": 2.321464844316733,
+        "fps": 1.7331397993890683,
         "render": {
           "calls": 109,
           "triangles": 53077,
@@ -567,7 +567,7 @@
         }
       },
       "sample": {
-        "fps": 2.9067654966936534,
+        "fps": 1.8601622991606062,
         "render": {
           "calls": 135,
           "triangles": 60080,
@@ -744,11 +744,12 @@
           "plinths": 3,
           "exitGates": 0,
           "windowTexture": "procedural",
-          "edgeMist": false
+          "edgeMist": false,
+          "chandelierLights": 2
         }
       },
       "sample": {
-        "fps": 2.4224806201550377,
+        "fps": 1.7620369146733608,
         "render": {
           "calls": 84,
           "triangles": 93123,
