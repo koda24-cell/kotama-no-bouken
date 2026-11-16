@@ -213,6 +213,7 @@ function fieldDrawMap(canvas, cell, full) {
     }
     else if(o.kind==="hiddenPassage"||o.kind==="hidden-passage") dot(o.tx,o.ty,"#c68cff",.82,"diamond","marker");
   }
+  if (typeof fieldA1DrawMarks === "function") fieldA1DrawMarks(g, a, cell, originX, originY, inWindow);
   for(const foe of fieldState.foes){
     if(foe.defeated) continue;
     const fx=Math.floor(foe.x/FIELD_TILE),fy=Math.floor(foe.y/FIELD_TILE);
