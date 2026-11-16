@@ -14,7 +14,7 @@ bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
 SC=bpy.context.scene
 SC.render.engine='CYCLES'
-SC.cycles.samples=36
+SC.cycles.samples=44 if VAR=='c' else 36
 SC.render.resolution_x=1100
 SC.render.resolution_y=825
 SC.render.resolution_percentage=100
@@ -52,8 +52,8 @@ def pbr(name,kind,seed):
         knot=np.exp(-((x-.31)**2/.003+(y-.58)**2/.018))
         uneven=.07*np.sin(2*pi*x*2)+.05*noise
         tone=np.clip(.51+.20*grain-.31*knot+uneven,0,1)
-        col=np.stack([.34+.31*tone,.22+.23*tone,.14+.16*tone],axis=-1)
-        rgh=np.clip(.83+.07*noise+.12*knot,0,1)
+        col=np.stack([.235+.21*tone,.175+.16*tone,.135+.12*tone],axis=-1) if VAR=='c' else np.stack([.34+.31*tone,.22+.23*tone,.14+.16*tone],axis=-1)
+        rgh=np.clip((.88 if VAR=='c' else .83)+.07*noise+.12*knot,0,1)
         h=grain*.45-knot*.75
         metal=0.
     elif kind=='metal':
@@ -108,6 +108,7 @@ mat_rust=bpy.data.materials.new('B4_Deep_Rust_Spots')
 mat_rust.diffuse_color=(.24,.13,.09,1);mat_rust.use_nodes=True
 mat_rust.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value=.89
 mat_rust.node_tree.nodes.get('Principled BSDF').inputs['Metallic'].default_value=.24
+mat_rust.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(.24,.13,.09,1)
 def box(name,loc,scale,mat,bevel=0):
     bpy.ops.mesh.primitive_cube_add(size=1,location=loc)
     obj=attach(bpy.context.object,name,mat)
@@ -138,11 +139,23 @@ def tapered_board(name,edge,sign,t0,t1,mat,chip=0):
                (sign*x1,y1,z1),(sign*x1,-y1,z1)]
         # some planks lose a tiny bite on one exposed end; not a rectangle overlay.
         if chip and sign>0:verts[2]=(sign*x1,y1-.06,z1-.035)
+        if VAR=='c' and t0<.65:
+            tm=(t0+t1)/2
+            xm=(bottomW/2+(topW-bottomW)*tm/2)
+            ym=(bottomL/2+(topL-bottomL)*tm/2)
+            zm=bz+(tz-bz)*tm
+            verts.insert(2,(sign*xm,ym-.10,zm))
     else:
         verts=[(-x0,sign*y0,z0),(x0,sign*y0,z0),
                (x1,sign*y1,z1),(-x1,sign*y1,z1)]
         if chip and sign<0:verts[3]=(-x1+.075,sign*y1,z1-.04)
-    mesh=bpy.data.meshes.new(name+'-mesh');mesh.from_pydata(verts,[],[(0,1,2,3)])
+    if VAR=='c' and edge=='end' and sign<0 and t0>.3:
+        tm=(t0+t1)/2
+        xm=(bottomW/2+(topW-bottomW)*tm/2)
+        ym=(bottomL/2+(topL-bottomL)*tm/2)
+        zm=bz+(tz-bz)*tm
+        verts.insert(2,(xm-.08,sign*ym,zm))
+    mesh=bpy.data.meshes.new(name+'-mesh');mesh.from_pydata(verts,[],[tuple(range(len(verts)))])
     mesh.update();obj=bpy.data.objects.new(name,mesh);SC.collection.objects.link(obj)
     obj.data.materials.append(mat);MODEL.append(obj)
     uv=mesh.uv_layers.new(name='UVMap')
@@ -201,16 +214,16 @@ for j in range(9):
     spl.rotation_euler[2]=(j-4)*.08
 # Wheels: proper rail gauge ±0.59, axle spacing >=2.0, actual four separate wheels.
 wheel_y=1.09 if VAR=='a' else 1.14
-axle_z=.46;rad=.342
+axle_z=.505 if VAR=='c' else .46;rad=.383 if VAR=='c' else .342
 for yy in [-wheel_y,wheel_y]:
     between('solid steel axle',(-.77,yy,axle_z),(.77,yy,axle_z),.11,.11,iron)
     for sx in [-1,1]:
         xx=sx*.59
         # Torus wheel rims, not disconnected floating rings. X is the axle axis.
         for major,minor,dx,material,label in [
-            (.300,.050,0,iron,'wheel rolled steel tyre'),
-            (.222,.026,sx*.015,iron,'wheel inner rim'),
-            (.340,.021,sx*.035,iron,'wheel flange edge')]:
+            (.338 if VAR=='c' else .300,.052,0,iron,'wheel rolled steel tyre'),
+            (.254 if VAR=='c' else .222,.026,sx*.015,iron,'wheel inner rim'),
+            (.378 if VAR=='c' else .340,.021,sx*.035,iron,'wheel flange edge')]:
             bpy.ops.mesh.primitive_torus_add(major_segments=36,minor_segments=8,
                 location=(xx+dx,yy,axle_z),rotation=(0,pi/2,0),
                 major_radius=major,minor_radius=minor)
@@ -218,7 +231,7 @@ for yy in [-wheel_y,wheel_y]:
         for k in range(10):
             angle=k*2*pi/10
             start=(xx,yy+math.cos(angle)*.08,axle_z+math.sin(angle)*.08)
-            end=(xx,yy+math.cos(angle)*.26,axle_z+math.sin(angle)*.26)
+            end=(xx,yy+math.cos(angle)*(.29 if VAR=='c' else .26),axle_z+math.sin(angle)*(.29 if VAR=='c' else .26))
             between('ten forged spokes',start,end,.044,.042,iron,.005)
         bpy.ops.mesh.primitive_cylinder_add(vertices=20,radius=.115,depth=.16,
             location=(xx+sx*.07,yy,axle_z),rotation=(0,pi/2,0))
@@ -256,6 +269,11 @@ for obj in MODEL:obj.select_set(False)
 # Non-model railway guide for one grounded side-shot, NOT part of the exported GLB.
 GUIDES=[]
 guide_mat=bpy.data.materials.new('studio rail guide');guide_mat.diffuse_color=(.20,.20,.23,1)
+guide_mat.use_nodes=True
+bs=guide_mat.node_tree.nodes.get('Principled BSDF')
+bs.inputs['Base Color'].default_value=(.18,.18,.20,1)
+bs.inputs['Metallic'].default_value=.76
+bs.inputs['Roughness'].default_value=.58
 for sx in [-1,1]:
     bpy.ops.mesh.primitive_cube_add(size=1,location=(sx*.59,0,.035))
     o=bpy.context.object;o.name='rail_gauge_check_only';o.dimensions=(.13,4.9,.17)
@@ -269,6 +287,8 @@ for k in range(12):
 for o in GUIDES:o.hide_render=True
 # Neutral backdrop/ground studio presentation.
 bgmat=bpy.data.materials.new('background only');bgmat.diffuse_color=(.60,.61,.64,1)
+bgmat.use_nodes=True
+bgmat.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(.60,.61,.64,1)
 bpy.ops.mesh.primitive_plane_add(size=200,location=(0,0,-.29))
 ground=bpy.context.object;ground.name='presentation_floor_not_exported';ground.data.materials.append(bgmat)
 def aim(o,p):o.rotation_euler=(Vector(p)-o.location).to_track_quat('-Z','Y').to_euler()
@@ -306,7 +326,8 @@ metrics={
  'wheel_radius':rad,
  'wood_texture_generated':'original procedural PBR maps embedded into GLB (not downloaded Poly Haven)',
  'model_objects':len(MODEL),
- 'source_original':'V17 retained as independent source / no previous model deletion'
+ 'source_original':'V17 retained as independent source / no previous model deletion',
+ 'visual_revision':'V19 weathered wood, chipped plank edges, darkened rusty clamps and larger rail-fit wheels' if VAR=='c' else 'V18 baseline'
 }
 with open(os.path.join(OUT,'b4-minecart-v18-'+VAR+'-metrics.json'),'w') as f:
     json.dump(metrics,f,indent=2)
