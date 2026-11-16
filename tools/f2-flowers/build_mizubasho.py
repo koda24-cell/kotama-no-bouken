@@ -229,6 +229,7 @@ def rolled_sheet(res_u, res_v, phi_fn, R_fn, spine_fn, spiral_fn, recurve_fn, co
 SP_WHITE = lin("EEF2EA")
 SP_GREEN = lin("C2D8AC")
 SP_GREEN_DEEP = lin("9DBB7E")
+SP_ICE = lin("DCEAF0")       # 先端と縁だけ淡く凍った色
 
 
 def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
@@ -274,6 +275,7 @@ def build_spathe(tag, L, wmax, rs, Ls, base, yaw, lean, roll, ground, seed):
         c = mix(SP_WHITE, SP_GREEN, g)
         keel = max(0.0, 1 - abs(a) / 0.2) * (1 - sstep(0.05, 0.45, s)) * 0.5
         c = mix(c, SP_GREEN_DEEP, keel + (1 - sstep(0.0, 0.08, s)) * 0.5)
+        c = mix(c, SP_ICE, sstep(0.82, 1.0, s) * 0.6 + max(0.0, abs(a) - 0.9) * 2.0 * sstep(0.4, 0.7, s))
         return c
 
     M = (Matrix.Translation(Vector(base)) @ Matrix.Rotation(math.radians(yaw), 4, "Z")
@@ -726,12 +728,12 @@ def build_collars():
 build_ground()
 GZ = 0.008
 # 仏炎苞（大・中・小）: 向きと高さをばらす
-build_spathe("L", L=0.18, wmax=0.15, rs=0.007, Ls=0.064, base=(-0.06, -0.034, 0.03),
-             yaw=-24, lean=-8, roll=6, ground=None, seed=1)
+build_spathe("L", L=0.18, wmax=0.15, rs=0.007, Ls=0.064, base=(-0.064, -0.03, 0.03),
+             yaw=-16, lean=-8, roll=6, ground=None, seed=1)
 build_spathe("M", L=0.155, wmax=0.13, rs=0.0064, Ls=0.056, base=(0.064, -0.03, 0.024),
              yaw=34, lean=2, roll=-8, ground=None, seed=2)
-build_spathe("S", L=0.128, wmax=0.105, rs=0.0058, Ls=0.047, base=(0.0, -0.09, 0.016),
-             yaw=6, lean=-14, roll=12, ground=None, seed=3)
+build_spathe("S", L=0.128, wmax=0.105, rs=0.0058, Ls=0.047, base=(0.02, -0.094, 0.016),
+             yaw=0, lean=-14, roll=12, ground=None, seed=3)
 # 葉（後ろ側に広がる櫂形 3 枚 + 後方中央の若い巻き葉）。開花期なので葉は苞より少し控えめ
 build_leaf("A", ground=(-0.008, 0.02, GZ), ang=118, hp=0.09, alpha=12, Lb=0.27, wmax=0.14,
            bend=(14, 32), roll=math.radians(-8), twist=0.22, seed=4)
