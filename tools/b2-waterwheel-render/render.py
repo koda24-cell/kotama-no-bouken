@@ -1,4 +1,4 @@
-"""Render one imported B5 GLB from FRONT, BACK and HIGH-ANGLE.
+"""Render B2 waterwheel GLB with its original materials from FRONT, SIDE and ANGLE.
 Blender glTF import maps Three.js Y-up to Blender Z-up. This renderer
 uses the imported mesh bounds, not assumed unconverted coordinates.
 """
@@ -18,16 +18,8 @@ lo=[min(v[i] for v in corners) for i in range(3)]
 hi=[max(v[i] for v in corners) for i in range(3)]
 center=Vector([(lo[i]+hi[i])/2 for i in range(3)])
 size=max([hi[i]-lo[i] for i in range(3)]+[.1])
-neutral=bpy.data.materials.new('B5_clay_gray')
-neutral.diffuse_color=(.66,.66,.68,1)
-neutral.use_nodes=True
-p=neutral.node_tree.nodes.get('Principled BSDF')
-p.inputs['Base Color'].default_value=(.64,.64,.67,1)
-p.inputs['Roughness'].default_value=.94
-for obj in meshes:
- obj.data.materials.clear();obj.data.materials.append(neutral)
 # Distinct floor reference lies below the model's lowest Z in Blender.
-floor=bpy.data.materials.new('B5_floor')
+floor=bpy.data.materials.new('B2_preview_floor')
 floor.diffuse_color=(.17,.18,.20,1)
 bpy.ops.mesh.primitive_plane_add(size=2,location=(center.x,center.y,lo[2]-.035))
 ground=bpy.context.object;ground.name='preview_ground_not_asset'
@@ -42,14 +34,14 @@ bpy.ops.object.camera_add();camera=bpy.context.object
 camera.data.type='ORTHO';camera.data.ortho_scale=size*1.75
 bpy.context.scene.camera=camera
 scene=bpy.context.scene
-scene.render.engine='CYCLES';scene.cycles.samples=16
+scene.render.engine='CYCLES';scene.cycles.samples=24
 scene.render.resolution_x=960;scene.render.resolution_y=720
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 scene.render.film_transparent=False
 scene.world.color=(.10,.10,.12)
 stem=os.path.splitext(os.path.basename(src))[0]
-views=[('front',(0,-1,.28)),('back',(0,1,.28)),('top-oblique',(1,-1,1.45))]
+views=[('front',(1,-1,.28)),('side',(1,0,.22)),('angle',(1,-1,1.05))]
 for name,direction in views:
  camera.location=center+Vector(direction).normalized()*size*3.8
  aim(camera,center)
@@ -58,3 +50,6 @@ for name,direction in views:
  if not os.path.exists(scene.render.filepath) or os.path.getsize(scene.render.filepath)<1000:
   raise RuntimeError('PNG missing: '+scene.render.filepath)
  print('RENDER_OK',name,scene.render.filepath,flush=True)
+
+# Keep an editable Blender scene alongside the directly usable GLB.
+bpy.ops.wm.save_as_mainfile(filepath=os.path.join(os.path.dirname(outdir),'frozen-waterwheel-courtyard.blend'))
