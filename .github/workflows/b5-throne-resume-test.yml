@@ -1,0 +1,73 @@
+name: B5 Throne Checkpoint Resume Integration Test
+on:
+  push:
+    branches: [feature/gpt-b5-throne-recovery-vision-20261116]
+    paths:
+      - 'tools/b5-throne/**'
+      - '.github/workflows/b5-throne-resume-test.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  first-pass:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and image inspection libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Force stop at exactly one completed iteration
+        run: |
+          /usr/bin/python3 tools/b5-throne/auto_loop.py --iterations 1 --minutes 12
+          /usr/bin/python3 -c "import json; s=json.load(open('render-output/b5-throne-auto/progress.json')); assert len(s['history'])==1 and s['status']=='iteration_limit',s"
+      - name: Upload checkpoint from first run
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-throne-resume-test-checkpoint
+          path: render-output/b5-throne-auto/
+          retention-days: 7
+          if-no-files-found: error
+  resume-pass:
+    needs: first-pass
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download checkpoint from previous job
+        uses: actions/download-artifact@v4
+        with:
+          name: b5-throne-resume-test-checkpoint
+          path: render-output/b5-throne-auto/
+      - name: Install Blender and image inspection libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Verify preserved iteration one and resume automatically
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s render-output/b5-throne-auto/iteration_01/front.png
+          /usr/bin/python3 tools/b5-throne/auto_loop.py --iterations 4 --minutes 15
+          /usr/bin/python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("render-output/b5-throne-auto")
+          s=json.loads((root/"progress.json").read_text())
+          assert len(s["history"])>=2, s
+          assert s["history"][0]["iteration"] == 1 and s["history"][1]["iteration"] == 2, s
+          assert (root/"iteration_01/front.png").stat().st_size>100
+          assert (root/"iteration_02/front.png").stat().st_size>100
+          assert s["approval"]=="NOT_APPROVED"
+          print("Checkpoint resume independently verified:", s["status"],len(s["history"]))
+          PY
+      - name: Upload verified resume output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-throne-resume-test-output
+          path: render-output/b5-throne-auto/
+          retention-days: 7
+          if-no-files-found: warn
