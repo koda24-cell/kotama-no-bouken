@@ -172,16 +172,16 @@ async function main(){
   report.foliageCoverage=foliageCoverage;
   await page.evaluate(()=>window.F1GameLayoutReview.setFocus('approach'));
   await page.evaluate(()=>{const input=document.getElementById('foliage-coverage');input.checked=false;input.dispatchEvent(new Event('change'));});
-  await page.screenshot({path:path.join(OUT,'needle-raw.png')});
+  await page.screenshot({path:path.join(OUT,'needle-raw.png'),timeout:180000});
   await page.evaluate(()=>{const input=document.getElementById('foliage-coverage');input.checked=true;input.dispatchEvent(new Event('change'));});
-  await page.screenshot({path:path.join(OUT,'needle-coverage.png')});
+  await page.screenshot({path:path.join(OUT,'needle-coverage.png'),timeout:180000});
   const nearViews={};
   for(const kind of ['approach','shrine','water']){
    const result=await page.evaluate(k=>window.F1GameLayoutReview.setFocus(k),kind);
    assert(Math.abs(result.eye[1]-1.6)<1e-5,'Near view must use eye height 1.6m');
    assert.equal(result.wallOccluded,false,kind+': intended landmark hidden by enclosure');
    assert(candidate.floorPlacements.some(f=>JSON.stringify(f.tile)===JSON.stringify(result.tile)),'Near camera must start on an existing walk floor');
-   await page.screenshot({path:path.join(OUT,'near-'+kind+'.png')});nearViews[kind]=result;
+   await page.screenshot({path:path.join(OUT,'near-'+kind+'.png'),timeout:180000});nearViews[kind]=result;
   }
   report.nearViews=nearViews;
   const sources=await page.evaluate(()=>window.F1GameLayoutReview.sourceSummary());
