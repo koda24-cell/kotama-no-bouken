@@ -786,8 +786,8 @@ export async function createTheme(api) {
     if (mats[key]) return key;
     const std = (o) => new THREE.MeshStandardMaterial(o), rockM = mats['Deep cavern rock'], paleM = mats['Pale mineral stone'];
     const make = {
-      'x:stoneDark': () => std({ color: 0x4f86b8, map: rockM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(1.2, 1.2), roughness: 0.78, emissive: 0x041a2e, emissiveIntensity: 1.0, envMapIntensity: 0.6, vertexColors: true }),
-      'x:stoneMid': () => std({ color: 0x74a8d4, map: paleM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 0.62, emissive: 0x062a44, emissiveIntensity: 1.0, envMapIntensity: 0.55, vertexColors: true }),
+      'x:stoneDark': () => std({ color: 0x5d95c4, map: rockM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(1.2, 1.2), roughness: 0.78, emissive: 0x08263f, emissiveIntensity: 1.0, envMapIntensity: 0.6, vertexColors: true }),
+      'x:stoneMid': () => std({ color: 0x64a0d2, map: paleM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 0.62, emissive: 0x0a3a5e, emissiveIntensity: 1.0, envMapIntensity: 0.55, vertexColors: true }),
       'x:snow': () => std({ color: 0xd6f4ff, roughness: 0.85, emissive: 0x1a5a7a, emissiveIntensity: 0.45, envMapIntensity: 0.5, vertexColors: true }),
       'x:flower': () => std({ color: 0xffffff, vertexColors: true, roughness: 0.48, metalness: 0.0, emissive: 0x0e4c6a, emissiveIntensity: 0.55, envMapIntensity: 1.0, side: THREE.DoubleSide }),
       'x:flowerIce': () => std({ color: 0xffffff, vertexColors: true, roughness: 0.08, metalness: 0.0, emissive: 0x1898d0, emissiveIntensity: 0.6, envMapIntensity: 1.7, side: THREE.DoubleSide }),
@@ -803,7 +803,6 @@ export async function createTheme(api) {
     if (/snow/.test(nm)) return 'x:snow';
     if (/cobalt|compressed/.test(nm)) return 'crystalDeep';
     if (trans || /ice|glacier/.test(nm)) return 'crystalIce';
-    if (/dust|chipped/.test(nm)) return 'Pale mineral stone';
     if (/dark|fissure|groove|eroded|slate|weathering/.test(nm)) return 'x:stoneDark';
     return 'x:stoneMid';
   }
@@ -1148,7 +1147,7 @@ export async function createTheme(api) {
         if (chosen.some((q) => Math.max(Math.abs(q.tx - sp.tx), Math.abs(q.ty - sp.ty)) < 3)) continue;
         const pc = EX[sp.kind];
         // 原寸（0.2〜0.5m）では一人称の目の高さ1.6mから小さすぎるので拡大する（形は変えない）
-        const s = sp.kind === 'mizubasho' ? (1.8 + sp.r * 0.4) / Math.max(pc.size.x, pc.size.z, 0.01)
+        const s = sp.kind === 'mizubasho' ? (0.95 + sp.r * 0.3) / Math.max(pc.size.y, 0.01)
           : sp.kind === 'bloom' ? (0.72 + sp.r * 0.2) / Math.max(pc.size.y, 0.01) : (1.0 + sp.r * 0.3) / Math.max(pc.size.y, 0.01);
         const push = sp.kind === 'mizubasho' && sp.d ? 0.3 : 0, px = sp.x + (sp.d ? vec(sp.d)[0] * push : 0), pz = sp.z + (sp.d ? vec(sp.d)[1] * push : 0);   // 大きな葉が通り道へ出ないよう壁へ寄せる
         B.add('flowers', pc, M4(px, sp.y - 0.02, pz, sp.ry, s), sp.tx, sp.ty);
@@ -1325,7 +1324,7 @@ export async function createTheme(api) {
             if (got.some((q) => cheb(q, e) < 3) || nearProp(e.tx, e.ty, 1)) continue;
             const v = vec(e.d), lat = [Math.abs(v[1]), Math.abs(v[0])], sh = (H(e.tx, e.ty, 551) - 0.5) * 1.2;
             const id = H(e.tx, e.ty, 552) < 0.5 ? (EX.bankL ? 'bankL' : 'bankR') : (EX.bankR ? 'bankR' : 'bankL'), pc = EX[id];
-            const sc = Math.min(1.6 / Math.max(pc.size.x, pc.size.z, 0.01), 0.95 / Math.max(pc.size.y, 0.01)), half = Math.max(pc.size.x, pc.size.z) * sc / 2;
+            const sc = Math.min(2.2 / Math.max(pc.size.x, pc.size.z, 0.01), 1.25 / Math.max(pc.size.y, 0.01)), half = Math.max(pc.size.x, pc.size.z) * sc / 2;
             const off = Math.max(1.05 + half, 2.2 - half);
             if (put(id, X(e.tx) + v[0] * off + lat[0] * sh, -0.45, Z(e.ty) + v[1] * off + lat[1] * sh, yawAlong(lat[0], lat[1]) + (H(e.tx, e.ty, 553) < 0.5 ? Math.PI : 0), sc, e.tx, e.ty)) {
               got.push(e); out.banks++; out.cells.bank.push(`${e.tx},${e.ty}:${e.d}`); propCells.add(`${e.tx},${e.ty}`);

@@ -71,7 +71,7 @@
 - 作り直し（buildKey が変わる・フロア移動）では `dispose()` がまとめた形・吹き抜け・しぶき・波紋など build 中に作った形と素材を捨てる（共有の素材 mats・キット・読み込んだ GLB の元の形は階層を離れるまで残す）。`themeInfo().ownedDisposed` で累計を確認できる
 
 色味の調整（形は変えない。GLB の素材をそのまま使わず #203 の素材の仲間へ振り分ける）
-- 茶色・灰色の石（遺跡の dark brown／sandstone gray、祭壇の limestone、氷岸の dark slate）→ 洞窟の岩のテクスチャと法線を持つ青い岩 `x:stoneDark`（0x5a8fbc）と霜色の石 `x:stoneMid`（0x8cbcd8）。砂ぼこり・欠けた石は #203 の淡い鉱物の石
+- 茶色・灰色の石（遺跡の dark brown／sandstone gray、祭壇の limestone、氷岸の dark slate）→ 洞窟の岩のテクスチャと法線を持つ青い岩 `x:stoneDark`（0x5a8fbc）と霜色の石 `x:stoneMid`（0x64a0d2、影でも青が残る自発光 0x0a3a5e）。青い岩は 0x5d95c4
 - 透過（transmission）の氷 → #203 の結晶の氷 `crystalIce`／`crystalDeep`（重い透過描画を使わない）。雪 → 霜の白 `x:snow`
 - 花 → 頂点色に元の素材の色を焼き込み、緑（葉・茎）を霜の青緑へ寄せる。花・花の氷・光る芯の3素材に、ほのかな発光（0x0e4c6a・0x1898d0・0x3cc4ff）
 
