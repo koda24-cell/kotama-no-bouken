@@ -1,0 +1,13 @@
+{
+  "source": "Poly Haven",
+  "asset_id": "aerial_ground_rock",
+  "asset_page": "https://polyhaven.com/a/aerial_ground_rock",
+  "license": "CC0",
+  "license_url": "https://polyhaven.com/license",
+  "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/aerial_ground_rock/aerial_ground_rock_diff_1k.jpg",
+  "original_filename": null,
+  "sha256": "c14761998b32630dd193b0fbfd31c8c6f5a144a701b84f87f9d7c33596cc554f",
+  "bytes": 599629,
+  "file": "diffuse_1k.jpg",
+  "status": "downloaded_unreviewed"
+}

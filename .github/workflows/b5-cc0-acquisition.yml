@@ -1,0 +1,53 @@
+name: B5 CC0 Texture Acquisition
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/b5-vault-scatter-props-20261113]
+    paths:
+      - tools/b5-vault-scatter-render/acquire_cc0.py
+      - .github/workflows/b5-cc0-acquisition.yml
+permissions:
+  contents: write
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download and verify CC0 texture candidates
+        run: python tools/b5-vault-scatter-render/acquire_cc0.py
+      - name: Inspect file signatures and manifest
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib
+          root=pathlib.Path('tools/third_party_cc0/polyhaven')
+          entries=json.loads((root/'manifest.json').read_text())
+          assert 1<=len(entries)<=3
+          for e in entries:
+              p=root/e['asset_id']/e['file']
+              b=p.read_bytes()
+              assert len(b)==e['bytes'] and hashlib.sha256(b).hexdigest()==e['sha256']
+              assert b.startswith(b'\x89PNG') or b.startswith(b'\xff\xd8\xff')
+              assert e['license']=='CC0'
+              print(p,len(b))
+          PY
+      - name: Commit vetted-license, unreviewed texture files to isolated feature branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/third_party_cc0/polyhaven
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "assets(b5): stage Poly Haven CC0 stone textures with provenance"
+          git push origin HEAD:feature/b5-vault-scatter-props-20261113
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b5-cc0-acquisition-log-and-assets
+          path: tools/third_party_cc0/polyhaven/
+          if-no-files-found: warn
+          retention-days: 14
