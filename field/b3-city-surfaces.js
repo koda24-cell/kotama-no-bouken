@@ -53,7 +53,16 @@ export function createCitySurfaces(THREE, high) {
         const pit = fine > 0.92 ? (fine - 0.92) * 4 : 0;
         const streak = noise(u * 16, v * 4, 16, seed + 3), moss = clamp((broad + grain * 0.28 - 0.77) * 4);
         const base = kind === 'stone' ? [135, 139, 127] : [157, 151, 132];
-        col = base.map((a, i) => a * (0.55 + broad * 0.38 + grain * 0.2 - streak * 0.12 - crack * 0.48 - pit) * (1 - moss * 0.55) + [35, 59, 24][i] * moss * 0.55 + fine * 12);
+        // Concrete only: cast-panel seams, tie holes, rust bleeding from rebar and spalled patches.
+        let panel = 0, bleed = 0, spall = 0;
+        if (kind === 'concrete') {
+          const sxp = x % 128, syp = y % 85;
+          panel = (Math.min(sxp, 128 - sxp) < 1.5 || Math.min(syp, 85 - syp) < 1.2) ? 0.35 : 0;
+          panel += (Math.hypot((sxp - 32) % 64 - 0, syp - 42) < 2.2 || Math.hypot(sxp - 96, syp - 42) < 2.2) ? 0.4 : 0;
+          bleed = clamp(Math.pow(noise(u * 20, v * 1.2, 20, seed + 9), 4) * 2.4 - 0.15);
+          spall = clamp((noise(u * 10, v * 10, 10, seed + 12) - 0.72) * 9);
+        }
+        col = base.map((a, i) => (a * (0.55 + broad * 0.38 + grain * 0.2 - streak * 0.12 - crack * 0.48 - pit - panel - spall * (0.28 - grain * 0.2)) * (1 - moss * 0.55) + [35, 59, 24][i] * moss * 0.55 + fine * 12) * (1 - bleed * 0.25) + [40, 14, 0][i] * bleed * 0.5);
       }
       const p = (y * size + x) * 4;
       data.data[p] = col[0]; data.data[p + 1] = col[1]; data.data[p + 2] = col[2]; data.data[p + 3] = 255;
@@ -230,7 +239,9 @@ export function createCitySurfaces(THREE, high) {
           float hFar=skyline(az,180.,11.,.018,.075), hNear=skyline(az,64.,37.,.035,.16);
           if(y<hFar) c=mix(far,horizon,smoothstep(-.05,hFar,y)*.35);
           if(y<hNear) c=mix(near,far,smoothstep(-.06,hNear,y)*.45);
-          if(y<0.) c=mix(near,horizon,.25);
+          if(y<hNear){float wx=fract(az*640.),wy=fract(y*90.);
+            c*=1.-.18*step(.55,wx)*step(.5,wy)*step(.35,h1(floor(az*640.)+floor(y*90.)*7.));}  // gutted window rows
+          if(y<0.) c=mix(near*.75,mix(near,horizon,.3),smoothstep(-.35,0.,y));
           gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>

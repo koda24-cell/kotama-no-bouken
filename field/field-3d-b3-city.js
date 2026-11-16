@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRuinedCityKit } from './b3-ruined-city-kit.js';
 import { createB3UrbanProps } from './b3-ruined-city-urban-props.js';
-import { createCitySurfaces } from './b3-city-surfaces.js?v=20261116-2';
+import { createCitySurfaces } from './b3-city-surfaces.js?v=20261116-3';
 
 export function createTheme(api) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile } = api;
