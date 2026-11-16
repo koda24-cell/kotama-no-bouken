@@ -44,3 +44,10 @@ sentinel V1 -> レンダリング目視 -> 形状修正 -> 承認待ち -> kneel
 - V6の見た目: V1より鎧の彫刻・肩甲・胸甲は増え、暗灰色の材質が見える。ただし依然、角張ったシルエットが強く、実世界水準の彫像としては品質改善余地あり。正式保存とゲーム反映はしない。
 - 配置計画: `tools/b5-knights/placement-plan.js`。通行可能セルを削除せず、壁の1方向だけが通路に面するセルを抽出。周辺イベント回避・4種分配・離隔制御を設計。まだ実ゲームに呼び出していない。
 - 次: 参考ピンの実画像を確認→V6石表面・人体比率・真の破断を改善→レビュー承認後に次のkneelingなどを個別制作→4種揃ってから実ゲーム配置テスト。
+
+## V7→V9 Blender反復制作・2026-11-16 夜
+- V7: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43855732074 ；Artifact `14220977156`。V6原本を保持して胸甲リブ・肩甲・石面の摩耗を追加。167 mesh、GLB 1,227,168 bytes。正面/側面/斜め実PNGを取得、SHA-256照合済み。遠目は依然機械的。
+- V8: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43856358943 ；Artifact `14221222688`。旧メッシュ保持、ring-loft曲面胸甲、兜、すね当てを追加。177 mesh、GLB 1,380,448 bytes。3方向PNGとhash照合済み。側面の厚みは改善したが、兜が大きい。
+- V9: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43856838479 ；Artifact `14221004238`。旧メッシュ保持、破損した石彫りの外套・前垂れ・礫を追加。193 mesh、GLB 1,484,876 bytes。3方向PNGとhash照合済み。下半身の空洞が減った反面、外套が平面板に見えるため**未完成**。
+- 各反復の `.blend`, `.glb`, `front.png`, `side.png`, `angle.png`, `manifest.json` は14日間のGitHub Actions Artifactで保持。ユーザー承認・正式素材への昇格・development/game実装は**行わない**。
+- 次回優先: V9の薄板外套を折れた布の3Dボリュームに改善、鎧装飾の規則正しさ解消、頭身・兜大きさの検証、粗い石面のNormal Mapを有効なPNG/GLBへベイクして確認。単にメッシュ数を増やすのでなく、少数の大きな彫刻形状・重量・欠損の物理的説得力を優先。既存形状は保持。
