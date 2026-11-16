@@ -60,11 +60,11 @@ def vc(m):
 
 def build_materials():
     mats = [None] * 9
-    mats[ROCK] = vc(C.mat_basic("crystal_rock", lin("#2B3440"), rough=0.8, spec=0.4))
+    mats[ROCK] = vc(C.mat_basic("crystal_rock", lin("#2B3440"), rough=0.85, spec=0.25))
     mats[STEM] = vc(C.mat_leaf("crystal_stem_leaf", lin("#3F6B6A"), rough=0.5, sss=0.12, coat=0.12))
     mats[CALYX] = C.mat_leaf("crystal_calyx", lin("#1B2A4A"), rough=0.3, sss=0.05, coat=0.5)
     mats[MILKY] = vc(C.mat_ice("crystal_ice_milky", lin("#E4F2FF"), rough=0.3, trans=0.45,
-                               emit=lin("#A6EAFF"), emit_strength=0.45))
+                               emit=lin("#A6EAFF"), emit_strength=0.32))
     mats[MID] = vc(C.mat_ice("crystal_ice_mid", lin("#C8E8FF"), rough=0.1, trans=0.82,
                              emit=lin("#7FE3FF"), emit_strength=0.12))
     mats[CLEAR] = vc(C.mat_ice("crystal_ice_clear", lin("#A8DBFF"), rough=0.03, trans=0.95,
@@ -286,11 +286,10 @@ def emit_rock(mb, tmp, bev, rnd, tops, rims, shade=0.0):
     for f in tmp.faces:
         nz = f.normal.z
         cz = f.calc_center_median().z
+        col = mix(srgb("#151B24"), srgb("#25303D"), rnd.random())
+        col = mix(col, srgb("#4E6680"), smooth01(nz, 0.6, 0.95) * rnd.uniform(0.2, 0.45))
         if f in bev:
-            col = mix(srgb("#2C3746"), srgb("#5C7590"), smooth01(nz, 0.2, 0.9))
-        else:
-            col = mix(srgb("#151B24"), srgb("#25303D"), rnd.random())
-            col = mix(col, srgb("#4E6680"), smooth01(nz, 0.6, 0.95) * rnd.uniform(0.2, 0.45))
+            col = mix(col, srgb("#9DB6CC"), smooth01(nz, 0.35, 0.9) * 0.45)
         if cz < 0.008:
             col = mix(col, srgb("#10141A"), 0.6)
         col = mix(col, srgb("#0E1218"), shade)
@@ -523,16 +522,16 @@ def main():
 
     heads = [
         # (base, pos, axis, D)
-        (cb(0.004, dx=-0.004), (-0.012, 0.006, 0.172), (-0.15, -0.45, 1.0), 0.090),
-        (cb(-0.010, dx=0.004), (0.054, -0.014, 0.134), (0.45, -0.40, 1.0), 0.070),
-        (cb(-0.022, dx=-0.003), (-0.068, -0.030, 0.104), (-0.50, -0.45, 1.0), 0.050),
+        (cb(0.004, dx=-0.004), (-0.014, 0.006, 0.160), (-0.15, -0.45, 1.0), 0.090),
+        (cb(-0.010, dx=0.004), (0.056, -0.014, 0.124), (0.45, -0.40, 1.0), 0.070),
+        (cb(-0.022, dx=-0.003), (-0.070, -0.032, 0.100), (-0.50, -0.45, 1.0), 0.050),
     ]
     for base, pos, axis, D in heads:
         H = head_matrix(pos, axis, rnd.uniform(0, 6.28))
-        build_stem(mb, base, H, 0.0034 * (D / 0.09) ** 0.5)
+        build_stem(mb, base, H, 0.0041 * (D / 0.09) ** 0.5)
         build_flower(mb, H, D, rnd)
-    Hb = head_matrix((0.018, 0.036, 0.150), (0.18, 0.25, 1.0), 0.4)
-    build_stem(mb, cb(0.020), Hb, 0.0025)
+    Hb = head_matrix((0.020, 0.038, 0.140), (0.18, 0.25, 1.0), 0.4)
+    build_stem(mb, cb(0.020), Hb, 0.0029)
     build_bud(mb, Hb, rnd)
 
     leaves = [
