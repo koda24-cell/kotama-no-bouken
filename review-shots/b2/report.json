@@ -42,6 +42,7 @@
       ],
       "ripples": 3,
       "mists": 2,
+      "ownedDisposed": 0,
       "falls": [
         {
           "cell": "5,19",
@@ -52,7 +53,11 @@
           "wall": "right"
         }
       ],
-      "bridge": null
+      "bridge": null,
+      "buildKey": "2-0",
+      "layout": null,
+      "extras": 0,
+      "extrasLoaded": null
     },
     {
       "floor": 2,
@@ -73,32 +78,32 @@
         "Waterfall_Mist:0",
         "Water_Ripple_Ring_1:0",
         "Waterfall_Mist:0",
-        "Water_Ripple_Ring_2:0",
-        "Waterfall_Mist:0",
+        "b2:v8_crystals:14",
         "b2:floor:35",
         "b2:ceiling:12",
         "b2:walls:12",
         "b2:rock_seams:12",
-        "b2:crystals:33",
-        "b2:water:11",
-        "b2:water_foam:3",
+        "b2:crystals:31",
+        "b2:water:8",
+        "b2:water_foam:2",
         "b2:rocks:13",
         "b2:ice_stalactites:11",
-        "b2:v8_stalagmites:12",
         "b2:frost_cornices:36",
         "b2:frost_veins:22",
         "b2:wall_outcrops:24",
+        "b2:v8_stalagmites:12",
         "b2:v8_erosion:9",
-        "b2:v8_crystals:12",
         "b2:ceiling_details:12",
         "b2:v8_ceiling_ice:12",
         "b2:shoreline:2",
         "b2:thorns:2",
         "b2:glow_fungi:2",
-        "b2:landmarks:3"
+        "b2:landmarks:3",
+        "b2:extras:41"
       ],
-      "ripples": 4,
-      "mists": 4,
+      "ripples": 3,
+      "mists": 3,
+      "ownedDisposed": 400,
       "falls": [
         {
           "cell": "21,15",
@@ -109,10 +114,6 @@
           "wall": "left"
         },
         {
-          "cell": "5,17",
-          "wall": "right"
-        },
-        {
           "cell": "1,1",
           "wall": "left"
         }
@@ -121,7 +122,62 @@
         "tx": 8,
         "ty": 12,
         "ry": 0
-      }
+      },
+      "buildKey": "2-1@e0s6z3iok",
+      "layout": {
+        "falls": 3,
+        "atrium": "8,12",
+        "v8Showcase": [
+          "17,11:deadend",
+          "13,5:corner"
+        ],
+        "altar": {
+          "cell": "19,7",
+          "open": "right",
+          "sight": 6
+        },
+        "pillars": 2,
+        "pillarRooms": 2,
+        "ruins": 4,
+        "ruinClusters": 3,
+        "banks": 0,
+        "flowers": 12,
+        "flowerClusters": [
+          "24,17:bloom:down",
+          "17,7:snowdrop:down",
+          "23,13:snowdrop:down",
+          "17,16:bloom:left",
+          "25,10:bloom:right"
+        ],
+        "cells": {
+          "pillar": [
+            "5,13:down+left",
+            "23,11:up+right"
+          ],
+          "ruin": [
+            "2,1:up",
+            "20,15:up",
+            "16,5:up"
+          ],
+          "bank": []
+        }
+      },
+      "extras": 19,
+      "extrasLoaded": [
+        "pillarAncient",
+        "pillarRuined",
+        "pillarGlaciated",
+        "altar",
+        "fallen",
+        "spire",
+        "rubble",
+        "parapet",
+        "bankL",
+        "bankR",
+        "snowdrop",
+        "mizubasho",
+        "bloom"
+      ]
     },
     {
       "floor": 3,
@@ -147,19 +203,19 @@
         "Water_Ripple_Ring_1:0",
         "Water_Ripple_Ring_1:0",
         "Waterfall_Mist:0",
+        "b2:v8_crystals:12",
         "b2:floor:34",
         "b2:ceiling:9",
         "b2:v8_ceiling_ice:8",
         "b2:walls:9",
         "b2:wall_outcrops:18",
         "b2:rock_seams:8",
-        "b2:crystals:23",
+        "b2:crystals:21",
         "b2:frost_cornices:27",
         "b2:frost_veins:16",
         "b2:ice_stalactites:8",
         "b2:v8_stalagmites:7",
         "b2:v8_erosion:5",
-        "b2:v8_crystals:9",
         "b2:rocks:16",
         "b2:ceiling_details:8",
         "b2:shoreline:8",
@@ -168,10 +224,12 @@
         "b2:water_foam:3",
         "b2:glow_fungi:12",
         "b2:thorns:8",
-        "b2:landmarks:3"
+        "b2:landmarks:3",
+        "b2:extras:52"
       ],
       "ripples": 8,
       "mists": 3,
+      "ownedDisposed": 415,
       "falls": [
         {
           "cell": "17,15",
@@ -190,7 +248,71 @@
         "tx": 8,
         "ty": 2,
         "ry": 0
-      }
+      },
+      "buildKey": "2-2@e0slaqk9v",
+      "layout": {
+        "falls": 3,
+        "atrium": "16,12",
+        "v8Showcase": [
+          "19,2:corner",
+          "15,15:corner",
+          "26,9:corner"
+        ],
+        "altar": {
+          "cell": "2,4",
+          "open": "right",
+          "sight": 8
+        },
+        "pillars": 5,
+        "pillarRooms": 2,
+        "ruins": 6,
+        "ruinClusters": 3,
+        "banks": 4,
+        "flowers": 12,
+        "flowerClusters": [
+          "24,5:mizubasho:up",
+          "15,9:mizubasho:right",
+          "11,6:mizubasho:down",
+          "19,2:mizubasho:right",
+          "1,5:snowdrop:up"
+        ],
+        "cells": {
+          "pillar": [
+            "5,1:up+right",
+            "8,7:right+down",
+            "13,8:down+left",
+            "8,14:right+down",
+            "2,15:down+left"
+          ],
+          "ruin": [
+            "2,12:left",
+            "16,8:down",
+            "24,13:right"
+          ],
+          "bank": [
+            "24,10:left",
+            "23,7:up",
+            "8,5:right",
+            "18,11:left"
+          ]
+        }
+      },
+      "extras": 28,
+      "extrasLoaded": [
+        "pillarAncient",
+        "pillarRuined",
+        "pillarGlaciated",
+        "altar",
+        "fallen",
+        "spire",
+        "rubble",
+        "parapet",
+        "bankL",
+        "bankR",
+        "snowdrop",
+        "mizubasho",
+        "bloom"
+      ]
     }
   ],
   "render": {
@@ -198,8 +320,8 @@
   },
   "noPreview": {
     "area": 2,
-    "active3d": true,
-    "is3dClass": true,
+    "active3d": false,
+    "is3dClass": false,
     "preview": false,
     "ls": null
   },
@@ -236,7 +358,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "right",
+      "dir": "up",
       "active": true,
       "near": "",
       "floor": 0,
@@ -248,7 +370,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "left",
+      "dir": "down",
       "active": true,
       "near": "",
       "floor": 0,
@@ -286,7 +408,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "chest:2-0:5:5",
+      "near": "chest:2-0:19:1",
       "floor": 0,
       "area": 2
     },
@@ -322,7 +444,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "cache:2:a2-cache",
+      "near": "",
       "floor": 1,
       "area": 2
     },
@@ -346,7 +468,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "npc:2:a2-plaque",
+      "near": "door:2:a2-gate",
       "floor": 1,
       "area": 2
     },
@@ -358,7 +480,7 @@
       },
       "dir": "right",
       "active": true,
-      "near": "switch:2:a2-stone-west",
+      "near": "npc:2:a2-plaque",
       "floor": 1,
       "area": 2
     },
@@ -370,7 +492,7 @@
       },
       "dir": "right",
       "active": true,
-      "near": "switch:2:a2-stone-east",
+      "near": "switch:2:a2-stone-west",
       "floor": 1,
       "area": 2
     },
@@ -382,7 +504,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "save:2-1:15:7",
+      "near": "switch:2:a2-stone-east",
       "floor": 1,
       "area": 2
     },
@@ -430,7 +552,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "npc:2:merchant",
+      "near": "sign:2-2:5:10",
       "floor": 2,
       "area": 2
     },
@@ -466,7 +588,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "",
+      "near": "save:2-2:24:15",
       "floor": 2,
       "area": 2
     },
