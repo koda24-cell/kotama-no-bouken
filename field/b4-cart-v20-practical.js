@@ -46,6 +46,7 @@ export function enhanceB4CartPractical(root,variant=20) {
    if(ob.isMesh && Math.abs(ob.position.x)>.80 && Math.abs(ob.position.z)>.30 && Math.abs(ob.position.z)<.57 && ob.position.y<.18){
     ob.position.z+=Math.sign(ob.position.z)*(axleZ-.43);
     ob.position.x+=Math.sign(ob.position.x)*.12;
+    if(variant>=26)ob.scale.multiplyScalar(1.12);
    } else if(ob.isGroup && /cart-detail-additions|cart-v14-quality/.test(ob.name))relocateChildren(ob);
   }
  }
