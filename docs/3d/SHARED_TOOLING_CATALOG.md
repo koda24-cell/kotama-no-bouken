@@ -171,3 +171,12 @@
 - 導入状況: `feature/gpt-b4-cart-structural-v20-20261116` / `tools/b4-render/bake-cart-pbr-v22.py`、`bake-cart-pbr-v23.py`。開発ブランチへの本体導入は**未承認**。
 - 実検証: 2026-11-16 GitHub Actions run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43824911258 および https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43825499744 成功。実ダウンロードしたGLBを解析して各6枚の埋込画像を確認、GLB再読み込みBlender/Cycles正面・側面・斜めPNGを目視。実ゲームThree.js性能・操作、GLTF validator、全メッシュのUV品質は未検証。
 - 制限: 手続き的な自作PBRはフォトグラメトリではない。古い鉱石形状・元の転倒ポーズは別課題。正式素材フォルダへの昇格はユーザー承認後のみ。参考画像候補リンクは `koda24-cell/pinterest-reference-library` に別管理。
+
+### B5朽ちた騎士像: Blender 4.0 glTFエクスポートと手作りNormal Map（2026-11-16）
+- 対象: `tools/b5-knights/build_sentinel_v1.py`〜`build_sentinel_v6.py`。制作PR #424（未承認）。
+- Ubuntu 24.04 Actions apt Blender 4.0.2に標準glTF exporterを使用。aptの `python3-numpy` を追加しなければ `ModuleNotFoundError: No module named numpy` で失敗。最初の失敗run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43824065595 。
+- CyclesでOpenImageDenoiserが利用不可な環境では `scene.cycles.use_denoising=False`、各view_layerのcycles denoisingを無効化して描画可能。修正版V1 run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43824415204 成功。
+- 独自生成のBlender ImageのNormal MapをGLB埋込後に調査したところ、V3/V4の PNG RGB各チャネル平均0（黒一色）。結果、モデルが黒く見えた。**有効なNormal Map接続は未検証**、V5/V6ではノーマルノードを未接続にしてモデル法線を使う。元の素材形状を残す。
+- カラーテクスチャのGLB埋込みは画像bufferViewのPNGを開いてRGB平均がゼロでないことを確認済み。法線テクスチャの有効性をGLB輸出前後で検証するゲートを今後設ける。
+- V6成功: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43826564411 。ArtifactsにGLB、Blend、front/side/angle、manifest。技術テストの成功は美観承認ではない。
+- 外部アドオン・外部有料APIの新規導入なし。Blender標準機能とPythonによる自作画像のみ。
