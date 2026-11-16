@@ -84,6 +84,9 @@ for asset_id,name in NAMES.items():
     m['evidenceHashes']={r:hashlib.sha256((OUT/r).read_bytes()).hexdigest() for r in m['renders']}
     m['renderEvidence']={r:png_evidence(OUT/r) for r in m['renders']}
     m['sourceBlendSha256']=hashlib.sha256((OUT/m['source']).read_bytes()).hexdigest()
+    packaging=m.get('sourcePackaging',{})
+    assert packaging.get('externalImagesRequired') is False,f'{asset_id}: portable source packaging not verified'
+    assert packaging.get('sha256')==m['sourceBlendSha256'],f'{asset_id}: source changed after packaging verification'
     assets.append(m)
 
 manifest=dict(schemaVersion=1,count=len(assets),totalBytes=sum(a['bytes'] for a in assets),

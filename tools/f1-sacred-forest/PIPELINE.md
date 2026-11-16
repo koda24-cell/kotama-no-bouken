@@ -59,3 +59,12 @@ leaves the GLB and a metrics file with `renderError` for honest diagnosis.
   values are preserved. No third-party image was used for this test.
 - Asset GLB export and render verification must be recorded from actual asset
   invocations; this helper's creation alone does not prove those operations.
+# Portable source verification
+
+After the individual render queue, run `pack_sources.py` inside Blender.
+Blender's lazy image loading makes a `has_data`-gated pack insufficient before
+the first export. The postprocessor explicitly reloads/packs all source images,
+saves and reopens each blend with nonexistent external image paths, verifies
+decoded packed images, and checks that geometry fingerprints are unchanged.
+The final manifest requires the packaging receipt to match the actual blend hash.
+
