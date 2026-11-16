@@ -25,6 +25,27 @@ export function createCitySurfaces(THREE, high) {
       } else if (kind === 'leaf') {
         const vein = Math.exp(-Math.abs(u - 0.5) * 65) + Math.pow(Math.max(0, Math.cos((v * 8 + Math.abs(u - 0.5) * 3) * Math.PI * 2)), 14) * 0.22;
         col = [39 + grain * 24 + vein * 26, 68 + broad * 43 + grain * 24 + vein * 20, 29 + grain * 17 + vein * 8];
+      } else if (kind === 'masonry') {
+        // Ashlar courses: 4 rows per tile, 2-4 blocks per row, eroded (chipped) arrises,
+        // per-block tone, water streaks and moss held in the mortar joints.
+        const rows = 4, rh = size / rows, row = Math.floor(y / rh), count = 2 + Math.floor(rand(row, 7, seed) * 3);
+        const bw = size / count, sx = (x + Math.floor(rand(row, 9, seed) * size)) % size, col0 = Math.floor(sx / bw);
+        const lx = sx - col0 * bw, ly = y - row * rh, block = rand(row, col0, seed + 4);
+        const erode = 1.6 + noise(u * 24, v * 24, 24, seed + 5) * 5.5 + (block > 0.82 ? 4 : 0);
+        const edge = Math.min(lx, bw - lx, ly, rh - ly), corner = Math.min(Math.hypot(Math.min(lx, bw - lx), Math.min(ly, rh - ly)), 99);
+        const joint = clamp(1 - (Math.min(edge, corner * 0.8) - erode) / 1.8);
+        const relief = clamp((lx < bw * 0.5 ? 1 : 0) * clamp(1 - ly / 7) * 0.5 + clamp(1 - ly / 5) * 0.4) - clamp(1 - (rh - ly) / 6) * 0.35;
+        const streak = Math.pow(noise(u * 28, v * 1.5, 28, seed + 3), 3) * 0.55;
+        const crack = Math.pow(Math.max(0, 1 - Math.abs(noise(u * 6, v * 6, 6, seed + 6) - 0.5) * 70), 2) * (1 - joint);
+        const moss = clamp((broad + grain * 0.35 - 0.7) * 3.2 + joint * 0.45 * broad);
+        const tone = 0.74 + block * 0.34, warm = rand(row, col0, seed + 8) - 0.5;
+        const base = [128 + warm * 16, 130 + warm * 4, 118 - warm * 10];
+        col = base.map((a, i) => {
+          const stoneCol = a * tone * (0.62 + broad * 0.3 + grain * 0.22 + relief * 0.22 - streak * 0.35 - crack * 0.5) + fine * 12;
+          const mortar = [62, 64, 54][i] * (0.75 + grain * 0.4);
+          const c = stoneCol * (1 - joint) + mortar * joint;
+          return c * (1 - moss * 0.6) + [34, 58, 22][i] * moss * 0.6 * (0.8 + grain * 0.5);
+        });
       } else if (kind === 'soil') {
         col = [61, 63, 45].map(a => a * (0.6 + broad * 0.55 + grain * 0.35) + fine * 9);
       } else {
@@ -41,8 +62,8 @@ export function createCitySurfaces(THREE, high) {
     const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping;
     t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = high ? 4 : 2; textures.push(t); return t;
   }
-  const maps = { concrete: texture('concrete', 11), stone: texture('stone', 21), rust: texture('rust', 31), bark: texture('bark', 41), leaf: texture('leaf', 51), soil: texture('soil', 61) };
-  function surface(kind, tint = 0xffffff, { world = true, scale = 0.72 } = {}) {
+  const maps = { masonry: texture('masonry', 71), concrete: texture('concrete', 11), stone: texture('stone', 21), rust: texture('rust', 31), bark: texture('bark', 41), leaf: texture('leaf', 51), soil: texture('soil', 61) };
+  function surface(kind, tint = 0xffffff, { world = true, scale = 0.72, moss = 0 } = {}) {
     const props = { color: tint, map: maps[kind], side: kind === 'leaf' ? THREE.DoubleSide : THREE.FrontSide };
     // Diffuse stone/foliage needs no metallic BRDF. Reserve PBR for exposed steel.
     const m = high && kind === 'rust'
@@ -68,6 +89,17 @@ export function createCitySurfaces(THREE, high) {
           diffuseColor *= b3tex;
           float b3ground = smoothstep(-0.1, 2.0, vB3World.y);
           diffuseColor.rgb *= mix(vec3(0.72, 0.76, 0.69), vec3(1.0), b3ground);
+          ${moss > 0 ? `
+          // Moss settles on upward faces and creeps up the damp foot of walls; vertical grime
+          // streaks run down from ledges. Uses the bound texture as a second noise octave.
+          float b3n = texture2D(map, b3uv.xz * 0.31 + vec2(0.37, 0.11)).g * 0.6 + texture2D(map, b3coords * 0.23 + 0.5).r * 0.4;
+          float b3up = smoothstep(0.45, 0.85, vB3Face.y);
+          float b3foot = (1.0 - smoothstep(0.0, 0.75, vB3World.y)) * (1.0 - b3up) * step(abs(vB3Face.y), 0.5);
+          float b3moss = clamp(b3up * smoothstep(0.30, 0.52, b3n) + b3foot * smoothstep(0.42, 0.6, b3n), 0.0, 1.0) * ${moss.toFixed(2)};
+          diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.13, 0.21, 0.08) * (0.75 + b3n * 0.6), b3moss * 0.8);
+          float b3streak = smoothstep(0.55, 0.85, texture2D(map, vec2(b3coords.x * 0.9, vB3World.y * 0.05 + 0.2)).b) * (1.0 - b3up);
+          diffuseColor.rgb *= 1.0 - b3streak * 0.22 * ${moss.toFixed(2)};
+          ` : ''}
         `);
       };
       const weather = m.onBeforeCompile;
@@ -80,12 +112,12 @@ export function createCitySurfaces(THREE, high) {
           #endif
         `);
       };
-      m.customProgramCacheKey = () => `b3-weathered-${scale}`;
+      m.customProgramCacheKey = () => `b3-weathered-${scale}-${moss}`;
     }
     materials.push(m); return m;
   }
   const palette = {
-    concrete: surface('concrete'), stone: surface('stone'), rust: surface('rust'), bark: surface('bark'),
+    concrete: surface('concrete', 0xffffff, { moss: 0.7 }), masonry: surface('masonry', 0xffffff, { moss: 1, scale: 0.62 }), stone: surface('stone'), rust: surface('rust'), bark: surface('bark'),
     leaf: surface('leaf', 0xffffff, { world: false }), soil: surface('soil'),
     dark: surface('rust', 0x65716b), gold: surface('rust', 0xbba777),
     paving: [surface('stone', 0xb6b4a3), surface('stone', 0x9ca798), surface('stone', 0xc1b8a5)]
@@ -148,7 +180,8 @@ export function createCitySurfaces(THREE, high) {
         else m.material = palette.bark;
       } else if ([0x555a5b, 0x343b3b, 0x373b38].includes(hex)) m.material = hex === 0x555a5b ? palette.rust : palette.dark;
       else if (hex === 0x9b8053) m.material = palette.gold;
-      else m.material = hex === 0x898779 ? palette.stone : palette.concrete;
+      else if (hex === 0x898779) m.material = key === 'statue' || key.startsWith('rubble') ? palette.stone : palette.masonry;
+      else m.material = palette.concrete;
     });
     if (key.startsWith('ruinedBuilding')) {
       const ledges = model.children.filter(m => m.isMesh && m.geometry.type === 'BoxGeometry' && m.scale.y < 0.35 && Math.abs(m.rotation.z) < 0.2);
@@ -161,18 +194,49 @@ export function createCitySurfaces(THREE, high) {
     }
     return model;
   }
-  function sky() {
+  // Overcast sky in linear HDR, kept below the bloom threshold. Horizon equals the fog colour so
+  // fogged streets dissolve into it; two procedural skyline bands give distant aerial perspective.
+  function sky(fogHex = 0x8f9a9b, sunDir = [-0.45, 0.8, -0.35]) {
+    const horizon = new THREE.Color(fogHex);
     const material = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, depthTest: false,
+      uniforms: { horizon: { value: horizon }, zenith: { value: new THREE.Color(0x56636b) },
+        cloudLo: { value: new THREE.Color(0x6a7273) }, cloudHi: { value: new THREE.Color(0xc2c4bd) },
+        far: { value: horizon.clone().lerp(new THREE.Color(0x4f5d63), 0.42) }, near: { value: horizon.clone().lerp(new THREE.Color(0x2e3a3c), 0.62) },
+        sun: { value: new THREE.Vector3(...sunDir).normalize() } },
       vertexShader: 'varying vec3 dir; void main(){dir=position; vec4 p=projectionMatrix*modelViewMatrix*vec4(position,1.0);gl_Position=p.xyww;}',
-      fragmentShader: `varying vec3 dir;
+      fragmentShader: `varying vec3 dir; uniform vec3 horizon, zenith, cloudLo, cloudHi, far, near, sun;
         float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+        float h1(float p){return fract(sin(p*91.7)*43758.5453);}
         float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+1.),f.x),f.y);}
-        void main(){vec3 d=normalize(dir);float t=smoothstep(-0.08,0.8,d.y);vec3 c=mix(vec3(.63,.68,.64),vec3(.22,.39,.44),t);vec2 q=d.xz/(abs(d.y)+.4)*3.;float cloud=n(q)*.6+n(q*2.1)*.28+n(q*4.3)*.12;c=mix(c,vec3(.82,.81,.70),smoothstep(.45,.7,cloud)*smoothstep(-.02,.25,d.y)*.65);gl_FragColor=vec4(c,1.);
+        float fbm(vec2 p){float a=0.,w=.5;for(int i=0;i<5;i++){a+=n(p)*w;p=p*2.03+vec2(1.7,9.2);w*=.5;}return a;}
+        // Ruined skyline: stepped blocks, broken tops and the odd mast, by azimuth.
+        float skyline(float az, float cells, float seed, float lo, float hi){
+          float x=az*cells, id=floor(x), f=fract(x), r=h1(id+seed);
+          float top=mix(lo,hi,r*r)*step(.18,r);
+          top-=step(.55,h1(id+seed+3.))*step(f,.45)*top*.35;               // collapsed half
+          top+=step(.86,h1(id+seed+7.))*step(abs(f-.5),.035)*hi*.9;       // antenna / pylon
+          top+=step(.7,r)*(1.-abs(f*2.-1.))*.012;                          // gabled ruin
+          return top;}
+        void main(){vec3 d=normalize(dir);float y=d.y;
+          float t=smoothstep(0.,.75,y);vec3 c=mix(horizon,zenith,pow(t,.8));
+          vec2 q=d.xz/(max(y,0.)+.18)*1.6;
+          float cl=fbm(q+vec2(3.1,1.4)), detail=fbm(q*2.7-vec2(5.,2.));
+          float cover=smoothstep(.32,.72,cl);
+          vec3 cloud=mix(cloudLo,cloudHi,smoothstep(.35,.85,detail*.55+cl*.6));
+          c=mix(c,cloud,cover*smoothstep(-.01,.12,y)*.85);
+          c+=vec3(.10,.09,.07)*pow(max(dot(d,sun),0.),6.)*(1.-cover*.6);
+          c=mix(c,horizon,1.-smoothstep(0.,.10,y));                       // haze band at the horizon
+          float az=atan(d.z,d.x)/6.2831853+.5;
+          float hFar=skyline(az,180.,11.,.018,.075), hNear=skyline(az,64.,37.,.03,.13);
+          if(y<hFar) c=mix(far,horizon,smoothstep(-.05,hFar,y)*.35);
+          if(y<hNear) c=mix(near,far,smoothstep(-.06,hNear,y)*.45);
+          if(y<0.) c=mix(c,near*.9,smoothstep(0.,-.25,y));
+          gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
         }` });
     materials.push(material);
-    const mesh = new THREE.Mesh(geo(new THREE.SphereGeometry(70, 20, 12)), material);mesh.name='b3:overcast-sky';mesh.renderOrder=-1000;mesh.frustumCulled=false;return mesh;
+    const mesh = new THREE.Mesh(geo(new THREE.SphereGeometry(70, 32, 16)), material);mesh.name='b3:overcast-sky';mesh.renderOrder=-1000;mesh.frustumCulled=false;return mesh;
   }
   return { palette, fern, slabs, dress, sky, lodGeometries, textureCount: textures.length,
     dispose() { textures.forEach(t=>t.dispose());materials.forEach(m=>m.dispose());geometries.forEach(g=>g.dispose()); } };
