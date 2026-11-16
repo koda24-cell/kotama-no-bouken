@@ -102,13 +102,23 @@ export function enhanceB4CartPractical(root,variant=20) {
   const coupler=new THREE.Group();coupler.name='b4:load-coupler-v22';group.add(coupler);
   const addCoupler=(mesh,x,y,z)=>{mesh.position.set(x,y,z);coupler.add(mesh);return mesh;};
   for(const end of [-1,1]){
-   const plate=new THREE.Mesh(new THREE.BoxGeometry(.40,.16,.32),iron);
-   addCoupler(plate,0,.06,end*(L+.14));
-   const shank=new THREE.Mesh(new THREE.BoxGeometry(.18,.18,.38),worn);
-   addCoupler(shank,0,.06,end*(L+.36));
-   const hook=new THREE.Mesh(new THREE.TorusGeometry(.17,.050,9,20,Math.PI*1.75),iron);
-   hook.rotation.x=Math.PI/2;hook.rotation.z=end*.12;
-   addCoupler(hook,0,.08,end*(L+.59));
+   const plate=new THREE.Mesh(new THREE.BoxGeometry(.42,.17,.38),iron);
+   addCoupler(plate,0,.06,end*(L+.10));
+   const shank=new THREE.Mesh(new THREE.BoxGeometry(.20,.18,.40),worn);
+   addCoupler(shank,0,.06,end*(L+.31));
+   if(variant===22){
+     const hook=new THREE.Mesh(new THREE.TorusGeometry(.17,.050,9,20,Math.PI*1.75),iron);
+     hook.rotation.x=Math.PI/2;hook.rotation.z=end*.12;
+     addCoupler(hook,0,.08,end*(L+.59));
+   } else {
+     // Solid U-shaped coupling clevis, mechanically seated on the shank.
+     for(const side of [-1,1]){
+       const jaw=new THREE.Mesh(new THREE.BoxGeometry(.075,.16,.35),iron);
+       addCoupler(jaw,side*.12,.06,end*(L+.56));
+     }
+     const pin=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.38,14),worn);
+     pin.rotation.z=Math.PI/2;addCoupler(pin,0,.08,end*(L+.61));
+   }
   }
   for(const side of [-1,1])for(const z of [-axleZ,axleZ]){
    const gusset=new THREE.Mesh(new THREE.BoxGeometry(.12,.28,.28),iron);
@@ -117,6 +127,21 @@ export function enhanceB4CartPractical(root,variant=20) {
    const cap=new THREE.Mesh(new THREE.CylinderGeometry(.10,.10,.07,16),worn);
    cap.rotation.z=Math.PI/2;cap.position.set(side*1.20,-.1,z);group.add(cap);
   }
+ }
+ // V23: structural lower cross ties and restrained chipped timber repairs.
+ if(variant>=23){
+   for(const side of [-1,1]){
+     // The metal frame visually carries the load into the wheel bearings.
+     for(const z of [-axleZ,axleZ]){
+       beam([side*(lowX-.16),.24,z*.86],[side*.80,-.095,z],.14,.10,iron);
+     }
+     beam([side*(lowX-.14),.19,-axleZ*1.15],[side*(lowX-.14),.19,axleZ*1.15],.085,.085,worn);
+   }
+   // Irregular, localized edge splinters and patched boards only on one face.
+   for(const [x,y,z,length] of [[X+.043,.79,-L*.39,.23],[X+.048,.99,L*.51,.31]]){
+     beam([x,y,z],[x+.018,y+.035,z+length],.025,.035,highlight);
+     beam([x+.023,y+.038,z+.020],[x+.006,y+.043,z+length*.8],.008,.012,woodGrain);
+   }
  }
  // Repairs, splinters and scorch are local and subdued, not generic random pellets.
  for(const side of [-1,1]){
