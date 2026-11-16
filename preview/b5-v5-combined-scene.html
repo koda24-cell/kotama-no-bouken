@@ -2,11 +2,12 @@
 import * as THREE from 'three';
 import {createB5DistantFogBackground} from '../field/b5-distant-fog-background.js';
 import {createB5ArcaneSparks,createB5PathEdgeMist} from '../field/b5-vfx-presets.js';
-const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(1100,620);renderer.setPixelRatio(1);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.35;document.body.appendChild(renderer.domElement);
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(1100,620);renderer.setPixelRatio(1);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.55;document.body.appendChild(renderer.domElement);
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x050514);scene.fog=new THREE.FogExp2(0x10102a,.022);
 const camera=new THREE.PerspectiveCamera(68,1100/620,.05,180);camera.position.set(0,2.0,0);camera.lookAt(0,2.2,-12);
-scene.add(new THREE.HemisphereLight(0x7779d7,0x14132e,1.35));
-const light=new THREE.PointLight(0x9955ee,12,30);light.position.set(0,5,-9);scene.add(light);
+scene.add(new THREE.HemisphereLight(0xa4a0d9,0x35304f,2.05));
+const light=new THREE.PointLight(0xa07ad9,16,35);light.position.set(0,5,-9);scene.add(light);
+const fill=new THREE.PointLight(0x777aa8,10,19);fill.position.set(0,3,-3);scene.add(fill);
 const stone=new THREE.MeshStandardMaterial({color:0x302a42,roughness:.92});
 const trim=new THREE.MeshStandardMaterial({color:0x4a3b60,roughness:.75});
 function box(w,h,d,x,y,z,m=stone){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);scene.add(o);return o;}
