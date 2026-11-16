@@ -62,3 +62,14 @@ developmentの最新状態と `AGENTS.md`、`docs/3d/BLENDER_DOCKER_HANDOFF.md`�
 - PBR参考: [Rock Surface](https://polyhaven.com/a/rock_surface) (CC0, Amal Kumar), [Mossy Stone Wall](https://polyhaven.com/a/mossy_stone_wall) (CC0) と [Rock059](https://ambientcg.com/view?id=Rock059) (CC0)。最後の2つは参考のみ/未取得。
 - 共通ツール台帳は情報のみのPR #436でdevelopmentに登録・統合。正式素材/ゲーム/mainは未変更。
 - 次: Actionsの最新結果・ダウンロード/GLB実検証 → PNG実目視 → ひび割れが写真に頼りすぎず立体形状に合っているか、材質UV反復や石の浮きがないか評価。より大きな破断は既存メッシュを保持した派生ジオメトリに限定。
+
+## 2026-11-16 表面/支持構造レビュー — VTK新規12枚（GPT）
+- ユーザー依頼: 旧石造アーチを保持しつつレンダリングを反復。写真PBR、風化、欠損と支持構造を品質評価。
+- この実行環境にはBlender実行バイナリなし。Poly Haven公式CDNのDNSアクセスに失敗。したがって**写真PBRの新規適用成功とBlender実レンダリング成功はいずれも未確認**。
+- このチャット内のレビュー源: `b2_team_review_12renders.zip` の既存 `b2_ruined_arch_variant_2_review.glb` (89メッシュ、1068三角面) をロード。scene graphのtransformを適用して既存の配置を保持。
+- 第1試作: VTKで石材三角面を細分化 (17,088面)、多重3Dノイズで砂岩の色ムラ、足元湿潤/薄い緑の付着、微小な法線方向凹凸を表現。乾燥版と湿潤版の各正面/側面/斜めで計6枚。
+- 第2試作: オリジナルの89メッシュを削除せず、不整形のブロック7個を追加した96メッシュ候補GLBを別出力。これも乾燥/湿潤×3方向で計6枚(合計新規12枚)。
+- 画像確認結果: 湿潤版は第2層の冷たい水源らしい色味だが、写真PBRの実質感ほどのディテールはない。補助石によりアーチの浮きは減ったが、支持部の補助パーツが球状・後付けに見える。次は**迫石を角張った欠損形状として追加**し、石の荷重・接地・継ぎ目をよりリアルにする。
+- 中間データ: 当該チャットの `/mnt/data/b2_stone_arch_surface_and_structure_review_20261116.zip` に実画像12枚、比較画像2枚、GLB、レンダーコード、hash付manifestをまとめた。GitHub正式素材ではなくローカル一時レビュー保存。
+- 非承認状況: `NOT_APPROVED`。Blender Actions新規run/3方向PNGとGLBの写真PBR埋め込みを実検証できていないため、正式素材には昇格しない。
+- 現行のBlender写真PBR対応制作ソースはPR #401、ツール情報はdevelopmentマージ済PR #436を参照。
