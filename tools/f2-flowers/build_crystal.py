@@ -63,13 +63,13 @@ def build_materials():
     mats[ROCK] = vc(C.mat_basic("crystal_rock", lin("#2B3440"), rough=0.8, spec=0.4))
     mats[STEM] = vc(C.mat_leaf("crystal_stem_leaf", lin("#3F6B6A"), rough=0.42, sss=0.12, coat=0.3))
     mats[CALYX] = C.mat_leaf("crystal_calyx", lin("#1B2A4A"), rough=0.3, sss=0.05, coat=0.5)
-    mats[MILKY] = vc(C.mat_ice("crystal_ice_milky", lin("#EEF7FF"), rough=0.28, trans=0.35,
-                               emit=lin("#BDEFFF"), emit_strength=0.9))
-    mats[MID] = vc(C.mat_ice("crystal_ice_mid", lin("#D6EEFF"), rough=0.12, trans=0.7,
-                             emit=lin("#8FE6FF"), emit_strength=0.3))
-    mats[CLEAR] = vc(C.mat_ice("crystal_ice_clear", lin("#A8DBFF"), rough=0.04, trans=0.92,
-                               emit=lin("#7FE3FF"), emit_strength=0.08))
-    mats[GLOW] = C.mat_emissive("crystal_core_glow", lin("#7FE3FF"), strength=5.0, base=lin("#C4F4FF"))
+    mats[MILKY] = vc(C.mat_ice("crystal_ice_milky", lin("#E4F2FF"), rough=0.3, trans=0.45,
+                               emit=lin("#A6EAFF"), emit_strength=0.45))
+    mats[MID] = vc(C.mat_ice("crystal_ice_mid", lin("#C8E8FF"), rough=0.1, trans=0.82,
+                             emit=lin("#7FE3FF"), emit_strength=0.12))
+    mats[CLEAR] = vc(C.mat_ice("crystal_ice_clear", lin("#A8DBFF"), rough=0.03, trans=0.95,
+                               emit=lin("#7FE3FF"), emit_strength=0.04))
+    mats[GLOW] = C.mat_emissive("crystal_core_glow", lin("#7FE3FF"), strength=4.0, base=lin("#2A7FA0"))
     mats[FROST] = C.mat_ice("crystal_frost", lin("#EAF6FF"), rough=0.3, trans=0.25,
                             emit=lin("#CFF4FF"), emit_strength=0.6)
     mats[RICE] = C.mat_ice("crystal_rock_ice", lin("#B8E2FF"), rough=0.05, trans=0.88,
@@ -131,8 +131,8 @@ def lance(u, peak=0.35, base=0.28):
     return (1 - t) ** 1.1 * (1 + 0.18 * math.sin(math.pi * t))
 
 
-def add_petal(mb, M, L, W, T, rnd, curl=0.0, nseg=7, mats=(MILKY, MID, CLEAR), tiers=(0.26, 0.56),
-              base_col=srgb("#F2F8FF"), tip_col=srgb("#A8DBFF"), edge_col=srgb("#FFFFFF"),
+def add_petal(mb, M, L, W, T, rnd, curl=0.0, nseg=7, mats=(MILKY, MID, CLEAR), tiers=(0.2, 0.5),
+              base_col=srgb("#EAF5FF"), tip_col=srgb("#A8DBFF"), edge_col=srgb("#FFFFFF"),
               jitter=0.12, smooth=False):
     rings = []
     edges = []
@@ -258,12 +258,12 @@ def build_rock(mb, rnd):
     tmp = bmesh.new()
     bmesh.ops.create_icosphere(tmp, subdivisions=4, radius=1.0)
     rr = random.Random(5)
-    planes = [(Vector((0, 0, 1)), 0.62)]
-    for i in range(12):
-        az = 2 * math.pi * i / 12 + rr.uniform(-0.25, 0.25)
-        el = rr.uniform(-0.2, 0.9)
+    planes = [(Vector((0, 0, 1)), 0.6), (Vector((0.2, -0.1, 1)).normalized(), 0.62)]
+    for i in range(16):
+        az = 2 * math.pi * i / 16 + rr.uniform(-0.18, 0.18)
+        el = rr.uniform(-0.15, 1.0)
         planes.append((Vector((math.cos(el) * math.cos(az), math.cos(el) * math.sin(az), math.sin(el))),
-                       rr.uniform(0.74, 0.92)))
+                       rr.uniform(0.66, 0.84)))
     crack = {}
     for v in tmp.verts:
         d = v.co.normalized()
@@ -273,7 +273,7 @@ def build_rock(mb, rnd):
             if k > 1e-3:
                 r = min(r, dist / k)
         p = d * r
-        p += Vector(noise.noise_vector(p * 2.6)) * 0.05 + Vector(noise.noise_vector(p * 7.0 + Vector((3, 1, 2)))) * 0.015
+        p += Vector(noise.noise_vector(p * 2.2)) * 0.03 + Vector(noise.noise_vector(p * 9.0 + Vector((3, 1, 2)))) * 0.008
         x, y, z = p.x * 0.125, p.y * 0.09, p.z * 0.07 + 0.028
         z = max(z, 0.0)
         c = 0.0
@@ -290,9 +290,9 @@ def build_rock(mb, rnd):
     for v in tmp.verts:
         nz = v.normal.z
         n1 = noise.noise(v.co * 60.0)
-        col = mix(srgb("#2B3440"), srgb("#3A4656"), 0.5 + 0.5 * n1)
-        col = mix(col, srgb("#8FA8BF"), smooth01(nz, 0.45, 0.92) * 0.55 * (0.6 + 0.4 * noise.noise(v.co * 25.0 + Vector((5, 5, 5)))))
-        col = mix(col, srgb("#10151C"), crack[v] * 1.2)
+        col = mix(srgb("#1E252F"), srgb("#2F3A48"), 0.5 + 0.5 * n1)
+        col = mix(col, srgb("#6F88A0"), smooth01(nz, 0.6, 0.95) * 0.4 * max(0.0, 0.5 + noise.noise(v.co * 25.0 + Vector((5, 5, 5)))))
+        col = mix(col, srgb("#0B0F15"), crack[v] * 1.3)
         if v.co.z < 0.004:
             col = mix(col, srgb("#151A21"), 0.7)
         vmap[v] = mb.v(v.co.copy(), col)
@@ -317,9 +317,13 @@ def rock_ice(mb, tops, rnd):
             q = p + Vector((rnd.uniform(-0.008, 0.008), rnd.uniform(-0.008, 0.008), 0)) - n * 0.004
             L = rnd.uniform(0.016, 0.042) * (1.0 if j else 1.25)
             add_prism(mb, q, d, L, L * rnd.uniform(0.13, 0.18), RICE, srgb("#FFFFFF"), rnd)
-    for _ in range(55):
-        p, n = rnd.choice(tops)
-        add_frost(mb, p, n + Vector((0, 0, 0.5)), rnd.uniform(0.0025, 0.0045), rnd)
+    hi = sorted(tops, key=lambda t: -t[0].z)[:max(8, len(tops) // 3)]
+    for _ in range(7):
+        p0, n0 = rnd.choice(hi)
+        near = [t for t in tops if (t[0] - p0).length < 0.014]
+        for _ in range(8):
+            p, n = rnd.choice(near)
+            add_frost(mb, p, n + Vector((0, 0, 0.6)), rnd.uniform(0.002, 0.0045), rnd)
 
 
 # ---------------------------------------------------------------------------
@@ -445,7 +449,7 @@ def build_stem(mb, base, H, radius):
 def build_leaf(mb, base, direction, L, W, rnd, frost_n=14):
     """槍形の葉: 断面6角（中肋の稜＋下の竜骨）、縁を頂点色と霜で白く"""
     xs = (-1.0, -0.72, 0.0, 0.72, 1.0, 0.0)
-    T = 0.0016
+    T = 0.0021
     zs = (0.0, 0.32, 0.12, 0.32, 0.0, -0.7)
     M = to4(frame(Vector(direction)) @ Matrix.Rotation(rnd.uniform(-0.3, 0.3), 3, "Y"), Vector(base))
     nseg = 10
@@ -453,19 +457,21 @@ def build_leaf(mb, base, direction, L, W, rnd, frost_n=14):
     for i in range(nseg):
         u = i / nseg
         w = W * lance(u, peak=0.32, base=0.22)
-        zc = -0.32 * u * u * L
+        zc = -0.22 * u * u * L
         ring = []
         for k in range(6):
-            col = srgb("#3F6B6A") if k not in (0, 4) else srgb("#E2EEF4")
+            col = srgb("#33595A") if k not in (0, 4) else srgb("#E8F2F8")
             if k == 2:
-                col = srgb("#5C8C88")
+                col = srgb("#5A8C88")
+            if k == 5:
+                col = srgb("#2A4A4C")
             ring.append(mb.v(M @ Vector((xs[k] * w, u * L, zc + zs[k] * T)), col))
         rings.append(ring)
         if i > 1:
             R3 = M.to_3x3()
             edges.append((ring[0].co.copy(), (R3 @ Vector((-1, 0, 0.5))).normalized()))
             edges.append((ring[4].co.copy(), (R3 @ Vector((1, 0, 0.5))).normalized()))
-    tip = mb.v(M @ Vector((0, L, -0.32 * L)), srgb("#E2EEF4"))
+    tip = mb.v(M @ Vector((0, L, -0.22 * L)), srgb("#E2EEF4"))
     for i in range(nseg - 1):
         for k in range(6):
             mb.f((rings[i][k], rings[i][(k + 1) % 6], rings[i + 1][(k + 1) % 6], rings[i + 1][k]), STEM, True)
@@ -492,23 +498,23 @@ def main():
 
     heads = [
         # (base, pos, axis, D)
-        (cb(-0.010), (-0.014, 0.004, 0.200), (-0.15, -0.45, 1.0), 0.090),
-        (cb(0.018), (0.052, -0.012, 0.148), (0.45, -0.40, 1.0), 0.070),
-        (cb(-0.030), (-0.066, -0.028, 0.112), (-0.50, -0.45, 1.0), 0.050),
+        (cb(-0.010), (-0.012, 0.006, 0.172), (-0.15, -0.45, 1.0), 0.090),
+        (cb(0.018), (0.054, -0.014, 0.134), (0.45, -0.40, 1.0), 0.070),
+        (cb(-0.030), (-0.068, -0.030, 0.104), (-0.50, -0.45, 1.0), 0.050),
     ]
     for base, pos, axis, D in heads:
         H = head_matrix(pos, axis, rnd.uniform(0, 6.28))
-        build_stem(mb, base, H, 0.0026 * (D / 0.09) ** 0.5)
+        build_stem(mb, base, H, 0.0034 * (D / 0.09) ** 0.5)
         build_flower(mb, H, D, rnd)
-    Hb = head_matrix((0.016, 0.034, 0.168), (0.18, 0.25, 1.0), 0.4)
-    build_stem(mb, cb(0.004), Hb, 0.0019)
+    Hb = head_matrix((0.018, 0.036, 0.150), (0.18, 0.25, 1.0), 0.4)
+    build_stem(mb, cb(0.004), Hb, 0.0025)
     build_bud(mb, Hb, rnd)
 
     leaves = [
-        (cb(-0.022, 0.046), (-0.55, -0.55, 0.62), 0.078, 0.0085),
-        (cb(0.010, 0.046), (0.65, -0.35, 0.66), 0.070, 0.0080),
-        (cb(-0.004, 0.046), (0.05, 0.75, 0.62), 0.064, 0.0075),
-        (cb(0.030, 0.046), (0.55, 0.45, 0.55), 0.056, 0.0070),
+        (cb(-0.022, 0.050), (-0.5, -0.45, 0.85), 0.090, 0.0120),
+        (cb(0.010, 0.050), (0.55, -0.35, 0.85), 0.082, 0.0115),
+        (cb(-0.006, 0.050), (-0.15, 0.6, 0.85), 0.076, 0.0110),
+        (cb(0.032, 0.050), (0.55, 0.4, 0.8), 0.066, 0.0100),
     ]
     for base, d, L, W in leaves:
         build_leaf(mb, base, d, L, W, rnd)
