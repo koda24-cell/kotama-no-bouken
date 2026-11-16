@@ -7666,6 +7666,19 @@
       "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
       "sceneSourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
       "camera": "camera_entry"
+    },
+    "courtyard": {
+      "file": "renders/scene/courtyard.png",
+      "sha256": "a24304569ffacdde23a2903d13442857992392f21cd1d538ad3a02dcf51d9a07",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "renderer": "Cycles CPU",
+      "geometrySource": "reimported individual GLBs",
+      "blenderVersion": "5.3.0",
+      "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
+      "sceneSourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
+      "camera": "camera_courtyard"
     }
   },
   "optionalSceneGLB": {
