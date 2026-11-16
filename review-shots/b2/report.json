@@ -338,7 +338,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "chest:2-0:5:5",
+      "near": "gather:2-0:17:7",
       "floor": 0,
       "area": 2
     },
@@ -362,7 +362,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "",
+      "near": "save:2-1:13:7",
       "floor": 1,
       "area": 2
     },
@@ -374,7 +374,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "save:2-1:13:7",
+      "near": "switch:2:a2-stone-west",
       "floor": 1,
       "area": 2
     },
@@ -386,7 +386,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "switch:2:a2-stone-west",
+      "near": "switch:2:a2-stone-east",
       "floor": 1,
       "area": 2
     },
@@ -398,7 +398,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "switch:2:a2-stone-east",
+      "near": "npc:2:a2-plaque",
       "floor": 1,
       "area": 2
     },
@@ -410,7 +410,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "npc:2:a2-plaque",
+      "near": "door:2:a2-gate",
       "floor": 1,
       "area": 2
     },
@@ -422,7 +422,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "door:2:a2-gate",
+      "near": "cache:2:a2-cache",
       "floor": 1,
       "area": 2
     },
