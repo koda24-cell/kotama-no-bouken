@@ -29,6 +29,42 @@ def material(name,color):
  bump=m.node_tree.nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=.35;bump.inputs["Distance"].default_value=.05
  m.node_tree.links.new(noise.outputs["Fac"],bump.inputs["Height"]);m.node_tree.links.new(bump.outputs["Normal"],p.inputs["Normal"])
  return m
+def override_with_photo_pbr(materials):
+ """Use true photographed PBR maps in the actual Blender shader AND GLB."""
+ from pathlib import Path
+ root=Path(OUT)/"photo_pbr"
+ manifest_path=root/"source_manifest.json"
+ if not manifest_path.exists():
+  print("PHOTO_PBR_MISSING: keeping procedural fallback; NOT photo textured")
+  if os.getenv("B2_REQUIRE_PHOTO_PBR")=="1":
+   raise RuntimeError("Required photographic PBR files missing")
+  return []
+ data=json.loads(manifest_path.read_text())
+ imgs={}
+ for kind in ("diff","nor_gl","rough"):
+  info=data["maps"][kind]
+  fpath=os.path.abspath(info["file"])
+  with open(fpath,"rb") as fh:
+   if hashlib.sha256(fh.read()).hexdigest()!=info["sha256"]:
+    raise RuntimeError("PBR hash mismatch: "+kind)
+  imgs[kind]=bpy.data.images.load(fpath,check_existing=True)
+  if kind!="diff":imgs[kind].colorspace_settings.name="Non-Color"
+ for idx,mat in enumerate(materials):
+  nodes=mat.node_tree.nodes;links=mat.node_tree.links
+  principled=nodes.get("Principled BSDF")
+  # Keep a shader-only darkening variation for aged joints, but preserve
+  # the downloaded photograph itself unchanged and exported with GLB.
+  diff=nodes.new("ShaderNodeTexImage");diff.image=imgs["diff"]
+  links.new(diff.outputs["Color"],principled.inputs["Base Color"])
+  rough=nodes.new("ShaderNodeTexImage");rough.image=imgs["rough"]
+  links.new(rough.outputs["Color"],principled.inputs["Roughness"])
+  normtex=nodes.new("ShaderNodeTexImage");normtex.image=imgs["nor_gl"]
+  nm=nodes.new("ShaderNodeNormalMap");nm.inputs["Strength"].default_value=.82
+  links.new(normtex.outputs["Color"],nm.inputs["Color"])
+  links.new(nm.outputs["Normal"],principled.inputs["Normal"])
+ print("PHOTO_PBR_APPLIED",data["asset"],len(materials),"materials",flush=True)
+ return [str(root/"source_manifest.json")]+[v["file"] for v in data["maps"].values()]
+
 def planar_uv(mesh):
  # Explicit per-face planar UVs, rather than relying on Blender-only Generated
  # coordinates that would disappear from GLB exports.
@@ -42,6 +78,7 @@ def planar_uv(mesh):
    uv.data[loopidx].uv=(v[axes[0]]/1.05+.5,v[axes[1]]/1.05+.5)
 
 mats=[material("weathered gray sandstone",(.36,.33,.28)),material("dark weathered joints",(.25,.24,.22)),material("warm aged stone",(.45,.39,.30)),material("pale worn face",(.50,.47,.40))]
+photo_pbr_files=override_with_photo_pbr(mats)
 def stone(name,center,size,mat,rotation=None):
  dx,dy,dz=size;verts=[]
  for z in [-1,1]:
@@ -213,6 +250,7 @@ bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT,"ruined_stone_arch_v1.blen
 # Validate saved outputs and record file hashes for Claude/browser handoff.
 texture_files=[m.name.replace(" ","_")+"_albedo.png" for m in mats]
 files=["ruined_stone_arch_v1.glb","ruined_stone_arch_v1.blend"]+["ruined_stone_arch_v1_"+x+".png" for x in ("front","side","angle")]+texture_files
+files.extend([os.path.relpath(p,OUT) for p in photo_pbr_files])
 checksums={}
 for file in files:
  path=os.path.join(OUT,file)
@@ -223,7 +261,7 @@ for file in files:
  checksums[file]=hashlib.sha256(payload).hexdigest()
 manifest={"name":"ruined_stone_arch_v1","status":"NOT_APPROVED","files":files,"sha256":checksums,
  "mesh_count":len([o for o in bpy.data.objects if o.type=="MESH" and not o.name.startswith("preview_")]),
- "textures":texture_files,"material_status":"procedural_base_color_only_normal_bump_not_baked",
+ "textures":texture_files,"photo_pbr":bool(photo_pbr_files),"material_status":("photographic_basecolor_normal_roughness" if photo_pbr_files else "procedural_base_color_only_normal_bump_not_baked"),
  "source":"tools/b2-render/build-ruined-stone-arch-v1.py","notes":"Old V1 arch silhouette retained; dramatic chipped buttresses/large grounded rubble, UV and embedded procedural albedo. Blender three-view visual QA pending."}
 with open(os.path.join(OUT,"manifest.json"),"w") as f:json.dump(manifest,f,indent=2)
 print("OUTPUT_VALIDATED",len(files),"files",flush=True)
