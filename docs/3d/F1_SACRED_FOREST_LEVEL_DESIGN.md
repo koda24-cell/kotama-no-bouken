@@ -174,3 +174,9 @@ blocked island・外周ポケットの根元には、同じ既存土床GLBから
 追加した全instanceは実GLBの祖先変換込みtriangle-AABBを、全歩行セル/辺の幅2m×高さ3mの既存sweepへ照合する。地面の選択ノードも同じ検査に含め、衝突配置はJSONの省略配列へ理由付きで残す。床・固定object identity7点・FOE・source runtime fingerprint・17GLB hash・水マスの一致を改めて確認する。
 
 全マップとzone別に、instance数・杉本数・triangle量・material primitive由来の概算draw call・unique source容量を記録し、独立viewerにも確認欄を設ける。これは全域を同時表示する場合のコスト見積であり、culling/LODや実機FPSの承認ではない。実Three.jsでsource pin・soil選択・UV/法線・2×2高さ・表示切替・エラー0を再確認する。
+
+### 密度追補の実行結果
+
+生成source checkpoint `1991a91` から実候補を再生成。杉25本・小物129点・非歩行soil支持床177枚が判定を通過し、計8件（従来の2件を含む）を省略した。新しい植生を縮小して合格させる修正は行っていない。全域のtriangle/material primitive概算3,911,334/2,092は、独立Three.jsでロードした全instanceの集計と一致した。元の274床、water、fixed object identity、FOE、map/save関連sourceは不変。
+
+[実ブラウザQAと制約](../reviews/f1-sacred-forest-game-layout/README.md)に、SHA照合・soil抽出・祖先変換・2×2床・9種の拒否動作・実画面を保存。俯瞰での針葉minification、実機FPS、ゲーム本体の回帰・統合は未承認のまま。
