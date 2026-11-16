@@ -239,9 +239,10 @@ export function createCitySurfaces(THREE, high) {
           float hFar=skyline(az,180.,11.,.018,.075), hNear=skyline(az,64.,37.,.035,.16);
           if(y<hFar) c=mix(far,horizon,smoothstep(-.05,hFar,y)*.35);
           if(y<hNear) c=mix(near,far,smoothstep(-.06,hNear,y)*.45);
-          if(y<hNear){float wx=fract(az*640.),wy=fract(y*90.);
-            c*=1.-.18*step(.55,wx)*step(.5,wy)*step(.35,h1(floor(az*640.)+floor(y*90.)*7.));}  // gutted window rows
-          if(y<0.) c=mix(near*.75,mix(near,horizon,.3),smoothstep(-.35,0.,y));
+          if(y<hNear&&y>.01&&y<hNear-.008){float wx=fract(az*420.),wy=fract(y*55.);
+            c*=1.-.1*step(.6,wx)*step(.55,wy)*step(.62,h1(floor(az*420.)+floor(y*55.)*7.));}  // a few gutted windows
+          // Below the horizon the distant city continues as one dark hazy mass, not an empty plain.
+          if(y<0.) c=near*mix(1.,.72,smoothstep(0.,-.2,y));
           gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
