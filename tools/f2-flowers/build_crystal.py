@@ -69,7 +69,7 @@ def build_materials():
                              emit=lin("#7FE3FF"), emit_strength=0.12))
     mats[CLEAR] = vc(C.mat_ice("crystal_ice_clear", lin("#A8DBFF"), rough=0.03, trans=0.95,
                                emit=lin("#7FE3FF"), emit_strength=0.04))
-    mats[GLOW] = C.mat_emissive("crystal_core_glow", lin("#7FE3FF"), strength=4.0, base=lin("#2A7FA0"))
+    mats[GLOW] = C.mat_emissive("crystal_core_glow", lin("#7FE3FF"), strength=5.0, base=lin("#1E6E92"))
     mats[FROST] = C.mat_ice("crystal_frost", lin("#EAF6FF"), rough=0.3, trans=0.25,
                             emit=lin("#CFF4FF"), emit_strength=0.6)
     mats[RICE] = C.mat_ice("crystal_rock_ice", lin("#B8E2FF"), rough=0.05, trans=0.88,
@@ -132,7 +132,7 @@ def lance(u, peak=0.35, base=0.28):
 
 
 def add_petal(mb, M, L, W, T, rnd, curl=0.0, nseg=7, mats=(MILKY, MID, CLEAR), tiers=(0.2, 0.5),
-              base_col=srgb("#EAF5FF"), tip_col=srgb("#A8DBFF"), edge_col=srgb("#FFFFFF"),
+              base_col=srgb("#DCEEFF"), tip_col=srgb("#A8DBFF"), edge_col=srgb("#FFFFFF"),
               jitter=0.12, smooth=False):
     rings = []
     edges = []
@@ -333,7 +333,8 @@ def rock_ice(mb, tops, rims, rnd):
     for az_deg in (205, 335, 75):
         az = math.radians(az_deg)
         want = Vector((math.cos(az), math.sin(az), 0))
-        best = max(tops, key=lambda t: Vector((t[0].x, t[0].y, 0)).normalized().dot(want) + 0.3 * t[1].z)
+        cand = [t for t in rims if t[0].z > 0.035] or tops
+        best = max(cand, key=lambda t: Vector((t[0].x, t[0].y, 0)).normalized().dot(want) + 8.0 * t[0].z)
         p, n = best
         k = rnd.randint(3, 5)
         for j in range(k):
@@ -416,7 +417,7 @@ def build_flower(mb, H, D, rnd, frost_n=5):
         p = H @ Vector((math.cos(phi) * rr, math.sin(phi) * rr, 0.0015 * s))
         dw = (H.to_3x3() @ d).normalized()
         tip = add_prism(mb, p, dw, rnd.uniform(0.0075, 0.011) * s, 0.00055 * s, GLOW, srgb("#C4F4FF"), rnd, sides=5)
-        add_octa(mb, tip, 0.0010 * s, GLOW, srgb("#C4F4FF"))
+        add_octa(mb, tip, 0.0013 * s, GLOW, srgb("#C4F4FF"))
     add_prism(mb, H @ Vector((0, 0, 0.001 * s)), (H.to_3x3() @ Vector((0, 0, 1))).normalized(),
               0.0065 * s, 0.0016 * s, GLOW, srgb("#C4F4FF"), rnd, sides=6, shoulder=0.55)
 
