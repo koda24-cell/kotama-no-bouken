@@ -261,6 +261,6 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
     verifyArea(layout, area); // A stale native floor never receives a partially built trial.
     world.add(root);
     return { root, env: { background: 0x9eafa3, fog: { color: 0x8fa096, density: .009 },
-      hemi: { sky: 0xc0d2bb, ground: 0x3d4432, high: 1.0, low: 1.2 } }, far: 96, info, dispose };
+      hemi: { sky: 0xc0d2bb, ground: 0x3d4432, high: 1.0, low: 1.2 } }, far: 96, info: () => ({ ...info }), dispose };
   } catch (error) { dispose(); throw error; }
 }
