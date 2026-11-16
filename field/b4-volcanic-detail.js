@@ -65,8 +65,14 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
   }
   // Lavafalls: thin molten sheets spilling down rock faces into adjacent lava pools.
   // Placed on the solid-cell boundary (<=0.5m into the lava cell), far outside the camera lane.
-  const fallGeo=new THREE.PlaneGeometry(1,1,1,10);
-  {const q=fallGeo.getAttribute('position');for(let i=0;i<q.count;i++){const yy=q.getY(i)+.5;q.setZ(i,Math.pow(1-yy,2)*.35+Math.sin(yy*9)*.03);}fallGeo.computeVertexNormals();}
+  // Tapered, ragged-edged sheet: narrow at the spill lip, fanning out and bulging at the foot.
+  const fallGeo=new THREE.PlaneGeometry(1,1,6,16);
+  {const q=fallGeo.getAttribute('position');for(let i=0;i<q.count;i++){
+    const x=q.getX(i),yy=q.getY(i)+.5,edge=Math.abs(x*2);
+    const w=.42+.58*Math.pow(1-yy,.8);
+    q.setX(i,x*w+Math.sin(yy*13+x*5)*.07*edge+Math.sin(yy*5.3)*.05);
+    q.setZ(i,Math.pow(1-yy,2.2)*.38+Math.sin(yy*9+x*4)*.035-edge*.05);
+  }fallGeo.computeVertexNormals();}
   let falls=0;
   for(let y=1;y<map.h-1 && falls<6;y++)for(let x=1;x<map.w-1 && falls<6;x++){
     if(!['*','~'].includes(ch(x,y)) || hash(x,y,970)>.5)continue;
@@ -77,14 +83,14 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
       used.add(wallKey);
       const H=map.f===2?7.7:3.95;
       const face=new THREE.Group();face.name='b4:lavafall';face.position.set(x*CELL+dx*2,0,y*CELL+dz*2);face.rotation.y=Math.atan2(-dx,-dz);group.add(face);
-      const main=put(face,fallGeo,surfaces.lava,(hash(x,y,971)-.5)*.8,H*.5,.42,.95+hash(x,y,972)*.4,H,1);
+      const main=put(face,fallGeo,surfaces.lava,(hash(x,y,971)-.5)*.8,H*.5,.42,.8+hash(x,y,972)*.35,H,1);
       main.name='b4:lavafall-sheet';
-      put(face,fallGeo,surfaces.lava,main.position.x+(hash(x,y,973)>.5?.85:-.85),H*.42,.40,.32,H*.84,1);
+      put(face,fallGeo,surfaces.lava,main.position.x+(hash(x,y,973)>.5?.72:-.72),H*.36,.40,.26,H*.72,1);
       // Dark lip at the spill point and a cooled splash apron at the base.
       put(face,rock,surfaces.basaltPlain,main.position.x,H+.02,.32,.9,.22,.4);
       for(let i=0;i<4;i++)put(face,rock,surfaces.basaltPlain,main.position.x+(i-1.5)*.55,.03,.55+hash(x+i,y,974)*.3,.24+hash(x,y+i,975)*.16,.1,.22,(i-1.5)*.2);
       lavaFalls.push({x,y});
-      lavaLights.push({world:new THREE.Vector3(x*CELL+dx*1.3,1.1,y*CELL+dz*1.3),color:0xff7a2a,intensity:5.4,range:7,off:false,fall:true});
+      lavaLights.push({world:new THREE.Vector3(x*CELL+dx*1.3,1.1,y*CELL+dz*1.3),color:0xff7a2a,intensity:3.6,range:6.5,off:false,fall:true});
       falls++;break;
     }
   }
