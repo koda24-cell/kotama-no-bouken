@@ -211,7 +211,8 @@ for name,loc in [('front',(0,-8,4)),('side',(8,0,3.5)),('angle',(6,-8,5.5))]:
  scene.render.filepath=os.path.join(OUT,"ruined_stone_arch_v1_"+name+".png");bpy.ops.render.render(write_still=True)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT,"ruined_stone_arch_v1.blend"))
 # Validate saved outputs and record file hashes for Claude/browser handoff.
-files=["ruined_stone_arch_v1.glb","ruined_stone_arch_v1.blend"]+["ruined_stone_arch_v1_"+x+".png" for x in ("front","side","angle")]
+texture_files=[m.name.replace(" ","_")+"_albedo.png" for m in mats]
+files=["ruined_stone_arch_v1.glb","ruined_stone_arch_v1.blend"]+["ruined_stone_arch_v1_"+x+".png" for x in ("front","side","angle")]+texture_files
 checksums={}
 for file in files:
  path=os.path.join(OUT,file)
@@ -222,6 +223,7 @@ for file in files:
  checksums[file]=hashlib.sha256(payload).hexdigest()
 manifest={"name":"ruined_stone_arch_v1","status":"NOT_APPROVED","files":files,"sha256":checksums,
  "mesh_count":len([o for o in bpy.data.objects if o.type=="MESH" and not o.name.startswith("preview_")]),
+ "textures":texture_files,"material_status":"procedural_base_color_only_normal_bump_not_baked",
  "source":"tools/b2-render/build-ruined-stone-arch-v1.py","notes":"Old V1 arch silhouette retained; dramatic chipped buttresses/large grounded rubble, UV and embedded procedural albedo. Blender three-view visual QA pending."}
 with open(os.path.join(OUT,"manifest.json"),"w") as f:json.dump(manifest,f,indent=2)
 print("OUTPUT_VALIDATED",len(files),"files",flush=True)
