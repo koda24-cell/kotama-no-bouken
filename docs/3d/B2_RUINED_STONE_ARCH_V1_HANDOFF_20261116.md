@@ -52,3 +52,13 @@ developmentの最新状態と `AGENTS.md`、`docs/3d/BLENDER_DOCKER_HANDOFF.md`�
 - **今回の実画像はBlenderではなくVTK出力**。古いGLB+参考追加ジオメトリであり、GitHubの現行Blender Python V2スクリプトと同一形状であるという保証はない。
 - GitHub Actionsの現行V2 Blender3方向PNGは、このセッションでは取得/成功検証できていない。美観判定、Three.js表示、正式保存・ユーザー承認は全て未完了。
 - 次の優先事項: V2ソースのBlenderレンダリング（PR #401）を成功させ、実PNGを出す。支持形状が不自然な石を先に修正してから、CC0石材PBR/BaseColor/Normal/Roughnessを採用検証。破断・浮石・タイル接続を正面/側面/斜めで評価する。
+
+## 2026-11-16 23:35 JST — ローポリ感・ひび割れ・写真PBRの改修
+- ユーザー指摘: ポリゴン面と三角形陰影が目立つため、写真素材の貼り付けやひび割れの表現を品質優先で改善。
+- 今回の新規取得コード: `tools/b2-render/fetch-stone-photo-pbr.py`。Poly Haven [Rock Surface](https://polyhaven.com/a/rock_surface) の実写真PBRを公式APIから1k JPG/PNGのBaseColor/Diffuse、Normal GL、Roughnessで取得し署名/SHA256を確認する設計。
+- Blenderソースはダウンロードした画像をPrincipled BSDFへ接続し、写真素材をGLBテクスチャとして書き出す処理を追加。既存74メッシュを含む旧石材形状は保存。元モデルの面について非破壊的な細分化（4分割）と軽微な面変位、Bevel幅/セグメント増を追加して平坦な面を抑える。
+- Actionsの写真取得を必須化。未取得時に生成テクスチャで偽装せずに失敗で停止。GLB内JSONで画像、BaseColor、Normal、Roughnessテクスチャ参照も検査。新規写真素材の出典・SHA256をsource_manifestに保存するコード。
+- **実行状態:** 設計とコード更新はGitHub PR #401へ保存。コンテナから素材サイトのDNS接続失敗を確認。現行Actions実run・PNG・GLB埋め込み材質検証は未確認。今回新たに成功した3方向Blender画像はない。写真適用成功とは報告しない。
+- PBR参考: [Rock Surface](https://polyhaven.com/a/rock_surface) (CC0, Amal Kumar), [Mossy Stone Wall](https://polyhaven.com/a/mossy_stone_wall) (CC0) と [Rock059](https://ambientcg.com/view?id=Rock059) (CC0)。最後の2つは参考のみ/未取得。
+- 共通ツール台帳は情報のみのPR #436でdevelopmentに登録・統合。正式素材/ゲーム/mainは未変更。
+- 次: Actionsの最新結果・ダウンロード/GLB実検証 → PNG実目視 → ひび割れが写真に頼りすぎず立体形状に合っているか、材質UV反復や石の浮きがないか評価。より大きな破断は既存メッシュを保持した派生ジオメトリに限定。
