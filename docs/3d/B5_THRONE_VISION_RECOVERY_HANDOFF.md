@@ -24,3 +24,11 @@
 
 ## 状態
 **コード実装済み。新規checkpoint再開テストと視覚AI通信/評価結果は未検証**（実証後追記）。V2旧版の実レンダ成功とは切り分ける。
+
+
+## 実際に確認できた結果（2026-11-16 JST）
+- **成功:** run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43794461689 で異なるGitHub Actionsジョブ間の Artifact 移送を確認。first-passで1反復、resume-passで反復2まで実行。ログに `Checkpoint resume independently verified: awaiting_user_approval 2` を確認。
+- 実Artifact `b5-throne-resume-test-output` ID **14194266215** をダウンロード、ZIP内に `iteration_01/` と `iteration_02/` の各3方向PNG・GLB・Blend・geometry.json・blender.log、およびprogress.json、summary.jsonを確認。
+- JSON記録: 最初の技術評価4.5753、再開後4.8036。V1構成要素38種類が名前で残り、mesh数149→156、反復番号1→2、status `awaiting_user_approval`、approval `NOT_APPROVED`。
+- **成功:** no-network安全テスト run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43794997803 の first-pass で `Ran 4 tests ... OK`。視覚APIが初期OFF時に呼び出されないこと、未設定時の非呼び出し、架空レスポンスの修正幅制限、平文HTTP拒否を確認。これは**実視覚AIの画像評価成功ではない**。
+- 未確認: 強制終了時の自動再投入/データ保証、外部推論サービスへの実通信、視覚AIが美術的に適切な修正を提案できるか、最終品質。追加runの最新ジョブ全体の成否は随時確認する。
