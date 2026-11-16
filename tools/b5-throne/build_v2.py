@@ -128,6 +128,40 @@ if arch_strength > 0:
             if previous is not None:
                 band(f"V2 feedback curved arch {sign} {j}",previous,point,.024,edge)
             previous=point
+# Permanent additive structural improvements; all V1 meshes retained.
+cube("V2 load bearing seat pedestal", (0, .04, .40), (1.22, .92, .25), stone, .045)
+cube("V2 deep rear stone backing", (0, .62, 1.91), (1.49, .23, 2.42), stone, .045)
+# Broad segmented pointed arch overlapping original straight beams.
+for sign in (-1, 1):
+    previous = None
+    for j in range(13):
+        t = j / 12
+        point = (sign * (.96 * (1-t) + .15 * math.sin(math.pi*t)), .32,
+                 3.02 + .98*t + .07*math.sin(math.pi*t))
+        if previous is not None:
+            ob = beam(f"V2 structural curved arch {sign} {j}", previous, point, .27, .42, stone)
+        previous = point
+# Rest each new loose stone on a real plane or plinth after rotation.
+for ob in bpy.data.objects:
+    if ob.type == "MESH" and ob.name.startswith("V2 fallen masonry"):
+        bpy.context.view_layer.update()
+        corners = [ob.matrix_world @ Vector(c) for c in ob.bound_box]
+        # Entire footprint must fit the main plinth to use its upper surface.
+        supported = all(abs(c.x) < 1.22 and abs(c.y) < .87 for c in corners)
+        ob.location.z += (.315 if supported else 0.0) - min(c.z for c in corners)
+# Surface relief: original procedural stone details, no external textures.
+for material in (stone, edge):
+    nodes = material.node_tree.nodes
+    noise = nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 18
+    noise.inputs["Detail"].default_value = 3
+    bump = nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = .24
+    bump.inputs["Distance"].default_value = .035
+    material.node_tree.links.new(noise.outputs["Fac"], bump.inputs["Height"])
+    material.node_tree.links.new(bump.outputs["Normal"], nodes.get("Principled BSDF").inputs["Normal"])
+# Procedural relief is Blender-preview-only until baked for GLB.
+
 # Restore rendering in V2 without mutating any V1 source file.
 world=bpy.context.scene.world
 world.color=(.12,.11,.15)

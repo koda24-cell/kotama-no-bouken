@@ -1,7 +1,7 @@
 name: B5 Throne Bounded Auto QA Loop
 on:
   push:
-    branches: [feature/gpt-b5-ruined-throne-v2-20261116, feature/gpt-b5-throne-recovery-vision-20261116]
+    branches: [feature/gpt-b5-ruined-throne-v2-20261116, feature/gpt-b5-throne-recovery-vision-20261116, feature/gpt-b5-throne-work-setup-20261116]
     paths:
       - 'tools/b5-throne/**'
       - '.github/workflows/b5-throne-auto-loop.yml'
@@ -47,6 +47,8 @@ jobs:
           run-id: ${{ inputs.resume_run_id }}
           github-token: ${{ github.token }}
           path: render-output/b5-throne-auto
+      - name: Offline safety tests
+        run: /usr/bin/python3 -m unittest discover -s tools/b5-throne -p 'test_vision_review.py' -v
       - name: Run bounded automatic Blender cycles
         env:
           MAX_ITERATIONS: ${{ inputs.max_iterations || '4' }}

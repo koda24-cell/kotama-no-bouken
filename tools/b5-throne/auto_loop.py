@@ -14,7 +14,7 @@ import subprocess
 import sys
 import time
 from PIL import Image
-from vision_review import evaluate
+from vision_review import evaluate, configuration
 
 ROOT = Path("render-output/b5-throne-auto")
 VIEWS = ("front", "side", "angle")
@@ -94,6 +94,9 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.iterations <= 8 or not 5 <= args.minutes <= 45:
         parser.error("Limits must be 1..8 iterations and 5..45 minutes")
+    config = configuration()
+    if config["enabled"] and not config["ready"]:
+        parser.error("Vision enabled but configuration missing: " + ", ".join(config["missing"]))
     ROOT.mkdir(parents=True, exist_ok=True)
     source_hash = hashlib.sha256((digest(SOURCE) + digest(ORIGINAL) + digest(Path("tools/b5-throne/vision_review.py"))).encode()).hexdigest()
     state = read_progress(source_hash, args.iterations)
@@ -118,7 +121,7 @@ def main():
         adjustments = state.get("next_adjustments", {})
         exposure += float(adjustments.get("exposure_delta", 0))
         exposure = max(-1.8, min(1.8, exposure))
-        env = dict(os.environ, THRONE_OUTPUT=str(output), THRONE_VARIANT=str(index),
+        env = dict({k: v for k, v in os.environ.items() if not k.startswith("VISION_")}, THRONE_OUTPUT=str(output), THRONE_VARIANT=str(index),
                    THRONE_EXPOSURE=str(exposure),
                    THRONE_RUBBLE_DELTA=str(int(adjustments.get("rubble_delta", 0))),
                    THRONE_RELIEF_DELTA=str(int(adjustments.get("relief_delta", 0))),
@@ -137,12 +140,23 @@ def main():
                 names = [name for name in geo["object_names"] if not name.startswith("V2 ")]
                 state["baseline"] = {"object_names":names, "mesh_count":len(names)}
             report = inspect(output, state["baseline"])
+            write_json(output/"manifest.json", {
+                "approval": "NOT_APPROVED", "game_integration_allowed": False,
+                "source_commit": os.getenv("GITHUB_SHA", "local-uncommitted"),
+                "source_hash": source_hash,
+                "workflow_run": os.getenv("GITHUB_RUN_ID"),
+                "iteration": index+1,
+                "files": {name: report["sha256"][name] for name in
+                          ["b5-ruined-throne-v2.glb", "front.png", "side.png", "angle.png"]},
+                "material_limit": "Procedural Blender bump is not baked into GLB",
+                "claude_handoff": "GLB, front/side/angle PNG, manifest only; review only until approved"
+            })
             try:
                 vision = evaluate(output)
             except Exception as exc:
                 # Do not hide the model-service failure, but do not corrupt technical results.
                 vision = {"mode":"error","artistic_quality":"UNVERIFIED",
-                          "reason":str(exc)[:200]}
+                          "reason":"Vision request failed: " + type(exc).__name__}
             if vision.get("mode") == "model" and vision.get("confidence", 0) >= .55:
                 state["next_adjustments"] = vision["adjustments"]
             else:

@@ -4,6 +4,8 @@ The model output is UNTRUSTED: allow only tightly clamped numerical changes.
 """
 import base64
 import json
+import math
+import argparse
 import os
 from pathlib import Path
 import re
@@ -11,9 +13,23 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 def clamp(value, low, high):
-    if isinstance(value, bool) or not isinstance(value, (int, float)):
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
         return 0.0
     return max(low, min(high, float(value)))
+
+def configuration():
+    """Offline preflight; never print credentials or contact the provider."""
+    enabled = os.getenv("ENABLE_VISION", "false").lower() == "true"
+    missing = [key for key in ("VISION_API_URL", "VISION_API_KEY", "VISION_MODEL")
+               if not os.getenv(key, "").strip()]
+    if enabled and not missing:
+        parsed = urlparse(os.environ["VISION_API_URL"].strip())
+        if (parsed.scheme != "https" or not parsed.hostname or parsed.username
+                or parsed.password or parsed.query or parsed.fragment):
+            raise ValueError("VISION_API_URL requires HTTPS without URL credentials, query or fragment")
+    return {"enabled": enabled, "ready": enabled and not missing,
+            "missing": missing, "network_called": False}
+
 
 def evaluate(directory: Path):
     endpoint = os.getenv("VISION_API_URL", "").strip()
@@ -23,6 +39,7 @@ def evaluate(directory: Path):
         return {"mode": "disabled", "artistic_quality": "UNVERIFIED"}
     if not (endpoint and model and token):
         return {"mode": "unconfigured", "artistic_quality": "UNVERIFIED"}
+    configuration()
     parsed = urlparse(endpoint)
     if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
         raise ValueError("VISION_API_URL must be an explicit HTTPS endpoint without credentials in URL")
@@ -83,3 +100,16 @@ def evaluate(directory: Path):
             "visual_score":round(clamp(reply.get("visual_score",0),0,10),2),
             "confidence":round(clamp(reply.get("confidence",0),0,1),3),
             "analysis":str(reply.get("analysis",""))[:600],"adjustments":safe}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Offline vision configuration check; never calls an API")
+    parser.add_argument("--check-config", action="store_true", required=True)
+    parser.parse_args()
+    try:
+        result = configuration()
+        print(json.dumps(result))
+        raise SystemExit(0 if not result["enabled"] or result["ready"] else 2)
+    except ValueError:
+        print("Invalid VISION_API_URL; configuration rejected without network usage")
+        raise SystemExit(2)

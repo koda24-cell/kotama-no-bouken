@@ -55,6 +55,18 @@ class VisionTests(unittest.TestCase):
                           "exposure_delta":.5})
         self.assertEqual(x["visual_score"],7.8)
 
+    def test_nonfinite_values_are_neutral(self):
+        for value in (float("nan"), float("inf"), -float("inf"), True, "99"):
+            self.assertEqual(vision_review.clamp(value, -3, 3), 0)
+
+    def test_preflight_is_offline_and_redacted(self):
+        env={"ENABLE_VISION":"true", "VISION_API_URL":"https://example.test/chat/completions",
+             "VISION_API_KEY":"secret-must-not-print", "VISION_MODEL":"test-model"}
+        with patch.dict(os.environ,env,clear=True), patch.object(vision_review,"urlopen",side_effect=AssertionError("network")):
+            result=vision_review.configuration()
+        self.assertTrue(result["ready"])
+        self.assertNotIn("secret-must-not-print", json.dumps(result))
+
     def test_refuse_plain_http(self):
         env={"ENABLE_VISION":"true","VISION_API_URL":"http://example.test/chat/completions",
              "VISION_API_KEY":"test-token","VISION_MODEL":"test-model"}
