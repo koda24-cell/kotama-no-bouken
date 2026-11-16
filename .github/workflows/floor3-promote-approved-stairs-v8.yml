@@ -30,7 +30,7 @@ jobs:
       - name: Checkout exact reproducible generator source
         uses: actions/checkout@v5
         with:
-          ref: 25ed01185aa0989d55510a362bfdffb8a1bf8845
+          ref: 363b7965bbe68b7bbd7a78e37275d01b448d4609
           path: source
           persist-credentials: false
       - name: Download verified original run artifact
