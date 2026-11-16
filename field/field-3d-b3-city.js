@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRuinedCityKit } from './b3-ruined-city-kit.js';
 import { createB3UrbanProps } from './b3-ruined-city-urban-props.js';
-import { createCitySurfaces } from './b3-city-surfaces.js?v=20261116-1';
+import { createCitySurfaces } from './b3-city-surfaces.js?v=20261116-2';
 
 export function createTheme(api) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile } = api;
@@ -89,7 +89,7 @@ export function createTheme(api) {
     const { paving, stone, soil, masonry, rust: steel, leaf: grass } = finish.palette;
     // One ground sheet under the whole district: wall cells have no paving, so without it the
     // sky showed through as a white seam below every wall base.
-    add(cube, soil, (a.w - 1) * CELL / 2, -0.2, (a.h - 1) * CELL / 2, a.w * CELL + 60, 0.1, a.h * CELL + 60);
+    add(cube, soil, (a.w - 1) * CELL / 2, -0.2, (a.h - 1) * CELL / 2, a.w * CELL + 6, 0.1, a.h * CELL + 6);
     const tuft = finish.fern;
     const chip = geo(new THREE.IcosahedronGeometry(0.18, 0));
     const water = mat({ color: 0x354f4b, roughness: 0.22, metalness: 0.1 });

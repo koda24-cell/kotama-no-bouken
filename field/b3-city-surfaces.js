@@ -31,7 +31,7 @@ export function createCitySurfaces(THREE, high) {
         const rows = 4, rh = size / rows, row = Math.floor(y / rh), count = 2 + Math.floor(rand(row, 7, seed) * 3);
         const bw = size / count, sx = (x + Math.floor(rand(row, 9, seed) * size)) % size, col0 = Math.floor(sx / bw);
         const lx = sx - col0 * bw, ly = y - row * rh, block = rand(row, col0, seed + 4);
-        const erode = 1.6 + noise(u * 24, v * 24, 24, seed + 5) * 5.5 + (block > 0.82 ? 4 : 0);
+        const erode = 1.2 + noise(u * 24, v * 24, 24, seed + 5) * 4.2 + (block > 0.82 ? 4 : 0);
         const edge = Math.min(lx, bw - lx, ly, rh - ly), corner = Math.min(Math.hypot(Math.min(lx, bw - lx), Math.min(ly, rh - ly)), 99);
         const joint = clamp(1 - (Math.min(edge, corner * 0.8) - erode) / 1.8);
         const relief = clamp((lx < bw * 0.5 ? 1 : 0) * clamp(1 - ly / 7) * 0.5 + clamp(1 - ly / 5) * 0.4) - clamp(1 - (rh - ly) / 6) * 0.35;
@@ -42,7 +42,7 @@ export function createCitySurfaces(THREE, high) {
         const base = [128 + warm * 16, 130 + warm * 4, 118 - warm * 10];
         col = base.map((a, i) => {
           const stoneCol = a * tone * (0.62 + broad * 0.3 + grain * 0.22 + relief * 0.22 - streak * 0.35 - crack * 0.5) + fine * 12;
-          const mortar = [62, 64, 54][i] * (0.75 + grain * 0.4);
+          const mortar = [84, 86, 74][i] * (0.75 + grain * 0.4);
           const c = stoneCol * (1 - joint) + mortar * joint;
           return c * (1 - moss * 0.6) + [34, 58, 22][i] * moss * 0.6 * (0.8 + grain * 0.5);
         });
@@ -201,7 +201,7 @@ export function createCitySurfaces(THREE, high) {
     const material = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, depthTest: false,
       uniforms: { horizon: { value: horizon }, zenith: { value: new THREE.Color(0x56636b) },
         cloudLo: { value: new THREE.Color(0x6a7273) }, cloudHi: { value: new THREE.Color(0xc2c4bd) },
-        far: { value: horizon.clone().lerp(new THREE.Color(0x4f5d63), 0.42) }, near: { value: horizon.clone().lerp(new THREE.Color(0x2e3a3c), 0.62) },
+        far: { value: horizon.clone().lerp(new THREE.Color(0x46545a), 0.5) }, near: { value: horizon.clone().lerp(new THREE.Color(0x27322f), 0.72) },
         sun: { value: new THREE.Vector3(...sunDir).normalize() } },
       vertexShader: 'varying vec3 dir; void main(){dir=position; vec4 p=projectionMatrix*modelViewMatrix*vec4(position,1.0);gl_Position=p.xyww;}',
       fragmentShader: `varying vec3 dir; uniform vec3 horizon, zenith, cloudLo, cloudHi, far, near, sun;
@@ -227,10 +227,10 @@ export function createCitySurfaces(THREE, high) {
           c+=vec3(.10,.09,.07)*pow(max(dot(d,sun),0.),6.)*(1.-cover*.6);
           c=mix(c,horizon,1.-smoothstep(0.,.10,y));                       // haze band at the horizon
           float az=atan(d.z,d.x)/6.2831853+.5;
-          float hFar=skyline(az,180.,11.,.018,.075), hNear=skyline(az,64.,37.,.03,.13);
+          float hFar=skyline(az,180.,11.,.018,.075), hNear=skyline(az,64.,37.,.035,.16);
           if(y<hFar) c=mix(far,horizon,smoothstep(-.05,hFar,y)*.35);
           if(y<hNear) c=mix(near,far,smoothstep(-.06,hNear,y)*.45);
-          if(y<0.) c=mix(c,near*.9,smoothstep(0.,-.25,y));
+          if(y<0.) c=mix(near,horizon,.25);
           gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
