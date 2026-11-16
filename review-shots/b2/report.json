@@ -184,44 +184,64 @@
       "drawGroups": [
         "b2:open_ceiling_atrium:180",
         "Water_Ripple_Ring_2:0",
+        "Waterfall_Foam_Mound:7",
+        "Waterfall_Mist:0",
         "Water_Ripple_Ring_2:0",
         "Water_Ripple_Ring_1:0",
+        "Waterfall_Foam_Mound:7",
+        "Waterfall_Mist:0",
         "Water_Ripple_Ring_1:0",
         "Water_Ripple_Ring_1:0",
-        "b2:props_pillars:28",
+        "Waterfall_Foam_Mound:7",
+        "Waterfall_Mist:0",
+        "b2:props_pillars:29",
         "b2:props_ruins:21",
         "b2:floor:33",
         "b2:ceiling:9",
         "b2:walls:18",
         "b2:rock_seams:8",
-        "b2:crystals:15",
+        "b2:crystals:16",
         "b2:frost_cornices:27",
         "b2:ice_stalactites:8",
-        "b2:v8_stalagmites:8",
+        "b2:v8_stalagmites:7",
         "b2:v8_erosion:5",
         "b2:rocks:14",
         "b2:ceiling_details:8",
         "b2:shoreline:8",
-        "b2:water:8",
-        "b2:glow_fungi:10",
-        "b2:thorns:6",
+        "b2:water:17",
+        "b2:water_foam:3",
+        "b2:glow_fungi:12",
         "b2:frost_ledge:4",
+        "b2:thorns:4",
         "b2:props_altar:12",
         "b2:landmarks:3",
         "b2:props_banks:8"
       ],
       "ripples": 5,
-      "mists": 0,
-      "falls": [],
+      "mists": 3,
+      "falls": [
+        {
+          "cell": "17,15",
+          "wall": "down"
+        },
+        {
+          "cell": "25,12",
+          "wall": "right"
+        },
+        {
+          "cell": "23,4",
+          "wall": "up"
+        }
+      ],
       "bridge": {
         "tx": 8,
         "ty": 2,
         "ry": 0
       },
       "alcove": {
-        "cell": "24,4",
-        "from": "24,5",
-        "dir": "up"
+        "cell": "1,10",
+        "from": "2,10",
+        "dir": "left"
       },
       "props": {
         "altar": 1,
@@ -249,8 +269,8 @@
   },
   "noPreview": {
     "area": 2,
-    "active3d": true,
-    "is3dClass": true,
+    "active3d": false,
+    "is3dClass": false,
     "preview": false,
     "ls": null
   },
@@ -287,7 +307,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "right",
+      "dir": "up",
       "active": true,
       "near": "",
       "floor": 0,
@@ -299,7 +319,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "left",
+      "dir": "down",
       "active": true,
       "near": "",
       "floor": 0,
@@ -349,7 +369,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "gather:2-0:17:7",
+      "near": "chest:2-0:5:5",
       "floor": 0,
       "area": 2
     },
@@ -373,7 +393,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "cache:2:a2-cache",
+      "near": "",
       "floor": 1,
       "area": 2
     },
@@ -409,7 +429,7 @@
       },
       "dir": "right",
       "active": true,
-      "near": "switch:2:a2-stone-west",
+      "near": "npc:2:a2-plaque",
       "floor": 1,
       "area": 2
     },
@@ -421,7 +441,7 @@
       },
       "dir": "right",
       "active": true,
-      "near": "switch:2:a2-stone-east",
+      "near": "switch:2:a2-stone-west",
       "floor": 1,
       "area": 2
     },
@@ -433,7 +453,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "save:2-1:15:7",
+      "near": "switch:2:a2-stone-east",
       "floor": 1,
       "area": 2
     },
@@ -445,7 +465,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "",
+      "near": "switch:2:a2-stone-east",
       "floor": 1,
       "area": 2
     },
