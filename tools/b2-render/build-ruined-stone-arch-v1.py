@@ -61,6 +61,25 @@ stone("right shoulder bridging masonry",(1.34,0,2.49),(.62,.84,.43),mats[0],(0,-
 stone("left broken outer cap",(-1.78,.05,2.70),(.31,.76,.29),mats[2],(0,.06,-.11))
 stone("right uneven outer cap",(1.76,-.035,2.17),(.32,.76,.34),mats[1],(.03,-.08,.09))
 
+# V1-preserving surface and masonry pass: separate details, no original mesh removed.
+# Keep the established asymmetrical arch silhouette and recognizable stone courses.
+# Add a few broad, weathered spalls, not clouds of small floating debris.
+for n,(x,y,z,w,h,d,rx,ry,rz) in enumerate([
+ (-1.44,-.558,.74,.42,.075,.15,.02,-.05,-.09),
+ (-1.55,-.564,1.71,.31,.055,.17,-.02,.07,.12),
+ (-1.31,-.559,2.33,.35,.080,.15,.03,.10,-.04),
+ ( 1.47,-.559,.91,.35,.070,.14,-.01,.04,.08),
+ ( 1.33,-.560,1.80,.39,.065,.14,.02,-.05,-.11),
+]):
+ stone("weathered joint lip %02d"%n,(x,y,z),(w,d,h),mats[(n+1)%len(mats)],(rx,ry,rz))
+# A few grounded displaced fragments echo the missing crown masonry, keeping the
+# original large rubble arrangement intact. Their bases intersect the ground.
+for n,(x,y,w,h,d) in enumerate([
+ (-1.91,-.83,.30,.19,.26),(-1.67,.88,.38,.23,.30),
+ ( 1.88,.73,.34,.22,.27),(1.48,-.92,.31,.18,.25),
+]):
+ stone("fallen chipped edge %02d"%n,(x,y,h*.38),(w,d,h),mats[(n+2)%len(mats)],(.09*n,-.10,.15*(n-1)))
+
 # Broken rubble on ground, one side heavier than other
 for i in range(26):
  x=rng.uniform(-2.15,2.15);y=rng.uniform(-1.1,1.1);s=rng.uniform(.08,.34)
