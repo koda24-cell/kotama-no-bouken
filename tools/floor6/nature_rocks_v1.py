@@ -22,12 +22,13 @@ moss=[mat('moss_sage',(0.23,0.36,0.18)),mat('moss_olive',(0.19,0.29,0.13))]
 # Deterministic baked image textures: image nodes are portable in exported GLB.
 def textured_material(material, base, seed):
  rng=random.Random(seed)
- image=bpy.data.images.new(material.name+'_albedo',width=128,height=128,alpha=True)
+ image=bpy.data.images.new(material.name+'_albedo',width=256,height=256,alpha=True)
  pixels=[]
- for y in range(128):
-  for x in range(128):
-   coarse=math.sin(x*.13+seed)*math.cos(y*.17-seed)*.065
-   grain=rng.uniform(-.035,.035)
+ for y in range(256):
+  for x in range(256):
+   u=math.tau*x/256;v=math.tau*y/256
+   coarse=(math.sin(u*4+seed)*math.cos(v*5-seed)*.048 + math.sin(11*u+7*v+seed)*.012)
+   grain=rng.uniform(-.045,.045)
    v=max(.55,min(1.4,1+coarse+grain))
    pixels.extend([min(1,base[0]*v),min(1,base[1]*v),min(1,base[2]*v),1])
  image.pixels[:]=pixels
@@ -39,23 +40,24 @@ def textured_material(material, base, seed):
  # Tangent-space normal texture from multi-scale deterministic rock height field.
  # Packed images and the Normal Map node are compatible with glTF/GLB export.
  def height_at(x,y):
-  u=math.tau*x/128;v=math.tau*y/128
+  u=math.tau*x/256;v=math.tau*y/256
   return (0.34*math.sin(3*u+seed)*math.cos(4*v-seed)
           +0.15*math.sin(9*u+5*v+seed*.2)
-          +0.07*math.cos(17*u-13*v+seed*.4))
- normal_image=bpy.data.images.new(material.name+'_normal',width=128,height=128,alpha=True)
+          +0.07*math.cos(17*u-13*v+seed*.4)
+          +0.038*math.sin(37*u+23*v+seed)*math.cos(19*v-11*u))
+ normal_image=bpy.data.images.new(material.name+'_normal',width=256,height=256,alpha=True)
  normal_pixels=[]
- for y in range(128):
-  for x in range(128):
-   dx=(height_at((x+1)%128,y)-height_at((x-1)%128,y))*.43
-   dy=(height_at(x,(y+1)%128)-height_at(x,(y-1)%128))*.43
+ for y in range(256):
+  for x in range(256):
+   dx=(height_at((x+1)%256,y)-height_at((x-1)%256,y))*.65
+   dy=(height_at(x,(y+1)%256)-height_at(x,(y-1)%256))*.65
    length=math.sqrt(dx*dx+dy*dy+1)
    normal_pixels.extend([(-dx/length+1)*.5,(-dy/length+1)*.5,(1/length+1)*.5,1])
  normal_image.pixels[:]=normal_pixels
  normal_image.colorspace_settings.name='Non-Color'
  normal_image.pack()
  normal_tex=nodes.new('ShaderNodeTexImage');normal_tex.image=normal_image
- normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.42
+ normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.48
  material.node_tree.links.new(normal_tex.outputs['Color'],normal_map.inputs['Color'])
  material.node_tree.links.new(normal_map.outputs['Normal'],bsdf.inputs['Normal'])
 for i,m in enumerate(stone): textured_material(m,[(.34,.36,.34),(.27,.29,.28),(.37,.34,.30)][i],110+i)
@@ -94,6 +96,12 @@ def angular_shard(name, location, radius, height, seed):
  obj=bpy.context.object;obj.name=name
  obj.rotation_euler=(rng.uniform(-.5,.5),rng.uniform(-.5,.5),rng.uniform(-3.14,3.14))
  obj.data.materials.append(stone[seed%len(stone)])
+ # Keep original shard mesh while softening its polygonal hard-edge facets.
+ bevel=obj.modifiers.new('weathered_shard_edges','BEVEL')
+ bevel.width=min(radius*.19,height*.12);bevel.segments=3
+ bpy.context.view_layer.objects.active=obj
+ bpy.ops.object.modifier_apply(modifier=bevel.name)
+ for poly in obj.data.polygons: poly.use_smooth=True
  return obj
 def surface_patch(name,center,sx,sy,seed):
  rng=random.Random(seed)
