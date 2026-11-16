@@ -32,3 +32,12 @@
 - Run 43805363902は技術画像QAのmanifest書込み権限不足で失敗（Docker root所有）。3枚のブラウザレンダー自体は成功・Artifact保存済み。原因と修正を区別する。
 - 修正: 画像QA実行前にActions側でrender-outputフォルダをrunner権限に戻す。修正版ワークフローrun https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43805723148 の結果は別途確認する。
 - 上記の技術QAは美観の承認ではない。**NOT_APPROVED**で保持、正式素材保存・developmentマージ不可。
+
+## 3方向PNG技術QA・修正後成功（2026-11-16）
+- 最終成功run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43805723148
+- Artifact ID: 14198137886 (一時保存・正式素材ではない)
+- GitHub Actions browser-render: success。3方向PNG検査/manifest生成/Artifact uploadが全て成功。
+- manifest: `render-output/b5-fog/manifest.json`。source SHA: `d040b255700de43bed646a5668f1c96536b0230f`、承認: `NOT_APPROVED`。
+- 1100x620 PNG3枚。独立取得したZIP内manifestを実際に読み、正面/側面/斜めのハッシュと画像指標を確認。
+- 平均輝度（0–255）: front 18.999, side 15.335, angle 17.825。技術的な画像検証はPASS、美観とゲームの壁遮蔽は未認定。
+- 通常のBlender GLB/Blend checkpointは本VFX JS/ShaderMaterialには適用しない。ソースコミット・run ID・manifest/PNGを反復用記録とする。
