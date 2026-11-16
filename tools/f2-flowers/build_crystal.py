@@ -265,7 +265,7 @@ def hull_rock(center, radii, n, seed, rot_z=0.0, tilt=(0.0, 0.0), bevel=0.0025):
         a = 2 * math.pi * k / 9 + rr.uniform(-0.2, 0.2)
         tmp.verts.new(Vector(center) + Matrix.Rotation(rot_z, 3, "Z") @ Vector((math.cos(a) * radii[0] * 0.92, math.sin(a) * radii[1] * 0.92, 0)) - Vector((0, 0, center[2])))
     res = bmesh.ops.convex_hull(tmp, input=list(tmp.verts))
-    junk = [g for g in res["geom_interior"] + res["geom_unused"] if isinstance(g, bmesh.types.BMVert)]
+    junk = list({g for g in res["geom_interior"] + res["geom_unused"] if isinstance(g, bmesh.types.BMVert) and g.is_valid})
     if junk:
         bmesh.ops.delete(tmp, geom=junk, context="VERTS")
     bmesh.ops.dissolve_limit(tmp, angle_limit=math.radians(5), verts=list(tmp.verts), edges=list(tmp.edges))
