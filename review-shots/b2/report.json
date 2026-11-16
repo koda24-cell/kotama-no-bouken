@@ -19,7 +19,7 @@
         "Waterfall_Foam_Mound:7",
         "Waterfall_Mist:0",
         "b2:props_pillars:30",
-        "b2:props_ruins:30",
+        "b2:props_ruins:18",
         "b2:floor:30",
         "b2:ceiling:12",
         "b2:walls:24",
@@ -34,7 +34,7 @@
         "b2:water:12",
         "b2:water_foam:2",
         "b2:shoreline:5",
-        "b2:thorns:8",
+        "b2:thorns:10",
         "b2:glow_fungi:6",
         "b2:frost_ledge:4",
         "b2:props_altar:12"
@@ -60,7 +60,7 @@
       "props": {
         "altar": 1,
         "pillars": 8,
-        "ruins": 9,
+        "ruins": 6,
         "banks": 0,
         "parapets": 1,
         "loaded": [
@@ -91,7 +91,7 @@
       "drawGroups": [
         "b2:open_ceiling_atrium:180",
         "b2:props_pillars:29",
-        "b2:props_ruins:30",
+        "b2:props_ruins:27",
         "b2:floor:29",
         "b2:ceiling:12",
         "b2:walls:24",
@@ -104,10 +104,10 @@
         "b2:ceiling_details:12",
         "b2:crystals:35",
         "b2:shoreline:7",
-        "b2:glow_fungi:8",
+        "b2:glow_fungi:10",
         "b2:water:5",
-        "b2:frost_ledge:8",
-        "b2:thorns:8",
+        "b2:thorns:6",
+        "b2:frost_ledge:6",
         "b2:props_altar:12",
         "b2:landmarks:3",
         "b2:props_banks:8"
@@ -133,7 +133,7 @@
       "props": {
         "altar": 1,
         "pillars": 8,
-        "ruins": 9,
+        "ruins": 8,
         "banks": 4,
         "parapets": 3,
         "loaded": [
@@ -172,7 +172,7 @@
         "Water_Ripple_Ring_0:0",
         "Water_Ripple_Ring_3:0",
         "b2:props_pillars:21",
-        "b2:props_ruins:24",
+        "b2:props_ruins:27",
         "b2:floor:36",
         "b2:ceiling:11",
         "b2:walls:22",
@@ -215,7 +215,7 @@
       "props": {
         "altar": 1,
         "pillars": 8,
-        "ruins": 7,
+        "ruins": 8,
         "banks": 4,
         "parapets": 3,
         "loaded": [
@@ -238,25 +238,12 @@
   },
   "noPreview": {
     "area": 2,
-    "active3d": false,
-    "is3dClass": false,
+    "active3d": true,
+    "is3dClass": true,
     "preview": false,
     "ls": null
   },
-  "errors": [
-    "console: THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The \"position\" attribute is likely to have NaN values. PlaneGeometry",
-    "console: THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The \"position\" attribute is likely to have NaN values. PlaneGeometry",
-    "console: THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The \"position\" attribute is likely to have NaN values. PlaneGeometry",
-    "console: THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The \"position\" attribute is likely to have NaN values. BufferGeometry",
-    "console: THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The \"position\" attribute is likely to have NaN values. BufferGeometry",
-    "console: THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The \"position\" attribute is likely to have NaN values. PlaneGeometry",
-    "console: THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The \"position\" attribute is likely to have NaN values. BufferGeometry",
-    "console: THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The \"position\" attribute is likely to have NaN values. PlaneGeometry",
-    "console: THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The \"position\" attribute is likely to have NaN values. PlaneGeometry",
-    "console: THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The \"position\" attribute is likely to have NaN values. PlaneGeometry",
-    "console: THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The \"position\" attribute is likely to have NaN values. BufferGeometry",
-    "console: THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The \"position\" attribute is likely to have NaN values. BufferGeometry"
-  ],
+  "errors": [],
   "missing": [],
   "log": [
     {
@@ -399,7 +386,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "switch:2:a2-stone-west",
+      "near": "switch:2:a2-stone-east",
       "floor": 1,
       "area": 2
     },
