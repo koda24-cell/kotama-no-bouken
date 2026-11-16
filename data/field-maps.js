@@ -22,9 +22,14 @@ const FIELD_AREAS = {
     bgm: "assets/music/仕分け雨/蒼獣シーガー.mp3",
     enterScene: "a1-enter", bossScene: "a1-boss", signScene: "a1-sign",
     objects: {
-      a: { kind: "npc", id: "woodcutter", name: "木こりボルド", sprite: "npc-woodcutter", scene: "a1-woodcutter", sideEvents: ["a1-axe-return"] },
-      b: { kind: "npc", id: "herb-girl", name: "薬草摘みのミナ", sprite: "npc-girl", scene: "a1-herb-girl", sideEvents: ["a1-herb-medicine"] },
-      // [SIDE] サブイベント（1F：古い切り株／2F：木の根元の隠し物）
+      a: { kind: "npc", id: "woodcutter", name: "孤立した衛兵", sprite: "npc-woodcutter", scene: "a1-woodcutter", sideEvents: ["a1-axe-return"] },
+      b: { kind: "npc", id: "herb-girl", name: "先行した先輩冒険者", sprite: "npc-girl", scene: "a1-herb-girl", sideEvents: ["a1-herb-medicine"] },
+      // [A1] 2F：先輩冒険者と巡回衛兵。3F：孤立した衛兵と先行冒険者。
+      h: { kind: "npc", id: "a1-senior-pair", name: "先輩冒険者", sprite: "npc-girl", scene: "a1-senior-pair" },
+      i: { kind: "npc", id: "a1-patrol", name: "巡回衛兵", sprite: "npc-woodcutter", scene: "a1-patrol" },
+      j: { kind: "npc", id: "a1-knights", name: "騎士団の伝令", sprite: "npc-woodcutter", scene: "a1-knights" },
+      k: { kind: "npc", id: "a1-rival-party", name: "別ギルドの冒険者", sprite: "npc-girl", scene: "a1-rival-party" },
+      // [SIDE] サブイベント（1F：調査隊の記録袋／2F：補給袋）
       c: { kind: "event", id: "a1-old-stump", name: "古い切り株", sprite: "ev-stump", event: "a1-old-stump" },
       d: { kind: "event", id: "a1-root-cache", name: "", sprite: "ev-hidden", event: "a1-root-cache", hidden: true },
       // [PUZZLE] 仕掛け（1F：レバーで鉄格子の扉が開く）
@@ -63,17 +68,17 @@ const FIELD_AREAS = {
         foes: [ { enemy: "foe-bear", path: [[19, 14], [17, 16]] }, { enemy: "foe-goblin-pack", path: [[22, 19], [23, 19]] } ], map: [
         "###########################",
         "#...............#T#.....#>#",
-        "#.#############.#.#.#.#.#.#",
+        "#.#############.#j#.#.#.#.#",
         "#.#...........#.#...#.#...#",
         "#.#.#########.#.#####.#####",
         "#.#.#.....#...#.....#.....#",
-        "#.#.#.###.#.#######.#.###.#",
+        "#.#.#.###h#.#######.#.###.#",
         "#.#.#.#S....#G......#.#...#",
         "#.#.#.#########.#######.#.#",
         "#.#.#.........#......*..#.#",
         "#.#.#########.#####***###.#",
-        "#.....#.....#...#.#**.#G#.#",
-        "#####.#.###.###.#.#..*#.#.#",
+        "#.....#.....#...#k#**.#G#.#",
+        "#####.#.###.###.#.#..*#i#.#",
         "#....*..#T....#.#.**.*#...#",
         "#.#***#########.#**.###.#.#",
         "#.#...#.........#.**#...#.#",
@@ -486,10 +491,10 @@ const FIELD_AREAS = {
    ------------------------------------------------------------ */
 const FIELD_SIDE_EVENTS = {
   /* 第1階層 はじまりの樹海 */
-  "a1-old-stump":   { scene: "side-a1-old-stump", doneScene: "side-a1-old-stump-done", keyItem: "木こりの手斧" },
+  "a1-old-stump":   { scene: "side-a1-old-stump", doneScene: "side-a1-old-stump-done", keyItem: "調査隊の地形調査票" },
   "a1-root-cache":  { scene: "side-a1-root-cache", reward: { gold: 30, items: [["potion", 2]] } },
   "a1-axe-return":  { requires: ["a1-old-stump"], hintScene: "side-a1-axe-hint", scene: "side-a1-axe-return", reward: { gold: 60, items: [["ether", 1]] } },
-  "a1-herb-medicine": { needs: { slime_jelly: 3 }, speaker: "herb-girl", askText: "スライムゼリーを3つ、ミナに渡しますか？", needText: "ミナ「スライムゼリーが3つあれば、よく効く傷薬が作れるの！　採取ポイントやスライムから集めてきてくれる？」", scene: "side-a1-herb-medicine", reward: { items: [["potion", 3]] } },
+  "a1-herb-medicine": { needs: { slime_jelly: 3 }, speaker: "senior-a", askText: "スライムゼリーを3つ、救援隊の薬作りに渡しますか？", needText: "先輩冒険者「負傷者の薬を作りたい。スライムゼリーを3つ集めてもらえないか？」", scene: "side-a1-herb-medicine", reward: { items: [["potion", 3]] } },
   /* 第2階層 ゴブリンの森 */
   "a2-crate-1":     { scene: "side-a2-crate-1", doneScene: "side-a2-crate-done", keyItem: "ロッコの荷物（布地）" },
   "a2-crate-2":     { scene: "side-a2-crate-2", doneScene: "side-a2-crate-done", keyItem: "ロッコの荷物（薬瓶）" },

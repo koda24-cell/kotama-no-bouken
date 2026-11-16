@@ -213,6 +213,7 @@ function fieldDrawMap(canvas, cell, full) {
     }
     else if(o.kind==="hiddenPassage"||o.kind==="hidden-passage") dot(o.tx,o.ty,"#c68cff",.82,"diamond","marker");
   }
+  if (typeof fieldA1DrawMarks === "function") fieldA1DrawMarks(g, a, cell, originX, originY, inWindow);
   for(const foe of fieldState.foes){
     if(foe.defeated) continue;
     const fx=Math.floor(foe.x/FIELD_TILE),fy=Math.floor(foe.y/FIELD_TILE);
@@ -238,7 +239,8 @@ function fieldDrawMinimap() {
 }
 function fieldDrawFullMap() {
   const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
-  const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - 92) / a.h)));
+  const extra = a.n === 1 && a.f === 0 ? 140 : 92;
+  const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - extra) / a.h)));
   fieldDrawMap($("field-fullmap-canvas"), cell, true);
   $("field-fullmap-title").textContent = `${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n, a.f)}`;
   $("field-fullmap-rate").textContent = `踏破率 ${fieldExploredRate(a)}%`;

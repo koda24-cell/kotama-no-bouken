@@ -38,6 +38,9 @@ function fieldDeserialize(d) {
   fieldState.area = Math.max(1, Math.min(areaCount, Math.floor(Number(d.area) || 1)));
   fieldState.floor = Math.max(0, Math.min(fieldFloorCount(fieldState.area) - 1, Math.floor(Number(d.floor) || 0)));
   if (d.flags && typeof d.flags === "object") for (const [k, v] of Object.entries(d.flags)) if (v === true) fieldState.flags[k] = true;
+  // 新人地図試験追加前に2F以降へ到達した旧セーブは、試験の再受験を要求しない。
+  // 報酬は遡って配布しないので、追加の重複取得も発生しない。
+  if (fieldState.flags["floor:1-1"] || fieldState.flags["floor:1-2"] || stageCleared[1]) fieldState.flags["a1:exam-passed"] = true;
   // 旧版（フロア導入前）のセーブ：最終フロアにいたものとして扱い、そのフロアまで行ける
   if (d.floor === undefined) { for (let n = 1; n <= areaCount; n++) if (n <= (state.maxUnlockedStage || 1)) for (let f = 0; f < fieldFloorCount(n); f++) if (stageCleared[FIELD_AREAS[n].stage]) fieldState.flags[`floor:${n}-${f}`] = true; fieldState.floor = 0; }
   if (d.maps && typeof d.maps === "object") for (const [key, str] of Object.entries(d.maps)) {

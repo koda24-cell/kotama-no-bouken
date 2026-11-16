@@ -1113,6 +1113,17 @@ async function beginStageCore(){
   const resumedBattle=!!pendingBattleResumeEnemy;
   battleState.enemy=pendingBattleResumeEnemy||(battleState.encounterMode&&typeof fieldCreateEnemy==="function"?fieldCreateEnemy(battleState.fieldEnemyGroup||battleState.fieldEnemyId):createEnemy(battleState.stage));// [FIELD] 雑魚戦はフィールドの敵
   pendingBattleResumeEnemy=null;
+  // 第1層3Fの救援戦：先輩が敵を半分まで弱らせた状態で引き継ぐ。
+  // 既存の通常戦・チュートリアル・他階層・再開中の戦闘は変更しない。
+  if (!resumedBattle && !battleState.encounterMode && !battleState.hiddenBossMode &&
+      battleState.stage === 1 && typeof fieldState !== "undefined" &&
+      fieldState.area === 1 && fieldState.floor === 2 && fieldState.flags["a1:senior-fought"] &&
+      typeof SNOWDRIFT_BOSS_DATA !== "undefined") {
+    const boss = JSON.parse(JSON.stringify(SNOWDRIFT_BOSS_DATA));
+    boss.maxHp = 740; boss.hp = 370;
+    boss.attack = 32; boss.spAttack = 30; boss.defense = 10; boss.spDefense = 9;
+    battleState.enemy = boss;
+  }
   const encounterUnits=battleState.enemy._mixedEncounter?battleState.enemy.members:[battleState.enemy];
   for(const unit of encounterUnits){registerEncounter(unit.compendiumAs||unit.name);if(typeof compendiumRecordEncounter==="function")compendiumRecordEncounter(unit,resumedBattle);}
   // [COMPENDIUM] 混成編成は敵個体ごとに図鑑へ記録
@@ -1167,7 +1178,7 @@ async function beginStageCore(){
   maouIntroBgmPersistent=false;
   if($("bgm-toggle")?.checked)startBgm();
   renderBattle();
-  if(battleState.stage===1&&!battleState.encounterMode)pushEvent("スライムは物理攻撃が効きにくいようだ……SP攻撃を試そう！");
+  if(battleState.stage===1&&!battleState.encounterMode&&battleState.enemy.name==="スライム")pushEvent("スライムは物理攻撃が効きにくいようだ……SP攻撃を試そう！");
   const overlay=$("stage-transition");
   if(battleState.encounterMode){arena?.classList.remove("stage-arrival-pending");await wait(250);}// [FIELD] 雑魚戦はステージ名の暗転を出さない
   else if(overlay){
