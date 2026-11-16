@@ -1,0 +1,89 @@
+{
+  "approval": "APPROVED_BY_USER_2026-11-17",
+  "source_sha": "6af57ddb9202eff0f82464de47d4405abeeca6c0",
+  "run_id": "43893048261",
+  "images": {
+    "31": 9,
+    "32": 9
+  },
+  "files": [
+    {
+      "path": "render-output/b4-cart-practical-v31-pbr.glb",
+      "size": 1040896,
+      "sha256": "69b1b8cd03b63efb6c895334f4506aefce9ea1d77dce6e33e0daaf9691cde4e7"
+    },
+    {
+      "path": "render-output/b4-cart-practical-v31.glb",
+      "size": 844156,
+      "sha256": "8e8481813d7591f220b67428066aed5866c52635f0d8269e60f95d2052f31b4a"
+    },
+    {
+      "path": "render-output/b4-cart-practical-v32-pbr.glb",
+      "size": 1504592,
+      "sha256": "a0a8769f153e2fa827bbdfafe3f440c9b8afe1961159636b0f02ddd8a550350b"
+    },
+    {
+      "path": "render-output/b4-cart-practical-v32.glb",
+      "size": 1305036,
+      "sha256": "c224f2b64da293a65b63b920d1a7ff312abe7a656965d8b0098f49390bce204c"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v31-pbr-angle.png",
+      "size": 1014793,
+      "sha256": "5c998e5079902b3af7b06cab9fb99b77f8d78b549639632de8a89f83d12823f2"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v31-pbr-front.png",
+      "size": 947686,
+      "sha256": "91c818e64c0ce9ba2d745bb046b7eb0614c013feecd70fa820a89c959e500085"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v31-pbr-side.png",
+      "size": 952023,
+      "sha256": "66ff2d21c4c713fd80a6c65edaba8f1ec1939b74042c21b0c271e4a05998807e"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v31-pbr-source.blend",
+      "size": 488629,
+      "sha256": "4365d33a924009bcf7e3d555a166143f0c374bdab5ef98890ef1ba91ee6b308c"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v31-pbr.blend",
+      "size": 504488,
+      "sha256": "e536f72aec82cb7dc09e8cfcaed6baf62fad6d6a836840b0ea886f6c3bbf7f5c"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v32-pbr-angle.png",
+      "size": 1016009,
+      "sha256": "9d9538075001d77db12725f856d6d5e198474401439c1222e66d520334b59920"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v32-pbr-front.png",
+      "size": 948745,
+      "sha256": "2a4d604538d5de9d4130a76df5926edfab20b518577a72837185f330e023bc8f"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v32-pbr-side.png",
+      "size": 950504,
+      "sha256": "a13fe5bc5cc652a0c178789ec36018273b292cec3c392995b4f9bc898fda5212"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v32-pbr-source.blend",
+      "size": 556888,
+      "sha256": "af249563f4754cf7da8d5f5022607007a13e3f9252abbc74e2bdb2fc99ece4f3"
+    },
+    {
+      "path": "render-review/b4-cart-practical-v32-pbr.blend",
+      "size": 572131,
+      "sha256": "61f9a51d9af66f751a2018a6c4e51ce455e6de89048b39f6ba8389254f6c25ed"
+    }
+  ],
+  "approved_variant": 32,
+  "archived_files": {
+    "render-output/b4-cart-practical-v32-pbr.glb": "assets/models/floor4/b4-minecart-v32.glb",
+    "render-review/b4-cart-practical-v32-pbr-front.png": "assets/models/floor4/reviews/b4-minecart-v32/front.png",
+    "render-review/b4-cart-practical-v32-pbr-side.png": "assets/models/floor4/reviews/b4-minecart-v32/side.png",
+    "render-review/b4-cart-practical-v32-pbr-angle.png": "assets/models/floor4/reviews/b4-minecart-v32/angle.png",
+    "render-review/b4-cart-practical-v32-pbr-source.blend": "assets/models/floor4/reviews/b4-minecart-v32/source.blend"
+  }
+}

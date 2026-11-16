@@ -1,0 +1,68 @@
+name: B4 Cart V24 Upright Ground Contact
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-structural-v20-20261116
+    paths:
+      - '.github/workflows/b4-cart-v24-upright.yml'
+      - 'tools/b4-render/render-cart-grounded-v24.py'
+      - 'tools/b4-render/export-cart-practical-v20.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install renderer
+        run: |
+          npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Export practical source
+        run: node tools/b4-render/export-cart-practical-v20.mjs
+      - name: Embed original PBR into v23 and upright v24
+        run: |
+          set -euo pipefail
+          mkdir -p render-review
+          for v in 23 24; do
+            blender -b -t 2 --python tools/b4-render/bake-cart-pbr-v23.py -- "render-output/b4-cart-practical-v${v}.glb" "render-output/b4-cart-practical-v${v}-pbr.glb" "render-review/b4-cart-practical-v${v}-source.blend"
+            test -s "render-output/b4-cart-practical-v${v}-pbr.glb"
+          done
+      - name: Cycles comparison on shadow-receiving neutral ground
+        run: |
+          set -euo pipefail
+          for v in 23 24; do
+            blender -b -t 2 --python tools/b4-render/render-cart-grounded-v24.py -- "render-output/b4-cart-practical-v${v}-pbr.glb" render-review
+          done
+          test "$(find render-review -name '*.png' | wc -l)" -eq 6
+      - name: Verify packed images and per-view checkpoint
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import glob,json,hashlib,os,struct
+          checks={}
+          for v in [23,24]:
+            p=f'render-output/b4-cart-practical-v{v}-pbr.glb'
+            if os.path.isfile(p):
+              with open(p,'rb') as f:f.seek(12);n,k=struct.unpack('<II',f.read(8));data=json.loads(f.read(n))
+              checks[str(v)]=len(data.get('images',[]))
+          paths=sorted(glob.glob('render-output/*.glb')+glob.glob('render-review/*.png')+glob.glob('render-review/*.blend'))
+          manifest={'approval_status':'NOT_APPROVED','source_sha':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'embedded_images':checks,'files':[{'path':p,'bytes':os.stat(p).st_size,'sha256':hashlib.sha256(open(p,'rb').read()).hexdigest()} for p in paths]}
+          os.makedirs('render-review',exist_ok=True)
+          open('render-review/manifest.json','w').write(json.dumps(manifest,indent=2))
+          if checks.get('24',0)<6:raise ValueError('V24 missing PBR texture maps')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-cart-v24-upright-grounded-review
+          path: |
+            render-output/*.glb
+            render-review/
+          retention-days: 14
