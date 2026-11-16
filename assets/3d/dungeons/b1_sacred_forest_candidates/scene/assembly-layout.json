@@ -5162,6 +5162,16 @@
       "renderer": "Cycles CPU",
       "geometrySource": "reimported individual GLBs",
       "blenderVersion": "5.3.0"
+    },
+    "shrine_detail": {
+      "file": "renders/scene/shrine_detail.png",
+      "sha256": "f48273e12d400946e1ce1e6e00c047633e3d8f90f8dd030f067be12910be85c8",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "renderer": "Cycles CPU",
+      "geometrySource": "reimported individual GLBs",
+      "blenderVersion": "5.3.0"
     }
   },
   "optionalSceneGLB": {
