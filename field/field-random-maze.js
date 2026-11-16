@@ -500,6 +500,24 @@ function frmGenCave(C) {
   for (let i = 0; i < nChest; i++) if (!place("T", true)) return false;
   for (let i = 0; i < nGather; i++) if (!place("G", false)) return false;
   for (let i = 0; i < (rule.signs || 0); i++) if (!place("?", false)) return false;
+  // --- 空の行き止まりを2〜3個（3Dの滝・祭壇の置き場）。足りなければ洞窟の壁を1マス掘ってくぼみにする ---
+  const emptyDead = () => { let k = 0; for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const c = C.g[y][x]; if ((c === "." || c === "*" || c === ",") && !C.locked[C.idx(x, y)] && frmWallCountOrth(C, x, y) === 3) k++; } return k; };
+  const wantDead = rng.int(2, 3);
+  if (emptyDead() < wantDead) {
+    const cands = [];
+    for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) {
+      if (C.g[y][x] !== "#" || C.locked[C.idx(x, y)] || C.rects.some(r => frmInRect(r, x, y, 1)) || frmInRect(room, x, y, 1)) continue;
+      const opens = FRM_DIRS.filter(([dx, dy]) => frmPass(C.at(x + dx, y + dy), true, null));
+      if (opens.length !== 1 || FRM_DIRS.filter(([dx, dy]) => C.at(x + dx, y + dy) === "#").length !== 3) continue;
+      const nc = C.at(x + opens[0][0], y + opens[0][1]); if (nc !== "." && nc !== "*") continue;
+      if (frmNearLetter(C, x, y, 1)) continue;
+      cands.push([x, y]);
+    }
+    for (const [x, y] of rng.shuffle(cands)) {
+      if (emptyDead() >= wantDead) break;
+      if (C.g[y][x] === "#" && FRM_DIRS.filter(([dx, dy]) => frmPass(C.at(x + dx, y + dy), true, null)).length === 1) C.set(x, y, ".");
+    }
+  }
   return true;
 }
 
