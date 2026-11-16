@@ -331,6 +331,19 @@ async function main(){
  browser=await chromium.launch({executablePath:process.env.CHROME||'/usr/bin/chromium',headless:true,
   args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--autoplay-policy=no-user-gesture-required']});
  try{
+  if(process.argv.includes('--water-review')){
+   report.scope='Supplementary real index.html west-facing water review; not the full gameplay suite';
+   const session=await createSession('water-review',true);
+   const snapshot=await enter(session,2,true);assertNativeFloor(snapshot,2);
+   await teleport(session,21,10,'left');await screenshot(session,'14-trial-water-facing-west');
+   await storageProof(session);
+   assert.deepEqual(session.record.pageErrors,[]);assert.deepEqual(session.record.consoleErrors,[]);
+   assert.deepEqual(frozenInputs(),sourceRecord.inputs,'Inputs changed during water review');
+   report.passed=true;report.verifiedAt=new Date().toISOString();
+   fs.writeFileSync(path.join(OUT,'water-review-verification.json'),JSON.stringify(report,null,2)+'\n');
+   console.log(JSON.stringify({passed:true,scope:report.scope,screenshots:report.screenshots.length}));
+   return;
+  }
   await normalSessions();await mismatchFallback();
   for(const session of report.sessions){assert.deepEqual(session.pageErrors,[],session.name+': page errors');assert.deepEqual(session.consoleErrors,[],session.name+': console errors');
    assert.deepEqual(session.requestFailures.filter(r=>r.url.includes('/'+KIT)||r.url.includes('field-3d-b1-sacred-trial')),[],session.name+': candidate request failed');}
