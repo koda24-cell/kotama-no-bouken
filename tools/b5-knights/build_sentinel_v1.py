@@ -149,6 +149,9 @@ area_light("fill violet",(4,0,6),650,4)
 area_light("rim pale blue",(0,5,7),1100,3)
 scene=bpy.context.scene
 scene.render.engine='CYCLES';scene.cycles.samples=22
+scene.cycles.use_denoising=False
+for layer in scene.view_layers:
+    if hasattr(layer,'cycles'): layer.cycles.use_denoising=False
 scene.render.resolution_x=800;scene.render.resolution_y=800;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 scene.view_settings.view_transform='Standard'
