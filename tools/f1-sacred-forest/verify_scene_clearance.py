@@ -9,7 +9,8 @@ OUT=ROOT/'assets/3d/dungeons/b1_sacred_forest_candidates'
 
 def verify():
     source=OUT/'scene/scene.blend'
-    if bpy.data.filepath!=str(source):bpy.ops.wm.open_mainfile(filepath=str(source))
+    # The persistent MCP session may hold an earlier revision of this same path.
+    bpy.ops.wm.open_mainfile(filepath=str(source))
     bpy.context.view_layer.update()
     lo=(-1,-14,.03);hi=(1,18,3);epsilon=.001
     def overlaps(points):
