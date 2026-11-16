@@ -154,6 +154,19 @@ for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
   }
 }
 
+// The altar must be visible from the actual route. Retain both barriers and
+// their footprints, but use the collapsed kit as a low sacred enclosure.
+const altarFrontWallIds = new Set(['wall_13_4_up','wall_14_3_left']);
+const altarFrontWalls = walls.filter(wall=>altarFrontWallIds.has(wall.id));
+if (altarFrontWalls.length !== 2) throw new Error('Review the altar enclosure against the changed source map.');
+for (const wall of altarFrontWalls) {
+  if (wall.assetId !== 'mod_sacred_collapsed_wall_4m') throw new Error('Altar enclosure requires the reviewed collapsed-wall kit.');
+  wall.scale=[1,.32,1];
+  wall.artVariant='low_altar_enclosure';
+  wall.navigationSolidUnchanged=true;
+  wall.collisionSource='unchanged blocked island and wall footprint; low stone enclosure reveals the shrine, no new passage';
+}
+
 // Reproduce only the existing presentation orientation lookup; object identity
 // and game data are taken verbatim from fieldArea(), never created here.
 function facingFor(tx, ty) {

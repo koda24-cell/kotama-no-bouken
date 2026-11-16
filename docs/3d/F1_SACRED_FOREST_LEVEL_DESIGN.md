@@ -180,3 +180,7 @@ blocked island・外周ポケットの根元には、同じ既存土床GLBから
 生成source checkpoint `1991a91` から実候補を再生成。杉25本・小物129点・非歩行soil支持床177枚が判定を通過し、計8件（従来の2件を含む）を省略した。新しい植生を縮小して合格させる修正は行っていない。全域のtriangle/material primitive概算3,911,334/2,092は、独立Three.jsでロードした全instanceの集計と一致した。元の274床、water、fixed object identity、FOE、map/save関連sourceは不変。
 
 [実ブラウザQAと制約](../reviews/f1-sacred-forest-game-layout/README.md)に、SHA照合・soil抽出・祖先変換・2×2床・9種の拒否動作・実画面を保存。俯瞰での針葉minification、実機FPS、ゲーム本体の回帰・統合は未承認のまま。
+
+### 目高で確認した祠の遮蔽への修正（2026-11-17）
+
+近景の実GLB表示で、blocked island (13,3)の小祠が東/南側の崩壊壁に隠れることを確認した。map・壁位置/厚み・blocked状態は変えず、正面2面だけ既存崩壊壁の縦scaleを0.32（最大約1.28mの低い石囲い）とする。祠が中央を占め、低壁も残すので通路を新設しない。元17GLBは不変。実歩行セルの目高1.6mから祠中心へのwall rayと実画像で見通しを再検証する。
