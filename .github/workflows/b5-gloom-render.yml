@@ -1,0 +1,39 @@
+name: B5 Gloom Corruption Prototype Render
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/b5-gloom-corruption-prototype-20261114
+    paths:
+      - 'tools/b5-gloom/**'
+      - '.github/workflows/b5-gloom-render.yml'
+permissions:
+  contents: read
+jobs:
+  blender-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render and export with Blender Docker
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
+            set -eu
+            blender -b -t 2 --python tools/b5-gloom/render.py
+          '
+      - name: Validate GLB and three views
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("render-output/b5-gloom")
+          for f in ["b5-gloom-corruption-prototype.glb","b5-gloom-front.png","b5-gloom-side.png","b5-gloom-top-oblique.png"]:
+              b=(p/f).read_bytes()
+              assert len(b)>1024 and b.startswith(b"glTF" if f.endswith(".glb") else b"\x89PNG"),f
+              print(f,len(b))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-gloom-corruption-glb-and-three-renders
+          path: render-output/b5-gloom/
+          retention-days: 14
+          if-no-files-found: error

@@ -1,0 +1,38 @@
+name: B5 V4 Scan and Gloom Blender Render
+on:
+  push:
+    branches: [feature/b5-gloom-corruption-prototype-20261114]
+    paths: ['tools/b5-gloom/render_v4.py', '.github/workflows/b5-v4-scan-gloom-render.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and verify CC0 scan
+        run: python3 tools/b5-gloom/fetch_cc0_scan.py
+      - name: Blender V4 three-view render and GLB export
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest blender -b -t 2 --python tools/b5-gloom/render_v4.py
+      - name: Validate outputs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('render-output/b5-gloom')
+          g=p/'b5-gloom-corruption-prototype.glb'
+          assert g.read_bytes()[:4]==b'glTF'
+          for n in ('front','side','top-oblique'):
+           f=p/f'b5-gloom-{n}.png'
+           assert f.read_bytes()[:8]==b'\x89PNG\r\n\x1a\n' and f.stat().st_size>1024
+          print('V4 verified GLB + three views')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-v4-cc0-scan-gloom-glb-and-renders
+          path: |
+            render-output/b5-gloom/
+            render-output/b5-scan-source/manifest.json
+          retention-days: 14

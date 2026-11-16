@@ -1,0 +1,40 @@
+name: B5 External Asset Network Diagnostics
+on:
+  push:
+    branches: [feature/b5-gloom-corruption-prototype-20261114]
+    paths: ['.github/workflows/b5-external-asset-network.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Test DNS and HTTPS without importing copyrighted assets
+        shell: bash
+        run: |
+          set +e
+          mkdir -p report
+          for host in api.polyhaven.com ambientcg.com github.com; do
+            echo "=== $host ===" | tee -a report/network.txt
+            getent ahostsv4 "$host" | head -2 | tee -a report/network.txt
+            curl -L -I -sS --connect-timeout 6 --max-time 12 -w 'HTTP %{http_code} DNS %{time_namelookup}s TLS %{time_appconnect}s\n' "https://$host/" 2>&1 | tail -8 | tee -a report/network.txt
+          done
+          echo '=== Poly Haven official API ===' | tee -a report/network.txt
+          curl -L -sS --connect-timeout 6 --max-time 12 -o report/polyhaven.json -w 'HTTP %{http_code} bytes %{size_download}\n' https://api.polyhaven.com/files/rock_07 | tee -a report/network.txt
+          python3 - <<'PY'
+          import json, pathlib, hashlib
+          p=pathlib.Path("report/polyhaven.json")
+          if p.exists():
+              print("polyhaven response bytes:",p.stat().st_size,"sha256:",hashlib.sha256(p.read_bytes()).hexdigest())
+              try:
+                  j=json.loads(p.read_text())
+                  print("top-level keys:",list(j)[:15])
+              except Exception as e: print("not JSON:",str(e))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-external-network-diagnostics
+          path: report/
+          retention-days: 7
