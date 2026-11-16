@@ -7,6 +7,7 @@ import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
+import { createB5Look } from './b5-look.js';
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -14,7 +15,7 @@ export function createTheme(api, area) {
     ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
     : magma
     ? { background: 0x171216, fog: { color: 0x302329, density: 0.022 }, hemi: { sky: 0xb9b7ba, ground: 0x6a4540, high: 2.2, low: 2.6 } }
-    : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x7779d7, ground: 0x14132e, high: 1.35, low: 1.7 } };
+    : { background: 0x060418, fog: { color: 0x15102e, density: 0.02 }, hemi: { sky: 0x9d9bd6, ground: 0x292541, high: 1.75, low: 2.05 } }; // B5: V5承認値
   function rockTexture(seed) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
     const ctx = canvas.getContext('2d'); if (!ctx) return null;
@@ -95,7 +96,7 @@ export function createTheme(api, area) {
   const crystalGeo = new THREE.ConeGeometry(0.32, 1.25, 5);
   const rimGeo = new THREE.BoxGeometry(0.18, 0.08, 3.3);
   let b4Plan = null, volcanicDetail = null, cameraLamp = null;
-  let dressing = null, ownedModels = [], ownedModelGeometry = [];
+  let dressing = null, ownedModels = [], ownedModelGeometry = [], b5Look = null;
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
@@ -279,7 +280,10 @@ export function createTheme(api, area) {
       volcanicDetail=addB4VolcanicDetail({root,map:a,ch,wallCell,hash,CELL,plan:b4Plan,surfaces});
       lights.push(...volcanicDetail.lights);g.lights.push(...volcanicDetail.lights);
     }
-    if (b5) dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall });
+    if (b5) {
+      dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall });
+      (b5Look ||= createB5Look({ g, mat })).build({ root, a, ch, wallCell, hash, CELL, hall, dressingInfo: dressing.info() });
+    }
     batchStatic();
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
@@ -311,6 +315,7 @@ export function createTheme(api, area) {
       }
       if (!o.onWall) g.entries.push(e);
     }
+    if (b5) b5Look?.decorateExits({ entries: g.entries, facing, DIR_VEC, CELL });
   }
   function dispose({ final = false } = {}) {
     if (!magma) {
@@ -336,7 +341,7 @@ export function createTheme(api, area) {
       } else root.traverse(o => { if (o.isInstancedMesh) o.dispose(); });
       root.parent?.remove(root);
     }
-    dressing?.dispose(); dressing = null; ownedModels = []; ownedModelGeometry = [];
+    dressing?.dispose(); dressing = null; b5Look?.clear(); ownedModels = []; ownedModelGeometry = [];
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; volcanicDetail = null; cameraLamp = null; landmarkState = 'pending';
     // build() can reuse this theme's base resources; theme replacement releases them.
@@ -344,10 +349,12 @@ export function createTheme(api, area) {
       for (const geo of [floorGeo,wallGeo,volcanicWallGeo,recessWallGeo,b5WallGeo,ceilingGeo,crystalGeo,rimGeo,...localGeometries]) geo?.dispose();
       for (const material of [...Object.values(mat),trunkMat,leafMat,flameMat]) if (!material.userData.b4SurfaceShared) material.dispose();
       surfaces?.dispose();
+      b5Look?.dispose(); b5Look = null;
       rockMap?.dispose(); floorMap?.dispose();
     }
   }
   function tick(dt, now, camera) {
+    b5Look?.tick(now);
     if (surfaces) {
       surfaces.tick(now); volcanicDetail?.tick(now);
       if (cameraLamp && camera) { cameraLamp.world.copy(camera);cameraLamp.world.y+=.75; }
@@ -358,5 +365,5 @@ export function createTheme(api, area) {
     }
   }
   async function sync() { return false; }
-  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info } } : {}) }) };
+  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(b5Look ? { look: b5Look.info() } : {}), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info } } : {}) }) };
 }
