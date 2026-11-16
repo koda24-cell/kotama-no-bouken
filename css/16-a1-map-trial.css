@@ -1,0 +1,7 @@
+/* 第1層新人試験：既存の全体マップに追加する手動目印UI */
+.a1-map-mark-toolbar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;padding:8px 10px;color:#f2e6c4;font-size:12px;background:rgba(7,18,30,.88);border-bottom:1px solid rgba(255,255,255,.15)}
+.a1-map-mark-toolbar[hidden]{display:none!important}
+.a1-map-mark-toolbar select{color:#fff;background:#26364d;border:1px solid #9caabd;padding:5px 8px;border-radius:6px;font:inherit}
+#a1-map-mark-hint{color:#d5e3eb}
+#field-fullmap-canvas{cursor:crosshair;touch-action:manipulation}
+@media(max-width:480px){.a1-map-mark-toolbar{font-size:11px;gap:5px;padding:6px}}
