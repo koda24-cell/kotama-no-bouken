@@ -1,4 +1,4 @@
-name: B4 Cart V29 V30 Detail Review
+name: B4 Cart V30 V31 Load Review
 on:
   push:
     branches:
@@ -33,11 +33,11 @@ jobs:
           set -euo pipefail
           mkdir -p render-review
           blender -b -t 2 --python tools/b4-render/bake-cart-pbr-v26.py -- render-output/b4-cart-practical-v30.glb render-output/b4-cart-practical-v30-pbr.glb render-review/b4-cart-practical-v30-pbr-source.blend
-          blender -b -t 2 --python tools/b4-render/bake-cart-pbr-v26.py -- render-output/b4-cart-practical-v29.glb render-output/b4-cart-practical-v29-pbr.glb render-review/b4-cart-practical-v29-pbr-source.blend
+          blender -b -t 2 --python tools/b4-render/bake-cart-pbr-v26.py -- render-output/b4-cart-practical-v31.glb render-output/b4-cart-practical-v31-pbr.glb render-review/b4-cart-practical-v31-pbr-source.blend
       - name: Blender Cycles comparison on shadow ground
         run: |
           set -euo pipefail
-          for v in 29 30; do
+          for v in 30 31; do
             blender -b -t 2 --python tools/b4-render/render-cart-grounded-v24.py -- "render-output/b4-cart-practical-v${v}-pbr.glb" render-review
             test -s "render-review/b4-cart-practical-v${v}-pbr.blend"
             for d in front side angle; do
@@ -51,7 +51,7 @@ jobs:
           python3 - <<'PY'
           import glob,os,struct,json,hashlib
           tex={}
-          for v in [29,30]:
+          for v in [30,31]:
             p=f'render-output/b4-cart-practical-v{v}-pbr.glb'
             if os.path.isfile(p):
               with open(p,'rb') as f:f.seek(12);n,k=struct.unpack('<II',f.read(8));data=json.loads(f.read(n))
@@ -60,7 +60,7 @@ jobs:
           manifest={'approval':'NOT_APPROVED','source_sha':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'images':tex,'files':[{'path':p,'size':os.stat(p).st_size,'sha256':hashlib.sha256(open(p,'rb').read()).hexdigest()} for p in paths]}
           os.makedirs('render-review',exist_ok=True)
           open('render-review/manifest.json','w').write(json.dumps(manifest,indent=2))
-          if tex.get('30',0)<9:raise ValueError('Expected original 3-map rock image PBR')
+          if tex.get('31',0)<9:raise ValueError('Expected original 3-map rock image PBR')
           PY
       - uses: actions/upload-artifact@v4
         if: always()
