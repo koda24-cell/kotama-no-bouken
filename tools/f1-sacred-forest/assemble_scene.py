@@ -232,6 +232,17 @@ def planned_placements():
     for i,(x,y) in enumerate([(-8,27),(-3.5,27),(1.0,29),(5.5,28),(9.5,27)]):
         add('forest_shrub_cluster','distant_understory_%02d'%i,x,y,
             angle=i*71,scale=1.7,zone='background_forest',role='dressing_only')
+    # Far understory closes the eye-level horizon beyond the cleared Y22 exit,
+    # rather than placing a large bush directly in the gateway sightline.
+    for name,x,y,angle,scale in [
+        ('north_left',-1.8,31.4,139,2.55),('north_right',2.0,34.7,271,2.38),
+        ('north_deep',-.4,38.2,42,2.72),
+        ('northwest_near',-14.5,29.7,207,2.42),
+        ('northwest_deep',-20.2,33.4,93,2.57),
+        ('northwest_rear',-18.0,39.1,318,2.31),
+    ]:
+        add('forest_shrub_cluster','horizon_understory_'+name,x,y,-.012,
+            angle=angle,scale=scale,zone='background_forest',role='dressing_only')
     add('sacred_cedar_tree','portal_midstory_left',-4.4,25.1,angle=124,scale=.74,
         zone='background_forest',role='dressing_only')
     add('sacred_cedar_tree','portal_midstory_right',4.2,28.7,angle=291,scale=.60,
@@ -488,7 +499,7 @@ def build():
         'coordinateSystem': {'authoring': 'Blender Z up, -Y front, metres', 'gltf': '+Y up, +Z front'},
         'groundBoundsBlender': {'x': [-10, 14], 'y': [-14, 22], 'walkHeight': 0,
                                 'meaning':'curated review area, not a rectangular ground mesh edge'},
-        'backgroundDressingBoundsBlender': {'x': [-27, 28], 'y': [-22, 39],
+        'backgroundDressingBoundsBlender': {'x': [-27, 28], 'y': [-22, 44],
                                             'meaning':'approximate vegetation envelope; soil continues beyond this',
                                             'role': 'dressing_only', 'gameTraversable': False},
         'mainWalkClearanceDesign': {'x': [-1, 1], 'y': [-14, 22], 'z': [0, 3],
