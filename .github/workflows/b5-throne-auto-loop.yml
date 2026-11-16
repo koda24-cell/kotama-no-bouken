@@ -1,0 +1,69 @@
+name: B5 Throne Bounded Auto QA Loop
+on:
+  push:
+    branches: [feature/gpt-b5-ruined-throne-v2-20261116]
+    paths:
+      - 'tools/b5-throne/**'
+      - '.github/workflows/b5-throne-auto-loop.yml'
+  workflow_dispatch:
+    inputs:
+      resume_run_id:
+        description: 'Earlier run ID with b5-throne-auto-checkpoint artifact (optional)'
+        required: false
+        type: string
+      max_iterations:
+        description: 'Maximum total iterations (1-8)'
+        required: false
+        default: '4'
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: b5-throne-auto-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  render-and-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 48
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and PNG analysis dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+          blender --version
+          /usr/bin/python3 -c 'from PIL import Image; print(Image.__version__)'
+      - name: Restore checkpoint (manual resume only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.resume_run_id != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: b5-throne-auto-checkpoint
+          run-id: ${{ inputs.resume_run_id }}
+          github-token: ${{ github.token }}
+          path: render-output/b5-throne-auto
+      - name: Run bounded automatic Blender cycles
+        env:
+          MAX_ITERATIONS: ${{ inputs.max_iterations || '4' }}
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 tools/b5-throne/auto_loop.py --iterations "$MAX_ITERATIONS" --minutes 35
+      - name: Verify state and publish job summary
+        if: always()
+        shell: bash
+        run: |
+          if test -s render-output/b5-throne-auto/summary.json; then
+            echo '## B5 throne QA (unapproved)' >> "$GITHUB_STEP_SUMMARY"
+            echo 'JSON record and images are in the artifact; do not promote.' >> "$GITHUB_STEP_SUMMARY"
+            cat render-output/b5-throne-auto/summary.json >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'No QA summary: inspect logs and partial output.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Preserve all attempts and checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-throne-auto-checkpoint
+          path: render-output/b5-throne-auto/
+          retention-days: 14
+          if-no-files-found: warn
