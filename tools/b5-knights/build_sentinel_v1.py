@@ -29,7 +29,6 @@ def saveobj(o,name,material):
     return o
 def bevel(o,width=.045,segments=2):
     mod=o.modifiers.new("rounded worn edges","BEVEL");mod.width=width;mod.segments=segments
-    mod.affect='EDGES' if hasattr(mod,'affect') else None
     mod2=o.modifiers.new("weighted normals","WEIGHTED_NORMAL")
     return o
 def cube(name,loc,scale,material=stone,bev=.045,rotation=None):
