@@ -69,7 +69,7 @@ for name in view_names:
 game=read(BASE/'scene/game-layout-candidate.json')
 assert game['scope']=='candidate_not_applied' and game['approvalStatus']=='pending_user_review'
 assert game['runtimeModified'] is False and game['mapModified'] is False and game['saveMigrationRequired'] is False
-assert game['schemaVersion']==2 and game['presentationRevision']=='soil_surface_v2'
+assert game['schemaVersion']==2 and game['presentationRevision'] in ('soil_surface_v2','soil_surface_v2_authored_forest_pockets')
 assert 'gltf_node_material_selection_v1' in game['requiredCapabilities']
 assert game['consumerContract']['implicitFullAssetFallback'] is False
 profiles=game['floorRenderProfiles']
@@ -80,6 +80,17 @@ for profile in profiles.values():
 for floor in game['floorPlacements']:
     assert floor['renderProfile'] in profiles
     if floor['assetId']=='mod_root_soil_floor_4m':assert floor['renderProfile']=='soil_surface_only'
+walk_floor_tiles={tuple(row['tile']) for row in game['floorPlacements']}
+source_cells={tuple(row['tile']):row for row in game['cells']}
+for ground in game.get('dressingGroundPlacements',[]):
+    assert ground['renderProfile']=='soil_surface_only'
+    assert ground['gameTraversable'] is False and ground['navigationSolidUnchanged'] is True and ground['mapBoundsExpanded'] is False
+    assert tuple(ground['tile']) not in walk_floor_tiles
+    assert not source_cells.get(tuple(ground['tile']),{}).get('water',False)
+    assert ground['sourceSha256']==profiles['soil_surface_only']['sourceSha256']
+    assert ground['clearance']['status']=='passed_conservative_triangle_aabb'
+for ceiling in game['ceilingPlacements']:
+    if 'sourceSha256' in ceiling:assert sha(ROOT/ceiling['file'])==ceiling['sourceSha256']
 for source in game['expectedSourceBaseline']['sourceFiles']:
     assert source['baselineMatch'] is True and sha(ROOT/source['file'])==source['sha256']==source['expectedBaselineSha256'],source['file']
 summary=dict(status='candidate_verified_pending_user_review',gameIntegrated=False,
