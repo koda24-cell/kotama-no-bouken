@@ -302,6 +302,60 @@ export function enhanceB4CartPractical(root,variant=20) {
      }
    }
  }
+
+ // V31: load mass and non-uniform silhouette. Preserve original ore and all
+ // existing parts, using additional high-density stones rather than overlays
+ // over the same rock surface (the V27/V28 failure mode).
+ if(variant>=31){
+   const oreMat=new THREE.MeshStandardMaterial({name:'B4_CaveOre',color:0x292c2d,roughness:.97,metalness:0});
+   const timber=new THREE.MeshStandardMaterial({name:'B4_WoodBoard2',color:0x504238,roughness:.98,metalness:0,side:THREE.DoubleSide});
+   const rust=new THREE.MeshStandardMaterial({name:'B4_RustedIron',color:0x39393a,metalness:.52,roughness:.86});
+   // Dense but individually fractured rocks. These are distinct stones,
+   // NOT overlapping shells around the existing coarse icosahedra.
+   const positions=[
+     [-.66,1.16,-.91,.40,.32,.37],[-.08,1.30,-.92,.39,.38,.34],
+     [.56,1.21,-.89,.37,.31,.40],[-.70,1.18,-.24,.43,.35,.36],
+     [.68,1.23,-.22,.44,.36,.38],[-.61,1.19,.52,.39,.34,.40],
+     [.62,1.23,.59,.41,.36,.39],[.03,1.40,.91,.38,.34,.39],
+     [-.27,1.56,-.34,.33,.29,.31],[.33,1.51,.28,.34,.32,.30],
+     [-.24,1.64,.54,.26,.23,.25],[.35,1.58,-.68,.27,.26,.25]
+   ];
+   for(let i=0;i<positions.length;i++){
+     const [x,y,z,sx,sy,sz]=positions[i];
+     const geom=new THREE.IcosahedronGeometry(1,3);
+     const pos=geom.getAttribute('position');
+     for(let v=0;v<pos.count;v++){
+       const px=pos.getX(v),py=pos.getY(v),pz=pos.getZ(v);
+       const n=.072*Math.sin(px*8.7+py*3.8+i*2.1)*Math.cos(pz*9.2-px*4.4)
+        +.038*Math.sin(py*19.3+pz*7.1+i*.7);
+       const r=1+n;
+       pos.setXYZ(v,px*r,py*r,pz*r);
+     }
+     pos.needsUpdate=true;geom.computeVertexNormals();
+     const stone=new THREE.Mesh(geom,oreMat);
+     stone.name='B4_V31_INDIVIDUAL_ORE_'+i;
+     stone.position.set(x,y,z);stone.scale.set(sx,sy,sz);
+     stone.rotation.set(.19*i,.27*i,.11*i);
+     group.add(stone);
+   }
+   // Bending is concentrated in separate short, irregular wear elements,
+   // avoiding a uniformly straight, duplicated inner hopper rim.
+   const rimPoints=[
+     [-X,top,-L],[-X-.024,top+.018,-L*.58],[-X-.043,top-.045,-L*.15],
+     [-X-.018,top+.012,L*.36],[-X,top-.065,L*.72],[-X,top,L]
+   ];
+   for(let i=0;i<rimPoints.length-1;i++){
+     const a=rimPoints[i],b=rimPoints[i+1];
+     beam(a,b,.057,.055,rust);
+   }
+   for(let i=0;i<3;i++){
+     const z=-L*.60+i*L*.61;
+     const x=X+.060;
+     const p=new THREE.Mesh(new THREE.TetrahedronGeometry(.095+i*.012,0),timber);
+     p.position.set(x,top-.16-i*.16,z);
+     p.rotation.set(.2*i,.55+i*.21,.35);group.add(p);
+   }
+ }
  cart.userData={...cart.userData,practical:{variant,topWidth:X*2,topLength:L*2,wheelbase:axleZ*2,sourceGeometryPreserved:true}};
  return root;
 }
