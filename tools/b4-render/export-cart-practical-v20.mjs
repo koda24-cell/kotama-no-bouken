@@ -12,7 +12,7 @@ class NodeFileReader {
 }
 globalThis.FileReader=NodeFileReader;
 fs.mkdirSync('render-output',{recursive:true});
-for(const variant of [14,20,21,22,23,24,25,26,27,28]){
+for(const variant of [26,29]){
  const root=createB4MineRigProps();
  enhanceB4MineCart(root);
  enhanceB4CartV14(root);
