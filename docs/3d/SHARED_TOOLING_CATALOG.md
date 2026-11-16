@@ -202,3 +202,11 @@
 - **実導入/検証状態: コード追加のみ / 未検証。** このチャットのコンテナは素材CDNへのDNSアクセス不能。GitHub Actions側でのダウンロード・Blenderレンダー・GLB材質・3方向PNG・写真テクスチャの見え方は未確認。Actions側では写真が得られない場合にエラー停止させ、手続きテクスチャを成功扱いにしない。
 - 関連: `feature/b2-ruined-stone-arch-20261116` / PR #401。承認前のGLB/PNGは正式素材ではない。画像ライセンスとダウンロード元URL・SHA256はsource_manifestへ記録する。
 - 他候補: [Mossy Stone Wall](https://polyhaven.com/a/mossy_stone_wall)（人工物の経年劣化）、[ambientCG Rock059](https://ambientcg.com/view?id=Rock059)（灰緑の湿り岩）。CC0だが**未取得・未適用**。
+
+### 第5階層朽ちた騎士像 / CC0写真測量素材の導入検証（2026-11-16）
+- 外部素材: ambientCG **Rock063**（公式 https://ambientcg.com/view?id=Rock063 ）。2026-02-22公開・写真測量・CC0ライセンス。原本Color/Roughness/NormalGL 1K JPGを公式配布から実取得。PR #424、Run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43890338792 。
+- 取得スクリプト: `tools/b5-knights/fetch_photo.py`、zip内JPGマジック・サイズ・SHA256を検証し、`photo_source/source.json`へ出典/ライセンス/各ハッシュを保存。失敗時は明示したprocedural fallback。
+- V12実行ではColorとRoughnessをBlenderに実適用、glTFのためのUV smart projectionを実行。実PNGは黄緑色が強く、美術的に不採用。
+- 色調補正: `tools/b5-knights/tone_photo.py`。原本写真は保持し、Pillowでグレースケールから冷灰紫色にマッピングした新しいJPEGを生成。派生画像SHA256=`1d6adcab3189cf25afbd402df6a3465c75d5a70d05f2dc32788d68f6f3adbc12`。
+- V13成功run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43891093819、V14成功run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43891804429 。Blender/GLB/3方向PNG/manifest・ハッシュ照合成功。写真は実適用確認済み、ただし**NormalGLは取得のみ・GLB内の正しい法線マップ動作は未検証**。
+- V10〜14で実メッシュの7頭身比率は6.886を確認。数値QAは美術品質・人体解剖学品質を保証しない。**モデルは未承認、ゲーム正式保存・マージ未実施**。
