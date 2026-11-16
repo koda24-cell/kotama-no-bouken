@@ -6,6 +6,10 @@ on:
         description: "Repository-relative .blend path; blank uses test fixture ONLY"
         required: false
         type: string
+      rock_target:
+        description: "Mesh object name for rock improvement; default QA_TEST_ONLY for demo"
+        required: false
+        type: string
       resume_run_id:
         description: "Previous workflow run ID to resume checkpoint from (same repo)"
         required: false
@@ -46,6 +50,18 @@ jobs:
       - name: Generate disposable demo scene for default test
         if: ${{ inputs.source_blend == '' }}
         run: blender -b -t 2 --python-exit-code 1 --python tools/blender-qa/make_demo.py
+      - name: Make isolated rock candidates (skip when resuming)
+        if: ${{ inputs.resume_run_id == ''' }}
+        env:
+          SOURCE_BLEND: ${{ inputs.source_blend }}
+          ROCK_TARGET: ${{ inputs.rock_target }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$SOURCE_BLEND" ]]; then SOURCE_BLEND=qa-fixture/sample.blend; fi
+          if [[ -z "$ROCK_TARGET" ]]; then ROCK_TARGET=QA_TEST_ONLY; fi
+          if [[ "$SOURCE_BLEND" = /* || "$SOURCE_BLEND" == *".."* || "$SOURCE_BLEND" != *.blend ]]; then exit 2; fi
+          blender -b -t 2 --python-exit-code 1 --python tools/blender-qa/rock_candidates.py -- \
+            --source "$SOURCE_BLEND" --target "$ROCK_TARGET" --out qa-output/rock-variants --candidates 4
       - name: Run bounded QA (preserve files even on quality failure)
         shell: bash
         env:
@@ -57,6 +73,7 @@ jobs:
           if [[ "$SOURCE_BLEND" = /* || "$SOURCE_BLEND" == *".."* || "$SOURCE_BLEND" != *.blend ]]; then
             echo "Unsafe or invalid scene path"; exit 2
           fi
+          if [[ ! -f qa-output/checkpoint.blend ]]; then SOURCE_BLEND=qa-output/rock-variants/candidate_01/candidate.blend; fi
           blender -b -t 2 --python-exit-code 1 --python tools/blender-qa/qa_loop.py -- \
             --source "$SOURCE_BLEND" --out qa-output \
             --max-iterations "$MAX_ITERATIONS" --max-seconds 2400
