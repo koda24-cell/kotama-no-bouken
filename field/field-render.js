@@ -239,7 +239,8 @@ function fieldDrawMinimap() {
 }
 function fieldDrawFullMap() {
   const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
-  const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - 92) / a.h)));
+  const extra = a.n === 1 && a.f === 0 ? 140 : 92;
+  const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - extra) / a.h)));
   fieldDrawMap($("field-fullmap-canvas"), cell, true);
   $("field-fullmap-title").textContent = `${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n, a.f)}`;
   $("field-fullmap-rate").textContent = `踏破率 ${fieldExploredRate(a)}%`;
