@@ -5172,6 +5172,16 @@
       "renderer": "Cycles CPU",
       "geometrySource": "reimported individual GLBs",
       "blenderVersion": "5.3.0"
+    },
+    "birdseye": {
+      "file": "renders/scene/birdseye.png",
+      "sha256": "709c37da0a3905f008c33809a4b8832773ffe5d43b3e0325f589bb2b1e9ded4d",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "renderer": "Cycles CPU",
+      "geometrySource": "reimported individual GLBs",
+      "blenderVersion": "5.3.0"
     }
   },
   "optionalSceneGLB": {

@@ -1,0 +1,77 @@
+{
+  "status": "candidate_verified_pending_user_review",
+  "gameIntegrated": false,
+  "generatedAtUTC": "2026-11-16T04:03:02.173106+00:00",
+  "sourceRevision": "4303890f5c550b548e054c1b7d943366c7ff17c7",
+  "assets": 17,
+  "individualTriangles": 136665,
+  "individualGlbBytes": 21305008,
+  "individualEvidenceImages": 68,
+  "sceneGlb": {
+    "file": "scene/sacred_forest_scene.glb",
+    "sha256": "2004c4b72ddcf7dbfee719467eb596a065683b22a25bd4fc44370356ff3a29a3",
+    "bytes": 21582100,
+    "triangles": 4432376,
+    "drawCalls": 1475
+  },
+  "sceneSource": {
+    "file": "scene/scene.blend",
+    "sha256": "879ad2ee873da1a81019c897c36f6df1199a94485e0a9e9f56e834f25863a127",
+    "packedImages": 195
+  },
+  "views": {
+    "entry": {
+      "file": "renders/scene/entry.png",
+      "sha256": "796ca846d89bb910f77c3ac11c857f69aff8ad0ba6b6f616d45839dc88a7a119",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_entry"
+    },
+    "courtyard": {
+      "file": "renders/scene/courtyard.png",
+      "sha256": "6ec12678591cdd4485ba9c3274d16dddb0c867d4839b4a4106e452aad3bab86c",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_courtyard"
+    },
+    "sealed_corridor": {
+      "file": "renders/scene/sealed_corridor.png",
+      "sha256": "ad451fa34540df599ad737a69f8acad71ffb7955b1184eb868c2527c66f5634a",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_sealed_corridor"
+    },
+    "shrine_detail": {
+      "file": "renders/scene/shrine_detail.png",
+      "sha256": "f48273e12d400946e1ce1e6e00c047633e3d8f90f8dd030f067be12910be85c8",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_shrine_detail"
+    },
+    "birdseye": {
+      "file": "renders/scene/birdseye.png",
+      "sha256": "709c37da0a3905f008c33809a4b8832773ffe5d43b3e0325f589bb2b1e9ded4d",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "camera": "camera_birdseye"
+    }
+  },
+  "conformanceFiles": 18,
+  "conformanceErrors": 0,
+  "conformanceWarnings": 0,
+  "browserErrors": 0,
+  "sourcePortabilityVerified": true,
+  "centralRouteClearanceVerified": true,
+  "realDevicePerformanceApproved": false,
+  "artApproval": "pending_user_review",
+  "notes": [
+    "Standalone review environment and unapplied game-layout candidate.",
+    "Cycles lighting/sky is not embedded as game runtime behaviour in GLB.",
+    "CPU SwiftShader readback is not a device FPS guarantee."
+  ]
+}
