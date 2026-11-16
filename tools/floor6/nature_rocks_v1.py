@@ -1,5 +1,5 @@
 import bpy, math, random, os, json, hashlib
-from mathutils import Vector
+from mathutils import Vector, noise
 from pathlib import Path
 
 OUT = Path('render-output/floor6/nature')
@@ -82,7 +82,7 @@ def add_uv(obj):
 
 def rock_part(name,loc,scale,seed,materials):
  rng=random.Random(seed)
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=4, radius=1, location=loc)
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=5 if max(scale)>.1 else 4, radius=1, location=loc)
  obj=bpy.context.object;obj.name=name
  for v in obj.data.vertices:
   co=v.co;angle=math.atan2(co.y,co.x)
@@ -90,7 +90,10 @@ def rock_part(name,loc,scale,seed,materials):
   # A directional fracture trench with depth on one face
   trench=math.exp(-((co.x*.8+co.y*.6-.12)**2)/.009) * max(0,1-abs(co.z)*.65)
   macro-=.25*trench
-  micro=(0.050*math.sin(co.x*17+seed)*math.cos(co.y*15-seed)+0.025*math.sin(co.z*27+co.x*9+seed)+0.017*math.sin(co.x*29+seed)*math.cos(co.y*27-co.z*19))
+  # Continuous low-amplitude 3D noise displaces geometry rather than UV-face colors.
+  rock_noise=noise.noise_vector(Vector((co.x*18.0+seed*.31,co.y*18.0-seed*.17,co.z*18.0+seed*.11)))
+  grain=(rock_noise.x*.016 + rock_noise.y*.009)
+  micro=(0.050*math.sin(co.x*17+seed)*math.cos(co.y*15-seed)+0.025*math.sin(co.z*27+co.x*9+seed)+0.017*math.sin(co.x*29+seed)*math.cos(co.y*27-co.z*19)+grain)
   v.co=(co.x*(macro+micro),co.y*(macro+micro),co.z*(1+micro*0.55))
  obj.scale=scale
  # Use one continuous albedo texture per rock mesh instead of random per-face materials.
