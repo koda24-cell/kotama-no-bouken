@@ -1,0 +1,98 @@
+name: F2 Flowers Blender Render (Claude team)
+
+# 第2層の花アセット: Blender 4.2 LTS を Actions 上でヘッドレス実行し、
+# GLB・実レンダーPNG・manifest をブランチへコミットして返す（Claudeがgit経由で画像を確認するため）
+on:
+  push:
+    branches:
+      - "feature/ai-claude-f2-flower**"
+    paths:
+      - "tools/f2-flowers/**"
+      - ".github/workflows/f2-flowers-render.yml"
+  workflow_dispatch:
+    inputs:
+      builders:
+        description: "実行する build_*.py（空欄=全部）例: build_snowdrop.py"
+        default: ""
+
+concurrency:
+  group: f2-flowers-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  BLENDER_MAJOR: "4.2"
+  BLENDER_VERSION: "4.2.3"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Blender
+        id: cache-blender
+        uses: actions/cache@v4
+        with:
+          path: ~/blender
+          key: blender-${{ env.BLENDER_VERSION }}-linux-x64
+
+      - name: Download Blender
+        if: steps.cache-blender.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/blender
+          curl -fL --retry 3 -o blender.tar.xz \
+            "https://download.blender.org/release/Blender${BLENDER_MAJOR}/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
+          tar -xf blender.tar.xz -C ~/blender --strip-components=1
+          rm blender.tar.xz
+
+      - name: Install runtime libraries
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libegl1 libxkbcommon0 libsm6
+
+      - name: Build and render
+        env:
+          F2_OUT: render-output/f2-flowers
+        run: |
+          set -e
+          if [ -n "${{ github.event.inputs.builders }}" ]; then
+            B="${{ github.event.inputs.builders }}"
+          else
+            B=$(cd tools/f2-flowers && ls build_*.py)
+          fi
+          for b in $B; do
+            echo "::group::$b"
+            set +e
+            ~/blender/blender -b --factory-startup --python-exit-code 1 -t 0 -P "tools/f2-flowers/$b" > "/tmp/${b%.py}.log" 2>&1
+            rc=$?
+            set -e
+            grep -v "^Fra:" "/tmp/${b%.py}.log" | tail -120
+            test "$rc" -eq 0 || { echo "::error::$b failed (rc=$rc)"; exit 1; }
+            echo "::endgroup::"
+          done
+          ls -laR render-output/f2-flowers
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f2-flowers-${{ github.run_id }}
+          path: render-output/f2-flowers/
+          retention-days: 14
+
+      - name: Commit renders back to branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add -f render-output/f2-flowers/
+          git diff --cached --quiet && exit 0
+          git commit -m "render: f2 flowers (run ${{ github.run_id }})"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+            sleep 5
+          done
+          exit 1
