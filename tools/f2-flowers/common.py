@@ -175,11 +175,14 @@ def petal_surface(name, length, width, res_u=18, res_v=10,
     pointed: 先端を尖らせる(0..1)
     """
     if width_fn is None:
-        def width_fn(u):
-            w = base_width + (1 - base_width) * math.sin(math.pi * min(1, u * 1.15) ** 0.85)
-            if pointed > 0:
-                w *= (1 - pointed * u ** 3)
-            return max(0.0, w)
+        def width_fn(u, _m=0.55):
+            # 付け根(base_width)→u=_mで最大幅→先端は 楕円(丸)〜直線(尖り) を pointed で混合して 0 に収束
+            if u <= _m:
+                return base_width + (1 - base_width) * math.sin(math.pi * 0.5 * u / _m)
+            t = min(1.0, (u - _m) / (1 - _m))
+            rounded = math.sqrt(max(0.0, 1 - t * t))
+            sharp = 1 - t
+            return max(0.0, rounded * (1 - pointed) + sharp * pointed)
     bm = bmesh.new()
     uv_layer = bm.loops.layers.uv.new("UVMap")
     verts = []
@@ -414,7 +417,7 @@ def _stage(mn, mx, mood):
 
     def area(name, energy, loc, color, sz):
         L = bpy.data.lights.new(name, "AREA")
-        L.energy = energy * size * size * 40
+        L.energy = energy * size * size * 9
         L.color = color
         L.size = sz * size
         o = bpy.data.objects.new("_" + name, L)
