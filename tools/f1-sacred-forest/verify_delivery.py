@@ -36,17 +36,21 @@ for a in browser['assetHashes']:assert sha(BASE/a['file'])==a['sha256'],a['id']
 assert browser['scene']['sha256']==sha(scene) and browser['scene']['invalid']==[]
 assert set(browser['scene']['rootExtraAssetIds'])==asset_ids
 mcp=read(V/'mcp-scene-readback.json');assert mcp['status']=='ok'
+assert mcp['result'].get('sceneBlendSha256')==sha(BASE/'scene/scene.blend'),'MCP receipt is stale or lacks sceneBlendSha256; rerun mcp_inspect_scene.py'
 assert len(mcp['result']['asset_ids'])==17 and len(mcp['result']['cameras'])==5
 assert set(mcp['result']['asset_ids'])==asset_ids
 view_names=('entry','courtyard','sealed_corridor','shrine_detail','birdseye')
 assert set(mcp['result']['cameras'])=={'camera_'+name for name in view_names}
 assert mcp['result']['externalImagesRequired']==[]
 clearance=read(V/'scene-clearance.json');assert clearance['passed'] and not clearance['conflicts']
+assert clearance['routeMin']==[-1,-14,.03] and clearance['routeMax']==[1,22,3]
 assert clearance['sceneGlbSha256']==sha(scene)
 assert clearance['sceneBlendSha256']==sha(BASE/'scene/scene.blend')
 views={}
 for name in view_names:
     record=layout['renders'][name];p=BASE/record['file'];data=p.read_bytes()
+    assert record['sceneBlendSha256']==sha(BASE/'scene/scene.blend')
+    assert record['sceneSourceCommit']==layout['sourceCommit'] and record['camera']=='camera_'+name
     assert sha(p)==record['sha256']
     assert data[:8]==b'\x89PNG\r\n\x1a\n'
     assert struct.unpack_from('>II',data,16)==(1600,1000)
@@ -65,6 +69,28 @@ for name in view_names:
 game=read(BASE/'scene/game-layout-candidate.json')
 assert game['scope']=='candidate_not_applied' and game['approvalStatus']=='pending_user_review'
 assert game['runtimeModified'] is False and game['mapModified'] is False and game['saveMigrationRequired'] is False
+assert game['schemaVersion']==2 and game['presentationRevision'] in ('soil_surface_v2','soil_surface_v2_authored_forest_pockets')
+assert 'gltf_node_material_selection_v1' in game['requiredCapabilities']
+assert game['consumerContract']['implicitFullAssetFallback'] is False
+profiles=game['floorRenderProfiles']
+assert game['fullRootsoilTileWhitelist']==[]
+for profile in profiles.values():
+    assert profile['sourceSha256']==next(a['sha256'] for a in manifest['assets'] if a['id']==profile['sourceAssetId'])
+    assert profile['onMismatch']=='reject_candidate'
+for floor in game['floorPlacements']:
+    assert floor['renderProfile'] in profiles
+    if floor['assetId']=='mod_root_soil_floor_4m':assert floor['renderProfile']=='soil_surface_only'
+walk_floor_tiles={tuple(row['tile']) for row in game['floorPlacements']}
+source_cells={tuple(row['tile']):row for row in game['cells']}
+for ground in game.get('dressingGroundPlacements',[]):
+    assert ground['renderProfile']=='soil_surface_only'
+    assert ground['gameTraversable'] is False and ground['navigationSolidUnchanged'] is True and ground['mapBoundsExpanded'] is False
+    assert tuple(ground['tile']) not in walk_floor_tiles
+    assert not source_cells.get(tuple(ground['tile']),{}).get('water',False)
+    assert ground['sourceSha256']==profiles['soil_surface_only']['sourceSha256']
+    assert ground['clearance']['status']=='passed_conservative_triangle_aabb'
+for ceiling in game['ceilingPlacements']:
+    if 'sourceSha256' in ceiling:assert sha(ROOT/ceiling['file'])==ceiling['sourceSha256']
 for source in game['expectedSourceBaseline']['sourceFiles']:
     assert source['baselineMatch'] is True and sha(ROOT/source['file'])==source['sha256']==source['expectedBaselineSha256'],source['file']
 summary=dict(status='candidate_verified_pending_user_review',gameIntegrated=False,
@@ -75,6 +101,10 @@ summary=dict(status='candidate_verified_pending_user_review',gameIntegrated=Fals
  sceneGlb=dict(file=layout['optionalSceneGLB']['file'],sha256=sha(scene),bytes=scene.stat().st_size,
                triangles=browser['scene']['triangles'],drawCalls=browser['scene']['renderer']['calls']),
  sceneSource=dict(file='scene/scene.blend',sha256=sha(BASE/'scene/scene.blend'),packedImages=mcp['result']['imagesPacked']),
+ gameLayoutCandidate=dict(file='scene/game-layout-candidate.json',sha256=sha(BASE/'scene/game-layout-candidate.json'),
+                          floors=len(game['floorPlacements']),props=len(game['candidatePropPlacements']),
+                          dressingGround=len(game.get('dressingGroundPlacements',[])),
+                          presentationRevision=game['presentationRevision'],requiredCapabilities=game['requiredCapabilities']),
  views=views,conformanceFiles=18,conformanceErrors=0,conformanceWarnings=0,browserErrors=0,
  sourcePortabilityVerified=True,centralRouteClearanceVerified=True,
  realDevicePerformanceApproved=False,artApproval='pending_user_review',

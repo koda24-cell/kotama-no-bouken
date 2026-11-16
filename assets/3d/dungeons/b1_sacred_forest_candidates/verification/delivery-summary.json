@@ -1,28 +1,42 @@
 {
   "status": "candidate_verified_pending_user_review",
   "gameIntegrated": false,
-  "generatedAtUTC": "2026-11-16T04:03:02.173106+00:00",
-  "sourceRevision": "4303890f5c550b548e054c1b7d943366c7ff17c7",
+  "generatedAtUTC": "2026-11-16T15:30:52.476099+00:00",
+  "sourceRevision": "ce3c236b70528e03b124330346fda528a8153f82",
   "assets": 17,
   "individualTriangles": 136665,
   "individualGlbBytes": 21305008,
   "individualEvidenceImages": 68,
   "sceneGlb": {
     "file": "scene/sacred_forest_scene.glb",
-    "sha256": "2004c4b72ddcf7dbfee719467eb596a065683b22a25bd4fc44370356ff3a29a3",
-    "bytes": 21582100,
-    "triangles": 4432376,
-    "drawCalls": 1475
+    "sha256": "1895d3342031eff60299af97583aa7574c43ac1031b9ad7fa87941b8c6fa7804",
+    "bytes": 20939944,
+    "triangles": 4480724,
+    "drawCalls": 1012
   },
   "sceneSource": {
     "file": "scene/scene.blend",
-    "sha256": "879ad2ee873da1a81019c897c36f6df1199a94485e0a9e9f56e834f25863a127",
+    "sha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
     "packedImages": 195
+  },
+  "gameLayoutCandidate": {
+    "file": "scene/game-layout-candidate.json",
+    "sha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0",
+    "floors": 274,
+    "props": 129,
+    "dressingGround": 177,
+    "presentationRevision": "soil_surface_v2_authored_forest_pockets",
+    "requiredCapabilities": [
+      "explicit_floor_render_profiles_v1",
+      "gltf_node_material_selection_v1",
+      "non_navigation_dressing_ground_v1",
+      "source_sha256_pins_v1"
+    ]
   },
   "views": {
     "entry": {
       "file": "renders/scene/entry.png",
-      "sha256": "796ca846d89bb910f77c3ac11c857f69aff8ad0ba6b6f616d45839dc88a7a119",
+      "sha256": "51513b648da67e8561d58bf9679b1bae3b80bae80b5a90e64d92386abce6b663",
       "width": 1600,
       "height": 1000,
       "samples": 48,
@@ -30,7 +44,7 @@
     },
     "courtyard": {
       "file": "renders/scene/courtyard.png",
-      "sha256": "6ec12678591cdd4485ba9c3274d16dddb0c867d4839b4a4106e452aad3bab86c",
+      "sha256": "a24304569ffacdde23a2903d13442857992392f21cd1d538ad3a02dcf51d9a07",
       "width": 1600,
       "height": 1000,
       "samples": 48,
@@ -38,7 +52,7 @@
     },
     "sealed_corridor": {
       "file": "renders/scene/sealed_corridor.png",
-      "sha256": "ad451fa34540df599ad737a69f8acad71ffb7955b1184eb868c2527c66f5634a",
+      "sha256": "f3c420757132e582e348554dbaa8c1704f62673be97bfa1182ab6a7b676d4667",
       "width": 1600,
       "height": 1000,
       "samples": 48,
@@ -46,7 +60,7 @@
     },
     "shrine_detail": {
       "file": "renders/scene/shrine_detail.png",
-      "sha256": "f48273e12d400946e1ce1e6e00c047633e3d8f90f8dd030f067be12910be85c8",
+      "sha256": "05d342ecc7ae15bc86dd2923a8f02771cd8fa6e7e6b5b47f3fa3fd1c7ea9b0ed",
       "width": 1600,
       "height": 1000,
       "samples": 48,
@@ -54,7 +68,7 @@
     },
     "birdseye": {
       "file": "renders/scene/birdseye.png",
-      "sha256": "709c37da0a3905f008c33809a4b8832773ffe5d43b3e0325f589bb2b1e9ded4d",
+      "sha256": "5aa18967686fb6b307a2edcc0defc9e3017705b6deece57db058347a883ad05b",
       "width": 1600,
       "height": 1000,
       "samples": 48,

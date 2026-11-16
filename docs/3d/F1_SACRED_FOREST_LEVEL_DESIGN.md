@@ -151,3 +151,36 @@ Scene minimum base footprint案: 20×28m、構図のため奥に追加した非�
 既存testの対象は1F〜3Fの移動・旋回・横移動・壁衝突・採集・宝箱・レバー/扉・階段・灯・NPC/看板/水/ボス・戦闘切替・2D/3D。
 
 この調査ではテストを実行していない。ゲーム起動や最新developmentのライブ画面確認は親の制作/検証担当に引き継ぐ。
+
+## 11. 実3F候補の植生密度改善・制作前追補（2026-11-16 JST）
+
+対象は `scene/game-layout-candidate.json` と独立した `preview/f1-game-layout-candidate.html`。完成デモの `assemble_scene.py`、`.blend`、17個別GLB、実レンダPNGとその検証記録は凍結する。ゲーム本体へ適用しない。
+
+### 配置の意図
+
+現候補は112×72m相当の実3Fマップに杉5本・小物66点で、森の神域より石の迷路の印象が強い。マップを変更せず、以下の手設計した局所ポケットと外周樹帯で、実測判定に通った杉の合計20〜30本を目指す。
+
+- **根の参道**: 既存鳥居の軸は空け、南側・西側のblocked islandと外周に杉の前後層を作る。NPC・階段の隣接操作マス、FOE巡回と通行中心は触らない。
+- **祭祀庭**: 小祠・石碑の背後に樹冠を置き、手前は灯籠・小さいシダ・少量の白花で静かな拝所を示す。幹と大岩を進行路へ置いて視線を塞がない。
+- **水際の根庭**: 元の水マスを完全保持。乾いた岸のcornerとblocked islandだけにシダ・低木・岩・花をまとめ、倒木は陸側の非通行域へ。水の上に床や根元を置かない。
+- **封印回廊の外縁**: 入口の判読を優先し、背後と外周に杉、壁の取り付け位置にだけ垂れ蔓を加える。既存vault ceilingを新候補17素材と混同しない。
+
+全域のuniform/hash scatterで密度を埋めない。既存87枚のsoil-only床と187枚の石床はそのまま。新しい杉は自然な0.85〜1.30程度のscaleを基本とし、衝突した物を極端に縮小して数だけ合格させず省略する。既存にあった小物配置と2件の危険配置の省略記録は保持する。
+
+### 地面と検証
+
+blocked island・外周ポケットの根元には、同じ既存土床GLBからsoil専用ノードだけを選んだ4m地面を局所再利用する。`dressingGroundPlacements` として274歩行床と分離し、`gameTraversable:false`・`navigationSolidUnchanged:true` を記録する。元の水・歩行セルにはこの追加地面を重ねず、地形の生成やマップ範囲の拡張として扱わない。
+
+追加した全instanceは実GLBの祖先変換込みtriangle-AABBを、全歩行セル/辺の幅2m×高さ3mの既存sweepへ照合する。地面の選択ノードも同じ検査に含め、衝突配置はJSONの省略配列へ理由付きで残す。床・固定object identity7点・FOE・source runtime fingerprint・17GLB hash・水マスの一致を改めて確認する。
+
+全マップとzone別に、instance数・杉本数・triangle量・material primitive由来の概算draw call・unique source容量を記録し、独立viewerにも確認欄を設ける。これは全域を同時表示する場合のコスト見積であり、culling/LODや実機FPSの承認ではない。実Three.jsでsource pin・soil選択・UV/法線・2×2高さ・表示切替・エラー0を再確認する。
+
+### 密度追補の実行結果
+
+生成source checkpoint `1991a91` から実候補を再生成。杉25本・小物129点・非歩行soil支持床177枚が判定を通過し、計8件（従来の2件を含む）を省略した。新しい植生を縮小して合格させる修正は行っていない。全域のtriangle/material primitive概算3,911,334/2,092は、独立Three.jsでロードした全instanceの集計と一致した。元の274床、water、fixed object identity、FOE、map/save関連sourceは不変。
+
+[実ブラウザQAと制約](../reviews/f1-sacred-forest-game-layout/README.md)に、SHA照合・soil抽出・祖先変換・2×2床・9種の拒否動作・実画面を保存。俯瞰での針葉minification、実機FPS、ゲーム本体の回帰・統合は未承認のまま。
+
+### 目高で確認した祠の遮蔽への修正（2026-11-17）
+
+近景の実GLB表示で、blocked island (13,3)の小祠が東/南側の崩壊壁に隠れることを確認した。map・壁位置/厚み・blocked状態は変えず、正面2面だけ既存崩壊壁の縦scaleを0.32（最大約1.28mの低い石囲い）とする。祠が中央を占め、低壁も残すので通路を新設しない。元17GLBは不変。実歩行セルの目高1.6mから祠中心へのwall rayと実画像で見通しを再検証する。

@@ -122,8 +122,27 @@ def import_template(asset_id):
 
 
 def linked_placement(asset_id, template, name, position, angle_degrees=0, scale=1, collection=None,
-                     rotation_x_degrees=0):
-    """Duplicate an imported hierarchy without duplicating mesh or images."""
+                     rotation_x_degrees=0, material_prefix=None, uv_scale=1):
+    """Quote complete GLBs or a named, already-separated source material mesh.
+
+    A source-part placement omits sibling meshes, never cuts or remeshes the
+    individual asset. Ancestor empties retain the imported local transform.
+    UV-only copies are explicit, so enlarging soil retains its metre scale.
+    """
+    if material_prefix:
+        meshes=[obj for obj in template if obj.type=='MESH' and any(
+            mat and mat.name.startswith(material_prefix) for mat in obj.data.materials)]
+        if not meshes:
+            raise RuntimeError('Missing source material part: '+asset_id+'/'+material_prefix)
+        for obj in meshes:
+            if not all(mat and mat.name.startswith(material_prefix) for mat in obj.data.materials):
+                raise RuntimeError('Source part is not independently separated: '+obj.name)
+        selected=set(meshes)
+        for obj in meshes:
+            ancestor=obj.parent
+            while ancestor in template:
+                selected.add(ancestor);ancestor=ancestor.parent
+        template=[obj for obj in template if obj in selected]
     parent = bpy.data.objects.new(name, None)
     collection.objects.link(parent)
     parent.location = position
@@ -132,9 +151,15 @@ def linked_placement(asset_id, template, name, position, angle_degrees=0, scale=
     parent.scale = (scale, scale, scale) if isinstance(scale, (int, float)) else scale
     parent['asset_id'] = asset_id
     parent['source_glb'] = str(asset_path(asset_id).relative_to(OUT))
+    parent['source_material_part'] = material_prefix or 'complete_asset'
+    parent['uv_repeat_multiplier'] = uv_scale
     copies = {}
     for original in template:
         duplicate = original.copy()
+        if original.type=='MESH' and uv_scale!=1:
+            duplicate.data=original.data.copy()
+            for uv in duplicate.data.uv_layers:
+                for loop in uv.data:loop.uv*=uv_scale
         # Object.copy() intentionally preserves shared Mesh/Material datablocks.
         duplicate.name = name + "__" + original.name
         collection.objects.link(duplicate)
@@ -153,28 +178,23 @@ def planned_placements():
                                rotation_z_degrees=angle, rotation_x_degrees=0,
                                scale=scale, zone=zone, role=role))
 
-    # 24 x 32m kit ground. Tile centres remain on a 4m grid; the broad central
-    # stone axis is uninterrupted and stays level. No generated ground plane.
-    for y in (-12, -8, -4, 0, 4, 8, 12, 16):
-        for x in (-8, -4, 0, 4, 8, 12):
-            stone = x == 0
-            asset = "mod_sacred_stone_floor_4m" if stone else "mod_root_soil_floor_4m"
-            role = "walk_floor" if stone else "ground"
-            # Only complete quarter turns preserve the exact kit perimeter.
-            angle = ((x // 4 + y // 4) % 4) * 90
-            add(asset, "ground_%+03d_%+03d" % (x, y), x, y, angle=angle,
-                zone="sealed_corridor" if y >= 12 else "root_path" if y <= -8 else "courtyard", role=role)
-
-    # Two sparse, tile-exact ground rings keep first-person views from showing
-    # a hard diorama edge. They are scenery only, outside the 24x32m review
-    # space and never a proposal to expand the game's traversable map.
-    for y in range(-20, 25, 4):
-        for x in range(-16, 21, 4):
-            if -8 <= x <= 12 and -12 <= y <= 16:
-                continue
-            add("mod_root_soil_floor_4m", "background_ground_%+03d_%+03d" % (x, y),
-                x, y, angle=((x // 4 + y // 4) % 4) * 90,
-                zone="background_forest", role="dressing_only")
+    # One quoted soil-only mesh replaces both the decorated core tiles and
+    # their repeating outer ring. The full floor GLB stays untouched. Its root,
+    # buried paving, leaf and moss siblings are intentionally not instantiated.
+    add('mod_root_soil_floor_4m','continuous_forest_soil',0,0,-.012,
+        scale=(35,35,1),zone='forest_ground',role='ground_surface')
+    placements[-1].update(source_material_part='sacred_damp_forest_soil',
+                          source_node_name='sacred_damp_forest_soil_surface',uv_scale=35,
+                          omitted_parts=['buried_paving','exposed_roots','leaf_litter_geometry','moss_geometry'])
+    # The 4m processional route remains level; its final tile reaches Y=22.
+    # Two existing paving modules widen the west into a quiet votive forecourt.
+    for y in (-12,-8,-4,0,4,8,12,16,20):
+        add('mod_sacred_stone_floor_4m','ground_%+03d_%+03d'%(0,y),0,y,
+            angle=((y//4)%4)*90,zone='sealed_corridor' if y>=12 else 'root_path' if y<=-8 else 'courtyard',
+            role='walk_floor')
+    for y,angle in ((4,90),(8,180)):
+        add('mod_sacred_stone_floor_4m','votive_forecourt_%02d'%y,-4,y,
+            angle=angle,zone='altar_remains',role='votive_forecourt_floor')
 
     # A quiet, readable threshold. Gate timber sits outside the 2m movement box.
     add("weathered_torii_gate", "threshold_torii", 0, -6.1, angle=-2, zone="threshold", role="gateway")
@@ -196,7 +216,7 @@ def planned_placements():
             x, y, angle=angle, scale=scale,
             zone="background_forest", role="dressing_only")
     for i,(x,y,angle,scale) in enumerate([
-        (-9.0,21.0,52,1.32),(-2.8,23.2,173,1.22),(1.6,24.1,284,1.35),
+        (-9.0,21.0,52,1.32),(-2.8,23.2,173,1.22),(6.0,27.2,284,1.35),
         (9.1,22.4,97,1.19),(13.5,23.7,247,1.42),
         (-6.0,13.8,315,1.14),(5.5,17.7,61,1.28),
         (-12.8,7.1,187,1.31),(15.7,-3.1,211,1.25),
@@ -204,20 +224,52 @@ def planned_placements():
         add("sacred_cedar_tree","deep_forest_cedar_%02d"%i,x,y,
             angle=angle,scale=scale,zone="background_forest",role="dressing_only")
     for i,(x,y,angle,scale) in enumerate([
-        (-14,32,153,1.45),(-8,34,46,1.36),(-2,32,273,1.52),
-        (4,35,81,1.39),(10,33,214,1.61),(16,31,327,1.43),
+        (-19.0,18.8,153,1.28),(-8,34,46,1.36),(-2,32,273,1.52),
+        (23.2,10.4,81,1.24),(10,33,214,1.61),(-22.6,26.1,327,1.31),
     ]):
         add('sacred_cedar_tree','distant_cedar_%02d'%i,x,y,
             angle=angle,scale=scale,zone='background_forest',role='dressing_only')
     for i,(x,y) in enumerate([(-8,27),(-3.5,27),(1.0,29),(5.5,28),(9.5,27)]):
         add('forest_shrub_cluster','distant_understory_%02d'%i,x,y,
             angle=i*71,scale=1.7,zone='background_forest',role='dressing_only')
-    add('sacred_cedar_tree','portal_midstory_left',-1.3,24.3,angle=124,scale=.74,
+    # Far understory closes the eye-level horizon beyond the cleared Y22 exit,
+    # rather than placing a large bush directly in the gateway sightline.
+    for name,x,y,angle,scale in [
+        ('north_left',-1.8,31.4,139,2.55),('north_right',2.0,34.7,271,2.38),
+        ('north_deep',-.4,38.2,42,2.72),
+        ('northwest_near',-14.5,29.7,207,2.42),
+        ('northwest_deep',-20.2,33.4,93,2.57),
+        ('northwest_rear',-18.0,39.1,318,2.31),
+    ]:
+        add('forest_shrub_cluster','horizon_understory_'+name,x,y,-.012,
+            angle=angle,scale=scale,zone='background_forest',role='dressing_only')
+    add('sacred_cedar_tree','portal_midstory_left',-4.4,25.1,angle=124,scale=.74,
         zone='background_forest',role='dressing_only')
-    add('sacred_cedar_tree','portal_midstory_right',1.6,28.7,angle=291,scale=.60,
+    add('sacred_cedar_tree','portal_midstory_right',4.2,28.7,angle=291,scale=.60,
         zone='background_forest',role='dressing_only')
-    add('forest_shrub_cluster','portal_deep_understory',.3,22,angle=37,scale=2.3,
+    add('forest_shrub_cluster','portal_deep_understory',-3.7,22.9,angle=37,scale=1.6,
         zone='background_forest',role='dressing_only')
+    add('forest_shrub_cluster','portal_understory_east',4.5,21.2,angle=218,scale=1.35,
+        zone='background_forest',role='dressing_only')
+    # Uneven two-depth side belts close eye-level horizons. Four new cedars
+    # (+58,848 source triangles) supplement three redistributed distant trees;
+    # this is a set of designed pockets, not a uniform perimeter/scatter ring.
+    for name,x,y,angle,scale in [
+        ('west_near',-15.8,12.0,236,1.05),('west_front',-17.3,-4.4,93,1.13),
+        ('east_near',20.1,-2.3,311,.93),('east_rear',24.0,22.7,157,1.17),
+    ]:
+        add('sacred_cedar_tree','side_belt_cedar_'+name,x,y,angle=angle,scale=scale,
+            zone='background_forest',role='dressing_only')
+    # The lower band matters as much as the canopy: roughly 2m high shrubs
+    # overlap at staggered depths along the western shrine and eastern garden.
+    for i,(x,y,angle,scale) in enumerate([
+        (-14.5,10.8,44,1.92),(-17.1,13.0,191,1.79),(-15.6,16.6,302,1.87),
+        (-19.0,18.1,128,2.03),(-20.2,23.3,17,1.85),(-16.9,25.0,251,1.96),
+        (18.4,.8,219,1.86),(21.3,3.1,72,2.01),(19.5,9.4,329,1.83),
+        (22.4,12.0,143,1.94),(21.1,18.7,286,1.81),(24.2,21.4,39,2.02),
+    ]):
+        add('forest_shrub_cluster','side_belt_understory_%02d'%i,x,y,-.012,
+            angle=angle,scale=scale,zone='background_forest',role='dressing_only')
     add("fallen_cedar_log", "fallen_trunk_east", 6.9, -3.2, angle=-27, scale=.96)
     add("broken_votive_stele", "western_votive_stele", -3.6, 2.9, angle=18, scale=1.04, role="landmark")
     add("sacred_hokora_shrine", "quiet_hokora_shrine", -4.8, 8.5,
@@ -247,12 +299,15 @@ def planned_placements():
             add("mod_sacred_wall_4m", "corridor_wall_%+d_%02d" % (side, y),
                 side * 2.0, y, angle=angle, zone="sealed_corridor", role="structural_wall")
     # The already completed paving module is reused upside-down as a level
-    # stone soffit. Its top surface becomes the ceiling underside at exactly
-    # 4m; all slab thickness remains above that, preserving head clearance.
+    # stone soffit. The original Z thickness remains above the 4m datum.
+    # Both sides overlap the wall by 4cm. The rear also covers the split
+    # cornice; its 6mm step avoids coplanar faces along the roof lap.
     # This is kit reuse, not newly generated ceiling geometry.
     for y in (12.0, 16.0):
+        rear=y==16.0
         add("mod_sacred_stone_floor_4m", "corridor_stone_soffit_%02d" % y,
-            0, y, 4.0, zone="sealed_corridor", role="ceiling")
+            0, y, 4.006 if rear else 4.0,
+            scale=(1.02,1.18 if rear else 1,1), zone="sealed_corridor", role="ceiling")
         placements[-1]['rotation_x_degrees'] = 180
     add("mod_sacred_arch_4m", "inner_seal_arch", 0, 17.8,
         zone="sealed_corridor", role="gateway")
@@ -403,22 +458,26 @@ def build():
     scene.collection.children.link(collection)
     templates = {asset: import_template(asset) for asset in ASSETS}
     placements = planned_placements()
+    source_records={a:dict(id=a,file=str(asset_path(a).relative_to(OUT)),
+                           sha256=file_hash(asset_path(a)),bytes=asset_path(a).stat().st_size)
+                    for a in ASSETS}
     for row in placements:
-        linked_placement(row['asset_id'], templates[row['asset_id']], row['name'],
-                         row['position'], row['rotation_z_degrees'], row['scale'], collection,
-                         row['rotation_x_degrees'])
-    # Continue the earth beyond the composition without a floating platform
-    # edge. Reuse only the existing soil surface from the validated floor GLB;
-    # positions/faces are unchanged, its UVs repeat at the original metre scale.
-    original=next(o for o in templates['mod_root_soil_floor_4m'] if o.type=='MESH'
-                  and any(m and m.name.startswith('sacred_damp_forest_soil') for m in o.data.materials))
-    ground=original.copy();ground.data=original.data.copy();ground.parent=None
-    collection.objects.link(ground);ground.name='background_earth_reused_floor_surface'
-    ground.matrix_world=Matrix.Translation((0,0,-.225))@Matrix.Diagonal((35,35,1,1))@original.matrix_world
-    for uv in ground.data.uv_layers:
-        for loop in uv.data:loop.uv*=35
-    ground['asset_id']='mod_root_soil_floor_4m';ground['role']='dressing_only'
-    ground['review_exclude_from_framing']=True
+        prefix=row.get('source_material_part')
+        quoted=[o for o in templates[row['asset_id']] if o.type=='MESH' and
+                (not prefix or any(m and m.name.startswith(prefix) for m in o.data.materials))]
+        row['sourceSelection']={
+            'mode':'separated_material_mesh_only' if prefix else 'complete_asset',
+            'materialPrefix':prefix,'sourceMeshNamesBlender':[o.name for o in quoted],
+            'sourceGLBSha256':source_records[row['asset_id']]['sha256'],
+            'geometryEdited':False,'uvRepeatMultiplier':row.get('uv_scale',1),
+            'uvOnlyMeshCopy':row.get('uv_scale',1)!=1,
+        }
+        parent=linked_placement(row['asset_id'], templates[row['asset_id']], row['name'],
+                               row['position'], row['rotation_z_degrees'], row['scale'], collection,
+                               row['rotation_x_degrees'],prefix,row.get('uv_scale',1))
+        if row['name']=='continuous_forest_soil':
+            parent['review_exclude_from_framing']=True
+            for obj in parent.children_recursive:obj['review_exclude_from_framing']=True
     lighting_and_cameras()
     # Imported GLBs embed images. Pack them into the .blend as well so moving
     # the review file does not depend on Blender's temporary import paths.
@@ -437,31 +496,46 @@ def build():
         'gameIntegration': False,
         'sourceCommit': commit,
         'coordinateSystem': {'authoring': 'Blender Z up, -Y front, metres', 'gltf': '+Y up, +Z front'},
-        'groundBoundsBlender': {'x': [-10, 14], 'y': [-14, 18], 'walkHeight': 0},
-        'backgroundDressingBoundsBlender': {'x': [-18, 22], 'y': [-22, 26],
+        'groundBoundsBlender': {'x': [-10, 14], 'y': [-14, 22], 'walkHeight': 0,
+                                'meaning':'curated review area, not a rectangular ground mesh edge'},
+        'backgroundDressingBoundsBlender': {'x': [-27, 28], 'y': [-22, 44],
+                                            'meaning':'approximate vegetation envelope; soil continues beyond this',
                                             'role': 'dressing_only', 'gameTraversable': False},
-        'mainWalkClearanceDesign': {'x': [-1, 1], 'y': [-14, 18], 'z': [0, 3],
+        'mainWalkClearanceDesign': {'x': [-1, 1], 'y': [-14, 22], 'z': [0, 3],
                                     'status': 'design envelope; verify against rendered GLBs, not physics integration'},
         'designBeats': ['root_path', 'threshold', 'courtyard', 'altar_remains', 'sealed_corridor'],
         'assetCount': len(ASSETS),
-        'placementCount': len(placements)+1,
-        'sourceAssets': [dict(id=a, file=str(asset_path(a).relative_to(OUT)),
-                              sha256=file_hash(asset_path(a)), bytes=asset_path(a).stat().st_size)
-                         for a in ASSETS],
+        'placementCount': len(placements),
+        'sourceAssets': list(source_records.values()),
         'linkedMeshes': True,
         'backgroundEarth': {'source':'modules/mod_root_soil_floor_4m.glb',
-                            'part':'sacred_damp_forest_soil only','role':'dressing_only',
-                            'worldScale':[35,35,1],'uvScale':35,'surfaceHeight':-.225},
+                            'part':'sacred_damp_forest_soil only','role':'review_scene_ground_only',
+                            'sourceNode':'sacred_damp_forest_soil_surface',
+                            'omittedParts':['buried_paving','exposed_roots','leaf_litter_geometry','moss_geometry'],
+                            'worldScale':[35,35,1],'uvScale':35,'surfaceHeight':-.012,
+                            'xyBounds':[-70,70],'geometryEdited':False,
+                            'note':'12mm below paving prevents coplanar surfaces; do not import this wide surface as a game map'},
+        'corridorJointCoverage': {'source':'modules/mod_sacred_stone_floor_4m.glb',
+                                 'sourceFootprintMeters':[4,4],
+                                 'frontSoffitScaleXYZ':[1.02,1,1],'rearSoffitScaleXYZ':[1.02,1.18,1],
+                                 'structuralUndersideZRange':[4,4.006],'sideOverlapMeters':.04,
+                                 'betweenSoffitsOverlapMeters':.36,'rearRoofStepMeters':.006,
+                                 'rearRoofEndY':18.36,'joinMethod':'6mm stepped lap; no coplanar overlap',
+                                 'geometryEdited':False},
+        'refinementScope': ['omit decorated soil repetition','irregular two-depth side vegetation belts',
+                            'clear portal extension to Y22','overlap existing soffit kit at wall/seams'],
         'environment': {'sky':'Blender 5.3 multiple scattering','skyStrength':.18,
                         'sunEnergy':1.9,'sunAngleDegrees':4,'AgXExposure':0},
         'placements': placements,
         'cameras': VIEWS,
         'notes': ['No new geometry generated by the assembler.',
-                  'All placements import the individually authored GLBs.',
+                  'All placements quote the individually authored GLBs, with the one named soil-only part selection recorded per placement.',
                   'No fog/particle runtime or game-map changes.',
                   'Layered cedars and understory continue beyond the main courtyard as dressing_only.',
-                  'A scaled copy of the existing soil-only mesh, with UV repeat, prevents a floating ground edge; no new terrain asset is generated.',
-                  'Corridor soffits reuse the completed paving GLB upside-down at 4m; no ceiling geometry is generated.'],
+                  'One continuous soil-only source mesh replaces decorated soil tiles and their ring; UV-only data copy preserves metre-scale repeats. No new terrain asset is generated.',
+                  'The original 17 individual GLBs are not edited. Source hash, selected meshes and transforms are recorded per placement.',
+                  'The two western paving tiles are a visual votive forecourt, not a newly integrated game-side traversable path.',
+                  'Corridor soffits reuse the paving GLB upside-down at Z=4..4.006; the rear is extended over the split cornice and its 6mm lap prevents coplanar faces. No ceiling geometry is generated.'],
         'renders': {},
     }
     scene['candidate_status'] = 'pending_user_review'
@@ -477,6 +551,10 @@ def render_view(name, args):
     if str(Path(bpy.data.filepath)) != str(SCENE_FILE):
         bpy.ops.wm.open_mainfile(filepath=str(SCENE_FILE))
     scene = bpy.context.scene
+    layout = json.loads(LAYOUT_FILE.read_text())
+    if scene.get('source_commit') != layout['sourceCommit']:
+        raise RuntimeError('Loaded scene differs from the assembly revision; reopen the blend')
+    source_hash = file_hash(SCENE_FILE)
     scene.camera = bpy.data.objects['camera_' + name]
     scene.cycles.samples = args.samples
     scene.render.resolution_x = args.width
@@ -488,12 +566,16 @@ def render_view(name, args):
     bpy.ops.render.render(write_still=True)
     if not path.is_file():
         raise RuntimeError('Render produced no file: ' + str(path))
+    if file_hash(SCENE_FILE) != source_hash:
+        raise RuntimeError('Scene source changed during photography')
     layout = json.loads(LAYOUT_FILE.read_text())
     layout.setdefault('renders', {})[name] = {
         'file': str(path.relative_to(OUT)), 'sha256': file_hash(path),
         'width': args.width, 'height': args.height, 'samples': args.samples,
         'renderer': 'Cycles CPU', 'geometrySource': 'reimported individual GLBs',
         'blenderVersion': bpy.app.version_string,
+        'sceneBlendSha256': source_hash, 'sceneSourceCommit': scene['source_commit'],
+        'camera': scene.camera.name,
     }
     LAYOUT_FILE.write_text(json.dumps(layout, ensure_ascii=False, indent=2) + '\n')
     print('F1_SCENE_RENDERED ' + json.dumps(layout['renders'][name], ensure_ascii=False))

@@ -1,0 +1,14 @@
+{
+  "status": "iteration_preview_not_final_delivery",
+  "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
+  "views": {
+    "sealed_corridor": {
+      "file": "renders/iteration-preview/rev2c/sealed_corridor.png",
+      "camera": "camera_sealed_corridor",
+      "width": 640,
+      "height": 400,
+      "samples": 8,
+      "sha256": "cd53267a40a2affb79c4c79d93f2304c2bec6bef1239c1cb974022dddfc382cd"
+    }
+  }
+}

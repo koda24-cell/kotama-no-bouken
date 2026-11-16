@@ -12,7 +12,7 @@ def verify():
     # The persistent MCP session may hold an earlier revision of this same path.
     bpy.ops.wm.open_mainfile(filepath=str(source))
     bpy.context.view_layer.update()
-    lo=(-1,-14,.03);hi=(1,18,3);epsilon=.001
+    lo=(-1,-14,.03);hi=(1,22,3);epsilon=.001
     def overlaps(points):
         for axis in range(3):
             if max(p[axis] for p in points)<=lo[axis]+epsilon:return False
