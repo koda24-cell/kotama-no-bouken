@@ -187,8 +187,8 @@ def add_prism(mb, p, d, L, r, mat, col, rnd, sides=6, shoulder=0.72, smooth=Fals
     return tip.co.copy()
 
 
-def add_frost(mb, p, d, L, rnd, mat=FROST, col=srgb("#FFFFFF")):
-    d = (d.normalized() + Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(-1, 1))) * 0.45).normalized()
+def add_frost(mb, p, d, L, rnd, mat=FROST, col=srgb("#FFFFFF"), jit=0.45):
+    d = (d.normalized() + Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(-1, 1))) * jit).normalized()
     R = d.to_track_quat("Z", "Y").to_matrix()
     r = L * rnd.uniform(0.2, 0.3)
     top = mb.v(p + R @ Vector((0, 0, L)), col)
@@ -268,9 +268,9 @@ def hull_rock(center, radii, n, seed, rot_z=0.0, tilt=(0.0, 0.0), bevel=0.0025):
     junk = list({g for g in res["geom_interior"] + res["geom_unused"] if isinstance(g, bmesh.types.BMVert) and g.is_valid})
     if junk:
         bmesh.ops.delete(tmp, geom=junk, context="VERTS")
-    bmesh.ops.dissolve_limit(tmp, angle_limit=math.radians(5), verts=list(tmp.verts), edges=list(tmp.edges))
+    bmesh.ops.dissolve_limit(tmp, angle_limit=math.radians(9), verts=list(tmp.verts), edges=list(tmp.edges))
     bev = set()
-    sharp = [e for e in tmp.edges if len(e.link_faces) == 2 and e.calc_face_angle(0.0) > math.radians(14)]
+    sharp = [e for e in tmp.edges if len(e.link_faces) == 2 and e.calc_face_angle(0.0) > math.radians(18)]
     if bevel > 0 and sharp:
         try:
             r = bmesh.ops.bevel(tmp, geom=sharp, offset=bevel, offset_type="OFFSET", segments=1, profile=0.5,
@@ -287,10 +287,10 @@ def emit_rock(mb, tmp, bev, rnd, tops, rims, shade=0.0):
         nz = f.normal.z
         cz = f.calc_center_median().z
         if f in bev:
-            col = mix(srgb("#4A5E74"), srgb("#8AA4BC"), smooth01(nz, 0.0, 0.8))
+            col = mix(srgb("#2C3746"), srgb("#5C7590"), smooth01(nz, 0.2, 0.9))
         else:
-            col = mix(srgb("#1C232D"), srgb("#2F3B49"), rnd.random())
-            col = mix(col, srgb("#6C86A0"), smooth01(nz, 0.55, 0.95) * rnd.uniform(0.25, 0.5))
+            col = mix(srgb("#151B24"), srgb("#25303D"), rnd.random())
+            col = mix(col, srgb("#4E6680"), smooth01(nz, 0.6, 0.95) * rnd.uniform(0.2, 0.45))
         if cz < 0.008:
             col = mix(col, srgb("#10141A"), 0.6)
         col = mix(col, srgb("#0E1218"), shade)
@@ -317,11 +317,11 @@ def build_rock(mb, rnd):
     tops, rims = [], []
     parts = [
         # center, radii, n, seed, rot_z, tilt
-        ((0.0, 0.0, 0.0), (0.128, 0.085, 0.030), 34, 3, 0.15, (0.0, 0.0), 0.0018),
-        ((-0.050, 0.014, 0.0), (0.075, 0.064, 0.080), 40, 11, 0.5, (0.06, 0.12), 0.0028),
-        ((0.060, -0.010, 0.0), (0.062, 0.054, 0.060), 36, 23, -0.4, (-0.05, -0.15), 0.0024),
-        ((0.020, 0.058, 0.0), (0.030, 0.026, 0.026), 18, 41, 1.0, (0.0, 0.0), 0.0015),
-        ((-0.020, -0.068, 0.0), (0.026, 0.020, 0.018), 16, 57, 0.3, (0.0, 0.0), 0.0012),
+        ((0.0, 0.0, 0.0), (0.128, 0.085, 0.030), 22, 3, 0.15, (0.0, 0.0), 0.0012),
+        ((-0.050, 0.014, 0.0), (0.075, 0.064, 0.080), 24, 11, 0.5, (0.06, 0.12), 0.0016),
+        ((0.060, -0.010, 0.0), (0.062, 0.054, 0.060), 22, 23, -0.4, (-0.05, -0.15), 0.0014),
+        ((0.020, 0.058, 0.0), (0.030, 0.026, 0.026), 12, 41, 1.0, (0.0, 0.0), 0.0010),
+        ((-0.020, -0.068, 0.0), (0.026, 0.020, 0.018), 12, 57, 0.3, (0.0, 0.0), 0.0008),
     ]
     for i, (c, r, n, sd, rz, tl, bv) in enumerate(parts):
         tmp, bev = hull_rock(c, r, n, sd, rz, tl, bv)
@@ -359,7 +359,7 @@ def head_matrix(pos, axis, spin):
     return to4(R, Vector(pos))
 
 
-def build_flower(mb, H, D, rnd, frost_n=3):
+def build_flower(mb, H, D, rnd, frost_n=5):
     s = D / 0.09
     edges_out = []
     # 萼（濃紺のカップ）
@@ -406,7 +406,7 @@ def build_flower(mb, H, D, rnd, frost_n=3):
                 edges_out += ed[-3:]
     for _ in range(frost_n * n):
         p, dd = rnd.choice(edges_out)
-        add_frost(mb, p, dd, rnd.uniform(0.0011, 0.0019) * s, rnd)
+        add_frost(mb, p, dd, rnd.uniform(0.0006, 0.0011) * s, rnd, jit=0.8)
     # 芯: 雄しべ状の発光氷柱
     ns = 14
     for k in range(ns):
@@ -444,7 +444,7 @@ def build_bud(mb, H, rnd):
                                tiers=(0.35, 0.7))
     for _ in range(10):
         p, dd = rnd.choice(edges)
-        add_frost(mb, p, dd, rnd.uniform(0.0011, 0.0017), rnd)
+        add_frost(mb, p, dd, rnd.uniform(0.0006, 0.001), rnd, jit=0.8)
     add_octa(mb, H @ Vector((0, 0, 0.012)), 0.0028, GLOW, srgb("#C4F4FF"))
     # 萼のふくらみ
     cup = []
@@ -471,7 +471,7 @@ def build_stem(mb, base, H, radius):
     add_tube(mb, pts, radius, STEM, stem_col, sides=8, radius_fn=lambda u: 1.15 - 0.3 * u)
 
 
-def build_leaf(mb, base, direction, L, W, rnd, frost_n=14):
+def build_leaf(mb, base, direction, L, W, rnd, frost_n=26):
     """槍形の葉: 断面6角（中肋の稜＋下の竜骨）、縁を頂点色と霜で白く"""
     xs = (-1.0, -0.72, 0.0, 0.72, 1.0, 0.0)
     T = 0.0021
@@ -505,7 +505,7 @@ def build_leaf(mb, base, direction, L, W, rnd, frost_n=14):
     mb.f(list(reversed(rings[0])), STEM, True)
     for _ in range(frost_n):
         p, dd = rnd.choice(edges)
-        add_frost(mb, p, dd, rnd.uniform(0.0014, 0.0024), rnd)
+        add_frost(mb, p, dd, rnd.uniform(0.0008, 0.0014), rnd, jit=0.9)
 
 
 # ---------------------------------------------------------------------------
