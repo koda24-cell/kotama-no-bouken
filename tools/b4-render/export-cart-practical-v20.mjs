@@ -12,11 +12,16 @@ class NodeFileReader {
 }
 globalThis.FileReader=NodeFileReader;
 fs.mkdirSync('render-output',{recursive:true});
-for(const variant of [14,20,21,22,23]){
+for(const variant of [14,20,21,22,23,24]){
  const root=createB4MineRigProps();
  enhanceB4MineCart(root);
  enhanceB4CartV14(root);
  if(variant>=20)enhanceB4CartPractical(root,variant);
+ if(variant===24){
+   // A functional standalone placement: original tipped scene version remains unchanged.
+   const cart=root.getObjectByName('b4:buried-ore-cart');
+   cart.rotation.set(0,0,0);cart.position.set(0,.50,0);
+ }
  const cart=root.getObjectByName('b4:buried-ore-cart');
  if(!cart)throw Error('Missing cart');
  cart.updateMatrixWorld(true);
