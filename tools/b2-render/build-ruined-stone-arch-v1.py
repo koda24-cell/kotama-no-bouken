@@ -65,11 +65,12 @@ def area(name,loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.name=name;o.data.energy=power;o.data.shape='DISK';o.data.size=size
 area("key",(2,-4,7),850,6);area("fill",(-4,2,5),450,5)
 bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.type='ORTHO';cam.data.ortho_scale=6.9
-scene=bpy.context.scene;scene.camera=cam;scene.render.engine='BLENDER_EEVEE' if bpy.app.version<(4,2,0) else 'BLENDER_EEVEE_NEXT'
+scene=bpy.context.scene;scene.camera=cam;scene.render.engine='BLENDER_EEVEE'  # Blender 5.0+ uses BLENDER_EEVEE, not BLENDER_EEVEE_NEXT
 scene.render.resolution_x=960;scene.render.resolution_y=720;scene.render.resolution_percentage=100
 scene.view_settings.view_transform='Standard';scene.view_settings.look='Medium High Contrast';scene.view_settings.exposure=0
 target=Vector((0,0,1.9))
 for name,loc in [('front',(0,-8,4)),('side',(8,0,3.5)),('angle',(6,-8,5.5))]:
  cam.location=loc;direction=target-cam.location;cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
  scene.render.filepath=os.path.join(OUT,"ruined_stone_arch_v1_"+name+".png");bpy.ops.render.render(write_still=True)
-with open(os.path.join(OUT,"manifest.json"),"w") as f:json.dump({"name":"ruined_stone_arch_v1","status":"prototype awaiting user approval","files":["ruined_stone_arch_v1.glb"]+["ruined_stone_arch_v1_"+x+".png" for x in ("front","side","angle")],"source":"tools/b2-render/build-ruined-stone-arch-v1.py"},f,indent=2)
+bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT,"ruined_stone_arch_v1.blend"))
+with open(os.path.join(OUT,"manifest.json"),"w") as f:json.dump({"name":"ruined_stone_arch_v1","status":"prototype awaiting user approval","files":["ruined_stone_arch_v1.glb","ruined_stone_arch_v1.blend"]+["ruined_stone_arch_v1_"+x+".png" for x in ("front","side","angle")],"source":"tools/b2-render/build-ruined-stone-arch-v1.py"},f,indent=2)
