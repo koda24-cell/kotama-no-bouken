@@ -17,22 +17,22 @@
     "snowdrop_stem"
   ],
   "bbox_m": [
-    0.1929,
+    0.193,
     0.1909,
     0.3347
   ],
   "origin": "bottom-center",
   "glb": "f2_frost_snowdrop.glb",
-  "glb_bytes": 962092,
+  "glb_bytes": 962100,
   "sha256": {
-    "f2_frost_snowdrop.glb": "b1284acf7e722c5245a55511d862c905effc20d8ada7e813c314bd5ce6f1131a",
-    "f2_frost_snowdrop_cave_front.png": "836103af51b780be0e2b6c9d31b34ec1fff4e07ceb2d0ef46c471868b2a750f0",
-    "f2_frost_snowdrop_cave_side.png": "37304d869bf6353f5c083a74dbd53ff7a28bb07c0d1f54a521d26a912523d166",
-    "f2_frost_snowdrop_cave_angle.png": "6032fe067797ebdad614548f025396d207efc42e81b26c39c78d571dffcad778",
-    "f2_frost_snowdrop_cave_top.png": "44354ffb5ba2517d3525e63b9966fcab1f1d7b9bb5a30e0e6c669121351d2a07",
-    "f2_frost_snowdrop_cave_close.png": "5a2b2f0f7ceac360c74d45f53b2fb7e4b5de9ad7755a724b532d7f999caa298f",
-    "f2_frost_snowdrop_studio_front.png": "e9349fe1a5902f1f7cb78a99caa8d2ae1dec3b195f933183fa928881bfcc4d01",
-    "f2_frost_snowdrop_studio_angle.png": "46eddce0113cd674e57b7b2600d38fcbdb7ca29743aeebb654da82dfd596fcc0"
+    "f2_frost_snowdrop.glb": "c0cd03b592060c5d5528cbbe981429e5fae4f2e40d043a86f15811424eed3bf9",
+    "f2_frost_snowdrop_cave_front.png": "5cdf7fb9f0d89acb6dbaa29206ca0f14252f80941caecb3d9b942577fe54cd74",
+    "f2_frost_snowdrop_cave_side.png": "9b9aca36ead48e121906705a99502dcb27c03d639d0e16af3956aa93724c85ea",
+    "f2_frost_snowdrop_cave_angle.png": "e157421d1cf0de5910354f7789ff82e5111780bc09c9bfba30e3f61ead1c79e9",
+    "f2_frost_snowdrop_cave_top.png": "be5d7226dc81584c1b1f702e3a25a6fa0219cec87fe851623a75dd622b898a49",
+    "f2_frost_snowdrop_cave_close.png": "da4b834248c8d175921b3b75dd9e7cf6103b5da7d60b045f01fb66a7979c2909",
+    "f2_frost_snowdrop_studio_front.png": "156013c85cd773e70f6652a1304b149edeff1b8bf9330639b3254c17ca6da410",
+    "f2_frost_snowdrop_studio_angle.png": "d33a78a3a8e140fb8ee10dada1af112c77e3556df9deaaa46c6156256dbf6655"
   },
   "renders": [
     "f2_frost_snowdrop_cave_front.png",
