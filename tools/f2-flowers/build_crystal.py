@@ -61,7 +61,7 @@ def vc(m):
 def build_materials():
     mats = [None] * 9
     mats[ROCK] = vc(C.mat_basic("crystal_rock", lin("#2B3440"), rough=0.8, spec=0.4))
-    mats[STEM] = vc(C.mat_leaf("crystal_stem_leaf", lin("#3F6B6A"), rough=0.42, sss=0.12, coat=0.3))
+    mats[STEM] = vc(C.mat_leaf("crystal_stem_leaf", lin("#3F6B6A"), rough=0.5, sss=0.12, coat=0.12))
     mats[CALYX] = C.mat_leaf("crystal_calyx", lin("#1B2A4A"), rough=0.3, sss=0.05, coat=0.5)
     mats[MILKY] = vc(C.mat_ice("crystal_ice_milky", lin("#E4F2FF"), rough=0.3, trans=0.45,
                                emit=lin("#A6EAFF"), emit_strength=0.45))
@@ -247,64 +247,89 @@ def bezier(p0, p1, p2, p3, n):
 # ---------------------------------------------------------------------------
 # 岩
 # ---------------------------------------------------------------------------
-def crack_y(x):
-    return 0.006 * math.sin(x * 55 + 0.7) + 0.004 * math.sin(x * 130)
+CRACK_X = 0.012  # 2つの岩の間のV字の割れ目（y方向に走る）
 
 
-CRACK_HALF = 0.014
+def hull_rock(center, radii, n, seed, rot_z=0.0, tilt=(0.0, 0.0), bevel=0.0025):
+    """凸包で作る面の大きい岩塊。鋭い稜だけ面取りし、面取り面を返す"""
+    rr = random.Random(seed)
+    tmp = bmesh.new()
+    R = Matrix.Rotation(rot_z, 3, "Z") @ Matrix.Rotation(tilt[0], 3, "X") @ Matrix.Rotation(tilt[1], 3, "Y")
+    for i in range(n):
+        d = Vector((rr.gauss(0, 1), rr.gauss(0, 1), abs(rr.gauss(0, 1)) - 0.1)).normalized()
+        p = Vector((d.x * radii[0], d.y * radii[1], d.z * radii[2])) * rr.uniform(0.8, 1.0)
+        p = R @ p + Vector(center)
+        p.z = max(p.z, 0.0)
+        tmp.verts.new(p)
+    for k in range(9):
+        a = 2 * math.pi * k / 9 + rr.uniform(-0.2, 0.2)
+        tmp.verts.new(Vector(center) + Matrix.Rotation(rot_z, 3, "Z") @ Vector((math.cos(a) * radii[0] * 0.92, math.sin(a) * radii[1] * 0.92, 0)) - Vector((0, 0, center[2])))
+    res = bmesh.ops.convex_hull(tmp, input=list(tmp.verts))
+    junk = [g for g in res["geom_interior"] + res["geom_unused"] if isinstance(g, bmesh.types.BMVert)]
+    if junk:
+        bmesh.ops.delete(tmp, geom=junk, context="VERTS")
+    bmesh.ops.dissolve_limit(tmp, angle_limit=math.radians(5), verts=list(tmp.verts), edges=list(tmp.edges))
+    bev = set()
+    sharp = [e for e in tmp.edges if len(e.link_faces) == 2 and e.calc_face_angle(0.0) > math.radians(14)]
+    if bevel > 0 and sharp:
+        try:
+            r = bmesh.ops.bevel(tmp, geom=sharp, offset=bevel, offset_type="OFFSET", segments=1, profile=0.5,
+                                affect="EDGES", clamp_overlap=True)
+            bev = set(r["faces"])
+        except Exception as ex:  # noqa
+            C.log(f"bevel skipped: {ex}")
+    tmp.normal_update()
+    return tmp, bev
+
+
+def emit_rock(mb, tmp, bev, rnd, tops, rims, shade=0.0):
+    for f in tmp.faces:
+        nz = f.normal.z
+        cz = f.calc_center_median().z
+        if f in bev:
+            col = mix(srgb("#4A5E74"), srgb("#8AA4BC"), smooth01(nz, 0.0, 0.8))
+        else:
+            col = mix(srgb("#1C232D"), srgb("#2F3B49"), rnd.random())
+            col = mix(col, srgb("#6C86A0"), smooth01(nz, 0.55, 0.95) * rnd.uniform(0.25, 0.5))
+        if cz < 0.008:
+            col = mix(col, srgb("#10141A"), 0.6)
+        col = mix(col, srgb("#0E1218"), shade)
+        vs = [mb.v(v.co.copy(), col) for v in f.verts]
+        mb.f(vs, ROCK, False)
+        if f in bev:
+            if cz > 0.03 and nz > -0.2:
+                for _ in range(2):
+                    t = rnd.random()
+                    e = rnd.randrange(len(f.verts))
+                    q = f.verts[e].co.lerp(f.verts[(e + 1) % len(f.verts)].co, t)
+                    rims.append((q, f.normal.copy()))
+        elif nz > 0.15 and cz > 0.02:
+            area = f.calc_area()
+            for _ in range(max(1, int(area / 0.00012))):
+                ws = [rnd.random() for _ in f.verts]
+                sw = sum(ws)
+                q = sum((v.co * (w / sw) for v, w in zip(f.verts, ws)), Vector())
+                tops.append((q, f.normal.copy()))
+    tmp.free()
 
 
 def build_rock(mb, rnd):
-    tmp = bmesh.new()
-    bmesh.ops.create_icosphere(tmp, subdivisions=4, radius=1.0)
-    rr = random.Random(5)
-    planes = [(Vector((0, 0, 1)), 0.6), (Vector((0.2, -0.1, 1)).normalized(), 0.62)]
-    for i in range(16):
-        az = 2 * math.pi * i / 16 + rr.uniform(-0.18, 0.18)
-        el = rr.uniform(-0.15, 1.0)
-        planes.append((Vector((math.cos(el) * math.cos(az), math.cos(el) * math.sin(az), math.sin(el))),
-                       rr.uniform(0.66, 0.84)))
-    crack = {}
-    for v in tmp.verts:
-        d = v.co.normalized()
-        r = 1.0
-        for n, dist in planes:
-            k = n.dot(d)
-            if k > 1e-3:
-                r = min(r, dist / k)
-        p = d * r
-        p += Vector(noise.noise_vector(p * 2.2)) * 0.03 + Vector(noise.noise_vector(p * 9.0 + Vector((3, 1, 2)))) * 0.008
-        x, y, z = p.x * 0.125, p.y * 0.09, p.z * 0.07 + 0.028
-        z = max(z, 0.0)
-        c = 0.0
-        if z > 0.045 and abs(x) < 0.08:
-            dist = abs(y - crack_y(x))
-            if dist < CRACK_HALF:
-                c = (1 - (dist / CRACK_HALF) ** 2) * math.sqrt(max(0.0, 1 - (x / 0.08) ** 2))
-                z -= 0.024 * c
-        v.co = (x, y, z)
-        crack[v] = c
-    tmp.normal_update()
-    vmap = {}
-    tops = []
-    for v in tmp.verts:
-        nz = v.normal.z
-        n1 = noise.noise(v.co * 60.0)
-        col = mix(srgb("#1E252F"), srgb("#2F3A48"), 0.5 + 0.5 * n1)
-        col = mix(col, srgb("#6F88A0"), smooth01(nz, 0.6, 0.95) * 0.4 * max(0.0, 0.5 + noise.noise(v.co * 25.0 + Vector((5, 5, 5)))))
-        col = mix(col, srgb("#0B0F15"), crack[v] * 1.3)
-        if v.co.z < 0.004:
-            col = mix(col, srgb("#151A21"), 0.7)
-        vmap[v] = mb.v(v.co.copy(), col)
-        if 0.15 < nz < 0.85 and v.co.z > 0.03 and crack[v] == 0:
-            tops.append((v.co.copy(), v.normal.copy()))
-    for f in tmp.faces:
-        mb.f([vmap[v] for v in f.verts], ROCK, True)
-    tmp.free()
-    return tops
+    tops, rims = [], []
+    parts = [
+        # center, radii, n, seed, rot_z, tilt
+        ((0.0, 0.0, 0.0), (0.128, 0.085, 0.030), 34, 3, 0.15, (0.0, 0.0), 0.0018),
+        ((-0.050, 0.014, 0.0), (0.075, 0.064, 0.080), 40, 11, 0.5, (0.06, 0.12), 0.0028),
+        ((0.060, -0.010, 0.0), (0.062, 0.054, 0.060), 36, 23, -0.4, (-0.05, -0.15), 0.0024),
+        ((0.020, 0.058, 0.0), (0.030, 0.026, 0.026), 18, 41, 1.0, (0.0, 0.0), 0.0015),
+        ((-0.020, -0.068, 0.0), (0.026, 0.020, 0.018), 16, 57, 0.3, (0.0, 0.0), 0.0012),
+    ]
+    for i, (c, r, n, sd, rz, tl, bv) in enumerate(parts):
+        tmp, bev = hull_rock(c, r, n, sd, rz, tl, bv)
+        emit_rock(mb, tmp, bev, rnd, tops, rims, shade=0.25 if i == 0 else 0.0)
+    return tops, rims
 
 
-def rock_ice(mb, tops, rnd):
+def rock_ice(mb, tops, rims, rnd):
     """岩の肩から生える透明な氷柱の群れ＋霜"""
     for az_deg in (205, 335, 75):
         az = math.radians(az_deg)
@@ -317,13 +342,13 @@ def rock_ice(mb, tops, rnd):
             q = p + Vector((rnd.uniform(-0.008, 0.008), rnd.uniform(-0.008, 0.008), 0)) - n * 0.004
             L = rnd.uniform(0.016, 0.042) * (1.0 if j else 1.25)
             add_prism(mb, q, d, L, L * rnd.uniform(0.13, 0.18), RICE, srgb("#FFFFFF"), rnd)
-    hi = sorted(tops, key=lambda t: -t[0].z)[:max(8, len(tops) // 3)]
-    for _ in range(7):
+    hi = [t for t in rims if t[0].z > 0.035] or rims
+    for _ in range(9):
         p0, n0 = rnd.choice(hi)
-        near = [t for t in tops if (t[0] - p0).length < 0.014]
-        for _ in range(8):
+        near = [t for t in rims if (t[0] - p0).length < 0.02]
+        for _ in range(7):
             p, n = rnd.choice(near)
-            add_frost(mb, p, n + Vector((0, 0, 0.6)), rnd.uniform(0.002, 0.0045), rnd)
+            add_frost(mb, p, n + Vector((0, 0, 0.5)), rnd.uniform(0.002, 0.004), rnd)
 
 
 # ---------------------------------------------------------------------------
@@ -490,31 +515,32 @@ def main():
     rnd = random.Random(2611)
     mats = build_materials()
     mb = MB()
-    tops = build_rock(mb, rnd)
-    rock_ice(mb, tops, rnd)
+    tops, rims = build_rock(mb, rnd)
+    rock_ice(mb, tops, rims, rnd)
 
-    def cb(x, z=0.040):
-        return Vector((x, crack_y(x), z))
+    def cb(y, z=0.022, dx=0.0):
+        return Vector((CRACK_X + dx, y, z))
 
     heads = [
         # (base, pos, axis, D)
-        (cb(-0.010), (-0.012, 0.006, 0.172), (-0.15, -0.45, 1.0), 0.090),
-        (cb(0.018), (0.054, -0.014, 0.134), (0.45, -0.40, 1.0), 0.070),
-        (cb(-0.030), (-0.068, -0.030, 0.104), (-0.50, -0.45, 1.0), 0.050),
+        (cb(0.004, dx=-0.004), (-0.012, 0.006, 0.172), (-0.15, -0.45, 1.0), 0.090),
+        (cb(-0.010, dx=0.004), (0.054, -0.014, 0.134), (0.45, -0.40, 1.0), 0.070),
+        (cb(-0.022, dx=-0.003), (-0.068, -0.030, 0.104), (-0.50, -0.45, 1.0), 0.050),
     ]
     for base, pos, axis, D in heads:
         H = head_matrix(pos, axis, rnd.uniform(0, 6.28))
         build_stem(mb, base, H, 0.0034 * (D / 0.09) ** 0.5)
         build_flower(mb, H, D, rnd)
     Hb = head_matrix((0.018, 0.036, 0.150), (0.18, 0.25, 1.0), 0.4)
-    build_stem(mb, cb(0.004), Hb, 0.0025)
+    build_stem(mb, cb(0.020), Hb, 0.0025)
     build_bud(mb, Hb, rnd)
 
     leaves = [
-        (cb(-0.022, 0.050), (-0.5, -0.45, 0.85), 0.090, 0.0120),
-        (cb(0.010, 0.050), (0.55, -0.35, 0.85), 0.082, 0.0115),
-        (cb(-0.006, 0.050), (-0.15, 0.6, 0.85), 0.076, 0.0110),
-        (cb(0.032, 0.050), (0.55, 0.4, 0.8), 0.066, 0.0100),
+        (cb(-0.016, 0.034, -0.003), (-0.5, -0.5, 0.85), 0.092, 0.0120),
+        (cb(-0.004, 0.034, 0.004), (0.6, -0.3, 0.85), 0.084, 0.0115),
+        (cb(0.012, 0.034, -0.004), (-0.3, 0.55, 0.85), 0.078, 0.0110),
+        (cb(0.028, 0.034, 0.003), (0.5, 0.45, 0.8), 0.068, 0.0100),
+        (cb(-0.030, 0.036, 0.0), (0.1, -0.75, 0.7), 0.060, 0.0095),
     ]
     for base, d, L, W in leaves:
         build_leaf(mb, base, d, L, W, rnd)
