@@ -5,6 +5,8 @@ on:
     paths:
       - tools/floor6/gravel_sparse_v1.py
       - .github/workflows/f6-gravel-sparse-render.yml
+  pull_request:
+    branches: [development]
   workflow_dispatch:
 permissions:
   contents: read
