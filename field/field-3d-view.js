@@ -383,7 +383,21 @@ function gatherDef(o) { try { return fieldGatherPointDef(fieldArea(), o); } catc
    FOE（モンスターの画像を立て札のように表示＋足元の光）
    ------------------------------------------------------------ */
 function foeTexture(src) {
-  if (!g.texCache.has(src)) { const t = new THREE.TextureLoader().load(src); t.colorSpace = THREE.SRGBColorSpace; g.texCache.set(src, t); }
+  if (!g.texCache.has(src)) {
+    const t = new THREE.TextureLoader().load(src, texture => {
+      if (!/\.svg(?:$|[?#])/i.test(src)) return;
+      // DOM SVG images can fail WebGL2 immutable texture upload. Rasterize
+      // synchronously in onLoad, before the first render can upload the SVG.
+      const image = texture.image, width = image.naturalWidth || image.width || 512;
+      const height = image.naturalHeight || image.height || 512;
+      const scale = Math.min(2048 / Math.max(width,height), Math.max(1,512 / Math.max(width,height)));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1,Math.round(width*scale)); canvas.height = Math.max(1,Math.round(height*scale));
+      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      texture.image = canvas; texture.userData.svgRasterized = true; texture.needsUpdate = true;
+    });
+    t.colorSpace = THREE.SRGBColorSpace; g.texCache.set(src,t);
+  }
   return g.texCache.get(src);
 }
 // FOE visuals own these GPU resources; textures remain in the shared cache.
@@ -585,7 +599,7 @@ function gameReviewState() {
     camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
     entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
     waterMeshCount:g.world.children.filter(o=>o.isMesh&&o.geometry===waterGeo).length,
-    foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image})),
+    foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),
     staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
 }
 window.KotamaField3D = { active, input, build, frame, toggle, gameReviewState, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
