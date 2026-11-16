@@ -185,7 +185,7 @@ export function enhanceB4CartPractical(root,variant=20) {
  }
  // V28: retain original icosahedron rock SILHOUETTE, add dense per-face sculpted
  // geometry offset only 1–4% outwards. Avoid V27's giant spherical bulge.
- if(variant>=28){
+ if(variant===28){
    const detailedOre=new THREE.MeshStandardMaterial({name:'B4_CaveOre',color:0x343536,metalness:0,roughness:.98,side:THREE.DoubleSide});
    let stoneIndex=0;
    for(const ore of [...cart.children]){
@@ -233,6 +233,40 @@ export function enhanceB4CartPractical(root,variant=20) {
      layer.name='B4_ORE_FACE_SUBDIVISION_PRESERVES_ORIGINAL_'+stoneIndex;
      layer.position.copy(ore.position);layer.rotation.copy(ore.rotation);layer.scale.copy(ore.scale);
      group.add(layer);stoneIndex++;
+   }
+ }
+
+ // V29: structural close-up pass. No substitute shells over the ore; preserve
+ // V26 dark ore and all four running wheels.
+ if(variant>=29){
+   const darkSteel = new THREE.MeshStandardMaterial({name:'B4_BlackIron',color:0x2f3235,metalness:.72,roughness:.70});
+   const wearSteel = new THREE.MeshStandardMaterial({name:'B4_RustedIron',color:0x575048,metalness:.48,roughness:.85});
+   const brownWood = new THREE.MeshStandardMaterial({name:'B4_WoodBoard2',color:0x554639,metalness:0,roughness:.98,side:THREE.DoubleSide});
+   // Real diagonal braces linking the underframe to each bearing.
+   for(const side of [-1,1])for(const z of [-axleZ,axleZ]){
+     beam([side*.60,.22,z+Math.sign(z)*.18],[side*.89,-.065,z],.072,.080,darkSteel);
+     const washer=new THREE.Mesh(new THREE.CylinderGeometry(.085,.085,.025,12),wearSteel);
+     washer.rotation.z=Math.PI/2;washer.position.set(side*1.13,-.10,z);group.add(washer);
+     const pin=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.035,8),darkSteel);
+     pin.rotation.z=Math.PI/2;pin.position.set(side*1.15,-.10,z);group.add(pin);
+   }
+   // Broken upper timber corners: irregular splinter pieces, not a solid
+   // block-shaped patch or uniformly repeated damage.
+   const fragments=[
+     {side:1,z:-L*.88,y:top-.12,len:.22,ang:-.19},
+     {side:-1,z:L*.71,y:top-.27,len:.31,ang:.16},
+     {side:1,z:L*.32,y:top-.32,len:.18,ang:.08}
+   ];
+   for(const f of fragments){
+     const x=f.side*(X-.035);
+     beam([x,f.y,f.z],[x+f.side*.025,f.y+f.042,f.z+f.len],.028,.031,brownWood);
+     const chip=new THREE.Mesh(new THREE.TetrahedronGeometry(.065,0),brownWood);
+     chip.position.set(x,f.y+.005,f.z+f.len*.54);chip.rotation.set(.27,.12,f.ang);group.add(chip);
+   }
+   // Rivets and narrow worn contact edges, coherent with actual braces.
+   for(const side of [-1,1])for(const z of [-L*.71,-L*.03,L*.56]){
+     const rivet=new THREE.Mesh(new THREE.CylinderGeometry(.027,.027,.034,10),wearSteel);
+     rivet.rotation.z=Math.PI/2;rivet.position.set(side*(X+.058),top-.07,z);group.add(rivet);
    }
  }
  cart.userData={...cart.userData,practical:{variant,topWidth:X*2,topLength:L*2,wheelbase:axleZ*2,sourceGeometryPreserved:true}};
