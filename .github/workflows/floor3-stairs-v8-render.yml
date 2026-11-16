@@ -1,0 +1,79 @@
+name: Floor3 Stairs V8 Single Asset Render
+on:
+  push:
+    branches: [feature/floor3-ruined-stair-connector-20261115]
+    paths:
+      - 'tools/floor3/ruined_connector/build_stairs_v8.py'
+      - '.github/workflows/floor3-stairs-v8-render.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [development]
+    paths:
+      - 'tools/floor3/ruined_connector/build_stairs_v8.py'
+      - '.github/workflows/floor3-stairs-v8-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - name: Blender V8 render with independent stair checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python3 -m py_compile tools/floor3/ruined_connector/build_stairs_v8.py
+          printf '{"stage":"floor3","asset":"stairs","version":"v8","approval":"NOT_APPROVED","phase":"STARTED","run_id":"%s"}\n' "$GITHUB_RUN_ID" > out/stairs-v8-progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_stairs_v8.py 2>&1 | tee blender-v8.log
+          grep -q 'FLOOR3_STAIRS_V8_COMPLETE' blender-v8.log
+          printf '{"stage":"floor3","asset":"stairs","version":"v8","approval":"NOT_APPROVED","phase":"BLENDER_COMPLETED","run_id":"%s"}\n' "$GITHUB_RUN_ID" > out/stairs-v8-progress.json
+      - name: Verify V8 stairs GLB and three views; hash checkpoint
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct
+          root=pathlib.Path('out')
+          stem='floor3_ruined_connector_stairs_v8'
+          glb=root/(stem+'.glb')
+          blend=root/(stem+'.blend')
+          files=[glb,blend]+[root/(stem+'-'+v+'.png') for v in ('front','side','angle')]
+          for p in files:
+              assert p.is_file() and p.stat().st_size>1024, f'missing/empty {p}'
+          raw=glb.read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          size,chunk=struct.unpack_from('<II',raw,12)
+          assert chunk==0x4e4f534a
+          document=json.loads(raw[20:20+size].decode())
+          assert any('V7 concrete staircase support spine' in (n.get('name') or '') for n in document['nodes']), 'missing structural support'
+          assert any('normalTexture' in m for m in document['materials']), 'missing normal map'
+          for p in files:
+              if p.suffix=='.png':
+                  assert p.read_bytes().startswith(bytes.fromhex('89504e470d0a1a0a'))
+          manifest={'approval':'NOT_APPROVED','stage':'floor3','asset':'stairs','version':'v8',
+                    'source_commit':'${{ github.sha }}','run_id':'${{ github.run_id }}',
+                    'status':'RENDERED_NOT_VISUALLY_APPROVED',
+                    'files':{p.name:{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in files}}
+          (root/'stairs-v8-manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n')
+          print('Validated V8 stairs',len(files),'files')
+          PY
+      - name: Preserve log even after failure
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p out
+          if test -f blender-v8.log; then cp blender-v8.log out/stairs-v8-blender.log; fi
+          if ! test -f out/stairs-v8-progress.json; then
+            printf '{"stage":"floor3","asset":"stairs","version":"v8","approval":"NOT_APPROVED","phase":"FAILED_BEFORE_RENDER"}\n' > out/stairs-v8-progress.json
+          fi
+      - name: Upload V8 review artifact
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: floor3-stairs-v8-review
+          path: |
+            out/floor3_ruined_connector_stairs_v8.*
+            out/floor3_ruined_connector_stairs_v8-*.png
+            out/stairs-v8-*
+          retention-days: 14
