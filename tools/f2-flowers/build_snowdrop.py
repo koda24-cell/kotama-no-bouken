@@ -140,10 +140,13 @@ def frost_edges(S, M, count, umin, size, sides=(-1, 1)):
 # ---------------------------------------------------------------------------
 # 材質
 # ---------------------------------------------------------------------------
-M_OUTER = C.mat_petal("snowdrop_outer_tepal", hexlin("#F4F7FA"), rough=0.5, sss=0.4,
-                      sss_radius=(1.0, 0.95, 0.9), sheen=0.35, vcol=True)
+M_OUTER = C.mat_petal("snowdrop_outer_tepal", hexlin("#F4F7FA"), rough=0.45, sss=0.5,
+                      sss_radius=(1.0, 0.95, 0.9), sheen=0.15, vcol=True)
+# 薄い花弁で光が抜けすぎると陰影が消えて平板に見えるため、散乱距離を厚み程度に絞る
+M_OUTER.node_tree.nodes["Principled BSDF"].inputs["Subsurface Scale"].default_value = 0.0014
 M_INNER = C.mat_petal("snowdrop_inner_tepal", hexlin("#F4F7FA"), rough=0.4, sss=0.45,
-                      sss_radius=(0.9, 1.0, 0.8), sheen=0.25, vcol=True)
+                      sss_radius=(0.9, 1.0, 0.8), sheen=0.15, vcol=True)
+M_INNER.node_tree.nodes["Principled BSDF"].inputs["Subsurface Scale"].default_value = 0.0012
 M_STEM = C.mat_leaf("snowdrop_stem", hexlin("#6E9474"), rough=0.45, sss=0.2, coat=0.15)
 M_OVARY = C.mat_leaf("snowdrop_ovary", hexlin("#6FA44A"), rough=0.45, sss=0.2, coat=0.15)
 M_SPATHE = C.mat_leaf("snowdrop_spathe", hexlin("#93B486"), rough=0.5, sss=0.35, coat=0.05)
@@ -247,7 +250,7 @@ def build_mound():
 def outer_S(L, W, cup, curl):
     def wf(u):
         if u < 0.6:
-            return 0.2 + 0.8 * math.sin(math.pi * 0.5 * u / 0.6)
+            return 0.26 + 0.74 * math.sin(math.pi * 0.5 * u / 0.6)
         t = (u - 0.6) / 0.4
         return max(0.0, math.sqrt(max(0.0, 1 - t * t)) * 0.95 + (1 - t) * 0.05)
 
@@ -308,7 +311,7 @@ def build_flower(tag, d, A, Lout, alpha, spin):
         y = d * math.cos(al) + e * math.sin(al)
         z = d * math.sin(al) - e * math.cos(al)
         L = Lout * R.uniform(0.95, 1.04)
-        S = outer_S(L, 0.0104, cup=0.55, curl=0.07)
+        S = outer_S(L, 0.0104, cup=0.32, curl=0.10)
         M = basis(A + e * 0.0021, y, z)
         ob = surface(f"{tag}_outer{k}", S, 12, 10, M, thickness=0.0013, color_fn=outer_color)
         C.assign(ob, M_OUTER)
@@ -320,8 +323,8 @@ def build_flower(tag, d, A, Lout, alpha, spin):
         al = math.radians(4)
         y = d * math.cos(al) + e * math.sin(al)
         z = d * math.sin(al) - e * math.cos(al)
-        S = inner_S(0.0120 * Lout / 0.025, 0.0078, cup=0.5, flare=0.5)
-        M = basis(A + d * 0.0006 + e * 0.0016, y, z)
+        S = inner_S(0.0120 * Lout / 0.025, 0.0080, cup=0.6, flare=0.5)
+        M = basis(A + d * 0.0006 + e * 0.0019, y, z)
         ob = surface(f"{tag}_inner{k}", S, 7, 6, M, thickness=0.0009, color_fn=inner_color)
         C.assign(ob, M_INNER)
         parts.append(ob)
