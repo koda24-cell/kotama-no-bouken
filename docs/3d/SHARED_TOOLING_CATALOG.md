@@ -133,3 +133,11 @@
 - GitHub Models推論APIは2026-07-30に終了済みのため使用しない: https://docs.github.com/en/github-models
 - 関連PR: 玉座V1 #383、玉座V2 #395。新規実装PRは別途公開後記録。
 - 注意: 画像の数値検査は美観評価ではない。AI評価が成功しても原形状破壊防止・人間の最終承認必須。ジョブ異常終了時のArtifact保全は無保証。接続先の従量課金を勝手に発生させない。
+
+## Claudeチーム: Actions上のBlender 4.2で植物プロップを生成・自己レビュー (2026-11-16 追加)
+- 担当: Claude。用途: 第2層の花3種（PR #409、未承認）。仕組みは `tools/f2-flowers/common.py` と `.github/workflows/f2-flowers-render.yml`。
+- 環境: GitHub Actions ubuntu-latest、Blender 4.2.3 LTS の公式Linux版をキャッシュ（Dockerは不使用）、Cycles CPU 64 samples、1アセットのレンダーは2〜4分。
+- 技法: 曲面花弁（輪郭関数・椀・反り・ねじれ）、平行移動フレームによる管（茎）、霜の氷晶を実メッシュで縁に配置、頂点色による模様、cave/studioの2照明で計7方向の実レンダー、manifest（tri・bbox・sha256）。
+- Claudeが画像を確認する方法: この環境ではArtifactのzipがHTTP 403で取れないため、ワークフローがPNGを作業ブランチへコミットして返し、git pullしてReadで見る。
+- 検証結果: 3アセット×各6回の反復で、全runがレンダー成功（一時的な403のpush失敗1回はrerunで解消）。独立レビューは霜鈴草6.5、氷晶花5.5、氷水芭蕉4.5（10点満点）。苞のような包む曲面と土台の作り込みが課題。
+- 未検証: Three.js（GLTFLoader）での KHR_materials_transmission と発光の見え方。
