@@ -111,8 +111,8 @@
         }
       ],
       "performance": {
-        "frames": 3,
-        "fps": 0.8476372112735749,
+        "frames": 6,
+        "fps": 1.6230077579771076,
         "calls": 275,
         "triangles": 345663,
         "memory": {
@@ -208,8 +208,8 @@
         }
       ],
       "performance": {
-        "frames": 4,
-        "fps": 1.1734334663224701,
+        "frames": 8,
+        "fps": 2.314508662875263,
         "calls": 246,
         "triangles": 330623,
         "memory": {
@@ -293,8 +293,8 @@
         }
       ],
       "performance": {
-        "frames": 7,
-        "fps": 1.8118677336554432,
+        "frames": 13,
+        "fps": 3.3075163308619047,
         "calls": 173,
         "triangles": 190195,
         "memory": {
@@ -414,8 +414,8 @@
         }
       ],
       "performance": {
-        "frames": 4,
-        "fps": 1.0927369417935595,
+        "frames": 7,
+        "fps": 1.8478595626732368,
         "calls": 275,
         "triangles": 345663,
         "memory": {
