@@ -8,6 +8,7 @@ on:
       - "field/field-interactions.js"
       - "field/field-movement-foe.js"
       - "field/field-navigation.js"
+      - "field/field-persistence.js"
       - "field/field-render.js"
       - "script.js"
       - "tools/world-tree/test_a1_story.cjs"
@@ -32,6 +33,7 @@ jobs:
           node --check field/field-interactions.js
           node --check field/field-movement-foe.js
           node --check field/field-navigation.js
+          node --check field/field-persistence.js
           node --check field/field-render.js
           node --check script.js
       - name: Story and map regression checks
