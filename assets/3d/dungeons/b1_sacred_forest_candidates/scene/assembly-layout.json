@@ -7692,6 +7692,19 @@
       "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
       "sceneSourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
       "camera": "camera_sealed_corridor"
+    },
+    "shrine_detail": {
+      "file": "renders/scene/shrine_detail.png",
+      "sha256": "05d342ecc7ae15bc86dd2923a8f02771cd8fa6e7e6b5b47f3fa3fd1c7ea9b0ed",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "renderer": "Cycles CPU",
+      "geometrySource": "reimported individual GLBs",
+      "blenderVersion": "5.3.0",
+      "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
+      "sceneSourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
+      "camera": "camera_shrine_detail"
     }
   },
   "optionalSceneGLB": {
