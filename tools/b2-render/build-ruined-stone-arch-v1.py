@@ -93,6 +93,7 @@ def stone(name,center,size,mat,rotation=None):
  bm=bmesh.new();bm.from_mesh(mesh)
  bm.verts.ensure_lookup_table()
  bmesh.ops.subdivide_edges(bm,edges=list(bm.edges),cuts=3,use_grid_fill=True)
+ bm.normal_update()
  for v in bm.verts:
   if len(v.link_edges)>=3:
    n=v.normal.normalized()
