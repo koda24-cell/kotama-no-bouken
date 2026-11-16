@@ -1,0 +1,49 @@
+{
+  "asset": "f2_ice_mizubasho",
+  "blender": "4.2.3 LTS",
+  "triangles": 28686,
+  "objects": [
+    "f2_ice_mizubasho"
+  ],
+  "materials": [
+    "mz_dead_grass",
+    "mz_frost",
+    "mz_ice",
+    "mz_ice_crack",
+    "mz_ice_rim",
+    "mz_leaf",
+    "mz_mud",
+    "mz_spadix",
+    "mz_spathe"
+  ],
+  "bbox_m": [
+    0.5116,
+    0.5051,
+    0.3758
+  ],
+  "origin": "bottom-center",
+  "glb": "f2_ice_mizubasho.glb",
+  "glb_bytes": 837460,
+  "sha256": {
+    "f2_ice_mizubasho.glb": "4af15b894b5895b66f133ec14991aaf36b8b1de1db94f3dd97e79d838c2565cc",
+    "f2_ice_mizubasho_cave_front.png": "01ca6233fcc60315e702ff7b973325809416abbd7a3208b9cf7d6abdc78a7b2f",
+    "f2_ice_mizubasho_cave_side.png": "0ec21355fddbbce071cb5f6dacca0c7de69994aafd1ba0adbf1c96aee7cafd52",
+    "f2_ice_mizubasho_cave_angle.png": "fd572bece53cef4ded66f00a15ca118456f6ed0e3ba36ca0f19b750e7c166d2a",
+    "f2_ice_mizubasho_cave_top.png": "df4997b4bd64f61960186e4527c5659c61611f125412533074e6893ad836d8bb",
+    "f2_ice_mizubasho_cave_close.png": "27bb9ca483ad00d1d874ae556d920812e62dd6fd7cbc8f822128dd618b7f3845",
+    "f2_ice_mizubasho_studio_front.png": "7aa05dcb4371c358756217da44cf6d73873877bdb5931e0e8c17a04ebd568b11",
+    "f2_ice_mizubasho_studio_angle.png": "f555cb05c6c883a9b892a23acf4a9977e74c481cc85665f5ef3551d63b42025e"
+  },
+  "renders": [
+    "f2_ice_mizubasho_cave_front.png",
+    "f2_ice_mizubasho_cave_side.png",
+    "f2_ice_mizubasho_cave_angle.png",
+    "f2_ice_mizubasho_cave_top.png",
+    "f2_ice_mizubasho_cave_close.png",
+    "f2_ice_mizubasho_studio_front.png",
+    "f2_ice_mizubasho_studio_angle.png"
+  ],
+  "samples": 64,
+  "notes": "氷水芭蕉（ミズバショウ基準）。仏炎苞3（筒状基部→スプーン形の舟状フード、縁の外反、基部の緑）、六角小花の実メッシュ肉穂、櫂形の葉3+若い巻き葉1（中央脈・側脈の凹凸・溝付き葉柄）、泥の上の薄氷円盤・割れ目・閉じ込めた枯れ草・茎元の氷の縁・縁の霜。画像テクスチャなし（材質色+頂点色）。",
+  "approval": "NOT_APPROVED"
+}
