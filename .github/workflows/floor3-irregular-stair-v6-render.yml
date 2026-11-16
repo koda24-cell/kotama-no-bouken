@@ -28,6 +28,35 @@ jobs:
               test -s "out/floor3_ruined_connector_${kind}_v6-${view}.png"
             done
           done
+      - name: Verify GLB, PNG, normal maps and write review manifest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, pathlib, struct
+          root=pathlib.Path("out")
+          files={}
+          for kind in ("stairs","ramp","landing"):
+              stem=f"floor3_ruined_connector_{kind}_v6"
+              glb=root/(stem+".glb")
+              data=glb.read_bytes()
+              assert data[:4]==b"glTF" and struct.unpack_from("<I",data,8)[0]==len(data), glb
+              json_length,json_type=struct.unpack_from("<II",data,12)
+              assert json_type==0x4E4F534A
+              asset=json.loads(data[20:20+json_length].decode())
+              assert asset.get("meshes") and asset.get("materials"), glb
+              assert asset.get("images") and asset.get("textures"), f"no embedded normal image: {glb}"
+              assert any("normalTexture" in m for m in asset["materials"]), f"no normalTexture: {glb}"
+              for p in [glb]+[root/(stem+"-"+view+".png") for view in ("front","side","angle")]:
+                  raw=p.read_bytes()
+                  if p.suffix==".png":
+                      assert raw.startswith(bytes.fromhex("89504e470d0a1a0a")), p
+                  files[p.name]={"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw)}
+          manifest={"approval":"NOT_APPROVED","stage":"floor3","version":"v6",
+                    "source_commit":"${{ github.sha }}","workflow_run_id":"${{ github.run_id }}",
+                    "status":"RENDERED_NOT_VISUALLY_APPROVED","files":files}
+          (root/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
+          print("validated",len(files),"GLB/PNG files")
+          PY
       - uses: actions/upload-artifact@v5
         with:
           name: floor3-irregular-stair-v6
