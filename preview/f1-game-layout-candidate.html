@@ -50,7 +50,7 @@ const close=(a,b,epsilon=1e-5)=>Math.abs(a-b)<=epsilon;
 function requestRender(){if(renderQueued)return;renderQueued=true;requestAnimationFrame(()=>{renderQueued=false;renderer.render(scene,camera);});}
 function resize(){const w=Math.max(1,viewport.clientWidth),h=Math.max(1,viewport.clientHeight);renderer.setSize(w,h,false);perspective.aspect=w/h;perspective.updateProjectionMatrix();const half=56;planCamera.left=-half*w/h;planCamera.right=half*w/h;planCamera.top=half;planCamera.bottom=-half;planCamera.updateProjectionMatrix();requestRender();}
 new ResizeObserver(resize).observe(viewport);
-function fit(){if(isPlan){planCamera.position.set(centre.x,150,centre.z);planCamera.lookAt(centre);controls.target.copy(centre);}else{perspective.position.copy(centre).add(new THREE.Vector3(69,87,106));controls.target.copy(centre);perspective.lookAt(centre);}controls.update();requestRender();}
+function fit(){controls.maxPolarAngle=Math.PI*.49;if(isPlan){planCamera.position.set(centre.x,150,centre.z);planCamera.lookAt(centre);controls.target.copy(centre);}else{perspective.position.copy(centre).add(new THREE.Vector3(69,87,106));controls.target.copy(centre);perspective.lookAt(centre);}controls.update();requestRender();}
 function setPlan(value){isPlan=!!value;camera=isPlan?planCamera:perspective;controls.object=camera;controls.enableRotate=!isPlan;$('plan').setAttribute('aria-pressed',String(isPlan));$('plan').textContent=isPlan?'斜め表示に戻す':'平面図に切り替え';$('view-label').textContent=isPlan?'3F配置の平面図 ／ 上が北':'実3Fの座標に合わせた配置確認';fit();renderer.render(scene,camera);return snapshot();}
 const nearViews={};
 function setFocus(kind){
@@ -63,7 +63,7 @@ function setFocus(kind){
   assert(candidates.length,'対象付近の歩行床がありません。');
   let chosen=candidates[0],wallOccluded=true;
   for(const c of candidates.slice(0,28)){ray.set(c.eye,target.clone().sub(c.eye).normalize());ray.far=c.distance-.15;if(!ray.intersectObjects(wallGroup.children,true).length){chosen=c;wallOccluded=false;break;}}
-  isPlan=false;camera=perspective;controls.object=camera;controls.enableRotate=true;
+  isPlan=false;camera=perspective;controls.object=camera;controls.enableRotate=true;controls.maxPolarAngle=Math.PI*.98;
   camera.position.copy(chosen.eye);controls.target.copy(target);camera.lookAt(target);controls.update();
   $('plan').setAttribute('aria-pressed','false');$('plan').textContent='平面図に切り替え';
   $('view-label').textContent=({approach:'参道',shrine:'祠周辺',water:'水際'})[kind]+' ／ 目高1.6m・独立配置プレビュー';
