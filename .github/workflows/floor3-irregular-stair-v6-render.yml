@@ -17,9 +17,11 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p out
+          printf '{"stage":"floor3","version":"v6","approval":"NOT_APPROVED","phase":"RENDER_STARTED","source_commit":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/progress.json
           docker pull lscr.io/linuxserver/blender:latest
           docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_irregular_v6.py 2>&1 | tee blender.log
           grep -q 'FLOOR3_IRREGULAR_V6_COMPLETE' blender.log
+          printf '{"stage":"floor3","version":"v6","approval":"NOT_APPROVED","phase":"RENDER_FINISHED","source_commit":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/progress.json
       - name: Verify GLB and three views
         run: |
           for kind in stairs ramp landing; do
@@ -57,7 +59,17 @@ jobs:
           (root/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
           print("validated",len(files),"GLB/PNG files")
           PY
+      - name: Preserve Blender log for review and recovery
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p out
+          if test -f blender.log; then cp blender.log out/blender.log; fi
+          if ! test -e out/progress.json; then
+            printf '{"stage":"floor3","version":"v6","approval":"NOT_APPROVED","phase":"FAILED_BEFORE_RENDER"}\n' > out/progress.json
+          fi
       - uses: actions/upload-artifact@v5
+        if: always()
         with:
           name: floor3-irregular-stair-v6
           path: out/
