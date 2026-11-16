@@ -5,6 +5,12 @@ on:
     paths:
       - 'tools/floor3/ruined_connector/build_irregular_v6.py'
       - '.github/workflows/floor3-irregular-stair-v6-render.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [development]
+    paths:
+      - 'tools/floor3/ruined_connector/build_irregular_v6.py'
+      - '.github/workflows/floor3-irregular-stair-v6-render.yml'
   workflow_dispatch:
 jobs:
   render:
