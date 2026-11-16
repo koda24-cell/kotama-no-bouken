@@ -16,8 +16,8 @@ async def main():
     if not command and Path('/workspace/tools/mcp-venv/bin/blender-mcp').is_file():
         command='/workspace/tools/mcp-venv/bin/blender-mcp'
     if not command:raise RuntimeError('Install official Blender Lab MCP server first')
-    code='import bpy\nbpy.ops.wm.open_mainfile(filepath='+repr(str(scene))+')\n'
-    code+='result={"version":bpy.app.version_string,"file":bpy.data.filepath,"objects":len(bpy.context.scene.objects),"asset_ids":sorted({o.get("asset_id") for o in bpy.context.scene.objects if o.get("asset_id")}),"cameras":[o.name for o in bpy.context.scene.objects if o.type=="CAMERA"],"imagesPacked":sum(bool(i.packed_file) for i in bpy.data.images if i.source=="FILE"),"externalImagesRequired":[i.name for i in bpy.data.images if i.source=="FILE" and not i.packed_file]}'
+    code='import bpy, hashlib\nfrom pathlib import Path\nbpy.ops.wm.open_mainfile(filepath='+repr(str(scene))+')\n'
+    code+='result={"version":bpy.app.version_string,"file":bpy.data.filepath,"sceneBlendSha256":hashlib.sha256(Path(bpy.data.filepath).read_bytes()).hexdigest(),"objects":len(bpy.context.scene.objects),"asset_ids":sorted({o.get("asset_id") for o in bpy.context.scene.objects if o.get("asset_id")}),"cameras":[o.name for o in bpy.context.scene.objects if o.type=="CAMERA"],"imagesPacked":sum(bool(i.packed_file) for i in bpy.data.images if i.source=="FILE"),"externalImagesRequired":[i.name for i in bpy.data.images if i.source=="FILE" and not i.packed_file]}'
     env=dict(os.environ,BLENDER_MCP_HOST='127.0.0.1',BLENDER_MCP_PORT='9876')
     async with stdio_client(StdioServerParameters(command=command,env=env)) as (read,write):
         async with ClientSession(read,write) as session:

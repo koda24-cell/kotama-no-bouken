@@ -36,6 +36,7 @@ for a in browser['assetHashes']:assert sha(BASE/a['file'])==a['sha256'],a['id']
 assert browser['scene']['sha256']==sha(scene) and browser['scene']['invalid']==[]
 assert set(browser['scene']['rootExtraAssetIds'])==asset_ids
 mcp=read(V/'mcp-scene-readback.json');assert mcp['status']=='ok'
+assert mcp['result'].get('sceneBlendSha256')==sha(BASE/'scene/scene.blend'),'MCP receipt is stale or lacks sceneBlendSha256; rerun mcp_inspect_scene.py'
 assert len(mcp['result']['asset_ids'])==17 and len(mcp['result']['cameras'])==5
 assert set(mcp['result']['asset_ids'])==asset_ids
 view_names=('entry','courtyard','sealed_corridor','shrine_detail','birdseye')
