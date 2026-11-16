@@ -17,6 +17,27 @@ patch=r""" # V6 repair railing: remove legacy posts whose bases do not match dec
    return -.39+.90*t+.055
   i=max(0,min(6,round((y+.855)/.285)))
   return -.39+i*.137+.048
+ # Stair-specific V6.1 sculpt pass. Preserve each old tread mesh identity,
+ # but vary its *large* broken silhouette instead of sprinkling pebble dots.
+ if kind=='stairs':
+  for tread_i in range(7):
+   tread=bpy.data.objects.get('irregular fractured stair tread '+str(tread_i))
+   assert tread is not None
+   rng=random.Random(7613+tread_i*103)
+   n=len(tread.data.vertices)//2
+   assert n>=8
+   # The top outline is deeply weathered on selected steps. Keep the center
+   # walking surface stable and preserve north/south 2 m connector endpoints.
+   loss={0:.026,1:.087,2:.041,3:.073,4:.115,5:.038,6:.092}[tread_i]
+   for local_j in (0,1,4,5,6):
+    v=tread.data.vertices[n+local_j]
+    strength=loss*(.55+.45*rng.random())
+    if local_j in (4,5,6):
+     v.co.x-=strength
+    else:
+     v.co.x+=strength*.42
+    v.co.z-=strength*(.15+.22*rng.random())
+   tread.data.update()
  # Rail feet follow the actual concrete walking surfaces, rather than a
  # universal global Z. Low heavy mounting collars hide seams in the concrete.
  post_ys=(-.82,.02,.81)
@@ -30,6 +51,8 @@ patch=r""" # V6 repair railing: remove legacy posts whose bases do not match dec
    top=base+(.68 if i!=1 else .63)
    rod('V6 anchored handrail post',(x,y,base-.025),(x,y,top),.026,rust)
    rod('V6 embedded post collar',(x,y,base-.045),(x,y,base+.06),.046,rust)
+   if kind=='stairs':
+    cube('V6 anchored stair rail socket plate',(x,y,base+.006),(.15,.13,.035),rust)
    tops.append((x,y,top))
   # Deliberately fragmented but each rail segment joins real post endpoints.
   rod('V6 railing attached segment A',tops[0],tops[1],.025,rust)
@@ -108,6 +131,9 @@ patch=r""" # V6 repair railing: remove legacy posts whose bases do not match dec
    bpy.ops.mesh.select_all(action='SELECT')
    bpy.ops.uv.smart_project(island_margin=.015)
    bpy.ops.object.mode_set(mode='OBJECT')
+ # Save source scene before expensive export/render. The GLB and renders stay
+ # separate NOT_APPROVED review assets, never production promotion.
+ bpy.ops.wm.save_as_mainfile(filepath=OUT+'/floor3_ruined_connector_'+kind+'_v6.blend',compress=True)
  # Export stays non-destructive to V5 as a separate artifact family.
  export('floor3_ruined_connector_'+kind+'_v6')"""
 source=source.replace(needle,patch)
