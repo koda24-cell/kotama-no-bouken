@@ -92,7 +92,7 @@ def rock_part(name,loc,scale,seed,materials):
   macro-=.25*trench
   # Continuous low-amplitude 3D noise displaces geometry rather than UV-face colors.
   rock_noise=noise.noise_vector(Vector((co.x*18.0+seed*.31,co.y*18.0-seed*.17,co.z*18.0+seed*.11)))
-  grain=(rock_noise.x*.016 + rock_noise.y*.009)
+  grain=(rock_noise.x*.007 + rock_noise.y*.004)
   micro=(0.050*math.sin(co.x*17+seed)*math.cos(co.y*15-seed)+0.025*math.sin(co.z*27+co.x*9+seed)+0.017*math.sin(co.x*29+seed)*math.cos(co.y*27-co.z*19)+grain)
   v.co=(co.x*(macro+micro),co.y*(macro+micro),co.z*(1+micro*0.55))
  obj.scale=scale
