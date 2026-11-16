@@ -66,15 +66,15 @@ export function createB4SurfaceLibrary({high=true}={}) {
     totalEmissiveRadiance+=vec3(0.62,0.17,0.045)*b4Bounce*b4Low;
     #ifdef USE_MAP
       float b4Lum=dot(sampledDiffuseColor.rgb,vec3(0.2126,0.7152,0.0722));
-      float b4Crack=1.0-smoothstep(0.0016,0.0048,b4Lum);
+      float b4Crack=1.0-smoothstep(0.0012,0.0036,b4Lum);
       totalEmissiveRadiance+=vec3(1.0,0.33,0.06)*b4Crack*b4Fissure*(0.25+0.75*exp(-b4H*0.55));
     #endif
   }`);
     };
     m.customProgramCacheKey=()=>'b4-underglow-'+m.name;
   };
-  underglow(basalt,{bounce:.085,fissure:.9,falloff:1.05});
-  underglow(grotto,{bounce:.07,fissure:.8,falloff:.9});
+  underglow(basalt,{bounce:.085,fissure:2.2,falloff:1.05});
+  underglow(grotto,{bounce:.07,fissure:1.6,falloff:.9});
   underglow(ceiling,{bounce:.05,fissure:.12,falloff:.35});
   const ember=material('ember-seams',{color:0xf49646,emissive:0xff4b09,emissiveIntensity:1.6,roughness:1});
   const timberCanvas=document.createElement('canvas');timberCanvas.width=timberCanvas.height=256;
