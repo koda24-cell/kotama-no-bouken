@@ -12,12 +12,12 @@ class NodeFileReader {
 }
 globalThis.FileReader=NodeFileReader;
 fs.mkdirSync('render-output',{recursive:true});
-for(const variant of [14,20,21,22,23,24,25]){
+for(const variant of [14,20,21,22,23,24,25,26]){
  const root=createB4MineRigProps();
  enhanceB4MineCart(root);
  enhanceB4CartV14(root);
  if(variant>=20)enhanceB4CartPractical(root,variant);
- if(variant===25) {
+ if(variant>=25) {
    // Original icosahedron ore meshes are preserved, only material copies renamed
    // for an independent, image-PBR weathered-rock candidate.
    const cart=root.getObjectByName('b4:buried-ore-cart');
