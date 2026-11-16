@@ -1,4 +1,4 @@
-name: B5 Ruined Knight Sentinel V6 Blender Render
+name: B5 Ruined Knight Sentinel V7 Blender Render
 on:
   push:
     branches: [feature/gpt-b5-knight-statues-v1-20261116]
@@ -21,18 +21,18 @@ jobs:
           blender --version
       - name: Build portable sentinel GLB and 3 view PNG
         run: |
-          mkdir -p render-output/b5-knights/sentinel_v6
-          blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_sentinel_v6.py
+          mkdir -p render-output/b5-knights/sentinel_v7
+          blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_sentinel_v7.py
       - name: Verify artifact and images
         run: |
           /usr/bin/python3 - <<'PY'
           import json,struct
           from pathlib import Path
           from PIL import Image,ImageStat
-          p=Path('render-output/b5-knights/sentinel_v6')
+          p=Path('render-output/b5-knights/sentinel_v7')
           m=json.loads((p/'manifest.json').read_text())
           assert m['approval']=='NOT_APPROVED'
-          data=(p/'sentinel_v6.glb').read_bytes()
+          data=(p/'sentinel_v7.glb').read_bytes()
           assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data)
           for v in ('front','side','angle'):
               with Image.open(p/f'{v}.png') as im:
@@ -45,6 +45,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: b5-knight-sentinel-v6-review-NOT-APPROVED
-          path: render-output/b5-knights/sentinel_v6/
+          name: b5-knight-sentinel-v7-review-NOT-APPROVED
+          path: render-output/b5-knights/sentinel_v7/
           retention-days: 14
