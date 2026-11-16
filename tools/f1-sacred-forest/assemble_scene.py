@@ -331,9 +331,9 @@ def lighting_and_cameras():
     scene.view_settings.exposure = .0
     world = bpy.data.worlds.new('overcast_forest_sky')
     world.use_nodes = True
-    sky=world.node_tree.nodes.new('ShaderNodeTexSky');sky.sky_type='NISHITA'
+    sky=world.node_tree.nodes.new('ShaderNodeTexSky');sky.sky_type='MULTIPLE_SCATTERING'
     sky.sun_disc=False;sky.sun_elevation=math.atan2(19,math.hypot(14,15))
-    sky.sun_rotation=math.atan2(-15,-14);sky.air_density=1.1;sky.dust_density=.5
+    sky.sun_rotation=math.atan2(-15,-14);sky.air_density=1.1;sky.aerosol_density=.5
     world.node_tree.links.new(sky.outputs['Color'],world.node_tree.nodes['Background'].inputs['Color'])
     world.node_tree.nodes['Background'].inputs['Strength'].default_value = .18
     scene.world = world
