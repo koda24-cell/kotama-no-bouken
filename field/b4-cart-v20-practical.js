@@ -307,7 +307,7 @@ export function enhanceB4CartPractical(root,variant=20) {
  // existing parts, using additional high-density stones rather than overlays
  // over the same rock surface (the V27/V28 failure mode).
  if(variant>=31){
-   const oreMat=new THREE.MeshStandardMaterial({name:'B4_CaveOre',color:0x292c2d,roughness:.97,metalness:0});
+   const oreMat=new THREE.MeshStandardMaterial({name:'B4_CaveOre',color:0x292c2d,roughness:.97,metalness:0,flatShading:false});
    const timber=new THREE.MeshStandardMaterial({name:'B4_WoodBoard2',color:0x504238,roughness:.98,metalness:0,side:THREE.DoubleSide});
    const rust=new THREE.MeshStandardMaterial({name:'B4_RustedIron',color:0x39393a,metalness:.52,roughness:.86});
    // Dense but individually fractured rocks. These are distinct stones,
@@ -322,12 +322,12 @@ export function enhanceB4CartPractical(root,variant=20) {
    ];
    for(let i=0;i<positions.length;i++){
      const [x,y,z,sx,sy,sz]=positions[i];
-     const geom=new THREE.IcosahedronGeometry(1,3);
+     const geom=new THREE.IcosahedronGeometry(1,variant>=32?5:3);
      const pos=geom.getAttribute('position');
      for(let v=0;v<pos.count;v++){
        const px=pos.getX(v),py=pos.getY(v),pz=pos.getZ(v);
-       const n=.072*Math.sin(px*8.7+py*3.8+i*2.1)*Math.cos(pz*9.2-px*4.4)
-        +.038*Math.sin(py*19.3+pz*7.1+i*.7);
+       const n=(variant>=32?.030:.072)*Math.sin(px*8.7+py*3.8+i*2.1)*Math.cos(pz*9.2-px*4.4)
+        +(variant>=32?.012:.038)*Math.sin(py*19.3+pz*7.1+i*.7);
        const r=1+n;
        pos.setXYZ(v,px*r,py*r,pz*r);
      }
