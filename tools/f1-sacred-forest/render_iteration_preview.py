@@ -15,7 +15,7 @@ p.add_argument('--height',type=int,default=400)
 a=p.parse_args(argv)
 source=BASE/'scene/scene.blend'
 bpy.ops.wm.open_mainfile(filepath=str(source))
-s=bpy.context.scene;s.cycles.use_persistent_data=True
+s=bpy.context.scene;s.render.use_persistent_data=True
 s.cycles.samples=a.samples
 s.render.resolution_x=a.width;s.render.resolution_y=a.height
 s.render.resolution_percentage=100;s.render.image_settings.file_format='PNG'
