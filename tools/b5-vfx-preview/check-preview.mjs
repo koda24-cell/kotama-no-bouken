@@ -1,0 +1,16 @@
+import { chromium } from 'playwright';
+const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-webgl']});
+const page=await browser.newPage({viewport:{width:1100,height:850}});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+await page.goto('http://127.0.0.1:8765/preview/b5-v13-miasma-vfx.html',{waitUntil:'networkidle',timeout:90000});
+await page.waitForTimeout(4000);
+const rock=await page.locator('body').getAttribute('data-rock');
+if(rock!=='loaded')throw Error('V13 rock GLB failed to load: '+await page.locator('#status').textContent());
+await page.screenshot({path:'render-output/b5-v13-vfx/animated-fog-t0.png'});
+await page.waitForTimeout(3500);
+await page.screenshot({path:'render-output/b5-v13-vfx/animated-fog-t1.png'});
+await page.locator('#density').fill('25');await page.waitForTimeout(700);
+await page.screenshot({path:'render-output/b5-v13-vfx/fog-low-density.png'});
+if(errors.length)throw Error('Browser errors: '+errors.join(' | '));
+console.log('V13_GLTF_LOADED_AND_VFX_RENDERED');
+await browser.close();

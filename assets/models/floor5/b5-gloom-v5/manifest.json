@@ -1,0 +1,36 @@
+{
+  "asset_id": "b5-gloom-v5",
+  "stage": 5,
+  "status": "user-approved-preview",
+  "approved_on": "2026-11-15",
+  "source_glb_run": 43607312319,
+  "vfx_render_run": 43722463655,
+  "source_commit": "cd5d3fc0b3ee8393270f925feb7e27beeafaef1c",
+  "glb": "assets/models/floor5/b5-gloom-v5/b5-gloom-v13-rock.glb",
+  "vfx_source": "preview/b5-v13-miasma-vfx.html",
+  "coordinate_system": "GLB glTF Y-up; preview rotates X +90 degrees into Z-up scene",
+  "runtime": "Three.js 0.160.1 GLTFLoader + ShaderMaterial; not yet integrated into game",
+  "files": [
+    {
+      "path": "assets/models/floor5/b5-gloom-v5/b5-gloom-v13-rock.glb",
+      "bytes": 8531604,
+      "sha256": "5417552ad5a0986ad658470331da886ce3d4ed33c987e4b96f7b0304083b6a4d"
+    },
+    {
+      "path": "assets/models/floor5/b5-gloom-v5/reviews/v5-animated-t0.png",
+      "bytes": 113187,
+      "sha256": "965686e39c8088ff121b0cdb31e92f03ac62414aa8a8fc3a458984674b98aca6"
+    },
+    {
+      "path": "assets/models/floor5/b5-gloom-v5/reviews/v5-animated-t1.png",
+      "bytes": 113229,
+      "sha256": "d33dfd06c28da6e9e82e3b20762dcb15c46d1ad1e552d727254cc97ed7a01bcf"
+    },
+    {
+      "path": "assets/models/floor5/b5-gloom-v5/reviews/v5-low-density.png",
+      "bytes": 97528,
+      "sha256": "75d40b7613d3bed1402ed149decc81fd3b8bcfc39473b75910aea4fc7a78f281"
+    }
+  ],
+  "notes": "Approved visual V5: floor rock with crimson flame and purple fog. Review PNGs are actual browser screenshots."
+}
