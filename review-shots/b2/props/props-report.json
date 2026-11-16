@@ -79,7 +79,7 @@
         "Waterfall_Mist:0",
         "Water_Ripple_Ring_1:0",
         "Waterfall_Mist:0",
-        "b2:v8_crystals:14",
+        "b2:v8_crystals:16",
         "b2:floor:35",
         "b2:ceiling:12",
         "b2:walls:12",
@@ -196,7 +196,7 @@
         "Water_Ripple_Ring_1:0",
         "Water_Ripple_Ring_1:0",
         "Waterfall_Mist:0",
-        "b2:v8_crystals:12",
+        "b2:v8_crystals:15",
         "b2:floor:34",
         "b2:ceiling:9",
         "b2:v8_ceiling_ice:8",
@@ -226,32 +226,32 @@
     "sameKeySameLayout": true,
     "memory": [
       {
-        "geometries": 464,
+        "geometries": 467,
         "textures": 140
       },
       {
         "geometries": 113,
         "textures": 139,
         "buildKey": "2-2@e1sfnnh90",
-        "ownedDisposed": 405
+        "ownedDisposed": 408
       },
       {
         "geometries": 120,
         "textures": 139,
         "buildKey": "2-2@e2s1pkc03u",
-        "ownedDisposed": 411
+        "ownedDisposed": 413
       },
       {
         "geometries": 119,
         "textures": 139,
         "buildKey": "2-2@e3s16f8qg",
-        "ownedDisposed": 374
+        "ownedDisposed": 376
       },
       {
         "geometries": 109,
         "textures": 139,
         "buildKey": "2-2@e4sfm2j3p",
-        "ownedDisposed": 391
+        "ownedDisposed": 394
       }
     ]
   },

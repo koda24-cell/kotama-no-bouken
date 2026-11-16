@@ -78,7 +78,7 @@
         "Waterfall_Mist:0",
         "Water_Ripple_Ring_1:0",
         "Waterfall_Mist:0",
-        "b2:v8_crystals:14",
+        "b2:v8_crystals:16",
         "b2:floor:35",
         "b2:ceiling:12",
         "b2:walls:12",
@@ -203,7 +203,7 @@
         "Water_Ripple_Ring_1:0",
         "Water_Ripple_Ring_1:0",
         "Waterfall_Mist:0",
-        "b2:v8_crystals:12",
+        "b2:v8_crystals:15",
         "b2:floor:34",
         "b2:ceiling:9",
         "b2:v8_ceiling_ice:8",
@@ -229,7 +229,7 @@
       ],
       "ripples": 8,
       "mists": 3,
-      "ownedDisposed": 415,
+      "ownedDisposed": 417,
       "falls": [
         {
           "cell": "17,15",
@@ -320,8 +320,8 @@
   },
   "noPreview": {
     "area": 2,
-    "active3d": false,
-    "is3dClass": false,
+    "active3d": true,
+    "is3dClass": true,
     "preview": false,
     "ls": null
   },
@@ -408,7 +408,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "chest:2-0:19:1",
+      "near": "chest:2-0:5:5",
       "floor": 0,
       "area": 2
     },
@@ -444,7 +444,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "",
+      "near": "cache:2:a2-cache",
       "floor": 1,
       "area": 2
     },
@@ -468,7 +468,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "door:2:a2-gate",
+      "near": "npc:2:a2-plaque",
       "floor": 1,
       "area": 2
     },
@@ -480,7 +480,7 @@
       },
       "dir": "right",
       "active": true,
-      "near": "npc:2:a2-plaque",
+      "near": "switch:2:a2-stone-west",
       "floor": 1,
       "area": 2
     },
@@ -504,7 +504,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "switch:2:a2-stone-east",
+      "near": "save:2-1:15:7",
       "floor": 1,
       "area": 2
     },
@@ -552,7 +552,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "sign:2-2:5:10",
+      "near": "npc:2:merchant",
       "floor": 2,
       "area": 2
     },
@@ -588,7 +588,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "save:2-2:24:15",
+      "near": "",
       "floor": 2,
       "area": 2
     },
