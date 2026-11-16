@@ -39,14 +39,15 @@ def textured_material(material, base, seed):
  # Tangent-space normal texture from multi-scale deterministic rock height field.
  # Packed images and the Normal Map node are compatible with glTF/GLB export.
  def height_at(x,y):
-  return (0.45*math.sin(x*.27+seed)*math.cos(y*.19-seed)
-          +0.23*math.sin(x*.73+y*.41+seed*.2)
-          +0.10*math.sin(x*1.47-y*1.21+seed*.4))
+  u=math.tau*x/128;v=math.tau*y/128
+  return (0.34*math.sin(3*u+seed)*math.cos(4*v-seed)
+          +0.15*math.sin(9*u+5*v+seed*.2)
+          +0.07*math.cos(17*u-13*v+seed*.4))
  normal_image=bpy.data.images.new(material.name+'_normal',width=128,height=128,alpha=True)
  normal_pixels=[]
  for y in range(128):
   for x in range(128):
-   dx=(height_at((x+1)%128,y)-height_at((x-1)%128,y))*.85
+   dx=(height_at((x+1)%128,y)-height_at((x-1)%128,y))*.22
    dy=(height_at(x,(y+1)%128)-height_at(x,(y-1)%128))*.85
    length=math.sqrt(dx*dx+dy*dy+1)
    normal_pixels.extend([(-dx/length+1)*.5,(-dy/length+1)*.5,(1/length+1)*.5,1])
@@ -54,10 +55,10 @@ def textured_material(material, base, seed):
  normal_image.colorspace_settings.name='Non-Color'
  normal_image.pack()
  normal_tex=nodes.new('ShaderNodeTexImage');normal_tex.image=normal_image
- normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.85
+ normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.28
  material.node_tree.links.new(normal_tex.outputs['Color'],normal_map.inputs['Color'])
  material.node_tree.links.new(normal_map.outputs['Normal'],bsdf.inputs['Normal'])
-for i,m in enumerate(stone): textured_material(m,[(.30,.32,.30),(.22,.24,.23),(.34,.31,.27)][i],110+i)
+for i,m in enumerate(stone): textured_material(m,[(.34,.36,.34),(.27,.29,.28),(.37,.34,.30)][i],110+i)
 for i,m in enumerate(moss): textured_material(m,[(.20,.32,.16),(.17,.26,.12)][i],210+i)
 def add_uv(obj):
  bpy.ops.object.select_all(action='DESELECT')
