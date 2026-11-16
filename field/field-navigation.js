@@ -25,9 +25,13 @@ function fieldPlaceAtStart() {
   fieldState.x = p.x; fieldState.y = p.y; fieldState.dir = "up"; fieldState.positioned = true;
 }
 function fieldPlayStageIntro(stage) {
-  const ids = { 1: "forest-intro", 2: "goblin-intro", 3: "wolf-intro", 4: "dragon-intro" };
+  const ids = { 1: "forest-intro", 2: "goblin-intro", 3: "wolf-intro", 4: "dragon-intro", 5: "maou-intro" };
   const ev = stageEvents.find(e => e.id === ids[stage] && !e.trigger);
-  return new Promise(resolve => { if (ev && !eventRead[ev.id]) openEvent(ev, resolve); else resolve(); });
+  return new Promise(resolve => {
+    // eventRead はセーブデータに保存される。初回のみ再生し、再訪では自動再生しない。
+    if (ev && !eventRead[ev.id]) openEvent(ev, () => { persistAutoSave(); resolve(); });
+    else resolve();
+  });
 }
 // 階層に入る。opts.floor：開始フロア（行ったことのあるフロアのみ）／ fromHome：ホームから（全回復・採取とFOEが復活）／ afterBoss：ボス撃破後
 async function fieldEnterArea(n, opts = {}) {
