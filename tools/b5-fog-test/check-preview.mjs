@@ -38,10 +38,17 @@ try{
   const fs=await import('node:fs/promises');
   const first=await fs.readFile('render-output/b5-fog/fog-initial.png'),second=await fs.readFile('render-output/b5-fog/fog-animated.png');
   if(first.equals(second))throw Error('Animation frames identical');
-  await page.goto('http://127.0.0.1:8765/preview/b5-v5-combined-scene.html',{waitUntil:'networkidle',timeout:60000});
-  await page.waitForSelector('canvas');
-  await page.waitForTimeout(1500);
-  await page.locator('canvas').screenshot({path:'render-output/b5-fog/b5-v5-combined-scene.png'});
+  for(const view of ['front','side','angle']) {
+    await page.goto('http://127.0.0.1:8765/preview/b5-v5-combined-scene.html?view='+view,{waitUntil:'networkidle',timeout:60000});
+    await page.waitForSelector('canvas');
+    await page.waitForTimeout(1600);
+    const selected=await page.locator('body').getAttribute('data-view');
+    if(selected!==view)throw Error('camera view mismatch: '+view+' / '+selected);
+    const dest='render-output/b5-fog/b5-v5-'+view+'.png';
+    await page.locator('canvas').screenshot({path:dest});
+    if(view==='front')await page.locator('canvas').screenshot({path:'render-output/b5-fog/b5-v5-combined-scene.png'});
+    console.log('B5 camera view:',view,'windowTexture:',await page.locator('body').getAttribute('data-window-source'));
+  }
   if(errors.length)throw Error(errors.join('\\n'));
   console.log('PASS: fog animation and combined B5 corridor VFX scene rendered');
 }finally{await browser.close();await new Promise(r=>server.close(r));}
