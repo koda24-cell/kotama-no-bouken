@@ -1,0 +1,455 @@
+{
+  "floors": [
+    {
+      "floor": 1,
+      "meshCount": 222,
+      "v8Decorations": {
+        "rocks": 12,
+        "crystals": 12,
+        "stalagmites": 12,
+        "ceilingIce": 12,
+        "erosion": 12
+      },
+      "omitted": [],
+      "drawGroups": [
+        "b2:open_ceiling_atrium:180",
+        "Water_Ripple_Ring_2:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_1:0",
+        "Water_Ripple_Ring_2:0",
+        "Waterfall_Mist:0",
+        "b2:floor:36",
+        "b2:ceiling:12",
+        "b2:v8_ceiling_ice:12",
+        "b2:walls:12",
+        "b2:wall_outcrops:24",
+        "b2:rock_seams:12",
+        "b2:crystals:39",
+        "b2:frost_cornices:36",
+        "b2:frost_veins:24",
+        "b2:ice_stalactites:12",
+        "b2:v8_stalagmites:12",
+        "b2:v8_erosion:11",
+        "b2:v8_crystals:12",
+        "b2:rocks:12",
+        "b2:ceiling_details:11",
+        "b2:water:10",
+        "b2:water_foam:2",
+        "b2:shoreline:5",
+        "b2:thorns:10",
+        "b2:glow_fungi:6",
+        "b2:frost_ledge:4"
+      ],
+      "ripples": 3,
+      "mists": 2,
+      "falls": [
+        {
+          "cell": "5,19",
+          "wall": "left"
+        },
+        {
+          "cell": "21,5",
+          "wall": "right"
+        }
+      ],
+      "bridge": null
+    },
+    {
+      "floor": 2,
+      "meshCount": 222,
+      "v8Decorations": {
+        "rocks": 12,
+        "crystals": 12,
+        "stalagmites": 12,
+        "ceilingIce": 12,
+        "erosion": 12
+      },
+      "omitted": [],
+      "drawGroups": [
+        "b2:open_ceiling_atrium:180",
+        "b2:floor:36",
+        "b2:ceiling:12",
+        "b2:walls:12",
+        "b2:ice_stalactites:12",
+        "b2:v8_stalagmites:12",
+        "b2:frost_cornices:36",
+        "b2:rock_seams:12",
+        "b2:frost_veins:24",
+        "b2:wall_outcrops:24",
+        "b2:v8_erosion:11",
+        "b2:v8_crystals:11",
+        "b2:rocks:11",
+        "b2:ceiling_details:12",
+        "b2:v8_ceiling_ice:12",
+        "b2:crystals:37",
+        "b2:shoreline:7",
+        "b2:glow_fungi:10",
+        "b2:water:5",
+        "b2:frost_ledge:8",
+        "b2:thorns:8",
+        "b2:landmarks:3"
+      ],
+      "ripples": 0,
+      "mists": 0,
+      "falls": [
+        {
+          "cell": "1,9",
+          "wall": "down"
+        }
+      ],
+      "bridge": {
+        "tx": 8,
+        "ty": 10,
+        "ry": 0
+      }
+    },
+    {
+      "floor": 3,
+      "meshCount": 222,
+      "v8Decorations": {
+        "rocks": 12,
+        "crystals": 12,
+        "stalagmites": 12,
+        "ceilingIce": 12,
+        "erosion": 12
+      },
+      "omitted": [],
+      "drawGroups": [
+        "b2:open_ceiling_atrium:180",
+        "Water_Ripple_Ring_3:0",
+        "Water_Ripple_Ring_1:0",
+        "Water_Ripple_Ring_3:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_2:0",
+        "Water_Ripple_Ring_0:0",
+        "Water_Ripple_Ring_0:0",
+        "Water_Ripple_Ring_3:0",
+        "b2:floor:37",
+        "b2:ceiling:11",
+        "b2:v8_ceiling_ice:9",
+        "b2:walls:11",
+        "b2:wall_outcrops:22",
+        "b2:rock_seams:10",
+        "b2:crystals:27",
+        "b2:frost_cornices:33",
+        "b2:frost_veins:20",
+        "b2:ice_stalactites:9",
+        "b2:v8_stalagmites:8",
+        "b2:v8_erosion:7",
+        "b2:v8_crystals:9",
+        "b2:rocks:14",
+        "b2:ceiling_details:6",
+        "b2:shoreline:7",
+        "b2:water:9",
+        "b2:thorns:8",
+        "b2:frost_ledge:10",
+        "b2:glow_fungi:4",
+        "b2:water_foam:1",
+        "b2:landmarks:3"
+      ],
+      "ripples": 7,
+      "mists": 1,
+      "falls": [
+        {
+          "cell": "25,6",
+          "wall": "right"
+        }
+      ],
+      "bridge": {
+        "tx": 12,
+        "ty": 1,
+        "ry": 0
+      }
+    }
+  ],
+  "render": {
+    "canvas": true
+  },
+  "noPreview": {
+    "area": 2,
+    "active3d": true,
+    "is3dClass": true,
+    "preview": false,
+    "ls": null
+  },
+  "errors": [],
+  "missing": [],
+  "log": [
+    {
+      "label": "enter",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "fwd2",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "turnR",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "bump-or-step",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "down",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "at-stairs-",
+      "tile": {
+        "tx": 9,
+        "ty": 2
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "at-chest-",
+      "tile": {
+        "tx": 18,
+        "ty": 1
+      },
+      "dir": "right",
+      "active": true,
+      "near": "chest:2-0:19:1",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "at-chest-",
+      "tile": {
+        "tx": 6,
+        "ty": 5
+      },
+      "dir": "left",
+      "active": true,
+      "near": "chest:2-0:5:5",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "at-gather-",
+      "tile": {
+        "tx": 17,
+        "ty": 6
+      },
+      "dir": "down",
+      "active": true,
+      "near": "chest:2-0:5:5",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "floor2",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-save-",
+      "tile": {
+        "tx": 13,
+        "ty": 6
+      },
+      "dir": "down",
+      "active": true,
+      "near": "",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-switch-a2-stone-west",
+      "tile": {
+        "tx": 1,
+        "ty": 11
+      },
+      "dir": "up",
+      "active": true,
+      "near": "switch:2:a2-stone-west",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-switch-a2-stone-east",
+      "tile": {
+        "tx": 24,
+        "ty": 11
+      },
+      "dir": "up",
+      "active": true,
+      "near": "switch:2:a2-stone-west",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-sign-a2-plaque",
+      "tile": {
+        "tx": 5,
+        "ty": 11
+      },
+      "dir": "left",
+      "active": true,
+      "near": "switch:2:a2-stone-east",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-door-a2-gate",
+      "tile": {
+        "tx": 3,
+        "ty": 13
+      },
+      "dir": "up",
+      "active": true,
+      "near": "npc:2:a2-plaque",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-cache-a2-cache",
+      "tile": {
+        "tx": 3,
+        "ty": 14
+      },
+      "dir": "down",
+      "active": true,
+      "near": "door:2:a2-gate",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "door-after-switches",
+      "tile": {
+        "tx": 3,
+        "ty": 13
+      },
+      "dir": "up",
+      "active": true,
+      "near": "switch:2:a2-stone-east",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "floor3",
+      "tile": {
+        "tx": 3,
+        "ty": 1
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-npc-merchant",
+      "tile": {
+        "tx": 2,
+        "ty": 2
+      },
+      "dir": "down",
+      "active": true,
+      "near": "npc:2:merchant",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-npc-watchman",
+      "tile": {
+        "tx": 21,
+        "ty": 10
+      },
+      "dir": "up",
+      "active": true,
+      "near": "npc:2:merchant",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-sign-",
+      "tile": {
+        "tx": 1,
+        "ty": 11
+      },
+      "dir": "up",
+      "active": true,
+      "near": "sign:2-2:1:10",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-save-",
+      "tile": {
+        "tx": 24,
+        "ty": 16
+      },
+      "dir": "up",
+      "active": true,
+      "near": "save:2-2:24:15",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-gate-",
+      "tile": {
+        "tx": 25,
+        "ty": 15
+      },
+      "dir": "down",
+      "active": true,
+      "near": "save:2-2:24:15",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "back-to-b1",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 1
+    }
+  ]
+}
