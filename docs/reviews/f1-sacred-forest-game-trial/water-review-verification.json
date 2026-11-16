@@ -1,0 +1,1633 @@
+{
+  "scope": "Supplementary real index.html north-facing water review; not the full gameplay suite",
+  "engine": "Chromium SwiftShader / Three.js r180",
+  "source": {
+    "commit": "e834d8af114ae74a869ffec247e85798a2b7f9ee",
+    "inputs": [
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-trial.json",
+        "sha256": "00ac1c8c02ab4a05756123f3b30b42df1c0e8dda11de18d3d0642fc6141eb994"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-candidate.json",
+        "sha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/manifest.json",
+        "sha256": "c11c469da86619ebf4c266f3e54eb383db86c52e3e001d7818638bafb5139553"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb",
+        "sha256": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb",
+        "sha256": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb",
+        "sha256": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_collapsed_wall_4m.glb",
+        "sha256": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_arch_4m.glb",
+        "sha256": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb",
+        "sha256": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb",
+        "sha256": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/moss_stone_lantern.glb",
+        "sha256": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/ofuda_seal_cluster.glb",
+        "sha256": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb",
+        "sha256": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/fallen_cedar_log.glb",
+        "sha256": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb",
+        "sha256": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb",
+        "sha256": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/white_wildflower_patch.glb",
+        "sha256": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/hanging_forest_vines.glb",
+        "sha256": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb",
+        "sha256": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_hokora_shrine.glb",
+        "sha256": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_ancient_forest/modules/mod_ceiling_vault_4m.glb",
+        "sha256": "82083e0ec116a47331f3bfd7a2146ddaae2a8f5cd9374d3a48d4415cd1699dc1"
+      },
+      {
+        "file": "index.html",
+        "sha256": "5921cc328caff4d02161f52184884515e088ce46da8d44121dae282f384f2f23"
+      },
+      {
+        "file": "field.js",
+        "sha256": "cc4837e05fb0ad777d3c4efd365b21e5deb8135b74ce91ae2c18847e79b2bbce"
+      },
+      {
+        "file": "data/field-maps.js",
+        "sha256": "a0b88a1164421a34dab77065cfc3b3edcb91f94224547a5d30b2c4e4a7a08ab7"
+      },
+      {
+        "file": "field/field-3d-view.js",
+        "sha256": "53b708a356068d7ad2d6da0a119213e95cab30fd9881dfae773852ed6dbe97d0"
+      },
+      {
+        "file": "field/field-3d-b1-sacred-trial.js",
+        "sha256": "0301587b052207a6b4f7ee61e2615ed42af0b5146ccc3965f27264719ca023f2"
+      },
+      {
+        "file": "preview/f1-foliage-coverage.js",
+        "sha256": "f29684256637e8a29c1ef20cda7fb50dec38c56a3f8833a324daeae60ad9fca2"
+      },
+      {
+        "file": "field/field-movement-foe.js",
+        "sha256": "ff7d9de0cc1877ec7609c39fbd4f619f8176fca470bacc28887b355306ad7d8b"
+      },
+      {
+        "file": "field/field-interactions.js",
+        "sha256": "a327380f7377090fb953d4152fded188062b5cef8138b04408567280db69c799"
+      },
+      {
+        "file": "field/field-navigation.js",
+        "sha256": "49576f65e6a9bf72e24ee45849a76f547f2f3b3c6fd3ceac21f4854961af314e"
+      },
+      {
+        "file": "field/field-persistence.js",
+        "sha256": "c6672c3bac351cf798138ab6608f312acabd872cb5c1cf94d275a5aa300c6a89"
+      },
+      {
+        "file": "field/field-puzzles.js",
+        "sha256": "b7306e43e8a2b6ef88ef5dd983d91cdc4aff4854573d72800624eeaaf71d54aa"
+      }
+    ],
+    "candidateMapSha256": "786ba94517df58fea6b6b22946cfe448c11c9d010241d6b6a68c498c075a5d45"
+  },
+  "autoSaveDisabled": true,
+  "fixtureNotes": [
+    "Fresh browser contexts only; no user browser profile or existing saves.",
+    "Party/tutorial/unlock flags are test fixtures. Camera review points use validated walk cells.",
+    "Movement uses the real exported KotamaField3D.input once per action to avoid short-key loss under slow software rendering.",
+    "Save/load persistence is deliberately suppressed and is not certified by these tests."
+  ],
+  "sessions": [
+    {
+      "name": "water-review",
+      "optIn": true,
+      "badManifest": false,
+      "pageErrors": [],
+      "consoleErrors": [],
+      "warnings": [
+        {
+          "text": "The resource http://127.0.0.1:8795/assets/monsters/goburinn.png was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.",
+          "url": "http://127.0.0.1:8795/index.html?f1sacred=1"
+        }
+      ],
+      "resource404": [
+        {
+          "text": "Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID",
+          "url": "https://fonts.googleapis.com/css2?family=DotGothic16&display=swap"
+        }
+      ],
+      "requestFailures": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=DotGothic16&display=swap",
+          "error": "net::ERR_CERT_AUTHORITY_INVALID"
+        },
+        {
+          "url": "http://127.0.0.1:8795/assets/3d/dungeons/b1_ancient_forest/modules/mod_floor_stone_4m.glb",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:8795/assets/3d/dungeons/b1_ancient_forest/modules/mod_wall_4m.glb",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:8795/assets/3d/dungeons/b1_ancient_forest/modules/mod_wall_collapsed_4m.glb",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:8795/assets/3d/dungeons/b1_ancient_forest/modules/mod_floor_stone_broken_4m.glb",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:8795/assets/3d/dungeons/b1_ancient_forest/modules/mod_wall_mossy_roots_4m.glb",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:8795/assets/3d/dungeons/b1_ancient_forest/modules/mod_floor_root_soil_4m.glb",
+          "error": "net::ERR_ABORTED"
+        }
+      ],
+      "candidateRequests": [
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-trial.json",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/manifest.json",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_collapsed_wall_4m.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_arch_4m.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/moss_stone_lantern.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/ofuda_seal_cluster.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/fallen_cedar_log.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/white_wildflower_patch.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/hanging_forest_vines.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb",
+        "http://127.0.0.1:8795/assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_hokora_shrine.glb"
+      ],
+      "injectedManifestResponses": 0,
+      "states": [
+        {
+          "label": "enter-3F",
+          "tile": {
+            "tx": 2,
+            "ty": 15
+          },
+          "direction": "up",
+          "turn": 0,
+          "area": 1,
+          "floor": 2,
+          "screen": "field",
+          "lock": false,
+          "active": true,
+          "trial": {
+            "scope": "opt_in_visual_game_trial",
+            "schemaVersion": 2,
+            "capabilities": [
+              "explicit_floor_render_profiles_v1",
+              "gltf_node_material_selection_v1",
+              "non_navigation_dressing_ground_v1",
+              "source_sha256_pins_v1"
+            ],
+            "target": {
+              "area": 1,
+              "floor": 2,
+              "floorLabel": "3F",
+              "floorKey": "1-2",
+              "widthTiles": 28,
+              "heightTiles": 18
+            },
+            "placements": 775,
+            "floors": 274,
+            "dressingGround": 177,
+            "walls": 178,
+            "props": 129,
+            "ceilings": 17,
+            "profileCounts": {
+              "stone_full_asset": 187,
+              "soil_surface_only": 87
+            },
+            "soilSurfaceFloors": 87,
+            "batches": 652,
+            "instances": 2092,
+            "instanceTriangles": 3911334,
+            "spatialBucketMeters": 16,
+            "sourceCount": 18,
+            "sourceSHA": {
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_collapsed_wall_4m.glb": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_arch_4m.glb": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/moss_stone_lantern.glb": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/ofuda_seal_cluster.glb": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/fallen_cedar_log.glb": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/white_wildflower_patch.glb": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/hanging_forest_vines.glb": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+              "assets/3d/dungeons/b1_ancient_forest/modules/mod_ceiling_vault_4m.glb": "82083e0ec116a47331f3bfd7a2146ddaae2a8f5cd9374d3a48d4415cd1699dc1",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_hokora_shrine.glb": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c"
+            },
+            "sourceHashesVerified": true,
+            "mapSha256": "786ba94517df58fea6b6b22946cfe448c11c9d010241d6b6a68c498c075a5d45",
+            "fixedObjectsPreserved": 7,
+            "foliageAlphaCutoffPreserved": true,
+            "realDevicePerformanceApproved": false
+          },
+          "review": {
+            "builtKey": "1-2",
+            "buildingKey": "",
+            "environment": {
+              "area": 1,
+              "background": 10399651,
+              "fogDensity": 0.009,
+              "far": 96
+            },
+            "camera": {
+              "position": [
+                8,
+                1.6,
+                61.1
+              ],
+              "rotation": [
+                -0.035,
+                0,
+                0
+              ]
+            },
+            "entries": [
+              {
+                "key": "gate:1",
+                "kind": "gate",
+                "state": null,
+                "at": [
+                  88,
+                  1.2,
+                  4
+                ],
+                "objectId": null,
+                "sprite": "boss-gate",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "7caa0581-8641-4b6d-8a89-47aaa688ce1f",
+                "modelBounds": [
+                  2.0199999809265137,
+                  3.0400231163948774,
+                  0.3180000130087137
+                ],
+                "childNames": [
+                  "gimmick_sealed_rune_door"
+                ]
+              },
+              {
+                "key": "save:1-2:24:3",
+                "kind": "save",
+                "state": null,
+                "at": [
+                  96,
+                  1.9,
+                  12
+                ],
+                "objectId": null,
+                "sprite": "save-lamp",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "136416ec-f5a5-4a45-97b7-6d66320f491c",
+                "modelBounds": [
+                  0.6522516012191772,
+                  1.6633877754211426,
+                  0.6440414190292358
+                ],
+                "childNames": [
+                  "blue_wisp_torch"
+                ]
+              },
+              {
+                "key": "chest:1-2:10:6",
+                "kind": "chest",
+                "state": "closed",
+                "at": [
+                  40,
+                  1.2,
+                  24
+                ],
+                "objectId": null,
+                "sprite": "chest",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "991cab24-2e7b-43a6-bcce-f5068562cd77",
+                "modelBounds": [
+                  1.4926302433013916,
+                  0.8686003684997559,
+                  1.5382992029190063
+                ],
+                "childNames": [
+                  "sealed_treasure_chest"
+                ]
+              },
+              {
+                "key": "sign:1-2:22:9",
+                "kind": "sign",
+                "state": null,
+                "at": [
+                  88,
+                  1.8,
+                  36
+                ],
+                "objectId": null,
+                "sprite": "sign",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "d1815398-e5b6-475f-b843-43a0f166bb8e",
+                "modelBounds": [
+                  1.1070582866668701,
+                  1.4035465717315674,
+                  0.9531450271606445
+                ],
+                "childNames": [
+                  "ancient_stone_signpost"
+                ]
+              },
+              {
+                "key": "npc:1:herb-girl",
+                "kind": "npc",
+                "state": null,
+                "at": [
+                  92,
+                  2.2,
+                  48
+                ],
+                "objectId": "herb-girl",
+                "sprite": "npc-girl",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "52c85f90-005a-4d5b-b71f-bcb15ef5f655",
+                "modelBounds": [
+                  0.5965265035629272,
+                  1.4754503965377808,
+                  0.6616817712783813
+                ],
+                "childNames": [
+                  "npc_herb_girl"
+                ]
+              },
+              {
+                "key": "npc:1:woodcutter",
+                "kind": "npc",
+                "state": null,
+                "at": [
+                  12,
+                  2.2,
+                  56
+                ],
+                "objectId": "woodcutter",
+                "sprite": "npc-woodcutter",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "34f13e17-5694-479b-9814-21208de14098",
+                "modelBounds": [
+                  0.7167263627052307,
+                  1.8315763473510742,
+                  0.7251709699630737
+                ],
+                "childNames": [
+                  "npc_woodcutter"
+                ]
+              },
+              {
+                "key": "up:1-2",
+                "kind": "stairs",
+                "state": null,
+                "at": [
+                  4,
+                  1.2,
+                  64
+                ],
+                "objectId": null,
+                "sprite": "stairs-up",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "617ee415-f745-4716-a77f-94111d1977de",
+                "modelBounds": [
+                  2.3485418558120728,
+                  1.6112991571426392,
+                  3.5447545051574707
+                ],
+                "childNames": [
+                  "broken_stone_stairs"
+                ]
+              }
+            ],
+            "waterMeshCount": 11,
+            "foes": [
+              {
+                "key": "foe:1-2:0",
+                "visible": true,
+                "meshOrSprite": "Sprite",
+                "textureLoaded": true
+              }
+            ],
+            "staticTrialInfo": {
+              "scope": "opt_in_visual_game_trial",
+              "schemaVersion": 2,
+              "capabilities": [
+                "explicit_floor_render_profiles_v1",
+                "gltf_node_material_selection_v1",
+                "non_navigation_dressing_ground_v1",
+                "source_sha256_pins_v1"
+              ],
+              "target": {
+                "area": 1,
+                "floor": 2,
+                "floorLabel": "3F",
+                "floorKey": "1-2",
+                "widthTiles": 28,
+                "heightTiles": 18
+              },
+              "placements": 775,
+              "floors": 274,
+              "dressingGround": 177,
+              "walls": 178,
+              "props": 129,
+              "ceilings": 17,
+              "profileCounts": {
+                "stone_full_asset": 187,
+                "soil_surface_only": 87
+              },
+              "soilSurfaceFloors": 87,
+              "batches": 652,
+              "instances": 2092,
+              "instanceTriangles": 3911334,
+              "spatialBucketMeters": 16,
+              "sourceCount": 18,
+              "sourceSHA": {
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_collapsed_wall_4m.glb": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_arch_4m.glb": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/moss_stone_lantern.glb": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/ofuda_seal_cluster.glb": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/fallen_cedar_log.glb": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/white_wildflower_patch.glb": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/hanging_forest_vines.glb": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+                "assets/3d/dungeons/b1_ancient_forest/modules/mod_ceiling_vault_4m.glb": "82083e0ec116a47331f3bfd7a2146ddaae2a8f5cd9374d3a48d4415cd1699dc1",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_hokora_shrine.glb": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c"
+              },
+              "sourceHashesVerified": true,
+              "mapSha256": "786ba94517df58fea6b6b22946cfe448c11c9d010241d6b6a68c498c075a5d45",
+              "fixedObjectsPreserved": 7,
+              "foliageAlphaCutoffPreserved": true,
+              "realDevicePerformanceApproved": false
+            },
+            "trialFallback": null
+          },
+          "gold": 50,
+          "nearKey": "",
+          "toggleHidden": true,
+          "objects": [
+            {
+              "key": "gate:1",
+              "kind": "gate",
+              "tx": 22,
+              "ty": 1,
+              "sprite": "boss-gate",
+              "name": "",
+              "walk": true
+            },
+            {
+              "key": "save:1-2:24:3",
+              "kind": "save",
+              "tx": 24,
+              "ty": 3,
+              "sprite": "save-lamp",
+              "name": "導きの灯"
+            },
+            {
+              "key": "chest:1-2:10:6",
+              "kind": "chest",
+              "tx": 10,
+              "ty": 6,
+              "sprite": "chest",
+              "name": "宝箱",
+              "reward": {
+                "gold": 80
+              }
+            },
+            {
+              "key": "sign:1-2:22:9",
+              "kind": "sign",
+              "tx": 22,
+              "ty": 9,
+              "sprite": "sign",
+              "name": "看板",
+              "scene": "a1-sign"
+            },
+            {
+              "key": "npc:1:herb-girl",
+              "kind": "npc",
+              "tx": 23,
+              "ty": 12,
+              "sprite": "npc-girl",
+              "name": "薬草摘みのミナ",
+              "scene": "a1-herb-girl",
+              "id": "herb-girl",
+              "hidden": false,
+              "sideEvents": [
+                "a1-herb-medicine"
+              ],
+              "puzzle": null,
+              "onWall": false,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "npc:1:woodcutter",
+              "kind": "npc",
+              "tx": 3,
+              "ty": 14,
+              "sprite": "npc-woodcutter",
+              "name": "木こりボルド",
+              "scene": "a1-woodcutter",
+              "id": "woodcutter",
+              "hidden": false,
+              "sideEvents": [
+                "a1-axe-return"
+              ],
+              "puzzle": null,
+              "onWall": false,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "up:1-2",
+              "kind": "stairs",
+              "dir": "up",
+              "tx": 1,
+              "ty": 16,
+              "sprite": "stairs-up",
+              "name": "上り階段",
+              "walk": true
+            }
+          ],
+          "foeDefinitions": [
+            {
+              "enemy": "foe-crystal-guardian",
+              "path": [
+                [
+                  22,
+                  9
+                ],
+                [
+                  23,
+                  10
+                ]
+              ],
+              "sight": 6
+            }
+          ],
+          "map": [
+            "############################",
+            "######...****.......##B#####",
+            "#####...**####***....#___###",
+            "####...**#####**......__S_##",
+            "###.....,,,,,,,,,,,,,,,___##",
+            "##..**..,#####****..,#######",
+            "##.****.,#T*******.,########",
+            "#..****.,###**~~~**.,..#####",
+            "#.....,,,,..**~~~~~**...####",
+            "#..***.,####.**~~~***.?.####",
+            "#..****.,####*******....####",
+            "#...**.,,,,,,,,,,,,,,,,..###",
+            "##...****.....******...b.###",
+            "###..####.....####**....####",
+            "#__a.####..**####***..***###",
+            "#_P_,,,,,,,,,,,,,,,,..****##",
+            "#<__########################",
+            "############################"
+          ]
+        },
+        {
+          "label": "camera-14-11-up",
+          "tile": {
+            "tx": 14,
+            "ty": 11
+          },
+          "direction": "up",
+          "turn": 0,
+          "area": 1,
+          "floor": 2,
+          "screen": "field",
+          "lock": false,
+          "active": true,
+          "trial": {
+            "scope": "opt_in_visual_game_trial",
+            "schemaVersion": 2,
+            "capabilities": [
+              "explicit_floor_render_profiles_v1",
+              "gltf_node_material_selection_v1",
+              "non_navigation_dressing_ground_v1",
+              "source_sha256_pins_v1"
+            ],
+            "target": {
+              "area": 1,
+              "floor": 2,
+              "floorLabel": "3F",
+              "floorKey": "1-2",
+              "widthTiles": 28,
+              "heightTiles": 18
+            },
+            "placements": 775,
+            "floors": 274,
+            "dressingGround": 177,
+            "walls": 178,
+            "props": 129,
+            "ceilings": 17,
+            "profileCounts": {
+              "stone_full_asset": 187,
+              "soil_surface_only": 87
+            },
+            "soilSurfaceFloors": 87,
+            "batches": 652,
+            "instances": 2092,
+            "instanceTriangles": 3911334,
+            "spatialBucketMeters": 16,
+            "sourceCount": 18,
+            "sourceSHA": {
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_collapsed_wall_4m.glb": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_arch_4m.glb": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/moss_stone_lantern.glb": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/ofuda_seal_cluster.glb": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/fallen_cedar_log.glb": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/white_wildflower_patch.glb": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/hanging_forest_vines.glb": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+              "assets/3d/dungeons/b1_ancient_forest/modules/mod_ceiling_vault_4m.glb": "82083e0ec116a47331f3bfd7a2146ddaae2a8f5cd9374d3a48d4415cd1699dc1",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_hokora_shrine.glb": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c"
+            },
+            "sourceHashesVerified": true,
+            "mapSha256": "786ba94517df58fea6b6b22946cfe448c11c9d010241d6b6a68c498c075a5d45",
+            "fixedObjectsPreserved": 7,
+            "foliageAlphaCutoffPreserved": true,
+            "realDevicePerformanceApproved": false
+          },
+          "review": {
+            "builtKey": "1-2",
+            "buildingKey": "",
+            "environment": {
+              "area": 1,
+              "background": 10399651,
+              "fogDensity": 0.009,
+              "far": 96
+            },
+            "camera": {
+              "position": [
+                56,
+                1.6,
+                45.1
+              ],
+              "rotation": [
+                -0.035,
+                0,
+                0
+              ]
+            },
+            "entries": [
+              {
+                "key": "gate:1",
+                "kind": "gate",
+                "state": null,
+                "at": [
+                  88,
+                  1.2,
+                  4
+                ],
+                "objectId": null,
+                "sprite": "boss-gate",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "7caa0581-8641-4b6d-8a89-47aaa688ce1f",
+                "modelBounds": [
+                  2.0199999809265137,
+                  3.0400231163948774,
+                  0.3180000130087137
+                ],
+                "childNames": [
+                  "gimmick_sealed_rune_door"
+                ]
+              },
+              {
+                "key": "save:1-2:24:3",
+                "kind": "save",
+                "state": null,
+                "at": [
+                  96,
+                  1.9,
+                  12
+                ],
+                "objectId": null,
+                "sprite": "save-lamp",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "136416ec-f5a5-4a45-97b7-6d66320f491c",
+                "modelBounds": [
+                  0.6522516012191772,
+                  1.6633877754211426,
+                  0.6440414190292358
+                ],
+                "childNames": [
+                  "blue_wisp_torch"
+                ]
+              },
+              {
+                "key": "chest:1-2:10:6",
+                "kind": "chest",
+                "state": "closed",
+                "at": [
+                  40,
+                  1.2,
+                  24
+                ],
+                "objectId": null,
+                "sprite": "chest",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "991cab24-2e7b-43a6-bcce-f5068562cd77",
+                "modelBounds": [
+                  1.4926302433013916,
+                  0.8686003684997559,
+                  1.5382992029190063
+                ],
+                "childNames": [
+                  "sealed_treasure_chest"
+                ]
+              },
+              {
+                "key": "sign:1-2:22:9",
+                "kind": "sign",
+                "state": null,
+                "at": [
+                  88,
+                  1.8,
+                  36
+                ],
+                "objectId": null,
+                "sprite": "sign",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "d1815398-e5b6-475f-b843-43a0f166bb8e",
+                "modelBounds": [
+                  1.1070582866668701,
+                  1.4035465717315674,
+                  0.9531450271606445
+                ],
+                "childNames": [
+                  "ancient_stone_signpost"
+                ]
+              },
+              {
+                "key": "npc:1:herb-girl",
+                "kind": "npc",
+                "state": null,
+                "at": [
+                  92,
+                  2.2,
+                  48
+                ],
+                "objectId": "herb-girl",
+                "sprite": "npc-girl",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "52c85f90-005a-4d5b-b71f-bcb15ef5f655",
+                "modelBounds": [
+                  0.5965265035629272,
+                  1.4754503965377808,
+                  0.6616817712783813
+                ],
+                "childNames": [
+                  "npc_herb_girl"
+                ]
+              },
+              {
+                "key": "npc:1:woodcutter",
+                "kind": "npc",
+                "state": null,
+                "at": [
+                  12,
+                  2.2,
+                  56
+                ],
+                "objectId": "woodcutter",
+                "sprite": "npc-woodcutter",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "34f13e17-5694-479b-9814-21208de14098",
+                "modelBounds": [
+                  0.7167263627052307,
+                  1.8315763473510742,
+                  0.7251709699630737
+                ],
+                "childNames": [
+                  "npc_woodcutter"
+                ]
+              },
+              {
+                "key": "up:1-2",
+                "kind": "stairs",
+                "state": null,
+                "at": [
+                  4,
+                  1.2,
+                  64
+                ],
+                "objectId": null,
+                "sprite": "stairs-up",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "617ee415-f745-4716-a77f-94111d1977de",
+                "modelBounds": [
+                  2.3485418558120728,
+                  1.6112991571426392,
+                  3.5447545051574707
+                ],
+                "childNames": [
+                  "broken_stone_stairs"
+                ]
+              }
+            ],
+            "waterMeshCount": 11,
+            "foes": [
+              {
+                "key": "foe:1-2:0",
+                "visible": true,
+                "meshOrSprite": "Sprite",
+                "textureLoaded": true
+              }
+            ],
+            "staticTrialInfo": {
+              "scope": "opt_in_visual_game_trial",
+              "schemaVersion": 2,
+              "capabilities": [
+                "explicit_floor_render_profiles_v1",
+                "gltf_node_material_selection_v1",
+                "non_navigation_dressing_ground_v1",
+                "source_sha256_pins_v1"
+              ],
+              "target": {
+                "area": 1,
+                "floor": 2,
+                "floorLabel": "3F",
+                "floorKey": "1-2",
+                "widthTiles": 28,
+                "heightTiles": 18
+              },
+              "placements": 775,
+              "floors": 274,
+              "dressingGround": 177,
+              "walls": 178,
+              "props": 129,
+              "ceilings": 17,
+              "profileCounts": {
+                "stone_full_asset": 187,
+                "soil_surface_only": 87
+              },
+              "soilSurfaceFloors": 87,
+              "batches": 652,
+              "instances": 2092,
+              "instanceTriangles": 3911334,
+              "spatialBucketMeters": 16,
+              "sourceCount": 18,
+              "sourceSHA": {
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_collapsed_wall_4m.glb": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_arch_4m.glb": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/moss_stone_lantern.glb": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/ofuda_seal_cluster.glb": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/fallen_cedar_log.glb": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/white_wildflower_patch.glb": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/hanging_forest_vines.glb": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+                "assets/3d/dungeons/b1_ancient_forest/modules/mod_ceiling_vault_4m.glb": "82083e0ec116a47331f3bfd7a2146ddaae2a8f5cd9374d3a48d4415cd1699dc1",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_hokora_shrine.glb": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c"
+              },
+              "sourceHashesVerified": true,
+              "mapSha256": "786ba94517df58fea6b6b22946cfe448c11c9d010241d6b6a68c498c075a5d45",
+              "fixedObjectsPreserved": 7,
+              "foliageAlphaCutoffPreserved": true,
+              "realDevicePerformanceApproved": false
+            },
+            "trialFallback": null
+          },
+          "gold": 50,
+          "nearKey": "",
+          "toggleHidden": true,
+          "objects": [
+            {
+              "key": "gate:1",
+              "kind": "gate",
+              "tx": 22,
+              "ty": 1,
+              "sprite": "boss-gate",
+              "name": "",
+              "walk": true
+            },
+            {
+              "key": "save:1-2:24:3",
+              "kind": "save",
+              "tx": 24,
+              "ty": 3,
+              "sprite": "save-lamp",
+              "name": "導きの灯"
+            },
+            {
+              "key": "chest:1-2:10:6",
+              "kind": "chest",
+              "tx": 10,
+              "ty": 6,
+              "sprite": "chest",
+              "name": "宝箱",
+              "reward": {
+                "gold": 80
+              }
+            },
+            {
+              "key": "sign:1-2:22:9",
+              "kind": "sign",
+              "tx": 22,
+              "ty": 9,
+              "sprite": "sign",
+              "name": "看板",
+              "scene": "a1-sign"
+            },
+            {
+              "key": "npc:1:herb-girl",
+              "kind": "npc",
+              "tx": 23,
+              "ty": 12,
+              "sprite": "npc-girl",
+              "name": "薬草摘みのミナ",
+              "scene": "a1-herb-girl",
+              "id": "herb-girl",
+              "hidden": false,
+              "sideEvents": [
+                "a1-herb-medicine"
+              ],
+              "puzzle": null,
+              "onWall": false,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "npc:1:woodcutter",
+              "kind": "npc",
+              "tx": 3,
+              "ty": 14,
+              "sprite": "npc-woodcutter",
+              "name": "木こりボルド",
+              "scene": "a1-woodcutter",
+              "id": "woodcutter",
+              "hidden": false,
+              "sideEvents": [
+                "a1-axe-return"
+              ],
+              "puzzle": null,
+              "onWall": false,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "up:1-2",
+              "kind": "stairs",
+              "dir": "up",
+              "tx": 1,
+              "ty": 16,
+              "sprite": "stairs-up",
+              "name": "上り階段",
+              "walk": true
+            }
+          ],
+          "foeDefinitions": [
+            {
+              "enemy": "foe-crystal-guardian",
+              "path": [
+                [
+                  22,
+                  9
+                ],
+                [
+                  23,
+                  10
+                ]
+              ],
+              "sight": 6
+            }
+          ],
+          "map": [
+            "############################",
+            "######...****.......##B#####",
+            "#####...**####***....#___###",
+            "####...**#####**......__S_##",
+            "###.....,,,,,,,,,,,,,,,___##",
+            "##..**..,#####****..,#######",
+            "##.****.,#T*******.,########",
+            "#..****.,###**~~~**.,..#####",
+            "#.....,,,,..**~~~~~**...####",
+            "#..***.,####.**~~~***.?.####",
+            "#..****.,####*******....####",
+            "#...**.,,,,,,,,,,,,,,,,..###",
+            "##...****.....******...b.###",
+            "###..####.....####**....####",
+            "#__a.####..**####***..***###",
+            "#_P_,,,,,,,,,,,,,,,,..****##",
+            "#<__########################",
+            "############################"
+          ]
+        },
+        {
+          "label": "screenshot-14-trial-water-facing-north",
+          "tile": {
+            "tx": 14,
+            "ty": 11
+          },
+          "direction": "up",
+          "turn": 0,
+          "area": 1,
+          "floor": 2,
+          "screen": "field",
+          "lock": false,
+          "active": true,
+          "trial": {
+            "scope": "opt_in_visual_game_trial",
+            "schemaVersion": 2,
+            "capabilities": [
+              "explicit_floor_render_profiles_v1",
+              "gltf_node_material_selection_v1",
+              "non_navigation_dressing_ground_v1",
+              "source_sha256_pins_v1"
+            ],
+            "target": {
+              "area": 1,
+              "floor": 2,
+              "floorLabel": "3F",
+              "floorKey": "1-2",
+              "widthTiles": 28,
+              "heightTiles": 18
+            },
+            "placements": 775,
+            "floors": 274,
+            "dressingGround": 177,
+            "walls": 178,
+            "props": 129,
+            "ceilings": 17,
+            "profileCounts": {
+              "stone_full_asset": 187,
+              "soil_surface_only": 87
+            },
+            "soilSurfaceFloors": 87,
+            "batches": 652,
+            "instances": 2092,
+            "instanceTriangles": 3911334,
+            "spatialBucketMeters": 16,
+            "sourceCount": 18,
+            "sourceSHA": {
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_collapsed_wall_4m.glb": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_arch_4m.glb": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/moss_stone_lantern.glb": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/ofuda_seal_cluster.glb": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/fallen_cedar_log.glb": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/white_wildflower_patch.glb": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/hanging_forest_vines.glb": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+              "assets/3d/dungeons/b1_ancient_forest/modules/mod_ceiling_vault_4m.glb": "82083e0ec116a47331f3bfd7a2146ddaae2a8f5cd9374d3a48d4415cd1699dc1",
+              "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_hokora_shrine.glb": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c"
+            },
+            "sourceHashesVerified": true,
+            "mapSha256": "786ba94517df58fea6b6b22946cfe448c11c9d010241d6b6a68c498c075a5d45",
+            "fixedObjectsPreserved": 7,
+            "foliageAlphaCutoffPreserved": true,
+            "realDevicePerformanceApproved": false
+          },
+          "review": {
+            "builtKey": "1-2",
+            "buildingKey": "",
+            "environment": {
+              "area": 1,
+              "background": 10399651,
+              "fogDensity": 0.009,
+              "far": 96
+            },
+            "camera": {
+              "position": [
+                56,
+                1.6,
+                45.1
+              ],
+              "rotation": [
+                -0.035,
+                0,
+                0
+              ]
+            },
+            "entries": [
+              {
+                "key": "gate:1",
+                "kind": "gate",
+                "state": null,
+                "at": [
+                  88,
+                  1.2,
+                  4
+                ],
+                "objectId": null,
+                "sprite": "boss-gate",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "7caa0581-8641-4b6d-8a89-47aaa688ce1f",
+                "modelBounds": [
+                  2.0199999809265137,
+                  3.0400231163948774,
+                  0.3180000130087137
+                ],
+                "childNames": [
+                  "gimmick_sealed_rune_door"
+                ]
+              },
+              {
+                "key": "save:1-2:24:3",
+                "kind": "save",
+                "state": null,
+                "at": [
+                  96,
+                  1.9,
+                  12
+                ],
+                "objectId": null,
+                "sprite": "save-lamp",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "136416ec-f5a5-4a45-97b7-6d66320f491c",
+                "modelBounds": [
+                  0.6522516012191772,
+                  1.6633877754211426,
+                  0.6440414190292358
+                ],
+                "childNames": [
+                  "blue_wisp_torch"
+                ]
+              },
+              {
+                "key": "chest:1-2:10:6",
+                "kind": "chest",
+                "state": "closed",
+                "at": [
+                  40,
+                  1.2,
+                  24
+                ],
+                "objectId": null,
+                "sprite": "chest",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "991cab24-2e7b-43a6-bcce-f5068562cd77",
+                "modelBounds": [
+                  1.4926302433013916,
+                  0.8686003684997559,
+                  1.5382992029190063
+                ],
+                "childNames": [
+                  "sealed_treasure_chest"
+                ]
+              },
+              {
+                "key": "sign:1-2:22:9",
+                "kind": "sign",
+                "state": null,
+                "at": [
+                  88,
+                  1.8,
+                  36
+                ],
+                "objectId": null,
+                "sprite": "sign",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "d1815398-e5b6-475f-b843-43a0f166bb8e",
+                "modelBounds": [
+                  1.1070582866668701,
+                  1.4035465717315674,
+                  0.9531450271606445
+                ],
+                "childNames": [
+                  "ancient_stone_signpost"
+                ]
+              },
+              {
+                "key": "npc:1:herb-girl",
+                "kind": "npc",
+                "state": null,
+                "at": [
+                  92,
+                  2.2,
+                  48
+                ],
+                "objectId": "herb-girl",
+                "sprite": "npc-girl",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "52c85f90-005a-4d5b-b71f-bcb15ef5f655",
+                "modelBounds": [
+                  0.5965265035629272,
+                  1.4754503965377808,
+                  0.6616817712783813
+                ],
+                "childNames": [
+                  "npc_herb_girl"
+                ]
+              },
+              {
+                "key": "npc:1:woodcutter",
+                "kind": "npc",
+                "state": null,
+                "at": [
+                  12,
+                  2.2,
+                  56
+                ],
+                "objectId": "woodcutter",
+                "sprite": "npc-woodcutter",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "34f13e17-5694-479b-9814-21208de14098",
+                "modelBounds": [
+                  0.7167263627052307,
+                  1.8315763473510742,
+                  0.7251709699630737
+                ],
+                "childNames": [
+                  "npc_woodcutter"
+                ]
+              },
+              {
+                "key": "up:1-2",
+                "kind": "stairs",
+                "state": null,
+                "at": [
+                  4,
+                  1.2,
+                  64
+                ],
+                "objectId": null,
+                "sprite": "stairs-up",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "617ee415-f745-4716-a77f-94111d1977de",
+                "modelBounds": [
+                  2.3485418558120728,
+                  1.6112991571426392,
+                  3.5447545051574707
+                ],
+                "childNames": [
+                  "broken_stone_stairs"
+                ]
+              }
+            ],
+            "waterMeshCount": 11,
+            "foes": [
+              {
+                "key": "foe:1-2:0",
+                "visible": true,
+                "meshOrSprite": "Sprite",
+                "textureLoaded": true
+              }
+            ],
+            "staticTrialInfo": {
+              "scope": "opt_in_visual_game_trial",
+              "schemaVersion": 2,
+              "capabilities": [
+                "explicit_floor_render_profiles_v1",
+                "gltf_node_material_selection_v1",
+                "non_navigation_dressing_ground_v1",
+                "source_sha256_pins_v1"
+              ],
+              "target": {
+                "area": 1,
+                "floor": 2,
+                "floorLabel": "3F",
+                "floorKey": "1-2",
+                "widthTiles": 28,
+                "heightTiles": 18
+              },
+              "placements": 775,
+              "floors": 274,
+              "dressingGround": 177,
+              "walls": 178,
+              "props": 129,
+              "ceilings": 17,
+              "profileCounts": {
+                "stone_full_asset": 187,
+                "soil_surface_only": 87
+              },
+              "soilSurfaceFloors": 87,
+              "batches": 652,
+              "instances": 2092,
+              "instanceTriangles": 3911334,
+              "spatialBucketMeters": 16,
+              "sourceCount": 18,
+              "sourceSHA": {
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_collapsed_wall_4m.glb": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_arch_4m.glb": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/moss_stone_lantern.glb": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/ofuda_seal_cluster.glb": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/fallen_cedar_log.glb": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/white_wildflower_patch.glb": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/hanging_forest_vines.glb": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+                "assets/3d/dungeons/b1_ancient_forest/modules/mod_ceiling_vault_4m.glb": "82083e0ec116a47331f3bfd7a2146ddaae2a8f5cd9374d3a48d4415cd1699dc1",
+                "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_hokora_shrine.glb": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c"
+              },
+              "sourceHashesVerified": true,
+              "mapSha256": "786ba94517df58fea6b6b22946cfe448c11c9d010241d6b6a68c498c075a5d45",
+              "fixedObjectsPreserved": 7,
+              "foliageAlphaCutoffPreserved": true,
+              "realDevicePerformanceApproved": false
+            },
+            "trialFallback": null
+          },
+          "gold": 50,
+          "nearKey": "",
+          "toggleHidden": true,
+          "objects": [
+            {
+              "key": "gate:1",
+              "kind": "gate",
+              "tx": 22,
+              "ty": 1,
+              "sprite": "boss-gate",
+              "name": "",
+              "walk": true
+            },
+            {
+              "key": "save:1-2:24:3",
+              "kind": "save",
+              "tx": 24,
+              "ty": 3,
+              "sprite": "save-lamp",
+              "name": "導きの灯"
+            },
+            {
+              "key": "chest:1-2:10:6",
+              "kind": "chest",
+              "tx": 10,
+              "ty": 6,
+              "sprite": "chest",
+              "name": "宝箱",
+              "reward": {
+                "gold": 80
+              }
+            },
+            {
+              "key": "sign:1-2:22:9",
+              "kind": "sign",
+              "tx": 22,
+              "ty": 9,
+              "sprite": "sign",
+              "name": "看板",
+              "scene": "a1-sign"
+            },
+            {
+              "key": "npc:1:herb-girl",
+              "kind": "npc",
+              "tx": 23,
+              "ty": 12,
+              "sprite": "npc-girl",
+              "name": "薬草摘みのミナ",
+              "scene": "a1-herb-girl",
+              "id": "herb-girl",
+              "hidden": false,
+              "sideEvents": [
+                "a1-herb-medicine"
+              ],
+              "puzzle": null,
+              "onWall": false,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "npc:1:woodcutter",
+              "kind": "npc",
+              "tx": 3,
+              "ty": 14,
+              "sprite": "npc-woodcutter",
+              "name": "木こりボルド",
+              "scene": "a1-woodcutter",
+              "id": "woodcutter",
+              "hidden": false,
+              "sideEvents": [
+                "a1-axe-return"
+              ],
+              "puzzle": null,
+              "onWall": false,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "up:1-2",
+              "kind": "stairs",
+              "dir": "up",
+              "tx": 1,
+              "ty": 16,
+              "sprite": "stairs-up",
+              "name": "上り階段",
+              "walk": true
+            }
+          ],
+          "foeDefinitions": [
+            {
+              "enemy": "foe-crystal-guardian",
+              "path": [
+                [
+                  22,
+                  9
+                ],
+                [
+                  23,
+                  10
+                ]
+              ],
+              "sight": 6
+            }
+          ],
+          "map": [
+            "############################",
+            "######...****.......##B#####",
+            "#####...**####***....#___###",
+            "####...**#####**......__S_##",
+            "###.....,,,,,,,,,,,,,,,___##",
+            "##..**..,#####****..,#######",
+            "##.****.,#T*******.,########",
+            "#..****.,###**~~~**.,..#####",
+            "#.....,,,,..**~~~~~**...####",
+            "#..***.,####.**~~~***.?.####",
+            "#..****.,####*******....####",
+            "#...**.,,,,,,,,,,,,,,,,..###",
+            "##...****.....******...b.###",
+            "###..####.....####**....####",
+            "#__a.####..**####***..***###",
+            "#_P_,,,,,,,,,,,,,,,,..****##",
+            "#<__########################",
+            "############################"
+          ]
+        }
+      ],
+      "storage": {
+        "harness": {
+          "blockedSaveWrites": [
+            "fantasyRpgSave",
+            "fantasyRpgSave",
+            "fantasyRpgSave",
+            "fantasyRpgSave"
+          ],
+          "suppressedAutoSaves": 2
+        },
+        "saveKeys": []
+      }
+    }
+  ],
+  "checks": [],
+  "screenshots": [
+    {
+      "file": "14-trial-water-facing-north.png",
+      "session": "water-review",
+      "area": 1,
+      "floor": 2,
+      "tile": {
+        "tx": 14,
+        "ty": 11
+      },
+      "direction": "up",
+      "camera": {
+        "position": [
+          56,
+          1.6,
+          45.1
+        ],
+        "rotation": [
+          -0.035,
+          0,
+          0
+        ]
+      },
+      "trialActive": true
+    }
+  ],
+  "limitations": [],
+  "passed": true,
+  "verifiedAt": "2026-11-16T21:36:29.157Z"
+}

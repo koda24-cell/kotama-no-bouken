@@ -6,7 +6,7 @@
 node tools/f1-sacred-forest/verify-game-trial.cjs
 ```
 
-予定する確認:
+実行済みの確認（`game-trial-verification.json`、3 context / 16 checks / 13 images）:
 
 - 従来1F、opt-inでも変わらない1F、opt-out 3F、opt-in 3F。
 - live map、固定7対象のidentity・実モデル・操作anchor、水11マス、FOE sprite/texture。
@@ -19,4 +19,16 @@ node tools/f1-sacred-forest/verify-game-trial.cjs
 
 新規context内の保存キー書込みと `persistAutoSave` はテストfixtureで抑止する。既存ユーザーの保存データを使わず、セーブ/ロードの永続化を合格にしない。Software rendererのカウンタは端末FPS承認ではない。
 
-現在はスクリプト作成段階。`game-trial-verification.json` が実行成功した場合だけ成功記録とする。失敗は別の `game-trial-failure.json` に保存し、途中の画像やsource commitだけで成功扱いにしない。
+実ゲームで775配置（床274=石187/土surface87、装飾地面177、壁178、小物129、天井17）、18 GLBのSHA一致、652 batches / 2092 instances / 3,911,334 trianglesを観測。実行前後のmap、候補、17個別資産、旧天井、runtimeの入力hashは一致した。記録のsource commitは実行開始時点で、以降のQAハーネスだけのcommitは実ゲームの入力を変えていない。
+
+page error / console error は0。ただし無警告ではない。trial中にSwiftShaderの `texSubImage2D: bad image data` と `Texture is immutable` が各1回出た。通常のmonster preload警告、外部Google fontのTLS失敗、遷移時に中止された旧資産の先読みも記録している。これらを消して正常扱いにはしていない。意図したSHA不一致の警告はnegative contextに分離した。
+
+画像05は歩行セル(13,4)・目高1.6mから見た祠。既存の低い崩落壁越しに屋根・扉を確認でき、高い壁の撤去は行っていない。画像04の参道は従来の細長い迷路構造を保持している。画像06は水際の東向きのため水面が画角外で、追加の水面向け画像は次で再現する。
+
+```sh
+node tools/f1-sacred-forest/verify-game-trial.cjs --water-review
+```
+
+追加画像14は歩行セル(14,11)・上向き・目高1.6m。機能suiteとは別の `water-review-verification.json` に記録する。
+
+初回の失敗はテストfixtureが既存gatherの表示名追加をidentity改変と誤判定したもの。`fixture-initial-failure.json` に保存し、source側の比較を修正後、上記suiteを最初から実行して成功した。途中画像だけで成功扱いにしていない。全ゲーム回帰、実機FPS、永続セーブ、長時間進行の承認は含まない。
