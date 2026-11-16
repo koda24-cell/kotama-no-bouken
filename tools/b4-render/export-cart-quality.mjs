@@ -5,6 +5,7 @@ import {createB4MineRigProps} from '../../field/b4-mine-rig-props.js';
 import {enhanceB4MineCart} from '../../field/b4-cart-detail-additions.js';
 import {enhanceB4CartV12} from '../../field/b4-cart-v12-additions.js';
 import {enhanceB4CartV14} from '../../field/b4-cart-v14-additions.js';
+import {enhanceB4CartTaper} from '../../field/b4-cart-taper-v15-additions.js';
 class NodeFileReader {
  result=null;onloadend=null;onerror=null;
  readAsArrayBuffer(b){b.arrayBuffer().then(v=>{this.result=v;this.onloadend?.()}).catch(e=>this.onerror?.(e))}
@@ -12,11 +13,13 @@ class NodeFileReader {
 }
 globalThis.FileReader=NodeFileReader;
 fs.mkdirSync('render-output',{recursive:true});
-for (const level of [0,1,2,3]) {
+for (const level of [0,1,2,3,4,5]) {
  const root=createB4MineRigProps();
  enhanceB4MineCart(root);
  if(level===1||level===2)enhanceB4CartV12(root,level);
- if(level===3)enhanceB4CartV14(root);
+ if(level>=3)enhanceB4CartV14(root);
+ if(level===4)enhanceB4CartTaper(root,1);
+ if(level===5)enhanceB4CartTaper(root,2);
  const cart=root.getObjectByName('b4:buried-ore-cart');
  if(!cart)throw Error('missing cart');
  cart.updateMatrixWorld(true);
