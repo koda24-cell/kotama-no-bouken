@@ -1,0 +1,47 @@
+{
+  "asset_id": "gravel_sparse",
+  "version": "V1",
+  "status": "NOT_APPROVED",
+  "game_integration": "NOT_INTEGRATED",
+  "tile_size_m": [
+    1,
+    1
+  ],
+  "source": "tools/floor6/gravel_sparse_v1.py",
+  "source_sha": "e9fd9f20074e8441a019eacd980631c4360d10b8",
+  "run_id": "43889055014",
+  "parts": 29,
+  "files": [
+    {
+      "name": "angle.png",
+      "bytes": 745122,
+      "sha256": "02467c26cc23b77c9628a60b72cd47eac5d84c1ad3964df292f55c82aa179370"
+    },
+    {
+      "name": "front.png",
+      "bytes": 739669,
+      "sha256": "35c83092e0ddcfb4d1fa7cdb4e6cb3357a18af4a5fa4a799604793f183e8b6cb"
+    },
+    {
+      "name": "gravel_sparse.blend",
+      "bytes": 247585,
+      "sha256": "2d93c88cc0a6ce8e858d2eeb6684a49fca643658343b4fa97861e368b4ede3bc"
+    },
+    {
+      "name": "gravel_sparse.glb",
+      "bytes": 193140,
+      "sha256": "0c4fb51a673575e3e83e2f1cd5c515178da60bc2dfbe65e4a3ffd6e219436bad"
+    },
+    {
+      "name": "side.png",
+      "bytes": 756839,
+      "sha256": "e2f957c6b23554a9c4f70a869d72c269cc19d8c61115f54f82d01faa27963e37"
+    },
+    {
+      "name": "top.png",
+      "bytes": 592017,
+      "sha256": "f638a02b0d14b335a3c0f9833b6dac3a25e45f471b560f1d6716f5b37be67053"
+    }
+  ],
+  "note": "Review-only ground plane excluded from GLB; render scene in .blend."
+}
