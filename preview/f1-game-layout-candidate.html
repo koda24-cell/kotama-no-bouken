@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:,">
+<title>一層3F｜神域配置候補の確認</title>
+<style>
+:root{font:14px/1.6 system-ui,-apple-system,"Noto Sans JP",sans-serif;color:#e6eadd;background:#111912;color-scheme:dark}*{box-sizing:border-box}body{margin:0}header{padding:17px 24px;border-bottom:1px solid #3b4c39;display:flex;align-items:center;gap:20px;background:#19241b}header small{display:block;letter-spacing:.16em;font-size:10px;color:#a4b492}h1{font-size:19px;margin:2px 0 0;font-weight:600}.status{margin-left:auto;padding:5px 10px;border:1px solid #74663f;color:#dccb95;font-size:12px}.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 24px;border-bottom:1px solid #384836}button{font:inherit;padding:6px 12px;border:1px solid #617457;background:#263823;color:#e6eadd;cursor:pointer;border-radius:3px}button:hover{background:#354c2f}button[aria-pressed=true]{background:#536b3d}label{display:flex;gap:6px;align-items:center;font-size:12px}input{accent-color:#b3c58b}button:disabled,input:disabled{opacity:.4;cursor:wait}.toolbar span{margin-left:auto;color:#aaba9e;font-size:12px}main{display:grid;grid-template-columns:minmax(0,1fr) 270px;height:calc(100dvh - 144px);min-height:480px}#viewport{position:relative;min-height:400px;background:#9ba89a;overflow:hidden}canvas{display:block;outline:none}#loading{position:absolute;inset:0;display:grid;place-content:center;background:#152419e8;color:#e5eddd;text-align:center;padding:24px;z-index:2}#loading[hidden]{display:none}#loading strong{font-size:15px;font-weight:500}#loading p{font-size:12px;color:#abbba2;max-width:40em;margin:8px auto}.view-label{position:absolute;left:16px;top:14px;pointer-events:none;color:#23321f;background:#e5ebd9e8;padding:5px 9px;font-size:11px}aside{padding:22px 18px;background:#19241b;border-left:1px solid #384836;overflow:auto}aside h2{font-size:12px;letter-spacing:.06em;color:#bfceac;margin:0 0 12px}aside p{font-size:12px;color:#b1bda8;margin:0 0 15px}.warning{padding:11px 12px;border-left:2px solid #94835a;background:#272b1f;color:#d9d1ad}dl{display:grid;grid-template-columns:1fr auto;gap:7px 10px;font-size:12px;margin:14px 0 24px}dt{color:#a4b69b}dd{margin:0;font-variant-numeric:tabular-nums}.legend{display:grid;gap:8px;font-size:11px;color:#bac6af}.legend i{display:inline-block;width:9px;height:9px;margin-right:8px;background:var(--c);border-radius:2px}details{margin-top:22px;font-size:11px;color:#a8ba9e}pre{font:10px/1.6 ui-monospace,monospace;white-space:pre-wrap;max-height:240px;overflow:auto;background:#111a12;padding:10px}#failure{color:#ffd2bc;border-left:2px solid #c58b6d;padding-left:10px;white-space:pre-wrap}#failure[hidden]{display:none}.bottom{font-size:10px;color:#91a188;margin-top:16px}a{color:#c4d7a8}@media(max-width:780px){header{padding:12px 14px}h1{font-size:16px}.status{font-size:10px}.toolbar{padding:10px 14px;gap:8px}.toolbar span{display:none}main{grid-template-columns:minmax(0,1fr);height:auto}#viewport{height:65dvh}aside{border-left:0;border-top:1px solid #384836}dl{grid-template-columns:1fr auto 1fr auto;gap:7px 14px}}
+</style>
+<style>.cost-table{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:10px}.cost-table th,.cost-table td{text-align:right;padding:5px 2px;border-bottom:1px solid #384836;font-variant-numeric:tabular-nums}.cost-table th:first-child,.cost-table td:first-child{text-align:left}.cost-table th{font-weight:400;color:#a8ba9e}.cost-caption{font-size:10px;color:#a4b397}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+<header><div><small>KOTAMA / GAME LAYOUT REVIEW</small><h1>一層3F — 神域の配置候補</h1></div><div class="status">承認待ち・ゲーム未適用</div></header>
+<div class="toolbar"><button id="plan" aria-pressed="false" disabled>平面図に切り替え</button><button id="reset" disabled>視点を戻す</button><label><input id="ceilings" type="checkbox" disabled>天井を表示</label><label><input id="props" type="checkbox" checked disabled>植生・小物</label><label><input id="zones" type="checkbox" disabled>区画を表示</label><span>ドラッグで回転 ／ スクロールで拡大</span></div>
+<main><div id="viewport"><div class="view-label" id="view-label">実3Fの座標に合わせた配置確認</div><div id="loading"><strong id="progress">配置候補を確認しています…</strong><p>実際のGLBを読み込み、土床の表示範囲と参照元を照合します。</p></div></div>
+<aside><h2>独立した配置レビュー</h2><p>実3Fの地形をもとに、床・壁・植生の配置を確認します。平面図ではマス全体を見渡せます。</p><p class="warning">水、固定オブジェクト7点、FOEはこの表示では描画しません。操作・衝突・セーブ・端末性能を含む、実ゲームの検証ではありません。</p><p id="failure" hidden></p><dl><dt>床</dt><dd id="floor-count">—</dd><dt>石床</dt><dd id="stone-count">—</dd><dt>土だけの床</dt><dd id="soil-count">—</dd><dt>境界の壁</dt><dd id="wall-count">—</dd><dt>植生・小物</dt><dd id="prop-count">—</dd><dt>確認状態</dt><dd id="check-status">確認中</dd></dl><h2>全域の配置コスト</h2><p class="cost-caption">天井を含む全マップの概算です。実機FPSの承認ではありません。背景の土は歩行域を増やしません。</p><dl><dt>杉</dt><dd id="cedar-count">—</dd><dt>背景の土床</dt><dd id="ground-count">—</dd><dt>三角形の概算</dt><dd id="cost-triangles">—</dd><dt>材質描画の概算</dt><dd id="cost-draws">—</dd></dl><table class="cost-table"><thead><tr><th>区画</th><th>杉</th><th>三角形</th></tr></thead><tbody id="zone-costs"></tbody></table><h2>区画</h2><div class="legend"><span><i style="--c:#c5b58a"></i>根の参道</span><span><i style="--c:#739996"></i>水際の根庭</span><span><i style="--c:#9b987d"></i>地下封印回廊</span><span><i style="--c:#859c70"></i>天蓋の裂けた祭祀庭</span></div><details><summary>参照・床の照合結果</summary><pre id="technical">確認中</pre></details><p class="bottom">表示対象は承認待ちの候補です。読み込み規則に合わない素材は、全体表示へ置き換えず停止します。</p><a class="bottom" href="f1-sacred-forest.html">個別素材のレビューへ</a></aside></main>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+
+const CANDIDATE='../assets/3d/dungeons/b1_sacred_forest_candidates/';
+const CAPABILITIES=new Set(['explicit_floor_render_profiles_v1','gltf_node_material_selection_v1','non_navigation_dressing_ground_v1','source_sha256_pins_v1']);
+const $=id=>document.getElementById(id),viewport=$('viewport');
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.1;renderer.setPixelRatio(1);
+renderer.domElement.tabIndex=0;renderer.domElement.setAttribute('aria-label','一層3F配置候補の3D表示');viewport.appendChild(renderer.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x99a495);
+scene.add(new THREE.HemisphereLight(0xdbe5e8,0x536244,1.55));
+const key=new THREE.DirectionalLight(0xffe8c5,2.0);key.position.set(-20,80,35);scene.add(key);
+const fill=new THREE.DirectionalLight(0xc6d6e6,.48);fill.position.set(100,35,50);scene.add(fill);
+const perspective=new THREE.PerspectiveCamera(43,1,.05,600);
+const planCamera=new THREE.OrthographicCamera(-80,80,55,-55,.1,600);planCamera.up.set(0,0,-1);
+let camera=perspective;
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=false;
+controls.maxPolarAngle=Math.PI*.49;controls.addEventListener('change',requestRender);
+const root=new THREE.Group(),floorGroup=new THREE.Group(),groundGroup=new THREE.Group(),wallGroup=new THREE.Group(),propGroup=new THREE.Group(),ceilingGroup=new THREE.Group(),zoneGroup=new THREE.Group();
+root.name='candidate_review_only';root.add(groundGroup,floorGroup,wallGroup,propGroup,ceilingGroup,zoneGroup);
+ceilingGroup.visible=false;zoneGroup.visible=false;
+let ready=false,busy=true,isPlan=false,renderQueued=false,layout=null,manifest=null,centre=new THREE.Vector3(54,0,34),candidateHash=null;
+const errors=[],sourcePromises=new Map(),sourceRecords=new Map(),templates=new Map(),floorInstances=[],groundInstances=[];
+const loader=new GLTFLoader();
+const jsonClone=value=>JSON.parse(JSON.stringify(value));
+const hashBuffer=async bytes=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(v=>v.toString(16).padStart(2,'0')).join('');
+const assert=(condition,message)=>{if(!condition)throw new Error(message);};
+const close=(a,b,epsilon=1e-5)=>Math.abs(a-b)<=epsilon;
+function requestRender(){if(renderQueued)return;renderQueued=true;requestAnimationFrame(()=>{renderQueued=false;renderer.render(scene,camera);});}
+function resize(){const w=Math.max(1,viewport.clientWidth),h=Math.max(1,viewport.clientHeight);renderer.setSize(w,h,false);perspective.aspect=w/h;perspective.updateProjectionMatrix();const half=56;planCamera.left=-half*w/h;planCamera.right=half*w/h;planCamera.top=half;planCamera.bottom=-half;planCamera.updateProjectionMatrix();requestRender();}
+new ResizeObserver(resize).observe(viewport);
+function fit(){if(isPlan){planCamera.position.set(centre.x,150,centre.z);planCamera.lookAt(centre);controls.target.copy(centre);}else{perspective.position.copy(centre).add(new THREE.Vector3(69,87,106));controls.target.copy(centre);perspective.lookAt(centre);}controls.update();requestRender();}
+function setPlan(value){isPlan=!!value;camera=isPlan?planCamera:perspective;controls.object=camera;controls.enableRotate=!isPlan;$('plan').setAttribute('aria-pressed',String(isPlan));$('plan').textContent=isPlan?'斜め表示に戻す':'平面図に切り替え';$('view-label').textContent=isPlan?'3F配置の平面図 ／ 上が北':'実3Fの座標に合わせた配置確認';fit();renderer.render(scene,camera);return snapshot();}
+function validateContract(candidate,capabilities=CAPABILITIES){
+  assert(candidate?.schemaVersion===2,'非対応の配置形式です。');
+  assert(candidate.scope==='candidate_not_applied','独立した候補データ以外は読み込みません。');
+  assert(Array.isArray(candidate.requiredCapabilities),'必要な表示機能の宣言がありません。');
+  for(const name of candidate.requiredCapabilities)assert(capabilities.has(name),'非対応の必須表示機能: '+name);
+  const contract=candidate.consumerContract;
+  assert(contract?.implicitFullAssetFallback===false&&contract.defaultFloorRenderProfile===null,'床の暗黙の代替表示は許可されていません。');
+  assert(contract.onSelectionMismatch==='reject_candidate'&&contract.onUnknownRenderProfile==='reject_candidate','床の不一致を拒否する規則が必要です。');
+  assert(candidate.runtimeModified===false&&candidate.mapModified===false,'ゲーム変更済みの配置はこのレビューの対象外です。');
+  const seen=new Set();
+  assert(Array.isArray(candidate.dressingGroundPlacements),'非歩行用地面の配置宣言がありません。');
+  assert(candidate.requiredCapabilities.includes('non_navigation_dressing_ground_v1'),'非歩行用地面を省略する表示規則は拒否しました。');
+  assert(candidate.dressingGroundPolicy?.gameTraversable===false&&candidate.dressingGroundPolicy?.mapBoundsExpanded===false,'背景地面によるマップ拡張は許可しません。');
+  for(const floor of [...candidate.floorPlacements||[],...candidate.dressingGroundPlacements]){
+    assert(!seen.has(floor.id),'床IDが重複しています: '+floor.id);seen.add(floor.id);
+    const profile=candidate.floorRenderProfiles?.[floor.renderProfile];
+    assert(profile&&profile.sourceAssetId===floor.assetId&&profile.sourceFile===floor.file,'明示した床表示規則と参照元が一致しません: '+floor.id);
+    assert(profile.onMismatch==='reject_candidate','床表示の不一致を拒否できません。');
+    assert(profile.selection?.preserveAncestorTransforms===true,'床の元の変換を保持する宣言が必要です。');
+    assert(['all','node_and_material_exact'].includes(profile.selection.mode),'非対応の床の選択方法です。');
+    assert(floor.sourceCharUnchanged!=='~','水マスへの床の配置を拒否しました。');
+    if(profile.requireExplicitTileWhitelist){assert((candidate.fullRootsoilTileWhitelist||[]).some(tile=>JSON.stringify(tile)===JSON.stringify(floor.tile)),'局所用の土床が配置許可リストにありません。');}
+    if(floor.role==='non_navigation_dressing_ground'){
+      assert(floor.gameTraversable===false&&floor.navigationSolidUnchanged===true&&floor.mapBoundsExpanded===false,'背景の地面を歩行領域に変更する指定は拒否しました。');
+      const[x,y]=floor.tile,letter=candidate.beforeFingerprint.saveCriticalData.map[y]?.[x]??'#';
+      assert(letter==='#'&&floor.sourceCharUnchanged==='#'&&floor.renderProfile==='soil_surface_only','背景の土床は元の壁マス・外周にだけ配置できます。');
+    }
+  }
+  return {schemaVersion:2,requiredCapabilities:[...candidate.requiredCapabilities],floorsChecked:seen.size,failClosed:true};
+}
+function safeUrl(file){assert(typeof file==='string'&&/^assets\/3d\/dungeons\/[a-zA-Z0-9_./-]+\.glb$/.test(file)&&!file.split('/').includes('..'),'不正なGLB参照です。');return new URL('../'+file,location.href);}
+function glbDocument(buffer){const view=new DataView(buffer);assert(view.getUint32(0,true)===0x46546c67&&view.getUint32(4,true)===2&&view.getUint32(8,true)===buffer.byteLength,'GLBの構造が正しくありません。');assert(view.getUint32(16,true)===0x4e4f534a,'GLBのJSONがありません。');const j=JSON.parse(new TextDecoder().decode(new Uint8Array(buffer,20,view.getUint32(12,true))));assert((j.buffers||[]).every(b=>!b.uri)&&(j.images||[]).every(i=>i.bufferView!==undefined&&!i.uri),'埋め込み以外の素材参照は受け付けません。');return j;}
+function expectedAssetHash(file){const match=manifest?.assets?.find(a=>file==='assets/3d/dungeons/b1_sacred_forest_candidates/'+a.file);return match?.sha256||null;}
+function inspectGeometry(source){const geometries=new Set(),materials=new Set(),invalid=[],textures=new Set();let triangles=0,vertices=0;source.traverse(o=>{if(!o.isMesh)return;const g=o.geometry;if(!geometries.has(g)){geometries.add(g);const p=g.getAttribute('position');if(!p||!g.getAttribute('normal')||!g.getAttribute('uv'))invalid.push(o.name+': missing position/normal/uv');if(g.getAttribute('color'))invalid.push(o.name+': vertex colour');for(const name of ['position','normal','uv']){const a=g.getAttribute(name);if(a){for(const n of a.array)if(!Number.isFinite(n)){invalid.push(o.name+': nonfinite '+name);break;}}}vertices+=p?.count||0;triangles+=(g.index?.count||p?.count||0)/3;}for(const m of Array.isArray(o.material)?o.material:[o.material]){if(!m)continue;materials.add(m);for(const t of Object.values(m))if(t?.isTexture)textures.add(t);}});for(const t of textures){const image=t.image;if(!(image?.width||image?.naturalWidth))invalid.push('unloaded texture: '+t.name);}return {geometries:geometries.size,materials:materials.size,triangles,vertices,textures:textures.size,invalid};}
+async function loadSource(file,requiredHash=null){
+  let promise=sourcePromises.get(file);
+  if(!promise){promise=(async()=>{const url=safeUrl(file),response=await fetch(url);assert(response.ok,'GLBを取得できません: '+file);const buffer=await response.arrayBuffer(),sourceHash=await hashBuffer(buffer),expected=expectedAssetHash(file);if(expected)assert(sourceHash===expected,'素材一覧とGLBのSHAが一致しません: '+file);const document=glbDocument(buffer),gltf=await loader.parseAsync(buffer,new URL('.',url).href),geometry=inspectGeometry(gltf.scene);assert(geometry.invalid.length===0,'GLBの形状・UV・法線を確認できません: '+file);const result={file,source:gltf.scene,document,sha256:sourceHash,bytes:buffer.byteLength,expectedHash:expected,manifestHashVerified:!!expected,explicitPins:new Set(),geometry};sourceRecords.set(file,result);return result;})();sourcePromises.set(file,promise);}
+  const record=await promise;
+  if(requiredHash){assert(record.sha256===requiredHash,'表示規則とGLBのSHAが一致しません: '+file);record.explicitPins.add(requiredHash);}
+  return record;
+}
+function verifySelectionDocument(record,profile){
+  assert(record.sha256===profile.sourceSha256,'選択元GLBのSHAが一致しません。');
+  const selection=profile.selection;assert(selection.preserveAncestorTransforms===true,'元の変換を保持しない床は拒否しました。');
+  if(selection.mode==='all')return {mode:'all',matchedNodes:null,matchedPrimitives:null};
+  assert(selection.mode==='node_and_material_exact','非対応の床選択方法です。');
+  const nodes=record.document.nodes.filter(n=>n.name===selection.node);
+  assert(nodes.length===selection.expectedNodeMatches,'床の選択ノードが一致しません: '+selection.node);
+  assert(selection.includeDescendants===false,'子ノードを含む選択には対応していません。');
+  let primitiveMatches=0;
+  for(const node of nodes){assert(node.mesh!==undefined&&!(node.children?.length),'土床の対象ノードに予期しない子が含まれています。');const primitives=record.document.meshes[node.mesh].primitives;assert(primitives.length===1,'土床の対象に余分な形状が含まれています。');for(const primitive of primitives){assert(record.document.materials[primitive.material]?.name===selection.material,'土床の材質が一致しません: '+selection.material);primitiveMatches++;}}
+  assert(primitiveMatches===selection.expectedPrimitiveMatches,'土床の選択形状数が一致しません。');
+  return {mode:selection.mode,matchedNodes:nodes.length,matchedPrimitives:primitiveMatches};
+}
+function cloneProfile(record,profile){
+  const validation=verifySelectionDocument(record,profile),copy=record.source.clone(true),meshes=[];copy.traverse(o=>{if(o.isMesh)meshes.push(o);});
+  if(profile.selection.mode==='node_and_material_exact'){
+    const matching=meshes.filter(o=>o.name===profile.selection.node&&(Array.isArray(o.material)?o.material:[o.material]).every(m=>m?.name===profile.selection.material));
+    assert(matching.length===profile.selection.expectedNodeMatches,'GLTFLoaderの土床ノード・材質が一致しません。');
+    const keep=new Set(matching);for(const mesh of meshes)if(!keep.has(mesh))mesh.removeFromParent();
+    copy.updateMatrixWorld(true);const bounds=new THREE.Box3().setFromObject(copy);
+    assert(close(bounds.max.y,profile.walkSurfaceY)&&close(bounds.max.x-bounds.min.x,4)&&close(bounds.max.z-bounds.min.z,4),'土床の変換または上面の高さが一致しません。');
+  }
+  // Retain the complete ancestor chain and each original matrix. Geometry,
+  // materials, textures and UV buffers are shared with the parsed source.
+  copy.userData.profileValidation=validation;return copy;
+}
+async function profileTemplate(id,override=null){const profile=override||layout.floorRenderProfiles[id];assert(profile,'不明な床表示規則です。');const record=await loadSource(profile.sourceFile,profile.sourceSha256);return {template:cloneProfile(record,profile),record,profile};}
+function placed(source,row){const group=new THREE.Group();group.name=row.id;group.position.fromArray(row.position);group.rotation.y=row.rotationY||0;group.scale.fromArray(row.scale||[1,1,1]);group.add(source.clone(true));group.userData.layoutRow=row;return group;}
+async function buildFloor(row,targetGroup=floorGroup,targetInstances=floorInstances){let item=templates.get(row.renderProfile);if(!item){item=await profileTemplate(row.renderProfile);templates.set(row.renderProfile,item);}const group=placed(item.template,row);targetGroup.add(group);targetInstances.push({row,group,source:item.record,profile:item.profile});}
+async function buildOther(rows,group){for(const row of rows){const record=await loadSource(row.file,row.sourceSha256||null);group.add(placed(record.source,row));}}
+function zoneHelpers(){const colors={root_approach:0xc5b58a,sunken_grove:0x739996,sealed_corridor:0x9b987d,sacred_courtyard:0x859c70},materials=new Map();for(const cell of layout.cells){if(cell.visualWall||cell.water)continue;let mat=materials.get(cell.zone);if(!mat){mat=new THREE.MeshBasicMaterial({color:colors[cell.zone],transparent:true,opacity:.32,depthWrite:false,side:THREE.DoubleSide});materials.set(cell.zone,mat);}const mesh=new THREE.Mesh(zoneHelpers.geometry||(zoneHelpers.geometry=new THREE.PlaneGeometry(3.90,3.90)),mat);mesh.rotation.x=-Math.PI/2;mesh.position.set(cell.worldCenter[0],.20,cell.worldCenter[2]);zoneGroup.add(mesh);}}
+async function setCeilings(value){if(value&&ceilingGroup.children.length===0){$('ceilings').disabled=true;await buildOther(layout.ceilingPlacements,ceilingGroup);$('ceilings').disabled=false;}ceilingGroup.visible=!!value;$('ceilings').checked=!!value;renderer.render(scene,camera);return snapshot();}
+function setProps(value){propGroup.visible=!!value;$('props').checked=!!value;renderer.render(scene,camera);return snapshot();}
+function sourceSummary(){return [...sourceRecords.values()].map(r=>({file:r.file,sha256:r.sha256,bytes:r.bytes,manifestHashVerified:r.manifestHashVerified,explicitPins:[...r.explicitPins],geometry:r.geometry}));}
+function instanceReport(instances){root.updateMatrixWorld(true);return instances.map(({row,group,source,profile})=>{const box=new THREE.Box3().setFromObject(group),meshes=[];group.traverse(o=>{if(o.isMesh)meshes.push(o);});const sourceMeshes=[];source.source.traverse(o=>{if(o.isMesh)sourceMeshes.push(o);});return {id:row.id,tile:row.tile,role:row.role,gameTraversable:row.gameTraversable,navigationSolidUnchanged:row.navigationSolidUnchanged,profile:row.renderProfile,sourceSha256:source.sha256,sourceHashVerified:source.sha256===profile.sourceSha256,meshes:meshes.length,materialNames:[...new Set(meshes.flatMap(o=>(Array.isArray(o.material)?o.material:[o.material]).map(m=>m.name)))],bboxMin:box.min.toArray(),bboxMax:box.max.toArray(),sharedGeometry:meshes.every(m=>sourceMeshes.some(s=>s.geometry===m.geometry)),attributesPresent:meshes.every(m=>m.geometry.attributes.position&&m.geometry.attributes.normal&&m.geometry.attributes.uv&&!m.geometry.attributes.color)};});}
+function snapshot(){const counts={};for(const {row}of floorInstances)counts[row.renderProfile]=(counts[row.renderProfile]||0)+1;return {ready,busy,scope:'standalone_candidate_review_not_game',schemaVersion:layout?.schemaVersion,presentationRevision:layout?.presentationRevision,candidateSha256:candidateHash,capabilities:[...CAPABILITIES],floorCount:floorInstances.length,dressingGroundCount:groundInstances.length,profileCounts:counts,estimatedCost:layout?.performanceEstimate?.totals,wallCount:wallGroup.children.length,propCount:propGroup.children.length,ceilingCount:ceilingGroup.children.length,ceilingsVisible:ceilingGroup.visible,propsVisible:propGroup.visible,planView:isPlan,omittedWaterCells:layout?.navigation?.preservedWaterTiles?.length,omittedFixedObjects:layout?.fixedObjects?.length,foesRendered:false,sourceCount:sourceRecords.size,renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles},errors:[...errors]};}
+function seamReport(id){assert(templates.has(id),'床表示規則をまだ読み込んでいません。');const {template}=templates.get(id),group=new THREE.Group();for(const[x,z]of[[0,0],[4,0],[0,4],[4,4]]){const copy=template.clone(true);copy.position.x+=x;copy.position.z+=z;group.add(copy);}group.updateMatrixWorld(true);const bounds=new THREE.Box3().setFromObject(group),v=new THREE.Vector3(),edges={west:[],east:[],north:[],south:[]};group.traverse(o=>{if(!o.isMesh)return;const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i).applyMatrix4(o.matrixWorld);if(close(v.x,-2,.002))edges.west.push(v.y);if(close(v.x,6,.002))edges.east.push(v.y);if(close(v.z,-2,.002))edges.north.push(v.y);if(close(v.z,6,.002))edges.south.push(v.y);}});const report={profile:id,tileCount:4,bboxMin:bounds.min.toArray(),bboxMax:bounds.max.toArray(),size:bounds.getSize(new THREE.Vector3()).toArray(),outerEdges:{}};for(const[name,points]of Object.entries(edges))report.outerEdges[name]={vertices:points.length,topMax:points.length?Math.max(...points):null};return report;}
+function assembledCostReport(){
+  let instances=0,triangles=0,estimatedDrawCalls=0;
+  for(const group of[floorGroup,groundGroup,wallGroup,propGroup,ceilingGroup]){
+    instances+=group.children.length;
+    group.traverse(o=>{if(!o.isMesh)return;triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;estimatedDrawCalls+=Array.isArray(o.material)?o.material.length:1;});
+  }
+  return{instances,triangles,estimatedDrawCalls,ceilingsLoaded:ceilingGroup.children.length};
+}
+function updateCosts(){
+  const estimate=layout.performanceEstimate;
+  $('cedar-count').textContent=estimate.totals.cedars;
+  $('ground-count').textContent=groundInstances.length;
+  $('cost-triangles').textContent=estimate.totals.triangles.toLocaleString();
+  $('cost-draws').textContent=estimate.totals.estimatedDrawCalls.toLocaleString();
+  $('zone-costs').replaceChildren();
+  for(const zone of estimate.byZone){const row=document.createElement('tr');for(const value of[zone.nameJa,zone.cedars,zone.triangles.toLocaleString()]){const cell=document.createElement('td');cell.textContent=value;row.appendChild(cell);}$('zone-costs').appendChild(row);}
+}
+function updateTechnical(){const s=snapshot();$('floor-count').textContent=s.floorCount;$('stone-count').textContent=s.profileCounts.stone_full_asset||0;$('soil-count').textContent=s.profileCounts.soil_surface_only||0;$('wall-count').textContent=s.wallCount;$('prop-count').textContent=s.propCount;updateCosts();$('technical').textContent=JSON.stringify({format:s.schemaVersion,presentation:s.presentationRevision,profiles:s.profileCounts,sources:sourceSummary().map(r=>({file:r.file,sha256:r.sha256,verified:r.manifestHashVerified})),floorFallback:false},null,2);}
+function fail(error){errors.push(error.message||String(error));root.removeFromParent();$('failure').textContent='表示を停止しました：'+(error.message||String(error));$('failure').hidden=false;$('check-status').textContent='不一致で停止';$('progress').textContent='配置候補を表示できません';$('loading').querySelector('p').textContent='参照元や表示規則の不一致があるため、素材を置き換えず停止しました。';$('loading').hidden=false;renderer.render(scene,camera);busy=false;}
+$('plan').onclick=()=>setPlan(!isPlan);$('reset').onclick=fit;$('ceilings').onchange=()=>setCeilings($('ceilings').checked).catch(fail);$('props').onchange=()=>setProps($('props').checked);$('zones').onchange=()=>{zoneGroup.visible=$('zones').checked;requestRender();};
+window.F1GameLayoutReview={get ready(){return ready;},get busy(){return busy;},snapshot,floorReport:()=>instanceReport(floorInstances),groundReport:()=>instanceReport(groundInstances),assembledCostReport,sourceSummary,seamReport,setPlan,setCeilings,setProps,validateCandidate:(candidate,capabilities)=>validateContract(candidate,capabilities?new Set(capabilities):CAPABILITIES),verifyFloorProfile:async profile=>{const{template,record}=await profileTemplate(null,profile);return {sha256:record.sha256,selection:template.userData.profileValidation,bounds:new THREE.Box3().setFromObject(template).getSize(new THREE.Vector3()).toArray()};},candidate:()=>jsonClone(layout),errors};
+try{
+  const [candidateResponse,manifestResponse]=await Promise.all([fetch(CANDIDATE+'scene/game-layout-candidate.json'),fetch(CANDIDATE+'manifest.json')]);
+  assert(candidateResponse.ok&&manifestResponse.ok,'配置候補と素材一覧を取得できません。');
+  const candidateBuffer=await candidateResponse.arrayBuffer();candidateHash=await hashBuffer(candidateBuffer);layout=JSON.parse(new TextDecoder().decode(candidateBuffer));manifest=await manifestResponse.json();validateContract(layout);
+  centre.set((layout.target.widthTiles-1)*2,0,(layout.target.heightTiles-1)*2);
+  // Verify the referenced source hashes before any candidate group is mounted.
+  const files=[...new Set([...layout.floorPlacements,...layout.dressingGroundPlacements,...layout.boundaryWallPlacements,...layout.candidatePropPlacements].map(r=>r.file))];
+  let loaded=0;await Promise.all(files.map(async file=>{await loadSource(file);$('progress').textContent=`素材を照合しています… ${++loaded}/${files.length}`;}));
+  for(const row of layout.floorPlacements)await buildFloor(row);
+  for(const row of layout.dressingGroundPlacements)await buildFloor(row,groundGroup,groundInstances);
+  await buildOther(layout.boundaryWallPlacements,wallGroup);await buildOther(layout.candidatePropPlacements,propGroup);
+  zoneHelpers();scene.add(root);root.updateMatrixWorld(true);fit();renderer.render(scene,camera);
+  ready=true;busy=false;updateTechnical();$('check-status').textContent='参照・土床を照合済み';$('loading').hidden=true;
+  for(const id of['plan','reset','ceilings','props','zones'])$(id).disabled=false;
+}catch(error){fail(error);}
+</script>
+</body>
+</html>
