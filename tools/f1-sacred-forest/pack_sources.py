@@ -58,9 +58,20 @@ def pack_one(asset_id):
         assert not Path(bpy.path.abspath(image.filepath)).exists(),image.filepath
         assert image.size[0]>0 and image.size[1]>0 and math.isfinite(image.pixels[0]),image.name
         decoded.append(dict(name=image.name,width=image.size[0],height=image.size[1],packedBytes=image.packed_file.size))
-    assert len(decoded)==image_count
+    # Blender may prune unreferenced generator materials/images on reopen.
+    # Every retained and every mesh-referenced image must still be embedded.
+    assert 0<len(decoded)<=image_count
+    retained={row['name'] for row in decoded}
+    for obj in bpy.context.scene.objects:
+        if obj.type!='MESH':continue
+        for material in obj.data.materials:
+            if material and material.use_nodes:
+                for node in material.node_tree.nodes:
+                    if node.type=='TEX_IMAGE' and node.image:
+                        assert node.image.name in retained,node.image.name
     record=dict(assetId=asset_id,file=metric['source'],sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
-      bytes=source.stat().st_size,imagesPacked=image_count,imagesDecoded=len(decoded),geometryPreserved=True,
+      bytes=source.stat().st_size,imagesPacked=len(decoded),imagesDecoded=len(decoded),
+      unusedImagesPruned=image_count-len(decoded),geometryPreserved=True,
       geometryFingerprint=before,externalImagesRequired=False,blender=bpy.app.version_string,
       packagingScriptSha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
       sourceCommit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),images=decoded)
