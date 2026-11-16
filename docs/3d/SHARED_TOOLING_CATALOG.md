@@ -216,3 +216,9 @@
 - 目高1.6mの近景で祠が壁に隠れる問題を発見し、既存崩壊壁2面を低い囲いとしてinstance縦scale0.32で利用。位置/厚み/map/blocked状態を保ち、実画像とwall rayで3近景の見通しを再確認。原本GLBへの形状変更なし。
 - 新規試験: 元のalphaMASK/alphaCutoffを変えず、縮小mipごとのcutout被覆率を元画像へ近づける `preview/f1-foliage-coverage.js`。Three.js標準DataTextureの明示mipを用い、RGBはlinear/premultiplied alphaで縮小、alphaだけcoverage補正する。source画像/GLB不変、独立viewerだけのsampling補助。新外部ツール/有料APIなし、構文確認済み、実GPU upload/ブラウザ比較は進行中で成功扱いにしない。実機FPS・遠景LOD全般の承認ではない。
 - 最新developmentとの比較ではmap等6sourceは同一だが共有rendererの統計/B2 cache更新を確認。全7source一致とは呼ばず、承認後の統合時に完全SHAを `F1_LAYOUT_BASELINE` で指定してsource一致を再検証する。
+
+### 一層神域 coverage mip・近景の実行結果（2026-11-17 JST）
+- 前節の試験を実Three r180/Chromium SwiftShaderで完了。元17GLB・source alphaCutoff不変、3目高ビューの壁遮蔽なし、9不一致拒否、274床/177背景土床/129propsを再確認しerror/warning0。実レポート・比較画像は[PR #391](https://github.com/koda24-cell/kotama-no-bouken/pull/391)の `docs/reviews/f1-sacred-forest-game-layout/` へ保存。
+- 針葉の基準被覆率約0.1511に対し、8×8 mipはraw0.0625→補正0.1406、4×4はraw0→0.125。実DataTexture uploadとraw/補正のスクリーンショット比較を完了。全LOD/端末FPS/美術水準の合格ではない。source画像へ焼き込まず任意のviewer sampling補助として残す。runtimeで採用する場合はtexture lifetimeとGPU依存動作を別途確認する。
+- ソフトウェアGPUの比較readbackで既定30秒のscreenshot timeoutが一度発生。既存の全景撮影と同じ180秒へ揃えた再実行は成功。timeoutをFPS評価へ転用しない。
+- 5全景写真・17GLB/編集source・68個別PNG・新3F候補hash・viewer/helper code hash・近景/補正レポートを最終delivery gateで照合しpass。ゲームは未統合、芸術承認はpending_user_review。地形起伏や一部の背景の抜けなどの美術留意点を保持。最終scene GLBは20,939,944B（途中組立値から更新）。
