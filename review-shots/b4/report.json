@@ -119,7 +119,7 @@
       },
       "render": {
         "calls": 89,
-        "triangles": 366466,
+        "triangles": 367154,
         "memory": {
           "geometries": 120,
           "textures": 236
@@ -440,7 +440,7 @@
       },
       "render": {
         "calls": 66,
-        "triangles": 350546,
+        "triangles": 351234,
         "memory": {
           "geometries": 127,
           "textures": 248
@@ -547,7 +547,7 @@
       },
       "render": {
         "calls": 70,
-        "triangles": 355915,
+        "triangles": 356603,
         "memory": {
           "geometries": 138,
           "textures": 283
@@ -654,7 +654,7 @@
       },
       "render": {
         "calls": 59,
-        "triangles": 185022,
+        "triangles": 187086,
         "memory": {
           "geometries": 126,
           "textures": 283
