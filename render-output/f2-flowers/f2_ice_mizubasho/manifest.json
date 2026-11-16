@@ -1,7 +1,7 @@
 {
   "asset": "f2_ice_mizubasho",
   "blender": "4.2.3 LTS",
-  "triangles": 31324,
+  "triangles": 25218,
   "objects": [
     "f2_ice_mizubasho"
   ],
@@ -19,20 +19,20 @@
   "bbox_m": [
     0.5116,
     0.5051,
-    0.3784
+    0.3415
   ],
   "origin": "bottom-center",
   "glb": "f2_ice_mizubasho.glb",
-  "glb_bytes": 910636,
+  "glb_bytes": 725660,
   "sha256": {
-    "f2_ice_mizubasho.glb": "52ec9687d5b5a257eed273d7645baddd800aedc01b73e8e134218b41e209768e",
-    "f2_ice_mizubasho_cave_front.png": "229b83151321f2fd39f97f0f3877fad73fe56a54a7b7b0e0c14c4acdeea63084",
-    "f2_ice_mizubasho_cave_side.png": "a83e5f706935a0a94b7c7b1783a82fe0ce4889164ae3fc440710740d199c4004",
-    "f2_ice_mizubasho_cave_angle.png": "c3de5e0b9ef0b8fc2cc0a686629803d74e2a83cd5572544b68741e0c381136ca",
-    "f2_ice_mizubasho_cave_top.png": "ff6d41d97f84bd88e0714c418266d40d87aece77911446cd3630c26421a9fec8",
-    "f2_ice_mizubasho_cave_close.png": "a7cd624e7864e6060016bff98f16c76883d0d2e09912ab2de0d4c43b215a20c2",
-    "f2_ice_mizubasho_studio_front.png": "8931cf532d67121aba0979adde3feb6ca08033a97b6834c99c480d28dffc447c",
-    "f2_ice_mizubasho_studio_angle.png": "f725aed2c65f568dc5a90824f25d9c79e1601d2d65c058bd3b4ae0111a275c15"
+    "f2_ice_mizubasho.glb": "5adc00b2a77d1a6ae56820cbd202b07c919766d6618f1b8bafeca05fde1c4d77",
+    "f2_ice_mizubasho_cave_front.png": "d22bc397e3ce7683ea2cf2103963f5ad30ad2f81896f3810023b2528704a2ddf",
+    "f2_ice_mizubasho_cave_side.png": "452f4c17aecbd0c2a2f7461fe0cf58c63fa002edf42105e8a4ec11eca5e0d795",
+    "f2_ice_mizubasho_cave_angle.png": "9a798200d1c2304b3e1e5672bf12ba6119b85f6c9bfd801e123acfca23edab31",
+    "f2_ice_mizubasho_cave_top.png": "f9028b125e9124330893339956c234294dfe9553f17ec3d16f7c64997b2755cc",
+    "f2_ice_mizubasho_cave_close.png": "fd429e14f05b272af1dcea927afda42b5e3ca71218b0cd936a25ae08547ceef1",
+    "f2_ice_mizubasho_studio_front.png": "7937e9071965ded9d94b451255af8a0abd660704621bb62f01a5e596bac61157",
+    "f2_ice_mizubasho_studio_angle.png": "3a80b3c792d301f1ec1dda26e0039b6fd6fc0b0f4830d27856b0a34359227013"
   },
   "renders": [
     "f2_ice_mizubasho_cave_front.png",
