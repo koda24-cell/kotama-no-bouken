@@ -102,6 +102,16 @@ export function enhanceB4CartPractical(root,variant=20) {
   const coupler=new THREE.Group();coupler.name='b4:load-coupler-v22';group.add(coupler);
   const addCoupler=(mesh,x,y,z)=>{mesh.position.set(x,y,z);coupler.add(mesh);return mesh;};
   for(const end of [-1,1]){
+   if(variant>=25) {
+     // Compact drawbar below the tub, fully attached to the end frame.
+     const drawbar=new THREE.Mesh(new THREE.BoxGeometry(.24,.15,.48),iron);
+     addCoupler(drawbar,0,.10,end*(lowL+.09));
+     const endplate=new THREE.Mesh(new THREE.BoxGeometry(.42,.20,.13),worn);
+     addCoupler(endplate,0,.10,end*(lowL+.30));
+     const pin=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,.19,12),iron);
+     addCoupler(pin,0,.02,end*(lowL+.29));
+     continue;
+   }
    const plate=new THREE.Mesh(new THREE.BoxGeometry(.42,.17,.38),iron);
    addCoupler(plate,0,.06,end*(L+.10));
    const shank=new THREE.Mesh(new THREE.BoxGeometry(.20,.18,.40),worn);
