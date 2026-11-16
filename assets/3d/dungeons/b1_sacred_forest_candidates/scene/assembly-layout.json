@@ -7705,6 +7705,19 @@
       "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
       "sceneSourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
       "camera": "camera_shrine_detail"
+    },
+    "birdseye": {
+      "file": "renders/scene/birdseye.png",
+      "sha256": "5aa18967686fb6b307a2edcc0defc9e3017705b6deece57db058347a883ad05b",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "renderer": "Cycles CPU",
+      "geometrySource": "reimported individual GLBs",
+      "blenderVersion": "5.3.0",
+      "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
+      "sceneSourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
+      "camera": "camera_birdseye"
     }
   },
   "optionalSceneGLB": {
