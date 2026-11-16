@@ -74,7 +74,7 @@ VIEWS = {
         "lens": 25.8, "description": "目高1.6m。中庭の開放感から石造回廊への圧縮。",
     },
     "shrine_detail": {
-        "position": (-2.0, 4.8, 1.6), "target": (-4.8, 8.5, 1.35),
+        "position": (-1.2, 5.3, 1.6), "target": (-4.8, 8.5, 1.35),
         "lens": 40.0, "description": "目高1.6m。小祠の屋根板・格子・基壇と周囲の植生を接写。",
     },
     "birdseye": {
@@ -157,7 +157,7 @@ def planned_placements():
     # stone axis is uninterrupted and stays level. No generated ground plane.
     for y in (-12, -8, -4, 0, 4, 8, 12, 16):
         for x in (-8, -4, 0, 4, 8, 12):
-            stone = x == 0 or (y in (0, 4) and x in (-4, 4))
+            stone = x == 0
             asset = "mod_sacred_stone_floor_4m" if stone else "mod_root_soil_floor_4m"
             role = "walk_floor" if stone else "ground"
             # Only complete quarter turns preserve the exact kit perimeter.
@@ -195,6 +195,14 @@ def planned_placements():
         add("sacred_cedar_tree", "background_cedar_%02d" % i,
             x, y, angle=angle, scale=scale,
             zone="background_forest", role="dressing_only")
+    for i,(x,y,angle,scale) in enumerate([
+        (-9.0,21.0,52,1.32),(-2.8,23.2,173,1.22),(1.6,24.1,284,1.35),
+        (9.1,22.4,97,1.19),(13.5,23.7,247,1.42),
+        (-6.0,13.8,315,1.14),(5.5,17.7,61,1.28),
+        (-12.8,7.1,187,1.31),(15.7,-3.1,211,1.25),
+    ]):
+        add("sacred_cedar_tree","deep_forest_cedar_%02d"%i,x,y,
+            angle=angle,scale=scale,zone="background_forest",role="dressing_only")
     add("fallen_cedar_log", "fallen_trunk_east", 6.9, -3.2, angle=-27, scale=.96)
     add("broken_votive_stele", "western_votive_stele", -3.6, 2.9, angle=18, scale=1.04, role="landmark")
     add("sacred_hokora_shrine", "quiet_hokora_shrine", -4.8, 8.5,
@@ -208,9 +216,9 @@ def planned_placements():
         (-9.8, -5, 90, True), (-9.8, -1, 90, False),
         (-9.8, 3, 90, True), (-9.8, 11, 90, True),
         (13.8, 1, -90, True), (13.8, 5, -90, False),
-        (13.8, 9, -90, True), (-6, 17.8, 180, True),
-        (-2, 17.8, 180, False), (6, 17.8, 180, True),
-        (10, 17.8, 180, False),
+        (13.8, 9, -90, True), (-8, 17.8, 0, True),
+        (-4, 17.8, 0, False), (4, 17.8, 0, True),
+        (8, 17.8, 0, False), (12, 17.8, 0, True),
     ]):
         add("mod_sacred_collapsed_wall_4m" if collapsed else "mod_sacred_wall_4m",
             "boundary_fragment_%02d" % i, x, y, angle=angle, role="perimeter")
@@ -283,6 +291,28 @@ def planned_placements():
     ]):
         add("hanging_forest_vines", "attached_vines_%02d" % i,
             x, y, z, angle=angle, scale=scale)
+    # Understory follows route edges and stone/root moisture pockets. It does
+    # not carpet the two-metre clear axis or change the logical game grid.
+    rng=random.Random(711016)
+    for side in (-1,1):
+        for row,y in enumerate((-12,-10,-8,-6,-4,-2,0,2,4,6,8)):
+            for band in range(2):
+                x=side*(2.65+band*1.45+rng.uniform(-.10,.18))
+                asset='forest_shrub_cluster' if (row+band)%4==0 else 'forest_fern_cluster'
+                add(asset,'route_understory_%+d_%02d_%d'%(side,row,band),x,
+                    y+rng.uniform(-.45,.45),-.012,angle=rng.uniform(0,360),
+                    scale=rng.uniform(.72,1.08),role='understory')
+    for pocket,(cx,cy) in enumerate([(-6,-5),(8,-7),(-7,1),(9,4),(-7,12),(10,13)]):
+        for i in range(7):
+            asset='forest_fern_cluster' if i%3 else 'forest_shrub_cluster'
+            add(asset,'root_pocket_%02d_%02d'%(pocket,i),cx+rng.uniform(-1.4,1.4),
+                cy+rng.uniform(-1.6,1.6),-.012,angle=rng.uniform(0,360),
+                scale=rng.uniform(.7,1.18),role='understory')
+    for i,(x,y) in enumerate([(-2.35,-7),(2.4,-4),(-2.45,-1),(2.5,3),(-2.5,5),
+                              (3.5,6.4),(-5.8,7.2),(6.2,-2.5),(-5.0,-8.4),
+                              (7.5,8),(-7,10.3),(9.5,-4.2)]):
+        add('white_wildflower_patch','trail_whiteflowers_%02d'%i,x,y,-.005,
+            angle=rng.uniform(0,360),scale=rng.uniform(.65,1),role='sunlit_flowers')
     return placements
 
 
@@ -298,18 +328,21 @@ def lighting_and_cameras():
     scene.render.image_settings.file_format = 'PNG'
     scene.render.film_transparent = False
     scene.view_settings.view_transform = 'AgX'
-    scene.view_settings.exposure = .20
+    scene.view_settings.exposure = .0
     world = bpy.data.worlds.new('overcast_forest_sky')
     world.use_nodes = True
-    world.node_tree.nodes['Background'].inputs['Color'].default_value = (.47, .53, .57, 1)
-    world.node_tree.nodes['Background'].inputs['Strength'].default_value = .45
+    sky=world.node_tree.nodes.new('ShaderNodeTexSky');sky.sky_type='NISHITA'
+    sky.sun_disc=False;sky.sun_elevation=math.atan2(19,math.hypot(14,15))
+    sky.sun_rotation=math.atan2(-15,-14);sky.air_density=1.1;sky.dust_density=.5
+    world.node_tree.links.new(sky.outputs['Color'],world.node_tree.nodes['Background'].inputs['Color'])
+    world.node_tree.nodes['Background'].inputs['Strength'].default_value = .18
     scene.world = world
 
     # Wide overcast fill plus one broad, low-contrast shaft of sun. No bloom,
     # volume or generated god-ray geometry disguises the asset surfaces.
     data = bpy.data.lights.new('late_morning_break_in_cloud', 'SUN')
     data.energy = 1.9
-    data.angle = math.radians(12)
+    data.angle = math.radians(4)
     data.color = (1.0, .91, .77)
     sun = bpy.data.objects.new('late_morning_break_in_cloud', data)
     scene.collection.objects.link(sun)
