@@ -1,0 +1,50 @@
+name: F6 approved rocks V15 permanent promotion
+on:
+  push:
+    branches: [feature/gpt-f6-rocks-v15-approved-20261116]
+    paths:
+      - .github/workflows/f6-rocks-v15-promotion.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout promotion branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Checkout immutable V15 generator
+        uses: actions/checkout@v4
+        with:
+          ref: 5a6bba6bc60f3febb19ca2e59c0e9a2c906486f0
+          path: source_f6
+          persist-credentials: false
+      - name: Download proven V15 render artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/f6-rocks-v15
+          gh run download 43814108717 --repo "$GITHUB_REPOSITORY" --name f6-nature-rocks-v1-review --dir /tmp/f6-rocks-v15
+      - name: Verify bytes and create approved files
+        run: |
+          python3 -m py_compile tools/floor6/promote_approved_rocks_v15.py
+          python3 tools/floor6/promote_approved_rocks_v15.py
+      - name: Commit verified approved assets to promotion branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/models/floor6/nature/ docs/3d/F6_COMPLETED_ASSETS.md docs/3d/F6_NATURE_ROCKS_V15_CLAUDE_HANDOFF.md tools/floor6/nature_rocks_v1.py
+          git diff --cached --stat
+          git diff --cached --quiet && { echo "No new files: refusing false promotion"; exit 1; }
+          git commit -m "assets(f6): promote user-approved natural rocks V15 GLB/PNG and handoff"
+          git push origin "HEAD:feature/gpt-f6-rocks-v15-approved-20261116"
+      - name: Verify committed content
+        run: |
+          git ls-files assets/models/floor6/nature/ | tee /tmp/saved-files.txt
+          test "$(grep -c '^assets/models/floor6/nature/.*\.glb$' /tmp/saved-files.txt)" -eq 3
+          test "$(grep -c '^assets/models/floor6/nature/reviews/.*\.png$' /tmp/saved-files.txt)" -eq 12
+          test "$(grep -c '^assets/models/floor6/nature/reviews/.*manifest\.json$' /tmp/saved-files.txt)" -eq 3

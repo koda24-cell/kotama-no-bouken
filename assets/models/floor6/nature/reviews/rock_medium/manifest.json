@@ -1,0 +1,51 @@
+{
+  "asset_id": "rock_medium",
+  "version": "V15",
+  "status": "APPROVED",
+  "approved_by": "user",
+  "approved_date_jst": "2026-11-16",
+  "game_integration": "NOT_INTEGRATED",
+  "tile_size": [
+    1,
+    1
+  ],
+  "source_script": "tools/floor6/nature_rocks_v1.py",
+  "source_commit": "5a6bba6bc60f3febb19ca2e59c0e9a2c906486f0",
+  "source_pr": 364,
+  "render_run_id": 43814108717,
+  "render_artifact_id": 14201817785,
+  "render_url": "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43814108717",
+  "files": [
+    {
+      "path": "assets/models/floor6/nature/rock_medium.glb",
+      "bytes": 601328,
+      "sha256": "06512e7f8600e6580ee8fceb282d8dcf41db79b1bdc6dada7b63b6528b16a994",
+      "role": "glb"
+    },
+    {
+      "path": "assets/models/floor6/nature/reviews/rock_medium/front.png",
+      "bytes": 870976,
+      "sha256": "0e36e2e6d8be341cc93b653c9a8f5f78240e14e4792e4f5ec2312017e52c0c31",
+      "role": "review_png"
+    },
+    {
+      "path": "assets/models/floor6/nature/reviews/rock_medium/side.png",
+      "bytes": 869877,
+      "sha256": "fd5a0d4839b71d265e0236dcf765d4bc9e2aea9ef98298ecad68e85efe9a4c9e",
+      "role": "review_png"
+    },
+    {
+      "path": "assets/models/floor6/nature/reviews/rock_medium/angle.png",
+      "bytes": 881747,
+      "sha256": "d2b1fc7b98e706ea7f2fb8bb159a0a50e3c0fe1d609da8bc3e3677111df8948e",
+      "role": "review_png"
+    },
+    {
+      "path": "assets/models/floor6/nature/reviews/rock_medium/top.png",
+      "bytes": 908707,
+      "sha256": "17c7ca05d461f537d7377d9f4ee8ad902ac5ceacad4857f7958db9544cb73c3a",
+      "role": "review_png"
+    }
+  ],
+  "notes": "Visual approval only; Three.js performance and integration require separate validation."
+}

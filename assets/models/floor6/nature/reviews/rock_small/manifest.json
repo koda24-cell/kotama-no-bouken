@@ -1,0 +1,51 @@
+{
+  "asset_id": "rock_small",
+  "version": "V15",
+  "status": "APPROVED",
+  "approved_by": "user",
+  "approved_date_jst": "2026-11-16",
+  "game_integration": "NOT_INTEGRATED",
+  "tile_size": [
+    1,
+    1
+  ],
+  "source_script": "tools/floor6/nature_rocks_v1.py",
+  "source_commit": "5a6bba6bc60f3febb19ca2e59c0e9a2c906486f0",
+  "source_pr": 364,
+  "render_run_id": 43814108717,
+  "render_artifact_id": 14201817785,
+  "render_url": "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43814108717",
+  "files": [
+    {
+      "path": "assets/models/floor6/nature/rock_small.glb",
+      "bytes": 480692,
+      "sha256": "40a3e812e09480ada54d26c2414283b9d6a004aaee6f7e29cae9ed9e9ea22c74",
+      "role": "glb"
+    },
+    {
+      "path": "assets/models/floor6/nature/reviews/rock_small/front.png",
+      "bytes": 859940,
+      "sha256": "83e8d04ac21da00d8621c60413cf6c74dc665f7ec81b08535e9f58ff89b7c67b",
+      "role": "review_png"
+    },
+    {
+      "path": "assets/models/floor6/nature/reviews/rock_small/side.png",
+      "bytes": 863007,
+      "sha256": "74e0f41d689782ca1f4ba0c0afac9e4a44b97890d70ceddb63a33ea023fe3736",
+      "role": "review_png"
+    },
+    {
+      "path": "assets/models/floor6/nature/reviews/rock_small/angle.png",
+      "bytes": 868978,
+      "sha256": "0dd33070d2663e15cde740c0397a43ee2a70c2d89babf47f5dbfe2bd0814d19b",
+      "role": "review_png"
+    },
+    {
+      "path": "assets/models/floor6/nature/reviews/rock_small/top.png",
+      "bytes": 906366,
+      "sha256": "7907ad74554d94f6b0613151df0d568f71b83f6a0f4a56f11f402e51b8bfec64",
+      "role": "review_png"
+    }
+  ],
+  "notes": "Visual approval only; Three.js performance and integration require separate validation."
+}
