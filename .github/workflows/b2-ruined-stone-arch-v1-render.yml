@@ -4,6 +4,7 @@ on:
     branches: [feature/b2-ruined-stone-arch-20261116]
     paths:
       - tools/b2-render/build-ruined-stone-arch-v1.py
+      - tools/b2-render/fetch-stone-photo-pbr.py
       - .github/workflows/b2-ruined-stone-arch-v1-render.yml
 permissions:
   contents: read
@@ -15,7 +16,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Blender
         run: sudo apt-get update -qq && sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1 libopengl0
+      - name: Download verified CC0 photographic stone PBR
+        env:
+          B2_PBR_ASSET: rock_surface
+        run: |
+          set -euo pipefail
+          python3 tools/b2-render/fetch-stone-photo-pbr.py
       - name: Build and render ruined stone arch
+        env:
+          B2_REQUIRE_PHOTO_PBR: "1"
         run: blender -b -t 2 --python-exit-code 1 --python tools/b2-render/build-ruined-stone-arch-v1.py
       - name: Validate model and 3 views
         run: |
@@ -31,9 +40,10 @@ jobs:
           manifest=json.loads((p/'manifest.json').read_text())
           assert manifest["status"]=="NOT_APPROVED"
           assert len(manifest.get("textures", []))==4
+          assert manifest.get("photo_pbr") is True, "actual photo texture not applied"
           for name in manifest["files"]:
               data=(p/name).read_bytes()
-              assert len(data)>1024, name
+              assert len(data)>(100 if name.endswith(".json") else 1024), name
               assert hashlib.sha256(data).hexdigest()==manifest["sha256"][name], name
               if name.endswith(".png"):
                   assert data[:8]==bytes.fromhex("89504e470d0a1a0a"), name
@@ -43,7 +53,7 @@ jobs:
           assert glb[:4]==b'glTF'
           print("VERIFIED_B2_ARCH",len(manifest["files"]),"files; views and texture hashes checked")
           PY
-          sha256sum *.glb *.blend *.png manifest.json > SHA256SUMS.txt
+          sha256sum *.glb *.blend *.png manifest.json photo_pbr/* > SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
