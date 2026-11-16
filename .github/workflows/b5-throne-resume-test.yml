@@ -19,6 +19,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Offline vision adapter safety tests (no API usage)
+        run: /usr/bin/python3 tools/b5-throne/test_vision_review.py
       - name: Force stop at exactly one completed iteration
         run: |
           /usr/bin/python3 tools/b5-throne/auto_loop.py --iterations 1 --minutes 12
