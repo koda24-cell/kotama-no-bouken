@@ -47,15 +47,15 @@ def textured_material(material, base, seed):
  normal_pixels=[]
  for y in range(128):
   for x in range(128):
-   dx=(height_at((x+1)%128,y)-height_at((x-1)%128,y))*.22
-   dy=(height_at(x,(y+1)%128)-height_at(x,(y-1)%128))*.22
+   dx=(height_at((x+1)%128,y)-height_at((x-1)%128,y))*.43
+   dy=(height_at(x,(y+1)%128)-height_at(x,(y-1)%128))*.43
    length=math.sqrt(dx*dx+dy*dy+1)
    normal_pixels.extend([(-dx/length+1)*.5,(-dy/length+1)*.5,(1/length+1)*.5,1])
  normal_image.pixels[:]=normal_pixels
  normal_image.colorspace_settings.name='Non-Color'
  normal_image.pack()
  normal_tex=nodes.new('ShaderNodeTexImage');normal_tex.image=normal_image
- normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.28
+ normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.42
  material.node_tree.links.new(normal_tex.outputs['Color'],normal_map.inputs['Color'])
  material.node_tree.links.new(normal_map.outputs['Normal'],bsdf.inputs['Normal'])
 for i,m in enumerate(stone): textured_material(m,[(.34,.36,.34),(.27,.29,.28),(.37,.34,.30)][i],110+i)
@@ -137,17 +137,24 @@ def make_asset(asset,idx):
  bpy.ops.object.select_all(action='DESELECT')
  for obj in pieces:obj.select_set(True)
  bpy.context.view_layer.objects.active=pieces[0]
+ # Match connected stone fragments to the core material, avoiding checkerboard-like
+ # color jumps between embedded fracture/shoulder and shard meshes.
+ for obj in pieces:
+  if obj.name.startswith((asset+'_fracture',asset+'_shoulder',asset+'_shard_')):
+   obj.data.materials.clear()
+   obj.data.materials.append(stone[(idx+9)%len(stone)])
  # glb export only rock geometry
  target=OUT/asset;target.mkdir(parents=True,exist_ok=True)
  bpy.ops.export_scene.gltf(filepath=str((target/(asset+'.glb')).resolve()),export_format='GLB',use_selection=True)
  bpy.ops.object.select_all(action='DESELECT')
  # camera and lighting only for PNG review
  light_data=bpy.data.lights.new('softbox','AREA');light=bpy.data.objects.new('softbox',light_data);bpy.context.collection.objects.link(light);light.location=(2,-3,5);light_data.energy=480;light_data.size=4
+ fill_data=bpy.data.lights.new('soft_fill','AREA');fill=bpy.data.objects.new('soft_fill',fill_data);bpy.context.collection.objects.link(fill);fill.location=(-2,2,3);fill_data.energy=220;fill_data.size=5
  world=bpy.context.scene.world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(0.35,0.39,0.43,1)
  def camera_at(name,position):
   cam_data=bpy.data.cameras.new('review_'+name);cam=bpy.data.objects.new('review_'+name,cam_data);bpy.context.collection.objects.link(cam)
   target_pos=Vector((0,0,sz*.6));cam.location=position;direction=target_pos-cam.location;cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
-  cam_data.type='ORTHO';cam_data.ortho_scale=1.5
+  cam_data.type='ORTHO';cam_data.ortho_scale=[.88,1.15,1.42][idx]
   bpy.context.scene.camera=cam
   bpy.context.scene.render.filepath=str((target/(name+'.png')).resolve());bpy.ops.render.render(write_still=True)
  for name,pos in [('front',(0,-2,1.0)),('side',(2,0,1.0)),('angle',(1.5,-2,1.6)),('top',(0,-0.01,3))]:
