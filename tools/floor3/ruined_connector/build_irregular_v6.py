@@ -21,9 +21,10 @@ patch=r""" # V6 repair railing: remove legacy posts whose bases do not match dec
  # universal global Z. Low heavy mounting collars hide seams in the concrete.
  post_ys=(-.82,.02,.81)
  for side in (-1,1):
-  x=side*.72
   tops=[]
   for i,y in enumerate(post_ys):
+   # The damaged landing lacks its south-east corner: do not anchor in air.
+   x=(.27 if kind=='landing' and side==1 and i==0 else side*.70)
    base=deck_height(y)
    top=base+(.68 if i!=1 else .63)
    rod('V6 anchored handrail post',(x,y,base-.025),(x,y,top),.026,rust)
