@@ -13,7 +13,7 @@
 </head>
 <body>
 <header><div><small>KOTAMA / GAME LAYOUT REVIEW</small><h1>一層3F — 神域の配置候補</h1></div><div class="status">承認待ち・ゲーム未適用</div></header>
-<div class="toolbar"><button id="plan" aria-pressed="false" disabled>平面図に切り替え</button><button id="reset" disabled>視点を戻す</button><label><input id="ceilings" type="checkbox" disabled>天井を表示</label><label><input id="props" type="checkbox" checked disabled>植生・小物</label><label><input id="zones" type="checkbox" disabled>区画を表示</label><span>ドラッグで回転 ／ スクロールで拡大</span></div>
+<div class="toolbar"><button id="plan" aria-pressed="false" disabled>平面図に切り替え</button><button id="reset" disabled>視点を戻す</button><button id="near-approach" disabled>参道の目線</button><button id="near-shrine" disabled>祠の目線</button><button id="near-water" disabled>水際の目線</button><label><input id="ceilings" type="checkbox" disabled>天井を表示</label><label><input id="props" type="checkbox" checked disabled>植生・小物</label><label><input id="zones" type="checkbox" disabled>区画を表示</label><span>ドラッグで回転 ／ スクロールで拡大</span></div>
 <main><div id="viewport"><div class="view-label" id="view-label">実3Fの座標に合わせた配置確認</div><div id="loading"><strong id="progress">配置候補を確認しています…</strong><p>実際のGLBを読み込み、土床の表示範囲と参照元を照合します。</p></div></div>
 <aside><h2>独立した配置レビュー</h2><p>実3Fの地形をもとに、床・壁・植生の配置を確認します。平面図ではマス全体を見渡せます。</p><p class="warning">水、固定オブジェクト7点、FOEはこの表示では描画しません。操作・衝突・セーブ・端末性能を含む、実ゲームの検証ではありません。</p><p id="failure" hidden></p><dl><dt>床</dt><dd id="floor-count">—</dd><dt>石床</dt><dd id="stone-count">—</dd><dt>土だけの床</dt><dd id="soil-count">—</dd><dt>境界の壁</dt><dd id="wall-count">—</dd><dt>植生・小物</dt><dd id="prop-count">—</dd><dt>確認状態</dt><dd id="check-status">確認中</dd></dl><h2>全域の配置コスト</h2><p class="cost-caption">天井を含む全マップの概算です。実機FPSの承認ではありません。背景の土は歩行域を増やしません。</p><dl><dt>杉</dt><dd id="cedar-count">—</dd><dt>背景の土床</dt><dd id="ground-count">—</dd><dt>三角形の概算</dt><dd id="cost-triangles">—</dd><dt>材質描画の概算</dt><dd id="cost-draws">—</dd></dl><table class="cost-table"><thead><tr><th>区画</th><th>杉</th><th>三角形</th></tr></thead><tbody id="zone-costs"></tbody></table><h2>区画</h2><div class="legend"><span><i style="--c:#c5b58a"></i>根の参道</span><span><i style="--c:#739996"></i>水際の根庭</span><span><i style="--c:#9b987d"></i>地下封印回廊</span><span><i style="--c:#859c70"></i>天蓋の裂けた祭祀庭</span></div><details><summary>参照・床の照合結果</summary><pre id="technical">確認中</pre></details><p class="bottom">表示対象は承認待ちの候補です。読み込み規則に合わない素材は、全体表示へ置き換えず停止します。</p><a class="bottom" href="f1-sacred-forest.html">個別素材のレビューへ</a></aside></main>
 <script type="module">
@@ -52,6 +52,25 @@ function resize(){const w=Math.max(1,viewport.clientWidth),h=Math.max(1,viewport
 new ResizeObserver(resize).observe(viewport);
 function fit(){if(isPlan){planCamera.position.set(centre.x,150,centre.z);planCamera.lookAt(centre);controls.target.copy(centre);}else{perspective.position.copy(centre).add(new THREE.Vector3(69,87,106));controls.target.copy(centre);perspective.lookAt(centre);}controls.update();requestRender();}
 function setPlan(value){isPlan=!!value;camera=isPlan?planCamera:perspective;controls.object=camera;controls.enableRotate=!isPlan;$('plan').setAttribute('aria-pressed',String(isPlan));$('plan').textContent=isPlan?'斜め表示に戻す':'平面図に切り替え';$('view-label').textContent=isPlan?'3F配置の平面図 ／ 上が北':'実3Fの座標に合わせた配置確認';fit();renderer.render(scene,camera);return snapshot();}
+const nearViews={};
+function setFocus(kind){
+  const targetRow=kind==='approach'?layout.candidatePropPlacements.find(p=>p.id==='root_approach_torii'):kind==='shrine'?layout.candidatePropPlacements.find(p=>p.id==='courtyard_hokora_shrine'):layout.candidatePropPlacements.find(p=>p.zone==='sunken_grove'&&p.assetId==='white_wildflower_patch')||layout.candidatePropPlacements.find(p=>p.zone==='sunken_grove');
+  assert(targetRow,'近景の対象がありません。');
+  const target=new THREE.Vector3(...targetRow.position);target.y=kind==='approach'?1.7:kind==='shrine'?1.35:.8;
+  const front=new THREE.Vector3(0,0,1).applyAxisAngle(new THREE.Vector3(0,1,0),targetRow.rotationY||0);
+  const ray=new THREE.Raycaster();root.updateMatrixWorld(true);
+  const candidates=layout.floorPlacements.map(row=>{const eye=new THREE.Vector3(row.position[0],1.6,row.position[2]);const delta=eye.clone().sub(target);return {row,eye,distance:delta.length(),score:Math.abs(delta.length()-9)+(1-delta.normalize().dot(front))*4};}).filter(c=>c.distance>=5&&c.distance<=18).sort((a,b)=>a.score-b.score);
+  assert(candidates.length,'対象付近の歩行床がありません。');
+  let chosen=candidates[0],wallOccluded=true;
+  for(const c of candidates.slice(0,28)){ray.set(c.eye,target.clone().sub(c.eye).normalize());ray.far=c.distance-.15;if(!ray.intersectObjects(wallGroup.children,true).length){chosen=c;wallOccluded=false;break;}}
+  isPlan=false;camera=perspective;controls.object=camera;controls.enableRotate=true;
+  camera.position.copy(chosen.eye);controls.target.copy(target);camera.lookAt(target);controls.update();
+  $('plan').setAttribute('aria-pressed','false');$('plan').textContent='平面図に切り替え';
+  $('view-label').textContent=({approach:'参道',shrine:'祠周辺',water:'水際'})[kind]+' ／ 目高1.6m・独立配置プレビュー';
+  renderer.render(scene,camera);
+  nearViews[kind]={tile:chosen.row.tile,eye:camera.position.toArray(),target:target.toArray(),targetId:targetRow.id,wallOccluded,scope:'static candidate view, not game camera or collision proof'};
+  return nearViews[kind];
+}
 function validateContract(candidate,capabilities=CAPABILITIES){
   assert(candidate?.schemaVersion===2,'非対応の配置形式です。');
   assert(candidate.scope==='candidate_not_applied','独立した候補データ以外は読み込みません。');
@@ -149,8 +168,9 @@ function updateCosts(){
 }
 function updateTechnical(){const s=snapshot();$('floor-count').textContent=s.floorCount;$('stone-count').textContent=s.profileCounts.stone_full_asset||0;$('soil-count').textContent=s.profileCounts.soil_surface_only||0;$('wall-count').textContent=s.wallCount;$('prop-count').textContent=s.propCount;updateCosts();$('technical').textContent=JSON.stringify({format:s.schemaVersion,presentation:s.presentationRevision,profiles:s.profileCounts,sources:sourceSummary().map(r=>({file:r.file,sha256:r.sha256,verified:r.manifestHashVerified})),floorFallback:false},null,2);}
 function fail(error){errors.push(error.message||String(error));root.removeFromParent();$('failure').textContent='表示を停止しました：'+(error.message||String(error));$('failure').hidden=false;$('check-status').textContent='不一致で停止';$('progress').textContent='配置候補を表示できません';$('loading').querySelector('p').textContent='参照元や表示規則の不一致があるため、素材を置き換えず停止しました。';$('loading').hidden=false;renderer.render(scene,camera);busy=false;}
+for(const kind of ['approach','shrine','water'])$('near-'+kind).onclick=()=>setFocus(kind);
 $('plan').onclick=()=>setPlan(!isPlan);$('reset').onclick=fit;$('ceilings').onchange=()=>setCeilings($('ceilings').checked).catch(fail);$('props').onchange=()=>setProps($('props').checked);$('zones').onchange=()=>{zoneGroup.visible=$('zones').checked;requestRender();};
-window.F1GameLayoutReview={get ready(){return ready;},get busy(){return busy;},snapshot,floorReport:()=>instanceReport(floorInstances),groundReport:()=>instanceReport(groundInstances),assembledCostReport,sourceSummary,seamReport,setPlan,setCeilings,setProps,validateCandidate:(candidate,capabilities)=>validateContract(candidate,capabilities?new Set(capabilities):CAPABILITIES),verifyFloorProfile:async profile=>{const{template,record}=await profileTemplate(null,profile);return {sha256:record.sha256,selection:template.userData.profileValidation,bounds:new THREE.Box3().setFromObject(template).getSize(new THREE.Vector3()).toArray()};},candidate:()=>jsonClone(layout),errors};
+window.F1GameLayoutReview={get ready(){return ready;},get busy(){return busy;},snapshot,floorReport:()=>instanceReport(floorInstances),groundReport:()=>instanceReport(groundInstances),assembledCostReport,sourceSummary,seamReport,setFocus,setPlan,setCeilings,setProps,validateCandidate:(candidate,capabilities)=>validateContract(candidate,capabilities?new Set(capabilities):CAPABILITIES),verifyFloorProfile:async profile=>{const{template,record}=await profileTemplate(null,profile);return {sha256:record.sha256,selection:template.userData.profileValidation,bounds:new THREE.Box3().setFromObject(template).getSize(new THREE.Vector3()).toArray()};},candidate:()=>jsonClone(layout),errors};
 try{
   const [candidateResponse,manifestResponse]=await Promise.all([fetch(CANDIDATE+'scene/game-layout-candidate.json'),fetch(CANDIDATE+'manifest.json')]);
   assert(candidateResponse.ok&&manifestResponse.ok,'配置候補と素材一覧を取得できません。');
@@ -164,7 +184,7 @@ try{
   await buildOther(layout.boundaryWallPlacements,wallGroup);await buildOther(layout.candidatePropPlacements,propGroup);
   zoneHelpers();scene.add(root);root.updateMatrixWorld(true);fit();renderer.render(scene,camera);
   ready=true;busy=false;updateTechnical();$('check-status').textContent='参照・土床を照合済み';$('loading').hidden=true;
-  for(const id of['plan','reset','ceilings','props','zones'])$(id).disabled=false;
+  for(const id of['plan','reset','ceilings','props','zones','near-approach','near-shrine','near-water'])$(id).disabled=false;
 }catch(error){fail(error);}
 </script>
 </body>
