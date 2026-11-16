@@ -40,7 +40,9 @@ function masonry({ w, h, rows, stoneW, base, seed, grout = 2.6, bevel = 9, crack
       let si = 0; while (si < row.xs.length - 2 && sx >= row.xs[si + 1]) si++;
       const dx = Math.min(sx - row.xs[si], row.xs[si + 1] - sx), dy = Math.min(yy, rh - yy);
       const d = Math.min(dx, dy), i = (py * w + px) * 4;
-      const grain = Math.sin(px * 1.37 + py * 2.11) * Math.cos(px * 0.77 - py * 1.53) * 0.5 + (Math.sin(px * 12.9898 + py * 78.233) * 43758.5453 % 1) * 0.5;
+      // 方向性のない粒状ノイズ（縞模様にならないよう整数ハッシュ）
+      let hsh = Math.imul(px * 73856093 ^ py * 19349663 ^ seed, 2654435761) >>> 0; hsh ^= hsh >>> 15;
+      const grain = (hsh & 1023) / 1023 - 0.5;
       const mottle = Math.sin(px * 0.045 + py * 0.031 + seed) * Math.cos(py * 0.052 - px * 0.02) * 0.08;
       let cr, cg, cb, rough, height;
       if (d < grout) {
@@ -49,10 +51,10 @@ function masonry({ w, h, rows, stoneW, base, seed, grout = 2.6, bevel = 9, crack
         const t = Math.min(1, (d - grout) / bevel), edge = 0.7 + 0.3 * t;
         // 左上の縁を少し明るく、右下を暗くして面取りを読ませる
         const lit = (dy === yy && yy - grout < bevel) || (dx === sx - row.xs[si] && dx - grout < bevel) ? 1.06 : 0.95;
-        const tone = row.tones[si] * edge * (t < 1 ? lit : 1) * (1 + mottle + grain * 0.07);
+        const tone = row.tones[si] * edge * (t < 1 ? lit : 1) * (1 + mottle + grain * 0.1);
         const warm = (row.tint + si * 0.37) % 1 < 0.2 ? 1.06 : 1;
         cr = base[0] * tone * warm; cg = base[1] * tone; cb = base[2] * tone / warm;
-        rough = 92 + Math.abs(grain) * 46 + (1 - t) * 40; height = 70 + 160 * t + grain * 12;
+        rough = 138 + grain * 40 + (1 - t) * 44; height = 70 + 160 * t + grain * 12;
       }
       imgs[0].data[i] = cr; imgs[0].data[i + 1] = cg; imgs[0].data[i + 2] = cb; imgs[0].data[i + 3] = 255;
       imgs[1].data[i] = imgs[1].data[i + 1] = imgs[1].data[i + 2] = rough; imgs[1].data[i + 3] = 255;
@@ -89,7 +91,7 @@ function portalTexture() {
   const c = document.createElement('canvas'); c.width = 64; c.height = 128;
   const ctx = c.getContext('2d'); if (!ctx) return null;
   const grad = ctx.createRadialGradient(32, 80, 4, 32, 70, 70);
-  grad.addColorStop(0, 'rgba(6,3,14,0.97)'); grad.addColorStop(0.6, 'rgba(30,12,56,0.92)'); grad.addColorStop(1, 'rgba(96,58,170,0.7)');
+  grad.addColorStop(0, 'rgba(4,2,10,0.97)'); grad.addColorStop(0.65, 'rgba(20,8,38,0.94)'); grad.addColorStop(1, 'rgba(70,40,128,0.75)');
   ctx.fillStyle = grad; ctx.fillRect(0, 0, 64, 128);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
@@ -131,11 +133,11 @@ export function createB5Look({ g, mat }) {
     bar: keepG(new THREE.BoxGeometry(0.5, 0.035, 0.035)),
     candle: keepG(new THREE.CylinderGeometry(0.032, 0.036, 0.15, 6)),
     bracket: keepG(new THREE.BoxGeometry(0.08, 0.08, 0.42)),
-    pillar: keepG(new THREE.BoxGeometry(0.62, 3.5, 0.62)),
-    pillarBase: keepG(new THREE.BoxGeometry(0.9, 0.32, 0.9)),
-    lintel: keepG(new THREE.BoxGeometry(3.7, 0.5, 0.78)),
-    portal: keepG(new THREE.PlaneGeometry(2.3, 3.15)),
-    runeBar: keepG(new THREE.BoxGeometry(2.3, 0.04, 0.04))
+    pillar: keepG(new THREE.BoxGeometry(0.48, 3.5, 0.48)),
+    pillarBase: keepG(new THREE.BoxGeometry(0.72, 0.32, 0.72)),
+    lintel: keepG(new THREE.BoxGeometry(3.2, 0.46, 0.6)),
+    portal: keepG(new THREE.PlaneGeometry(2.2, 3.15)),
+    runeBar: keepG(new THREE.BoxGeometry(2.2, 0.04, 0.04))
   };
   // ---- build() ごとの資源 ----
   let fx = null, owned = [], poolLights = [], fog = null, sparks = null, mist = null;
@@ -200,6 +202,12 @@ export function createB5Look({ g, mat }) {
       picked.push(f); if (picked.length >= maxCandles) break;
     }
     const flamePos = [];
+    // 広間のシャンデリア（b5-scene-dressing の配置と同じ位置）に暖色の灯
+    if (hall) for (const cy of [4, a.h - 4]) {
+      const hx = 13 * CELL, hz = cy * CELL;
+      addPool(hx, 6.2, hz, 0xffb874, 4, 11);
+      stats.chandelierLights = (stats.chandelierLights || 0) + 1;
+    }
     for (const f of picked) {
       // 壁面から通路側へ少し出した位置
       const ox = f.x + f.nx * (f.tall ? 0.62 : 0.05), oz = f.z + f.nz * (f.tall ? 0.62 : 0.05);
@@ -252,19 +260,19 @@ export function createB5Look({ g, mat }) {
       if (e.obj) { e.obj.parent?.remove(e.obj); for (const L of e.obj.userData?.lights || []) L.off = true; }
       const f = facing(e.o.tx, e.o.ty), [dx, dz] = DIR_VEC[f];
       const gate = new THREE.Group(); gate.name = 'b5:exit-gate';
-      const x = e.o.tx * CELL - dx * 1.62, z = e.o.ty * CELL - dz * 1.62;
+      const x = e.o.tx * CELL - dx * 1.68, z = e.o.ty * CELL - dz * 1.68;
       gate.position.set(x, 0, z); gate.rotation.y = dx ? Math.PI / 2 : 0;
       const part = (geo, material, px, py, pz) => { const m = new THREE.Mesh(geo, material); m.position.set(px, py, pz); gate.add(m); return m; };
       for (const s of [-1, 1]) {
-        part(G.pillarBase, M.gateStone, s * 1.48, 0.16, 0);
-        part(G.pillar, M.gateStone, s * 1.48, 0.32 + 1.75, 0);
+        part(G.pillarBase, M.gateStone, s * 1.36, 0.16, 0);
+        part(G.pillar, M.gateStone, s * 1.36, 0.32 + 1.75, 0);
       }
       part(G.lintel, M.gateStone, 0, 4.07 + 0.25 - 0.25, 0);
       part(G.portal, M.portal, 0, 0.32 + 1.6, 0.05);
-      part(G.runeBar, M.rune, 0, 3.55, 0.36);
+      part(G.runeBar, M.rune, 0, 3.55, 0.3);
       fx.add(gate); e.obj = gate;
       const lx = dx ? 0 : 1, lz = dx ? 1 : 0;
-      for (const s of [-1, 1]) addPool(x + lx * s * 1.48 + dx * 0.6, 2.4, z + lz * s * 1.48 + dz * 0.6, 0x9c78e8, 0.9, 4);
+      for (const s of [-1, 1]) addPool(x + lx * s * 1.36 + dx * 0.6, 2.4, z + lz * s * 1.36 + dz * 0.6, 0x9c78e8, 0.9, 4);
       stats.exitGates++;
     }
   }
