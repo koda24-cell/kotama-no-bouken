@@ -13,13 +13,14 @@ class NodeFileReader {
 }
 globalThis.FileReader=NodeFileReader;
 fs.mkdirSync('render-output',{recursive:true});
-for (const level of [0,1,2,3,4,5]) {
+for (const level of [0,1,2,3,4,5,6]) {
  const root=createB4MineRigProps();
  enhanceB4MineCart(root);
  if(level===1||level===2)enhanceB4CartV12(root,level);
  if(level>=3)enhanceB4CartV14(root);
  if(level===4)enhanceB4CartTaper(root,1);
  if(level===5)enhanceB4CartTaper(root,2);
+ if(level===6)enhanceB4CartTaper(root,3);
  const cart=root.getObjectByName('b4:buried-ore-cart');
  if(!cart)throw Error('missing cart');
  cart.updateMatrixWorld(true);
