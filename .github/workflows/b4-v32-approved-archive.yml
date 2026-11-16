@@ -55,5 +55,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/models/floor4/b4-minecart-v32.glb assets/models/floor4/reviews/b4-minecart-v32/
-          git commit -m "Archive user-approved B4 minecart V32 GLB and 3-view render evidence"
-          git push origin HEAD:feature/gpt-b4-cart-v29-material-details-20261116
+          git commit -m "Archive user-approved B4 minecart V32 GLB and 3-view render evidence" || true
+          git fetch origin development
+          git branch -f feature/gpt-b4-minecart-v32-approved-20261117 origin/development
+          git checkout feature/gpt-b4-minecart-v32-approved-20261117
+          git checkout feature/gpt-b4-cart-v29-material-details-20261116 -- assets/models/floor4/b4-minecart-v32.glb assets/models/floor4/reviews/b4-minecart-v32/ docs/3d/B4_MINECART_V32_COMPLETED_20261117.md docs/3d/FLOOR4_COMPLETED_ASSETS.md
+          git add assets/models/floor4/ docs/3d/B4_MINECART_V32_COMPLETED_20261117.md docs/3d/FLOOR4_COMPLETED_ASSETS.md
+          git commit -m "Promote approved B4 minecart V32 GLB renders manifest and Claude handoff"
+          git push origin HEAD:feature/gpt-b4-minecart-v32-approved-20261117
