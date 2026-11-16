@@ -39,6 +39,11 @@ jobs:
         continue-on-error: true
         timeout-minutes: 15
         run: node tools/b2-3d/game-test-b2.js review-shots/b2 1280 800 2>&1 | tail -40
+      - name: B2 random-floor props (5F/6F)
+        if: contains(env.FLOORS, 'B2') && hashFiles('tools/claude-review/b2-random-props-shots.cjs') != ''
+        continue-on-error: true
+        timeout-minutes: 15
+        run: node tools/claude-review/b2-random-props-shots.cjs review-shots/b2/props 2>&1 | tail -60
       - name: B3
         if: contains(env.FLOORS, 'B3')
         continue-on-error: true
