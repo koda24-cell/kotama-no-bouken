@@ -1,0 +1,38 @@
+name: Verify First Stratum Story
+on:
+  pull_request:
+    paths:
+      - "data/story-a1.js"
+      - "data/field-maps.js"
+      - "field/field-a1-events.js"
+      - "field/field-interactions.js"
+      - "field/field-movement-foe.js"
+      - "field/field-navigation.js"
+      - "field/field-render.js"
+      - "script.js"
+      - "tools/world-tree/test_a1_story.cjs"
+      - ".github/workflows/verify-f1-story.yml"
+  workflow_dispatch:
+jobs:
+  story:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: |
+          node --check data/story-a1.js
+          node --check data/field-maps.js
+          node --check data/progression.js
+          node --check field/field-a1-events.js
+          node --check field/field-interactions.js
+          node --check field/field-movement-foe.js
+          node --check field/field-navigation.js
+          node --check field/field-render.js
+          node --check script.js
+      - name: Story and map regression checks
+        run: node tools/world-tree/test_a1_story.cjs
