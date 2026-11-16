@@ -43,6 +43,7 @@ view_names=('entry','courtyard','sealed_corridor','shrine_detail','birdseye')
 assert set(mcp['result']['cameras'])=={'camera_'+name for name in view_names}
 assert mcp['result']['externalImagesRequired']==[]
 clearance=read(V/'scene-clearance.json');assert clearance['passed'] and not clearance['conflicts']
+assert clearance['routeMin']==[-1,-14,.03] and clearance['routeMax']==[1,22,3]
 assert clearance['sceneGlbSha256']==sha(scene)
 assert clearance['sceneBlendSha256']==sha(BASE/'scene/scene.blend')
 views={}
