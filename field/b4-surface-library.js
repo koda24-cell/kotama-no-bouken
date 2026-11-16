@@ -31,8 +31,6 @@ export function createB4SurfaceLibrary({high=true}={}) {
   const ash=material('ash-stone',{map:ashMap,normalMap:ashNormal,normalScale:new THREE.Vector2(.65,.65),roughnessMap:ashRough,roughness:1,color:0xffffff});
   // Unlifted basalt: lava crust, shoreline and the distant overlook keep their dark silhouettes.
   const basaltPlain=material('basalt-plain',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.8,.8),roughnessMap:basaltRough,roughness:1,color:0xffffff,flatShading:true});
-  // Lava crust/shore boulders: dark, but their undersides pick up the molten glow.
-  const basaltCrust=material('basalt-crust',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.8,.8),roughnessMap:basaltRough,roughness:1,color:0xffffff,flatShading:true});
   const grotto=material('basalt-grotto',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.8,.8),roughnessMap:basaltRough,roughness:1,color:0xffffff,flatShading:true,side:THREE.DoubleSide});
   const ceiling=material('basalt-ceiling',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.6,.6),roughnessMap:basaltRough,roughness:1,color:0xc2b8b0,side:THREE.DoubleSide});
   const iron=material('blackened-bronze',{map:metalMap,normalMap:metalNormal,roughnessMap:metalRough,roughness:.9,metalness:.3,color:0xd4cfca});
@@ -91,8 +89,6 @@ export function createB4SurfaceLibrary({high=true}={}) {
   };
   underglow(basalt,{bounce:.085,fissure:1.4,falloff:1.05});
   underglow(grotto,{bounce:.07,fissure:.5,falloff:.9});
-  basaltCrust.color.setRGB(1.2,1.08,1.04);
-  underglow(basaltCrust,{bounce:.55,fissure:0,falloff:9});
   underglow(ceiling,{bounce:.05,fissure:0,falloff:.35});
   const ember=material('ember-seams',{color:0xf49646,emissive:0xff4b09,emissiveIntensity:1.6,roughness:1});
   const timberCanvas=document.createElement('canvas');timberCanvas.width=timberCanvas.height=256;
@@ -122,7 +118,7 @@ export function createB4SurfaceLibrary({high=true}={}) {
     replaced.forEach(m=>m.dispose());
   }
   let disposed=false;
-  return {basalt,basaltPlain,basaltCrust,grotto,ash,ceiling,iron,ore,crystal,lava,ember,wood,rope,materials,textures,apply,
+  return {basalt,basaltPlain,grotto,ash,ceiling,iron,ore,crystal,lava,ember,wood,rope,materials,textures,apply,
     ready:Promise.all(pending),
     tick(now){const seconds=now*.001;lavaMap.offset.y=lavaGlow.offset.y=lavaNormal.offset.y=lavaRough.offset.y=seconds*.018;lava.emissiveIntensity=1.1+Math.sin(seconds*.8)*.12;},
     dispose(){if(disposed)return;disposed=true;materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}
