@@ -32,6 +32,12 @@ for (let f=0;f<3;f++) {
     if(rows[ny]&&walkable(rows[ny][nx])&&!visited.has(k)){visited.add(k);queue.push([nx,ny]);}
   }
   assert.ok(visited.has(end.join(",")),"map exit unreachable "+f);
+  // Side NPCs and existing save/stash objects must remain approachable.
+  const inspectable = f === 0 ? ["c","e","f"] : f === 1 ? ["h","i","j","k","d","S"] : ["a","b","S"];
+  for (const icon of inspectable) {
+    const tile=locate(icon); assert.ok(tile,"missing inspectable "+icon+" on "+f);
+    assert.ok([[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>visited.has((tile[0]+dx)+","+(tile[1]+dy))),"unreachable inspectable "+icon+" on "+f);
+  }
 }
 for(const [objId,scene] of [["h","a1-senior-pair"],["i","a1-patrol"],["j","a1-knights"],["k","a1-rival-party"],["a","a1-woodcutter"],["b","a1-herb-girl"]]) {
   assert.equal(a.objects[objId].scene,scene);
