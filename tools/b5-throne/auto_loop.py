@@ -108,8 +108,14 @@ def main():
             break
         output = ROOT/("iteration_%02d" % (index+1))
         output.mkdir(exist_ok=True)
+        # Feedback from the previous render controls exposure on the next pass.
+        exposure = 0.0
+        if state["history"] and "views" in state["history"][-1]:
+            previous = list(state["history"][-1]["views"].values())
+            average = sum(v["brightness"] for v in previous) / len(previous)
+            exposure = round(max(-1.8, min(1.8, (0.47-average)*2.5)), 2)
         env = dict(os.environ, THRONE_OUTPUT=str(output), THRONE_VARIANT=str(index),
-                   THRONE_EXPOSURE="0")
+                   THRONE_EXPOSURE=str(exposure))
         log = output/"blender.log"
         try:
             with log.open("w", encoding="utf-8") as f:
@@ -123,7 +129,7 @@ def main():
                 names = [name for name in geo["object_names"] if not name.startswith("V2 ")]
                 state["baseline"] = {"object_names":names, "mesh_count":len(names)}
             report = inspect(output, state["baseline"])
-            rec = {"iteration":index+1,"status":"passed" if report["valid"] else "qa_failed",
+            rec = {"iteration":index+1,"exposure":exposure,"status":"passed" if report["valid"] else "qa_failed",
                    **report}
             state["history"].append(rec)
             if report["valid"] and (not state["best"] or report["score"] > state["best"]["score"]):
@@ -133,7 +139,7 @@ def main():
                 state["status"] = "awaiting_user_approval"
             else:
                 state["status"] = "running"
-        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, Exception) as exc:
+        except Exception as exc:
             state["history"].append({"iteration":index+1,"status":"error","reason":str(exc)})
             state["status"] = "needs_manual_fix"
         finally:
