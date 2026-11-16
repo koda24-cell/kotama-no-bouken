@@ -53,6 +53,16 @@ Object.assign(STORY_SCENES, {
     {who:"patrol-guard",text:"騎士団が奥の異変を調べている。最近は生息域の違う魔物まで目撃されるようになった。"},
     {who:"patrol-guard",text:"それでも今は、荷運びも採取も続いている。街の暮らしを支える大事な仕事だからな。"}
   ]},
+  "a1-knights": { lines:[
+    {who:"patrol-guard",text:"騎士団からの伝令だ。迷宮の異変を調べるため、大規模調査隊が各階層に派遣されている。"},
+    {who:"patrol-guard",text:"奥での被害は大きい。だが街を支える探索を、簡単に止めるわけにもいかないんだ。"},
+    {who:"patrol-guard",text:"君たちのような冒険者の地図も貴重な情報になる。小さな記録が誰かの役に立つぞ。"}
+  ], repeat:[{who:"patrol-guard",text:"見慣れない魔物がいたら無理に戦うな。位置と特徴を記録してほしい。"}]},
+  "a1-rival-party": { lines:[
+    {who:"narration",text:"別のギルドの冒険者たちが、採取した素材を分け合っていた。"},
+    {who:"senior-b",text:"新人さん？　私たちも最初は地図試験で迷ったよ。あの宝箱を見つけるのに半日かかったっけ。"},
+    {who:"senior-b",text:"腕を磨けば、いい依頼も回ってくる。最奥の伝承なんて夢物語だって笑う人もいるけど……夢を見るのは自由だよね。"}
+  ], repeat:[{who:"senior-b",text:"採取品を持ち帰れば、それだけでも立派な仕事。焦らず稼ごうね。"}]},
   "a1-alarm": {once:true,lines:[
     {who:"narration",text:"階段へ続く通路に、鎧を傷つけた兵士がよろめきながら現れた。"},
     {who:"wounded-soldier",text:"誰か……助けてくれ！　3Fで調査隊が襲われた！"},
