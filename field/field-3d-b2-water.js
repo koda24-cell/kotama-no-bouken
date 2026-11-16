@@ -179,13 +179,24 @@ async function loadV8Decorations() {
 async function parseV8Decorations() {
   const gltf = await new GLTFLoader().loadAsync(B2_V8_GLB);
   gltf.scene.updateMatrixWorld(true);
-  const result = { rocks: [], crystals: [], stalagmites: [], ceilingIce: [], erosion: [] };
+  const result = { rocks: [], crystals: [], stalagmites: [], ceilingIce: [], erosion: [], crystalsUpright: [] };
   gltf.scene.traverse((o) => {
     if (!o.isMesh) return;
     const rock = /^23_/.test(o.name), crystal = /^07_crystal_/.test(o.name);
     const stalagmite = /^04_stalagmite_/.test(o.name), ceilingIce = /^26_ceiling_ice_/.test(o.name);
     const erosion = /^06_erosion_rock_/.test(o.name);
     if (!rock && !crystal && !stalagmite && !ceilingIce && !erosion) return;
+    if (crystal) {
+      // [RANDOM-MAZE] 見せ場の結晶の塊用：v8 の結晶を元の向き（GLB の Y が上）のまま、高さ1mにそろえて持つ。
+      // 既存の壁ぎわの v8 結晶（下の crystals）は従来どおり。
+      const ug = prepGeo(o.geometry.clone().applyMatrix4(o.matrixWorld), false);
+      const up = makePiece(o.name + '_upright', [{ geo: ug, mat: 'Glowing cyan crystal', tag: o.name }]);
+      ug.dispose();
+      const us = 1 / Math.max(up.size.y, 0.01);
+      for (const pp of up.parts) pp.geo.scale(us, us, us);
+      up.size.multiplyScalar(us);
+      result.crystalsUpright.push(up);
+    }
     const target = rock ? result.rocks : crystal ? result.crystals : stalagmite ? result.stalagmites : ceilingIce ? result.ceilingIce : result.erosion;
     if (target.length >= 12) return;
     const geo = o.geometry.clone().applyMatrix4(o.matrixWorld).applyMatrix4(Z_UP_TO_Y_UP);
@@ -233,7 +244,7 @@ const B2_EXTRAS = {
   bloom: B2_FLOWERS + 'f2_ice_crystal_bloom.glb',
 };
 // 白いレンダー用の石色が冷たい照明の洞窟で白く飛ばないよう、明るさと寒色を合わせる（形は変えない）
-const EXTRA_TINT = { fallen: 0.55, spire: 0.55, rubble: 0.5, parapet: 0.5, pillarAncient: 0.8, pillarRuined: 0.8, pillarGlaciated: 0.84, altar: 0.78, snowdrop: 0.82, mizubasho: 0.8, bloom: 0.9 };
+const EXTRA_TINT = { fallen: 0.5, spire: 0.5, rubble: 0.45, parapet: 0.5, pillarAncient: 0.66, pillarRuined: 0.66, pillarGlaciated: 0.72, altar: 0.78, snowdrop: 0.82, mizubasho: 0.8, bloom: 0.9 };
 const KEEP_Y = new Set(['bankL', 'bankR']);   // 氷岸は上面が床の高さに合うよう、元の高さのまま
 let extrasPromise = null;
 function loadExtras() {
@@ -860,7 +871,7 @@ export async function createTheme(api) {
         }
       }
 
-      // 規則V1〜V3：v8 の結晶の塊（見せ場）。紫の大きな結晶1つ＋水色の小さな結晶2〜3つを、奥の壁ぎわ（中央から1.15m以上）に寄せた群れ。
+      // 規則V1〜V3：v8 の結晶の塊（見せ場）。紫の背の高い結晶3本の芯＋水色の中・小の結晶4〜5本＋根元の岩を、奥の壁ぎわ（中央から1.15m以上）に寄せた群れ。
       // 置き場：残りの行き止まりを優先し、足りなければ部屋の本当の角、さらに通路の曲がり角（角の外側の斜めも壁）。1階に2〜3か所、群れどうし6マス以上（チェビシェフ）、祭壇から4マス以上
       if (v8 && v8.crystals.length) {
         const violet = (pc) => ({ ...pc, parts: pc.parts.map((p) => ({ ...p, mat: 'Violet danger crystal' })) });
@@ -883,19 +894,33 @@ export async function createTheme(api) {
           const dx = c.dirs.reduce((s2, v) => s2 + v[0], 0), dz = c.dirs.reduce((s2, v) => s2 + v[1], 0);   // 壁（角なら角）の向き
           const lat = [Math.abs(dz) > 0 && Math.abs(dx) === 0 ? 1 : 0, Math.abs(dx) > 0 && Math.abs(dz) === 0 ? 1 : 0];
           const corner = c.dirs.length === 2, reach = corner ? 1.15 : 1.35;
-          const main = pick(v8.crystals, H(c.tx, c.ty, 512)), ms = 1.8 + H(c.tx, c.ty, 513) * 0.4;
           const mx = x + dx * reach, mz = z + dz * reach;
-          B.add('v8_crystals', violet(main), M4(mx, -0.05, mz, H(c.tx, c.ty, 514) * 6.28, ms), c.tx, c.ty);
-          const n = 2 + (H(c.tx, c.ty, 515) < 0.5 ? 1 : 0);
+          const UP = v8.crystalsUpright.length ? v8.crystalsUpright : v8.crystals;
+          const R = (k) => H(c.tx, c.ty, 512 + k);
+          const crystal = (k, px, pz, height, tilt, mat) => {
+            const pc = pick(UP, R(k)), piece = mat ? { ...pc, parts: pc.parts.map((p) => ({ ...p, mat })) } : pc;
+            B.add('v8_crystals', piece, M4(px, -0.1, pz, R(k + 1) * 6.28, height / Math.max(pc.size.y, 0.01), tilt), c.tx, c.ty);
+          };
+          // 芯：紫の背の高い結晶3本を寄せて立てる（少しずつ傾ける）
+          const core = [[0, 0, 1.75], [0.28, -0.12, 1.35], [-0.26, 0.1, 1.05]];
+          for (const [i, [ox, oz, hh]] of core.entries()) {
+            const latV = corner ? [dz * 0.7, -dx * 0.7] : lat, inV = corner ? [dx * 0.7, dz * 0.7] : [dx, dz];   // 壁に沿う向き・壁へ向かう向き
+            const sx = latV[0] * ox - inV[0] * Math.abs(oz), sz2 = latV[1] * ox - inV[1] * Math.abs(oz);
+            crystal(10 + i * 3, mx + sx, mz + sz2, hh * (0.85 + R(11 + i * 3) * 0.3), (R(12 + i * 3) - 0.5) * 0.45, 'Violet danger crystal');
+          }
+          // まわり：水色の中くらいの結晶と小さな結晶を、壁に沿って左右へ散らす
+          const n = 4 + (R(40) < 0.5 ? 1 : 0);
           for (let i = 0; i < n; i++) {
             // 角なら二つの壁それぞれに沿って（もう一方の壁から離れる向き）、行き止まりなら奥の壁に沿って左右へ
             const side = corner ? (i % 2 ? [-c.dirs[1][0], -c.dirs[1][1]] : [-c.dirs[0][0], -c.dirs[0][1]]) : [lat[0] * (i % 2 ? 1 : -1), lat[1] * (i % 2 ? 1 : -1)];
-            const off = 0.75 + i * 0.25 + H(c.tx, c.ty, 516 + i) * 0.25;
-            const px = mx + side[0] * off - dx * (corner ? 0 : 0.05 * i), pz = mz + side[1] * off - dz * (corner ? 0 : 0.05 * i);
-            B.add('v8_crystals', pick(v8.crystals, H(c.tx, c.ty, 520 + i)), M4(px, -0.05, pz, H(c.tx, c.ty, 524 + i) * 6.28, 0.8 + H(c.tx, c.ty, 528 + i) * 0.45), c.tx, c.ty);
+            const off = 0.55 + Math.floor(i / 2) * 0.4 + R(41 + i) * 0.2, inward = 0.1 + R(47 + i) * 0.35;
+            const px = mx + side[0] * off - dx * inward * (corner ? 0.5 : 1), pz = mz + side[1] * off - dz * inward * (corner ? 0.5 : 1);
+            const hh = i < 2 ? 0.8 + R(53 + i) * 0.35 : 0.35 + R(53 + i) * 0.3;
+            crystal(60 + i * 3, px, pz, hh, (R(61 + i * 3) - 0.5) * 0.6, null);
           }
-          light(mx - dx * 0.3, main.size.y * ms * 0.55, mz - dz * 0.3, 0xb48cff, 1.9, 6.0);
-          light(mx - dx * 0.9, 0.9, mz - dz * 0.9, 0x7fdcff, 0.9, 4.5);
+          if (v8.rocks.length) B.add('v8_crystals', pick(v8.rocks, R(90)), M4(mx, -0.18, mz, R(91) * 6.28, 0.75), c.tx, c.ty);   // 根元の岩
+          light(mx - dx * 0.35, 1.2, mz - dz * 0.35, 0xb48cff, 2.0, 6.5);
+          light(mx - dx * 0.9, 0.7, mz - dz * 0.9, 0x7fdcff, 0.9, 4.5);
           propCells.add(`${c.tx},${c.ty}`); got.push(c);
           out.v8Showcase.push(`${c.tx},${c.ty}${corner ? ':corner' : ':deadend'}`);
         }
