@@ -363,8 +363,10 @@ def build():
     # Imported GLBs embed images. Pack them into the .blend as well so moving
     # the review file does not depend on Blender's temporary import paths.
     for image in bpy.data.images:
-        if image.source == 'FILE' and image.has_data:
-            image.pack()
+        if image.source == 'FILE':
+            if not image.packed_file:
+                image.pack()
+            assert image.packed_file, image.name
     bpy.context.view_layer.update()
     SCENE_DIR.mkdir(parents=True, exist_ok=True)
     RENDER_DIR.mkdir(parents=True, exist_ok=True)
