@@ -6,7 +6,7 @@ export function enhanceB4CartPractical(root,variant=20) {
  if(!cart)throw Error('missing source cart');
  const name='b4:cart-practical-v'+variant;
  if(cart.getObjectByName(name))return root;
- const long=variant===21;
+ const long=variant>=21;
  const L=long?1.74:1.63, X=long?1.18:1.13;
  const lowL=long?1.20:1.16, lowX=long?.83:.80;
  const top=1.39, base=.31, axleZ=long?1.03:.96;
@@ -14,7 +14,9 @@ export function enhanceB4CartPractical(root,variant=20) {
  const boards=[0x5b4638,0x624a37,0x564137,0x68513f].map(c=>new THREE.MeshStandardMaterial({color:c,roughness:.97,metalness:0,side:THREE.DoubleSide}));
  const iron=new THREE.MeshStandardMaterial({color:0x35383b,roughness:.75,metalness:.64});
  const worn=new THREE.MeshStandardMaterial({color:0x6d4b3d,roughness:.91,metalness:.27});
+ darkwood.name='B4_WoodDark';boards.forEach((m,i)=>m.name='B4_WoodBoard'+i);iron.name='B4_BlackIron';worn.name='B4_RustedIron';
  const woodGrain=new THREE.MeshStandardMaterial({color:0x302c2a,roughness:1});
+ woodGrain.name='B4_WoodGrain';
  const highlight=new THREE.MeshStandardMaterial({color:0x81644b,roughness:.95});
  const group=new THREE.Group();group.name=name;cart.add(group);
  const boxgeo=new THREE.BoxGeometry(1,1,1);
@@ -94,6 +96,27 @@ export function enhanceB4CartPractical(root,variant=20) {
      block(side*.70,-.015,z,.32,.15,.20,worn);
      block(side*.72,.17,z,.13,.34,.18,iron);
    }
+ }
+ // V22: functional end coupling and load-bearing gussets; not ornamental rings.
+ if(variant>=22){
+  const coupler=new THREE.Group();coupler.name='b4:load-coupler-v22';group.add(coupler);
+  const addCoupler=(mesh,x,y,z)=>{mesh.position.set(x,y,z);coupler.add(mesh);return mesh;};
+  for(const end of [-1,1]){
+   const plate=new THREE.Mesh(new THREE.BoxGeometry(.40,.16,.32),iron);
+   addCoupler(plate,0,.06,end*(L+.14));
+   const shank=new THREE.Mesh(new THREE.BoxGeometry(.18,.18,.38),worn);
+   addCoupler(shank,0,.06,end*(L+.36));
+   const hook=new THREE.Mesh(new THREE.TorusGeometry(.17,.050,9,20,Math.PI*1.75),iron);
+   hook.rotation.x=Math.PI/2;hook.rotation.z=end*.12;
+   addCoupler(hook,0,.08,end*(L+.59));
+  }
+  for(const side of [-1,1])for(const z of [-axleZ,axleZ]){
+   const gusset=new THREE.Mesh(new THREE.BoxGeometry(.12,.28,.28),iron);
+   gusset.position.set(side*.71,.10,z);
+   gusset.rotation.z=side*.16;group.add(gusset);
+   const cap=new THREE.Mesh(new THREE.CylinderGeometry(.10,.10,.07,16),worn);
+   cap.rotation.z=Math.PI/2;cap.position.set(side*1.20,-.1,z);group.add(cap);
+  }
  }
  // Repairs, splinters and scorch are local and subdued, not generic random pellets.
  for(const side of [-1,1]){
