@@ -112,7 +112,7 @@
       ],
       "performance": {
         "frames": 6,
-        "fps": 1.5936762924714762,
+        "fps": 1.585288522511097,
         "calls": 275,
         "triangles": 345663,
         "memory": {
@@ -208,8 +208,8 @@
         }
       ],
       "performance": {
-        "frames": 7,
-        "fps": 1.7149717029668983,
+        "frames": 8,
+        "fps": 2.0829613759447683,
         "calls": 246,
         "triangles": 330623,
         "memory": {
@@ -293,8 +293,8 @@
         }
       ],
       "performance": {
-        "frames": 12,
-        "fps": 2.7916656092175804,
+        "frames": 13,
+        "fps": 3.2516800346845796,
         "calls": 173,
         "triangles": 190195,
         "memory": {
@@ -335,8 +335,8 @@
       "placed": true,
       "surfaceTextures": 7,
       "memory": {
-        "geometries": 59,
-        "textures": 160
+        "geometries": 84,
+        "textures": 167
       },
       "overlaps": [],
       "entryKinds": [
@@ -414,12 +414,12 @@
         }
       ],
       "performance": {
-        "frames": 6,
-        "fps": 1.6050849089916976,
+        "frames": 8,
+        "fps": 1.9572754725422243,
         "calls": 275,
         "triangles": 345663,
         "memory": {
-          "geometries": 75,
+          "geometries": 84,
           "textures": 167
         }
       }
