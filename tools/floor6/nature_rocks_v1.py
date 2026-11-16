@@ -57,18 +57,29 @@ def textured_material(material, base, seed):
  normal_image.colorspace_settings.name='Non-Color'
  normal_image.pack()
  normal_tex=nodes.new('ShaderNodeTexImage');normal_tex.image=normal_image
- normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.48
+ normal_map=nodes.new('ShaderNodeNormalMap');normal_map.inputs['Strength'].default_value=.32
  material.node_tree.links.new(normal_tex.outputs['Color'],normal_map.inputs['Color'])
  material.node_tree.links.new(normal_map.outputs['Normal'],bsdf.inputs['Normal'])
 for i,m in enumerate(stone): textured_material(m,[(.34,.36,.34),(.27,.29,.28),(.37,.34,.30)][i],110+i)
 for i,m in enumerate(moss): textured_material(m,[(.20,.32,.16),(.17,.26,.12)][i],210+i)
 def add_uv(obj):
- bpy.ops.object.select_all(action='DESELECT')
- obj.select_set(True);bpy.context.view_layer.objects.active=obj
- bpy.ops.object.mode_set(mode='EDIT')
- bpy.ops.mesh.select_all(action='SELECT')
- bpy.ops.uv.smart_project(island_margin=.02)
- bpy.ops.object.mode_set(mode='OBJECT')
+ # Continuous cylindrical UVs for natural rock bodies: smart_project used to
+ # make hundreds of small independent UV islands, visibly printing triangles.
+ # Retain the source mesh and only replace texture coordinates.
+ uv_layer=obj.data.uv_layers.active or obj.data.uv_layers.new(name='rock_continuous_uv')
+ coords={}
+ for vert in obj.data.vertices:
+  co=vert.co
+  angle=math.atan2(co.y,co.x)
+  coords[vert.index]=((angle/math.tau+.5),max(0.002,min(.998,(co.z+1)*.5)))
+ for poly in obj.data.polygons:
+  face_uv=[coords[obj.data.loops[li].vertex_index] for li in poly.loop_indices]
+  us=[pair[0] for pair in face_uv]
+  crosses=max(us)-min(us)>.5
+  for li,(u,v) in zip(poly.loop_indices,face_uv):
+   if crosses and u<.5:u+=1
+   uv_layer.data[li].uv=(u,v)
+
 def rock_part(name,loc,scale,seed,materials):
  rng=random.Random(seed)
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=4, radius=1, location=loc)
