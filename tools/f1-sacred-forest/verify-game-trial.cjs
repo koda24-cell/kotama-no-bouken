@@ -252,6 +252,8 @@ async function normalSessions(){
  const foes=await state(trial,'native-foe-models');
  assert.equal(foes.review.foes.length,sourceFloors[2].foes.length);
  assert(foes.review.foes.every(f=>f.meshOrSprite==='Sprite'&&f.visible&&f.textureLoaded));
+ assert(foes.review.foes.every(f=>f.textureRasterized===true),'3F dragon FOE SVG was not rasterized before upload');
+ for(const foe of foes.review.foes)assert.deepEqual(foe.textureSize,[512,512],'FOE raster source dimensions changed');
  await teleport(trial,5,15,'right');await screenshot(trial,'04-trial-approach');
  await teleport(trial,13,4,'up');await screenshot(trial,'05-trial-shrine-surroundings');
  await teleport(trial,21,10,'right');await screenshot(trial,'06-trial-water-edge');
@@ -345,6 +347,9 @@ async function main(){
    return;
   }
   await normalSessions();await mismatchFallback();
+  const positiveTrial=report.sessions.find(session=>session.name==='trial-on');
+  assert.deepEqual(positiveTrial.warnings.filter(warning=>/WebGL|texSubImage|texImage|GL_INVALID|Texture is immutable/i.test(warning.text)),[],
+   'Positive trial emitted WebGL texture upload warnings');
   for(const session of report.sessions){assert.deepEqual(session.pageErrors,[],session.name+': page errors');assert.deepEqual(session.consoleErrors,[],session.name+': console errors');
    assert.deepEqual(session.requestFailures.filter(r=>r.url.includes('/'+KIT)||r.url.includes('field-3d-b1-sacred-trial')),[],session.name+': candidate request failed');}
   assert.deepEqual(frozenInputs(),sourceRecord.inputs,'Input assets, runtime or candidate changed during QA');
