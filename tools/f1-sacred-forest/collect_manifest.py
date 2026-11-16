@@ -60,6 +60,9 @@ for asset_id,name in NAMES.items():
     m.update(name_ja=name,approvalStatus='pending_user_review',
              origin='top attachment' if asset_id=='hanging_forest_vines' else 'surface top centre' if 'floor_4m' in asset_id else 'floor-centred',
              expectedByteBudget=4194304 if asset_id in ('sacred_cedar_tree','sacred_hokora_shrine') else 1048576)
+    if asset_id in ('mod_sacred_wall_4m','mod_sacred_collapsed_wall_4m','mod_sacred_arch_4m'):
+        m['origin']='inner-face lower centre; passage-facing +Z, thickness behind -Z'
+    elif asset_id=='ofuda_seal_cluster':m['origin']='wall-contact lower centre; front +Z'
     m['budgetStatus']='within_target' if m['bytes']<=m['expectedByteBudget'] else 'above_target_review_required'
     source=ROOT/'tools/f1-sacred-forest/assets'/('build_'+asset_id+'.py')
     m['buildScript']='tools/f1-sacred-forest/assets/'+source.name

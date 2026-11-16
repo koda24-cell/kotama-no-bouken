@@ -22,7 +22,9 @@ for r in rows:
 x,y=pt(-1,18)
 parts.append(f'<rect x="{x}" y="{y}" width="36" height="576" fill="#dce4cf" opacity=".5"/>')
 for r in rows:
- a=r['asset_id'];x,y=pt(*r['position'][:2]);s=r['scale'];s=s if isinstance(s,(int,float)) else s[0]
+ a=r['asset_id'];
+ if r['position'][1]>26:continue
+ x,y=pt(*r['position'][:2]);s=r['scale'];s=s if isinstance(s,(int,float)) else s[0]
  if 'floor' in a:continue
  if a=='sacred_cedar_tree':
   parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{40*s:.1f}" fill="#49664a" fill-opacity=".45" stroke="#344c39" stroke-width="1.4"/><circle cx="{x:.1f}" cy="{y:.1f}" r="6" fill="#554634"/>')
@@ -55,7 +57,7 @@ parts+=['<text x="815" y="655" font-size="14">主空間 24 × 32m</text>',
  '<text x="815" y="705" font-size="14">歩行高さ0m / 目高1.6m</text>',
  '<text x="815" y="760" font-size="12">薄い外周は視覚用の背景。</text>',
  '<text x="815" y="783" font-size="12">ゲームの歩行領域拡張ではない。</text>',
- f'<text x="45" y="1060" font-size="13">17個別アセット / {len(rows)}配置予定 / 出典: assemble_scene.py / 2026-11-16 JST</text>',
+ f'<text x="45" y="1060" font-size="13">17個別アセット / {len(rows)+1}配置（背景地面1・遠景の一部は省略） / 出典: assemble_scene.py / 2026-11-16 JST</text>',
  '</g></svg>']
 out=ROOT/'docs/3d/f1-sacred-forest-layout.svg';out.write_text('\n'.join(parts)+'\n')
 print(out)
