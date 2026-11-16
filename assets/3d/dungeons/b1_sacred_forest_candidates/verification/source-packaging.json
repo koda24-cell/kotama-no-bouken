@@ -1,0 +1,1464 @@
+{
+  "scope": "portable editing sources, no GLB modifications",
+  "records": [
+    {
+      "assetId": "broken_votive_stele",
+      "file": "sources/broken_votive_stele.blend",
+      "sha256": "c4cc0d9f1340da710ad8467648ffafd2bc2362649c342fa7158a0a1b7b8cab99",
+      "bytes": 670925,
+      "imagesPacked": 12,
+      "imagesDecoded": 12,
+      "unusedImagesPruned": 0,
+      "geometryPreserved": true,
+      "geometryFingerprint": "92f73c4f0cc9b74877ee89ce3f39e48c51535da5668c9b52734d2d98fcd0418a",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "stele_cushion_moss_0a12f4719265_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6059
+        },
+        {
+          "name": "stele_cushion_moss_0a12f4719265_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6773
+        },
+        {
+          "name": "stele_cushion_moss_0a12f4719265_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4450
+        },
+        {
+          "name": "stele_old_fracture_ee59368867c9_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 9034
+        },
+        {
+          "name": "stele_old_fracture_ee59368867c9_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6762
+        },
+        {
+          "name": "stele_old_fracture_ee59368867c9_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6282
+        },
+        {
+          "name": "stele_recessed_carving_a47b3c72ef4b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6194
+        },
+        {
+          "name": "stele_recessed_carving_a47b3c72ef4b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6782
+        },
+        {
+          "name": "stele_recessed_carving_a47b3c72ef4b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5191
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 147023
+        },
+        {
+          "name": "stone_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 214271
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122001
+        }
+      ]
+    },
+    {
+      "assetId": "fallen_cedar_log",
+      "file": "sources/fallen_cedar_log.blend",
+      "sha256": "3b468056c4fd017bef964f1a36aa4f55a2068dd0d654a69918ce30bd3468059a",
+      "bytes": 780148,
+      "imagesPacked": 12,
+      "imagesDecoded": 12,
+      "unusedImagesPruned": 8,
+      "geometryPreserved": true,
+      "geometryFingerprint": "f18259a1017e1af18965336d3c58f5af06c924858046b2cbbaf649d11de0fa1e",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122111
+        },
+        {
+          "name": "bark_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 309795
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 53978
+        },
+        {
+          "name": "cedar_cavity_shadow_d7c3795db051_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 3961
+        },
+        {
+          "name": "cedar_cavity_shadow_d7c3795db051_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 3965
+        },
+        {
+          "name": "cedar_cavity_shadow_d7c3795db051_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4249
+        },
+        {
+          "name": "cedar_old_heartwood_13c02feb653d_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5843
+        },
+        {
+          "name": "cedar_old_heartwood_13c02feb653d_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4057
+        },
+        {
+          "name": "cedar_old_heartwood_13c02feb653d_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4899
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5484
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4011
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4841
+        }
+      ]
+    },
+    {
+      "assetId": "forest_fern_cluster",
+      "file": "sources/forest_fern_cluster.blend",
+      "sha256": "a939bc53a4e7483d8291e529d33d6b465e21d67dd7750e3c5174ca19fa8161a5",
+      "bytes": 968528,
+      "imagesPacked": 8,
+      "imagesDecoded": 8,
+      "unusedImagesPruned": 12,
+      "geometryPreserved": true,
+      "geometryFingerprint": "7f5d4de5fa106b04b16ba6f3f5357828f5cbb5cd982e88660c47c06c9d277aea",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6925
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6739
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6213
+        },
+        {
+          "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5425
+        },
+        {
+          "name": "woodland_leaf_old_veins_v2_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4907
+        },
+        {
+          "name": "woodland_leaf_veins_v2_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4923
+        },
+        {
+          "name": "woodland_leaf_veins_v2_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7140
+        },
+        {
+          "name": "woodland_leaf_veins_v2_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 8727
+        }
+      ]
+    },
+    {
+      "assetId": "forest_shrub_cluster",
+      "file": "sources/forest_shrub_cluster.blend",
+      "sha256": "746674a0322c402634bea11ef27118ee7a307044386a64675f3028537252f57d",
+      "bytes": 888086,
+      "imagesPacked": 10,
+      "imagesDecoded": 10,
+      "unusedImagesPruned": 10,
+      "geometryPreserved": true,
+      "geometryFingerprint": "0744d71805a8d0640fcc0e08a610ee7fdf5abae4c22b850f19c966b53fcec44c",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122111
+        },
+        {
+          "name": "bark_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 309795
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 53978
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6925
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6739
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6213
+        },
+        {
+          "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5425
+        },
+        {
+          "name": "woodland_leaf_veins_v2_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4923
+        },
+        {
+          "name": "woodland_leaf_veins_v2_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7140
+        },
+        {
+          "name": "woodland_leaf_veins_v2_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 8727
+        }
+      ]
+    },
+    {
+      "assetId": "hanging_forest_vines",
+      "file": "sources/hanging_forest_vines.blend",
+      "sha256": "63ea791e6bd38b973292f48102d080f324ab16e031152888c7d688845c3485dc",
+      "bytes": 301763,
+      "imagesPacked": 7,
+      "imagesDecoded": 7,
+      "unusedImagesPruned": 13,
+      "geometryPreserved": true,
+      "geometryFingerprint": "4ccd4f9d8300e45939692a8f869833cca6418accd5079936fc74a06040be1cd7",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6925
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6739
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6213
+        },
+        {
+          "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5425
+        },
+        {
+          "name": "woodland_leaf_veins_v2_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4923
+        },
+        {
+          "name": "woodland_leaf_veins_v2_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7140
+        },
+        {
+          "name": "woodland_leaf_veins_v2_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 8727
+        }
+      ]
+    },
+    {
+      "assetId": "mod_root_soil_floor_4m",
+      "file": "sources/mod_root_soil_floor_4m.blend",
+      "sha256": "9c938f5f5b9c99e0ecb5b36641a6267ee75b775d0e92c792f9d1dfd842807398",
+      "bytes": 958342,
+      "imagesPacked": 15,
+      "imagesDecoded": 15,
+      "unusedImagesPruned": 6,
+      "geometryPreserved": true,
+      "geometryFingerprint": "37d484ce5e5affa603af127a9f7997f52b84faea85d6a2e72186860f3901b431",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "sacred_old_leaf_litter_505ec0d469d6_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 8407
+        },
+        {
+          "name": "sacred_old_leaf_litter_505ec0d469d6_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6755
+        },
+        {
+          "name": "sacred_old_leaf_litter_505ec0d469d6_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6250
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7562
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6860
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6273
+        },
+        {
+          "name": "soil_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 137951
+        },
+        {
+          "name": "soil_module_bark_color_graded.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 24389
+        },
+        {
+          "name": "soil_module_bark_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 58600
+        },
+        {
+          "name": "soil_module_bark_roughness.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 11739
+        },
+        {
+          "name": "soil_module_stone_color_graded.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 31780
+        },
+        {
+          "name": "soil_module_stone_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 37920
+        },
+        {
+          "name": "soil_module_stone_roughness.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 25712
+        },
+        {
+          "name": "soil_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 367399
+        },
+        {
+          "name": "soil_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 76473
+        }
+      ]
+    },
+    {
+      "assetId": "mod_sacred_arch_4m",
+      "file": "sources/mod_sacred_arch_4m.blend",
+      "sha256": "1cfcda0b4d34d3be95a3bf40bbc078b6ccdeac73365a3ddd692489b2089d7021",
+      "bytes": 1214283,
+      "imagesPacked": 12,
+      "imagesDecoded": 12,
+      "unusedImagesPruned": 0,
+      "geometryPreserved": true,
+      "geometryFingerprint": "13d394103c2a9451d120076120b08bcd6b3e782a92e22e8cd4e2bc21377fe9b8",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122111
+        },
+        {
+          "name": "bark_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 309795
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 53978
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7369
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6815
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6163
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7562
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6860
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6273
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 147023
+        },
+        {
+          "name": "stone_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 214271
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122001
+        }
+      ]
+    },
+    {
+      "assetId": "mod_sacred_collapsed_wall_4m",
+      "file": "sources/mod_sacred_collapsed_wall_4m.blend",
+      "sha256": "9192e2da787b16d97fa1bf9cb5b12fdf8c5baf7bdd860108c23ddc5b49026371",
+      "bytes": 1214528,
+      "imagesPacked": 12,
+      "imagesDecoded": 12,
+      "unusedImagesPruned": 3,
+      "geometryPreserved": true,
+      "geometryFingerprint": "b987cede9b7617b7a27d82f38978107f92fd258f1825abd0ff87add19260f231",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122111
+        },
+        {
+          "name": "bark_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 309795
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 53978
+        },
+        {
+          "name": "sacred_fresh_fracture_393b30e024f7_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 9363
+        },
+        {
+          "name": "sacred_fresh_fracture_393b30e024f7_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6741
+        },
+        {
+          "name": "sacred_fresh_fracture_393b30e024f7_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6317
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7562
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6860
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6273
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 147023
+        },
+        {
+          "name": "stone_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 214271
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122001
+        }
+      ]
+    },
+    {
+      "assetId": "mod_sacred_stone_floor_4m",
+      "file": "sources/mod_sacred_stone_floor_4m.blend",
+      "sha256": "f939b94930d8f51a3728d48fc707bf236deb115ba18cff1de833571eff0f82a9",
+      "bytes": 702389,
+      "imagesPacked": 9,
+      "imagesDecoded": 9,
+      "unusedImagesPruned": 6,
+      "geometryPreserved": true,
+      "geometryFingerprint": "f81c992fe8b6190c62a86090aa03bd8faf6a04cb2424086c5cc6e6ab30685cf6",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7369
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6815
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6163
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7562
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6860
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6273
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 147023
+        },
+        {
+          "name": "stone_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 214271
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122001
+        }
+      ]
+    },
+    {
+      "assetId": "mod_sacred_wall_4m",
+      "file": "sources/mod_sacred_wall_4m.blend",
+      "sha256": "329a135e49a16d641ced0ca6a0022ecfb40c62776b6b9ee73aef8445b602e794",
+      "bytes": 1249636,
+      "imagesPacked": 12,
+      "imagesDecoded": 12,
+      "unusedImagesPruned": 3,
+      "geometryPreserved": true,
+      "geometryFingerprint": "385fe11e7c1e9a09d4c3df166ef66b8005d6b28fff1f3b244a3f771c501b0ee6",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122111
+        },
+        {
+          "name": "bark_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 309795
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 53978
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7369
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6815
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6163
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7562
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6860
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6273
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 147023
+        },
+        {
+          "name": "stone_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 214271
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122001
+        }
+      ]
+    },
+    {
+      "assetId": "moss_stone_lantern",
+      "file": "sources/moss_stone_lantern.blend",
+      "sha256": "3290a971bb5804ecdc5ef19f92ba134311b51794e24fd2677a31608eaa3d150d",
+      "bytes": 685452,
+      "imagesPacked": 12,
+      "imagesDecoded": 12,
+      "unusedImagesPruned": 0,
+      "geometryPreserved": true,
+      "geometryFingerprint": "6769d7610e2676a1358971aeb75cccd3ca1a9eee0d7f6899a97f8c8e02d822b1",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "lantern_pale_fracture_f3ab1ea2accb_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 9063
+        },
+        {
+          "name": "lantern_pale_fracture_f3ab1ea2accb_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6737
+        },
+        {
+          "name": "lantern_pale_fracture_f3ab1ea2accb_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6217
+        },
+        {
+          "name": "lantern_roof_moss_d5eb608fc89f_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6288
+        },
+        {
+          "name": "lantern_roof_moss_d5eb608fc89f_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6811
+        },
+        {
+          "name": "lantern_roof_moss_d5eb608fc89f_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4410
+        },
+        {
+          "name": "lantern_soot_stone_0f7ec405b664_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5811
+        },
+        {
+          "name": "lantern_soot_stone_0f7ec405b664_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6712
+        },
+        {
+          "name": "lantern_soot_stone_0f7ec405b664_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5231
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 147023
+        },
+        {
+          "name": "stone_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 214271
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122001
+        }
+      ]
+    },
+    {
+      "assetId": "mossy_granite_boulder",
+      "file": "sources/mossy_granite_boulder.blend",
+      "sha256": "d4ad8b58f3b4b83f3e9a81e746a0605fb3606e379d64a5b999f2ad611eb541e3",
+      "bytes": 755892,
+      "imagesPacked": 6,
+      "imagesDecoded": 6,
+      "unusedImagesPruned": 0,
+      "geometryPreserved": true,
+      "geometryFingerprint": "05892822909fa590af8c72d8ab2683af854c202d5db14759fdc42d18ab86646b",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "old_granite_fracture_140c375bfb5a_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 8476
+        },
+        {
+          "name": "old_granite_fracture_140c375bfb5a_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6703
+        },
+        {
+          "name": "old_granite_fracture_140c375bfb5a_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6209
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 147023
+        },
+        {
+          "name": "stone_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 214271
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122001
+        }
+      ]
+    },
+    {
+      "assetId": "ofuda_seal_cluster",
+      "file": "sources/ofuda_seal_cluster.blend",
+      "sha256": "b5206808b622a8bab91fe760f22a48c995917c2e3d5e2d174dca63d3a6417258",
+      "bytes": 181774,
+      "imagesPacked": 3,
+      "imagesDecoded": 3,
+      "unusedImagesPruned": 0,
+      "geometryPreserved": true,
+      "geometryFingerprint": "53ddba37209e976eda713cf77588575a8268004c98cd19fb315e08e7783c281c",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "fictional_paper_seal_atlas.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 67665
+        },
+        {
+          "name": "original_talisman_paper_6569eac9f4b7_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6756
+        },
+        {
+          "name": "original_talisman_paper_6569eac9f4b7_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6198
+        }
+      ]
+    },
+    {
+      "assetId": "sacred_cedar_tree",
+      "file": "sources/sacred_cedar_tree.blend",
+      "sha256": "b7630d4e923be5b0117665705165bf44aba3f4dcee791ba0675c9eca393913e4",
+      "bytes": 1359301,
+      "imagesPacked": 9,
+      "imagesDecoded": 9,
+      "unusedImagesPruned": 14,
+      "geometryPreserved": true,
+      "geometryFingerprint": "b14378826a54da943af23c6960c11d9f4f4e3dd95f05dec8bac2501aaa836b3b",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122111
+        },
+        {
+          "name": "bark_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 309795
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 53978
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5484
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4011
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4841
+        },
+        {
+          "name": "cedar_spray_v1_basecolor.png",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 345550
+        },
+        {
+          "name": "cedar_spray_v1_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 9361
+        },
+        {
+          "name": "cedar_spray_v1_orm.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 5569
+        }
+      ]
+    },
+    {
+      "assetId": "sacred_hokora_shrine",
+      "file": "sources/sacred_hokora_shrine.blend",
+      "sha256": "6fc97088e076c11f48dda8467ba6641779263e17c63942577a64ac01a0065c96",
+      "bytes": 1176758,
+      "imagesPacked": 24,
+      "imagesDecoded": 24,
+      "unusedImagesPruned": 0,
+      "geometryPreserved": true,
+      "geometryFingerprint": "b0ef323af22b66f28c42fbeef7a38bad50b5616c4f2c8042c4369df081bf8fe9",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "hokora_exposed_split_basecolor.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 24323
+        },
+        {
+          "name": "hokora_exposed_split_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 31091
+        },
+        {
+          "name": "hokora_exposed_split_orm.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 16122
+        },
+        {
+          "name": "hokora_folded_paper_7fc82de65627_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 10977
+        },
+        {
+          "name": "hokora_folded_paper_7fc82de65627_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6751
+        },
+        {
+          "name": "hokora_folded_paper_7fc82de65627_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6159
+        },
+        {
+          "name": "hokora_old_straw_binding_1778971daf62_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 8500
+        },
+        {
+          "name": "hokora_old_straw_binding_1778971daf62_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6733
+        },
+        {
+          "name": "hokora_old_straw_binding_1778971daf62_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5323
+        },
+        {
+          "name": "hokora_sheltered_wood_e7a600397220_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4177
+        },
+        {
+          "name": "hokora_sheltered_wood_e7a600397220_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4049
+        },
+        {
+          "name": "hokora_sheltered_wood_e7a600397220_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4816
+        },
+        {
+          "name": "hokora_silvered_cedar_basecolor.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 22260
+        },
+        {
+          "name": "hokora_silvered_cedar_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 31091
+        },
+        {
+          "name": "hokora_silvered_cedar_orm.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 16075
+        },
+        {
+          "name": "hokora_soaked_shingle_basecolor.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 19687
+        },
+        {
+          "name": "hokora_soaked_shingle_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 31091
+        },
+        {
+          "name": "hokora_soaked_shingle_orm.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 16122
+        },
+        {
+          "name": "hokora_sparse_eave_moss_1ee61995a205_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5656
+        },
+        {
+          "name": "hokora_sparse_eave_moss_1ee61995a205_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6746
+        },
+        {
+          "name": "hokora_sparse_eave_moss_1ee61995a205_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4401
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 147023
+        },
+        {
+          "name": "stone_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 214271
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 122001
+        }
+      ]
+    },
+    {
+      "assetId": "weathered_torii_gate",
+      "file": "sources/weathered_torii_gate.blend",
+      "sha256": "9f36ca385289292d74778d13f336d09675e017fe449d9d0bcd96a66fec75fb39",
+      "bytes": 451720,
+      "imagesPacked": 16,
+      "imagesDecoded": 16,
+      "unusedImagesPruned": 0,
+      "geometryPreserved": true,
+      "geometryFingerprint": "581ddd0739610dfd6e31c0394f0c33803abccf7c5d75696db48658881168f8be",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "straw_shimenawa_3090d98ab39a_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 8838
+        },
+        {
+          "name": "straw_shimenawa_3090d98ab39a_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6765
+        },
+        {
+          "name": "straw_shimenawa_3090d98ab39a_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5821
+        },
+        {
+          "name": "torii_moss_6ed9c4c63c7f_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6161
+        },
+        {
+          "name": "torii_moss_6ed9c4c63c7f_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6697
+        },
+        {
+          "name": "torii_moss_6ed9c4c63c7f_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4455
+        },
+        {
+          "name": "torii_weathering_v2_grain_normal.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 16415
+        },
+        {
+          "name": "torii_weathering_v2_paint_basecolor.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 27388
+        },
+        {
+          "name": "torii_weathering_v2_paint_orm.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 29267
+        },
+        {
+          "name": "torii_weathering_v2_silvered_basecolor.jpg",
+          "width": 512,
+          "height": 512,
+          "packedBytes": 25255
+        },
+        {
+          "name": "torii_weathering_v2_silvered_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5276
+        },
+        {
+          "name": "torii_weathering_v2_soaked_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6693
+        },
+        {
+          "name": "torii_weathering_v2_soaked_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5303
+        },
+        {
+          "name": "worn_rice_paper_8a581b77d99a_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 10999
+        },
+        {
+          "name": "worn_rice_paper_8a581b77d99a_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6720
+        },
+        {
+          "name": "worn_rice_paper_8a581b77d99a_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6182
+        }
+      ]
+    },
+    {
+      "assetId": "white_wildflower_patch",
+      "file": "sources/white_wildflower_patch.blend",
+      "sha256": "995ac45c20d4c641a0a547e48332b11bf6a08ed133c89f132b44419b99822086",
+      "bytes": 391189,
+      "imagesPacked": 16,
+      "imagesDecoded": 16,
+      "unusedImagesPruned": 13,
+      "geometryPreserved": true,
+      "geometryFingerprint": "1d6040b8384125f636aed1287213b5a4b92533d38ab716724da30b29ab6bff0a",
+      "externalImagesRequired": false,
+      "blender": "5.3.0",
+      "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+      "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+      "images": [
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6925
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6739
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 6213
+        },
+        {
+          "name": "woodland_dry_seed_6906fca0ad08_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5527
+        },
+        {
+          "name": "woodland_dry_seed_6906fca0ad08_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4065
+        },
+        {
+          "name": "woodland_dry_seed_6906fca0ad08_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4886
+        },
+        {
+          "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 5425
+        },
+        {
+          "name": "woodland_leaf_veins_v2_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4923
+        },
+        {
+          "name": "woodland_leaf_veins_v2_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7140
+        },
+        {
+          "name": "woodland_leaf_veins_v2_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 8727
+        },
+        {
+          "name": "woodland_muted_pollen_f592bb055206_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 7129
+        },
+        {
+          "name": "woodland_muted_pollen_f592bb055206_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 3982
+        },
+        {
+          "name": "woodland_muted_pollen_f592bb055206_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4797
+        },
+        {
+          "name": "woodland_warm_white_petal_fe269d002c3f_basecolor.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 8347
+        },
+        {
+          "name": "woodland_warm_white_petal_fe269d002c3f_normal.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4000
+        },
+        {
+          "name": "woodland_warm_white_petal_fe269d002c3f_orm.jpg",
+          "width": 256,
+          "height": 256,
+          "packedBytes": 4806
+        }
+      ]
+    }
+  ]
+}

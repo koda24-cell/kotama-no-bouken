@@ -1,8 +1,8 @@
 {
-  "bytes": 1224048,
-  "sha256": "1806bab101b7114bbdf9989ffb05d7b2de77b830c635d31b84592c27c7cb0af5",
+  "bytes": 1335328,
+  "sha256": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
   "tris": 1992,
-  "verts": 3970,
+  "verts": 4950,
   "meshes": 5,
   "drawCalls": 5,
   "materials": [
@@ -34,12 +34,13 @@
   "pointLights": 0,
   "emitters": 0,
   "valid": true,
+  "zeroTangentFallbackVertices": 0,
   "id": "mod_root_soil_floor_4m",
   "file": "modules/mod_root_soil_floor_4m.glb",
   "category": "modules",
   "desc_ja": "4m level forest soil with buried processional slabs; 1.7m clear central walking strip, roots confined to side margins; boundary surface Z=0.",
   "approvalStatus": "pending_visual_review",
-  "sourceCommit": "affaa558df53d0dbdbd3d05aa2a5388e90fa2acd",
+  "sourceCommit": "2507adf4f29e1885accb794a5a0c7058050c23ca",
   "workflowRun": null,
   "verificationEnvironment": "Local Blender 5.3.0",
   "source": "sources/mod_root_soil_floor_4m.blend",
@@ -49,5 +50,112 @@
     "renders/mod_root_soil_floor_4m/side.png",
     "renders/mod_root_soil_floor_4m/angle.png",
     "renders/mod_root_soil_floor_4m/top.png"
-  ]
+  ],
+  "sourcePackaging": {
+    "assetId": "mod_root_soil_floor_4m",
+    "file": "sources/mod_root_soil_floor_4m.blend",
+    "sha256": "9c938f5f5b9c99e0ecb5b36641a6267ee75b775d0e92c792f9d1dfd842807398",
+    "bytes": 958342,
+    "imagesPacked": 15,
+    "imagesDecoded": 15,
+    "unusedImagesPruned": 6,
+    "geometryPreserved": true,
+    "geometryFingerprint": "37d484ce5e5affa603af127a9f7997f52b84faea85d6a2e72186860f3901b431",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "sacred_old_leaf_litter_505ec0d469d6_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 8407
+      },
+      {
+        "name": "sacred_old_leaf_litter_505ec0d469d6_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6755
+      },
+      {
+        "name": "sacred_old_leaf_litter_505ec0d469d6_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6250
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 7562
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6860
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6273
+      },
+      {
+        "name": "soil_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 137951
+      },
+      {
+        "name": "soil_module_bark_color_graded.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 24389
+      },
+      {
+        "name": "soil_module_bark_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 58600
+      },
+      {
+        "name": "soil_module_bark_roughness.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 11739
+      },
+      {
+        "name": "soil_module_stone_color_graded.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 31780
+      },
+      {
+        "name": "soil_module_stone_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 37920
+      },
+      {
+        "name": "soil_module_stone_roughness.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 25712
+      },
+      {
+        "name": "soil_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 367399
+      },
+      {
+        "name": "soil_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 76473
+      }
+    ]
+  }
 }

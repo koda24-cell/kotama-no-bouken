@@ -1,0 +1,130 @@
+{
+  "bytes": 1181524,
+  "sha256": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+  "tris": 10656,
+  "verts": 8928,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "cedar_weathered_bark",
+    "forest_flexible_stem",
+    "forest_leaf",
+    "forest_new_leaf"
+  ],
+  "textureCount": 10,
+  "textureBytes": 682101,
+  "sizeMeters": [
+    1.6597,
+    1.1081,
+    1.6488
+  ],
+  "bboxMin": [
+    -0.8054,
+    0.0008,
+    -0.809
+  ],
+  "bboxMax": [
+    0.8543,
+    1.1089,
+    0.8398
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "forest_shrub_cluster",
+  "file": "props/forest_shrub_cluster.glb",
+  "category": "props",
+  "desc_ja": "約1.6m幅の常緑低木。接地原点。木質主枝/側枝/葉柄、反りと葉脈、実輪郭の虫食い、小さな新葉を造形。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/forest_shrub_cluster.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/forest_shrub_cluster/front.png",
+    "renders/forest_shrub_cluster/side.png",
+    "renders/forest_shrub_cluster/angle.png",
+    "renders/forest_shrub_cluster/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "forest_shrub_cluster",
+    "file": "sources/forest_shrub_cluster.blend",
+    "sha256": "746674a0322c402634bea11ef27118ee7a307044386a64675f3028537252f57d",
+    "bytes": 888086,
+    "imagesPacked": 10,
+    "imagesDecoded": 10,
+    "unusedImagesPruned": 10,
+    "geometryPreserved": true,
+    "geometryFingerprint": "0744d71805a8d0640fcc0e08a610ee7fdf5abae4c22b850f19c966b53fcec44c",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "bark_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122111
+      },
+      {
+        "name": "bark_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 309795
+      },
+      {
+        "name": "bark_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 53978
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6925
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6739
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6213
+      },
+      {
+        "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5425
+      },
+      {
+        "name": "woodland_leaf_veins_v2_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4923
+      },
+      {
+        "name": "woodland_leaf_veins_v2_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 7140
+      },
+      {
+        "name": "woodland_leaf_veins_v2_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 8727
+      }
+    ]
+  }
+}

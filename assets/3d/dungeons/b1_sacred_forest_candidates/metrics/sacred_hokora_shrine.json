@@ -1,0 +1,218 @@
+{
+  "bytes": 2963824,
+  "sha256": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c",
+  "tris": 18262,
+  "verts": 39591,
+  "meshes": 8,
+  "drawCalls": 8,
+  "materials": [
+    "hokora_exposed_split_wood",
+    "hokora_folded_paper",
+    "hokora_graded_foundation_stone",
+    "hokora_old_straw_binding",
+    "hokora_sheltered_wood",
+    "hokora_silvered_cedar_wood",
+    "hokora_soaked_shingle_wood",
+    "hokora_sparse_eave_moss"
+  ],
+  "textureCount": 24,
+  "textureBytes": 939407,
+  "sizeMeters": [
+    2.11,
+    2.449,
+    1.8964
+  ],
+  "bboxMin": [
+    -1.055,
+    0.0,
+    -0.7416
+  ],
+  "bboxMax": [
+    1.055,
+    2.449,
+    1.1548
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "sacred_hokora_shrine",
+  "file": "props/sacred_hokora_shrine.glb",
+  "category": "props",
+  "desc_ja": "朽ちた架空森祠。底面中央原点/正面+Z。幅約2.1m高約2.45m。石基壇、四柱木組、半開き前面格子、一部失われた側板、前へ長い流造風木葺き屋根。板を実geometryで重ね、軒の損失・少量の苔と紙垂・内部小祭壇。実在宗教文言の複製なし。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "7171fa4026576fc86804ce152dfc0735371b05b4",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/sacred_hokora_shrine.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/sacred_hokora_shrine/front.png",
+    "renders/sacred_hokora_shrine/side.png",
+    "renders/sacred_hokora_shrine/angle.png",
+    "renders/sacred_hokora_shrine/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "sacred_hokora_shrine",
+    "file": "sources/sacred_hokora_shrine.blend",
+    "sha256": "6fc97088e076c11f48dda8467ba6641779263e17c63942577a64ac01a0065c96",
+    "bytes": 1176758,
+    "imagesPacked": 24,
+    "imagesDecoded": 24,
+    "unusedImagesPruned": 0,
+    "geometryPreserved": true,
+    "geometryFingerprint": "b0ef323af22b66f28c42fbeef7a38bad50b5616c4f2c8042c4369df081bf8fe9",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "hokora_exposed_split_basecolor.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 24323
+      },
+      {
+        "name": "hokora_exposed_split_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 31091
+      },
+      {
+        "name": "hokora_exposed_split_orm.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 16122
+      },
+      {
+        "name": "hokora_folded_paper_7fc82de65627_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 10977
+      },
+      {
+        "name": "hokora_folded_paper_7fc82de65627_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6751
+      },
+      {
+        "name": "hokora_folded_paper_7fc82de65627_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6159
+      },
+      {
+        "name": "hokora_old_straw_binding_1778971daf62_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 8500
+      },
+      {
+        "name": "hokora_old_straw_binding_1778971daf62_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6733
+      },
+      {
+        "name": "hokora_old_straw_binding_1778971daf62_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5323
+      },
+      {
+        "name": "hokora_sheltered_wood_e7a600397220_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4177
+      },
+      {
+        "name": "hokora_sheltered_wood_e7a600397220_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4049
+      },
+      {
+        "name": "hokora_sheltered_wood_e7a600397220_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4816
+      },
+      {
+        "name": "hokora_silvered_cedar_basecolor.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 22260
+      },
+      {
+        "name": "hokora_silvered_cedar_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 31091
+      },
+      {
+        "name": "hokora_silvered_cedar_orm.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 16075
+      },
+      {
+        "name": "hokora_soaked_shingle_basecolor.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 19687
+      },
+      {
+        "name": "hokora_soaked_shingle_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 31091
+      },
+      {
+        "name": "hokora_soaked_shingle_orm.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 16122
+      },
+      {
+        "name": "hokora_sparse_eave_moss_1ee61995a205_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5656
+      },
+      {
+        "name": "hokora_sparse_eave_moss_1ee61995a205_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6746
+      },
+      {
+        "name": "hokora_sparse_eave_moss_1ee61995a205_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4401
+      },
+      {
+        "name": "stone_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 147023
+      },
+      {
+        "name": "stone_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 214271
+      },
+      {
+        "name": "stone_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122001
+      }
+    ]
+  }
+}

@@ -46,5 +46,40 @@
     "renders/ofuda_seal_cluster/side.png",
     "renders/ofuda_seal_cluster/angle.png",
     "renders/ofuda_seal_cluster/top.png"
-  ]
+  ],
+  "sourcePackaging": {
+    "assetId": "ofuda_seal_cluster",
+    "file": "sources/ofuda_seal_cluster.blend",
+    "sha256": "b5206808b622a8bab91fe760f22a48c995917c2e3d5e2d174dca63d3a6417258",
+    "bytes": 181774,
+    "imagesPacked": 3,
+    "imagesDecoded": 3,
+    "unusedImagesPruned": 0,
+    "geometryPreserved": true,
+    "geometryFingerprint": "53ddba37209e976eda713cf77588575a8268004c98cd19fb315e08e7783c281c",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "fictional_paper_seal_atlas.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 67665
+      },
+      {
+        "name": "original_talisman_paper_6569eac9f4b7_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6756
+      },
+      {
+        "name": "original_talisman_paper_6569eac9f4b7_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6198
+      }
+    ]
+  }
 }

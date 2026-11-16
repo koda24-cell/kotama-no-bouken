@@ -1,0 +1,36 @@
+{
+  "status": "ok",
+  "result": {
+    "version": "5.3.0",
+    "file": "/workspace/work/kotama/assets/3d/dungeons/b1_sacred_forest_candidates/scene/scene.blend",
+    "objects": 1428,
+    "asset_ids": [
+      "broken_votive_stele",
+      "fallen_cedar_log",
+      "forest_fern_cluster",
+      "forest_shrub_cluster",
+      "hanging_forest_vines",
+      "mod_root_soil_floor_4m",
+      "mod_sacred_arch_4m",
+      "mod_sacred_collapsed_wall_4m",
+      "mod_sacred_stone_floor_4m",
+      "mod_sacred_wall_4m",
+      "moss_stone_lantern",
+      "mossy_granite_boulder",
+      "ofuda_seal_cluster",
+      "sacred_cedar_tree",
+      "sacred_hokora_shrine",
+      "weathered_torii_gate",
+      "white_wildflower_patch"
+    ],
+    "cameras": [
+      "camera_entry",
+      "camera_courtyard",
+      "camera_sealed_corridor",
+      "camera_shrine_detail",
+      "camera_birdseye"
+    ],
+    "imagesPacked": 195,
+    "externalImagesRequired": []
+  }
+}

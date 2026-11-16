@@ -1,0 +1,142 @@
+{
+  "bytes": 997728,
+  "sha256": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31",
+  "tris": 2366,
+  "verts": 5454,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "lantern_pale_fracture",
+    "lantern_roof_moss",
+    "lantern_soot_stone",
+    "lantern_weathered_stone"
+  ],
+  "textureCount": 12,
+  "textureBytes": 714537,
+  "sizeMeters": [
+    0.76,
+    1.6,
+    0.74
+  ],
+  "bboxMin": [
+    -0.36,
+    0.0,
+    -0.36
+  ],
+  "bboxMax": [
+    0.4,
+    1.6,
+    0.38
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "moss_stone_lantern",
+  "file": "props/moss_stone_lantern.glb",
+  "category": "props",
+  "desc_ja": "高さ1.6mの石灯籠。底面中央原点、正面+Z。独立した台座/竿/中台/火袋/笠/宝珠。火袋窓は実開口、笠角は実欠損。苔は上向き面へ限定。光源なし。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/moss_stone_lantern.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/moss_stone_lantern/front.png",
+    "renders/moss_stone_lantern/side.png",
+    "renders/moss_stone_lantern/angle.png",
+    "renders/moss_stone_lantern/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "moss_stone_lantern",
+    "file": "sources/moss_stone_lantern.blend",
+    "sha256": "3290a971bb5804ecdc5ef19f92ba134311b51794e24fd2677a31608eaa3d150d",
+    "bytes": 685452,
+    "imagesPacked": 12,
+    "imagesDecoded": 12,
+    "unusedImagesPruned": 0,
+    "geometryPreserved": true,
+    "geometryFingerprint": "6769d7610e2676a1358971aeb75cccd3ca1a9eee0d7f6899a97f8c8e02d822b1",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "lantern_pale_fracture_f3ab1ea2accb_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 9063
+      },
+      {
+        "name": "lantern_pale_fracture_f3ab1ea2accb_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6737
+      },
+      {
+        "name": "lantern_pale_fracture_f3ab1ea2accb_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6217
+      },
+      {
+        "name": "lantern_roof_moss_d5eb608fc89f_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6288
+      },
+      {
+        "name": "lantern_roof_moss_d5eb608fc89f_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6811
+      },
+      {
+        "name": "lantern_roof_moss_d5eb608fc89f_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4410
+      },
+      {
+        "name": "lantern_soot_stone_0f7ec405b664_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5811
+      },
+      {
+        "name": "lantern_soot_stone_0f7ec405b664_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6712
+      },
+      {
+        "name": "lantern_soot_stone_0f7ec405b664_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5231
+      },
+      {
+        "name": "stone_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 147023
+      },
+      {
+        "name": "stone_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 214271
+      },
+      {
+        "name": "stone_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122001
+      }
+    ]
+  }
+}

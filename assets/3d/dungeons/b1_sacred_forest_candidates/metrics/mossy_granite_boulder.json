@@ -1,0 +1,104 @@
+{
+  "bytes": 919316,
+  "sha256": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+  "tris": 5350,
+  "verts": 4265,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "old_granite_fracture",
+    "sacred_granite"
+  ],
+  "textureCount": 6,
+  "textureBytes": 678645,
+  "sizeMeters": [
+    2.4566,
+    1.4969,
+    1.7734
+  ],
+  "bboxMin": [
+    -1.3306,
+    -0.0225,
+    -0.8893
+  ],
+  "bboxMax": [
+    1.1259,
+    1.4744,
+    0.8841
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "mossy_granite_boulder",
+  "file": "props/mossy_granite_boulder.glb",
+  "category": "props",
+  "desc_ja": "Continuous granite mass with an actual removed shoulder, sheltered moss and mineral lichen; footprint about 2.5m; bottom-centred origin.",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "6bb1c3d7667b5e5b0a91baa2e0273ae4461a8a68",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/mossy_granite_boulder.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/mossy_granite_boulder/front.png",
+    "renders/mossy_granite_boulder/side.png",
+    "renders/mossy_granite_boulder/angle.png",
+    "renders/mossy_granite_boulder/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "mossy_granite_boulder",
+    "file": "sources/mossy_granite_boulder.blend",
+    "sha256": "d4ad8b58f3b4b83f3e9a81e746a0605fb3606e379d64a5b999f2ad611eb541e3",
+    "bytes": 755892,
+    "imagesPacked": 6,
+    "imagesDecoded": 6,
+    "unusedImagesPruned": 0,
+    "geometryPreserved": true,
+    "geometryFingerprint": "05892822909fa590af8c72d8ab2683af854c202d5db14759fdc42d18ab86646b",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "old_granite_fracture_140c375bfb5a_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 8476
+      },
+      {
+        "name": "old_granite_fracture_140c375bfb5a_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6703
+      },
+      {
+        "name": "old_granite_fracture_140c375bfb5a_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6209
+      },
+      {
+        "name": "stone_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 147023
+      },
+      {
+        "name": "stone_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 214271
+      },
+      {
+        "name": "stone_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122001
+      }
+    ]
+  }
+}

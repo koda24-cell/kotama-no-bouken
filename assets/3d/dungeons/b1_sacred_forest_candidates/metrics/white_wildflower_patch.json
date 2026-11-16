@@ -1,0 +1,168 @@
+{
+  "bytes": 573968,
+  "sha256": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc",
+  "tris": 9632,
+  "verts": 8584,
+  "meshes": 6,
+  "drawCalls": 6,
+  "materials": [
+    "forest_flexible_stem",
+    "forest_leaf",
+    "forest_new_leaf",
+    "woodland_dry_seed",
+    "woodland_muted_pollen",
+    "woodland_warm_white_petal"
+  ],
+  "textureCount": 16,
+  "textureBytes": 93631,
+  "sizeMeters": [
+    0.8851,
+    0.5704,
+    0.9397
+  ],
+  "bboxMin": [
+    -0.4251,
+    -0.0003,
+    -0.5065
+  ],
+  "bboxMax": [
+    0.46,
+    0.5701,
+    0.4332
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "white_wildflower_patch",
+  "file": "props/white_wildflower_patch.glb",
+  "category": "props",
+  "desc_ja": "約0.9mの白い林床花群。接地原点。五弁花・萼・雄しべ・若い蕾・種房を個別造形し、生育段階を混在。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "fb665c8afd233bf9476265a91ac08f5e6f974083",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/white_wildflower_patch.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/white_wildflower_patch/front.png",
+    "renders/white_wildflower_patch/side.png",
+    "renders/white_wildflower_patch/angle.png",
+    "renders/white_wildflower_patch/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "white_wildflower_patch",
+    "file": "sources/white_wildflower_patch.blend",
+    "sha256": "995ac45c20d4c641a0a547e48332b11bf6a08ed133c89f132b44419b99822086",
+    "bytes": 391189,
+    "imagesPacked": 16,
+    "imagesDecoded": 16,
+    "unusedImagesPruned": 13,
+    "geometryPreserved": true,
+    "geometryFingerprint": "1d6040b8384125f636aed1287213b5a4b92533d38ab716724da30b29ab6bff0a",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6925
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6739
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6213
+      },
+      {
+        "name": "woodland_dry_seed_6906fca0ad08_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5527
+      },
+      {
+        "name": "woodland_dry_seed_6906fca0ad08_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4065
+      },
+      {
+        "name": "woodland_dry_seed_6906fca0ad08_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4886
+      },
+      {
+        "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5425
+      },
+      {
+        "name": "woodland_leaf_veins_v2_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4923
+      },
+      {
+        "name": "woodland_leaf_veins_v2_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 7140
+      },
+      {
+        "name": "woodland_leaf_veins_v2_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 8727
+      },
+      {
+        "name": "woodland_muted_pollen_f592bb055206_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 7129
+      },
+      {
+        "name": "woodland_muted_pollen_f592bb055206_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 3982
+      },
+      {
+        "name": "woodland_muted_pollen_f592bb055206_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4797
+      },
+      {
+        "name": "woodland_warm_white_petal_fe269d002c3f_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 8347
+      },
+      {
+        "name": "woodland_warm_white_petal_fe269d002c3f_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4000
+      },
+      {
+        "name": "woodland_warm_white_petal_fe269d002c3f_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4806
+      }
+    ]
+  }
+}

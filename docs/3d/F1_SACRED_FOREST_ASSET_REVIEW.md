@@ -80,3 +80,80 @@ angle/topを実見。火袋の実開口、笠角の実欠損、台座と落ち�
 ### 09 ofuda_seal_cluster
 
 angle/topを実見。5枚の架空のお札、幾何学的な墨跡、紙の折れ/下端の反り/欠け角を確認。実測154,196 bytes / 540 triangles / 1 draw call / 幅0.610m×高さ0.601m。これは壁貼り用であり、単体スタジオで宙に見えるのは取付壁が含まれないため。正面はGLB+Z、背面を壁へ貼る。画像はオリジナル紋様で実宗教の札の複製ではない。風のanimationは未収録で、静止材としての確認。
+
+### 10 sacred_cedar_tree（初回、樹冠の評価保留）
+
+angle/topを実見。10mの樹高、根張り・幹の裂け・接地・枝の階層を確認。実測1,992,840 bytes / 24,720 triangles / 4 draw calls。問題: 樹冠がかなり疎く、topで針葉のscale sprayより大きな羽状/披針形の葉に見える。枯損古木としての表現と、緑豊かな樹海の主役としての杉は区別する。植物の形態と樹冠密度の再設計を依頼し、初回を「リアルな完成古杉」と扱わない。
+
+### 11 fallen_cedar_log
+
+初回angle/topで、空洞端・不連続年輪・放射割れ・折れ枝・接地は確認した一方、苔が平らな緑の紙片に見える問題を検出。倒木scriptだけを修正し、実樹皮のBVHへ追従する32点×2ringの薄膜（縁0.7mm/中3mm）と3〜6mmの短細毛へ置換。commit3a0725cで再build/4方向レンダ。
+
+再撮影angle/topで、苔が幹から浮く平面片ではなく曲面へ貼りつくこと、木口/枝形状の維持を確認。実測1,000,656 bytes / 6,420 triangles / 4 draw calls / 長さ4.293m、高さ1.144m。苔の微細な繊維の最終見え方は接写/全景で継続評価する。
+
+### 12 forest_fern_cluster
+
+angle/topを実見。大小3株、放射する羽状葉、主軸の弧、若い巻き芽を確認。葉面winding/UV修正後のbuildで、表裏の暗転破綻や極端な葉脈のずれは見えない。実測566,928 bytes / 10,704 triangles / 4 draw calls / 幅1.554m、高さ0.595m。最下点は基準面より7.4mm上（接地調整の実装側許容/表土への埋込みで確認）。全景で大株の等間隔反復を避ける。
+
+### 13 forest_shrub_cluster
+
+angle/topを実見。木質主枝、葉柄、大小の反り葉、新葉の色差、間を抜ける枝構造を確認。実測965,744 bytes / 5,728 triangles / 4 draw calls / 幅1.654m、高さ1.114m、最下点0.8mm。輪郭と枝は読めるが、640px単体では葉の微細葉脈の説得力は限定的。ゲーム距離の階層密度/近接時の葉面detailは継続評価対象。通行帯に同じ密度で連続配置しない。
+
+### 14 white_wildflower_patch（初回、花弁改善待ち）
+
+angle/topを実見。五弁花・萼・雄しべ・蕾・種房の混在、茎の接地、白花のアクセントは確認。初回338,972 bytes / 3,744 triangles / 6 draw calls / 幅約0.88m、高さ0.57m。問題: 8点輪郭の花弁が直線的な紙細工に見えた。commit4fce0aeで花弁だけを滑らかなteardrop輪郭・12長手/4横断分割の浅いcupへ変更、重複tip頂点を作らずUVを維持。自然の共通葉改良完成後に最終再buildする。
+
+### 15 hanging_forest_vines（初回、共通葉改善待ち）
+
+angle/topを実見。上端取付原点、長さ差のある垂れ茎、節/分岐/巻きひげを確認。初回253,360 bytes / 4,504 triangles / 3 draw calls / 垂下長2.48m、幅1.32m。上端は基準より2.4mmの茎半径分だけ上へ出る。葉の角張りが残るため、自然共通leafの滑らかな輪郭/杯状面/PBR改良後に再build。風animationは未収録、静止の壁/梁添え材。
+
+### 16 mossy_granite_boulder（初回、苔境界の評価保留）
+
+angle/topを実見。連続した岩塊の輪郭、肩の実欠損、足元の小破片、石の写真PBRを確認。初回964,612 bytes / 5,342 triangles / 4 draw calls / 幅2.405m、高さ1.481m。問題: 上面のmoss/lichen面material割当が大きな緑の三角形/多角形に見える箇所があり、自然な境界の改善が必要。岩本体の彫刻と写真は保持して局所材境界の調整を検討。
+
+### 17 sacred_hokora_shrine
+
+angle/topを実見。2.449m高の小祠、流れの長い屋根、葺板の重なり、独立する柱/床組/格子戸、壁板の実欠損、石基壇と前段の接地を確認。材質は暖灰石/銀化した木/濡れた暗色葺板へ整理され、他の神域素材とトーンが共存。実測2,963,824 bytes / 18,262 triangles / 8 draw calls / 幅2.11m×奥行1.90m。大きな目印の4MB予算内。左右の格子や内部祭壇は存在するが、開閉animation/調べるイベントの実装は含まない。
+
+## 最終freeze版の再build確認
+
+- 01石床: tangent収録版で再build/4方向再撮影、angle/top再確認。1,151,380 bytes / 3,380tri、zero tangent fallback0。追加接線による容量増を含むため、旧939KB値を最終値に使わない。
+- 02土床: 同様に再build/4方向再撮影、angle/top再確認。1,335,328 bytes / 1,992tri / 5calls、zero tangent fallback0。1.5MB個別目標内、主512/副256の質感を維持。
+- 06鳥居: 方向性木目・少面積の剥離・雨筋/粗さ差の改良版を再buildし、angle/topを実見。朱塗りの単色感が抑えられ、縦方向の風化した露出木と貫の木目が読めた。590,244 bytes / 7,338tri / 6calls、zero tangent fallback0。形状/2×3mクリアランスは維持。
+- 07石碑: Boolean陰刻初回で本体消失を画像から検出。石碑slabの内向きwindingを修正し、鋭角の折れ線tube cutterの自己交差を毎strokeの独立した凸diamond prismへ変更（02945e6→8360ac6）。陰刻各回の残存volume>0.15m³ guardで消失時は出力前停止する。最終8360ac6再build/4viewのangle/topで1.8m本体と沈んだ紋様/縁溝、欠損肩、台座を再確認。825,896 bytes / 1,433tri / 4calls。旧「台座だけ」の失敗GLBは成功版で上書き済み。
+- 08灯籠: 薄い屋根面追従の不規則苔patchへ更新した最終版を再build/4view撮影、angle/top実見。大きな球状粒が消え、笠の輪郭と欠損角/火袋の実開口を保持。997,728 bytes / 2,366tri / 4calls、zero tangent fallback0。苔の表面繊維の細密感は全景/接写でも継続評価する。
+- 03石壁: freeze後commonと完全整合する本再build/4viewを実施、angle/topで黒帯の再発なし。2,069,064 bytes / 5,424tri / 4calls。UV退化箇所3頂点のゼロ接線だけ、法線に直交する単位接線へfallbackして記録（他の接線/形状/UVは維持）。
+- 10古杉: 512px針葉spray/alpha MASKの湾曲card群と30主枝へ改良した版を再build/4view撮影、angle/topを実見。大きな広葉状の初回から細い針葉の樹冠へ変わり、根幹の裂け/根張りを保持。1,822,596 bytes / 14,712tri / 3calls / 高さ10m。葉群の平板矩形は目立たず、枝越しの抜けが読める。alphaModeMASK・cutoff0.45・両面設定を親がJSON確認。全景で樹冠を重ねた密度/透過負荷を評価する。
+- 11倒木: 最終natural helper freeze後に再build/4viewを実施し、angle/topで幹/空洞/割れ/曲面追従苔の形状を再確認。葉非使用でも共有helperのsource依存が最終版に一致する出力へ更新。
+- 12シダ: 最終共通leafの滑らかな外周/浅い杯状面/穏当な葉脈PBRへ更新した版を再build/4view撮影、angle/topを実見。紙的な角が減り、羽片の連続曲線と中肋が読める。1,547,392 bytes / 33,804tri / 4calls。葉の実曲面と大小3株の密度保持を優先したため基本1MB目安超過、全景配置数の性能評価が必要。
+- 13低木: 最終共通leaf版を再build/4view撮影、angle/topを実見。直線折れの葉輪郭が連続した丸み/軽いカップへ変わり、葉脈/色の穏当な変化が見える。木質枝と葉柄・新葉/旧葉の配分を保持。1,181,524 bytes / 10,656tri / 4calls、zero tangent fallback0。葉の実曲面維持により基本1MBを約0.18MB超える。
+- 14白花: 滑らかなpetal cupと最終共通leaf版で再build/4view撮影、angle/topを実見。五弁の丸い輪郭と浅いカップが読め、初回の紙細工的な直線角を解消。蕾/種房/萼/雄しべを保持。573,968 bytes / 9,632tri / 6calls、zero tangent fallback0。
+- 15つる: 最終共通leaf版を再build/4view撮影、angle/topを実見。葉の丸い連続輪郭/軽い曲面へ変わり、節・巻きひげ・先細りの垂下長と吊元原点は維持。351,536 bytes / 6,632tri / 3calls、zero tangent fallback0。静止材であることは変わらない。
+
+- 16岩: 面単位の緑material割当を廃止し元写真PBRの連続した地衣/苔へ統合した版を再build/4view撮影、angle/topを実見。緑の三角形境界が消え、岩塊の輪郭/肩の実欠損/破片は維持。919,316 bytes / 5,350tri / 2calls、zero tangent fallback0。
+
+## 最終単体確認一覧
+
+全17点を個別build→GLB再import→4方向実レンダ→angle/top実画像確認の順で検証した。以下は最後のGLBの測定値。ユーザー承認とゲーム統合・実機性能の確認は別段階。
+
+| Asset | Bytes | Triangles | Draw calls | Source commit |
+|---|---:|---:|---:|---|
+| broken_votive_stele | 825896 | 1433 | 4 | 8360ac6 |
+| fallen_cedar_log | 1000656 | 6420 | 4 | 8360ac6 |
+| forest_fern_cluster | 1547392 | 33804 | 4 | 8360ac6 |
+| forest_shrub_cluster | 1181524 | 10656 | 4 | 8360ac6 |
+| hanging_forest_vines | 351536 | 6632 | 3 | 5fa16d7 |
+| mod_root_soil_floor_4m | 1335328 | 1992 | 5 | 2507adf |
+| mod_sacred_arch_4m | 1936680 | 4560 | 4 | f4e9d70 |
+| mod_sacred_collapsed_wall_4m | 1883680 | 4164 | 4 | 44caff1 |
+| mod_sacred_stone_floor_4m | 1151380 | 3380 | 3 | 2507adf |
+| mod_sacred_wall_4m | 2069064 | 5424 | 4 | 8360ac6 |
+| moss_stone_lantern | 997728 | 2366 | 4 | 8360ac6 |
+| mossy_granite_boulder | 919316 | 5350 | 2 | 6bb1c3d |
+| ofuda_seal_cluster | 154196 | 540 | 1 | 78d9f8b |
+| sacred_cedar_tree | 1822596 | 14712 | 3 | 8360ac6 |
+| sacred_hokora_shrine | 2963824 | 18262 | 8 | 7171fa4 |
+| weathered_torii_gate | 590244 | 7338 | 6 | 2507adf |
+| white_wildflower_patch | 573968 | 9632 | 6 | fb665c8 |
+
+個別GLB合計 21305008 bytes / 136665 triangles。2026-11-16 JST、ソース本体/再帰local helper/commonのgit保存時点と現在の一致、GLB SHA-256、4方向再import evidenceを17点で読取検査。差異 0 件。portable blend画像pack、Khronos/Three.js、全景/継ぎ目/目線/性能の統合検証は親担当へ引継ぎ。

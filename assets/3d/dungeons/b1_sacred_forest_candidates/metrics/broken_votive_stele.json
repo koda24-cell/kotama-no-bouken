@@ -1,0 +1,142 @@
+{
+  "bytes": 825896,
+  "sha256": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
+  "tris": 1433,
+  "verts": 1985,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "stele_cushion_moss",
+    "stele_old_fracture",
+    "stele_recessed_carving",
+    "stele_weathered_stone"
+  ],
+  "textureCount": 12,
+  "textureBytes": 714784,
+  "sizeMeters": [
+    1.0956,
+    1.8,
+    0.5872
+  ],
+  "bboxMin": [
+    -0.55,
+    0.0,
+    -0.235
+  ],
+  "bboxMax": [
+    0.5456,
+    1.8,
+    0.3522
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "broken_votive_stele",
+  "file": "props/broken_votive_stele.glb",
+  "category": "props",
+  "desc_ja": "高さ1.8mの欠損石碑。底面中央原点、正面+Z。失われた肩/角の実欠損、Boolean陰刻の架空角形紋様・縁線・細い割れ溝と苔。実宗教の文字・札は複製していない。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/broken_votive_stele.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/broken_votive_stele/front.png",
+    "renders/broken_votive_stele/side.png",
+    "renders/broken_votive_stele/angle.png",
+    "renders/broken_votive_stele/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "broken_votive_stele",
+    "file": "sources/broken_votive_stele.blend",
+    "sha256": "c4cc0d9f1340da710ad8467648ffafd2bc2362649c342fa7158a0a1b7b8cab99",
+    "bytes": 670925,
+    "imagesPacked": 12,
+    "imagesDecoded": 12,
+    "unusedImagesPruned": 0,
+    "geometryPreserved": true,
+    "geometryFingerprint": "92f73c4f0cc9b74877ee89ce3f39e48c51535da5668c9b52734d2d98fcd0418a",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "stele_cushion_moss_0a12f4719265_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6059
+      },
+      {
+        "name": "stele_cushion_moss_0a12f4719265_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6773
+      },
+      {
+        "name": "stele_cushion_moss_0a12f4719265_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 4450
+      },
+      {
+        "name": "stele_old_fracture_ee59368867c9_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 9034
+      },
+      {
+        "name": "stele_old_fracture_ee59368867c9_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6762
+      },
+      {
+        "name": "stele_old_fracture_ee59368867c9_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6282
+      },
+      {
+        "name": "stele_recessed_carving_a47b3c72ef4b_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6194
+      },
+      {
+        "name": "stele_recessed_carving_a47b3c72ef4b_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6782
+      },
+      {
+        "name": "stele_recessed_carving_a47b3c72ef4b_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 5191
+      },
+      {
+        "name": "stone_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 147023
+      },
+      {
+        "name": "stone_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 214271
+      },
+      {
+        "name": "stone_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122001
+      }
+    ]
+  }
+}

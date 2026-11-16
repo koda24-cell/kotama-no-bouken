@@ -1,0 +1,3395 @@
+{
+  "verifiedAt": "2026-11-16T02:54:50.642Z",
+  "engine": "Chromium SwiftShader / Three.js r180 GLTFLoader",
+  "scope": "Standalone candidate review, not game integration or real-device performance",
+  "assets": [
+    {
+      "id": "mod_sacred_stone_floor_4m",
+      "file": "modules/mod_sacred_stone_floor_4m.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 6,
+      "meshes": 3,
+      "geometries": 3,
+      "materials": 3,
+      "materialNames": [
+        "sacred_earth_mortar",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textures": 9,
+      "images": 9,
+      "imageDims": [
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stone_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 3380,
+      "vertices": 8901,
+      "bboxMin": [
+        -2,
+        -0.20999999344348907,
+        -2.000000024214387
+      ],
+      "bboxMax": [
+        2,
+        0.020160888787359,
+        2.0000001192092896
+      ],
+      "sizeMeters": [
+        4,
+        0.23016088223084807,
+        4.0000001434236765
+      ],
+      "renderer": {
+        "calls": 6,
+        "triangles": 3382,
+        "memory": {
+          "geometries": 6,
+          "textures": 9
+        },
+        "submitMs": 1.6,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 1151380
+    },
+    {
+      "id": "mod_root_soil_floor_4m",
+      "file": "modules/mod_root_soil_floor_4m.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 8,
+      "meshes": 5,
+      "geometries": 5,
+      "materials": 5,
+      "materialNames": [
+        "sacred_damp_forest_soil",
+        "sacred_old_leaf_litter",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textures": 15,
+      "images": 15,
+      "imageDims": [
+        {
+          "name": "soil_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "soil_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "soil_roughness",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "sacred_old_leaf_litter_505ec0d469d6_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_old_leaf_litter_505ec0d469d6_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_old_leaf_litter_505ec0d469d6_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_bark_color_graded",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_bark_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_bark_roughness",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_stone_color_graded",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_stone_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_stone_roughness",
+          "width": 256,
+          "height": 256
+        }
+      ],
+      "triangles": 1992,
+      "vertices": 4950,
+      "bboxMin": [
+        -2,
+        -0.2199999988079071,
+        -2
+      ],
+      "bboxMax": [
+        2,
+        0.1589202880859375,
+        2
+      ],
+      "sizeMeters": [
+        4,
+        0.3789202868938446,
+        4
+      ],
+      "renderer": {
+        "calls": 8,
+        "triangles": 1994,
+        "memory": {
+          "geometries": 8,
+          "textures": 15
+        },
+        "submitMs": 1.1,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 1335328
+    },
+    {
+      "id": "mod_sacred_wall_4m",
+      "file": "modules/mod_sacred_wall_4m.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 7,
+      "meshes": 4,
+      "geometries": 4,
+      "materials": 4,
+      "materialNames": [
+        "sacred_earth_mortar",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textures": 12,
+      "images": 12,
+      "imageDims": [
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "bark_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_roughness",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stone_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 5424,
+      "vertices": 14480,
+      "bboxMin": [
+        -2,
+        0,
+        -0.800000011920929
+      ],
+      "bboxMax": [
+        2,
+        4,
+        0.005973232910037041
+      ],
+      "sizeMeters": [
+        4,
+        4,
+        0.805973244830966
+      ],
+      "renderer": {
+        "calls": 7,
+        "triangles": 5426,
+        "memory": {
+          "geometries": 7,
+          "textures": 12
+        },
+        "submitMs": 1.3,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 2069064
+    },
+    {
+      "id": "mod_sacred_collapsed_wall_4m",
+      "file": "modules/mod_sacred_collapsed_wall_4m.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 7,
+      "meshes": 4,
+      "geometries": 4,
+      "materials": 4,
+      "materialNames": [
+        "sacred_fresh_fracture",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textures": 12,
+      "images": 12,
+      "imageDims": [
+        {
+          "name": "sacred_fresh_fracture_393b30e024f7_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_fresh_fracture_393b30e024f7_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_fresh_fracture_393b30e024f7_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "bark_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_roughness",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stone_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 4164,
+      "vertices": 10731,
+      "bboxMin": [
+        -2.039416551589966,
+        0,
+        -0.7900000214576721
+      ],
+      "bboxMax": [
+        2,
+        3.96626615524292,
+        -0.012000000104308128
+      ],
+      "sizeMeters": [
+        4.039416551589966,
+        3.96626615524292,
+        0.778000021353364
+      ],
+      "renderer": {
+        "calls": 7,
+        "triangles": 4166,
+        "memory": {
+          "geometries": 7,
+          "textures": 12
+        },
+        "submitMs": 0.4,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 1883680
+    },
+    {
+      "id": "mod_sacred_arch_4m",
+      "file": "modules/mod_sacred_arch_4m.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 7,
+      "meshes": 4,
+      "geometries": 4,
+      "materials": 4,
+      "materialNames": [
+        "sacred_earth_mortar",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textures": 12,
+      "images": 12,
+      "imageDims": [
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "bark_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_roughness",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stone_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 4560,
+      "vertices": 11830,
+      "bboxMin": [
+        -2,
+        0,
+        -0.800000011920929
+      ],
+      "bboxMax": [
+        2,
+        4,
+        0
+      ],
+      "sizeMeters": [
+        4,
+        4,
+        0.800000011920929
+      ],
+      "renderer": {
+        "calls": 7,
+        "triangles": 4562,
+        "memory": {
+          "geometries": 7,
+          "textures": 12
+        },
+        "submitMs": 0.5,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 1936680
+    },
+    {
+      "id": "weathered_torii_gate",
+      "file": "props/weathered_torii_gate.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 9,
+      "meshes": 6,
+      "geometries": 6,
+      "materials": 6,
+      "materialNames": [
+        "aged_vermilion_wood",
+        "exposed_cedar_wood",
+        "rain_darkened_wood",
+        "straw_shimenawa",
+        "torii_moss",
+        "worn_rice_paper"
+      ],
+      "textures": 16,
+      "images": 16,
+      "imageDims": [
+        {
+          "name": "torii_weathering_v2_paint_basecolor",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "torii_weathering_v2_paint_orm",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "torii_weathering_v2_grain_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "torii_weathering_v2_silvered_basecolor",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "torii_weathering_v2_silvered_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "torii_weathering_v2_soaked_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "torii_weathering_v2_soaked_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "straw_shimenawa_3090d98ab39a_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "straw_shimenawa_3090d98ab39a_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "straw_shimenawa_3090d98ab39a_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "torii_moss_6ed9c4c63c7f_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "torii_moss_6ed9c4c63c7f_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "torii_moss_6ed9c4c63c7f_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "worn_rice_paper_8a581b77d99a_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "worn_rice_paper_8a581b77d99a_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "worn_rice_paper_8a581b77d99a_normal",
+          "width": 256,
+          "height": 256
+        }
+      ],
+      "triangles": 7338,
+      "vertices": 7449,
+      "bboxMin": [
+        -1.899999976158142,
+        -0.002578218700364232,
+        -0.1850000023841858
+      ],
+      "bboxMax": [
+        1.899999976158142,
+        3.799999952316284,
+        0.26786258816719055
+      ],
+      "sizeMeters": [
+        3.799999952316284,
+        3.8025781710166484,
+        0.45286259055137634
+      ],
+      "renderer": {
+        "calls": 9,
+        "triangles": 7340,
+        "memory": {
+          "geometries": 9,
+          "textures": 16
+        },
+        "submitMs": 0.5,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 590244
+    },
+    {
+      "id": "broken_votive_stele",
+      "file": "props/broken_votive_stele.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 7,
+      "meshes": 4,
+      "geometries": 4,
+      "materials": 4,
+      "materialNames": [
+        "stele_cushion_moss",
+        "stele_old_fracture",
+        "stele_recessed_carving",
+        "stele_weathered_stone"
+      ],
+      "textures": 12,
+      "images": 12,
+      "imageDims": [
+        {
+          "name": "stele_cushion_moss_0a12f4719265_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stele_cushion_moss_0a12f4719265_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stele_cushion_moss_0a12f4719265_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stele_old_fracture_ee59368867c9_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stele_old_fracture_ee59368867c9_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stele_old_fracture_ee59368867c9_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stele_recessed_carving_a47b3c72ef4b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stele_recessed_carving_a47b3c72ef4b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stele_recessed_carving_a47b3c72ef4b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stone_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 1433,
+      "vertices": 1985,
+      "bboxMin": [
+        -0.550000011920929,
+        0,
+        -0.23499999940395355
+      ],
+      "bboxMax": [
+        0.5456193685531616,
+        1.7999999523162842,
+        0.3522069454193115
+      ],
+      "sizeMeters": [
+        1.0956193804740906,
+        1.7999999523162842,
+        0.5872069448232651
+      ],
+      "renderer": {
+        "calls": 7,
+        "triangles": 1435,
+        "memory": {
+          "geometries": 7,
+          "textures": 12
+        },
+        "submitMs": 0.5,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 825896
+    },
+    {
+      "id": "moss_stone_lantern",
+      "file": "props/moss_stone_lantern.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 7,
+      "meshes": 4,
+      "geometries": 4,
+      "materials": 4,
+      "materialNames": [
+        "lantern_pale_fracture",
+        "lantern_roof_moss",
+        "lantern_soot_stone",
+        "lantern_weathered_stone"
+      ],
+      "textures": 12,
+      "images": 12,
+      "imageDims": [
+        {
+          "name": "lantern_pale_fracture_f3ab1ea2accb_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "lantern_pale_fracture_f3ab1ea2accb_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "lantern_pale_fracture_f3ab1ea2accb_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "lantern_roof_moss_d5eb608fc89f_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "lantern_roof_moss_d5eb608fc89f_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "lantern_roof_moss_d5eb608fc89f_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "lantern_soot_stone_0f7ec405b664_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "lantern_soot_stone_0f7ec405b664_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "lantern_soot_stone_0f7ec405b664_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stone_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 2366,
+      "vertices": 5454,
+      "bboxMin": [
+        -0.36000001430511475,
+        0,
+        -0.36000001430511475
+      ],
+      "bboxMax": [
+        0.4000000059604645,
+        1.600000023841858,
+        0.3799999952316284
+      ],
+      "sizeMeters": [
+        0.7600000202655792,
+        1.600000023841858,
+        0.7400000095367432
+      ],
+      "renderer": {
+        "calls": 7,
+        "triangles": 2368,
+        "memory": {
+          "geometries": 7,
+          "textures": 12
+        },
+        "submitMs": 0.7,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 997728
+    },
+    {
+      "id": "ofuda_seal_cluster",
+      "file": "props/ofuda_seal_cluster.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 4,
+      "meshes": 1,
+      "geometries": 1,
+      "materials": 1,
+      "materialNames": [
+        "original_fictional_ofuda_paper"
+      ],
+      "textures": 3,
+      "images": 3,
+      "imageDims": [
+        {
+          "name": "fictional_paper_seal_atlas",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "original_talisman_paper_6569eac9f4b7_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "original_talisman_paper_6569eac9f4b7_normal",
+          "width": 256,
+          "height": 256
+        }
+      ],
+      "triangles": 540,
+      "vertices": 1420,
+      "bboxMin": [
+        -0.3050456941127777,
+        -0.0004334964032750577,
+        -0.001274449867196381
+      ],
+      "bboxMax": [
+        0.30504846572875977,
+        0.6000592708587646,
+        0.057493921369314194
+      ],
+      "sizeMeters": [
+        0.6100941598415375,
+        0.6004927672620397,
+        0.058768371236510575
+      ],
+      "renderer": {
+        "calls": 4,
+        "triangles": 542,
+        "memory": {
+          "geometries": 4,
+          "textures": 3
+        },
+        "submitMs": 0.5,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 154196
+    },
+    {
+      "id": "sacred_cedar_tree",
+      "file": "props/sacred_cedar_tree.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 6,
+      "meshes": 3,
+      "geometries": 3,
+      "materials": 3,
+      "materialNames": [
+        "cedar_fine_needle_spray",
+        "cedar_shade_moss",
+        "cedar_weathered_bark"
+      ],
+      "textures": 9,
+      "images": 9,
+      "imageDims": [
+        {
+          "name": "cedar_spray_v1_basecolor",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "cedar_spray_v1_orm",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "cedar_spray_v1_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "bark_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 14712,
+      "vertices": 14958,
+      "bboxMin": [
+        -2.8982651233673096,
+        0,
+        -2.4806690216064453
+      ],
+      "bboxMax": [
+        2.8304505348205566,
+        10,
+        2.869100570678711
+      ],
+      "sizeMeters": [
+        5.728715658187866,
+        10,
+        5.349769592285156
+      ],
+      "renderer": {
+        "calls": 6,
+        "triangles": 14714,
+        "memory": {
+          "geometries": 6,
+          "textures": 9
+        },
+        "submitMs": 0.9,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 1822596
+    },
+    {
+      "id": "fallen_cedar_log",
+      "file": "props/fallen_cedar_log.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 7,
+      "meshes": 4,
+      "geometries": 4,
+      "materials": 4,
+      "materialNames": [
+        "cedar_cavity_shadow",
+        "cedar_old_heartwood",
+        "cedar_shade_moss",
+        "cedar_weathered_bark"
+      ],
+      "textures": 12,
+      "images": 12,
+      "imageDims": [
+        {
+          "name": "cedar_cavity_shadow_d7c3795db051_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_cavity_shadow_d7c3795db051_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_cavity_shadow_d7c3795db051_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_old_heartwood_13c02feb653d_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_old_heartwood_13c02feb653d_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_old_heartwood_13c02feb653d_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "cedar_shade_moss_8182ca73dc8d_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "bark_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 6420,
+      "vertices": 5779,
+      "bboxMin": [
+        -2.147235631942749,
+        0,
+        -0.4943132698535919
+      ],
+      "bboxMax": [
+        2.1461081504821777,
+        1.1442137472331524,
+        0.4573707580566406
+      ],
+      "sizeMeters": [
+        4.293343782424927,
+        1.1442137472331524,
+        0.9516840279102325
+      ],
+      "renderer": {
+        "calls": 7,
+        "triangles": 6422,
+        "memory": {
+          "geometries": 7,
+          "textures": 12
+        },
+        "submitMs": 0.4,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 1000656
+    },
+    {
+      "id": "forest_fern_cluster",
+      "file": "props/forest_fern_cluster.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 7,
+      "meshes": 4,
+      "geometries": 4,
+      "materials": 4,
+      "materialNames": [
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf",
+        "forest_old_leaf"
+      ],
+      "textures": 8,
+      "images": 8,
+      "imageDims": [
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_light_veins_v2_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_old_veins_v2_basecolor",
+          "width": 256,
+          "height": 256
+        }
+      ],
+      "triangles": 33804,
+      "vertices": 26809,
+      "bboxMin": [
+        -0.8405129909515381,
+        0.0073990654200315475,
+        -0.6677576899528503
+      ],
+      "bboxMax": [
+        0.7127012610435486,
+        0.6019167900085449,
+        0.6201398968696594
+      ],
+      "sizeMeters": [
+        1.5532142519950867,
+        0.5945177245885134,
+        1.2878975868225098
+      ],
+      "renderer": {
+        "calls": 7,
+        "triangles": 33806,
+        "memory": {
+          "geometries": 7,
+          "textures": 8
+        },
+        "submitMs": 0.3,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 1547392
+    },
+    {
+      "id": "forest_shrub_cluster",
+      "file": "props/forest_shrub_cluster.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 7,
+      "meshes": 4,
+      "geometries": 4,
+      "materials": 4,
+      "materialNames": [
+        "cedar_weathered_bark",
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf"
+      ],
+      "textures": 10,
+      "images": 10,
+      "imageDims": [
+        {
+          "name": "bark_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "bark_roughness",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_light_veins_v2_basecolor",
+          "width": 256,
+          "height": 256
+        }
+      ],
+      "triangles": 10656,
+      "vertices": 8928,
+      "bboxMin": [
+        -0.805382251739502,
+        0.0008401824161410332,
+        -0.8090123534202576
+      ],
+      "bboxMax": [
+        0.8543103933334351,
+        1.1088902950286865,
+        0.8397713899612427
+      ],
+      "sizeMeters": [
+        1.659692645072937,
+        1.1080501126125455,
+        1.6487837433815002
+      ],
+      "renderer": {
+        "calls": 7,
+        "triangles": 10658,
+        "memory": {
+          "geometries": 7,
+          "textures": 10
+        },
+        "submitMs": 0.5,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 1181524
+    },
+    {
+      "id": "white_wildflower_patch",
+      "file": "props/white_wildflower_patch.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 9,
+      "meshes": 6,
+      "geometries": 6,
+      "materials": 6,
+      "materialNames": [
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf",
+        "woodland_dry_seed",
+        "woodland_muted_pollen",
+        "woodland_warm_white_petal"
+      ],
+      "textures": 16,
+      "images": 16,
+      "imageDims": [
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_light_veins_v2_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_dry_seed_6906fca0ad08_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_dry_seed_6906fca0ad08_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_dry_seed_6906fca0ad08_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_muted_pollen_f592bb055206_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_muted_pollen_f592bb055206_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_muted_pollen_f592bb055206_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_warm_white_petal_fe269d002c3f_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_warm_white_petal_fe269d002c3f_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_warm_white_petal_fe269d002c3f_normal",
+          "width": 256,
+          "height": 256
+        }
+      ],
+      "triangles": 9632,
+      "vertices": 8584,
+      "bboxMin": [
+        -0.4250688850879669,
+        -0.0002771990548353642,
+        -0.5065022110939026
+      ],
+      "bboxMax": [
+        0.46004241704940796,
+        0.5700928568840027,
+        0.43317273259162903
+      ],
+      "sizeMeters": [
+        0.8851113021373749,
+        0.570370055938838,
+        0.9396749436855316
+      ],
+      "renderer": {
+        "calls": 9,
+        "triangles": 9634,
+        "memory": {
+          "geometries": 9,
+          "textures": 16
+        },
+        "submitMs": 0.5,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 573968
+    },
+    {
+      "id": "hanging_forest_vines",
+      "file": "props/hanging_forest_vines.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 6,
+      "meshes": 3,
+      "geometries": 3,
+      "materials": 3,
+      "materialNames": [
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf"
+      ],
+      "textures": 7,
+      "images": 7,
+      "imageDims": [
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "forest_flexible_stem_a91a07929c1b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_veins_v2_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "woodland_leaf_light_veins_v2_basecolor",
+          "width": 256,
+          "height": 256
+        }
+      ],
+      "triangles": 6632,
+      "vertices": 5424,
+      "bboxMin": [
+        -0.6812167763710022,
+        -2.480199098587036,
+        -0.06309262663125992
+      ],
+      "bboxMax": [
+        0.6420238018035889,
+        0.0024151529651135206,
+        0.17262059450149536
+      ],
+      "sizeMeters": [
+        1.323240578174591,
+        2.4826142515521497,
+        0.23571322113275528
+      ],
+      "renderer": {
+        "calls": 6,
+        "triangles": 6634,
+        "memory": {
+          "geometries": 6,
+          "textures": 7
+        },
+        "submitMs": 0.6,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 351536
+    },
+    {
+      "id": "mossy_granite_boulder",
+      "file": "props/mossy_granite_boulder.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 5,
+      "meshes": 2,
+      "geometries": 2,
+      "materials": 2,
+      "materialNames": [
+        "old_granite_fracture",
+        "sacred_granite"
+      ],
+      "textures": 6,
+      "images": 6,
+      "imageDims": [
+        {
+          "name": "old_granite_fracture_140c375bfb5a_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "old_granite_fracture_140c375bfb5a_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "old_granite_fracture_140c375bfb5a_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stone_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 5350,
+      "vertices": 4265,
+      "bboxMin": [
+        -1.3306459188461304,
+        -0.022482499480247498,
+        -0.8892568945884705
+      ],
+      "bboxMax": [
+        1.1259095668792725,
+        1.4743984937667847,
+        0.8840991854667664
+      ],
+      "sizeMeters": [
+        2.456555485725403,
+        1.4968809932470322,
+        1.7733560800552368
+      ],
+      "renderer": {
+        "calls": 5,
+        "triangles": 5352,
+        "memory": {
+          "geometries": 5,
+          "textures": 6
+        },
+        "submitMs": 0.5,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 919316
+    },
+    {
+      "id": "sacred_hokora_shrine",
+      "file": "props/sacred_hokora_shrine.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 11,
+      "meshes": 8,
+      "geometries": 8,
+      "materials": 8,
+      "materialNames": [
+        "hokora_exposed_split_wood",
+        "hokora_folded_paper",
+        "hokora_graded_foundation_stone",
+        "hokora_old_straw_binding",
+        "hokora_sheltered_wood",
+        "hokora_silvered_cedar_wood",
+        "hokora_soaked_shingle_wood",
+        "hokora_sparse_eave_moss"
+      ],
+      "textures": 24,
+      "images": 24,
+      "imageDims": [
+        {
+          "name": "hokora_exposed_split_basecolor",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_exposed_split_orm",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_exposed_split_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_folded_paper_7fc82de65627_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_folded_paper_7fc82de65627_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_folded_paper_7fc82de65627_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stone_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_roughness",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_old_straw_binding_1778971daf62_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_old_straw_binding_1778971daf62_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_old_straw_binding_1778971daf62_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_sheltered_wood_e7a600397220_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_sheltered_wood_e7a600397220_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_sheltered_wood_e7a600397220_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_silvered_cedar_basecolor",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_silvered_cedar_orm",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_silvered_cedar_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_soaked_shingle_basecolor",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_soaked_shingle_orm",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_soaked_shingle_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "hokora_sparse_eave_moss_1ee61995a205_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_sparse_eave_moss_1ee61995a205_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "hokora_sparse_eave_moss_1ee61995a205_normal",
+          "width": 256,
+          "height": 256
+        }
+      ],
+      "triangles": 18262,
+      "vertices": 39591,
+      "bboxMin": [
+        -1.0549999475479126,
+        0,
+        -0.7415682673454285
+      ],
+      "bboxMax": [
+        1.0549999475479126,
+        2.44899982213974,
+        1.1547836065292358
+      ],
+      "sizeMeters": [
+        2.109999895095825,
+        2.44899982213974,
+        1.8963518738746643
+      ],
+      "renderer": {
+        "calls": 11,
+        "triangles": 18264,
+        "memory": {
+          "geometries": 11,
+          "textures": 24
+        },
+        "submitMs": 0.3,
+        "pixelRatio": 1
+      },
+      "seams": false,
+      "invalid": [],
+      "bytes": 2963824
+    }
+  ],
+  "seams": [
+    {
+      "id": "mod_sacred_stone_floor_4m",
+      "file": "modules/mod_sacred_stone_floor_4m.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 21,
+      "meshes": 12,
+      "geometries": 3,
+      "materials": 3,
+      "materialNames": [
+        "sacred_earth_mortar",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textures": 9,
+      "images": 9,
+      "imageDims": [
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_earth_mortar_dab6502aaeed_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "stone_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "stone_roughness",
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "triangles": 13520,
+      "vertices": 35604,
+      "bboxMin": [
+        -2,
+        -0.20999999344348907,
+        -2.000000024214387
+      ],
+      "bboxMax": [
+        6,
+        0.020160888787359,
+        6.0000001192092896
+      ],
+      "sizeMeters": [
+        8,
+        0.23016088223084807,
+        8.000000143423676
+      ],
+      "renderer": {
+        "calls": 15,
+        "triangles": 13522,
+        "memory": {
+          "geometries": 6,
+          "textures": 9
+        },
+        "submitMs": 1,
+        "pixelRatio": 1
+      },
+      "seams": true,
+      "invalid": [],
+      "edgeHeights": {
+        "west": {
+          "vertices": 48,
+          "samples": [
+            [
+              -2,
+              0
+            ],
+            [
+              -1.95,
+              0
+            ],
+            [
+              1.95,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "topMax": 0
+        },
+        "east": {
+          "vertices": 48,
+          "samples": [
+            [
+              -2,
+              0
+            ],
+            [
+              -1.95,
+              0
+            ],
+            [
+              1.95,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "topMax": 0
+        },
+        "north": {
+          "vertices": 24,
+          "samples": [
+            [
+              -2,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "topMax": 0
+        },
+        "south": {
+          "vertices": 24,
+          "samples": [
+            [
+              -2,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "topMax": 0
+        }
+      }
+    },
+    {
+      "id": "mod_root_soil_floor_4m",
+      "file": "modules/mod_root_soil_floor_4m.glb",
+      "approvalStatus": "pending_user_review",
+      "lighting": {
+        "mode": "neutral",
+        "key": 1.3,
+        "hemisphere": 1,
+        "fill": 0.4,
+        "exposure": 1
+      },
+      "nodes": 29,
+      "meshes": 20,
+      "geometries": 5,
+      "materials": 5,
+      "materialNames": [
+        "sacred_damp_forest_soil",
+        "sacred_old_leaf_litter",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textures": 15,
+      "images": 15,
+      "imageDims": [
+        {
+          "name": "soil_color_graded",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "soil_normal",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "soil_roughness",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "name": "sacred_old_leaf_litter_505ec0d469d6_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_old_leaf_litter_505ec0d469d6_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_old_leaf_litter_505ec0d469d6_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_bark_color_graded",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_bark_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_bark_roughness",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_basecolor",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_orm",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "sacred_velvet_moss_240e5b7b849b_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_stone_color_graded",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_stone_normal",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "soil_module_stone_roughness",
+          "width": 256,
+          "height": 256
+        }
+      ],
+      "triangles": 7968,
+      "vertices": 19800,
+      "bboxMin": [
+        -2,
+        -0.2199999988079071,
+        -2
+      ],
+      "bboxMax": [
+        6,
+        0.1589202880859375,
+        6
+      ],
+      "sizeMeters": [
+        8,
+        0.3789202868938446,
+        8
+      ],
+      "renderer": {
+        "calls": 23,
+        "triangles": 7970,
+        "memory": {
+          "geometries": 8,
+          "textures": 15
+        },
+        "submitMs": 0.5,
+        "pixelRatio": 1
+      },
+      "seams": true,
+      "invalid": [],
+      "edgeHeights": {
+        "west": {
+          "vertices": 12,
+          "samples": [
+            [
+              -2,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "topMax": 0
+        },
+        "east": {
+          "vertices": 12,
+          "samples": [
+            [
+              -2,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "topMax": 0
+        },
+        "north": {
+          "vertices": 12,
+          "samples": [
+            [
+              -2,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "topMax": 0
+        },
+        "south": {
+          "vertices": 12,
+          "samples": [
+            [
+              -2,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "topMax": 0
+        }
+      }
+    }
+  ],
+  "scene": {
+    "id": "sacred_forest_scene",
+    "file": "scene/sacred_forest_scene.glb",
+    "approvalStatus": "pending_user_review",
+    "lighting": {
+      "mode": "neutral",
+      "key": 1.3,
+      "hemisphere": 1,
+      "fill": 0.4,
+      "exposure": 1
+    },
+    "nodes": 1423,
+    "meshes": 969,
+    "geometries": 69,
+    "materials": 69,
+    "materialNames": [
+      "lantern_pale_fracture",
+      "lantern_roof_moss",
+      "lantern_soot_stone",
+      "lantern_weathered_stone",
+      "forest_flexible_stem.003",
+      "forest_leaf.003",
+      "forest_new_leaf.003",
+      "cedar_fine_needle_spray",
+      "cedar_shade_moss",
+      "cedar_weathered_bark",
+      "sacred_damp_forest_soil",
+      "sacred_old_leaf_litter",
+      "sacred_root_bark",
+      "sacred_velvet_moss.001",
+      "sacred_weathered_stone.001",
+      "sacred_fresh_fracture",
+      "sacred_root_bark.002",
+      "sacred_velvet_moss.003",
+      "sacred_weathered_stone.003",
+      "sacred_earth_mortar.001",
+      "sacred_root_bark.001",
+      "sacred_velvet_moss.002",
+      "sacred_weathered_stone.002",
+      "sacred_earth_mortar",
+      "sacred_velvet_moss",
+      "sacred_weathered_stone",
+      "cedar_cavity_shadow",
+      "cedar_old_heartwood",
+      "cedar_shade_moss.001",
+      "cedar_weathered_bark.001",
+      "old_granite_fracture",
+      "sacred_granite",
+      "original_fictional_ofuda_paper",
+      "sacred_earth_mortar.002",
+      "sacred_root_bark.003",
+      "sacred_velvet_moss.004",
+      "sacred_weathered_stone.004",
+      "hokora_exposed_split_wood",
+      "hokora_folded_paper",
+      "hokora_graded_foundation_stone",
+      "hokora_old_straw_binding",
+      "hokora_sheltered_wood",
+      "hokora_silvered_cedar_wood",
+      "hokora_soaked_shingle_wood",
+      "hokora_sparse_eave_moss",
+      "stele_cushion_moss",
+      "stele_old_fracture",
+      "stele_recessed_carving",
+      "stele_weathered_stone",
+      "forest_flexible_stem.002",
+      "forest_leaf.002",
+      "forest_new_leaf.002",
+      "woodland_dry_seed",
+      "woodland_muted_pollen",
+      "woodland_warm_white_petal",
+      "aged_vermilion_wood",
+      "exposed_cedar_wood",
+      "rain_darkened_wood",
+      "straw_shimenawa",
+      "torii_moss",
+      "worn_rice_paper",
+      "cedar_weathered_bark.002",
+      "forest_flexible_stem.001",
+      "forest_leaf.001",
+      "forest_new_leaf.001",
+      "forest_flexible_stem",
+      "forest_leaf",
+      "forest_new_leaf",
+      "forest_old_leaf"
+    ],
+    "textures": 195,
+    "images": 195,
+    "imageDims": [
+      {
+        "name": "lantern_pale_fracture_f3ab1ea2accb_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "lantern_pale_fracture_f3ab1ea2accb_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "lantern_pale_fracture_f3ab1ea2accb_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "lantern_roof_moss_d5eb608fc89f_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "lantern_roof_moss_d5eb608fc89f_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "lantern_roof_moss_d5eb608fc89f_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "lantern_soot_stone_0f7ec405b664_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "lantern_soot_stone_0f7ec405b664_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "lantern_soot_stone_0f7ec405b664_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stone_color_graded.005",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_normal.005",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_roughness.005",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_basecolor.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_orm.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_normal.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_basecolor.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_orm.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_normal.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_light_veins_v2_basecolor.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_spray_v1_basecolor",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "cedar_spray_v1_orm",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "cedar_spray_v1_normal",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "bark_color_graded.003",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_normal.003",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_roughness.003",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "soil_color_graded",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "soil_normal",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "soil_roughness",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "sacred_old_leaf_litter_505ec0d469d6_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_old_leaf_litter_505ec0d469d6_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_old_leaf_litter_505ec0d469d6_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "soil_module_bark_color_graded",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "soil_module_bark_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "soil_module_bark_roughness",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_basecolor.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_orm.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_normal.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "soil_module_stone_color_graded",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "soil_module_stone_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "soil_module_stone_roughness",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_fresh_fracture_393b30e024f7_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_fresh_fracture_393b30e024f7_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_fresh_fracture_393b30e024f7_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "bark_color_graded.001",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_normal.001",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_roughness.001",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_basecolor.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_orm.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_normal.003",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stone_color_graded.002",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_normal.002",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_roughness.002",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_basecolor.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_orm.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_normal.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "bark_color_graded",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_normal",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_roughness",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_basecolor.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_orm.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_normal.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stone_color_graded.001",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_normal.001",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_roughness.001",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stone_color_graded",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_normal",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_roughness",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "cedar_cavity_shadow_d7c3795db051_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_cavity_shadow_d7c3795db051_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_cavity_shadow_d7c3795db051_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_old_heartwood_13c02feb653d_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_old_heartwood_13c02feb653d_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_old_heartwood_13c02feb653d_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_basecolor.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_orm.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "cedar_shade_moss_8182ca73dc8d_normal.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "bark_color_graded.004",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_normal.004",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_roughness.004",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "old_granite_fracture_140c375bfb5a_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "old_granite_fracture_140c375bfb5a_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "old_granite_fracture_140c375bfb5a_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stone_color_graded.007",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_normal.007",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_roughness.007",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "fictional_paper_seal_atlas",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "original_talisman_paper_6569eac9f4b7_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "original_talisman_paper_6569eac9f4b7_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_basecolor.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_orm.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_earth_mortar_dab6502aaeed_normal.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "bark_color_graded.002",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_normal.002",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_roughness.002",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_basecolor.004",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_orm.004",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_normal.004",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stone_color_graded.003",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_normal.003",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_roughness.003",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_exposed_split_basecolor",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_exposed_split_orm",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_exposed_split_normal",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_folded_paper_7fc82de65627_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_folded_paper_7fc82de65627_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_folded_paper_7fc82de65627_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stone_color_graded.006",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_normal.006",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_roughness.006",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_old_straw_binding_1778971daf62_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_old_straw_binding_1778971daf62_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_old_straw_binding_1778971daf62_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_sheltered_wood_e7a600397220_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_sheltered_wood_e7a600397220_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_sheltered_wood_e7a600397220_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_silvered_cedar_basecolor",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_silvered_cedar_orm",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_silvered_cedar_normal",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_soaked_shingle_basecolor",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_soaked_shingle_orm",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_soaked_shingle_normal",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "hokora_sparse_eave_moss_1ee61995a205_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_sparse_eave_moss_1ee61995a205_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "hokora_sparse_eave_moss_1ee61995a205_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stele_cushion_moss_0a12f4719265_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stele_cushion_moss_0a12f4719265_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stele_cushion_moss_0a12f4719265_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stele_old_fracture_ee59368867c9_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stele_old_fracture_ee59368867c9_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stele_old_fracture_ee59368867c9_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stele_recessed_carving_a47b3c72ef4b_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stele_recessed_carving_a47b3c72ef4b_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stele_recessed_carving_a47b3c72ef4b_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "stone_color_graded.004",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_normal.004",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "stone_roughness.004",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_basecolor.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_orm.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_normal.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_basecolor.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_orm.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_normal.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_light_veins_v2_basecolor.002",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_dry_seed_6906fca0ad08_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_dry_seed_6906fca0ad08_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_dry_seed_6906fca0ad08_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_muted_pollen_f592bb055206_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_muted_pollen_f592bb055206_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_muted_pollen_f592bb055206_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_warm_white_petal_fe269d002c3f_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_warm_white_petal_fe269d002c3f_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_warm_white_petal_fe269d002c3f_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "torii_weathering_v2_paint_basecolor",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "torii_weathering_v2_paint_orm",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "torii_weathering_v2_grain_normal",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "torii_weathering_v2_silvered_basecolor",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "torii_weathering_v2_silvered_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "torii_weathering_v2_soaked_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "torii_weathering_v2_soaked_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "straw_shimenawa_3090d98ab39a_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "straw_shimenawa_3090d98ab39a_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "straw_shimenawa_3090d98ab39a_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "torii_moss_6ed9c4c63c7f_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "torii_moss_6ed9c4c63c7f_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "torii_moss_6ed9c4c63c7f_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "worn_rice_paper_8a581b77d99a_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "worn_rice_paper_8a581b77d99a_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "worn_rice_paper_8a581b77d99a_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "bark_color_graded.005",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_normal.005",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "bark_roughness.005",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_basecolor.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_orm.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_normal.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_basecolor.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_orm.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_normal.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_light_veins_v2_basecolor.001",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "forest_flexible_stem_a91a07929c1b_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_orm",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_veins_v2_normal",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_light_veins_v2_basecolor",
+        "width": 256,
+        "height": 256
+      },
+      {
+        "name": "woodland_leaf_old_veins_v2_basecolor",
+        "width": 256,
+        "height": 256
+      }
+    ],
+    "triangles": 1745128,
+    "vertices": 2081277,
+    "bboxMin": [
+      -18.000000537435426,
+      -0.2199999988079071,
+      -28.173858567255284
+    ],
+    "bboxMax": [
+      22.38732234481383,
+      12.300000190734863,
+      22.000000537435426
+    ],
+    "sizeMeters": [
+      40.38732288224925,
+      12.52000018954277,
+      50.173859104690706
+    ],
+    "renderer": {
+      "calls": 972,
+      "triangles": 1745130,
+      "memory": {
+        "geometries": 72,
+        "textures": 195
+      },
+      "submitMs": 8.4,
+      "pixelRatio": 1
+    },
+    "seams": false,
+    "invalid": []
+  },
+  "errors": []
+}
