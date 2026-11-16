@@ -5152,6 +5152,16 @@
       "renderer": "Cycles CPU",
       "geometrySource": "reimported individual GLBs",
       "blenderVersion": "5.3.0"
+    },
+    "sealed_corridor": {
+      "file": "renders/scene/sealed_corridor.png",
+      "sha256": "ad451fa34540df599ad737a69f8acad71ffb7955b1184eb868c2527c66f5634a",
+      "width": 1600,
+      "height": 1000,
+      "samples": 48,
+      "renderer": "Cycles CPU",
+      "geometrySource": "reimported individual GLBs",
+      "blenderVersion": "5.3.0"
     }
   },
   "optionalSceneGLB": {
