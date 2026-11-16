@@ -89,6 +89,7 @@ export function addB4GameScenery({ root, map, ch, wallCell, hash, CELL, surfaces
   const rigSite = plan.mines[0];
   if (rigSite) scenery.add(fitB4Recess(createB4MineRigProps({detail:'low'}), rigSite, CELL));
   addB4AbandonedMine({root:scenery,area:4,map,wallCell,hash,cellSize:CELL,sites:plan.mines.slice(1)});
+  const beforeVista = new Set(scenery.children);
   if (plan.vista) {
     frame(plan.vista,true);
     const x = plan.vista.tx*CELL, z=(plan.vista.ty-.5)*CELL;
@@ -100,6 +101,10 @@ export function addB4GameScenery({ root, map, ch, wallCell, hash, CELL, surfaces
     skyline.position.set(x,-2,z-8); skyline.scale.setScalar(.65); scenery.add(skyline);
   }
   surfaces?.apply(scenery);
+  // The overlook parapet and distant spires stay unlifted dark silhouettes against the red sky.
+  if (surfaces) for (const child of scenery.children) if (!beforeVista.has(child)) child.traverse(o => {
+    if (o.isMesh && o.material === surfaces.basalt) o.material = surfaces.basaltPlain;
+  });
   batchB4Scenery(scenery);
   const vistaFaces=plan.vista ? [-1,0,1].map(offset=>({...plan.vista,tx:plan.vista.tx+offset,wx:plan.vista.wx+offset,key:`${plan.vista.tx+offset},${plan.vista.ty}:0,-1`})) : [];
   const lights = plan.mines.map(s => ({world:new THREE.Vector3((s.tx+s.dx*.32)*CELL,2.6,(s.ty+s.dz*.32)*CELL),

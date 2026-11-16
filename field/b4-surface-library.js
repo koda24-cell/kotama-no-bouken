@@ -29,6 +29,8 @@ export function createB4SurfaceLibrary({high=true}={}) {
   const lavaMap=load('molten_lava_albedo.png',true),lavaNormal=load('molten_lava_normal.png'),lavaRough=load('molten_lava_roughness.png'),lavaGlow=load('molten_lava_emissive.png',true);
   const basalt=material('basalt',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.8,.8),roughnessMap:basaltRough,roughness:1,color:0xffffff,flatShading:true});
   const ash=material('ash-stone',{map:ashMap,normalMap:ashNormal,normalScale:new THREE.Vector2(.65,.65),roughnessMap:ashRough,roughness:1,color:0xffffff});
+  // Unlifted basalt: lava crust, shoreline and the distant overlook keep their dark silhouettes.
+  const basaltPlain=material('basalt-plain',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.8,.8),roughnessMap:basaltRough,roughness:1,color:0xffffff,flatShading:true});
   const grotto=material('basalt-grotto',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.8,.8),roughnessMap:basaltRough,roughness:1,color:0xffffff,flatShading:true,side:THREE.DoubleSide});
   const ceiling=material('basalt-ceiling',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.6,.6),roughnessMap:basaltRough,roughness:1,color:0xc2b8b0,side:THREE.DoubleSide});
   const iron=material('blackened-bronze',{map:metalMap,normalMap:metalNormal,roughnessMap:metalRough,roughness:.9,metalness:.3,color:0xd4cfca});
@@ -39,9 +41,9 @@ export function createB4SurfaceLibrary({high=true}={}) {
   // the lava read as pure black. Lift the base colour and add a world-height
   // lava bounce (warm, strongest at the floor) plus faint glowing fissures taken
   // from the darkest crack lines of the existing albedo. Visual only.
-  basalt.color.setRGB(2.1,1.85,1.75);
+  basalt.color.setRGB(1.6,1.42,1.36);
   ceiling.color.setRGB(1.35,1.18,1.1);
-  grotto.color.setRGB(2.1,1.85,1.75);
+  grotto.color.setRGB(1.5,1.33,1.27);
   const underglow=(m,{bounce,fissure,falloff})=>{
     m.onBeforeCompile=shader=>{
       shader.uniforms.b4Bounce={value:bounce};shader.uniforms.b4Fissure={value:fissure};shader.uniforms.b4Falloff={value:falloff};
@@ -64,15 +66,15 @@ export function createB4SurfaceLibrary({high=true}={}) {
     totalEmissiveRadiance+=vec3(0.62,0.17,0.045)*b4Bounce*b4Low;
     #ifdef USE_MAP
       float b4Lum=dot(sampledDiffuseColor.rgb,vec3(0.2126,0.7152,0.0722));
-      float b4Crack=1.0-smoothstep(0.0022,0.0065,b4Lum);
+      float b4Crack=1.0-smoothstep(0.0016,0.0048,b4Lum);
       totalEmissiveRadiance+=vec3(1.0,0.33,0.06)*b4Crack*b4Fissure*(0.25+0.75*exp(-b4H*0.55));
     #endif
   }`);
     };
     m.customProgramCacheKey=()=>'b4-underglow-'+m.name;
   };
-  underglow(basalt,{bounce:.16,fissure:.55,falloff:.85});
-  underglow(grotto,{bounce:.2,fissure:.5,falloff:.7});
+  underglow(basalt,{bounce:.085,fissure:.9,falloff:1.05});
+  underglow(grotto,{bounce:.07,fissure:.8,falloff:.9});
   underglow(ceiling,{bounce:.05,fissure:.12,falloff:.35});
   const ember=material('ember-seams',{color:0xf49646,emissive:0xff4b09,emissiveIntensity:1.6,roughness:1});
   const timberCanvas=document.createElement('canvas');timberCanvas.width=timberCanvas.height=256;
@@ -102,7 +104,7 @@ export function createB4SurfaceLibrary({high=true}={}) {
     replaced.forEach(m=>m.dispose());
   }
   let disposed=false;
-  return {basalt,grotto,ash,ceiling,iron,ore,crystal,lava,ember,wood,rope,materials,textures,apply,
+  return {basalt,basaltPlain,grotto,ash,ceiling,iron,ore,crystal,lava,ember,wood,rope,materials,textures,apply,
     ready:Promise.all(pending),
     tick(now){const seconds=now*.001;lavaMap.offset.y=lavaGlow.offset.y=lavaNormal.offset.y=lavaRough.offset.y=seconds*.018;lava.emissiveIntensity=1.1+Math.sin(seconds*.8)*.12;},
     dispose(){if(disposed)return;disposed=true;materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}

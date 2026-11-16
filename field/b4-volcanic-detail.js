@@ -22,15 +22,19 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
       // An unbroken lava sheet under the cooling plates hides the old black tile grid.
       for(let i=0;i<3 && crust<150;i++){
         const size=.32+hash(x,y,713+i)*.58;
-        const m=put(group,rock,surfaces.basalt,wx+(hash(x,y,723+i)-.5)*3.1,.035,wz+(hash(x,y,733+i)-.5)*3.1,size,.10+size*.06,size*.8);
-        m.rotation.y=hash(x,y,743+i)*6.28;crust++;
+        // Chunky, slightly tilted crust rafts read as cooled rock, not floating boards.
+        const m=put(group,rock,surfaces.basaltPlain,wx+(hash(x,y,723+i)-.5)*3.1,.02,wz+(hash(x,y,733+i)-.5)*3.1,size,.12+size*.16,size*(.6+hash(x,y,744+i)*.4),(hash(x,y,745+i)-.5)*.22);
+        m.rotation.y=hash(x,y,743+i)*6.28;m.rotation.x=(hash(x,y,746+i)-.5)*.2;crust++;
       }
       if(hash(x,y,750)<.24)lavaLights.push({world:new THREE.Vector3(wx,.6,wz),color:0xff6a22,intensity:5.2,range:7,off:false});
       for(const [dx,dz]of[[0,-1],[1,0],[0,1],[-1,0]]){
         if(wallCell(x+dx,y+dz)||['*','~'].includes(ch(x+dx,y+dz)))continue;
-        for(let i=0;i<3;i++){
-          const t=(i-1)*1.15;
-          put(group,rock,surfaces.basalt,wx+dx*1.9+dz*t,.015,wz+dz*1.9-dx*t,.65,.12,.58);
+        // Irregular shoreline: mixed boulders sunk into the ash, banked towards the dry side.
+        for(let i=0;i<4;i++){
+          const k=hash(x*3+dx,y*3+dz,901+i),t=(i-1.5)*1.0+(hash(x,y,905+i+dx*7+dz*13)-.5)*.5;
+          const out=1.72+hash(x,y,911+i+dx*5+dz*11)*.42,sz=.38+k*.42;
+          const m=put(group,rock,surfaces.basaltPlain,wx+dx*out+dz*t,-.03+k*.05,wz+dz*out-dx*t,sz,.1+k*.17,sz*(.7+hash(x,y,921+i)*.5),(k-.5)*.3);
+          m.rotation.y=hash(x,y,931+i+dx*3+dz*9)*6.28;
         }
       }
     }
@@ -62,10 +66,19 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
   // Original charcoal boulders break the smooth square frames of the mine entrances.
   for(const s of plan.mines){
     const edge=new THREE.Group();edge.position.set((s.tx+s.dx/2)*CELL,0,(s.ty+s.dz/2)*CELL);edge.rotation.y=Math.atan2(-s.dx,-s.dz);group.add(edge);
-    for(const side of [-1,1])for(let i=0;i<6;i++){
-      put(edge,rock,surfaces.basalt,side*1.85,.32+i*.64,-.10,.28+(i%2)*.08,.42,.32,(i-2)*.07);
+    // Uneven jambs: varied boulder sizes and offsets avoid a bead-chain silhouette.
+    for(const side of [-1,1]){
+      let yy=.05;
+      for(let i=0;i<7 && yy<3.75;i++){
+        const k=hash(s.wx+side,s.wy+i,951),h=.28+k*.34;
+        const m=put(edge,rock,surfaces.basalt,side*(1.8+(hash(s.wx,s.wy+i,953+side)-.5)*.14),yy+h,-.06-k*.1,.22+k*.2,h,.26+k*.14,(hash(s.wx+i,s.wy,955)-.5)*.6);
+        m.rotation.y=k*6.28;yy+=h*1.55;
+      }
     }
-    for(let i=0;i<5;i++)put(edge,rock,surfaces.basalt,-1.65+i*.82,3.92,-.10,.53,.27,.38,(i-2)*.05);
+    for(let i=0;i<5;i++){
+      const k=hash(s.wx+i,s.wy,961);
+      const m=put(edge,rock,surfaces.basalt,-1.65+i*.82+(k-.5)*.25,3.86+k*.1,-.10,.4+k*.25,.2+k*.14,.34,(k-.5)*.4);m.rotation.y=k*6.28;
+    }
   }
   // Spread candidates over the whole stratum rather than exhausting the quota in the first rows.
   lavaLights.sort((a,b)=>hash(a.world.x,a.world.z,840)-hash(b.world.x,b.world.z,840));
