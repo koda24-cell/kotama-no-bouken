@@ -1,0 +1,68 @@
+{
+  "asset_id": "floor3_ruined_connector_stairs_v8",
+  "stage": "floor3",
+  "asset": "stairs",
+  "version": "v8",
+  "status": "APPROVED_BY_USER_PENDING_GAME_INTEGRATION",
+  "approval": {
+    "approved": true,
+    "approved_by": "user",
+    "approved_on": "2026-11-16",
+    "scope": "stairs V8 only",
+    "source": "ChatGPT user acceptance"
+  },
+  "origin": {
+    "action_run_id": "43858942490",
+    "action_artifact_id": "14221847568",
+    "source_commit": "5142f6099f930ab5f01ea1d5ec6098d7307bb76c"
+  },
+  "coordinate_system": "GLB/glTF 2.0",
+  "footprint_m": [
+    2,
+    2
+  ],
+  "game_asset_path": "assets/models/floor3/ruined_connector/stairs_v8.glb",
+  "previews": {
+    "front": "assets/models/floor3/ruined_connector/reviews/stairs_v8/front.png",
+    "side": "assets/models/floor3/ruined_connector/reviews/stairs_v8/side.png",
+    "angle": "assets/models/floor3/ruined_connector/reviews/stairs_v8/angle.png"
+  },
+  "blend_path": "assets/models/floor3/ruined_connector/sources/stairs_v8.blend",
+  "source_scripts": [
+    "tools/floor3/ruined_connector/build.py",
+    "tools/floor3/ruined_connector/build_irregular_v2.py",
+    "tools/floor3/ruined_connector/build_irregular_v3.py",
+    "tools/floor3/ruined_connector/build_irregular_v4.py",
+    "tools/floor3/ruined_connector/build_irregular_v5.py",
+    "tools/floor3/ruined_connector/build_irregular_v6.py",
+    "tools/floor3/ruined_connector/build_stairs_v7.py",
+    "tools/floor3/ruined_connector/build_stairs_v8.py"
+  ],
+  "assets": {
+    "assets/models/floor3/ruined_connector/stairs_v8.glb": {
+      "bytes": 350704,
+      "sha256": "27c1b5dec9d03046eaa9e35bfaf990d277d9c6fbbaaad0cdca7469c33030e01b"
+    },
+    "assets/models/floor3/ruined_connector/sources/stairs_v8.blend": {
+      "bytes": 291872,
+      "sha256": "dba4932522b22d4026a2cb89f6f6dfeee88858725f2af085857336090b7cbade"
+    },
+    "assets/models/floor3/ruined_connector/reviews/stairs_v8/front.png": {
+      "bytes": 422224,
+      "sha256": "f2e90633f359714253e040138166cf024c0a7dae992c27a26e4f3d823597420b"
+    },
+    "assets/models/floor3/ruined_connector/reviews/stairs_v8/side.png": {
+      "bytes": 385138,
+      "sha256": "c73edf0973981917f4cac558cb0d447688a489995eb59a4e00fd6efab6ac219e"
+    },
+    "assets/models/floor3/ruined_connector/reviews/stairs_v8/angle.png": {
+      "bytes": 434732,
+      "sha256": "5ed853ef470c594550c07bb7ff69e7ffc08e035da9256346df30995d944ea515"
+    }
+  },
+  "notes": [
+    "Approved visual V8, not yet integrated in game",
+    "V6 ramp/landing are not approved and are excluded",
+    "Test GLTFLoader/scale/alignments/lighting in Three.js before enabling"
+  ]
+}
