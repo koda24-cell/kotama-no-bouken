@@ -8,13 +8,15 @@ import * as THREE from 'three';
  * @param {{width?:number,height?:number,seed?:number}} opts
  * @returns {{mesh:THREE.Mesh,update:(seconds:number)=>void,dispose:()=>void}}
  */
-export function createB5DistantFogBackground({width=24,height=12,seed=514,windowTexture=null}={}) {
+export function createB5DistantFogBackground({width=24,height=12,seed=514,windowTexture=null,octaves=5}={}) {
+  // octaves: low-quality settings may pass 3 to cut the per-pixel noise cost.
   const vertexShader=`
     varying vec2 vUv;
     void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}
   `;
   const fragmentShader=`
     precision highp float;
+    #define OCTAVES ${Math.max(2,Math.min(5,octaves|0))}
     varying vec2 vUv;
     uniform float uTime;
     uniform float uSeed;
@@ -27,12 +29,14 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
       return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),
                  mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);
     }
-    float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.07+11.3;a*=.5;}return v;}
+    float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<OCTAVES;i++){v+=a*noise(p);p=p*2.07+11.3;a*=.5;}return v;}
     vec3 windows(vec2 uv){
       // Grouped illuminated rectangles, with no drawn building silhouettes.
-      vec2 q=uv*vec2(18.,6.);
+      // Procedural fallback: small clustered windows in a band around the horizon,
+      // never a regular grid across the whole sky.
+      vec2 q=uv*vec2(46.,15.);
       vec2 block=floor(q),local=fract(q);
-      float present=step(.43,hash(block+uSeed));
+      float present=step(.58,hash(block+uSeed));
       vec2 cell=floor(local*vec2(4.,8.));
       vec2 f=fract(local*vec2(4.,8.));
       float on=step(.62,hash(block*17.7+cell+uSeed));
@@ -40,7 +44,9 @@ export function createB5DistantFogBackground({width=24,height=12,seed=514,window
       float windowSeed=hash(block*17.7+cell*3.13+uSeed);
       float pulse=pow(max(0.,sin(uTime*(.25+windowSeed*.8)+windowSeed*6.283)),18.);
       float flicker=.65+.25*sin(uTime*.15+windowSeed*6.283)+.38*pulse;
-      float light=present*on*rect*flicker;
+      float band=smoothstep(.27,.4,uv.y)*(1.-smoothstep(.52,.7,uv.y));
+      float cluster=smoothstep(.5,.68,fbm(uv*vec2(6.,2.2)+uSeed*.01));
+      float light=present*on*rect*flicker*band*cluster;
       float warm=hash(block+cell*3.1);
       return mix(vec3(.48,.08,.28),vec3(1.,.35,.13),warm)*light;
     }

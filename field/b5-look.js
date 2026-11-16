@@ -89,7 +89,7 @@ function portalTexture() {
   const c = document.createElement('canvas'); c.width = 64; c.height = 128;
   const ctx = c.getContext('2d'); if (!ctx) return null;
   const grad = ctx.createRadialGradient(32, 80, 4, 32, 70, 70);
-  grad.addColorStop(0, 'rgba(10,4,22,0.96)'); grad.addColorStop(0.55, 'rgba(46,16,84,0.9)'); grad.addColorStop(1, 'rgba(150,90,255,0.75)');
+  grad.addColorStop(0, 'rgba(6,3,14,0.97)'); grad.addColorStop(0.6, 'rgba(30,12,56,0.92)'); grad.addColorStop(1, 'rgba(96,58,170,0.7)');
   ctx.fillStyle = grad; ctx.fillRect(0, 0, 64, 128);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
@@ -108,14 +108,14 @@ export function createB5Look({ g, mat }) {
   tallTex.forEach(keepT);
   const surface = (tex, opts) => keepM(new THREE.MeshStandardMaterial({ map: tex[0] || null, roughnessMap: tex[1] || null, bumpMap: tex[2] || null, ...opts }));
   const M = {
-    floor: surface(floorTex, { color: 0xa49dc0, roughness: 0.92, bumpScale: 2.4 }),
-    wall: surface(wallTex, { color: 0x938cb0, roughness: 1, bumpScale: 1.8 }),
-    tall: surface(tallTex, { color: 0x8a82a6, roughness: 1, bumpScale: 1.6 }),
-    cap: keepM(new THREE.MeshStandardMaterial({ color: 0xa79fc6, roughness: 0.62, map: wallTex[0] || null })),
+    floor: surface(floorTex, { color: 0x7c7694, roughness: 0.92, bumpScale: 2.4 }),
+    wall: surface(wallTex, { color: 0x6c6689, roughness: 1, bumpScale: 1.8 }),
+    tall: surface(tallTex, { color: 0x655e80, roughness: 1, bumpScale: 1.6 }),
+    cap: keepM(new THREE.MeshStandardMaterial({ color: 0x847d9f, roughness: 0.62, map: wallTex[0] || null })),
     trim: keepM(new THREE.MeshStandardMaterial({ color: 0x6e6590, roughness: 0.7 })),
     iron: keepM(new THREE.MeshStandardMaterial({ color: 0x3b3546, roughness: 0.45, metalness: 0.7 })),
     wax: keepM(new THREE.MeshStandardMaterial({ color: 0xf0dcc0, emissive: 0x9a5a24, emissiveIntensity: 0.55, roughness: 0.6 })),
-    gateStone: keepM(new THREE.MeshStandardMaterial({ color: 0x8c84ab, roughness: 0.8, map: wallTex[0] || null, bumpMap: wallTex[2] || null, bumpScale: 1.2 })),
+    gateStone: keepM(new THREE.MeshStandardMaterial({ color: 0x6a6386, roughness: 0.8, map: wallTex[0] || null, bumpMap: wallTex[2] || null, bumpScale: 1.2 })),
     portal: keepM(new THREE.MeshBasicMaterial({ map: keepT(portalTexture()), transparent: true, depthWrite: false, side: THREE.DoubleSide, fog: false })),
     rune: keepM(new THREE.MeshBasicMaterial({ color: 0xb48cff, fog: false }))
   };
@@ -228,15 +228,15 @@ export function createB5Look({ g, mat }) {
       fx.add(halos, flames);
     }
     // カメラ追従の補助光（承認プレビューの faceFill を実ゲームへ）。既存の点光源プールとは別に2灯だけ。
-    spot = new THREE.SpotLight(0xb9a8dd, hall ? 48 : 40, hall ? 28 : 23, Math.PI / 3.4, 0.78, 1.45);
-    lantern = new THREE.PointLight(0xc6b4ff, 9, 13, 1.6);
+    spot = new THREE.SpotLight(0xb3a6d4, hall ? 30 : 24, hall ? 28 : 23, Math.PI / 3.4, 0.78, 1.45);
+    lantern = new THREE.PointLight(0xc0b2ee, 4.5, 11, 1.6);
     // リムライト：既存のキーライトと反対側から、壁の縁と柱の輪郭を拾う低い角度の寒色光
-    rim = new THREE.DirectionalLight(0x8f7dff, hall ? 1.1 : 1.35);
+    rim = new THREE.DirectionalLight(0x8a7cf0, hall ? 0.8 : 1.0);
     const cx = (a.w - 1) * CELL / 2, cz = (a.h - 1) * CELL / 2;
     rim.position.set(cx + 40, 14, cz - 34); rim.target.position.set(cx, 0, cz);
     fx.add(spot, spot.target, lantern, rim, rim.target);
     // V5 遠景・火の粉・瘴気（窓テクスチャは未昇格のため手続き的な窓光）
-    fog = createB5DistantFogBackground({ width: 230, height: 135, seed: 514 });
+    fog = createB5DistantFogBackground({ width: 230, height: 135, seed: 514, octaves: high ? 5 : 3 });
     fog.mesh.name = 'b5:v5-distant-miasma'; fog.mesh.frustumCulled = false;
     sparks = createB5ArcaneSparks({ count: high ? 42 : 18 });
     fx.add(fog.mesh, sparks.points);
@@ -264,7 +264,7 @@ export function createB5Look({ g, mat }) {
       part(G.runeBar, M.rune, 0, 3.55, 0.36);
       fx.add(gate); e.obj = gate;
       const lx = dx ? 0 : 1, lz = dx ? 1 : 0;
-      for (const s of [-1, 1]) addPool(x + lx * s * 1.48 + dx * 0.6, 2.4, z + lz * s * 1.48 + dz * 0.6, 0xb48cff, 1.8, 5);
+      for (const s of [-1, 1]) addPool(x + lx * s * 1.48 + dx * 0.6, 2.4, z + lz * s * 1.48 + dz * 0.6, 0x9c78e8, 0.9, 4);
       stats.exitGates++;
     }
   }
@@ -276,7 +276,7 @@ export function createB5Look({ g, mat }) {
     spot.position.copy(cam.position).addScaledVector(fwd, -0.8); spot.position.y += 2.6;
     spot.target.position.copy(cam.position).addScaledVector(fwd, 10); spot.target.position.y = 0.4;
     lantern.position.copy(cam.position).addScaledVector(fwd, -0.3); lantern.position.y += 0.55;
-    lantern.intensity = 9 * (0.94 + 0.06 * Math.sin(t * 2.3));
+    lantern.intensity = 4.5 * (0.94 + 0.06 * Math.sin(t * 2.3));
     fog.mesh.position.copy(cam.position).addScaledVector(fwd, 90);
     fog.mesh.quaternion.copy(cam.quaternion);
     fog.update(t); sparks.update(t, cam.position); mist?.update(t, cam);

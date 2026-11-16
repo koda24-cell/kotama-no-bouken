@@ -18,7 +18,7 @@ export function createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall }) {
   const keyLight = new THREE.DirectionalLight(hall ? 0xffd7ab : 0xaabaff, 2.4);
   keyLight.position.set(a.w * CELL / 2 - 12, 30, a.h * CELL / 2 + 15);
   keyLight.target.position.set(a.w * CELL / 2, 0, a.h * CELL / 2);
-  const fill = new THREE.HemisphereLight(hall ? 0xd6c6bb : 0xacb9dc, 0x333344, 1.4);
+  const fill = new THREE.HemisphereLight(hall ? 0xd6c6bb : 0xacb9dc, 0x333344, 1.0);
   dressing.add(keyLight, keyLight.target, fill);
   // The libraries reuse materials but contain hundreds of separate meshes.
   // Bake static transforms and merge by material *within each prop* so spatial
