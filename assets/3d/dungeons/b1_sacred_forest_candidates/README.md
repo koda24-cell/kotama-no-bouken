@@ -112,3 +112,7 @@ Blenderは画像を遅延読込します。初回保存だけで画像内蔵を�
 今回の静的モデル完成と分けて扱います。
 
 [出典・権利](CREDITS.md) / [統合担当への引き継ぎ](../../../../docs/3d/F1_SACRED_FOREST_CLAUDE_HANDOFF.md)
+
+## 最終撮影・照合
+
+全景5視点（entry / courtyard / sealed_corridor / shrine_detail / birdseye）の1600×1000・48 samples撮影を完了し、実画像を確認しました。`verification/delivery-summary.json`は、17個別GLB・68個別画像・5全景画像・各検査記録の実ファイルhashを照合した結果です。美術承認は別途pending_user_reviewです。
