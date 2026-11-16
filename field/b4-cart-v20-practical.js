@@ -161,7 +161,7 @@ export function enhanceB4CartPractical(root,variant=20) {
  }
  // V27: non-destructive rock surface shells. The coarse source ore meshes remain
  // inside the overlay, not deleted or overwritten, and can be restored by not using V27.
- if(variant>=27){
+ if(variant===27){
    const rockSurface=new THREE.MeshStandardMaterial({name:'B4_CaveOre',color:0x343536,metalness:0,roughness:.96});
    let index=0;
    for(const ore of [...cart.children]){
@@ -181,6 +181,58 @@ export function enhanceB4CartPractical(root,variant=20) {
      shell.name='B4_ORIGINAL_ORE_PRESERVED_SMOOTH_SURFACE_'+index;
      shell.position.copy(ore.position);shell.rotation.copy(ore.rotation);shell.scale.copy(ore.scale);
      group.add(shell);index++;
+   }
+ }
+ // V28: retain original icosahedron rock SILHOUETTE, add dense per-face sculpted
+ // geometry offset only 1–4% outwards. Avoid V27's giant spherical bulge.
+ if(variant>=28){
+   const detailedOre=new THREE.MeshStandardMaterial({name:'B4_CaveOre',color:0x343536,metalness:0,roughness:.98,side:THREE.DoubleSide});
+   let stoneIndex=0;
+   for(const ore of [...cart.children]){
+     if(!ore.isMesh || ore.geometry?.type!=='IcosahedronGeometry' || ore.scale.x<.41)continue;
+     const src=ore.geometry.getAttribute('position');
+     const divisions=9,coords=[],uvs=[],idx=[];
+     function project(a,b,c,t,u,n,salt) {
+       const p=new THREE.Vector3().copy(a).multiplyScalar(1-t-u)
+         .addScaledVector(b,t).addScaledVector(c,u);
+       const rough=Math.sin(p.x*26.1+p.z*13.8+salt*1.7)*Math.cos(p.y*18.3-p.z*5.8);
+       const cracks=Math.sin(p.x*61.5+p.y*36.3+p.z*19.7+salt*1.8);
+       const height=.027+.008*rough+.005*cracks;
+       p.addScaledVector(n,height);
+       return p;
+     }
+     for(let f=0;f<src.count;f+=3){
+       const a=new THREE.Vector3().fromBufferAttribute(src,f);
+       const b=new THREE.Vector3().fromBufferAttribute(src,f+1);
+       const c=new THREE.Vector3().fromBufferAttribute(src,f+2);
+       const normal=b.clone().sub(a).cross(c.clone().sub(a)).normalize();
+       if(normal.dot(a.clone().add(b).add(c))<0)normal.negate();
+       const baseIndex=coords.length/3;
+       const lookup=[];
+       for(let i=0;i<=divisions;i++){
+         lookup[i]=[];
+         for(let j=0;j<=divisions-i;j++){
+           const t=i/divisions,u=j/divisions;
+           const p=project(a,b,c,t,u,normal,f+stoneIndex);
+           lookup[i][j]=coords.length/3;
+           coords.push(p.x,p.y,p.z);
+           uvs.push(p.x*.56+p.z*.18,p.y*.66+p.z*.22);
+         }
+       }
+       for(let i=0;i<divisions;i++)for(let j=0;j<divisions-i;j++){
+         // Original face winding is preserved in local coordinates.
+         idx.push(lookup[i][j],lookup[i+1][j],lookup[i][j+1]);
+         if(j<divisions-i-1)idx.push(lookup[i+1][j],lookup[i+1][j+1],lookup[i][j+1]);
+       }
+     }
+     const geo=new THREE.BufferGeometry();
+     geo.setAttribute('position',new THREE.Float32BufferAttribute(coords,3));
+     geo.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
+     geo.setIndex(idx);geo.computeVertexNormals();
+     const layer=new THREE.Mesh(geo,detailedOre);
+     layer.name='B4_ORE_FACE_SUBDIVISION_PRESERVES_ORIGINAL_'+stoneIndex;
+     layer.position.copy(ore.position);layer.rotation.copy(ore.rotation);layer.scale.copy(ore.scale);
+     group.add(layer);stoneIndex++;
    }
  }
  cart.userData={...cart.userData,practical:{variant,topWidth:X*2,topLength:L*2,wheelbase:axleZ*2,sourceGeometryPreserved:true}};
