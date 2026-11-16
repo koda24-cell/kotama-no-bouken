@@ -109,6 +109,44 @@ mat_rust.diffuse_color=(.24,.13,.09,1);mat_rust.use_nodes=True
 mat_rust.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value=.89
 mat_rust.node_tree.nodes.get('Principled BSDF').inputs['Metallic'].default_value=.24
 mat_rust.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(.24,.13,.09,1)
+# V20 optional verified photographic PBR: CC0 Poly Haven maps downloaded before Blender.
+# The previous procedural maps remain the robust fallback; original scene assets unchanged.
+PBR_SOURCES=[]
+if VAR=='d':
+ import glob
+ def ph(slug,key):
+  matches=glob.glob(os.path.join('v20-materials',slug+'_'+key+'.*'))
+  return matches[0] if matches else None
+ def set_material_image(mat,slug):
+  diff=ph(slug,'diff'); rough=ph(slug,'rough'); normal=ph(slug,'nor_gl')
+  if not all([diff,rough,normal]):
+   print('PH_MATERIAL_FALLBACK',slug,flush=True);return
+  images=[]
+  for path,cs in [(diff,'sRGB'),(rough,'Non-Color'),(normal,'Non-Color')]:
+   im=bpy.data.images.load(os.path.abspath(path),check_existing=True)
+   im.colorspace_settings.name=cs
+   images.append(im)
+  nodes=mat.node_tree.nodes;links=mat.node_tree.links
+  bs=nodes.get('Principled BSDF')
+  tex=[o for o in nodes if o.type=='TEX_IMAGE']
+  if len(tex)>=3:
+   by_label={o.label:o for o in tex}
+   cnode=next((o for o in tex if 'albedo' in o.label.lower()),tex[0])
+   rnode=next((o for o in tex if 'roughness' in o.label.lower()),tex[1])
+   nnode=next((o for o in tex if 'normal' in o.label.lower()),tex[2])
+   for node,im in [(cnode,images[0]),(rnode,images[1]),(nnode,images[2])]:
+    node.image=im
+  else:
+   cnode=nodes.new('ShaderNodeTexImage');cnode.image=images[0];links.new(cnode.outputs['Color'],bs.inputs['Base Color'])
+   rnode=nodes.new('ShaderNodeTexImage');rnode.image=images[1];links.new(rnode.outputs['Color'],bs.inputs['Roughness'])
+   nnode=nodes.new('ShaderNodeTexImage');nnode.image=images[2]
+   norm=nodes.new('ShaderNodeNormalMap');norm.inputs['Strength'].default_value=.38
+   links.new(nnode.outputs['Color'],norm.inputs['Color']);links.new(norm.outputs['Normal'],bs.inputs['Normal'])
+  PBR_SOURCES.append(slug)
+  print('PH_MATERIAL_APPLIED',slug,diff,rough,normal,flush=True)
+ set_material_image(timber,'rough_wood')
+ set_material_image(mat_rust,'rusty_metal')
+
 def box(name,loc,scale,mat,bevel=0):
     bpy.ops.mesh.primitive_cube_add(size=1,location=loc)
     obj=attach(bpy.context.object,name,mat)
@@ -327,7 +365,8 @@ metrics={
  'wood_texture_generated':'original procedural PBR maps embedded into GLB (not downloaded Poly Haven)',
  'model_objects':len(MODEL),
  'source_original':'V17 retained as independent source / no previous model deletion',
- 'visual_revision':'V19 weathered wood, chipped plank edges, darkened rusty clamps and larger rail-fit wheels' if VAR=='c' else 'V18 baseline'
+ 'visual_revision':'V20 CC0 Poly Haven original texture maps experiment' if VAR=='d' else ('V19 aged shape' if VAR=='c' else 'V18 baseline'),
+ 'photographic_materials_applied':PBR_SOURCES if VAR=='d' else []
 }
 with open(os.path.join(OUT,'b4-minecart-v18-'+VAR+'-metrics.json'),'w') as f:
     json.dump(metrics,f,indent=2)
