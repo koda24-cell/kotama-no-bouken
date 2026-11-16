@@ -33,7 +33,7 @@ from mathutils import Vector
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from common import OUT, ROOT
+from common import OUT, ROOT, repair_zero_tangents
 
 SCENE_DIR = OUT / "scene"
 SCENE_FILE = SCENE_DIR / "scene.blend"
@@ -439,12 +439,15 @@ def export_scene_glb():
     path = SCENE_DIR / 'sacred_forest_scene.glb'
     bpy.ops.export_scene.gltf(filepath=str(path), export_format='GLB', use_selection=True,
                              export_yup=True, export_texcoords=True, export_normals=True,
+                             export_tangents=True,
                              export_vertex_color='NONE', export_materials='EXPORT',
                              export_image_format='AUTO', export_cameras=False,
                              export_lights=False, export_extras=True, export_animations=False)
+    repairs=repair_zero_tangents(path)
     layout = json.loads(LAYOUT_FILE.read_text())
     layout['optionalSceneGLB'] = dict(file=str(path.relative_to(OUT)), bytes=path.stat().st_size,
-                                     sha256=file_hash(path), gameIntegrated=False)
+                                     sha256=file_hash(path), gameIntegrated=False,
+                                     zeroTangentFallbackVertices=repairs)
     LAYOUT_FILE.write_text(json.dumps(layout, ensure_ascii=False, indent=2) + '\n')
 
 

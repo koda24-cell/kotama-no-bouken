@@ -9,7 +9,10 @@ async function main(){
  const manifest=JSON.parse(fs.readFileSync(path.join(base,'manifest.json')));
  if(manifest.partial)throw Error('Final validation requires all assets');
  const reports=[];
- for(const asset of manifest.assets){
+ const sceneFile='scene/sacred_forest_scene.glb';
+ const targets=[...manifest.assets];
+ if(fs.existsSync(path.join(base,sceneFile)))targets.push({id:'sacred_forest_scene',file:sceneFile});
+ for(const asset of targets){
   const bytes=fs.readFileSync(path.join(base,asset.file));
   const report=await validator.validateBytes(new Uint8Array(bytes),{uri:asset.file,maxIssues:250});
   reports.push({id:asset.id,file:asset.file,sha256:crypto.createHash('sha256').update(bytes).digest('hex'),report});
