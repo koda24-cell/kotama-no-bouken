@@ -1,0 +1,36 @@
+name: Verify Second Stratum Story
+on:
+  pull_request:
+    paths:
+      - "data/field-maps.js"
+      - "data/story-b2.js"
+      - "data/progression.js"
+      - "field/field-b2-events.js"
+      - "field/field-interactions.js"
+      - "field/field-movement-foe.js"
+      - "field/field-navigation.js"
+      - "index.html"
+      - "tools/world-tree/test_b2_story.cjs"
+      - ".github/workflows/verify-b2-story.yml"
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check syntax
+        run: |
+          node --check data/story-b2.js
+          node --check data/field-maps.js
+          node --check data/progression.js
+          node --check field/field-b2-events.js
+          node --check field/field-interactions.js
+          node --check field/field-movement-foe.js
+          node --check field/field-navigation.js
+      - name: Validate quest references, map routes and triggers
+        run: node tools/world-tree/test_b2_story.cjs
