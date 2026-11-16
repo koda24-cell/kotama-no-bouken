@@ -1,0 +1,53 @@
+name: F6 Gravel Sparse V1 Render
+on:
+  push:
+    branches: [feature/gpt-f6-gravel-sparse-v1-20261116]
+    paths:
+      - tools/floor6/gravel_sparse_v1.py
+      - .github/workflows/f6-gravel-sparse-render.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python check
+        run: python3 -m py_compile tools/floor6/gravel_sparse_v1.py
+      - name: Install Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy libegl1 libgl1 libopengl0 libgl1-mesa-dri
+      - name: Export GLB and actual preview PNGs
+        run: |
+          set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1
+          export EGL_PLATFORM=surfaceless
+          blender -b -t 2 --python tools/floor6/gravel_sparse_v1.py 2>&1 | tee /tmp/gravel.log
+          grep -q F6_GRAVEL_SPARSE_DONE /tmp/gravel.log
+      - name: Validate expected outputs
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          d=Path('render-output/floor6/gravel/gravel_sparse')
+          m=json.loads((d/'manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED'
+          assert m['parts']==29
+          expected={'gravel_sparse.glb','gravel_sparse.blend','front.png','side.png','angle.png','top.png'}
+          assert {f['name'] for f in m['files']}==expected
+          for f in m['files']:
+              p=d/f['name']
+              assert p.is_file() and p.stat().st_size==f['bytes']
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==f['sha256']
+              if p.suffix=='.glb':assert p.read_bytes()[:4]==b'glTF'
+              if p.suffix=='.png':assert p.read_bytes()[:8]==bytes([137,80,78,71,13,10,26,10])
+          print('F6_GRAVEL_QA_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-gravel-sparse-v1-unapproved
+          path: render-output/floor6/gravel/gravel_sparse/
+          retention-days: 14
+          if-no-files-found: error
