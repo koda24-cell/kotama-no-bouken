@@ -1178,7 +1178,7 @@ async function beginStageCore(){
   maouIntroBgmPersistent=false;
   if($("bgm-toggle")?.checked)startBgm();
   renderBattle();
-  if(battleState.stage===1&&!battleState.encounterMode)pushEvent("スライムは物理攻撃が効きにくいようだ……SP攻撃を試そう！");
+  if(battleState.stage===1&&!battleState.encounterMode&&battleState.enemy.name==="スライム")pushEvent("スライムは物理攻撃が効きにくいようだ……SP攻撃を試そう！");
   const overlay=$("stage-transition");
   if(battleState.encounterMode){arena?.classList.remove("stage-arrival-pending");await wait(250);}// [FIELD] 雑魚戦はステージ名の暗転を出さない
   else if(overlay){
