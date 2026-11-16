@@ -13,7 +13,8 @@ import struct
 import subprocess
 import sys
 import time
-from PIL import Image, ImageStat
+from PIL import Image
+from vision_review import evaluate
 
 ROOT = Path("render-output/b5-throne-auto")
 VIEWS = ("front", "side", "angle")
@@ -94,7 +95,7 @@ def main():
     if not 1 <= args.iterations <= 8 or not 5 <= args.minutes <= 45:
         parser.error("Limits must be 1..8 iterations and 5..45 minutes")
     ROOT.mkdir(parents=True, exist_ok=True)
-    source_hash = hashlib.sha256((digest(SOURCE) + digest(ORIGINAL)).encode()).hexdigest()
+    source_hash = hashlib.sha256((digest(SOURCE) + digest(ORIGINAL) + digest(Path("tools/b5-throne/vision_review.py"))).encode()).hexdigest()
     state = read_progress(source_hash, args.iterations)
     if state["status"] == "awaiting_user_approval":
         print("Already passed; user approval required; no more iterations")
@@ -114,8 +115,15 @@ def main():
             previous = list(state["history"][-1]["views"].values())
             average = sum(v["brightness"] for v in previous) / len(previous)
             exposure = round(max(-1.8, min(1.8, (0.47-average)*2.5)), 2)
+        adjustments = state.get("next_adjustments", {})
+        exposure += float(adjustments.get("exposure_delta", 0))
+        exposure = max(-1.8, min(1.8, exposure))
         env = dict(os.environ, THRONE_OUTPUT=str(output), THRONE_VARIANT=str(index),
-                   THRONE_EXPOSURE=str(exposure))
+                   THRONE_EXPOSURE=str(exposure),
+                   THRONE_RUBBLE_DELTA=str(int(adjustments.get("rubble_delta", 0))),
+                   THRONE_RELIEF_DELTA=str(int(adjustments.get("relief_delta", 0))),
+                   THRONE_BACK_DEPTH_DELTA=str(float(adjustments.get("back_depth_delta", 0))),
+                   THRONE_ARCH_CURVATURE_DELTA=str(float(adjustments.get("arch_curvature_delta", 0))))
         log = output/"blender.log"
         try:
             with log.open("w", encoding="utf-8") as f:
@@ -129,7 +137,19 @@ def main():
                 names = [name for name in geo["object_names"] if not name.startswith("V2 ")]
                 state["baseline"] = {"object_names":names, "mesh_count":len(names)}
             report = inspect(output, state["baseline"])
-            rec = {"iteration":index+1,"exposure":exposure,"status":"passed" if report["valid"] else "qa_failed",
+            try:
+                vision = evaluate(output)
+            except Exception as exc:
+                # Do not hide the model-service failure, but do not corrupt technical results.
+                vision = {"mode":"error","artistic_quality":"UNVERIFIED",
+                          "reason":str(exc)[:200]}
+            if vision.get("mode") == "model" and vision.get("confidence", 0) >= .55:
+                state["next_adjustments"] = vision["adjustments"]
+            else:
+                state["next_adjustments"] = {}
+            rec = {"iteration":index+1,"vision_review":vision,
+                   "applied_adjustments":adjustments, "exposure":exposure,
+                   "status":"passed" if report["valid"] else "qa_failed",
                    **report}
             state["history"].append(rec)
             if report["valid"] and (not state["best"] or report["score"] > state["best"]["score"]):
