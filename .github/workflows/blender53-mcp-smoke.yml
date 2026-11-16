@@ -1,0 +1,46 @@
+name: Blender 5.3 Official MCP Cloud Smoke Test
+on:
+  push:
+    branches: [feature/blender53-mcp-actions-smoke-20261116]
+    paths:
+      - '.github/workflows/blender53-mcp-smoke.yml'
+      - 'tools/blender-mcp/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download official Blender 5.3 (fail closed on missing version)
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --output /tmp/blender.tar.xz \
+            https://download.blender.org/release/Blender5.3/blender-5.3.0-linux-x64.tar.xz
+          mkdir -p /tmp/blender53
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender53 --strip-components=1
+          /tmp/blender53/blender -b --python-expr 'import bpy; print("BLENDER_VERSION", bpy.app.version_string); assert bpy.app.version[:2] == (5,3)'
+      - name: Retrieve Blender Lab official MCP source
+        run: |
+          git clone --depth 1 https://projects.blender.org/lab/blender_mcp.git /tmp/blender_mcp
+          test -d /tmp/blender_mcp/addon/blender_mcp_addon
+          test -f /tmp/blender_mcp/mcp/pyproject.toml
+          git -C /tmp/blender_mcp rev-parse HEAD | tee /tmp/mcp-source-sha.txt
+      - name: Install MCP Python server in isolated venv
+        run: |
+          python3 -m venv /tmp/blender-mcp-venv
+          /tmp/blender-mcp-venv/bin/pip install /tmp/blender_mcp/mcp
+          /tmp/blender-mcp-venv/bin/python -c 'import blmcp; print("BLMCP_IMPORT_OK")'
+      - name: Validate Blender add-on registration (no public listener)
+        run: |
+          /tmp/blender53/blender -b --python tools/blender-mcp/smoke_addon.py
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender53-mcp-smoke-diagnostics
+          path: /tmp/mcp-source-sha.txt
+          if-no-files-found: warn
+          retention-days: 14
