@@ -222,3 +222,11 @@
 - 針葉の基準被覆率約0.1511に対し、8×8 mipはraw0.0625→補正0.1406、4×4はraw0→0.125。実DataTexture uploadとraw/補正のスクリーンショット比較を完了。全LOD/端末FPS/美術水準の合格ではない。source画像へ焼き込まず任意のviewer sampling補助として残す。runtimeで採用する場合はtexture lifetimeとGPU依存動作を別途確認する。
 - ソフトウェアGPUの比較readbackで既定30秒のscreenshot timeoutが一度発生。既存の全景撮影と同じ180秒へ揃えた再実行は成功。timeoutをFPS評価へ転用しない。
 - 5全景写真・17GLB/編集source・68個別PNG・新3F候補hash・viewer/helper code hash・近景/補正レポートを最終delivery gateで照合しpass。ゲームは未統合、芸術承認はpending_user_review。地形起伏や一部の背景の抜けなどの美術留意点を保持。最終scene GLBは20,939,944B（途中組立値から更新）。
+
+### 一層神域: 実ゲーム試験ロード・保存分離・SVG GPU upload（2026-11-17 JST）
+- 担当: GPT制作チーム。関連: [試験組込みPR #447](https://github.com/koda24-cell/kotama-no-bouken/pull/447)。新規外部配布物/購入なし。Three.js（MIT）公式 https://threejs.org/docs/ 、Playwright（Apache-2.0）公式 https://playwright.dev/ 。追加コードはリポジトリ内自作、元GLB/画像の条件は制作manifestを維持。
+- 手法: 実map/固定identityと18 GLBのSHA256を照合し、全成功後だけ静的環境をworldへ追加するtransactional loader。16m空間bucketのInstancedMeshは775配置を652batch/2092 mesh instanceへ集約。batch数は実draw/FPS合格の代用ではない。失敗時は旧F1経路へ戻す。導入先 `field/field-3d-b1-sacred-trial.js`、通常表示は変更せず一層3Fのopt-in限定。
+- 試遊入口: 実index.htmlをiframe.srcdocへ読み込み、ゲームscriptより前にそのrealmのStorage APIをmemory Mapへ切替。通常の保存を読み書きせず3Fから開始する。`preview/f1-sacred-playtest.html`。`node tools/f1-sacred-forest/verify-playtest-page.cjs` で親の保存sentinel不変、試遊側から不可視、固定7/水11/source hash検証を実確認済み。
+- 発見した不具合: 既存FOE dragon.svgをHTMLImageElementのままWebGL2へ送るとSwiftShaderでINVALID_VALUE/immutable texture警告。最小再現ではSVG直接uploadがGLerror1281、描画前に512px canvasへ同期rasterizeすると0。DataTexture明示mip単独も0で、針葉mipを原因と断定しない。SVG原本を変えずTextureLoader callback内で初回upload前にcanvas化する修正を試験branchへ追加。
+- 現在の検証状態: Chromium/Three r180/SwiftShaderで保存分離と最小再現は完了。修正後の全フロア往復/戦闘帰還QAは実行中。実行コマンド `node tools/f1-sacred-forest/verify-game-trial.cjs`。証拠はPR #447の `docs/reviews/` へ保存する。失敗履歴は削除しない。
+- 制限: 実機FPS/全GPU/美術承認は未完了。main公開・既定表示への昇格を含まない。第三者参考画像の再配布なし。
