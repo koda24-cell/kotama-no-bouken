@@ -1,0 +1,49 @@
+name: B4 Minecart V20 Poly Haven CC0 PBR Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-cart-v20-cc0-textures-20261116
+    paths:
+      - '.github/workflows/b4-minecart-v20-polyhaven.yml'
+      - 'tools/b4-render/build-v18-artisan.py'
+      - 'tools/b4-render/fetch-polyhaven-v20.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch official CC0 PBR maps with provenance
+        run: python3 tools/b4-render/fetch-polyhaven-v20.py v20-materials
+      - name: Install Blender and NumPy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Render single V20 photographed-PBR candidate
+        run: |
+          set -euo pipefail
+          blender -b -t 2 --python tools/b4-render/build-v18-artisan.py -- v20-output d
+          for view in front side angle gauge; do test -s "v20-output/b4-minecart-v18-d-${view}.png"; done
+          test -s v20-output/b4-minecart-v18-d.glb
+          test -s v20-output/b4-minecart-v18-d.blend
+          test -s v20-output/b4-minecart-v18-d-metrics.json
+      - name: Manifest for visual comparison and licensing
+        run: |
+          python3 - <<'PY'
+          import os,glob,hashlib,json
+          paths=sorted(p for p in glob.glob('v20-output/*') if os.path.isfile(p))
+          data=[{'path':p,'bytes':os.stat(p).st_size,'sha256':hashlib.sha256(open(p,'rb').read()).hexdigest()} for p in paths]
+          open('v20-output/manifest.json','w').write(json.dumps({'approval':'NOT_APPROVED','version':20,'files':data,'pbr_source':'see v20-materials/polyhaven-fetch-manifest.json'},indent=2))
+          print('FILES',len(data))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-minecart-v20-cc0-pbr-review
+          path: |
+            v20-output/
+            v20-materials/
+          retention-days: 14
