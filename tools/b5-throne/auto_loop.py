@@ -152,10 +152,25 @@ def main():
                    "status":"passed" if report["valid"] else "qa_failed",
                    **report}
             state["history"].append(rec)
+            # Keep technical and semantic rankings distinct. No semantic judgment without VLM.
             if report["valid"] and (not state["best"] or report["score"] > state["best"]["score"]):
                 state["best"] = {"iteration":index+1, "score":report["score"]}
-            # Stop early on 2 technically sound candidates; perceptual approval still required.
-            if sum(r["status"]=="passed" for r in state["history"]) >= 2:
+            if os.getenv("ENABLE_VISION", "false").lower() == "true":
+                if vision.get("mode") != "model":
+                    # Explicitly requested vision must not silently fall back to numerical QA.
+                    state["status"] = "needs_manual_fix"
+                else:
+                    if report["valid"] and vision["confidence"] >= .6:
+                        current = {"iteration":index+1,"score":vision["visual_score"],
+                                   "confidence":vision["confidence"]}
+                        if not state.get("best_visual") or current["score"] > state["best_visual"]["score"]:
+                            state["best_visual"] = current
+                    # Even when AI thinks quality is high, stop for human approval.
+                    state["status"] = ("awaiting_user_approval"
+                                       if report["valid"] and vision["confidence"] >= .7
+                                       and vision["visual_score"] >= 8.0
+                                       else "running")
+            elif sum(r["status"]=="passed" for r in state["history"]) >= 2:
                 state["status"] = "awaiting_user_approval"
             else:
                 state["status"] = "running"
@@ -171,7 +186,10 @@ def main():
     state["approval"] = "NOT_APPROVED"
     write_json(ROOT/"progress.json",state)
     summary = {"status":state["status"],"approval":state["approval"],
-               "best_technical_candidate":state["best"],"iterations":len(state["history"]),
+               "best_technical_candidate":state["best"],
+               "best_visual_candidate":state.get("best_visual"),
+               "vision_enabled":os.getenv("ENABLE_VISION","false").lower()=="true",
+               "iterations":len(state["history"]),
                "warning":"Automated metrics do not assess visual craft or game performance"}
     write_json(ROOT/"summary.json", summary)
     print(json.dumps(summary, ensure_ascii=False))
