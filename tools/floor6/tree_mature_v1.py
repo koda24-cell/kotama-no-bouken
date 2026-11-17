@@ -105,7 +105,7 @@ tips=[]
 for i in range(13):
  a=2*math.pi*(i*.61803398875%1)+.25
  z=1.24+(i%6)*.185+R.uniform(-.085,.085)
- reach=.62+R.uniform(-.10,.22)
+ reach=.66+R.uniform(-.10,.24)
  anchor=(.08*math.sin(z*1.4),.025,z)
  bends=[anchor,(anchor[0]+reach*.23*math.cos(a),anchor[1]+reach*.23*math.sin(a),z+.17),
         (anchor[0]+reach*.59*math.cos(a+.13),anchor[1]+reach*.59*math.sin(a+.13),z+.27),
@@ -147,10 +147,10 @@ def leaf(name,center,size,rotation,material):
  asset.append(ob);leaves_obj_count+=1
 for ti,tip in enumerate(tips):
  # Loose groups of leaves along twigs, leaving background visible between groups.
- for n in range(17 if ti%3 else 23):
-  off=Vector((R.gauss(0,.085),R.gauss(0,.085),R.gauss(0,.07)))
+ for n in range(24 if ti%3 else 34):
+  off=Vector((R.gauss(0,.092),R.gauss(0,.092),R.gauss(0,.078)))
   center=tip+off
-  size=R.uniform(.056,.092)
+  size=R.uniform(.063,.110)
   leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,size,
        (R.uniform(-math.pi,math.pi),R.uniform(-.15,.45)),leaves[R.randrange(len(leaves))])
 # Export the actual foliage and woody meshes only, without environment or light.
@@ -178,7 +178,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V4",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V5",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
