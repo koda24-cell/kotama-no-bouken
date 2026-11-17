@@ -35,7 +35,12 @@ def material(name,color,rough=.9,emission=0,albedo=None,normal=None):
  bs.inputs['Roughness'].default_value=rough
  if albedo:
   im=nodes.new('ShaderNodeTexImage');im.image=bpy.data.images.load(os.path.abspath(albedo),check_existing=True)
-  m.node_tree.links.new(im.outputs['Color'],bs.inputs['Base Color'])
+  shade=nodes.new('ShaderNodeMixRGB');shade.blend_type='MULTIPLY'
+  shade.inputs[0].default_value=1.0
+  factor=.32 if 'Crust' in name else (.48 if 'Basalt' in name else .56)
+  shade.inputs[2].default_value=(factor,factor,factor,1)
+  m.node_tree.links.new(im.outputs['Color'],shade.inputs[1])
+  m.node_tree.links.new(shade.outputs['Color'],bs.inputs['Base Color'])
  if normal:
   im=nodes.new('ShaderNodeTexImage');im.image=bpy.data.images.load(os.path.abspath(normal),check_existing=True)
   im.image.colorspace_settings.name='Non-Color'
@@ -51,7 +56,7 @@ tex='assets/3d/dungeons/b4_dragonfire/textures/'
 basalt=material('B4_PBR_Existing_Basalt',(.11,.10,.095),.96,albedo=tex+'volcanic_basalt_albedo.png',normal=tex+'volcanic_basalt_normal.png')
 ash=material('B4_PBR_Existing_Ash',(.10,.09,.085),.98,albedo=tex+'ashen_stone_albedo.png',normal=tex+'ashen_stone_normal.png')
 crust=material('B4_Black_Cooling_Crust',(.038,.034,.031),.99,albedo=tex+'volcanic_basalt_albedo.png',normal=tex+'volcanic_basalt_normal.png')
-glow=material('B4_RedHot_Fracture',(1,.18,.018),.86,emission=2.0)
+glow=material('B4_RedHot_Fracture',(1,.18,.018),.86,emission=1.5)
 # Original generated heat map, warped irregular cell fractures, no water-wave normal.
 n=384
 grid=np.random.default_rng(1157)
@@ -167,10 +172,33 @@ for seg_index,(start,end) in enumerate(segments):
     for i in range(2):
      a=j*3+i;b=a+3;fs.append((a,a+1,b+1,b))
    link('B4_CONTACT_COOLING_CRUST',vs,fs,crust,uv)
+# V2: broad irregular cooling crust rafts over the molten surface, rather
+# than uninterrupted thin red stripes that resemble flowing water.
+for i in range(28):
+ y=rng.uniform(-2.15,2.15)
+ ch=branches(y)
+ c,w=ch[i%len(ch)]
+ x=c+rng.uniform(-.47,.47)*w
+ rx=rng.uniform(.075,.17)*min(1,w/.25)
+ ry=rng.uniform(.11,.28)
+ verts=[(x, y, molten_z(x,y)+.024)]
+ uv=[(x*.27,y*.27)]
+ for k in range(16):
+  a=2*pi*k/16
+  r=1+.17*sin(a*5+i*.7)+.10*sin(a*9+i)
+  px=x+rx*cos(a)*r;py=y+ry*sin(a)*r
+  near=branches(py)
+  if min(abs(px-cc)-ww for cc,ww in near)>.01:
+   px=x+(px-x)*.78
+  verts.append((px,py,molten_z(px,py)+.025+.004*sin(a*7)))
+  uv.append((px*.27,py*.27))
+ faces=[(0,k+1,k+2) for k in range(1,16)]
+ faces.append((0,16,1))
+ link('B4_V2_LARGE_COOLING_CRUST_RAFT',verts,faces,crust,uv,False)
 # Irregular extruded stone plates, embedded into existing ground.
 def stone(name,x,y,rx,ry,height,seed,mat):
  R=random.Random(seed);n=13;vs=[];uv=[];fs=[]
- z=bed(x,y)-.09
+ z=bed(x,y)-.15
  angle=R.uniform(-pi,pi)
  for layer in (0,1):
   for k in range(n):
@@ -191,7 +219,7 @@ for i in range(50):
  scale=rng.uniform(.15,.43)
  if i%9==0:scale*=1.55
  stone('B4_BURIED_FRACTURED_BASALT',x,y,scale*rng.uniform(.75,1.55),
-       scale*rng.uniform(.7,1.45),rng.uniform(.035,.15),i+50,basalt)
+       scale*rng.uniform(.7,1.45),rng.uniform(.13,.22),i+50,basalt)
 # Fewer, larger oblique fractured plates, not pebble confetti.
 for i in range(10):
  y=-2.1+i*.45+rng.uniform(-.18,.18)
@@ -199,7 +227,7 @@ for i in range(10):
  c,w=branches(y)[0]
  x=c+side*(w+.48+rng.uniform(0,.40))
  stone('B4_LARGE_EMBEDDED_STRATA',x,y,rng.uniform(.32,.57),
-       rng.uniform(.22,.42),rng.uniform(.08,.20),300+i,ash)
+       rng.uniform(.22,.42),rng.uniform(.14,.24),300+i,ash)
 # Thermal seams are mostly buried; avoid floating glow spheres.
 for i in range(12):
  y=rng.uniform(-2.1,2.1)
@@ -213,8 +241,8 @@ for i in range(12):
       [(0,0),(1,0),(1,1),(0,1)])
 # Distinct P3 basalt step with extra broken overhang.
 if pattern=='p3':
- for i in range(13):
-  x=-2.1+i*.35
+ for i in range(9):
+  x=-2.05+i*.49+rng.uniform(-.10,.10)
   y=.36+.08*sin(i*2.1)
   stone('B4_STEPPED_BASALT_LEDGE',x,y,.22+rng.random()*.15,.25,.19,710+i,basalt)
 # Lighting and camera, review only (excluded from export).
@@ -243,7 +271,7 @@ views=[
  ('side',(8.2,0,2.7),(0,0,.11)),
  ('top',(0,0,10),(0,0,.11))
 ]
-stem='b4-magma-bank-'+pattern+'-v1'
+stem='b4-magma-bank-'+pattern+'-v2'
 for view,loc,target in views:
  scene.camera=camera('REVIEW_'+view,loc,target)
  scene.render.filepath=os.path.join(out,stem+'-'+view+'.png')
