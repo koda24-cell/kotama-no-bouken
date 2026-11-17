@@ -1,5 +1,5 @@
 # B5 朽ちた騎士像・サレット兜金属質感研究（2026-11-18）
-Status: RESEARCH / V5 Action rendering, NOT_APPROVED.
+Status: V5 rendered and QA PASSED technically; aesthetic NOT_APPROVED. V6 independently pending.
 
 ## 一次資料
 - The Metropolitan Museum of Art German visored sallet: https://www.metmuseum.org/art/collection/search/34275 。前後に連続する曲面、狭い眼孔、頬防護と後頭部に向かう尾部。
@@ -22,3 +22,10 @@ V5: 独立Blender造形 `tools/b5-knights/build_sallet_v5.py`。面を円弧状�
 - 画像からバイザーが浮く・顔面が空洞・反射が強すぎる場合、V5を上書きせず独立V6を制作。
 - 遠景LODは静的形状として元GLBを残し共通GLB Performance Audit対象。最適化でゲーム画面を変化させない。
 - Pinterest画像の記録/共有: https://github.com/koda24-cell/pinterest-reference-library/blob/main/handoff/b5-sallet-metal-20261118.md
+
+## V5実レンダリング・検証追記
+- GitHub Actions run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44194851712 完了 success。Artifact 14378761645, `b5-sallet-v5-NOT-APPROVED`。
+- Blender実PNG(front/side/angle/top)各900×900、編集用Blend、GLB、manifestの6 SHA256を取得ZIP内容から再計算しすべて一致。
+- 目視結果: V4の一様な灰色石材から鈍い金属反射へ改善。しかし人工的な格子状ノイズが広い面に浮き、額/眼孔/頬の装甲が分離して見える。金属の写実性と機械的接合は未達。
+- V6ではテクスチャの周期模様を弱め、頭部側への頬ブリッジを追加。実装ソースをV5と別保存し、旧版を維持。V6品質は成功証拠確認後に記録する。
+- 技術QAの合格は造形の承認と独立。ゲーム統合・正式昇格・マージ禁止。
