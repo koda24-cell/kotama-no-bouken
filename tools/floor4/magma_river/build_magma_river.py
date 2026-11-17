@@ -498,14 +498,15 @@ for j in range(n+1):
  cx=-.42+.13*sin(t*5.3)+.08*sin(t*13.1)
  w=.22+.11*sin(t*pi)+.20*t*t+.028*sin(t*18)
  for i in range(4):
-  u=i/3
-  x=cx+(u-.5)*2*w*1.25
-  # Back attaches to the continuous cliff, front supports the lava surface.
-  zz=-3.91+(.10+.04*sin(y*2.9+x*4.3))*(1-t)+(.70+.28*sin(t*2.8)+.38*t*t)*u
-  if i==3:zz=z-.025+.022*sin(t*21)
-  if i==2:zz=z-.072+.018*sin(t*16)
+  # A four-corner cross section: rear-left/front-left/front-right/rear-right.
+  # Both front corners follow the molten ribbon; both rear corners embed
+  # in the cliff. This prevents an oblique unsupported sheet in side view.
+  side_x=(-1 if i<2 else 1)
+  x=cx+side_x*w*1.23
+  is_front=i in (1,2)
+  zz=(z-.055+.022*sin(t*19+i)) if is_front else (-3.91+.045*sin(y*2.9+x*4.3))
   yy=y+.027*sin(t*18+i*1.7)
-  verts.append((x,yy,zz));uv.append((u*.8,t*1.6))
+  verts.append((x,yy,zz));uv.append((i*.27,t*1.6))
 for j in range(n):
  for i in range(3):
   a=j*4+i;b=a+4
