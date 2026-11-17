@@ -94,3 +94,10 @@ Pinterest/Tailwindから7候補を追加取得。URL・サムネイル・確認�
 - V7では512×512の**オリジナル熱分布ベイク画像**をBlender内で作成し、溶岩のBaseColor/Emissionに直接接続。既存の溶岩Normal/Roughness画像を保持。暗い冷却殻と局所的な熱い流路を画像で描き分け、GLBに画像を内包させる設計。
 - V7では岩の左右から本流へ合流する細い支流を2本追加。これまでの一筋の河川だけでなく、岩の隙間を流れるネットワークに近づける。
 - V7は実Blender実行結果とGLB内包画像、4方向PNGの目視確認まで未承認。
+
+## V7 PBR画像生成成功・V8岩肌改善（2026-11-17）
+- V7初回 run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43990788569 **failure**。Blender 5.0.1の `image.pixels.foreach_set` がnumpy float64配列を受け付けず `TypeError: incorrect sequence item type: d`。float32に変換して修正。
+- V7修正版 run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43990940189 **success**。Artifact 14287822454。GLBは182メッシュ・10画像内包。4方向PNG、Blend、manifestをダウンロード・目視確認。
+- V7の実画像では均一な明るい渦模様が抑えられ、黒い冷却殻と赤熱部のコントラストが改善。左右の細い支流は遠景で弱く、存在感をさらに調整する必要がある。
+- V7の残課題: 岩が丸い低密度の塊・尖った反復オブジェクトに見える。自然の崖面としての細かな破断・風化・堆積の違いが弱い。静止画のみで動的VFXは未検証。
+- V8は岩メッシュの最小細分を4へ引き上げ、複数周波数の凹凸と個別の非対称回転を追加。元のV7の河川・落下流・溜まり・画像テクスチャは保持。
