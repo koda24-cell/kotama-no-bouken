@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-paddle:
@@ -46,6 +46,34 @@ jobs:
                   if name.endswith('.png'): assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
               print('BLENDER_OUTPUT_VERIFIED',prefix,manifest['blender'])
           PY
+      - name: Publish verified run metadata to this isolated feature branch
+        if: success()
+        env:
+          CURRENT_RUN_ID: ${{ github.run_id }}
+          CURRENT_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path('docs/3d/b2-waterwheel-paddle-run/latest.json')
+          p.parent.mkdir(parents=True,exist_ok=True)
+          data={
+            'run_id':os.environ['CURRENT_RUN_ID'],
+            'url':os.environ['CURRENT_RUN_URL'],
+            'source_sha':os.environ['SOURCE_SHA'],
+            'status':'BLENDER_OUTPUT_VERIFIED_NOT_APPROVED',
+            'artifacts':'b2-waterwheel-paddle-blender-v01-v02',
+            'variants':['v01','v02'],
+            'png_views':['front','side','angle','back'],
+            'note':'This status only means files were generated and hashes verified; artistic approval pending'
+          }
+          p.write_text(json.dumps(data,indent=2)+'\\n')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/3d/b2-waterwheel-paddle-run/latest.json
+          git commit -m "chore(b2): record verified Blender paddle Actions run" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-core-upgrade-20261117
       - name: Upload editable Blend, GLB, internal QA PNG and checksums
         if: always()
         uses: actions/upload-artifact@v4
