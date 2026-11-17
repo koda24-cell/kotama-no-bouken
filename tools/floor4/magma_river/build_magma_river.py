@@ -195,6 +195,20 @@ for j in range(M):
  for i in range(N):
   a=j*(N+1)+i;b=a+N+1;faces.append((a,a+1,b+1,b))
 objmesh('MOLTEN_POOL_WIDENING',verts,faces,lava,uv)
+# V16: irregular viscous terminal lip. Break the unnaturally flat front
+# silhouette of the original horizontal river sheet without deleting it.
+for k in range(16):
+ z=3.22+.10*sin(k*2.3)+R.uniform(-.035,.035)
+ left=edge(z,-1);right=edge(z,1)
+ u=(k+.5)/16
+ x=left+(right-left)*u
+ # Cooling lava bulges are thick, grounded and partially buried in the melt.
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,
+  location=(x,lava_y(x,z)+.003,z+.055))
+ o=bpy.context.object;o.name='V16_HEAVY_TERMINAL_LAVA_LIP';parent(o)
+ o.scale=(.12+.06*R.random(),.025+.025*R.random(),.10+.09*R.random())
+ o.data.materials.append(dense_lava if k%4==0 else crust)
+
 # Off-channel side basin in a genuine eroded depression connected to the river.
 verts=[];uv=[];faces=[];N=88;M=27
 for j in range(M+1):
@@ -315,7 +329,12 @@ for i in range(14):
 def fall_path(t):
  cx=-.42+.085*t+.025*sin(t*pi)
  yy=2.42-2.2*t
- zz=-3.25+.075*t+.10*t**3+.23*t**8
+ # Two gentle step-backs around basalt ledges, not a corkscrew.
+ def ease(a):return max(0,min(1,a))**2*(3-2*max(0,min(1,a)))
+ zz=(-3.25+.04*t+.07*t**3+.14*t**8
+     +.12*ease((t-.23)/.13)
+     -.075*ease((t-.51)/.12)
+     +.12*ease((t-.75)/.15))
  width=.18+.035*sin(t*pi)+.23*t*t
  return cx,yy,zz,width
 def fall_xyz(t,u,front=True):
