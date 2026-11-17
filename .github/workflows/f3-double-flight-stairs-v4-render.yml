@@ -6,12 +6,6 @@ on:
       - 'tools/floor3/double_flight/build_v4.py'
       - 'tools/floor3/double_flight/fetch_pbr_v4.py'
       - '.github/workflows/f3-double-flight-stairs-v4-render.yml'
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [development]
-    paths:
-      - 'tools/floor3/double_flight/build_v4.py'
-      - '.github/workflows/f3-double-flight-stairs-v4-render.yml'
   workflow_dispatch:
 jobs:
   render:
