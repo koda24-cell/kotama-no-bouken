@@ -24,6 +24,20 @@
 - Blender Actions: https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f3-tall-ruined-wall-v2-render.yml
 - 成功/失敗・4方向画像は**実行完了後に別途確認**する。
 
+## V2実レンダー（ジョブは技術QA条件だけ失敗）
+- GitHub Actions run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44057504554
+- **Blenderによる4方向PNG/GLB/Blend生成は成功**、Artifact ID `14316068450`。CIの最終結果はfailure。
+- 原因: V2では苔の四角い帯を取り去り、未使用の苔材質画像がGLBから除外されたため、古い`4枚以上`条件でAssertionError。実GLBを解析し、使用中のBaseColor、Normal、Roughness 3枚のbufferView内包を確認。
+- 実画像は確認済み。V1の四角い緑帯を解消したが、V2の側面の欠けは大きな丸穴に見えるので美術的に未合格。
+- CIは「実際に使用している3種類の写真PBR画像が存在するか」に修正。完了run確認前の再検証は成功扱いにしない。
+
+## V3で試す改善
+- `tools/floor3/wall/build_tall_wall_v3.py` / workflow `.github/workflows/f3-tall-ruined-wall-v3-render.yml`
+- V2の元メッシュを維持し、実形状の大きな丸穴を端へ移動して破断の幅を小さくする。
+- 写真テクスチャのUVスケールを縮小（細かな繰り返しが過剰にならないよう調整）。
+- 目線より高い4.6m壁の仕様は保持、独立ファイルとしてV1/V2を上書きしない。
+- V3 Blender run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44058362906 （成果物成功は実際のrun完了後に確認）。
+
 ## 次の品質ゲート
 1. V1/V2のGLB、Blend、4方向PNGを比較。輪郭/壁厚/接地/材質埋込/白い破断面を検査。
 2. 欠け・骨材・非反復の雨染みを自然な実ジオメトリ＋実写真PBRで改善。
