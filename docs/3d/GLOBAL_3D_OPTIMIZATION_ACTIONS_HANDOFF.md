@@ -43,11 +43,11 @@ BotW本体のシェーダーや非公開ソースをコピーするのではな�
 4. **Shared Rigid GLB LOD Review** `.github/workflows/shared-rigid-lod-review.yml`
    - `tools/3d-performance/build_rigid_lod_review.py` が元の不透明GLBから形状別LOD0/1/2を独立生成、各正面/側面/斜め/真上をレンダリング、計3GLB＋12PNG＋manifestをSHA確認。
    - **不透明な静的岩・建物専用**。葉、ガラス、骨格モデルでは自動簡略化を拒否。幾何と見た目の品質は個別に承認が必要。
-   - 第1層の `moss_boulder_cluster.glb` で試験。Blender 5の`blend_method`表現差による初回の安全チェック失敗をGLB JSON本来の`alphaMode`検証に修正。修正版の最終成功は要確認。
+   - 第1層の `moss_boulder_cluster.glb` で試験。Blender 5の`blend_method`表現差による初回の安全チェック失敗をGLB JSON本来の`alphaMode`検証に修正。修正版のActions #44061002394 でGLB3・PNG12・manifestの作成とSHA検証が成功。実際の岩: LOD0=3,806 tris、LOD1=2,093、LOD2=951。ただしLOD2で緑の苔の欠落が見えるため、材質名mossの減面率を小さくする新試験中（品質未承認）。
 5. **F6 Multi-view Impostor Atlas Review** `.github/workflows/f6-multiview-impostor-review.yml`
    - 成木V14の元Blendを読み取り、透明背景で8方向のRGBAレンダリング→Pillowで4×2アトラス化。アルファ被覆率・PNG・画像SHAを検証。
    - **遠景LOD2候補用のテクスチャ生成**。カメラyawによるスプライト切替、風アニメ、影処理、ゲーム内統合は未実装。
-   - GitHub Actionsで実レンダリング検証中。素材はすべてNOT_APPROVED、正式昇格しない。
+   - Actions #44061467370 で8方向の実レンダリング・透過PNGのアルファ被覆検査・2080×1040のRGBAアトラス保存に成功。画像は8方向ともアルファ被覆率約0.13〜0.15、角度・境界情報をmanifestへ記録。素材はすべてNOT_APPROVED、正式昇格しない。
 
 ## 今後のゲーム統合タスク（安全境界）
 
