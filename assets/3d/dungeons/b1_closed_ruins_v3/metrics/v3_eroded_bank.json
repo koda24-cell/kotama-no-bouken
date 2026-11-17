@@ -1,0 +1,52 @@
+{
+  "bytes": 2251616,
+  "sha256": "2506dfd653b47abf6d0d0b453c1b97c80ee14c9a2a720e215b2843d07d51d39a",
+  "tris": 962,
+  "verts": 2192,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "v3_deep_moss",
+    "v3_wet_root",
+    "v3_wet_stone"
+  ],
+  "textureCount": 9,
+  "textureBytes": 2135294,
+  "sizeMeters": [
+    3.38,
+    0.7485,
+    0.9353
+  ],
+  "bboxMin": [
+    -1.7885,
+    -0.48,
+    -0.2489
+  ],
+  "bboxMax": [
+    1.5916,
+    0.2685,
+    0.6864
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "v3_eroded_bank",
+  "file": "props/v3_eroded_bank.glb",
+  "category": "props",
+  "desc_ja": "幅4m以内の非対称な侵食岸。原点=地表の岸中心。Blender-Xは岸沿い、-Yが水側（glTF+Z）、+Yが陸側（glTF-Z）。水側最大0.75m/陸側最大0.35m、下0.5m/上0.28m。大小3つの角形破断岩と偏った小礫、途切れた泥苔棚、水面下まで続く細根。水がworld+X側ならrotationY=+pi/2、-X側=-pi/2、+Z側=0、-Z側=pi。単純な4m棒や均一玉石列ではなく、隙間を残して配置する。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "b352d152eaea1651e86f415a32de112a48936f09",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/v3_eroded_bank.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v3_eroded_bank/front.png",
+    "renders/v3_eroded_bank/side.png",
+    "renders/v3_eroded_bank/angle.png",
+    "renders/v3_eroded_bank/top.png"
+  ]
+}

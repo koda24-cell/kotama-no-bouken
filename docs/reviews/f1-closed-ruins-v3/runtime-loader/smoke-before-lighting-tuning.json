@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "rejected": [
+    {
+      "mode": "duplicate-id",
+      "error": "F1 sacred trial: duplicate/invalid revision asset ID"
+    },
+    {
+      "mode": "duplicate-file",
+      "error": "F1 sacred trial: duplicate/invalid revision source"
+    },
+    {
+      "mode": "bad-sha",
+      "error": "F1 sacred trial: GLB SHA mismatch: assets/3d/dungeons/b1_ancient_forest/modules/mod_pillar_corner.glb"
+    },
+    {
+      "mode": "unregistered-ceiling",
+      "error": "F1 sacred trial: revision ceiling must match an explicit revision source"
+    }
+  ],
+  "v2": {
+    "sourceCount": 18,
+    "placements": 775
+  },
+  "v3": {
+    "sourceCount": 19,
+    "revision": "closed_ruins_v3",
+    "lightPockets": 1
+  },
+  "scope": "Actual GLTFLoader asset loading/cache/dispose; no final v3 layout or GPU/FPS approval",
+  "pageErrors": []
+}

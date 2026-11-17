@@ -1,0 +1,645 @@
+{
+  "scope": "Read-only reopen of five sources and packed image decode, not art approval",
+  "passed": true,
+  "blender": "5.3.0",
+  "sources": [
+    {
+      "file": "sources/v3_collapse_oculus.blend",
+      "sha256": "6496ab467e7c85e44cfba86c7d7d7f7802662ec43512b96b29e91e4476e790b0",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "moss_color.jpg",
+          "size": [
+            1024,
+            1024
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        }
+      ]
+    },
+    {
+      "file": "sources/v3_eroded_bank.blend",
+      "sha256": "bf26533332dd9ad6117d8eae0920e612f902a34623413e8d5feccf907490980a",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "moss_color.jpg",
+          "size": [
+            1024,
+            1024
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        }
+      ]
+    },
+    {
+      "file": "sources/v3_moss_veil.blend",
+      "sha256": "100033fe02db8637fdf918e7a22d663dc48b865047dfbe55d855cfdf3adb26bf",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "moss_color.jpg",
+          "size": [
+            1024,
+            1024
+          ],
+          "packed": true
+        },
+        {
+          "name": "moss_feathered.png",
+          "size": [
+            1024,
+            1024
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        }
+      ]
+    },
+    {
+      "file": "sources/v3_root_rubble.blend",
+      "sha256": "598021594bf61cef0add2cc85d31da6a1d8d428b81d343336aae4597d3081b2e",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "moss_color.jpg",
+          "size": [
+            1024,
+            1024
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        }
+      ]
+    },
+    {
+      "file": "sources/v3_shade_understory.blend",
+      "sha256": "6c177ad8815724fa4362250e29ec1f851392dd3bcdeed07364d2bd96f78299d3",
+      "images": [
+        {
+          "name": "bark_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "bark_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "moss_color.jpg",
+          "size": [
+            1024,
+            1024
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "soil_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_color_graded.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_normal.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "stone_roughness.jpg",
+          "size": [
+            512,
+            512
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_fresh_leaf_da4477d94a75_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_basecolor.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_normal.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        },
+        {
+          "name": "v3_shade_leaf_5f59e84c90be_orm.jpg",
+          "size": [
+            256,
+            256
+          ],
+          "packed": true
+        }
+      ]
+    }
+  ]
+}
