@@ -65,7 +65,7 @@ jobs:
                   assert p.exists() and len(p.read_bytes())==data['bytes']
                   assert hashlib.sha256(p.read_bytes()).hexdigest()==data['sha256']
                   if name.endswith('.glb'): assert p.read_bytes()[:4]==b'glTF'
-                  if name.endswith('.blend'): assert p.read_bytes()[:7]==b'BLENDER'
+                  if name.endswith('.blend'): assert p.stat().st_size>1024  # Blender 5.3 may use Zstd-compressed .blend container
                   if name.endswith('.png'): assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
               print('BLENDER_OUTPUT_VERIFIED',prefix,manifest['blender'])
           PY
