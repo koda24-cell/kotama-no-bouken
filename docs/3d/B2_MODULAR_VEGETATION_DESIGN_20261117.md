@@ -135,3 +135,11 @@
 - **レビュー所見:** 変更は輪郭の局所形状として確認できるが、4案の差はまだ小さい。扇形がまだ整いすぎる。葉面テクスチャ・個々の葉縁の大きな非対称・葉脈の微細な分岐と薄さが不足。次回は波形の強弱だけでなく、左右の成長差と先端の丸いローブごとの形を非一様に調整し、3方向レンダリングで確認する。
 - レビュー一式: このチャットのローカル `/mnt/data/b2_fern_leaf_v05_review.zip` にGLB4・PNG13・manifest。**GitHubへは本説明のみ保存。ローカルのGLBとPNG自体はGitHubへ未アップロード。**
 - **境界:** Blender本体がこのチャットのローカル環境に無いため、Blenderでの今回のレンダリング成功は未確認。GitHub Actions成功・ゲーム組込・承認・正式素材への昇格を報告しない。
+
+## 2026-11-17 — V06: ユーザー指摘「模様が気持ち悪い」への再造形
+- 直前のV05比較画像を拡大評価。放射状の明るい線が太く規則的で、表面の繰り返し模様が人工的。**葉脈表現を強化するのではなく、一旦除去する**。
+- 植物資料: [Royal Botanic Garden Edinburgh](https://websites.rbge.org.uk/thaiferns/factsheets/index.php?q=Adiantum_capillus-veneris.xml) と[Texas 植物形態資料](https://w3.biosci.utexas.edu/prc/K12/pdf/Adiantum%20capillus%20veneris)。葉脈は分岐し、葉先は丸い裂片や細かい鋸歯、葉の膜自体は薄く隆起が少ない。
+- 新造形: `tools/b2-vegetation/generate_leaf_v06.py` を別ファイルで追加。V03/V04/V05の原型は維持。正面・斜め比較に旧V05相当を含め、V06_clean（線なし）、V06_subtle（穏やかな色ムラ）、V06_edge_detail（葉縁の鋸歯を少し強める）を新規生成。
+- **実行確認**: ローカルVTK9.6.2で4候補×front/side/angle = 12枚、正面と斜めの比較2枚、計14 PNGを実出力。GLBは4候補、計4ファイル。ハッシュmanifestとローカルZIP `/mnt/data/b2_fern_leaf_v06_review.zip` を作成。これらの画像はBlenderレンダーではない。
+- 見た目の評価: V06_subtleを第一候補とする。表面の明るい放射線を無くして不気味な機械的模様は軽減。まだ実写真の葉縁の細かい歯状構造、葉柄接続、透明感が不足。実物の可視葉脈は後段で非常に薄い分岐として検討。
+- **未検証**: Github ActionsのV06生成/Blender出力、GLBのThree.js法線両面表示、正式素材フォルダ保存、ユーザーによるV06承認。状態NOT_APPROVED、PR #451継続。
