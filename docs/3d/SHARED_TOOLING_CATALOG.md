@@ -283,3 +283,13 @@
 - V12 Artifact 14294645385 をダウンロードし、6ファイルのSHA256一致、GLB 361メッシュ・画像10内包を実確認。画像を目視し、後方崖の地層/破断面と岩色の改善を確認。
 - V11で既存プロジェクト自作の assets/textures/floor4/basalt-charcoal-01/ を追加利用。原本生成コード tools/b4-render/generate-basalt-pbr.py、READMEに第三者依存なしと明記。既存岩の頂点は削除せず、地層状変位と破断キャップを追加。
 - 残課題: 大きな岩の丸い輪郭・薄い岩盤の板状感は未解消。**美術承認なし**、正式保存なし、ゲーム統合/FPS未検証。制作PR #458（親PR #450）。
+
+
+### Karanyi Sounds Brigade FX — voice harmony effect (2026-11-17)
+- Official: https://karanyisounds.com/pages/brigade ; documentation https://docs.karanyisounds.com/install/
+- Purpose: vocals-to-harmonies audio post-processing, not standalone AI BGM generation. Windows/macOS VST3/AU support per official announcement.
+- Free claim: 2026-11-27 12:00 CET for preregistered email recipients; advertised perpetual license. Individual license, activation and automation terms for Brigade itself **not yet confirmed**. Do not redistribute installer or plug-in binary via GitHub.
+- Installation status: **not acquired / not installed**. Integration status: **GitHub Actions read-only preflight prepared; execution and full processing not yet verified**.
+- Implementation/hand-off: https://github.com/koda24-cell/music-ai-studio/pull/8 ; `docs/integrations/KARANYI_BRIGADE_ACTIONS.md`.
+- Required before enablement: official installer and claim, safe per-machine activation, host/DAW supporting unattended VST3 WAV processing, actual input-output test and log review. GitHub-hosted Windows runners are ephemeral; self-hosted runner may be needed for license-binding.
+- Owner: GPT; recorded 2026-11-17; evidence: official product/install/activation documentation, music-ai-studio Draft PR #8. No working render or license claim has been asserted.
