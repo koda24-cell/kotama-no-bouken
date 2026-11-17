@@ -262,3 +262,11 @@
 - V3実体確認: 独立GLB 5、Blend 5、PNG 20（各4視点）、manifest 5。GLBには7画像内包、全30ファイルのSHA256がmanifestと一致。ソース `tools/floor4/lava_modules/build_lava_modules.py`、制作PR #454。
 - 具体的な改善: 合流点の非対称化、滝の厚み追加、冷却亀裂の不規則化と発光抑制。静止モデルのみ。GLBのブラウザ実描画・流動VFX・FPS・ゲーム内接続は**未検証**。
 - 状態: 技術的なGLB/PNG/Blend生成は検証済み。**美術承認なし、正式保存なし**。GitHub Actions Artifactは一時保管、ユーザー承認後に正式保存PRを作る。
+
+### B4玄武岩・層理破断メッシュ（2026-11-17）
+- 名称: 不規則多角形の押し出し破断岩盤＋背面崖の侵食地層＋埋没瓦礫（Blender標準Python API）。
+- 目的: 溶岩河川の岩が丸い粘土塊の集合に見える問題を改善し、元のV9メッシュを保持して実地質的な角張った破断面・岩盤の重なりを追加する。
+- 公式: https://docs.blender.org/api/current/ （Blender標準API）。自作コードで第三者アドオン不要。PBRは既存のvolcanic_basalt/ashen_stone画像を再利用（元画像のライセンスは正式採用前に確認）。
+- 導入: PR https://github.com/koda24-cell/kotama-no-bouken/pull/458 、tools/floor4/magma_river/build_magma_river.py（親PR #450の作業ブランチから派生）。Blender 5.x Actionsで試験。
+- 検証: V9元モデルの4方向実レンダーrun https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43994456829 は成功。V10追加地質メッシュの実レンダーrun https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44003753769 は**結果確認待ち**。品質・GLB・ゲーム実装未承認。
+- 注意: 既存の岩/溶岩メッシュを消さない。形状追加は破断面・段差の質感改善であり、地質学的な実測再現ではない。実PNG目視後に修正し、承認までは本番へ移さない。
