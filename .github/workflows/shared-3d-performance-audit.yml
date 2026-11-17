@@ -1,0 +1,67 @@
+name: Shared 3D GLB Performance Audit
+on:
+  push:
+    branches:
+      - feature/gpt-shared-3d-optimization-actions-20261117
+    paths:
+      - tools/3d-performance/**
+      - .github/workflows/shared-3d-performance-audit.yml
+  pull_request:
+    branches: [development]
+    paths:
+      - tools/3d-performance/**
+      - .github/workflows/shared-3d-performance-audit.yml
+  workflow_dispatch:
+    inputs:
+      asset_glob:
+        description: 'Repo-relative .glb glob (read only; quote ** patterns)'
+        required: false
+        default: assets/3d/dungeons/b1_ancient_forest/props/*.glb
+        type: string
+  workflow_call:
+    inputs:
+      asset_glob:
+        description: 'Repo-relative .glb glob'
+        required: false
+        default: assets/3d/dungeons/b1_ancient_forest/props/*.glb
+        type: string
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run GLB audit unit tests
+        run: python3 -m unittest discover -s tools/3d-performance -p 'test_*.py' -v
+      - name: Audit actual repository GLBs
+        env:
+          ASSET_GLOB: ${{ inputs.asset_glob || 'assets/3d/dungeons/b1_ancient_forest/props/*.glb' }}
+        run: |
+          python3 tools/3d-performance/audit_glb.py "$ASSET_GLOB" --output render-output/3d-performance/glb-audit.json
+      - name: Show aggregate
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('render-output/3d-performance/glb-audit.json').read_text())
+          objs=data['models']
+          summary={
+            'files':len(objs),
+            'scene_primitive_instances':sum(x['scene_primitive_instances'] for x in objs),
+            'estimated_triangles':sum(x['estimated_scene_triangles'] for x in objs),
+            'models_with_mask':sum(x['alpha_materials'].get('MASK',0)>0 for x in objs),
+          }
+          print(summary)
+          with open('render-output/3d-performance/summary.json','w') as f:
+            json.dump(summary,f,indent=2)
+          assert len(objs)>0 and not data['errors']
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-3d-glb-performance-audit
+          path: render-output/3d-performance/
+          retention-days: 14
+          if-no-files-found: warn
