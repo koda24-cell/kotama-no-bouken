@@ -31,3 +31,9 @@
 2. GitHub Actionsで3 GLB + 3 Blend + 12 PNG + manifest、ソースSHA/実行IDを記録。
 3. 4方向PNGを実際に確認して形状・厚み・テクスチャ・境界を改善。
 4. ユーザー承認後にのみ別PRで正式保存・developmentへ統合。Claudeはその後のゲーム実装を担当。
+
+## V1実レンダリングとV2修正
+- V1 Actions [run 44029320483](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44029320483) success、Artifact 14304835747。P1/P2/P3各GLB・Blend・4方向PNG・SHA256 manifestを生成、技術検証成功。
+- GPTの4方向画像目視: P1細い支流、P2二股、P3段差の形状差は成立。ただし玄武岩が明るい茶色で岩盤が薄い板に見え、溶岩の赤い縦縞が水っぽい。P3上段の積層岩がやや規則的。V1は不合格・未承認。
+- V2修正: PBR岩色を暗く、溶岩面に大きな不規則な冷却殻の島を追加。石板の地面への埋め込みを強化、P3の等間隔の段差石を減らして配置に乱数を加える。
+- V2も未承認。Blenderの正面・側面・斜め・俯瞰PNGを再確認し、接地感・溶岩の粘性・岩の形状を評価する。
