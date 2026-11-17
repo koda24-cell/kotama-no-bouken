@@ -1,0 +1,66 @@
+name: Floor3 Ruined Building V2 Render
+on:
+  push:
+    branches: [feature/gpt-f3-ruined-building-v2-20261117]
+    paths:
+      - 'tools/floor3/build_v2.py'
+      - '.github/workflows/floor3-ruined-building-v2-render.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [feature/floor3-ruined-building-prototype-20261112]
+    paths:
+      - 'tools/floor3/build_v2.py'
+      - '.github/workflows/floor3-ruined-building-v2-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install trimesh generator dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'trimesh>=4,<5'
+      - name: Build original-preserving V2 concrete building
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p render-output
+          python -m py_compile tools/floor3/build.py tools/floor3/build_v2.py tools/floor3/render.py
+          python tools/floor3/build_v2.py 2>&1 | tee render-output/generator.log
+          mv ruined_building_v2.glb render-output/
+          test -s render-output/ruined_building_v2.glb
+      - name: Render with actual Blender Docker
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/render.py -- /work/render-output/ruined_building_v2.glb /work/render-output 2>&1 | tee render-output/blender.log
+      - name: Verify GLB and 3-angle PNG
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,hashlib,pathlib,struct,os,trimesh
+          out=pathlib.Path('render-output')
+          files=[out/'ruined_building_v2.glb']+[out/('ruined_building_v2-'+n+'.png') for n in ('front','side','angle')]
+          for p in files:assert p.is_file() and p.stat().st_size>1024, p
+          data=files[0].read_bytes()
+          assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data)
+          scene=trimesh.load(str(files[0]),force='scene')
+          assert len(scene.geometry)>200,len(scene.geometry)
+          for p in files[1:]:assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          manifest={'stage':'floor3','asset':'ruined_building','version':'v2','approval':'NOT_APPROVED',
+            'base_model_pr':256,'source_commit':os.getenv('GITHUB_SHA'),'run_id':os.getenv('GITHUB_RUN_ID'),
+            'geometry_count':len(scene.geometry),
+            'files':{p.name:{'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size} for p in files}}
+          (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          print('F3_RUINED_BUILDING_V2_RENDER_QA_OK',len(scene.geometry))
+          PY
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: f3-ruined-building-v2-unapproved-review
+          path: render-output/
+          retention-days: 14
