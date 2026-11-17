@@ -7,7 +7,7 @@
       "buildKey": "2-0",
       "random": false,
       "layout": {
-        "flowers": 46,
+        "flowers": 40,
         "flowerSpots": 68,
         "flowerClusters": [
           "3,9:snowdrop:down",
@@ -26,32 +26,44 @@
               "n": 5,
               "kinds": [
                 "snowdrop",
-                "mizubasho"
+                "bloom"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                3.02,
+                9.3
+              ]
             },
             {
               "cell": "21,2",
               "kind": "snowdrop",
               "d": "right",
-              "n": 7,
+              "n": 6,
               "kinds": [
                 "bloom",
                 "snowdrop",
                 "mizubasho"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                21.29,
+                2.05
+              ]
             },
             {
               "cell": "17,13",
               "kind": "snowdrop",
               "d": "up",
-              "n": 5,
+              "n": 4,
               "kinds": [
                 "snowdrop",
                 "bloom"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                16.76,
+                12.69
+              ]
             },
             {
               "cell": "13,15",
@@ -59,10 +71,14 @@
               "d": "up",
               "n": 4,
               "kinds": [
-                "mizubasho",
-                "snowdrop"
+                "snowdrop",
+                "bloom"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                12.75,
+                14.68
+              ]
             },
             {
               "cell": "21,12",
@@ -71,10 +87,13 @@
               "n": 6,
               "kinds": [
                 "mizubasho",
-                "snowdrop",
                 "bloom"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                21.32,
+                12
+              ]
             },
             {
               "cell": "14,9",
@@ -84,10 +103,14 @@
               "kinds": [
                 "mizubasho"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                14.04,
+                9.32
+              ]
             }
           ],
-          "groupPlants": 30,
+          "groupPlants": 28,
           "meadow": {
             "source": "atrium",
             "center": "2,16",
@@ -102,22 +125,22 @@
               "2,17",
               "3,17"
             ],
-            "plants": 16,
+            "plants": 12,
             "kinds": {
               "snowdrop": 1,
-              "mizubasho": 10,
-              "bloom": 5
+              "mizubasho": 9,
+              "bloom": 2
             }
           },
           "byKind": {
-            "snowdrop": 18,
-            "mizubasho": 18,
-            "bloom": 10
+            "snowdrop": 14,
+            "mizubasho": 17,
+            "bloom": 9
           },
-          "dress": 161,
+          "dress": 140,
           "patches": 7,
-          "triangles": 1036740,
-          "drawMeshes": 45,
+          "triangles": 901138,
+          "drawMeshes": 48,
           "chunks": 7
         }
       },
@@ -224,7 +247,7 @@
           ],
           "bank": []
         },
-        "flowers": 45,
+        "flowers": 38,
         "flowerSpots": 64,
         "flowerClusters": [
           "12,9:bloom:up",
@@ -245,7 +268,11 @@
                 "bloom",
                 "snowdrop"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                11.95,
+                8.7
+              ]
             },
             {
               "cell": "23,8",
@@ -254,43 +281,59 @@
               "n": 4,
               "kinds": [
                 "bloom",
-                "snowdrop"
+                "mizubasho"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                23.33,
+                7.96
+              ]
             },
             {
               "cell": "9,3",
               "kind": "snowdrop",
               "d": "up",
-              "n": 5,
+              "n": 4,
               "kinds": [
                 "snowdrop",
                 "bloom"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                8.76,
+                2.69
+              ]
             },
             {
               "cell": "21,13",
               "kind": "snowdrop",
               "d": "down",
-              "n": 7,
+              "n": 6,
               "kinds": [
                 "snowdrop",
                 "bloom",
                 "mizubasho"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                20.94,
+                13.32
+              ]
             },
             {
               "cell": "18,3",
               "kind": "snowdrop",
               "d": "up",
-              "n": 7,
+              "n": 6,
               "kinds": [
                 "snowdrop",
                 "mizubasho"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                18.14,
+                2.68
+              ]
             },
             {
               "cell": "15,13",
@@ -300,10 +343,14 @@
               "kinds": [
                 "snowdrop"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                14.68,
+                13.18
+              ]
             }
           ],
-          "groupPlants": 29,
+          "groupPlants": 26,
           "meadow": {
             "source": "atrium",
             "center": "8,12",
@@ -318,22 +365,22 @@
               "8,13",
               "9,13"
             ],
-            "plants": 16,
+            "plants": 12,
             "kinds": {
               "snowdrop": 6,
               "mizubasho": 2,
-              "bloom": 8
+              "bloom": 4
             }
           },
           "byKind": {
-            "snowdrop": 25,
-            "mizubasho": 5,
-            "bloom": 15
+            "snowdrop": 20,
+            "mizubasho": 6,
+            "bloom": 12
           },
-          "dress": 189,
+          "dress": 158,
           "patches": 7,
-          "triangles": 972606,
-          "drawMeshes": 45,
+          "triangles": 827208,
+          "drawMeshes": 48,
           "chunks": 7
         }
       },
@@ -474,7 +521,7 @@
             "2,14:left"
           ]
         },
-        "flowers": 49,
+        "flowers": 42,
         "flowerSpots": 31,
         "flowerClusters": [
           "18,7:mizubasho:right",
@@ -491,23 +538,31 @@
               "cell": "18,7",
               "kind": "mizubasho",
               "d": "right",
-              "n": 5,
-              "kinds": [
-                "mizubasho",
-                "snowdrop"
-              ],
-              "edge": "water"
-            },
-            {
-              "cell": "9,4",
-              "kind": "mizubasho",
-              "d": "down",
               "n": 4,
               "kinds": [
                 "mizubasho",
                 "snowdrop"
               ],
-              "edge": "water"
+              "edge": "water",
+              "at": [
+                18.35,
+                6.97
+              ]
+            },
+            {
+              "cell": "9,4",
+              "kind": "mizubasho",
+              "d": "down",
+              "n": 3,
+              "kinds": [
+                "mizubasho",
+                "snowdrop"
+              ],
+              "edge": "water",
+              "at": [
+                9.07,
+                4.37
+              ]
             },
             {
               "cell": "3,14",
@@ -518,7 +573,11 @@
                 "mizubasho",
                 "snowdrop"
               ],
-              "edge": "water"
+              "edge": "water",
+              "at": [
+                2.66,
+                13.77
+              ]
             },
             {
               "cell": "24,5",
@@ -529,7 +588,11 @@
                 "snowdrop",
                 "mizubasho"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                24.1,
+                4.7
+              ]
             },
             {
               "cell": "18,2",
@@ -540,19 +603,27 @@
                 "bloom",
                 "snowdrop"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                17.92,
+                1.7
+              ]
             },
             {
               "cell": "9,13",
               "kind": "snowdrop",
               "d": "down",
-              "n": 7,
+              "n": 6,
               "kinds": [
                 "snowdrop",
                 "mizubasho",
                 "bloom"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                9,
+                13.31
+              ]
             },
             {
               "cell": "1,5",
@@ -561,12 +632,16 @@
               "n": 5,
               "kinds": [
                 "snowdrop",
-                "bloom"
+                "mizubasho"
               ],
-              "edge": "wall"
+              "edge": "wall",
+              "at": [
+                0.71,
+                4.66
+              ]
             }
           ],
-          "groupPlants": 33,
+          "groupPlants": 30,
           "meadow": {
             "source": "atrium",
             "center": "16,12",
@@ -581,22 +656,22 @@
               "16,13",
               "17,13"
             ],
-            "plants": 16,
+            "plants": 12,
             "kinds": {
-              "snowdrop": 6,
-              "mizubasho": 7,
+              "snowdrop": 5,
+              "mizubasho": 4,
               "bloom": 3
             }
           },
           "byKind": {
-            "snowdrop": 26,
-            "mizubasho": 14,
-            "bloom": 9
+            "snowdrop": 23,
+            "mizubasho": 12,
+            "bloom": 7
           },
-          "dress": 199,
+          "dress": 172,
           "patches": 8,
-          "triangles": 1110748,
-          "drawMeshes": 51,
+          "triangles": 956892,
+          "drawMeshes": 57,
           "chunks": 8
         }
       },
@@ -720,301 +795,301 @@
     "sameKeySameLayout": true,
     "memory": [
       {
-        "geometries": 401,
+        "geometries": 391,
         "textures": 145
       },
       {
-        "geometries": 128,
+        "geometries": 118,
         "textures": 143,
         "buildKey": "2-2@e1sfnnh90",
-        "ownedDisposed": 2268
+        "ownedDisposed": 2289
       },
       {
-        "geometries": 128,
+        "geometries": 118,
         "textures": 143,
         "buildKey": "2-2@e2s1pkc03u",
-        "ownedDisposed": 2730
+        "ownedDisposed": 2753
       },
       {
-        "geometries": 128,
+        "geometries": 118,
         "textures": 143,
         "buildKey": "2-2@e3s16f8qg",
-        "ownedDisposed": 3157
+        "ownedDisposed": 3187
       },
       {
-        "geometries": 129,
+        "geometries": 119,
         "textures": 143,
         "buildKey": "2-2@e4sfm2j3p",
-        "ownedDisposed": 3596
+        "ownedDisposed": 3630
       }
     ]
   },
   "stats": {
     "b2f1_props_flower_1_snowdrop": {
-      "calls": 207,
-      "triangles": 982789,
-      "geometries": 235,
+      "calls": 200,
+      "triangles": 622863,
+      "geometries": 236,
       "textures": 52,
-      "lights": 36
+      "lights": 33
     },
     "b2f1_props_flower_2_snowdrop": {
-      "calls": 78,
-      "triangles": 312889,
-      "geometries": 264,
-      "textures": 52,
-      "lights": 36
+      "calls": 198,
+      "triangles": 737559,
+      "geometries": 306,
+      "textures": 53,
+      "lights": 33
     },
     "b2f1_props_flower_3_snowdrop": {
-      "calls": 202,
-      "triangles": 817981,
-      "geometries": 314,
+      "calls": 203,
+      "triangles": 794305,
+      "geometries": 316,
       "textures": 65,
-      "lights": 36
+      "lights": 33
     },
     "b2f1_props_flower_4_snowdrop": {
-      "calls": 229,
-      "triangles": 1010793,
-      "geometries": 314,
+      "calls": 231,
+      "triangles": 980227,
+      "geometries": 316,
       "textures": 65,
-      "lights": 36
+      "lights": 33
     },
     "b2f1_props_flower_meadow_near_up": {
-      "calls": 175,
-      "triangles": 1068106,
-      "geometries": 314,
+      "calls": 171,
+      "triangles": 873522,
+      "geometries": 316,
       "textures": 65,
-      "lights": 36
+      "lights": 33
     },
     "b2f2_props_flower_1_bloom": {
-      "calls": 151,
-      "triangles": 621469,
-      "geometries": 246,
-      "textures": 93,
-      "lights": 52
+      "calls": 223,
+      "triangles": 712171,
+      "geometries": 332,
+      "textures": 111,
+      "lights": 48
     },
     "b2f2_props_flower_2_bloom": {
-      "calls": 92,
-      "triangles": 323811,
-      "geometries": 286,
-      "textures": 93,
-      "lights": 52
+      "calls": 239,
+      "triangles": 811000,
+      "geometries": 364,
+      "textures": 114,
+      "lights": 48
     },
     "b2f2_props_flower_3_snowdrop": {
-      "calls": 63,
-      "triangles": 297520,
-      "geometries": 287,
-      "textures": 93,
-      "lights": 52
+      "calls": 176,
+      "triangles": 669265,
+      "geometries": 371,
+      "textures": 114,
+      "lights": 48
     },
     "b2f2_props_flower_4_snowdrop": {
-      "calls": 159,
-      "triangles": 446620,
+      "calls": 160,
+      "triangles": 422804,
       "geometries": 379,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_flower_meadow_far": {
-      "calls": 208,
-      "triangles": 1048329,
-      "geometries": 385,
+      "calls": 203,
+      "triangles": 920329,
+      "geometries": 379,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_flower_meadow_near_right": {
-      "calls": 219,
-      "triangles": 1055315,
-      "geometries": 391,
+      "calls": 220,
+      "triangles": 985479,
+      "geometries": 379,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_flower_meadow_near_left": {
-      "calls": 164,
-      "triangles": 784986,
-      "geometries": 404,
+      "calls": 165,
+      "triangles": 715150,
+      "geometries": 396,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_crystals_1_violet": {
       "calls": 93,
-      "triangles": 351041,
-      "geometries": 404,
+      "triangles": 350881,
+      "geometries": 396,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_crystals_2_white": {
       "calls": 210,
-      "triangles": 845714,
-      "geometries": 410,
+      "triangles": 815588,
+      "geometries": 396,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_waterfall_1": {
-      "calls": 149,
-      "triangles": 406224,
-      "geometries": 412,
+      "calls": 150,
+      "triangles": 382408,
+      "geometries": 396,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_altar": {
       "calls": 141,
-      "triangles": 457317,
-      "geometries": 412,
+      "triangles": 451683,
+      "geometries": 400,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_pillar_1": {
-      "calls": 96,
-      "triangles": 638623,
-      "geometries": 412,
+      "calls": 92,
+      "triangles": 492247,
+      "geometries": 400,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_pillar_2": {
-      "calls": 165,
-      "triangles": 550664,
-      "geometries": 412,
+      "calls": 166,
+      "triangles": 526848,
+      "geometries": 400,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_ruin_1": {
-      "calls": 194,
-      "triangles": 678172,
-      "geometries": 412,
+      "calls": 195,
+      "triangles": 649102,
+      "geometries": 400,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f2_props_ruin_2": {
-      "calls": 144,
-      "triangles": 643491,
-      "geometries": 412,
+      "calls": 143,
+      "triangles": 608007,
+      "geometries": 400,
       "textures": 130,
-      "lights": 52
+      "lights": 48
     },
     "b2f3_props_flower_1_mizubasho": {
-      "calls": 176,
-      "triangles": 430397,
-      "geometries": 233,
+      "calls": 172,
+      "triangles": 288651,
+      "geometries": 224,
       "textures": 129,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_flower_2_mizubasho": {
-      "calls": 239,
-      "triangles": 506176,
-      "geometries": 373,
+      "calls": 240,
+      "triangles": 482428,
+      "geometries": 364,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_flower_3_mizubasho": {
-      "calls": 54,
-      "triangles": 136005,
-      "geometries": 373,
+      "calls": 55,
+      "triangles": 135693,
+      "geometries": 364,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_flower_4_snowdrop": {
-      "calls": 92,
-      "triangles": 262595,
-      "geometries": 385,
+      "calls": 90,
+      "triangles": 210191,
+      "geometries": 375,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_flower_meadow_far": {
-      "calls": 263,
-      "triangles": 908252,
-      "geometries": 390,
+      "calls": 259,
+      "triangles": 692926,
+      "geometries": 380,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_flower_meadow_near_up": {
-      "calls": 252,
-      "triangles": 868594,
-      "geometries": 398,
+      "calls": 255,
+      "triangles": 748662,
+      "geometries": 388,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_flower_meadow_near_down": {
-      "calls": 104,
-      "triangles": 548690,
-      "geometries": 399,
+      "calls": 106,
+      "triangles": 452194,
+      "geometries": 389,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_crystals_1_blue": {
-      "calls": 145,
-      "triangles": 357776,
-      "geometries": 399,
+      "calls": 146,
+      "triangles": 357464,
+      "geometries": 389,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_crystals_2_blue": {
       "calls": 43,
       "triangles": 78016,
-      "geometries": 399,
+      "geometries": 389,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_waterfall_1": {
       "calls": 71,
-      "triangles": 157828,
-      "geometries": 399,
+      "triangles": 157516,
+      "geometries": 389,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_altar": {
       "calls": 40,
-      "triangles": 64015,
-      "geometries": 400,
+      "triangles": 63703,
+      "geometries": 390,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_pillar_1": {
       "calls": 44,
-      "triangles": 79970,
-      "geometries": 400,
+      "triangles": 79658,
+      "geometries": 390,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_pillar_2": {
-      "calls": 206,
-      "triangles": 472583,
-      "geometries": 400,
+      "calls": 207,
+      "triangles": 448835,
+      "geometries": 390,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_ruin_1": {
       "calls": 62,
-      "triangles": 48249,
-      "geometries": 401,
+      "triangles": 47937,
+      "geometries": 391,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_ruin_2": {
       "calls": 221,
-      "triangles": 382936,
-      "geometries": 401,
+      "triangles": 382624,
+      "geometries": 391,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_bank_1": {
       "calls": 63,
-      "triangles": 169931,
-      "geometries": 401,
+      "triangles": 169619,
+      "geometries": 391,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_bank_2": {
       "calls": 59,
-      "triangles": 44734,
-      "geometries": 401,
+      "triangles": 44422,
+      "geometries": 391,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     },
     "b2f3_props_monument_watergate_n": {
       "calls": 98,
-      "triangles": 153785,
-      "geometries": 401,
+      "triangles": 153473,
+      "geometries": 391,
       "textures": 145,
-      "lights": 47
+      "lights": 44
     }
   },
   "errors": [],
