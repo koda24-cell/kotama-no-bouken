@@ -11,6 +11,7 @@ import json
 import math
 from pathlib import Path
 import sys
+import struct
 import bpy
 from mathutils import Vector
 
@@ -33,7 +34,16 @@ bpy.ops.import_scene.gltf(filepath=str(src.resolve()))
 source_objects=[o for o in bpy.context.scene.objects if o.type=="MESH"]
 assert source_objects, "no mesh"
 assert not any(o.type=="ARMATURE" for o in bpy.context.scene.objects), "skinned content unsupported"
-assert not any(any(m and m.blend_method!="OPAQUE" for m in o.data.materials) for o in source_objects), "alpha foliage and glass must use specialized LOD"
+# In Blender 5.x imported opaque materials may use DITHERED blend_method;
+# trust original glTF material alphaMode instead of Blender's display mode.
+with src.open("rb") as f:
+    header=f.read(12)
+    magic,version,total=struct.unpack("<4sII",header)
+    assert magic==b"glTF" and version==2
+    jsonlen,kind=struct.unpack("<I4s",f.read(8))
+    assert kind==b"JSON"
+    gltf_doc=json.loads(f.read(jsonlen))
+assert all(m.get("alphaMode","OPAQUE")=="OPAQUE" for m in gltf_doc.get("materials",[])), "alpha foliage and glass must use specialized LOD"
 assert not any(o.type=="MESH" and o.find_armature() for o in source_objects)
 for o in source_objects:o.hide_render=False
 
