@@ -45,3 +45,14 @@
 - **V9**: `tools/b5-knights/build_pedestal_true_fracture_v9.py`。主亀裂の低周波うねりを増幅し、狭い先端へ収束する副亀裂を石材にBooleanカットで造形。新規CUTTERは作品GLBには出さず、左右本体の存在と三角面をActionsで検査。実Blender3方向描画/GLB/Blend/manifest成功: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44034533166 。Artifact `14306162859`。ZIP実体の5ファイルSHA-256一致。副亀裂の視認性は弱く、全体が直線スリットに見える問題が残る。**未合格**。
 - Caution: 単に亀裂の座標を揺らすだけでなく、周辺の層状剥離・装飾の不均一欠損・石材断面の粗い微細形状・主割れ周辺の段差を広域に作り直すこと。現在のデザインはむしろ整いすぎていて、現代の模型台に見える。ゲーム距離での視認性を確認すること。
 - V1–V9はすべて独立ソースを保持。**NO asset promotion / no merge / no game modification**。
+
+## V10–V14 ユーザー添付青線図に合わせた「側面Y字状亀裂」修正 (2026-11-17)
+- **実際に確認した入力**: 2026-11-17チャット添付・3方向の台座画像で SIDE 面にユーザーが青線を手書き。側面の**最上段左寄りから右下に長く曲がりながら走る主亀裂**、その中間より右から下へ伸びる**短い分岐**。ユーザー画像は参考資料であり原画像をゲーム素材に採用していない。
+- 実装方向: 座標Y/Zに沿って石材側面 (+X) にメッシュ断面カッターを作成、主亀裂→笠石上の分岐→下段胴体の亀裂を独立に削り込む。実モデルの保全チェックでCapとShaftを残す。
+- **V10** https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44036833547 : Blender 3方向、GLB/Blend/manifestとhash検証成功。側面の溝は細く、通常撮影でほぼ見えず、**未合格**。
+- **V11** https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44037640023 : 幅・深さ拡大し`side_detail.png`接写を追加。実GLB・Blend・4 PNG/manifest SHA照合成功。幅が増えたが、側面ではまだラインが見えない。**未合格**。
+- **V12** https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44038377274 : 下地のBoolean掘り込みと併せ、亀裂内部の暗い鉱物断面を極薄メッシュとして露出。3方向+接写、GLB/Blend、6 filesのSHA検証成功。初めて亀裂と下向き枝が視認できたが、二重の線が不自然。**未合格**。
+- **V13** https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44039165420 : カメラを水平な側面正投影に変更。実レンダリング4PNG+GLB/Blend全部QA成功。主亀裂と枝の形状が読みやすくなったが、上部の石縁から離れている。
+- **V14** https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44039845293 : 亀裂の始点をより上縁へ変更、過剰に並行する明るい線を撤去。Artifacts ID `14308583765`、GLB/Blend、front/side/angle/side_detail PNG、manifest SHA-256の全件照合完了。写真系PBRは以前と同様にambientCG Rock063のAlbedo/Roughness。技術QA成功、**芸術品質は未承認**。
+- **V14視覚評価**: 長い横方向に下る亀裂と途中から下がる一本の枝は確認できる。ただし、ユーザーの青い線より亀裂が**笠石下縁へ寄りすぎ、溝が均一で、部分的に黒い塗り線の印象**が残る。元画像とV14の接写画像を実際に並べて比較済み。亀裂だけでなく石の端面を破断させる造形へ段階的に進むべき。
+- 試作V7〜V14はすべて独立ファイルとして保存。バージョンに`NOT_APPROVED`を維持し、正式素材・development・ゲームへ昇格しない。
