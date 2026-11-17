@@ -160,67 +160,52 @@
       "omitted": [],
       "drawGroups": [
         "b2:open_ceiling_atrium:8",
-        "Water_Ripple_Ring_3:0",
-        "Waterfall_Mist:0",
-        "Water_Ripple_Ring_1:0",
-        "Waterfall_Mist:0",
-        "Water_Ripple_Ring_1:0",
+        "b2_fish:1",
+        "Water_Ripple_Ring_0:0",
         "Waterfall_Mist:0",
         "Water_Ripple_Ring_2:0",
         "Waterfall_Mist:0",
         "b2:atrium:5",
-        "b2:floor:15",
+        "b2:floor:14",
         "b2:ceiling:12",
         "b2:walls:12",
-        "b2:extras:11",
-        "b2:pillars:31",
+        "b2:extras:10",
+        "b2:pillars:35",
+        "b2:shoreline:1",
+        "b2:ice_stalactites:24",
+        "b2:frost_cornices:36",
+        "b2:frost_veins:24",
+        "b2:water:7",
+        "b2:rocks:13",
+        "b2:frost_ledge:2",
         "b2:spires:12",
         "b2:rock_seams:12",
-        "b2:water:11",
-        "b2:water_foam:3",
-        "b2:rocks:14",
+        "b2:streams:4",
         "b2:puddles:24",
-        "b2:ice_stalactites:24",
-        "b2:v8_stalagmites:12",
-        "b2:frost_cornices:36",
-        "b2:frost_veins:22",
-        "b2:v8_erosion:9",
-        "b2:streams:5",
+        "b2:v8_erosion:11",
         "b2:ceiling_details:12",
-        "b2:shoreline:2",
-        "b2:crystal_zone:12",
+        "b2:v8_stalagmites:12",
+        "b2:water_foam:2",
+        "b2:crystal_zone:8",
         "b2:monuments:9",
-        "b2:landmarks:3",
         "b2:flowers:30"
       ],
-      "ripples": 4,
-      "mists": 4,
+      "ripples": 2,
+      "mists": 2,
       "falls": [
         {
-          "cell": "21,15",
-          "wall": "right"
-        },
-        {
-          "cell": "5,5",
+          "cell": "23,3",
           "wall": "left"
         },
         {
           "cell": "5,17",
           "wall": "right"
-        },
-        {
-          "cell": "1,1",
-          "wall": "left"
         }
       ],
-      "bridge": {
-        "tx": 8,
-        "ty": 12,
-        "ry": 0
-      },
+      "bridge": null,
       "atrium": {
-        "tx": 8,
-        "ty": 12
+        "tx": 16,
+        "ty": 3
       },
       "monuments": [
         {
@@ -234,51 +219,39 @@
       "placed": [
         {
           "name": "shrine",
-          "x": 22,
-          "z": 10,
-          "ry": 0
-        },
-        {
-          "name": "pillarG",
-          "x": 12.7,
-          "z": 4.7,
-          "ry": 3.89
-        },
-        {
-          "name": "pillarG",
-          "x": 18.7,
-          "z": 13.3,
-          "ry": 5.27
-        },
-        {
-          "name": "ruinParapet",
-          "x": 17.51,
-          "z": 10,
+          "x": 16,
+          "z": 16,
           "ry": -1.57
         },
         {
-          "name": "ruinRubble",
-          "x": 20,
-          "z": 6.39,
-          "ry": 5.37
+          "name": "pillarA",
+          "x": 0.7,
+          "z": 0.7,
+          "ry": 1.98
         },
         {
-          "name": "ruinSpire",
-          "x": 5.99,
-          "z": 13.54,
-          "ry": 1
-        },
-        {
-          "name": "ruinRubble",
-          "x": 5.99,
-          "z": 10.39,
-          "ry": 5.54
+          "name": "ruinFallen",
+          "x": 11.89,
+          "z": 13.51,
+          "ry": 3.14
         },
         {
           "name": "ruinRubble",
-          "x": 2,
-          "z": 1.61,
-          "ry": 1.12
+          "x": 13.61,
+          "z": 11.09,
+          "ry": 0.65
+        },
+        {
+          "name": "ruinParapet",
+          "x": 8.49,
+          "z": 10.92,
+          "ry": 1.57
+        },
+        {
+          "name": "bankL",
+          "x": 3.54,
+          "z": 0.93,
+          "ry": 1.57
         },
         {
           "name": "watergate",
@@ -311,92 +284,109 @@
           "ry": 0
         },
         {
+          "name": "pillarG",
+          "x": 18.5,
+          "z": 1.5,
+          "ry": 0.51
+        },
+        {
+          "name": "pillarA",
+          "x": 18.5,
+          "z": 2.5,
+          "ry": 4.81
+        },
+        {
           "name": "pillarR",
-          "x": 18.75,
-          "z": 7.22,
-          "ry": 1.57
+          "x": 24.5,
+          "z": 4.5,
+          "ry": 5.5
+        },
+        {
+          "name": "pillarG",
+          "x": 18.5,
+          "z": 6.5,
+          "ry": 3.93
+        },
+        {
+          "name": "pillarG",
+          "x": 18.5,
+          "z": 7.5,
+          "ry": 6.27
         },
         {
           "name": "pillarA",
-          "x": 14.5,
-          "z": 5.5,
-          "ry": 5.8
-        },
-        {
-          "name": "pillarA",
-          "x": 22.5,
-          "z": 12.5,
-          "ry": 2.26
+          "x": 10.5,
+          "z": 9.5,
+          "ry": 0.85
         }
       ],
       "crystalZones": [
         {
-          "tx": 5,
-          "ty": 13,
+          "tx": 25,
+          "ty": 9,
+          "pal": "cyan",
+          "deadEnd": false,
+          "bx": 1,
+          "bz": -1
+        },
+        {
+          "tx": 3,
+          "ty": 15,
+          "pal": "cyan",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": -1
+        },
+        {
+          "tx": 1,
+          "ty": 9,
           "pal": "violet",
           "deadEnd": false,
           "bx": -1,
-          "bz": 1
-        },
-        {
-          "tx": 23,
-          "ty": 9,
-          "pal": "white",
-          "deadEnd": false,
-          "bx": -1,
-          "bz": 1
-        },
-        {
-          "tx": 13,
-          "ty": 9,
-          "pal": "white",
-          "deadEnd": false,
-          "bx": 1,
-          "bz": 1
+          "bz": -1
         }
       ],
-      "buildKey": "2-1@e0s6z3iok",
+      "buildKey": "2-1@e0sndp0mj",
       "random": true,
       "layout": {
         "altar": {
-          "cell": "22,11",
-          "niche": "22,10",
-          "open": "up",
-          "sight": 2
+          "cell": "15,16",
+          "niche": "16,16",
+          "open": "right",
+          "sight": 0
         },
-        "pillars": 2,
-        "ruins": 5,
-        "ruinClusters": 3,
-        "banks": 0,
+        "pillars": 1,
+        "ruins": 3,
+        "ruinClusters": 1,
+        "banks": 1,
         "cells": {
           "pillar": [
-            "13,5:up+left",
-            "19,13:down+left"
+            "1,1:up+left"
           ],
           "ruin": [
-            "17,10:right",
-            "6,13:down",
-            "2,1:up"
+            "12,13:down"
           ],
-          "bank": []
+          "bank": [
+            "3,1:right"
+          ]
         },
         "flowers": 14,
-        "flowerSpots": 70,
+        "flowerSpots": 67,
         "flowerClusters": [
-          "13,9:bloom:right",
-          "23,9:bloom:left",
-          "9,3:snowdrop:up",
-          "9,13:mizubasho:down",
-          "21,13:snowdrop:down",
-          "18,3:snowdrop:up",
-          "10,7:snowdrop:up",
-          "5,10:snowdrop:right",
-          "15,13:snowdrop:left",
+          "25,9:bloom:right",
+          "12,15:snowdrop:up",
           "24,3:snowdrop:up",
-          "16,19:snowdrop:up",
-          "1,15:snowdrop:up",
-          "5,15:snowdrop:up",
-          "4,19:snowdrop:up"
+          "3,1:mizubasho:up",
+          "7,6:snowdrop:right",
+          "18,13:snowdrop:up",
+          "7,18:snowdrop:right",
+          "3,9:snowdrop:right",
+          "1,4:snowdrop:right",
+          "13,18:snowdrop:right",
+          "25,6:snowdrop:right",
+          "3,15:bloom:left",
+          "21,11:snowdrop:up",
+          "9,13:snowdrop:down"
         ]
       },
       "extras": {
@@ -426,211 +416,160 @@
       "omitted": [],
       "drawGroups": [
         "b2:open_ceiling_atrium:8",
-        "Water_Ripple_Ring_2:0",
-        "b2_fish:1",
-        "b2_fish:1",
-        "Water_Ripple_Ring_2:0",
-        "Waterfall_Mist:0",
-        "b2_fish:1",
-        "b2_fish:1",
-        "b2_fish:1",
-        "Water_Ripple_Ring_2:0",
-        "b2_fish:1",
-        "b2_fish:1",
-        "b2_fish:1",
         "Water_Ripple_Ring_1:0",
-        "b2_fish:1",
-        "b2_fish:1",
-        "b2_fish:1",
-        "b2_fish:1",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_0:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_1:0",
+        "Waterfall_Mist:0",
         "b2_fish:1",
         "b2_fish:1",
         "Water_Ripple_Ring_3:0",
         "Waterfall_Mist:0",
-        "Water_Ripple_Ring_1:0",
-        "Water_Ripple_Ring_1:0",
-        "Water_Ripple_Ring_1:0",
-        "Waterfall_Mist:0",
         "b2:atrium:5",
-        "b2:floor:18",
-        "b2:ceiling:10",
-        "b2:walls:10",
-        "b2:extras:22",
-        "b2:pillars:27",
-        "b2:ice_stalactites:16",
+        "b2:pillars:25",
+        "b2:extras:11",
+        "b2:floor:13",
+        "b2:ceiling:11",
+        "b2:ice_stalactites:14",
+        "b2:walls:11",
+        "b2:spires:9",
         "b2:rock_seams:8",
         "b2:frost_cornices:27",
         "b2:frost_veins:16",
-        "b2:puddles:16",
-        "b2:v8_stalagmites:6",
-        "b2:spires:9",
-        "b2:v8_erosion:5",
-        "b2:streams:3",
-        "b2:rocks:17",
-        "b2:ceiling_details:8",
-        "b2:shoreline:8",
+        "b2:puddles:18",
+        "b2:v8_stalagmites:8",
+        "b2:v8_erosion:6",
+        "b2:streams:5",
+        "b2:rocks:12",
+        "b2:ceiling_details:7",
         "b2:water:14",
-        "b2:frost_ledge:6",
-        "b2:water_foam:3",
+        "b2:water_foam:4",
+        "b2:shoreline:2",
+        "b2:frost_ledge:4",
         "b2:crystal_zone:12",
-        "b2:monuments:9",
-        "b2:landmarks:3",
+        "b2:monuments:21",
         "b2:flowers:31"
       ],
-      "ripples": 8,
-      "mists": 3,
+      "ripples": 4,
+      "mists": 4,
       "falls": [
         {
-          "cell": "17,15",
+          "cell": "1,11",
           "wall": "down"
         },
         {
-          "cell": "25,12",
+          "cell": "23,11",
           "wall": "right"
         },
         {
-          "cell": "23,4",
+          "cell": "11,1",
+          "wall": "right"
+        },
+        {
+          "cell": "1,4",
           "wall": "up"
         }
       ],
-      "bridge": {
-        "tx": 8,
-        "ty": 2,
-        "ry": 0
-      },
+      "bridge": null,
       "atrium": {
-        "tx": 16,
-        "ty": 12
+        "tx": 4,
+        "ty": 8
       },
       "monuments": [
         {
+          "name": "altar",
+          "x": 16,
+          "y": 8,
+          "w": 3,
+          "h": 2
+        },
+        {
           "name": "watergate",
-          "x": 19,
-          "y": 15,
+          "x": 6,
+          "y": 16,
           "w": 4,
           "h": 2
         }
       ],
       "placed": [
         {
-          "name": "shrine",
-          "x": 14,
-          "z": 1,
-          "ry": 0
-        },
-        {
           "name": "pillarG",
-          "x": 5.3,
+          "x": 16.7,
           "z": 0.7,
-          "ry": 1.27
+          "ry": 3.7
         },
         {
-          "name": "pillarG",
-          "x": 8.3,
-          "z": 7.3,
-          "ry": 3.69
+          "name": "pillarA",
+          "x": 2.69,
+          "z": 15.3,
+          "ry": 1.1
         },
         {
-          "name": "pillarG",
-          "x": 8.3,
-          "z": 14.3,
-          "ry": 3.46
-        },
-        {
-          "name": "pillarR",
-          "x": 0.7,
-          "z": 6.3,
-          "ry": 0
-        },
-        {
-          "name": "ruinFallen",
-          "x": 26.51,
-          "z": 7.98,
-          "ry": -1.57
-        },
-        {
-          "name": "ruinRubble",
-          "x": 24.61,
-          "z": 11.02,
-          "ry": 1.25
-        },
-        {
-          "name": "ruinFallen",
-          "x": 10.94,
-          "z": 6.51,
-          "ry": 3.14
-        },
-        {
-          "name": "ruinRubble",
-          "x": 13.39,
-          "z": 9.03,
-          "ry": 5.02
+          "name": "pillarA",
+          "x": 8.7,
+          "z": 10.7,
+          "ry": 0.4
         },
         {
           "name": "ruinSpire",
-          "x": 1.46,
-          "z": 12.12,
-          "ry": 1.8
+          "x": 5.89,
+          "z": 9.54,
+          "ry": 1.15
         },
         {
           "name": "ruinRubble",
-          "x": 1.39,
-          "z": 8.89,
-          "ry": 2.55
+          "x": 5.96,
+          "z": 6.39,
+          "ry": 3.26
         },
         {
-          "name": "ruinFallen",
-          "x": 4,
-          "z": 15.51,
+          "name": "ruinParapet",
+          "x": 10,
+          "z": 1.51,
           "ry": 3.14
         },
         {
-          "name": "bankL",
-          "x": 20.09,
-          "z": 2.46,
-          "ry": 3.14
+          "name": "ruinRubble",
+          "x": 22,
+          "z": 11.61,
+          "ry": 3.53
         },
         {
-          "name": "bankL",
-          "x": 26.54,
-          "z": 6.1,
+          "name": "bankR",
+          "x": 11.54,
+          "z": 12.07,
           "ry": -1.57
         },
         {
-          "name": "bankR",
-          "x": 16.07,
-          "z": 9.46,
+          "name": "altar",
+          "x": 17,
+          "z": 8.5,
           "ry": 0
         },
         {
-          "name": "bankR",
-          "x": 1.46,
-          "z": 14.1,
-          "ry": 1.57
-        },
-        {
           "name": "watergate",
-          "x": 20.5,
-          "z": 15.2,
+          "x": 7.5,
+          "z": 16.2,
           "ry": 3.14
         },
         {
-          "name": "pillarA",
-          "x": 16.5,
-          "z": 2.5,
-          "ry": 5.03
-        },
-        {
-          "name": "pillarA",
-          "x": 18.5,
-          "z": 2.5,
-          "ry": 4.81
-        },
-        {
           "name": "pillarR",
-          "x": 5.5,
-          "z": 4.5,
-          "ry": 3.93
+          "x": 12.75,
+          "z": 13.22,
+          "ry": 1.57
+        },
+        {
+          "name": "pillarA",
+          "x": 12.5,
+          "z": 2.5,
+          "ry": 5.07
+        },
+        {
+          "name": "pillarA",
+          "x": 14.5,
+          "z": 2.5,
+          "ry": 3.62
         },
         {
           "name": "pillarR",
@@ -639,93 +578,84 @@
           "ry": 3.93
         },
         {
-          "name": "pillarG",
-          "x": 5.5,
+          "name": "pillarA",
+          "x": 14.5,
           "z": 5.5,
-          "ry": 5.97
+          "ry": 5.8
         },
         {
-          "name": "pillarR",
-          "x": 8.5,
-          "z": 5.5,
-          "ry": 3.93
+          "name": "pillarA",
+          "x": 5.5,
+          "z": 13.5,
+          "ry": 2.14
         }
       ],
       "crystalZones": [
         {
-          "tx": 19,
-          "ty": 2,
-          "pal": "blue",
-          "deadEnd": false,
+          "tx": 7,
+          "ty": 11,
+          "pal": "cyan",
+          "deadEnd": true,
           "bx": 1,
-          "bz": -1
+          "bz": 0
         },
         {
-          "tx": 1,
-          "ty": 1,
-          "pal": "blue",
+          "tx": 23,
+          "ty": 7,
+          "pal": "violet",
           "deadEnd": false,
           "bx": -1,
           "bz": -1
         },
         {
-          "tx": 25,
-          "ty": 14,
+          "tx": 12,
+          "ty": 2,
           "pal": "blue",
           "deadEnd": false,
-          "bx": 1,
+          "bx": -1,
           "bz": -1
         }
       ],
       "buildKey": "2-2@e0slaqk9v",
       "random": true,
       "layout": {
-        "altar": {
-          "cell": "14,2",
-          "niche": "14,1",
-          "open": "up",
-          "sight": 8
-        },
-        "pillars": 4,
-        "ruins": 7,
+        "altar": null,
+        "pillars": 3,
+        "ruins": 4,
         "ruinClusters": 3,
-        "banks": 4,
+        "banks": 1,
         "cells": {
           "pillar": [
-            "5,1:up+right",
-            "8,7:right+down",
-            "8,14:right+down",
-            "1,6:down+left"
+            "17,1:up+left",
+            "3,15:down+left",
+            "9,11:up+left"
           ],
           "ruin": [
-            "26,8:right",
-            "11,6:down",
-            "2,12:left"
+            "6,9:down",
+            "10,1:up",
+            "22,11:up"
           ],
           "bank": [
-            "20,3:up",
-            "26,6:right",
-            "16,10:up",
-            "2,14:left"
+            "11,12:right"
           ]
         },
         "flowers": 14,
-        "flowerSpots": 47,
+        "flowerSpots": 54,
         "flowerClusters": [
-          "15,9:mizubasho:right",
-          "19,2:bloom:right",
-          "9,6:mizubasho:down",
-          "7,15:snowdrop:down",
-          "24,5:snowdrop:up",
-          "18,13:snowdrop:down",
-          "25,15:bloom:right",
-          "15,15:snowdrop:down",
-          "1,5:snowdrop:up",
-          "2,15:mizubasho:down",
-          "10,2:mizubasho:up",
-          "1,1:bloom:left",
-          "25,10:snowdrop:right",
-          "21,14:snowdrop:down"
+          "12,2:bloom:left",
+          "23,7:bloom:left",
+          "7,11:bloom:right",
+          "25,1:snowdrop:up",
+          "3,9:snowdrop:down",
+          "16,10:snowdrop:up",
+          "25,15:snowdrop:right",
+          "8,15:snowdrop:down",
+          "21,11:snowdrop:up",
+          "9,4:snowdrop:right",
+          "19,1:mizubasho:up",
+          "10,11:mizubasho:up",
+          "2,3:snowdrop:down",
+          "13,13:snowdrop:up"
         ]
       },
       "extras": {
@@ -740,7 +670,7 @@
         "bankR": true,
         "shrine": true
       },
-      "ownedDisposed": 874
+      "ownedDisposed": 868
     }
   ],
   "render": {
@@ -858,240 +788,233 @@
       "lights": 32
     },
     "b2f2_01_enter": {
-      "calls": 196,
-      "triangles": 779243,
-      "geometries": 220,
-      "textures": 104,
-      "lights": 49
-    },
-    "b2f2_obj_cache_a2-cache": {
-      "calls": 50,
-      "triangles": 101823,
-      "geometries": 229,
-      "textures": 104,
-      "lights": 49
+      "calls": 168,
+      "triangles": 713795,
+      "geometries": 200,
+      "textures": 93,
+      "lights": 47
     },
     "b2f2_obj_door_a2-gate": {
-      "calls": 79,
-      "triangles": 192456,
-      "geometries": 242,
-      "textures": 104,
-      "lights": 49
+      "calls": 104,
+      "triangles": 362152,
+      "geometries": 229,
+      "textures": 93,
+      "lights": 47
+    },
+    "b2f2_obj_cache_a2-cache": {
+      "calls": 176,
+      "triangles": 568442,
+      "geometries": 299,
+      "textures": 109,
+      "lights": 47
     },
     "b2f2_obj_sign_a2-plaque": {
-      "calls": 78,
-      "triangles": 199132,
-      "geometries": 244,
-      "textures": 104,
-      "lights": 49
+      "calls": 84,
+      "triangles": 225950,
+      "geometries": 299,
+      "textures": 109,
+      "lights": 47
+    },
+    "b2f2_obj_save_10_13": {
+      "calls": 162,
+      "triangles": 535535,
+      "geometries": 347,
+      "textures": 125,
+      "lights": 47
     },
     "b2f2_obj_switch_a2-stone-west": {
-      "calls": 205,
-      "triangles": 749745,
-      "geometries": 289,
-      "textures": 104,
-      "lights": 49
+      "calls": 104,
+      "triangles": 309499,
+      "geometries": 347,
+      "textures": 125,
+      "lights": 47
     },
     "b2f2_obj_switch_a2-stone-east": {
-      "calls": 138,
-      "triangles": 383414,
-      "geometries": 360,
-      "textures": 104,
-      "lights": 49
-    },
-    "b2f2_obj_save_15_7": {
-      "calls": 288,
-      "triangles": 868944,
-      "geometries": 407,
-      "textures": 110,
-      "lights": 49
+      "calls": 106,
+      "triangles": 236533,
+      "geometries": 367,
+      "textures": 125,
+      "lights": 47
     },
     "b2f2_door_after_switches": {
-      "calls": 77,
-      "triangles": 192436,
-      "geometries": 407,
-      "textures": 110,
-      "lights": 49
+      "calls": 102,
+      "triangles": 362132,
+      "geometries": 367,
+      "textures": 125,
+      "lights": 47
     },
     "b2f2_waterfall_1": {
-      "calls": 119,
-      "triangles": 224101,
-      "geometries": 420,
-      "textures": 129,
-      "lights": 49
+      "calls": 168,
+      "triangles": 519839,
+      "geometries": 381,
+      "textures": 125,
+      "lights": 47
     },
     "b2f2_waterfall_2": {
-      "calls": 84,
-      "triangles": 201830,
-      "geometries": 420,
-      "textures": 129,
-      "lights": 49
+      "calls": 220,
+      "triangles": 750239,
+      "geometries": 382,
+      "textures": 125,
+      "lights": 47
     },
-    "b2f2_crystals_1_violet": {
-      "calls": 95,
-      "triangles": 394137,
-      "geometries": 420,
-      "textures": 129,
-      "lights": 49
+    "b2f2_crystals_1_cyan": {
+      "calls": 66,
+      "triangles": 166855,
+      "geometries": 406,
+      "textures": 125,
+      "lights": 47
     },
-    "b2f2_crystals_2_white": {
-      "calls": 210,
-      "triangles": 746176,
-      "geometries": 424,
-      "textures": 129,
-      "lights": 49
+    "b2f2_crystals_2_cyan": {
+      "calls": 68,
+      "triangles": 216938,
+      "geometries": 406,
+      "textures": 125,
+      "lights": 47
     },
-    "b2f2_crystals_3_white": {
-      "calls": 223,
-      "triangles": 674249,
-      "geometries": 424,
-      "textures": 129,
-      "lights": 49
+    "b2f2_crystals_3_violet": {
+      "calls": 54,
+      "triangles": 220089,
+      "geometries": 406,
+      "textures": 125,
+      "lights": 47
     },
     "b2f2_atrium_from_south": {
-      "calls": 207,
-      "triangles": 686226,
-      "geometries": 424,
-      "textures": 129,
-      "lights": 49
+      "calls": 67,
+      "triangles": 200522,
+      "geometries": 406,
+      "textures": 125,
+      "lights": 47
     },
     "b2f2_atrium_center": {
-      "calls": 189,
-      "triangles": 648696,
-      "geometries": 424,
-      "textures": 129,
-      "lights": 49
-    },
-    "b2f2_bridge": {
-      "calls": 213,
-      "triangles": 776065,
-      "geometries": 424,
-      "textures": 129,
-      "lights": 49
+      "calls": 59,
+      "triangles": 198260,
+      "geometries": 406,
+      "textures": 125,
+      "lights": 47
     },
     "b2f3_01_enter": {
-      "calls": 35,
-      "triangles": 52258,
+      "calls": 36,
+      "triangles": 85735,
       "geometries": 103,
-      "textures": 128,
-      "lights": 46
-    },
-    "b2f3_obj_sign_5_10": {
-      "calls": 167,
-      "triangles": 385394,
-      "geometries": 228,
-      "textures": 137,
-      "lights": 46
+      "textures": 124,
+      "lights": 42
     },
     "b2f3_obj_npc_merchant": {
-      "calls": 177,
-      "triangles": 418157,
-      "geometries": 244,
-      "textures": 143,
-      "lights": 46
+      "calls": 81,
+      "triangles": 245066,
+      "geometries": 166,
+      "textures": 130,
+      "lights": 42
     },
     "b2f3_obj_npc_watchman": {
-      "calls": 196,
-      "triangles": 450258,
-      "geometries": 270,
-      "textures": 143,
-      "lights": 46
+      "calls": 68,
+      "triangles": 163858,
+      "geometries": 172,
+      "textures": 130,
+      "lights": 42
+    },
+    "b2f3_obj_sign_1_13": {
+      "calls": 48,
+      "triangles": 72296,
+      "geometries": 200,
+      "textures": 139,
+      "lights": 42
     },
     "b2f3_obj_save_24_15": {
-      "calls": 248,
-      "triangles": 500304,
-      "geometries": 371,
-      "textures": 144,
-      "lights": 46
+      "calls": 364,
+      "triangles": 1125306,
+      "geometries": 295,
+      "textures": 140,
+      "lights": 42
     },
     "b2f3_obj_gate_25_16": {
-      "calls": 47,
-      "triangles": 55215,
-      "geometries": 379,
-      "textures": 144,
-      "lights": 46
+      "calls": 42,
+      "triangles": 35743,
+      "geometries": 304,
+      "textures": 140,
+      "lights": 42
     },
     "b2f3_open_water": {
-      "calls": 181,
-      "triangles": 423911,
-      "geometries": 379,
-      "textures": 144,
-      "lights": 46
+      "calls": 186,
+      "triangles": 582311,
+      "geometries": 352,
+      "textures": 141,
+      "lights": 42
     },
     "b2f3_waterfall_1": {
-      "calls": 47,
-      "triangles": 65898,
-      "geometries": 383,
-      "textures": 144,
-      "lights": 46
+      "calls": 66,
+      "triangles": 121534,
+      "geometries": 371,
+      "textures": 141,
+      "lights": 42
     },
     "b2f3_waterfall_2": {
-      "calls": 51,
-      "triangles": 70737,
-      "geometries": 383,
-      "textures": 144,
-      "lights": 46
+      "calls": 66,
+      "triangles": 124698,
+      "geometries": 372,
+      "textures": 141,
+      "lights": 42
+    },
+    "b2f3_monument_altar_n": {
+      "calls": 407,
+      "triangles": 1159786,
+      "geometries": 388,
+      "textures": 141,
+      "lights": 42
     },
     "b2f3_monument_watergate_n": {
-      "calls": 89,
-      "triangles": 156403,
-      "geometries": 391,
-      "textures": 144,
-      "lights": 46
+      "calls": 68,
+      "triangles": 216742,
+      "geometries": 388,
+      "textures": 141,
+      "lights": 42
     },
-    "b2f3_crystals_1_blue": {
-      "calls": 141,
-      "triangles": 246342,
-      "geometries": 392,
-      "textures": 144,
-      "lights": 46
+    "b2f3_crystals_1_cyan": {
+      "calls": 325,
+      "triangles": 1042568,
+      "geometries": 395,
+      "textures": 141,
+      "lights": 42
     },
-    "b2f3_crystals_2_blue": {
-      "calls": 45,
-      "triangles": 92244,
-      "geometries": 392,
-      "textures": 144,
-      "lights": 46
+    "b2f3_crystals_2_violet": {
+      "calls": 328,
+      "triangles": 1046004,
+      "geometries": 395,
+      "textures": 141,
+      "lights": 42
     },
     "b2f3_crystals_3_blue": {
-      "calls": 71,
-      "triangles": 109663,
-      "geometries": 392,
-      "textures": 144,
-      "lights": 46
+      "calls": 159,
+      "triangles": 430936,
+      "geometries": 408,
+      "textures": 141,
+      "lights": 42
     },
     "b2f3_atrium_from_south": {
-      "calls": 250,
-      "triangles": 512638,
-      "geometries": 394,
-      "textures": 144,
-      "lights": 46
+      "calls": 123,
+      "triangles": 349477,
+      "geometries": 408,
+      "textures": 141,
+      "lights": 42
     },
     "b2f3_atrium_center": {
-      "calls": 223,
-      "triangles": 468320,
-      "geometries": 394,
-      "textures": 144,
-      "lights": 46
-    },
-    "b2f3_bridge": {
-      "calls": 199,
-      "triangles": 417584,
-      "geometries": 402,
-      "textures": 144,
-      "lights": 46
+      "calls": 114,
+      "triangles": 326185,
+      "geometries": 408,
+      "textures": 141,
+      "lights": 42
     },
     "b1_after_b2": {
       "calls": 1116,
       "triangles": 3361628,
-      "geometries": 152,
-      "textures": 290,
+      "geometries": 151,
+      "textures": 287,
       "lights": 919
     }
   },
   "buildMs": {
-    "2-2F": 5873,
-    "2-3F": 2882
+    "2-2F": 3950,
+    "2-3F": 2563
   },
   "missing": [],
   "log": [
@@ -1137,7 +1060,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "left",
+      "dir": "down",
       "active": true,
       "near": "",
       "floor": 0,
@@ -1175,7 +1098,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "chest:2-0:19:1",
+      "near": "chest:2-0:5:5",
       "floor": 0,
       "area": 2
     },
@@ -1204,24 +1127,24 @@
       "area": 2
     },
     {
-      "label": "at-cache-a2-cache",
+      "label": "at-door-a2-gate",
       "tile": {
-        "tx": 2,
+        "tx": 7,
         "ty": 3
       },
       "dir": "left",
       "active": true,
-      "near": "cache:2:a2-cache",
+      "near": "",
       "floor": 1,
       "area": 2
     },
     {
-      "label": "at-door-a2-gate",
+      "label": "at-cache-a2-cache",
       "tile": {
-        "tx": 5,
+        "tx": 8,
         "ty": 3
       },
-      "dir": "left",
+      "dir": "right",
       "active": true,
       "near": "door:2:a2-gate",
       "floor": 1,
@@ -1235,50 +1158,50 @@
       },
       "dir": "up",
       "active": true,
-      "near": "door:2:a2-gate",
-      "floor": 1,
-      "area": 2
-    },
-    {
-      "label": "at-switch-a2-stone-west",
-      "tile": {
-        "tx": 3,
-        "ty": 6
-      },
-      "dir": "right",
-      "active": true,
-      "near": "npc:2:a2-plaque",
-      "floor": 1,
-      "area": 2
-    },
-    {
-      "label": "at-switch-a2-stone-east",
-      "tile": {
-        "tx": 17,
-        "ty": 6
-      },
-      "dir": "right",
-      "active": true,
-      "near": "switch:2:a2-stone-west",
+      "near": "cache:2:a2-cache",
       "floor": 1,
       "area": 2
     },
     {
       "label": "at-save-",
       "tile": {
-        "tx": 15,
-        "ty": 6
+        "tx": 10,
+        "ty": 12
       },
       "dir": "down",
       "active": true,
-      "near": "switch:2:a2-stone-east",
+      "near": "save:2-1:10:13",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-switch-a2-stone-west",
+      "tile": {
+        "tx": 6,
+        "ty": 15
+      },
+      "dir": "down",
+      "active": true,
+      "near": "switch:2:a2-stone-west",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-switch-a2-stone-east",
+      "tile": {
+        "tx": 22,
+        "ty": 15
+      },
+      "dir": "down",
+      "active": true,
+      "near": "switch:2:a2-stone-west",
       "floor": 1,
       "area": 2
     },
     {
       "label": "door-after-switches",
       "tile": {
-        "tx": 5,
+        "tx": 7,
         "ty": 3
       },
       "dir": "left",
@@ -1300,38 +1223,38 @@
       "area": 2
     },
     {
-      "label": "at-sign-",
-      "tile": {
-        "tx": 5,
-        "ty": 11
-      },
-      "dir": "up",
-      "active": true,
-      "near": "sign:2-2:5:10",
-      "floor": 2,
-      "area": 2
-    },
-    {
       "label": "at-npc-merchant",
       "tile": {
-        "tx": 8,
-        "ty": 11
+        "tx": 19,
+        "ty": 5
       },
       "dir": "up",
       "active": true,
-      "near": "sign:2-2:5:10",
+      "near": "npc:2:merchant",
       "floor": 2,
       "area": 2
     },
     {
       "label": "at-npc-watchman",
       "tile": {
-        "tx": 12,
-        "ty": 11
+        "tx": 23,
+        "ty": 5
       },
       "dir": "up",
       "active": true,
-      "near": "npc:2:merchant",
+      "near": "npc:2:watchman",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-sign-",
+      "tile": {
+        "tx": 2,
+        "ty": 13
+      },
+      "dir": "left",
+      "active": true,
+      "near": "sign:2-2:1:13",
       "floor": 2,
       "area": 2
     },
@@ -1343,7 +1266,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "npc:2:watchman",
+      "near": "save:2-2:24:15",
       "floor": 2,
       "area": 2
     },
