@@ -1608,7 +1608,7 @@ export async function createTheme(api) {
         }
         if (fall === d) {
           addWaterfall(ex, ez, ry, tx, ty, B);
-          light(ex - dx * 0.55, 2.5, ez - dy * 0.55, 0x80cde6, 0.4, 6.5);   // [B2V4-L] F1：滝の照り返しを弱く
+          light(ex - dx * 1.5, 3.0, ez - dy * 1.5, 0x80cde6, 0.4, 6.5);   // [B2V4-L] F1：滝の帯の0.25m手前にあった光で白い光の点が出たので、離して弱く
           continue;
         }
         if (objAt.has(key) || c === '>' || c === '<') continue;
