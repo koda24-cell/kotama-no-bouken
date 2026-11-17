@@ -28,8 +28,8 @@ export function createWaterV2(type='stream'){
  const material=new THREE.ShaderMaterial({
   uniforms,transparent:true,depthWrite:false,side:THREE.DoubleSide,
   vertexShader:`
-  varying vec2 vUv;varying vec3 vWorld;
-  void main(){vUv=uv;vec4 world=modelMatrix*vec4(position,1.);vWorld=world.xyz;gl_Position=projectionMatrix*viewMatrix*world;}
+  varying vec2 vUv;varying vec3 vWorld;varying vec3 vWorldNormal;
+  void main(){vUv=uv;vec4 world=modelMatrix*vec4(position,1.);vWorld=world.xyz;vWorldNormal=normalize(mat3(modelMatrix)*normal);gl_Position=projectionMatrix*viewMatrix*world;}
   `,
   fragmentShader:`
   precision highp float;
@@ -46,9 +46,9 @@ export function createWaterV2(type='stream'){
     float broad=sin(uv1.x*8.0+uv1.y*3.0);
     float micro=sin(uv2.y*24.0-uv2.x*16.0);
     float wave=(broad*0.75+micro*0.25)*uWave;
-    vec3 normal=normalize(vec3(0.13*cos(uv1.x*8.0),1.0,0.10*sin(uv2.y*12.0)));
+    vec3 localN=normalize(vWorldNormal+vec3(0.035*cos(uv1.x*8.0),0.02*sin(uv2.y*12.0),0.035*sin(uv2.x*9.0)));
     vec3 viewDir=normalize(cameraPosition-vWorld);
-    float fresnel=pow(1.0-max(dot(normal,viewDir),0.0),3.0);
+    float fresnel=pow(1.0-abs(dot(localN,viewDir)),3.0);
     // A decorative UV tint: NOT real scene depth.
     float depthMix=smoothstep(0.10,0.90,vUv.y);
     vec3 color=mix(uShallow,uDeep,0.6*depthMix);
@@ -57,8 +57,8 @@ export function createWaterV2(type='stream'){
     float line=texture2D(uCaustics,vUv*2.0+velocity*uTime*0.07).r;
     color+=vec3(.08,.23,.22)*line*uCaustic*0.28;
     // Field alpha is only a local-tile border mask; real shores require geometry/depth.
-    float foam=uFoam*field.a*clamp(.45+.18*broad,0.0,1.0);
-    color=mix(color,vec3(.78,.93,.95),clamp(foam,0.0,.8));
+    float foam=uFoam*field.a*clamp(.22+.12*broad,0.0,1.0);
+    color=mix(color,vec3(.65,.83,.89),clamp(foam,0.0,.45));
     gl_FragColor=vec4(color,clamp(.78+.13*fresnel,0.0,1.0));
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
