@@ -45,6 +45,48 @@ basalt=mat('Basalt_CC0_project_existing',(0.13,.095,.088),.95,texture=tex+'volca
 ash=mat('Dark_ashen_banks',(0.13,.11,.10),.97,texture=tex+'ashen_stone_albedo.png',normal=tex+'ashen_stone_normal.png',roughmap=tex+'ashen_stone_roughness.png')
 crust=mat('Black_cooling_crust',(.052,.046,.043),.97,texture=tex+'volcanic_basalt_albedo.png',normal=tex+'volcanic_basalt_normal.png')
 lava=mat('Molten_lava_project_existing',(1,.22,.025),.35,em=1.55,texture=tex+'molten_lava_albedo.png',normal=tex+'molten_lava_normal.png',roughmap=tex+'molten_lava_roughness.png',emmap=tex+'molten_lava_emissive.png')
+# Baked thermal map for real GLB PBR: uneven black cooling crust and
+# connected molten channels, avoiding the repeated yellow swirl wallpaper.
+# Existing project lava normal/roughness maps are still reused.
+import numpy as np
+def thermal_image(name,kind):
+ n=512
+ rng=np.random.default_rng(20261117)
+ def noise(freq):
+  grid=rng.random((freq,freq)).astype(np.float32)
+  u=np.arange(n,dtype=np.float32)*freq/n
+  a=np.floor(u).astype(np.int32);t=u-a;t=t*t*(3-2*t)
+  ix=a[:,None];iy=a[None,:]
+  tx=t[:,None];ty=t[None,:]
+  a00=grid[ix%freq,iy%freq]
+  a10=grid[(ix+1)%freq,iy%freq]
+  a01=grid[ix%freq,(iy+1)%freq]
+  a11=grid[(ix+1)%freq,(iy+1)%freq]
+  return (a00*(1-tx)+a10*tx)*(1-ty)+(a01*(1-tx)+a11*tx)*ty
+ n5=noise(5);n11=noise(11);n24=noise(24);n57=noise(57)
+ yy,xx=np.mgrid[0:n,0:n].astype(np.float32)/n
+ warp=n11-.5
+ veins=np.abs(np.sin((xx+warp*.12)*21+yy*3.8+n24*1.7))
+ heat=np.clip((.43*n5+.31*n11+.18*veins+.08*n57-.36)*3.6,0,1)**1.35
+ heat*=1-.72*np.clip((n5-.61)*3.0,0,1)
+ if kind=='color':
+  rgb=np.stack((.055+.90*heat,.012+.34*heat**1.3,.005+.055*heat),axis=-1)
+ else:
+  rgb=np.stack((heat,.37*heat**1.4,.055*heat),axis=-1)
+ rgba=np.concatenate((np.clip(rgb,0,1),np.ones((n,n,1),dtype=np.float32)),axis=-1)
+ image=bpy.data.images.new(name,width=n,height=n,alpha=True)
+ image.pixels.foreach_set(rgba.ravel())
+ image.pack()
+ return image
+thermal_base=thermal_image('B4_V7_ThermalLava_BaseColor','color')
+thermal_emission=thermal_image('B4_V7_ThermalLava_Emissive','emission')
+lava_bs=lava.node_tree.nodes.get('Principled BSDF')
+im=lava.node_tree.nodes.new('ShaderNodeTexImage');im.image=thermal_base
+lava.node_tree.links.new(im.outputs['Color'],lava_bs.inputs['Base Color'])
+im=lava.node_tree.nodes.new('ShaderNodeTexImage');im.image=thermal_emission
+try:lava.node_tree.links.new(im.outputs['Color'],lava_bs.inputs['Emission'])
+except KeyError:lava.node_tree.links.new(im.outputs['Color'],lava_bs.inputs['Emission Color'])
+lava_bs.inputs['Emission Strength'].default_value=2.1
 hot=mat('Bright_molten_fissures',(1,.26,.028),.38,em=3.8)
 hot2=mat('Sulfur_yellow_core',(1,.61,.08),.35,em=5)
 coal=mat('Charred_rock',(0.09,.075,.075),.95)
@@ -124,6 +166,25 @@ for j in range(M):
  for i in range(N):
   a=j*(N+1)+i;b=a+N+1;faces.append((a,a+1,b+1,b))
 objmesh('SIDE_ERODED_MOLTEN_BASIN',verts,faces,lava,uv)
+# Two irregular narrow tributaries travel across the rock banks to the main river.
+for side,z0 in [(1,-.72),(-1,.58)]:
+ verts=[];uv=[];faces=[];N=95;M=12
+ for j in range(N+1):
+  t=j/N
+  z=z0+1.02*t+.11*sin(t*2*pi)
+  x0=side*2.62
+  x1=edge(z,side)
+  x=x0*(1-t)+x1*t+.09*sin(t*8.0)
+  width=(.13+.09*sin(t*pi))*(1+.12*sin(t*15))
+  for i in range(M+1):
+   u=i/M;px=x+(u-.5)*2*width
+   y=(1-t)*ground_y(px,z)+t*lava_y(px,z)+.018
+   verts.append((px,y,z+.035*sin(u*pi*2+t*10)))
+   uv.append((u*.8,t*1.2))
+ for j in range(N):
+  for i in range(M):
+   a=j*(M+1)+i;b=a+M+1;faces.append((a,b,b+1,a+1))
+ objmesh('SIDE_TRIBUTARY_MOLTEN_VEIN',verts,faces,lava,uv)
 # Rock masses: high-poly displaced with multiple frequencies, not tetrahedron stones.
 def rock(name,xyz,scale,material,seed=0,subdiv=3):
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdiv,radius=1,location=xyz)
