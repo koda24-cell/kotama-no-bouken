@@ -21,7 +21,7 @@ node tools/f1-sacred-forest/verify-game-trial.cjs
 
 実ゲームで775配置（床274=石187/土surface87、装飾地面177、壁178、小物129、天井17）、18 GLBのSHA一致、652 batches / 2092 instances / 3,911,334 trianglesを観測。実行前後のmap、候補、17個別資産、旧天井、runtimeの入力hashは一致した。記録のsource commitは実行開始時点で、以降のQAハーネスだけのcommitは実ゲームの入力を変えていない。
 
-page error / console error は0。ただし無警告ではない。trial中にSwiftShaderの `texSubImage2D: bad image data` と `Texture is immutable` が各1回出た。通常のmonster preload警告、外部Google fontのTLS失敗、遷移時に中止された旧資産の先読みも記録している。これらを消して正常扱いにはしていない。意図したSHA不一致の警告はnegative contextに分離した。
+修正前の機能suiteはpassしたが、SwiftShaderで `texSubImage2D: bad image data` と `Texture is immutable` が各1回出た。その履歴は `history-pre-svg-raster-fix.json` に保持。原因は既存FOE SVGの直接uploadと独立再現で判明し、初回描画前のcanvas化で修正した。別の実ゲーム8段階GPU診断は820 uploads / GLerror0 / GPU警告0（隣接の `../f1-sacred-forest-gpu-upload/` 参照）。通常のmonster preload警告、外部Google fontのTLS失敗、遷移時の先読み中断は別に記録し、意図したSHA不一致警告はnegative contextに分離する。
 
 画像05は歩行セル(13,4)・目高1.6mから見た祠。既存の低い崩落壁越しに屋根・扉を確認でき、高い壁の撤去は行っていない。画像04の参道は従来の細長い迷路構造を保持している。画像06は水際の東向きのため水面が画角外で、追加の水面向け画像は次で再現する。
 
