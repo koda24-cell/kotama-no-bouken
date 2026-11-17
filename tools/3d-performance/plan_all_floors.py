@@ -20,18 +20,38 @@ def floor_for_path(path):
     return "shared_or_unclassified"
 
 def classify(item):
-    path = item["path"].lower()
+    # Restrict semantic naming to the asset/mesh/material, not the parent
+    # stage folder (e.g. b1_ancient_forest contains both stone walls and trees).
+    filename = Path(item["path"]).stem.lower()
+    labels = " ".join([filename] + [str(x).lower() for x in item.get("material_names", [])]
+                      + [str(x).lower() for x in item.get("mesh_names", [])])
     m = item.get("alpha_materials", {})
     tri = item.get("estimated_scene_triangles", 0)
     draws = item.get("scene_primitive_instances", 0)
-    if any(word in path for word in ("character", "npc", "enemy", "foe", "boss", "rigged", "animation")):
+    character = any(word in labels for word in (
+        "character", "npc", "enemy", "foe", "boss", "rigged", "humanoid", "skeleton", "armature"))
+    animated = (bool(item.get("skins", 0)) or bool(item.get("animations", 0))
+                or bool(item.get("morph_target_meshes", 0)))
+    vegetation = any(word in labels for word in (
+        "tree", "leaf", "leaves", "foliage", "grass", "fern", "plant", "shrub",
+        "bush", "flower", "lily", "vine", "moss", "root", "branch",
+        "trunk", "canopy", "bamboo", "sprout"))
+    effect = any(word in filename for word in (
+        "lava", "magma", "water", "fog", "smoke", "fire", "mist",
+        "vfx", "spark", "ember", "flame", "splash", "waterfall"))
+    if character or animated:
         mode = "manual_animated_or_character_review"
         automatic_rigid_candidate = False
-    elif m.get("BLEND", 0) or m.get("MASK", 0):
-        mode = "foliage_or_transparency_review" if any(w in path for w in ("tree", "leaf", "grass", "bush", "flower", "vine", "moss")) else "transparency_specialized_review"
-        automatic_rigid_candidate = False
-    elif any(w in path for w in ("lava", "magma", "water", "fog", "smoke", "fire", "mist", "vfx", "spark", "emissive")):
+    elif effect:
         mode = "vfx_shader_manual_review"
+        automatic_rigid_candidate = False
+    elif vegetation:
+        # Even completely OPAQUE individual leaves must not be decimated
+        # as generic rocks (the V14 mature tree uses opaque leaf materials).
+        mode = "foliage_or_transparency_review"
+        automatic_rigid_candidate = False
+    elif m.get("BLEND", 0) or m.get("MASK", 0):
+        mode = "transparency_specialized_review"
         automatic_rigid_candidate = False
     else:
         mode = "rigid_geometry_review"
