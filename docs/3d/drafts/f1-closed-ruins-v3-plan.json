@@ -1,0 +1,372 @@
+{
+  "schemaVersion": 1,
+  "status": "design_draft_not_runtime_descriptor",
+  "dateJST": "2026-11-17",
+  "scope": "F1_3F_closed_ruins_art_revision_only",
+  "baseline": {
+    "layoutFile": "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-trial.json",
+    "layoutSha256": "00ac1c8c02ab4a05756123f3b30b42df1c0e8dda11de18d3d0642fc6141eb994",
+    "mapSha256": "786ba94517df58fea6b6b22946cfe448c11c9d010241d6b6a68c498c075a5d45",
+    "widthTiles": 28,
+    "heightTiles": 18,
+    "sourceRemoteDevelopmentObserved": "dcfd0b97f538ffb673a705b66f8f0b2ebdbf5fb5"
+  },
+  "preserve": {
+    "map": true,
+    "navigation": true,
+    "fixedObjectIdentities": true,
+    "waterSolidTiles": true,
+    "foePaths": true,
+    "saveFormat": true,
+    "combat": true,
+    "floors1and2": true
+  },
+  "units": {
+    "tileMeters": 4,
+    "eyeMeters": 1.6,
+    "position": "world X,Y,Z; north=-Z",
+    "rotationY": "radians"
+  },
+  "environmentTargets": {
+    "fogColor": "#101f16",
+    "fogDensityRange": [
+      0.045,
+      0.055
+    ],
+    "cameraFarMeters": 40,
+    "defaultCeilingUndersideMeters": 4,
+    "minimumRouteClearanceMeters": [
+      2,
+      3
+    ],
+    "walkableCeilingCoverageMinimum": 0.9,
+    "note": "Targets only; use real image review. Fog is not a replacement for physical enclosure."
+  },
+  "roof": {
+    "coverage": "All 285 non-wall cells including 11 water cells, plus roof coverage or solid high root/rubble over 219 wall cells and former 177 dressing-ground locations. Never leave the former dressing-ground as visible flat gardens.",
+    "solidWalkFloorCells": 274,
+    "waterCells": 11,
+    "openingCount": 3,
+    "openings": [
+      {
+        "id": "root_scar",
+        "centerTile": [
+          8,
+          13
+        ],
+        "centerWorldXZ": [
+          32,
+          52
+        ],
+        "radiusMeters": 1.25,
+        "kind": "collapsed_roof_over_blocked_root_island",
+        "treePolicy": "one tall trunk only after crown/roof intersection checks; roots remain on blocked island"
+      },
+      {
+        "id": "water_lightwell",
+        "centerTile": [
+          15,
+          8
+        ],
+        "centerWorldXZ": [
+          60,
+          32
+        ],
+        "radiusMeters": 1.6,
+        "kind": "irregular_partial_tile_water_lightwell",
+        "treePolicy": "no tree in water"
+      },
+      {
+        "id": "shrine_lightwell",
+        "centerTile": [
+          13,
+          3
+        ],
+        "centerWorldXZ": [
+          52,
+          12
+        ],
+        "radiusMeters": 1.2,
+        "kind": "small_irregular_altar_roof_break",
+        "treePolicy": "no cedar obscuring shrine"
+      }
+    ],
+    "prohibited": "Opening an entire courtyard or every grass tile; unintentional wall-top/ceiling gaps; mature cedars piercing intact roofs."
+  },
+  "sacredAxis": {
+    "shrine": {
+      "placementId": "courtyard_hokora_shrine",
+      "position": [
+        52,
+        0,
+        12
+      ],
+      "rotationY": 1.5707963267948966,
+      "faces": "+X"
+    },
+    "torii": {
+      "placementId": "root_approach_torii",
+      "position": [
+        58,
+        0,
+        12
+      ],
+      "rotationY": -1.5707963267948966,
+      "faces": "-X",
+      "moveFrom": [
+        28,
+        0,
+        60
+      ],
+      "placementReason": "between tile centers (15,3) and (14,3), keeps posts away from cardinal route sweeps"
+    },
+    "worshipStop": {
+      "tile": [
+        14,
+        3
+      ],
+      "look": "left",
+      "world": [
+        56,
+        1.6,
+        12
+      ]
+    },
+    "axisDistanceMeters": 6,
+    "keepLowEnclosure": "wall_14_3_left scaleY .32; blocked cell stays blocked",
+    "restoreFullWall": "wall_13_4_up scaleY 1 to stop unrelated southern view",
+    "clearanceStatus": "proposed; actual GLB triangle clearance and player-eye review required"
+  },
+  "architectureBeats": [
+    {
+      "id": "entry_root_tunnel",
+      "tiles": [
+        [
+          5,
+          15
+        ],
+        [
+          6,
+          15
+        ],
+        [
+          7,
+          15
+        ],
+        [
+          8,
+          15
+        ]
+      ],
+      "archWorldPositions": [
+        [
+          20,
+          0,
+          60
+        ],
+        [
+          28,
+          0,
+          60
+        ]
+      ],
+      "archRotationY": -1.5707963267948966,
+      "ceiling": "vault with attached roots, 4m underside",
+      "intent": "recover tunnel silhouette at beginning; remove unrelated entrance torii now grouped with shrine"
+    },
+    {
+      "id": "west_buried_passage",
+      "rectTiles": [
+        2,
+        5,
+        10,
+        12
+      ],
+      "ceiling": "continuous 4m; colonized block islands; dark fern/root margins",
+      "intent": "wet dense burial with a few readable root folds, not open garden"
+    },
+    {
+      "id": "water_remnant",
+      "rectTiles": [
+        12,
+        6,
+        20,
+        10
+      ],
+      "ceiling": "continuous except water_lightwell",
+      "intent": "submerged masonry, broken bank stones, algae pockets, restrained small ripples"
+    },
+    {
+      "id": "upper_seal_tunnel",
+      "tiles": [
+        [
+          10,
+          4
+        ],
+        [
+          12,
+          4
+        ]
+      ],
+      "archWorldPositions": [
+        [
+          40,
+          0,
+          16
+        ],
+        [
+          48,
+          0,
+          16
+        ]
+      ],
+      "archRotationY": -1.5707963267948966,
+      "ceiling": "continuous 4m; support piers tied to side walls",
+      "intent": "second tunnel leads toward close shrine ensemble, not repeating plain open road"
+    },
+    {
+      "id": "boss_antechamber",
+      "rectTiles": [
+        22,
+        2,
+        25,
+        4
+      ],
+      "ceilingUndersideMeters": 4.8,
+      "requires": "upper stone/root closure above current 4m walls; no perimeter sky slit",
+      "intent": "only slightly taller and broader climax, still enclosed"
+    }
+  ],
+  "densityTargets": {
+    "existing129PropsIsNotCompletionMetric": true,
+    "blockedIslandDressing": "large linked root masses / fallen roof blocks / masonry supports, replacing empty # soil visual",
+    "walkingCorners": "fern + low shrub + stones + leaf/moss transition in authored groups; keep all 2m route sweeps and interaction neighborhoods",
+    "matureCedarCountMax": 1,
+    "fernRootMossVine": "primary green density under roof",
+    "standingStone": "support/retaining role with rubble foundation, not isolated placards"
+  },
+  "floor": {
+    "goal": "continuous damp green moss and mineral stone; hide 4m soil/stone square edges",
+    "method": "irregular interlocking moss margins, partial buried slabs, merged soil/moss patches with non-grid mask; geometry below route or at corners",
+    "maxGroundAccentYInRouteMeters": 0.03,
+    "prohibited": "full raised rootsoil module everywhere, hard tan/stone checkerboard, roots spanning every cardinal path"
+  },
+  "water": {
+    "preserveTiles": [
+      [
+        14,
+        7
+      ],
+      [
+        15,
+        7
+      ],
+      [
+        16,
+        7
+      ],
+      [
+        14,
+        8
+      ],
+      [
+        15,
+        8
+      ],
+      [
+        16,
+        8
+      ],
+      [
+        17,
+        8
+      ],
+      [
+        18,
+        8
+      ],
+      [
+        15,
+        9
+      ],
+      [
+        16,
+        9
+      ],
+      [
+        17,
+        9
+      ]
+    ],
+    "logicalShorelineUnchanged": true,
+    "shoreVisual": "submerged/collapsed stones, muddy moss shelves, roots and algae cover tile-stepped edges without making a false crossing",
+    "waterSurface": "dark green translucent depth/color, two low amplitude ripple scales, local reflections and underwater silhouettes",
+    "vegetation": "algae accumulated at shaded edges, sparse nondecorative floating leaves; no neat ornamental lotus pond"
+  },
+  "qaViews": [
+    {
+      "tile": [
+        5,
+        15
+      ],
+      "dir": "right",
+      "purpose": "entry tunnel and ceiling closure"
+    },
+    {
+      "tile": [
+        10,
+        12
+      ],
+      "dir": "up",
+      "purpose": "buried vegetation and blocked-island density"
+    },
+    {
+      "tile": [
+        14,
+        11
+      ],
+      "dir": "up",
+      "purpose": "water and irregular visual shore"
+    },
+    {
+      "tile": [
+        15,
+        3
+      ],
+      "dir": "left",
+      "purpose": "torii and shrine in one frame"
+    },
+    {
+      "tile": [
+        14,
+        3
+      ],
+      "dir": "left",
+      "purpose": "prayer stop roof enclosure"
+    },
+    {
+      "tile": [
+        22,
+        4
+      ],
+      "dir": "up",
+      "purpose": "boss gate modest relief only"
+    }
+  ],
+  "acceptance": {
+    "routeSweepMeters": [
+      2,
+      3
+    ],
+    "ceilingRayCoverage": ">=90% walkable sample centers outside declared holes",
+    "skyPixelTargets": "ordinary views <5%; root/water/shrine hole views <=12%; boss <=15%, visual review remains necessary",
+    "physicalClosure": "roof extends beyond collapsed walls; blocked islands do not show flat open dirt; no cameraFar exposed cut edges",
+    "tests": "all prior 3-session 16-check actual game regressions plus storage isolation, fog/far restoration, new source hashes and per-asset GLB validation",
+    "artApproval": "pending real images and user review"
+  },
+  "limitations": [
+    "No actual map curvature is added by this plan. Long straight logical links remain; do not call them new route turns.",
+    "Current authored cell route is fully reserved. Solid blockers may only use blocked islands, correct boundary mass and verified free corners.",
+    "References and texture research must be merged by root before individual asset production. This file is not completed runtime data."
+  ]
+}

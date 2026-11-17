@@ -1,0 +1,40 @@
+'use strict';
+const fs=require('fs'),path=require('path'),http=require('http'),assert=require('node:assert/strict'),crypto=require('crypto');
+const ROOT=path.resolve(__dirname,'../..'),MODULES=process.env.BROWSER_MODULES||'/workspace/work/browser/node_modules',OUT=process.env.WATER_V3_OUT||path.join(ROOT,'docs/reviews/f1-closed-water-v3');
+const {chromium}=require(path.join(MODULES,'playwright-core'));
+const types={'.js':'text/javascript','.json':'application/json','.png':'image/png','.html':'text/html'};
+const server=http.createServer((q,s)=>{
+ if(q.url==='/favicon.ico'){s.writeHead(204);return s.end();}
+ if(q.url==='/review'){s.writeHead(200,{'Content-Type':'text/html'});return s.end('<!doctype html><html><head><script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/":"/three/"}}</script></head><body style="margin:0;background:#111"></body></html>');}
+ const url=decodeURIComponent(q.url.split('?')[0]);const base=url.startsWith('/three/')?path.join(MODULES,'three'):ROOT;
+ const file=path.resolve(base,'.'+(url.startsWith('/three/')?url.slice(6):url));if(!file.startsWith(base+'/')){s.writeHead(403);return s.end();}
+ fs.readFile(file,(e,b)=>{s.writeHead(e?404:200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'});s.end(e?'not found':b);});
+});
+(async()=>{
+ fs.mkdirSync(OUT,{recursive:true});await new Promise(r=>server.listen(8819,'127.0.0.1',r));const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ const errors=[],warnings=[];
+ try{
+ const page=await browser.newPage({viewport:{width:1000,height:700}});page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());if(m.type()==='warning')warnings.push(m.text());});
+ await page.goto('http://127.0.0.1:8819/review');
+ const init=await page.evaluate(async()=>{
+  const THREE=await import('three'),{createClosedWaterV3}=await import('/field/f1-closed-water-v3.js');
+  const layout=await(await fetch('/assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-trial.json')).json();const map=layout.beforeFingerprint.saveCriticalData.map;
+  const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(1000,700);renderer.setPixelRatio(1);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;document.body.append(renderer.domElement);
+  const scene=new THREE.Scene();scene.background=new THREE.Color(0x111d16);scene.fog=new THREE.FogExp2(0x111d16,.022);
+  scene.add(new THREE.HemisphereLight(0xa4bca2,0x263323,2.0));const sun=new THREE.DirectionalLight(0xe0e4be,2.2);sun.position.set(55,12,26);scene.add(sun);
+  const camera=new THREE.PerspectiveCamera(54,1000/700,.05,48);camera.position.set(62,2.2,43);camera.lookAt(63,-.25,32);
+  const nativeGeometry=new THREE.PlaneGeometry(4,4).rotateX(-Math.PI/2),nativeMaterial=new THREE.MeshStandardMaterial({color:0x0b2a36});const meshes=[];
+  for(let z=0;z<map.length;z++)for(let x=0;x<map[z].length;x++)if(map[z][x]==='~'){const m=new THREE.Mesh(nativeGeometry,nativeMaterial);m.position.set(x*4,-.15,z*4);meshes.push(m);scene.add(m);}
+  const root=new THREE.Group();scene.add(root);renderer.render(scene,camera);const baseline={geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures};
+  const water=await createClosedWaterV3({meshes,root,map});water.update(0);renderer.render(scene,camera);window.review={renderer,scene,camera,meshes,water,nativeGeometry,nativeMaterial,baseline};return {info:water.info(),baseline};
+ });
+ await page.screenshot({path:path.join(OUT,'water-time-0.png'),timeout:180000});
+ const second=await page.evaluate(()=>{const r=window.review;r.water.update(5);r.renderer.render(r.scene,r.camera);return r.water.info();});
+ await page.screenshot({path:path.join(OUT,'water-time-5.png'),timeout:180000});
+ const teardown=await page.evaluate(()=>{const r=window.review;r.water.dispose();r.water.dispose();r.renderer.render(r.scene,r.camera);return {restored:r.meshes.every(m=>m.material===r.nativeMaterial&&m.geometry===r.nativeGeometry),memory:{geometries:r.renderer.info.memory.geometries,textures:r.renderer.info.memory.textures},baseline:r.baseline,info:r.water.info(),glError:r.renderer.getContext().getError()};});
+ assert.equal(init.info.shaderCompiled,true);assert.equal(second.animatedTimeSeconds,5);assert.equal(teardown.restored,true);assert.deepEqual(teardown.memory,teardown.baseline);assert.equal(teardown.glError,0);assert.deepEqual(errors,[]);assert.deepEqual(warnings.filter(s=>/WebGL|GL_INVALID|shader/i.test(s)),[]);
+ const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(path.join(OUT,file))).digest('hex');const hashes=[hash('water-time-0.png'),hash('water-time-5.png')];assert.notEqual(...hashes);
+ const sourceSHA256=crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT,'field/f1-closed-water-v3.js'))).digest('hex');
+ const result={passed:true,sourceSHA256,scope:'Independent WebGL water module, not actual-game integration or real-device FPS',init,second,teardown,errors,warnings,screenshotSHA256:hashes};fs.writeFileSync(path.join(OUT,'water-verification.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result,null,2));
+ }finally{await browser.close();await new Promise(r=>server.close(r));}
+})().catch(e=>{console.error(e);server.close();process.exitCode=1;});

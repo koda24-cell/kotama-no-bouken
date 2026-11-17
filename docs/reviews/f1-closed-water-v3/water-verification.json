@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "sourceSHA256": "8f39bccb8049a10c3a1952c1ff4aca4c6836a7ebc1d0f7f3f3847a4865369054",
+  "scope": "Independent WebGL water module, not actual-game integration or real-device FPS",
+  "init": {
+    "info": {
+      "version": 3,
+      "nativeWaterMeshes": 11,
+      "waterTiles": 11,
+      "shoreBoundaryEdges": 16,
+      "submergedStoneInstances": 55,
+      "algaePatches": 11,
+      "shaderCompiled": true,
+      "worldCoordinateNormals": true,
+      "reflectionRenderTargets": 0,
+      "animatedTimeSeconds": 0,
+      "disposed": false
+    },
+    "baseline": {
+      "geometries": 1,
+      "textures": 0
+    }
+  },
+  "second": {
+    "version": 3,
+    "nativeWaterMeshes": 11,
+    "waterTiles": 11,
+    "shoreBoundaryEdges": 16,
+    "submergedStoneInstances": 55,
+    "algaePatches": 11,
+    "shaderCompiled": true,
+    "worldCoordinateNormals": true,
+    "reflectionRenderTargets": 0,
+    "animatedTimeSeconds": 5,
+    "disposed": false
+  },
+  "teardown": {
+    "restored": true,
+    "memory": {
+      "geometries": 1,
+      "textures": 0
+    },
+    "baseline": {
+      "geometries": 1,
+      "textures": 0
+    },
+    "info": {
+      "version": 3,
+      "nativeWaterMeshes": 11,
+      "waterTiles": 11,
+      "shoreBoundaryEdges": 16,
+      "submergedStoneInstances": 55,
+      "algaePatches": 11,
+      "shaderCompiled": true,
+      "worldCoordinateNormals": true,
+      "reflectionRenderTargets": 0,
+      "animatedTimeSeconds": 5,
+      "disposed": true
+    },
+    "glError": 0
+  },
+  "errors": [],
+  "warnings": [],
+  "screenshotSHA256": [
+    "39bd014929c5c8e6e0b2a065265ce05e04d1533c41b6dacf84386001b7f9a2c3",
+    "71bd6c9b0ca70312efc461863d6e433613e70a264c87b687bad783a20afd7d17"
+  ],
+  "imageDifference": {
+    "changedPixels": 183741,
+    "meanAbsoluteChannelDifference": 0.8321242857142858,
+    "note": "Same camera and geometry; only update(seconds) changed"
+  }
+}
