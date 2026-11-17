@@ -1,0 +1,82 @@
+name: Auto Review New 3D Assets Across Floors
+on:
+  pull_request:
+    branches: [development]
+    paths:
+      - assets/**/*.glb
+      - tools/3d-performance/**
+      - .github/workflows/auto-review-new-3d-assets.yml
+  push:
+    branches: [development]
+    paths:
+      - assets/**/*.glb
+      - .github/workflows/auto-review-new-3d-assets.yml
+      - tools/3d-performance/**
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  select:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      matrix: ${{ steps.pick.outputs.matrix }}
+      count: ${{ steps.pick.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Unit-test candidate selection
+        run: python3 -m unittest discover -s tools/3d-performance -p 'test_*.py' -v
+      - name: Audit all current floor GLBs and make material-safe plan
+        run: |
+          python3 tools/3d-performance/audit_glb.py 'assets/**/*.glb' --output render-output/3d-performance/glb-audit.json
+          python3 tools/3d-performance/plan_all_floors.py render-output/3d-performance/glb-audit.json --output render-output/3d-performance/all-floor-plan.json
+      - name: Select changed rigid opaque candidates (no auto-promotion)
+        id: pick
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/3d-performance
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            git fetch origin "$BASE_REF" --quiet
+            git diff --name-only "origin/$BASE_REF...HEAD" -- assets > /tmp/changed-glbs.txt
+          elif [[ "$EVENT_NAME" == "push" ]]; then
+            if [[ -n "$BEFORE_SHA" ]] && git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+              git diff --name-only "$BEFORE_SHA" HEAD -- assets > /tmp/changed-glbs.txt
+            else
+              git diff --name-only HEAD^ HEAD -- assets > /tmp/changed-glbs.txt
+            fi
+          else
+            : > /tmp/changed-glbs.txt
+          fi
+          python3 tools/3d-performance/select_changed_candidates.py --plan render-output/3d-performance/all-floor-plan.json --changes /tmp/changed-glbs.txt --matrix-output /tmp/rigid-review-matrix.json
+          cp /tmp/rigid-review-matrix.json render-output/3d-performance/changed-rigid-candidates.json
+          echo "matrix=$(cat /tmp/rigid-review-matrix.json)" >> "$GITHUB_OUTPUT"
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          print("count="+str(len(json.load(open('/tmp/rigid-review-matrix.json'))["include"])))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: auto-all-floor-optimization-inventory
+          path: render-output/3d-performance/
+          retention-days: 14
+          if-no-files-found: warn
+  rigid-review:
+    needs: select
+    if: ${{ needs.select.outputs.count != '0' }}
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix: ${{ fromJSON(needs.select.outputs.matrix) }}
+    uses: ./.github/workflows/shared-rigid-lod-review.yml
+    with:
+      source_glb: ${{ matrix.source_glb }}
+    permissions:
+      contents: read
