@@ -29,3 +29,9 @@
 - V9→V10比較: 後方崖に水平層と岩盤の破断が増え、手前の岸にも薄い岩盤が追加された。溶岩流・滝・溜まりは維持。
 - **残課題**: 大きな丸い岩は依然として淡い粘土の塊のように見える。追加した薄い岩盤の一部は浮遊板・人工的な棚に見える。全体に玄武岩らしい暗色・層理のコントラストが弱い。
 - V11予定: プロジェクト内の自作CC0依存なし charcoal basalt PBRを岩塊へ適用し、元の岩メッシュの頂点を削除せず微小な層理・剪断面変位を追加する。薄い岩盤の色を周辺と統一。実画像で再評価。
+
+## V11追加修正・実行状況
+- 岩メッシュの頂点・面は削除せず、Y-upの高さ方向へ地層段差を約27%ブレンドし、表面に剪断・切断の不規則な変位を追加。
+- 元のPBRから、プロジェクト内自作の assets/textures/floor4/basalt-charcoal-01/ BaseColor/Normal/Roughnessへ変更。出典: assets/textures/floor4/basalt-charcoal-01/README.md。外部配布素材の追加なし。
+- V11 Blender Actions https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44004361611 。実行開始、**GLB/PNG成功・美術品質はまだ未確認**。
+- ワークフローでV11出力名を使う際、ブランチ名までV11へ置換してしまったため修正済み。ソースブランチは feature/gpt-b4-basalt-geology-v10-20261117。
