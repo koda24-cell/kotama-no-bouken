@@ -1,0 +1,26 @@
+name: B4 Archive User-Approved Lava Pool V3 Only
+on:
+  push:
+    branches:
+      - automation/gpt-b4-lava-pool-v3-archive-20261117
+    paths:
+      - '.github/workflows/b4-archive-approved-lava-pool.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch verified V3 run source artifact
+        run: |
+          mkdir -p /tmp/b4-lava-pool-source
+          gh run download 43998531627 -R koda24-cell/kotama-no-bouken -n b4-lava-five-modules-v3-review -D /tmp/b4-lava-pool-source
+      - name: Verify source and archive approved C only to clean development-based branch
+        run: python3 tools/floor4/archive_lava_pool_v3.py
