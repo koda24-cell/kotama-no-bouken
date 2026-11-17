@@ -1,0 +1,46 @@
+name: Character mesh research - independent glTF figures
+on:
+  push:
+    branches: [feature/gpt-character-mesh-reference-study-20261116]
+    paths:
+      - 'tools/character-mesh-research/**'
+      - '.github/workflows/character-mesh-independent.yml'
+  workflow_dispatch:
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender xvfb python3-numpy
+      - name: Download attributed CC BY 4.0 reference figure
+        run: |
+          mkdir -p /tmp/mesh-reference output/character-mesh-independent
+          for model in RiggedFigure; do
+            curl --fail --location --retry 3 --max-time 180 -o "/tmp/mesh-reference/$model.glb" "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/$model/glTF-Binary/$model.glb"
+            test -s "/tmp/mesh-reference/$model.glb"
+            sha256sum "/tmp/mesh-reference/$model.glb" >> output/character-mesh-independent/sources.sha256
+          done
+      - name: Blender structure comparison
+        run: |
+          for model in RiggedFigure; do
+            xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/analyze_character.py -- "/tmp/mesh-reference/$model.glb" "output/character-mesh-independent/$model.json"
+          done
+      - name: Validate JSON
+        run: |
+          python3 - <<'PY'
+          import json
+          for name in ('RiggedFigure',):
+              d=json.load(open(f'output/character-mesh-independent/{name}.json'))
+              assert d['meshes'], name
+              print(name, len(d['meshes']))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: independent-figure-topology-json
+          path: output/character-mesh-independent/
+          retention-days: 14
