@@ -22,3 +22,6 @@
 - 完成記録: [B4_MAGMA_RIVER_V16_COMPLETED_20261117.md](B4_MAGMA_RIVER_V16_COMPLETED_20261117.md)
 - 独立採用済みの溶岩溜まりC V3とトロッコV32は保持。A/B/D/E単体候補は不採用のまま。
 - 正式保存の実体・developmentマージは別途検証。ゲーム内表示・動的VFXは未実装。
+
+- **V16恒久保存検証済み**: Archive run [44028977940](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44028977940) success、正式保存PR [#477](https://github.com/koda24-cell/kotama-no-bouken/pull/477) developmentマージ成功（`65c5ff184adef4f7ccb9382313d3f5e3c4826c9a`）。GLB/Blend/4 PNG/承認manifestのGit実体を確認済み。
+- 次の派生P1/P2/P3（細い支流・分岐岩岸・段差棚）は[試作PR #478](https://github.com/koda24-cell/kotama-no-bouken/pull/478)で管理。**未承認**、完成素材一覧には追加しない。
