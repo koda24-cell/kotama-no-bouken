@@ -1,0 +1,56 @@
+name: B5 Gothic Sallet Helmet V2 Independent Render
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_sallet_v2.py'
+      - '.github/workflows/b5-knight-sallet-v2-render.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Export sallet GLB and render three directions
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_sallet_v2.py
+      - name: Verify exported GLB meshes and actual rendered PNG
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          p=Path('render-output/b5-knights/sallet_v2')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED'
+          raw=(p/'sallet_v2.glb').read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          n=struct.unpack_from('<I',raw,12)[0]
+          doc=json.loads(raw[20:20+n])
+          names=[x.get('name','') for x in doc['nodes'] if 'mesh' in x]
+          assert any('cranium' in x for x in names), names
+          assert any('visor' in x for x in names), names
+          assert any('bevor' in x for x in names), names
+          for file,digest in m['files_sha256'].items():
+              assert hashlib.sha256((p/file).read_bytes()).hexdigest()==digest,file
+          for view in ('front','side','angle'):
+              with Image.open(p/(view+'.png')) as im:
+                  im.load()
+                  assert im.size==(900,900)
+                  assert max(ImageStat.Stat(im.convert('RGB')).stddev)>5
+          print('PASS: distinct skull visor bevor; GLB Blend 3 rendered PNG and SHA')
+          PY
+      - name: Save preview artifact even after render failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-sallet-helm-v1-NOT-APPROVED
+          path: render-output/b5-knights/sallet_v2/
+          retention-days: 14
+          if-no-files-found: warn
