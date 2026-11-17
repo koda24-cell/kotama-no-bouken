@@ -6,6 +6,8 @@ on:
     paths:
       - 'tools/3d-water/**'
       - 'tools/floor6/meadow-wind-field*'
+      - 'tools/floor6/f6-v7-wind-adapter.mjs'
+      - 'tools/floor6/v7-wind-asset-preview.html'
       - '.github/workflows/b2-f6-shader-research-tests.yml'
   workflow_dispatch:
 jobs:
