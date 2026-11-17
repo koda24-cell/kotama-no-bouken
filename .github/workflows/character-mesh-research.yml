@@ -43,6 +43,11 @@ jobs:
           for model in HairSample_Female HairSample_Male Sendagaya_Shibu Sendagaya_Shino Sakurada_Fumiriya Vita; do
             xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/render_head.py -- "/tmp/character-sources/$model.vrm" "output/character-mesh-research/renders/$model"
           done
+      - name: Render complete head context (face, eyes and hair) six views
+        run: |
+          for model in HairSample_Female HairSample_Male Sendagaya_Shibu Sendagaya_Shino Sakurada_Fumiriya Vita; do
+            xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/render_full_head.py -- "/tmp/character-sources/$model.vrm" "output/character-mesh-research/full-head/$model"
+          done
       - name: Validate results
         run: |
           for model in HairSample_Female HairSample_Male Sendagaya_Shibu Sendagaya_Shino Sakurada_Fumiriya Vita; do
@@ -50,7 +55,10 @@ jobs:
             test -s "output/character-mesh-research/$model.json"
           done
           for model in HairSample_Female HairSample_Male Sendagaya_Shibu Sendagaya_Shino Sakurada_Fumiriya Vita; do
-            for view in front back left right three_quarter back_upper; do test -s "output/character-mesh-research/renders/$model/$view.png"; done
+            for view in front back left right three_quarter back_upper; do
+              test -s "output/character-mesh-research/renders/$model/$view.png"
+              test -s "output/character-mesh-research/full-head/$model/$view.png"
+            done
           done
           python3 - <<'PY'
           import json
