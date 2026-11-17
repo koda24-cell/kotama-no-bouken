@@ -2,7 +2,7 @@ name: B4 Standalone Lava Modules Blender Review
 on:
   push:
     branches:
-      - feature/gpt-b4-lava-modules-v1-20261117
+      - feature/gpt-b4-lava-modules-v2-20261117
     paths:
       - 'tools/floor4/lava_modules/**'
       - '.github/workflows/b4-lava-modules-review.yml'
@@ -22,16 +22,16 @@ jobs:
       - name: Render 5 separate lava GLBs, 20 review views, and Blend checkpoints
         run: |
           mkdir -p render-output
-          blender -b -t 2 --python tools/floor4/lava_modules/build_lava_modules.py -- --out render-output --variant v1
+          blender -b -t 2 --python tools/floor4/lava_modules/build_lava_modules.py -- --out render-output --variant v2
       - name: Verify all five GLBs, Blender files, four views each, and embedded textures
         run: |
           python3 - <<'PY'
           import os,json,struct,hashlib
           out='render-output';assets=['a_sinuous','b_confluence','c_pool','d_cascade','e_cooling']
           for a in assets:
-            stem=f'b4-lava-{a}-v1'
+            stem=f'b4-lava-{a}-v2'
             names=[stem+'.glb',stem+'.blend']+[stem+'-'+v+'.png' for v in ['angle','front','side','top']]
-            manifest=json.load(open(f'{out}/manifest-{a}-v1.json'))
+            manifest=json.load(open(f'{out}/manifest-{a}-v2.json'))
             assert manifest['approval']=='NOT_APPROVED'
             for name in names:
               path=os.path.join(out,name)
@@ -46,12 +46,12 @@ jobs:
             assert len(doc.get('images',[]))>=2,(a,len(doc.get('images',[])))
             manifest['run_id']=os.environ.get('GITHUB_RUN_ID')
             manifest['source_sha']=os.environ.get('GITHUB_SHA')
-            with open(f'{out}/manifest-{a}-v1.json','w') as f:json.dump(manifest,f,indent=2)
+            with open(f'{out}/manifest-{a}-v2.json','w') as f:json.dump(manifest,f,indent=2)
             print('verified',a,len(doc['meshes']),'meshes',len(doc['images']),'images')
           PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: b4-lava-five-modules-v1-review
+          name: b4-lava-five-modules-v2-review
           path: render-output/
           retention-days: 14
