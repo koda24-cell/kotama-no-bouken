@@ -27,7 +27,7 @@ bg=world.node_tree.nodes.get('Background')
 bg.inputs['Color'].default_value=(.64,.70,.76,1)
 bg.inputs['Strength'].default_value=.9
 scene.view_settings.view_transform='AgX'
-scene.view_settings.look='Medium High Contrast'
+scene.view_settings.look='AgX - Medium High Contrast'
 scene.view_settings.exposure=.65
 scene.view_settings.gamma=1
 def aim(ob,target):
