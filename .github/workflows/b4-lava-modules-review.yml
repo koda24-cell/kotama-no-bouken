@@ -1,0 +1,57 @@
+name: B4 Standalone Lava Modules Blender Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-lava-modules-v1-20261117
+    paths:
+      - 'tools/floor4/lava_modules/**'
+      - '.github/workflows/b4-lava-modules-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lava-modules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and numpy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Render 5 separate lava GLBs, 20 review views, and Blend checkpoints
+        run: |
+          mkdir -p render-output
+          blender -b -t 2 --python tools/floor4/lava_modules/build_lava_modules.py -- --out render-output --variant v1
+      - name: Verify all five GLBs, Blender files, four views each, and embedded textures
+        run: |
+          python3 - <<'PY'
+          import os,json,struct,hashlib
+          out='render-output';assets=['a_sinuous','b_confluence','c_pool','d_cascade','e_cooling']
+          for a in assets:
+            stem=f'b4-lava-{a}-v1'
+            names=[stem+'.glb',stem+'.blend']+[stem+'-'+v+'.png' for v in ['angle','front','side','top']]
+            manifest=json.load(open(f'{out}/manifest-{a}-v1.json'))
+            assert manifest['approval']=='NOT_APPROVED'
+            for name in names:
+              path=os.path.join(out,name)
+              assert os.path.isfile(path) and os.path.getsize(path)>5000,(a,name)
+              record=next(x for x in manifest['files'] if x['file']==name)
+              assert record['sha256']==hashlib.sha256(open(path,'rb').read()).hexdigest()
+            with open(f'{out}/{stem}.glb','rb') as f:
+              assert f.read(4)==b'glTF'
+              f.seek(12);size,typ=struct.unpack('<II',f.read(8))
+              doc=json.loads(f.read(size))
+            assert len(doc.get('meshes',[]))>1
+            assert len(doc.get('images',[]))>=2,(a,len(doc.get('images',[])))
+            manifest['run_id']=os.environ.get('GITHUB_RUN_ID')
+            manifest['source_sha']=os.environ.get('GITHUB_SHA')
+            with open(f'{out}/manifest-{a}-v1.json','w') as f:json.dump(manifest,f,indent=2)
+            print('verified',a,len(doc['meshes']),'meshes',len(doc['images']),'images')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-lava-five-modules-v1-review
+          path: render-output/
+          retention-days: 14
