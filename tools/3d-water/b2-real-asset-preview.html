@@ -20,11 +20,24 @@ const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(innerW
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
 const lake=createWaterV2('lake'),falls=createWaterV2('waterfall');const changed=[];
 const status=document.getElementById('status'),stats=document.getElementById('stats');
+function ensurePreviewUV(mesh){
+ if(mesh.geometry.getAttribute('uv'))return;
+ const geometry=mesh.geometry.clone(),pos=geometry.getAttribute('position');
+ const bounds=new THREE.Box3().setFromBufferAttribute(pos),size=bounds.getSize(new THREE.Vector3());
+ const axes=[0,1,2].sort((a,b)=>size.getComponent(b)-size.getComponent(a));
+ const uv=new Float32Array(pos.count*2),lo=bounds.min;
+ for(let i=0;i<pos.count;i++)for(let j=0;j<2;j++){
+  let axis=axes[j],length=Math.max(size.getComponent(axis),.001);
+  uv[i*2+j]=(pos.getComponent(i,axis)-lo.getComponent(axis))/length;
+ }
+ geometry.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+ mesh.geometry=geometry;
+}
 function classify(name){let s=(name||'').toLowerCase();if(/waterfall|falls|滝/.test(s))return 'falls';if(/clear blue water|water surface|水面|^water$/.test(s))return 'lake';return null;}
 let loaded=false;
 new GLTFLoader().load('../../assets/3d/dungeons/b2_water_source/models/floor2-water-source-quality-v3.glb',gltf=>{
  const root=gltf.scene;scene.add(root);root.updateMatrixWorld(true);
- root.traverse(obj=>{if(!obj.isMesh)return;const arr=Array.isArray(obj.material)?obj.material:[obj.material];const newM=arr.map(m=>{const type=classify(m?.name);if(!type)return m;changed.push({obj,name:m.name,type});return type==='falls'?falls.material:lake.material;});const old=obj.material;obj.material=Array.isArray(old)?newM:newM[0];obj.userData.originalMaterial=old;});
+ root.traverse(obj=>{if(!obj.isMesh)return;const arr=Array.isArray(obj.material)?obj.material:[obj.material];const newM=arr.map(m=>{const type=classify(m?.name);if(!type)return m;ensurePreviewUV(obj);changed.push({obj,name:m.name,type});return type==='falls'?falls.material:lake.material;});const old=obj.material;obj.material=Array.isArray(old)?newM:newM[0];obj.userData.originalMaterial=old;});
  // Default to existing material until comparison checkbox is explicitly checked.
  root.traverse(obj=>{if(obj.isMesh)obj.material=obj.userData.originalMaterial;});
  const box=new THREE.Box3().setFromObject(root),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3()),d=Math.max(size.x,size.y,size.z);
