@@ -99,7 +99,7 @@ for image,socket in [(thermal_base,'Base Color'),(thermal_emission,'Emission Col
  except KeyError:
   if socket=='Emission Color':dense_lava.node_tree.links.new(node.outputs['Color'],dbs.inputs['Emission'])
   else:raise
-dbs.inputs['Emission Strength'].default_value=1.2
+dbs.inputs['Emission Strength'].default_value=1.75
 hot=mat('Bright_molten_fissures',(1,.26,.028),.38,em=3.8)
 hot2=mat('Sulfur_yellow_core',(1,.61,.08),.35,em=5)
 coal=mat('Charred_rock',(0.09,.075,.075),.95)
@@ -315,7 +315,7 @@ for i in range(14):
 def fall_path(t):
  cx=-.42+.085*t+.025*sin(t*pi)
  yy=2.42-2.2*t
- zz=-3.69+.07*t+.16*t**3+.55*t**8
+ zz=-3.25+.075*t+.10*t**3+.23*t**8
  width=.18+.035*sin(t*pi)+.23*t*t
  return cx,yy,zz,width
 def fall_xyz(t,u,front=True):
@@ -346,8 +346,51 @@ for i in range(N):
  faces.extend([(i,stride+i,stride+i+1,i+1),
                (M*(N+1)+i,M*(N+1)+i+1,stride+M*(N+1)+i+1,stride+M*(N+1)+i)])
 objmesh('FALLING_MAGMA_CASCADE',verts,faces,dense_lava,uv,smooth=True)
+
+# V15: real supporting basalt volume between the old cliff and the lava.
+# This restores a readable molten face without a hovering side-view sheet.
+# Keep every original cliff/rock mesh and add a locally eroded vertical bed.
+back_verts=[];back_uv=[];back_faces=[];rows=96;cols=12
+for surface in range(2):
+ for j in range(rows+1):
+  t=j/rows;cx,yy,zz,w=fall_path(t)
+  for i in range(cols+1):
+   u=i/cols
+   x=cx+(u-.5)*2*w*1.48
+   # Fractured supporting bed protrudes from the old rear cliff.
+   noise=.045*sin(t*13+u*7)+.024*sin(t*31-u*13)
+   z=zz-(.12 if surface==0 else .60)+noise
+   y=yy+.05*sin(u*6+t*7)
+   back_verts.append((x,y,z));back_uv.append((x*.32,yy*.42))
+bs=(rows+1)*(cols+1)
+for j in range(rows):
+ for i in range(cols):
+  a=j*(cols+1)+i;b=a+cols+1
+  back_faces.append((a,a+1,b+1,b))
+  back_faces.append((bs+a,bs+b,bs+b+1,bs+a+1))
+for j in range(rows):
+ a=j*(cols+1);b=(j+1)*(cols+1)
+ back_faces.extend([(a,b,bs+b,bs+a),
+                    (a+cols,bs+a+cols,bs+b+cols,b+cols)])
+for i in range(cols):
+ back_faces.extend([(i,bs+i,bs+i+1,i+1),
+                    (rows*(cols+1)+i,rows*(cols+1)+i+1,bs+rows*(cols+1)+i+1,bs+rows*(cols+1)+i)])
+objmesh('V15_FRACTURED_CLIFF_SUPPORT_BEHIND_FALL',
+        back_verts,back_faces,basalt,back_uv,smooth=False)
+# Two banks of dark cooling crust obscure the hard edge where the
+# molten stream meets the basalt support, but leave the center molten.
+for side in (-1,1):
+ v=[];uvs=[];f=[]
+ for j in range(65):
+  t=j/64;cx,y,z,w=fall_path(t)
+  for u in (.82,.99):
+   x=cx+side*w*u
+   v.append((x,y,z+.015+.022*sin(t*14+side*3)));uvs.append((u,t))
+ for j in range(64):f.append((2*j,2*j+1,2*j+3,2*j+2))
+ objmesh('V15_ATTACHED_COOLING_MARGIN',v,f,crust,uvs,smooth=False)
+
 # Solidifying irregular crust embedded in the flow, not floating line work.
-for k in range(25):
+for k in range(16):
  t0=.045+R.uniform(0,.82);u0=R.uniform(.11,.89)
  dt=R.uniform(.028,.115);du=R.uniform(.055,.20)
  n=9;v=[];f=[];uvs=[]
@@ -387,7 +430,7 @@ for i in range(16):
  bpy.ops.mesh.primitive_uv_sphere_add(segments=12,ring_count=8,radius=1,location=(x,.23,z))
  o=bpy.context.object;o.name='BANK_RED_HOT_FISSURE';parent(o);o.scale=(.025,.015,R.uniform(.10,.26));o.data.materials.append(hot)
 # Small glowing lava splashes near cascade impact; subtle not glitter storm.
-for i in range(28):
+for i in range(14):
  x=-.42+R.gauss(0,.28);z=-2.75+R.gauss(0,.28)
  y=.30+R.random()*.70
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=R.uniform(.015,.043),location=(x,y,z))
@@ -395,7 +438,7 @@ for i in range(28):
 
 # V13: emissive droplets with restrained size/height variation at the impact.
 # Static render proof; real-time motion requires separate Three.js implementation.
-for i in range(54):
+for i in range(18):
  angle=R.uniform(0,2*math.pi)
  rr=R.uniform(.06,.42)
  x=-.345+rr*math.cos(angle)
