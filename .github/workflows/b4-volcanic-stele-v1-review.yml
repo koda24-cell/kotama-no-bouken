@@ -17,14 +17,13 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y blender python3-pip python3-venv
-          python3 -m venv /tmp/b4-blender-deps
-          /tmp/b4-blender-deps/bin/pip install numpy
+          sudo apt-get install -y blender python3-numpy
+          blender -b --python-expr "import sys; print('BLENDER_PYTHON',sys.version); import numpy; print('NUMPY',numpy.__version__)"
           blender --version
       - name: Build GLB and render four views
         run: |
           mkdir -p /tmp/b4-volcanic-stele
-          PYTHONPATH=/tmp/b4-blender-deps/lib/python3.14/site-packages OUT_DIR=/tmp/b4-volcanic-stele blender -b -t 2 --python tools/floor4/volcanic_stele/build_v1.py
+          PYTHONPATH=/usr/lib/python3/dist-packages OUT_DIR=/tmp/b4-volcanic-stele blender -b -t 2 --python tools/floor4/volcanic_stele/build_v1.py
       - name: Validate GLB PNG Blend and manifest
         run: |
           python3 - <<'PY'
