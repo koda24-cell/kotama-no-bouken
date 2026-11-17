@@ -312,6 +312,72 @@ for i in range(28):
  y=.30+R.random()*.70
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=R.uniform(.015,.043),location=(x,y,z))
  o=bpy.context.object;o.name='MOLTEN_SPRAY';parent(o);o.data.materials.append(hot2)
+
+# V10 geological detail: original river, bank and every V9 rock remain intact.
+# Add real stepped strata, fractured basalt slabs and local contact rubble,
+# rather than a new blanket of smooth spheres or random triangle confetti.
+fracture=mat('Recessed_fracture_dark',(.043,.036,.034),.99)
+weathered=mat('Weathered_shear_face',(.115,.105,.099),.93,
+ texture=tex+'ashen_stone_albedo.png',normal=tex+'ashen_stone_normal.png',roughmap=tex+'ashen_stone_roughness.png')
+def slab(name,x,y,z,rx,rz,depth,seed,material=basalt):
+ rng=random.Random(seed)
+ # Polygonal shear slab: near-planar weathered top, steep broken sidewalls.
+ n=11;verts=[];uv=[];faces=[]
+ ang0=rng.uniform(-pi,pi)
+ for j in range(2):
+  for i in range(n):
+   a=2*pi*i/n+ang0
+   k=1+.16*sin(a*3+seed*.17)+.095*sin(a*5-seed*.31)+rng.uniform(-.065,.065)
+   xx=x+rx*cos(a)*k
+   zz=z+rz*sin(a)*k
+   yy=y+(0 if j==0 else -depth)+.028*sin(a*4+seed)+.019*sin(a*9-seed)
+   verts.append((xx,yy,zz));uv.append((xx*.28,zz*.28))
+ for i in range(1,n-1):faces.append((0,i,i+1))
+ for i in range(n):
+  a=i;b=(i+1)%n;faces.append((a,b,b+n,a+n))
+ ob=objmesh(name,verts,faces,material,uv,smooth=False)
+ return ob
+# Banks have long weathered bedrock ledges rather than piles of identical rounded stones.
+for side in (-1,1):
+ for k in range(18):
+  z=-3.04+k*.36+R.uniform(-.12,.12)
+  x=edge(z,side)+side*(.24+R.uniform(.05,.78))
+  y=ground_y(x,z)+.065+R.uniform(.015,.13)
+  slab('V10_BEDROCK_SHEAR_PLATE',(x),y,z,
+       R.uniform(.18,.44),R.uniform(.27,.66),R.uniform(.045,.16),500+k+side*57,
+       basalt if k%5 else weathered)
+ # Buried fragments around large masses; not bright floating pebbles.
+ for k in range(12):
+  z=R.uniform(-3.10,3.08)
+  x=edge(z,side)+side*R.uniform(.24,1.60)
+  y=ground_y(x,z)+.017
+  slab('V10_BURIED_TALUS',x,y,z,R.uniform(.075,.20),
+       R.uniform(.12,.31),R.uniform(.045,.12),830+k+side*93,basalt)
+# Add eroded horizontal seams and displaced plates to the continuous rear cliff.
+# These are shallow interlocking rock strata with variable thickness and stagger.
+for band in range(5):
+ y0=.44+band*.47+R.uniform(-.055,.055)
+ for k in range(6):
+  x=-2.05+k*.79+R.uniform(-.12,.12)
+  z=-3.65+.09*sin(x*2.2+band)
+  slab('V10_REAR_BASALT_STRATUM',x,y0,z,
+       R.uniform(.38,.61),R.uniform(.14,.25),R.uniform(.055,.13),
+       1000+band*17+k,weathered if (k+band)%6==0 else basalt)
+# Sparse black recessed fracture wedges, following changes in bedding direction.
+# Keep cracks local and discontinuous; avoid painted repeated parallel lines.
+for side in (-1,1):
+ for k in range(9):
+  z=-2.85+k*.68+R.uniform(-.17,.17)
+  x=edge(z,side)+side*R.uniform(.48,1.23)
+  yy=ground_y(x,z)+.06
+  length=R.uniform(.17,.47)
+  dx=side*R.uniform(.03,.13)
+  vs=[(x,yy,z),(x+dx,yy-.014,z+length*.45),
+      (x+dx+side*.019,yy-.015,z+length*.48),
+      (x+side*.026,yy,z+.025)]
+  objmesh('V10_LOCAL_BASALT_FRACTURE',vs,[(0,1,2,3)],fracture,
+          [(0,0),(.8,1),(1,1),(.15,0)],smooth=False)
+
 # The modeling convention above uses Y-up (as in Three.js).
 # Blender is Z-up: convert every mesh to Z-up BEFORE lighting and cameras.
 # This also makes the lava river a horizontal ground surface and the fall vertical.
