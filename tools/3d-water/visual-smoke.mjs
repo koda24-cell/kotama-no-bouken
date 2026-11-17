@@ -41,6 +41,18 @@ try{
    report.push({mode:'b2-real-glb',kind:'existing/enhanced',status:await real.locator('#status').innerText()});
    if(issues.length)throw Error('B2 real GLB preview: '+issues.join('\n'));
    await real.close();
+   const meadow=await context.newPage(),windErrors=[];
+   meadow.on('pageerror',e=>windErrors.push('pageerror:'+e.message));
+   meadow.on('console',m=>{if(m.type()==='error')windErrors.push('console:'+m.text())});
+   await meadow.goto('http://127.0.0.1:'+PORT+'/tools/floor6/v7-wind-asset-preview.html',{waitUntil:'load'});
+   await meadow.waitForFunction(()=>document.querySelector('#status')?.textContent?.includes('V7実GLB読込成功'),null,{timeout:45000});
+   await meadow.locator('#wind').uncheck();await sleep(900);
+   await meadow.screenshot({path:'render-output/shader-research/f6-v7-static-glb.png'});
+   await meadow.locator('#wind').check();await sleep(900);
+   await meadow.screenshot({path:'render-output/shader-research/f6-v7-wind-glb.png'});
+   report.push({mode:'f6-real-glb',kind:'static/wind',status:await meadow.locator('#status').innerText()});
+   if(windErrors.length)throw Error('F6 real GLB preview: '+windErrors.join('\n'));
+   await meadow.close();
   }
   if(errors.length)throw Error(mode+' browser error: '+errors.join('\n'));
   await context.close();
