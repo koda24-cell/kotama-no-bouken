@@ -1,0 +1,43 @@
+name: Character boundary fast diagnostics
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/gpt-character-mesh-reference-study-20261116]
+    paths:
+      - 'tools/character-mesh-research/analyze_boundary_loops.py'
+      - 'tools/character-mesh-research/summarize_boundary_loops.py'
+      - 'tools/character-mesh-research/rank_posterior_seams.py'
+      - '.github/workflows/character-boundary-fast.yml'
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender xvfb
+      - name: Download two reference VRMs
+        run: |
+          mkdir -p /tmp/character-sources output/character-mesh-research
+          for model in Sendagaya_Shibu Vita; do
+            curl -fL --retry 3 --max-time 240 -o "/tmp/character-sources/$model.vrm" "https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/beta/$model.vrm"
+            test "$(stat -c%s "/tmp/character-sources/$model.vrm")" -gt 1000000
+          done
+      - name: Extract actual boundary topology
+        run: |
+          for model in Sendagaya_Shibu Vita; do
+            xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/analyze_boundary_loops.py -- "/tmp/character-sources/$model.vrm" "output/character-mesh-research/$model.boundary-loops.json"
+          done
+      - name: Summarize and shortlist
+        run: |
+          python3 tools/character-mesh-research/summarize_boundary_loops.py output/character-mesh-research
+          python3 tools/character-mesh-research/rank_posterior_seams.py output/character-mesh-research
+          test -s output/character-mesh-research/posterior_seam_review.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: character-boundary-fast-diagnostics
+          path: output/character-mesh-research/
+          retention-days: 14
