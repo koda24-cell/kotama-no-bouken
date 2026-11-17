@@ -22,7 +22,7 @@ def mat(name,c,rough=1):
  p.inputs["Base Color"].default_value=(*c,1)
  p.inputs["Roughness"].default_value=rough
  return m
-bark=mat("aged_bark",(0.22,.155,.105))
+bark=mat("aged_bark",(0.235,.168,.112))
 twig=mat("twigs",(0.24,.175,.118))
 leaves=[mat("leaf_deep",(0.095,.26,.10)),mat("leaf_mid",(0.15,.34,.13)),mat("leaf_lit",(0.22,.41,.17)),mat("leaf_sage",(0.17,.32,.19))]
 # A packed, hand-generated bark normal texture for glTF transport.
@@ -57,7 +57,7 @@ def tube(name,points,radii,material,radial=10):
   bit=tangent.cross(cross).normalized()
   for j in range(radial):
    angle=2*math.pi*j/radial
-   ridge=1+.07*math.sin(j*2.8+i*.9)+.045*math.sin(j*6.1+i*1.6)
+   ridge=1+.065*math.sin(j*2.8+i*.9)+.038*math.sin(j*6.1+i*1.6)+.04*math.sin(angle*9.0+i*.21)+.025*math.sin(angle*17+i*.43)
    verts.append(tuple(p+radii[i]*ridge*(cross*math.cos(angle)+bit*math.sin(angle))))
   if i:
    for j in range(radial):
@@ -98,6 +98,9 @@ for i in range(13):
         (anchor[0]+reach*math.cos(a+.09),anchor[1]+reach*math.sin(a+.09),z+.32+R.uniform(-.09,.18))]
  tube("tree_mature_main_branch_%02d"%i,bends,[.068,.053,.029,.007],bark,9)
  tips.append(Vector(bends[-1]))
+ # Each major branch carries leaves along its length, not just at its final tip.
+ tips.append(Vector(bends[2]) + Vector((0,0,.075)))
+ tips.append(Vector(bends[1]) + Vector((0,0,.14)))
  # Secondary branch fans create open canopy rather than a solid sphere.
  for j in range(3):
   bend=Vector(bends[2])
@@ -107,6 +110,7 @@ for i in range(13):
   end=bend+Vector((math.cos(phi)*length,math.sin(phi)*length,.13+R.uniform(0,.12)))
   tube("tree_mature_secondary_%02d_%02d"%(i,j),[tuple(bend),tuple(p1),tuple(end)],[.019,.012,.003],twig,7)
   tips.append(end)
+  tips.append(p1 + Vector((0,0,.045)))
 # Leaf cards: curved double-sided almond leaves; no large opaque ball meshes.
 leaves_obj_count=0
 def leaf(name,center,size,rotation,material):
@@ -129,12 +133,12 @@ def leaf(name,center,size,rotation,material):
  asset.append(ob);leaves_obj_count+=1
 for ti,tip in enumerate(tips):
  # Loose groups of leaves along twigs, leaving background visible between groups.
- for n in range(30):
-  off=Vector((R.gauss(0,.095),R.gauss(0,.095),R.gauss(0,.075)))
+ for n in range(17 if ti%3 else 23):
+  off=Vector((R.gauss(0,.085),R.gauss(0,.085),R.gauss(0,.07)))
   center=tip+off
-  size=R.uniform(.066,.113)
+  size=R.uniform(.056,.092)
   leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,size,
-       (R.uniform(-math.pi,math.pi),R.uniform(-.25,.55)),leaves[R.randrange(len(leaves))])
+       (R.uniform(-math.pi,math.pi),R.uniform(-.15,.45)),leaves[R.randrange(len(leaves))])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -160,7 +164,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V1",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V3",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
