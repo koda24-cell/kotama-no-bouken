@@ -326,3 +326,5 @@
 - **未検証/未承認**: ゲーム内GLTFLoader、動的熱ゆらぎ、火の粉の時間変化、FPS、タイル接続、ユーザー美術承認。実行コードとGLBは未マージのPR #475上にある。
 
 | 第6層草原・波状風フィールド/根元固定/葉先Flutter (2026-11-18) | V7既存造形を保持しブレワイ風の空間連続風を試作 | NVIDIA GPU Gems/AMD/海外再現研究を参照。`tools/floor6/meadow-wind-field.mjs` で独立数学モデル・GLSL断片、Node単体試験PASS。Three.js GPU/ゲーム描画・美術QAは**未検証**、ライセンスは第三者コードの転載なし | [研究資料](F6_MEADOW_WIND_VISUAL_RESEARCH_20261118.md) / [GPU Gems](https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-7-rendering-countless-blades-waving-grass) |
+
+| 第2層 水面・水路・滝の共通Three.js材質プロトタイプ（2026-11-18） | 原神・ブレワイ・Unity研究を独立WebGL比較部品へ変換 | 湖/水路/滝の色・波・簡易Fresnel・模擬岸泡、画面サイズの品質切替をコード化。Node 22の画質切替テストPASS。**WebGL実描画/実素材接続/ゲームFPS未検証**。外部コード転用なし | [試作/検証メモ](WATER_MEADOW_SHARED_SHADER_PROTOTYPE_20261118.md) / [研究PR #499](https://github.com/koda24-cell/kotama-no-bouken/pull/499) |
