@@ -52,3 +52,10 @@ PR: https://github.com/koda24-cell/kotama-no-bouken/pull/412
 - 頭部メッシュの自動選別は**オブジェクト名のヒューリスティック**。別名/統合メッシュでは誤判定する。
 - 参照モデルの再配布や直接的な形状複製は行わない。一般的な造形原理・比率・品質指標を抽出し、新規造形で検証する。
 - 初版の実行結果・JSON値・PNG目視評価は**未確認**。実行後にこの文書へ証拠URLと失敗/改善点を追記する。
+
+## 自動QA追加（2026-11-17）
+- 既存5領域抽出Actions #44003162337 は成功: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44003162337 。JSON内容の人手レビューは未完了。
+- `tools/character-mesh-research/assess_character_quality.py` を追加。6体の `.quality.json` から `quality_comparison.csv` と `quality_review.md` を生成する。
+- チェック: 頭部名の認識有無、髪メッシュ名の認識有無、閉路でない境界成分、境界分岐、ボーン検出、メッシュ・材質・表情の数量。
+- **注意**: `boundary_edges>0` は必ずしも欠陥ではない（顔/首の意図的開口があり得る）。非閉路のフラグも要目視。頭部の認識はオブジェクト名に依存する。自動QAの合格を美術的承認としない。
+- 追加QAの新規Actions成功・CSV実数値は未確認。V16の形状修正はまだ実施していない。
