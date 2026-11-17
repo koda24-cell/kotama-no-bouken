@@ -24,7 +24,8 @@ def mat(name,c,rough=1):
  return m
 bark=mat("aged_bark",(0.235,.168,.112))
 twig=mat("twigs",(0.24,.175,.118))
-leaves=[mat("leaf_deep",(0.085,.23,.085)),mat("leaf_mid",(0.125,.30,.105)),mat("leaf_lit",(0.175,.36,.13)),mat("leaf_sage",(0.15,.27,.16))]
+# V6: lower-saturation, deeper woodland greens with rare lighter accents.
+leaves=[mat("leaf_deep",(0.042,.125,.043)),mat("leaf_mid",(0.066,.185,.063)),mat("leaf_lit",(0.105,.255,.095)),mat("leaf_sage",(0.075,.165,.083))]
 # A packed, hand-generated bark normal texture for glTF transport.
 def bark_normal(m):
  img=bpy.data.images.new("tree_mature_bark_normal",width=256,height=256,alpha=True)
@@ -145,14 +146,29 @@ def leaf(name,center,size,rotation,material):
  mesh.materials.append(material)
  for p in mesh.polygons:p.use_smooth=True
  asset.append(ob);leaves_obj_count+=1
+# V6: form 2–3 coherent leaf sprays anchored at EACH real branch position.
+# A broad, single Gaussian per branch scattered the leaves as paper confetti.
 for ti,tip in enumerate(tips):
- # Loose groups of leaves along twigs, leaving background visible between groups.
- for n in range(24 if ti%3 else 34):
-  off=Vector((R.gauss(0,.092),R.gauss(0,.092),R.gauss(0,.078)))
-  center=tip+off
-  size=R.uniform(.063,.110)
-  leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,size,
-       (R.uniform(-math.pi,math.pi),R.uniform(-.15,.45)),leaves[R.randrange(len(leaves))])
+ radial=Vector((tip.x-.06,tip.y,0))
+ if radial.length<.03:radial=Vector((R.uniform(-1,1),R.uniform(-1,1),0))
+ radial.normalize()
+ sprays=2+(1 if ti%4==0 else 0)
+ for spray in range(sprays):
+  theta=(spray-(sprays-1)*.5)*.75+R.uniform(-.25,.25)
+  direction=Vector((radial.x*math.cos(theta)-radial.y*math.sin(theta),
+                    radial.x*math.sin(theta)+radial.y*math.cos(theta),0))
+  cluster_center=tip+direction*(.045+R.uniform(0,.055))+Vector((0,0,R.uniform(-.04,.065)))
+  count=16 if spray==0 else 12
+  for n in range(count):
+   along=R.gauss(0,.045)
+   perp=R.gauss(0,.035)
+   height=R.gauss(0,.035)
+   perpendicular=Vector((-direction.y,direction.x,0))
+   center=cluster_center+direction*along+perpendicular*perp+Vector((0,0,height))
+   size=R.uniform(.070,.110)
+   az=math.atan2(direction.y,direction.x)+R.uniform(-.43,.43)
+   leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,size,
+        (az,R.uniform(-.12,.37)),leaves[R.choices([0,1,2,3],weights=[38,36,13,13])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -178,7 +194,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V5",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V6",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
