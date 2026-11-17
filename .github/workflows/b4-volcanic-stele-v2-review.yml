@@ -2,7 +2,7 @@ name: B4 Volcanic Stele V2 Blender Review
 on:
   push:
     branches:
-      - feature/gpt-b4-volcanic-stele-v2-20261117
+      - feature/gpt-b4-volcanic-stele-v1-20261117
     paths:
       - tools/floor4/volcanic_stele/**
       - .github/workflows/b4-volcanic-stele-v2-review.yml
