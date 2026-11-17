@@ -11,10 +11,10 @@
 import * as THREE from 'three';import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {enableV7MeadowWind} from './f6-v7-wind-adapter.mjs';
 const scene=new THREE.Scene();scene.background=new THREE.Color(0xc6daaf);
-scene.add(new THREE.HemisphereLight(0xcdfcd3,0x426343,2));
-const sun=new THREE.DirectionalLight(0xffebbb,2.0);sun.position.set(-2,5,3);scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xcdfcd3,0x426343,0.7));
+const sun=new THREE.DirectionalLight(0xffebbb,0.8);sun.position.set(-2,5,3);scene.add(sun);
 const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,.02,80);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;document.body.append(renderer.domElement);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=0.8;document.body.append(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
 const status=document.getElementById('status');let controller=null;
 new GLTFLoader().load('../../render-input/f6_meadow_floor_v1.glb',gltf=>{
