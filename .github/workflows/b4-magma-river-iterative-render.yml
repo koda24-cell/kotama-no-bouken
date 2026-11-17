@@ -2,7 +2,7 @@ name: B4 Magma River Blender Iterative Render
 on:
   push:
     branches:
-      - feature/gpt-b4-basalt-geology-v10-20261117
+      - feature/gpt-b4-magma-viscosity-contact-v14-20261117
     paths:
       - '.github/workflows/b4-magma-river-iterative-render.yml'
       - 'tools/floor4/magma_river/**'
@@ -22,12 +22,12 @@ jobs:
       - name: Render molten river, lava pool, cascade and basalt shore
         run: |
           mkdir -p render-output
-          blender -b -t 2 --python tools/floor4/magma_river/build_magma_river.py -- --out render-output --variant v12
+          blender -b -t 2 --python tools/floor4/magma_river/build_magma_river.py -- --out render-output --variant v16
       - name: Verify GLB, Blender source, 4 real views and manifest
         run: |
           python3 - <<'PY'
           import os,json,struct
-          p='render-output';v='v12'
+          p='render-output';v='v16'
           names=[f'b4-magma-river-{v}.{e}' for e in ('glb','blend')]+[f'b4-magma-river-{v}-{a}.png' for a in ('angle','front','side','top')]
           for n in names:
             f=os.path.join(p,n)
@@ -47,6 +47,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: b4-magma-river-v12-review
+          name: b4-magma-river-v16-review
           path: render-output/
           retention-days: 14
