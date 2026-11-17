@@ -135,11 +135,11 @@ for i in range(23):
  rock('FLOATING_COOLING_CRUST',(x,.17,z),(size,.025+size*.12,size*R.uniform(.5,1.7)),crust,seed=i+3,subdiv=2)
 # Thin cooled rafts cover parts of the molten surface, making hot cracks legible.
 # Each irregular sheet follows the meander, rather than forming polygonal confetti.
-for i in range(62):
+for i in range(35):
  z=R.uniform(-2.95,3.15)
  c=center(z);width=halfwidth(z)
- x=c+R.uniform(-.76,.76)*width
- rx=R.uniform(.12,.35);rz=R.uniform(.16,.48)
+ x=c+R.choice([-1,1])*R.uniform(.40,.83)*width
+ rx=R.uniform(.08,.20);rz=R.uniform(.12,.29)
  vs=[];fs=[];n=15
  for k in range(n):
   a=k*2*pi/n
@@ -189,14 +189,23 @@ for i in range(28):
  y=.30+R.random()*.70
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=R.uniform(.015,.043),location=(x,y,z))
  o=bpy.context.object;o.name='MOLTEN_SPRAY';parent(o);o.data.materials.append(hot2)
+# The modeling convention above uses Y-up (as in Three.js).
+# Blender is Z-up: convert every mesh to Z-up BEFORE lighting and cameras.
+# This also makes the lava river a horizontal ground surface and the fall vertical.
+from mathutils import Matrix
+Y_UP_TO_Z_UP=Matrix.Rotation(math.pi/2,4,'X')
+bpy.context.view_layer.update()
+for o in bpy.data.objects:
+ if o.type=='MESH':o.matrix_world=Y_UP_TO_Z_UP @ o.matrix_world
+def to_blender(v):return Y_UP_TO_Z_UP @ Vector(v)
 # Stage lighting: molten orange motivates the scene, blue-black ambient fill.
 world=bpy.context.scene.world or bpy.data.worlds.new('B4_Cavern_World');bpy.context.scene.world=world;world.use_nodes=True
 world.node_tree.nodes.get('Background').inputs['Color'].default_value=(.045,.054,.071,1)
 world.node_tree.nodes.get('Background').inputs['Strength'].default_value=.65
 def area(name,loc,power,color,size):
  d=bpy.data.lights.new(name,'AREA');d.energy=power;d.color=color;d.shape='DISK';d.size=size
- o=bpy.data.objects.new(name,d);bpy.context.collection.objects.link(o);o.location=loc
- o.rotation_euler=(Vector((0,.1,0))-o.location).to_track_quat('-Z','Y').to_euler()
+ o=bpy.data.objects.new(name,d);bpy.context.collection.objects.link(o);o.location=to_blender(loc)
+ o.rotation_euler=(to_blender((0,.1,0))-o.location).to_track_quat('-Z','Y').to_euler()
 area('MAGMA_LIGHT_WARM',(0,1.65,.9),420,(1,.24,.045),5.4)
 area('UPSTREAM_CASCADE_LIGHT',(-.4,2.4,-2.9),340,(1,.35,.075),3.2)
 area('COLD_CAVE_FILL',(2.2,5,3.5),1150,(.25,.36,.58),6)
@@ -207,7 +216,7 @@ scene.view_settings.view_transform='Filmic';scene.view_settings.look='Medium Hig
 scene.camera=None
 def camera(name,loc,target,focal=42):
  data=bpy.data.cameras.new(name);o=bpy.data.objects.new(name,data);bpy.context.collection.objects.link(o)
- o.location=loc;o.rotation_euler=(Vector(target)-o.location).to_track_quat('-Z','Y').to_euler()
+ o.location=to_blender(loc);o.rotation_euler=(to_blender(target)-o.location).to_track_quat('-Z','Y').to_euler()
  data.type='PERSP';data.lens=focal;scene.camera=o;return o
 # save editable project with materials, source geometry and 3 cameras.
 cams=[('angle',(6.9,5.8,9.5),(0,.60,0),37),('front',(0,5.0,11.7),(0,.65,-.35),40),('side',(11.5,5.2,0),(0,.6,0),41),('top',(0,11,0),(0,.2,0),46)]
