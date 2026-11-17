@@ -2,7 +2,7 @@ name: B4 Standalone Lava Modules Blender Review
 on:
   push:
     branches:
-      - feature/gpt-b4-lava-modules-v2-20261117
+      - feature/gpt-b4-lava-modules-v1-20261117
     paths:
       - 'tools/floor4/lava_modules/**'
       - '.github/workflows/b4-lava-modules-review.yml'
