@@ -283,3 +283,12 @@
 - V12 Artifact 14294645385 をダウンロードし、6ファイルのSHA256一致、GLB 361メッシュ・画像10内包を実確認。画像を目視し、後方崖の地層/破断面と岩色の改善を確認。
 - V11で既存プロジェクト自作の assets/textures/floor4/basalt-charcoal-01/ を追加利用。原本生成コード tools/b4-render/generate-basalt-pbr.py、READMEに第三者依存なしと明記。既存岩の頂点は削除せず、地層状変位と破断キャップを追加。
 - 残課題: 大きな岩の丸い輪郭・薄い岩盤の板状感は未解消。**美術承認なし**、正式保存なし、ゲーム統合/FPS未検証。制作PR #458（親PR #450）。
+
+### 一層・閉鎖神域V3: 連続水面と個別低負荷植生の試作方針（2026-11-17 JST）
+- 名称/担当: Three r180 MeshPhysicalMaterial＋world-XZ二層normalによる水面試作、Blender 5.3個別asset出力。GPT制作チーム。対象は一層3Fの閉鎖神域改修 [PR #465](https://github.com/koda24-cell/kotama-no-bouken/pull/465) / `feature/f1-closed-ruins-v3-20261117`。
+- 公式: Three.js docs https://threejs.org/docs/ 、比較用Water実装 https://github.com/mrdoob/three.js/blob/r180/examples/jsm/objects/Water.js （Three.jsはMIT。既存依存を利用し、新規第三者コードの丸ごと転用は計画していない）。Blender公式 https://docs.blender.org/api/current/ 。既存Poly Haven画像は元manifestの公式出典/CC0条件を維持して再利用する方針。Pinterest画像は参考のみでテクスチャへ転用しない。
+- 目的/導入手順案: 既存11水meshの通行・水位・identityを保ち、同じworld-XZ座標に基づく異なる速度/向きの二層normalを `onBeforeCompile` で合成し、マス境界で波模様を途切れさせない。MeshPhysicalMaterialで水の濃淡/粗さ/反射応答を調整する。Water.jsのmeshごとの反射renderを11枚へ導入せず、追加reflection render target数は0を設計目標とする。これはリアルタイム平面反射の実装済みという意味ではない。
+- lifecycle方針: 元水材を保持し、試験終了/他階へ移る際に元材へ戻す。共有元texture/materialのdisposeを避け、試作用のmaterial/uniform/textureだけ所有関係を定めて解放する。実装後は水面連続性、time変化、shader compile、フロア往復、戦闘帰還、resource解放と正常fallbackを実ゲームで別検証する。
+- 個別素材方針: 専用 `/workspace/tools/blender-5.3.0-linux-x64/blender` を固定して一assetずつBlend/GLB/実再import PNG/metricsを出力。原本17GLBは保持しV3を別出力先へ。既存33,804trisのシダを大量複製せず、密度用lowpoly草花/不定形苔capを別制作する。画像埋込PBR/原点/4mセル/1.6m目高を記録し、各assetから実画面へ段階確認する。
+- 導入/検証状態: **計画・実装中。実GPUの水面描画、reflection target数、lifetime、FPSは未検証**。専用Blender5.3の起動と既存6構造GLBの実import/bbox確認、原本17SHA一致のみ監査済み。これらを新規asset生成完了や美術品質合格と扱わない。実行日時/コマンド/画像/JSONによる結果は実行担当が後続追記する。
+- 注意: 既存map/固定7対象/FOE/戦闘/セーブは保持。通常表示・main公開・美術承認・実機FPSへの昇格を含まない。本項は情報共有のみで、未検証runtime・モデル・画像をdevelopmentへ導入する変更ではない。
