@@ -240,3 +240,11 @@
 - 1K公式Diffuse SHA-256 `7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc`、Normal GL `ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b`、Roughness `ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c`。
 - 失敗と修正: ホスト側の `/work` 書込みでPermissionError→相対パス `out/` へ修正。PBRマップ取得不能時は生成テクスチャにフォールバックし、成功とは報告しない。
 - 留意: 完成品質判定と技術検査は別。参考画像の著作権不明な画像は素材化しない。現モデルはユーザー承認前、正式フォルダへの保存・ゲーム統合はしていない。
+
+## 第4層・独立溶岩モジュールのBlender PBR書出し手法（2026-11-17）
+- 名称: 手続き型512px熱分布ベイク＋既存PBR Normal/Roughness＋個別GLB/4方向レンダー。
+- 目的: 蛇行流・合流・溜まり・落下・冷却の5つを、周辺地形を含まない再利用可能な溶岩モデルとして制作する。
+- 公式技術: Blender Python API https://docs.blender.org/api/current/ 、glTF 2.0 https://www.khronos.org/gltf/ 。Blender標準API・独自Pythonコード。画像ベイクはオリジナル生成、既存のプロジェクト内PBR画像は利用条件を正式採用前に再確認。
+- 導入: `tools/floor4/lava_modules/build_lava_modules.py` と `.github/workflows/b4-lava-modules-review.yml`（PR #454、未承認）。
+- 検証: ソース/ワークフロー作成済み。Actions run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43996896778 を実行中。**この記録時点では実レンダー成功・GLB出力・ゲーム内描画・アニメーション未検証**。確認後にrun結果を追記する。
+- 担当: GPT（Blender/GLB/PNG）、Claude（承認後のブラウザ組込み）。未承認GLBを本番ゲームへ統合しない。
