@@ -265,6 +265,45 @@ for i in range(8):
   leaf("tree_mature_leaf_%04d"%leaves_obj_count,ctr,R.uniform(.06,.094),
        (a+R.uniform(-.6,.6),R.uniform(-.24,.40)),
        leaves[R.choices([0,1,2,3],weights=[44,37,12,7])[0]])
+# V12: zelkova/oak broadleaf crown. Dominant volume ABOVE the main trunk,
+# unlike earlier horizontal tiers. The existing V1–V11 geometry is retained.
+# Fourteen irregular upper lobes: rising wooden forks with overlapping leaf sprays.
+for lobe in range(14):
+ a=math.tau*(lobe*0.61803398875%1)+R.uniform(-.17,.17)
+ ring=lobe%3
+ distance=(.32,.58,.76)[ring]+R.uniform(-.07,.085)
+ crown_z=(2.91,2.73,2.57)[ring]+R.uniform(-.10,.16)
+ base=Vector((.06*math.sin(crown_z),.035,2.22+R.uniform(-.08,.22)))
+ bend=base+Vector((distance*.46*math.cos(a),distance*.46*math.sin(a),.20))
+ tip=Vector((distance*math.cos(a),distance*math.sin(a),crown_z))
+ tube("tree_mature_v12_upward_fork_%02d"%lobe,[tuple(base),tuple(bend),tuple(tip)],
+      [.031,.019,.003],bark,9)
+ # Leaf sprays are concentrated around a woody scaffold and overlap neighbors.
+ for micro in range(3):
+  from_tip=(micro-1)*.075
+  center=tip+Vector((R.gauss(0,.074)+from_tip*math.cos(a),
+                     R.gauss(0,.07)+from_tip*math.sin(a),
+                     R.gauss(0,.055)+R.uniform(-.04,.04)))
+  for n in range(42 if ring!=2 else 34):
+   radial=R.gauss(0,.105 if ring==0 else .115)
+   lateral=R.gauss(0,.087)
+   rise=R.gauss(0,.094 if ring==0 else .083)
+   leaf_center=center+Vector((radial*math.cos(a)-lateral*math.sin(a),
+                             radial*math.sin(a)+lateral*math.cos(a),rise))
+   leaf("tree_mature_leaf_%04d"%leaves_obj_count,leaf_center,
+        R.uniform(.065,.106),
+        (a+R.uniform(-.9,.9),R.uniform(-.30,.55)),
+        leaves[R.choices([0,1,2,3],weights=[41,40,13,6])[0]])
+# Smaller crown cap above the original tip: asymmetrically dome-shaped,
+# leaves still individually formed; no solid sphere or original mesh deletion.
+for cap in range(6):
+ a=math.tau*cap/6+.24
+ cap_center=Vector((.17*math.cos(a),.15*math.sin(a),3.00+R.uniform(-.035,.14)))
+ for n in range(45):
+  p=cap_center+Vector((R.gauss(0,.10),R.gauss(0,.10),R.gauss(0,.073)))
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,p,R.uniform(.062,.092),
+       (a+R.uniform(-.7,.7),R.uniform(-.20,.42)),
+       leaves[R.choices([0,1,2,3],weights=[43,41,10,6])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -282,7 +321,7 @@ for name,pos in [("front",(0,-6,3.1)),("side",(6,0,3.0)),("angle",(4,-6,4.1)),("
  ca=bpy.data.cameras.new(name);ob=bpy.data.objects.new("review_camera_"+name,ca)
  bpy.context.collection.objects.link(ob);ob.location=pos
  ob.rotation_euler=(Vector((0,0,1.40))-ob.location).to_track_quat("-Z","Y").to_euler()
- ca.type="ORTHO";ca.ortho_scale=3.75
+ ca.type="ORTHO";ca.ortho_scale=4.30
  scene.camera=ob;scene.render.filepath=str((OUT/(name+".png")).resolve())
  bpy.ops.render.render(write_still=True)
 bpy.ops.wm.save_as_mainfile(filepath=str((OUT/"tree_mature.blend").resolve()))
@@ -290,7 +329,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V11",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V12",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
