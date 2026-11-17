@@ -133,3 +133,9 @@ PR: https://github.com/koda24-cell/kotama-no-bouken/pull/412
 
 ### 高速診断の修正結果
 - NumPy追加後のrun #44104633050 は **success**（2026-11-17確認）。Shibu/Vitaの高速境界計測・集計・候補生成を独立実行できた。成功ログと実測値の突合せは必要に応じてArtifactsから再確認する。
+
+## 色分け境界画像の追加（2026-11-17）
+- `render_boundary_components.py` を追加。Shibu/Vitaの顔面境界グラフについて、辺数順の上位6連結成分を別色で重ね、正面・背面・側面・背面上方の各4枚を描画する。JSONの頂点IDに従うため、V15のZ帯平均法は使わない。
+- 出力は `component-overlays/<model>/{front,back,side,back_upper}.png` と `component_overlay_manifest.json`。色はトポロジー成分の識別子で、後頭部・首・目などの解剖学的意味を示さない。
+- `character-boundary-fast.yml` にレンダリングと8枚の存在検査を追加。**追加直後で実行結果・画像品質は未確認**。元VRMは一時ダウンロード、元メッシュを改変・正式保存しない。
+- 画像確認後、後頭部の接続に使える成分を選ぶ。どれも該当しなければ元Faceのメッシュ構造を再検討し、無理に接合しない。
