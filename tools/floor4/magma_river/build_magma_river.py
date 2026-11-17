@@ -186,13 +186,13 @@ for side,z0 in [(1,-.72),(-1,.58)]:
    a=j*(M+1)+i;b=a+M+1;faces.append((a,b,b+1,a+1))
  objmesh('SIDE_TRIBUTARY_MOLTEN_VEIN',verts,faces,lava,uv)
 # Rock masses: high-poly displaced with multiple frequencies, not tetrahedron stones.
-def rock(name,xyz,scale,material,seed=0,subdiv=3):
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdiv,radius=1,location=xyz)
+def rock(name,xyz,scale,material,seed=0,subdiv=4):
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=max(4,subdiv),radius=1,location=xyz)
  o=bpy.context.object;o.name=name;parent(o)
  for v in o.data.vertices:
-  x,y,z=v.co;h=1+.17*sin(x*4.3+seed)*sin(z*5.7-seed*.4)+.09*sin(y*11+z*8+seed)
+  x,y,z=v.co;h=1+.14*sin(x*4.3+seed)*sin(z*5.7-seed*.4)+.075*sin(y*11+z*8+seed)+.045*sin(x*19+y*17+z*12+seed)+.027*sin((x+y-z)*31+seed)
   v.co=(x*h,y*h,z*h)
- o.scale=scale;o.data.materials.append(material)
+ o.scale=scale;o.rotation_euler=(R.uniform(-.23,.23),R.uniform(-.26,.26),R.uniform(-.65,.65));o.data.materials.append(material)
  for p in o.data.polygons:p.use_smooth=True
  return o
 for side in (-1,1):
