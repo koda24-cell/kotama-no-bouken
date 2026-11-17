@@ -21,7 +21,7 @@ for(let j=0;j<4;j++){const t=j/3;for(const s of [-1,1]){vertices.push(cx+dirX*t*
 grassGeo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));grassGeo.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));grassGeo.setAttribute('aHeight',new THREE.Float32BufferAttribute(height,1));grassGeo.setAttribute('aPhase',new THREE.Float32BufferAttribute(phase,1));grassGeo.setIndex(indices);grassGeo.computeVertexNormals();
 const grassMat=new THREE.ShaderMaterial({side:THREE.DoubleSide,uniforms:{uTime:{value:0},uWind:{value:1},uDir:{value:new THREE.Vector2(Math.cos(32*Math.PI/180),Math.sin(32*Math.PI/180))}},
 vertexShader:`uniform float uTime,uWind;uniform vec2 uDir;attribute float aHeight,aPhase;varying float vH;${MEADOW_WIND_GLSL}void main(){vH=aHeight;vec4 wp=modelMatrix*vec4(position,1.);vec2 offset=kotamaMeadowWind(wp.xz,aHeight,uTime,aPhase,1.0,uDir);wp.xz+=offset*uWind;gl_Position=projectionMatrix*viewMatrix*wp;}`,
-fragmentShader:`precision highp float;varying float vH;void main(){vec3 green=mix(vec3(.17,.31,.10),vec3(.65,.80,.32),smoothstep(0.,1.,vH));gl_FragColor=vec4(green,1.);#include <tonemapping_fragment>
+fragmentShader:`precision highp float;varying float vH;void main(){vec3 green=mix(vec3(.17,.31,.10),vec3(.65,.80,.32),smoothstep(0.,1.,vH));gl_FragColor=vec4(green,1.);\n#include <tonemapping_fragment>
 #include <colorspace_fragment>` } );
 const grass=new THREE.Mesh(grassGeo,grassMat);grass.frustumCulled=false;scene.add(grass);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.target.set(0,0,0);
