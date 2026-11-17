@@ -75,7 +75,7 @@ def thermal_image(name,kind):
   rgb=np.stack((heat,.37*heat**1.4,.055*heat),axis=-1)
  rgba=np.concatenate((np.clip(rgb,0,1),np.ones((n,n,1),dtype=np.float32)),axis=-1)
  image=bpy.data.images.new(name,width=n,height=n,alpha=True)
- image.pixels.foreach_set(rgba.ravel())
+ image.pixels.foreach_set(rgba.astype(np.float32).ravel())
  image.pack()
  return image
 thermal_base=thermal_image('B4_V7_ThermalLava_BaseColor','color')
