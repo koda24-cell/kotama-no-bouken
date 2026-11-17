@@ -35,3 +35,9 @@
 - 元のPBRから、プロジェクト内自作の assets/textures/floor4/basalt-charcoal-01/ BaseColor/Normal/Roughnessへ変更。出典: assets/textures/floor4/basalt-charcoal-01/README.md。外部配布素材の追加なし。
 - V11 Blender Actions https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44004361611 。実行開始、**GLB/PNG成功・美術品質はまだ未確認**。
 - ワークフローでV11出力名を使う際、ブランチ名までV11へ置換してしまったため修正済み。ソースブランチは feature/gpt-b4-basalt-geology-v10-20261117。
+
+## V11実画像・V12追加造形（2026-11-17）
+- V11 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44004361611 **success**、Artifact 14293269477。GLB/Blend/4 PNG/manifestをダウンロードしSHA256とGLBメッシュ310/画像10を検証。
+- V11はV10より岩塊が暗くなり、溶岩との明暗差が改善。だが手前の大岩はまだ丸く、背面崖の丸い積み重なりも残る。
+- V12: 元の大岩の上面に埋め込んだ不規則な破断岩盤キャップを追加し、元メッシュを消さずに角張ったシルエットへ。背面崖には水平の棚ではなく、前面へ突き出す不規則な縦方向の剪断面を15枚追加。
+- V12は未承認。Blender Actionsで4方向実レンダーを行い、V11と比較してから品質判定する。GLB/PNG未確認の間は成功とは記録しない。
