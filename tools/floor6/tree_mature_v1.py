@@ -24,7 +24,7 @@ def mat(name,c,rough=1):
  return m
 bark=mat("aged_bark",(0.22,.155,.105))
 twig=mat("twigs",(0.24,.175,.118))
-leaves=[mat("leaf_deep",(0.16,.34,.13)),mat("leaf_mid",(0.24,.43,.15)),mat("leaf_lit",(0.34,.52,.20)),mat("leaf_sage",(0.26,.42,.24))]
+leaves=[mat("leaf_deep",(0.095,.26,.10)),mat("leaf_mid",(0.15,.34,.13)),mat("leaf_lit",(0.22,.41,.17)),mat("leaf_sage",(0.17,.32,.19))]
 # A packed, hand-generated bark normal texture for glTF transport.
 def bark_normal(m):
  img=bpy.data.images.new("tree_mature_bark_normal",width=256,height=256,alpha=True)
@@ -84,8 +84,8 @@ tube("tree_mature_main_trunk",trunk,[.18,.172,.15,.132,.112,.089,.066,.041,.014]
 for k in range(7):
  angle=2*math.pi*k/7+.15
  dist=.33+R.uniform(-.06,.09)
- points=[(.015,.0,.18),(.07*math.cos(angle),.07*math.sin(angle),.11),(.18*math.cos(angle),.18*math.sin(angle),.055),(dist*math.cos(angle),dist*math.sin(angle),.009)]
- tube("tree_mature_root_%02d"%k,points,[.075,.073,.055,.008],bark,9)
+ points=[(.015,.0,.18),(.07*math.cos(angle),.07*math.sin(angle),.115),(.15*math.cos(angle),.15*math.sin(angle),.07),(.25*math.cos(angle),.25*math.sin(angle),.029),(dist*math.cos(angle),dist*math.sin(angle),.012)]
+ tube("tree_mature_root_%02d"%k,points,[.075,.075,.058,.026,.009],bark,12)
 # Branches with side bends, taper and staggered elevations.
 tips=[]
 for i in range(13):
@@ -129,10 +129,10 @@ def leaf(name,center,size,rotation,material):
  asset.append(ob);leaves_obj_count+=1
 for ti,tip in enumerate(tips):
  # Loose groups of leaves along twigs, leaving background visible between groups.
- for n in range(21):
-  off=Vector((R.gauss(0,.11),R.gauss(0,.11),R.gauss(0,.095)))
+ for n in range(30):
+  off=Vector((R.gauss(0,.095),R.gauss(0,.095),R.gauss(0,.075)))
   center=tip+off
-  size=R.uniform(.071,.14)
+  size=R.uniform(.066,.113)
   leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,size,
        (R.uniform(-math.pi,math.pi),R.uniform(-.25,.55)),leaves[R.randrange(len(leaves))])
 # Export the actual foliage and woody meshes only, without environment or light.
