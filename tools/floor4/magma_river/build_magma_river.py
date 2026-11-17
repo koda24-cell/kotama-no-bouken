@@ -121,28 +121,28 @@ def rock(name,xyz,scale,material,seed=0,subdiv=3):
  for p in o.data.polygons:p.use_smooth=True
  return o
 for side in (-1,1):
- for i in range(34):
-  z=-3.05+i*.185+R.uniform(-.085,.085)
-  x=edge(z,side)+side*(.17+R.uniform(0,.68))
-  s=R.uniform(.23,.62)
-  rock('BANK_LARGE_WEATHERED_ROCK', (x,.28+R.uniform(-.04,.13),z),(s*R.uniform(.9,1.4),s*.55,s*R.uniform(.8,1.4)),basalt,seed=i+side*19,subdiv=3)
+ for i in range(18):
+  z=-3.0+i*.36+R.uniform(-.12,.12)
+  x=edge(z,side)+side*(.35+R.uniform(0,.75))
+  s=R.uniform(.18,.38)
+  rock('BANK_LARGE_WEATHERED_ROCK', (x,.28+R.uniform(-.04,.13),z),(s*R.uniform(.9,1.4),s*.50,s*R.uniform(.8,1.4)),basalt,seed=i+side*19,subdiv=3)
 # Black crust islands, embedded in the stream with emissive cracks between them.
-for i in range(37):
+for i in range(23):
  z=R.uniform(-2.95,3.1)
  x=center(z)+R.uniform(-.65,.65)*halfwidth(z)
- size=R.uniform(.075,.31)
+ size=R.uniform(.075,.23)
  if i%6==0:size*=1.55
  rock('FLOATING_COOLING_CRUST',(x,.17,z),(size,.025+size*.12,size*R.uniform(.5,1.7)),crust,seed=i+3,subdiv=2)
 # Side cave rock cliffs and rear basalt overhang.
-for i in range(32):
+for i in range(24):
  side=-1 if i%2 else 1
  z=-3.25+R.random()*6.7
- x=side*(3.2+R.uniform(-.2,.4))
- h=R.uniform(.9,2.9)
- rock('CAVERN_ROCK_FACE',(x,h*.38,z),(.65,h,.8),ash,seed=i+90,subdiv=3)
-for i in range(12):
- x=-3.2+i*.59
- rock('REAR_JAGGED_OVERHANG',(x,2.7+R.random()*.7,-3.55),(.55,.6,.62),basalt,seed=i+120,subdiv=3)
+ x=side*(3.65+R.uniform(-.2,.3))
+ h=R.uniform(.75,1.75)
+ rock('CAVERN_ROCK_FACE',(x,h*.38,z),(.55,h,.7),ash,seed=i+90,subdiv=3)
+for i in range(8):
+ x=-3.0+i*.84
+ rock('REAR_JAGGED_OVERHANG',(x,2.45+R.random()*.25,-3.75),(.48,.43,.53),basalt,seed=i+120,subdiv=3)
 # Cascading flow from a fractured wall: bending ribbon with variable width.
 verts=[];uv=[];faces=[];N=26;M=100
 for j in range(M+1):
@@ -172,14 +172,14 @@ for i in range(28):
 # Stage lighting: molten orange motivates the scene, blue-black ambient fill.
 world=bpy.context.scene.world or bpy.data.worlds.new('B4_Cavern_World');bpy.context.scene.world=world;world.use_nodes=True
 world.node_tree.nodes.get('Background').inputs['Color'].default_value=(.045,.054,.071,1)
-world.node_tree.nodes.get('Background').inputs['Strength'].default_value=.38
+world.node_tree.nodes.get('Background').inputs['Strength'].default_value=.65
 def area(name,loc,power,color,size):
  d=bpy.data.lights.new(name,'AREA');d.energy=power;d.color=color;d.shape='DISK';d.size=size
  o=bpy.data.objects.new(name,d);bpy.context.collection.objects.link(o);o.location=loc
  o.rotation_euler=(Vector((0,.1,0))-o.location).to_track_quat('-Z','Y').to_euler()
-area('MAGMA_LIGHT_WARM',(0,1.65,.9),1300,(1,.24,.045),5.4)
-area('UPSTREAM_CASCADE_LIGHT',(-.4,2.4,-2.9),1050,(1,.35,.075),3.2)
-area('COLD_CAVE_FILL',(2.2,5,3.5),700,(.25,.36,.58),6)
+area('MAGMA_LIGHT_WARM',(0,1.65,.9),600,(1,.24,.045),5.4)
+area('UPSTREAM_CASCADE_LIGHT',(-.4,2.4,-2.9),480,(1,.35,.075),3.2)
+area('COLD_CAVE_FILL',(2.2,5,3.5),1150,(.25,.36,.58),6)
 scene=bpy.context.scene
 scene.render.engine='CYCLES';scene.cycles.samples=24
 scene.render.resolution_x=1024;scene.render.resolution_y=768;scene.render.resolution_percentage=100
@@ -190,7 +190,7 @@ def camera(name,loc,target,focal=42):
  o.location=loc;o.rotation_euler=(Vector(target)-o.location).to_track_quat('-Z','Y').to_euler()
  data.type='PERSP';data.lens=focal;scene.camera=o;return o
 # save editable project with materials, source geometry and 3 cameras.
-cams=[('angle',(7.3,6.1,9.3),(0,.85,0),36),('front',(0,3.0,11.7),(0,.95,-.35),42),('side',(11.5,4.0,0),(0,.95,0),43),('top',(0,11,0),(0,.2,0),46)]
+cams=[('angle',(6.9,5.8,9.5),(0,.60,0),37),('front',(0,5.0,11.7),(0,.65,-.35),40),('side',(11.5,5.2,0),(0,.6,0),41),('top',(0,11,0),(0,.2,0),46)]
 for label,loc,target,focal in cams:
  camera('REVIEW_'+label,loc,target,focal)
  scene.render.filepath=os.path.join(out,'b4-magma-river-'+variant+'-'+label+'.png')
