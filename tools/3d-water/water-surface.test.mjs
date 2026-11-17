@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {selectWaterQuality,waterCapabilities} from './water-surface.mjs';
+import {selectWaterQuality,waterCapabilities} from './water-quality.mjs';
 assert.equal(selectWaterQuality(12,'medium'),'low');
 assert.equal(selectWaterQuality(22,'low'),'low');
 assert.equal(selectWaterQuality(35,'low'),'medium');
