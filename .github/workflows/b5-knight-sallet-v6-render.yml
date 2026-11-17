@@ -19,7 +19,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y blender python3-numpy python3-pil
           blender --version
-      - name: Render standalone V5 and store source checkpoint
+      - name: Render standalone V6 and store source checkpoint
         run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_sallet_v6.py
       - name: Validate GLB and actual four PNG renders
         run: |
@@ -46,11 +46,11 @@ jobs:
                   assert im.size==(900,900)
                   assert max(ImageStat.Stat(im.convert('RGB')).stddev)>5
           assert (p/'progress.json').exists()
-          print('PASS V5: GLB + Blend + front/side/angle/top PNG + hashes/checkpoint')
+          print('PASS V6: GLB + Blend + front/side/angle/top PNG + hashes/checkpoint')
           PY
       - name: Upload recoverable unapproved artifact
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         with:
           name: b5-sallet-v6-NOT-APPROVED
           path: render-output/b5-knights/sallet_v6/
