@@ -172,7 +172,7 @@ for loc,energy,size in [((0,-5,11),1850,6),((-7,3,9),1400,6),((4,5,8),1100,5)]:
  bpy.context.object.data.energy=energy
  bpy.context.object.data.shape='DISK';bpy.context.object.data.size=size
 scene=bpy.context.scene
-scene.render.engine='BLENDER_EEVEE_NEXT'
+scene.render.engine='BLENDER_EEVEE'
 scene.render.resolution_x=980;scene.render.resolution_y=980
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
