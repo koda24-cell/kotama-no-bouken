@@ -324,3 +324,5 @@
 - V17 Artifact 14304097614 のGLB/Blend/4方向PNG/manifestをダウンロード。SHA256が6ファイル一致、GLB 400 meshes/9 imagesを実確認。
 - V14は滝が岩に隠れ、V16は下流端が発光団子列になったため採用せず。V17で厚い岩盤支持体と一体型冷却縁を維持し、側面の浮遊感を軽減。
 - **未検証/未承認**: ゲーム内GLTFLoader、動的熱ゆらぎ、火の粉の時間変化、FPS、タイル接続、ユーザー美術承認。実行コードとGLBは未マージのPR #475上にある。
+
+| 第6層草原・波状風フィールド/根元固定/葉先Flutter (2026-11-18) | V7既存造形を保持しブレワイ風の空間連続風を試作 | NVIDIA GPU Gems/AMD/海外再現研究を参照。`tools/floor6/meadow-wind-field.mjs` で独立数学モデル・GLSL断片、Node単体試験PASS。Three.js GPU/ゲーム描画・美術QAは**未検証**、ライセンスは第三者コードの転載なし | [研究資料](F6_MEADOW_WIND_VISUAL_RESEARCH_20261118.md) / [GPU Gems](https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-7-rendering-countless-blades-waving-grass) |
