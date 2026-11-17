@@ -48,6 +48,11 @@ jobs:
           for model in HairSample_Female HairSample_Male Sendagaya_Shibu Sendagaya_Shino Sakurada_Fumiriya Vita; do
             xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/render_full_head.py -- "/tmp/character-sources/$model.vrm" "output/character-mesh-research/full-head/$model"
           done
+      - name: Measure ordered face boundary components for all six models
+        run: |
+          for model in HairSample_Female HairSample_Male Sendagaya_Shibu Sendagaya_Shino Sakurada_Fumiriya Vita; do
+            xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/analyze_boundary_loops.py -- "/tmp/character-sources/$model.vrm" "output/character-mesh-research/$model.boundary-loops.json"
+          done
       - name: Render face boundary overlay diagnostics for two samples
         run: |
           for model in Sendagaya_Shibu Vita; do
@@ -65,6 +70,7 @@ jobs:
         run: |
           for model in HairSample_Female HairSample_Male Sendagaya_Shibu Sendagaya_Shino Sakurada_Fumiriya Vita; do
             test -s "output/character-mesh-research/$model.quality.json"
+            test -s "output/character-mesh-research/$model.boundary-loops.json"
             test -s "output/character-mesh-research/$model.json"
           done
           for model in HairSample_Female HairSample_Male Sendagaya_Shibu Sendagaya_Shino Sakurada_Fumiriya Vita; do
