@@ -12,3 +12,13 @@
 次の制作候補: レール・枕木・分岐・破損レール。既存素材を保持して独立PRで制作する。
 
 2026-11-17: 溶岩単体5候補のうち C（溶岩溜まり）のみ採用。A/B/D/Eは不採用。CのGLB/PNG/Blend/manifestを正式保存。ゲーム統合は未実施。
+
+## マグマ河川 V16（2026-11-17 ユーザー完成承認）
+| 素材 | 版 | 正式GLB | 4方向レビュー・manifest | Claude引継ぎ | ゲーム統合 |
+| --- | --- | --- | --- | --- | --- |
+| マグマ河川・岩盤・溶岩滝複合セット | V16 | [GLB](../../assets/models/floor4/b4-magma-river-v16.glb) | [レビュー](../../assets/models/floor4/reviews/b4-magma-river-v16/) | [MD](B4_MAGMA_RIVER_V16_CLAUDE_HANDOFF.md) / [JSON](B4_MAGMA_RIVER_V16_CLAUDE_HANDOFF.json) | 未実施 |
+
+- 元のBlender成功run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44027612542
+- 完成記録: [B4_MAGMA_RIVER_V16_COMPLETED_20261117.md](B4_MAGMA_RIVER_V16_COMPLETED_20261117.md)
+- 独立採用済みの溶岩溜まりC V3とトロッコV32は保持。A/B/D/E単体候補は不採用のまま。
+- 正式保存の実体・developmentマージは別途検証。ゲーム内表示・動的VFXは未実装。
