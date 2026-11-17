@@ -1,0 +1,64 @@
+name: B4 P3 V5 Thick Secondary Magmafall Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
+    paths:
+      - tools/floor4/magma_banks/build_p3_v5.py
+      - tools/floor4/magma_banks/p3_v5_additions.py
+      - .github/workflows/b4-magma-bank-p3-v5-review.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and numpy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Render P3 V5 with V16 and V4 geometry preserved
+        run: |
+          set -euo pipefail
+          mkdir -p render-output
+          blender -b -t 2 --python tools/floor4/magma_banks/build_p3_v5.py -- --variant p3-v5 --out render-output
+      - name: Validate GLB and four actual renders
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,hashlib,struct
+          d=pathlib.Path('render-output')
+          m=json.loads((d/'manifest-p3-v5.json').read_text())
+          assert m['approval']=='NOT_APPROVED'
+          stem='b4-magma-river-p3-v5'
+          expected={stem+'.glb',stem+'.blend'}|{stem+'-'+v+'.png' for v in ('angle','front','side','top')}
+          assert {x['file'] for x in m['files']}==expected
+          for x in m['files']:
+              p=d/x['file']
+              assert p.is_file() and p.stat().st_size==x['size'] and p.stat().st_size>4000
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==x['sha256']
+          glb=d/(stem+'.glb')
+          with glb.open('rb') as f:
+              assert f.read(4)==b'glTF'
+              version,length=struct.unpack('<II',f.read(8))
+              assert version==2 and length==glb.stat().st_size
+              chunk_len,chunk_type=struct.unpack('<II',f.read(8))
+              assert chunk_type==0x4e4f534a
+              scene=json.loads(f.read(chunk_len))
+          assert len(scene['meshes'])>=516
+          assert len(scene['images'])>=9 and len(scene['materials'])>=7
+          nodes=[n.get('name','') for n in scene['nodes']]
+          assert any('P3_V5_THICKER_SECONDARY_MOLTEN_FRONT' in n for n in nodes)
+          assert any('P3_V5_SECONDARY_IMPACT_MOLTEN_BASIN' in n for n in nodes)
+          for v in ('angle','front','side','top'):
+              assert (d/(stem+'-'+v+'.png')).read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          print('P3 V5 verified',len(scene['meshes']),'meshes',len(scene['images']),'images')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-magma-p3-v5-secondary-cascade
+          path: render-output/
+          retention-days: 14
