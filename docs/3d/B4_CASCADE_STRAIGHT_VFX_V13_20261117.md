@@ -9,3 +9,10 @@
 - 制作PR: https://github.com/koda24-cell/kotama-no-bouken/pull/468
 - Blender run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44022714810 （実行中・結果確認前）。
 - 現状: **NOT_APPROVED**。GLBとPNGの実レンダリング確認後、旧V12との比較・修正を続ける。正式保存やゲーム統合はユーザー承認後。
+
+## 実レンダリング検証（2026-11-17）
+- Run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44022714810 **success**、Artifact ID 14302335873。4方向PNG、Blend、GLB、manifestの7ファイル取得。
+- manifestに記載の6ファイルのSHA256は全て一致。GLBは418 meshes / 10 embedded images。
+- 4方向実画像で確認: 青丸の滝は大きな蛇行が消え、ほぼ垂直な落下流になった。滝壺の火の粉と暖色照明が確認できる。
+- **美術上の新たな問題**: 発光細流7本が均一な縦線に見え、滝が発光する細い棒・光のカーテンのように見える。落下流の面の広がりと濃淡が不足。次は線を間引き、太さ/長さ/発光量を不均一にし、中央の溶岩シートを主役にする。
+- ユーザー承認前につき **NOT_APPROVED**。GLBは一時Artifactで、正式保存・ゲーム統合は未実施。動的VFXも未実装。
