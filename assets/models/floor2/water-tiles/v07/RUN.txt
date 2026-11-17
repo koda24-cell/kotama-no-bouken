@@ -1,0 +1,5 @@
+run_id=43995529885
+commit=e279dbb2ad4710733138674abbc877ae0191bd36
+blender=Blender 5.3.0
+generator=tools/b2-render/build-modular-water-tiles.py (unmodified, GPT)
+postprocess=tools/b2-render/claude-water-tiles-lite.py
