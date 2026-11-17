@@ -66,6 +66,31 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
     report.floors.push({ floor: f + 1, centerHits, placedCount: (inf.placed || []).length, buildKey: inf.buildKey, random: inf.random, layout: L, extras: inf.extras, falls: inf.falls, monuments: inf.monuments, crystalZones: inf.crystalZones, drawGroups: inf.drawGroups });
     // 花（4F も：光るキノコ・荊の位置の差し替え）
     for (const [i, s] of (L.flowerClusters || []).slice(0, f === 0 ? 3 : 4).entries()) { const [cell, kind, d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shotS(`${pre}_flower_${i + 1}_${kind}`); }
+    // [B2V4-L] 光班の確認：導きの灯を通路の3マス先から、天井の水流、両側が壁の通路の奥（石筍・鍾乳石の根元）
+    {
+      const extra = await p.evaluate(() => {
+        const a = fieldArea(), D = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, OPP = { up: 'down', down: 'up', left: 'right', right: 'left' };
+        const open = (x, y) => { const c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); };
+        const wall = (x, y) => !open(x, y);
+        const out = { save: [], corr: [] };
+        for (const o of a.objects.filter((q) => q.kind === 'save')) {
+          let best = null;
+          for (const d of Object.keys(D)) { let n = 0; while (n < 4 && open(o.tx + D[d][0] * (n + 1), o.ty + D[d][1] * (n + 1))) n++; if (n >= 2 && (!best || n > best.n)) best = { n, d }; }
+          if (best) out.save.push([o.tx + D[best.d][0] * best.n, o.ty + D[best.d][1] * best.n, OPP[best.d]]);
+        }
+        // 通路：自分と前の3マスが、左右とも壁（向かい合う壁の通路）
+        for (let ty = 1; ty < a.h - 1 && out.corr.length < 6; ty++) for (let tx = 1; tx < a.w - 1 && out.corr.length < 6; tx++) for (const d of ['right', 'down']) {
+          const [vx, vy] = D[d], sx = vy ? 1 : 0, sy = vx ? 1 : 0; let ok = true;
+          for (let k = 0; k <= 3 && ok; k++) { const x = tx + vx * k, y = ty + vy * k; if (!open(x, y) || !wall(x + sx, y + sy) || !wall(x - sx, y - sy)) ok = false; }
+          if (ok && !out.corr.some((q) => Math.abs(q[0] - tx) + Math.abs(q[1] - ty) < 8)) out.corr.push([tx, ty, d]);
+        }
+        return out;
+      });
+      const at = async (tx, ty, d) => { await p.evaluate(([tx, ty, d]) => { const cc = fieldTileCenter(tx, ty); fieldState.x = cc.x; fieldState.y = cc.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, [tx, ty, d]); await p.waitForTimeout(900); };
+      for (const [i, s] of extra.save.slice(0, 1).entries()) { await at(...s); await shotS(`${pre}_L_save_far_${i + 1}`); }
+      for (const [i, s] of extra.corr.slice(0, 3).entries()) { await at(...s); await shotS(`${pre}_L_corridor_${i + 1}`); }
+      for (const [i, s] of (inf.streams || []).slice(0, 2).entries()) { const [tx, ty] = s.split(',').map(Number), d = await openDir(tx, ty); await look(tx, ty, OPP[d]); await shotS(`${pre}_L_stream_${i + 1}`); }
+    }
     if (f === 0) continue;
     for (const [i, z] of (inf.crystalZones || []).slice(0, 2).entries()) {
       const dir = z.bx > 0 ? 'right' : z.bx < 0 ? 'left' : z.bz > 0 ? 'down' : 'up';

@@ -16,7 +16,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
-import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=20261110-c7';   // 結晶（ユーザー確認済みの質感）
+import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=20261117-l1';   // 結晶（ユーザー確認済みの質感）
 import { createB2WaterTiles, B2V4W_REMOVE_STEPPING_STONES } from './b2-water-tiles.js?v=20261117-w1';   // [B2V4-W] 危険な水面（GPT 水面タイル）・床の模様
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
@@ -31,6 +31,7 @@ const WATER_KEY = 'kotama.field3d.b2.water';           // 'opaque' で水を不�
 // 暗く沈めるのではなく、手前は濃い青、奥は明るい水色という空気遠近で奥行きを出す。
 export const ENV = { background: 0x1478a0, fog: { color: 0x1b86ad, density: 0.034 }, hemi: { sky: 0x9af2ff, ground: 0x123e5c, high: 1.15, low: 1.6 } };
 const EXPOSURE = 1.45;                                                  // 第2階層だけ少し明るく（第1階層へ戻るときに元へ戻す）
+const BLOOM = { threshold: 0.88, strength: 0.4 };                       // [B2V4-L] F1：第2階層のにじみ（共通の値は threshold 0.84・strength 0.45）
 const LANTERN = { color: 0xbff4ff, high: 6, low: 8, range: 12 };       // カメラに付いて動く手元の灯り（第2階層だけ）
 // 天井の高さ。通行判定とカメラ（目の高さ1.6m）は変えず、見た目の天井だけを7mに上げて大空洞の広さを出す
 export const CEIL_H = 7;
@@ -77,7 +78,8 @@ function makeMaterials(opaqueWater) {
   });
   fallTex.repeat.set(2, 1.4); waterTex.repeat.set(1, 1);
   const water = std({ color: 0x8eeaff, map: waterTex, roughness: 0.05, metalness: 0.1, emissive: 0x0f86b4, emissiveIntensity: 0.55, envMapIntensity: 1.6, side: THREE.DoubleSide });
-  const fall = std({ color: 0x9fe6fa, map: fallTex, roughness: 0.19, metalness: 0.0, emissive: 0x1a8cc0, emissiveIntensity: 0.45, side: THREE.DoubleSide });
+  const fall = std({ color: 0x9fe6fa, map: fallTex, roughness: 0.5,   // [B2V4-L] F1：0.19 だと面ごとに点光源の白い四角い照り返しが出た
+    metalness: 0.0, emissive: 0x1a8cc0, emissiveIntensity: 0.45, side: THREE.DoubleSide });
   if (opaqueWater) { water.color.setHex(0x0f4a68); fall.color.setHex(0x2f7fa8); }
   else for (const m of [water, fall]) { m.transparent = true; m.opacity = m === water ? 0.66 : 0.72; m.depthWrite = false; }   // 水底の小石と魚が透けて見える濃さ
   const foam = std({ color: 0xd8f4ff, roughness: 0.5, emissive: 0x1f4a59, emissiveIntensity: 0.6, transparent: true, opacity: 0.24, depthWrite: false, envMapIntensity: 0.3 });   // 硬い白線にならない薄さ
@@ -93,7 +95,8 @@ function makeMaterials(opaqueWater) {
     'Deep cavern rock': std({ color: 0x74a8d4, map: rock.map, normalMap: rock.normal, normalScale: new THREE.Vector2(1.4, 1.4), roughness: 0.78, metalness: 0.0, emissive: 0x041a2e, emissiveIntensity: 1.0, envMapIntensity: 0.6, vertexColors: true }),   // 青い岩（影が黒く沈まないよう少し自発光）
     caveFloor: std({ color: 0x82bcd8, map: slate.map, normalMap: rock.normal, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 0.42, metalness: 0.02, emissive: 0x52e2ff, emissiveMap: veins, emissiveIntensity: 1.25, envMapIntensity: 1.0, vertexColors: true }),   // 濡れた岩盤＋光る水脈
     puddle: std({ color: 0x7fe2f6, roughness: 0.05, metalness: 0.1, emissive: 0x2ab4e0, emissiveIntensity: 0.6, envMapIntensity: 1.5 }),
-    stream: new THREE.MeshBasicMaterial({ color: 0x8ff2ff, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }),   // 天井から落ちる光る細い水流
+    stream: farFade(new THREE.MeshBasicMaterial({ color: 0x8ff2ff, transparent: true, opacity: 0.4, depthWrite: false, blending: THREE.AdditiveBlending, fog: true })),   // 天井から落ちる光る細い水流（[B2V4-L] F1：霧で遠くほど消える。旧版は霧を無視して遠くから光った）
+    streamPool: std({ color: 0x6fcfe6, roughness: 0.35, metalness: 0.05, emissive: 0x1a86b0, emissiveIntensity: 0.35, envMapIntensity: 0.9 }),   // [B2V4-L] F1：水流の落ちる所の水たまり（照り返しの白い円にならない）
     'Pale mineral stone': std({ color: 0xb2e2f0, map: pale.map, normalMap: pale.normal, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 0.6, metalness: 0.0, envMapIntensity: 0.45, vertexColors: true }),  // 淡い鉱物の石
     'Glowing cyan crystal': std({ color: 0x7fe0ff, roughness: 0.08, metalness: 0.05, emissive: 0x1cb6f0, emissiveIntensity: 1.0, envMapIntensity: 1.4, flatShading: true }),   // 白飛びしない強さ  // 控えめな発光
     'Deep blue crystal': std({ color: 0x4a76e8, roughness: 0.12, metalness: 0.05, emissive: 0x1a3596, emissiveIntensity: 0.7, envMapIntensity: 1.3 }),
@@ -196,6 +199,13 @@ function stoneSet(n, seed, kind) {
 const ceilDrop = (wx, wz) => 0.45 + 0.3 * Math.sin(wx * 0.37 + 0.7) * Math.cos(wz * 0.42 + 0.3) + 0.18 * Math.sin(wx * 0.83 + wz * 0.56)
   + 0.06 * Math.cos(wx * 1.91 - wz * 1.47) + 0.12 * Math.pow(Math.abs(Math.sin(wx * 0.72 - wz * 0.83)), 9);
 const ceilY = (wx, wz) => CEIL_H - ceilDrop(wx, wz);
+// [B2V4-L] F9：天井から下がる物の根元の高さ。根元の広がり（半径 r）の中で一番高い天井より少し上に置き、
+// 天井の起伏で根元が浮いて隙間が見えないようにする（根元は天井にめり込み、付け根の岩が天井の下に顔を出す）
+const rootY = (wx, wz, r) => {
+  let y = ceilY(wx, wz);
+  for (let k = 0; k < 6; k++) { const a = k * 1.047; y = Math.max(y, ceilY(wx + Math.cos(a) * r, wz + Math.sin(a) * r)); }
+  return y + 0.04;
+};
 // 壁の面の前後のずれ（+が通路側、最大0.2m）。wx, wz は壁の面上の位置、lx は壁の中心からの横位置、y は高さ。
 // 壁の形と、壁に貼る霜の花の位置の両方で使う（花が壁に埋まったり浮いたりしない）
 function wallZ(wx, wz, lx, y, cell) {
@@ -218,6 +228,21 @@ function blob(c, s, x, y, r, col) {
     const gr = c.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(255,255,255,0)');
     c.fillStyle = gr; c.beginPath(); c.arc(x + ox, y + oy, r, 0, Math.PI * 2); c.fill();
   }
+}
+// [B2V4-L] F1：加算合成の光（水流など）は、霧の色を足すと遠くで明るくなるので、霧の濃さに応じて光そのものを消す
+function farFade(m) {
+  m.onBeforeCompile = (sh) => { sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', `#ifdef USE_FOG
+      float fadeF = 1.0 - exp(- fogDensity * fogDensity * vFogDepth * vFogDepth * 3.0);
+      gl_FragColor.rgb *= 1.0 - fadeF;
+    #endif`); };
+  m.customProgramCacheKey = () => 'b2farFade';
+  return m;
+}
+// [B2V4-L] F1：光の粒（雪・きらめき）が目の前で大きな光の玉にならないよう、画面上の大きさに上限を付ける
+function capPoints(m, px) {
+  m.onBeforeCompile = (sh) => { sh.vertexShader = sh.vertexShader.replace('#include <logdepthbuf_vertex>', `gl_PointSize = min(gl_PointSize, ${px.toFixed(1)});\n#include <logdepthbuf_vertex>`); };
+  m.customProgramCacheKey = () => 'b2capPoints' + px.toFixed(1);
+  return m;
 }
 function tileTexture(s, draw) {
   const cv = document.createElement('canvas'); cv.width = cv.height = s; draw(cv.getContext('2d'), s);
@@ -324,7 +349,9 @@ async function loadKit() {
   }
   kit.bridge = makePiece('Broken_Bridge', asParts(take(by(/^(Broken_Bridge_Stone|Bridge_Support)/))), { keepY: true });
   { // 滝：水の帯（UV を付けて流す）と泡
-    const sheets = take(by(/^Waterfall_Sheet/)).map((m) => ({ geo: planarUv(prepGeo(m.geo, false)), mat: 'waterfall', tag: m.name }));
+    // [B2V4-L] F1：面ごとの法線（平面の継ぎはぎ）だと点光源の照り返しが四角く白く光ったので、なめらかな法線にする
+    const smoothSheet = (geo) => { const g0 = prepGeo(geo, false); g0.deleteAttribute('normal'); const g1 = mergeVertices(g0, 1e-3); g0.dispose(); g1.computeVertexNormals(); return g1; };
+    const sheets = take(by(/^Waterfall_Sheet/)).map((m) => ({ geo: planarUv(smoothSheet(m.geo)), mat: 'waterfall', tag: m.name }));
     const foam = asParts(take(by(/^Waterfall_Foam/)));
     kit.waterfall = makePiece('Waterfall', [...sheets, ...foam]);
   }
@@ -397,8 +424,8 @@ function makeProcedural() {
       geo.translate((rnd(variant * 13 + j) - 0.5) * 0.42, 0, (rnd(variant * 17 + j) - 0.5) * 0.42);
       parts.push({ geo, mat: 'ice' });
     }
-    const root = new THREE.SphereGeometry(0.2, 7, 3, 0, Math.PI * 2, 0, Math.PI / 2); root.scale(1.4, 0.35, 1.2); root.rotateX(Math.PI);
-    parts.push({ geo: root, mat: 'Deep cavern rock' });
+    const root = new THREE.SphereGeometry(0.2, 9, 4, 0, Math.PI * 2, 0, Math.PI / 2); root.scale(2.0, 0.6, 1.8); root.rotateX(Math.PI);
+    parts.push({ geo: root, mat: 'ceiling' });   // [B2V4-L] F9：付け根は天井と同じ素材で太く（天井となじむ）
     return { name: 'b2_ice_stalactite_' + variant, parts };
   });
   // 浅瀬の壁際に張り出す氷結した岩棚。小さな多面体を組み合わせ、
@@ -538,6 +565,20 @@ function makeProcedural() {
       g.scale(h * 1.4, h, h * 1.4); g.translate(Math.cos(a) * d, 0, Math.sin(a) * d);
       parts.push({ geo: g, mat: 'Deep cavern rock' });
     }
+    // [B2V4-L] F9：鍾乳石の付け根。天井と同じ素材の、でこぼこした平たい岩の盛り上がりで房の根元を包み、
+    // 天井から垂れ下がって見えるようにする（旧版は細い根元が天井の起伏の上に浮いて、天井と分かれて見えた）。
+    // 上半分は天井の裏に隠れ、天井より下に出た所だけが太い付け根として見える。明るさも天井と同じになる
+    if (down) {
+      const m = new THREE.IcosahedronGeometry(1, 1), mp = m.attributes.position;
+      for (let i = 0; i < mp.count; i++) {
+        const x = mp.getX(i), y = mp.getY(i), z = mp.getZ(i);
+        const k = 1 + 0.2 * Math.sin(x * 6.1 + z * 4.3 + v) * Math.cos(y * 5.7 + x * 2.9) + 0.1 * Math.sin(z * 11.3 - x * 7.7 + v * 2);
+        mp.setXYZ(i, x * k, y * k, z * k);
+      }
+      m.scale(0.44 + rnd(v * 29 + 3) * 0.08, 0.17, 0.4 + rnd(v * 31 + 5) * 0.08); m.translate(0, 0.02, 0);
+      m.computeVertexNormals();
+      parts.push({ geo: m, mat: 'ceiling' });
+    }
     return { name: (down ? 'b2_stalactites_' : 'b2_stalagmites_') + v, parts };
   });
   const stalagmites = spikeCluster(false), stalactites = spikeCluster(true);
@@ -559,7 +600,8 @@ function makeProcedural() {
   const bed = { name: 'water_bed', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(4, 4).rotateX(-Math.PI / 2), false), mat: 'bed' }] };
   const pool = (w, d) => ({ name: 'water_surface', parts: [{ geo: prepGeo(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), true), mat: 'Clear blue water' }] });
   const plaque = { name: 'wall_plaque', parts: [{ geo: prepGeo(new THREE.BoxGeometry(1.1, 0.7, 0.08).translate(0, 0, 0.04), false), mat: 'Ancient inlay' }, { geo: prepGeo(new THREE.BoxGeometry(1.3, 0.9, 0.06).translate(0, 0, 0.0), false), mat: 'Pale mineral stone' }] };
-  return { continuousWall, continuousCeiling, continuousGround, shoreline, glowFungi, frostVeins, frostCornices, wallOutcrops, frostLedges, ceilingRidge, iceStalactites, bed, shallowBed, puddles, stalagmites, stalactites, columns, stream, lintel, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
+  const streamPuddle = { name: 'b2_stream_puddle', parts: [{ geo: puddles[1].parts[0].geo, mat: 'streamPool' }, puddles[1].parts[1]] };   // [B2V4-L] F1：水流の落ちる所の控えめな水たまり
+  return { streamPuddle, continuousWall, continuousCeiling, continuousGround, shoreline, glowFungi, frostVeins, frostCornices, wallOutcrops, frostLedges, ceilingRidge, iceStalactites, bed, shallowBed, puddles, stalagmites, stalactites, columns, stream, lintel, poolFull: pool(4, 4), poolHalf: pool(4, 1.9), plaque };
 }
 
 /* ------------------------------------------------------------
@@ -858,14 +900,14 @@ export async function createTheme(api) {
   let ownedDisposed = 0;                // 診断用：作り直しで破棄した形・素材の累計（themeInfo().ownedDisposed）
 
   // 映り込み用の環境マップ（濡れた石・水面・結晶のつや）。小さなグラデーション画像から作るので軽い
-  let envTex = null, lantern = null, motes = null, prevExposure = null;
+  let envTex = null, lantern = null, motes = null, prevExposure = null, prevBloom = null;
   // 空中を漂う光の粒（カメラの周り 24m の箱の中で繰り返す）
   function addMotes() {
     const N = 300, pos = new Float32Array(N * 3), seed = new Float32Array(N * 3);
     for (let i = 0; i < N * 3; i++) seed[i] = rnd(i * 1.7 + 3);
     const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     const tex = tileTexture(32, (c, n) => { c.clearRect(0, 0, n, n); const gr = c.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, n / 2); gr.addColorStop(0, 'rgba(220,250,255,1)'); gr.addColorStop(0.4, 'rgba(140,230,255,0.5)'); gr.addColorStop(1, 'rgba(140,230,255,0)'); c.fillStyle = gr; c.fillRect(0, 0, n, n); });
-    const mat = new THREE.PointsMaterial({ map: tex, size: 0.09, color: 0xaef4ff, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+    const mat = capPoints(new THREE.PointsMaterial({ map: tex, size: 0.09, color: 0xaef4ff, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }), 10 * (g.renderer ? g.renderer.getPixelRatio() : 1));   // [B2V4-L] F1：目の前の粒が大きな光の玉にならない
     motes = new THREE.Points(geo, mat); motes.name = 'b2_motes'; motes.frustumCulled = false; motes.renderOrder = 5; motes.userData.seed = seed; g.scene.add(motes);
     extraMats.push(tex);   // テクスチャも破棄リストへ（dispose を持つので一緒に扱う）
   }
@@ -909,6 +951,32 @@ export async function createTheme(api) {
     });
     return obj;
   }
+  // [B2V4-L] F1：第1階層と共有する導きの灯（青白い灯火・床のルーン）は、第2階層の明るい霧と露出の中では
+  // 光る四角（灯の芯）が遠くからピカピカ光った。第2階層に置いた複製だけ、芯の発光を k 倍・点光源を lk 倍にし、
+  // 芯（glow_core）の形を横に細くする（元の素材・第1階層は変えない）
+  const glowCache = new Map();
+  function softGlow(obj, k, lk, thin) {
+    if (!obj) return obj;
+    obj.traverse((o) => {
+      if (!o.isMesh) return;
+      const swap = (m) => {
+        if (!m || !m.emissive || (m.emissiveIntensity || 0) <= 1.0) return m;
+        let d = glowCache.get(m);
+        if (!d) { d = m.clone(); d.emissiveIntensity = m.emissiveIntensity * k; glowCache.set(m, d); extraMats.push(d); }
+        return d;
+      };
+      const before = o.material;
+      o.material = Array.isArray(o.material) ? o.material.map(swap) : swap(o.material);
+      if (thin && o.material !== before && /glow_core/.test(o.name)) {
+        // 芯の中心（底面の中心）を軸に横だけ細くする
+        o.geometry.computeBoundingBox(); const c = o.geometry.boundingBox.getCenter(new THREE.Vector3());
+        o.position.x += c.x * (1 - thin); o.position.z += c.z * (1 - thin); o.scale.x *= thin; o.scale.z *= thin;
+        o.updateMatrix(); o.updateMatrixWorld(true);
+      }
+    });
+    for (const L of obj.userData.lights || []) L.intensity *= lk;
+    return obj;
+  }
   const light = (x, y, z, color, intensity, range) => g.lights.push({ pos: [x, y, z], color, intensity, range, world: new THREE.Vector3(x, y, z), off: false });
   const pick = (arr, r) => arr[Math.min(arr.length - 1, Math.floor(r * arr.length))];
 
@@ -937,12 +1005,13 @@ export async function createTheme(api) {
     for (const m of anim.mists) { m.points.geometry.dispose(); }
     for (const c of anim.caustics) { c.mesh.geometry.dispose(); c.mesh.material.dispose(); c.texture.dispose(); }
     for (const geo of extraGeos) geo.dispose(); extraGeos = []; fishGeo = null;
-    for (const m of extraMats) m.dispose(); extraMats = []; frostCache.clear();
+    for (const m of extraMats) m.dispose(); extraMats = []; frostCache.clear(); glowCache.clear();
     if (g.scene && envTex && g.scene.environment === envTex) g.scene.environment = null;
     if (lantern) { lantern.parent?.remove(lantern); lantern = null; }
     if (glitter) { glitter.parent?.remove(glitter); glitter = null; }
     if (motes) { motes.parent?.remove(motes); motes.geometry.dispose(); motes.material.dispose(); motes = null; }
     if (g.renderer && prevExposure !== null) { g.renderer.toneMappingExposure = prevExposure; prevExposure = null; }
+    if (prevBloom) { prevBloom.pass.threshold = prevBloom.threshold; prevBloom.pass.strength = prevBloom.strength; prevBloom = null; }
     anim = { ripples: [], mists: [], fishes: [], caustics: [] }; root = null;
     // 階層を離れるとき（field-3d-view.js が final を付けて呼ぶ）は、素材・テクスチャ・部品の形もすべて破棄する
     if (opts && opts.final) {
@@ -973,6 +1042,10 @@ export async function createTheme(api) {
     placedLog = [];
     ensureEnv(); if (envTex) g.scene.environment = envTex;
     if (g.renderer) { if (prevExposure === null) prevExposure = g.renderer.toneMappingExposure; g.renderer.toneMappingExposure = EXPOSURE; }
+    { // [B2V4-L] F1：にじみ（ブルーム、高画質のみ）を第2階層だけ控えめに。強い光源のまわりだけがにじむ（第1階層へ戻ると元に戻す）
+      const bp = g.composer && g.composer.passes.find((q) => 'threshold' in q && 'strength' in q);
+      if (bp) { if (!prevBloom) prevBloom = { pass: bp, threshold: bp.threshold, strength: bp.strength }; bp.threshold = BLOOM.threshold; bp.strength = BLOOM.strength; }
+    }
     addMotes(); addGlitter();
     lantern = new THREE.PointLight(LANTERN.color, g.high ? LANTERN.high : LANTERN.low, LANTERN.range, 2); lantern.name = 'b2_lantern'; g.scene.add(lantern);
     wallCellAt = wallCell; objAtB = (tx, ty) => objAt.has(`${tx},${ty}`);
@@ -1010,6 +1083,7 @@ export async function createTheme(api) {
     // マップ文字・通行判定・イベントには触れず、見た目だけのランドマークにする。
     const openCells = new Set();
     let streamCount = 0, pillarCount = 0;
+    const streamLog = [];   // [B2V4-L] 診断用：天井の水流のマス（themeInfo().streams）
     keepClear = new Set();
     const skylightCandidates = [];
     for (let cy = 2; cy < a.h - 2; cy++) for (let cx = 2; cx < a.w - 2; cx++) {
@@ -1420,7 +1494,7 @@ export async function createTheme(api) {
         const ox = side * (1.12 + hash(tx, ty, 242) * 0.42);
         const oz = (hash(tx, ty, 243) - 0.5) * 2.4;
         B.add('ice_stalactites', pick(proc.iceStalactites, hash(tx, ty, 244)),
-          M4(x + ox, ceilY(x + ox, z + oz) + 0.04, z + oz, hash(tx, ty, 245) * Math.PI * 2, 0.85 + hash(tx, ty, 246) * 0.5), tx, ty);
+          M4(x + ox, rootY(x + ox, z + oz, 0.35), z + oz, hash(tx, ty, 245) * Math.PI * 2, 0.85 + hash(tx, ty, 246) * 0.5), tx, ty);
       }
       // v8 の氷柱・石筍を通路の端に控えめに配置。視界とイベントマスを優先する。
       if (v8 && !objAt.has(key) && c !== '>' && c !== '<' && !falls.has(key)) {
@@ -1441,20 +1515,21 @@ export async function createTheme(api) {
         if (!openCells.has(key) && side && hash(tx, ty, 307) < 0.3) {
           const [dx, dz] = DIR_VEC[side], al = (hash(tx, ty, 309) - 0.5) * 2.4;
           const ix = x + dx * 1.55 + (dz ? al : 0), iz = z + dz * 1.55 + (dx ? al : 0);
-          B.add('ice_stalactites', pick(proc.iceStalactites, hash(tx, ty, 308)), M4(ix, ceilY(ix, iz) + 0.04, iz, hash(tx, ty, 311) * 6.28, 1.0 + hash(tx, ty, 310) * 0.6), tx, ty);
+          B.add('ice_stalactites', pick(proc.iceStalactites, hash(tx, ty, 308)), M4(ix, rootY(ix, iz, 0.4), iz, hash(tx, ty, 311) * 6.28, 1.0 + hash(tx, ty, 310) * 0.6), tx, ty);
         }
       }
       // 部屋の上の長い鍾乳石（先端は4.2m以上。目の高さ1.6mの視界はふさがない）
       if (!openCells.has(key) && hash(tx, ty, 560) < 0.38) {
         const sx = x + (hash(tx, ty, 561) - 0.5) * 3.2, sz = z + (hash(tx, ty, 562) - 0.5) * 3.2, h = 0.8 + hash(tx, ty, 563) * 1.7;
-        B.add('spires', pick(proc.stalactites, hash(tx, ty, 564)), M4(sx, ceilY(sx, sz) + 0.1, sz, hash(tx, ty, 565) * 6.28, [h * 0.75, h, h * 0.75]), tx, ty);
+        B.add('spires', pick(proc.stalactites, hash(tx, ty, 564)), M4(sx, rootY(sx, sz, h * 0.24), sz, hash(tx, ty, 565) * 6.28, [h * 0.75, h, h * 0.75]), tx, ty);
       }
       // 天井から落ちる光る水流（浅瀬に多め。フロアあたり最大10本）
       if (streamCount < 10 && !objAt.has(key) && c !== '>' && c !== '<' && !openCells.has(key) && hash(tx, ty, 570) < (c === '*' ? 0.32 : 0.05)) {
         const sx = x + (hash(tx, ty, 571) - 0.5) * 2.4, sz = z + (hash(tx, ty, 572) - 0.5) * 2.4, top = ceilY(sx, sz), base = c === '*' ? -0.07 : groundY(sx, sz);
         B.add('streams', proc.stream, M4(sx, base, sz, 0, [1, top - base, 1]), tx, ty);
-        B.add('puddles', pick(proc.puddles, hash(tx, ty, 573)), M4(sx, base + 0.03, sz, 0, 0.45), tx, ty);
-        light(sx, 0.6, sz, 0x7fe8ff, 0.9, 4);
+        B.add('puddles', proc.streamPuddle, M4(sx, base + 0.03, sz, hash(tx, ty, 573) * 6.28, 0.45), tx, ty);
+        streamLog.push(`${tx},${ty}`);
+        light(sx, 1.4, sz, 0x7fe8ff, 0.45, 4);   // [B2V4-L] F1：真上の強い光で床の水たまりが白い円に見えたので、高く・弱く
         streamCount++;
       }
       // 光るキノコ（壁ぎわ。陸のマス）
@@ -1480,14 +1555,21 @@ export async function createTheme(api) {
           for (let q = 0; q < 2; q++) {   // 1つの壁に最大2か所ずつ
             const sd = di * 2 + q * 97;
             if (!wallThing && fall !== d && c !== '>' && c !== '<' && hash(tx, ty, 500 + sd) < (q ? 0.45 : 0.75)) {
-              const t = (hash(tx, ty, 504 + sd) - 0.5) * 3.2, inw = 0.25 + hash(tx, ty, 508 + sd) * 0.3, h = 0.9 + Math.pow(hash(tx, ty, 512 + sd), 1.5) * 3.2;
+              // [B2V4-L] F3：通路の両側の石筍が中央で重なって道が塞がって見えたので、
+              //  ・向かい合う壁で前後にずらす（上・右の壁の高い石筍はマスの前半、下・左の壁は後半。もう1本は反対の半分に低く）
+              //  ・壁に沿う向きに置き、通路へ向かう厚みを抑えて壁へ寄せる（通路側へは壁の面から最大約1.1m＝中央に1.6m以上の隙間）
+              const half = di < 2 ? -1 : 1, tall = q === 0;
+              const t = half * (tall ? 1 : -1) * (0.25 + hash(tx, ty, 504 + sd) * 1.35);
+              const h = tall ? 0.9 + Math.pow(hash(tx, ty, 512 + sd), 1.5) * 3.2 : 0.7 + hash(tx, ty, 512 + sd) * 1.1;
+              const sAlong = Math.min(h * 0.85, 1.9), sAcross = Math.min(h * 0.6, 1.05), inw = 0.12 + hash(tx, ty, 508 + sd) * 0.12;
               const sx = ex + along[0] * t - dx * inw, sz = ez + along[1] * t - dy * inw;
-              B.add('spires', pick(proc.stalagmites, hash(tx, ty, 516 + sd)), M4(sx, groundY(sx, sz) - 0.05, sz, hash(tx, ty, 520 + sd) * 6.28, [h * 0.85, h, h * 0.85]), tx, ty);
+              const yaw = ry + (hash(tx, ty, 520 + sd) < 0.5 ? 0 : Math.PI) + (hash(tx, ty, 521 + sd) - 0.5) * 0.5;
+              B.add('spires', pick(proc.stalagmites, hash(tx, ty, 516 + sd)), M4(sx, groundY(sx, sz) - 0.05, sz, yaw, [sAlong, h, sAcross]), tx, ty);
             }
             if (!wallThing && !openCells.has(key) && hash(tx, ty, 524 + sd) < (q ? 0.7 : 0.95)) {
               const t = (hash(tx, ty, 528 + sd) - 0.5) * 3.4, inw = 0.15 + hash(tx, ty, 532 + sd) * 0.8, h = 1.1 + Math.pow(hash(tx, ty, 536 + sd), 1.2) * 2.4;
               const sx = ex + along[0] * t - dx * inw, sz = ez + along[1] * t - dy * inw;
-              B.add('spires', pick(proc.stalactites, hash(tx, ty, 540 + sd)), M4(sx, ceilY(sx, sz) + 0.1, sz, hash(tx, ty, 544 + sd) * 6.28, [h * 0.75, h, h * 0.75]), tx, ty);
+              B.add('spires', pick(proc.stalactites, hash(tx, ty, 540 + sd)), M4(sx, rootY(sx, sz, h * 0.24), sz, hash(tx, ty, 544 + sd) * 6.28, [h * 0.75, h, h * 0.75]), tx, ty);
             }
           }
         }
@@ -1531,7 +1613,7 @@ export async function createTheme(api) {
         }
         if (fall === d) {
           addWaterfall(ex, ez, ry, tx, ty, B);
-          light(ex - dx * 0.55, 2.5, ez - dy * 0.55, 0x80cde6, 0.6, 6.5);
+          light(ex - dx * 1.5, 3.0, ez - dy * 1.5, 0x80cde6, 0.4, 6.5);   // [B2V4-L] F1：滝の帯の0.25m手前にあった光で白い光の点が出たので、離して弱く
           continue;
         }
         if (objAt.has(key) || c === '>' || c === '<') continue;
@@ -1593,7 +1675,7 @@ export async function createTheme(api) {
           if (o.dir === 'down') e.obj = frostify(api.place(g.world, s.stairsDown, x, 0, z, ry));
           else e.obj = frostify(api.place(g.world, s.stairsUp, x, 0, z, ry + Math.PI, 0.75));
           break;
-        case 'save': frostify(api.place(g.world, s.seal, x, 0.005, z, 0, 0.8)); e.obj = api.place(g.world, s.torch, x, 0, z); e.at.y = 1.9; break;
+        case 'save': softGlow(frostify(api.place(g.world, s.seal, x, 0.005, z, 0, 0.8)), 0.4, 0.5); e.obj = softGlow(api.place(g.world, s.torch, x, 0, z), 0.35, 0.45, 0.6); e.at.y = 1.9; break;   // [B2V4-L] F1：導きの灯を控えめに
         case 'chest': case 'cache': case 'gather': case 'event': e.ry = ry; break;   // 状態に応じて sync で置く
         case 'sign': e.obj = frostify(api.place(g.world, s.sign, x, 0, z, ry)); e.at.y = 1.8; break;
         case 'gate': {   // ボス門：紫の光を帯びた水門（マスの奥側）
@@ -1619,7 +1701,7 @@ export async function createTheme(api) {
     }
     placeFlowers();
     made = B.build(root, mats);
-    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), placed: placedLog.slice(), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })), buildKey: a.buildKey || a.key, random: !!roles, layout: { ...(layout || {}), flowers: flowerLog.length, flowerSpots: flowerSpots.length, flowerClusters: flowerLog.slice() }, extras: Object.fromEntries(Object.entries(EX).map(([k, v]) => [k, !!v])), ownedDisposed };
+    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), placed: placedLog.slice(), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })), streams: streamLog, buildKey: a.buildKey || a.key, random: !!roles, layout: { ...(layout || {}), flowers: flowerLog.length, flowerSpots: flowerSpots.length, flowerClusters: flowerLog.slice() }, extras: Object.fromEntries(Object.entries(EX).map(([k, v]) => [k, !!v])), ownedDisposed };
   }
 
   // 大空洞の縦方向の景観。天井を抜いた3×3マスに高い石造壁と冷光を加える。
@@ -1659,8 +1741,9 @@ export async function createTheme(api) {
         put(i === 0 ? 'medium' : 'small', PX + sx * side * 1.55 + bx * (0.6 - i * 0.7), PZ + sz * side * 1.55 + bz * (0.6 - i * 0.7), 0.7 + hash(ptx, pty, 770 + i) * 0.4, ptx, pty);
       }
     }
-    light(ox - bx * 0.6, 1.3, oz - bz * 0.6, XTAL_LIGHT[z.pal], 2.0, 7);
-    light(X0 - bx * 0.5, 0.5, Z0 - bz * 0.5, XTAL_LIGHT[z.pal], 0.8, 4.5);
+    // [B2V4-L] F1：旧版は結晶の0.6m手前・強さ2.0の点光源で、結晶の面が白く飛んでいた。結晶から離し、弱める
+    light(ox - bx * 1.5, 2.0, oz - bz * 1.5, XTAL_LIGHT[z.pal], 1.0, 7);
+    light(X0 - bx * 0.5, 0.5, Z0 - bz * 0.5, XTAL_LIGHT[z.pal], 0.55, 4.5);
   }
   // モニュメントを壁の塊の中央に置く。塊の床・天井を作り、塊の中に残った壁のマスとの境目には内向きの壁を立てる。
   // 高さは天井（約6.3m）に収まるよう縮め、塊より短い分の両端は岩と石筍で埋める（入れない場所だと分かるように）
@@ -2039,7 +2122,7 @@ export async function createTheme(api) {
     for (let i = 0; i < N * 4; i++) seed[i] = rnd(i * 2.3 + 11);
     const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
     const tex = tileTexture(32, (c, n) => { c.clearRect(0, 0, n, n); const gr = c.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, n / 2); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.25, 'rgba(160,240,255,0.8)'); gr.addColorStop(1, 'rgba(90,200,255,0)'); c.fillStyle = gr; c.fillRect(0, 0, n, n); });
-    const mat = new THREE.PointsMaterial({ map: tex, size: 0.11, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+    const mat = capPoints(new THREE.PointsMaterial({ map: tex, size: 0.09, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }), 8 * (g.renderer ? g.renderer.getPixelRatio() : 1));   // [B2V4-L] F1：浮いた光の玉は小さく
     glitter = new THREE.Points(geo, mat); glitter.name = 'b2_glitter'; glitter.frustumCulled = false; glitter.renderOrder = 5; glitter.userData.seed = seed;
     g.scene.add(glitter); extraMats.push(tex, mat); extraGeos.push(geo);
   }
@@ -2074,7 +2157,7 @@ export async function createTheme(api) {
         ez + fwd[1] * (0.9 + i * 0.18), hash(tx, ty, 209 + i) * 6.28, sc), tx, ty);
     }
     B.add('rocks', pick(kit.rocks, hash(tx, ty, 50)), M4(ex + fwd[0] * 0.8 + fwd[1] * 1.6, -0.2, ez + fwd[1] * 0.8 - fwd[0] * 1.6, ry, 0.6), tx, ty);
-    light(ex + fwd[0] * 1.2, 1.2, ez + fwd[1] * 1.2, 0x6fd4ff, 1.1, 6);
+    light(ex + fwd[0] * 1.6, 1.0, ez + fwd[1] * 1.6, 0x6fd4ff, 0.7, 6);   // [B2V4-L] F1：滝の帯から離して弱く（白い照り返しを出さない）
     if (anim.ripples.length < 24) addRipple(ex + fwd[0] * 0.9, ez + fwd[1] * 0.9, hash(tx, ty, 51));
     addMist(ex + fwd[0] * 0.6, ez + fwd[1] * 0.6, ry);
   }
@@ -2113,7 +2196,7 @@ export async function createTheme(api) {
         const x = a * B + Math.sin(t * (0.2 + d * 0.3) + i) * 0.35, z = c * B + Math.cos(t * (0.17 + a * 0.3) + i * 1.7) * 0.35, y = 0.5 + ((b * 4.2 + t * (0.05 + d * 0.08)) % 4.2);
         P.setXYZ(i, wrap(x, camPos.x), y, wrap(z, camPos.z));
         // 明滅：ふだんは淡く、ときどき強く光る
-        const tw = Math.pow(0.5 + 0.5 * Math.sin(t * (1.2 + d * 2.5) + i * 7.1), 6), k = 0.35 + tw * 1.4;
+        const tw = Math.pow(0.5 + 0.5 * Math.sin(t * (1.2 + d * 2.5) + i * 7.1), 6), k = 0.3 + tw * 0.6;   // [B2V4-L] F1：強く光るときも控えめ（旧 0.35＋1.4）
         _gc.copy(_gA).lerp(_gB, tw).multiplyScalar(k); C.setXYZ(i, _gc.r, _gc.g, _gc.b);
       }
       P.needsUpdate = true; C.needsUpdate = true;
