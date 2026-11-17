@@ -110,3 +110,23 @@ PR: https://github.com/koda24-cell/kotama-no-bouken/pull/412
 - `rank_posterior_seams.py` を追加。ループJSONから `posterior_seam_candidates.csv` と `posterior_seam_review.md` を生成する。閉路、幅、頂点数を使った単純なトポロジー順位であり、解剖学的な後頭部認識ではない。
 - 対象モデルの顔・首・口・目の開口を誤接合しないよう、候補は必ず手動画像照合が必要。既存のV15の高さ帯平均による接合方式は採用しない。
 - Workflowに候補CSV/Markdown生成とファイル検証を追加。GitHubコード保存済み、新規実行結果と候補の実測値は未確認。
+
+## 重要な実測結果・失敗ログ（2026-11-17 夜）
+**確認済みの証拠:** Character mesh research run #44090193746 は成功。Artifact #14337250110（約27 MB、120ファイル）をダウンロード・展開し、境界JSON/CSV/Markdownの実内容を確認。
+
+| モデル | Face境界辺数 | 連結成分数 | 最大成分の辺数 | 最大成分は単純閉路か |
+| --- | ---: | ---: | ---: | --- |
+| HairSample_Female | 1356 | 129 | 72 | いいえ（分岐） |
+| HairSample_Male | 1326 | 105 | 54 | はい |
+| Sakurada_Fumiriya | 1326 | 107 | 54 | はい |
+| Sendagaya_Shibu | 1328 | 121 | 72 | いいえ（分岐） |
+| Sendagaya_Shino | 1328 | 121 | 72 | いいえ（分岐） |
+| Vita | 1328 | 121 | 72 | いいえ（分岐） |
+
+**重要:** 境界辺1328本を「1つの頭部外周」とみなしてはいけない。Shibu/VitaのFaceにはそれぞれ121個の連結成分がある。多くは口・目・装飾などの局所開口を含む可能性があり、解剖学的な同定は未完了。現在の候補ランキングは単純閉路や長さを高く評価するため、例えばShibu component 5/path 0（36頂点・経路長0.723135m）を高順位とするが、**後頭部の接合輪郭である証拠はない**。ランキング上位を自動で接合しないこと。
+
+**高速診断run #44090714938失敗:** Blender glTF importer が `ModuleNotFoundError: No module named 'numpy'` を出し、JSON未生成のため後段の `No boundary-loop JSON reports found` で失敗。高速診断workflowへ `python3-numpy` 追加（commit 0929f3a）。修正後の成功はまだ未確認。
+
+**V16の判断基準:** 1) 正面/背面/側面のオーバーレイと個別境界成分を突き合わせる 2) 目・口・首・まつ毛の境界を除外 3) 後頭部輪郭の頂点順序と面法線を確認 4) 追加造形したGLBのnonmanifold・穴・交差を計測 5) 正面/背面/左右/斜め/後方上から実レンダリング。元のV15のZ帯平均化は再利用しない。
+
+**保存先:** 実測JSON/PNG/CSVは期限14日のActions Artifact #14337250110。再現手順と集計値・制約は本Git文書に恒久保存。ライセンス未確認の第三者モデル生データを無断で正式アセット化しない。
