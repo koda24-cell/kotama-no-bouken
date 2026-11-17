@@ -181,3 +181,13 @@
 - レビューの一時ZIP: `/mnt/data/b2_fern_clump_v01_review.zip`、3GLB+9 PNG+比較1 PNG+manifestと作業スクリプト。GLBデータをVTK9.6.2でレンダー。Blenderレンダーではない。
 - 見た目: `balanced`は一株の広がりが読みやすいが、葉の量が多い箇所は団子状で、上部の小葉と枝の向きに不自然さがある。**まだ完成/承認済みではない**。先に小枝の造形を高品質化し、この仮組みの過密度を解決する。
 - 次: 水源の岩・遺跡石積の付け根と混合する軽いモデル、通路の占有回避、配置負荷、Three.jsの裏面表示を検証。正式アセットへ昇格しない。
+
+## 2026-11-17 雪・霜の質感 V01（ユーザー依頼：写真・テクスチャを少し追加）
+- ベース: ユーザー承認済みの小葉V08と、未承認のシダ6本仮組み `balanced.glb`。既存の葉/枝の頂点位置を変えず、**頂点色の薄い霜、葉先近くの細かい追加氷晶ジオメトリ**を足した。別候補として元のGLBは保持。
+- 実写真参考: Pinterest公開検索で frost on fern の候補を確認（高解像度写真取得未了）、写真の代わりに実物写真の掲載情報を参照。Getty画像の利用権はないため、写真ファイルをGLBに複製しない。
+- CC0 PBR素材候補: Poly Haven Snow 02 https://polyhaven.com/a/snow_02 。公式ページで CC0、Diffuse/Normal/Roughness マップ提供を確認。ただし、この実行環境で公式API画像取得はDNSエラー。**実写真・Poly Haven PBRはGLBへ未適用**。
+- ローカル出力: `b2_fern_snow_light.glb`・`b2_fern_snow_balanced.glb`・`b2_fern_snow_frosty.glb` の3種。付着する葉の選別、霜の付着比率、氷晶粒の量を変えた。局所的な色変化はGLBのvertex colorsとして保持。さらに霜色の手続き生成PNG `procedural_frost_color.png` を作ったが、**これは現時点でGLBの貼付テクスチャではない**。
+- VTK 9.6.2で実GLBを正面・側面・斜めの計9画像にレンダリング。比較画像1枚を作成し目視。初回の雪が目立たない試作から、付着比率を増やして再生成・再レンダリング済。
+- レビュー版ZIP: `/mnt/data/b2_fern_snow_texture_v01_review.zip`（作業中の一時ローカルファイル。GitHub恒久保存ではない）。3 GLB、9 PNG、比較画像、procedural PNG、manifest、再生成コード/レンダーコード入り。合計約45MB。
+- 現状評価: 中程度（balanced）を暫定第一候補とするが、葉単体の形状の承認を株全体・積雪演出の承認と混同しない。小枝・株・雪は **NOT_APPROVED**。Blender、Three.jsの材質、性能・PBR写真を適用した最終品質は未検証。元のシダは削除・変更せず、game runtimeにも反映しない。
+- 次の具体策: GH Actions環境でPoly HavenのCC0 1K Diffuse/Normal/Roughnessを実際に取得・品質確認した後、雪の細粒メッシュ/上面だけにUV/PBRを適用して別候補で比較。氷岸・遺跡岩の配置と、葉の自然な緑を潰さない雪濃度を再点検。
