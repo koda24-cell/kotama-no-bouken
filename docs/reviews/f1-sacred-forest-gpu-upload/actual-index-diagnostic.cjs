@@ -6,7 +6,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const assert=require('node:assert/strict'),crypto=require('node:crypto'),cp=require('node:child_process'),vm=require('node:vm');
-const ROOT='/workspace/work/kotama';
+const ROOT=process.env.KOTAMA_ROOT||path.resolve(__dirname,'../../..');
 const MODULES=process.env.BROWSER_MODULES||'/workspace/work/browser/node_modules';
 const THREE=process.env.THREE_DIR||path.join(MODULES,'three');
 const {chromium}=require(process.env.PLAYWRIGHT||path.join(MODULES,'playwright-core'));
