@@ -1,4 +1,4 @@
-name: B4 Magma Bank V3 - Approved V16 Derived Variants
+name: B4 Magma Bank V4 - Approved V16 Derived Variants
 on:
   push:
     branches:
@@ -39,7 +39,7 @@ jobs:
           set -euo pipefail
           mkdir -p render-output
           for p in p1 p2 p3; do
-            blender -b -t 2 --python tools/floor4/magma_banks/build_from_approved_v16.py -- --variant "${p}-v3" --out render-output
+            blender -b -t 2 --python tools/floor4/magma_banks/build_from_approved_v16.py -- --variant "${p}-v4" --out render-output
           done
       - name: Verify GLB, Blend, four PNGs and source hashes
         run: |
@@ -47,8 +47,8 @@ jobs:
           import pathlib,hashlib,json,struct
           d=pathlib.Path('render-output')
           for p in ('p1','p2','p3'):
-              stem=f'b4-magma-river-{p}-v3'
-              m=json.loads((d/f'manifest-{p}-v3.json').read_text())
+              stem=f'b4-magma-river-{p}-v4'
+              m=json.loads((d/f'manifest-{p}-v4.json').read_text())
               assert m['approval']=='NOT_APPROVED'
               expected={stem+'.glb',stem+'.blend'}|{stem+'-'+v+'.png' for v in ('angle','front','side','top')}
               assert {x['file'] for x in m['files']}==expected
@@ -75,6 +75,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: b4-magma-v16-derived-p1-p3-v3
+          name: b4-magma-v16-derived-p1-p3-v4
           path: render-output/
           retention-days: 14
