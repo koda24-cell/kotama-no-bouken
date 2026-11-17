@@ -1,9 +1,9 @@
-name: B5 Knight Pedestal Component V1 Blender Review
+name: B5 Knight Pedestal Component V2 Blender Review
 on:
   push:
     branches: [feature/gpt-b5-knight-statues-v1-20261116]
     paths:
-      - 'tools/b5-knights/build_pedestal_v1.py'
+      - 'tools/b5-knights/build_pedestal_v2.py'
       - '.github/workflows/b5-knight-pedestal-render.yml'
   workflow_dispatch:
 permissions:
@@ -21,17 +21,17 @@ jobs:
           blender --version
       - name: Render separate pedestal candidate and GLB
         run: |
-          blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_pedestal_v1.py
+          blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_pedestal_v2.py
       - name: Validate actual GLB PNG manifest
         run: |
           /usr/bin/python3 - <<'PY'
           from pathlib import Path
           import json,hashlib,struct
           from PIL import Image,ImageStat
-          root=Path('render-output/b5-knights/pedestal_v1')
+          root=Path('render-output/b5-knights/pedestal_v2')
           manifest=json.loads((root/'manifest.json').read_text())
           assert manifest['approval']=='NOT_APPROVED'
-          model=root/'pedestal_v1.glb'
+          model=root/'pedestal_v2.glb'
           data=model.read_bytes()
           assert data[:4]==b'glTF'
           assert struct.unpack_from('<I',data,8)[0]==len(data)
@@ -48,7 +48,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: b5-knight-pedestal-v1-NOT-APPROVED
-          path: render-output/b5-knights/pedestal_v1/
+          name: b5-knight-pedestal-v2-NOT-APPROVED
+          path: render-output/b5-knights/pedestal_v2/
           retention-days: 14
           if-no-files-found: warn
