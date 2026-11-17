@@ -34,3 +34,10 @@
 ## 参考資料
 - Pinterest候補・確認状態: https://github.com/koda24-cell/pinterest-reference-library/blob/main/handoff/b4-magma-river-transition-20261117.md
 - 候補画像は未目視。Pinterestの画像本体は3D素材・テクスチャとして使用していない。
+
+## V14 実レンダリング結果とV15追加（2026-11-17）
+- Actions run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44026715328 **success**。Artifact 14303885889。
+- 実取得: V14 GLB 12,496,024 bytes、Blend、front/side/angle/topの4 PNG、manifest。ZIP内の7ファイルを確認。manifestにはsource_sha `98734e919fe03d43ad9e9cb237654ed9e973a32e` とrun IDが記録されている。
+- 目視評価: 正面・斜めでは岩盤の間に発光河川が見える。**側面では手前の川が薄い平板で直線的に切れ、滝も細い発光帯に見える**。上からは明るい連続したうねりが水っぽい。薄い岩盤プレートも多く浮いた印象が残る。**V14不合格、未承認**。
+- V15修正: 溶岩河川の下に実体のある暗い岩盤支持体を追加し、下流の直線的な端面を黒い不規則な冷却殻で隠す。滝の左右に厚みのある冷却側壁を追加。熱分布画像の周期的な渦模様を、割れ目・冷却島中心に調整。
+- V15も未承認。次の4方向実画像で改善確認が必要。前回V14のArtifactは上記runから復元可能（14日間）。
