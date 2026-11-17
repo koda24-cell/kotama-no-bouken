@@ -52,3 +52,10 @@ Pinterest画像目視・既存マグマ壁の確認 → 岸/河川のGLB生成 �
 
 ### 参考収集状況
 Pinterest/Tailwindから7候補を追加取得。URL・サムネイル・確認状況は `koda24-cell/pinterest-reference-library/handoff/b4-magma-river-transition-20261117.md` に記録。画像本体はネットワーク制限により未目視。
+
+## 実Blender V1の確認・V2改善（2026-11-17）
+- V1 run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43987785319 **success**。Artifact ID 14284839526。GLB約17MB、Blender source、正面・側面・斜め・俯瞰PNGの4方向、manifestをダウンロード・実画像確認。
+- **V1の不合格点**: 岸辺の岩が大きく密集しすぎて流路を隠す。背後の壁と岩が重なり巨大な板状の崖に見える。滝の下端と流路の接続が読みづらい。強い橙色の照り返しで岩の陰影がつぶれる。横方向からは溶岩がほぼ見えない。
+- V2では岸辺の大岩を片側34→18個、幅/高さを縮小して川から後退。壁岩32→24個、位置を外側へ移動して高さを抑えた。冷却殻の個数37→23個。暖色エリア光を約半分にし、寒色補助光を強化。カメラを高くして流路が見えるように変更。
+- V2 run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43988247639 。**成功・目視評価待ち**。
+- V1はユーザー承認前・未完成。正式保存/ゲーム統合を行わない。
