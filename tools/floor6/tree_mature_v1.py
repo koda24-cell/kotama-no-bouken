@@ -271,8 +271,8 @@ for i in range(8):
 for lobe in range(14):
  a=math.tau*(lobe*0.61803398875%1)+R.uniform(-.17,.17)
  ring=lobe%3
- distance=(.32,.58,.76)[ring]+R.uniform(-.07,.085)
- crown_z=(2.91,2.73,2.57)[ring]+R.uniform(-.10,.16)
+ distance=(.38,.72,.92)[ring]+R.uniform(-.07,.085)
+ crown_z=(2.89,2.70,2.48)[ring]+R.uniform(-.10,.16)
  base=Vector((.06*math.sin(crown_z),.035,2.22+R.uniform(-.08,.22)))
  bend=base+Vector((distance*.46*math.cos(a),distance*.46*math.sin(a),.20))
  tip=Vector((distance*math.cos(a),distance*math.sin(a),crown_z))
@@ -304,6 +304,23 @@ for cap in range(6):
   leaf("tree_mature_leaf_%04d"%leaves_obj_count,p,R.uniform(.062,.092),
        (a+R.uniform(-.7,.7),R.uniform(-.20,.42)),
        leaves[R.choices([0,1,2,3],weights=[43,41,10,6])[0]])
+# V13: overlapping flank clusters at mid-height tie earlier shelf branches
+# into the new broadleaf crown. Irregular asymmetry avoids a perfect ball.
+for k in range(8):
+ az=math.tau*(k*.6180339887%1)+.33
+ elevation=2.23+R.uniform(-.15,.17)
+ radial=.51+R.uniform(.04,.24)
+ trunk_point=Vector((.08,.03,elevation-.19))
+ twig_end=Vector((math.cos(az)*radial,math.sin(az)*radial,elevation))
+ twig_mid=trunk_point.lerp(twig_end,.55)+Vector((0,0,.07))
+ tube("tree_mature_v13_flank_connector_%02d"%k,
+      [tuple(trunk_point),tuple(twig_mid),tuple(twig_end)],
+      [.021,.013,.003],twig,8)
+ for n in range(59):
+  c=twig_end+Vector((R.gauss(0,.13),R.gauss(0,.11),R.gauss(0,.13)))
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,c,R.uniform(.067,.101),
+       (az+R.uniform(-.8,.8),R.uniform(-.21,.39)),
+       leaves[R.choices([0,1,2,3],weights=[41,43,11,5])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -329,7 +346,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V12",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V13",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
