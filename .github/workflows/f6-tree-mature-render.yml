@@ -1,0 +1,55 @@
+name: F6 Mature Tree V1 Review
+on:
+  push:
+    branches: [feature/gpt-f6-tree-mature-v1-20261117]
+    paths:
+      - tools/floor6/tree_mature_v1.py
+      - .github/workflows/f6-tree-mature-render.yml
+  pull_request:
+    branches: [development]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Python
+        run: python3 -m py_compile tools/floor6/tree_mature_v1.py
+      - name: Install Blender
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy libegl1 libgl1 libopengl0 libgl1-mesa-dri
+      - name: Render actual tree and export GLB plus Blend
+        run: |
+          set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+          blender -b -t 2 --python tools/floor6/tree_mature_v1.py 2>&1 | tee /tmp/tree.log
+          grep -q F6_TREE_MATURE_DONE /tmp/tree.log
+      - name: Validate GLB PNG and Blender checkpoint
+        run: |
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          d=Path('render-output/floor6/nature/tree_mature')
+          m=json.loads((d/'manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED'
+          assert m['leaf_meshes']>500
+          expected={'tree_mature.glb','tree_mature.blend','front.png','side.png','angle.png','top.png'}
+          assert set(e['name'] for e in m['files'])==expected
+          for e in m['files']:
+            p=d/e['name'];data=p.read_bytes()
+            assert len(data)==e['bytes'] and len(data)>100
+            assert hashlib.sha256(data).hexdigest()==e['sha256']
+            if p.suffix=='.png': assert data[:8]==bytes([137,80,78,71,13,10,26,10])
+            if p.suffix=='.glb': assert data[:4]==b'glTF'
+            if p.suffix=='.blend': assert data[:7]==b'BLENDER'
+          print('F6_TREE_QA_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-tree-mature-v1-NOT-APPROVED
+          path: render-output/floor6/nature/tree_mature/
+          retention-days: 14
+          if-no-files-found: warn
