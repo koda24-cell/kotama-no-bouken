@@ -1,0 +1,43 @@
+{
+  "asset_id": "b4_magma_river_v16",
+  "approval": "USER_APPROVED",
+  "approved_at_jst": "2026-11-17",
+  "scope": "static visual quality only",
+  "source_run_id": 44027612542,
+  "source_artifact_id": 14303622918,
+  "source_sha": "d31c3fd88ff2ea5fdb942e193235e62647633690",
+  "game_integration": "NOT_STARTED",
+  "files": [
+    {
+      "path": "assets/models/floor4/b4-magma-river-v16.glb",
+      "bytes": 12865484,
+      "sha256": "359fb4a68960e624ab955abe57d6afd9c3a1dbe44b7e7b37c8067b8567834918"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-v16/source.blend",
+      "bytes": 3979770,
+      "sha256": "14f3dfcd322f892dae3c055638782cc931d59be13bfeb14a9ca9b7dc8ad4019f"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-v16/front.png",
+      "bytes": 1345961,
+      "sha256": "4bff0238c6efeb965ea126f215cc49a8d6f28e6e02cfb99549f3d7555b76691a"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-v16/side.png",
+      "bytes": 1357472,
+      "sha256": "b1f6cc0d8cb4e2e010dc6087941f5e4c5cbe265b06bc616400b12d6f7f722fe5"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-v16/angle.png",
+      "bytes": 1340108,
+      "sha256": "134aa67d9a585954a91f9c7b1e934bfaadf09b61553fbe4a4c322ae78d356a0e"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-v16/top.png",
+      "bytes": 1777784,
+      "sha256": "ee36870ff3f4e789988c12adbe2f063d9da1a11b15857107f530aec3ea6ab420"
+    }
+  ],
+  "source_manifest": "source-manifest.json"
+}
