@@ -86,7 +86,15 @@ lava.node_tree.links.new(im.outputs['Color'],lava_bs.inputs['Base Color'])
 im=lava.node_tree.nodes.new('ShaderNodeTexImage');im.image=thermal_emission
 try:lava.node_tree.links.new(im.outputs['Color'],lava_bs.inputs['Emission'])
 except KeyError:lava.node_tree.links.new(im.outputs['Color'],lava_bs.inputs['Emission Color'])
-lava_bs.inputs['Emission Strength'].default_value=2.1
+lava_bs.inputs['Emission Strength'].default_value=1.55
+# Water-like shine was caused by the previous lava roughness/normal inputs.
+# Keep source textures in the .blend but reduce specular and smooth ripples.
+for link in list(lava.node_tree.links):
+ if link.to_node==lava_bs and link.to_socket.name=='Roughness':
+  lava.node_tree.links.remove(link)
+lava_bs.inputs['Roughness'].default_value=.88
+for node in lava.node_tree.nodes:
+ if node.type=='NORMAL_MAP':node.inputs['Strength'].default_value=.16
 hot=mat('Bright_molten_fissures',(1,.26,.028),.38,em=3.8)
 hot2=mat('Sulfur_yellow_core',(1,.61,.08),.35,em=5)
 coal=mat('Charred_rock',(0.09,.075,.075),.95)
@@ -107,7 +115,10 @@ def halfwidth(z):return (.76+.16*sin(z*1.8+1.1)+.38*math.exp(-((z-1.95)/1.2)**2)
 def edge(z,side):return center(z)+side*(halfwidth(z)+.055*sin(z*9+side*1.4))
 def ground_y(x,z):
  return .24+.10*sin(x*1.7+z*.85)*sin(z*2.2-x*.48)+.035*sin(x*7.3+z*5.1)-.22*math.exp(-((x+1.42)/.82)**2-((z-1.72)/.74)**2)
-def lava_y(x,z):return .13+.024*sin(z*5.5+x*3.7)+.015*sin(x*11-z*4.3)
+# V14: high-viscosity molten rock, not a shallow rippling water surface.
+# Broad slow bulges with smaller local fractures; banks stay higher than the melt.
+def lava_y(x,z):
+ return .105+.024*sin(z*1.75+x*.42)+.014*sin(z*3.15-x*1.1)+.008*sin(z*8.2+x*2.7)
 # Non-rectangular bank boundaries; no square tiled river silhouette.
 for side in (-1,1):
  verts=[];uv=[];faces=[];nz=190;nx=44
@@ -437,6 +448,97 @@ for k in range(15):
  wall_shear('V12_CLIFF_SHEAR_FACE',x,y,z,
             R.uniform(.45,.88),R.uniform(.43,.89),R.uniform(.06,.20),
             1600+k)
+
+# V14 high-viscosity revision: additive bank contact and supported lava cascade.
+# Preserve all V12 meshes and accepted standalone C pool. No game integration.
+# Build eroded black contact rims where molten rock meets the raised basalt shore.
+for side in (-1,1):
+ for section in range(3):
+  verts=[];uv=[];faces=[]
+  n=84
+  for j in range(n+1):
+   z=-3.32+(section*n+j)*(6.64/(3*n))
+   lip=edge(z,side)
+   for i in range(4):
+    u=i/3
+    x=lip+side*(.016+u*(.17+.035*sin(z*4.2+side)))
+    rock_y=ground_y(x,z)
+    # A buried wedge: no hovering orange slab in the side camera.
+    y=(lava_y(x,z)-.018)*(1-u)+(rock_y-.012)*u
+    y+=.009*sin(z*8.3+u*4.0+side)*(u*(1-u))
+    verts.append((x,y,z));uv.append((z*.17,u*.5))
+  for j in range(n):
+   for i in range(3):
+    a=j*4+i;b=a+4
+    faces.append((a,a+1,b+1,b) if side<0 else (a,b,b+1,a+1))
+  objmesh('V14_BURIED_BANK_CONTACT_RIM',verts,faces,crust,uv,smooth=False)
+ # Sparse elongated cooling plates attached to river margins; not floating pebbles.
+ for section in range(5):
+  z0=-3.08+section*1.29+.13*sin(section*2.7+side)
+  verts=[];uv=[];faces=[];n=34
+  for j in range(n+1):
+   z=z0+j*.68/n
+   w=halfwidth(z)
+   for i,u in enumerate((.58,.76,.92)):
+    x=center(z)+side*w*(u+.035*sin(z*7.1+i+section))
+    y=lava_y(x,z)+.009+(.017 if i==1 else -.009)
+    verts.append((x,y,z));uv.append((z*.19,i*.35))
+  for j in range(n):
+   for i in range(2):
+    a=j*3+i;b=a+3
+    faces.append((a,a+1,b+1,b) if side<0 else (a,b,b+1,a+1))
+  objmesh('V14_SLOW_COOLING_MARGIN_SHEET',verts,faces,crust,uv,smooth=False)
+# An embedded, sculpted bedrock chute physically joins the rear cliff to the fall.
+# The original glowing ribbon remains; its dark, irregular rock substrate is new.
+verts=[];uv=[];faces=[];n=96
+for j in range(n+1):
+ t=j/n
+ y=2.42-t*2.2
+ z=-3.18+.28*sin(t*2.8)+.38*t*t
+ cx=-.42+.13*sin(t*5.3)+.08*sin(t*13.1)
+ w=.22+.11*sin(t*pi)+.20*t*t+.028*sin(t*18)
+ for i in range(4):
+  u=i/3
+  x=cx+(u-.5)*2*w*1.25
+  # Back attaches to the continuous cliff, front supports the lava surface.
+  zz=-3.91+(.10+.04*sin(y*2.9+x*4.3))*(1-t)+(.70+.28*sin(t*2.8)+.38*t*t)*u
+  if i==3:zz=z-.025+.022*sin(t*21)
+  if i==2:zz=z-.072+.018*sin(t*16)
+  yy=y+.027*sin(t*18+i*1.7)
+  verts.append((x,yy,zz));uv.append((u*.8,t*1.6))
+for j in range(n):
+ for i in range(3):
+  a=j*4+i;b=a+4
+  faces.append((a,a+1,b+1,b))
+objmesh('V14_CASCADE_CONNECTED_BEDROCK_CHUTE',verts,faces,dark_basalt,uv,smooth=False)
+# Solid broken crust flanks around the molten fall; they interrupt its thin,
+# straight ribbon silhouette without deleting the source mesh.
+for side in (-1,1):
+ verts=[];uv=[];faces=[];n=96
+ for j in range(n+1):
+  t=j/n;y=2.42-t*2.2
+  z=-3.18+.28*sin(t*2.8)+.38*t*t
+  cx=-.42+.13*sin(t*5.3)+.08*sin(t*13.1)
+  w=.22+.11*sin(t*pi)+.20*t*t+.028*sin(t*18)
+  edge_x=cx+side*w*(.80+.07*sin(t*13.7+side))
+  for i,u in enumerate((0,.5,1)):
+   x=edge_x+side*(u-.5)*(.11+.045*sin(t*11.3+side)**2)
+   zz=z+.068+.018*sin(t*23+u*3+side)-.012*u
+   yy=y+.015*sin(t*21+u*2)
+   verts.append((x,yy,zz));uv.append((u*.3,t*1.4))
+ for j in range(n):
+  for i in range(2):
+   a=j*3+i;b=a+3
+   faces.append((a,a+1,b+1,a+3))
+ objmesh('V14_FALL_BROKEN_CRUST_SHOULDER',verts,faces,crust,uv,smooth=False)
+# Break the visually straight lower impact line with thick, uneven molten lobes.
+for k in range(9):
+ x=-.42+(k-4)*.14+.035*sin(k*3.1)
+ z=-2.69+.085*sin(k*2.6)
+ y=.15+.018*sin(k*1.7)
+ rock('V14_CASCADE_IMPACT_COOLING_LOBE',(x,y,z),
+      (.105+.02*sin(k)**2,.048,.13+.035*sin(k*1.4)**2),
+      crust,seed=2400+k,subdiv=4)
 
 # The modeling convention above uses Y-up (as in Three.js).
 # Blender is Z-up: convert every mesh to Z-up BEFORE lighting and cameras.
