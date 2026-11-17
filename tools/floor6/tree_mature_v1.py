@@ -394,6 +394,26 @@ for i in range(8):
    leaf("tree_mature_leaf_%04d"%leaves_obj_count,pos,R.uniform(.060,.096),
         (phi+R.uniform(-.55,.55),R.uniform(-.22,.42)),
         leaves[R.choices([0,1,2,3],weights=[44,41,10,5])[0]])
+# V17: restrained drooping secondary shoots on the crown perimeter.
+# Each shoot physically emerges from a principal limb and carries a small,
+# uneven terminal spray. Preserve all previous geometry; avoid blanket leaf fill.
+for k in range(7):
+ az=math.tau*((k*.61803398875)%1)+.41
+ height=2.35+R.uniform(-.07,.24)
+ origin=Vector((.33*math.cos(az),.33*math.sin(az),height))
+ elbow=Vector((.60*math.cos(az+.08),.60*math.sin(az+.08),height+.045))
+ end=Vector((.77*math.cos(az+.16),.77*math.sin(az+.16),height-.14-R.uniform(0,.09)))
+ tube("tree_mature_v17_drooping_shoot_%02d"%k,
+      [tuple(origin),tuple(elbow),tuple(end)],
+      [.014,.009,.002],twig,8)
+ for j in range(15):
+  t=R.uniform(.45,1.0)
+  anchor_point=elbow.lerp(end,t)
+  pos=anchor_point+Vector((R.gauss(0,.043),R.gauss(0,.045),R.gauss(0,.056)))
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,pos,
+       R.uniform(.060,.088),
+       (az+R.uniform(-.48,.48),R.uniform(-.33,.16)),
+       leaves[R.choices([0,1,2,3],weights=[45,41,9,5])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -419,7 +439,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V16",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V17",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
