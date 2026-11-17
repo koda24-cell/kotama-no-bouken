@@ -62,7 +62,7 @@ def foliage_albedo(m, color, seed):
  tex=nodes.new("ShaderNodeTexImage")
  tex.name="V18_PackedLeafAlbedo"
  tex.image=image
- nodes.links.new(tex.outputs["Color"],nodes.get("Principled BSDF").inputs["Base Color"])
+ m.node_tree.links.new(tex.outputs["Color"],nodes.get("Principled BSDF").inputs["Base Color"])
  return image
 for idx,material in enumerate(leaves):
  foliage_albedo(material,[(.067,.184,.056),(.098,.236,.068),(.160,.291,.103),(.104,.210,.092)][idx],1800+idx)
