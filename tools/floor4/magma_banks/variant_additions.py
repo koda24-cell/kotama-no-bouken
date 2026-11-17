@@ -8,7 +8,7 @@ import math
 from math import sin, cos, pi
 from pathlib import Path
 p=variant.split('-')[0]
-assert p in ('p1','p2','p3') and variant.endswith('-v3'), variant
+assert p in ('p1','p2','p3') and variant.endswith('-v4'), variant
 rng=random.Random(20261117+{'p1':1,'p2':2,'p3':3}[p]*499)
 def bankrock(name,x,y,z,sx,sy,sz,seed,material=dark_basalt):
  return rock(name,(x,y,z),(sx,sy,sz),material,seed=seed,subdiv=4)
@@ -41,24 +41,24 @@ if p=='p1':
    buried_plate('P1_BROKEN_BANK_CAP',x+side*.15,z+.08,.30,.42,.14,
       5300+k+side*17,.12)
  # Three natural boulders interrupt the flow and make a narrower side channel.
- for k,(z,dx,scale) in enumerate(((-1.12,-.24,.40),(.10,.24,.37),(1.34,-.13,.44))):
+ for k,(z,dx,scale) in enumerate(((-1.12,-.48,.27),(.10,.43,.28),(1.34,-.38,.31))):
   x=center(z)+dx
   bankrock('P1_SUBMERGED_MOLTEN_CHANNEL_OBSTACLE',x,.105,z,
     scale,.18,scale*1.10,5400+k)
-  buried_plate('P1_COOLING_BASALT_TOP',x,z,.29,.36,.09,5500+k,.03)
+  buried_plate('P1_COOLING_BASALT_TOP',x,z,.22,.30,.09,5500+k,.03)
 elif p=='p2':
  # Natural river fork: a coherent central basalt island splits the approved
  # main channel in two, with rooted dark masses and a staggered rock rim.
- for k in range(9):
-  z=.0+k*.22
+ for k in range(6):
+  z=.05+k*.34
   x=center(z)+.06*sin(k*.82)
   sy=.22+.035*sin(k*.9)**2
-  bankrock('P2_EMBEDDED_FORK_ISLAND',x,.11,z,.32+.055*sin(k*.8)**2,sy,
-     .34+.09*sin(k*1.1)**2,6000+k)
+  bankrock('P2_EMBEDDED_FORK_ISLAND',x,.09,z,.23+.035*sin(k*.8)**2,sy*.85,
+     .28+.07*sin(k*1.1)**2,6000+k)
  for k in range(5):
   z=.13+k*.42
   x=center(z)+.04*sin(k*.8)
-  buried_plate('P2_SPLIT_FLOW_BASALT_SHEAR',x,z,.32,.37,.16,6100+k,.05)
+  buried_plate('P2_SPLIT_FLOW_BASALT_SHEAR',x,z,.24,.30,.13,6100+k,.05)
  for side in (-1,1):
   for k in range(5):
    z=.13+k*.43
@@ -87,6 +87,57 @@ elif p=='p3':
   z=-3.59+.09*sin(k*1.4)
   wall_shear('P3_DEEP_CLIFF_JOINTS',x,y,z,
     .56+.13*sin(k*.9)**2,.47+.16*sin(k*1.1)**2,.14,7300+k)
+# P3 V4: second minor lavafall, physically rooted into the original rear
+# cliff and flanked by the same charcoal-basalt PBR. This is additive and
+# intentionally smaller than the V16 main cascade.
+if p=='p3':
+ n=96;m=24;vs=[];uv=[];fs=[]
+ for j in range(n+1):
+  t=j/n
+  y=1.92-1.58*t
+  z=-3.55+.53*t+.045*sin(t*4.3)
+  cx=1.47+.11*sin(t*4.2)
+  width=.115+.075*t+.022*sin(t*pi)
+  for i in range(m+1):
+   u=i/m
+   x=cx+(u-.5)*2*width*(1+.07*sin(t*11+u*8))
+   zz=z+.024*sin(u*5.8+t*12)
+   vs.append((x,y,zz));uv.append((u,t*1.6))
+ for j in range(n):
+  for i in range(m):
+   a=j*(m+1)+i;b=a+m+1;fs.append((a,a+1,b+1,b))
+ objmesh('P3_V4_SECONDARY_VISCOUS_CASCADE',vs,fs,lava,uv,True)
+ # Backing volume: broad dark rock wedge with broken profile, no suspended sheet.
+ vs=[];uv=[];fs=[]
+ for j in range(n+1):
+  t=j/n;y=1.92-1.58*t
+  z=-3.55+.53*t+.045*sin(t*4.3)
+  cx=1.47+.11*sin(t*4.2)
+  width=.115+.075*t+.022*sin(t*pi)
+  for i in range(4):
+   side=-1 if i<2 else 1
+   x=cx+side*(width+.09)
+   front=i in (1,2)
+   zz=(z-.04+.025*sin(t*15+i)) if front else (-3.83+.025*sin(y*5+x*3))
+   vs.append((x,y+.015*sin(t*14+i),zz));uv.append((i*.27,t*1.4))
+ for j in range(n):
+  for i in range(3):
+   a=j*4+i;b=a+4;fs.append((a,a+1,b+1,b))
+ objmesh('P3_V4_SECONDARY_CASCADE_CONNECTED_BEDROCK',vs,fs,dark_basalt,uv,False)
+ for side in (-1,1):
+  for k in range(8):
+   t=(k+.45)/8
+   y=1.92-1.58*t;z=-3.55+.53*t+.045*sin(t*4.3)
+   x=1.47+.11*sin(t*4.2)+side*(.115+.075*t+.07)
+   bankrock('P3_V4_SECONDARY_FALL_BASALT_SHOULDER',x,y,z-.06,
+     .12,.14,.13,8100+k+side*11,dark_basalt)
+ # The impact is a recessed dark crater, not a floating luminous water disk.
+ for k in range(12):
+  a=2*pi*k/12
+  x=1.55+.33*cos(a);z=-2.99+.27*sin(a)
+  bankrock('P3_V4_CASCADE_IMPACT_RIM',x,ground_y(x,z)+.06,z,
+    .17,.13,.20,8300+k,crust if k%4==0 else dark_basalt)
+
 # A few local dark fissures give the added boulders depth without emitting
 # water-like bright bands. Preserve every original approved V16 rock.
 for k in range(12):
