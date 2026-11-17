@@ -18,7 +18,10 @@
 - `tools/floor3/render_v3_photo.py` は上記V2のGLBをBlenderで読み込み、全メッシュを保持したままCC0写真PBRを追加する。使用元は既にユーザー承認済み階段V10の `development/assets/models/floor3/double_flight/textures/` に保存済みの `chipped_concrete`/ `concrete_moss`。
 - UVを物理寸法に基づき投影し、材質のBaseColor/Normal/Roughnessを写真から設定。GLBへ画像埋込・Blender `.blend`へpack。
 - Actions: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44053194648
-- V3が成功したかどうかはActionsの完了ログ・GLB・PNGを別途確認する。未確認を成功扱いにしない。
+- **V3のBlender実レンダー成功**: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44053194648 。Artifact ID `14314652231`。GLB/Blend/PNG3枚を実取得し、manifestに記録されたSHA-256・ファイルサイズを照合済み。
+- **V3の実GLB:** 934メッシュ、CC0写真由来画像6点が内部埋込、Normal Map参照あり。GLB・Blendは別名保存でV2原本を保持。
+- **美術レビュー:** V2の単色灰色よりコンクリート材質は改善。ただし全体に暗く、建物の破断・階層構造が読み取りにくい。正面/側面の植生は箱状で、実壁に沿った草木・雨染みをもっと改善する必要あり。V3もユーザー未承認。
+- 次のV4は中立照明と写真の明度、壁面の物理的な剥離、接続した樹木・蔓の見直しを優先。
 
 ## 次の品質評価
 1. front/side/angle画像の実レンダーを確認。角ばった緑の植生と非自然な破断輪郭を改善する。
