@@ -169,6 +169,26 @@ for ti,tip in enumerate(tips):
    az=math.atan2(direction.y,direction.x)+R.uniform(-.43,.43)
    leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,size,
         (az,R.uniform(-.12,.37)),leaves[R.choices([0,1,2,3],weights=[38,36,13,13])[0]])
+# V7: secondary inner-branch bridges soften stacked shelf-like leaf silhouettes.
+# Supplement V6 sprays rather than replacing original foliage or woody meshes.
+for ti,tip in enumerate(tips):
+ if ti%3: continue
+ toward_center=Vector((-.11*tip.x,-.11*tip.y,.085+R.uniform(-.05,.08)))
+ core=tip+toward_center
+ for n in range(17):
+  center=core+Vector((R.gauss(0,.09),R.gauss(0,.09),R.gauss(0,.095)))
+  direction=Vector((center.x,center.y,.12))
+  az=math.atan2(direction.y,direction.x)+R.uniform(-.6,.6)
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,R.uniform(.066,.1),
+       (az,R.uniform(-.1,.42)),leaves[R.choices([0,1,2,3],weights=[36,41,14,9])[0]])
+# Break up the bare spear-shaped trunk tip with irregular small terminal shoots.
+for ti in range(5):
+ az=ti*math.tau/5+.35
+ base=Vector((.025*math.cos(az),.025*math.sin(az),2.58+R.uniform(-.045,.06)))
+ for n in range(15):
+  center=base+Vector((R.gauss(0,.095),R.gauss(0,.095),R.gauss(0,.065)))
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,R.uniform(.058,.084),
+       (az+R.uniform(-.6,.6),R.uniform(-.05,.4)),leaves[R.randrange(3)])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -194,7 +214,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V6",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V7",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
