@@ -482,7 +482,7 @@ for upper in (False,True):
          if o.type=='MESH' and o.name=='V11 full-bodied reinforced stair core']
  assert len(flight)==2
  # identify the correctly located core using its global y coordinate.
- core=min(flight,key=lambda ob:abs(ob.location.y-cy))
+ core=min(flight,key=lambda ob:abs(sum(v.co.y for v in ob.data.vertices)/len(ob.data.vertices)-cy))
  for k,t in enumerate((.17,.43,.81)):
   x=xa+(xb-xa)*t
   zz=za+(zb-za)*t-.23
