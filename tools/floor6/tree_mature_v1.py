@@ -462,6 +462,42 @@ for k in range(7):
        R.uniform(.060,.088),
        (az+R.uniform(-.48,.48),R.uniform(-.33,.16)),
        leaves[R.choices([0,1,2,3],weights=[45,41,9,5])[0]])
+# V19: exposed woody buttresses with irregular joining ridges and a few
+# grounded surface roots. Separate additive structures; original roots,
+# leaf geometry and materials remain intact. Limit spread to the 1m tile.
+for i in range(9):
+ a=math.tau*(i+.17)/9+R.uniform(-.11,.11)
+ length=.22+R.uniform(.035,.105)
+ inner=Vector((.052*math.cos(a),.052*math.sin(a),.34+R.uniform(-.07,.065)))
+ knee=Vector((.115*math.cos(a+.08),.115*math.sin(a+.08),.15))
+ spread=Vector((length*.77*math.cos(a+.09),length*.77*math.sin(a+.09),.04))
+ tip=Vector((length*math.cos(a+.12),length*math.sin(a+.12),-.025))
+ tube("tree_mature_v19_buttress_%02d"%i,[tuple(inner),tuple(knee),tuple(spread),tuple(tip)],
+      [.052,.055,.023,.003],bark,11)
+ # Narrow secondary root ridge breaks up identical radial seams.
+ if i%2==0:
+  half=knee.lerp(spread,.60)
+  offset=Vector((.055*math.cos(a+.38),.055*math.sin(a+.38),-.015))
+  branch_end=spread+offset
+  tube("tree_mature_v19_root_side_%02d"%i,
+       [tuple(knee),tuple(half+offset*.42),tuple(branch_end)],
+       [.021,.014,.002],bark,8)
+# V19: lower attached leafy sprays soften overly empty upper trunk.
+# Small groups follow anchored woody forks, rather than uniform scatter.
+for k in range(5):
+ az=math.tau*(k*.61803398875%1)+.42
+ z=1.58+R.uniform(-.07,.33)
+ start=Vector((.095*math.sin(z*1.3),.025,z))
+ elbow=start+Vector((.22*math.cos(az),.22*math.sin(az),.105))
+ end=elbow+Vector((.18*math.cos(az+.22),.18*math.sin(az+.22),.125))
+ tube("tree_mature_v19_lower_fork_%02d"%k,[tuple(start),tuple(elbow),tuple(end)],
+      [.024,.014,.002],twig,8)
+ for n in range(24):
+  t=R.uniform(.55,1.0)
+  position=elbow.lerp(end,t)+Vector((R.gauss(0,.052),R.gauss(0,.048),R.gauss(0,.067)))
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,position,R.uniform(.068,.099),
+       (az+R.uniform(-.52,.52),R.uniform(-.18,.42)),
+       leaves[R.choices([0,1,2,3],weights=[42,42,11,5])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -487,7 +523,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V18",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V19",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
