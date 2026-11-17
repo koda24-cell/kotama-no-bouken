@@ -37,3 +37,10 @@ E. 完成承認後にのみ`assets/models/floor2/`へ正式保存候補PR。CLAU
 - 既存のゲーム・他の第2層素材と衝突しない。見た目承認と実機統合承認を区別する。
 
 **この文書は開始時の仕様・対象分離を記録したもの。新しい羽根GLBやBlenderレンダー、完成承認を意味しない。**
+
+## 2026-11-17: Blenderネイティブ制作導線の実装
+- ユーザー指定: 「ブレンダーでやってね、画像はいらないよ」。以後**画像生成ツールの概念画像を実GLB/Blenderレンダーと混同しない**。ユーザーに画像を示さず実ファイルを優先。
+- `tools/b2-waterwheel-paddle/build_paddle.py` を新規追加。**羽根板1枚のみ**をBlenderのネイティブメッシュ、木材の実厚/反り/欠け、木材PBRノード、局所裂け目、鍛鉄の固定帯・鋲、雪と氷の別メッシュで制作。V1と破損を強めたV2を各別`.blend`/`.glb`に出力し、内部QA用4方向PNG・manifest SHA256を出すコード。既存水車ゲームコードは変更なし。
+- `.github/workflows/b2-waterwheel-single-paddle-blender.yml` を追加。対象作業ブランチへのpushでBlender入りDockerを起動し、2BLEND/2GLB/8PNG/2manifestを校正してArtifactを出す設計。Artifactsは一時保存であり正式素材には該当しない。
+- このチャットのローカル環境にBlender executable/bpyが存在しない。ローカルPython構文検査は済ませたが、**実Blender実行/GLB・Blendの成果物/Actions run IDはまだ確認できていない**。Actionsのcommit紐づけ検索ではランは取得できず、これを失敗・成功の断定に使わない。
+- 造形は未承認。新しい羽根の実ファイルが出力された後、正面/側面/斜め/裏を内部確認して追加修正する。ユーザーにレビュー画像を表示する必要はない。
