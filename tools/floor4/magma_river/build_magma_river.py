@@ -66,9 +66,26 @@ def thermal_image(name,kind):
  n5=noise(5);n11=noise(11);n24=noise(24);n57=noise(57)
  yy,xx=np.mgrid[0:n,0:n].astype(np.float32)/n
  warp=n11-.5
- # Irregular cooling plates and fracture heat, not glossy water-like swirls.
- veins=np.clip(1.0-np.abs(n11-n24)*4.1,0,1)
- heat=np.clip((.48*n5+.26*n11+.19*veins+.07*n57-.44)*3.2,0,1)**1.50
+ # V16: irregular cell-boundary fractures, not sinusoidal worm lines.
+ # A warped Voronoi distance gap yields branched thermal fissures around
+ # cooling plates. This is procedural and never copies Pinterest imagery.
+ wx=xx*7+(n11-.5)*1.05
+ wy=yy*7+(n24-.5)*.92
+ ix=np.floor(wx).astype(np.int32);iy=np.floor(wy).astype(np.int32)
+ jit=np.random.default_rng(1808).random((7,7,2))
+ best=np.full((n,n),1e8,dtype=np.float32)
+ second=np.full((n,n),1e8,dtype=np.float32)
+ for dx in (-1,0,1):
+  for dy in (-1,0,1):
+   cx=ix+dx;cy=iy+dy
+   px=cx+.18+.64*jit[cx%7,cy%7,0]
+   py=cy+.18+.64*jit[cx%7,cy%7,1]
+   dist=(wx-px)**2+(wy-py)**2
+   second=np.where(dist<best,best,np.minimum(second,dist))
+   best=np.minimum(best,dist)
+ fracture=np.clip(1-(np.sqrt(second)-np.sqrt(best))*5.5,0,1)**1.8
+ heat=np.clip((.40*n5+.24*n11+.32*fracture+.04*n57-.28)*2.9,0,1)**1.22
+ heat*=1-.50*np.clip((n5-.62)*3,0,1)
  heat*=1-.72*np.clip((n5-.61)*3.0,0,1)
  if kind=='color':
   rgb=np.stack((.055+.90*heat,.012+.34*heat**1.3,.005+.055*heat),axis=-1)
@@ -97,7 +114,7 @@ lava_bs.inputs['Roughness'].default_value=.88
 for node in lava.node_tree.nodes:
  if node.type=='NORMAL_MAP':node.inputs['Strength'].default_value=.16
 hot=mat('Bright_molten_fissures',(1,.26,.028),.38,em=3.8)
-hot2=mat('Sulfur_yellow_core',(1,.61,.08),.35,em=5)
+hot2=mat('Sulfur_yellow_core',(1,.48,.05),.58,em=2.6)
 coal=mat('Charred_rock',(0.09,.075,.075),.95)
 materials=[basalt,ash,crust,lava,hot,hot2,coal]
 def objmesh(name,verts,faces,material,uv=None,smooth=True):
@@ -324,10 +341,10 @@ for i in range(16):
  bpy.ops.mesh.primitive_uv_sphere_add(segments=12,ring_count=8,radius=1,location=(x,.23,z))
  o=bpy.context.object;o.name='BANK_RED_HOT_FISSURE';parent(o);o.scale=(.025,.015,R.uniform(.10,.26));o.data.materials.append(hot)
 # Small glowing lava splashes near cascade impact; subtle not glitter storm.
-for i in range(28):
+for i in range(14):
  x=-.42+R.gauss(0,.28);z=-2.75+R.gauss(0,.28)
  y=.30+R.random()*.70
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=R.uniform(.015,.043),location=(x,y,z))
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=R.uniform(.012,.031),location=(x,y,z))
  o=bpy.context.object;o.name='MOLTEN_SPRAY';parent(o);o.data.materials.append(hot2)
 
 # V10 geological detail: original river, bank and every V9 rock remain intact.
