@@ -105,3 +105,8 @@ PR: https://github.com/koda24-cell/kotama-no-bouken/pull/412
 - `render_boundary_review.py` の境界オーバーレイを、辺ごとにCurve/Objectを作る方式から**1 Curve/Object内に多数の2点POLYスプラインを格納**する方式へ変更した。約1300オブジェクトを作成していた管理負荷を減らす狙い。
 - 保存コミット `35df59c4ea508c19d7e43fe7c565b00fff22c6df`。レンダリングの成功・速度改善・終了時SIGSEGV解消はまだ未検証。
 - V15の元コードを再確認: 高さ帯ごとの境界頂点を平均化して左右端を作り、背面シェルを張る構造。実際の閉じた接続ループと頂点対応を使っておらず、V16ではこの平均化手法をそのまま踏襲しない。
+
+## 後頭部接続候補の保守的な選別（2026-11-17）
+- `rank_posterior_seams.py` を追加。ループJSONから `posterior_seam_candidates.csv` と `posterior_seam_review.md` を生成する。閉路、幅、頂点数を使った単純なトポロジー順位であり、解剖学的な後頭部認識ではない。
+- 対象モデルの顔・首・口・目の開口を誤接合しないよう、候補は必ず手動画像照合が必要。既存のV15の高さ帯平均による接合方式は採用しない。
+- Workflowに候補CSV/Markdown生成とファイル検証を追加。GitHubコード保存済み、新規実行結果と候補の実測値は未確認。
