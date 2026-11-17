@@ -8,6 +8,7 @@
 - `docs/3d/ASSET_PROMOTION_POLICY.md`
 - `docs/3d/TOOLING_AUTO_SHARE_POLICY.md`
 - `docs/3d/SHARED_TOOLING_CATALOG.md`
+- `docs/3d/GLOBAL_3D_OPTIMIZATION_ACTIONS_HANDOFF.md`（実動作成功済み共通GLB監査・葉バッチ化・剛体LOD・ImpostorのAction入口。ゲームへのLOD/カリング統合は未実施）
 - `docs/3d/GLOBAL_3D_LOD_PERFORMANCE_POLICY.md`（全階層の3Dアセット制作・軽量化の優先方針）
 - 個別素材の最新引き継ぎ文書と、未マージPRの最新差分
 
