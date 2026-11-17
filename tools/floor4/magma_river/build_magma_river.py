@@ -64,7 +64,7 @@ def center(z):return .32*sin(z*.78)+.27*sin(z*1.92+.7)+.11*sin(z*3.15)
 def halfwidth(z):return (.76+.16*sin(z*1.8+1.1)+.38*math.exp(-((z-1.95)/1.2)**2)+.07*sin(z*5.1))*(1-.56*math.exp(-((z+3.32)/.40)**2))
 def edge(z,side):return center(z)+side*(halfwidth(z)+.055*sin(z*9+side*1.4))
 def ground_y(x,z):
- return .24+.10*sin(x*1.7+z*.85)*sin(z*2.2-x*.48)+.035*sin(x*7.3+z*5.1)
+ return .24+.10*sin(x*1.7+z*.85)*sin(z*2.2-x*.48)+.035*sin(x*7.3+z*5.1)-.22*math.exp(-((x+1.42)/.82)**2-((z-1.72)/.74)**2)
 def lava_y(x,z):return .13+.024*sin(z*5.5+x*3.7)+.015*sin(x*11-z*4.3)
 # Non-rectangular bank boundaries; no square tiled river silhouette.
 for side in (-1,1):
@@ -110,6 +110,20 @@ for j in range(M):
  for i in range(N):
   a=j*(N+1)+i;b=a+N+1;faces.append((a,a+1,b+1,b))
 objmesh('MOLTEN_POOL_WIDENING',verts,faces,lava,uv)
+# Off-channel side basin in a genuine eroded depression connected to the river.
+verts=[];uv=[];faces=[];N=88;M=27
+for j in range(M+1):
+ r=j/M
+ for i in range(N+1):
+  a=2*pi*i/N
+  jag=1+.11*sin(a*5+1.2)+.06*sin(a*11)
+  x=-1.42+r*.92*jag*cos(a)
+  z=1.72+r*.74*jag*sin(a)
+  verts.append((x,.15+.011*sin(a*3+r*11),z));uv.append((.5+r*cos(a)*.48,.5+r*sin(a)*.48))
+for j in range(M):
+ for i in range(N):
+  a=j*(N+1)+i;b=a+N+1;faces.append((a,a+1,b+1,b))
+objmesh('SIDE_ERODED_MOLTEN_BASIN',verts,faces,lava,uv)
 # Rock masses: high-poly displaced with multiple frequencies, not tetrahedron stones.
 def rock(name,xyz,scale,material,seed=0,subdiv=3):
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdiv,radius=1,location=xyz)
@@ -160,9 +174,11 @@ for i in range(14):
  x=side*(3.38+R.uniform(-.18,.28))
  h=R.uniform(.65,1.30)
  rock('CAVERN_ROCK_FACE',(x,h*.38,z),(.48,h,.56),ash,seed=i+90,subdiv=3)
-for i in range(8):
- x=-3.0+i*.84
- rock('REAR_JAGGED_OVERHANG',(x,2.45+R.random()*.25,-3.75),(.48,.43,.53),basalt,seed=i+120,subdiv=3)
+for i in range(7):
+ x=-2.65+i*.87+R.uniform(-.22,.22)
+ y=2.42+R.uniform(-.18,.38)
+ z=-3.77+R.uniform(-.22,.12)
+ rock('REAR_IRREGULAR_BASALT_OVERHANG',(x,y,z),(R.uniform(.39,.72),R.uniform(.30,.56),R.uniform(.38,.68)),basalt,seed=i+120,subdiv=3)
 # Continuous rear basalt cliff: the lavafall emerges from a real cliff,
 # rather than a floating row of boulders. The top edge is eroded.
 verts=[];uv=[];faces=[];nx=74;ny=50
