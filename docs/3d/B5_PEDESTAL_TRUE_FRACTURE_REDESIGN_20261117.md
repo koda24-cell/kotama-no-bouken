@@ -38,3 +38,10 @@
 - V7 downloaded actual images `front/side/angle` 1000×800; ZIP manifest GLB/Blend/3PNG SHA-256 recomputed and all matched. Both shaft nodes in GLB proven: left mesh index 3, right index 4. AmbientCG Rock063 CC0 color/roughness was included. Technical pass ≠ art pass.
 - **V7 art review**: shaft restoration works and central open break is visible. Nevertheless sculpted ornament resembles applied clover stickers and surface roughness has low-resolution polygonal flaking, not authentic centuries-old damaged stone. Top course mostly straight and clean. **NOT APPROVED**, no promotion/merge/game insertion.
 - Future iteration must favor observational sculpting of rough stone fracture interiors, deeper physically intact shell, erosion concentrated on water paths, and a real baked mineral roughness/normal study; don't use Booleans that invalidate the mesh.
+
+## V8–V9: 非直線亀裂レンダリング反復（2026-11-17）
+- 出発点: V7はひびの見え方がほぼ直線・等幅でユーザーから不採用。
+- **V8**: `tools/b5-knights/build_pedestal_true_fracture_v8.py`。主亀裂を38点の低周波曲線＋微小乱数へ再生成し、亀裂幅を高さで変える。右/左の石材の分離、法線、GLBノードの存在検査を維持。実Blender3方向描画/GLB/Blend/manifest成功: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44034016273 。Artifact `14306721195`。ZIP実体の5ファイルSHA-256一致。目視: 曲線化したが依然細い1本線で不採用。
+- **V9**: `tools/b5-knights/build_pedestal_true_fracture_v9.py`。主亀裂の低周波うねりを増幅し、狭い先端へ収束する副亀裂を石材にBooleanカットで造形。新規CUTTERは作品GLBには出さず、左右本体の存在と三角面をActionsで検査。実Blender3方向描画/GLB/Blend/manifest成功: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44034533166 。Artifact `14306162859`。ZIP実体の5ファイルSHA-256一致。副亀裂の視認性は弱く、全体が直線スリットに見える問題が残る。**未合格**。
+- Caution: 単に亀裂の座標を揺らすだけでなく、周辺の層状剥離・装飾の不均一欠損・石材断面の粗い微細形状・主割れ周辺の段差を広域に作り直すこと。現在のデザインはむしろ整いすぎていて、現代の模型台に見える。ゲーム距離での視認性を確認すること。
+- V1–V9はすべて独立ソースを保持。**NO asset promotion / no merge / no game modification**。
