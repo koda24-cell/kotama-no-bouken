@@ -1,0 +1,48 @@
+name: B2 Wet Ruin Fern V01 Render (Review Only)
+on:
+  push:
+    branches: [feature/gpt-b2-modular-wet-fern-20261117]
+    paths:
+      - tools/b2-vegetation/**
+      - .github/workflows/b2-wet-ruin-fern-v01.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install source and render dependencies
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq blender libegl1 libgl1
+          python3 -m pip install --user --break-system-packages numpy trimesh pillow
+      - name: Generate standalone fern candidate GLB
+        run: python3 tools/b2-vegetation/generate_fern.py
+      - name: Render 3 direction PNGs from imported GLB
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b2-vegetation/render_fern_blender.py
+      - name: Validate render outputs and unapproved status
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,struct
+          root=Path("render-output/b2-wet-ruin-fern-v01")
+          manifest=json.loads((root/"manifest.json").read_text())
+          assert manifest["status"]=="NOT_APPROVED"
+          assert set(manifest["blender_render_views"])=={"front","side","angle"}
+          for name,hashval in manifest["files_sha256"].items():
+              data=(root/name).read_bytes()
+              assert len(data)>1024 and hashlib.sha256(data).hexdigest()==hashval,name
+              if name.endswith(".png"):
+                  assert data[:8]==bytes.fromhex("89504e470d0a1a0a")
+                  w,h=struct.unpack(">II",data[16:24]); assert min(w,h)>=900
+          assert (root/"b2_wet_ruin_fern_v01.glb").read_bytes()[:4]==b"glTF"
+          print("B2_FERN_VERIFIED",len(manifest["files_sha256"]))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-wet-ruin-fern-v01-review-unapproved
+          path: render-output/b2-wet-ruin-fern-v01/
+          retention-days: 14
