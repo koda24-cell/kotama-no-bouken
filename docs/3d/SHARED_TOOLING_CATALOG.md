@@ -230,3 +230,7 @@
 - 発見した不具合: 既存FOE dragon.svgをHTMLImageElementのままWebGL2へ送るとSwiftShaderでINVALID_VALUE/immutable texture警告。最小再現ではSVG直接uploadがGLerror1281、描画前に512px canvasへ同期rasterizeすると0。DataTexture明示mip単独も0で、針葉mipを原因と断定しない。SVG原本を変えずTextureLoader callback内で初回upload前にcanvas化する修正を試験branchへ追加。
 - 現在の検証状態: Chromium/Three r180/SwiftShaderで保存分離と最小再現は完了。修正後の全フロア往復/戦闘帰還QAは実行中。実行コマンド `node tools/f1-sacred-forest/verify-game-trial.cjs`。証拠はPR #447の `docs/reviews/` へ保存する。失敗履歴は削除しない。
 - 制限: 実機FPS/全GPU/美術承認は未完了。main公開・既定表示への昇格を含まない。第三者参考画像の再配布なし。
+
+### 一層試験GPU・保存分離の実行結果追記（2026-11-17 JST）
+- 前節のSVG対策を実index.htmlで完走。1F→3F→祠→水際→2F→3F→戦闘→3F帰還の全8段階、820 uploads / GLerrors0 / GPU警告0。FOEは512角canvas upload。修正前の同条件はSVG直接uploadのGLerror1281が1回と警告2件。独立3比較でもSVG直接だけ失敗、canvasとDataTexture mipは成功。原本SVG・17候補GLB不変。
+- 保存分離ページも修正後に再実行pass。親Storage sentinel不変、試遊側から不可視、実3F/固定7/水11/source hash成功。証跡: PR #447の `docs/reviews/f1-sacred-forest-gpu-upload/` と `docs/reviews/f1-sacred-forest-playtest-page/`。Chromium/Three r180/SwiftShaderのみ、実機FPS・全GPU・美術承認には拡張しない。全機能QAの最終記録は同PRへ別保存する。
