@@ -57,7 +57,7 @@ jobs:
               assert kind==0x4e4f534a
               scene=json.loads(f.read(size))
               assert len(scene.get('meshes',[]))>=100 and len(scene.get('images',[]))>=4
-          assert (src/'b4-magma-river-v16.blend').read_bytes()[:7]==b'BLENDER'
+          assert (src/'b4-magma-river-v16.blend').read_bytes()[:7]==b'BLENDER' or (src/'b4-magma-river-v16.blend').read_bytes()[:4]==bytes.fromhex('28b52ffd')
           for v in ('front','side','angle','top'):
               assert (src/f'b4-magma-river-v16-{v}.png').read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
           dst=pathlib.Path('assets/models/floor4/reviews/b4-magma-river-v16')
