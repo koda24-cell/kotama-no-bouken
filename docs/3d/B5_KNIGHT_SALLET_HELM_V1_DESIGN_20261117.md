@@ -22,3 +22,11 @@ Status: NOT_APPROVED. Original knight V14 and pedestal V1–V17 remain untouched
 - Downloaded 3 views and visually inspected (contact sheet `b5-sallet-helm-v1-contact.jpg` generated outside Git). **NOT APPROVED**: boxy bucket-like crown, disconnected horizontal visor bands, nape sheet floating behind skull; entire helmet hovering above ground; severely overbright surfaces.
 - V2 code `tools/b5-knights/build_sallet_v2.py`: adjusted crown and tail integration, reduced visor gap / forward extension and rivet size; lower rendering surface under the part; reduced overbright lamp power and stone albedo. Not finished until actual new render and review.
 - Historical reference is genuine museum armor but geometry is an original, standalone sculpt. No unapproved model inserted in game. Do not merge.
+
+## V2 Blender rendered and visual QA
+- Real run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44069781616 successful; artifact ID `14322246268` (name currently says v1 due workflow upload label typo, but **inside ZIP are sallet_v2.glb and sallet_v2.blend**). Do not confuse this artifact with actual V1 `14321408058`.
+- Actual downloaded GLB 146348 bytes, Blend, three rendered 900x900 PNG. Manifest five SHA256 all independently recomputed and matched. Actual 3-way contact sheet `b5-sallet-helm-v2-contact.jpg` generated for user review.
+- Changes: visor and chin guard closer to head, tail profile shorter, viewport lights reduced, stone darkened and base plane correctly moved under model. No changes to knight V14 or any pedestal.
+- **Art quality not approved**: image still resembles a cylindrical toy bucket with rectangular forward visor bands, narrow crest appears like rod, neck-tail geometry looks like floating wing, horizontal ring shading obvious. Technical mesh count and PNG success alone are not acceptance.
+- Next model V3 must rework major forms (skull smooth curved shell, properly hinged curved visor around brow, irregular metal plate and articulated bevor), not just add rivets or decals. Keep all previous code and screenshots.
+- No permanent asset promotion, no merge, no gameplay.
