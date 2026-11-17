@@ -1,0 +1,109 @@
+name: Save Approved Floor3 Double Flight V10
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [development]
+    paths: ['.github/workflows/f3-promote-approved-double-flight-stairs-v10.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: approved-floor3-double-flight-v10
+  cancel-in-progress: false
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: development
+          path: base
+      - uses: actions/checkout@v5
+        with:
+          ref: c38f46e6bdeff39be2ea0b0d693cccd98603a69b
+          path: source
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          repository: koda24-cell/kotama-no-bouken
+          run-id: 44035057067
+          name: f3-double-flight-stair-v10-review
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: incoming
+      - name: Verify V10 and stage approved assets only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,hashlib,pathlib,struct
+          root=pathlib.Path('base/assets/models/floor3/double_flight')
+          src=pathlib.Path('incoming')
+          m=json.loads((src/'manifest.json').read_text())
+          assert (m['stage'],m['asset'],m['version'])==('floor3','double_flight_stairs','v10')
+          assert (m['run_id'],m['source_commit'])==('44035057067','c38f46e6bdeff39be2ea0b0d693cccd98603a69b')
+          stem='f3_double_flight_stairs_v10'
+          files={stem+'.glb':root/'stairs_v10.glb',stem+'.blend':root/'sources/stairs_v10.blend'}
+          for view in ('front','side','angle','detail'):
+              files[stem+'-'+view+'.png']=root/'reviews/stairs_v10'/(view+'.png')
+          assert set(files)==set(m['files'])
+          checks={}
+          for name,dst in files.items():
+              raw=(src/name).read_bytes(); info=m['files'][name]
+              assert len(raw)==info['size'] and hashlib.sha256(raw).hexdigest()==info['sha256']
+              if name.endswith('.png'): assert raw[:8]==bytes.fromhex('89504e470d0a1a0a')
+              if name.endswith('.glb'):
+                  assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+                  length,kind=struct.unpack_from('<II',raw,12); assert kind==0x4e4f534a
+                  model=json.loads(raw[20:20+length])
+                  assert len(model.get('images',[]))>=6
+                  assert all('bufferView' in im and 'uri' not in im for im in model['images'])
+                  assert any('normalTexture' in mat for mat in model['materials'])
+              assert not dst.exists(),dst
+              dst.parent.mkdir(parents=True,exist_ok=True);dst.write_bytes(raw)
+              checks[str(dst.relative_to(pathlib.Path('base')))]=info
+          pbr=m['pbr_sources']; assert pbr['license']=='CC0'
+          assert set(pbr['maps'])=={'chipped_concrete','concrete_moss'}
+          for asset,maps in pbr['maps'].items():
+              assert set(maps)=={'diffuse','normal','roughness'}
+              for kind,info in maps.items():
+                  raw=(src/info['path']).read_bytes()
+                  assert len(raw)==info['bytes'] and hashlib.sha256(raw).hexdigest()==info['sha256']
+                  dst=root/'textures'/pathlib.Path(info['path']).name
+                  assert not dst.exists();dst.parent.mkdir(parents=True,exist_ok=True);dst.write_bytes(raw)
+                  checks[str(dst.relative_to(pathlib.Path('base')))]=info
+          (root/'textures/sources.json').write_bytes((src/'pbr_sources/sources.json').read_bytes())
+          result={'asset_id':'floor3_double_flight_stairs_v10','status':'USER_APPROVED_PENDING_GAME_INTEGRATION',
+             'approval':{'approved':True,'date':'2026-11-17','scope':'double flight staircase V10'},
+             'source':{'run_id':m['run_id'],'artifact_id':'14306454068','commit':m['source_commit']},
+             'model':str(files[stem+'.glb'].relative_to(pathlib.Path('base'))),
+             'blender':str(files[stem+'.blend'].relative_to(pathlib.Path('base'))),
+             'views':{view:str(files[stem+'-'+view+'.png'].relative_to(pathlib.Path('base'))) for view in ('front','side','angle','detail')},
+             'embedded_pbr':True,'pbr_sources':pbr,'files':checks,'game_integration':'NOT_VERIFIED'}
+          (root/'stairs_v10.manifest.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          print('VERIFIED',len(checks),'asset files')
+          PY
+          mkdir -p base/tools/floor3/double_flight
+          for n in $(seq 1 10); do
+            f=build_v"$n".py
+            if test -e base/tools/floor3/double_flight/"$f"; then
+              cmp source/tools/floor3/double_flight/"$f" base/tools/floor3/double_flight/"$f"
+            else
+              cp source/tools/floor3/double_flight/"$f" base/tools/floor3/double_flight/"$f"
+            fi
+          done
+          cp source/tools/floor3/double_flight/fetch_pbr_v4.py base/tools/floor3/double_flight/fetch_pbr_v4.py
+      - name: Commit official sources to independent branch
+        working-directory: base
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c feature/approved-f3-double-flight-stairs-v10-20261117
+          git add assets/models/floor3/double_flight tools/floor3/double_flight
+          git diff --cached --check
+          git commit -m 'assets(f3): save approved V10 double-flight staircase with CC0 PBR'
+          git push origin HEAD:refs/heads/feature/approved-f3-double-flight-stairs-v10-20261117
+          echo PROMOTION_PUSH_SUCCEEDED
