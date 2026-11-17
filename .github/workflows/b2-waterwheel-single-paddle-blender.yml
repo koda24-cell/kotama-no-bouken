@@ -1,0 +1,56 @@
+name: B2 Individual Waterwheel Paddle Blender Build
+on:
+  push:
+    branches:
+      - feature/gpt-b2-waterwheel-core-upgrade-20261117
+    paths:
+      - "tools/b2-waterwheel-paddle/**"
+      - ".github/workflows/b2-waterwheel-single-paddle-blender.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-paddle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make output folder
+        run: mkdir -p render-output/b2-waterwheel-paddle
+      - name: Blender native mesh creation and 4-direction QA render
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            lscr.io/linuxserver/blender:latest \
+            /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle.py -- render-output/b2-waterwheel-paddle
+      - name: Check real Blender output, GLB, PNG and manifest
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          root=Path('render-output/b2-waterwheel-paddle')
+          for variant in (1,2):
+              prefix=f'b2_bucket_paddle_blender_v{variant:02d}'
+              manifest=json.loads((root/(prefix+'_manifest.json')).read_text())
+              assert manifest['status']=='NOT_APPROVED'
+              assert len(manifest['files'])==6
+              for name,data in manifest['files'].items():
+                  p=root/name
+                  assert p.exists() and len(p.read_bytes())==data['bytes']
+                  assert hashlib.sha256(p.read_bytes()).hexdigest()==data['sha256']
+                  if name.endswith('.glb'): assert p.read_bytes()[:4]==b'glTF'
+                  if name.endswith('.blend'): assert p.read_bytes()[:7]==b'BLENDER'
+                  if name.endswith('.png'): assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+              print('BLENDER_OUTPUT_VERIFIED',prefix,manifest['blender'])
+          PY
+      - name: Upload editable Blend, GLB, internal QA PNG and checksums
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-paddle-blender-v01-v02
+          path: render-output/b2-waterwheel-paddle/
+          if-no-files-found: warn
+          retention-days: 14
