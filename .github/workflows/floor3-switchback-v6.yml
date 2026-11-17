@@ -6,13 +6,6 @@ on:
       - 'tools/floor3/switchback/build_v6.py'
       - 'tools/floor3/switchback/fetch_cc0_pbr.py'
       - '.github/workflows/floor3-switchback-v6.yml'
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [development]
-    paths:
-      - 'tools/floor3/switchback/build_v6.py'
-      - 'tools/floor3/switchback/fetch_cc0_pbr.py'
-      - '.github/workflows/floor3-switchback-v6.yml'
   workflow_dispatch:
 jobs:
   render:
