@@ -56,6 +56,85 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
   const shotS = async (name) => { await shot(name); stats[name] = await p.evaluate(() => window.KotamaField3D.stats && window.KotamaField3D.stats()); };
   await p.evaluate(() => { fieldEnterArea(2, { floor: 0, adminSkip: true }); });
   for (let i = 0; i < 8; i++) await skip();
+  // [B2V4-W] 危険な水面（迷宮班 M の features：通路の脇の水路・広間の水面・橋の下の水路・水門の池）と、通れる水たまり・床の接写。
+  // 撮影の時間切れで後回しにならないよう、最初に撮る。地図は変えない（ゲームが作った 5F・6F をそのまま撮る）
+  report.water = [];
+  {
+    const at = async (tx, ty, d) => { await p.evaluate(([tx, ty, d]) => { const cc = fieldTileCenter(tx, ty); fieldState.x = cc.x; fieldState.y = cc.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, [tx, ty, d]); await p.waitForTimeout(900); };
+    const wstat = {};
+    const wshot = async (name, tx, ty, d) => { await at(tx, ty, d); await shot(name); wstat[name] = { at: [tx, ty, d], ...(await p.evaluate(() => window.KotamaField3D.stats && window.KotamaField3D.stats())) }; };
+    for (const f of [1, 2]) {
+      await p.evaluate((f) => { fieldState.floor = f; fieldState.positioned = false; fieldState.built = ''; fieldShow(); }, f);
+      for (let i = 0; i < 4; i++) await skip();
+      await waitBuilt(`water floor ${f}`); await p.waitForTimeout(1500);
+      const pre = `b2f${f + 1}_W`;
+      // 立ち位置を地図から決める（すべて通れるマス）
+      const plan = await p.evaluate(() => {
+        const a = fieldArea(), F = a.b2Features || {}, D = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, OPP = { up: 'down', down: 'up', left: 'right', right: 'left' };
+        const c = (x, y) => fieldTileAt(a, x, y), walk = (x, y) => { const q = c(x, y); return !!q && q !== '#' && !fieldCharSolid(a, q); }, wet = (x, y) => c(x, y) === '~';
+        const out = { side: [], vista: [], bridge: [], puddle: [], floor: [], gate: [] };
+        // 通路の脇の水路：水の列の外の端から、列に沿って見る（水が横に写る）＋列の真ん中で水を正面に見る
+        const strips = []; const seen = new Set();
+        for (const [x, y] of F.sideWater || []) { if (seen.has(`${x},${y}`)) continue; const s = [[x, y]]; seen.add(`${x},${y}`); for (const [qx, qy] of F.sideWater) { if (!seen.has(`${qx},${qy}`) && s.some(([sx, sy]) => Math.abs(sx - qx) + Math.abs(sy - qy) === 1)) { s.push([qx, qy]); seen.add(`${qx},${qy}`); } } strips.push(s); }
+        for (const s of strips) {
+          s.sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+          const horiz = s.length > 1 ? s[0][1] === s[1][1] : true, along = horiz ? 'right' : 'down', lat = horiz ? ['up', 'down'] : ['left', 'right'];
+          for (const l of lat) {
+            const [lx, ly] = D[l], row = s.map(([x, y]) => [x + lx, y + ly]); if (!row.every(([x, y]) => walk(x, y))) continue;
+            const [ax, ay] = D[along], first = row[0], last = row[row.length - 1];
+            const back = [first[0] - ax, first[1] - ay], back2 = [first[0] - ax * 2, first[1] - ay * 2];
+            const st = walk(...back2) && walk(...back) ? back2 : walk(...back) ? back : first;
+            out.side.push({ along: [...st, along], across: [...row[row.length >> 1], OPP[l]], fwd: walk(last[0] + ax, last[1] + ay) ? [last[0] + ax, last[1] + ay, OPP[along]] : null });
+            break;
+          }
+        }
+        // 広間の水面：水と反対側の床から水を正面に＋広間の角から斜めに
+        for (const v of F.vistas || []) {
+          if (!v.pool || !v.pool.length) continue;
+          const ps = new Set(v.pool.map(([x, y]) => `${x},${y}`)), xs = v.pool.map((p) => p[0]), ys = v.pool.map((p) => p[1]);
+          const side = Math.min(...ys) === v.y0 && Math.max(...ys) < v.y1 && xs.length > 1 && ys.every((y) => y <= v.y0 + 1) ? 'up' : Math.max(...ys) === v.y1 && ys.every((y) => y >= v.y1 - 1) ? 'down' : Math.min(...xs) === v.x0 ? 'left' : 'right';
+          const cx = Math.round((Math.min(...xs) + Math.max(...xs)) / 2), cy = Math.round((Math.min(...ys) + Math.max(...ys)) / 2);
+          const far = side === 'up' ? [cx, v.y1] : side === 'down' ? [cx, v.y0] : side === 'left' ? [v.x1, cy] : [v.x0, cy];
+          const corner = side === 'up' || side === 'down' ? [v.x0, far[1]] : [far[0], v.y0];
+          const near = [far[0] - D[side][0] * -1, far[1] - D[side][1] * -1];
+          out.vista.push({ front: walk(...far) ? [...far, side] : null, near: walk(...near) && !ps.has(`${near[0]},${near[1]}`) ? [...near, side] : null, corner: walk(...corner) ? [...corner, side === 'up' || side === 'down' ? side : 'down'] : null, side });
+        }
+        // 橋の下の水路：橋の中央から水路に沿って＋橋のたもとから渡る向き
+        for (const b of F.bridges || []) {
+          const mid = b.cells[b.cells.length >> 1], ch = b.channel, alongCh = b.dir === 'x' ? ['up', 'down'] : ['left', 'right'];
+          const dl = alongCh.find((d) => wet(mid[0] + D[d][0], mid[1] + D[d][1])) || alongCh[0];
+          const e0 = b.ends[0], cross = b.dir === 'x' ? (e0[0] < mid[0] ? 'right' : 'left') : (e0[1] < mid[1] ? 'down' : 'up');
+          out.bridge.push({ deck: [...mid, dl], end: walk(...e0) ? [...e0, cross] : null, ch });
+        }
+        // 水たまり：隣の床から水たまりを見る
+        for (const [x, y] of (F.puddles || []).slice(0, 3)) {
+          for (const d of Object.keys(D)) { const sx = x - D[d][0], sy = y - D[d][1]; if (walk(sx, sy) && c(sx, sy) !== '*') { out.puddle.push([sx, sy, d]); break; } }
+        }
+        // 床の接写：両側が壁の、まっすぐな通路（水・水たまりから離れた所）
+        for (let y = 1; y < a.h - 1 && out.floor.length < 2; y++) for (let x = 1; x < a.w - 1 && out.floor.length < 2; x++) for (const d of ['right', 'down']) {
+          const [vx, vy] = D[d], sx = vy ? 1 : 0, sy = vx ? 1 : 0; let ok = true;
+          for (let k = 0; k <= 2 && ok; k++) { const qx = x + vx * k, qy = y + vy * k; if (!walk(qx, qy) || c(qx, qy) !== '.' || walk(qx + sx, qy + sy) || walk(qx - sx, qy - sy)) ok = false; }
+          if (ok && !out.floor.some((q) => Math.abs(q[0] - x) + Math.abs(q[1] - y) < 8)) out.floor.push([x, y, d]);
+        }
+        for (const g of F.watergates || []) out.gate.push([...g.view, g.facing]);
+        return { out, n: { hazard: (F.waterHazard || []).length, puddles: (F.puddles || []).length, side: (F.sideWater || []).length, vistas: (F.vistas || []).length, bridges: (F.bridges || []).length } };
+      });
+      const wti = await p.evaluate(() => window.KotamaB2WaterTiles && window.KotamaB2WaterTiles.info());
+      const P = plan.out;
+      if (process.env.W_ONLY) console.log(JSON.stringify(plan), '\n' + (await p.evaluate(() => { const a = fieldArea(); return Array.from({ length: a.h }, (_, y) => Array.from({ length: a.w }, (_, x) => fieldTileAt(a, x, y)).join('')).join('\n'); })));
+      for (const [i, s] of P.side.slice(0, 2).entries()) { await wshot(`${pre}_side_along_${i + 1}`, ...s.along); await wshot(`${pre}_side_across_${i + 1}`, ...s.across); if (s.fwd && i === 0) await wshot(`${pre}_side_back_${i + 1}`, ...s.fwd); }
+      for (const [i, v] of P.vista.slice(0, 1).entries()) { if (v.front) await wshot(`${pre}_vista_pool_${i + 1}`, ...v.front); if (v.near) await wshot(`${pre}_vista_pool_edge_${i + 1}`, ...v.near); if (v.corner) await wshot(`${pre}_vista_pool_corner_${i + 1}`, ...v.corner); }
+      for (const [i, b] of P.bridge.slice(0, 1).entries()) { await wshot(`${pre}_bridge_channel_${i + 1}`, ...b.deck); if (b.end) await wshot(`${pre}_bridge_channel_end_${i + 1}`, ...b.end); }
+      for (const [i, q] of P.puddle.slice(0, 2).entries()) await wshot(`${pre}_puddle_${i + 1}`, ...q);
+      for (const [i, q] of P.floor.slice(0, 2).entries()) await wshot(`${pre}_floor_corridor_${i + 1}`, ...q);
+      for (const [i, q] of P.gate.slice(0, 1).entries()) await wshot(`${pre}_watergate_basin_${i + 1}`, ...q);
+      report.water.push({ floor: f + 1, counts: plan.n, plan: P, tiles: wti });
+    }
+    const vals = Object.values(wstat).filter((s) => s && s.triangles);
+    report.waterStats = { shots: wstat, maxTriangles: Math.max(0, ...vals.map((s) => s.triangles)), avgTriangles: vals.length ? Math.round(vals.reduce((t, s) => t + s.triangles, 0) / vals.length) : 0, maxCalls: Math.max(0, ...vals.map((s) => s.calls)) };
+    if (process.env.W_ONLY) { report.errors = errs; report.missing = [...new Set(missing)]; fs.writeFileSync(path.join(out, 'water-report.json'), JSON.stringify(report, null, 2)); console.log(JSON.stringify({ errors: errs, missing: report.missing, water: report.water.map((w) => ({ floor: w.floor, counts: w.counts, tiles: w.tiles })), waterStats: { ...report.waterStats, shots: undefined } }, null, 1)); await b.close(); srv.close(); return; }
+    fs.writeFileSync(path.join(out, 'water-report.json'), JSON.stringify({ water: report.water, waterStats: report.waterStats, errors: errs.slice(), missing: [...new Set(missing)] }, null, 2));
+  }
   for (const f of [0, 1, 2]) {
     await p.evaluate((f) => { fieldState.floor = f; fieldState.positioned = false; fieldState.built = ''; fieldShow(); }, f);
     for (let i = 0; i < 4; i++) await skip();
@@ -182,49 +261,8 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
     }
     report.rebuild.memory = series;
   }
-  // [B2V4-W] 危険な水面（water-hazard）の試し撮り。迷宮班 M の役割が入るまでの確認用に、撮影の中だけで
-  // 内側の壁の塊（外周から2マス以上）を '~'＋役割 water-hazard に置き換える（もともと通れないマスなので通行は変わらない）。
-  // 水面タイル（ビットマスク）・岸・飛び石の廃止・床の模様を、5F・6F で撮る。ゲーム本体のマップ生成は変えない。
-  report.hazard = [];
-  for (const f of [1, 2]) {
-    await p.evaluate((f) => { fieldState.floor = f; fieldState.positioned = false; fieldState.built = ''; fieldShow(); }, f);
-    for (let i = 0; i < 4; i++) await skip();
-    await waitBuilt('hazard base ' + f);
-    const plan = await p.evaluate(() => {
-      const a = fieldArea(), W = a.w, H = a.h, at = (x, y) => fieldTileAt(a, x, y), open = (x, y) => { const c = at(x, y); return c !== '#' && c !== '~' && !fieldCharSolid(a, c); };
-      const used = new Set(), blocks = [];
-      for (const [w, h] of [[3, 3], [4, 2], [2, 4], [3, 2], [2, 3], [2, 2]]) {
-        for (let y = 2; y + h <= H - 2; y++) for (let x = 2; x + w <= W - 2; x++) {
-          let ok = true; for (let j = 0; j < h && ok; j++) for (let i = 0; i < w; i++) if (at(x + i, y + j) !== '#' || used.has(`${x + i},${y + j}`) || a.objects.some((o) => o.tx === x + i && o.ty === y + j)) { ok = false; break; }
-          if (!ok) continue;
-          let ring = 0; const stand = [];
-          for (let i = 0; i < w; i++) for (const [yy, d] of [[y - 1, 'down'], [y + h, 'up']]) if (open(x + i, yy)) { ring++; stand.push([x + i, yy, d]); }
-          for (let j = 0; j < h; j++) for (const [xx, d] of [[x - 1, 'right'], [x + w, 'left']]) if (open(xx, y + j)) { ring++; stand.push([xx, y + j, d]); }
-          if (ring < 3) continue;
-          blocks.push({ x, y, w, h, ring, stand }); for (let j = -1; j <= h; j++) for (let i = -1; i <= w; i++) used.add(`${x + i},${y + j}`);
-          if (blocks.length >= 2) break;
-        }
-        if (blocks.length >= 2) break;
-      }
-      for (const bl of blocks) for (let j = 0; j < bl.h; j++) for (let i = 0; i < bl.w; i++) { a.grid[bl.y + j][bl.x + i] = '~'; if (a.tileRoles) a.tileRoles[bl.y + j][bl.x + i] = 'water-hazard'; }
-      a.buildKey = (a.buildKey || a.key) + '|hz';
-      return blocks;
-    });
-    await waitBuilt('hazard ' + f); await p.waitForTimeout(1500);
-    const wti = await p.evaluate(() => window.KotamaB2WaterTiles && window.KotamaB2WaterTiles.info());
-    report.hazard.push({ floor: f + 1, blocks: plan.map((b) => ({ x: b.x, y: b.y, w: b.w, h: b.h })), tiles: wti, stats: await p.evaluate(() => window.KotamaField3D.stats()) });
-    for (const [i, bl] of plan.entries()) {
-      // 塊の長い辺の中央の前に立って見る＋斜めから
-      const s = bl.stand[Math.floor(bl.stand.length / 2)];
-      await p.evaluate(([tx, ty, d]) => { const c = fieldTileCenter(tx, ty); fieldState.x = c.x; fieldState.y = c.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, s);
-      await p.waitForTimeout(900); await shotS(`b2f${f + 1}_hazard_open_water_${i + 1}`);
-      const s2 = bl.stand[0];
-      await p.evaluate(([tx, ty, d]) => { const c = fieldTileCenter(tx, ty); fieldState.x = c.x; fieldState.y = c.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, s2);
-      await p.waitForTimeout(900); await shotS(`b2f${f + 1}_hazard_open_water_${i + 1}b`);
-    }
-  }
   report.errors = errs; report.missing = [...new Set(missing)];
   fs.writeFileSync(path.join(out, 'props-report.json'), JSON.stringify(report, null, 2));
-  console.log(JSON.stringify({ errors: errs, missing: report.missing, rebuild: report.rebuild, hazard: report.hazard, stats, floors: report.floors.map((f) => ({ floor: f.floor, centerHits: f.centerHits, placedCount: f.placedCount, layout: f.layout, extras: f.extras, monuments: f.monuments })) }, null, 1));
+  console.log(JSON.stringify({ errors: errs, missing: report.missing, rebuild: report.rebuild, stats, floors: report.floors.map((f) => ({ floor: f.floor, centerHits: f.centerHits, placedCount: f.placedCount, layout: f.layout, extras: f.extras, monuments: f.monuments })) }, null, 1));
   await b.close(); srv.close();
 })().catch((e) => { console.error(e); process.exit(1); });

@@ -10,12 +10,17 @@
      念のため組み立てごとに全ての隣接を検査し、食い違い・外周に接する水面を info() に記録する（外周に接するマスは描かない）。
    ・通行判定は従来どおりマップ側（'~' は FIELD_SOLID）。ここは見た目だけ。
    ・どのマスが危険な水面かは B2V4W_ROLES で決める（迷宮班 M の tileRoles 確定後に名前を差し替えられる）。
-   ・同じ GLB は1回だけ読み、マスごとに Batcher（区画×素材でまとめる既存の仕組み）へ渡して描画回数を抑える。
+   ・使うマスクの GLB だけを1回だけ読み、マスごとに Batcher（区画×素材でまとめる既存の仕組み）へ渡して描画回数を抑える。
+     読み込み時に軽くする：川底・浅い棚・岸の石板（平らなのに1枚 数千三角形）は海岸線の式による 20×20 の格子1枚に置き換え、
+     岸の岩は間引き（SimplifyModifier）、水の中に立つ小岩（遠目に黒い棘）は置かず、水中の岩は低くして水面の下へ沈める。
    ・読み込めない場合は、従来の水面（平らな水＋暗い底）で描く（画面を壊さない）。
-   ・水たまり（通れる浅瀬 '*'）は従来の浅く明るい水のまま。危険な水面は深く暗めで、縁に泡（頂点色）と濡れた岸。
+   ・水たまり（通れる浅瀬 '*'）は従来の浅く明るい水のまま。危険な水面は岸ぎわのターコイズ → 中央の深い青（頂点色）、縁に泡、
+     岸の岩は #203 の青い岩の色に霜をのせ、床との境の帯に霜の縁取り（少し盛り上がった白い青の線）を付けて「入れない」ことを示す。
+   ・床（F10c）：岩盤の UV を世界座標にそろえ、光る水脈がマスの境で直線に切れないようにした。光る水たまりの楕円は縁へ向けて消えるにじみにした。
    ============================================================ */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { SimplifyModifier } from 'three/addons/modifiers/SimplifyModifier.js';
 
 // 役割名（迷宮班 M の確定後に差し替える）。hazard＝危険な水面（非通行）。chars はマップ文字で判定する場合
 export const B2V4W_ROLES = { hazard: new Set(['water-hazard']), hazardChars: new Set(['~']) };
@@ -29,7 +34,7 @@ export const B2V4W_REMOVE_STEPPING_STONES = true;
 const TILE_DIR = './assets/models/floor2/water-tiles/v07/lite/';
 const BIT = { up: 8, right: 2, down: 1, left: 4 };            // N=8 E=2 S=1 W=4（DIR_VEC の up は ty-1＝北）
 const OPP = { up: 'down', down: 'up', left: 'right', right: 'left' };
-const WATER_Y = -0.08;                                         // タイルの原点（水面）の高さ。床（0.03前後）より少し下
+const WATER_Y = -0.07;                                         // タイルの原点（水面）の高さ。床（0.03前後）より一段下（岸の縁で段差が見える）
 
 // GPT の生成スクリプトと同じ海岸線（水の内側で正、陸で負）。x・y はタイル内の -0.5〜0.5（y は北が正）
 function coast(x, y, mask) {
@@ -73,14 +78,28 @@ function rippleNormal() {
 function tuneFloor(mats, proc, owned) {
   if (proc.__b2v4wFloor) return; proc.__b2v4wFloor = true;
   const std = (o) => new THREE.MeshStandardMaterial(o);
-  // 水たまり：白い楕円＋淡い石の縁 → ひと回り小さく、少し透ける青い水と、岩盤と同じ青の濡れた縁
-  mats['wt:puddle'] = std({ color: 0x4fbfe0, roughness: 0.08, metalness: 0.1, emissive: 0x1a86b4, emissiveIntensity: 0.42, envMapIntensity: 1.1, transparent: true, opacity: 0.72, depthWrite: false });
-  mats['wt:puddleRim'] = std({ color: 0x6c9ec0, map: mats['Wet slate stone'].map, normalMap: mats['Wet slate stone'].normalMap, roughness: 0.34, metalness: 0.02, emissive: 0x0b3a58, emissiveIntensity: 0.6, envMapIntensity: 0.8, vertexColors: true, transparent: true, opacity: 0.55, depthWrite: false });
-  for (const pc of proc.puddles || []) for (const p of pc.parts) {
-    p.geo.scale(0.66, 1, 0.66);
-    if (p.mat === 'puddle') p.mat = 'wt:puddle';
-    else if (p.mat === 'Pale mineral stone') { p.mat = 'wt:puddleRim'; p.geo.translate(0, 0.004, 0); }
-  }
+  // 岩盤の UV を世界座標にそろえる（マスごとに 0〜1 だったため、光る水脈と石の模様がマスの境で直線に切れていた）
+  const ground = proc.continuousGround;
+  proc.continuousGround = (wx, wz, cell) => {
+    const pc = ground(wx, wz, cell), g = pc.parts[0].geo, p = g.attributes.position, uv = g.attributes.uv;
+    if (uv) for (let i = 0; i < p.count; i++) uv.setXY(i, (wx + p.getX(i)) / cell, -(wz + p.getZ(i)) / cell);
+    return pc;
+  };
+  // 光る水たまり（床の斑点）：硬い楕円＋淡い石の縁 → 縁へ向けて消える、岩盤と同じ青の濡れたにじみ（頂点の透明度）。縁の石は使わない
+  mats['wt:puddle'] = std({ color: 0x3fb4d8, roughness: 0.1, metalness: 0.1, emissive: 0x1689b8, emissiveIntensity: 0.32, envMapIntensity: 1.0, vertexColors: true, transparent: true, depthWrite: false });
+  const soft = (v) => {
+    const n = 22, pos = [0, 0, 0], col = [1, 1, 1, 0.5], idx = [];
+    for (let i = 0; i < n; i++) {
+      const t = i / n * Math.PI * 2, r = 0.62 * (1 + 0.16 * Math.sin(t * 3 + v * 2.1) + 0.08 * Math.sin(t * 5 + v));
+      pos.push(Math.cos(t) * r * (1.15 + v * 0.2), 0, Math.sin(t) * r * (0.78 + v * 0.08)); col.push(1, 1, 1, 0);
+      idx.push(0, 1 + ((i + 1) % n), 1 + i);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4)); g.setIndex(idx);
+    g.computeVertexNormals(); owned.push(g);
+    return g;
+  };
+  (proc.puddles || []).forEach((pc, v) => { pc.parts = [{ geo: soft(v), mat: 'wt:puddle' }]; });
   // 岩盤の色テクスチャ：濃淡（大きな斑）を平均へ 45% 寄せ、少しだけ青へ。水脈（emissiveMap）はそのまま
   const fl = mats.caveFloor, src = fl && fl.map && fl.map.image;
   if (src && src.getContext) {
@@ -110,74 +129,145 @@ export function createB2WaterTiles(ctx) {
   tuneFloor(mats, proc, owned);
   const std = (o) => new THREE.MeshStandardMaterial(o);
   const ripple = rippleNormal(); ripple.repeat.set(0.42, 0.42); owned.push(ripple);
-  const glow = { value: 0.34 };
-  // 危険な水面：深く暗めの青緑（頂点色で水深と縁の泡）。#203 の水（明るいシアン・発光）と同じ色域で、浅瀬より暗い
-  const water = std({ color: 0xffffff, vertexColors: true, roughness: 0.07, metalness: 0.08, normalMap: ripple, normalScale: new THREE.Vector2(0.32, 0.32),
-    envMapIntensity: 1.35, transparent: true, opacity: 0.8, depthWrite: false });
+  const glow = { value: 0.26 };
+  // 危険な水面：#203 の明るいシアンと同じ色域で、岸ぎわは明るいターコイズ → 中央ほど深い青（頂点色）、縁に泡。
+  // 水たまり（'*'、通れる浅い水）より濃く深く見せ、「入れない深さ」を色で伝える
+  const water = std({ color: 0xffffff, vertexColors: true, roughness: 0.06, metalness: 0.1, normalMap: ripple, normalScale: new THREE.Vector2(0.38, 0.38),
+    envMapIntensity: 1.05, transparent: true, opacity: 0.84, depthWrite: false });
   water.onBeforeCompile = (sh) => {
     sh.uniforms.wtGlow = glow;
     sh.fragmentShader = 'uniform float wtGlow;\n' + sh.fragmentShader.replace('#include emissivemap_fragment', '#include emissivemap_fragment\n  totalEmissiveRadiance += vColor.rgb * wtGlow;');
   };
   water.customProgramCacheKey = () => 'b2v4w-water';
+  const rockMap = mats['Deep cavern rock'].map, rockNormal = mats['Deep cavern rock'].normalMap;
   Object.assign(mats, {
     'wt:water': water,
-    'wt:bed': std({ color: 0x2a7ea6, map: mats['Deep cavern rock'].map, normalMap: mats['Deep cavern rock'].normalMap, normalScale: new THREE.Vector2(0.8, 0.8), roughness: 0.85, emissive: 0x062c48, emissiveIntensity: 1.0, envMapIntensity: 0.4, vertexColors: true }),
-    'wt:shelf': std({ color: 0x6cc4dc, map: mats['Pale mineral stone'].map, roughness: 0.72, emissive: 0x0c4460, emissiveIntensity: 0.8, envMapIntensity: 0.5, vertexColors: true }),
+    // 水底（頂点色で 岸の淡い鉱物 → 深い青緑）。水を通して見える
+    'wt:bed': std({ color: 0xffffff, map: rockMap, normalMap: rockNormal, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 0.8, emissive: 0x05304c, emissiveIntensity: 1.0, envMapIntensity: 0.4, vertexColors: true }),
+    // 岸の岩：#203 の鮮やかな青い岩の色で、上を向いた面に霜（頂点色）。黒く沈ませない
+    'wt:ledge': std({ color: 0xffffff, map: rockMap, normalMap: rockNormal, normalScale: new THREE.Vector2(1.1, 1.1), roughness: 0.62, emissive: 0x0b3c62, emissiveIntensity: 0.9, envMapIntensity: 0.8, vertexColors: true }),
     'wt:film': std({ color: 0x55bedd, roughness: 0.06, metalness: 0.1, emissive: 0x157aa6, emissiveIntensity: 0.45, envMapIntensity: 1.3 }),
     'wt:fallback': std({ color: 0x3c9ec4, map: mats['Clear blue water'].map, roughness: 0.06, metalness: 0.1, emissive: 0x0b5f86, emissiveIntensity: 0.5, envMapIntensity: 1.4, transparent: true, opacity: 0.82, depthWrite: false }),
     'wt:deepbed': std({ color: 0x1a5272, roughness: 0.9, emissive: 0x04203a, emissiveIntensity: 1.0, vertexColors: true }),
+    // 岸の帯：濡れた岩 → 霜の縁取り → 床（頂点色）
+    'wt:bank': std({ color: 0xffffff, map: mats['Wet slate stone'].map, normalMap: mats['Wet slate stone'].normalMap, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 0.4, metalness: 0.02, emissive: 0x0a3550, emissiveIntensity: 0.7, envMapIntensity: 0.9, vertexColors: true }),
   });
-  const COLORS = { deep: new THREE.Color(0x0f4f74), mid: new THREE.Color(0x2a8fb8), shallow: new THREE.Color(0x6fd8f2), foam: new THREE.Color(0xe2f8ff) };
+  const COLORS = { deep: new THREE.Color(0x0a4676), mid: new THREE.Color(0x1286b8), shallow: new THREE.Color(0x2cb4dc), foam: new THREE.Color(0xd8f4ff),
+    bedLand: new THREE.Color(0x5d8fae), bedShelf: new THREE.Color(0x4aa6c6), bedDeep: new THREE.Color(0x154f78),
+    rock: new THREE.Color(0x6aa6d6), rockLow: new THREE.Color(0x3f78a8), frost: new THREE.Color(0xe8f8ff) };
 
-  let tiles = null, loadJob = null, mode = 'none', stats = {};
+  let tiles = new Array(16).fill(null), loading = new Map(), failed = false, mode = 'none', stats = {};
   let hz = new Set(), W = 0, Hh = 0;
+  const simplifier = new SimplifyModifier();
 
-  // GLB の素材名・形の名前 → このゲームの素材
-  function matKey(meshName, matName) {
+  // 水底＋岸の地面：GPT の川底（平らでも 3600 三角形あった）・浅い棚・岸の石板を、同じ海岸線の式による 20×20 の格子 1 枚にまとめる。
+  // 陸（海岸線の外）は岸の石板の高さ、水の中は岸から中央へ深くなる。頂点色で 陸の岩 → 淡い鉱物の棚 → 深い青緑
+  function bedGrid(mask) {
+    const N = 20, pos = [], col = [], idx = [], c = new THREE.Color();
+    for (let j = 0; j <= N; j++) for (let i = 0; i <= N; i++) {
+      const x = i / N - 0.5, y = 0.5 - j / N, d = coast(x, y, mask);
+      const depth = d <= 0 ? 0 : smooth(0, 0.22, d);
+      const h = d <= -0.015 ? 0.004 : -0.035 - 0.125 * depth;
+      pos.push(x, h, -y);
+      if (d <= -0.015) c.copy(COLORS.bedLand).multiplyScalar(0.9 + 0.1 * Math.sin(x * 37 + y * 23));
+      else c.copy(COLORS.bedShelf).lerp(COLORS.bedDeep, smooth(0.05, 0.85, depth));
+      col.push(c.r, c.g, c.b);
+    }
+    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) { const a = j * (N + 1) + i, b = a + 1, cc = a + N + 1, dd = cc + 1; idx.push(a, cc, b, b, cc, dd); }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals();
+    return g;
+  }
+  // 部品の分類（GLB の形の名前・素材名 → このゲームの素材と扱い）
+  function kind(meshName, matName) {
     const n = (meshName || '').toLowerCase(), m = (matName || '').toLowerCase();
-    if (/glacial water surface|isolated flooded/.test(n) || /turquoise water/.test(m)) return 'wt:water';
-    if (/riverbed/.test(n) || /riverbed/.test(m)) return 'wt:bed';
-    if (/shallow mineral shelves/.test(n) || /mineral shallows/.test(m)) return 'wt:shelf';
-    if (/erosion water finger/.test(n) || /water film/.test(m)) return 'wt:film';
-    if (/shoreline/.test(n)) return 'Wet slate stone';
-    return 'Deep cavern rock';
+    if (/glacial water surface|isolated flooded/.test(n) || /turquoise water/.test(m)) return 'water';
+    if (/riverbed|shallow mineral shelves|dark slate shoreline/.test(n) || /riverbed|mineral shallows/.test(m)) return 'drop';   // bedGrid が代わる
+    if (/erosion water finger/.test(n) || /water film/.test(m)) return 'film';
+    if (/underwater worn boulder/.test(n)) return 'boulder';
+    return 'ledge';
+  }
+  // 岩を間引く（GPT の岩は 1 個 360〜560 三角形。4m のマスでは 4 割で十分。失敗したら元のまま）
+  function lighten(geo, keep) {
+    try {
+      const n = geo.attributes.position.count, out = simplifier.modify(geo, Math.floor(n * (1 - keep)));
+      if (out && out.attributes.position.count >= 4) { geo.dispose(); return out; }
+    } catch (e) { /* 元のまま */ }
+    return geo;
+  }
+  // 岩の頂点色：上を向いた面ほど霜（白い青）、根元ほど濃い青
+  function frostColors(geo, base) {
+    geo.computeVertexNormals();
+    const p = geo.attributes.position, nm = geo.attributes.normal, col = new Float32Array(p.count * 3), c = new THREE.Color();
+    for (let i = 0; i < p.count; i++) {
+      const up = nm.getY(i), y = p.getY(i);
+      c.copy(COLORS.rockLow).lerp(COLORS.rock, smooth(base - 0.04, base + 0.08, y)).lerp(COLORS.frost, smooth(0.55, 0.92, up) * smooth(base, base + 0.06, y) * 0.85);
+      col.set([c.r, c.g, c.b], i * 3);
+    }
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
   }
   function prepTile(gltf, mask) {
     gltf.scene.updateMatrixWorld(true);
     const parts = [];
     gltf.scene.traverse((o) => {
       if (!o.isMesh || !o.geometry?.attributes?.position) return;
-      const mat = Array.isArray(o.material) ? o.material[0] : o.material, key = matKey(o.name, mat && mat.name);
+      const mat = Array.isArray(o.material) ? o.material[0] : o.material, k = kind(o.name, mat && mat.name);
+      if (k === 'drop') return;
       let geo = o.geometry.clone().applyMatrix4(o.matrixWorld);
-      for (const k of Object.keys(geo.attributes)) if (k !== 'position') geo.deleteAttribute(k);
-      geo.computeVertexNormals();
-      if (key === 'wt:water') {   // 水面は真上向きの法線にそろえる（間引いた細い三角形の陰の筋を出さない。さざ波は法線マップで出す）
-        const nm = geo.attributes.normal; for (let i = 0; i < nm.count; i++) nm.setXYZ(i, 0, 1, 0);   // 頂点色：海岸線からの距離で 水深の色＋縁の泡（タイルの外へはみ出す水たまりは浅い色）
-        const p = geo.attributes.position, col = new Float32Array(p.count * 3), pool = /isolated/i.test(o.name), c = new THREE.Color();
+      for (const a of Object.keys(geo.attributes)) if (a !== 'position') geo.deleteAttribute(a);
+      const p = geo.attributes.position;
+      if (k === 'water') {   // 水面は真上向きの法線（間引いた細い三角形の陰の筋を出さない。さざ波は法線マップ）。頂点色：海岸線からの距離で水深の色＋縁の泡
+        geo.computeVertexNormals();
+        const nm = geo.attributes.normal; for (let i = 0; i < nm.count; i++) nm.setXYZ(i, 0, 1, 0);
+        const col = new Float32Array(p.count * 3), pool = /isolated/i.test(o.name), c = new THREE.Color();
         for (let i = 0; i < p.count; i++) {
-          const x = p.getX(i), y = -p.getZ(i), d = pool ? 0.06 : coast(x, y, mask);
-          const depth = smooth(0.02, 0.26, d);
-          c.copy(COLORS.shallow).lerp(COLORS.mid, smooth(0, 0.5, depth)).lerp(COLORS.deep, smooth(0.45, 1, depth));
-          const foam = pool ? 0 : (1 - smooth(0.0, 0.055, d)) * (0.65 + 0.35 * Math.sin(x * 61 + y * 47) * Math.sin(y * 29 - x * 13));
-          c.lerp(COLORS.foam, Math.max(0, Math.min(0.85, foam)));
+          const x = p.getX(i), y = -p.getZ(i), d = pool ? 0.04 : coast(x, y, mask);
+          const depth = smooth(0.0, 0.24, d);
+          c.copy(COLORS.shallow).lerp(COLORS.mid, smooth(0, 0.45, depth)).lerp(COLORS.deep, smooth(0.5, 1, depth));
+          const foam = pool ? 0 : (1 - smooth(0.0, 0.03, d)) * (0.6 + 0.4 * Math.sin(x * 61 + y * 47) * Math.sin(y * 29 - x * 13));
+          c.lerp(COLORS.foam, Math.max(0, Math.min(0.7, foam)));
           col.set([c.r, c.g, c.b], i * 3);
         }
         geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-      }
-      parts.push({ geo, mat: key, tag: o.name });
+        parts.push({ geo, mat: 'wt:water' });
+      } else if (k === 'boulder') {   // 水中の岩：細い棒のように水面から突き出ていたので、低くして水面のすぐ下に沈める（水を通して見える深さの目印）
+        geo.computeBoundingBox(); const y0 = geo.boundingBox.min.y;
+        for (let i = 0; i < p.count; i++) p.setY(i, y0 + (p.getY(i) - y0) * 0.38);
+        geo = lighten(geo, 0.6); frostColors(geo, -0.06);
+        parts.push({ geo, mat: 'wt:ledge' });
+      } else if (k === 'ledge') {     // 岸の岩：背を 6 割に、マスの外へ大きくはみ出さないよう内へ寄せる。上面に霜
+        geo.computeBoundingBox(); const bb = geo.boundingBox, cx = (bb.min.x + bb.max.x) / 2, cz = (bb.min.z + bb.max.z) / 2;
+        // 水の中に立つ小さな岩は、遠目に黒い棘に見えたので置かない（岸に沿った岩だけ残す＝「ここから先は水」の縁取り）
+        if (coast(cx, -cz, mask) > 0.03) return;
+        const sx = Math.max(0, bb.max.x - 0.52) - Math.max(0, -0.52 - bb.min.x), sz = Math.max(0, bb.max.z - 0.52) - Math.max(0, -0.52 - bb.min.z);
+        for (let i = 0; i < p.count; i++) { const y = p.getY(i); p.setXYZ(i, p.getX(i) - sx, y > 0 ? y * 0.62 : y, p.getZ(i) - sz); }
+        geo = lighten(geo, 0.7); frostColors(geo, 0.0);
+        parts.push({ geo, mat: 'wt:ledge' });
+      } else { geo.computeVertexNormals(); parts.push({ geo, mat: 'wt:film' }); }
     });
-    if (!parts.length) throw new Error('empty water tile ' + mask);
+    parts.push({ geo: bedGrid(mask), mat: 'wt:bed' });
+    // 長さ 0 の法線（間引きでつぶれた三角形）は上向きにする。シェーダーで正規化すると数でなくなり、後処理の光のにじみで画面全体が黒くなる
+    for (const pt of parts) {
+      const nm = pt.geo.attributes.normal; if (!nm) continue;
+      for (let i = 0; i < nm.count; i++) { const x = nm.getX(i), y = nm.getY(i), z = nm.getZ(i), l = Math.hypot(x, y, z); if (!(l > 1e-6)) nm.setXYZ(i, 0, 1, 0); else if (Math.abs(l - 1) > 1e-3) nm.setXYZ(i, x / l, y / l, z / l); }
+    }
+    // 数でない頂点（間引きの失敗など）が 1 つでもある部品は捨てる（後処理の光のにじみで画面全体が黒くなるのを防ぐ）
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const bad = Object.values(parts[i].geo.attributes).some((at) => { for (let k = 0; k < at.array.length; k++) if (!Number.isFinite(at.array[k])) return true; return false; });
+      if (bad) { stats.nanParts = (stats.nanParts || 0) + 1; console.warn('[B2] 水面タイルの部品に数でない頂点', mask, parts[i].mat); parts[i].geo.dispose(); parts.splice(i, 1); }
+    }
+    if (parts.length < 2) throw new Error('empty water tile ' + mask);
     // 同じ素材の部品をまとめる（Batcher の手間を減らす）
-    const by = new Map(); for (const p of parts) { if (!by.has(p.mat)) by.set(p.mat, []); by.get(p.mat).push(p.geo); }
+    const by = new Map(); for (const pt of parts) { if (!by.has(pt.mat)) by.set(pt.mat, []); by.get(pt.mat).push(pt.geo); }
     const merged = [];
     for (const [mat, geos] of by) {
-      const ok = geos.every((g) => !!g.attributes.color === !!geos[0].attributes.color);
-      if (geos.length === 1 || !ok) { for (const g of geos) merged.push({ geo: g, mat }); continue; }
       const idx = geos.map((g) => (g.index ? g.toNonIndexed() : g));
+      const names = Object.keys(idx[0].attributes), ok = idx.every((g) => Object.keys(g.attributes).length === names.length && names.every((nm) => g.attributes[nm] && g.attributes[nm].itemSize === idx[0].attributes[nm].itemSize));
+      if (idx.length === 1 || !ok) { for (const g of idx) merged.push({ geo: g, mat }); continue; }
       const m = mergeSimple(idx); geos.forEach((g) => g.dispose()); idx.forEach((g) => g !== m && g.dispose && g.dispose());
       merged.push({ geo: m, mat });
     }
-    let tris = 0; for (const p of merged) tris += (p.geo.index ? p.geo.index.count : p.geo.attributes.position.count) / 3;
+    let tris = 0; for (const pt of merged) tris += (pt.geo.index ? pt.geo.index.count : pt.geo.attributes.position.count) / 3;
     return { name: 'b2_water_tile_' + mask, parts: merged, tris };
   }
   function mergeSimple(geos) {
@@ -189,13 +279,16 @@ export function createB2WaterTiles(ctx) {
     }
     return out;
   }
-  function loadTiles() {
-    if (loadJob) return loadJob;
-    const loader = new GLTFLoader();
-    loadJob = Promise.all(Array.from({ length: 16 }, (_, m) => loader.loadAsync(`${TILE_DIR}water_tile_${String(m).padStart(2, '0')}.glb`).then((g) => prepTile(g, m))))
-      .then((list) => { tiles = list; return list; })
-      .catch((e) => { console.warn('[B2] 水面タイルを読めなかったため従来の水面で描きます', e); tiles = null; return null; });
-    return loadJob;
+  // 使うマスクの GLB だけを読む（1 度読んだら階層にいる間は使い回す）。1 枚でも読めなければ従来の水面で描く
+  const loader = new GLTFLoader();
+  function loadTiles(masks) {
+    const jobs = [];
+    for (const m of masks) {
+      if (tiles[m]) continue;
+      if (!loading.has(m)) loading.set(m, loader.loadAsync(`${TILE_DIR}water_tile_${String(m).padStart(2, '0')}.glb`).then((g) => { tiles[m] = prepTile(g, m); }));
+      jobs.push(loading.get(m));
+    }
+    return Promise.all(jobs).then(() => true).catch((e) => { console.warn('[B2] 水面タイルを読めなかったため従来の水面で描きます', e); for (const m of masks) if (!tiles[m]) loading.delete(m); return false; });
   }
 
   // 組み立ての始め：危険な水面のマスを決め、必要ならタイルを読む
@@ -219,9 +312,10 @@ export function createB2WaterTiles(ctx) {
       }
     }
     if (stats.mismatches) console.warn('[B2] 水面タイルの接合が食い違う', stats.mismatches);
-    if (hz.size) { await loadTiles(); mode = tiles ? 'tiles' : 'fallback'; } else mode = 'none';
+    if (hz.size) { const ok = await loadTiles(Object.keys(stats.masks).map(Number)); mode = ok ? 'tiles' : 'fallback'; } else mode = 'none';
+    stats.loaded = tiles.filter(Boolean).length;
     stats.mode = mode;
-    if (typeof window !== 'undefined') window.KotamaB2WaterTiles = { info };
+    if (typeof window !== 'undefined') window.KotamaB2WaterTiles = { info: statsInfo };
   }
   const isHazard = (tx, ty) => hz.has(`${tx},${ty}`);
   function maskAt(tx, ty) {
@@ -233,7 +327,7 @@ export function createB2WaterTiles(ctx) {
   // opts: { ch, wallCell, ceiling: bool, skipWall: (key) => bool }
   function addCell(B, tx, ty, opts) {
     const x = tx * CELL, z = ty * CELL, m = maskAt(tx, ty);
-    if (tiles) { B.add('water_tiles', tiles[m], M4(x, WATER_Y, z, 0, CELL), tx, ty); stats.tris += tiles[m].tris; }
+    if (mode === 'tiles' && tiles[m]) { B.add('water_tiles', tiles[m], M4(x, WATER_Y, z, 0, CELL), tx, ty); stats.tris += tiles[m].tris; }
     else {
       B.add('water_tiles', { name: 'wt_fallback', parts: [{ geo: proc.poolFull.parts[0].geo, mat: 'wt:fallback' }] }, M4(x, WATER_Y - 0.04, z), tx, ty);
       B.add('water_tiles', { name: 'wt_fallback_bed', parts: [{ geo: proc.bed.parts[0].geo, mat: 'wt:deepbed' }] }, M4(x, -0.62, z), tx, ty);
@@ -249,7 +343,7 @@ export function createB2WaterTiles(ctx) {
         B.add('walls', proc.continuousWall(ex, ez, ry, CELL), M4(ex, 0, ez, ry), tx, ty);
         // 水から立ち上がる岩（石筍）と、上の鍾乳石：壁ぎわに寄せる
         const along = [dy ? 1 : 0, dx ? 1 : 0];
-        if (hash(tx, ty, 880 + di) < 0.55) {
+        if (hash(tx, ty, 880 + di) < 0.32) {
           const t = (hash(tx, ty, 884 + di) - 0.5) * 3.0, inw = 0.3 + hash(tx, ty, 888 + di) * 0.25, h = 0.7 + hash(tx, ty, 892 + di) * 1.6;
           B.add('spires', proc.stalagmites[Math.floor(hash(tx, ty, 896 + di) * proc.stalagmites.length) % proc.stalagmites.length], M4(ex + along[0] * t - dx * inw, -0.45, ez + along[1] * t - dy * inw, hash(tx, ty, 900 + di) * 6.28, [h * 0.85, h, h * 0.85]), tx, ty);
         }
@@ -264,22 +358,29 @@ export function createB2WaterTiles(ctx) {
       B.add('water_tiles', bankStrip(ex, ez, d, opts.ch(nx, ny) === '*'), M4(0, 0, 0), tx, ty);
     }
   }
-  // 境界線に沿った帯（世界座標で作る）。床の側は床の高さ、水の側はタイルの岸の高さへつなぐ。浅瀬の側は浅瀬の底まで下げる
+  // 境界線に沿った帯（世界座標で作る）。床の側は床の高さ、水の側はタイルの岸の高さへつなぐ。浅瀬の側は浅瀬の底まで下げる。
+  // 床の側の縁に、少し盛り上がった霜の縁取り（白い青の帯）を付け、「ここから先は入れない水」を見た目で示す
+  const BANK = { wet: new THREE.Color(0x3f7fa6), frost: new THREE.Color(0xd9f3ff), floor: new THREE.Color(0x9cc6dc) };
   function bankStrip(ex, ez, d, shallow) {
-    const [dx, dy] = DIR_VEC[d], ax = dy ? 1 : 0, az = dx ? 1 : 0, SEG = 14, ROWS = 4;
-    const g = new THREE.PlaneGeometry(1, 1, SEG, ROWS), p = g.attributes.position;
+    const [dx, dy] = DIR_VEC[d], ax = dy ? 1 : 0, az = dx ? 1 : 0, SEG = 18, ROWS = 6;
+    const g = new THREE.PlaneGeometry(1, 1, SEG, ROWS), p = g.attributes.position, col = new Float32Array(p.count * 3), c = new THREE.Color();
     for (let i = 0; i < p.count; i++) {
       const u = p.getX(i) + 0.5, v = p.getY(i) + 0.5;                 // u：境界に沿う、v：0＝水の側 → 1＝床の側
-      const s = (u - 0.5) * (CELL + 0.04), off = -0.55 + v * 1.0;   // 境界から水側 0.55m 〜 床側 0.45m
+      const s = (u - 0.5) * (CELL + 0.04), off = -0.6 + v * 1.0;    // 境界から水側 0.6m 〜 床側 0.4m
       const wx = ex + ax * s + dx * off, wz = ez + az * s + dy * off;
-      const floorY = shallow ? -0.33 : groundY(wx, wz) + 0.015, waterSide = WATER_Y + 0.07;
-      const bump = 0.035 * Math.sin(wx * 3.1 + wz * 2.3) + 0.02 * Math.sin(wx * 7.7 - wz * 5.9);
-      const y = waterSide + (floorY - waterSide) * smooth(0, 1, v) + bump * Math.sin(v * Math.PI);
+      const floorY = shallow ? -0.33 : groundY(wx, wz) + 0.015, waterSide = WATER_Y + 0.02;
+      const wob = 0.04 * Math.sin(wx * 2.3 + wz * 1.7) + 0.025 * Math.sin(wx * 5.9 - wz * 4.3);   // 縁取りの線を直線にしない
+      const lipC = 0.62 + wob, lip = shallow ? 0 : Math.exp(-Math.pow((v - lipC) / 0.09, 2));
+      const bump = 0.03 * Math.sin(wx * 3.1 + wz * 2.3) + 0.02 * Math.sin(wx * 7.7 - wz * 5.9);
+      const y = waterSide + (floorY - waterSide) * smooth(0.1, 0.62 + wob, v) + bump * Math.sin(v * Math.PI) + lip * 0.045;
       p.setXYZ(i, wx, y, wz);
+      c.copy(BANK.wet).lerp(BANK.floor, smooth(0.55, 1, v)).lerp(BANK.frost, lip * 0.85);
+      col.set([c.r, c.g, c.b], i * 3);
     }
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     g.computeVertexNormals();
     if (g.attributes.normal.getY(0) < 0) { g.index.array.reverse(); g.computeVertexNormals(); }
-    return { name: 'wt_bank', transient: true, parts: [{ geo: g, mat: 'Wet slate stone' }] };
+    return { name: 'wt_bank', transient: true, parts: [{ geo: g, mat: shallow ? 'Wet slate stone' : 'wt:bank' }] };
   }
   // 床の高さ（field-3d-b2-water.js の groundY と同じ式）
   function groundY(wx, wz) { return 0.03 + 0.09 * Math.sin(wx * 0.47) * Math.cos(wz * 0.39) + 0.04 * Math.sin(wx * 1.14 + wz * 0.58) + 0.02 * Math.cos(wx * 2.37 - wz * 1.81); }
@@ -293,9 +394,9 @@ export function createB2WaterTiles(ctx) {
   function dispose() {
     for (const o of owned) o.dispose && o.dispose();
     owned.length = 0;
-    if (tiles) for (const tl of tiles) for (const p of tl.parts) p.geo.dispose();
-    tiles = null; loadJob = null;
+    for (const tl of tiles) if (tl) for (const p of tl.parts) p.geo.dispose();
+    tiles = new Array(16).fill(null); loading.clear();
   }
-  function info() { return { ...stats, hazard: [...B2V4W_ROLES.hazard], hazardChars: [...B2V4W_ROLES.hazardChars] }; }
-  return { begin, isHazard, maskAt, addCell, tick, dispose, info };
+  function statsInfo() { return { ...stats, hazard: [...B2V4W_ROLES.hazard], hazardChars: [...B2V4W_ROLES.hazardChars] }; }
+  return { begin, isHazard, maskAt, addCell, tick, dispose, info: statsInfo };
 }
