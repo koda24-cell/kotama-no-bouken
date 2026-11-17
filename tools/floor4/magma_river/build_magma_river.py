@@ -157,12 +157,34 @@ for i in range(35):
 for i in range(14):
  side=-1 if i%2 else 1
  z=-3.25+R.random()*6.7
- x=side*(3.95+R.uniform(-.25,.3))
+ x=side*(3.38+R.uniform(-.18,.28))
  h=R.uniform(.65,1.30)
  rock('CAVERN_ROCK_FACE',(x,h*.38,z),(.48,h,.56),ash,seed=i+90,subdiv=3)
 for i in range(8):
  x=-3.0+i*.84
  rock('REAR_JAGGED_OVERHANG',(x,2.45+R.random()*.25,-3.75),(.48,.43,.53),basalt,seed=i+120,subdiv=3)
+# Continuous rear basalt cliff: the lavafall emerges from a real cliff,
+# rather than a floating row of boulders. The top edge is eroded.
+verts=[];uv=[];faces=[];nx=74;ny=50
+for j in range(ny+1):
+ t=j/ny
+ for i in range(nx+1):
+  u=i/nx;x=-2.25+4.5*u
+  top=2.7+.16*sin(x*3.1)+.08*sin(x*8.3)
+  y=.13+t*(top-.13)
+  z=-3.83+.13*sin(x*2.7+y*1.8)+.065*sin(x*9.1-y*6.2)
+  verts.append((x,y,z));uv.append((u*1.7,t*1.3))
+for j in range(ny):
+ for i in range(nx):
+  a=j*(nx+1)+i;b=a+nx+1
+  faces.append((a,a+1,b+1,b))
+objmesh('CONTINUOUS_FRACTURED_BASALT_CLIFF',verts,faces,basalt,uv)
+# Large embedded basalt shoulders framing the source of the fall.
+for i in range(14):
+ side=-1 if i%2 else 1
+ x=side*(.74+R.uniform(0,1.32))
+ y=R.uniform(1.0,2.55)
+ rock('FALL_SOURCE_EMBEDDED_BASALT',(x,y,-3.58+R.uniform(-.15,.12)),(.34,.30,.35),basalt,seed=i+301,subdiv=3)
 # Cascading flow from a fractured wall: bending ribbon with variable width.
 verts=[];uv=[];faces=[];N=26;M=100
 for j in range(M+1):
@@ -198,6 +220,10 @@ bpy.context.view_layer.update()
 for o in bpy.data.objects:
  if o.type=='MESH':o.matrix_world=Y_UP_TO_Z_UP @ o.matrix_world
 def to_blender(v):return Y_UP_TO_Z_UP @ Vector(v)
+# Add a non-exported ground catch-plane for grounded Blender review shots.
+bpy.ops.mesh.primitive_plane_add(size=2,location=(0,0,-.10))
+review_ground=bpy.context.object;review_ground.name='REVIEW_GROUND_ONLY'
+review_ground.scale=(6.0,6.5,1);review_ground.data.materials.append(coal)
 # Stage lighting: molten orange motivates the scene, blue-black ambient fill.
 world=bpy.context.scene.world or bpy.data.worlds.new('B4_Cavern_World');bpy.context.scene.world=world;world.use_nodes=True
 world.node_tree.nodes.get('Background').inputs['Color'].default_value=(.045,.054,.071,1)
@@ -227,8 +253,8 @@ for label,loc,target,focal in cams:
 # Only geometry, not cameras/lights, in game GLB.
 bpy.ops.object.select_all(action='DESELECT')
 for o in bpy.data.objects:
- if o.type=='MESH':o.select_set(True)
-bpy.context.view_layer.objects.active=next(o for o in bpy.data.objects if o.type=='MESH')
+ if o.type=='MESH' and not o.name.startswith('REVIEW_'):o.select_set(True)
+bpy.context.view_layer.objects.active=next(o for o in bpy.data.objects if o.type=='MESH' and not o.name.startswith('REVIEW_'))
 bpy.ops.export_scene.gltf(filepath=os.path.join(out,'b4-magma-river-'+variant+'.glb'),export_format='GLB',use_selection=True,export_apply=True)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'b4-magma-river-'+variant+'.blend'))
 files=[]
