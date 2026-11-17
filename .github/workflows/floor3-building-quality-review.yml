@@ -51,7 +51,7 @@ jobs:
               if name.endswith('.glb'):
                   assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data),name
               if name.endswith('.blend'):
-                  assert data.startswith(b'BLENDER'),name
+                  assert data.startswith(b'BLENDER') or data.startswith(bytes.fromhex('28b52ffd')),name # Blender 5.x may zstd-compress .blend
               records[name]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
           manifest={'stage':'floor3','version':'v3-brighter-review','approval':'NOT_APPROVED',
               'source_commit':os.getenv('GITHUB_SHA'),'workflow_run_id':os.getenv('GITHUB_RUN_ID'),
