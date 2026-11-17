@@ -63,13 +63,20 @@ jobs:
             -w /workspace \
             lscr.io/linuxserver/blender:latest \
             /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v04.py -- render-output/b2-waterwheel-paddle
+      - name: V5 native Blender natural wood grain and four QA views
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            lscr.io/linuxserver/blender:latest \
+            /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v05.py -- render-output/b2-waterwheel-paddle
       - name: Check real Blender output, GLB, PNG and manifest
         run: |
           python3 - <<'PY'
           import json,hashlib
           from pathlib import Path
           root=Path('render-output/b2-waterwheel-paddle')
-          for variant in (1,2,3,4):
+          for variant in (1,2,3,4,5):
               prefix=f'b2_bucket_paddle_blender_v{variant:02d}'
               manifest=json.loads((root/(prefix+'_manifest.json')).read_text())
               assert manifest['status']=='NOT_APPROVED'
@@ -99,8 +106,8 @@ jobs:
             'url':os.environ['CURRENT_RUN_URL'],
             'source_sha':os.environ['SOURCE_SHA'],
             'status':'BLENDER_OUTPUT_VERIFIED_NOT_APPROVED',
-            'artifacts':'b2-waterwheel-paddle-blender-v01-v02-v03-v04',
-            'variants':['v01','v02','v03','v04'],
+            'artifacts':'b2-waterwheel-paddle-blender-v01-v02-v03-v04-v05',
+            'variants':['v01','v02','v03','v04','v05'],
             'png_views':['front','side','angle','back'],
             'note':'This status only means files were generated and hashes verified; artistic approval pending'
           }
@@ -115,7 +122,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: b2-waterwheel-paddle-blender-v01-v02-v03-v04
+          name: b2-waterwheel-paddle-blender-v01-v02-v03-v04-v05
           path: render-output/b2-waterwheel-paddle/
           if-no-files-found: warn
           retention-days: 14
