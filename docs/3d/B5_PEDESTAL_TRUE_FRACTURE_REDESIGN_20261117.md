@@ -56,3 +56,11 @@
 - **V14** https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44039845293 : 亀裂の始点をより上縁へ変更、過剰に並行する明るい線を撤去。Artifacts ID `14308583765`、GLB/Blend、front/side/angle/side_detail PNG、manifest SHA-256の全件照合完了。写真系PBRは以前と同様にambientCG Rock063のAlbedo/Roughness。技術QA成功、**芸術品質は未承認**。
 - **V14視覚評価**: 長い横方向に下る亀裂と途中から下がる一本の枝は確認できる。ただし、ユーザーの青い線より亀裂が**笠石下縁へ寄りすぎ、溝が均一で、部分的に黒い塗り線の印象**が残る。元画像とV14の接写画像を実際に並べて比較済み。亀裂だけでなく石の端面を破断させる造形へ段階的に進むべき。
 - 試作V7〜V14はすべて独立ファイルとして保存。バージョンに`NOT_APPROVED`を維持し、正式素材・development・ゲームへ昇格しない。
+
+## V15 follow-up — actual 4-view Blender and user-uploaded image comparison
+- V15 source `tools/b5-knights/build_pedestal_true_fracture_v15.py`, workflow `.github/workflows/b5-knight-pedestal-true-fracture-v15.yml`.
+- Why: Compare user's 2048×576 image (SIDE blue annotation, main crack slopes left to right and branch descends) with V14. Old cap is too thin, so V14 main fissure sits too close to lower cornice.
+- Shape change: upper cap 07/08 real mesh blocks elongated upward by factor 2 about cap base Z=.483; top bedding blocks 09/10 shifted upward 0.078m. Main upper side fissure and cap segment of fork transformed through same Z mapping, leaving lower branch on shaft intact. V14 source and models preserved.
+- **Real Blender success** https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44040772172 . Artifact ID `14308893829`, 4 PNG (front, side, angle, side_detail) + GLB + Blend, SHA256 all 6 match manifest. `photo_status=CC0_AMBIENTCG_ROCK063_COLOR_ROUGHNESS`; old geometry-integrity QA of both shaft meshes passes.
+- Visual review with user's source image: V15 is closer in broad silhouette; long left-to-right downward groove and the downward fork are readily visible in true horizontal side view. But compared to blue stroke, the opening still looks too smooth and uniformly dark, and the spur near the fork appears like a triangular chip rather than naturally branching stone layers. **No artistic approval**.
+- **Status**: V10–V15 independent files in Draft PR #424. User's original uploaded photo is not copied into game assets; compare is generated only for review. No formal promotion or merging.
