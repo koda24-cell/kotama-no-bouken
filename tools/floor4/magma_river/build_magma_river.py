@@ -229,17 +229,17 @@ for i in range(35):
   for k in range(1,len(vs)):fs.append((0,1 if k==len(vs)-1 else k+1,k))
   objmesh('COOLED_LAVA_CRUST_RAFT',vs,fs,crust,[(x*.18,z*.18) for x,y,z in vs])
 # Side cave rock cliffs and rear basalt overhang.
-for i in range(14):
+for i in range(10):
  side=-1 if i%2 else 1
  z=-3.25+R.random()*6.7
  x=side*(3.38+R.uniform(-.18,.28))
- h=R.uniform(.65,1.30)
- rock('CAVERN_ROCK_FACE',(x,h*.38,z),(.48,h,.56),ash,seed=i+90,subdiv=3)
-for i in range(7):
- x=-2.65+i*.87+R.uniform(-.22,.22)
- y=2.42+R.uniform(-.18,.38)
+ h=R.uniform(.38,.86)
+ rock('CAVERN_ROCK_FACE',(x,h*.34,z),(.59,h*.68,.72),ash,seed=i+90,subdiv=3)
+for i in range(5):
+ x=-2.4+i*1.15+R.uniform(-.35,.35)
+ y=2.20+R.uniform(-.22,.16)
  z=-3.77+R.uniform(-.22,.12)
- rock('REAR_IRREGULAR_BASALT_OVERHANG',(x,y,z),(R.uniform(.39,.72),R.uniform(.30,.56),R.uniform(.38,.68)),basalt,seed=i+120,subdiv=3)
+ rock('REAR_IRREGULAR_BASALT_OVERHANG',(x,y,z),(R.uniform(.48,.77),R.uniform(.23,.42),R.uniform(.34,.61)),basalt,seed=i+120,subdiv=3)
 # Continuous rear basalt cliff: the lavafall emerges from a real cliff,
 # rather than a floating row of boulders. The top edge is eroded.
 verts=[];uv=[];faces=[];nx=74;ny=50
@@ -268,14 +268,38 @@ for j in range(M+1):
  t=j/M;y=2.42-t*2.2
  z=-3.18+.28*sin(t*2.8)+.38*t*t
  cx=-.42+.13*sin(t*5.3)+.08*sin(t*13.1)
- w=.28+.13*sin(t*pi)+.08*t
+ w=.22+.11*sin(t*pi)+.20*t*t+.028*sin(t*18)
  for i in range(N+1):
   u=i/N;x=cx+(u-.5)*2*w*(1+.06*sin(t*19+u*11))
-  verts.append((x,y,z+.09*sin(u*pi*2+t*12)));uv.append((u,t*1.8))
+  verts.append((x,y,z+.055*sin(u*pi*2+t*12)+.032*sin(u*21+t*37)*(1-t)));uv.append((u,t*1.8))
 for j in range(M):
  for i in range(N):
   a=j*(N+1)+i;b=a+N+1;faces.append((a,a+1,b+1,b))
 objmesh('FALLING_MAGMA_CASCADE',verts,faces,lava,uv)
+# V9: natural dark crust adhering to the margins of the descending molten stream.
+# Narrow interrupted patches preserve the visible molten core instead of covering it.
+for side in (-1,1):
+ for k in range(13):
+  t=(k+.45)/14
+  cy=2.42-t*2.2
+  cz=-3.18+.28*sin(t*2.8)+.38*t*t
+  cx=-.42+.13*sin(t*5.3)+.08*sin(t*13.1)
+  w=.22+.11*sin(t*pi)+.20*t*t+.028*sin(t*18)
+  span=.065+.028*sin(k*2.7+side)
+  vs=[]
+  for q in range(9):
+   u=q/8
+   yy=cy+(u-.5)*span
+   tt=(2.42-yy)/2.2
+   ww=.22+.11*sin(tt*pi)+.20*tt*tt+.028*sin(tt*18)
+   xx=cx+side*ww*(.82+.12*sin(u*5+k))
+   zz=cz+.045*sin(u*7+k)+.012
+   vs.append((xx,yy,zz))
+   vs.append((xx-side*(.04+.025*sin(k*1.9)),yy,zz+.012))
+  fs=[]
+  for q in range(8):
+   a=2*q;fs.append((a,a+1,a+3,a+2))
+  objmesh('FALL_COOLING_CRUST_EDGE',vs,fs,crust,[(q*.12,k*.08) for q in range(len(vs))])
 # Bright thin rivulets in fissures of the upper wall and near the riverbank.
 for i in range(16):
  z=R.uniform(-2.9,2.8);side=R.choice([-1,1])
