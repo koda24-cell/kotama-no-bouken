@@ -74,3 +74,7 @@ BotWの正確な葉のポリゴン数、シェーダ、距離閾値、LODフェ�
 | 2Dグリッド先読みとLODヒステリシス判定 | Nodeテスト [run 44063296917](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44063296917) 成功 | 独立した純粋関数のみ。ゲームの衝突/セーブ/視界を変更していない |
 
 対応ロードマップ: アセット別ゲーム視点テスト（前後/角度/近景）、端末別WebGLの `renderer.info` とFPS計測、透過MASK/A2Cと色/影の実比較、段階適用・ユーザー承認。まだ全階層自動LODを実装済みとは主張しない。
+
+
+## 標準適用範囲を全階層へ拡張（2026-11-17）
+新規・変更GLBのPR／development更新に合わせて全階層のGLBを自動監査。静的・不透明なモデルだけ比較用LOD候補生成を行う。樹木・草・透過・VFX・キャラは専用方式を使う。GitHubへの保存前の未承認Artifactsは自動検知できないため、制作側が生成ワークフロー内で監査する。ゲーム内LOD自動表示の導入とは別作業で、画質検証と正式承認を要する。詳細は [ALL_FLOOR_AUTO_OPTIMIZATION_HANDOFF.md](ALL_FLOOR_AUTO_OPTIMIZATION_HANDOFF.md)。
