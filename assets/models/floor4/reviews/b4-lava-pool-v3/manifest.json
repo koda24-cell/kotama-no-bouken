@@ -1,0 +1,41 @@
+{
+  "asset": "b4-lava-pool-v3",
+  "source": "b4-lava-c_pool-v3",
+  "source_run_id": 43998531627,
+  "source_artifact_id": 14290673461,
+  "user_selection": "C only; A,B,D,E excluded",
+  "approval": "USER_APPROVED_2026-11-17",
+  "game_integration": "NOT_DONE",
+  "files": [
+    {
+      "path": "assets/models/floor4/b4-lava-pool-v3.glb",
+      "size": 8217548,
+      "sha256": "948348a8fc2b79bad28302a775814c93850b4d2b8cf7a566b2d13bb0d7e9ce6a"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-lava-pool-v3/angle.png",
+      "size": 901545,
+      "sha256": "db1dcaea107c389c3cccca0820401c94eccc7d61b4edb878840ec768c496d391"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-lava-pool-v3/front.png",
+      "size": 889013,
+      "sha256": "f196ff95ff734826c0e81a0f3e90b1af69e6a3cc3d56cea6d1e6915cd247bab1"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-lava-pool-v3/side.png",
+      "size": 890674,
+      "sha256": "2a4f0d18d2f22f4026c7c4ad376d3f5d9790fb6815c377d223c596576c567be7"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-lava-pool-v3/top.png",
+      "size": 1001984,
+      "sha256": "2608e31e78a59bd33930cd74bea98e797ea7655d9d371b0bb577bd547bd8fe34"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-lava-pool-v3/source.blend",
+      "size": 452788,
+      "sha256": "c10655a648069d4e53eb06653a686f6e16ddc1a6b5dc50b5802b63a29c752a8a"
+    }
+  ]
+}
