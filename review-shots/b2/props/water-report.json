@@ -1,0 +1,644 @@
+{
+  "water": [
+    {
+      "floor": 2,
+      "counts": {
+        "hazard": 25,
+        "puddles": 3,
+        "side": 4,
+        "vistas": 1,
+        "bridges": 1
+      },
+      "plan": {
+        "side": [
+          {
+            "along": [
+              25,
+              2,
+              "down"
+            ],
+            "across": [
+              25,
+              5,
+              "left"
+            ],
+            "fwd": [
+              25,
+              6,
+              "up"
+            ]
+          },
+          {
+            "along": [
+              18,
+              11,
+              "right"
+            ],
+            "across": [
+              21,
+              11,
+              "down"
+            ],
+            "fwd": [
+              22,
+              11,
+              "left"
+            ]
+          }
+        ],
+        "vista": [
+          {
+            "front": [
+              11,
+              13,
+              "up"
+            ],
+            "near": [
+              11,
+              12,
+              "up"
+            ],
+            "corner": [
+              9,
+              13,
+              "up"
+            ],
+            "side": "up"
+          }
+        ],
+        "bridge": [
+          {
+            "deck": [
+              17,
+              5,
+              "up"
+            ],
+            "end": [
+              15,
+              5,
+              "right"
+            ],
+            "ch": {
+              "x0": 16,
+              "y0": 2,
+              "x1": 18,
+              "y1": 8
+            }
+          }
+        ],
+        "puddle": [
+          [
+            1,
+            1,
+            "right"
+          ],
+          [
+            3,
+            3,
+            "up"
+          ]
+        ],
+        "floor": [
+          [
+            6,
+            1,
+            "right"
+          ],
+          [
+            22,
+            1,
+            "right"
+          ]
+        ],
+        "gate": []
+      },
+      "tiles": {
+        "cells": 25,
+        "masks": {
+          "1": 1,
+          "2": 2,
+          "3": 2,
+          "4": 2,
+          "5": 2,
+          "6": 1,
+          "7": 2,
+          "8": 1,
+          "10": 2,
+          "11": 2,
+          "12": 2,
+          "13": 2,
+          "14": 2,
+          "15": 2
+        },
+        "mismatches": 0,
+        "borderSkipped": 0,
+        "tris": 114420,
+        "mode": "tiles",
+        "edgesChecked": 50,
+        "loaded": 14,
+        "hazard": [
+          "water-hazard"
+        ],
+        "hazardChars": [
+          "~"
+        ]
+      }
+    },
+    {
+      "floor": 3,
+      "counts": {
+        "hazard": 25,
+        "puddles": 6,
+        "side": 4,
+        "vistas": 2,
+        "bridges": 1
+      },
+      "plan": {
+        "side": [
+          {
+            "along": [
+              7,
+              2,
+              "down"
+            ],
+            "across": [
+              7,
+              5,
+              "right"
+            ],
+            "fwd": null
+          },
+          {
+            "along": [
+              19,
+              11,
+              "right"
+            ],
+            "across": [
+              21,
+              11,
+              "down"
+            ],
+            "fwd": [
+              22,
+              11,
+              "left"
+            ]
+          }
+        ],
+        "vista": [
+          {
+            "front": [
+              6,
+              15,
+              "up"
+            ],
+            "near": [
+              6,
+              14,
+              "up"
+            ],
+            "corner": [
+              3,
+              15,
+              "up"
+            ],
+            "side": "up"
+          }
+        ],
+        "bridge": [
+          {
+            "deck": [
+              13,
+              3,
+              "up"
+            ],
+            "end": [
+              11,
+              3,
+              "right"
+            ],
+            "ch": {
+              "x0": 12,
+              "y0": 2,
+              "x1": 14,
+              "y1": 6
+            }
+          }
+        ],
+        "puddle": [
+          [
+            19,
+            1,
+            "left"
+          ],
+          [
+            17,
+            6,
+            "down"
+          ],
+          [
+            19,
+            7,
+            "left"
+          ]
+        ],
+        "floor": [
+          [
+            19,
+            1,
+            "right"
+          ],
+          [
+            10,
+            3,
+            "right"
+          ]
+        ],
+        "gate": [
+          [
+            15,
+            9,
+            "down"
+          ]
+        ]
+      },
+      "tiles": {
+        "cells": 25,
+        "masks": {
+          "1": 1,
+          "2": 3,
+          "3": 2,
+          "4": 3,
+          "5": 2,
+          "6": 2,
+          "7": 2,
+          "8": 1,
+          "10": 2,
+          "11": 1,
+          "12": 2,
+          "13": 1,
+          "14": 2,
+          "15": 1
+        },
+        "mismatches": 0,
+        "borderSkipped": 0,
+        "tris": 126605,
+        "mode": "tiles",
+        "edgesChecked": 50,
+        "loaded": 14,
+        "hazard": [
+          "water-hazard"
+        ],
+        "hazardChars": [
+          "~"
+        ]
+      }
+    }
+  ],
+  "waterStats": {
+    "shots": {
+      "b2f2_W_side_along_1": {
+        "at": [
+          25,
+          2,
+          "down"
+        ],
+        "calls": 192,
+        "triangles": 749461,
+        "geometries": 300,
+        "textures": 76,
+        "lights": 58
+      },
+      "b2f2_W_side_across_1": {
+        "at": [
+          25,
+          5,
+          "left"
+        ],
+        "calls": 230,
+        "triangles": 731171,
+        "geometries": 363,
+        "textures": 96,
+        "lights": 58
+      },
+      "b2f2_W_side_back_1": {
+        "at": [
+          25,
+          6,
+          "up"
+        ],
+        "calls": 104,
+        "triangles": 284068,
+        "geometries": 367,
+        "textures": 96,
+        "lights": 58
+      },
+      "b2f2_W_side_along_2": {
+        "at": [
+          18,
+          11,
+          "right"
+        ],
+        "calls": 188,
+        "triangles": 498922,
+        "geometries": 402,
+        "textures": 96,
+        "lights": 58
+      },
+      "b2f2_W_side_across_2": {
+        "at": [
+          21,
+          11,
+          "down"
+        ],
+        "calls": 169,
+        "triangles": 551221,
+        "geometries": 409,
+        "textures": 96,
+        "lights": 58
+      },
+      "b2f2_W_vista_pool_1": {
+        "at": [
+          11,
+          13,
+          "up"
+        ],
+        "calls": 493,
+        "triangles": 2170791,
+        "geometries": 445,
+        "textures": 97,
+        "lights": 58
+      },
+      "b2f2_W_vista_pool_edge_1": {
+        "at": [
+          11,
+          12,
+          "up"
+        ],
+        "calls": 488,
+        "triangles": 2084173,
+        "geometries": 458,
+        "textures": 97,
+        "lights": 58
+      },
+      "b2f2_W_vista_pool_corner_1": {
+        "at": [
+          9,
+          13,
+          "up"
+        ],
+        "calls": 470,
+        "triangles": 2218693,
+        "geometries": 458,
+        "textures": 97,
+        "lights": 58
+      },
+      "b2f2_W_bridge_channel_1": {
+        "at": [
+          17,
+          5,
+          "up"
+        ],
+        "calls": 110,
+        "triangles": 606423,
+        "geometries": 458,
+        "textures": 97,
+        "lights": 58
+      },
+      "b2f2_W_bridge_channel_end_1": {
+        "at": [
+          15,
+          5,
+          "right"
+        ],
+        "calls": 219,
+        "triangles": 837611,
+        "geometries": 458,
+        "textures": 97,
+        "lights": 58
+      },
+      "b2f2_W_puddle_1": {
+        "at": [
+          1,
+          1,
+          "right"
+        ],
+        "calls": 174,
+        "triangles": 560309,
+        "geometries": 462,
+        "textures": 103,
+        "lights": 58
+      },
+      "b2f2_W_puddle_2": {
+        "at": [
+          3,
+          3,
+          "up"
+        ],
+        "calls": 139,
+        "triangles": 420926,
+        "geometries": 462,
+        "textures": 103,
+        "lights": 58
+      },
+      "b2f2_W_floor_corridor_1": {
+        "at": [
+          6,
+          1,
+          "right"
+        ],
+        "calls": 186,
+        "triangles": 678434,
+        "geometries": 462,
+        "textures": 103,
+        "lights": 58
+      },
+      "b2f2_W_floor_corridor_2": {
+        "at": [
+          22,
+          1,
+          "right"
+        ],
+        "calls": 86,
+        "triangles": 246552,
+        "geometries": 462,
+        "textures": 103,
+        "lights": 58
+      },
+      "b2f3_W_side_along_1": {
+        "at": [
+          7,
+          2,
+          "down"
+        ],
+        "calls": 492,
+        "triangles": 2332614,
+        "geometries": 303,
+        "textures": 112,
+        "lights": 59
+      },
+      "b2f3_W_side_across_1": {
+        "at": [
+          7,
+          5,
+          "right"
+        ],
+        "calls": 443,
+        "triangles": 1809180,
+        "geometries": 378,
+        "textures": 112,
+        "lights": 59
+      },
+      "b2f3_W_side_along_2": {
+        "at": [
+          19,
+          11,
+          "right"
+        ],
+        "calls": 131,
+        "triangles": 263660,
+        "geometries": 433,
+        "textures": 112,
+        "lights": 59
+      },
+      "b2f3_W_side_across_2": {
+        "at": [
+          21,
+          11,
+          "down"
+        ],
+        "calls": 96,
+        "triangles": 198316,
+        "geometries": 433,
+        "textures": 112,
+        "lights": 59
+      },
+      "b2f3_W_vista_pool_1": {
+        "at": [
+          6,
+          15,
+          "up"
+        ],
+        "calls": 454,
+        "triangles": 1834514,
+        "geometries": 451,
+        "textures": 118,
+        "lights": 59
+      },
+      "b2f3_W_vista_pool_edge_1": {
+        "at": [
+          6,
+          14,
+          "up"
+        ],
+        "calls": 461,
+        "triangles": 2187182,
+        "geometries": 455,
+        "textures": 118,
+        "lights": 59
+      },
+      "b2f3_W_vista_pool_corner_1": {
+        "at": [
+          3,
+          15,
+          "up"
+        ],
+        "calls": 415,
+        "triangles": 1981286,
+        "geometries": 465,
+        "textures": 118,
+        "lights": 59
+      },
+      "b2f3_W_bridge_channel_1": {
+        "at": [
+          13,
+          3,
+          "up"
+        ],
+        "calls": 116,
+        "triangles": 324704,
+        "geometries": 465,
+        "textures": 118,
+        "lights": 59
+      },
+      "b2f3_W_bridge_channel_end_1": {
+        "at": [
+          11,
+          3,
+          "right"
+        ],
+        "calls": 388,
+        "triangles": 1396127,
+        "geometries": 467,
+        "textures": 118,
+        "lights": 59
+      },
+      "b2f3_W_puddle_1": {
+        "at": [
+          19,
+          1,
+          "left"
+        ],
+        "calls": 236,
+        "triangles": 830478,
+        "geometries": 481,
+        "textures": 118,
+        "lights": 59
+      },
+      "b2f3_W_puddle_2": {
+        "at": [
+          17,
+          6,
+          "down"
+        ],
+        "calls": 486,
+        "triangles": 1409758,
+        "geometries": 481,
+        "textures": 118,
+        "lights": 59
+      },
+      "b2f3_W_floor_corridor_1": {
+        "at": [
+          19,
+          1,
+          "right"
+        ],
+        "calls": 94,
+        "triangles": 540139,
+        "geometries": 481,
+        "textures": 118,
+        "lights": 59
+      },
+      "b2f3_W_floor_corridor_2": {
+        "at": [
+          10,
+          3,
+          "right"
+        ],
+        "calls": 383,
+        "triangles": 1156832,
+        "geometries": 481,
+        "textures": 118,
+        "lights": 59
+      },
+      "b2f3_W_watergate_basin_1": {
+        "at": [
+          15,
+          9,
+          "down"
+        ],
+        "calls": 159,
+        "triangles": 368590,
+        "geometries": 481,
+        "textures": 118,
+        "lights": 59
+      }
+    },
+    "maxTriangles": 2332614,
+    "avgTriangles": 1045433,
+    "maxCalls": 493
+  },
+  "errors": [],
+  "missing": []
+}
