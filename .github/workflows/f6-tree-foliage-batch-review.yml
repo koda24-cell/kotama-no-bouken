@@ -3,7 +3,9 @@ on:
   push:
     branches: [feature/gpt-shared-3d-optimization-actions-20261117]
     paths:
-      - tools/3d-performance/**
+      - tools/3d-performance/batch_blend_foliage.py
+      - tools/3d-performance/compare_renders.py
+      - tools/3d-performance/audit_glb.py
       - .github/workflows/f6-tree-foliage-batch-review.yml
   workflow_dispatch:
     inputs:
