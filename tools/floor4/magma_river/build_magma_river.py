@@ -401,6 +401,43 @@ for o in bpy.data.objects:
   if len(o.data.materials):o.data.materials[0]=dark_basalt
   else:o.data.materials.append(dark_basalt)
 
+
+# V12: integrate fractured caps with the retained original large boulders.
+# Earlier strata lay on the ground; these caps break the smooth boulder silhouettes.
+for o in list(bpy.data.objects):
+ if o.type!='MESH':continue
+ if o.name.split('.')[0]=='BANK_LARGE_WEATHERED_ROCK':
+  x,y,z=o.location;sx,sy,sz=o.scale
+  # Two asymmetrical fractured faces, both embedded into the source boulder.
+  capseed=sum(ord(c) for c in o.name)+int(z*113)
+  slab('V12_EMBEDDED_BASALT_CLEAVAGE',x+sx*.18,y+sy*.68,z+sz*.12,
+       sx*.85,sz*.91,sy*1.04,capseed,dark_basalt)
+# Broken rear-cliff faces: vertical, stepped and oblique, not horizontal shelves.
+def wall_shear(name,x,y,z,w,h,thick,seed):
+ rng=random.Random(seed)
+ n=12;vs=[];uv=[];fs=[]
+ # Front and rear contours with irregular angular facets.
+ for layer in range(2):
+  for i in range(n):
+   a=2*pi*i/n
+   rad=1+.11*sin(a*4+seed*.3)+rng.uniform(-.08,.08)
+   xx=x+w*.5*cos(a)*rad
+   yy=y+h*.5*sin(a)*rad
+   zz=z+(thick*.5 if layer==0 else -thick*.5)+.045*sin(a*5+seed)
+   vs.append((xx,yy,zz));uv.append((xx*.29,yy*.29))
+ for i in range(1,n-1):fs.append((0,i,i+1))
+ for i in range(n):
+  a=i;b=(i+1)%n
+  fs.append((a,b,b+n,a+n))
+ return objmesh(name,vs,fs,dark_basalt,uv,smooth=False)
+for k in range(15):
+ x=-2.0+(k%5)*.96+R.uniform(-.13,.13)
+ y=.48+(k//5)*.83+R.uniform(-.13,.13)
+ z=-3.60+R.uniform(-.13,.15)
+ wall_shear('V12_CLIFF_SHEAR_FACE',x,y,z,
+            R.uniform(.45,.88),R.uniform(.43,.89),R.uniform(.06,.20),
+            1600+k)
+
 # The modeling convention above uses Y-up (as in Three.js).
 # Blender is Z-up: convert every mesh to Z-up BEFORE lighting and cameras.
 # This also makes the lava river a horizontal ground surface and the fall vertical.
