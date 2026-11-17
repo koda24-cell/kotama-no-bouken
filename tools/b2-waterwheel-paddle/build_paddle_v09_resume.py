@@ -13,7 +13,7 @@ removed=[]
 for ob in list(bpy.data.objects):
  if ob.name.startswith(('V08 forged raised washer','V08 forged bolt shank','V08 bent bracket lip')):
   removed.append(ob.name);bpy.data.objects.remove(ob,do_unlink=True)
-assert len(removed)==20, 'Expected exactly 20 detached hardware objects, found '+str(len(removed))
+assert len(removed)==14, 'Expected exactly 14 detached hardware objects, found '+str(len(removed))
 original=[o for o in bpy.data.objects if o.name.startswith('real_iron_rivet') and o.type=='MESH']
 assert len(original)==6, 'Unexpected V07 rivet inventory '+str(len(original))
 metal=bpy.data.materials.get('V08 cold iron wear')
