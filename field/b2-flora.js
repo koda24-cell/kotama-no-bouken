@@ -23,15 +23,15 @@ export const FLORA_CONFIG = {
   wallSideRoles: ['corridor', 'road', 'deadend', 'room', 'shore', 'vista'],
   groupsPerFloor: 7,      // 群れの数（各階）
   groupSpacing: 4,        // 群れどうしの間隔（マス、チェビシェフ距離）
-  groupMin: 3, groupMax: 7,
+  groupMin: 3, groupMax: 6,
   quota: { mizubasho: 3, snowdrop: 4, bloom: 2 },  // 主になる種類ごとの群れの上限
-  meadowMax: 16,          // 群生地の株数の上限（1株約2万三角形）
-  far: 30,                // これより遠い区画は描かない（m）
+  meadowMax: 12,          // 群生地の株数の上限（1株約2万三角形。#203 の目安 最大約95万三角形に収める）
+  far: 26,                // これより遠い区画は描かない（m。霧の濃さ0.034で約6割が霧に沈む距離）
   chunk: 4,               // 区画（マス）
 };
 
 // 目の高さ1.6mの一人称から見えるように拡大した高さ（m）。[低い, 高い]
-const HEIGHT = { snowdrop: [0.66, 1.18], bloom: [0.5, 0.84], mizubasho: [0.78, 1.12] };
+const HEIGHT = { snowdrop: [0.66, 1.18], bloom: [0.5, 0.84], mizubasho: [0.7, 1.0] };
 // 根元を床へ沈める量（原寸の高さに対する値）：霜鈴草の盛り土は高さ0.029、氷晶花の岩は0.062、氷水芭蕉の泥と薄氷は0.016
 const SINK = { snowdrop: 0.025, bloom: 0.034, mizubasho: 0.009 };
 const MIX = { mizubasho: ['snowdrop', 'snowdrop', 'bloom'], snowdrop: ['bloom', 'bloom', 'mizubasho'], bloom: ['snowdrop', 'snowdrop', 'mizubasho'] };
@@ -40,7 +40,7 @@ const MIX = { mizubasho: ['snowdrop', 'snowdrop', 'bloom'], snowdrop: ['bloom', 
 // GLB の素材名から、花の素材の仲間を選ぶ
 export function floraMaterialClass(m) {
   const nm = (m.name || '').toLowerCase(), trans = (m.transmission || 0) > 0 || m.transparent;
-  if (/snow_mound/.test(nm)) return 'x:flowerBase';   // 盛り土 → 床になじむ青白い霜
+  if (/snow_mound|mz_ice$|mz_ice_crack|mz_mud/.test(nm)) return 'x:flowerBase';   // 盛り土・薄氷の円盤・泥 → 床になじむ青白い霜（白く浮かない）
   if (/core_glow/.test(nm)) return 'x:flowerGlow';
   return (trans || /ice|frost/.test(nm)) && !/mud|crack|grass/.test(nm) ? 'x:flowerIce' : 'x:flower';
 }
@@ -52,8 +52,8 @@ export function floraMaterial(key) {
     case 'x:flowerIce': return std({ color: 0xffffff, vertexColors: true, roughness: 0.08, metalness: 0.0, emissive: 0x1898d0, emissiveIntensity: 0.6, envMapIntensity: 1.7, side: THREE.DoubleSide });
     case 'x:flowerGlow': return std({ color: 0xffffff, vertexColors: true, roughness: 0.3, emissive: 0x3cc4ff, emissiveIntensity: 1.1, envMapIntensity: 1.0 });
     // 盛り土：床（caveFloor 0x82bcd8・光る水脈 0x52e2ff）と同じ色域の、少しだけ明るい霜。白く飛ばない
-    case 'x:flowerBase': return std({ color: 0x7fb6d2, vertexColors: true, roughness: 0.62, metalness: 0.0, emissive: 0x1a6688, emissiveIntensity: 0.42, envMapIntensity: 0.8 });
-    case 'x:floraFrost': return std({ color: 0xc4ecff, vertexColors: true, roughness: 0.7, metalness: 0.0, emissive: 0x2a86aa, emissiveIntensity: 0.3, envMapIntensity: 0.6, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+    case 'x:flowerBase': return std({ color: 0x74aac6, vertexColors: true, roughness: 0.62, metalness: 0.0, emissive: 0x1a6688, emissiveIntensity: 0.42, envMapIntensity: 0.8 });
+    case 'x:floraFrost': return std({ color: 0xa8d8ee, vertexColors: true, roughness: 0.7, metalness: 0.0, emissive: 0x2a86aa, emissiveIntensity: 0.15, envMapIntensity: 0.6, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
     default: return null;
   }
 }
@@ -157,7 +157,8 @@ export function createFlora(ctx) {
       const wet = ch(tx, ty) === '*', nearWet = DIR_ORDER.some((d) => isWaterCell(tx + vec(d)[0], ty + vec(d)[1]));
       // 種類：水の中・水辺は氷水芭蕉を多め、中心は霜鈴草、縁は氷晶花と霜鈴草
       const hk = H(n, 7, 963);
-      let kind = wet ? 'mizubasho' : nearWet && hk < 0.4 ? 'mizubasho' : dn < 0.45 ? (hk < 0.58 ? 'snowdrop' : hk < 0.88 ? 'bloom' : 'mizubasho') : (hk < 0.47 ? 'bloom' : hk < 0.92 ? 'snowdrop' : 'mizubasho');
+      if (wet && hk > 0.45) continue;   // 水の中は半分だけ（氷水芭蕉の大きな葉ばかりにしない）
+      let kind = wet ? 'mizubasho' : nearWet && hk < 0.25 ? 'mizubasho' : dn < 0.45 ? (hk < 0.58 ? 'snowdrop' : hk < 0.88 ? 'bloom' : 'mizubasho') : (hk < 0.47 ? 'bloom' : hk < 0.92 ? 'snowdrop' : 'mizubasho');
       if (!avail(kind)) kind = kinds[Math.floor(hk * kinds.length) % kinds.length];
       if (wet && kind !== 'mizubasho') continue;
       // 中心ほど高く、縁ほど低い（奥・縁は小さい株）
@@ -190,8 +191,8 @@ export function createFlora(ctx) {
     }
     for (const c of chosen) addPlant(c.kind, c.x, c.z, c.ry, c.s, 'meadow', c.seed + 500);
     if (chosen.length) {
-      patches.push({ x: ccx, z: ccz, ra: R * 0.95, rb: R * 0.95, ang: 0, amax: 0.36, set });
-      ctx.light(ccx, 0.9, ccz, 0x8fe6ff, 0.9, 7);
+      patches.push({ x: ccx, z: ccz, ra: R * 0.95, rb: R * 0.95, ang: 0, amax: 0.24, set });
+      ctx.light(ccx, 0.9, ccz, 0x8fe6ff, 0.55, 6);
     }
     meadow = { source: mz.source, center: k2(Math.round(mx), Math.round(my)), cells: mz.cells.map((c) => k2(c[0], c[1])), plants: chosen.length, kinds: Object.fromEntries(kinds.map((k) => [k, chosen.filter((c) => c.kind === k).length])) };
   }
@@ -236,7 +237,8 @@ export function createFlora(ctx) {
       if (mix.length && (h(973) < 0.28 || (placed.length === 2 && want >= 4 && !placed.some((p) => p.kind !== main)))) kind = mix[Math.floor(h(974) * mix.length) % mix.length];
       const s = plantScale(kind, h(975)), r = radiusOf(kind, s);
       // 壁・水へ寄せる深さ u と、沿う向きの位置 v（角は角へ寄せる）。マスの中心から1m以内には置かない
-      let u = 1.0 + h(976) * 0.85;
+      // 壁ぎわの石筍（壁から0.25〜0.55m）の手前に植え、石筍の根元に寄り添わせる（石筍の陰に隠れない）
+      let u = 0.95 + h(976) * 0.55;
       const v = an.d2 ? 0.25 + h(977) * 1.5 : (h(977) * 2 - 1) * 1.7;
       if (an.edge === 'wall') u = Math.min(u, CELL / 2 - 0.15 - r * 0.4);
       else if (kind === 'mizubasho') u = 1.25 + h(976) * 1.15;   // 水辺：氷水芭蕉は水の中まで出してよい
@@ -245,7 +247,7 @@ export function createFlora(ctx) {
       if (!plantable(tx, ty) || (ch(tx, ty) === '*' && kind !== 'mizubasho')) continue;
       if (meadow && meadow.cells.includes(k2(tx, ty))) continue;
       const lx = x - X(tx), lz = z - Z(ty);
-      if (Math.max(Math.abs(lx), Math.abs(lz)) < 1.0) continue;   // 通れるマスの中央は空ける
+      if (Math.max(Math.abs(lx), Math.abs(lz)) < 0.92) continue;   // 通れるマスの中央は空ける
       // 違うマスへはみ出したら、そのマスの壁も確かめる（壁の中に植えない）
       let inWall = false;
       for (const d of DIR_ORDER) { const [dx, dz] = vec(d); if (wallCell(tx + dx, ty + dz) && lx * dx + lz * dz > CELL / 2 - 0.15 - r * 0.4) inWall = true; }
@@ -260,10 +262,9 @@ export function createFlora(ctx) {
     const mx = placed.reduce((s, p) => s + p.x, 0) / placed.length, mzz = placed.reduce((s, p) => s + p.z, 0) / placed.length;
     let ra = 0.6, rb = 0.5;
     for (const p of placed) { const dx = p.x - mx, dz = p.z - mzz; ra = Math.max(ra, Math.abs(dx * qx + dz * qz) + p.r + 0.3); rb = Math.max(rb, Math.abs(dx * nx + dz * nz) + p.r + 0.25); }
-    patches.push({ x: mx, z: mzz, ra, rb, ang: Math.atan2(qz, qx), amax: 0.42 });
-    if (placed.some((p) => p.kind === 'bloom')) ctx.light(mx, 0.5, mzz, 0x6fd8ff, 0.6, 3.5);
+    patches.push({ x: mx, z: mzz, ra, rb, ang: Math.atan2(qz, qx), amax: 0.26 });   // 氷晶花の芯が光るので、群れに点光源は足さない（床が白く飛ぶ）
     const kinds = [...new Set(placed.map((p) => p.kind))];
-    return { cell: k2(an.tx, an.ty), kind: main, d: an.d, n: placed.length, kinds, edge: an.edge };
+    return { cell: k2(an.tx, an.ty), kind: main, d: an.d, n: placed.length, kinds, edge: an.edge, at: [+(mx / CELL).toFixed(2), +(mzz / CELL).toFixed(2)] };
   }
   function plantGroups() {
     const list = anchors().map((an, i) => ({ an, k: H(an.tx * 5 + (i % 5), an.ty, 630) + an.pri })).sort((p, q) => p.k - q.k);
@@ -373,7 +374,7 @@ export function createFlora(ctx) {
     const byKind = Object.fromEntries(FLORA_KINDS.map((k) => [k, plants.filter((p) => p.kind === k).length]));
     return {
       flowers: plants.length, flowerSpots: (ctx.spots || []).length, flowerClusters: groupLog.slice(),
-      flora: { groups: groups.map((gq) => ({ cell: gq.cell, kind: gq.kind, d: gq.d, n: gq.n, kinds: gq.kinds, edge: gq.edge })), groupPlants: plants.filter((p) => p.chunk !== 'meadow').length, meadow, byKind, dress: dress.length, patches: patches.length, triangles, drawMeshes, chunks: chunks.length },
+      flora: { groups: groups.map((gq) => ({ cell: gq.cell, kind: gq.kind, d: gq.d, n: gq.n, kinds: gq.kinds, edge: gq.edge, at: gq.at })), groupPlants: plants.filter((p) => p.chunk !== 'meadow').length, meadow, byKind, dress: dress.length, patches: patches.length, triangles, drawMeshes, chunks: chunks.length },
     };
   }
   return { place, tick, layout, disposables };
