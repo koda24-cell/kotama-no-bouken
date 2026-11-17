@@ -299,3 +299,11 @@
 - 独立水面試験: 青緑色調とclearcoat normalの追従を調整後、shader/GPU errors0・warnings0、同cameraで時刻0→5秒だけを変えた画像差183,741px。既存11水meshの連続world-XZ normal、追加reflection render target0、dispose後の元材復元とresource baseline復帰を確認。証拠 `docs/reviews/f1-closed-water-v3/water-verification.json`、PNG2枚と修正前履歴。**独立WebGL試験であり、実ゲーム統合や実機FPSの合格ではない**。
 - 最終map guard/clearance: 25source hash一致、932 hard placementsと104 cardinal sweepsで干渉0。高さ帯0.12〜2.1m、経路幅1.8mの保守的三角形AABB検査。薄い苔/紙/植生などsoft1,377配置は理由付き別扱いで、全geometryの無条件通過保証へ拡張しない。`docs/reviews/f1-closed-ruins-v3/clearance.json` に実体、修正前結果も保存。
 - 再現/証拠: `assets/3d/dungeons/b1_closed_ruins_v3/manifest.json` と `verification/khronos-validation.json` / `source-portability.json`、`tools/f1-closed-ruins-v3/assets/build_*.py` を各単体で専用Blenderに渡す制作手順。**実ゲーム全suiteはこの記録時点で実行中、まだpassと扱わない**。主担当が完走後にruntime source hashと結果を追記する。通常表示/main公開/美術承認への昇格は含まない。
+
+### 第4層：粘性溶岩の閉じたメッシュ・岩壁密着・冷却殻（2026-11-17）
+- 名称: Blender Pythonによる前後・側面を持つ厚い溶岩滝メッシュ、岩壁接触パス、熱画像PBRと冷却殻の追加造形。
+- 目的: 旧V13の薄い浮遊シートが水のように見える問題を修正。岩壁から離れた落下流のz位置を崖へ近づけ、着地点で粘性溶岩塊を形成する。
+- 技術: Blender標準Mesh APIとPrincipled BSDF/UV/PBR。公式 https://docs.blender.org/api/current/ および https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html 。新規第三者アドオン・有料素材なし。既存プロジェクト内の溶岩テクスチャと玄武岩PBRを再利用。
+- 導入先: https://github.com/koda24-cell/kotama-no-bouken/pull/470 、tools/floor4/magma_river/build_magma_river.py 。元の地形/河川/岩は保持し、滝の厚みと岸の冷却縁、短い発光亀裂を追加。
+- 実行: GitHub Actions https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44026524892 （**結果確認前**）。美術承認なし、正式保存なし、ゲーム内VFX動作未実装。
+- 注意: 静止GLBは実際に流動する流体ではない。横からの接触/浮遊判定、GLBメッシュ・PNG実体、ゲーム性能は実レンダー/ブラウザ確認後に評価する。
