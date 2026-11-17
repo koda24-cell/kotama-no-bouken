@@ -1,25 +1,13 @@
 /* Experimental WebGL water surface: authored for Kotama, not derived game shaders.
    No screen-space reflection, depth buffer or fluid simulation required. */
 import * as THREE from 'three';
+import {waterCapabilities} from './water-quality.mjs';
+export {waterCapabilities,selectWaterQuality} from './water-quality.mjs';
 export const WATER_PRESETS=Object.freeze({
   lake:{shallow:0x57bfcb,deep:0x164765,opacity:0.82,flow:[0.12,0.025],foam:0.045},
   stream:{shallow:0x81dce0,deep:0x1a6879,opacity:0.78,flow:[0.34,0.045],foam:0.10},
   waterfall:{shallow:0xa9eff6,deep:0x3d89ac,opacity:0.86,flow:[0.02,0.68],foam:0.24},
 });
-export function selectWaterQuality(projectedPixels,previous='medium'){
- if (!Number.isFinite(projectedPixels)||projectedPixels<0)throw Error('invalid projectedPixels');
- const p=projectedPixels;
- // Hysteresis around screen-size thresholds prevents frame-to-frame flicker.
- if(previous==='high') return p<85?'medium':'high';
- if(previous==='low') return p>32?'medium':'low';
- return p>115?'high':p<20?'low':'medium';
-}
-export function waterCapabilities(tier){
- if(tier==='low')return {microWave:false,foam:false,caustics:false};
- if(tier==='medium')return {microWave:true,foam:false,caustics:false};
- if(tier==='high')return {microWave:true,foam:true,caustics:false};
- throw Error('unknown water quality');
-}
 /** Creates a self-contained surface shader; ground/water geometry remains caller-owned.
     For arbitrary flowing channels use a future per-vertex/flow-map direction field. */
 export function createKotamaWaterMaterial(type='lake'){
