@@ -170,10 +170,19 @@ async function teleport(session,tx,ty,direction){
  return state(session,`camera-${tx}-${ty}-${direction}`);
 }
 async function screenshot(session,name){
- await session.page.screenshot({path:path.join(OUT,name+'.png'),timeout:180000});
+ const checkpointFile=process.env.V3_VISUAL_CHECKPOINT;
+ let reused=null;
+ if(checkpointFile){
+  const saved=JSON.parse(fs.readFileSync(checkpointFile,'utf8'));
+  assert.deepEqual(saved.source.inputs,sourceRecord.inputs,'Visual checkpoint source differs from this run');
+  reused=saved.screenshots.find(r=>r.file===name+'.png');
+  if(reused)assert.equal(sha(fs.readFileSync(path.join(OUT,reused.file))),reused.sha256,'Visual checkpoint PNG changed');
+ }
+ if(!reused)await session.page.screenshot({path:path.join(OUT,name+'.png'),timeout:180000});
  const point=await state(session,'screenshot-'+name);report.screenshots.push({file:name+'.png',session:session.name,
   area:point.area,floor:point.floor,tile:point.tile,direction:point.direction,camera:point.review.camera,
-  trialActive:!!point.review.staticTrialInfo});return point;
+  trialActive:!!point.review.staticTrialInfo,sha256:sha(fs.readFileSync(path.join(OUT,name+'.png'))),
+  ...(reused?{reusedVisualFrom:'same-input initial capture; gameplay checks rerun in fresh context'}:{})});return point;
 }
 function assertNativeFloor(snapshot,floor){
  const expected=sourceFloors[floor];assert.deepEqual(snapshot.map,expected.map,'Live map changed');
@@ -300,7 +309,7 @@ async function normalSessions(){
  await teleport(trial,15,3,'left');await screenshot(trial,'15-v3-torii-shrine-axis');
  await teleport(trial,7,15,'right');await screenshot(trial,'16-v3-enclosed-root-vault');
  const waterBefore=await trial.page.evaluate(()=>window.KotamaField3D.sacredTrialInfo().water);
- await trial.page.waitForTimeout(250);
+ await trial.page.waitForFunction(previous=>window.KotamaField3D.sacredTrialInfo()?.water?.animatedTimeSeconds>previous,waterBefore.animatedTimeSeconds,{timeout:60000,polling:100});
  const waterAfter=await trial.page.evaluate(()=>window.KotamaField3D.sacredTrialInfo().water);
  assert.equal(waterAfter.shaderCompiled,true,'V3 water shader never compiled');
  assert(waterAfter.animatedTimeSeconds>waterBefore.animatedTimeSeconds,'V3 water time did not advance');
