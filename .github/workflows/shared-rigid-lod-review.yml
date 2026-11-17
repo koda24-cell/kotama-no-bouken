@@ -72,7 +72,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: shared-rigid-lod-UNAPPROVED-review
+          name: shared-rigid-lod-${{ hashFiles(inputs.source_glb) }}-UNAPPROVED-review
           path: render-output/3d-performance/
           retention-days: 14
           if-no-files-found: warn
