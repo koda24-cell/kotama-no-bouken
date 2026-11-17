@@ -12,7 +12,7 @@
 | `f6-multiview-impostor-review.yml` | 第6層成木V14の原本Blend checkpoint | 8方向の透過PNGとRGBAアトラス（4×2）、アルファ被覆率・SHA検証。Three.jsの向き選択や遠景置き換えは別実装 | [run 44061467370](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44061467370) success：8枚の512px PNGと2080×1040のアトラス |
 | `tools/3d-performance/lod_policy.mjs` | 画面上の見かけのpx数、前LOD、重要度、プレイヤーの2D座標 | LODヒステリシスと可視・先読みセルを返す純粋関数。ゲーム内処理は未変更 | [run 44059738282](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44059738282) Nodeテストsuccess |
 
-**重要**：上記は試験PR #488の実行結果。既に`development`へ統合されたと勘違いしないこと。ユーザー美術承認前に未承認GLBを`assets/models`へ昇格／`main`へマージしない。
+**更新：PR #488は2026-11-17に`development`へ統合確認済み。** 試験実績とゲーム内自動LOD適用は別。ユーザー美術承認前に未承認GLBを`assets/models`へ昇格／`main`へマージしない。
 
 ## 制作開始・完了時の標準手順（GPT・Claude共通）
 
@@ -38,3 +38,8 @@
 - 実装ブランチ/PR： https://github.com/koda24-cell/kotama-no-bouken/pull/488
 - 第6層成木元モデル/PR： https://github.com/koda24-cell/kotama-no-bouken/pull/452
 - GitHub ActionsのArtifactsは14日で失効し得るため、本番素材には永久保存と別途承認が必要。
+
+
+## 全階層への自動適用（追加）
+- [ALL_FLOOR_AUTO_OPTIMIZATION_HANDOFF.md](ALL_FLOOR_AUTO_OPTIMIZATION_HANDOFF.md) に制作指示・GLB生成後の標準工程・未承認素材の扱いを記載。
+- [Auto Review New 3D Assets Across Floors](../../.github/workflows/auto-review-new-3d-assets.yml) はGLBコミットのPR／development pushで全階層のGLBを監査し、新しい静的不透明GLBだけ独立したLOD0/1/2候補を生成。ゲーム本体には未統合。
