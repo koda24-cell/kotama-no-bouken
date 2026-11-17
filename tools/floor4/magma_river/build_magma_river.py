@@ -81,7 +81,7 @@ for side in (-1,1):
  for j in range(nz):
   for i in range(nx):
    a=j*(nx+1)+i;b=a+nx+1
-   faces.append((a,b,b+1,a+1) if side<0 else (a,a+1,b+1,b))
+   faces.append((a,a+1,b+1,b) if side<0 else (a,b,b+1,a+1))
  objmesh('ERODED_BASALT_BANK_'+str(side),verts,faces,basalt,uv)
 # Winding channel surface with pool widening at near end.
 verts=[];uv=[];faces=[];nz=240;nx=56
@@ -94,7 +94,7 @@ for j in range(nz+1):
   verts.append((x,y,z));uv.append((t*1.6,z*.48))
 for j in range(nz):
  for i in range(nx):
-  a=j*(nx+1)+i;b=a+nx+1;faces.append((a,a+1,b+1,b))
+  a=j*(nx+1)+i;b=a+nx+1;faces.append((a,b,b+1,a+1))
 objmesh('MEANDERING_MOLTEN_CHANNEL',verts,faces,lava,uv)
 # Broad pool on downstream section: irregular surface, not a perfect ellipse.
 verts=[];uv=[];faces=[];N=100;M=32
@@ -108,7 +108,7 @@ for j in range(M+1):
   verts.append((x,.145+.015*sin(a*4+r*14),z));uv.append((.5+r*cos(a)*.45,.5+r*sin(a)*.45))
 for j in range(M):
  for i in range(N):
-  a=j*(N+1)+i;b=a+N+1;faces.append((a,b,b+1,a+1))
+  a=j*(N+1)+i;b=a+N+1;faces.append((a,a+1,b+1,b))
 objmesh('MOLTEN_POOL_WIDENING',verts,faces,lava,uv)
 # Rock masses: high-poly displaced with multiple frequencies, not tetrahedron stones.
 def rock(name,xyz,scale,material,seed=0,subdiv=3):
