@@ -64,6 +64,46 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
     // 足した物・柱の中心が、通れるマスの中央から 1.0m（0.25マス）以内に無いか
     const centerHits = await p.evaluate((placed) => { const a = fieldArea(), out = []; for (const q of placed || []) { const tx = Math.round(q.x), ty = Math.round(q.z), c = fieldTileAt(a, tx, ty); if (!c || c === '#' || fieldCharSolid(a, c)) continue; const d = Math.hypot(q.x - tx, q.z - ty) * 4; if (d < 1.0) out.push({ ...q, d: +d.toFixed(2) }); } return out; }, inf.placed);
     report.floors.push({ floor: f + 1, centerHits, placedCount: (inf.placed || []).length, buildKey: inf.buildKey, random: inf.random, layout: L, extras: inf.extras, falls: inf.falls, monuments: inf.monuments, crystalZones: inf.crystalZones, drawGroups: inf.drawGroups });
+    // [B2V4-S] 見せ場（階段・背景モニュメント・水門・橋・柱群）。themeInfo().setpieces の位置から撮る
+    const SPI = inf.setpieces || {};
+    report.floors[report.floors.length - 1].setpieces = SPI;
+    const D4 = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+    const stand = async (tx, ty, d) => { await p.evaluate(([tx, ty, d]) => { const cc = fieldTileCenter(tx, ty); fieldState.x = cc.x; fieldState.y = cc.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, [tx, ty, d]); await p.waitForTimeout(900); };
+    const walkable = (tx, ty) => p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [tx, ty]);
+    for (const st of (SPI.stairs || [])) {
+      const tag = `${pre}_obj_stairs_${st.dir}_${st.tx}_${st.ty}`;
+      await stand(st.tx, st.ty, st.face); await shotS(`${tag}_arrive_front`);     // 着いた直後の正面（出口の向き）
+      await stand(st.tx, st.ty, st.back); await shotS(`${tag}_turn_back`);        // 振り返った向き（階段の奥）
+      const nx = st.tx + D4[st.face][0], ny = st.ty + D4[st.face][1];
+      if (await walkable(nx, ny)) { await stand(nx, ny, st.back); await shotS(`${tag}_approach`); }   // 隣のマスから階段を見る
+    }
+    for (const [i, bd] of (SPI.backdrops || []).entries()) {
+      const [vx, vy] = bd.view; await stand(vx, vy, bd.d); await shotS(`${pre}_monument_backdrop_${bd.name}_view`);
+      await stand(bd.tx, bd.ty, bd.d); await shotS(`${pre}_monument_backdrop_${bd.name}_window`);
+      const lat = bd.d === 'up' || bd.d === 'down' ? 'right' : 'down';
+      const sx = bd.tx + D4[lat][0] * 2 - D4[bd.d][0], sy = bd.ty + D4[lat][1] * 2 - D4[bd.d][1];
+      if (await walkable(sx, sy)) { await stand(sx, sy, bd.d); await shotS(`${pre}_monument_backdrop_${bd.name}_oblique`); }
+    }
+    if (SPI.watergate) {
+      const wg = SPI.watergate, cx = wg.x + 1, cy = wg.y - 1;
+      for (const [ty, tag] of [[cy - 2, 'far'], [cy, 'edge']]) if (await walkable(cx, ty)) { await stand(cx, ty, 'down'); await shotS(`${pre}_monument_watergate_${tag}`); }
+      if (await walkable(wg.x - 1, cy)) { await stand(wg.x - 1, cy, 'right'); await shotS(`${pre}_monument_watergate_side`); }
+    }
+    if (SPI.bridge) {
+      const br = SPI.bridge, along = br.ry === 0, d = along ? 'right' : 'down', b = along ? 'left' : 'up';
+      const ex = br.tx - (along ? 2 : 0), ey = br.ty - (along ? 0 : 2);
+      if (await walkable(ex, ey)) { await stand(ex, ey, d); await shotS(`${pre}_bridge_from_end`); }
+      await stand(br.tx, br.ty, d); await shotS(`${pre}_bridge_on_deck`);
+      const sx = br.tx + (along ? 0 : 2), sy = br.ty + (along ? 2 : 0);
+      if (await walkable(sx, sy)) { await stand(sx, sy, along ? 'up' : 'left'); await shotS(`${pre}_bridge_side`); }
+      else if (await walkable(br.tx + (along ? 0 : -2), br.ty + (along ? -2 : 0))) { await stand(br.tx + (along ? 0 : -2), br.ty + (along ? -2 : 0), along ? 'down' : 'right'); await shotS(`${pre}_bridge_side`); }
+    }
+    for (const [i, cl] of (SPI.clusters || []).slice(0, 3).entries()) {
+      const tx = Math.round(cl.x), ty = Math.round(cl.z);
+      let done = false;
+      for (const d of ['down', 'up', 'right', 'left']) { const nx = tx - D4[d][0] * 1, ny = ty - D4[d][1] * 1; if (!done && await walkable(nx, ny) && await walkable(nx - D4[d][0], ny - D4[d][1])) { await stand(nx - D4[d][0], ny - D4[d][1], d); await shotS(`${pre}_pillar_cluster_${i + 1}_${cl.mode}`); done = true; } }
+    }
+    if (process.env.SP_ONLY) continue;
     // 花（4F も：光るキノコ・荊の位置の差し替え）
     for (const [i, s] of (L.flowerClusters || []).slice(0, f === 0 ? 3 : 4).entries()) { const [cell, kind, d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shotS(`${pre}_flower_${i + 1}_${kind}`); }
     if (f === 0) continue;
@@ -85,6 +125,7 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
     }
   }
   report.stats = stats;
+  if (process.env.SP_ONLY) { report.errors = errs; report.missing = [...new Set(missing)]; fs.writeFileSync(path.join(out, 'props-report.json'), JSON.stringify(report, null, 2)); console.log(JSON.stringify({ errors: errs, missing: report.missing, setpieces: report.floors.map((f) => f.setpieces) }, null, 1)); await b.close(); srv.close(); return; }
   // 同じ迷宮の作り直し → 同じ配置。探索回数を変えて作り直し → メモリが増え続けない
   {
     const L0 = JSON.stringify((await info()).layout), m0 = await mem();
