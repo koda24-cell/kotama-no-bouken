@@ -17,6 +17,29 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - name: Record this Actions run ID before Blender starts
+        env:
+          CURRENT_RUN_ID: ${{ github.run_id }}
+          CURRENT_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path('docs/3d/b2-waterwheel-paddle-run/latest.json')
+          p.parent.mkdir(parents=True,exist_ok=True)
+          p.write_text(json.dumps({
+            'run_id':os.environ['CURRENT_RUN_ID'],
+            'url':os.environ['CURRENT_RUN_URL'],
+            'source_sha':os.environ['SOURCE_SHA'],
+            'status':'STARTED_PENDING_BLENDER_VERIFICATION',
+            'approval':'NOT_APPROVED'
+          },indent=2))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/3d/b2-waterwheel-paddle-run/latest.json
+          git commit -m "chore(b2): save waterwheel paddle Actions run pointer"
+          git push origin HEAD:feature/gpt-b2-waterwheel-core-upgrade-20261117
       - name: Make output folder
         run: mkdir -p render-output/b2-waterwheel-paddle
       - name: Blender native mesh creation and 4-direction QA render
@@ -67,7 +90,7 @@ jobs:
             'png_views':['front','side','angle','back'],
             'note':'This status only means files were generated and hashes verified; artistic approval pending'
           }
-          p.write_text(json.dumps(data,indent=2)+'\\n')
+          p.write_text(json.dumps(data,indent=2))
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
