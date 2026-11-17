@@ -189,6 +189,22 @@ for ti in range(5):
   center=base+Vector((R.gauss(0,.095),R.gauss(0,.095),R.gauss(0,.065)))
   leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,R.uniform(.058,.084),
        (az+R.uniform(-.6,.6),R.uniform(-.05,.4)),leaves[R.randrange(3)])
+# V8: terminal branchlets replace the bare-stick impression without deleting
+# the source trunk. They carry their own layered leaf clusters.
+for k in range(9):
+ az=k*math.tau/9+.29
+ origin=Vector((.024*math.cos(az),.024*math.sin(az),2.33+R.uniform(-.06,.20)))
+ spread=.23+R.uniform(.035,.15)
+ elbow=origin+Vector((math.cos(az)*spread*.55,math.sin(az)*spread*.55,.09))
+ end=origin+Vector((math.cos(az)*spread,math.sin(az)*spread,.16+R.uniform(-.08,.09)))
+ tube("tree_mature_crown_terminal_%02d"%k,[tuple(origin),tuple(elbow),tuple(end)],
+      [.017,.011,.0025],twig,7)
+ for j,center_base in enumerate((elbow,end)):
+  for n in range(22 if j else 15):
+   center=center_base+Vector((R.gauss(0,.077),R.gauss(0,.077),R.gauss(0,.075)))
+   leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,R.uniform(.062,.095),
+        (az+R.uniform(-.6,.6),R.uniform(-.2,.42)),
+        leaves[R.choices([0,1,2,3],weights=[32,43,17,8])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -214,7 +230,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V7",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V8",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
