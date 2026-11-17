@@ -151,10 +151,10 @@ for i in range(62):
  if len(vs)>=4:
   mx=sum(v[0] for v in vs)/len(vs);mz=sum(v[2] for v in vs)/len(vs)
   vs.insert(0,(mx,lava_y(mx,mz)+.047,mz))
-  for k in range(1,len(vs)):fs.append((0,k,1 if k==len(vs)-1 else k+1))
+  for k in range(1,len(vs)):fs.append((0,1 if k==len(vs)-1 else k+1,k))
   objmesh('COOLED_LAVA_CRUST_RAFT',vs,fs,crust,[(x*.18,z*.18) for x,y,z in vs])
 # Side cave rock cliffs and rear basalt overhang.
-for i in range(24):
+for i in range(14):
  side=-1 if i%2 else 1
  z=-3.25+R.random()*6.7
  x=side*(3.95+R.uniform(-.25,.3))
