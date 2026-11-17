@@ -3,14 +3,17 @@ on:
   push:
     branches:
       - feature/gpt-shared-3d-optimization-actions-20261117
+      - development
     paths:
       - tools/3d-performance/**
       - .github/workflows/shared-3d-performance-audit.yml
+      - assets/**/*.glb
   pull_request:
     branches: [development]
     paths:
       - tools/3d-performance/**
       - .github/workflows/shared-3d-performance-audit.yml
+      - assets/**/*.glb
   workflow_dispatch:
     inputs:
       asset_glob:
@@ -33,6 +36,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - name: Run GLB audit unit tests
         run: python3 -m unittest discover -s tools/3d-performance -p 'test_*.py' -v
       - name: Validate trial LOD and prefetch policy (pure, not integrated)
@@ -41,7 +46,18 @@ jobs:
         env:
           ASSET_GLOB: ${{ inputs.asset_glob || 'assets/3d/dungeons/b1_ancient_forest/props/*.glb' }}
         run: |
-          python3 tools/3d-performance/audit_glb.py "$ASSET_GLOB" --output render-output/3d-performance/glb-audit.json
+          # Inspect changed committed GLBs on PR/push; use input pattern otherwise.
+          changed=()
+          if [[ "$GITHUB_EVENT_NAME" == "push" || "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            while IFS= read -r name; do
+              if [[ "$name" == assets/* && "$name" == *.glb && -f "$name" ]]; then changed+=("$name"); fi
+            done < <(git diff --name-only HEAD^ HEAD -- assets/ || true)
+          fi
+          if (( ${#changed[@]} > 0 )); then
+            python3 tools/3d-performance/audit_glb.py "${changed[@]}" --output render-output/3d-performance/glb-audit.json
+          else
+            python3 tools/3d-performance/audit_glb.py "$ASSET_GLOB" --output render-output/3d-performance/glb-audit.json
+          fi
       - name: Show aggregate
         run: |
           python3 - <<'PY'
