@@ -1,0 +1,34 @@
+name: B2 F6 Shader Research Regression
+on:
+  push:
+    branches:
+      - feature/gpt-f6-meadow-wind-field-prototype-20261118
+    paths:
+      - 'tools/3d-water/**'
+      - 'tools/floor6/meadow-wind-field*'
+      - '.github/workflows/b2-f6-shader-research-tests.yml'
+  workflow_dispatch:
+jobs:
+  pure-model-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify source syntax
+        run: |
+          node --check tools/3d-water/water-surface.mjs
+          node --check tools/3d-water/water-quality.mjs
+          node --check tools/3d-water/water-field.mjs
+          node --check tools/3d-water/water-v2.mjs
+          node --check tools/floor6/meadow-wind-field.mjs
+      - name: Water quality and flow tile tests
+        run: |
+          node tools/3d-water/water-surface.test.mjs
+          node tools/3d-water/water-field.test.mjs
+      - name: Meadow wind math tests
+        run: node tools/floor6/meadow-wind-field.test.mjs
