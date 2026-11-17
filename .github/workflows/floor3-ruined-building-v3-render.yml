@@ -1,0 +1,78 @@
+name: Floor3 Ruined Building V3 Photo-PBR Render
+on:
+  push:
+    branches: [feature/gpt-f3-ruined-building-v2-20261117]
+    paths: ['tools/floor3/render_v3_photo.py','.github/workflows/floor3-ruined-building-v3-render.yml']
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [feature/floor3-ruined-building-prototype-20261112]
+    paths: ['tools/floor3/render_v3_photo.py','.github/workflows/floor3-ruined-building-v3-render.yml']
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with:
+          ref: development
+          path: reference
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing generator requirements
+        run: python -m pip install 'numpy>=1.26,<3' 'trimesh>=4,<5'
+      - name: Generate original-preserving existing V2 geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p render-output
+          python -m py_compile tools/floor3/build.py tools/floor3/build_v2.py tools/floor3/render_v3_photo.py
+          python tools/floor3/build_v2.py
+          mv ruined_building_v2.glb render-output/
+          test -s render-output/ruined_building_v2.glb
+      - name: Apply photo PBR, pack GLB and render with Blender
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in chipped_concrete_diffuse chipped_concrete_normal chipped_concrete_roughness concrete_moss_diffuse concrete_moss_normal concrete_moss_roughness; do
+            test -s "reference/assets/models/floor3/double_flight/textures/$n.jpg"
+          done
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/render_v3_photo.py 2>&1 | tee render-output/blender-v3.log
+          grep -q F3_RUINED_BUILDING_V3_PBR_RENDER_COMPLETE render-output/blender-v3.log
+      - name: Verify glTF embedded photographic PBR and 3-angle PNG
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,os,struct,hashlib,pathlib,trimesh
+          root=pathlib.Path('render-output');stem='ruined_building_v3'
+          ps=[root/(stem+'.glb'),root/(stem+'.blend')]+[root/(stem+'-'+v+'.png') for v in ('front','side','angle')]
+          for p in ps: assert p.is_file() and p.stat().st_size>1024,p
+          raw=ps[0].read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          size,typ=struct.unpack_from('<II',raw,12);assert typ==0x4e4f534a
+          gltf=json.loads(raw[20:20+size])
+          assert len(gltf.get('images',[]))>=4,'PBR maps missing'
+          assert all('bufferView' in im and not im.get('uri') for im in gltf['images'])
+          assert any('normalTexture' in m for m in gltf.get('materials',[]))
+          assert all(p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a') for p in ps[2:])
+          s=trimesh.load(ps[0],force='scene')
+          assert len(s.geometry)>200
+          m={'stage':'floor3','asset':'ruined_building','version':'v3',
+             'source_model':'PR256 existing geometry plus V2 additive pass',
+             'photo_pbr_source':'approved CC0 source photographs from assets/models/floor3/double_flight/textures',
+             'approval':'NOT_APPROVED','run_id':os.getenv('GITHUB_RUN_ID'),'source_commit':os.getenv('GITHUB_SHA'),
+             'geometry_count':len(s.geometry),'embedded_images':len(gltf['images']),
+             'files':{p.name:{'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size} for p in ps}}
+          (root/'v3-manifest.json').write_text(json.dumps(m,indent=2)+'\n')
+          print('V3_PBR_QA_SUCCESS',m['geometry_count'],m['embedded_images'])
+          PY
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: f3-ruined-building-v3-pbr-review
+          path: render-output/
+          retention-days: 14
