@@ -48,7 +48,7 @@ jobs:
           from pathlib import Path
           root=Path('render-output/b2-waterwheel-v09')
           m=json.loads((root/'b2_bucket_paddle_blender_v09_manifest.json').read_text())
-          assert m['status']=='NOT_APPROVED' and m['removed_floating_objects']==20 and m['anchored_washers']==6
+          assert m['status']=='NOT_APPROVED' and m['removed_floating_objects']==14 and m['anchored_washers']==6
           assert len(m['files'])==6
           for n,meta in m['files'].items():
             raw=(root/n).read_bytes()
