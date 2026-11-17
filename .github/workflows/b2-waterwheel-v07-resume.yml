@@ -1,0 +1,119 @@
+name: B2 Waterwheel V07 Blender Checkpoint Resume
+on:
+  push:
+    branches:
+      - feature/gpt-b2-waterwheel-v07-resume-20261118
+    paths:
+      - "tools/b2-waterwheel-paddle/build_paddle_v07_resume.py"
+      - ".github/workflows/b2-waterwheel-v07-resume.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  resume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish run pointer before Blender
+        env:
+          CURRENT_RUN_ID: ${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-paddle-run
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path('docs/3d/b2-waterwheel-paddle-run/latest-v07.json')
+          p.write_text(json.dumps({'run_id':int(os.environ['CURRENT_RUN_ID']),
+           'url':'https://github.com/koda24-cell/kotama-no-bouken/actions/runs/'+os.environ['CURRENT_RUN_ID'],
+           'source_sha':os.environ['SOURCE_SHA'],'status':'STARTED_PENDING_BLENDER',
+           'approval':'NOT_APPROVED'},indent=2))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/3d/b2-waterwheel-paddle-run/latest-v07.json
+          git commit -m "chore(b2): checkpoint V07 Actions run id"
+          git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
+      - name: Restore last verified Blender V06 checkpoint from prior run
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-paddle-blender-v01-v02-v03-v04-v05-v06
+          run-id: 44131102651
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Verify source Blender checkpoint and preserve original
+        run: |
+          echo "632fcb47afdf5fecb6f44f88e61a24911bc845d8b0a329c042375c95d548b199  checkpoint/b2_bucket_paddle_blender_v06.blend" | sha256sum -c
+          echo "044f03e6621e86addbb03adabf06ea9b57c1a34d82742142d37433621d7d4585  checkpoint/b2_bucket_paddle_blender_v06.glb" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-v07
+      - name: Download CC0 photographic roughness and OpenGL normal maps
+        run: |
+          for map in rough nor_gl; do
+            url="https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_planks/wood_planks_${map}_1k.jpg"
+            dest="render-output/b2-waterwheel-v07/wood_planks_${map}_1k.jpg"
+            if curl -fLsS --retry 2 --max-time 65 "$url" -o "$dest"; then
+              echo "TEXTURE_MAP_RETRIEVED $map $(wc -c < "$dest")"
+            else
+              rm -f "$dest"
+              echo "TEXTURE_MAP_NOT_AVAILABLE $map; Blender safely retains V06 values"
+            fi
+          done
+      - name: Blender reopen verified V06 and render V07 4 views
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            lscr.io/linuxserver/blender:latest \
+            /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v07_resume.py -- checkpoint/b2_bucket_paddle_blender_v06.blend render-output/b2-waterwheel-v07
+      - name: Validate V07 GLB PNG and Blender checkpoint hashes
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          root=Path('render-output/b2-waterwheel-v07')
+          p=root/'b2_bucket_paddle_blender_v07_manifest.json'
+          j=json.loads(p.read_text())
+          assert j['source_checkpoint_sha256']=='632fcb47afdf5fecb6f44f88e61a24911bc845d8b0a329c042375c95d548b199'
+          assert j['status']=='NOT_APPROVED' and len(j['files'])==6
+          for name,info in j['files'].items():
+            f=root/name;b=f.read_bytes()
+            assert len(b)==info['bytes'] and hashlib.sha256(b).hexdigest()==info['sha256']
+            if name.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if name.endswith('.glb'):assert b[:4]==b'glTF'
+            if name.endswith('.blend'):assert len(b)>1024
+          print('B2_V07_BLENDER_VERIFIED',j['blender'],'normal',j.get('photo_nor_gl_applied'),'rough',j.get('photo_rough_applied'))
+          PY
+      - name: Save verified V07 run details to isolated PR branch
+        if: success()
+        env:
+          CURRENT_RUN_ID: ${{ github.run_id }}
+          CURRENT_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import pathlib,os,json
+          j=json.loads(pathlib.Path('render-output/b2-waterwheel-v07/b2_bucket_paddle_blender_v07_manifest.json').read_text())
+          dest=pathlib.Path('/tmp/b2-v07-runproof.json')
+          dest.write_text(json.dumps({'run_id':int(os.environ['CURRENT_RUN_ID']),
+           'url':'https://github.com/koda24-cell/kotama-no-bouken/actions/runs/'+os.environ['CURRENT_RUN_ID'],
+           'source_sha':os.environ['CURRENT_SHA'],'status':'BLENDER_V07_VERIFIED_NOT_APPROVED',
+           'normal_photo':j.get('photo_nor_gl_applied'),'rough_photo':j.get('photo_rough_applied')},indent=2))
+          PY
+          git fetch origin feature/gpt-b2-waterwheel-v07-resume-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-v07-resume-20261118
+          mkdir -p docs/3d/b2-waterwheel-paddle-run
+          cp /tmp/b2-v07-runproof.json docs/3d/b2-waterwheel-paddle-run/latest-v07.json
+          git add docs/3d/b2-waterwheel-paddle-run/latest-v07.json
+          git commit -m "chore(b2): record verified V07 Blender resume"
+          git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
+      - name: Store V07 Blender GLB PNG and provenance temporarily
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-v07-blender-resume
+          path: render-output/b2-waterwheel-v07/
+          retention-days: 14
+          if-no-files-found: warn
