@@ -1,0 +1,71 @@
+name: B2 Waterwheel V10 Ice Sculpt Blender Review
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-v07-resume-20261118]
+    paths:
+      - "tools/b2-waterwheel-paddle/build_paddle_v10_resume.py"
+      - ".github/workflows/b2-waterwheel-v10-review.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Save V10 run pointer before rendering
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-paddle-run
+          echo "{\"run_id\":${RUN_ID},\"status\":\"STARTED_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-paddle-run/latest-v10.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/3d/b2-waterwheel-paddle-run/latest-v10.json
+          git commit -m "chore(b2): V10 run pointer" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
+      - name: Restore verified V09 Blender source
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-v09-anchored-review
+          run-id: 44195302317
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Check V09 SHA before modifications
+        run: |
+          echo "1944077419d665912a63f5895a85830e0ba3984865fd263b382f92638ae1d65b  checkpoint/b2_bucket_paddle_blender_v09.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-v10
+      - name: Blender V10 replace trial spikes with organic ice geometry
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v10_resume.py -- checkpoint/b2_bucket_paddle_blender_v09.blend render-output/b2-waterwheel-v10
+      - name: Verify GLB photographic maps and 4-direction PNG
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          p=Path("render-output/b2-waterwheel-v10")
+          m=json.loads((p/"b2_bucket_paddle_blender_v10_manifest.json").read_text())
+          assert m["status"]=="NOT_APPROVED" and m["ice_clusters"]==7
+          assert len(m["files"])==6
+          for name,meta in m["files"].items():
+            b=(p/name).read_bytes()
+            assert len(b)==meta['size'] and hashlib.sha256(b).hexdigest()==meta['sha256']
+            if name.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if name.endswith('.glb'):
+              assert b[:4]==b'glTF'
+              length=struct.unpack_from('<I',b,12)[0]
+              obj=json.loads(b[20:20+length])
+              assert len(obj.get('images',[]))>=3
+          print('V10_VALIDATED_PHOTO_PBR',m['blender'])
+          PY
+      - name: Upload V10 assets and preview evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-v10-organic-ice
+          path: render-output/b2-waterwheel-v10/
+          if-no-files-found: warn
+          retention-days: 14
