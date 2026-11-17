@@ -41,7 +41,7 @@ jobs:
       - name: Run GLB audit unit tests
         run: python3 -m unittest discover -s tools/3d-performance -p 'test_*.py' -v
       - name: Validate trial LOD and prefetch policy (pure, not integrated)
-        run: node --test tools/3d-performance/lod_policy.test.mjs
+        run: node --test tools/3d-performance/lod_policy.test.mjs tools/3d-performance/impostor_views.test.mjs
       - name: Audit actual repository GLBs
         env:
           ASSET_GLOB: ${{ inputs.asset_glob || 'assets/3d/dungeons/b1_ancient_forest/props/*.glb' }}
