@@ -25,7 +25,7 @@ def mat(name,c,rough=1):
 bark=mat("aged_bark",(0.235,.168,.112))
 twig=mat("twigs",(0.24,.175,.118))
 # V6: lower-saturation, deeper woodland greens with rare lighter accents.
-leaves=[mat("leaf_deep",(0.042,.125,.043)),mat("leaf_mid",(0.066,.185,.063)),mat("leaf_lit",(0.105,.255,.095)),mat("leaf_sage",(0.075,.165,.083))]
+leaves=[mat("leaf_deep",(0.036,.112,.039)),mat("leaf_mid",(0.055,.161,.053)),mat("leaf_lit",(0.095,.223,.083)),mat("leaf_sage",(0.066,.148,.075))]
 # A packed, hand-generated bark normal texture for glTF transport.
 def bark_normal(m):
  img=bpy.data.images.new("tree_mature_bark_normal",width=256,height=256,alpha=True)
@@ -368,6 +368,32 @@ for i in range(10):
    leaf("tree_mature_leaf_%04d"%leaves_obj_count,ctr,R.uniform(.065,.096),
         (fan+R.uniform(-.57,.57),R.uniform(-.26,.44)),
         leaves[R.choices([0,1,2,3],weights=[46,39,10,5])[0]])
+# V16: asymmetric climbing boughs from the middle trunk to the
+# underside of the upper broadleaf crown. These make the lower tiers belong
+# to the same tree rather than isolated horizontal leaf shelves.
+for i in range(8):
+ phi=math.tau*((i*.61803398875)%1)+R.uniform(-.20,.20)
+ z=1.42+R.uniform(-.07,.30)
+ reach=.53+R.uniform(.10,.25)
+ base=Vector((.10*math.sin(z*1.3),.02,z))
+ shoulder=base+Vector((.23*math.cos(phi),.23*math.sin(phi),.28))
+ upper=base+Vector((reach*.74*math.cos(phi+.09),reach*.74*math.sin(phi+.09),.57))
+ tip=base+Vector((reach*math.cos(phi+.12),reach*math.sin(phi+.12),.71+R.uniform(-.07,.12)))
+ tube("tree_mature_v16_climbing_bough_%02d"%i,
+      [tuple(base),tuple(shoulder),tuple(upper),tuple(tip)],
+      [.051,.038,.017,.003],bark,10)
+ for j in range(2):
+  end=tip+Vector((math.cos(phi+(j-.5)*.57)*.17,
+                  math.sin(phi+(j-.5)*.57)*.17,
+                  R.uniform(-.05,.12)))
+  tube("tree_mature_v16_upper_twigs_%02d_%02d"%(i,j),
+       [tuple(upper),tuple(tip),tuple(end)],
+       [.012,.008,.002],twig,8)
+  for n in range(19):
+   pos=end+Vector((R.gauss(0,.075),R.gauss(0,.072),R.gauss(0,.080)))
+   leaf("tree_mature_leaf_%04d"%leaves_obj_count,pos,R.uniform(.060,.096),
+        (phi+R.uniform(-.55,.55),R.uniform(-.22,.42)),
+        leaves[R.choices([0,1,2,3],weights=[44,41,10,5])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -393,7 +419,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V15",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V16",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
