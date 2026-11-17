@@ -64,7 +64,10 @@ def build(seed=71):
  for i,m in enumerate(meshes):scene.add_geometry(m,geom_name=f"fern_{i:04}")
  return scene
 if __name__=="__main__":
- scene=build();p=OUT/"b2_wet_ruin_fern_v01.glb";scene.export(p)
+ scene=build()
+ # Authoring space is Z-up; glTF/Three.js is Y-up. Rotate once for export.
+ scene.apply_transform(trimesh.transformations.rotation_matrix(-math.pi/2,[1,0,0]))
+ p=OUT/"b2_wet_ruin_fern_v01.glb";scene.export(p)
  meta={"asset_id":"b2_wet_ruin_fern_v01","status":"NOT_APPROVED","seed":71,
  "anchor":"root_at_origin","allowed_surfaces":["wet_rock","ruin_crack","shore_soil","cave_floor"],
  "exclude_surfaces":["water","ice_smooth","walkway","door","stairs"],
