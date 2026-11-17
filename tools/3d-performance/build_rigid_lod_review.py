@@ -106,7 +106,12 @@ for level,ratio in [(0,1.0),(1,opt.ratios[0]),(2,opt.ratios[1])]:
                 ob.select_set(True)
                 bpy.context.view_layer.objects.active=ob
                 mod=ob.modifiers.new("REVIEW_LOD_DECIMATE","DECIMATE")
-                mod.ratio=ratio
+                # Moss/surface coatings are silhouette and colour-critical.
+                # Protect them from the destructive stone mesh reduction.
+                material_names=[m.name.lower() for m in ob.data.materials if m]
+                protected=any(("moss" in name or "foliage" in name or "leaf" in name)
+                              for name in material_names)
+                mod.ratio=max(ratio, .95 if level==1 else .85) if protected else ratio
                 bpy.ops.object.modifier_apply(modifier=mod.name)
     count=faces_count()
     bpy.ops.object.select_all(action="DESELECT")
