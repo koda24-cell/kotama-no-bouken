@@ -50,9 +50,9 @@ jobs:
           n,chunk=struct.unpack_from('<II',raw,12); assert chunk==0x4e4f534a
           doc=json.loads(raw[20:20+n])
           assert len(doc.get('meshes',[]))>=5, 'missing wall/rebar meshes'
-          assert len(doc.get('images',[]))>=4, 'missing packed concrete image maps'
+          assert len(doc.get('images',[]))>=3, 'missing baked basecolor/normal/roughness photos'
           assert all('bufferView' in i and not i.get('uri') for i in doc['images']), 'external texture URL'
-          assert any('normalTexture' in m for m in doc['materials'])
+          assert any('normalTexture' in m and 'baseColorTexture' in m.get('pbrMetallicRoughness',{}) and 'metallicRoughnessTexture' in m.get('pbrMetallicRoughness',{}) for m in doc['materials']), 'missing PBR channels'
           for p in files[2:]: assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
           meta={'asset':'floor3_1floor_tall_wall','version':'v2','approval':'NOT_APPROVED','height_m':4.6,
                 'width_m':2.0,'reference_material':'Poly Haven CC0 reused from approved V10 stairs',
