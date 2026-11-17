@@ -1,0 +1,75 @@
+name: B2 Waterwheel V11 Ice Root Correction Blender Review
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-v07-resume-20261118]
+    paths:
+      - "tools/b2-waterwheel-paddle/build_paddle_v11_resume.py"
+      - ".github/workflows/b2-waterwheel-v11-review.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Save run ID for review
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-paddle-run
+          echo "{\"run_id\":${RUN_ID},\"status\":\"STARTED_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-paddle-run/latest-v11.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/3d/b2-waterwheel-paddle-run/latest-v11.json /tmp/b2-v11-run.json
+          git fetch origin feature/gpt-b2-waterwheel-v07-resume-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-v07-resume-20261118
+          cp /tmp/b2-v11-run.json docs/3d/b2-waterwheel-paddle-run/latest-v11.json
+          git add docs/3d/b2-waterwheel-paddle-run/latest-v11.json
+          git commit -m "chore(b2): record V11 run ID" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
+      - name: Restore source V10
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-v10-organic-ice
+          run-id: 44196329875
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Verify immutable source
+        run: |
+          echo "7edbc20b96625a73f73175289ec432c8f79246a9f45220eba50669f23fbdb664  checkpoint/b2_bucket_paddle_blender_v10.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-v11
+      - name: Blender V11 correct square ice roots and cold color
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v11_resume.py -- checkpoint/b2_bucket_paddle_blender_v10.blend render-output/b2-waterwheel-v11
+      - name: Verify real Blender outputs
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          p=Path('render-output/b2-waterwheel-v11')
+          m=json.loads((p/'b2_bucket_paddle_blender_v11_manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED' and m['removed_bad_ice_roots']==11
+          assert len(m['files'])==6
+          for name,item in m['files'].items():
+            b=(p/name).read_bytes()
+            assert len(b)==item['size'] and hashlib.sha256(b).hexdigest()==item['sha256']
+            if name.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if name.endswith('.glb'):
+              assert b[:4]==b'glTF'
+              n=struct.unpack_from('<I',b,12)[0]
+              j=json.loads(b[20:20+n])
+              assert len(j.get('images',[]))>=3
+          print('V11_REAL_BLENDER_PBR_QA_SUCCESS')
+          PY
+      - name: Preserve all V11 files in temporary artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-v11-review
+          path: render-output/b2-waterwheel-v11/
+          retention-days: 14
+          if-no-files-found: warn
