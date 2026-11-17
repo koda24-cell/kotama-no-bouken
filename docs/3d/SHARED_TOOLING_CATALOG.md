@@ -277,3 +277,9 @@
 ### 一層試験組込み: 最終機能QA完了（2026-11-17 JST）
 - `node tools/f1-sacred-forest/verify-game-trial.cjs` を修正後runtime SHA `6f3e5d432221b44211a8f0409602bccf79ba3b82e0391d641d2a9fb60f7903b1` で再実行しpass。通常/opt-in/SHA不一致の3 sessions、16 checks、実ゲーム画像13枚。移動/壁衝突/宝箱報酬一回とモデル交換/NPC/看板/灯/階段往復/戦闘帰還/旧表示fallbackを確認。page/console errors0、positive trial WebGL警告0。入力source hash不変をassert。
 - [PR #447](https://github.com/koda24-cell/kotama-no-bouken/pull/447) の `docs/reviews/f1-sacred-forest-game-trial/game-trial-verification.json` が最終記録、修正前警告/初期fixture失敗も別保存。通常preload警告・外部font接続問題は削除せず残す。保存分離/全GPU診断は前節通り。ユーザー認可は試験組込みのみ、main公開/既定表示/美術承認/実機FPSには昇格しない。
+
+### B4玄武岩の地層・破断メッシュ実検証（2026-11-17）
+- V10 Blender https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44003753769、V11 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44004361611、V12 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44004825512 は全て**success**。各runでGLB/Blend/4方向PNG/manifestを生成。
+- V12 Artifact 14294645385 をダウンロードし、6ファイルのSHA256一致、GLB 361メッシュ・画像10内包を実確認。画像を目視し、後方崖の地層/破断面と岩色の改善を確認。
+- V11で既存プロジェクト自作の assets/textures/floor4/basalt-charcoal-01/ を追加利用。原本生成コード tools/b4-render/generate-basalt-pbr.py、READMEに第三者依存なしと明記。既存岩の頂点は削除せず、地層状変位と破断キャップを追加。
+- 残課題: 大きな岩の丸い輪郭・薄い岩盤の板状感は未解消。**美術承認なし**、正式保存なし、ゲーム統合/FPS未検証。制作PR #458（親PR #450）。
