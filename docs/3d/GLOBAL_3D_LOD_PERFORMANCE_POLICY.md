@@ -54,3 +54,9 @@ P3: 多方向impostor、テクスチャアトラス、風アニメ、影の距�
 - Three.js API: https://threejs.org/docs/pages/InstancedMesh.html / https://threejs.org/docs/pages/BatchedMesh / https://threejs.org/manual/pages/optimize-lots-of-objects.html
 
 BotWの正確な葉のポリゴン数、シェーダ、距離閾値、LODフェード式を断定できない。『任天堂の公式設計を完全再現』ではなく『確認された思想と公開された同等技術をコタマへ適用』と区別する。
+## 制作・レビュー時のGitHub Actions利用ルール（2026-11-17 追加）
+- 全3D制作のアセット検証時は、まずGLBの構造負荷監査Actionを実行し、メッシュ数・primitive数・面数・材質とファイル容量を記録する。従来型Action未対応のソースには理由を残す。
+- 植生は元Blend保全＋材質別葉メッシュ結合＋同一視点レンダー比較を優先。岩／建築等の静的な不透明モデルは別の3段階LOD Actionを利用。樹木遠景は8方向Impostorをレビュー用に生成できる。
+- LODのヒステリシス／2Dセル先読みの純粋関数はNodeテスト済みだが、各階層の実ゲームLODマネージャーやロードは**未接続**。自動適用済みと説明しない。
+- glTF MASK／alphaTest／MSAAのAlpha to Coverageは**検証候補**。シェーダー、フレームレート、モバイル端末での実測なしに一括採用しない。
+- 参照: [GitHub Actions運用と検証記録](SHARED_3D_ACTIONS_OPTIMIZATION_PLAYBOOK.md)、[共通引継ぎ](BLENDER_SHARED_EXECUTION_ENTRYPOINT.md)。
