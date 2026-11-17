@@ -1,0 +1,68 @@
+name: Floor3 Ruined Building Quality Lighting Review
+on:
+  push:
+    branches: [feature/gpt-b3-building-render-study-20261117]
+    paths:
+      - 'tools/floor3/render_quality.py'
+      - '.github/workflows/floor3-building-quality-review.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Generate source GLBs without changing existing building
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'numpy>=1.26,<3' 'trimesh>=4,<5'
+          mkdir -p review-output render-output
+          python tools/floor3/build_render_studies.py
+          cp render-output/floor3_ruined_building_study_v3.glb review-output/
+          printf '{"floor":3,"version":"v3-brighter-review","status":"STARTED","approval":"NOT_APPROVED","sha":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > review-output/progress.json
+      - name: Actual Blender three-view render and .blend checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+            -b -t 2 --python tools/floor3/render_quality.py -- \
+            review-output/floor3_ruined_building_study_v3.glb review-output 2>&1 | tee review-output/blender.log
+          grep -q 'B3_QUALITY_ALL_VIEWS_COMPLETE' review-output/blender.log
+      - name: Verify GLB Blender checkpoint and actual PNG views
+        shell: bash
+        run: |
+          python - <<'PY'
+          import pathlib,hashlib,json,struct,os
+          root=pathlib.Path('review-output')
+          stem='floor3_ruined_building_study_v3'
+          names=[stem+'.glb',stem+'.blend']+[stem+'-'+v+'.png' for v in ('front','side','angle')]
+          records={}
+          for name in names:
+              data=(root/name).read_bytes()
+              assert len(data)>1024,name
+              if name.endswith('.png'):
+                  assert data.startswith(b'\x89PNG\r\n\x1a\n'),name
+              if name.endswith('.glb'):
+                  assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data),name
+              if name.endswith('.blend'):
+                  assert data.startswith(b'BLENDER'),name
+              records[name]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+          manifest={'stage':'floor3','version':'v3-brighter-review','approval':'NOT_APPROVED',
+              'source_commit':os.getenv('GITHUB_SHA'),'workflow_run_id':os.getenv('GITHUB_RUN_ID'),
+              'status':'RENDERED_AWAITING_VISUAL_APPROVAL','files':records}
+          (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+          print('VALIDATED',len(records),'FILES')
+          PY
+      - name: Upload all partial evidence and checkpoint
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: floor3-building-brighter-review-v3
+          path: review-output/
+          retention-days: 14
