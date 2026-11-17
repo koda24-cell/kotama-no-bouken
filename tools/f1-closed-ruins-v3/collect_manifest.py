@@ -2,10 +2,11 @@ from pathlib import Path
 import json,hashlib
 ROOT=Path(__file__).resolve().parents[2];b=ROOT/'assets/3d/dungeons/b1_closed_ruins_v3'
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+scripts={'v3_moss_veil':'build_moss_veil.py','v3_shade_understory':'build_shade_understory.py','v3_root_rubble':'build_root_rubble.py','v3_collapse_oculus':'build_collapse_oculus.py','v3_eroded_bank':'build_eroded_bank.py'}
 assets=[]
 for p in sorted((b/'metrics').glob('*.json')):
     d=json.loads(p.read_text());assert len(d['renders'])==4 and d['renderedFrom']=='reimported GLB'
-    assert sha(b/d['file'])==d['sha256'];d['sourceSha256']=sha(b/d['source']);d['renderSHA256']={r:sha(b/r) for r in d['renders']};assets.append(d)
+    assert sha(b/d['file'])==d['sha256'];d['sourceSha256']=sha(b/d['source']);d['renderSHA256']={r:sha(b/r) for r in d['renders']};d['buildScript']='tools/f1-closed-ruins-v3/assets/'+scripts[d['id']];d['buildScriptSha256']=sha(ROOT/d['buildScript']);d['commonAdapterSha256']=sha(ROOT/'tools/f1-closed-ruins-v3/asset_common.py');assets.append(d)
 assert len(assets)==5
 source=json.loads((b/'verification/source-portability.json').read_text());assert source['passed']
 for s in source['sources']:assert sha(b/s['file'])==s['sha256']

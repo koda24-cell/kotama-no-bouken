@@ -64,7 +64,10 @@
         "renders/v3_collapse_oculus/side.png": "99153fff91a2239858b64f696431a75c4676524c047169499cd4557792f5fe42",
         "renders/v3_collapse_oculus/angle.png": "bfde2e55c29f9120666e825945aa525cefbdfdf9b027d593170073418a1493c0",
         "renders/v3_collapse_oculus/top.png": "3d5b8681d9e9dd818cffac7db03fb216c6f64ae75d61f45946fb6f4a1fd3afd8"
-      }
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_collapse_oculus.py",
+      "buildScriptSha256": "467be85ce63ae3c3235221ffad57c99df925fe1f78f5ab67310463546ec7d619",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
     },
     {
       "bytes": 2251616,
@@ -123,7 +126,10 @@
         "renders/v3_eroded_bank/side.png": "77e57dd1e260bfdacb8c6e824531a4fb8c625105892ebb1ca2fcdf46ff842be0",
         "renders/v3_eroded_bank/angle.png": "a41aa5aec0ddd4ccc2edd84d1d7a4d024ae75691f41e82f37e4675c556b451fa",
         "renders/v3_eroded_bank/top.png": "dc827ae3854222d1e77b5c20bb2e0a4d95b473b2a06bbf4588deab0392ca10b2"
-      }
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_eroded_bank.py",
+      "buildScriptSha256": "d203357cba228741cdd0acc8338395891d70e427ee6f38bdc3013967b18bb786",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
     },
     {
       "bytes": 2996972,
@@ -181,7 +187,10 @@
         "renders/v3_moss_veil/side.png": "c235d053282c078f2ef6694d8f79434f5d9d6eb2ee1b1b1fe23ebb720896df4d",
         "renders/v3_moss_veil/angle.png": "39d6424a9d17691b0fab67fb0577654ccecb4b065034f4fd8ae14a1cc2512698",
         "renders/v3_moss_veil/top.png": "e1e991ad458cfa52af604d4589d5b9d8d81246e4969c7ae8ef91e363a9e14282"
-      }
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_moss_veil.py",
+      "buildScriptSha256": "71f71a04ecb3bc0acba647a086d8aa4b36f70369f6e57c20711201605aaa00a0",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
     },
     {
       "bytes": 2300740,
@@ -240,7 +249,10 @@
         "renders/v3_root_rubble/side.png": "c6a2e5953bed5bed1d90f4982ab8fd3c12cf80183eedf6ff9889c7809a774705",
         "renders/v3_root_rubble/angle.png": "b757aa9a26bf6b42cc8df4981a9d77a04f9181ac225363b8d49c68e138248499",
         "renders/v3_root_rubble/top.png": "65547b7cdef7d539998a9d21dd2d086a09dcc60818b32c8293acce2361757468"
-      }
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_root_rubble.py",
+      "buildScriptSha256": "4bb8802bd141c353e447c47bf52d5b3ae9acb67b07fb007ef97ec95da6575286",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
     },
     {
       "bytes": 846040,
@@ -299,7 +311,10 @@
         "renders/v3_shade_understory/side.png": "c911e651c3d95d7011fff4e0e16992d79563c840c03b07b3143c5437b58cca57",
         "renders/v3_shade_understory/angle.png": "419d18a43b14882a7e47d464454a6e8caa76caf16b3ee798b5897b3c883b08d1",
         "renders/v3_shade_understory/top.png": "08098de225c9f7e426d99e89abbc7158b7483abb7322dd06196d816d726c5dee"
-      }
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_shade_understory.py",
+      "buildScriptSha256": "d9cfacd3a55a0a58110d71389e56801645f4d5737cb1feefc5ae26c0f515ad64",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
     }
   ],
   "verification": {
