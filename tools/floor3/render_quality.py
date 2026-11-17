@@ -25,10 +25,10 @@ scene.world=world
 world.use_nodes=True
 bg=world.node_tree.nodes.get('Background')
 bg.inputs['Color'].default_value=(.64,.70,.76,1)
-bg.inputs['Strength'].default_value=.9
+bg.inputs['Strength'].default_value=.58
 scene.view_settings.view_transform='AgX'
 scene.view_settings.look='AgX - Medium High Contrast'
-scene.view_settings.exposure=.65
+scene.view_settings.exposure=-.35
 scene.view_settings.gamma=1
 def aim(ob,target):
  ob.rotation_euler=(target-ob.location).to_track_quat('-Z','Y').to_euler()
@@ -37,7 +37,7 @@ for label,rel,power,dimension in [
  ('side-fill',(1.1,.5,.75),1900,.95),
  ('rim',(-.6,1.0,1.35),1600,.75)]:
  bpy.ops.object.light_add(type='AREA',location=center+Vector(rel)*size)
- ob=bpy.context.object;ob.name=label;ob.data.energy=power*(size/13)**2;ob.data.size=size*dimension;aim(ob,center)
+ ob=bpy.context.object;ob.name=label;ob.data.energy=power*(size/13)**2*.75;ob.data.size=size*dimension;aim(ob,center)
 bpy.ops.object.camera_add()
 camera=bpy.context.object
 camera.data.type='ORTHO'
