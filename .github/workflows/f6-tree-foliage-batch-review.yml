@@ -73,7 +73,10 @@ jobs:
             data=(root/f['name']).read_bytes()
             assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256']
           structural=json.loads(Path('render-output/3d-performance/tree-before-after.json').read_text())['models']
-          assert len(structural)==2\n          original=next(x for x in structural if x['path']=='source-tree/tree_mature.glb')\n          batched=next(x for x in structural if x['path'].endswith('tree_mature_v14_leaf_batched_NOT_APPROVED.glb'))\n          assert batched['scene_mesh_nodes']<original['scene_mesh_nodes']
+          assert len(structural)==2
+          original=next(x for x in structural if x['path']=='source-tree/tree_mature.glb')
+          batched=next(x for x in structural if x['path'].endswith('tree_mature_v14_leaf_batched_NOT_APPROVED.glb'))
+          assert batched['scene_mesh_nodes']<original['scene_mesh_nodes']
           print('FOLIAGE_STRUCTURAL_QA_PASS', [(x['path'],x['scene_mesh_nodes']) for x in structural])
           PY
       - uses: actions/upload-artifact@v4
