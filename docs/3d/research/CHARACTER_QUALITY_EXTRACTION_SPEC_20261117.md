@@ -100,3 +100,8 @@ PR: https://github.com/koda24-cell/kotama-no-bouken/pull/412
 - `summarize_boundary_loops.py` を追加。6モデルのJSONを読み、境界成分ごとに辺数・頂点数・閉路判定・分岐/端点数・XYZ幅/奥行/高さ・経路数を `boundary_component_comparison.csv` と `boundary_component_review.md` に出力する。
 - **成分番号は辺数降順の便宜的なIDで、後頭部の解剖学的な接合位置を示すものではない**。計測値の単位もBlender取り込みスケールの検証が必要。
 - 本コードは作業ブランチに保存済み。新規Actions成功・CSV内容の確認はまだ未実施。
+
+## 境界描画の軽量化（2026-11-17）
+- `render_boundary_review.py` の境界オーバーレイを、辺ごとにCurve/Objectを作る方式から**1 Curve/Object内に多数の2点POLYスプラインを格納**する方式へ変更した。約1300オブジェクトを作成していた管理負荷を減らす狙い。
+- 保存コミット `35df59c4ea508c19d7e43fe7c565b00fff22c6df`。レンダリングの成功・速度改善・終了時SIGSEGV解消はまだ未検証。
+- V15の元コードを再確認: 高さ帯ごとの境界頂点を平均化して左右端を作り、背面シェルを張る構造。実際の閉じた接続ループと頂点対応を使っておらず、V16ではこの平均化手法をそのまま踏襲しない。
