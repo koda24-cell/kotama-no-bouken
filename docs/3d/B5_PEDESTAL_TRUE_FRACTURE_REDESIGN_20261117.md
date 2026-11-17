@@ -20,3 +20,10 @@
 - The third-person game-scale silhouette and rectangle architectural mass must remain. No new changes to game map or original assets.
 - Reject if the crack looks like a zigzag lightning icon or if the fracture faces look like smooth plastic.
 - Only after review and approval promote official assets through separate PR.
+
+## First real render and image review
+- V1 Actions success: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44026580207 ; Artifact `14303078042`. GLB (903,124 bytes), Blender source, three 1000×800 PNG and manifest were fetched and real images opened. 3-direction/GLB/hash technical QA passed.
+- Actual **artistic failure**: most of the statue pedestal remains blank, white and studio-clean; open split reads as a highly repetitive lightning bolt with unconvincing zigzag angles; both sides appear excessively uniform. True physical separation is achieved but does not establish historically convincing erosion.
+- V2 script `tools/b5-knights/build_pedestal_true_fracture_v2.py` changes upper and shaft split to less repetitive slopes, variable fracture-side vertex perturbations through depth, shallower gap, real removed-stone patches on cap/shaft, lower photographic influence and exposure.
+- V2 Actions: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44027043326 . Results must be checked; a source commit alone is not completion.
+- **No variant is approved**; original V1–V3, all old A/B/C, and knight V14 remain preserved without gameplay changes. Repair alternatives proceed one item at a time.
