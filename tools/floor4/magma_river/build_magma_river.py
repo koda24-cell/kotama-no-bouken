@@ -191,7 +191,12 @@ def rock(name,xyz,scale,material,seed=0,subdiv=4):
  o=bpy.context.object;o.name=name;parent(o)
  for v in o.data.vertices:
   x,y,z=v.co;h=1+.14*sin(x*4.3+seed)*sin(z*5.7-seed*.4)+.075*sin(y*11+z*8+seed)+.045*sin(x*19+y*17+z*12+seed)+.027*sin((x+y-z)*31+seed)
-  v.co=(x*h,y*h,z*h)
+  # Retain the original ico-sphere topology; geological shearing reshapes
+  # only its surface. Broad near-planar bedding breaks the inflated-pillow look.
+  strata=round((y+.08*sin(x*3.4+z*2.1+seed*.23))*4.8)/4.8
+  shear=.045*sin(x*3.1+z*2.3+seed*.17)*sin(y*4.6+seed*.21)
+  cut=.055*max(0,sin(x*2.8+y*3.2-z*1.6+seed*.27))**4
+  v.co=(x*h*(1-cut)+shear*.25,y*h*.73+strata*.27+shear,z*h*(1-cut))
  o.scale=scale;o.rotation_euler=(R.uniform(-.23,.23),R.uniform(-.26,.26),R.uniform(-.65,.65));o.data.materials.append(material)
  for p in o.data.polygons:p.use_smooth=True
  return o
@@ -312,6 +317,127 @@ for i in range(28):
  y=.30+R.random()*.70
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=R.uniform(.015,.043),location=(x,y,z))
  o=bpy.context.object;o.name='MOLTEN_SPRAY';parent(o);o.data.materials.append(hot2)
+
+# V10 geological detail: original river, bank and every V9 rock remain intact.
+# Add real stepped strata, fractured basalt slabs and local contact rubble,
+# rather than a new blanket of smooth spheres or random triangle confetti.
+fracture=mat('Recessed_fracture_dark',(.043,.036,.034),.99)
+weathered=mat('Weathered_shear_face',(.115,.105,.099),.93,
+ texture=tex+'ashen_stone_albedo.png',normal=tex+'ashen_stone_normal.png',roughmap=tex+'ashen_stone_roughness.png')
+def slab(name,x,y,z,rx,rz,depth,seed,material=basalt):
+ rng=random.Random(seed)
+ # Polygonal shear slab: near-planar weathered top, steep broken sidewalls.
+ n=11;verts=[];uv=[];faces=[]
+ ang0=rng.uniform(-pi,pi)
+ for j in range(2):
+  for i in range(n):
+   a=2*pi*i/n+ang0
+   k=1+.16*sin(a*3+seed*.17)+.095*sin(a*5-seed*.31)+rng.uniform(-.065,.065)
+   xx=x+rx*cos(a)*k
+   zz=z+rz*sin(a)*k
+   yy=y+(0 if j==0 else -depth)+.028*sin(a*4+seed)+.019*sin(a*9-seed)
+   verts.append((xx,yy,zz));uv.append((xx*.28,zz*.28))
+ for i in range(1,n-1):faces.append((0,i,i+1))
+ for i in range(n):
+  a=i;b=(i+1)%n;faces.append((a,b,b+n,a+n))
+ ob=objmesh(name,verts,faces,material,uv,smooth=False)
+ return ob
+# Banks have long weathered bedrock ledges rather than piles of identical rounded stones.
+for side in (-1,1):
+ for k in range(18):
+  z=-3.04+k*.36+R.uniform(-.12,.12)
+  x=edge(z,side)+side*(.24+R.uniform(.05,.78))
+  y=ground_y(x,z)+.065+R.uniform(.015,.13)
+  slab('V10_BEDROCK_SHEAR_PLATE',(x),y,z,
+       R.uniform(.18,.44),R.uniform(.27,.66),R.uniform(.045,.16),500+k+side*57,
+       basalt if k%5 else weathered)
+ # Buried fragments around large masses; not bright floating pebbles.
+ for k in range(12):
+  z=R.uniform(-3.10,3.08)
+  x=edge(z,side)+side*R.uniform(.24,1.60)
+  y=ground_y(x,z)+.017
+  slab('V10_BURIED_TALUS',x,y,z,R.uniform(.075,.20),
+       R.uniform(.12,.31),R.uniform(.045,.12),830+k+side*93,basalt)
+# Add eroded horizontal seams and displaced plates to the continuous rear cliff.
+# These are shallow interlocking rock strata with variable thickness and stagger.
+for band in range(5):
+ y0=.44+band*.47+R.uniform(-.055,.055)
+ for k in range(6):
+  x=-2.05+k*.79+R.uniform(-.12,.12)
+  z=-3.65+.09*sin(x*2.2+band)
+  slab('V10_REAR_BASALT_STRATUM',x,y0,z,
+       R.uniform(.38,.61),R.uniform(.14,.25),R.uniform(.055,.13),
+       1000+band*17+k,weathered if (k+band)%6==0 else basalt)
+# Sparse black recessed fracture wedges, following changes in bedding direction.
+# Keep cracks local and discontinuous; avoid painted repeated parallel lines.
+for side in (-1,1):
+ for k in range(9):
+  z=-2.85+k*.68+R.uniform(-.17,.17)
+  x=edge(z,side)+side*R.uniform(.48,1.23)
+  yy=ground_y(x,z)+.06
+  length=R.uniform(.17,.47)
+  dx=side*R.uniform(.03,.13)
+  vs=[(x,yy,z),(x+dx,yy-.014,z+length*.45),
+      (x+dx+side*.019,yy-.015,z+length*.48),
+      (x+side*.026,yy,z+.025)]
+  objmesh('V10_LOCAL_BASALT_FRACTURE',vs,[(0,1,2,3)],fracture,
+          [(0,0),(.8,1),(1,1),(.15,0)],smooth=False)
+
+
+# V11 color/normal realism: project-original dark charcoal basalt PBR.
+# Keep original rock geometry and V10 added strata, but replace the pale
+# clay-like boulder surface with the project's own dark weathered volcanic stone.
+charcoal_dir='assets/textures/floor4/basalt-charcoal-01/'
+dark_basalt=mat('V11_Dark_Charcoal_Basalt',(0.13,.115,.109),.94,
+ texture=charcoal_dir+'basecolor.png',normal=charcoal_dir+'normal.png',
+ roughmap=charcoal_dir+'roughness.png')
+dark_boulder_names={
+ 'BANK_LARGE_WEATHERED_ROCK','CAVERN_ROCK_FACE',
+ 'REAR_IRREGULAR_BASALT_OVERHANG','FALL_SOURCE_EMBEDDED_BASALT',
+ 'V10_BEDROCK_SHEAR_PLATE','V10_BURIED_TALUS','V10_REAR_BASALT_STRATUM'
+}
+for o in bpy.data.objects:
+ if o.type=='MESH' and o.name.split('.')[0] in dark_boulder_names:
+  if len(o.data.materials):o.data.materials[0]=dark_basalt
+  else:o.data.materials.append(dark_basalt)
+
+
+# V12: integrate fractured caps with the retained original large boulders.
+# Earlier strata lay on the ground; these caps break the smooth boulder silhouettes.
+for o in list(bpy.data.objects):
+ if o.type!='MESH':continue
+ if o.name.split('.')[0]=='BANK_LARGE_WEATHERED_ROCK':
+  x,y,z=o.location;sx,sy,sz=o.scale
+  # Two asymmetrical fractured faces, both embedded into the source boulder.
+  capseed=sum(ord(c) for c in o.name)+int(z*113)
+  slab('V12_EMBEDDED_BASALT_CLEAVAGE',x+sx*.18,y+sy*.68,z+sz*.12,
+       sx*.85,sz*.91,sy*1.04,capseed,dark_basalt)
+# Broken rear-cliff faces: vertical, stepped and oblique, not horizontal shelves.
+def wall_shear(name,x,y,z,w,h,thick,seed):
+ rng=random.Random(seed)
+ n=12;vs=[];uv=[];fs=[]
+ # Front and rear contours with irregular angular facets.
+ for layer in range(2):
+  for i in range(n):
+   a=2*pi*i/n
+   rad=1+.11*sin(a*4+seed*.3)+rng.uniform(-.08,.08)
+   xx=x+w*.5*cos(a)*rad
+   yy=y+h*.5*sin(a)*rad
+   zz=z+(thick*.5 if layer==0 else -thick*.5)+.045*sin(a*5+seed)
+   vs.append((xx,yy,zz));uv.append((xx*.29,yy*.29))
+ for i in range(1,n-1):fs.append((0,i,i+1))
+ for i in range(n):
+  a=i;b=(i+1)%n
+  fs.append((a,b,b+n,a+n))
+ return objmesh(name,vs,fs,dark_basalt,uv,smooth=False)
+for k in range(15):
+ x=-2.0+(k%5)*.96+R.uniform(-.13,.13)
+ y=.48+(k//5)*.83+R.uniform(-.13,.13)
+ z=-3.60+R.uniform(-.13,.15)
+ wall_shear('V12_CLIFF_SHEAR_FACE',x,y,z,
+            R.uniform(.45,.88),R.uniform(.43,.89),R.uniform(.06,.20),
+            1600+k)
+
 # The modeling convention above uses Y-up (as in Three.js).
 # Blender is Z-up: convert every mesh to Z-up BEFORE lighting and cameras.
 # This also makes the lava river a horizontal ground surface and the fall vertical.
