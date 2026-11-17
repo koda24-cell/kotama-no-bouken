@@ -1,0 +1,59 @@
+name: Floor3 Overgrown Switchback V10 Render
+on:
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - name: Render user reference geometry V10
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python3 -m py_compile tools/floor3/switchback/build_v10.py
+          printf '{"status":"started","asset":"floor3-switchback","version":"v10","approval":"NOT_APPROVED","source_commit":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/progress.json
+          python3 tools/floor3/switchback/fetch_cc0_pbr.py
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/switchback/build_v10.py 2>&1 | tee blender.log
+          grep -q "FLOOR3_SWITCHBACK_V10_COMPLETE" blender.log
+      - name: Validate actual GLB, Blend and front/side/angle PNG
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct
+          root=pathlib.Path('out');stem='floor3_overgrown_switchback_v10'
+          paths=[root/(stem+'.blend'),root/(stem+'.glb')]+[root/(stem+'-'+v+'.png') for v in ('front','side','angle')]
+          for p in paths:
+              assert p.exists() and p.stat().st_size>1024,f'missing {p}'
+          raw=paths[1].read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          length,kind=struct.unpack_from('<II',raw,12)
+          assert kind==0x4e4f534a
+          doc=json.loads(raw[20:20+length])
+          names=[n.get('name','') for n in doc['nodes']]
+          for expected in ('V1 upper worn structural tread','V1 lower worn structural tread','V1 massive load bearing pillar','V1 rusty vertical railing post'):
+              assert any(expected in n for n in names),f'missing {expected}'
+          assert any('normalTexture' in m for m in doc['materials']),'normal texture not packed'
+          for p in paths[2:]:
+              assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          manifest={'asset':'floor3_overgrown_switchback','version':'v10','approval':'NOT_APPROVED',
+                    'status':'RENDERED_NOT_VISUALLY_APPROVED','run_id':'${{ github.run_id }}',
+                    'source_commit':'${{ github.sha }}',
+                    'files':{p.name:{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths}}
+          (root/'manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n')
+          print('Validated all five V10 artifacts')
+          PY
+      - name: Keep logs on failure
+        if: always()
+        run: |
+          mkdir -p out
+          if test -f blender.log; then cp blender.log out/blender.log; fi
+      - name: Upload unapproved review archive
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: floor3-switchback-v10-review
+          path: out/
+          retention-days: 14
