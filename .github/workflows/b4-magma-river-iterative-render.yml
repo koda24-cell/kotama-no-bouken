@@ -2,7 +2,7 @@ name: B4 Magma River Blender Iterative Render
 on:
   push:
     branches:
-      - feature/gpt-b4-basalt-geology-v11-20261117
+      - feature/gpt-b4-basalt-geology-v10-20261117
     paths:
       - '.github/workflows/b4-magma-river-iterative-render.yml'
       - 'tools/floor4/magma_river/**'
