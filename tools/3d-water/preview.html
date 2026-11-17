@@ -24,6 +24,7 @@ vertexShader:`uniform float uTime,uWind;uniform vec2 uDir;attribute float aHeigh
 fragmentShader:`precision highp float;varying float vH;void main(){vec3 green=mix(vec3(.17,.31,.10),vec3(.65,.80,.32),smoothstep(0.,1.,vH));gl_FragColor=vec4(green,1.);\n#include <tonemapping_fragment>
 #include <colorspace_fragment>\n}` } );
 const grass=new THREE.Mesh(grassGeo,grassMat);grass.frustumCulled=false;scene.add(grass);
+window.__kotamaShaderPreview={renderer,scene,camera};
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.target.set(0,0,0);
 document.getElementById('kind').onchange=e=>{const old=waterFx;waterFx=createWaterV2(e.target.value);water.material=waterFx.material;old.dispose();};
 document.getElementById('status').textContent='起動済み（独立した生成草と水面）';
