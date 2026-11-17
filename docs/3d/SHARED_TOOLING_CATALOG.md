@@ -292,3 +292,10 @@
 - 個別素材方針: 専用 `/workspace/tools/blender-5.3.0-linux-x64/blender` を固定して一assetずつBlend/GLB/実再import PNG/metricsを出力。原本17GLBは保持しV3を別出力先へ。既存33,804trisのシダを大量複製せず、密度用lowpoly草花/不定形苔capを別制作する。画像埋込PBR/原点/4mセル/1.6m目高を記録し、各assetから実画面へ段階確認する。
 - 導入/検証状態: **計画・実装中。実GPUの水面描画、reflection target数、lifetime、FPSは未検証**。専用Blender5.3の起動と既存6構造GLBの実import/bbox確認、原本17SHA一致のみ監査済み。これらを新規asset生成完了や美術品質合格と扱わない。実行日時/コマンド/画像/JSONによる結果は実行担当が後続追記する。
 - 注意: 既存map/固定7対象/FOE/戦闘/セーブは保持。通常表示・main公開・美術承認・実機FPSへの昇格を含まない。本項は情報共有のみで、未検証runtime・モデル・画像をdevelopmentへ導入する変更ではない。
+
+### 一層・閉鎖神域V3: 個別素材・苔MASK・独立水面の実行結果（2026-11-17 JST）
+- 前節PR #466の計画に対する実測追記。制作 [PR #465](https://github.com/koda24-cell/kotama-no-bouken/pull/465) で専用Blender5.3を使い、新規5assetを**各1個ずつ順次生成**。GLBを別sceneへ再importして4方向計20PNGを作成し、制作rootが全contactを実確認。苔cap652 / 低草1520 / 根瓦礫1556 / 崩落穴縁2004 / 水際962、合計6,694tris。原本17GLBは全SHA不変。新規5GLBのKhronos validator errors/warnings0、5Blend全FILE画像packed・再open/decode pass。これは最終美術承認ではない。
+- 新技法: 既存CC0土RGBの緑色調派生と、自作seeded multiscale Gaussian alpha＋端のfeatherを組み合わせた不定形苔cap。既存画像の出典/CC0条件は元manifestを継承し、Pinterest画像を転用しない。alpha MASK threshold0.45、vertex colorsなし、同一UVの一枚面で床格子を跨ぐ。原本素材は変更せず、別V3出力。capは2,540→652trisへ削減して密度用途へ調整したが、実機FPS合格を意味しない。公式/ライセンスは前節のBlender/Three.js（MIT）と既存Poly Haven（CC0）を参照。
+- 独立水面試験: 青緑色調とclearcoat normalの追従を調整後、shader/GPU errors0・warnings0、同cameraで時刻0→5秒だけを変えた画像差183,741px。既存11水meshの連続world-XZ normal、追加reflection render target0、dispose後の元材復元とresource baseline復帰を確認。証拠 `docs/reviews/f1-closed-water-v3/water-verification.json`、PNG2枚と修正前履歴。**独立WebGL試験であり、実ゲーム統合や実機FPSの合格ではない**。
+- 最終map guard/clearance: 25source hash一致、932 hard placementsと104 cardinal sweepsで干渉0。高さ帯0.12〜2.1m、経路幅1.8mの保守的三角形AABB検査。薄い苔/紙/植生などsoft1,377配置は理由付き別扱いで、全geometryの無条件通過保証へ拡張しない。`docs/reviews/f1-closed-ruins-v3/clearance.json` に実体、修正前結果も保存。
+- 再現/証拠: `assets/3d/dungeons/b1_closed_ruins_v3/manifest.json` と `verification/khronos-validation.json` / `source-portability.json`、`tools/f1-closed-ruins-v3/assets/build_*.py` を各単体で専用Blenderに渡す制作手順。**実ゲーム全suiteはこの記録時点で実行中、まだpassと扱わない**。主担当が完走後にruntime source hashと結果を追記する。通常表示/main公開/美術承認への昇格は含まない。
