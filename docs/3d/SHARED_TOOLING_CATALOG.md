@@ -234,3 +234,42 @@
 ### 一層試験GPU・保存分離の実行結果追記（2026-11-17 JST）
 - 前節のSVG対策を実index.htmlで完走。1F→3F→祠→水際→2F→3F→戦闘→3F帰還の全8段階、820 uploads / GLerrors0 / GPU警告0。FOEは512角canvas upload。修正前の同条件はSVG直接uploadのGLerror1281が1回と警告2件。独立3比較でもSVG直接だけ失敗、canvasとDataTexture mipは成功。原本SVG・17候補GLB不変。
 - 保存分離ページも修正後に再実行pass。親Storage sentinel不変、試遊側から不可視、実3F/固定7/水11/source hash成功。証跡: PR #447の `docs/reviews/f1-sacred-forest-gpu-upload/` と `docs/reviews/f1-sacred-forest-playtest-page/`。Chromium/Three r180/SwiftShaderのみ、実機FPS・全GPU・美術承認には拡張しない。全機能QAの最終記録は同PRへ別保存する。
+
+## 第3層折返し階段で実証したCC0写真PBR（2026-11-17）
+- 技術: Poly Haven Concrete Moss 1K/2K画像（Diffuse、Normal OpenGL、Roughness）。ゲームの自然侵食した古いコンクリートに利用。
+- 正式出典: https://polyhaven.com/a/concrete_moss / Rob Tuytel / Poly HavenのCC0 1.0。
+- 取得実装: `tools/floor3/switchback/fetch_cc0_pbr.py`（制作PR https://github.com/koda24-cell/kotama-no-bouken/pull/449）。GitHub Actions runnerの `out/source_textures` に保存してBlenderコンテナへ共有し、画像をGLB埋め込み。
+- **実動作確認**: V5 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43988036966 （全3マップ取得・Blenderロード・GLB/3方向PNG・Blend成功）。2K版V8 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43990198620 （描画と形式検査成功、Artifacts保存）。
+- 1K公式Diffuse SHA-256 `7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc`、Normal GL `ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b`、Roughness `ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c`。
+- 失敗と修正: ホスト側の `/work` 書込みでPermissionError→相対パス `out/` へ修正。PBRマップ取得不能時は生成テクスチャにフォールバックし、成功とは報告しない。
+- 留意: 完成品質判定と技術検査は別。参考画像の著作権不明な画像は素材化しない。現モデルはユーザー承認前、正式フォルダへの保存・ゲーム統合はしていない。
+
+## 第4層・独立溶岩モジュールのBlender PBR書出し手法（2026-11-17）
+- 名称: 手続き型512px熱分布ベイク＋既存PBR Normal/Roughness＋個別GLB/4方向レンダー。
+- 目的: 蛇行流・合流・溜まり・落下・冷却の5つを、周辺地形を含まない再利用可能な溶岩モデルとして制作する。
+- 公式技術: Blender Python API https://docs.blender.org/api/current/ 、glTF 2.0 https://www.khronos.org/gltf/ 。Blender標準API・独自Pythonコード。画像ベイクはオリジナル生成、既存のプロジェクト内PBR画像は利用条件を正式採用前に再確認。
+- 導入: `tools/floor4/lava_modules/build_lava_modules.py` と `.github/workflows/b4-lava-modules-review.yml`（PR #454、未承認）。
+- 検証: ソース/ワークフロー作成済み。Actions run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43996896778 を実行中。**この記録時点では実レンダー成功・GLB出力・ゲーム内描画・アニメーション未検証**。確認後にrun結果を追記する。
+- 担当: GPT（Blender/GLB/PNG）、Claude（承認後のブラウザ組込み）。未承認GLBを本番ゲームへ統合しない。
+
+### Poly Haven Fern 02 — 写実的なシダのCC0基準モデル (2026-11-17)
+- 公式URL: https://polyhaven.com/a/fern_02 ; ライセンス: https://polyhaven.com/license (CC0, 改変・商用利用可)。
+- 用途: 第2層水源の独立型植物3Dにおける葉の形・マテリアル・シルエット・モデル密度の**品質比較基準**。植物を単独GLBとして岩/遺跡/橋へシードで組み合わせる案。
+- 内容: 4株のシダモデル、約6,232三角面、Diffuse / Normal (GL) / Roughness / Alphaなどの実写真由来マップを公式サイトで案内。造形作者 Rico Cilliers、スキャン Rob Tuytel。
+- 登録/担当: 2026-11-17 GPT。ソース・ライセンス・仕様の公開情報を確認済み。
+- **実導入/検証: 未導入/未実行。** GLBを実際に取得/読み込み/撮影/ゲーム内組合せしたわけではない。別チャットのPinterest参照（画像CDNがDNSエラー）はこれと区別。
+- 制作先: PR #451、`feature/gpt-b2-modular-wet-fern-20261117`。V01原型とV02手続き造形は保持。Fern 02を実参照/採用する場合はダウンロードURL・出典・ハッシュ・Blender実レンダー/GLB上の材質と当たり判定・タイル密度を検証し、承認を得る。
+
+### 溶岩単体5種の実行結果（2026-11-17、上記PBR技術の追記）
+- GitHub Actions V1 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43996896778 、V2 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43997817577 、V3 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43998531627 はいずれも**成功**。
+- V3実体確認: 独立GLB 5、Blend 5、PNG 20（各4視点）、manifest 5。GLBには7画像内包、全30ファイルのSHA256がmanifestと一致。ソース `tools/floor4/lava_modules/build_lava_modules.py`、制作PR #454。
+- 具体的な改善: 合流点の非対称化、滝の厚み追加、冷却亀裂の不規則化と発光抑制。静止モデルのみ。GLBのブラウザ実描画・流動VFX・FPS・ゲーム内接続は**未検証**。
+- 状態: 技術的なGLB/PNG/Blend生成は検証済み。**美術承認なし、正式保存なし**。GitHub Actions Artifactは一時保管、ユーザー承認後に正式保存PRを作る。
+
+### B4玄武岩・層理破断メッシュ（2026-11-17）
+- 名称: 不規則多角形の押し出し破断岩盤＋背面崖の侵食地層＋埋没瓦礫（Blender標準Python API）。
+- 目的: 溶岩河川の岩が丸い粘土塊の集合に見える問題を改善し、元のV9メッシュを保持して実地質的な角張った破断面・岩盤の重なりを追加する。
+- 公式: https://docs.blender.org/api/current/ （Blender標準API）。自作コードで第三者アドオン不要。PBRは既存のvolcanic_basalt/ashen_stone画像を再利用（元画像のライセンスは正式採用前に確認）。
+- 導入: PR https://github.com/koda24-cell/kotama-no-bouken/pull/458 、tools/floor4/magma_river/build_magma_river.py（親PR #450の作業ブランチから派生）。Blender 5.x Actionsで試験。
+- 検証: V9元モデルの4方向実レンダーrun https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43994456829 は成功。V10追加地質メッシュの実レンダーrun https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44003753769 は**結果確認待ち**。品質・GLB・ゲーム実装未承認。
+- 注意: 既存の岩/溶岩メッシュを消さない。形状追加は破断面・段差の質感改善であり、地質学的な実測再現ではない。実PNG目視後に修正し、承認までは本番へ移さない。
