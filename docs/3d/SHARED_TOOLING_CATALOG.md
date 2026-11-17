@@ -4,6 +4,10 @@
 
 | 名称・技術 | 用途 | 情報/導入/検証状態 | 出典・実装・証拠 |
 | --- | --- | --- | --- |
+| CEDEC2024 BotW 二次元四分木・距離別ロード | 全階層のセルストリーミング/LOD設計 | 任天堂講演の公表内容を確認・コタマ未実装 | [公式講演レポート](https://gamemakers.jp/article/2024_09_04_78145/) / [共通方針](GLOBAL_3D_LOD_PERFORMANCE_POLICY.md) |
+| Cemu BotW tree billboard / grass density解析 | 遠景樹木・植生の表示距離を別管理する根拠 | コミュニティ解析コード確認・コタマ未実装・任天堂公式コードではない | [Cemuパッチ](https://github.com/cemu-project/cemu_graphic_packs/blob/master/src/BreathOfTheWild/Mods/DrawDistance/patch_DrawDistance.asm) / [調査文書](F6_TREE_BOTW_PERFORMANCE_RESEARCH_20261117.md) |
+| SpeedTree葉束LOD・Alpha to Coverage・葉アトラス | 樹冠を高品質に保ちつつメッシュ/ドローコール削減 | GPU Gems文献確認・コタマ実動作未検証 | [GPU Gems 2](https://developer.nvidia.cn/gpugems/gpugems2/part-i-geometric-complexity/chapter-1-toward-photorealism-virtual-botany) / [GPU Gems 3](https://developer.nvidia.com/gpugems/gpugems3/part-i-geometry/chapter-4-next-generation-speedtree-rendering) |
+| 既存F1 16m InstancedMesh + 3D統計 | 計測基盤と繰返し配置バッチの再利用 | development実装コード確認・全階層共通LODは未実装 | `field/field-3d-b1-sacred-trial.js` / `field/field-3d-view.js` / [共通方針](GLOBAL_3D_LOD_PERFORMANCE_POLICY.md) |
 | Blender標準 Bevel / Weighted Normal | 建築・鉄骨エッジ | 実装済み・Actions描画検証済み（高架V1） | PR #353 / run 43601312291 |
 | Blender標準 Noise / Bump / 画像マテリアル | コンクリート・錆・表面凹凸 | V2実装済み・結果要確認 | PR #353 / `tools/floor3/elevated_bridge/build_v2.py` |
 | Poly Haven CC0 texture API | concrete/rust 画像取得 | 自動取得コード実装済み・実取得成否要確認 | https://polyhaven.com/ / PR #353 / `fetch_textures.py` |
