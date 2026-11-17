@@ -23,6 +23,10 @@ jobs:
           echo "{\"run_id\":${RUN_ID},\"status\":\"STARTED_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-paddle-run/latest-v10.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/3d/b2-waterwheel-paddle-run/latest-v10.json /tmp/v10-run-pointer.json
+          git fetch origin feature/gpt-b2-waterwheel-v07-resume-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-v07-resume-20261118
+          cp /tmp/v10-run-pointer.json docs/3d/b2-waterwheel-paddle-run/latest-v10.json
           git add docs/3d/b2-waterwheel-paddle-run/latest-v10.json
           git commit -m "chore(b2): V10 run pointer" || true
           git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
