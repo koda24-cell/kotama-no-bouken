@@ -38,6 +38,21 @@
 - 目線より高い4.6m壁の仕様は保持、独立ファイルとしてV1/V2を上書きしない。
 - V3 Blender run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44058362906 （成果物成功は実際のrun完了後に確認）。
 
+
+## 実レンダリング反復 V3〜V5
+
+| 版 | GitHub Actions | 技術検査 | 実画像での評価 |
+|---|---|---|---|
+| V3 | https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44058362906 | success / Artifact 14317082089 | 溝の幅は改善、しかし小粒の模様が反復して見え不合格 |
+| V4 | https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44059543631 | success / Artifact 14316644014 | ベース色の低周波マスクがシームレスでなく四角い継ぎ目が露出。不合格 |
+| V5 | https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44060267416 | success / Artifact 14317797495 | 反復用テクスチャの境界を修正。4方向の継ぎ目はV4より目立たなくなった |
+
+- V5のGLB、Blend、front/side/angle/game-eye PNG4枚を実際にArtifactとして取得して視覚確認。
+- CC0コンクリート写真由来のDiffuse/Normal/Roughnessを内包したGLBがCI検査を通過。Blendも画像pack済み。
+- **V5でも美術的完成ではない。** 主面の風化がまだ均一で、壁が薄い1枚板に近く、破断端面と骨材の表現が平坦。鉄筋の接続と上階連結も未検証。
+- 技術検査のsuccessとユーザーによる完成承認を混同しない。現在のモデルはDraft PRで保持、正式素材フォルダには保存しない。
+- 次回の優先作業はV6で大きく崩れた断面の複数段差、鉄筋周りの割れ、グラデーション状の雨垂れ（四角いデカールを作らない）、端面にも写真PBRを確実に見せること。
+
 ## 次の品質ゲート
 1. V1/V2のGLB、Blend、4方向PNGを比較。輪郭/壁厚/接地/材質埋込/白い破断面を検査。
 2. 欠け・骨材・非反復の雨染みを自然な実ジオメトリ＋実写真PBRで改善。
