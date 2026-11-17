@@ -18,6 +18,11 @@ mat.use_nodes=True;nodes=mat.node_tree.nodes;nodes.clear()
 em=nodes.new('ShaderNodeEmission');em.inputs['Color'].default_value=(1,.12,.01,1);em.inputs['Strength'].default_value=2
 outnode=nodes.new('ShaderNodeOutputMaterial');mat.node_tree.links.new(em.outputs['Emission'],outnode.inputs['Surface'])
 count=0;branch=0
+# Single Curve datablock for all diagnostic segments: avoids thousands of Blender objects.
+curve=bpy.data.curves.new("AllBoundarySegments","CURVE")
+curve.dimensions="3D";curve.bevel_depth=.001;curve.bevel_resolution=1
+ob=bpy.data.objects.new("boundary_overlay",curve)
+bpy.context.collection.objects.link(ob);ob.data.materials.append(mat)
 for o in faces:
  edgefaces=collections.Counter()
  for poly in o.data.polygons:
@@ -32,10 +37,8 @@ for o in faces:
   p=world@o.data.vertices[x].co;q=world@o.data.vertices[y].co
   direction=q-p
   if direction.length<1e-8:continue
-  curve=bpy.data.curves.new('boundary_segment','CURVE');curve.dimensions='3D';curve.bevel_depth=.001;curve.bevel_resolution=1
   spline=curve.splines.new('POLY');spline.points.add(1)
   spline.points[0].co=(*p,1);spline.points[1].co=(*q,1)
-  ob=bpy.data.objects.new('boundary_overlay',curve);bpy.context.collection.objects.link(ob);ob.data.materials.append(mat)
   count+=1
 pts=[o.matrix_world@v.co for o in faces for v in o.data.vertices]
 lo=Vector([min(p[i] for p in pts) for i in range(3)])
