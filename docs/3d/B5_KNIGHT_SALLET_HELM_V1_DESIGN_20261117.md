@@ -16,3 +16,9 @@ Status: NOT_APPROVED. Original knight V14 and pedestal V1–V17 remain untouched
 - All pieces organized as meshes with semantic names; export GLB+Blend+front/side/angle PNG; manifest SHA-256. Independent part has bottom at Z~0m, height ~0.37m, safe for 7-head body later.
 - Stone tint B5 cold gray; avoid broken normals. Old V14 stays a reference, no gameplay integration.
 - Review priorities: 3/4 silhouette, forward eye line, not cubical, no metal/plastic shine, natural tail/forehead proportions, beveled edges small.
+
+## Real Blender V1 review (2026-11-17)
+- Real Actions https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44069062877 SUCCESS, Artifact `14321408058` includes GLB (144868 bytes), Blend, and front/side/angle 900×900 PNG. GLB skull/visor/bevor nodes and actual source SHA verified in workflow.
+- Downloaded 3 views and visually inspected (contact sheet `b5-sallet-helm-v1-contact.jpg` generated outside Git). **NOT APPROVED**: boxy bucket-like crown, disconnected horizontal visor bands, nape sheet floating behind skull; entire helmet hovering above ground; severely overbright surfaces.
+- V2 code `tools/b5-knights/build_sallet_v2.py`: adjusted crown and tail integration, reduced visor gap / forward extension and rivet size; lower rendering surface under the part; reduced overbright lamp power and stone albedo. Not finished until actual new render and review.
+- Historical reference is genuine museum armor but geometry is an original, standalone sculpt. No unapproved model inserted in game. Do not merge.
