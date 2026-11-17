@@ -1,0 +1,73 @@
+name: F6 Multi-view Impostor Atlas Review
+on:
+  push:
+    branches: [feature/gpt-shared-3d-optimization-actions-20261117]
+    paths:
+      - tools/3d-performance/build_multiview_impostor.py
+      - tools/3d-performance/pack_multiview_atlas.py
+      - .github/workflows/f6-multiview-impostor-review.yml
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Existing successful V14 tree source run'
+        required: false
+        default: '44053620503'
+        type: string
+  workflow_call:
+    inputs:
+      source_run_id:
+        description: 'Successful V14 source Blender Actions run'
+        required: false
+        type: string
+        default: '44053620503'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  bake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get the verified unapproved original Blend checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.source_run_id || '44053620503' }}
+          github-token: ${{ github.token }}
+          name: f6-tree-mature-v1-NOT-APPROVED
+          path: source-tree
+      - name: Verify unmodified source input
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          root=Path('source-tree')
+          doc=json.loads((root/'manifest.json').read_text())
+          assert doc['version']=='V14' and doc['status']=='NOT_APPROVED'
+          for f in doc['files']:
+            data=(root/f['name']).read_bytes()
+            assert hashlib.sha256(data).hexdigest()==f['sha256']
+          print('IMPOSTOR_SOURCE_V14_VERIFIED')
+          PY
+      - name: Install Blender and Pillow in venv
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libopengl0 libgl1-mesa-dri
+          python3 -m venv /tmp/impostor-venv
+          /tmp/impostor-venv/bin/pip install --quiet Pillow
+      - name: Render 8 transparent tree views from original 3D mesh
+        run: |
+          set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+          blender -b source-tree/tree_mature.blend -t 2 --python tools/3d-performance/build_multiview_impostor.py -- --size 512 --directions 8 --out render-output/3d-performance/impostor 2>&1 | tee /tmp/impostor.log
+          grep -q IMPOSTOR_FRAMES_DONE /tmp/impostor.log
+      - name: Check RGBA alpha and pack multi-direction atlas
+        run: |
+          /tmp/impostor-venv/bin/python tools/3d-performance/pack_multiview_atlas.py render-output/3d-performance/impostor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-tree-8view-impostor-UNAPPROVED-review
+          path: render-output/3d-performance/impostor/
+          retention-days: 14
+          if-no-files-found: warn
