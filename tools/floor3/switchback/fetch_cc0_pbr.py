@@ -14,7 +14,7 @@ try:
  groups={'diffuse':('Diffuse','diffuse'),'normal':('nor_gl','Normal (GL)','normal_gl'),'rough':('Rough','rough')}
  for dest,aliases in groups.items():
   group=next((data[k] for k in aliases if k in data),{})
-  versions=group.get('1k') or group.get('2k') or {}
+  versions=group.get('2k') or group.get('1k') or {}
   variant=versions.get('jpg') or versions.get('png') or next(iter(versions.values()),None)
   if not isinstance(variant,dict) or not variant.get('url'):
    status['errors'].append('missing map '+dest)
