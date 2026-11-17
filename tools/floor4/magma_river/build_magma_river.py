@@ -267,44 +267,58 @@ for i in range(14):
  x=side*(.74+R.uniform(0,1.32))
  y=R.uniform(1.0,2.55)
  rock('FALL_SOURCE_EMBEDDED_BASALT',(x,y,-3.58+R.uniform(-.15,.12)),(.34,.30,.35),basalt,seed=i+301,subdiv=3)
-# Cascading flow from a fractured wall: bending ribbon with variable width.
-verts=[];uv=[];faces=[];N=26;M=100
+# V13: Gravity-directed lava sheet attached to the rear basalt wall.
+# User circled the twisted ribbon. Keep the source and impact locations, but
+# eliminate repeated S-curves in centerline and surface cross-section.
+def fall_path(t):
+    # Slow downhill drift toward the impact; no sin(t*13) or coiling.
+    cx=-.42+.075*t+.015*t*t
+    yy=2.42-2.2*t
+    zz=-3.20+.19*t+.20*t*t
+    width=.205+.045*math.sin(t*math.pi)+.24*t*t
+    return cx,yy,zz,width
+verts=[];uv=[];faces=[];N=32;M=112
 for j in range(M+1):
- t=j/M;y=2.42-t*2.2
- z=-3.18+.28*sin(t*2.8)+.38*t*t
- cx=-.42+.13*sin(t*5.3)+.08*sin(t*13.1)
- w=.22+.11*sin(t*pi)+.20*t*t+.028*sin(t*18)
+ t=j/M;cx,y,z,w=fall_path(t)
  for i in range(N+1):
-  u=i/N;x=cx+(u-.5)*2*w*(1+.06*sin(t*19+u*11))
-  verts.append((x,y,z+.055*sin(u*pi*2+t*12)+.032*sin(u*21+t*37)*(1-t)));uv.append((u,t*1.8))
+  u=i/N
+  # Subtle scalloped edges, mostly straight downward flow.
+  edge_rough=.022*math.sin(t*11+u*5.5)+.011*math.sin(t*23+u*9)
+  x=cx+(u-.5)*2*w*(1+edge_rough)
+  # Very shallow surface ripples; no corkscrew distortion.
+  zz=z+.012*math.cos(u*math.pi*2)+.007*math.sin(t*18+u*3)
+  verts.append((x,y,zz));uv.append((u,t*1.8))
 for j in range(M):
  for i in range(N):
   a=j*(N+1)+i;b=a+N+1;faces.append((a,a+1,b+1,b))
 objmesh('FALLING_MAGMA_CASCADE',verts,faces,lava,uv)
-# V9: natural dark crust adhering to the margins of the descending molten stream.
-# Narrow interrupted patches preserve the visible molten core instead of covering it.
+# Cooled edge streaks follow the SAME fall_path, so they cannot coil.
 for side in (-1,1):
- for k in range(13):
-  t=(k+.45)/14
-  cy=2.42-t*2.2
-  cz=-3.18+.28*sin(t*2.8)+.38*t*t
-  cx=-.42+.13*sin(t*5.3)+.08*sin(t*13.1)
-  w=.22+.11*sin(t*pi)+.20*t*t+.028*sin(t*18)
-  span=.065+.028*sin(k*2.7+side)
+ for k in range(11):
+  t0=(k+.42)/12
   vs=[]
-  for q in range(9):
-   u=q/8
-   yy=cy+(u-.5)*span
-   tt=(2.42-yy)/2.2
-   ww=.22+.11*sin(tt*pi)+.20*tt*tt+.028*sin(tt*18)
-   xx=cx+side*ww*(.82+.12*sin(u*5+k))
-   zz=cz+.045*sin(u*7+k)+.012
-   vs.append((xx,yy,zz))
-   vs.append((xx-side*(.04+.025*sin(k*1.9)),yy,zz+.012))
-  fs=[]
-  for q in range(8):
-   a=2*q;fs.append((a,a+1,a+3,a+2))
-  objmesh('FALL_COOLING_CRUST_EDGE',vs,fs,crust,[(q*.12,k*.08) for q in range(len(vs))])
+  for q in range(10):
+   t=min(.99,max(.01,t0+(q-4.5)*.008))
+   cx,yy,zz,w=fall_path(t)
+   wav=.015*math.sin(k*1.7+q*.55)
+   xx=cx+side*w*(.84+wav)
+   vs.extend([(xx,yy,zz+.015),(xx-side*.042,yy,zz+.019)])
+  fs=[(2*q,2*q+1,2*q+3,2*q+2) for q in range(9)]
+  objmesh('V13_FALL_COOLING_CRUST_EDGE',vs,fs,crust,
+          [(q*.12,k*.08) for q in range(len(vs))])
+# Thin luminous veins attached to the cascade, with uneven heat intensity.
+for stripe in range(7):
+ u0=(stripe+1)/8
+ vs=[];uvs=[]
+ for j in range(84):
+  t=.025+j*.95/83;cx,yy,zz,w=fall_path(t)
+  u=u0+.019*math.sin(t*8+stripe*1.7)
+  xx=cx+(u-.5)*2*w
+  span=.006+.006*(.5+.5*math.sin(t*13+stripe*2.1))
+  vs.extend([(xx-span,yy,zz+.023),(xx+span,yy,zz+.023)])
+  uvs.extend([(0,t),(1,t)])
+ fs=[(2*j,2*j+1,2*j+3,2*j+2) for j in range(83)]
+ objmesh('V13_FALL_INCANDESCENT_VEIN',vs,fs,hot if stripe%3 else hot2,uvs)
 # Bright thin rivulets in fissures of the upper wall and near the riverbank.
 for i in range(16):
  z=R.uniform(-2.9,2.8);side=R.choice([-1,1])
@@ -317,6 +331,20 @@ for i in range(28):
  y=.30+R.random()*.70
  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=R.uniform(.015,.043),location=(x,y,z))
  o=bpy.context.object;o.name='MOLTEN_SPRAY';parent(o);o.data.materials.append(hot2)
+
+# V13: emissive droplets with restrained size/height variation at the impact.
+# Static render proof; real-time motion requires separate Three.js implementation.
+for i in range(54):
+ angle=R.uniform(0,2*math.pi)
+ rr=R.uniform(.06,.42)
+ x=-.345+rr*math.cos(angle)
+ z=-2.78+rr*math.sin(angle)
+ y=.26+R.random()**2*.92
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=R.uniform(.009,.028),location=(x,y,z))
+ o=bpy.context.object;o.name='V13_IMPACT_EMBER';parent(o)
+ o.data.materials.append(hot if i%4 else hot2)
+# Heat haze: transparent cards are excluded from the GLB to avoid fake static fog;
+# animated distortion will be specified in Claude's VFX handoff.
 
 # V10 geological detail: original river, bank and every V9 rock remain intact.
 # Add real stepped strata, fractured basalt slabs and local contact rubble,
@@ -461,6 +489,8 @@ def area(name,loc,power,color,size):
  o.rotation_euler=(to_blender((0,.1,0))-o.location).to_track_quat('-Z','Y').to_euler()
 area('MAGMA_LIGHT_WARM',(0,1.65,.9),420,(1,.24,.045),5.4)
 area('UPSTREAM_CASCADE_LIGHT',(-.4,2.4,-2.9),340,(1,.35,.075),3.2)
+area('V13_LAVA_FALL_WARM_RIM',(-.4,1.30,-3.05),240,(1,.21,.035),2.1)
+area('V13_IMPACT_BOUNCE',(-.35,.46,-2.60),155,(1,.29,.06),2.5)
 area('COLD_CAVE_FILL',(2.2,5,3.5),1150,(.25,.36,.58),6)
 scene=bpy.context.scene
 scene.render.engine='CYCLES';scene.cycles.samples=24
