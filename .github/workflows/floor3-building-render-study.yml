@@ -1,0 +1,60 @@
+name: Floor3 Ruined Building 3-Pass Render Study
+on:
+  push:
+    branches: [feature/gpt-b3-building-render-study-20261117]
+    paths:
+      - 'tools/floor3/build_render_studies.py'
+      - '.github/workflows/floor3-building-render-study.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Generate three additive study GLBs
+        run: |
+          set -euo pipefail
+          pip install 'numpy>=1.26,<3' 'trimesh>=4,<5'
+          mkdir -p render-output
+          python -m py_compile tools/floor3/build_render_studies.py
+          python tools/floor3/build_render_studies.py
+      - name: Render each study from three angles in Blender
+        run: |
+          set -euo pipefail
+          docker pull lscr.io/linuxserver/blender:latest
+          for version in 1 2 3; do
+            docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+              -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+              -b -t 2 --python tools/floor3/render.py -- \
+              "render-output/floor3_ruined_building_study_v${version}.glb" render-output
+          done
+      - name: Validate outputs and checkpoint manifest
+        run: |
+          python - <<'PY'
+          import pathlib,hashlib,json,struct,os
+          root=pathlib.Path('render-output')
+          files={}
+          for version in (1,2,3):
+              stem=f'floor3_ruined_building_study_v{version}'
+              glb=root/(stem+'.glb')
+              data=glb.read_bytes()
+              assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data)
+              for p in [glb]+[root/(stem+'-'+angle+'.png') for angle in ('front','side','angle')]:
+                  b=p.read_bytes()
+                  assert b and (p.suffix!='.png' or b.startswith(b'\x89PNG\r\n\x1a\n'))
+                  files[p.name]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}
+          (root/'manifest.json').write_text(json.dumps({'floor':3,'asset':'ruined_building',
+              'approval':'NOT_APPROVED','source_commit':os.environ['GITHUB_SHA'],
+              'workflow_run_id':os.environ['GITHUB_RUN_ID'],'files':files},indent=2))
+          print('VERIFIED',len(files),'FILES')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: floor3-ruined-building-study-v1-v2-v3
+          path: render-output/
+          retention-days: 14
