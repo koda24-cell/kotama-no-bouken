@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {selectWaterQuality,waterCapabilities} from './water-surface.mjs';
+assert.equal(selectWaterQuality(12,'medium'),'low');
+assert.equal(selectWaterQuality(22,'low'),'low');
+assert.equal(selectWaterQuality(35,'low'),'medium');
+assert.equal(selectWaterQuality(120,'medium'),'high');
+assert.equal(selectWaterQuality(90,'high'),'high');
+assert.equal(selectWaterQuality(80,'high'),'medium');
+assert.deepEqual(waterCapabilities('low'),{microWave:false,foam:false,caustics:false});
+assert.deepEqual(waterCapabilities('high'),{microWave:true,foam:true,caustics:false});
+assert.throws(()=>selectWaterQuality(-1));
+console.log('B2 water quality policy: PASS');
