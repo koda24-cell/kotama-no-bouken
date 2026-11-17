@@ -32,7 +32,7 @@ jobs:
           import json,pathlib,hashlib,struct,os
           d=pathlib.Path('render-output')
           for pattern in ('p1','p2','p3'):
-              stem=f'b4-magma-bank-{pattern}-v1'
+              stem=f'b4-magma-bank-{pattern}-v2'
               m=json.loads((d/f'manifest-{pattern}.json').read_text())
               assert m['approval']=='NOT_APPROVED'
               expected={stem+'.glb',stem+'.blend'}|{stem+'-'+v+'.png' for v in ('front','side','angle','top')}
