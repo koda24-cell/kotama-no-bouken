@@ -3,7 +3,7 @@ No Pinterest or user reference image is copied into the texture.
 Network failure is reported explicitly and procedural source remains available.
 """
 import json, pathlib, urllib.request, hashlib, time
-root=pathlib.Path('/work/out/source_textures');root.mkdir(parents=True,exist_ok=True)
+root=pathlib.Path('out/source_textures');root.mkdir(parents=True,exist_ok=True)
 asset='concrete_moss'
 def fetch(url):
  req=urllib.request.Request(url,headers={'User-Agent':'kotama-3d-asset-provenance/1.0'})
