@@ -293,6 +293,13 @@ def verify(layout_path, out):
                     report['conflicts'].append({**record, 'sweepIndices': sorted(crossed), 'examples': examples,
                                                 'recommendedAction': 'Review conservative witnesses; move/remove this placement within existing blocked/corner space. Never change map to conceal the conflict.'})
         report['geometrySourcesDecoded'] = len(geometry_cache)
+    # Fail rather than certifying a stale snapshot if another task regenerated
+    # the descriptor or any source during this read-only check.
+    if layout_path.read_bytes() != data:
+        report['hashErrors'].append({'file': str(layout_path.relative_to(ROOT)), 'error': 'layout_changed_during_check'})
+    for file, raw in source_bytes.items():
+        if hashlib.sha256((ROOT/file).read_bytes()).hexdigest() != hashlib.sha256(raw).hexdigest():
+            report['hashErrors'].append({'file': file, 'error': 'source_changed_during_check'})
     report['summary'] = {'sourceHashes': len(report['hashes']), 'hashErrors': len(report['hashErrors']),
                          'routeSweeps': len(sweeps), 'hardPlacements': len(report['hardPlacements']),
                          'softExclusions': len(report['exclusions']), 'conflictingPlacements': len(report['conflicts']),
