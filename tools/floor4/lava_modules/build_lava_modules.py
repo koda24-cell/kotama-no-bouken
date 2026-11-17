@@ -57,6 +57,7 @@ def mat(name,color,rough=.85,em=0,base_image=None,em_image=None,normal=None,roug
 lava=mat('Lava_thermal_PBR',(1,.28,.03),.56,1.8,heat_color,heat_emission,'molten_lava_normal.png','molten_lava_roughness.png')
 crust=mat('Lava_cooling_crust_PBR',(.055,.046,.042),.94,0,bpy.data.images.load(os.path.abspath(TEX+'volcanic_basalt_albedo.png'),check_existing=True),normal='volcanic_basalt_normal.png',rough_image='volcanic_basalt_roughness.png')
 hot=mat('Fresh_rupture_hot',(1,.24,.016),.48,3.3)
+hotdim=mat('Cooling_crust_internal_fissure',(.93,.17,.018),.61,1.65)
 coal=mat('REVIEW_studio_floor',(.045,.046,.055),.92)
 def mesh(name,verts,faces,material,uv=None):
  me=bpy.data.meshes.new(name);me.from_pydata(verts,[],faces);me.update()
@@ -109,7 +110,7 @@ def pool(name,cx,cy,rx,ry,z=.07,material=lava,seed=1):
   r=j/M
   for i in range(N+1):
    a=i*2*pi/N
-   radius=1+.09*sin(a*5+seed)+.06*sin(a*9-seed*.7)+.03*sin(a*17+seed)
+   radius=1+.13*sin(a*5+seed)+.085*sin(a*9-seed*.7)+.038*sin(a*17+seed)
    x=cx+rx*r*radius*cos(a);y=cy+ry*r*radius*sin(a)
    verts.append((x,y,z+.014*sin(a*5+r*19)*r))
    uv.append((.5+(x-cx)/(rx*2.6),.5+(y-cy)/(ry*2.6)))
@@ -143,10 +144,10 @@ def build_b():
  flow('B_MAIN_CONFLUENCE',main,w)
  for side in (-1,1):
   def tributary(t,side=side):
-   y=-2.30+3.25*t
-   x=side*(2.35*(1-t)**2)+.19*sin((y+2.9)/5.8*2.1*pi)
+   y=(-2.38 if side<0 else -1.76)+(3.18 if side<0 else 3.55)*t
+   x=side*(2.50 if side<0 else 2.05)*(1-t)**(1.75 if side<0 else 2.65)+.19*sin((y+2.9)/5.8*2.1*pi)+.12*sin(t*9+side)*sin(t*pi)
    return (x,y,.078+.014*sin(t*12))
-  def ww(t):return .18+.10*t+.04*sin(t*pi)
+  def ww(t,side=side):return (.16 if side<0 else .20)+.08*t+.055*sin(t*pi)+.018*sin(t*12+side)
   flow('B_TRIBUTARY_'+str(side),tributary,ww)
 def build_c():
  pool('C_IRREGULAR_MOLTEN_LAKE',0,0,2.28,1.77,seed=5)
@@ -169,6 +170,31 @@ def build_d():
   for i in range(M):
    a=j*(M+1)+i;b=a+M+1;fs.append((a,a+1,b+1,b))
  mesh('D_VERTICAL_MAGMA_CASCADE',vs,fs,lava,uv)
+ # Physical thickness is essential: the previous waterfall was nearly invisible edge-on.
+ back=[(x,y+.19+.035*sin(z*5.1),z) for x,y,z in vs]
+ back_faces=[tuple(reversed(f)) for f in fs]
+ mesh('D_CASCADE_BACK_VOLUME',back,back_faces,lava,uv)
+ walls=[];wall_uv=[];wall_faces=[]
+ for edge in (0,M):
+  for j in range(N+1):
+   idx=j*(M+1)+edge
+   walls.extend([vs[idx],back[idx]])
+   wall_uv.extend([(0,j/N),(1,j/N)])
+  base=len(walls)-2*(N+1)
+  for j in range(N):
+   a=base+j*2;wall_faces.append((a,a+1,a+3,a+2))
+ mesh('D_CASCADE_LIQUID_SIDE_VOLUME',walls,wall_faces,lava,wall_uv)
+ # Uneven raised streams break up the curtain silhouette without a rectangular sheet.
+ for strand in range(3):
+  ss=[];su=[];sf=[];steps=96
+  for j in range(steps+1):
+   t=j/steps;cx,cy,cz=center(t)
+   for u in (0,1):
+    xx=cx+(strand-1)*width(t)*.53+(u-.5)*(.075+.04*sin(t*9+strand))
+    ss.append((xx,cy-.075-.03*sin(t*23+strand),cz));su.append((u,t*2))
+  for j in range(steps):
+   a=j*2;sf.append((a,a+1,a+3,a+2))
+  mesh('D_RAISED_MOLTEN_RIVULET_'+str(strand),ss,sf,lava,su)
  for side in (-1,1):
   for k in range(13):
    if k%4==0:continue
@@ -188,15 +214,24 @@ def build_d():
 def build_e():
  pool('E_SUBSURFACE_GLOW',0,0,2.45,2.25,.025,seed=8)
  pool('E_DARK_COOLING_SHEET',0,0,2.42,2.22,.060,material=crust,seed=8)
- # Branching cracks on cooled lava, with organic broken paths.
- for k in range(13):
-  ang=2*pi*k/13+.25*sin(k*1.7)
-  length=R.uniform(.9,2.18)
-  def crack(t,ang=ang,length=length,k=k):
-   r=.12+length*t
-   a=ang+.16*sin(t*6+k)+.08*sin(t*17-k)
-   return (r*cos(a),r*sin(a),.093)
-  path_ribbon('E_RUPTURE_VEIN_'+str(k),crack,lambda t,k=k:.017+.031*sin(t*pi)**2+.011*sin(t*19+k)**2,hot,N=74,M=7)
+ # Irregular fault network: offset fissures, branches and broken endpoints, not a radial magic sigil.
+ faults=[
+  ((-2.05,-.90),(-.55,-.28),(1.62,.36)),
+  ((-.63,-1.88),(.18,-.42),(1.02,1.78)),
+  ((-1.78,1.02),(-.32,.52),(.82,1.55)),
+  ((.28,-1.52),(.82,-.78),(2.03,-.51)),
+  ((-1.03,.16),(-1.48,1.05),(-1.18,1.85)),
+  ((.66,.12),(1.37,.78),(1.83,1.31)),
+  ((-1.85,-.12),(-1.42,-.40),(-.65,-.34)),
+  ((.52,.75),(1.00,1.12),(1.28,1.83)),
+ ]
+ for k,(a,b,c) in enumerate(faults):
+  def crack(t,a=a,b=b,c=c,k=k):
+   u=1-t
+   x=u*u*a[0]+2*u*t*b[0]+t*t*c[0]+.04*sin(t*21+k)*sin(t*pi)
+   y=u*u*a[1]+2*u*t*b[1]+t*t*c[1]+.04*sin(t*17-k)*sin(t*pi)
+   return (x,y,.091)
+  path_ribbon('E_IRREGULAR_FAULT_'+str(k),crack,lambda t,k=k:.015+.026*sin(t*pi)**2+.009*sin(t*17+k)**2,hotdim,N=94,M=7)
  crust_islands('E_BROKEN_COOLING_PLATES',0,0,2.3,2.1,13,920)
 builders={'a_sinuous':build_a,'b_confluence':build_b,'c_pool':build_c,'d_cascade':build_d,'e_cooling':build_e}
 world=bpy.context.scene.world or bpy.data.worlds.new('B4_Lava_Module_Studio');bpy.context.scene.world=world;world.use_nodes=True
