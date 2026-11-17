@@ -54,8 +54,9 @@ jobs:
           mkdir -p $D/source $D/lite $D/previews
           cp render-output/b2-water-tiles/water_tile_*.glb $D/source/
           cp render-output/b2-water-tiles-lite/water_tile_*.glb $D/lite/
-          for f in top side angle; do convert render-output/b2-water-tiles/$f.png -quality 88 $D/previews/gpt_$f.jpg; done
-          for f in seam_top seam_angle seam_close; do convert render-output/b2-water-tiles-lite/$f.png -quality 88 $D/previews/claude_$f.jpg || true; done
+          python3 -m pip install --quiet pillow || true
+          for f in top side angle; do python3 -c "import sys;from PIL import Image;Image.open(sys.argv[1]).convert('RGB').save(sys.argv[2],quality=88)" render-output/b2-water-tiles/$f.png $D/previews/gpt_$f.jpg || cp render-output/b2-water-tiles/$f.png $D/previews/gpt_$f.png; done
+          for f in seam_top seam_angle seam_close; do python3 -c "import sys;from PIL import Image;Image.open(sys.argv[1]).convert('RGB').save(sys.argv[2],quality=88)" render-output/b2-water-tiles-lite/$f.png $D/previews/claude_$f.jpg || cp render-output/b2-water-tiles-lite/$f.png $D/previews/claude_$f.png; done
           cp render-output/b2-water-tiles-lite/manifest.json $D/manifest.json
           (cd $D && sha256sum source/*.glb lite/*.glb > SHA256SUMS.txt)
           { echo "run_id=${{ github.run_id }}"; echo "commit=${{ github.sha }}"; echo "blender=$(cat render-output/blender-version.txt)"; echo "generator=tools/b2-render/build-modular-water-tiles.py (unmodified, GPT)"; echo "postprocess=tools/b2-render/claude-water-tiles-lite.py"; } > $D/RUN.txt

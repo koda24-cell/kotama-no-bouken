@@ -42,6 +42,13 @@ def import_tile(path):
 
 
 def decimate(o, angle_deg):
+    # glTF import splits vertices per face (flat normals); weld them first or nothing can be dissolved
+    bm = bmesh.new()
+    bm.from_mesh(o.data)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bm.to_mesh(o.data)
+    bm.free()
+    o.data.update()
     bpy.ops.object.select_all(action='DESELECT')
     o.select_set(True)
     bpy.context.view_layer.objects.active = o
