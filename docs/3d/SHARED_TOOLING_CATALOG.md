@@ -230,3 +230,13 @@
 - 発見した不具合: 既存FOE dragon.svgをHTMLImageElementのままWebGL2へ送るとSwiftShaderでINVALID_VALUE/immutable texture警告。最小再現ではSVG直接uploadがGLerror1281、描画前に512px canvasへ同期rasterizeすると0。DataTexture明示mip単独も0で、針葉mipを原因と断定しない。SVG原本を変えずTextureLoader callback内で初回upload前にcanvas化する修正を試験branchへ追加。
 - 現在の検証状態: Chromium/Three r180/SwiftShaderで保存分離と最小再現は完了。修正後の全フロア往復/戦闘帰還QAは実行中。実行コマンド `node tools/f1-sacred-forest/verify-game-trial.cjs`。証拠はPR #447の `docs/reviews/` へ保存する。失敗履歴は削除しない。
 - 制限: 実機FPS/全GPU/美術承認は未完了。main公開・既定表示への昇格を含まない。第三者参考画像の再配布なし。
+
+
+## 第3層折返し階段で実証したCC0写真PBR（2026-11-17）
+- 技術: Poly Haven Concrete Moss 1K/2K画像（Diffuse、Normal OpenGL、Roughness）。ゲームの自然侵食した古いコンクリートに利用。
+- 正式出典: https://polyhaven.com/a/concrete_moss / Rob Tuytel / Poly HavenのCC0 1.0。
+- 取得実装: `tools/floor3/switchback/fetch_cc0_pbr.py`（制作PR https://github.com/koda24-cell/kotama-no-bouken/pull/449）。GitHub Actions runnerの `out/source_textures` に保存してBlenderコンテナへ共有し、画像をGLB埋め込み。
+- **実動作確認**: V5 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43988036966 （全3マップ取得・Blenderロード・GLB/3方向PNG・Blend成功）。2K版V8 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43990198620 （描画と形式検査成功、Artifacts保存）。
+- 1K公式Diffuse SHA-256 `7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc`、Normal GL `ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b`、Roughness `ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c`。
+- 失敗と修正: ホスト側の `/work` 書込みでPermissionError→相対パス `out/` へ修正。PBRマップ取得不能時は生成テクスチャにフォールバックし、成功とは報告しない。
+- 留意: 完成品質判定と技術検査は別。参考画像の著作権不明な画像は素材化しない。現モデルはユーザー承認前、正式フォルダへの保存・ゲーム統合はしていない。
