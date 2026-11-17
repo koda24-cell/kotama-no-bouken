@@ -19,9 +19,9 @@ export async function createClosedWaterV3({ meshes, root, map }) {
   const time={value:0}; let disposed=false,shaderCompiled=false;
   function material(m){ownMaterials.push(m);return m;}
   function geometry(g){ownGeometry.push(g);return g;}
-  const water=material(new THREE.MeshPhysicalMaterial({name:'f1-closed:damp-green-water',color:0x697d64,roughness:.19,metalness:0,
-    transparent:true,opacity:.77,depthWrite:false,side:THREE.FrontSide,clearcoat:.45,clearcoatRoughness:.24}));
-  water.customProgramCacheKey=()=> 'f1-closed-water-v3-world-normal-1';
+  const water=material(new THREE.MeshPhysicalMaterial({name:'f1-closed:damp-teal-water',color:0x4b7d81,roughness:.12,metalness:0,
+    transparent:true,opacity:.83,depthWrite:false,side:THREE.FrontSide,clearcoat:.55,clearcoatRoughness:.14}));
+  water.customProgramCacheKey=()=> 'f1-closed-water-v3-world-normal-2';
   water.onBeforeCompile=shader=>{
     shaderCompiled=true;
     shader.uniforms.closedWaterTime=time;
@@ -33,18 +33,25 @@ export async function createClosedWaterV3({ meshes, root, map }) {
       vec2 cw = vClosedWaterWorld.xz;
       vec3 silt = texture2D(closedWaterSilt, cw * 0.115).rgb;
       float cloud = texture2D(closedWaterSilt, cw * 0.031 + vec2(0.21)).g;
-      diffuseColor.rgb *= mix(vec3(0.34,0.48,0.33), vec3(0.83,0.98,0.77), silt.g * 0.8 + cloud * 0.2);
+      diffuseColor.rgb *= mix(vec3(0.33,0.56,0.56), vec3(0.72,0.91,0.94), silt.g * 0.8 + cloud * 0.2);
     `);
     shader.fragmentShader=shader.fragmentShader.replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
       vec2 cwA = vClosedWaterWorld.xz * 0.38 + vec2(closedWaterTime * 0.011, closedWaterTime * 0.007);
       vec2 cwB = vClosedWaterWorld.zx * 0.67 + vec2(-closedWaterTime * 0.008, closedWaterTime * 0.014);
       vec2 nA = texture2D(closedWaterNormal, cwA).xy * 2.0 - 1.0;
       vec2 nB = texture2D(closedWaterNormal, cwB).yx * 2.0 - 1.0;
-      vec2 nC = (nA + nB * 0.58) * 0.15;
+      vec2 nC = (nA + nB * 0.58) * 0.28;
       normal = normalize(mat3(viewMatrix) * normalize(vec3(nC.x, 1.0, nC.y)));
     `);
+    // The standard clearcoat lobe otherwise keeps the original perfectly flat
+    // normal, hiding the moving wet highlights even when the base normal moves.
+    shader.fragmentShader=shader.fragmentShader.replace('#include <clearcoat_normal_fragment_maps>', `#include <clearcoat_normal_fragment_maps>
+      #ifdef USE_CLEARCOAT
+        clearcoatNormal = normal;
+      #endif
+    `);
   };
-  const bedMat=material(new THREE.MeshStandardMaterial({name:'f1-closed:submerged-silt',map:siltMap,color:0x59714a,roughness:1}));
+  const bedMat=material(new THREE.MeshStandardMaterial({name:'f1-closed:submerged-silt',map:siltMap,color:0x455f55,roughness:1}));
   const stoneMat=material(new THREE.MeshStandardMaterial({name:'f1-closed:submerged-stones',color:0x4b5842,roughness:.94}));
   const algaeMat=material(new THREE.MeshStandardMaterial({name:'f1-closed:floating-algae',map:algaeMap,roughness:.96,transparent:true,alphaTest:.16,depthWrite:false,side:THREE.DoubleSide,color:0xabc18b}));
   const bedGeo=geometry(new THREE.PlaneGeometry(4.015,4.015,2,2).rotateX(-Math.PI/2));
