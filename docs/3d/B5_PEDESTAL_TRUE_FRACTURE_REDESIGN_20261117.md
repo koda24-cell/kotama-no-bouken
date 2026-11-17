@@ -64,3 +64,10 @@
 - **Real Blender success** https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44040772172 . Artifact ID `14308893829`, 4 PNG (front, side, angle, side_detail) + GLB + Blend, SHA256 all 6 match manifest. `photo_status=CC0_AMBIENTCG_ROCK063_COLOR_ROUGHNESS`; old geometry-integrity QA of both shaft meshes passes.
 - Visual review with user's source image: V15 is closer in broad silhouette; long left-to-right downward groove and the downward fork are readily visible in true horizontal side view. But compared to blue stroke, the opening still looks too smooth and uniformly dark, and the spur near the fork appears like a triangular chip rather than naturally branching stone layers. **No artistic approval**.
 - **Status**: V10–V15 independent files in Draft PR #424. User's original uploaded photo is not copied into game assets; compare is generated only for review. No formal promotion or merging.
+
+## V16–V17 Blender反復（2026-11-17 18時台）
+- 出発点：ユーザー指定の青線に沿うV15だが、亀裂が単調な黒帯、下向き分岐の形が不自然、剥離表現が足りない。
+- **V16** 独立コード `tools/b5-knights/build_pedestal_true_fracture_v16.py`。主亀裂の幅に不均一な変化を追加し、途中の3か所に途切れた石表面の剥離メッシュを増設。GitHub Actions https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44052248395 はSUCCESS。Artifact `14315080211`。実GLB、Blend、4方向PNG、SHA256照合すべてPASS。写真系PBR CC0 Rock063のColor/Roughnessを使用。
+- **V17** 独立コード `tools/b5-knights/build_pedestal_true_fracture_v17.py`。V16の黒帯が濃すぎたため暗色断面マテリアルを薄い灰青にして一部奥へ下げ、剥離を控えめにし、余分な黒い縁取りを減らした。GitHub Actions https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44053048931 はSUCCESS。Artifact `14313814817`。実GLB、Blend、4方向PNG、SHA256照合すべてPASS。
+- **画像評価**: V16は側面で主亀裂が太い黒い帯、V17は黒帯が軽減した反面、また細く見えにくい。双方ともひびの周りの石肌・内側断面の深さに本物の破断らしい凹凸が足りない。**完成品質ではない**。
+- 次の改善は黒帯のマテリアル補正だけでなく、側面の石材そのものを局所的に分割し、破断が上縁の輪郭を崩す3D形状へ変更すべき。旧版V15〜V17の出力を保存。PR #424 Draft、game / developmentへの正式昇格・マージなし。
