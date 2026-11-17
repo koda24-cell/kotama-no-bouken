@@ -32,3 +32,28 @@ jobs:
           node tools/3d-water/water-field.test.mjs
       - name: Meadow wind math tests
         run: node tools/floor6/meadow-wind-field.test.mjs
+
+  shader-browser-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test tooling
+        run: |
+          npm install --no-save --no-package-lock playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Capture actual WebGL renders and console errors
+        run: node tools/3d-water/visual-smoke.mjs
+      - name: Upload unapproved preview PNG and metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-f6-shader-unapproved-browser-review
+          path: render-output/shader-research/
+          retention-days: 14
+          if-no-files-found: warn
