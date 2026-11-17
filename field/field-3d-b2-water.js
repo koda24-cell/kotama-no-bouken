@@ -568,7 +568,7 @@ function makeProcedural() {
     // 天井から垂れ下がって見えるようにする（旧版は細い根元が天井の起伏の上に浮いて、天井と分かれて見えた）。
     // 上半分は天井の裏に隠れ、天井より下に出た所だけが太い付け根として見える。明るさも天井と同じになる
     if (down) {
-      const m = new THREE.IcosahedronGeometry(1, 2), mp = m.attributes.position;
+      const m = new THREE.IcosahedronGeometry(1, 1), mp = m.attributes.position;
       for (let i = 0; i < mp.count; i++) {
         const x = mp.getX(i), y = mp.getY(i), z = mp.getZ(i);
         const k = 1 + 0.2 * Math.sin(x * 6.1 + z * 4.3 + v) * Math.cos(y * 5.7 + x * 2.9) + 0.1 * Math.sin(z * 11.3 - x * 7.7 + v * 2);
@@ -1080,6 +1080,7 @@ export async function createTheme(api) {
     // マップ文字・通行判定・イベントには触れず、見た目だけのランドマークにする。
     const openCells = new Set();
     let streamCount = 0, pillarCount = 0;
+    const streamLog = [];   // [B2V4-L] 診断用：天井の水流のマス（themeInfo().streams）
     keepClear = new Set();
     const skylightCandidates = [];
     for (let cy = 2; cy < a.h - 2; cy++) for (let cx = 2; cx < a.w - 2; cx++) {
@@ -1522,6 +1523,7 @@ export async function createTheme(api) {
         const sx = x + (hash(tx, ty, 571) - 0.5) * 2.4, sz = z + (hash(tx, ty, 572) - 0.5) * 2.4, top = ceilY(sx, sz), base = c === '*' ? -0.07 : groundY(sx, sz);
         B.add('streams', proc.stream, M4(sx, base, sz, 0, [1, top - base, 1]), tx, ty);
         B.add('puddles', proc.streamPuddle, M4(sx, base + 0.03, sz, hash(tx, ty, 573) * 6.28, 0.45), tx, ty);
+        streamLog.push(`${tx},${ty}`);
         light(sx, 1.4, sz, 0x7fe8ff, 0.45, 4);   // [B2V4-L] F1：真上の強い光で床の水たまりが白い円に見えたので、高く・弱く
         streamCount++;
       }
@@ -1694,7 +1696,7 @@ export async function createTheme(api) {
     }
     placeFlowers();
     made = B.build(root, mats);
-    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), placed: placedLog.slice(), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })), buildKey: a.buildKey || a.key, random: !!roles, layout: { ...(layout || {}), flowers: flowerLog.length, flowerSpots: flowerSpots.length, flowerClusters: flowerLog.slice() }, extras: Object.fromEntries(Object.entries(EX).map(([k, v]) => [k, !!v])), ownedDisposed };
+    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), placed: placedLog.slice(), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })), streams: streamLog, buildKey: a.buildKey || a.key, random: !!roles, layout: { ...(layout || {}), flowers: flowerLog.length, flowerSpots: flowerSpots.length, flowerClusters: flowerLog.slice() }, extras: Object.fromEntries(Object.entries(EX).map(([k, v]) => [k, !!v])), ownedDisposed };
   }
 
   // 大空洞の縦方向の景観。天井を抜いた3×3マスに高い石造壁と冷光を加える。
