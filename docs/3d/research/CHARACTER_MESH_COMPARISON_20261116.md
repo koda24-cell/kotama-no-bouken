@@ -53,3 +53,11 @@ V15の失敗は、顔・耳など複数の境界を高さごとに平均して�
 注意: ミラーはpixiv公式の配布元ではない。個別モデルの出所と元の利用条件を確認してから実利用する。ShibuとVitaの既存読込実績を、新規6件の解析完了と混同しない。
 
 次の実作業: HairSample_Female → Sendagaya_Shino → Sakurada_Fumiriya の順にBlender実読込し、メッシュ名・頭部境界・各断面・接続を記録する。現時点では新規読込は未実施。
+
+## 実行検証追記（2026-11-17）
+
+- VRoid 6体のBlender JSON解析と6方向レンダリングのActions成功を確認: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43809309665 （Artifact 14199914169）。画像を目視検査して品質評価したことは意味しない。
+- 頭部比較CSV生成を追加した後の再実行: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43984840388 （確認時は実行中）。CSVの中身は未検証。
+- 独立した人型RiggedFigureのBlender解析成功: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43984830917 。CesiumManはユーザー指定により今後の対象から除外済み。
+- 次の優先順位はBOOTH・VTuber・VOCALOIDなどアニメ調で権利確認済みのモデル。原神・ブルアカは正規配布元と解析条件の確認が取れるまで保留。商用不可だけで排除せず、AI解析・再配布・改変等の制限を個別確認する。
+- 頭部の品質改善は単なるモデル数ではなく、レンダ画像と境界ループの解析を結びつけてV16へ反映する。V16は未完成。
