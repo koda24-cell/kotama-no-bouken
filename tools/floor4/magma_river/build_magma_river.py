@@ -66,8 +66,9 @@ def thermal_image(name,kind):
  n5=noise(5);n11=noise(11);n24=noise(24);n57=noise(57)
  yy,xx=np.mgrid[0:n,0:n].astype(np.float32)/n
  warp=n11-.5
- veins=np.abs(np.sin((xx+warp*.12)*21+yy*3.8+n24*1.7))
- heat=np.clip((.43*n5+.31*n11+.18*veins+.08*n57-.36)*3.6,0,1)**1.35
+ # Irregular cooling plates and fracture heat, not glossy water-like swirls.
+ veins=np.clip(1.0-np.abs(n11-n24)*4.1,0,1)
+ heat=np.clip((.48*n5+.26*n11+.19*veins+.07*n57-.44)*3.2,0,1)**1.50
  heat*=1-.72*np.clip((n5-.61)*3.0,0,1)
  if kind=='color':
   rgb=np.stack((.055+.90*heat,.012+.34*heat**1.3,.005+.055*heat),axis=-1)
@@ -540,6 +541,65 @@ for k in range(9):
  rock('V14_CASCADE_IMPACT_COOLING_LOBE',(x,y,z),
       (.105+.02*sin(k)**2,.048,.13+.035*sin(k*1.4)**2),
       crust,seed=2400+k,subdiv=4)
+
+# V15: bedrock volume under the zero-thickness river, including a buried,
+# jagged downstream edge. This prevents a luminous flat plate in side view.
+verts=[];uv=[];faces=[];n=192
+for j in range(n+1):
+ z=-3.35+j*6.7/n
+ for side in (-1,1):
+  x=edge(z,side)-side*.04
+  top=lava_y(x,z)-.012
+  bottom=top-.18-.04*sin(z*3.8+side)
+  verts.extend(((x,top,z),(x,bottom,z)))
+  uv.extend(((z*.18,0),(z*.18,1)))
+for j in range(n):
+ a=j*4;b=a+4
+ faces.extend(((a,a+1,b+1,b),(a+2,b+2,b+3,a+3)))
+# The riverbed front and back caps have dark jagged edges, not a glowing cut.
+for j in (0,n):
+ a=j*4
+ faces.append((a,a+2,a+3,a+1))
+objmesh('V15_BURIED_MOLTEN_RIVERBED_VOLUME',verts,faces,dark_basalt,uv,smooth=False)
+# Irregular dark crust cap along the downstream tile boundary.
+verts=[];uv=[];faces=[];m=48;z=3.345
+for i in range(m+1):
+ u=i/m
+ left=edge(z,-1);right=edge(z,1);x=left+(right-left)*u
+ zz=z-.055-.065*sin(u*pi)**2+.035*sin(u*29)
+ yy=lava_y(x,zz)+.018+.022*sin(u*17)**2
+ verts.extend(((x,yy,zz),(x,yy-.17-.03*sin(u*11),zz+.02)))
+ uv.extend(((u,0),(u,1)))
+for i in range(m):
+ a=i*2;faces.append((a,a+1,a+3,a+2))
+objmesh('V15_DOWNSTREAM_JAGGED_BLACK_CRUST',verts,faces,crust,uv,smooth=False)
+# The original lavafall is a front skin. Give it physical thickness and
+# continuous dark sidewalls, with front and rear at every height.
+for side in (-1,1):
+ verts=[];uv=[];faces=[];n=120
+ for j in range(n+1):
+  t=j/n
+  y=2.42-t*2.2
+  z=-3.18+.28*sin(t*2.8)+.38*t*t
+  cx=-.42+.13*sin(t*5.3)+.08*sin(t*13.1)
+  w=.22+.11*sin(t*pi)+.20*t*t+.028*sin(t*18)
+  x=cx+side*w*(.91+.075*sin(t*16.3+side))
+  # Rock-crust sides wrap around the molten skin rather than floating beside it.
+  front=z+.07+.023*sin(t*19+side)
+  back=z-.16-.035*sin(t*9.2+side)**2
+  verts.extend(((x,y,front),(x,y,back)))
+  uv.extend(((t*.5,0),(t*.5,1)))
+ for j in range(n):
+  a=j*2;faces.append((a,a+1,a+3,a+2))
+ objmesh('V15_THICK_CASCADE_COOLING_SIDEWALL',verts,faces,crust,uv,smooth=False)
+# Cooling chunks at the riverbank's front edge interrupt the ruler-straight
+# river section without obscuring the river's usable tile connections.
+for k in range(11):
+ u=(k+.45)/11;z=3.23+.09*sin(k*2.2)
+ x=edge(z,-1)+(edge(z,1)-edge(z,-1))*u
+ rock('V15_EMBEDDED_FRONT_CRUST_BREAK',(x,lava_y(x,z)-.025,z),
+      (.12+.025*sin(k*2)**2,.075,.11+.03*sin(k*1.5)**2),
+      crust,seed=2600+k,subdiv=4)
 
 # The modeling convention above uses Y-up (as in Three.js).
 # Blender is Z-up: convert every mesh to Z-up BEFORE lighting and cameras.
