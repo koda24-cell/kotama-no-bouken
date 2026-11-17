@@ -256,3 +256,9 @@
 - 登録/担当: 2026-11-17 GPT。ソース・ライセンス・仕様の公開情報を確認済み。
 - **実導入/検証: 未導入/未実行。** GLBを実際に取得/読み込み/撮影/ゲーム内組合せしたわけではない。別チャットのPinterest参照（画像CDNがDNSエラー）はこれと区別。
 - 制作先: PR #451、`feature/gpt-b2-modular-wet-fern-20261117`。V01原型とV02手続き造形は保持。Fern 02を実参照/採用する場合はダウンロードURL・出典・ハッシュ・Blender実レンダー/GLB上の材質と当たり判定・タイル密度を検証し、承認を得る。
+
+### 溶岩単体5種の実行結果（2026-11-17、上記PBR技術の追記）
+- GitHub Actions V1 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43996896778 、V2 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43997817577 、V3 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43998531627 はいずれも**成功**。
+- V3実体確認: 独立GLB 5、Blend 5、PNG 20（各4視点）、manifest 5。GLBには7画像内包、全30ファイルのSHA256がmanifestと一致。ソース `tools/floor4/lava_modules/build_lava_modules.py`、制作PR #454。
+- 具体的な改善: 合流点の非対称化、滝の厚み追加、冷却亀裂の不規則化と発光抑制。静止モデルのみ。GLBのブラウザ実描画・流動VFX・FPS・ゲーム内接続は**未検証**。
+- 状態: 技術的なGLB/PNG/Blend生成は検証済み。**美術承認なし、正式保存なし**。GitHub Actions Artifactは一時保管、ユーザー承認後に正式保存PRを作る。
