@@ -273,3 +273,7 @@
 - 導入: PR https://github.com/koda24-cell/kotama-no-bouken/pull/458 、tools/floor4/magma_river/build_magma_river.py（親PR #450の作業ブランチから派生）。Blender 5.x Actionsで試験。
 - 検証: V9元モデルの4方向実レンダーrun https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43994456829 は成功。V10追加地質メッシュの実レンダーrun https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44003753769 は**結果確認待ち**。品質・GLB・ゲーム実装未承認。
 - 注意: 既存の岩/溶岩メッシュを消さない。形状追加は破断面・段差の質感改善であり、地質学的な実測再現ではない。実PNG目視後に修正し、承認までは本番へ移さない。
+
+### 一層試験組込み: 最終機能QA完了（2026-11-17 JST）
+- `node tools/f1-sacred-forest/verify-game-trial.cjs` を修正後runtime SHA `6f3e5d432221b44211a8f0409602bccf79ba3b82e0391d641d2a9fb60f7903b1` で再実行しpass。通常/opt-in/SHA不一致の3 sessions、16 checks、実ゲーム画像13枚。移動/壁衝突/宝箱報酬一回とモデル交換/NPC/看板/灯/階段往復/戦闘帰還/旧表示fallbackを確認。page/console errors0、positive trial WebGL警告0。入力source hash不変をassert。
+- [PR #447](https://github.com/koda24-cell/kotama-no-bouken/pull/447) の `docs/reviews/f1-sacred-forest-game-trial/game-trial-verification.json` が最終記録、修正前警告/初期fixture失敗も別保存。通常preload警告・外部font接続問題は削除せず残す。保存分離/全GPU診断は前節通り。ユーザー認可は試験組込みのみ、main公開/既定表示/美術承認/実機FPSには昇格しない。
