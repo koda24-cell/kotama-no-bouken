@@ -44,3 +44,16 @@ E. 完成承認後にのみ`assets/models/floor2/`へ正式保存候補PR。CLAU
 - `.github/workflows/b2-waterwheel-single-paddle-blender.yml` を追加。対象作業ブランチへのpushでBlender入りDockerを起動し、2BLEND/2GLB/8PNG/2manifestを校正してArtifactを出す設計。Artifactsは一時保存であり正式素材には該当しない。
 - このチャットのローカル環境にBlender executable/bpyが存在しない。ローカルPython構文検査は済ませたが、**実Blender実行/GLB・Blendの成果物/Actions run IDはまだ確認できていない**。Actionsのcommit紐づけ検索ではランは取得できず、これを失敗・成功の断定に使わない。
 - 造形は未承認。新しい羽根の実ファイルが出力された後、正面/側面/斜め/裏を内部確認して追加修正する。ユーザーにレビュー画像を表示する必要はない。
+
+## 2026-11-18 — Blender実行、実レンダリング、段階的修正の検証
+
+- ユーザー要求: `development`の `AGENTS.md` と `BLENDER_SHARED_EXECUTION_ENTRYPOINT.md` を参照、Blender Actions/内部画像QA/途中保存を使用し、既存モデルを保持して承認前は正式保存しない。
+- **実行環境**: GitHub Actions / Docker `lscr.io/linuxserver/blender:latest` / **Blender 5.3.0**。チャット内ローカルにはbpy/Blenderなし。Blender MCPの自動接続・VLM審美評価の実通信は未実証。
+- 初回run [#44126767260](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44126767260): V1/V2の各 `.blend`、`.glb`、正面/側面/斜め/裏の計8PNG生成成功。しかしCIの `.blend` 固定ヘッダー検査が失敗。Blender 5.3の保存ファイル先頭はZstd `28 b5 2f fd`。失敗時もArtifact **#14348610987** とV1/V2の段階manifest/チェックポイントを保持。レビューZIPをダウンロードしSHA256全件一致を確認。
+- 修正run [#44127236886](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44127236886): ZIP/GLB/PNG/Blend SHA256・PNG/GLB形式・サイズ検証が**success**、run-IDおよびチェックポイント状態を作業ブランチの `docs/3d/b2-waterwheel-paddle-run/latest.json` に記録。画像の美術承認とは別。
+- 改良run [#44127972415](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44127972415): V1/V2保全＋V3（UV画像木目PBRと曲面に沿う鋼帯・裏面・氷柱）を実Blender生成、3GLB/3Blend/12PNGと各manifest、全てSHA256成功、Artifact **#14347913398**。実画像でV3木面がほぼ黒になる重大材質問題を発見。GLB内埋込NormalテクスチャのRGBが全0、Roughnessがマゼンタに異常出力。V3は採用不可、原本として保持。
+- 修正版run [#44128907333](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44128907333): V4で異常Normal/Roughness接続を無効化し、GLB内に正常な木目color画像を埋込。V1〜V4の4GLB/4Blend/16PNGが生成され、全ファイルのSHA256一致・Actions**success**、Artifact **#14348857576**。Blender画像を目視して明度・輪郭復元を確認。ただし木目が等間隔の波状で不自然、金具や氷柱が簡素。V4は未承認の試作。
+- GLBのローカル構造監査: V1=62 meshes / 11844 tris、V2=88 / 13212、V3=31 / 14822、V4=31 / 14822。バッチ化でメッシュ削減方向だが、ゲーム内GPU draw callsとFPSは未測定、共有GLB Performance Audit Actionsもこの水車版では未実行。各GLB約0.4〜0.7 MB。
+- V5は `tools/b2-waterwheel-paddle/build_paddle_v05.py` に木目歪みの抑制・含水色差を独立実装し、`b2-waterwheel-single-paddle-blender.yml`に追加。**この設計書更新時点ではV5実レンダー結果を未確認**。先行V1〜V4を削除せず、再実行で5段階のモデルを独立したArtifactに保存する。
+- workflowは各バージョン終了直後 `.blend/.glb/4PNGs/manifest`および`progress.json`の独立チェックポイントを作る。途中失敗しても `if: always()`で存在する成果物をArtifactへ一時保存する設計。**ジョブ間でArtifactから自動的に復元して続きの段階を実施する機能は当水車ワークフローでは未実証**（共有Blender入口での他素材の復元検証例とは区別）。
+- **すべてNOT_APPROVED**。既存 `field/assets/b2-frozen-waterwheel-scene.js` は未変更、Claudeの見せ場配置を触っていない。承認前のGLB/PNGを正式素材フォルダへ昇格・`development`にマージしていない。V5の美術確認、glTFValidator、Three.js実機、LOD/負荷計測、木目PBRの外部写真素材適用は未完了。
