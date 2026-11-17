@@ -65,3 +65,34 @@
 - 葉柄の曲線をシダの本来のアーチ状にし、先端に葉がなく突き出た棒を減らす。
 - リアルな参考比較としてPoly Haven Fern 02の実GLB/PBRをライセンス付きで取得できる環境で確認し、参考形状とレンダー比較（そのままゲーム素材の採用判断は別）。
 - 湿った岩、古い石の継ぎ目などの設置例は置ける面のタグと占有円を満たすこと。植物単体を承認するまでゲームに表示しない。
+
+## 2026-11-17 追加調査 — V02の構造的欠点とV03実装仕様
+ユーザー指示: 参考資料をより深く分析した上で、形状を繰り返し修正すること。今回V02実レンダー（v02_seed20261117_angle.png）を拡大確認し、植物全体が水平の葉の器形、枝は中心の茶色の針束、葉は尖った三角紙片であると確認。これはリアルなAdiantumの二〜三回羽状複葉と異なる。
+
+### Pinterestから抽出した検討対象（サムネイルURL取得、実高解像度画像未取得）
+- https://www.pinterest.com/pin/24769866687619377/ (Adiantum capillus-veneris、種特定候補)
+- https://www.pinterest.com/pin/365987907204513707/ (小葉のローブと上端、植物記述が充実)
+- https://www.pinterest.com/pin/117656609005290424/ (濡れた葉と水滴、現物の反射表現候補)
+- https://www.pinterest.com/pin/447545281723217501/ (黒い葉柄と株の広がり)
+- https://www.pinterest.com/pin/485192559829012651/ (石造遺跡のクラックから生える地生シダ)
+- **Pinterest CDN画像の直接の高解像度取得・拡大目視は現在まで未完了。** タイトル/説明のみでビジュアル確認済みとしない。
+
+### 信頼できる植物分類資料と形態記述
+- Royal Botanic Garden Edinburgh: https://websites.rbge.org.uk/thaiferns/factsheets/index.php?q=Adiantum_capillus-veneris.xml
+- World Flora Online: https://www.worldfloraonline.org/taxon/wfo-0001109469
+- Royal Botanic Gardens Victoria: https://hortflora.rbg.vic.gov.au/taxon/ad8befe6-5340-11e7-b82b-005056b0018f
+- Canadian government: https://www.canada.ca/en/environment-climate-change/services/species-risk-public-registry/recovery-strategies/southern-maidenhair-fern-2013.html
+- NYBG fern morphology: https://sweetgum.nybg.org/science/world-flora/monographs-details/?irn=25121
+これらの記述では、黒褐色の細い葉柄、2〜3段階に分かれた葉、半円形〜楔形の小葉、細かな葉縁、基部の大きな羽片、外へ弓なりに伸びる葉の配置、岩の隙間や水しぶきのかかる環境が共通する。
+
+### V03で必要な構造変更
+1. 旧V01・V02は全保持。V03は別生成器/別GLBとし、葉の枚数の単純な増減ではなく**葉の階層構造**を変更する。
+2. 葉柄 → 主軸 → 第一次側枝 → 小葉柄 → 小葉という分岐階層にする。基部側の枝が長く、先端側は短くなる。主軸の先端は長い棒だけでなく若葉で終端。
+3. 株の大きさ: 現在の0.6m程度はホウライシダとして大きめの演出。自然サイズは0.15〜0.4m程度が中心のため、V03は0.24〜0.42mを基準にし、演出用大型株は別スケール設定。
+4. 小葉は三角形メッシュではなく、楔形の基部＋丸い扇形外縁＋不規則な2〜5切れ込み、放射状の淡い葉脈を作り、表裏の見え方を確認。
+5. 若葉は淡黄緑で小さめ、成熟葉は緑、葉縁枯れは一部のみ。第2層の照明で青く染め過ぎない。片面から消えないよう両面材質をGLB/Three.jsで検証。
+6. 各枝の傾き・ねじれ・向き・空間占有を測り、V02の「水平に開いた皿形」を解消。幹と葉の密度を3方向から判断。
+7. 接地・ランダム組み合わせ: 短い匍匐根茎を地面原点とし、岩の割れ目に置く位置制限。既存配置APIは維持、ゲーム側の変更は未承認ではしない。
+
+### 進捗と検証境界
+- この追記は形態比較・V03設計であり、まだV03の新規GLB/Blender実レンダーが完成したことを意味しない。V02はNOT_APPROVED。
