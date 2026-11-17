@@ -674,8 +674,8 @@ export function createSetpieces(S) {
       for (const end of [-1, 1]) for (const side of [-1, 1]) {
         const lx = end * (L2 - 0.45), lz = side * (HW + 0.1), ps = sd + end * 17 + side * 29;
         let y = TOP - 0.05; const nS = 3 + (rnd(ps) < 0.5 ? 1 : 0);
-        for (let q = 0; q < nS; q++) { const h = 0.3 + rnd(ps + q) * 0.08; bag.add('sp:stairStone', at(stone(0.5 - q * 0.02, h, 0.5 - q * 0.02, ps + q * 3, 0.03), lx, y + h / 2, lz, (rnd(ps + q * 5) - 0.5) * 0.1)); y += h; }
-        bag.add('sp:stairStone', at(stone(0.66, 0.14, 0.66, ps + 9, 0.02), lx, y + 0.07, lz));
+        for (let q = 0; q < nS; q++) { const h = 0.3 + rnd(ps + q) * 0.08; bag.add('sp:stairStone', at(stone(0.4 - q * 0.02, h, 0.4 - q * 0.02, ps + q * 3, 0.03), lx, y + h / 2, lz, (rnd(ps + q * 5) - 0.5) * 0.1)); y += h; }
+        bag.add('sp:stairStone', at(stone(0.54, 0.13, 0.54, ps + 9, 0.02), lx, y + 0.07, lz));
         for (let q = 0; q < 2; q++) {
           const g = new THREE.ConeGeometry(0.04 + rnd(ps + q) * 0.03, 0.16 + rnd(ps + q * 3) * 0.14, 5); noUv(g); g.translate(0, (0.22 + rnd(ps + q * 3) * 0.2) / 2, 0);
           bag.add('crystalIce', at(g, lx + (rnd(ps + q * 7) - 0.5) * 0.2, y + 0.13, lz + (rnd(ps + q * 9) - 0.5) * 0.2, 0, (rnd(ps + q * 11) - 0.5) * 0.6, (rnd(ps + q * 13) - 0.5) * 0.6));
@@ -750,7 +750,7 @@ export function createSetpieces(S) {
       const scXZ = mode === 'point' ? 0.6 : 0.56, scY = mode === 'point' ? 0.78 : mode === 'deadend' ? 0.8 : 0.74;
       const sc = [scXZ, scY, scXZ], hP = (A.size.y || 4.42) * scY;
       spots.forEach(([lx, lz], i) => {
-        const [wx, wz] = rot(lx, lz, yaw), pc = i === 1 && assets.pillarG && rnd(sd + 5) < 0.5 ? assets.pillarG : A;
+        const [wx, wz] = rot(lx, lz, yaw), pc = i === 1 && assets.pillarG && rnd(sd + 5) < 0.3 ? assets.pillarG : A;   // 氷河の柱（発光する結晶つき）はまれに＝光の点を増やさない
         placeAsset(B, 'pillars', pc, wx, groundY(wx, wz) - 0.06, wz, yaw + Math.floor(rnd(sd + i * 3) * 4) * Math.PI / 2, sc, tx, ty);
       });
       {
@@ -783,7 +783,7 @@ export function createSetpieces(S) {
         bag.add('sp:flag', at(stone(w, w * 0.7, w * 0.9, sd + q * 53, 0.05), wx, groundY(wx, wz) + w * 0.25, wz, rnd(sd + q * 59) * 6.28, rnd(sd + q) * 0.5));
       }
       B.add('pillars', bag.piece('b2sp_ruin_cluster'), new THREE.Matrix4(), tx, ty);
-      light(cx, 2.0, cz, 0x6fd0ff, 0.6, 4.5);
+      light(cx, 2.2, cz, 0x6fd0ff, 0.45, 4.5);
       log.clusters.push({ mode, tx, ty, x: +(cx / CELL).toFixed(2), z: +(cz / CELL).toFixed(2), fwd: fwd ? fwd.slice() : null });
       return true;
     }

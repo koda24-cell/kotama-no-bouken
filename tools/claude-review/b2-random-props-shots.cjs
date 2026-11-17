@@ -56,17 +56,18 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
   const shotS = async (name) => { await shot(name); stats[name] = await p.evaluate(() => window.KotamaField3D.stats && window.KotamaField3D.stats()); };
   await p.evaluate(() => { fieldEnterArea(2, { floor: 0, adminSkip: true }); });
   for (let i = 0; i < 8; i++) await skip();
-  for (const f of [0, 1, 2]) {
+  // [B2V4-S] 1巡目：3階分の見せ場だけを先に撮る（撮影の段の15分の制限で 6F の見せ場が切れないように）。2巡目：それ以外（従来どおり）
+  for (const [spPass, f] of [[true, 0], [true, 1], [true, 2], [false, 0], [false, 1], [false, 2]]) {
     await p.evaluate((f) => { fieldState.floor = f; fieldState.positioned = false; fieldState.built = ''; fieldShow(); }, f);
     for (let i = 0; i < 4; i++) await skip();
     await waitBuilt(`floor ${f}`); await p.waitForTimeout(1200);
     const inf = await info(), L = inf.layout || {}, pre = `b2f${f + 1}_props`;
     // 足した物・柱の中心が、通れるマスの中央から 1.0m（0.25マス）以内に無いか
     const centerHits = await p.evaluate((placed) => { const a = fieldArea(), out = []; for (const q of placed || []) { const tx = Math.round(q.x), ty = Math.round(q.z), c = fieldTileAt(a, tx, ty); if (!c || c === '#' || fieldCharSolid(a, c)) continue; const d = Math.hypot(q.x - tx, q.z - ty) * 4; if (d < 1.0) out.push({ ...q, d: +d.toFixed(2) }); } return out; }, inf.placed);
-    report.floors.push({ floor: f + 1, centerHits, placedCount: (inf.placed || []).length, buildKey: inf.buildKey, random: inf.random, layout: L, extras: inf.extras, falls: inf.falls, monuments: inf.monuments, crystalZones: inf.crystalZones, drawGroups: inf.drawGroups });
+    if (spPass) report.floors.push({ floor: f + 1, centerHits, placedCount: (inf.placed || []).length, buildKey: inf.buildKey, random: inf.random, layout: L, extras: inf.extras, falls: inf.falls, monuments: inf.monuments, crystalZones: inf.crystalZones, drawGroups: inf.drawGroups });
     // [B2V4-S] 見せ場（階段・背景モニュメント・水門・橋・柱群）。themeInfo().setpieces の位置から撮る
-    const SPI = inf.setpieces || {};
-    report.floors[report.floors.length - 1].setpieces = SPI;
+    const SPI = spPass ? inf.setpieces || {} : {};
+    if (spPass) report.floors[report.floors.length - 1].setpieces = SPI;
     const D4 = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
     const stand = async (tx, ty, d) => { await p.evaluate(([tx, ty, d]) => { const cc = fieldTileCenter(tx, ty); fieldState.x = cc.x; fieldState.y = cc.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, [tx, ty, d]); await p.waitForTimeout(900); };
     const walkable = (tx, ty) => p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [tx, ty]);
@@ -97,7 +98,6 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
         await stand(cx, cy, 'down'); await shotS(`${pre}_monument_watergate_edge`);
         if (await walkable(cx, cy - 1)) { await stand(cx, cy - 1, 'down'); await shotS(`${pre}_monument_watergate_front`);
           if (await walkable(cx, cy - 2)) { await stand(cx, cy - 2, 'down'); await shotS(`${pre}_monument_watergate_far`); } }
-        if (await walkable(wg.x + 2, cy - 1)) { await stand(wg.x + 2, cy - 1, 'down'); await shotS(`${pre}_monument_watergate_right`); }
       }
     }
     // 橋：渡る手前（岸の1〜2マス手前）から正面、橋の上から先、水辺から横
@@ -106,7 +106,7 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
       const cells = br.cells || [[br.tx - (along ? 1 : 0), br.ty - (along ? 0 : 1)], [br.tx, br.ty], [br.tx + (along ? 1 : 0), br.ty + (along ? 0 : 1)]];
       const first = cells[0], last = cells[cells.length - 1], tag = `${pre}_bridge${i ? i + 1 : ''}`;
       // 手前から正面（first の手前の岸。2マス手前が通れればそこから）
-      for (const [x0, y0, d, nm] of [[first[0] - fx, first[1] - fy, fwd, 'approach'], [last[0] + fx, last[1] + fy, bwd, 'approach_back']]) {
+      for (const [x0, y0, d, nm] of [[first[0] - fx, first[1] - fy, fwd, 'approach']]) {
         const [dx, dy] = D4[d];
         if (await walkable(x0 - dx, y0 - dy)) { await stand(x0 - dx, y0 - dy, d); await shotS(`${tag}_${nm}`); }
         else if (await walkable(x0, y0)) { await stand(x0, y0, d); await shotS(`${tag}_${nm}`); }
@@ -119,8 +119,6 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
         const bx = mid[0] + (along ? off : 0), by = mid[1] + (along ? 0 : off), sx = bx + D4[ld][0] * k, sy = by + D4[ld][1] * k;
         if (await walkable(sx, sy)) { await stand(sx, sy, OPP[ld]); await shotS(`${tag}_side`); sideDone = true; }
       }
-      // 岸から斜め（橋のたもとの横の岸から、橋の方へ）
-      for (const ld of lats) { const sx = first[0] - fx + D4[ld][0], sy = first[1] - fy + D4[ld][1]; if (await walkable(sx, sy) && await walkable(sx - fx, sy - fy)) { await stand(sx - fx, sy - fy, fwd); await shotS(`${tag}_bank_oblique`); break; } }
     }
     // 柱のまとまり：群れの中心がまっすぐ前（横のずれ 0.6マス以内）、1.5〜3.2マス先に来るマスから撮る
     for (const [i, cl] of (SPI.clusters || []).slice(0, 3).entries()) {
@@ -147,7 +145,7 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
         for (const d of ['down', 'up', 'right', 'left']) { const nx = tx - D4[d][0] * 1, ny = ty - D4[d][1] * 1; if (!done && await walkable(nx, ny) && await walkable(nx - D4[d][0], ny - D4[d][1])) { await stand(nx - D4[d][0], ny - D4[d][1], d); await shotS(`${pre}_pillar_cluster_${i + 1}_${cl.mode}`); done = true; } }
       }
     }
-    if (process.env.SP_ONLY) continue;
+    if (spPass || process.env.SP_ONLY) continue;
     // 花（4F も：光るキノコ・荊の位置の差し替え）
     // [B2V4-F] 花の群れ：群れのマスの手前（壁・水と反対側）から、そこが通れなければ壁に沿った隣のマスから見る
     const walkC = (x, y) => p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [x, y]);
