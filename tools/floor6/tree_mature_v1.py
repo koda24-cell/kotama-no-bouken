@@ -321,6 +321,24 @@ for k in range(8):
   leaf("tree_mature_leaf_%04d"%leaves_obj_count,c,R.uniform(.067,.101),
        (az+R.uniform(-.8,.8),R.uniform(-.21,.39)),
        leaves[R.choices([0,1,2,3],weights=[41,43,11,5])[0]])
+# V14: overlapping interior broadleaf crown pads between old branch tiers
+# and the main upper canopy; keeps original branches and prior leaf meshes.
+for pad in range(12):
+ a=math.tau*((pad*.754877666)%1)+R.uniform(-.1,.1)
+ d=(.18,.39,.61)[pad%3]+R.uniform(-.07,.07)
+ z=(2.38,2.48,2.30)[pad%3]+R.uniform(-.10,.12)
+ core=Vector((d*math.cos(a),d*math.sin(a),z))
+ # Smaller local twigs help leaves grow from structure, not float unsupported.
+ root=Vector((core.x*.34,core.y*.34,z-.16))
+ middle=root.lerp(core,.62)+Vector((0,0,.07))
+ tube("tree_mature_v14_crown_interior_%02d"%pad,
+      [tuple(root),tuple(middle),tuple(core)],[.018,.011,.002],twig,8)
+ for n in range(73):
+  p=core+Vector((R.gauss(0,.104),R.gauss(0,.101),R.gauss(0,.117)))
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,p,
+       R.uniform(.061,.10),
+       (a+R.uniform(-.7,.7),R.uniform(-.18,.44)),
+       leaves[R.choices([0,1,2,3],weights=[43,39,13,5])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -346,7 +364,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V13",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V14",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
