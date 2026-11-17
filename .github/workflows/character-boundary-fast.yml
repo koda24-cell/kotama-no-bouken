@@ -9,6 +9,7 @@ on:
       - 'tools/character-mesh-research/rank_posterior_seams.py'
       - '.github/workflows/character-boundary-fast.yml'
       - 'tools/character-mesh-research/render_boundary_components.py'
+      - 'tools/character-mesh-research/audit_posterior_rim.py'
 jobs:
   boundary:
     runs-on: ubuntu-latest
@@ -36,6 +37,8 @@ jobs:
           python3 tools/character-mesh-research/summarize_boundary_loops.py output/character-mesh-research
           python3 tools/character-mesh-research/rank_posterior_seams.py output/character-mesh-research
           test -s output/character-mesh-research/posterior_seam_review.md
+          python3 tools/character-mesh-research/audit_posterior_rim.py output/character-mesh-research
+          test -s output/character-mesh-research/posterior_rim_geometric_audit.csv
       - name: Render six-color boundary component overlays
         run: |
           for model in Sendagaya_Shibu Vita; do
