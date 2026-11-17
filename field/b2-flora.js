@@ -27,14 +27,15 @@ export const FLORA_CONFIG = {
   groupSpacing: 4,        // 群れどうしの間隔（マス、チェビシェフ距離）
   groupMin: 3, groupMax: 7,
   quota: { mizubasho: 4, snowdrop: 5, bloom: 3 },  // 主になる種類ごとの群れの上限
-  meadowMax: 230,         // 群生地の株数の上限（群生地は軽い版だけで描く）
+  meadowMax: 190,         // 群生地の株数の上限（群生地は軽い版だけで描く）
   meadowStep: 0.5,        // 群生地の株の間隔の目安（m）
   far: 26,                // これより遠い区画は描かない（m。霧の濃さ0.034で約6割が霧に沈む距離）
-  // 区画の端までの距離で形を切り替える（m）：[元の形, 中, 遠] の上限
-  tiers: { group: [4.5, 13, 26], meadow: [0, 9, 30] },
-  lod: { mid: 0.16, lo: 0.05, mMid: 0.09, mLo: 0.035 },
+  // 区画の端までの距離で形の段階を切り替える（m）：[元の形, 中, 遠] の上限（0 はその段階を使わない）
+  // 中（約20%）は近くで見ても元の形とほぼ同じ（間引きの比較で確認）なので、元の形（1株約2万三角形）は使わない
+  tiers: { group: [0, 12, 26], meadow: [0, 6, 30] },
+  lod: { mid: 0.2, lo: 0.05, mMid: 0.065, mLo: 0.035 },
   chunk: 4,               // 群れ以外の区画（マス）
-  meadowChunk: 2,         // 群生地の区画（マス）
+  meadowChunk: 3,         // 群生地の区画（マス）
 };
 
 // 目の高さ1.6mの一人称から見えるように拡大した高さ（m）。[低い, 高い]
@@ -124,8 +125,9 @@ export function simplifyGeometry(geo, ratio, minTris = 8) {
     fnorm(f); const len = Math.hypot(fx, fy, fz);
     for (let k = 0; k < 3; k++) { const e = ek(F[f * 3 + k], F[f * 3 + (k + 1) % 3]); edgeCount.set(e, (edgeCount.get(e) || 0) + 1); }
     if (len < 1e-14) continue;
-    const nx = fx / len, ny = fy / len, nz = fz / len, a = F[f * 3] * 3, d = -(nx * pos[a] + ny * pos[a + 1] + nz * pos[a + 2]), area = len * 0.5;
-    for (let k = 0; k < 3; k++) addQ(F[f * 3 + k], nx, ny, nz, d, area);
+    // 面ごとに同じ重み（面積で重みづけすると、細かく作られた小さな花＝霜鈴草の鈴が先に消える）
+    const nx = fx / len, ny = fy / len, nz = fz / len, a = F[f * 3] * 3, d = -(nx * pos[a] + ny * pos[a + 1] + nz * pos[a + 2]);
+    for (let k = 0; k < 3; k++) addQ(F[f * 3 + k], nx, ny, nz, d, 1);
   }
   for (let f = 0; f < nf; f++) {
     fnorm(f); if (Math.hypot(fx, fy, fz) < 1e-14) continue;
@@ -133,7 +135,7 @@ export function simplifyGeometry(geo, ratio, minTris = 8) {
       const v1 = F[f * 3 + k], v2 = F[f * 3 + (k + 1) % 3]; if (edgeCount.get(ek(v1, v2)) !== 1) continue;
       const ex = pos[v2 * 3] - pos[v1 * 3], ey = pos[v2 * 3 + 1] - pos[v1 * 3 + 1], ez = pos[v2 * 3 + 2] - pos[v1 * 3 + 2];
       let px = ey * fz - ez * fy, py = ez * fx - ex * fz, pz = ex * fy - ey * fx; const pl = Math.hypot(px, py, pz); if (pl < 1e-14) continue;
-      px /= pl; py /= pl; pz /= pl; const d = -(px * pos[v1 * 3] + py * pos[v1 * 3 + 1] + pz * pos[v1 * 3 + 2]), w = (ex * ex + ey * ey + ez * ez) * 4;
+      px /= pl; py /= pl; pz /= pl; const d = -(px * pos[v1 * 3] + py * pos[v1 * 3 + 1] + pz * pos[v1 * 3 + 2]), w = 3;
       addQ(v1, px, py, pz, d, w); addQ(v2, px, py, pz, d, w);
     }
   }
@@ -225,14 +227,33 @@ export function simplifyGeometry(geo, ratio, minTris = 8) {
 }
 // 種類ごとの形の段階（読み込んだ形 EX[kind] ごとに1回だけ作り、組み立て直しでも使い回す。破棄しない）
 //   hi＝元の形、mid・lo＝群れの中・遠、mMid・mLo＝群生地の中・遠（根元の部品なし）
+//   遠（lo・mLo）は描く回数を減らすため、光る芯以外の部品を1つの形にまとめ、素材の色の違いは頂点色へ焼き込む（素材は x:flower）
 const LOD_CACHE = new WeakMap();
+const BAKE = { 'x:flowerBase': 0x6aa0be, 'x:flowerBaseIce': 0x9cd2ea, 'x:flowerRock': 0x4c86b4 };
+function mergeFar(parts) {
+  const keep = parts.filter((pt) => pt.mat === 'x:flowerGlow'), rest = parts.filter((pt) => pt.mat !== 'x:flowerGlow');
+  if (rest.length < 2) return parts;
+  let n = 0; for (const pt of rest) n += pt.geo.attributes.position.count;
+  const P = new Float32Array(n * 3), Nn = new Float32Array(n * 3), Cc = new Float32Array(n * 3), col = new THREE.Color();
+  let o = 0;
+  for (const pt of rest) {
+    const g = pt.geo, m = g.attributes.position.count, c = g.attributes.color; col.setHex(BAKE[pt.mat] ?? 0xffffff);
+    P.set(g.attributes.position.array, o * 3); Nn.set(g.attributes.normal.array, o * 3);
+    for (let i = 0; i < m; i++) { Cc[(o + i) * 3] = (c ? c.getX(i) : 1) * col.r; Cc[(o + i) * 3 + 1] = (c ? c.getY(i) : 1) * col.g; Cc[(o + i) * 3 + 2] = (c ? c.getZ(i) : 1) * col.b; }
+    o += m;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(P, 3)); geo.setAttribute('normal', new THREE.BufferAttribute(Nn, 3)); geo.setAttribute('color', new THREE.BufferAttribute(Cc, 3));
+  geo.computeBoundingBox(); geo.computeBoundingSphere();
+  return [{ geo, mat: 'x:flower' }, ...keep];
+}
 function lodSets(ex, L) {
   let c = LOD_CACHE.get(ex);
   if (!c) { c = { hi: ex.parts }; LOD_CACHE.set(ex, c); }
   if (!c.mid) c.mid = ex.parts.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.mid), mat: pt.mat }));
-  if (!c.lo) c.lo = c.mid.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.lo / L.mid), mat: pt.mat }));
+  if (!c.lo) c.lo = mergeFar(c.mid.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.lo / L.mid), mat: pt.mat })));
   if (!c.mMid) c.mMid = c.mid.filter((pt) => !BASE_KEYS.has(pt.mat)).map((pt) => ({ geo: simplifyGeometry(pt.geo, L.mMid / L.mid), mat: pt.mat }));
-  if (!c.mLo) c.mLo = c.mMid.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.mLo / L.mMid), mat: pt.mat }));
+  if (!c.mLo) c.mLo = mergeFar(c.mMid.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.mLo / L.mMid), mat: pt.mat })));
   return c;
 }
 
@@ -362,9 +383,9 @@ export function createFlora(ctx) {
       let kind;
       if (wet) { if (hk > 0.32) continue; kind = 'mizubasho'; }
       else if (nearWet && nz2 > 0.15 && hk < 0.55) kind = 'mizubasho';
-      else if (nz1 > 0.38 || (ed < 0.9 && hk < 0.3)) kind = 'bloom';
+      else if (nz1 > 0.5 || (ed < 0.9 && hk < 0.16)) kind = 'bloom';
       else if (nz2 > 0.62 && hk < 0.5) kind = 'mizubasho';
-      else kind = hk < 0.9 ? 'snowdrop' : 'bloom';
+      else kind = hk < 0.94 ? 'snowdrop' : 'bloom';
       if (!avail(kind)) kind = kinds[Math.floor(hk * kinds.length) % kinds.length];
       if (wet && kind !== 'mizubasho') continue;
       // 密度：中心が濃く、縁がまばら
@@ -559,7 +580,7 @@ export function createFlora(ctx) {
     const col = new THREE.Color(), sets = {};
     for (const kind of FLORA_KINDS) if (avail(kind)) sets[kind] = lodSets(EX[kind], C.lod);
     for (const [ck, list] of byChunk) {
-      const mode = list[0].set, tierNames = mode === 'meadow' ? ['mMid', 'mLo'] : ['hi', 'mid', 'lo'];
+      const mode = list[0].set, tierNames = mode === 'meadow' ? ['mMid', 'mLo'] : (C.tiers.group[0] > 0 ? ['hi', 'mid', 'lo'] : ['mid', 'lo']);
       const cg = new THREE.Group(); cg.name = `b2:flora:${ck}`; group.add(cg);
       let mx = 0, mz = 0; for (const p of list) { mx += p.x; mz += p.z; } mx /= list.length; mz /= list.length;
       let rad = 0; for (const p of list) rad = Math.max(rad, Math.hypot(p.x - mx, p.z - mz) + p.r + 0.3);
@@ -601,12 +622,20 @@ export function createFlora(ctx) {
       let tn = null;
       if (c.mode === 'meadow') { const [, m1, m2] = C.tiers.meadow; tn = d < m1 ? 'mMid' : d < m2 ? 'mLo' : null; }
       else { const [h0, m1, m2] = C.tiers.group; tn = d < h0 ? 'hi' : d < m1 ? 'mid' : d < m2 ? 'lo' : null; }
+      if (tn && !c.tiers[tn]) tn = c.mode === 'meadow' ? 'mMid' : 'mid';
       if (tn === c.cur) continue;
       if (c.cur) c.tiers[c.cur].visible = false;
       if (tn) c.tiers[tn].visible = true;
       c.cur = tn;
     }
   }
+  // 診断用（撮影・レビュー）：いま描く段階の三角形数・描く数（画面外の区画も含む上限）
+  function visible() {
+    let tris = 0, meshes = 0;
+    for (const c of chunks) if (c.cur) c.tiers[c.cur].traverse((o) => { if (o.isInstancedMesh) { tris += triCount(o.geometry) * o.count; meshes++; } });
+    return { tris, meshes, tiers: chunks.reduce((q, c) => { q[c.cur || 'off'] = (q[c.cur || 'off'] || 0) + 1; return q; }, {}) };
+  }
+  if (typeof window !== 'undefined') window.KotamaB2Flora = { visible, setVisible: (v) => { if (group) group.visible = !!v; } };
   function layout() {
     const byKind = Object.fromEntries(FLORA_KINDS.map((k) => [k, plants.filter((p) => p.kind === k).length]));
     const lod = {}; for (const kind of FLORA_KINDS) if (avail(kind)) { const s = lodSets(EX[kind], C.lod); lod[kind] = Object.fromEntries(Object.entries(s).map(([tn, parts]) => [tn, parts.reduce((q, pt) => q + triCount(pt.geo), 0)])); }
