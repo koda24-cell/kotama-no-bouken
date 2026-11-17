@@ -43,7 +43,7 @@ jobs:
             assert hashlib.sha256(data).hexdigest()==e['sha256']
             if p.suffix=='.png': assert data[:8]==bytes([137,80,78,71,13,10,26,10])
             if p.suffix=='.glb': assert data[:4]==b'glTF'
-            if p.suffix=='.blend': assert data[:7]==b'BLENDER'
+            if p.suffix=='.blend': assert data[:7]==b'BLENDER' or data[:4]==bytes([40,181,47,253])  # Blender can save Zstandard-compressed .blend
           print('F6_TREE_QA_PASS')
           PY
       - uses: actions/upload-artifact@v4
