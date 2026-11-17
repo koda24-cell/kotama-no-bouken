@@ -307,3 +307,9 @@
 - 導入先: https://github.com/koda24-cell/kotama-no-bouken/pull/470 、tools/floor4/magma_river/build_magma_river.py 。元の地形/河川/岩は保持し、滝の厚みと岸の冷却縁、短い発光亀裂を追加。
 - 実行: GitHub Actions https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44026524892 （**結果確認前**）。美術承認なし、正式保存なし、ゲーム内VFX動作未実装。
 - 注意: 静止GLBは実際に流動する流体ではない。横からの接触/浮遊判定、GLBメッシュ・PNG実体、ゲーム性能は実レンダー/ブラウザ確認後に評価する。
+
+### B4粘性溶岩・岩壁密着V14–V17の実検証（2026-11-17）
+- V14 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44026524892 、V15 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44027091713 、V16 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44027581364 、V17 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44028204063 は全てBlender Actions **success**。
+- V17 Artifact 14304097614 のGLB/Blend/4方向PNG/manifestをダウンロード。SHA256が6ファイル一致、GLB 400 meshes/9 imagesを実確認。
+- V14は滝が岩に隠れ、V16は下流端が発光団子列になったため採用せず。V17で厚い岩盤支持体と一体型冷却縁を維持し、側面の浮遊感を軽減。
+- **未検証/未承認**: ゲーム内GLTFLoader、動的熱ゆらぎ、火の粉の時間変化、FPS、タイル接続、ユーザー美術承認。実行コードとGLBは未マージのPR #475上にある。
