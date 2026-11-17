@@ -9,6 +9,9 @@ This file is an entry point for ChatGPT, Claude and other AI development session
 4. Work in isolated feature branches; prepare PRs against `development`. Never merge into `main` without explicit user authorization.
 5. Treat rendered screenshots and GLBs as evidence only after actual successful workflow/artifact verification; do not claim a render succeeded from code commits alone.
 
+## 3D visual-quality-first performance policy (all stages)
+For all new and revised 3D models, prioritize distance- and screen-size-based LOD, only loading and rendering visible/needed data, material/geometry batching, and draw-call reduction **without sacrificing near-view quality or changing gameplay/collisions**. See `docs/3d/GLOBAL_3D_LOD_PERFORMANCE_POLICY.md`. This is a design requirement, **not** a claim that every feature is currently implemented. Test with actual PNG/GLB and game frame statistics before promotion.
+
 ## Stage 4 3D asset policy
 Volcanic cave, magma, abandoned mine, mining carts, pickaxes, ore, rocky obstacles, ruined equipment. Improve silhouettes and geometry by ADDING detail to existing models, not replacing/removing original geometry. Render actual models before and after modifications, preferably front/side/angle views. Use screenshots to guide subsequent improvements.
 
