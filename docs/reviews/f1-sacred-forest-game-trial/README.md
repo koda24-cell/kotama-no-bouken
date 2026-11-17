@@ -32,3 +32,7 @@ node tools/f1-sacred-forest/verify-game-trial.cjs --water-review
 追加画像14は歩行セル(14,11)・上向き・目高1.6m。機能suiteとは別の `water-review-verification.json` に記録する。
 
 初回の失敗はテストfixtureが既存gatherの表示名追加をidentity改変と誤判定したもの。`fixture-initial-failure.json` に保存し、source側の比較を修正後、上記suiteを最初から実行して成功した。途中画像だけで成功扱いにしていない。全ゲーム回帰、実機FPS、永続セーブ、長時間進行の承認は含まない。
+
+## SVG修正後の全suite再実行
+
+同じruntime SHA `6f3e5d432221b44211a8f0409602bccf79ba3b82e0391d641d2a9fb60f7903b1` で3 sessions / 16 checks / 13 screenshotsを最初から完走しpass。current `game-trial-verification.json` と画像01〜13を更新。page/console errors0、positive trialのWebGL警告0をassert。FOEのcanvas化と512角もassertした。補足の水画像14は前回の同一素材・配置による撮影で、独立water reportを保持する。

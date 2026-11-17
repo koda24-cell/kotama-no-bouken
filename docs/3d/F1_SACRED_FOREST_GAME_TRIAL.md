@@ -16,3 +16,7 @@
 通常進行から見る場合は `http://localhost:8796/index.html?f1sacred=1` を使う。この経路は通常ゲームのセーブを使うため、保存分離を希望する場合は上記試遊ページを選ぶ。
 
 実ゲーム証拠は `docs/reviews/f1-sacred-forest-game-trial/`、保存分離証拠は `docs/reviews/f1-sacred-forest-playtest-page/` に保存する。実機FPSと最終美術承認は未完了。平坦な地形、背景の抜け、遠景植生には改善余地がある。mainへのマージや一般向け既定表示への変更は行わない。
+
+## 実行結果（2026-11-17 JST）
+
+`node tools/f1-sacred-forest/verify-game-trial.cjs` は3 sessions / 16 checks / 13 screenshotsでpass。通常表示・opt-in・意図的SHA不一致を分離し、移動/壁衝突/宝箱80G一回/モデル交換/NPC/看板/灯/階段往復/戦闘帰還/旧表示fallbackを確認。page/console errorとGPU upload警告は0。通常preload警告や外部font接続問題はレポートに保持する。保存分離ページの別テストもpass。これらは長期進行・実機FPS・最終美術承認を含まない。
