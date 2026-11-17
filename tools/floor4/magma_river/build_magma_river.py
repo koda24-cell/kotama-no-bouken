@@ -44,7 +44,7 @@ tex='assets/3d/dungeons/b4_dragonfire/textures/'
 basalt=mat('Basalt_CC0_project_existing',(0.13,.095,.088),.95,texture=tex+'volcanic_basalt_albedo.png',normal=tex+'volcanic_basalt_normal.png',roughmap=tex+'volcanic_basalt_roughness.png')
 ash=mat('Dark_ashen_banks',(0.13,.11,.10),.97,texture=tex+'ashen_stone_albedo.png',normal=tex+'ashen_stone_normal.png',roughmap=tex+'ashen_stone_roughness.png')
 crust=mat('Black_cooling_crust',(.052,.046,.043),.97,texture=tex+'volcanic_basalt_albedo.png',normal=tex+'volcanic_basalt_normal.png')
-lava=mat('Molten_lava_project_existing',(1,.22,.025),.35,em=2.6,texture=tex+'molten_lava_albedo.png',normal=tex+'molten_lava_normal.png',roughmap=tex+'molten_lava_roughness.png',emmap=tex+'molten_lava_emissive.png')
+lava=mat('Molten_lava_project_existing',(1,.22,.025),.35,em=1.55,texture=tex+'molten_lava_albedo.png',normal=tex+'molten_lava_normal.png',roughmap=tex+'molten_lava_roughness.png',emmap=tex+'molten_lava_emissive.png')
 hot=mat('Bright_molten_fissures',(1,.26,.028),.38,em=3.8)
 hot2=mat('Sulfur_yellow_core',(1,.61,.08),.35,em=5)
 coal=mat('Charred_rock',(0.09,.075,.075),.95)
@@ -61,7 +61,7 @@ def objmesh(name,verts,faces,material,uv=None,smooth=True):
  for p in me.polygons:p.use_smooth=smooth
  return o
 def center(z):return .32*sin(z*.78)+.27*sin(z*1.92+.7)+.11*sin(z*3.15)
-def halfwidth(z):return .76+.16*sin(z*1.8+1.1)+.26*math.exp(-((z-1.95)/1.2)**2)+.07*sin(z*5.1)
+def halfwidth(z):return (.76+.16*sin(z*1.8+1.1)+.38*math.exp(-((z-1.95)/1.2)**2)+.07*sin(z*5.1))*(1-.56*math.exp(-((z+3.32)/.40)**2))
 def edge(z,side):return center(z)+side*(halfwidth(z)+.055*sin(z*9+side*1.4))
 def ground_y(x,z):
  return .24+.10*sin(x*1.7+z*.85)*sin(z*2.2-x*.48)+.035*sin(x*7.3+z*5.1)
@@ -133,13 +133,33 @@ for i in range(23):
  size=R.uniform(.075,.23)
  if i%6==0:size*=1.55
  rock('FLOATING_COOLING_CRUST',(x,.17,z),(size,.025+size*.12,size*R.uniform(.5,1.7)),crust,seed=i+3,subdiv=2)
+# Thin cooled rafts cover parts of the molten surface, making hot cracks legible.
+# Each irregular sheet follows the meander, rather than forming polygonal confetti.
+for i in range(62):
+ z=R.uniform(-2.95,3.15)
+ c=center(z);width=halfwidth(z)
+ x=c+R.uniform(-.76,.76)*width
+ rx=R.uniform(.12,.35);rz=R.uniform(.16,.48)
+ vs=[];fs=[];n=15
+ for k in range(n):
+  a=k*2*pi/n
+  rough=1+.18*sin(a*3+i*2.2)+.09*sin(a*7+i)
+  px=x+rx*cos(a)*rough
+  pz=z+rz*sin(a)*rough
+  if abs(px-center(pz))>halfwidth(pz)*.91:continue
+  vs.append((px,lava_y(px,pz)+.045,pz))
+ if len(vs)>=4:
+  mx=sum(v[0] for v in vs)/len(vs);mz=sum(v[2] for v in vs)/len(vs)
+  vs.insert(0,(mx,lava_y(mx,mz)+.047,mz))
+  for k in range(1,len(vs)):fs.append((0,k,1 if k==len(vs)-1 else k+1))
+  objmesh('COOLED_LAVA_CRUST_RAFT',vs,fs,crust,[(x*.18,z*.18) for x,y,z in vs])
 # Side cave rock cliffs and rear basalt overhang.
 for i in range(24):
  side=-1 if i%2 else 1
  z=-3.25+R.random()*6.7
- x=side*(3.65+R.uniform(-.2,.3))
- h=R.uniform(.75,1.75)
- rock('CAVERN_ROCK_FACE',(x,h*.38,z),(.55,h,.7),ash,seed=i+90,subdiv=3)
+ x=side*(3.95+R.uniform(-.25,.3))
+ h=R.uniform(.65,1.30)
+ rock('CAVERN_ROCK_FACE',(x,h*.38,z),(.48,h,.56),ash,seed=i+90,subdiv=3)
 for i in range(8):
  x=-3.0+i*.84
  rock('REAR_JAGGED_OVERHANG',(x,2.45+R.random()*.25,-3.75),(.48,.43,.53),basalt,seed=i+120,subdiv=3)
@@ -177,8 +197,8 @@ def area(name,loc,power,color,size):
  d=bpy.data.lights.new(name,'AREA');d.energy=power;d.color=color;d.shape='DISK';d.size=size
  o=bpy.data.objects.new(name,d);bpy.context.collection.objects.link(o);o.location=loc
  o.rotation_euler=(Vector((0,.1,0))-o.location).to_track_quat('-Z','Y').to_euler()
-area('MAGMA_LIGHT_WARM',(0,1.65,.9),600,(1,.24,.045),5.4)
-area('UPSTREAM_CASCADE_LIGHT',(-.4,2.4,-2.9),480,(1,.35,.075),3.2)
+area('MAGMA_LIGHT_WARM',(0,1.65,.9),420,(1,.24,.045),5.4)
+area('UPSTREAM_CASCADE_LIGHT',(-.4,2.4,-2.9),340,(1,.35,.075),3.2)
 area('COLD_CAVE_FILL',(2.2,5,3.5),1150,(.25,.36,.58),6)
 scene=bpy.context.scene
 scene.render.engine='CYCLES';scene.cycles.samples=24
