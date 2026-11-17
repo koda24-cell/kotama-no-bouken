@@ -1,3 +1,4 @@
+# V2 visual corrections: asymmetrical confluence, volumetric fall, geological fissures.
 """Five standalone Stage-4 lava GLBs. No surrounding terrain; original thermal maps and cooling crust are integral lava only.
 Run: blender -b -t 2 --python tools/floor4/lava_modules/build_lava_modules.py -- --out render-output --variant v1
 """
