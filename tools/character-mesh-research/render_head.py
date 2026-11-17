@@ -1,4 +1,4 @@
-"""Render licensed VRoid sample head geometry from five directions for topology review."""
+"""Render isolated facial shell from six directions. Not a complete head.\nCamera labels are calibrated for these VRoid samples (+Y facial front).\n"""
 import bpy,sys,os,math,json
 from mathutils import Vector
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
@@ -28,7 +28,7 @@ camera_data=bpy.data.cameras.new('ReviewCamera');cam=bpy.data.objects.new('Revie
 cam.data.type='ORTHO';cam.data.ortho_scale=extent*1.5
 light_data=bpy.data.lights.new('Softbox','AREA');light=bpy.data.objects.new('Softbox',light_data);scene.collection.objects.link(light)
 light.location=center+Vector((extent,extent,extent*1.4));light_data.energy=650;light_data.shape='DISK';light_data.size=extent*1.5
-views={'front':(0,-1,0),'back':(0,1,0),'left':(-1,0,0),'right':(1,0,0),'three_quarter':(1,-1,.28),'back_upper':(1,1,.65)}
+views={'front':(0,1,0),'back':(0,-1,0),'left':(-1,0,0),'right':(1,0,0),'three_quarter':(1,1,.28),'back_upper':(1,-1,.65)}
 for name,offset in views.items():
  vec=Vector(offset).normalized()
  cam.location=center+vec*extent*3
@@ -37,4 +37,4 @@ for name,offset in views.items():
  scene.render.filepath=os.path.join(out,name+'.png')
  bpy.ops.render.render(write_still=True)
 with open(os.path.join(out,'review_manifest.json'),'w') as f:
- json.dump({'source':os.path.basename(src),'head_objects':[o.name for o in head],'bounds':[list(lo),list(hi)],'views':list(views)},f,indent=2)
+ json.dump({'source':os.path.basename(src),'head_objects':[o.name for o in head],'bounds':[list(lo),list(hi)],'views':list(views),'forward_axis':'+Y for tested VRoid samples; verify per source','coverage':'Face/ear only; rear head and hair are intentionally excluded'},f,indent=2)
