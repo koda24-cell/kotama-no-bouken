@@ -64,7 +64,7 @@ jobs:
           mkdir -p out
           if test -f blender.log; then cp blender.log out/blender.log; fi
       - name: Upload unapproved review archive
-        uses: actions/upload-artifact@v8
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: floor3-switchback-v8-review
