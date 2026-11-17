@@ -23,3 +23,9 @@
 - V9参考run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43994456829 （成功）。
 - V10実行結果・美術評価はrun確認後に追記。ユーザー承認まで**NOT_APPROVED**。正式保存・ゲーム統合しない。
 - 参考Pinterestは pinterest-reference-library/handoff/b4-magma-river-transition-20261117.md の候補。画像の実目視・権利確認は未実施、画像そのものは素材へ流用しない。
+
+## V10 実Blenderレンダリング検証（2026-11-17）
+- Run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44003753769 **success**。Artifact ID 14292933940、GLB・Blend・正面/側面/斜め/俯瞰PNG・manifestをダウンロードし実画像を確認。
+- V9→V10比較: 後方崖に水平層と岩盤の破断が増え、手前の岸にも薄い岩盤が追加された。溶岩流・滝・溜まりは維持。
+- **残課題**: 大きな丸い岩は依然として淡い粘土の塊のように見える。追加した薄い岩盤の一部は浮遊板・人工的な棚に見える。全体に玄武岩らしい暗色・層理のコントラストが弱い。
+- V11予定: プロジェクト内の自作CC0依存なし charcoal basalt PBRを岩塊へ適用し、元の岩メッシュの頂点を削除せず微小な層理・剪断面変位を追加する。薄い岩盤の色を周辺と統一。実画像で再評価。
