@@ -5,12 +5,6 @@ on:
     paths:
       - 'tools/floor3/switchback/build_v4.py'
       - '.github/workflows/floor3-switchback-v4.yml'
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [development]
-    paths:
-      - 'tools/floor3/switchback/build_v4.py'
-      - '.github/workflows/floor3-switchback-v4.yml'
   workflow_dispatch:
 jobs:
   render:
