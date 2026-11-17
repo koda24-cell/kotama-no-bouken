@@ -90,4 +90,5 @@ jobs:
           git add assets/models/floor4/b4-magma-river-p1-v4.glb assets/models/floor4/b4-magma-river-p2-v4.glb assets/models/floor4/b4-magma-river-p3-v5.glb assets/models/floor4/reviews/b4-magma-river-p1-v4 assets/models/floor4/reviews/b4-magma-river-p2-v4 assets/models/floor4/reviews/b4-magma-river-p3-v5
           git diff --cached --quiet && exit 0
           git commit -m 'assets(b4): archive approved magma bank P1 V4 P2 V4 P3 V5'
+          git pull --rebase origin feature/gpt-b4-magma-bank-modules-p1-p3-20261117
           git push origin HEAD:feature/gpt-b4-magma-bank-modules-p1-p3-20261117
