@@ -54,3 +54,9 @@ BotW本体のシェーダーや非公開ソースをコピーするのではな�
 - GPU Gemsの透過Alpha to CoverageはMSAAやrenderer/bloom条件に依存する。まずMASK材質→実WebGL画面→透過縁/カットアウト/影の比較を独立テストし、各端末の検証後に採用。
 - 実ゲームの3D表示を全面LOD化・自動ストリーミング化するのは未着手。第1層opt-in `InstancedMesh`と既存`KotamaField3D.stats()`を使い、別ブランチで段階導入。
 - 海外のBotW/Cemu解析情報は研究根拠であり、特定のシェーダー/アセットを直接取り込んでいない。
+
+## 追加: 実行検証済みのImpostor方向・UV決定
+
+- `tools/3d-performance/impostor_views.mjs` は8方向アトラスの角度（0〜360循環）とFour-by-twoタイルのUV矩形を返す純粋関数。
+- `impostor_views.test.mjs` を共有GLB監査Actionで実行し、境界角359度・負角度・4pxパディング・不正メタデータをテスト。実行 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44063296917 成功。
+- **Three.jsレンダラーへの接続とYaw座標変換は未実装**。実ゲームで遠景の画像切替・色変化・クロスフェード品質を未測定。
