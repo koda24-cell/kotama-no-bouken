@@ -1,14 +1,16 @@
 const fs=require('fs'),path=require('path');
-const {chromium}=require('/workspace/work/browser/node_modules/playwright-core');
-const instrument=fs.readFileSync('/workspace/work/f1-gpu-diagnostic/instrument.js','utf8');
+const MODULES=process.env.BROWSER_MODULES||'/workspace/work/browser/node_modules';
+const ROOT=process.env.KOTAMA_ROOT||path.resolve(__dirname,'../../..');
+const {chromium}=require(path.join(MODULES,'playwright-core'));
+const instrument=fs.readFileSync(path.join(__dirname,'instrument.js'),'utf8');
 let browser;
 (async()=>{
  const b=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  browser=b;const c=await b.newContext();await c.addInitScript({content:instrument+'\ninstrumentWebGL();'});const p=await c.newPage(),messages=[];
  p.on('console',m=>messages.push({type:m.type(),text:m.text()}));
- await c.route(/https:\/\/cdn\.jsdelivr\.net\/npm\/three@0\.180\.0\/(.*)/,async r=>{const f=r.request().url().split('three@0.180.0/')[1];await r.fulfill({path:path.join('/workspace/work/browser/node_modules/three',f),contentType:'text/javascript'});});
+ await c.route(/https:\/\/cdn\.jsdelivr\.net\/npm\/three@0\.180\.0\/(.*)/,async r=>{const f=r.request().url().split('three@0.180.0/')[1];await r.fulfill({path:path.join(MODULES,'three',f),contentType:'text/javascript'});});
  await c.route('**/gpu-minimal',r=>r.fulfill({status:200,contentType:'text/html',body:'<!doctype html><html><body></body></html>'}));
- await c.route('**/assets/monsters/dragon.svg',r=>r.fulfill({path:'/workspace/work/kotama/assets/monsters/dragon.svg',contentType:'image/svg+xml'}));
+ await c.route('**/assets/monsters/dragon.svg',r=>r.fulfill({path:path.join(ROOT,'assets/monsters/dragon.svg'),contentType:'image/svg+xml'}));
  await p.goto('http://127.0.0.1:8797/gpu-minimal');
  const result=await p.evaluate(async()=>{
   const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js');
@@ -29,6 +31,6 @@ let browser;
    scene.remove(mesh);mesh.geometry.dispose();mesh.material.dispose();texture.dispose();renderer.dispose();
   }
   return {results,gl:JSON.parse(JSON.stringify(window.__glDiag))};
- });await p.waitForTimeout(200);result.messages=messages;fs.writeFileSync('/workspace/work/f1-gpu-diagnostic/minimal-svg-result.json',JSON.stringify(result,null,2));
+ });await p.waitForTimeout(200);result.messages=messages;fs.writeFileSync(process.env.SVG_DIAGNOSTIC_OUT||path.join(__dirname,'minimal-svg-rerun.json'),JSON.stringify(result,null,2));
  console.log(JSON.stringify({cases:result.results.map(x=>({mode:x.mode,image:x.image,uploadErrors:x.newErrors.filter(e=>e.error).length,priorErrors:x.newErrors.filter(e=>e.priorError).length})),messages},null,2));await b.close();
 })().catch(async e=>{console.error(e);await browser?.close();process.exitCode=1;});
