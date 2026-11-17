@@ -1,0 +1,45 @@
+{
+  "asset_id": "b4_magma_river_p3_v5",
+  "approval": "USER_APPROVED",
+  "approved_at_jst": "2026-11-17",
+  "source_run_id": 44035779505,
+  "source_artifact_id": 14307625547,
+  "base_asset": "b4-magma-river-v16",
+  "mesh_count": 538,
+  "material_count": 7,
+  "image_count": 9,
+  "game_integration": "NOT_STARTED",
+  "files": [
+    {
+      "path": "assets/models/floor4/b4-magma-river-p3-v5.glb",
+      "bytes": 15685028,
+      "sha256": "7aece604e214ef980adfa56f96df42554e3baf501c4db1849d623b53e569c941"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-p3-v5/source.blend",
+      "bytes": 4941163,
+      "sha256": "e89e10ebccf2a507e222f4c764f350aac9df6f3da1197590fdf57d9acf75b280"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-p3-v5/front.png",
+      "bytes": 1346572,
+      "sha256": "2c573fee94b114fc99db52fd81804a7c111541774fce9650d34394e03f9d0d7c"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-p3-v5/side.png",
+      "bytes": 1350643,
+      "sha256": "f2431afb55baeb338db8bebe5e71b2d3618860a48e05eb3a3234cffb3b912d7d"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-p3-v5/angle.png",
+      "bytes": 1340528,
+      "sha256": "1219dc34dfbe3ec6aa59cd277cfed5c285ce99d573124cfeeb9790b2290d6e54"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-magma-river-p3-v5/top.png",
+      "bytes": 1766927,
+      "sha256": "a57d4eb762eaa140af76ebbfe9244504f12043df009cfc8e3959653a7c4a19f5"
+    }
+  ],
+  "source_manifest": "source-manifest.json"
+}
