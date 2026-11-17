@@ -248,3 +248,11 @@
 - 導入: `tools/floor4/lava_modules/build_lava_modules.py` と `.github/workflows/b4-lava-modules-review.yml`（PR #454、未承認）。
 - 検証: ソース/ワークフロー作成済み。Actions run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43996896778 を実行中。**この記録時点では実レンダー成功・GLB出力・ゲーム内描画・アニメーション未検証**。確認後にrun結果を追記する。
 - 担当: GPT（Blender/GLB/PNG）、Claude（承認後のブラウザ組込み）。未承認GLBを本番ゲームへ統合しない。
+
+### Poly Haven Fern 02 — 写実的なシダのCC0基準モデル (2026-11-17)
+- 公式URL: https://polyhaven.com/a/fern_02 ; ライセンス: https://polyhaven.com/license (CC0, 改変・商用利用可)。
+- 用途: 第2層水源の独立型植物3Dにおける葉の形・マテリアル・シルエット・モデル密度の**品質比較基準**。植物を単独GLBとして岩/遺跡/橋へシードで組み合わせる案。
+- 内容: 4株のシダモデル、約6,232三角面、Diffuse / Normal (GL) / Roughness / Alphaなどの実写真由来マップを公式サイトで案内。造形作者 Rico Cilliers、スキャン Rob Tuytel。
+- 登録/担当: 2026-11-17 GPT。ソース・ライセンス・仕様の公開情報を確認済み。
+- **実導入/検証: 未導入/未実行。** GLBを実際に取得/読み込み/撮影/ゲーム内組合せしたわけではない。別チャットのPinterest参照（画像CDNがDNSエラー）はこれと区別。
+- 制作先: PR #451、`feature/gpt-b2-modular-wet-fern-20261117`。V01原型とV02手続き造形は保持。Fern 02を実参照/採用する場合はダウンロードURL・出典・ハッシュ・Blender実レンダー/GLB上の材質と当たり判定・タイル密度を検証し、承認を得る。
