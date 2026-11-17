@@ -55,3 +55,29 @@
 - この文書と `docs/3d/B2_WATER_TILE_CLAUDE_HANDOFF.md`, `field/field-3d-b2-water.js` を読む。
 - GPT側で生成・承認されたGLBと実際の比較PNG/manifestを受け取り、ClaudeはGLTFLoader/Three.js上の表示と性能/継ぎ目を検証する。Blender実操作をClaude担当にしない。
 - ユーザーが「すべて取り込む」と指示しても、未検証の手法を一括で本番有効にしない。試作→計測→承認の順番を厳守。
+
+
+## 2026-11-18 追加研究: 時のオカリナ2026・Fluid Flux・水の美術品質
+
+### 出典を混同しない
+1. **任天堂公式 Switch 2『時のオカリナ』(2026-11-05)**: [開発者インタビュー Part 2](https://www.nintendo.com/us/whatsnew/ask-the-developer-vol-24-the-legend-of-zelda-ocarina-of-time-part-2/) は「実在感と幻想的/暗さ/色彩の対比」「素材研究・ライティング・テクスチャ調整」「元の場所の印象を維持」という美術指針を説明する。水面の具体的なシェーダー式やエンジン内部を公開したわけではない。
+2. **外部の技術評価**: [Digital Foundry紹介](https://nintendoeverything.com/zelda-ocarina-of-time-remake-switch-2-frame-rate-resolution) はPBR、GI/AO、動的解像度、LOD、60fps等を報告。公式実装の詳細仕様を確定するものではない。
+3. **CryZENx UE5『時のオカリナ』ファン制作版**: [DSOGaming 2022年の水表現紹介](https://www.dsogaming.com/videotrailer-news/new-video-for-zelda-ocarina-of-time-unreal-engine-5-fan-remake-shows-off-impressive-water-effects/) は **Fluid Flux** 使用を報道。任天堂版とは無関係。UEプラグインをThree.jsに直接移植できない。
+4. **Fluid Fluxの[公式仕様](https://imaginaryblend.github.io/imaginaryblend-docs/core-systems/simulation-domain)**: Shallow Water Equations の2D地形マップと水位/速度/泡/濡れを扱い、泡・Caustics・波を速度場に沿って流す。シミュレーション状態のベイクが可能。コタマではリアルタイム全面計算を避け、オフラインで流向場の模倣/ベイク→軽量シェーダーを試す。
+5. **新しい海外アーティスト研究**: [HAWKEDの滝制作](https://80.lv/articles/creating-a-procedural-waterfalls-tool-for-the-game-hawked) はスプライン、断面のブレンド、頂点カラーに保存したマスクから滝と泡を制御。[Anthony Dizon 2026研究](https://anto3d.artstation.com/projects/RKvbeA?album_id=14115892) は水質4種、川と滝の共通マスター材質、方向制御、RenderTexture波紋を作例として公開。[URP Water Shader 2026](https://vexury.dev/posts/006_URPWaterShader/) は深度色、岸泡、Gerstner変位、スクリーン屈折を独立調整可能にする。
+
+### 画質仕様（追加候補 W11〜W16）
+| ID | 見た目の狙い | 制作/技術手法 | 安全な検証 |
+|---|---|---|---|
+| W11 | 水が周囲に属して見える | 周辺の濡れた石・氷・柱の粗さ/色/環境照明を統一。必要ならベイク照明と局所的反射色 | 水だけ浮いた発光色にならないか画像比較 |
+| W12 | 芸術的な水の色 | 浅瀬/深水/氷洞窟/光の当たり方別のパレットを独立パラメータ化 | 昼夜/暗い場所/異なる視角で白飛び検査 |
+| W13 | 水が動いているように見える | 流向マスクをFoam/Caustics/波紋へ共有。全面物理演算はせずFlow Mapまたは事前計算の状態テクスチャを利用 | 水流と泡の速度方向が不一致にならない |
+| W14 | 滝の造形が自然 | スプライン曲面と上端〜落下〜滝壺の断面遷移、vertex colorへ泡/濡れ/速度マスクを格納 | 低角度・側面で平板に見えないか |
+| W15 | 水面と周囲の光が一致 | 大きな反射形状/細かな波/湿潤岩と水中光の階層調整。静的環境反射を優先し必要時だけ高コスト反射を比較 | 洞窟・石橋・氷柱の配置視点で確認 |
+| W16 | 美しさを定量的に守る | Water LookDev固定カメラ（湖/水路/岸/滝、4方向）、色・明度/透明度、視覚的不自然さの評価票、GPU時間計測 | 改善前後同条件PNG/動画、FPS・Draw Call・メモリ |
+
+### 追加の研究・実装ガード
+- Unity/UEのコード、Fluid Fluxプラグイン、原神・ゼルダのゲーム内アセットはライセンス検証なしでコピーしない。観察した仕組みをThree.jsで独自実装する。
+- PBR/GI/SSR/動的解像度は「参考技術」であり、第2層へ導入済みではない。現在の実装ではSSRや物理ベース水シミュレーション採用を前提にしない。
+- **優先**: W11/W12の美術パレット・周辺の濡れ表現と W01/W02 の近景反射 → W13流向共有 → W14滝断面 → W16LookDev測定。
+- 既存GLB・16タイル・ゲーム移動規則を保持し、追加効果は独立プレビューとopt-inフラグで比較する。
