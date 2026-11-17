@@ -1,0 +1,52 @@
+{
+  "bytes": 846040,
+  "sha256": "c591fae01ce3612b40842619734ce19801e099d0e65cd091148dfb7d431a2679",
+  "tris": 1520,
+  "verts": 3232,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "v3_fresh_leaf",
+    "v3_shade_leaf",
+    "v3_wet_root"
+  ],
+  "textureCount": 9,
+  "textureBytes": 676343,
+  "sizeMeters": [
+    1.3541,
+    0.3255,
+    1.1429
+  ],
+  "bboxMin": [
+    -0.6212,
+    0.0062,
+    -0.629
+  ],
+  "bboxMax": [
+    0.7329,
+    0.3317,
+    0.5139
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "v3_shade_understory",
+  "file": "props/v3_shade_understory.glb",
+  "category": "props",
+  "desc_ja": "低い小シダ・カヤ・広葉の混生株。高さ約0.3m、密度用の低負荷実形状。方向/scaleを変え根際と壁際の苔に重ねる。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "796dcd358334fd7f0bf6377d6a58dfb07494c02a",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/v3_shade_understory.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v3_shade_understory/front.png",
+    "renders/v3_shade_understory/side.png",
+    "renders/v3_shade_understory/angle.png",
+    "renders/v3_shade_understory/top.png"
+  ]
+}
