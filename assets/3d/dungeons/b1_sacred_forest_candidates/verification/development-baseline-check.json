@@ -1,0 +1,55 @@
+{
+  "status": "map_and_gameplay_sources_match_shared_renderer_changed",
+  "developmentCommit": "7708b031d946f5c4468a7b1ab361620f881012f2",
+  "sourceFiles": [
+    {
+      "file": "data/field-maps.js",
+      "developmentSha256": "a0b88a1164421a34dab77065cfc3b3edcb91f94224547a5d30b2c4e4a7a08ab7",
+      "candidateBaselineSha256": "a0b88a1164421a34dab77065cfc3b3edcb91f94224547a5d30b2c4e4a7a08ab7",
+      "matches": true
+    },
+    {
+      "file": "field.js",
+      "developmentSha256": "cc4837e05fb0ad777d3c4efd365b21e5deb8135b74ce91ae2c18847e79b2bbce",
+      "candidateBaselineSha256": "cc4837e05fb0ad777d3c4efd365b21e5deb8135b74ce91ae2c18847e79b2bbce",
+      "matches": true
+    },
+    {
+      "file": "field/field-movement-foe.js",
+      "developmentSha256": "ff7d9de0cc1877ec7609c39fbd4f619f8176fca470bacc28887b355306ad7d8b",
+      "candidateBaselineSha256": "ff7d9de0cc1877ec7609c39fbd4f619f8176fca470bacc28887b355306ad7d8b",
+      "matches": true
+    },
+    {
+      "file": "field/field-interactions.js",
+      "developmentSha256": "a327380f7377090fb953d4152fded188062b5cef8138b04408567280db69c799",
+      "candidateBaselineSha256": "a327380f7377090fb953d4152fded188062b5cef8138b04408567280db69c799",
+      "matches": true
+    },
+    {
+      "file": "field/field-persistence.js",
+      "developmentSha256": "c6672c3bac351cf798138ab6608f312acabd872cb5c1cf94d275a5aa300c6a89",
+      "candidateBaselineSha256": "c6672c3bac351cf798138ab6608f312acabd872cb5c1cf94d275a5aa300c6a89",
+      "matches": true
+    },
+    {
+      "file": "field/field-puzzles.js",
+      "developmentSha256": "b7306e43e8a2b6ef88ef5dd983d91cdc4aff4854573d72800624eeaaf71d54aa",
+      "candidateBaselineSha256": "b7306e43e8a2b6ef88ef5dd983d91cdc4aff4854573d72800624eeaaf71d54aa",
+      "matches": true
+    },
+    {
+      "file": "field/field-3d-view.js",
+      "developmentSha256": "7d8780a48addeb50e6c5a24af71edf2daee9543479814f500877b0e737e58a12",
+      "candidateBaselineSha256": "159ebf03903ce08c1a28c54f9101ea1c2f613598e1a4dc90b738663ab2b494a3",
+      "matches": false
+    }
+  ],
+  "allSourceFilesIdentical": false,
+  "rendererChangesReviewed": [
+    "Renderer diagnostic counters/reset and stats API",
+    "B2 theme cache version"
+  ],
+  "requiresIntegrationRebaseline": true,
+  "scope": "source comparison only; no gameplay regression or FPS approval"
+}

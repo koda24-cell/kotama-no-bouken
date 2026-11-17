@@ -1,0 +1,5008 @@
+{
+  "validator": "2.0.0-dev.3.10",
+  "source": "https://github.com/KhronosGroup/glTF-Validator",
+  "scope": "Format and conformance; artistic quality and game integration require separate review",
+  "errors": 0,
+  "reports": [
+    {
+      "id": "mod_sacred_stone_floor_4m",
+      "file": "modules/mod_sacred_stone_floor_4m.glb",
+      "sha256": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e",
+      "report": {
+        "uri": "modules/mod_sacred_stone_floor_4m.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.284Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 1145840
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 3,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 3,
+          "totalVertexCount": 8901,
+          "totalTriangleCount": 3380,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "mod_root_soil_floor_4m",
+      "file": "modules/mod_root_soil_floor_4m.glb",
+      "sha256": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
+      "report": {
+        "uri": "modules/mod_root_soil_floor_4m.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.375Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 1326420
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/12",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/13",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/14",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 5,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 5,
+          "totalVertexCount": 4950,
+          "totalTriangleCount": 1992,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "mod_sacred_wall_4m",
+      "file": "modules/mod_sacred_wall_4m.glb",
+      "sha256": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
+      "report": {
+        "uri": "modules/mod_sacred_wall_4m.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.552Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 2061908
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 4,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 4,
+          "totalVertexCount": 14480,
+          "totalTriangleCount": 5424,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "mod_sacred_collapsed_wall_4m",
+      "file": "modules/mod_sacred_collapsed_wall_4m.glb",
+      "sha256": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+      "report": {
+        "uri": "modules/mod_sacred_collapsed_wall_4m.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.651Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 1876472
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 4,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 4,
+          "totalVertexCount": 10731,
+          "totalTriangleCount": 4164,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "mod_sacred_arch_4m",
+      "file": "modules/mod_sacred_arch_4m.glb",
+      "sha256": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1",
+      "report": {
+        "uri": "modules/mod_sacred_arch_4m.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.703Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 1929524
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 4,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 4,
+          "totalVertexCount": 11830,
+          "totalTriangleCount": 4560,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "weathered_torii_gate",
+      "file": "props/weathered_torii_gate.glb",
+      "sha256": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
+      "report": {
+        "uri": "props/weathered_torii_gate.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.767Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 579840
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/12",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/13",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/14",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/15",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 6,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 6,
+          "totalVertexCount": 7449,
+          "totalTriangleCount": 7338,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "broken_votive_stele",
+      "file": "props/broken_votive_stele.glb",
+      "sha256": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
+      "report": {
+        "uri": "props/broken_votive_stele.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.783Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 818688
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 4,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 4,
+          "totalVertexCount": 1985,
+          "totalTriangleCount": 1433,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "moss_stone_lantern",
+      "file": "props/moss_stone_lantern.glb",
+      "sha256": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31",
+      "report": {
+        "uri": "props/moss_stone_lantern.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.846Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 990540
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 4,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 4,
+          "totalVertexCount": 5454,
+          "totalTriangleCount": 2366,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "ofuda_seal_cluster",
+      "file": "props/ofuda_seal_cluster.glb",
+      "sha256": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048",
+      "report": {
+        "uri": "props/ofuda_seal_cluster.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.860Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 152024
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 1,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 1,
+          "totalVertexCount": 1420,
+          "totalTriangleCount": 540,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "sacred_cedar_tree",
+      "file": "props/sacred_cedar_tree.glb",
+      "sha256": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+      "report": {
+        "uri": "props/sacred_cedar_tree.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.947Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 1817096
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgba",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 3,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 3,
+          "totalVertexCount": 14958,
+          "totalTriangleCount": 14712,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "fallen_cedar_log",
+      "file": "props/fallen_cedar_log.glb",
+      "sha256": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191",
+      "report": {
+        "uri": "props/fallen_cedar_log.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:41.981Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 993252
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 4,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 4,
+          "totalVertexCount": 5779,
+          "totalTriangleCount": 6420,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "forest_fern_cluster",
+      "file": "props/forest_fern_cluster.glb",
+      "sha256": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
+      "report": {
+        "uri": "props/forest_fern_cluster.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:42.088Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 1540668
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 4,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 4,
+          "totalVertexCount": 26809,
+          "totalTriangleCount": 33804,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "forest_shrub_cluster",
+      "file": "props/forest_shrub_cluster.glb",
+      "sha256": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+      "report": {
+        "uri": "props/forest_shrub_cluster.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:42.173Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 1174596
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 4,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 4,
+          "totalVertexCount": 8928,
+          "totalTriangleCount": 10656,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "white_wildflower_patch",
+      "file": "props/white_wildflower_patch.glb",
+      "sha256": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc",
+      "report": {
+        "uri": "props/white_wildflower_patch.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:42.245Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 563484
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/12",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/13",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/14",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/15",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 6,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 6,
+          "totalVertexCount": 8584,
+          "totalTriangleCount": 9632,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "hanging_forest_vines",
+      "file": "props/hanging_forest_vines.glb",
+      "sha256": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a",
+      "report": {
+        "uri": "props/hanging_forest_vines.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:42.280Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 346248
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 3,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 3,
+          "totalVertexCount": 5424,
+          "totalTriangleCount": 6632,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "mossy_granite_boulder",
+      "file": "props/mossy_granite_boulder.glb",
+      "sha256": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+      "report": {
+        "uri": "props/mossy_granite_boulder.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:42.342Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 915472
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 2,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 2,
+          "totalVertexCount": 4265,
+          "totalTriangleCount": 5350,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "sacred_hokora_shrine",
+      "file": "props/sacred_hokora_shrine.glb",
+      "sha256": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c",
+      "report": {
+        "uri": "props/sacred_hokora_shrine.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:42.546Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 2949380
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/12",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/13",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/14",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/15",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/16",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/17",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/18",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/19",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/20",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/21",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/22",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/23",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 8,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 8,
+          "totalVertexCount": 39591,
+          "totalTriangleCount": 18262,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "sacred_forest_scene",
+      "file": "scene/sacred_forest_scene.glb",
+      "sha256": "1895d3342031eff60299af97583aa7574c43ac1031b9ad7fa87941b8c6fa7804",
+      "report": {
+        "uri": "scene/sacred_forest_scene.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-16T10:07:44.694Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 20610680
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/9",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/10",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/11",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/12",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/13",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/14",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/15",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/16",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/17",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/18",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/19",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/20",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/21",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgba",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/22",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/23",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/24",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/25",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/26",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/27",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/28",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/29",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/30",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/31",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/32",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/33",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/34",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/35",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/36",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/37",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/38",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/39",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/40",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/41",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/42",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/43",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/44",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/45",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/46",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/47",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/48",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/49",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/50",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/51",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/52",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/53",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/54",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/55",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/56",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/57",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/58",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/59",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/60",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/61",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/62",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/63",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/64",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/65",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/66",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/67",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/68",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/69",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/70",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/71",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/72",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/73",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/74",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/75",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/76",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/77",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/78",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/79",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/80",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/81",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/82",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/83",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/84",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/85",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/86",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/87",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/88",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/89",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/90",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/91",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/92",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/93",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/94",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/95",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/96",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/97",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/98",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/99",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/100",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/101",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/102",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/103",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/104",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/105",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/106",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/107",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/108",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/109",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/110",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/111",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/112",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/113",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/114",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/115",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/116",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/117",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/118",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/119",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/120",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/121",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/122",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/123",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/124",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/125",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/126",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/127",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/128",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/129",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/130",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/131",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/132",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/133",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/134",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/135",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/136",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/137",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/138",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/139",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/140",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/141",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/142",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/143",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/144",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/145",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/146",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/147",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/148",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/149",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/150",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/151",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/152",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/153",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/154",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/155",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/156",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/157",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/158",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/159",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/160",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/161",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/162",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/163",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/164",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/165",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/166",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/167",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/168",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/169",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/170",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/171",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/172",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/173",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/174",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/175",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/176",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/177",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/178",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/179",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/180",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/181",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/182",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 65,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 65,
+          "totalVertexCount": 176653,
+          "totalTriangleCount": 134685,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    }
+  ]
+}

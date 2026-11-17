@@ -1,0 +1,37 @@
+{
+  "status": "technical_comparison_not_art_approval",
+  "beforeRevision": "a50c51b2190cee162214e54134a361f966c44cba",
+  "afterSceneSourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
+  "individualAssetHashesUnchanged": 17,
+  "measurements": {
+    "placements": {
+      "before": 349,
+      "after": 263,
+      "delta": -86
+    },
+    "triangles": {
+      "before": 4432376,
+      "after": 4480724,
+      "delta": 48348
+    },
+    "drawCalls": {
+      "before": 1475,
+      "after": 1012,
+      "delta": -463
+    },
+    "sceneGlbBytes": {
+      "before": 21582100,
+      "after": 20939944,
+      "delta": -642156
+    }
+  },
+  "decoratedSoilInstances": {
+    "before": 112,
+    "after": 0
+  },
+  "notes": [
+    "Draw calls are software reviewer diagnostics, not a real-device FPS guarantee.",
+    "Source assets are unchanged; this revision changes part selection and placement.",
+    "All five revision-two final photographs completed and passed the matching-source delivery gate."
+  ]
+}

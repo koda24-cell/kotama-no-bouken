@@ -1,0 +1,142 @@
+{
+  "bytes": 1883680,
+  "sha256": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+  "tris": 4164,
+  "verts": 10731,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "sacred_fresh_fracture",
+    "sacred_root_bark",
+    "sacred_velvet_moss",
+    "sacred_weathered_stone"
+  ],
+  "textureCount": 12,
+  "textureBytes": 1336382,
+  "sizeMeters": [
+    4.0394,
+    3.9663,
+    0.778
+  ],
+  "bboxMin": [
+    -2.0394,
+    0.0,
+    -0.79
+  ],
+  "bboxMax": [
+    2.0,
+    3.9663,
+    -0.012
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "mod_sacred_collapsed_wall_4m",
+  "file": "modules/mod_sacred_collapsed_wall_4m.glb",
+  "category": "modules",
+  "desc_ja": "4m footprint wall with a genuinely missing asymmetric crown. Highest surviving corner under 4m, solid lower retaining wall, wet ledges and roots exploit actual masonry fractures. Inner face Y=0; depth 0.8m.",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "44caff1614e97853190d4a10a1db2ef7dc6c7850",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/mod_sacred_collapsed_wall_4m.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/mod_sacred_collapsed_wall_4m/front.png",
+    "renders/mod_sacred_collapsed_wall_4m/side.png",
+    "renders/mod_sacred_collapsed_wall_4m/angle.png",
+    "renders/mod_sacred_collapsed_wall_4m/top.png"
+  ],
+  "sourcePackaging": {
+    "assetId": "mod_sacred_collapsed_wall_4m",
+    "file": "sources/mod_sacred_collapsed_wall_4m.blend",
+    "sha256": "9192e2da787b16d97fa1bf9cb5b12fdf8c5baf7bdd860108c23ddc5b49026371",
+    "bytes": 1214528,
+    "imagesPacked": 12,
+    "imagesDecoded": 12,
+    "unusedImagesPruned": 3,
+    "geometryPreserved": true,
+    "geometryFingerprint": "b987cede9b7617b7a27d82f38978107f92fd258f1825abd0ff87add19260f231",
+    "externalImagesRequired": false,
+    "blender": "5.3.0",
+    "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+    "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+    "images": [
+      {
+        "name": "bark_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122111
+      },
+      {
+        "name": "bark_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 309795
+      },
+      {
+        "name": "bark_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 53978
+      },
+      {
+        "name": "sacred_fresh_fracture_393b30e024f7_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 9363
+      },
+      {
+        "name": "sacred_fresh_fracture_393b30e024f7_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6741
+      },
+      {
+        "name": "sacred_fresh_fracture_393b30e024f7_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6317
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 7562
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6860
+      },
+      {
+        "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+        "width": 256,
+        "height": 256,
+        "packedBytes": 6273
+      },
+      {
+        "name": "stone_color_graded.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 147023
+      },
+      {
+        "name": "stone_normal.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 214271
+      },
+      {
+        "name": "stone_roughness.jpg",
+        "width": 512,
+        "height": 512,
+        "packedBytes": 122001
+      }
+    ]
+  }
+}

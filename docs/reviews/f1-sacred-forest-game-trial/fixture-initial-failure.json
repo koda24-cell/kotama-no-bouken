@@ -1,0 +1,672 @@
+{
+  "scope": "Real index.html opt-in visual trial; gameplay smoke checks with isolated fixtures, not full game certification or real-device FPS approval",
+  "engine": "Chromium SwiftShader / Three.js r180",
+  "source": {
+    "commit": "79cdc71e23d5004913a320a6aecbce5e921d1ea6",
+    "inputs": [
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-trial.json",
+        "sha256": "00ac1c8c02ab4a05756123f3b30b42df1c0e8dda11de18d3d0642fc6141eb994"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-candidate.json",
+        "sha256": "b541fd6bd76cca51956d55d96d576c96d3ca038a4ee5f4dadd1b13b93bfd5ca0"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/manifest.json",
+        "sha256": "c11c469da86619ebf4c266f3e54eb383db86c52e3e001d7818638bafb5139553"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_stone_floor_4m.glb",
+        "sha256": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_root_soil_floor_4m.glb",
+        "sha256": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_wall_4m.glb",
+        "sha256": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_collapsed_wall_4m.glb",
+        "sha256": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/modules/mod_sacred_arch_4m.glb",
+        "sha256": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/weathered_torii_gate.glb",
+        "sha256": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/broken_votive_stele.glb",
+        "sha256": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/moss_stone_lantern.glb",
+        "sha256": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/ofuda_seal_cluster.glb",
+        "sha256": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb",
+        "sha256": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/fallen_cedar_log.glb",
+        "sha256": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_fern_cluster.glb",
+        "sha256": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/forest_shrub_cluster.glb",
+        "sha256": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/white_wildflower_patch.glb",
+        "sha256": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/hanging_forest_vines.glb",
+        "sha256": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/mossy_granite_boulder.glb",
+        "sha256": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_hokora_shrine.glb",
+        "sha256": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c"
+      },
+      {
+        "file": "assets/3d/dungeons/b1_ancient_forest/modules/mod_ceiling_vault_4m.glb",
+        "sha256": "82083e0ec116a47331f3bfd7a2146ddaae2a8f5cd9374d3a48d4415cd1699dc1"
+      },
+      {
+        "file": "index.html",
+        "sha256": "5921cc328caff4d02161f52184884515e088ce46da8d44121dae282f384f2f23"
+      },
+      {
+        "file": "field.js",
+        "sha256": "cc4837e05fb0ad777d3c4efd365b21e5deb8135b74ce91ae2c18847e79b2bbce"
+      },
+      {
+        "file": "data/field-maps.js",
+        "sha256": "a0b88a1164421a34dab77065cfc3b3edcb91f94224547a5d30b2c4e4a7a08ab7"
+      },
+      {
+        "file": "field/field-3d-view.js",
+        "sha256": "5e1ad1ef029bfdc350b28045166c4b32c51de8191f63998b2aa4be0982e9136f"
+      },
+      {
+        "file": "field/field-3d-b1-sacred-trial.js",
+        "sha256": "0301587b052207a6b4f7ee61e2615ed42af0b5146ccc3965f27264719ca023f2"
+      },
+      {
+        "file": "preview/f1-foliage-coverage.js",
+        "sha256": "f29684256637e8a29c1ef20cda7fb50dec38c56a3f8833a324daeae60ad9fca2"
+      },
+      {
+        "file": "field/field-movement-foe.js",
+        "sha256": "ff7d9de0cc1877ec7609c39fbd4f619f8176fca470bacc28887b355306ad7d8b"
+      },
+      {
+        "file": "field/field-interactions.js",
+        "sha256": "a327380f7377090fb953d4152fded188062b5cef8138b04408567280db69c799"
+      },
+      {
+        "file": "field/field-navigation.js",
+        "sha256": "49576f65e6a9bf72e24ee45849a76f547f2f3b3c6fd3ceac21f4854961af314e"
+      },
+      {
+        "file": "field/field-persistence.js",
+        "sha256": "c6672c3bac351cf798138ab6608f312acabd872cb5c1cf94d275a5aa300c6a89"
+      },
+      {
+        "file": "field/field-puzzles.js",
+        "sha256": "b7306e43e8a2b6ef88ef5dd983d91cdc4aff4854573d72800624eeaaf71d54aa"
+      }
+    ],
+    "candidateMapSha256": "786ba94517df58fea6b6b22946cfe448c11c9d010241d6b6a68c498c075a5d45"
+  },
+  "autoSaveDisabled": true,
+  "fixtureNotes": [
+    "Fresh browser contexts only; no user browser profile or existing saves.",
+    "Party/tutorial/unlock flags are test fixtures. Camera review points use validated walk cells.",
+    "Movement uses the real exported KotamaField3D.input once per action to avoid short-key loss under slow software rendering.",
+    "Save/load persistence is deliberately suppressed and is not certified by these tests."
+  ],
+  "sessions": [
+    {
+      "name": "legacy-off",
+      "optIn": false,
+      "badManifest": false,
+      "pageErrors": [],
+      "consoleErrors": [],
+      "warnings": [
+        {
+          "text": "The resource http://127.0.0.1:8795/assets/monsters/goburinn.png was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.",
+          "url": "http://127.0.0.1:8795/index.html"
+        },
+        {
+          "text": "The resource http://127.0.0.1:8795/assets/monsters/goburinn.png was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.",
+          "url": "http://127.0.0.1:8795/index.html"
+        }
+      ],
+      "resource404": [
+        {
+          "text": "Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID",
+          "url": "https://fonts.googleapis.com/css2?family=DotGothic16&display=swap"
+        }
+      ],
+      "requestFailures": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=DotGothic16&display=swap",
+          "error": "net::ERR_CERT_AUTHORITY_INVALID"
+        },
+        {
+          "url": "http://127.0.0.1:8795/assets/3d/dungeons/b1_ancient_forest/modules/mod_floor_stone_4m.glb",
+          "error": "net::ERR_ABORTED"
+        }
+      ],
+      "candidateRequests": [],
+      "injectedManifestResponses": 0,
+      "states": [
+        {
+          "label": "enter-1F",
+          "tile": {
+            "tx": 1,
+            "ty": 19
+          },
+          "direction": "up",
+          "turn": 0,
+          "area": 1,
+          "floor": 0,
+          "screen": "field",
+          "lock": false,
+          "active": true,
+          "trial": null,
+          "review": {
+            "builtKey": "1-0",
+            "buildingKey": "",
+            "environment": {
+              "area": 1,
+              "background": 462097,
+              "fogDensity": 0.042,
+              "far": 48
+            },
+            "camera": {
+              "position": [
+                4,
+                1.6,
+                77.1
+              ],
+              "rotation": [
+                -0.035,
+                0,
+                0
+              ]
+            },
+            "entries": [
+              {
+                "key": "switch:1:a1-lever",
+                "kind": "switch",
+                "state": "idle",
+                "at": [
+                  40,
+                  1.4,
+                  69.5
+                ],
+                "objectId": "a1-lever",
+                "sprite": "pz-lever",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "8466c5ae-c384-4822-a907-c639298bc8f0",
+                "modelBounds": [
+                  0.7135177850723267,
+                  1.4334583282470703,
+                  0.5663044452667236
+                ],
+                "childNames": [
+                  "gimmick_root_lever"
+                ]
+              },
+              {
+                "key": "switch:1:a1-lever",
+                "kind": "switch",
+                "state": "idle",
+                "at": [
+                  40,
+                  1.4,
+                  74.5
+                ],
+                "objectId": "a1-lever",
+                "sprite": "pz-lever",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "79de9f82-e70a-4b72-bc6f-0737c15c75b8",
+                "modelBounds": [
+                  0.7135177850723267,
+                  1.4334583282470703,
+                  0.5663044452667236
+                ],
+                "childNames": [
+                  "gimmick_root_lever"
+                ]
+              },
+              {
+                "key": "gather:1-0:1:1",
+                "kind": "gather",
+                "state": "take:ok",
+                "at": [
+                  4,
+                  1.2,
+                  4
+                ],
+                "objectId": null,
+                "sprite": "gather",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "6d343268-d708-49d7-adaa-a5a68681b29a",
+                "modelBounds": [
+                  1.352681922912598,
+                  0.416890174150467,
+                  1.3817388534545896
+                ],
+                "childNames": [
+                  "gather_herb_point"
+                ]
+              },
+              {
+                "key": "event:1:a1-old-stump",
+                "kind": "event",
+                "state": "todo",
+                "at": [
+                  100,
+                  1.2,
+                  4
+                ],
+                "objectId": "a1-old-stump",
+                "sprite": "ev-stump",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "4e74e6b3-ad9c-46f1-a379-df22434d5fe4",
+                "modelBounds": [
+                  3.0121072769165096,
+                  0.9997123271226882,
+                  3.0336776733398434
+                ],
+                "childNames": [
+                  "hollow_tree_stump"
+                ]
+              },
+              {
+                "key": "down:1-0",
+                "kind": "stairs",
+                "state": null,
+                "at": [
+                  76,
+                  1.2,
+                  12
+                ],
+                "objectId": null,
+                "sprite": "stairs-down",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "8f39d2dc-9b1d-4985-b1de-bbe00388e8d1",
+                "modelBounds": [
+                  4,
+                  3.6500000953674316,
+                  4
+                ],
+                "childNames": [
+                  "mod_stairs_down"
+                ]
+              },
+              {
+                "key": "chest:1-0:13:13",
+                "kind": "chest",
+                "state": "closed",
+                "at": [
+                  52,
+                  1.2,
+                  52
+                ],
+                "objectId": null,
+                "sprite": "chest",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "e9bee13b-8878-4908-beb6-1e474a85b284",
+                "modelBounds": [
+                  1.5382992029190063,
+                  0.8686003684997559,
+                  1.4926302433013916
+                ],
+                "childNames": [
+                  "sealed_treasure_chest"
+                ]
+              },
+              {
+                "key": "cache:1:a1-cache",
+                "kind": "cache",
+                "state": "closed",
+                "at": [
+                  76,
+                  1.2,
+                  60
+                ],
+                "objectId": "a1-cache",
+                "sprite": "pz-cache",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "c3118b77-6a85-4b50-a810-cdb2cd09b30a",
+                "modelBounds": [
+                  1.5382992029190063,
+                  0.8686003684997559,
+                  1.4926302433013916
+                ],
+                "childNames": [
+                  "sealed_treasure_chest"
+                ]
+              },
+              {
+                "key": "gather:1-0:9:17",
+                "kind": "gather",
+                "state": "chop:ok",
+                "at": [
+                  36,
+                  1.2,
+                  68
+                ],
+                "objectId": null,
+                "sprite": "gather",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "56887e1d-a955-464a-b17a-685843b4c7c2",
+                "modelBounds": [
+                  1.2001502990722628,
+                  0.5730276316404344,
+                  2.186948776245117
+                ],
+                "childNames": [
+                  "gather_logging_point"
+                ]
+              },
+              {
+                "key": "chest:1-0:25:17",
+                "kind": "chest",
+                "state": "closed",
+                "at": [
+                  100,
+                  1.2,
+                  68
+                ],
+                "objectId": null,
+                "sprite": "chest",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "edee7643-578c-424f-96ce-82b57a519a11",
+                "modelBounds": [
+                  1.5382992029190063,
+                  0.8686003684997559,
+                  1.4926302433013916
+                ],
+                "childNames": [
+                  "sealed_treasure_chest"
+                ]
+              },
+              {
+                "key": "door:1:a1-gate",
+                "kind": "door",
+                "state": "closed",
+                "at": [
+                  76,
+                  1.2,
+                  72
+                ],
+                "objectId": "a1-gate",
+                "sprite": "pz-door",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "58d672f1-3317-44fb-9314-433ea492f3dc",
+                "modelBounds": [
+                  5.244219827651975,
+                  4.2487741363584055,
+                  1.1020684704184447
+                ],
+                "childNames": [
+                  "ancient_iron_gate"
+                ]
+              },
+              {
+                "key": "exit:1",
+                "kind": "exit",
+                "state": null,
+                "at": [
+                  4,
+                  1.2,
+                  76
+                ],
+                "objectId": null,
+                "sprite": "exit",
+                "hasObject": true,
+                "modelName": "AuxScene",
+                "objectUuid": "98c82405-0d9a-4874-beba-6723081e18a0",
+                "modelBounds": [
+                  6.242911415100098,
+                  4.404170181751251,
+                  1.8595291709899868
+                ],
+                "childNames": [
+                  "living_root_arch"
+                ]
+              }
+            ],
+            "waterMeshCount": 0,
+            "foes": [
+              {
+                "key": "foe:1-0:0",
+                "visible": true,
+                "meshOrSprite": "Sprite",
+                "textureLoaded": true
+              }
+            ],
+            "staticTrialInfo": null,
+            "trialFallback": null
+          },
+          "gold": 50,
+          "nearKey": "",
+          "toggleHidden": true,
+          "objects": [
+            {
+              "key": "gather:1-0:1:1",
+              "kind": "gather",
+              "tx": 1,
+              "ty": 1,
+              "sprite": "gather",
+              "name": "採取ポイント",
+              "gatherKind": "take"
+            },
+            {
+              "key": "event:1:a1-old-stump",
+              "kind": "event",
+              "tx": 25,
+              "ty": 1,
+              "sprite": "ev-stump",
+              "name": "古い切り株",
+              "id": "a1-old-stump",
+              "event": "a1-old-stump",
+              "hidden": false,
+              "sideEvents": null,
+              "puzzle": null,
+              "onWall": false,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "down:1-0",
+              "kind": "stairs",
+              "dir": "down",
+              "tx": 19,
+              "ty": 3,
+              "sprite": "stairs-down",
+              "name": "下り階段",
+              "walk": true
+            },
+            {
+              "key": "chest:1-0:13:13",
+              "kind": "chest",
+              "tx": 13,
+              "ty": 13,
+              "sprite": "chest",
+              "name": "宝箱",
+              "reward": {
+                "item": "potion",
+                "count": 2
+              }
+            },
+            {
+              "key": "cache:1:a1-cache",
+              "kind": "cache",
+              "tx": 19,
+              "ty": 15,
+              "sprite": "pz-cache",
+              "name": "古い宝箱",
+              "id": "a1-cache",
+              "hidden": false,
+              "sideEvents": null,
+              "puzzle": "a1-lever-gate",
+              "onWall": false,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "gather:1-0:9:17",
+              "kind": "gather",
+              "tx": 9,
+              "ty": 17,
+              "sprite": "gather",
+              "name": "伐採ポイント",
+              "gatherKind": "chop"
+            },
+            {
+              "key": "chest:1-0:25:17",
+              "kind": "chest",
+              "tx": 25,
+              "ty": 17,
+              "sprite": "chest",
+              "name": "宝箱",
+              "reward": {
+                "gold": 40
+              }
+            },
+            {
+              "key": "switch:1:a1-lever",
+              "kind": "switch",
+              "tx": 10,
+              "ty": 18,
+              "sprite": "pz-lever",
+              "name": "古いレバー",
+              "id": "a1-lever",
+              "hidden": false,
+              "sideEvents": null,
+              "puzzle": "a1-lever-gate",
+              "onWall": true,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "door:1:a1-gate",
+              "kind": "door",
+              "tx": 19,
+              "ty": 18,
+              "sprite": "pz-door",
+              "name": "鉄格子の扉",
+              "id": "a1-gate",
+              "hidden": false,
+              "sideEvents": null,
+              "puzzle": "a1-lever-gate",
+              "onWall": false,
+              "oneWay": null,
+              "requires": null,
+              "lockedText": "",
+              "askText": "",
+              "openScene": ""
+            },
+            {
+              "key": "exit:1",
+              "kind": "exit",
+              "tx": 1,
+              "ty": 19,
+              "sprite": "exit",
+              "name": "",
+              "walk": true
+            }
+          ],
+          "foeDefinitions": [
+            {
+              "enemy": "foe-bear",
+              "path": [
+                [
+                  25,
+                  14
+                ],
+                [
+                  25,
+                  9
+                ]
+              ]
+            }
+          ],
+          "map": [
+            "###########################",
+            "#G#.....................#c#",
+            "#.#.#.#.###.###########.#.#",
+            "#...#.#.#...#....*.>#...#.#",
+            "#####.#.#.###.###***#.###.#",
+            "#.....#...#......***#.#...#",
+            "#.#########..*###.###.#.#.#",
+            "#.#.......#**...#...#...#.#",
+            "#.#.###.#.#####.###.#####.#",
+            "#*.*..#.#.....#.#...#...#.#",
+            "#..*###.#####.#.#.###.#.#.#",
+            "#*.*..#.....#.#.#.....#.#.#",
+            "#####.#.###.#.#.#######.#.#",
+            "#.....#.#...#T#.#.....#.#.#",
+            "#.#######.#.###.#.###.#.#.#",
+            "#.#.......#.#...#.#g#.#...#",
+            "#.#.###.###.#.###.#.#.#####",
+            "#.#.#.#.#G..#.....#.#...#T#",
+            "#.#.#.#.##e########f###.#.#",
+            "#E#...#...................#",
+            "###########################"
+          ]
+        }
+      ]
+    }
+  ],
+  "checks": [],
+  "screenshots": [],
+  "limitations": [],
+  "passed": false,
+  "error": {
+    "message": "page.screenshot: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n",
+    "stack": "page.screenshot: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\n    at screenshot (/workspace/work/kotama/tools/f1-sacred-forest/verify-game-trial.cjs:169:21)\n    at normalSessions (/workspace/work/kotama/tools/f1-sacred-forest/verify-game-trial.cjs:233:8)\n    at async main (/workspace/work/kotama/tools/f1-sacred-forest/verify-game-trial.cjs:334:3)"
+  },
+  "failedAt": "2026-11-16T21:24:39.261Z"
+}

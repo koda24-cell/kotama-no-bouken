@@ -1,0 +1,26 @@
+{
+  "status": "verified_pending_user_review",
+  "artApproval": "pending_user_review",
+  "gameIntegrated": false,
+  "sceneSourceCommit": "3fb280fa187f9a8421c29074dc37b0f530e105ae",
+  "sceneBlendSha256": "73059fc86b8cfc248f76e103a5206421918157c791a0a8cbb081ca3c34fe695d",
+  "sceneGlbSha256": "1895d3342031eff60299af97583aa7574c43ac1031b9ad7fa87941b8c6fa7804",
+  "placements": 263,
+  "triangles": 4480724,
+  "drawCalls": 1012,
+  "conformanceErrors": 0,
+  "conformanceWarnings": 0,
+  "browserErrors": 0,
+  "centralRouteY": [
+    -14,
+    22
+  ],
+  "completedFinalViews": [
+    "entry",
+    "courtyard",
+    "sealed_corridor",
+    "shrine_detail",
+    "birdseye"
+  ],
+  "note": "Revision two photographs and final gate complete; visual acceptance and game integration remain pending."
+}

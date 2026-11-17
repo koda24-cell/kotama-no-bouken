@@ -1,0 +1,3345 @@
+{
+  "schemaVersion": 1,
+  "count": 17,
+  "totalBytes": 21305008,
+  "sourceBaseline": "ae7995ae9ab7c36a547c6dbd7a5d601d3fc4bea5",
+  "approvalStatus": "pending_user_review",
+  "conventions": {
+    "units": "metres",
+    "up": "+Y",
+    "front": "+Z",
+    "cellMeters": 4,
+    "eyeHeightMeters": 1.6,
+    "origin": "floor props bottom-centred; floors top centre; hanging vines top attachment"
+  },
+  "gameIntegration": "not integrated; candidate assets and standalone preview only",
+  "materials": "embedded image metallic-roughness and OpenGL normal; no vertex colours or external decoder",
+  "verification": "Each GLB reimported in Blender 5.3 for front/side/angle/top renders; browser report separate",
+  "assets": [
+    {
+      "bytes": 1151380,
+      "sha256": "6c32fface8aac44d0965ad4e07d3b31a702d96e66d0436319082a0e458826b1e",
+      "tris": 3380,
+      "verts": 8901,
+      "meshes": 3,
+      "drawCalls": 3,
+      "materials": [
+        "sacred_earth_mortar",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textureCount": 9,
+      "textureBytes": 698299,
+      "sizeMeters": [
+        4.0,
+        0.2302,
+        4.0
+      ],
+      "bboxMin": [
+        -2.0,
+        -0.21,
+        -2.0
+      ],
+      "bboxMax": [
+        2.0,
+        0.0202,
+        2.0
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "mod_sacred_stone_floor_4m",
+      "file": "modules/mod_sacred_stone_floor_4m.glb",
+      "category": "modules",
+      "desc_ja": "4m shrine paving; perimeter top Z=0, true chipped slab corners, sheltered seam moss. Blender Z-up / glTF Y-up. Ground placement.",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "2507adf4f29e1885accb794a5a0c7058050c23ca",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/mod_sacred_stone_floor_4m.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/mod_sacred_stone_floor_4m/front.png",
+        "renders/mod_sacred_stone_floor_4m/side.png",
+        "renders/mod_sacred_stone_floor_4m/angle.png",
+        "renders/mod_sacred_stone_floor_4m/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "mod_sacred_stone_floor_4m",
+        "file": "sources/mod_sacred_stone_floor_4m.blend",
+        "sha256": "f939b94930d8f51a3728d48fc707bf236deb115ba18cff1de833571eff0f82a9",
+        "bytes": 702389,
+        "imagesPacked": 9,
+        "imagesDecoded": 9,
+        "unusedImagesPruned": 6,
+        "geometryPreserved": true,
+        "geometryFingerprint": "f81c992fe8b6190c62a86090aa03bd8faf6a04cb2424086c5cc6e6ab30685cf6",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "sacred_earth_mortar_dab6502aaeed_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7369
+          },
+          {
+            "name": "sacred_earth_mortar_dab6502aaeed_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6815
+          },
+          {
+            "name": "sacred_earth_mortar_dab6502aaeed_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6163
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7562
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6860
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6273
+          },
+          {
+            "name": "stone_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 147023
+          },
+          {
+            "name": "stone_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 214271
+          },
+          {
+            "name": "stone_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122001
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "風化した参道の敷石",
+      "origin": "surface top centre",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "above_target_review_required",
+      "buildScript": "tools/f1-sacred-forest/assets/build_mod_sacred_stone_floor_4m.py",
+      "buildScriptSha256": "c1903a72f0673478ebbd1bd39eae50614bdee5653a197d355d8b15c26f3fe9bc",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/architecture_details.py": "7e7211cda3d509840d2d1fa6b5dd1c9f2e301a46623f5ae1369dd51349f5a84c",
+        "tools/f1-sacred-forest/assets/build_mod_sacred_stone_floor_4m.py": "c1903a72f0673478ebbd1bd39eae50614bdee5653a197d355d8b15c26f3fe9bc",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/mod_sacred_stone_floor_4m/front.png": "ff4cc0c250baf5b4202b6cd0f5c1cc103c67ef4681f7dff500cb65a54417d7b0",
+        "renders/mod_sacred_stone_floor_4m/side.png": "b41e17f17be6d8147b9f49fd10aa77e525a1967d8f482b0d0bf2f02381dd608a",
+        "renders/mod_sacred_stone_floor_4m/angle.png": "86be39553b86d893dadc21670e1f11b731beb7cdfc833bfcccb934f955dec2c9",
+        "renders/mod_sacred_stone_floor_4m/top.png": "43cd12fd6fb743e0e01e29e1ff005a42fcea32c118b720716ce4b05b7e60e8d6"
+      },
+      "renderEvidence": {
+        "renders/mod_sacred_stone_floor_4m/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:06:53",
+          "renderTime": "00:11.88"
+        },
+        "renders/mod_sacred_stone_floor_4m/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:07:04",
+          "renderTime": "00:11.34"
+        },
+        "renders/mod_sacred_stone_floor_4m/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:07:17",
+          "renderTime": "00:13.37"
+        },
+        "renders/mod_sacred_stone_floor_4m/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:07:32",
+          "renderTime": "00:14.69"
+        }
+      },
+      "sourceBlendSha256": "f939b94930d8f51a3728d48fc707bf236deb115ba18cff1de833571eff0f82a9"
+    },
+    {
+      "bytes": 1335328,
+      "sha256": "a8a52193f076a3926f25f28acdf7ba9726a87e2f9366c7c00138cf2f4a52b788",
+      "tris": 1992,
+      "verts": 4950,
+      "meshes": 5,
+      "drawCalls": 5,
+      "materials": [
+        "sacred_damp_forest_soil",
+        "sacred_old_leaf_litter",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textureCount": 15,
+      "textureBytes": 1076850,
+      "sizeMeters": [
+        4.0,
+        0.3789,
+        4.0
+      ],
+      "bboxMin": [
+        -2.0,
+        -0.22,
+        -2.0
+      ],
+      "bboxMax": [
+        2.0,
+        0.1589,
+        2.0
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "mod_root_soil_floor_4m",
+      "file": "modules/mod_root_soil_floor_4m.glb",
+      "category": "modules",
+      "desc_ja": "4m level forest soil with buried processional slabs; 1.7m clear central walking strip, roots confined to side margins; boundary surface Z=0.",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "2507adf4f29e1885accb794a5a0c7058050c23ca",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/mod_root_soil_floor_4m.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/mod_root_soil_floor_4m/front.png",
+        "renders/mod_root_soil_floor_4m/side.png",
+        "renders/mod_root_soil_floor_4m/angle.png",
+        "renders/mod_root_soil_floor_4m/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "mod_root_soil_floor_4m",
+        "file": "sources/mod_root_soil_floor_4m.blend",
+        "sha256": "9c938f5f5b9c99e0ecb5b36641a6267ee75b775d0e92c792f9d1dfd842807398",
+        "bytes": 958342,
+        "imagesPacked": 15,
+        "imagesDecoded": 15,
+        "unusedImagesPruned": 6,
+        "geometryPreserved": true,
+        "geometryFingerprint": "37d484ce5e5affa603af127a9f7997f52b84faea85d6a2e72186860f3901b431",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "sacred_old_leaf_litter_505ec0d469d6_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 8407
+          },
+          {
+            "name": "sacred_old_leaf_litter_505ec0d469d6_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6755
+          },
+          {
+            "name": "sacred_old_leaf_litter_505ec0d469d6_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6250
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7562
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6860
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6273
+          },
+          {
+            "name": "soil_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 137951
+          },
+          {
+            "name": "soil_module_bark_color_graded.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 24389
+          },
+          {
+            "name": "soil_module_bark_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 58600
+          },
+          {
+            "name": "soil_module_bark_roughness.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 11739
+          },
+          {
+            "name": "soil_module_stone_color_graded.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 31780
+          },
+          {
+            "name": "soil_module_stone_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 37920
+          },
+          {
+            "name": "soil_module_stone_roughness.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 25712
+          },
+          {
+            "name": "soil_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 367399
+          },
+          {
+            "name": "soil_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 76473
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "根と落葉の林床",
+      "origin": "surface top centre",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "above_target_review_required",
+      "buildScript": "tools/f1-sacred-forest/assets/build_mod_root_soil_floor_4m.py",
+      "buildScriptSha256": "f588504023b3ba3d8073b6707f75530ebeafb09db6d82f6fd9f827075a5011f7",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/architecture_details.py": "7e7211cda3d509840d2d1fa6b5dd1c9f2e301a46623f5ae1369dd51349f5a84c",
+        "tools/f1-sacred-forest/assets/build_mod_root_soil_floor_4m.py": "f588504023b3ba3d8073b6707f75530ebeafb09db6d82f6fd9f827075a5011f7",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/mod_root_soil_floor_4m/front.png": "54b93c610cbd63ea6c804cd9b3cdfd10d94f973f6fc819e704e7a7fa81639658",
+        "renders/mod_root_soil_floor_4m/side.png": "1a54231a407f46c1e608fd7b33842446a757c21da99cff34bed2fd0fede0eb25",
+        "renders/mod_root_soil_floor_4m/angle.png": "057824012108d5c3d47aa209e67ca1fbbe791ed12c5475318cbb37c6fae906df",
+        "renders/mod_root_soil_floor_4m/top.png": "4228bef26a753d15eb8787a6bca57ce6180021fc827f98cc3a90db7484b77bf2"
+      },
+      "renderEvidence": {
+        "renders/mod_root_soil_floor_4m/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:08:01",
+          "renderTime": "00:16.18"
+        },
+        "renders/mod_root_soil_floor_4m/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:08:15",
+          "renderTime": "00:13.92"
+        },
+        "renders/mod_root_soil_floor_4m/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:08:29",
+          "renderTime": "00:13.63"
+        },
+        "renders/mod_root_soil_floor_4m/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:08:44",
+          "renderTime": "00:14.51"
+        }
+      },
+      "sourceBlendSha256": "9c938f5f5b9c99e0ecb5b36641a6267ee75b775d0e92c792f9d1dfd842807398"
+    },
+    {
+      "bytes": 2069064,
+      "sha256": "ab68971be6eeb5be7065d50ac346562d7a37603ddd9c35583120170a3fd9a23d",
+      "tris": 5424,
+      "verts": 14480,
+      "meshes": 4,
+      "drawCalls": 4,
+      "materials": [
+        "sacred_earth_mortar",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textureCount": 12,
+      "textureBytes": 1334308,
+      "sizeMeters": [
+        4.0,
+        4.0,
+        0.806
+      ],
+      "bboxMin": [
+        -2.0,
+        0.0,
+        -0.8
+      ],
+      "bboxMax": [
+        2.0,
+        4.0,
+        0.006
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 3,
+      "id": "mod_sacred_wall_4m",
+      "file": "modules/mod_sacred_wall_4m.glb",
+      "category": "modules",
+      "desc_ja": "4m-wide 4m-high sanctuary retaining wall; front surface Y=0, thickness behind face Y=0..0.8. Individual chipped blocks, original corner losses, sheltered basal moss.",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/mod_sacred_wall_4m.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/mod_sacred_wall_4m/front.png",
+        "renders/mod_sacred_wall_4m/side.png",
+        "renders/mod_sacred_wall_4m/angle.png",
+        "renders/mod_sacred_wall_4m/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "mod_sacred_wall_4m",
+        "file": "sources/mod_sacred_wall_4m.blend",
+        "sha256": "329a135e49a16d641ced0ca6a0022ecfb40c62776b6b9ee73aef8445b602e794",
+        "bytes": 1249636,
+        "imagesPacked": 12,
+        "imagesDecoded": 12,
+        "unusedImagesPruned": 3,
+        "geometryPreserved": true,
+        "geometryFingerprint": "385fe11e7c1e9a09d4c3df166ef66b8005d6b28fff1f3b244a3f771c501b0ee6",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "bark_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122111
+          },
+          {
+            "name": "bark_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 309795
+          },
+          {
+            "name": "bark_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 53978
+          },
+          {
+            "name": "sacred_earth_mortar_dab6502aaeed_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7369
+          },
+          {
+            "name": "sacred_earth_mortar_dab6502aaeed_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6815
+          },
+          {
+            "name": "sacred_earth_mortar_dab6502aaeed_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6163
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7562
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6860
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6273
+          },
+          {
+            "name": "stone_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 147023
+          },
+          {
+            "name": "stone_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 214271
+          },
+          {
+            "name": "stone_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122001
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "苔むした祭祀石壁",
+      "origin": "inner-face lower centre; passage-facing +Z, thickness behind -Z",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "above_target_review_required",
+      "buildScript": "tools/f1-sacred-forest/assets/build_mod_sacred_wall_4m.py",
+      "buildScriptSha256": "d5760b677ab246996175088cb1e47e0bafad0fb2d9245034b06ed41cb7a3f325",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/architecture_details.py": "7e7211cda3d509840d2d1fa6b5dd1c9f2e301a46623f5ae1369dd51349f5a84c",
+        "tools/f1-sacred-forest/assets/build_mod_sacred_wall_4m.py": "d5760b677ab246996175088cb1e47e0bafad0fb2d9245034b06ed41cb7a3f325",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/mod_sacred_wall_4m/front.png": "8a17bf975ef9a53900d2137556ce41a503cfa5d62da6d8c299bad197301ab691",
+        "renders/mod_sacred_wall_4m/side.png": "43ba8fc90b75ed4777a9d87fa0462053a3f0bce96d3f7e8bbc2ce9d4a5b95fa7",
+        "renders/mod_sacred_wall_4m/angle.png": "c956ddae69c28c75237cafc206ac7d26479af8f2da766bddfc2f1e0475441ac4",
+        "renders/mod_sacred_wall_4m/top.png": "d1a5a016483cfed73e1b6076839ad506e8c34b3cab494fde4b22f2c4347dc859"
+      },
+      "renderEvidence": {
+        "renders/mod_sacred_wall_4m/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:16:44",
+          "renderTime": "00:26.43"
+        },
+        "renders/mod_sacred_wall_4m/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:17:00",
+          "renderTime": "00:15.54"
+        },
+        "renders/mod_sacred_wall_4m/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:17:24",
+          "renderTime": "00:24.33"
+        },
+        "renders/mod_sacred_wall_4m/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:17:49",
+          "renderTime": "00:24.90"
+        }
+      },
+      "sourceBlendSha256": "329a135e49a16d641ced0ca6a0022ecfb40c62776b6b9ee73aef8445b602e794"
+    },
+    {
+      "bytes": 1883680,
+      "sha256": "7f69ebac9c26e1d4e3ff17a572023183d53909d7d832a03cf0fa5413db6a8199",
+      "tris": 4164,
+      "verts": 10731,
+      "meshes": 4,
+      "drawCalls": 4,
+      "materials": [
+        "sacred_fresh_fracture",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textureCount": 12,
+      "textureBytes": 1336382,
+      "sizeMeters": [
+        4.0394,
+        3.9663,
+        0.778
+      ],
+      "bboxMin": [
+        -2.0394,
+        0.0,
+        -0.79
+      ],
+      "bboxMax": [
+        2.0,
+        3.9663,
+        -0.012
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "mod_sacred_collapsed_wall_4m",
+      "file": "modules/mod_sacred_collapsed_wall_4m.glb",
+      "category": "modules",
+      "desc_ja": "4m footprint wall with a genuinely missing asymmetric crown. Highest surviving corner under 4m, solid lower retaining wall, wet ledges and roots exploit actual masonry fractures. Inner face Y=0; depth 0.8m.",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "44caff1614e97853190d4a10a1db2ef7dc6c7850",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/mod_sacred_collapsed_wall_4m.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/mod_sacred_collapsed_wall_4m/front.png",
+        "renders/mod_sacred_collapsed_wall_4m/side.png",
+        "renders/mod_sacred_collapsed_wall_4m/angle.png",
+        "renders/mod_sacred_collapsed_wall_4m/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "mod_sacred_collapsed_wall_4m",
+        "file": "sources/mod_sacred_collapsed_wall_4m.blend",
+        "sha256": "9192e2da787b16d97fa1bf9cb5b12fdf8c5baf7bdd860108c23ddc5b49026371",
+        "bytes": 1214528,
+        "imagesPacked": 12,
+        "imagesDecoded": 12,
+        "unusedImagesPruned": 3,
+        "geometryPreserved": true,
+        "geometryFingerprint": "b987cede9b7617b7a27d82f38978107f92fd258f1825abd0ff87add19260f231",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "bark_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122111
+          },
+          {
+            "name": "bark_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 309795
+          },
+          {
+            "name": "bark_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 53978
+          },
+          {
+            "name": "sacred_fresh_fracture_393b30e024f7_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 9363
+          },
+          {
+            "name": "sacred_fresh_fracture_393b30e024f7_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6741
+          },
+          {
+            "name": "sacred_fresh_fracture_393b30e024f7_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6317
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7562
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6860
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6273
+          },
+          {
+            "name": "stone_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 147023
+          },
+          {
+            "name": "stone_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 214271
+          },
+          {
+            "name": "stone_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122001
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "崩落した石壁",
+      "origin": "inner-face lower centre; passage-facing +Z, thickness behind -Z",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "above_target_review_required",
+      "buildScript": "tools/f1-sacred-forest/assets/build_mod_sacred_collapsed_wall_4m.py",
+      "buildScriptSha256": "4683d2cc8bd83a03c3b62c8d277f144ded90fa510e93534b1121c20e1af1495f",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/architecture_details.py": "7e7211cda3d509840d2d1fa6b5dd1c9f2e301a46623f5ae1369dd51349f5a84c",
+        "tools/f1-sacred-forest/assets/build_mod_sacred_collapsed_wall_4m.py": "4683d2cc8bd83a03c3b62c8d277f144ded90fa510e93534b1121c20e1af1495f",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/mod_sacred_collapsed_wall_4m/front.png": "43447ae30ab6291ec92795266f78a23fcdae967bc965673e2c0c6d7d37bd62b1",
+        "renders/mod_sacred_collapsed_wall_4m/side.png": "1e310ea6100d096d2f4b51a321468d022f6e53757e7db4ced7a165a1415c7c26",
+        "renders/mod_sacred_collapsed_wall_4m/angle.png": "f1dc65dd79556b8df7b65b021d410b8d44ff2af6c60a4da78e70eaee8fd5016f",
+        "renders/mod_sacred_collapsed_wall_4m/top.png": "1abd6e107c53824bfc95eaf992b26896804f4b93b086904628b76775d0582ac2"
+      },
+      "renderEvidence": {
+        "renders/mod_sacred_collapsed_wall_4m/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 02:02:59",
+          "renderTime": "00:15.08"
+        },
+        "renders/mod_sacred_collapsed_wall_4m/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 02:03:10",
+          "renderTime": "00:10.76"
+        },
+        "renders/mod_sacred_collapsed_wall_4m/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 02:03:25",
+          "renderTime": "00:15.08"
+        },
+        "renders/mod_sacred_collapsed_wall_4m/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 02:03:42",
+          "renderTime": "00:16.93"
+        }
+      },
+      "sourceBlendSha256": "9192e2da787b16d97fa1bf9cb5b12fdf8c5baf7bdd860108c23ddc5b49026371"
+    },
+    {
+      "bytes": 1936680,
+      "sha256": "49124e081d624a368d43442f5d700d072f7d1b162593c6b120a4ef9ee271aab1",
+      "tris": 4560,
+      "verts": 11830,
+      "meshes": 4,
+      "drawCalls": 4,
+      "materials": [
+        "sacred_earth_mortar",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "textureCount": 12,
+      "textureBytes": 1334308,
+      "sizeMeters": [
+        4.0,
+        4.0,
+        0.8
+      ],
+      "bboxMin": [
+        -2.0,
+        0.0,
+        -0.8
+      ],
+      "bboxMax": [
+        2.0,
+        4.0,
+        0.0
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 6,
+      "id": "mod_sacred_arch_4m",
+      "file": "modules/mod_sacred_arch_4m.glb",
+      "category": "modules",
+      "desc_ja": "4m-wide / 4m-high shallow sanctuary arch, exact unobstructed 2m-wide by 3m-high opening. Interior is -Y (glTF +Z), wall behind face Y=0..0.8. Worn voussoirs and split cornice, peripheral root.",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "f4e9d70191ffb4542161707ca02cdc4da769bd7e",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/mod_sacred_arch_4m.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/mod_sacred_arch_4m/front.png",
+        "renders/mod_sacred_arch_4m/side.png",
+        "renders/mod_sacred_arch_4m/angle.png",
+        "renders/mod_sacred_arch_4m/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "mod_sacred_arch_4m",
+        "file": "sources/mod_sacred_arch_4m.blend",
+        "sha256": "1cfcda0b4d34d3be95a3bf40bbc078b6ccdeac73365a3ddd692489b2089d7021",
+        "bytes": 1214283,
+        "imagesPacked": 12,
+        "imagesDecoded": 12,
+        "unusedImagesPruned": 0,
+        "geometryPreserved": true,
+        "geometryFingerprint": "13d394103c2a9451d120076120b08bcd6b3e782a92e22e8cd4e2bc21377fe9b8",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "bark_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122111
+          },
+          {
+            "name": "bark_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 309795
+          },
+          {
+            "name": "bark_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 53978
+          },
+          {
+            "name": "sacred_earth_mortar_dab6502aaeed_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7369
+          },
+          {
+            "name": "sacred_earth_mortar_dab6502aaeed_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6815
+          },
+          {
+            "name": "sacred_earth_mortar_dab6502aaeed_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6163
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7562
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6860
+          },
+          {
+            "name": "sacred_velvet_moss_240e5b7b849b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6273
+          },
+          {
+            "name": "stone_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 147023
+          },
+          {
+            "name": "stone_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 214271
+          },
+          {
+            "name": "stone_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122001
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "封印回廊の石門",
+      "origin": "inner-face lower centre; passage-facing +Z, thickness behind -Z",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "above_target_review_required",
+      "buildScript": "tools/f1-sacred-forest/assets/build_mod_sacred_arch_4m.py",
+      "buildScriptSha256": "7c5a03784d05721eb7e57a5a4de987747e6321717fc160076992275475796ea3",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/architecture_details.py": "7e7211cda3d509840d2d1fa6b5dd1c9f2e301a46623f5ae1369dd51349f5a84c",
+        "tools/f1-sacred-forest/assets/build_mod_sacred_arch_4m.py": "7c5a03784d05721eb7e57a5a4de987747e6321717fc160076992275475796ea3",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/mod_sacred_arch_4m/front.png": "d2c9695370b2c3a60da9efe5a55849982ecd8e05a39b1cc1624b974e5c5beff5",
+        "renders/mod_sacred_arch_4m/side.png": "ddee626ecac63ed721a08c68208c1a51f2fa998e74058ab6ef11ef996863a977",
+        "renders/mod_sacred_arch_4m/angle.png": "34e2d3a19398e6207e491a61ab14b3e32a1148a4e4d6e12a56982d0e6e4c6eec",
+        "renders/mod_sacred_arch_4m/top.png": "278b0f61670acd14b8fda205b82a48c6083f9583bb19189dd51dec9c3d2988ea"
+      },
+      "renderEvidence": {
+        "renders/mod_sacred_arch_4m/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 06:43:27",
+          "renderTime": "00:13.66"
+        },
+        "renders/mod_sacred_arch_4m/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 06:43:38",
+          "renderTime": "00:10.19"
+        },
+        "renders/mod_sacred_arch_4m/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 06:43:54",
+          "renderTime": "00:15.84"
+        },
+        "renders/mod_sacred_arch_4m/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 06:44:08",
+          "renderTime": "00:14.11"
+        }
+      },
+      "sourceBlendSha256": "1cfcda0b4d34d3be95a3bf40bbc078b6ccdeac73365a3ddd692489b2089d7021"
+    },
+    {
+      "bytes": 590244,
+      "sha256": "27a1d59fcddb26a1ff7ca7c63974f3def67b51c22206f7d87d484d399b167dea",
+      "tris": 7338,
+      "verts": 7449,
+      "meshes": 6,
+      "drawCalls": 6,
+      "materials": [
+        "aged_vermilion_wood",
+        "exposed_cedar_wood",
+        "rain_darkened_wood",
+        "straw_shimenawa",
+        "torii_moss",
+        "worn_rice_paper"
+      ],
+      "textureCount": 16,
+      "textureBytes": 178235,
+      "sizeMeters": [
+        3.8,
+        3.8026,
+        0.4529
+      ],
+      "bboxMin": [
+        -1.9,
+        -0.0026,
+        -0.185
+      ],
+      "bboxMax": [
+        1.9,
+        3.8,
+        0.2679
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "weathered_torii_gate",
+      "file": "props/weathered_torii_gate.glb",
+      "category": "props",
+      "desc_ja": "退色した木造鳥居。幅3.8m高さ3.8m、底面中央原点/正面+Z。笠木の反り、貫の木組、実欠損、しめ縄と紙垂。中央幅2m高さ3mの通行空間を保持。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "2507adf4f29e1885accb794a5a0c7058050c23ca",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/weathered_torii_gate.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/weathered_torii_gate/front.png",
+        "renders/weathered_torii_gate/side.png",
+        "renders/weathered_torii_gate/angle.png",
+        "renders/weathered_torii_gate/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "weathered_torii_gate",
+        "file": "sources/weathered_torii_gate.blend",
+        "sha256": "9f36ca385289292d74778d13f336d09675e017fe449d9d0bcd96a66fec75fb39",
+        "bytes": 451720,
+        "imagesPacked": 16,
+        "imagesDecoded": 16,
+        "unusedImagesPruned": 0,
+        "geometryPreserved": true,
+        "geometryFingerprint": "581ddd0739610dfd6e31c0394f0c33803abccf7c5d75696db48658881168f8be",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "straw_shimenawa_3090d98ab39a_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 8838
+          },
+          {
+            "name": "straw_shimenawa_3090d98ab39a_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6765
+          },
+          {
+            "name": "straw_shimenawa_3090d98ab39a_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5821
+          },
+          {
+            "name": "torii_moss_6ed9c4c63c7f_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6161
+          },
+          {
+            "name": "torii_moss_6ed9c4c63c7f_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6697
+          },
+          {
+            "name": "torii_moss_6ed9c4c63c7f_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4455
+          },
+          {
+            "name": "torii_weathering_v2_grain_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 16415
+          },
+          {
+            "name": "torii_weathering_v2_paint_basecolor.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 27388
+          },
+          {
+            "name": "torii_weathering_v2_paint_orm.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 29267
+          },
+          {
+            "name": "torii_weathering_v2_silvered_basecolor.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 25255
+          },
+          {
+            "name": "torii_weathering_v2_silvered_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5276
+          },
+          {
+            "name": "torii_weathering_v2_soaked_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6693
+          },
+          {
+            "name": "torii_weathering_v2_soaked_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5303
+          },
+          {
+            "name": "worn_rice_paper_8a581b77d99a_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 10999
+          },
+          {
+            "name": "worn_rice_paper_8a581b77d99a_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6720
+          },
+          {
+            "name": "worn_rice_paper_8a581b77d99a_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6182
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "退色した木造鳥居",
+      "origin": "floor-centred",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_weathered_torii_gate.py",
+      "buildScriptSha256": "dde118c568ba2e09f73b42c080c9a8ac9317921d3a67d282c4a75566357d79c3",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_weathered_torii_gate.py": "dde118c568ba2e09f73b42c080c9a8ac9317921d3a67d282c4a75566357d79c3",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/weathered_torii_gate/front.png": "35d98a4f4c97b4830ae12a6c53b5eaef9cf6c5fa9d20f7d17a4b48f00a4573dc",
+        "renders/weathered_torii_gate/side.png": "f90e4cbe24e96670397c147b57975a285ccc34d11ac98bc62938714560904d6e",
+        "renders/weathered_torii_gate/angle.png": "01d99f6e28ce05bfef4a61a66cb3d526ded2bc0ab64fb3840e17910e8ebc9f38",
+        "renders/weathered_torii_gate/top.png": "c44e33ee46ec3b7c91863f4136d182cb50a99fb5de9bf84e33d255f5aee24047"
+      },
+      "renderEvidence": {
+        "renders/weathered_torii_gate/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:09:04",
+          "renderTime": "00:17.65"
+        },
+        "renders/weathered_torii_gate/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:09:17",
+          "renderTime": "00:12.66"
+        },
+        "renders/weathered_torii_gate/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:09:40",
+          "renderTime": "00:22.12"
+        },
+        "renders/weathered_torii_gate/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:10:05",
+          "renderTime": "00:24.82"
+        }
+      },
+      "sourceBlendSha256": "9f36ca385289292d74778d13f336d09675e017fe449d9d0bcd96a66fec75fb39"
+    },
+    {
+      "bytes": 825896,
+      "sha256": "fc79b4ca30337dffe137d1fe9031c4a43253fb29d45c4dbe97051d220a4eb0b1",
+      "tris": 1433,
+      "verts": 1985,
+      "meshes": 4,
+      "drawCalls": 4,
+      "materials": [
+        "stele_cushion_moss",
+        "stele_old_fracture",
+        "stele_recessed_carving",
+        "stele_weathered_stone"
+      ],
+      "textureCount": 12,
+      "textureBytes": 714784,
+      "sizeMeters": [
+        1.0956,
+        1.8,
+        0.5872
+      ],
+      "bboxMin": [
+        -0.55,
+        0.0,
+        -0.235
+      ],
+      "bboxMax": [
+        0.5456,
+        1.8,
+        0.3522
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "broken_votive_stele",
+      "file": "props/broken_votive_stele.glb",
+      "category": "props",
+      "desc_ja": "高さ1.8mの欠損石碑。底面中央原点、正面+Z。失われた肩/角の実欠損、Boolean陰刻の架空角形紋様・縁線・細い割れ溝と苔。実宗教の文字・札は複製していない。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/broken_votive_stele.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/broken_votive_stele/front.png",
+        "renders/broken_votive_stele/side.png",
+        "renders/broken_votive_stele/angle.png",
+        "renders/broken_votive_stele/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "broken_votive_stele",
+        "file": "sources/broken_votive_stele.blend",
+        "sha256": "c4cc0d9f1340da710ad8467648ffafd2bc2362649c342fa7158a0a1b7b8cab99",
+        "bytes": 670925,
+        "imagesPacked": 12,
+        "imagesDecoded": 12,
+        "unusedImagesPruned": 0,
+        "geometryPreserved": true,
+        "geometryFingerprint": "92f73c4f0cc9b74877ee89ce3f39e48c51535da5668c9b52734d2d98fcd0418a",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "stele_cushion_moss_0a12f4719265_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6059
+          },
+          {
+            "name": "stele_cushion_moss_0a12f4719265_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6773
+          },
+          {
+            "name": "stele_cushion_moss_0a12f4719265_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4450
+          },
+          {
+            "name": "stele_old_fracture_ee59368867c9_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 9034
+          },
+          {
+            "name": "stele_old_fracture_ee59368867c9_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6762
+          },
+          {
+            "name": "stele_old_fracture_ee59368867c9_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6282
+          },
+          {
+            "name": "stele_recessed_carving_a47b3c72ef4b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6194
+          },
+          {
+            "name": "stele_recessed_carving_a47b3c72ef4b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6782
+          },
+          {
+            "name": "stele_recessed_carving_a47b3c72ef4b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5191
+          },
+          {
+            "name": "stone_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 147023
+          },
+          {
+            "name": "stone_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 214271
+          },
+          {
+            "name": "stone_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122001
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "肩の欠けた奉納石碑",
+      "origin": "floor-centred",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_broken_votive_stele.py",
+      "buildScriptSha256": "2ca196fc83f4102f9a61cefbc024fbe52fef66416d09cde601e9e348ff381b6d",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_broken_votive_stele.py": "2ca196fc83f4102f9a61cefbc024fbe52fef66416d09cde601e9e348ff381b6d",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/broken_votive_stele/front.png": "0a791797463c1fd5341238a922f03daa6f1606561ebe8186ffb86a06190d4265",
+        "renders/broken_votive_stele/side.png": "bde9aae0bd48b4059259928894ed07b96c0dd358e1897097891bcd39a4a8110c",
+        "renders/broken_votive_stele/angle.png": "a8f4a0783452b1cd88657c19e6be87ee92c32711d4db3bdb375ed5d3540e6289",
+        "renders/broken_votive_stele/top.png": "dcb21a84be856feeacf1734660a357643cfa9507d6dff41f33c71a30b178a54c"
+      },
+      "renderEvidence": {
+        "renders/broken_votive_stele/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:13:55",
+          "renderTime": "00:13.13"
+        },
+        "renders/broken_votive_stele/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:14:08",
+          "renderTime": "00:12.88"
+        },
+        "renders/broken_votive_stele/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:14:23",
+          "renderTime": "00:15.47"
+        },
+        "renders/broken_votive_stele/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:14:50",
+          "renderTime": "00:26.19"
+        }
+      },
+      "sourceBlendSha256": "c4cc0d9f1340da710ad8467648ffafd2bc2362649c342fa7158a0a1b7b8cab99"
+    },
+    {
+      "bytes": 997728,
+      "sha256": "b1770fa90aae0f11f2b27f36ecfa23b5d693839d0a8c5784f0f29024d5076a31",
+      "tris": 2366,
+      "verts": 5454,
+      "meshes": 4,
+      "drawCalls": 4,
+      "materials": [
+        "lantern_pale_fracture",
+        "lantern_roof_moss",
+        "lantern_soot_stone",
+        "lantern_weathered_stone"
+      ],
+      "textureCount": 12,
+      "textureBytes": 714537,
+      "sizeMeters": [
+        0.76,
+        1.6,
+        0.74
+      ],
+      "bboxMin": [
+        -0.36,
+        0.0,
+        -0.36
+      ],
+      "bboxMax": [
+        0.4,
+        1.6,
+        0.38
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "moss_stone_lantern",
+      "file": "props/moss_stone_lantern.glb",
+      "category": "props",
+      "desc_ja": "高さ1.6mの石灯籠。底面中央原点、正面+Z。独立した台座/竿/中台/火袋/笠/宝珠。火袋窓は実開口、笠角は実欠損。苔は上向き面へ限定。光源なし。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/moss_stone_lantern.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/moss_stone_lantern/front.png",
+        "renders/moss_stone_lantern/side.png",
+        "renders/moss_stone_lantern/angle.png",
+        "renders/moss_stone_lantern/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "moss_stone_lantern",
+        "file": "sources/moss_stone_lantern.blend",
+        "sha256": "3290a971bb5804ecdc5ef19f92ba134311b51794e24fd2677a31608eaa3d150d",
+        "bytes": 685452,
+        "imagesPacked": 12,
+        "imagesDecoded": 12,
+        "unusedImagesPruned": 0,
+        "geometryPreserved": true,
+        "geometryFingerprint": "6769d7610e2676a1358971aeb75cccd3ca1a9eee0d7f6899a97f8c8e02d822b1",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "lantern_pale_fracture_f3ab1ea2accb_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 9063
+          },
+          {
+            "name": "lantern_pale_fracture_f3ab1ea2accb_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6737
+          },
+          {
+            "name": "lantern_pale_fracture_f3ab1ea2accb_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6217
+          },
+          {
+            "name": "lantern_roof_moss_d5eb608fc89f_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6288
+          },
+          {
+            "name": "lantern_roof_moss_d5eb608fc89f_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6811
+          },
+          {
+            "name": "lantern_roof_moss_d5eb608fc89f_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4410
+          },
+          {
+            "name": "lantern_soot_stone_0f7ec405b664_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5811
+          },
+          {
+            "name": "lantern_soot_stone_0f7ec405b664_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6712
+          },
+          {
+            "name": "lantern_soot_stone_0f7ec405b664_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5231
+          },
+          {
+            "name": "stone_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 147023
+          },
+          {
+            "name": "stone_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 214271
+          },
+          {
+            "name": "stone_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122001
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "苔と欠損の石灯籠",
+      "origin": "floor-centred",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_moss_stone_lantern.py",
+      "buildScriptSha256": "4eaffad15dce6a9ded98c7dfa4dd79e496e97078882fa704fab7efe557117933",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_moss_stone_lantern.py": "4eaffad15dce6a9ded98c7dfa4dd79e496e97078882fa704fab7efe557117933",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/moss_stone_lantern/front.png": "8e6a69fdf2b9e1cc44528d3c7cc0e058c87010b17e55f93b8d4efcc59ad23131",
+        "renders/moss_stone_lantern/side.png": "c9fd4732045cf7df539b25e42227ca7176d796708265846f91e5800de80b15ea",
+        "renders/moss_stone_lantern/angle.png": "5cfda99c2d819a5020c68f16feb5886c25044979c2e931170e9c7c9c02799708",
+        "renders/moss_stone_lantern/top.png": "7b5102a504d70fca2e0da33ab25ed87be88273579b9f950cda810c1344a12281"
+      },
+      "renderEvidence": {
+        "renders/moss_stone_lantern/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:15:17",
+          "renderTime": "00:10.70"
+        },
+        "renders/moss_stone_lantern/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:15:26",
+          "renderTime": "00:09.57"
+        },
+        "renders/moss_stone_lantern/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:15:39",
+          "renderTime": "00:12.67"
+        },
+        "renders/moss_stone_lantern/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:15:56",
+          "renderTime": "00:16.99"
+        }
+      },
+      "sourceBlendSha256": "3290a971bb5804ecdc5ef19f92ba134311b51794e24fd2677a31608eaa3d150d"
+    },
+    {
+      "bytes": 154196,
+      "sha256": "3d08e33321f38b05dd892cc9e156662f517cccf86d5ce562aff9c156a7c18048",
+      "tris": 540,
+      "verts": 1420,
+      "meshes": 1,
+      "drawCalls": 1,
+      "materials": [
+        "original_fictional_ofuda_paper"
+      ],
+      "textureCount": 3,
+      "textureBytes": 80619,
+      "sizeMeters": [
+        0.6101,
+        0.6005,
+        0.0588
+      ],
+      "bboxMin": [
+        -0.305,
+        -0.0004,
+        -0.0013
+      ],
+      "bboxMax": [
+        0.305,
+        0.6001,
+        0.0575
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "ofuda_seal_cluster",
+      "file": "props/ofuda_seal_cluster.glb",
+      "category": "props",
+      "desc_ja": "壁用の貼り札5枚、約0.6m高。壁面下端中央原点、正面+Z。紙端の破れ/折れ/反りと独自描画の架空墨紋様。実宗教の札・文字・印章を複製していない。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "78d9f8b46726e22c3b3ce22e9778f93644846753",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/ofuda_seal_cluster.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/ofuda_seal_cluster/front.png",
+        "renders/ofuda_seal_cluster/side.png",
+        "renders/ofuda_seal_cluster/angle.png",
+        "renders/ofuda_seal_cluster/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "ofuda_seal_cluster",
+        "file": "sources/ofuda_seal_cluster.blend",
+        "sha256": "b5206808b622a8bab91fe760f22a48c995917c2e3d5e2d174dca63d3a6417258",
+        "bytes": 181774,
+        "imagesPacked": 3,
+        "imagesDecoded": 3,
+        "unusedImagesPruned": 0,
+        "geometryPreserved": true,
+        "geometryFingerprint": "53ddba37209e976eda713cf77588575a8268004c98cd19fb315e08e7783c281c",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "fictional_paper_seal_atlas.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 67665
+          },
+          {
+            "name": "original_talisman_paper_6569eac9f4b7_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6756
+          },
+          {
+            "name": "original_talisman_paper_6569eac9f4b7_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6198
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "剥がれた封印の紙札",
+      "origin": "wall-contact lower centre; front +Z",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_ofuda_seal_cluster.py",
+      "buildScriptSha256": "7248125b8dbeff904ff4ffc7c8c8e9721a6ce00dcd5edd6fbe091ebf359642a4",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_ofuda_seal_cluster.py": "7248125b8dbeff904ff4ffc7c8c8e9721a6ce00dcd5edd6fbe091ebf359642a4",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/ofuda_seal_cluster/front.png": "5ae2a7f5591854f8cae417368ea5f98723221789ebd494dee75f3aaf00c051ed",
+        "renders/ofuda_seal_cluster/side.png": "1a43063ce96baeae60cc5af4079f9871804ff21ee34c0df42c5f5236ce5f33ae",
+        "renders/ofuda_seal_cluster/angle.png": "d1ffafcb22bbbc5b05755c2129e42ad8c3c85031a825d5eb3611b74130f689e7",
+        "renders/ofuda_seal_cluster/top.png": "22c5cf6a00d5fd6950650799ca0e5cddc236be0270bbbf33c6d1d1237469a63e"
+      },
+      "renderEvidence": {
+        "renders/ofuda_seal_cluster/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 06:49:57",
+          "renderTime": "00:13.38"
+        },
+        "renders/ofuda_seal_cluster/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 06:50:06",
+          "renderTime": "00:09.02"
+        },
+        "renders/ofuda_seal_cluster/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 06:50:20",
+          "renderTime": "00:13.42"
+        },
+        "renders/ofuda_seal_cluster/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 06:50:33",
+          "renderTime": "00:13.44"
+        }
+      },
+      "sourceBlendSha256": "b5206808b622a8bab91fe760f22a48c995917c2e3d5e2d174dca63d3a6417258"
+    },
+    {
+      "bytes": 1822596,
+      "sha256": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+      "tris": 14712,
+      "verts": 14958,
+      "meshes": 3,
+      "drawCalls": 3,
+      "materials": [
+        "cedar_fine_needle_spray",
+        "cedar_shade_moss",
+        "cedar_weathered_bark"
+      ],
+      "textureCount": 9,
+      "textureBytes": 1010825,
+      "sizeMeters": [
+        5.7287,
+        10.0,
+        5.3498
+      ],
+      "bboxMin": [
+        -2.8983,
+        0.0,
+        -2.4807
+      ],
+      "bboxMax": [
+        2.8305,
+        10.0,
+        2.8691
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "sacred_cedar_tree",
+      "file": "props/sacred_cedar_tree.glb",
+      "category": "props",
+      "desc_ja": "約10mの根張り古杉。基部原点、実形状の幹裂け・根張りを保持。枝階層と独自512px針葉sprayの湾曲alphaMASKカードで密度のある樹冠。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/sacred_cedar_tree.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/sacred_cedar_tree/front.png",
+        "renders/sacred_cedar_tree/side.png",
+        "renders/sacred_cedar_tree/angle.png",
+        "renders/sacred_cedar_tree/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "sacred_cedar_tree",
+        "file": "sources/sacred_cedar_tree.blend",
+        "sha256": "b7630d4e923be5b0117665705165bf44aba3f4dcee791ba0675c9eca393913e4",
+        "bytes": 1359301,
+        "imagesPacked": 9,
+        "imagesDecoded": 9,
+        "unusedImagesPruned": 14,
+        "geometryPreserved": true,
+        "geometryFingerprint": "b14378826a54da943af23c6960c11d9f4f4e3dd95f05dec8bac2501aaa836b3b",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "bark_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122111
+          },
+          {
+            "name": "bark_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 309795
+          },
+          {
+            "name": "bark_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 53978
+          },
+          {
+            "name": "cedar_shade_moss_8182ca73dc8d_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5484
+          },
+          {
+            "name": "cedar_shade_moss_8182ca73dc8d_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4011
+          },
+          {
+            "name": "cedar_shade_moss_8182ca73dc8d_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4841
+          },
+          {
+            "name": "cedar_spray_v1_basecolor.png",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 345550
+          },
+          {
+            "name": "cedar_spray_v1_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 9361
+          },
+          {
+            "name": "cedar_spray_v1_orm.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 5569
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "根張りの古杉",
+      "origin": "floor-centred",
+      "expectedByteBudget": 4194304,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_sacred_cedar_tree.py",
+      "buildScriptSha256": "0d64436efaa2a1a9c7ae0539441b9e555be6034bb5365d7a4caa5cc37ea76740",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_sacred_cedar_tree.py": "0d64436efaa2a1a9c7ae0539441b9e555be6034bb5365d7a4caa5cc37ea76740",
+        "tools/f1-sacred-forest/assets/cedar_crown.py": "4c55e15edf01d45c2c05cd42af10419255c35873fa70c176969c32269fee4dfb",
+        "tools/f1-sacred-forest/assets/natural.py": "8e5185054e1804a00603046976553e61fa08054cd2d1d590a6cf3b396f3959d8",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/sacred_cedar_tree/front.png": "baa42a6cee8e0eb41f0e64afaed7d0b12b8c2aa4809a07cbe7464cf7367bcfb3",
+        "renders/sacred_cedar_tree/side.png": "63975b30d6b9afd9594116d912d04fcc8e7949f9a46c202b707d9395a0457a7a",
+        "renders/sacred_cedar_tree/angle.png": "55a84bbec44447136ed82ca4ca3612b57c73764bde0021413514b716789192fb",
+        "renders/sacred_cedar_tree/top.png": "91d7f59da232ebeffdd43e315e8555c5c5e447382a77b35e4f69cfd4ad7a42b6"
+      },
+      "renderEvidence": {
+        "renders/sacred_cedar_tree/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:18:42",
+          "renderTime": "00:26.80"
+        },
+        "renders/sacred_cedar_tree/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:19:08",
+          "renderTime": "00:25.25"
+        },
+        "renders/sacred_cedar_tree/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:19:39",
+          "renderTime": "00:30.75"
+        },
+        "renders/sacred_cedar_tree/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:20:16",
+          "renderTime": "00:36.84"
+        }
+      },
+      "sourceBlendSha256": "b7630d4e923be5b0117665705165bf44aba3f4dcee791ba0675c9eca393913e4"
+    },
+    {
+      "bytes": 1000656,
+      "sha256": "0d9387dcf818d96ff576195bf1b940a4402923aef2b49496aea354413e42c191",
+      "tris": 6420,
+      "verts": 5779,
+      "meshes": 4,
+      "drawCalls": 4,
+      "materials": [
+        "cedar_cavity_shadow",
+        "cedar_old_heartwood",
+        "cedar_shade_moss",
+        "cedar_weathered_bark"
+      ],
+      "textureCount": 12,
+      "textureBytes": 677319,
+      "sizeMeters": [
+        4.2933,
+        1.1442,
+        0.9517
+      ],
+      "bboxMin": [
+        -2.1472,
+        0.0,
+        -0.4943
+      ],
+      "bboxMax": [
+        2.1461,
+        1.1442,
+        0.4574
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "fallen_cedar_log",
+      "file": "props/fallen_cedar_log.glb",
+      "category": "props",
+      "desc_ja": "約4mの倒木。接地原点。樹皮の縦UV、両端の空洞・不連続年輪・放射割れ・折れ枝と上面の部分的な苔。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/fallen_cedar_log.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/fallen_cedar_log/front.png",
+        "renders/fallen_cedar_log/side.png",
+        "renders/fallen_cedar_log/angle.png",
+        "renders/fallen_cedar_log/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "fallen_cedar_log",
+        "file": "sources/fallen_cedar_log.blend",
+        "sha256": "3b468056c4fd017bef964f1a36aa4f55a2068dd0d654a69918ce30bd3468059a",
+        "bytes": 780148,
+        "imagesPacked": 12,
+        "imagesDecoded": 12,
+        "unusedImagesPruned": 8,
+        "geometryPreserved": true,
+        "geometryFingerprint": "f18259a1017e1af18965336d3c58f5af06c924858046b2cbbaf649d11de0fa1e",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "bark_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122111
+          },
+          {
+            "name": "bark_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 309795
+          },
+          {
+            "name": "bark_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 53978
+          },
+          {
+            "name": "cedar_cavity_shadow_d7c3795db051_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 3961
+          },
+          {
+            "name": "cedar_cavity_shadow_d7c3795db051_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 3965
+          },
+          {
+            "name": "cedar_cavity_shadow_d7c3795db051_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4249
+          },
+          {
+            "name": "cedar_old_heartwood_13c02feb653d_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5843
+          },
+          {
+            "name": "cedar_old_heartwood_13c02feb653d_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4057
+          },
+          {
+            "name": "cedar_old_heartwood_13c02feb653d_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4899
+          },
+          {
+            "name": "cedar_shade_moss_8182ca73dc8d_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5484
+          },
+          {
+            "name": "cedar_shade_moss_8182ca73dc8d_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4011
+          },
+          {
+            "name": "cedar_shade_moss_8182ca73dc8d_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4841
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "朽ちた中空の倒木",
+      "origin": "floor-centred",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_fallen_cedar_log.py",
+      "buildScriptSha256": "ce0525da2082d88b628fbd5e690a250e7d7827343247a3f9e37fcaf6b19f519a",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_fallen_cedar_log.py": "ce0525da2082d88b628fbd5e690a250e7d7827343247a3f9e37fcaf6b19f519a",
+        "tools/f1-sacred-forest/assets/natural.py": "8e5185054e1804a00603046976553e61fa08054cd2d1d590a6cf3b396f3959d8",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/fallen_cedar_log/front.png": "0edd52bbdea98019aa745a618fc8d881ed741db70f0249f8278dabd44bf28abb",
+        "renders/fallen_cedar_log/side.png": "0649a86b0e523e316f28a58c87452f3d06caf262ba4a9a4b70a715d0b1b16660",
+        "renders/fallen_cedar_log/angle.png": "d508ec384a6412fe24581e97474952b39bec3ba0fb42e888cdb43f4c46b197b0",
+        "renders/fallen_cedar_log/top.png": "4d4929b10127bcb71ac2fc2b2609b6eac9feb6acfee8977529408d0d18c7dee1"
+      },
+      "renderEvidence": {
+        "renders/fallen_cedar_log/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:20:41",
+          "renderTime": "00:10.71"
+        },
+        "renders/fallen_cedar_log/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:21:02",
+          "renderTime": "00:20.56"
+        },
+        "renders/fallen_cedar_log/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:21:16",
+          "renderTime": "00:14.30"
+        },
+        "renders/fallen_cedar_log/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:21:41",
+          "renderTime": "00:24.60"
+        }
+      },
+      "sourceBlendSha256": "3b468056c4fd017bef964f1a36aa4f55a2068dd0d654a69918ce30bd3468059a"
+    },
+    {
+      "bytes": 1547392,
+      "sha256": "fe9c9e423762cbba9ab6b84c905432cccd437933dda2660a1fbd60a16ce012e0",
+      "tris": 33804,
+      "verts": 26809,
+      "meshes": 4,
+      "drawCalls": 4,
+      "materials": [
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf",
+        "forest_old_leaf"
+      ],
+      "textureCount": 8,
+      "textureBytes": 50999,
+      "sizeMeters": [
+        1.5532,
+        0.5945,
+        1.2879
+      ],
+      "bboxMin": [
+        -0.8405,
+        0.0074,
+        -0.6678
+      ],
+      "bboxMax": [
+        0.7127,
+        0.6019,
+        0.6201
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "forest_fern_cluster",
+      "file": "props/forest_fern_cluster.glb",
+      "category": "props",
+      "desc_ja": "約1.4mのシダ3株。接地原点。弓なりの葉軸と対生羽片、若い巻き葉、地際の枯れ葉を別造形。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/forest_fern_cluster.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/forest_fern_cluster/front.png",
+        "renders/forest_fern_cluster/side.png",
+        "renders/forest_fern_cluster/angle.png",
+        "renders/forest_fern_cluster/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "forest_fern_cluster",
+        "file": "sources/forest_fern_cluster.blend",
+        "sha256": "a939bc53a4e7483d8291e529d33d6b465e21d67dd7750e3c5174ca19fa8161a5",
+        "bytes": 968528,
+        "imagesPacked": 8,
+        "imagesDecoded": 8,
+        "unusedImagesPruned": 12,
+        "geometryPreserved": true,
+        "geometryFingerprint": "7f5d4de5fa106b04b16ba6f3f5357828f5cbb5cd982e88660c47c06c9d277aea",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6925
+          },
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6739
+          },
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6213
+          },
+          {
+            "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5425
+          },
+          {
+            "name": "woodland_leaf_old_veins_v2_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4907
+          },
+          {
+            "name": "woodland_leaf_veins_v2_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4923
+          },
+          {
+            "name": "woodland_leaf_veins_v2_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7140
+          },
+          {
+            "name": "woodland_leaf_veins_v2_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 8727
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "羽状葉のシダ群落",
+      "origin": "floor-centred",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "above_target_review_required",
+      "buildScript": "tools/f1-sacred-forest/assets/build_forest_fern_cluster.py",
+      "buildScriptSha256": "34a7135eb68c52cf08b056f7b9626091688bfb481a321c01181d9c97ae75c7a5",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_forest_fern_cluster.py": "34a7135eb68c52cf08b056f7b9626091688bfb481a321c01181d9c97ae75c7a5",
+        "tools/f1-sacred-forest/assets/natural.py": "8e5185054e1804a00603046976553e61fa08054cd2d1d590a6cf3b396f3959d8",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/forest_fern_cluster/front.png": "bf04919c987c425b78ba0b5c14732319a869b9e0445800843060586ecc1c0c1f",
+        "renders/forest_fern_cluster/side.png": "144585b82d9bff26097457de045cfa41b2481a14f3589abd3f817e3ec48aeda1",
+        "renders/forest_fern_cluster/angle.png": "a7b6ed9f26488a79929aa06fda28efaf1354d6389924ab950e410c883767564f",
+        "renders/forest_fern_cluster/top.png": "bb0af48ae6269e5d382c128e19a7b1c228f3f5d915a83f0406b6ba7eacfcac6b"
+      },
+      "renderEvidence": {
+        "renders/forest_fern_cluster/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:22:15",
+          "renderTime": "00:14.66"
+        },
+        "renders/forest_fern_cluster/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:22:43",
+          "renderTime": "00:27.55"
+        },
+        "renders/forest_fern_cluster/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:22:59",
+          "renderTime": "00:16.55"
+        },
+        "renders/forest_fern_cluster/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:23:22",
+          "renderTime": "00:22.75"
+        }
+      },
+      "sourceBlendSha256": "a939bc53a4e7483d8291e529d33d6b465e21d67dd7750e3c5174ca19fa8161a5"
+    },
+    {
+      "bytes": 1181524,
+      "sha256": "b2ccddeaf66aca37a1222e06ff002337f6976347d0ba1172cb69720956c4c99d",
+      "tris": 10656,
+      "verts": 8928,
+      "meshes": 4,
+      "drawCalls": 4,
+      "materials": [
+        "cedar_weathered_bark",
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf"
+      ],
+      "textureCount": 10,
+      "textureBytes": 682101,
+      "sizeMeters": [
+        1.6597,
+        1.1081,
+        1.6488
+      ],
+      "bboxMin": [
+        -0.8054,
+        0.0008,
+        -0.809
+      ],
+      "bboxMax": [
+        0.8543,
+        1.1089,
+        0.8398
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "forest_shrub_cluster",
+      "file": "props/forest_shrub_cluster.glb",
+      "category": "props",
+      "desc_ja": "約1.6m幅の常緑低木。接地原点。木質主枝/側枝/葉柄、反りと葉脈、実輪郭の虫食い、小さな新葉を造形。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "8360ac6b6e19e93f910ef611a8b7cc2d34088fcc",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/forest_shrub_cluster.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/forest_shrub_cluster/front.png",
+        "renders/forest_shrub_cluster/side.png",
+        "renders/forest_shrub_cluster/angle.png",
+        "renders/forest_shrub_cluster/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "forest_shrub_cluster",
+        "file": "sources/forest_shrub_cluster.blend",
+        "sha256": "746674a0322c402634bea11ef27118ee7a307044386a64675f3028537252f57d",
+        "bytes": 888086,
+        "imagesPacked": 10,
+        "imagesDecoded": 10,
+        "unusedImagesPruned": 10,
+        "geometryPreserved": true,
+        "geometryFingerprint": "0744d71805a8d0640fcc0e08a610ee7fdf5abae4c22b850f19c966b53fcec44c",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "bark_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122111
+          },
+          {
+            "name": "bark_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 309795
+          },
+          {
+            "name": "bark_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 53978
+          },
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6925
+          },
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6739
+          },
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6213
+          },
+          {
+            "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5425
+          },
+          {
+            "name": "woodland_leaf_veins_v2_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4923
+          },
+          {
+            "name": "woodland_leaf_veins_v2_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7140
+          },
+          {
+            "name": "woodland_leaf_veins_v2_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 8727
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "森の低木",
+      "origin": "floor-centred",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "above_target_review_required",
+      "buildScript": "tools/f1-sacred-forest/assets/build_forest_shrub_cluster.py",
+      "buildScriptSha256": "b6f8b9c3e078415a1d9d1ce852b8cdcbfce265ba39778aae1c7b3f3bba3cb894",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_forest_shrub_cluster.py": "b6f8b9c3e078415a1d9d1ce852b8cdcbfce265ba39778aae1c7b3f3bba3cb894",
+        "tools/f1-sacred-forest/assets/natural.py": "8e5185054e1804a00603046976553e61fa08054cd2d1d590a6cf3b396f3959d8",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/forest_shrub_cluster/front.png": "ba58557f5a2d9fe76d5609f86570d1d1da1040b2a08890cee25c6b0ddb34bef0",
+        "renders/forest_shrub_cluster/side.png": "c6c1c9af9ce245a67929bacb20958b787c330f7b397c37e6403aab240ce7ab9c",
+        "renders/forest_shrub_cluster/angle.png": "5b7d1a7f3717f6e064074c61b9e054177ebfdc6c1a5c2a2130048dedfa6deae2",
+        "renders/forest_shrub_cluster/top.png": "012480c221f478efb69b09236ecb3e132e4da32385c4fff417e9b936f87a414a"
+      },
+      "renderEvidence": {
+        "renders/forest_shrub_cluster/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:45:13",
+          "renderTime": "00:15.46"
+        },
+        "renders/forest_shrub_cluster/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:45:29",
+          "renderTime": "00:15.35"
+        },
+        "renders/forest_shrub_cluster/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:45:47",
+          "renderTime": "00:18.62"
+        },
+        "renders/forest_shrub_cluster/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:46:10",
+          "renderTime": "00:22.21"
+        }
+      },
+      "sourceBlendSha256": "746674a0322c402634bea11ef27118ee7a307044386a64675f3028537252f57d"
+    },
+    {
+      "bytes": 573968,
+      "sha256": "f6cf2813e97ec4997003667ba6f4b51395a57a7b225f2439677c7b6d8900e6bc",
+      "tris": 9632,
+      "verts": 8584,
+      "meshes": 6,
+      "drawCalls": 6,
+      "materials": [
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf",
+        "woodland_dry_seed",
+        "woodland_muted_pollen",
+        "woodland_warm_white_petal"
+      ],
+      "textureCount": 16,
+      "textureBytes": 93631,
+      "sizeMeters": [
+        0.8851,
+        0.5704,
+        0.9397
+      ],
+      "bboxMin": [
+        -0.4251,
+        -0.0003,
+        -0.5065
+      ],
+      "bboxMax": [
+        0.46,
+        0.5701,
+        0.4332
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "white_wildflower_patch",
+      "file": "props/white_wildflower_patch.glb",
+      "category": "props",
+      "desc_ja": "約0.9mの白い林床花群。接地原点。五弁花・萼・雄しべ・若い蕾・種房を個別造形し、生育段階を混在。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "fb665c8afd233bf9476265a91ac08f5e6f974083",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/white_wildflower_patch.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/white_wildflower_patch/front.png",
+        "renders/white_wildflower_patch/side.png",
+        "renders/white_wildflower_patch/angle.png",
+        "renders/white_wildflower_patch/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "white_wildflower_patch",
+        "file": "sources/white_wildflower_patch.blend",
+        "sha256": "995ac45c20d4c641a0a547e48332b11bf6a08ed133c89f132b44419b99822086",
+        "bytes": 391189,
+        "imagesPacked": 16,
+        "imagesDecoded": 16,
+        "unusedImagesPruned": 13,
+        "geometryPreserved": true,
+        "geometryFingerprint": "1d6040b8384125f636aed1287213b5a4b92533d38ab716724da30b29ab6bff0a",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6925
+          },
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6739
+          },
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6213
+          },
+          {
+            "name": "woodland_dry_seed_6906fca0ad08_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5527
+          },
+          {
+            "name": "woodland_dry_seed_6906fca0ad08_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4065
+          },
+          {
+            "name": "woodland_dry_seed_6906fca0ad08_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4886
+          },
+          {
+            "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5425
+          },
+          {
+            "name": "woodland_leaf_veins_v2_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4923
+          },
+          {
+            "name": "woodland_leaf_veins_v2_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7140
+          },
+          {
+            "name": "woodland_leaf_veins_v2_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 8727
+          },
+          {
+            "name": "woodland_muted_pollen_f592bb055206_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7129
+          },
+          {
+            "name": "woodland_muted_pollen_f592bb055206_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 3982
+          },
+          {
+            "name": "woodland_muted_pollen_f592bb055206_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4797
+          },
+          {
+            "name": "woodland_warm_white_petal_fe269d002c3f_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 8347
+          },
+          {
+            "name": "woodland_warm_white_petal_fe269d002c3f_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4000
+          },
+          {
+            "name": "woodland_warm_white_petal_fe269d002c3f_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4806
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "白花と蕾の草叢",
+      "origin": "floor-centred",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_white_wildflower_patch.py",
+      "buildScriptSha256": "ab5776b28acca5ecd0a42233f5c34e9a7112959179bee6f9528364275df48d2b",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_white_wildflower_patch.py": "ab5776b28acca5ecd0a42233f5c34e9a7112959179bee6f9528364275df48d2b",
+        "tools/f1-sacred-forest/assets/natural.py": "8e5185054e1804a00603046976553e61fa08054cd2d1d590a6cf3b396f3959d8",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/white_wildflower_patch/front.png": "140117c17fa8f4913cc4004f43fee13a996dc25ee9637f5ef22ed60d55567cec",
+        "renders/white_wildflower_patch/side.png": "7951a9d2ded25552d6b407f3a8bcf701d2d999f3eefc1d79f217ead7d9761b17",
+        "renders/white_wildflower_patch/angle.png": "46dfbe819f40dfa8bf0c734011b07cb23071b4264bdd8a3795383149ae5779a1",
+        "renders/white_wildflower_patch/top.png": "c2d3dce197e7cf69be253f947106640ad9e2ba8686cb4d2f84516a245e8706d5"
+      },
+      "renderEvidence": {
+        "renders/white_wildflower_patch/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:46:43",
+          "renderTime": "00:15.60"
+        },
+        "renders/white_wildflower_patch/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:46:57",
+          "renderTime": "00:14.67"
+        },
+        "renders/white_wildflower_patch/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:47:14",
+          "renderTime": "00:16.39"
+        },
+        "renders/white_wildflower_patch/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:47:31",
+          "renderTime": "00:16.65"
+        }
+      },
+      "sourceBlendSha256": "995ac45c20d4c641a0a547e48332b11bf6a08ed133c89f132b44419b99822086"
+    },
+    {
+      "bytes": 351536,
+      "sha256": "e6b38012c30043534c9030935094e216eefda9f2bc9f5b16643f4f45442e8b5a",
+      "tris": 6632,
+      "verts": 5424,
+      "meshes": 3,
+      "drawCalls": 3,
+      "materials": [
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf"
+      ],
+      "textureCount": 7,
+      "textureBytes": 46092,
+      "sizeMeters": [
+        1.3232,
+        2.4826,
+        0.2357
+      ],
+      "bboxMin": [
+        -0.6812,
+        -2.4802,
+        -0.0631
+      ],
+      "bboxMax": [
+        0.642,
+        0.0024,
+        0.1726
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "hanging_forest_vines",
+      "file": "props/hanging_forest_vines.glb",
+      "category": "props",
+      "desc_ja": "上端取り付け原点・下方約2.5mの蔓。異長の主蔓、交互の葉柄、節からの枝分岐・巻きひげを造形。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "5fa16d7d03e5f452afde469fa2ad1cef998b22d0",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/hanging_forest_vines.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/hanging_forest_vines/front.png",
+        "renders/hanging_forest_vines/side.png",
+        "renders/hanging_forest_vines/angle.png",
+        "renders/hanging_forest_vines/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "hanging_forest_vines",
+        "file": "sources/hanging_forest_vines.blend",
+        "sha256": "63ea791e6bd38b973292f48102d080f324ab16e031152888c7d688845c3485dc",
+        "bytes": 301763,
+        "imagesPacked": 7,
+        "imagesDecoded": 7,
+        "unusedImagesPruned": 13,
+        "geometryPreserved": true,
+        "geometryFingerprint": "4ccd4f9d8300e45939692a8f869833cca6418accd5079936fc74a06040be1cd7",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6925
+          },
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6739
+          },
+          {
+            "name": "forest_flexible_stem_a91a07929c1b_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6213
+          },
+          {
+            "name": "woodland_leaf_light_veins_v2_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5425
+          },
+          {
+            "name": "woodland_leaf_veins_v2_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4923
+          },
+          {
+            "name": "woodland_leaf_veins_v2_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 7140
+          },
+          {
+            "name": "woodland_leaf_veins_v2_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 8727
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "垂れつると巻きひげ",
+      "origin": "top attachment",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_hanging_forest_vines.py",
+      "buildScriptSha256": "b13bbbd43c5890de0ecfc19d48be854d37eec325a74c198dcf6bad05ed51658f",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_hanging_forest_vines.py": "b13bbbd43c5890de0ecfc19d48be854d37eec325a74c198dcf6bad05ed51658f",
+        "tools/f1-sacred-forest/assets/natural.py": "8e5185054e1804a00603046976553e61fa08054cd2d1d590a6cf3b396f3959d8",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/hanging_forest_vines/front.png": "5726c1df2b6fdd005aef122f1e160266244fc2504b2b3823568aa6a973c60284",
+        "renders/hanging_forest_vines/side.png": "8f7169a3ad16d892b947b73a2a42d556531b09e3451c41cb094aaaac7d2b8ddd",
+        "renders/hanging_forest_vines/angle.png": "edb2efd5b144ac313a0b86e4a88807ff97494fe1d938ef8fccebfbdaaafa8c47",
+        "renders/hanging_forest_vines/top.png": "e3734255e246be88dff0b3eb93dde85b87c4722b09a57676d8d750b41fc2be75"
+      },
+      "renderEvidence": {
+        "renders/hanging_forest_vines/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:48:03",
+          "renderTime": "00:10.41"
+        },
+        "renders/hanging_forest_vines/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:48:12",
+          "renderTime": "00:09.56"
+        },
+        "renders/hanging_forest_vines/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:48:26",
+          "renderTime": "00:13.60"
+        },
+        "renders/hanging_forest_vines/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:48:40",
+          "renderTime": "00:14.32"
+        }
+      },
+      "sourceBlendSha256": "63ea791e6bd38b973292f48102d080f324ab16e031152888c7d688845c3485dc"
+    },
+    {
+      "bytes": 919316,
+      "sha256": "3932fa382a5a005393ba7e48d33ca31118215a28cfb93666b0dca6c38c84989a",
+      "tris": 5350,
+      "verts": 4265,
+      "meshes": 2,
+      "drawCalls": 2,
+      "materials": [
+        "old_granite_fracture",
+        "sacred_granite"
+      ],
+      "textureCount": 6,
+      "textureBytes": 678645,
+      "sizeMeters": [
+        2.4566,
+        1.4969,
+        1.7734
+      ],
+      "bboxMin": [
+        -1.3306,
+        -0.0225,
+        -0.8893
+      ],
+      "bboxMax": [
+        1.1259,
+        1.4744,
+        0.8841
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "mossy_granite_boulder",
+      "file": "props/mossy_granite_boulder.glb",
+      "category": "props",
+      "desc_ja": "Continuous granite mass with an actual removed shoulder, sheltered moss and mineral lichen; footprint about 2.5m; bottom-centred origin.",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "6bb1c3d7667b5e5b0a91baa2e0273ae4461a8a68",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/mossy_granite_boulder.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/mossy_granite_boulder/front.png",
+        "renders/mossy_granite_boulder/side.png",
+        "renders/mossy_granite_boulder/angle.png",
+        "renders/mossy_granite_boulder/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "mossy_granite_boulder",
+        "file": "sources/mossy_granite_boulder.blend",
+        "sha256": "d4ad8b58f3b4b83f3e9a81e746a0605fb3606e379d64a5b999f2ad611eb541e3",
+        "bytes": 755892,
+        "imagesPacked": 6,
+        "imagesDecoded": 6,
+        "unusedImagesPruned": 0,
+        "geometryPreserved": true,
+        "geometryFingerprint": "05892822909fa590af8c72d8ab2683af854c202d5db14759fdc42d18ab86646b",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "old_granite_fracture_140c375bfb5a_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 8476
+          },
+          {
+            "name": "old_granite_fracture_140c375bfb5a_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6703
+          },
+          {
+            "name": "old_granite_fracture_140c375bfb5a_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6209
+          },
+          {
+            "name": "stone_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 147023
+          },
+          {
+            "name": "stone_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 214271
+          },
+          {
+            "name": "stone_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122001
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "欠損した苔の花崗岩",
+      "origin": "floor-centred",
+      "expectedByteBudget": 1048576,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_mossy_granite_boulder.py",
+      "buildScriptSha256": "042b737710a1b382c1d1e5a630e8efbdd83143948fc67ec621877b8c493549fe",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_mossy_granite_boulder.py": "042b737710a1b382c1d1e5a630e8efbdd83143948fc67ec621877b8c493549fe",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/mossy_granite_boulder/front.png": "8c23435f7f4fcd48ac3af511fe7a00572246c35ecd0990ba5d51fd21de577448",
+        "renders/mossy_granite_boulder/side.png": "9b0872758050430b847716b7ddc663cd8d9999b4af175fe394bd35417d6f88a3",
+        "renders/mossy_granite_boulder/angle.png": "7edbfe286a2e2d76a1420853aae3e7d0fd717cf9b70e1939bbe68cfe16adc5ab",
+        "renders/mossy_granite_boulder/top.png": "33922e270fbd814b69b1d6cabe3d63b6e04e827da70c5acc7718cf00159ea742"
+      },
+      "renderEvidence": {
+        "renders/mossy_granite_boulder/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:49:09",
+          "renderTime": "00:14.38"
+        },
+        "renders/mossy_granite_boulder/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:49:25",
+          "renderTime": "00:16.65"
+        },
+        "renders/mossy_granite_boulder/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:49:43",
+          "renderTime": "00:17.50"
+        },
+        "renders/mossy_granite_boulder/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 11:50:00",
+          "renderTime": "00:16.68"
+        }
+      },
+      "sourceBlendSha256": "d4ad8b58f3b4b83f3e9a81e746a0605fb3606e379d64a5b999f2ad611eb541e3"
+    },
+    {
+      "bytes": 2963824,
+      "sha256": "f54bc0aa0d828147728f7d959f5018b71b95e684bdce2010a77cae0dfe061b3c",
+      "tris": 18262,
+      "verts": 39591,
+      "meshes": 8,
+      "drawCalls": 8,
+      "materials": [
+        "hokora_exposed_split_wood",
+        "hokora_folded_paper",
+        "hokora_graded_foundation_stone",
+        "hokora_old_straw_binding",
+        "hokora_sheltered_wood",
+        "hokora_silvered_cedar_wood",
+        "hokora_soaked_shingle_wood",
+        "hokora_sparse_eave_moss"
+      ],
+      "textureCount": 24,
+      "textureBytes": 939407,
+      "sizeMeters": [
+        2.11,
+        2.449,
+        1.8964
+      ],
+      "bboxMin": [
+        -1.055,
+        0.0,
+        -0.7416
+      ],
+      "bboxMax": [
+        1.055,
+        2.449,
+        1.1548
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "sacred_hokora_shrine",
+      "file": "props/sacred_hokora_shrine.glb",
+      "category": "props",
+      "desc_ja": "朽ちた架空森祠。底面中央原点/正面+Z。幅約2.1m高約2.45m。石基壇、四柱木組、半開き前面格子、一部失われた側板、前へ長い流造風木葺き屋根。板を実geometryで重ね、軒の損失・少量の苔と紙垂・内部小祭壇。実在宗教文言の複製なし。",
+      "approvalStatus": "pending_user_review",
+      "sourceCommit": "7171fa4026576fc86804ce152dfc0735371b05b4",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/sacred_hokora_shrine.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/sacred_hokora_shrine/front.png",
+        "renders/sacred_hokora_shrine/side.png",
+        "renders/sacred_hokora_shrine/angle.png",
+        "renders/sacred_hokora_shrine/top.png"
+      ],
+      "sourcePackaging": {
+        "assetId": "sacred_hokora_shrine",
+        "file": "sources/sacred_hokora_shrine.blend",
+        "sha256": "6fc97088e076c11f48dda8467ba6641779263e17c63942577a64ac01a0065c96",
+        "bytes": 1176758,
+        "imagesPacked": 24,
+        "imagesDecoded": 24,
+        "unusedImagesPruned": 0,
+        "geometryPreserved": true,
+        "geometryFingerprint": "b0ef323af22b66f28c42fbeef7a38bad50b5616c4f2c8042c4369df081bf8fe9",
+        "externalImagesRequired": false,
+        "blender": "5.3.0",
+        "packagingScriptSha256": "60ecba8d71a7f79babc613ad16a0b02a534dd1cd1c3e0bd38036aa249d1a0382",
+        "sourceCommit": "570bc231d75d99f492ac973509d1cf85712235a7",
+        "images": [
+          {
+            "name": "hokora_exposed_split_basecolor.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 24323
+          },
+          {
+            "name": "hokora_exposed_split_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 31091
+          },
+          {
+            "name": "hokora_exposed_split_orm.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 16122
+          },
+          {
+            "name": "hokora_folded_paper_7fc82de65627_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 10977
+          },
+          {
+            "name": "hokora_folded_paper_7fc82de65627_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6751
+          },
+          {
+            "name": "hokora_folded_paper_7fc82de65627_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6159
+          },
+          {
+            "name": "hokora_old_straw_binding_1778971daf62_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 8500
+          },
+          {
+            "name": "hokora_old_straw_binding_1778971daf62_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6733
+          },
+          {
+            "name": "hokora_old_straw_binding_1778971daf62_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5323
+          },
+          {
+            "name": "hokora_sheltered_wood_e7a600397220_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4177
+          },
+          {
+            "name": "hokora_sheltered_wood_e7a600397220_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4049
+          },
+          {
+            "name": "hokora_sheltered_wood_e7a600397220_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4816
+          },
+          {
+            "name": "hokora_silvered_cedar_basecolor.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 22260
+          },
+          {
+            "name": "hokora_silvered_cedar_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 31091
+          },
+          {
+            "name": "hokora_silvered_cedar_orm.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 16075
+          },
+          {
+            "name": "hokora_soaked_shingle_basecolor.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 19687
+          },
+          {
+            "name": "hokora_soaked_shingle_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 31091
+          },
+          {
+            "name": "hokora_soaked_shingle_orm.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 16122
+          },
+          {
+            "name": "hokora_sparse_eave_moss_1ee61995a205_basecolor.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 5656
+          },
+          {
+            "name": "hokora_sparse_eave_moss_1ee61995a205_normal.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 6746
+          },
+          {
+            "name": "hokora_sparse_eave_moss_1ee61995a205_orm.jpg",
+            "width": 256,
+            "height": 256,
+            "packedBytes": 4401
+          },
+          {
+            "name": "stone_color_graded.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 147023
+          },
+          {
+            "name": "stone_normal.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 214271
+          },
+          {
+            "name": "stone_roughness.jpg",
+            "width": 512,
+            "height": 512,
+            "packedBytes": 122001
+          }
+        ]
+      },
+      "sourceContainer": "Zstandard-compressed blend",
+      "name_ja": "朽ちた鎮守の小祠",
+      "origin": "floor-centred",
+      "expectedByteBudget": 4194304,
+      "budgetStatus": "within_target",
+      "buildScript": "tools/f1-sacred-forest/assets/build_sacred_hokora_shrine.py",
+      "buildScriptSha256": "546f7fd53edb9d3d4a7e6e8e1890c8cb0bd96c0e244f3649f5e237c49f77d2ec",
+      "buildDependencies": {
+        "tools/f1-sacred-forest/assets/build_sacred_hokora_shrine.py": "546f7fd53edb9d3d4a7e6e8e1890c8cb0bd96c0e244f3649f5e237c49f77d2ec",
+        "tools/f1-sacred-forest/common.py": "705b73748bfaa2302b935955ae1df36be41bd2997596fbba72a71e1adefe06a0"
+      },
+      "evidenceHashes": {
+        "renders/sacred_hokora_shrine/front.png": "ac052645b5f4cdb7cfcb4a5d0f68d88a670d1c3ad2c54dcf10e0de82f734251a",
+        "renders/sacred_hokora_shrine/side.png": "273ddea27ec8d5b163865edf2b78e5d78ae8fac09bdb08be85bdd1ddbd1c9fe9",
+        "renders/sacred_hokora_shrine/angle.png": "15413512f50d975c44bb8c1c4525081616a4ec8556913b1e664174df0da5c395",
+        "renders/sacred_hokora_shrine/top.png": "e424befff11ef2c9593b541792d15cea2149753e28cb359ab5068f265ed8988c"
+      },
+      "renderEvidence": {
+        "renders/sacred_hokora_shrine/front.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:05:04",
+          "renderTime": "00:15.55"
+        },
+        "renders/sacred_hokora_shrine/side.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:05:20",
+          "renderTime": "00:15.69"
+        },
+        "renders/sacred_hokora_shrine/angle.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:05:37",
+          "renderTime": "00:17.55"
+        },
+        "renders/sacred_hokora_shrine/top.png": {
+          "width": 640,
+          "height": 640,
+          "samples": 16,
+          "camera": "evidence_camera",
+          "engine": "Cycles CPU",
+          "blenderDateMetadata": "2026/11/16 07:05:55",
+          "renderTime": "00:17.17"
+        }
+      },
+      "sourceBlendSha256": "6fc97088e076c11f48dda8467ba6641779263e17c63942577a64ac01a0065c96"
+    }
+  ]
+}

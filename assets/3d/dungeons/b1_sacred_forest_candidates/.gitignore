@@ -1,0 +1,4 @@
+# Blender's transient backups and reproducible material-build cache.
+*.blend1
+*.blend2
+sources/generated_materials/

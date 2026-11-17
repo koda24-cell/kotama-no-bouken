@@ -1,0 +1,18 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
+const ROOT=path.resolve(__dirname,'../..'),MOD=process.env.BROWSER_MODULES||'/workspace/work/browser/node_modules',OUT=process.env.PLAYTEST_OUT||'/workspace/work/f1-playtest-page';
+const {chromium}=require(path.join(MOD,'playwright-core'));
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.glb':'model/gltf-binary','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.mp3':'audio/mpeg','.webp':'image/webp'};
+const server=http.createServer((q,s)=>{const f=path.resolve(ROOT,'.'+decodeURIComponent(q.url.split('?')[0]));if(!f.startsWith(ROOT+path.sep)){s.writeHead(403);return s.end();}fs.readFile(f,(e,b)=>{s.writeHead(e?404:200,{'Content-Type':types[path.extname(f)]||'application/octet-stream'});s.end(e?'not found':b);});});
+(async()=>{fs.mkdirSync(OUT,{recursive:true});await new Promise(r=>server.listen(8796,'127.0.0.1',r));const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--autoplay-policy=no-user-gesture-required']});
+try{const context=await browser.newContext({viewport:{width:1280,height:900}});await context.route(/cdn\.jsdelivr\.net\/npm\/three@0\.180\.0\/(.*)/,r=>r.fulfill({path:path.join(MOD,'three',r.request().url().match(/three@0\.180\.0\/(.*)$/)[1].split('?')[0]),contentType:'text/javascript'}));
+await context.addInitScript(()=>{if(window===window.top)localStorage.setItem('kotama-playtest-sentinel','normal-save-untouched');});const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto('http://127.0.0.1:8796/preview/f1-sacred-playtest.html',{waitUntil:'domcontentloaded'});
+await page.waitForFunction(()=>document.getElementById('game').contentWindow.KotamaField3D?.sacredTrialInfo()?.sourceHashesVerified,null,{timeout:300000});
+const frame=page.frames().find(f=>f.parentFrame());await frame.waitForFunction(()=>window.KotamaField3D.active(),null,{timeout:60000});
+const data=await frame.evaluate(()=>{const before=localStorage.getItem('kotama-playtest-sentinel');localStorage.setItem('kotama-playtest-sentinel','trial-only');return {before,trialValue:localStorage.getItem('kotama-playtest-sentinel'),floor:fieldState.floor,area:fieldState.area,game:window.KotamaField3D.gameReviewState()};});
+assert.equal(data.before,null);assert.equal(data.trialValue,'trial-only');assert.equal(data.area,1);assert.equal(data.floor,2);assert.equal(data.game.entries.length,7);assert.equal(data.game.waterMeshCount,11);assert.equal(data.game.staticTrialInfo.sourceHashesVerified,true);
+assert.equal(await page.evaluate(()=>localStorage.getItem('kotama-playtest-sentinel')),'normal-save-untouched');assert.deepEqual(errors,[]);
+await page.screenshot({path:path.join(OUT,'actual-game-playtest.png'),timeout:180000});
+fs.writeFileSync(path.join(OUT,'playtest-page-verification.json'),JSON.stringify({passed:true,storageIsolated:true,normalSaveSentinelPreserved:true,errors,...data,scope:'Actual index.html in isolated-memory iframe; no real-device FPS approval'},null,2));console.log('Actual game playtest ready; normal storage remains unchanged');
+}finally{await browser.close();await new Promise(r=>server.close(r));}})().catch(e=>{console.error(e);server.close();process.exitCode=1;});

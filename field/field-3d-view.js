@@ -229,6 +229,8 @@ async function buildFloor() {
     return;
   }   // 待っている間にフロアが変わった
   const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
+  // The URL-only sacred trial owns no save or interaction state.
+  g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
   // 片付け
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
@@ -251,6 +253,22 @@ async function buildFloor() {
     }
   }
   else {                                // 第1階層：ここから下は従来の組み立て（変更なし）
+  let sacred = false;
+  if (area === 1 && a.f === 2 && (new URLSearchParams(location.search).get('f1sacred') === '1' || window.KotamaSacredPlaytest === true)) {
+    try {
+      const { buildSacredForestTrial } = await import('./field-3d-b1-sacred-trial.js?v=20261117-1');
+      const trial = await buildSacredForestTrial({ world: g.world, area: a,
+        layoutUrl: new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-trial.json', import.meta.url).href });
+      if (token !== g.buildToken || curKey() !== key) { trial.dispose(); if (token === g.buildToken) g.buildingKey = ''; return; }
+      g.sacredTrial = trial; sacred = true;
+      applyEnv(area, trial.env); g.camera.far = trial.far; g.camera.updateProjectionMatrix();
+    } catch (error) {
+      if (token !== g.buildToken || curKey() !== key) return;
+      g.sacredTrialError = String(error.message || error);
+      console.warn('[field-3d] 神域の試験表示を読み込めないため従来表示を使います:', error);
+    }
+  }
+  if (!sacred) {
   // 床・天井・壁
   for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
     if (wallCell(tx, ty)) continue;
@@ -282,6 +300,10 @@ async function buildFloor() {
       else if (k > 0.91) place(g.world, S.mossPatch, x, 0.01, z, k * 6, 0.8);
     }
   }
+  } else {
+    // Keep the existing water presentation and interaction objects.
+    for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) if (ch(tx,ty) === '~') addWater(X(tx),Z(ty));
+  }
   // 物（宝箱・採集・灯・NPC・イベント・仕掛け・階段など）
   for (const o of a.objects) {
     const x = X(o.tx), z = Z(o.ty), f = facing(o.tx, o.ty), ry = FACE_YAW[f];
@@ -289,7 +311,7 @@ async function buildFloor() {
     switch (o.kind) {
       case 'stairs':
         if (o.dir === 'down') e.obj = place(g.world, S.stairsDown, x, 0, z, ry);
-        else { place(g.world, S.floor, x, 0, z); e.obj = place(g.world, S.stairsUp, x, 0, z - 0, ry + Math.PI, 0.75); }
+        else { if (!sacred) place(g.world, S.floor, x, 0, z); e.obj = place(g.world, S.stairsUp, x, 0, z - 0, ry + Math.PI, 0.75); }
         break;
       case 'save': place(g.world, S.seal, x, 0.005, z, 0, 0.8); e.obj = place(g.world, S.torch, x, 0, z); e.at.y = 1.9; break;
       case 'chest': case 'cache': e.ry = ry; break;   // 開閉に応じて sync で置く
@@ -361,7 +383,21 @@ function gatherDef(o) { try { return fieldGatherPointDef(fieldArea(), o); } catc
    FOE（モンスターの画像を立て札のように表示＋足元の光）
    ------------------------------------------------------------ */
 function foeTexture(src) {
-  if (!g.texCache.has(src)) { const t = new THREE.TextureLoader().load(src); t.colorSpace = THREE.SRGBColorSpace; g.texCache.set(src, t); }
+  if (!g.texCache.has(src)) {
+    const t = new THREE.TextureLoader().load(src, texture => {
+      if (!/\.svg(?:$|[?#])/i.test(src)) return;
+      // DOM SVG images can fail WebGL2 immutable texture upload. Rasterize
+      // synchronously in onLoad, before the first render can upload the SVG.
+      const image = texture.image, width = image.naturalWidth || image.width || 512;
+      const height = image.naturalHeight || image.height || 512;
+      const scale = Math.min(2048 / Math.max(width,height), Math.max(1,512 / Math.max(width,height)));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1,Math.round(width*scale)); canvas.height = Math.max(1,Math.round(height*scale));
+      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      texture.image = canvas; texture.userData.svgRasterized = true; texture.needsUpdate = true;
+    });
+    t.colorSpace = THREE.SRGBColorSpace; g.texCache.set(src,t);
+  }
   return g.texCache.get(src);
 }
 // FOE visuals own these GPU resources; textures remain in the shared cache.
@@ -557,7 +593,16 @@ function setPreview(n, on) {
   g.preview = readPreview(); if (on) g.themeFailed = false;
   if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
 }
-window.KotamaField3D = { active, input, build, frame, toggle, isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
+function gameReviewState() {
+  return { builtKey:g.builtKey, buildingKey:g.buildingKey,
+    environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far},
+    camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
+    entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
+    waterMeshCount:g.world.children.filter(o=>o.isMesh&&o.geometry===waterGeo).length,
+    foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),
+    staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
+}
+window.KotamaField3D = { active, input, build, frame, toggle, gameReviewState, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
   // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）
   stats: () => (g.renderer ? { calls: g.renderer.info.render.calls, triangles: g.renderer.info.render.triangles, geometries: g.renderer.info.memory.geometries, textures: g.renderer.info.memory.textures, lights: g.lights.length } : null) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる
