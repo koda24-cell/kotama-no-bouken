@@ -1,0 +1,50 @@
+name: Floor 3 Ruined Building Docker Render
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/floor3-ruined-building-prototype-20261112
+    paths:
+      - 'tools/floor3/**'
+      - '.github/workflows/floor3-docker-render.yml'
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install model generation dependencies
+        run: pip install 'numpy>=1.26,<3' 'trimesh>=4,<5'
+      - name: Generate ruined building GLB
+        run: |
+          mkdir -p render-output
+          python tools/floor3/build.py
+          mv ruined_building_prototype.glb render-output/
+          test -s render-output/ruined_building_prototype.glb
+      - name: Verify exported GLB
+        run: |
+          python - <<'PY'
+          import trimesh
+          scene = trimesh.load('render-output/ruined_building_prototype.glb', force='scene')
+          assert len(scene.geometry) > 100, 'Unexpectedly small scene'
+          print('GLB_GEOMETRIES', len(scene.geometry))
+          PY
+      - name: Pull Blender Docker image
+        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: Render front side and angle using Blender
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+            -b -t 2 --python tools/floor3/render.py -- render-output/ruined_building_prototype.glb render-output
+          for view in front side angle; do
+            test -s "render-output/ruined_building_prototype-${view}.png"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: floor3-ruined-building-blender
+          path: render-output/
+          retention-days: 14
