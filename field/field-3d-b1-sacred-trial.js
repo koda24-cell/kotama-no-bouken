@@ -269,7 +269,7 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
       batch.instanceMatrix.needsUpdate = true; batch.computeBoundingBox(); batch.computeBoundingSphere();
       batch.userData.f1SacredTrial = true; root.add(batch); batches.push(batch);
     }
-    const sun = new THREE.DirectionalLight(closedV3 ? 0xb7c8a5 : 0xffe2b8, closedV3 ? .65 : 2.0);
+    const sun = new THREE.DirectionalLight(closedV3 ? 0xb7c8a5 : 0xffe2b8, closedV3 ? 1.05 : 2.0);
     sun.name = 'f1-sacred:daylight'; sun.position.set(20, 90, -30); sun.target.position.set(52, 0, 32);
     root.add(sun, sun.target);
     const lightPockets = closedV3 ? (layout.closedRuinsV3?.lightPockets ?? []) : [];
@@ -307,7 +307,7 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
     }
     const env = closedV3
       ? { background: 0x101f18, fog: { color: 0x172c20, density: .045 },
-        hemi: { sky: 0x91a58c, ground: 0x263426, high: .65, low: .85 } }
+        hemi: { sky: 0x91a58c, ground: 0x263426, high: .95, low: 1.25 } }
       : { background: 0x9eafa3, fog: { color: 0x8fa096, density: .009 },
         hemi: { sky: 0xc0d2bb, ground: 0x3d4432, high: 1.0, low: 1.2 } };
     return { root, env, far: closedV3 ? 40 : 96,
