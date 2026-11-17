@@ -86,7 +86,20 @@ lava.node_tree.links.new(im.outputs['Color'],lava_bs.inputs['Base Color'])
 im=lava.node_tree.nodes.new('ShaderNodeTexImage');im.image=thermal_emission
 try:lava.node_tree.links.new(im.outputs['Color'],lava_bs.inputs['Emission'])
 except KeyError:lava.node_tree.links.new(im.outputs['Color'],lava_bs.inputs['Emission Color'])
-lava_bs.inputs['Emission Strength'].default_value=2.1
+lava_bs.inputs['Emission Strength'].default_value=1.45
+# V14: thick, crusting basaltic melt rather than shiny water.
+for link in list(lava.node_tree.links):
+ if link.to_socket==lava_bs.inputs['Roughness']:lava.node_tree.links.remove(link)
+lava_bs.inputs['Roughness'].default_value=.86
+dense_lava=mat('V14_Viscous_Molten_Basalt',(.5,.075,.012),.9,normal=tex+'molten_lava_normal.png')
+dbs=dense_lava.node_tree.nodes.get('Principled BSDF')
+for image,socket in [(thermal_base,'Base Color'),(thermal_emission,'Emission Color')]:
+ node=dense_lava.node_tree.nodes.new('ShaderNodeTexImage');node.image=image
+ try:dense_lava.node_tree.links.new(node.outputs['Color'],dbs.inputs[socket])
+ except KeyError:
+  if socket=='Emission Color':dense_lava.node_tree.links.new(node.outputs['Color'],dbs.inputs['Emission'])
+  else:raise
+dbs.inputs['Emission Strength'].default_value=1.2
 hot=mat('Bright_molten_fissures',(1,.26,.028),.38,em=3.8)
 hot2=mat('Sulfur_yellow_core',(1,.61,.08),.35,em=5)
 coal=mat('Charred_rock',(0.09,.075,.075),.95)
@@ -138,6 +151,36 @@ for j in range(nz):
  for i in range(nx):
   a=j*(nx+1)+i;b=a+nx+1;faces.append((a,b,b+1,a+1))
 objmesh('MEANDERING_MOLTEN_CHANNEL',verts,faces,lava,uv)
+# V14: a cooled recessed lip connects river surface to bank geometry.
+for side in (-1,1):
+ verts=[];uv=[];faces=[];nz=175
+ for j in range(nz+1):
+  z=-3.31+j*6.62/nz;e=edge(z,side)
+  for i in range(5):
+   u=i/4;x=e+side*(u*.23-.055)
+   y=lava_y(e,z)+.016+u**1.7*(ground_y(x,z)-lava_y(e,z)+.025)
+   y+=.011*sin(z*10+side*2+u*3)
+   verts.append((x,y,z));uv.append((z*.26,u))
+ for j in range(nz):
+  for i in range(4):
+   a=j*5+i;b=a+5;faces.append((a,a+1,b+1,b))
+ objmesh('V14_BANK_CONTACT_COOLING_RIM',verts,faces,crust,uv,smooth=False)
+# Sluggish dark crust tongues across the hot river, no water-like smooth sheet.
+for k in range(19):
+ z=-2.9+k*.32+R.uniform(-.06,.06)
+ x=center(z)+R.uniform(-.44,.44)*halfwidth(z)
+ r=.11+R.uniform(.03,.16)
+ vs=[];uvs=[];fs=[];n=13
+ for j in range(n):
+  a=2*pi*j/n
+  xx=x+r*cos(a)*(1+.23*sin(3*a+k))
+  zz=z+r*1.8*sin(a)*(1+.14*cos(5*a+k))
+  xx=max(edge(zz,-1)+.06,min(edge(zz,1)-.06,xx))
+  vs.append((xx,lava_y(xx,zz)+.034+.011*sin(a*4+k),zz));uvs.append((xx*.27,zz*.27))
+ vs.insert(0,(x,lava_y(x,z)+.045,z));uvs.insert(0,(x*.27,z*.27))
+ for j in range(n):fs.append((0,j+1,1 if j==n-1 else j+2))
+ objmesh('V14_VISCOUS_COOLING_TONGUE',vs,fs,crust,uvs,smooth=False)
+
 # Broad pool on downstream section: irregular surface, not a perfect ellipse.
 verts=[];uv=[];faces=[];N=100;M=32
 cx=center(1.95)
@@ -267,58 +310,76 @@ for i in range(14):
  x=side*(.74+R.uniform(0,1.32))
  y=R.uniform(1.0,2.55)
  rock('FALL_SOURCE_EMBEDDED_BASALT',(x,y,-3.58+R.uniform(-.15,.12)),(.34,.30,.35),basalt,seed=i+301,subdiv=3)
-# V13: Gravity-directed lava sheet attached to the rear basalt wall.
-# User circled the twisted ribbon. Keep the source and impact locations, but
-# eliminate repeated S-curves in centerline and surface cross-section.
+# V14: a closed thick lava body clings to the rock wall, then rolls outward.
+# V13 was a paper-thin sheet too far forward of the rear cliff.
 def fall_path(t):
-    # Slow downhill drift toward the impact; no sin(t*13) or coiling.
-    cx=-.42+.075*t+.015*t*t
-    yy=2.42-2.2*t
-    zz=-3.20+.19*t+.20*t*t
-    width=.205+.045*math.sin(t*math.pi)+.24*t*t
-    return cx,yy,zz,width
-verts=[];uv=[];faces=[];N=32;M=112
-for j in range(M+1):
- t=j/M;cx,y,z,w=fall_path(t)
- for i in range(N+1):
-  u=i/N
-  # Subtle scalloped edges, mostly straight downward flow.
-  edge_rough=.022*math.sin(t*11+u*5.5)+.011*math.sin(t*23+u*9)
-  x=cx+(u-.5)*2*w*(1+edge_rough)
-  # Very shallow surface ripples; no corkscrew distortion.
-  zz=z+.012*math.cos(u*math.pi*2)+.007*math.sin(t*18+u*3)
-  verts.append((x,y,zz));uv.append((u,t*1.8))
+ cx=-.42+.085*t+.025*sin(t*pi)
+ yy=2.42-2.2*t
+ zz=-3.69+.07*t+.16*t**3+.55*t**8
+ width=.18+.035*sin(t*pi)+.23*t*t
+ return cx,yy,zz,width
+def fall_xyz(t,u,front=True):
+ cx,y,z,w=fall_path(t)
+ thick=.075+.05*sin(t*pi)**2+.08*t*t
+ fold=.028*sin(t*8+u*3.2)+.014*sin(t*19+u*7.5)
+ edge_rough=.025*sin(t*9+u*5.1)+.012*sin(t*21+u*8.2)
+ x=cx+(u-.5)*2*w*(1+edge_rough)
+ z+= (thick*.48+fold) if front else (-thick*.55+fold*.22)
+ y+=.012*sin(u*9+t*8)*sin(t*pi)
+ return x,y,z
+N=32;M=112;verts=[];uv=[];faces=[]
+for surface in range(2):
+ for j in range(M+1):
+  t=j/M
+  for i in range(N+1):
+   u=i/N;verts.append(fall_xyz(t,u,surface==0));uv.append((u,t*1.8))
+stride=(N+1)*(M+1)
 for j in range(M):
  for i in range(N):
-  a=j*(N+1)+i;b=a+N+1;faces.append((a,a+1,b+1,b))
-objmesh('FALLING_MAGMA_CASCADE',verts,faces,lava,uv)
-# Cooled edge streaks follow the SAME fall_path, so they cannot coil.
-for side in (-1,1):
- for k in range(11):
-  t0=(k+.42)/12
-  vs=[]
-  for q in range(10):
-   t=min(.99,max(.01,t0+(q-4.5)*.008))
-   cx,yy,zz,w=fall_path(t)
-   wav=.015*math.sin(k*1.7+q*.55)
-   xx=cx+side*w*(.84+wav)
-   vs.extend([(xx,yy,zz+.015),(xx-side*.042,yy,zz+.019)])
-  fs=[(2*q,2*q+1,2*q+3,2*q+2) for q in range(9)]
-  objmesh('V13_FALL_COOLING_CRUST_EDGE',vs,fs,crust,
-          [(q*.12,k*.08) for q in range(len(vs))])
-# Thin luminous veins attached to the cascade, with uneven heat intensity.
-for stripe in range(7):
- u0=(stripe+1)/8
- vs=[];uvs=[]
- for j in range(84):
-  t=.025+j*.95/83;cx,yy,zz,w=fall_path(t)
-  u=u0+.019*math.sin(t*8+stripe*1.7)
-  xx=cx+(u-.5)*2*w
-  span=.006+.006*(.5+.5*math.sin(t*13+stripe*2.1))
-  vs.extend([(xx-span,yy,zz+.023),(xx+span,yy,zz+.023)])
-  uvs.extend([(0,t),(1,t)])
- fs=[(2*j,2*j+1,2*j+3,2*j+2) for j in range(83)]
- objmesh('V13_FALL_INCANDESCENT_VEIN',vs,fs,hot if stripe%3 else hot2,uvs)
+  a=j*(N+1)+i;b=a+N+1
+  faces.append((a,a+1,b+1,b))
+  faces.append((stride+a,stride+b,stride+b+1,stride+a+1))
+for j in range(M):
+ a=j*(N+1);b=(j+1)*(N+1)
+ faces.extend([(a,b,stride+b,stride+a),(a+N,stride+a+N,stride+b+N,b+N)])
+for i in range(N):
+ faces.extend([(i,stride+i,stride+i+1,i+1),
+               (M*(N+1)+i,M*(N+1)+i+1,stride+M*(N+1)+i+1,stride+M*(N+1)+i)])
+objmesh('FALLING_MAGMA_CASCADE',verts,faces,dense_lava,uv,smooth=True)
+# Solidifying irregular crust embedded in the flow, not floating line work.
+for k in range(25):
+ t0=.045+R.uniform(0,.82);u0=R.uniform(.11,.89)
+ dt=R.uniform(.028,.115);du=R.uniform(.055,.20)
+ n=9;v=[];f=[];uvs=[]
+ for j in range(n):
+  a=2*pi*j/n
+  t=min(.97,max(.02,t0+dt*cos(a)*(1+.20*sin(a*3+k))))
+  u=min(.97,max(.03,u0+du*sin(a)*(1+.14*sin(a*5+k))))
+  x,y,z=fall_xyz(t,u,True)
+  v.append((x,y,z+.009));uvs.append((u,t))
+ cx=sum(q[0] for q in v)/n;cy=sum(q[1] for q in v)/n;cz=sum(q[2] for q in v)/n
+ v.insert(0,(cx,cy,cz+.014));uvs.insert(0,(u0,t0))
+ for j in range(1,n+1):f.append((0,j,1 if j==n else j+1))
+ objmesh('V14_EMBEDDED_COOLING_SKIN',v,f,crust,uvs,smooth=False)
+# Few short fissures, not continuous luminous rods.
+for k in range(8):
+ t0=.075+R.uniform(0,.78);span_t=R.uniform(.045,.15);u0=R.uniform(.17,.83)
+ v=[];uvs=[];f=[]
+ for j in range(14):
+  t=t0+span_t*j/13;u=u0+.02*sin(j*.38+k)
+  for sign in (-1,1):
+   x,y,z=fall_xyz(t,u+sign*(.006+.004*sin(j*.31+k)),True)
+   v.append((x,y,z+.019));uvs.append((j/13,0 if sign<0 else 1))
+ for j in range(13):f.append((2*j,2*j+1,2*j+3,2*j+2))
+ objmesh('V14_INTERRUPTED_MOLTEN_FISSURE',v,f,hot if k%3 else hot2,uvs)
+# Rounded, heavy melt lobes sink into the receiving pool.
+for k in range(12):
+ a=2*pi*k/12;cx,yy,zz,w=fall_path(1)
+ x=cx+.33*cos(a);z=zz+.28*sin(a)
+ bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,.16+.018*sin(k*1.9),z))
+ o=bpy.context.object;o.name='V14_VISCOUS_IMPACT_LOBE';parent(o)
+ o.scale=(.12+.035*sin(k),.036+.012*cos(k*2),.16+.04*cos(k))
+ o.data.materials.append(dense_lava if k%3 else crust)
 # Bright thin rivulets in fissures of the upper wall and near the riverbank.
 for i in range(16):
  z=R.uniform(-2.9,2.8);side=R.choice([-1,1])
