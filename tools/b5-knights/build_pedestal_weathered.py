@@ -252,7 +252,7 @@ sha={}
 for p in list(OUT.glob("*.png"))+[OUT/(MODEL+".glb"),OUT/(MODEL+".blend")]:
  sha[p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
 meshes=[o for o in objects if o.type=="MESH"]
-manifest={"approval":"NOT_APPROVED","stage":"B5","part":"architectural_pedestal_weathered_",
+manifest={"approval":"NOT_APPROVED","stage":"B5","part":"architectural_pedestal_weathered_"+VARIANT,"variant":VARIANT,
 "source_sha":os.getenv("GITHUB_SHA"),"run_id":os.getenv("GITHUB_RUN_ID"),
 "mesh_count":len(meshes),"all_source_preserved":True,"game_integrated":False,"photo_status":photo_status,
 "render_views":["front","side","angle"],"files_sha256":sha,
