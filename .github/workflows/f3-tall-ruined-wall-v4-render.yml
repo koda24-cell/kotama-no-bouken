@@ -1,0 +1,74 @@
+name: F3 One Floor Tall Ruined Wall V4 Blender Render
+on:
+  push:
+    branches: [feature/gpt-f3-ruined-wall-floor1-v1-20261117]
+    paths:
+      - 'tools/floor3/wall/build_tall_wall_v4.py'
+      - '.github/workflows/f3-tall-ruined-wall-v4-render.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [development]
+    paths:
+      - 'tools/floor3/wall/build_tall_wall_v4.py'
+      - '.github/workflows/f3-tall-ruined-wall-v4-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with:
+          ref: development
+          path: reference
+          persist-credentials: false
+      - name: Blender render of first standalone 4.6m tall wall
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python3 -m py_compile tools/floor3/wall/build_tall_wall_v4.py
+          for n in chipped_concrete_diffuse chipped_concrete_normal chipped_concrete_roughness concrete_moss_diffuse concrete_moss_normal concrete_moss_roughness; do
+            test -s "reference/assets/models/floor3/double_flight/textures/$n.jpg"
+          done
+          printf '{"asset":"floor3_1floor_wall","approval":"NOT_APPROVED","phase":"STARTED","run":"%s"}\n' "$GITHUB_RUN_ID" > out/progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/wall/build_tall_wall_v4.py 2>&1 | tee out/blender.log
+          grep -q F3_TALL_WALL_V4_COMPLETE out/blender.log
+      - name: Verify four real Blender views + packed CC0 PBR GLB
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct,os
+          out=pathlib.Path('out');stem='f3_ruined_wall_floor1_v4'
+          files=[out/(stem+'.glb'),out/(stem+'.blend')]+[out/(stem+'-'+view+'.png') for view in ('front','side','angle','game-eye')]
+          for p in files:
+              assert p.is_file() and p.stat().st_size>1024, p
+          raw=files[0].read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          n,chunk=struct.unpack_from('<II',raw,12); assert chunk==0x4e4f534a
+          doc=json.loads(raw[20:20+n])
+          assert len(doc.get('meshes',[]))>=5, 'missing wall/rebar meshes'
+          assert len(doc.get('images',[]))>=3, 'missing baked basecolor/normal/roughness photos'
+          assert all('bufferView' in i and not i.get('uri') for i in doc['images']), 'external texture URL'
+          assert any('normalTexture' in m and 'baseColorTexture' in m.get('pbrMetallicRoughness',{}) and 'metallicRoughnessTexture' in m.get('pbrMetallicRoughness',{}) for m in doc['materials']), 'missing PBR channels'
+          for p in files[2:]: assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          meta={'asset':'floor3_1floor_tall_wall','version':'v4','approval':'NOT_APPROVED','height_m':4.6,
+                'width_m':2.0,'reference_material':'Poly Haven CC0 reused from approved V10 stairs',
+                'source_commit':os.getenv('GITHUB_SHA'),'run_id':os.getenv('GITHUB_RUN_ID'),
+                'files':{p.name:{'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size} for p in files}}
+          (out/'manifest.json').write_text(json.dumps(meta,indent=2)+'\n')
+          print('F3_WALL_V1_TECHNICAL_QA_SUCCESS')
+          PY
+      - name: Preserve progress and Blender logs even on failure
+        if: always()
+        run: |
+          mkdir -p out
+          if ! test -f out/progress.json; then echo '{"approval":"NOT_APPROVED","phase":"FAILED_BEFORE_RENDER"}' > out/progress.json; fi
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: f3-tall-ruined-wall-v4-unapproved
+          path: out/
+          retention-days: 14
