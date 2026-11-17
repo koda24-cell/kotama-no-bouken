@@ -16,10 +16,12 @@ const ctx = vm.createContext({ console, Math, Date, Object, Array, Set, Map, JSO
 for (const f of ["data/field-maps.js", "data/field-gathering.js", "field/field-random-maze.js"]) vm.runInContext(fs.readFileSync(path.join(ROOT, f), "utf8"), ctx, { filename: f });
 // 最小限の field.js（fieldArea の差し込み部分は本物をそのまま読み込む）
 const fieldSrc = fs.readFileSync(path.join(ROOT, "field.js"), "utf8");
+const foeSrc = fs.readFileSync(path.join(ROOT, "field/field-movement-foe.js"), "utf8");
 const pick = (name) => { const m = fieldSrc.match(new RegExp(`function ${name}\\([^]*?\\n}\\n`)); if (!m) throw new Error("field.js に " + name + " が見つからない"); return m[0]; };
 vm.runInContext(`
   const FIELD_TILE = 32;
   const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);
+  const FIELD_SAFE = new Set(["_", "P", "E", "B", "<", ">"]);
   let fieldState = { area: 2, floor: 1, expedition: 0, flags: {}, explored: {}, discovered: {} };
   const fieldAreaCache = {};
   function fieldFloorCount(n) { return FIELD_AREAS[n]?.floors?.length || 1; }
@@ -29,15 +31,22 @@ vm.runInContext(`
   function fieldLetterDef(a, c) { return /[a-z]/.test(c) && a.def.objects ? a.def.objects[c] || null : null; }
   function fieldDoorOpen(o) { return !!fieldState.flags["puzzle:" + o.puzzle]; }
   function fieldCharSolid(a, c) { const o = fieldLetterDef(a, c); if (o && o.kind === "door") return !fieldDoorOpen(o); return fieldIsSolidChar(c); }
+  ${pick("fieldCanEnter")}
+  ${foeSrc.match(/^function fieldFoeWalkable.*$/m)[0]}
 `, ctx);
 const R = (code) => vm.runInContext(code, ctx);
+if (!fieldSrc.includes('const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);')) throw new Error("field.js の FIELD_SOLID が変わった（テストの写しを直すこと）");
 
 let fails = 0;
 const ok = (name, cond, extra = "") => { if (cond) console.log("  OK  " + name); else { fails++; console.log("  NG  " + name + (extra ? " … " + extra : "")); } };
+const tagChar = (tags, c) => tags.includes("watergate-gate") ? "g" : tags.includes("watergate-view") ? "v" : tags.includes("backdrop-slot") ? "B" : tags.includes("bridge") ? "=" : tags.includes("water-hazard") ? "~"
+  : tags.includes("setpiece-watergate") ? "W" : tags.includes("meadow") ? "M" : tags.includes("vista") ? "V" : tags.includes("backdrop-view") ? "b" : c === "#" ? "#" : ".";
 const show = (r, title) => {
-  console.log(`\n=== ${title}  (seed ${r.seed}, attempt ${r.attempt}) ===`);
+  const F = r.floor.features;
+  console.log(`\n=== ${title}  (seed ${r.seed}, attempt ${r.attempt}) ===  橋 ${F.bridges.map(b => JSON.stringify(b.cells)).join(" ")}／広間 ${F.vistas.length}／水門 ${F.watergates.map(g => `gate${JSON.stringify(g.gate)} view${JSON.stringify(g.view)} ${g.facing}`).join(" ") || "なし"}`);
+  console.log(`      背景スロット ${F.backdropSlots.map(b => `wall${JSON.stringify(b.wall)} ${b.dir} view${JSON.stringify(b.view)} far${JSON.stringify(b.far)}`).join(" ／ ")}／階段 ${JSON.stringify(F.stairs)}`);
   const foe = new Set(r.floor.foes.flatMap(f => f.path.map(p => p.join(","))));
-  r.floor.map.forEach((row, y) => console.log("  " + [...row].map((c, x) => foe.has(`${x},${y}`) && c === "." ? "F" : foe.has(`${x},${y}`) ? "F" : c).join("") + "   " + r.roles[y].map(s => ({ wall: "#", "shrine-candidate": "A", fixed: "x", template: "t", room: "r", corridor: "c", road: "=", deadend: "d", water: "~", shore: "s" })[s] || "?").join("")));
+  r.floor.map.forEach((row, y) => console.log("  " + [...row].map((c, x) => foe.has(`${x},${y}`) ? "F" : c).join("") + "   " + [...row].map((c, x) => tagChar(r.tags[y][x], c)).join("") + "   " + r.roles[y].map(s => ({ wall: "#", "shrine-candidate": "A", fixed: "x", template: "t", room: "r", corridor: "c", road: "=", deadend: "d", water: "*", shore: "s", "water-hazard": "~", bridge: "=" })[s] || "?").join("")));
 };
 
 if (!ASCII_ONLY) {
@@ -103,11 +112,84 @@ if (!ASCII_ONLY) {
      fieldState.flags = {}; const inCache = fieldRandomMazePosOk(a, ...c(m.ax, m.ay)); fieldState.flags["puzzle:a2-twin-stones"] = true; const inCacheOpen = fieldRandomMazePosOk(a, ...c(m.ax, m.ay));
      return { start: fieldRandomMazePosOk(a, ...c(a.start.tx, a.start.ty)), wall: fieldRandomMazePosOk(a, ...c(...wall)), inCache, inCacheOpen }; })()`);
   ok("保存位置の確認：開始位置は可・壁は不可・門の奥は閉じていれば不可／開いていれば可", pos.start && !pos.wall && !pos.inCache && pos.inCacheOpen, JSON.stringify(pos));
+
+  console.log(`\n[5] v4：水面・橋・道幅・水門・到達性（ゲームの通行判定 fieldCanEnter／fieldFoeWalkable で確認、${N} 探索回数 × 5F・6F）`);
+  for (const [fk, f] of [["2-1", 1], ["2-2", 2]]) {
+    const hist = {}; let tSum = 0, tMax = 0, nBr = 0, nVista = 0, nSide = 0, nPud = 0;
+    for (let e = 0; e < N; e++) {
+      const t0 = process.hrtime.bigint();
+      R(`fieldState.expedition = ${e}; fieldState.flags = {};`);
+      const res = R(`(() => {
+        const a = fieldArea(2, ${f}), F = a.b2Features, errs = [], W = a.w, H = a.h, idx = (x, y) => y * W + x;
+        const bfs = (block) => { const d = new Int32Array(W * H).fill(-1), q = [idx(a.start.tx, a.start.ty)]; d[q[0]] = 0;
+          for (let qi = 0; qi < q.length; qi++) { const c = q[qi], x = c % W, y = (c - x) / W; for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) { const nx = x + dx, ny = y + dy, ni = idx(nx, ny); if (nx < 0 || ny < 0 || nx >= W || ny >= H || d[ni] >= 0 || !fieldCanEnter(a, nx, ny) || (block && block.has(ni))) continue; d[ni] = d[c] + 1; q.push(ni); } }
+          return d; };
+        const closed = bfs(null); fieldState.flags["puzzle:a2-twin-stones"] = true; const open = bfs(null); delete fieldState.flags["puzzle:a2-twin-stones"];
+        const adj = (d, x, y) => [[1,0],[-1,0],[0,1],[0,-1]].some(([dx, dy]) => { const nx = x + dx, ny = y + dy; return nx >= 0 && ny >= 0 && nx < W && ny < H && d[idx(nx, ny)] >= 0; });
+        // 水面：ゲームの通行判定でプレイヤーも FOE も入れない・外周（とその隣）に無い・役割が water-hazard
+        let water = 0;
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (a.grid[y][x] === "~") { water++;
+          if (fieldCanEnter(a, x, y) || fieldFoeWalkable(a, x, y)) errs.push("water-enterable");
+          if (x < 2 || y < 2 || x > W - 3 || y > H - 3) errs.push("water-touches-border");
+          if (a.tileRoles[y][x] !== "water-hazard" || !a.tileTags[y][x].includes("water-hazard")) errs.push("water-role");
+        } else if (a.grid[y][x] === "*") { if (!fieldCanEnter(a, x, y)) errs.push("puddle-blocked"); if (!a.tileTags[y][x].includes("puddle")) errs.push("puddle-tag"); }
+        if (!water) errs.push("no-water");
+        // 橋：1つ以上・通れる・橋を通らずにゴールへ行けない
+        const goal = a.objects.find(o => o.kind === (${f} === 1 ? "stairs" : "gate") && (${f} !== 1 || o.dir === "down"));
+        const bset = new Set(); for (const b of F.bridges) for (const [x, y] of b.cells) { bset.add(idx(x, y)); if (!fieldCanEnter(a, x, y) || a.tileRoles[y][x] !== "bridge") errs.push("bridge-cell"); }
+        if (!F.bridges.length) errs.push("no-bridge");
+        if (closed[idx(goal.tx, goal.ty)] < 0) errs.push("goal-unreachable");
+        if (bfs(bset)[idx(goal.tx, goal.ty)] >= 0) errs.push("bridge-bypassable");
+        // 道幅：通れる3×3は広間・群生地・固定エリア（周り1マス）だけ
+        const ok = new Uint8Array(W * H);
+        for (const v of F.vistas) for (let y = v.y0; y <= v.y1; y++) for (let x = v.x0; x <= v.x1; x++) ok[idx(x, y)] = 1;
+        for (const r of a.random.meta.fixed) for (let y = r.y0 - 1; y <= r.y1 + 1; y++) for (let x = r.x0 - 1; x <= r.x1 + 1; x++) if (x >= 0 && y >= 0 && x < W && y < H) ok[idx(x, y)] = 1;
+        fieldState.flags["puzzle:a2-twin-stones"] = true;
+        for (let y = 0; y + 2 < H; y++) for (let x = 0; x + 2 < W; x++) { let all = true, inside = true; for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) { if (fieldCharSolid(a, fieldTileAt(a, x + i, y + j))) all = false; if (!ok[idx(x + i, y + j)]) inside = false; } if (all && !inside) errs.push("wide-open"); }
+        delete fieldState.flags["puzzle:a2-twin-stones"];
+        if (F.vistas.length < 1 || F.vistas.length > 2) errs.push("vista-count");
+        if (!F.meadow || F.meadow.cells.length < 4 || F.meadow.cells.some(([x, y]) => open[idx(x, y)] < 0)) errs.push("meadow");
+        // 水門：水際（見る床）以外に立てない・水門の周り8マスに立てない
+        if (F.watergates.length !== (${f} === 2 ? 1 : 0)) errs.push("watergate-count");
+        for (const g of F.watergates) {
+          if (open[idx(...g.view)] < 0) errs.push("watergate-view-unreachable");
+          for (const [bx, by] of g.basin) for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) { const nx = bx + dx, ny = by + dy; if (open[idx(nx, ny)] >= 0 && !(nx === g.view[0] && ny === g.view[1])) errs.push("watergate-shore"); }
+          for (let y = g.gate[1] - 1; y <= g.gate[1] + 1; y++) for (let x = g.gate[0] - 1; x <= g.gate[0] + 1; x++) if (open[idx(x, y)] >= 0) errs.push("watergate-side");
+        }
+        // 物すべてに到達できる（歩いて乗る物は乗れる、調べる物は隣に立てる。門の奥の宝箱だけは門を開けて）
+        for (const o of a.objects) {
+          const d = o.kind === "cache" ? open : closed;
+          if (o.walk ? d[idx(o.tx, o.ty)] < 0 : !adj(d, o.tx, o.ty)) errs.push("unreachable-" + o.kind);
+        }
+        // FOE：巡回点はすべて歩いて行けて、橋の上には来ない
+        for (const fd of a.floor.foes) for (const [x, y] of fd.path) { if (closed[idx(x, y)] < 0 || !fieldFoeWalkable(a, x, y)) errs.push("foe-point"); if (bset.has(idx(x, y))) errs.push("foe-on-bridge"); }
+        // 背景スロット・階段の向き
+        if (F.backdropSlots.length < 1 || F.backdropSlots.length > 2) errs.push("backdrop-count");
+        for (const b of F.backdropSlots) { const [wx, wy] = b.wall; if (!(wx === 0 || wy === 0 || wx === W - 1 || wy === H - 1) || open[idx(...b.view)] < 0) errs.push("backdrop"); }
+        if (!F.stairs.up || (${f} === 1 && !F.stairs.down)) errs.push("stairs");
+        return { errs, br: F.bridges.length, vista: F.vistas.length, side: F.sideWater.length, pud: F.puddles.length };
+      })()`);
+      const ms = Number(process.hrtime.bigint() - t0) / 1e6; tSum += ms; tMax = Math.max(tMax, ms);
+      for (const x of res.errs) hist[x] = (hist[x] || 0) + 1;
+      nBr += res.br; nVista += res.vista; nSide += res.side; nPud += res.pud;
+    }
+    ok(`${fk}: ${N}件すべて v4 条件を満たす`, !Object.keys(hist).length, JSON.stringify(hist));
+    console.log(`        平均 橋 ${(nBr / N).toFixed(2)}・広間 ${(nVista / N).toFixed(2)}・脇の水路 ${(nSide / N).toFixed(2)}マス・水たまり ${(nPud / N).toFixed(2)}マス／fieldArea 込み 平均 ${(tSum / N).toFixed(2)}ms・最大 ${tMax.toFixed(2)}ms`);
+  }
+  {
+    const a = R(`(() => { fieldState.expedition = 3; const a = fieldArea(2, 2); return { roles: [...new Set(a.tileRoles.flat())].sort(), tags: [...new Set(a.tileTags.flat(2))].sort(), feat: Object.keys(a.b2Features).sort(), same: a.b2Features === a.random.meta.features, stairs: a.random.meta.stairs }; })()`);
+    ok("6F の tileRoles に water-hazard・bridge、tileTags に新しい役割が入る", a.roles.includes("water-hazard") && a.roles.includes("bridge") && ["water-hazard", "bridge", "vista", "meadow", "backdrop-slot", "setpiece-watergate", "watergate-gate", "watergate-view"].every(t => a.tags.includes(t)), JSON.stringify(a));
+    ok("a.b2Features と a.random.meta.features が同じ・階段の向きを渡す", a.same && a.stairs.up && a.stairs.up.flight && a.stairs.up.face, JSON.stringify(a.stairs));
+    const s4 = R(`fieldRandomMazeStairInfo(fieldArea(2, 0))`);
+    const has4Up = R(`FIELD_AREAS[2].floors[0].map.some(r => r.includes("<"))`);
+    ok("4F（固定）でも階段の向きを計算できる（fieldRandomMazeStairInfo。4F は上り階段なし）", (!has4Up || (s4.up && s4.up.flight)) && s4.down && s4.down.flight, JSON.stringify(s4));
+  }
 }
 
 if (ASCII) {
   for (const e of [0, 1, 2]) for (const fk of ["2-1", "2-2"]) show(R(`fieldRandomMazeGenerate("${fk}", ${e})`), `${fk === "2-1" ? "5F" : "6F"} expedition ${e}`);
-  console.log("\n  凡例（右）: #=wall A=shrine-candidate x=fixed t=template r=room c=corridor ==road d=deadend ~=water s=shore ／（左）F=FOE巡回点");
+  console.log("\n  凡例（右＝tileRoles）: #=wall A=shrine-candidate x=fixed t=template r=room c=corridor d=deadend *=water(水たまり) s=shore ~=water-hazard ==bridge");
+  console.log("  凡例（左＝マップ）: ~=危険な水面（通行不可） *=水たまり（通行可） F=FOE巡回点 ／（中＝tileTags）: ~=水面 ==橋 M=群生地 V=広間 W=水門区画 g=水門 v=水門を見る床 B=背景スロットの壁 b=背景を見る床");
 }
 console.log(fails ? `\n失敗 ${fails}件` : "\nすべて成功");
 process.exit(fails ? 1 : 0);

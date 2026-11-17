@@ -140,3 +140,58 @@
   - `shore`：`*` に接する床
 - 優先順：fixed > template > (壁) > water > deadend > shore > room > road > corridor
 - その他：`a.random = { seed, expedition, attempt, tag, meta: { rooms, cacheRoom, npcRoom, fixed } }`、`a.buildKey`。装飾の乱数は `a.random.seed` かマス座標から作れば、同じ迷宮で同じ見た目になる
+
+### v4（2026-11-17、迷宮班 M）：細い道・危険な水面・橋・水門・群生地・背景スロット・階段の向き
+設計書：`docs/3d/B2_V4_FEEDBACK_DESIGN.md`（F2・F4・F6・F8・F10b・F10d）。上の §4〜§8 の部屋・洞窟・浅瀬の規則は、5F・6F ではこの節に置き換わる。
+
+#### 地形（マップ文字）
+| 文字 | 意味 | 通行 | 備考 |
+|---|---|---|---|
+| `~` | **危険な水面**（water-hazard） | プレイヤー・FOE とも不可 | field.js の `FIELD_SOLID` に元から含まれる（通行判定・2D の `tile-water`・ミニマップの水色・視線は通す、は既存のまま）。**外周とその隣（x<2・y<2・x>W-3・y>H-3）には置かない** |
+| `*` | 通れる**水たまり**（puddle） | 可 | 通路に1〜3マス。危険な水面から2マス以上離す |
+| `.` ＋役割 bridge | **橋** | 可 | 地図文字は床のまま。どれが橋かは `tileRoles`／features で判定 |
+新しい文字は追加していない（セーブ・踏破マップ・FOE・2D は既存の扱いで動く）。旧セーブの位置が水面の上なら `fieldRandomMazePosOk` が開始位置へ戻す。
+
+#### 生成（5F・6F 共通 `frmGenNarrow`）
+1. 固定エリアを写す（ports は床）
+2. **水路と橋**：スタート側とゴール側を分ける線（5F は縦、6F は縦か横）を格子のつなぎ目に引いて全部ふさぐ。線の上に幅3・長さ5〜7の水路（`~`）を作り、真ん中に長さ3の橋。橋を通らないとゴールへ行けない
+3. 仕掛け部屋（5F）／行商人・見張り番の部屋（6F。下の段は左右に抜ける、入口は中央の下）
+4. **見せ場の広間（vista）**：5F 1つ・6F 1〜2つ（格子にそろえた 5〜9×3〜5）。1つ目は必ず一辺に沿って水面（奥行き1〜2・長さ3以上）＝水辺の広間
+5. **水門の展示区画**（6F 1つ）：行き止まりの「見る床」→ 手前の水 → 水門（水の中）。幅3×奥行き2の池、池の左右・水門の裏は壁
+6. 固定エリアへ ports 以外から直接つながる格子は岩。6F は格子の12%を岩にして洞窟らしく
+7. Kruskal の迷路（道幅1マス）＋ループ（5F 5〜8本・6F 3〜6本）→ 行き止まりの処理（§10 と同じ）→ 届かない床は埋める
+8. 宝箱・採取・木箱d・看板? は行き止まり（足りなければ広間の壁ぎわ）、導きの灯S（5F）は広間の壁ぎわ、合図石 e・f（5F）は §10 と同じ
+9. 水たまり `*`（5F 1〜2個・6F 2〜3個）、通路の脇の水路（壁の列を2〜3マス `~`、片側がまっすぐな通路、1〜2本）
+10. FOE（§10 と同じ。**橋の上と水門を見る床には入れない**）
+
+#### 3D の班へ渡すデータ
+- `a.tileRoles[y][x]`（従来どおり1マス1つ）：従来の値はそのまま（`*`＝`water`、広間の床＝`room` など）＋新しい2つ：`water-hazard`（`~`）、`bridge`（橋）。水門を見る床は `corridor`（行き止まりだが滝・祭壇を置かせない）
+- `a.tileTags[y][x]`（**新規**、文字列の配列。重ねる役割）：
+  `water-hazard`（`~` 全部）／`bridge`／`puddle`（`*`）／`vista`（広間の長方形、水面を含む）／`meadow`（群生地の床）／
+  `backdrop-slot`（背景モニュメントの前の外周壁3マス＋見る床との間の壁）／`backdrop-view`（背景を正面に見通す床の列）／
+  `setpiece-watergate`（水門区画：池・見る床・囲む壁）／`watergate-gate`（水門を置くマス）／`watergate-view`（見る床）／`waterside`（`~` に接する通れる床）
+- `a.b2Features`（＝ `a.random.meta.features`、`a.floor.features` も同じ）。座標はすべて `[tx, ty]`、向きは `up/down/left/right`（マップの y 下向き＝down）
+  ```
+  { version: 4,
+    waterHazard: [[x,y]...], puddles: [[x,y]...], sideWater: [[x,y]...],
+    bridges: [{ cells: [[x,y]×3], ends: [[x,y],[x,y]],   // ends＝橋のたもとの床（ここに氷岸）
+                dir: "x"|"y",                           // 渡る向き（x＝左右に渡る。水路は y 方向に流れる）
+                channel: {x0,y0,x1,y1}, water: [[x,y]...] }],
+    vistas: [{ x0,y0,x1,y1, cells: [[x,y]...床], pool: [[x,y]...水面] }],   // 1〜2。吹き抜けはここに
+    meadow: { cells, x0,y0,x1,y1, vista: 0, nearWater: true },             // 各階1つ。1つ目の広間の水辺から2マス以内の床
+    backdropSlots: [{ wall: [x,y],        // 外周の壁（この向こう＝マップ外にモニュメント）
+                      dir: "up",          // 見る床→壁の向き（モニュメントは dir 側に置き、正面を逆向きに）
+                      view: [x,y], far: [x,y], sight: [[x,y]...],   // 壁に接する床／いちばん遠い床（正面全体が見える）／見通しの列
+                      span: [[x,y]×3], depth: 1|2, walls: [[x,y]...], vista: bool }],   // 1〜2か所。depth 2 は内側にもう1列の壁（6F の右・下）
+    watergates: [{ gate: [x,y], view: [x,y], facing: "up", basin: [[x,y]×6], walls: [[x,y]...] }],   // facing＝見る床→水門の向き
+    stairs: { up: { tx, ty, flight, face, open }, down: {...} } }
+  ```
+- **階段の向き（F2）**：`flight`＝段が伸びる向き（上り階段は上へ、下り階段は下へ降りていく方向。壁側＝到着した人の背中側／奥）、`face`＝階段から通路へ向く向き（到着時に向くべき方向）。固定の 4F でも `fieldRandomMazeStairInfo(fieldArea(2,0))` で同じ形を得られる。※ 現在 `fieldPlaceAtStart`（field-navigation.js）は到着時に常に `dir = "up"`。向きを合わせるなら `face` を使う（迷宮班は未変更）
+
+#### 検証（`fieldRandomMazeValidate` と `node tools/b2-random-maze/test.cjs [N]`）
+- 水面は通れない（ゲームの `fieldCanEnter`／`fieldFoeWalkable` でも確認）・外周とその隣に無い
+- 橋が1つ以上・橋は水路の上・**橋のマスをふさぐとゴールへ行けない**
+- 通れる 3×3 は広間・群生地・固定エリア（周り1マス）の中だけ
+- 広間1〜2・群生地1（4マス以上、到達可能）・水門（6F 1）：水門の周り8マスと、池に接するマス（見る床を除く）に立てない
+- 背景スロット1〜2（外周の壁、見る床は到達可能）・階段の向きあり・物すべて到達可能・FOE は橋に来ない
+- 1000シード × 5F・6F 全件成功、平均生成 約3〜4ms（最大 約25〜40ms、検証込み）
