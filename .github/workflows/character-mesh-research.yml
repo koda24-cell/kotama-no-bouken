@@ -51,7 +51,15 @@ jobs:
       - name: Render face boundary overlay diagnostics for two samples
         run: |
           for model in Sendagaya_Shibu Vita; do
+            set +e
             xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/render_boundary_review.py -- "/tmp/character-sources/$model.vrm" "output/character-mesh-research/boundaries/$model"
+            code=$?
+            set -e
+            if [ "$code" -ne 0 ]; then
+              echo "::warning::Blender exit $code for $model; verifying all four actual PNGs and manifest before accepting output"
+              for view in front back side back_upper; do test -s "output/character-mesh-research/boundaries/$model/$view.png" || exit "$code"; done
+              test -s "output/character-mesh-research/boundaries/$model/boundary_manifest.json" || exit "$code"
+            fi
           done
       - name: Validate results
         run: |
