@@ -34,7 +34,7 @@ jobs:
         run: node tools/floor6/meadow-wind-field.test.mjs
 
   shader-browser-review:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     timeout-minutes: 16
