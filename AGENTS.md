@@ -12,6 +12,9 @@ This file is an entry point for ChatGPT, Claude and other AI development session
 ## 3D visual-quality-first performance policy (all stages)
 For all new and revised 3D models, prioritize distance- and screen-size-based LOD, only loading and rendering visible/needed data, material/geometry batching, and draw-call reduction **without sacrificing near-view quality or changing gameplay/collisions**. See `docs/3d/GLOBAL_3D_LOD_PERFORMANCE_POLICY.md`. This is a design requirement, **not** a claim that every feature is currently implemented. Test with actual PNG/GLB and game frame statistics before promotion.
 
+### Shared GitHub Actions as the default optimization validation path
+When building or revising a 3D asset, run the available reusable `Shared 3D GLB Performance Audit` on its actual GLB (or record why it cannot be run). For heavy vegetation, prefer the non-destructive material-group foliage batching review; for opaque rigid static props, use the separate rigid LOD review; for tree far distance, use the multi-view impostor-bake review. Always compare original vs optimized multi-view PNG/GLB and manifest. Full setup and verified runs: `docs/3d/SHARED_3D_ACTIONS_OPTIMIZATION_PLAYBOOK.md`. Do not insert any unapproved candidate into gameplay. Separate measured performance from source-file/structural statistics, and do not claim that Actions automatically optimize every asset without selecting a supported category.
+
 ## Stage 4 3D asset policy
 Volcanic cave, magma, abandoned mine, mining carts, pickaxes, ore, rocky obstacles, ruined equipment. Improve silhouettes and geometry by ADDING detail to existing models, not replacing/removing original geometry. Render actual models before and after modifications, preferably front/side/angle views. Use screenshots to guide subsequent improvements.
 
