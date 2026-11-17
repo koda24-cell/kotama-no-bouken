@@ -118,7 +118,6 @@ def build(variant):
   ob.scale=(rng.uniform(.5,1.3),.3,.38)
  tag='b2_bucket_paddle_blender_v%02d'%variant
  blend=os.path.join(OUT,tag+'.blend');glb=os.path.join(OUT,tag+'.glb')
- bpy.ops.wm.save_as_mainfile(filepath=blend)
  bpy.ops.export_scene.gltf(filepath=glb,export_format='GLB',export_yup=True)
  # QA render captured internally only; no illustrative image generation.
  scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=16
@@ -136,6 +135,8 @@ def build(variant):
   cam.location=pos;cam.rotation_euler=(-cam.location).to_track_quat('-Z','Y').to_euler()
   path=os.path.join(OUT,tag+'_'+name+'.png');scene.render.filepath=path
   bpy.ops.render.render(write_still=True);files.append(path)
+ # The editable Blender checkpoint includes the QA camera and lights.
+ bpy.ops.wm.save_as_mainfile(filepath=blend)
  manifest={'asset':'waterwheel_individual_bucket_paddle','variant':variant,'status':'NOT_APPROVED',
   'blender':bpy.app.version_string,'existing_scene_modified':False,'mesh_count':len([o for o in bpy.data.objects if o.type=='MESH']),'files':{}}
  for path in files:
@@ -143,6 +144,15 @@ def build(variant):
   if len(data)<100:raise RuntimeError('missing/invalid '+path)
   manifest['files'][os.path.basename(path)]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
  with open(os.path.join(OUT,tag+'_manifest.json'),'w') as f:json.dump(manifest,f,indent=2)
+ progress_path=os.path.join(OUT,'progress.json')
+ if os.path.exists(progress_path):
+  with open(progress_path) as pf:progress=json.load(pf)
+ else:progress={'status':'NOT_APPROVED','completed_variants':[]}
+ progress['completed_variants'].append({'variant':variant,'tag':tag,'file_count':len(files),'manifest':tag+'_manifest.json'})
+ progress['next_variant']=variant+1 if variant<2 else None
+ with open(progress_path,'w') as pf:json.dump(progress,pf,indent=2)
  print('VERIFIED_BLENDER_CHECKPOINT',tag,flush=True)
 
-for ver in [1,2]:build(ver)
+for ver in [1,2]:
+ print('BLENDER_START_VARIANT',ver,flush=True)
+ build(ver)
