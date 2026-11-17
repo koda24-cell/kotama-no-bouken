@@ -10,6 +10,7 @@ on:
       - '.github/workflows/character-boundary-fast.yml'
       - 'tools/character-mesh-research/render_boundary_components.py'
       - 'tools/character-mesh-research/audit_posterior_rim.py'
+      - 'tools/character-mesh-research/build_posterior_v16.py'
 jobs:
   boundary:
     runs-on: ubuntu-latest
@@ -46,6 +47,12 @@ jobs:
             for view in front back side back_upper; do test -s "output/character-mesh-research/component-overlays/$model/$view.png"; done
             test -s "output/character-mesh-research/component-overlays/$model/component_overlay_manifest.json"
           done
+      - name: Build and render V16 review candidate
+        run: |
+          xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/build_posterior_v16.py -- /tmp/character-sources/Sendagaya_Shibu.vrm /tmp/character-sources/Vita.vrm output/character-mesh-research/Sendagaya_Shibu.boundary-loops.json output/character-mesh-research/v16-review
+          test -s output/character-mesh-research/v16-review/assassin_head_posterior_v16_review.glb
+          test -s output/character-mesh-research/v16-review/geometry_measurements.json
+          for view in front back left right back_upper three_quarter; do test -s "output/character-mesh-research/v16-review/$view.png"; done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
