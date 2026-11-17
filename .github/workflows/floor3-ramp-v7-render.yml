@@ -1,0 +1,79 @@
+name: Floor3 Ramp V7 Single Asset Render
+on:
+  push:
+    branches: [feature/gpt-f3-ruined-ramp-v7-20261116]
+    paths:
+      - 'tools/floor3/ruined_connector/build_ramp_v7.py'
+      - '.github/workflows/floor3-ramp-v7-render.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [development]
+    paths:
+      - 'tools/floor3/ruined_connector/build_ramp_v7.py'
+      - '.github/workflows/floor3-ramp-v7-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - name: Blender V7 render with independent stair checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python3 -m py_compile tools/floor3/ruined_connector/build_ramp_v7.py
+          printf '{"stage":"floor3","asset":"ramp","version":"v7","approval":"NOT_APPROVED","phase":"STARTED","run_id":"%s"}\n' "$GITHUB_RUN_ID" > out/ramp-v7-progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_ramp_v7.py 2>&1 | tee blender-v7.log
+          grep -q 'FLOOR3_RAMP_V7_COMPLETE' blender-v7.log
+          printf '{"stage":"floor3","asset":"ramp","version":"v7","approval":"NOT_APPROVED","phase":"BLENDER_COMPLETED","run_id":"%s"}\n' "$GITHUB_RUN_ID" > out/ramp-v7-progress.json
+      - name: Verify V7 ramp GLB and three views; hash checkpoint
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct
+          root=pathlib.Path('out')
+          stem='floor3_ruined_connector_ramp_v7'
+          glb=root/(stem+'.glb')
+          blend=root/(stem+'.blend')
+          files=[glb,blend]+[root/(stem+'-'+v+'.png') for v in ('front','side','angle')]
+          for p in files:
+              assert p.is_file() and p.stat().st_size>1024, f'missing/empty {p}'
+          raw=glb.read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          size,chunk=struct.unpack_from('<II',raw,12)
+          assert chunk==0x4e4f534a
+          document=json.loads(raw[20:20+size].decode())
+          assert any('V7 eroded ramp supporting concrete spine' in (n.get('name') or '') for n in document['nodes']), 'missing structural support'
+          assert any('normalTexture' in m for m in document['materials']), 'missing normal map'
+          for p in files:
+              if p.suffix=='.png':
+                  assert p.read_bytes().startswith(bytes.fromhex('89504e470d0a1a0a'))
+          manifest={'approval':'NOT_APPROVED','stage':'floor3','asset':'ramp','version':'v7',
+                    'source_commit':'${{ github.sha }}','run_id':'${{ github.run_id }}',
+                    'status':'RENDERED_NOT_VISUALLY_APPROVED',
+                    'files':{p.name:{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in files}}
+          (root/'ramp-v7-manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n')
+          print('Validated V7 ramp',len(files),'files')
+          PY
+      - name: Preserve log even after failure
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p out
+          if test -f blender-v7.log; then cp blender-v7.log out/ramp-v7-blender.log; fi
+          if ! test -f out/ramp-v7-progress.json; then
+            printf '{"stage":"floor3","asset":"ramp","version":"v7","approval":"NOT_APPROVED","phase":"FAILED_BEFORE_RENDER"}\n' > out/ramp-v7-progress.json
+          fi
+      - name: Upload V7 review artifact
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: floor3-ramp-v7-review
+          path: |
+            out/floor3_ruined_connector_ramp_v7.*
+            out/floor3_ruined_connector_ramp_v7-*.png
+            out/ramp-v7-*
+          retention-days: 14
