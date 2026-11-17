@@ -27,6 +27,21 @@ try{
    const stats=await page.evaluate(()=>({calls:window.__kotamaShaderPreview?.renderer.info.render.calls,triangles:window.__kotamaShaderPreview?.renderer.info.render.triangles}));
    report.push({mode,kind,file,...stats});
   }
+  if(mode==='desktop'){
+   const real=await context.newPage(),issues=[];
+   real.on('pageerror',e=>issues.push('pageerror:'+e.message));
+   real.on('console',m=>{if(m.type()==='error')issues.push('console:'+m.text())});
+   await real.goto('http://127.0.0.1:'+PORT+'/tools/3d-water/b2-real-asset-preview.html',{waitUntil:'load'});
+   await real.waitForFunction(()=>document.querySelector('#status')?.textContent?.includes('GLBロード済み'),null,{timeout:45000});
+   await sleep(1200);
+   await real.screenshot({path:'render-output/shader-research/b2-existing-glb.png'});
+   await real.locator('#enhance').check();
+   await sleep(1200);
+   await real.screenshot({path:'render-output/shader-research/b2-enhanced-water-v2.png'});
+   report.push({mode:'b2-real-glb',kind:'existing/enhanced',status:await real.locator('#status').innerText()});
+   if(issues.length)throw Error('B2 real GLB preview: '+issues.join('\n'));
+   await real.close();
+  }
   if(errors.length)throw Error(mode+' browser error: '+errors.join('\n'));
   await context.close();
  }
