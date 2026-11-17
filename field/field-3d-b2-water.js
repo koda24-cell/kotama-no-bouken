@@ -486,7 +486,7 @@ function makeProcedural() {
       g.scale(width, 0.19 + j * 0.035, 0.25 + (variant % 2) * 0.09);
       g.rotateZ(0.15 * (j - 1));
       g.translate((j - 1) * 0.52, -0.11 - j * 0.045, 0.02 + (j % 2) * 0.10);
-      parts.push({ geo: g, mat: j === 1 ? 'Pale mineral stone' : 'Deep cavern rock' });
+      parts.push({ geo: g, mat: j === 1 ? 'ceiling' : 'Deep cavern rock' });   // [仕上げ] F9：中央の石は天井と同じ素材（白っぽい石が天井の際で白い欠片に見えた）
     }
     // [仕上げ] F9：庇の下の氷のかけらは、根元を岩に埋めて天井の青から先端の氷色へ（白い欠片が宙に浮いて見えた）
     const iceLen = 0.38 + variant * 0.11, ice = new THREE.ConeGeometry(0.13 + variant * 0.025, iceLen, 5, 3);
