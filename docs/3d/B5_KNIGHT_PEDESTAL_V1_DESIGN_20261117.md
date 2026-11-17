@@ -27,3 +27,12 @@ Status: NOT_APPROVED — review-only standalone candidate; V14 geometry is prese
 7. full assembled statue three-view and map fit test
 
 No approval, merge, or game inclusion before user review.
+
+## Blender反復・2026-11-17 実行結果
+- V1 Run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43985469980 ／Artifact 14284239387: GLB、Blend、800px正面/側面/斜め。石棺型の段付き構造・小ベベル・四葉彫刻を確認。薄い胴と白く広い上面のため不採用。
+- V2 Run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43985917998 ／Artifact 14285437011: 台座の胴を厚くし、カメラと照明を変更。彫刻は明瞭、依然展示模型らしい単色石肌で不採用。
+- V3 Run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43986393010 ／Artifact 14285277868: CC0 ambientCG Rock063の実写真Color/Roughnessを取り込み、グレーに調色してUV適用。低い水平カメラで装飾面と笠石の比率を比較。見た目は向上したが、装飾が均一、石材の破断は局所的で古びた建築物の完成品質ではない。
+- 3 runともActions成功、GLBヘッダー整合、`front.png`, `side.png`, `angle.png` (800×800)とBlend/GLBのファイルSHA-256がmanifestに一致したことを独立確認。
+- V3 manifestの`photo_status=AMBIENTCG_ROCK063_CC0_PHOTOGRAPHIC`が実際の適用状態。現行`known_limitations`文字列に「no photo PBR」が残ったのは文言更新漏れであり、この文字列は誤り。V3 sourceを次版で直すこと。
+- 三つとも`NOT_APPROVED`。**旧V14本体は編集していない**。ゲーム内のパーツ置換・衝突・性能検証は未着手。正式保存とdevelopmentマージを行わない。
+- 次回の一体制作で優先: 表面テクスチャの方向性、自然な複数箇所の削れと彫刻の欠損、石の接合の厚みを詰める。その後、独立したヘルメット/胸甲/腕関節/剣盾/薄い石彫布を順に作る。
