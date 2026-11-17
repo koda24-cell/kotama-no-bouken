@@ -32,3 +32,23 @@
 
 ## 次の作業
 Pinterest画像目視・既存マグマ壁の確認 → 岸/河川のGLB生成 → Blender多方向レンダー → 造形修正 → ユーザー承認 → 正式保存/Claude引継ぎ。
+
+## V1 実装と検証条件（2026-11-17）
+- Blender生成: `tools/floor4/magma_river/build_magma_river.py`。手続き型の蛇行流路、左右の侵食された岸、手前の不規則な溶岩溜まり、奥のマグマ落下、周辺の玄武岩・冷却殻、発光亀裂、飛沫を造形。
+- PBR: 既存の `assets/3d/dungeons/b4_dragonfire/textures/` にある `volcanic_basalt_*`、`ashen_stone_*`、`molten_lava_*` を使用。画像の著作者・再配布ライセンスは既存リポジトリの記録を再確認する。Pinterestの画像はモデルやテクスチャに転用しない。
+- ワークフロー: `.github/workflows/b4-magma-river-iterative-render.yml`。GLB、Blend、正面・側面・斜め・俯瞰PNG、manifestをArtifactsに保存。実行run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43987785319
+- 本候補の静止画VFX: 溶岩マテリアル発光、落下地点の飛沫、赤熱亀裂。**動く熱ゆらぎ・煙・粒子シミュレーションは未実装**。ゲーム用GLBではBlender照明やアニメーションが自動で再現されるとは限らない。
+- 3Dタイルの占有範囲は約6.3×6.7（Blender単位）。実ゲームの1マス寸法との換算はClaudeとの統合前に検証する。
+- V1の構造は高密度の試作であり、性能最適化・隣接タイルの継ぎ目・流れのアニメーションは今後の検証対象。
+
+### 合格基準（未達項目があれば再制作）
+1. 俯瞰で溶岩の中心線が明確に蛇行し、均等幅の直線帯に見えない。
+2. 正面と斜めでマグマが岩の隙間を流れていることが読める。岸の浮き・交差・大きな矩形輪郭がない。
+3. 溜まりが流路につながり、唐突な円形の浮遊板にならない。
+4. 上部からの落下流と落下先の位置が自然につながる。流れが板状・リボン状に見えない。
+5. 玄武岩の色/質感が全体で統一され、マグマが白飛びせず、周囲への照り返しが見える。
+6. GLBのテクスチャ埋め込み、正面/側面/斜め/俯瞰PNG、Blend、manifestの実ファイルを確認。
+7. ユーザー承認までは正式アセットフォルダへ移動しない。
+
+### 参考収集状況
+Pinterest/Tailwindから7候補を追加取得。URL・サムネイル・確認状況は `koda24-cell/pinterest-reference-library/handoff/b4-magma-river-transition-20261117.md` に記録。画像本体はネットワーク制限により未目視。
