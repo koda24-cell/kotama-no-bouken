@@ -1,9 +1,10 @@
 """Explicit closed-ruins revision of the immutable opt-in trial descriptor."""
 from pathlib import Path
-import json,hashlib,math,random,copy
+import json,hashlib,math,random,copy,functools
 ROOT=Path(__file__).resolve().parents[2];OLD='assets/3d/dungeons/b1_sacred_forest_candidates/';NEW='assets/3d/dungeons/b1_closed_ruins_v3/';LEG='assets/3d/dungeons/b1_ancient_forest/'
 l=json.loads((ROOT/OLD/'scene/game-layout-trial.json').read_text());rng=random.Random(73030);grid=l['beforeFingerprint']['saveCriticalData']['map'];w,h=28,18
-sha=lambda p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest()
+@functools.lru_cache(None)
+def sha(p):return hashlib.sha256((ROOT/p).read_bytes()).hexdigest()
 l['presentationRevision']='closed_ruins_v3';l['approvalStatus']='pending_user_art_review';l['revisionSources']=[]
 def source(id,file):
     l['revisionSources'].append(dict(id=id,file=file,sha256=sha(file)));return id,file
@@ -61,6 +62,7 @@ add('root_lightwell_cedar','sacred_cedar_tree',[32,0,52],.35,[.65,.8,.65])
 # Actual corridor thresholds, not disconnected exhibition arches.
 for n,(x,z,rot) in enumerate([(22,60,math.pi/2),(82,16,math.pi/2)]):
     add('closed_threshold_'+str(n),'mod_sacred_arch_4m',[x,0,z],rot,[1,1,1],'traversable_arch_threshold')
+add('old_rooted_tunnel','legacy_ruin_arch',[14,0,60],math.pi/2,[1,1,1],'traversable_old_tunnel')
 # Root curtains cling to the wall-top/soffit in blocked pockets.
 for n,p in enumerate(l['boundaryWallPlacements'][::7]):
     x,y,z=p['position'];add('vines_'+str(n),'hanging_forest_vines',[x,3.8,z],p.get('rotationY',0),[.8,.65,.8])
