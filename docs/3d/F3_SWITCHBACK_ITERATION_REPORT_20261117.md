@@ -40,3 +40,14 @@
 4. 過去版を全PR更新で再レンダしていたため、V1〜V6のPR発火トリガーを除去。必要時のみ対応版コード/Workflowのpush、または手動dispatch。V7は別Workflow。
 5. 次の品質基準: 参考画像のコンクリート厚・支柱接合、フライトの下部支持、雨垂れ、苔分布、錆びた手すりの不規則さ、三方向、ゲーム内寸法確認。
 6. **美術合格は未達**。Actions成功はユーザーの完成承認ではない。描画結果を必ず見てユーザーへ提示。
+
+
+## 2026-11-17 追加検証 V7〜V11
+- V7: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43989565616 — GLB/Blend/3PNG・manifest検証成功。Artifact 14286129898。太い柱・踊り場破損・鋼材錆の追加、人工的な苔斑点が残った。
+- V8: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43990198620 — 成功、Artifact 14286648849。Poly Haven Concrete Mossの2K写真PBRを実取得してGLBで使用。張り付けたような白い苔ポリゴンを撤去。
+- V9: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43990813145 — 成功、Artifact 14288166556。3m実寸を基準とするUV再投影、階段踏み板の実欠損を追加。柱の円形穴が視覚上不自然。
+- V10: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43991519799 — 成功、Artifact 14288257256。柱の不自然な穴を小さな欠けへ修正、鉄部のまだら錆を画像マップで追加。踏み板が構造的に薄く見える。
+- V11: `tools/floor3/switchback/build_v11.py` — 踏み板の下に0.35m厚のコンクリート階段躯体を各フライトへ追加。初回run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43992118038 はDockerコンテナ取得時にレート制限で失敗。RetryとホストBlenderフォールバックを実装し、再実行run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/43992543011 は実行結果待ち。**合格・成功を未確認の段階では断言しない**。
+- 2K公式PBRの実取得SHA-256: diffuse `764e43763490672a2067d3bd644ab0602a9d477533e598bcc0e3b3b01d8b937a`、normal OpenGL `4b680afc05e0e02aa96e8b3ad213d28e4805e980895f2c082c979a5c7ba8b3c2`、roughness `59b515c94d1759ecae0aa0f47bf5dfc6584d9bcc19b3de635cb0ad0218915626`。
+- Blender Dockerレジストリ呼び出しを減らすため旧版V1〜V10のPR自動起動を整理済み。旧ソース・旧Artifactsは保持。
+- CC0技術資料は共有台帳PR #453でdevelopmentへマージ、ユーザー画像の権利/参考ポイント引き継ぎはPinterest参照用PR #12でmainへマージ済み。**ユーザーが現在の大型折り返し階段に完成合格を出していないため、PR #449はDraftのまま**。
