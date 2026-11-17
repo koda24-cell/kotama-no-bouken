@@ -37,6 +37,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+      actions: read
     timeout-minutes: 16
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +48,13 @@ jobs:
         run: |
           npm install --no-save --no-package-lock playwright@1.58.2
           npx playwright install --with-deps chromium
+      - name: Retrieve approved-look F6 V7 source artifact for isolated review
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p render-input
+          gh run download 43602069517 --repo ${{ github.repository }} -n f6-meadow-floor-v1 -D render-input
+          test -s render-input/f6_meadow_floor_v1.glb
       - name: Capture actual WebGL renders and console errors
         run: node tools/3d-water/visual-smoke.mjs
       - name: Upload unapproved preview PNG and metrics
