@@ -109,7 +109,7 @@ export function createB2WaterTiles(ctx) {
   const owned = [];          // 階層を離れるときに破棄する物（テクスチャ・形）
   tuneFloor(mats, proc, owned);
   const std = (o) => new THREE.MeshStandardMaterial(o);
-  const ripple = rippleNormal(); ripple.repeat.set(0.18, 0.18); owned.push(ripple);
+  const ripple = rippleNormal(); ripple.repeat.set(0.42, 0.42); owned.push(ripple);
   const glow = { value: 0.34 };
   // 危険な水面：深く暗めの青緑（頂点色で水深と縁の泡）。#203 の水（明るいシアン・発光）と同じ色域で、浅瀬より暗い
   const water = std({ color: 0xffffff, vertexColors: true, roughness: 0.07, metalness: 0.08, normalMap: ripple, normalScale: new THREE.Vector2(0.32, 0.32),
@@ -151,7 +151,8 @@ export function createB2WaterTiles(ctx) {
       let geo = o.geometry.clone().applyMatrix4(o.matrixWorld);
       for (const k of Object.keys(geo.attributes)) if (k !== 'position') geo.deleteAttribute(k);
       geo.computeVertexNormals();
-      if (key === 'wt:water') {   // 頂点色：海岸線からの距離で 水深の色＋縁の泡（タイルの外へはみ出す水たまりは浅い色）
+      if (key === 'wt:water') {   // 水面は真上向きの法線にそろえる（間引いた細い三角形の陰の筋を出さない。さざ波は法線マップで出す）
+        const nm = geo.attributes.normal; for (let i = 0; i < nm.count; i++) nm.setXYZ(i, 0, 1, 0);   // 頂点色：海岸線からの距離で 水深の色＋縁の泡（タイルの外へはみ出す水たまりは浅い色）
         const p = geo.attributes.position, col = new Float32Array(p.count * 3), pool = /isolated/i.test(o.name), c = new THREE.Color();
         for (let i = 0; i < p.count; i++) {
           const x = p.getX(i), y = -p.getZ(i), d = pool ? 0.06 : coast(x, y, mask);
