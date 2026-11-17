@@ -55,6 +55,8 @@ jobs:
           done
       - name: Summarize measured boundary loops across six models
         run: python3 tools/character-mesh-research/summarize_boundary_loops.py output/character-mesh-research
+      - name: Rank posterior seam candidates for manual review
+        run: python3 tools/character-mesh-research/rank_posterior_seams.py output/character-mesh-research
       - name: Render face boundary overlay diagnostics for two samples
         run: |
           for model in Sendagaya_Shibu Vita; do
@@ -83,6 +85,8 @@ jobs:
           done
           test -s output/character-mesh-research/boundary_component_comparison.csv
           test -s output/character-mesh-research/boundary_component_review.md
+          test -s output/character-mesh-research/posterior_seam_candidates.csv
+          test -s output/character-mesh-research/posterior_seam_review.md
           for model in Sendagaya_Shibu Vita; do
             for view in front back side back_upper; do test -s "output/character-mesh-research/boundaries/$model/$view.png"; done
           done
