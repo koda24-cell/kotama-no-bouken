@@ -65,7 +65,16 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
     const centerHits = await p.evaluate((placed) => { const a = fieldArea(), out = []; for (const q of placed || []) { const tx = Math.round(q.x), ty = Math.round(q.z), c = fieldTileAt(a, tx, ty); if (!c || c === '#' || fieldCharSolid(a, c)) continue; const d = Math.hypot(q.x - tx, q.z - ty) * 4; if (d < 1.0) out.push({ ...q, d: +d.toFixed(2) }); } return out; }, inf.placed);
     report.floors.push({ floor: f + 1, centerHits, placedCount: (inf.placed || []).length, buildKey: inf.buildKey, random: inf.random, layout: L, extras: inf.extras, falls: inf.falls, monuments: inf.monuments, crystalZones: inf.crystalZones, drawGroups: inf.drawGroups });
     // 花（4F も：光るキノコ・荊の位置の差し替え）
-    for (const [i, s] of (L.flowerClusters || []).slice(0, f === 0 ? 3 : 4).entries()) { const [cell, kind, d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shotS(`${pre}_flower_${i + 1}_${kind}`); }
+    for (const [i, s] of (L.flowerClusters || []).slice(0, 4).entries()) { const [cell, kind, d] = s.split(':'), [tx, ty] = cell.split(',').map(Number); await look(tx, ty, d); await shotS(`${pre}_flower_${i + 1}_${kind}`); }
+    // [B2V4-F] 花の群生地：2マス手前から正面に見る（far）、1マス手前（near）
+    const md = L.flora && L.flora.meadow;
+    if (md) {
+      const [mx, my] = md.center.split(',').map(Number), D = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+      const walk = (x, y) => p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [x, y]);
+      let dir = null; for (const d of ['up', 'down', 'left', 'right']) if (await walk(mx - D[d][0] * 2, my - D[d][1] * 2)) { dir = d; break; }
+      if (dir) { await look(mx - D[dir][0], my - D[dir][1], dir); await shotS(`${pre}_flower_meadow_far`); }
+      for (const d of dir ? [dir, OPP[dir]] : ['up']) { await look(mx, my, d); await shotS(`${pre}_flower_meadow_near_${d}`); }
+    }
     if (f === 0) continue;
     for (const [i, z] of (inf.crystalZones || []).slice(0, 2).entries()) {
       const dir = z.bx > 0 ? 'right' : z.bx < 0 ? 'left' : z.bz > 0 ? 'down' : 'up';

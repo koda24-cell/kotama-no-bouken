@@ -17,6 +17,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=20261110-c7';   // 結晶（ユーザー確認済みの質感）
+import { createFlora, floraMaterial, floraMaterialClass, floraTint } from './b2-flora.js?v=20261117-f1';   // [B2V4-F] 花の配置と見た目
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
 export const B2_GLB = B2_BASE + 'models/floor2-water-source-quality-v3.glb';
@@ -789,17 +790,14 @@ export async function createTheme(api) {
       'x:stoneDark': () => std({ color: 0x5d95c4, map: rockM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(1.2, 1.2), roughness: 0.78, emissive: 0x08263f, emissiveIntensity: 1.0, envMapIntensity: 0.6, vertexColors: true }),
       'x:stoneMid': () => std({ color: 0x64a0d2, map: paleM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 0.62, emissive: 0x0a3a5e, emissiveIntensity: 1.0, envMapIntensity: 0.55, vertexColors: true }),
       'x:snow': () => std({ color: 0xd6f4ff, roughness: 0.85, emissive: 0x1a5a7a, emissiveIntensity: 0.45, envMapIntensity: 0.5, vertexColors: true }),
-      'x:flower': () => std({ color: 0xffffff, vertexColors: true, roughness: 0.48, metalness: 0.0, emissive: 0x0e4c6a, emissiveIntensity: 0.55, envMapIntensity: 1.0, side: THREE.DoubleSide }),
-      'x:flowerIce': () => std({ color: 0xffffff, vertexColors: true, roughness: 0.08, metalness: 0.0, emissive: 0x1898d0, emissiveIntensity: 0.6, envMapIntensity: 1.7, side: THREE.DoubleSide }),
-      'x:flowerGlow': () => std({ color: 0xffffff, vertexColors: true, roughness: 0.3, emissive: 0x3cc4ff, emissiveIntensity: 1.1, envMapIntensity: 1.0 }),
     };
-    mats[key] = make[key]();
+    mats[key] = floraMaterial(key) || make[key]();   // [B2V4-F] 花の素材は b2-flora.js
     return key;
   }
   // GLB の素材名から、#203 の素材の仲間を選ぶ
   function extraClass(name, m) {
     const nm = (m.name || '').toLowerCase(), trans = (m.transmission || 0) > 0 || m.transparent;
-    if (FLOWER.has(name)) return /core_glow/.test(nm) ? 'x:flowerGlow' : (trans || /ice|frost/.test(nm)) && !/mud|crack|grass/.test(nm) ? 'x:flowerIce' : 'x:flower';
+    if (FLOWER.has(name)) return floraMaterialClass(m);   // [B2V4-F]
     if (/snow/.test(nm)) return 'x:snow';
     if (/cobalt|compressed/.test(nm)) return 'crystalDeep';
     if (trans || /ice|glacier/.test(nm)) return 'crystalIce';
@@ -820,16 +818,7 @@ export async function createTheme(api) {
         const src = geo.attributes.color, n = geo.attributes.position.count;
         for (const k of Object.keys(geo.attributes)) if (k !== 'position' && k !== 'normal') geo.deleteAttribute(k);
         if (!geo.attributes.normal) geo.computeVertexNormals();
-        if (flower) {   // 頂点色 × 素材の色。緑（葉・茎）は霜の青緑へ寄せる
-          const col = new Float32Array(n * 3), base = m.color || new THREE.Color(1, 1, 1);
-          for (let i = 0; i < n; i++) {
-            _c.setRGB(src ? src.getX(i) : 1, src ? src.getY(i) : 1, src ? src.getZ(i) : 1).multiply(base);
-            const lum = _c.r * 0.299 + _c.g * 0.587 + _c.b * 0.114, green = Math.max(0, Math.min(1, (_c.g - Math.max(_c.r, _c.b)) * 6));
-            const k = 0.25 + 0.45 * green;
-            col[i * 3] = _c.r * (1 - k) + lum * 0.78 * k; col[i * 3 + 1] = _c.g * (1 - k) + lum * 1.0 * k; col[i * 3 + 2] = _c.b * (1 - k) + lum * 1.18 * k;
-          }
-          geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-        }
+        if (flower) geo.setAttribute('color', new THREE.BufferAttribute(floraTint(src, m, n, key), 3));   // [B2V4-F] 頂点色 × 素材の色（b2-flora.js）
         if (!byKey.has(key)) byKey.set(key, []);
         byKey.get(key).push(geo);
       });
@@ -853,6 +842,7 @@ export async function createTheme(api) {
   const { CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g } = api;
   let made = [], anim = { ripples: [], mists: [], fishes: [], caustics: [] }, root = null, last = { falls: [], bridge: null };
   let extraGeos = [], extraMats = [];   // 組み立てごとに作る物（作り直すときに破棄する）
+  let floraTick = null;                 // [B2V4-F]
   let ownedDisposed = 0;                // 診断用：作り直しで破棄した形・素材の累計（themeInfo().ownedDisposed）
 
   // 映り込み用の環境マップ（濡れた石・水面・結晶のつや）。小さなグラデーション画像から作るので軽い
@@ -935,7 +925,7 @@ export async function createTheme(api) {
     for (const m of anim.mists) { m.points.geometry.dispose(); }
     for (const c of anim.caustics) { c.mesh.geometry.dispose(); c.mesh.material.dispose(); c.texture.dispose(); }
     for (const geo of extraGeos) geo.dispose(); extraGeos = []; fishGeo = null;
-    for (const m of extraMats) m.dispose(); extraMats = []; frostCache.clear();
+    for (const m of extraMats) m.dispose(); extraMats = []; frostCache.clear(); floraTick = null;   // [B2V4-F] 花の InstancedMesh・霜の斑も extraMats で破棄
     if (g.scene && envTex && g.scene.environment === envTex) g.scene.environment = null;
     if (lantern) { lantern.parent?.remove(lantern); lantern = null; }
     if (glitter) { glitter.parent?.remove(glitter); glitter = null; }
@@ -1106,55 +1096,10 @@ export async function createTheme(api) {
     const EX = await extrasJob;
     const layout = roles ? planRandomExtras() : null;
     const flowerSpots = [];   // 花の候補（#203 の光るキノコ・荊の位置と、ランダム階の水辺・部屋の隅・結晶の脇）。最後に数を絞って置く
-    const flowerLog = [];
 
-    // 花：Claude の花（霜鈴草・氷水芭蕉・氷晶花。1株 1.7〜2.4万三角形）を、#203 の光るキノコ・荊の位置に置き換える（4F〜6F）。
-    // 4F は候補の位置・向きを変えず、物だけ差し替える（数は下の上限で絞る）。
-    // ランダム階（5F・6F）は候補を足す：水辺（shore の壁ぎわ）＝氷水芭蕉、部屋の隅＝霜鈴草、結晶の溜まり場の脇＝氷晶花。
-    // 重いので 1階14株まで・株どうし3マス以上（チェビシェフ）離す。区画ごとに素材3つ（花・花の氷・光る芯）へまとめて描画回数を抑える
-    function placeFlowers() {
-      const vec = (d) => DIR_VEC[d];
-      if (roles) {
-        const wallsOf = (tx, ty) => DIR_ORDER.filter((d) => wallCell(tx + vec(d)[0], ty + vec(d)[1]));
-        const free = (tx, ty) => { const k = `${tx},${ty}`, c = ch(tx, ty); return !wallCell(tx, ty) && !objAt.has(k) && c !== '<' && c !== '>' && c !== '*' && !falls.has(k) && !openCells.has(k) && !propCells.has(k) && role(tx, ty) !== 'fixed'; };
-        // 結晶の溜まり場の脇：溜まり場のマスの、奥の壁に沿った左右の床際（中央から1.55m）
-        for (const zq of zones) {
-          const len = Math.hypot(zq.bx, zq.bz), bx = zq.bx / len, bz = zq.bz / len;
-          for (const side of [-1, 1]) {
-            const px = X(zq.tx) - bz * side * 1.6 - bx * 0.9, pz = Z(zq.ty) + bx * side * 1.6 - bz * 0.9;
-            flowerSpots.push({ kind: 'bloom', x: px, y: groundY(px, pz), z: pz, ry: H(zq.tx, zq.ty, 610 + side) * 6.28, r: H(zq.tx, zq.ty, 612 + side), tx: zq.tx, ty: zq.ty, d: zq.deadEnd ? DIR_ORDER[(DIR_ORDER.indexOf(zq.openD) + 2) % 4] : DIR_ORDER.find((d) => vec(d)[0] === Math.sign(zq.bx) && vec(d)[1] === 0) || DIR_ORDER.find((d) => vec(d)[1] === Math.sign(zq.bz)), pri: -0.3 });
-          }
-        }
-        for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) {
-          if (!free(tx, ty)) continue;
-          const r0 = role(tx, ty), ws = wallsOf(tx, ty); if (!ws.length) continue;
-          const isCorner = ws.length === 2 && (DIR_ORDER.indexOf(ws[1]) - DIR_ORDER.indexOf(ws[0])) % 2 !== 0;
-          let kind = null;
-          if (r0 === 'shore') kind = 'mizubasho';
-          else if ((r0 === 'room' || r0 === 'template') && isCorner) kind = 'snowdrop';
-          if (!kind || H(tx, ty, 620) > 0.5) continue;
-          const d = ws[Math.floor(H(tx, ty, 621) * ws.length)], [dx, dz] = vec(d), al = (H(tx, ty, 622) - 0.5) * 1.6;
-          const px = X(tx) + dx * 1.5 + (dz ? al : 0), pz = Z(ty) + dz * 1.5 + (dx ? al : 0);
-          flowerSpots.push({ kind, x: px, y: groundY(px, pz), z: pz, ry: H(tx, ty, 623) * 6.28, r: H(tx, ty, 624), tx, ty, d, pri: kind === 'mizubasho' ? -0.15 : 0 });
-        }
-      }
-      // 優先順は位置から決まる乱数（同じ迷宮なら同じ）。株どうしを離して、フロア全体に散らす
-      const order = flowerSpots.map((sp, i) => ({ sp, k: (roles ? H(sp.tx * 5 + i % 5, sp.ty, 630) : hash(sp.tx * 5 + i % 5, sp.ty, 630)) + (sp.pri || 0) })).sort((p, q) => p.k - q.k);
-      const chosen = [];
-      for (const { sp } of order) {
-        if (chosen.length >= 14) break;
-        if (!EX[sp.kind]) continue;
-        if (chosen.some((q) => Math.max(Math.abs(q.tx - sp.tx), Math.abs(q.ty - sp.ty)) < 3)) continue;
-        const pc = EX[sp.kind];
-        // 原寸（0.2〜0.5m）では一人称の目の高さ1.6mから小さすぎるので拡大する（形は変えない）
-        const s = sp.kind === 'mizubasho' ? (0.95 + sp.r * 0.3) / Math.max(pc.size.y, 0.01)
-          : sp.kind === 'bloom' ? (0.72 + sp.r * 0.2) / Math.max(pc.size.y, 0.01) : (1.0 + sp.r * 0.3) / Math.max(pc.size.y, 0.01);
-        const push = sp.kind === 'mizubasho' && sp.d ? 0.3 : 0, px = sp.x + (sp.d ? vec(sp.d)[0] * push : 0), pz = sp.z + (sp.d ? vec(sp.d)[1] * push : 0);   // 大きな葉が通り道へ出ないよう壁へ寄せる
-        B.add('flowers', pc, M4(px, sp.y - 0.02, pz, sp.ry, s), sp.tx, sp.ty);
-        chosen.push(sp); flowerLog.push(`${sp.tx},${sp.ty}:${sp.kind}:${sp.d}`);
-        if (sp.kind === 'bloom') light(sp.x, 0.5, sp.z, 0x6fd8ff, 0.6, 3);
-      }
-    }
+    // [B2V4-F] 花（霜鈴草・氷水芭蕉・氷晶花）の群れと群生地は b2-flora.js（flowerSpots は #203 の光るキノコ・荊の位置の候補）
+    const flora = createFlora({ a, ch, wallCell, objAt, roles, role, H, X, Z, CELL, DIR_VEC, DIR_ORDER, groundY, falls, openCells, propCells, monumentCells, keepClear, zones, sky, onBridge, spots: flowerSpots, EX, mats, root, light });
+    const placeFlowers = () => { flora.place(); extraMats.push(...flora.disposables); floraTick = flora.tick; };   // [B2V4-F]
 
     // [RANDOM-MAZE] ランダム階だけ：役割から見せ場の素材を置く（規則は B2_RANDOM_MAZE_SPEC.md §8.1。番号はそこと対応）
     // #203 の見せ場（滝・吹き抜け・結晶の溜まり場・モニュメント・石柱・門柱）は上の #203 の処理がそのまま選ぶ。ここでは足すだけ
@@ -1614,7 +1559,7 @@ export async function createTheme(api) {
     }
     placeFlowers();
     made = B.build(root, mats);
-    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), placed: placedLog.slice(), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })), buildKey: a.buildKey || a.key, random: !!roles, layout: { ...(layout || {}), flowers: flowerLog.length, flowerSpots: flowerSpots.length, flowerClusters: flowerLog.slice() }, extras: Object.fromEntries(Object.entries(EX).map(([k, v]) => [k, !!v])), ownedDisposed };
+    last = { falls: [...falls].map(([k, d]) => ({ cell: k, wall: d })), bridge, atrium: sky ? { tx: sky.cx, ty: sky.cy } : null, monuments: monuments.map((m) => ({ name: m.name, x: m.x, y: m.y, w: m.w, h: m.h })), placed: placedLog.slice(), crystalZones: zones.map((z) => ({ tx: z.tx, ty: z.ty, pal: z.pal, deadEnd: z.deadEnd, bx: z.bx, bz: z.bz })), buildKey: a.buildKey || a.key, random: !!roles, layout: { ...(layout || {}), ...flora.layout() }, extras: Object.fromEntries(Object.entries(EX).map(([k, v]) => [k, !!v])), ownedDisposed };
   }
 
   // 大空洞の縦方向の景観。天井を抜いた3×3マスに高い石造壁と冷光を加える。
@@ -2088,6 +2033,7 @@ export async function createTheme(api) {
   let t = 0;
   function tick(dt, now, camPos) {
     t += dt;
+    if (floraTick) floraTick(camPos);   // [B2V4-F] 遠い花の区画を描かない
     if (lantern && camPos) lantern.position.set(camPos.x, camPos.y + 0.35, camPos.z);
     if (motes && camPos) {
       const P = motes.geometry.attributes.position, S = motes.userData.seed, B = 24, wrap = (v, c) => c + ((((v - c) % B) + B * 1.5) % B) - B / 2;
