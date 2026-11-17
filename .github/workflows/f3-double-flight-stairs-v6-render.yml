@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 65
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v5
       - name: Blender real render of new reference-matched switchback stair
         shell: bash
         run: |
@@ -68,7 +68,7 @@ jobs:
           mkdir -p out
           if test -f blender.log; then cp blender.log out/blender.log; fi
           if ! test -f out/progress.json; then printf '{"phase":"FAILED_BEFORE_RENDER","approval":"NOT_APPROVED"}\n' > out/progress.json; fi
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: f3-double-flight-stair-v6-review
