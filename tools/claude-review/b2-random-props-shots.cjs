@@ -101,8 +101,49 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
     }
     report.rebuild.memory = series;
   }
+  // [B2V4-W] 危険な水面（water-hazard）の試し撮り。迷宮班 M の役割が入るまでの確認用に、撮影の中だけで
+  // 内側の壁の塊（外周から2マス以上）を '~'＋役割 water-hazard に置き換える（もともと通れないマスなので通行は変わらない）。
+  // 水面タイル（ビットマスク）・岸・飛び石の廃止・床の模様を、5F・6F で撮る。ゲーム本体のマップ生成は変えない。
+  report.hazard = [];
+  for (const f of [1, 2]) {
+    await p.evaluate((f) => { fieldState.floor = f; fieldState.positioned = false; fieldState.built = ''; fieldShow(); }, f);
+    for (let i = 0; i < 4; i++) await skip();
+    await waitBuilt('hazard base ' + f);
+    const plan = await p.evaluate(() => {
+      const a = fieldArea(), W = a.w, H = a.h, at = (x, y) => fieldTileAt(a, x, y), open = (x, y) => { const c = at(x, y); return c !== '#' && c !== '~' && !fieldCharSolid(a, c); };
+      const used = new Set(), blocks = [];
+      for (const [w, h] of [[3, 3], [4, 2], [2, 4], [3, 2], [2, 3], [2, 2]]) {
+        for (let y = 2; y + h <= H - 2; y++) for (let x = 2; x + w <= W - 2; x++) {
+          let ok = true; for (let j = 0; j < h && ok; j++) for (let i = 0; i < w; i++) if (at(x + i, y + j) !== '#' || used.has(`${x + i},${y + j}`) || a.objects.some((o) => o.tx === x + i && o.ty === y + j)) { ok = false; break; }
+          if (!ok) continue;
+          let ring = 0; const stand = [];
+          for (let i = 0; i < w; i++) for (const [yy, d] of [[y - 1, 'down'], [y + h, 'up']]) if (open(x + i, yy)) { ring++; stand.push([x + i, yy, d]); }
+          for (let j = 0; j < h; j++) for (const [xx, d] of [[x - 1, 'right'], [x + w, 'left']]) if (open(xx, y + j)) { ring++; stand.push([xx, y + j, d]); }
+          if (ring < 3) continue;
+          blocks.push({ x, y, w, h, ring, stand }); for (let j = -1; j <= h; j++) for (let i = -1; i <= w; i++) used.add(`${x + i},${y + j}`);
+          if (blocks.length >= 2) break;
+        }
+        if (blocks.length >= 2) break;
+      }
+      for (const bl of blocks) for (let j = 0; j < bl.h; j++) for (let i = 0; i < bl.w; i++) { a.grid[bl.y + j][bl.x + i] = '~'; if (a.tileRoles) a.tileRoles[bl.y + j][bl.x + i] = 'water-hazard'; }
+      a.buildKey = (a.buildKey || a.key) + '|hz';
+      return blocks;
+    });
+    await waitBuilt('hazard ' + f); await p.waitForTimeout(1500);
+    const wti = await p.evaluate(() => window.KotamaB2WaterTiles && window.KotamaB2WaterTiles.info());
+    report.hazard.push({ floor: f + 1, blocks: plan.map((b) => ({ x: b.x, y: b.y, w: b.w, h: b.h })), tiles: wti, stats: await p.evaluate(() => window.KotamaField3D.stats()) });
+    for (const [i, bl] of plan.entries()) {
+      // 塊の長い辺の中央の前に立って見る＋斜めから
+      const s = bl.stand[Math.floor(bl.stand.length / 2)];
+      await p.evaluate(([tx, ty, d]) => { const c = fieldTileCenter(tx, ty); fieldState.x = c.x; fieldState.y = c.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, s);
+      await p.waitForTimeout(900); await shotS(`b2f${f + 1}_hazard_open_water_${i + 1}`);
+      const s2 = bl.stand[0];
+      await p.evaluate(([tx, ty, d]) => { const c = fieldTileCenter(tx, ty); fieldState.x = c.x; fieldState.y = c.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, s2);
+      await p.waitForTimeout(900); await shotS(`b2f${f + 1}_hazard_open_water_${i + 1}b`);
+    }
+  }
   report.errors = errs; report.missing = [...new Set(missing)];
   fs.writeFileSync(path.join(out, 'props-report.json'), JSON.stringify(report, null, 2));
-  console.log(JSON.stringify({ errors: errs, missing: report.missing, rebuild: report.rebuild, stats, floors: report.floors.map((f) => ({ floor: f.floor, centerHits: f.centerHits, placedCount: f.placedCount, layout: f.layout, extras: f.extras, monuments: f.monuments })) }, null, 1));
+  console.log(JSON.stringify({ errors: errs, missing: report.missing, rebuild: report.rebuild, hazard: report.hazard, stats, floors: report.floors.map((f) => ({ floor: f.floor, centerHits: f.centerHits, placedCount: f.placedCount, layout: f.layout, extras: f.extras, monuments: f.monuments })) }, null, 1));
   await b.close(); srv.close();
 })().catch((e) => { console.error(e); process.exit(1); });

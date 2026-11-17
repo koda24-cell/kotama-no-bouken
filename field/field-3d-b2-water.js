@@ -17,6 +17,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=20261110-c7';   // 結晶（ユーザー確認済みの質感）
+import { createB2WaterTiles, B2V4W_REMOVE_STEPPING_STONES } from './b2-water-tiles.js?v=20261117-w1';   // [B2V4-W] 危険な水面（GPT 水面タイル）・床の模様
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
 export const B2_GLB = B2_BASE + 'models/floor2-water-source-quality-v3.glb';
@@ -851,6 +852,7 @@ export async function createTheme(api) {
     return job;
   }
   const { CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g } = api;
+  const wt = createB2WaterTiles({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, M4, proc, mats, CEIL_H, ceilY });   // [B2V4-W]
   let made = [], anim = { ripples: [], mists: [], fishes: [], caustics: [] }, root = null, last = { falls: [], bridge: null };
   let extraGeos = [], extraMats = [];   // 組み立てごとに作る物（作り直すときに破棄する）
   let ownedDisposed = 0;                // 診断用：作り直しで破棄した形・素材の累計（themeInfo().ownedDisposed）
@@ -944,6 +946,7 @@ export async function createTheme(api) {
     anim = { ripples: [], mists: [], fishes: [], caustics: [] }; root = null;
     // 階層を離れるとき（field-3d-view.js が final を付けて呼ぶ）は、素材・テクスチャ・部品の形もすべて破棄する
     if (opts && opts.final) {
+      wt.dispose();   // [B2V4-W]
       const tex = new Set();
       for (const m of Object.values(mats)) { for (const k of ['map', 'normalMap', 'emissiveMap', 'bumpMap']) if (m[k]) tex.add(m[k]); m.dispose(); }
       for (const t of tex) t.dispose();
@@ -1335,10 +1338,12 @@ export async function createTheme(api) {
       return out;
     }
 
+    await wt.begin(a, info, roles);   // [B2V4-W]
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const c = ch(tx, ty), x = X(tx), z = Z(ty), key = `${tx},${ty}`;
       const fall = falls.get(key);
+      if (wt.isHazard(tx, ty)) { wt.addCell(B, tx, ty, { ch, wallCell, ceiling: !openCells.has(key), skipWall: (k) => monumentCells.has(k) }); continue; }   // [B2V4-W] 危険な水面
       // 床：濡れた石板を2×2枚。すき間から暗い水底がのぞく
       if (c === '*' || c === '>') B.add('floor', c === '*' ? proc.shallowBed : proc.bed, M4(x, c === '*' ? -0.34 : -0.3, z), tx, ty);
       if (c === '>') { /* 階段の素材が床を兼ねる */ }
@@ -1572,7 +1577,7 @@ export async function createTheme(api) {
       }
       B.add('spires', pick(proc.columns, hash(tx, ty, 592)), M4(px, 0, pz, hash(tx, ty, 593) * 6.28, [sc, 1, sc]), tx, ty);
     }
-    if (bridge) {   // 壊れた橋（6.6m）を3マスに合わせて少し伸ばす。上面が水面のすぐ上に来る高さ
+    if (bridge && !B2V4W_REMOVE_STEPPING_STONES) {   // [B2V4-W] 飛び石（四角い石板）は廃止 / 壊れた橋（6.6m）を3マスに合わせて少し伸ばす。上面が水面のすぐ上に来る高さ
       const sx = (CELL * 3 - 0.6) / kit.bridge.size.x;
       B.add('landmarks', kit.bridge, M4(X(bridge.tx), -0.42, Z(bridge.ty), bridge.ry, [sx, 1, 1.15]), bridge.tx, bridge.ty);
     }
@@ -2088,6 +2093,7 @@ export async function createTheme(api) {
   let t = 0;
   function tick(dt, now, camPos) {
     t += dt;
+    wt.tick(dt);   // [B2V4-W]
     if (lantern && camPos) lantern.position.set(camPos.x, camPos.y + 0.35, camPos.z);
     if (motes && camPos) {
       const P = motes.geometry.attributes.position, S = motes.userData.seed, B = 24, wrap = (v, c) => c + ((((v - c) % B) + B * 1.5) % B) - B / 2;
