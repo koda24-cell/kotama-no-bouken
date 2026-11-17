@@ -142,6 +142,9 @@ bpy.ops.object.camera_add();camera=bpy.context.object
 camera.data.type="ORTHO";camera.data.ortho_scale=.64
 scene=bpy.context.scene;scene.camera=camera
 scene.render.engine="CYCLES";scene.cycles.samples=40
+scene.cycles.use_denoising=False
+for layer in scene.view_layers:
+    if hasattr(layer,"cycles"):layer.cycles.use_denoising=False
 scene.render.resolution_x=900;scene.render.resolution_y=900
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
