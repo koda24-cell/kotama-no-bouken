@@ -57,6 +57,8 @@ export function createSetpieces(S) {
     mats['sp:flag'] = frostify(std({ color: 0x8cc0e2, map: paleM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(0.8, 0.8), roughness: 0.6, emissive: 0x0a3550, emissiveIntensity: 1.0, envMapIntensity: 0.6, vertexColors: true }), 'flag', 0.75);
     // 階段の奥・背景の空洞の奥にかすむ光（霧の色に近い。白く光らせない）
     mats['sp:tunnelGlow'] = new THREE.MeshBasicMaterial({ color: 0x2f9cc4, fog: true, side: THREE.DoubleSide });
+    // 下り階段の奥：暗めの青（段の霜の白と差をつけ、奥へ沈んでいく深さに見せる）
+    mats['sp:tunnelGlowDeep'] = new THREE.MeshBasicMaterial({ color: 0x175d80, fog: true, side: THREE.DoubleSide });
   }
   // 柱（GLB）の石の素材を、洞窟の青と霜の素材に差し替える（1回だけ）。氷・光る結晶はそのまま
   const styled = new WeakSet();
@@ -298,7 +300,7 @@ export function createSetpieces(S) {
           g.computeVertexNormals();
           bag.add('ceiling', at(g, 0, archTop + rise / 2 - 0.05, tz0 + L / 2));
         }
-        { const g = new THREE.PlaneGeometry(archR * 2 + 0.6, 3.4); noUv(g); g.rotateY(Math.PI); bag.add('sp:tunnelGlow', at(g, 0, yAt(tz1) + 1.4, tz1 - 0.05)); }
+        { const g = new THREE.PlaneGeometry(archR * 2 + 0.6, 3.4); noUv(g); g.rotateY(Math.PI); bag.add(up ? 'sp:tunnelGlow' : 'sp:tunnelGlowDeep', at(g, 0, yAt(tz1) + 1.4, tz1 - 0.05)); }
         // 段に沿って壁に付いた小さな氷の結晶（奥へ行くほど低い位置に並び、「奥へ降りる／上る」向きが一目でわかる）。光らせすぎない
         for (const side of [-1, 1]) for (let z = tz0 + 0.5, k = 0; z < tz1 - 0.6; z += 1.05, k++) {
           const yy = yAt(z) + 1.0 + (rnd(sd + k * 3 + side) - 0.5) * 0.2, wx = side * (archR + 0.02);
@@ -390,7 +392,9 @@ export function createSetpieces(S) {
         for (let k = 0; k < 3; k++) {
           const t = (k - 1) * 1.15 + (rnd(sd + cx * 3 + cy + k) - 0.5) * 0.3, [px, pz] = [ex + lat[0] * t - vec(d)[0] * 0.12, ez + lat[1] * t - vec(d)[1] * 0.12];
           B.add('backdrop', proc.frostLedges[(k + cx) % proc.frostLedges.length], M4(px, SILL + 0.08, pz, FACE_YAW[d] + (rnd(sd + k) - 0.5) * 0.3, 0.55), cx, cy);
-          B.add('backdrop', proc.iceStalactites[(k + cy) % proc.iceStalactites.length], M4(px + lat[0] * 0.4, OTOP + 0.55 - Math.abs(t) * 0.25, pz + lat[1] * 0.4, rnd(sd + k * 5) * 6.28, 1.3 + rnd(sd + k * 7) * 0.6), cx, cy);
+          // 氷柱の根元（平たい笠）は窓のアーチの縁より上の壁に埋める（空中に浮いた円盤に見せない）
+          const tt = t + 0.4, archEdge = OTOP + 0.9 * Math.sqrt(Math.max(0, 1 - (tt / OW) ** 2));
+          B.add('backdrop', proc.iceStalactites[(k + cy) % proc.iceStalactites.length], M4(px + lat[0] * 0.4 + vec(d)[0] * 0.18, archEdge + 0.3, pz + lat[1] * 0.4 + vec(d)[1] * 0.18, rnd(sd + k * 5) * 6.28, 1.3 + rnd(sd + k * 7) * 0.6), cx, cy);
         }
       }
       // 窓の両端・境目の岩の柱（壁の切れ目の薄さを隠す）
@@ -438,15 +442,19 @@ export function createSetpieces(S) {
           if (assets.shoreline) for (const side of [-1, 1]) { const [sx, sz] = W(side * 9, lz + 5.5); placeAsset(B, 'backdrop', assets.shoreline, sx, WATER - 0.55, sz, yaw + (side > 0 ? Math.PI : 0), [0.7, 0.6, 0.7], bd.tx, bd.ty); }
           bd.monument = { size: [L, 10.18 * s], z: lz };
         } else {
-          const sc = Math.min((W2 - 6) / piece.size.x, (depth - 8) / piece.size.z, (TOP - FLOOR - 2.5) / piece.size.y, 0.95);
-          const lz = 4.2 + piece.size.z * sc / 2, [px, pz] = W(0, lz);
+          // 水車の中庭：水車は水路に沿う軸（模型の x）に付いていて、真正面（模型の +Z）からは車輪が縦の線にしか見えない。
+          // 約30°ひねって、窓から車輪の面と中庭の奥行きが両方見える向きにする
+          const turn = bd.name === 'waterwheel' ? -0.52 : 0, cT = Math.abs(Math.cos(turn)), sT = Math.abs(Math.sin(turn));
+          const ex = piece.size.x * cT + piece.size.z * sT, ez = piece.size.x * sT + piece.size.z * cT;
+          const sc = Math.min((W2 - 5) / ex, (depth - 7) / ez, (TOP - FLOOR - 2.5) / piece.size.y, 0.95);
+          const lz = 4.0 + ez * sc / 2, [px, pz] = W(0, lz);
           // 足もとの島（岩と霜の岩棚）
           for (let k = 0; k < 10; k++) {
-            const a0 = k / 10 * 6.28, rx = piece.size.x * sc * 0.55, rz = piece.size.z * sc * 0.55, [qx, qz] = W(Math.cos(a0) * rx, lz + Math.sin(a0) * rz);
+            const a0 = k / 10 * 6.28, rx = ex * sc * 0.52, rz = ez * sc * 0.52, [qx, qz] = W(Math.cos(a0) * rx, lz + Math.sin(a0) * rz);
             B.add('backdrop', kit.boulders[k % kit.boulders.length], M4(qx, WATER - 0.6, qz, a0, 1.2 + rnd(sd + k) * 0.8), bd.tx, bd.ty);
           }
-          placeAsset(B, 'backdrop', piece, px, WATER - 0.25, pz, yaw + Math.PI, sc, bd.tx, bd.ty);
-          bd.monument = { size: [piece.size.x * sc, piece.size.y * sc], z: lz };
+          placeAsset(B, 'backdrop', piece, px, WATER - 0.25, pz, yaw + Math.PI + turn, sc, bd.tx, bd.ty);
+          bd.monument = { size: [ex * sc, piece.size.y * sc], z: lz, turn };
         }
       }
       // 照明：手前から正面を照らす（白飛びさせない強さ）
@@ -487,13 +495,13 @@ export function createSetpieces(S) {
       // 水際（通路との境目）：氷の縁と霜の岩棚。歩ける床の端が水へ落ちる形
       for (let k = 0; k < 7; k++) {
         const lx = cx - W / 2 + (k + 0.5) * W / 7 + (rnd(sd + k) - 0.5) * 0.6;
-        bag.add('crystalIce', at(stone(W / 7 + 0.3, 0.5, 0.55, sd + k * 3, 0.08), lx, WATER + 0.18 + rnd(sd + k * 5) * 0.08, frontZ + 0.2, (rnd(sd + k * 7) - 0.5) * 0.2));
+        if (k % 2 === 0) bag.add('crystalIce', at(stone(W / 9 + 0.2, 0.18, 0.35, sd + k * 3, 0.06), lx, WATER + 0.08 + rnd(sd + k * 5) * 0.04, frontZ + 0.3, (rnd(sd + k * 7) - 0.5) * 0.2));
         B.add('monuments', proc.frostLedges[k % proc.frostLedges.length], M4(lx, 0.0, frontZ + 0.15, (rnd(sd + k * 9) - 0.5) * 0.3, 0.8), tx, ty);
       }
       // 水面の氷の欠片と、水門の足もとの泡
-      for (let k = 0; k < 12; k++) {
-        const px = cx + (rnd(sd + k * 11) - 0.5) * (W - 2), pz = frontZ + 0.9 + rnd(sd + k * 13) * (gateFront - frontZ - 1.2), w = 0.3 + rnd(sd + k) * 0.7;
-        bag.add('crystalIce', at(stone(w, 0.12, w * (0.6 + rnd(sd + k * 3) * 0.5), sd + k * 17, 0.06), px, WATER + 0.02, pz, rnd(sd + k * 19) * 3));
+      for (let k = 0; k < 6; k++) {
+        const px = cx + (rnd(sd + k * 11) - 0.5) * (W - 2), pz = frontZ + 1.1 + rnd(sd + k * 13) * (gateFront - frontZ - 1.4), w = 0.2 + rnd(sd + k) * 0.35;
+        bag.add('crystalIce', at(stone(w * 0.6, 0.08, w * (1.0 + rnd(sd + k * 3) * 0.6), sd + k * 17, 0.05), px, WATER + 0.02, pz, rnd(sd + k * 19) * 3));
       }
       for (let i = 0; i < 4; i++) B.add('water_foam', kit.ripples[(i + sd) % kit.ripples.length], M4(cx + (i - 1.5) * gw * 0.22, WATER + 0.03, gateFront - 0.3, rnd(sd + i) * 6.28, 1.0 + i * 0.25), tx, ty);
       // 左右：水から立ち上がる氷に覆われた岩の塊（石筍・岩・結晶の氷）。正面の幅に収める
@@ -578,18 +586,18 @@ export function createSetpieces(S) {
       for (let k = 0; k < 9; k++) {
         const lx = (k - 4) * (gw / 8.6) + (rnd(sd + k) - 0.5) * 0.3, lz = gateFront + 0.1 + rnd(sd + k * 3) * 0.35;
         bag.add('sp:frostRock', at(stone(gw / 8 + 0.35, 0.7, 0.9, sd + k * 41, 0.08), lx, WATER - 0.3, lz, (rnd(sd + k * 43) - 0.5) * 0.25));
-        bag.add('crystalIce', at(stone(gw / 8 + 0.2, 0.16, 0.8 + rnd(sd + k * 7) * 0.5, sd + k * 47, 0.06), lx, WATER + 0.05, lz - 0.35, (rnd(sd + k * 49) - 0.5) * 0.3));
+        if (k % 2 === 0) bag.add('crystalIce', at(stone(gw / 9 + 0.1, 0.12, 0.35 + rnd(sd + k * 7) * 0.3, sd + k * 47, 0.06), lx, WATER + 0.04, lz - 0.2, (rnd(sd + k * 49) - 0.5) * 0.3));
       }
       // 水路：水門の下から V の足もとへ。水面の氷の欠片（流れに沿って細長く）と、水門の足もとの泡
-      for (let k = 0; k < 16; k++) {
-        const lx = (rnd(sd + k * 11) - 0.5) * (HWB * 2 - 1.5), lz = Z0 + 0.7 + rnd(sd + k * 13) * (gateFront - Z0 - 1.2), w = 0.25 + rnd(sd + k) * 0.55;
+      for (let k = 0; k < 7; k++) {
+        const lx = (rnd(sd + k * 11) - 0.5) * (HWB * 2 - 1.5), lz = Z0 + 0.9 + rnd(sd + k * 13) * (gateFront - Z0 - 1.4), w = 0.2 + rnd(sd + k) * 0.35;
         bag.add('crystalIce', at(stone(w * 0.6, 0.08, w * (1.0 + rnd(sd + k * 3) * 0.8), sd + k * 17, 0.05), lx, WATER + 0.02, lz, (rnd(sd + k * 19) - 0.5) * 0.5));
       }
       for (let i = 0; i < 5; i++) { const [px, pz] = Wd((i - 2) * gw * 0.18, gateFront - 0.35); B.add('water_foam', kit.ripples[(i + sd) % kit.ripples.length], M4(px, WATER + 0.03, pz, rnd(sd + i) * 6.28, 1.0 + (i % 3) * 0.3), gtx, gty); }
       // V の足もと（床と水の境）：氷の縁と霜の岩棚。水面班 W の岸の帯の上に重ね、歩ける床の端が水へ落ちる形にする
       for (let k = 0; k < 5; k++) {
         const lx = -CELL / 2 + (k + 0.5) * CELL / 5 + (rnd(sd + k * 51) - 0.5) * 0.3;
-        bag.add('crystalIce', at(stone(CELL / 5 + 0.25, 0.14, 0.6, sd + k * 53, 0.06), lx, WATER + 0.06, Z0 + 0.3, (rnd(sd + k * 55) - 0.5) * 0.2));
+        if (rnd(sd + k * 57) < 0.6) bag.add('crystalIce', at(stone(CELL / 6 + 0.2, 0.1, 0.32, sd + k * 53, 0.05), lx, WATER + 0.05, Z0 + 0.22, (rnd(sd + k * 55) - 0.5) * 0.3));
       }
       B.add('monuments', bag.piece('b2sp_watergate_basin'), M4(ox, 0, oz, yaw), gtx, gty);
       // 光：手前から水門の正面を照らす（白飛びさせない）＋水門の足もとの水
@@ -648,6 +656,8 @@ export function createSetpieces(S) {
         bag.add('sp:frostRock', at(stone(1.0, h, 0.9, ps, 0.06), px, cy, side * (HW + 0.3)));
         { const g = stone(0.72, h * 0.96, 0.72, ps + 1, 0.05); bag.add('sp:frostRock', at(g, px, cy - 0.02, side * (HW + 0.72), Math.PI / 4)); }   // 水切り（45°の角）
         bag.add('sp:stairStone', at(stone(1.2, 0.16, 1.15, ps + 2, 0.03), px, TOP - 0.02, side * (HW + 0.38)));   // 笠石
+        // 橋脚の上の控え柱（欄干の外側に欄干より少し高く立ち上げ、横から見たときに橋脚の並びがわかるように）
+        { const ph = 0.95; bag.add('sp:frostRock', at(stone(0.62, ph, 0.5, ps + 4, 0.05), px, TOP + 0.06 + ph / 2, side * (HW + 0.33))); bag.add('sp:stairStone', at(stone(0.76, 0.12, 0.64, ps + 5, 0.03), px, TOP + 0.06 + ph + 0.06, side * (HW + 0.33))); }
         for (let q = 0; q < 5; q++) {   // 根元の氷の縁（水面に張った薄い氷）
           const a0 = (q / 5) * Math.PI * 2 + rnd(ps + q) * 0.8, rr = 0.75 + rnd(ps + q * 3) * 0.35, w = 0.45 + rnd(ps + q * 5) * 0.4;
           bag.add('crystalIce', at(stone(w, 0.06, w * 0.7, ps + q * 7, 0.03), px + Math.cos(a0) * rr * 0.8, BR_WATER + 0.03, side * (HW + 0.45) + Math.sin(a0) * rr * 0.6, a0));
@@ -666,8 +676,8 @@ export function createSetpieces(S) {
         let y = TOP - 0.05; const nS = 3 + (rnd(ps) < 0.5 ? 1 : 0);
         for (let q = 0; q < nS; q++) { const h = 0.3 + rnd(ps + q) * 0.08; bag.add('sp:stairStone', at(stone(0.5 - q * 0.02, h, 0.5 - q * 0.02, ps + q * 3, 0.03), lx, y + h / 2, lz, (rnd(ps + q * 5) - 0.5) * 0.1)); y += h; }
         bag.add('sp:stairStone', at(stone(0.66, 0.14, 0.66, ps + 9, 0.02), lx, y + 0.07, lz));
-        for (let q = 0; q < 4; q++) {
-          const g = new THREE.ConeGeometry(0.05 + rnd(ps + q) * 0.04, 0.22 + rnd(ps + q * 3) * 0.2, 5); noUv(g); g.translate(0, (0.22 + rnd(ps + q * 3) * 0.2) / 2, 0);
+        for (let q = 0; q < 2; q++) {
+          const g = new THREE.ConeGeometry(0.04 + rnd(ps + q) * 0.03, 0.16 + rnd(ps + q * 3) * 0.14, 5); noUv(g); g.translate(0, (0.22 + rnd(ps + q * 3) * 0.2) / 2, 0);
           bag.add('crystalIce', at(g, lx + (rnd(ps + q * 7) - 0.5) * 0.2, y + 0.13, lz + (rnd(ps + q * 9) - 0.5) * 0.2, 0, (rnd(ps + q * 11) - 0.5) * 0.6, (rnd(ps + q * 13) - 0.5) * 0.6));
         }
         for (let q = 0; q < 3; q++) bag.add('ice', at(icicle(0.025, 0.1 + rnd(ps + q) * 0.12, ps + q), lx + (rnd(ps + q * 3) - 0.5) * 0.5, y, lz + (rnd(ps + q * 5) - 0.5) * 0.5));
@@ -675,8 +685,12 @@ export function createSetpieces(S) {
       // たもと：岸側に霜の石の踏み台（段差をなじませる）
       for (const end of [-1, 1]) {
         const lx = end * (L2 - 0.2);
-        bag.add('sp:stairStone', at(stone(0.9, 0.3, HW * 2 - 0.2, sd + end * 7, 0.05), lx + end * 0.35, TOP - 0.17, 0));
-        bag.add('sp:stairStone', at(stone(0.7, 0.22, HW * 2 - 0.4, sd + end * 9, 0.05), lx + end * 1.0, TOP - 0.24, 0));
+        // 1枚の長い板にせず、幅を3つに割った不揃いの石（霜は控えめ＝白い帯に見せない）
+        for (let q = 0; q < 3; q++) {
+          const w = (HW * 2 - 0.3) / 3, lzq = -HW + 0.15 + w * (q + 0.5);
+          bag.add('sp:frostRock', at(stone(0.85 + rnd(sd + end * 7 + q) * 0.15, 0.3, w - 0.05, sd + end * 7 + q * 3, 0.06), lx + end * 0.35, TOP - 0.18 - rnd(sd + q) * 0.03, lzq, (rnd(sd + end + q * 5) - 0.5) * 0.1));
+          bag.add('sp:frostRock', at(stone(0.65 + rnd(sd + end * 9 + q) * 0.15, 0.22, w - 0.08, sd + end * 9 + q * 3, 0.06), lx + end * 1.0, TOP - 0.25 - rnd(sd + q * 3) * 0.03, lzq + (rnd(sd + q * 7) - 0.5) * 0.1, (rnd(sd + end * 3 + q) - 0.5) * 0.12));
+        }
       }
       B.add('bridge', bag.piece('b2sp_bridge_ice'), M4(x, 0, z, yaw), br.tx, br.ty);
       // 氷岸 V11：両端の左右に1つずつ（水から立ち上がる氷の岸）

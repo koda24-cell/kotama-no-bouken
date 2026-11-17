@@ -130,10 +130,12 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
         for (let ty = Math.floor(cz) - 4; ty <= Math.ceil(cz) + 4; ty++) for (let tx = Math.floor(cx) - 4; tx <= Math.ceil(cx) + 4; tx++) for (const d of Object.keys(D)) {
           if (!open(tx, ty)) continue;
           const [dx, dy] = D[d], ahead = (cx - tx) * dx + (cz - ty) * dy + 0.275, lat = Math.abs((cx - tx) * dy - (cz - ty) * dx);
-          if (ahead < 1.5 || ahead > 3.4 || lat > 0.6) continue;
-          let clear = true; for (let k = 1; k < Math.floor(ahead - 0.3); k++) if (!open(tx + dx * k, ty + dy * k)) clear = false;
-          if (!clear) continue;
-          const sc = Math.abs(ahead - 2.3) + lat * 1.5;
+          if (ahead < 1.4 || ahead > 3.6 || lat > 0.7) continue;
+          // 見通し：カメラ（マスの中心から 0.275マス後ろ）→ 群れの中心と、その左右 0.35マスの3本の線が、壁のマスを通らないこと
+          const ex = tx - dx * 0.275, ez = ty - dy * 0.275; let blocked = 0;
+          for (const o of [-0.35, 0, 0.35]) { const gx = cx + dy * o, gz = cz - dx * o; for (let t = 0.1; t < 0.92; t += 0.06) { const x = ex + (gx - ex) * t, z = ez + (gz - ez) * t; if (!open(Math.round(x), Math.round(z))) { blocked++; break; } } }
+          if (blocked > 1) continue;
+          const sc = blocked * 2 + Math.abs(ahead - 2.2) + lat * 1.2;
           if (!best || sc < best.sc) best = { tx, ty, d, sc };
         }
         return best;
