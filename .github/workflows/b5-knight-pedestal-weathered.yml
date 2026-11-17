@@ -1,0 +1,64 @@
+name: B5 Knight Pedestal A B C Weathered Blender Review
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_pedestal_weathered.py'
+      - '.github/workflows/b5-knight-pedestal-weathered.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  weathered-options:
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [A, B, C]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PEDESTAL_VARIANT: ${{ matrix.variant }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Fetch original CC0 stone photographs and derive cold stone
+        run: |
+          python3 tools/b5-knights/fetch_photo.py
+          python3 tools/b5-knights/tone_photo.py
+      - name: Create physically weathered pedestal GLB and render 3 views
+        run: |
+          blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_pedestal_weathered.py
+      - name: Validate render and saved model SHA-256
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import hashlib,json,os,struct
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          v=os.environ['PEDESTAL_VARIANT']
+          folder=Path('render-output/b5-knights/pedestal_weathered_'+v)
+          info=json.loads((folder/'manifest.json').read_text())
+          assert info['variant']==v and info['approval']=='NOT_APPROVED'
+          blob=(folder/('pedestal_weathered_'+v+'.glb')).read_bytes()
+          assert blob[:4]==b'glTF' and struct.unpack_from('<I',blob,8)[0]==len(blob)
+          for f,sha in info['files_sha256'].items():
+              assert hashlib.sha256((folder/f).read_bytes()).hexdigest()==sha
+          for view in ('front','side','angle'):
+              with Image.open(folder/(view+'.png')) as im:
+                  im.load()
+                  assert im.size==(800,800)
+                  assert max(ImageStat.Stat(im.convert('RGB')).stddev)>5
+          print('PASS',v,info['photo_status'],len(info['files_sha256']))
+          PY
+      - name: Save unfinished candidate and checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-pedestal-weathered-${{ matrix.variant }}-NOT-APPROVED
+          path: |
+            render-output/b5-knights/pedestal_weathered_${{ matrix.variant }}/
+            render-output/b5-knights/photo_source/
+          retention-days: 14
+          if-no-files-found: warn
