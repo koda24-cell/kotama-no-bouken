@@ -162,3 +162,11 @@
 - `verify_delivery.py` の最終gateはpass。[delivery-summary.json](https://github.com/koda24-cell/kotama-no-bouken/blob/feature/ai-gpt-f1-sacred-forest-20261116/assets/3d/dungeons/b1_sacred_forest_candidates/verification/delivery-summary.json) の17個別GLB・68個別証拠PNG・5全景画像、全18GLBのKhronos errors/warnings 0、browser errors 0、編集ソース画像埋込/再open、中央経路clearance、各証拠hashを照合。公開証拠は引き続き[制作候補PR #391](https://github.com/koda24-cell/kotama-no-bouken/pull/391)。
 - 到達状態は `candidate_verified_pending_user_review`。**ゲーム未統合・美術承認待ち・実機性能未承認**は維持。既知の美術留意点は回廊の見通し、天井の細い明線、祠背景の包囲感。全景の計算負荷を実機FPS承認へ読み替えない。
 - 本追記は検証情報のみ。コード・素材・画像をdevelopmentへ統合する変更ではない。
+
+## キャラクター5領域品質抽出（2026-11-17）
+- 名称: Blender標準Python APIを使った頭部境界・部位寸法・髪断面概算・材質ノード・ボーン/シェイプキー解析。
+- 目的: コタマ暗殺者V16の独立造形に向け、参考モデルから再現可能な**一般的造形指標**を集計。
+- 導入: PR #412 `tools/character-mesh-research/extract_character_quality.py`、`.github/workflows/character-mesh-research.yml`。外部アドオン不要。Blenderと許諾済みモデルが必要。
+- ライセンス: Blender標準APIを利用。参照モデルは個別の許諾確認が必要で、原本をGitに保存しない。
+- 検証状態: コード追加済み、**新規5領域抽出の実行・JSON中身・レンダー目視は未確認**。既存のVRoid6体レンダー成功は別検証。
+- 設計・制約: `docs/3d/research/CHARACTER_QUALITY_EXTRACTION_SPEC_20261117.md`。部位名判定はヒューリスティック、髪束の厳密断面や顔ランドマーク・変形品質は未実装。
