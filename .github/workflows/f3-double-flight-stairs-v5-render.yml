@@ -1,0 +1,70 @@
+name: F3 Two-Flight Ruined Stair Reference V5 Render
+on:
+  push:
+    branches: [feature/gpt-f3-double-flight-stair-reference-v1-20261117]
+    paths:
+      - 'tools/floor3/double_flight/build_v5.py'
+      - 'tools/floor3/double_flight/fetch_pbr_v4.py'
+      - '.github/workflows/f3-double-flight-stairs-v5-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v5
+      - name: Blender real render of new reference-matched switchback stair
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python3 -m py_compile tools/floor3/double_flight/build_v5.py
+          printf '{"phase":"STARTED","approval":"NOT_APPROVED","source":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/progress.json
+          python3 -m py_compile tools/floor3/double_flight/fetch_pbr_v4.py
+          python3 tools/floor3/double_flight/fetch_pbr_v4.py
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/double_flight/build_v5.py 2>&1 | tee blender.log
+          grep -q F3_DOUBLE_FLIGHT_V5_COMPLETE blender.log
+      - name: Verify model and front-side-angle previews
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct,os
+          root=pathlib.Path('out')
+          stem='f3_double_flight_stairs_v5'
+          paths=[root/(stem+'.glb'),root/(stem+'.blend')]+[root/(stem+'-'+v+'.png') for v in ('front','side','angle')]
+          for p in paths:
+              assert p.is_file() and p.stat().st_size>1024, f'missing or empty: {p}'
+          raw=paths[0].read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          size,kind=struct.unpack_from('<II',raw,12)
+          assert kind==0x4e4f534a
+          gltf=json.loads(raw[20:20+size])
+          assert len(gltf.get('meshes',[]))>=30, 'missing complex geometry'
+          assert len(gltf.get('images',[]))>=4, 'PBR texture images absent from GLB'
+          assert any('normalTexture' in mat for mat in gltf.get('materials',[])), 'missing GLB normal map'
+          assert any('normalTexture' in m for m in gltf.get('materials',[])), 'V5 embedded normal missing'
+          for p in paths[2:]:
+              assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          sources=json.loads((root/'pbr_sources/sources.json').read_text())
+          assert set(sources['maps'])=={'chipped_concrete','concrete_moss'}
+          assert all(set(v)=={'diffuse','normal','roughness'} for v in sources['maps'].values())
+          m={'pbr_sources':sources,'stage':'floor3','asset':'double_flight_stairs','version':'v5','approval':'NOT_APPROVED',
+             'source_commit':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],
+             'files':{p.name:{'size':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths}}
+          (root/'manifest.json').write_text(json.dumps(m,indent=2)+'\n')
+          print('Validated real Blender renders, embedded CC0 PBR images, GLB and checkpoint')
+          PY
+      - name: Save recovery information
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p out
+          if test -f blender.log; then cp blender.log out/blender.log; fi
+          if ! test -f out/progress.json; then printf '{"phase":"FAILED_BEFORE_RENDER","approval":"NOT_APPROVED"}\n' > out/progress.json; fi
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: f3-double-flight-stair-v5-review
+          path: out/
+          retention-days: 14
