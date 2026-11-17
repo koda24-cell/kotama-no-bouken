@@ -26,6 +26,47 @@ bark=mat("aged_bark",(0.235,.168,.112))
 twig=mat("twigs",(0.24,.175,.118))
 # V6: lower-saturation, deeper woodland greens with rare lighter accents.
 leaves=[mat("leaf_deep",(0.036,.112,.039)),mat("leaf_mid",(0.055,.161,.053)),mat("leaf_lit",(0.095,.223,.083)),mat("leaf_sage",(0.066,.148,.075))]
+# V18: packed, UV-mapped foliage albedo. The existing curved geometry,
+# orientation and leaf count remain unchanged. Use original painted procedural
+# texture as a deterministic baseline while CC0 photo atlas is evaluated.
+def foliage_albedo(m, color, seed):
+ rng=random.Random(seed)
+ image=bpy.data.images.new("tree_mature_leaf_albedo_%02d"%seed,width=128,height=128,alpha=False)
+ pixels=[]
+ freckles=[(rng.random(),rng.random(),rng.uniform(.025,.065)) for _ in range(65)]
+ for y in range(128):
+  v=(y+.5)/128
+  for x in range(128):
+   u=(x+.5)/128
+   # lengthwise midrib + chevron lateral vein network
+   midrib=math.exp(-((u-.5)/.024)**2)
+   bands=(v*9.0)%1.0
+   branch=math.exp(-((bands-(.14+.84*abs(u-.5))) / .095)**2)
+   veins=(.105*midrib + .070*branch)*(0.55+v*.45)
+   edge=max(0.0,(abs(u-.5)-.32)/.18)
+   mottling=(.045*math.sin(33*u+17*v)+.032*math.sin(58*v-23*u)
+             +.025*math.sin(101*u+97*v))
+   freckle=0.0
+   for fx,fy,s in freckles:
+    dd=((u-fx)**2+(v-fy)**2)/(s*s)
+    if dd<7: freckle+=.025*math.exp(-dd*2)
+   variation=1.0+veins+mottling-freckle-.11*edge
+   # sunlit leaf tips show warm, desaturated highlights; petioles darker
+   warm=.035*v
+   pixels.extend((min(.9,max(.008,color[0]*variation+warm*.45)),
+                  min(.9,max(.008,color[1]*variation+warm)),
+                  min(.9,max(.008,color[2]*variation+warm*.32)),1))
+ image.pixels[:]=pixels
+ image.pack()
+ nodes=m.node_tree.nodes
+ tex=nodes.new("ShaderNodeTexImage")
+ tex.name="V18_PackedLeafAlbedo"
+ tex.image=image
+ nodes.links.new(tex.outputs["Color"],nodes.get("Principled BSDF").inputs["Base Color"])
+ return image
+for idx,material in enumerate(leaves):
+ foliage_albedo(material,[(.067,.184,.056),(.098,.236,.068),(.160,.291,.103),(.104,.210,.092)][idx],1800+idx)
+
 # A packed, hand-generated bark normal texture for glTF transport.
 def bark_normal(m):
  img=bpy.data.images.new("tree_mature_bark_normal",width=256,height=256,alpha=True)
@@ -148,6 +189,13 @@ def leaf(name,center,size,rotation,material):
                                                           (4,1,0),(4,2,1),(4,3,2),(4,0,3)]);mesh.update()
  ob=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(ob)
  mesh.materials.append(material)
+ # Five-vertex leaf UVs; each triangle shares one coherent longitudinal
+ # midrib map. Back-facing triangles use the same coordinates.
+ uv=mesh.uv_layers.new(name="LeafUV")
+ mapping=[(.5,.04),(.94,.42),(.5,.98),(.06,.42),(.5,.48)]
+ for poly in mesh.polygons:
+  for li in poly.loop_indices:
+   uv.data[li].uv=mapping[mesh.loops[li].vertex_index]
  for p in mesh.polygons:p.use_smooth=True
  asset.append(ob);leaves_obj_count+=1
 # V6: form 2–3 coherent leaf sprays anchored at EACH real branch position.
@@ -439,7 +487,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V17",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V18",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
