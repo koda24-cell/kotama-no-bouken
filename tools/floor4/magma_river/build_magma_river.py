@@ -191,7 +191,12 @@ def rock(name,xyz,scale,material,seed=0,subdiv=4):
  o=bpy.context.object;o.name=name;parent(o)
  for v in o.data.vertices:
   x,y,z=v.co;h=1+.14*sin(x*4.3+seed)*sin(z*5.7-seed*.4)+.075*sin(y*11+z*8+seed)+.045*sin(x*19+y*17+z*12+seed)+.027*sin((x+y-z)*31+seed)
-  v.co=(x*h,y*h,z*h)
+  # Retain the original ico-sphere topology; geological shearing reshapes
+  # only its surface. Broad near-planar bedding breaks the inflated-pillow look.
+  strata=round((y+.08*sin(x*3.4+z*2.1+seed*.23))*4.8)/4.8
+  shear=.045*sin(x*3.1+z*2.3+seed*.17)*sin(y*4.6+seed*.21)
+  cut=.055*max(0,sin(x*2.8+y*3.2-z*1.6+seed*.27))**4
+  v.co=(x*h*(1-cut)+shear*.25,y*h*.73+strata*.27+shear,z*h*(1-cut))
  o.scale=scale;o.rotation_euler=(R.uniform(-.23,.23),R.uniform(-.26,.26),R.uniform(-.65,.65));o.data.materials.append(material)
  for p in o.data.polygons:p.use_smooth=True
  return o
@@ -377,6 +382,24 @@ for side in (-1,1):
       (x+side*.026,yy,z+.025)]
   objmesh('V10_LOCAL_BASALT_FRACTURE',vs,[(0,1,2,3)],fracture,
           [(0,0),(.8,1),(1,1),(.15,0)],smooth=False)
+
+
+# V11 color/normal realism: project-original dark charcoal basalt PBR.
+# Keep original rock geometry and V10 added strata, but replace the pale
+# clay-like boulder surface with the project's own dark weathered volcanic stone.
+charcoal_dir='assets/textures/floor4/basalt-charcoal-01/'
+dark_basalt=mat('V11_Dark_Charcoal_Basalt',(0.13,.115,.109),.94,
+ texture=charcoal_dir+'basecolor.png',normal=charcoal_dir+'normal.png',
+ roughmap=charcoal_dir+'roughness.png')
+dark_boulder_names={
+ 'BANK_LARGE_WEATHERED_ROCK','CAVERN_ROCK_FACE',
+ 'REAR_IRREGULAR_BASALT_OVERHANG','FALL_SOURCE_EMBEDDED_BASALT',
+ 'V10_BEDROCK_SHEAR_PLATE','V10_BURIED_TALUS','V10_REAR_BASALT_STRATUM'
+}
+for o in bpy.data.objects:
+ if o.type=='MESH' and o.name.split('.')[0] in dark_boulder_names:
+  if len(o.data.materials):o.data.materials[0]=dark_basalt
+  else:o.data.materials.append(dark_basalt)
 
 # The modeling convention above uses Y-up (as in Three.js).
 # Blender is Z-up: convert every mesh to Z-up BEFORE lighting and cameras.
