@@ -205,6 +205,34 @@ for k in range(9):
    leaf("tree_mature_leaf_%04d"%leaves_obj_count,center,R.uniform(.062,.095),
         (az+R.uniform(-.6,.6),R.uniform(-.2,.42)),
         leaves[R.choices([0,1,2,3],weights=[32,43,17,8])[0]])
+# V9: asymmetric intermediate crowns, gently drooping leaf sprays and
+# bifurcating top shoots. Additive only: original geometry remains intact.
+for i in range(11):
+ a=i*2.399963+R.uniform(-.2,.2)
+ z=1.65+R.uniform(0,.82)
+ radius=R.uniform(.14,.48)
+ base=Vector((.08*math.sin(z*1.4),.025,z))
+ knee=base+Vector((math.cos(a)*radius*.55,math.sin(a)*radius*.55,.12))
+ end=base+Vector((math.cos(a)*radius,math.sin(a)*radius,.14+R.uniform(-.1,.11)))
+ tube("tree_mature_v9_bridge_branch_%02d"%i,[tuple(base),tuple(knee),tuple(end)],
+      [.024,.014,.002],twig,8)
+ for n in range(34):
+  t=R.uniform(.55,1.18)
+  anchor_point=knee.lerp(end,min(1,t))
+  off=Vector((R.gauss(0,.087),R.gauss(0,.083),R.gauss(-.025,.068)))
+  pos=anchor_point+off
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,pos,R.uniform(.058,.087),
+       (a+R.uniform(-.62,.62),R.uniform(-.25,.30)),leaves[R.choices([0,1,2,3],weights=[43,41,10,6])[0]])
+# Bark-covered uneven buttress collars make the star-like straight root seams
+# less apparent without removing the existing seven exposed roots.
+for i in range(7):
+ a=(i+.13)*math.tau/7
+ length=.18+R.uniform(.01,.09)
+ stem=Vector((.028*math.cos(a),.028*math.sin(a),.24))
+ mid=Vector((.105*math.cos(a),.105*math.sin(a),.115))
+ outer=Vector((length*math.cos(a),length*math.sin(a),.026))
+ tube("tree_mature_v9_root_flare_%02d"%i,[tuple(stem),tuple(mid),tuple(outer)],
+      [.071,.075,.006],bark,11)
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -230,7 +258,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V8",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V9",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
