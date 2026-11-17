@@ -195,20 +195,28 @@ for j in range(M):
  for i in range(N):
   a=j*(N+1)+i;b=a+N+1;faces.append((a,a+1,b+1,b))
 objmesh('MOLTEN_POOL_WIDENING',verts,faces,lava,uv)
-# V16: irregular viscous terminal lip. Break the unnaturally flat front
-# silhouette of the original horizontal river sheet without deleting it.
-for k in range(16):
- z=3.22+.10*sin(k*2.3)+R.uniform(-.035,.035)
+# V17: one continuous, heavy, ragged cooling lip.  The V16 row of
+# equally spaced glowing pebbles looked artificial, so replace only that
+# unapproved experimental addition, keeping the original river mesh.
+verts=[];uv=[];faces=[];N=72
+for i in range(N+1):
+ u=i/N
+ z=3.21+.045*sin(u*17.0)+.026*sin(u*43.0+1.3)
  left=edge(z,-1);right=edge(z,1)
- u=(k+.5)/16
  x=left+(right-left)*u
- # Cooling lava bulges are thick, grounded and partially buried in the melt.
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,
-  location=(x,lava_y(x,z)+.003,z+.055))
- o=bpy.context.object;o.name='V16_HEAVY_TERMINAL_LAVA_LIP';parent(o)
- o.scale=(.12+.06*R.random(),.025+.025*R.random(),.10+.09*R.random())
- o.data.materials.append(dense_lava if k%4==0 else crust)
-
+ # Thick cooled skin wraps over the river's downstream edge.
+ front=3.42+.085*sin(u*21.3)+.035*sin(u*53.2+1.1)
+ rows=[(z-.12,lava_y(x,z)+.018),
+       (z+.045,lava_y(x,z)+.065),
+       (front,lava_y(x,z)-.035-.018*sin(u*26)),
+       (front-.085,lava_y(x,z)-.11)]
+ for j,(zz,yy) in enumerate(rows):
+  verts.append((x,yy,zz));uv.append((u*2.2,j*.32))
+for i in range(N):
+ for j in range(3):
+  a=i*4+j;b=(i+1)*4+j
+  faces.append((a,b,b+1,a+1))
+objmesh('V17_COHESIVE_BASALTIC_COOLING_LIP',verts,faces,crust,uv,smooth=False)
 # Off-channel side basin in a genuine eroded depression connected to the river.
 verts=[];uv=[];faces=[];N=88;M=27
 for j in range(M+1):
