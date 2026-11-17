@@ -1,0 +1,184 @@
+{
+  "scope": "Actual index.html before/after GPU upload diagnosis; no real-device FPS guarantee",
+  "causeConfirmed": "Native FOE dragon.svg HTMLImageElement upload, not candidate mipmaps or source cache lifetime",
+  "fixCommit": "a08c8f0",
+  "before": {
+    "uploads": 820,
+    "glErrors": 1,
+    "gpuWarnings": [
+      {
+        "text": "WebGL: INVALID_VALUE: texSubImage2D: bad image data",
+        "url": ""
+      },
+      {
+        "text": "[.WebGL-0x3454001eda00] GL_INVALID_OPERATION: glTexImage2DRobustANGLE: Texture is immutable.",
+        "url": "http://127.0.0.1:8797/index.html?f1sacred=1"
+      }
+    ],
+    "firstFailure": {
+      "phase": "trial-3f-first",
+      "method": "texSubImage2D",
+      "args": [
+        3553,
+        0,
+        0,
+        0,
+        6408,
+        5121,
+        {
+          "type": "HTMLImageElement",
+          "id": 1599,
+          "width": 150,
+          "height": 150,
+          "naturalWidth": 150,
+          "naturalHeight": 150,
+          "complete": true,
+          "src": "http://127.0.0.1:8797/assets/monsters/dragon.svg"
+        }
+      ],
+      "error": 1281,
+      "stack": "Error\n    at WebGL2RenderingContext.value [as texSubImage2D] (<anonymous>:33:74)\n    at Object.texSubImage2D (https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js:9829:7)\n    at uploadTexture (https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js:11402:14)\n    at WebGLTextures.setTexture2D (https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js:10675:5)\n    at SingleUniform.setValueT1 [as setValue] (https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js:4989:11)\n    at WebGLUniforms.upload (https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js:5546:7)\n    at setProgram (https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js:17376:19)\n    at WebGLRenderer.renderBufferDirect (https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js:15941:20)\n    at renderObject (https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js:16866:11)\n    at renderObjects (https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js:16835:6)"
+    },
+    "imageBitmapCloses": 0
+  },
+  "after": {
+    "uploads": 820,
+    "glErrors": 0,
+    "gpuWarnings": [],
+    "phaseSnapshots": [
+      {
+        "label": "native-1f-first",
+        "at": "2026-11-16T21:45:19.990Z",
+        "uploadCount": 325,
+        "errorCount": 0
+      },
+      {
+        "label": "trial-3f-first",
+        "at": "2026-11-16T21:46:38.971Z",
+        "uploadCount": 820,
+        "errorCount": 0
+      },
+      {
+        "label": "trial-shrine-camera",
+        "at": "2026-11-16T21:46:56.899Z",
+        "uploadCount": 820,
+        "errorCount": 0
+      },
+      {
+        "label": "trial-water-camera",
+        "at": "2026-11-16T21:47:43.658Z",
+        "uploadCount": 820,
+        "errorCount": 0
+      },
+      {
+        "label": "native-2f-after-trial",
+        "at": "2026-11-16T21:47:45.775Z",
+        "uploadCount": 820,
+        "errorCount": 0
+      },
+      {
+        "label": "trial-3f-cached-return",
+        "at": "2026-11-16T21:48:26.870Z",
+        "uploadCount": 820,
+        "errorCount": 0
+      },
+      {
+        "label": "native-battle",
+        "at": "2026-11-16T21:48:27.768Z",
+        "uploadCount": 820,
+        "errorCount": 0
+      },
+      {
+        "label": "trial-battle-return",
+        "at": "2026-11-16T21:48:29.660Z",
+        "uploadCount": 820,
+        "errorCount": 0
+      }
+    ],
+    "foeRasterization": {
+      "key": "foe:1-2:0",
+      "visible": true,
+      "meshOrSprite": "Sprite",
+      "textureLoaded": true,
+      "textureRasterized": true,
+      "textureSize": [
+        512,
+        512
+      ]
+    },
+    "canvasUpload": {
+      "phase": "trial-3f-first",
+      "method": "texSubImage2D",
+      "context": 1,
+      "unit": 33984,
+      "textureID": 1598,
+      "args": [
+        3553,
+        0,
+        0,
+        0,
+        6408,
+        5121,
+        {
+          "type": "HTMLCanvasElement",
+          "id": 1599,
+          "width": 512,
+          "height": 512
+        }
+      ],
+      "priorError": 0,
+      "storage": {
+        "levels": 10,
+        "internalFormat": 35907,
+        "width": 512,
+        "height": 512,
+        "immutable": true
+      },
+      "error": 0
+    },
+    "imageBitmapCloses": 0
+  },
+  "independentMinimalCases": [
+    {
+      "mode": "svg-html-image",
+      "uploadErrors": 1,
+      "priorErrors": 0
+    },
+    {
+      "mode": "svg-canvas-raster",
+      "uploadErrors": 0,
+      "priorErrors": 0
+    },
+    {
+      "mode": "typed-data-mip-control",
+      "uploadErrors": 0,
+      "priorErrors": 0
+    }
+  ],
+  "receipts": {
+    "before": "before-svg-fix-gpu-diagnostic.json",
+    "after": "gpu-diagnostic.json",
+    "minimal": "minimal-svg-result.json"
+  },
+  "scripts": [
+    "actual-index-diagnostic.cjs",
+    "minimal-svg.cjs",
+    "instrument.js"
+  ],
+  "source": {
+    "foeSVG": {
+      "file": "assets/monsters/dragon.svg",
+      "sha256": "afc2090a22024e46b0783ed513b60788edaf87358a65fbdc42a4192fb13ba830"
+    },
+    "runtimeAtPostRun": {
+      "file": "field/field-3d-view.js",
+      "sha256": "6f3e5d432221b44211a8f0409602bccf79ba3b82e0391d641d2a9fb60f7903b1"
+    },
+    "unchangedByDiagnostic": [
+      "runtime",
+      "candidate JSON",
+      "models",
+      "coverage/mip helper"
+    ]
+  }
+}
