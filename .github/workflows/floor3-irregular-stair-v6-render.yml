@@ -1,0 +1,80 @@
+name: Floor3 Irregular Stair V6 Render
+on:
+  push:
+    branches: [feature/floor3-ruined-stair-connector-20261115]
+    paths:
+      - 'tools/floor3/ruined_connector/build_irregular_v6.py'
+      - '.github/workflows/floor3-irregular-stair-v6-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - name: Render V6 real concrete cracks and anchored rails
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python3 -m py_compile tools/floor3/ruined_connector/build_irregular_v6.py
+          echo "V6 source: $GITHUB_SHA; Actions run: $GITHUB_RUN_ID"
+          printf '{"stage":"floor3","version":"v6","approval":"NOT_APPROVED","phase":"RENDER_STARTED","source_commit":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_irregular_v6.py 2>&1 | tee blender.log
+          grep -q 'FLOOR3_IRREGULAR_V6_COMPLETE' blender.log
+          printf '{"stage":"floor3","version":"v6","approval":"NOT_APPROVED","phase":"RENDER_FINISHED","source_commit":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/progress.json
+      - name: Verify GLB and three views
+        run: |
+          for kind in stairs ramp landing; do
+            test -s "out/floor3_ruined_connector_${kind}_v6.glb"
+            for view in front side angle; do
+              test -s "out/floor3_ruined_connector_${kind}_v6-${view}.png"
+            done
+          done
+      - name: Verify GLB, PNG, normal maps and write review manifest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, pathlib, struct
+          root=pathlib.Path("out")
+          files={}
+          for kind in ("stairs","ramp","landing"):
+              stem=f"floor3_ruined_connector_{kind}_v6"
+              glb=root/(stem+".glb")
+              blend=root/(stem+".blend")
+              assert blend.is_file() and blend.stat().st_size>512, f"missing Blender checkpoint: {blend}"
+              data=glb.read_bytes()
+              assert data[:4]==b"glTF" and struct.unpack_from("<I",data,8)[0]==len(data), glb
+              json_length,json_type=struct.unpack_from("<II",data,12)
+              assert json_type==0x4E4F534A
+              asset=json.loads(data[20:20+json_length].decode())
+              assert asset.get("meshes") and asset.get("materials"), glb
+              assert asset.get("images") and asset.get("textures"), f"no embedded normal image: {glb}"
+              assert any("normalTexture" in m for m in asset["materials"]), f"no normalTexture: {glb}"
+              for p in [glb,blend]+[root/(stem+"-"+view+".png") for view in ("front","side","angle")]:
+                  raw=p.read_bytes()
+                  if p.suffix==".png":
+                      assert raw.startswith(bytes.fromhex("89504e470d0a1a0a")), p
+                  files[p.name]={"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw)}
+          manifest={"approval":"NOT_APPROVED","stage":"floor3","version":"v6",
+                    "source_commit":"${{ github.sha }}","workflow_run_id":"${{ github.run_id }}",
+                    "status":"RENDERED_NOT_VISUALLY_APPROVED","files":files}
+          (root/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
+          print("validated",len(files),"GLB/PNG files")
+          PY
+      - name: Preserve Blender log for review and recovery
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p out
+          if test -f blender.log; then cp blender.log out/blender.log; fi
+          if ! test -e out/progress.json; then
+            printf '{"stage":"floor3","version":"v6","approval":"NOT_APPROVED","phase":"FAILED_BEFORE_RENDER"}\n' > out/progress.json
+          fi
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: floor3-irregular-stair-v6
+          path: out/
+          retention-days: 14

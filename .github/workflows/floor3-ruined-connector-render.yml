@@ -1,0 +1,51 @@
+name: Floor3 Ruined Connector Render
+on:
+  push:
+    branches: [feature/floor3-ruined-stair-connector-20261115]
+    paths:
+      - 'tools/floor3/ruined_connector/**'
+      - '.github/workflows/floor3-ruined-connector-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download source CC0 Kenney stairs GLB
+        run: |
+          mkdir -p tools/floor3/ruined_connector/external
+          curl -fL --retry 3 'https://api.flockbay.com/bootstrap/library/models/v1/14c4e8ef1cef29be590af0a6672206ba25afd5897e28d6a8aa5c0eaf317ee6f5/stairs.glb' -o tools/floor3/ruined_connector/external/kenney-stairs.glb
+          test -s tools/floor3/ruined_connector/external/kenney-stairs.glb
+      - name: Render GLB and three views
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          mkdir -p tools/floor3/ruined_connector/source
+          curl --fail --location --retry 3 --output tools/floor3/ruined_connector/source/concrete_stair_set.glb https://cdn.3dassets.dev/assets/33523/v1/model.glb
+          test $(stat -c%s tools/floor3/ruined_connector/source/concrete_stair_set.glb) -gt 1000
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build.py 2>&1 | tee blender.log
+          grep -q 'FLOOR3_CONNECTOR_RENDER_COMPLETE' blender.log
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_real_stair.py 2>&1 | tee blender-real.log
+          grep -q 'FLOOR3_REAL_STAIR_RENDER_COMPLETE' blender-real.log
+          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/ruined_connector/build_kenney.py 2>&1 | tee kenney-render.log
+          grep -q 'FLOOR3_KENNEY_STAIRS_RENDER_COMPLETE' kenney-render.log
+      - name: Verify files
+        run: |
+          for kind in stairs ramp landing; do
+            test -s "out/floor3_ruined_connector_${kind}.glb"
+            for view in front side angle; do
+              test -s "out/floor3_ruined_connector_${kind}-${view}.png"
+            done
+          done
+          test -s out/floor3_ruined_connector_kenney_cc0_stairs.glb
+          for view in front side angle; do
+            test -s "out/floor3_ruined_connector_kenney_cc0_stairs-${view}.png"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: floor3-ruined-connector-real-v2-kenney
+          path: out/
+          retention-days: 14
