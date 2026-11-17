@@ -22,3 +22,11 @@
 5. **噴気・火の粉・熱揺らぎ**: VFXを別コンポーネントにし、流路形状とは分離
 
 次の制作は別ブランチとPR。Pinterest参考画像は [引継ぎ](https://github.com/koda24-cell/pinterest-reference-library/blob/main/handoff/b4-magma-river-transition-20261117.md) を継続使用。外部画像は無断転用しない。
+
+## 正式保存・マージの実行検証（2026-11-17）
+- 承認済みの保存PR [#477](https://github.com/koda24-cell/kotama-no-bouken/pull/477) は `development` に**マージ成功**。merge commit `65c5ff184adef4f7ccb9382313d3f5e3c4826c9a`。
+- 保存Actions [run 44028977940](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44028977940) は**成功**。元のV16レンダリングrunの成功・ソースSHAを照合し、6原本のSHA-256、GLB 2.0形式・PNG署名・Blender圧縮形式を検証した。
+- GitHub `development` のツリーでGLB 12,865,484 bytes、Blend 3,979,770 bytes、4方向PNG、`manifest.json`、`source-manifest.json`、`SHA256SUMS.txt`の実体を確認。
+- 正式manifestの`approval`は `USER_APPROVED`、`game_integration`は `NOT_STARTED`。
+- 元の制作時`source-manifest.json`は`NOT_APPROVED`の履歴を保存するが、承認後の正式manifestと本完成記録を優先する。
+- 元の制作Draft PR #450/#458/#472の必要なソース・設計文書は、競合する古いブランチを丸ごとマージせず、#477で安全に移植した。再レンダリング履歴は元PR/Actionsに保持。

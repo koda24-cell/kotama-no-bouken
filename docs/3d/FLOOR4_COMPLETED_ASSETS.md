@@ -23,11 +23,5 @@
 - 独立採用済みの溶岩溜まりC V3とトロッコV32は保持。A/B/D/E単体候補は不採用のまま。
 - 正式保存の実体・developmentマージは別途検証。ゲーム内表示・動的VFXは未実装。
 
-## マグマ河川派生 P1 V4 / P2 V4 / P3 V5（2026-11-17 ユーザー完成承認）
-| 素材 | 版 | 正式GLB | 4方向レビュー | Claude引継ぎ | ゲーム統合 |
-| --- | --- | --- | --- | --- | --- |
-| 細い支流・岩岸 | P1 V4 | [GLB](../../assets/models/floor4/b4-magma-river-p1-v4.glb) | [review](../../assets/models/floor4/reviews/b4-magma-river-p1-v4/) | [JSON](B4_MAGMA_BANK_P1_P2_P3_CLAUDE_HANDOFF.json) | 未実施 |
-| 分岐する玄武岩岸 | P2 V4 | [GLB](../../assets/models/floor4/b4-magma-river-p2-v4.glb) | [review](../../assets/models/floor4/reviews/b4-magma-river-p2-v4/) | [MD](B4_MAGMA_BANK_P1_P2_P3_CLAUDE_HANDOFF.md) | 未実施 |
-| 玄武岩段差・第二溶岩滝 | P3 V5 | [GLB](../../assets/models/floor4/b4-magma-river-p3-v5.glb) | [review](../../assets/models/floor4/reviews/b4-magma-river-p3-v5/) | [完成記録](B4_MAGMA_BANK_P1_P2_P3_COMPLETED_20261117.md) | 未実施 |
-- 正式保存ワークフロー: `.github/workflows/b4-magma-bank-p1-p3-approved-archive.yml`。**ワークフロー成功と実ファイルのdevelopment存在確認後に恒久保存完了と判断する**。
-- 元V16は変更しない。GLBのゲーム組み込みは別作業。
+- **V16恒久保存検証済み**: Archive run [44028977940](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44028977940) success、正式保存PR [#477](https://github.com/koda24-cell/kotama-no-bouken/pull/477) developmentマージ成功（`65c5ff184adef4f7ccb9382313d3f5e3c4826c9a`）。GLB/Blend/4 PNG/承認manifestのGit実体を確認済み。
+- 次の派生P1/P2/P3（細い支流・分岐岩岸・段差棚）は[試作PR #478](https://github.com/koda24-cell/kotama-no-bouken/pull/478)で管理。**未承認**、完成素材一覧には追加しない。
