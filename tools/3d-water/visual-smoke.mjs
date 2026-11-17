@@ -1,0 +1,35 @@
+// Experimental visual regression: screenshot the independent viewer, not approved game assets.
+import {chromium,devices} from 'playwright';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {spawn} from 'node:child_process';
+const PORT=8777,base='http://127.0.0.1:'+PORT+'/tools/3d-water/preview.html';
+await mkdir('render-output/shader-research',{recursive:true});
+const server=spawn('python3',['-m','http.server',String(PORT),'--bind','127.0.0.1'],{stdio:'ignore'});
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function ready(){for(let i=0;i<40;i++){try{const r=await fetch(base);if(r.ok)return;}catch{}await sleep(250);}throw Error('HTTP server failed');}
+let browser;
+try{
+ await ready();browser=await chromium.launch({headless:true,args:['--enable-webgl','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ const report=[];
+ for(const mode of ['desktop','mobile']){
+  const context=await browser.newContext(mode==='mobile'?{...devices['iPhone 13'],viewport:{width:390,height:720}}:{viewport:{width:1100,height:720},deviceScaleFactor:1});
+  const page=await context.newPage(),errors=[];
+  page.on('pageerror',e=>errors.push('pageerror:'+e.message));
+  page.on('console',m=>{if(m.type()==='error')errors.push('console:'+m.text())});
+  await page.goto(base,{waitUntil:'load'});
+  await page.waitForFunction(()=>document.querySelector('#status')?.textContent?.includes('起動済み'),{timeout:20000});
+  await sleep(2200);
+  for(const kind of ['lake','stream','waterfall']){
+   await page.selectOption('#kind',kind);
+   await sleep(1000);
+   const file='render-output/shader-research/'+mode+'-'+kind+'.png';
+   await page.screenshot({path:file});
+   const stats=await page.evaluate(()=>({calls:window.__kotamaShaderPreview?.renderer.info.render.calls,triangles:window.__kotamaShaderPreview?.renderer.info.render.triangles}));
+   report.push({mode,kind,file,...stats});
+  }
+  if(errors.length)throw Error(mode+' browser error: '+errors.join('\n'));
+  await context.close();
+ }
+ await writeFile('render-output/shader-research/report.json',JSON.stringify({status:'UNAPPROVED',results:report},null,2));
+ console.log(JSON.stringify(report,null,2));
+}finally{await browser?.close();server.kill();}
