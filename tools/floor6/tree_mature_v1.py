@@ -97,9 +97,9 @@ trunk=[(0,0,.015),(.017,-.014,.22),(.04,-.035,.53),(.085,-.04,.91),(.12,-.02,1.3
 tube("tree_mature_main_trunk",trunk,[.18,.172,.15,.132,.112,.089,.066,.041,.014],bark,16)
 # Surface roots go down to the terrain and converge naturally at lower trunk.
 for k in range(7):
- angle=2*math.pi*k/7+.15
- dist=.33+R.uniform(-.06,.09)
- points=[(.015,.0,.18),(.07*math.cos(angle),.07*math.sin(angle),.115),(.15*math.cos(angle),.15*math.sin(angle),.07),(.25*math.cos(angle),.25*math.sin(angle),.029),(dist*math.cos(angle),dist*math.sin(angle),-.022)]
+ angle=2*math.pi*k/7+.15+R.uniform(-.25,.25)
+ dist=.28+R.uniform(-.09,.12)
+ points=[(.015,.0,.18),(.07*math.cos(angle),.07*math.sin(angle),.115),(.15*math.cos(angle),.15*math.sin(angle),.07),(.21*math.cos(angle),.21*math.sin(angle),.014),(dist*math.cos(angle),dist*math.sin(angle),-.022)]
  tube("tree_mature_root_%02d"%k,points,[.075,.07,.052,.025,.010],bark,12)
 # Branches with side bends, taper and staggered elevations.
 tips=[]
@@ -226,7 +226,7 @@ for i in range(11):
 # Bark-covered uneven buttress collars make the star-like straight root seams
 # less apparent without removing the existing seven exposed roots.
 for i in range(7):
- a=(i+.13)*math.tau/7
+ a=(i+.13)*math.tau/7+R.uniform(-.23,.23)
  length=.18+R.uniform(.01,.09)
  stem=Vector((.028*math.cos(a),.028*math.sin(a),.24))
  mid=Vector((.105*math.cos(a),.105*math.sin(a),.115))
@@ -249,6 +249,22 @@ for k in range(12):
   leaf("tree_mature_leaf_%04d"%leaves_obj_count,ctr,R.uniform(.058,.096),
        (a+R.uniform(-.8,.8),R.uniform(-.15,.46)),
        leaves[R.choices([0,1,2,3],weights=[42,39,13,6])[0]])
+# V11: mid-crown off-axis sprays bridge rigid shelf layers.
+for i in range(8):
+ a=2.3999632*i+.48
+ level=1.72+R.uniform(0,.75)
+ reach=.27+R.uniform(0,.2)
+ base=Vector((.06*math.sin(level),.025,level))
+ mid=base+Vector((math.cos(a)*reach*.52,math.sin(a)*reach*.52,.075))
+ end=base+Vector((math.cos(a)*reach,math.sin(a)*reach,.08+R.uniform(-.07,.08)))
+ tube("tree_mature_v11_connecting_twigs_%02d"%i,[tuple(base),tuple(mid),tuple(end)],
+      [.020,.012,.002],twig,7)
+ for n in range(21):
+  anchor=mid.lerp(end,R.uniform(.35,1.0))
+  ctr=anchor+Vector((R.gauss(0,.065),R.gauss(0,.07),R.gauss(0,.07)))
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,ctr,R.uniform(.06,.094),
+       (a+R.uniform(-.6,.6),R.uniform(-.24,.40)),
+       leaves[R.choices([0,1,2,3],weights=[44,37,12,7])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -274,7 +290,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V10",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V11",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
