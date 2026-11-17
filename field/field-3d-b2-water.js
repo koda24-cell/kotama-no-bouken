@@ -16,7 +16,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
-import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=20261117-l1';   // 結晶（ユーザー確認済みの質感）
+import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=20261117-l2';   // 結晶（ユーザー確認済みの質感）
 import { createB2WaterTiles, B2V4W_REMOVE_STEPPING_STONES } from './b2-water-tiles.js?v=20261117-w1';   // [B2V4-W] 危険な水面（GPT 水面タイル）・床の模様
 import { createFlora, floraMaterial, floraMaterialClass, floraTint } from './b2-flora.js?v=20261117-f1';   // [B2V4-F] 花の配置と見た目
 import { createSetpieces, SP_ROLES } from './b2-setpieces.js?v=20261117-s1';   // [B2V4-S] 階段・橋・水門・柱群・背景モニュメント
@@ -97,8 +97,8 @@ function makeMaterials(opaqueWater) {
     'Deep cavern rock': std({ color: 0x74a8d4, map: rock.map, normalMap: rock.normal, normalScale: new THREE.Vector2(1.4, 1.4), roughness: 0.78, metalness: 0.0, emissive: 0x041a2e, emissiveIntensity: 1.0, envMapIntensity: 0.6, vertexColors: true }),   // 青い岩（影が黒く沈まないよう少し自発光）
     caveFloor: std({ color: 0x82bcd8, map: slate.map, normalMap: rock.normal, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 0.42, metalness: 0.02, emissive: 0x52e2ff, emissiveMap: veins, emissiveIntensity: 1.25, envMapIntensity: 1.0, vertexColors: true }),   // 濡れた岩盤＋光る水脈
     puddle: std({ color: 0x7fe2f6, roughness: 0.05, metalness: 0.1, emissive: 0x2ab4e0, emissiveIntensity: 0.6, envMapIntensity: 1.5 }),
-    stream: farFade(new THREE.MeshBasicMaterial({ color: 0x8ff2ff, transparent: true, opacity: 0.4, depthWrite: false, blending: THREE.AdditiveBlending, fog: true })),   // 天井から落ちる光る細い水流（[B2V4-L] F1：霧で遠くほど消える。旧版は霧を無視して遠くから光った）
-    streamPool: std({ color: 0x6fcfe6, roughness: 0.35, metalness: 0.05, emissive: 0x1a86b0, emissiveIntensity: 0.35, envMapIntensity: 0.9 }),   // [B2V4-L] F1：水流の落ちる所の水たまり（照り返しの白い円にならない）
+    stream: farFade(new THREE.MeshBasicMaterial({ color: 0x6fdcf4, transparent: true, opacity: 0.26, depthWrite: false, blending: THREE.AdditiveBlending, fog: true })),   // 天井から落ちる光る細い水流（[B2V4-L] F1：霧で遠くほど消える。旧版は霧を無視して遠くから光った。[仕上げ] 近くでも白い線に見えないよう、色を水色に・薄く）
+    streamPool: std({ color: 0x4fb2d2, roughness: 0.4, metalness: 0.05, emissive: 0x1a86b0, emissiveIntensity: 0.2, envMapIntensity: 0.7 }),   // [B2V4-L] F1：水流の落ちる所の水たまり（照り返しの白い円にならない）
     'Pale mineral stone': std({ color: 0xb2e2f0, map: pale.map, normalMap: pale.normal, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 0.6, metalness: 0.0, envMapIntensity: 0.45, vertexColors: true }),  // 淡い鉱物の石
     'Glowing cyan crystal': std({ color: 0x7fe0ff, roughness: 0.08, metalness: 0.05, emissive: 0x1cb6f0, emissiveIntensity: 1.0, envMapIntensity: 1.4, flatShading: true }),   // 白飛びしない強さ  // 控えめな発光
     'Deep blue crystal': std({ color: 0x4a76e8, roughness: 0.12, metalness: 0.05, emissive: 0x1a3596, emissiveIntensity: 0.7, envMapIntensity: 1.3 }),
@@ -420,13 +420,29 @@ function makeProcedural() {
     const parts = [], count = 3 + (variant % 3);
     for (let j = 0; j < count; j++) {
       const len = 0.35 + rnd(variant * 11 + j) * (0.55 + variant * 0.12), r = 0.05 + rnd(variant * 7 + j * 3) * 0.06;
-      const geo = new THREE.ConeGeometry(r, len, 7, 2);
+      // [仕上げ] F9：氷柱は根元ほど太く（付け根の盛り上がりに埋まる）、色も根元は天井の青、先へ行くほど氷の白
+      //  （白い氷柱が天井の岩から急に始まると、霧で暗く沈む天井から切り離されて浮いて見えた）
+      const geo = new THREE.ConeGeometry(r, len, 7, 4);
       geo.rotateX(Math.PI); geo.translate(0, -len / 2 + 0.03, 0);
+      { const q = geo.attributes.position, col = new Float32Array(q.count * 3);
+        for (let i = 0; i < q.count; i++) {
+          const t = THREE.MathUtils.clamp((0.03 - q.getY(i)) / len, 0, 1), flare = 1 + 1.3 * Math.pow(1 - t, 3);
+          q.setX(i, q.getX(i) * flare); q.setZ(i, q.getZ(i) * flare);
+          const k = THREE.MathUtils.smoothstep(t, 0.05, 0.6);
+          col.set([0.42 + 0.58 * k, 0.6 + 0.4 * k, 0.78 + 0.22 * k], i * 3);
+        }
+        geo.setAttribute('color', new THREE.BufferAttribute(col, 3)); geo.computeVertexNormals(); }
       geo.rotateZ((rnd(variant * 5 + j) - 0.5) * 0.18);
       geo.translate((rnd(variant * 13 + j) - 0.5) * 0.42, 0, (rnd(variant * 17 + j) - 0.5) * 0.42);
       parts.push({ geo, mat: 'ice' });
     }
-    const root = new THREE.SphereGeometry(0.2, 9, 4, 0, Math.PI * 2, 0, Math.PI / 2); root.scale(2.0, 0.6, 1.8); root.rotateX(Math.PI);
+    // 付け根：天井と同じ素材の、でこぼこした平たい岩（房全体を包む太さ。下へ 0.2m ほど垂れ、上半分は天井の裏に隠れる）
+    const root = new THREE.IcosahedronGeometry(1, 1), rp = root.attributes.position;
+    for (let i = 0; i < rp.count; i++) {
+      const x = rp.getX(i), y = rp.getY(i), z = rp.getZ(i), k = 1 + 0.22 * Math.sin(x * 5.3 + z * 3.7 + variant) * Math.cos(y * 4.9 + x * 2.3) + 0.1 * Math.sin(z * 9.1 - x * 6.7 + variant * 3);
+      rp.setXYZ(i, x * k, y * k, z * k);
+    }
+    root.scale(0.5, 0.24, 0.46); root.computeVertexNormals();
     parts.push({ geo: root, mat: 'ceiling' });   // [B2V4-L] F9：付け根は天井と同じ素材で太く（天井となじむ）
     return { name: 'b2_ice_stalactite_' + variant, parts };
   });
@@ -472,10 +488,14 @@ function makeProcedural() {
       g.translate((j - 1) * 0.52, -0.11 - j * 0.045, 0.02 + (j % 2) * 0.10);
       parts.push({ geo: g, mat: j === 1 ? 'Pale mineral stone' : 'Deep cavern rock' });
     }
-    const ice = new THREE.ConeGeometry(0.13 + variant * 0.025, 0.38 + variant * 0.11, 5, 1);
+    // [仕上げ] F9：庇の下の氷のかけらは、根元を岩に埋めて天井の青から先端の氷色へ（白い欠片が宙に浮いて見えた）
+    const iceLen = 0.38 + variant * 0.11, ice = new THREE.ConeGeometry(0.13 + variant * 0.025, iceLen, 5, 3);
     ice.rotateX(Math.PI);
-    ice.translate(0.32 - variant * 0.24, -0.38, 0.15);
-    parts.push({ geo: ice, mat: 'Glowing cyan crystal' });
+    { const q = ice.attributes.position, col = new Float32Array(q.count * 3);
+      for (let i = 0; i < q.count; i++) { const k = THREE.MathUtils.smoothstep((iceLen / 2 - q.getY(i)) / iceLen, 0.1, 0.75); col.set([0.42 + 0.5 * k, 0.6 + 0.36 * k, 0.78 + 0.2 * k], i * 3); }
+      ice.setAttribute('color', new THREE.BufferAttribute(col, 3)); }
+    ice.translate(0.32 - variant * 0.24, -0.3, 0.15);
+    parts.push({ geo: ice, mat: 'ice' });
     return { name: 'b2_frost_cornice_' + variant, parts };
   });
   // 壁面に埋まった薄い氷脈。独立した小物を増やすのではなく、
@@ -563,7 +583,10 @@ function makeProcedural() {
     const parts = [{ geo: spike(0.2 + rnd(v * 3 + (down ? 50 : 0)) * 0.08, v * 7 + (down ? 100 : 0), down), mat: 'Deep cavern rock' }];
     const n = 1 + (v % 3);
     for (let j = 0; j < n; j++) {
-      const g = spike(0.14 + rnd(v * 5 + j) * 0.06, v * 11 + j * 3 + (down ? 200 : 0), down), h = 0.3 + rnd(v * 9 + j) * 0.35, a = rnd(v * 17 + j) * 6.28, d = 0.22 + rnd(v * 19 + j) * 0.25;
+      // [B2V4-L] F3：石筍の脇の小さなとげは、自分の X 軸（置くときに壁に沿う向き）の前後へ並べる。
+      // 通路側（Z）へ張り出さないので、壁ぎわに寄せても主役のとげの形が残る（鍾乳石は従来どおり全方向）
+      const a = down ? rnd(v * 17 + j) * 6.28 : (j % 2 ? Math.PI : 0) + (rnd(v * 17 + j) - 0.5) * 0.8;
+      const g = spike(0.14 + rnd(v * 5 + j) * 0.06, v * 11 + j * 3 + (down ? 200 : 0), down), h = 0.3 + rnd(v * 9 + j) * 0.35, d = 0.22 + rnd(v * 19 + j) * 0.25;
       g.scale(h * 1.4, h, h * 1.4); g.translate(Math.cos(a) * d, 0, Math.sin(a) * d);
       parts.push({ geo: g, mat: 'Deep cavern rock' });
     }
@@ -577,11 +600,30 @@ function makeProcedural() {
         const k = 1 + 0.2 * Math.sin(x * 6.1 + z * 4.3 + v) * Math.cos(y * 5.7 + x * 2.9) + 0.1 * Math.sin(z * 11.3 - x * 7.7 + v * 2);
         mp.setXYZ(i, x * k, y * k, z * k);
       }
-      m.scale(0.44 + rnd(v * 29 + 3) * 0.08, 0.17, 0.4 + rnd(v * 31 + 5) * 0.08); m.translate(0, 0.02, 0);
+      // [仕上げ] 付け根を広く厚く（天井の起伏の低い所まで届く）
+      m.scale(0.56 + rnd(v * 29 + 3) * 0.1, 0.22, 0.52 + rnd(v * 31 + 5) * 0.1); m.translate(0, 0.02, 0);
       m.computeVertexNormals();
       parts.push({ geo: m, mat: 'ceiling' });
+      // [仕上げ] 主役のとげの上の部分を、天井と同じ素材の太い漏斗形の「首」で包む。
+      // 天井（自発光あり）→ 首 → 岩のとげ と明るさが段階的に変わり、根元で色が急に切り替わらない
+      const r0 = 0.2 + rnd(v * 3 + 50) * 0.08, collar = new THREE.CylinderGeometry(r0 * 2.0, r0 * 0.92, 0.34, 7, 2, true), cp = collar.attributes.position;
+      for (let i = 0; i < cp.count; i++) { const k = 1 + (rnd(v * 37 + i * 7) - 0.5) * 0.3; cp.setX(i, cp.getX(i) * k); cp.setZ(i, cp.getZ(i) * k); }
+      collar.translate(0, -0.15, 0); collar.computeVertexNormals();
+      parts.push({ geo: collar, mat: 'ceiling' });
     }
-    return { name: (down ? 'b2_stalactites_' : 'b2_stalagmites_') + v, parts };
+    // [仕上げ] F3：石筍は面ごとの陰影（角のあるとげ）にし、根元は暗く・先へ行くほど霜で明るい色にする。
+    // 壁と同じ岩の素材なので、なめらかな陰影のままだと壁の凹凸に溶けて見えなかった（とげの輪郭を壁から浮かせる）
+    if (!down) for (const p of parts) {
+      const g = p.geo.index ? p.geo.toNonIndexed() : p.geo; if (g !== p.geo) p.geo.dispose();
+      g.computeVertexNormals();
+      const q = g.attributes.position, col = new Float32Array(q.count * 3);
+      for (let i = 0; i < q.count; i++) { const y = THREE.MathUtils.clamp(q.getY(i), 0, 1), k = 0.55 + 0.85 * Math.pow(y, 1.3); col.set([k * 0.92, k, k * 1.1], i * 3); }
+      g.setAttribute('color', new THREE.BufferAttribute(col, 3)); p.geo = g;
+    }
+    // [B2V4-L] F3：大きさ1のときの、根元の中心から通路側（Z）・壁に沿う向き（X）への張り出し（置くときの上限の計算に使う）
+    let ex = 0, ez = 0;
+    for (const p of parts) { const q = p.geo.attributes.position; for (let i = 0; i < q.count; i++) { ex = Math.max(ex, Math.abs(q.getX(i))); ez = Math.max(ez, Math.abs(q.getZ(i))); } }
+    return { name: (down ? 'b2_stalactites_' : 'b2_stalagmites_') + v, parts, ext: { x: ex, z: ez } };
   });
   const stalagmites = spikeCluster(false), stalactites = spikeCluster(true);
   // 床から天井まで届く柱（石筍と鍾乳石がつながった砂時計形）
@@ -1516,13 +1558,19 @@ export async function createTheme(api) {
               // [B2V4-L] F3：通路の両側の石筍が中央で重なって道が塞がって見えたので、
               //  ・向かい合う壁で前後にずらす（上・右の壁の高い石筍はマスの前半、下・左の壁は後半。もう1本は反対の半分に低く）
               //  ・壁に沿う向きに置き、通路へ向かう厚みを抑えて壁へ寄せる（通路側へは壁の面から最大約1.1m＝中央に1.6m以上の隙間）
+              //  [仕上げ] 統合版は壁に貼り付いた平たい形になり、壁の凹凸に埋もれて見えなくなったので、
+              //  ・壁の面から 0.3〜0.55m 離して立て（壁との間に隙間＝とげの輪郭が見える）、断面はほぼ丸いまま
+              //  ・通路側への張り出し（根元の中心＋形の Z の張り出し×太さ）は壁の面から 1.3m（低い方は 1.0m）まで
+              //    → 両側に出ても中央に 1.4m 以上の通り道。背の高いとげほど太さの上限で細長くなる
               const half = di < 2 ? -1 : 1, tall = q === 0;
-              const t = half * (tall ? 1 : -1) * (0.25 + hash(tx, ty, 504 + sd) * 1.35);
+              const t = half * (tall ? 1 : -1) * (0.3 + hash(tx, ty, 504 + sd) * 1.3);
               const h = tall ? 0.9 + Math.pow(hash(tx, ty, 512 + sd), 1.5) * 3.2 : 0.7 + hash(tx, ty, 512 + sd) * 1.1;
-              const sAlong = Math.min(h * 0.85, 1.9), sAcross = Math.min(h * 0.6, 1.05), inw = 0.12 + hash(tx, ty, 508 + sd) * 0.12;
+              const piece = pick(proc.stalagmites, hash(tx, ty, 516 + sd)), pe = piece.ext || { x: 0.6, z: 0.35 };
+              const inw = 0.3 + hash(tx, ty, 508 + sd) * 0.25, reach = tall ? 1.3 : 1.0;
+              const sAcross = Math.max(0.35, Math.min(h * 0.8, (reach - inw) / pe.z)), sAlong = Math.min(h * 0.8, sAcross * 1.25, (1.95 - Math.abs(t)) / pe.x + 0.4);
               const sx = ex + along[0] * t - dx * inw, sz = ez + along[1] * t - dy * inw;
-              const yaw = ry + (hash(tx, ty, 520 + sd) < 0.5 ? 0 : Math.PI) + (hash(tx, ty, 521 + sd) - 0.5) * 0.5;
-              B.add('spires', pick(proc.stalagmites, hash(tx, ty, 516 + sd)), M4(sx, groundY(sx, sz) - 0.05, sz, yaw, [sAlong, h, sAcross]), tx, ty);
+              const yaw = ry + (hash(tx, ty, 520 + sd) < 0.5 ? 0 : Math.PI) + (hash(tx, ty, 521 + sd) - 0.5) * 0.2;
+              B.add('spires', piece, M4(sx, groundY(sx, sz) - 0.05, sz, yaw, [sAlong, h, sAcross]), tx, ty);
             }
             if (!wallThing && !openCells.has(key) && hash(tx, ty, 524 + sd) < (q ? 0.7 : 0.95)) {
               const t = (hash(tx, ty, 528 + sd) - 0.5) * 3.4, inw = 0.15 + hash(tx, ty, 532 + sd) * 0.8, h = 1.1 + Math.pow(hash(tx, ty, 536 + sd), 1.2) * 2.4;
@@ -2144,7 +2192,7 @@ export async function createTheme(api) {
       }
       P.needsUpdate = true;
     }
-    mats.stream.opacity = 0.45 + 0.1 * Math.sin(t * 3.1);
+    mats.stream.opacity = 0.2 + 0.05 * Math.sin(t * 3.1);   // [仕上げ] F1：毎フレーム 0.45 に戻していたので、水流が白い線に見えた
     if (glitter && camPos) {
       const P = glitter.geometry.attributes.position, C = glitter.geometry.attributes.color, S = glitter.userData.seed, B = 18;
       const wrap = (v, c) => c + ((((v - c) % B) + B * 1.5) % B) - B / 2;
