@@ -24,7 +24,7 @@ def mat(name,c,rough=1):
  return m
 bark=mat("aged_bark",(0.235,.168,.112))
 twig=mat("twigs",(0.24,.175,.118))
-leaves=[mat("leaf_deep",(0.095,.26,.10)),mat("leaf_mid",(0.15,.34,.13)),mat("leaf_lit",(0.22,.41,.17)),mat("leaf_sage",(0.17,.32,.19))]
+leaves=[mat("leaf_deep",(0.085,.23,.085)),mat("leaf_mid",(0.125,.30,.105)),mat("leaf_lit",(0.175,.36,.13)),mat("leaf_sage",(0.15,.27,.16))]
 # A packed, hand-generated bark normal texture for glTF transport.
 def bark_normal(m):
  img=bpy.data.images.new("tree_mature_bark_normal",width=256,height=256,alpha=True)
@@ -44,6 +44,20 @@ def bark_normal(m):
  m.node_tree.links.new(tex.outputs["Color"],normal.inputs["Color"])
  m.node_tree.links.new(normal.outputs["Normal"],nodes.get("Principled BSDF").inputs["Normal"])
 bark_normal(bark)
+# Packed custom bark ALBEDO, painted procedural veins—not copied Pinterest pixels.
+img=bpy.data.images.new("tree_mature_bark_albedo_v4",width=256,height=256,alpha=True)
+pixels=[]
+for y in range(256):
+ for x in range(256):
+  u=x/256;v=y/256
+  crack=abs(math.sin(u*math.tau*13+math.sin(v*16)*.45))
+  deep=(1.0-crack)**7
+  grain=.08*math.sin(u*math.tau*45+v*14)*math.sin(v*55+u*17)
+  val=max(.48,min(1.22,1.0-.27*deep+grain))
+  pixels.extend([.25*val,.188*val,.125*val,1])
+img.pixels[:]=pixels;img.pack()
+node=bark.node_tree.nodes.new("ShaderNodeTexImage");node.image=img
+bark.node_tree.links.new(node.outputs["Color"],bark.node_tree.nodes.get("Principled BSDF").inputs["Base Color"])
 asset=[]
 def tube(name,points,radii,material,radial=10):
  # ring-based tapered joined mesh, avoids disconnected cylinder seams.
@@ -85,13 +99,13 @@ for k in range(7):
  angle=2*math.pi*k/7+.15
  dist=.33+R.uniform(-.06,.09)
  points=[(.015,.0,.18),(.07*math.cos(angle),.07*math.sin(angle),.115),(.15*math.cos(angle),.15*math.sin(angle),.07),(.25*math.cos(angle),.25*math.sin(angle),.029),(dist*math.cos(angle),dist*math.sin(angle),.012)]
- tube("tree_mature_root_%02d"%k,points,[.075,.075,.058,.026,.009],bark,12)
+ tube("tree_mature_root_%02d"%k,points,[.075,.07,.052,.020,.005],bark,12)
 # Branches with side bends, taper and staggered elevations.
 tips=[]
 for i in range(13):
  a=2*math.pi*(i*.61803398875%1)+.25
  z=1.24+(i%6)*.185+R.uniform(-.085,.085)
- reach=.52+R.uniform(-.11,.19)
+ reach=.62+R.uniform(-.10,.22)
  anchor=(.08*math.sin(z*1.4),.025,z)
  bends=[anchor,(anchor[0]+reach*.23*math.cos(a),anchor[1]+reach*.23*math.sin(a),z+.17),
         (anchor[0]+reach*.59*math.cos(a+.13),anchor[1]+reach*.59*math.sin(a+.13),z+.27),
@@ -149,7 +163,7 @@ bpy.ops.object.select_all(action="DESELECT")
 bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,-.045))
 floor=bpy.context.object;floor.name="REVIEW_ONLY_GROUND";floor.scale=(2.4,2.4,.08)
 floor.data.materials.append(mat("review_only_ground",(.32,.36,.27)))
-for name,pos,energy,size in [("key",(3,-4,6),900,4.5),("fill",(-3,2,4),650,5)]:
+for name,pos,energy,size in [("key",(3,-4,6),570,4.5),("fill",(-3,2,4),410,5)]:
  ld=bpy.data.lights.new(name,"AREA");ob=bpy.data.objects.new(name,ld)
  bpy.context.collection.objects.link(ob);ob.location=pos;ld.energy=energy;ld.size=size
 for name,pos in [("front",(0,-6,3.1)),("side",(6,0,3.0)),("angle",(4,-6,4.1)),("top",(0,-.01,7))]:
@@ -164,7 +178,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V3",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V4",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
