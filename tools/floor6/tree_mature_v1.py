@@ -99,8 +99,8 @@ tube("tree_mature_main_trunk",trunk,[.18,.172,.15,.132,.112,.089,.066,.041,.014]
 for k in range(7):
  angle=2*math.pi*k/7+.15
  dist=.33+R.uniform(-.06,.09)
- points=[(.015,.0,.18),(.07*math.cos(angle),.07*math.sin(angle),.115),(.15*math.cos(angle),.15*math.sin(angle),.07),(.25*math.cos(angle),.25*math.sin(angle),.029),(dist*math.cos(angle),dist*math.sin(angle),.012)]
- tube("tree_mature_root_%02d"%k,points,[.075,.07,.052,.020,.005],bark,12)
+ points=[(.015,.0,.18),(.07*math.cos(angle),.07*math.sin(angle),.115),(.15*math.cos(angle),.15*math.sin(angle),.07),(.25*math.cos(angle),.25*math.sin(angle),.029),(dist*math.cos(angle),dist*math.sin(angle),-.022)]
+ tube("tree_mature_root_%02d"%k,points,[.075,.07,.052,.025,.010],bark,12)
 # Branches with side bends, taper and staggered elevations.
 tips=[]
 for i in range(13):
@@ -230,9 +230,25 @@ for i in range(7):
  length=.18+R.uniform(.01,.09)
  stem=Vector((.028*math.cos(a),.028*math.sin(a),.24))
  mid=Vector((.105*math.cos(a),.105*math.sin(a),.115))
- outer=Vector((length*math.cos(a),length*math.sin(a),.026))
+ outer=Vector((length*math.cos(a),length*math.sin(a),-.014))
  tube("tree_mature_v9_root_flare_%02d"%i,[tuple(stem),tuple(mid),tuple(outer)],
       [.071,.075,.006],bark,11)
+# V10: add a multi-directional living crown above the prior visible trunk tip.
+# Existing trunk stays present; fine shoots and foliage occlude its spear.
+for k in range(12):
+ a=k*math.tau/12+R.uniform(-.18,.18)
+ at=Vector((.008*math.cos(a),.025+.009*math.sin(a),2.53+R.uniform(-.055,.035)))
+ length=.13+R.uniform(.06,.20)
+ bend=at+Vector((math.cos(a)*length*.5,math.sin(a)*length*.5,.06))
+ end=at+Vector((math.cos(a)*length,math.sin(a)*length,.11+R.uniform(-.02,.11)))
+ tube("tree_mature_v10_crown_fork_%02d"%k,[tuple(at),tuple(bend),tuple(end)],
+      [.013,.009,.002],twig,7)
+ for n in range(36):
+  bas=R.choice([bend,end])
+  ctr=bas+Vector((R.gauss(0,.067),R.gauss(0,.067),R.gauss(0,.065)))
+  leaf("tree_mature_leaf_%04d"%leaves_obj_count,ctr,R.uniform(.058,.096),
+       (a+R.uniform(-.8,.8),R.uniform(-.15,.46)),
+       leaves[R.choices([0,1,2,3],weights=[42,39,13,6])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -258,7 +274,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V9",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V10",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
