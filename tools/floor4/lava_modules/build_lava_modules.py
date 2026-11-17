@@ -1,4 +1,4 @@
-# V2 visual corrections: asymmetrical confluence, volumetric fall, geological fissures.
+# V3 visual corrections: more convincing edge-on lavafall and natural, recessed fracture lines.
 """Five standalone Stage-4 lava GLBs. No surrounding terrain; original thermal maps and cooling crust are integral lava only.
 Run: blender -b -t 2 --python tools/floor4/lava_modules/build_lava_modules.py -- --out render-output --variant v1
 """
@@ -58,7 +58,7 @@ def mat(name,color,rough=.85,em=0,base_image=None,em_image=None,normal=None,roug
 lava=mat('Lava_thermal_PBR',(1,.28,.03),.56,1.8,heat_color,heat_emission,'molten_lava_normal.png','molten_lava_roughness.png')
 crust=mat('Lava_cooling_crust_PBR',(.055,.046,.042),.94,0,bpy.data.images.load(os.path.abspath(TEX+'volcanic_basalt_albedo.png'),check_existing=True),normal='volcanic_basalt_normal.png',rough_image='volcanic_basalt_roughness.png')
 hot=mat('Fresh_rupture_hot',(1,.24,.016),.48,3.3)
-hotdim=mat('Cooling_crust_internal_fissure',(.93,.17,.018),.61,1.65)
+hotdim=mat('Cooling_crust_internal_fissure',(.78,.105,.012),.68,1.20)
 coal=mat('REVIEW_studio_floor',(.045,.046,.055),.92)
 def mesh(name,verts,faces,material,uv=None):
  me=bpy.data.meshes.new(name);me.from_pydata(verts,[],faces);me.update()
@@ -172,7 +172,7 @@ def build_d():
    a=j*(M+1)+i;b=a+M+1;fs.append((a,a+1,b+1,b))
  mesh('D_VERTICAL_MAGMA_CASCADE',vs,fs,lava,uv)
  # Physical thickness is essential: the previous waterfall was nearly invisible edge-on.
- back=[(x,y+.19+.035*sin(z*5.1),z) for x,y,z in vs]
+ back=[(x,y+.38+.07*sin(z*5.1),z) for x,y,z in vs]
  back_faces=[tuple(reversed(f)) for f in fs]
  mesh('D_CASCADE_BACK_VOLUME',back,back_faces,lava,uv)
  walls=[];wall_uv=[];wall_faces=[]
@@ -192,7 +192,7 @@ def build_d():
    t=j/steps;cx,cy,cz=center(t)
    for u in (0,1):
     xx=cx+(strand-1)*width(t)*.53+(u-.5)*(.075+.04*sin(t*9+strand))
-    ss.append((xx,cy-.075-.03*sin(t*23+strand),cz));su.append((u,t*2))
+    ss.append((xx,cy-.15-.06*sin(t*23+strand),cz));su.append((u,t*2))
   for j in range(steps):
    a=j*2;sf.append((a,a+1,a+3,a+2))
   mesh('D_RAISED_MOLTEN_RIVULET_'+str(strand),ss,sf,lava,su)
@@ -229,10 +229,11 @@ def build_e():
  for k,(a,b,c) in enumerate(faults):
   def crack(t,a=a,b=b,c=c,k=k):
    u=1-t
-   x=u*u*a[0]+2*u*t*b[0]+t*t*c[0]+.04*sin(t*21+k)*sin(t*pi)
-   y=u*u*a[1]+2*u*t*b[1]+t*t*c[1]+.04*sin(t*17-k)*sin(t*pi)
+   x=u*u*a[0]+2*u*t*b[0]+t*t*c[0]+.09*sin(t*14+k)*sin(t*pi)+.035*sin(t*37+k)*sin(t*pi)
+   y=u*u*a[1]+2*u*t*b[1]+t*t*c[1]+.08*sin(t*12-k)*sin(t*pi)+.032*sin(t*31-k)*sin(t*pi)
    return (x,y,.091)
-  path_ribbon('E_IRREGULAR_FAULT_'+str(k),crack,lambda t,k=k:.015+.026*sin(t*pi)**2+.009*sin(t*17+k)**2,hotdim,N=94,M=7)
+  path_ribbon('E_FRACTURE_RECESSED_EDGE_'+str(k),crack,lambda t,k=k:.040+.034*sin(t*pi)**2+.011*sin(t*17+k)**2,crust,N=94,M=7,offset=-.007)
+  path_ribbon('E_IRREGULAR_FAULT_'+str(k),crack,lambda t,k=k:.011+.023*sin(t*pi)**2+.009*sin(t*17+k)**2,hotdim,N=94,M=7)
  crust_islands('E_BROKEN_COOLING_PLATES',0,0,2.3,2.1,13,920)
 builders={'a_sinuous':build_a,'b_confluence':build_b,'c_pool':build_c,'d_cascade':build_d,'e_cooling':build_e}
 world=bpy.context.scene.world or bpy.data.worlds.new('B4_Lava_Module_Studio');bpy.context.scene.world=world;world.use_nodes=True
