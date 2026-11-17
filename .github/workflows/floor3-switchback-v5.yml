@@ -4,12 +4,14 @@ on:
     branches: [feature/gpt-f3-switchback-stairs-reference-20261117]
     paths:
       - 'tools/floor3/switchback/build_v5.py'
+      - 'tools/floor3/switchback/fetch_cc0_pbr.py'
       - '.github/workflows/floor3-switchback-v5.yml'
   pull_request:
     types: [opened, synchronize, reopened]
     branches: [development]
     paths:
       - 'tools/floor3/switchback/build_v5.py'
+      - 'tools/floor3/switchback/fetch_cc0_pbr.py'
       - '.github/workflows/floor3-switchback-v5.yml'
   workflow_dispatch:
 jobs:
