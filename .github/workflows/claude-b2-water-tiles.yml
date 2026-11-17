@@ -1,0 +1,69 @@
+name: Claude B2 water tiles (regenerate GPT v0.7 + lite + seam test)
+# 水面班 W（B2 v4）。GPT の水面タイル生成スクリプト（tools/b2-render/build-modular-water-tiles.py、改変しない）を
+# Blender Docker で実行して 16 種の GLB と 3 方向 PNG を作り直し、Claude の後処理（平面の間引き・接合テスト撮影）を加えて、
+# assets/models/floor2/water-tiles/v07/ へコミットして返す（Artifact は一時保存のため）。未承認素材の扱い。
+on:
+  push:
+    branches:
+      - feature/ai-claude-b2-v4-w-20261117
+    paths:
+      - tools/b2-render/build-modular-water-tiles.py
+      - tools/b2-render/claude-water-tiles-lite.py
+      - .github/workflows/claude-b2-water-tiles.yml
+  workflow_dispatch:
+
+concurrency:
+  group: claude-b2-water-tiles-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull Blender Docker
+        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: GPT generator (unmodified) - 16 GLBs and top/angle/side renders
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b2-water-tiles
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python tools/b2-render/build-modular-water-tiles.py > gpt.log 2>&1 || { tail -60 gpt.log; exit 1; }
+          tail -15 gpt.log
+          for i in $(seq -w 0 15); do test -s "render-output/b2-water-tiles/water_tile_$i.glb"; done
+          for f in top.png side.png angle.png; do test -s "render-output/b2-water-tiles/$f"; done
+      - name: Claude post-process - lite GLBs and seam test renders
+        run: |
+          set -euo pipefail
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python tools/b2-render/claude-water-tiles-lite.py > lite.log 2>&1 || true
+          grep -E "tile [0-9]+|seam|Error|error|Traceback|Saved" lite.log | tail -80 || true
+          for i in $(seq -w 0 15); do test -s "render-output/b2-water-tiles-lite/water_tile_$i.glb"; done
+          test -s render-output/b2-water-tiles-lite/manifest.json
+          docker run --rm --entrypoint /usr/bin/blender lscr.io/linuxserver/blender:latest --version | head -1 > render-output/blender-version.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: claude-b2-water-tiles-v07
+          path: render-output/
+          retention-days: 14
+      - name: Commit GLBs and previews to the branch
+        run: |
+          set -euo pipefail
+          D=assets/models/floor2/water-tiles/v07
+          mkdir -p $D/source $D/lite $D/previews
+          cp render-output/b2-water-tiles/water_tile_*.glb $D/source/
+          cp render-output/b2-water-tiles-lite/water_tile_*.glb $D/lite/
+          python3 -m pip install --quiet pillow || true
+          for f in top side angle; do python3 -c "import sys;from PIL import Image;Image.open(sys.argv[1]).convert('RGB').save(sys.argv[2],quality=88)" render-output/b2-water-tiles/$f.png $D/previews/gpt_$f.jpg || cp render-output/b2-water-tiles/$f.png $D/previews/gpt_$f.png; done
+          for f in seam_top seam_angle seam_close; do python3 -c "import sys;from PIL import Image;Image.open(sys.argv[1]).convert('RGB').save(sys.argv[2],quality=88)" render-output/b2-water-tiles-lite/$f.png $D/previews/claude_$f.jpg || cp render-output/b2-water-tiles-lite/$f.png $D/previews/claude_$f.png; done
+          cp render-output/b2-water-tiles-lite/manifest.json $D/manifest.json
+          (cd $D && sha256sum source/*.glb lite/*.glb > SHA256SUMS.txt)
+          { echo "run_id=${{ github.run_id }}"; echo "commit=${{ github.sha }}"; echo "blender=$(cat render-output/blender-version.txt)"; echo "generator=tools/b2-render/build-modular-water-tiles.py (unmodified, GPT)"; echo "postprocess=tools/b2-render/claude-water-tiles-lite.py"; } > $D/RUN.txt
+          du -sh $D/source $D/lite
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add -f $D
+          git diff --cached --quiet && exit 0
+          git commit -m "B2 water tiles v0.7 regenerated (run ${{ github.run_id }}, unapproved)"
+          git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push
