@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "authorship": "Original generated pixel data; no external image inputs",
+  "generator": "tools/f1-closed-ruins-v3/build_water_textures.py",
+  "license": "Project original work; same repository terms",
+  "normalConvention": "OpenGL +Y tangent-space, data texture",
+  "usage": "F1 closed ruins trial only",
+  "records": [
+    {
+      "file": "water_algae_cluster.png",
+      "sha256": "98d0f8b9cfdeeda60bf6417a521b1e7e14ff2d179bf9c74a661e95777c973faf",
+      "bytes": 323389,
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "file": "water_micro_normal.png",
+      "sha256": "534bd671cf90f6ebfe0d7a464fec0c10a34810be370e91c24c9ab3c2889f034d",
+      "bytes": 133412,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "water_silt_color.png",
+      "sha256": "d127f451fe84ccf3d3d99bdeb3da36c215dd1bb373df2908d21db85fde05696b",
+      "bytes": 42092,
+      "size": [
+        256,
+        256
+      ]
+    }
+  ]
+}
