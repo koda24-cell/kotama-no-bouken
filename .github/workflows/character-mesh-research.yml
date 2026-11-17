@@ -36,6 +36,8 @@ jobs:
           done
       - name: Summarize head geometry across samples
         run: python3 tools/character-mesh-research/summarize_heads.py output/character-mesh-research
+      - name: Assess quality reports and produce review flags
+        run: python3 tools/character-mesh-research/assess_character_quality.py output/character-mesh-research
       - name: Render head comparison six views per sample
         run: |
           for model in HairSample_Female HairSample_Male Sendagaya_Shibu Sendagaya_Shino Sakurada_Fumiriya Vita; do
