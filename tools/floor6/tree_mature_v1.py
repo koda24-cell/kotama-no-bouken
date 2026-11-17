@@ -135,11 +135,15 @@ def leaf(name,center,size,rotation,material):
  axis=Vector((math.cos(az),math.sin(az),tilt)).normalized()
  side=Vector((-math.sin(az),math.cos(az),0)).normalized()
  normal=axis.cross(side).normalized()
- points=[c-axis*size*.55,
-         c-axis*size*.1+side*size*.31+normal*size*.08,
-         c+axis*size*.55,
-         c-axis*size*.1-side*size*.31+normal*size*.08,
-         c+normal*size*.095]
+ # V15: curved broadleaf blade with a narrower pointed tip, raised midrib,
+ # asymmetric margin and a gently cupped surface; no paper-square silhouette.
+ width=size*(.34+R.uniform(-.045,.035))
+ roll=R.uniform(-.04,.045)*size
+ points=[c-axis*size*.62,
+         c-axis*size*.15+side*width+normal*size*.035,
+         c+axis*size*.66+side*roll,
+         c-axis*size*.17-side*width*.86+normal*size*.045,
+         c+normal*size*(.17+R.uniform(-.02,.045))]
  mesh=bpy.data.meshes.new(name+"_mesh");mesh.from_pydata(points,[],[(0,1,4),(1,2,4),(2,3,4),(3,0,4),
                                                           (4,1,0),(4,2,1),(4,3,2),(4,0,3)]);mesh.update()
  ob=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(ob)
@@ -339,6 +343,31 @@ for pad in range(12):
        R.uniform(.061,.10),
        (a+R.uniform(-.7,.7),R.uniform(-.18,.44)),
        leaves[R.choices([0,1,2,3],weights=[43,39,13,5])[0]])
+# V15: a small number of structural *visible branch forks*, not thousands
+# of additional floating leaves. Connect the former shelf layers to the upper
+# crown. Sprays are attached to the fork tips and inherit branch orientation.
+for i in range(10):
+ az=math.tau*((i*.6180339887)%1)+R.uniform(-.14,.14)
+ base_z=1.67+R.uniform(-.17,.26)
+ base=Vector((.10*math.sin(base_z),.04,base_z))
+ mid=base+Vector((.32*math.cos(az),.32*math.sin(az),.33+R.uniform(-.05,.12)))
+ tip=mid+Vector((.28*math.cos(az+.20),.28*math.sin(az+.20),.30+R.uniform(-.08,.10)))
+ tube("tree_mature_v15_main_fork_%02d"%i,[tuple(base),tuple(mid),tuple(tip)],
+      [.048,.029,.004],bark,10)
+ for j in range(3):
+  fan=az+(j-1)*.57+R.uniform(-.12,.12)
+  branch_tip=tip+Vector((math.cos(fan)*(.13+R.uniform(0,.10)),
+                         math.sin(fan)*(.13+R.uniform(0,.10)),
+                         R.uniform(-.075,.11)))
+  tube("tree_mature_v15_branchlet_%02d_%02d"%(i,j),
+       [tuple(mid.lerp(tip,.62)),tuple(tip),tuple(branch_tip)],
+       [.010,.006,.002],twig,7)
+  for n in range(18):
+   # Small overlapping edge clusters rather than expanding total crown uniformly.
+   ctr=branch_tip+Vector((R.gauss(0,.064),R.gauss(0,.073),R.gauss(0,.086)))
+   leaf("tree_mature_leaf_%04d"%leaves_obj_count,ctr,R.uniform(.065,.096),
+        (fan+R.uniform(-.57,.57),R.uniform(-.26,.44)),
+        leaves[R.choices([0,1,2,3],weights=[46,39,10,5])[0]])
 # Export the actual foliage and woody meshes only, without environment or light.
 bpy.ops.object.select_all(action="DESELECT")
 for ob in asset:ob.select_set(True)
@@ -364,7 +393,7 @@ files=[]
 for p in sorted(OUT.iterdir()):
  if p.suffix in (".glb",".png",".blend"):
   files.append(dict(name=p.name,bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
-manifest=dict(asset_id="tree_mature",version="V14",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
+manifest=dict(asset_id="tree_mature",version="V15",status="NOT_APPROVED",game_integration="NOT_INTEGRATED",
               source="tools/floor6/tree_mature_v1.py",source_sha=os.getenv("GITHUB_SHA","local"),
               render_run_id=os.getenv("GITHUB_RUN_ID","local"),footprint_m=[1,1],height_m=2.72,
               roots=7,main_branches=13,leaf_meshes=leaves_obj_count,files=files)
