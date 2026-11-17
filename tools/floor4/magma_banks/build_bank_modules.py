@@ -192,7 +192,7 @@ for i in range(28):
    px=x+(px-x)*.78
   verts.append((px,py,molten_z(px,py)+.025+.004*sin(a*7)))
   uv.append((px*.27,py*.27))
- faces=[(0,k+1,k+2) for k in range(1,16)]
+ faces=[(0,k+1,k+2) for k in range(0,15)]
  faces.append((0,16,1))
  link('B4_V2_LARGE_COOLING_CRUST_RAFT',verts,faces,crust,uv,False)
 # Irregular extruded stone plates, embedded into existing ground.
