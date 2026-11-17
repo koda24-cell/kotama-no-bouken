@@ -57,3 +57,12 @@ E. 完成承認後にのみ`assets/models/floor2/`へ正式保存候補PR。CLAU
 - V5は `tools/b2-waterwheel-paddle/build_paddle_v05.py` に木目歪みの抑制・含水色差を独立実装し、`b2-waterwheel-single-paddle-blender.yml`に追加。**この設計書更新時点ではV5実レンダー結果を未確認**。先行V1〜V4を削除せず、再実行で5段階のモデルを独立したArtifactに保存する。
 - workflowは各バージョン終了直後 `.blend/.glb/4PNGs/manifest`および`progress.json`の独立チェックポイントを作る。途中失敗しても `if: always()`で存在する成果物をArtifactへ一時保存する設計。**ジョブ間でArtifactから自動的に復元して続きの段階を実施する機能は当水車ワークフローでは未実証**（共有Blender入口での他素材の復元検証例とは区別）。
 - **すべてNOT_APPROVED**。既存 `field/assets/b2-frozen-waterwheel-scene.js` は未変更、Claudeの見せ場配置を触っていない。承認前のGLB/PNGを正式素材フォルダへ昇格・`development`にマージしていない。V5の美術確認、glTFValidator、Three.js実機、LOD/負荷計測、木目PBRの外部写真素材適用は未完了。
+
+## 2026-11-18 — V05/V06 結果の実証とV07の独立再開試験
+
+- **V05** run [#44129933072](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44129933072): Blender V1〜V5造形・4方向×5枚組・manifest SHA256は全件成功。メタデータをbranchへpushする最終段階のみ、同時進行の文書コミットによるnon-fast-forwardで失敗。Artifact **#14348144378**は保存され、ダウンロードし全ハッシュ一致を確認。見た目は均一な木目の波模様が残るため未承認。
+- **V06** run [#44131102651](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44131102651): **Actions全工程success**。Poly Havenの商用・改変利用可能なCC0 `wood_planks`（https://polyhaven.com/a/wood_planks）の**1K写真Diffuse画像を取得・実Blenderシェーダーへ適用しGLBへ埋込**。写真SHA256 `3b0669f683e4bf10f5a55a381cfa9669a7b8dfd921901829daa3b35acc2bbdec`。受水板形状と独立の金具/氷を保持。
+- Artifact **#14349903645**（run 44131102651）を実ダウンロード、6個のGLB、6個のBlend、24枚の4方向PNG、それぞれのmanifestを展開、**全ファイルの実SHA256一致**をローカル確認。V06モデル: 31 mesh程度、約1,032,412バイトGLB、約1,169,825バイトBlend（各manifest参照）。写真を使った木材の模様はV05より自然になったが、明るい茶色が第2層の冷たい遺構環境とまだ合わず、金具・雪・小さな割れはさらなる造形が必要。
+- V06原本の編集用Blend SHA256 `632fcb47afdf5fecb6f44f88e61a24911bc845d8b0a329c042375c95d548b199`、GLB SHA256 `044f03e6621e86addbb03adabf06ea9b57c1a34d82742142d37433621d7d4585`。**次のジョブ間再開はこのハッシュ以外の原本を拒否する**。
+- **V07独立続編PR [#498](https://github.com/koda24-cell/kotama-no-bouken/pull/498)**：`development`から独立ブランチを作成し、成功runのArtifactをGH Actionsでrestore→ハッシュ検証→Blenderで`.blend`再読込→写真マテリアルの寒色化とCC0 Normal/Roughness追加→新GLB/Blend/4方向PNG出力を試行。V06の形状は変更しない。**実際のジョブ間restoreが成功したと断定するのはrun #44132575418の結果確認後のみ**。現段階はダウンロードステップ待ち。
+- すべて`NOT_APPROVED`、ゲーム未統合。Artifacts一時保管、正式素材への保存・development/mainマージなし。Claude向け恒久データの正式保存は承認後。
