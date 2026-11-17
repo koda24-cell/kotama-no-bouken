@@ -1,0 +1,58 @@
+name: B4 Magma Bank Modules P1-P3 Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
+    paths:
+      - tools/floor4/magma_banks/**
+      - .github/workflows/b4-magma-bank-modules-review.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and numpy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Render three candidate basalt-bank modules, four views each
+        run: |
+          set -euo pipefail
+          mkdir -p render-output
+          for pattern in p1 p2 p3; do
+            blender -b -t 2 --python tools/floor4/magma_banks/build_bank_modules.py -- --pattern "$pattern" --out render-output
+          done
+      - name: Verify GLB, Blend, PNG and SHA256 manifests
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib,struct,os
+          d=pathlib.Path('render-output')
+          for pattern in ('p1','p2','p3'):
+              stem=f'b4-magma-bank-{pattern}-v1'
+              m=json.loads((d/f'manifest-{pattern}.json').read_text())
+              assert m['approval']=='NOT_APPROVED'
+              expected={stem+'.glb',stem+'.blend'}|{stem+'-'+v+'.png' for v in ('front','side','angle','top')}
+              assert {x['file'] for x in m['files']}==expected
+              for x in m['files']:
+                  p=d/x['file']
+                  assert p.is_file() and p.stat().st_size==x['bytes'] and p.stat().st_size>3000
+                  assert hashlib.sha256(p.read_bytes()).hexdigest()==x['sha256']
+              glb=d/(stem+'.glb')
+              with glb.open('rb') as f:
+                  assert f.read(4)==b'glTF'
+                  ver,length=struct.unpack('<II',f.read(8))
+                  assert ver==2 and length==glb.stat().st_size
+              for v in ('front','side','angle','top'):
+                  assert (d/(stem+'-'+v+'.png')).read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+              print(pattern,'verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-magma-bank-p1-p3-review
+          path: render-output/
+          retention-days: 14
