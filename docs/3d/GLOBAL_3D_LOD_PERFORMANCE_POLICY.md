@@ -60,3 +60,17 @@ BotWの正確な葉のポリゴン数、シェーダ、距離閾値、LODフェ�
 - LODのヒステリシス／2Dセル先読みの純粋関数はNodeテスト済みだが、各階層の実ゲームLODマネージャーやロードは**未接続**。自動適用済みと説明しない。
 - glTF MASK／alphaTest／MSAAのAlpha to Coverageは**検証候補**。シェーダー、フレームレート、モバイル端末での実測なしに一括採用しない。
 - 参照: [GitHub Actions運用と検証記録](SHARED_3D_ACTIONS_OPTIMIZATION_PLAYBOOK.md)、[共通引継ぎ](BLENDER_SHARED_EXECUTION_ENTRYPOINT.md)。
+
+## 実装済みActions / 検証段階（2026-11-17）
+
+共通実装の詳細: [GLOBAL_3D_OPTIMIZATION_ACTIONS_HANDOFF.md](GLOBAL_3D_OPTIMIZATION_ACTIONS_HANDOFF.md)、[PR #488](https://github.com/koda24-cell/kotama-no-bouken/pull/488)。ツールコードのみdevelopmentにマージ済み。ゲーム本番LOD・カリングへは**未統合**。
+
+| 項目 | 実動作の証拠 | ゲーム反映 |
+| --- | --- | --- |
+| 全階層GLB構造監査・変更GLB自動監査 | 第1層48GLB [run 44058467063](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44058467063) 成功。GLB転送容量とmesh/triangle/材質情報の構造検証 | ツールのみ。実GPUドローコールは未計測 |
+| 葉材質別メッシュ統合＋4視点比較 | 第6層成木V14 [run 44059729505](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44059729505) 成功。9108→145mesh nodes、trisと視点PNGほぼ同一 | **未承認**。原木を保持 |
+| 岩・建築向けLOD0/1/2 GLB＋12PNG | 苔材質保護 [run 44062318352](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44062318352) 成功。3806→2431→1459 tris | **未承認**。崖・足場の破断シルエット検査が必要 |
+| 8方向遠景Impostor RGBAアトラス | [run 44061467370](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44061467370) 成功。UV選択ユニットテストも成功 | Three.jsで角度・視距離・影・切替フェード未統合 |
+| 2Dグリッド先読みとLODヒステリシス判定 | Nodeテスト [run 44063296917](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44063296917) 成功 | 独立した純粋関数のみ。ゲームの衝突/セーブ/視界を変更していない |
+
+対応ロードマップ: アセット別ゲーム視点テスト（前後/角度/近景）、端末別WebGLの `renderer.info` とFPS計測、透過MASK/A2Cと色/影の実比較、段階適用・ユーザー承認。まだ全階層自動LODを実装済みとは主張しない。
