@@ -6,13 +6,6 @@ on:
       - 'tools/floor3/switchback/build_v11.py'
       - 'tools/floor3/switchback/fetch_cc0_pbr.py'
       - '.github/workflows/floor3-switchback-v11.yml'
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [development]
-    paths:
-      - 'tools/floor3/switchback/build_v11.py'
-      - 'tools/floor3/switchback/fetch_cc0_pbr.py'
-      - '.github/workflows/floor3-switchback-v11.yml'
   workflow_dispatch:
 jobs:
   render:
@@ -28,8 +21,20 @@ jobs:
           python3 -m py_compile tools/floor3/switchback/build_v11.py
           printf '{"status":"started","asset":"floor3-switchback","version":"v11","approval":"NOT_APPROVED","source_commit":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/progress.json
           python3 tools/floor3/switchback/fetch_cc0_pbr.py
-          docker pull lscr.io/linuxserver/blender:latest
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/switchback/build_v11.py 2>&1 | tee blender.log
+          ready=0
+          for retry in 1 2 3 4 5; do
+            if docker pull lscr.io/linuxserver/blender:latest; then ready=1; break; fi
+            echo "Blender registry pull retry $retry/5"; sleep $((retry*10))
+          done
+          if test "$ready" -eq 1; then
+            docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/switchback/build_v11.py 2>&1 | tee blender.log
+          else
+            echo "Container registry unavailable; falling back to native Ubuntu Blender"
+            sudo apt-get update
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender
+            sudo ln -s "$GITHUB_WORKSPACE" /work
+            blender -b -t 2 --python /work/tools/floor3/switchback/build_v11.py 2>&1 | tee blender.log
+          fi
           grep -q "FLOOR3_SWITCHBACK_V11_COMPLETE" blender.log
       - name: Validate actual GLB, Blend and front/side/angle PNG
         shell: bash
