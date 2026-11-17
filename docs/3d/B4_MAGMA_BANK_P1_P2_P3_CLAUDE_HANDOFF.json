@@ -1,0 +1,42 @@
+{
+  "project": "kotama-no-bouken",
+  "floor": 4,
+  "approval": "USER_APPROVED",
+  "approved_at_jst": "2026-11-17",
+  "source_base": "b4-magma-river-v16",
+  "assets": [
+    {
+      "id": "b4_magma_river_p1_v4",
+      "glb": "assets/models/floor4/b4-magma-river-p1-v4.glb",
+      "review": "assets/models/floor4/reviews/b4-magma-river-p1-v4/",
+      "meshes": 456,
+      "materials": 7,
+      "images": 9,
+      "render_run": 44034610503,
+      "artifact_id": 14306048875
+    },
+    {
+      "id": "b4_magma_river_p2_v4",
+      "glb": "assets/models/floor4/b4-magma-river-p2-v4.glb",
+      "review": "assets/models/floor4/reviews/b4-magma-river-p2-v4/",
+      "meshes": 447,
+      "materials": 7,
+      "images": 9,
+      "render_run": 44034610503,
+      "artifact_id": 14306048875
+    },
+    {
+      "id": "b4_magma_river_p3_v5",
+      "glb": "assets/models/floor4/b4-magma-river-p3-v5.glb",
+      "review": "assets/models/floor4/reviews/b4-magma-river-p3-v5/",
+      "meshes": 538,
+      "materials": 7,
+      "images": 9,
+      "render_run": 44035779505,
+      "artifact_id": 14307625547
+    }
+  ],
+  "game_integration": "NOT_STARTED",
+  "claude_role": "Consume GLB PNG manifest; Three.js integration and size/origin/seams/performance QA; no Blender edits",
+  "gpt_role": "Blender modeling/render and source edits"
+}

@@ -1,0 +1,94 @@
+name: B4 Approved Magma Bank P1 P2 P3 Archive
+on:
+  push:
+    branches:
+      - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
+    paths:
+      - .github/workflows/b4-magma-bank-p1-p3-approved-archive.yml
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify source workflows and download exact approved artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/b4-approved/v4 /tmp/b4-approved/v5
+          for run in 44034610503 44035779505; do
+            gh api "repos/koda24-cell/kotama-no-bouken/actions/runs/$run" > "/tmp/b4-approved/$run.json"
+          done
+          python3 - <<'PY'
+          import json
+          for run,path in ((44034610503,'.github/workflows/b4-magma-bank-v16-derived-render.yml'),(44035779505,'.github/workflows/b4-magma-bank-p3-v5-review.yml')):
+              d=json.load(open(f'/tmp/b4-approved/{run}.json'))
+              assert d['status']=='completed' and d['conclusion']=='success'
+              assert d['path']==path
+              assert d['head_branch']=='feature/gpt-b4-magma-bank-modules-p1-p3-20261117'
+          PY
+          gh run download 44034610503 --repo koda24-cell/kotama-no-bouken --name b4-magma-v16-derived-p1-p3-v4 --dir /tmp/b4-approved/v4
+          gh run download 44035779505 --repo koda24-cell/kotama-no-bouken --name b4-magma-p3-v5-secondary-cascade --dir /tmp/b4-approved/v5
+      - name: Verify and archive approved GLB Blend and four views
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,struct,shutil
+          base=pathlib.Path('/tmp/b4-approved')
+          dest=pathlib.Path('assets/models/floor4')
+          dest.mkdir(parents=True,exist_ok=True)
+          for p,v,run,artifact in (('p1','v4',44034610503,14306048875),('p2','v4',44034610503,14306048875),('p3','v5',44035779505,14307625547)):
+              src=base/v
+              stem=f'b4-magma-river-{p}-{v}'
+              manifest=json.loads((src/f'manifest-{p}-{v}.json').read_text())
+              expected={stem+'.glb',stem+'.blend'}|{stem+'-'+view+'.png' for view in ('front','side','angle','top')}
+              assert {x['file'] for x in manifest['files']}==expected
+              for item in manifest['files']:
+                  fp=src/item['file']
+                  assert fp.is_file() and fp.stat().st_size==item['size'] and fp.stat().st_size>4000
+                  assert hashlib.sha256(fp.read_bytes()).hexdigest()==item['sha256']
+              glb=src/(stem+'.glb')
+              with glb.open('rb') as f:
+                  assert f.read(4)==b'glTF'
+                  version,length=struct.unpack('<II',f.read(8))
+                  assert version==2 and length==glb.stat().st_size
+                  chunk_len,chunk_type=struct.unpack('<II',f.read(8))
+                  assert chunk_type==0x4e4f534a
+                  scene=json.loads(f.read(chunk_len))
+              assert len(scene['meshes'])>=390 and len(scene['images'])>=9 and len(scene['materials'])>=7
+              for view in ('front','side','angle','top'):
+                  assert (src/(stem+'-'+view+'.png')).read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+              blend=src/(stem+'.blend')
+              assert blend.read_bytes()[:7]==b'BLENDER' or blend.read_bytes()[:4]==bytes.fromhex('28b52ffd')
+              dst=dest/'reviews'/stem
+              dst.mkdir(parents=True,exist_ok=True)
+              shutil.copy2(glb,dest/(stem+'.glb'))
+              shutil.copy2(blend,dst/'source.blend')
+              for view in ('front','side','angle','top'):
+                  shutil.copy2(src/(stem+'-'+view+'.png'),dst/(view+'.png'))
+              shutil.copy2(src/f'manifest-{p}-{v}.json',dst/'source-manifest.json')
+              paths=[dest/(stem+'.glb'),dst/'source.blend']+[dst/(view+'.png') for view in ('front','side','angle','top')]
+              files=[{'path':str(fp),'bytes':fp.stat().st_size,'sha256':hashlib.sha256(fp.read_bytes()).hexdigest()} for fp in paths]
+              approved={'asset_id':f'b4_magma_river_{p}_{v}','approval':'USER_APPROVED','approved_at_jst':'2026-11-17',
+                'source_run_id':run,'source_artifact_id':artifact,'base_asset':'b4-magma-river-v16',
+                'mesh_count':len(scene['meshes']),'material_count':len(scene['materials']),'image_count':len(scene['images']),
+                'game_integration':'NOT_STARTED','files':files,'source_manifest':'source-manifest.json'}
+              (dst/'manifest.json').write_text(json.dumps(approved,ensure_ascii=False,indent=2)+'\n')
+              (dst/'SHA256SUMS.txt').write_text(''.join(f"{item['sha256']}  {pathlib.Path(item['path']).name}\n" for item in files[1:]))
+              print(stem,'verified',len(scene['meshes']),'meshes')
+          PY
+      - name: Commit approved files to feature branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models/floor4/b4-magma-river-p1-v4.glb assets/models/floor4/b4-magma-river-p2-v4.glb assets/models/floor4/b4-magma-river-p3-v5.glb assets/models/floor4/reviews/b4-magma-river-p1-v4 assets/models/floor4/reviews/b4-magma-river-p2-v4 assets/models/floor4/reviews/b4-magma-river-p3-v5
+          git diff --cached --quiet && exit 0
+          git commit -m 'assets(b4): archive approved magma bank P1 V4 P2 V4 P3 V5'
+          git pull --rebase origin feature/gpt-b4-magma-bank-modules-p1-p3-20261117
+          git push origin HEAD:feature/gpt-b4-magma-bank-modules-p1-p3-20261117

@@ -1,0 +1,47 @@
+name: B4 Approved Bank Reconcile Development
+on:
+  push:
+    branches:
+      - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
+    paths:
+      - .github/workflows/b4-magma-bank-approved-reconcile.yml
+permissions:
+  contents: write
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Merge latest development and retain all approved assets
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin development
+          git merge -X theirs --no-edit origin/development || {
+            echo "Conflicts found; resolving only ledger in favor of current development"
+            git diff --name-only --diff-filter=U > /tmp/conflicts
+            cat /tmp/conflicts
+            if [ "$(cat /tmp/conflicts)" != "docs/3d/FLOOR4_COMPLETED_ASSETS.md" ]; then
+              echo "Unexpected conflicts; aborting safely"
+              exit 1
+            fi
+            git checkout --theirs docs/3d/FLOOR4_COMPLETED_ASSETS.md
+            git add docs/3d/FLOOR4_COMPLETED_ASSETS.md
+            git commit --no-edit
+          }
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('docs/3d/FLOOR4_COMPLETED_ASSETS.md')
+          s=p.read_text()
+          if '## マグマ河川派生 P1 V4 / P2 V4 / P3 V5' not in s:
+              s+='''\n## マグマ河川派生 P1 V4 / P2 V4 / P3 V5（2026-11-17 ユーザー完成承認）\n| 素材 | 正式GLB | Claude引継ぎ | ゲーム統合 |\n| --- | --- | --- | --- |\n| 細い支流・岩岸 P1 V4 | assets/models/floor4/b4-magma-river-p1-v4.glb | docs/3d/B4_MAGMA_BANK_P1_P2_P3_CLAUDE_HANDOFF.json | 未実施 |\n| 分岐玄武岩岸 P2 V4 | assets/models/floor4/b4-magma-river-p2-v4.glb | 同上 | 未実施 |\n| 玄武岩段差・第二溶岩滝 P3 V5 | assets/models/floor4/b4-magma-river-p3-v5.glb | 同上 | 未実施 |\n\nGLB・Blend・4方向PNG・ハッシュ付きmanifestは各reviews/b4-magma-river-p*-v*/に恒久保存。承認済みV16本体は保持。ゲーム統合は別作業。\n'''
+              p.write_text(s)
+          PY
+          git add docs/3d/FLOOR4_COMPLETED_ASSETS.md
+          if ! git diff --cached --quiet; then git commit -m 'docs(b4): retain user-approved bank asset ledger'; fi
+          git push origin HEAD:feature/gpt-b4-magma-bank-modules-p1-p3-20261117

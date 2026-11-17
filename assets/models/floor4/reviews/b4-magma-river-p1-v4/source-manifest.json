@@ -1,0 +1,38 @@
+{
+  "approval": "NOT_APPROVED",
+  "variant": "p1-v4",
+  "geometry": "meandering lava river, pool, cascade, eroded basalt banks",
+  "textures": "existing repo assets/3d/dungeons/b4_dragonfire/textures",
+  "files": [
+    {
+      "file": "b4-magma-river-p1-v4-angle.png",
+      "size": 1334302,
+      "sha256": "cee5901a570dbf676bbd30d770af405a889d3c1e92eaecb86480e9384ca05c00"
+    },
+    {
+      "file": "b4-magma-river-p1-v4-front.png",
+      "size": 1339656,
+      "sha256": "25132d122520c73495fe15a4ac7196e900f164e50ab5565adf11ce264db639c2"
+    },
+    {
+      "file": "b4-magma-river-p1-v4-side.png",
+      "size": 1351410,
+      "sha256": "787781ed0bacefe28e9de3ec9075a1d7bb11bc047e7c7dc42bbb3b3ef0a7b3ec"
+    },
+    {
+      "file": "b4-magma-river-p1-v4-top.png",
+      "size": 1757385,
+      "sha256": "4aee0ab61c7e1c3db76dba8a0fd033e68407e8c931c8924d6e8339c5b4b4c924"
+    },
+    {
+      "file": "b4-magma-river-p1-v4.blend",
+      "size": 4096889,
+      "sha256": "8f6fa5aee3bf42703bb35659f059dbfd081f5070165dd34e49a11a297636e323"
+    },
+    {
+      "file": "b4-magma-river-p1-v4.glb",
+      "size": 13709312,
+      "sha256": "2f41053e4f7f124ea9d8f69d5752b8c0339c6741e9b9917b25c93ed66fab3f8f"
+    }
+  ]
+}

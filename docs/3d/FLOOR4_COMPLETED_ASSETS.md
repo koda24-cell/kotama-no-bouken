@@ -25,3 +25,12 @@
 
 - **V16恒久保存検証済み**: Archive run [44028977940](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44028977940) success、正式保存PR [#477](https://github.com/koda24-cell/kotama-no-bouken/pull/477) developmentマージ成功（`65c5ff184adef4f7ccb9382313d3f5e3c4826c9a`）。GLB/Blend/4 PNG/承認manifestのGit実体を確認済み。
 - 次の派生P1/P2/P3（細い支流・分岐岩岸・段差棚）は[試作PR #478](https://github.com/koda24-cell/kotama-no-bouken/pull/478)で管理。**未承認**、完成素材一覧には追加しない。
+
+## マグマ河川派生 P1 V4 / P2 V4 / P3 V5（2026-11-17 ユーザー完成承認）
+| 素材 | 正式GLB | Claude引継ぎ | ゲーム統合 |
+| --- | --- | --- | --- |
+| 細い支流・岩岸 P1 V4 | assets/models/floor4/b4-magma-river-p1-v4.glb | docs/3d/B4_MAGMA_BANK_P1_P2_P3_CLAUDE_HANDOFF.json | 未実施 |
+| 分岐玄武岩岸 P2 V4 | assets/models/floor4/b4-magma-river-p2-v4.glb | 同上 | 未実施 |
+| 玄武岩段差・第二溶岩滝 P3 V5 | assets/models/floor4/b4-magma-river-p3-v5.glb | 同上 | 未実施 |
+
+GLB・Blend・4方向PNG・ハッシュ付きmanifestは各reviews/b4-magma-river-p*-v*/に恒久保存。承認済みV16本体は保持。ゲーム統合は別作業。
