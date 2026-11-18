@@ -1,0 +1,44 @@
+name: Candidate asset safety audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/asset-security-audit-20261118]
+    paths:
+      - ".github/workflows/candidate-asset-safety-audit.yml"
+      - "tools/security/inventory_scan.py"
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install ClamAV and update signatures
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clamav clamav-freshclam
+          sudo systemctl stop clamav-freshclam || true
+          mkdir -p security-audit-output
+          sudo freshclam > security-audit-output/definitions.log 2>&1 || echo "Signature update failed; result cannot be certified" >> security-audit-output/definitions.log
+          clamscan --version > security-audit-output/engine-version.txt
+      - name: Inventory and non-executing ZIP structure check
+        run: python3 tools/security/inventory_scan.py
+      - name: Signature scan of checked-out files
+        shell: bash
+        run: |
+          set +e
+          clamscan -r -i --max-filesize=100M --max-scansize=300M --max-recursion=12 --max-files=20000 --exclude-dir='^./.git' . > security-audit-output/clamscan.log 2>&1
+          echo "clamscan_exit=$?" > security-audit-output/scan-exit.txt
+          tail -n 30 security-audit-output/clamscan.log
+          exit 0
+      - name: Upload logs (not a safety certificate)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asset-safety-audit
+          path: security-audit-output
+          retention-days: 14
