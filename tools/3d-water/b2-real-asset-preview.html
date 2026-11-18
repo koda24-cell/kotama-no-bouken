@@ -1,0 +1,51 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第2層既存GLB × 水V2 独立比較</title>
+<style>html,body{margin:0;overflow:hidden;background:#132a3e;color:#e6f7ff;font:14px system-ui}canvas{display:block}#panel{position:absolute;left:12px;top:12px;background:#071a30e8;padding:12px;max-width:320px;border-radius:8px;z-index:2}label{display:block;margin:8px 0}small{display:block;line-height:1.5}select{padding:4px}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script></head><body>
+<div id="panel"><b>第2層実GLB × 水試作（非本番）</b>
+<label><input type="checkbox" id="enhance"> 水V2実験シェーダーを適用</label>
+<label>画質 <select id="quality"><option value="high">高</option><option value="medium">中</option><option value="low">低</option></select></label>
+<small>既存GLBのメッシュ形状は変更しません。認識した水マテリアルだけ一時的に差替える独立プレビュー。未承認、レンダリング結果未確認。</small>
+<small id="status">GLBロード開始...</small><small id="stats"></small></div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {createWaterV2} from './water-v2.mjs';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x132a3e);
+scene.add(new THREE.HemisphereLight(0xc3ebff,0x24445b,2.0));
+const light=new THREE.DirectionalLight(0xd6f8ff,2.2);light.position.set(-7,12,6);scene.add(light);
+const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,.05,500);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.append(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+const lake=createWaterV2('lake'),falls=createWaterV2('waterfall');const changed=[];
+const status=document.getElementById('status'),stats=document.getElementById('stats');
+function ensurePreviewUV(mesh){
+ if(mesh.geometry.getAttribute('uv'))return;
+ const geometry=mesh.geometry.clone(),pos=geometry.getAttribute('position');
+ const bounds=new THREE.Box3().setFromBufferAttribute(pos),size=bounds.getSize(new THREE.Vector3());
+ const axes=[0,1,2].sort((a,b)=>size.getComponent(b)-size.getComponent(a));
+ const uv=new Float32Array(pos.count*2),lo=bounds.min;
+ for(let i=0;i<pos.count;i++)for(let j=0;j<2;j++){
+  let axis=axes[j],length=Math.max(size.getComponent(axis),.001);
+  uv[i*2+j]=(pos.getComponent(i,axis)-lo.getComponent(axis))/length;
+ }
+ geometry.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+ mesh.geometry=geometry;
+}
+function classify(name){let s=(name||'').toLowerCase();if(/waterfall|falls|滝/.test(s))return 'falls';if(/clear blue water|water surface|水面|^water$/.test(s))return 'lake';return null;}
+let loaded=false;
+new GLTFLoader().load('../../assets/3d/dungeons/b2_water_source/models/floor2-water-source-quality-v3.glb',gltf=>{
+ const root=gltf.scene;scene.add(root);root.updateMatrixWorld(true);
+ root.traverse(obj=>{if(!obj.isMesh)return;const arr=Array.isArray(obj.material)?obj.material:[obj.material];const newM=arr.map(m=>{const type=classify(m?.name);if(!type)return m;ensurePreviewUV(obj);changed.push({obj,name:m.name,type});return type==='falls'?falls.material:lake.material;});const old=obj.material;obj.material=Array.isArray(old)?newM:newM[0];obj.userData.originalMaterial=old;});
+ // Default to existing material until comparison checkbox is explicitly checked.
+ root.traverse(obj=>{if(obj.isMesh)obj.material=obj.userData.originalMaterial;});
+ const box=new THREE.Box3().setFromObject(root),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3()),d=Math.max(size.x,size.y,size.z);
+ controls.target.copy(center);camera.position.copy(center).add(new THREE.Vector3(d*.8,d*.55,d*.9));camera.near=Math.max(.01,d/2500);camera.far=d*14;camera.updateProjectionMatrix();controls.update();
+ document.getElementById('enhance').onchange=e=>root.traverse(obj=>{if(!obj.isMesh)return;const old=obj.userData.originalMaterial;const originals=Array.isArray(old)?old:[old];const next=originals.map(m=>{let type=classify(m?.name);return e.target.checked&&type?(type==='falls'?falls.material:lake.material):m;});obj.material=Array.isArray(old)?next:next[0]});
+ loaded=true;status.textContent='GLBロード済み。水マテリアル候補: '+changed.map(x=>x.name).filter((x,i,a)=>a.indexOf(x)===i).join(', ');
+},undefined,e=>{status.textContent='GLB読み込み失敗: '+e.message;});
+window.__kotamaRealB2={renderer,camera,scene};
+const clock=new THREE.Clock();function frame(){requestAnimationFrame(frame);const t=clock.getElapsedTime(),q=document.getElementById('quality').value;lake.update(t,q);falls.update(t,q);controls.update();renderer.render(scene,camera);if(loaded)stats.textContent='Draw calls '+renderer.info.render.calls+' / tris '+renderer.info.render.triangles;}frame();
+onresize=()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);};
+</script></body></html>

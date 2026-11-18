@@ -1,0 +1,69 @@
+name: B2 F6 Shader Research Regression
+on:
+  push:
+    branches:
+      - feature/gpt-f6-meadow-wind-field-prototype-20261118
+    paths:
+      - 'tools/3d-water/**'
+      - 'tools/floor6/meadow-wind-field*'
+      - 'tools/floor6/f6-v7-wind-adapter.mjs'
+      - 'tools/floor6/v7-wind-asset-preview.html'
+      - '.github/workflows/b2-f6-shader-research-tests.yml'
+  workflow_dispatch:
+jobs:
+  pure-model-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify source syntax
+        run: |
+          node --check tools/3d-water/water-surface.mjs
+          node --check tools/3d-water/water-quality.mjs
+          node --check tools/3d-water/water-field.mjs
+          node --check tools/3d-water/water-v2.mjs
+          node --check tools/floor6/meadow-wind-field.mjs
+      - name: Water quality and flow tile tests
+        run: |
+          node tools/3d-water/water-surface.test.mjs
+          node tools/3d-water/water-field.test.mjs
+      - name: Meadow wind math tests
+        run: node tools/floor6/meadow-wind-field.test.mjs
+
+  shader-browser-review:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test tooling
+        run: |
+          npm install --no-save --no-package-lock playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Retrieve approved-look F6 V7 source artifact for isolated review
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p render-input
+          gh run download 43602069517 --repo ${{ github.repository }} -n f6-meadow-floor-v1 -D render-input
+          test -s render-input/f6_meadow_floor_v1.glb
+      - name: Capture actual WebGL renders and console errors
+        run: node tools/3d-water/visual-smoke.mjs
+      - name: Upload unapproved preview PNG and metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-f6-shader-unapproved-browser-review
+          path: render-output/shader-research/
+          retention-days: 14
+          if-no-files-found: warn

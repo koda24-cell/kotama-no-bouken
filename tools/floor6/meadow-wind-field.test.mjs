@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {sampleMeadowWind,DEFAULT_WIND,MEADOW_WIND_GLSL} from './meadow-wind-field.mjs';
+const p={x:2.5,z:-1.3,timeSeconds:1.25,plantPhase:0.4};
+const root=sampleMeadowWind({...p,heightRatio:0});
+assert.equal(root.dx,0);assert.equal(root.dz,0);
+const tip=sampleMeadowWind({...p,heightRatio:1});
+assert.ok(Number.isFinite(tip.dx)&&Number.isFinite(tip.dz));
+assert.deepEqual(tip,sampleMeadowWind({...p,heightRatio:1}));
+const near=sampleMeadowWind({...p,x:p.x+0.001,heightRatio:1});
+assert.ok(Math.hypot(tip.dx-near.dx,tip.dz-near.dz)<0.001);
+const still=sampleMeadowWind({...p,heightRatio:1,stiffness:0});
+assert.equal(still.dx,0);assert.equal(still.dz,0);
+const later=sampleMeadowWind({...p,heightRatio:1,timeSeconds:5});
+assert.ok(Math.hypot(tip.dx-later.dx,tip.dz-later.dz)>0.001);
+assert.equal(DEFAULT_WIND.directionDegrees,32);
+assert.ok(MEADOW_WIND_GLSL.includes('kotamaMeadowWind'));
+console.log('F6 wind mathematical regression tests: PASS');
