@@ -20,3 +20,10 @@
 
 ## 引き継ぎ
 Claudeは出力されたGLB/PNG/manifestを受け取り、Blender操作は担当しない。元V19と候補V20の両方を確認してユーザー承認を待つ。
+
+## 2026-11-18 V21 soft-leaf review
+- V19 original: source tree GLB/Blend/4-view PNG remains unchanged.
+- V20 CC0 PBR download/apply/4-view job succeeded: run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44220114498 , actual artifact contained color, normal, opacity, roughness with sha256 and both tree versions. V20 photo map appeared **too pale and yellow-green** in front/angle render; not accepted.
+- V21 change on the same independent review PR: retain CC0 source and original V19 checkpoint, apply lower saturation and a subdued woodland tint in the review material, blunt needle-like tips by rebuilding leaf outline in review-only Blender scene and retain curvature/leaf count. Preserve all V19 wood/root geometry. Candidate V21 in `tree_mature_photo_v21` and 4 PNGs.
+- V21 visual QA: do not claim success without matching successful run, actual PNG file hashes and review of color/silhouette. Double-sided leaf faces now use more triangles; do not present as optimized LOD. Texture mask/alpha is not used pending test. Full game FPS still unmeasured.
+- As with prior versions, **NOT_APPROVED**. No material promotion; no production merge.
