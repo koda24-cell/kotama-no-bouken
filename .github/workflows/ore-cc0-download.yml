@@ -7,6 +7,7 @@ on:
       - 'tools/ore/intake_cc0_assets.py'
       - 'tools/ore/render_imported_boulder.py'
       - 'tools/ore/render_dense_crystal_boulder.py'
+      - 'tools/ore/validate_crystal_growth.py'
       - '.github/workflows/ore-cc0-download.yml'
   workflow_dispatch:
 permissions:
@@ -108,6 +109,8 @@ jobs:
         run: |
           mkdir -p ore-dense-render
           blender -b -t 2 --python tools/ore/render_dense_crystal_boulder.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-dense-render"
+      - name: Evaluate reference-driven growth metrics
+        run: python3 tools/ore/validate_crystal_growth.py ore-dense-render/manifest.json
       - name: Verify four PNGs, GLB, and unchanged source mesh count
         run: |
           python3 - <<'PY'
