@@ -23,6 +23,11 @@ jobs:
       - name: Static syntax check
         run: |
           python3 -m py_compile tools/floor6/tree_mature_v1.py tools/floor6/fetch_cc0_leaf.py tools/floor6/apply_cc0_leaf_photo.py
+      - name: Obtain official CC0 leaf archive and validate its maps
+        run: |
+          set -euo pipefail
+          python3 tools/floor6/fetch_cc0_leaf.py
+          test -s render-output/floor6/cc0-leaf-source/color.png
       - name: Install Blender rendering dependencies
         run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy libegl1 libgl1 libopengl0 libgl1-mesa-dri
       - name: Generate original V19 GLB, Blend and four camera PNGs
@@ -32,11 +37,6 @@ jobs:
           blender -b -t 2 --python tools/floor6/tree_mature_v1.py 2>&1 | tee /tmp/f6_baseline.log
           grep -q F6_TREE_MATURE_DONE /tmp/f6_baseline.log
           test -s render-output/floor6/nature/tree_mature/tree_mature.blend
-      - name: Obtain official CC0 leaf archive and validate its maps
-        run: |
-          set -euo pipefail
-          python3 tools/floor6/fetch_cc0_leaf.py
-          test -s render-output/floor6/cc0-leaf-source/color.png
       - name: Apply CC0 leaf color and PBR while preserving base geometry
         run: |
           set -euo pipefail
