@@ -19,7 +19,7 @@ import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometr
 import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=20261117-l1';   // 結晶（ユーザー確認済みの質感）
 import { createB2WaterTiles, B2V4W_REMOVE_STEPPING_STONES } from './b2-water-tiles.js?v=20261117-w1';   // [B2V4-W] 危険な水面（GPT 水面タイル）・床の模様
 import { createFlora, floraMaterial, floraMaterialClass, floraTint } from './b2-flora.js?v=20261117-f1';   // [B2V4-F] 花の配置と見た目
-import { createSetpieces, SP_ROLES } from './b2-setpieces.js?v=20261117-s1';   // [B2V4-S] 階段・橋・水門・柱群・背景モニュメント
+import { createSetpieces, SP_ROLES } from './b2-setpieces.js?v=20261117-s2';   // [B2V4-S] 階段・橋・水門・柱群・背景モニュメント
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
 export const B2_GLB = B2_BASE + 'models/floor2-water-source-quality-v3.glb';
@@ -1155,7 +1155,8 @@ export async function createTheme(api) {
     // 氷結した古代水門：大広間の外壁に埋め込む（正面の1辺だけが通路に面した、奥行き2マスの壁の並び）。3Fだけ・1回
     const gateRoleCells = [];   // [B2V4-S]
     if (roles) for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) if (role(tx, ty) === SP_ROLES.watergate) gateRoleCells.push([tx, ty]);
-    if (monumentFloor) {
+    const mazeGates = (roles && a.b2Features && a.b2Features.watergates) || [];   // [B2V4-S] 迷宮班 M の水門の展示区画があれば、壁の塊ではなくそこへ置く
+    if (monumentFloor && !mazeGates.length) {   // [B2V4-S]
       let best = null;
       for (let y = 1; y < a.h; y++) for (let x = 1; x + 4 <= a.w - 1; x++) {
         // 正面が北（y-1 の行が4マスとも通路）、奥行き2マス（y, y+1）が壁。モニュメントのマスとは重ねない
@@ -1178,6 +1179,7 @@ export async function createTheme(api) {
     const wantAssets = [...monuments.map((m) => m.name), 'pillarA', 'pillarR', 'pillarG', ...backdrops.map((q) => q.name)];
     if (monuments.some((m) => m.name === 'bridge') || backdrops.some((q) => q.name === 'bridge')) wantAssets.push('aqueduct', 'shoreline');
     if (bridge || (roles && roles.some((row) => row && row.includes && row.includes(SP_ROLES.bridge)))) wantAssets.push('bridgeLite');
+    if (mazeGates.length) wantAssets.push('watergate');   // [B2V4-S]
     await Promise.all([...new Set(wantAssets)].map(async (nm) => {
       try { assets[nm] = await loadAsset(nm); } catch (e) { console.warn('[field-3d] 第2階層の追加素材を読めなかったため置きません:', nm, e); }
     }));
@@ -1597,6 +1599,7 @@ export async function createTheme(api) {
       else addMonument(m, assets[m.name], B, sp.monumentYaw(m));   // [B2V4-S] 正面を開けた側へ
     }
     for (const bd of backdrops) sp.buildBackdrop(bd, assets);   // [B2V4-S] 外周壁の向こうの背景モニュメント
+    for (const gt of mazeGates) sp.buildMazeWatergate(gt, assets.watergate);   // [B2V4-S] 迷宮班 M の水門の展示区画（水は水面班 W のタイル）
     addPillars(a, B, assets, { ch, wallCell, objAt, zoneCells, falls, openCells, sp, EX });
     // 柱：4マスが通れる角（マスとマスの間の点）に、床から天井まで届く柱。プレイヤーが通るマスの中心と辺の中点から2m離れている
     const clusterAt = [];   // [B2V4-S] 遺跡群の位置
@@ -1615,10 +1618,12 @@ export async function createTheme(api) {
       }
       B.add('spires', pick(proc.columns, hash(tx, ty, 592)), M4(px, 0, pz, hash(tx, ty, 593) * 6.28, [sc, 1, sc]), tx, ty);
     }
-    if (bridge && !sp.buildBridge(bridge, assets.bridgeLite, EX) && !B2V4W_REMOVE_STEPPING_STONES) {   // [B2V4-S] 古代の氷橋の橋桁と欄干＋たもとの氷岸 / [B2V4-W] 飛び石（四角い石板）は廃止。旧の壊れた橋は読めないとき、かつ飛び石を残す設定のときだけ
+    const mazeBridges = (roles && a.b2Features && a.b2Features.bridges) || [];   // [B2V4-S] ランダム階は迷宮班 M の橋だけに架ける（浅瀬の並びには架けない）
+    if (bridge && !mazeBridges.length && !sp.buildBridge(bridge, assets.bridgeLite, EX) && !B2V4W_REMOVE_STEPPING_STONES) {   // [B2V4-S] 古代の氷橋の橋桁と欄干＋たもとの氷岸 / [B2V4-W] 飛び石（四角い石板）は廃止。旧の壊れた橋は読めないとき、かつ飛び石を残す設定のときだけ
       const sx = (CELL * 3 - 0.6) / kit.bridge.size.x;
       B.add('landmarks', kit.bridge, M4(X(bridge.tx), -0.42, Z(bridge.ty), bridge.ry, [sx, 1, 1.15]), bridge.tx, bridge.ty);
     }
+    for (const fb of mazeBridges) sp.buildMazeBridge(fb, assets.bridgeLite, EX);   // [B2V4-S] 迷宮班 M の橋（水路をまたぐ通り道）に古代の氷橋
 
     // 物（宝箱・採集・灯・NPC・イベント・仕掛け・階段・出口・ボス門）
     const s = S;

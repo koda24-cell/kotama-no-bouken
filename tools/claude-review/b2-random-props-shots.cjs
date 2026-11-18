@@ -56,17 +56,18 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
   const shotS = async (name) => { await shot(name); stats[name] = await p.evaluate(() => window.KotamaField3D.stats && window.KotamaField3D.stats()); };
   await p.evaluate(() => { fieldEnterArea(2, { floor: 0, adminSkip: true }); });
   for (let i = 0; i < 8; i++) await skip();
-  for (const f of [0, 1, 2]) {
+  // [B2V4-S] 1巡目：3階分の見せ場だけを先に撮る（撮影の段の15分の制限で 6F の見せ場が切れないように）。2巡目：それ以外（従来どおり）
+  for (const [spPass, f] of [[true, 0], [true, 1], [true, 2], [false, 0], [false, 1], [false, 2]]) {
     await p.evaluate((f) => { fieldState.floor = f; fieldState.positioned = false; fieldState.built = ''; fieldShow(); }, f);
     for (let i = 0; i < 4; i++) await skip();
     await waitBuilt(`floor ${f}`); await p.waitForTimeout(1200);
     const inf = await info(), L = inf.layout || {}, pre = `b2f${f + 1}_props`;
     // 足した物・柱の中心が、通れるマスの中央から 1.0m（0.25マス）以内に無いか
     const centerHits = await p.evaluate((placed) => { const a = fieldArea(), out = []; for (const q of placed || []) { const tx = Math.round(q.x), ty = Math.round(q.z), c = fieldTileAt(a, tx, ty); if (!c || c === '#' || fieldCharSolid(a, c)) continue; const d = Math.hypot(q.x - tx, q.z - ty) * 4; if (d < 1.0) out.push({ ...q, d: +d.toFixed(2) }); } return out; }, inf.placed);
-    report.floors.push({ floor: f + 1, centerHits, placedCount: (inf.placed || []).length, buildKey: inf.buildKey, random: inf.random, layout: L, extras: inf.extras, falls: inf.falls, monuments: inf.monuments, crystalZones: inf.crystalZones, drawGroups: inf.drawGroups });
+    if (spPass) report.floors.push({ floor: f + 1, centerHits, placedCount: (inf.placed || []).length, buildKey: inf.buildKey, random: inf.random, layout: L, extras: inf.extras, falls: inf.falls, monuments: inf.monuments, crystalZones: inf.crystalZones, drawGroups: inf.drawGroups });
     // [B2V4-S] 見せ場（階段・背景モニュメント・水門・橋・柱群）。themeInfo().setpieces の位置から撮る
-    const SPI = inf.setpieces || {};
-    report.floors[report.floors.length - 1].setpieces = SPI;
+    const SPI = spPass ? inf.setpieces || {} : {};
+    if (spPass) report.floors[report.floors.length - 1].setpieces = SPI;
     const D4 = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
     const stand = async (tx, ty, d) => { await p.evaluate(([tx, ty, d]) => { const cc = fieldTileCenter(tx, ty); fieldState.x = cc.x; fieldState.y = cc.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, [tx, ty, d]); await p.waitForTimeout(900); };
     const walkable = (tx, ty) => p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [tx, ty]);
@@ -84,26 +85,67 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
       const sx = bd.tx + D4[lat][0] * 2 - D4[bd.d][0], sy = bd.ty + D4[lat][1] * 2 - D4[bd.d][1];
       if (await walkable(sx, sy)) { await stand(sx, sy, bd.d); await shotS(`${pre}_monument_backdrop_${bd.name}_oblique`); }
     }
+    // 水門：迷宮班 M の展示区画なら、見る床 V（水際）・1マス手前・2マス手前から正面を撮る。壁の塊の水門なら、正面の列から下を向いて撮る
     if (SPI.watergate) {
-      const wg = SPI.watergate, cx = wg.x + 1, cy = wg.y - 1;
-      for (const [ty, tag] of [[cy - 2, 'far'], [cy, 'edge']]) if (await walkable(cx, ty)) { await stand(cx, ty, 'down'); await shotS(`${pre}_monument_watergate_${tag}`); }
-      if (await walkable(wg.x - 1, cy)) { await stand(wg.x - 1, cy, 'right'); await shotS(`${pre}_monument_watergate_side`); }
+      const wg = SPI.watergate;
+      if (wg.maze) {
+        const [vx, vy] = wg.view, f = wg.facing, [fx, fy] = D4[f];
+        await stand(vx, vy, f); await shotS(`${pre}_monument_watergate_edge`);
+        if (await walkable(vx - fx, vy - fy)) { await stand(vx - fx, vy - fy, f); await shotS(`${pre}_monument_watergate_front`);
+          if (await walkable(vx - fx * 2, vy - fy * 2)) { await stand(vx - fx * 2, vy - fy * 2, f); await shotS(`${pre}_monument_watergate_far`); } }
+      } else {
+        const cx = wg.x + 1, cy = wg.y - 1;
+        await stand(cx, cy, 'down'); await shotS(`${pre}_monument_watergate_edge`);
+        if (await walkable(cx, cy - 1)) { await stand(cx, cy - 1, 'down'); await shotS(`${pre}_monument_watergate_front`);
+          if (await walkable(cx, cy - 2)) { await stand(cx, cy - 2, 'down'); await shotS(`${pre}_monument_watergate_far`); } }
+      }
     }
-    if (SPI.bridge) {
-      const br = SPI.bridge, along = br.ry === 0, d = along ? 'right' : 'down', b = along ? 'left' : 'up';
-      const ex = br.tx - (along ? 2 : 0), ey = br.ty - (along ? 0 : 2);
-      if (await walkable(ex, ey)) { await stand(ex, ey, d); await shotS(`${pre}_bridge_from_end`); }
-      await stand(br.tx, br.ty, d); await shotS(`${pre}_bridge_on_deck`);
-      const sx = br.tx + (along ? 0 : 2), sy = br.ty + (along ? 2 : 0);
-      if (await walkable(sx, sy)) { await stand(sx, sy, along ? 'up' : 'left'); await shotS(`${pre}_bridge_side`); }
-      else if (await walkable(br.tx + (along ? 0 : -2), br.ty + (along ? -2 : 0))) { await stand(br.tx + (along ? 0 : -2), br.ty + (along ? -2 : 0), along ? 'down' : 'right'); await shotS(`${pre}_bridge_side`); }
+    // 橋：渡る手前（岸の1〜2マス手前）から正面、橋の上から先、水辺から横
+    for (const [i, br] of (SPI.bridges || (SPI.bridge ? [SPI.bridge] : [])).entries()) {
+      const along = br.ry === 0, fwd = along ? 'right' : 'down', bwd = OPP[fwd], [fx, fy] = D4[fwd];
+      const cells = br.cells || [[br.tx - (along ? 1 : 0), br.ty - (along ? 0 : 1)], [br.tx, br.ty], [br.tx + (along ? 1 : 0), br.ty + (along ? 0 : 1)]];
+      const first = cells[0], last = cells[cells.length - 1], tag = `${pre}_bridge${i ? i + 1 : ''}`;
+      // 手前から正面（first の手前の岸。2マス手前が通れればそこから）
+      for (const [x0, y0, d, nm] of [[first[0] - fx, first[1] - fy, fwd, 'approach']]) {
+        const [dx, dy] = D4[d];
+        if (await walkable(x0 - dx, y0 - dy)) { await stand(x0 - dx, y0 - dy, d); await shotS(`${tag}_${nm}`); }
+        else if (await walkable(x0, y0)) { await stand(x0, y0, d); await shotS(`${tag}_${nm}`); }
+      }
+      await stand(first[0], first[1], fwd); await shotS(`${tag}_on_deck`);
+      // 横：橋と直角の向きに、水路の向こうの通れるマスから橋を見る（最大4マス先まで探す）
+      const lats = along ? ['up', 'down'] : ['left', 'right'], mid = cells[Math.floor((cells.length - 1) / 2)];
+      let sideDone = false;
+      for (const off of [0, -1, 1]) for (const ld of lats) for (let k = 2; k <= 5 && !sideDone; k++) {
+        const bx = mid[0] + (along ? off : 0), by = mid[1] + (along ? 0 : off), sx = bx + D4[ld][0] * k, sy = by + D4[ld][1] * k;
+        if (await walkable(sx, sy)) { await stand(sx, sy, OPP[ld]); await shotS(`${tag}_side`); sideDone = true; }
+      }
     }
+    // 柱のまとまり：群れの中心がまっすぐ前（横のずれ 0.6マス以内）、1.5〜3.2マス先に来るマスから撮る
     for (const [i, cl] of (SPI.clusters || []).slice(0, 3).entries()) {
-      const tx = Math.round(cl.x), ty = Math.round(cl.z);
-      let done = false;
-      for (const d of ['down', 'up', 'right', 'left']) { const nx = tx - D4[d][0] * 1, ny = ty - D4[d][1] * 1; if (!done && await walkable(nx, ny) && await walkable(nx - D4[d][0], ny - D4[d][1])) { await stand(nx - D4[d][0], ny - D4[d][1], d); await shotS(`${pre}_pillar_cluster_${i + 1}_${cl.mode}`); done = true; } }
+      const pick = await p.evaluate(([cx, cz]) => {
+        const a = fieldArea(), D = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, open = (x, y) => { const c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); };
+        let best = null;
+        for (let ty = Math.floor(cz) - 4; ty <= Math.ceil(cz) + 4; ty++) for (let tx = Math.floor(cx) - 4; tx <= Math.ceil(cx) + 4; tx++) for (const d of Object.keys(D)) {
+          if (!open(tx, ty)) continue;
+          const [dx, dy] = D[d], ahead = (cx - tx) * dx + (cz - ty) * dy + 0.275, lat = Math.abs((cx - tx) * dy - (cz - ty) * dx);
+          if (ahead < 1.4 || ahead > 3.6 || lat > 0.7) continue;
+          // 見通し：カメラ（マスの中心から 0.275マス後ろ）→ 群れの中心と、その左右 0.35マスの3本の線が、壁のマスを通らないこと
+          const ex = tx - dx * 0.275, ez = ty - dy * 0.275; let blocked = 0;
+          for (const o of [-0.35, 0, 0.35]) { const gx = cx + dy * o, gz = cz - dx * o; for (let t = 0.1; t < 0.92; t += 0.06) { const x = ex + (gx - ex) * t, z = ez + (gz - ez) * t; if (!open(Math.round(x), Math.round(z))) { blocked++; break; } } }
+          if (blocked > 1) continue;
+          const sc = blocked * 2 + Math.abs(ahead - 2.2) + lat * 1.2;
+          if (!best || sc < best.sc) best = { tx, ty, d, sc };
+        }
+        return best;
+      }, [cl.x, cl.z]);
+      if (pick) { await stand(pick.tx, pick.ty, pick.d); await shotS(`${pre}_pillar_cluster_${i + 1}_${cl.mode}`); }
+      else {
+        const tx = Math.round(cl.x), ty = Math.round(cl.z);
+        let done = false;
+        for (const d of ['down', 'up', 'right', 'left']) { const nx = tx - D4[d][0] * 1, ny = ty - D4[d][1] * 1; if (!done && await walkable(nx, ny) && await walkable(nx - D4[d][0], ny - D4[d][1])) { await stand(nx - D4[d][0], ny - D4[d][1], d); await shotS(`${pre}_pillar_cluster_${i + 1}_${cl.mode}`); done = true; } }
+      }
     }
-    if (process.env.SP_ONLY) continue;
+    if (spPass || process.env.SP_ONLY) continue;
     // 花（4F も：光るキノコ・荊の位置の差し替え）
     // [B2V4-F] 花の群れ：群れのマスの手前（壁・水と反対側）から、そこが通れなければ壁に沿った隣のマスから見る
     const walkC = (x, y) => p.evaluate(([x, y]) => { const a = fieldArea(), c = fieldTileAt(a, x, y); return !!c && c !== '#' && !fieldCharSolid(a, c); }, [x, y]);
