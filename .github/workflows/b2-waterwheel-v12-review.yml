@@ -1,0 +1,73 @@
+name: B2 Waterwheel V12 Attached Frost QA
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-v07-resume-20261118]
+    paths:
+      - "tools/b2-waterwheel-paddle/build_paddle_v12_resume.py"
+      - ".github/workflows/b2-waterwheel-v12-review.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  v12-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record run ID
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-paddle-run
+          echo "{\"run_id\":${RUN_ID},\"status\":\"STARTED_NOT_APPROVED\"}" > /tmp/v12-run.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-v07-resume-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-v07-resume-20261118
+          cp /tmp/v12-run.json docs/3d/b2-waterwheel-paddle-run/latest-v12.json
+          git add docs/3d/b2-waterwheel-paddle-run/latest-v12.json
+          git commit -m "chore(b2): V12 Blender run pointer" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
+      - name: Restore verified V11 Blend
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-v11-review
+          run-id: 44196983349
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Check previous editable checkpoint
+        run: |
+          echo "a18c95540a9ac6f73d2e7ebb96303e581e16626dc02c862b629608f213bed75c  checkpoint/b2_bucket_paddle_blender_v11.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-v12
+      - name: Blender V12 edit and 4-direction true rendering
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v12_resume.py -- checkpoint/b2_bucket_paddle_blender_v11.blend render-output/b2-waterwheel-v12
+      - name: Validate files and CC0 photo maps
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          p=Path('render-output/b2-waterwheel-v12')
+          m=json.loads((p/'b2_bucket_paddle_blender_v12_manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED' and m['replaced_floating_snow_patches']>=9 and m['attached_frost_patches']==5
+          assert len(m['files'])==6
+          for name,meta in m['files'].items():
+            data=(p/name).read_bytes()
+            assert len(data)==meta['bytes'] and hashlib.sha256(data).hexdigest()==meta['sha256']
+            if name.endswith('.png'):assert data[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if name.endswith('.glb'):
+              assert data[:4]==b'glTF'
+              n=struct.unpack_from('<I',data,12)[0]
+              payload=json.loads(data[20:20+n]);assert len(payload.get('images',[]))>=3
+          print('V12_PASS_TECHNICAL_QA')
+          PY
+      - name: Keep V12 checkpoint as temporary Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-v12-review
+          path: render-output/b2-waterwheel-v12/
+          retention-days: 14
+          if-no-files-found: warn

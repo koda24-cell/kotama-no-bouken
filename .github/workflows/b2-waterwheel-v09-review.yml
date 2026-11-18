@@ -1,0 +1,69 @@
+name: B2 Waterwheel V09 Anchored Fasteners Blender Review
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-v07-resume-20261118]
+    paths:
+      - "tools/b2-waterwheel-paddle/build_paddle_v09_resume.py"
+      - ".github/workflows/b2-waterwheel-v09-review.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  render-v09:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Commit run ID before Blender
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-paddle-run
+          echo "{\"run_id\":${RUN_ID},\"status\":\"STARTED_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-paddle-run/latest-v09.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/3d/b2-waterwheel-paddle-run/latest-v09.json
+          git commit -m "chore(b2): checkpoint V09 run pointer" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
+      - name: Restore V08 Blend from successful run
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-v08-additive-review
+          run-id: 44194599955
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Verify V08 checkpoint
+        run: |
+          echo "bf043453e7a51c1349064ba9ff60309236000cc0c7621529da0e2b9c89fe282c  checkpoint/b2_bucket_paddle_blender_v08.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-v09
+      - name: Render corrected V09 in real Blender
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v09_resume.py -- checkpoint/b2_bucket_paddle_blender_v08.blend render-output/b2-waterwheel-v09
+      - name: Check all output and real photo PBR
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          root=Path('render-output/b2-waterwheel-v09')
+          m=json.loads((root/'b2_bucket_paddle_blender_v09_manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED' and m['removed_floating_objects']==14 and m['anchored_washers']==6
+          assert len(m['files'])==6
+          for n,meta in m['files'].items():
+            raw=(root/n).read_bytes()
+            assert len(raw)==meta['size'] and hashlib.sha256(raw).hexdigest()==meta['sha256']
+            if n.endswith('.png'):assert raw[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if n.endswith('.glb'):
+              assert raw[:4]==b'glTF';num=struct.unpack_from('<I',raw,12)[0]
+              j=json.loads(raw[20:20+num]);assert len(j.get('images',[]))>=3
+          print('V09_CHECKPOINT_QA_VALID',m['blender'])
+          PY
+      - name: Upload V09 editable model and four-view photos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-v09-anchored-review
+          path: render-output/b2-waterwheel-v09/
+          retention-days: 14
+          if-no-files-found: warn

@@ -1,0 +1,73 @@
+name: B2 Waterwheel V14 Shallow Timber Damage Blender QA
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-v07-resume-20261118]
+    paths:
+      - "tools/b2-waterwheel-paddle/build_paddle_v14_resume.py"
+      - ".github/workflows/b2-waterwheel-v14-review.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record exact run id
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-paddle-run
+          echo "{\"run_id\":${RUN_ID},\"status\":\"STARTED_NOT_APPROVED\"}" > /tmp/b2-v14.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-v07-resume-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-v07-resume-20261118
+          cp /tmp/b2-v14.json docs/3d/b2-waterwheel-paddle-run/latest-v14.json
+          git add docs/3d/b2-waterwheel-paddle-run/latest-v14.json
+          git commit -m "chore(b2): V14 Blender run id" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
+      - name: Restore actual V13 Blend
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-v13-carved-seams
+          run-id: 44216344361
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Check source hash and create output path
+        run: |
+          echo "31183d4bddfd2a785c4cda6c187e65971b33c077cb42a6a6cffa44ae2d577fb4  checkpoint/b2_bucket_paddle_blender_v13.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-v14
+      - name: Native Blender V14 four-view rendering
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v14_resume.py -- checkpoint/b2_bucket_paddle_blender_v13.blend render-output/b2-waterwheel-v14
+      - name: Check actual GLB photo materials, BLEND backup, 4 PNG
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,struct
+          root=Path("render-output/b2-waterwheel-v14")
+          m=json.loads((root/"b2_bucket_paddle_blender_v14_manifest.json").read_text())
+          assert m["status"]=="NOT_APPROVED" and m["shallow_actual_cut_count"]==4
+          assert m["preserved_original_in_editable_blend"] and len(m["files"])==6
+          for name,info in m["files"].items():
+            data=(root/name).read_bytes()
+            assert len(data)==info["bytes"] and hashlib.sha256(data).hexdigest()==info["sha256"]
+            if name.endswith(".png"):assert data[:8]==bytes.fromhex("89504e470d0a1a0a")
+            if name.endswith(".glb"):
+              assert data[:4]==b"glTF"
+              n=struct.unpack_from("<I",data,12)[0]
+              j=json.loads(data[20:20+n]);assert len(j.get("images",[]))>=3
+          print("B2_V14_GLTF_PHOTOPBR_PASS")
+          PY
+      - name: Save all checkpoints and previews, including partial failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-v14-shallow-wood
+          path: render-output/b2-waterwheel-v14/
+          if-no-files-found: warn
+          retention-days: 14

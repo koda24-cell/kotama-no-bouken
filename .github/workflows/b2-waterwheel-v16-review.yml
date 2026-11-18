@@ -1,0 +1,74 @@
+name: B2 Waterwheel V16 Forged Iron PBR Blender QA
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-v07-resume-20261118]
+    paths:
+      - "tools/b2-waterwheel-paddle/build_paddle_v16_resume.py"
+      - ".github/workflows/b2-waterwheel-v16-review.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkpoint run identifier
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-paddle-run
+          echo "{\"run_id\":${RUN_ID},\"status\":\"STARTED_NOT_APPROVED\"}" > /tmp/b2-v16.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-v07-resume-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-v07-resume-20261118
+          cp /tmp/b2-v16.json docs/3d/b2-waterwheel-paddle-run/latest-v16.json
+          git add docs/3d/b2-waterwheel-paddle-run/latest-v16.json
+          git commit -m "chore(b2): V16 Blender run id" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
+      - name: Download verified V15 editable Blender checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-v15-wrought-iron
+          run-id: 44217794337
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Verify untouched V15 checkpoint
+        run: |
+          echo "45f70dcfa42fbec79c47abf8737a20982179d038219f15d4d59b57dd80b55f72  checkpoint/b2_bucket_paddle_blender_v15.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-v16
+      - name: Real Blender V16 iron material bake and four views
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v16_resume.py -- checkpoint/b2_bucket_paddle_blender_v15.blend render-output/b2-waterwheel-v16
+      - name: Verify GLB embedded wood/iron maps and 4 PNGs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          p=Path("render-output/b2-waterwheel-v16")
+          m=json.loads((p/"b2_bucket_paddle_blender_v16_manifest.json").read_text())
+          assert m["status"]=="NOT_APPROVED" and m["timber_unchanged"]
+          assert m["cold_wrought_iron_corrected"] and m["timber_unchanged"]
+          assert len(m["files"])==6
+          for name,meta in m["files"].items():
+            b=(p/name).read_bytes()
+            assert len(b)==meta["bytes"] and hashlib.sha256(b).hexdigest()==meta["sha256"]
+            if name.endswith(".png"):assert b[:8]==bytes.fromhex("89504e470d0a1a0a")
+            if name.endswith(".glb"):
+              assert b[:4]==b"glTF"
+              n=struct.unpack_from("<I",b,12)[0]
+              j=json.loads(b[20:20+n]);assert len(j.get("images",[]))>=5
+          print("V16_FORGED_IRON_PHOTO_WOOD_PBR_QA_SUCCESS")
+          PY
+      - name: Save V16 GLB, Blend and review renders temporarily
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-v16-wrought-iron
+          path: render-output/b2-waterwheel-v16/
+          if-no-files-found: warn
+          retention-days: 14
