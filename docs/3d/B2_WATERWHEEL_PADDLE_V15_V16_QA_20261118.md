@@ -1,0 +1,15 @@
+# B2 waterwheel: Blender V15–V16 forged-iron material review (2026-11-18)
+
+**Status: NOT_APPROVED.** User asked continued repeated high-quality Blender iteration. Only one paddle asset, existing game/waterwheel unchanged, PR #498 draft.
+
+## Actual checkpoints and render evidence
+- V15 [run 44217794337](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44217794337), Artifact **14389187811**, technical success. Restored V14 Blend SHA256 `0c24b2c1b389bd361d90b84db0af086120fa652e6518952b6b84a2cf9d84081a`. Retextured 14 original iron/bracket/rivet/washer mesh objects, generated own 512×512 procedural cold oxidized iron diffuse+roughness **UV image textures** and embedded into GLB. Original Poly Haven CC0 wood color/normal/roughness and all timber geometry unchanged. Blender 5.3, 4 PNG and GLB/.blend SHA-verified. **Aesthetic FAIL**: metal rendered near-black, obscuring raised rivets and corrosion.
+- V16 failed initial [run 44218304585](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44218304585) because workflow restored V15 but incorrectly referenced V14 file name. Source path and manifest assertions corrected, no erroneous files promoted.
+- V16 success [run 44218427470](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44218427470), Artifact **14389107921**. Restore source V15 Blend SHA `45f70dcfa42fbec79c47abf8737a20982179d038219f15d4d59b57dd80b55f72`. Lightened the iron map with preserved pitting/rust and reduced metallic response, exported 4 real Blender Cycles PNG and GLB/.blend; SHA256 matched all 6. GLB includes both iron UV maps + 3 inherited photo wood PBR textures.
+- Actual V16 GLB `b2_bucket_paddle_blender_v16.glb`: **2,866,016 bytes**, SHA256 `1e95489b02bc5180ae16da4290d152f417464e848537426d4c6a6c65927f2e4d`. Editable V16 Blend SHA256 `c330cfeced26fbc2dd9777d7e27dbb308528c565a911e22018cafd650484b6b5`. Source and output preserved. The V14 timber topology and original backup inside Blender remain unchanged.
+
+## Visual comparison and remaining issues
+- V16 recovered rivet visibility and cold oxidized blue-gray iron tone. Unlike V15, hardware no longer reads as a black silhouette. Iron texture maps are generated procedurally, **not directly captured photographs**; Poly Haven wood remains the only photographic CC0 material.
+- V13 long deep grooves were too artificial. V14 reduced this to four shallow short marks. Those still look like blade cuts, not organically split timber in close views. Wood plank structure and ice hanging off bottom remain simplistic. **Neither V14 nor V16 is approved as world-class asset.**
+- Next controlled improvements should target *only* the wood end-grain breakup and root-to-timber ice adhesion, then verify 4 views under frozen dungeon lighting. Do not recreate a full wheel or change the existing three-view setpiece.
+- Cross-floor Shared GLB Performance Audit / GLTFLoader game scene / FPS has **not** been run for V16: output exists only in temporary 14-day Artifact. Preserve and measure before formal promotion, but never treat it as approved material.
