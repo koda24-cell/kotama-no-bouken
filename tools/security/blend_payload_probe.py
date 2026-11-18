@@ -37,7 +37,7 @@ for p in sorted(base.rglob("*.blend")):
         raw=bytes(data)
         result["decoded_bytes"]=len(raw)
         result["decoded_header"]=repr(raw[:24])
-        result["standard_blender_header"]=(len(raw)>=12 and raw.startswith(b"BLENDER") and raw[7:8] in (b"_",b"-") and raw[8:9] in (b"v",b"V") and raw[9:12].isdigit())
+        result["standard_blender_header"]=(raw.startswith(b"BLENDER") and ((len(raw)>=17 and raw[7:9]==b"17" and raw[9:10] in (b"-",b"_") and raw[10:12]==b"01" and raw[12:13] in (b"v",b"V") and raw[13:17].isdigit()) or (len(raw)>=12 and raw[7:8] in (b"-",b"_") and raw[8:9] in (b"v",b"V") and raw[9:12].isdigit())))
         for name,pattern in patterns.items():
             found=re.findall(pattern,raw,re.I)
             result["signals"][name]={"matches":len(found),"examples":[x.decode("utf-8","replace")[:100] for x in found[:5]]}
