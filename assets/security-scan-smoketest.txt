@@ -1,0 +1,1 @@
+Harmless CI smoke test file. No executable content. Do not merge into asset library.
