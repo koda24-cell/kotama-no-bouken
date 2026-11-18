@@ -747,7 +747,7 @@ export function createSetpieces(S) {
       }
       // 柱：2本（＋3本目）。2本の上に梁（片側が落ちかけ）
       // 大きさ：通り道（マスの中心・辺の中点）をふさがない太さのまま、背を高くして「門のような柱と梁」に見せる
-      const scXZ = mode === 'point' ? 0.6 : 0.56, scY = mode === 'point' ? 0.78 : mode === 'deadend' ? 0.8 : 0.74;
+      const scXZ = mode === 'point' ? 0.6 : 0.56, scY = mode === 'point' ? 0.78 : mode === 'deadend' ? 0.8 : 0.86;
       const sc = [scXZ, scY, scXZ], hP = (A.size.y || 4.42) * scY;
       spots.forEach(([lx, lz], i) => {
         const [wx, wz] = rot(lx, lz, yaw), pc = i === 1 && assets.pillarG && rnd(sd + 5) < 0.3 ? assets.pillarG : A;   // 氷河の柱（発光する結晶つき）はまれに＝光の点を増やさない
