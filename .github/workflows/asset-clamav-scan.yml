@@ -32,6 +32,8 @@ jobs:
         with:
           persist-credentials: false
           lfs: true
+      - name: Run isolated download safety unit tests
+        run: python3 -m unittest discover -s tools/security -p 'test_*.py' -v
       - name: Install ClamAV
         run: |
           sudo apt-get update
