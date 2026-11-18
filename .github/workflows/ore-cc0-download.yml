@@ -32,9 +32,11 @@ jobs:
           data=json.loads(p.read_text())
           for a in data["assets"]:
               if a["state"]!="downloaded_unreviewed":continue
-              f=root/a["file"]
-              assert f.is_file() and f.stat().st_size>1000, a["id"]
-              assert hashlib.sha256(f.read_bytes()).hexdigest()==a["sha256"], a["id"]
+              assert a["downloads"], a["id"]
+              for item in a["downloads"]:
+                  f=root/item["file"]
+                  assert f.is_file() and f.stat().st_size>1000, item["file"]
+                  assert hashlib.sha256(f.read_bytes()).hexdigest()==item["sha256"], item["file"]
           print("downloaded",sum(a["state"]=="downloaded_unreviewed" for a in data["assets"]),"/",len(data["assets"]))
           PY
       - uses: actions/upload-artifact@v4
