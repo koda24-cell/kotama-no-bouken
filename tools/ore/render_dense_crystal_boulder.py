@@ -61,11 +61,11 @@ if bsdf.inputs.get("Transmission Weight"):bsdf.inputs["Transmission Weight"].def
 # Restrained mineral luminescence, not a uniform neon surface.
 # GLB-compatible Principled emission: color remains physically shaded.
 crystal_mats=[]
-for tier,(tint,glow) in enumerate([((.30,.62,.78,1),.08),((.28,.72,.88,1),.20),((.38,.78,.95,1),.38)]):
+for tier,(tint,glow) in enumerate([((.30,.62,.78,1),.18),((.28,.72,.88,1),.65),((.38,.78,.95,1),1.6)]):
     m=mat.copy();m.name="Quartz subtle core glow %d"%tier
     shader=m.node_tree.nodes.get("Principled BSDF")
     shader.inputs["Base Color"].default_value=tint
-    if shader.inputs.get("Emission Color"):shader.inputs["Emission Color"].default_value=(.10,.58,.92,1)
+    if shader.inputs.get("Emission Color"):shader.inputs["Emission Color"].default_value=(.24,.78,1.0,1)
     if shader.inputs.get("Emission Strength"):shader.inputs["Emission Strength"].default_value=glow
     crystal_mats.append(m)
 def make_crystal(index,origin,axis,length,radius):
@@ -172,6 +172,6 @@ bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"render_variant":"V4_SUBTLE_CYAN_EMISSION","emission_strengths":[0.08,0.20,0.38],"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
+manifest={"render_variant":"V5_CYAN_EMISSION","emission_strengths":[0.18,0.65,1.6],"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
