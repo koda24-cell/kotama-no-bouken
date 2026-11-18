@@ -1,6 +1,11 @@
 name: Candidate asset safety audit
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "assets/**"
+      - "tools/security/**"
+      - ".github/workflows/candidate-asset-safety-audit.yml"
   push:
     branches: [feature/asset-security-audit-20261118]
     paths:
@@ -23,7 +28,7 @@ jobs:
           sudo apt-get install -y clamav clamav-freshclam
           sudo systemctl stop clamav-freshclam || true
           mkdir -p security-audit-output
-          sudo freshclam > security-audit-output/definitions.log 2>&1 || echo "Signature update failed; result cannot be certified" >> security-audit-output/definitions.log
+          sudo freshclam > security-audit-output/definitions.log 2>&1 || { echo "::error::Malware definitions could not be refreshed" ; cat security-audit-output/definitions.log; exit 1; }
           clamscan --version > security-audit-output/engine-version.txt
       - name: Inventory and non-executing ZIP structure check
         run: python3 tools/security/inventory_scan.py
@@ -32,9 +37,11 @@ jobs:
         run: |
           set +e
           clamscan -r -i --max-filesize=100M --max-scansize=300M --max-recursion=12 --max-files=20000 --exclude-dir='^./.git' . > security-audit-output/clamscan.log 2>&1
-          echo "clamscan_exit=$?" > security-audit-output/scan-exit.txt
+          scan_rc=$?
+          echo "clamscan_exit=$scan_rc" > security-audit-output/scan-exit.txt
           tail -n 30 security-audit-output/clamscan.log
-          exit 0
+          if [ "$scan_rc" -ne 0 ]; then echo "::error::ClamAV detection or scan error ($scan_rc)"; exit 1; fi
+          if grep -Eq '^(ERROR|WARNING):' security-audit-output/clamscan.log; then echo "::error::ClamAV reported errors or warnings"; exit 1; fi
       - name: Upload logs (not a safety certificate)
         if: always()
         uses: actions/upload-artifact@v4
