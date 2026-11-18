@@ -19,27 +19,38 @@ def get(url, limit=180*1024*1024):
         data=r.read(limit+1)
         if len(data)>limit:raise ValueError("too large")
         return data
-def poly_url(id,kind):
-    info=json.loads(get("https://api.polyhaven.com/files/"+urllib.parse.quote(id),4*1024*1024))
-    # Select the smallest downloadable mesh or JPG map, based on actual API metadata.
-    candidates=[]
+def poly_urls(asset_id, kind):
+    """Resolve actual mesh and PBR map files; never substitute AO for a mesh."""
+    info=json.loads(get("https://api.polyhaven.com/files/"+urllib.parse.quote(asset_id),4*1024*1024))
+    found=[]
     def walk(obj,path=()):
         if isinstance(obj,dict):
-            if isinstance(obj.get("url"),str):
-                url=obj["url"]
-                if url.startswith("https://") and any(url.lower().split("?")[0].endswith(ext) for ext in (".glb",".blend",".fbx",".jpg",".png",".zip")):
-                    candidates.append((path,url,obj.get("size",0)))
+            url=obj.get("url")
+            if isinstance(url,str) and url.startswith("https://"):
+                ext=pathlib.PurePosixPath(urllib.parse.urlsplit(url).path).suffix.lower()
+                if ext in (".glb",".blend",".fbx",".gltf",".jpg",".png",".exr",".zip"):
+                    found.append((path,url,ext))
             for k,v in obj.items():walk(v,path+(str(k),))
         elif isinstance(obj,list):
             for i,v in enumerate(obj):walk(v,path+(str(i),))
     walk(info)
-    def rank(item):
-        path,url,size=item;name="/".join(path).lower()
-        prefer=("1k" in name or "2k" in name)
-        if kind=="model":return (0 if url.lower().split("?")[0].endswith(".glb") else 1,0 if prefer else 1,size if isinstance(size,int) else 0)
-        return (0 if "diff" in name or "col" in name else 1,0 if prefer else 1,size if isinstance(size,int) else 0)
-    if not candidates:raise ValueError("no suitable asset file in API response")
-    return sorted(candidates,key=rank)[0][1]
+    def lowres(path):
+        label="/".join(path).lower()
+        return 0 if "1k" in label else 1 if "2k" in label else 2
+    if kind=="model":
+        mesh=[x for x in found if x[2] in (".glb",".blend",".fbx",".gltf")]
+        if not mesh:raise ValueError("NO_MESH_FORMAT_IN_POLYHAVEN_API")
+        mesh.sort(key=lambda x:({".glb":0,".blend":1,".fbx":2,".gltf":3}[x[2]],lowres(x[0])))
+        selected=[("mesh",mesh[0][1])]
+    else:
+        selected=[]
+    for tag,needles in (("diff",("diff","color","albedo")),("nor",("nor_gl","normal","nor")),("rough",("rough",)),("disp",("disp","height")),("ao",("ao",))):
+        options=[x for x in found if x[2] in (".jpg",".png",".exr") and any(n in "/".join(x[0]).lower() for n in needles)]
+        options.sort(key=lambda x:(lowres(x[0]),0 if x[2]==".jpg" else 1))
+        if options:selected.append((tag,options[0][1]))
+    if kind=="texture" and not any(tag=="diff" for tag,_ in selected):
+        raise ValueError("MISSING_DIFFUSE_MAP")
+    return selected
 def ambient_url(id):
     return "https://ambientcg.com/get?file="+urllib.parse.quote(id+"_1K-JPG.zip")
 def main():
@@ -52,17 +63,24 @@ def main():
     for key in a.assets:
         spec=ASSETS[key];entry=dict(spec,license_url=LICENSES[spec["provider"]],state="failed")
         try:
-            url=poly_url(key,spec["kind"]) if spec["provider"]=="polyhaven" else ambient_url(key)
-            data=get(url,a.max_mb*1024*1024)
-            suffix=pathlib.PurePosixPath(urllib.parse.urlsplit(url).path).suffix.lower()
-            if not suffix:
-                suffix=pathlib.PurePosixPath(urllib.parse.parse_qs(urllib.parse.urlsplit(url).query).get("file",[""])[0]).suffix.lower()
-            if suffix not in (".zip",".jpg",".png",".glb",".blend",".fbx"):raise ValueError("unexpected file type")
-            if suffix==".zip" and not zipfile.is_zipfile(io.BytesIO(data)):raise ValueError("invalid ZIP")
-            if suffix==".glb" and data[:4]!=b"glTF":raise ValueError("invalid GLB")
-            if suffix in (".jpg",".png") and not (data.startswith(bytes([0xff,0xd8])) or data.startswith(bytes([0x89,0x50,0x4e,0x47]))):raise ValueError("invalid image")
-            filename=key+suffix;path=root/filename;path.write_bytes(data)
-            entry.update(state="downloaded_unreviewed",file=filename,sha256=hashlib.sha256(data).hexdigest(),bytes=len(data),download_url=url)
+            targets=poly_urls(key,spec["kind"]) if spec["provider"]=="polyhaven" else [("bundle",ambient_url(key))]
+            downloads=[]
+            for tag,url in targets:
+                data=get(url,a.max_mb*1024*1024)
+                suffix=pathlib.PurePosixPath(urllib.parse.urlsplit(url).path).suffix.lower()
+                if not suffix:
+                    suffix=pathlib.PurePosixPath(urllib.parse.parse_qs(urllib.parse.urlsplit(url).query).get("file",[""])[0]).suffix.lower()
+                if suffix not in (".zip",".jpg",".png",".glb",".blend",".fbx",".gltf",".exr"):raise ValueError("unexpected file type")
+                if suffix==".zip" and not zipfile.is_zipfile(io.BytesIO(data)):raise ValueError("invalid ZIP")
+                if suffix==".glb" and data[:4]!=b"glTF":raise ValueError("invalid GLB")
+                if suffix==".jpg" and not data.startswith(bytes([0xff,0xd8])):raise ValueError("invalid JPEG")
+                if suffix==".png" and not data.startswith(bytes([0x89,0x50,0x4e,0x47])):raise ValueError("invalid PNG")
+                filename=key+"_"+tag+suffix
+                dest=root/filename;dest.write_bytes(data)
+                downloads.append(dict(role=tag,file=filename,sha256=hashlib.sha256(data).hexdigest(),bytes=len(data),download_url=url))
+            entry.update(state="downloaded_unreviewed",downloads=downloads)
+            if spec["kind"]=="model" and not any(x["role"]=="mesh" for x in downloads):
+                raise ValueError("mesh missing")
         except Exception as exc:
             entry["error"]=str(exc)
         report["assets"].append(entry)
