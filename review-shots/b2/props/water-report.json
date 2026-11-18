@@ -55,7 +55,7 @@
             ],
             "near": [
               11,
-              12,
+              10,
               "up"
             ],
             "corner": [
@@ -373,11 +373,11 @@
       "b2f2_W_vista_pool_edge_1": {
         "at": [
           11,
-          12,
+          10,
           "up"
         ],
-        "calls": 488,
-        "triangles": 2084173,
+        "calls": 416,
+        "triangles": 1794726,
         "geometries": 458,
         "textures": 97,
         "lights": 58
@@ -636,7 +636,7 @@
       }
     },
     "maxTriangles": 2332614,
-    "avgTriangles": 1045433,
+    "avgTriangles": 1035096,
     "maxCalls": 493
   },
   "errors": [],

@@ -1878,8 +1878,8 @@
     }
   },
   "buildMs": {
-    "2-2F": 4838,
-    "2-3F": 4416
+    "2-2F": 5595,
+    "2-3F": 4545
   },
   "missing": [],
   "log": [
@@ -2011,7 +2011,7 @@
       },
       "dir": "right",
       "active": true,
-      "near": "cache:2:a2-cache",
+      "near": "door:2:a2-gate",
       "floor": 1,
       "area": 2
     },
@@ -2119,7 +2119,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "sign:2-2:1:13",
+      "near": "npc:2:watchman",
       "floor": 2,
       "area": 2
     },
