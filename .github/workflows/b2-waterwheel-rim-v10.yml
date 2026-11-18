@@ -46,7 +46,7 @@ jobs:
           set -o pipefail
           docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-rim/build_rim_v10_resume.py -- checkpoint/b2_waterwheel_single_rim_segment_v08.blend render-output/b2-waterwheel-rim-v10 | tee /tmp/b2-rim-v10-blender.log
           if grep -E "Traceback \(most recent call last\)|Python script failed|Error: Python" /tmp/b2-rim-v10-blender.log; then exit 1; fi
-          grep -q "V10_PLUG_ENDGRAIN_REVIEW_OK" /tmp/b2-rim-v10-blender.log
+          grep -q "V10_SOFT_JOINT_REVIEW_OK" /tmp/b2-rim-v10-blender.log
       - name: Verify Blend GLB 4 PNGs and photo images
         run: |
           python3 - <<'PY'
