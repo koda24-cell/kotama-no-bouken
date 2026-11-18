@@ -9,6 +9,7 @@ on:
       - 'tools/ore/render_dense_crystal_boulder.py'
       - 'tools/ore/validate_crystal_growth.py'
       - 'tools/ore/audit_boulder_textures.py'
+      - 'tools/ore/repair_boulder_material.py'
       - '.github/workflows/ore-cc0-download.yml'
   workflow_dispatch:
 permissions:
@@ -76,10 +77,14 @@ jobs:
           name: ore-original-boulder-texture-audit
           path: ore-texture-audit/
           retention-days: 14
+      - name: Restore and pack matching boulder PBR textures
+        run: |
+          mkdir -p ore-boulder-render
+          blender -b -t 2 --python tools/ore/repair_boulder_material.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-cc0-review" "$PWD/ore-boulder-render/boulder_01_repaired.blend"
       - name: Render original downloaded boulder mesh
         run: |
           mkdir -p ore-boulder-render
-          blender -b -t 2 --python tools/ore/render_imported_boulder.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-boulder-render"
+          blender -b -t 2 --python tools/ore/render_imported_boulder.py -- "$PWD/ore-boulder-render/boulder_01_repaired.blend" "$PWD/ore-boulder-render"
       - name: Validate actual three-view PNGs
         run: |
           python3 - <<'PY'
@@ -116,10 +121,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y blender python3-numpy
           blender -b --python-expr 'import numpy; print(numpy.__version__)'
+      - name: Restore original boulder PBR maps for ore preview
+        run: |
+          mkdir -p ore-dense-render
+          blender -b -t 2 --python tools/ore/repair_boulder_material.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-cc0-review" "$PWD/ore-dense-render/boulder_01_repaired.blend"
       - name: Render dense crystals on actual downloaded CC0 boulder
         run: |
           mkdir -p ore-dense-render
-          blender -b -t 2 --python tools/ore/render_dense_crystal_boulder.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-dense-render"
+          blender -b -t 2 --python tools/ore/render_dense_crystal_boulder.py -- "$PWD/ore-dense-render/boulder_01_repaired.blend" "$PWD/ore-dense-render"
       - name: Evaluate reference-driven growth metrics
         run: python3 tools/ore/validate_crystal_growth.py ore-dense-render/manifest.json
       - name: Verify four PNGs, GLB, and unchanged source mesh count
