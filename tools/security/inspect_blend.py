@@ -6,6 +6,23 @@ result = {"file":path.replace("/assets/","assets/",1),"status":"error","autoexec
 PAT = re.compile(r"\b(?:exec|eval|compile|__import__|subprocess|Popen|os\.system|socket|urllib|requests|httpx|ctypes|pickle|base64|importlib|bpy\.app\.handlers)\b|https?://",re.I)
 try:
     bpy.context.preferences.filepaths.use_scripts_auto_execute = False
+    # Blender's saved .blend may be wrapped in a zstd stream. Decode without running scripts.
+    # A strict file-size limit protects this sandbox against decompression bombs.
+    import tempfile, subprocess, resource
+    with open(path, "rb") as f:
+        magic=f.read(4)
+    if magic == b"\\x28\\xb5\\x2f\\xfd":
+        tmp="/tmp/decoded.blend"
+        with open(tmp,"wb") as dest:
+            def restrict():
+                resource.setrlimit(resource.RLIMIT_FSIZE,(256*1024*1024,256*1024*1024))
+            subprocess.run(["zstd","-d","-q","-c",path],stdout=dest,stderr=subprocess.PIPE,check=True,timeout=35,preexec_fn=restrict)
+        result["decompressed_zstd"]=True
+        path=tmp
+    with open(path,"rb") as f:
+        result["decoded_header"]=f.read(7).decode("ascii","replace")
+    if result["decoded_header"] != "BLENDER":
+        raise ValueError("Decoded file has no BLENDER header")
     bpy.ops.wm.open_mainfile(filepath=path, load_ui=False, use_scripts=False)
     bpy.context.preferences.filepaths.use_scripts_auto_execute = False
     for t in bpy.data.texts:
