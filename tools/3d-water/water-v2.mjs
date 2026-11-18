@@ -36,7 +36,7 @@ export function createWaterV2(type='stream'){
   uniform float uTime,uWave,uFoam,uCaustic;
   uniform sampler2D uFlowTexture,uCaustics;
   uniform vec3 uDeep,uShallow;
-  varying vec2 vUv;varying vec3 vWorld;
+  varying vec2 vUv;varying vec3 vWorld;varying vec3 vWorldNormal;
   void main(){
     vec4 field=texture2D(uFlowTexture,vUv);
     vec2 velocity=(field.rg*2.0-1.0)*field.b;
