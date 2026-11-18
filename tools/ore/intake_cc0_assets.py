@@ -54,7 +54,7 @@ def main():
         try:
             url=poly_url(key,spec["kind"]) if spec["provider"]=="polyhaven" else ambient_url(key)
             data=get(url,a.max_mb*1024*1024)
-            suffix=pathlib.PurePosixPath(urllib.parse.urlsplit(url).path).suffix.lower()
+            suffix=pathlib.PurePosixPath(urllib.parse.urlsplit(url).path).suffix.lower()\n            if not suffix:\n                suffix=pathlib.PurePosixPath(urllib.parse.parse_qs(urllib.parse.urlsplit(url).query).get("file",[""])[0]).suffix.lower()
             if suffix not in (".zip",".jpg",".png",".glb",".blend",".fbx"):raise ValueError("unexpected file type")
             if suffix==".zip" and not zipfile.is_zipfile(io.BytesIO(data)):raise ValueError("invalid ZIP")
             if suffix==".glb" and data[:4]!=b"glTF":raise ValueError("invalid GLB")
