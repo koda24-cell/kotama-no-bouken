@@ -96,8 +96,13 @@ for pocket_index,(px,py,n) in enumerate(pockets):
         sample=center+Vector((x*dims.x,y*dims.y,dims.z*2.5))
         hit,hit_pos,hit_normal,hit_index,hit_obj,hit_matrix=scene.ray_cast(bpy.context.view_layer.depsgraph,sample,Vector((0,0,-1)),distance=scale*5)
         if not hit or hit_obj not in original:
-            # Skip unsupported locations rather than leaving crystals floating.
-            continue
+            # Nearest-mesh fallback retains all 110 crystals on steep rock sides.
+            target=original[0]
+            local=target.matrix_world.inverted()@sample
+            found,local_pos,local_normal,_=target.closest_point_on_mesh(local)
+            assert found,"cannot anchor crystal to source rock"
+            hit_pos=target.matrix_world@local_pos
+            hit_normal=(target.matrix_world.to_3x3().inverted().transposed()@local_normal).normalized()
         origin=hit_pos-hit_normal*(scale*.008)
         axis=base+Vector((rng.gauss(0,.24),rng.gauss(0,.24),rng.gauss(0,.15)))
         if axis.dot(hit_normal)<.22:axis=(axis+hit_normal*.9).normalized()
