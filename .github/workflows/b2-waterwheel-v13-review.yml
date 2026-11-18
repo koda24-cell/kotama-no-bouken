@@ -1,0 +1,73 @@
+name: B2 Waterwheel V13 Carved Plank Joint Blender QA
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-v07-resume-20261118]
+    paths:
+      - "tools/b2-waterwheel-paddle/build_paddle_v13_resume.py"
+      - ".github/workflows/b2-waterwheel-v13-review.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record V13 run ID
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-paddle-run
+          echo "{\"run_id\":${RUN_ID},\"status\":\"STARTED_NOT_APPROVED\"}" > /tmp/v13-run.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-v07-resume-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-v07-resume-20261118
+          cp /tmp/v13-run.json docs/3d/b2-waterwheel-paddle-run/latest-v13.json
+          git add docs/3d/b2-waterwheel-paddle-run/latest-v13.json
+          git commit -m "chore(b2): V13 run pointer" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
+      - name: Restore V12 actual Blender checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-v12-review
+          run-id: 44197671550
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Verify immutable source
+        run: |
+          echo "f0003d2ba199dd20c744bbf4046b8adcbbf5ae258cd40143b8d3d170d1596bac  checkpoint/b2_bucket_paddle_blender_v12.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-v13
+      - name: Blender V13 sculpt actual irregular wood joints and four views
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v13_resume.py -- checkpoint/b2_bucket_paddle_blender_v12.blend render-output/b2-waterwheel-v13
+      - name: Validate GLB, CC0 texture maps, Blender checkpoint, and PNGs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct,hashlib
+          p=Path("render-output/b2-waterwheel-v13")
+          m=json.loads((p/"b2_bucket_paddle_blender_v13_manifest.json").read_text())
+          assert m["approval"]=="NOT_APPROVED" and m["original_core_backup_in_blend"]
+          assert len(m["files"])==6 and len(m["joints"])==2
+          for name,meta in m["files"].items():
+            b=(p/name).read_bytes()
+            assert len(b)==meta["bytes"] and hashlib.sha256(b).hexdigest()==meta["sha256"]
+            if name.endswith(".png"):assert b[:8]==bytes.fromhex("89504e470d0a1a0a")
+            if name.endswith(".glb"):
+              assert b[:4]==b"glTF"
+              n=struct.unpack_from("<I",b,12)[0]
+              j=json.loads(b[20:20+n]);assert len(j.get("images",[]))>=3
+          print("V13_REAL_BLENDER_RENDER_QA_SUCCESS")
+          PY
+      - name: Archive V13 review models, 4 images, checksums
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-v13-carved-seams
+          path: render-output/b2-waterwheel-v13/
+          retention-days: 14
+          if-no-files-found: warn
