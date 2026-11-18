@@ -6,6 +6,7 @@ on:
     paths:
       - 'tools/ore/intake_cc0_assets.py'
       - 'tools/ore/render_imported_boulder.py'
+      - 'tools/ore/render_dense_crystal_boulder.py'
       - '.github/workflows/ore-cc0-download.yml'
   workflow_dispatch:
 permissions:
@@ -86,3 +87,52 @@ jobs:
           name: ore-boulder-real-render-not-approved
           path: ore-boulder-render/
           retention-days: 14
+
+  render-dense-ore:
+    needs: download
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ore-cc0-download-review
+          path: ore-cc0-review
+      - name: Install Blender and NumPy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender -b --python-expr 'import numpy; print(numpy.__version__)'
+      - name: Render dense crystals on actual downloaded CC0 boulder
+        run: |
+          mkdir -p ore-dense-render
+          blender -b -t 2 --python tools/ore/render_dense_crystal_boulder.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-dense-render"
+      - name: Verify four PNGs, GLB, and unchanged source mesh count
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,hashlib
+          p=pathlib.Path("ore-dense-render")
+          m=json.loads((p/"manifest.json").read_text())
+          assert m["status"]=="NOT_APPROVED"
+          assert m["original_mesh_count"]>=1
+          assert m["added_crystals"]==110
+          assert {"front.png","side.png","angle.png","top.png","dense_crystal_on_original_boulder.glb"}==set(m["files"])
+          for name,sha in m["files"].items():
+              f=p/name
+              assert f.is_file() and f.stat().st_size>1000
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==sha
+          print("VERIFIED_DENSE_ORE",m)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ore-dense-crystal-original-boulder-not-approved
+          path: ore-dense-render/
+          retention-days: 14
+      - name: Write run summary
+        if: always()
+        run: |
+          echo "### Dense ore on original CC0 boulder" >> "$GITHUB_STEP_SUMMARY"
+          echo "Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Artifact: ore-dense-crystal-original-boulder-not-approved" >> "$GITHUB_STEP_SUMMARY"
+          echo "Unapproved: do not integrate into game." >> "$GITHUB_STEP_SUMMARY"
