@@ -12,6 +12,7 @@ on:
       - 'tools/character-mesh-research/audit_posterior_rim.py'
       - 'tools/character-mesh-research/build_posterior_v16.py'
       - 'tools/character-mesh-research/build_posterior_v17.py'
+      - 'tools/character-mesh-research/measure_head_rim.py'
 jobs:
   boundary:
     runs-on: ubuntu-latest
@@ -67,6 +68,12 @@ jobs:
           print('V17 geometry checks passed:',d)
           PY
           for view in front back left right back_upper three_quarter; do test -s "output/character-mesh-research/v17-review/$view.png"; done
+      - name: Measure exact head rim positions and normals
+        run: |
+          for model in Sendagaya_Shibu Vita; do
+            xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/measure_head_rim.py -- "/tmp/character-sources/$model.vrm" "output/character-mesh-research/$model.boundary-loops.json" "output/character-mesh-research/$model.rim-geometry.json"
+            test -s "output/character-mesh-research/$model.rim-geometry.json"
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
