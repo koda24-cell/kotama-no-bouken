@@ -5,6 +5,7 @@ on:
       - feature/gpt-ore-free-assets-intake-20261118
     paths:
       - 'tools/ore/intake_cc0_assets.py'
+      - 'tools/ore/render_imported_boulder.py'
       - '.github/workflows/ore-cc0-download.yml'
   workflow_dispatch:
 permissions:
@@ -44,4 +45,44 @@ jobs:
         with:
           name: ore-cc0-download-review
           path: ore-cc0-review/
+          retention-days: 14
+
+  render-boulder:
+    needs: download
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ore-cc0-download-review
+          path: ore-cc0-review
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Render original downloaded boulder mesh
+        run: |
+          mkdir -p ore-boulder-render
+          blender -b -t 2 --python tools/ore/render_imported_boulder.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-boulder-render"
+      - name: Validate actual three-view PNGs
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          root=pathlib.Path("ore-boulder-render")
+          d=json.loads((root/"render_manifest.json").read_text())
+          assert d["status"]=="NOT_APPROVED" and d["mesh_count"]>0
+          assert set(d["files"])=={"front.png","side.png","angle.png"}
+          for name,info in d["files"].items():
+              b=(root/name).read_bytes()
+              assert b.startswith(bytes([137,80,78,71,13,10,26,10]))
+              assert hashlib.sha256(b).hexdigest()==info["sha256"]
+          print("Verified actual Blender renders:",list(d["files"]))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ore-boulder-real-render-not-approved
+          path: ore-boulder-render/
           retention-days: 14
