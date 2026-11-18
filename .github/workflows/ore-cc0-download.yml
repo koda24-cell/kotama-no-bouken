@@ -11,6 +11,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  pull-requests: write
 jobs:
   download:
     runs-on: ubuntu-latest
@@ -136,3 +137,49 @@ jobs:
           echo "Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> "$GITHUB_STEP_SUMMARY"
           echo "Artifact: ore-dense-crystal-original-boulder-not-approved" >> "$GITHUB_STEP_SUMMARY"
           echo "Unapproved: do not integrate into game." >> "$GITHUB_STEP_SUMMARY"
+
+  report-review:
+    if: always()
+    needs: [download, render-boulder, render-dense-ore]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summarize job outcomes
+        env:
+          DOWNLOAD: ${{ needs.download.result }}
+          BOULDER: ${{ needs.render-boulder.result }}
+          DENSE: ${{ needs.render-dense-ore.result }}
+        run: |
+          {
+            echo "## Ore CC0 and dense-crystal render status"
+            echo "| Job | Result |"
+            echo "|---|---|"
+            echo "| CC0 download | $DOWNLOAD |"
+            echo "| Original boulder render | $BOULDER |"
+            echo "| 110-crystal boulder render | $DENSE |"
+            echo ""
+            echo "Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "Unapproved artifacts only; review actual PNG/GLB."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Post result to open PR
+        uses: actions/github-script@v7
+        env:
+          DOWNLOAD: ${{ needs.download.result }}
+          BOULDER: ${{ needs.render-boulder.result }}
+          DENSE: ${{ needs.render-dense-ore.result }}
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const head = context.ref.replace('refs/heads/', '');
+            const prs = await github.rest.pulls.list({owner, repo, state:'open', head: owner + ':' + head});
+            if (!prs.data.length) { core.info('No open PR matches ' + head); return; }
+            const body = [
+              '### CC0 ore and dense crystal render',
+              '| Job | Result |', '|---|---|',
+              '| CC0 download | ' + process.env.DOWNLOAD + ' |',
+              '| Original boulder | ' + process.env.BOULDER + ' |',
+              '| 110-crystal boulder | ' + process.env.DENSE + ' |',
+              '',
+              '[Run logs and artifacts](https://github.com/' + owner + '/' + repo + '/actions/runs/' + context.runId + ')',
+              'All outputs are **NOT_APPROVED**. Check actual rendered PNGs before promoting.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner,repo,issue_number:prs.data[0].number,body});
