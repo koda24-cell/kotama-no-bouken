@@ -1,0 +1,73 @@
+name: B2 Single Rim V02 Endgrain Blender Review
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-rim-segment-v01-20261118]
+    paths:
+      - "tools/b2-waterwheel-rim/build_rim_v02_resume.py"
+      - ".github/workflows/b2-waterwheel-rim-v02.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record review run
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-rim
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > /tmp/b2-rim-v02.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+          cp /tmp/b2-rim-v02.json docs/3d/b2-waterwheel-rim/latest-v02.json
+          git add docs/3d/b2-waterwheel-rim/latest-v02.json
+          git commit -m "chore(b2): record V02 rim Blender job" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+      - name: Restore V01 verified Blend
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-single-rim-v01
+          run-id: 44228293247
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Confirm V01 checkpoint hash
+        run: |
+          echo "190c4780534e007052bf0693777679e0de759b6b7d30414a115829830c67e5a1  checkpoint/b2_waterwheel_single_rim_segment_v01.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-rim-v02
+      - name: Blender V02 physical endgrain and dowels four-view render
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-rim/build_rim_v02_resume.py -- checkpoint/b2_waterwheel_single_rim_segment_v01.blend render-output/b2-waterwheel-rim-v02
+      - name: Verify all files and embedded textures
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          p=Path('render-output/b2-waterwheel-rim-v02')
+          m=json.loads((p/'b2_waterwheel_single_rim_segment_v02_manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED' and m['endgrain_cap_faces']==2
+          assert m['original_beam_geometry_unchanged'] and len(m['files'])==6
+          for n,meta in m['files'].items():
+            b=(p/n).read_bytes()
+            assert len(b)==meta['bytes'] and hashlib.sha256(b).hexdigest()==meta['sha256']
+            if n.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if n.endswith('.glb'):
+              assert b[:4]==b'glTF'
+              k=struct.unpack_from('<I',b,12)[0]
+              j=json.loads(b[20:20+k]);assert len(j.get('images',[]))>=4
+          print('B2_RIM_V02_PHYSICAL_ENDGRAIN_PASS')
+          PY
+      - name: Store temporary review GLB Blend PNG and manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-single-rim-v02
+          path: render-output/b2-waterwheel-rim-v02/
+          if-no-files-found: warn
+          retention-days: 14
