@@ -58,6 +58,16 @@ bsdf.inputs["Base Color"].default_value=(.34,.69,.82,1)
 bsdf.inputs["Metallic"].default_value=.05
 bsdf.inputs["Roughness"].default_value=.17
 if bsdf.inputs.get("Transmission Weight"):bsdf.inputs["Transmission Weight"].default_value=.28
+# Restrained mineral luminescence, not a uniform neon surface.
+# GLB-compatible Principled emission: color remains physically shaded.
+crystal_mats=[]
+for tier,(tint,glow) in enumerate([((.30,.62,.78,1),.08),((.28,.72,.88,1),.20),((.38,.78,.95,1),.38)]):
+    m=mat.copy();m.name="Quartz subtle core glow %d"%tier
+    shader=m.node_tree.nodes.get("Principled BSDF")
+    shader.inputs["Base Color"].default_value=tint
+    if shader.inputs.get("Emission Color"):shader.inputs["Emission Color"].default_value=(.10,.58,.92,1)
+    if shader.inputs.get("Emission Strength"):shader.inputs["Emission Strength"].default_value=glow
+    crystal_mats.append(m)
 def make_crystal(index,origin,axis,length,radius):
     axis=Vector(axis).normalized()
     u=axis.cross(Vector((0,0,1)))
@@ -80,7 +90,7 @@ def make_crystal(index,origin,axis,length,radius):
     mesh=bpy.data.meshes.new("crystal_mesh_%03d"%index)
     mesh.from_pydata(vertices,[],faces);mesh.update()
     obj=bpy.data.objects.new("ADDED_QUARTZ_%03d"%index,mesh)
-    scene.collection.objects.link(obj);mesh.materials.append(mat)
+    scene.collection.objects.link(obj);mesh.materials.append(crystal_mats[rng.choices([0,1,2],[.55,.35,.10])[0]])
     return obj
 # Original mesh bounds are used to distribute clusters over upper/front boulder surface.
 # Avoid a regular grid: use five overlapping, unevenly populated growth pockets.
@@ -133,6 +143,14 @@ camdata=bpy.data.cameras.new("Review camera")
 cam=bpy.data.objects.new("Review camera",camdata);scene.collection.objects.link(cam)
 scene.camera=cam;camdata.type="ORTHO";camdata.ortho_scale=scale*1.6
 scene.render.engine="CYCLES";scene.cycles.samples=32
+# Preview includes soft glow via compositor; geometry and GLB remain unchanged.
+scene.use_nodes=True
+nodes=scene.node_tree.nodes;nodes.clear()
+rl=nodes.new("CompositorNodeRLayers")
+glare=nodes.new("CompositorNodeGlare");glare.glare_type="FOG_GLOW";glare.threshold=1.7;glare.quality="MEDIUM";glare.mix=-.90
+out_node=nodes.new("CompositorNodeComposite")
+scene.node_tree.links.new(rl.outputs["Image"],glare.inputs["Image"])
+scene.node_tree.links.new(glare.outputs["Image"],out_node.inputs["Image"])
 scene.render.resolution_x=800;scene.render.resolution_y=800;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 files={}
