@@ -325,3 +325,12 @@
 - V17 Artifact 14304097614 のGLB/Blend/4方向PNG/manifestをダウンロード。SHA256が6ファイル一致、GLB 400 meshes/9 imagesを実確認。
 - V14は滝が岩に隠れ、V16は下流端が発光団子列になったため採用せず。V17で厚い岩盤支持体と一体型冷却縁を維持し、側面の浮遊感を軽減。
 - **未検証/未承認**: ゲーム内GLTFLoader、動的熱ゆらぎ、火の粉の時間変化、FPS、タイル接続、ユーザー美術承認。実行コードとGLBは未マージのPR #475上にある。
+
+### 第4層粘性マグマ Three.js ShaderMaterial 試作 (2026-11-18)
+- 名称: Voronoi crack + domain-warp noise + slow UV advection 独立試作
+- 対象: 第4層マグマの黒い冷却皮膜と亀裂発光。Three.js標準ShaderMaterial。外部コードは複製せず独立実装。
+- 参考: https://threejs.org/examples/webgl_shader_lava.html / https://github.com/daniel-ilett/shaders-stylised-lava
+- ライセンス: 今回の独立コードは本リポジトリの既存方針に従う。参考実装の再配布条件は未確認、外部コード未導入。
+- 状態: コード追加済み、Node/WebGL/Blenderレンダリング・負荷検証未実施。ゲーム未統合・NOT_APPROVED。
+- 実装: `tools/floor4/lava/b4-lava-material-prototype.js`、設計/QA: `docs/3d/B4_VISCOUS_LAVA_SHADER_PROTOTYPE_20261118.md`。
+- 次: 専用プレビュー、UV流路形状、3方向PNG、動画、実GPU計測、承認。
