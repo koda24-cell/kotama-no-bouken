@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/b4-docker-batch-render-20261112
+      - feature/gpt-shared-render-run-index-20261118
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -33,3 +34,15 @@ jobs:
           name: b4-blender-docker-batch
           path: render-output/
           retention-days: 14
+
+  report:
+    if: always()
+    needs: [render]
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: ./.github/workflows/shared-render-status.yml
+    with:
+      result: ${{ needs.render.result }}
+      artifact_name: b4-blender-docker-batch
+      label: B4 Docker Batch Render
