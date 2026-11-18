@@ -241,6 +241,12 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
       let dir = null; for (const d of ['up', 'down', 'left', 'right']) if (await walkC(mx - D[d][0] * 2, my - D[d][1] * 2)) { dir = d; break; }
       if (dir) { await look(mx - D[dir][0], my - D[dir][1], dir); await shotS(`${pre}_flower_meadow_far`); }
       for (const d of dir ? [dir, OPP[dir]] : ['up']) { await look(mx, my, d); await shotS(`${pre}_flower_meadow_near_${d}`); }
+      // [B2V4-F] 根元の確認：群生地の株（L.flora.closeups）を、1マス手前のマスから株の方へ向いて見る（株は約3〜5m先、根元が画面の下に入る）
+      for (const [i, c] of (L.flora.closeups || []).slice(0, 1).entries()) {
+        const tx = Math.round(c.x / 4), ty = Math.round(c.z / 4), d = Math.abs(c.vx) > Math.abs(c.vz) ? (c.vx > 0 ? 'left' : 'right') : (c.vz > 0 ? 'up' : 'down');
+        const sx = tx - D[d][0], sy = ty - D[d][1];
+        if (await walkC(sx, sy)) { await look(tx, ty, d); await shotS(`${pre}_flower_root_${i + 1}_${c.kind}`); }
+      }
     }
     // [B2V4-L] 光班の確認：導きの灯を通路の3マス先から、天井の水流、両側が壁の通路の奥（石筍・鍾乳石の根元）
     {
