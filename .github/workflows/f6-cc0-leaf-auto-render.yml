@@ -1,0 +1,87 @@
+name: F6 CC0 Photo Leaf Auto Render (Unapproved)
+on:
+  push:
+    branches:
+      - feature/gpt-f6-auto-cc0-leaf-render-20261118
+    paths:
+      - tools/floor6/tree_mature_v1.py
+      - tools/floor6/fetch_cc0_leaf.py
+      - tools/floor6/apply_cc0_leaf_photo.py
+      - .github/workflows/f6-cc0-leaf-auto-render.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: f6-cc0-photo-leaf-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build-and-compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static syntax check
+        run: |
+          python3 -m py_compile tools/floor6/tree_mature_v1.py tools/floor6/fetch_cc0_leaf.py tools/floor6/apply_cc0_leaf_photo.py
+      - name: Install Blender rendering dependencies
+        run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy libegl1 libgl1 libopengl0 libgl1-mesa-dri
+      - name: Generate original V19 GLB, Blend and four camera PNGs
+        run: |
+          set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+          blender -b -t 2 --python tools/floor6/tree_mature_v1.py 2>&1 | tee /tmp/f6_baseline.log
+          grep -q F6_TREE_MATURE_DONE /tmp/f6_baseline.log
+          test -s render-output/floor6/nature/tree_mature/tree_mature.blend
+      - name: Obtain official CC0 leaf archive and validate its maps
+        run: |
+          set -euo pipefail
+          python3 tools/floor6/fetch_cc0_leaf.py
+          test -s render-output/floor6/cc0-leaf-source/color.png
+      - name: Apply CC0 leaf color and PBR while preserving base geometry
+        run: |
+          set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+          blender -b -t 2 render-output/floor6/nature/tree_mature/tree_mature.blend --python tools/floor6/apply_cc0_leaf_photo.py 2>&1 | tee /tmp/f6_cc0.log
+          grep -q F6_CC0_PHOTO_V20_DONE /tmp/f6_cc0.log
+      - name: Validate hash manifests, 4 PNGs and before-after difference
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, struct
+          from pathlib import Path
+          base=Path("render-output/floor6/nature/tree_mature")
+          photo=Path("render-output/floor6/nature/tree_mature_photo_v20")
+          for d in [base,photo]:
+              m=json.loads((d/"manifest.json").read_text())
+              assert m["status"]=="NOT_APPROVED"
+              names={e["name"] for e in m["files"]}
+              assert {"front.png","side.png","angle.png","top.png"}<=names
+              assert len([n for n in names if n.endswith(".glb")])==1
+              assert len([n for n in names if n.endswith(".blend")])==1
+              for e in m["files"]:
+                  p=d/e["name"]
+                  data=p.read_bytes()
+                  assert len(data)==e["bytes"] and hashlib.sha256(data).hexdigest()==e["sha256"]
+                  if p.suffix==".glb": assert data[:4]==b"glTF"
+                  if p.suffix==".png":
+                      assert data[:8]==b"\x89PNG\r\n\x1a\n"
+                      w,h=struct.unpack(">II",data[16:24])
+                      assert w>=512 and h>=512
+          m=json.loads((photo/"manifest.json").read_text())
+          assert m["source_texture"]["license"]=="CC0"
+          assert m["source_texture"]["maps"]["color"]["sha256"]
+          different=[v for v in ["front","side","angle","top"] if hashlib.sha256((base/(v+".png")).read_bytes()).digest()!=hashlib.sha256((photo/(v+".png")).read_bytes()).digest()]
+          assert len(different)>=2, "CC0 texture did not visibly alter camera render PNG bytes"
+          report=dict(status="NOT_APPROVED",before_version="V19",candidate="V20-CC0",different_views=different,photo_source=m["source_texture"]["official_page"],source_run=m["render_run_id"],note="PNG difference is NOT human aesthetic acceptance or FPS validation")
+          (photo/"comparison.json").write_text(json.dumps(report,indent=2)+"\n")
+          print("F6_CC0_COMPARE_PASS", report)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-v19-v20-cc0-leaf-comparison-NOT-APPROVED
+          path: |
+            render-output/floor6/nature/tree_mature/
+            render-output/floor6/nature/tree_mature_photo_v20/
+            render-output/floor6/cc0-leaf-source/
+          retention-days: 14
+          if-no-files-found: warn
