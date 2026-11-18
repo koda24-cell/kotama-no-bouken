@@ -1,0 +1,63 @@
+name: Shared 3D render run index
+on:
+  workflow_call:
+    inputs:
+      result:
+        type: string
+        required: true
+      artifact_name:
+        type: string
+        required: true
+      label:
+        type: string
+        required: true
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Persist run ID to summary
+        env:
+          RESULT: ${{ inputs.result }}
+          ARTIFACT: ${{ inputs.artifact_name }}
+          LABEL: ${{ inputs.label }}
+        run: |
+          {
+            echo "### $LABEL"
+            echo "Result: $RESULT"
+            echo "Run ID: ${{ github.run_id }}"
+            echo "Commit: ${{ github.sha }}"
+            echo "Artifact: $ARTIFACT"
+            echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "NOT_APPROVED: verify actual render before promotion."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Update one indexed comment on matching PR
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          RESULT: ${{ inputs.result }}
+          ARTIFACT: ${{ inputs.artifact_name }}
+          LABEL: ${{ inputs.label }}
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const branch = context.ref.replace('refs/heads/', '');
+            const prs = await github.rest.pulls.list({owner,repo,state:'open',head:owner+':'+branch});
+            if (!prs.data.length) { core.info('No open PR for '+branch); return; }
+            const marker = '<!-- shared-render-index:'+process.env.LABEL+' -->';
+            const body = [
+              marker, '### '+process.env.LABEL+' — latest render',
+              '**Run ID:** '+context.runId,
+              '**Commit:** '+context.sha,
+              '**Result:** '+process.env.RESULT,
+              '**Artifact:** `'+process.env.ARTIFACT+'`',
+              '[Actions logs and artifacts](https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId+')',
+              'Unapproved until PNG/GLB inspection and user approval.'
+            ].join('\n');
+            const issue_number=prs.data[0].number;
+            const comments=await github.paginate(github.rest.issues.listComments,{owner,repo,issue_number,per_page:100});
+            const prior=comments.find(c=>c.user?.type==='Bot'&&c.body?.includes(marker));
+            if(prior) await github.rest.issues.updateComment({owner,repo,comment_id:prior.id,body});
+            else await github.rest.issues.createComment({owner,repo,issue_number,body});
