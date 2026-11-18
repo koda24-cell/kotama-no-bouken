@@ -51,21 +51,21 @@ if missing:
             if slot.material and any(m['material']==slot.material.name for m in missing):slot.material=fallback
 print('MISSING_TEXTURE_DIAGNOSTIC',json.dumps(missing))
 mat=bpy.data.materials.new("Quartz pale ice blue")
-mat.diffuse_color=(.38,.72,.85,1)
+mat.diffuse_color=(.075,.20,.30,1)
 mat.use_nodes=True
 bsdf=mat.node_tree.nodes.get("Principled BSDF")
-bsdf.inputs["Base Color"].default_value=(.34,.69,.82,1)
+bsdf.inputs["Base Color"].default_value=(.075,.20,.30,1)
 bsdf.inputs["Metallic"].default_value=.05
 bsdf.inputs["Roughness"].default_value=.17
 if bsdf.inputs.get("Transmission Weight"):bsdf.inputs["Transmission Weight"].default_value=.28
 # Restrained mineral luminescence, not a uniform neon surface.
 # GLB-compatible Principled emission: color remains physically shaded.
 crystal_mats=[]
-for tier,(tint,glow) in enumerate([((.30,.62,.78,1),.18),((.28,.72,.88,1),.65),((.38,.78,.95,1),1.6)]):
+for tier,(tint,glow) in enumerate([((.045,.14,.24,1),.05),((.07,.20,.32,1),.24),((.10,.26,.40,1),1.9)]):
     m=mat.copy();m.name="Quartz subtle core glow %d"%tier
     shader=m.node_tree.nodes.get("Principled BSDF")
     shader.inputs["Base Color"].default_value=tint
-    if shader.inputs.get("Emission Color"):shader.inputs["Emission Color"].default_value=(.24,.78,1.0,1)
+    if shader.inputs.get("Emission Color"):shader.inputs["Emission Color"].default_value=(.12,.72,1.0,1)
     if shader.inputs.get("Emission Strength"):shader.inputs["Emission Strength"].default_value=glow
     crystal_mats.append(m)
 def make_crystal(index,origin,axis,length,radius):
@@ -97,6 +97,7 @@ def make_crystal(index,origin,axis,length,radius):
 pockets=[(-.30,-.19,8),(.12,-.26,31),(.35,-.03,12),(-.14,.17,44),(.24,.25,15)]
 count=0
 growth=[]
+glow_centers=[]
 for pocket_index,(px,py,n) in enumerate(pockets):
     base=Vector((rng.uniform(-.65,.65),rng.uniform(-.65,.65),rng.uniform(.55,1.0))).normalized()
     for j in range(n):
@@ -124,13 +125,14 @@ for pocket_index,(px,py,n) in enumerate(pockets):
         else:length=scale*rng.uniform(.014,.07)
         radius=length*rng.uniform(.12,.26)
         make_crystal(count,origin,axis,length,radius)
+        if j==0 and pocket_index in (1,3): glow_centers.append(origin+axis.normalized()*length*.48)
         growth.append({'pocket':pocket_index,'length':round(length/scale,4),'direction':[round(v,3) for v in axis.normalized()]})
         count+=1
 for o in list(scene.objects):
     if o.type in {"CAMERA","LIGHT"}:bpy.data.objects.remove(o,do_unlink=True)
 world=bpy.data.worlds.new("Neutral mineral review")
 world.use_nodes=True;world.node_tree.nodes["Background"].inputs["Color"].default_value=(.26,.29,.34,1)
-world.node_tree.nodes["Background"].inputs["Strength"].default_value=.75
+world.node_tree.nodes["Background"].inputs["Strength"].default_value=.32
 scene.world=world
 def light(name,direction,energy,size):
     d=bpy.data.lights.new(name,"AREA");d.energy=energy;d.size=size
@@ -138,7 +140,13 @@ def light(name,direction,energy,size):
     o.location=center+Vector(direction)*scale
     o.rotation_euler=(center-o.location).to_track_quat("-Z","Y").to_euler()
 light("Key",(.7,-.8,1.3),650,4)
-light("Fill",(-.7,.5,.8),350,5)
+light("Fill",(-.7,.5,.8),120,5)
+# Real local light spill onto adjacent rock, independent of postprocess bloom.
+for i,pos in enumerate(glow_centers):
+    data=bpy.data.lights.new("Quartz cyan spill %d"%i,"POINT")
+    data.color=(.12,.68,1.0);data.energy=80;data.shadow_soft_size=scale*.11
+    obj=bpy.data.objects.new(data.name,data);scene.collection.objects.link(obj)
+    obj.location=pos
 camdata=bpy.data.cameras.new("Review camera")
 cam=bpy.data.objects.new("Review camera",camdata);scene.collection.objects.link(cam)
 scene.camera=cam;camdata.type="ORTHO";camdata.ortho_scale=scale*1.6
@@ -172,6 +180,6 @@ bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"render_variant":"V5_CYAN_EMISSION","emission_strengths":[0.18,0.65,1.6],"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
+manifest={"render_variant":"V6_DARK_CRYSTAL_LOCAL_CYAN_SPILL","emission_strengths":[0.05,0.24,1.9],"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
