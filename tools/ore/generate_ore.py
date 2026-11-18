@@ -10,8 +10,10 @@ def mat(name, color, metallic=0, roughness=0.6, emission=0):
     p.inputs["Base Color"].default_value=(*color,1)
     p.inputs["Metallic"].default_value=metallic
     p.inputs["Roughness"].default_value=roughness
-    p.inputs["Emission Color"].default_value=(*color,1)
-    p.inputs["Emission Strength"].default_value=emission
+    emission_input=p.inputs.get("Emission Color") or p.inputs.get("Emission")
+    if emission_input: emission_input.default_value=(*color,1)
+    strength_input=p.inputs.get("Emission Strength")
+    if strength_input: strength_input.default_value=emission
     return m
 
 def rock(rng, material):
