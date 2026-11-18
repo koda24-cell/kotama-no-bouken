@@ -29,7 +29,7 @@ jobs:
           git add docs/3d/b2-waterwheel-paddle-run/latest-v16.json
           git commit -m "chore(b2): V16 Blender run id" || true
           git push origin HEAD:feature/gpt-b2-waterwheel-v07-resume-20261118
-      - name: Download verified V14 editable Blender checkpoint
+      - name: Download verified V15 editable Blender checkpoint
         uses: actions/download-artifact@v4
         with:
           name: b2-waterwheel-v15-wrought-iron
@@ -37,13 +37,13 @@ jobs:
           repository: ${{ github.repository }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: checkpoint
-      - name: Verify untouched V14 checkpoint
+      - name: Verify untouched V15 checkpoint
         run: |
-          echo "45f70dcfa42fbec79c47abf8737a20982179d038219f15d4d59b57dd80b55f72  checkpoint/b2_bucket_paddle_blender_v14.blend" | sha256sum -c
+          echo "45f70dcfa42fbec79c47abf8737a20982179d038219f15d4d59b57dd80b55f72  checkpoint/b2_bucket_paddle_blender_v15.blend" | sha256sum -c
           mkdir -p render-output/b2-waterwheel-v16
       - name: Real Blender V16 iron material bake and four views
         run: |
-          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v16_resume.py -- checkpoint/b2_bucket_paddle_blender_v14.blend render-output/b2-waterwheel-v16
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v16_resume.py -- checkpoint/b2_bucket_paddle_blender_v15.blend render-output/b2-waterwheel-v16
       - name: Verify GLB embedded wood/iron maps and 4 PNGs
         run: |
           python3 - <<'PY'
@@ -51,7 +51,7 @@ jobs:
           import json,hashlib,struct
           p=Path("render-output/b2-waterwheel-v16")
           m=json.loads((p/"b2_bucket_paddle_blender_v16_manifest.json").read_text())
-          assert m["status"]=="NOT_APPROVED" and m["timber_geometry_preserved"]
+          assert m["status"]=="NOT_APPROVED" and m["timber_unchanged"]
           assert m["cold_wrought_iron_corrected"] and m["timber_unchanged"]
           assert len(m["files"])==6
           for name,meta in m["files"].items():
