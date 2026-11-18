@@ -325,3 +325,10 @@
 - V17 Artifact 14304097614 のGLB/Blend/4方向PNG/manifestをダウンロード。SHA256が6ファイル一致、GLB 400 meshes/9 imagesを実確認。
 - V14は滝が岩に隠れ、V16は下流端が発光団子列になったため採用せず。V17で厚い岩盤支持体と一体型冷却縁を維持し、側面の浮遊感を軽減。
 - **未検証/未承認**: ゲーム内GLTFLoader、動的熱ゆらぎ、火の粉の時間変化、FPS、タイル接続、ユーザー美術承認。実行コードとGLBは未マージのPR #475上にある。
+
+### BotW 公式公開技術の全階層向け設計登録 (2026-11-18)
+- 出典: https://cedec.cesa.or.jp/2017/session/VA/s58eed7182c81b.html （近/中/遠景、時間・空間レイヤー） / https://cedec.cesa.or.jp/2017/session/VA/s58eed8209ffce.html （データ駆動VFX） / https://www.youtube.com/watch?v=QyMsF31NdNc （相互作用ルール） / https://cedec.cesa.or.jp/2017/session/ （制作/QA/UI/サウンド）。
+- 用途: 全階層の空気遠近・植生・水/溶岩・瘴気・LOD・制作QAを共通原則で設計。既存研究と重複する部分は再利用。
+- 状態: 公式公開要旨とGDC講演を調査し、採用計画を文書化。実ゲーム導入・レンダリング・GPU実測は未実施。
+- 権利: 技術的知見のみ参照。任天堂のコード/画像/ゲームデータはコピーしない。講演資料の公開制限に注意。
+- 手順/優先順位/検証: [BOTW_ALL_FLOORS_TECH_ADOPTION_20261118.md](BOTW_ALL_FLOORS_TECH_ADOPTION_20261118.md)。
