@@ -23,6 +23,10 @@ for node_name,(filename,space) in mapping.items():
     node.image=image
     report["reconnected"].append({"node":node_name,"file":filename,"bytes":path.stat().st_size,"packed":True})
 assert len(report["reconnected"])==3
+for node_name in mapping:
+    assert nodes[node_name].image.packed_file is not None, 'texture not packed: '+node_name
+report['original_meshes']=[{'name':o.name,'vertices':len(o.data.vertices),'polygons':len(o.data.polygons)} for o in bpy.data.objects if o.type=='MESH']
+report['shader_links']=[l.from_node.name+' -> '+l.to_node.name for l in mat.node_tree.links]
 bpy.ops.wm.save_as_mainfile(filepath=str(out))
 (out.parent/"material_repair_report.json").write_text(json.dumps(report,indent=2))
 print("MATERIAL_REPAIR",json.dumps(report))
