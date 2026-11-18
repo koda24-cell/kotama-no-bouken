@@ -18,6 +18,29 @@ center=(lo+hi)*.5
 dims=hi-lo
 scale=max(dims.length,.1)
 rng=random.Random(20261118)
+# Reference-driven growth: many small crystals, few dominant tips.
+# Preserve the source rock mesh, diagnose missing images before rendering.
+missing=[]
+for material in bpy.data.materials:
+    if not material.use_nodes: continue
+    for node in material.node_tree.nodes:
+        if node.type=='TEX_IMAGE' and node.image:
+            im=node.image
+            try: valid=im.packed_file is not None or Path(bpy.path.abspath(im.filepath)).is_file()
+            except Exception: valid=False
+            if not valid: missing.append({'material':material.name,'image':im.name,'path':im.filepath})
+# A missing diffuse image produces magenta. Use a neutral stone fallback
+# only for missing-image materials; keep all original geometry unchanged.
+if missing:
+    fallback=bpy.data.materials.new('REVIEW_ONLY_neutral_stone_missing_texture')
+    fallback.diffuse_color=(.28,.27,.25,1);fallback.use_nodes=True
+    shader=fallback.node_tree.nodes.get('Principled BSDF')
+    shader.inputs['Base Color'].default_value=(.28,.27,.25,1)
+    shader.inputs['Roughness'].default_value=.86
+    for obj in original:
+        for slot in obj.material_slots:
+            if slot.material and any(m['material']==slot.material.name for m in missing):slot.material=fallback
+print('MISSING_TEXTURE_DIAGNOSTIC',json.dumps(missing))
 mat=bpy.data.materials.new("Quartz pale ice blue")
 mat.diffuse_color=(.38,.72,.85,1)
 mat.use_nodes=True
@@ -52,22 +75,26 @@ def make_crystal(index,origin,axis,length,radius):
     return obj
 # Original mesh bounds are used to distribute clusters over upper/front boulder surface.
 # Avoid a regular grid: use five overlapping, unevenly populated growth pockets.
-pockets=[(-.30,-.18),(.08,-.28),(.32,-.08),(-.08,.16),(.22,.26)]
+pockets=[(-.30,-.19,8),(.12,-.26,31),(.35,-.03,12),(-.14,.17,44),(.24,.25,15)]
 count=0
-for pocket_index,(px,py) in enumerate(pockets):
-    for j in range(22):
-        x=max(-.45,min(.45,px+rng.gauss(0,.115)))
-        y=max(-.45,min(.45,py+rng.gauss(0,.12)))
-        # A root slightly inside the top of the boulder; original boulder stays untouched.
-        origin=center+Vector((x*dims.x,y*dims.y,dims.z*(.32+rng.uniform(-.05,.12))))
-        axis=Vector((rng.uniform(-.48,.48),rng.uniform(-.48,.48),rng.uniform(.65,1.0)))
+growth=[]
+for pocket_index,(px,py,n) in enumerate(pockets):
+    base=Vector((rng.uniform(-.65,.65),rng.uniform(-.65,.65),rng.uniform(.55,1.0))).normalized()
+    for j in range(n):
+        x=max(-.44,min(.44,px+rng.gauss(0,.06 if pocket_index%2==0 else .11)))
+        y=max(-.44,min(.44,py+rng.gauss(0,.065 if pocket_index%2==0 else .11)))
+        origin=center+Vector((x*dims.x,y*dims.y,dims.z*(.28+rng.uniform(-.07,.08))))
+        axis=base+Vector((rng.gauss(0,.24),rng.gauss(0,.24),rng.gauss(0,.15)))
+        if rng.random()<.12:axis=Vector((rng.uniform(-1,1),rng.uniform(-1,1),rng.uniform(.1,.8)))
         tier=rng.random()
-        if j==0:length=scale*rng.uniform(.30,.40)
-        elif tier<.22:length=scale*rng.uniform(.19,.28)
-        elif tier<.68:length=scale*rng.uniform(.10,.19)
-        else:length=scale*rng.uniform(.045,.10)
-        radius=length*rng.uniform(.14,.23)
-        make_crystal(count,origin,axis,length,radius);count+=1
+        if j==0 and pocket_index in (1,3):length=scale*rng.uniform(.22,.31)
+        elif tier<.04:length=scale*rng.uniform(.15,.21)
+        elif tier<.21:length=scale*rng.uniform(.075,.14)
+        else:length=scale*rng.uniform(.014,.07)
+        radius=length*rng.uniform(.12,.26)
+        make_crystal(count,origin,axis,length,radius)
+        growth.append({'pocket':pocket_index,'length':round(length/scale,4),'direction':[round(v,3) for v in axis.normalized()]})
+        count+=1
 for o in list(scene.objects):
     if o.type in {"CAMERA","LIGHT"}:bpy.data.objects.remove(o,do_unlink=True)
 world=bpy.data.worlds.new("Neutral mineral review")
@@ -101,6 +128,6 @@ bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(original),"added_crystals":count,"files":files}
+manifest={"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
