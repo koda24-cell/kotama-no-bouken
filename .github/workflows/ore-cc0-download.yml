@@ -160,7 +160,8 @@ jobs:
             echo "Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             echo "Unapproved artifacts only; review actual PNG/GLB."
           } >> "$GITHUB_STEP_SUMMARY"
-      - name: Post result to open PR
+      - name: Post or update run index on PR
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           DOWNLOAD: ${{ needs.download.result }}
@@ -171,15 +172,29 @@ jobs:
             const {owner, repo} = context.repo;
             const head = context.ref.replace('refs/heads/', '');
             const prs = await github.rest.pulls.list({owner, repo, state:'open', head: owner + ':' + head});
-            if (!prs.data.length) { core.info('No open PR matches ' + head); return; }
+            if (!prs.data.length) { core.warning('No open PR for ' + head); return; }
+            const marker = '<!-- ore-render-run-index -->';
+            const status = [process.env.DOWNLOAD,process.env.BOULDER,process.env.DENSE];
             const body = [
-              '### CC0 ore and dense crystal render',
+              marker,
+              '### Latest ore rendering run (automatically updated)',
+              '**Run ID:** ' + context.runId,
+              '**Commit:** ' + context.sha,
               '| Job | Result |', '|---|---|',
               '| CC0 download | ' + process.env.DOWNLOAD + ' |',
               '| Original boulder | ' + process.env.BOULDER + ' |',
               '| 110-crystal boulder | ' + process.env.DENSE + ' |',
               '',
-              '[Run logs and artifacts](https://github.com/' + owner + '/' + repo + '/actions/runs/' + context.runId + ')',
-              'All outputs are **NOT_APPROVED**. Check actual rendered PNGs before promoting.'
-            ].join('\n');
-            await github.rest.issues.createComment({owner,repo,issue_number:prs.data[0].number,body});
+              '[Open this run and its artifacts](https://github.com/' + owner + '/' + repo + '/actions/runs/' + context.runId + ')',
+              'Artifact: `ore-dense-crystal-original-boulder-not-approved`',
+              'This run is ' + (status.every(x => x === 'success') ? '**SUCCESS**' : '**NOT FULLY SUCCESSFUL**') + '.',
+              'Generated assets remain **NOT_APPROVED**.'
+            ].join('\\n');
+            const issue_number = prs.data[0].number;
+            const comments = await github.paginate(github.rest.issues.listComments, {owner,repo,issue_number,per_page:100});
+            const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({owner,repo,comment_id:existing.id,body});
+            } else {
+              await github.rest.issues.createComment({owner,repo,issue_number,body});
+            }
