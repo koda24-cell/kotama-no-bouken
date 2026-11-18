@@ -34,3 +34,11 @@
 1. 使用しているBlender生成プロセスが、なぜ通常の`.blend`ではないバイナリを保存しているのか制作ソースを追跡し、正規のBlendを生成/確認できるよう修正。元データは残す。
 2. 全27ファイルは内部レビュー「未確認」、ネイティブファイル互換性「要修正」として扱う。
 3. Blender監査Actionで解析失敗の検出をワークフロー失敗/警告として扱い、成功表示で誤解させない。
+
+## 重要な訂正（2026-11-18）: Blender 5.x の正規ヘッダー
+以前の報告で「`BLENDER17-01v0503` / `BLENDER17-01v0500` は標準形式ではない」と書いたのは誤り。**Blender 5.0以降で正規に採用された17バイトの新しいヘッダー形式**である。参照: https://projects.blender.org/blender/blender/issues/129309 、https://developer.blender.org/docs/release_notes/5.0/core/ 。
+- 27件のファイルはZstandard圧縮に成功し、Blender 5.0 / 5.3 の新ヘッダーを保持。形式の一致は確認できるが、27件すべての正常読み込みを実測したわけではない。
+- 読み込みに失敗した主原因は監査コンテナの **Blender 4.0.2がBlender 5.xの新ファイル形式に対応していないこと**と考えられる。ウイルス・ファイル破損の証拠ではない。
+- 27件中、第1層の候補17件は`tools/f1-sacred-forest/pack_sources.py` にBlender自身の`save_as_mainfile`で保存し、再読み込みしてテクスチャ内包を検証したコードと、`assets/3d/dungeons/b1_sacred_forest_candidates/manifest.json` に`Blender 5.3.0`の記録がある。第4層は`.github/workflows/b4-magma-river-v16-approved-archive.yml`などで生成済みArtifactをハッシュ照合し保存する手順を確認。
+- **真の内部Python監査・正常な再読み込み検証が必要なら、Blender 5.3の隔離環境で`--disable-autoexec`を用いて同じファイルを開く**。既存のBlender 4.0.2監査の27/27失敗は互換性不足の可能性が高いため、不正判定には使えない。
+- この訂正は元の監査結果を消さず、記録の解釈を修正するもの。ClamAVのウイルス検出0件とは別の話。
