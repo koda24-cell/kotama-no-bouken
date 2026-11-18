@@ -45,6 +45,12 @@ jobs:
             tail -n 5 "security-audit-output/blend/$name.log"
           done < security-audit-output/blend-file-list.null
           echo "Inspected_count=$count" | tee security-audit-output/blend-total.txt
+          successful=$(grep -l '"status": "inspected"' security-audit-output/blend/*.log 2>/dev/null | wc -l)
+          echo "Successfully_opened=$successful" | tee -a security-audit-output/blend-total.txt
+          if [ "$successful" -ne "$count" ]; then
+            echo "::error::Blender native inspection incomplete: $successful / $count files opened"
+            exit 1
+          fi
       - name: Upload Blender review evidence
         if: always()
         uses: actions/upload-artifact@v4
