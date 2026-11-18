@@ -1,0 +1,45 @@
+name: Ore CC0 Download Verification
+on:
+  push:
+    branches:
+      - feature/gpt-ore-free-assets-intake-20261118
+    paths:
+      - 'tools/ore/intake_cc0_assets.py'
+      - '.github/workflows/ore-cc0-download.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile intake script
+        run: python3 -m py_compile tools/ore/intake_cc0_assets.py
+      - name: Download five CC0 assets
+        run: |
+          mkdir -p ore-cc0-review
+          python3 tools/ore/intake_cc0_assets.py --out ore-cc0-review
+      - name: Verify SHA256 and file signatures
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, hashlib
+          root=pathlib.Path("ore-cc0-review")
+          p=root/"intake_manifest.json"
+          assert p.is_file(), "missing manifest"
+          data=json.loads(p.read_text())
+          for a in data["assets"]:
+              if a["state"]!="downloaded_unreviewed":continue
+              f=root/a["file"]
+              assert f.is_file() and f.stat().st_size>1000, a["id"]
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==a["sha256"], a["id"]
+          print("downloaded",sum(a["state"]=="downloaded_unreviewed" for a in data["assets"]),"/",len(data["assets"]))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ore-cc0-download-review
+          path: ore-cc0-review/
+          retention-days: 14
