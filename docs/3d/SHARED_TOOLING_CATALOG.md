@@ -332,3 +332,12 @@
 - 状態: 公式公開要旨とGDC講演を調査し、採用計画を文書化。実ゲーム導入・レンダリング・GPU実測は未実施。
 - 権利: 技術的知見のみ参照。任天堂のコード/画像/ゲームデータはコピーしない。講演資料の公開制限に注意。
 - 手順/優先順位/検証: [BOTW_ALL_FLOORS_TECH_ADOPTION_20261118.md](BOTW_ALL_FLOORS_TECH_ADOPTION_20261118.md)。
+
+
+### ClamAV 取得直後隔離・感染チェック（2026-11-19、GPT）
+- 正規配布元: https://www.clamav.net/ / https://github.com/Cisco-Talos/clamav 。GPLv2、無料。マルウェア定義は freshclam で更新。
+- 用途: HTTPSから取得した外部素材を一時隔離し、CLAMAV検査成功時のみ保存。ZIPは解凍前スキャン、Zip Slip・サイズ制限確認、解凍後ファイル再スキャン。原本SHA-256を記録。
+- 実装: `tools/security/safe_asset_download.py`、単体テスト `tools/security/test_safe_asset_download.py`、CI `.github/workflows/asset-clamav-scan.yml`。3層Poly Haven取得例: `tools/floor3/elevated_bridge/fetch_textures.py` と対応render workflow。
+- 状態: 独立Draft PR #514、未マージ。既存Git追跡ファイルのClamAV実スキャンはrun 44415778077で成功、専用ダウンローダーの模擬単体試験はrun 44416255514で成功。3層取得処理を統合した後の外部実ダウンロード・検査・レンダリングは未検証。
+- 限界: モジュールを使わない既存のcurl/wget/requests等は保護対象外。BLEND Python・アドオン動作の安全性は静的レビューも必要。未知マルウェアの陰性は安全の保証でない。
+- 手順と引き継ぎ: `docs/3d/CLAMAV_ASSET_SECURITY_HANDOFF.md` / https://github.com/koda24-cell/kotama-no-bouken/pull/514
