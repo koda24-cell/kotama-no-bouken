@@ -57,17 +57,26 @@ bsdf=mat.node_tree.nodes.get("Principled BSDF")
 bsdf.inputs["Base Color"].default_value=(.075,.20,.30,1)
 bsdf.inputs["Metallic"].default_value=.05
 bsdf.inputs["Roughness"].default_value=.17
-if bsdf.inputs.get("Transmission Weight"):bsdf.inputs["Transmission Weight"].default_value=.28
+if bsdf.inputs.get("Transmission Weight"):bsdf.inputs["Transmission Weight"].default_value=.48
 # Restrained mineral luminescence, not a uniform neon surface.
 # GLB-compatible Principled emission: color remains physically shaded.
 crystal_mats=[]
-for tier,(tint,glow) in enumerate([((.045,.14,.24,1),.05),((.07,.20,.32,1),.24),((.10,.26,.40,1),1.9)]):
+for tier,(tint,glow) in enumerate([((.025,.075,.14,1),.01),((.035,.11,.20,1),.05),((.06,.17,.29,1),.22)]):
     m=mat.copy();m.name="Quartz subtle core glow %d"%tier
     shader=m.node_tree.nodes.get("Principled BSDF")
     shader.inputs["Base Color"].default_value=tint
     if shader.inputs.get("Emission Color"):shader.inputs["Emission Color"].default_value=(.12,.72,1.0,1)
     if shader.inputs.get("Emission Strength"):shader.inputs["Emission Strength"].default_value=glow
     crystal_mats.append(m)
+# The emissive core is a separate narrow prism inside the dark translucent shell.
+core_mat=bpy.data.materials.new("Quartz inner cyan light core")
+core_mat.use_nodes=True
+core_shader=core_mat.node_tree.nodes.get("Principled BSDF")
+core_shader.inputs["Base Color"].default_value=(.015,.20,.35,1)
+core_shader.inputs["Roughness"].default_value=.28
+core_shader.inputs["Emission Color"].default_value=(.10,.75,1,1)
+core_shader.inputs["Emission Strength"].default_value=7.0
+
 def make_crystal(index,origin,axis,length,radius):
     axis=Vector(axis).normalized()
     u=axis.cross(Vector((0,0,1)))
@@ -91,6 +100,25 @@ def make_crystal(index,origin,axis,length,radius):
     mesh.from_pydata(vertices,[],faces);mesh.update()
     obj=bpy.data.objects.new("ADDED_QUARTZ_%03d"%index,mesh)
     scene.collection.objects.link(obj);mesh.materials.append(crystal_mats[rng.choices([0,1,2],[.55,.35,.10])[0]])
+    # A smaller interior prism preserves the existing crystal shell geometry.
+    # It is intentionally visible through the transmissive shell at glancing angles.
+    if length>scale*.055:
+        core_verts=[]
+        for h,w in [(.02,.40),(.18,.54),(.58,.48),(.78,.22),(.88,.015)]:
+            for j in range(sides):
+                a=phase+j*math.tau/sides
+                p=Vector(origin)+axis*(length*h)+radius*w*(u*math.cos(a)+v*math.sin(a))
+                core_verts.append(tuple(p))
+        core_faces=[]
+        for k in range(4):
+            for j in range(sides):
+                a=k*sides+j;b=k*sides+(j+1)%sides
+                core_faces.append((a,b,b+sides,a+sides))
+        core_mesh=bpy.data.meshes.new("inner_core_mesh_%03d"%index)
+        core_mesh.from_pydata(core_verts,[],core_faces);core_mesh.update()
+        core_obj=bpy.data.objects.new("ADDED_QUARTZ_CORE_%03d"%index,core_mesh)
+        scene.collection.objects.link(core_obj)
+        core_mesh.materials.append(core_mat)
     return obj
 # Original mesh bounds are used to distribute clusters over upper/front boulder surface.
 # Avoid a regular grid: use five overlapping, unevenly populated growth pockets.
@@ -139,7 +167,7 @@ def light(name,direction,energy,size):
     o=bpy.data.objects.new(name,d);scene.collection.objects.link(o)
     o.location=center+Vector(direction)*scale
     o.rotation_euler=(center-o.location).to_track_quat("-Z","Y").to_euler()
-light("Key",(.7,-.8,1.3),650,4)
+light("Key",(.7,-.8,1.3),240,4)
 light("Fill",(-.7,.5,.8),120,5)
 # Real local light spill onto adjacent rock, independent of postprocess bloom.
 for i,pos in enumerate(glow_centers):
@@ -180,6 +208,6 @@ bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"render_variant":"V6_DARK_CRYSTAL_LOCAL_CYAN_SPILL","emission_strengths":[0.05,0.24,1.9],"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
+manifest={"render_variant":"V7_DARK_SHELL_INTERNAL_EMISSIVE_CORE","emission_strengths":[0.01,0.05,0.22],"internal_core_emission":7.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
