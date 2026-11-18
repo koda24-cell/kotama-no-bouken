@@ -4,6 +4,7 @@ on:
     branches: [feature/floor3-elevated-ruin-tiles-20261114]
     paths:
       - 'tools/floor3/elevated_bridge/**'
+      - 'tools/security/**'
       - '.github/workflows/floor3-elevated-bridge-render.yml'
   workflow_dispatch:
 jobs:
@@ -12,6 +13,12 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+      - name: Install and update ClamAV before any texture fetch
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clamav clamav-freshclam
+          sudo systemctl stop clamav-freshclam || true
+          sudo freshclam
       - name: Acquire CC0 textures (fallback procedural if unavailable)
         run: |
           mkdir -p tools/floor3/elevated_bridge/textures
