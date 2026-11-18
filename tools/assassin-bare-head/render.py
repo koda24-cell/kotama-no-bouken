@@ -60,7 +60,7 @@ for pos,power in [((3,-4,5),700),((-3,1,3),420)]:
  bpy.ops.object.light_add(type='AREA',location=pos);light=bpy.context.object
  light.data.energy=power;light.data.size=5
  light.rotation_euler=(Vector((0,0,.20))-light.location).to_track_quat('-Z','Y').to_euler()
-for name,loc in [('front',(0,-5,.25)),('right_side',(5,0,.25)),('left_side',(-5,0,.25)),('three_quarter',(3,-4,.35))]:
+for name,loc in [('front',(0,-5,.25)),('right_side',(5,0,.25)),('left_side',(-5,0,.25)),('three_quarter',(3,-4,.35)),('back',(0,5,.25)),('top',(0,0,5))]:
  bpy.ops.object.camera_add(location=loc);cam=bpy.context.object
  cam.rotation_euler=(Vector((0,0,.20))-cam.location).to_track_quat('-Z','Y').to_euler()
  cam.data.type='ORTHO';cam.data.ortho_scale=2.25;sc.camera=cam
@@ -70,3 +70,11 @@ for name,loc in [('front',(0,-5,.25)),('right_side',(5,0,.25)),('left_side',(-5,
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'assassin_bare_head.blend'))
 with open(os.path.join(out,'geometry_report.txt'),'w') as f:
  f.write('head_vertices=10752\nhead_quads=10656\nhair_vertices=0\nengine='+sc.render.engine+'\n')
+
+# Diagnostic geometry summary for later neck-loop and hair attachment review.
+import json
+from collections import Counter
+edge_counts=Counter(tuple(sorted((a,b))) for face in faces for a,b in zip(face,face[1:]+face[:1]))
+bounds={'x':[min(v[0] for v in verts),max(v[0] for v in verts)],'y':[min(v[1] for v in verts),max(v[1] for v in verts)],'z':[min(v[2] for v in verts),max(v[2] for v in verts)]}
+summary={'asset':'assassin_bare_head','approval':'NOT_APPROVED','vertex_count':len(verts),'quad_count':len(faces),'boundary_edge_count':sum(n==1 for n in edge_counts.values()),'nonmanifold_edge_count':sum(n>2 for n in edge_counts.values()),'bounds_m':bounds,'view_names':['front','right_side','left_side','three_quarter','back','top'],'hair_added':False,'notes':'Diagnostic only; neck attachment loop and hair not yet modeled.'}
+with open(os.path.join(out,'geometry_diagnostics.json'),'w') as f:json.dump(summary,f,indent=2)
