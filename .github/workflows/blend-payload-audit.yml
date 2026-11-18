@@ -1,0 +1,29 @@
+name: Nonexecuting Blender payload audit
+on:
+  push:
+    branches: [feature/asset-security-audit-20261118]
+    paths:
+      - ".github/workflows/blend-payload-audit.yml"
+      - "tools/security/blend_payload_probe.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install zstd decoder
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq zstd
+      - name: Decode in memory and search safe static indicators
+        run: python3 tools/security/blend_payload_probe.py
+      - name: Upload detailed results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blend-payload-static-audit
+          path: security-audit-output/
+          retention-days: 14

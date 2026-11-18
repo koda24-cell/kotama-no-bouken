@@ -1,0 +1,60 @@
+name: Sandbox Blender embedded-code audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/asset-security-audit-20261118]
+    paths:
+      - ".github/workflows/blend-embedded-code-audit.yml"
+      - "tools/security/blend-audit.Dockerfile"
+      - "tools/security/inspect_blend.py"
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build isolated Blender runtime
+        run: docker build -f tools/security/blend-audit.Dockerfile -t kotama-blend-inspector .
+      - name: Inspect every .blend separately with network disabled
+        shell: bash
+        run: |
+          mkdir -p security-audit-output/blend
+          chmod -R 777 security-audit-output
+          find assets -type f -iname '*.blend' -print0 | sort -z > security-audit-output/blend-file-list.null
+          count=0
+          while IFS= read -r -d '' file; do
+            count=$((count+1))
+            echo "Inspect $count: $file"
+            name=$(printf '%s' "$file" | sha256sum | cut -c1-20)
+            set +e
+            timeout 95s docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 128 --memory 4g --cpus 2 \
+              --user 65534:65534 --tmpfs /tmp:rw,nosuid,nodev,size=768m \
+              -e HOME=/tmp \
+              -v "$PWD/assets:/assets:ro" -v "$PWD/tools/security:/audit:ro" \
+              -v "$PWD/security-audit-output:/out:rw" \
+              kotama-blend-inspector blender -b -noaudio --factory-startup --disable-autoexec \
+              --python /audit/inspect_blend.py -- "/$file" \
+              > "security-audit-output/blend/$name.log" 2>&1
+            status=$?
+            set -e
+            printf '%s,%s,%s\n' "$file" "$status" "$name" >> security-audit-output/blend-exit-codes.csv
+            tail -n 5 "security-audit-output/blend/$name.log"
+          done < security-audit-output/blend-file-list.null
+          echo "Inspected_count=$count" | tee security-audit-output/blend-total.txt
+          successful=$(grep -l '"status": "inspected"' security-audit-output/blend/*.log 2>/dev/null | wc -l)
+          echo "Successfully_opened=$successful" | tee -a security-audit-output/blend-total.txt
+          if [ "$successful" -ne "$count" ]; then
+            echo "::error::Blender native inspection incomplete: $successful / $count files opened"
+            exit 1
+          fi
+      - name: Upload Blender review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blend-embedded-code-audit
+          path: security-audit-output/
+          retention-days: 14
