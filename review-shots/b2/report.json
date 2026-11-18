@@ -2119,8 +2119,8 @@
       "lights": 60
     },
     "b2f3_crystals_3_blue": {
-      "calls": 351,
-      "triangles": 1491484,
+      "calls": 353,
+      "triangles": 1492108,
       "geometries": 497,
       "textures": 114,
       "lights": 60
@@ -2148,8 +2148,8 @@
     }
   },
   "buildMs": {
-    "2-2F": 3632,
-    "2-3F": 3214
+    "2-2F": 4591,
+    "2-3F": 3302
   },
   "missing": [],
   "log": [
@@ -2233,7 +2233,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "chest:2-0:5:5",
+      "near": "chest:2-0:19:1",
       "floor": 0,
       "area": 2
     },
@@ -2269,7 +2269,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "door:2:a2-gate",
+      "near": "",
       "floor": 1,
       "area": 2
     },
@@ -2329,7 +2329,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "switch:2:a2-stone-west",
+      "near": "switch:2:a2-stone-east",
       "floor": 1,
       "area": 2
     },
