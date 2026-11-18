@@ -8,6 +8,7 @@ on:
       - 'tools/ore/render_imported_boulder.py'
       - 'tools/ore/render_dense_crystal_boulder.py'
       - 'tools/ore/validate_crystal_growth.py'
+      - 'tools/ore/audit_boulder_textures.py'
       - '.github/workflows/ore-cc0-download.yml'
   workflow_dispatch:
 permissions:
@@ -65,6 +66,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y blender
           blender --version
+      - name: Inspect original boulder textures and shader connections
+        run: |
+          mkdir -p ore-texture-audit
+          blender -b -t 2 --python tools/ore/audit_boulder_textures.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-cc0-review" "$PWD/ore-texture-audit"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ore-original-boulder-texture-audit
+          path: ore-texture-audit/
+          retention-days: 14
       - name: Render original downloaded boulder mesh
         run: |
           mkdir -p ore-boulder-render
