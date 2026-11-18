@@ -1,0 +1,76 @@
+name: B2 Single Rim V08 Fine Grained Wood Blender Review
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-rim-segment-v01-20261118]
+    paths:
+      - "tools/b2-waterwheel-rim/build_rim_v08_resume.py"
+      - ".github/workflows/b2-waterwheel-rim-v08.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record actual run
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-rim
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > /tmp/b2-rim-v08.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+          cp /tmp/b2-rim-v08.json docs/3d/b2-waterwheel-rim/latest-v08.json
+          git add docs/3d/b2-waterwheel-rim/latest-v08.json
+          git commit -m "chore(b2): V08 rim single wood run" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+      - name: Restore V02 checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-single-rim-v07
+          run-id: 44250612575
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Hash source and prep output
+        run: |
+          echo "ee4792751f12d11e57df3341003bac72651a5b02f5514cf8a42999a1092ff819  checkpoint/b2_waterwheel_single_rim_segment_v07.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-rim-v08
+      - name: Blender V08 revise single timber PBR and 4 views
+        run: |
+          set -o pipefail
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-rim/build_rim_v08_resume.py -- checkpoint/b2_waterwheel_single_rim_segment_v07.blend render-output/b2-waterwheel-rim-v08 | tee /tmp/b2-rim-v08-blender.log
+          if grep -E "Traceback \(most recent call last\)|Python script failed|Error: Python" /tmp/b2-rim-v08-blender.log; then exit 1; fi
+          grep -q "B2_RIM_V08_PHOTOGRAPHIC_GRAIN_DIRECTION_QA" /tmp/b2-rim-v08-blender.log
+      - name: Verify Blend GLB 4 PNGs and photo images
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          p=Path('render-output/b2-waterwheel-rim-v08')
+          m=json.loads((p/'b2_waterwheel_single_rim_segment_v08_manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED' and m['original_v03_backup_preserved'] and m['wood_timber_geometry_untouched'] and m['body_uv_loops_rotated']>100
+          assert len(m['files'])==6
+          for name,meta in m['files'].items():
+            b=(p/name).read_bytes()
+            assert len(b)==meta['bytes'] and hashlib.sha256(b).hexdigest()==meta['sha256']
+            if name.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if name.endswith('.glb'):
+              assert b[:4]==b'glTF'
+              n=struct.unpack_from('<I',b,12)[0]
+              j=json.loads(b[20:20+n]);assert len(j.get('images',[]))>=4
+          print('RIM_V08_BLENDER_VERIFIED',m['body_uv_loops_rotated'])
+          PY
+      - name: Temporary unapproved review artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-single-rim-v08
+          path: render-output/b2-waterwheel-rim-v08/
+          retention-days: 14
+          if-no-files-found: warn
