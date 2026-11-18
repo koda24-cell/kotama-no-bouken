@@ -1,0 +1,28 @@
+name: B5 Walters Real Sallet 11-View Reference Collection
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/collect_walters_refs.py'
+      - '.github/workflows/b5-walters-real-photo-collection.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare photo validation
+        run: sudo apt-get update && sudo apt-get install -y python3-pil
+      - name: Fetch actual CC0 original photographs and assemble comparison
+        run: /usr/bin/python3 tools/b5-knights/collect_walters_refs.py
+      - name: Preserve photos and manifest for research (not production)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-walters-real-photos-research-CC0
+          path: render-output/b5-knights/walters_51_470_reference/
+          retention-days: 14
+          if-no-files-found: warn
