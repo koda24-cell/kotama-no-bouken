@@ -49,7 +49,7 @@ jobs:
           import hashlib, json, struct
           from pathlib import Path
           base=Path("render-output/floor6/nature/tree_mature")
-          photo=Path("render-output/floor6/nature/tree_mature_photo_v20")
+          photo=Path("render-output/floor6/nature/tree_mature_photo_v21")
           for d in [base,photo]:
               m=json.loads((d/"manifest.json").read_text())
               assert m["status"]=="NOT_APPROVED"
@@ -69,19 +69,20 @@ jobs:
           m=json.loads((photo/"manifest.json").read_text())
           assert m["source_texture"]["license"]=="CC0"
           assert m["source_texture"]["maps"]["color"]["sha256"]
+          assert m["rounded_leaf_meshes"] > 500
           different=[v for v in ["front","side","angle","top"] if hashlib.sha256((base/(v+".png")).read_bytes()).digest()!=hashlib.sha256((photo/(v+".png")).read_bytes()).digest()]
           assert len(different)>=2, "CC0 texture did not visibly alter camera render PNG bytes"
-          report=dict(status="NOT_APPROVED",before_version="V19",candidate="V20-CC0",different_views=different,photo_source=m["source_texture"]["official_page"],source_run=m["render_run_id"],note="PNG difference is NOT human aesthetic acceptance or FPS validation")
+          report=dict(status="NOT_APPROVED",before_version="V19",candidate="V21-CC0",different_views=different,photo_source=m["source_texture"]["official_page"],source_run=m["render_run_id"],note="PNG difference is NOT human aesthetic acceptance or FPS validation")
           (photo/"comparison.json").write_text(json.dumps(report,indent=2)+"\n")
           print("F6_CC0_COMPARE_PASS", report)
           PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: f6-v19-v20-cc0-leaf-comparison-NOT-APPROVED
+          name: f6-v19-v21-cc0-leaf-comparison-NOT-APPROVED
           path: |
             render-output/floor6/nature/tree_mature/
-            render-output/floor6/nature/tree_mature_photo_v20/
+            render-output/floor6/nature/tree_mature_photo_v21/
             render-output/floor6/cc0-leaf-source/
           retention-days: 14
           if-no-files-found: warn
