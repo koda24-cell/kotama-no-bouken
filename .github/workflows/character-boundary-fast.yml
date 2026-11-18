@@ -11,6 +11,7 @@ on:
       - 'tools/character-mesh-research/render_boundary_components.py'
       - 'tools/character-mesh-research/audit_posterior_rim.py'
       - 'tools/character-mesh-research/build_posterior_v16.py'
+      - 'tools/character-mesh-research/build_posterior_v17.py'
 jobs:
   boundary:
     runs-on: ubuntu-latest
@@ -53,6 +54,19 @@ jobs:
           test -s output/character-mesh-research/v16-review/assassin_head_posterior_v16_review.glb
           test -s output/character-mesh-research/v16-review/geometry_measurements.json
           for view in front back left right back_upper three_quarter; do test -s "output/character-mesh-research/v16-review/$view.png"; done
+      - name: Build and render V17 candidate with mesh QA
+        run: |
+          xvfb-run -a blender -b -t 2 --python tools/character-mesh-research/build_posterior_v17.py -- /tmp/character-sources/Sendagaya_Shibu.vrm /tmp/character-sources/Vita.vrm output/character-mesh-research/Sendagaya_Shibu.boundary-loops.json output/character-mesh-research/v17-review
+          test -s output/character-mesh-research/v17-review/assassin_head_posterior_v17_review.glb
+          python3 - <<'PY'
+          import json
+          p='output/character-mesh-research/v17-review/geometry_measurements.json'
+          d=json.load(open(p));assert d['rim_vertices']==36
+          assert d['shell_boundary_edges']==36
+          assert d['min_face_area_m2']>1e-10
+          print('V17 geometry checks passed:',d)
+          PY
+          for view in front back left right back_upper three_quarter; do test -s "output/character-mesh-research/v17-review/$view.png"; done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
