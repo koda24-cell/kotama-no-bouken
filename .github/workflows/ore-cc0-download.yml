@@ -129,6 +129,38 @@ jobs:
         run: |
           mkdir -p ore-dense-render
           blender -b -t 2 --python tools/ore/render_dense_crystal_boulder.py -- "$PWD/ore-dense-render/boulder_01_repaired.blend" "$PWD/ore-dense-render"
+      - name: Add soft cyan optical bloom to review PNGs (Blender 5 compatible)
+        run: |
+          python3 -m pip install --break-system-packages Pillow
+          python3 - <<'PY'
+          from PIL import Image, ImageFilter, ImageChops
+          from pathlib import Path
+          import json, hashlib
+          root=Path('ore-dense-render')
+          manifest_path=root/'manifest.json'
+          manifest=json.loads(manifest_path.read_text())
+          for name in ('front.png','side.png','angle.png','top.png'):
+              path=root/name
+              original=Image.open(path).convert('RGB')
+              original.save(root/(name[:-4]+'_raw.png'))
+              # Only cyan-dominant bright crystal highlights seed the halo.
+              pixels=original.load()
+              mask=Image.new('RGB',original.size)
+              out=mask.load()
+              for y in range(original.height):
+                  for x in range(original.width):
+                      r,g,b=pixels[x,y]
+                      intensity=max(0,min(255,int((min(g,b)-r*1.15-18)*2.8)))
+                      if b>g*0.92 and b>r*1.5 and intensity>0:
+                          out[x,y]=(int(intensity*.18),int(intensity*.65),intensity)
+              halo=mask.filter(ImageFilter.GaussianBlur(radius=15))
+              halo=halo.point(lambda v:min(255,int(v*1.9)))
+              combined=ImageChops.screen(original,halo)
+              combined.save(path)
+              manifest['files'][name]=hashlib.sha256(path.read_bytes()).hexdigest()
+          manifest['preview_bloom']='cyan selective screen blend, 15px gaussian, raw images preserved'
+          manifest_path.write_text(json.dumps(manifest,indent=2))
+          PY
       - name: Evaluate reference-driven growth metrics
         run: python3 tools/ore/validate_crystal_growth.py ore-dense-render/manifest.json
       - name: Verify four PNGs, GLB, and unchanged source mesh count
