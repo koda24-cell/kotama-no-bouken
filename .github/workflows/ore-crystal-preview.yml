@@ -1,0 +1,53 @@
+name: Ore Crystal Blender Preview (experimental)
+on:
+  push:
+    branches:
+      - feature/gpt-procedural-ore-generator-20261118
+    paths:
+      - 'tools/ore/**'
+      - '.github/workflows/ore-crystal-preview.yml'
+  workflow_dispatch:
+    inputs:
+      variant:
+        description: 'normal, rare, luminous, ice, volcanic'
+        required: false
+        default: normal
+permissions:
+  contents: read
+jobs:
+  ore-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Generate actual Blender GLB and four-view PNG
+        env:
+          VARIANT: ${{ github.event.inputs.variant || 'normal' }}
+        run: |
+          mkdir -p ore-output
+          blender -b -t 2 --python tools/ore/generate_ore.py -- --out "$PWD/ore-output" --variant "$VARIANT" --seed 17
+      - name: Verify generated files
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, hashlib
+          p=pathlib.Path("ore-output/manifest.json")
+          d=json.loads(p.read_text())
+          assert d["status"]=="NOT_APPROVED"
+          assert len(d["files"])==5
+          for name, expected in d["files"].items():
+              f=p.parent/name
+              assert f.is_file() and f.stat().st_size>1000, name
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==expected, name
+          print("verified", sorted(d["files"]))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ore-prototype-not-approved
+          path: ore-output/
+          retention-days: 14
