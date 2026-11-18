@@ -1878,8 +1878,8 @@
     }
   },
   "buildMs": {
-    "2-2F": 5375,
-    "2-3F": 5033
+    "2-2F": 3994,
+    "2-3F": 3405
   },
   "missing": [],
   "log": [
@@ -2011,7 +2011,7 @@
       },
       "dir": "right",
       "active": true,
-      "near": "door:2:a2-gate",
+      "near": "cache:2:a2-cache",
       "floor": 1,
       "area": 2
     },
