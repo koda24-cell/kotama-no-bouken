@@ -65,15 +65,14 @@ for i,x in enumerate((-.48,-.31,.06,.34,.49)):
  data.from_pydata(verts,[],[(0,1,2)]);data.update()
  obj=bpy.data.objects.new("V13 anchored_end_grain_fiber_%d"%i,data)
  bpy.context.collection.objects.link(obj);data.materials.append(splitmat)
-# True original remains inside .blend; only visible candidate is exported to GLB.
-# Ensure backup is not part of GLB selection.
-bpy.ops.object.select_all(action="DESELECT")
-for obj in bpy.context.scene.objects:
- if obj.type=="MESH" and obj!=backup and not obj.hide_get():
-  obj.select_set(True)
+# Explicitly unlink the original backup from the scene only during glTF export.
+# Blender 5.3 has removed the legacy export_selected keyword. Keep backup inside BLEND.
 tag="b2_bucket_paddle_blender_v13"
 glb=out/(tag+".glb")
-bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",export_yup=True,export_selected=True)
+backup_coll.objects.unlink(backup)
+bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",export_yup=True)
+backup_coll.objects.link(backup)
+backup.hide_render=True;backup.hide_set(True)
 scene=bpy.context.scene;scene.render.engine="CYCLES";scene.cycles.samples=32
 scene.render.resolution_x=820;scene.render.resolution_y=820
 scene.render.resolution_percentage=100;scene.render.image_settings.file_format="PNG"
