@@ -15,7 +15,7 @@ concurrency:
 jobs:
   shots:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 100
     permissions:
       contents: write
     steps:
@@ -42,7 +42,7 @@ jobs:
       - name: B2 random-floor props (5F/6F)
         if: contains(env.FLOORS, 'B2') && hashFiles('tools/claude-review/b2-random-props-shots.cjs') != ''
         continue-on-error: true
-        timeout-minutes: 15
+        timeout-minutes: 40
         run: node tools/claude-review/b2-random-props-shots.cjs review-shots/b2/props 2>&1 | tail -60
       - name: B3
         if: contains(env.FLOORS, 'B3')
