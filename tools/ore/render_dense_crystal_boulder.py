@@ -11,6 +11,15 @@ bpy.ops.wm.open_mainfile(filepath=str(src))
 scene=bpy.context.scene
 original=[o for o in scene.objects if o.type=="MESH" and not o.hide_render]
 assert original,"missing original CC0 boulder mesh"
+# Original .blend contains four overlapping LODs. Keep all geometry intact,
+# but render/export only LOD0 to prevent z-fighting and quadruple geometry.
+all_original=list(original)
+original=[o for o in original if o.name.endswith('LOD0')] or original[:1]
+for obj in all_original:
+    if obj not in original:
+        obj.hide_render=True
+        obj.hide_set(True)
+
 pts=[o.matrix_world@Vector(c) for o in original for c in o.bound_box]
 lo=Vector(tuple(min(p[i] for p in pts) for i in range(3)))
 hi=Vector(tuple(max(p[i] for p in pts) for i in range(3)))
@@ -123,11 +132,11 @@ for name,direction in {"front":(0,-1,.35),"side":(1,0,.35),"angle":(1,-1,.8),"to
     files[p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
 bpy.ops.object.select_all(action="DESELECT")
 for o in scene.objects:
-    if o.type=="MESH":o.select_set(True)
+    if o.type=="MESH" and not o.hide_render:o.select_set(True)
 bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
+manifest={"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
