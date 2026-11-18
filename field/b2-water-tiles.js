@@ -34,7 +34,7 @@ export const B2V4W_REMOVE_STEPPING_STONES = true;
 const TILE_DIR = './assets/models/floor2/water-tiles/v07/lite/';
 const BIT = { up: 8, right: 2, down: 1, left: 4 };            // N=8 E=2 S=1 W=4（DIR_VEC の up は ty-1＝北）
 const OPP = { up: 'down', down: 'up', left: 'right', right: 'left' };
-const WATER_Y = -0.07;                                         // タイルの原点（水面）の高さ。床（0.03前後）より一段下（岸の縁で段差が見える）
+const WATER_Y = -0.035;                                         // タイルの原点（水面）の高さ。床（0.03前後）より一段下（岸の縁で段差が見える）
 
 // GPT の生成スクリプトと同じ海岸線（水の内側で正、陸で負）。x・y はタイル内の -0.5〜0.5（y は北が正）
 function coast(x, y, mask) {
@@ -129,11 +129,11 @@ export function createB2WaterTiles(ctx) {
   tuneFloor(mats, proc, owned);
   const std = (o) => new THREE.MeshStandardMaterial(o);
   const ripple = rippleNormal(); ripple.repeat.set(0.42, 0.42); owned.push(ripple);
-  const glow = { value: 0.26 };
+  const glow = { value: 0.34 };
   // 危険な水面：#203 の明るいシアンと同じ色域で、岸ぎわは明るいターコイズ → 中央ほど深い青（頂点色）、縁に泡。
   // 水たまり（'*'、通れる浅い水）より濃く深く見せ、「入れない深さ」を色で伝える
-  const water = std({ color: 0xffffff, vertexColors: true, roughness: 0.06, metalness: 0.1, normalMap: ripple, normalScale: new THREE.Vector2(0.38, 0.38),
-    envMapIntensity: 1.05, transparent: true, opacity: 0.84, depthWrite: false });
+  const water = std({ color: 0xffffff, vertexColors: true, roughness: 0.06, metalness: 0.1, normalMap: ripple, normalScale: new THREE.Vector2(0.3, 0.3),
+    envMapIntensity: 0.55, transparent: true, opacity: 0.9, depthWrite: false });
   water.onBeforeCompile = (sh) => {
     sh.uniforms.wtGlow = glow;
     sh.fragmentShader = 'uniform float wtGlow;\n' + sh.fragmentShader.replace('#include emissivemap_fragment', '#include emissivemap_fragment\n  totalEmissiveRadiance += vColor.rgb * wtGlow;');
@@ -146,14 +146,14 @@ export function createB2WaterTiles(ctx) {
     'wt:bed': std({ color: 0xffffff, map: rockMap, normalMap: rockNormal, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 0.8, emissive: 0x05304c, emissiveIntensity: 1.0, envMapIntensity: 0.4, vertexColors: true }),
     // 岸の岩：#203 の鮮やかな青い岩の色で、上を向いた面に霜（頂点色）。黒く沈ませない
     'wt:ledge': std({ color: 0xffffff, map: rockMap, normalMap: rockNormal, normalScale: new THREE.Vector2(1.1, 1.1), roughness: 0.62, emissive: 0x0b3c62, emissiveIntensity: 0.9, envMapIntensity: 0.8, vertexColors: true }),
-    'wt:film': std({ color: 0x55bedd, roughness: 0.06, metalness: 0.1, emissive: 0x157aa6, emissiveIntensity: 0.45, envMapIntensity: 1.3 }),
+    'wt:film': std({ color: 0x2c98c4, roughness: 0.08, metalness: 0.1, emissive: 0x0f6a96, emissiveIntensity: 0.4, envMapIntensity: 0.7 }),
     'wt:fallback': std({ color: 0x3c9ec4, map: mats['Clear blue water'].map, roughness: 0.06, metalness: 0.1, emissive: 0x0b5f86, emissiveIntensity: 0.5, envMapIntensity: 1.4, transparent: true, opacity: 0.82, depthWrite: false }),
     'wt:deepbed': std({ color: 0x1a5272, roughness: 0.9, emissive: 0x04203a, emissiveIntensity: 1.0, vertexColors: true }),
     // 岸の帯：濡れた岩 → 霜の縁取り → 床（頂点色）
     'wt:bank': std({ color: 0xffffff, map: mats['Wet slate stone'].map, normalMap: mats['Wet slate stone'].normalMap, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 0.4, metalness: 0.02, emissive: 0x0a3550, emissiveIntensity: 0.7, envMapIntensity: 0.9, vertexColors: true }),
   });
-  const COLORS = { deep: new THREE.Color(0x0a4676), mid: new THREE.Color(0x1286b8), shallow: new THREE.Color(0x2cb4dc), foam: new THREE.Color(0xd8f4ff),
-    bedLand: new THREE.Color(0x5d8fae), bedShelf: new THREE.Color(0x4aa6c6), bedDeep: new THREE.Color(0x154f78),
+  const COLORS = { deep: new THREE.Color(0x0a4a7e), mid: new THREE.Color(0x0f8cc0), shallow: new THREE.Color(0x1eb0d8), foam: new THREE.Color(0xcdf2ff),
+    bedLand: new THREE.Color(0x44789e), bedShelf: new THREE.Color(0x4aa6c6), bedDeep: new THREE.Color(0x154f78),
     rock: new THREE.Color(0x6aa6d6), rockLow: new THREE.Color(0x3f78a8), frost: new THREE.Color(0xe8f8ff) };
 
   let tiles = new Array(16).fill(null), loading = new Map(), failed = false, mode = 'none', stats = {};
@@ -201,7 +201,7 @@ export function createB2WaterTiles(ctx) {
     const p = geo.attributes.position, nm = geo.attributes.normal, col = new Float32Array(p.count * 3), c = new THREE.Color();
     for (let i = 0; i < p.count; i++) {
       const up = nm.getY(i), y = p.getY(i);
-      c.copy(COLORS.rockLow).lerp(COLORS.rock, smooth(base - 0.04, base + 0.08, y)).lerp(COLORS.frost, smooth(0.55, 0.92, up) * smooth(base, base + 0.06, y) * 0.85);
+      c.copy(COLORS.rockLow).lerp(COLORS.rock, smooth(base - 0.04, base + 0.08, y)).lerp(COLORS.frost, smooth(0.6, 0.95, up) * smooth(base, base + 0.06, y) * 0.6);
       col.set([c.r, c.g, c.b], i * 3);
     }
     geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
@@ -222,10 +222,10 @@ export function createB2WaterTiles(ctx) {
         const col = new Float32Array(p.count * 3), pool = /isolated/i.test(o.name), c = new THREE.Color();
         for (let i = 0; i < p.count; i++) {
           const x = p.getX(i), y = -p.getZ(i), d = pool ? 0.04 : coast(x, y, mask);
-          const depth = smooth(0.0, 0.24, d);
+          const depth = smooth(0.0, 0.18, d);
           c.copy(COLORS.shallow).lerp(COLORS.mid, smooth(0, 0.45, depth)).lerp(COLORS.deep, smooth(0.5, 1, depth));
-          const foam = pool ? 0 : (1 - smooth(0.0, 0.03, d)) * (0.6 + 0.4 * Math.sin(x * 61 + y * 47) * Math.sin(y * 29 - x * 13));
-          c.lerp(COLORS.foam, Math.max(0, Math.min(0.7, foam)));
+          const foam = pool ? 0 : (1 - smooth(0.0, 0.022, d)) * (0.6 + 0.4 * Math.sin(x * 61 + y * 47) * Math.sin(y * 29 - x * 13));
+          c.lerp(COLORS.foam, Math.max(0, Math.min(0.55, foam)));
           col.set([c.r, c.g, c.b], i * 3);
         }
         geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
@@ -389,7 +389,7 @@ export function createB2WaterTiles(ctx) {
   function tick(dt) {
     t += dt || 0.016;
     ripple.offset.set((t * 0.011) % 1, (t * 0.017) % 1);
-    glow.value = 0.32 + 0.03 * Math.sin(t * 0.9);
+    glow.value = 0.34 + 0.03 * Math.sin(t * 0.9);
   }
   function dispose() {
     for (const o of owned) o.dispose && o.dispose();

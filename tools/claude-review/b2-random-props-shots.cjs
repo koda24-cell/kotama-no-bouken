@@ -96,7 +96,7 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
           const cx = Math.round((Math.min(...xs) + Math.max(...xs)) / 2), cy = Math.round((Math.min(...ys) + Math.max(...ys)) / 2);
           const far = side === 'up' ? [cx, v.y1] : side === 'down' ? [cx, v.y0] : side === 'left' ? [v.x1, cy] : [v.x0, cy];
           const corner = side === 'up' || side === 'down' ? [v.x0, far[1]] : [far[0], v.y0];
-          const near = [far[0] - D[side][0] * -1, far[1] - D[side][1] * -1];
+          const near = side === 'up' ? [cx, Math.max(...ys) + 1] : side === 'down' ? [cx, Math.min(...ys) - 1] : side === 'left' ? [Math.max(...xs) + 1, cy] : [Math.min(...xs) - 1, cy];   // 水面の1マス手前
           out.vista.push({ front: walk(...far) ? [...far, side] : null, near: walk(...near) && !ps.has(`${near[0]},${near[1]}`) ? [...near, side] : null, corner: walk(...corner) ? [...corner, side === 'up' || side === 'down' ? side : 'down'] : null, side });
         }
         // 橋の下の水路：橋の中央から水路に沿って＋橋のたもとから渡る向き
