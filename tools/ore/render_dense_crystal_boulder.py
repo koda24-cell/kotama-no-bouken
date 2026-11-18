@@ -92,12 +92,19 @@ for pocket_index,(px,py,n) in enumerate(pockets):
     for j in range(n):
         x=max(-.44,min(.44,px+rng.gauss(0,.06 if pocket_index%2==0 else .11)))
         y=max(-.44,min(.44,py+rng.gauss(0,.065 if pocket_index%2==0 else .11)))
-        origin=center+Vector((x*dims.x,y*dims.y,dims.z*(.28+rng.uniform(-.07,.08))))
+        # Cast onto the actual rock surface rather than guessing from bounding box.
+        sample=center+Vector((x*dims.x,y*dims.y,dims.z*2.5))
+        hit,hit_pos,hit_normal,hit_index,hit_obj,hit_matrix=scene.ray_cast(bpy.context.view_layer.depsgraph,sample,Vector((0,0,-1)),distance=scale*5)
+        if not hit or hit_obj not in original:
+            # Skip unsupported locations rather than leaving crystals floating.
+            continue
+        origin=hit_pos-hit_normal*(scale*.008)
         axis=base+Vector((rng.gauss(0,.24),rng.gauss(0,.24),rng.gauss(0,.15)))
+        if axis.dot(hit_normal)<.22:axis=(axis+hit_normal*.9).normalized()
         if rng.random()<.12:axis=Vector((rng.uniform(-1,1),rng.uniform(-1,1),rng.uniform(.1,.8)))
         tier=rng.random()
-        if j==0 and pocket_index in (1,3):length=scale*rng.uniform(.22,.31)
-        elif tier<.04:length=scale*rng.uniform(.15,.21)
+        if j==0 and pocket_index in (1,3):length=scale*rng.uniform(.16,.22)
+        elif tier<.04:length=scale*rng.uniform(.11,.16)
         elif tier<.21:length=scale*rng.uniform(.075,.14)
         else:length=scale*rng.uniform(.014,.07)
         radius=length*rng.uniform(.12,.26)
