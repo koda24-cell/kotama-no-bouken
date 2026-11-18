@@ -1,0 +1,106 @@
+"""Add dense crystal clusters to the ORIGINAL downloaded CC0 boulder mesh.
+The source mesh is not edited or deleted. Review output only.
+"""
+import bpy, math, random, sys, json, hashlib
+from pathlib import Path
+from mathutils import Vector
+src=Path(sys.argv[sys.argv.index("--")+1]).resolve()
+out=Path(sys.argv[sys.argv.index("--")+2]).resolve()
+out.mkdir(parents=True,exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(src))
+scene=bpy.context.scene
+original=[o for o in scene.objects if o.type=="MESH" and not o.hide_render]
+assert original,"missing original CC0 boulder mesh"
+pts=[o.matrix_world@Vector(c) for o in original for c in o.bound_box]
+lo=Vector(tuple(min(p[i] for p in pts) for i in range(3)))
+hi=Vector(tuple(max(p[i] for p in pts) for i in range(3)))
+center=(lo+hi)*.5
+dims=hi-lo
+scale=max(dims.length,.1)
+rng=random.Random(20261118)
+mat=bpy.data.materials.new("Quartz pale ice blue")
+mat.diffuse_color=(.38,.72,.85,1)
+mat.use_nodes=True
+bsdf=mat.node_tree.nodes.get("Principled BSDF")
+bsdf.inputs["Base Color"].default_value=(.34,.69,.82,1)
+bsdf.inputs["Metallic"].default_value=.05
+bsdf.inputs["Roughness"].default_value=.17
+if bsdf.inputs.get("Transmission Weight"):bsdf.inputs["Transmission Weight"].default_value=.28
+def make_crystal(index,origin,axis,length,radius):
+    axis=Vector(axis).normalized()
+    u=axis.cross(Vector((0,0,1)))
+    if u.length<.1:u=axis.cross(Vector((0,1,0)))
+    u.normalize();v=axis.cross(u).normalized()
+    sides=6;phase=rng.random()*math.tau
+    rings=[(-.24,.72),(0,1),(.64,.95),(.81,.8),(1,.025)]
+    vertices=[]
+    for h,w in rings:
+        for j in range(sides):
+            angle=phase+j*math.tau/sides
+            p=Vector(origin)+axis*(length*h)+radius*w*(u*math.cos(angle)+v*math.sin(angle))
+            vertices.append(tuple(p))
+    faces=[]
+    for k in range(len(rings)-1):
+        for j in range(sides):
+            a=k*sides+j;b=k*sides+(j+1)%sides
+            faces.append((a,b,b+sides,a+sides))
+    faces.append(tuple(reversed(range(sides))))
+    mesh=bpy.data.meshes.new("crystal_mesh_%03d"%index)
+    mesh.from_pydata(vertices,[],faces);mesh.update()
+    obj=bpy.data.objects.new("ADDED_QUARTZ_%03d"%index,mesh)
+    scene.collection.objects.link(obj);mesh.materials.append(mat)
+    return obj
+# Original mesh bounds are used to distribute clusters over upper/front boulder surface.
+# Avoid a regular grid: use five overlapping, unevenly populated growth pockets.
+pockets=[(-.30,-.18),(.08,-.28),(.32,-.08),(-.08,.16),(.22,.26)]
+count=0
+for pocket_index,(px,py) in enumerate(pockets):
+    for j in range(22):
+        x=max(-.45,min(.45,px+rng.gauss(0,.115)))
+        y=max(-.45,min(.45,py+rng.gauss(0,.12)))
+        # A root slightly inside the top of the boulder; original boulder stays untouched.
+        origin=center+Vector((x*dims.x,y*dims.y,dims.z*(.32+rng.uniform(-.05,.12))))
+        axis=Vector((rng.uniform(-.48,.48),rng.uniform(-.48,.48),rng.uniform(.65,1.0)))
+        tier=rng.random()
+        if j==0:length=scale*rng.uniform(.30,.40)
+        elif tier<.22:length=scale*rng.uniform(.19,.28)
+        elif tier<.68:length=scale*rng.uniform(.10,.19)
+        else:length=scale*rng.uniform(.045,.10)
+        radius=length*rng.uniform(.14,.23)
+        make_crystal(count,origin,axis,length,radius);count+=1
+for o in list(scene.objects):
+    if o.type in {"CAMERA","LIGHT"}:bpy.data.objects.remove(o,do_unlink=True)
+world=bpy.data.worlds.new("Neutral mineral review")
+world.use_nodes=True;world.node_tree.nodes["Background"].inputs["Color"].default_value=(.26,.29,.34,1)
+world.node_tree.nodes["Background"].inputs["Strength"].default_value=.75
+scene.world=world
+def light(name,direction,energy,size):
+    d=bpy.data.lights.new(name,"AREA");d.energy=energy;d.size=size
+    o=bpy.data.objects.new(name,d);scene.collection.objects.link(o)
+    o.location=center+Vector(direction)*scale
+    o.rotation_euler=(center-o.location).to_track_quat("-Z","Y").to_euler()
+light("Key",(.7,-.8,1.3),650,4)
+light("Fill",(-.7,.5,.8),350,5)
+camdata=bpy.data.cameras.new("Review camera")
+cam=bpy.data.objects.new("Review camera",camdata);scene.collection.objects.link(cam)
+scene.camera=cam;camdata.type="ORTHO";camdata.ortho_scale=scale*1.6
+scene.render.engine="CYCLES";scene.cycles.samples=32
+scene.render.resolution_x=800;scene.render.resolution_y=800;scene.render.resolution_percentage=100
+scene.render.image_settings.file_format="PNG"
+files={}
+for name,direction in {"front":(0,-1,.35),"side":(1,0,.35),"angle":(1,-1,.8),"top":(.01,-.01,1)}.items():
+    cam.location=center+Vector(direction).normalized()*scale*2.5
+    cam.rotation_euler=(center-cam.location).to_track_quat("-Z","Y").to_euler()
+    p=out/(name+".png");scene.render.filepath=str(p)
+    bpy.ops.render.render(write_still=True)
+    files[p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
+bpy.ops.object.select_all(action="DESELECT")
+for o in scene.objects:
+    if o.type=="MESH":o.select_set(True)
+bpy.context.view_layer.objects.active=original[0]
+glb=out/"dense_crystal_on_original_boulder.glb"
+bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
+files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
+manifest={"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(original),"added_crystals":count,"files":files}
+(out/"manifest.json").write_text(json.dumps(manifest,indent=2))
+print("DENSE_ORE_RESULT",json.dumps(manifest))
