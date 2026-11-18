@@ -143,14 +143,19 @@ camdata=bpy.data.cameras.new("Review camera")
 cam=bpy.data.objects.new("Review camera",camdata);scene.collection.objects.link(cam)
 scene.camera=cam;camdata.type="ORTHO";camdata.ortho_scale=scale*1.6
 scene.render.engine="CYCLES";scene.cycles.samples=32
-# Preview includes soft glow via compositor; geometry and GLB remain unchanged.
-scene.use_nodes=True
-nodes=scene.node_tree.nodes;nodes.clear()
-rl=nodes.new("CompositorNodeRLayers")
-glare=nodes.new("CompositorNodeGlare");glare.glare_type="FOG_GLOW";glare.threshold=1.7;glare.quality="MEDIUM";glare.mix=-.90
-out_node=nodes.new("CompositorNodeComposite")
-scene.node_tree.links.new(rl.outputs["Image"],glare.inputs["Image"])
-scene.node_tree.links.new(glare.outputs["Image"],out_node.inputs["Image"])
+# Blender 5 removes Scene.node_tree. Keep emissive Principled materials
+# portable and renderable; add compositor glow only on older compatible APIs.
+if hasattr(scene, "node_tree") and scene.node_tree is not None:
+    scene.use_nodes=True
+    nodes=scene.node_tree.nodes;nodes.clear()
+    rl=nodes.new("CompositorNodeRLayers")
+    glare=nodes.new("CompositorNodeGlare")
+    glare.glare_type="FOG_GLOW";glare.threshold=1.7;glare.quality="MEDIUM";glare.mix=-.90
+    out_node=nodes.new("CompositorNodeComposite")
+    scene.node_tree.links.new(rl.outputs["Image"],glare.inputs["Image"])
+    scene.node_tree.links.new(glare.outputs["Image"],out_node.inputs["Image"])
+else:
+    print("BLENDER5_COMPOSITOR_SKIP: emissive material renders without bloom")
 scene.render.resolution_x=800;scene.render.resolution_y=800;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 files={}
