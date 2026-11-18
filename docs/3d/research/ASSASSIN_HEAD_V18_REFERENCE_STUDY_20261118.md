@@ -30,3 +30,7 @@
 ## 未確認・制限
 - Pinterestの画像候補はこの文書では取得・画像確認していない。公式Blender/VRoid記事は文面を参照したが画像の細部は未評価。
 - この文書は設計調査。V18の造形・レンダリングを完了した意味ではない。
+
+## 2026-11-18 追加実装
+- `tools/character-mesh-research/measure_head_rim.py`：component 5の36頂点の元ID、ワールド座標XYZ、頂点法線、隣接エッジ長、輪郭角度を記録。Shibu/Vitaの比較用。
+- 高速診断Actionsに実測処理を追加。出力は `<model>.rim-geometry.json`。**実行結果はまだ未検証**。V18の接続パッチ設計は実測JSONとレンダリングを確認してから行う。
