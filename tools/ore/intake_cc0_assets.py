@@ -54,11 +54,13 @@ def main():
         try:
             url=poly_url(key,spec["kind"]) if spec["provider"]=="polyhaven" else ambient_url(key)
             data=get(url,a.max_mb*1024*1024)
-            suffix=pathlib.PurePosixPath(urllib.parse.urlsplit(url).path).suffix.lower()\n            if not suffix:\n                suffix=pathlib.PurePosixPath(urllib.parse.parse_qs(urllib.parse.urlsplit(url).query).get("file",[""])[0]).suffix.lower()
+            suffix=pathlib.PurePosixPath(urllib.parse.urlsplit(url).path).suffix.lower()
+            if not suffix:
+                suffix=pathlib.PurePosixPath(urllib.parse.parse_qs(urllib.parse.urlsplit(url).query).get("file",[""])[0]).suffix.lower()
             if suffix not in (".zip",".jpg",".png",".glb",".blend",".fbx"):raise ValueError("unexpected file type")
             if suffix==".zip" and not zipfile.is_zipfile(io.BytesIO(data)):raise ValueError("invalid ZIP")
             if suffix==".glb" and data[:4]!=b"glTF":raise ValueError("invalid GLB")
-            if suffix in (".jpg",".png") and not (data.startswith(b"\\xff\\xd8") or data.startswith(b"\\x89PNG")):raise ValueError("invalid image")
+            if suffix in (".jpg",".png") and not (data.startswith(bytes([0xff,0xd8])) or data.startswith(bytes([0x89,0x50,0x4e,0x47]))):raise ValueError("invalid image")
             filename=key+suffix;path=root/filename;path.write_bytes(data)
             entry.update(state="downloaded_unreviewed",file=filename,sha256=hashlib.sha256(data).hexdigest(),bytes=len(data),download_url=url)
         except Exception as exc:
