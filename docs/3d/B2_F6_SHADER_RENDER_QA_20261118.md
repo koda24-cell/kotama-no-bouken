@@ -26,3 +26,8 @@
 - [PR #500](https://github.com/koda24-cell/kotama-no-bouken/pull/500) のブラウザシェーダーテストと実GLB表示レビュー。
 - [PR #499](https://github.com/koda24-cell/kotama-no-bouken/pull/499) は水の美術/導入研究の原資料。
 - Blender実GLB/正面・側面・斜めPNG/manifest保存、ゲーム内導入は承認・品質検証の別工程。
+
+## 2026-11-18 追加: shader compile failureの修正
+- run [44204096833](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44204096833) は **純粋関数テスト成功/ブラウザQA失敗**。エラー: fragment shader で `vWorldNormal` 未宣言。水面法線の改善時にvertex側の varying 宣言だけを追加していたことが原因。
+- `tools/3d-water/water-v2.mjs` の fragment shader に同じ varying 宣言を追加（commit `4845f6db3759d1430eedcd831290730a09f49b08`）。
+- 再実行 [44215172389](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44215172389) は開始確認。成功/失敗はGitHub run結果を確認してから記録する。ブラウザQA成功前に水の修正完了と判断しない。
