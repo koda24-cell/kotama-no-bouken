@@ -1,0 +1,30 @@
+name: Blender binary header probe
+on:
+  push:
+    branches: [feature/asset-security-audit-20261118]
+    paths:
+      - ".github/workflows/blend-header-probe.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check headers without executing assets
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,collections,json
+          files=sorted(pathlib.Path('assets').rglob('*.blend'))
+          signatures=collections.Counter()
+          for p in files:
+              with p.open('rb') as f: h=f.read(24)
+              signatures[h[:8].hex()]+=1
+              print(json.dumps({'file':str(p),'size':p.stat().st_size,'header':h.hex()}))
+          print('TOTAL',len(files))
+          print('SIGNATURES',dict(signatures))
+          PY
