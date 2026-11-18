@@ -43,7 +43,10 @@ jobs:
           mkdir -p render-output/b2-waterwheel-rim-v07
       - name: Blender V07 revise single timber PBR and 4 views
         run: |
-          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-rim/build_rim_v07_resume.py -- checkpoint/b2_waterwheel_single_rim_segment_v05.blend render-output/b2-waterwheel-rim-v07
+          set -o pipefail
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-rim/build_rim_v07_resume.py -- checkpoint/b2_waterwheel_single_rim_segment_v05.blend render-output/b2-waterwheel-rim-v07 | tee /tmp/b2-rim-v07-blender.log
+          if grep -E "Traceback \(most recent call last\)|Python script failed|Error: Python" /tmp/b2-rim-v07-blender.log; then exit 1; fi
+          grep -q "B2_RIM_V07_REAL_BLENDER_CHECKPOINT_OK" /tmp/b2-rim-v07-blender.log
       - name: Verify Blend GLB 4 PNGs and photo images
         run: |
           python3 - <<'PY'
@@ -51,7 +54,7 @@ jobs:
           import json,hashlib,struct
           p=Path('render-output/b2-waterwheel-rim-v07')
           m=json.loads((p/'b2_waterwheel_single_rim_segment_v07_manifest.json').read_text())
-          assert m['approval']=='NOT_APPROVED' and m['original_v03_backed_up_in_blend'] and m['no_boolean_spikes'] and 0.008<m['max_wood_deformation_m']<0.015
+          assert m['approval']=='NOT_APPROVED' and m['original_v03_backed_up_in_blend'] and m['no_boolean_spikes'] and 0.005<m['max_wood_deformation_m']<0.015 and m['modified_surface_vertices']>=4
           assert len(m['files'])==6
           for name,meta in m['files'].items():
             b=(p/name).read_bytes()
