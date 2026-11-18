@@ -15,37 +15,37 @@ bpy.ops.wm.open_mainfile(filepath=str(source))
 beam=bpy.data.objects.get('B2_RimSegment_01_Curved_OakTimber')
 original=bpy.data.objects.get('V03_Rim_Original_Protected')
 assert beam and original and beam.type=='MESH'
-# V05 segment: 43 longitudinal rings, 8 vertices around the bevelled wood section.
-# Deform, don't delete, only selected exposed end and face corners. The parametric
-# radius is measured from the real wheel center in its local coordinates.
+# V05 uses Boolean-drilled mortises: vertex count no longer equals 43*8.
+# Derive each existing vertex's ring angle and actual physical radius instead.
 v=beam.data.vertices
 before=[tuple(p.co) for p in v]
-N=8;steps=42
-assert len(v)==(steps+1)*N
-def endpoint_drop(u,k):
-    # Broad, continuous weathering pockets; keep center and both long mating
-    # faces structurally intact. Non-repeating left/right and cross-section.
-    if u<.16 and k in (3,4,5):
-        factor=math.sin(math.pi*max(0,1-u/.16)/2)**2
-        variation=(.58+.42*math.sin(11*u+1.5*k)**2)
-        return .010*factor*variation
-    if u>.83 and k in (2,3,4):
-        factor=math.sin(math.pi*max(0,(u-.83)/.17)/2)**2
-        variation=(.55+.45*math.cos(13*u+1.6*k)**2)
-        return .013*factor*variation
-    return 0
+SEG=math.tau/14
 max_shift=0
-for i in range(steps+1):
-    u=i/steps
-    for k in range(N):
-        p=v[i*N+k]
-        radial=Vector((0,p.co.y+2.55,p.co.z))
-        if radial.length==0:continue
-        wear=endpoint_drop(u,k)
+modified=0
+for p in v:
+    y=p.co.y+2.55
+    z=p.co.z
+    radial=Vector((0,y,z))
+    if radial.length<.001:continue
+    angle=math.atan2(z,y)
+    u=angle/SEG+.5
+    # Wear away only the radial outer corners of exposed ends.
+    # Keep the peg drilling and the inner circumferential contact faces intact.
+    r=radial.length
+    if r<2.55+.078 or abs(p.co.x)<.082:continue
+    wear=0.0
+    if u<.16:
+        f=max(0.,min(1.,(.16-u)/.16))
+        wear=.011*(math.sin(.5*math.pi*f)**2)*(.72+.28*math.sin(12*u+7*p.co.x)**2)
+    elif u>.84:
+        f=max(0.,min(1.,(u-.84)/.16))
+        wear=.0125*(math.sin(.5*math.pi*f)**2)*(.69+.31*math.cos(11*u-8*p.co.x)**2)
+    if wear>0:
         p.co-=radial.normalized()*wear
         max_shift=max(max_shift,wear)
+        modified+=1
 beam.data.update()
-assert max_shift<.015 and max_shift>.008
+assert max_shift<.015 and max_shift>.005 and modified>=4, (max_shift,modified)
 assert len(beam.data.vertices)==len(before)
 # A physically subtle exposed wood-end tone, not a sticker-like procedural ring.
 end=bpy.data.materials.get('Exposed weathered end grain')
@@ -80,7 +80,7 @@ bpy.ops.wm.save_as_mainfile(filepath=str(blend));files.append(blend)
 manifest={'asset':tag,'approval':'NOT_APPROVED','source_v05_blend_sha256':sha,
  'original_v03_backed_up_in_blend':True,'no_boolean_spikes':True,
  'max_wood_deformation_m':max_shift,'endgrain_repaired':True,
- 'mesh_vertex_count':len(v),'wood_PBR':'Poly Haven fine_grained_wood CC0; retained photo color, normal and roughness',
+ 'mesh_vertex_count':len(v),'modified_surface_vertices':modified,'wood_PBR':'Poly Haven fine_grained_wood CC0; retained photo color, normal and roughness',
  'files':{}}
 for file in files:
     raw=file.read_bytes()
