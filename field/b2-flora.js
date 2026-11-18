@@ -32,10 +32,10 @@ export const FLORA_CONFIG = {
   far: 26,                // これより遠い区画は描かない（m。霧の濃さ0.034で約6割が霧に沈む距離）
   // 区画の端までの距離で形の段階を切り替える（m）：[元の形, 中, 遠] の上限（0 はその段階を使わない）
   // 中（約20%）は近くで見ても元の形とほぼ同じ（間引きの比較で確認）なので、元の形（1株約2万三角形）は使わない
-  tiers: { group: [0, 12, 26], meadow: [0, 6, 30] },
+  tiers: { group: [0, 12, 26], meadow: [0, 4, 30] },
   lod: { mid: 0.2, lo: 0.05, mMid: 0.065, mLo: 0.035 },
   chunk: 4,               // 群れ以外の区画（マス）
-  meadowChunk: 3,         // 群生地の区画（マス）
+  meadowChunk: 2,         // 群生地の区画（マス。小さいほど遠い区画が軽い版になる）
 };
 
 // 目の高さ1.6mの一人称から見えるように拡大した高さ（m）。[低い, 高い]
@@ -416,7 +416,7 @@ export function createFlora(ctx) {
     if (chosen.length) {
       // 群生地の床一面の霜（マスの外へ出さない）。中心ほど濃い
       for (const [tx, ty] of cellsOk) if (ch(tx, ty) !== '*') patches.push({ x: X(tx), z: Z(ty), ra: CELL * 0.62, rb: CELL * 0.62, ang: 0, amax: 0.15 - Math.min(1, Math.hypot(X(tx) - ccx, Z(ty) - ccz) / R) * 0.04, set, square: true });
-      ctx.light(ccx, 1.1, ccz, 0x8fe6ff, 0.5, 7);
+      ctx.light(ccx, 1.1, ccz, 0x8fe6ff, 0.35, 7);
       // 根元の接写の位置（確認用）：中心に近い株を種類ごとに1つ、通路側から見る
       for (const kind of kinds) {
         const c = chosen.filter((q) => q.kind === kind && ch(...cellOf(q.x, q.z)) !== '*').sort((p, q) => p.dn - q.dn)[0]; if (!c) continue;
