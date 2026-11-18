@@ -11,7 +11,7 @@ try:
     import tempfile, subprocess, resource
     with open(path, "rb") as f:
         magic=f.read(4)
-    if magic == b"\\x28\\xb5\\x2f\\xfd":
+    if magic == bytes((0x28,0xB5,0x2F,0xFD)):
         tmp="/tmp/decoded.blend"
         with open(tmp,"wb") as dest:
             def restrict():
