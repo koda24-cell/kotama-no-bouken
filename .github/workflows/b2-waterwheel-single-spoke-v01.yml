@@ -1,11 +1,7 @@
 name: B2 Single Waterwheel Spoke V01 Blender Review
+# Design gate: do not automatically run modeling on pushes.
+# Enable manually after design review and compatibility checks.
 on:
-  push:
-    branches:
-      - feature/gpt-b2-waterwheel-single-spoke-v01-20261119
-    paths:
-      - 'tools/b2-waterwheel-spoke/**'
-      - '.github/workflows/b2-waterwheel-single-spoke-v01.yml'
   workflow_dispatch:
 permissions:
   contents: read
