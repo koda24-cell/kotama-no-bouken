@@ -18,3 +18,12 @@ The user finds breastplate V4 too flat and wants a texture matching the already 
 - Workflow `.github/workflows/b5-gothic-breastplate-v5.yml` run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44512473962
 - Source scan, decoded image SHA validation, Blender Cycles six 800x800 views, GLB and Blend, 2 baked PBR PNG, manifest ten SHA256 records, GLB baked texture check, output ClamAV scan.
 - Final art decision requires real six-view inspection and comparison to V4. No official assets promotion before approval.
+
+## Confirmed V5 / additional V6 smoothing
+- V5 actual GitHub Action [44512473962](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44512473962) **SUCCESS**: 6 Blender views + GLB + Blend + two PBR PNG.
+- Downloaded original artifact `14522499587`; all **10 of 10** SHA256 entries independently verified. ClamAV actual scan: **12 files, 0 infected**.
+- Actual front/angle/left/right compared directly with V4. Chest convexity and side projection visibly increased. V22 image-derived rusty patina now visible; GLB validation checked its embedded PBR textures. Outer silhouette and neckline remain inherited from V4.
+- Remaining V5 issue: six visible vertical/diagonal Gothic embossed flutes have jagged stair-step pixels, because the mesh transverse resolution is too coarse for thin local folds.
+- V6 independent generator `tools/b5-knights/build_gothic_breastplate_v6.py` doubles transverse ring resolution 160→320, widens flute smoothing σ 6→10.5mm and moderates fold height 7.4→6.8mm. Crown V22 source PBR and all inherited convex breast shaping unchanged.
+- V6 dedicated workflow `.github/workflows/b5-gothic-breastplate-v6.yml` run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44513263807. Still requires actual result and visual QA.
+- All V4/V5 source files preserved, none promoted; V6 NOT_APPROVED.
