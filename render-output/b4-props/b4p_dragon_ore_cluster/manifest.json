@@ -1,8 +1,8 @@
 {
   "asset": "b4p_dragon_ore_cluster",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
-  "triangles": 2088,
+  "triangles": 5158,
   "budget_triangles": 8000,
   "materials": [
     "b4p_dragon_ore_cluster_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    1.85,
-    1.456,
-    1.044
+    1.965,
+    1.545,
+    1.048
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_dragon_ore_cluster.glb",
-  "glb_bytes": 705008,
+  "glb_bytes": 801520,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -50,16 +50,16 @@
     41
   ],
   "sha256": {
-    "b4p_dragon_ore_cluster.glb": "4c15fc4f6165bfcad98fa3125082fc11f3750d5194c3847447f637cfc81ba433",
-    "b4p_dragon_ore_cluster_volcanic_front.png": "c039d37d13d3587c2b940b03cd1d8ca676aa64ae19a2d665cf83b0d7807c21e1",
-    "b4p_dragon_ore_cluster_volcanic_side.png": "613ac289180103a70064a86c2b5c9e38a5b317c36a057557a7c75dcad7ebc684",
-    "b4p_dragon_ore_cluster_volcanic_angle.png": "fbb31d2bec38d64cecc41e7b4c7959e60d354d29ab284c09e2ea14be0f6500de",
-    "b4p_dragon_ore_cluster_volcanic_top.png": "e3ae2d79c32860471275080541359ad2c974765521c58c93681c377ed1e6a70a",
-    "b4p_dragon_ore_cluster_volcanic_close.png": "22405228c4280364546ede1ad15143dad770805201a2c09daab1298c110b2597",
-    "b4p_dragon_ore_cluster_volcanic_back.png": "92635cd6d657f5870b4b5ebf6794cc1ec673ef4a618e78abf3093e3ef3e2e4ba",
-    "b4p_dragon_ore_cluster_studio_front.png": "274d5ff321a4f59b3f67fef3ad1d05f14fe2acca20fff7c81926bb40fb426af2",
-    "b4p_dragon_ore_cluster_studio_angle.png": "9b43fff61e4bc27b378e4ae884ad04f7ab94a335daadc3e7c67cd9bd5d175ea9",
-    "b4p_dragon_ore_cluster_studio_scale.png": "0ca5870c34d598219b82c1897fe84b28da1e73353feb4249cab297e88a6054ed"
+    "b4p_dragon_ore_cluster.glb": "7c98f13eeaaa4451dc3afac1d0242102b767d2567432c1028f81bb3b726393a2",
+    "b4p_dragon_ore_cluster_volcanic_front.png": "618e68198e6df7c07e5d5775cc827703dd02debefe7259e084eceb5a9877ffee",
+    "b4p_dragon_ore_cluster_volcanic_side.png": "11aa15003c61ea631028207c758daeca9930b257659c81a45aaad8e663f23233",
+    "b4p_dragon_ore_cluster_volcanic_angle.png": "1086449407e67c21633243f36d734d44f81885a64bb276ceb3e530db0d0cd9a7",
+    "b4p_dragon_ore_cluster_volcanic_top.png": "0c3dec324106bc12e54924b0e67dd89d51c3d0aa31ea712f11097617bf61be2e",
+    "b4p_dragon_ore_cluster_volcanic_close.png": "10319428697a9aeadbcb57a15120be67945216ee4b6d8f8c19f2c3492c15cad4",
+    "b4p_dragon_ore_cluster_volcanic_back.png": "3f23aa3695eadb05569e5f3a86a19a8356928b12251815e3bb43d35b5d107344",
+    "b4p_dragon_ore_cluster_studio_front.png": "237193258ed3d2c37ebe365dbcc66a09a9a62724eded7981135698d63fe83405",
+    "b4p_dragon_ore_cluster_studio_angle.png": "42a9042067e13008e7c0250345c5e0f3494afe7d02410d5139d8b779e830c9ab",
+    "b4p_dragon_ore_cluster_studio_scale.png": "c13a9862727902119d672798d3184f3181364013c219623dc3ec9c2dc3444f99"
   },
   "renders": [
     "b4p_dragon_ore_cluster_volcanic_front.png",
@@ -73,15 +73,15 @@
     "b4p_dragon_ore_cluster_studio_scale.png"
   ],
   "samples": 96,
-  "notes": "炎竜鉱の結晶群。割れて傾いた玄武岩のV字の割れ目から13本の結晶が扇状に出る。発光は割れ目の内側・縁の細いひび・結晶の内部のみ。",
+  "notes": "炎竜鉱の結晶群。割れて傾いた玄武岩のV字の割れ目から14本の結晶が扇状に出る。発光は割れ目の内側・縁の細いひび・結晶の内部のみ。",
   "game_lights": [
     {
       "pos_blender_zup": [
-        0.15044403076171875,
-        0.019756661728024483,
-        0.3840245306491852
+        0.08435854315757751,
+        -0.03005896508693695,
+        0.20450468361377716
       ],
-      "watts": 22.0,
+      "watts": 18.0,
       "color": [
         1.0,
         0.22,
@@ -90,14 +90,14 @@
     },
     {
       "pos_blender_zup": [
-        0.15261518955230713,
-        -0.19963541626930237,
-        0.5248892307281494
+        0.24511036276817322,
+        0.19921272993087769,
+        0.2650875747203827
       ],
-      "watts": 8.0,
+      "watts": 5.0,
       "color": [
         1.0,
-        0.16,
+        0.18,
         0.05
       ]
     }
