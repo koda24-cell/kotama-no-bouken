@@ -11,7 +11,7 @@
    ・通行判定は従来どおりマップ側（'~' は FIELD_SOLID）。ここは見た目だけ。
    ・どのマスが危険な水面かは B2V4W_ROLES で決める（迷宮班 M の tileRoles 確定後に名前を差し替えられる）。
    ・使うマスクの GLB だけを1回だけ読み、マスごとに Batcher（区画×素材でまとめる既存の仕組み）へ渡して描画回数を抑える。
-     読み込み時に軽くする：川底・浅い棚・岸の石板（平らなのに1枚 数千三角形）は海岸線の式による 20×20 の格子1枚に置き換え、
+     読み込み時に軽くする：川底・浅い棚・岸の石板（平らなのに1枚 数千三角形）は海岸線の式による 12×12 の格子1枚に置き換え、
      岸の岩は間引き（SimplifyModifier）、水の中に立つ小岩（遠目に黒い棘）は置かず、水中の岩は低くして水面の下へ沈める。
    ・読み込めない場合は、従来の水面（平らな水＋暗い底）で描く（画面を壊さない）。
    ・水たまり（通れる浅瀬 '*'）は従来の浅く明るい水のまま。危険な水面は岸ぎわのターコイズ → 中央の深い青（頂点色）、縁に泡、
@@ -21,6 +21,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { SimplifyModifier } from 'three/addons/modifiers/SimplifyModifier.js';
+import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 
 // 役割名（迷宮班 M の確定後に差し替える）。hazard＝危険な水面（非通行）。chars はマップ文字で判定する場合
 export const B2V4W_ROLES = { hazard: new Set(['water-hazard']), hazardChars: new Set(['~']) };
@@ -129,11 +130,13 @@ export function createB2WaterTiles(ctx) {
   tuneFloor(mats, proc, owned);
   const std = (o) => new THREE.MeshStandardMaterial(o);
   const ripple = rippleNormal(); ripple.repeat.set(0.42, 0.42); owned.push(ripple);
-  const glow = { value: 0.34 };
+  const glow = { value: 0.5 };
   // 危険な水面：#203 の明るいシアンと同じ色域で、岸ぎわは明るいターコイズ → 中央ほど深い青（頂点色）、縁に泡。
   // 水たまり（'*'、通れる浅い水）より濃く深く見せ、「入れない深さ」を色で伝える
-  const water = std({ color: 0xffffff, vertexColors: true, roughness: 0.06, metalness: 0.1, normalMap: ripple, normalScale: new THREE.Vector2(0.3, 0.3),
-    envMapIntensity: 0.55, transparent: true, opacity: 0.9, depthWrite: false });
+  // 白く見えた原因：多数の点光源の照り返しと拡散光が水面全体を白く飛ばしていた。拡散色を暗くし（色は頂点色の発光で出す）、
+  // 照り返しは弱く・少し広く（MeshPhysical の specularIntensity）。さざ波の揺らぎと、わずかな映り込みだけ残す
+  const water = new THREE.MeshPhysicalMaterial({ color: 0x3a6a86, vertexColors: true, roughness: 0.16, metalness: 0.0, specularIntensity: 0.32, normalMap: ripple, normalScale: new THREE.Vector2(0.45, 0.45),
+    envMapIntensity: 0.4, transparent: true, opacity: 0.92, depthWrite: false });
   water.onBeforeCompile = (sh) => {
     sh.uniforms.wtGlow = glow;
     sh.fragmentShader = 'uniform float wtGlow;\n' + sh.fragmentShader.replace('#include emissivemap_fragment', '#include emissivemap_fragment\n  totalEmissiveRadiance += vColor.rgb * wtGlow;');
@@ -152,18 +155,18 @@ export function createB2WaterTiles(ctx) {
     // 岸の帯：濡れた岩 → 霜の縁取り → 床（頂点色）
     'wt:bank': std({ color: 0xffffff, map: mats['Wet slate stone'].map, normalMap: mats['Wet slate stone'].normalMap, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 0.4, metalness: 0.02, emissive: 0x0a3550, emissiveIntensity: 0.7, envMapIntensity: 0.9, vertexColors: true }),
   });
-  const COLORS = { deep: new THREE.Color(0x0a4a7e), mid: new THREE.Color(0x0f8cc0), shallow: new THREE.Color(0x1eb0d8), foam: new THREE.Color(0xcdf2ff),
-    bedLand: new THREE.Color(0x44789e), bedShelf: new THREE.Color(0x4aa6c6), bedDeep: new THREE.Color(0x154f78),
-    rock: new THREE.Color(0x6aa6d6), rockLow: new THREE.Color(0x3f78a8), frost: new THREE.Color(0xe8f8ff) };
+  const COLORS = { deep: new THREE.Color(0x032a4e), mid: new THREE.Color(0x0a5f8e), shallow: new THREE.Color(0x13a0bf), foam: new THREE.Color(0xbfeeff),
+    bedLand: new THREE.Color(0x2f5f84), bedShelf: new THREE.Color(0x2f86a8), bedDeep: new THREE.Color(0x0c3558),
+    rock: new THREE.Color(0x6aa6d6), rockLow: new THREE.Color(0x3f78a8), frost: new THREE.Color(0xa6d8ee) };
 
   let tiles = new Array(16).fill(null), loading = new Map(), failed = false, mode = 'none', stats = {};
   let hz = new Set(), W = 0, Hh = 0;
   const simplifier = new SimplifyModifier();
 
-  // 水底＋岸の地面：GPT の川底（平らでも 3600 三角形あった）・浅い棚・岸の石板を、同じ海岸線の式による 20×20 の格子 1 枚にまとめる。
+  // 水底＋岸の地面：GPT の川底（平らでも 3600 三角形あった）・浅い棚・岸の石板を、同じ海岸線の式による 12×12 の格子 1 枚にまとめる。
   // 陸（海岸線の外）は岸の石板の高さ、水の中は岸から中央へ深くなる。頂点色で 陸の岩 → 淡い鉱物の棚 → 深い青緑
   function bedGrid(mask) {
-    const N = 20, pos = [], col = [], idx = [], c = new THREE.Color();
+    const N = 12, pos = [], col = [], idx = [], c = new THREE.Color();
     for (let j = 0; j <= N; j++) for (let i = 0; i <= N; i++) {
       const x = i / N - 0.5, y = 0.5 - j / N, d = coast(x, y, mask);
       const depth = d <= 0 ? 0 : smooth(0, 0.22, d);
@@ -190,8 +193,10 @@ export function createB2WaterTiles(ctx) {
   // 岩を間引く（GPT の岩は 1 個 360〜560 三角形。4m のマスでは 4 割で十分。失敗したら元のまま）
   function lighten(geo, keep) {
     try {
-      const n = geo.attributes.position.count, out = simplifier.modify(geo, Math.floor(n * (1 - keep)));
-      if (out && out.attributes.position.count >= 4) { geo.dispose(); return out; }
+      // 削る数は「溶接した後の頂点数」に対して決める（GLB の三角形ごとの頂点数で決めると全部つぶれて失敗していた）
+      const wd = mergeVertices(geo), n = wd.attributes.position.count, out = simplifier.modify(wd, Math.floor(n * (1 - keep)));
+      wd.dispose();
+      if (out && out.index && out.index.count >= 12) { geo.dispose(); return out; }
     } catch (e) { /* 元のまま */ }
     return geo;
   }
@@ -201,7 +206,7 @@ export function createB2WaterTiles(ctx) {
     const p = geo.attributes.position, nm = geo.attributes.normal, col = new Float32Array(p.count * 3), c = new THREE.Color();
     for (let i = 0; i < p.count; i++) {
       const up = nm.getY(i), y = p.getY(i);
-      c.copy(COLORS.rockLow).lerp(COLORS.rock, smooth(base - 0.04, base + 0.08, y)).lerp(COLORS.frost, smooth(0.6, 0.95, up) * smooth(base, base + 0.06, y) * 0.6);
+      c.copy(COLORS.rockLow).lerp(COLORS.rock, smooth(base - 0.04, base + 0.08, y)).lerp(COLORS.frost, smooth(0.7, 0.95, up) * smooth(base, base + 0.06, y) * 0.3);
       col.set([c.r, c.g, c.b], i * 3);
     }
     geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
@@ -225,7 +230,7 @@ export function createB2WaterTiles(ctx) {
           const depth = smooth(0.0, 0.18, d);
           c.copy(COLORS.shallow).lerp(COLORS.mid, smooth(0, 0.45, depth)).lerp(COLORS.deep, smooth(0.5, 1, depth));
           const foam = pool ? 0 : (1 - smooth(0.0, 0.022, d)) * (0.6 + 0.4 * Math.sin(x * 61 + y * 47) * Math.sin(y * 29 - x * 13));
-          c.lerp(COLORS.foam, Math.max(0, Math.min(0.55, foam)));
+          c.lerp(COLORS.foam, Math.max(0, Math.min(0.6, foam)));
           col.set([c.r, c.g, c.b], i * 3);
         }
         geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
@@ -233,15 +238,16 @@ export function createB2WaterTiles(ctx) {
       } else if (k === 'boulder') {   // 水中の岩：細い棒のように水面から突き出ていたので、低くして水面のすぐ下に沈める（水を通して見える深さの目印）
         geo.computeBoundingBox(); const y0 = geo.boundingBox.min.y;
         for (let i = 0; i < p.count; i++) p.setY(i, y0 + (p.getY(i) - y0) * 0.38);
-        geo = lighten(geo, 0.6); frostColors(geo, -0.06);
+        geo = lighten(geo, 0.25); frostColors(geo, -0.06);
         parts.push({ geo, mat: 'wt:ledge' });
       } else if (k === 'ledge') {     // 岸の岩：背を 6 割に、マスの外へ大きくはみ出さないよう内へ寄せる。上面に霜
         geo.computeBoundingBox(); const bb = geo.boundingBox, cx = (bb.min.x + bb.max.x) / 2, cz = (bb.min.z + bb.max.z) / 2;
         // 水の中に立つ小さな岩は、遠目に黒い棘に見えたので置かない（岸に沿った岩だけ残す＝「ここから先は水」の縁取り）
         if (coast(cx, -cz, mask) > 0.03) return;
+        if (bb.max.y - bb.min.y < 0.09 || (bb.max.x - bb.min.x) * (bb.max.z - bb.min.z) < 0.004) return;   // 小さすぎる岩は省く（三角形の節約）
         const sx = Math.max(0, bb.max.x - 0.52) - Math.max(0, -0.52 - bb.min.x), sz = Math.max(0, bb.max.z - 0.52) - Math.max(0, -0.52 - bb.min.z);
         for (let i = 0; i < p.count; i++) { const y = p.getY(i); p.setXYZ(i, p.getX(i) - sx, y > 0 ? y * 0.62 : y, p.getZ(i) - sz); }
-        geo = lighten(geo, 0.7); frostColors(geo, 0.0);
+        geo = lighten(geo, 0.26); frostColors(geo, 0.0);
         parts.push({ geo, mat: 'wt:ledge' });
       } else { geo.computeVertexNormals(); parts.push({ geo, mat: 'wt:film' }); }
     });
@@ -362,7 +368,7 @@ export function createB2WaterTiles(ctx) {
   // 床の側の縁に、少し盛り上がった霜の縁取り（白い青の帯）を付け、「ここから先は入れない水」を見た目で示す
   const BANK = { wet: new THREE.Color(0x3f7fa6), frost: new THREE.Color(0xd9f3ff), floor: new THREE.Color(0x9cc6dc) };
   function bankStrip(ex, ez, d, shallow) {
-    const [dx, dy] = DIR_VEC[d], ax = dy ? 1 : 0, az = dx ? 1 : 0, SEG = 18, ROWS = 6;
+    const [dx, dy] = DIR_VEC[d], ax = dy ? 1 : 0, az = dx ? 1 : 0, SEG = 10, ROWS = 8;
     const g = new THREE.PlaneGeometry(1, 1, SEG, ROWS), p = g.attributes.position, col = new Float32Array(p.count * 3), c = new THREE.Color();
     for (let i = 0; i < p.count; i++) {
       const u = p.getX(i) + 0.5, v = p.getY(i) + 0.5;                 // u：境界に沿う、v：0＝水の側 → 1＝床の側
@@ -389,7 +395,7 @@ export function createB2WaterTiles(ctx) {
   function tick(dt) {
     t += dt || 0.016;
     ripple.offset.set((t * 0.011) % 1, (t * 0.017) % 1);
-    glow.value = 0.34 + 0.03 * Math.sin(t * 0.9);
+    glow.value = 0.5 + 0.04 * Math.sin(t * 0.9);
   }
   function dispose() {
     for (const o of owned) o.dispose && o.dispose();
