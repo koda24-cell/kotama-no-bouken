@@ -317,14 +317,14 @@ def crystal_bm(length, radius, seed, sides=6, taper=0.84, tip_frac=0.26, embed=0
         frac, tilt = broken
         nrm = Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), 0)).normalized() * math.sin(tilt) + Vector((0, 0, math.cos(tilt)))
         bm_cut(bm, (o.x * frac, o.y * frac, length * frac), nrm, keep="inner", fresh=1.0)
-    for c in range(chips):
+    for c in range(chips):  # 角の欠け: 肩（柱面と錐面の境）の角を斜めに小さく落とす（柱面を縦に削がない）
         i = rnd.randrange(sides)
-        ring = rnd.choice([1, 2])
-        vco = Vector((math.cos(angs[i]) * rads[i] * ss[ring], math.sin(angs[i]) * rads[i] * ss[ring], zs[ring] + rnd.uniform(-0.25, 0.1) * length * 0.3))
-        hz = Vector((vco.x, vco.y, 0)).normalized()
-        nrm = (hz + Vector((0, 0, rnd.uniform(-0.4, 0.7)))).normalized()
-        depth = radius * rnd.uniform(0.18, 0.32)
-        p = Vector((vco.x, vco.y, vco.z)) - nrm * depth
+        ring = 2 if rnd.random() < 0.75 else 1
+        vco = Vector((math.cos(angs[i]) * rads[i] * ss[ring], math.sin(angs[i]) * rads[i] * ss[ring], zs[ring])) + \
+            drift * (max(0.0, zs[ring]) / length) ** 1.5 * 4
+        hz = Vector((math.cos(angs[i]), math.sin(angs[i]), 0))
+        nrm = (hz + Vector((0, 0, rnd.uniform(0.7, 1.4) * (1 if ring == 2 else rnd.choice((-1, 1)))))).normalized()
+        p = vco - nrm * radius * rnd.uniform(0.15, 0.28)
         try:
             bm_cut(bm, p, nrm, keep="inner", fresh=1.0)
         except Exception as e:  # noqa
@@ -468,6 +468,7 @@ def dragon_crystal(name, glow_strength=4.0, body_dark=(0.024, 0.0016, 0.0015), b
     edge = b.edge_mask(0.005, 0.02, 0.25)
     body = b.ramp(n1, [(0.2, body_dark), (0.55, body_mid), (0.9, body_hi)])
     col = b.mix(b.math("MULTIPLY", edge, 0.55), body, (0.060, 0.016, 0.013))
+    col = b.mix(b.math("MULTIPLY", fresh, 0.6), col, (0.075, 0.020, 0.016))  # 新しい欠け口は白っぽく曇る
     root = b._map(tip, 0.0, 0.16, 1.0, 0.0)
     col = b.mix(b.math("MULTIPLY", root, 0.75), col, (0.010, 0.0065, 0.006))
     ashm = b.math("MULTIPLY", b.up_mask(0.55, 0.95), b.ramp(n1, [(0.4, 0.0), (0.75, 1.0)]))
@@ -490,7 +491,6 @@ def dragon_crystal(name, glow_strength=4.0, body_dark=(0.024, 0.0016, 0.0015), b
     cr = b.math("MULTIPLY", cr, b.math("SUBTRACT", 1.0, edge))
     cr = b.math("MULTIPLY", cr, b._map(tip, 0.15, 0.85, 1.0, 0.25))
     e = b.math("MAXIMUM", body_e, b.math("MULTIPLY", cr, 0.8))
-    e = b.math("MAXIMUM", e, b.math("MULTIPLY", fresh, 0.12))
     e = b.math("MULTIPLY", e, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", ashm, 0.8)))
     # 内部の発光色 #ff3b1f（linear 1.0,0.044,0.014）を中心に
     emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.26, 0.006, 0.003)), (0.65, (0.72, 0.024, 0.008)), (1.0, (1.0, 0.065, 0.02))])
