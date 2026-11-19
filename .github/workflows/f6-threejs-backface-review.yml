@@ -1,0 +1,80 @@
+name: F6 Three.js Backface GLB Browser Review (Unapproved)
+on:
+  push:
+    branches: [feature/f6-threejs-foliage-backface-20261119]
+    paths:
+      - tools/floor6/threejs-backface-review/**
+      - .github/workflows/f6-threejs-backface-review.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  threejs-browser-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore verified A/B/C Blender GLB
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44456579971
+          name: f6-foliage-backface-abc-NOT-APPROVED
+          path: /tmp/f6-backface-abc
+          github-token: ${{ github.token }}
+      - name: Verify Blender GLB SHA256 and glTF material facts
+        run: |
+          python3 - <<'PY'
+          import json, hashlib, struct
+          from pathlib import Path
+          d=Path('/tmp/f6-backface-abc/render-output/floor6/foliage_backface_light_trial')
+          m=json.loads((d/'manifest.json').read_text())
+          assert m['state']=='NOT_APPROVED'
+          for f in m['files']:
+              p=d/f['name']
+              assert p.exists() and hashlib.sha256(p.read_bytes()).hexdigest()==f['sha256']
+          b=(d/'foliage_normal_test_NOT_APPROVED.glb').read_bytes()
+          assert b[:4]==b'glTF'
+          size=struct.unpack_from('<I',b,12)[0]
+          j=json.loads(b[20:20+size])
+          mats={x['name'][0]:x for x in j['materials']}
+          assert sorted(mats)==['A','B','C']
+          assert mats['A']['pbrMetallicRoughness']==mats['B']['pbrMetallicRoughness']
+          assert 'emissiveFactor' in mats['C']
+          assert all(x.get('doubleSided') for x in mats.values())
+          print('F6_GLB_BACKFACE_NODES_NOT_PORTABLE_A_B_PBR_IDENTICAL')
+          PY
+      - name: Install version-pinned Three.js and Playwright Core without lifecycle scripts
+        working-directory: tools/floor6/threejs-backface-review
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: "Browser test - load actual GLB and render 3 camera views"
+        env:
+          F6_SOURCE_GLB: /tmp/f6-backface-abc/render-output/floor6/foliage_backface_light_trial/foliage_normal_test_NOT_APPROVED.glb
+          CHROME_BIN: /usr/bin/google-chrome
+        working-directory: tools/floor6/threejs-backface-review
+        run: |
+          google-chrome --version
+          node review.mjs
+      - name: Verify screenshots and manifest
+        run: |
+          python3 - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          d=Path('render-output/floor6/threejs-backface-review')
+          report=json.loads((d/'browser-report.json').read_text())
+          assert report['meshes']==420 and report['shaderPatched']==2 and len(report['views'])==3 and len(report['closeups'])==6
+          for name in ('front','angle','underside','A_front_close','B_front_close','C_front_close','A_underside_close','B_underside_close','C_underside_close','B_face_debug','C_face_debug'):
+              b=(d/(name+'.png')).read_bytes()
+              assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+              w,h=struct.unpack('>II',b[16:24])
+              assert (w,h)==(1600,680)
+              print(name,hashlib.sha256(b).hexdigest(),len(b))
+          print('F6_THREEJS_BROWSER_OUTPUT_VERIFIED')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-threejs-backface-browser-NOT-APPROVED
+          path: render-output/floor6/threejs-backface-review/
+          retention-days: 14
+          if-no-files-found: warn

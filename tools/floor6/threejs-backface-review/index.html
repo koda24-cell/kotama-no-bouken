@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>F6 foliage Three.js backface review</title>
+<style>body{margin:0;background:#252c32;color:#eef;font:16px system-ui}#info{position:absolute;left:12px;top:8px;pointer-events:none}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+</head><body><div id="info">V27 leaf geometry | A glTF default · B backface mute · C mute + warm scatter | NOT APPROVED</div>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const status={loaded:false,errors:[],materials:[],meshes:0,shaderPatched:0,threeVersion:THREE.REVISION};
+const debugUniforms={};
+window.f6=status;
+window.addEventListener('error',e=>status.errors.push(String(e.message)));
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#292f36');
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(1); renderer.setSize(1600,680);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.NoToneMapping;
+document.body.appendChild(renderer.domElement);
+const camera=new THREE.OrthographicCamera(-3.25*1600/680,3.25*1600/680,3.25,-3.25,0.1,100);
+const hemi=new THREE.HemisphereLight(0xe7f4fa,0x5d6c58,2.0);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xffefd0,2.5);sun.position.set(-3,-5,7);scene.add(sun);
+const fill=new THREE.DirectionalLight(0xe3efff,0.5);fill.position.set(5,2,5);scene.add(fill);
+function patchMaterial(material,kind){
+  material.side=THREE.DoubleSide;
+  material.roughness=0.92;
+  if(material.emissive)material.emissive.setRGB(0,0,0); // isolate backface correction from exported C emission
+  if(kind==='A')return;
+  material.onBeforeCompile=(shader)=>{
+    shader.uniforms.f6debug={value:0};
+    debugUniforms[kind]=shader.uniforms.f6debug;
+    shader.fragmentShader='uniform float f6debug;\n'+shader.fragmentShader;
+    const anchor='#include <color_fragment>';
+    if(!shader.fragmentShader.includes(anchor)){status.errors.push('missing-color-fragment:'+material.name);return;}
+    const tweak=kind==='B'
+      ? 'if ( f6debug > 0.5 ) { diffuseColor.rgb=vec3(1.0,0.05,0.02); } else if ( !gl_FrontFacing ) { diffuseColor.rgb *= 0.58; }'
+      : 'if ( f6debug > 0.5 && !gl_FrontFacing ) { diffuseColor.rgb=vec3(0.02,0.05,1.0); } else if ( !gl_FrontFacing ) { diffuseColor.rgb = diffuseColor.rgb * 0.56 + vec3(0.008,0.014,0.002); }';
+    shader.fragmentShader=shader.fragmentShader.replace(anchor,anchor+'\n'+tweak);
+    status.shaderPatched++;
+  };
+  material.customProgramCacheKey=()=> 'f6-backface-'+kind+'-v1';
+  material.needsUpdate=true;
+}
+const loader=new GLTFLoader();
+try{
+ const gltf=await loader.loadAsync('/asset/foliage_normal_test_NOT_APPROVED.glb');
+ gltf.scene.traverse((ob)=>{
+   if(!ob.isMesh)return;
+   status.meshes++;
+   const mat=ob.material;
+   const kind=mat.name.startsWith('A ')?'A':mat.name.startsWith('B ')?'B':mat.name.startsWith('C ')?'C':null;
+   if(!kind){status.errors.push('unexpected-mat:'+mat.name);return;}
+   if(!status.materials.includes(mat.name))status.materials.push(mat.name);
+   patchMaterial(mat,kind);
+ });
+ // Blender glTF export already places A,B,C at x -2.45,0,2.45.
+ // Camera adapts to actual GLB AABB, excluding simulation of individual positions.
+ scene.add(gltf.scene);
+ const bounds=new THREE.Box3().setFromObject(gltf.scene);
+ const centroid=bounds.getCenter(new THREE.Vector3());
+ const dimensions=bounds.getSize(new THREE.Vector3());
+ status.bounds=dimensions.toArray();status.center=centroid.toArray();
+ status.materialKinds=status.materials.map(n=>n[0]);
+ function cameraMode(mode){
+   const at=new THREE.Vector3(centroid.x,centroid.y,centroid.z);
+   const from=mode==='underside'?new THREE.Vector3(at.x,at.y-9,at.z-3.0):
+     mode==='angle'?new THREE.Vector3(at.x+5,at.y-9,at.z+2.5):
+     new THREE.Vector3(at.x,at.y-10,at.z+1.1);
+   camera.position.copy(from);camera.lookAt(at);camera.updateProjectionMatrix();renderer.render(scene,camera);
+   return {mode,rendered:renderer.info.render.calls,width:renderer.domElement.width,height:renderer.domElement.height};
+ }
+ window.f6Render=cameraMode;
+ window.f6FaceDebug=(enabled)=>{for(const x of Object.values(debugUniforms))x.value=enabled?1:0;};
+ window.f6RenderClose=(panel,mode)=>{
+   const shift=[-2.45,0,2.45][panel];
+   if(shift===undefined)throw Error('unknown panel');
+   const at=new THREE.Vector3(centroid.x+shift,centroid.y,centroid.z);
+   const from=mode==='underside'?new THREE.Vector3(at.x,at.y-3.8,at.z-1.6):
+     new THREE.Vector3(at.x,at.y-4,at.z+.55);
+   const halfHeight=.52,halfWidth=halfHeight*1600/680;
+   camera.left=-halfWidth;camera.right=halfWidth;camera.top=halfHeight;camera.bottom=-halfHeight;
+   camera.position.copy(from);camera.lookAt(at);camera.updateProjectionMatrix();
+   renderer.render(scene,camera);
+   return {panel,mode,drawCalls:renderer.info.render.calls};
+ };
+ window.f6Render('front');
+ status.loaded=true;
+}catch(error){status.errors.push(String(error.stack||error));}
+</script></body></html>
