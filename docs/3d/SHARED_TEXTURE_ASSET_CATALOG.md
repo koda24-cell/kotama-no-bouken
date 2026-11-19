@@ -17,6 +17,8 @@
 | `F3_WALL_CONCRETE_CRACKED_01` | 第3層壁01・ひび割れたコンクリートの色テクスチャ | 1024×1024 PNG / sRGB | 壁面向け。シームレス未検証、他モデル再利用は要評価 | この会話で生成した「風化したコンクリート壁スラブ三面図」の正面部分を切り出し補正。ローカル生成 `make_floor3_wall_texture.py` | `bb8dd23fc08dd384a5e2789cb8d7b84da2d4e90972c61627560fb94ce341c941` | チャット成果物 `floor3_wall_textured_trial/wall01_color_1024.png`。**GitHubへのPNG原本保存未実施**。壁01 V4造形はユーザー承認、色画像単独の正式素材承認/ウイルススキャンは未実施 |
 | `F3_WALL_CONCRETE_NORMAL_EST_01` | 同じ壁の画像勾配から推定した微細凹凸Normal | 1024×1024 PNG / non-color data | 上記と同じUVで試作。シームレス未確認 | カラー画像の輝度勾配から計算（本当の幾何Normalではない） | `59cee4a12733291cf90cb98f1bd7823add3c1c12a364e0b47c026c7f2ec365ef` | チャット成果物 `floor3_wall_textured_trial/wall01_normal_estimate_1024.png`。**GitHubバイナリ保存未実施**。Normal品質/ウイルススキャン未検証 |
 
+| `F3_REBAR_RUST_01` | 第3層の露出鉄筋01用・酸化鉄カラーPNG（画像テクスチャ） | 256×256 PNG / sRGB | 鉄筋のUV円筒に再利用可能。非シームレスの実画質評価は未完了 | 自作手続き生成コード `tools/floor3/rebar01/build.py`（PR #536、実行 #44446358240） | `a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58` | Actions Artifact ID `14493312525` の画像実体とSHA-256確認済み。**GitHubには生成コードのみあり、PNG原本は未昇格**。素材/ゲーム未承認、実ウイルススキャン未実施 |
+
 ## モデルとの関係・承認境界
 
 - 第3層の壁01 V4（段差剥離）はユーザーが造形を了承済み。候補GLBの検証時SHA-256: `44e995b1ee843ad3bffba078c532158011effef6d6245cd0bced9f25082a8981`。
