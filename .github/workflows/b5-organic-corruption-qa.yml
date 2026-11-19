@@ -26,7 +26,15 @@ jobs:
           set -euo pipefail
           mkdir -p render-output/b5-organic-corruption
           sudo systemctl stop clamav-freshclam || true
-          sudo freshclam --stdout --tries=3 2>&1 | tee render-output/b5-organic-corruption/freshclam.log
+          updated=0
+          for attempt in 1 2 3; do
+            if sudo freshclam --stdout 2>&1 | tee -a render-output/b5-organic-corruption/freshclam.log; then
+              updated=1
+              break
+            fi
+            sleep 10
+          done
+          test "$updated" -eq 1
           clamscan --version | tee render-output/b5-organic-corruption/clamav-version.txt
           test -n "$(find /var/lib/clamav -maxdepth 1 \( -name '*.cvd' -o -name '*.cld' \) -print -quit)"
       - name: Real ClamAV scan of source before execution
