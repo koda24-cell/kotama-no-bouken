@@ -25,3 +25,10 @@
 - 共有検証済みBlender+ClamAVコンテナ使用。ソース／テクスチャ／生成成果物のスキャンが必須。
 - 完成を主張するのはActions success、出力実ファイルのSHA検証、画像を実際に目視した後。
 - 人間による美術承認まで正式保存不可。
+
+## 検証済み結果 / V19・V20
+- V19 run [44454334252](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44454334252) **success**、Artifact 14496564249。6方向PNG・GLB・Blend・PBRテクスチャのmanifest SHA-256 13/13一致。実際のBlender Cycles出力を目視。前後長と後頭部断面は改善したが、頭頂に独立リッジが白線として浮き、バイザーはまだ前方へ突き出す。**美術不合格**。
+- そこでV20 `tools/b5-knights/build_sallet_v20.py` を独立追加。頭頂の独立カーブを削除し、鉢メッシュのごく浅い断面変形に変更。バイザー側端を後退・幅を控えめに変更。V18の汚れ・3か所の局所ひびを完全維持。
+- V20 run [44454949220](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44454949220) **success**、Artifact 14497875347。GLB・Blend・実レンダ6方向・PBR 13ファイル SHA-256 13/13一致。生成候補のClamAVスキャン成功、source/texture scanned before build。
+- V20実物写真との比較: Walters実物とモデルのfront/left/right/angleを並置。写真のカメラ投影・焦点距離・スタンドの影響が違うため、**実ピクセル一致・カメラ校正済みの検証とは主張しない**。頭頂白線は解消した。一方、正面下部が卵形に丸く、バイザーが板状に見え、実物の明瞭な裾・連続した側面鋼板との一致はまだ不十分。**美術品質未承認**。
+- 承認するのはユーザーのみ。公式 `assets`、`development`、`main` は変更せず、Actions一時Artifacsとして保存。
