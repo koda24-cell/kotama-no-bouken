@@ -8,27 +8,31 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  packages: read
 jobs:
   render-and-scan:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install Blender and ClamAV
+      - name: Confirm preinstalled Blender and ClamAV (no apt)
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender clamav clamav-freshclam
           blender --version | head -2
           clamscan --version
+          freshclam --version
       - name: Update virus signatures - mandatory
         run: |
           set -euo pipefail
           mkdir -p render-output/b5-organic-corruption
-          sudo systemctl stop clamav-freshclam || true
           updated=0
           for attempt in 1 2 3; do
-            if sudo freshclam --stdout 2>&1 | tee -a render-output/b5-organic-corruption/freshclam.log; then
+            if freshclam --stdout 2>&1 | tee -a render-output/b5-organic-corruption/freshclam.log; then
               updated=1
               break
             fi
@@ -45,7 +49,7 @@ jobs:
       - name: Build actual Blender GLB and 3-direction renders
         run: |
           set -euo pipefail
-          blender -b -t 2 --python tools/b5-organic-corruption/build_overlay.py 2>&1 | tee render-output/b5-organic-corruption/blender.log
+          HOME=/tmp/blender-home blender -b -t 2 --python tools/b5-organic-corruption/build_overlay.py 2>&1 | tee render-output/b5-organic-corruption/blender.log
           python3 tools/b5-organic-corruption/verify_output.py
       - name: Real ClamAV scan of all generated assets
         run: |
