@@ -34,7 +34,9 @@ jobs:
       - name: Update ClamAV definitions
         run: bash tools/security/clamav_scan_gate.sh update qa/security
       - name: Scan source scripts before executing
-        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-waterwheel-render qa/security/source.log
+        run: |
+          bash tools/security/clamav_scan_gate.sh scan tools/b2-waterwheel-render qa/security/source.log
+          bash tools/security/clamav_scan_gate.sh scan field/assets/b2-frozen-waterwheel-scene.js qa/security/source-scene.log
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
