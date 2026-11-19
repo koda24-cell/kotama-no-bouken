@@ -383,7 +383,7 @@ ASH = (0.082, 0.077, 0.070)
 
 
 def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairline=1.0, ash_amt=1.0,
-           tex_lo=0.03, tex_hi=0.40, nrm_strength=0.75, bump=0.6, prox_soot=0.0, heat_range=(0.82, 1.0), heat_amt=0.6):
+           tex_lo=0.03, tex_hi=0.40, nrm_strength=0.75, bump=0.6, prox_soot=0.0, heat_range=(0.82, 1.0), heat_amt=0.6, hair_cd=(0.84, 0.985)):
     """玄武岩: rock_face_02（CC0）の明暗を 2章の色域へ写す＋気泡の穴＋新しい割れ面＋角の欠け＋
     割れ目の縁の煤と焼け＋上向き面・凹みの灰。発光は glow 面（割れ目の内側）と、
     割れ目の近く（cd）の細いひびの中だけ"""
@@ -437,7 +437,7 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     # 割れ目の縁から伸びる短い細いひび（発光）
     hv = ridge(b, 5.0, vec=warp(b, 2.0, 0.25))
     hl = b.ramp(hv, [(0.968, 0.0), (0.99, 1.0)])
-    hair_m = b.math("MULTIPLY", hl, b._map(cd, 0.84, 0.985))
+    hair_m = b.math("MULTIPLY", hl, b._map(cd, *hair_cd))
     hair_m = b.math("MULTIPLY", hair_m, b.ramp(n_big, [(0.4, 0.0), (0.6, 1.0)]))
     hair_m = b.math("MULTIPLY", hair_m, b.math("SUBTRACT", 1.0, glow))
     hair_m = b.math("MULTIPLY", hair_m, hairline, clamp=True)

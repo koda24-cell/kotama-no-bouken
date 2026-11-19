@@ -28,12 +28,12 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Vector, noise  # noqa: E402
 
 NAME = "b4p_claw_rock"
-VERSION = "v4"
+VERSION = "v5"
 rnd = random.Random(1111)
 C.reset(1111)
 
-RAD = (1.18, 0.32, 1.0)
-CEN = Vector((0, 0, 0.56))
+RAD = (1.18, 0.33, 1.1)
+CEN = Vector((0, 0, 0.60))
 NF = Vector((0, -0.96, 0.28)).normalized()      # 正面（割れ面）の外向き法線：少し上を向く＝後ろへ傾いた板
 SUP = math.sqrt((NF.y * RAD[1]) ** 2 + (NF.z * RAD[2]) ** 2)
 FRAC = 0.62
@@ -83,7 +83,7 @@ def dist_fn(co):
 
 def carve(bm):
     L = D.bm_layers(bm)
-    D.bm_refine_near(bm, dist_fn, (0.05, 0.012))
+    D.bm_refine_near(bm, dist_fn, (0.055, 0.02, -0.03))
     chipped = set()
     for v in bm.verts:
         h, p2 = local(v.co)
@@ -120,7 +120,7 @@ def carve(bm):
 
 
 bm = D.basalt_bm(RAD, CEN, seed=21, subdiv=4, lumpy=0.16, facets=15, facet_depth=(0.55, 0.85), fresh_ratio=0.35,
-                 up_bias=0.3, fine=(0.010, 6.0), ground=0.0, extra_planes=[(tuple(NF), FRAC, False)],
+                 up_bias=0.3, fine=(0.010, 6.0), ground=0.0, extra_planes=[(tuple(NF), FRAC, False), ((0.25, 1.0, 0.3), 0.72, False), ((-0.35, 1.0, -0.1), 0.76, True)],
                  hook=carve, notches=8, notch_depth=(0.8, 0.93))
 slab = D.sharp_by_angle(C.obj_from_bm(bm, "slab"), 40)
 parts = [slab]
@@ -137,7 +137,8 @@ for k in range(6):
 for o in parts:
     D.ensure_attrs(o)
 off = D.recenter(parts)
-mat = D.basalt("basalt", hairline=0.7, prox_soot=0.75, heat_range=(0.3, 0.85), heat_amt=1.0, glow_strength=4.0)
+mat = D.basalt("basalt", hairline=0.7, prox_soot=0.75, heat_range=(0.3, 0.85), heat_amt=1.0, glow_strength=4.0,
+               hair_cd=(0.6, 0.92))
 for o in parts:
     C.assign(o, mat)
 
