@@ -9,23 +9,25 @@ on:
       - ".github/workflows/candidate-asset-safety-audit.yml"
 permissions:
   contents: read
+  packages: read
 jobs:
   audit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Install ClamAV and update signatures
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clamav clamav-freshclam
-          sudo systemctl stop clamav-freshclam || true
-          mkdir -p security-audit-output
-          sudo freshclam > security-audit-output/definitions.log 2>&1 || { echo "::error::Malware definitions could not be refreshed" ; cat security-audit-output/definitions.log; exit 1; }
-          clamscan --version > security-audit-output/engine-version.txt
+      - name: Update ClamAV signatures (no apt install)
+        run: bash tools/security/clamav_scan_gate.sh update security-audit-output
       - name: Inventory and non-executing ZIP structure check
         run: python3 tools/security/inventory_scan.py
       - name: Signature scan of checked-out files
