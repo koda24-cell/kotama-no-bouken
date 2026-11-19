@@ -32,8 +32,8 @@ await page.waitForFunction(() => document.querySelector('#status')?.textContent?
 await mkdir('f5-360-renders',{recursive:true});
 const records=[];
 for (const angle of [0,45,90,135,180,225,270,315]) {
-  await page.locator('[data-angle="'+(angle%90===0?angle:0)+'"]').click();
-  if(angle%90!==0) await page.evaluate(a=>{const btn=document.querySelector('#right');for(let i=0;i<(a%90)/15;i++)btn.click()},angle);
+  await page.locator('[data-angle="'+Math.floor(angle/90)*90+'"]').click();
+  if(angle%90!==0) await page.evaluate(() => {for(let i=0;i<3;i++)document.querySelector('#right').click()});
   await page.waitForTimeout(250);
   const name='f5-view-'+String(angle).padStart(3,'0')+'.png';
   const buf=await page.locator('canvas').screenshot({path:'f5-360-renders/'+name});
