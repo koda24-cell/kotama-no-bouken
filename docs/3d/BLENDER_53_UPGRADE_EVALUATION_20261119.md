@@ -1,6 +1,15 @@
 # Blender 5.3.0 adoption evaluation — 2026-11-19
 
-**Status: official release confirmed; Docker build and real model render are NOT YET verified.** This document is shared information, not authorization to change the default runtime or approve assets.
+**Status: official 5.3.0 Docker build, ClamAV smoke and actual B4 P1 render VERIFIED; B2 water compatibility VERIFIED; F6 foliage and per-workflow migration still being evaluated.** This is not blanket approval of all Blender workflows or any 3D asset.
+
+## Verified image and evidence (2026-11-19)
+
+- [PR #603](https://github.com/koda24-cell/kotama-no-bouken/pull/603) merged to `development` after [full successful Actions run #44466267564](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44466267564).
+- Immutable GHCR image: `ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99`. This is **official Blender 5.3.0**, not the older distro Blender5 image.
+- Official SHA256 and independently pinned SHA256 matched. The initial naive ClamAV xz archive scan failed because the decompressor hit its 500 MiB cap; the corrected build verifies SHA first, scans archive bytes before extraction and **5,597 extracted files before running Blender**. Both scans infected 0. This avoids claiming a truncated decompression scan was complete.
+- Actual runtime checks: exact `Blender 5.3.0`, freshclam update, EICAR detected, smoke GLB+PNG signatures and output scans, B4 magma P1 GLB/Blend/four PNGs with manifest SHA256. Runtime source scans 1+5 scripts, imported PBR textures 14, smoke outputs 2, B4 outputs 7: all infected 0. [Temporary QA artifact](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44466267564/artifacts/14502612250).
+- [PR #606](https://github.com/koda24-cell/kotama-no-bouken/pull/606) verified Blender5.3 compatibility for existing B2 water: [run #44467090675](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44467090675) produced **16 GLBs and 3 PNGs**, all signatures and hashes passed; source 1/output 21 scanned with 0 infected. It is a **separate QA job**, not evidence that every production B2 workflow was switched.
+- F6 V14 foliage [PR #607](https://github.com/koda24-cell/kotama-no-bouken/pull/607) and original B2/B4 workflow image-switch PRs #608/#609 are separate; **do not call them verified until their Actions succeed**.
 
 ## Official sources
 - Blender 5.3.0 stable released November 10, 2026: https://www.blender.org/releases/5-3/
