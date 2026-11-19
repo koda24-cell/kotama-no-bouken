@@ -15,13 +15,15 @@ export const B4_PROP_REGISTRY = {
 
 // Approved GPT models reused as-is (docs/3d/B4_GPT_MODEL_INVENTORY.md).
 export const B4_GPT_MODELS = {
-  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7 },
+  // V32's packed metal/roughness images are a magenta placeholder (G=0 -> mirror-like roughness 0 in three.js).
+  // Ignore those maps and use the material factors with a matte floor instead (reported to GPT in the handoff).
+  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82 },
 };
 
 const cache = new Map();
 const loader = new GLTFLoader();
 // Load once; bake node transforms into geometry and merge per material so a 192-mesh model costs one draw per material.
-function loadModel(key, url) {
+function loadModel(key, url, opts = {}) {
   if (!cache.has(key)) cache.set(key, loader.loadAsync(url).then(gltf => {
     gltf.scene.updateMatrixWorld(true);
     const byMat = new Map();
@@ -33,6 +35,12 @@ function loadModel(key, url) {
     });
     const meshes = [];
     for (const [material, geos] of byMat) {
+      if (opts.fixRoughness) {
+        material.roughnessMap = null; material.metalnessMap = null;
+        material.roughness = Math.max(material.roughness ?? 1, opts.fixRoughness);
+        material.metalness = Math.min(material.metalness ?? 0, 0.55);
+        material.needsUpdate = true;
+      }
       if (material.emissiveMap) material.emissiveIntensity = Math.max(material.emissiveIntensity, 2.2);
       material.userData.b4PropCached = true;
       let merged = null;
@@ -142,7 +150,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   }
   // ---- mine recesses: the user-approved GPT minecart V32 replaces the procedural cart ----
   if (mines.length) {
-    const cart = await loadModel('minecart_v32', B4_GPT_MODELS.minecart_v32.url);
+    const cart = await loadModel('minecart_v32', B4_GPT_MODELS.minecart_v32.url, B4_GPT_MODELS.minecart_v32);
     if (isStale()) return { group, dispose() { owned.forEach(i => i.dispose()); }, info: () => info };
     if (cart) {
       const size = cart.box.getSize(new THREE.Vector3()), centre = cart.box.getCenter(new THREE.Vector3());
