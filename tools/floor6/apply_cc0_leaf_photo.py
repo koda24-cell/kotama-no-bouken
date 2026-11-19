@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 INPUT = Path("render-output/floor6/cc0-leaf-source")
-OUT = Path("render-output/floor6/nature/tree_mature_photo_v23")
+OUT = Path("render-output/floor6/nature/tree_mature_photo_v24")
 OUT.mkdir(parents=True, exist_ok=True)
 source = json.loads((INPUT / "source_manifest.json").read_text())
 assert source["license"] == "CC0" and source["asset"] == "Leaf001"
@@ -49,12 +49,12 @@ for i, name in enumerate(("leaf_deep", "leaf_mid", "leaf_lit", "leaf_sage")):
     # V21: CC0 photograph retains its microdetail, but reduce the electric
     # yellow-green cast using a low-saturation forest palette.
     desaturate = nodes.new("ShaderNodeHueSaturation")
-    desaturate.name = "V23_ForestSaturation"
+    desaturate.name = "V24_ForestSaturation"
     desaturate.inputs["Saturation"].default_value = .91
     desaturate.inputs["Value"].default_value = .85
     links.new(tex.outputs["Color"], desaturate.inputs["Color"])
     tone = nodes.new("ShaderNodeMixRGB")
-    tone.name = "V23_ForestTint"
+    tone.name = "V24_ForestTint"
     tone.blend_type = "MULTIPLY"
     tone.inputs[0].default_value = .82
     tone.inputs[2].default_value = ((.16,.26,.18,1),(.23,.36,.22,1),(.37,.43,.24,1),(.26,.32,.22,1))[i]
@@ -65,16 +65,27 @@ for i, name in enumerate(("leaf_deep", "leaf_mid", "leaf_lit", "leaf_sage")):
         nt.name = "CC0_Leaf001_Normal"
         nt.image = normal
         nm = nodes.new("ShaderNodeNormalMap")
-        nm.inputs["Strength"].default_value = 0.72
+        nm.inputs["Strength"].default_value = 0.42
         links.new(nt.outputs["Color"], nm.inputs["Color"])
         links.new(nm.outputs["Normal"], shader.inputs["Normal"])
     if roughness is not None:
         rt = nodes.new("ShaderNodeTexImage")
         rt.name = "CC0_Leaf001_Roughness"
         rt.image = roughness
-        links.new(rt.outputs["Color"], shader.inputs["Roughness"])
+        # Preserve microscopic CC0 roughness detail, but avoid glossy white
+        # glints that erased green in V22/V23 side and angle renders.
+        rough_floor = nodes.new("ShaderNodeMath")
+        rough_floor.operation = "MAXIMUM"
+        rough_floor.inputs[1].default_value = .86
+        links.new(rt.outputs["Color"], rough_floor.inputs[0])
+        links.new(rough_floor.outputs[0], shader.inputs["Roughness"])
     else:
-        shader.inputs["Roughness"].default_value = .78
+        shader.inputs["Roughness"].default_value = .9
+    # Matte leaf wax, no white dielectric highlight dominating 3/4 views.
+    if "Specular" in shader.inputs:
+        shader.inputs["Specular"].default_value = .16
+    if "Specular IOR Level" in shader.inputs:
+        shader.inputs["Specular IOR Level"].default_value = .16
     # Do not infer a cutout alpha mask from diffuse pixels. Original curved
     # leaf silhouettes remain intact and double-sided.
 
@@ -93,8 +104,8 @@ for obj in bpy.data.objects:
     # Original blade: base(0), right(1), needle-tip(2), left(3), raised rib(4).
     mid = (p[1] + p[3]) * .5
     # V23: a softer, wider oval blade rather than the thin needle profile.
-    p[1] = mid + (p[1] - mid) * 1.16
-    p[3] = mid + (p[3] - mid) * 1.15
+    p[1] = mid + (p[1] - mid) * 1.20
+    p[3] = mid + (p[3] - mid) * 1.20
     blunt_tip = p[2].lerp(mid, .24)
     upper_right = p[1].lerp(p[2], .59)
     upper_left = p[3].lerp(p[2], .59)
@@ -107,7 +118,7 @@ for obj in bpy.data.objects:
     vertices = outline + [p[4]]
     front = [(8, i, (i + 1) % 8) for i in range(8)]
     back = [(8, (i + 1) % 8, i) for i in range(8)]
-    new_mesh = bpy.data.meshes.new(old_mesh.name + "_V23SoftRounded")
+    new_mesh = bpy.data.meshes.new(old_mesh.name + "_V24SoftRounded")
     new_mesh.from_pydata(vertices, [], front + back)
     new_mesh.update()
     for mat in old_mesh.materials:
@@ -141,7 +152,7 @@ for start in range(0, len(leaf_objects), 7):
     for j, (ob, original) in enumerate(zip(group, centers)):
         offset = original - center
         # Retain depth and organic openings while reducing paper-confetti spacing.
-        ob.location += (center - original) * .48
+        ob.location += (center - original) * .62
         # Gentle vertical stratification: coherent overlapping tiers, not planar balls.
         ob.location.z += ((j % 3) - 1) * .012
         clustered_leaves += 1
@@ -174,13 +185,13 @@ for f in sorted(OUT.iterdir()):
         data = f.read_bytes()
         files.append(dict(name=f.name, bytes=len(data), sha256=hashlib.sha256(data).hexdigest()))
 assert len(files) == 6
-manifest = dict(asset_id="tree_mature", version="V23-CC0-rich-forest-review",
+manifest = dict(asset_id="tree_mature", version="V24-CC0-matte-forest-review",
                 status="NOT_APPROVED", game_integration="NOT_INTEGRATED",
                 base_model="tree_mature V19 existing source geometry unchanged",
                 branch=os.getenv("GITHUB_REF_NAME", "local"),
                 source_sha=os.getenv("GITHUB_SHA", "local"),
                 render_run_id=os.getenv("GITHUB_RUN_ID", "local"),
                 source_texture=source, preserved_meshes=len(objects), rounded_leaf_meshes=rounding_count, clustered_leaf_meshes=clustered_leaves,
-                files=files, notes="CC0 photographic-type source with 82 percent multiply forest tint, 48 percent leaf-group compression, wider softly rounded oval leaves; no alpha fabricated")
+                files=files, notes="CC0 source with matte >=0.86 roughness, reduced specular/normal highlights, expanded oval blades and 62% leaf-group compression; no alpha fabricated")
 (OUT / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-print("F6_CC0_PHOTO_V23_DONE", len(objects), len(files))
+print("F6_CC0_PHOTO_V24_DONE", len(objects), len(files))
