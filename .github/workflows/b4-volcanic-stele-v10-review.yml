@@ -1,0 +1,48 @@
+name: B4 Volcanic Stele V10 Blender Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-volcanic-stele-v1-20261117
+    paths:
+      - tools/floor4/volcanic_stele/**
+      - .github/workflows/b4-volcanic-stele-v10-review.yml
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+          blender -b --python-expr "import sys; print('BLENDER_PYTHON',sys.version); import numpy; print('NUMPY',numpy.__version__)"
+          blender --version
+      - name: Build GLB and render four views
+        run: |
+          mkdir -p /tmp/b4-volcanic-stele
+          PYTHONPATH=/usr/lib/python3/dist-packages OUT_DIR=/tmp/b4-volcanic-stele blender -b -t 2 --python-exit-code 1 --python tools/floor4/volcanic_stele/build_v10.py
+      - name: Validate GLB PNG Blend and manifest
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,hashlib,struct
+          p=pathlib.Path('/tmp/b4-volcanic-stele');m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED'
+          for a in m['files']:
+            f=p/a['file'];assert f.is_file() and f.stat().st_size==a['size'] and hashlib.sha256(f.read_bytes()).hexdigest()==a['sha256']
+          glb=p/'b4-volcanic-stele-v10.glb'
+          with glb.open('rb') as f:
+            assert f.read(4)==b'glTF'
+            version,length=struct.unpack('<II',f.read(8));assert version==2 and length==glb.stat().st_size
+          for view in ('front','side','angle','top'):
+            assert (p/f'b4-volcanic-stele-v10-{view}.png').read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          assert (p/'b4-volcanic-stele-v10.blend').stat().st_size>10000
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-volcanic-stele-v10-review
+          path: /tmp/b4-volcanic-stele/
+          retention-days: 14
