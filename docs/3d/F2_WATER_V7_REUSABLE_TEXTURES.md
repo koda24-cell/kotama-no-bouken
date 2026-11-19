@@ -2,8 +2,11 @@
 
 更新: 2026-11-19
 
+**AI生成の水面PNG（96×96、透過パレットの軽量プレビュー）も、Git Blobとして実ファイル保存済み。** 原寸の1254px生成画像はGit未保存であり、制作候補PNGは小サイズの試験用。
+
 ## 保存済みのGit画像
 
+- [AI生成水面カラー＋アルファ PNG（96px）](../../tools/f2-water/textures/v7_ai_generated_water_surface_96.png) — 画像生成で作成した透明波紋画像を軽量化した実PNG。透明成分あり。小さな試作・色見本用（96pxのため本番テクスチャの解像度には不足）。
 - [水面カラー＋アルファ画像](../../tools/f2-water/textures/v7_water_surface_color_alpha.svg) — 1024×1024相当の透明SVG。淡い青緑と白い連続曲線、透明背景。川底を隠さず水面の色模様を載せる。**Gitのテキスト画像素材として恒久保存（ただしPRは未マージ）**。
 - [岸際の泡・アルファ画像](../../tools/f2-water/textures/v7_shore_foam_alpha.svg) — 透明SVG。不規則で断続的な泡筋。水面カラーとは別に調整・UV適用する。
 - [V7テクスチャ変換処理](../../tools/f2-water/rasterize_v7_textures.py) — Git管理のSVGを1024pxのRGBA PNGに変換し、SHA-256をmanifestへ記録する。
@@ -11,7 +14,7 @@
 
 ## 生成・採用状態
 
-- ユーザー依頼を基にAIで淡い水面の画像案を生成。**生成された高解像度PNG案そのものはこのGit PRにバイナリ保存していない**。現在Gitで管理している水面画像は、その方向性を踏まえたオリジナルの透明SVG実装であり、生成PNGと同一ファイルではない。
+- 依頼を基にAIで淡い水面のPNG画像を生成し、透明成分付き96px縮小版をGit Blobで保存済み。**原寸1254px生成PNGはGitに未保存**。高解像度運用の本命は1024px相当の透明SVG画像をBlenderでPNG化する方式。両画像は同一ではない。
 - SVGは自作、外部の写真や他社の配布アセットではない。SVG→PNG変換では `python3-cairosvg` を使用。外部URL参照、SVG image/script/foreignObjectを拒否してから処理する。
 - Poly Havenの川底写真は既存のClamAV隔離取得フローで検査する。**水面SVGの自動生成は外部ファイル取得ではない**。
 - GitHub Actions [V7 Run #44452990228](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44452990228) は起動済み。現時点で実スキャン・PNG変換・3方向レンダリング完了・実画像の美観は**未検証**。
