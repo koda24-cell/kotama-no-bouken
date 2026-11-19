@@ -7,6 +7,7 @@ LABEL org.opencontainers.image.description="Shared Blender and ClamAV runtime fo
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        blender clamav clamav-freshclam python3 ca-certificates bash coreutils grep findutils git \
+    && sed -i -E '/^[[:space:]]*NotifyClamd[[:space:]]/d' /etc/clamav/freshclam.conf \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /work /var/lib/clamav \
     && chown clamav:clamav /var/lib/clamav
