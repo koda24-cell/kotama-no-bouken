@@ -1,0 +1,53 @@
+name: Floor3 Window Crossbar01 Isolated Blender Review
+on:
+  push:
+    branches: [feature/gpt-f3-window-crossbar01-20261119]
+    paths:
+      - 'tools/floor3/window_crossbar01/**'
+      - '.github/workflows/f3-window-crossbar01-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source
+        run: python3 -m py_compile tools/floor3/window_crossbar01/build.py
+      - name: Blender isolated horizontal bar 3-pass render
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_window_crossbar01
+          printf '{"part":"F3_WINDOW_CROSSBAR01","approval":"NOT_APPROVED","phase":"STARTED","sha":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/f3_window_crossbar01/progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python /work/tools/floor3/window_crossbar01/build.py 2>&1 | tee out/f3_window_crossbar01/blender.log
+          grep -q F3_CROSSBAR_ALL_COMPLETE out/f3_window_crossbar01/blender.log
+      - name: Inspect file types and verify SHA manifest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,struct,os
+          p=Path('out/f3_window_crossbar01')
+          rec={}
+          for v in (1,2,3):
+              stem=f'f3_window_crossbar01_v{v}'
+              names=[stem+'.glb',stem+'.blend']+[stem+'-'+direction+'.png' for direction in ('front','side','angle')]+[f'F3_WINDOW_CROSSBAR_{t}_V{v}.png' for t in ('PAINT','ROUGH')]
+              for name in names:
+                  data=(p/name).read_bytes()
+                  assert len(data)>200,name
+                  if name.endswith('.png'): assert data[:8]==bytes.fromhex('89504e470d0a1a0a'),name
+                  if name.endswith('.glb'): assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data),name
+                  if name.endswith('.blend'): assert data.startswith(b'BLENDER') or data.startswith(bytes.fromhex('28b52ffd')),name
+                  rec[name]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+          (p/'manifest.json').write_text(json.dumps({'asset':'F3_WINDOW_CROSSBAR01','status':'NOT_APPROVED','source_sha':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],'files':rec},indent=2))
+          print('CROSSBAR_QA_SUCCESS',len(rec))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: floor3-window-crossbar01-v1-v3
+          path: out/f3_window_crossbar01/
+          retention-days: 14
