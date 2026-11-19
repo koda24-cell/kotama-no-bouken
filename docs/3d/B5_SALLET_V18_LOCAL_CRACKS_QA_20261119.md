@@ -20,3 +20,13 @@ V17 local fractures looked good but sparse; increase a little, NOT over the whol
 - Six Blender Cycles directions, 800px, GLB/Blend, baked base color/roughness and localization mask PNG. SHA manifest and mandatory nonapproval.
 - Art gate: front and visor unchanged, back and side slightly more weathered; check for unwanted uniform dark graffiti / UV stretching.
 - Artifact is temporary. Do not promote to official `assets` until user approval.
+
+## Verified result, final checkpoint (2026-11-19)
+- Initial run #44452119890 suffered slow per-job apt; V18 workflow switched to verified GHCR shared Blender+ClamAV digest.
+- Container run #44452828140 failed before any render because this feature branch initially lacked `tools/security/clamav_scan_gate.sh`. Copied the exact verified `development` script and retriggered.
+- **Successful V18 run [44453026859](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453026859)**; artifact `14496961289`, `b5-sallet-v18-walters-NOT-APPROVED`.
+- Six actual Cycles 800x800 PNG, GLB and Blender checkpoint exported. All 13 SHA-256 manifest values independently recomputed from downloaded ZIP, all matched.
+- ClamAV actual source and reference texture scans passed; generated output scan: **15 files scanned, 0 infected** (freshclam update succeeded). This is NOT a guarantee of absolute safety.
+- V17 crack-active texels 915; V18 active texels 1337 (+422, ~46% more above threshold) but still strictly restricted to three rear UV ellipses. User asked for a *slight* appearance increase, not full surface breakage.
+- Visual V17/V18 front/left/back/angle comparison completed. Front appears unchanged; rear nape has slightly stronger localized dark abrasion/fracture detail; side difference is subtle. The crack effect remains largely a fine dark texture feature, not a true geometric metal split.
+- Art approval remains PENDING. No changes to gameplay, official asset folder, `development` or `main`.
