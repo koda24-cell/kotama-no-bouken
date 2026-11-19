@@ -68,7 +68,7 @@ for i in range(15):
 # It controls microscopic surface slope, roughness and delicate colored glints;
 # the base water remains largely transparent rather than opaque teal jelly.
 TEX_SIZE=256
-surface=bpy.data.images.new("F2_original_water_surface_height_V6",width=TEX_SIZE,height=TEX_SIZE,alpha=False,float_buffer=False)
+surface=bpy.data.images.new("F2_original_water_surface_height_V7",width=TEX_SIZE,height=TEX_SIZE,alpha=False,float_buffer=False)
 pixels=[]
 for py in range(TEX_SIZE):
     v=2.0*math.pi*py/TEX_SIZE
@@ -82,7 +82,7 @@ for py in range(TEX_SIZE):
         height=max(.02,min(.98,.5+.34*wave))
         pixels.extend((height,height,height,1.0))
 surface.pixels.foreach_set(pixels)
-surface.filepath_raw=str((root/"f2-water-surface-v6.png").resolve())
+surface.filepath_raw=str((root/"f2-water-surface-v7-height.png").resolve())
 surface.file_format="PNG"
 surface.save()
 # V6 water: keep real transparency, restore legible surface through
@@ -144,7 +144,28 @@ mixhigh=wn.new("ShaderNodeMixShader")
 wl.new(hscale.outputs[0],mixhigh.inputs[0])
 wl.new(mix.outputs[0],mixhigh.inputs[1])
 wl.new(highlight.outputs[0],mixhigh.inputs[2])
-wl.new(mixhigh.outputs[0],outnode.inputs["Surface"])
+# V7: actual COLOR + ALPHA water image texture on the same mesh.
+# Alpha masks gentle cyan highlights while transparent regions retain the riverbed.
+overlay_path=root/"v7_water_surface_color_alpha.png"
+assert overlay_path.is_file(), "V7 SVG-rasterized overlay missing"
+overlay_img=bpy.data.images.load(str(overlay_path.resolve()))
+overlay_tex=wn.new("ShaderNodeTexImage")
+overlay_tex.image=overlay_img
+overlay_tex.extension="REPEAT"
+overlay_tex.interpolation="Linear"
+wl.new(mapping.outputs["Vector"],overlay_tex.inputs["Vector"])
+overlay_light=wn.new("ShaderNodeEmission")
+overlay_light.inputs["Strength"].default_value=.75
+wl.new(overlay_tex.outputs["Color"],overlay_light.inputs["Color"])
+overlay_alpha=wn.new("ShaderNodeMath")
+overlay_alpha.operation="MULTIPLY"
+overlay_alpha.inputs[1].default_value=.80
+wl.new(overlay_tex.outputs["Alpha"],overlay_alpha.inputs[0])
+overlay_mix=wn.new("ShaderNodeMixShader")
+wl.new(overlay_alpha.outputs[0],overlay_mix.inputs[0])
+wl.new(mixhigh.outputs[0],overlay_mix.inputs[1])
+wl.new(overlay_light.outputs["Emission"],overlay_mix.inputs[2])
+wl.new(overlay_mix.outputs[0],outnode.inputs["Surface"])
 # Shape water to avoid hard straight shoreline, with randomised multifrequency normal from mesh.
 verts=[];faces=[];N=95
 for j in range(N+1):
@@ -161,39 +182,7 @@ mesh=bpy.data.meshes.new("non_uniform_waves");mesh.from_pydata(verts,[],faces);m
 water=bpy.data.objects.new("Clear_water_surface",mesh);bpy.context.collection.objects.link(water)
 water.data.materials.append(watermat)
 for pgn in water.data.polygons:pgn.use_smooth=True
-# Separate, narrow broken ripples at the surface clarify the actual water plane.
-# Off-white transparent emission instead of an opaque blue volume.
-ribbonmat=bpy.data.materials.new("V6 subtle interrupted ripple strokes")
-ribbonmat.use_nodes=True
-rn=ribbonmat.node_tree.nodes;rn.clear();rl=ribbonmat.node_tree.links
-ro=rn.new("ShaderNodeOutputMaterial")
-rt=rn.new("ShaderNodeBsdfTransparent")
-re=rn.new("ShaderNodeEmission")
-re.inputs["Color"].default_value=(.63,.84,.88,1)
-re.inputs["Strength"].default_value=.65
-rm=rn.new("ShaderNodeMixShader")
-rm.inputs[0].default_value=.22
-rl.new(rt.outputs[0],rm.inputs[1]);rl.new(re.outputs[0],rm.inputs[2]);rl.new(rm.outputs[0],ro.inputs["Surface"])
-random.seed(20261120)
-for k in range(92):
-    x0=random.uniform(-7.1,7.1)
-    y0=random.uniform(-6.9,2.05)
-    length=random.uniform(.17,.85)
-    thickness=random.uniform(.007,.022)
-    rv=[];rf=[]
-    for t in range(5):
-        x=x0+length*t/4
-        y=y0+.055*math.sin(t*.92+k*.17)+.016*math.sin(x*4+k)
-        z=.052
-        rv.append((x,y-thickness,z))
-        rv.append((x,y+thickness,z))
-    for t in range(4):
-        z=2*t;rf.append((z,z+1,z+3,z+2))
-    ribmesh=bpy.data.meshes.new("ripple_ribbon")
-    ribmesh.from_pydata(rv,[],rf);ribmesh.update()
-    ob=bpy.data.objects.new("V6_reflection_ripple_%03d"%k,ribmesh)
-    bpy.context.collection.objects.link(ob)
-    ob.data.materials.append(ribbonmat)
+# V7: remove V6's artificial white ribbon strokes. Natural overlay image replaces them.
 # Local translucent foam around irregular bank using scattered thin white flakes
 foam=mat("Soft_broken_white_foam","#9dc9bd",.8)
 for i in range(65):
@@ -237,4 +226,4 @@ for n in ("front","side","angle"):
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
 (root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v6.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v7.blend").resolve()))
