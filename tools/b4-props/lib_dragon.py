@@ -439,8 +439,8 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
 
 
-def dragon_crystal(name, glow_strength=3.0, body_dark=(0.026, 0.0020, 0.0019), body_mid=(0.056, 0.0036, 0.0031),
-                   body_hi=(0.10, 0.0062, 0.0050), inner=0.28, metallic=0.3, rough_lo=0.3):
+def dragon_crystal(name, glow_strength=2.6, body_dark=(0.026, 0.0020, 0.0019), body_mid=(0.056, 0.0036, 0.0031),
+                   body_hi=(0.10, 0.0062, 0.0050), inner=0.40, metallic=0.5, rough_lo=0.16, root_pow=3.5):
     """炎竜鉱の結晶: 暗い赤の艶のある面＋角は欠けて明るく＋根元は煤と灰。
     発光は「内部」だけ: 根元ほど強く、面の中央で強く角で弱い（厚みの見え方）＋内部のひび＋包有物＋折れ口"""
     b = C.NB(name)
@@ -464,7 +464,7 @@ def dragon_crystal(name, glow_strength=3.0, body_dark=(0.026, 0.0020, 0.0019), b
     r = b.mixf(root, r, 0.7)
     r = b.mixf(ashm, r, 0.92)
     # 発光（内部）
-    body_e = b.math("POWER", b.math("SUBTRACT", 1.0, tip), 2.2)
+    body_e = b.math("POWER", b.math("SUBTRACT", 1.0, tip), root_pow)
     body_e = b.math("MULTIPLY", body_e, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", edge, 0.9)))
     body_e = b.math("MULTIPLY", body_e, b.ramp(n1, [(0.3, 0.35), (0.7, 1.0)]))
     body_e = b.math("MULTIPLY", body_e, inner)
@@ -473,9 +473,9 @@ def dragon_crystal(name, glow_strength=3.0, body_dark=(0.026, 0.0020, 0.0019), b
     cr = b.math("MULTIPLY", cr, b.math("SUBTRACT", 1.0, edge))
     spots = b.ramp(b.noise(7.0, 4, 0.55), [(0.64, 0.0), (0.76, 1.0)])
     spots = b.math("MULTIPLY", spots, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", tip, 0.6)))
-    e = b.math("MAXIMUM", body_e, b.math("MULTIPLY", cr, 0.75))
-    e = b.math("MAXIMUM", e, b.math("MULTIPLY", spots, 0.35))
-    e = b.math("MAXIMUM", e, b.math("MULTIPLY", fresh, 0.5))
+    e = b.math("MAXIMUM", body_e, b.math("MULTIPLY", cr, 0.7))
+    e = b.math("MAXIMUM", e, b.math("MULTIPLY", spots, 0.22))
+    e = b.math("MAXIMUM", e, b.math("MULTIPLY", fresh, 0.3))
     e = b.math("MULTIPLY", e, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", ashm, 0.8)))
     # 内部の発光色 #ff3b1f（linear 1.0,0.044,0.014）を中心に
     emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.26, 0.006, 0.003)), (0.65, (0.72, 0.024, 0.008)), (1.0, (1.0, 0.065, 0.02))])
