@@ -70,13 +70,20 @@ ao_max=0.0
 for pidx,shift in enumerate(panels):
     for idx,(mesh,transform) in enumerate(snapshots):
         m=mesh.copy()
+        # Bake imported GLB transforms into geometry, then place all three
+        # samples by their actual vertex coordinates. Imported GLB objects may
+        # include tiny root scales; assigning matrix_world alone previously
+        # left A and C almost on top of B despite all meshes existing.
+        m.transform(transform)
+        for vertex in m.vertices:
+            vertex.co.x += shift
         # Avoid a single material inherited from source which may use an
         # atlas; controlled comparison isolates the normal effect.
         m.materials.clear()
         m.materials.append(mat[pidx])
         ob=bpy.data.objects.new("F6_Test_%s_%03d"%("ABC"[pidx],idx),m)
         bpy.context.collection.objects.link(ob)
-        ob.matrix_world=Matrix.Translation(Vector((shift,0,0)))*transform
+        # Identity object transform; baked verts are in tree/world units.
         for face in m.polygons: face.use_smooth=True
         if pidx>0:
             normals=[]
@@ -115,11 +122,21 @@ for pidx,shift in enumerate(panels):
                 rel=pt-Vector((shift,0,0))-center
                 planar=math.sqrt(rel.x**2+rel.y**2)
                 # intentionally mild fake AO, not a physical bake
-                shade=max(.74,min(1.0,.76+.20*min(1,planar/.65)+.03*max(-1,min(1,rel.z/.6))))
+                shade=max(.70,min(1.0,.72+.24*min(1,planar/.85)+.04*max(-1,min(1,rel.z/.6))))
                 col.data[vert.index].color=(shade,shade,shade,1)
                 ao_min=min(ao_min,shade);ao_max=max(ao_max,shade)
         made.append(ob)
 assert changed>1000
+# Numerical image layout gate: these must be three spatially separated
+# real foliage sprigs, otherwise visual A/B/C comparison is meaningless.
+panel_centroids=[]
+for pidx in range(3):
+    sampled=made[pidx*len(selected):(pidx+1)*len(selected)]
+    pts=[sum((v.co for v in o.data.vertices),Vector())/len(o.data.vertices) for o in sampled]
+    panel_centroids.append(sum(pts,Vector())/len(pts))
+assert abs((panel_centroids[1].x-panel_centroids[0].x)-2.45)<.06, panel_centroids
+assert abs((panel_centroids[2].x-panel_centroids[1].x)-2.45)<.06, panel_centroids
+print("F6_ABC_LAYOUT_VERIFIED", [round(c.x,2) for c in panel_centroids])
 # Reference stylized woody stub is identical between all three panels.
 wood=bpy.data.materials.new("Neutral Bark");wood.diffuse_color=(.24,.20,.16,1)
 for shift in panels:
@@ -139,7 +156,7 @@ def area(name,position,power,size):
 area("Key Light",(-4.0,-4.7,7),1150,5)
 area("Fill Light",(3.5,2.5,4.5),430,4)
 def camera(name,position,at):
-    dat=bpy.data.cameras.new(name);dat.type="ORTHO";dat.ortho_scale=7.9
+    dat=bpy.data.cameras.new(name);dat.type="ORTHO";dat.ortho_scale=6.5
     ob=bpy.data.objects.new(name,dat);bpy.context.collection.objects.link(ob)
     ob.location=position
     ob.rotation_euler=(Vector(at)-ob.location).to_track_quat("-Z","Y").to_euler()
@@ -152,6 +169,19 @@ render_cameras=[
 files=[]
 for name,pos,at in render_cameras:
     scene.camera=camera("F6_Camera_"+name,pos,at)
+    path=out/(name+".png")
+    scene.render.filepath=str(path.resolve())
+    bpy.ops.render.render(write_still=True)
+    files.append(path)
+# Full-resolution dedicated closeups are needed: entire-tree views hide
+# the normal transfer/AO differences on individual leaves.
+scene.render.resolution_x=720
+scene.render.resolution_y=720
+for idx,shift in enumerate(panels):
+    name="ABC"[idx]+"_close"
+    ca=camera("F6_Camera_"+name,(shift,-3.3,2.88),(shift,0,2.30))
+    ca.data.ortho_scale=1.7
+    scene.camera=ca
     path=out/(name+".png")
     scene.render.filepath=str(path.resolve())
     bpy.ops.render.render(write_still=True)
@@ -173,6 +203,7 @@ manifest={
  "source":"V27 verified Blender artifact from GitHub run 44447197961",
  "selected_source_leaves":len(selected),
  "panel_leaves":[len(selected)]*3,
+ "panel_centers_world_x":[c.x for c in panel_centroids],
  "changed_corner_normals":changed,
  "ao_range":[ao_min,ao_max],
  "blender_version":bpy.app.version_string,
