@@ -53,7 +53,7 @@ bed.node_tree.links.new(bottom_geo.outputs["Position"],bottom_xyz.inputs["Vector
 underwater=bed.node_tree.nodes.new("ShaderNodeMapRange")
 underwater.inputs["From Min"].default_value=1.65
 underwater.inputs["From Max"].default_value=3.45
-underwater.inputs["To Min"].default_value=.16
+underwater.inputs["To Min"].default_value=.09
 underwater.inputs["To Max"].default_value=0.0
 underwater.clamp=True
 bed.node_tree.links.new(bottom_xyz.outputs["Y"],underwater.inputs["Value"])
@@ -69,18 +69,51 @@ bump=bed.node_tree.nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_v
 bump.inputs["Distance"].default_value=.055
 bed.node_tree.links.new(image.outputs["Color"],bump.inputs["Height"])
 bed.node_tree.links.new(bump.outputs["Normal"],bs.inputs["Normal"])
-bpy.ops.mesh.primitive_plane_add(size=2,location=(0,0,-.45))
-ground=bpy.context.object;ground.name="Riverbed_scanned_CC0"
-ground.scale=(8,8,1);ground.data.materials.append(bed)
+# V14: actual sloped bathymetry. Water surface is at z≈0, the shore
+# is near y≈+2.8 and the river gets deeper toward negative y.
+# Unlike V13 the bottom is NOT one flat plane behind an alpha water card.
+def shore_y(x):
+    return 2.8+.34*math.sin(x*.7)+.18*math.cos(x*1.9)
+def depth_at(x,y):
+    distance=max(0.0,shore_y(x)-y)
+    t=min(1.0,distance/10.0)
+    return .10+2.9*t*t*(3-2*t) # smooth physical shallows to ~3m deep
+def bottom_z(x,y):
+    # Gently irregular sediment, no tiled polygon caustic grids.
+    natural=.045*math.sin(.63*x+.29*y)+.026*math.cos(.39*x-.55*y)
+    return -depth_at(x,y)+natural
+bedverts=[];bedfaces=[];beduv=[]
+GRID=76
+for j in range(GRID+1):
+    y=-8.0+16.0*j/GRID
+    for i in range(GRID+1):
+        x=-8.0+16.0*i/GRID
+        bedverts.append((x,y,bottom_z(x,y)))
+        beduv.append((i/GRID,j/GRID))
+for j in range(GRID):
+    for i in range(GRID):
+        k=j*(GRID+1)+i
+        bedfaces.append((k,k+1,k+GRID+2,k+GRID+1))
+bedmesh=bpy.data.meshes.new("V14_sloped_riverbed_mesh")
+bedmesh.from_pydata(bedverts,[],bedfaces);bedmesh.update()
+uvlayer=bedmesh.uv_layers.new(name="Riverbed UV")
+for polygon in bedmesh.polygons:
+    for loop_id in polygon.loop_indices:
+        vertex_index=bedmesh.loops[loop_id].vertex_index
+        uvlayer.data[loop_id].uv=beduv[vertex_index]
+ground=bpy.data.objects.new("Riverbed_scanned_CC0_variable_depth",bedmesh)
+bpy.context.collection.objects.link(ground)
+ground.data.materials.append(bed)
+for polygon in ground.data.polygons:polygon.use_smooth=True
 shore=mat("Damp wet bank","#554e42",.44)
 pebble=[mat("Warm sandstone","#82776a",.66),mat("Cool wet schist","#626d69",.52),mat("Moss stained stone","#566458",.64),mat("Pale river gravel","#a29c86",.78)]
 for i in range(450):
     x=random.uniform(-7.7,7.7);y=random.uniform(-7.7,7.7)
     # More detail at irregular shoreline, avoid tile / grid placement.
-    shoreline=2.8+.34*math.sin(x*.7)+.18*math.cos(x*1.9)
-    if y < shoreline and random.random()<.40:continue
+    shoreline=shore_y(x)
+    if y < shoreline and random.random()<.45:continue
     radius=random.uniform(.025,.16) if random.random()<.88 else random.uniform(.16,.43)
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1 if radius<.16 else 2,radius=1,location=(x,y,-.43))
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1 if radius<.16 else 2,radius=1,location=(x,y,bottom_z(x,y)+.01))
     o=bpy.context.object;o.name="Wet_river_pebble"
     o.scale=(radius*random.uniform(.7,1.5),radius*random.uniform(.7,1.2),radius*random.uniform(.35,.74))
     o.rotation_euler=(random.random()*.5,random.random()*.5,random.random()*math.pi)
@@ -88,7 +121,7 @@ for i in range(450):
 for i in range(15):
     x=random.uniform(-7,7);y=random.uniform(2.6,7.5)
     r=random.uniform(.16,.51)
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,y,-.25))
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,y,bottom_z(x,y)+.08))
     o=bpy.context.object;o.name="Waterline_stone";o.scale=(r*random.uniform(.8,1.4),r*.83,r*.42);o.rotation_euler=(random.random()*.18,random.random()*.18,random.random()*math.pi);o.data.materials.append(random.choice(pebble))
 # V5: original tileable surface IMAGE, generated locally (never downloaded).
 # It controls microscopic surface slope, roughness and delicate colored glints;
@@ -113,7 +146,7 @@ surface.file_format="PNG"
 surface.save()
 # V6 water: keep real transparency, restore legible surface through
 # Fresnel reflections and image-controlled pale optical highlights.
-watermat=bpy.data.materials.new("V13 clear shallow water + broad underwater tint")
+watermat=bpy.data.materials.new("V14 variable bathymetry, depth opacity, thin ripples")
 watermat.use_nodes=True
 wn=watermat.node_tree.nodes
 wn.clear()
@@ -255,7 +288,42 @@ wl.new(cover_map.outputs["Result"],ai_coverage.inputs[1])
 wl.new(ai_coverage.outputs[0],ai_mix.inputs[0])
 wl.new(overlay_mix.outputs[0],ai_mix.inputs[1])
 wl.new(ai_emission.outputs[0],ai_mix.inputs[2])
-wl.new(ai_mix.outputs[0],outnode.inputs["Surface"])
+# Depth-driven water response. This is a deliberate, inexpensive
+# Beer-Lambert-inspired approximation for preview: stronger optical
+# extinction over a genuinely deep bed, never a screen-distance fade.
+# The sculpted bed and the material use the same shoreline / depth profile.
+depth_geo=wn.new("ShaderNodeNewGeometry")
+depth_xyz=wn.new("ShaderNodeSeparateXYZ")
+wl.new(depth_geo.outputs["Position"],depth_xyz.inputs["Vector"])
+depth_noise=wn.new("ShaderNodeTexNoise")
+depth_noise.inputs["Scale"].default_value=.37
+depth_noise.inputs["Detail"].default_value=2.0
+wl.new(depth_geo.outputs["Position"],depth_noise.inputs["Vector"])
+depth_warp=wn.new("ShaderNodeMath");depth_warp.operation="MULTIPLY"
+depth_warp.inputs[1].default_value=.13
+wl.new(depth_noise.outputs["Fac"],depth_warp.inputs[0])
+depth_coord=wn.new("ShaderNodeMath");depth_coord.operation="ADD"
+wl.new(depth_xyz.outputs["Y"],depth_coord.inputs[0])
+wl.new(depth_warp.outputs[0],depth_coord.inputs[1])
+# Near shoreline ≈0.1m depth: transparent; upstream/deep y≈-7m: opaque.
+depth_range=wn.new("ShaderNodeMapRange")
+depth_range.inputs["From Min"].default_value=-6.2
+depth_range.inputs["From Max"].default_value=2.2
+depth_range.inputs["To Min"].default_value=.87
+depth_range.inputs["To Max"].default_value=.02
+depth_range.clamp=True
+depth_range.interpolation_type="SMOOTHSTEP"
+wl.new(depth_coord.outputs[0],depth_range.inputs["Value"])
+deepwater=wn.new("ShaderNodeBsdfDiffuse")
+deepwater.inputs["Color"].default_value=(.025,.18,.22,1)
+deepwater.inputs["Roughness"].default_value=.2
+# Mixing occurs before the final highlights. Deep reflection still comes
+# from the original water shader in areas with low extinction.
+deep_mix=wn.new("ShaderNodeMixShader")
+wl.new(depth_range.outputs["Result"],deep_mix.inputs[0])
+wl.new(ai_mix.outputs[0],deep_mix.inputs[1])
+wl.new(deepwater.outputs["BSDF"],deep_mix.inputs[2])
+wl.new(deep_mix.outputs[0],outnode.inputs["Surface"])
 # Shape water to avoid hard straight shoreline, with randomised multifrequency normal from mesh.
 verts=[];faces=[];N=95
 for j in range(N+1):
@@ -306,7 +374,7 @@ def point_camera(loc,target):
     cam.rotation_euler=(Vector(target)-cam.location).to_track_quat("-Z","Y").to_euler()
     cam.data.type="ORTHO";cam.data.ortho_scale=12.5
     scene.camera=cam
-for name,pos in [("front",(0,-11,5.9)),("side",(11,-2,6)),("angle",(7,-11,8.4))]:
+for name,pos in [("front",(0,11,6.0)),("side",(11,2.5,6.2)),("angle",(7,10,8.4))]:
     point_camera(pos,(0,0,-.2));scene.render.filepath=str((root/(name+".png")).resolve())
     bpy.ops.render.render(write_still=True)
     bpy.data.objects.remove(scene.camera,do_unlink=True)
@@ -314,6 +382,6 @@ results={}
 for n in ("front","side","angle"):
     f=root/(n+".png");assert f.stat().st_size>10000
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
-(root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
+(root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"],"depth_m":{"shore":round(depth_at(0,2.7),3),"middle":round(depth_at(0,-2.0),3),"deep":round(depth_at(0,-7.0),3)},"depth_absorption":"V14 bathymetry-matched shader opacity, visual approximation not true volume absorption"},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v13.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v14.blend").resolve()))
