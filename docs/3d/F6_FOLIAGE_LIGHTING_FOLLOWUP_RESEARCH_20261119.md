@@ -84,3 +84,15 @@
 - Khronos glTF材質仕様では `doubleSided=true` の背面は光計算前に法線が反転する。通常のglTF材質では独自の`gl_FrontFacing`を使った裏面分岐を表せないので、Three.js側の`onBeforeCompile`等で実装した候補を**独立のブラウザ描画**で比較する。
 - 試験Draft PR: https://github.com/koda24-cell/kotama-no-bouken/pull/585 、HTML/JSは独立 `tools/floor6/threejs-backface-review/` に隔離。Three.js v0.181.2 + Playwright Chrome。ゲーム本体のローダーは変更しない。
 - 本項は**GLBフォーマットの実物検証**であり、ブラウザの成功や美術品質を意味しない。検証ジョブと3方向のスクリーンショットは成功確認後に追記する。
+
+
+## 2026-11-19 Chrome Three.js実レンダリングと裏面診断（追加）
+
+- 最終診断: [GitHub Actions #44461527435](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44461527435) **success**。Chrome + Three.js r181 + Playwright; artifact 14499569196; 独立試作 Draft PR #585。
+- GLB由来の葉メッシュ420個、マテリアルA/B/C、WebGLドローコール420を読み込み検証。3方向全体＋6枚の葉接写、追加で赤／青の可視面診断2枚の合計11 PNG。PNGハッシュ・画像サイズはワークフローで検証。
+- **GLB材質の書き出し欠落**: Blender BのGeometry Backfacing→MixShader裏面分岐はglTFの標準PBRマテリアルに存在しない。AとBのPBR値は完全一致。CのわずかなEmissiveは裏面限定でなく素材全体に付与。
+- Three.jsでonBeforeCompileを使いBの裏面Albedoを0.58倍、Cを0.56倍＋淡い暖色にする試験を実施。シェーダー2件のコンパイル成功。ただし実画像A/B/Cの葉群は**ほぼ同一**。グリーン前景に限定したA/BのRGB平均差はfront約0.00035/255、underside約0.00016/255。
+- **切り分け診断**: Bの色を裏面条件なしで強制赤色にすると前景約60,769pxが赤になりGLSLの書き換えは実際に効いている。一方Cを裏面だけ青くする診断はundersideカメラでも青色0px。可視面は実際の描画上ほぼすべてgl_FrontFacing=trueであり、裏面条件付きシェーダーだけでは画質改善ができないと判断。
+- 失敗→修正ログ: 初回workflowのstep名にあるコロンを引用せずYAML不正、次にGLSL改行の二重エスケープでcompile失敗、次にfaviconの404を異常扱いしてジョブ失敗。すべて修正後にWebGL実描画成功。
+- **次の技術選択**: 裏面の色だけを操作するのではなく、採用済みのV25樹冠幅を固定して枝につながる立体的な葉束と葉群体積を再設計し、約45%の半球法線+柔らかい内側AO/頂点カラーを独立実証。葉と幹の形も並行して調整。真正のThree.js画像が変わることを確認できるまではモデルを正式承認しない。
+- これはゲームローダーへ未統合の独立ブラウザ検証。任天堂の内部実装と混同しない。
