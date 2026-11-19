@@ -487,3 +487,129 @@ def dragon_crystal(name, glow_strength=2.6, body_dark=(0.026, 0.0020, 0.0019), b
     hgt = b.math("ADD", hgt, b.math("MULTIPLY", stri, 0.25))
     b.normal_from(None, bump_height=hgt, bump_strength=0.3, bump_dist=0.002)
     return b.out(col, r, metal, emit=emit, emit_strength=glow_strength)
+
+
+# ---------------------------------------------------------------------------
+# 形状：竜の鱗（抜け落ちた1枚）
+# ---------------------------------------------------------------------------
+def scale_plate_bm(length, seed, width=0.78, ns=28, nr=6, thick=0.022, edge=0.004, keel=0.010, cup=0.035,
+                   notches=2, chord=None, root_tear=0.07):
+    """涙形の盾のような鱗。局所座標: +Y が先端、原点が外形の中心付近、+Z が表。
+    notches 個の縁の欠け、chord=(角度, 比) で縁が直線に割れ落ちる。根元は裂けて不揃い。
+    tip 属性=中心からの比 ρ（成長線用）、cd=横方向の位置（0..1、条線用）、欠けの縁は fresh"""
+    rnd = random.Random(seed)
+    R0 = length * 0.40
+    nts = [(rnd.uniform(-2.6, 2.6), rnd.uniform(0.10, 0.2), rnd.uniform(0.10, 0.22)) for _ in range(notches)]
+    off = rnd.uniform(0, 50)
+
+    def outline(th):
+        t = math.atan2(math.sin(th), math.cos(th))
+        r = R0 * (1 + 0.75 * math.exp(-(t / 0.5) ** 2))
+        rootw = max(0.0, -math.cos(th)) ** 2
+        r *= 1 + root_tear * noise.noise(Vector((th * 3.0 + off, 0.3, 0.7))) * rootw * 2.0
+        fr = 0.0
+        for c, dep, w in nts:
+            dd = math.atan2(math.sin(th - c), math.cos(th - c))
+            k = math.exp(-(dd / w) ** 2)
+            r *= 1 - dep * k
+            fr = max(fr, k)
+        if chord:
+            ca, cr = chord
+            dd = math.cos(th - ca)
+            lim = R0 * cr / max(dd, 1e-3) if dd > 0 else 1e9
+            if r > lim:
+                r = lim
+                fr = 1.0
+        return r, fr
+
+    bm = bmesh.new()
+    L = bm_layers(bm)
+    ths = [2 * math.pi * i / ns + math.pi / 2 for i in range(ns)]  # i=0 が先端(+Y)
+    outl = [outline(th - math.pi / 2) for th in ths]
+
+    def ztop(x, y, rho):
+        z = thick * 0.5 * (1 - rho ** 2) ** 0.7
+        z += keel * math.exp(-(x / (R0 * 0.16)) ** 2) * (1 - rho * 0.6) * (1 if y > -R0 * 0.3 else 0.6)
+        z += cup * rho ** 2
+        return z
+
+    def thk(rho):
+        return thick * (1 - rho ** 1.6) + edge
+
+    top_rings, bot_rings = [], []
+    ct = bm.verts.new((0, 0, ztop(0, 0, 0)))
+    cb = bm.verts.new((0, 0, ztop(0, 0, 0) - thk(0)))
+    for j in range(1, nr + 1):
+        rho = j / nr
+        tr, br = [], []
+        for th, (r, _) in zip(ths, outl):
+            x, y = math.cos(th) * r * rho * width, math.sin(th) * r * rho
+            zt = ztop(x, y, rho) + 0.0015 * noise.noise(Vector((x * 30 + off, y * 30, 0)))
+            tr.append(bm.verts.new((x, y, zt)))
+            br.append(bm.verts.new((x, y, zt - thk(rho))))
+        top_rings.append(tr)
+        bot_rings.append(br)
+    for i in range(ns):
+        k = (i + 1) % ns
+        bm.faces.new((ct, top_rings[0][i], top_rings[0][k]))
+        bm.faces.new((cb, bot_rings[0][k], bot_rings[0][i]))
+        for j in range(nr - 1):
+            bm.faces.new((top_rings[j][i], top_rings[j + 1][i], top_rings[j + 1][k], top_rings[j][k]))
+            bm.faces.new((bot_rings[j][k], bot_rings[j + 1][k], bot_rings[j + 1][i], bot_rings[j][i]))
+        f = bm.faces.new((top_rings[-1][i], bot_rings[-1][i], bot_rings[-1][k], top_rings[-1][k]))
+        frv = max(outl[i][1], outl[k][1])
+        if frv > 0.35:
+            set_face_corner([f], L["fresh"], min(1.0, frv))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    wmax = max(abs(v.co.x) for v in bm.verts) or 1.0
+    for v in bm.verts:
+        rho = Vector((v.co.x / width, v.co.y)).length / (R0 * 1.75)
+        v[L["tip"]] = min(1.0, rho)
+        v[L["cd"]] = 0.5 + 0.5 * v.co.x / wmax
+    return bm
+
+
+def dragon_scale_mat(name, glow_strength=0.0):
+    """竜の鱗: 黒い鈍い艶（玄武岩より少しだけ冷たい黒）＋同心の成長線＋縦の条線＋細かい引っかき傷＋
+    縁の摩耗と欠けた断面（層状の暗い赤茶）＋成長線の溝と上向き面に灰"""
+    b = C.NB(name)
+    tip = attr(b, "tip")
+    lat = attr(b, "cd")
+    fresh = attr(b, "fresh")
+    n_big = b.noise(3.0, 6, 0.6)
+    n_fine = b.noise(40.0, 4, 0.5)
+    growth = b.math("SINE", b.math("ADD", b.math("MULTIPLY", tip, 46.0), b.math("MULTIPLY", n_big, 3.0)))
+    gr = b._map(growth, 0.55, 1.0)
+    stria = b._map(b.math("SINE", b.math("ADD", b.math("MULTIPLY", lat, 120.0), b.math("MULTIPLY", n_big, 4.0))), 0.7, 1.0)
+    col = b.ramp(n_big, [(0.2, (0.0095, 0.0090, 0.0092)), (0.6, (0.016, 0.0145, 0.0142)), (0.95, (0.024, 0.021, 0.020))])
+    col = b.mix(b.math("MULTIPLY", gr, 0.5), col, (0.026, 0.016, 0.012))  # 成長線の山は少し赤茶
+    # 細かい引っかき傷（2方向の細い線）
+    scr = None
+    for k, (sx, sy) in enumerate(((18.0, 0.6), (0.7, 22.0))):
+        mp = b.n("ShaderNodeMapping")
+        mp.inputs["Scale"].default_value = (sx, sy, 3.0)
+        mp.inputs["Rotation"].default_value = (0.0, 0.0, 0.5 + k * 0.9)
+        b.link(b.coord(), mp.inputs["Vector"])
+        line = b.ramp(ridge(b, 6.0, vec=mp.outputs[0], detail=2), [(0.975, 0.0), (0.995, 1.0)])
+        line = b.math("MULTIPLY", line, b.ramp(b.noise(5.0 + k, 3, 0.5), [(0.45, 0.0), (0.6, 1.0)]))
+        scr = line if scr is None else b.math("MAXIMUM", scr, line)
+    col = b.mix(b.math("MULTIPLY", scr, 0.8), col, (0.055, 0.050, 0.047))
+    edge = b.math("MULTIPLY", b.edge_mask(0.004, 0.03, 0.25), b.ramp(n_fine, [(0.3, 0.3), (0.65, 1.0)]), clamp=True)
+    col = b.mix(b.math("MULTIPLY", edge, 0.7), col, (0.050, 0.044, 0.040))
+    fcol = b.mix(b._map(b.math("SINE", b.math("MULTIPLY", tip, 160.0)), -1.0, 1.0), (0.020, 0.010, 0.008), (0.040, 0.022, 0.016))
+    col = b.mix(b.math("MULTIPLY", fresh, 0.9), col, fcol)
+    cav = b.math("SUBTRACT", 1.0, b.cavity(0.012))
+    ashm = b.math("MAXIMUM", b.math("MULTIPLY", b.up_mask(0.75, 0.97), 0.35), b.math("MULTIPLY", cav, 0.9))
+    ashm = b.math("MAXIMUM", ashm, b.math("MULTIPLY", b.math("SUBTRACT", 1.0, gr), b.math("MULTIPLY", b.up_mask(0.5, 0.9), 0.3)))
+    ashm = b.math("MULTIPLY", ashm, b.ramp(b.noise(9.0, 5, 0.6), [(0.35, 0.0), (0.7, 1.0)]))
+    col = b.mix(b.math("MULTIPLY", ashm, 0.75), col, ASH)
+    r = b.mixf(n_big, 0.36, 0.5)
+    r = b.mixf(scr, r, 0.62)
+    r = b.mixf(edge, r, 0.55)
+    r = b.mixf(fresh, r, 0.8)
+    r = b.mixf(ashm, r, 0.95)
+    hgt = b.math("ADD", b.math("MULTIPLY", gr, 0.5), b.math("MULTIPLY", stria, 0.15))
+    hgt = b.math("SUBTRACT", hgt, b.math("MULTIPLY", scr, 0.6))
+    hgt = b.math("ADD", hgt, b.math("MULTIPLY", n_fine, 0.1))
+    b.normal_from(None, bump_height=hgt, bump_strength=0.35, bump_dist=0.0015)
+    return b.out(col, r, 0.0)
