@@ -31,8 +31,25 @@ def bm_layers(bm):
     L = {}
     for k, dom in ATTRS.items():
         lay = bm.loops.layers.float if dom == "CORNER" else bm.verts.layers.float
-        L[k] = lay.get(k) or lay.new(k)
+        it = lay.get(k)
+        L[k] = it if it is not None else lay.new(k)
     return L
+
+
+def attr_report(objs, tag=""):
+    """属性の値域をログへ（ベイク前後の確認用）"""
+    for o in objs:
+        me = o.data
+        msg = []
+        for k in ATTRS:
+            a = me.attributes.get(k)
+            if a is None:
+                msg.append(f"{k}=MISSING")
+                continue
+            vals = [d.value for d in a.data]
+            if vals:
+                msg.append(f"{k}[{a.domain}]={min(vals):.2f}..{max(vals):.2f}/avg{sum(vals) / len(vals):.2f}")
+        C.log(f"attrs{tag} {o.name}: " + " ".join(msg) + f" all={[x.name for x in me.attributes if not x.name.startswith('.')]}")
 
 
 def set_face_corner(faces, layer, value):

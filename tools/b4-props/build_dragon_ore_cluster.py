@@ -31,7 +31,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_dragon_ore_cluster"
-VERSION = "v6"
+VERSION = "v7"
 rnd = random.Random(808)
 C.reset(808)
 
@@ -128,6 +128,7 @@ objs = [o for o, _ in parts.values()]
 for o in objs:
     D.ensure_attrs(o)
 off = D.recenter(objs)
+D.attr_report([o for o in objs if o.name in ("rock_a", "cry_0", "cry_1", "cry_20")], " pre")
 
 mats = {"basalt": D.basalt("basalt"), "crystal": D.dragon_crystal("crystal")}
 for o, key in parts.values():
@@ -137,6 +138,7 @@ lights = [  # 割れ目の奥（結晶の根元より下）だけに置く
     (tuple(gap_point(0.0, 0.18) - off), 11.0, (1.0, 0.20, 0.06)),
     (tuple(gap_point(0.30, 0.24) - off), 3.5, (1.0, 0.18, 0.05)),
 ]
-C.finish(NAME, objs, version=VERSION, lights=lights, tex_res=1024, budget_tris=8000, refs=[60, 61, 64, 41],
-         notes="炎竜鉱の結晶群。割れて傾いた玄武岩のV字の割れ目から14本の結晶が扇状に出る。"
+M = C.finish(NAME, objs, version=VERSION, lights=lights, tex_res=1024, budget_tris=8000, refs=[60, 61, 64, 41],
+         notes="炎竜鉱の結晶群。割れて傾いた玄武岩のV字の割れ目から26本の結晶が放射状に出る。"
                "発光は割れ目の内側・縁の細いひび・結晶の内部のみ。")
+D.attr_report([C.bpy.data.objects[NAME]], " post")
