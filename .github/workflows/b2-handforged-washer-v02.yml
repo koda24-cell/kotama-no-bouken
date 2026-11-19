@@ -1,4 +1,4 @@
-name: B2 One Hand Forged Washer V02 Blender Cycles QA
+name: B2 Washer V02 Real Cycles Visual Review and Scan
 on:
   push:
     branches: [feature/gpt-b2-handforged-bearing-washer-v01-20261119]
