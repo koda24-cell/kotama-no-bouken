@@ -20,7 +20,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y clamav clamav-freshclam blender python3-pil
+          sudo apt-get install -y clamav clamav-freshclam blender python3-pil python3-cairosvg
           command -v clamscan
           command -v blender
       - name: Update ClamAV signatures (fail closed)
@@ -39,6 +39,11 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/f2-water/safe_acquire.py
+      - name: Rasterize tracked V7 color-alpha and shoreline textures
+        if: steps.scan.outcome == 'success'
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 tools/f2-water/rasterize_v7_textures.py
       - name: Blender Cycles front side angle
         if: steps.scan.outcome == 'success'
         env:
@@ -76,8 +81,11 @@ jobs:
             out/f2-water/front.png
             out/f2-water/side.png
             out/f2-water/angle.png
-            out/f2-water/f2-water-surface-v6.png
-            out/f2-water/f2-water-v6.blend
+            out/f2-water/f2-water-surface-v7-height.png
+            out/f2-water/v7_water_surface_color_alpha.png
+            out/f2-water/v7_shore_foam_alpha.png
+            out/f2-water/v7_texture_manifest.json
+            out/f2-water/f2-water-v7.blend
             scan-version.txt
           retention-days: 14
           if-no-files-found: warn
