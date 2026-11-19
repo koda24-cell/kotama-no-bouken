@@ -32,6 +32,11 @@ bs=bed.node_tree.nodes.get("Principled BSDF")
 image=bed.node_tree.nodes.new("ShaderNodeTexImage")
 image.image=bpy.data.images.load(str(imgpath.resolve()))
 image.interpolation="Linear"
+texcoord=bed.node_tree.nodes.new("ShaderNodeTexCoord")
+uvscale=bed.node_tree.nodes.new("ShaderNodeVectorMath");uvscale.operation="SCALE"
+uvscale.inputs["Scale"].default_value=6.0
+bed.node_tree.links.new(texcoord.outputs["UV"],uvscale.inputs[0])
+bed.node_tree.links.new(uvscale.outputs["Vector"],image.inputs["Vector"])
 bed.node_tree.links.new(image.outputs["Color"],bs.inputs["Base Color"])
 bump=bed.node_tree.nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=.16
 bump.inputs["Distance"].default_value=.055
@@ -71,9 +76,10 @@ p.inputs["IOR"].default_value=1.333
 # Shape water to avoid hard straight shoreline, with randomised multifrequency normal from mesh.
 verts=[];faces=[];N=95
 for j in range(N+1):
-    y=-7.9+15.8*j/N
     for i in range(N+1):
         x=-7.9+15.8*i/N
+        shoreline=2.8+.34*math.sin(x*.7)+.18*math.cos(x*1.9)
+        y=-7.9+(7.9+shoreline)*j/N
         z=.015*math.sin(1.7*x+1.2*y)+.009*math.sin(3.1*x-.7*y)+.007*math.cos(.52*x+2.9*y)
         verts.append((x,y,z))
 for j in range(N):
