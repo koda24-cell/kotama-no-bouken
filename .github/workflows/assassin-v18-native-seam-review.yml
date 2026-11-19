@@ -1,0 +1,49 @@
+name: V18 Native Shibu Face Body seam closeups
+on:
+  push:
+    branches: [feature/gpt-assassin-v18-native-seam-closeup-20261119]
+    paths:
+      - 'tools/character-mesh-research/audit_shibu_body_scalp.py'
+      - '.github/workflows/assassin-v18-native-seam-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender xvfb python3-numpy
+      - name: Fetch Shibu VRM for ephemeral study
+        run: |
+          mkdir -p /tmp/source output/assassin-v18-body-audit
+          curl -fL --retry 3 --max-time 240 -o /tmp/source/Shibu.vrm https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/beta/Sendagaya_Shibu.vrm
+          test "$(stat -c%s /tmp/source/Shibu.vrm)" -gt 1000000
+      - name: Inspect original Body posterior scalp and render
+        run: |
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a blender -b -t 2 --python-exit-code 1 --python tools/character-mesh-research/audit_shibu_body_scalp.py -- /tmp/source/Shibu.vrm output/assassin-v18-body-audit
+      - name: Verify source audit artifacts
+        run: |
+          python3 - <<'PY'
+          import json,os
+          p='output/assassin-v18-body-audit'
+          d=json.load(open(p+'/mesh_region_audit.json'))
+          assert any(x['name'].lower()=='body' for x in d)
+          assert any(x['name'].lower()=='face' for x in d)
+          c=json.load(open(p+'/face_body_rim_correspondence.json'))
+          assert c['count']==36 and c['distance_max_m']>=0
+          v=json.load(open(p+'/face_body_rim_surface_distances.json'))
+          assert v['count']==36 and v['distance_max_m']>=0
+          for n in ('body_only_back','body_only_left','body_only_right','body_only_back_upper','face_body_left','face_body_back','ear_seam_order_8_side','ear_seam_order_8_rear_angle','ear_seam_order_32_side','ear_seam_order_32_rear_angle'):
+            assert os.path.getsize(f'{p}/{n}.png')>2000
+          PY
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assassin-v18-original-face-body-seam-closeups-NOT-APPROVED
+          path: output/assassin-v18-body-audit/
+          retention-days: 14
