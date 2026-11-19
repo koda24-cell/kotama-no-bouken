@@ -1,1 +1,1 @@
-build_dragon_ore_cluster.py
+build_claw_rock.py
