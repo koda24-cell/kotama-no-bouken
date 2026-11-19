@@ -4,7 +4,7 @@ on:
     branches: [feature/gpt-b2-iron-axle-ferrule-v02-20261119]
     paths:
       - 'tools/b2-waterwheel-ferrule/**'
-      - '.github/workflows/b2-waterwheel-iron-ferrule-v02.yml'
+      - '.github/workflows/b2-waterwheel-iron-ferrule-v01.yml'
   workflow_dispatch:
 permissions:
   contents: write
