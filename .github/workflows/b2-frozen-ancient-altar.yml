@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - feature/b2-frozen-ancient-altar-20261112
-      - feature/shared-container-b2-frozen-legacy-20261119
     paths:
-      - 'tools/b2-altar/build-and-render.py'
+      - 'tools/b2-altar/**'
       - '.github/workflows/b2-frozen-ancient-altar.yml'
 permissions:
   contents: read
