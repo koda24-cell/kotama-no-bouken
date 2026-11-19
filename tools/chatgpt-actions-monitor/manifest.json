@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "コタマ Actions ステータス",
+  "version": "0.1.0",
+  "description": "ChatGPTのチャット一覧に紐付けたGitHub Actionsの状態を表示します。",
+  "permissions": ["storage", "tabs"],
+  "host_permissions": ["https://api.github.com/*"],
+  "background": {"service_worker": "background.js"},
+  "action": {"default_title": "コタマ Actions ステータス", "default_popup": "popup.html"},
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
