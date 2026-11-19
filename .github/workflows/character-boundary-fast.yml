@@ -80,3 +80,5 @@ jobs:
           name: character-boundary-fast-diagnostics
           path: output/character-mesh-research/
           retention-days: 14
+
+# 2026-11-19: Re-render current Shibu Face V17 (not legacy standalone Assassin head).
