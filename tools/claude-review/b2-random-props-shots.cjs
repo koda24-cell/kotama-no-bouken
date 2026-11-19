@@ -270,8 +270,16 @@ const srv = http.createServer((q, s) => { const p = path.join(ROOT, decodeURICom
       });
       const at = async (tx, ty, d) => { await p.evaluate(([tx, ty, d]) => { const cc = fieldTileCenter(tx, ty); fieldState.x = cc.x; fieldState.y = cc.y; fieldState.dir = d; fieldState.view = null; fieldUpdateVision(true); }, [tx, ty, d]); await p.waitForTimeout(900); };
       for (const [i, s] of extra.save.slice(0, 1).entries()) { await at(...s); await shotS(`${pre}_L_save_far_${i + 1}`); }
-      for (const [i, s] of extra.corr.slice(0, 3).entries()) { await at(...s); await shotS(`${pre}_L_corridor_${i + 1}`); }
-      for (const [i, s] of (inf.streams || []).slice(0, 2).entries()) { const [tx, ty] = s.split(',').map(Number), d = await openDir(tx, ty); await look(tx, ty, OPP[d]); await shotS(`${pre}_L_stream_${i + 1}`); }
+      for (const [i, s] of extra.corr.slice(0, 2).entries()) { await at(...s); await shotS(`${pre}_L_corridor_${i + 1}`); }
+      for (const [i, s] of (inf.streams || []).slice(0, 1).entries()) { const [tx, ty] = s.split(',').map(Number), d = await openDir(tx, ty); await look(tx, ty, OPP[d]); await shotS(`${pre}_L_stream_${i + 1}`); }
+      // [B2V4-L 仕上げ] まぶしさの至近距離確認（導きの灯の1マス手前・結晶の溜まり場の中・滝の前）と、天井を見上げた鍾乳石の根元。
+      // 見上げは撮影の中だけでカメラの縦の向き（YXZ の X）を差し替える（ゲーム本体は変えない）
+      const pitch = (v) => p.evaluate(async (v) => { if (!window.__b2PitchHook) { const T = await import('three'); const o = T.Euler.prototype.set; T.Euler.prototype.set = function (x, y, z, ord) { if (ord === 'YXZ' && window.__b2Pitch != null) x = window.__b2Pitch; return o.call(this, x, y, z, ord); }; window.__b2PitchHook = true; } window.__b2Pitch = v; }, v);
+      for (const [i, s] of extra.save.slice(0, 1).entries()) { const [sx, sy, d] = s, o = await p.evaluate(([x, y, d]) => { const D = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }; let k = 0; const a = fieldArea(); while (k < 6 && !a.objects.some((q) => q.kind === 'save' && q.tx === x + D[d][0] * (k + 1) && q.ty === y + D[d][1] * (k + 1))) k++; return k; }, s); if (o < 6) { await at(sx + D4[d][0] * o, sy + D4[d][1] * o, d); await shotS(`${pre}_L_save_near_${i + 1}`); } }
+      for (const [i, z] of (inf.crystalZones || []).slice(0, 1).entries()) { const dir = z.bx > 0 ? 'right' : z.bx < 0 ? 'left' : z.bz > 0 ? 'down' : 'up'; await at(z.tx, z.ty, dir); await shotS(`${pre}_L_crystal_close_${i + 1}_${z.pal}`); }
+      for (const [i, fl] of (inf.falls || []).slice(0, 1).entries()) { const [tx, ty] = fl.cell.split(',').map(Number); await at(tx, ty, fl.wall); await shotS(`${pre}_L_waterfall_close_${i + 1}`); }
+      for (const [i, s] of extra.corr.slice(0, 1).entries()) { await at(...s); await pitch(0.95); await shotS(`${pre}_L_ceiling_up_${i + 1}`); await pitch(null); }
+      if (inf.atrium) { await at(inf.atrium.tx, inf.atrium.ty + 1, 'up'); await shotS(`${pre}_L_atrium_shaft`); }
     }
     if (f === 0) continue;
     for (const [i, z] of (inf.crystalZones || []).slice(0, 2).entries()) {

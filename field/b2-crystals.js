@@ -242,8 +242,13 @@ function crystalShader(m, key, o) {
           totalEmissiveRadiance += (crackCol * ((crack + halo) * crackI + centerGlow) + own * (${o.base.toFixed(2)} + pow(1.0 - facing, 3.0) * ${o.rim.toFixed(2)})) * farK; }`)
       // [B2V4-L] F1 白飛びの上限：一番明るい色の成分を、なめらかに上限（色相は保つ）へ押さえる。
       // 至近距離や点光源のそばでも芯が白く飛ばず、結晶の色が残る（にじみ＝ブルームもほぼ出ない）
+      // [仕上げ] 色の薄い面（白い水晶・根元の乳白）は同じ明るさでも白く飛んで見えるので、彩度の低い面ほど上限を下げる
+      //   （彩度の高い青・紫・水色の面は従来の上限のまま＝7_blue_crystal_GOOD_TARGET の見え方を保つ）
       .replace('#include <opaque_fragment>', `{ float mx = max(outgoingLight.r, max(outgoingLight.g, outgoingLight.b));
-          if (mx > ${o.knee.toFixed(2)}) { float ex = mx - ${o.knee.toFixed(2)}; outgoingLight *= (${o.knee.toFixed(2)} + ex / (1.0 + ex / ${(o.cap - o.knee).toFixed(2)})) / mx; } }
+          float mn = min(outgoingLight.r, min(outgoingLight.g, outgoingLight.b));
+          float satK = smoothstep(0.18, 0.62, (mx - mn) / max(mx, 1e-4));
+          float cap = mix(${o.capPale.toFixed(2)}, ${o.cap.toFixed(2)}, satK), knee = cap * ${(o.knee / o.cap).toFixed(3)};
+          if (mx > knee) { float ex = mx - knee; outgoingLight *= (knee + ex / (1.0 + ex / (cap - knee))) / mx; } }
         #include <opaque_fragment>`);
   };
   m.customProgramCacheKey = () => key;
@@ -259,9 +264,9 @@ export function makeCrystalMaterials() {
   // 光の強さは控えめ（まぶしくない、落ち着いた光り方）
   // [B2V4-L] F1：芯の光（center）を半分に、ふちの光（rim）を少し下げる。光るのはひびと縁だけ（7_blue_crystal_GOOD_TARGET の水準）
   //   knee/cap：白飛びの上限（明るさ knee から上はなめらかに cap へ近づく）
-  const shell = mk(0.14, 0.9, 'b2crystalShell6', { wRoot: 0.11, crack: 0.75, base: 0.07, rim: 0.18, center: 0.2, knee: 0.7, cap: 1.05 });
-  const cloudy = mk(0.32, 0.7, 'b2crystalCloudy6', { wRoot: 0.1, crack: 0.65, base: 0.07, rim: 0.13, center: 0.14, knee: 0.7, cap: 1.05 });
-  const fracture = mk(0.6, 0.55, 'b2crystalFracture6', { wRoot: 0.14, crack: 0.85, base: 0.09, rim: 0.08, center: 0.1, knee: 0.7, cap: 1.05 });
+  const shell = mk(0.14, 0.9, 'b2crystalShell7', { wRoot: 0.11, crack: 0.75, base: 0.07, rim: 0.18, center: 0.2, knee: 0.7, cap: 1.05, capPale: 0.7 });
+  const cloudy = mk(0.32, 0.7, 'b2crystalCloudy7', { wRoot: 0.1, crack: 0.65, base: 0.07, rim: 0.13, center: 0.14, knee: 0.7, cap: 1.05, capPale: 0.7 });
+  const fracture = mk(0.6, 0.55, 'b2crystalFracture7', { wRoot: 0.14, crack: 0.85, base: 0.09, rim: 0.08, center: 0.1, knee: 0.7, cap: 1.05, capPale: 0.7 });
   const core = new THREE.MeshBasicMaterial({ vertexColors: true });
   const rock = new THREE.MeshStandardMaterial({ color: 0x4a6278, roughness: 0.85, metalness: 0.0, flatShading: true });
   return { shell, cloudy, fracture, core, rock };
