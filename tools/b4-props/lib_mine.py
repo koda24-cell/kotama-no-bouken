@@ -253,8 +253,8 @@ def canvas(name, soot_z=None, scale=1.0, base=(0.085, 0.066, 0.045), heat_center
     # 織り目：XとYの細かい縞を掛け合わせる
     sep = b.n("ShaderNodeSeparateXYZ")
     b.link(b.coord("Object"), sep.inputs[0])
-    wx = b.math("SINE", b.math("MULTIPLY", b.math("ADD", sep.outputs["X"], sep.outputs["Z"]), 1400.0 / scale))
-    wy = b.math("SINE", b.math("MULTIPLY", b.math("ADD", sep.outputs["Y"], sep.outputs["Z"]), 1400.0 / scale))
+    wx = b.math("SINE", b.math("MULTIPLY", b.math("ADD", sep.outputs["X"], sep.outputs["Z"]), 500.0 / scale))
+    wy = b.math("SINE", b.math("MULTIPLY", b.math("ADD", sep.outputs["Y"], sep.outputs["Z"]), 500.0 / scale))
     weave = b.math("MULTIPLY", b.math("ADD", wx, wy), 0.25)
     weave = b.math("ADD", weave, 0.5)
     col = b.mix(n_mid, base, (base[0] * 0.65, base[1] * 0.62, base[2] * 0.6))
