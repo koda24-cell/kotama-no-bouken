@@ -2,6 +2,7 @@ name: Build shared Blender + ClamAV image
 on:
   push:
     branches:
+      - development
       - feature/shared-blender-clamav-container-20261119
     paths:
       - '.github/docker/blender-clamav/**'
