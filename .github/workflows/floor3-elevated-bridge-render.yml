@@ -42,6 +42,9 @@ jobs:
       - name: Blender render
         run: |
           mkdir -p "$GITHUB_WORKSPACE/out"
+          ln -sfn "$GITHUB_WORKSPACE/tools" /work/tools
+          ln -sfn "$GITHUB_WORKSPACE/out" /work/out
+          export HOME=/tmp/blender-home
           set -o pipefail
           blender -b -t 2 --python tools/floor3/elevated_bridge/build_v2.py 2>&1 | tee blender-render.log
           grep -q 'V2_RENDER_COMPLETE' blender-render.log
