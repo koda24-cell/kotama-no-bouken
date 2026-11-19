@@ -10,21 +10,28 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  packages: read
 jobs:
   render:
     runs-on: ubuntu-24.04
     timeout-minutes: 50
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:6f9e660501dcf7a6e0cb8dc94ca3103568f673948812a12a344021b877e7c310
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install Blender dependencies
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan source files and reference textures
         run: |
-          if ! command -v blender >/dev/null 2>&1; then
-            timeout 180 sudo apt-get update || echo "apt index update timeout; trying cached index"
-            timeout 1200 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -o Acquire::Retries=3 blender python3-numpy python3-pil
-          else
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-numpy python3-pil
-          fi
+          bash tools/security/clamav_scan_gate.sh scan tools/b5-knights/build_sallet_v18.py qa/security/b5-v18-source.log
+          bash tools/security/clamav_scan_gate.sh scan tools/b5-knights/textures qa/security/b5-v18-textures.log
+      - name: Verify Blender/Pillow availability
+        run: |
           blender --version
+          /usr/bin/python3 -c 'from PIL import Image; print("Pillow present")'
       - name: Decode image-generated grime and inspect pixel dimensions / digest
         run: |
           /usr/bin/python3 - <<'PY'
@@ -112,11 +119,15 @@ jobs:
           assert (p/'progress.json').exists()
           print('PASS actual V18 Blender 6-view PNG, GLB, Blend, SHA-256. NOT APPROVED')
           PY
+      - name: Scan generated candidate textures, GLB, Blend and PNG before upload
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b5-knights/sallet_v18 qa/security/b5-v18-output.log
       - name: Save temporary unapproved 3D checkpoint, even on failure
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: b5-sallet-v18-walters-NOT-APPROVED
-          path: render-output/b5-knights/sallet_v18/
+          path: |
+            render-output/b5-knights/sallet_v18/
+            qa/security/
           retention-days: 14
           if-no-files-found: warn
