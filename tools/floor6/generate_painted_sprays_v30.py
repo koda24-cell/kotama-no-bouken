@@ -69,26 +69,26 @@ for ix,(name,count,wscale,hscale,sway) in enumerate(variants):
                 (int(anchor[0]*S),int(anchor[1]*S))],
                 fill=(57,76,47,115),width=2*S)
     for y,tx,ang,length,width,k in sorted(leaves,key=lambda x:x[0]):
-        mid=Vector((tx,y))
-        dir=Vector((math.cos(ang),math.sin(ang)))
-        base=mid-dir*length*.48
-        tip=mid+dir*length*.52
+        mid=(tx,y)
+        direction=(math.cos(ang),math.sin(ang))
+        base=(tx-direction[0]*length*.48,y-direction[1]*length*.48)
+        tip=(tx+direction[0]*length*.52,y+direction[1]*length*.52)
         palette=palettes[ix]
         # Shadows stay in dark-green shades, never neon/white.
         pick=palette[rng.randrange(len(palette))]
         jitter=rng.uniform(.90,1.08)
         col=tuple(max(0,min(255,round(c*jitter))) for c in pick)+(255,)
-        contour=leaf_points(tuple(base),tuple(tip),width,rng.uniform(-8,8))
+        contour=leaf_points(base,tip,width,rng.uniform(-8,8))
         shadow=tuple((x+3*S,y+5*S) for x,y in contour)
         d.polygon(shadow,fill=(27,69,44,77))
         d.polygon(contour,fill=col)
         # Subtle leaf midrib and occasional broad soft vein; dark interior
-        d.line([(int(base.x*S),int(base.y*S)),
-                (int(tip.x*S),int(tip.y*S))],
+        d.line([(int(base[0]*S),int(base[1]*S)),
+                (int(tip[0]*S),int(tip[1]*S))],
                 fill=(157,174,95,68),width=S)
         if k%4==0:
-            d.ellipse((int((mid.x-12)*S),int((mid.y-9)*S),
-                       int((mid.x+10)*S),int((mid.y+8)*S)),fill=(137,177,90,25))
+            d.ellipse((int((mid[0]-12)*S),int((mid[1]-9)*S),
+                       int((mid[0]+10)*S),int((mid[1]+8)*S)),fill=(137,177,90,25))
     im=im.resize((W,H),Image.Resampling.LANCZOS)
     alpha=im.getchannel("A")
     assert alpha.getbbox() is not None and max(alpha.getextrema())==255
