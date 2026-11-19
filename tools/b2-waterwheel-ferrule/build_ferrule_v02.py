@@ -1,4 +1,4 @@
-"""B2 single forged-iron axle ferrule: one independent, visibly aged rigid part.
+"""B2 single forged-iron axle ferrule V02 seam-free PBR: one independent, visibly aged rigid part.
 No reference hub mesh is altered or exported; 4 real Cycles renders for review.
 """
 import bpy,sys,math,hashlib,json,random,struct
