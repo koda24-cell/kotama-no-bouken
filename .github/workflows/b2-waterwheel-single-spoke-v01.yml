@@ -8,13 +8,27 @@ on:
       - 'tools/b2-waterwheel-spoke/**'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   render:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - name: Record actual workflow run for cross-chat verification
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-spoke
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > /tmp/b2-spoke-run.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-single-spoke-v01-20261119
+          git reset --hard origin/feature/gpt-b2-waterwheel-single-spoke-v01-20261119
+          cp /tmp/b2-spoke-run.json docs/3d/b2-waterwheel-spoke/latest-v01.json
+          git add docs/3d/b2-waterwheel-spoke/latest-v01.json
+          git commit -m "chore(b2): record single spoke V01 run" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-single-spoke-v01-20261119
       - name: Real Blender Cycles 4-view GLB and Blend
         shell: bash
         run: |
