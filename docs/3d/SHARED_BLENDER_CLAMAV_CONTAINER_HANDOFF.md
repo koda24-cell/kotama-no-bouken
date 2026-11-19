@@ -133,3 +133,13 @@ No geometry/gameplay modifications; artifacts and renders remain unapproved.
 - B5 fog preview uses **Playwright/Chromium**, not Blender; do not blindly replace its browser image with a Blender image. Third-party texture download and npm scan need a separate safety integration.
 - Remaining archive/promotion and generated-texture workflows must be assessed by operation type; do not migrate a job that has no Blender to a Blender container merely for uniformity.
 - Each migration requires its own real Actions pass and scan evidence. F6 Blender5 foliage/impostor candidates remain unapproved; PR #550 is separate.
+
+## Seven-workflow cross-floor migration finalized (2026-11-19)
+[PR #550](https://github.com/koda24-cell/kotama-no-bouken/pull/550) merged to `development` after actual success on all seven workflows:
+- B2 watergate [#44451951536](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44451951536), aqueduct [#44451951540](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44451951540), modular water tiles [#44451951597](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44451951597): success and real ClamAV scans 0 infected.
+- F3 elevated bridge with **immediate scan of downloaded CC0 texture before saving/import** [#44452606244](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44452606244): success, concrete texture fetched/scanned, rust procedural fallback, V2/V3 renders; source 5/download 1/output 48 files scanned, 0 infected.
+- Shared rigid LOD [#44451540647](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44451540647): success.
+- F6 Blender5 V14 foliage batching [#44453183636](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453183636): success on **final smoke-verified Blender5 digest**, 15 scripts/7 checkpoint/7 output files scanned, 0 infected; 9108→145 mesh nodes.
+- F6 Blender5 V14 8-view impostor [#44453189534](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453189534): success on **final smoke-verified Blender5 digest**, 8 actual transparent views and 2080×1040 atlas QA; 15 scripts/7 checkpoint/10 output files scanned, 0 infected.
+- Temporary migration test branch push triggers were removed before merging; original triggers preserved.
+- This is environment/technical QA only. **No candidate GLB/PNG artistic approval or game asset promotion.** Other workflows in remaining-migration list still need separate tests.
