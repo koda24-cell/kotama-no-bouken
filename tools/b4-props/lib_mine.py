@@ -359,3 +359,72 @@ def beam_between(name, p0, p1, w, t, split_a=None, split_b=None, seed=0, bow=0.0
     if mat is not None:
         C.assign(ob, mat)
     return ob
+
+
+def crate(prefix, w, d, h, mats, seed=0, nb=3, t=0.022, post=0.05, segs=3, chip=0.006,
+          skip=(), broken=None, lid=True):
+    """スラットの木箱（底中心が原点、+Z上）。mats={'x','y','z'}（木目方向別の木材）。
+    板ID: 'F0'..（前 -Y）、'B0'..（後 +Y）、'L0'..（-X）、'R0'..（+X）、'T0'..（蓋）、'P0'..'P3'（角柱）、'K0','K1'（蓋の桟）、'S0'..（底）
+    skip: 作らない板ID。broken: {ID: ('a'|'b'|'mid', 荒さ)} 折れた板（'mid' は中央で折れて2片が内へ落ちる）
+    戻り値: {ID: [objects]}"""
+    rnd = random.Random(seed)
+    broken = broken or {}
+    out = {}
+    gap = (h - nb * ((h - t) / nb)) if False else 0.0
+    sh = (h - 0.02) / nb  # 1段の高さ
+    bw = sh - 0.012       # 板幅（隙間 12mm）
+
+    def mk(bid, length, width, thick, loc, rot, mat, grain_seed):
+        if bid in skip:
+            return
+        sp = broken.get(bid)
+        if sp and sp[0] == "mid":
+            obs = []
+            for half, sgn in (("a", -1), ("b", 1)):
+                hl = length * rnd.uniform(0.42, 0.55)
+                pl = plank(f"{prefix}_{bid}{half}", hl, width, thick, segs=max(2, segs - 1), seed=grain_seed + (7 if half == "b" else 0),
+                           split_b=sp[1] if half == "a" else None, split_a=sp[1] if half == "b" else None, chip=chip)
+                # 外端を支点に内へ落ちる
+                from mathutils import Matrix
+                piv = Vector((sgn * length / 2, 0, 0))
+                pl.data.transform(Matrix.Translation(Vector((sgn * (length / 2 - hl / 2), 0, 0))))
+                ang = math.radians(rnd.uniform(14, 24)) * (-sgn)
+                pl.data.transform(Matrix.Translation(piv) @ Matrix.Rotation(ang, 4, "Y") @ Matrix.Translation(-piv))
+                C.xform(pl, loc, rot)
+                obs.append(C.assign(pl, mat))
+            out[bid] = obs
+            return
+        pl = plank(f"{prefix}_{bid}", length, width, thick, segs=segs, seed=grain_seed,
+                   split_a=sp[1] if sp and sp[0] == "a" else None, split_b=sp[1] if sp and sp[0] == "b" else None, chip=chip)
+        C.displace_noise(pl, 0.002, 6.0, seed=grain_seed)
+        C.xform(pl, loc, rot)
+        out[bid] = [C.assign(pl, mat)]
+
+    hw, hd = w / 2, d / 2
+    # 角柱（縦）
+    for k, (sx, sy) in enumerate(((-1, -1), (1, -1), (1, 1), (-1, 1))):
+        mk(f"P{k}", h, post, post, (sx * (hw - post / 2), sy * (hd - post / 2), h / 2), (0, 90, 0), mats["z"], seed + 10 + k)
+    for i in range(nb):
+        z = 0.01 + sh * i + sh / 2
+        mk(f"F{i}", w + 0.004, bw, t, (0, -hd - t / 2, z), (90, 0, 0), mats["x"], seed + 20 + i)
+        mk(f"B{i}", w + 0.004, bw, t, (0, hd + t / 2, z), (90, 0, 0), mats["x"], seed + 30 + i)
+        mk(f"L{i}", d + 2 * t, bw, t, (-hw - t / 2, 0, z), (90, 0, 90), mats["y"], seed + 40 + i)
+        mk(f"R{i}", d + 2 * t, bw, t, (hw + t / 2, 0, z), (90, 0, 90), mats["y"], seed + 50 + i)
+    if lid:
+        nt = 3
+        tw = (d + 2 * t) / nt
+        for i in range(nt):
+            y = -hd - t + tw * i + tw / 2
+            mk(f"T{i}", w + 2 * t + 0.01, tw - 0.01, t, (0, y, h + t / 2), (0, 0, 0), mats["x"], seed + 60 + i)
+        for k, sx in enumerate((-1, 1)):
+            mk(f"K{k}", d - 0.004, 0.06, 0.02, (sx * (hw - post - 0.035), 0, h - 0.01), (0, 0, 90), mats["y"], seed + 70 + k)
+    for i in range(2):
+        mk(f"S{i}", w, (d / 2) - 0.01, t, (0, (i - 0.5) * d / 2, t / 2), (0, 0, 0), mats["x"], seed + 80 + i)
+    return out
+
+
+def flatten(dct):
+    res = []
+    for v in dct.values():
+        res.extend(v)
+    return res
