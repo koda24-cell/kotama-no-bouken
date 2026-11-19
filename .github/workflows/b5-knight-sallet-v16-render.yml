@@ -40,7 +40,7 @@ jobs:
           with Image.open(io.BytesIO(raw)) as image:
               image.load()
               assert image.size==(256,256),image.size
-              image.convert('RGBA').save(out/'grime_source_v15.png')
+              image.convert('RGBA').save(out/'grime_source_v16.png')
           print('PASS: actual generated grime image decoded and staged',actual)
           PY
       - name: Render 6 views and checkpoint original V16 Blender/GLB
@@ -66,8 +66,8 @@ jobs:
               assert hashlib.sha256((p/filename).read_bytes()).hexdigest()==digest, filename
           assert len(m['views'])==6
           assert m['generated_grime_source_sha256']=='7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23'
-          assert (p/'grime_baked_albedo_v15.png').exists()
-          assert (p/'grime_baked_roughness_v15.png').exists()
+          assert (p/'grime_baked_albedo_v16.png').exists()
+          assert (p/'grime_baked_roughness_v16.png').exists()
           # Ensure GLB truly has texture references, not just Blender-only nodes.
           assert doc.get('textures') and doc.get('images')
           metal=[q for q in doc.get('materials',[]) if 'steel crown' in q.get('name','')]
