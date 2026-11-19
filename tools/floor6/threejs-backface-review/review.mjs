@@ -53,6 +53,12 @@ try{
    closeups.push({label:letter,...result});
   }
  }
+ await page.evaluate(()=>window.f6FaceDebug(true));
+ for(const panel of [1,2]){
+  await page.evaluate(panel=>window.f6RenderClose(panel,'underside'),panel);
+  await page.locator('canvas').screenshot({path:path.join(out,(panel===1?'B':'C')+'_face_debug.png')});
+ }
+ await page.evaluate(()=>window.f6FaceDebug(false));
  if(errors.length)throw Error('WebGL/browser errors '+JSON.stringify(errors));
  const info={status:'NOT_APPROVED',three:report.threeVersion,meshes:report.meshes,materialNames:report.materials,
   shaderPatched:report.shaderPatched,bounds:report.bounds,views,closeups,comments:'Blender B backside nodes were not retained in glTF; compared shader-controlled Three.js per-side correction'};
