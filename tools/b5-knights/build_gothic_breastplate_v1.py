@@ -130,6 +130,9 @@ for name,loc,energy,size in [("key",(-1.1,-1.6,2.4),130,1.3),("fill",(1.2,-.4,1.
  l.location=loc;l.rotation_euler=(Vector((0,-.12,1.19))-l.location).to_track_quat("-Z","Y").to_euler()
 bpy.ops.object.camera_add();camera=bpy.context.object;camera.data.type="ORTHO";camera.data.ortho_scale=.9
 scene=bpy.context.scene;scene.camera=camera;scene.render.engine="CYCLES";scene.cycles.samples=40
+scene.cycles.use_denoising=False
+for layer in scene.view_layers:
+ if hasattr(layer,"cycles"):layer.cycles.use_denoising=False
 scene.render.resolution_x=800;scene.render.resolution_y=800;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 scene.view_settings.view_transform="Standard"
