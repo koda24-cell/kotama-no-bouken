@@ -1,0 +1,2665 @@
+{
+  "floors": [
+    {
+      "floor": 1,
+      "meshCount": 222,
+      "v8Decorations": {
+        "rocks": 12,
+        "crystals": 12,
+        "stalagmites": 12,
+        "ceilingIce": 12,
+        "erosion": 12
+      },
+      "omitted": [],
+      "drawGroups": [
+        "b2:open_ceiling_atrium:8",
+        "Water_Ripple_Ring_2:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_1:0",
+        "b2_fish:1",
+        "Water_Ripple_Ring_2:0",
+        "Waterfall_Mist:0",
+        "b2:flora:14",
+        "b2:atrium:5",
+        "b2:floor:17",
+        "b2:ceiling:12",
+        "b2:ice_stalactites:12",
+        "b2:walls:12",
+        "b2:spires:24",
+        "b2:rock_seams:12",
+        "b2:frost_cornices:24",
+        "b2:frost_veins:24",
+        "b2:puddles:17",
+        "b2:v8_stalagmites:12",
+        "b2:v8_erosion:11",
+        "b2:streams:5",
+        "b2:rocks:15",
+        "b2:ceiling_details:11",
+        "b2:water:10",
+        "b2:water_foam:2",
+        "b2:shoreline:5",
+        "b2:frost_ledge:4",
+        "b2:crystal_zone:12",
+        "b2:pillars:20",
+        "b2:extras:2",
+        "b2:stairs:8"
+      ],
+      "ripples": 3,
+      "mists": 2,
+      "falls": [
+        {
+          "cell": "5,19",
+          "wall": "left"
+        },
+        {
+          "cell": "21,5",
+          "wall": "right"
+        }
+      ],
+      "bridge": null,
+      "atrium": {
+        "tx": 2,
+        "ty": 16
+      },
+      "monuments": [],
+      "placed": [
+        {
+          "name": "pillarA",
+          "x": 9.34,
+          "z": 1.68,
+          "ry": 1.57
+        },
+        {
+          "name": "pillarA",
+          "x": 8.66,
+          "z": 1.68,
+          "ry": -1.57
+        },
+        {
+          "name": "pillarG",
+          "x": 1.68,
+          "z": 18.66,
+          "ry": 3.14
+        },
+        {
+          "name": "pillarG",
+          "x": 1.68,
+          "z": 19.34,
+          "ry": 0
+        },
+        {
+          "name": "pillarA",
+          "x": 19.47,
+          "z": 12.29,
+          "ry": 10.21
+        },
+        {
+          "name": "pillarG",
+          "x": 19.71,
+          "z": 12.53,
+          "ry": 5.5
+        },
+        {
+          "name": "ruinFallen",
+          "x": 19.42,
+          "z": 12.54,
+          "ry": 5.44
+        },
+        {
+          "name": "ruinRubble",
+          "x": 19.53,
+          "z": 12.67,
+          "ry": 5.87
+        }
+      ],
+      "crystalZones": [
+        {
+          "tx": 3,
+          "ty": 3,
+          "pal": "blue",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": -1
+        },
+        {
+          "tx": 5,
+          "ty": 13,
+          "pal": "violet",
+          "deadEnd": false,
+          "bx": 1,
+          "bz": 1
+        },
+        {
+          "tx": 23,
+          "ty": 9,
+          "pal": "white",
+          "deadEnd": false,
+          "bx": 1,
+          "bz": -1
+        }
+      ],
+      "streams": [
+        "3,1",
+        "11,1",
+        "1,2",
+        "20,5",
+        "6,7",
+        "6,9",
+        "19,9",
+        "3,11",
+        "6,11",
+        "20,12"
+      ],
+      "buildKey": "2-0",
+      "random": false,
+      "layout": {
+        "flowers": 144,
+        "flowerSpots": 68,
+        "flowerClusters": [
+          "3,9:snowdrop:down",
+          "21,2:snowdrop:right",
+          "17,13:snowdrop:up",
+          "13,15:snowdrop:up",
+          "1,4:snowdrop:right",
+          "21,13:mizubasho:down",
+          "15,9:mizubasho:down"
+        ],
+        "flora": {
+          "groups": [
+            {
+              "cell": "3,9",
+              "kind": "snowdrop",
+              "d": "down",
+              "n": 5,
+              "kinds": [
+                "snowdrop",
+                "mizubasho"
+              ],
+              "edge": "wall",
+              "at": [
+                3.06,
+                9.3
+              ]
+            },
+            {
+              "cell": "21,2",
+              "kind": "snowdrop",
+              "d": "right",
+              "n": 7,
+              "kinds": [
+                "bloom",
+                "snowdrop"
+              ],
+              "edge": "wall",
+              "at": [
+                21.31,
+                1.98
+              ]
+            },
+            {
+              "cell": "17,13",
+              "kind": "snowdrop",
+              "d": "up",
+              "n": 5,
+              "kinds": [
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                16.79,
+                12.68
+              ]
+            },
+            {
+              "cell": "13,15",
+              "kind": "snowdrop",
+              "d": "up",
+              "n": 4,
+              "kinds": [
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                12.76,
+                14.66
+              ]
+            },
+            {
+              "cell": "1,4",
+              "kind": "snowdrop",
+              "d": "right",
+              "n": 7,
+              "kinds": [
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                1.3,
+                4.11
+              ]
+            },
+            {
+              "cell": "21,13",
+              "kind": "mizubasho",
+              "d": "down",
+              "n": 3,
+              "kinds": [
+                "mizubasho"
+              ],
+              "edge": "wall",
+              "at": [
+                21.22,
+                13.31
+              ]
+            },
+            {
+              "cell": "15,9",
+              "kind": "mizubasho",
+              "d": "down",
+              "n": 5,
+              "kinds": [
+                "mizubasho",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                15,
+                9.32
+              ]
+            }
+          ],
+          "groupPlants": 36,
+          "meadow": {
+            "source": "atrium",
+            "center": "2,16",
+            "cells": [
+              "1,15",
+              "2,15",
+              "3,15",
+              "1,16",
+              "2,16",
+              "3,16",
+              "1,17",
+              "2,17",
+              "3,17"
+            ],
+            "plants": 108,
+            "kinds": {
+              "snowdrop": 57,
+              "mizubasho": 19,
+              "bloom": 32
+            }
+          },
+          "byKind": {
+            "snowdrop": 77,
+            "mizubasho": 27,
+            "bloom": 40
+          },
+          "dress": 318,
+          "patches": 11,
+          "triangles": 208658,
+          "tierTris": {
+            "hi": 0,
+            "mid": 95656,
+            "lo": 31756,
+            "mMid": 105174,
+            "mLo": 55398
+          },
+          "lod": {
+            "snowdrop": {
+              "hi": 23436,
+              "midS": 2792,
+              "mid": 2792,
+              "lo": 927,
+              "mMid": 1112,
+              "mLo": 646
+            },
+            "mizubasho": {
+              "hi": 24254,
+              "midS": 2899,
+              "mid": 2899,
+              "lo": 962,
+              "mMid": 970,
+              "mLo": 432
+            },
+            "bloom": {
+              "hi": 17364,
+              "midS": 2078,
+              "mid": 2078,
+              "lo": 690,
+              "mMid": 730,
+              "mLo": 324
+            }
+          },
+          "drawMeshes": 70,
+          "chunks": 11,
+          "closeups": [
+            {
+              "kind": "snowdrop",
+              "x": 9.14,
+              "z": 66.03,
+              "vx": -0.503,
+              "vz": 0.864
+            },
+            {
+              "kind": "mizubasho",
+              "x": 10.31,
+              "z": 64.73,
+              "vx": 0.919,
+              "vz": -0.395
+            },
+            {
+              "kind": "bloom",
+              "x": 8.36,
+              "z": 66.13,
+              "vx": -0.187,
+              "vz": 0.982
+            }
+          ]
+        }
+      },
+      "extras": {
+        "snowdrop": true,
+        "mizubasho": true,
+        "bloom": true,
+        "ruinFallen": true,
+        "ruinRubble": true,
+        "bankL": true,
+        "bankR": true
+      },
+      "ownedDisposed": 0,
+      "setpieces": {
+        "stairs": [
+          {
+            "dir": "down",
+            "tx": 9,
+            "ty": 1,
+            "back": "up",
+            "tunnel": true,
+            "face": "down"
+          }
+        ],
+        "backdrops": [],
+        "watergate": null,
+        "bridge": null,
+        "bridges": [],
+        "clusters": [
+          {
+            "mode": "point",
+            "tx": 20,
+            "ty": 13,
+            "x": 19.5,
+            "z": 12.5,
+            "fwd": null
+          }
+        ]
+      }
+    },
+    {
+      "floor": 2,
+      "meshCount": 222,
+      "v8Decorations": {
+        "rocks": 12,
+        "crystals": 12,
+        "stalagmites": 12,
+        "ceilingIce": 12,
+        "erosion": 12
+      },
+      "omitted": [],
+      "drawGroups": [
+        "b2:open_ceiling_atrium:8",
+        "b2_fish:1",
+        "Water_Ripple_Ring_0:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_2:0",
+        "Waterfall_Mist:0",
+        "b2:flora:18",
+        "b2:atrium:5",
+        "b2:floor:13",
+        "b2:ceiling:12",
+        "b2:walls:12",
+        "b2:extras:15",
+        "b2:pillars:32",
+        "b2:shoreline:1",
+        "b2:ice_stalactites:12",
+        "b2:frost_cornices:24",
+        "b2:frost_veins:24",
+        "b2:water:7",
+        "b2:rocks:12",
+        "b2:frost_ledge:2",
+        "b2:spires:24",
+        "b2:rock_seams:12",
+        "b2:streams:4",
+        "b2:puddles:16",
+        "b2:v8_erosion:10",
+        "b2:ceiling_details:12",
+        "b2:v8_stalagmites:12",
+        "b2:water_tiles:20",
+        "b2:water_foam:2",
+        "b2:crystal_zone:8",
+        "b2:monuments:14",
+        "b2:backdrop:26",
+        "b2:bridge:10",
+        "b2:stairs:14"
+      ],
+      "ripples": 2,
+      "mists": 2,
+      "falls": [
+        {
+          "cell": "23,3",
+          "wall": "left"
+        },
+        {
+          "cell": "5,17",
+          "wall": "right"
+        }
+      ],
+      "bridge": null,
+      "atrium": {
+        "tx": 16,
+        "ty": 3
+      },
+      "monuments": [
+        {
+          "name": "watergate",
+          "x": 2,
+          "y": 20,
+          "w": 4,
+          "h": 2
+        }
+      ],
+      "placed": [
+        {
+          "name": "shrine",
+          "x": 16,
+          "z": 16,
+          "ry": -1.57
+        },
+        {
+          "name": "pillarA",
+          "x": 0.62,
+          "z": 0.81,
+          "ry": 2.36
+        },
+        {
+          "name": "pillarG",
+          "x": 0.76,
+          "z": 0.57,
+          "ry": 5.5
+        },
+        {
+          "name": "ruinFallen",
+          "x": 0.79,
+          "z": 0.89,
+          "ry": 0.98
+        },
+        {
+          "name": "ruinRubble",
+          "x": 0.9,
+          "z": 0.69,
+          "ry": 6.26
+        },
+        {
+          "name": "ruinFallen",
+          "x": 11.89,
+          "z": 13.51,
+          "ry": 3.14
+        },
+        {
+          "name": "ruinRubble",
+          "x": 13.61,
+          "z": 11.09,
+          "ry": 0.65
+        },
+        {
+          "name": "ruinParapet",
+          "x": 8.49,
+          "z": 10.92,
+          "ry": 1.57
+        },
+        {
+          "name": "bankL",
+          "x": 3.54,
+          "z": 0.93,
+          "ry": 1.57
+        },
+        {
+          "name": "watergate",
+          "x": 3.5,
+          "z": 20.84,
+          "ry": 3.14
+        },
+        {
+          "name": "bridge",
+          "x": -2.38,
+          "z": 3,
+          "ry": -1.57
+        },
+        {
+          "name": "aqueduct",
+          "x": -2.38,
+          "z": -1.49,
+          "ry": -1.57
+        },
+        {
+          "name": "aqueduct",
+          "x": -2.38,
+          "z": 7.49,
+          "ry": -1.57
+        },
+        {
+          "name": "shoreline",
+          "x": -3.75,
+          "z": 0.75,
+          "ry": -1.57
+        },
+        {
+          "name": "shoreline",
+          "x": -3.75,
+          "z": 5.25,
+          "ry": 1.57
+        },
+        {
+          "name": "pillarA",
+          "x": 20.32,
+          "z": 16.66,
+          "ry": 3.14
+        },
+        {
+          "name": "pillarA",
+          "x": 20.32,
+          "z": 17.34,
+          "ry": 0
+        },
+        {
+          "name": "pillarG",
+          "x": 1.68,
+          "z": 18.66,
+          "ry": 3.14
+        },
+        {
+          "name": "pillarG",
+          "x": 1.68,
+          "z": 19.34,
+          "ry": 0
+        },
+        {
+          "name": "pillarA",
+          "x": 18.53,
+          "z": 1.71,
+          "ry": 3.93
+        },
+        {
+          "name": "pillarA",
+          "x": 18.29,
+          "z": 1.47,
+          "ry": 7.07
+        },
+        {
+          "name": "ruinFallen",
+          "x": 18.58,
+          "z": 1.46,
+          "ry": 2.42
+        },
+        {
+          "name": "ruinRubble",
+          "x": 18.47,
+          "z": 1.33,
+          "ry": 2.51
+        },
+        {
+          "name": "pillarA",
+          "x": 24.71,
+          "z": 4.47,
+          "ry": 7.07
+        },
+        {
+          "name": "pillarA",
+          "x": 24.47,
+          "z": 4.71,
+          "ry": 8.64
+        },
+        {
+          "name": "ruinFallen",
+          "x": 24.46,
+          "z": 4.42,
+          "ry": 4.02
+        },
+        {
+          "name": "ruinRubble",
+          "x": 24.33,
+          "z": 4.53,
+          "ry": 0.17
+        },
+        {
+          "name": "b2sp_bridge_deck",
+          "x": 17,
+          "z": 5,
+          "ry": 0
+        },
+        {
+          "name": "b2sp_bridge_rail",
+          "x": 17,
+          "z": 5,
+          "ry": 0
+        },
+        {
+          "name": "bankL",
+          "x": 15.6,
+          "z": 4.34,
+          "ry": 0.11
+        },
+        {
+          "name": "bankR",
+          "x": 15.6,
+          "z": 5.66,
+          "ry": 3.23
+        },
+        {
+          "name": "bankL",
+          "x": 18.4,
+          "z": 4.34,
+          "ry": 0.09
+        },
+        {
+          "name": "bankR",
+          "x": 18.4,
+          "z": 5.66,
+          "ry": 3.23
+        }
+      ],
+      "crystalZones": [
+        {
+          "tx": 25,
+          "ty": 9,
+          "pal": "cyan",
+          "deadEnd": false,
+          "bx": 1,
+          "bz": -1
+        },
+        {
+          "tx": 3,
+          "ty": 15,
+          "pal": "cyan",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": -1
+        },
+        {
+          "tx": 1,
+          "ty": 9,
+          "pal": "violet",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": -1
+        }
+      ],
+      "streams": [
+        "3,1",
+        "11,1",
+        "1,2",
+        "3,6",
+        "11,6",
+        "6,7",
+        "5,8",
+        "19,9",
+        "3,11",
+        "6,11"
+      ],
+      "buildKey": "2-1@e0sndp0mj",
+      "random": true,
+      "layout": {
+        "altar": {
+          "cell": "15,16",
+          "niche": "16,16",
+          "open": "right",
+          "sight": 0
+        },
+        "pillars": 1,
+        "ruins": 3,
+        "ruinClusters": 1,
+        "banks": 1,
+        "cells": {
+          "pillar": [
+            "1,1:up+left"
+          ],
+          "ruin": [
+            "12,13:down"
+          ],
+          "bank": [
+            "3,1:right"
+          ]
+        },
+        "flowers": 190,
+        "flowerSpots": 60,
+        "flowerClusters": [
+          "4,15:bloom:up",
+          "25,10:bloom:right",
+          "19,3:mizubasho:left",
+          "21,13:mizubasho:up",
+          "19,7:mizubasho:left",
+          "5,9:snowdrop:right",
+          "24,3:snowdrop:up",
+          "1,10:bloom:right",
+          "3,3:mizubasho:up",
+          "17,14:snowdrop:left"
+        ],
+        "flora": {
+          "groups": [
+            {
+              "cell": "4,15",
+              "kind": "bloom",
+              "d": "up",
+              "n": 7,
+              "kinds": [
+                "bloom",
+                "snowdrop"
+              ],
+              "edge": "wall",
+              "at": [
+                3.98,
+                14.69
+              ]
+            },
+            {
+              "cell": "25,10",
+              "kind": "bloom",
+              "d": "right",
+              "n": 7,
+              "kinds": [
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                25.29,
+                9.93
+              ]
+            },
+            {
+              "cell": "19,3",
+              "kind": "mizubasho",
+              "d": "left",
+              "n": 4,
+              "kinds": [
+                "mizubasho",
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "water",
+              "at": [
+                18.67,
+                2.74
+              ]
+            },
+            {
+              "cell": "21,13",
+              "kind": "mizubasho",
+              "d": "up",
+              "n": 5,
+              "kinds": [
+                "mizubasho",
+                "bloom",
+                "snowdrop"
+              ],
+              "edge": "water",
+              "at": [
+                21.1,
+                12.64
+              ]
+            },
+            {
+              "cell": "19,7",
+              "kind": "mizubasho",
+              "d": "left",
+              "n": 7,
+              "kinds": [
+                "mizubasho",
+                "snowdrop"
+              ],
+              "edge": "water",
+              "at": [
+                18.65,
+                6.86
+              ]
+            },
+            {
+              "cell": "5,9",
+              "kind": "snowdrop",
+              "d": "right",
+              "n": 4,
+              "kinds": [
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                5.29,
+                9
+              ]
+            },
+            {
+              "cell": "24,3",
+              "kind": "snowdrop",
+              "d": "up",
+              "n": 3,
+              "kinds": [
+                "snowdrop",
+                "mizubasho"
+              ],
+              "edge": "wall",
+              "at": [
+                24.2,
+                2.68
+              ]
+            },
+            {
+              "cell": "1,10",
+              "kind": "bloom",
+              "d": "right",
+              "n": 3,
+              "kinds": [
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                1.3,
+                9.86
+              ]
+            },
+            {
+              "cell": "3,3",
+              "kind": "mizubasho",
+              "d": "up",
+              "n": 4,
+              "kinds": [
+                "mizubasho",
+                "snowdrop"
+              ],
+              "edge": "water",
+              "at": [
+                3.12,
+                2.6
+              ]
+            },
+            {
+              "cell": "17,14",
+              "kind": "snowdrop",
+              "d": "left",
+              "n": 6,
+              "kinds": [
+                "snowdrop",
+                "mizubasho",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                16.69,
+                14.06
+              ]
+            }
+          ],
+          "groupPlants": 50,
+          "meadow": {
+            "source": "feature",
+            "center": "11,10",
+            "cells": [
+              "9,9",
+              "13,9",
+              "9,10",
+              "10,10",
+              "11,10",
+              "12,10",
+              "13,10",
+              "10,11",
+              "11,11",
+              "12,11"
+            ],
+            "plants": 140,
+            "kinds": {
+              "snowdrop": 86,
+              "mizubasho": 9,
+              "bloom": 45
+            }
+          },
+          "byKind": {
+            "snowdrop": 108,
+            "mizubasho": 23,
+            "bloom": 59
+          },
+          "dress": 459,
+          "patches": 20,
+          "triangles": 281146,
+          "tierTris": {
+            "hi": 0,
+            "mid": 131102,
+            "lo": 43522,
+            "mMid": 137212,
+            "mLo": 74024
+          },
+          "lod": {
+            "snowdrop": {
+              "hi": 23436,
+              "midS": 2792,
+              "mid": 2792,
+              "lo": 927,
+              "mMid": 1112,
+              "mLo": 646
+            },
+            "mizubasho": {
+              "hi": 24254,
+              "midS": 2899,
+              "mid": 2899,
+              "lo": 962,
+              "mMid": 970,
+              "mLo": 432
+            },
+            "bloom": {
+              "hi": 17364,
+              "midS": 2078,
+              "mid": 2078,
+              "lo": 690,
+              "mMid": 730,
+              "mLo": 324
+            }
+          },
+          "drawMeshes": 113,
+          "chunks": 15,
+          "closeups": [
+            {
+              "kind": "snowdrop",
+              "x": 44.95,
+              "z": 40.6,
+              "vx": -0.847,
+              "vz": -0.532
+            },
+            {
+              "kind": "mizubasho",
+              "x": 44.44,
+              "z": 41.1,
+              "vx": -0.371,
+              "vz": -0.929
+            },
+            {
+              "kind": "bloom",
+              "x": 44.4,
+              "z": 39.41,
+              "vx": -0.567,
+              "vz": 0.824
+            }
+          ]
+        }
+      },
+      "extras": {
+        "snowdrop": true,
+        "mizubasho": true,
+        "bloom": true,
+        "ruinFallen": true,
+        "ruinSpire": true,
+        "ruinRubble": true,
+        "ruinParapet": true,
+        "bankL": true,
+        "bankR": true,
+        "shrine": true
+      },
+      "ownedDisposed": 454,
+      "setpieces": {
+        "stairs": [
+          {
+            "dir": "down",
+            "tx": 21,
+            "ty": 17,
+            "back": "right",
+            "tunnel": true,
+            "face": "left"
+          },
+          {
+            "dir": "up",
+            "tx": 1,
+            "ty": 19,
+            "back": "down",
+            "tunnel": true,
+            "face": "up"
+          }
+        ],
+        "backdrops": [
+          {
+            "name": "bridge",
+            "tx": 1,
+            "ty": 3,
+            "d": "left",
+            "cells": [
+              "1,3",
+              "1,2",
+              "1,4"
+            ],
+            "sight": 8,
+            "view": [
+              3,
+              3
+            ]
+          }
+        ],
+        "watergate": {
+          "x": 2,
+          "y": 20,
+          "w": 4,
+          "h": 2,
+          "front": [
+            4,
+            19
+          ],
+          "gateZ": 20.84
+        },
+        "bridge": {
+          "tx": 17,
+          "ty": 5,
+          "ry": 0,
+          "len": 3,
+          "banks": [
+            [
+              15.6,
+              4.34
+            ],
+            [
+              15.6,
+              5.66
+            ],
+            [
+              18.4,
+              4.34
+            ],
+            [
+              18.4,
+              5.66
+            ]
+          ],
+          "along": true,
+          "cells": [
+            [
+              16,
+              5
+            ],
+            [
+              17,
+              5
+            ],
+            [
+              18,
+              5
+            ]
+          ],
+          "ends": [
+            [
+              15,
+              5
+            ],
+            [
+              19,
+              5
+            ]
+          ]
+        },
+        "bridges": [
+          {
+            "tx": 17,
+            "ty": 5,
+            "ry": 0,
+            "len": 3,
+            "banks": [
+              [
+                15.6,
+                4.34
+              ],
+              [
+                15.6,
+                5.66
+              ],
+              [
+                18.4,
+                4.34
+              ],
+              [
+                18.4,
+                5.66
+              ]
+            ],
+            "along": true,
+            "cells": [
+              [
+                16,
+                5
+              ],
+              [
+                17,
+                5
+              ],
+              [
+                18,
+                5
+              ]
+            ],
+            "ends": [
+              [
+                15,
+                5
+              ],
+              [
+                19,
+                5
+              ]
+            ]
+          }
+        ],
+        "clusters": [
+          {
+            "mode": "corner",
+            "tx": 1,
+            "ty": 1,
+            "x": 0.81,
+            "z": 0.81,
+            "fwd": [
+              0.7071067811865475,
+              0.7071067811865475
+            ]
+          },
+          {
+            "mode": "point",
+            "tx": 19,
+            "ty": 2,
+            "x": 18.5,
+            "z": 1.5,
+            "fwd": null
+          },
+          {
+            "mode": "point",
+            "tx": 25,
+            "ty": 5,
+            "x": 24.5,
+            "z": 4.5,
+            "fwd": null
+          }
+        ]
+      }
+    },
+    {
+      "floor": 3,
+      "meshCount": 222,
+      "v8Decorations": {
+        "rocks": 12,
+        "crystals": 12,
+        "stalagmites": 12,
+        "ceilingIce": 12,
+        "erosion": 12
+      },
+      "omitted": [],
+      "drawGroups": [
+        "b2:open_ceiling_atrium:8",
+        "Water_Ripple_Ring_1:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_0:0",
+        "Waterfall_Mist:0",
+        "Water_Ripple_Ring_1:0",
+        "Waterfall_Mist:0",
+        "b2_fish:1",
+        "b2_fish:1",
+        "Water_Ripple_Ring_3:0",
+        "Waterfall_Mist:0",
+        "b2:flora:19",
+        "b2:atrium:5",
+        "b2:pillars:41",
+        "b2:extras:14",
+        "b2:floor:11",
+        "b2:ceiling:9",
+        "b2:ice_stalactites:7",
+        "b2:walls:9",
+        "b2:spires:18",
+        "b2:rock_seams:8",
+        "b2:frost_cornices:18",
+        "b2:frost_veins:16",
+        "b2:puddles:14",
+        "b2:v8_stalagmites:8",
+        "b2:v8_erosion:6",
+        "b2:streams:5",
+        "b2:rocks:12",
+        "b2:ceiling_details:7",
+        "b2:water:14",
+        "b2:water_foam:5",
+        "b2:shoreline:2",
+        "b2:frost_ledge:4",
+        "b2:water_tiles:20",
+        "b2:crystal_zone:12",
+        "b2:monuments:26",
+        "b2:backdrop:27",
+        "b2:bridge:10",
+        "b2:stairs:5"
+      ],
+      "ripples": 4,
+      "mists": 4,
+      "falls": [
+        {
+          "cell": "1,11",
+          "wall": "down"
+        },
+        {
+          "cell": "23,11",
+          "wall": "right"
+        },
+        {
+          "cell": "11,1",
+          "wall": "right"
+        },
+        {
+          "cell": "1,4",
+          "wall": "up"
+        }
+      ],
+      "bridge": null,
+      "atrium": {
+        "tx": 4,
+        "ty": 8
+      },
+      "monuments": [
+        {
+          "name": "altar",
+          "x": 16,
+          "y": 8,
+          "w": 3,
+          "h": 2
+        }
+      ],
+      "placed": [
+        {
+          "name": "pillarA",
+          "x": 16.62,
+          "z": 0.81,
+          "ry": 0.79
+        },
+        {
+          "name": "pillarA",
+          "x": 16.76,
+          "z": 0.57,
+          "ry": 0.79
+        },
+        {
+          "name": "pillarR",
+          "x": 17,
+          "z": 0.7,
+          "ry": 2.21
+        },
+        {
+          "name": "ruinFallen",
+          "x": 16.79,
+          "z": 0.89,
+          "ry": 1.02
+        },
+        {
+          "name": "ruinRubble",
+          "x": 16.9,
+          "z": 0.69,
+          "ry": 3.94
+        },
+        {
+          "name": "pillarA",
+          "x": 2.81,
+          "z": 15.38,
+          "ry": 3.93
+        },
+        {
+          "name": "pillarG",
+          "x": 2.57,
+          "z": 15.24,
+          "ry": 5.5
+        },
+        {
+          "name": "pillarR",
+          "x": 2.7,
+          "z": 15,
+          "ry": 3.94
+        },
+        {
+          "name": "ruinFallen",
+          "x": 2.89,
+          "z": 15.21,
+          "ry": 2.47
+        },
+        {
+          "name": "ruinRubble",
+          "x": 2.69,
+          "z": 15.1,
+          "ry": 0.91
+        },
+        {
+          "name": "ruinParapet",
+          "x": 5.89,
+          "z": 9.51,
+          "ry": 3.14
+        },
+        {
+          "name": "ruinRubble",
+          "x": 5.96,
+          "z": 6.39,
+          "ry": 3.26
+        },
+        {
+          "name": "ruinParapet",
+          "x": 10,
+          "z": 1.51,
+          "ry": 3.14
+        },
+        {
+          "name": "ruinRubble",
+          "x": 22,
+          "z": 11.61,
+          "ry": 3.53
+        },
+        {
+          "name": "bankL",
+          "x": 10.02,
+          "z": 11.54,
+          "ry": 0
+        },
+        {
+          "name": "altar",
+          "x": 17,
+          "z": 8.5,
+          "ry": 3.14
+        },
+        {
+          "name": "bridge",
+          "x": -2.38,
+          "z": 7,
+          "ry": -1.57
+        },
+        {
+          "name": "aqueduct",
+          "x": -2.38,
+          "z": 2.51,
+          "ry": -1.57
+        },
+        {
+          "name": "aqueduct",
+          "x": -2.38,
+          "z": 11.48,
+          "ry": -1.57
+        },
+        {
+          "name": "shoreline",
+          "x": -3.75,
+          "z": 4.75,
+          "ry": -1.57
+        },
+        {
+          "name": "shoreline",
+          "x": -3.75,
+          "z": 9.25,
+          "ry": 1.57
+        },
+        {
+          "name": "watergate",
+          "x": 15,
+          "z": 10.9,
+          "ry": 3.14
+        },
+        {
+          "name": "pillarA",
+          "x": 12.61,
+          "z": 13.3,
+          "ry": 3.14
+        },
+        {
+          "name": "pillarA",
+          "x": 12.61,
+          "z": 12.7,
+          "ry": 1.57
+        },
+        {
+          "name": "pillarR",
+          "x": 12.53,
+          "z": 13,
+          "ry": 3.25
+        },
+        {
+          "name": "ruinFallen",
+          "x": 12.9,
+          "z": 13.07,
+          "ry": 1.34
+        },
+        {
+          "name": "ruinRubble",
+          "x": 12.84,
+          "z": 12.85,
+          "ry": 4.65
+        },
+        {
+          "name": "pillarA",
+          "x": 12.29,
+          "z": 2.53,
+          "ry": 0.79
+        },
+        {
+          "name": "pillarA",
+          "x": 12.53,
+          "z": 2.29,
+          "ry": 3.93
+        },
+        {
+          "name": "ruinFallen",
+          "x": 12.54,
+          "z": 2.58,
+          "ry": 0.85
+        },
+        {
+          "name": "ruinRubble",
+          "x": 12.67,
+          "z": 2.47,
+          "ry": 5.15
+        },
+        {
+          "name": "pillarA",
+          "x": 5.29,
+          "z": 13.53,
+          "ry": 0.79
+        },
+        {
+          "name": "pillarA",
+          "x": 5.53,
+          "z": 13.29,
+          "ry": 2.36
+        },
+        {
+          "name": "ruinFallen",
+          "x": 5.54,
+          "z": 13.58,
+          "ry": 0.6
+        },
+        {
+          "name": "ruinRubble",
+          "x": 5.67,
+          "z": 13.47,
+          "ry": 5.5
+        },
+        {
+          "name": "b2sp_bridge_deck",
+          "x": 13,
+          "z": 3,
+          "ry": 0
+        },
+        {
+          "name": "b2sp_bridge_rail",
+          "x": 13,
+          "z": 3,
+          "ry": 0
+        },
+        {
+          "name": "bankL",
+          "x": 11.6,
+          "z": 2.34,
+          "ry": -0.03
+        },
+        {
+          "name": "bankR",
+          "x": 11.6,
+          "z": 3.66,
+          "ry": 3.29
+        },
+        {
+          "name": "bankL",
+          "x": 14.4,
+          "z": 2.34,
+          "ry": 0.15
+        },
+        {
+          "name": "bankR",
+          "x": 14.4,
+          "z": 3.66,
+          "ry": 3.01
+        }
+      ],
+      "crystalZones": [
+        {
+          "tx": 7,
+          "ty": 11,
+          "pal": "cyan",
+          "deadEnd": true,
+          "bx": 1,
+          "bz": 0
+        },
+        {
+          "tx": 23,
+          "ty": 7,
+          "pal": "violet",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": -1
+        },
+        {
+          "tx": 12,
+          "ty": 2,
+          "pal": "blue",
+          "deadEnd": false,
+          "bx": -1,
+          "bz": -1
+        }
+      ],
+      "streams": [
+        "3,1",
+        "11,1",
+        "1,2",
+        "20,5",
+        "11,6",
+        "6,7",
+        "6,9",
+        "19,9",
+        "19,10",
+        "6,11"
+      ],
+      "buildKey": "2-2@e0slaqk9v",
+      "random": true,
+      "layout": {
+        "altar": null,
+        "pillars": 2,
+        "ruins": 4,
+        "ruinClusters": 3,
+        "banks": 1,
+        "cells": {
+          "pillar": [
+            "17,1:up+left",
+            "3,15:down+left"
+          ],
+          "ruin": [
+            "6,9:down",
+            "10,1:up",
+            "22,11:up"
+          ],
+          "bank": [
+            "10,11:down"
+          ]
+        },
+        "flowers": 192,
+        "flowerSpots": 43,
+        "flowerClusters": [
+          "11,10:mizubasho:down",
+          "25,1:snowdrop:up",
+          "16,7:mizubasho:right",
+          "9,4:snowdrop:right",
+          "19,1:mizubasho:up",
+          "24,5:snowdrop:up",
+          "17,13:snowdrop:up",
+          "1,5:snowdrop:left",
+          "21,11:mizubasho:down"
+        ],
+        "flora": {
+          "groups": [
+            {
+              "cell": "11,10",
+              "kind": "mizubasho",
+              "d": "down",
+              "n": 5,
+              "kinds": [
+                "snowdrop",
+                "mizubasho"
+              ],
+              "edge": "water",
+              "at": [
+                10.76,
+                10.38
+              ]
+            },
+            {
+              "cell": "25,1",
+              "kind": "snowdrop",
+              "d": "up",
+              "n": 7,
+              "kinds": [
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                25.26,
+                0.71
+              ]
+            },
+            {
+              "cell": "16,7",
+              "kind": "mizubasho",
+              "d": "right",
+              "n": 7,
+              "kinds": [
+                "mizubasho",
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "water",
+              "at": [
+                16.39,
+                7.04
+              ]
+            },
+            {
+              "cell": "9,4",
+              "kind": "snowdrop",
+              "d": "right",
+              "n": 6,
+              "kinds": [
+                "mizubasho",
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                9.31,
+                3.95
+              ]
+            },
+            {
+              "cell": "19,1",
+              "kind": "mizubasho",
+              "d": "up",
+              "n": 7,
+              "kinds": [
+                "mizubasho",
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                18.92,
+                0.69
+              ]
+            },
+            {
+              "cell": "24,5",
+              "kind": "snowdrop",
+              "d": "up",
+              "n": 7,
+              "kinds": [
+                "snowdrop",
+                "bloom"
+              ],
+              "edge": "wall",
+              "at": [
+                23.93,
+                4.69
+              ]
+            },
+            {
+              "cell": "17,13",
+              "kind": "snowdrop",
+              "d": "up",
+              "n": 5,
+              "kinds": [
+                "bloom",
+                "snowdrop"
+              ],
+              "edge": "wall",
+              "at": [
+                17.05,
+                12.69
+              ]
+            },
+            {
+              "cell": "1,5",
+              "kind": "snowdrop",
+              "d": "left",
+              "n": 5,
+              "kinds": [
+                "snowdrop",
+                "mizubasho"
+              ],
+              "edge": "wall",
+              "at": [
+                0.69,
+                5.08
+              ]
+            },
+            {
+              "cell": "21,11",
+              "kind": "mizubasho",
+              "d": "down",
+              "n": 3,
+              "kinds": [
+                "snowdrop",
+                "bloom",
+                "mizubasho"
+              ],
+              "edge": "water",
+              "at": [
+                20.79,
+                11.32
+              ]
+            }
+          ],
+          "groupPlants": 52,
+          "meadow": {
+            "source": "feature",
+            "center": "6,14",
+            "cells": [
+              "3,13",
+              "4,13",
+              "8,13",
+              "9,13",
+              "3,14",
+              "4,14",
+              "7,14",
+              "8,14",
+              "9,14",
+              "4,15",
+              "5,15",
+              "6,15",
+              "7,15",
+              "8,15",
+              "9,15"
+            ],
+            "plants": 140,
+            "kinds": {
+              "snowdrop": 106,
+              "mizubasho": 3,
+              "bloom": 31
+            }
+          },
+          "byKind": {
+            "snowdrop": 136,
+            "mizubasho": 16,
+            "bloom": 40
+          },
+          "dress": 472,
+          "patches": 24,
+          "triangles": 298161,
+          "tierTris": {
+            "hi": 0,
+            "mid": 140149,
+            "lo": 46526,
+            "mMid": 143412,
+            "mLo": 79816
+          },
+          "lod": {
+            "snowdrop": {
+              "hi": 23436,
+              "midS": 2792,
+              "mid": 2792,
+              "lo": 927,
+              "mMid": 1112,
+              "mLo": 646
+            },
+            "mizubasho": {
+              "hi": 24254,
+              "midS": 2899,
+              "mid": 2899,
+              "lo": 962,
+              "mMid": 970,
+              "mLo": 432
+            },
+            "bloom": {
+              "hi": 17364,
+              "midS": 2078,
+              "mid": 2078,
+              "lo": 690,
+              "mMid": 730,
+              "mLo": 324
+            }
+          },
+          "drawMeshes": 124,
+          "chunks": 16,
+          "closeups": [
+            {
+              "kind": "snowdrop",
+              "x": 26.19,
+              "z": 56.53,
+              "vx": 0.96,
+              "vz": -0.28
+            },
+            {
+              "kind": "mizubasho",
+              "x": 27.46,
+              "z": 55.56,
+              "vx": 0.776,
+              "vz": 0.63
+            },
+            {
+              "kind": "bloom",
+              "x": 25.43,
+              "z": 58.06,
+              "vx": -0.594,
+              "vz": 0.804
+            }
+          ]
+        }
+      },
+      "extras": {
+        "snowdrop": true,
+        "mizubasho": true,
+        "bloom": true,
+        "ruinFallen": true,
+        "ruinSpire": true,
+        "ruinRubble": true,
+        "ruinParapet": true,
+        "bankL": true,
+        "bankR": true,
+        "shrine": true
+      },
+      "ownedDisposed": 1037,
+      "setpieces": {
+        "stairs": [
+          {
+            "dir": "up",
+            "tx": 2,
+            "ty": 2,
+            "back": "left",
+            "tunnel": false,
+            "face": "right"
+          }
+        ],
+        "backdrops": [
+          {
+            "name": "bridge",
+            "tx": 1,
+            "ty": 7,
+            "d": "left",
+            "cells": [
+              "1,7",
+              "1,6"
+            ],
+            "sight": 8,
+            "view": [
+              3,
+              7
+            ]
+          }
+        ],
+        "watergate": {
+          "maze": true,
+          "view": [
+            15,
+            9
+          ],
+          "facing": "down",
+          "gate": [
+            15,
+            11
+          ],
+          "x": 15,
+          "y": 9,
+          "w": 3,
+          "h": 2,
+          "front": [
+            15,
+            9
+          ],
+          "scale": 0.583,
+          "gateFrontCells": 1.32
+        },
+        "bridge": {
+          "tx": 13,
+          "ty": 3,
+          "ry": 0,
+          "len": 3,
+          "banks": [
+            [
+              11.6,
+              2.34
+            ],
+            [
+              11.6,
+              3.66
+            ],
+            [
+              14.4,
+              2.34
+            ],
+            [
+              14.4,
+              3.66
+            ]
+          ],
+          "along": true,
+          "cells": [
+            [
+              12,
+              3
+            ],
+            [
+              13,
+              3
+            ],
+            [
+              14,
+              3
+            ]
+          ],
+          "ends": [
+            [
+              11,
+              3
+            ],
+            [
+              15,
+              3
+            ]
+          ]
+        },
+        "bridges": [
+          {
+            "tx": 13,
+            "ty": 3,
+            "ry": 0,
+            "len": 3,
+            "banks": [
+              [
+                11.6,
+                2.34
+              ],
+              [
+                11.6,
+                3.66
+              ],
+              [
+                14.4,
+                2.34
+              ],
+              [
+                14.4,
+                3.66
+              ]
+            ],
+            "along": true,
+            "cells": [
+              [
+                12,
+                3
+              ],
+              [
+                13,
+                3
+              ],
+              [
+                14,
+                3
+              ]
+            ],
+            "ends": [
+              [
+                11,
+                3
+              ],
+              [
+                15,
+                3
+              ]
+            ]
+          }
+        ],
+        "clusters": [
+          {
+            "mode": "corner",
+            "tx": 17,
+            "ty": 1,
+            "x": 16.81,
+            "z": 0.81,
+            "fwd": [
+              0.7071067811865475,
+              0.7071067811865475
+            ]
+          },
+          {
+            "mode": "corner",
+            "tx": 3,
+            "ty": 15,
+            "x": 2.81,
+            "z": 15.19,
+            "fwd": [
+              0.7071067811865475,
+              -0.7071067811865475
+            ]
+          },
+          {
+            "mode": "deadend",
+            "tx": 13,
+            "ty": 13,
+            "x": 12.86,
+            "z": 13,
+            "fwd": [
+              1,
+              0
+            ]
+          },
+          {
+            "mode": "point",
+            "tx": 13,
+            "ty": 3,
+            "x": 12.5,
+            "z": 2.5,
+            "fwd": null
+          },
+          {
+            "mode": "point",
+            "tx": 6,
+            "ty": 14,
+            "x": 5.5,
+            "z": 13.5,
+            "fwd": null
+          }
+        ]
+      }
+    }
+  ],
+  "render": {
+    "canvas": true
+  },
+  "defaultMode": {
+    "area": 2,
+    "active3d": true
+  },
+  "errors": [],
+  "stats": {
+    "b2f1_01_enter": {
+      "calls": 194,
+      "triangles": 833387,
+      "geometries": 168,
+      "textures": 53,
+      "lights": 34
+    },
+    "b2f1_02_forward": {
+      "calls": 194,
+      "triangles": 833387,
+      "geometries": 168,
+      "textures": 53,
+      "lights": 34
+    },
+    "b2f1_obj_stairs_9_1": {
+      "calls": 64,
+      "triangles": 243003,
+      "geometries": 201,
+      "textures": 54,
+      "lights": 34
+    },
+    "b2f1_obj_chest_19_1": {
+      "calls": 95,
+      "triangles": 307086,
+      "geometries": 248,
+      "textures": 66,
+      "lights": 34
+    },
+    "b2f1_obj_chest_5_5": {
+      "calls": 74,
+      "triangles": 295973,
+      "geometries": 253,
+      "textures": 66,
+      "lights": 34
+    },
+    "b2f1_obj_gather_17_7": {
+      "calls": 236,
+      "triangles": 826889,
+      "geometries": 322,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f1_shallows": {
+      "calls": 196,
+      "triangles": 656890,
+      "geometries": 324,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f1_foe_area": {
+      "calls": 170,
+      "triangles": 653195,
+      "geometries": 326,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f1_waterfall_1": {
+      "calls": 108,
+      "triangles": 242341,
+      "geometries": 336,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f1_waterfall_2": {
+      "calls": 86,
+      "triangles": 298978,
+      "geometries": 336,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f1_crystals_1_blue": {
+      "calls": 53,
+      "triangles": 222658,
+      "geometries": 336,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f1_crystals_2_violet": {
+      "calls": 150,
+      "triangles": 752129,
+      "geometries": 336,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f1_crystals_3_white": {
+      "calls": 80,
+      "triangles": 292932,
+      "geometries": 336,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f1_atrium_from_south": {
+      "calls": 167,
+      "triangles": 770263,
+      "geometries": 342,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f1_atrium_center": {
+      "calls": 165,
+      "triangles": 750333,
+      "geometries": 342,
+      "textures": 67,
+      "lights": 34
+    },
+    "b2f2_01_enter": {
+      "calls": 183,
+      "triangles": 801165,
+      "geometries": 214,
+      "textures": 67,
+      "lights": 57
+    },
+    "b2f2_obj_door_a2-gate": {
+      "calls": 252,
+      "triangles": 1134336,
+      "geometries": 264,
+      "textures": 68,
+      "lights": 57
+    },
+    "b2f2_obj_cache_a2-cache": {
+      "calls": 187,
+      "triangles": 663741,
+      "geometries": 336,
+      "textures": 84,
+      "lights": 57
+    },
+    "b2f2_obj_sign_a2-plaque": {
+      "calls": 199,
+      "triangles": 694740,
+      "geometries": 336,
+      "textures": 84,
+      "lights": 57
+    },
+    "b2f2_obj_save_10_13": {
+      "calls": 157,
+      "triangles": 516092,
+      "geometries": 379,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_obj_switch_a2-stone-west": {
+      "calls": 106,
+      "triangles": 330502,
+      "geometries": 379,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_obj_switch_a2-stone-east": {
+      "calls": 103,
+      "triangles": 268269,
+      "geometries": 404,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_door_after_switches": {
+      "calls": 248,
+      "triangles": 1134296,
+      "geometries": 404,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_waterfall_1": {
+      "calls": 186,
+      "triangles": 617837,
+      "geometries": 415,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_waterfall_2": {
+      "calls": 215,
+      "triangles": 789960,
+      "geometries": 416,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_crystals_1_cyan": {
+      "calls": 62,
+      "triangles": 189018,
+      "geometries": 439,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_crystals_2_cyan": {
+      "calls": 163,
+      "triangles": 842712,
+      "geometries": 439,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_crystals_3_violet": {
+      "calls": 152,
+      "triangles": 908178,
+      "geometries": 439,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_atrium_from_south": {
+      "calls": 81,
+      "triangles": 267985,
+      "geometries": 439,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f2_atrium_center": {
+      "calls": 66,
+      "triangles": 243738,
+      "geometries": 439,
+      "textures": 100,
+      "lights": 57
+    },
+    "b2f3_01_enter": {
+      "calls": 39,
+      "triangles": 111168,
+      "geometries": 111,
+      "textures": 99,
+      "lights": 57
+    },
+    "b2f3_obj_npc_merchant": {
+      "calls": 95,
+      "triangles": 261500,
+      "geometries": 180,
+      "textures": 105,
+      "lights": 57
+    },
+    "b2f3_obj_npc_watchman": {
+      "calls": 82,
+      "triangles": 176096,
+      "geometries": 185,
+      "textures": 105,
+      "lights": 57
+    },
+    "b2f3_obj_sign_1_13": {
+      "calls": 130,
+      "triangles": 559828,
+      "geometries": 239,
+      "textures": 114,
+      "lights": 57
+    },
+    "b2f3_obj_save_24_15": {
+      "calls": 383,
+      "triangles": 1234728,
+      "geometries": 342,
+      "textures": 114,
+      "lights": 57
+    },
+    "b2f3_obj_gate_25_16": {
+      "calls": 44,
+      "triangles": 28279,
+      "geometries": 352,
+      "textures": 114,
+      "lights": 57
+    },
+    "b2f3_open_water": {
+      "calls": 201,
+      "triangles": 592649,
+      "geometries": 394,
+      "textures": 115,
+      "lights": 57
+    },
+    "b2f3_waterfall_1": {
+      "calls": 93,
+      "triangles": 209603,
+      "geometries": 414,
+      "textures": 115,
+      "lights": 57
+    },
+    "b2f3_waterfall_2": {
+      "calls": 66,
+      "triangles": 150088,
+      "geometries": 415,
+      "textures": 115,
+      "lights": 57
+    },
+    "b2f3_monument_altar_n": {
+      "calls": 428,
+      "triangles": 1156286,
+      "geometries": 443,
+      "textures": 115,
+      "lights": 57
+    },
+    "b2f3_crystals_1_cyan": {
+      "calls": 418,
+      "triangles": 1262508,
+      "geometries": 447,
+      "textures": 115,
+      "lights": 57
+    },
+    "b2f3_crystals_2_violet": {
+      "calls": 414,
+      "triangles": 1166116,
+      "geometries": 447,
+      "textures": 115,
+      "lights": 57
+    },
+    "b2f3_crystals_3_blue": {
+      "calls": 325,
+      "triangles": 1046920,
+      "geometries": 458,
+      "textures": 115,
+      "lights": 57
+    },
+    "b2f3_atrium_from_south": {
+      "calls": 272,
+      "triangles": 1079152,
+      "geometries": 458,
+      "textures": 115,
+      "lights": 57
+    },
+    "b2f3_atrium_center": {
+      "calls": 246,
+      "triangles": 886780,
+      "geometries": 458,
+      "textures": 115,
+      "lights": 57
+    },
+    "b1_after_b2": {
+      "calls": 1116,
+      "triangles": 3361628,
+      "geometries": 159,
+      "textures": 257,
+      "lights": 919
+    }
+  },
+  "buildMs": {
+    "2-2F": 3386,
+    "2-3F": 2277
+  },
+  "missing": [],
+  "log": [
+    {
+      "label": "enter",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "fwd2",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "turnR",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "right",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "bump-or-step",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "at-stairs-",
+      "tile": {
+        "tx": 9,
+        "ty": 2
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "at-chest-",
+      "tile": {
+        "tx": 18,
+        "ty": 1
+      },
+      "dir": "right",
+      "active": true,
+      "near": "chest:2-0:19:1",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "at-chest-",
+      "tile": {
+        "tx": 6,
+        "ty": 5
+      },
+      "dir": "left",
+      "active": true,
+      "near": "chest:2-0:5:5",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "at-gather-",
+      "tile": {
+        "tx": 17,
+        "ty": 6
+      },
+      "dir": "down",
+      "active": true,
+      "near": "gather:2-0:17:7",
+      "floor": 0,
+      "area": 2
+    },
+    {
+      "label": "floor2",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-door-a2-gate",
+      "tile": {
+        "tx": 7,
+        "ty": 3
+      },
+      "dir": "left",
+      "active": true,
+      "near": "",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-cache-a2-cache",
+      "tile": {
+        "tx": 8,
+        "ty": 3
+      },
+      "dir": "right",
+      "active": true,
+      "near": "door:2:a2-gate",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-sign-a2-plaque",
+      "tile": {
+        "tx": 5,
+        "ty": 5
+      },
+      "dir": "up",
+      "active": true,
+      "near": "cache:2:a2-cache",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-save-",
+      "tile": {
+        "tx": 10,
+        "ty": 12
+      },
+      "dir": "down",
+      "active": true,
+      "near": "npc:2:a2-plaque",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-switch-a2-stone-west",
+      "tile": {
+        "tx": 6,
+        "ty": 15
+      },
+      "dir": "down",
+      "active": true,
+      "near": "switch:2:a2-stone-west",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "at-switch-a2-stone-east",
+      "tile": {
+        "tx": 22,
+        "ty": 15
+      },
+      "dir": "down",
+      "active": true,
+      "near": "switch:2:a2-stone-east",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "door-after-switches",
+      "tile": {
+        "tx": 7,
+        "ty": 3
+      },
+      "dir": "left",
+      "active": true,
+      "near": "",
+      "floor": 1,
+      "area": 2
+    },
+    {
+      "label": "floor3",
+      "tile": {
+        "tx": 3,
+        "ty": 1
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-npc-merchant",
+      "tile": {
+        "tx": 19,
+        "ty": 5
+      },
+      "dir": "up",
+      "active": true,
+      "near": "npc:2:merchant",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-npc-watchman",
+      "tile": {
+        "tx": 23,
+        "ty": 5
+      },
+      "dir": "up",
+      "active": true,
+      "near": "npc:2:watchman",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-sign-",
+      "tile": {
+        "tx": 2,
+        "ty": 13
+      },
+      "dir": "left",
+      "active": true,
+      "near": "sign:2-2:1:13",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-save-",
+      "tile": {
+        "tx": 24,
+        "ty": 16
+      },
+      "dir": "up",
+      "active": true,
+      "near": "sign:2-2:1:13",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "at-gate-",
+      "tile": {
+        "tx": 25,
+        "ty": 15
+      },
+      "dir": "down",
+      "active": true,
+      "near": "save:2-2:24:15",
+      "floor": 2,
+      "area": 2
+    },
+    {
+      "label": "back-to-b1",
+      "tile": {
+        "tx": 1,
+        "ty": 19
+      },
+      "dir": "up",
+      "active": true,
+      "near": "",
+      "floor": 0,
+      "area": 1
+    }
+  ]
+}
