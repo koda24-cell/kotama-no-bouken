@@ -6,7 +6,7 @@ V01: [run 44517152392](https://github.com/koda24-cell/kotama-no-bouken/actions/r
 
 V02: [run 44517944270](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44517944270). Reworked lighter roughness, softer rust coverage and lighting of underside, 4 actual Cycles PNG and GLB/Blend verified, artifact 14527055607 physically downloaded; all 7 manifest SHA/size checks passed. Mesh 1536 faces, GLB 1 mesh + 1 embedded original PBR image. Images show darker, more subdued metal and clearly visible rear, but side still white from high light exposure and manufacturing dents not yet detailed. Artistic status NOT_APPROVED. ClamAV bootstrap failed again because freshclam DB directory not writable for its own UID, rather than infected files.
 
-Separate scan-only job [44518375382](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44518375382) is configured to use writable signature directory and re-check exact V02 artifact. Actual results pending at the time of this note: never claim a virus scan passed until job outcome confirms it.
+Separate scan-only job [44518375382](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44518375382) is configured to use writable signature directory and re-check exact V02 artifact. Actual result: run 44518375382 completed/success. ClamAV 1.5.4, daily/main/bytecode databases freshly downloaded and tested; 3,628,279 signatures, eight V02 artifact files scanned, 0 infected. This is a successful scan, not a guarantee of absolute safety.
 
 Pinterest candidates and GPT/Claude handoff: https://github.com/koda24-cell/pinterest-reference-library/pull/33. Full-size images uninspected, none used as PBR or saved.
 
