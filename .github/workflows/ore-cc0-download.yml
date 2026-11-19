@@ -269,10 +269,13 @@ jobs:
             }
  ore-cc0-review/clamav-scan.log
           echo "CLAMAV_SCAN_PASSED=true" >> "$GITHUB_ENV"
+      - name: Install Blender for isolated no-autoexec inspection
+        run: |
+          sudo apt-get install -y blender
       - name: Reject embedded Python execution in untrusted Blender files
         run: |
           set -euo pipefail
-          python3 tools/ore/check_blend_python_safety.py ore-cc0-review
+          blender -b --disable-autoexec --python tools/ore/check_blend_python_safety.py -- ore-cc0-review
           echo "BLEND_PYTHON_SAFETY_PASSED=true" >> "$GITHUB_ENV"
       - name: Verify SHA256 and file signatures
         run: |
