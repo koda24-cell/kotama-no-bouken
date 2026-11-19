@@ -304,10 +304,10 @@
           2,
           "down"
         ],
-        "calls": 191,
-        "triangles": 724432,
-        "geometries": 301,
-        "textures": 76,
+        "calls": 179,
+        "triangles": 722076,
+        "geometries": 279,
+        "textures": 77,
         "lights": 60
       },
       "b2f2_W_side_across_1": {
@@ -316,10 +316,10 @@
           5,
           "left"
         ],
-        "calls": 236,
-        "triangles": 797830,
-        "geometries": 374,
-        "textures": 96,
+        "calls": 223,
+        "triangles": 795382,
+        "geometries": 349,
+        "textures": 97,
         "lights": 60
       },
       "b2f2_W_side_back_1": {
@@ -328,10 +328,10 @@
           6,
           "up"
         ],
-        "calls": 99,
-        "triangles": 232286,
-        "geometries": 379,
-        "textures": 96,
+        "calls": 94,
+        "triangles": 231506,
+        "geometries": 354,
+        "textures": 97,
         "lights": 60
       },
       "b2f2_W_side_along_2": {
@@ -340,10 +340,10 @@
           11,
           "right"
         ],
-        "calls": 181,
-        "triangles": 405033,
-        "geometries": 414,
-        "textures": 96,
+        "calls": 170,
+        "triangles": 403449,
+        "geometries": 385,
+        "textures": 97,
         "lights": 60
       },
       "b2f2_W_side_across_2": {
@@ -352,10 +352,10 @@
           11,
           "down"
         ],
-        "calls": 176,
-        "triangles": 484921,
-        "geometries": 425,
-        "textures": 96,
+        "calls": 167,
+        "triangles": 482941,
+        "geometries": 396,
+        "textures": 97,
         "lights": 60
       },
       "b2f2_W_vista_pool_1": {
@@ -364,10 +364,10 @@
           13,
           "up"
         ],
-        "calls": 537,
-        "triangles": 2430595,
-        "geometries": 462,
-        "textures": 97,
+        "calls": 501,
+        "triangles": 2423425,
+        "geometries": 433,
+        "textures": 98,
         "lights": 60
       },
       "b2f2_W_vista_pool_edge_1": {
@@ -376,10 +376,10 @@
           10,
           "up"
         ],
-        "calls": 450,
-        "triangles": 2148286,
-        "geometries": 480,
-        "textures": 97,
+        "calls": 426,
+        "triangles": 2143786,
+        "geometries": 451,
+        "textures": 98,
         "lights": 60
       },
       "b2f2_W_vista_pool_corner_1": {
@@ -388,10 +388,10 @@
           13,
           "up"
         ],
-        "calls": 508,
-        "triangles": 2302787,
-        "geometries": 480,
-        "textures": 97,
+        "calls": 476,
+        "triangles": 2296577,
+        "geometries": 451,
+        "textures": 98,
         "lights": 60
       },
       "b2f2_W_bridge_channel_1": {
@@ -400,10 +400,10 @@
           5,
           "up"
         ],
-        "calls": 122,
-        "triangles": 413119,
-        "geometries": 480,
-        "textures": 97,
+        "calls": 117,
+        "triangles": 412157,
+        "geometries": 451,
+        "textures": 98,
         "lights": 60
       },
       "b2f2_W_bridge_channel_end_1": {
@@ -412,10 +412,10 @@
           5,
           "right"
         ],
-        "calls": 221,
-        "triangles": 663523,
-        "geometries": 480,
-        "textures": 97,
+        "calls": 208,
+        "triangles": 661407,
+        "geometries": 451,
+        "textures": 98,
         "lights": 60
       },
       "b2f2_W_puddle_1": {
@@ -424,10 +424,10 @@
           1,
           "right"
         ],
-        "calls": 181,
-        "triangles": 618416,
-        "geometries": 484,
-        "textures": 103,
+        "calls": 173,
+        "triangles": 617120,
+        "geometries": 455,
+        "textures": 104,
         "lights": 60
       },
       "b2f2_W_puddle_2": {
@@ -436,10 +436,10 @@
           3,
           "up"
         ],
-        "calls": 153,
-        "triangles": 491476,
-        "geometries": 484,
-        "textures": 103,
+        "calls": 145,
+        "triangles": 490716,
+        "geometries": 455,
+        "textures": 104,
         "lights": 60
       },
       "b2f2_W_floor_corridor_1": {
@@ -448,10 +448,10 @@
           1,
           "right"
         ],
-        "calls": 195,
-        "triangles": 737343,
-        "geometries": 484,
-        "textures": 103,
+        "calls": 182,
+        "triangles": 735117,
+        "geometries": 455,
+        "textures": 104,
         "lights": 60
       },
       "b2f2_W_floor_corridor_2": {
@@ -460,10 +460,10 @@
           1,
           "right"
         ],
-        "calls": 84,
-        "triangles": 188644,
-        "geometries": 484,
-        "textures": 103,
+        "calls": 79,
+        "triangles": 187864,
+        "geometries": 455,
+        "textures": 104,
         "lights": 60
       },
       "b2f3_W_side_along_1": {
@@ -472,10 +472,10 @@
           2,
           "down"
         ],
-        "calls": 507,
-        "triangles": 1817266,
-        "geometries": 331,
-        "textures": 112,
+        "calls": 477,
+        "triangles": 1813236,
+        "geometries": 316,
+        "textures": 113,
         "lights": 60
       },
       "b2f3_W_side_across_1": {
@@ -484,10 +484,10 @@
           5,
           "right"
         ],
-        "calls": 488,
-        "triangles": 1590120,
-        "geometries": 411,
-        "textures": 112,
+        "calls": 458,
+        "triangles": 1585310,
+        "geometries": 392,
+        "textures": 113,
         "lights": 60
       },
       "b2f3_W_side_along_2": {
@@ -496,10 +496,10 @@
           11,
           "right"
         ],
-        "calls": 142,
-        "triangles": 297263,
-        "geometries": 466,
-        "textures": 112,
+        "calls": 136,
+        "triangles": 296319,
+        "geometries": 443,
+        "textures": 113,
         "lights": 60
       },
       "b2f3_W_side_across_2": {
@@ -508,10 +508,10 @@
           11,
           "down"
         ],
-        "calls": 108,
-        "triangles": 241261,
-        "geometries": 466,
-        "textures": 112,
+        "calls": 104,
+        "triangles": 240691,
+        "geometries": 443,
+        "textures": 113,
         "lights": 60
       },
       "b2f3_W_vista_pool_1": {
@@ -520,10 +520,10 @@
           15,
           "up"
         ],
-        "calls": 506,
-        "triangles": 2283952,
-        "geometries": 475,
-        "textures": 118,
+        "calls": 476,
+        "triangles": 2279300,
+        "geometries": 453,
+        "textures": 119,
         "lights": 60
       },
       "b2f3_W_vista_pool_edge_1": {
@@ -532,10 +532,10 @@
           14,
           "up"
         ],
-        "calls": 487,
-        "triangles": 2092014,
-        "geometries": 479,
-        "textures": 118,
+        "calls": 459,
+        "triangles": 2095764,
+        "geometries": 457,
+        "textures": 119,
         "lights": 60
       },
       "b2f3_W_vista_pool_corner_1": {
@@ -544,10 +544,10 @@
           15,
           "up"
         ],
-        "calls": 451,
-        "triangles": 1725914,
-        "geometries": 489,
-        "textures": 118,
+        "calls": 423,
+        "triangles": 1721824,
+        "geometries": 467,
+        "textures": 119,
         "lights": 60
       },
       "b2f3_W_bridge_channel_1": {
@@ -556,10 +556,10 @@
           3,
           "up"
         ],
-        "calls": 122,
-        "triangles": 363913,
-        "geometries": 489,
-        "textures": 118,
+        "calls": 119,
+        "triangles": 363941,
+        "geometries": 467,
+        "textures": 119,
         "lights": 60
       },
       "b2f3_W_bridge_channel_end_1": {
@@ -568,10 +568,10 @@
           3,
           "right"
         ],
-        "calls": 403,
-        "triangles": 1274197,
-        "geometries": 491,
-        "textures": 118,
+        "calls": 377,
+        "triangles": 1270967,
+        "geometries": 467,
+        "textures": 119,
         "lights": 60
       },
       "b2f3_W_puddle_1": {
@@ -580,10 +580,10 @@
           1,
           "left"
         ],
-        "calls": 220,
-        "triangles": 719734,
-        "geometries": 491,
-        "textures": 118,
+        "calls": 211,
+        "triangles": 718770,
+        "geometries": 467,
+        "textures": 119,
         "lights": 60
       },
       "b2f3_W_puddle_2": {
@@ -592,10 +592,10 @@
           6,
           "down"
         ],
-        "calls": 476,
-        "triangles": 1268268,
-        "geometries": 491,
-        "textures": 118,
+        "calls": 448,
+        "triangles": 1262908,
+        "geometries": 467,
+        "textures": 119,
         "lights": 60
       },
       "b2f3_W_floor_corridor_1": {
@@ -604,10 +604,10 @@
           1,
           "right"
         ],
-        "calls": 89,
-        "triangles": 213231,
-        "geometries": 491,
-        "textures": 118,
+        "calls": 85,
+        "triangles": 216221,
+        "geometries": 467,
+        "textures": 119,
         "lights": 60
       },
       "b2f3_W_floor_corridor_2": {
@@ -616,10 +616,10 @@
           3,
           "right"
         ],
-        "calls": 426,
-        "triangles": 1376834,
-        "geometries": 491,
-        "textures": 118,
+        "calls": 400,
+        "triangles": 1372824,
+        "geometries": 467,
+        "textures": 119,
         "lights": 60
       },
       "b2f3_W_watergate_basin_1": {
@@ -628,16 +628,16 @@
           9,
           "down"
         ],
-        "calls": 160,
-        "triangles": 446914,
-        "geometries": 491,
-        "textures": 118,
+        "calls": 153,
+        "triangles": 445376,
+        "geometries": 467,
+        "textures": 119,
         "lights": 60
       }
     },
-    "maxTriangles": 2430595,
-    "avgTriangles": 1012485,
-    "maxCalls": 537
+    "maxTriangles": 2423425,
+    "avgTriangles": 1010249,
+    "maxCalls": 501
   },
   "errors": [],
   "missing": []
