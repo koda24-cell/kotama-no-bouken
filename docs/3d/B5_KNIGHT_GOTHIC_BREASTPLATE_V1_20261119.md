@@ -26,3 +26,11 @@
 - Actions: `.github/workflows/b5-gothic-breastplate-v1.yml`
 - 実行 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44463864093（初版の完了は別途確認）
 - 次の美術検査：正面の胸部半径と中央稜線、側面の厚み、上端のU字襟、脇の切れ込み、下端の腰方向の絞り、金属パーツが浮いて見えないこと。
+
+## 実行・V2修正（検証中）
+- V1初回 [44463864093](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44463864093) は OpenImageDenoiser が非対応のため実描画前に失敗。ソースでデノイズ無効化。
+- V1再実行 [44464024978](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44464024978) **成功**。Artifact `14501198010`、GLB/Blendと6方向PNG。マニフェスト8件SHA-256をローカルで再計算・8/8一致。生成ファイルClamAV 10件/感染0。美術面は不合格。
+- V1美術不合格理由: 正面の鍛造稜線が薄く、側面の裏側に線が露出する。実表面のyと一致せず食い込んだ別曲線だった。金属反射が白飛び傾向。
+- V2ソース `tools/b5-knights/build_gothic_breastplate_v2.py` では、各曲線のx,z点から隣接リング間の正面yを線形補間し、さらに約4.5mm外側へずらして細いリブを固定。明暗・粗さ・照明も調整。旧V1保存。
+- V2実行 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44464448676 はまだ実結果未確認。
+- 次のQA: frontの曲線が実際に見える、sideで裏面に浮いた黒線がない、薄板としての板金厚みとネック縁を維持すること。
