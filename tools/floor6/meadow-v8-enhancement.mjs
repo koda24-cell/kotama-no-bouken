@@ -55,9 +55,9 @@ float kotamaField=0.985+0.025*sin(vKotamaWorldXZ.x*3.7+vKotamaWorldXZ.y*1.9);
 diffuseColor.rgb*=mix(vec3(1.0),kotamaShade*kotamaCluster*kotamaField,uKotamaEnhance);`);
         shader.fragmentShader=shader.fragmentShader.replace('#include <lights_fragment_end>',
           `#include <lights_fragment_end>
-// Very subtle backlit leaf approximation; no alpha transparency or additive glow.
+// Vertex-color-weighted diffuse fill restores brightness without white emission.\n// Small extra backlight approximates transmitted sunlight; no alpha glow.
 float kotamaBack=pow(max(dot(-normalize(vKotamaWorldNormal),normalize(uKotamaSunWorldDir)),0.0),2.0);
-reflectedLight.indirectDiffuse+=diffuseColor.rgb*(0.075*kotamaBack*uKotamaEnhance);`);
+reflectedLight.indirectDiffuse+=diffuseColor.rgb*((0.30+0.075*kotamaBack)*uKotamaEnhance);`);
       };
       mat.customProgramCacheKey=()=> (previousKey?previousKey():'v7')+'|kotama-meadow-v8-look';
       if('roughness' in mat)mat.roughness=Math.max(mat.roughness??0,0.88);
