@@ -11,17 +11,21 @@ const BASE = './assets/models/floor4/props/';
 // side: how far from tile centre towards the wall (m). human: 0 = dragon trace, 1 = human trace.
 export const B4_PROP_REGISTRY = {
   b4p_brazier_cage: { human: 1, weight: 1.0, side: 1.25, scale: [0.95, 1.08], light: { y: 0.6, color: 0xff7a2e, intensity: 1.6, range: 4.5 } },
+  // hung from a nail in the rock at head height
+  b4p_mine_lantern: { human: 1, weight: 1.3, side: 1.82, y: 1.55, scale: [0.95, 1.05], light: { y: 0.2, color: 0xffb070, intensity: 0.9, range: 3.2 } },
 };
 
 // Approved GPT models reused as-is (docs/3d/B4_GPT_MODEL_INVENTORY.md).
 export const B4_GPT_MODELS = {
-  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7 },
+  // V32's packed metal/roughness images are a magenta placeholder (G=0 -> mirror-like roughness 0 in three.js).
+  // Ignore those maps and use the material factors with a matte floor instead (reported to GPT in the handoff).
+  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82 },
 };
 
 const cache = new Map();
 const loader = new GLTFLoader();
 // Load once; bake node transforms into geometry and merge per material so a 192-mesh model costs one draw per material.
-function loadModel(key, url) {
+function loadModel(key, url, opts = {}) {
   if (!cache.has(key)) cache.set(key, loader.loadAsync(url).then(gltf => {
     gltf.scene.updateMatrixWorld(true);
     const byMat = new Map();
@@ -33,6 +37,12 @@ function loadModel(key, url) {
     });
     const meshes = [];
     for (const [material, geos] of byMat) {
+      if (opts.fixRoughness) {
+        material.roughnessMap = null; material.metalnessMap = null;
+        material.roughness = Math.max(material.roughness ?? 1, opts.fixRoughness);
+        material.metalness = Math.min(material.metalness ?? 0, 0.55);
+        material.needsUpdate = true;
+      }
       if (material.emissiveMap) material.emissiveIntensity = Math.max(material.emissiveIntensity, 2.2);
       material.userData.b4PropCached = true;
       let merged = null;
@@ -129,9 +139,10 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       const x = c.tx * CELL + c.dx * R.side, z = c.ty * CELL + c.dz * R.side;
       const yaw = Math.atan2(-c.dx, -c.dz) + (hash(c.tx, c.ty, 814) - 0.5) * 0.9;
       const s = R.scale[0] + (R.scale[1] - R.scale[0]) * hash(c.tx, c.ty, 815);
-      tmp.position.set(x, 0, z); tmp.rotation.set(0, yaw, 0); tmp.scale.setScalar(s); tmp.updateMatrix();
+      const y0 = (R.y || 0) * (0.95 + 0.1 * hash(c.tx, c.ty, 816));
+      tmp.position.set(x, y0, z); tmp.rotation.set(0, yaw, 0); tmp.scale.setScalar(s); tmp.updateMatrix();
       if (R.light && lights.length < 30) {
-        const L = { world: new THREE.Vector3(x, R.light.y * s, z), color: R.light.color, intensity: R.light.intensity, range: R.light.range, off: false };
+        const L = { world: new THREE.Vector3(x, y0 + R.light.y * s, z), color: R.light.color, intensity: R.light.intensity, range: R.light.range, off: false };
         lights.push(L); gLights.push(L);
       }
       return tmp.matrix.clone();
@@ -142,7 +153,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   }
   // ---- mine recesses: the user-approved GPT minecart V32 replaces the procedural cart ----
   if (mines.length) {
-    const cart = await loadModel('minecart_v32', B4_GPT_MODELS.minecart_v32.url);
+    const cart = await loadModel('minecart_v32', B4_GPT_MODELS.minecart_v32.url, B4_GPT_MODELS.minecart_v32);
     if (isStale()) return { group, dispose() { owned.forEach(i => i.dispose()); }, info: () => info };
     if (cart) {
       const size = cart.box.getSize(new THREE.Vector3()), centre = cart.box.getCenter(new THREE.Vector3());
@@ -162,6 +173,17 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
         return slot.multiply(local).multiply(recentre);
       });
       instance(group, owned, cart, mats, 'b4:gpt-minecart-v32');
+      // broken timber set against the back of each recess (mine team #3)
+      const timber = await loadProp('b4p_timber_set_broken');
+      if (timber && !isStale()) {
+        const tm = mines.map(site => new THREE.Matrix4().compose(
+          new THREE.Vector3((site.tx + site.dx / 2) * CELL, 0, (site.ty + site.dz / 2) * CELL),
+          new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.atan2(-site.dx, -site.dz), 0)), new THREE.Vector3(1, 1, 1))
+          .multiply(new THREE.Matrix4().compose(new THREE.Vector3((hash(site.tx, site.ty, 821) - 0.5) * 0.4, 0, -3.2),
+            new THREE.Quaternion().setFromEuler(new THREE.Euler(0, (hash(site.tx, site.ty, 822) - 0.5) * 0.25, 0)), new THREE.Vector3(1.2, 1.2, 1.2))));
+        instance(group, owned, timber, tm, 'b4:prop:b4p_timber_set_broken');
+        info.byId.b4p_timber_set_broken = tm.length;
+      }
       const proc = root.getObjectByName('b4:abandoned-mine');
       if (proc) proc.visible = false;                         // procedural stand-in no longer needed
       info.mineCarts = mats.length;
