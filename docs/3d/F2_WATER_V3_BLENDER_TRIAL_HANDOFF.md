@@ -58,3 +58,10 @@
 - **V4試験変更**：水面に透過Mix Shaderと細かなNoise→Bumpを組み合わせる。暗い水色を薄い青緑へ、水面の材質透過重みを下げ川底を見せる。石の材質を4色化して大岩の数とサイズを減らす。泡の数・サイズを小さく。照明の強度を下げ拡散する。薄い霧と川底の既存形状を保持。Blendファイルを `f2-water-v4.blend` へ分離。
 - [V4 Actions Run #44439733411](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44439733411) は新コードpushにより起動確認。**本記載時点でin_progress**、結果・実PNGは未確認。ClamAV fail-closedを維持。
 - ワークフロー全体の正常終了は旧コード修正run [#44438855211](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44438855211) でsuccess確認。PRコメントの権限403はジョブSummaryへ代替し、失敗としてカウントしない設計。V4実レンダ品質は別途確認すること。
+
+ 
+## V5 水面画像を貼りつつ透過を保つ試験（2026-11-19）
+- ユーザー指定順：①水の色を薄くする、②水面テクスチャ追加、③Bump、④Roughness/反射ムラ、⑤Fresnel、⑥3方向実レンダ確認。中間承認を求めない。
+- Blenderスクリプト内で画像 `f2-water-surface-v5.png`（256²・タイル可能な独自の複合周期波高マスク）を**外部ダウンロードせず生成**。これを水面テクスチャ画像として使用し、法線・ラフネスを変える。色画像のベタ貼りはせず、ほぼ無色の透過BSDFに画像駆動の微弱なGlossyとFresnelを加える。濃いゼラチン風の着色Principled透過材質は水面から外す。河床CC0のClamAVゲート・ハッシュ一致確認は継続。水のメッシュと岩は保持。
+- 実行対象：`tools/f2-water/render_water.py`、 `.github/workflows/f2-safe-water-render.yml`。GLBゲーム統合・正式素材保存は未実施。V5 `.blend` は画像をパックして単体レビュー可能にする。
+- [V5確認対象Run #44442337728](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44442337728)（ワークフローも更新済み版）、[先行V5 Run #44442319272](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44442319272)。この記録時点で両方とも成功・実PNGは未確認。実行後ログ・Artifactsを検証すること。
