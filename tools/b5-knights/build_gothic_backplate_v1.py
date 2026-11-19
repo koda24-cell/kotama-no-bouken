@@ -58,7 +58,7 @@ def mesh(name,verts,faces,material=steel):
   poly.use_smooth=True
   for loop in poly.loop_indices:
    v=me.vertices[me.loops[loop].vertex_index].co
-   uv.data[loop].uv=((v.x+.25)/.5,(v.z-.59)/.33)
+   uv.data[loop].uv=((v.x+.25)/.5,(v.z-.85)/.65)
  so=ob.modifiers.new("1.8mm forged sheet","SOLIDIFY");so.thickness=.0018;so.offset=-1
  be=ob.modifiers.new("softened punched metal edge","BEVEL");be.width=.00065;be.segments=2
  ob.modifiers.new("surface normal","WEIGHTED_NORMAL")
@@ -121,7 +121,7 @@ rows=(len(profiles)-1)*5+1
 for j in range(rows-1):
  for i in range(n):
   a=j*(n+1)+i
-  faces.append((a,a+1,a+n+2,a+n+1))
+  faces.append((a+n+1,a+n+2,a+1,a))
 assert len(verts)==rows*(n+1)
 assert .85<min(v[2] for v in verts)<.92
 assert 1.43<max(v[2] for v in verts)<1.50
