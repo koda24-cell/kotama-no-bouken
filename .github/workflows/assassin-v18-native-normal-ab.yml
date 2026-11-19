@@ -1,0 +1,50 @@
+name: Assassin V18 Original Face Body Local Normal Transfer A-B
+on:
+  push:
+    branches: [feature/gpt-assassin-v18-source-normal-ab-20261119]
+    paths:
+      - 'tools/character-mesh-research/v18_native_normal_transfer_ab.py'
+      - '.github/workflows/assassin-v18-native-normal-ab.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender xvfb python3-numpy
+      - name: Fetch original Shibu VRM
+        run: |
+          mkdir -p /tmp/v18src output/v18-native-normal-ab
+          curl -fL --retry 3 --max-time 200 -o /tmp/v18src/Shibu.vrm https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/beta/Sendagaya_Shibu.vrm
+          test "$(stat -c%s /tmp/v18src/Shibu.vrm)" -gt 1000000
+          sha256sum /tmp/v18src/Shibu.vrm > output/v18-native-normal-ab/source.sha256
+      - name: Real Blender local normals A/B
+        run: |
+          python3 -m py_compile tools/character-mesh-research/v18_native_normal_transfer_ab.py
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a blender -b -t 2 --python-exit-code 1 --python tools/character-mesh-research/v18_native_normal_transfer_ab.py -- /tmp/v18src/Shibu.vrm output/v18-native-normal-ab
+      - name: Verify real image output and untouched source
+        run: |
+          python3 - <<'PY'
+          import os,json
+          p='output/v18-native-normal-ab'
+          q=json.load(open(f'{p}/qa.json'))
+          assert q['approval']=='NOT_APPROVED' and q['source_mesh_geometry_unchanged']
+          assert q['affected_face_vertices']>=2
+          for variant in ('baseline','transfer'):
+            for vid in (2071,1506):
+              for side in ('side','rear'):
+                assert os.path.getsize(f'{p}/{variant}_{vid}_{side}.png')>2500
+          assert os.path.getsize(f'{p}/shibu_v18_local_normal_ab_NOT_APPROVED.blend')>1000
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assassin-v18-native-ear-normal-AB-NOT-APPROVED
+          path: output/v18-native-normal-ab/
+          retention-days: 14
