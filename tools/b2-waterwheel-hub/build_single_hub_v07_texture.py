@@ -143,16 +143,16 @@ for yi in range(size):
         warp=(noise(u,v,3.1,4.3)-.5)*.039
         uu=u+warp
         large=noise(uu,v,5.7,8.0)
-        chips=noise(uu,v,18,22)
+        chip_noise=noise(uu,v,18,22)
         fibers=noise(uu,v,3.0,112)
         fine=noise(uu,v,23,198)
         fleck=noise(uu,v,48,41)
         jitter=(rng.random()-.5)*.020
         # Old crushed timber: matte brown-gray, broad staining, fine and low-contrast
         # linear grain. No repeated sinusoidal bands / zebra patterns.
-        base=.355+.080*(large-.5)+.037*(chips-.5)+.055*(fibers-.5)+.025*(fine-.5)+jitter
+        base=.355+.080*(large-.5)+.037*(chip_noise-.5)+.055*(fibers-.5)+.025*(fine-.5)+jitter
         # Occasional subdued exposed wood flecks, not light stripes.
-        if fleck>.83 and chips>.60:
+        if fleck>.83 and chip_noise>.60:
             base+=.046
         base=max(.23,min(.46,base))
         pixels.extend((base*.77,base*.59,base*.43,1.0))
