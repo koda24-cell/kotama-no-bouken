@@ -7,6 +7,29 @@ export function createOriginalB5FogRing(THREE,scene,{radius=145,height=88,seed=5
   const group=new THREE.Group();
   group.name='B5_V4_FLAT_ABYSS_VISTAS';
   scene.add(group);
+  // Original preview references a PNG absent from development and PR #354.
+  // Deterministic emission atlas activates the original irregular-window shader.
+  // Review substitute only: not the missing original image.
+  const canvas=document.createElement('canvas');
+  canvas.width=1024;canvas.height=512;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#000';ctx.fillRect(0,0,1024,512);
+  let state=55421;
+  const random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);
+  for(let block=0;block<42;block++){
+    const bx=random()*880,by=random()*400;
+    const cols=3+Math.floor(random()*13),rows=2+Math.floor(random()*11);
+    const stepX=3+random()*7,stepY=3+random()*9;
+    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+      if(random()<.64)continue;
+      const v=110+Math.floor(random()*145);
+      ctx.fillStyle='rgb('+v+','+Math.floor(v*(.36+random()*.2))+','+Math.floor(v*(.42+random()*.32))+')';
+      ctx.fillRect(bx+x*stepX,by+y*stepY,1+random()*2.5,1+random()*2.7);
+    }
+  }
+  const windowTexture=new THREE.CanvasTexture(canvas);
+  windowTexture.colorSpace=THREE.SRGBColorSpace;
+  windowTexture.wrapS=windowTexture.wrapT=THREE.RepeatWrapping;
   const parts=[];
   const sides=[
     {x:0,z:-radius,ry:0},
@@ -16,7 +39,7 @@ export function createOriginalB5FogRing(THREE,scene,{radius=145,height=88,seed=5
   ];
   for(let i=0;i<4;i++){
     const s=sides[i];
-    const part=createB5DistantFogBackground({width:radius*2.08,height,seed:seed+i*127});
+    const part=createB5DistantFogBackground({width:radius*2.08,height,seed:seed+i*127,windowTexture});
     part.mesh.position.set(s.x,height*.16,s.z);
     part.mesh.rotation.y=s.ry;
     part.mesh.material.side=THREE.DoubleSide;
@@ -27,5 +50,5 @@ export function createOriginalB5FogRing(THREE,scene,{radius=145,height=88,seed=5
     parts.push(part);
   }
   return {group,update(seconds){for(const p of parts)p.update(seconds)},
-    dispose(){for(const p of parts)p.dispose();group.removeFromParent()}};
+    dispose(){for(const p of parts)p.dispose();windowTexture.dispose();group.removeFromParent()}};
 }
