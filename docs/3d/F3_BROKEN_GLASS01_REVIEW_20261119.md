@@ -27,3 +27,11 @@
 ## 安全
 - 実際のClamAVスキャンとウイルス定義更新がジョブで行われた場合にのみ成功記録を残す。PNGヘッダーとSHAの基本検査のみではウイルススキャン済みと記載しない。
 - Actions artifactは14日間の一時保存。ジョブ間の自動checkpoint復旧は本金具・ガラス専用には未検証。
+
+## 実レンダリングによる初回判定
+- [run #44455660695](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44455660695): **success**。V1/V2/V3それぞれ正面・側面・斜めPNG計9枚・GLB3個・Blend3個・自作汚れPNG1枚をArtifact #14498525631から取得。manifestの全16ファイルのSHA256一致を確認した。
+- GLB実測三角形：V1 296、V2 428、V3 500。これらは描画負荷やゲーム内FPSを直接保証しない。
+- 画像QA：初回3版とも白っぽく、断面とひび割れが見えにくい。上部の破断輪郭が周期的なノコギリ状。**美術不合格**。
+- V4は `tools/floor3/broken_glass01/build_v4.py` で破断輪郭を調整し、より暗い背景で正面・側面・斜め・破断部拡大をレンダリングする。
+- [V4 run #44456704485](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44456704485) は作成済み。V4についての成功判定と画質の評価は **実際の完了・Artifact確認まで未確定** とする。
+- 256px自作マスク `F3_WINDOW_DIRT_MASK_01` SHA-256 `e1df204118e4b6c47bf191008adb4aa433edf0039378fdadb9fcb3b48fc73fc1`。共有テクスチャ台帳へdocs PR #574からdevelopmentに反映済み。ただし画像本体の正式Git保存はまだない。
