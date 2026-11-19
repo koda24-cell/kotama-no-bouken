@@ -23,3 +23,11 @@ B2/B4 approval and archive workflows (including `b4-promote-approved-asset.yml`)
 ## Invariants
 
 Update signatures on each run; scan source before execution, downloaded files immediately before unpack/install/decode, extracted data before model/image import, and generated files before artifact publishing or Git commits. Keep real GLB/PNG/Blend signatures, hashes and QA logs. `NOT_APPROVED` remains `NOT_APPROVED`; ClamAV zero detections are not a guarantee of safety or visual approval.
+
+## Final `development` workflow-code audit (2026-11-19)
+
+After merging PR #581/#582/#586, re-read the current `development` workflow definitions. Of the Blender-related render/review workflows checked (B2 bridge props/variants, frozen altar/pillars/watergate/waterwheel/shoreline/bridge tiles, water tiles/aqueduct/stone ruins; B4 cart batch/magma banks; F2 waterfall; F3 bridge; F6 foliage/impostor; shared rigid LOD), **each has `clamav_scan_gate.sh` references and none retains `apt-get install blender`**. The two shared Blender image publisher workflows also include ClamAV smoke logic. The B5 fog job is Playwright, not Blender, and now has separate host ClamAV download-before-decode gates.
+
+This is a **workflow source-code audit**, not an assertion that every historical/feature-branch run succeeded or that every model is malware-free. Promotion/approved archive workflows, the non-Blender performance-audit selector and other diagnostics have separate trust boundaries; they are not silently converted to Blender. Additional feature-branch-only workflows may still require migration.
+
+Evidence: [PR #581](https://github.com/koda24-cell/kotama-no-bouken/pull/581), [PR #582](https://github.com/koda24-cell/kotama-no-bouken/pull/582), [PR #586](https://github.com/koda24-cell/kotama-no-bouken/pull/586), and [B4 V16-derived Blender5 run #44460403769](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44460403769).
