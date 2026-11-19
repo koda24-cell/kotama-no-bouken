@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
+      - feature/blender53-b4-v5-v16-review-20261119
     paths:
       - tools/floor4/magma_banks/build_from_approved_v16.py
       - tools/floor4/magma_banks/variant_additions.py
@@ -18,7 +19,7 @@ jobs:
       run:
         shell: bash
     container:
-      image: ghcr.io/koda24-cell/kotama-blender5-clamav@sha256:05f93bdd5c2c0dc541c34b6f30e488f0c21a53c403c50311f26fd43357ce8047
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
