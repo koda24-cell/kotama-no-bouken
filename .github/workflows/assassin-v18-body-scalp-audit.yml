@@ -34,6 +34,8 @@ jobs:
           d=json.load(open(p+'/mesh_region_audit.json'))
           assert any(x['name'].lower()=='body' for x in d)
           assert any(x['name'].lower()=='face' for x in d)
+          c=json.load(open(p+'/face_body_rim_correspondence.json'))
+          assert c['count']==36 and c['distance_max_m']>=0
           for n in ('body_only_back','body_only_left','body_only_right','body_only_back_upper','face_body_left','face_body_back'):
             assert os.path.getsize(f'{p}/{n}.png')>2000
           PY
