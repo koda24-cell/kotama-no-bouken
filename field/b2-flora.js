@@ -27,13 +27,15 @@ export const FLORA_CONFIG = {
   groupSpacing: 4,        // 群れどうしの間隔（マス、チェビシェフ距離）
   groupMin: 3, groupMax: 7,
   quota: { mizubasho: 4, snowdrop: 5, bloom: 3 },  // 主になる種類ごとの群れの上限
-  meadowMax: 190,         // 群生地の株数の上限（群生地は軽い版だけで描く）
+  meadowMax: 140,         // 群生地の株数の上限（群生地は軽い版だけで描く。少し大きめの株で一面に見せる）
   meadowStep: 0.5,        // 群生地の株の間隔の目安（m）
   far: 26,                // これより遠い区画は描かない（m。霧の濃さ0.034で約6割が霧に沈む距離）
   // 区画の端までの距離で形の段階を切り替える（m）：[元の形, 中, 遠] の上限（0 はその段階を使わない）
   // 中（約20%）は近くで見ても元の形とほぼ同じ（間引きの比較で確認）なので、元の形（1株約2万三角形）は使わない
-  tiers: { group: [0, 12, 26], meadow: [0, 4, 30] },
-  lod: { mid: 0.2, lo: 0.05, mMid: 0.065, mLo: 0.035 },
+  tiers: { group: [0, 9, 24], meadow: [0, 3, 26] },
+  lod: { mid: 0.12, lo: 0.04, mMid: 0.045, mLo: 0.02 },
+  // 種類ごとの上書き：霜鈴草は細い茎が先に消える（鈴が浮く）ので、軽い版を少し厚めに残す
+  lodKind: { snowdrop: { mMid: 0.055, mLo: 0.032 } },
   chunk: 4,               // 群れ以外の区画（マス）
   meadowChunk: 2,         // 群生地の区画（マス。小さいほど遠い区画が軽い版になる）
 };
@@ -230,8 +232,9 @@ export function simplifyGeometry(geo, ratio, minTris = 8) {
 //   遠（lo・mLo）は描く回数を減らすため、光る芯以外の部品を1つの形にまとめ、素材の色の違いは頂点色へ焼き込む（素材は x:flower）
 const LOD_CACHE = new WeakMap();
 const BAKE = { 'x:flowerBase': 0x6aa0be, 'x:flowerBaseIce': 0x9cd2ea, 'x:flowerRock': 0x4c86b4 };
-function mergeFar(parts) {
-  const keep = parts.filter((pt) => pt.mat === 'x:flowerGlow'), rest = parts.filter((pt) => pt.mat !== 'x:flowerGlow');
+function mergeFar(parts, keepIce = false) {
+  const sep = (pt) => pt.mat === 'x:flowerGlow' || (keepIce && pt.mat === 'x:flowerIce');
+  const keep = parts.filter(sep), rest = parts.filter((pt) => !sep(pt));
   if (rest.length < 2) return parts;
   let n = 0; for (const pt of rest) n += pt.geo.attributes.position.count;
   const P = new Float32Array(n * 3), Nn = new Float32Array(n * 3), Cc = new Float32Array(n * 3), col = new THREE.Color();
@@ -250,10 +253,14 @@ function mergeFar(parts) {
 function lodSets(ex, L) {
   let c = LOD_CACHE.get(ex);
   if (!c) { c = { hi: ex.parts }; LOD_CACHE.set(ex, c); }
-  if (!c.mid) c.mid = ex.parts.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.mid), mat: pt.mat }));
-  if (!c.lo) c.lo = mergeFar(c.mid.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.lo / L.mid), mat: pt.mat })));
-  if (!c.mMid) c.mMid = c.mid.filter((pt) => !BASE_KEYS.has(pt.mat)).map((pt) => ({ geo: simplifyGeometry(pt.geo, L.mMid / L.mid), mat: pt.mat }));
-  if (!c.mLo) c.mLo = mergeFar(c.mMid.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.mLo / L.mMid), mat: pt.mat })));
+  // 中・群生地の中も、氷（つや）と光る芯以外は1つにまとめて描く回数を減らす
+  if (!c.midS) c.midS = ex.parts.map((pt) => ({ geo: simplifyGeometry(pt.geo, Math.max(L.mid, L.mMid)), mat: pt.mat }));
+  const base = Math.max(L.mid, L.mMid);
+  if (!c.mid) c.mid = mergeFar(c.midS.map((pt) => (L.mid >= base ? pt : { geo: simplifyGeometry(pt.geo, L.mid / base), mat: pt.mat })), true);
+  if (!c.lo) c.lo = mergeFar(c.midS.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.lo / base), mat: pt.mat })));
+  const mm = c.midS.filter((pt) => !BASE_KEYS.has(pt.mat)).map((pt) => ({ geo: simplifyGeometry(pt.geo, L.mMid / base), mat: pt.mat }));
+  if (!c.mMid) c.mMid = mergeFar(mm, true);
+  if (!c.mLo) c.mLo = mergeFar(mm.map((pt) => ({ geo: simplifyGeometry(pt.geo, L.mLo / L.mMid), mat: pt.mat })));
   return c;
 }
 
@@ -356,10 +363,12 @@ export function createFlora(ctx) {
     const cands = [];
     const xs = cellsOk.map((c) => c[0]), ys = cellsOk.map((c) => c[1]);
     const x0 = X(Math.min(...xs)) - CELL / 2, x1 = X(Math.max(...xs)) + CELL / 2, z0 = Z(Math.min(...ys)) - CELL / 2, z1 = Z(Math.max(...ys)) + CELL / 2;
+    // 乱数の種は床の絶対位置と階ごとの値から（群生地の外枠からの番号だと、どの階も同じ並び・同じ内訳になる）
     const step = C.meadowStep, seedK = H(Math.round(mx), Math.round(my), 959) * 10;
+    let fseed = 0; for (const ch2 of String(a.buildKey || a.key || '')) fseed = (fseed * 31 + ch2.charCodeAt(0)) % 100003;
     let n = 0;
     for (let gz = z0 + step / 2; gz < z1; gz += step) for (let gx = x0 + step / 2; gx < x1; gx += step) {
-      n++;
+      n = Math.round(gx / step) * 1013 + Math.round(gz / step) * 7 + fseed;
       const x = gx + (H(n, 3, 961) - 0.5) * step * 0.9, z = gz + (H(n, 5, 962) - 0.5) * step * 0.9, [tx, ty] = cellOf(x, z);
       if (!set.has(k2(tx, ty))) continue;
       const lx = x - X(tx), lz = z - Z(ty), dn = Math.min(1, Math.hypot(x - ccx, z - ccz) / R), ed = edgeDist(x, z);
@@ -394,7 +403,7 @@ export function createFlora(ctx) {
       // 高さ：中心ほど高く、縁・歩く筋の脇ほど低い（吹きだまりの中は高さをそろえすぎない）
       let t = 0.85 - dn * 0.5 + (H(n, 9, 964) - 0.5) * 0.5;
       if (laneD < 0.35) t -= 0.35; if (ed < 0.7) t -= 0.25;
-      const s = plantScale(kind, Math.max(0, Math.min(1, t))) * (kind === 'mizubasho' ? 0.85 : 1), r = radiusOf(kind, s);
+      const s = plantScale(kind, Math.max(0, Math.min(1, t))) * (kind === 'mizubasho' ? 0.9 : 1.12), r = radiusOf(kind, s);
       cands.push({ kind, x, z, s, r, dn, k: dn * 0.6 + H(n, 13, 966) * 0.5, ry: H(n, 15, 967) * 6.28, seed: n });
     }
     cands.sort((p, q) => p.k - q.k);
@@ -578,7 +587,7 @@ export function createFlora(ctx) {
     const byChunk = new Map();
     for (const p of plants) { if (!byChunk.has(p.chunk)) byChunk.set(p.chunk, []); byChunk.get(p.chunk).push(p); }
     const col = new THREE.Color(), sets = {};
-    for (const kind of FLORA_KINDS) if (avail(kind)) sets[kind] = lodSets(EX[kind], C.lod);
+    for (const kind of FLORA_KINDS) if (avail(kind)) sets[kind] = lodSets(EX[kind], { ...C.lod, ...(C.lodKind[kind] || {}) });
     for (const [ck, list] of byChunk) {
       const mode = list[0].set, tierNames = mode === 'meadow' ? ['mMid', 'mLo'] : (C.tiers.group[0] > 0 ? ['hi', 'mid', 'lo'] : ['mid', 'lo']);
       const cg = new THREE.Group(); cg.name = `b2:flora:${ck}`; group.add(cg);
@@ -638,7 +647,7 @@ export function createFlora(ctx) {
   if (typeof window !== 'undefined') window.KotamaB2Flora = { visible, setVisible: (v) => { if (group) group.visible = !!v; } };
   function layout() {
     const byKind = Object.fromEntries(FLORA_KINDS.map((k) => [k, plants.filter((p) => p.kind === k).length]));
-    const lod = {}; for (const kind of FLORA_KINDS) if (avail(kind)) { const s = lodSets(EX[kind], C.lod); lod[kind] = Object.fromEntries(Object.entries(s).map(([tn, parts]) => [tn, parts.reduce((q, pt) => q + triCount(pt.geo), 0)])); }
+    const lod = {}; for (const kind of FLORA_KINDS) if (avail(kind)) { const s = lodSets(EX[kind], { ...C.lod, ...(C.lodKind[kind] || {}) }); lod[kind] = Object.fromEntries(Object.entries(s).map(([tn, parts]) => [tn, parts.reduce((q, pt) => q + triCount(pt.geo), 0)])); }
     return {
       flowers: plants.length, flowerSpots: (ctx.spots || []).length, flowerClusters: groupLog.slice(),
       flora: { groups: groups.map((gq) => ({ cell: gq.cell, kind: gq.kind, d: gq.d, n: gq.n, kinds: gq.kinds, edge: gq.edge, at: gq.at })), groupPlants: plants.filter((p) => p.set !== 'meadow').length, meadow, byKind, dress: dress.length, patches: patches.length, triangles, tierTris, lod, drawMeshes, chunks: chunks.length, closeups },
