@@ -25,3 +25,11 @@
 - Approval solely from user; no asset promotion or game integration.
 
 Run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44444237905 — execution underway at writing; no aesthetic judgment yet.
+
+## Verified V12 result
+- Run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44444237905: **completed / success**; Artifact 14492647789, `b5-sallet-v12-walters-NOT-APPROVED`.
+- All 8 binary file SHA256 entries checked against manifest: true. Six 800px PNG plus GLB and Blend present, progress/manifest present.
+- GLB material inspected: steel material `metallicFactor=0.82` and a `metallicRoughnessTexture` index are present in the exported GLB; roughness texture is not only an unexported Blender node.
+- Real six-view visual check: still predominantly smooth round helmet, visor front looks horizontal, weak forged edge and cheek plane definition; metallurgical appearance remains monotonous. **Aesthetic FAIL**.
+- Decision: V13 independent profile revision `tools/b5-knights/build_sallet_v13.py` and `.github/workflows/b5-knight-sallet-v13-render.yml`, run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44444782454 . Initial run not yet verified at this document edit.
+- No approved asset promotion; V12 and earlier immutable original files retained.
