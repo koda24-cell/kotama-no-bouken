@@ -1,0 +1,54 @@
+name: B5 Organic Corruption Blender QA + ClamAV
+on:
+  push:
+    branches: [feature/b5-organic-malice-overlay-20261119]
+    paths:
+      - 'tools/b5-organic-corruption/**'
+      - '.github/workflows/b5-organic-corruption-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render-and-scan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and ClamAV
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender clamav clamav-freshclam
+          blender --version | head -2
+          clamscan --version
+      - name: Update virus signatures - mandatory
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b5-organic-corruption
+          sudo systemctl stop clamav-freshclam || true
+          sudo freshclam --stdout --tries=3 2>&1 | tee render-output/b5-organic-corruption/freshclam.log
+          clamscan --version | tee render-output/b5-organic-corruption/clamav-version.txt
+          test -n "$(find /var/lib/clamav -maxdepth 1 \( -name '*.cvd' -o -name '*.cld' \) -print -quit)"
+      - name: Real ClamAV scan of source before execution
+        run: |
+          set -euo pipefail
+          clamscan -r --infected --stdout tools/b5-organic-corruption 2>&1 | tee render-output/b5-organic-corruption/scan-source.log
+          grep -q 'Infected files: 0' render-output/b5-organic-corruption/scan-source.log
+      - name: Build actual Blender GLB and 3-direction renders
+        run: |
+          set -euo pipefail
+          blender -b -t 2 --python tools/b5-organic-corruption/build_overlay.py 2>&1 | tee render-output/b5-organic-corruption/blender.log
+          python3 tools/b5-organic-corruption/verify_output.py
+      - name: Real ClamAV scan of all generated assets
+        run: |
+          set -euo pipefail
+          clamscan -r --infected --stdout render-output/b5-organic-corruption 2>&1 | tee render-output/b5-organic-corruption/scan-output.log
+          grep -q 'Infected files: 0' render-output/b5-organic-corruption/scan-output.log
+          python3 tools/b5-organic-corruption/verify_output.py
+      - name: Save scan logs and review artifacts even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-organic-corruption-unapproved-qa
+          path: render-output/b5-organic-corruption/
+          retention-days: 14
