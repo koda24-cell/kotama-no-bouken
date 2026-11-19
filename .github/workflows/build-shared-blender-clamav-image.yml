@@ -105,10 +105,27 @@ jobs:
           test "$rc" -eq 1
           grep -q 'FOUND' qa/security/eicar.log
           echo 'EICAR_DETECTION_PASS' > qa/security/eicar-status.txt
+      - name: Real Blender PNG render, GLB export and output malware scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender -b -t 2 --python .github/docker/blender-clamav/smoke.py
+          python3 - <<'PY'
+          from pathlib import Path
+          png = Path("qa/container-smoke/smoke.png").read_bytes()
+          glb = Path("qa/container-smoke/smoke.glb").read_bytes()
+          assert png[:8] == b"\\x89PNG\\r\\n\\x1a\\n", "PNG signature mismatch"
+          assert glb[:4] == b"glTF", "GLB signature mismatch"
+          assert len(png) > 100 and len(glb) > 100
+          print("SMOKE_FILE_HEADERS_PASS")
+          PY
+          bash tools/security/clamav_scan_gate.sh scan qa/container-smoke qa/security/generated.log
       - name: Upload QA logs even if scan fails
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: shared-blender-clamav-container-qa
-          path: qa/security/
+          path: |
+            qa/security/
+            qa/container-smoke/
           retention-days: 14
