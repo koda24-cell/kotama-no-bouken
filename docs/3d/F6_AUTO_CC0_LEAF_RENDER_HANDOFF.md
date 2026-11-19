@@ -41,3 +41,11 @@ Claudeは出力されたGLB/PNG/manifestを受け取り、Blender操作は担当
 - Remaining deficits: silhouette still has many hard, isolated small leaf triangles; outer crown has unnatural gaps. Next work should improve true twig-attached leaf sprays, curvature and real leaf form at near distance rather than increasing generic polygon count; actual 4-view artistic inspection mandatory.
 - Workflow optimizations verified: older V19 Blender checkpoint restored from SHA-verified artifact; fallback rerenders original when artifact expired. `cancel-in-progress: true` limits parallel obsolete rendering. This is job execution optimization, **not** geometric LOD/compression (deferred until artistic approval).
 - No merge of this modeling PR to development/main; no gameplay integration; no promotion of GLB/PNG without explicit user approval.
+
+## 2026-11-19 V25 broad canopy and photogrammetry bark review
+- User rejects V24 aesthetic: canopy too narrow, bare central wood looks mangrove-like, individual leaves too granular/repulsive. Explicit request: **apply bark texture to trunk**.
+- V25 implementation is entirely **review only**: add approximately 200 coherent seven-leaf sprays to outer crown, central trunk screening and oblique overlapping shells. Preserve the original V19 source and its geometry while extending the review scene with new leaf meshes. More artistic refinement remains needed after real render review.
+- Add official CC0 photogrammetry [ambientCG Bark015](https://ambientcg.com/view?id=Bark015) (Surface Photogrammetry, 2025) in `tools/floor6/fetch_cc0_bark.py`. Validate downloadable ZIP, file size, PNG magic and per-map SHA256; apply Color/Normal/Roughness to the original `aged_bark` and `twigs` materials in the review-only copy with packed images. Keep provenance/source manifest alongside the GLB.
+- Existing ambientCG Leaf001 PBR remains. Reference pins from Pinterest are reference-only, not texture sources.
+- V25 Actions: `.github/workflows/f6-cc0-leaf-auto-render.yml`; source `tools/floor6/apply_cc0_leaf_photo.py`. Render all 4 angles and compare PNGs to original V19. Source 1m root footprint preserved; extending canopy width is intentional.
+- No user approval yet; **NOT_APPROVED** and not in gameplay. Mark successful/quality only after downloading and inspecting real 4-view PNGs, GLB/Blend/manifest.
