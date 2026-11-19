@@ -19,17 +19,42 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - name: Install ClamAV on browser-capable runner
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y clamav clamav-freshclam
+          sudo systemctl stop clamav-freshclam.service || true
+          sudo sed -i -E '/^[[:space:]]*(NotifyClamd|UpdateLogFile|DatabaseOwner)[[:space:]]/d' /etc/clamav/freshclam.conf
+          sudo chown -R "$(id -u):$(id -g)" /var/lib/clamav
+      - name: Refresh ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan all fog preview scripts before executing
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b5-fog-test qa/security/source.log
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Install Playwright and Chromium
         run: |
           npm install --no-save --ignore-scripts --no-package-lock playwright@1.56.1
+          bash tools/security/clamav_scan_gate.sh scan node_modules qa/security/npm.log
           docker pull mcr.microsoft.com/playwright:v1.56.1-noble
+          docker image inspect mcr.microsoft.com/playwright:v1.56.1-noble --format '{{json .RepoDigests}}' | tee qa/security/playwright-image-digests.json
       - name: Fetch CC0 real window emission textures
         run: |
-          python3 -m pip install --break-system-packages Pillow
+          set -euo pipefail
+          mkdir -p qa/wheels
+          python3 -m pip download --only-binary=:all: --dest qa/wheels 'Pillow>=10,<12'
+          bash tools/security/clamav_scan_gate.sh scan qa/wheels qa/security/pillow-wheels.log
+          python3 -m pip install --break-system-packages --no-index --find-links qa/wheels 'Pillow>=10,<12'
           python3 tools/b5-fog-test/fetch-real-windows.py
+          bash tools/security/clamav_scan_gate.sh scan field/assets/b5-distant qa/security/downloaded-textures.log
+      - name: Scan browser preview source HTML and JavaScript before loading
+        run: |
+          bash tools/security/clamav_scan_gate.sh scan preview/b5-distant-fog-background.html qa/security/html-fog.log
+          bash tools/security/clamav_scan_gate.sh scan preview/b5-v5-combined-scene.html qa/security/html-combined.log
+          bash tools/security/clamav_scan_gate.sh scan field/b5-distant-fog-background.js qa/security/js-fog.log
+          bash tools/security/clamav_scan_gate.sh scan field/b5-vfx-presets.js qa/security/js-vfx.log
       - name: Render and check animated shader
         run: |
           docker run --rm --ipc=host -v "$PWD:/work" -w /work mcr.microsoft.com/playwright:v1.56.1-noble node tools/b5-fog-test/check-preview.mjs
@@ -38,6 +63,9 @@ jobs:
         run: |
           sudo chown -R "$(id -u):$(id -g)" render-output/b5-fog
           python3 tools/b5-fog-test/check-three-views.py
+      - name: Scan final PNG renders and downloaded textures
+        if: success()
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b5-fog qa/security/rendered-output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -45,4 +73,5 @@ jobs:
           path: |
             render-output/b5-fog/
             field/assets/b5-distant/
+            qa/security/
           retention-days: 14
