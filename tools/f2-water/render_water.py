@@ -39,50 +39,11 @@ uvscale.inputs["Scale"].default_value=6.0
 bed.node_tree.links.new(texcoord.outputs["UV"],uvscale.inputs[0])
 bed.node_tree.links.new(uvscale.outputs["Vector"],image.inputs["Vector"])
 bed.node_tree.links.new(image.outputs["Color"],bs.inputs["Base Color"])
-# V11 optical cue: subtle pseudo-caustics ON THE RIVERBED, not white
-# strokes pasted onto the water surface. This is stylized light, not path-traced caustics.
-# Keep verified scanned photo as the base diffuse image.
-caustic_uv=bed.node_tree.nodes.new("ShaderNodeTexCoord")
-caustic_warp_noise=bed.node_tree.nodes.new("ShaderNodeTexNoise")
-caustic_warp_noise.inputs["Scale"].default_value=5.0
-caustic_warp_noise.inputs["Detail"].default_value=2.0
-bed.node_tree.links.new(caustic_uv.outputs["UV"],caustic_warp_noise.inputs["Vector"])
-caustic_shift=bed.node_tree.nodes.new("ShaderNodeVectorMath")
-caustic_shift.operation="SCALE"
-caustic_shift.inputs["Scale"].default_value=.05
-bed.node_tree.links.new(caustic_warp_noise.outputs["Color"],caustic_shift.inputs[0])
-caustic_coord=bed.node_tree.nodes.new("ShaderNodeVectorMath")
-caustic_coord.operation="ADD"
-bed.node_tree.links.new(caustic_uv.outputs["UV"],caustic_coord.inputs[0])
-bed.node_tree.links.new(caustic_shift.outputs["Vector"],caustic_coord.inputs[1])
-caustic_pattern=bed.node_tree.nodes.new("ShaderNodeTexVoronoi")
-caustic_pattern.feature="DISTANCE_TO_EDGE"
-caustic_pattern.inputs["Scale"].default_value=24.0
-bed.node_tree.links.new(caustic_coord.outputs["Vector"],caustic_pattern.inputs["Vector"])
-caustic_ramp=bed.node_tree.nodes.new("ShaderNodeValToRGB")
-caustic_ramp.color_ramp.elements[0].position=.008
-caustic_ramp.color_ramp.elements[0].color=(.57,.72,.76,1)
-caustic_ramp.color_ramp.elements[1].position=.065
-caustic_ramp.color_ramp.elements[1].color=(0,0,0,1)
-bed.node_tree.links.new(caustic_pattern.outputs["Distance"],caustic_ramp.inputs["Fac"])
-caustic_geometry=bed.node_tree.nodes.new("ShaderNodeNewGeometry")
-caustic_separate=bed.node_tree.nodes.new("ShaderNodeSeparateXYZ")
-bed.node_tree.links.new(caustic_geometry.outputs["Position"],caustic_separate.inputs["Vector"])
-caustic_underwater=bed.node_tree.nodes.new("ShaderNodeMath")
-caustic_underwater.operation="LESS_THAN"
-caustic_underwater.inputs[1].default_value=2.6
-bed.node_tree.links.new(caustic_separate.outputs["Y"],caustic_underwater.inputs[0])
-caustic_masked=bed.node_tree.nodes.new("ShaderNodeMixRGB")
-caustic_masked.blend_type="MULTIPLY"
-caustic_masked.inputs[0].default_value=1.0
-bed.node_tree.links.new(caustic_ramp.outputs["Color"],caustic_masked.inputs[1])
-bed.node_tree.links.new(caustic_underwater.outputs[0],caustic_masked.inputs[2])
-caustic_add=bed.node_tree.nodes.new("ShaderNodeMixRGB")
-caustic_add.blend_type="ADD"
-caustic_add.inputs[0].default_value=.23
-bed.node_tree.links.new(image.outputs["Color"],caustic_add.inputs[1])
-bed.node_tree.links.new(caustic_masked.outputs[0],caustic_add.inputs[2])
-bed.node_tree.links.new(caustic_add.outputs[0],bs.inputs["Base Color"])
+# V12 corrective: The V11 Voronoi Distance-to-Edge created an unnatural
+# network of bright polygonal seams resembling cracked stone. Remove that
+# entire pseudo-caustic node chain and retain the scanned riverbed photo.
+# Genuine light caustics will be revisited with low-contrast warped bands,
+# masked/discontinuous and compared in an isolated A/B test.
 bump=bed.node_tree.nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=.16
 bump.inputs["Distance"].default_value=.055
 bed.node_tree.links.new(image.outputs["Color"],bump.inputs["Height"])
@@ -131,7 +92,7 @@ surface.file_format="PNG"
 surface.save()
 # V6 water: keep real transparency, restore legible surface through
 # Fresnel reflections and image-controlled pale optical highlights.
-watermat=bpy.data.materials.new("V11 readable clear water / soft bottom caustics")
+watermat=bpy.data.materials.new("V12 clean refraction without grid caustics")
 watermat.use_nodes=True
 wn=watermat.node_tree.nodes
 wn.clear()
@@ -334,4 +295,4 @@ for n in ("front","side","angle"):
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
 (root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v11.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v12.blend").resolve()))
