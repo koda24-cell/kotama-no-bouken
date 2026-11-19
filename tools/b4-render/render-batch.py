@@ -31,6 +31,7 @@ scene=bpy.context.scene
 scene.render.engine='CYCLES'
 scene.cycles.samples=20
 scene.cycles.use_denoising=False
+bpy.context.view_layer.cycles.use_denoising=False
 scene.render.resolution_x=960
 scene.render.resolution_y=720
 scene.render.resolution_percentage=100
