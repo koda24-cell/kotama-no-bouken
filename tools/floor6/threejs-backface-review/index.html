@@ -66,6 +66,18 @@ try{
    return {mode,rendered:renderer.info.render.calls,width:renderer.domElement.width,height:renderer.domElement.height};
  }
  window.f6Render=cameraMode;
+ window.f6RenderClose=(panel,mode)=>{
+   const shift=[-2.45,0,2.45][panel];
+   if(shift===undefined)throw Error('unknown panel');
+   const at=new THREE.Vector3(centroid.x+shift,centroid.y,centroid.z);
+   const from=mode==='underside'?new THREE.Vector3(at.x,at.y-3.8,at.z-1.6):
+     new THREE.Vector3(at.x,at.y-4,at.z+.55);
+   const halfHeight=.52,halfWidth=halfHeight*1600/680;
+   camera.left=-halfWidth;camera.right=halfWidth;camera.top=halfHeight;camera.bottom=-halfHeight;
+   camera.position.copy(from);camera.lookAt(at);camera.updateProjectionMatrix();
+   renderer.render(scene,camera);
+   return {panel,mode,drawCalls:renderer.info.render.calls};
+ };
  window.f6Render('front');
  status.loaded=true;
 }catch(error){status.errors.push(String(error.stack||error));}
