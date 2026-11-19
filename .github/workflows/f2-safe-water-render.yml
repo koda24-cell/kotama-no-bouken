@@ -22,8 +22,23 @@ jobs:
       - name: Install malware scanner, Blender and Python image parser
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y clamav clamav-freshclam blender python3-pil python3-cairosvg
+          # Ubuntu mirrors intermittently return HTTP 503. Retry with
+          # finite exponential delays; never proceed without every package.
+          for attempt in 1 2 3 4; do
+            if sudo apt-get -o Acquire::Retries=4 update -qq &&
+               sudo DEBIAN_FRONTEND=noninteractive apt-get \
+                 -o Acquire::Retries=5 -o Acquire::http::Timeout=45 \
+                 -o Acquire::https::Timeout=45 install -y \
+                 clamav clamav-freshclam blender python3-pil python3-cairosvg; then
+              break
+            fi
+            if [ "$attempt" = 4 ]; then
+              echo "::error::Ubuntu apt mirror unavailable after four attempts"
+              exit 1
+            fi
+            sleep $((attempt * 15))
+          done
+          dpkg-query -W clamav clamav-freshclam blender python3-pil python3-cairosvg
           command -v clamscan
           command -v blender
       - name: Update ClamAV signatures (fail closed)
