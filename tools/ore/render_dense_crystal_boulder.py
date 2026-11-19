@@ -167,6 +167,22 @@ for i,pos in enumerate(glow_centers):
     data.color=(.12,.68,1.0);data.energy=80;data.shadow_soft_size=scale*.11
     obj=bpy.data.objects.new(data.name,data);scene.collection.objects.link(obj)
     obj.location=pos
+# V9 subtle VFX: scattered tiny emissive motes near crystal growth pockets.
+# No glowing strokes or giant halos. Geometry stays separate from source rock.
+vfx_mat=bpy.data.materials.new("VFX tiny mineral motes")
+vfx_mat.use_nodes=True
+vfx_shader=vfx_mat.node_tree.nodes.get("Principled BSDF")
+vfx_shader.inputs["Base Color"].default_value=(.08,.35,.55,1)
+vfx_shader.inputs["Emission Color"].default_value=(.15,.7,1,1)
+vfx_shader.inputs["Emission Strength"].default_value=2.0
+vfx_objects=[]
+for i in range(22):
+    base=glow_centers[i%len(glow_centers)]
+    offset=Vector((rng.uniform(-.13,.13),rng.uniform(-.13,.13),rng.uniform(-.04,.20)))*scale
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=scale*rng.uniform(.0014,.0035),location=base+offset)
+    mote=bpy.context.object;mote.name="VFX_MINERAL_MOTE_%02d"%i
+    mote.data.materials.append(vfx_mat)
+    vfx_objects.append(mote)
 camdata=bpy.data.cameras.new("Review camera")
 cam=bpy.data.objects.new("Review camera",camdata);scene.collection.objects.link(cam)
 scene.camera=cam;camdata.type="ORTHO";camdata.ortho_scale=scale*1.6
@@ -212,6 +228,7 @@ for color_name,(dark,light,emission) in colorways.items():
         ramp.color_ramp.elements[1].color=(*light,1)
         shader=nodes.get("Principled BSDF")
         shader.inputs["Emission Color"].default_value=(*emission,1)
+    vfx_shader.inputs["Emission Color"].default_value=(*emission,1)
     for obj in scene.objects:
         if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
             obj.data.color=emission
@@ -227,6 +244,7 @@ for m in crystal_mats:
     ramp.color_ramp.elements[0].color=(.018,.055,.095,1)
     ramp.color_ramp.elements[1].color=(.11,.29,.40,1)
     m.node_tree.nodes.get("Principled BSDF").inputs["Emission Color"].default_value=(.12,.72,1.0,1)
+vfx_shader.inputs["Emission Color"].default_value=(.15,.7,1,1)
 for obj in scene.objects:
     if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
         obj.data.color=(.12,.68,1.0)
@@ -237,6 +255,6 @@ bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"render_variant":"V8_MINERAL_NOISE_SOFT_EMISSION","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files,"colorway_renders":variant_files}
+manifest={"render_variant":"V9_MINERAL_MOTES_SUBTLE_VFX","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"vfx_mote_count":len(vfx_objects),"files":files,"colorway_renders":variant_files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
