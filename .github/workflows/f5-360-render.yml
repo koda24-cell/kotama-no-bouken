@@ -1,0 +1,26 @@
+name: F5 360-degree real browser renders
+on:
+  push:
+    branches: [feature/f5-worldlocked-360-backdrop-20261119]
+    paths: ['.github/workflows/f5-360-render.yml','tools/f5-backdrop/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install browser test dependencies
+        run: |
+          npm install --no-save playwright@1.56.1 three@0.170.0
+          npx playwright install --with-deps chromium
+      - name: Render all directions and parallax
+        run: node tools/f5-backdrop/render-360.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f5-360-browser-renders-unapproved
+          path: f5-360-renders/
+          retention-days: 14
