@@ -406,7 +406,7 @@ def crate(prefix, w, d, h, mats, seed=0, nb=3, t=0.022, post=0.05, segs=3, chip=
         out[bid] = [C.assign(pl, mat)]
 
     hw, hd = w / 2, d / 2
-    # 角柱（縦）
+    # 角柱（縦）。Y90°回転なので上端=split_a
     for k, (sx, sy) in enumerate(((-1, -1), (1, -1), (1, 1), (-1, 1))):
         mk(f"P{k}", h, post, post, (sx * (hw - post / 2), sy * (hd - post / 2), h / 2), (0, 90, 0), mats["z"], seed + 10 + k)
     for i in range(nb):
