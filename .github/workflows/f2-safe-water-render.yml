@@ -61,7 +61,7 @@ jobs:
               assert path.read_bytes()[:8]==bytes.fromhex("89504e470d0a1a0a")
               assert path.stat().st_size>10000
           PY
-      - name: Save scan report, all renders and Blender file, including on failure
+      - name: Always write actual scan and render execution report\n        if: always()\n        run: python3 tools/f2-water/report_run.py\n      - name: Save scan report, renders and Blender file, including on failure
         if: always()
         uses: actions/upload-artifact@v4
         with:
