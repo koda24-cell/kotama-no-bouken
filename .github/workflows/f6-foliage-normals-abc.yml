@@ -1,0 +1,104 @@
+name: F6 Foliage Normal Transfer A-B-C Review (Unapproved)
+on:
+  push:
+    branches:
+      - feature/f6-foliage-normal-shading-prototype-20261119
+    paths:
+      - tools/floor6/foliage_normals_trial.py
+      - .github/workflows/f6-foliage-normals-abc.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  packages: read
+concurrency:
+  group: f6-normals-abc-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  render-and-compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Static syntax check
+        run: python3 -m py_compile tools/floor6/foliage_normals_trial.py
+      - name: Restore V27 source GLB from successful Blender workflow
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44447197961
+          name: f6-v19-v27-bark-leaf-refinement-comparison-NOT-APPROVED
+          path: /tmp/f6-normals-source
+          github-token: ${{ github.token }}
+      - name: Verify V27 SHA256 provenance
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          d=Path("/tmp/f6-normals-source/nature/tree_mature_photo_v27")
+          m=json.loads((d/"manifest.json").read_text())
+          assert m["status"]=="NOT_APPROVED" and m["version"].startswith("V27")
+          for f in m["files"]:
+              p=d/f["name"]
+              assert p.exists() and hashlib.sha256(p.read_bytes()).hexdigest()==f["sha256"]
+          assert (d/"tree_mature_photo_v20.glb").read_bytes()[:4]==b"glTF"
+          print("F6_V27_ARTIFACT_SHA256_VERIFIED")
+          PY
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Blender script before executing
+        run: bash tools/security/clamav_scan_gate.sh scan tools/floor6/foliage_normals_trial.py qa/security/script.log
+      - name: Scan downloaded V27 GLB before importing
+        run: bash tools/security/clamav_scan_gate.sh scan /tmp/f6-normals-source/nature/tree_mature_photo_v27/tree_mature_photo_v20.glb qa/security/source-glb.log
+      - name: Render three original vs hemi-normal vs AO panels
+        env:
+          F6_SOURCE_GLB: /tmp/f6-normals-source/nature/tree_mature_photo_v27/tree_mature_photo_v20.glb
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/blender-home
+          export HOME=/tmp/blender-home LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+          blender -b -t 2 --python tools/floor6/foliage_normals_trial.py 2>&1 | tee /tmp/f6-foliage-normals.log
+          grep -q F6_NORMALS_TRIAL_DONE /tmp/f6-foliage-normals.log
+      - name: Validate all outputs and hashes
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,struct
+          from pathlib import Path
+          d=Path("render-output/floor6/foliage_normals_trial")
+          m=json.loads((d/"manifest.json").read_text())
+          assert m["state"]=="NOT_APPROVED"
+          assert m["selected_source_leaves"]>=70 and m["changed_corner_normals"]>1000
+          assert .70<=m["ao_range"][0]<m["ao_range"][1]<=1.01
+          names={x["name"] for x in m["files"]}
+          assert {"front.png","angle.png","underside.png","A_close.png","B_close.png","C_close.png","foliage_normal_test_NOT_APPROVED.glb","foliage_normal_test_NOT_APPROVED.blend"}==names
+          cs=m["panel_centers_world_x"]
+          assert abs(cs[1]-cs[0]-2.45)<.06 and abs(cs[2]-cs[1]-2.45)<.06
+          for x in m["files"]:
+              data=(d/x["name"]).read_bytes()
+              assert len(data)==x["bytes"] and hashlib.sha256(data).hexdigest()==x["sha256"]
+              if x["name"].endswith(".png"):
+                  assert data[:8]==bytes.fromhex("89504e470d0a1a0a")
+                  w,h=struct.unpack(">II",data[16:24]);assert w>=700 and h>=600
+              if x["name"].endswith(".glb"):assert data[:4]==b"glTF"
+          print("F6_NORMALS_A_B_C_VALIDATED")
+          PY
+      - name: Scan generated outputs with ClamAV
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/floor6/foliage_normals_trial qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-foliage-normals-ABC-NOT-APPROVED
+          path: |
+            render-output/floor6/foliage_normals_trial/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn
