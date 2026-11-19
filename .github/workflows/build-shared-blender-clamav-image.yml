@@ -114,7 +114,7 @@ jobs:
           from pathlib import Path
           png = Path("qa/container-smoke/smoke.png").read_bytes()
           glb = Path("qa/container-smoke/smoke.glb").read_bytes()
-          assert png[:8] == b"\\x89PNG\\r\\n\\x1a\\n", "PNG signature mismatch"
+          assert png[:8] == b"\x89PNG\r\n\x1a\n", "PNG signature mismatch"
           assert glb[:4] == b"glTF", "GLB signature mismatch"
           assert len(png) > 100 and len(glb) > 100
           print("SMOKE_FILE_HEADERS_PASS")
