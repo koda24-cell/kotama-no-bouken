@@ -456,8 +456,8 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
 
 
-def dragon_crystal(name, glow_strength=2.6, body_dark=(0.026, 0.0020, 0.0019), body_mid=(0.056, 0.0036, 0.0031),
-                   body_hi=(0.10, 0.0062, 0.0050), inner=0.40, metallic=0.0, rough_lo=0.34, root_pow=3.5):
+def dragon_crystal(name, glow_strength=4.0, body_dark=(0.050, 0.0024, 0.0022), body_mid=(0.072, 0.0032, 0.0029),
+                   body_hi=(0.10, 0.0045, 0.0040), inner=0.85, metallic=0.0, rough_lo=0.24, root_len=0.2):
     """炎竜鉱の結晶: 暗い赤の艶のある面＋角は欠けて明るく＋根元は煤と灰。
     発光は「内部」だけ: 根元ほど強く、面の中央で強く角で弱い（厚みの見え方）＋内部のひび＋包有物＋折れ口"""
     b = C.NB(name)
@@ -475,24 +475,22 @@ def dragon_crystal(name, glow_strength=2.6, body_dark=(0.026, 0.0020, 0.0019), b
     ashm = b.math("MULTIPLY", ashm, b.math("SUBTRACT", 1.0, fresh))
     col = b.mix(b.math("MULTIPLY", ashm, 0.65), col, ASH)
     # 粗さ: 面は艶、角の欠け・灰・根元は粗い
-    r = b.mixf(n2, rough_lo, rough_lo + 0.14)
+    r = b.mixf(n2, rough_lo, rough_lo + 0.10)
     r = b.mixf(edge, r, 0.5)
     r = b.mixf(fresh, r, 0.28)
     r = b.mixf(root, r, 0.7)
     r = b.mixf(ashm, r, 0.92)
-    # 発光（内部）
-    body_e = b.math("POWER", b.math("SUBTRACT", 1.0, tip), root_pow)
+    # 発光（内部）: 根元（tip<0.2）と内部のひび線だけ。結晶表面の大部分は発光ゼロ
+    body_e = b.math("POWER", b._map(tip, 0.0, root_len, 1.0, 0.0), 1.6)
     body_e = b.math("MULTIPLY", body_e, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", edge, 0.9)))
-    body_e = b.math("MULTIPLY", body_e, b.ramp(n1, [(0.3, 0.35), (0.7, 1.0)]))
+    body_e = b.math("MULTIPLY", body_e, b.ramp(n1, [(0.3, 0.45), (0.7, 1.0)]))
     body_e = b.math("MULTIPLY", body_e, inner)
-    cr = b.ramp(b.voronoi(6.5, "DISTANCE_TO_EDGE", vec=warp(b, 3.0, 0.2)), [(0.0, 1.0), (0.018, 0.0)])
-    cr = b.math("MULTIPLY", cr, b.ramp(b.noise(2.2, 3, 0.5), [(0.45, 0.0), (0.62, 1.0)]))
+    cr = b.ramp(b.voronoi(6.5, "DISTANCE_TO_EDGE", vec=warp(b, 3.0, 0.2)), [(0.0, 1.0), (0.010, 0.0)])
+    cr = b.math("MULTIPLY", cr, b.ramp(b.noise(2.2, 3, 0.5), [(0.5, 0.0), (0.64, 1.0)]))
     cr = b.math("MULTIPLY", cr, b.math("SUBTRACT", 1.0, edge))
-    spots = b.ramp(b.noise(7.0, 4, 0.55), [(0.64, 0.0), (0.76, 1.0)])
-    spots = b.math("MULTIPLY", spots, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", tip, 0.6)))
-    e = b.math("MAXIMUM", body_e, b.math("MULTIPLY", cr, 0.7))
-    e = b.math("MAXIMUM", e, b.math("MULTIPLY", spots, 0.22))
-    e = b.math("MAXIMUM", e, b.math("MULTIPLY", fresh, 0.3))
+    cr = b.math("MULTIPLY", cr, b._map(tip, 0.15, 0.85, 1.0, 0.25))
+    e = b.math("MAXIMUM", body_e, b.math("MULTIPLY", cr, 0.8))
+    e = b.math("MAXIMUM", e, b.math("MULTIPLY", fresh, 0.12))
     e = b.math("MULTIPLY", e, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", ashm, 0.8)))
     # 内部の発光色 #ff3b1f（linear 1.0,0.044,0.014）を中心に
     emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.26, 0.006, 0.003)), (0.65, (0.72, 0.024, 0.008)), (1.0, (1.0, 0.065, 0.02))])
