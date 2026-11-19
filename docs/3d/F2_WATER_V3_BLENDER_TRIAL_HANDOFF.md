@@ -33,3 +33,13 @@
 - Artifactが無い・スキャンが失敗した場合も、失敗を隠さず `UNVERIFIED` とrun URLを表示する。安全確認の合格は実manifestに依存し、レンダ品質承認とは別。
 - **2026-11-19の実際の観測**：ワークフローコードのGitHub保存は確認。コミットから照会できるPR起因runは0件であり、push起因の全runの列挙はこのコネクタでは不可。PRコメントの自動作成、run ID取得、ClamAVスキャン、Blender PNGの実動作は**未検証**。コメントまたはActionsの実行URLが判明した時点で、ログ・成果物・失敗原因を確認して本書を追記する。
 - この仕組みは水V3ワークフローにまず試験導入したもので、**他階層・全ワークフローに実装済みではない**。安定動作確認後に共有テンプレートとして移植する。PRの投稿権限が制限される環境では投稿が失敗しうるため、Job SummaryとArtifactは引き続き利用する。
+
+
+## 確認済みの実行結果（2026-11-19、GitHub Actionsの実ログに基づく）
+- [Run #44429500884](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44429500884)／scan-renderジョブ #135242924970。GitHub APIからジョブステップとログの実体を取得して確認。
+- ClamAV導入：成功。freshclamで daily.cvd (28187)、main.cvd (63)、bytecode.cvd (339) を更新。スキャナ `ClamAV 1.5.4/28187`。
+- Poly Havenの `river_small_rocks_diff_1k.jpg` （1,028,735 bytes）の取得成功。SHA-256 `adbcaae1f1445d5b49797c71ea2c3f43ccaf7b109f933a427f0d0993d1dbbc51`。
+- `clamscan --no-summary out/f2-water/quarantine/river_small_rocks_diff_1k.jpg`：**終了コード0、ログ `river_small_rocks_diff_1k.jpg: OK`。このファイルのウイルス検査は確認OK**。形式検査後のverified移動が記録されている。マルウェアの不存在を絶対保証するものではない。
+- 同runのレンダリング：**失敗**。Blenderは取得済み画像をロードしてCycles描画開始まで到達したが、`RuntimeError: Error: Build without OpenImageDenoiser` で停止。検査処理の失敗ではない。front/side/angle実PNGの成功は未確認。
+- 修正：`tools/f2-water/render_water.py` のdenoisingをFalseに変更し、互換性問題を回避する候補をコミット。修正後の再実行成否は別runの結果確認が必要。
+- その他のrunの結果を推測で成功扱いしない。確認済み証拠は上記runに限定。
