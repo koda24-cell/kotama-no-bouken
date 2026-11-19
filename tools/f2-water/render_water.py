@@ -15,7 +15,7 @@ bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=Fals
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
 scene.cycles.samples=32
-scene.cycles.use_denoising=True
+bpy.context.view_layer.cycles.use_denoising=True
 scene.render.resolution_x=960;scene.render.resolution_y=640;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 scene.world.color=(0.15,0.23,0.26)
@@ -65,9 +65,9 @@ p=watermat.node_tree.nodes.get("Principled BSDF")
 p.inputs["Base Color"].default_value=(.045,.55,.60,1)
 p.inputs["Roughness"].default_value=.065
 p.inputs["IOR"].default_value=1.333
-p.inputs["Transmission Weight"].default_value=.87
-p.inputs["Coat Weight"].default_value=.25
-p.inputs["Coat Roughness"].default_value=.03
+(p.inputs.get("Transmission Weight") or p.inputs.get("Transmission")).default_value=.87
+(p.inputs.get("Coat Weight") or p.inputs.get("Clearcoat")).default_value=.25
+(p.inputs.get("Coat Roughness") or p.inputs.get("Clearcoat Roughness")).default_value=.03
 # Shape water to avoid hard straight shoreline, with randomised multifrequency normal from mesh.
 verts=[];faces=[];N=95
 for j in range(N+1):
