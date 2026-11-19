@@ -1,0 +1,76 @@
+name: Blender 5.3 B2 Water Tiles Compatibility Review
+on:
+  push:
+    branches:
+      - feature/blender53-b2-water-compat-20261119
+    paths:
+      - '.github/workflows/blender53-b2-water-compat-review.yml'
+      - 'tools/b2-render/build-modular-water-tiles.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert exact Blender 5.3.0
+        run: |
+          set -euo pipefail
+          blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan water source before executing Blender
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-modular-water-tiles.py qa/security/source.log
+      - name: Build original B2 water tiles with Blender 5.3
+        run: |
+          set -euo pipefail
+          blender -b --disable-autoexec -t 2 --python tools/b2-render/build-modular-water-tiles.py
+      - name: Validate 16 GLB and three PNG without changing originals
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json, struct
+          d=Path('render-output/b2-water-tiles')
+          glbs=sorted(d.glob('water_tile_*.glb'))
+          pngs=sorted(d.glob('*.png'))
+          assert len(glbs)==16,len(glbs)
+          assert {p.name for p in pngs}=={'top.png','side.png','angle.png'}
+          manifest={}
+          for p in glbs+pngs:
+              b=p.read_bytes()
+              assert len(b)>100,p
+              if p.suffix=='.glb':
+                  assert b[:4]==b'glTF' and struct.unpack('<I',b[4:8])[0]==2,p
+              else:
+                  assert b[:8]==bytes.fromhex('89504e470d0a1a0a'),p
+              manifest[p.name]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}
+          (d/'BLENDER53_COMPAT_QA_NOT_APPROVED.json').write_text(json.dumps({'status':'NOT_APPROVED','blender':'5.3.0','files':manifest},indent=2))
+          print('BLENDER53_B2_WATER_16_GLB_3_PNG_PASS')
+          PY
+      - name: Scan all generated water candidates before publishing artifact
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-water-tiles qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blender53-b2-water-compat-NOT-APPROVED
+          path: |
+            render-output/b2-water-tiles/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn
