@@ -242,6 +242,14 @@ for color_name,(dark,light,emission) in colorways.items():
 # Fresnel is tested through the physically-based IOR/coat layer rather than
 # an artificial bright outline or thin emission mask.
 v10_files={}
+for m in crystal_mats:
+    ramp=next(n for n in m.node_tree.nodes if n.type=="VALTORGB")
+    ramp.color_ramp.elements[0].color=(.018,.055,.095,1)
+    ramp.color_ramp.elements[1].color=(.11,.29,.40,1)
+    m.node_tree.nodes.get("Principled BSDF").inputs["Emission Color"].default_value=(.12,.72,1.0,1)
+vfx_shader.inputs["Emission Color"].default_value=(.15,.7,1,1)
+for obj in scene.objects:
+    if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):obj.data.color=(.12,.68,1.0)
 for experiment in ("baseline","pbr_facets","pbr_coat"):
     for i,m in enumerate(crystal_mats):
         sh=m.node_tree.nodes.get("Principled BSDF")
