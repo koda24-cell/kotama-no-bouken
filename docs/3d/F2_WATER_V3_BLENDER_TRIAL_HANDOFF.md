@@ -19,3 +19,9 @@
 4. 鮮やかさ、水底の石、自然な水面、きらめき、靄を段階的に調整し、再レンダリング。
 
 実行入口：https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f2-safe-water-render.yml
+
+## 実行結果の証拠と反映方法（2026-11-19追記）
+- 本PRは `tools/f2-water/report_run.py` により **Actionsの成功・失敗どちらでも** `execution_report.json` とGitHub Job Summaryを生成する設計。run ID/URL・スキャン判定・exit code・取得元SHA・レンダー画像報告数・エラーを記録。隔離中の未スキャンファイルはArtifactsアップロード対象から除外。
+- 正式な結果判定は、Actions run と実Artifact/PNGを人が確認して初めて行う。レポート生成コードを保存しただけで検査済み・レンダー済みとはしない。
+- **本追記時点で照会できたPR起因のワークフローrunは0件。** この照会はpush起因の実行を網羅しない。run IDが得られるまでは「スキャン未検証／レンダー未検証」を維持する。
+- 次の担当はActionsからrunを開き、成功/失敗・実際のClamAVログ・manifest・front/side/angle PNGを確認し、結果と証拠URLを本書または実行結果台帳に更新する。失敗時もエラー原因と再実行結果を追記する。自動レポートをGitHubの文書へ書き戻す権限・仕組みは現時点で未実装。
