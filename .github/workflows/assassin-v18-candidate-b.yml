@@ -1,7 +1,7 @@
 name: Assassin V18 Candidate B - Shibu Face posterior review
 on:
   push:
-    branches: [feature/gpt-assassin-v18-posterior-candidate-b-20261119]
+    branches: [feature/gpt-assassin-v18-posterior-candidate-a-20261119]
     paths:
       - 'tools/character-mesh-research/build_v18_candidate_b.py'
       - '.github/workflows/assassin-v18-candidate-b.yml'
