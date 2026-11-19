@@ -82,7 +82,7 @@ def lathe(name, prof, sides=12, rfn=None, phase=0.0, cap_bottom=False, cap_top=F
     return C.obj_from_bm(bm, name, smooth)
 
 
-def broken_shell(name, prof, sides, holes, thickness=0.0025, rfn=None, seed=0, jag=0.004, phase=0.0):
+def broken_shell(name, prof, sides, holes, thickness=0.0025, rfn=None, seed=0, jag=0.004, phase=0.0, mats=None):
     """回転体の殻を三角形化し、holes=[(angle, z, ang_r, z_r)] の楕円（ノイズで崩す）内の三角形を消す。
     割れ口の頂点をずらしてギザギザにし、厚みをつける（割れ口の断面が見える）。"""
     bm = lathe_bm(prof, sides, rfn, phase)
@@ -111,11 +111,16 @@ def broken_shell(name, prof, sides, holes, thickness=0.0025, rfn=None, seed=0, j
             a = math.atan2(v.co.y, v.co.x) + rnd.uniform(-1, 1) * jag / max(r, 1e-3)
             v.co = Vector((r * math.cos(a), r * math.sin(a), v.co.z + rnd.uniform(-1, 1) * jag))
     ob = C.obj_from_bm(bm, name, smooth=True)
+    if mats:  # mats=(外側, 内側)。内側の殻に別材質（煤の膜）を割り当てる
+        for mt in mats:
+            ob.data.materials.append(mt)
     m = ob.modifiers.new("solid", "SOLIDIFY")
     m.thickness = thickness
     m.offset = -1.0
     m.use_rim = True
     m.use_even_offset = True
+    if mats and len(mats) > 1:
+        m.material_offset = 1
     return C.apply_mods(ob)
 
 

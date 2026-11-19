@@ -29,7 +29,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Vector  # noqa: E402
 
 NAME = "b4p_mine_lantern"
-VERSION = "v4"
+VERSION = "v5"
 rnd = random.Random(84)
 C.reset(84)
 
@@ -39,6 +39,8 @@ wire = C.weathered_iron("wire", heat_center=(0, 0, 0.16), heat_r=(0.03, 0.12), s
 HOLE_A = -1.25
 glass = L.sooty_glass("glass", soot_z=(0.15, 0.215), scale=0.4, tint=(0.012, 0.014, 0.011), tint2=(0.020, 0.015, 0.010),
                       crack_center=(0.06 * math.cos(HOLE_A), 0.06 * math.sin(HOLE_A), 0.145), crack_r=(0.03, 0.09))
+# ホヤの内側：炎の煤が膜になって黒く付く（内側だけ別材質。光を受けても黄土色の板に見えない）
+glass_in = L.sooty_glass("glass_in", soot_z=(0.10, 0.17), scale=0.4, tint=(0.006, 0.0055, 0.005), tint2=(0.010, 0.008, 0.006))
 wick = L.wick_glow("wick", 0.079, 0.0825, 0.122, strength=5.0)
 
 parts = []
@@ -76,8 +78,8 @@ GLOBE = [(0.033, 0.084), (0.044, 0.094), (0.054, 0.110), (0.059, 0.130), (0.060,
 globe = L.broken_shell("globe", GLOBE, 14,
                        holes=[(HOLE_A, 0.145, 0.95, 0.050), (HOLE_A + 2.9, 0.175, 0.30, 0.018)],
                        thickness=0.0022, seed=3, jag=0.0035,
-                       rfn=L.dent_fn([], wobble=0.0008, seed=2))
-parts.append(C.assign(globe, glass))
+                       rfn=L.dent_fn([], wobble=0.0008, seed=2), mats=(glass, glass_in))
+parts.append(globe)
 
 # 落ちた破片2枚（タンクの肩に引っかかる）
 for j, (a, z) in enumerate(((HOLE_A + 0.25, 0.060),)):
