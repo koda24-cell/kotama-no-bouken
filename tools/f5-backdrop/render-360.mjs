@@ -12,6 +12,7 @@ const server = http.createServer(async (req, res) => {
     if (path === '/three.module.js') file = resolve(root, 'node_modules/three/build/three.module.js');
     else if (path === '/worldlocked-360-backdrop.mjs') file = resolve(root, 'tools/f5-backdrop/worldlocked-360-backdrop.mjs');
     else if (path === '/original-fog-ring.mjs') file = resolve(root, 'tools/f5-backdrop/original-fog-ring.mjs');
+    else if (path === '/field/b5-vfx-presets.js') file = resolve(root, 'field/b5-vfx-presets.js');
     else if (path === '/field/b5-distant-fog-background.js') file = resolve(root, 'field/b5-distant-fog-background.js');
     else file = resolve(root, 'tools/f5-backdrop/preview.html');
     let body = await readFile(file);
