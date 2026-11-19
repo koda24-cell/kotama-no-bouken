@@ -47,7 +47,7 @@ jobs:
       - name: Install version-pinned Three.js and Playwright Core without lifecycle scripts
         working-directory: tools/floor6/threejs-backface-review
         run: npm install --ignore-scripts --no-audit --no-fund
-      - name: Browser test: load actual GLB and render 3 camera views
+      - name: "Browser test - load actual GLB and render 3 camera views"
         env:
           F6_SOURCE_GLB: /tmp/f6-backface-abc/render-output/floor6/foliage_backface_light_trial/foliage_normal_test_NOT_APPROVED.glb
           CHROME_BIN: /usr/bin/google-chrome
