@@ -25,6 +25,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 import bmesh  # noqa: E402
+import bpy  # noqa: E402
 import common as C  # noqa: E402
 import lib_mine as L  # noqa: E402
 from mathutils import Vector, noise  # noqa: E402
@@ -171,6 +172,36 @@ pc, pn = surface_point(0.07, 0.13, -1)
 patch = L.plank("name_patch", 0.12, 0.075, 0.006, segs=3, seed=31, round_edges=0.3, chip=0.004)
 C.xform(patch, pc + Vector((0, -0.004, 0)), (90 + rnd.uniform(-4, 4), 0, rnd.uniform(-6, 6)))
 parts.append(C.assign(patch, hide))
+# 縫い取り（文字の代わり）：名札の縁の縫い目と、つるはしの印を糸で刺す（盛り上がった糸の線）
+thread = L.canvas("thread", scale=0.3, base=(0.075, 0.062, 0.045))
+pm = patch.matrix_world.copy()
+bpy.context.view_layer.update()
+pm = patch.matrix_world.copy()
+
+
+def on_patch(u, v, lift=0.0042):
+    """名札ローカル（u: 長手 -0.06..0.06, v: 幅 -0.037..0.037）→ 世界。名札の表（ローカル +Z＝世界 -Y 側）に少し浮かせる"""
+    return pm @ Vector((u, v, lift))
+
+
+k = 0
+for side in range(4):
+    for j in range(5 if side % 2 == 0 else 3):
+        if side == 0:
+            a, b_ = (-0.05 + j * 0.021, -0.028), (-0.05 + j * 0.021 + 0.012, -0.028)
+        elif side == 2:
+            a, b_ = (-0.05 + j * 0.021, 0.028), (-0.05 + j * 0.021 + 0.012, 0.028)
+        elif side == 1:
+            a, b_ = (0.051, -0.02 + j * 0.017), (0.051, -0.02 + j * 0.017 + 0.01)
+        else:
+            a, b_ = (-0.051, -0.02 + j * 0.017), (-0.051, -0.02 + j * 0.017 + 0.01)
+        st = C.sweep(f"stitch_{k}", [on_patch(*a), on_patch(*b_)], C.circle_profile(0.0014, 4), smooth=False)
+        parts.append(C.assign(st, thread))
+        k += 1
+# つるはしの印：弧（頭）と柄の線
+arc = [on_patch(-0.032 + 0.064 * t, 0.014 - 0.022 * (2 * t - 1) ** 2 + 0.004) for t in (i / 8 for i in range(9))]
+parts.append(C.assign(C.sweep("emblem_head", arc, C.circle_profile(0.0019, 4)), thread))
+parts.append(C.assign(C.sweep("emblem_handle", [on_patch(0.0, 0.016), on_patch(0.004, -0.022)], C.circle_profile(0.0019, 4)), thread))
 for k, (x, z) in enumerate(((0.03, 0.17), (0.11, 0.17), (0.03, 0.09), (0.11, 0.09))):
     rv = C.dome(f"patch_rivet_{k}", 0.004, 0.003, sides=5)
     sp, sn = surface_point(x, z, -1)
