@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - feature/b2-frozen-ruin-pillars-20261112
-      - feature/shared-container-b2-frozen-legacy-20261119
-    paths:
-      - 'tools/b2-3d/create-frozen-pillars.py'
-      - '.github/workflows/b2-frozen-pillars-render.yml'
 permissions:
   contents: read
   packages: read
