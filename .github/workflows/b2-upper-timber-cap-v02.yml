@@ -1,0 +1,82 @@
+name: B2 Upper Timber Bearing Cap V02 Blender Review
+on:
+  push:
+    branches: [feature/gpt-b2-upper-timber-bearing-cap-v01-20261119]
+    paths:
+      - 'tools/b2-waterwheel-upper-cap/build_upper_cap_v02.py'
+      - '.github/workflows/b2-upper-timber-cap-v02.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record run evidence
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-upper-timber-bearing-cap-v01-20261119
+          git reset --hard origin/feature/gpt-b2-upper-timber-bearing-cap-v01-20261119
+          mkdir -p docs/3d/b2-upper-timber-cap
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-upper-timber-cap/latest-v02.json
+          git add docs/3d/b2-upper-timber-cap/latest-v02.json
+          git commit -m "chore(b2): record upper timber cap Blender run"
+          git push origin HEAD:feature/gpt-b2-upper-timber-bearing-cap-v01-20261119
+      - name: Restore approved-looking CC0 photo from rim V11
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-single-rim-v11
+          run-id: 44436858908
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Validate source SHA
+        run: |
+          set -e
+          echo "addae90dd199b9f6d0417c70f5152a32bd504e83e2deffa8e0965a0fdf5e2c67  checkpoint/b2_waterwheel_single_rim_segment_v11.blend" | sha256sum -c
+          mkdir -p render-output/b2-upper-cap-v02
+      - name: Generate real model and four Cycles views
+        run: |
+          set -o pipefail
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-upper-cap/build_upper_cap_v02.py -- render-output/b2-upper-cap-v02 checkpoint/b2_waterwheel_single_rim_segment_v11.blend | tee /tmp/upper-cap.log
+          if grep -E 'Traceback \(most recent call last\)|Python script failed|Error: Python' /tmp/upper-cap.log; then exit 1; fi
+          grep -q 'B2_UPPER_CAP_V02_REAL_BLENDER_RENDER_OK' /tmp/upper-cap.log
+      - name: Verify generated GLB Blend PNG and SHA
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          root=Path('render-output/b2-upper-cap-v02')
+          m=json.loads((root/'b2_one_upper_timber_bearing_cap_v02_manifest.json').read_text())
+          assert m['geometry_piece_count']==1 and m['approval']=='NOT_APPROVED'
+          assert m['seat_mesh_faces']>50 and m['seat_radius_m']==.322
+          assert len(m['files'])==6
+          assert sum(n.endswith('_front.png') or n.endswith('_side.png') or n.endswith('_angle.png') or n.endswith('_back.png') for n in m['files'])==4
+          for n,info in m['files'].items():
+            data=(root/n).read_bytes()
+            assert len(data)==info['bytes'] and hashlib.sha256(data).hexdigest()==info['sha256'],n
+            if n.endswith('.png'):assert data.startswith(bytes.fromhex('89504e470d0a1a0a'))
+            if n.endswith('.blend'):assert len(data)>100000
+            if n.endswith('.glb'):
+              assert data[:4]==b'glTF'
+              length=struct.unpack_from('<I',data,12)[0]
+              j=json.loads(data[20:20+length])
+              assert len(j.get('meshes',[]))==1
+              assert len(j.get('images',[]))>=3
+          print('B2_UPPER_CAP_V02_VERIFIED')
+          PY
+      - name: Store unapproved review-only files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-upper-timber-bearing-cap-v02
+          path: render-output/b2-upper-cap-v02
+          retention-days: 14
+          if-no-files-found: warn
