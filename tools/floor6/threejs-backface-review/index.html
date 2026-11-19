@@ -23,6 +23,7 @@ const fill=new THREE.DirectionalLight(0xe3efff,0.5);fill.position.set(5,2,5);sce
 function patchMaterial(material,kind){
   material.side=THREE.DoubleSide;
   material.roughness=0.92;
+  if(material.emissive)material.emissive.setRGB(0,0,0); // isolate backface correction from exported C emission
   if(kind==='A')return;
   material.onBeforeCompile=(shader)=>{
     const anchor='#include <color_fragment>';
