@@ -1,4 +1,4 @@
-name: Floor3 Glass Single Corner Chip V9 Blender
+name: Floor3 Glass Detached Corner Shard V9 Blender
 on:
   push:
     branches: [feature/gpt-f3-broken-window-glass01-20261119]
@@ -31,7 +31,7 @@ jobs:
           python3 - <<'PY'
           import pathlib,hashlib,json,struct,os
           p=pathlib.Path('out/f3_glass_corner_chip_v9')
-          name='f3_glass_single_corner_chip_v9'
+          name='f3_glass_detached_shard01_v9'
           names=[name+'.glb',name+'.blend','F3_GLASS_SINGLE_CHIP_ROUGHNESS_01.png']+[name+'-'+d+'.png' for d in ['front','side','angle','chip_detail']]
           record={}
           for n in names:
