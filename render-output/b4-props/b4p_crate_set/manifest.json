@@ -1,0 +1,104 @@
+{
+  "asset": "b4p_crate_set",
+  "version": "v1",
+  "blender": "4.2.3 LTS",
+  "triangles": 5468,
+  "budget_triangles": 9000,
+  "materials": [
+    "b4p_crate_set_mat"
+  ],
+  "bake": {
+    "res": 1024,
+    "emissive": true,
+    "maps": [
+      "basecolor",
+      "orm",
+      "normal",
+      "emissive"
+    ]
+  },
+  "bbox_m": [
+    3.378,
+    0.906,
+    0.666
+  ],
+  "origin": "bottom-center",
+  "up": "+Y (glTF)",
+  "glb": "b4p_crate_set.glb",
+  "glb_bytes": 952324,
+  "cc0_textures": {
+    "wood_planks_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/wood_planks",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "3b0669f683e4bf10f5a55a381cfa9669a7b8dfd921901829daa3b35acc2bbdec"
+    },
+    "wood_planks_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/wood_planks",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "d02abf113e17a8abe97e1be3e9d6d88add242e8c2291e2200d37aa8c68909f25"
+    },
+    "rusty_metal_03_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rusty_metal_03",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "6bb9ede80978c6c679cef3babec452157f3638c6a90526db617644e06ba1c068"
+    },
+    "rusty_metal_03_rough_1k.jpg": {
+      "source": "https://polyhaven.com/a/rusty_metal_03",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "f8c33af71fcd8bf6325517022bd6b703e76550cff5047df4e7a6a662c389c77a"
+    },
+    "rusty_metal_03_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/rusty_metal_03",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "9c9bb22e4e432e8460bcc3157c76b2a3072e7faa64ed8fe4bc213e8f2175c126"
+    },
+    "rust_coarse_01_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rust_coarse_01",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "369f69eb86a7dcc4e5b6e30b1f3a4da5ce6ba50cf417de937efb4f09101f88d4"
+    },
+    "rock_face_02_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "d777f2c9b598773c2143751c34913cf5eef0ae392af31fb73c28b98afab6fb7b"
+    },
+    "rock_face_02_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "a9dc200810f5488395fdc928b5a9441c007c33047d0375d946f33dcd2ff1c853"
+    }
+  },
+  "pinterest_refs": [
+    97,
+    98,
+    100
+  ],
+  "sha256": {
+    "b4p_crate_set.glb": "8ef9043c10b9db06081268fe504d8d86cb0f85c80702842b4f098eb4dcbc1797",
+    "b4p_crate_set_volcanic_front.png": "add01bfd4cb746014f8c858b4742ca06708f49b7e88e31092c12751f66deb163",
+    "b4p_crate_set_volcanic_side.png": "2f970927f11edac9623ca494245140c4216251a8bd7969b3ccdb6c40d350d9d7",
+    "b4p_crate_set_volcanic_angle.png": "37cb1407909741be328d8fd7d6acc699d2dc8040f91f2f601c89efec4711d5d9",
+    "b4p_crate_set_volcanic_top.png": "238a942a9f9bd124d673673d563777f573e8121e35cd62ae2b0a0b1046df5476",
+    "b4p_crate_set_volcanic_close.png": "155fea9f5b2bef0bfa9edc154192436f58b909b8a81cfd0db5918463650fd611",
+    "b4p_crate_set_volcanic_back.png": "372c52beb4f1691601ee6a172c7eede914edd6a2a7ffe907f0370c6f6b09d255",
+    "b4p_crate_set_studio_front.png": "d94e5ef68664389a5580f2cf5d0d9f8b41124261996f8e187f64bd00223f5295",
+    "b4p_crate_set_studio_angle.png": "ee842658df4129a2ccb20d9da2ab30d58849ca52591902452767e9f42b3f90b2",
+    "b4p_crate_set_studio_scale.png": "c69998436092a627c2a345c4cc24ac3bebafdd40719a65150831e1a7f8e3ad49"
+  },
+  "renders": [
+    "b4p_crate_set_volcanic_front.png",
+    "b4p_crate_set_volcanic_side.png",
+    "b4p_crate_set_volcanic_angle.png",
+    "b4p_crate_set_volcanic_top.png",
+    "b4p_crate_set_volcanic_close.png",
+    "b4p_crate_set_volcanic_back.png",
+    "b4p_crate_set_studio_front.png",
+    "b4p_crate_set_studio_angle.png",
+    "b4p_crate_set_studio_scale.png"
+  ],
+  "samples": 96,
+  "notes": "焦げた木箱3種（A無傷・B蓋割れ・C潰れ）。x=-1.05/0/+1.15 に並ぶ。ゲーム側は分割して個別に配置可（同一テクスチャ）。",
+  "game_lights": [],
+  "approval": "NOT_APPROVED",
+  "design": "docs/3d/B4_PROPS_DESIGN.md"
+}
