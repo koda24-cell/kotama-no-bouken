@@ -1,4 +1,4 @@
-name: B2 Single Timber Lower Axle Bearing V01 Blender Cycles
+name: B2 Timber Lower Bearing V01 Real Blender 4 View Review
 on:
   push:
     branches: [feature/gpt-b2-single-timber-axle-bearing-v01-20261119]
