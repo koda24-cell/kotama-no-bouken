@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>コタマ Actions ステータス</title>
+<style>
+:root{font-family:system-ui,"Yu Gothic",sans-serif;color-scheme:light dark}body{width:370px;margin:0;padding:15px;box-sizing:border-box;font-size:13px}h1{font-size:17px;margin:0 0 7px}p{margin:6px 0 12px;color:gray}label{display:block;font-weight:650;margin:10px 0 4px}input,select{box-sizing:border-box;width:100%;padding:7px;border:1px solid #9996;border-radius:7px;background:transparent;color:inherit}button{padding:8px 11px;border-radius:7px;border:1px solid #8886;cursor:pointer;background:transparent;color:inherit}button.primary{background:#1673d8;color:white;border-color:#1673d8}button:disabled{opacity:.5;cursor:default}.row{display:flex;gap:8px}.row>div{flex:1;min-width:0}.buttons{display:flex;gap:8px;margin:13px 0;flex-wrap:wrap}.muted{font-size:12px;color:gray}.entry{border:1px solid #8885;border-radius:8px;padding:9px;margin:8px 0;overflow-wrap:anywhere}.entry button{float:right;padding:3px 8px}#notice{min-height:18px}details{margin-top:12px}summary{cursor:pointer;font-weight:650}#chat{overflow-wrap:anywhere;font-weight:650}#runs{max-height:200px;overflow:auto}.run{padding:6px 0;border-bottom:1px solid #8884}.run a{color:#2787da;text-decoration:none}.dot{font-size:16px}.running{color:#c18b18}.success{color:#159454}.failure{color:#d34848}.unknown{color:#888}
+</style></head><body>
+<h1>コタマ Actions ステータス</h1>
+<p id="chat">ChatGPTのチャットを開いてください。</p>
+<div id="editor" hidden>
+  <label for="repo">GitHubリポジトリ</label><input id="repo" value="koda24-cell/kotama-no-bouken" placeholder="owner/repo">
+  <div class="row"><div><label for="branch">ブランチ</label><input id="branch" placeholder="feature/..."></div><div><label for="pr">PR番号（任意）</label><input id="pr" inputmode="numeric" placeholder="570"></div></div>
+  <div class="row"><div><label for="runId">run ID（任意）</label><input id="runId" inputmode="numeric" placeholder="44465481091"></div><div><label for="category">種別</label><select id="category"><option value="all">すべて</option><option value="render">レンダリング</option><option value="safety">安全検査</option><option value="performance">軽量化・監査</option><option value="other">その他</option></select></div></div>
+  <label for="workflow">ワークフロー名・ファイル名で絞る（任意）</label><input id="workflow" placeholder="blender / .yml / safety">
+  <div class="buttons"><button id="add" class="primary">このチャットに紐付ける</button><button id="refresh">状態を更新</button></div>
+  <div id="notice" class="muted" role="status"></div>
+  <strong>登録済みの対象</strong><div id="entries"></div>
+  <strong>取得した実行結果</strong><div id="runs" class="muted">未取得</div>
+</div>
+<details><summary>GitHub APIの認証（任意）</summary><p class="muted">30秒ごとの最新データ取得には読み取り専用Fine-grained tokenを推奨。未設定ではAPI制限を避けるため60秒キャッシュ。トークンはこのChromeプロファイル内に保存し、GitHub APIへの通信以外に使いません。</p><label for="token">GitHubトークン</label><input type="password" id="token" autocomplete="off" placeholder="github_pat_..."><div class="buttons"><button id="saveToken">トークン保存</button><button id="deleteToken">トークン削除</button></div><p id="tokenStatus" class="muted"></p></details>
+<script src="status.js"></script><script src="popup.js"></script></body></html>
