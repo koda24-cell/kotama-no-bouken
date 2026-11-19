@@ -62,6 +62,11 @@ reflectedLight.indirectDiffuse+=diffuseColor.rgb*(0.075*kotamaBack*uKotamaEnhanc
       mat.customProgramCacheKey=()=> (previousKey?previousKey():'v7')+'|kotama-meadow-v8-look';
       if('roughness' in mat)mat.roughness=Math.max(mat.roughness??0,0.88);
       if('metalness' in mat)mat.metalness=0;
+      // The original V7 GLB has emissiveFactor [1,1,1] on every grass material.
+      // Disable its white self-illumination on the cloned review material only;
+      // otherwise it can wash out COLOR_0 and defeat root occlusion.
+      if(mat.emissive?.setRGB)mat.emissive.setRGB(0,0,0);
+      if('emissiveIntensity' in mat)mat.emissiveIntensity=0;
       mat.needsUpdate=true;
     }
     count++;
