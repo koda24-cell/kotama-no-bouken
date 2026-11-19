@@ -97,3 +97,12 @@ the container is trusted.
 - No image/artifact promotion or game integration without explicit approval.
 - Keep logs and manifest hashes as evidence; Actions artifacts expire.
 - Update this page with actual run IDs, digest and scan evidence after verification.
+
+## Actual consumer migration evidence (2026-11-19)
+
+- B5 organic miasma: [run #44447869498](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44447869498), actual 3-view PNG/GLB and ClamAV 3 source / 10 generated files, 0 infected. Modeling PR #528 remains draft and unapproved.
+- General candidate safety audit: [run #44448178510](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448178510), ClamAV scanned 1,219 files, 0 infected. PR #539 merged to `development`.
+- B2 bridge props: [run #44448963669](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448963669), 4 GLBs/12 PNGs, ClamAV source 1/output 18 files, 0 infected.
+- B2 stone ruins V4: [run #44448970296](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448970296), 4 GLBs/12 PNGs, ClamAV source script 1/source bridge GLB 1/output 18 files, 0 infected.
+- B2 migration PR #542 merged to `development`. The other floor workflows remain on their previous implementations until migrated and verified individually.
+- These are **technical and security QA results only**, not visual artistic approval of PNGs, and no GLB/PNG was promoted to the game.
