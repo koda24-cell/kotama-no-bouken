@@ -1,8 +1,8 @@
 {
   "asset": "b4p_brazier_cage",
-  "version": "v3",
+  "version": "v4",
   "blender": "4.2.3 LTS",
-  "triangles": 9730,
+  "triangles": 9770,
   "budget_triangles": 10000,
   "materials": [
     "b4p_brazier_cage_mat"
@@ -20,12 +20,12 @@
   "bbox_m": [
     0.737,
     0.808,
-    0.901
+    0.897
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_brazier_cage.glb",
-  "glb_bytes": 1285084,
+  "glb_bytes": 1314304,
   "cc0_textures": {
     "rusty_metal_03_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rusty_metal_03",
@@ -65,16 +65,16 @@
     103
   ],
   "sha256": {
-    "b4p_brazier_cage.glb": "0ab0ed0297f1d7329b20c04317506a6462b7511a15d3b3dcacc36c66fdc36814",
-    "b4p_brazier_cage_volcanic_front.png": "ee697ae8196860a93cdba94a8c97c5487f48666fb726d2ae4bd01c6bb7059905",
-    "b4p_brazier_cage_volcanic_side.png": "a520dde25e88576dc560f999cc2bf44684365aa9e1bd60cf7ee1e9ab86b34a78",
-    "b4p_brazier_cage_volcanic_angle.png": "1131fb60ee7a282d27e8d05e1ee86ad35364944aba7f46b1aee8cf3e32be019d",
-    "b4p_brazier_cage_volcanic_top.png": "ff6565373dc09e85d7cf4578ce3e09d25bcea6115987278e0c3375d1e300c49b",
-    "b4p_brazier_cage_volcanic_close.png": "f1819a1892034436e6c5893449e7bf4ecc27a247ec8f28959bff8390ecefb045",
-    "b4p_brazier_cage_volcanic_back.png": "a505c8a84d77a997446da2bab43dfed8e5ba252f8e92215bb7942a6bf2f58da1",
-    "b4p_brazier_cage_studio_front.png": "74acb84977f6bcc78356afe94e02b09d6ae7f4c858e2a8db13c26861ae897b68",
-    "b4p_brazier_cage_studio_angle.png": "fd396d1fb6abf8978b679ed25d15238b22b7d4b47d79ae71f434673179b965fa",
-    "b4p_brazier_cage_studio_scale.png": "7556aaaf702fb7332c4388e29688512bafccdcd6e6a98350b4919f02c2cd8121"
+    "b4p_brazier_cage.glb": "1b7a74bcf5970608016fbff13c6b597b3c32c11966e8204c5f55e4ee81f9ed78",
+    "b4p_brazier_cage_volcanic_front.png": "79fa6d40d0e94f38338a575796cdb43a4e60c647f521cbd44fae0071895c4562",
+    "b4p_brazier_cage_volcanic_side.png": "5b994d9acb76a08f83faa86bf689f500e59facaabaea7ad120638ae11354e99a",
+    "b4p_brazier_cage_volcanic_angle.png": "76593fb8f4fa887edb63941295994de0668cb402858bd742f48b5021e9dbabdb",
+    "b4p_brazier_cage_volcanic_top.png": "4d08fc16781e68166134fd10ba57f3c1050645e386df65b7a05c85dad41df3b2",
+    "b4p_brazier_cage_volcanic_close.png": "16010bfd39b750ec3548d9d58bd0b39f2bcde0d10be72ed1cc398971e62681e4",
+    "b4p_brazier_cage_volcanic_back.png": "16037523d814383e585623db04ce99fc81379abdb43d121c0f5c2e89667e40e2",
+    "b4p_brazier_cage_studio_front.png": "37b487dec76a8008766103c6f09f44c56e441d080d7ce7b69eccef954caafef0",
+    "b4p_brazier_cage_studio_angle.png": "4b91c32be360aba5a550f712a562947d808e5f02e175f728d6b8e983d197ee14",
+    "b4p_brazier_cage_studio_scale.png": "ab75665d1982240fdc6f156b1fe763d36f967de7b39d9caa68f8ade872e1cab0"
   },
   "renders": [
     "b4p_brazier_cage_volcanic_front.png",
