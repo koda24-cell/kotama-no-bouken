@@ -18,7 +18,7 @@ jobs:
         run: |
           if ! command -v blender >/dev/null 2>&1; then
             timeout 180 sudo apt-get update || echo "apt index update timeout; trying cached index"
-            timeout 480 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender python3-numpy python3-pil
+            timeout 1200 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -o Acquire::Retries=3 blender python3-numpy python3-pil
           else
             sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-numpy python3-pil
           fi
