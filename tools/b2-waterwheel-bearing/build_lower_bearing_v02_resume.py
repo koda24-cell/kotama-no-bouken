@@ -1,4 +1,4 @@
-"""V02 timber saddle finishing: SHA-verified V01 checkpoint restoration.
+"""V02 timber saddle finishing: verified Blender edit checkpoint and UV correction.
 Tame conspicuous side UV pale photo bands while preserving saddle and all geometry.
 """
 import bpy,sys,json,hashlib,math
