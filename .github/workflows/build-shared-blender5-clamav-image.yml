@@ -78,9 +78,9 @@ jobs:
           set -euo pipefail
           blender --version | head -n 2
           python3 - <<'PY'
-          import subprocess,re
+          import subprocess
           version=subprocess.check_output(['blender','--version'],text=True).splitlines()[0]
-          assert re.search(r'Blender ([5-9]|[1-9][0-9])\\.',version),version
+          assert version.startswith('Blender 5.'),version
           print('BLENDER5_VERSION_PASS',version)
           PY
           clamscan --version
