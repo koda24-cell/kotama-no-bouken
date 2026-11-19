@@ -43,9 +43,9 @@ for y in range(256):
   r=max(.29,min(.95,rawrough+.09*dirt+.26*oxid+.16*soot))
   rough.extend((r,r,r,1.))
 a=bpy.data.images.new("V22 matched fauld color",width=256,height=256,alpha=False)
-a.pixels[:]=al;a.filepath_raw=str(out/"v22_matched_backplate_albedo_v2.png");a.file_format="PNG";a.save();a.pack()
+a.pixels[:]=al;a.filepath_raw=str(out/"v22_matched_backplate_albedo_v1.png");a.file_format="PNG";a.save();a.pack()
 r=bpy.data.images.new("V22 matched fauld roughness",width=256,height=256,alpha=False)
-r.pixels[:]=rough;r.filepath_raw=str(out/"v22_matched_backplate_roughness_v2.png");r.file_format="PNG";r.save();r.pack()
+r.pixels[:]=rough;r.filepath_raw=str(out/"v22_matched_backplate_roughness_v1.png");r.file_format="PNG";r.save();r.pack()
 im.pack()
 steel=mat("V22 patinated forged steel",(.35,.36,.39),.82,.49,a,r)
 dark=mat("lap undercut dark iron",(.13,.14,.16),.67,.76)
@@ -172,7 +172,7 @@ views=[("front",(0,-1.6,1.48)),("left",(-1.5,0,1.47)),("right",(1.5,0,1.47)),
 for n,pos in views:
  cam.location=pos;cam.rotation_euler=(Vector((0,.13,1.17))-cam.location).to_track_quat("-Z","Y").to_euler()
  scene.render.filepath=str(out/(n+".png"));bpy.ops.render.render(write_still=True)
-files=["gothic_backplate_v1.glb","gothic_backplate_v1.blend","v22_matched_backplate_albedo_v2.png","v22_matched_backplate_roughness_v2.png"]+[n+".png" for n,_ in views]
+files=["gothic_backplate_v1.glb","gothic_backplate_v1.blend","v22_matched_backplate_albedo_v1.png","v22_matched_backplate_roughness_v1.png"]+[n+".png" for n,_ in views]
 hashes={f:hashlib.sha256((out/f).read_bytes()).hexdigest() for f in files}
 manifest={"asset":"gothic_backplate","version":1,"approval":"NOT_APPROVED","game_integrated":False,"source":"tools/b5-knights/build_gothic_backplate_v1.py",
 "source_sha":os.environ.get("GITHUB_SHA"),"run_id":os.environ.get("GITHUB_RUN_ID"),"reference":"15th century German Gothic backplate, Met Museum 22881 and 22906","chest_compatibility":"Breastplate V6 lowest Z0.875 / halfwidth .172; backplate low edge .872/.172","source_texture_sha256":"7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23","backplate_segments":1,"views":[n for n,_ in views],"files_sha256":hashes,"parts":len(parts),"limitations":"Backplate only; front breastplate and fauld are separately approved components. Culet and joining straps not yet included."}
