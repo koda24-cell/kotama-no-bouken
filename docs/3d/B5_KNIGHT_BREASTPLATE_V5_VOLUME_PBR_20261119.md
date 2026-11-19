@@ -27,3 +27,10 @@ The user finds breastplate V4 too flat and wants a texture matching the already 
 - V6 independent generator `tools/b5-knights/build_gothic_breastplate_v6.py` doubles transverse ring resolution 160→320, widens flute smoothing σ 6→10.5mm and moderates fold height 7.4→6.8mm. Crown V22 source PBR and all inherited convex breast shaping unchanged.
 - V6 dedicated workflow `.github/workflows/b5-gothic-breastplate-v6.yml` run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44513263807. Still requires actual result and visual QA.
 - All V4/V5 source files preserved, none promoted; V6 NOT_APPROVED.
+
+## Verified V6 result and art assessment
+- Actual run [44513263807](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44513263807) SUCCESS. Artifact `14524523488` `b5-gothic-breastplate-v6-NOT-APPROVED`. 6 rendered Blender Cycles views, editable Blend, exported GLB and two PBR maps.
+- Independently downloaded original ZIP and recalculated all **10/10 SHA256** entries. Actual ClamAV scan **12 files, 0 infected**. Scanning does not guarantee immunity.
+- V5 vs V6 front/angle/left/right preview visually inspected. V5 visibly jagged rib marks; V6 removes this pixelated/stair-step artifact using denser topology and smooth broader deformations. Deepened plate bulge remains clearly more pronounced than V4 in side/angle. V22 helmet source image-derived rust, soot and roughness retained in actual GLB.
+- Quality limitation: V6 smoother pressed folds are now **too subtle in front view** and look close to a smooth worn panel. Curved upper chest could still benefit from broader planes and hand-forged transition; separate backplate and waist fauld are not yet constructed. **Art status: improvement candidate, not formally approved.**
+- V4, V5, V6 preserved in feature branch. No promoted official assets, development/main merges or game integration.
