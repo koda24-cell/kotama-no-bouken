@@ -26,6 +26,30 @@ with open(os.path.join(out,'mesh_region_audit.json'),'w') as f:json.dump(audit,f
 face=next((o for o in meshes if o.name.lower()=='face'),None)
 body=next((o for o in meshes if o.name.lower()=='body'),None)
 if face is None or body is None:raise RuntimeError('Body or Face object missing')
+
+# Recompare the exact Shibu rim (fixed validated source IDs from 2026-11-19
+# run 44436213466) with original Body vertices. This audits correspondence,
+# not a claim that source objects are welded.
+rim_ids=[1472,1877,1880,1759,1758,2077,2074,2075,2071,1711,1710,1708,1709,2067,1698,1693,1692,2046,2044,2042,2034,2035,2037,2039,1577,1578,1585,1587,1519,1518,1520,1505,1506,2057,2056,2058]
+assert len(set(rim_ids))==36 and max(rim_ids)<len(face.data.vertices)
+face_world=face.matrix_world;body_world=body.matrix_world
+body_positions=[body_world@v.co for v in body.data.vertices]
+match=[]
+for j,idx in enumerate(rim_ids):
+    p=face_world@face.data.vertices[idx].co
+    distance,v=min(((p-q).length,k) for k,q in enumerate(body_positions))
+    match.append({'rim_order':j,'face_vertex_id':idx,'nearest_body_vertex_id':v,
+       'distance_m':round(distance,8),'face_world_xyz':[round(c,7) for c in p]})
+distances=[m['distance_m'] for m in match]
+summary={'count':len(match),'distance_min_m':min(distances),
+         'distance_max_m':max(distances),'distance_mean_m':sum(distances)/36,
+         'count_within_0_1mm':sum(d<=0.0001 for d in distances),
+         'count_within_1mm':sum(d<=0.001 for d in distances),
+         'point_matches':match,
+         'note':'Nearest source Body vertex only; do not claim Face and Body are welded or contact-free without triangle-to-surface and visual checks'}
+with open(os.path.join(out,'face_body_rim_correspondence.json'),'w') as fp:json.dump(summary,fp,indent=2)
+print('FACE_BODY_RIM_CORRESPONDENCE',summary['distance_min_m'],summary['distance_max_m'],summary['count_within_0_1mm'])
+
 mat=bpy.data.materials.new('Shibu_source_audit_clay');mat.use_nodes=True
 shader=mat.node_tree.nodes.get('Principled BSDF');shader.inputs['Base Color'].default_value=(.72,.68,.65,1)
 bpy.context.view_layer.material_override=mat
