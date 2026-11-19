@@ -440,7 +440,7 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
 
 
 def dragon_crystal(name, glow_strength=2.6, body_dark=(0.026, 0.0020, 0.0019), body_mid=(0.056, 0.0036, 0.0031),
-                   body_hi=(0.10, 0.0062, 0.0050), inner=0.40, metallic=0.5, rough_lo=0.16, root_pow=3.5):
+                   body_hi=(0.10, 0.0062, 0.0050), inner=0.40, metallic=0.0, rough_lo=0.34, root_pow=3.5):
     """炎竜鉱の結晶: 暗い赤の艶のある面＋角は欠けて明るく＋根元は煤と灰。
     発光は「内部」だけ: 根元ほど強く、面の中央で強く角で弱い（厚みの見え方）＋内部のひび＋包有物＋折れ口"""
     b = C.NB(name)
@@ -481,5 +481,9 @@ def dragon_crystal(name, glow_strength=2.6, body_dark=(0.026, 0.0020, 0.0019), b
     emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.26, 0.006, 0.003)), (0.65, (0.72, 0.024, 0.008)), (1.0, (1.0, 0.065, 0.02))])
     # 反射を暗い赤に寄せる（白っぽいハイライトでピンクに見えるのを防ぐ）
     metal = b.mixf(b.math("MAXIMUM", ashm, root), metallic, 0.0)
-    b.normal_from(None, bump_height=b.math("ADD", b.math("MULTIPLY", n2, 0.3), b.math("MULTIPLY", cr, -0.4)), bump_strength=0.15, bump_dist=0.002)
+    # 柱面の横すじ（成長条線）: 反射を帯状に割り、面全体が一様に光るのを防ぐ
+    stri = b.math("SINE", b.math("ADD", b.math("MULTIPLY", tip, 70.0), b.math("MULTIPLY", n1, 6.0)))
+    hgt = b.math("ADD", b.math("MULTIPLY", n2, 0.3), b.math("MULTIPLY", cr, -0.4))
+    hgt = b.math("ADD", hgt, b.math("MULTIPLY", stri, 0.25))
+    b.normal_from(None, bump_height=hgt, bump_strength=0.3, bump_dist=0.002)
     return b.out(col, r, metal, emit=emit, emit_strength=glow_strength)

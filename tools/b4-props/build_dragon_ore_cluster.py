@@ -31,7 +31,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_dragon_ore_cluster"
-VERSION = "v5"
+VERSION = "v6"
 rnd = random.Random(808)
 C.reset(808)
 
