@@ -18,6 +18,8 @@
 | `F3_WALL_CONCRETE_NORMAL_EST_01` | 同じ壁の画像勾配から推定した微細凹凸Normal | 1024×1024 PNG / non-color data | 上記と同じUVで試作。シームレス未確認 | カラー画像の輝度勾配から計算（本当の幾何Normalではない） | `59cee4a12733291cf90cb98f1bd7823add3c1c12a364e0b47c026c7f2ec365ef` | チャット成果物 `floor3_wall_textured_trial/wall01_normal_estimate_1024.png`。**GitHubバイナリ保存未実施**。Normal品質/ウイルススキャン未検証 |
 | `F3_REBAR_RUST_01` | 第3層の露出鉄筋01用・酸化鉄カラーPNG（画像テクスチャ） | 256×256 PNG / sRGB | 鉄筋のUV円筒に再利用可能。非シームレスの実画質評価は未完了 | 自作手続き生成コード `tools/floor3/rebar01/build.py`（PR #536、実行 #44446358240） | `a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58` | Actions Artifact ID `14493312525` の画像実体とSHA-256確認済み。**GitHubには生成コードのみあり、PNG原本は未昇格**。素材/ゲーム未承認、実ウイルススキャン未実施 |
 
+| `F3_WINDOW_AGED_PAINT_RUST_01` | 第3層・廃ビル金属窓枠縦材の塗装剥離・錆カラー | 256×512 PNG / sRGB | 縦長の金属面用、シームレスではない。現状は縦縞が強く改善要 | 自作Blender生成スクリプト `tools/floor3/window_mullion01/build_v4.py`、[PR #540](https://github.com/koda24-cell/kotama-no-bouken/pull/540)、[run #44448888071](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448888071) | `3ecfab0e24a56aed12b6cd1ddd5b1aa7bf5e7a13222458d1c2f74c082ee6cfee` | 実PNG/GLB/Blend/4方向PNGのSHA256一致。Artifact ID `14494134047`。**PNG本体はGitHub正式素材フォルダには未保存**。美術品質未承認、ウイルススキャン未実施 |
+
 ## モデルとの関係・承認境界
 
 - 第3層の壁01 V4（段差剥離）はユーザーが造形を了承済み。候補GLBの検証時SHA-256: `44e995b1ee843ad3bffba078c532158011effef6d6245cd0bced9f25082a8981`。
