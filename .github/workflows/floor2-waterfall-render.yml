@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - feature/floor2-frozen-waterfall-open-cavern-20261112
-      - feature/shared-container-f2-waterfall-20261119
     paths:
       - 'tools/floor2/waterfall/**'
       - '.github/workflows/floor2-waterfall-render.yml'
