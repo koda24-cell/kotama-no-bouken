@@ -1,4 +1,4 @@
-name: B2 Timber Lower Bearing V03 PBR Side Stripe Correction QA
+name: B2 One Bearing V03 Unified Antique Wood Grain Render
 on:
   push:
     branches: [feature/gpt-b2-single-timber-axle-bearing-v01-20261119]
