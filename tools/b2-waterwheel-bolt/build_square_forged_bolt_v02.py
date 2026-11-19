@@ -1,4 +1,4 @@
-"""Single black-forged square-head through bolt. Original procedural rust PBR and 4 Cycles renders."""
+"""Single black-forged square-head bolt V02. Original muted local rust PBR and four Cycles renders."""
 import bpy, math, sys, hashlib, json, random, struct
 from pathlib import Path
 from mathutils import Vector
