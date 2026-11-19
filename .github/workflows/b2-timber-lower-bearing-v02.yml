@@ -1,4 +1,4 @@
-name: B2 Timber Lower Bearing V02 Real Blender 4 View Review
+name: B2 Timber Lower Bearing V02 PBR Side Stripe Correction QA
 on:
   push:
     branches: [feature/gpt-b2-single-timber-axle-bearing-v01-20261119]
