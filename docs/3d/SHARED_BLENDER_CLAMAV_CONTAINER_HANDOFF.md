@@ -1,6 +1,6 @@
 # Shared Blender + ClamAV container (GitHub Actions)
 
-Status: **candidate, NOT VERIFIED until the GHCR publish run and consumer scan pass** (2026-11-19).
+Status: **GHCR image publish verified; consumer ClamAV smoke scan pending** (2026-11-19).
 Branch: `feature/shared-blender-clamav-container-20261119`.
 Base: `development`. This is infrastructure only: no game assets, geometry or gameplay changed.
 
@@ -14,8 +14,7 @@ the package-install step is removed, not all startup/download time.
 Image: `ghcr.io/koda24-cell/kotama-blender-clamav:ubuntu24.04-v1`.
 The publisher also pushes immutable-by-convention `sha-<12-digit-commit>` tags and
 reports the **registry digest**. For production, pin consumers to the tested
-`@sha256:<digest>` rather than a mutable tag. The initial image may not exist until
-the publisher has succeeded. GHCR package visibility/permissions may require review.
+`@sha256:<digest>` rather than a mutable tag. First publish succeeded in [run 44444888828](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44444888828) (publish job). Exact image digest:\n\`sha256:ea35dc3d7834233133e776b7cacc81f0a8315e699f04ef017f00f50bc1bab5eb\`.\nGHCR package pull and freshclam/scan smoke job are still being verified; do not infer scan success from publish.
 
 Source: `.github/docker/blender-clamav/Dockerfile`
 Publisher: `.github/workflows/build-shared-blender-clamav-image.yml`
