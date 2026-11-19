@@ -1,0 +1,66 @@
+name: B5 Gothic Breastplate V4 Six-View Blender Review
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_gothic_breastplate_v4.py'
+      - '.github/workflows/b5-gothic-breastplate-v4.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:6f9e660501dcf7a6e0cb8dc94ca3103568f673948812a12a344021b877e7c310
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update ClamAV signatures and verify real source scan
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/b5-knights/build_gothic_breastplate_v4.py qa/security/breastplate-source.log
+      - name: Blender six-camera full geometry/material export
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_gothic_breastplate_v4.py
+      - name: Verify outputs, hashes, material and six images
+        run: |
+          /usr/bin/python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          from PIL import Image,ImageStat
+          p=Path('render-output/b5-knights/gothic_breastplate_v4')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and not m['game_integrated']
+          assert m['source_sha'] and m['run_id']
+          assert len(m['views'])==6 and len(m['files_sha256'])==8
+          for name,expected in m['files_sha256'].items():
+              data=(p/name).read_bytes()
+              assert hashlib.sha256(data).hexdigest()==expected,name
+          raw=(p/'gothic_breastplate_v4.glb').read_bytes()
+          assert raw[:4]==b'glTF'
+          assert struct.unpack_from('<I',raw,8)[0]==len(raw)
+          n=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+n])
+          nodes=[x.get('name','') for x in doc.get('nodes',[]) if 'mesh' in x]
+          assert any('continuous forged breastplate' in x for x in nodes),nodes
+          assert doc.get('materials') and doc.get('meshes')
+          for name in m['views']:
+              im=Image.open(p/(name+'.png')).convert('RGB')
+              assert im.size==(800,800)
+              assert max(ImageStat.Stat(im).stddev)>3
+          print('PASS six real Blender images, GLB, Blend, 8 hashes')
+          PY
+      - name: ClamAV scan generated material and 3D assets
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b5-knights/gothic_breastplate_v4 qa/security/breastplate-output.log
+      - name: Temporary NOT_APPROVED review checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-gothic-breastplate-v4-NOT-APPROVED
+          path: |
+            render-output/b5-knights/gothic_breastplate_v4/
+            qa/security/
+          retention-days: 14
