@@ -5,6 +5,7 @@
  * dragon traces take over (bones, scales, claw marks). One warning sign marks the border. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const BASE = './assets/models/floor4/props/';
 // side: how far from tile centre towards the wall (m). human: 0 = dragon trace, 1 = human trace.
@@ -12,33 +13,62 @@ export const B4_PROP_REGISTRY = {
   b4p_brazier_cage: { human: 1, weight: 1.0, side: 1.25, scale: [0.95, 1.08], light: { y: 0.6, color: 0xff7a2e, intensity: 1.6, range: 4.5 } },
 };
 
+// Approved GPT models reused as-is (docs/3d/B4_GPT_MODEL_INVENTORY.md).
+export const B4_GPT_MODELS = {
+  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7 },
+};
+
 const cache = new Map();
 const loader = new GLTFLoader();
-function loadProp(id) {
-  if (!cache.has(id)) cache.set(id, loader.loadAsync(`${BASE}${id}.glb`).then(gltf => {
-    const meshes = [];
+// Load once; bake node transforms into geometry and merge per material so a 192-mesh model costs one draw per material.
+function loadModel(key, url) {
+  if (!cache.has(key)) cache.set(key, loader.loadAsync(url).then(gltf => {
     gltf.scene.updateMatrixWorld(true);
-    gltf.scene.traverse(o => { if (o.isMesh) meshes.push({ geometry: o.geometry, material: o.material, matrix: o.matrixWorld.clone() }); });
-    for (const m of meshes) {
-      const mats = Array.isArray(m.material) ? m.material : [m.material];
-      for (const mat of mats) {
-        if (mat.emissiveMap) mat.emissiveIntensity = Math.max(mat.emissiveIntensity, 2.2);
-        mat.userData.b4PropCached = true;
+    const byMat = new Map();
+    gltf.scene.traverse(o => {
+      if (!o.isMesh || Array.isArray(o.material)) return;
+      const geo = o.geometry.clone().applyMatrix4(o.matrixWorld);
+      if (!byMat.has(o.material)) byMat.set(o.material, []);
+      byMat.get(o.material).push(geo);
+    });
+    const meshes = [];
+    for (const [material, geos] of byMat) {
+      if (material.emissiveMap) material.emissiveIntensity = Math.max(material.emissiveIntensity, 2.2);
+      material.userData.b4PropCached = true;
+      let merged = null;
+      if (geos.length > 1) {
+        const keys = g => Object.keys(g.attributes).sort().join(',') + '|' + !!g.index;
+        const k0 = keys(geos[0]);
+        if (geos.every(g => keys(g) === k0)) { try { merged = mergeGeometries(geos, false); } catch (e) { merged = null; } }
       }
+      if (merged) { geos.forEach(g => g.dispose()); meshes.push({ geometry: merged, material, matrix: new THREE.Matrix4() }); }
+      else for (const g of geos) meshes.push({ geometry: g, material, matrix: new THREE.Matrix4() });
     }
-    return { meshes };
-  }).catch(err => { console.warn('[b4-dressing] missing', id, err?.message); return null; }));
-  return cache.get(id);
+    const box = new THREE.Box3();
+    for (const m of meshes) { m.geometry.computeBoundingBox(); box.union(m.geometry.boundingBox); }
+    return { meshes, box };
+  }).catch(err => { console.warn('[b4-dressing] missing', key, err?.message); return null; }));
+  return cache.get(key);
+}
+const loadProp = id => loadModel(id, `${BASE}${id}.glb`);
+
+function instance(group, owned, asset, matrices, name) {
+  for (const m of asset.meshes) {
+    const inst = new THREE.InstancedMesh(m.geometry, m.material, matrices.length);
+    inst.name = name;
+    matrices.forEach((M, i) => inst.setMatrixAt(i, new THREE.Matrix4().multiplyMatrices(M, m.matrix)));
+    inst.instanceMatrix.needsUpdate = true; inst.computeBoundingSphere();
+    group.add(inst); owned.push(inst);
+  }
 }
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
-export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), isStale = () => false, maxProps = 22 }) {
+export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY);
   const group = new THREE.Group(); group.name = 'b4:asset-dressing'; group.userData.b4Cached = true;
   const owned = [];
   const info = { placed: 0, byId: {}, missing: [], list: [] };
-  if (!ids.length) return { group, dispose() {}, info: () => info };
 
   // ---- progress along the floor (BFS from the entrance) ----
   const W = map.w, H = map.h, idx = (x, y) => y * W + x;
@@ -106,15 +136,36 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       }
       return tmp.matrix.clone();
     });
-    for (const m of asset.meshes) {
-      const inst = new THREE.InstancedMesh(m.geometry, m.material, mats.length);
-      inst.name = `b4:prop:${id}`;
-      mats.forEach((M, i) => inst.setMatrixAt(i, new THREE.Matrix4().multiplyMatrices(M, m.matrix)));
-      inst.instanceMatrix.needsUpdate = true; inst.computeBoundingSphere();
-      group.add(inst); owned.push(inst);
-    }
+    instance(group, owned, asset, mats, `b4:prop:${id}`);
     info.byId[id] = list.length; info.placed += list.length;
     for (const c of list) info.list.push({ id, tx: c.tx, ty: c.ty, dx: c.dx, dz: c.dz, t: +c.t.toFixed(2) });
+  }
+  // ---- mine recesses: the user-approved GPT minecart V32 replaces the procedural cart ----
+  if (mines.length) {
+    const cart = await loadModel('minecart_v32', B4_GPT_MODELS.minecart_v32.url);
+    if (isStale()) return { group, dispose() { owned.forEach(i => i.dispose()); }, info: () => info };
+    if (cart) {
+      const size = cart.box.getSize(new THREE.Vector3()), centre = cart.box.getCenter(new THREE.Vector3());
+      const s = B4_GPT_MODELS.minecart_v32.length / Math.max(size.x, size.z);
+      const alongX = size.x >= size.z;
+      const mats = mines.map(site => {
+        const yaw = Math.atan2(-site.dx, -site.dz);
+        const slot = new THREE.Matrix4().compose(
+          new THREE.Vector3((site.tx + site.dx / 2) * CELL, 0, (site.ty + site.dz / 2) * CELL),
+          new THREE.Quaternion().setFromEuler(new THREE.Euler(0, yaw, 0)), new THREE.Vector3(1, 1, 1));
+        // inside the recess (local -Z is into the wall), cart parallel to the wall, slightly skewed
+        const local = new THREE.Matrix4().compose(
+          new THREE.Vector3(0, 0.03, -1.7),
+          new THREE.Quaternion().setFromEuler(new THREE.Euler(0, (alongX ? 0 : Math.PI / 2) + (hash(site.tx, site.ty, 820) - 0.5) * 0.5, 0)),
+          new THREE.Vector3(s, s, s));
+        const recentre = new THREE.Matrix4().makeTranslation(-centre.x, -cart.box.min.y, -centre.z);
+        return slot.multiply(local).multiply(recentre);
+      });
+      instance(group, owned, cart, mats, 'b4:gpt-minecart-v32');
+      const proc = root.getObjectByName('b4:abandoned-mine');
+      if (proc) proc.visible = false;                         // procedural stand-in no longer needed
+      info.mineCarts = mats.length;
+    } else info.missing.push('minecart_v32');
   }
   root.add(group);
   return {

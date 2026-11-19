@@ -6,7 +6,7 @@ import { createB4SurfaceLibrary } from './b4-surface-library.js';
 import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261119-p1';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261119-p2';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -187,7 +187,7 @@ export function createTheme(api, area) {
     if (b4Plan) for (const s of [...b4Plan.mines, ...b4Plan.vistaFaces]) objAt.add(s.tx+','+s.ty);
     if (b4Plan) {
       // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
-      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, isStale: () => root !== buildRoot })
+      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, mines: b4Plan.mines.slice(1), isStale: () => root !== buildRoot })
         .then(d => { if (root !== buildRoot) d.dispose(); else b4Dressing = d; })
         .catch(err => console.warn('[b4-dressing]', err));
     }
