@@ -77,3 +77,9 @@ Coordinate conventions follow imported Shibu Face as measured (front +Y, posteri
 
 ## License blocker clarified
 The [official VRoid older-beta sample license FAQ](https://vroid.pixiv.help/hc/ja/articles/4402614652569) lists certain beta AvatarSample and HairSample as CC0, **but does not explicitly enumerate Sendagaya_Shibu or Vita** under those CC0 names. Do **not** treat the Shibu/Vita source as confirmed CC0 or redistribute whole VRMs/derived GLB to the public game until source-specific license is verified. External studies may remain reference-only and formal promotion is blocked pending provenance approval.
+
+## Latest repeatability verification (2026-11-19 JST)
+- Run [44436213466](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44436213466): **completed/success**. Blender ran all steps including V16/V17 review six-view renders and exact 36-point Shibu/Vita rim measurements.
+- Artifact ID **14489523113**, name `character-boundary-fast-diagnostics`, 15,662,816 bytes, expiration **2026-12-03 01:32:52 UTC**; ZIP downloaded and CRC tested with `ZipFile.testzip() == None`, all 36 files present.
+- SHA-256 values of `Sendagaya_Shibu.rim-geometry.json` (`38c17da7b34ee49...`), `Vita.rim-geometry.json` (`2df807c73957926...`) and V17 geometry measurements (`09772d36ae47511...`) **match the 2026-11-18 run**. V18 design is grounded in repeatable source measurements, not the legacy standalone bare head.
+- The V17 source is not accepted as a final head shape: this run reproduces defects; technical run success must not be confused with artistic approval.
