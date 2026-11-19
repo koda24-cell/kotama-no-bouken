@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5層 360° 背景検証</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090516;color:#f0e9fa;font-family:system-ui,sans-serif}
+canvas{display:block}#ui{position:fixed;top:12px;left:12px;background:#100c1bd9;border:1px solid #69547d;padding:14px;border-radius:10px;max-width:310px;z-index:2}
+button{background:#49365f;color:white;border:1px solid #8c78a5;border-radius:5px;padding:7px;margin:2px;cursor:pointer}
+small{display:block;color:#c2b3d5;margin-top:8px}#status{font-variant-numeric:tabular-nums}
+</style></head><body>
+<div id="ui"><strong>5層・360°背景 実験ビュー</strong><div id="status">準備中</div>
+<div><button data-angle="0">北 0°</button><button data-angle="90">東 90°</button><button data-angle="180">南 180°</button><button data-angle="270">西 270°</button></div>
+<div><button id="left">↶ 左回転</button><button id="right">右回転 ↷</button><button id="forward">前進 ↑</button><button id="reset">初期位置</button></div>
+<small>ドラッグ: 見回す / WASD: 移動 / ←→: 回転。<br>背景は画面に固定されず、遠景と中景に視差が出ます。</small></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+import {createFloor5Backdrop} from './worldlocked-360-backdrop.mjs';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x090516);
+scene.fog=new THREE.FogExp2(0x100a1b,0.0023);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,0.1,1200);
+camera.position.set(0,2,0);
+scene.add(new THREE.HemisphereLight(0x8775ab,0x15101b,2.3));
+const backdrop=createFloor5Backdrop(THREE,{seed:51119,radius:150,groundY:-14});
+scene.add(backdrop.root);
+const floor=new THREE.Mesh(new THREE.CircleGeometry(34,64),new THREE.MeshStandardMaterial({color:0x1b1722,roughness:1}));
+floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
+const grid=new THREE.GridHelper(55,22,0x574465,0x352c41);scene.add(grid);
+let yaw=0,pitch=0,dragging=false,px=0,keys=new Set();
+function renderView(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;backdrop.update(camera);
+document.querySelector('#status').textContent='方位 '+((yaw*180/Math.PI%360+360)%360).toFixed(0)+'° / 位置 X '+camera.position.x.toFixed(1)+' Z '+camera.position.z.toFixed(1);
+renderer.render(scene,camera)}
+document.querySelectorAll('[data-angle]').forEach(b=>b.onclick=()=>{yaw=Number(b.dataset.angle)*Math.PI/180;renderView()});
+document.querySelector('#left').onclick=()=>{yaw-=Math.PI/12;renderView()};
+document.querySelector('#right').onclick=()=>{yaw+=Math.PI/12;renderView()};
+document.querySelector('#forward').onclick=()=>{camera.position.x-=Math.sin(yaw)*3;camera.position.z-=Math.cos(yaw)*3;renderView()};
+document.querySelector('#reset').onclick=()=>{camera.position.set(0,2,0);yaw=0;pitch=0;renderView()};
+renderer.domElement.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;renderer.domElement.setPointerCapture(e.pointerId)});
+renderer.domElement.addEventListener('pointerup',()=>dragging=false);
+renderer.domElement.addEventListener('pointermove',e=>{if(!dragging)return;yaw-=(e.clientX-px)*.005;px=e.clientX;renderView()});
+addEventListener('keydown',e=>{keys.add(e.key.toLowerCase());if(['arrowleft','arrowright',' '].includes(e.key.toLowerCase()))e.preventDefault()});
+addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+let prev=performance.now();
+function frame(now){const dt=Math.min((now-prev)/1000,.05);prev=now;
+if(keys.has('arrowleft'))yaw+=dt*1.5;if(keys.has('arrowright'))yaw-=dt*1.5;
+const dx=Number(keys.has('d'))-Number(keys.has('a')),dz=Number(keys.has('s'))-Number(keys.has('w'));
+camera.position.x+=(Math.cos(yaw)*dx-Math.sin(yaw)*dz)*dt*9;
+camera.position.z+=(-Math.sin(yaw)*dx-Math.cos(yaw)*dz)*dt*9;
+renderView();requestAnimationFrame(frame)}
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+requestAnimationFrame(frame);
+</script></body></html>
