@@ -50,3 +50,12 @@
 - Add fail-closed bounds on world coordinates: minimum Z near 0.875m, maximum around 1.48m, horizontal halfwidth near 0.243m. This prevents another tall spike export.
 - V4 [Actions run 44465505541](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465505541), status currently pending/processing, must separately verify actual output.
 - The six Gothic pressed flutes are still a single deformed main plate instead of extra floating curve strips.
+
+## V4 実画像検査と最新候補（2026-11-19）
+- Run [44465505541](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465505541) **SUCCESS**。Artifact `14501564754`、`b5-gothic-breastplate-v4-NOT-APPROVED`。
+- V4 GLB/Blend/6方向 Cycles PNG を実際に取得・開いた。ローカルで全8 SHA-256一致（8/8）。ClamAV: 10出力ファイル、感染検出0。
+- V3の異常に伸びる肩・襟の突起は消えた。V4はV2と同程度の人体に沿った基本シルエットに復帰。
+- 6本のゴシック稜線は浮き棒を削除して胸甲メッシュの形として出力。V2より自然な浅い稜線、角度によっては薄すぎる。今後近接美術レビューでは鍛造筋の太さ・メリハリの検討必要。
+- 側面は薄板として成立するが、背甲未制作のため胸甲単体の背面は開放されている。画面内で胴体が浮いて見えるのはプレビューで胴体/接地のない単体パーツだからで、最終組み立てで位置合わせが必要。
+- 現状の材質は低彩度鋼鉄でV22の強い錆・傷とは未統一。次段階はV4造形の美術承認後の PBR/錆合わせ、別モデルとして腰重ね板（fauld）、背甲、肩当てを1パーツずつ。
+- **美術評価は設計確認候補（ユーザー未承認）。正式保存、ゲーム組み込み、`development`/ `main` マージは行っていない。**
