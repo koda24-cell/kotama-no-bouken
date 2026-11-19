@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - feature/b2-ice-bridge-adjacent-tiles-20261113
-      - feature/shared-container-b2-frozen-legacy-20261119
-    paths:
-      - 'tools/b2-render/build-bridge-adjacent.py'
-      - '.github/workflows/b2-ice-bridge-adjacent-render.yml'
 permissions:
   contents: read
   packages: read
