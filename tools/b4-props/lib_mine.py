@@ -491,3 +491,165 @@ def punch_holes(bm, centers, seed=0):
     bmesh.ops.delete(bm, geom=kill, context="FACES")
     loose = [v for v in bm.verts if not v.link_faces]
     bmesh.ops.delete(bm, geom=loose, context="VERTS")
+
+
+# ---------------------------------------------------------------------------
+# 任意の向きの板（木箱 v2 以降）
+# ---------------------------------------------------------------------------
+def _basis(ax, aw):
+    from mathutils import Matrix
+    x = Vector(ax).normalized()
+    y = Vector(aw)
+    y = (y - x * y.dot(x)).normalized()
+    z = x.cross(y)
+    m = Matrix.Identity(4)
+    for i in range(3):
+        m[i][0], m[i][1], m[i][2] = x[i], y[i], z[i]
+    return m
+
+
+def grain_mat(mats, ax):
+    """木目方向が近い軸の材質（mats={'x','y','z'}）"""
+    a = Vector(ax)
+    k = max(range(3), key=lambda i: abs(a[i]))
+    return mats["xyz"[k]]
+
+
+def board(name, c, ax, aw, length, width, thick, mats, seed=0, split_a=None, split_b=None, chip=0.005,
+          segs=3, warp=0.0, extra=None):
+    """中心 c、長手 ax、幅方向 aw の板。extra=Matrix（世界座標での追加変換：落ちる・傾く）"""
+    from mathutils import Matrix
+    pl = plank(name, length, width, thick, segs=segs, split_a=split_a, split_b=split_b, seed=seed, chip=chip, warp=warp)
+    C.displace_noise(pl, min(0.003, thick * 0.12), 5.0, seed=seed)
+    M = Matrix.Translation(Vector(c)) @ _basis(ax, aw)
+    if extra is not None:
+        M = extra @ M
+    pl.matrix_world = M
+    return C.assign(pl, grain_mat(mats, ax))
+
+
+def pivot_rot(pivot, axis, deg, move=(0, 0, 0)):
+    """pivot を通る axis 周りに deg 回転してから move だけ平行移動する行列"""
+    from mathutils import Matrix
+    p = Vector(pivot)
+    return Matrix.Translation(Vector(move)) @ Matrix.Translation(p) @ Matrix.Rotation(math.radians(deg), 4, Vector(axis)) @ Matrix.Translation(-p)
+
+
+def board_broken(name, c, ax, aw, length, width, thick, mats, seed=0, f=0.5, rough=0.06,
+                 rot_a=None, rot_b=None, drop_a=False, drop_b=False, chip=0.005, segs=3):
+    """中央付近（f）で折れた板。各片は外端（板の端）を支点に rot=(world_axis, deg[, move]) で回る。
+    drop_*=True でその片を作らない（失われた）。戻り値: 片のリスト"""
+    ax_n = Vector(ax).normalized()
+    c = Vector(c)
+    pa = c - ax_n * length / 2
+    pb = c + ax_n * length / 2
+    pm = pa + ax_n * length * f
+    out = []
+    rnd = random.Random(seed)
+    for tag, p0, p1, sa, sb, rot, drop in (("a", pa, pm, None, rough, rot_a, drop_a),
+                                           ("b", pm, pb, rough, None, rot_b, drop_b)):
+        if drop:
+            continue
+        ln = (p1 - p0).length
+        piv = p0 if tag == "a" else p1
+        ex = pivot_rot(piv, rot[0], rot[1], rot[2] if len(rot) > 2 else (0, 0, 0)) if rot else None
+        out.append(board(f"{name}{tag}", (p0 + p1) / 2, ax, aw, ln, width, thick, mats,
+                         seed=seed + (11 if tag == "b" else 0), split_a=sa, split_b=sb, chip=chip,
+                         segs=max(2, segs - 1), extra=ex))
+    return out
+
+
+def nail(name, pos, normal, r=0.0075, mat=None):
+    ob = C.dome(name, r, r * 0.45, sides=6)
+    C.place_on(ob, pos, normal)
+    if mat is not None:
+        C.assign(ob, mat)
+    return ob
+
+
+def framed_crate(prefix, w, d, h, mats, iron=None, seed=0, nb=3, t=0.02, bat=0.075, gap=0.028,
+                 brace=False, skip=(), broken=None, mods=None, nails=True, skids=True, lid_n=3, splits=None):
+    """枠つきのスラット木箱（底中心が原点、+Z 上）。#97 の形：
+    面ごとに横板 nb 枚（隙間 gap）＋外側の縦の角当て（bat 幅）＋上下の横の縁当て、必要なら斜めの筋交い、
+    蓋 lid_n 枚、底の下に2本の根太（skids）。
+    板ID: F/B/L/R + s0.. (横板), F/B/L/R + v0,v1（縦の角当て）, F/B + t,b（上下の縁当て）, F/B + x（筋交い）,
+          T0..（蓋）, K0,K1（根太）
+    skip: 作らない ID。broken: {ID: dict(f=, rough=, rot_a=, rot_b=, drop_a=, drop_b=)}
+    mods: {ID: Matrix}（板全体を動かす: 外れて倒れる等）
+    戻り値: {ID: [objects]}"""
+    broken = broken or {}
+    mods = mods or {}
+    splits = splits or {}
+    out = {}
+    z0 = 0.045 if skids else 0.0   # 根太の上に乗る
+    hw, hd = w / 2, d / 2
+    H = h - z0
+
+    def add(bid, c, ax, aw, length, width, thick, sa=None, sb=None, chip=0.005, segs=3):
+        if bid in skip:
+            return
+        if bid in splits:
+            sa, sb = splits[bid]
+        sd = seed * 100 + sum(ord(ch) * (i + 3) for i, ch in enumerate(bid)) % 997
+        if bid in broken:
+            kw = dict(broken[bid])
+            out[bid] = board_broken(f"{prefix}_{bid}", c, ax, aw, length, width, thick, mats, seed=sd, chip=chip, segs=segs, **kw)
+        elif bid in mods and isinstance(mods[bid], dict):
+            kw = dict(mods[bid])
+            out[bid] = [board(f"{prefix}_{bid}", c, ax, aw, length, width, thick, mats, seed=sd, chip=chip, segs=segs, **kw)]
+        else:
+            out[bid] = [board(f"{prefix}_{bid}", c, ax, aw, length, width, thick, mats, seed=sd,
+                              split_a=sa, split_b=sb, chip=chip, segs=segs, extra=mods.get(bid))]
+
+    sw = (H - gap * (nb + 1)) / nb  # 横板の幅
+    for face, n_out, along, half_len, half_off in (("F", Vector((0, -1, 0)), Vector((1, 0, 0)), hw, hd),
+                                                    ("B", Vector((0, 1, 0)), Vector((-1, 0, 0)), hw, hd),
+                                                    ("L", Vector((-1, 0, 0)), Vector((0, -1, 0)), hd, hw),
+                                                    ("R", Vector((1, 0, 0)), Vector((0, 1, 0)), hd, hw)):
+        # 横板（面の内側の層）
+        for i in range(nb):
+            z = z0 + gap + sw / 2 + i * (sw + gap)
+            c = n_out * (half_off - t / 2) + Vector((0, 0, z))
+            add(f"{face}s{i}", c, along, (0, 0, 1), 2 * half_len - (2 * t if face in "LR" else 0), sw, t)
+        # 縦の角当て（外側の層）
+        for j, sgn in enumerate((-1, 1)):
+            c = n_out * (half_off + t / 2) + along * sgn * (half_len - bat / 2 + (t if face in "FB" else 0)) + Vector((0, 0, z0 + H / 2))
+            add(f"{face}v{j}", c, (0, 0, 1), along, H, bat, t)
+        # 上下の縁当て（F/B のみ）と筋交い
+        if face in "FB":
+            inner = 2 * half_len - 2 * bat + 2 * t
+            for tag, zz in (("t", z0 + H - bat / 2), ("b", z0 + bat / 2)):
+                c = n_out * (half_off + t / 2) + Vector((0, 0, zz))
+                add(f"{face}{tag}", c, along, (0, 0, 1), inner, bat * 0.9, t)
+            if brace:
+                p0 = n_out * (half_off + t * 1.5) + along * (-(half_len - bat)) + Vector((0, 0, z0 + bat))
+                p1 = n_out * (half_off + t * 1.5) + along * (half_len - bat) + Vector((0, 0, z0 + H - bat))
+                dv = p1 - p0
+                add(f"{face}x", (p0 + p1) / 2, dv, n_out.cross(dv), dv.length * 0.98, bat * 0.85, t)
+    # 蓋（X 方向の板を Y に並べる）
+    ld = d + 4 * t
+    lw = (ld - 0.008 * (lid_n - 1)) / lid_n
+    for i in range(lid_n):
+        y = -ld / 2 + lw / 2 + i * (lw + 0.008)
+        add(f"T{i}", (0, y, h + t / 2), (1, 0, 0), (0, 1, 0), w + 4 * t + 0.01, lw, t)
+    if skids:
+        for k, sx in enumerate((-1, 1)):
+            add(f"K{k}", (sx * (hw - 0.08), 0, z0 / 2), (0, 1, 0), (1, 0, 0), d + 2 * t, 0.07, z0, chip=0.008)
+    # 底板（見えにくいので2枚）
+    for i in range(2):
+        add(f"S{i}", (0, (i - 0.5) * d / 2, z0 + t / 2), (1, 0, 0), (0, 1, 0), w - 0.01, d / 2 - 0.01, t)
+    # 釘（縦の角当ての上下）
+    if nails and iron is not None:
+        k = 0
+        for face, n_out, along, half_len, half_off in (("F", Vector((0, -1, 0)), Vector((1, 0, 0)), hw, hd),
+                                                        ("L", Vector((-1, 0, 0)), Vector((0, -1, 0)), hd, hw),
+                                                        ("R", Vector((1, 0, 0)), Vector((0, 1, 0)), hd, hw),
+                                                        ("B", Vector((0, 1, 0)), Vector((-1, 0, 0)), hw, hd)):
+            for j, sgn in enumerate((-1, 1)):
+                if f"{face}v{j}" in skip or f"{face}v{j}" in mods or f"{face}v{j}" in broken:
+                    continue
+                for zz in (z0 + gap + sw / 2, z0 + H - gap - sw / 2):
+                    p = n_out * (half_off + t) + along * sgn * (half_len - bat / 2 + (t if face in "FB" else 0)) + Vector((0, 0, zz))
+                    out[f"N{k}"] = [nail(f"{prefix}_N{k}", p, n_out, mat=iron)]
+                    k += 1
+    return out

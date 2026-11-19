@@ -1,23 +1,26 @@
 """
 b4p_crate_set — 焦げた木箱3種（無傷・蓋が割れた・潰れた）を1つのGLBに横並び
 
-参考（Pinterest、references/b4-dragonfire-props-20261119.md）:
-  #97  積まれた木箱・スラット箱：角柱＋横板、隙間のある板、蓋の桟
-  #98  樽と木箱の組み合わせ：板の厚み、角の摩耗（ラベル・瓶は採用しない）
-  #100 壊れた樽：割れて外れた板、錆びた帯鉄、散らばる板片（壊れ方の参考）
-形・寸法の要点:
-  - A 無傷：0.70×0.50×0.50（蓋込み約0.55）。角に鉄の当て金、板3段＋蓋3枚＋桟
-  - B 蓋が割れた：0.60×0.60×0.55。蓋の中央板が割れて2片が箱の中へ落ち、1枚は外れて箱に立てかけ。
-       中に鉱石の塊が見える。前の上段の板が1枚欠け、右の角柱の頭が欠ける
-  - C 潰れた：0.90×0.60×0.55 の箱が上から潰れて右へ傾き（高さは右端で約半分）、蓋が V 字に凹む。
-       前の中段は中央で折れて内へ、右の板は1枚外れて地面に。上に落ちた岩が乗る
-  - 並び：x = -1.05 / 0 / +1.15（底中心が原点）
+参考（Pinterest、references/b4-dragonfire-props-20261119.md、シートG/H）:
+  #97  積まれたスラット箱：横板の間に隙間、外側に縦の角当てと上下の縁当て、斜めの筋交い（Z 字）、底の根太
+  #98  樽と木箱：板の厚み（約20mm）、角の摩耗、蓋の板が少し反る（ラベル・瓶は採用しない）
+  #100 壊れた樽：割れて外れた板、錆びた鉄、散らばる板片（壊れ方の参考）
+形・寸法の要点（v2 で作り直し：v1 は「ただの箱」に見えたため、#97 の枠組みの箱にする）:
+  - 枠つきスラット箱：面ごとに横板3枚（隙間28mm、中の暗さが見える）＋外側の縦の角当て（75mm）、
+    前後は上下の縁当て、底に根太2本（45mm 浮く）。板厚20mm、角の欠け・反り・ささくれ
+  - A 無傷：0.72×0.50×0.50。前後に筋交い、蓋の四隅に鉄の当て金、左右に鉄の取っ手、釘。
+       使い古し：蓋の端の割れ、右前の角当ての頭の欠け、横板の端の割れ
+  - B 蓋が割れた：0.62×0.62×0.56。蓋の中央板が折れて2片が箱の中へ落ち、奥の1枚は外れて右に立てかけ、
+       手前の1枚はずれる。前の上段の横板が折れて半分失われる。中に黒い鉱石の塊
+  - C 潰れた：0.90×0.60×0.55。上に落ちた岩で潰れ、前の面が外へ倒れて別の岩に寄りかかる。
+       左右の横板は前半分が折れて落ち、蓋は手前が落ち、中央の板は折れてたわむ
+  - 並び：x = -1.0 / 0 / +1.0、少しずつ向きを変える（底中心が原点）
 劣化（設計書3章）:
-  欠け＝割れた蓋・欠けた板・折れた板・潰れ、板の角の欠け（chip）
-  角の摩耗＝weathered_wood の edge、鉄の当て金は角で地金
-  煤＝上ほど黒い。C は右下（熱源側）が炭化
-  灰＝蓋の上・板の段の上向き面
-  熱変色＝炭化（char）、当て金の焼け
+  1 欠け＝折れた板（ささくれ）、失われた板、角の欠け（chip）、倒れた面
+  2 角の摩耗＝weathered_wood の edge（角が丸く明るい）、鉄の当て金の角は地金
+  3 煤＝上ほど黒い（soot_z）。C は岩の当たった前側が炭化
+  4 灰＝蓋・縁当ての上向き面、隙間の凹み
+  5 熱変色＝炭化（char、亀甲割れ）、鉄の焼け
 """
 import math
 import os
@@ -25,104 +28,150 @@ import random
 import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
+import bpy  # noqa: E402
 import common as C  # noqa: E402
 import lib_mine as L  # noqa: E402
-from mathutils import Vector  # noqa: E402
+from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_crate_set"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(97)
 C.reset(97)
 
-
-def woods(tag, char, soot, heat=None):
-    return {"x": C.weathered_wood(f"{tag}_x", char=char, soot_z=soot, grain_axis="X", scale=0.5, heat_center=heat, heat_r=(0.1, 0.5)),
-            "y": C.weathered_wood(f"{tag}_y", char=char, soot_z=soot, grain_axis="Y", scale=0.5, heat_center=heat, heat_r=(0.1, 0.5)),
-            "z": C.weathered_wood(f"{tag}_z", char=char, soot_z=soot, grain_axis="Z", scale=0.5, heat_center=heat, heat_r=(0.1, 0.5))}
-
-
-XA, XB, XC = -1.05, 0.0, 1.15
-wA = woods("A", 0.30, (0.35, 0.60))
-wB = woods("B", 0.40, (0.35, 0.62))
-wC = woods("C", 0.55, (0.25, 0.60), heat=(XC + 0.45, -0.3, 0.0))
-iron = C.weathered_iron("iron", soot_z=(0.4, 0.6), rust=0.6, scale=0.5)
-rock = L.mine_rock("rock", scale=0.6)
-parts = []
+T = 0.02      # 板厚
+BAT = 0.075   # 角当ての幅
+GAP = 0.028
+Z0 = 0.045    # 根太の高さ
 
 
-def move(objs, dx):
+def woods(tag, char, soot, heat=None, hr=(0.1, 0.5)):
+    return {k: C.weathered_wood(f"{tag}_{k}", char=char, soot_z=soot, grain_axis=k.upper(), scale=0.45,
+                                heat_center=heat, heat_r=hr) for k in "xyz"}
+
+
+wA = woods("A", 0.35, (0.30, 0.62))
+wB = woods("B", 0.45, (0.28, 0.66))
+wC = woods("C", 0.60, (0.20, 0.62), heat=(0.0, -0.75, 0.15), hr=(0.15, 0.6))
+iron = C.weathered_iron("iron", soot_z=(0.3, 0.6), rust=0.6, scale=0.4)
+rockm = L.mine_rock("rock", scale=0.6)
+
+
+def place(objs, x, yaw):
+    """組み立てた箱（原点まわり）を x へ置き、yaw 度回す"""
+    bpy.context.view_layer.update()
+    M = Matrix.Translation((x, 0, 0)) @ Matrix.Rotation(math.radians(yaw), 4, "Z")
     for o in objs:
-        o.location.x += dx
+        o.matrix_world = M @ o.matrix_world
     return objs
 
 
-# ================= A 無傷 =================
-A = L.crate("A", 0.70, 0.50, 0.50, wA, seed=1)
-partsA = move(L.flatten(A), XA)
-# 角の当て金（蓋の四隅に L 字の鉄板）
+def slat_z(h, i, nb=3):
+    H = h - Z0
+    sw = (H - GAP * (nb + 1)) / nb
+    return Z0 + GAP + sw / 2 + i * (sw + GAP), sw
+
+
+def rock(name, r, loc, rot=(0, 0, 0), squash=(1, 0.85, 0.7), seed=0, facet=4, detail=2):
+    ob = C.rock(name, r, detail=detail, rough=0.3, squash=squash, seed=seed, facet=facet)
+    C.xform(ob, loc, rot)
+    return C.assign(ob, rockm)
+
+
+parts = []
+
+# ================= A 無傷（使い古し） =================
+wA_, dA, hA = 0.72, 0.50, 0.50
+A = L.framed_crate("A", wA_, dA, hA, wA, iron=iron, seed=1, brace=True,
+                   splits={"T0": (0.03, None), "Fv1": (None, 0.045), "Rs0": (None, 0.04), "Bs2": (0.035, None)})
+pA = L.flatten(A)
+# 蓋の四隅の当て金（上面→側面へ折れる L 字の帯）
+lx, ly, lz = wA_ / 2 + 2 * T + 0.005, (dA + 4 * T) / 2, hA + T
 for k, (sx, sy) in enumerate(((-1, -1), (1, -1), (1, 1), (-1, 1))):
-    cx, cy, cz = XA + sx * (0.35 + 0.023), sy * (0.25 + 0.023), 0.50 + 0.022
-    pts = [Vector((cx - sx * 0.075, cy, cz)), Vector((cx, cy, cz)), Vector((cx, cy, cz - 0.075))]
-    br = C.sweep(f"bracket_{k}", pts, C.rect_profile(0.004, 0.045), up_fn=lambda i, p, t, sy=sy: (0, sy, 0))
-    partsA.append(C.assign(br, iron))
-    pts = [Vector((cx, cy - sy * 0.075, cz)), Vector((cx, cy, cz)), Vector((cx, cy, cz - 0.075))]
-    br = C.sweep(f"bracket2_{k}", pts, C.rect_profile(0.004, 0.045), up_fn=lambda i, p, t, sx=sx: (sx, 0, 0))
-    partsA.append(C.assign(br, iron))
-parts += partsA
+    cx, cy = sx * (lx + 0.002), sy * (ly + 0.002)
+    for j, (dx, dy, upv) in enumerate(((-sx * 0.09, 0, (0, sy, 0)), (0, -sy * 0.09, (sx, 0, 0)))):
+        pts = [Vector((cx + dx, cy + dy, lz + 0.002)), Vector((cx, cy, lz + 0.002)), Vector((cx, cy, lz - 0.07))]
+        br = C.sweep(f"A_br{k}{j}", pts, C.rect_profile(0.004, 0.042, 0.001), up_fn=lambda i, p, t, u=upv: u)
+        pA.append(C.assign(br, iron))
+# 左右の鉄の取っ手（上段の横板に）
+zt, _ = slat_z(hA, 2)
+for k, sx in enumerate((-1, 1)):
+    xf = sx * (wA_ / 2 + 0.004)
+    pts = C.bezier((xf, -0.08, zt + 0.01), (xf + sx * 0.06, -0.08, zt - 0.03), (xf + sx * 0.06, 0.08, zt - 0.03), (xf, 0.08, zt + 0.01), n=8)
+    hd_ = C.sweep(f"A_handle{k}", pts, C.circle_profile(0.0065, 6))
+    pA.append(C.assign(hd_, iron))
+    for j, yy in enumerate((-0.08, 0.08)):
+        pl = L.board(f"A_hplate{k}{j}", (xf, yy, zt + 0.005), (0, 0, 1), (0, 1, 0), 0.06, 0.03, 0.005, {"x": iron, "y": iron, "z": iron}, seed=k * 3 + j, chip=0.0, segs=1)
+        pA.append(pl)
+parts += place(pA, -1.0, 6)
 
 # ================= B 蓋が割れた =================
-B = L.crate("B", 0.60, 0.60, 0.55, wB, seed=2, skip=("T2", "F2"), broken={"T1": ("mid", 0.06), "P1": ("a", 0.05)})
-partsB = move(L.flatten(B), XB)
-# 外れた蓋板：箱の右側面に立てかける
-tb = L.plank("B_T2_loose", 0.66, 0.19, 0.022, segs=3, seed=95, split_b=0.05, chip=0.006)
-L.orient_between(tb, (XB + 0.40, -0.05, 0.0), (XB + 0.336, -0.03, 0.62), roll_deg=90)
-partsB.append(C.assign(tb, wB["z"]))
-# 欠けた前上段の板：折れた短い残り（左の角柱に釘で残る）
-st = L.plank("B_F2_stub", 0.17, 0.155, 0.022, segs=2, seed=96, split_b=0.05)
-C.xform(st, (XB - 0.30 + 0.085, -0.311, 0.01 + 0.18 * 2 + 0.09), (90, 0, -4))
-partsB.append(C.assign(st, wB["x"]))
-# 中身：鉱石の塊（蓋の割れ目から見える）
-for j in range(6):
-    r = rnd.uniform(0.06, 0.10)
-    ob = C.rock(f"B_ore_{j}", r, detail=1, rough=0.3, squash=(1, 0.85, 0.7), seed=400 + j, facet=3)
-    C.xform(ob, (XB + rnd.uniform(-0.18, 0.18), rnd.uniform(-0.18, 0.18), 0.30 + rnd.uniform(0, 0.08)), (0, 0, rnd.uniform(0, 360)))
-    partsB.append(C.assign(ob, rock))
-parts += partsB
+wB_, dB, hB = 0.62, 0.62, 0.56
+hwB = wB_ / 2
+B = L.framed_crate("B", wB_, dB, hB, wB, iron=iron, seed=2, skip=("T2",),
+                   broken={"T1": dict(f=0.47, rough=0.07, rot_a=((0, 1, 0), 28, (0, 0, -0.02)), rot_b=((0, 1, 0), -34, (0, 0, -0.03))),
+                           "Fs2": dict(f=0.42, rough=0.07, drop_b=True),
+                           "Lv1": dict(f=0.82, rough=0.05, drop_b=True)},
+                   mods={"T0": L.pivot_rot((0, 0, hB), (0, 0, 1), 7, (0.03, -0.025, 0.004))},
+                   splits={"Rv0": (None, 0.05), "Bs2": (None, 0.045)})
+pB = L.flatten(B)
+# 外れた奥の蓋板：右の面に立てかける（下端は地面、上端は箱の縁）
+p0, p1 = Vector((hwB + 0.20, 0.05, 0.012)), Vector((hwB + 0.035, 0.08, hB + 0.06))
+dv = p1 - p0
+pB.append(L.board("B_T2_loose", (p0 + p1) / 2, dv, (0, 1, 0), dv.length, 0.2, T, wB, seed=95, split_b=0.06, chip=0.007))
+# 折れて失われた前上段の残り片：前の地面に
+pB.append(L.board("B_Fs2_frag", (0.12, -dB / 2 - 0.20, 0.012), (math.cos(0.5), math.sin(0.5), 0), (-math.sin(0.5), math.cos(0.5), 0),
+                  0.30, 0.13, T, wB, seed=96, split_a=0.06, split_b=0.04))
+# 中身：黒い鉱石の塊（割れ目から見える）
+for j in range(7):
+    r = rnd.uniform(0.07, 0.11)
+    pB.append(rock(f"B_ore{j}", r, (rnd.uniform(-0.18, 0.18), rnd.uniform(-0.18, 0.18), 0.30 + rnd.uniform(0, 0.10)),
+                   (0, 0, rnd.uniform(0, 360)), seed=400 + j, facet=3, detail=1))
+parts += place(pB, 0.0, -9)
 
 # ================= C 潰れた =================
-Cc = L.crate("C", 0.90, 0.60, 0.55, wC, seed=3, segs=5, skip=("R1",),
-             broken={"F1": ("mid", 0.07), "T1": ("mid", 0.05), "R2": ("a", 0.08), "P2": ("a", 0.06)})
-partsC = L.flatten(Cc)
-# 潰す：右ほど低く（高さ×(1-0.48*s)）、上ほど右へずれる、蓋は V 字にたわむ、側面は膨らむ
-for o in partsC:
-    C.apply_xform(o)
-    for v in o.data.vertices:
-        x, y, z = v.co
-        s = min(1.0, max(0.0, (x + 0.45) / 0.9)) ** 1.3
-        zf = z / 0.58
-        z2 = z * (1.0 - 0.48 * s)
-        z2 -= 0.09 * math.exp(-((x - 0.05) / 0.22) ** 2) * zf ** 2      # 蓋の V 字
-        y2 = y * (1.0 + 0.10 * math.sin(math.pi * min(1.0, zf)) * (0.5 + s))  # 膨らみ
-        x2 = x + 0.07 * zf * (0.5 + s)
-        v.co = (x2, y2, max(0.0, z2))
-move(partsC, XC)
-# 外れた右の板（地面に）と、蓋から落ちた板片
-lb = L.plank("C_R1_loose", 0.62, 0.16, 0.022, segs=3, seed=97, split_a=0.06, chip=0.008)
-C.xform(lb, (XC + 0.62, -0.08, 0.012), (0, 0, 74))
-partsC.append(C.assign(lb, wC["y"]))
-fb = L.plank("C_frag", 0.28, 0.14, 0.022, segs=2, seed=98, split_a=0.05, split_b=0.05)
-C.xform(fb, (XC - 0.18, -0.42, 0.05), (0, 18, 25))
-partsC.append(C.assign(fb, wC["x"]))
-# 潰した岩
-ob = C.rock("C_rock", 0.20, detail=2, rough=0.3, squash=(1.0, 0.85, 0.65), seed=500, facet=4)
-C.xform(ob, (XC + 0.12, 0.05, 0.47), (8, -12, 30))
-partsC.append(C.assign(ob, rock))
-for j in range(3):
-    r = rnd.uniform(0.04, 0.07)
-    ob = C.rock(f"C_frag_rock_{j}", r, detail=1, rough=0.3, squash=(1, 0.8, 0.6), seed=510 + j, facet=3)
-    C.xform(ob, (XC + rnd.uniform(-0.5, 0.6), rnd.uniform(-0.42, -0.35), r * 0.35), (0, 0, rnd.uniform(0, 360)))
-    partsC.append(C.assign(ob, rock))
-parts += partsC
+wC_, dC, hC = 0.90, 0.60, 0.55
+hdC = dC / 2
+HC = hC - Z0
+front_fall = L.pivot_rot((0, -hdC - T, Z0), (1, 0, 0), 66, (0, -0.02, 0))
+brk = {}
+mods = {}
+for bid in ("Fs0", "Fs1", "Fs2", "Fv0", "Fv1", "Ft", "Fb"):
+    mods[bid] = front_fall
+# 倒れた前の面も壊れている：中段は半分失われ、左の角当ては折れる
+brk["Fs1"] = dict(f=0.58, rough=0.07, drop_b=True)  # 倒す行列は後で掛ける
+del mods["Fs1"]
+# 左右の横板：前半分が折れて落ちる（L は b 片、R は a 片が前）
+for i in range(3):
+    dz = 0.06 + 0.07 * i
+    brk[f"Ls{i}"] = dict(f=0.5 + 0.05 * i, rough=0.07, rot_b=((1, 0, 0), 14 + 6 * i, (0, -0.02, -dz)))
+    brk[f"Rs{i}"] = dict(f=0.45 - 0.04 * i, rough=0.07, rot_a=((1, 0, 0), 12 + 7 * i, (0, -0.02, -dz)))
+brk["Ls1"]["drop_b"] = True
+brk["Lv1"] = dict(f=0.45, rough=0.06, drop_b=True)
+brk["Rv0"] = dict(f=0.38, rough=0.06, drop_b=True)
+# 蓋：手前は中へ落ち、中央は折れてたわみ、奥は傾く
+ldC = dC + 4 * T
+mods["T0"] = L.pivot_rot((0, -ldC / 2, hC), (1, 0, 0), -24, (0.02, 0.05, -0.30))
+brk["T1"] = dict(f=0.55, rough=0.07, rot_a=((0, 1, 0), 16, (0, -0.01, -0.06)), rot_b=((0, 1, 0), -22, (0, -0.01, -0.08)))
+mods["T2"] = L.pivot_rot((0, ldC / 2, hC + T), (1, 0, 0), 8, (0, 0, 0))
+Cc = L.framed_crate("C", wC_, dC, hC, wC, iron=iron, seed=3, broken=brk, mods=mods,
+                    splits={"Bv1": (None, 0.05), "Bs2": (0.05, 0.05)})
+bpy.context.view_layer.update()
+for o in Cc["Fs1"]:
+    o.matrix_world = front_fall @ o.matrix_world
+pC = L.flatten(Cc)
+# 上に落ちた岩（蓋を押し潰す）と、倒れた前の面を支える岩
+pC.append(rock("C_rock_top", 0.21, (0.12, -0.02, 0.42), (8, -12, 30), squash=(1.0, 0.85, 0.7), seed=500, facet=5))
+pC.append(rock("C_rock_prop", 0.17, (-0.12, -0.80, 0.10), (0, 0, 20), squash=(1.15, 0.9, 0.75), seed=501, facet=5))
+for j in range(6):
+    r = rnd.uniform(0.035, 0.07)
+    pC.append(rock(f"C_rubble{j}", r, (rnd.uniform(-0.5, 0.5), rnd.uniform(-0.95, -0.35), r * 0.35), (0, 0, rnd.uniform(0, 360)),
+                   squash=(1, 0.8, 0.6), seed=510 + j, facet=3, detail=1))
+# 折れた角当ての上半分と板片（地面）
+pC.append(L.board("C_Lv1_frag", (-0.52, -0.62, 0.015), (math.cos(1.2), math.sin(1.2), 0), (-math.sin(1.2), math.cos(1.2), 0),
+                  0.27, BAT, T, wC, seed=97, split_a=0.06))
+pC.append(L.board("C_Fs1_frag", (0.36, -0.95, 0.02), (math.cos(-0.3), math.sin(-0.3), 0.06), (math.sin(0.3), math.cos(0.3), 0),
+                  0.36, 0.13, T, wC, seed=98, split_a=0.06, split_b=0.05))
+parts += place(pC, 1.02, 4)
 
 C.finish(NAME, parts, version=VERSION, tex_res=1024, budget_tris=9000, refs=[97, 98, 100],
-         notes="焦げた木箱3種（A無傷・B蓋割れ・C潰れ）。x=-1.05/0/+1.15 に並ぶ。ゲーム側は分割して個別に配置可（同一テクスチャ）。")
+         notes="焦げた木箱3種（A無傷・B蓋割れ・C潰れ）。x=-1.0/0/+1.02 に並ぶ。枠つきスラット箱（#97）。ゲーム側は分割して個別に配置可（同一テクスチャ）。")
