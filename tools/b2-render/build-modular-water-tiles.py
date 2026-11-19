@@ -159,7 +159,7 @@ for loc,power,size in [((0,-5,9),750,7),((-4,4,7),420,6)]:
  o.rotation_euler=(Vector((0,0,0))-o.location).to_track_quat('-Z','Y').to_euler()
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
-scene.cycles.samples=40
+scene.cycles.samples=40;scene.cycles.use_denoising=False
 scene.view_settings.view_transform='Standard'
 scene.view_settings.look='Medium High Contrast'
 scene.view_settings.exposure=-0.5
