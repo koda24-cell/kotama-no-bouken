@@ -41,3 +41,13 @@
 - ただし、ひびの何本かが穴の中を斜めに横切るため **美術品質は不合格**。外形の大きな斜め欠けと細かいギザギザもまだ幾何学的。
 - V7 `tools/floor3/broken_glass01/build_type_a_v7.py` は、`inner` の破断輪郭から `outer` の残存ガラスへ向けて、同じ半径方向に複数点で生成する亀裂だけを使用。開口を横断する線を発生させない設計。
 - [V7 run #44465494696](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465494696) 。完成の有無とアート判定は必ず実出力後に追記。
+
+## V7 破断亀裂再設計：実検証結果
+- [Blender Actions #44465494696](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465494696) は **success**。Artifact ID `14502345703`、GLB/Blend/正面・側面・斜め・破断拡大PNG、自作Roughness PNGの**7ファイル**を実取得しmanifestのSHA256全一致確認。
+- 実GLB分析: 6 mesh（ガラス1 + 細い亀裂5）、合計652 triangles、約98,328 bytes。中央が抜けた輪状ガラスメッシュは実形状。6mmのSolidifyで厚みを付けている。
+- V6と違い、**穴の中を横断する長い亀裂が消えた**。亀裂を内側の破断エッジから、外周方向の残存ガラス上に限定している。3方向と拡大画像で目視確認。
+- 見た目の改善: V5の白飛びを解消、V6の誤った穴横断線を除去。暗い背景と透明ガラスの差分を確認。
+- **美術QAはまだ未承認**。中央の穴が角ばった多角形（星型に近い）で、いくつかの破断角が直線的。外周下側の大きい斜めカットも人工的。次の造形改善では写真の大きな残存破片と小さな縁の欠けのサイズ階層を加える。
+- GLS/Three.jsの実ゲーム画面レンダリングおよびFPS測定は未実施。GLBに `KHR_materials_transmission` が存在し、Cube/Backdrop混入がない検査までは実施済み。
+- 粗さマップ `F3_GLASS_WEATHERING_ROUGHNESS_A_V5` の自作PNGは256×256 / non-color data、SHA256 `431a4468faa0b6e64f3e166268c6239d4a9ec3d90dbf94136e011d79511c7c77`。V5〜V7でデータを共通再利用。共通テクスチャ台帳にdocs PR #602からdevelopmentへ記録済み。
+- 承認前の正式GLB昇格なし。ClamAVの実スキャン未実施。外部GLB/テクスチャは今回一切ダウンロード・組み込みしていない。
