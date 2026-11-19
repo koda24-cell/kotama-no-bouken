@@ -38,7 +38,9 @@ jobs:
           assert c['count']==36 and c['distance_max_m']>=0
           v=json.load(open(p+'/face_body_rim_surface_distances.json'))
           assert v['count']==36 and v['distance_max_m']>=0
-          for n in ('body_only_back','body_only_left','body_only_right','body_only_back_upper','face_body_left','face_body_back','ear_seam_order_8_side','ear_seam_order_8_rear_angle','ear_seam_order_32_side','ear_seam_order_32_rear_angle'):
+          d=json.load(open(p+'/bilateral_ear_normal_topology_audit.json'))
+          assert len(d['rim_order'])==6 and d['source_meshes_untouched']
+          for n in ('body_only_back','body_only_left','body_only_right','body_only_back_upper','face_body_left','face_body_back','ear_seam_order_8_side','ear_seam_order_8_rear_angle','ear_seam_order_32_side','ear_seam_order_32_rear_angle','ear_seam_order_8_face_blue_body_orange','ear_seam_order_32_face_blue_body_orange'):
             assert os.path.getsize(f'{p}/{n}.png')>2000
           PY
       - if: always()
