@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>F6 V8 meadow — original V7 GLB visual review</title>
+<style>
+html,body{margin:0;overflow:hidden;background:#a9bd9d;color:#f3f6eb;font:14px system-ui}
+canvas{display:block}#panel{position:absolute;left:12px;top:12px;z-index:2;background:#172c1de8;padding:14px;border:1px solid #57715b;border-radius:10px;max-width:310px}
+label{display:block;margin:8px 0}small{display:block;line-height:1.45;margin-top:8px}
+input[type=range]{vertical-align:middle;width:145px}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head><body>
+<div id="panel"><b>第6層 草原 V8・光と風の比較</b>
+<label><input id="enhance" type="checkbox" checked> 根元の陰影・葉先色・疑似透過光</label>
+<label><input id="wind" type="checkbox" checked> 波状風</label>
+<label>風の強さ <input id="strength" type="range" min="0" max="2" step=".05" value="1"></label>
+<label><input id="tiling" type="checkbox"> 3×3タイルで接続を確認</label>
+<label>露出 <input id="exposure" type="range" min=".35" max="1.2" step=".05" value=".85"></label>
+<small>V7承認済みGLBを変更せず、WebGL上でのみ光・色・風を試験。チェックを外すと同じ照明で陰影補正なしを比較できます。ゲーム未統合・未承認。</small>
+<small id="status">V7 GLBを読み込み中...</small><small id="stats"></small></div>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {enableV7MeadowWind} from './f6-v7-wind-adapter.mjs';
+import {installMeadowV8Look} from './meadow-v8-enhancement.mjs';
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x9fb69c);
+scene.fog=new THREE.Fog(0x9fb69c,5,16);
+scene.add(new THREE.HemisphereLight(0xe5f1df,0x4b6650,.65));
+const sun=new THREE.DirectionalLight(0xffefd1,.85);
+sun.position.set(-3,6,4);scene.add(sun);
+const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.02,80);
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=.85;
+document.body.append(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+const status=document.getElementById('status');
+let controller=null,look=null,center=new THREE.Vector3(),fixedTime=null,clones=[];
+const ui=id=>document.getElementById(id);
+const offsets={
+ front:[0,.52,1.7],side:[1.7,.52,0],angle:[1.35,.83,1.55],top:[.001,2.5,.001],wide:[3.0,2.3,3.4]
+};
+function setView(name){
+ const d=offsets[name];if(!d)throw Error('unknown view '+name);
+ controls.target.copy(center);
+ camera.position.copy(center).add(new THREE.Vector3(...d));
+ camera.lookAt(center);controls.update();
+}
+function setTiling(enabled){
+ for(const c of clones)c.visible=!!enabled;
+ setView(enabled?'wide':'angle');
+}
+new GLTFLoader().load('../../render-input/f6_meadow_floor_v1.glb',gltf=>{
+ try{
+  const root=gltf.scene;
+  scene.add(root);
+  controller=enableV7MeadowWind(root);
+  look=installMeadowV8Look(root,sun.position);
+  const bounds=new THREE.Box3().setFromObject(root);
+  center=bounds.getCenter(new THREE.Vector3());
+  for(let x=-1;x<=1;x++)for(let z=-1;z<=1;z++){
+   if(x===0&&z===0)continue;
+   const c=root.clone(true);
+   c.position.x+=x;c.position.z+=z;c.visible=false;
+   scene.add(c);clones.push(c);
+  }
+  setView('angle');
+  status.textContent='V7実GLB読込成功：'+controller.matched.length+'メッシュ、'+clones.length+'複製タイル準備';
+  window.__kotamaMeadowV8.ready=true;
+ }catch(e){status.textContent='V7処理エラー: '+e.message;window.__kotamaMeadowV8.error=e.message;console.error(e);}
+},undefined,e=>{status.textContent='GLB読込失敗: '+e.message;window.__kotamaMeadowV8.error=e.message;console.error(e);});
+ui('tiling').addEventListener('change',e=>setTiling(e.target.checked));
+ui('exposure').addEventListener('input',e=>{renderer.toneMappingExposure=Number(e.target.value)});
+window.__kotamaMeadowV8={
+ ready:false,error:null,renderer,scene,camera,setView,
+ setTiling(enabled){ui('tiling').checked=!!enabled;setTiling(enabled);},
+ setEnhanced(enabled){ui('enhance').checked=!!enabled;},
+ setWind(enabled){ui('wind').checked=!!enabled;},
+ freeze(time){fixedTime=time;},
+ metrics(){return {calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,exposure:renderer.toneMappingExposure,tiles:ui('tiling').checked?9:1};}
+};
+const clock=new THREE.Clock();
+function frame(){
+ requestAnimationFrame(frame);
+ if(controller){
+  controller.update(fixedTime??clock.getElapsedTime(),ui('wind').checked?Number(ui('strength').value):0);
+  look.setEnhanced(ui('enhance').checked);
+ }
+ controls.update();renderer.render(scene,camera);
+ ui('stats').textContent='Draw calls '+renderer.info.render.calls+' / tris '+renderer.info.render.triangles;
+}
+frame();
+onresize=()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)};
+</script></body></html>

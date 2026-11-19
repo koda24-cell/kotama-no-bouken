@@ -1,0 +1,48 @@
+name: F6 Meadow V8 Visual Review
+on:
+  push:
+    branches:
+      - feature/gpt-f6-meadow-v8-light-wind-review-20261119
+    paths:
+      - 'tools/floor6/meadow-v8-*'
+      - '.github/workflows/f6-meadow-v8-review.yml'
+  workflow_dispatch:
+jobs:
+  meadow-v8-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and shader unit checks
+        run: |
+          node --check tools/floor6/meadow-v8-enhancement.mjs
+          node --check tools/floor6/meadow-v8-visual-smoke.mjs
+          node tools/floor6/meadow-v8-enhancement.test.mjs
+          node tools/floor6/meadow-wind-field.test.mjs
+      - name: Install headless browser
+        run: |
+          npm install --no-save --no-package-lock playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Retrieve original V7 GLB (not a replacement)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p render-input
+          gh run download 43602069517 --repo ${{ github.repository }} -n f6-meadow-floor-v1 -D render-input
+          test -s render-input/f6_meadow_floor_v1.glb
+      - name: Capture real GLB screenshots / WebGL metrics
+        run: node tools/floor6/meadow-v8-visual-smoke.mjs
+      - name: Upload unapproved review images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f6-meadow-v8-unapproved-review
+          path: render-output/f6-meadow-v8/
+          retention-days: 14
+          if-no-files-found: warn
