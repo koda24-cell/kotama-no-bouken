@@ -1,8 +1,8 @@
 {
   "asset": "b4p_dragon_ore_cluster",
-  "version": "v3",
+  "version": "v4",
   "blender": "4.2.3 LTS",
-  "triangles": 5152,
+  "triangles": 5608,
   "budget_triangles": 8000,
   "materials": [
     "b4p_dragon_ore_cluster_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    1.965,
-    1.545,
-    1.048
+    1.908,
+    1.522,
+    1.068
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_dragon_ore_cluster.glb",
-  "glb_bytes": 829048,
+  "glb_bytes": 822904,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -50,16 +50,16 @@
     41
   ],
   "sha256": {
-    "b4p_dragon_ore_cluster.glb": "c00de64839489a3655adb5757618c44a47b2a8e036e77b5d17632d43cf6f4c22",
-    "b4p_dragon_ore_cluster_volcanic_front.png": "3e37a53fc730d94fc3b8f457d82827616a7bdc87ca845268e40ade1d399bafe6",
-    "b4p_dragon_ore_cluster_volcanic_side.png": "c0d8ff9a99c38211b9c9b2d696343fc649921a685427aa32b9c5980882309382",
-    "b4p_dragon_ore_cluster_volcanic_angle.png": "e63879ed8018476caf5a6c65e757277f8a5f942f88f83c89912044afdbf29670",
-    "b4p_dragon_ore_cluster_volcanic_top.png": "af445e6c05f8814ee4d2efa1bc33684626eefc8c19b40c3e3a6d054faea10691",
-    "b4p_dragon_ore_cluster_volcanic_close.png": "c57fc57e30843cd8adaa9622bcb30ce150b29f20aaa6787ba0f2212751c1d5e3",
-    "b4p_dragon_ore_cluster_volcanic_back.png": "4c76cd6e667ad413e91d6186d40633a943a1cb2c838691b5a1b152feaea1dcc7",
-    "b4p_dragon_ore_cluster_studio_front.png": "e45b255c4c9762763ecf0430357f8b125d46037d272222232b3f7861f95192fb",
-    "b4p_dragon_ore_cluster_studio_angle.png": "9ae5a3e2e42c907fba4b3ab2b651496b96dd592a590d707d9b0d55a42fbaa453",
-    "b4p_dragon_ore_cluster_studio_scale.png": "26d19618776000393efd2bf9a594b45ab76831ab59327b3a4f337df7158f28de"
+    "b4p_dragon_ore_cluster.glb": "96f5f784c86596cc5852021ed1b59d256cfa7225f6b627ad65778e677d4adc8a",
+    "b4p_dragon_ore_cluster_volcanic_front.png": "be6813f81ecc02c5ecad717fb59f52ad08ad313e433f9ba33a5d8db29b3bd3d8",
+    "b4p_dragon_ore_cluster_volcanic_side.png": "a48c09b0e2fdb293ba2e6fb032f05986463088c635a14b9abb5c2122c2207795",
+    "b4p_dragon_ore_cluster_volcanic_angle.png": "c5b59780471d5b1ff5ee5e7e40883b1bf89c628173e8daa42aa07a1f53a36dcb",
+    "b4p_dragon_ore_cluster_volcanic_top.png": "00ccf228fa93f11c3bc5fddac2bc476012ed29789b8bdcb006860a78bdd15806",
+    "b4p_dragon_ore_cluster_volcanic_close.png": "3c7aa508af94d582bf807f0bff65e3d5b4d112c5bf92c5fe54ef229155267eed",
+    "b4p_dragon_ore_cluster_volcanic_back.png": "1a0e8379df95e1f22978662ec6dfb2fde6df21b6f26c4416910fe413ee1b2be5",
+    "b4p_dragon_ore_cluster_studio_front.png": "5714c45e4bdb32c1a2bfe403670f7f66328fa9c8eed4f6174a98f50e28738e3b",
+    "b4p_dragon_ore_cluster_studio_angle.png": "93e03e6c21736c0e99cf3909e4b29c95fde5f60c219be508c09ab8473ad2cd8c",
+    "b4p_dragon_ore_cluster_studio_scale.png": "509d4ba4f1157430fb122affb1b406a86a83288eba80158243a4010fed9af30f"
   },
   "renders": [
     "b4p_dragon_ore_cluster_volcanic_front.png",
@@ -77,24 +77,24 @@
   "game_lights": [
     {
       "pos_blender_zup": [
-        0.08435854315757751,
-        -0.03005896508693695,
-        0.20450468361377716
+        0.08330558240413666,
+        -0.025753378868103027,
+        0.2122509479522705
       ],
-      "watts": 18.0,
+      "watts": 11.0,
       "color": [
         1.0,
-        0.22,
+        0.2,
         0.06
       ]
     },
     {
       "pos_blender_zup": [
-        0.24511036276817322,
-        0.19921272993087769,
-        0.2650875747203827
+        0.25538796186447144,
+        0.21999914944171906,
+        0.2728338837623596
       ],
-      "watts": 5.0,
+      "watts": 3.5,
       "color": [
         1.0,
         0.18,
