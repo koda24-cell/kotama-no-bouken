@@ -1,5 +1,8 @@
 # Blender Docker 一括レンダリング — 他チャット引き継ぎ
 
+> **2026-11-19 追記（最新の実行環境）**：公式Blender **5.3.0＋ClamAV** 専用Dockerを実ビルド・実レンダリングで確認済み。[Blender 5.3評価・引継ぎ](BLENDER_53_UPGRADE_EVALUATION_20261119.md) / [共通入口](BLENDER_SHARED_EXECUTION_ENTRYPOINT.md)。B2水面、B4マグマ3系統、F6葉群の既存5ワークフローは実QA成功後に5.3へ移行済み。以下の旧Blender Docker手順は過去の制作環境の説明として保持し、未検証の旧ジョブを一括移行しない。生成候補は承認までNOT_APPROVED。
+
+
 最終更新: 2026-11-12
 
 ## 目的
