@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
-      - feature/blender53-b4-bank-modules-workflow-20261119
     paths:
       - tools/floor4/magma_banks/build_bank_modules.py
       - .github/workflows/b4-magma-bank-modules-review.yml
