@@ -3,28 +3,42 @@ on:
   push:
     branches:
       - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
+      - feature/shared-container-b4-magma-banks-20261119
     paths:
       - tools/floor4/magma_banks/build_bank_modules.py
       - .github/workflows/b4-magma-bank-modules-review.yml
   workflow_dispatch:
 permissions:
   contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
-      - name: Install Blender and numpy
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y blender python3-numpy
+        with:
+          persist-credentials: false
+      - name: Update ClamAV definitions before reading project assets
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan review scripts before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/floor4/magma_banks qa/security/input-0.log
+      - name: Scan imported source 1 before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b4_dragonfire/textures qa/security/input-1.log
       - name: Render three candidate basalt-bank modules, four views each
         run: |
           set -euo pipefail
           mkdir -p render-output
           for pattern in p1 p2 p3; do
-            blender -b -t 2 --python tools/floor4/magma_banks/build_bank_modules.py -- --pattern "$pattern" --out render-output
+            HOME=/tmp/blender-home blender -b -t 2 --python tools/floor4/magma_banks/build_bank_modules.py -- --pattern "$pattern" --out render-output
           done
       - name: Verify GLB, Blend, PNG and SHA256 manifests
         run: |
@@ -50,9 +64,13 @@ jobs:
                   assert (d/(stem+'-'+v+'.png')).read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
               print(pattern,'verified')
           PY
+      - name: Scan generated GLB, Blend, PNG and manifests
+        run: bash tools/security/clamav_scan_gate.sh scan render-output qa/security/output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: b4-magma-bank-p1-p3-review
-          path: render-output/
+          path: |
+            render-output/
+            qa/security/
           retention-days: 14
