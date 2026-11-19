@@ -30,12 +30,44 @@ RUN set -eux; \
     echo "BLENDER53_OFFICIAL_SHA256_PASS"; \
     freshclam --stdout; \
     test -f /var/lib/clamav/daily.cvd -o -f /var/lib/clamav/daily.cld; \
-    clamscan --max-filesize=500M --max-scansize=2000M --max-recursion=12 --alert-exceeds-max "$archive" > /tmp/blender-archive-scan.log; \
-    grep -Eq '^Infected files: 0[[:space:]]*$' /tmp/blender-archive-scan.log; \
-    grep -Eq '^Scanned files: 1[[:space:]]*$' /tmp/blender-archive-scan.log; \
+    # ClamAV xz decoder has a 500 MiB decompression limit for this 388 MiB archive. \
+    # Verify official SHA first, scan archive bytes without decompression, then \
+    # unpack the authenticated archive into quarantine and scan EACH extracted file \
+    # before executing any Blender binary. Never treat a truncated xz scan as pass. \
+    clamscan --scan-archive=no --max-filesize=500M "$archive" > /tmp/blender-archive-scan.log; \
+    grep -Eq '^Infected files: 0[[:space:]]*
+    ln -s "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender" /usr/local/bin/blender; \
+    blender --version | head -n 1 | grep -Fx "Blender ${BLENDER_VERSION}"; \
+    rm -f "$archive" "blender-${BLENDER_VERSION}.sha256" /tmp/blender-archive-scan.log /tmp/blender-extracted-scan.log; \
+    rm -f /var/lib/clamav/*.cvd /var/lib/clamav/*.cld
+WORKDIR /work
+ENV HOME=/tmp/blender-home
+CMD ["/bin/bash"]
+ /tmp/blender-archive-scan.log; \
+    grep -Eq '^Scanned files: 1[[:space:]]*
+    ln -s "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender" /usr/local/bin/blender; \
+    blender --version | head -n 1 | grep -Fx "Blender ${BLENDER_VERSION}"; \
+    rm -f "$archive" "blender-${BLENDER_VERSION}.sha256" /tmp/blender-archive-scan.log; \
+    rm -f /var/lib/clamav/*.cvd /var/lib/clamav/*.cld
+WORKDIR /work
+ENV HOME=/tmp/blender-home
+CMD ["/bin/bash"]
+ /tmp/blender-archive-scan.log; \
     cat /tmp/blender-archive-scan.log; \
     tar --no-same-owner -xJf "$archive" -C /opt/blender; \
     test -x "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender"; \
+    clamscan --recursive --scan-archive=no --max-filesize=500M "/opt/blender/blender-${BLENDER_VERSION}-linux-x64" > /tmp/blender-extracted-scan.log; \
+    grep -Eq '^Infected files: 0[[:space:]]*
+    ln -s "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender" /usr/local/bin/blender; \
+    blender --version | head -n 1 | grep -Fx "Blender ${BLENDER_VERSION}"; \
+    rm -f "$archive" "blender-${BLENDER_VERSION}.sha256" /tmp/blender-archive-scan.log; \
+    rm -f /var/lib/clamav/*.cvd /var/lib/clamav/*.cld
+WORKDIR /work
+ENV HOME=/tmp/blender-home
+CMD ["/bin/bash"]
+ /tmp/blender-extracted-scan.log; \
+    awk '/^Scanned files:/ {if ($3 > 0) ok=1} END {exit !ok}' /tmp/blender-extracted-scan.log; \
+    tail -n 18 /tmp/blender-extracted-scan.log; \
     ln -s "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender" /usr/local/bin/blender; \
     blender --version | head -n 1 | grep -Fx "Blender ${BLENDER_VERSION}"; \
     rm -f "$archive" "blender-${BLENDER_VERSION}.sha256" /tmp/blender-archive-scan.log; \
