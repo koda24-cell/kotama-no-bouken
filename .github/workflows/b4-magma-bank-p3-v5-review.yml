@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
-      - feature/shared-container-b4-magma-banks-20261119
     paths:
       - tools/floor4/magma_banks/build_p3_v5.py
       - tools/floor4/magma_banks/p3_v5_additions.py
