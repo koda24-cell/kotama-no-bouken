@@ -173,6 +173,17 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
         return slot.multiply(local).multiply(recentre);
       });
       instance(group, owned, cart, mats, 'b4:gpt-minecart-v32');
+      // broken timber set against the back of each recess (mine team #3)
+      const timber = await loadProp('b4p_timber_set_broken');
+      if (timber && !isStale()) {
+        const tm = mines.map(site => new THREE.Matrix4().compose(
+          new THREE.Vector3((site.tx + site.dx / 2) * CELL, 0, (site.ty + site.dz / 2) * CELL),
+          new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.atan2(-site.dx, -site.dz), 0)), new THREE.Vector3(1, 1, 1))
+          .multiply(new THREE.Matrix4().compose(new THREE.Vector3((hash(site.tx, site.ty, 821) - 0.5) * 0.4, 0, -3.2),
+            new THREE.Quaternion().setFromEuler(new THREE.Euler(0, (hash(site.tx, site.ty, 822) - 0.5) * 0.25, 0)), new THREE.Vector3(1.2, 1.2, 1.2))));
+        instance(group, owned, timber, tm, 'b4:prop:b4p_timber_set_broken');
+        info.byId.b4p_timber_set_broken = tm.length;
+      }
       const proc = root.getObjectByName('b4:abandoned-mine');
       if (proc) proc.visible = false;                         // procedural stand-in no longer needed
       info.mineCarts = mats.length;
