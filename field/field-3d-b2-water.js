@@ -18,7 +18,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=20261117-l2';   // 結晶（ユーザー確認済みの質感）
 import { createB2WaterTiles, B2V4W_REMOVE_STEPPING_STONES } from './b2-water-tiles.js?v=20261119-w4';   // [B2V4-W] 危険な水面（GPT 水面タイル）・床の模様
-import { createFlora, floraMaterial, floraMaterialClass, floraTint } from './b2-flora.js?v=20261117-f3';   // [B2V4-F] 花の配置と見た目
+import { createFlora, floraMaterial, floraMaterialClass, floraTint } from './b2-flora.js?v=20261119-f4';   // [B2V4-F] 花の配置と見た目
 import { createSetpieces, SP_ROLES } from './b2-setpieces.js?v=20261119-s3';   // [B2V4-S] 階段・橋・水門・柱群・背景モニュメント
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
