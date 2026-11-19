@@ -15,7 +15,7 @@ bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=Fals
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
 scene.cycles.samples=32
-bpy.context.view_layer.cycles.use_denoising=True
+bpy.context.view_layer.cycles.use_denoising=False  # Ubuntu apt Blender has no OpenImageDenoiser
 scene.render.resolution_x=960;scene.render.resolution_y=640;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 scene.world.color=(0.15,0.23,0.26)
