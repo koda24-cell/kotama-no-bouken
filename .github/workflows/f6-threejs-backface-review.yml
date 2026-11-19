@@ -63,7 +63,7 @@ jobs:
           d=Path('render-output/floor6/threejs-backface-review')
           report=json.loads((d/'browser-report.json').read_text())
           assert report['meshes']==420 and report['shaderPatched']==2 and len(report['views'])==3 and len(report['closeups'])==6
-          for name in ('front','angle','underside','A_front_close','B_front_close','C_front_close','A_underside_close','B_underside_close','C_underside_close'):
+          for name in ('front','angle','underside','A_front_close','B_front_close','C_front_close','A_underside_close','B_underside_close','C_underside_close','B_face_debug','C_face_debug'):
               b=(d/(name+'.png')).read_bytes()
               assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
               w,h=struct.unpack('>II',b[16:24])
