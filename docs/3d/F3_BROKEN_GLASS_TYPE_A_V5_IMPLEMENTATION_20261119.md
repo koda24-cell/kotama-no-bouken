@@ -34,3 +34,10 @@
 - 正面、側面、斜め、破断面拡大の画像QA：中央の穴と周辺に残るガラス、薄い実断面は確認できた。しかし**ガラス全体が白っぽく透過が弱く、破断面の反射も不足**。破断輪郭も幾何学的な直線が多いので美術未承認。
 - 粗さマスク `F3_GLASS_WEATHERING_ROUGHNESS_A_V5.png` は256×256 PNG、SHA256 `431a4468faa0b6e64f3e166268c6239d4a9ec3d90dbf94136e011d79511c7c77`。自作で外部素材は未導入。
 - V6は `tools/floor3/broken_glass01/build_type_a_v6.py`、`.github/workflows/f3-broken-glass01-type-a-v6.yml` で透過率・露出・明暗を再調整。run [#44465072113](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465072113)。**完了と実画像の視覚QAは未確認の段階でこの記録を追加**。
+
+## V6実画像とV7の修正
+- [V6 run #44465072113](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465072113): **success**。GLB/Blend/正面・側面・斜め・破断部拡大PNG、Roughness PNGの7点のSHA256をダウンロードしたArtifact #14502240181で全一致照合。
+- V6ではレンダリング用の背景を暗いEmissionへ変更し、露出とライトを抑えた。ガラスの開口部と残存部が明瞭になった。
+- ただし、ひびの何本かが穴の中を斜めに横切るため **美術品質は不合格**。外形の大きな斜め欠けと細かいギザギザもまだ幾何学的。
+- V7 `tools/floor3/broken_glass01/build_type_a_v7.py` は、`inner` の破断輪郭から `outer` の残存ガラスへ向けて、同じ半径方向に複数点で生成する亀裂だけを使用。開口を横断する線を発生させない設計。
+- [V7 run #44465494696](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465494696) 。完成の有無とアート判定は必ず実出力後に追記。
