@@ -1,0 +1,918 @@
+{
+  "report": [
+    {
+      "floor": 0,
+      "info": {
+        "placed": 22,
+        "byId": {
+          "b4p_brazier_cage": 22
+        },
+        "missing": [],
+        "list": [
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 11,
+            "ty": 4,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.37
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 21,
+            "ty": 19,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.65
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 18,
+            "ty": 19,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.67
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 9,
+            "ty": 16,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.49
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 1,
+            "ty": 9,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.52
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 15,
+            "ty": 16,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.22
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 25,
+            "ty": 9,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.56
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 8,
+            "ty": 13,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.46
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 20,
+            "ty": 13,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.48
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 11,
+            "ty": 14,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.44
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 7,
+            "ty": 19,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.13
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 3,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.47
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 18,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.46
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 3,
+            "ty": 13,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.47
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 23,
+            "ty": 11,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.52
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 16,
+            "ty": 9,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.39
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 17,
+            "ty": 5,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.38
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 1,
+            "ty": 4,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.51
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 25,
+            "ty": 16,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.58
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 8,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.42
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 21,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.48
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 25,
+            "ty": 3,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.54
+          }
+        ],
+        "mineCarts": 3
+      }
+    },
+    {
+      "name": "f0-01-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 11,
+        "ty": 4,
+        "dx": 1,
+        "dz": 0,
+        "t": 0.37
+      },
+      "at": [
+        11,
+        3,
+        0,
+        1
+      ],
+      "render": {
+        "calls": 97,
+        "triangles": 619563,
+        "memory": {
+          "geometries": 97,
+          "textures": 93
+        }
+      }
+    },
+    {
+      "name": "f0-02-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 21,
+        "ty": 19,
+        "dx": 0,
+        "dz": 1,
+        "t": 0.65
+      },
+      "at": [
+        22,
+        19,
+        -1,
+        0
+      ],
+      "render": {
+        "calls": 86,
+        "triangles": 616126,
+        "memory": {
+          "geometries": 105,
+          "textures": 111
+        }
+      }
+    },
+    {
+      "name": "f0-03-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 18,
+        "ty": 19,
+        "dx": 0,
+        "dz": -1,
+        "t": 0.67
+      },
+      "at": [
+        17,
+        19,
+        1,
+        0
+      ],
+      "render": {
+        "calls": 33,
+        "triangles": 550508,
+        "memory": {
+          "geometries": 105,
+          "textures": 111
+        }
+      }
+    },
+    {
+      "name": "f0-04-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 9,
+        "ty": 16,
+        "dx": 1,
+        "dz": 0,
+        "t": 0.49
+      },
+      "at": [
+        9,
+        15,
+        0,
+        1
+      ],
+      "render": {
+        "calls": 43,
+        "triangles": 558051,
+        "memory": {
+          "geometries": 107,
+          "textures": 112
+        }
+      }
+    },
+    {
+      "name": "f0-05-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 1,
+        "ty": 9,
+        "dx": -1,
+        "dz": 0,
+        "t": 0.52
+      },
+      "at": [
+        2,
+        9,
+        -1,
+        0
+      ],
+      "render": {
+        "calls": 33,
+        "triangles": 550508,
+        "memory": {
+          "geometries": 107,
+          "textures": 112
+        }
+      }
+    },
+    {
+      "name": "f0-06-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 15,
+        "ty": 16,
+        "dx": -1,
+        "dz": 0,
+        "t": 0.22
+      },
+      "at": [
+        16,
+        16,
+        -1,
+        0
+      ],
+      "render": {
+        "calls": 46,
+        "triangles": 555325,
+        "memory": {
+          "geometries": 107,
+          "textures": 112
+        }
+      }
+    },
+    {
+      "floor": 1,
+      "info": {
+        "placed": 22,
+        "byId": {
+          "b4p_brazier_cage": 22
+        },
+        "missing": [],
+        "list": [
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 15,
+            "ty": 2,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.44
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 11,
+            "ty": 4,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.51
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 23,
+            "ty": 4,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.29
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 5,
+            "ty": 2,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.66
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 21,
+            "ty": 19,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.57
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 18,
+            "ty": 19,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.61
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 19,
+            "ty": 12,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.69
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 1,
+            "ty": 9,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.8
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 13,
+            "ty": 16,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.69
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 5,
+            "ty": 6,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.61
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 25,
+            "ty": 9,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.35
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 8,
+            "ty": 13,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.89
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 11,
+            "ty": 14,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.71
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 15,
+            "ty": 19,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.7
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 3,
+            "ty": 1,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.67
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 18,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.39
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 3,
+            "ty": 13,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.88
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 23,
+            "ty": 11,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.4
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 17,
+            "ty": 5,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.8
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 1,
+            "ty": 4,
+            "dx": 1,
+            "dz": 0,
+            "t": 0.74
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 25,
+            "ty": 16,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.49
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 21,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.35
+          }
+        ],
+        "mineCarts": 3
+      }
+    },
+    {
+      "name": "f1-01-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 15,
+        "ty": 2,
+        "dx": 1,
+        "dz": 0,
+        "t": 0.44
+      },
+      "at": [
+        15,
+        1,
+        0,
+        1
+      ],
+      "render": {
+        "calls": 109,
+        "triangles": 627011,
+        "memory": {
+          "geometries": 121,
+          "textures": 162
+        }
+      }
+    },
+    {
+      "name": "f1-02-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 11,
+        "ty": 4,
+        "dx": 1,
+        "dz": 0,
+        "t": 0.51
+      },
+      "at": [
+        11,
+        3,
+        0,
+        1
+      ],
+      "render": {
+        "calls": 99,
+        "triangles": 620420,
+        "memory": {
+          "geometries": 121,
+          "textures": 162
+        }
+      }
+    },
+    {
+      "name": "f1-03-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 23,
+        "ty": 4,
+        "dx": -1,
+        "dz": 0,
+        "t": 0.29
+      },
+      "at": [
+        23,
+        5,
+        0,
+        -1
+      ],
+      "render": {
+        "calls": 93,
+        "triangles": 618321,
+        "memory": {
+          "geometries": 121,
+          "textures": 162
+        }
+      }
+    },
+    {
+      "name": "f1-04-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 5,
+        "ty": 2,
+        "dx": 1,
+        "dz": 0,
+        "t": 0.66
+      },
+      "at": [
+        5,
+        1,
+        0,
+        1
+      ],
+      "render": {
+        "calls": 99,
+        "triangles": 620420,
+        "memory": {
+          "geometries": 121,
+          "textures": 162
+        }
+      }
+    },
+    {
+      "name": "f1-05-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 21,
+        "ty": 19,
+        "dx": 0,
+        "dz": 1,
+        "t": 0.57
+      },
+      "at": [
+        22,
+        19,
+        -1,
+        0
+      ],
+      "render": {
+        "calls": 73,
+        "triangles": 607360,
+        "memory": {
+          "geometries": 121,
+          "textures": 162
+        }
+      }
+    },
+    {
+      "name": "f1-06-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 18,
+        "ty": 19,
+        "dx": 0,
+        "dz": -1,
+        "t": 0.61
+      },
+      "at": [
+        17,
+        19,
+        1,
+        0
+      ],
+      "render": {
+        "calls": 69,
+        "triangles": 605810,
+        "memory": {
+          "geometries": 121,
+          "textures": 162
+        }
+      }
+    },
+    {
+      "floor": 2,
+      "info": {
+        "placed": 9,
+        "byId": {
+          "b4p_brazier_cage": 9
+        },
+        "missing": [],
+        "list": [
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 23,
+            "ty": 11,
+            "dx": 1,
+            "dz": 0,
+            "t": 1
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 4,
+            "ty": 13,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.76
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 3,
+            "ty": 5,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.59
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 11,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.7
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 22,
+            "ty": 15,
+            "dx": 0,
+            "dz": 1,
+            "t": 1
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 24,
+            "ty": 13,
+            "dx": 0,
+            "dz": -1,
+            "t": 1
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 12,
+            "ty": 15,
+            "dx": 0,
+            "dz": 1,
+            "t": 0.94
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 2,
+            "ty": 10,
+            "dx": -1,
+            "dz": 0,
+            "t": 0.74
+          },
+          {
+            "id": "b4p_brazier_cage",
+            "tx": 3,
+            "ty": 8,
+            "dx": 0,
+            "dz": -1,
+            "t": 0.68
+          }
+        ],
+        "mineCarts": 3
+      }
+    },
+    {
+      "name": "f2-01-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 23,
+        "ty": 11,
+        "dx": 1,
+        "dz": 0,
+        "t": 1
+      },
+      "at": [
+        22,
+        11,
+        1,
+        0
+      ],
+      "render": {
+        "calls": 71,
+        "triangles": 314738,
+        "memory": {
+          "geometries": 113,
+          "textures": 162
+        }
+      }
+    },
+    {
+      "name": "f2-02-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 4,
+        "ty": 13,
+        "dx": 0,
+        "dz": 1,
+        "t": 0.76
+      },
+      "at": [
+        4,
+        12,
+        0,
+        1
+      ],
+      "render": {
+        "calls": 81,
+        "triangles": 322516,
+        "memory": {
+          "geometries": 121,
+          "textures": 163
+        }
+      }
+    },
+    {
+      "name": "f2-03-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 3,
+        "ty": 5,
+        "dx": -1,
+        "dz": 0,
+        "t": 0.59
+      },
+      "at": [
+        4,
+        5,
+        -1,
+        0
+      ],
+      "render": {
+        "calls": 62,
+        "triangles": 312252,
+        "memory": {
+          "geometries": 121,
+          "textures": 163
+        }
+      }
+    },
+    {
+      "name": "f2-04-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 11,
+        "ty": 1,
+        "dx": 0,
+        "dz": -1,
+        "t": 0.7
+      },
+      "at": [
+        11,
+        2,
+        0,
+        -1
+      ],
+      "render": {
+        "calls": 86,
+        "triangles": 318848,
+        "memory": {
+          "geometries": 121,
+          "textures": 163
+        }
+      }
+    },
+    {
+      "name": "f2-05-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 22,
+        "ty": 15,
+        "dx": 0,
+        "dz": 1,
+        "t": 1
+      },
+      "at": [
+        22,
+        14,
+        0,
+        1
+      ],
+      "render": {
+        "calls": 138,
+        "triangles": 330145,
+        "memory": {
+          "geometries": 183,
+          "textures": 174
+        }
+      }
+    },
+    {
+      "name": "f2-06-b4p_brazier_cage",
+      "it": {
+        "id": "b4p_brazier_cage",
+        "tx": 24,
+        "ty": 13,
+        "dx": 0,
+        "dz": -1,
+        "t": 1
+      },
+      "at": [
+        24,
+        14,
+        0,
+        -1
+      ],
+      "render": {
+        "calls": 79,
+        "triangles": 317500,
+        "memory": {
+          "geometries": 183,
+          "textures": 174
+        }
+      }
+    }
+  ],
+  "errors": []
+}
