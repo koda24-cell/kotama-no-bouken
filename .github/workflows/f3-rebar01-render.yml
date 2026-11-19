@@ -1,0 +1,57 @@
+name: Floor3 Exposed Rebar01 Isolated Blender Review
+on:
+  push:
+    branches: [feature/gpt-f3-exposed-rebar01-20261119]
+    paths:
+      - 'tools/floor3/rebar01/**'
+      - '.github/workflows/f3-rebar01-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check source
+        run: python3 -m py_compile tools/floor3/rebar01/build.py
+      - name: Render single rebar variants with Blender
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_rebar01
+          printf '{"asset":"F3_EXPOSED_REBAR_01","approval":"NOT_APPROVED","phase":"STARTED","source_sha":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/f3_rebar01/progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
+            -b -t 2 --python /work/tools/floor3/rebar01/build.py 2>&1 | tee out/f3_rebar01/blender.log
+          grep -q F3_REBAR_ALL_COMPLETE out/f3_rebar01/blender.log
+      - name: Verify files and SHA manifest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json, struct, os
+          p=Path('out/f3_rebar01')
+          names=['F3_REBAR_RUST_01.png']
+          for ver in (1,2,3):
+              stem=f'f3_rebar01_v{ver}'
+              names += [stem+'.glb',stem+'.blend']+[stem+'-'+d+'.png' for d in ('front','side','angle')]
+          entries={}
+          for n in names:
+              raw=(p/n).read_bytes()
+              assert len(raw)>150, n
+              if n.endswith('.png'): assert raw[:8]==bytes.fromhex('89504e470d0a1a0a'),n
+              if n.endswith('.glb'):
+                  assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw),n
+              if n.endswith('.blend'):
+                  assert raw.startswith(b'BLENDER') or raw.startswith(bytes.fromhex('28b52ffd')),n
+              entries[n]={'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+          (p/'manifest.json').write_text(json.dumps({'asset':'F3_EXPOSED_REBAR_01','approval':'NOT_APPROVED','source_sha':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],'files':entries},indent=2))
+          print('F3_REBAR_QA_SUCCESS',len(entries))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f3-rebar01-blender-v1-v2-v3
+          path: out/f3_rebar01/
+          retention-days: 14
