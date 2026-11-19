@@ -1,0 +1,28 @@
+.kotama-actions-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  flex: 0 0 auto !important;
+  margin-inline-start: 5px !important;
+  padding: 2px 5px !important;
+  border: 1px solid var(--kotama-border, #8b8b8b55) !important;
+  border-radius: 6px !important;
+  background: var(--kotama-bg, #66666620) !important;
+  color: var(--kotama-color, #888) !important;
+  font: 600 10px/1.5 system-ui, sans-serif !important;
+  white-space: nowrap !important;
+  max-width: 88px !important;
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+.kotama-actions-badge[data-state="running"] {--kotama-color:#b77900;--kotama-bg:#f5bf2825;--kotama-border:#b7790066;}
+.kotama-actions-badge[data-state="success"] {--kotama-color:#159454;--kotama-bg:#2abf7020;--kotama-border:#15945466;}
+.kotama-actions-badge[data-state="failure"] {--kotama-color:#d34848;--kotama-bg:#d3484820;--kotama-border:#d3484866;}
+.kotama-actions-badge[data-state="unknown"] {--kotama-color:#888;--kotama-bg:#88888820;--kotama-border:#88888866;}
+.kotama-actions-badge:focus-visible {outline: 2px solid #5098fa !important;outline-offset:2px !important;}
+@media (prefers-color-scheme: dark) {
+  .kotama-actions-badge[data-state="running"] {--kotama-color:#f5c451;}
+  .kotama-actions-badge[data-state="success"] {--kotama-color:#54d997;}
+  .kotama-actions-badge[data-state="failure"] {--kotama-color:#ff8585;}
+}
