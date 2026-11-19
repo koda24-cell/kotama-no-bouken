@@ -29,7 +29,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Vector  # noqa: E402
 
 NAME = "b4p_mine_lantern"
-VERSION = "v5"
+VERSION = "v6"
 rnd = random.Random(84)
 C.reset(84)
 
@@ -212,6 +212,6 @@ hk = C.sweep("s_hook", hook, C.circle_profile(0.0028, 4), scale_fn=lambda u: 1.0
 hk.rotation_euler = (0, 0, math.radians(14))
 parts.append(C.assign(hk, iron))
 
-C.finish(NAME, parts, version=VERSION, lights=[((0.0, 0.0, 0.102), 0.45, (1.0, 0.52, 0.18))], tex_res=512, budget_tris=2500,
+C.finish(NAME, parts, version=VERSION, lights=[((0.0, 0.0, 0.102), 0.12, (1.0, 0.52, 0.18))], tex_res=512, budget_tris=2500,
          refs=[84, 80],
          notes="ハリケーン型の坑道ランタン（灯った状態）。潰れたガード線の部分でホヤが大きく割れ、芯と炎だけ発光。S字金具つき。")
