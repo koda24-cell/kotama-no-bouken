@@ -14,7 +14,8 @@ random.seed(20261119)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
-scene.cycles.samples=32
+scene.cycles.samples=48
+scene.cycles.max_bounces=6
 bpy.context.view_layer.cycles.use_denoising=False  # Ubuntu apt Blender has no OpenImageDenoiser
 scene.render.resolution_x=960;scene.render.resolution_y=640;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
@@ -46,7 +47,7 @@ bpy.ops.mesh.primitive_plane_add(size=2,location=(0,0,-.45))
 ground=bpy.context.object;ground.name="Riverbed_scanned_CC0"
 ground.scale=(8,8,1);ground.data.materials.append(bed)
 shore=mat("Damp wet bank","#554e42",.44)
-pebble=[mat("Wet pebble gray","#595d57",.28),mat("Warm river stones","#81715e",.35),mat("Olive pebbles","#535745",.44)]
+pebble=[mat("Warm sandstone","#82776a",.66),mat("Cool wet schist","#626d69",.52),mat("Moss stained stone","#566458",.64),mat("Pale river gravel","#a29c86",.78)]
 for i in range(450):
     x=random.uniform(-7.7,7.7);y=random.uniform(-7.7,7.7)
     # More detail at irregular shoreline, avoid tile / grid placement.
@@ -58,21 +59,39 @@ for i in range(450):
     o.scale=(radius*random.uniform(.7,1.5),radius*random.uniform(.7,1.2),radius*random.uniform(.35,.74))
     o.rotation_euler=(random.random()*.5,random.random()*.5,random.random()*math.pi)
     o.data.materials.append(random.choice(pebble))
-for i in range(28):
+for i in range(15):
     x=random.uniform(-7,7);y=random.uniform(2.6,7.5)
-    r=random.uniform(.3,.95)
+    r=random.uniform(.16,.51)
     bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,y,-.25))
-    o=bpy.context.object;o.name="Waterline_stone";o.scale=(r,r*.83,r*.47);o.data.materials.append(shore)
+    o=bpy.context.object;o.name="Waterline_stone";o.scale=(r*random.uniform(.8,1.4),r*.83,r*.42);o.rotation_euler=(random.random()*.18,random.random()*.18,random.random()*math.pi);o.data.materials.append(random.choice(pebble))
 # Smooth moving water surface: nonregular frequencies intentionally avoid square-grid appearance
 watermat=bpy.data.materials.new("WAVY-inspired translucent blue teal (not WAVY addon)")
 watermat.use_nodes=True
 p=watermat.node_tree.nodes.get("Principled BSDF")
-p.inputs["Base Color"].default_value=(.045,.55,.60,1)
-p.inputs["Roughness"].default_value=.065
+p.inputs["Base Color"].default_value=(.36,.73,.72,1)
+p.inputs["Roughness"].default_value=.035
 p.inputs["IOR"].default_value=1.333
-(p.inputs.get("Transmission Weight") or p.inputs.get("Transmission")).default_value=.87
-(p.inputs.get("Coat Weight") or p.inputs.get("Clearcoat")).default_value=.25
+(p.inputs.get("Transmission Weight") or p.inputs.get("Transmission")).default_value=.4
+(p.inputs.get("Coat Weight") or p.inputs.get("Clearcoat")).default_value=.08
 (p.inputs.get("Coat Roughness") or p.inputs.get("Clearcoat Roughness")).default_value=.03
+# Fresnel-like translucent overlay: preserve bright water glints but reveal riverbed.
+wn=watermat.node_tree.nodes
+wl=watermat.node_tree.links
+outnode=wn.get("Material Output")
+trans=wn.new("ShaderNodeBsdfTransparent")
+mix=wn.new("ShaderNodeMixShader")
+mix.inputs[0].default_value=.32
+wl.new(trans.outputs["BSDF"],mix.inputs[1])
+wl.new(p.outputs["BSDF"],mix.inputs[2])
+wl.new(mix.outputs[0],outnode.inputs["Surface"])
+noise=wn.new("ShaderNodeTexNoise")
+noise.inputs["Scale"].default_value=14
+noise.inputs["Detail"].default_value=2.2
+waterbump=wn.new("ShaderNodeBump")
+waterbump.inputs["Strength"].default_value=.1
+waterbump.inputs["Distance"].default_value=.01
+wl.new(noise.outputs["Fac"],waterbump.inputs["Height"])
+wl.new(waterbump.outputs["Normal"],p.inputs["Normal"])
 # Shape water to avoid hard straight shoreline, with randomised multifrequency normal from mesh.
 verts=[];faces=[];N=95
 for j in range(N+1):
@@ -90,19 +109,19 @@ water=bpy.data.objects.new("Clear_water_surface",mesh);bpy.context.collection.ob
 water.data.materials.append(watermat)
 for pgn in water.data.polygons:pgn.use_smooth=True
 # Local translucent foam around irregular bank using scattered thin white flakes
-foam=mat("Soft_broken_white_foam","#c1e7df",.35)
-for i in range(170):
+foam=mat("Soft_broken_white_foam","#9dc9bd",.8)
+for i in range(65):
     x=random.uniform(-7.2,7.2)
     y=2.8+.34*math.sin(x*.7)+.18*math.cos(x*1.9)+random.gauss(0,.18)
-    radius=random.uniform(.016,.07)
+    radius=random.uniform(.006,.035)
     bpy.ops.mesh.primitive_uv_sphere_add(segments=8,ring_count=4,radius=1,location=(x,y,.038))
-    o=bpy.context.object;o.name="Foam_contact_fragment";o.scale=(radius*2.2,radius*.5,.003)
+    o=bpy.context.object;o.name="Foam_contact_fragment";o.scale=(radius*2.5,radius*.32,.001)
     o.data.materials.append(foam)
 # luminous gobo-ish breaks: light for particulate sparkle, rather than a uniform lattice
 for k in range(4):
     bpy.ops.object.light_add(type="AREA",location=((-4+k*2.8),-1,6))
-    lamp=bpy.context.object;lamp.data.energy=340 if k==0 else 150
-    lamp.data.shape="DISK";lamp.data.size=3 if k else 1.6
+    lamp=bpy.context.object;lamp.data.energy=160 if k==0 else 80
+    lamp.data.shape="DISK";lamp.data.size=5 if k else 4
 bpy.ops.object.light_add(type="SUN",location=(0,0,8))
 sun=bpy.context.object;sun.data.energy=1.3;sun.rotation_euler=(.39,-.4,-.5)
 # very subtle distance fog using actual volume scatter in a distant cube
@@ -110,7 +129,7 @@ fog=bpy.data.materials.new("Subtle distance mist VFX");fog.use_nodes=True
 nodes=fog.node_tree.nodes;nodes.clear()
 output=nodes.new("ShaderNodeOutputMaterial");volume=nodes.new("ShaderNodeVolumePrincipled")
 volume.inputs["Color"].default_value=(.54,.76,.75,1)
-volume.inputs["Density"].default_value=.004
+volume.inputs["Density"].default_value=.0008
 fog.node_tree.links.new(volume.outputs["Volume"],output.inputs["Volume"])
 bpy.ops.mesh.primitive_cube_add(size=1,location=(0,5,2.5))
 mist=bpy.context.object;mist.name="Distance_mist";mist.scale=(16,7,6);mist.data.materials.append(fog)
@@ -131,4 +150,4 @@ for n in ("front","side","angle"):
     f=root/(n+".png");assert f.stat().st_size>10000
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
 (root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v1.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v4.blend").resolve()))
