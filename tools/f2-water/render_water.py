@@ -44,6 +44,27 @@ bed.node_tree.links.new(image.outputs["Color"],bs.inputs["Base Color"])
 # entire pseudo-caustic node chain and retain the scanned riverbed photo.
 # Genuine light caustics will be revisited with low-contrast warped bands,
 # masked/discontinuous and compared in an isolated A/B test.
+# V13: separate SHALLOW WATER BOTTOM TINT from reflections and refraction.
+# Subtle cyan scattering tint exists only where riverbed is beneath the surface
+# (Y < shoreline). A broad, soft gradient prevents any hard waterline/grid.
+bottom_geo=bed.node_tree.nodes.new("ShaderNodeNewGeometry")
+bottom_xyz=bed.node_tree.nodes.new("ShaderNodeSeparateXYZ")
+bed.node_tree.links.new(bottom_geo.outputs["Position"],bottom_xyz.inputs["Vector"])
+underwater=bed.node_tree.nodes.new("ShaderNodeMapRange")
+underwater.inputs["From Min"].default_value=1.65
+underwater.inputs["From Max"].default_value=3.45
+underwater.inputs["To Min"].default_value=.16
+underwater.inputs["To Max"].default_value=0.0
+underwater.clamp=True
+bed.node_tree.links.new(bottom_xyz.outputs["Y"],underwater.inputs["Value"])
+tint_color=bed.node_tree.nodes.new("ShaderNodeRGB")
+tint_color.outputs["Color"].default_value=(.29,.63,.64,1)
+bottom_tint=bed.node_tree.nodes.new("ShaderNodeMixRGB")
+bottom_tint.blend_type="MIX"
+bed.node_tree.links.new(underwater.outputs["Result"],bottom_tint.inputs[0])
+bed.node_tree.links.new(image.outputs["Color"],bottom_tint.inputs[1])
+bed.node_tree.links.new(tint_color.outputs["Color"],bottom_tint.inputs[2])
+bed.node_tree.links.new(bottom_tint.outputs["Color"],bs.inputs["Base Color"])
 bump=bed.node_tree.nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=.16
 bump.inputs["Distance"].default_value=.055
 bed.node_tree.links.new(image.outputs["Color"],bump.inputs["Height"])
@@ -92,7 +113,7 @@ surface.file_format="PNG"
 surface.save()
 # V6 water: keep real transparency, restore legible surface through
 # Fresnel reflections and image-controlled pale optical highlights.
-watermat=bpy.data.materials.new("V12 clean refraction without grid caustics")
+watermat=bpy.data.materials.new("V13 clear shallow water + broad underwater tint")
 watermat.use_nodes=True
 wn=watermat.node_tree.nodes
 wn.clear()
@@ -295,4 +316,4 @@ for n in ("front","side","angle"):
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
 (root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v12.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v13.blend").resolve()))
