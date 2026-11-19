@@ -29,3 +29,8 @@
 - 外部Poly Haven川底画像は毎回 `safe_acquire.py` → freshclam → clamscan(exit 0/検出0) → SHA-256照合の既存ゲートを維持。
 - 3方向画像、Blend、生成テクスチャ、scan_manifest、execution_report をActions Artifactに一時保存。素材を直接正式フォルダへ移動しない。
 - 本書は設計・研究記録であってV11の合格報告ではない。V11のrun/画像を実際に取得してから状態を更新する。
+
+## V11 実装履歴（検証中）
+- `render_water.py` の屈折混合率 23%→11%、屈折 Roughness .008→.002、水面Bump .13/.012→.075/.006に変更。IOR 1.333は維持。
+- 川底マテリアルだけに `Voronoi Distance to Edge` + 緩やかなNoise変形 + 水域マスク（概ねY<2.6）を適用して、薄い疑似カースティクスを付加。素材として保存済みの川底写真/石/水面SVG/AI画像は保持。**カースティクスは物理的に追跡した光ではなく、画像的な補助表現**。
+- `f2-water-v11.blend` をArtifact対象に変更。実行: [run #44464758746](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44464758746)。**この記録時点で起動確認のみ**。ClamAV実検査、PNG3方向、品質評価のV11成功は未確認。今回も安全確認と美術承認を区別する。
