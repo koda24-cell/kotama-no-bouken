@@ -43,3 +43,10 @@
 - 同runのレンダリング：**失敗**。Blenderは取得済み画像をロードしてCycles描画開始まで到達したが、`RuntimeError: Error: Build without OpenImageDenoiser` で停止。検査処理の失敗ではない。front/side/angle実PNGの成功は未確認。
 - 修正：`tools/f2-water/render_water.py` のdenoisingをFalseに変更し、互換性問題を回避する候補をコミット。修正後の再実行成否は別runの結果確認が必要。
 - その他のrunの結果を推測で成功扱いしない。確認済み証拠は上記runに限定。
+
+
+## V3 実レンダリング成功記録（2026-11-19）
+- [Actions Run #44434710785](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44434710785) の `scan-render` ジョブ #135260550981 は **success**。ClamAV更新、隔離ダウンロード・スキャン、Blender Cycles front/side/angle レンダリング、出力形式・サイズ確認、レポート生成、Artifactアップロードの全ステップ成功をGitHub APIジョブ結果で確認。
+- 成果物 `f2-water-scan-render-candidate` Artifact ID **14489801084**（4,851,569 bytes、未失効）がGitHub APIで確認済み。PNGの描画内容の目視評価はまだ未実施であり、美観は **NOT_APPROVED**。
+- ワークフロー全体が failure なのは独立した `publish-run-link` ジョブ #135272472384 が GitHub REST `issues/517/comments` で **403 Resource not accessible by integration** を受けたため。レンダリング失敗ではない。
+- 投稿失敗をワークフロー全体の失敗扱いにしないよう、403を捕捉しJob Summaryにrun URLと安全判定を残す修正コミットを追加。**この修正後の実行確認は未完了**。PRコメントを本当に投稿するにはrepository GitHub Actionsのworkflow tokenにIssue/PRへの書込権限が必要となる場合がある。権限を独断変更せず、Artifact/Job Summaryを優先する。
