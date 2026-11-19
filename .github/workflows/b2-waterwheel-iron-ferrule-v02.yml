@@ -1,4 +1,4 @@
-name: B2 Wrought Iron Shaft Ferrule V02 Real Blender 4 View
+name: B2 Ferrule V02 PBR Rust Seam QA Cycles
 on:
   push:
     branches: [feature/gpt-b2-iron-axle-ferrule-v02-20261119]
