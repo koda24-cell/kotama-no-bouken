@@ -40,7 +40,7 @@ jobs:
           n=struct.unpack_from('<I',raw,12)[0]
           doc=json.loads(raw[20:20+n])
           names=[q.get('name','') for q in doc['nodes'] if 'mesh' in q]
-          for term in ('bowl','visor','tail','pivot'):
+          for term in ('bowl','visor','rear forged lip','pivot'):
               assert any(term in x for x in names), (term,names)
           for filename,digest in m['files_sha256'].items():
               assert hashlib.sha256((p/filename).read_bytes()).hexdigest()==digest, filename
