@@ -29,7 +29,7 @@ function patchMaterial(material,kind){
   material.onBeforeCompile=(shader)=>{
     shader.uniforms.f6debug={value:0};
     debugUniforms[kind]=shader.uniforms.f6debug;
-    shader.fragmentShader='uniform float f6debug;\\n'+shader.fragmentShader;
+    shader.fragmentShader='uniform float f6debug;\n'+shader.fragmentShader;
     const anchor='#include <color_fragment>';
     if(!shader.fragmentShader.includes(anchor)){status.errors.push('missing-color-fragment:'+material.name);return;}
     const tweak=kind==='B'
