@@ -87,7 +87,7 @@ if seam_inc!=[2]*26:raise RuntimeError('Unwelded / nonmanifold seam: '+str(seam_
 nonmanifold=[e for e,v in edges.items() if v>2]
 if nonmanifold:raise RuntimeError(f'Nonmanifold edges {len(nonmanifold)}')
 neck_edges=[e for e,n in edges.items() if n==1 and (e[0]>=original_count and e[1]>=original_count)]
-if len(neck_edges)!=26:raise RuntimeError(f'Open posterior edge expected 26, found {len(neck_edges)}')
+if len(neck_edges)!=48:raise RuntimeError(f'Open posterior + side boundaries expected 48, found {len(neck_edges)}')
 # Surface normals must be continuous enough to inspect, not inferred from manifold.
 areas=[f.area for f in candidate.data.polygons]
 if min(areas)<=1e-10:raise RuntimeError('Degenerate face')
