@@ -1,0 +1,257 @@
+"""
+mine チーム（人・坑道の痕跡）用の部品と材質。common.py の上に積む。
+
+- 形状: lathe（回転体＋凹み）、broken_shell（三角形単位で割れ穴を開けた殻）、
+        plank（ささくれた折れ口つきの板・角材）、wedge
+- 材質: sooty_glass（煤けた不透明ガラス）、wick_glow（芯だけ光る）、
+        canvas（煤けた帆布）。どれも設計書2章の明度上限と3章の劣化（角の摩耗・煤・灰・凹み）を
+        weathered_* と同じ考え方で入れる。
+"""
+import math
+import random
+
+import bmesh
+from mathutils import Vector, noise
+
+import common as C
+
+
+# ---------------------------------------------------------------------------
+# 形状
+# ---------------------------------------------------------------------------
+def dent_fn(dents, wobble=0.0, seed=0):
+    """dents: [(angle_rad, z, depth, ang_width, z_width)] → rfn(a, z, r)"""
+    def f(a, z, r):
+        rr = r
+        for a0, z0, d, aw, zw in dents:
+            da = math.atan2(math.sin(a - a0), math.cos(a - a0))
+            rr -= d * math.exp(-((da / aw) ** 2 + ((z - z0) / zw) ** 2))
+        if wobble:
+            rr += wobble * noise.noise(Vector((math.cos(a) * 3, math.sin(a) * 3, z * 30 + seed)))
+        return rr
+    return f
+
+
+def lathe_bm(prof, sides=12, rfn=None, phase=0.0, cap_bottom=False, cap_top=False):
+    """prof: [(r, z)] 下から上。r==0 の端点は1頂点に集約"""
+    bm = bmesh.new()
+    rings = []
+    for r, z in prof:
+        if r <= 1e-6:
+            rings.append([bm.verts.new((0, 0, z))])
+            continue
+        ring = []
+        for i in range(sides):
+            a = phase + 2 * math.pi * i / sides
+            rr = rfn(a, z, r) if rfn else r
+            ring.append(bm.verts.new((rr * math.cos(a), rr * math.sin(a), z)))
+        rings.append(ring)
+    for k in range(len(rings) - 1):
+        r0, r1 = rings[k], rings[k + 1]
+        if len(r0) == 1 and len(r1) == 1:
+            continue
+        if len(r0) == 1:
+            for i in range(sides):
+                bm.faces.new((r0[0], r1[i], r1[(i + 1) % sides]))
+        elif len(r1) == 1:
+            for i in range(sides):
+                bm.faces.new((r0[i], r0[(i + 1) % sides], r1[0]))
+        else:
+            for i in range(sides):
+                bm.faces.new((r0[i], r0[(i + 1) % sides], r1[(i + 1) % sides], r1[i]))
+    if cap_bottom and len(rings[0]) > 1:
+        bm.faces.new(list(reversed(rings[0])))
+    if cap_top and len(rings[-1]) > 1:
+        bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return bm
+
+
+def lathe(name, prof, sides=12, rfn=None, phase=0.0, cap_bottom=False, cap_top=False, smooth=True):
+    return C.obj_from_bm(lathe_bm(prof, sides, rfn, phase, cap_bottom, cap_top), name, smooth)
+
+
+def broken_shell(name, prof, sides, holes, thickness=0.0025, rfn=None, seed=0, jag=0.004, phase=0.0):
+    """回転体の殻を三角形化し、holes=[(angle, z, ang_r, z_r)] の楕円（ノイズで崩す）内の三角形を消す。
+    割れ口の頂点をずらしてギザギザにし、厚みをつける（割れ口の断面が見える）。"""
+    bm = lathe_bm(prof, sides, rfn, phase)
+    bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method="ALTERNATE")
+    off = Vector((seed * 3.1, seed * 1.7, seed * 5.9))
+    kill = []
+    for f in bm.faces:
+        c = f.calc_center_median()
+        a = math.atan2(c.y, c.x)
+        for a0, z0, ar, zr in holes:
+            da = math.atan2(math.sin(a - a0), math.cos(a - a0))
+            d = (da / ar) ** 2 + ((c.z - z0) / zr) ** 2
+            d += 0.55 * noise.noise(c * 60 + off)
+            if d < 1.0:
+                kill.append(f)
+                break
+    bmesh.ops.delete(bm, geom=kill, context="FACES")
+    loose = [v for v in bm.verts if not v.link_faces]
+    bmesh.ops.delete(bm, geom=loose, context="VERTS")
+    zs = [v.co.z for v in bm.verts]
+    zmin, zmax = min(zs), max(zs)
+    rnd = random.Random(seed)
+    for v in bm.verts:
+        if v.is_boundary and zmin + 1e-4 < v.co.z < zmax - 1e-4:
+            r = Vector((v.co.x, v.co.y)).length
+            a = math.atan2(v.co.y, v.co.x) + rnd.uniform(-1, 1) * jag / max(r, 1e-3)
+            v.co = Vector((r * math.cos(a), r * math.sin(a), v.co.z + rnd.uniform(-1, 1) * jag))
+    ob = C.obj_from_bm(bm, name, smooth=True)
+    m = ob.modifiers.new("solid", "SOLIDIFY")
+    m.thickness = thickness
+    m.offset = -1.0
+    m.use_rim = True
+    m.use_even_offset = True
+    return C.apply_mods(ob)
+
+
+def plank(name, length, width, thick, segs=6, split_a=None, split_b=None, seed=0, round_edges=0.25,
+          warp=0.0, chip=0.0):
+    """X軸方向の角材・板（中心原点）。両端を折れ口（ささくれ）にできる。
+    split_a/split_b: None=きれいな木口（小さな欠けのみ）、数値=折れ口の荒さ（m、裂けの長さ）
+    round_edges: 角の丸み（断面8角形の面取り比）。warp: 長手の反り。chip: 角の欠け量"""
+    rnd = random.Random(seed)
+    hw, ht = width / 2, thick / 2
+    c = min(hw, ht) * round_edges
+    prof = [(-hw + c, -ht), (hw - c, -ht), (hw, -ht + c), (hw, ht - c),
+            (hw - c, ht), (-hw + c, ht), (-hw, ht - c), (-hw, -ht + c)]
+    M = len(prof)
+    bm = bmesh.new()
+    rings = []
+    off = Vector((seed * 2.3, seed * 4.1, seed * 0.7))
+    for k in range(segs + 1):
+        u = k / segs
+        x = -length / 2 + length * u
+        ring = []
+        for j, (py, pz) in enumerate(prof):
+            yy, zz = py, pz
+            # 角の欠け：低周波ノイズで断面を内側へ削る
+            if chip:
+                n = noise.noise(Vector((x * 9, py * 40, pz * 40)) + off)
+                if n > 0.15:
+                    s = 1 - chip * (n - 0.15) / max(hw, ht)
+                    yy, zz = yy * s, zz * s
+            xx = x
+            if k == 0 and split_a:
+                xx += rnd.uniform(0, split_a) + (split_a * 0.6 if j % 3 == 0 else 0)
+            elif k == 0:
+                xx += rnd.uniform(0, 0.004)
+            if k == segs and split_b:
+                xx -= rnd.uniform(0, split_b) + (split_b * 0.6 if j % 3 == 1 else 0)
+            elif k == segs:
+                xx -= rnd.uniform(0, 0.004)
+            zz += warp * math.sin(math.pi * u)
+            ring.append(bm.verts.new((xx, yy, zz)))
+        rings.append(ring)
+    for k in range(segs):
+        for j in range(M):
+            bm.faces.new((rings[k][j], rings[k][(j + 1) % M], rings[k + 1][(j + 1) % M], rings[k + 1][j]))
+    for k, sp, sign in ((0, split_a, -1), (segs, split_b, 1)):
+        ring = rings[k]
+        if sp:
+            # 折れ口：中心に突き出た裂け（ささくれ）の先端へ扇状に閉じる
+            cx = sum(v.co.x for v in ring) / M
+            tip = bm.verts.new((cx + sign * sp * rnd.uniform(0.6, 1.3), rnd.uniform(-hw, hw) * 0.4, rnd.uniform(-ht, ht) * 0.4))
+            for j in range(M):
+                a, b = ring[j], ring[(j + 1) % M]
+                bm.faces.new((a, b, tip) if sign > 0 else (b, a, tip))
+        else:
+            bm.faces.new(list(reversed(ring)) if sign < 0 else ring)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return C.obj_from_bm(bm, name, smooth=False)
+
+
+def wedge(name, l, w, h, seed=0):
+    """楔（X方向に細る）。原点は中心"""
+    bm = bmesh.new()
+    rnd = random.Random(seed)
+    v = [bm.verts.new(p) for p in (
+        (-l / 2, -w / 2, -h / 2), (l / 2, -w / 2, -h / 2 + h * 0.8), (l / 2, w / 2, -h / 2 + h * 0.8), (-l / 2, w / 2, -h / 2),
+        (-l / 2, -w / 2, h / 2), (l / 2, -w / 2, h / 2 * rnd.uniform(0.9, 1.0)), (l / 2, w / 2, h / 2), (-l / 2, w / 2, h / 2))]
+    for f in ((0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)):
+        bm.faces.new([v[i] for i in f])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return C.obj_from_bm(bm, name, smooth=False)
+
+
+# ---------------------------------------------------------------------------
+# 材質
+# ---------------------------------------------------------------------------
+def sooty_glass(name, soot_z=None, scale=1.0, tint=(0.034, 0.024, 0.014)):
+    """煤けた不透明ガラス（透過はベイクできないため）。
+    暗い琥珀色の地＋上方の煤（内側から付く黒い膜）＋細いひび（明るい線）＋灰。粗さで艶の島を残す。"""
+    b = C.NB(name)
+    n_big = b.noise(9.0 / scale, 6, 0.6)
+    n_fine = b.noise(60.0 / scale, 4, 0.5)
+    # ひび：ボロノイの縁を細く（放射状の割れの代わりに不規則な網目を2スケール）
+    cr1 = b.ramp(b.voronoi(22.0 / scale, "DISTANCE_TO_EDGE"), [(0.0, 1.0), (0.025, 0.0)])
+    cr2 = b.ramp(b.voronoi(55.0 / scale, "DISTANCE_TO_EDGE"), [(0.0, 1.0), (0.03, 0.0)])
+    crack = b.math("MAXIMUM", cr1, b.math("MULTIPLY", cr2, b.ramp(n_big, [(0.4, 0.0), (0.7, 1.0)])))
+    col = b.mix(n_big, tint, (tint[0] * 1.6, tint[1] * 1.5, tint[2] * 1.3))
+    soot = b.ramp(n_big, [(0.25, 0.25), (0.75, 0.75)])
+    if soot_z is not None:
+        soot = b.math("MAXIMUM", soot, b.height_mask(*soot_z))
+    soot = b.math("MULTIPLY", soot, b.ramp(n_fine, [(0.2, 0.7), (0.8, 1.0)]))
+    col = b.mix(soot, col, (0.006, 0.0055, 0.005))
+    col = b.mix(b.math("MULTIPLY", crack, 0.85), col, (0.11, 0.10, 0.09))
+    # 割れ口・角の欠け（白っぽい断面）
+    edge = b.edge_mask(0.0015, 0.05, 0.3)
+    col = b.mix(b.math("MULTIPLY", edge, 0.6), col, (0.14, 0.13, 0.115))
+    ash = b.math("MULTIPLY", b.up_mask(0.5, 0.9), b.ramp(n_big, [(0.35, 0.0), (0.7, 1.0)]))
+    col = b.mix(b.math("MULTIPLY", ash, 0.8), col, (0.075, 0.07, 0.066))
+    r = b.mixf(soot, 0.06, 0.62)
+    r = b.mixf(crack, r, 0.35)
+    r = b.mixf(ash, r, 0.95)
+    b.normal_from(None, bump_height=b.math("SUBTRACT", 1.0, crack), bump_strength=0.25, bump_dist=0.0008)
+    return b.out(col, r, 0.0)
+
+
+def wick_glow(name, z_dark, z_red, z_tip, strength=8.0):
+    """芯と小さな炎：z_dark より下は炭化した黒、z_red で赤い燠、z_tip へ向かって橙→黄。
+    基本色は暗く、発光だけで見せる（面全体ではなく芯の部品だけに割り当てる）"""
+    b = C.NB(name)
+    h = b.height_mask(z_dark, z_tip)
+    t_red = (z_red - z_dark) / max(1e-6, z_tip - z_dark)
+    n = b.noise(400.0, 4, 0.5)
+    emit = b.ramp(b.math("ADD", h, b.math("MULTIPLY", n, 0.04)),
+                  [(0.0, (0, 0, 0)), (t_red, (0.55, 0.06, 0.01)), (min(0.95, t_red + 0.2), (1.0, 0.30, 0.04)),
+                   (1.0, (1.0, 0.62, 0.22))])
+    col = b.mix(h, (0.008, 0.007, 0.006), (0.05, 0.02, 0.01))
+    return b.out(col, 0.9, 0.0, emit=emit, emit_strength=strength)
+
+
+def canvas(name, soot_z=None, scale=1.0, base=(0.085, 0.066, 0.045), heat_center=None, heat_r=(0.05, 0.3)):
+    """煤けた帆布：織り目（細かい格子）＋汚れムラ＋煤（下と上）＋縫い目付近の擦れ（明るい）＋灰。
+    明度上限は煤けた木と同等（0.30）以下に抑える"""
+    b = C.NB(name)
+    n_big = b.noise(3.0 / scale, 6, 0.6)
+    n_mid = b.noise(12.0 / scale, 6, 0.6)
+    # 織り目：XとYの細かい縞を掛け合わせる
+    sep = b.n("ShaderNodeSeparateXYZ")
+    b.link(b.coord("Object"), sep.inputs[0])
+    wx = b.math("SINE", b.math("MULTIPLY", b.math("ADD", sep.outputs["X"], sep.outputs["Z"]), 1400.0 / scale))
+    wy = b.math("SINE", b.math("MULTIPLY", b.math("ADD", sep.outputs["Y"], sep.outputs["Z"]), 1400.0 / scale))
+    weave = b.math("MULTIPLY", b.math("ADD", wx, wy), 0.25)
+    weave = b.math("ADD", weave, 0.5)
+    col = b.mix(n_mid, base, (base[0] * 0.65, base[1] * 0.62, base[2] * 0.6))
+    col = b.mix(b.math("MULTIPLY", weave, 0.25), col, (base[0] * 0.6, base[1] * 0.6, base[2] * 0.6))
+    stain = b.ramp(n_big, [(0.45, 0.0), (0.7, 1.0)])
+    col = b.mix(b.math("MULTIPLY", stain, 0.7), col, (0.030, 0.022, 0.016))
+    if soot_z is not None:
+        soot = b.math("MULTIPLY", b.height_mask(*soot_z), b.ramp(n_mid, [(0.2, 0.5), (0.8, 1.0)]))
+        col = b.mix(b.math("MULTIPLY", soot, 0.8), col, (0.012, 0.010, 0.009))
+    if heat_center is not None:
+        burn = b.dist_mask(heat_center, *heat_r)
+        col = b.mix(burn, col, (0.008, 0.006, 0.005))
+    edge = b.edge_mask(0.006, 0.03, 0.3)
+    col = b.mix(b.math("MULTIPLY", edge, 0.45), col, (0.15, 0.125, 0.095))
+    cav = b.math("SUBTRACT", 1.0, b.cavity(0.04))
+    ash = b.math("MAXIMUM", b.math("MULTIPLY", cav, 0.5), b.math("MULTIPLY", b.up_mask(0.6, 0.95), 0.45))
+    ash = b.math("MULTIPLY", ash, b.ramp(n_big, [(0.3, 0.0), (0.7, 1.0)]))
+    col = b.mix(b.math("MULTIPLY", ash, 0.85), col, (0.075, 0.07, 0.066))
+    r = b.mixf(ash, 0.92, 0.97)
+    b.normal_from(None, bump_height=b.math("ADD", weave, b.math("MULTIPLY", n_mid, 2.0)), bump_strength=0.35, bump_dist=0.0015)
+    return b.out(col, r, 0.0)
