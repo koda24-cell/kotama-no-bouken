@@ -1,11 +1,13 @@
-# Independent Blender 5.3.0 + ClamAV CPU renderer. Keep Blender4/5 images intact.
-# Official archive, independently pinned SHA256, official checksum file and AV gate.
+# Separate official Blender 5.3.0 CPU-only renderer; do not replace legacy images.
+# SHA256 is independently pinned and also checked against the official manifest.
+# ClamAV's xz decompressor truncates huge tarballs; scan authenticated archive
+# bytes first, extract into quarantine, then scan every extracted file before use.
 FROM ubuntu:24.04
 ARG DEBIAN_FRONTEND=noninteractive
 ARG BLENDER_VERSION=5.3.0
 ARG BLENDER_ARCHIVE_SHA256=dacb8264197a3f7fda6001285a5a506fc97ee943881261c2c3bd63c882f22e05
 LABEL org.opencontainers.image.source="https://github.com/koda24-cell/kotama-no-bouken"
-LABEL org.opencontainers.image.description="Kotama QA-only Blender 5.3.0 official binary with ClamAV"
+LABEL org.opencontainers.image.description="QA-only Blender 5.3.0 official binary with ClamAV"
 LABEL org.opencontainers.image.licenses="GPL-3.0-or-later"
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -30,47 +32,19 @@ RUN set -eux; \
     echo "BLENDER53_OFFICIAL_SHA256_PASS"; \
     freshclam --stdout; \
     test -f /var/lib/clamav/daily.cvd -o -f /var/lib/clamav/daily.cld; \
-    # ClamAV xz decoder has a 500 MiB decompression limit for this 388 MiB archive. \
-    # Verify official SHA first, scan archive bytes without decompression, then \
-    # unpack the authenticated archive into quarantine and scan EACH extracted file \
-    # before executing any Blender binary. Never treat a truncated xz scan as pass. \
     clamscan --scan-archive=no --max-filesize=500M "$archive" > /tmp/blender-archive-scan.log; \
-    grep -Eq '^Infected files: 0[[:space:]]*
-    ln -s "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender" /usr/local/bin/blender; \
-    blender --version | head -n 1 | grep -Fx "Blender ${BLENDER_VERSION}"; \
-    rm -f "$archive" "blender-${BLENDER_VERSION}.sha256" /tmp/blender-archive-scan.log /tmp/blender-extracted-scan.log; \
-    rm -f /var/lib/clamav/*.cvd /var/lib/clamav/*.cld
-WORKDIR /work
-ENV HOME=/tmp/blender-home
-CMD ["/bin/bash"]
- /tmp/blender-archive-scan.log; \
-    grep -Eq '^Scanned files: 1[[:space:]]*
-    ln -s "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender" /usr/local/bin/blender; \
-    blender --version | head -n 1 | grep -Fx "Blender ${BLENDER_VERSION}"; \
-    rm -f "$archive" "blender-${BLENDER_VERSION}.sha256" /tmp/blender-archive-scan.log; \
-    rm -f /var/lib/clamav/*.cvd /var/lib/clamav/*.cld
-WORKDIR /work
-ENV HOME=/tmp/blender-home
-CMD ["/bin/bash"]
- /tmp/blender-archive-scan.log; \
+    grep -Eq '^Infected files: 0[[:space:]]*$' /tmp/blender-archive-scan.log; \
+    grep -Eq '^Scanned files: 1[[:space:]]*$' /tmp/blender-archive-scan.log; \
     cat /tmp/blender-archive-scan.log; \
     tar --no-same-owner -xJf "$archive" -C /opt/blender; \
     test -x "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender"; \
     clamscan --recursive --scan-archive=no --max-filesize=500M "/opt/blender/blender-${BLENDER_VERSION}-linux-x64" > /tmp/blender-extracted-scan.log; \
-    grep -Eq '^Infected files: 0[[:space:]]*
-    ln -s "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender" /usr/local/bin/blender; \
-    blender --version | head -n 1 | grep -Fx "Blender ${BLENDER_VERSION}"; \
-    rm -f "$archive" "blender-${BLENDER_VERSION}.sha256" /tmp/blender-archive-scan.log; \
-    rm -f /var/lib/clamav/*.cvd /var/lib/clamav/*.cld
-WORKDIR /work
-ENV HOME=/tmp/blender-home
-CMD ["/bin/bash"]
- /tmp/blender-extracted-scan.log; \
+    grep -Eq '^Infected files: 0[[:space:]]*$' /tmp/blender-extracted-scan.log; \
     awk '/^Scanned files:/ {if ($3 > 0) ok=1} END {exit !ok}' /tmp/blender-extracted-scan.log; \
     tail -n 18 /tmp/blender-extracted-scan.log; \
     ln -s "/opt/blender/blender-${BLENDER_VERSION}-linux-x64/blender" /usr/local/bin/blender; \
     blender --version | head -n 1 | grep -Fx "Blender ${BLENDER_VERSION}"; \
-    rm -f "$archive" "blender-${BLENDER_VERSION}.sha256" /tmp/blender-archive-scan.log; \
+    rm -f "$archive" "blender-${BLENDER_VERSION}.sha256" /tmp/blender-archive-scan.log /tmp/blender-extracted-scan.log; \
     rm -f /var/lib/clamav/*.cvd /var/lib/clamav/*.cld
 WORKDIR /work
 ENV HOME=/tmp/blender-home
