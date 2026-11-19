@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 INPUT = Path("render-output/floor6/cc0-leaf-source")
-OUT = Path("render-output/floor6/nature/tree_mature_photo_v21")
+OUT = Path("render-output/floor6/nature/tree_mature_photo_v22")
 OUT.mkdir(parents=True, exist_ok=True)
 source = json.loads((INPUT / "source_manifest.json").read_text())
 assert source["license"] == "CC0" and source["asset"] == "Leaf001"
@@ -49,15 +49,15 @@ for i, name in enumerate(("leaf_deep", "leaf_mid", "leaf_lit", "leaf_sage")):
     # V21: CC0 photograph retains its microdetail, but reduce the electric
     # yellow-green cast using a low-saturation forest palette.
     desaturate = nodes.new("ShaderNodeHueSaturation")
-    desaturate.name = "V21_SoftForestSaturation"
-    desaturate.inputs["Saturation"].default_value = .62
-    desaturate.inputs["Value"].default_value = .83
+    desaturate.name = "V22_ForestSaturation"
+    desaturate.inputs["Saturation"].default_value = .87
+    desaturate.inputs["Value"].default_value = .88
     links.new(tex.outputs["Color"], desaturate.inputs["Color"])
     tone = nodes.new("ShaderNodeMixRGB")
-    tone.name = "V21_WoodlandTint"
+    tone.name = "V22_ForestTint"
     tone.blend_type = "MULTIPLY"
-    tone.inputs[0].default_value = .43
-    tone.inputs[2].default_value = (0.38, 0.48, 0.41, 1)
+    tone.inputs[0].default_value = .32
+    tone.inputs[2].default_value = ((.26,.36,.28,1),(.35,.43,.34,1),(.50,.51,.33,1),(.36,.39,.32,1))[i]
     links.new(desaturate.outputs["Color"], tone.inputs[1])
     links.new(tone.outputs["Color"], shader.inputs["Base Color"])
     if normal is not None:
@@ -65,7 +65,7 @@ for i, name in enumerate(("leaf_deep", "leaf_mid", "leaf_lit", "leaf_sage")):
         nt.name = "CC0_Leaf001_Normal"
         nt.image = normal
         nm = nodes.new("ShaderNodeNormalMap")
-        nm.inputs["Strength"].default_value = 0.52
+        nm.inputs["Strength"].default_value = 0.72
         links.new(nt.outputs["Color"], nm.inputs["Color"])
         links.new(nm.outputs["Normal"], shader.inputs["Normal"])
     if roughness is not None:
@@ -104,7 +104,7 @@ for obj in bpy.data.objects:
     vertices = outline + [p[4]]
     front = [(8, i, (i + 1) % 8) for i in range(8)]
     back = [(8, (i + 1) % 8, i) for i in range(8)]
-    new_mesh = bpy.data.meshes.new(old_mesh.name + "_V21SoftRounded")
+    new_mesh = bpy.data.meshes.new(old_mesh.name + "_V22SoftRounded")
     new_mesh.from_pydata(vertices, [], front + back)
     new_mesh.update()
     for mat in old_mesh.materials:
@@ -118,6 +118,32 @@ for obj in bpy.data.objects:
         poly.use_smooth = True
     obj.data = new_mesh
     rounding_count += 1
+
+# V22: restore the visual continuity of leaf sprays without altering any woody
+# structure. Source leaves have contiguous, deterministic branch-group indices.
+# Bring groups of seven into overlapping, 3D fan-like bunches, not flat cards.
+leaf_objects = [o for o in bpy.data.objects if o.type == "MESH" and o.name.startswith("tree_mature_leaf_")]
+leaf_objects.sort(key=lambda o: o.name)
+from mathutils import Vector
+clustered_leaves = 0
+for start in range(0, len(leaf_objects), 7):
+    group = leaf_objects[start:start + 7]
+    if len(group) < 3:
+        continue
+    centers = []
+    for ob in group:
+        bounds = [v.co for v in ob.data.vertices]
+        centers.append(sum(bounds, Vector()) / len(bounds))
+    center = sum(centers, Vector()) / len(centers)
+    for j, (ob, original) in enumerate(zip(group, centers)):
+        offset = original - center
+        # Retain depth and organic openings while reducing paper-confetti spacing.
+        ob.location += (center - original) * .27
+        # Gentle vertical stratification: coherent overlapping tiers, not planar balls.
+        ob.location.z += ((j % 3) - 1) * .008
+        clustered_leaves += 1
+assert clustered_leaves > 500
+
 assert rounding_count > 500, "No leaf meshes rounded"
 
 scene = bpy.context.scene
@@ -145,13 +171,13 @@ for f in sorted(OUT.iterdir()):
         data = f.read_bytes()
         files.append(dict(name=f.name, bytes=len(data), sha256=hashlib.sha256(data).hexdigest()))
 assert len(files) == 6
-manifest = dict(asset_id="tree_mature", version="V21-CC0-softleaf-review",
+manifest = dict(asset_id="tree_mature", version="V22-CC0-clustered-forest-review",
                 status="NOT_APPROVED", game_integration="NOT_INTEGRATED",
                 base_model="tree_mature V19 existing source geometry unchanged",
                 branch=os.getenv("GITHUB_REF_NAME", "local"),
                 source_sha=os.getenv("GITHUB_SHA", "local"),
                 render_run_id=os.getenv("GITHUB_RUN_ID", "local"),
-                source_texture=source, preserved_meshes=len(objects), rounded_leaf_meshes=rounding_count,
-                files=files, notes="CC0 albedo with muted tint and new softly rounded review-only geometry; no alpha fabricated")
+                source_texture=source, preserved_meshes=len(objects), rounded_leaf_meshes=rounding_count, clustered_leaf_meshes=clustered_leaves,
+                files=files, notes="CC0 albedo with four nuanced forest tints, gently overlapping 3D leaf sprays and rounded leaf outline; no alpha fabricated")
 (OUT / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-print("F6_CC0_PHOTO_V20_DONE", len(objects), len(files))
+print("F6_CC0_PHOTO_V22_DONE", len(objects), len(files))
