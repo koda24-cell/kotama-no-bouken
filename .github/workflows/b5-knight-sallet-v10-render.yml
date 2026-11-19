@@ -1,0 +1,63 @@
+name: B5 Sallet V10 Walters Six-View Blender QA
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_sallet_v10.py'
+      - '.github/workflows/b5-knight-sallet-v10-render.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender dependencies
+        run: |
+          if ! command -v blender >/dev/null 2>&1; then
+            timeout 180 sudo apt-get update || echo "apt index update timeout; trying cached index"
+            timeout 480 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender python3-numpy python3-pil
+          else
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-numpy python3-pil
+          fi
+          blender --version
+      - name: Render 6 views and checkpoint original V10 Blender/GLB
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_sallet_v10.py
+      - name: Validate six real PNG and GLB meshes and hashes
+        run: |
+          /usr/bin/python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          import json,hashlib,struct
+          p=Path('render-output/b5-knights/sallet_v10')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and not m['game_integrated']
+          assert m['source_sha'] and m['run_id']
+          raw=(p/'sallet_v10.glb').read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          n=struct.unpack_from('<I',raw,12)[0]
+          doc=json.loads(raw[20:20+n])
+          names=[q.get('name','') for q in doc['nodes'] if 'mesh' in q]
+          for term in ('bowl','visor','tail','pivot'):
+              assert any(term in x for x in names), (term,names)
+          for filename,digest in m['files_sha256'].items():
+              assert hashlib.sha256((p/filename).read_bytes()).hexdigest()==digest, filename
+          assert len(m['views'])==6
+          for view in ('front','left','right','back','angle','top'):
+              with Image.open(p/(view+'.png')) as im:
+                  im.load()
+                  assert im.size==(800,800)
+                  assert max(ImageStat.Stat(im.convert('RGB')).stddev)>5
+          assert (p/'progress.json').exists()
+          print('PASS actual V10 Blender 6-view PNG, GLB, Blend, SHA-256. NOT APPROVED')
+          PY
+      - name: Save temporary unapproved 3D checkpoint, even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-sallet-v10-walters-NOT-APPROVED
+          path: render-output/b5-knights/sallet_v10/
+          retention-days: 14
+          if-no-files-found: warn
