@@ -1,7 +1,7 @@
 name: F6 Tree Foliage Batching Review
 on:
   push:
-    branches: [feature/gpt-shared-3d-optimization-actions-20261117, feature/blender53-f6-foliage-production-workflow-20261119]
+    branches: [feature/gpt-shared-3d-optimization-actions-20261117]
     paths:
       - tools/3d-performance/batch_blend_foliage.py
       - tools/3d-performance/compare_renders.py
