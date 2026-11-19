@@ -1,0 +1,73 @@
+name: F2 Water - Scan Then Blender Render
+on:
+  push:
+    branches:
+      - feature/f2-safe-water-render-20261119
+    paths:
+      - 'tools/f2-water/**'
+      - '.github/workflows/f2-safe-water-render.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scan-render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - name: Checkout isolated candidate
+        uses: actions/checkout@v4
+      - name: Install malware scanner, Blender and Python image parser
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y clamav clamav-freshclam blender python3-pil
+          command -v clamscan
+          command -v blender
+      - name: Update ClamAV signatures (fail closed)
+        run: |
+          set -euo pipefail
+          sudo systemctl stop clamav-freshclam || true
+          ok=0
+          for attempt in 1 2 3; do
+            if sudo freshclam; then ok=1; break; fi
+            sleep $((attempt*15))
+          done
+          test "$ok" = 1
+          clamscan --version | tee scan-version.txt
+      - name: Download to quarantine and scan before decoding
+        id: scan
+        run: |
+          set -euo pipefail
+          python3 tools/f2-water/safe_acquire.py
+      - name: Blender Cycles front side angle
+        if: steps.scan.outcome == 'success'
+        env:
+          BLENDER_USER_SCRIPTS: /tmp/f2-empty-blender-scripts
+        run: |
+          set -euo pipefail
+          mkdir -p "$BLENDER_USER_SCRIPTS"
+          blender --background --factory-startup --disable-autoexec --python tools/f2-water/render_water.py
+      - name: Validate output files and hashes
+        if: steps.scan.outcome == 'success'
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib
+          folder=pathlib.Path("out/f2-water")
+          m=json.loads((folder/"render_manifest.json").read_text())
+          assert m["status"]=="NOT_APPROVED"
+          for name in ("front","side","angle"):
+              path=folder/(name+".png")
+              assert path.read_bytes()[:8]==bytes.fromhex("89504e470d0a1a0a")
+              assert path.stat().st_size>10000
+          PY
+      - name: Save scan report, all renders and Blender file, including on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f2-water-scan-render-candidate
+          path: |
+            out/f2-water/
+            scan-version.txt
+          retention-days: 14
+          if-no-files-found: warn
