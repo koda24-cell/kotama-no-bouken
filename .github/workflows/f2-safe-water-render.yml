@@ -64,6 +64,8 @@ jobs:
           folder=pathlib.Path("out/f2-water")
           m=json.loads((folder/"render_manifest.json").read_text())
           assert m["status"]=="NOT_APPROVED"
+          assert m["depth_m"]["deep"] > m["depth_m"]["middle"] > m["depth_m"]["shore"]
+          assert m["depth_m"]["deep"] - m["depth_m"]["shore"] > 1.0, m["depth_m"]
           for name in ("front","side","angle"):
               path=folder/(name+".png")
               assert path.read_bytes()[:8]==bytes.fromhex("89504e470d0a1a0a")
@@ -89,7 +91,7 @@ jobs:
             out/f2-water/v7_ai_water_surface_color_alpha_1024.png
             out/f2-water/v7_shore_foam_alpha.png
             out/f2-water/v7_texture_manifest.json
-            out/f2-water/f2-water-v13.blend
+            out/f2-water/f2-water-v14.blend
             scan-version.txt
           retention-days: 14
           if-no-files-found: warn
