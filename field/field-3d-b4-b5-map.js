@@ -6,6 +6,7 @@ import { createB4SurfaceLibrary } from './b4-surface-library.js';
 import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261119-p1';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -99,6 +100,7 @@ export function createTheme(api, area) {
   let b4Plan = null, volcanicDetail = null, cameraLamp = null;
   let dressing = null, ownedModels = [], ownedModelGeometry = [];
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
+  let b4Dressing = null;
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -183,6 +185,12 @@ export function createTheme(api, area) {
       lights.push(cameraLamp,...b4Plan.lights); g.lights.push(cameraLamp,...b4Plan.lights);
     }
     if (b4Plan) for (const s of [...b4Plan.mines, ...b4Plan.vistaFaces]) objAt.add(s.tx+','+s.ty);
+    if (b4Plan) {
+      // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
+      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, isStale: () => root !== buildRoot })
+        .then(d => { if (root !== buildRoot) d.dispose(); else b4Dressing = d; })
+        .catch(err => console.warn('[b4-dressing]', err));
+    }
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
@@ -372,7 +380,7 @@ export function createTheme(api, area) {
       } else root.traverse(o => { if (o.isInstancedMesh) o.dispose(); });
       root.parent?.remove(root);
     }
-    dressing?.dispose(); dressing = null; ownedModels = []; ownedModelGeometry = [];
+    dressing?.dispose(); dressing = null; b4Dressing?.dispose(); b4Dressing = null; ownedModels = []; ownedModelGeometry = [];
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; volcanicDetail = null; cameraLamp = null; landmarkState = 'pending';
     // build() can reuse this theme's base resources; theme replacement releases them.
@@ -403,5 +411,5 @@ export function createTheme(api, area) {
     }
   }
   async function sync() { return false; }
-  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info } } : {}) }) };
+  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info, props: b4Dressing?.info() || null } } : {}) }) };
 }
