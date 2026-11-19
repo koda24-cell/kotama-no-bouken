@@ -50,3 +50,11 @@
 - 成果物 `f2-water-scan-render-candidate` Artifact ID **14489801084**（4,851,569 bytes、未失効）がGitHub APIで確認済み。PNGの描画内容の目視評価はまだ未実施であり、美観は **NOT_APPROVED**。
 - ワークフロー全体が failure なのは独立した `publish-run-link` ジョブ #135272472384 が GitHub REST `issues/517/comments` で **403 Resource not accessible by integration** を受けたため。レンダリング失敗ではない。
 - 投稿失敗をワークフロー全体の失敗扱いにしないよう、403を捕捉しJob Summaryにrun URLと安全判定を残す修正コミットを追加。**この修正後の実行確認は未完了**。PRコメントを本当に投稿するにはrepository GitHub Actionsのworkflow tokenにIssue/PRへの書込権限が必要となる場合がある。権限を独断変更せず、Artifact/Job Summaryを優先する。
+
+
+## V3実画像の目視検査・V4改善（2026-11-19、GPT検証）
+- Artifact ID 14489801084 のZIPを実取得し、PNG 3枚を展開、render_manifest記載のSHA-256とサイズが一致することを確認した。front/side/angleを実際に画像表示して目視確認。
+- **V3見た目は不合格**：水面が濃い青緑で不透明、細かなザラザラしたノイズが水全域に出ている。岸の大岩は白灰色で単調な丸い低ポリ、岸の泡は白い点の列、端に直線的な板状境界が見える。川底の石の立体感が水越しに分かりにくい。大きな白い照明反射も不自然。V3は安全検査合格・技術レンダ成功であり、芸術品質合格ではない。
+- **V4試験変更**：水面に透過Mix Shaderと細かなNoise→Bumpを組み合わせる。暗い水色を薄い青緑へ、水面の材質透過重みを下げ川底を見せる。石の材質を4色化して大岩の数とサイズを減らす。泡の数・サイズを小さく。照明の強度を下げ拡散する。薄い霧と川底の既存形状を保持。Blendファイルを `f2-water-v4.blend` へ分離。
+- [V4 Actions Run #44439733411](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44439733411) は新コードpushにより起動確認。**本記載時点でin_progress**、結果・実PNGは未確認。ClamAV fail-closedを維持。
+- ワークフロー全体の正常終了は旧コード修正run [#44438855211](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44438855211) でsuccess確認。PRコメントの権限403はジョブSummaryへ代替し、失敗としてカウントしない設計。V4実レンダ品質は別途確認すること。
