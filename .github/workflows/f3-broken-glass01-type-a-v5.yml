@@ -42,7 +42,8 @@ jobs:
                   assert raw[16:20]==b'JSON',name
                   g=json.loads(raw[20:20+n])
                   node_names=[v.get('name','') for v in g.get('nodes',[])]
-                  assert not any('BACKDROP' in v for v in node_names),node_names
+                  assert not any('BACKDROP' in v or v in ('Cube','Camera','Light') for v in node_names),node_names
+                  assert any('F3_RUINED_GLASS01' in v for v in node_names),node_names
                   assert any(m.get('extensions',{}).get('KHR_materials_transmission') for m in g.get('materials',[])), 'Transmission material missing'
               if name.endswith('.blend'):assert raw[:7]==b'BLENDER' or raw[:4]==bytes.fromhex('28b52ffd'),name
               files[name]={'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
