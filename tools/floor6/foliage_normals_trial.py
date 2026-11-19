@@ -80,7 +80,16 @@ for pidx,shift in enumerate(panels):
         for face in m.polygons: face.use_smooth=True
         if pidx>0:
             normals=[]
-            original=[Vector(c.normal).copy() for c in m.corner_normals] if hasattr(m,"corner_normals") else [Vector(c.normal).copy() for c in m.loops]
+            # Blender 4.0 may expose an empty corner_normals collection
+            # immediately after GLB import. Fall back to polygon normals,
+            # matching each loop to its real polygon instead of indexing
+            # a zero-length collection.
+            original=[Vector((0,0,1)) for _ in m.loops]
+            for polygon in m.polygons:
+                for li in polygon.loop_indices:
+                    original[li]=polygon.normal.copy()
+            if hasattr(m,"corner_normals") and len(m.corner_normals)==len(m.loops):
+                original=[Vector(c.normal).copy() for c in m.corner_normals]
             # Compute hemisphere-like normals in the ORIGINAL tree's
             # coordinates, then transform them back to mesh-local space.
             inv=(ob.matrix_world.to_3x3().inverted()).transposed()
