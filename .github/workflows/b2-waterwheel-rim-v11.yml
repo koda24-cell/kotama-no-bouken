@@ -1,0 +1,76 @@
+name: B2 Single Rim V11 Fine Grained Wood Blender Review
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-rim-segment-v01-20261118]
+    paths:
+      - "tools/b2-waterwheel-rim/build_rim_v11_resume.py"
+      - ".github/workflows/b2-waterwheel-rim-v11.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record actual run
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-rim
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > /tmp/b2-rim-v11.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+          cp /tmp/b2-rim-v11.json docs/3d/b2-waterwheel-rim/latest-v11.json
+          git add docs/3d/b2-waterwheel-rim/latest-v11.json
+          git commit -m "chore(b2): V11 rim single wood run" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+      - name: Restore SHA-verified V10 checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-single-rim-v10
+          run-id: 44407714469
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Hash source and prep output
+        run: |
+          echo "c897bc8e08c6a459a670d8f30e3871d336658c564c03c5595ada48796ca159e9  checkpoint/b2_waterwheel_single_rim_segment_v10.blend" | sha256sum -c
+          mkdir -p render-output/b2-waterwheel-rim-v11
+      - name: Blender V11 revise single timber PBR and 4 views
+        run: |
+          set -o pipefail
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-rim/build_rim_v11_resume.py -- checkpoint/b2_waterwheel_single_rim_segment_v10.blend render-output/b2-waterwheel-rim-v11 | tee /tmp/b2-rim-v11-blender.log
+          if grep -E "Traceback \(most recent call last\)|Python script failed|Error: Python" /tmp/b2-rim-v11-blender.log; then exit 1; fi
+          grep -q "V11_ENDGRAIN_MICROFIBER_REVIEW_OK" /tmp/b2-rim-v11-blender.log
+      - name: Verify Blend GLB 4 PNGs and photo images
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          p=Path('render-output/b2-waterwheel-rim-v11')
+          m=json.loads((p/'b2_waterwheel_single_rim_segment_v11_manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and m['preserved_core_mesh'] and m['endgrain_fiber_strips']==8 and m['backup_in_editable_blend'] and m['original_mesh_topology_preserved']==True
+          assert len(m['files'])==6
+          for name,meta in m['files'].items():
+            b=(p/name).read_bytes()
+            assert len(b)==meta['bytes'] and hashlib.sha256(b).hexdigest()==meta['sha256']
+            if name.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if name.endswith('.glb'):
+              assert b[:4]==b'glTF'
+              n=struct.unpack_from('<I',b,12)[0]
+              j=json.loads(b[20:20+n]);assert len(j.get('images',[]))>=4
+          print('RIM_V11_BLENDER_VERIFIED',m['endgrain_fiber_strips'])
+          PY
+      - name: Temporary unapproved review artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-single-rim-v11
+          path: render-output/b2-waterwheel-rim-v11/
+          retention-days: 14
+          if-no-files-found: warn

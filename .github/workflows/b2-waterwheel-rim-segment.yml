@@ -1,0 +1,77 @@
+name: B2 Single Curved Rim Segment Blender V01
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-rim-segment-v01-20261118]
+    paths:
+      - "tools/b2-waterwheel-rim/**"
+      - ".github/workflows/b2-waterwheel-rim-segment.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rim:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Persist Actions run reference
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p docs/3d/b2-waterwheel-rim
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > /tmp/b2-rim-run.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+          git reset --hard origin/feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+          cp /tmp/b2-rim-run.json docs/3d/b2-waterwheel-rim/latest.json
+          git add docs/3d/b2-waterwheel-rim/latest.json
+          git commit -m "chore(b2): checkpoint rim segment render run" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-rim-segment-v01-20261118
+      - name: Prepare temporary output
+        run: mkdir -p render-output/b2-waterwheel-rim-v01
+      - name: Download independently licensed CC0 photographed timber maps
+        run: |
+          for map in diff nor_gl rough; do
+            url="https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_planks/wood_planks_${map}_1k.jpg"
+            dest="render-output/b2-waterwheel-rim-v01/wood_planks_${map}_1k.jpg"
+            if curl -fLsS --retry 2 --max-time 65 "$url" -o "$dest"; then
+              echo "CC0_PHOTO_MAP_RETRIEVED $map $(wc -c < "$dest") bytes"
+            else
+              rm -f "$dest";echo "CC0_PHOTO_MAP_FAILED $map"
+            fi
+          done
+      - name: Blender sculpt one rim segment and render front side angle back
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-rim/build_rim_v01.py -- render-output/b2-waterwheel-rim-v01
+      - name: Validate actual GLB, PBR texture, Blend and real PNGs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          p=Path("render-output/b2-waterwheel-rim-v01")
+          tag="b2_waterwheel_single_rim_segment_v01"
+          m=json.loads((p/(tag+"_manifest.json")).read_text())
+          assert m["status"]=="NOT_APPROVED"
+          assert m["one_curved_wood_segment_only"] and m["legacy_spokes"]==14
+          assert len(m["files"])==6
+          for name,meta in m["files"].items():
+            b=(p/name).read_bytes()
+            assert len(b)==meta["bytes"] and hashlib.sha256(b).hexdigest()==meta["sha256"]
+            if name.endswith(".png"):assert b[:8]==bytes.fromhex("89504e470d0a1a0a")
+            if name.endswith(".glb"):
+              assert b[:4]==b"glTF"
+              n=struct.unpack_from("<I",b,12)[0]
+              j=json.loads(b[20:20+n])
+              if m["photos_used"]:assert len(j.get("images",[]))>=3
+            if name.endswith(".blend"):assert len(b)>1024
+          print("B2_WATERWHEEL_SINGLE_RIM_VERIFIED",m["blender"],m["photos_used"])
+          PY
+      - name: Keep Blender and renders as temporary review only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-single-rim-v01
+          path: render-output/b2-waterwheel-rim-v01/
+          retention-days: 14
+          if-no-files-found: warn
