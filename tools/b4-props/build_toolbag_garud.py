@@ -32,7 +32,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Vector, noise  # noqa: E402
 
 NAME = "b4p_toolbag_garud"
-VERSION = "v3"
+VERSION = "v4"
 rnd = random.Random(82)
 C.reset(82)
 
@@ -59,8 +59,8 @@ for v in bm.verts:
     x, y, z = v.co
     t = min(1.0, max(0.0, z / (2 * HZ)))
     bulge = 1.0 + 0.13 * math.sin(math.pi * min(1.0, t * 1.15))
-    pinch = 1.0 - 0.34 * t ** 2.4              # 口は前後に絞られる
-    xg = 1.0 - 0.08 * t ** 2
+    pinch = 1.0 - 0.48 * t ** 2.2              # 口は前後に絞られる（中身で口がすぼむ）
+    xg = 1.0 - 0.15 * t ** 2.5
     sag = 0.035 * t ** 3 * math.exp(-((x + 0.03) / 0.14) ** 2)
     x2 = x * xg * (1.0 + 0.05 * math.sin(math.pi * t)) + 0.018 * t ** 2
     y2 = y * bulge * pinch
@@ -77,7 +77,7 @@ for v in bm.verts:
     crease = noise.noise(Vector((p.x * 34, p.y * 34, p.z * 10)) + Vector((9, 5, 2)))
     k = 1.0 if p.z > 0.06 else 0.35        # 革の底はしわが少ない
     v.co = p + v.normal * k * (0.011 * fold + 0.004 * crease)
-L.jag_boundary(bm, 0.005, seed=6, zmin=0.2)
+L.jag_boundary(bm, 0.0035, seed=6, zmin=0.2)
 # 革の底（下 55mm）を材質 1 に
 for f in bm.faces:
     f.material_index = 1 if f.calc_center_median().z < 0.055 else 0
@@ -126,7 +126,7 @@ def surface_point(x, z, side=-1):
 # 革の底の縁の玉縁（縫い目）
 bead = contour(0.056)
 if len(bead) > 8:
-    sb = C.sweep("bottom_bead", bead, C.circle_profile(0.0035, 5), closed=True)
+    sb = C.sweep("bottom_bead", bead, C.circle_profile(0.0026, 5), closed=True)
     parts.append(C.assign(sb, hide))
 # 両端の縦の縫い目（帆布の継ぎ目）
 for k, sx in enumerate((-1, 1)):
@@ -137,6 +137,8 @@ for k, sx in enumerate((-1, 1)):
         if cand:
             q = max(cand, key=lambda p: sx * p.x)
             sp.append(q + Vector((sx * 0.003, 0, 0)))
+    for _ in range(2):   # しわで縫い目がジグザグにならないよう平滑化
+        sp = [sp[0]] + [(sp[i - 1] + sp[i] * 2 + sp[i + 1]) / 4 for i in range(1, len(sp) - 1)] + [sp[-1]] if len(sp) > 2 else sp
     if len(sp) > 3:
         parts.append(C.assign(C.sweep(f"side_seam{k}", sp, C.circle_profile(0.004, 5)), cloth))
 
@@ -242,7 +244,7 @@ th = C.sweep("glove_thumb", [gpath(0.0, 0.045), gpath(0.012, 0.060), gpath(0.035
 parts.append(C.assign(th, glove_m))
 
 # ---- 前面の革の名札＋縫い取り ----
-pc = surface_point(0.11, 0.098, -1)
+pc = surface_point(0.0, 0.092, -1)
 patch = L.plank("name_patch", 0.12, 0.075, 0.006, segs=3, seed=31, round_edges=0.3, chip=0.004)
 C.xform(patch, pc + Vector((0, -0.002, 0)), (90 + rnd.uniform(-4, 4), 0, rnd.uniform(-6, 6)))
 parts.append(C.assign(patch, hide))
@@ -292,7 +294,7 @@ p0, p1 = rim_at(1.95), rim_at(1.2)
 q0, q1 = p0 + Vector((0, 0.008, -0.03)), p1 + Vector((0, 0.008, -0.03))
 strap(0, q0, q1, q0 + Vector((0.01, 0.02, 0.17)), q1 + Vector((-0.01, 0.02, 0.17)), 1)
 # 手前：前へ倒れ、前面に沿って U 字に垂れる（手袋の右）
-xa, xb = 0.02, 0.15
+xa, xb = 0.075, 0.195
 za = rim_at(math.atan2(-0.09, xa)).z - 0.03
 zb = rim_at(math.atan2(-0.09, xb)).z - 0.03
 q0 = Vector((xa, front_y(xa, za) - 0.006, za))
