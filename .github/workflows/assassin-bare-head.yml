@@ -1,0 +1,39 @@
+name: Assassin bare head Eevee solid render
+on:
+  push:
+    branches: [feature/assassin-head-geometry-review-20261119]
+    paths: ['tools/assassin-bare-head/**','.github/workflows/assassin-bare-head.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and software OpenGL
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender xvfb libgl1-mesa-dri
+      - name: Render bare head in Eevee
+        run: |
+          python -m py_compile tools/assassin-bare-head/render.py
+          mkdir -p output/assassin-bare-head
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1280x1024x24' blender -b -noaudio -t 2 --factory-startup --python-exit-code 1 --python tools/assassin-bare-head/render.py -- --out output/assassin-bare-head
+      - name: Verify
+        run: |
+          for f in front right_side left_side three_quarter back top; do test -s "output/assassin-bare-head/$f.png"; done
+          test -s output/assassin-bare-head/assassin_bare_head.blend
+          grep -q 'head_vertices=10752' output/assassin-bare-head/geometry_report.txt
+          grep -q 'hair_vertices=0' output/assassin-bare-head/geometry_report.txt
+          cat output/assassin-bare-head/geometry_report.txt
+          python -m json.tool output/assassin-bare-head/geometry_diagnostics.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assassin-bare-head-eevee
+          path: output/assassin-bare-head/
+          retention-days: 14
+
+# Rerun requested: six-view bare head render review (2026-11-19).
