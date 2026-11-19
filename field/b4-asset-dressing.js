@@ -37,7 +37,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   const ids = Object.keys(B4_PROP_REGISTRY);
   const group = new THREE.Group(); group.name = 'b4:asset-dressing'; group.userData.b4Cached = true;
   const owned = [];
-  const info = { placed: 0, byId: {}, missing: [] };
+  const info = { placed: 0, byId: {}, missing: [], list: [] };
   if (!ids.length) return { group, dispose() {}, info: () => info };
 
   // ---- progress along the floor (BFS from the entrance) ----
@@ -114,6 +114,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       group.add(inst); owned.push(inst);
     }
     info.byId[id] = list.length; info.placed += list.length;
+    for (const c of list) info.list.push({ id, tx: c.tx, ty: c.ty, dx: c.dx, dz: c.dz, t: +c.t.toFixed(2) });
   }
   root.add(group);
   return {
