@@ -72,3 +72,11 @@
 - V6: 既存の生成画像を波のNormal（Bump強度0.29、Distance0.026）、反射向けGlossy、Fresnel依存反射（基本0.15+角度依存最大0.40）、局所の淡い発光ハイライト（画像マスク依存）として利用。微細な分断反射筋92本を水面上に独立薄膜で追加。川底は透明BSDFから透視可能。外部画像を追加取得せず、新たな未検査素材を使わない。
 - V6候補ファイル: `f2-water-surface-v6.png`, `f2-water-v6.blend`, 3方向PNG、scan/render/execution manifest。
 - [V6 Run #44444579533](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44444579533) はpushによる実起動を確認。**実行開始時点で in_progress**。ClamAV実スキャン・レンダリング・画像品質はこのV6 runのログとArtifactを確認するまでは未検証。既存成果物の正式保存とマージは引き続き保留。
+
+
+## V6実行結果・実PNG目視判定（2026-11-19）
+- 実レンダ成功：[Run #44444562592](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44444562592)。scan-render と publish-run-link ジョブともに success。
+- Artifact ID **14493275750** を実取得してZIP展開。front / side / angle 3方向PNGを画像表示し、render_manifestの各SHA-256・ファイルサイズが実ファイルと一致することを確認。
+- ClamAV 1.5.4、検査exit code 0、`river_small_rocks_diff_1k.jpg: OK`。検査素材 SHA-256 `adbcaae1f1445d5b49797c71ea2c3f43ccaf7b109f933a427f0d0993d1dbbc51`、report `safety_check=CONFIRMED_OK`、`approval=NOT_APPROVED`。
+- **美観判定：不合格**。濡れた地面に小さな白い線が散ったように見え、連続した水面の量感・透明な浅瀬の輪郭が弱い。手前側の白い反射パッチが大きく不自然。岩は低ポリの明るい灰色で、自然な岸とのなじみも不足。今後は水面の実在感を、単純な線の追加ではなく、屈折・微細法線の方向性、なだらかなフレネル反射、浅瀬の色変化、細い泡マスクで改善する。
+- 注意：この成功runはワークフローのBlend/画像Artifact名更新より**前**のコミットで起動されたため、保存されたZIPには3方向PNGと3種類のmanifest、scan-version.txtの7点のみ。V6のBlend・surface textureはこのArtifactには含まれない。更新後run #44444579533 はcancelled。Blend/texture保存は未検証。
