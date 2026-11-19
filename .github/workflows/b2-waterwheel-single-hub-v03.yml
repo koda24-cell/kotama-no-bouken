@@ -1,4 +1,4 @@
-name: B2 Single Wooden Hub V03 Blender Four View QA
+name: B2 Single Wooden Hub V03 Prominent Fractures Four View QA
 on:
   push:
     branches: [feature/gpt-b2-single-wooden-hub-v01-20261119]
