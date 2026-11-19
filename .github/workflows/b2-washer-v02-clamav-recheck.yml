@@ -1,0 +1,26 @@
+name: B2 Washer V02 Artifact ClamAV Followup
+on:
+  push:
+    branches: [feature/gpt-b2-handforged-bearing-washer-v01-20261119]
+    paths:
+      - '.github/workflows/b2-washer-v02-clamav-recheck.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: b2-handforged-washer-v02
+          run-id: 44517944270
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: review
+      - name: Bootstrap signature database with writable local directory, then scan
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'set -e; mkdir -p /tmp/clamdb; chmod 777 /tmp/clamdb; freshclam --stdout --datadir=/tmp/clamdb; test -n "$(ls -A /tmp/clamdb)"; clamscan --database=/tmp/clamdb -r --infected review'

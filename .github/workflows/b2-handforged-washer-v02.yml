@@ -1,0 +1,68 @@
+name: B2 Washer V02 Real Cycles Visual Review and Scan
+on:
+  push:
+    branches: [feature/gpt-b2-handforged-bearing-washer-v01-20261119]
+    paths:
+      - 'tools/b2-waterwheel-washer/build_washer_v02.py'
+      - '.github/workflows/b2-handforged-washer-v02.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record exact run for later QA
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-handforged-bearing-washer-v01-20261119
+          git reset --hard origin/feature/gpt-b2-handforged-bearing-washer-v01-20261119
+          mkdir -p docs/3d/b2-washer
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-washer/latest-v02.json
+          git add docs/3d/b2-washer/latest-v02.json
+          git commit -m "chore(b2): record washer Blender run"
+          git push origin HEAD:feature/gpt-b2-handforged-bearing-washer-v01-20261119
+      - name: Blender Cycles generate one washer and four views
+        run: |
+          set -o pipefail
+          mkdir -p render-output/b2-washer-v02
+          docker run --rm -v "$PWD:/workspace" -w /workspace ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-washer/build_washer_v02.py -- render-output/b2-washer-v02 | tee /tmp/washer.log
+          grep -q 'B2_FORGED_WASHER_V02_CYCLES_RENDER_COMPLETE' /tmp/washer.log
+      - name: SHA/structure inspection
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          root=Path('render-output/b2-washer-v02')
+          m=json.loads((root/'b2_one_handforged_washer_v02_manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and m['piece_count']==1
+          assert m['geometry_faces']>=1000 and len(m['files'])==7
+          for name,v in m['files'].items():
+            data=(root/name).read_bytes()
+            assert len(data)==v['bytes'] and hashlib.sha256(data).hexdigest()==v['sha256'],name
+            if name.endswith('.png'):assert data.startswith(bytes.fromhex('89504e470d0a1a0a'))
+            if name.endswith('.glb'):
+              assert data[:4]==b'glTF'
+              length=struct.unpack_from('<I',data,12)[0]
+              j=json.loads(data[20:20+length])
+              assert len(j.get('meshes',[]))==1 and len(j.get('images',[]))==1
+            if name.endswith('.blend'):assert len(data)>100000
+          print('B2_WASHER_V02_HASH_GLTF_PNG_VERIFIED')
+          PY
+      - name: ClamAV scan of generated review payload
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'mkdir -p /tmp/clamdb && freshclam --stdout --datadir=/tmp/clamdb && clamscan -d /tmp/clamdb -r --infected --no-summary render-output/b2-washer-v02'
+      - name: Temporary artifact, no asset promotion
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-handforged-washer-v02
+          path: render-output/b2-washer-v02
+          retention-days: 14
+          if-no-files-found: warn
