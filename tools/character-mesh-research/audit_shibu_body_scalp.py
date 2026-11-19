@@ -50,6 +50,36 @@ summary={'count':len(match),'distance_min_m':min(distances),
 with open(os.path.join(out,'face_body_rim_correspondence.json'),'w') as fp:json.dump(summary,fp,indent=2)
 print('FACE_BODY_RIM_CORRESPONDENCE',summary['distance_min_m'],summary['distance_max_m'],summary['count_within_0_1mm'])
 
+# Vertex gaps can be false positives if Face points lie on Body polygons
+# away from their vertex corners. Audit actual Body triangles independently.
+import bmesh
+from mathutils.bvhtree import BVHTree
+bm=bmesh.new();bm.from_mesh(body.data)
+bmesh.ops.transform(bm,matrix=body.matrix_world,verts=bm.verts)
+bm.normal_update()
+tree=BVHTree.FromBMesh(bm)
+surface=[]
+for j,idx in enumerate(rim_ids):
+    p=face_world@face.data.vertices[idx].co
+    hit=tree.find_nearest(p)
+    if hit is None:raise RuntimeError('No Body nearest triangle')
+    pos,normal,face_index,distance=hit
+    surface.append({'rim_order':j,'face_vertex_id':idx,
+        'body_face_index':face_index,'nearest_surface_distance_m':round(distance,9),
+        'nearest_body_surface_xyz':[round(x,7) for x in pos]})
+bm.free()
+sd=[x['nearest_surface_distance_m'] for x in surface]
+surface_report={'count':len(sd),'distance_min_m':min(sd),
+ 'distance_max_m':max(sd),'distance_mean_m':sum(sd)/len(sd),
+ 'count_within_0_1mm':sum(d<=.0001 for d in sd),
+ 'count_within_1mm':sum(d<=.001 for d in sd),'samples':surface,
+ 'note':'Distance to Body triangle surfaces in Blender-world coordinates; proximity does not mean faces are welded, normals/weights preserved or licenses verified'}
+with open(os.path.join(out,'face_body_rim_surface_distances.json'),'w') as fp:
+    json.dump(surface_report,fp,indent=2)
+print('FACE_BODY_SURFACE_DISTANCE',surface_report['distance_max_m'],
+    surface_report['count_within_0_1mm'])
+
+
 mat=bpy.data.materials.new('Shibu_source_audit_clay');mat.use_nodes=True
 shader=mat.node_tree.nodes.get('Principled BSDF');shader.inputs['Base Color'].default_value=(.72,.68,.65,1)
 bpy.context.view_layer.material_override=mat
