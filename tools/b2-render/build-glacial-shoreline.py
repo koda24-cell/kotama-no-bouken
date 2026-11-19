@@ -3,7 +3,7 @@ from mathutils import Vector
 random.seed(20261112)
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
-out='/work/render-output/b2-shoreline'
+out='render-output/b2-shoreline'
 os.makedirs(out,exist_ok=True)
 def mat(name,color,rough=.6,metal=0,alpha=1,transmission=0):
  m=bpy.data.materials.new(name);m.diffuse_color=(*color,alpha);m.use_nodes=True
@@ -13,7 +13,9 @@ def mat(name,color,rough=.6,metal=0,alpha=1,transmission=0):
  p.inputs['Metallic'].default_value=metal
  p.inputs['Alpha'].default_value=alpha
  p.inputs['Transmission Weight'].default_value=transmission
- if alpha<1:m.surface_render_method='DITHERED'
+ if alpha<1:
+  if hasattr(m,'surface_render_method'):m.surface_render_method='DITHERED'
+  else:m.blend_method='HASHED'
  return m
 rock=mat('Dark wet shale',(.13,.22,.28),.88)
 stone=mat('Submerged carved ruins',(.37,.48,.51),.79)
@@ -166,7 +168,7 @@ world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default
 for loc,power,size in [((2,-9,13),2600,10),((-9,5,11),1700,8)]:
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.size=size
  o.rotation_euler=(Vector((0,0,0))-o.location).to_track_quat('-Z','Y').to_euler()
-bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=24
+bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=24;bpy.context.scene.cycles.use_denoising=False;bpy.context.view_layer.cycles.use_denoising=False
 bpy.context.scene.render.resolution_x=1100;bpy.context.scene.render.resolution_y=760;bpy.context.scene.render.resolution_percentage=100
 for name,pos in [('front',(0,-18,12)),('side',(24,0,12)),('angle',(18,-19,15))]:
  bpy.ops.object.camera_add(location=pos);cam=bpy.context.object
