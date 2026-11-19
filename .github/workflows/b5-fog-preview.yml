@@ -1,7 +1,7 @@
 name: B5 Fog Backdrop Browser Preview
 on:
   push:
-    branches: [feature/gpt-b5-v5-safe-integration-20261116, feature/b5-fog-download-scan-gate-20261119]
+    branches: [feature/gpt-b5-v5-safe-integration-20261116]
     paths:
       - 'field/b5-distant-fog-background.js'
       - 'preview/b5-distant-fog-background.html'
