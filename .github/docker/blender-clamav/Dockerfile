@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source="https://github.com/koda24-cell/kotama-no-
 LABEL org.opencontainers.image.description="Shared Blender and ClamAV runtime for unapproved Kotama 3D asset QA"
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-       blender clamav clamav-freshclam python3 ca-certificates bash coreutils grep findutils \
+       blender clamav clamav-freshclam python3 ca-certificates bash coreutils grep findutils git \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /work /var/lib/clamav \
     && chown clamav:clamav /var/lib/clamav
