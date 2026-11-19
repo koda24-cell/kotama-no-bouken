@@ -4,6 +4,7 @@ on:
     branches: [feature/gpt-b5-knight-statues-v1-20261116]
     paths:
       - 'tools/b5-knights/build_sallet_v18.py'
+      - 'tools/security/clamav_scan_gate.sh'
       - '.github/workflows/b5-knight-sallet-v18-render.yml'
       - 'tools/b5-knights/textures/grime_imagegen_v15_256.webp.b64'
       - 'tools/b5-knights/textures/cracks_imagegen_v17_192.webp.b64'
