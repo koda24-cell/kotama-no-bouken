@@ -1,7 +1,7 @@
 name: B2 Ferrule V02 PBR Rust Seam QA Cycles
 on:
   push:
-    branches: [feature/gpt-b2-iron-axle-ferrule-v02-20261119]
+    branches: [feature/gpt-b2-iron-axle-ferrule-v01-20261119]
     paths:
       - 'tools/b2-waterwheel-ferrule/**'
       - '.github/workflows/b2-waterwheel-iron-ferrule-v02.yml'
@@ -22,12 +22,12 @@ jobs:
           mkdir -p docs/3d/b2-waterwheel-ferrule
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin feature/gpt-b2-iron-axle-ferrule-v02-20261119
-          git reset --hard origin/feature/gpt-b2-iron-axle-ferrule-v02-20261119
+          git fetch origin feature/gpt-b2-iron-axle-ferrule-v01-20261119
+          git reset --hard origin/feature/gpt-b2-iron-axle-ferrule-v01-20261119
           echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-ferrule/latest-v02.json
           git add docs/3d/b2-waterwheel-ferrule/latest-v02.json
           git commit -m "chore(b2): record real ferrule Blender run"
-          git push origin HEAD:feature/gpt-b2-iron-axle-ferrule-v02-20261119
+          git push origin HEAD:feature/gpt-b2-iron-axle-ferrule-v01-20261119
       - name: Blender Cycles 4 real views plus GLB / Blend
         run: |
           set -o pipefail
