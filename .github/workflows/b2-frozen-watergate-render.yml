@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - feature/b2-frozen-watergate-docker-20261112
-      - feature/shared-container-cross-floor-batch-20261119
   workflow_dispatch:
 permissions:
   contents: read
