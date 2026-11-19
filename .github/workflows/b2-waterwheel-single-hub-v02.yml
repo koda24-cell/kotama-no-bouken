@@ -3,7 +3,7 @@ on:
   push:
     branches: [feature/gpt-b2-single-wooden-hub-v01-20261119]
     paths:
-      - 'tools/b2-waterwheel-hub/**'
+      - 'tools/b2-waterwheel-hub/build_single_hub_v02_resume.py'
       - '.github/workflows/b2-waterwheel-single-hub-v02.yml'
   workflow_dispatch:
 permissions:
