@@ -1,0 +1,110 @@
+name: Blender 5.3 F6 Foliage Compatibility Review
+on:
+  push:
+    branches: [feature/blender53-f6-foliage-compat-20261119]
+    paths:
+      - tools/3d-performance/batch_blend_foliage.py
+      - tools/3d-performance/compare_renders.py
+      - tools/3d-performance/audit_glb.py
+      - .github/workflows/blender53-f6-foliage-compat-review.yml
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Successful Blender V14 run with original tree_mature.blend'
+        required: false
+        default: '44053620503'
+        type: string
+permissions:
+  contents: read
+  packages: read
+  actions: read
+jobs:
+  batch:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Verify exact Blender 5.3.0 compatibility with V14 checkpoint
+        run: |
+          blender --version | head -n 1
+          python3 - <<'PY'
+          import subprocess
+          assert subprocess.check_output(['blender','--version'],text=True).splitlines()[0]=='Blender 5.3.0'
+          PY
+      - name: Scan Blender and QA scripts
+        run: bash tools/security/clamav_scan_gate.sh scan tools/3d-performance qa/security/scripts.log
+      - name: Download source review checkpoint from existing successful run
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.source_run_id || '44053620503' }}
+          github-token: ${{ github.token }}
+          name: f6-tree-mature-v1-NOT-APPROVED
+          path: source-tree
+      - name: Inspect immutable source without changing it
+        run: |
+          python3 - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          root=Path('source-tree')
+          m=json.loads((root/'manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED'
+          assert m['asset_id']=='tree_mature'
+          assert m['version']=='V14', 'requires exact V14 checkpoint; do not silently optimize another version'
+          for entry in m['files']:
+            p=root/entry['name']
+            assert p.is_file()
+            b=p.read_bytes()
+            assert len(b)==entry['bytes'] and hashlib.sha256(b).hexdigest()==entry['sha256']
+          print('SOURCE_CHECKPOINT_VERIFIED',m['leaf_meshes'],m['version'])
+          PY
+      - name: Scan downloaded Blend checkpoint before Blender import
+        run: bash tools/security/clamav_scan_gate.sh scan source-tree qa/security/input.log
+      - name: Batch leaf meshes without modifying source BLEND
+        run: |
+          set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+          HOME=/tmp/blender-home blender -b source-tree/tree_mature.blend --disable-autoexec -t 2 --python tools/3d-performance/batch_blend_foliage.py -- --output render-output/3d-performance/foliage-batch 2>&1 | tee /tmp/foliage-batch.log
+          grep -q 'FOLIAGE_BATCH_DONE' /tmp/foliage-batch.log
+      - name: Compare actual render pixels and GLB geometry structure
+        run: |
+          set -euo pipefail
+          python3 tools/3d-performance/audit_glb.py source-tree/tree_mature.glb render-output/3d-performance/foliage-batch/*.glb --output render-output/3d-performance/tree-before-after.json
+          python3 tools/3d-performance/compare_renders.py source-tree render-output/3d-performance/foliage-batch --out render-output/3d-performance/foliage-batch/image-comparison.json --max-mae 0.15
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          root=Path('render-output/3d-performance/foliage-batch')
+          m=json.loads((root/'batch_manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and m['source_blend_modified'] is False
+          assert m['batched_leaf_meshes']>=1 and m['batched_leaf_meshes']<m['source_leaf_meshes']
+          for f in m['files']:
+            data=(root/f['name']).read_bytes()
+            assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256']
+          structural=json.loads(Path('render-output/3d-performance/tree-before-after.json').read_text())['models']
+          assert len(structural)==2
+          original=next(x for x in structural if x['path']=='source-tree/tree_mature.glb')
+          batched=next(x for x in structural if x['path'].endswith('tree_mature_v14_leaf_batched_NOT_APPROVED.glb'))
+          assert batched['scene_mesh_nodes']<original['scene_mesh_nodes']
+          print('FOLIAGE_STRUCTURAL_QA_PASS', [(x['path'],x['scene_mesh_nodes']) for x in structural])
+          PY
+      - name: Scan generated candidates
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/3d-performance/foliage-batch qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blender53-f6-tree-v14-compat-NOT-APPROVED
+          path: |
+            render-output/3d-performance/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn
