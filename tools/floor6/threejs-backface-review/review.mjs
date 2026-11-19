@@ -44,9 +44,18 @@ try{
   await page.locator('canvas').screenshot({path:path.join(out,mode+'.png')});
   views.push(r);
  }
+ const closeups=[];
+ for(const [panel,letter] of ['A','B','C'].entries()){
+  for(const mode of ['front','underside']){
+   const result=await page.evaluate(({panel,mode})=>window.f6RenderClose(panel,mode),{panel,mode});
+   if(result.drawCalls<=0)throw Error('no draw calls for '+letter+mode);
+   await page.locator('canvas').screenshot({path:path.join(out,letter+'_'+mode+'_close.png')});
+   closeups.push({label:letter,...result});
+  }
+ }
  if(errors.length)throw Error('WebGL/browser errors '+JSON.stringify(errors));
  const info={status:'NOT_APPROVED',three:report.threeVersion,meshes:report.meshes,materialNames:report.materials,
-  shaderPatched:report.shaderPatched,bounds:report.bounds,views,comments:'Blender B backside nodes were not retained in glTF; compared shader-controlled Three.js per-side correction'};
+  shaderPatched:report.shaderPatched,bounds:report.bounds,views,closeups,comments:'Blender B backside nodes were not retained in glTF; compared shader-controlled Three.js per-side correction'};
  await fs.writeFile(path.join(out,'browser-report.json'),JSON.stringify(info,null,2));
  console.log('F6_THREEJS_REAL_RENDER_DONE',JSON.stringify(info));
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve))}
