@@ -109,7 +109,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          blender -b -t 2 --python .github/docker/blender-clamav/smoke.py
+          HOME=/tmp/blender-home blender -b -t 2 --python .github/docker/blender-clamav/smoke.py
           python3 - <<'PY'
           from pathlib import Path
           png = Path("qa/container-smoke/smoke.png").read_bytes()
