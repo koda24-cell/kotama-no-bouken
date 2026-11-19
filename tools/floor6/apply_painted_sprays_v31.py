@@ -8,7 +8,7 @@ from pathlib import Path
 from mathutils import Vector
 from collections import defaultdict
 ROOT=Path("render-output/floor6")
-ATLAS=ROOT/"painted-spray-v31-source"
+ATLAS=ROOT/"painted-spray-v30-source"
 BARK=ROOT/"cc0-bark-source"
 OUT=ROOT/"painted-foliage-v31-NOT-APPROVED"
 OUT.mkdir(parents=True,exist_ok=True)
