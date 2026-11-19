@@ -14,7 +14,7 @@ random.seed(20261119)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
-scene.cycles.samples=48
+scene.cycles.samples=64
 scene.cycles.max_bounces=6
 bpy.context.view_layer.cycles.use_denoising=False  # Ubuntu apt Blender has no OpenImageDenoiser
 scene.render.resolution_x=960;scene.render.resolution_y=640;scene.render.resolution_percentage=100
@@ -64,34 +64,78 @@ for i in range(15):
     r=random.uniform(.16,.51)
     bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,y,-.25))
     o=bpy.context.object;o.name="Waterline_stone";o.scale=(r*random.uniform(.8,1.4),r*.83,r*.42);o.rotation_euler=(random.random()*.18,random.random()*.18,random.random()*math.pi);o.data.materials.append(random.choice(pebble))
-# Smooth moving water surface: nonregular frequencies intentionally avoid square-grid appearance
-watermat=bpy.data.materials.new("WAVY-inspired translucent blue teal (not WAVY addon)")
+# V5: original tileable surface IMAGE, generated locally (never downloaded).
+# It controls microscopic surface slope, roughness and delicate colored glints;
+# the base water remains largely transparent rather than opaque teal jelly.
+TEX_SIZE=256
+surface=bpy.data.images.new("F2_original_water_surface_height_V5",width=TEX_SIZE,height=TEX_SIZE,alpha=False,float_buffer=False)
+pixels=[]
+for py in range(TEX_SIZE):
+    v=2.0*math.pi*py/TEX_SIZE
+    for px in range(TEX_SIZE):
+        u=2.0*math.pi*px/TEX_SIZE
+        # Explicitly periodic multidirectional features: seamless, no grid pattern.
+        wave=(.43*math.sin(5*u+2*math.sin(3*v))+
+              .22*math.sin(3*v+4*math.sin(2*u))+
+              .16*math.sin(9*u+7*v+1.2*math.sin(2*v))+
+              .10*math.cos(12*v-5*u)+.08*math.sin(13*u-7*v))
+        height=max(.02,min(.98,.5+.34*wave))
+        pixels.extend((height,height,height,1.0))
+surface.pixels.foreach_set(pixels)
+surface.filepath_raw=str((root/"f2-water-surface-v5.png").resolve())
+surface.file_format="PNG"
+surface.save()
+watermat=bpy.data.materials.new("V5 thin transparent water + image driven ripples")
 watermat.use_nodes=True
-p=watermat.node_tree.nodes.get("Principled BSDF")
-p.inputs["Base Color"].default_value=(.36,.73,.72,1)
-p.inputs["Roughness"].default_value=.035
-p.inputs["IOR"].default_value=1.333
-(p.inputs.get("Transmission Weight") or p.inputs.get("Transmission")).default_value=.4
-(p.inputs.get("Coat Weight") or p.inputs.get("Clearcoat")).default_value=.08
-(p.inputs.get("Coat Roughness") or p.inputs.get("Clearcoat Roughness")).default_value=.03
-# Fresnel-like translucent overlay: preserve bright water glints but reveal riverbed.
 wn=watermat.node_tree.nodes
+wn.clear()
 wl=watermat.node_tree.links
-outnode=wn.get("Material Output")
-trans=wn.new("ShaderNodeBsdfTransparent")
+output=wn.new("ShaderNodeOutputMaterial")
+co=wn.new("ShaderNodeTexCoord")
+mapping=wn.new("ShaderNodeVectorMath")
+mapping.operation="SCALE"
+mapping.inputs["Scale"].default_value=2.2
+wl.new(co.outputs["Generated"],mapping.inputs[0])
+tex=wn.new("ShaderNodeTexImage")
+tex.image=surface
+tex.interpolation="Linear"
+tex.extension="REPEAT"
+wl.new(mapping.outputs["Vector"],tex.inputs["Vector"])
+bumpwater=wn.new("ShaderNodeBump")
+bumpwater.inputs["Strength"].default_value=.16
+bumpwater.inputs["Distance"].default_value=.012
+wl.new(tex.outputs["Color"],bumpwater.inputs["Height"])
+gloss=wn.new("ShaderNodeBsdfGlossy")
+gloss.inputs["Color"].default_value=(.78,.96,.98,1)
+wl.new(bumpwater.outputs["Normal"],gloss.inputs["Normal"])
+# Same texture modulates micro-roughness and glints, independent of transparency.
+roughmultiply=wn.new("ShaderNodeMath")
+roughmultiply.operation="MULTIPLY"
+roughmultiply.inputs[1].default_value=.055
+wl.new(tex.outputs["Color"],roughmultiply.inputs[0])
+roughadd=wn.new("ShaderNodeMath")
+roughadd.operation="ADD"
+roughadd.inputs[1].default_value=.025
+wl.new(roughmultiply.outputs[0],roughadd.inputs[0])
+wl.new(roughadd.outputs[0],gloss.inputs["Roughness"])
+transparent=wn.new("ShaderNodeBsdfTransparent")
+# No dark base color; only faint pale-cyan surface reflection.
+transparent.inputs["Color"].default_value=(.97,.995,.995,1)
+fresnel=wn.new("ShaderNodeLayerWeight")
+fresnel.inputs["Blend"].default_value=.12
+strength=wn.new("ShaderNodeMath")
+strength.operation="MULTIPLY"
+strength.inputs[1].default_value=.30
+wl.new(fresnel.outputs["Fresnel"],strength.inputs[0])
+base=wn.new("ShaderNodeMath")
+base.operation="ADD"
+base.inputs[1].default_value=.035
+wl.new(strength.outputs[0],base.inputs[0])
 mix=wn.new("ShaderNodeMixShader")
-mix.inputs[0].default_value=.32
-wl.new(trans.outputs["BSDF"],mix.inputs[1])
-wl.new(p.outputs["BSDF"],mix.inputs[2])
-wl.new(mix.outputs[0],outnode.inputs["Surface"])
-noise=wn.new("ShaderNodeTexNoise")
-noise.inputs["Scale"].default_value=14
-noise.inputs["Detail"].default_value=2.2
-waterbump=wn.new("ShaderNodeBump")
-waterbump.inputs["Strength"].default_value=.1
-waterbump.inputs["Distance"].default_value=.01
-wl.new(noise.outputs["Fac"],waterbump.inputs["Height"])
-wl.new(waterbump.outputs["Normal"],p.inputs["Normal"])
+wl.new(base.outputs[0],mix.inputs[0])
+wl.new(transparent.outputs["BSDF"],mix.inputs[1])
+wl.new(gloss.outputs["BSDF"],mix.inputs[2])
+wl.new(mix.outputs[0],output.inputs["Surface"])
 # Shape water to avoid hard straight shoreline, with randomised multifrequency normal from mesh.
 verts=[];faces=[];N=95
 for j in range(N+1):
@@ -99,7 +143,7 @@ for j in range(N+1):
         x=-7.9+15.8*i/N
         shoreline=2.8+.34*math.sin(x*.7)+.18*math.cos(x*1.9)
         y=-7.9+(7.9+shoreline)*j/N
-        z=.015*math.sin(1.7*x+1.2*y)+.009*math.sin(3.1*x-.7*y)+.007*math.cos(.52*x+2.9*y)
+        z=.009*math.sin(1.7*x+1.2*y)+.006*math.sin(3.1*x-.7*y)+.004*math.cos(.52*x+2.9*y)
         verts.append((x,y,z))
 for j in range(N):
     for i in range(N):
@@ -150,4 +194,5 @@ for n in ("front","side","angle"):
     f=root/(n+".png");assert f.stat().st_size>10000
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
 (root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v4.blend").resolve()))
+bpy.ops.file.pack_all()
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v5.blend").resolve()))
