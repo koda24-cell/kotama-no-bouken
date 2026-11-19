@@ -4,6 +4,7 @@
 
 | 名称・技術 | 用途 | 情報/導入/検証状態 | 出典・実装・証拠 |
 | --- | --- | --- | --- |
+| F2水面V7 透明SVGカラー/アルファ＋岸泡SVG＋CairoSVG PNG変換 | 水底の透過を維持しつつ表面の色・泡・反射を分離。再利用可能な透明SVGをGit管理し、Blender用PNGへ変換 | **候補保存済み・実V7レンダ品質未検証**。正式素材昇格・development統合は未実施 | [V7素材台帳](F2_WATER_V7_REUSABLE_TEXTURES.md) / [候補PR #517](https://github.com/koda24-cell/kotama-no-bouken/pull/517) / [V7試験Actions](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44452990228) |
 | F6 成木 CC0葉素材自動取得 + Blender V19/V20 並列比較 | ambientCG Leaf001 1K-PNGを公式URLから取得・ZIP/PNG/SHAを検証して葉材質へ適用。原本と候補の4視点PNG/GLB/Blend/manifest比較 | **試験PR #501 でActions起動確認、完成/美観/写真素材の実適用は未検証**。Leaf001は配布元分類 Approximation で写真そのものではない。ゲーム未統合 / NOT_APPROVED | [PR #501](https://github.com/koda24-cell/kotama-no-bouken/pull/501) / [手順](F6_AUTO_CC0_LEAF_RENDER_HANDOFF.md)（PRブランチ側） / [ambientCG](https://ambientcg.com/view?id=Leaf001) |
 | CEDEC2024 BotW 二次元四分木・距離別ロード | 全階層のセルストリーミング/LOD設計 | 任天堂講演の公表内容を確認・コタマ未実装 | [公式講演レポート](https://gamemakers.jp/article/2024_09_04_78145/) / [共通方針](GLOBAL_3D_LOD_PERFORMANCE_POLICY.md) |
 | Cemu BotW tree billboard / grass density解析 | 遠景樹木・植生の表示距離を別管理する根拠 | コミュニティ解析コード確認・コタマ未実装・任天堂公式コードではない | [Cemuパッチ](https://github.com/cemu-project/cemu_graphic_packs/blob/master/src/BreathOfTheWild/Mods/DrawDistance/patch_DrawDistance.asm) / [調査文書](F6_TREE_BOTW_PERFORMANCE_RESEARCH_20261117.md) |
