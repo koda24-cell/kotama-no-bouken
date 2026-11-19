@@ -87,7 +87,7 @@ surface.file_format="PNG"
 surface.save()
 # V6 water: keep real transparency, restore legible surface through
 # Fresnel reflections and image-controlled pale optical highlights.
-watermat=bpy.data.materials.new("V6 clear water / photo-like ripple highlights")
+watermat=bpy.data.materials.new("V8 variable translucent water / broken reflection mask")
 watermat.use_nodes=True
 wn=watermat.node_tree.nodes
 wn.clear()
@@ -96,7 +96,7 @@ outnode=wn.new("ShaderNodeOutputMaterial")
 co=wn.new("ShaderNodeTexCoord")
 mapping=wn.new("ShaderNodeVectorMath")
 mapping.operation="SCALE"
-mapping.inputs["Scale"].default_value=2.8
+mapping.inputs["Scale"].default_value=1.65
 wl.new(co.outputs["Generated"],mapping.inputs[0])
 tex=wn.new("ShaderNodeTexImage")
 tex.image=surface
@@ -104,12 +104,12 @@ tex.extension="REPEAT"
 tex.interpolation="Linear"
 wl.new(mapping.outputs["Vector"],tex.inputs["Vector"])
 waterbump=wn.new("ShaderNodeBump")
-waterbump.inputs["Strength"].default_value=.29
-waterbump.inputs["Distance"].default_value=.026
+waterbump.inputs["Strength"].default_value=.18
+waterbump.inputs["Distance"].default_value=.017
 wl.new(tex.outputs["Color"],waterbump.inputs["Height"])
 reflection=wn.new("ShaderNodeBsdfGlossy")
 reflection.inputs["Color"].default_value=(.72,.89,.93,1)
-reflection.inputs["Roughness"].default_value=.075
+reflection.inputs["Roughness"].default_value=.14
 wl.new(waterbump.outputs["Normal"],reflection.inputs["Normal"])
 clear=wn.new("ShaderNodeBsdfTransparent")
 clear.inputs["Color"].default_value=(.98,.995,1,1)
@@ -117,10 +117,10 @@ fresnel=wn.new("ShaderNodeLayerWeight")
 fresnel.inputs["Blend"].default_value=.19
 # Visible, yet light, reflection even straight on.
 fscale=wn.new("ShaderNodeMath");fscale.operation="MULTIPLY"
-fscale.inputs[1].default_value=.40
+fscale.inputs[1].default_value=.24
 wl.new(fresnel.outputs["Fresnel"],fscale.inputs[0])
 fbase=wn.new("ShaderNodeMath");fbase.operation="ADD"
-fbase.inputs[1].default_value=.15
+fbase.inputs[1].default_value=.055
 wl.new(fscale.outputs[0],fbase.inputs[0])
 mix=wn.new("ShaderNodeMixShader")
 wl.new(fbase.outputs[0],mix.inputs[0])
@@ -135,11 +135,11 @@ crest.color_ramp.elements[1].position=.79
 crest.color_ramp.elements[1].color=(1,1,1,1)
 wl.new(tex.outputs["Color"],crest.inputs["Fac"])
 hscale=wn.new("ShaderNodeMath");hscale.operation="MULTIPLY"
-hscale.inputs[1].default_value=.17
+hscale.inputs[1].default_value=.075
 wl.new(crest.outputs["Color"],hscale.inputs[0])
 highlight=wn.new("ShaderNodeEmission")
 highlight.inputs["Color"].default_value=(.63,.87,.91,1)
-highlight.inputs["Strength"].default_value=.52
+highlight.inputs["Strength"].default_value=.24
 mixhigh=wn.new("ShaderNodeMixShader")
 wl.new(hscale.outputs[0],mixhigh.inputs[0])
 wl.new(mix.outputs[0],mixhigh.inputs[1])
@@ -149,20 +149,48 @@ wl.new(highlight.outputs[0],mixhigh.inputs[2])
 overlay_path=root/"v7_water_surface_color_alpha.png"
 assert overlay_path.is_file(), "V7 SVG-rasterized overlay missing"
 overlay_img=bpy.data.images.load(str(overlay_path.resolve()))
+# V8: one broad smooth nonuniform flow field distorts texture coordinates
+# and a separate low-frequency field breaks repeated highlight coverage.
+flow_noise=wn.new("ShaderNodeTexNoise")
+flow_noise.inputs["Scale"].default_value=3.8
+flow_noise.inputs["Detail"].default_value=2.1
+wl.new(mapping.outputs["Vector"],flow_noise.inputs["Vector"])
+flow_shift=wn.new("ShaderNodeVectorMath")
+flow_shift.operation="SCALE"
+flow_shift.inputs["Scale"].default_value=.13
+wl.new(flow_noise.outputs["Color"],flow_shift.inputs[0])
+warped_uv=wn.new("ShaderNodeVectorMath")
+warped_uv.operation="ADD"
+wl.new(mapping.outputs["Vector"],warped_uv.inputs[0])
+wl.new(flow_shift.outputs["Vector"],warped_uv.inputs[1])
+coverage=wn.new("ShaderNodeTexNoise")
+coverage.inputs["Scale"].default_value=1.8
+coverage.inputs["Detail"].default_value=2.0
+wl.new(mapping.outputs["Vector"],coverage.inputs["Vector"])
+cover_map=wn.new("ShaderNodeMapRange")
+cover_map.inputs["From Min"].default_value=.38
+cover_map.inputs["From Max"].default_value=.72
+cover_map.inputs["To Min"].default_value=.12
+cover_map.inputs["To Max"].default_value=1.0
+wl.new(coverage.outputs["Fac"],cover_map.inputs["Value"])
 overlay_tex=wn.new("ShaderNodeTexImage")
 overlay_tex.image=overlay_img
 overlay_tex.extension="REPEAT"
 overlay_tex.interpolation="Linear"
-wl.new(mapping.outputs["Vector"],overlay_tex.inputs["Vector"])
+wl.new(warped_uv.outputs["Vector"],overlay_tex.inputs["Vector"])
 overlay_light=wn.new("ShaderNodeEmission")
-overlay_light.inputs["Strength"].default_value=.75
+overlay_light.inputs["Strength"].default_value=.42
 wl.new(overlay_tex.outputs["Color"],overlay_light.inputs["Color"])
 overlay_alpha=wn.new("ShaderNodeMath")
 overlay_alpha.operation="MULTIPLY"
-overlay_alpha.inputs[1].default_value=.80
+overlay_alpha.inputs[1].default_value=.47
 wl.new(overlay_tex.outputs["Alpha"],overlay_alpha.inputs[0])
 overlay_mix=wn.new("ShaderNodeMixShader")
-wl.new(overlay_alpha.outputs[0],overlay_mix.inputs[0])
+overlay_coverage=wn.new("ShaderNodeMath")
+overlay_coverage.operation="MULTIPLY"
+wl.new(overlay_alpha.outputs[0],overlay_coverage.inputs[0])
+wl.new(cover_map.outputs["Result"],overlay_coverage.inputs[1])
+wl.new(overlay_coverage.outputs[0],overlay_mix.inputs[0])
 wl.new(mixhigh.outputs[0],overlay_mix.inputs[1])
 wl.new(overlay_light.outputs["Emission"],overlay_mix.inputs[2])
 # V7 AI-generated source image is used directly as a second COLOR + ALPHA layer.
@@ -174,16 +202,20 @@ ai_tex=wn.new("ShaderNodeTexImage")
 ai_tex.image=ai_img
 ai_tex.extension="REPEAT"
 ai_tex.interpolation="Linear"
-wl.new(mapping.outputs["Vector"],ai_tex.inputs["Vector"])
+wl.new(warped_uv.outputs["Vector"],ai_tex.inputs["Vector"])
 ai_emission=wn.new("ShaderNodeEmission")
-ai_emission.inputs["Strength"].default_value=.82
+ai_emission.inputs["Strength"].default_value=.48
 wl.new(ai_tex.outputs["Color"],ai_emission.inputs["Color"])
 ai_mask=wn.new("ShaderNodeMath")
 ai_mask.operation="MULTIPLY"
-ai_mask.inputs[1].default_value=.56
+ai_mask.inputs[1].default_value=.29
 wl.new(ai_tex.outputs["Alpha"],ai_mask.inputs[0])
 ai_mix=wn.new("ShaderNodeMixShader")
-wl.new(ai_mask.outputs[0],ai_mix.inputs[0])
+ai_coverage=wn.new("ShaderNodeMath")
+ai_coverage.operation="MULTIPLY"
+wl.new(ai_mask.outputs[0],ai_coverage.inputs[0])
+wl.new(cover_map.outputs["Result"],ai_coverage.inputs[1])
+wl.new(ai_coverage.outputs[0],ai_mix.inputs[0])
 wl.new(overlay_mix.outputs[0],ai_mix.inputs[1])
 wl.new(ai_emission.outputs[0],ai_mix.inputs[2])
 wl.new(ai_mix.outputs[0],outnode.inputs["Surface"])
@@ -216,10 +248,10 @@ for i in range(65):
 # luminous gobo-ish breaks: light for particulate sparkle, rather than a uniform lattice
 for k in range(4):
     bpy.ops.object.light_add(type="AREA",location=((-4+k*2.8),-1,6))
-    lamp=bpy.context.object;lamp.data.energy=160 if k==0 else 80
-    lamp.data.shape="DISK";lamp.data.size=5 if k else 4
+    lamp=bpy.context.object;lamp.data.energy=90 if k==0 else 45
+    lamp.data.shape="DISK";lamp.data.size=6.5 if k else 6
 bpy.ops.object.light_add(type="SUN",location=(0,0,8))
-sun=bpy.context.object;sun.data.energy=1.3;sun.rotation_euler=(.39,-.4,-.5)
+sun=bpy.context.object;sun.data.energy=.9;sun.rotation_euler=(.39,-.4,-.5)
 # very subtle distance fog using actual volume scatter in a distant cube
 fog=bpy.data.materials.new("Subtle distance mist VFX");fog.use_nodes=True
 nodes=fog.node_tree.nodes;nodes.clear()
@@ -247,4 +279,4 @@ for n in ("front","side","angle"):
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
 (root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v7.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v8.blend").resolve()))
