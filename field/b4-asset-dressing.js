@@ -11,6 +11,8 @@ const BASE = './assets/models/floor4/props/';
 // side: how far from tile centre towards the wall (m). human: 0 = dragon trace, 1 = human trace.
 export const B4_PROP_REGISTRY = {
   b4p_brazier_cage: { human: 1, weight: 1.0, side: 1.25, scale: [0.95, 1.08], light: { y: 0.6, color: 0xff7a2e, intensity: 1.6, range: 4.5 } },
+  // hung from a nail in the rock at head height
+  b4p_mine_lantern: { human: 1, weight: 1.3, side: 1.82, y: 1.55, scale: [0.95, 1.05], light: { y: 0.2, color: 0xffb070, intensity: 0.9, range: 3.2 } },
 };
 
 // Approved GPT models reused as-is (docs/3d/B4_GPT_MODEL_INVENTORY.md).
@@ -137,9 +139,10 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       const x = c.tx * CELL + c.dx * R.side, z = c.ty * CELL + c.dz * R.side;
       const yaw = Math.atan2(-c.dx, -c.dz) + (hash(c.tx, c.ty, 814) - 0.5) * 0.9;
       const s = R.scale[0] + (R.scale[1] - R.scale[0]) * hash(c.tx, c.ty, 815);
-      tmp.position.set(x, 0, z); tmp.rotation.set(0, yaw, 0); tmp.scale.setScalar(s); tmp.updateMatrix();
+      const y0 = (R.y || 0) * (0.95 + 0.1 * hash(c.tx, c.ty, 816));
+      tmp.position.set(x, y0, z); tmp.rotation.set(0, yaw, 0); tmp.scale.setScalar(s); tmp.updateMatrix();
       if (R.light && lights.length < 30) {
-        const L = { world: new THREE.Vector3(x, R.light.y * s, z), color: R.light.color, intensity: R.light.intensity, range: R.light.range, off: false };
+        const L = { world: new THREE.Vector3(x, y0 + R.light.y * s, z), color: R.light.color, intensity: R.light.intensity, range: R.light.range, off: false };
         lights.push(L); gLights.push(L);
       }
       return tmp.matrix.clone();
