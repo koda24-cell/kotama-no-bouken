@@ -44,6 +44,16 @@ let browser;
     report.push({floor:f,info});
     if(!info)continue;
     const seen=new Set();let k=0;
+    const mines=await p.evaluate(()=>KotamaField3D.themeInfo()?.scenery?.mines||[]);
+    for(const [mi,m] of mines.slice(1).entries()){
+      await p.evaluate(({m,DIRN})=>{
+        const {g}=__b4visual;cancelAnimationFrame(fieldRaf);fieldRaf=null;g.maxFps=0;
+        const c=fieldTileCenter(m.tx,m.ty);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=DIRN[m.dx+','+m.dz];fieldState.view=null;g.cam.ready=false;
+        fieldUpdateVision(true);fieldUpdateNear();performance.now=()=>10000;fieldRender();KotamaField3D.frame();
+      },{m,DIRN});
+      const clip=await p.locator('.field-3d-canvas').boundingBox();
+      await p.screenshot({path:path.join(out,`f${f}-mine${mi}.png`),clip,timeout:120000});
+    }
     for(const it of info.list){
       if(seen.has(it.id)&&k>=6)continue;seen.add(it.id);
       if(k++>=10)break;
