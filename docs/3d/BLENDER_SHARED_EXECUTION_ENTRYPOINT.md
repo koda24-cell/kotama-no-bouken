@@ -84,3 +84,19 @@ ClaudeはBlenderを操作する想定にしない。GPT/Blenderで出力され�
 6. **実装と検証の区別**：この文書は作業運用ルール。各Actionsに途中Artifactアップロード・再開機能を実装・実証するまでは、「停止後も必ず保存される」とは主張しない。強制killや実行上限時の保存動作は別途試験する。
 
 **ユーザーの希望**：作業をタイムアウト前に一度区切ることを目的とせず、できる限り反復制作を進めながら、途中停止しても作業が失われにくい状態を維持する。
+
+
+## GitHub Actions実行一覧を自動確認する共通手順（2026-11-19追記）
+
+GitHub Actionsの **push起動 run** は、GitHub連携の `fetch_commit_workflow_runs` だけでは見落とす（同関数はpull_request起動に限定）。ワークフロー画面のURLが直接fetch不可でも、**GitHub RESTの実行一覧エンドポイント**をGitHub連携 `fetch` で問い合わせること。
+
+1. ユーザー提示の `https://github.com/OWNER/REPO/actions/workflows/NAME.yml` から OWNER/REPO・ワークフロー名を特定（`utm_source`などの追跡パラメータは無視）。
+2. 対象ブランチが分かる場合は、まず次のAPI URLをGitHub連携 `fetch` で取得（ブランチ名をURLエンコード）。`https://api.github.com/repos/OWNER/REPO/actions/runs?branch=ENCODED_BRANCH&per_page=10`。返却JSONの `workflow_runs` から `path` と `head_sha` で対象を厳密に絞り込み、最新の `id`, `status`, `conclusion`, `html_url` を確認。
+3. `fetch_workflow_run_jobs({repo_full_name,run_id})` と `fetch_workflow_run_artifacts({repo_full_name,run_id})` でジョブ成功・Verify・Artifactsの存在と期限を検証。ArtifactのPNG/GLBを**実際に開くまで**目視評価済みとは言わない。
+4. `/actions/workflows/NAME.yml/runs` 型APIやブラウザー画面URLは接続によって拒否されることがある。拒否は「実行が無い」ことの証明ではない。ブランチ指定実行一覧に切り替える。
+5. 実行リンクを報告し、未承認モデルはNOT_APPROVEDのまま保持。runが存在しない場合はコミットSHA/branch/pathを再検証し、何を確認できなかったか明示する。
+
+### 検証例：アサシン頭部（2026-11-19）
+- Workflow: `.github/workflows/assassin-bare-head.yml`、PR #513、branch `feature/assassin-head-geometry-review-20261119`
+- Actions run [#44434198539](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44434198539): **completed/success**、pushイベント、SHA `6393f8c3d508637349d5d7590a02f2fb14521cc8`
+- Job `render` 成功。Blender Eevee / Verify / upload-artifact各ステップ成功。Artifact `assassin-bare-head-eevee` ID `14488925390`、2026-12-03 01:09 UTC満了予定。**PNG目視は未検証**。
