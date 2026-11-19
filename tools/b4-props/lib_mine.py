@@ -32,6 +32,14 @@ def dent_fn(dents, wobble=0.0, seed=0):
     return f
 
 
+def sharpen(bm, deg):
+    """面の角度が deg を超える辺をシャープに（GLB の分割法線になる）"""
+    lim = math.radians(deg)
+    for e in bm.edges:
+        if len(e.link_faces) == 2 and e.calc_face_angle(0.0) > lim:
+            e.smooth = False
+
+
 def lathe_bm(prof, sides=12, rfn=None, phase=0.0, cap_bottom=False, cap_top=False):
     """prof: [(r, z)] 下から上。r==0 の端点は1頂点に集約"""
     bm = bmesh.new()
@@ -67,8 +75,11 @@ def lathe_bm(prof, sides=12, rfn=None, phase=0.0, cap_bottom=False, cap_top=Fals
     return bm
 
 
-def lathe(name, prof, sides=12, rfn=None, phase=0.0, cap_bottom=False, cap_top=False, smooth=True):
-    return C.obj_from_bm(lathe_bm(prof, sides, rfn, phase, cap_bottom, cap_top), name, smooth)
+def lathe(name, prof, sides=12, rfn=None, phase=0.0, cap_bottom=False, cap_top=False, smooth=True, sharp_deg=None):
+    bm = lathe_bm(prof, sides, rfn, phase, cap_bottom, cap_top)
+    if sharp_deg:
+        sharpen(bm, sharp_deg)
+    return C.obj_from_bm(bm, name, smooth)
 
 
 def broken_shell(name, prof, sides, holes, thickness=0.0025, rfn=None, seed=0, jag=0.004, phase=0.0):
@@ -180,26 +191,30 @@ def wedge(name, l, w, h, seed=0):
 # ---------------------------------------------------------------------------
 # 材質
 # ---------------------------------------------------------------------------
-def sooty_glass(name, soot_z=None, scale=1.0, tint=(0.034, 0.024, 0.014)):
+def sooty_glass(name, soot_z=None, scale=1.0, tint=(0.034, 0.024, 0.014), crack_center=None, crack_r=(0.02, 0.08)):
     """煤けた不透明ガラス（透過はベイクできないため）。
     暗い琥珀色の地＋上方の煤（内側から付く黒い膜）＋細いひび（明るい線）＋灰。粗さで艶の島を残す。"""
     b = C.NB(name)
     n_big = b.noise(9.0 / scale, 6, 0.6)
     n_fine = b.noise(60.0 / scale, 4, 0.5)
-    # ひび：ボロノイの縁を細く（放射状の割れの代わりに不規則な網目を2スケール）
-    cr1 = b.ramp(b.voronoi(22.0 / scale, "DISTANCE_TO_EDGE"), [(0.0, 1.0), (0.025, 0.0)])
-    cr2 = b.ramp(b.voronoi(55.0 / scale, "DISTANCE_TO_EDGE"), [(0.0, 1.0), (0.03, 0.0)])
-    crack = b.math("MAXIMUM", cr1, b.math("MULTIPLY", cr2, b.ramp(n_big, [(0.4, 0.0), (0.7, 1.0)])))
+    # ひび：ノイズの等値線（|n-0.5|が小さい所）を細い線にする＝蛇行する割れ。割れ穴の近くほど密に
+    def ridge(sc, w):
+        n = b.noise(sc, 3, 0.45)
+        return b.ramp(b.math("ABSOLUTE", b.math("SUBTRACT", n, 0.5)), [(0.0, 1.0), (w, 0.0)])
+    cr1 = ridge(14.0 / scale, 0.012)
+    cr2 = ridge(38.0 / scale, 0.010)
+    near = b.dist_mask(crack_center, *crack_r) if crack_center is not None else 0.4
+    crack = b.math("MULTIPLY", b.math("MAXIMUM", cr1, cr2), b.math("ADD", b.math("MULTIPLY", near, 0.85), 0.15), clamp=True)
     col = b.mix(n_big, tint, (tint[0] * 1.6, tint[1] * 1.5, tint[2] * 1.3))
     soot = b.ramp(n_big, [(0.25, 0.25), (0.75, 0.75)])
     if soot_z is not None:
         soot = b.math("MAXIMUM", soot, b.height_mask(*soot_z))
     soot = b.math("MULTIPLY", soot, b.ramp(n_fine, [(0.2, 0.7), (0.8, 1.0)]))
     col = b.mix(soot, col, (0.006, 0.0055, 0.005))
-    col = b.mix(b.math("MULTIPLY", crack, 0.85), col, (0.11, 0.10, 0.09))
-    # 割れ口・角の欠け（白っぽい断面）
-    edge = b.edge_mask(0.0015, 0.05, 0.3)
-    col = b.mix(b.math("MULTIPLY", edge, 0.6), col, (0.14, 0.13, 0.115))
+    col = b.mix(b.math("MULTIPLY", crack, 0.8), col, (0.10, 0.09, 0.08))
+    # 割れ口（少し明るい断面）
+    edge = b.edge_mask(0.0012, 0.08, 0.35)
+    col = b.mix(b.math("MULTIPLY", edge, 0.35), col, (0.09, 0.085, 0.075))
     ash = b.math("MULTIPLY", b.up_mask(0.5, 0.9), b.ramp(n_big, [(0.35, 0.0), (0.7, 1.0)]))
     col = b.mix(b.math("MULTIPLY", ash, 0.8), col, (0.075, 0.07, 0.066))
     r = b.mixf(soot, 0.06, 0.62)
