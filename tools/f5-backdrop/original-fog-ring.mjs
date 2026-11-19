@@ -1,32 +1,31 @@
-/** V3: one seamless cylindrical projection of the ORIGINAL B5 fog shader.
- * Original source remains untouched; visual-review-only.
- * One shader draw call replaces 32 tiled planes, avoiding repeated panels.
+/** V4: wide, FLAT world-locked abyss vistas, NOT a visible circular cylinder.
+ * Preserve original B5 shader. Four 220-unit distant walls surround the map,
+ * with large uninterrupted panels instead of narrow strips. Review-only.
  */
 import {createB5DistantFogBackground} from '../../field/b5-distant-fog-background.js';
-export function createOriginalB5FogRing(THREE,scene,{radius=110,height=62,seed=514}={}) {
+export function createOriginalB5FogRing(THREE,scene,{radius=145,height=88,seed=514}={}) {
   const group=new THREE.Group();
-  group.name='B5_ORIGINAL_FOG_CYLINDER_V3_REVIEW';
+  group.name='B5_V4_FLAT_ABYSS_VISTAS';
   scene.add(group);
-  const original=createB5DistantFogBackground({width:1,height:1,seed});
-  // The original plane is only a material source; never render it.
-  original.mesh.geometry.dispose();
-  const material=original.mesh.material;
-  // Remove rectangular side-edge fading on a full-wrap UV cylinder.
-  // The original shader module remains intact and available for comparison.
-  material.fragmentShader=material.fragmentShader.replace(
-    'float alpha=bottom*left*right*top;',
-    'float alpha=bottom*top;'
-  );
-  material.needsUpdate=true;
-  material.side=THREE.BackSide;
-  material.depthWrite=false;
-  material.fog=false;
-  const geometry=new THREE.CylinderGeometry(radius,radius,height,256,1,true);
-  const mesh=new THREE.Mesh(geometry,material);
-  mesh.name='B5_ORIGINAL_SHADER_SEAMLESS_360';
-  mesh.position.y=height*.13;
-  mesh.renderOrder=-90;
-  group.add(mesh);
-  return {group,update(seconds){original.update(seconds)},
-    dispose(){geometry.dispose();material.dispose();group.removeFromParent()}};
+  const parts=[];
+  const sides=[
+    {x:0,z:-radius,ry:0},
+    {x:radius,z:0,ry:-Math.PI/2},
+    {x:0,z:radius,ry:Math.PI},
+    {x:-radius,z:0,ry:Math.PI/2}
+  ];
+  for(let i=0;i<4;i++){
+    const s=sides[i];
+    const part=createB5DistantFogBackground({width:radius*2.08,height,seed:seed+i*127});
+    part.mesh.position.set(s.x,height*.16,s.z);
+    part.mesh.rotation.y=s.ry;
+    part.mesh.material.side=THREE.DoubleSide;
+    part.mesh.material.depthWrite=false;
+    part.mesh.renderOrder=-90;
+    part.mesh.name='B5_V4_WIDE_FLAT_VISTA_'+i;
+    group.add(part.mesh);
+    parts.push(part);
+  }
+  return {group,update(seconds){for(const p of parts)p.update(seconds)},
+    dispose(){for(const p of parts)p.dispose();group.removeFromParent()}};
 }
