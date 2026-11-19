@@ -1,0 +1,59 @@
+name: B2 Single Forged Bearing Strap V01 Blender 5.3 4-view
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-bearing-strap-design-20261119]
+    paths:
+      - 'tools/b2-waterwheel-strap/**'
+      - '.github/workflows/b2-forged-bearing-strap-v01.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan source using Blender 5.3 plus ClamAV image
+        run: |
+          set -euo pipefail
+          mkdir -p security/clamdb
+          chmod 777 security/clamdb
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'set -e; freshclam --stdout --datadir=/workspace/security/clamdb; clamscan --database=/workspace/security/clamdb -r --infected tools/b2-waterwheel-strap'
+      - name: Actual 4 view Blender Cycles and GLB
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b2-strap-v01
+          docker run --rm -v "$PWD:/workspace" -w /workspace ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-strap/build_strap_v01.py -- render-output/b2-strap-v01 | tee /tmp/b2-strap.log
+          grep -q B2_STRAP_V01_RENDER_SUCCESS /tmp/b2-strap.log
+      - name: Validate 4 actual PNG and GLB and manifest
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          p=Path('render-output/b2-strap-v01')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and m['mesh_vertices']>=100
+          assert len(m['files'])==6
+          for name,meta in m['files'].items():
+              d=(p/name).read_bytes()
+              assert len(d)==meta['bytes'] and hashlib.sha256(d).hexdigest()==meta['sha256']
+              if name.endswith('.png'):assert d[:8]==bytes.fromhex('89504e470d0a1a0a')
+              if name.endswith('.glb'):assert d[:4]==b'glTF' and struct.unpack_from('<I',d,8)[0]==len(d)
+          assert len(list(p.glob('*.png')))==4
+          print('B2_STRAP_V01_VERIFIED')
+          PY
+      - name: Shared GLB structural performance audit
+        run: python3 tools/3d-performance/audit_glb.py 'render-output/b2-strap-v01/*.glb' --output render-output/b2-strap-v01/mesh_performance.json
+      - name: Scan outputs with ClamAV
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'clamscan --database=/workspace/security/clamdb -r --infected render-output/b2-strap-v01'
+      - name: Temporary review artifact only NOT_APPROVED
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-forged-bearing-strap-v01-review
+          path: render-output/b2-strap-v01/
+          retention-days: 14
+          if-no-files-found: warn
