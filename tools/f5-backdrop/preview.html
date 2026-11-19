@@ -11,9 +11,11 @@ small{display:block;color:#c2b3d5;margin-top:8px}#status{font-variant-numeric:ta
 <div><button data-angle="0">北 0°</button><button data-angle="90">東 90°</button><button data-angle="180">南 180°</button><button data-angle="270">西 270°</button></div>
 <div><button id="left">↶ 左回転</button><button id="right">右回転 ↷</button><button id="forward">前進 ↑</button><button id="reset">初期位置</button></div>
 <small>ドラッグ: 見回す / WASD: 移動 / ←→: 回転。<br>背景は画面に固定されず、遠景と中景に視差が出ます。</small></div>
+<script type="importmap">{"imports":{"three":"/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
 import {createFloor5Backdrop} from './worldlocked-360-backdrop.mjs';
+import {createOriginalB5FogRing} from './original-fog-ring.mjs';
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x090516);
 scene.fog=new THREE.FogExp2(0x100a1b,0.0023);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
@@ -24,11 +26,12 @@ camera.position.set(0,2,0);
 scene.add(new THREE.HemisphereLight(0x8775ab,0x15101b,2.3));
 const backdrop=createFloor5Backdrop(THREE,{seed:51119,radius:150,groundY:-14});
 scene.add(backdrop.root);
+const originalFog=createOriginalB5FogRing(THREE,scene,{segments:32,radius:108,height:58});
 const floor=new THREE.Mesh(new THREE.CircleGeometry(34,64),new THREE.MeshStandardMaterial({color:0x1b1722,roughness:1}));
 floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
 const grid=new THREE.GridHelper(55,22,0x574465,0x352c41);scene.add(grid);
 let yaw=0,pitch=0,dragging=false,px=0,keys=new Set();
-function renderView(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;backdrop.update(camera);
+function renderView(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;backdrop.update(camera);originalFog.update(8);
 document.querySelector('#status').textContent='方位 '+((yaw*180/Math.PI%360+360)%360).toFixed(0)+'° / 位置 X '+camera.position.x.toFixed(1)+' Z '+camera.position.z.toFixed(1);
 renderer.render(scene,camera)}
 document.querySelectorAll('[data-angle]').forEach(b=>b.onclick=()=>{yaw=Number(b.dataset.angle)*Math.PI/180;renderView()});
