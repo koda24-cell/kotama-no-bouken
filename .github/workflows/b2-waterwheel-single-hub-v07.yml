@@ -1,4 +1,4 @@
-name: B2 Single Wooden Hub V07 Applied Generated Crack PBR Review
+name: B2 Hub V07 Nonperiodic Generated Wood Fracture Review
 on:
   push:
     branches: [feature/gpt-b2-single-wooden-hub-v01-20261119]
