@@ -18,9 +18,15 @@ if [[ "$mode" == "update" && $# -eq 2 ]]; then
   updated=0
   for attempt in 1 2 3; do
     echo "freshclam attempt $attempt" | tee -a "$out/freshclam.log"
-    if freshclam --stdout 2>&1 | tee -a "$out/freshclam.log"; then
-      updated=1
-      break
+    if freshclam --stdout 2>&1 | tee "$out/freshclam-attempt-$attempt.log" | tee -a "$out/freshclam.log"; then
+      # freshclam can exit 0 after successfully updating definitions while still
+      # printing an ERROR (e.g. a missing clamd notification target).
+      if grep -Eq '(^|[[:space:]])ERROR:' "$out/freshclam-attempt-$attempt.log"; then
+        echo "FAIL: freshclam reported an error despite exit code 0" | tee -a "$out/freshclam.log"
+      else
+        updated=1
+        break
+      fi
     fi
     if [[ "$attempt" -lt 3 ]]; then sleep 10; fi
   done
@@ -44,7 +50,7 @@ elif [[ "$mode" == "scan" && $# -eq 3 ]]; then
   awk '/^Scanned files:/ { if ($3 > 0) good=1 } END { exit !good }' "$log" || {
     echo "FAIL: no files actually scanned" >&2; exit 1;
   }
-  if grep -Eq '^Total errors: [1-9]' "$log"; then
+  if grep -Eq '^Total errors: [1-9]|(^|[[:space:]])ERROR:' "$log"; then
     echo "FAIL: scan reported errors" >&2
     exit 1
   fi
