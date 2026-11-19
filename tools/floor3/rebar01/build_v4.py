@@ -14,6 +14,8 @@ source=source.replace(old,new)
 source=source.replace('if variant==3 and j>rings-9:', 'if variant>=3 and j>rings-9:')
 source=source.replace('cam.data.ortho_scale=2.2','cam.data.ortho_scale=2.0')
 exec(compile(source,'rebar_v4_source','exec'))
+bpy.ops.object.select_all(action='SELECT')
+bpy.ops.object.delete(use_global=False)
 image=make_texture()
 version=4
 ob=build(version,make_mat(image))
