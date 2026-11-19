@@ -1,28 +1,28 @@
 [b4-props] b4p_toolbag_garud: tris=4622 materials=6
 Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)
-Fra:1 Mem:76.42M (Peak 76.42M) | Time:498646:45:01.37 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:76.71M (Peak 76.71M) | Time:498646:45:01.37 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:76.70M (Peak 76.71M) | Time:498646:45:01.37 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_basecolor
-Fra:1 Mem:80.53M (Peak 233.99M) | Time:498646:45:21.33 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:80.67M (Peak 233.99M) | Time:498646:45:21.33 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:80.67M (Peak 233.99M) | Time:498646:45:21.33 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_roughness
-Fra:1 Mem:84.50M (Peak 233.99M) | Time:498646:45:27.65 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:84.65M (Peak 233.99M) | Time:498646:45:27.65 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:84.65M (Peak 233.99M) | Time:498646:45:27.65 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_metallic
-Fra:1 Mem:88.50M (Peak 233.99M) | Time:498646:45:28.62 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:88.65M (Peak 233.99M) | Time:498646:45:28.62 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:88.64M (Peak 233.99M) | Time:498646:45:28.62 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_emissive
-Fra:1 Mem:92.59M (Peak 233.99M) | Time:498646:45:29.60 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:93.04M (Peak 233.99M) | Time:498646:45:29.60 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:93.03M (Peak 233.99M) | Time:498646:45:29.60 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_normal
-Fra:1 Mem:96.60M (Peak 258.75M) | Time:498646:45:38.41 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:97.05M (Peak 258.75M) | Time:498646:45:38.41 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:97.05M (Peak 258.75M) | Time:498646:45:38.41 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_ao
-22:47:23 | INFO: Starting glTF 2.0 export
-22:47:23 | INFO: Extracting primitive: b4p_toolbag_garud
-22:47:23 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
-22:47:23 | INFO: Primitives created: 1
-22:47:23 | INFO: Finished glTF 2.0 export in 0.15578722953796387 s
+Fra:1 Mem:76.42M (Peak 76.42M) | Time:498647:03:04.07 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
+Fra:1 Mem:76.71M (Peak 76.71M) | Time:498647:03:04.07 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:76.70M (Peak 76.71M) | Time:498647:03:04.07 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_basecolor
+Fra:1 Mem:80.53M (Peak 233.99M) | Time:498647:03:17.54 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
+Fra:1 Mem:80.67M (Peak 233.99M) | Time:498647:03:17.54 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:80.67M (Peak 233.99M) | Time:498647:03:17.54 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_roughness
+Fra:1 Mem:84.50M (Peak 233.99M) | Time:498647:03:21.70 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
+Fra:1 Mem:84.65M (Peak 233.99M) | Time:498647:03:21.70 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:84.65M (Peak 233.99M) | Time:498647:03:21.70 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_metallic
+Fra:1 Mem:88.50M (Peak 233.99M) | Time:498647:03:22.34 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
+Fra:1 Mem:88.65M (Peak 233.99M) | Time:498647:03:22.34 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:88.64M (Peak 233.99M) | Time:498647:03:22.34 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_emissive
+Fra:1 Mem:92.59M (Peak 233.99M) | Time:498647:03:22.97 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
+Fra:1 Mem:93.04M (Peak 233.99M) | Time:498647:03:22.97 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:93.03M (Peak 233.99M) | Time:498647:03:22.97 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_normal
+Fra:1 Mem:96.60M (Peak 258.75M) | Time:498647:03:29.05 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_toolbag_garud
+Fra:1 Mem:97.05M (Peak 258.75M) | Time:498647:03:29.05 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:97.05M (Peak 258.75M) | Time:498647:03:29.05 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_toolbag_garud_ao
+23:04:41 | INFO: Starting glTF 2.0 export
+23:04:41 | INFO: Extracting primitive: b4p_toolbag_garud
+23:04:41 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+23:04:41 | INFO: Primitives created: 1
+23:04:41 | INFO: Finished glTF 2.0 export in 0.11435055732727051 s
 Info: Total files 10 | Changed 10 | Failed 0
 Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
@@ -63,31 +63,30 @@ Fra:1 Mem:26.90M (Peak 41.64M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, 
 Fra:1 Mem:26.90M (Peak 41.64M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:26.90M (Peak 41.64M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:26.90M (Peak 41.64M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_emissive.png
-Fra:1 Mem:30.90M (Peak 41.64M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_basecolor.png
-Fra:1 Mem:30.90M (Peak 41.64M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_orm.png
-Fra:1 Mem:42.91M (Peak 42.91M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:42.91M (Peak 42.91M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:42.91M (Peak 42.91M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:42.91M (Peak 42.91M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.06 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:119.79M (Peak 119.79M) | Time:00:01.08 | Remaining:01:36.31 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:119.79M (Peak 119.79M) | Time:00:32.81 | Remaining:01:02.51 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:119.79M (Peak 119.79M) | Time:01:04.50 | Remaining:00:30.73 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:119.79M (Peak 119.79M) | Time:01:19.37 | Remaining:00:15.86 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:151.79M (Peak 199.79M) | Time:01:34.26 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:151.79M (Peak 199.79M) | Time:01:34.26 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
+Fra:1 Mem:30.90M (Peak 41.64M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
+Fra:1 Mem:42.91M (Peak 42.91M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:42.91M (Peak 42.91M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:42.91M (Peak 42.91M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:42.91M (Peak 42.91M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.04 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:43.77M (Peak 44.33M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:119.79M (Peak 119.79M) | Time:00:00.73 | Remaining:01:05.34 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:119.79M (Peak 119.79M) | Time:00:22.32 | Remaining:00:42.54 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:119.79M (Peak 119.79M) | Time:00:43.86 | Remaining:00:20.90 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:119.79M (Peak 119.79M) | Time:00:53.80 | Remaining:00:10.75 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:151.79M (Peak 199.79M) | Time:01:03.85 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:151.79M (Peak 199.79M) | Time:01:03.85 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_toolbag_garud/b4p_toolbag_garud_volcanic_front.png'
-Time: 01:34.56 (Saving: 00:00.29)
+Time: 01:04.06 (Saving: 00:00.20)
 
 [b4-props] render b4p_toolbag_garud_volcanic_side.png
 Fra:1 Mem:26.09M (Peak 26.09M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:26.09M (Peak 26.09M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:26.13M (Peak 26.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
 Fra:1 Mem:26.64M (Peak 26.64M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
 Fra:1 Mem:26.30M (Peak 26.64M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
 Fra:1 Mem:26.31M (Peak 26.64M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
@@ -115,26 +114,27 @@ Fra:1 Mem:26.97M (Peak 26.97M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, 
 Fra:1 Mem:26.97M (Peak 26.97M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:26.97M (Peak 26.97M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:26.97M (Peak 26.97M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_emissive.png
-Fra:1 Mem:30.97M (Peak 30.97M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
-Fra:1 Mem:42.98M (Peak 42.98M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:42.98M (Peak 42.98M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:42.98M (Peak 42.98M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:42.98M (Peak 42.98M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:43.84M (Peak 44.41M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:43.84M (Peak 44.41M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.06 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:119.86M (Peak 119.86M) | Time:00:01.02 | Remaining:01:31.22 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:119.86M (Peak 119.86M) | Time:00:31.59 | Remaining:01:00.20 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:119.86M (Peak 119.86M) | Time:01:01.95 | Remaining:00:29.51 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:119.86M (Peak 119.86M) | Time:01:16.33 | Remaining:00:15.25 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:151.87M (Peak 199.87M) | Time:01:31.36 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:151.87M (Peak 199.87M) | Time:01:31.36 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
+Fra:1 Mem:26.97M (Peak 26.97M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_orm.png
+Fra:1 Mem:34.97M (Peak 34.97M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
+Fra:1 Mem:42.98M (Peak 42.98M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:42.98M (Peak 42.98M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:42.98M (Peak 42.98M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:42.98M (Peak 42.98M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:43.84M (Peak 44.41M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:43.84M (Peak 44.41M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.04 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:43.85M (Peak 44.41M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:119.86M (Peak 119.86M) | Time:00:00.69 | Remaining:01:02.19 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:119.86M (Peak 119.86M) | Time:00:21.43 | Remaining:00:40.83 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:119.86M (Peak 119.86M) | Time:00:41.83 | Remaining:00:19.93 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:119.86M (Peak 119.86M) | Time:00:51.26 | Remaining:00:10.24 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:151.87M (Peak 199.87M) | Time:01:01.19 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:151.87M (Peak 199.87M) | Time:01:01.19 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_toolbag_garud/b4p_toolbag_garud_volcanic_side.png'
-Time: 01:31.56 (Saving: 00:00.19)
+Time: 01:01.33 (Saving: 00:00.14)
 
 [b4-props] render b4p_toolbag_garud_volcanic_angle.png
 Fra:1 Mem:26.16M (Peak 26.16M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_toolbag_garud
@@ -165,33 +165,31 @@ Fra:1 Mem:27.04M (Peak 27.04M) | Time:00:00.00 | Mem:0.65M, Peak:0.79M | Scene, 
 Fra:1 Mem:27.04M (Peak 27.04M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:27.04M (Peak 27.04M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.04M (Peak 27.04M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:27.04M (Peak 27.04M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_emissive.png
-Fra:1 Mem:31.04M (Peak 31.04M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_orm.png
-Fra:1 Mem:43.06M (Peak 43.06M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.06M (Peak 43.06M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.06M (Peak 43.06M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.06M (Peak 43.06M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.06 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:119.94M (Peak 119.94M) | Time:00:01.52 | Remaining:02:19.09 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:119.94M (Peak 119.94M) | Time:00:24.55 | Remaining:01:53.79 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 17/96
-Fra:1 Mem:119.94M (Peak 119.94M) | Time:00:47.54 | Remaining:01:30.64 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:119.94M (Peak 119.94M) | Time:01:10.52 | Remaining:01:07.58 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 49/96
-Fra:1 Mem:119.94M (Peak 119.94M) | Time:01:33.57 | Remaining:00:44.59 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:119.94M (Peak 119.94M) | Time:01:55.13 | Remaining:00:23.01 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:151.94M (Peak 199.94M) | Time:02:10.87 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:151.94M (Peak 199.94M) | Time:02:10.87 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
+Fra:1 Mem:27.04M (Peak 27.04M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_orm.png
+Fra:1 Mem:31.04M (Peak 31.04M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
+Fra:1 Mem:43.06M (Peak 43.06M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.06M (Peak 43.06M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.06M (Peak 43.06M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.06M (Peak 43.06M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.04 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:43.92M (Peak 44.48M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:119.94M (Peak 119.94M) | Time:00:01.00 | Remaining:01:31.39 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:119.94M (Peak 119.94M) | Time:00:31.23 | Remaining:00:59.54 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:119.94M (Peak 119.94M) | Time:01:01.49 | Remaining:00:29.30 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:119.94M (Peak 119.94M) | Time:01:15.68 | Remaining:00:15.12 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:151.94M (Peak 199.94M) | Time:01:26.13 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:151.94M (Peak 199.94M) | Time:01:26.13 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_toolbag_garud/b4p_toolbag_garud_volcanic_angle.png'
-Time: 02:11.08 (Saving: 00:00.20)
+Time: 01:26.29 (Saving: 00:00.15)
 
 [b4-props] render b4p_toolbag_garud_volcanic_top.png
 Fra:1 Mem:26.23M (Peak 26.23M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:26.35M (Peak 26.35M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:26.23M (Peak 26.23M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
 Fra:1 Mem:26.79M (Peak 26.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
 Fra:1 Mem:26.45M (Peak 26.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
 Fra:1 Mem:26.45M (Peak 26.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
@@ -219,28 +217,27 @@ Fra:1 Mem:27.12M (Peak 27.12M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, 
 Fra:1 Mem:27.12M (Peak 27.12M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.12M (Peak 27.12M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:27.12M (Peak 27.12M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_emissive.png
-Fra:1 Mem:27.12M (Peak 27.12M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
-Fra:1 Mem:43.13M (Peak 43.13M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.13M (Peak 43.13M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.13M (Peak 43.13M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.13M (Peak 43.13M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.06 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:120.01M (Peak 120.01M) | Time:00:01.65 | Remaining:02:30.86 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:120.01M (Peak 120.01M) | Time:00:26.87 | Remaining:02:04.57 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 17/96
-Fra:1 Mem:120.01M (Peak 120.01M) | Time:00:51.90 | Remaining:01:38.96 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:120.01M (Peak 120.01M) | Time:01:16.90 | Remaining:01:13.70 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 49/96
-Fra:1 Mem:120.01M (Peak 120.01M) | Time:01:42.16 | Remaining:00:48.69 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:120.01M (Peak 120.01M) | Time:02:05.69 | Remaining:00:25.12 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:152.01M (Peak 200.01M) | Time:02:23.84 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:152.01M (Peak 200.01M) | Time:02:23.84 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
+Fra:1 Mem:31.12M (Peak 31.12M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_orm.png
+Fra:1 Mem:35.12M (Peak 35.12M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
+Fra:1 Mem:43.13M (Peak 43.13M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.13M (Peak 43.13M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.13M (Peak 43.13M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.13M (Peak 43.13M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.04 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:43.99M (Peak 44.56M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:120.01M (Peak 120.01M) | Time:00:01.11 | Remaining:01:42.09 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:120.01M (Peak 120.01M) | Time:00:34.65 | Remaining:01:06.08 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:120.01M (Peak 120.01M) | Time:01:08.95 | Remaining:00:32.86 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:120.01M (Peak 120.01M) | Time:01:25.07 | Remaining:00:17.00 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:152.01M (Peak 200.01M) | Time:01:37.56 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:152.01M (Peak 200.01M) | Time:01:37.56 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_toolbag_garud/b4p_toolbag_garud_volcanic_top.png'
-Time: 02:24.05 (Saving: 00:00.20)
+Time: 01:37.71 (Saving: 00:00.15)
 
 [b4-props] render b4p_toolbag_garud_volcanic_close.png
 Fra:1 Mem:26.31M (Peak 26.31M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_toolbag_garud
@@ -272,28 +269,26 @@ Fra:1 Mem:27.19M (Peak 27.19M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, 
 Fra:1 Mem:27.19M (Peak 27.19M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.19M (Peak 27.19M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:27.19M (Peak 27.19M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_emissive.png
-Fra:1 Mem:31.19M (Peak 31.19M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
-Fra:1 Mem:43.20M (Peak 43.20M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.20M (Peak 43.20M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.20M (Peak 43.20M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.20M (Peak 43.20M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:44.06M (Peak 44.63M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:44.06M (Peak 44.63M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.06 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:120.08M (Peak 120.08M) | Time:00:01.55 | Remaining:02:21.09 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:120.08M (Peak 120.08M) | Time:00:24.88 | Remaining:01:55.32 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 17/96
-Fra:1 Mem:120.08M (Peak 120.08M) | Time:00:48.22 | Remaining:01:31.94 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:120.08M (Peak 120.08M) | Time:01:11.70 | Remaining:01:08.71 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 49/96
-Fra:1 Mem:120.08M (Peak 120.08M) | Time:01:35.05 | Remaining:00:45.30 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:120.08M (Peak 120.08M) | Time:01:57.04 | Remaining:00:23.39 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:152.09M (Peak 200.09M) | Time:02:13.92 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:152.09M (Peak 200.09M) | Time:02:13.92 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
+Fra:1 Mem:31.19M (Peak 31.19M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_orm.png
+Fra:1 Mem:43.20M (Peak 43.20M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.20M (Peak 43.20M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.20M (Peak 43.20M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.20M (Peak 43.20M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:44.06M (Peak 44.63M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:44.06M (Peak 44.63M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.04 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:44.07M (Peak 44.63M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:120.08M (Peak 120.08M) | Time:00:01.05 | Remaining:01:35.91 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:120.08M (Peak 120.08M) | Time:00:32.57 | Remaining:01:02.10 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:120.08M (Peak 120.08M) | Time:01:03.73 | Remaining:00:30.37 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:120.08M (Peak 120.08M) | Time:01:18.30 | Remaining:00:15.65 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:152.09M (Peak 200.09M) | Time:01:29.69 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:152.09M (Peak 200.09M) | Time:01:29.69 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_toolbag_garud/b4p_toolbag_garud_volcanic_close.png'
-Time: 02:14.13 (Saving: 00:00.20)
+Time: 01:29.85 (Saving: 00:00.15)
 
 [b4-props] render b4p_toolbag_garud_volcanic_back.png
 Fra:1 Mem:26.38M (Peak 26.38M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_toolbag_garud
@@ -325,30 +320,30 @@ Fra:1 Mem:27.27M (Peak 27.27M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, 
 Fra:1 Mem:27.27M (Peak 27.27M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.27M (Peak 27.27M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:27.27M (Peak 27.27M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_emissive.png
-Fra:1 Mem:31.27M (Peak 31.27M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_basecolor.png
-Fra:1 Mem:43.28M (Peak 43.28M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.28M (Peak 43.28M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.28M (Peak 43.28M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.28M (Peak 43.28M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.06 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.06 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:120.16M (Peak 120.16M) | Time:00:01.17 | Remaining:01:45.30 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:120.16M (Peak 120.16M) | Time:00:36.46 | Remaining:01:09.48 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:120.16M (Peak 120.16M) | Time:01:11.75 | Remaining:00:34.19 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:120.16M (Peak 120.16M) | Time:01:28.31 | Remaining:00:17.64 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:152.16M (Peak 200.16M) | Time:01:43.63 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:152.16M (Peak 200.16M) | Time:01:43.63 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
+Fra:1 Mem:27.27M (Peak 27.27M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
+Fra:1 Mem:43.28M (Peak 43.28M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.28M (Peak 43.28M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.28M (Peak 43.28M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.28M (Peak 43.28M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.04 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:44.14M (Peak 44.70M) | Time:00:00.04 | Mem:17.76M, Peak:17.76M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:120.16M (Peak 120.16M) | Time:00:00.78 | Remaining:01:10.60 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:120.16M (Peak 120.16M) | Time:00:24.31 | Remaining:00:46.33 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:120.16M (Peak 120.16M) | Time:00:47.72 | Remaining:00:22.74 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:120.16M (Peak 120.16M) | Time:00:58.71 | Remaining:00:11.73 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:152.16M (Peak 200.16M) | Time:01:09.01 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:152.16M (Peak 200.16M) | Time:01:09.01 | Mem:93.77M, Peak:93.77M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_toolbag_garud/b4p_toolbag_garud_volcanic_back.png'
-Time: 01:43.83 (Saving: 00:00.19)
+Time: 01:09.15 (Saving: 00:00.14)
 
 [b4-props] render b4p_toolbag_garud_studio_front.png
 Fra:1 Mem:26.37M (Peak 26.37M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:26.92M (Peak 26.92M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:26.37M (Peak 26.37M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
 Fra:1 Mem:26.92M (Peak 26.92M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
 Fra:1 Mem:26.62M (Peak 26.92M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
 Fra:1 Mem:26.62M (Peak 26.92M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
@@ -375,25 +370,24 @@ Fra:1 Mem:27.28M (Peak 27.28M) | Time:00:00.00 | Mem:0.65M, Peak:0.79M | Scene, 
 Fra:1 Mem:27.28M (Peak 27.28M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:27.28M (Peak 27.28M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.28M (Peak 27.28M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:27.28M (Peak 27.28M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_emissive.png
-Fra:1 Mem:31.28M (Peak 31.28M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_orm.png
-Fra:1 Mem:43.29M (Peak 43.29M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.29M (Peak 43.29M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.29M (Peak 43.29M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.29M (Peak 43.29M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:44.15M (Peak 44.72M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:44.15M (Peak 44.72M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.06 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:120.17M (Peak 120.17M) | Time:00:00.78 | Remaining:00:33.94 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:120.17M (Peak 120.17M) | Time:00:23.39 | Remaining:00:10.60 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 33/48
-Fra:1 Mem:152.17M (Peak 200.18M) | Time:00:40.45 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:152.17M (Peak 200.18M) | Time:00:40.45 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Finished
+Fra:1 Mem:27.28M (Peak 27.28M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_basecolor.png
+Fra:1 Mem:31.28M (Peak 31.28M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
+Fra:1 Mem:43.29M (Peak 43.29M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.29M (Peak 43.29M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.29M (Peak 43.29M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.29M (Peak 43.29M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:44.15M (Peak 44.72M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:44.15M (Peak 44.72M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.04 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:44.16M (Peak 44.72M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:120.17M (Peak 120.17M) | Time:00:00.53 | Remaining:00:22.97 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:152.17M (Peak 200.18M) | Time:00:27.09 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:152.17M (Peak 200.18M) | Time:00:27.09 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_toolbag_garud/b4p_toolbag_garud_studio_front.png'
-Time: 00:40.66 (Saving: 00:00.20)
+Time: 00:27.25 (Saving: 00:00.15)
 
 [b4-props] render b4p_toolbag_garud_studio_angle.png
 Fra:1 Mem:26.42M (Peak 26.42M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_toolbag_garud
@@ -424,30 +418,30 @@ Fra:1 Mem:27.33M (Peak 27.33M) | Time:00:00.00 | Mem:0.65M, Peak:0.79M | Scene, 
 Fra:1 Mem:27.33M (Peak 27.33M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:27.33M (Peak 27.33M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.33M (Peak 27.33M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:27.33M (Peak 27.33M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_emissive.png
-Fra:1 Mem:31.33M (Peak 31.34M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_orm.png
-Fra:1 Mem:43.35M (Peak 43.35M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.35M (Peak 43.35M) | Time:00:00.04 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.35M (Peak 43.35M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.35M (Peak 43.35M) | Time:00:00.04 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.06 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.06 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:120.23M (Peak 120.23M) | Time:00:01.06 | Remaining:00:46.93 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:120.23M (Peak 120.23M) | Time:00:32.80 | Remaining:00:14.88 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 33/48
-Fra:1 Mem:152.23M (Peak 200.23M) | Time:00:54.09 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:152.23M (Peak 200.23M) | Time:00:54.09 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Finished
+Fra:1 Mem:27.33M (Peak 27.33M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
+Fra:1 Mem:27.33M (Peak 27.33M) | Time:00:00.00 | Mem:0.81M, Peak:0.81M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_orm.png
+Fra:1 Mem:43.35M (Peak 43.35M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.35M (Peak 43.35M) | Time:00:00.02 | Mem:16.81M, Peak:16.81M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.35M (Peak 43.35M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.35M (Peak 43.35M) | Time:00:00.02 | Mem:16.89M, Peak:16.89M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.04 | Mem:17.67M, Peak:17.75M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:44.21M (Peak 44.77M) | Time:00:00.04 | Mem:17.75M, Peak:17.75M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:120.23M (Peak 120.23M) | Time:00:00.71 | Remaining:00:31.68 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:120.23M (Peak 120.23M) | Time:00:21.58 | Remaining:00:09.79 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 33/48
+Fra:1 Mem:152.23M (Peak 200.23M) | Time:00:35.88 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:152.23M (Peak 200.23M) | Time:00:35.88 | Mem:93.76M, Peak:93.76M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_toolbag_garud/b4p_toolbag_garud_studio_angle.png'
-Time: 00:54.30 (Saving: 00:00.20)
+Time: 00:36.04 (Saving: 00:00.15)
 
 [b4-props] render b4p_toolbag_garud_studio_scale.png
 Fra:1 Mem:26.78M (Peak 26.78M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_toolbag_garud
-Fra:1 Mem:26.90M (Peak 26.90M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _fig_head
-Fra:1 Mem:26.97M (Peak 26.97M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:26.78M (Peak 26.78M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _fig_head
+Fra:1 Mem:26.91M (Peak 26.91M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
 Fra:1 Mem:27.42M (Peak 27.42M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
 Fra:1 Mem:27.01M (Peak 27.42M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
 Fra:1 Mem:27.01M (Peak 27.42M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
@@ -474,25 +468,25 @@ Fra:1 Mem:27.74M (Peak 27.74M) | Time:00:00.00 | Mem:0.72M, Peak:0.90M | Scene, 
 Fra:1 Mem:27.74M (Peak 27.74M) | Time:00:00.00 | Mem:0.92M, Peak:0.92M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:27.74M (Peak 27.74M) | Time:00:00.00 | Mem:0.92M, Peak:0.92M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.74M (Peak 27.74M) | Time:00:00.00 | Mem:0.92M, Peak:0.92M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:27.74M (Peak 27.74M) | Time:00:00.00 | Mem:0.92M, Peak:0.92M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_basecolor.png
+Fra:1 Mem:27.74M (Peak 27.74M) | Time:00:00.00 | Mem:0.92M, Peak:0.92M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_emissive.png
 Fra:1 Mem:31.74M (Peak 31.74M) | Time:00:00.00 | Mem:0.92M, Peak:0.92M | Scene, ViewLayer | Updating Images | Loading b4p_toolbag_garud_normal.png
-Fra:1 Mem:43.75M (Peak 43.75M) | Time:00:00.03 | Mem:16.92M, Peak:16.92M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.75M (Peak 43.75M) | Time:00:00.03 | Mem:16.92M, Peak:16.92M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.75M (Peak 43.75M) | Time:00:00.03 | Mem:17.00M, Peak:17.00M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.75M (Peak 43.75M) | Time:00:00.03 | Mem:17.00M, Peak:17.00M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.06 | Mem:17.86M, Peak:17.86M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.06 | Mem:17.86M, Peak:17.86M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.06 | Mem:17.78M, Peak:17.86M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.06 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.06 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.06 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.06 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:120.63M (Peak 120.63M) | Time:00:00.63 | Remaining:00:26.97 | Mem:93.88M, Peak:93.88M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:152.63M (Peak 200.63M) | Time:00:33.91 | Mem:93.88M, Peak:93.88M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:152.63M (Peak 200.63M) | Time:00:33.91 | Mem:93.88M, Peak:93.88M | Scene, ViewLayer | Finished
+Fra:1 Mem:43.75M (Peak 43.75M) | Time:00:00.02 | Mem:16.92M, Peak:16.92M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.75M (Peak 43.75M) | Time:00:00.02 | Mem:16.92M, Peak:16.92M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.75M (Peak 43.75M) | Time:00:00.02 | Mem:17.00M, Peak:17.00M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.75M (Peak 43.75M) | Time:00:00.02 | Mem:17.00M, Peak:17.00M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.04 | Mem:17.86M, Peak:17.86M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.04 | Mem:17.86M, Peak:17.86M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.04 | Mem:17.78M, Peak:17.86M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.04 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.04 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.04 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:44.61M (Peak 45.17M) | Time:00:00.04 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:120.63M (Peak 120.63M) | Time:00:00.42 | Remaining:00:18.12 | Mem:93.88M, Peak:93.88M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:152.63M (Peak 200.63M) | Time:00:22.57 | Mem:93.88M, Peak:93.88M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:152.63M (Peak 200.63M) | Time:00:22.57 | Mem:93.88M, Peak:93.88M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_toolbag_garud/b4p_toolbag_garud_studio_scale.png'
-Time: 00:34.12 (Saving: 00:00.21)
+Time: 00:22.72 (Saving: 00:00.15)
 
-[b4-props] done b4p_toolbag_garud: tris=4622 bbox=[0.562, 0.405, 0.47] glb=753992B
+[b4-props] done b4p_toolbag_garud: tris=4622 bbox=[0.562, 0.397, 0.47] glb=727772B
 
 Blender quit
