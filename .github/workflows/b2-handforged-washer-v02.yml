@@ -21,13 +21,13 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin feature/gpt-b2-handforged-bearing-washer-v02-20261119
-          git reset --hard origin/feature/gpt-b2-handforged-bearing-washer-v02-20261119
+          git fetch origin feature/gpt-b2-handforged-bearing-washer-v01-20261119
+          git reset --hard origin/feature/gpt-b2-handforged-bearing-washer-v01-20261119
           mkdir -p docs/3d/b2-washer
           echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-washer/latest-v02.json
           git add docs/3d/b2-washer/latest-v02.json
           git commit -m "chore(b2): record washer Blender run"
-          git push origin HEAD:feature/gpt-b2-handforged-bearing-washer-v02-20261119
+          git push origin HEAD:feature/gpt-b2-handforged-bearing-washer-v01-20261119
       - name: Blender Cycles generate one washer and four views
         run: |
           set -o pipefail
