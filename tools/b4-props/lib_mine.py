@@ -433,3 +433,61 @@ def flatten(dct):
     for v in dct.values():
         res.extend(v)
     return res
+
+
+def leather(name, scale=1.0, base=(0.040, 0.025, 0.015), soot_z=None):
+    """古い革：暗い茶＋細かいしわ割れ＋擦れて明るく艶の出た角＋煤と灰"""
+    b = C.NB(name)
+    n_big = b.noise(4.0 / scale, 6, 0.6)
+    n_mid = b.noise(25.0 / scale, 5, 0.6)
+    cr = b.ramp(b.voronoi(60.0 / scale, "DISTANCE_TO_EDGE"), [(0.0, 1.0), (0.05, 0.0)])
+    col = b.mix(n_big, base, (base[0] * 0.6, base[1] * 0.6, base[2] * 0.6))
+    col = b.mix(b.math("MULTIPLY", cr, 0.6), col, (0.010, 0.007, 0.005))
+    edge = b.edge_mask(0.004, 0.03, 0.25)
+    col = b.mix(b.math("MULTIPLY", edge, 0.7), col, (0.085, 0.060, 0.040))
+    if soot_z is not None:
+        col = b.mix(b.math("MULTIPLY", b.height_mask(*soot_z), 0.7), col, (0.010, 0.009, 0.008))
+    cav = b.math("SUBTRACT", 1.0, b.cavity(0.02))
+    ash = b.math("MAXIMUM", b.math("MULTIPLY", cav, 0.5), b.math("MULTIPLY", b.up_mask(0.65, 0.95), 0.35))
+    ash = b.math("MULTIPLY", ash, b.ramp(n_big, [(0.3, 0.0), (0.7, 1.0)]))
+    col = b.mix(b.math("MULTIPLY", ash, 0.8), col, (0.075, 0.07, 0.066))
+    r = b.mixf(edge, 0.62, 0.38)
+    r = b.mixf(ash, r, 0.95)
+    b.normal_from(None, bump_height=b.math("ADD", b.math("MULTIPLY", n_mid, 0.6), b.math("MULTIPLY", cr, -0.5)), bump_strength=0.4, bump_dist=0.0015)
+    return b.out(col, r, 0.0)
+
+
+def soft_box_bm(hx, hy, hz, cuts=6, n=3.0):
+    """丸みのある箱（超楕円体）。中心原点。cuts=各辺の分割"""
+    bm = bmesh.new()
+    bmesh.ops.create_cube(bm, size=2.0)
+    bmesh.ops.subdivide_edges(bm, edges=bm.edges[:], cuts=cuts, use_grid_fill=True)
+    for v in bm.verts:
+        q = v.co
+        linf = max(abs(q.x), abs(q.y), abs(q.z))
+        ln = (abs(q.x) ** n + abs(q.y) ** n + abs(q.z) ** n) ** (1.0 / n)
+        p = q * (linf / ln)
+        v.co = Vector((p.x * hx, p.y * hy, p.z * hz))
+    return bm
+
+
+def jag_boundary(bm, amount, seed=0, zmin=None):
+    rnd = random.Random(seed)
+    for v in bm.verts:
+        if v.is_boundary and (zmin is None or v.co.z > zmin):
+            v.co += Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(-1, 1))) * amount
+
+
+def punch_holes(bm, centers, seed=0):
+    """centers=[(Vector, radius)] の周りの面を、ノイズで崩した形で消す（焼け穴・突き破り）"""
+    off = Vector((seed * 1.3, seed * 2.9, seed * 0.4))
+    kill = []
+    for f in bm.faces:
+        c = f.calc_center_median()
+        for p, r in centers:
+            if (c - Vector(p)).length < r * (1.0 + 0.45 * noise.noise(c * 40 + off)):
+                kill.append(f)
+                break
+    bmesh.ops.delete(bm, geom=kill, context="FACES")
+    loose = [v for v in bm.verts if not v.link_faces]
+    bmesh.ops.delete(bm, geom=loose, context="VERTS")
