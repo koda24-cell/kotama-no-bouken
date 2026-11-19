@@ -1,28 +1,28 @@
-[b4-props] b4p_mine_lantern: tris=2548 materials=4
+[b4-props] b4p_mine_lantern: tris=2480 materials=4
 Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)
-Fra:1 Mem:31.91M (Peak 35.82M) | Time:498638:43:44.45 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:32.00M (Peak 35.82M) | Time:498638:43:44.45 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:32.00M (Peak 35.82M) | Time:498638:43:44.45 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_basecolor
-Fra:1 Mem:32.91M (Peak 76.78M) | Time:498638:43:48.41 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:33.00M (Peak 76.78M) | Time:498638:43:48.42 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:33.00M (Peak 76.78M) | Time:498638:43:48.42 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_roughness
-Fra:1 Mem:33.90M (Peak 76.78M) | Time:498638:43:50.13 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:33.98M (Peak 76.78M) | Time:498638:43:50.13 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:33.98M (Peak 76.78M) | Time:498638:43:50.13 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_metallic
-Fra:1 Mem:34.88M (Peak 76.78M) | Time:498638:43:51.68 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:34.97M (Peak 76.78M) | Time:498638:43:51.68 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:34.96M (Peak 76.78M) | Time:498638:43:51.68 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_emissive
-Fra:1 Mem:35.96M (Peak 76.78M) | Time:498638:43:51.93 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:36.22M (Peak 76.78M) | Time:498638:43:51.93 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:36.21M (Peak 76.78M) | Time:498638:43:51.93 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_normal
-Fra:1 Mem:36.97M (Peak 85.72M) | Time:498638:43:53.56 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:37.23M (Peak 85.72M) | Time:498638:43:53.57 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:37.23M (Peak 85.72M) | Time:498638:43:53.57 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_ao
-14:44:12 | INFO: Starting glTF 2.0 export
-14:44:12 | INFO: Extracting primitive: b4p_mine_lantern
-14:44:12 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
-14:44:12 | INFO: Primitives created: 1
-14:44:12 | INFO: Finished glTF 2.0 export in 0.0584259033203125 s
+Fra:1 Mem:31.91M (Peak 35.82M) | Time:498639:00:26.17 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:31.99M (Peak 35.82M) | Time:498639:00:26.17 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:31.99M (Peak 35.82M) | Time:498639:00:26.17 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_basecolor
+Fra:1 Mem:32.90M (Peak 76.76M) | Time:498639:00:29.54 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:32.99M (Peak 76.76M) | Time:498639:00:29.54 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:32.99M (Peak 76.76M) | Time:498639:00:29.54 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_roughness
+Fra:1 Mem:33.89M (Peak 76.76M) | Time:498639:00:31.24 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:33.97M (Peak 76.76M) | Time:498639:00:31.24 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:33.97M (Peak 76.76M) | Time:498639:00:31.24 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_metallic
+Fra:1 Mem:34.87M (Peak 76.76M) | Time:498639:00:32.72 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:34.96M (Peak 76.76M) | Time:498639:00:32.72 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:34.95M (Peak 76.76M) | Time:498639:00:32.72 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_emissive
+Fra:1 Mem:35.95M (Peak 76.76M) | Time:498639:00:33.00 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:36.20M (Peak 76.76M) | Time:498639:00:33.00 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:36.20M (Peak 76.76M) | Time:498639:00:33.00 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_normal
+Fra:1 Mem:36.97M (Peak 85.70M) | Time:498639:00:34.98 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:37.21M (Peak 85.70M) | Time:498639:00:34.98 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:37.21M (Peak 85.70M) | Time:498639:00:34.98 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_ao
+15:00:55 | INFO: Starting glTF 2.0 export
+15:00:55 | INFO: Extracting primitive: b4p_mine_lantern
+15:00:55 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+15:00:55 | INFO: Primitives created: 1
+15:00:55 | INFO: Finished glTF 2.0 export in 0.053681135177612305 s
 Info: Total files 8 | Changed 8 | Failed 0
 Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
@@ -34,461 +34,463 @@ INFO Draco mesh compression is available, use library at /home/runner/blender/4.
 
 Info: Saved "b4p_mine_lantern.blend"
 [b4-props] render b4p_mine_lantern_volcanic_front.png
-Fra:1 Mem:16.61M (Peak 20.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:16.61M (Peak 20.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:16.92M (Peak 20.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:16.57M (Peak 20.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:16.57M (Peak 20.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:16.57M (Peak 20.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:16.57M (Peak 20.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:16.66M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:16.70M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:16.89M (Peak 20.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:16.89M (Peak 20.22M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:16.89M (Peak 20.22M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:16.89M (Peak 20.22M) | Time:00:00.00 | Mem:0.28M, Peak:0.28M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:16.89M (Peak 20.22M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:16.89M (Peak 20.22M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:16.98M (Peak 20.22M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:16.98M (Peak 20.22M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:16.98M (Peak 20.22M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:16.98M (Peak 20.22M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:16.98M (Peak 20.22M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:17.98M (Peak 20.22M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_orm.png
-Fra:1 Mem:21.00M (Peak 21.00M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:21.00M (Peak 21.00M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.00M (Peak 21.00M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:21.00M (Peak 21.00M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:21.47M (Peak 21.47M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:21.47M (Peak 21.47M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:21.47M (Peak 21.47M) | Time:00:00.02 | Mem:4.94M, Peak:5.02M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.47M (Peak 21.47M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:21.47M (Peak 21.47M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:21.47M (Peak 21.47M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:21.47M (Peak 21.47M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.49M (Peak 97.49M) | Time:00:00.90 | Remaining:01:23.58 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.49M (Peak 97.49M) | Time:00:28.51 | Remaining:00:54.37 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.49M (Peak 97.49M) | Time:00:55.91 | Remaining:00:26.65 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.49M (Peak 97.49M) | Time:01:08.86 | Remaining:00:13.76 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.49M (Peak 177.49M) | Time:01:20.94 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.49M (Peak 177.49M) | Time:01:20.94 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Finished
+Fra:1 Mem:16.60M (Peak 20.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:16.60M (Peak 20.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:16.90M (Peak 20.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:16.55M (Peak 20.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:16.55M (Peak 20.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:16.55M (Peak 20.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:16.55M (Peak 20.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:16.64M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:16.68M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:16.86M (Peak 20.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:16.86M (Peak 20.20M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:16.86M (Peak 20.20M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:16.86M (Peak 20.20M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:16.86M (Peak 20.20M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:16.86M (Peak 20.20M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:16.95M (Peak 20.20M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:16.95M (Peak 20.20M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:16.95M (Peak 20.20M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:16.95M (Peak 20.20M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:16.95M (Peak 20.20M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:17.95M (Peak 20.20M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:20.97M (Peak 20.97M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:20.97M (Peak 20.97M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:20.97M (Peak 20.97M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:20.97M (Peak 20.97M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:21.43M (Peak 21.43M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:21.43M (Peak 21.43M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:21.43M (Peak 21.43M) | Time:00:00.02 | Mem:4.92M, Peak:5.00M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.43M (Peak 21.43M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:21.43M (Peak 21.43M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:21.43M (Peak 21.43M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:21.43M (Peak 21.43M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:97.45M (Peak 97.45M) | Time:00:01.04 | Remaining:01:36.47 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.45M (Peak 97.45M) | Time:00:33.25 | Remaining:01:03.42 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.45M (Peak 97.45M) | Time:01:04.94 | Remaining:00:30.96 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.45M (Peak 97.45M) | Time:01:20.20 | Remaining:00:16.03 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.45M (Peak 177.45M) | Time:01:37.35 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.45M (Peak 177.45M) | Time:01:37.35 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_front.png'
-Time: 01:21.23 (Saving: 00:00.29)
+Time: 01:37.65 (Saving: 00:00.29)
 
 [b4-props] render b4p_mine_lantern_volcanic_side.png
-Fra:1 Mem:16.68M (Peak 16.68M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:16.69M (Peak 16.69M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:17.00M (Peak 17.00M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:16.64M (Peak 17.00M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:16.65M (Peak 17.00M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:16.65M (Peak 17.00M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:16.65M (Peak 17.00M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:16.73M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:16.77M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:16.97M (Peak 17.00M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:16.97M (Peak 17.00M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:16.97M (Peak 17.00M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:16.97M (Peak 17.00M) | Time:00:00.00 | Mem:0.28M, Peak:0.28M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:16.97M (Peak 17.00M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:16.97M (Peak 17.00M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:17.06M (Peak 17.06M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:17.06M (Peak 17.06M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:17.06M (Peak 17.06M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:17.06M (Peak 17.06M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.06M (Peak 17.06M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:17.06M (Peak 17.06M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
-Fra:1 Mem:21.07M (Peak 21.07M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:21.07M (Peak 21.07M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.07M (Peak 21.07M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:21.07M (Peak 21.07M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:21.55M (Peak 21.55M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:21.55M (Peak 21.55M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:21.55M (Peak 21.55M) | Time:00:00.02 | Mem:4.94M, Peak:5.02M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.55M (Peak 21.55M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:21.55M (Peak 21.55M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:21.55M (Peak 21.55M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:21.55M (Peak 21.55M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.57M (Peak 97.57M) | Time:00:00.85 | Remaining:01:18.56 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.57M (Peak 97.57M) | Time:00:26.83 | Remaining:00:51.18 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.57M (Peak 97.57M) | Time:00:52.82 | Remaining:00:25.17 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.57M (Peak 97.57M) | Time:01:05.07 | Remaining:00:13.00 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.57M (Peak 177.57M) | Time:01:16.72 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.57M (Peak 177.57M) | Time:01:16.72 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Finished
+Fra:1 Mem:16.67M (Peak 16.67M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:16.67M (Peak 16.67M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:16.98M (Peak 16.98M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:16.62M (Peak 16.98M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:16.63M (Peak 16.98M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:16.63M (Peak 16.98M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:16.63M (Peak 16.98M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:16.71M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:16.75M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:16.94M (Peak 16.98M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:16.94M (Peak 16.98M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:16.94M (Peak 16.98M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:16.94M (Peak 16.98M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:16.94M (Peak 16.98M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:16.94M (Peak 16.98M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:17.03M (Peak 17.03M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:17.03M (Peak 17.03M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:17.03M (Peak 17.03M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:17.03M (Peak 17.03M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:17.03M (Peak 17.03M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:18.03M (Peak 18.03M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:21.04M (Peak 21.04M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:21.04M (Peak 21.04M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.04M (Peak 21.04M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:21.04M (Peak 21.04M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:21.51M (Peak 21.51M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:21.51M (Peak 21.51M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:21.51M (Peak 21.51M) | Time:00:00.02 | Mem:4.92M, Peak:5.00M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.51M (Peak 21.51M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:21.51M (Peak 21.51M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:21.51M (Peak 21.51M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:21.51M (Peak 21.51M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:97.53M (Peak 97.53M) | Time:00:00.98 | Remaining:01:30.62 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.53M (Peak 97.53M) | Time:00:31.51 | Remaining:01:00.10 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.53M (Peak 97.53M) | Time:01:02.22 | Remaining:00:29.66 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.53M (Peak 97.53M) | Time:01:16.44 | Remaining:00:15.28 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.53M (Peak 177.53M) | Time:01:32.92 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.53M (Peak 177.53M) | Time:01:32.92 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_side.png'
-Time: 01:16.92 (Saving: 00:00.19)
+Time: 01:33.11 (Saving: 00:00.18)
 
 [b4-props] render b4p_mine_lantern_volcanic_angle.png
-Fra:1 Mem:16.76M (Peak 16.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:16.76M (Peak 16.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:17.07M (Peak 17.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:16.72M (Peak 17.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:16.72M (Peak 17.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:16.72M (Peak 17.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:16.72M (Peak 17.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:16.81M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:16.85M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:17.04M (Peak 17.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:17.04M (Peak 17.07M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:17.04M (Peak 17.07M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:17.04M (Peak 17.07M) | Time:00:00.00 | Mem:0.28M, Peak:0.28M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:17.04M (Peak 17.07M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:17.04M (Peak 17.07M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:17.13M (Peak 17.13M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:17.13M (Peak 17.13M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:17.13M (Peak 17.13M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:17.13M (Peak 17.13M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.13M (Peak 17.13M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:18.13M (Peak 18.13M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_basecolor.png
-Fra:1 Mem:21.15M (Peak 21.15M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:21.15M (Peak 21.15M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.15M (Peak 21.15M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:21.15M (Peak 21.15M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:21.62M (Peak 21.62M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:21.62M (Peak 21.62M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:21.62M (Peak 21.62M) | Time:00:00.02 | Mem:4.94M, Peak:5.02M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.62M (Peak 21.62M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:21.62M (Peak 21.62M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:21.63M (Peak 21.63M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:21.63M (Peak 21.63M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.64M (Peak 97.64M) | Time:00:01.23 | Remaining:01:54.47 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.64M (Peak 97.64M) | Time:00:39.32 | Remaining:01:15.02 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.64M (Peak 97.64M) | Time:01:17.24 | Remaining:00:36.82 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.64M (Peak 97.64M) | Time:01:35.18 | Remaining:00:19.03 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.64M (Peak 177.65M) | Time:01:47.51 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.64M (Peak 177.65M) | Time:01:47.51 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Finished
+Fra:1 Mem:16.75M (Peak 16.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:16.75M (Peak 16.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:17.05M (Peak 17.05M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:16.70M (Peak 17.05M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:16.70M (Peak 17.05M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:16.70M (Peak 17.05M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:16.70M (Peak 17.05M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:16.79M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:16.83M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:17.01M (Peak 17.05M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:17.01M (Peak 17.05M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:17.01M (Peak 17.05M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:17.01M (Peak 17.05M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:17.01M (Peak 17.05M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:17.01M (Peak 17.05M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:21.12M (Peak 21.12M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:21.12M (Peak 21.12M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.12M (Peak 21.12M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:21.12M (Peak 21.12M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:21.58M (Peak 21.58M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:21.58M (Peak 21.58M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:21.58M (Peak 21.58M) | Time:00:00.02 | Mem:4.92M, Peak:5.00M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.58M (Peak 21.58M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:21.58M (Peak 21.58M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:21.58M (Peak 21.58M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:21.58M (Peak 21.58M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:00:01.44 | Remaining:02:14.43 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:00:24.21 | Remaining:01:52.37 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 17/96
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:00:46.56 | Remaining:01:28.83 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:01:09.29 | Remaining:01:06.44 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 49/96
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:01:31.72 | Remaining:00:43.73 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:01:52.86 | Remaining:00:22.56 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.60M (Peak 177.60M) | Time:02:10.48 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.60M (Peak 177.60M) | Time:02:10.48 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_angle.png'
-Time: 01:47.71 (Saving: 00:00.20)
+Time: 02:10.67 (Saving: 00:00.19)
 
 [b4-props] render b4p_mine_lantern_volcanic_top.png
-Fra:1 Mem:16.83M (Peak 16.83M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:16.83M (Peak 16.83M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:17.15M (Peak 17.15M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:16.79M (Peak 17.15M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:16.79M (Peak 17.15M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:16.79M (Peak 17.15M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:16.79M (Peak 17.15M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:16.88M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:16.92M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:17.11M (Peak 17.15M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:17.11M (Peak 17.15M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:17.11M (Peak 17.15M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:17.11M (Peak 17.15M) | Time:00:00.00 | Mem:0.28M, Peak:0.28M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:17.11M (Peak 17.15M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:17.11M (Peak 17.15M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:17.21M (Peak 17.21M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:17.21M (Peak 17.21M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:17.21M (Peak 17.21M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:17.21M (Peak 17.21M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.21M (Peak 17.21M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:18.21M (Peak 18.21M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
-Fra:1 Mem:19.21M (Peak 19.21M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_basecolor.png
-Fra:1 Mem:21.22M (Peak 21.22M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:21.22M (Peak 21.22M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.22M (Peak 21.22M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:21.22M (Peak 21.22M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:21.69M (Peak 21.69M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:21.69M (Peak 21.69M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:21.70M (Peak 21.70M) | Time:00:00.02 | Mem:4.94M, Peak:5.02M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.70M (Peak 21.70M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:21.70M (Peak 21.70M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:21.70M (Peak 21.70M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:21.70M (Peak 21.70M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.71M (Peak 97.71M) | Time:00:01.28 | Remaining:01:59.01 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.71M (Peak 97.71M) | Time:00:41.11 | Remaining:01:18.42 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.71M (Peak 97.71M) | Time:01:20.79 | Remaining:00:38.51 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.71M (Peak 97.71M) | Time:01:39.51 | Remaining:00:19.89 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.72M (Peak 177.72M) | Time:01:53.79 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.72M (Peak 177.72M) | Time:01:53.79 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Finished
+Fra:1 Mem:16.82M (Peak 16.82M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:16.82M (Peak 16.82M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:17.13M (Peak 17.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:16.77M (Peak 17.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:16.77M (Peak 17.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:16.77M (Peak 17.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:16.77M (Peak 17.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:16.86M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:16.90M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:17.09M (Peak 17.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:17.09M (Peak 17.13M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:17.09M (Peak 17.13M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:17.09M (Peak 17.13M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:17.09M (Peak 17.13M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:17.09M (Peak 17.13M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:21.19M (Peak 21.19M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:21.19M (Peak 21.19M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.19M (Peak 21.19M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:21.19M (Peak 21.19M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:21.65M (Peak 21.65M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:21.65M (Peak 21.65M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:21.66M (Peak 21.66M) | Time:00:00.03 | Mem:4.92M, Peak:5.00M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.66M (Peak 21.66M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:21.66M (Peak 21.66M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:21.66M (Peak 21.66M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:21.66M (Peak 21.66M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:97.67M (Peak 97.67M) | Time:00:01.52 | Remaining:02:21.63 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.67M (Peak 97.67M) | Time:00:25.01 | Remaining:01:56.10 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 17/96
+Fra:1 Mem:97.67M (Peak 97.67M) | Time:00:48.46 | Remaining:01:32.45 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.67M (Peak 97.67M) | Time:01:12.31 | Remaining:01:09.33 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 49/96
+Fra:1 Mem:97.67M (Peak 97.67M) | Time:01:35.75 | Remaining:00:45.65 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.67M (Peak 97.67M) | Time:01:58.05 | Remaining:00:23.60 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.68M (Peak 177.68M) | Time:02:17.84 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.68M (Peak 177.68M) | Time:02:17.84 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_top.png'
-Time: 01:53.99 (Saving: 00:00.19)
+Time: 02:18.03 (Saving: 00:00.19)
 
 [b4-props] render b4p_mine_lantern_volcanic_close.png
-Fra:1 Mem:16.91M (Peak 16.91M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:16.91M (Peak 16.91M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:17.22M (Peak 17.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:16.87M (Peak 17.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:16.87M (Peak 17.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:16.87M (Peak 17.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:16.87M (Peak 17.22M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:16.96M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:17.00M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:17.19M (Peak 17.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:17.19M (Peak 17.22M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:17.19M (Peak 17.22M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:17.19M (Peak 17.22M) | Time:00:00.00 | Mem:0.28M, Peak:0.28M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:17.19M (Peak 17.22M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:17.19M (Peak 17.22M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:17.28M (Peak 17.28M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:17.28M (Peak 17.28M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:17.28M (Peak 17.28M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:17.28M (Peak 17.28M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.28M (Peak 17.28M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_orm.png
-Fra:1 Mem:18.28M (Peak 18.28M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
-Fra:1 Mem:21.30M (Peak 21.30M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:21.30M (Peak 21.30M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.30M (Peak 21.30M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:21.30M (Peak 21.30M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:21.77M (Peak 21.77M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:21.77M (Peak 21.77M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:21.77M (Peak 21.77M) | Time:00:00.02 | Mem:4.94M, Peak:5.02M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.77M (Peak 21.77M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:21.77M (Peak 21.77M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:21.78M (Peak 21.78M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:21.78M (Peak 21.78M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.79M (Peak 97.79M) | Time:00:01.26 | Remaining:01:57.58 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.79M (Peak 97.79M) | Time:00:40.28 | Remaining:01:16.85 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.79M (Peak 97.79M) | Time:01:19.41 | Remaining:00:37.86 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.79M (Peak 97.79M) | Time:01:37.81 | Remaining:00:19.55 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.79M (Peak 177.80M) | Time:01:51.10 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.79M (Peak 177.80M) | Time:01:51.10 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Finished
+Fra:1 Mem:16.90M (Peak 16.90M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:16.90M (Peak 16.90M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:17.20M (Peak 17.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:16.85M (Peak 17.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:16.85M (Peak 17.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:16.85M (Peak 17.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:16.85M (Peak 17.20M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:16.94M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:16.98M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:17.16M (Peak 17.20M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:17.16M (Peak 17.20M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:17.16M (Peak 17.20M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:17.16M (Peak 17.20M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:17.16M (Peak 17.20M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:17.16M (Peak 17.20M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:18.26M (Peak 18.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:21.27M (Peak 21.27M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:21.27M (Peak 21.27M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.27M (Peak 21.27M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:21.27M (Peak 21.27M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:21.73M (Peak 21.73M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:21.73M (Peak 21.73M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:21.73M (Peak 21.73M) | Time:00:00.02 | Mem:4.92M, Peak:5.00M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.73M (Peak 21.73M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:21.73M (Peak 21.73M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:21.73M (Peak 21.73M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:21.73M (Peak 21.73M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:00:01.46 | Remaining:02:16.83 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:00:24.37 | Remaining:01:53.15 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 17/96
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:00:47.79 | Remaining:01:31.18 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:01:10.65 | Remaining:01:07.74 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 49/96
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:01:33.47 | Remaining:00:44.56 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:01:55.27 | Remaining:00:23.04 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.75M (Peak 177.75M) | Time:02:13.02 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.75M (Peak 177.75M) | Time:02:13.02 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_close.png'
-Time: 01:51.30 (Saving: 00:00.20)
+Time: 02:13.21 (Saving: 00:00.18)
 
 [b4-props] render b4p_mine_lantern_volcanic_back.png
-Fra:1 Mem:16.98M (Peak 16.98M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:16.97M (Peak 16.97M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
 Fra:1 Mem:16.98M (Peak 16.98M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:17.30M (Peak 17.30M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:16.94M (Peak 17.30M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:16.94M (Peak 17.30M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:16.94M (Peak 17.30M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:16.94M (Peak 17.30M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:17.03M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:17.07M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:17.26M (Peak 17.30M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:17.26M (Peak 17.30M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:17.26M (Peak 17.30M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:17.26M (Peak 17.30M) | Time:00:00.00 | Mem:0.28M, Peak:0.28M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:17.26M (Peak 17.30M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:17.26M (Peak 17.30M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:17.36M (Peak 17.36M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:17.36M (Peak 17.36M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:17.36M (Peak 17.36M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:17.36M (Peak 17.36M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.36M (Peak 17.36M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:18.36M (Peak 18.36M) | Time:00:00.00 | Mem:0.47M, Peak:0.47M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
-Fra:1 Mem:21.37M (Peak 21.37M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:21.37M (Peak 21.37M) | Time:00:00.01 | Mem:4.47M, Peak:4.47M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.37M (Peak 21.37M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:21.37M (Peak 21.37M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:21.84M (Peak 21.84M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:21.84M (Peak 21.84M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:21.85M (Peak 21.85M) | Time:00:00.02 | Mem:4.94M, Peak:5.02M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.85M (Peak 21.85M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:21.85M (Peak 21.85M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:21.85M (Peak 21.85M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:21.85M (Peak 21.85M) | Time:00:00.02 | Mem:5.03M, Peak:5.03M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.86M (Peak 97.86M) | Time:00:00.95 | Remaining:01:27.76 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.86M (Peak 97.86M) | Time:00:30.29 | Remaining:00:57.77 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.86M (Peak 97.86M) | Time:00:59.71 | Remaining:00:28.46 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.86M (Peak 97.86M) | Time:01:13.54 | Remaining:00:14.70 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.87M (Peak 177.87M) | Time:01:26.87 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.87M (Peak 177.87M) | Time:01:26.87 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Finished
+Fra:1 Mem:17.28M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:16.92M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:16.92M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:16.92M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:16.92M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:17.01M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:17.05M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:17.24M (Peak 17.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:17.24M (Peak 17.28M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:17.24M (Peak 17.28M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:17.24M (Peak 17.28M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:17.24M (Peak 17.28M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:17.24M (Peak 17.28M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:21.34M (Peak 21.34M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:21.34M (Peak 21.34M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.34M (Peak 21.34M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:21.34M (Peak 21.34M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:21.80M (Peak 21.80M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:21.80M (Peak 21.80M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:4.92M, Peak:5.00M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:97.82M (Peak 97.82M) | Time:00:01.09 | Remaining:01:41.07 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.82M (Peak 97.82M) | Time:00:35.47 | Remaining:01:07.67 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.82M (Peak 97.82M) | Time:01:09.52 | Remaining:00:33.14 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.82M (Peak 97.82M) | Time:01:26.01 | Remaining:00:17.19 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.83M (Peak 177.83M) | Time:01:44.82 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.83M (Peak 177.83M) | Time:01:44.82 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_back.png'
-Time: 01:27.06 (Saving: 00:00.19)
+Time: 01:45.01 (Saving: 00:00.18)
 
 [b4-props] render b4p_mine_lantern_studio_front.png
-Fra:1 Mem:16.96M (Peak 16.96M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:16.97M (Peak 16.97M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:17.28M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:16.96M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:16.96M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:16.96M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:16.96M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:17.04M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:17.08M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:17.28M (Peak 17.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:17.27M (Peak 17.28M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:17.27M (Peak 17.28M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:17.27M (Peak 17.28M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:17.27M (Peak 17.28M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:17.27M (Peak 17.28M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:17.37M (Peak 17.37M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:17.37M (Peak 17.37M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:17.37M (Peak 17.37M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:17.37M (Peak 17.37M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.37M (Peak 17.37M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:18.37M (Peak 18.37M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
-Fra:1 Mem:21.38M (Peak 21.38M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:21.38M (Peak 21.38M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.38M (Peak 21.38M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:21.38M (Peak 21.38M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:21.86M (Peak 21.86M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:21.86M (Peak 21.86M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:21.86M (Peak 21.86M) | Time:00:00.02 | Mem:4.94M, Peak:5.02M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.86M (Peak 21.86M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:21.86M (Peak 21.86M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:21.86M (Peak 21.86M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:21.86M (Peak 21.86M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:97.88M (Peak 97.88M) | Time:00:00.68 | Remaining:00:30.99 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:97.88M (Peak 97.88M) | Time:00:21.37 | Remaining:00:09.70 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 33/48
-Fra:1 Mem:129.88M (Peak 177.88M) | Time:00:37.33 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:129.88M (Peak 177.88M) | Time:00:37.33 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Finished
+Fra:1 Mem:16.95M (Peak 16.95M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:16.96M (Peak 16.96M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:16.94M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:16.94M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:16.94M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:16.94M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:17.02M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:17.06M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:17.25M (Peak 17.26M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:17.25M (Peak 17.26M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:17.25M (Peak 17.26M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:17.25M (Peak 17.26M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:17.25M (Peak 17.26M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:17.25M (Peak 17.26M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:17.34M (Peak 17.34M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:17.34M (Peak 17.34M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:17.34M (Peak 17.34M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:17.34M (Peak 17.34M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:17.34M (Peak 17.34M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:17.34M (Peak 17.34M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:21.35M (Peak 21.35M) | Time:00:00.01 | Mem:4.45M, Peak:4.45M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:21.35M (Peak 21.35M) | Time:00:00.01 | Mem:4.45M, Peak:4.45M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.35M (Peak 21.35M) | Time:00:00.01 | Mem:4.53M, Peak:4.53M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:21.35M (Peak 21.35M) | Time:00:00.01 | Mem:4.53M, Peak:4.53M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:4.99M, Peak:4.99M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:4.99M, Peak:4.99M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.02 | Mem:4.91M, Peak:4.99M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:97.83M (Peak 97.83M) | Time:00:00.81 | Remaining:00:36.83 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:97.83M (Peak 97.83M) | Time:00:25.47 | Remaining:00:11.56 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 33/48
+Fra:1 Mem:129.84M (Peak 177.84M) | Time:00:47.76 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:129.84M (Peak 177.84M) | Time:00:47.76 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_studio_front.png'
-Time: 00:37.53 (Saving: 00:00.20)
+Time: 00:47.96 (Saving: 00:00.19)
 
 [b4-props] render b4p_mine_lantern_studio_angle.png
-Fra:1 Mem:17.02M (Peak 17.02M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:17.03M (Peak 17.03M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:17.34M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:17.02M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:17.02M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:17.02M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:17.02M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:17.10M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:17.14M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:17.34M (Peak 17.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:17.33M (Peak 17.34M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:17.33M (Peak 17.34M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:17.33M (Peak 17.34M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:17.33M (Peak 17.34M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:17.33M (Peak 17.34M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:17.43M (Peak 17.43M) | Time:00:00.00 | Mem:0.37M, Peak:0.45M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:17.43M (Peak 17.43M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:17.43M (Peak 17.43M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:17.43M (Peak 17.43M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.43M (Peak 17.43M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:18.43M (Peak 18.43M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_orm.png
-Fra:1 Mem:19.43M (Peak 19.43M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
-Fra:1 Mem:21.44M (Peak 21.44M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:21.44M (Peak 21.44M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.44M (Peak 21.44M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:21.44M (Peak 21.44M) | Time:00:00.01 | Mem:4.55M, Peak:4.55M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:21.92M (Peak 21.92M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:21.92M (Peak 21.92M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:21.92M (Peak 21.92M) | Time:00:00.02 | Mem:4.94M, Peak:5.02M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.92M (Peak 21.92M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:21.92M (Peak 21.92M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:21.92M (Peak 21.92M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:21.92M (Peak 21.92M) | Time:00:00.02 | Mem:5.02M, Peak:5.02M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:97.94M (Peak 97.94M) | Time:00:00.90 | Remaining:00:41.46 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:97.94M (Peak 97.94M) | Time:00:28.81 | Remaining:00:13.08 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 33/48
-Fra:1 Mem:129.94M (Peak 177.94M) | Time:00:48.12 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:129.94M (Peak 177.94M) | Time:00:48.12 | Mem:81.04M, Peak:81.04M | Scene, ViewLayer | Finished
+Fra:1 Mem:17.01M (Peak 17.01M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:17.01M (Peak 17.01M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:17.32M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:17.00M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:17.00M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:17.00M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:17.00M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:17.08M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:17.12M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:17.31M (Peak 17.32M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:17.31M (Peak 17.32M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:17.31M (Peak 17.32M) | Time:00:00.00 | Mem:0.19M, Peak:0.19M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:17.31M (Peak 17.32M) | Time:00:00.00 | Mem:0.27M, Peak:0.27M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:17.31M (Peak 17.32M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:17.31M (Peak 17.32M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:17.40M (Peak 17.40M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:17.40M (Peak 17.40M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:17.40M (Peak 17.40M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:17.40M (Peak 17.40M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:17.40M (Peak 17.40M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:18.40M (Peak 18.40M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_orm.png
+Fra:1 Mem:21.41M (Peak 21.41M) | Time:00:00.01 | Mem:4.45M, Peak:4.45M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:21.41M (Peak 21.41M) | Time:00:00.01 | Mem:4.45M, Peak:4.45M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.41M (Peak 21.41M) | Time:00:00.01 | Mem:4.53M, Peak:4.53M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:21.41M (Peak 21.41M) | Time:00:00.01 | Mem:4.53M, Peak:4.53M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:21.87M (Peak 21.87M) | Time:00:00.02 | Mem:4.99M, Peak:4.99M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:21.87M (Peak 21.87M) | Time:00:00.02 | Mem:4.99M, Peak:4.99M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:4.91M, Peak:4.99M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:97.89M (Peak 97.89M) | Time:00:01.08 | Remaining:00:49.80 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:97.89M (Peak 97.89M) | Time:00:34.62 | Remaining:00:15.72 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 33/48
+Fra:1 Mem:129.90M (Peak 177.90M) | Time:01:01.27 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:129.90M (Peak 177.90M) | Time:01:01.27 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_studio_angle.png'
-Time: 00:48.33 (Saving: 00:00.20)
+Time: 01:01.48 (Saving: 00:00.20)
 
 [b4-props] render b4p_mine_lantern_studio_scale.png
-Fra:1 Mem:17.39M (Peak 17.39M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:17.40M (Peak 17.40M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _fig_body
-Fra:1 Mem:17.41M (Peak 17.41M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:17.79M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:17.37M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:17.37M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:17.37M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:17.37M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:17.45M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:17.51M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:17.71M (Peak 17.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:17.71M (Peak 17.79M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:17.71M (Peak 17.79M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:17.71M (Peak 17.79M) | Time:00:00.00 | Mem:0.31M, Peak:0.31M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:17.71M (Peak 17.79M) | Time:00:00.00 | Mem:0.44M, Peak:0.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:17.71M (Peak 17.79M) | Time:00:00.00 | Mem:0.44M, Peak:0.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:17.84M (Peak 17.84M) | Time:00:00.00 | Mem:0.44M, Peak:0.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:17.84M (Peak 17.84M) | Time:00:00.00 | Mem:0.57M, Peak:0.57M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:17.84M (Peak 17.84M) | Time:00:00.00 | Mem:0.57M, Peak:0.57M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:17.84M (Peak 17.84M) | Time:00:00.00 | Mem:0.57M, Peak:0.57M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.84M (Peak 17.84M) | Time:00:00.00 | Mem:0.57M, Peak:0.57M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:18.84M (Peak 18.84M) | Time:00:00.00 | Mem:0.57M, Peak:0.57M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
-Fra:1 Mem:21.85M (Peak 21.85M) | Time:00:00.01 | Mem:4.57M, Peak:4.57M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:21.85M (Peak 21.85M) | Time:00:00.01 | Mem:4.57M, Peak:4.57M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.85M (Peak 21.85M) | Time:00:00.01 | Mem:4.65M, Peak:4.65M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:21.85M (Peak 21.85M) | Time:00:00.01 | Mem:4.65M, Peak:4.65M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:22.33M (Peak 22.33M) | Time:00:00.02 | Mem:5.12M, Peak:5.12M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:22.33M (Peak 22.33M) | Time:00:00.02 | Mem:5.12M, Peak:5.12M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:22.33M (Peak 22.33M) | Time:00:00.02 | Mem:5.04M, Peak:5.12M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:22.33M (Peak 22.33M) | Time:00:00.02 | Mem:5.13M, Peak:5.13M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:22.33M (Peak 22.33M) | Time:00:00.02 | Mem:5.13M, Peak:5.13M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:22.33M (Peak 22.33M) | Time:00:00.02 | Mem:5.13M, Peak:5.13M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:22.33M (Peak 22.33M) | Time:00:00.02 | Mem:5.13M, Peak:5.13M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:98.35M (Peak 98.35M) | Time:00:00.50 | Remaining:00:22.60 | Mem:81.14M, Peak:81.14M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:130.35M (Peak 178.35M) | Time:00:29.26 | Mem:81.14M, Peak:81.14M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:130.35M (Peak 178.35M) | Time:00:29.26 | Mem:81.14M, Peak:81.14M | Scene, ViewLayer | Finished
+Fra:1 Mem:17.38M (Peak 17.38M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:17.39M (Peak 17.39M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:17.77M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:17.35M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:17.35M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:17.35M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:17.35M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:17.43M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:17.49M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:17.68M (Peak 17.77M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:17.68M (Peak 17.77M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:17.68M (Peak 17.77M) | Time:00:00.00 | Mem:0.20M, Peak:0.20M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:17.68M (Peak 17.77M) | Time:00:00.00 | Mem:0.31M, Peak:0.31M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:17.68M (Peak 17.77M) | Time:00:00.00 | Mem:0.43M, Peak:0.54M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:17.68M (Peak 17.77M) | Time:00:00.00 | Mem:0.43M, Peak:0.54M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:17.81M (Peak 17.81M) | Time:00:00.00 | Mem:0.43M, Peak:0.54M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:17.81M (Peak 17.81M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:17.81M (Peak 17.81M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:17.81M (Peak 17.81M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:17.81M (Peak 17.81M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:18.81M (Peak 18.81M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.01 | Mem:4.56M, Peak:4.56M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.01 | Mem:4.56M, Peak:4.56M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.01 | Mem:4.64M, Peak:4.64M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.01 | Mem:4.64M, Peak:4.64M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.10M, Peak:5.10M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.10M, Peak:5.10M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.02M, Peak:5.10M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.11M, Peak:5.11M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.11M, Peak:5.11M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.11M, Peak:5.11M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.11M, Peak:5.11M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:98.31M (Peak 98.31M) | Time:00:00.60 | Remaining:00:26.92 | Mem:81.12M, Peak:81.12M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:130.31M (Peak 178.31M) | Time:00:38.05 | Mem:81.12M, Peak:81.12M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:130.31M (Peak 178.31M) | Time:00:38.05 | Mem:81.12M, Peak:81.12M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_studio_scale.png'
-Time: 00:29.47 (Saving: 00:00.20)
+Time: 00:38.25 (Saving: 00:00.20)
 
-[b4-props] done b4p_mine_lantern: tris=2548 bbox=[0.171, 0.157, 0.378] glb=249860B
-[b4-props] WARN over budget: 2548 > 2500
+[b4-props] done b4p_mine_lantern: tris=2480 bbox=[0.171, 0.153, 0.378] glb=250132B
 
 Blender quit
