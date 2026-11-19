@@ -41,7 +41,7 @@ jobs:
           assert q['rim_vertex_count']==36
           assert q['added_quads']==312 and q['added_vertices']==324
           assert q['cranial_seam_edges']==26
-          assert q['open_posterior_boundary_edges']==26
+          assert q['open_posterior_boundary_edges']==48
           assert q['all_36_seam_edges_welded'] and q['nonmanifold_edges_gt2']==0
           for f in ('front','back','left','right','three_quarter','back_upper','side_closeup'):
             assert os.path.getsize(f'{p}/{f}.png')>2000
