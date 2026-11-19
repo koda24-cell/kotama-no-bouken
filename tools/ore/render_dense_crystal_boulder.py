@@ -337,6 +337,79 @@ for experiment,spill_energy in (("v12_glass_radiant_650",650),("v12_glass_radian
     scene.render.filepath=str(p)
     bpy.ops.render.render(write_still=True)
     v12_files[p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
+# V13: 10 stage-adapted ore variants; original source mesh remains untouched.
+# 1F mossy forest stone, 2F cold blue-grey stone, 4F dark volcanic stone.
+# Each variant has deterministic crystal thinning, size, angle and mineral palette.
+# This is review-only: GLBs require game-side spill lights and visual QA.
+variant_specs=[
+ ("f1_01_moss_cluster",1,(.20,.245,.17),(.025,.10,.14),(.11,.38,.43),(.16,.70,.78),.78,.82,-.16),
+ ("f1_02_lichen_spires",1,(.28,.30,.22),(.035,.11,.16),(.16,.43,.48),(.25,.80,.86),.64,1.13,.10),
+ ("f1_03_rootside_specks",1,(.18,.22,.16),(.018,.07,.11),(.08,.28,.35),(.13,.58,.68),.44,.72,.28),
+ ("f2_01_ice_blue",2,(.25,.34,.40),(.003,.025,.055),(.06,.48,.75),(.12,.68,1.0),.95,1.0,0),
+ ("f2_02_frost_shelf",2,(.36,.43,.46),(.008,.045,.075),(.17,.52,.70),(.22,.73,.94),.76,.76,.22),
+ ("f2_03_cave_glacier",2,(.16,.25,.31),(.005,.022,.060),(.04,.30,.56),(.08,.57,.94),.62,1.22,-.12),
+ ("f2_04_riverbed_crystals",2,(.28,.36,.38),(.012,.045,.055),(.10,.40,.46),(.20,.70,.75),.52,.68,.35),
+ ("f4_01_basalt_vein",4,(.085,.085,.095),(.06,.014,.022),(.40,.085,.11),(.95,.19,.12),.86,.82,-.18),
+ ("f4_02_ember_cluster",4,(.12,.105,.10),(.09,.026,.015),(.55,.16,.045),(1.0,.35,.08),.60,1.18,.14),
+ ("f4_03_obsidian_glow",4,(.055,.065,.075),(.025,.014,.06),(.26,.10,.42),(.68,.23,.96),.45,.95,-.30),
+]
+variant_records=[]
+crystal_objects=sorted((o for o in scene.objects if o.name.startswith("ADDED_QUARTZ_")),key=lambda o:o.name)
+crystal_state={o.name:(o.hide_render,o.scale.copy(),o.rotation_euler.copy()) for o in crystal_objects}
+rock_slots={o.name:[slot.material for slot in o.material_slots] for o in original}
+rock_mat=bpy.data.materials.new("V13 review stage-tinted rock")
+rock_mat.use_nodes=True
+rock_sh=rock_mat.node_tree.nodes.get("Principled BSDF")
+rock_sh.inputs["Roughness"].default_value=.89
+for index,(name,floor_id,rock_color,dark,bright,glow_color,density,length_factor,lean) in enumerate(variant_specs):
+    # Replace only the review render material slots, never original rock geometry.
+    rock_sh.inputs["Base Color"].default_value=(*rock_color,1)
+    rock_mat.diffuse_color=(*rock_color,1)
+    for rock in original:
+        for slot in rock.material_slots:slot.material=rock_mat
+    for i,m in enumerate(crystal_mats):
+        sh=m.node_tree.nodes.get("Principled BSDF")
+        ramp=next(n for n in m.node_tree.nodes if n.type=="VALTORGB")
+        sh.inputs["Roughness"].default_value=.015
+        sh.inputs["Metallic"].default_value=0
+        sh.inputs["Transmission Weight"].default_value=.94
+        sh.inputs["IOR"].default_value=1.62
+        sh.inputs["Emission Strength"].default_value=.015
+        sh.inputs["Emission Color"].default_value=(*glow_color,1)
+        sh.inputs["Coat Weight"].default_value=1.0
+        sh.inputs["Coat Roughness"].default_value=.02
+        ramp.color_ramp.elements[0].color=(*dark,1)
+        ramp.color_ramp.elements[1].color=(*bright,1)
+    for i,obj in enumerate(crystal_objects):
+        # Deterministic, distributed thinning rather than a solid uniform haircut.
+        obj.hide_render=((i*37+index*19)%101)/101.0>=density
+        obj.scale=(length_factor,length_factor,length_factor)
+        obj.rotation_euler[1]=lean*((i%7)-3)/3
+    for obj in scene.objects:
+        if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
+            obj.data.color=glow_color
+            obj.data.energy=450 if floor_id==2 else (210 if floor_id==1 else 320)
+    scene.render.resolution_x=640;scene.render.resolution_y=640
+    scene.cycles.samples=24
+    cam.location=center+Vector((1,-1,.8)).normalized()*scale*2.5
+    cam.rotation_euler=(center-cam.location).to_track_quat("-Z","Y").to_euler()
+    png=out/("v13_"+name+".png")
+    scene.render.filepath=str(png)
+    bpy.ops.render.render(write_still=True)
+    # Export only currently visible crystals and original LOD0, not cameras/lights.
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in scene.objects:
+        if o.type=="MESH" and not o.hide_render:o.select_set(True)
+    bpy.context.view_layer.objects.active=original[0]
+    variant_glb=out/("v13_"+name+".glb")
+    bpy.ops.export_scene.gltf(filepath=str(variant_glb),export_format="GLB",use_selection=True,export_apply=True)
+    variant_records.append({"name":name,"floor":floor_id,"rock_color":rock_color,"crystal_density":density,"crystal_scale":length_factor,"light_reference":450 if floor_id==2 else (210 if floor_id==1 else 320),"png":png.name,"png_sha256":hashlib.sha256(png.read_bytes()).hexdigest(),"glb":variant_glb.name,"glb_sha256":hashlib.sha256(variant_glb.read_bytes()).hexdigest(),"visible_crystals":sum(not o.hide_render for o in crystal_objects)})
+for rock in original:
+    for slot,mat_orig in zip(rock.material_slots,rock_slots[rock.name]):slot.material=mat_orig
+for o in crystal_objects:
+    was_hidden,old_scale,old_rotation=crystal_state[o.name]
+    o.hide_render=was_hidden;o.scale=old_scale;o.rotation_euler=old_rotation
+scene.render.resolution_x=800;scene.render.resolution_y=800;scene.cycles.samples=32
 # Restore spill intensity as well as material settings for GLB.
 for obj in scene.objects:
     if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
@@ -367,7 +440,7 @@ bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"render_variant":"V10_PBR_COMPARISON_UNAPPROVED","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"vfx_mote_count":len(vfx_objects),"v10_comparison_renders":v10_files,"v11_exaggerated_comparison_renders":v11_files,"v12_hybrid_renders":v12_files,"files":files,"colorway_renders":variant_files}
+manifest={"render_variant":"V10_PBR_COMPARISON_UNAPPROVED","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"vfx_mote_count":len(vfx_objects),"v10_comparison_renders":v10_files,"v11_exaggerated_comparison_renders":v11_files,"v12_hybrid_renders":v12_files,"v13_stage_variants":variant_records,"files":files,"colorway_renders":variant_files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
 
