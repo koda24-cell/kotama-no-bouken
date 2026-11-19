@@ -1,0 +1,70 @@
+name: B5 Organic Corruption Blender QA + ClamAV
+on:
+  push:
+    branches: [feature/b5-organic-malice-overlay-20261119]
+    paths:
+      - 'tools/b5-organic-corruption/**'
+      - '.github/workflows/b5-organic-corruption-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render-and-scan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm preinstalled Blender and ClamAV (no apt)
+        run: |
+          set -euo pipefail
+          blender --version | head -2
+          clamscan --version
+          freshclam --version
+      - name: Update virus signatures - mandatory
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b5-organic-corruption
+          updated=0
+          for attempt in 1 2 3; do
+            if freshclam --stdout 2>&1 | tee -a render-output/b5-organic-corruption/freshclam.log; then
+              updated=1
+              break
+            fi
+            sleep 10
+          done
+          test "$updated" -eq 1
+          clamscan --version | tee render-output/b5-organic-corruption/clamav-version.txt
+          test -n "$(find /var/lib/clamav -maxdepth 1 \( -name '*.cvd' -o -name '*.cld' \) -print -quit)"
+      - name: Real ClamAV scan of source before execution
+        run: |
+          set -euo pipefail
+          clamscan -r --infected --stdout tools/b5-organic-corruption 2>&1 | tee render-output/b5-organic-corruption/scan-source.log
+          grep -q 'Infected files: 0' render-output/b5-organic-corruption/scan-source.log
+      - name: Build actual Blender GLB and 3-direction renders
+        run: |
+          set -euo pipefail
+          HOME=/tmp/blender-home blender -b -t 2 --python tools/b5-organic-corruption/build_overlay.py 2>&1 | tee render-output/b5-organic-corruption/blender.log
+          python3 tools/b5-organic-corruption/verify_output.py
+      - name: Real ClamAV scan of all generated assets
+        run: |
+          set -euo pipefail
+          clamscan -r --infected --stdout render-output/b5-organic-corruption 2>&1 | tee render-output/b5-organic-corruption/scan-output.log
+          grep -q 'Infected files: 0' render-output/b5-organic-corruption/scan-output.log
+          python3 tools/b5-organic-corruption/verify_output.py
+          python3 tools/b5-organic-corruption/verify_scan.py
+      - name: Save scan logs and review artifacts even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-organic-corruption-unapproved-qa
+          path: render-output/b5-organic-corruption/
+          retention-days: 14
