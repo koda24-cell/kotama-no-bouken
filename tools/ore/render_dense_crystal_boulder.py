@@ -310,6 +310,33 @@ for experiment in ("v11_glass","v11_milky","v11_radiant"):
     scene.render.filepath=str(p)
     bpy.ops.render.render(write_still=True)
     v11_files[p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
+# V12: user-selected hybrid. Glass crystal surface + Radiant rock illumination.
+# Keep both light energy and shader settings independent; no Milky variant.
+v12_files={}
+for experiment,spill_energy in (("v12_glass_radiant_650",650),("v12_glass_radiant_450",450)):
+    for i,m in enumerate(crystal_mats):
+        sh=m.node_tree.nodes.get("Principled BSDF")
+        ramp=next(n for n in m.node_tree.nodes if n.type=="VALTORGB")
+        sh.inputs["Roughness"].default_value=.015
+        sh.inputs["Metallic"].default_value=0.0
+        sh.inputs["Transmission Weight"].default_value=.94
+        sh.inputs["IOR"].default_value=1.62
+        sh.inputs["Emission Strength"].default_value=.015
+        ramp.color_ramp.elements[0].color=(.003,.025,.055,1)
+        ramp.color_ramp.elements[1].color=(.06,.48,.75,1)
+        if sh.inputs.get("Coat Weight"):
+            sh.inputs["Coat Weight"].default_value=1.0
+        if sh.inputs.get("Coat Roughness"):
+            sh.inputs["Coat Roughness"].default_value=.02
+    for obj in scene.objects:
+        if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
+            obj.data.energy=spill_energy
+    cam.location=center+Vector((1,-1,.8)).normalized()*scale*2.5
+    cam.rotation_euler=(center-cam.location).to_track_quat("-Z","Y").to_euler()
+    p=out/(experiment+".png")
+    scene.render.filepath=str(p)
+    bpy.ops.render.render(write_still=True)
+    v12_files[p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
 # Restore spill intensity as well as material settings for GLB.
 for obj in scene.objects:
     if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
@@ -340,7 +367,7 @@ bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"render_variant":"V10_PBR_COMPARISON_UNAPPROVED","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"vfx_mote_count":len(vfx_objects),"v10_comparison_renders":v10_files,"v11_exaggerated_comparison_renders":v11_files,"files":files,"colorway_renders":variant_files}
+manifest={"render_variant":"V10_PBR_COMPARISON_UNAPPROVED","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"vfx_mote_count":len(vfx_objects),"v10_comparison_renders":v10_files,"v11_exaggerated_comparison_renders":v11_files,"v12_hybrid_renders":v12_files,"files":files,"colorway_renders":variant_files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
 
