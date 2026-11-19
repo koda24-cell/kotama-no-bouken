@@ -146,7 +146,7 @@ surface.file_format="PNG"
 surface.save()
 # V6 water: keep real transparency, restore legible surface through
 # Fresnel reflections and image-controlled pale optical highlights.
-watermat=bpy.data.materials.new("V14 variable bathymetry, depth opacity, thin ripples")
+watermat=bpy.data.materials.new("V15 anisotropic broad water reflections and retained bathymetry")
 watermat.use_nodes=True
 wn=watermat.node_tree.nodes
 wn.clear()
@@ -168,7 +168,7 @@ waterbump.inputs["Distance"].default_value=.006
 wl.new(tex.outputs["Color"],waterbump.inputs["Height"])
 reflection=wn.new("ShaderNodeBsdfGlossy")
 reflection.inputs["Color"].default_value=(.72,.89,.93,1)
-reflection.inputs["Roughness"].default_value=.095
+reflection.inputs["Roughness"].default_value=.12
 wl.new(waterbump.outputs["Normal"],reflection.inputs["Normal"])
 # V9 genuine shallow-water distortion: refraction is independent of colored ripples.
 # Mix a mostly-transparent sightline with physical IOR 1.333 refraction.
@@ -205,7 +205,7 @@ crest.color_ramp.elements[1].position=.79
 crest.color_ramp.elements[1].color=(1,1,1,1)
 wl.new(tex.outputs["Color"],crest.inputs["Fac"])
 hscale=wn.new("ShaderNodeMath");hscale.operation="MULTIPLY"
-hscale.inputs[1].default_value=.075
+hscale.inputs[1].default_value=.038
 wl.new(crest.outputs["Color"],hscale.inputs[0])
 highlight=wn.new("ShaderNodeEmission")
 highlight.inputs["Color"].default_value=(.63,.87,.91,1)
@@ -253,7 +253,7 @@ overlay_light.inputs["Strength"].default_value=.42
 wl.new(overlay_tex.outputs["Color"],overlay_light.inputs["Color"])
 overlay_alpha=wn.new("ShaderNodeMath")
 overlay_alpha.operation="MULTIPLY"
-overlay_alpha.inputs[1].default_value=.55
+overlay_alpha.inputs[1].default_value=.40
 wl.new(overlay_tex.outputs["Alpha"],overlay_alpha.inputs[0])
 overlay_mix=wn.new("ShaderNodeMixShader")
 overlay_coverage=wn.new("ShaderNodeMath")
@@ -278,7 +278,7 @@ ai_emission.inputs["Strength"].default_value=.48
 wl.new(ai_tex.outputs["Color"],ai_emission.inputs["Color"])
 ai_mask=wn.new("ShaderNodeMath")
 ai_mask.operation="MULTIPLY"
-ai_mask.inputs[1].default_value=.37
+ai_mask.inputs[1].default_value=.25
 wl.new(ai_tex.outputs["Alpha"],ai_mask.inputs[0])
 ai_mix=wn.new("ShaderNodeMixShader")
 ai_coverage=wn.new("ShaderNodeMath")
@@ -323,7 +323,54 @@ deep_mix=wn.new("ShaderNodeMixShader")
 wl.new(depth_range.outputs["Result"],deep_mix.inputs[0])
 wl.new(ai_mix.outputs[0],deep_mix.inputs[1])
 wl.new(deepwater.outputs["BSDF"],deep_mix.inputs[2])
-wl.new(deep_mix.outputs[0],outnode.inputs["Surface"])
+# V15: Broad and nonuniform reflection fields stretched along the
+# longitudinal water flow (the Y axis), rather than repeated white ribbons.
+# This is real glossy reflection from scene lighting, NOT emissive white paint.
+# The water depth mask from V14 is preserved and applied before this layer.
+reflect_coords=wn.new("ShaderNodeVectorMath")
+reflect_coords.operation="MULTIPLY"
+reflect_coords.inputs[1].default_value=(1.28,.32,.12)
+wl.new(depth_geo.outputs["Position"],reflect_coords.inputs[0])
+reflect_noise=wn.new("ShaderNodeTexNoise")
+reflect_noise.inputs["Scale"].default_value=1.45
+reflect_noise.inputs["Detail"].default_value=2.0
+reflect_noise.inputs["Roughness"].default_value=.58
+wl.new(reflect_coords.outputs["Vector"],reflect_noise.inputs["Vector"])
+reflect_ramp=wn.new("ShaderNodeMapRange")
+reflect_ramp.inputs["From Min"].default_value=.45
+reflect_ramp.inputs["From Max"].default_value=.69
+reflect_ramp.inputs["To Min"].default_value=0.0
+reflect_ramp.inputs["To Max"].default_value=.34
+reflect_ramp.clamp=True
+reflect_ramp.interpolation_type="SMOOTHSTEP"
+wl.new(reflect_noise.outputs["Fac"],reflect_ramp.inputs["Value"])
+# Reflection is most visible over deep water, yet gentle at the shore.
+reflect_depth=wn.new("ShaderNodeMapRange")
+reflect_depth.inputs["From Min"].default_value=0.0
+reflect_depth.inputs["From Max"].default_value=1.0
+reflect_depth.inputs["To Min"].default_value=.28
+reflect_depth.inputs["To Max"].default_value=1.0
+wl.new(depth_range.outputs["Result"],reflect_depth.inputs["Value"])
+reflect_amount=wn.new("ShaderNodeMath")
+reflect_amount.operation="MULTIPLY"
+wl.new(reflect_ramp.outputs["Result"],reflect_amount.inputs[0])
+wl.new(reflect_depth.outputs["Result"],reflect_amount.inputs[1])
+# A separate low-frequency normal controls reflections. The fine V14
+# ripple normal still independently controls the small refractive distortion.
+reflect_bump=wn.new("ShaderNodeBump")
+reflect_bump.inputs["Strength"].default_value=.11
+reflect_bump.inputs["Distance"].default_value=.017
+wl.new(reflect_noise.outputs["Fac"],reflect_bump.inputs["Height"])
+wl.new(waterbump.outputs["Normal"],reflect_bump.inputs["Normal"])
+broad_gloss=wn.new("ShaderNodeBsdfGlossy")
+broad_gloss.inputs["Color"].default_value=(.64,.85,.89,1)
+broad_gloss.inputs["Roughness"].default_value=.19
+wl.new(reflect_bump.outputs["Normal"],broad_gloss.inputs["Normal"])
+broad_mix=wn.new("ShaderNodeMixShader")
+wl.new(reflect_amount.outputs[0],broad_mix.inputs[0])
+wl.new(deep_mix.outputs[0],broad_mix.inputs[1])
+wl.new(broad_gloss.outputs["BSDF"],broad_mix.inputs[2])
+wl.new(broad_mix.outputs[0],outnode.inputs["Surface"])
 # Shape water to avoid hard straight shoreline, with randomised multifrequency normal from mesh.
 verts=[];faces=[];N=95
 for j in range(N+1):
@@ -382,6 +429,6 @@ results={}
 for n in ("front","side","angle"):
     f=root/(n+".png");assert f.stat().st_size>10000
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
-(root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"],"depth_m":{"shore":round(depth_at(0,2.7),3),"middle":round(depth_at(0,-2.0),3),"deep":round(depth_at(0,-7.0),3)},"depth_absorption":"V14 bathymetry-matched shader opacity, visual approximation not true volume absorption"},indent=2))
+(root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"],"depth_m":{"shore":round(depth_at(0,2.7),3),"middle":round(depth_at(0,-2.0),3),"deep":round(depth_at(0,-7.0),3)},"depth_absorption":"V14 bathymetry-matched shader opacity, visual approximation not true volume absorption","surface_reflection":"V15 directional 2-scale normals, noise-masked wide glossy reflections, no white emittance grid"},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v14.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v15.blend").resolve()))
