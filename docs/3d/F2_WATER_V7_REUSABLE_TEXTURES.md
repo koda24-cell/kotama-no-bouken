@@ -26,3 +26,10 @@
 - 泡は岸との接触域のUV/ジオメトリに限定し、一面に均等に貼らない。
 - マスクは水底法線ではなく水面の屈折・微反射にも利用し、3方向PNG・近距離を比較する。
 - 今後の採用時にGit管理のSVGは継続利用できる。PNGはActionsで再生成してもよい。
+
+
+## AI生成PNGのBlender貼付（追加反映）
+- [実PNG（96px）](../../tools/f2-water/textures/v7_ai_generated_water_surface_96.png) のGit Blob SHAは `cb0d7870324d673c93a8d5d54e31f7150499d3eb`（Git APIで実ファイル確認）。
+- `rasterize_v7_textures.py` は元PNGをRGBAで1024pxへ拡大・平滑化して `out/f2-water/v7_ai_water_surface_color_alpha_1024.png` に出力。
+- `render_water.py` はこの実AI画像のRGBを水面カラー、Alphaを透過率マスクとして読み込み、先行SVG透明オーバーレイに合成。画像生成した画像を水面に実際に貼る仕組みになった。
+- [最新の試験run #44453825512](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453825512) は起動が確認されたが、2026-11-19現在の実描画・質感は未確認。SVG変換とAI画像変換の両方を通した証拠が必要。
