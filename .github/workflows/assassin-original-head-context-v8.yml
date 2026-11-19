@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v8
+      - uses: actions/checkout@v4
       - name: Install Blender
         run: |
           sudo apt-get update -qq
@@ -39,7 +39,7 @@ jobs:
           PY
       - name: Upload review evidence
         if: always()
-        uses: actions/upload-artifact@v8
+        uses: actions/upload-artifact@v4
         with:
           name: assassin-original-head-v8-context-NOT-APPROVED
           path: output/assassin-original-head-v8
