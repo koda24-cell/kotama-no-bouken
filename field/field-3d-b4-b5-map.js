@@ -6,7 +6,7 @@ import { createB4SurfaceLibrary } from './b4-surface-library.js';
 import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261120-p6';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261120-p7';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -101,6 +101,7 @@ export function createTheme(api, area) {
   let dressing = null, ownedModels = [], ownedModelGeometry = [];
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   let b4Dressing = null;
+  let oreSites = [];
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -175,7 +176,7 @@ export function createTheme(api, area) {
     dispose();
     root = new THREE.Group(); root.name = mist ? 'b3_mist_forest_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
     const { ch, wallCell, facing, open } = info;
-    const buildRoot = root;
+    const buildRoot = root; oreSites = [];
     const b5 = area === 5, hall = b5 && isB5Hall(a, ch);
     const b4Vault = magma && a.f === 2;
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
@@ -185,12 +186,7 @@ export function createTheme(api, area) {
       lights.push(cameraLamp,...b4Plan.lights); g.lights.push(cameraLamp,...b4Plan.lights);
     }
     if (b4Plan) for (const s of [...b4Plan.mines, ...b4Plan.vistaFaces]) objAt.add(s.tx+','+s.ty);
-    if (b4Plan) {
-      // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
-      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, mines: b4Plan.mines.slice(1), isStale: () => root !== buildRoot })
-        .then(d => { if (root !== buildRoot) d.dispose(); else b4Dressing = d; })
-        .catch(err => console.warn('[b4-dressing]', err));
-    }
+
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
@@ -225,6 +221,7 @@ export function createTheme(api, area) {
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (!b5 && k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, magma ? surfaces.crystal : mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
+          if (magma) oreSites.push({ x: ex - dx * 0.42, z: ez - dz * 0.42, dx, dz, k });
           if (magma) for(const side of [-1,1]) {
             const c=mesh(crystalGeo,surfaces.crystal,ex-dx*.48+dz*side*.24,.35,ez-dz*.48-dx*side*.24,ry,.32,.65,.32);c.rotation.z=side*.16;
           }
@@ -324,6 +321,12 @@ export function createTheme(api, area) {
     }
     if (b5) { dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall }); installB5Fog(); }
     batchStatic();
+    if (b4Plan) {
+      // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
+      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, mines: b4Plan.mines.slice(1), oreSites, crystalGeo, isStale: () => root !== buildRoot })
+        .then(d => { if (root !== buildRoot) d.dispose(); else b4Dressing = d; })
+        .catch(err => console.warn('[b4-dressing]', err));
+    }
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
     for (const o of a.objects) {

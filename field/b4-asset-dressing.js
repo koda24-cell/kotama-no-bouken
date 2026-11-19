@@ -12,7 +12,7 @@ const BASE = './assets/models/floor4/props/';
 export const B4_PROP_REGISTRY = {
   b4p_brazier_cage: { human: 1, weight: 1.0, radius: 0.34, height: 0.9, scale: [0.95, 1.08], light: { y: 0.6, color: 0xff7a2e, intensity: 1.6, range: 4.5 } },
   // hung from a nail in the rock at head height
-  b4p_mine_lantern: { human: 1, weight: 1.3, radius: 0.1, height: 0.4, y: 1.55, scale: [0.95, 1.05], light: { y: 0.2, color: 0xffb070, intensity: 0.9, range: 3.2 } },
+  b4p_mine_lantern: { human: 1, weight: 1.3, radius: 0.1, height: 0.4, y: 1.55, scale: [0.95, 1.05], light: { y: 0.2, color: 0xffb070, intensity: 2.0, range: 4.2 } },
 };
 
 // Approved GPT models reused as-is (docs/3d/B4_GPT_MODEL_INVENTORY.md).
@@ -73,6 +73,7 @@ function instance(group, owned, asset, matrices, name) {
   }
 }
 
+const ORE_READY = false;   // flips to true when the dragon team's ore cluster GLB is promoted
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
 // Distance from the tile centre to the B4 volcanic wall skin at lateral offset 0, for heights y0..y1.
@@ -92,7 +93,7 @@ function wallSkinDistance(y0, y1) {
 }
 const sideFor = R => R.side ?? (wallSkinDistance(R.y || 0, (R.y || 0) + R.height) - R.radius - 0.04);
 
-export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], isStale = () => false, maxProps = 22 }) {
+export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], crystalGeo = null, isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY);
   const group = new THREE.Group(); group.name = 'b4:asset-dressing'; group.userData.b4Cached = true;
   const owned = [];
@@ -206,6 +207,19 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       if (proc) proc.visible = false;                         // procedural stand-in no longer needed
       info.mineCarts = mats.length;
     } else info.missing.push('minecart_v32');
+  }
+  // ---- wall crystal sites: the dragon team's ore cluster replaces the cone placeholders ----
+  if (oreSites.length && ORE_READY) {
+    const ore = await loadProp('b4p_dragon_ore_cluster');
+    if (ore && !isStale()) {
+      const om = oreSites.map(o => new THREE.Matrix4().compose(
+        new THREE.Vector3(o.x - o.dx * 0.25, 0, o.z - o.dz * 0.25),
+        new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.atan2(-o.dx, -o.dz) + Math.PI + (o.k - 0.08) * 3, 0)),
+        new THREE.Vector3().setScalar(0.9 + o.k * 2.2)));
+      instance(group, owned, ore, om, 'b4:prop:b4p_dragon_ore_cluster');
+      info.byId.b4p_dragon_ore_cluster = om.length;
+      if (crystalGeo) for (const ch of root.children) if (ch.geometry === crystalGeo) ch.visible = false;
+    }
   }
   root.add(group);
   return {
