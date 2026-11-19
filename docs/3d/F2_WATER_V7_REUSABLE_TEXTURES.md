@@ -47,3 +47,10 @@
 - V8正面・斜めPNGは確認済み。既存は透明Shader＋薄い光沢＋カラーアルファの合成で、川底の屈折が実質無い。そのため模様を強くすると白いフィルム、弱くすると濡れた床に見える。
 - V9で `ShaderNodeBsdfRefraction`（IOR 1.333、浅い水色）を透明Shaderへ40%混ぜ、川底の視認性を維持しつつ屈折を付加。独立したFresnel/Glossy/波高画像/カラーアルファは保持。水面メッシュのうねりを少し増やす。
 - 実験的な候補で美観は未判定。ClamAVゲートを保持。[Actions試験 #44460015874](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44460015874)、[Draft PR #517](https://github.com/koda24-cell/kotama-no-bouken/pull/517)。美術未承認のため正式保存・developmentマージをしない。
+
+
+## V9→V10 実反復・2026-11-19
+- [V9実行 #44461004945](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44461004945): **success**。ClamAV再検査、Blender3方向レンダ、PNG/ハッシュ検証、Artifact ID `14499769163` (6,953,136 bytes)をGitHub上で確認してZIPを実取得。scan_manifest: `SCANNED_OK_NOT_APPROVED` / exit code 0 / `river_small_rocks_diff_1k.jpg: OK`; execution_report: `safety_check=CONFIRMED_OK`。
+- **V9目視評価：美術不合格**。V8より水面領域・岸の境界は認識できるが、物理屈折の強さとBumpが強すぎて透明な水より曇りガラス風のざらつきになる。特に正面・斜めで細かい粒状ノイズと岩の不自然な水越しの歪み。描画は比較用85%解像度、24 samples。
+- V10では同じ既存河床と水面画像を保持し、屈折混合率40%→23%、屈折Roughness .075→.008、Bump強度 .24→.13、Distance .028→.012、サンプル数24→38。波の面積はなるべく残し、川底の鮮明さを戻す。正式採用は未承認。
+- V10 Actions [#44461754859](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44461754859)。実行起動確認、2026-11-19のこの記載段階では結果未確認。
