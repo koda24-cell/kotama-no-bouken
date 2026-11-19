@@ -14,7 +14,7 @@ random.seed(20261119)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
-scene.cycles.samples=64
+scene.cycles.samples=56
 scene.cycles.max_bounces=6
 bpy.context.view_layer.cycles.use_denoising=False  # Ubuntu apt Blender has no OpenImageDenoiser
 scene.render.resolution_x=960;scene.render.resolution_y=640;scene.render.resolution_percentage=100
@@ -68,7 +68,7 @@ for i in range(15):
 # It controls microscopic surface slope, roughness and delicate colored glints;
 # the base water remains largely transparent rather than opaque teal jelly.
 TEX_SIZE=256
-surface=bpy.data.images.new("F2_original_water_surface_height_V5",width=TEX_SIZE,height=TEX_SIZE,alpha=False,float_buffer=False)
+surface=bpy.data.images.new("F2_original_water_surface_height_V6",width=TEX_SIZE,height=TEX_SIZE,alpha=False,float_buffer=False)
 pixels=[]
 for py in range(TEX_SIZE):
     v=2.0*math.pi*py/TEX_SIZE
@@ -82,60 +82,69 @@ for py in range(TEX_SIZE):
         height=max(.02,min(.98,.5+.34*wave))
         pixels.extend((height,height,height,1.0))
 surface.pixels.foreach_set(pixels)
-surface.filepath_raw=str((root/"f2-water-surface-v5.png").resolve())
+surface.filepath_raw=str((root/"f2-water-surface-v6.png").resolve())
 surface.file_format="PNG"
 surface.save()
-watermat=bpy.data.materials.new("V5 thin transparent water + image driven ripples")
+# V6 water: keep real transparency, restore legible surface through
+# Fresnel reflections and image-controlled pale optical highlights.
+watermat=bpy.data.materials.new("V6 clear water / photo-like ripple highlights")
 watermat.use_nodes=True
 wn=watermat.node_tree.nodes
 wn.clear()
 wl=watermat.node_tree.links
-output=wn.new("ShaderNodeOutputMaterial")
+outnode=wn.new("ShaderNodeOutputMaterial")
 co=wn.new("ShaderNodeTexCoord")
 mapping=wn.new("ShaderNodeVectorMath")
 mapping.operation="SCALE"
-mapping.inputs["Scale"].default_value=2.2
+mapping.inputs["Scale"].default_value=2.8
 wl.new(co.outputs["Generated"],mapping.inputs[0])
 tex=wn.new("ShaderNodeTexImage")
 tex.image=surface
-tex.interpolation="Linear"
 tex.extension="REPEAT"
+tex.interpolation="Linear"
 wl.new(mapping.outputs["Vector"],tex.inputs["Vector"])
-bumpwater=wn.new("ShaderNodeBump")
-bumpwater.inputs["Strength"].default_value=.16
-bumpwater.inputs["Distance"].default_value=.012
-wl.new(tex.outputs["Color"],bumpwater.inputs["Height"])
-gloss=wn.new("ShaderNodeBsdfGlossy")
-gloss.inputs["Color"].default_value=(.78,.96,.98,1)
-wl.new(bumpwater.outputs["Normal"],gloss.inputs["Normal"])
-# Same texture modulates micro-roughness and glints, independent of transparency.
-roughmultiply=wn.new("ShaderNodeMath")
-roughmultiply.operation="MULTIPLY"
-roughmultiply.inputs[1].default_value=.055
-wl.new(tex.outputs["Color"],roughmultiply.inputs[0])
-roughadd=wn.new("ShaderNodeMath")
-roughadd.operation="ADD"
-roughadd.inputs[1].default_value=.025
-wl.new(roughmultiply.outputs[0],roughadd.inputs[0])
-wl.new(roughadd.outputs[0],gloss.inputs["Roughness"])
-transparent=wn.new("ShaderNodeBsdfTransparent")
-# No dark base color; only faint pale-cyan surface reflection.
-transparent.inputs["Color"].default_value=(.97,.995,.995,1)
+waterbump=wn.new("ShaderNodeBump")
+waterbump.inputs["Strength"].default_value=.29
+waterbump.inputs["Distance"].default_value=.026
+wl.new(tex.outputs["Color"],waterbump.inputs["Height"])
+reflection=wn.new("ShaderNodeBsdfGlossy")
+reflection.inputs["Color"].default_value=(.72,.89,.93,1)
+reflection.inputs["Roughness"].default_value=.075
+wl.new(waterbump.outputs["Normal"],reflection.inputs["Normal"])
+clear=wn.new("ShaderNodeBsdfTransparent")
+clear.inputs["Color"].default_value=(.98,.995,1,1)
 fresnel=wn.new("ShaderNodeLayerWeight")
-fresnel.inputs["Blend"].default_value=.12
-strength=wn.new("ShaderNodeMath")
-strength.operation="MULTIPLY"
-strength.inputs[1].default_value=.30
-wl.new(fresnel.outputs["Fresnel"],strength.inputs[0])
-base=wn.new("ShaderNodeMath")
-base.operation="ADD"
-base.inputs[1].default_value=.035
-wl.new(strength.outputs[0],base.inputs[0])
+fresnel.inputs["Blend"].default_value=.19
+# Visible, yet light, reflection even straight on.
+fscale=wn.new("ShaderNodeMath");fscale.operation="MULTIPLY"
+fscale.inputs[1].default_value=.40
+wl.new(fresnel.outputs["Fresnel"],fscale.inputs[0])
+fbase=wn.new("ShaderNodeMath");fbase.operation="ADD"
+fbase.inputs[1].default_value=.15
+wl.new(fscale.outputs[0],fbase.inputs[0])
 mix=wn.new("ShaderNodeMixShader")
-wl.new(base.outputs[0],mix.inputs[0])
-wl.new(transparent.outputs["BSDF"],mix.inputs[1])
-wl.new(gloss.outputs["BSDF"],mix.inputs[2])
-wl.new(mix.outputs[0],output.inputs["Surface"])
+wl.new(fbase.outputs[0],mix.inputs[0])
+wl.new(clear.outputs["BSDF"],mix.inputs[1])
+wl.new(reflection.outputs["BSDF"],mix.inputs[2])
+# A very thin, pale image-driven highlight mask makes the waterline
+# readable even if the scene is viewed head-on. Never tint the water volume.
+crest=wn.new("ShaderNodeValToRGB")
+crest.color_ramp.elements[0].position=.53
+crest.color_ramp.elements[0].color=(0,0,0,1)
+crest.color_ramp.elements[1].position=.79
+crest.color_ramp.elements[1].color=(1,1,1,1)
+wl.new(tex.outputs["Color"],crest.inputs["Fac"])
+hscale=wn.new("ShaderNodeMath");hscale.operation="MULTIPLY"
+hscale.inputs[1].default_value=.17
+wl.new(crest.outputs["Color"],hscale.inputs[0])
+highlight=wn.new("ShaderNodeEmission")
+highlight.inputs["Color"].default_value=(.63,.87,.91,1)
+highlight.inputs["Strength"].default_value=.52
+mixhigh=wn.new("ShaderNodeMixShader")
+wl.new(hscale.outputs[0],mixhigh.inputs[0])
+wl.new(mix.outputs[0],mixhigh.inputs[1])
+wl.new(highlight.outputs[0],mixhigh.inputs[2])
+wl.new(mixhigh.outputs[0],outnode.inputs["Surface"])
 # Shape water to avoid hard straight shoreline, with randomised multifrequency normal from mesh.
 verts=[];faces=[];N=95
 for j in range(N+1):
@@ -152,6 +161,39 @@ mesh=bpy.data.meshes.new("non_uniform_waves");mesh.from_pydata(verts,[],faces);m
 water=bpy.data.objects.new("Clear_water_surface",mesh);bpy.context.collection.objects.link(water)
 water.data.materials.append(watermat)
 for pgn in water.data.polygons:pgn.use_smooth=True
+# Separate, narrow broken ripples at the surface clarify the actual water plane.
+# Off-white transparent emission instead of an opaque blue volume.
+ribbonmat=bpy.data.materials.new("V6 subtle interrupted ripple strokes")
+ribbonmat.use_nodes=True
+rn=ribbonmat.node_tree.nodes;rn.clear();rl=ribbonmat.node_tree.links
+ro=rn.new("ShaderNodeOutputMaterial")
+rt=rn.new("ShaderNodeBsdfTransparent")
+re=rn.new("ShaderNodeEmission")
+re.inputs["Color"].default_value=(.63,.84,.88,1)
+re.inputs["Strength"].default_value=.65
+rm=rn.new("ShaderNodeMixShader")
+rm.inputs[0].default_value=.22
+rl.new(rt.outputs[0],rm.inputs[1]);rl.new(re.outputs[0],rm.inputs[2]);rl.new(rm.outputs[0],ro.inputs["Surface"])
+random.seed(20261120)
+for k in range(92):
+    x0=random.uniform(-7.1,7.1)
+    y0=random.uniform(-6.9,2.05)
+    length=random.uniform(.17,.85)
+    thickness=random.uniform(.007,.022)
+    rv=[];rf=[]
+    for t in range(5):
+        x=x0+length*t/4
+        y=y0+.055*math.sin(t*.92+k*.17)+.016*math.sin(x*4+k)
+        z=.052
+        rv.append((x,y-thickness,z))
+        rv.append((x,y+thickness,z))
+    for t in range(4):
+        z=2*t;rf.append((z,z+1,z+3,z+2))
+    ribmesh=bpy.data.meshes.new("ripple_ribbon")
+    ribmesh.from_pydata(rv,[],rf);ribmesh.update()
+    ob=bpy.data.objects.new("V6_reflection_ripple_%03d"%k,ribmesh)
+    bpy.context.collection.objects.link(ob)
+    ob.data.materials.append(ribbonmat)
 # Local translucent foam around irregular bank using scattered thin white flakes
 foam=mat("Soft_broken_white_foam","#9dc9bd",.8)
 for i in range(65):
@@ -195,4 +237,4 @@ for n in ("front","side","angle"):
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
 (root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v5.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v6.blend").resolve()))
