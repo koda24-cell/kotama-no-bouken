@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 INPUT = Path("render-output/floor6/cc0-leaf-source")
-OUT = Path("render-output/floor6/nature/tree_mature_photo_v24")
+OUT = Path("render-output/floor6/nature/tree_mature_photo_v25")
 OUT.mkdir(parents=True, exist_ok=True)
 source = json.loads((INPUT / "source_manifest.json").read_text())
 assert source["license"] == "CC0" and source["asset"] == "Leaf001"
@@ -160,6 +160,113 @@ assert clustered_leaves > 500
 
 assert rounding_count > 500, "No leaf meshes rounded"
 
+# V25: CC0 real photogrammetry of bark; load with manifest hashes.
+BARK_INPUT = Path("render-output/floor6/cc0-bark-source")
+bark_source = json.loads((BARK_INPUT / "source_manifest.json").read_text())
+assert bark_source["license"] == "CC0" and bark_source["asset"] == "Bark015"
+def bark_map(kind):
+    info = bark_source["maps"].get(kind)
+    if not info:
+        return None
+    p = BARK_INPUT / info["filename"]
+    raw = p.read_bytes()
+    assert raw[:8] == b"\\x89PNG\\r\\n\\x1a\\n" and hashlib.sha256(raw).hexdigest() == info["sha256"]
+    img = bpy.data.images.load(str(p.resolve()), check_existing=False)
+    img.pack()
+    if kind != "color":
+        img.colorspace_settings.name = "Non-Color"
+    return img
+
+bark_color = bark_map("color")
+bark_normal = bark_map("normal")
+bark_rough = bark_map("roughness")
+assert bark_color is not None
+bark_materials = []
+for name in ("aged_bark", "twigs"):
+    material = bpy.data.materials.get(name)
+    assert material is not None, "Missing bark material " + name
+    shader = material.node_tree.nodes.get("Principled BSDF")
+    assert shader is not None
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    tex = nodes.new("ShaderNodeTexImage")
+    tex.name = "V25_CC0_Bark015_Photogrammetry"
+    tex.image = bark_color
+    links.new(tex.outputs["Color"], shader.inputs["Base Color"])
+    if bark_normal:
+        nt = nodes.new("ShaderNodeTexImage")
+        nt.image = bark_normal
+        nm = nodes.new("ShaderNodeNormalMap")
+        nm.inputs["Strength"].default_value = .76
+        links.new(nt.outputs["Color"], nm.inputs["Color"])
+        links.new(nm.outputs["Normal"], shader.inputs["Normal"])
+    if bark_rough:
+        rt = nodes.new("ShaderNodeTexImage")
+        rt.image = bark_rough
+        links.new(rt.outputs["Color"], shader.inputs["Roughness"])
+    bark_materials.append(name)
+
+# V25: make the canopy broad and continuous. Source leaf geometry and the
+# tree's original trunk/branches/roots remain intact in the V19 checkpoint.
+# Each cloned seven-leaf SPRAY stays cohesive, then spreads as one unit.
+from math import sin, cos, tau
+import random
+rng = random.Random(62525)
+leaf_objects.sort(key=lambda obj: obj.name)
+sprays = [leaf_objects[i:i+7] for i in range(0,len(leaf_objects)-6,7)]
+def obj_center(ob):
+    return sum((v.co for v in ob.data.vertices), Vector()) / len(ob.data.vertices) + ob.location
+spray_centers = [sum((obj_center(o) for o in group), Vector()) / len(group) for group in sprays]
+added_canopy_leaves = 0
+def clone_spray(group, translation, seed, enlargement=1.0):
+    global added_canopy_leaves
+    for j, src in enumerate(group):
+        duplicate = src.copy()
+        duplicate.data = src.data.copy()
+        duplicate.name = "tree_mature_v25_canopy_%05d" % added_canopy_leaves
+        bpy.context.collection.objects.link(duplicate)
+        duplicate.location += translation + Vector((rng.uniform(-.012,.012),rng.uniform(-.012,.012),rng.uniform(-.013,.013)))
+        # Preserve the original surface curvature, but give some new leaves
+        # a more legible, broad near-view silhouette.
+        if enlargement > 1.0:
+            pivot = sum((v.co for v in duplicate.data.vertices),Vector()) / len(duplicate.data.vertices)
+            for v in duplicate.data.vertices:
+                v.co = pivot + (v.co-pivot) * enlargement
+        added_canopy_leaves += 1
+
+# Extend existing branch sprays into a coherent umbrella crown, rather than
+# a single horizontal disc or disconnected point-like confetti.
+candidates = [i for i,p in enumerate(spray_centers) if 1.65 < p.z < 3.1 and (p.x*p.x+p.y*p.y)**.5 > .35]
+rng.shuffle(candidates)
+for k,idx in enumerate(candidates[:170]):
+    p=spray_centers[idx]
+    radial=Vector((p.x,p.y,0)).normalized()
+    reach=.23+(.18 if k%3==0 else .08)+rng.uniform(-.07,.10)
+    offset=radial*reach + Vector((0,0,-.07 + .12*rng.random()))
+    clone_spray(sprays[idx],offset,k,1.12 if k%4 else 1.21)
+
+# Three overlapping shell directions screen the exposed central trunk without
+# burying all of its bark. The canopy remains open under its outer edge.
+inner = [i for i,p in enumerate(spray_centers) if 1.60 < p.z < 2.8 and (p.x*p.x+p.y*p.y)**.5 < .72]
+rng.shuffle(inner)
+for k in range(min(120,len(inner))):
+    idx = inner[k]
+    p = spray_centers[idx]
+    angle=(k * .61803398875 % 1.0)*tau
+    target_radius=.21+rng.uniform(.04,.16)
+    target = Vector((cos(angle)*target_radius, sin(angle)*target_radius, p.z + rng.uniform(-.07,.08)))
+    clone_spray(sprays[idx], target-p,1000+k,1.18 if k%3 else 1.32)
+
+# Four camera-facing oblique sprays reduce obvious empty slits without creating
+# a spherical blob. All are derived from existing leaf geometry, no billboards.
+for k in range(48):
+    if not inner: break
+    idx=inner[k%len(inner)]
+    p=spray_centers[idx]
+    angle=k*tau/48
+    target=Vector((.20*cos(angle),.20*sin(angle), 1.72+1.02*((k*7)%48)/48))
+    clone_spray(sprays[idx],target-p,2000+k,1.20)
+assert added_canopy_leaves > 500, "V25 canopy was not expanded"
+
 scene = bpy.context.scene
 objects = [o for o in bpy.data.objects if o.type == "MESH" and o.name.startswith("tree_mature_")]
 assert len(objects) > 100
@@ -185,13 +292,13 @@ for f in sorted(OUT.iterdir()):
         data = f.read_bytes()
         files.append(dict(name=f.name, bytes=len(data), sha256=hashlib.sha256(data).hexdigest()))
 assert len(files) == 6
-manifest = dict(asset_id="tree_mature", version="V24-CC0-matte-forest-review",
+manifest = dict(asset_id="tree_mature", version="V25-CC0-wide-crown-bark-review",
                 status="NOT_APPROVED", game_integration="NOT_INTEGRATED",
                 base_model="tree_mature V19 existing source geometry unchanged",
                 branch=os.getenv("GITHUB_REF_NAME", "local"),
                 source_sha=os.getenv("GITHUB_SHA", "local"),
                 render_run_id=os.getenv("GITHUB_RUN_ID", "local"),
-                source_texture=source, preserved_meshes=len(objects), rounded_leaf_meshes=rounding_count, clustered_leaf_meshes=clustered_leaves,
-                files=files, notes="CC0 source with matte >=0.86 roughness, reduced specular/normal highlights, expanded oval blades and 62% leaf-group compression; no alpha fabricated")
+                source_texture=source, bark_source=bark_source, bark_materials=bark_materials, expanded_canopy_leaves=added_canopy_leaves, preserved_meshes=len(objects), rounded_leaf_meshes=rounding_count, clustered_leaf_meshes=clustered_leaves,
+                files=files, notes="V25 wider coherent crown + 3D central foliage screens + actual CC0 Bark015 photogrammetry PBR for bark and twigs; V19 original retained; approval pending")
 (OUT / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-print("F6_CC0_PHOTO_V24_DONE", len(objects), len(files))
+print("F6_CC0_PHOTO_V25_DONE", len(objects), len(files))
