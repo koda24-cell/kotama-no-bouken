@@ -1,0 +1,22 @@
+{
+  "run_id": "44131102651",
+  "url": "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44131102651",
+  "source_sha": "411009d4914a2c924f8e8c8fa65762c89338f930",
+  "status": "BLENDER_OUTPUT_VERIFIED_NOT_APPROVED",
+  "artifacts": "b2-waterwheel-paddle-blender-v01-v02-v03-v04-v05-v06",
+  "variants": [
+    "v01",
+    "v02",
+    "v03",
+    "v04",
+    "v05",
+    "v06"
+  ],
+  "png_views": [
+    "front",
+    "side",
+    "angle",
+    "back"
+  ],
+  "note": "This status only means files were generated and hashes verified; artistic approval pending"
+}

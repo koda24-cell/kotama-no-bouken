@@ -1,0 +1,156 @@
+name: B2 Individual Waterwheel Paddle Blender Build
+on:
+  push:
+    branches:
+      - feature/gpt-b2-waterwheel-core-upgrade-20261117
+    paths:
+      - "tools/b2-waterwheel-paddle/**"
+      - ".github/workflows/b2-waterwheel-single-paddle-blender.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-paddle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record this Actions run ID before Blender starts
+        env:
+          CURRENT_RUN_ID: ${{ github.run_id }}
+          CURRENT_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path('docs/3d/b2-waterwheel-paddle-run/latest.json')
+          p.parent.mkdir(parents=True,exist_ok=True)
+          p.write_text(json.dumps({
+            'run_id':os.environ['CURRENT_RUN_ID'],
+            'url':os.environ['CURRENT_RUN_URL'],
+            'source_sha':os.environ['SOURCE_SHA'],
+            'status':'STARTED_PENDING_BLENDER_VERIFICATION',
+            'approval':'NOT_APPROVED'
+          },indent=2))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/3d/b2-waterwheel-paddle-run/latest.json
+          git commit -m "chore(b2): save waterwheel paddle Actions run pointer"
+          git push origin HEAD:feature/gpt-b2-waterwheel-core-upgrade-20261117
+      - name: Make output folder
+        run: mkdir -p render-output/b2-waterwheel-paddle
+      - name: Blender native mesh creation and 4-direction QA render
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            lscr.io/linuxserver/blender:latest \
+            /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle.py -- render-output/b2-waterwheel-paddle
+      - name: V3 native Blender with embedded UV maps and four QA views
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            lscr.io/linuxserver/blender:latest \
+            /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v03.py -- render-output/b2-waterwheel-paddle
+      - name: V4 native Blender corrected wood shading and four QA views
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            lscr.io/linuxserver/blender:latest \
+            /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v04.py -- render-output/b2-waterwheel-paddle
+      - name: V5 native Blender natural wood grain and four QA views
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            lscr.io/linuxserver/blender:latest \
+            /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v05.py -- render-output/b2-waterwheel-paddle
+      - name: Fetch CC0 photo-based Wood Planks 1K diffuse, with safe fallback
+        run: |
+          src="https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_planks/wood_planks_diff_1k.jpg"
+          dest="render-output/b2-waterwheel-paddle/wood_planks_diff_1k.jpg"
+          if curl --fail --location --silent --show-error --retry 2 --max-time 80 "$src" --output "$dest"; then
+            python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          f=Path("render-output/b2-waterwheel-paddle/wood_planks_diff_1k.jpg")
+          b=f.read_bytes()
+          assert b[:2]==bytes.fromhex('ffd8') and len(b)>20000
+          print("PHOTO_CC0_DOWNLOADED",len(b),hashlib.sha256(b).hexdigest())
+          PY
+          else
+            rm -f "$dest"
+            echo "PHOTO_DOWNLOAD_FAILED: V6 uses procedural fallback"
+          fi
+      - name: V6 native Blender with real CC0 wood diffuse and four QA views
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            lscr.io/linuxserver/blender:latest \
+            /blender/blender -b -t 2 --python tools/b2-waterwheel-paddle/build_paddle_v06.py -- render-output/b2-waterwheel-paddle
+      - name: Check real Blender output, GLB, PNG and manifest
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          root=Path('render-output/b2-waterwheel-paddle')
+          for variant in (1,2,3,4,5,6):
+              prefix=f'b2_bucket_paddle_blender_v{variant:02d}'
+              manifest=json.loads((root/(prefix+'_manifest.json')).read_text())
+              assert manifest['status']=='NOT_APPROVED'
+              assert len(manifest['files'])==6
+              for name,data in manifest['files'].items():
+                  p=root/name
+                  assert p.exists() and len(p.read_bytes())==data['bytes']
+                  assert hashlib.sha256(p.read_bytes()).hexdigest()==data['sha256']
+                  if name.endswith('.glb'): assert p.read_bytes()[:4]==b'glTF'
+                  if name.endswith('.blend'): assert p.stat().st_size>1024  # Blender 5.3 may use Zstd-compressed .blend container
+                  if name.endswith('.png'): assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+              print('BLENDER_OUTPUT_VERIFIED',prefix,manifest['blender'])
+          PY
+      - name: Publish verified run metadata to this isolated feature branch
+        if: success()
+        env:
+          CURRENT_RUN_ID: ${{ github.run_id }}
+          CURRENT_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path('docs/3d/b2-waterwheel-paddle-run/latest.json')
+          p.parent.mkdir(parents=True,exist_ok=True)
+          data={
+            'run_id':os.environ['CURRENT_RUN_ID'],
+            'url':os.environ['CURRENT_RUN_URL'],
+            'source_sha':os.environ['SOURCE_SHA'],
+            'status':'BLENDER_OUTPUT_VERIFIED_NOT_APPROVED',
+            'artifacts':'b2-waterwheel-paddle-blender-v01-v02-v03-v04-v05-v06',
+            'variants':['v01','v02','v03','v04','v05','v06'],
+            'png_views':['front','side','angle','back'],
+            'note':'This status only means files were generated and hashes verified; artistic approval pending'
+          }
+          p.write_text(json.dumps(data,indent=2))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/3d/b2-waterwheel-paddle-run/latest.json /tmp/b2-run-verified.json
+          git fetch origin feature/gpt-b2-waterwheel-core-upgrade-20261117
+          git reset --hard origin/feature/gpt-b2-waterwheel-core-upgrade-20261117
+          cp /tmp/b2-run-verified.json docs/3d/b2-waterwheel-paddle-run/latest.json
+          git add docs/3d/b2-waterwheel-paddle-run/latest.json
+          git commit -m "chore(b2): record verified Blender paddle Actions run" || true
+          git push origin HEAD:feature/gpt-b2-waterwheel-core-upgrade-20261117
+      - name: Upload editable Blend, GLB, internal QA PNG and checksums
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-paddle-blender-v01-v02-v03-v04-v05-v06
+          path: render-output/b2-waterwheel-paddle/
+          if-no-files-found: warn
+          retention-days: 14
