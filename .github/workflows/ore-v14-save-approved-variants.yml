@@ -1,0 +1,62 @@
+name: Save approved V14 crystal-rock variants
+on:
+  push:
+    branches: [feature/gpt-ore-v10-pbr-compare-20261119]
+    paths: ['.github/workflows/ore-v14-save-approved-variants.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/gpt-ore-v10-pbr-compare-20261119
+          persist-credentials: true
+      - name: Fetch reviewed successful render artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/ore-v14-artifact
+          gh run download 44453350861 -R "${{ github.repository }}" -n ore-dense-crystal-original-boulder-not-approved -D /tmp/ore-v14-artifact
+      - name: Validate and stage exactly fifteen approved variant pairs
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,pathlib,shutil
+          src=pathlib.Path('/tmp/ore-v14-artifact')
+          dst=pathlib.Path('assets/models/ore/variants/v14-neutral')
+          manifest=json.loads((src/'manifest.json').read_text())
+          variants=manifest.get('v14_neutral_shape_variants')
+          assert isinstance(variants,list) and len(variants)==15, 'expected 15 V14 variants'
+          dst.mkdir(parents=True,exist_ok=True)
+          names=set()
+          for item in variants:
+              name=item['name']
+              assert name not in names and name.replace('_','').isalnum()
+              names.add(name)
+              for field,signature in [('png',b'\\x89PNG\\r\\n\\x1a\\n'),('glb',b'glTF')]:
+                  file=src/item[field]
+                  assert file.is_file() and file.stat().st_size>1024
+                  assert file.read_bytes().startswith(signature)
+                  assert hashlib.sha256(file.read_bytes()).hexdigest()==item[field+'_sha256']
+                  assert file.stat().st_size<100_000_000
+                  shutil.copy2(file,dst/file.name)
+          (dst/'variants.json').write_text(json.dumps({'source_run':44453350861,'approval':'user-approved visual variants','status':'saved_for_development_review_not_integrated','palette':'neutral_recolorable','variants':variants},indent=2)+'\\n')
+          (dst/'README.md').write_text('# V14 neutral crystal-rock variants\\n\\n15 user-approved visual variants, saved permanently as individual PNG and GLB files.\\nSource run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453350861\\n\\nThese are **not yet integrated into gameplay**. Verify GLB fidelity, performance and materials before floor-specific deployment. Keep approved V13 variants untouched.\\n')
+          print('Validated and staged',len(variants),'variant pairs')
+          PY
+      - name: Commit reviewed assets to feature branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/models/ore/variants/v14-neutral/
+          if git diff --cached --quiet; then
+            echo "Already saved"
+            exit 0
+          fi
+          git commit -m "Save 15 user-approved V14 neutral crystal rock GLBs and PNGs"
+          git push origin HEAD:feature/gpt-ore-v10-pbr-compare-20261119

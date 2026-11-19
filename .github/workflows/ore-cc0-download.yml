@@ -1,0 +1,259 @@
+name: Ore CC0 Download Verification
+on:
+  push:
+    branches:
+      - feature/gpt-ore-v10-pbr-compare-20261119
+    paths:
+      - 'tools/ore/**'
+      - '.github/workflows/ore-cc0-download.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download CC0 assets
+        run: |
+          mkdir -p ore-cc0-review
+          python3 tools/ore/intake_cc0_assets.py --out ore-cc0-review
+      - name: Install security scanners
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y clamav clamav-freshclam blender
+          sudo systemctl stop clamav-freshclam || true
+          sudo freshclam
+      - name: Scan downloaded assets with ClamAV
+        run: |
+          set -euo pipefail
+          clamscan -r -i --scan-archive=yes ore-cc0-review | tee ore-cc0-review/clamav-scan.log
+          grep -q 'Infected files: 0' ore-cc0-review/clamav-scan.log
+      - name: Inspect Blender Python safety
+        run: |
+          set -euo pipefail
+          blender -b --disable-autoexec --python tools/ore/check_blend_python_safety.py -- ore-cc0-review
+      - name: Verify downloaded asset hashes
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          root=pathlib.Path('ore-cc0-review')
+          data=json.loads((root/'intake_manifest.json').read_text())
+          for asset in data['assets']:
+              if asset['state']!='downloaded_unreviewed':continue
+              for item in asset['downloads']:
+                  f=root/item['file']
+                  assert f.is_file() and f.stat().st_size>1000
+                  assert hashlib.sha256(f.read_bytes()).hexdigest()==item['sha256']
+          print('SECURITY_PREFLIGHT_OK')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ore-cc0-download-review
+          path: ore-cc0-review/
+          retention-days: 14
+
+  render-boulder:
+    needs: download
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ore-cc0-download-review
+          path: ore-cc0-review
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Inspect original boulder textures and shader connections
+        run: |
+          mkdir -p ore-texture-audit
+          blender -b -t 2 --disable-autoexec --python tools/ore/audit_boulder_textures.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-cc0-review" "$PWD/ore-texture-audit"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ore-original-boulder-texture-audit
+          path: ore-texture-audit/
+          retention-days: 14
+      - name: Restore and pack matching boulder PBR textures
+        run: |
+          mkdir -p ore-boulder-render
+          blender -b -t 2 --disable-autoexec --python tools/ore/repair_boulder_material.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-cc0-review" "$PWD/ore-boulder-render/boulder_01_repaired.blend"
+      - name: Render original downloaded boulder mesh
+        run: |
+          mkdir -p ore-boulder-render
+          blender -b -t 2 --disable-autoexec --python tools/ore/render_imported_boulder.py -- "$PWD/ore-boulder-render/boulder_01_repaired.blend" "$PWD/ore-boulder-render"
+      - name: Validate actual three-view PNGs
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          root=pathlib.Path("ore-boulder-render")
+          d=json.loads((root/"render_manifest.json").read_text())
+          assert d["status"]=="NOT_APPROVED" and d["mesh_count"]>0
+          assert set(d["files"])=={"front.png","side.png","angle.png"}
+          for name,info in d["files"].items():
+              b=(root/name).read_bytes()
+              assert b.startswith(bytes([137,80,78,71,13,10,26,10]))
+              assert hashlib.sha256(b).hexdigest()==info["sha256"]
+          print("Verified actual Blender renders:",list(d["files"]))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ore-boulder-real-render-not-approved
+          path: ore-boulder-render/
+          retention-days: 14
+
+  render-dense-ore:
+    needs: download
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ore-cc0-download-review
+          path: ore-cc0-review
+      - name: Install Blender and NumPy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender -b --disable-autoexec --python-expr 'import numpy; print(numpy.__version__)'
+      - name: Restore original boulder PBR maps for ore preview
+        run: |
+          mkdir -p ore-dense-render
+          blender -b -t 2 --disable-autoexec --python tools/ore/repair_boulder_material.py -- "$PWD/ore-cc0-review/boulder_01_mesh.blend" "$PWD/ore-cc0-review" "$PWD/ore-dense-render/boulder_01_repaired.blend"
+      - name: Render dense crystals on actual downloaded CC0 boulder
+        run: |
+          mkdir -p ore-dense-render
+          blender -b -t 2 --disable-autoexec --python tools/ore/render_dense_crystal_boulder.py -- "$PWD/ore-dense-render/boulder_01_repaired.blend" "$PWD/ore-dense-render"
+      - name: Add soft cyan optical bloom to review PNGs (Blender 5 compatible)
+        run: |
+          python3 -m pip install --break-system-packages Pillow
+          python3 - <<'PY'
+          from PIL import Image, ImageFilter, ImageChops
+          from pathlib import Path
+          import json, hashlib
+          root=Path('ore-dense-render')
+          manifest_path=root/'manifest.json'
+          manifest=json.loads(manifest_path.read_text())
+          for name in ('front.png','side.png','angle.png','top.png'):
+              path=root/name
+              original=Image.open(path).convert('RGB')
+              original.save(root/(name[:-4]+'_raw.png'))
+              # Only cyan-dominant bright crystal highlights seed the halo.
+              pixels=original.load()
+              mask=Image.new('RGB',original.size)
+              out=mask.load()
+              for y in range(original.height):
+                  for x in range(original.width):
+                      r,g,b=pixels[x,y]
+                      intensity=max(0,min(255,int((min(g,b)-r*1.15-18)*2.8)))
+                      if b>g*0.92 and b>r*1.5 and intensity>0:
+                          out[x,y]=(int(intensity*.18),int(intensity*.65),intensity)
+              halo=mask.filter(ImageFilter.GaussianBlur(radius=15))
+              halo=halo.point(lambda v:min(255,int(v*1.9)))
+              combined=ImageChops.screen(original,halo)
+              combined.save(path)
+              manifest['files'][name]=hashlib.sha256(path.read_bytes()).hexdigest()
+          manifest['preview_bloom']='cyan selective screen blend, 15px gaussian, raw images preserved'
+          manifest_path.write_text(json.dumps(manifest,indent=2))
+          PY
+      - name: Evaluate reference-driven growth metrics
+        run: python3 tools/ore/validate_crystal_growth.py ore-dense-render/manifest.json
+      - name: Verify four PNGs, GLB, and unchanged source mesh count
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,hashlib
+          p=pathlib.Path("ore-dense-render")
+          m=json.loads((p/"manifest.json").read_text())
+          assert m["status"]=="NOT_APPROVED"
+          assert m["original_mesh_count"]>=1
+          assert m["added_crystals"]==110
+          assert {"front.png","side.png","angle.png","top.png","dense_crystal_on_original_boulder.glb"}==set(m["files"])
+          for name,sha in m["files"].items():
+              f=p/name
+              assert f.is_file() and f.stat().st_size>1000
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==sha
+          print("VERIFIED_DENSE_ORE",m)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ore-dense-crystal-original-boulder-not-approved
+          path: ore-dense-render/
+          retention-days: 14
+      - name: Write run summary
+        if: always()
+        run: |
+          echo "### Dense ore on original CC0 boulder" >> "$GITHUB_STEP_SUMMARY"
+          echo "Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Artifact: ore-dense-crystal-original-boulder-not-approved" >> "$GITHUB_STEP_SUMMARY"
+          echo "Unapproved: do not integrate into game." >> "$GITHUB_STEP_SUMMARY"
+
+  report-review:
+    if: always()
+    needs: [download, render-boulder, render-dense-ore]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summarize job outcomes
+        env:
+          DOWNLOAD: ${{ needs.download.result }}
+          BOULDER: ${{ needs.render-boulder.result }}
+          DENSE: ${{ needs.render-dense-ore.result }}
+        run: |
+          {
+            echo "## Ore CC0 and dense-crystal render status"
+            echo "| Job | Result |"
+            echo "|---|---|"
+            echo "| CC0 download | $DOWNLOAD |"
+            echo "| Original boulder render | $BOULDER |"
+            echo "| 110-crystal boulder render | $DENSE |"
+            echo ""
+            echo "Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "Unapproved artifacts only; review actual PNG/GLB."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Post or update run index on PR
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          DOWNLOAD: ${{ needs.download.result }}
+          BOULDER: ${{ needs.render-boulder.result }}
+          DENSE: ${{ needs.render-dense-ore.result }}
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const head = context.ref.replace('refs/heads/', '');
+            const prs = await github.rest.pulls.list({owner, repo, state:'open', head: owner + ':' + head});
+            if (!prs.data.length) { core.warning('No open PR for ' + head); return; }
+            const marker = '<!-- ore-render-run-index -->';
+            const status = [process.env.DOWNLOAD,process.env.BOULDER,process.env.DENSE];
+            const body = [
+              marker,
+              '### Latest ore rendering run (automatically updated)',
+              '**Run ID:** ' + context.runId,
+              '**Commit:** ' + context.sha,
+              '| Job | Result |', '|---|---|',
+              '| CC0 download | ' + process.env.DOWNLOAD + ' |',
+              '| Original boulder | ' + process.env.BOULDER + ' |',
+              '| 110-crystal boulder | ' + process.env.DENSE + ' |',
+              '',
+              '[Open this run and its artifacts](https://github.com/' + owner + '/' + repo + '/actions/runs/' + context.runId + ')',
+              'Artifact: `ore-dense-crystal-original-boulder-not-approved`',
+              'This run is ' + (status.every(x => x === 'success') ? '**SUCCESS**' : '**NOT FULLY SUCCESSFUL**') + '.',
+              'Generated assets remain **NOT_APPROVED**.'
+            ].join('\n');
+            const issue_number = prs.data[0].number;
+            const comments = await github.paginate(github.rest.issues.listComments, {owner,repo,issue_number,per_page:100});
+            const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({owner,repo,comment_id:existing.id,body});
+            } else {
+              await github.rest.issues.createComment({owner,repo,issue_number,body});
+            }
