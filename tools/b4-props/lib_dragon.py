@@ -363,7 +363,7 @@ ASH = (0.082, 0.077, 0.070)
 
 
 def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairline=1.0, ash_amt=1.0,
-           tex_lo=0.03, tex_hi=0.40, nrm_strength=0.75, bump=0.6, prox_soot=0.0):
+           tex_lo=0.03, tex_hi=0.40, nrm_strength=0.75, bump=0.6, prox_soot=0.0, heat_range=(0.82, 1.0), heat_amt=0.6):
     """玄武岩: rock_face_02（CC0）の明暗を 2章の色域へ写す＋気泡の穴＋新しい割れ面＋角の欠け＋
     割れ目の縁の煤と焼け＋上向き面・凹みの灰。発光は glow 面（割れ目の内側）と、
     割れ目の近く（cd）の細いひびの中だけ"""
@@ -399,8 +399,8 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     if prox_soot > 0:  # tip 属性＝溝などへの近さ。まわりを煤で黒く
         ps = b.math("MULTIPLY", b.math("POWER", attr(b, "tip"), 1.5), b.ramp(n_mid, [(0.25, 0.45), (0.75, 1.0)]))
         col = b.mix(b.math("MULTIPLY", ps, prox_soot), col, (0.0050, 0.0044, 0.0042))
-    heat = b.math("MULTIPLY", b._map(cd, 0.82, 1.0), b.ramp(n_fine, [(0.3, 0.4), (0.7, 1.0)]))
-    col = b.mix(b.math("MULTIPLY", heat, 0.6), col, (0.030, 0.009, 0.0045))
+    heat = b.math("MULTIPLY", b._map(cd, *heat_range), b.ramp(n_fine, [(0.3, 0.4), (0.7, 1.0)]))
+    col = b.mix(b.math("MULTIPLY", heat, heat_amt), col, (0.030, 0.009, 0.0045))
     # 灰: 上向き面と凹み（割れ面・熱い縁には積もらない）
     cav = b.math("SUBTRACT", 1.0, b.cavity(0.05))
     ashm = b.math("MAXIMUM", b.math("MULTIPLY", b.up_mask(0.62, 0.92), 0.65), b.math("MULTIPLY", cav, 0.85))
