@@ -14,3 +14,12 @@ Status: **NOT_APPROVED**. V21 actual render showed a needle-like tip; user agree
 - Six real 800px Cycles views, GLB/Blend, packed PBR and the SHA-256 manifest.
 - Compare front/side/angle/top against V21; desired result: slightly sharp forged silhouette at crown top but not a spike. If too rounded, adjust the ring transition in the next isolated version, not old V21.
 - Technical success does not imply aesthetic approval. Official assets and game runtime remain untouched.
+
+## Verified execution and art review (2026-11-19)
+- Run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44460127042: **SUCCESS**, artifact `14499397037`, `b5-sallet-v22-walters-NOT-APPROVED`.
+- Actual Blender Cycles six views (front, left, right, back, angle, top) produced; GLB and Blend exported.
+- Independently downloaded ZIP and SHA-256 recomputed all 13 manifest file entries; **13/13 match**.
+- ClamAV signature refresh, source/texture scans and output scan passed.
+- Compared V21/V22 actual front/left/angle/top: V21 visibly needle-like central tip; V22 broadens and lowers summit, now flows smoothly with crown, still a subtle forged apex.
+- V22 seems closer to user-requested form; this is an **assistant art assessment**, not explicit user approval. Previous metallic PBR/corrosion/three rear-only local crack zones unchanged.
+- No assets promoted; V22 and all previous independent generator checkpoints retained. User can select/approve later.
