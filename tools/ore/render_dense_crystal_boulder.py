@@ -343,3 +343,5 @@ files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
 manifest={"render_variant":"V10_PBR_COMPARISON_UNAPPROVED","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"vfx_mote_count":len(vfx_objects),"v10_comparison_renders":v10_files,"v11_exaggerated_comparison_renders":v11_files,"files":files,"colorway_renders":variant_files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
+
+# V11 exaggerated material comparison: rerender requested; safety gate required.
