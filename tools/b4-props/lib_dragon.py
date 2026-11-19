@@ -631,3 +631,142 @@ def dragon_scale_mat(name, glow_strength=0.0):
     hgt = b.math("ADD", hgt, b.math("MULTIPLY", n_fine, 0.1))
     b.normal_from(None, bump_height=hgt, bump_strength=0.35, bump_dist=0.0015)
     return b.out(col, r, 0.0)
+
+
+# ---------------------------------------------------------------------------
+# 形状：骨（プリミティブの和をボクセル化して1枚の面に→穴を引く→減らす）
+# ---------------------------------------------------------------------------
+def ellipsoid(name, center, radii, rot=(0, 0, 0), subdiv=3):
+    bm = bmesh.new()
+    bmesh.ops.create_icosphere(bm, subdivisions=subdiv, radius=1.0)
+    bm_transform(bm, Matrix.Diagonal((radii[0], radii[1], radii[2], 1.0)))
+    R = (Matrix.Rotation(math.radians(rot[2]), 4, "Z") @ Matrix.Rotation(math.radians(rot[1]), 4, "Y") @
+         Matrix.Rotation(math.radians(rot[0]), 4, "X"))
+    bm_transform(bm, Matrix.Translation(Vector(center)) @ R)
+    return C.obj_from_bm(bm, name)
+
+
+def tube(name, pts, r0, r1, sides=10, pw=1.0, cap=True):
+    """太さが r0→r1 に変わる管（角・肋骨・顎など）"""
+    return C.sweep(name, pts, C.circle_profile(1.0, sides), scale_fn=lambda u: r0 + (r1 - r0) * (u ** pw), cap=cap)
+
+
+def voxel_union(objs, name, voxel=0.02):
+    ob = C.join(objs, name)
+    m = ob.modifiers.new("remesh", "REMESH")
+    m.mode = "VOXEL"
+    m.voxel_size = voxel
+    m.adaptivity = 0.0
+    m.use_smooth_shade = True
+    C.apply_mods(ob)
+    C.log(f"voxel_union {name}: verts={len(ob.data.vertices)}")
+    return ob
+
+
+def bool_diff(ob, cutters):
+    cut = C.join(cutters, "_cutters_tmp")
+    m = ob.modifiers.new("bool", "BOOLEAN")
+    m.operation = "DIFFERENCE"
+    m.solver = "EXACT"
+    m.object = cut
+    C.apply_mods(ob)
+    bpy.data.objects.remove(cut, do_unlink=True)
+    return ob
+
+
+def decimate_to(ob, tris):
+    me = ob.data
+    me.calc_loop_triangles()
+    n = len(me.loop_triangles)
+    if n > tris:
+        m = ob.modifiers.new("dec", "DECIMATE")
+        m.decimate_type = "COLLAPSE"
+        m.ratio = tris / n
+        m.use_collapse_triangulate = True
+        C.apply_mods(ob)
+    me.calc_loop_triangles()
+    C.log(f"decimate {ob.name}: {n} -> {len(me.loop_triangles)}")
+    return ob
+
+
+def displace_along_normal(ob, fn):
+    """fn(co, normal) -> 法線方向の変位量（凹みは負）"""
+    me = ob.data
+    for v in me.vertices:
+        v.co = v.co + v.normal * fn(v.co, v.normal)
+    return ob
+
+
+def set_attr_fn(ob, name, fn):
+    """属性を位置から計算して入れる（POINT は頂点、CORNER は面の中心を使う）"""
+    me = ob.data
+    ensure_attrs(ob)
+    a = me.attributes[name]
+    if a.domain == "POINT":
+        for i, v in enumerate(me.vertices):
+            a.data[i].value = fn(v.co)
+    else:
+        for p in me.polygons:
+            val = fn(p.center)
+            for li in p.loop_indices:
+                a.data[li].value = val
+    return ob
+
+
+# 2章の骨 #a89a80〜#c2b498（linear）。煤と灰で必ず汚す
+BONE_LO = (0.39, 0.33, 0.22)
+BONE_HI = (0.54, 0.46, 0.31)
+
+
+def bone_mat(name, soot_lo=0.0, soot_hi=0.5, scale=1.0):
+    """風化した骨: 2章の骨色を基準に、細かいひび割れ（乾燥割れ）・剥離・小さな穴・角の摩耗・
+    下ほど濃い煤（tip 属性＝高さ比 0..1 で soot_lo→soot_hi が黒→骨色）・凹み/上向き面の灰・
+    凹部（cd 属性＝眼窩などの奥）の黒。新しい折れ口（fresh）は白っぽく多孔質"""
+    b = C.NB(name)
+    tip = attr(b, "tip")
+    cd = attr(b, "cd")
+    fresh = attr(b, "fresh")
+    n_big = b.noise(1.2 / scale, 6, 0.6)
+    n_mid = b.noise(5.0 / scale, 6, 0.6)
+    n_fine = b.noise(38.0 / scale, 4, 0.5)
+    col = b.ramp(b.math("ADD", b.math("MULTIPLY", n_big, 0.6), b.math("MULTIPLY", n_mid, 0.4)),
+                 [(0.25, (0.25, 0.21, 0.15)), (0.5, BONE_LO), (0.8, BONE_HI)])
+    # 乾燥割れ（骨の繊維に沿う細かいひび）＋剥離した面の段差
+    crk = b.ramp(ridge(b, 9.0 / scale, vec=warp(b, 3.0, 0.2)), [(0.94, 0.0), (0.985, 1.0)])
+    crk2 = b.ramp(b.voronoi(14.0 / scale, "DISTANCE_TO_EDGE", vec=warp(b, 6.0, 0.08)), [(0.0, 1.0), (0.02, 0.0)])
+    crk2 = b.math("MULTIPLY", crk2, b.ramp(n_mid, [(0.5, 0.0), (0.65, 1.0)]))
+    cracks = b.math("MAXIMUM", crk, crk2)
+    col = b.mix(b.math("MULTIPLY", cracks, 0.85), col, (0.035, 0.028, 0.022))
+    flake = b.ramp(b.noise(7.0 / scale, 4, 0.5), [(0.58, 0.0), (0.62, 1.0)])
+    col = b.mix(b.math("MULTIPLY", flake, 0.35), col, (0.20, 0.165, 0.115))
+    pits = b.ramp(b.voronoi(60.0 / scale, "F1", "Distance"), [(0.0, 1.0), (0.12, 0.0)])
+    pits = b.math("MULTIPLY", pits, b.ramp(n_mid, [(0.35, 0.2), (0.7, 1.0)]))
+    col = b.mix(b.math("MULTIPLY", pits, 0.6), col, (0.08, 0.065, 0.048))
+    # 角の摩耗（擦れて少し明るく滑らか）
+    edge = b.math("MULTIPLY", b.edge_mask(0.015, 0.03, 0.25), b.ramp(n_fine, [(0.3, 0.3), (0.65, 1.0)]), clamp=True)
+    col = b.mix(b.math("MULTIPLY", edge, 0.4), col, BONE_HI)
+    # 新しい折れ口
+    fcol = b.mix(pits, (0.50, 0.44, 0.34), (0.22, 0.18, 0.13))
+    col = b.mix(b.math("MULTIPLY", fresh, 0.9), col, fcol)
+    # 煤：下ほど黒く（埋もれていた所・炎の通り道）、まだらに
+    soot = b.math("SUBTRACT", 1.0, b._map(tip, soot_lo, soot_hi))
+    soot = b.math("MULTIPLY", soot, b.ramp(n_mid, [(0.2, 0.6), (0.75, 1.0)]))
+    soot = b.math("MAXIMUM", soot, b.math("MULTIPLY", b.ramp(n_big, [(0.55, 0.0), (0.8, 1.0)]), 0.6))
+    col = b.mix(b.math("MULTIPLY", soot, 0.92), col, (0.022, 0.019, 0.017))
+    # 奥まった所（眼窩・鼻孔の中）は黒
+    deep = b.math("MAXIMUM", b._map(cd, 0.2, 0.9), b.math("MULTIPLY", b.math("SUBTRACT", 1.0, b.cavity(0.08)), 0.8))
+    col = b.mix(b.math("MULTIPLY", deep, 0.9), col, (0.012, 0.010, 0.009))
+    # 灰：上向き面と凹み
+    cav = b.math("SUBTRACT", 1.0, b.cavity(0.04))
+    ashm = b.math("MAXIMUM", b.math("MULTIPLY", b.up_mask(0.6, 0.92), 0.7), b.math("MULTIPLY", cav, 0.5))
+    ashm = b.math("MULTIPLY", ashm, b.ramp(b.noise(4.0, 6, 0.65), [(0.38, 0.0), (0.66, 1.0)]))
+    col = b.mix(b.math("MULTIPLY", ashm, 0.8), col, ASH)
+    r = b.mixf(n_fine, 0.72, 0.88)
+    r = b.mixf(edge, r, 0.55)
+    r = b.mixf(ashm, r, 0.97)
+    r = b.mixf(soot, r, 0.9)
+    hgt = b.math("SUBTRACT", b.math("MULTIPLY", n_fine, 0.25), b.math("MULTIPLY", cracks, 0.8))
+    hgt = b.math("SUBTRACT", hgt, b.math("MULTIPLY", pits, 0.5))
+    hgt = b.math("ADD", hgt, b.math("MULTIPLY", flake, 0.3))
+    b.normal_from(None, bump_height=hgt, bump_strength=0.55, bump_dist=0.004)
+    return b.out(col, r, 0.0)
