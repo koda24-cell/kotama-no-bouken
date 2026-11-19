@@ -9,7 +9,7 @@ b4p_claw_rock — 竜の爪痕：3本の深い溝が刻まれた黒い玄武岩�
 形・寸法の要点:
   - 立った岩板 幅2.0m×厚さ0.6m×高さ1.4m。少し後ろへ傾いた平らな正面（割れ面）に爪痕
   - 爪痕は左上→右下へ弧を描く3本（中央が最長1.25m、間隔約0.19mで先へ少し開く）。
-    幅は最大約0.10m、深さは中央0.11m・外側0.08m。入りは浅く鋭く、中ほどが最も深く、抜けはかすれて欠ける
+    幅は最大約0.12m、深さは中央0.135m・外側0.105m。上の溝は板の左上の縁を切って抜ける。入りは浅く鋭く、中ほどが最も深く、抜けはかすれて欠ける
   - 溝の縁は欠けて（えぐれた小さな割れ面）ギザギザ。岩の角も大きく割れ落ちている
   - 足元に溝から削れ落ちた岩片6つ（新しい断面）
 劣化（設計書3章）:
@@ -28,11 +28,11 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Vector, noise  # noqa: E402
 
 NAME = "b4p_claw_rock"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(1111)
 C.reset(1111)
 
-RAD = (1.0, 0.32, 0.85)
+RAD = (1.18, 0.32, 0.86)
 CEN = Vector((0, 0, 0.50))
 NF = Vector((0, -0.96, 0.28)).normalized()      # 正面（割れ面）の外向き法線：少し上を向く＝後ろへ傾いた板
 SUP = math.sqrt((NF.y * RAD[1]) ** 2 + (NF.z * RAD[2]) ** 2)
@@ -49,10 +49,10 @@ def smooth(x, a, b):
 
 # ---- 爪痕の溝（正面の2D座標 u=横, w=上） ----
 G = []
-base = C.bezier((-0.66, 0.42), (-0.08, 0.30), (0.58, -0.26), n=24)
+base = C.bezier((-0.86, 0.60), (-0.12, 0.36), (0.62, -0.28), n=24)
 tang = [(base[min(i + 1, 24)] - base[max(i - 1, 0)]).normalized() for i in range(25)]
-for k, (lat, depth, wmax, t0, t1) in enumerate(((-0.19, 0.080, 0.042, 0.10, 0.86), (0.0, 0.110, 0.052, 0.0, 1.0),
-                                                 (0.19, 0.085, 0.045, 0.06, 0.90))):
+for k, (lat, depth, wmax, t0, t1) in enumerate(((-0.20, 0.105, 0.048, 0.0, 0.84), (0.0, 0.135, 0.058, 0.0, 1.0),
+                                                 (0.20, 0.110, 0.050, 0.08, 0.90))):
     pts = []
     for i in range(25):
         t = i / 24
@@ -60,7 +60,9 @@ for k, (lat, depth, wmax, t0, t1) in enumerate(((-0.19, 0.080, 0.042, 0.10, 0.86
             continue
         nrm = Vector((-tang[i].y, tang[i].x))
         pts.append(base[i] + nrm * lat * (0.85 + 0.35 * t) + nrm * 0.008 * math.sin(t * 11 + k))
-    chips = [(rnd.uniform(0.15, 0.9), rnd.choice((-1, 1)), rnd.uniform(0.025, 0.05)) for _ in range(6)]
+    chips = [(rnd.uniform(0.12, 0.85), rnd.choice((-1, 1)), rnd.uniform(0.035, 0.075)) for _ in range(6)]
+    chips.append((0.93, 1, 0.10))   # 爪の抜けで岩が大きくえぐれる
+    chips.append((0.90, -1, 0.08))
     G.append({"pts": pts, "depth": depth, "w": wmax, "seed": k * 7.3, "chips": chips,
               "len": sum((pts[i + 1] - pts[i]).length for i in range(len(pts) - 1))})
 WMAX = max(g["w"] for g in G)
@@ -81,7 +83,7 @@ def dist_fn(co):
 
 def carve(bm):
     L = D.bm_layers(bm)
-    D.bm_refine_near(bm, dist_fn, (0.10, 0.05, 0.012))
+    D.bm_refine_near(bm, dist_fn, (0.075, 0.035, 0.0))
     chipped = set()
     for v in bm.verts:
         h, p2 = local(v.co)
@@ -106,7 +108,7 @@ def carve(bm):
                 lat = d - w * 0.85
                 rr = math.sqrt(along * along + lat * lat * 1.6)
                 if rr < rc and d > w * 0.4:
-                    chip = max(chip, 0.028 * (1 - (rr / rc) ** 2))
+                    chip = max(chip, 0.045 * (rc / 0.07) ** 0.5 * (1 - (rr / rc) ** 2))
         if chip > 0.002:
             chipped.add(v)
         v.co -= NF * (cut + chip)
@@ -128,7 +130,7 @@ for k in range(6):
     u = rnd.uniform(-0.45, 0.75)
     y = -0.42 - rnd.uniform(0.0, 0.3)
     sz = rnd.uniform(0.04, 0.11)
-    ob = D.chip_rock(f"chip_{k}", sz, (u, y), seed=60 + k, subdiv=2 if sz > 0.09 else 1,
+    ob = D.chip_rock(f"chip_{k}", sz, (u, y), seed=60 + k, subdiv=1,
                      squash=(1.0, rnd.uniform(0.7, 0.95), rnd.uniform(0.45, 0.7)), rot_z=rnd.uniform(0, 6.28))
     parts.append(ob)
 
