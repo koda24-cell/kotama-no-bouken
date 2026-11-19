@@ -1,8 +1,8 @@
 {
   "asset": "b4p_timber_set_broken",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
-  "triangles": 2704,
+  "triangles": 3674,
   "budget_triangles": 8000,
   "materials": [
     "b4p_timber_set_broken_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    2.58,
-    0.573,
-    2.45
+    2.605,
+    0.621,
+    2.431
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_timber_set_broken.glb",
-  "glb_bytes": 829672,
+  "glb_bytes": 968868,
   "cc0_textures": {
     "wood_planks_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/wood_planks",
@@ -74,16 +74,16 @@
     9
   ],
   "sha256": {
-    "b4p_timber_set_broken.glb": "e1618b36238bc4ff97820196e571e4ee13e272ab0afa022b4df04238e993267f",
-    "b4p_timber_set_broken_volcanic_front.png": "304aafbc14bd8c0eb56ade75ed731342ec7b65bf3a0e40e74a4c451c1fd021ca",
-    "b4p_timber_set_broken_volcanic_side.png": "d37d91c4a85dcd79a71ffdca47f5f722d63fbc177cc25cc79d8c1ce403df0a32",
-    "b4p_timber_set_broken_volcanic_angle.png": "6f5cdad7dc86d4de636d7f7901282a25eb3f1565275191ce3e8f908849b1b7ff",
-    "b4p_timber_set_broken_volcanic_top.png": "e5c74771f7a98ef8bf57fea130117d499a7f252fa70e046e4c364f688ab60f2c",
-    "b4p_timber_set_broken_volcanic_close.png": "d6e169a42d94a9bf522510f41dba763c6275b80b1d0887b73b0d7a799c37c991",
-    "b4p_timber_set_broken_volcanic_back.png": "c0e310858c2727644fed46d7e67aaea18c2ea0e5231f0ca03fea75876a7de421",
-    "b4p_timber_set_broken_studio_front.png": "083a190ea2be2e12a947421576b8d149542b7caa789bf4cf1bd8be1cb4d18d42",
-    "b4p_timber_set_broken_studio_angle.png": "41eca15c914ccacc794f7c290783c39e1f9ecb46ca2f11ab6f987dc7d75aeb57",
-    "b4p_timber_set_broken_studio_scale.png": "f11f3dc457ade3a3a5f3722bd1c4b082eebec7ade1a784bcdbccf642c3c3f55d"
+    "b4p_timber_set_broken.glb": "30ef606b281602748279a59712f21214ec57a7d143117f45af029e4c59568029",
+    "b4p_timber_set_broken_volcanic_front.png": "d8b999c830f5cf57e5cee5ad8317ae809b8bc980ebd753e472a75cbb043e3dd5",
+    "b4p_timber_set_broken_volcanic_side.png": "44d128f9161c88c032b71be10a459a4f2bcb9477d689f199f8361f06f9f5c553",
+    "b4p_timber_set_broken_volcanic_angle.png": "e2ca2080bbd9208ad7d8a59a37ed440a579180f89ae1218d117e0d4ed7b08711",
+    "b4p_timber_set_broken_volcanic_top.png": "0c02fc8786e03fc7de0ceb390e243b5c9066b055490d1d54b844bfd787d727be",
+    "b4p_timber_set_broken_volcanic_close.png": "e25c2bb712c210819120fdb7f7350474b3606e84e5f486638c6096dc3e7616af",
+    "b4p_timber_set_broken_volcanic_back.png": "635f7d21468fe7903bb9f7ce75e168778b454bf888c489586f44ce63f1a6a427",
+    "b4p_timber_set_broken_studio_front.png": "72e599113311b3aa075a933b2a05bb0c659344f6c1fd0ce0cdfa1fbde236564d",
+    "b4p_timber_set_broken_studio_angle.png": "bcb2beace1554c4a3ff66b246a31fa42dd1a3466458b4482bfe61429d95c2654",
+    "b4p_timber_set_broken_studio_scale.png": "be32b3e71429fd3f70847b71ad4849e8081bfa8c36b0348a744280c6aae740f2"
   },
   "renders": [
     "b4p_timber_set_broken_volcanic_front.png",
@@ -97,7 +97,7 @@
     "b4p_timber_set_broken_studio_scale.png"
   ],
   "samples": 96,
-  "notes": "崩れかけた支保工。梁が折れて右半分が斜めに落ち、右脚は折れて上半分が転がる。楔・鎹・矢板・落石つき。",
+  "notes": "崩れかけた支保工。天井梁が中央で折れて V 字に落ち、右脚は座屈して外へ傾く。楔・鎹・矢板・落石の山つき。",
   "game_lights": [],
   "approval": "NOT_APPROVED",
   "design": "docs/3d/B4_PROPS_DESIGN.md"
