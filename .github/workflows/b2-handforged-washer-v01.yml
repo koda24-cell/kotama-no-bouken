@@ -57,7 +57,7 @@ jobs:
           PY
       - name: ClamAV scan of generated review payload
         run: |
-          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ecb36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'clamscan -r --infected --no-summary render-output/b2-washer-v01'
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'clamscan -r --infected --no-summary render-output/b2-washer-v01'
       - name: Temporary artifact, no asset promotion
         if: always()
         uses: actions/upload-artifact@v4
