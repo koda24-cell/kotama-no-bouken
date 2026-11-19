@@ -11,7 +11,7 @@ b4p_dragon_ore_cluster — 炎竜鉱：割れた玄武岩の塊から暗赤の�
 形・寸法の要点:
   - 母岩：幅約1.5m×奥行1.0m×高さ0.65mの黒い玄武岩。1つの塊を平面で割り、右側の片(B)を
     底の線を軸に約17°外へ傾けて「結晶が岩を押し割った」V字の割れ目を作る（割れ目の内側が赤く光る）
-  - 結晶：割れ目の底から扇状に14本。大2（1.0m/0.74m、うち1本は先が折れる）・中3（0.4〜0.52m）・
+  - 結晶：割れ目の底から扇状に14本。大2（1.0m/0.74m、うち1本は先が折れる）・中3（0.44〜0.56m）・
     小9（0.14〜0.30m、割れ目に沿って点々と顔を出す）。六角柱の太さ・面幅は不揃い、先端の錐面は偏る
   - 足元：割れて落ちた岩片5つ（新しい断面が多い）と、折れて転がった結晶1本
 劣化（設計書3章）:
@@ -31,7 +31,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_dragon_ore_cluster"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(808)
 C.reset(808)
 
@@ -44,8 +44,8 @@ def add(ob, key):
 
 
 # ---- 母岩：1つの塊を作って割る ----
-full = D.basalt_bm((0.74, 0.56, 0.46), (0, 0, 0.20), seed=3, subdiv=5, lumpy=0.16, facets=13,
-                   facet_depth=(0.6, 0.88), fresh_ratio=0.3, up_bias=0.2, fine=(0.018, 5.5), ground=0.0)
+full = D.basalt_bm((0.74, 0.56, 0.46), (0, 0, 0.20), seed=3, subdiv=5, lumpy=0.14, facets=19,
+                   facet_depth=(0.52, 0.86), fresh_ratio=0.3, up_bias=0.2, fine=(0.018, 5.5), ground=0.0)
 D.bm_vnoise(full, 0.006, 16.0, seed=9, z0=0.0)
 CO = Vector((0.12, -0.04, 0.0))
 N = Vector((0.80, -0.55, 0.10)).normalized()  # 割れ目は斜め：正面からも横からも V 字が見える

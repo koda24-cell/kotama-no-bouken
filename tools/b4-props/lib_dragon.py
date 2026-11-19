@@ -310,8 +310,8 @@ BASALT_LIGHT = (0.0273, 0.0222, 0.0194)
 ASH = (0.082, 0.077, 0.070)
 
 
-def basalt(name, tex_scale=0.9, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairline=1.0, ash_amt=1.0,
-           tex_lo=0.03, tex_hi=0.40):
+def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairline=1.0, ash_amt=1.0,
+           tex_lo=0.03, tex_hi=0.40, nrm_strength=0.75, bump=0.6):
     """玄武岩: rock_face_02（CC0）の明暗を 2章の色域へ写す＋気泡の穴＋新しい割れ面＋角の欠け＋
     割れ目の縁の煤と焼け＋上向き面・凹みの灰。発光は glow 面（割れ目の内側）と、
     割れ目の近く（cd）の細いひびの中だけ"""
@@ -336,7 +336,7 @@ def basalt(name, tex_scale=0.9, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     ves = b.math("MULTIPLY", ves, b.ramp(n_mid, [(0.42, 0.0), (0.68, 1.0)]))
     col = b.mix(b.math("MULTIPLY", ves, 0.85), col, (0.004, 0.0036, 0.0034))
     # 新しい割れ面（少し灰色がかって明るい、灰がのらない）
-    fcol = b.mix(n_fine, (0.019, 0.018, 0.0175), (0.028, 0.026, 0.025))
+    fcol = b.mix(n_fine, (0.0155, 0.0150, 0.0148), (0.023, 0.0222, 0.0218))
     col = b.mix(b.math("MULTIPLY", fresh, 0.85), col, fcol)
     # 角の欠け（新しい断面が角に出る）
     edge = b.math("MULTIPLY", b.edge_mask(0.012, 0.03, 0.22), b.ramp(n_fine, [(0.3, 0.2), (0.65, 1.0)]), clamp=True)
@@ -361,8 +361,8 @@ def basalt(name, tex_scale=0.9, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     col = b.mix(b.math("MINIMUM", b.math("MULTIPLY", glow, 4.0), 1.0), col, (0.010, 0.0055, 0.004))
     # 割れ目の縁から伸びる短い細いひび（発光）
     hv = ridge(b, 5.0, vec=warp(b, 2.0, 0.25))
-    hl = b.ramp(hv, [(0.955, 0.0), (0.985, 1.0)])
-    hair_m = b.math("MULTIPLY", hl, b._map(cd, 0.78, 0.97))
+    hl = b.ramp(hv, [(0.968, 0.0), (0.99, 1.0)])
+    hair_m = b.math("MULTIPLY", hl, b._map(cd, 0.84, 0.985))
     hair_m = b.math("MULTIPLY", hair_m, b.ramp(n_big, [(0.4, 0.0), (0.6, 1.0)]))
     hair_m = b.math("MULTIPLY", hair_m, b.math("SUBTRACT", 1.0, glow))
     hair_m = b.math("MULTIPLY", hair_m, hairline, clamp=True)
@@ -380,12 +380,12 @@ def basalt(name, tex_scale=0.9, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     hgt = b.math("ADD", b.math("MULTIPLY", lum, 0.4), b.math("MULTIPLY", n_fine, 0.25))
     hgt = b.math("SUBTRACT", hgt, b.math("MULTIPLY", ves, 0.7))
     hgt = b.math("SUBTRACT", hgt, b.math("MULTIPLY", hair_m, 0.8))
-    b.normal_from(nrm, 0.45, bump_height=hgt, bump_strength=0.45, bump_dist=0.004)
+    b.normal_from(nrm, nrm_strength, bump_height=hgt, bump_strength=bump, bump_dist=0.004)
     return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
 
 
 def dragon_crystal(name, glow_strength=4.0, body_dark=(0.026, 0.0020, 0.0019), body_mid=(0.056, 0.0036, 0.0031),
-                   body_hi=(0.10, 0.0062, 0.0050), inner=0.32):
+                   body_hi=(0.10, 0.0062, 0.0050), inner=0.32, metallic=0.3):
     """炎竜鉱の結晶: 暗い赤の艶のある面＋角は欠けて明るく＋根元は煤と灰。
     発光は「内部」だけ: 根元ほど強く、面の中央で強く角で弱い（厚みの見え方）＋内部のひび＋包有物＋折れ口"""
     b = C.NB(name)
@@ -423,6 +423,8 @@ def dragon_crystal(name, glow_strength=4.0, body_dark=(0.026, 0.0020, 0.0019), b
     e = b.math("MAXIMUM", e, b.math("MULTIPLY", fresh, 0.5))
     e = b.math("MULTIPLY", e, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", ashm, 0.8)))
     # 内部の発光色 #ff3b1f（linear 1.0,0.044,0.014）を中心に
-    emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.30, 0.010, 0.004)), (0.65, (0.85, 0.040, 0.012)), (1.0, (1.0, 0.12, 0.03))])
+    emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.26, 0.006, 0.003)), (0.65, (0.72, 0.024, 0.008)), (1.0, (1.0, 0.065, 0.02))])
+    # 反射を暗い赤に寄せる（白っぽいハイライトでピンクに見えるのを防ぐ）
+    metal = b.mixf(b.math("MAXIMUM", ashm, root), metallic, 0.0)
     b.normal_from(None, bump_height=b.math("ADD", b.math("MULTIPLY", n2, 0.3), b.math("MULTIPLY", cr, -0.4)), bump_strength=0.15, bump_dist=0.002)
-    return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
+    return b.out(col, r, metal, emit=emit, emit_strength=glow_strength)
