@@ -332,3 +332,11 @@
 - 状態: 公式公開要旨とGDC講演を調査し、採用計画を文書化。実ゲーム導入・レンダリング・GPU実測は未実施。
 - 権利: 技術的知見のみ参照。任天堂のコード/画像/ゲームデータはコピーしない。講演資料の公開制限に注意。
 - 手順/優先順位/検証: [BOTW_ALL_FLOORS_TECH_ADOPTION_20261118.md](BOTW_ALL_FLOORS_TECH_ADOPTION_20261118.md)。
+
+
+## B5 BotW 怨念 / TotK 瘴気の技術研究（2026-11-19）
+
+- **公式資料**: [CEDEC 2017 BotWエフェクト](https://cedec.cesa.or.jp/2017/session/VA/s58eed8209ffce.html)、[CEDEC 2017 レイヤー描画](https://cedec.cesa.or.jp/2017/session/VA/s58eed7182c81b.html)、[Nintendo DREAM講演取材（ひも）](https://www.ndw.jp/post-1121/)、[任天堂VFX職種解説](https://www.nintendo.co.jp/jobs/introduction/design/work04.html)。講演概要/取材確認済み、怨念固有の内部実装は非公開・未確認。
+- **第三者研究**: [MiasmaSharp](https://github.com/BladesawStudios/MiasmaSharp) はTotKの領域指定・合成・ノイズの研究。**AGPL-3.0のためソースをコタマへコピーしない**。BotWの怨念と混同しない。
+- **応用候補**: Blender Curve→Meshによる不規則な紐/根、world-space/domain-warp侵食膜、黒紫の表面と局所的な脈動emission、深度付き薄霧、遠景レイヤー。**研究のみ / 未導入 / 実レンダ未検証 / NOT_APPROVED**。
+- **技術・出典・検証状況の詳細**: [B5 BotW/TotK瘴気技術調査](research/B5_BOTW_MALICE_VFX_TECHNICAL_RESEARCH_20261119.md)。既存岩・VFXの原本保持、独立候補で比較。
