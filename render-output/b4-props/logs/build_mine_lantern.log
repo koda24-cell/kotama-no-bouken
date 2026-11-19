@@ -1,28 +1,28 @@
 [b4-props] b4p_mine_lantern: tris=2480 materials=5
 Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)
-Fra:1 Mem:33.09M (Peak 36.97M) | Time:498639:16:57.71 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:33.17M (Peak 36.97M) | Time:498639:16:57.71 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:33.17M (Peak 36.97M) | Time:498639:16:57.71 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_basecolor
-Fra:1 Mem:34.08M (Peak 77.96M) | Time:498639:17:00.71 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:34.17M (Peak 77.96M) | Time:498639:17:00.71 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:34.17M (Peak 77.96M) | Time:498639:17:00.71 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_roughness
-Fra:1 Mem:35.04M (Peak 77.96M) | Time:498639:17:02.15 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:35.13M (Peak 77.96M) | Time:498639:17:02.15 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:35.12M (Peak 77.96M) | Time:498639:17:02.15 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_metallic
-Fra:1 Mem:36.02M (Peak 77.96M) | Time:498639:17:03.45 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:36.11M (Peak 77.96M) | Time:498639:17:03.45 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:36.11M (Peak 77.96M) | Time:498639:17:03.45 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_emissive
-Fra:1 Mem:37.14M (Peak 77.96M) | Time:498639:17:03.64 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:37.39M (Peak 77.96M) | Time:498639:17:03.64 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:37.39M (Peak 77.96M) | Time:498639:17:03.64 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_normal
-Fra:1 Mem:38.15M (Peak 86.93M) | Time:498639:17:04.87 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:38.40M (Peak 86.93M) | Time:498639:17:04.88 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:38.40M (Peak 86.93M) | Time:498639:17:04.88 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_ao
-15:17:19 | INFO: Starting glTF 2.0 export
-15:17:19 | INFO: Extracting primitive: b4p_mine_lantern
-15:17:19 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
-15:17:19 | INFO: Primitives created: 1
-15:17:19 | INFO: Finished glTF 2.0 export in 0.0437159538269043 s
+Fra:1 Mem:33.09M (Peak 36.97M) | Time:498639:29:10.75 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:33.17M (Peak 36.97M) | Time:498639:29:10.75 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:33.17M (Peak 36.97M) | Time:498639:29:10.75 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_basecolor
+Fra:1 Mem:34.08M (Peak 77.96M) | Time:498639:29:15.11 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:34.17M (Peak 77.96M) | Time:498639:29:15.11 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:34.17M (Peak 77.96M) | Time:498639:29:15.11 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_roughness
+Fra:1 Mem:35.04M (Peak 77.96M) | Time:498639:29:16.98 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:35.13M (Peak 77.96M) | Time:498639:29:16.98 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:35.12M (Peak 77.96M) | Time:498639:29:16.98 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_metallic
+Fra:1 Mem:36.02M (Peak 77.96M) | Time:498639:29:18.37 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:36.11M (Peak 77.96M) | Time:498639:29:18.37 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:36.11M (Peak 77.96M) | Time:498639:29:18.37 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_emissive
+Fra:1 Mem:37.14M (Peak 77.96M) | Time:498639:29:18.62 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:37.39M (Peak 77.96M) | Time:498639:29:18.62 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:37.39M (Peak 77.96M) | Time:498639:29:18.62 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_normal
+Fra:1 Mem:38.15M (Peak 86.93M) | Time:498639:29:20.30 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:38.40M (Peak 86.93M) | Time:498639:29:20.30 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:38.40M (Peak 86.93M) | Time:498639:29:20.30 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_mine_lantern_ao
+15:29:40 | INFO: Starting glTF 2.0 export
+15:29:40 | INFO: Extracting primitive: b4p_mine_lantern
+15:29:40 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+15:29:40 | INFO: Primitives created: 1
+15:29:40 | INFO: Finished glTF 2.0 export in 0.05961346626281738 s
 Info: Total files 8 | Changed 8 | Failed 0
 Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
@@ -35,7 +35,7 @@ INFO Draco mesh compression is available, use library at /home/runner/blender/4.
 Info: Saved "b4p_mine_lantern.blend"
 [b4-props] render b4p_mine_lantern_volcanic_front.png
 Fra:1 Mem:16.60M (Peak 20.21M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:16.60M (Peak 20.21M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:16.61M (Peak 20.21M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
 Fra:1 Mem:16.91M (Peak 20.21M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
 Fra:1 Mem:16.55M (Peak 20.21M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
 Fra:1 Mem:16.55M (Peak 20.21M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
@@ -75,14 +75,14 @@ Fra:1 Mem:21.44M (Peak 21.44M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, 
 Fra:1 Mem:21.44M (Peak 21.44M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:21.44M (Peak 21.44M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:21.44M (Peak 21.44M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.45M (Peak 97.45M) | Time:00:00.73 | Remaining:01:07.98 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.45M (Peak 97.45M) | Time:00:23.50 | Remaining:00:44.83 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.45M (Peak 97.45M) | Time:00:46.29 | Remaining:00:22.06 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.45M (Peak 97.45M) | Time:00:57.02 | Remaining:00:11.40 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.46M (Peak 177.46M) | Time:01:11.03 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.46M (Peak 177.46M) | Time:01:11.03 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
+Fra:1 Mem:97.45M (Peak 97.45M) | Time:00:00.89 | Remaining:01:22.61 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.45M (Peak 97.45M) | Time:00:28.32 | Remaining:00:54.02 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.45M (Peak 97.45M) | Time:00:55.71 | Remaining:00:26.55 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.45M (Peak 97.45M) | Time:01:08.57 | Remaining:00:13.70 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.46M (Peak 177.46M) | Time:01:20.53 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.46M (Peak 177.46M) | Time:01:20.53 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_front.png'
-Time: 01:11.27 (Saving: 00:00.23)
+Time: 01:20.83 (Saving: 00:00.30)
 
 [b4-props] render b4p_mine_lantern_volcanic_side.png
 Fra:1 Mem:16.68M (Peak 16.68M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
@@ -126,14 +126,14 @@ Fra:1 Mem:21.52M (Peak 21.52M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, 
 Fra:1 Mem:21.52M (Peak 21.52M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:21.52M (Peak 21.52M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:21.52M (Peak 21.52M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.53M (Peak 97.53M) | Time:00:00.71 | Remaining:01:05.65 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.53M (Peak 97.53M) | Time:00:22.47 | Remaining:00:42.85 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.53M (Peak 97.53M) | Time:00:44.36 | Remaining:00:21.14 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.53M (Peak 97.53M) | Time:00:54.68 | Remaining:00:10.93 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.53M (Peak 177.54M) | Time:01:08.33 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.53M (Peak 177.54M) | Time:01:08.33 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
+Fra:1 Mem:97.53M (Peak 97.53M) | Time:00:00.85 | Remaining:01:18.49 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.53M (Peak 97.53M) | Time:00:27.03 | Remaining:00:51.55 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.53M (Peak 97.53M) | Time:00:53.26 | Remaining:00:25.38 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.53M (Peak 97.53M) | Time:01:05.51 | Remaining:00:13.09 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.53M (Peak 177.54M) | Time:01:17.09 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.53M (Peak 177.54M) | Time:01:17.09 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_side.png'
-Time: 01:08.48 (Saving: 00:00.15)
+Time: 01:17.29 (Saving: 00:00.19)
 
 [b4-props] render b4p_mine_lantern_volcanic_angle.png
 Fra:1 Mem:16.75M (Peak 16.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
@@ -165,7 +165,7 @@ Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, 
 Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:17.11M (Peak 17.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:18.11M (Peak 18.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:18.11M (Peak 18.11M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_orm.png
 Fra:1 Mem:21.12M (Peak 21.12M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
 Fra:1 Mem:21.12M (Peak 21.12M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
 Fra:1 Mem:21.12M (Peak 21.12M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights
@@ -177,17 +177,17 @@ Fra:1 Mem:21.59M (Peak 21.59M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, 
 Fra:1 Mem:21.59M (Peak 21.59M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:21.59M (Peak 21.59M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:21.59M (Peak 21.59M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.60M (Peak 97.60M) | Time:00:01.06 | Remaining:01:38.46 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.60M (Peak 97.60M) | Time:00:33.87 | Remaining:01:04.61 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.60M (Peak 97.60M) | Time:01:06.36 | Remaining:00:31.63 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.60M (Peak 97.60M) | Time:01:21.51 | Remaining:00:16.29 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.61M (Peak 177.61M) | Time:01:35.74 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.61M (Peak 177.61M) | Time:01:35.74 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:00:01.24 | Remaining:01:55.33 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:00:39.96 | Remaining:01:16.24 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:01:18.12 | Remaining:00:37.24 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.60M (Peak 97.60M) | Time:01:36.03 | Remaining:00:19.20 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.61M (Peak 177.61M) | Time:01:48.27 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.61M (Peak 177.61M) | Time:01:48.27 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_angle.png'
-Time: 01:35.91 (Saving: 00:00.17)
+Time: 01:48.48 (Saving: 00:00.20)
 
 [b4-props] render b4p_mine_lantern_volcanic_top.png
-Fra:1 Mem:16.82M (Peak 16.82M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
+Fra:1 Mem:16.83M (Peak 16.83M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
 Fra:1 Mem:16.83M (Peak 16.83M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
 Fra:1 Mem:17.13M (Peak 17.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
 Fra:1 Mem:16.78M (Peak 17.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
@@ -215,7 +215,7 @@ Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, 
 Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_orm.png
+Fra:1 Mem:17.18M (Peak 17.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
 Fra:1 Mem:18.18M (Peak 18.18M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
 Fra:1 Mem:21.20M (Peak 21.20M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
 Fra:1 Mem:21.20M (Peak 21.20M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
@@ -228,14 +228,14 @@ Fra:1 Mem:21.66M (Peak 21.66M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, 
 Fra:1 Mem:21.66M (Peak 21.66M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:21.66M (Peak 21.66M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:21.66M (Peak 21.66M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.68M (Peak 97.68M) | Time:00:01.09 | Remaining:01:42.10 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.68M (Peak 97.68M) | Time:00:35.51 | Remaining:01:07.76 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.68M (Peak 97.68M) | Time:01:09.82 | Remaining:00:33.28 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.68M (Peak 97.68M) | Time:01:25.88 | Remaining:00:17.17 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.68M (Peak 177.68M) | Time:01:41.97 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.68M (Peak 177.68M) | Time:01:41.97 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
+Fra:1 Mem:97.68M (Peak 97.68M) | Time:00:01.28 | Remaining:01:59.25 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.68M (Peak 97.68M) | Time:00:39.89 | Remaining:01:16.10 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.68M (Peak 97.68M) | Time:01:17.21 | Remaining:00:36.81 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.68M (Peak 97.68M) | Time:01:34.52 | Remaining:00:18.89 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.68M (Peak 177.68M) | Time:01:47.82 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.68M (Peak 177.68M) | Time:01:47.82 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_top.png'
-Time: 01:42.13 (Saving: 00:00.15)
+Time: 01:48.02 (Saving: 00:00.19)
 
 [b4-props] render b4p_mine_lantern_volcanic_close.png
 Fra:1 Mem:16.90M (Peak 16.90M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
@@ -267,7 +267,7 @@ Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, 
 Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:17.26M (Peak 17.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_basecolor.png
+Fra:1 Mem:18.26M (Peak 18.26M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
 Fra:1 Mem:21.27M (Peak 21.27M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
 Fra:1 Mem:21.27M (Peak 21.27M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
 Fra:1 Mem:21.27M (Peak 21.27M) | Time:00:00.01 | Mem:4.54M, Peak:4.54M | Scene, ViewLayer | Updating Lights
@@ -279,14 +279,14 @@ Fra:1 Mem:21.74M (Peak 21.74M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, 
 Fra:1 Mem:21.74M (Peak 21.74M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:21.74M (Peak 21.74M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:21.74M (Peak 21.74M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.75M (Peak 97.75M) | Time:00:01.07 | Remaining:01:40.02 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.75M (Peak 97.75M) | Time:00:34.45 | Remaining:01:05.72 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.75M (Peak 97.75M) | Time:01:07.76 | Remaining:00:32.30 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.75M (Peak 97.75M) | Time:01:23.51 | Remaining:00:16.69 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.76M (Peak 177.76M) | Time:01:38.01 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.76M (Peak 177.76M) | Time:01:38.01 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:00:01.16 | Remaining:01:48.52 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:00:37.65 | Remaining:01:11.83 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:01:13.95 | Remaining:00:35.25 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.75M (Peak 97.75M) | Time:01:31.08 | Remaining:00:18.21 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.76M (Peak 177.76M) | Time:01:43.23 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.76M (Peak 177.76M) | Time:01:43.23 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_close.png'
-Time: 01:38.17 (Saving: 00:00.15)
+Time: 01:43.43 (Saving: 00:00.20)
 
 [b4-props] render b4p_mine_lantern_volcanic_back.png
 Fra:1 Mem:16.97M (Peak 16.97M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
@@ -317,7 +317,7 @@ Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, 
 Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
+Fra:1 Mem:17.33M (Peak 17.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_basecolor.png
 Fra:1 Mem:18.33M (Peak 18.33M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
 Fra:1 Mem:21.35M (Peak 21.35M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Camera Volume
 Fra:1 Mem:21.35M (Peak 21.35M) | Time:00:00.01 | Mem:4.46M, Peak:4.46M | Scene, ViewLayer | Updating Lookup Tables
@@ -330,14 +330,14 @@ Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, 
 Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:21.81M (Peak 21.81M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:97.83M (Peak 97.83M) | Time:00:00.80 | Remaining:01:14.23 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:97.83M (Peak 97.83M) | Time:00:25.54 | Remaining:00:48.71 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:97.83M (Peak 97.83M) | Time:00:50.10 | Remaining:00:23.88 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:97.83M (Peak 97.83M) | Time:01:01.62 | Remaining:00:12.32 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:129.83M (Peak 177.83M) | Time:01:16.76 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:129.83M (Peak 177.83M) | Time:01:16.76 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
+Fra:1 Mem:97.83M (Peak 97.83M) | Time:00:00.93 | Remaining:01:26.33 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:97.83M (Peak 97.83M) | Time:00:29.27 | Remaining:00:55.83 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:97.83M (Peak 97.83M) | Time:00:58.37 | Remaining:00:27.82 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:97.83M (Peak 97.83M) | Time:01:12.04 | Remaining:00:14.40 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:129.83M (Peak 177.83M) | Time:01:25.46 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:129.83M (Peak 177.83M) | Time:01:25.46 | Mem:81.02M, Peak:81.02M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_volcanic_back.png'
-Time: 01:16.92 (Saving: 00:00.16)
+Time: 01:25.66 (Saving: 00:00.19)
 
 [b4-props] render b4p_mine_lantern_studio_front.png
 Fra:1 Mem:16.96M (Peak 16.96M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
@@ -368,7 +368,7 @@ Fra:1 Mem:17.35M (Peak 17.35M) | Time:00:00.00 | Mem:0.36M, Peak:0.44M | Scene, 
 Fra:1 Mem:17.35M (Peak 17.35M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:17.35M (Peak 17.35M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:17.35M (Peak 17.35M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:17.35M (Peak 17.35M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_basecolor.png
+Fra:1 Mem:17.35M (Peak 17.35M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
 Fra:1 Mem:17.35M (Peak 17.35M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
 Fra:1 Mem:21.36M (Peak 21.36M) | Time:00:00.01 | Mem:4.45M, Peak:4.45M | Scene, ViewLayer | Updating Camera Volume
 Fra:1 Mem:21.36M (Peak 21.36M) | Time:00:00.01 | Mem:4.45M, Peak:4.45M | Scene, ViewLayer | Updating Lookup Tables
@@ -381,11 +381,12 @@ Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, 
 Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:21.82M (Peak 21.82M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:97.84M (Peak 97.84M) | Time:00:00.57 | Remaining:00:26.08 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:129.84M (Peak 177.84M) | Time:00:35.84 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:129.84M (Peak 177.84M) | Time:00:35.84 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Finished
+Fra:1 Mem:97.84M (Peak 97.84M) | Time:00:00.66 | Remaining:00:29.95 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:97.84M (Peak 97.84M) | Time:00:21.35 | Remaining:00:09.69 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 33/48
+Fra:1 Mem:129.84M (Peak 177.84M) | Time:00:37.53 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:129.84M (Peak 177.84M) | Time:00:37.53 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_studio_front.png'
-Time: 00:36.00 (Saving: 00:00.15)
+Time: 00:37.73 (Saving: 00:00.20)
 
 [b4-props] render b4p_mine_lantern_studio_angle.png
 Fra:1 Mem:17.02M (Peak 17.02M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
@@ -417,29 +418,28 @@ Fra:1 Mem:17.41M (Peak 17.41M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, 
 Fra:1 Mem:17.41M (Peak 17.41M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:17.41M (Peak 17.41M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:17.41M (Peak 17.41M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:18.41M (Peak 18.41M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:17.41M (Peak 17.41M) | Time:00:00.00 | Mem:0.45M, Peak:0.45M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
 Fra:1 Mem:21.42M (Peak 21.42M) | Time:00:00.01 | Mem:4.45M, Peak:4.45M | Scene, ViewLayer | Updating Camera Volume
 Fra:1 Mem:21.42M (Peak 21.42M) | Time:00:00.01 | Mem:4.45M, Peak:4.45M | Scene, ViewLayer | Updating Lookup Tables
 Fra:1 Mem:21.42M (Peak 21.42M) | Time:00:00.01 | Mem:4.53M, Peak:4.53M | Scene, ViewLayer | Updating Lights
 Fra:1 Mem:21.42M (Peak 21.42M) | Time:00:00.01 | Mem:4.53M, Peak:4.53M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:4.99M, Peak:4.99M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:4.99M, Peak:4.99M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:4.91M, Peak:4.99M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.02 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:97.90M (Peak 97.90M) | Time:00:00.78 | Remaining:00:36.00 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:97.90M (Peak 97.90M) | Time:00:24.93 | Remaining:00:11.32 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 33/48
-Fra:1 Mem:129.90M (Peak 177.90M) | Time:00:45.47 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:129.90M (Peak 177.90M) | Time:00:45.47 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Finished
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.03 | Mem:4.99M, Peak:4.99M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.03 | Mem:4.99M, Peak:4.99M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.03 | Mem:4.91M, Peak:4.99M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:21.88M (Peak 21.88M) | Time:00:00.03 | Mem:5.00M, Peak:5.00M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:97.90M (Peak 97.90M) | Time:00:00.90 | Remaining:00:41.32 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:97.90M (Peak 97.90M) | Time:00:28.45 | Remaining:00:12.92 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 33/48
+Fra:1 Mem:129.90M (Peak 177.90M) | Time:00:48.01 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:129.90M (Peak 177.90M) | Time:00:48.01 | Mem:81.01M, Peak:81.01M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_studio_angle.png'
-Time: 00:45.63 (Saving: 00:00.16)
+Time: 00:48.21 (Saving: 00:00.20)
 
 [b4-props] render b4p_mine_lantern_studio_scale.png
 Fra:1 Mem:17.39M (Peak 17.39M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_mine_lantern
-Fra:1 Mem:17.39M (Peak 17.39M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _fig_head
-Fra:1 Mem:17.42M (Peak 17.42M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:17.40M (Peak 17.40M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
 Fra:1 Mem:17.78M (Peak 17.78M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
 Fra:1 Mem:17.35M (Peak 17.78M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
 Fra:1 Mem:17.35M (Peak 17.78M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
@@ -467,7 +467,7 @@ Fra:1 Mem:17.82M (Peak 17.82M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, 
 Fra:1 Mem:17.82M (Peak 17.82M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:17.82M (Peak 17.82M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:17.82M (Peak 17.82M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_emissive.png
-Fra:1 Mem:18.82M (Peak 18.82M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
+Fra:1 Mem:17.82M (Peak 17.82M) | Time:00:00.00 | Mem:0.56M, Peak:0.56M | Scene, ViewLayer | Updating Images | Loading b4p_mine_lantern_normal.png
 Fra:1 Mem:21.83M (Peak 21.83M) | Time:00:00.01 | Mem:4.56M, Peak:4.56M | Scene, ViewLayer | Updating Camera Volume
 Fra:1 Mem:21.83M (Peak 21.83M) | Time:00:00.01 | Mem:4.56M, Peak:4.56M | Scene, ViewLayer | Updating Lookup Tables
 Fra:1 Mem:21.83M (Peak 21.83M) | Time:00:00.01 | Mem:4.64M, Peak:4.64M | Scene, ViewLayer | Updating Lights
@@ -479,11 +479,11 @@ Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.11M, Peak:5.11M | Scene, 
 Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.11M, Peak:5.11M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.11M, Peak:5.11M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:22.29M (Peak 22.29M) | Time:00:00.02 | Mem:5.11M, Peak:5.11M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:98.31M (Peak 98.31M) | Time:00:00.44 | Remaining:00:19.69 | Mem:81.12M, Peak:81.12M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:130.31M (Peak 178.31M) | Time:00:29.09 | Mem:81.12M, Peak:81.12M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:130.31M (Peak 178.31M) | Time:00:29.09 | Mem:81.12M, Peak:81.12M | Scene, ViewLayer | Finished
+Fra:1 Mem:98.31M (Peak 98.31M) | Time:00:00.51 | Remaining:00:22.71 | Mem:81.12M, Peak:81.12M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:130.31M (Peak 178.31M) | Time:00:29.35 | Mem:81.12M, Peak:81.12M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:130.31M (Peak 178.31M) | Time:00:29.35 | Mem:81.12M, Peak:81.12M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_mine_lantern/b4p_mine_lantern_studio_scale.png'
-Time: 00:29.25 (Saving: 00:00.15)
+Time: 00:29.55 (Saving: 00:00.19)
 
 [b4-props] done b4p_mine_lantern: tris=2480 bbox=[0.171, 0.153, 0.378] glb=253064B
 
