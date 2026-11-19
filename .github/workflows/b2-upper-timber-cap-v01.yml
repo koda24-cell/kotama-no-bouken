@@ -3,7 +3,7 @@ on:
   push:
     branches: [feature/gpt-b2-upper-timber-bearing-cap-v01-20261119]
     paths:
-      - 'tools/b2-waterwheel-upper-cap/**'
+      - 'tools/b2-waterwheel-upper-cap/build_upper_cap_v01.py'
       - '.github/workflows/b2-upper-timber-cap-v01.yml'
   workflow_dispatch:
 permissions:
