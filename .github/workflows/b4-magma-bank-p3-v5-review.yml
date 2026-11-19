@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
-      - feature/blender53-b4-v5-v16-review-20261119
     paths:
       - tools/floor4/magma_banks/build_p3_v5.py
       - tools/floor4/magma_banks/p3_v5_additions.py
