@@ -1,4 +1,4 @@
-name: B2 Single Wooden Hub V06 Generated Fracture Texture QA
+name: B2 Single Wooden Hub V06 Procedural Torn Oak Texture Review
 on:
   push:
     branches: [feature/gpt-b2-single-wooden-hub-v01-20261119]
