@@ -2,7 +2,7 @@ name: B2 Single Waterwheel Spoke V02 Blender Review
 # Design reviewed against development wheel geometry; generate review-only artifacts.
 on:
   push:
-    branches: [feature/gpt-b2-waterwheel-single-spoke-v02-20261119]
+    branches: [feature/gpt-b2-waterwheel-single-spoke-v01-20261119]
     paths:
       - '.github/workflows/b2-waterwheel-single-spoke-v02.yml'
       - 'tools/b2-waterwheel-spoke/**'
@@ -23,12 +23,12 @@ jobs:
           echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > /tmp/b2-spoke-run.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin feature/gpt-b2-waterwheel-single-spoke-v02-20261119
-          git reset --hard origin/feature/gpt-b2-waterwheel-single-spoke-v02-20261119
+          git fetch origin feature/gpt-b2-waterwheel-single-spoke-v01-20261119
+          git reset --hard origin/feature/gpt-b2-waterwheel-single-spoke-v01-20261119
           cp /tmp/b2-spoke-run.json docs/3d/b2-waterwheel-spoke/latest-v02.json
           git add docs/3d/b2-waterwheel-spoke/latest-v02.json
           git commit -m "chore(b2): record single spoke V02 run" || true
-          git push origin HEAD:feature/gpt-b2-waterwheel-single-spoke-v02-20261119
+          git push origin HEAD:feature/gpt-b2-waterwheel-single-spoke-v01-20261119
       - name: Restore approved-look V11 rim Blend as a non-destructive PBR source
         uses: actions/download-artifact@v4
         with:
