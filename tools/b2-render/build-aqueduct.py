@@ -2,7 +2,7 @@ import bpy, math, random, os
 from mathutils import Vector
 random.seed(42)
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
-out='/work/render-output/b2-aqueduct';os.makedirs(out,exist_ok=True)
+out='render-output/b2-aqueduct';os.makedirs(out,exist_ok=True)
 def mat(n,c,metal=0,rough=.65):
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True
  p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*c,1);p.inputs['Metallic'].default_value=metal;p.inputs['Roughness'].default_value=rough;return m
@@ -195,7 +195,7 @@ bpy.ops.export_scene.gltf(filepath=out+'/ancient_ice_bridge_v03.glb',export_form
 world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs['Color'].default_value=(.03,.06,.12,1)
 for loc,power in [((1,-8,15),2600),((-10,4,10),1600)]:
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=9;o.rotation_euler=(Vector((0,0,4))-o.location).to_track_quat('-Z','Y').to_euler()
-bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=24
+bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=24;bpy.context.scene.cycles.use_denoising=False
 bpy.context.scene.render.resolution_x=1100;bpy.context.scene.render.resolution_y=760;bpy.context.scene.render.resolution_percentage=100
 for name,pos in [('front',(0,-31,15)),('side',(30,-2,15)),('angle',(24,-30,17))]:
  bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,4.5))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=27;bpy.context.scene.camera=cam
