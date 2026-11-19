@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - feature/b4-procedural-basalt-pbr-library-20261114
-      - feature/shared-container-b4-basalt-pbr-20261119
     paths:
       - '.github/workflows/b4-generate-basalt-pbr.yml'
       - 'tools/b4-render/generate-basalt-pbr.py'
