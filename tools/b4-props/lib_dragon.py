@@ -317,14 +317,17 @@ def crystal_bm(length, radius, seed, sides=6, taper=0.84, tip_frac=0.26, embed=0
         frac, tilt = broken
         nrm = Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), 0)).normalized() * math.sin(tilt) + Vector((0, 0, math.cos(tilt)))
         bm_cut(bm, (o.x * frac, o.y * frac, length * frac), nrm, keep="inner", fresh=1.0)
-    for c in range(chips):  # 角の欠け: 肩（柱面と錐面の境）の角を斜めに小さく落とす（柱面を縦に削がない）
+    for c in range(chips):  # 角の欠け: 肩の角だけを小さく落とす。面の傾きは錐面より緩く→先端は残る
         i = rnd.randrange(sides)
-        ring = 2 if rnd.random() < 0.75 else 1
-        vco = Vector((math.cos(angs[i]) * rads[i] * ss[ring], math.sin(angs[i]) * rads[i] * ss[ring], zs[ring])) + \
-            drift * (max(0.0, zs[ring]) / length) ** 1.5 * 4
+        th = length - shoulder
+        rs = rads[i] * ss[2]
+        u = 0.55 * rs / max(th, 1e-4)
+        vco = Vector((math.cos(angs[i]) * rs, math.sin(angs[i]) * rs, zs[2])) + drift * (zs[2] / length) ** 1.5 * 4
         hz = Vector((math.cos(angs[i]), math.sin(angs[i]), 0))
-        nrm = (hz + Vector((0, 0, rnd.uniform(0.7, 1.4) * (1 if ring == 2 else rnd.choice((-1, 1)))))).normalized()
-        p = vco - nrm * radius * rnd.uniform(0.15, 0.28)
+        nrm = (hz + Vector((0, 0, u))).normalized()
+        p = vco - nrm * rs * rnd.uniform(0.12, 0.22)
+        if not apex.is_valid or (apex.co - p).dot(nrm) > -0.002:
+            continue
         try:
             bm_cut(bm, p, nrm, keep="inner", fresh=1.0)
         except Exception as e:  # noqa
