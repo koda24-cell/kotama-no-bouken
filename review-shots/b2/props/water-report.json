@@ -304,9 +304,9 @@
           2,
           "down"
         ],
-        "calls": 191,
-        "triangles": 724432,
-        "geometries": 301,
+        "calls": 187,
+        "triangles": 717714,
+        "geometries": 297,
         "textures": 76,
         "lights": 60
       },
@@ -316,9 +316,9 @@
           5,
           "left"
         ],
-        "calls": 236,
-        "triangles": 797830,
-        "geometries": 374,
+        "calls": 234,
+        "triangles": 788515,
+        "geometries": 369,
         "textures": 96,
         "lights": 60
       },
@@ -329,8 +329,8 @@
           "up"
         ],
         "calls": 99,
-        "triangles": 232286,
-        "geometries": 379,
+        "triangles": 230519,
+        "geometries": 375,
         "textures": 96,
         "lights": 60
       },
@@ -341,8 +341,8 @@
           "right"
         ],
         "calls": 181,
-        "triangles": 405033,
-        "geometries": 414,
+        "triangles": 402840,
+        "geometries": 410,
         "textures": 96,
         "lights": 60
       },
@@ -352,9 +352,9 @@
           11,
           "down"
         ],
-        "calls": 176,
-        "triangles": 484921,
-        "geometries": 425,
+        "calls": 171,
+        "triangles": 473616,
+        "geometries": 420,
         "textures": 96,
         "lights": 60
       },
@@ -364,9 +364,9 @@
           13,
           "up"
         ],
-        "calls": 537,
-        "triangles": 2430595,
-        "geometries": 462,
+        "calls": 535,
+        "triangles": 2319251,
+        "geometries": 457,
         "textures": 97,
         "lights": 60
       },
@@ -376,9 +376,9 @@
           10,
           "up"
         ],
-        "calls": 450,
-        "triangles": 2148286,
-        "geometries": 480,
+        "calls": 442,
+        "triangles": 1994042,
+        "geometries": 475,
         "textures": 97,
         "lights": 60
       },
@@ -388,9 +388,9 @@
           13,
           "up"
         ],
-        "calls": 508,
-        "triangles": 2302787,
-        "geometries": 480,
+        "calls": 506,
+        "triangles": 2189691,
+        "geometries": 475,
         "textures": 97,
         "lights": 60
       },
@@ -400,9 +400,9 @@
           5,
           "up"
         ],
-        "calls": 122,
-        "triangles": 413119,
-        "geometries": 480,
+        "calls": 115,
+        "triangles": 397811,
+        "geometries": 475,
         "textures": 97,
         "lights": 60
       },
@@ -413,8 +413,8 @@
           "right"
         ],
         "calls": 221,
-        "triangles": 663523,
-        "geometries": 480,
+        "triangles": 659908,
+        "geometries": 475,
         "textures": 97,
         "lights": 60
       },
@@ -424,9 +424,9 @@
           1,
           "right"
         ],
-        "calls": 181,
-        "triangles": 618416,
-        "geometries": 484,
+        "calls": 176,
+        "triangles": 602013,
+        "geometries": 479,
         "textures": 103,
         "lights": 60
       },
@@ -436,9 +436,9 @@
           3,
           "up"
         ],
-        "calls": 153,
-        "triangles": 491476,
-        "geometries": 484,
+        "calls": 145,
+        "triangles": 474022,
+        "geometries": 479,
         "textures": 103,
         "lights": 60
       },
@@ -449,8 +449,8 @@
           "right"
         ],
         "calls": 195,
-        "triangles": 737343,
-        "geometries": 484,
+        "triangles": 736287,
+        "geometries": 479,
         "textures": 103,
         "lights": 60
       },
@@ -460,9 +460,9 @@
           1,
           "right"
         ],
-        "calls": 84,
-        "triangles": 188644,
-        "geometries": 484,
+        "calls": 79,
+        "triangles": 176259,
+        "geometries": 479,
         "textures": 103,
         "lights": 60
       },
@@ -472,9 +472,9 @@
           2,
           "down"
         ],
-        "calls": 507,
-        "triangles": 1817266,
-        "geometries": 331,
+        "calls": 493,
+        "triangles": 1772196,
+        "geometries": 326,
         "textures": 112,
         "lights": 60
       },
@@ -484,9 +484,9 @@
           5,
           "right"
         ],
-        "calls": 488,
-        "triangles": 1590120,
-        "geometries": 411,
+        "calls": 470,
+        "triangles": 1533264,
+        "geometries": 406,
         "textures": 112,
         "lights": 60
       },
@@ -496,9 +496,9 @@
           11,
           "right"
         ],
-        "calls": 142,
-        "triangles": 297263,
-        "geometries": 466,
+        "calls": 137,
+        "triangles": 291102,
+        "geometries": 461,
         "textures": 112,
         "lights": 60
       },
@@ -508,9 +508,9 @@
           11,
           "down"
         ],
-        "calls": 108,
-        "triangles": 241261,
-        "geometries": 466,
+        "calls": 103,
+        "triangles": 235100,
+        "geometries": 461,
         "textures": 112,
         "lights": 60
       },
@@ -520,9 +520,9 @@
           15,
           "up"
         ],
-        "calls": 506,
-        "triangles": 2283952,
-        "geometries": 475,
+        "calls": 494,
+        "triangles": 2084294,
+        "geometries": 470,
         "textures": 118,
         "lights": 60
       },
@@ -532,9 +532,9 @@
           14,
           "up"
         ],
-        "calls": 487,
-        "triangles": 2092014,
-        "geometries": 479,
+        "calls": 477,
+        "triangles": 1925246,
+        "geometries": 474,
         "textures": 118,
         "lights": 60
       },
@@ -544,9 +544,9 @@
           15,
           "up"
         ],
-        "calls": 451,
-        "triangles": 1725914,
-        "geometries": 489,
+        "calls": 439,
+        "triangles": 1664310,
+        "geometries": 484,
         "textures": 118,
         "lights": 60
       },
@@ -557,8 +557,8 @@
           "up"
         ],
         "calls": 122,
-        "triangles": 363913,
-        "geometries": 489,
+        "triangles": 362941,
+        "geometries": 484,
         "textures": 118,
         "lights": 60
       },
@@ -568,9 +568,9 @@
           3,
           "right"
         ],
-        "calls": 403,
-        "triangles": 1274197,
-        "geometries": 491,
+        "calls": 395,
+        "triangles": 1256923,
+        "geometries": 486,
         "textures": 118,
         "lights": 60
       },
@@ -580,9 +580,9 @@
           1,
           "left"
         ],
-        "calls": 220,
-        "triangles": 719734,
-        "geometries": 491,
+        "calls": 216,
+        "triangles": 707292,
+        "geometries": 486,
         "textures": 118,
         "lights": 60
       },
@@ -592,9 +592,9 @@
           6,
           "down"
         ],
-        "calls": 476,
-        "triangles": 1268268,
-        "geometries": 491,
+        "calls": 458,
+        "triangles": 1235236,
+        "geometries": 486,
         "textures": 118,
         "lights": 60
       },
@@ -604,9 +604,9 @@
           1,
           "right"
         ],
-        "calls": 89,
-        "triangles": 213231,
-        "geometries": 491,
+        "calls": 82,
+        "triangles": 190237,
+        "geometries": 486,
         "textures": 118,
         "lights": 60
       },
@@ -617,8 +617,8 @@
           "right"
         ],
         "calls": 426,
-        "triangles": 1376834,
-        "geometries": 491,
+        "triangles": 1374890,
+        "geometries": 486,
         "textures": 118,
         "lights": 60
       },
@@ -628,16 +628,16 @@
           9,
           "down"
         ],
-        "calls": 160,
-        "triangles": 446914,
-        "geometries": 491,
+        "calls": 153,
+        "triangles": 399010,
+        "geometries": 486,
         "textures": 118,
         "lights": 60
       }
     },
-    "maxTriangles": 2430595,
-    "avgTriangles": 1012485,
-    "maxCalls": 537
+    "maxTriangles": 2319251,
+    "avgTriangles": 971233,
+    "maxCalls": 535
   },
   "errors": [],
   "missing": []

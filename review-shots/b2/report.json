@@ -288,72 +288,75 @@
             ],
             "plants": 108,
             "kinds": {
-              "snowdrop": 60,
-              "mizubasho": 23,
-              "bloom": 25
+              "snowdrop": 57,
+              "mizubasho": 19,
+              "bloom": 32
             }
           },
           "byKind": {
-            "snowdrop": 80,
-            "mizubasho": 31,
-            "bloom": 33
+            "snowdrop": 77,
+            "mizubasho": 27,
+            "bloom": 40
           },
-          "dress": 308,
+          "dress": 318,
           "patches": 11,
-          "triangles": 304972,
+          "triangles": 208658,
           "tierTris": {
             "hi": 0,
-            "mid": 159524,
-            "lo": 39772,
-            "mMid": 137652,
-            "mLo": 73972
+            "mid": 95656,
+            "lo": 31756,
+            "mMid": 105174,
+            "mLo": 55398
           },
           "lod": {
             "snowdrop": {
               "hi": 23436,
-              "mid": 4655,
-              "lo": 1161,
-              "mMid": 1316,
-              "mLo": 708
+              "midS": 2792,
+              "mid": 2792,
+              "lo": 927,
+              "mMid": 1112,
+              "mLo": 646
             },
             "mizubasho": {
               "hi": 24254,
-              "mid": 4835,
-              "lo": 1205,
-              "mMid": 1404,
-              "mLo": 754
+              "midS": 2899,
+              "mid": 2899,
+              "lo": 962,
+              "mMid": 970,
+              "mLo": 432
             },
             "bloom": {
               "hi": 17364,
-              "mid": 3468,
-              "lo": 864,
-              "mMid": 1056,
-              "mLo": 566
+              "midS": 2078,
+              "mid": 2078,
+              "lo": 690,
+              "mMid": 730,
+              "mLo": 324
             }
           },
-          "drawMeshes": 94,
+          "drawMeshes": 70,
           "chunks": 11,
           "closeups": [
             {
               "kind": "snowdrop",
-              "x": 10.23,
-              "z": 64.81,
-              "vx": 0.909,
-              "vz": -0.417
+              "x": 9.14,
+              "z": 66.03,
+              "vx": -0.503,
+              "vz": 0.864
             },
             {
               "kind": "mizubasho",
-              "x": 8.24,
-              "z": 66.55,
-              "vx": -0.16,
-              "vz": 0.987
+              "x": 10.31,
+              "z": 64.73,
+              "vx": 0.919,
+              "vz": -0.395
             },
             {
               "kind": "bloom",
-              "x": 10.53,
-              "z": 63.44,
-              "vx": 0.934,
-              "vz": 0.356
+              "x": 8.36,
+              "z": 66.13,
+              "vx": -0.187,
+              "vz": 0.982
             }
           ]
         }
@@ -736,7 +739,7 @@
             "3,1:right"
           ]
         },
-        "flowers": 240,
+        "flowers": 190,
         "flowerSpots": 60,
         "flowerClusters": [
           "4,15:bloom:up",
@@ -921,74 +924,77 @@
               "11,11",
               "12,11"
             ],
-            "plants": 190,
+            "plants": 140,
             "kinds": {
-              "snowdrop": 138,
-              "mizubasho": 8,
-              "bloom": 44
+              "snowdrop": 86,
+              "mizubasho": 9,
+              "bloom": 45
             }
           },
           "byKind": {
-            "snowdrop": 160,
-            "mizubasho": 22,
-            "bloom": 58
+            "snowdrop": 108,
+            "mizubasho": 23,
+            "bloom": 59
           },
-          "dress": 564,
+          "dress": 459,
           "patches": 20,
-          "triangles": 471844,
+          "triangles": 281146,
           "tierTris": {
             "hi": 0,
-            "mid": 218652,
-            "lo": 54508,
-            "mMid": 239304,
-            "mLo": 128640
+            "mid": 131102,
+            "lo": 43522,
+            "mMid": 137212,
+            "mLo": 74024
           },
           "lod": {
             "snowdrop": {
               "hi": 23436,
-              "mid": 4655,
-              "lo": 1161,
-              "mMid": 1316,
-              "mLo": 708
+              "midS": 2792,
+              "mid": 2792,
+              "lo": 927,
+              "mMid": 1112,
+              "mLo": 646
             },
             "mizubasho": {
               "hi": 24254,
-              "mid": 4835,
-              "lo": 1205,
-              "mMid": 1404,
-              "mLo": 754
+              "midS": 2899,
+              "mid": 2899,
+              "lo": 962,
+              "mMid": 970,
+              "mLo": 432
             },
             "bloom": {
               "hi": 17364,
-              "mid": 3468,
-              "lo": 864,
-              "mMid": 1056,
-              "mLo": 566
+              "midS": 2078,
+              "mid": 2078,
+              "lo": 690,
+              "mMid": 730,
+              "mLo": 324
             }
           },
-          "drawMeshes": 152,
+          "drawMeshes": 113,
           "chunks": 15,
           "closeups": [
             {
               "kind": "snowdrop",
-              "x": 43.07,
-              "z": 40.74,
-              "vx": 0.784,
-              "vz": -0.621
+              "x": 44.95,
+              "z": 40.6,
+              "vx": -0.847,
+              "vz": -0.532
             },
             {
               "kind": "mizubasho",
-              "x": 43.56,
-              "z": 40.45,
-              "vx": 0.699,
-              "vz": -0.716
+              "x": 44.44,
+              "z": 41.1,
+              "vx": -0.371,
+              "vz": -0.929
             },
             {
               "kind": "bloom",
-              "x": 43.82,
-              "z": 39.31,
-              "vx": 0.251,
-              "vz": 0.968
+              "x": 44.4,
+              "z": 39.41,
+              "vx": -0.567,
+              "vz": 0.824
             }
           ]
         }
@@ -1005,7 +1011,7 @@
         "bankR": true,
         "shrine": true
       },
-      "ownedDisposed": 507,
+      "ownedDisposed": 483,
       "setpieces": {
         "stairs": [
           {
@@ -1601,7 +1607,7 @@
             "10,11:down"
           ]
         },
-        "flowers": 242,
+        "flowers": 192,
         "flowerSpots": 43,
         "flowerClusters": [
           "11,10:mizubasho:down",
@@ -1777,74 +1783,77 @@
               "8,15",
               "9,15"
             ],
-            "plants": 190,
+            "plants": 140,
             "kinds": {
-              "snowdrop": 138,
-              "mizubasho": 8,
-              "bloom": 44
+              "snowdrop": 106,
+              "mizubasho": 3,
+              "bloom": 31
             }
           },
           "byKind": {
-            "snowdrop": 168,
-            "mizubasho": 21,
-            "bloom": 53
+            "snowdrop": 136,
+            "mizubasho": 16,
+            "bloom": 40
           },
-          "dress": 571,
+          "dress": 472,
           "patches": 24,
-          "triangles": 488593,
+          "triangles": 298161,
           "tierTris": {
             "hi": 0,
-            "mid": 233717,
-            "lo": 58271,
-            "mMid": 239304,
-            "mLo": 128640
+            "mid": 140149,
+            "lo": 46526,
+            "mMid": 143412,
+            "mLo": 79816
           },
           "lod": {
             "snowdrop": {
               "hi": 23436,
-              "mid": 4655,
-              "lo": 1161,
-              "mMid": 1316,
-              "mLo": 708
+              "midS": 2792,
+              "mid": 2792,
+              "lo": 927,
+              "mMid": 1112,
+              "mLo": 646
             },
             "mizubasho": {
               "hi": 24254,
-              "mid": 4835,
-              "lo": 1205,
-              "mMid": 1404,
-              "mLo": 754
+              "midS": 2899,
+              "mid": 2899,
+              "lo": 962,
+              "mMid": 970,
+              "mLo": 432
             },
             "bloom": {
               "hi": 17364,
-              "mid": 3468,
-              "lo": 864,
-              "mMid": 1056,
-              "mLo": 566
+              "midS": 2078,
+              "mid": 2078,
+              "lo": 690,
+              "mMid": 730,
+              "mLo": 324
             }
           },
-          "drawMeshes": 175,
+          "drawMeshes": 124,
           "chunks": 16,
           "closeups": [
             {
               "kind": "snowdrop",
-              "x": 26.11,
-              "z": 57.7,
-              "vx": 0.743,
-              "vz": -0.669
+              "x": 26.19,
+              "z": 56.53,
+              "vx": 0.96,
+              "vz": -0.28
             },
             {
               "kind": "mizubasho",
-              "x": 26.86,
-              "z": 54.91,
-              "vx": 0.721,
-              "vz": 0.693
+              "x": 27.46,
+              "z": 55.56,
+              "vx": 0.776,
+              "vz": 0.63
             },
             {
               "kind": "bloom",
-              "x": 26.64,
-              "z": 57.1,
-              "vx": 0.779,
-              "vz": -0.627
+              "x": 25.43,
+              "z": 58.06,
+              "vx": -0.594,
+              "vz": 0.804
             }
           ]
         }
@@ -1861,7 +1870,7 @@
         "bankR": true,
         "shrine": true
       },
-      "ownedDisposed": 1176,
+      "ownedDisposed": 1113,
       "setpieces": {
         "stairs": [
           {
@@ -2091,331 +2100,331 @@
   "errors": [],
   "stats": {
     "b2f1_01_enter": {
-      "calls": 207,
-      "triangles": 854785,
+      "calls": 206,
+      "triangles": 836243,
       "geometries": 182,
       "textures": 52,
       "lights": 34
     },
     "b2f1_02_forward": {
-      "calls": 207,
-      "triangles": 854785,
+      "calls": 206,
+      "triangles": 836243,
       "geometries": 182,
       "textures": 52,
       "lights": 34
     },
     "b2f1_obj_stairs_9_1": {
       "calls": 68,
-      "triangles": 244017,
-      "geometries": 207,
-      "textures": 52,
+      "triangles": 244049,
+      "geometries": 218,
+      "textures": 53,
       "lights": 34
     },
     "b2f1_obj_chest_19_1": {
       "calls": 102,
-      "triangles": 310396,
-      "geometries": 260,
+      "triangles": 308850,
+      "geometries": 271,
       "textures": 65,
       "lights": 34
     },
     "b2f1_obj_chest_5_5": {
       "calls": 78,
-      "triangles": 298281,
-      "geometries": 265,
+      "triangles": 295919,
+      "geometries": 276,
       "textures": 65,
       "lights": 34
     },
     "b2f1_obj_gather_17_7": {
       "calls": 256,
-      "triangles": 832685,
-      "geometries": 356,
+      "triangles": 831571,
+      "geometries": 350,
       "textures": 66,
       "lights": 34
     },
     "b2f1_shallows": {
-      "calls": 215,
-      "triangles": 679736,
-      "geometries": 367,
+      "calls": 210,
+      "triangles": 660448,
+      "geometries": 353,
       "textures": 66,
       "lights": 34
     },
     "b2f1_foe_area": {
-      "calls": 189,
-      "triangles": 673559,
-      "geometries": 369,
+      "calls": 183,
+      "triangles": 656761,
+      "geometries": 355,
       "textures": 66,
       "lights": 34
     },
     "b2f1_waterfall_1": {
-      "calls": 113,
-      "triangles": 261663,
-      "geometries": 373,
+      "calls": 112,
+      "triangles": 243121,
+      "geometries": 365,
       "textures": 66,
       "lights": 34
     },
     "b2f1_waterfall_2": {
       "calls": 94,
-      "triangles": 300986,
-      "geometries": 373,
+      "triangles": 301018,
+      "geometries": 365,
       "textures": 66,
       "lights": 34
     },
     "b2f1_crystals_1_blue": {
-      "calls": 58,
-      "triangles": 245844,
-      "geometries": 376,
+      "calls": 54,
+      "triangles": 222630,
+      "geometries": 365,
       "textures": 66,
       "lights": 34
     },
     "b2f1_crystals_2_violet": {
       "calls": 163,
-      "triangles": 755895,
-      "geometries": 376,
+      "triangles": 755927,
+      "geometries": 365,
       "textures": 66,
       "lights": 34
     },
     "b2f1_crystals_3_white": {
       "calls": 86,
-      "triangles": 294130,
-      "geometries": 376,
+      "triangles": 294162,
+      "geometries": 365,
       "textures": 66,
       "lights": 34
     },
     "b2f1_atrium_from_south": {
-      "calls": 180,
-      "triangles": 800751,
-      "geometries": 382,
+      "calls": 179,
+      "triangles": 773119,
+      "geometries": 371,
       "textures": 66,
       "lights": 34
     },
     "b2f1_atrium_center": {
-      "calls": 178,
-      "triangles": 785635,
-      "geometries": 382,
+      "calls": 176,
+      "triangles": 753189,
+      "geometries": 371,
       "textures": 66,
       "lights": 34
     },
     "b2f2_01_enter": {
       "calls": 197,
-      "triangles": 859281,
-      "geometries": 241,
+      "triangles": 856887,
+      "geometries": 230,
       "textures": 66,
       "lights": 60
     },
     "b2f2_obj_door_a2-gate": {
       "calls": 270,
-      "triangles": 1142104,
-      "geometries": 291,
+      "triangles": 1138066,
+      "geometries": 280,
       "textures": 67,
       "lights": 60
     },
     "b2f2_obj_cache_a2-cache": {
-      "calls": 219,
-      "triangles": 830175,
-      "geometries": 382,
+      "calls": 213,
+      "triangles": 785089,
+      "geometries": 371,
       "textures": 83,
       "lights": 60
     },
     "b2f2_obj_sign_a2-plaque": {
-      "calls": 233,
-      "triangles": 770266,
-      "geometries": 382,
+      "calls": 223,
+      "triangles": 737460,
+      "geometries": 371,
       "textures": 83,
       "lights": 60
     },
     "b2f2_obj_save_10_13": {
-      "calls": 165,
-      "triangles": 503766,
-      "geometries": 427,
+      "calls": 168,
+      "triangles": 518770,
+      "geometries": 416,
       "textures": 99,
       "lights": 60
     },
     "b2f2_obj_switch_a2-stone-west": {
       "calls": 113,
-      "triangles": 333276,
-      "geometries": 427,
+      "triangles": 332220,
+      "geometries": 416,
       "textures": 99,
       "lights": 60
     },
     "b2f2_obj_switch_a2-stone-east": {
       "calls": 109,
-      "triangles": 269773,
-      "geometries": 454,
+      "triangles": 268717,
+      "geometries": 443,
       "textures": 99,
       "lights": 60
     },
     "b2f2_door_after_switches": {
       "calls": 266,
-      "triangles": 1142064,
-      "geometries": 454,
+      "triangles": 1138026,
+      "geometries": 443,
       "textures": 99,
       "lights": 60
     },
     "b2f2_waterfall_1": {
       "calls": 207,
-      "triangles": 742316,
-      "geometries": 465,
+      "triangles": 738701,
+      "geometries": 454,
       "textures": 99,
       "lights": 60
     },
     "b2f2_waterfall_2": {
-      "calls": 240,
-      "triangles": 931730,
-      "geometries": 466,
+      "calls": 236,
+      "triangles": 872774,
+      "geometries": 455,
       "textures": 99,
       "lights": 60
     },
     "b2f2_crystals_1_cyan": {
-      "calls": 71,
-      "triangles": 207179,
-      "geometries": 488,
+      "calls": 68,
+      "triangles": 194028,
+      "geometries": 481,
       "textures": 99,
       "lights": 60
     },
     "b2f2_crystals_2_cyan": {
-      "calls": 181,
-      "triangles": 868180,
-      "geometries": 489,
+      "calls": 175,
+      "triangles": 844716,
+      "geometries": 482,
       "textures": 99,
       "lights": 60
     },
     "b2f2_crystals_3_violet": {
-      "calls": 168,
-      "triangles": 920740,
-      "geometries": 489,
+      "calls": 166,
+      "triangles": 910288,
+      "geometries": 482,
       "textures": 99,
       "lights": 60
     },
     "b2f2_atrium_from_south": {
       "calls": 103,
-      "triangles": 368178,
-      "geometries": 493,
+      "triangles": 367122,
+      "geometries": 486,
       "textures": 99,
       "lights": 60
     },
     "b2f2_atrium_center": {
       "calls": 88,
-      "triangles": 344139,
-      "geometries": 493,
+      "triangles": 343083,
+      "geometries": 486,
       "textures": 99,
       "lights": 60
     },
     "b2f3_01_enter": {
       "calls": 46,
-      "triangles": 126830,
-      "geometries": 125,
+      "triangles": 125858,
+      "geometries": 118,
       "textures": 98,
       "lights": 60
     },
     "b2f3_obj_npc_merchant": {
       "calls": 117,
-      "triangles": 368466,
-      "geometries": 212,
+      "triangles": 365880,
+      "geometries": 205,
       "textures": 104,
       "lights": 60
     },
     "b2f3_obj_npc_watchman": {
-      "calls": 107,
-      "triangles": 257489,
-      "geometries": 218,
+      "calls": 104,
+      "triangles": 241230,
+      "geometries": 211,
       "textures": 104,
       "lights": 60
     },
     "b2f3_obj_sign_1_13": {
       "calls": 136,
-      "triangles": 562536,
-      "geometries": 275,
+      "triangles": 560592,
+      "geometries": 268,
       "textures": 113,
       "lights": 60
     },
     "b2f3_obj_save_24_15": {
       "calls": 421,
-      "triangles": 1373142,
-      "geometries": 389,
+      "triangles": 1369896,
+      "geometries": 382,
       "textures": 113,
       "lights": 60
     },
     "b2f3_obj_gate_25_16": {
       "calls": 44,
-      "triangles": 29251,
-      "geometries": 399,
+      "triangles": 28279,
+      "geometries": 392,
       "textures": 113,
       "lights": 60
     },
     "b2f3_open_water": {
       "calls": 223,
-      "triangles": 687155,
-      "geometries": 441,
+      "triangles": 686183,
+      "geometries": 434,
       "textures": 114,
       "lights": 60
     },
     "b2f3_waterfall_1": {
-      "calls": 101,
-      "triangles": 269858,
-      "geometries": 461,
+      "calls": 96,
+      "triangles": 222862,
+      "geometries": 454,
       "textures": 114,
       "lights": 60
     },
     "b2f3_waterfall_2": {
       "calls": 70,
-      "triangles": 151810,
-      "geometries": 462,
+      "triangles": 150838,
+      "geometries": 455,
       "textures": 114,
       "lights": 60
     },
     "b2f3_monument_altar_n": {
-      "calls": 476,
-      "triangles": 1268268,
-      "geometries": 489,
+      "calls": 458,
+      "triangles": 1235236,
+      "geometries": 484,
       "textures": 114,
       "lights": 60
     },
     "b2f3_crystals_1_cyan": {
-      "calls": 473,
-      "triangles": 1591762,
-      "geometries": 493,
+      "calls": 471,
+      "triangles": 1527906,
+      "geometries": 488,
       "textures": 114,
       "lights": 60
     },
     "b2f3_crystals_2_violet": {
       "calls": 477,
-      "triangles": 1428388,
-      "geometries": 493,
+      "triangles": 1425142,
+      "geometries": 488,
       "textures": 114,
       "lights": 60
     },
     "b2f3_crystals_3_blue": {
       "calls": 351,
-      "triangles": 1160712,
-      "geometries": 504,
+      "triangles": 1156062,
+      "geometries": 499,
       "textures": 114,
       "lights": 60
     },
     "b2f3_atrium_from_south": {
       "calls": 321,
-      "triangles": 1287986,
-      "geometries": 504,
+      "triangles": 1283666,
+      "geometries": 499,
       "textures": 114,
       "lights": 60
     },
     "b2f3_atrium_center": {
-      "calls": 301,
-      "triangles": 1105016,
-      "geometries": 504,
+      "calls": 293,
+      "triangles": 1087270,
+      "geometries": 499,
       "textures": 114,
       "lights": 60
     },
     "b1_after_b2": {
       "calls": 1116,
       "triangles": 3361628,
-      "geometries": 164,
+      "geometries": 159,
       "textures": 257,
       "lights": 919
     }
   },
   "buildMs": {
-    "2-2F": 6151,
-    "2-3F": 4199
+    "2-2F": 2695,
+    "2-3F": 2637
   },
   "missing": [],
   "log": [
@@ -2449,7 +2458,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "up",
+      "dir": "right",
       "active": true,
       "near": "",
       "floor": 0,
@@ -2461,7 +2470,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "left",
+      "dir": "up",
       "active": true,
       "near": "",
       "floor": 0,
@@ -2511,7 +2520,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "chest:2-0:5:5",
+      "near": "gather:2-0:17:7",
       "floor": 0,
       "area": 2
     },
@@ -2595,7 +2604,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "switch:2:a2-stone-west",
+      "near": "switch:2:a2-stone-east",
       "floor": 1,
       "area": 2
     },
@@ -2607,7 +2616,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "switch:2:a2-stone-east",
+      "near": "",
       "floor": 1,
       "area": 2
     },
@@ -2643,7 +2652,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "npc:2:merchant",
+      "near": "npc:2:watchman",
       "floor": 2,
       "area": 2
     },
@@ -2655,7 +2664,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "npc:2:watchman",
+      "near": "sign:2-2:1:13",
       "floor": 2,
       "area": 2
     },
