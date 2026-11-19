@@ -20,10 +20,10 @@ jobs:
         run: python3 -m py_compile tools/floor6/foliage_normals_trial.py
       - name: Restore verified V27 source Blender project
         env:
-          GH_TOKEN: $\{{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh run download 44447197961 --repo "$\{{ github.repository }}" \
+          gh run download 44447197961 --repo "${{ github.repository }}" \
             --name f6-v19-v27-bark-leaf-refinement-comparison-NOT-APPROVED \
             --dir /tmp/f6-normals-source
           test -s /tmp/f6-normals-source/nature/tree_mature_photo_v27/tree_mature_photo_v20.blend
