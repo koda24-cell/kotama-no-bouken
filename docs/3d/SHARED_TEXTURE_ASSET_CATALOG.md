@@ -30,6 +30,8 @@
 | `F3_WINDOW_CROSSBAR_ROUGH_V2` | 第3層窓枠横材01 粗さの非カラー（V2） | 256×512 PNG / non-color | 横材専用UV、シームレス未検証 | 自作Blender生成 `tools/floor3/window_crossbar01/build.py`、PR #551、run #44451653102 | `052d99d933b3e809b753e10606834f877e9001cd43b8ff9de4114136a66bf6a7` | Artifact 14494619940でSHA-256一致確認。PNG本体の正式Git保存なし。未承認、ClamAV実スキャン未確認 |
 | `F3_WINDOW_CROSSBAR_ROUGH_V3` | 第3層窓枠横材01 粗さの非カラー（V3） | 256×512 PNG / non-color | 横材専用UV、シームレス未検証 | 自作Blender生成 `tools/floor3/window_crossbar01/build.py`、PR #551、run #44451653102 | `0afaa323f8b6b07f09e0f98afddf24835baba4e8bf15192a8b67af9c1e1fadf3` | Artifact 14494619940でSHA-256一致確認。PNG本体の正式Git保存なし。未承認、ClamAV実スキャン未確認 |
 
+| `F3_WINDOW_DIRT_MASK_01` | 第3層・割れた窓ガラス01用の汚れ/曇りマスク（V3、V4） | 256×256 PNG / non-color mask | ガラス面用。シームレス未検証。光透過と粗さの調整用 | 自作手続き生成コード `tools/floor3/broken_glass01/build.py`、PR #565、[run #44455660695](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44455660695) | `e1df204118e4b6c47bf191008adb4aa433edf0039378fdadb9fcb3b48fc73fc1` | Artifact ID `14498525631` のPNG本体とSHA-256確認。正式Git PNG保存は未実施。美術未承認、ClamAV実スキャン未確認 |
+
 ## モデルとの関係・承認境界
 
 - 第3層の壁01 V4（段差剥離）はユーザーが造形を了承済み。候補GLBの検証時SHA-256: `44e995b1ee843ad3bffba078c532158011effef6d6245cd0bced9f25082a8981`。
