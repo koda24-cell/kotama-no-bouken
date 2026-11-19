@@ -1,0 +1,107 @@
+{
+  "asset": "b4p_dragon_ore_cluster",
+  "version": "v1",
+  "blender": "4.2.3 LTS",
+  "triangles": 2088,
+  "budget_triangles": 8000,
+  "materials": [
+    "b4p_dragon_ore_cluster_mat"
+  ],
+  "bake": {
+    "res": 1024,
+    "emissive": true,
+    "maps": [
+      "basecolor",
+      "orm",
+      "normal",
+      "emissive"
+    ]
+  },
+  "bbox_m": [
+    1.85,
+    1.456,
+    1.044
+  ],
+  "origin": "bottom-center",
+  "up": "+Y (glTF)",
+  "glb": "b4p_dragon_ore_cluster.glb",
+  "glb_bytes": 705008,
+  "cc0_textures": {
+    "rock_face_02_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "d777f2c9b598773c2143751c34913cf5eef0ae392af31fb73c28b98afab6fb7b"
+    },
+    "rock_face_02_rough_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "8744f00d5b576dfeff31d554bcf8f92b6709b95309a48f0b7d9974e18d802e81"
+    },
+    "rock_face_02_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "a9dc200810f5488395fdc928b5a9441c007c33047d0375d946f33dcd2ff1c853"
+    }
+  },
+  "pinterest_refs": [
+    60,
+    61,
+    64,
+    41
+  ],
+  "sha256": {
+    "b4p_dragon_ore_cluster.glb": "4c15fc4f6165bfcad98fa3125082fc11f3750d5194c3847447f637cfc81ba433",
+    "b4p_dragon_ore_cluster_volcanic_front.png": "c039d37d13d3587c2b940b03cd1d8ca676aa64ae19a2d665cf83b0d7807c21e1",
+    "b4p_dragon_ore_cluster_volcanic_side.png": "613ac289180103a70064a86c2b5c9e38a5b317c36a057557a7c75dcad7ebc684",
+    "b4p_dragon_ore_cluster_volcanic_angle.png": "fbb31d2bec38d64cecc41e7b4c7959e60d354d29ab284c09e2ea14be0f6500de",
+    "b4p_dragon_ore_cluster_volcanic_top.png": "e3ae2d79c32860471275080541359ad2c974765521c58c93681c377ed1e6a70a",
+    "b4p_dragon_ore_cluster_volcanic_close.png": "22405228c4280364546ede1ad15143dad770805201a2c09daab1298c110b2597",
+    "b4p_dragon_ore_cluster_volcanic_back.png": "92635cd6d657f5870b4b5ebf6794cc1ec673ef4a618e78abf3093e3ef3e2e4ba",
+    "b4p_dragon_ore_cluster_studio_front.png": "274d5ff321a4f59b3f67fef3ad1d05f14fe2acca20fff7c81926bb40fb426af2",
+    "b4p_dragon_ore_cluster_studio_angle.png": "9b43fff61e4bc27b378e4ae884ad04f7ab94a335daadc3e7c67cd9bd5d175ea9",
+    "b4p_dragon_ore_cluster_studio_scale.png": "0ca5870c34d598219b82c1897fe84b28da1e73353feb4249cab297e88a6054ed"
+  },
+  "renders": [
+    "b4p_dragon_ore_cluster_volcanic_front.png",
+    "b4p_dragon_ore_cluster_volcanic_side.png",
+    "b4p_dragon_ore_cluster_volcanic_angle.png",
+    "b4p_dragon_ore_cluster_volcanic_top.png",
+    "b4p_dragon_ore_cluster_volcanic_close.png",
+    "b4p_dragon_ore_cluster_volcanic_back.png",
+    "b4p_dragon_ore_cluster_studio_front.png",
+    "b4p_dragon_ore_cluster_studio_angle.png",
+    "b4p_dragon_ore_cluster_studio_scale.png"
+  ],
+  "samples": 96,
+  "notes": "炎竜鉱の結晶群。割れて傾いた玄武岩のV字の割れ目から13本の結晶が扇状に出る。発光は割れ目の内側・縁の細いひび・結晶の内部のみ。",
+  "game_lights": [
+    {
+      "pos_blender_zup": [
+        0.15044403076171875,
+        0.019756661728024483,
+        0.3840245306491852
+      ],
+      "watts": 22.0,
+      "color": [
+        1.0,
+        0.22,
+        0.06
+      ]
+    },
+    {
+      "pos_blender_zup": [
+        0.15261518955230713,
+        -0.19963541626930237,
+        0.5248892307281494
+      ],
+      "watts": 8.0,
+      "color": [
+        1.0,
+        0.16,
+        0.05
+      ]
+    }
+  ],
+  "approval": "NOT_APPROVED",
+  "design": "docs/3d/B4_PROPS_DESIGN.md"
+}
