@@ -139,6 +139,8 @@ bpy.context.object.data.size = 4
 scene = bpy.context.scene
 scene.render.engine = "CYCLES"
 scene.cycles.samples = 32
+# Ubuntu Blender build has no OpenImageDenoise device; keep CPU Cycles rendering valid.
+bpy.context.view_layer.cycles.use_denoising = False
 scene.render.resolution_x = 960
 scene.render.resolution_y = 720
 scene.render.resolution_percentage = 100
