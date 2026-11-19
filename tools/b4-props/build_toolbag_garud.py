@@ -57,7 +57,7 @@ bmesh.ops.delete(bm, geom=top, context="FACES")
 L.punch_holes(bm, [(BURN, 0.06), (BURN + Vector((0.05, -0.01, 0.045)), 0.022), (PIERCE, 0.024)], seed=4)
 for v in bm.verts:
     x, y, z = v.co
-    t = z / (2 * HZ)
+    t = min(1.0, max(0.0, z / (2 * HZ)))
     bulge = 1.0 + 0.13 * math.sin(math.pi * min(1.0, t * 1.15))
     pinch = 1.0 - 0.34 * t ** 2.4              # 口は前後に絞られる
     xg = 1.0 - 0.08 * t ** 2
