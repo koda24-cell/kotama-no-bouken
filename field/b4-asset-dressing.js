@@ -19,7 +19,7 @@ export const B4_PROP_REGISTRY = {
 export const B4_GPT_MODELS = {
   // V32's packed metal/roughness images are a magenta placeholder (G=0 -> mirror-like roughness 0 in three.js).
   // Ignore those maps and use the material factors with a matte floor instead (reported to GPT in the handoff).
-  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82 },
+  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82, tint: 0.42 },  // its albedo is a light tan; darken to the B4 soot-wood range
 };
 
 const cache = new Map();
@@ -43,6 +43,7 @@ function loadModel(key, url, opts = {}) {
         material.metalness = Math.min(material.metalness ?? 0, 0.55);
         material.needsUpdate = true;
       }
+      if (opts.tint && material.color) material.color.multiplyScalar(opts.tint);
       if (material.emissiveMap) material.emissiveIntensity = Math.max(material.emissiveIntensity, 2.2);
       material.userData.b4PropCached = true;
       let merged = null;
