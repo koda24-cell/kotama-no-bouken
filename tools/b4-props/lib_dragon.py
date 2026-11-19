@@ -456,8 +456,8 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
 
 
-def dragon_crystal(name, glow_strength=4.0, body_dark=(0.050, 0.0024, 0.0022), body_mid=(0.072, 0.0032, 0.0029),
-                   body_hi=(0.10, 0.0045, 0.0040), inner=0.85, metallic=0.0, rough_lo=0.24, root_len=0.2):
+def dragon_crystal(name, glow_strength=4.0, body_dark=(0.024, 0.0016, 0.0015), body_mid=(0.036, 0.0021, 0.0019),
+                   body_hi=(0.052, 0.0030, 0.0026), inner=0.85, metallic=0.0, rough_lo=0.20, root_len=0.2):
     """炎竜鉱の結晶: 暗い赤の艶のある面＋角は欠けて明るく＋根元は煤と灰。
     発光は「内部」だけ: 根元ほど強く、面の中央で強く角で弱い（厚みの見え方）＋内部のひび＋包有物＋折れ口"""
     b = C.NB(name)
@@ -467,7 +467,7 @@ def dragon_crystal(name, glow_strength=4.0, body_dark=(0.050, 0.0024, 0.0022), b
     n2 = b.noise(16.0, 4, 0.5)
     edge = b.edge_mask(0.005, 0.02, 0.25)
     body = b.ramp(n1, [(0.2, body_dark), (0.55, body_mid), (0.9, body_hi)])
-    col = b.mix(b.math("MULTIPLY", edge, 0.55), body, (0.085, 0.020, 0.016))
+    col = b.mix(b.math("MULTIPLY", edge, 0.55), body, (0.060, 0.016, 0.013))
     root = b._map(tip, 0.0, 0.16, 1.0, 0.0)
     col = b.mix(b.math("MULTIPLY", root, 0.75), col, (0.010, 0.0065, 0.006))
     ashm = b.math("MULTIPLY", b.up_mask(0.55, 0.95), b.ramp(n1, [(0.4, 0.0), (0.75, 1.0)]))
