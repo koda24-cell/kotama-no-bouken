@@ -124,3 +124,61 @@ for rim_order,vid in preview_positions:
         sc.render.filepath=os.path.join(out,f'ear_seam_order_{rim_order}_{angle_name}.png')
         bpy.ops.render.render(write_still=True)
 cam.data.ortho_scale=.43
+
+
+# Additional nondestructive topology and normal diagnostic, specifically around
+# source ear transitions; never move a source Face/Body vertex or replace scalp.
+from mathutils.bvhtree import BVHTree
+normal_mat=face.matrix_world.to_3x3().inverted().transposed()
+bm_b=bmesh.new();bm_b.from_mesh(body.data)
+bmesh.ops.transform(bm_b,matrix=body.matrix_world,verts=bm_b.verts)
+bm_b.normal_update();bvh=BVHTree.FromBMesh(bm_b)
+topological_counts=collections.Counter()
+for poly in face.data.polygons:
+    ids=list(poly.vertices)
+    for k in range(len(ids)):
+        topological_counts[tuple(sorted((ids[k],ids[(k+1)%len(ids)])))]+=1
+diagnostic={'source_meshes_untouched':True,'rim_order':{},'note':'Nearest body triangle does not imply welded topology; face and body remain separate source objects'}
+for idx in [7,8,9,31,32,33]:
+    vi=rim_ids[idx]
+    co=face.matrix_world@face.data.vertices[vi].co
+    fn=(normal_mat@face.data.vertices[vi].normal).normalized()
+    nearest=bvh.find_nearest(co)
+    bp,bn,tri,d=nearest
+    ang=math.degrees(math.acos(max(-1,min(1,fn.dot(bn.normalized()))))
+    previous=rim_ids[(idx-1)%36];next_v=rim_ids[(idx+1)%36]
+    diagnostic['rim_order'][str(idx)]={
+        'face_source_vertex_id':vi,'body_nearest_triangle':tri,
+        'body_distance_m':float(d),'face_normal_world':list(fn),
+        'body_triangle_normal_world':list(bn.normalized()),
+        'face_to_body_normal_angle_deg':ang,
+        'face_rim_edge_incidence':[
+          topological_counts[tuple(sorted((previous,vi)))],
+          topological_counts[tuple(sorted((vi,next_v)))]]}
+bm_b.free()
+with open(os.path.join(out,'bilateral_ear_normal_topology_audit.json'),'w') as fp:
+    json.dump(diagnostic,fp,indent=2)
+print('BILATERAL_EAR_NORMAL_AUDIT',json.dumps(diagnostic['rim_order']))
+
+# Diagnostics: duplicate the source meshes only for rendering a distinct-color
+# wireframe overlay; untouched source geometry stays available in this scene.
+face.hide_render=True;body.hide_render=True
+face_copy=face.copy();face_copy.data=face.data.copy();face_copy.name='DIAGNOSTIC_FACE_COPY'
+body_copy=body.copy();body_copy.data=body.data.copy();body_copy.name='DIAGNOSTIC_BODY_COPY'
+bpy.context.collection.objects.link(face_copy)
+bpy.context.collection.objects.link(body_copy)
+for ob,color in [(face_copy,(0.14,.58,.95,1)),(body_copy,(.95,.52,.22,1))]:
+    m=bpy.data.materials.new('DIAGNOSTIC_COLOR_'+ob.name);m.diffuse_color=color;m.use_nodes=True
+    m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=color
+    ob.data.materials.clear();ob.data.materials.append(m)
+    for pg in ob.data.polygons:pg.material_index=0
+bpy.context.view_layer.material_override=None
+for rid,vid in preview_positions:
+    focus=face.matrix_world@face.data.vertices[vid].co
+    direction=Vector((1 if focus.x>=0 else -1,-.55,.17)).normalized()
+    cam.location=focus+direction*.9
+    cam.rotation_euler=(focus-cam.location).to_track_quat('-Z','Y').to_euler()
+    cam.data.ortho_scale=.082
+    sc.render.filepath=os.path.join(out,f'ear_seam_order_{rid}_face_blue_body_orange.png')
+    bpy.ops.render.render(write_still=True)
+# No source file or game assets are written. Preserve original VRM as read-only input.
