@@ -112,6 +112,35 @@ def bm_vnoise(bm, amp, freq, seed=0, z0=None, fade=0.05):
     return bm
 
 
+def bm_refine_near(bm, dist_fn, thresholds):
+    """dist_fn(co) が小さい所の辺だけ細分（溝など細部が要る所にだけ頂点を足す）"""
+    for th in thresholds:
+        edges = [e for e in bm.edges if dist_fn((e.verts[0].co + e.verts[1].co) * 0.5) < th]
+        if edges:
+            bmesh.ops.subdivide_edges(bm, edges=edges, cuts=1, use_grid_fill=True)
+        bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3])
+    return bm
+
+
+def polyline_nearest(pts, q):
+    """2D 折れ線 pts への最近点: (距離, 媒介変数 t∈[0,1], 符号つき横方向)"""
+    best = (1e9, 0.0, 0.0)
+    total = sum((pts[i + 1] - pts[i]).length for i in range(len(pts) - 1))
+    acc = 0.0
+    for i in range(len(pts) - 1):
+        a, b = pts[i], pts[i + 1]
+        ab = b - a
+        L = ab.length
+        u = max(0.0, min(1.0, (q - a).dot(ab) / max(L * L, 1e-9)))
+        c = a + ab * u
+        d = (q - c).length
+        if d < best[0]:
+            side = ab.x * (q - a).y - ab.y * (q - a).x
+            best = (d, (acc + L * u) / total, 1.0 if side >= 0 else -1.0)
+        acc += L
+    return best
+
+
 def bm_transform(bm, M):
     bmesh.ops.transform(bm, matrix=M, verts=bm.verts[:])
     return bm
@@ -160,7 +189,7 @@ def recenter(parts):
 # 形状：玄武岩の塊
 # ---------------------------------------------------------------------------
 def basalt_bm(radii, center=(0, 0, 0), seed=0, subdiv=4, lumpy=0.12, facets=8, facet_depth=(0.62, 0.9),
-              fresh_ratio=0.35, up_bias=0.3, fine=(0.012, 7.0), ground=0.0):
+              fresh_ratio=0.35, up_bias=0.3, fine=(0.012, 7.0), ground=0.0, extra_planes=(), hook=None):
     """角ばった玄武岩: 楕円体＋低周波のこぶ＋平面の割れ面（facets）＋細かい凹凸＋平らな底。
     割れ面の一部は fresh（新しい断面）としてコーナー属性に記録"""
     rnd = random.Random(seed)
@@ -179,6 +208,10 @@ def basalt_bm(radii, center=(0, 0, 0), seed=0, subdiv=4, lumpy=0.12, facets=8, f
         d = Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(-0.25, 1.0) + up_bias)).normalized()
         sup = math.sqrt((d.x * rx) ** 2 + (d.y * ry) ** 2 + (d.z * rz) ** 2)
         planes.append((d, sup * rnd.uniform(*facet_depth), rnd.random() < fresh_ratio))
+    for d, frac, fr in extra_planes:  # 指定の割れ面（d=方向, frac=支持距離に対する比）
+        d = Vector(d).normalized()
+        sup = math.sqrt((d.x * rx) ** 2 + (d.y * ry) ** 2 + (d.z * rz) ** 2)
+        planes.append((d, sup * frac, fr))
     tag = {}
     for v in bm.verts:
         for k, (d, dist, _) in enumerate(planes):
@@ -193,6 +226,8 @@ def basalt_bm(radii, center=(0, 0, 0), seed=0, subdiv=4, lumpy=0.12, facets=8, f
             if k >= 0 and planes[k][2]:
                 set_face_corner([f], L["fresh"], 1.0)
     bm_transform(bm, Matrix.Translation(Vector(center)))
+    if hook is not None:
+        hook(bm)
     if fine and fine[0] > 0:
         bm_vnoise(bm, fine[0], fine[1], seed=seed + 101, z0=ground, fade=0.06)
     if ground is not None:
@@ -311,7 +346,7 @@ ASH = (0.082, 0.077, 0.070)
 
 
 def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairline=1.0, ash_amt=1.0,
-           tex_lo=0.03, tex_hi=0.40, nrm_strength=0.75, bump=0.6):
+           tex_lo=0.03, tex_hi=0.40, nrm_strength=0.75, bump=0.6, prox_soot=0.0):
     """玄武岩: rock_face_02（CC0）の明暗を 2章の色域へ写す＋気泡の穴＋新しい割れ面＋角の欠け＋
     割れ目の縁の煤と焼け＋上向き面・凹みの灰。発光は glow 面（割れ目の内側）と、
     割れ目の近く（cd）の細いひびの中だけ"""
@@ -344,6 +379,9 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     # 割れ目まわり: 広めの煤 → 縁のごく近くだけ赤茶に焼ける
     soot = b.math("MULTIPLY", b._map(cd, 0.35, 0.85), b.ramp(n_mid, [(0.2, 0.55), (0.7, 1.0)]))
     col = b.mix(b.math("MULTIPLY", soot, 0.7), col, (0.0055, 0.0048, 0.0045))
+    if prox_soot > 0:  # tip 属性＝溝などへの近さ。まわりを煤で黒く
+        ps = b.math("MULTIPLY", b.math("POWER", attr(b, "tip"), 1.5), b.ramp(n_mid, [(0.25, 0.45), (0.75, 1.0)]))
+        col = b.mix(b.math("MULTIPLY", ps, prox_soot), col, (0.0050, 0.0044, 0.0042))
     heat = b.math("MULTIPLY", b._map(cd, 0.82, 1.0), b.ramp(n_fine, [(0.3, 0.4), (0.7, 1.0)]))
     col = b.mix(b.math("MULTIPLY", heat, 0.6), col, (0.030, 0.009, 0.0045))
     # 灰: 上向き面と凹み（割れ面・熱い縁には積もらない）
