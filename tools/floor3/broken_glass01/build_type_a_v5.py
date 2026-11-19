@@ -42,7 +42,7 @@ mesh.from_pydata(verts,[],faces)
 mesh.update()
 ob=bpy.data.objects.new('F3_RUINED_GLASS01_A_V5',mesh)
 bpy.context.collection.objects.link(ob)
-uv=mesh.uv_layers.new('glass_uv')
+uv=mesh.uv_layers.new(name='glass_uv')
 for face in mesh.polygons:
  for li in face.loop_indices:
   p=mesh.vertices[mesh.loops[li].vertex_index].co
