@@ -1,0 +1,93 @@
+{
+  "asset": "b4p_toolbag_garud",
+  "version": "v1",
+  "blender": "4.2.3 LTS",
+  "triangles": 3816,
+  "budget_triangles": 5000,
+  "materials": [
+    "b4p_toolbag_garud_mat"
+  ],
+  "bake": {
+    "res": 1024,
+    "emissive": true,
+    "maps": [
+      "basecolor",
+      "orm",
+      "normal",
+      "emissive"
+    ]
+  },
+  "bbox_m": [
+    0.557,
+    0.383,
+    0.459
+  ],
+  "origin": "bottom-center",
+  "up": "+Y (glTF)",
+  "glb": "b4p_toolbag_garud.glb",
+  "glb_bytes": 642764,
+  "cc0_textures": {
+    "rusty_metal_03_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rusty_metal_03",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "6bb9ede80978c6c679cef3babec452157f3638c6a90526db617644e06ba1c068"
+    },
+    "rusty_metal_03_rough_1k.jpg": {
+      "source": "https://polyhaven.com/a/rusty_metal_03",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "f8c33af71fcd8bf6325517022bd6b703e76550cff5047df4e7a6a662c389c77a"
+    },
+    "rusty_metal_03_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/rusty_metal_03",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "9c9bb22e4e432e8460bcc3157c76b2a3072e7faa64ed8fe4bc213e8f2175c126"
+    },
+    "rust_coarse_01_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rust_coarse_01",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "369f69eb86a7dcc4e5b6e30b1f3a4da5ce6ba50cf417de937efb4f09101f88d4"
+    },
+    "wood_planks_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/wood_planks",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "3b0669f683e4bf10f5a55a381cfa9669a7b8dfd921901829daa3b35acc2bbdec"
+    },
+    "wood_planks_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/wood_planks",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "d02abf113e17a8abe97e1be3e9d6d88add242e8c2291e2200d37aa8c68909f25"
+    }
+  },
+  "pinterest_refs": [
+    82,
+    83
+  ],
+  "sha256": {
+    "b4p_toolbag_garud.glb": "8c031e74ac7829d4d5840f8fdd48a9ab33970c45398c43e4a10684a58b0f1c91",
+    "b4p_toolbag_garud_volcanic_front.png": "a7849e96a8d0d4f8130afcb07edc2197048839ef4825be16e1f54d552756e27f",
+    "b4p_toolbag_garud_volcanic_side.png": "8e6bb0fed883bb6054565f9fe12b0758e4409c9259ccaa123d5d998c27feef80",
+    "b4p_toolbag_garud_volcanic_angle.png": "035d10e236a3494e915bbc526ac6811ec38c9e0a395acb670626cd55ded20b0f",
+    "b4p_toolbag_garud_volcanic_top.png": "8b290e51b33be3ee5277adc12dfdb3d05bb0ca45fa9f88b2b31b41e17fd3441f",
+    "b4p_toolbag_garud_volcanic_close.png": "e76a71f70a40da6dbd991f7aec8617f2f876d12a05a6a6a17b97e8ea761d8709",
+    "b4p_toolbag_garud_volcanic_back.png": "e58d0253ca3a86086222ad8c9675c62ec19eb889935089340ed9437d9450b72e",
+    "b4p_toolbag_garud_studio_front.png": "7add938c22f032c29d5eeeacd5ffcda680aa3c4fdbaf46c743e91af68f73480a",
+    "b4p_toolbag_garud_studio_angle.png": "46b86125d006609910a74e2eee43fe18c06eed9953e6c5d298728125f3a50a03",
+    "b4p_toolbag_garud_studio_scale.png": "05e6f8f794bd96f8da2175259c7bd596dbfd6848d13b8292226825ddadf93511"
+  },
+  "renders": [
+    "b4p_toolbag_garud_volcanic_front.png",
+    "b4p_toolbag_garud_volcanic_side.png",
+    "b4p_toolbag_garud_volcanic_angle.png",
+    "b4p_toolbag_garud_volcanic_top.png",
+    "b4p_toolbag_garud_volcanic_close.png",
+    "b4p_toolbag_garud_volcanic_back.png",
+    "b4p_toolbag_garud_studio_front.png",
+    "b4p_toolbag_garud_studio_angle.png",
+    "b4p_toolbag_garud_studio_scale.png"
+  ],
+  "samples": 96,
+  "notes": "ガルドの道具袋。煤けた帆布、焼け穴、つるはしの尖りが前面を突き破り、柄が口から突き出す。革の手袋と名札（縫い取りの代わり）。",
+  "game_lights": [],
+  "approval": "NOT_APPROVED",
+  "design": "docs/3d/B4_PROPS_DESIGN.md"
+}
