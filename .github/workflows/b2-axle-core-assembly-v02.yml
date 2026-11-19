@@ -1,7 +1,7 @@
 name: B2 Axle Hub Bearing Assembly V02 Real Blender BVH QA
 on:
   push:
-    branches: [feature/gpt-b2-waterwheel-axle-assembly-fit-v02-20261119]
+    branches: [feature/gpt-b2-waterwheel-axle-assembly-fit-v01-20261119]
     paths:
       - 'tools/b2-waterwheel-assembly/build_assembly_v02.py'
       - '.github/workflows/b2-axle-core-assembly-v02.yml'
@@ -22,13 +22,13 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin feature/gpt-b2-waterwheel-axle-assembly-fit-v02-20261119
-          git reset --hard origin/feature/gpt-b2-waterwheel-axle-assembly-fit-v02-20261119
+          git fetch origin feature/gpt-b2-waterwheel-axle-assembly-fit-v01-20261119
+          git reset --hard origin/feature/gpt-b2-waterwheel-axle-assembly-fit-v01-20261119
           mkdir -p docs/3d/b2-waterwheel-assembly
           echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-assembly/latest-v02.json
           git add docs/3d/b2-waterwheel-assembly/latest-v02.json
           git commit -m "chore(b2): track real assembly review run"
-          git push origin HEAD:feature/gpt-b2-waterwheel-axle-assembly-fit-v02-20261119
+          git push origin HEAD:feature/gpt-b2-waterwheel-axle-assembly-fit-v01-20261119
       - name: Restore original hub V11
         uses: actions/download-artifact@v4
         with:
