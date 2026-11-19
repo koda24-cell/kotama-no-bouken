@@ -54,6 +54,11 @@ jobs:
         continue-on-error: true
         timeout-minutes: 15
         run: QUALITY=high node tools/b4-3d/visual-test.cjs review-shots/b4 2>&1 | tail -40
+      - name: B4 props in game
+        if: contains(env.FLOORS, 'B4') && hashFiles('tools/claude-review/b4-props-shots.cjs') != ''
+        continue-on-error: true
+        timeout-minutes: 30
+        run: QUALITY=high node tools/claude-review/b4-props-shots.cjs review-shots/b4/props 2>&1 | tail -60
       - name: B5
         if: contains(env.FLOORS, 'B5')
         continue-on-error: true
