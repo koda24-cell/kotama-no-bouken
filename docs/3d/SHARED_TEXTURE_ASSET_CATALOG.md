@@ -23,6 +23,13 @@
 | `F3_WINDOW_ENAMEL_RUST_V5` | 第3層窓枠縦材01 V5の塗装・局所酸化・露出金属アルベド | 256×512 PNG / sRGB | 単体縦材用。無限タイル不適。V4より面の変化を局所化 | 自作コード `tools/floor3/window_mullion01/build_v5.py`（PR #540）、[成功run #44450317443](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44450317443) | `e1e76aa48c6a55fe1d1e7bfb2919148bc3c63d5b72a7dbf30d8330579a0c3628` | Artifact #14495033109 実体とSHA一致。画像バイナリ正式Git保存未実施、未承認。実ClamAVスキャン未確認 |
 | `F3_WINDOW_ROUGHNESS_V5` | 上記塗装・錆・露出金属を識別する粗さデータ | 256×512 PNG / non-color | V5カラーと同UV専用。タイル不可 | 同一V5自作コード・run #44450317443 | `9dcb8e20ad4bbeb39a2369366c0479023fad435a900cf4e0be8e665e91f1da58` | Artifact #14495033109 実体とSHA一致。画像バイナリ正式Git保存未実施、未承認。実ClamAVスキャン未確認 |
 
+| `F3_WINDOW_CROSSBAR_PAINT_V1` | 第3層窓枠横材01 塗装と錆のカラー（V1） | 256×512 PNG / sRGB | 横材専用UV、シームレス未検証 | 自作Blender生成 `tools/floor3/window_crossbar01/build.py`、PR #551、run #44451653102 | `6fafb4e963aedd7cac3a75fd9d3b215577f8f0388981f841409ef0bdecf43635` | Artifact 14494619940でSHA-256一致確認。PNG本体の正式Git保存なし。未承認、ClamAV実スキャン未確認 |
+| `F3_WINDOW_CROSSBAR_PAINT_V2` | 第3層窓枠横材01 塗装と錆のカラー（V2） | 256×512 PNG / sRGB | 横材専用UV、シームレス未検証 | 自作Blender生成 `tools/floor3/window_crossbar01/build.py`、PR #551、run #44451653102 | `2cb498d9c9e4508dab8eba59ab34ebe789192ebb1dc651a1416b6fae32f3e6cf` | Artifact 14494619940でSHA-256一致確認。PNG本体の正式Git保存なし。未承認、ClamAV実スキャン未確認 |
+| `F3_WINDOW_CROSSBAR_PAINT_V3` | 第3層窓枠横材01 塗装と錆のカラー（V3） | 256×512 PNG / sRGB | 横材専用UV、シームレス未検証 | 自作Blender生成 `tools/floor3/window_crossbar01/build.py`、PR #551、run #44451653102 | `56a0476cc367afad88eadcb3ee7c67638d48171610462cdb49bd92f76f8fa49e` | Artifact 14494619940でSHA-256一致確認。PNG本体の正式Git保存なし。未承認、ClamAV実スキャン未確認 |
+| `F3_WINDOW_CROSSBAR_ROUGH_V1` | 第3層窓枠横材01 粗さの非カラー（V1） | 256×512 PNG / non-color | 横材専用UV、シームレス未検証 | 自作Blender生成 `tools/floor3/window_crossbar01/build.py`、PR #551、run #44451653102 | `b2506d7aca416d9cd5215da94818b6507c63680b8081375b2b935166be6b2fe8` | Artifact 14494619940でSHA-256一致確認。PNG本体の正式Git保存なし。未承認、ClamAV実スキャン未確認 |
+| `F3_WINDOW_CROSSBAR_ROUGH_V2` | 第3層窓枠横材01 粗さの非カラー（V2） | 256×512 PNG / non-color | 横材専用UV、シームレス未検証 | 自作Blender生成 `tools/floor3/window_crossbar01/build.py`、PR #551、run #44451653102 | `052d99d933b3e809b753e10606834f877e9001cd43b8ff9de4114136a66bf6a7` | Artifact 14494619940でSHA-256一致確認。PNG本体の正式Git保存なし。未承認、ClamAV実スキャン未確認 |
+| `F3_WINDOW_CROSSBAR_ROUGH_V3` | 第3層窓枠横材01 粗さの非カラー（V3） | 256×512 PNG / non-color | 横材専用UV、シームレス未検証 | 自作Blender生成 `tools/floor3/window_crossbar01/build.py`、PR #551、run #44451653102 | `0afaa323f8b6b07f09e0f98afddf24835baba4e8bf15192a8b67af9c1e1fadf3` | Artifact 14494619940でSHA-256一致確認。PNG本体の正式Git保存なし。未承認、ClamAV実スキャン未確認 |
+
 ## モデルとの関係・承認境界
 
 - 第3層の壁01 V4（段差剥離）はユーザーが造形を了承済み。候補GLBの検証時SHA-256: `44e995b1ee843ad3bffba078c532158011effef6d6245cd0bced9f25082a8981`。
