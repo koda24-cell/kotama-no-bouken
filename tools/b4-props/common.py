@@ -889,7 +889,7 @@ def _stage(mn, mx, mood):
         bg.inputs["Color"].default_value = (0.006, 0.004, 0.004, 1)
         bg.inputs["Strength"].default_value = 1.0
         _light("AREA", "LavaBounce", 70 * size * size, (1.0, 0.36, 0.10), loc=c + Vector((1.4, -1.0, -0.1)) * size + Vector((0, 0, size * 0.15)), size=size * 1.6, target=tgt)
-        _light("AREA", "Key", 28 * size * size, (1.0, 0.72, 0.48), loc=c + Vector((-1.2, -1.5, 1.6)) * size, size=size * 0.9, target=tgt)
+        _light("AREA", "Key", 42 * size * size, (1.0, 0.72, 0.48), loc=c + Vector((-1.2, -1.5, 1.6)) * size, size=size * 0.9, target=tgt)
         _light("AREA", "CoolFill", 7 * size * size, (0.55, 0.62, 0.8), loc=c + Vector((-1.6, 1.4, 0.8)) * size, size=size * 2.0, target=tgt)
     else:
         bg.inputs["Color"].default_value = (0.20, 0.205, 0.21, 1)
@@ -933,6 +933,9 @@ def _scale_figure(mn, mx):
     body.name, head.name = "_fig_body", "_fig_head"
 
 
+RENDER_LIGHTS = []  # finish(lights=...) で設定: ゲーム内でも置く想定の点光源（燠火など）
+
+
 def render_views(name, out_dir, mood="volcanic", views=None, samples=None, res=None):
     s = bpy.context.scene
     s.render.engine = "CYCLES"
@@ -958,6 +961,8 @@ def render_views(name, out_dir, mood="volcanic", views=None, samples=None, res=N
             _scale_figure(mn, mx)
             mn, mx = _bounds(include_helpers=True)
         c, size, tgt = _stage(mn, mx, mood)
+        for li, (lp, le, lc) in enumerate(RENDER_LIGHTS):
+            _light("POINT", f"prop_light_{li}", le, lc, loc=lp, size=0.05)
         if vname == "close":
             c2 = Vector((c.x, c.y, mn.z + (mx.z - mn.z) * 0.7))
             tgt.location = c2
@@ -1000,10 +1005,11 @@ def set_origin_bottom(ob):
     ob.matrix_world = Matrix.Identity(4)
 
 
-def finish(name, parts, notes="", tex_res=1024, budget_tris=None, version="v1", refs=None):
+def finish(name, parts, notes="", tex_res=1024, budget_tris=None, version="v1", refs=None, lights=None):
     """parts: 形状オブジェクト群（手続き材質つき）。結合→ベイク→GLB→レンダー→manifest"""
     out_dir = os.path.join(OUT_ROOT, name)
     os.makedirs(out_dir, exist_ok=True)
+    RENDER_LIGHTS[:] = lights or []
     for o in parts:
         bpy.ops.object.select_all(action="DESELECT")
         o.select_set(True)
@@ -1034,6 +1040,7 @@ def finish(name, parts, notes="", tex_res=1024, budget_tris=None, version="v1", 
         "sha256": {os.path.basename(p): _sha(p) for p in [glb] + files},
         "renders": [os.path.basename(p) for p in files],
         "samples": SAMPLES, "notes": notes,
+        "game_lights": [{"pos_blender_zup": list(p), "watts": e, "color": list(c)} for p, e, c in (lights or [])],
         "approval": "NOT_APPROVED",
         "design": "docs/3d/B4_PROPS_DESIGN.md",
     }

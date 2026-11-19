@@ -174,7 +174,7 @@ for j in range(46):
     layer = rnd.random()
     z = Z0 + 0.025 + 0.085 * (1 - d * d) + layer * 0.05
     sz = rnd.uniform(0.016, 0.042) * (1.15 - 0.4 * layer)
-    ob = C.rock(f"coal_{j}", sz, detail=2, rough=0.4, squash=(1, rnd.uniform(0.7, 1), rnd.uniform(0.5, 0.8)), seed=j, facet=2)
+    ob = C.rock(f"coal_{j}", sz, detail=2 if sz > 0.026 else 1, rough=0.4, squash=(1, rnd.uniform(0.7, 1), rnd.uniform(0.5, 0.8)), seed=j, facet=2)
     C.xform(ob, (r * math.cos(a), r * math.sin(a), z), (rnd.uniform(0, 360), rnd.uniform(0, 360), rnd.uniform(0, 360)))
     parts.append(C.assign(ob, coal if (layer < 0.55 and d < 0.8) else coal_dead))
 
@@ -204,25 +204,12 @@ for j, (a, tilt) in enumerate(((0.6, 34), (2.9, 28))):
     ob = C.sweep(f"log_{j}", pts, C.circle_profile(0.024, 7, jitter=0.18, seed=j), scale_fn=lambda u: 1.0 - 0.45 * u)
     parts.append(C.assign(ob, wood))
 
-# ---- 足元にこぼれた炭と灰（縁は地面の下へ沈めて馴染ませる） ----
-bm = bmesh.new()
-bmesh.ops.create_circle(bm, cap_ends=True, radius=0.22, segments=20)
-bmesh.ops.subdivide_edges(bm, edges=bm.edges[:], cuts=1, use_grid_fill=True)
-for v in bm.verts:
-    ang = math.atan2(v.co.y, v.co.x)
-    d = Vector((v.co.x, v.co.y)).length / 0.22
-    k = 1.0 + 0.4 * C.noise.noise(Vector((math.cos(ang), math.sin(ang), 0)) * 2.5)
-    v.co.x *= k
-    v.co.y *= k * 0.75
-    v.co.z = 0.014 * (1 - d * d) - 0.006 * d + 0.003 * C.noise.noise(v.co * 30)
-spill = C.obj_from_bm(bm, "spill_ash")
-C.xform(spill, (0.14, -0.12, 0), (0, 0, 20))
-parts.append(C.assign(spill, ash))
+# ---- 足元にこぼれた炭（灰の板は地面と馴染まないため置かない。灰は配置側の地面で表現） ----
 for j in range(4):
     ob = C.rock(f"spill_coal_{j}", rnd.uniform(0.02, 0.035), detail=1, rough=0.3, squash=(1, 0.8, 0.6), seed=50 + j, facet=3)
     C.xform(ob, (0.10 + rnd.uniform(-0.1, 0.15), -0.18 + rnd.uniform(-0.08, 0.08), 0.012), (rnd.uniform(0, 360), 0, rnd.uniform(0, 360)))
     parts.append(C.assign(ob, coal_dead))
 
-C.finish(NAME, parts, version="v1", tex_res=1024, budget_tris=10000,
+C.finish(NAME, parts, version="v3", lights=[((0.0, 0.0, 0.58), 18.0, (1.0, 0.42, 0.14))], tex_res=1024, budget_tris=10000,
          refs=[34, 39, 37, 103],
          notes="鍛鉄の籠型火鉢。欠落1本・折損1本・凹んだ上リング・曲がった脚1本。燠火は割れ目のみ発光。")
