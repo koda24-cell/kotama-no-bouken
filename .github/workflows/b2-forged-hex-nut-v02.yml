@@ -1,0 +1,67 @@
+name: B2 One Wrought Iron Hex Nut V02 Real Blender QA
+on:
+  push:
+    branches: [feature/gpt-b2-forged-bearing-nut-v01-20261119]
+    paths:
+      - 'tools/b2-waterwheel-nut/build_forged_nut_v02.py'
+      - '.github/workflows/b2-forged-hex-nut-v02.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record exact review run for handoff
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-forged-bearing-nut-v01-20261119
+          git reset --hard origin/feature/gpt-b2-forged-bearing-nut-v01-20261119
+          mkdir -p docs/3d/b2-waterwheel-nut
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-nut/latest-v02.json
+          git add docs/3d/b2-waterwheel-nut/latest-v02.json
+          git commit -m "chore(b2): record actual hex nut Blender render ID"
+          git push origin HEAD:feature/gpt-b2-forged-bearing-nut-v01-20261119
+      - name: Generate independent nut and four real Blender Cycles views
+        run: |
+          set -o pipefail
+          mkdir -p render-output/b2-hex-nut-v02
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-nut/build_forged_nut_v02.py -- render-output/b2-hex-nut-v02 | tee /tmp/nut.log
+          grep -q 'B2_FORGED_NUT_V02_CYCLES_RENDER_OK' /tmp/nut.log
+      - name: Verify real PNG GLB Blend SHA and structure
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          root=Path('render-output/b2-hex-nut-v02')
+          m=json.loads((root/'b2_one_hand_forged_hex_nut_v02_manifest.json').read_text())
+          assert m['pieces']==1 and m['approval']=='NOT_APPROVED'
+          assert m['mesh_faces']>1000 and len(m['files'])==7
+          assert m['inner_bore_radius_m']>.035
+          assert sum(n.endswith('_front.png') or n.endswith('_side.png') or n.endswith('_angle.png') or n.endswith('_back.png') for n in m['files'])==4
+          for n,v in m['files'].items():
+            bb=(root/n).read_bytes()
+            assert len(bb)==v['bytes'] and hashlib.sha256(bb).hexdigest()==v['sha256'],n
+            if n.endswith('.png'):assert bb[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if n.endswith('.blend'):assert len(bb)>100000
+            if n.endswith('.glb'):
+              assert bb[:4]==b'glTF'
+              size=struct.unpack_from('<I',bb,12)[0]
+              j=json.loads(bb[20:20+size])
+              assert len(j.get('meshes',[]))==1 and len(j.get('images',[]))==1
+          print('B2_NUT_V02_REAL_GLTF_HASH_VERIFIED')
+          PY
+      - name: Archive temporary unapproved review files
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-one-forged-hex-nut-v02
+          path: render-output/b2-hex-nut-v02
+          retention-days: 14
+          if-no-files-found: warn
