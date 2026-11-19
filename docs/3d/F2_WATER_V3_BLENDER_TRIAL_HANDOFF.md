@@ -65,3 +65,10 @@
 - Blenderスクリプト内で画像 `f2-water-surface-v5.png`（256²・タイル可能な独自の複合周期波高マスク）を**外部ダウンロードせず生成**。これを水面テクスチャ画像として使用し、法線・ラフネスを変える。色画像のベタ貼りはせず、ほぼ無色の透過BSDFに画像駆動の微弱なGlossyとFresnelを加える。濃いゼラチン風の着色Principled透過材質は水面から外す。河床CC0のClamAVゲート・ハッシュ一致確認は継続。水のメッシュと岩は保持。
 - 実行対象：`tools/f2-water/render_water.py`、 `.github/workflows/f2-safe-water-render.yml`。GLBゲーム統合・正式素材保存は未実施。V5 `.blend` は画像をパックして単体レビュー可能にする。
 - [V5確認対象Run #44442337728](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44442337728)（ワークフローも更新済み版）、[先行V5 Run #44442319272](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44442319272)。この記録時点で両方とも成功・実PNGは未確認。実行後ログ・Artifactsを検証すること。
+
+
+## V6 水面の視認性改善（2026-11-19）
+- V5実レンダリングは成功したが、水面がほぼ見えず川底がむき出しに見えるとの指摘。透明度を下げて濃い水色にするのではなく、水面法線/画像駆動の反射に重点を置く。
+- V6: 既存の生成画像を波のNormal（Bump強度0.29、Distance0.026）、反射向けGlossy、Fresnel依存反射（基本0.15+角度依存最大0.40）、局所の淡い発光ハイライト（画像マスク依存）として利用。微細な分断反射筋92本を水面上に独立薄膜で追加。川底は透明BSDFから透視可能。外部画像を追加取得せず、新たな未検査素材を使わない。
+- V6候補ファイル: `f2-water-surface-v6.png`, `f2-water-v6.blend`, 3方向PNG、scan/render/execution manifest。
+- [V6 Run #44444579533](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44444579533) はpushによる実起動を確認。**実行開始時点で in_progress**。ClamAV実スキャン・レンダリング・画像品質はこのV6 runのログとArtifactを確認するまでは未検証。既存成果物の正式保存とマージは引き続き保留。
