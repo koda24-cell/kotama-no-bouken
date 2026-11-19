@@ -4,6 +4,7 @@
 
 | 名称・技術 | 用途 | 情報/導入/検証状態 | 出典・実装・証拠 |
 | --- | --- | --- | --- |
+| Shared Blender + ClamAV GHCR image (Ubuntu 24.04) | Blender/ClamAVを共通コンテナに事前導入し、全階層のActionsでapt再インストールを省く。freshclam定義更新・取得直後/生成後の実スキャンは毎ジョブ必須 | **2026-11-19 設計・コード登録済み、GHCR publish/実スキャン未検証**。未承認の実行環境。既存ワークフローは変更しない | [公式GHCR](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) / [引き継ぎ](SHARED_BLENDER_CLAMAV_CONTAINER_HANDOFF.md) / `tools/security/clamav_scan_gate.sh` / `build-shared-blender-clamav-image.yml` |
 | F6 成木 CC0葉素材自動取得 + Blender V19/V20 並列比較 | ambientCG Leaf001 1K-PNGを公式URLから取得・ZIP/PNG/SHAを検証して葉材質へ適用。原本と候補の4視点PNG/GLB/Blend/manifest比較 | **2026-11-19 Actions 3回実成功**（V22 run 44439923529、V23 run 44440715441、V24 run 44441728229）。4方向PNG/GLB/BlendとSHA manifestを検証。V24で過度な白反射を低減、葉形状・樹冠品質はまだ改善途中で未承認。Leaf001は配布元分類 Approximation で写真そのものではない。ゲーム未統合 / NOT_APPROVED | [PR #501](https://github.com/koda24-cell/kotama-no-bouken/pull/501) / [手順](F6_AUTO_CC0_LEAF_RENDER_HANDOFF.md)（PRブランチ側） / [ambientCG](https://ambientcg.com/view?id=Leaf001) |
 | CEDEC2024 BotW 二次元四分木・距離別ロード | 全階層のセルストリーミング/LOD設計 | 任天堂講演の公表内容を確認・コタマ未実装 | [公式講演レポート](https://gamemakers.jp/article/2024_09_04_78145/) / [共通方針](GLOBAL_3D_LOD_PERFORMANCE_POLICY.md) |
 | Cemu BotW tree billboard / grass density解析 | 遠景樹木・植生の表示距離を別管理する根拠 | コミュニティ解析コード確認・コタマ未実装・任天堂公式コードではない | [Cemuパッチ](https://github.com/cemu-project/cemu_graphic_packs/blob/master/src/BreathOfTheWild/Mods/DrawDistance/patch_DrawDistance.asm) / [調査文書](F6_TREE_BOTW_PERFORMANCE_RESEARCH_20261117.md) |
