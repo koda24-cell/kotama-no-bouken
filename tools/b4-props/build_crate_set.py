@@ -34,7 +34,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_crate_set"
-VERSION = "v3"
+VERSION = "v4"
 rnd = random.Random(97)
 C.reset(97)
 
@@ -73,6 +73,15 @@ def slat_z(h, i, nb=3):
 
 def rock(name, r, loc, rot=(0, 0, 0), squash=(1, 0.85, 0.7), seed=0, facet=4, detail=2):
     ob = C.rock(name, r, detail=detail, rough=0.3, squash=squash, seed=seed, facet=facet)
+    # 割れ面は平らに、面の間はなめらかに（三角形の段々を見せない）：35°を超える辺だけシャープ
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    for f in bm.faces:
+        f.smooth = True
+    L.sharpen(bm, 35)
+    bm.to_mesh(ob.data)
+    bm.free()
     C.xform(ob, loc, rot)
     return C.assign(ob, rockm)
 
@@ -139,6 +148,7 @@ mods = {}
 # 倒れた前の面も壊れている：中段は半分失われ、右の角当ては折れる（倒す行列は後で掛ける）
 brk["Fs1"] = dict(f=0.58, rough=0.07, drop_b=True)
 brk["Fv1"] = dict(f=0.62, rough=0.06, drop_b=True)
+brk["Fs2"] = dict(f=0.36, rough=0.06, rot_b=((0, 1, 0), -9, (0.03, 0, 0)))
 # 左右の横板：前半分が折れ口を支点に垂れ下がる（L は b 片、R は a 片が前）。前端は地面近くまで
 LEN_LR = dC + 2 * T - 2 * T
 for i in range(3):
@@ -153,7 +163,7 @@ brk["Lv1"] = dict(f=0.45, rough=0.06, drop_b=True)
 brk["Rv0"] = dict(f=0.38, rough=0.06, drop_b=True)
 # 蓋：手前は中へ落ち、中央と奥は折れて V 字にたわむ（岩が乗る）
 ldC = dC + 4 * T
-mods["T0"] = L.pivot_rot((0, -ldC / 2, hC), (1, 0, 0), -24, (0.02, 0.05, -0.30))
+brk["T0"] = dict(f=0.48, rough=0.07, rot_a=((0, 1, 0), 52, (0.0, 0.02, -0.02)), rot_b=((0, 1, 0), -58, (0.0, 0.02, -0.02)))
 brk["T1"] = dict(f=0.55, rough=0.07, rot_a=((0, 1, 0), 30, (0, -0.01, -0.03)), rot_b=((0, 1, 0), -36, (0, -0.01, -0.04)))
 brk["T2"] = dict(f=0.45, rough=0.06, rot_a=((0, 1, 0), 15, (0, 0, -0.01)), rot_b=((0, 1, 0), -19, (0, 0, -0.01)))
 Cc = L.framed_crate("C", wC_, dC, hC, wC, iron=iron, seed=3, broken=brk, mods=mods, skip=("Ft",), no_nails="F",
