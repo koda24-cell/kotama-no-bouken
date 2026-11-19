@@ -145,7 +145,7 @@ for idx in [7,8,9,31,32,33]:
     fn=(normal_mat@face.data.vertices[vi].normal).normalized()
     nearest=bvh.find_nearest(co)
     bp,bn,tri,d=nearest
-    ang=math.degrees(math.acos(max(-1,min(1,fn.dot(bn.normalized()))))
+    ang=math.degrees(math.acos(max(-1.0,min(1.0,fn.dot(bn.normalized())))))
     previous=rim_ids[(idx-1)%36];next_v=rim_ids[(idx+1)%36]
     diagnostic['rim_order'][str(idx)]={
         'face_source_vertex_id':vi,'body_nearest_triangle':tri,
