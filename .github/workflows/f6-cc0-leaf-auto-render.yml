@@ -11,6 +11,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: f6-cc0-photo-leaf-${{ github.ref }}
   cancel-in-progress: false
@@ -30,12 +31,31 @@ jobs:
           test -s render-output/floor6/cc0-leaf-source/color.png
       - name: Install Blender rendering dependencies
         run: sudo apt-get update -qq && sudo apt-get install -y blender python3-numpy libegl1 libgl1 libopengl0 libgl1-mesa-dri
-      - name: Generate original V19 GLB, Blend and four camera PNGs
+      - name: Restore verified V19 Blender checkpoint (render only if unavailable)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
-          blender -b -t 2 --python tools/floor6/tree_mature_v1.py 2>&1 | tee /tmp/f6_baseline.log
-          grep -q F6_TREE_MATURE_DONE /tmp/f6_baseline.log
+          mkdir -p render-output/floor6/nature/tree_mature
+          if gh run download 44229543648 --repo "${{ github.repository }}" --name f6-v19-v21-cc0-leaf-comparison-NOT-APPROVED --dir /tmp/f6_ref; then
+            cp -a /tmp/f6_ref/nature/tree_mature/. render-output/floor6/nature/tree_mature/
+            python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          d=Path("render-output/floor6/nature/tree_mature")
+          m=json.loads((d/"manifest.json").read_text())
+          assert m["status"]=="NOT_APPROVED"
+          for f in m["files"]:
+              p=d/f["name"]
+              assert p.exists() and hashlib.sha256(p.read_bytes()).hexdigest()==f["sha256"]
+          print("F6_V19_RESTORED_VERIFIED")
+          PY
+          else
+            echo "Old artifact unavailable; rendering fresh original V19"
+            export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+            blender -b -t 2 --python tools/floor6/tree_mature_v1.py 2>&1 | tee /tmp/f6_baseline.log
+            grep -q F6_TREE_MATURE_DONE /tmp/f6_baseline.log
+          fi
           test -s render-output/floor6/nature/tree_mature/tree_mature.blend
       - name: Apply CC0 leaf color and PBR while preserving base geometry
         run: |
