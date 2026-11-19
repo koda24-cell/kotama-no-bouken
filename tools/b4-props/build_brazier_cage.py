@@ -68,7 +68,7 @@ for i in range(N):
         z = Z0 - 0.015 + (Z1 + 0.035 - Z0) * k / steps
         r = rad_at(min(z, Z1))
         if z > Z1:  # 上端は外へ反る
-            r += (z - Z1) * 1.4
+            r += (z - Z1) * 2.4 + ((z - Z1) / 0.035) ** 2 * 0.012
         pts.append(Vector((r * ca, r * sa, z)))
     if i == broken:  # 途中で折れ、上側は外へねじれて曲がる（先端は欠落）
         cut = 5
@@ -82,8 +82,13 @@ for i in range(N):
                      up_fn=lambda k, p, t, o=out: o, scale_fn=lambda u: (1.0, 1.0 - 0.35 * u))
         parts.append(C.assign(ob, iron))
         continue
-    ob = C.sweep(f"strap_{i}", pts, STRAP, up_fn=radial_up(ca, sa))
+    w = rnd.uniform(0.025, 0.034)
+    tw = rnd.uniform(-0.15, 0.15)
+    ob = C.sweep(f"strap_{i}", pts, C.rect_profile(0.008, w, chamfer=0.0025),
+                 up_fn=lambda k, p, t, tw=tw: (Vector((p.x, p.y, 0)).normalized() + t.cross(Vector((p.x, p.y, 0)).normalized()) * tw * math.sin(k)),
+                 scale_fn=lambda u: (1.0, 1.0 + 0.12 * math.sin(u * 7 + i)))
     C.displace_noise(ob, 0.004, 6.0, seed=i)
+    C.displace_noise(ob, 0.0012, 45.0, seed=i + 100)  # 鍛造の槌目
     parts.append(C.assign(ob, iron))
 
 # ---- リング（帯を立てて巻く） ----
@@ -161,16 +166,34 @@ for v in bm.verts:
 bed = C.obj_from_bm(bm, "ash_bed")
 parts.append(C.assign(bed, ash))
 
-# ---- 燠火（山盛りの炭、割れ目が光る） ----
-for j in range(20):
-    r = (R0 - 0.03) * math.sqrt(rnd.random())
+# ---- 燠火（山盛りの炭）：下層ほど赤く、上は灰をかぶった炭 ----
+for j in range(46):
+    r = (R0 - 0.025) * math.sqrt(rnd.random())
     a = rnd.uniform(0, 2 * math.pi)
     d = r / (R0 + 0.02)
-    z = Z0 + 0.03 + 0.09 * (1 - d * d) + rnd.uniform(0.0, 0.04)
-    sz = rnd.uniform(0.028, 0.06)
-    ob = C.rock(f"coal_{j}", sz, detail=1, rough=0.25, squash=(1, rnd.uniform(0.7, 1), rnd.uniform(0.55, 0.8)), seed=j, facet=3)
+    layer = rnd.random()
+    z = Z0 + 0.025 + 0.085 * (1 - d * d) + layer * 0.05
+    sz = rnd.uniform(0.016, 0.042) * (1.15 - 0.4 * layer)
+    ob = C.rock(f"coal_{j}", sz, detail=2, rough=0.4, squash=(1, rnd.uniform(0.7, 1), rnd.uniform(0.5, 0.8)), seed=j, facet=2)
     C.xform(ob, (r * math.cos(a), r * math.sin(a), z), (rnd.uniform(0, 360), rnd.uniform(0, 360), rnd.uniform(0, 360)))
-    parts.append(C.assign(ob, coal if j % 5 else coal_dead))
+    parts.append(C.assign(ob, coal if (layer < 0.55 and d < 0.8) else coal_dead))
+
+# ---- 吊り輪の取っ手（左右） ----
+for k, a in enumerate((0.0, math.pi)):
+    ca, sa = math.cos(a + 0.26), math.sin(a + 0.26)
+    out = Vector((ca, sa, 0))
+    rr = rad_at(Z1) + 0.02
+    eye = out * rr + Vector((0, 0, Z1 - 0.03))
+    lp = C.dome(f"eye_{k}", 0.012, 0.012, sides=6)
+    C.place_on(lp, eye, out)
+    parts.append(C.assign(lp, iron))
+    cen = eye + out * 0.03 + Vector((0, 0, -0.04))
+    side = Vector((-sa, ca, 0))
+    tilt = Vector((0, 0, 1)).lerp(out, 0.35).normalized()
+    pts = [cen + (side * math.cos(t) + tilt * math.sin(t)) * 0.045 for t in (2 * math.pi * q / 18 for q in range(18))]
+    hr = C.sweep(f"handle_{k}", pts, C.circle_profile(0.0065, 6), closed=True)
+    C.displace_noise(hr, 0.002, 30, seed=k)
+    parts.append(C.assign(hr, iron))
 
 # ---- 燃え残りの薪（2本が籠の縁から突き出す） ----
 for j, (a, tilt) in enumerate(((0.6, 34), (2.9, 28))):
@@ -181,15 +204,19 @@ for j, (a, tilt) in enumerate(((0.6, 34), (2.9, 28))):
     ob = C.sweep(f"log_{j}", pts, C.circle_profile(0.024, 7, jitter=0.18, seed=j), scale_fn=lambda u: 1.0 - 0.45 * u)
     parts.append(C.assign(ob, wood))
 
-# ---- 足元にこぼれた炭と灰 ----
+# ---- 足元にこぼれた炭と灰（縁は地面の下へ沈めて馴染ませる） ----
 bm = bmesh.new()
-bmesh.ops.create_circle(bm, cap_ends=True, radius=0.26, segments=18)
+bmesh.ops.create_circle(bm, cap_ends=True, radius=0.22, segments=20)
+bmesh.ops.subdivide_edges(bm, edges=bm.edges[:], cuts=1, use_grid_fill=True)
 for v in bm.verts:
-    v.co.x *= 1.0 + 0.35 * C.noise.noise(v.co * 6)
-    v.co.y *= 0.8
-    v.co.z = 0.004
+    ang = math.atan2(v.co.y, v.co.x)
+    d = Vector((v.co.x, v.co.y)).length / 0.22
+    k = 1.0 + 0.4 * C.noise.noise(Vector((math.cos(ang), math.sin(ang), 0)) * 2.5)
+    v.co.x *= k
+    v.co.y *= k * 0.75
+    v.co.z = 0.014 * (1 - d * d) - 0.006 * d + 0.003 * C.noise.noise(v.co * 30)
 spill = C.obj_from_bm(bm, "spill_ash")
-C.xform(spill, (0.16, -0.12, 0), (0, 0, 20))
+C.xform(spill, (0.14, -0.12, 0), (0, 0, 20))
 parts.append(C.assign(spill, ash))
 for j in range(4):
     ob = C.rock(f"spill_coal_{j}", rnd.uniform(0.02, 0.035), detail=1, rough=0.3, squash=(1, 0.8, 0.6), seed=50 + j, facet=3)

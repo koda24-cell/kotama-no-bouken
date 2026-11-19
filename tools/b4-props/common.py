@@ -493,10 +493,11 @@ def weathered_iron(name, heat_center=None, heat_r=(0.05, 0.5), soot_z=None, rust
     n_big = b.noise(3.0 / scale, 8, 0.6)
     n_fine = b.noise(40.0 / scale, 4, 0.5)
     # 錆の島マスク
-    rust_m = b.ramp(b.math("ADD", n_big, b.math("MULTIPLY", n_fine, 0.25)),
-                    [(0.0, 0.0), (max(0.05, 0.62 - rust * 0.35), 0.0), (min(0.95, 0.70 - rust * 0.25), 1.0), (1.0, 1.0)])
-    iron = b.mix(n_fine, (0.022, 0.021, 0.020), (0.045, 0.040, 0.036))
-    rust_col = b.mix(n_big, (0.11, 0.035, 0.012), (0.20, 0.07, 0.025))
+    n_mid = b.noise(11.0 / scale, 6, 0.6)
+    rust_m = b.ramp(b.math("ADD", b.math("MULTIPLY", n_big, 0.7), b.math("MULTIPLY", n_mid, 0.45)),
+                    [(0.0, 0.0), (max(0.05, 0.66 - rust * 0.3), 0.0), (min(0.97, 0.72 - rust * 0.22), 1.0), (1.0, 1.0)])
+    iron = b.mix(n_fine, (0.016, 0.015, 0.014), (0.034, 0.031, 0.028))
+    rust_col = b.mix(n_big, (0.075, 0.030, 0.013), (0.15, 0.058, 0.024))
     if diff is not None:  # 実写錆を暗く・彩度を抑えて重ねる
         hs = b.n("ShaderNodeHueSaturation")
         hs.inputs["Saturation"].default_value = 0.75
@@ -524,7 +525,7 @@ def weathered_iron(name, heat_center=None, heat_r=(0.05, 0.5), soot_z=None, rust
     cav = b.math("SUBTRACT", 1.0, b.cavity(0.025))
     ash = b.math("MAXIMUM", b.math("MULTIPLY", cav, 0.7), b.math("MULTIPLY", b.up_mask(0.6, 0.95), 0.35))
     ash = b.math("MULTIPLY", ash, b.ramp(n_big, [(0.25, 0.0), (0.75, 1.0)]))
-    col = b.mix(ash, col, (0.13, 0.12, 0.11))
+    col = b.mix(b.math("MULTIPLY", ash, 0.8), col, (0.075, 0.07, 0.066))
     # 粗さ・金属度
     r = b.mixf(rust_m, 0.42, 0.88)
     if rgh is not None:
@@ -575,14 +576,14 @@ def weathered_wood(name, char=0.3, soot_z=None, heat_center=None, heat_r=(0.1, 0
     cav = b.math("SUBTRACT", 1.0, b.cavity(0.03))
     ash = b.math("MAXIMUM", b.math("MULTIPLY", cav, 0.6), b.math("MULTIPLY", b.up_mask(0.65, 0.95), 0.4))
     ash = b.math("MULTIPLY", ash, b.ramp(n_big, [(0.3, 0.0), (0.7, 1.0)]))
-    col = b.mix(ash, col, (0.12, 0.112, 0.105))
+    col = b.mix(b.math("MULTIPLY", ash, 0.85), col, (0.07, 0.066, 0.062))
     r = b.mixf(charm, 0.82, 0.68)
     r = b.mixf(ash, r, 0.96)
     b.normal_from(nrm, 0.5, bump_height=b.math("ADD", b.math("MULTIPLY", grain, 0.6), b.math("MULTIPLY", alli, b.math("MULTIPLY", charm, -1.5))), bump_strength=0.5)
     return b.out(col, r, 0.0)
 
 
-def ember_coal(name, glow=1.0, scale=1.0, hot=(1.0, 0.33, 0.06)):
+def ember_coal(name, glow=1.0, scale=1.0, hot=(1.0, 0.22, 0.03)):
     """燠火・炭: 黒い炭の表面＋割れ目の中だけ発光（BotW の溶岩岩と同じ考え方）"""
     b = NB(name)
     n_big = b.noise(6.0 / scale, 6, 0.6)
@@ -593,7 +594,7 @@ def ember_coal(name, glow=1.0, scale=1.0, hot=(1.0, 0.33, 0.06)):
     glow_m = b.math("MULTIPLY", glow_m, b.ramp(n_big, [(0.25, 0.15), (0.65, 1.0)]))
     col = b.mix(n_big, (0.010, 0.009, 0.008), (0.035, 0.030, 0.027))
     ashm = b.math("MULTIPLY", b.up_mask(0.5, 0.9), b.ramp(n_big, [(0.55, 0.0), (0.8, 1.0)]))
-    col = b.mix(ashm, col, (0.16, 0.15, 0.14))
+    col = b.mix(ashm, col, (0.07, 0.065, 0.06))
     emit = b.ramp(glow_m, [(0.0, (0, 0, 0)), (0.35, (hot[0] * 0.5, hot[1] * 0.3, hot[2] * 0.2)), (1.0, hot)])
     r = b.mixf(ashm, 0.75, 0.95)
     b.normal_from(None, bump_height=b.math("SUBTRACT", 1.0, crack_m), bump_strength=0.6, bump_dist=0.004)
@@ -604,7 +605,7 @@ def ash_bed(name, scale=1.0):
     b = NB(name)
     n1 = b.noise(14.0 / scale, 6, 0.6)
     n2 = b.noise(3.0 / scale, 4, 0.5)
-    col = b.ramp(b.math("ADD", n1, b.math("MULTIPLY", n2, 0.4)), [(0.3, (0.07, 0.065, 0.06)), (0.7, (0.20, 0.19, 0.18))])
+    col = b.ramp(b.math("ADD", n1, b.math("MULTIPLY", n2, 0.4)), [(0.25, (0.022, 0.020, 0.019)), (0.55, (0.055, 0.051, 0.048)), (0.85, (0.10, 0.095, 0.09))])
     b.normal_from(None, bump_height=n1, bump_strength=0.4)
     return b.out(col, 0.97, 0.0)
 
@@ -887,9 +888,9 @@ def _stage(mn, mx, mood):
         # 暗い洞窟：溶岩の赤い照り返し（下・横から）＋弱い冷たい環境光＋上からの鈍い光
         bg.inputs["Color"].default_value = (0.006, 0.004, 0.004, 1)
         bg.inputs["Strength"].default_value = 1.0
-        _light("AREA", "LavaBounce", 260 * size * size, (1.0, 0.36, 0.10), loc=c + Vector((1.4, -1.0, -0.1)) * size + Vector((0, 0, size * 0.15)), size=size * 1.6, target=tgt)
-        _light("AREA", "Key", 120 * size * size, (1.0, 0.72, 0.48), loc=c + Vector((-1.2, -1.5, 1.6)) * size, size=size * 0.9, target=tgt)
-        _light("AREA", "CoolFill", 20 * size * size, (0.55, 0.62, 0.8), loc=c + Vector((-1.6, 1.4, 0.8)) * size, size=size * 2.0, target=tgt)
+        _light("AREA", "LavaBounce", 70 * size * size, (1.0, 0.36, 0.10), loc=c + Vector((1.4, -1.0, -0.1)) * size + Vector((0, 0, size * 0.15)), size=size * 1.6, target=tgt)
+        _light("AREA", "Key", 28 * size * size, (1.0, 0.72, 0.48), loc=c + Vector((-1.2, -1.5, 1.6)) * size, size=size * 0.9, target=tgt)
+        _light("AREA", "CoolFill", 7 * size * size, (0.55, 0.62, 0.8), loc=c + Vector((-1.6, 1.4, 0.8)) * size, size=size * 2.0, target=tgt)
     else:
         bg.inputs["Color"].default_value = (0.20, 0.205, 0.21, 1)
         bg.inputs["Strength"].default_value = 1.0
@@ -1017,7 +1018,7 @@ def finish(name, parts, notes="", tex_res=1024, budget_tris=None, version="v1", 
     bpy.ops.object.select_all(action="DESELECT")
     ob.select_set(True)
     bpy.ops.export_scene.gltf(filepath=glb, export_format="GLB", use_selection=True, export_apply=True,
-                              export_yup=True, export_image_format="AUTO")
+                              export_yup=True, export_image_format="JPEG", export_image_quality=88)
     blend = os.path.join(out_dir, f"{name}.blend")
     bpy.ops.wm.save_as_mainfile(filepath=blend, compress=True)
     files = render_views(name, out_dir, "volcanic")
