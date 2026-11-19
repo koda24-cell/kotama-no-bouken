@@ -1,8 +1,8 @@
 {
   "asset": "b4p_claw_rock",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
-  "triangles": 8352,
+  "triangles": 6890,
   "budget_triangles": 6000,
   "materials": [
     "b4p_claw_rock_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    1.623,
-    0.99,
-    1.288
+    1.892,
+    0.991,
+    1.32
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_claw_rock.glb",
-  "glb_bytes": 1021504,
+  "glb_bytes": 1062880,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -48,16 +48,16 @@
     41
   ],
   "sha256": {
-    "b4p_claw_rock.glb": "e805ab4df2623fc5e1e8351e33cd7755bc04876573d9a1f8c184c20986f46288",
-    "b4p_claw_rock_volcanic_front.png": "786fe3fc45b45da0d62103c74b8d007e0acbdb1453b40f2cc4ef7bc4f2b5878d",
-    "b4p_claw_rock_volcanic_side.png": "cbcd458ba4d7825306a102b3fde83d91c6ce191ae1a8e1ba8c6c53f084c2adc1",
-    "b4p_claw_rock_volcanic_angle.png": "fceca6aab4369da97142f25476b4c11f3298bdd9e36c895eb742ca9ba20bf470",
-    "b4p_claw_rock_volcanic_top.png": "e7709ece270665b25bc3b6864854330eba625fa9013158cc826eb5798c2830b0",
-    "b4p_claw_rock_volcanic_close.png": "7a1f06bccd2bfc2dbe73e9782bd84f33822b80e23ceec862ae2f0bff109c8c8f",
-    "b4p_claw_rock_volcanic_back.png": "25b52f9496090ae3b462958784b14758e1aa24c643d99e6e9152e7fd3dc640a5",
-    "b4p_claw_rock_studio_front.png": "f482e808c9e7886aaf71db6e40308686a37485dcc89b0ba1f4afbbb1945dbb2c",
-    "b4p_claw_rock_studio_angle.png": "3cb4aae1a3e40de7a6002ab95dfd957ec645439182c490537d324703abb03b85",
-    "b4p_claw_rock_studio_scale.png": "f0a3b4f356808f87050799ab7cbfdbf26885b55303a7d225901f764220df60fe"
+    "b4p_claw_rock.glb": "8dec285f9952834ee3d4ab2699b961bbfa08cca3f11f5bedd6ba18afda23633e",
+    "b4p_claw_rock_volcanic_front.png": "1d9ef8a77e903ceae769d0b5a92c34cc56d47e577f9db816e63d7539b01480db",
+    "b4p_claw_rock_volcanic_side.png": "00130f40ec091a6b28fac2a5a97d917480e2dd06eebf78908ec4b964e99ce3b1",
+    "b4p_claw_rock_volcanic_angle.png": "f263c2be326862cb0edef9855718d89007ed1c97281e2f7e28b8fee2a52155cd",
+    "b4p_claw_rock_volcanic_top.png": "069557a1ca7e713964a96eb5e1f83a892be034cd1c8086a70328eddfe3ea4ad7",
+    "b4p_claw_rock_volcanic_close.png": "1014169a2fbfa7d3026f39574631ed7a121093f65d4baecc5877908eb095395f",
+    "b4p_claw_rock_volcanic_back.png": "34de509764fc85d806ce1163689823561afa5ff83c61844b01a8eea9d81e4741",
+    "b4p_claw_rock_studio_front.png": "6ef7069473c5f4fc2fdf44343005d09333952757e75658efb2aa1443686cbbc2",
+    "b4p_claw_rock_studio_angle.png": "5d2b0b016207408bb17db391cebc5010fd5c2b21be30df0a0bef613bf78ac98f",
+    "b4p_claw_rock_studio_scale.png": "b81b557b1b4c41e53814e84aebd9261a4c08d42803ef27a5a9a6d3652a0e1d77"
   },
   "renders": [
     "b4p_claw_rock_volcanic_front.png",
