@@ -42,7 +42,7 @@ bpy.ops.object.camera_add();camera=bpy.context.object
 camera.data.type='ORTHO';camera.data.ortho_scale=size*1.75
 bpy.context.scene.camera=camera
 scene=bpy.context.scene
-scene.render.engine='CYCLES';scene.cycles.samples=16
+scene.render.engine='CYCLES';scene.cycles.samples=16;scene.cycles.use_denoising=False;bpy.context.view_layer.cycles.use_denoising=False
 scene.render.resolution_x=960;scene.render.resolution_y=720
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
