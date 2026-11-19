@@ -15,7 +15,7 @@ jobs:
       - name: Install browser test dependencies
         run: |
           npm install --no-save playwright@1.56.1 three@0.170.0
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
       - name: Render all directions and parallax
         run: node tools/f5-backdrop/render-360.mjs
       - uses: actions/upload-artifact@v4
