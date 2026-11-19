@@ -76,7 +76,8 @@ jobs:
             out/f2-water/front.png
             out/f2-water/side.png
             out/f2-water/angle.png
-            out/f2-water/f2-water-v4.blend
+            out/f2-water/f2-water-surface-v5.png
+            out/f2-water/f2-water-v5.blend
             scan-version.txt
           retention-days: 14
           if-no-files-found: warn
