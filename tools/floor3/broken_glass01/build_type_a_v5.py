@@ -7,6 +7,9 @@ import bpy, math, random, os
 from mathutils import Vector
 OUT='/work/out/f3_broken_glass01_type_a'
 os.makedirs(OUT,exist_ok=True)
+# Blender default startup cube must never be exported or occlude QA images.
+bpy.ops.object.select_all(action='SELECT')
+bpy.ops.object.delete(use_global=False)
 random.seed(11019)
 N=24
 W,H=.56,.90
