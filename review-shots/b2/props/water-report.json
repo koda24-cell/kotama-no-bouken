@@ -533,7 +533,7 @@
           "up"
         ],
         "calls": 441,
-        "triangles": 1787706,
+        "triangles": 1788112,
         "geometries": 435,
         "textures": 119,
         "lights": 57
@@ -636,7 +636,7 @@
       }
     },
     "maxTriangles": 2133197,
-    "avgTriangles": 869706,
+    "avgTriangles": 869720,
     "maxCalls": 491
   },
   "errors": [],

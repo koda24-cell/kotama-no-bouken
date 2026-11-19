@@ -1327,7 +1327,7 @@
         "b2:monuments:26",
         "b2:backdrop:27",
         "b2:bridge:10",
-        "b2:stairs:5"
+        "b2:stairs:6"
       ],
       "setpieces": {
         "stairs": [
@@ -1537,32 +1537,32 @@
     "sameKeySameLayout": true,
     "memory": [
       {
-        "geometries": 458,
+        "geometries": 459,
         "textures": 119
       },
       {
         "geometries": 151,
         "textures": 118,
         "buildKey": "2-2@e1sdmtrbo",
-        "ownedDisposed": 5948
+        "ownedDisposed": 5930
       },
       {
         "geometries": 131,
         "textures": 118,
         "buildKey": "2-2@e2s1pkc03u",
-        "ownedDisposed": 6498
+        "ownedDisposed": 6481
       },
       {
         "geometries": 134,
         "textures": 118,
         "buildKey": "2-2@e3s16f8qg",
-        "ownedDisposed": 7052
+        "ownedDisposed": 7036
       },
       {
         "geometries": 157,
         "textures": 118,
         "buildKey": "2-2@e4s1ff9b1w",
-        "ownedDisposed": 7590
+        "ownedDisposed": 7575
       }
     ]
   },
@@ -2100,7 +2100,7 @@
           "up"
         ],
         "calls": 441,
-        "triangles": 1787706,
+        "triangles": 1788112,
         "geometries": 435,
         "textures": 119,
         "lights": 57
@@ -2203,7 +2203,7 @@
       }
     },
     "maxTriangles": 2133197,
-    "avgTriangles": 869706,
+    "avgTriangles": 869720,
     "maxCalls": 491
   },
   "stats": {
@@ -2315,126 +2315,126 @@
     "b2f2_props_pillar_cluster_1_corner": {
       "calls": 141,
       "triangles": 637548,
-      "geometries": 454,
+      "geometries": 455,
       "textures": 119,
       "lights": 57
     },
     "b2f2_props_pillar_cluster_2_point": {
       "calls": 174,
       "triangles": 700464,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     },
     "b2f2_props_pillar_cluster_3_point": {
       "calls": 167,
       "triangles": 562573,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_obj_stairs_up_2_2_arrive_front": {
       "calls": 183,
-      "triangles": 521885,
+      "triangles": 522088,
       "geometries": 251,
       "textures": 118,
       "lights": 57
     },
     "b2f3_props_obj_stairs_up_2_2_turn_back": {
-      "calls": 125,
-      "triangles": 601606,
-      "geometries": 272,
+      "calls": 127,
+      "triangles": 602016,
+      "geometries": 273,
       "textures": 118,
       "lights": 57
     },
     "b2f3_props_obj_stairs_up_2_2_approach": {
-      "calls": 131,
-      "triangles": 611448,
-      "geometries": 273,
+      "calls": 133,
+      "triangles": 611858,
+      "geometries": 274,
       "textures": 118,
       "lights": 57
     },
     "b2f3_props_monument_backdrop_bridge_view": {
       "calls": 150,
       "triangles": 737972,
-      "geometries": 278,
+      "geometries": 279,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_monument_backdrop_bridge_window": {
       "calls": 125,
       "triangles": 712810,
-      "geometries": 278,
+      "geometries": 279,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_monument_backdrop_bridge_oblique": {
       "calls": 141,
       "triangles": 730116,
-      "geometries": 283,
+      "geometries": 284,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_monument_watergate_edge": {
       "calls": 145,
       "triangles": 371606,
-      "geometries": 326,
+      "geometries": 327,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_monument_watergate_front": {
       "calls": 355,
       "triangles": 933496,
-      "geometries": 353,
+      "geometries": 354,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_monument_watergate_far": {
       "calls": 387,
       "triangles": 1060468,
-      "geometries": 362,
+      "geometries": 363,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_bridge_approach": {
       "calls": 369,
       "triangles": 1116288,
-      "geometries": 403,
+      "geometries": 404,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_bridge_on_deck": {
       "calls": 362,
       "triangles": 1000551,
-      "geometries": 417,
+      "geometries": 418,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_bridge_side": {
       "calls": 498,
       "triangles": 1565304,
-      "geometries": 430,
+      "geometries": 431,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_pillar_cluster_1_corner": {
       "calls": 191,
       "triangles": 589855,
-      "geometries": 430,
+      "geometries": 431,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_pillar_cluster_2_corner": {
       "calls": 180,
       "triangles": 660368,
-      "geometries": 439,
+      "geometries": 440,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_pillar_cluster_3_deadend": {
       "calls": 203,
       "triangles": 633745,
-      "geometries": 441,
+      "geometries": 442,
       "textures": 119,
       "lights": 57
     },
@@ -2762,7 +2762,7 @@
     },
     "b2f3_props_L_stream_1": {
       "calls": 46,
-      "triangles": 127014,
+      "triangles": 127116,
       "geometries": 453,
       "textures": 119,
       "lights": 57
@@ -2789,72 +2789,72 @@
       "lights": 57
     },
     "b2f3_props_L_atrium_shaft": {
-      "calls": 272,
-      "triangles": 1079152,
-      "geometries": 457,
+      "calls": 274,
+      "triangles": 1079562,
+      "geometries": 458,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_crystals_1_cyan": {
       "calls": 418,
       "triangles": 1262508,
-      "geometries": 457,
+      "geometries": 458,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_crystals_2_violet": {
       "calls": 414,
       "triangles": 1166116,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_waterfall_1": {
       "calls": 106,
       "triangles": 297691,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_pillar_1": {
       "calls": 72,
       "triangles": 205650,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_pillar_2": {
       "calls": 57,
       "triangles": 131552,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_ruin_1": {
       "calls": 169,
       "triangles": 514859,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_ruin_2": {
       "calls": 51,
       "triangles": 132812,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_bank_1": {
       "calls": 110,
       "triangles": 345928,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     },
     "b2f3_props_monument_altar_n": {
       "calls": 446,
       "triangles": 1219198,
-      "geometries": 458,
+      "geometries": 459,
       "textures": 119,
       "lights": 57
     }

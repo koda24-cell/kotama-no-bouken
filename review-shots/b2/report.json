@@ -1235,7 +1235,7 @@
         "b2:monuments:26",
         "b2:backdrop:27",
         "b2:bridge:10",
-        "b2:stairs:5"
+        "b2:stairs:6"
       ],
       "ripples": 4,
       "mists": 4,
@@ -2073,42 +2073,42 @@
     "b2f1_obj_stairs_9_1": {
       "calls": 64,
       "triangles": 243003,
-      "geometries": 201,
-      "textures": 54,
+      "geometries": 192,
+      "textures": 53,
       "lights": 34
     },
     "b2f1_obj_chest_19_1": {
       "calls": 95,
       "triangles": 307086,
-      "geometries": 248,
+      "geometries": 239,
       "textures": 66,
       "lights": 34
     },
     "b2f1_obj_chest_5_5": {
       "calls": 74,
       "triangles": 295973,
-      "geometries": 253,
+      "geometries": 244,
       "textures": 66,
       "lights": 34
     },
     "b2f1_obj_gather_17_7": {
       "calls": 236,
       "triangles": 826889,
-      "geometries": 322,
+      "geometries": 328,
       "textures": 67,
       "lights": 34
     },
     "b2f1_shallows": {
       "calls": 196,
       "triangles": 656890,
-      "geometries": 324,
+      "geometries": 330,
       "textures": 67,
       "lights": 34
     },
     "b2f1_foe_area": {
       "calls": 170,
       "triangles": 653195,
-      "geometries": 326,
+      "geometries": 332,
       "textures": 67,
       "lights": 34
     },
@@ -2309,65 +2309,65 @@
       "lights": 57
     },
     "b2f3_open_water": {
-      "calls": 201,
-      "triangles": 592649,
-      "geometries": 394,
+      "calls": 202,
+      "triangles": 592854,
+      "geometries": 395,
       "textures": 115,
       "lights": 57
     },
     "b2f3_waterfall_1": {
       "calls": 93,
       "triangles": 209603,
-      "geometries": 414,
+      "geometries": 415,
       "textures": 115,
       "lights": 57
     },
     "b2f3_waterfall_2": {
       "calls": 66,
       "triangles": 150088,
-      "geometries": 415,
+      "geometries": 416,
       "textures": 115,
       "lights": 57
     },
     "b2f3_monument_altar_n": {
       "calls": 428,
       "triangles": 1156286,
-      "geometries": 443,
+      "geometries": 444,
       "textures": 115,
       "lights": 57
     },
     "b2f3_crystals_1_cyan": {
       "calls": 418,
       "triangles": 1262508,
-      "geometries": 447,
+      "geometries": 448,
       "textures": 115,
       "lights": 57
     },
     "b2f3_crystals_2_violet": {
       "calls": 414,
       "triangles": 1166116,
-      "geometries": 447,
+      "geometries": 448,
       "textures": 115,
       "lights": 57
     },
     "b2f3_crystals_3_blue": {
-      "calls": 325,
-      "triangles": 1046920,
-      "geometries": 458,
+      "calls": 327,
+      "triangles": 1047330,
+      "geometries": 459,
       "textures": 115,
       "lights": 57
     },
     "b2f3_atrium_from_south": {
-      "calls": 272,
-      "triangles": 1079152,
-      "geometries": 458,
+      "calls": 274,
+      "triangles": 1079562,
+      "geometries": 459,
       "textures": 115,
       "lights": 57
     },
     "b2f3_atrium_center": {
-      "calls": 246,
-      "triangles": 886780,
-      "geometries": 458,
+      "calls": 248,
+      "triangles": 887190,
+      "geometries": 459,
       "textures": 115,
       "lights": 57
     },
@@ -2380,8 +2380,8 @@
     }
   },
   "buildMs": {
-    "2-2F": 3386,
-    "2-3F": 2277
+    "2-2F": 3799,
+    "2-3F": 3430
   },
   "missing": [],
   "log": [
@@ -2415,7 +2415,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "right",
+      "dir": "up",
       "active": true,
       "near": "",
       "floor": 0,
@@ -2427,7 +2427,7 @@
         "tx": 1,
         "ty": 19
       },
-      "dir": "up",
+      "dir": "down",
       "active": true,
       "near": "",
       "floor": 0,
@@ -2465,7 +2465,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "chest:2-0:5:5",
+      "near": "chest:2-0:19:1",
       "floor": 0,
       "area": 2
     },
@@ -2477,7 +2477,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "gather:2-0:17:7",
+      "near": "chest:2-0:5:5",
       "floor": 0,
       "area": 2
     },
@@ -2549,7 +2549,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "switch:2:a2-stone-west",
+      "near": "save:2-1:10:13",
       "floor": 1,
       "area": 2
     },
@@ -2561,7 +2561,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "switch:2:a2-stone-east",
+      "near": "switch:2:a2-stone-west",
       "floor": 1,
       "area": 2
     },
@@ -2609,7 +2609,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "npc:2:watchman",
+      "near": "npc:2:merchant",
       "floor": 2,
       "area": 2
     },
