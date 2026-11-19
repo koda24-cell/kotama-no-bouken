@@ -1,4 +1,4 @@
-"""Preview ONLY: import five unmodified B2 GLBs, position shaft bearings, check triangle overlaps."""
+"""V02 review: preserve source GLBs and explicitly place both ±1.02m bearing pairs."""
 import bpy,sys,json,hashlib,math
 from pathlib import Path
 from mathutils import Vector
