@@ -16,8 +16,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Blender dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y blender python3-numpy python3-pil
+          if ! command -v blender >/dev/null 2>&1; then
+            timeout 180 sudo apt-get update || echo "apt index update timeout; trying cached index"
+            timeout 480 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender python3-numpy python3-pil
+          else
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-numpy python3-pil
+          fi
           blender --version
       - name: Render 6 views and checkpoint original V8 Blender/GLB
         run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_sallet_v8.py
