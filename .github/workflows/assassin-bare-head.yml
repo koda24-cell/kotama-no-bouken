@@ -35,3 +35,5 @@ jobs:
           name: assassin-bare-head-eevee
           path: output/assassin-bare-head/
           retention-days: 14
+
+# Rerun requested: six-view bare head render review (2026-11-19).
