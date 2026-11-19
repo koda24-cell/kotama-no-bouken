@@ -150,7 +150,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     });
     instance(group, owned, asset, mats, `b4:prop:${id}`);
     info.byId[id] = list.length; info.placed += list.length;
-    for (const c of list) info.list.push({ id, tx: c.tx, ty: c.ty, dx: c.dx, dz: c.dz, t: +c.t.toFixed(2) });
+    for (const c of list) info.list.push({ id, tx: c.tx, ty: c.ty, dx: c.dx, dz: c.dz, t: +c.t.toFixed(2), x: c.tx * CELL + c.dx * R.side, y: R.y || 0, z: c.ty * CELL + c.dz * R.side });
   }
   // ---- mine recesses: the user-approved GPT minecart V32 replaces the procedural cart ----
   if (mines.length) {
