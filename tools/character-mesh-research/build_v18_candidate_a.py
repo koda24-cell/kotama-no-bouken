@@ -54,15 +54,16 @@ candidate.name='Assassin_V18_Candidate_A_SOURCE_FACE_PRESERVED'
 bpy.context.collection.objects.link(candidate);candidate.hide_render=False
 bm=bmesh.new();bm.from_mesh(candidate.data);bm.verts.ensure_lookup_table()
 original_count=len(bm.verts);original_faces=len(bm.faces)
+source_vertices=tuple(bm.verts[i] for i in range(original_count))
 grid={}
 for v in range(N+1):
     for u in range(N+1):
         idx=boundary_id(u,v) if (u==0 or u==N or v==0 or v==N) else None
         if idx is not None:
-            grid[(u,v)]=bm.verts[idx]
+            grid[(u,v)]=source_vertices[idx]
         else:
             grid[(u,v)]=bm.verts.new(inv@coons(u,v))
-bm.verts.ensure_lookup_table()
+bm.verts.ensure_lookup_table();bm.verts.index_update()
 faces=[]
 for v in range(N):
     for u in range(N):
@@ -84,7 +85,7 @@ if (a,b) in boundary_lookup:
 bm.normal_update()
 # Source vertex positions must be bit-for-bit unchanged.
 for i,v in enumerate(original.data.vertices):
-    if (bm.verts[i].co-v.co).length>1e-9:
+    if (source_vertices[i].co-v.co).length>1e-9:
         raise RuntimeError('Source vertex position changed')
 bm.to_mesh(candidate.data);bm.free();candidate.data.update()
 # Validate seam and topology on final Blender mesh.
