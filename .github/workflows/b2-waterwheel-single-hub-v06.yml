@@ -46,7 +46,7 @@ jobs:
       - name: Generate actual single wooden hub and render 4 Cycles views
         run: |
           set -o pipefail
-          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-hub/build_single_hub_v06_resume.py -- render-output/b2-hub-v06 checkpoint/b2_waterwheel_single_wooden_hub_v02.blend | tee /tmp/hub-blender.log
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-hub/build_single_hub_v06_texture.py -- render-output/b2-hub-v06 checkpoint/b2_waterwheel_single_wooden_hub_v02.blend | tee /tmp/hub-blender.log
           if grep -E 'Traceback \(most recent call last\)|Python script failed|Error: Python' /tmp/hub-blender.log; then exit 1; fi
           grep -q 'B2_HUB_V06_GENERATED_FRACTURE_TEXTURE_APPLIED' /tmp/hub-blender.log
       - name: Validate real GLB Blend PNG and SHA records
