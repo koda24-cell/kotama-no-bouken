@@ -1,0 +1,84 @@
+name: B2 Single Wooden Hub V03 Blender Four View QA
+on:
+  push:
+    branches: [feature/gpt-b2-single-wooden-hub-v01-20261119]
+    paths:
+      - 'tools/b2-waterwheel-hub/build_single_hub_v03_resume.py'
+      - '.github/workflows/b2-waterwheel-single-hub-v03.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record exact Action run for cross-chat review
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -e
+          mkdir -p docs/3d/b2-waterwheel-hub
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > /tmp/hub-run.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-single-wooden-hub-v01-20261119
+          git reset --hard origin/feature/gpt-b2-single-wooden-hub-v01-20261119
+          cp /tmp/hub-run.json docs/3d/b2-waterwheel-hub/latest-v03.json
+          git add docs/3d/b2-waterwheel-hub/latest-v03.json
+          git commit -m "chore(b2): record wooden hub review run" || true
+          git push origin HEAD:feature/gpt-b2-single-wooden-hub-v01-20261119
+      - name: Restore SHA-verified V02 actual wooden hub checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-single-wooden-hub-v02
+          run-id: 44443721959
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Verify exact reference and prepare output
+        run: |
+          set -e
+          echo "8e6f827c5fb4dfe8ffe47c33e545a7ff982acc4d01cdb5e82e782c3f402de4d1  checkpoint/b2_waterwheel_single_wooden_hub_v02.blend" | sha256sum -c
+          mkdir -p render-output/b2-hub-v03
+      - name: Generate actual single wooden hub and render 4 Cycles views
+        run: |
+          set -o pipefail
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-hub/build_single_hub_v03_resume.py -- render-output/b2-hub-v03 checkpoint/b2_waterwheel_single_wooden_hub_v02.blend | tee /tmp/hub-blender.log
+          if grep -E 'Traceback \(most recent call last\)|Python script failed|Error: Python' /tmp/hub-blender.log; then exit 1; fi
+          grep -q 'B2_HUB_V03_VISIBLE_DAMAGE_RENDER_OK' /tmp/hub-blender.log
+      - name: Validate real GLB Blend PNG and SHA records
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          p=Path('render-output/b2-hub-v03')
+          m=json.loads((p/'b2_waterwheel_single_wooden_hub_v03_manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and m['preserved_original_V02_checkpoint']
+          assert m['original_radial_socket_count']==14 and m['outer_corner_chips']==6 and m['deep_endgrain_wedges']==6
+          assert len(m['files'])==6
+          assert sum(n.endswith('.png') for n in m['files'])==4
+          for n,meta in m['files'].items():
+              b=(p/n).read_bytes()
+              assert len(b)==meta['bytes'] and hashlib.sha256(b).hexdigest()==meta['sha256']
+              if n.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+              if n.endswith('.glb'):
+                  assert b[:4]==b'glTF'
+                  l=struct.unpack_from('<I',b,12)[0]
+                  gltf=json.loads(b[20:20+l])
+                  assert len(gltf.get('meshes',[]))==1
+                  assert len(gltf.get('images',[]))>=3
+              if n.endswith('.blend'):
+                  assert len(b)>100000
+          print('B2_HUB_V03_REAL_FILES_VERIFIED')
+          PY
+      - name: Temporary unapproved output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-single-wooden-hub-v03
+          path: render-output/b2-hub-v03
+          retention-days: 14
+          if-no-files-found: warn
