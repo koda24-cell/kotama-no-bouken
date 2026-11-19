@@ -17,7 +17,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 import {createFloor5Backdrop} from './worldlocked-360-backdrop.mjs';
 import {createOriginalB5FogRing} from './original-fog-ring.mjs';
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x090516);
-scene.fog=new THREE.FogExp2(0x100a1b,0.0023);
+scene.fog=new THREE.FogExp2(0x20122c,0.0036);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;
 document.body.appendChild(renderer.domElement);
@@ -26,10 +26,10 @@ camera.position.set(0,2,0);
 scene.add(new THREE.HemisphereLight(0x8775ab,0x15101b,2.3));
 const backdrop=createFloor5Backdrop(THREE,{seed:51119,radius:150,groundY:-14});
 scene.add(backdrop.root);
-const originalFog=createOriginalB5FogRing(THREE,scene,{segments:32,radius:108,height:58});
-const floor=new THREE.Mesh(new THREE.CircleGeometry(34,64),new THREE.MeshStandardMaterial({color:0x1b1722,roughness:1}));
+const originalFog=createOriginalB5FogRing(THREE,scene,{radius:108,height:58});
+const floor=new THREE.Mesh(new THREE.CircleGeometry(34,64),new THREE.MeshStandardMaterial({color:0x292036,roughness:1}));
 floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
-const grid=new THREE.GridHelper(55,22,0x574465,0x352c41);scene.add(grid);
+// Grid hidden in beauty renders: it is a debug-only aid, not part of B5 scenery.
 let yaw=0,pitch=0,dragging=false,px=0,keys=new Set();
 function renderView(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;backdrop.update(camera);originalFog.update(8);
 document.querySelector('#status').textContent='方位 '+((yaw*180/Math.PI%360+360)%360).toFixed(0)+'° / 位置 X '+camera.position.x.toFixed(1)+' Z '+camera.position.z.toFixed(1);
