@@ -1,0 +1,134 @@
+name: B5 Sallet V21 Walters Six-View Blender QA
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_sallet_v21.py'
+      - 'tools/security/clamav_scan_gate.sh'
+      - '.github/workflows/b5-knight-sallet-v21-render.yml'
+      - 'tools/b5-knights/textures/grime_imagegen_v15_256.webp.b64'
+      - 'tools/b5-knights/textures/cracks_imagegen_v17_192.webp.b64'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:6f9e660501dcf7a6e0cb8dc94ca3103568f673948812a12a344021b877e7c310
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan source files and reference textures
+        run: |
+          bash tools/security/clamav_scan_gate.sh scan tools/b5-knights/build_sallet_v21.py qa/security/b5-v21-source.log
+          bash tools/security/clamav_scan_gate.sh scan tools/b5-knights/textures qa/security/b5-v21-textures.log
+      - name: Verify Blender/Pillow availability
+        run: |
+          blender --version
+          /usr/bin/python3 -c 'from PIL import Image; print("Pillow present")'
+      - name: Decode image-generated grime and inspect pixel dimensions / digest
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import base64,hashlib,io
+          from pathlib import Path
+          from PIL import Image
+          src=Path('tools/b5-knights/textures/grime_imagegen_v15_256.webp.b64')
+          raw=base64.b64decode(src.read_text().strip(),validate=True)
+          actual=hashlib.sha256(raw).hexdigest()
+          expected='7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23'
+          assert actual==expected, (actual,expected)
+          out=Path('render-output/b5-knights')
+          out.mkdir(parents=True,exist_ok=True)
+          with Image.open(io.BytesIO(raw)) as image:
+              image.load()
+              assert image.size==(256,256),image.size
+              image.convert('RGBA').save(out/'grime_source_v21.png')
+          print('PASS: actual generated grime image decoded and staged',actual)
+          PY
+      - name: Decode selected source crack image and build localized detail mask
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import base64, hashlib, io
+          from pathlib import Path
+          from PIL import Image, ImageFilter, ImageChops
+          src=Path('tools/b5-knights/textures/cracks_imagegen_v17_192.webp.b64')
+          raw=base64.b64decode(src.read_text().strip(),validate=True)
+          digest=hashlib.sha256(raw).hexdigest()
+          assert digest=='b9560e690caebf216df9ccadd434dbe6e6dbbca5e8f5c085c8b4d4129ac2955c',digest
+          im=Image.open(io.BytesIO(raw)).convert('RGB')
+          assert im.size==(192,192),im.size
+          out=Path('render-output/b5-knights')
+          out.mkdir(parents=True,exist_ok=True)
+          im.resize((256,256),Image.Resampling.LANCZOS).save(out/'cracks_source_v21.png')
+          gray=im.convert('L').resize((256,256),Image.Resampling.LANCZOS)
+          blurred=gray.filter(ImageFilter.GaussianBlur(4))
+          # Extract fine dark fracture valleys, not entire metal plates or widespread rust.
+          valleys=ImageChops.subtract(blurred,gray)
+          detail=valleys.point(lambda v: max(0,min(255,(v-5)*12)))
+          detail.convert('RGBA').save(out/'crack_detail_mask_v21.png')
+          assert detail.getbbox() is not None
+          print('PASS: source ImageGen crack pixels decoded / locally extracted; digest',digest)
+          PY
+      - name: Render 6 views and checkpoint original V21 Blender/GLB
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_sallet_v21.py
+      - name: Validate six real PNG and GLB meshes and hashes
+        run: |
+          /usr/bin/python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          import json,hashlib,struct
+          p=Path('render-output/b5-knights/sallet_v21')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and not m['game_integrated']
+          assert m['source_sha'] and m['run_id']
+          raw=(p/'sallet_v21.glb').read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          n=struct.unpack_from('<I',raw,12)[0]
+          doc=json.loads(raw[20:20+n])
+          names=[q.get('name','') for q in doc['nodes'] if 'mesh' in q]
+          for term in ('bowl','visor','rear forged lip','pivot'):
+              assert any(term in x for x in names), (term,names)
+          for filename,digest in m['files_sha256'].items():
+              assert hashlib.sha256((p/filename).read_bytes()).hexdigest()==digest, filename
+          assert len(m['views'])==6
+          assert m['generated_grime_source_sha256']=='7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23'
+          assert (p/'grime_baked_albedo_v21.png').exists()
+          assert (p/'grime_baked_roughness_v21.png').exists()
+          assert m['crack_source_sha256']=='b9560e690caebf216df9ccadd434dbe6e6dbbca5e8f5c085c8b4d4129ac2955c'
+          assert 900<m['crack_active_texels']<7000, m['crack_active_texels']
+          for image_name in ('localized_cracks_albedo_v21.png','localized_cracks_roughness_v21.png','localized_cracks_mask_v21.png'):
+              assert (p/image_name).exists(), image_name
+          # Confirm unchanged V16 visor material remains a separate texture.
+          assert any('visor untouched by cracks' in q.get('name','') for q in doc.get('materials',[]))
+
+          # Ensure GLB truly has texture references, not just Blender-only nodes.
+          assert doc.get('textures') and doc.get('images')
+          metal=[q for q in doc.get('materials',[]) if 'steel crown' in q.get('name','')]
+          assert metal and metal[0].get('pbrMetallicRoughness',{}).get('baseColorTexture')
+          for view in ('front','left','right','back','angle','top'):
+              with Image.open(p/(view+'.png')) as im:
+                  im.load()
+                  assert im.size==(800,800)
+                  assert max(ImageStat.Stat(im.convert('RGB')).stddev)>5
+          assert (p/'progress.json').exists()
+          print('PASS actual V21 Blender 6-view PNG, GLB, Blend, SHA-256. NOT APPROVED')
+          PY
+      - name: Scan generated candidate textures, GLB, Blend and PNG before upload
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b5-knights/sallet_v21 qa/security/b5-v21-output.log
+      - name: Save temporary unapproved 3D checkpoint, even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-sallet-v21-walters-NOT-APPROVED
+          path: |
+            render-output/b5-knights/sallet_v21/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn

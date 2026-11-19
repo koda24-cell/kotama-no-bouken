@@ -1,0 +1,58 @@
+name: B5 Sallet V5 Curved Shell Four-View Review
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_sallet_v5.py'
+      - '.github/workflows/b5-knight-sallet-v5-render.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and QA dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+          blender --version
+      - name: Render standalone V5 and store source checkpoint
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_sallet_v5.py
+      - name: Validate GLB and actual four PNG renders
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import hashlib,json,struct
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          p=Path('render-output/b5-knights/sallet_v5')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and not m['game_integrated']
+          assert m['source_sha']
+          raw=(p/'sallet_v5.glb').read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          n=struct.unpack_from('<I',raw,12)[0]
+          gltf=json.loads(raw[20:20+n])
+          names=[x.get('name','') for x in gltf['nodes'] if 'mesh' in x]
+          for substring in ('cranium','brow','lower face','bevor'):
+              assert any(substring in x for x in names),(substring,names)
+          for file,digest in m['files_sha256'].items():
+              assert hashlib.sha256((p/file).read_bytes()).hexdigest()==digest,file
+          for view in ('front','side','angle','top'):
+              with Image.open(p/(view+'.png')) as im:
+                  im.load()
+                  assert im.size==(900,900)
+                  assert max(ImageStat.Stat(im.convert('RGB')).stddev)>5
+          assert (p/'progress.json').exists()
+          print('PASS V5: GLB + Blend + front/side/angle/top PNG + hashes/checkpoint')
+          PY
+      - name: Upload recoverable unapproved artifact
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: b5-sallet-v5-NOT-APPROVED
+          path: render-output/b5-knights/sallet_v5/
+          retention-days: 14
+          if-no-files-found: warn

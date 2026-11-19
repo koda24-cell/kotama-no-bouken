@@ -1,0 +1,58 @@
+name: B5 Pedestal True Physical Fracture V4
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_pedestal_true_fracture_v4.py'
+      - '.github/workflows/b5-knight-pedestal-true-fracture-v4.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and PIL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Acquire CC0 photographic rock optionally and derive cool tone
+        run: |
+          python3 tools/b5-knights/fetch_photo.py
+          python3 tools/b5-knights/tone_photo.py
+      - name: Build two solids with open jagged crack and render
+        run: |
+          blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_pedestal_true_fracture_v4.py
+      - name: Verify GLB / Blend / real PNGs and hash evidence
+        run: |
+          /usr/bin/python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          from PIL import Image,ImageStat
+          p=Path('render-output/b5-knights/pedestal_true_fracture_v4')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and m['fracture_geometry']=='TWO_OPEN_SEPARATE_MASONRY_SOLIDS'
+          buf=(p/'pedestal_true_fracture_v4.glb').read_bytes()
+          assert buf[:4]==b'glTF' and struct.unpack_from('<I',buf,8)[0]==len(buf)
+          assert (p/'pedestal_true_fracture_v4.blend').is_file()
+          for fn,digest in m['files_sha256'].items():
+              assert hashlib.sha256((p/fn).read_bytes()).hexdigest()==digest,fn
+          for view in ('front','side','angle'):
+              with Image.open(p/(view+'.png')) as im:
+                  im.load()
+                  assert im.size==(1000,800)
+                  assert max(ImageStat.Stat(im.convert('RGB')).stddev)>5
+          print('PASS: open physically separated crack candidate GLB+Blend+3 PNGs')
+          PY
+      - name: Preserve unfinished candidate checkpoint regardless of failure
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b5-pedestal-true-fracture-v4-NOT-APPROVED
+          path: |
+            render-output/b5-knights/pedestal_true_fracture_v4/
+            render-output/b5-knights/photo_source/
+          retention-days: 14
+          if-no-files-found: warn

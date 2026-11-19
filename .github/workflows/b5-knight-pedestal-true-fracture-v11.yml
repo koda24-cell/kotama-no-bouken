@@ -1,0 +1,62 @@
+name: B5 Pedestal True Fracture V11 Side Crack Visibility QA
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_pedestal_true_fracture_v11.py'
+      - '.github/workflows/b5-knight-pedestal-true-fracture-v11.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and image QA dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Acquire ambientCG CC0 source and tone
+        run: |
+          python3 tools/b5-knights/fetch_photo.py
+          python3 tools/b5-knights/tone_photo.py
+      - name: Render physically fractured intact pedestal
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_pedestal_true_fracture_v11.py
+      - name: Verify actual GLB shafts exist plus PNG hashes
+        run: |
+          /usr/bin/python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          import json,hashlib,struct
+          root=Path('render-output/b5-knights/pedestal_true_fracture_v11')
+          meta=json.loads((root/'manifest.json').read_text())
+          assert meta['approval']=='NOT_APPROVED'
+          blob=(root/'pedestal_true_fracture_v11.glb').read_bytes()
+          assert blob[:4]==b'glTF' and struct.unpack_from('<I',blob,8)[0]==len(blob)
+          n=struct.unpack_from('<I',blob,12)[0]
+          document=json.loads(blob[20:20+n])
+          for name in ('04 real fractured left stone shaft','05 real fractured right stone shaft'):
+              nodes=[node for node in document['nodes'] if node.get('name')==name]
+              assert len(nodes)==1 and isinstance(nodes[0].get('mesh'),int),('MISSING_SHAFT_GEOMETRY',name)
+              assert document['meshes'][nodes[0]['mesh']].get('primitives'),('MISSING_SHAFT_TRIANGLES',name)
+          for f,sha in meta['files_sha256'].items():
+              assert hashlib.sha256((root/f).read_bytes()).hexdigest()==sha,f
+          for view in ('front','side','angle','side_detail'):
+              with Image.open(root/(view+'.png')) as im:
+                  im.load()
+                  assert im.size==(1000,800)
+                  assert max(ImageStat.Stat(im.convert('RGB')).stddev)>5
+          print('PASS restored split masonry shafts, original GLB, Blend and real three-view PNG')
+          PY
+      - name: Save temporary unapproved checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-pedestal-true-fracture-v11-NOT-APPROVED
+          path: |
+            render-output/b5-knights/pedestal_true_fracture_v11/
+            render-output/b5-knights/photo_source/
+          retention-days: 14
+          if-no-files-found: warn

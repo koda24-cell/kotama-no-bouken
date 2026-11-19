@@ -1,0 +1,90 @@
+name: B5 Gothic Backplate V2 Six-View Blender Review
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_gothic_backplate_v2.py'
+      - '.github/workflows/b5-gothic-backplate-v2.yml'
+      - 'tools/b5-knights/textures/grime_imagegen_v15_256.webp.b64'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:6f9e660501dcf7a6e0cb8dc94ca3103568f673948812a12a344021b877e7c310
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update ClamAV signatures and verify real source scan
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/b5-knights/build_gothic_backplate_v2.py qa/security/backplate-source.log
+      - name: Decode source ImageGen grime used by accepted sallet V22
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import hashlib,base64,io
+          from PIL import Image
+          from pathlib import Path
+          p=Path('tools/b5-knights/textures/grime_imagegen_v15_256.webp.b64')
+          raw=base64.b64decode(p.read_text().strip(),validate=True)
+          digest=hashlib.sha256(raw).hexdigest()
+          assert digest=='7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23',digest
+          im=Image.open(io.BytesIO(raw)).convert('RGBA')
+          assert im.size==(256,256)
+          q=Path('render-output/b5-knights/helmet_grime_source_backplate_v2.png')
+          q.parent.mkdir(parents=True,exist_ok=True)
+          im.save(q)
+          print('PASS: V22 source texture verified',digest)
+          PY
+      - name: Blender six-camera full geometry/material export
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_gothic_backplate_v2.py
+      - name: Verify outputs, hashes, material and six images
+        run: |
+          /usr/bin/python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          from PIL import Image,ImageStat
+          p=Path('render-output/b5-knights/gothic_backplate_v2')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and not m['game_integrated']
+          assert m['source_sha'] and m['run_id']
+          assert len(m['views'])==6 and len(m['files_sha256'])==10
+          for name,expected in m['files_sha256'].items():
+              data=(p/name).read_bytes()
+              assert hashlib.sha256(data).hexdigest()==expected,name
+          raw=(p/'gothic_backplate_v2.glb').read_bytes()
+          assert raw[:4]==b'glTF'
+          assert struct.unpack_from('<I',raw,8)[0]==len(raw)
+          n=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+n])
+          nodes=[x.get('name','') for x in doc.get('nodes',[]) if 'mesh' in x]
+          assert sum('continuous Gothic forged backplate' in x for x in nodes)==1,nodes
+          assert doc.get('materials') and doc.get('meshes')
+          assert doc.get('images') and doc.get('textures')
+          assert any(x.get('pbrMetallicRoughness',{}).get('baseColorTexture') for x in doc['materials'])
+          assert m['source_texture_sha256']=='7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23'
+          assert m['backplate_segments']==1
+          for name in ('v22_matched_backplate_albedo_v1.png','v22_matched_backplate_roughness_v1.png'):
+              assert Image.open(p/name).size==(256,256)
+          for name in m['views']:
+              im=Image.open(p/(name+'.png')).convert('RGB')
+              assert im.size==(800,800)
+              assert max(ImageStat.Stat(im).stddev)>3
+          print('PASS six real Blender images, GLB, Blend, 10 hashes + embedded PBR')
+          PY
+      - name: ClamAV scan generated material and 3D assets
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b5-knights/gothic_backplate_v2 qa/security/backplate-output.log
+      - name: Temporary NOT_APPROVED review checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-gothic-backplate-v2-NOT-APPROVED
+          path: |
+            render-output/b5-knights/gothic_backplate_v2/
+            qa/security/
+          retention-days: 14

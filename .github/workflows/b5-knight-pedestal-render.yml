@@ -1,0 +1,60 @@
+name: B5 Knight Pedestal Component V3 Blender Review
+on:
+  push:
+    branches: [feature/gpt-b5-knight-statues-v1-20261116]
+    paths:
+      - 'tools/b5-knights/build_pedestal_v3.py'
+      - '.github/workflows/b5-knight-pedestal-render.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+          blender --version
+      - name: Fetch optional CC0 source and tone stone photo
+        run: |
+          python3 tools/b5-knights/fetch_photo.py
+          python3 tools/b5-knights/tone_photo.py
+      - name: Render separate pedestal candidate and GLB
+        run: |
+          blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_pedestal_v3.py
+      - name: Validate actual GLB PNG manifest
+        run: |
+          /usr/bin/python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          from PIL import Image,ImageStat
+          root=Path('render-output/b5-knights/pedestal_v3')
+          manifest=json.loads((root/'manifest.json').read_text())
+          assert manifest['approval']=='NOT_APPROVED'
+          model=root/'pedestal_v3.glb'
+          data=model.read_bytes()
+          assert data[:4]==b'glTF'
+          assert struct.unpack_from('<I',data,8)[0]==len(data)
+          for name,digest in manifest['files_sha256'].items():
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==digest, name
+          for view in ('front','side','angle'):
+              with Image.open(root/f'{view}.png') as im:
+                  im.load()
+                  assert im.size==(800,800)
+                  assert max(ImageStat.Stat(im.convert('RGB')).stddev)>5
+          print('PASS: standalone Gothic architectural pedestal and 3 actual rendered PNGs')
+          PY
+      - name: Preserve review checkpoint even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-knight-pedestal-v3-NOT-APPROVED
+          path: |
+            render-output/b5-knights/pedestal_v3/
+            render-output/b5-knights/photo_source/
+          retention-days: 14
+          if-no-files-found: warn
