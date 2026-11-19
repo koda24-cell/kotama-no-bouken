@@ -1,7 +1,7 @@
 name: F6 Tree Foliage Batching Review
 on:
   push:
-    branches: [feature/gpt-shared-3d-optimization-actions-20261117]
+    branches: [feature/gpt-shared-3d-optimization-actions-20261117, feature/blender53-f6-foliage-production-workflow-20261119]
     paths:
       - tools/3d-performance/batch_blend_foliage.py
       - tools/3d-performance/compare_renders.py
@@ -32,7 +32,7 @@ jobs:
       run:
         shell: bash
     container:
-      image: ghcr.io/koda24-cell/kotama-blender5-clamav@sha256:05f93bdd5c2c0dc541c34b6f30e488f0c21a53c403c50311f26fd43357ce8047
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -46,7 +46,7 @@ jobs:
           blender --version | head -n 1
           python3 - <<'PY'
           import subprocess
-          assert subprocess.check_output(['blender','--version'],text=True).startswith('Blender 5.')
+          assert subprocess.check_output(['blender','--version'],text=True).splitlines()[0]=='Blender 5.3.0'
           PY
       - name: Scan Blender and QA scripts
         run: bash tools/security/clamav_scan_gate.sh scan tools/3d-performance qa/security/scripts.log
@@ -80,7 +80,7 @@ jobs:
         run: |
           set -euo pipefail
           export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
-          HOME=/tmp/blender-home blender -b source-tree/tree_mature.blend -t 2 --python tools/3d-performance/batch_blend_foliage.py -- --output render-output/3d-performance/foliage-batch 2>&1 | tee /tmp/foliage-batch.log
+          HOME=/tmp/blender-home blender -b source-tree/tree_mature.blend --disable-autoexec -t 2 --python tools/3d-performance/batch_blend_foliage.py -- --output render-output/3d-performance/foliage-batch 2>&1 | tee /tmp/foliage-batch.log
           grep -q 'FOLIAGE_BATCH_DONE' /tmp/foliage-batch.log
       - name: Compare actual render pixels and GLB geometry structure
         run: |
