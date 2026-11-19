@@ -14,10 +14,10 @@ random.seed(20261119)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
-scene.cycles.samples=56
-scene.cycles.max_bounces=6
+scene.cycles.samples=24  # V9 fast lookdev; restore >=56 for approved final
+scene.cycles.max_bounces=4
 bpy.context.view_layer.cycles.use_denoising=False  # Ubuntu apt Blender has no OpenImageDenoiser
-scene.render.resolution_x=960;scene.render.resolution_y=640;scene.render.resolution_percentage=100
+scene.render.resolution_x=960;scene.render.resolution_y=640;scene.render.resolution_percentage=85  # V9 fast preview 816x544
 scene.render.image_settings.file_format="PNG"
 scene.world.color=(0.15,0.23,0.26)
 scene.view_settings.view_transform="AgX"
@@ -268,7 +268,7 @@ fog=bpy.data.materials.new("Subtle distance mist VFX");fog.use_nodes=True
 nodes=fog.node_tree.nodes;nodes.clear()
 output=nodes.new("ShaderNodeOutputMaterial");volume=nodes.new("ShaderNodeVolumePrincipled")
 volume.inputs["Color"].default_value=(.54,.76,.75,1)
-volume.inputs["Density"].default_value=.0008
+volume.inputs["Density"].default_value=.0003
 fog.node_tree.links.new(volume.outputs["Volume"],output.inputs["Volume"])
 bpy.ops.mesh.primitive_cube_add(size=1,location=(0,5,2.5))
 mist=bpy.context.object;mist.name="Distance_mist";mist.scale=(16,7,6);mist.data.materials.append(fog)
