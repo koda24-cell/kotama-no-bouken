@@ -45,6 +45,7 @@ jobs:
           clamscan -r --infected --stdout render-output/b5-organic-corruption 2>&1 | tee render-output/b5-organic-corruption/scan-output.log
           grep -q 'Infected files: 0' render-output/b5-organic-corruption/scan-output.log
           python3 tools/b5-organic-corruption/verify_output.py
+          python3 tools/b5-organic-corruption/verify_scan.py
       - name: Save scan logs and review artifacts even on failure
         if: always()
         uses: actions/upload-artifact@v4
