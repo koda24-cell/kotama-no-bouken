@@ -1,8 +1,8 @@
 {
   "asset": "b4p_crate_set",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
-  "triangles": 5468,
+  "triangles": 8890,
   "budget_triangles": 9000,
   "materials": [
     "b4p_crate_set_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    3.378,
-    0.906,
-    0.666
+    3.09,
+    1.416,
+    0.656
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_crate_set.glb",
-  "glb_bytes": 952324,
+  "glb_bytes": 1169672,
   "cc0_textures": {
     "wood_planks_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/wood_planks",
@@ -74,16 +74,16 @@
     100
   ],
   "sha256": {
-    "b4p_crate_set.glb": "8ef9043c10b9db06081268fe504d8d86cb0f85c80702842b4f098eb4dcbc1797",
-    "b4p_crate_set_volcanic_front.png": "add01bfd4cb746014f8c858b4742ca06708f49b7e88e31092c12751f66deb163",
-    "b4p_crate_set_volcanic_side.png": "2f970927f11edac9623ca494245140c4216251a8bd7969b3ccdb6c40d350d9d7",
-    "b4p_crate_set_volcanic_angle.png": "37cb1407909741be328d8fd7d6acc699d2dc8040f91f2f601c89efec4711d5d9",
-    "b4p_crate_set_volcanic_top.png": "238a942a9f9bd124d673673d563777f573e8121e35cd62ae2b0a0b1046df5476",
-    "b4p_crate_set_volcanic_close.png": "155fea9f5b2bef0bfa9edc154192436f58b909b8a81cfd0db5918463650fd611",
-    "b4p_crate_set_volcanic_back.png": "372c52beb4f1691601ee6a172c7eede914edd6a2a7ffe907f0370c6f6b09d255",
-    "b4p_crate_set_studio_front.png": "d94e5ef68664389a5580f2cf5d0d9f8b41124261996f8e187f64bd00223f5295",
-    "b4p_crate_set_studio_angle.png": "ee842658df4129a2ccb20d9da2ab30d58849ca52591902452767e9f42b3f90b2",
-    "b4p_crate_set_studio_scale.png": "c69998436092a627c2a345c4cc24ac3bebafdd40719a65150831e1a7f8e3ad49"
+    "b4p_crate_set.glb": "32209323319f0482973830ea8e3421e89665ba93d03bb126bd92eaea407a5676",
+    "b4p_crate_set_volcanic_front.png": "7bc8b0ede80aef8a89e98c018d31c8e693483b8e8b4c7fbf57e2adcd8984284b",
+    "b4p_crate_set_volcanic_side.png": "ca57d4022cb462855e5898ac55459117d0b49049241d9714fc215060e4b1214a",
+    "b4p_crate_set_volcanic_angle.png": "001105a6df183c69a6abe60822026bfd34afcf1f95814e849691ed4ab5bbfd60",
+    "b4p_crate_set_volcanic_top.png": "e7eeaa3bf02e680eda16c54c3d30291b22c52c56c679ceaa6ab5e2aef5118c61",
+    "b4p_crate_set_volcanic_close.png": "cae505f4046e78f825db7aeb471632c046233b8c81d8c61f2f5ba72036b8c72e",
+    "b4p_crate_set_volcanic_back.png": "50d312b47ff2827b4ac151ceb72e8a2c3cad0b2dc34f15ae0a4151fe318954e1",
+    "b4p_crate_set_studio_front.png": "b186f70be71a4ca557009531017219172b02e99f59ac1dbbdb2252d9e6a9a074",
+    "b4p_crate_set_studio_angle.png": "5b6c9c0b687a9914476f17b39d25d2e08e2f3c71b2e754d66efc7ed10105b9f7",
+    "b4p_crate_set_studio_scale.png": "6dff1514fa5cd1684dbca66200147e0eb09344f884344e2f75b342a0fe35a772"
   },
   "renders": [
     "b4p_crate_set_volcanic_front.png",
@@ -97,7 +97,7 @@
     "b4p_crate_set_studio_scale.png"
   ],
   "samples": 96,
-  "notes": "焦げた木箱3種（A無傷・B蓋割れ・C潰れ）。x=-1.05/0/+1.15 に並ぶ。ゲーム側は分割して個別に配置可（同一テクスチャ）。",
+  "notes": "焦げた木箱3種（A無傷・B蓋割れ・C潰れ）。x=-1.0/0/+1.02 に並ぶ。枠つきスラット箱（#97）。ゲーム側は分割して個別に配置可（同一テクスチャ）。",
   "game_lights": [],
   "approval": "NOT_APPROVED",
   "design": "docs/3d/B4_PROPS_DESIGN.md"
