@@ -41,3 +41,9 @@
 - Fresnelの最低反射・反射倍率、発光ハイライト、ライト強度を下げ、Glossy Roughnessを上げて白い反射の塊を抑える。水底と水面の透過構成は保持。新しい外部素材は取得しない。
 - [V8試験ワークフロー](https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f2-safe-water-render.yml) / [V8の起動が確認されたrun #44456123359](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44456123359)。**記録時点はqueued、ClamAV・PNG・Blenderファイルの実成功未確認**。
 - V8は `out/f2-water/f2-water-v8.blend` を出力予定。3方向PNGを目視で検査し、正式素材への採用はユーザー承認後。
+
+
+## V9 実屈折を使う反復修正（2026-11-19）
+- V8正面・斜めPNGは確認済み。既存は透明Shader＋薄い光沢＋カラーアルファの合成で、川底の屈折が実質無い。そのため模様を強くすると白いフィルム、弱くすると濡れた床に見える。
+- V9で `ShaderNodeBsdfRefraction`（IOR 1.333、浅い水色）を透明Shaderへ40%混ぜ、川底の視認性を維持しつつ屈折を付加。独立したFresnel/Glossy/波高画像/カラーアルファは保持。水面メッシュのうねりを少し増やす。
+- 実験的な候補で美観は未判定。ClamAVゲートを保持。[Actions試験 #44460015874](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44460015874)、[Draft PR #517](https://github.com/koda24-cell/kotama-no-bouken/pull/517)。美術未承認のため正式保存・developmentマージをしない。
