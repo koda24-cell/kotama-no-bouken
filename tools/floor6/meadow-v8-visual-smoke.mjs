@@ -20,8 +20,8 @@ try{
  page.on('console',m=>{if(m.type()==='error')errors.push('console: '+m.text());});
  await page.goto(url,{waitUntil:'load'});
  await page.waitForFunction(()=>window.__kotamaMeadowV8?.ready===true || !!window.__kotamaMeadowV8?.error,null,{timeout:45000});
- const load=await page.evaluate(()=>window.__kotamaMeadowV8);
- if(load.error)throw Error('V7 GLB preview error: '+load.error);
+ const loadError=await page.evaluate(()=>window.__kotamaMeadowV8.error);
+ if(loadError)throw Error('V7 GLB preview error: '+loadError);
  await page.evaluate(()=>{window.__kotamaMeadowV8.freeze(0);window.__kotamaMeadowV8.setWind(false);window.__kotamaMeadowV8.setEnhanced(false);});
  const shots=[];
  async function shot(name,view){
