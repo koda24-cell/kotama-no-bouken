@@ -32,6 +32,8 @@
 
 | `F3_WINDOW_DIRT_MASK_01` | 第3層・割れた窓ガラス01用の汚れ/曇りマスク（V3、V4） | 256×256 PNG / non-color mask | ガラス面用。シームレス未検証。光透過と粗さの調整用 | 自作手続き生成コード `tools/floor3/broken_glass01/build.py`、PR #565、[run #44455660695](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44455660695) | `e1df204118e4b6c47bf191008adb4aa433edf0039378fdadb9fcb3b48fc73fc1` | Artifact ID `14498525631` のPNG本体とSHA-256確認。正式Git PNG保存は未実施。美術未承認、ClamAV実スキャン未確認 |
 
+| `F3_GLASS_WEATHERING_ROUGHNESS_A_V5` | 第3層の廃墟窓ガラスA型中央大欠損用、枠沿いの埃/雨筋による粗さ | 256×256 PNG / non-color | V5/V6/V7で同一自作マップを再利用、UVベース。シームレス未検証 | 自作生成 `tools/floor3/broken_glass01/build_type_a_v5.py`、PR #565、[V7成功run #44465494696](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465494696) | `431a4468faa0b6e64f3e166268c6239d4a9ec3d90dbf94136e011d79511c7c77` | Artifact #14502345703のPNG実体・SHA確認。バイナリのGit正式保存なし、アート未承認、ClamAV未実施 |
+
 ## モデルとの関係・承認境界
 
 - 第3層の壁01 V4（段差剥離）はユーザーが造形を了承済み。候補GLBの検証時SHA-256: `44e995b1ee843ad3bffba078c532158011effef6d6245cd0bced9f25082a8981`。
