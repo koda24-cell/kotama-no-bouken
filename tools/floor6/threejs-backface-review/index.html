@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const status={loaded:false,errors:[],materials:[],meshes:0,shaderPatched:0,threeVersion:THREE.REVISION};
+const debugUniforms={};
 window.f6=status;
 window.addEventListener('error',e=>status.errors.push(String(e.message)));
 const scene=new THREE.Scene();
@@ -26,11 +27,14 @@ function patchMaterial(material,kind){
   if(material.emissive)material.emissive.setRGB(0,0,0); // isolate backface correction from exported C emission
   if(kind==='A')return;
   material.onBeforeCompile=(shader)=>{
+    shader.uniforms.f6debug={value:0};
+    debugUniforms[kind]=shader.uniforms.f6debug;
+    shader.fragmentShader='uniform float f6debug;\\n'+shader.fragmentShader;
     const anchor='#include <color_fragment>';
     if(!shader.fragmentShader.includes(anchor)){status.errors.push('missing-color-fragment:'+material.name);return;}
     const tweak=kind==='B'
-      ? 'if ( !gl_FrontFacing ) { diffuseColor.rgb *= 0.58; }'
-      : 'if ( !gl_FrontFacing ) { diffuseColor.rgb = diffuseColor.rgb * 0.56 + vec3(0.008,0.014,0.002); }';
+      ? 'if ( f6debug > 0.5 ) { diffuseColor.rgb=vec3(1.0,0.05,0.02); } else if ( !gl_FrontFacing ) { diffuseColor.rgb *= 0.58; }'
+      : 'if ( f6debug > 0.5 && !gl_FrontFacing ) { diffuseColor.rgb=vec3(0.02,0.05,1.0); } else if ( !gl_FrontFacing ) { diffuseColor.rgb = diffuseColor.rgb * 0.56 + vec3(0.008,0.014,0.002); }';
     shader.fragmentShader=shader.fragmentShader.replace(anchor,anchor+'\n'+tweak);
     status.shaderPatched++;
   };
@@ -66,6 +70,7 @@ try{
    return {mode,rendered:renderer.info.render.calls,width:renderer.domElement.width,height:renderer.domElement.height};
  }
  window.f6Render=cameraMode;
+ window.f6FaceDebug=(enabled)=>{for(const x of Object.values(debugUniforms))x.value=enabled?1:0;};
  window.f6RenderClose=(panel,mode)=>{
    const shift=[-2.45,0,2.45][panel];
    if(shift===undefined)throw Error('unknown panel');
