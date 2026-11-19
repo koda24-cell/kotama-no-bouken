@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - feature/b2-modular-water-tiles-20261112
-      - feature/blender53-b2-water-production-workflow-20261119
     paths:
       - tools/b2-render/build-modular-water-tiles.py
       - .github/workflows/b2-modular-water-tiles-render.yml
