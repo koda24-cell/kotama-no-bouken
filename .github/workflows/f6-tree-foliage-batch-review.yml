@@ -23,13 +23,33 @@ on:
         default: '44053620503'
 permissions:
   contents: read
+  packages: read
   actions: read
 jobs:
   batch:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender5-clamav@sha256:05f93bdd5c2c0dc541c34b6f30e488f0c21a53c403c50311f26fd43357ce8047
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Verify Blender 5 compatibility with V14 checkpoint
+        run: |
+          blender --version | head -n 1
+          python3 - <<'PY'
+          import subprocess
+          assert subprocess.check_output(['blender','--version'],text=True).startswith('Blender 5.')
+          PY
+      - name: Scan Blender and QA scripts
+        run: bash tools/security/clamav_scan_gate.sh scan tools/3d-performance qa/security/scripts.log
       - name: Download source review checkpoint from existing successful run
         uses: actions/download-artifact@v4
         with:
@@ -54,23 +74,19 @@ jobs:
             assert len(b)==entry['bytes'] and hashlib.sha256(b).hexdigest()==entry['sha256']
           print('SOURCE_CHECKPOINT_VERIFIED',m['leaf_meshes'],m['version'])
           PY
-      - name: Install Blender and comparison tools
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libopengl0 libgl1-mesa-dri
-          python3 -m venv /tmp/foliage-qa-venv
-          /tmp/foliage-qa-venv/bin/pip install --quiet Pillow
+      - name: Scan downloaded Blend checkpoint before Blender import
+        run: bash tools/security/clamav_scan_gate.sh scan source-tree qa/security/input.log
       - name: Batch leaf meshes without modifying source BLEND
         run: |
           set -euo pipefail
           export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
-          blender -b source-tree/tree_mature.blend -t 2 --python tools/3d-performance/batch_blend_foliage.py -- --output render-output/3d-performance/foliage-batch 2>&1 | tee /tmp/foliage-batch.log
+          HOME=/tmp/blender-home blender -b source-tree/tree_mature.blend -t 2 --python tools/3d-performance/batch_blend_foliage.py -- --output render-output/3d-performance/foliage-batch 2>&1 | tee /tmp/foliage-batch.log
           grep -q 'FOLIAGE_BATCH_DONE' /tmp/foliage-batch.log
       - name: Compare actual render pixels and GLB geometry structure
         run: |
           set -euo pipefail
           python3 tools/3d-performance/audit_glb.py source-tree/tree_mature.glb render-output/3d-performance/foliage-batch/*.glb --output render-output/3d-performance/tree-before-after.json
-          /tmp/foliage-qa-venv/bin/python tools/3d-performance/compare_renders.py source-tree render-output/3d-performance/foliage-batch --out render-output/3d-performance/foliage-batch/image-comparison.json --max-mae 0.15
+          python3 tools/3d-performance/compare_renders.py source-tree render-output/3d-performance/foliage-batch --out render-output/3d-performance/foliage-batch/image-comparison.json --max-mae 0.15
           python3 - <<'PY'
           import json,hashlib
           from pathlib import Path
@@ -88,10 +104,14 @@ jobs:
           assert batched['scene_mesh_nodes']<original['scene_mesh_nodes']
           print('FOLIAGE_STRUCTURAL_QA_PASS', [(x['path'],x['scene_mesh_nodes']) for x in structural])
           PY
+      - name: Scan generated candidates
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/3d-performance/foliage-batch qa/security/output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: f6-tree-v14-batched-UNAPPROVED-review
-          path: render-output/3d-performance/
+          path: |
+            render-output/3d-performance/
+            qa/security/
           retention-days: 14
           if-no-files-found: warn
