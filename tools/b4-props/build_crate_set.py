@@ -34,7 +34,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_crate_set"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(97)
 C.reset(97)
 
@@ -49,11 +49,11 @@ def woods(tag, char, soot, heat=None, hr=(0.1, 0.5)):
                                 heat_center=heat, heat_r=hr) for k in "xyz"}
 
 
-wA = woods("A", 0.35, (0.30, 0.62))
-wB = woods("B", 0.45, (0.28, 0.66))
-wC = woods("C", 0.60, (0.20, 0.62), heat=(0.0, -0.75, 0.15), hr=(0.15, 0.6))
+wA = woods("A", 0.42, (0.30, 0.62))
+wB = woods("B", 0.52, (0.28, 0.66))
+wC = woods("C", 0.72, (0.20, 0.62), heat=(0.0, -0.75, 0.15), hr=(0.15, 0.6))
 iron = C.weathered_iron("iron", soot_z=(0.3, 0.6), rust=0.6, scale=0.4)
-rockm = L.mine_rock("rock", scale=0.6)
+rockm = L.mine_rock("rock", scale=0.6, ash_amt=0.45)
 
 
 def place(objs, x, yaw):
@@ -132,36 +132,40 @@ parts += place(pB, 0.0, -9)
 wC_, dC, hC = 0.90, 0.60, 0.55
 hdC = dC / 2
 HC = hC - Z0
-front_fall = L.pivot_rot((0, -hdC - T, Z0), (1, 0, 0), 66, (0, -0.02, 0))
+front_fall = L.pivot_rot((0, -hdC - T, Z0), (1, 0, 0), 80, (0, -0.02, 0))
+FALL = ("Fs0", "Fs1", "Fs2", "Fv0", "Fv1", "Fb")   # 前の面：外へ倒れて地面に（Ft は失われた）
 brk = {}
 mods = {}
-for bid in ("Fs0", "Fs1", "Fs2", "Fv0", "Fv1", "Ft", "Fb"):
-    mods[bid] = front_fall
-# 倒れた前の面も壊れている：中段は半分失われ、左の角当ては折れる
-brk["Fs1"] = dict(f=0.58, rough=0.07, drop_b=True)  # 倒す行列は後で掛ける
-del mods["Fs1"]
-# 左右の横板：前半分が折れて落ちる（L は b 片、R は a 片が前）
+# 倒れた前の面も壊れている：中段は半分失われ、右の角当ては折れる（倒す行列は後で掛ける）
+brk["Fs1"] = dict(f=0.58, rough=0.07, drop_b=True)
+brk["Fv1"] = dict(f=0.62, rough=0.06, drop_b=True)
+# 左右の横板：前半分が折れ口を支点に垂れ下がる（L は b 片、R は a 片が前）。前端は地面近くまで
+LEN_LR = dC + 2 * T - 2 * T
 for i in range(3):
-    dz = 0.06 + 0.07 * i
-    brk[f"Ls{i}"] = dict(f=0.5 + 0.05 * i, rough=0.07, rot_b=((1, 0, 0), 14 + 6 * i, (0, -0.02, -dz)))
-    brk[f"Rs{i}"] = dict(f=0.45 - 0.04 * i, rough=0.07, rot_a=((1, 0, 0), 12 + 7 * i, (0, -0.02, -dz)))
+    zi, _ = slat_z(hC, i)
+    fL, fR = 0.5 + 0.05 * i, 0.45 - 0.04 * i
+    angL = math.degrees(math.asin(min(0.97, (zi - 0.03) / (LEN_LR * (1 - fL)))))
+    angR = math.degrees(math.asin(min(0.97, (zi - 0.03) / (LEN_LR * fR))))
+    brk[f"Ls{i}"] = dict(f=fL, rough=0.07, rot_b=((1, 0, 0), angL * rnd.uniform(0.8, 0.95), (0.0, 0, 0)), hinge="inner")
+    brk[f"Rs{i}"] = dict(f=fR, rough=0.07, rot_a=((1, 0, 0), angR * rnd.uniform(0.8, 0.95), (0.0, 0, 0)), hinge="inner")
 brk["Ls1"]["drop_b"] = True
 brk["Lv1"] = dict(f=0.45, rough=0.06, drop_b=True)
 brk["Rv0"] = dict(f=0.38, rough=0.06, drop_b=True)
-# 蓋：手前は中へ落ち、中央は折れてたわみ、奥は傾く
+# 蓋：手前は中へ落ち、中央と奥は折れて V 字にたわむ（岩が乗る）
 ldC = dC + 4 * T
 mods["T0"] = L.pivot_rot((0, -ldC / 2, hC), (1, 0, 0), -24, (0.02, 0.05, -0.30))
-brk["T1"] = dict(f=0.55, rough=0.07, rot_a=((0, 1, 0), 16, (0, -0.01, -0.06)), rot_b=((0, 1, 0), -22, (0, -0.01, -0.08)))
-mods["T2"] = L.pivot_rot((0, ldC / 2, hC + T), (1, 0, 0), 8, (0, 0, 0))
-Cc = L.framed_crate("C", wC_, dC, hC, wC, iron=iron, seed=3, broken=brk, mods=mods,
+brk["T1"] = dict(f=0.55, rough=0.07, rot_a=((0, 1, 0), 30, (0, -0.01, -0.03)), rot_b=((0, 1, 0), -36, (0, -0.01, -0.04)))
+brk["T2"] = dict(f=0.45, rough=0.06, rot_a=((0, 1, 0), 15, (0, 0, -0.01)), rot_b=((0, 1, 0), -19, (0, 0, -0.01)))
+Cc = L.framed_crate("C", wC_, dC, hC, wC, iron=iron, seed=3, broken=brk, mods=mods, skip=("Ft",), no_nails="F",
                     splits={"Bv1": (None, 0.05), "Bs2": (0.05, 0.05)})
 bpy.context.view_layer.update()
-for o in Cc["Fs1"]:
-    o.matrix_world = front_fall @ o.matrix_world
+for bid in FALL:
+    for o in Cc.get(bid, []):
+        o.matrix_world = front_fall @ o.matrix_world
 pC = L.flatten(Cc)
 # 上に落ちた岩（蓋を押し潰す）と、倒れた前の面を支える岩
-pC.append(rock("C_rock_top", 0.21, (0.12, -0.02, 0.42), (8, -12, 30), squash=(1.0, 0.85, 0.7), seed=500, facet=5))
-pC.append(rock("C_rock_prop", 0.17, (-0.12, -0.80, 0.10), (0, 0, 20), squash=(1.15, 0.9, 0.75), seed=501, facet=5))
+pC.append(rock("C_rock_top", 0.22, (0.10, -0.02, 0.38), (8, -12, 30), squash=(1.0, 0.85, 0.7), seed=500, facet=5))
+pC.append(rock("C_rock_prop", 0.16, (0.05, -0.62, 0.16), (0, 0, 20), squash=(1.15, 0.9, 0.75), seed=501, facet=5))
 for j in range(6):
     r = rnd.uniform(0.035, 0.07)
     pC.append(rock(f"C_rubble{j}", r, (rnd.uniform(-0.5, 0.5), rnd.uniform(-0.95, -0.35), r * 0.35), (0, 0, rnd.uniform(0, 360)),

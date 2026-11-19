@@ -304,7 +304,7 @@ def splinters(prefix, origin, direction, radius, n=4, length=0.12, seed=0, mat=N
     return out
 
 
-def mine_rock(name, scale=1.0):
+def mine_rock(name, scale=1.0, ash_amt=0.75):
     """坑道の落石（玄武岩）：#1d1a19〜#2e2926、割れたばかりの面は少し明るく、上向き面と凹みに灰"""
     b = C.NB(name)
     diff = b.image(C.cc0("rock_face_02", "diff"), scale * 0.8)
@@ -325,7 +325,7 @@ def mine_rock(name, scale=1.0):
     cav = b.math("SUBTRACT", 1.0, b.cavity(0.06))
     ash = b.math("MAXIMUM", b.math("MULTIPLY", cav, 0.5), b.math("MULTIPLY", b.up_mask(0.55, 0.9), 0.6))
     ash = b.math("MULTIPLY", ash, b.ramp(n_big, [(0.25, 0.1), (0.7, 1.0)]))
-    col = b.mix(b.math("MULTIPLY", ash, 0.75), col, (0.085, 0.079, 0.072))
+    col = b.mix(b.math("MULTIPLY", ash, ash_amt), col, (0.085, 0.079, 0.072))
     r = b.mixf(ash, 0.82, 0.96)
     r = b.mixf(edge, r, 0.7)
     b.normal_from(nrm, 0.8, bump_height=n_fine, bump_strength=0.3, bump_dist=0.01)
@@ -536,9 +536,9 @@ def pivot_rot(pivot, axis, deg, move=(0, 0, 0)):
 
 
 def board_broken(name, c, ax, aw, length, width, thick, mats, seed=0, f=0.5, rough=0.06,
-                 rot_a=None, rot_b=None, drop_a=False, drop_b=False, chip=0.005, segs=3):
+                 rot_a=None, rot_b=None, drop_a=False, drop_b=False, chip=0.005, segs=3, hinge="outer"):
     """中央付近（f）で折れた板。各片は外端（板の端）を支点に rot=(world_axis, deg[, move]) で回る。
-    drop_*=True でその片を作らない（失われた）。戻り値: 片のリスト"""
+    drop_*=True でその片を作らない（失われた）。hinge="inner" で折れ口を支点にする。戻り値: 片のリスト"""
     ax_n = Vector(ax).normalized()
     c = Vector(c)
     pa = c - ax_n * length / 2
@@ -551,7 +551,10 @@ def board_broken(name, c, ax, aw, length, width, thick, mats, seed=0, f=0.5, rou
         if drop:
             continue
         ln = (p1 - p0).length
-        piv = p0 if tag == "a" else p1
+        if hinge == "inner":   # 折れ口を支点に（ささくれで繋がったまま垂れる）
+            piv = p1 if tag == "a" else p0
+        else:
+            piv = p0 if tag == "a" else p1
         ex = pivot_rot(piv, rot[0], rot[1], rot[2] if len(rot) > 2 else (0, 0, 0)) if rot else None
         out.append(board(f"{name}{tag}", (p0 + p1) / 2, ax, aw, ln, width, thick, mats,
                          seed=seed + (11 if tag == "b" else 0), split_a=sa, split_b=sb, chip=chip,
@@ -568,7 +571,7 @@ def nail(name, pos, normal, r=0.0075, mat=None):
 
 
 def framed_crate(prefix, w, d, h, mats, iron=None, seed=0, nb=3, t=0.02, bat=0.075, gap=0.028,
-                 brace=False, skip=(), broken=None, mods=None, nails=True, skids=True, lid_n=3, splits=None):
+                 brace=False, skip=(), broken=None, mods=None, nails=True, skids=True, lid_n=3, splits=None, no_nails=""):
     """枠つきのスラット木箱（底中心が原点、+Z 上）。#97 の形：
     面ごとに横板 nb 枚（隙間 gap）＋外側の縦の角当て（bat 幅）＋上下の横の縁当て、必要なら斜めの筋交い、
     蓋 lid_n 枚、底の下に2本の根太（skids）。
@@ -645,10 +648,12 @@ def framed_crate(prefix, w, d, h, mats, iron=None, seed=0, nb=3, t=0.02, bat=0.0
                                                         ("L", Vector((-1, 0, 0)), Vector((0, -1, 0)), hd, hw),
                                                         ("R", Vector((1, 0, 0)), Vector((0, 1, 0)), hd, hw),
                                                         ("B", Vector((0, 1, 0)), Vector((-1, 0, 0)), hw, hd)):
+            if face in no_nails:
+                continue
             for j, sgn in enumerate((-1, 1)):
                 if f"{face}v{j}" in skip or f"{face}v{j}" in mods or f"{face}v{j}" in broken:
                     continue
-                for zz in (z0 + gap + sw / 2, z0 + H - gap - sw / 2):
+                for zz in (z0 + H - gap - sw / 2,):
                     p = n_out * (half_off + t) + along * sgn * (half_len - bat / 2 + (t if face in "FB" else 0)) + Vector((0, 0, zz))
                     out[f"N{k}"] = [nail(f"{prefix}_N{k}", p, n_out, mat=iron)]
                     k += 1
