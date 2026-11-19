@@ -1,8 +1,8 @@
 {
   "asset": "b4p_timber_set_broken",
-  "version": "v3",
+  "version": "v4",
   "blender": "4.2.3 LTS",
-  "triangles": 4356,
+  "triangles": 5270,
   "budget_triangles": 8000,
   "materials": [
     "b4p_timber_set_broken_mat"
@@ -25,7 +25,7 @@
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_timber_set_broken.glb",
-  "glb_bytes": 1037468,
+  "glb_bytes": 1134488,
   "cc0_textures": {
     "wood_planks_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/wood_planks",
@@ -74,16 +74,16 @@
     9
   ],
   "sha256": {
-    "b4p_timber_set_broken.glb": "ea4ff7795808378606047e22778c67906b3afae91a1a645811e1f77f2ba403f0",
-    "b4p_timber_set_broken_volcanic_front.png": "ad5d8201b9874346e3bab4ffc9c01d00ac5289551a391ccdf4e9abb53749ecea",
-    "b4p_timber_set_broken_volcanic_side.png": "13587a89cd758b71f2faabfa6dd776348593ec94cc535c59b9da48b0b2c8693b",
-    "b4p_timber_set_broken_volcanic_angle.png": "bf408cd4a56e11ff3033ebc18ba9d33651d42f6931070a309c2b55873be99b2a",
-    "b4p_timber_set_broken_volcanic_top.png": "f2b353f419343f682f1be1e59c12bf5e33ceae88c064ce07ab980d2caba2ae2c",
-    "b4p_timber_set_broken_volcanic_close.png": "cdaca5e3197a4925c5c41d37e6967b83e01c2f241313b6c71a17a2d4c8ab8065",
-    "b4p_timber_set_broken_volcanic_back.png": "1d41f4c2bb94f24cb8817c5acdfe7d6e5cfaa563797c3333d44b47b47c26a13b",
-    "b4p_timber_set_broken_studio_front.png": "c1523349726bae00de08ce26b75100a91222d17f310d1e4b44ca902a6baf00c3",
-    "b4p_timber_set_broken_studio_angle.png": "0a5eb3a47ac214b6deef38511568107252cb0b1c9bcad108c9a3bb2df16a57bf",
-    "b4p_timber_set_broken_studio_scale.png": "23e787c934b6d7ec1d184fada39aba324f168e7561e21484a86085641e180cdf"
+    "b4p_timber_set_broken.glb": "12feb791b3ca8ba5c545473faa82cc9f05196040bd460e21c76fe68760d6ffc2",
+    "b4p_timber_set_broken_volcanic_front.png": "c9eeec1d237dbe0fead5ae186d4a7afd11a2a56284afba8e2d795e4046977718",
+    "b4p_timber_set_broken_volcanic_side.png": "ca5d6f826de8c9bc64fd8d4833ee1d401fd2d130ca751a1c0e5ce8e794af5c4c",
+    "b4p_timber_set_broken_volcanic_angle.png": "ee8548962b8cbc79c449a8b3802c87020fc3444f7dfefa12bd0212a838d29b5f",
+    "b4p_timber_set_broken_volcanic_top.png": "51fd8496e1b778effbc33571ab98436497cfeec921d4c80044b255b089833ab7",
+    "b4p_timber_set_broken_volcanic_close.png": "bba20cd69143fd68e1bec5459a203554977d3bdc1b58b0651a3de312145686e5",
+    "b4p_timber_set_broken_volcanic_back.png": "cb03f9e447f8ec008ef0bcdc62b0c5d8e681e6d0541b44809a8b706866f146b9",
+    "b4p_timber_set_broken_studio_front.png": "0597b21296d8d870a857678d6ed1ef9c44fafef2f864562f7c8604db1367d59b",
+    "b4p_timber_set_broken_studio_angle.png": "87b3e6dc8af57ee25a2cf2ece359d0bb22738f8e085cceec37567bdf97ee962b",
+    "b4p_timber_set_broken_studio_scale.png": "e9543975ab0bc826b31d57804912dc205f9c1bb4225f5bb39ef19332c8bf704f"
   },
   "renders": [
     "b4p_timber_set_broken_volcanic_front.png",
