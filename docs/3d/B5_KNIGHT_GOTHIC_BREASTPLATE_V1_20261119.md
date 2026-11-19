@@ -42,3 +42,11 @@
 - V2の正面では鍛造稜線が明確に可視化し、V1の裏側へ食い込む問題は修正。金属の眩しすぎる反射を緩和。
 - ただし胸中央の6本の稜線はまだ直線的な別チューブに見え、実物の鋼板へプレスされた滑らかなリブとは異なる。今後V3では**本体メッシュへの実変形による稜線**へ変更すべき。金属PBR・傷・汚れも兜V22と未統一。側面は薄板として成立するが、背甲が未制作のため完全な胴鎧には見えない。
 - **美術判定：未合格（初期の造形候補）**。ユーザーの確認前に正式保存・ゲーム実装は行わない。
+
+## V3失敗とV4安全対策（2026-11-19）
+- V3 run [44465019470](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465019470) **technical success**: six real Cycles PNG/GLB/Blend, 8/8 SHA checks, ClamAV output 10 scanned/0 infected. **Art FAIL**: upper shoulder/collar stretched upward into long thin spikes (actual image verified). Never promote.
+- Root cause: after subdividing the ring loft, the procedural neck/shoulder and underarm offset still depended on discrete ring index `j`. `j` tripled while displacement formula multiplied by `(j-9)/2`, producing nonsensical geometry. Illustrates why numeric and visual QA must both exist.
+- Independent V4 `tools/b5-knights/build_gothic_breastplate_v4.py`: recalculate shoulder scoop / armpit deformation by *physical z height* normalized to the original control range, rather than subdivided ring index.
+- Add fail-closed bounds on world coordinates: minimum Z near 0.875m, maximum around 1.48m, horizontal halfwidth near 0.243m. This prevents another tall spike export.
+- V4 [Actions run 44465505541](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465505541), status currently pending/processing, must separately verify actual output.
+- The six Gothic pressed flutes are still a single deformed main plate instead of extra floating curve strips.
