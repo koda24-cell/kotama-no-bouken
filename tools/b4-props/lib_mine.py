@@ -333,3 +333,28 @@ def staple(name, center, axis_dir, width=0.08, leg=0.05, thick=0.008, seed=0):
     pts = [c - a * width / 2 + Vector((0, 0, -leg)), c - a * width / 2, c + a * width / 2, c + a * width / 2 + Vector((0, 0, -leg))]
     pts = C.bezier(pts[0], pts[1] + Vector((0, 0, 0.0)), pts[2], pts[3], n=8)
     return C.sweep(name, pts, C.rect_profile(thick * 1.6, thick, chamfer=thick * 0.25), up_fn=lambda k, p, t: (0, 0, 1))
+
+
+def orient_between(ob, p0, p1, roll_deg=0.0):
+    """X軸に沿って作った部品（中心原点）を p0→p1 の中点に置き、X を p0→p1 へ向ける"""
+    from mathutils import Matrix
+    p0, p1 = Vector(p0), Vector(p1)
+    d = p1 - p0
+    q = d.normalized().to_track_quat("X", "Z")
+    ob.matrix_world = Matrix.Translation((p0 + p1) / 2) @ q.to_matrix().to_4x4() @ Matrix.Rotation(math.radians(roll_deg), 4, "X")
+    return ob
+
+
+def beam_between(name, p0, p1, w, t, split_a=None, split_b=None, seed=0, bow=0.0, chip=0.0, roll=0.0, segs=12,
+                 round_edges=0.35, mat=None):
+    """p0→p1 の角材（手斧で削った丸太風：面取り8角形・曲がり・角の欠け・折れ口）"""
+    L_ = (Vector(p1) - Vector(p0)).length
+    ob = plank(name, L_, w, t, segs=segs, split_a=split_a, split_b=split_b, seed=seed, round_edges=round_edges,
+               warp=0.0, chip=chip)
+    if bow:
+        C.displace_noise(ob, bow, 1.2 / max(L_, 0.1), seed=seed)
+        C.displace_noise(ob, bow * 0.15, 9.0, seed=seed + 50)
+    orient_between(ob, p0, p1, roll)
+    if mat is not None:
+        C.assign(ob, mat)
+    return ob
