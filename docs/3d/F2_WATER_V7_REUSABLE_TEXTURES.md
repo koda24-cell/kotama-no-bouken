@@ -33,3 +33,11 @@
 - `rasterize_v7_textures.py` は元PNGをRGBAで1024pxへ拡大・平滑化して `out/f2-water/v7_ai_water_surface_color_alpha_1024.png` に出力。
 - `render_water.py` はこの実AI画像のRGBを水面カラー、Alphaを透過率マスクとして読み込み、先行SVG透明オーバーレイに合成。画像生成した画像を水面に実際に貼る仕組みになった。
 - [最新の試験run #44453825512](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453825512) は起動が確認されたが、2026-11-19現在の実描画・質感は未確認。SVG変換とAI画像変換の両方を通した証拠が必要。
+
+
+## V8 非均一水面の修正（2026-11-19）
+- V7レンダは成功したが、白波模様の反復が均一、手前の強い白反射、水面の平板さが美観上の問題。**V7は採用せず候補として保持**。
+- V8は既存のカラー・アルファの素材を残し、Noise→VectorMathで水面画像UVを緩やかに変形する。別の低周波Noise→MapRangeで場所ごとに透明波模様の可視割合を変え、均一な繰り返しを抑える。
+- Fresnelの最低反射・反射倍率、発光ハイライト、ライト強度を下げ、Glossy Roughnessを上げて白い反射の塊を抑える。水底と水面の透過構成は保持。新しい外部素材は取得しない。
+- [V8試験ワークフロー](https://github.com/koda24-cell/kotama-no-bouken/actions/workflows/f2-safe-water-render.yml) / [V8の起動が確認されたrun #44456123359](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44456123359)。**記録時点はqueued、ClamAV・PNG・Blenderファイルの実成功未確認**。
+- V8は `out/f2-water/f2-water-v8.blend` を出力予定。3方向PNGを目視で検査し、正式素材への採用はユーザー承認後。
