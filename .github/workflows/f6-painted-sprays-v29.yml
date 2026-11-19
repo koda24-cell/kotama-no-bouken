@@ -1,0 +1,123 @@
+name: F6 Painted Spray Foliage V29 Blender Review (Unapproved)
+on:
+  push:
+    branches:
+      - feature/f6-painted-foliage-sprays-20261119
+    paths:
+      - tools/floor6/generate_painted_sprays.py
+      - tools/floor6/apply_painted_sprays_v29.py
+      - tools/floor6/fetch_cc0_bark.py
+      - .github/workflows/f6-painted-sprays-v29.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  packages: read
+concurrency:
+  group: f6-painted-sprays-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  render-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check script syntax and Pillow availability
+        run: |
+          python3 -m py_compile tools/floor6/generate_painted_sprays.py tools/floor6/apply_painted_sprays_v29.py tools/floor6/fetch_cc0_bark.py
+          python3 -c "from PIL import Image" || (python3 -m pip install --break-system-packages Pillow)
+      - name: Restore verified V27 original complete tree GLB
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44447197961
+          name: f6-v19-v27-bark-leaf-refinement-comparison-NOT-APPROVED
+          path: /tmp/f6-v27
+          github-token: ${{ github.token }}
+      - name: Verify original manifest and SHA256
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          d=Path('/tmp/f6-v27/nature/tree_mature_photo_v27')
+          m=json.loads((d/'manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED' and m['version'].startswith('V27')
+          for f in m['files']:
+              p=d/f['name']
+              assert p.exists() and hashlib.sha256(p.read_bytes()).hexdigest()==f['sha256']
+          assert (d/'tree_mature_photo_v20.glb').read_bytes()[:4]==b'glTF'
+          print('V27_SOURCE_HASHES_VERIFIED')
+          PY
+      - name: Update ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Virus scan source GLB and production scripts
+        run: |
+          bash tools/security/clamav_scan_gate.sh scan /tmp/f6-v27/nature/tree_mature_photo_v27/tree_mature_photo_v20.glb qa/security/source.log
+          bash tools/security/clamav_scan_gate.sh scan tools/floor6/generate_painted_sprays.py qa/security/generate-script.log
+          bash tools/security/clamav_scan_gate.sh scan tools/floor6/apply_painted_sprays_v29.py qa/security/apply-script.log
+          bash tools/security/clamav_scan_gate.sh scan tools/floor6/fetch_cc0_bark.py qa/security/bark-script.log
+      - name: Generate six stylized transparent painted leaf sprays
+        run: |
+          python3 tools/floor6/generate_painted_sprays.py
+          test -s render-output/floor6/painted-spray-source/six_sprays_atlas.png
+      - name: Download official CC0 bark after pre-extraction ZIP scan
+        run: |
+          python3 tools/floor6/fetch_cc0_bark.py
+          test -s render-output/floor6/cc0-bark-source/color.png
+      - name: Scan unpacked images before Blender import
+        run: |
+          bash tools/security/clamav_scan_gate.sh scan render-output/floor6/painted-spray-source qa/security/painted-sprays.log
+          bash tools/security/clamav_scan_gate.sh scan render-output/floor6/cc0-bark-source qa/security/bark-texture.log
+      - name: Render legacy and new V29 painted leaf card tree
+        env:
+          F6_SOURCE_GLB: /tmp/f6-v27/nature/tree_mature_photo_v27/tree_mature_photo_v20.glb
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/f6-blender-home
+          export HOME=/tmp/f6-blender-home LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+          blender -b -t 2 --python tools/floor6/apply_painted_sprays_v29.py 2>&1 | tee /tmp/f6-v29-blender.log
+          grep -q F6_V29_PAINTED_SPRAY_RENDER_SUCCESS /tmp/f6-v29-blender.log
+      - name: Verify source preservation, PNGs, GLB and SHA256
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          d=Path('render-output/floor6/painted-foliage-v29-NOT-APPROVED')
+          m=json.loads((d/'manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED' and m['version']=='V29'
+          assert m['source_preserved_leaf_meshes']>5000 and m['source_wood_meshes']>10
+          assert m['painted_spray_cards']>=140
+          names={f['name'] for f in m['files']}
+          expected={f'legacy_{x}.png' for x in ('front','side','angle','top')}
+          expected|={f'painted_{x}.png' for x in ('front','side','angle','top')}
+          expected|={'painted_foliage_close.png','painted_bark_close.png',
+               'f6_mature_painted_sprays_v29_NOT_APPROVED.glb','f6_mature_painted_sprays_v29_NOT_APPROVED.blend'}
+          assert names==expected
+          for f in m['files']:
+              p=d/f['name'];b=p.read_bytes()
+              assert len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256']
+              if p.suffix=='.png':
+                  assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+                  w,h=struct.unpack('>II',b[16:24]);assert w>=700 and h>=700
+              elif p.suffix=='.glb':assert b[:4]==b'glTF'
+          print('F6_V29_ARTIFACT_QA_PASS',m['painted_spray_cards'])
+          PY
+      - name: Scan output before upload
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/floor6/painted-foliage-v29-NOT-APPROVED qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-painted-sprays-v29-review-NOT-APPROVED
+          path: |
+            render-output/floor6/painted-spray-source/
+            render-output/floor6/cc0-bark-source/
+            render-output/floor6/painted-foliage-v29-NOT-APPROVED/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn
