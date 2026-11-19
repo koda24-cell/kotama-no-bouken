@@ -37,10 +37,10 @@ jobs:
           repository: ${{ github.repository }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: assembly-input/hub
-      - name: Restore original iron ferrule V02
+      - name: Restore original iron ferrule V01
         uses: actions/download-artifact@v4
         with:
-          name: b2-iron-axle-ferrule-v02
+          name: b2-iron-axle-ferrule-v01
           run-id: 44454120299
           repository: ${{ github.repository }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -76,7 +76,7 @@ jobs:
           import json,hashlib
           root=Path('assembly-input')
           req={'hub':'b2_waterwheel_single_wooden_hub_v11.glb',
-            'ferrule':'b2_single_iron_axle_ferrule_v02.glb',
+            'ferrule':'b2_single_iron_axle_ferrule_v01.glb',
             'lower':'b2_single_timber_lower_axle_bearing_v03.glb',
             'upper':'b2_one_upper_timber_bearing_cap_v05.glb',
             'axle':'b2_single_oak_waterwheel_axle_v02.glb'}
