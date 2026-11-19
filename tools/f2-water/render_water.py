@@ -14,7 +14,7 @@ random.seed(20261119)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
-scene.cycles.samples=38  # V10 lookdev; restore >=56 for approved final
+scene.cycles.samples=48  # V11 preview; restore >=56 for approved final
 scene.cycles.max_bounces=4
 bpy.context.view_layer.cycles.use_denoising=False  # Ubuntu apt Blender has no OpenImageDenoiser
 scene.render.resolution_x=960;scene.render.resolution_y=640;scene.render.resolution_percentage=85  # V9 fast preview 816x544
@@ -39,6 +39,50 @@ uvscale.inputs["Scale"].default_value=6.0
 bed.node_tree.links.new(texcoord.outputs["UV"],uvscale.inputs[0])
 bed.node_tree.links.new(uvscale.outputs["Vector"],image.inputs["Vector"])
 bed.node_tree.links.new(image.outputs["Color"],bs.inputs["Base Color"])
+# V11 optical cue: subtle pseudo-caustics ON THE RIVERBED, not white
+# strokes pasted onto the water surface. This is stylized light, not path-traced caustics.
+# Keep verified scanned photo as the base diffuse image.
+caustic_uv=bed.node_tree.nodes.new("ShaderNodeTexCoord")
+caustic_warp_noise=bed.node_tree.nodes.new("ShaderNodeTexNoise")
+caustic_warp_noise.inputs["Scale"].default_value=5.0
+caustic_warp_noise.inputs["Detail"].default_value=2.0
+bed.node_tree.links.new(caustic_uv.outputs["UV"],caustic_warp_noise.inputs["Vector"])
+caustic_shift=bed.node_tree.nodes.new("ShaderNodeVectorMath")
+caustic_shift.operation="SCALE"
+caustic_shift.inputs["Scale"].default_value=.05
+bed.node_tree.links.new(caustic_warp_noise.outputs["Color"],caustic_shift.inputs[0])
+caustic_coord=bed.node_tree.nodes.new("ShaderNodeVectorMath")
+caustic_coord.operation="ADD"
+bed.node_tree.links.new(caustic_uv.outputs["UV"],caustic_coord.inputs[0])
+bed.node_tree.links.new(caustic_shift.outputs["Vector"],caustic_coord.inputs[1])
+caustic_pattern=bed.node_tree.nodes.new("ShaderNodeTexVoronoi")
+caustic_pattern.feature="DISTANCE_TO_EDGE"
+caustic_pattern.inputs["Scale"].default_value=24.0
+bed.node_tree.links.new(caustic_coord.outputs["Vector"],caustic_pattern.inputs["Vector"])
+caustic_ramp=bed.node_tree.nodes.new("ShaderNodeValToRGB")
+caustic_ramp.color_ramp.elements[0].position=.008
+caustic_ramp.color_ramp.elements[0].color=(.57,.72,.76,1)
+caustic_ramp.color_ramp.elements[1].position=.065
+caustic_ramp.color_ramp.elements[1].color=(0,0,0,1)
+bed.node_tree.links.new(caustic_pattern.outputs["Distance"],caustic_ramp.inputs["Fac"])
+caustic_geometry=bed.node_tree.nodes.new("ShaderNodeNewGeometry")
+caustic_separate=bed.node_tree.nodes.new("ShaderNodeSeparateXYZ")
+bed.node_tree.links.new(caustic_geometry.outputs["Position"],caustic_separate.inputs["Vector"])
+caustic_underwater=bed.node_tree.nodes.new("ShaderNodeMath")
+caustic_underwater.operation="LESS_THAN"
+caustic_underwater.inputs[1].default_value=2.6
+bed.node_tree.links.new(caustic_separate.outputs["Y"],caustic_underwater.inputs[0])
+caustic_masked=bed.node_tree.nodes.new("ShaderNodeMixRGB")
+caustic_masked.blend_type="MULTIPLY"
+caustic_masked.inputs[0].default_value=1.0
+bed.node_tree.links.new(caustic_ramp.outputs["Color"],caustic_masked.inputs[1])
+bed.node_tree.links.new(caustic_underwater.outputs[0],caustic_masked.inputs[2])
+caustic_add=bed.node_tree.nodes.new("ShaderNodeMixRGB")
+caustic_add.blend_type="ADD"
+caustic_add.inputs[0].default_value=.23
+bed.node_tree.links.new(image.outputs["Color"],caustic_add.inputs[1])
+bed.node_tree.links.new(caustic_masked.outputs[0],caustic_add.inputs[2])
+bed.node_tree.links.new(caustic_add.outputs[0],bs.inputs["Base Color"])
 bump=bed.node_tree.nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=.16
 bump.inputs["Distance"].default_value=.055
 bed.node_tree.links.new(image.outputs["Color"],bump.inputs["Height"])
@@ -87,7 +131,7 @@ surface.file_format="PNG"
 surface.save()
 # V6 water: keep real transparency, restore legible surface through
 # Fresnel reflections and image-controlled pale optical highlights.
-watermat=bpy.data.materials.new("V10 clearer shallow refraction / controlled ripple roughness")
+watermat=bpy.data.materials.new("V11 readable clear water / soft bottom caustics")
 watermat.use_nodes=True
 wn=watermat.node_tree.nodes
 wn.clear()
@@ -104,12 +148,12 @@ tex.extension="REPEAT"
 tex.interpolation="Linear"
 wl.new(mapping.outputs["Vector"],tex.inputs["Vector"])
 waterbump=wn.new("ShaderNodeBump")
-waterbump.inputs["Strength"].default_value=.13
-waterbump.inputs["Distance"].default_value=.012
+waterbump.inputs["Strength"].default_value=.075
+waterbump.inputs["Distance"].default_value=.006
 wl.new(tex.outputs["Color"],waterbump.inputs["Height"])
 reflection=wn.new("ShaderNodeBsdfGlossy")
 reflection.inputs["Color"].default_value=(.72,.89,.93,1)
-reflection.inputs["Roughness"].default_value=.12
+reflection.inputs["Roughness"].default_value=.095
 wl.new(waterbump.outputs["Normal"],reflection.inputs["Normal"])
 # V9 genuine shallow-water distortion: refraction is independent of colored ripples.
 # Mix a mostly-transparent sightline with physical IOR 1.333 refraction.
@@ -118,10 +162,10 @@ clear.inputs["Color"].default_value=(.995,1,1,1)
 refract=wn.new("ShaderNodeBsdfRefraction")
 refract.inputs["Color"].default_value=(.91,.975,.99,1)
 refract.inputs["IOR"].default_value=1.333
-refract.inputs["Roughness"].default_value=.008
+refract.inputs["Roughness"].default_value=.002
 wl.new(waterbump.outputs["Normal"],refract.inputs["Normal"])
 refr_mix=wn.new("ShaderNodeMixShader")
-refr_mix.inputs[0].default_value=.23
+refr_mix.inputs[0].default_value=.11
 wl.new(clear.outputs["BSDF"],refr_mix.inputs[1])
 wl.new(refract.outputs["BSDF"],refr_mix.inputs[2])
 fresnel=wn.new("ShaderNodeLayerWeight")
@@ -131,7 +175,7 @@ fscale=wn.new("ShaderNodeMath");fscale.operation="MULTIPLY"
 fscale.inputs[1].default_value=.24
 wl.new(fresnel.outputs["Fresnel"],fscale.inputs[0])
 fbase=wn.new("ShaderNodeMath");fbase.operation="ADD"
-fbase.inputs[1].default_value=.08
+fbase.inputs[1].default_value=.06
 wl.new(fscale.outputs[0],fbase.inputs[0])
 mix=wn.new("ShaderNodeMixShader")
 wl.new(fbase.outputs[0],mix.inputs[0])
@@ -290,4 +334,4 @@ for n in ("front","side","angle"):
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
 (root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v10.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v11.blend").resolve()))
