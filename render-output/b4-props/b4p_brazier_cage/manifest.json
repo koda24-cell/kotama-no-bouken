@@ -1,8 +1,8 @@
 {
   "asset": "b4p_brazier_cage",
-  "version": "v1",
+  "version": "v3",
   "blender": "4.2.3 LTS",
-  "triangles": 10728,
+  "triangles": 9730,
   "budget_triangles": 10000,
   "materials": [
     "b4p_brazier_cage_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    0.758,
+    0.737,
     0.808,
     0.901
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_brazier_cage.glb",
-  "glb_bytes": 1388300,
+  "glb_bytes": 1285084,
   "cc0_textures": {
     "rusty_metal_03_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rusty_metal_03",
@@ -65,16 +65,16 @@
     103
   ],
   "sha256": {
-    "b4p_brazier_cage.glb": "fd6ce20cb319b9172f6c8e9c1ee92865e7445ec84cd4ab1f0cd803de164d0a95",
-    "b4p_brazier_cage_volcanic_front.png": "c97ca9a52e0c3fd26a220fe13a3a7fe1dee381021c8976572e713f2461fa0035",
-    "b4p_brazier_cage_volcanic_side.png": "06d8f0029758bf8d47378e13cfbd99be7150c8ea1be8b1a613143c7e122cdb10",
-    "b4p_brazier_cage_volcanic_angle.png": "47d879d91dc2868697d8e6c7af8ac3ec6d37490514582698d294f6df9af0bd55",
-    "b4p_brazier_cage_volcanic_top.png": "e6eb6d23022cdaf3edd88e454b88c46be066a186aaf4051d07364e972160633d",
-    "b4p_brazier_cage_volcanic_close.png": "31a75a14cb8c4d77323e4fbc69c6ac345e416c37145e66dcc5e7395407423e73",
-    "b4p_brazier_cage_volcanic_back.png": "08dc338ef59deafc8241710219e8061b37a3ba977f3d7da65d07ef2b1aac9b6a",
-    "b4p_brazier_cage_studio_front.png": "d4a279033503e01a315d27199e9f0bb0ce07d1e4b7456763b3aac51709aff756",
-    "b4p_brazier_cage_studio_angle.png": "4557eb6b11ef0cab241bbba0733113b37c67740d54e206d50c64419cae4c9204",
-    "b4p_brazier_cage_studio_scale.png": "9723d93ae92466e2f6131bbd37bb0cfcfccaf193774bc91d504856a9069c385e"
+    "b4p_brazier_cage.glb": "0ab0ed0297f1d7329b20c04317506a6462b7511a15d3b3dcacc36c66fdc36814",
+    "b4p_brazier_cage_volcanic_front.png": "ee697ae8196860a93cdba94a8c97c5487f48666fb726d2ae4bd01c6bb7059905",
+    "b4p_brazier_cage_volcanic_side.png": "a520dde25e88576dc560f999cc2bf44684365aa9e1bd60cf7ee1e9ab86b34a78",
+    "b4p_brazier_cage_volcanic_angle.png": "1131fb60ee7a282d27e8d05e1ee86ad35364944aba7f46b1aee8cf3e32be019d",
+    "b4p_brazier_cage_volcanic_top.png": "ff6565373dc09e85d7cf4578ce3e09d25bcea6115987278e0c3375d1e300c49b",
+    "b4p_brazier_cage_volcanic_close.png": "f1819a1892034436e6c5893449e7bf4ecc27a247ec8f28959bff8390ecefb045",
+    "b4p_brazier_cage_volcanic_back.png": "a505c8a84d77a997446da2bab43dfed8e5ba252f8e92215bb7942a6bf2f58da1",
+    "b4p_brazier_cage_studio_front.png": "74acb84977f6bcc78356afe94e02b09d6ae7f4c858e2a8db13c26861ae897b68",
+    "b4p_brazier_cage_studio_angle.png": "fd396d1fb6abf8978b679ed25d15238b22b7d4b47d79ae71f434673179b965fa",
+    "b4p_brazier_cage_studio_scale.png": "7556aaaf702fb7332c4388e29688512bafccdcd6e6a98350b4919f02c2cd8121"
   },
   "renders": [
     "b4p_brazier_cage_volcanic_front.png",
@@ -89,6 +89,21 @@
   ],
   "samples": 96,
   "notes": "鍛鉄の籠型火鉢。欠落1本・折損1本・凹んだ上リング・曲がった脚1本。燠火は割れ目のみ発光。",
+  "game_lights": [
+    {
+      "pos_blender_zup": [
+        0.0,
+        0.0,
+        0.58
+      ],
+      "watts": 18.0,
+      "color": [
+        1.0,
+        0.42,
+        0.14
+      ]
+    }
+  ],
   "approval": "NOT_APPROVED",
   "design": "docs/3d/B4_PROPS_DESIGN.md"
 }
