@@ -43,7 +43,7 @@ STRAP = C.rect_profile(0.008, 0.030, chamfer=0.0025)  # n=半径方向の厚み�
 
 
 def rad_at(z):
-    t = (z - Z0) / (Z1 - Z0)
+    t = min(1.0, max(0.0, (z - Z0) / (Z1 - Z0)))
     return R0 + (R1 - R0) * (t ** 0.85) + 0.012 * math.sin(math.pi * t)  # 少し膨らむ
 
 
