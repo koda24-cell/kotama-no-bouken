@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feature/gpt-ore-free-assets-intake-20261118
+      - feature/gpt-ore-v10-pbr-compare-20261119
     paths:
       - 'tools/ore/intake_cc0_assets.py'
       - 'tools/ore/render_imported_boulder.py'
