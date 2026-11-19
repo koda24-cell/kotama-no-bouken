@@ -34,7 +34,7 @@ iron = C.weathered_iron("iron", heat_center=HEAT, heat_r=(0.08, 0.42), soot_z=(0
 coal = C.ember_coal("coal", glow=1.0)
 coal_dead = C.ember_coal("coal_dead", glow=0.12)
 ash = C.ash_bed("ash")
-wood = C.weathered_wood("wood", char=1.0, heat_center=HEAT, heat_r=(0.05, 0.3), grain_axis="X", scale=0.5)
+wood = C.ember_coal("log_ember", glow=0.35, scale=0.6)  # 燃えさしの薪：炭化した亀甲割れの奥だけ赤い（参考 #55）
 
 parts = []
 Z0, Z1 = 0.40, 0.86          # 籠の下端・上端
@@ -210,6 +210,6 @@ for j in range(4):
     C.xform(ob, (0.10 + rnd.uniform(-0.1, 0.15), -0.18 + rnd.uniform(-0.08, 0.08), 0.012), (rnd.uniform(0, 360), 0, rnd.uniform(0, 360)))
     parts.append(C.assign(ob, coal_dead))
 
-C.finish(NAME, parts, version="v4", lights=[((0.0, 0.0, 0.58), 18.0, (1.0, 0.42, 0.14))], tex_res=1024, budget_tris=10000,
+C.finish(NAME, parts, version="v5", lights=[((0.0, 0.0, 0.58), 18.0, (1.0, 0.42, 0.14))], tex_res=1024, budget_tris=10000,
          refs=[34, 39, 37, 103],
          notes="鍛鉄の籠型火鉢。欠落1本・折損1本・凹んだ上リング・曲がった脚1本。燠火は割れ目のみ発光。")
