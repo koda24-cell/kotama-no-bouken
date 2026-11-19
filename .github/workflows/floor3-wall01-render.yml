@@ -1,0 +1,51 @@
+name: Floor3 Wall 01 Three Iterations Blender Render
+on:
+  push:
+    branches: [feature/gpt-b3-concrete-wall-piece-20261118]
+    paths:
+      - 'tools/floor3/wall01/**'
+      - '.github/workflows/floor3-wall01-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Blender Python source
+        run: python3 -m py_compile tools/floor3/wall01/build_wall.py
+      - name: Render isolated concrete wall with Blender
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/floor3_wall01
+          printf '{"stage":"floor3","asset":"wall01","status":"STARTED","approval":"NOT_APPROVED","source_commit":"%s","run_id":"%s"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/floor3_wall01/progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python /work/tools/floor3/wall01/build_wall.py 2>&1 | tee out/floor3_wall01/blender.log
+          grep -q WALL01_ALL_COMPLETE out/floor3_wall01/blender.log
+      - name: Verify actual assets and manifest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,os,struct
+          root=pathlib.Path('out/floor3_wall01')
+          records={}
+          for v in (1,2,3):
+              stem=f'floor3_wall01_v{v}'
+              for suffix in ['.glb','.blend','-front.png','-side.png','-angle.png']:
+                  f=root/(stem+suffix)
+                  data=f.read_bytes()
+                  assert len(data)>1000, f
+                  if suffix=='.glb': assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data)
+                  if suffix=='.blend': assert data.startswith(b'BLENDER') or data.startswith(bytes.fromhex('28b52ffd'))
+                  if suffix.endswith('.png'): assert data[:8]==bytes.fromhex('89504e470d0a1a0a')
+                  records[f.name]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+          (root/'manifest.json').write_text(json.dumps({'stage':'floor3','asset':'wall01','approval':'NOT_APPROVED','source_commit':os.getenv('GITHUB_SHA'),'run_id':os.getenv('GITHUB_RUN_ID'),'files':records},indent=2))
+          print('WALL01_QA_OK',len(records))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: floor3-wall01-three-iterations
+          path: out/floor3_wall01/
+          retention-days: 14
