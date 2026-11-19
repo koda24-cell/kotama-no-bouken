@@ -170,7 +170,7 @@ def bark_map(kind):
         return None
     p = BARK_INPUT / info["filename"]
     raw = p.read_bytes()
-    assert raw[:8] == b"\\x89PNG\\r\\n\\x1a\\n" and hashlib.sha256(raw).hexdigest() == info["sha256"]
+    assert raw[:8] == bytes([137,80,78,71,13,10,26,10]) and hashlib.sha256(raw).hexdigest() == info["sha256"]
     img = bpy.data.images.load(str(p.resolve()), check_existing=False)
     img.pack()
     if kind != "color":
