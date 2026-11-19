@@ -50,7 +50,7 @@ export function createSetpieces(S) {
   function ensureMats() {
     if (mats['sp:stairStone']) return;
     // 階段の石：周りの岩（0x74a8d4）より少し明るい青。凹凸は洞窟の岩と同じ法線
-    mats['sp:stairStone'] = frostify(std({ color: 0x80b6de, map: rockM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(1.0, 1.0), roughness: 0.66, metalness: 0.0, emissive: 0x08304c, emissiveIntensity: 1.0, envMapIntensity: 0.7, vertexColors: true }), 'stair', 0.9);
+    mats['sp:stairStone'] = frostify(std({ color: 0x80b6de, map: rockM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(1.0, 1.0), roughness: 0.66, metalness: 0.0, emissive: 0x08304c, emissiveIntensity: 1.0, envMapIntensity: 0.7, vertexColors: true }), 'stair2', 0.62, 0.55, 0.9);
     // 側壁・トンネル：洞窟の岩そのもの（霜は少なめ）
     mats['sp:frostRock'] = frostify(rockM, 'rock', 0.55, 0.55, 0.92);
     // 土台の石畳・梁：淡い石に霜
@@ -67,8 +67,10 @@ export function createSetpieces(S) {
     for (const pt of piece.parts) {
       const nm = (pt.src || '').toLowerCase(), src = mats[pt.mat];
       if (!src || /ice|glacier|crystal|glow/.test(nm) || src.transparent) continue;
-      const col = /joint|seam/.test(nm) ? 0x4a7eac : /highlight|carv/.test(nm) ? 0x8fc4e6 : 0x67a4d6;
-      const m = frostify(std({ color: col, map: rockM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(1.1, 1.1), roughness: 0.7, emissive: 0x072a44, emissiveIntensity: 1.0, envMapIntensity: 0.6, vertexColors: true }), 'pillar:' + col.toString(16), 0.9, 0.38, 0.8);
+      // 折れ口・欠け（fracture/broken/chip）と霜の粒（scattered frost）は霜をほとんど乗せず暗めの青：上を向いた折れ口が白い楕円に見えない
+      const frac = /fractur|broken|chip|frost/.test(nm);
+      const col = frac ? 0x4f86b4 : /joint|seam/.test(nm) ? 0x4a7eac : /highlight|carv/.test(nm) ? 0x8fc4e6 : 0x67a4d6;
+      const m = frostify(std({ color: col, map: rockM.map, normalMap: rockM.normalMap, normalScale: new THREE.Vector2(1.1, 1.1), roughness: 0.7, emissive: 0x072a44, emissiveIntensity: 1.0, envMapIntensity: 0.6, vertexColors: true }), 'pillar:' + col.toString(16) + (frac ? 'f' : ''), frac ? 0.25 : 0.9, frac ? 0.7 : 0.38, frac ? 0.98 : 0.8);
       src.dispose(); mats[pt.mat] = m;
     }
   }
@@ -101,15 +103,26 @@ export function createSetpieces(S) {
     g.computeVertexNormals();
     return g;
   }
+  // 面の向きで投影する UV（2.4m で1巡）。岩のテクスチャ・法線を切石にも乗せ、模様のない板に見せない
+  function boxUv(g) {
+    if (!g.attributes.normal) g.computeVertexNormals();
+    const P = g.attributes.position, N = g.attributes.normal, uv = new Float32Array(P.count * 2), k = 1 / 2.4;
+    for (let i = 0; i < P.count; i++) {
+      const ax = Math.abs(N.getX(i)), ay = Math.abs(N.getY(i)), az = Math.abs(N.getZ(i)), x = P.getX(i), y = P.getY(i), z = P.getZ(i);
+      if (ay >= ax && ay >= az) { uv[i * 2] = x * k; uv[i * 2 + 1] = z * k; } else if (ax >= az) { uv[i * 2] = z * k; uv[i * 2 + 1] = y * k; } else { uv[i * 2] = x * k; uv[i * 2 + 1] = y * k; }
+    }
+    g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    return g;
+  }
   // 素材ごとの形の束 → 1つの部品（transient：B.add の後で形を破棄）
   function Bag() {
     const by = new Map();
     return {
-      add(mat, g) { if (!g) return; if (!by.has(mat)) by.set(mat, []); by.get(mat).push(flat(g)); },
+      add(mat, g) { if (!g) return; if (!by.has(mat)) by.set(mat, []); by.get(mat).push(boxUv(flat(g))); },
       piece(name) {
         const parts = [];
         for (const [mat, list] of by) {
-          for (const g of list) { for (const k of Object.keys(g.attributes)) if (k !== 'position' && k !== 'normal') g.deleteAttribute(k); if (!g.attributes.normal) g.computeVertexNormals(); }
+          for (const g of list) { for (const k of Object.keys(g.attributes)) if (k !== 'position' && k !== 'normal' && k !== 'uv') g.deleteAttribute(k); if (!g.attributes.normal) g.computeVertexNormals(); }
           const m = list.length > 1 ? mergeGeometries(list, false) : list[0];
           if (list.length > 1) list.forEach((g) => g.dispose());
           if (m) parts.push({ geo: m, mat });
@@ -181,8 +194,11 @@ export function createSetpieces(S) {
     // 無ければ：通れる隣（出口）のうち、反対側が壁のもの（トンネルを掘れる）を選び、その反対を奥にする。
     function stairBack(o) {
       const m = meta.stairs && meta.stairs[o.dir];
+      // 上り階段：ゲームは開始位置に「上向き」で立たせる（fieldPlaceAtStart）。背中側（下）が壁なら、そこへ上る＝進行方向に段が見えない
+      if (o.dir !== 'down' && !walk(o.tx, o.ty + 1)) return 'down';
       if (m) {
         if (typeof m === 'string' && DIR_VEC[m]) return m;
+        if (m.flight && DIR_VEC[m.flight]) return m.flight;   // 迷宮班 M の fieldRandomMazeStairInfo：flight＝段の続く向き
         if (m.back && DIR_VEC[m.back]) return m.back;
         if (m.dir && DIR_VEC[m.dir]) return m.dir;
         if (m.arrive && DIR_VEC[m.arrive]) return OPP[m.arrive];   // 到着時に向く向き → 背中側が奥
@@ -217,8 +233,12 @@ export function createSetpieces(S) {
         let x = -SW / 2;
         for (let k = 0; k < pieces; k++) {
           const w = k === pieces - 1 ? SW / 2 - x : (SW / pieces) * (0.75 + rnd(sd + i * 7 + k) * 0.5);
-          const h = top - bot, g = stone(w - 0.03, h, T + 0.06, sd + i * 11 + k, 0.035);
-          bag.add('sp:stairStone', at(g, x + w / 2, bot + h / 2 + (rnd(sd + i * 5 + k) - 0.5) * 0.025, z0 + T / 2, (rnd(sd + i + k * 9) - 0.5) * 0.03));
+          // 踏み面の奥側は暗い岩、段鼻（手前 0.13m）は霜の付いた明るい石 → 段ごとに明暗の縞ができ、上から見ても段が読める
+          const h = top - bot, jy = (rnd(sd + i * 5 + k) - 0.5) * 0.025, jr = (rnd(sd + i + k * 9) - 0.5) * 0.03, NZ = 0.13;
+          const back = up ? 1 : -1;   // 段鼻は「手前」（上りは z の小さい側、下りも見る人の側＝z の小さい側）
+          bag.add('sp:frostRock', at(stone(w - 0.03, h, T + 0.06 - NZ, sd + i * 11 + k, 0.035), x + w / 2, bot + h / 2 + jy, z0 + NZ + (T + 0.06 - NZ) / 2 - 0.03, jr));
+          bag.add('sp:stairStone', at(stone(w - 0.03, h + 0.01, NZ + 0.02, sd + i * 13 + k, 0.02), x + w / 2, bot + h / 2 + jy + 0.005, z0 + NZ / 2 - 0.02, jr));
+          void back;
           x += w;
         }
         // 氷：踏み面の手前半分を覆う薄い氷（全段ではない）と、段鼻から垂れる短い氷柱（両端寄り）
@@ -300,7 +320,9 @@ export function createSetpieces(S) {
           g.computeVertexNormals();
           bag.add('ceiling', at(g, 0, archTop + rise / 2 - 0.05, tz0 + L / 2));
         }
-        { const g = new THREE.PlaneGeometry(archR * 2 + 0.6, 3.4); noUv(g); g.rotateY(Math.PI); bag.add(up ? 'sp:tunnelGlow' : 'sp:tunnelGlowDeep', at(g, 0, yAt(tz1) + 1.4, tz1 - 0.05)); }
+        // 奥：平たい光の板をやめ、霜の岩の行き止まり（折り返し）＋その上（上り）／下（下り）に細く漏れる光
+        { const g = rockSheet(archR * 2 + 0.8, 4.6, 5, 5, sd + 77, 0.18); g.rotateY(Math.PI); bag.add('sp:frostRock', at(g, 0, yAt(tz1) + 1.2, tz1 - 0.02)); }
+        { const g = new THREE.PlaneGeometry(archR * 2 - 0.4, 0.35); noUv(g); g.rotateY(Math.PI); bag.add(up ? 'sp:tunnelGlow' : 'sp:tunnelGlowDeep', at(g, 0, up ? yAt(tz1) + 2.5 : yAt(tz1) + 0.05, tz1 - 0.12)); }
         // 段に沿って壁に付いた小さな氷の結晶（奥へ行くほど低い位置に並び、「奥へ降りる／上る」向きが一目でわかる）。光らせすぎない
         for (const side of [-1, 1]) for (let z = tz0 + 0.5, k = 0; z < tz1 - 0.6; z += 1.05, k++) {
           const yy = yAt(z) + 1.0 + (rnd(sd + k * 3 + side) - 0.5) * 0.2, wx = side * (archR + 0.02);
@@ -495,14 +517,9 @@ export function createSetpieces(S) {
       // 水際（通路との境目）：氷の縁と霜の岩棚。歩ける床の端が水へ落ちる形
       for (let k = 0; k < 7; k++) {
         const lx = cx - W / 2 + (k + 0.5) * W / 7 + (rnd(sd + k) - 0.5) * 0.6;
-        if (k % 2 === 0) bag.add('crystalIce', at(stone(W / 9 + 0.2, 0.18, 0.35, sd + k * 3, 0.06), lx, WATER + 0.08 + rnd(sd + k * 5) * 0.04, frontZ + 0.3, (rnd(sd + k * 7) - 0.5) * 0.2));
         B.add('monuments', proc.frostLedges[k % proc.frostLedges.length], M4(lx, 0.0, frontZ + 0.15, (rnd(sd + k * 9) - 0.5) * 0.3, 0.8), tx, ty);
       }
       // 水面の氷の欠片と、水門の足もとの泡
-      for (let k = 0; k < 6; k++) {
-        const px = cx + (rnd(sd + k * 11) - 0.5) * (W - 2), pz = frontZ + 1.1 + rnd(sd + k * 13) * (gateFront - frontZ - 1.4), w = 0.2 + rnd(sd + k) * 0.35;
-        bag.add('crystalIce', at(stone(w * 0.6, 0.08, w * (1.0 + rnd(sd + k * 3) * 0.6), sd + k * 17, 0.05), px, WATER + 0.02, pz, rnd(sd + k * 19) * 3));
-      }
       for (let i = 0; i < 4; i++) B.add('water_foam', kit.ripples[(i + sd) % kit.ripples.length], M4(cx + (i - 1.5) * gw * 0.22, WATER + 0.03, gateFront - 0.3, rnd(sd + i) * 6.28, 1.0 + i * 0.25), tx, ty);
       // 左右：水から立ち上がる氷に覆われた岩の塊（石筍・岩・結晶の氷）。正面の幅に収める
       const sideW = (W - gw) / 2;
@@ -586,19 +603,10 @@ export function createSetpieces(S) {
       for (let k = 0; k < 9; k++) {
         const lx = (k - 4) * (gw / 8.6) + (rnd(sd + k) - 0.5) * 0.3, lz = gateFront + 0.1 + rnd(sd + k * 3) * 0.35;
         bag.add('sp:frostRock', at(stone(gw / 8 + 0.35, 0.7, 0.9, sd + k * 41, 0.08), lx, WATER - 0.3, lz, (rnd(sd + k * 43) - 0.5) * 0.25));
-        if (k % 2 === 0) bag.add('crystalIce', at(stone(gw / 9 + 0.1, 0.12, 0.35 + rnd(sd + k * 7) * 0.3, sd + k * 47, 0.06), lx, WATER + 0.04, lz - 0.2, (rnd(sd + k * 49) - 0.5) * 0.3));
+
       }
-      // 水路：水門の下から V の足もとへ。水面の氷の欠片（流れに沿って細長く）と、水門の足もとの泡
-      for (let k = 0; k < 7; k++) {
-        const lx = (rnd(sd + k * 11) - 0.5) * (HWB * 2 - 1.5), lz = Z0 + 0.9 + rnd(sd + k * 13) * (gateFront - Z0 - 1.4), w = 0.2 + rnd(sd + k) * 0.35;
-        bag.add('crystalIce', at(stone(w * 0.6, 0.08, w * (1.0 + rnd(sd + k * 3) * 0.8), sd + k * 17, 0.05), lx, WATER + 0.02, lz, (rnd(sd + k * 19) - 0.5) * 0.5));
-      }
+      // 水路の白い氷の板は置かない（廃止した飛び石に見えるため）。水門の足もとの泡だけ
       for (let i = 0; i < 5; i++) { const [px, pz] = Wd((i - 2) * gw * 0.18, gateFront - 0.35); B.add('water_foam', kit.ripples[(i + sd) % kit.ripples.length], M4(px, WATER + 0.03, pz, rnd(sd + i) * 6.28, 1.0 + (i % 3) * 0.3), gtx, gty); }
-      // V の足もと（床と水の境）：氷の縁と霜の岩棚。水面班 W の岸の帯の上に重ね、歩ける床の端が水へ落ちる形にする
-      for (let k = 0; k < 5; k++) {
-        const lx = -CELL / 2 + (k + 0.5) * CELL / 5 + (rnd(sd + k * 51) - 0.5) * 0.3;
-        if (rnd(sd + k * 57) < 0.6) bag.add('crystalIce', at(stone(CELL / 6 + 0.2, 0.1, 0.32, sd + k * 53, 0.05), lx, WATER + 0.05, Z0 + 0.22, (rnd(sd + k * 55) - 0.5) * 0.3));
-      }
       B.add('monuments', bag.piece('b2sp_watergate_basin'), M4(ox, 0, oz, yaw), gtx, gty);
       // 光：手前から水門の正面を照らす（白飛びさせない）＋水門の足もとの水
       { const [px, pz] = W(0, Z0 + 1.0); light(px, 2.6, pz, 0x8fdcff, 1.3, 9); }
@@ -658,10 +666,6 @@ export function createSetpieces(S) {
         bag.add('sp:stairStone', at(stone(1.2, 0.16, 1.15, ps + 2, 0.03), px, TOP - 0.02, side * (HW + 0.38)));   // 笠石
         // 橋脚の上の控え柱（欄干の外側に欄干より少し高く立ち上げ、横から見たときに橋脚の並びがわかるように）
         { const ph = 0.95; bag.add('sp:frostRock', at(stone(0.62, ph, 0.5, ps + 4, 0.05), px, TOP + 0.06 + ph / 2, side * (HW + 0.33))); bag.add('sp:stairStone', at(stone(0.76, 0.12, 0.64, ps + 5, 0.03), px, TOP + 0.06 + ph + 0.06, side * (HW + 0.33))); }
-        for (let q = 0; q < 5; q++) {   // 根元の氷の縁（水面に張った薄い氷）
-          const a0 = (q / 5) * Math.PI * 2 + rnd(ps + q) * 0.8, rr = 0.75 + rnd(ps + q * 3) * 0.35, w = 0.45 + rnd(ps + q * 5) * 0.4;
-          bag.add('crystalIce', at(stone(w, 0.06, w * 0.7, ps + q * 7, 0.03), px + Math.cos(a0) * rr * 0.8, BR_WATER + 0.03, side * (HW + 0.45) + Math.sin(a0) * rr * 0.6, a0));
-        }
         for (let q = 0; q < 4; q++) bag.add('ice', at(icicle(0.04 + rnd(ps + q) * 0.03, 0.18 + rnd(ps + q * 3) * 0.22, ps + q), px + (rnd(ps + q * 5) - 0.5) * 1.0, TOP - 0.1, side * (HW + 0.85 + rnd(ps + q * 7) * 0.12)));
       }
       // 桁の縁の氷柱（蛇腹の下から水面近くまで。両端寄りは短く）
