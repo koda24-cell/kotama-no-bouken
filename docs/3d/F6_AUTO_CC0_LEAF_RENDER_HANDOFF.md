@@ -27,3 +27,9 @@ Claudeは出力されたGLB/PNG/manifestを受け取り、Blender操作は担当
 - V21 change on the same independent review PR: retain CC0 source and original V19 checkpoint, apply lower saturation and a subdued woodland tint in the review material, blunt needle-like tips by rebuilding leaf outline in review-only Blender scene and retain curvature/leaf count. Preserve all V19 wood/root geometry. Candidate V21 in `tree_mature_photo_v21` and 4 PNGs.
 - V21 visual QA: do not claim success without matching successful run, actual PNG file hashes and review of color/silhouette. Double-sided leaf faces now use more triangles; do not present as optimized LOD. Texture mask/alpha is not used pending test. Full game FPS still unmeasured.
 - As with prior versions, **NOT_APPROVED**. No material promotion; no production merge.
+
+## 2026-11-19 V22 quality-first iteration
+- User judged V21 **NOT ACCEPTED**: washed-out pale sage color, confetti-like foliage and obsolete low-quality single leaf presentation particularly in side/angle view.
+- V22 review-only changes: saturation 0.87 vs 0.62, value 0.88 vs 0.83, warmer/deeper forest-tint palette with per-material differences; Normal intensity 0.72; rounded leaf mesh preserved but deterministic groups of seven are packed/stratified to form overlapping 3D sprigs. Performance reduction **deferred until artistic approval**.
+- Source `tools/floor6/apply_cc0_leaf_photo.py`, workflow `.github/workflows/f6-cc0-leaf-auto-render.yml`, run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44439253251 . The run was queued at edit time, **not yet a successful verified render**. Do not assert objective quality or approval before inspecting actual four camera PNGs.
+- Preserve V19 source and original Blender file; no game integration and no automatic asset promotion. Subsequent iteration must compare **front / side / angle / top** actual PNGs and avoid false “automatic aesthetic certification.”
