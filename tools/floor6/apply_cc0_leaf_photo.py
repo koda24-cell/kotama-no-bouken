@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 INPUT = Path("render-output/floor6/cc0-leaf-source")
-OUT = Path("render-output/floor6/nature/tree_mature_photo_v27")
+OUT = Path("render-output/floor6/nature/tree_mature_photo_v28")
 OUT.mkdir(parents=True, exist_ok=True)
 source = json.loads((INPUT / "source_manifest.json").read_text())
 assert source["license"] == "CC0" and source["asset"] == "Leaf001"
@@ -327,6 +327,142 @@ for k in range(17):
     ridge_count+=1
 assert ridge_count==17
 
+# V28: Replace the repeated approximation texture with genuine CC0
+# photogrammetry leaf-atlas imagery + its real opacity mask. This preserves the
+# accepted V25 crown spatial layout, existing bark, trunks and branch geometry.
+import numpy as np
+from collections import deque
+ATLAS_INPUT = Path("render-output/floor6/cc0-leafset-source")
+atlas_source = json.loads((ATLAS_INPUT/"source_manifest.json").read_text())
+assert atlas_source["asset"] == "LeafSet023" and atlas_source["license"] == "CC0"
+def atlas_image(kind):
+    info=atlas_source["maps"].get(kind)
+    if not info: return None
+    path=ATLAS_INPUT/info["filename"]
+    raw=path.read_bytes()
+    assert raw[:8] == bytes([137,80,78,71,13,10,26,10])
+    assert hashlib.sha256(raw).hexdigest() == info["sha256"]
+    image=bpy.data.images.load(str(path.resolve()),check_existing=False)
+    image.pack()
+    if kind != "color": image.colorspace_settings.name="Non-Color"
+    return image
+
+leaf_color_atlas=atlas_image("color")
+leaf_opacity_atlas=atlas_image("opacity")
+leaf_normal_atlas=atlas_image("normal")
+leaf_rough_atlas=atlas_image("roughness")
+assert leaf_color_atlas is not None and leaf_opacity_atlas is not None
+
+# Connected opaque components in an 1K atlas represent real individual leaves.
+# Auto-detect them once at low resolution; no reliance on unknown hardcoded UVs.
+w,h=leaf_opacity_atlas.size[:]
+pixels=np.asarray(leaf_opacity_atlas.pixels[:],dtype=np.float32).reshape(h,w,4)
+stride=max(2,int(max(w,h)/300))
+mask=pixels[::stride,::stride,0]>.52
+if mask.mean()>.60: mask=~mask
+hh,ww=mask.shape
+visited=np.zeros((hh,ww),dtype=np.bool_)
+regions=[]
+for yy in range(hh):
+    for xx in range(ww):
+        if not mask[yy,xx] or visited[yy,xx]: continue
+        q=deque([(xx,yy)])
+        visited[yy,xx]=True
+        minx=maxx=xx;miny=maxy=yy;count=0
+        while q:
+            x0,y0=q.popleft();count+=1
+            minx=min(minx,x0);maxx=max(maxx,x0)
+            miny=min(miny,y0);maxy=max(maxy,y0)
+            for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
+                nx,ny=x0+dx,y0+dy
+                if 0<=nx<ww and 0<=ny<hh and mask[ny,nx] and not visited[ny,nx]:
+                    visited[ny,nx]=True;q.append((nx,ny))
+        bw=maxx-minx+1;bh=maxy-miny+1
+        if count>=34 and bw>=6 and bh>=6 and max(bw,bh)<max(ww,hh)*.85:
+            regions.append((count,minx,miny,maxx,maxy))
+regions.sort(reverse=True)
+if len(regions)<3:
+    raise RuntimeError("Insufficient separate leaf atlas shapes: %d, sizes %s" %
+                       (len(regions),str([(r[0],r[3]-r[1]+1,r[4]-r[2]+1) for r in regions[:6]])))
+regions=regions[:min(14,len(regions))]
+# The image is stored bottom-first in Blender and our scan follows that order.
+atlas_rects=[]
+for _,x0,y0,x1,y1 in regions:
+    margin=1.0
+    atlas_rects.append(((x0-margin)*stride/w,(y0-margin)*stride/h,
+                        (x1+1+margin)*stride/w,(y1+1+margin)*stride/h))
+
+for name in ("leaf_deep","leaf_mid","leaf_lit","leaf_sage"):
+    m=bpy.data.materials[name]
+    nodes=m.node_tree.nodes;links=m.node_tree.links
+    tex=nodes.new("ShaderNodeTexImage");tex.image=leaf_color_atlas
+    tex.name="V28_LeafSet023_RealLeafAlbedo"
+    saturation=nodes.get("V24_ForestSaturation")
+    if saturation: links.new(tex.outputs["Color"],saturation.inputs["Color"])
+    else: links.new(tex.outputs["Color"],nodes.get("Principled BSDF").inputs["Base Color"])
+    alpha=nodes.new("ShaderNodeTexImage");alpha.image=leaf_opacity_atlas
+    alpha.name="V28_LeafSet023_Cutout"
+    links.new(alpha.outputs["Color"],nodes.get("Principled BSDF").inputs["Alpha"])
+    if leaf_normal_atlas is not None:
+        normal_nodes=[n for n in nodes if n.type=="TEX_IMAGE" and n.name.startswith("CC0_Leaf001_Normal")]
+        for n in normal_nodes: n.image=leaf_normal_atlas
+    if leaf_rough_atlas is not None:
+        rough_nodes=[n for n in nodes if n.type=="TEX_IMAGE" and n.name.startswith("CC0_Leaf001_Roughness")]
+        for n in rough_nodes: n.image=leaf_rough_atlas
+    try: m.blend_method = "CLIP"
+    except (AttributeError,TypeError,ValueError): pass
+    try: m.surface_render_method="DITHERED"
+    except (AttributeError,TypeError,ValueError): pass
+    m.use_backface_culling=False
+
+atlas_leaf_count=0
+all_atlas_leaves=[ob for ob in bpy.data.objects if ob.type=="MESH" and
+                  (ob.name.startswith("tree_mature_leaf_") or ob.name.startswith("tree_mature_v25_canopy_"))]
+all_atlas_leaves.sort(key=lambda ob:ob.name)
+for index,ob in enumerate(all_atlas_leaves):
+    old=ob.data
+    if len(old.vertices)<8: continue
+    p=[v.co.copy() for v in old.vertices]
+    # Current rounded old leaf has base vertex 0 and broad tip vertex 4.
+    axis=(p[4]-p[0]).normalized()
+    side=(p[1]-p[7]).normalized()
+    normal=axis.cross(side).normalized()
+    if normal.length<.3: continue
+    center=(p[0]+p[4])*.5
+    span=(p[4]-p[0]).length
+    width=(p[1]-p[7]).length
+    rect=atlas_rects[index%len(atlas_rects)]
+    ua,va,ub,vb=rect
+    # A gently cupped 3x3 surface. The alpha texture supplies the detailed
+    # photographed silhouette; do not simulate every tooth with triangular tips.
+    verts=[];uv_coords=[]
+    for y in range(3):
+        fy=(y-1)
+        for x in range(3):
+            fx=x-1
+            cupping=.042*span*(1-abs(fx))*(1-abs(fy))
+            asym=.07*span*fy*fx
+            pos=center+axis*(fy*span*.58)+side*(fx*width*.64+asym)+normal*(cupping+.025*span*fy)
+            verts.append(tuple(pos))
+            uv_coords.append((ua+(ub-ua)*x/2,va+(vb-va)*y/2))
+    faces=[]
+    for y in range(2):
+        for x in range(2):
+            a=y*3+x; b=a+1; c=a+3; d=c+1
+            faces.extend(((a,b,d,c),(c,d,b,a)))
+    mesh=bpy.data.meshes.new(old.name+"_V28PhotoLeaf")
+    mesh.from_pydata(verts,[],faces);mesh.update()
+    for mat in old.materials:mesh.materials.append(mat)
+    uv=mesh.uv_layers.new(name="LeafUV")
+    for poly in mesh.polygons:
+        for li in poly.loop_indices:
+            uv.data[li].uv=uv_coords[mesh.loops[li].vertex_index]
+        poly.use_smooth=True
+    ob.data=mesh
+    atlas_leaf_count+=1
+assert atlas_leaf_count>500, "No individual leaves converted to real atlas imagery"
+
+
 
 scene = bpy.context.scene
 objects = [o for o in bpy.data.objects if o.type == "MESH" and o.name.startswith("tree_mature_")]
@@ -345,6 +481,21 @@ for view in ("front", "side", "angle", "top"):
     scene.camera = camera
     scene.render.filepath = str((OUT / (view + ".png")).resolve())
     bpy.ops.render.render(write_still=True)
+# V28 separate close-up proof: texture readability is impossible to judge
+# from the whole tree alone. These are review cameras, never exported in GLB.
+from mathutils import Vector
+for name,location,focus,ortho in (
+    ("foliage_close",(1.45,-1.7,2.72),(.12,0,2.38),1.36),
+    ("trunk_close",(1.1,-1.55,1.18),(.07,0,.98),1.18)):
+    ca=bpy.data.cameras.new(name)
+    co=bpy.data.objects.new("review_camera_"+name,ca)
+    bpy.context.collection.objects.link(co)
+    co.location=location
+    co.rotation_euler=(Vector(focus)-co.location).to_track_quat("-Z","Y").to_euler()
+    ca.type="ORTHO";ca.ortho_scale=ortho
+    scene.camera=co
+    scene.render.filepath=str((OUT/(name+".png")).resolve())
+    bpy.ops.render.render(write_still=True)
 blend = OUT / "tree_mature_photo_v20.blend"
 bpy.ops.wm.save_as_mainfile(filepath=str(blend.resolve()))
 files = []
@@ -352,14 +503,14 @@ for f in sorted(OUT.iterdir()):
     if f.suffix in (".glb", ".png", ".blend"):
         data = f.read_bytes()
         files.append(dict(name=f.name, bytes=len(data), sha256=hashlib.sha256(data).hexdigest()))
-assert len(files) == 6
-manifest = dict(asset_id="tree_mature", version="V27-CC0-broadleaf-weathered-bark-review",
+assert len(files) == 8
+manifest = dict(asset_id="tree_mature", version="V28-CC0-leafset-atlas-review",
                 status="NOT_APPROVED", game_integration="NOT_INTEGRATED",
                 base_model="tree_mature V19 existing source geometry unchanged",
                 branch=os.getenv("GITHUB_REF_NAME", "local"),
                 source_sha=os.getenv("GITHUB_SHA", "local"),
                 render_run_id=os.getenv("GITHUB_RUN_ID", "local"),
-                source_texture=source, bark_source=bark_source, bark_materials=bark_materials, expanded_canopy_leaves=added_canopy_leaves, bark_ridges=ridge_count, approved_canopy_spread_reference="V25", preserved_meshes=len(objects), rounded_leaf_meshes=rounding_count, clustered_leaf_meshes=clustered_leaves,
-                files=files, notes="V27 retains V25 approved wide crown spread; improved leaf oval shape and Bark015 photogrammetry UV mapped, dark grey-brown bark with additive natural vertical ridges; no asset promotion")
+                source_texture=source, bark_source=bark_source, leaf_atlas_source=atlas_source, atlas_rects=atlas_rects, atlas_leaf_meshes=atlas_leaf_count, bark_materials=bark_materials, expanded_canopy_leaves=added_canopy_leaves, bark_ridges=ridge_count, approved_canopy_spread_reference="V25", preserved_meshes=len(objects), rounded_leaf_meshes=rounding_count, clustered_leaf_meshes=clustered_leaves,
+                files=files, notes="V28 retains accepted V25 canopy width; converts leaf geometry to gently cupped alpha-cutout photos scanned from CC0 LeafSet023, preserves Bark015 PBR and bark ridges; final asset unapproved")
 (OUT / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-print("F6_CC0_PHOTO_V27_DONE", len(objects), len(files))
+print("F6_CC0_PHOTO_V28_DONE", len(objects), len(files))
