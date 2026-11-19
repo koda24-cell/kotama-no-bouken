@@ -1,8 +1,8 @@
 {
   "asset": "b4p_crate_set",
-  "version": "v3",
+  "version": "v4",
   "blender": "4.2.3 LTS",
-  "triangles": 7974,
+  "triangles": 8038,
   "budget_triangles": 9000,
   "materials": [
     "b4p_crate_set_mat"
@@ -25,7 +25,7 @@
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_crate_set.glb",
-  "glb_bytes": 1162272,
+  "glb_bytes": 1148908,
   "cc0_textures": {
     "wood_planks_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/wood_planks",
@@ -74,16 +74,16 @@
     100
   ],
   "sha256": {
-    "b4p_crate_set.glb": "2d59460506884cb85c2eef088de9eb1eec7b6ceb89085eee61b946b3cfa5f593",
-    "b4p_crate_set_volcanic_front.png": "933ec2ccab8fb21b28c921d80b9bb7db14463c1373ad94f0e302c5dba0e4e49f",
-    "b4p_crate_set_volcanic_side.png": "4b1cda982bedfa8663ec126688ca21a248b3e3f96ea248d22aa169c41fcae2fd",
-    "b4p_crate_set_volcanic_angle.png": "6f177b62edc2c821abfd34096a8b429f353a0d1d209cd03acfb643459699284d",
-    "b4p_crate_set_volcanic_top.png": "3d9b380e0274b6fb3dc88d6933fea572efeb5f31faa463647a8c78147f4fa096",
-    "b4p_crate_set_volcanic_close.png": "e7b3b84002b4bc4b2ab77d3b295ee4273ea657cf35c1a5f65b3d48efa3726a67",
-    "b4p_crate_set_volcanic_back.png": "e74bb77cb0d25edbfc9b7034f1a83b571f821b2396ef4a0a6beb15de2d550e33",
-    "b4p_crate_set_studio_front.png": "db9b836ddf05fd14acd13c77b46f1b1e833920a5409a484e2b911bc5cd3afff1",
-    "b4p_crate_set_studio_angle.png": "edf7847dfb15a45365c1d78d69b2bc1794d6efa4f511e492ec016aba6af449f5",
-    "b4p_crate_set_studio_scale.png": "67050563334872da3cca01b58314052a6d5d7a86b2250d5ac5c66bc246d43bcb"
+    "b4p_crate_set.glb": "5065bfaf10686f0d3c5bbb7e3d82bc3746583e36f09b0c8a6335352c29b4dc4a",
+    "b4p_crate_set_volcanic_front.png": "9f8d881193813c2c849739928e75973617bb6709d4a8cd030cf1ebfb0c12709b",
+    "b4p_crate_set_volcanic_side.png": "1b596e339e455a12db9ee08dd81af419e808b0d9a7f82febf9723e2b7b2a0048",
+    "b4p_crate_set_volcanic_angle.png": "9430dba994fb17b84baa8f438353dfb8ca68f42336a694692c648268c1fcb7b3",
+    "b4p_crate_set_volcanic_top.png": "68e3c37552aeb0c6bc89e15b4b15634e428d004e80d2ba151611bd4e60e8ae02",
+    "b4p_crate_set_volcanic_close.png": "a68797e089edd92f7872947d1cec8cb98a18914846604cf28ad40d5cb6c531ae",
+    "b4p_crate_set_volcanic_back.png": "617c2fca0b718540e6a83ac313978781bebc283fe6ca93ade96a1ce7ce7a0cc9",
+    "b4p_crate_set_studio_front.png": "eed611b42aa467ae020349c6ca6913a64e6e229069d47b919e13a73a32acb53d",
+    "b4p_crate_set_studio_angle.png": "55f17fc70a8268ae8c1e3b876bda4aec94740aefa69d239c53559da11b5a84fa",
+    "b4p_crate_set_studio_scale.png": "55d27814adfdb3d213ee03899f7830923383db269df8ad79d78fd790b0b0c1b9"
   },
   "renders": [
     "b4p_crate_set_volcanic_front.png",
