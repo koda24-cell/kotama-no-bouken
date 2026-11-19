@@ -26,3 +26,10 @@ Target: Stage 5 ruined knight sallet helmet, preserve original metallic forged s
 - Latest run: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448101296
 - At document creation: job in progress, DO NOT mark model or texture application verified yet.
 - All outputs remain `NOT_APPROVED` and game runtime is untouched.
+
+## Verified actual rendering / comparison (2026-11-19)
+- V15 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448101296 : SUCCESS. Artifact 14494785856, six Cycles PNG, .GLB, .blend, baked albedo/roughness. 10/10 SHA-256 hashes recomputed and matched. Generated image WebP exact SHA validated in Action before Blender, then composited and packed. Real image looked too clean/understated, not approved.
+- V16 independent enhancement: `tools/b5-knights/build_sallet_v16.py` and `.github/workflows/b5-knight-sallet-v16-render.yml`. Uses SAME generated image (not newly invented texture), increases localized oxidized brown and soot contrast, increases roughness in source-image rusty patches.
+- V16 https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448728821 : SUCCESS. Artifact 14493924229; 10/10 manifest SHA-256 checks matched including GLB, Blend, baked albedo and roughness PNG, six viewing PNG.
+- Actual screenshot review: V16 visible old brown discoloration at brow, tail crown, rear nape and top; still retains broad steel highlights. Compared to V15 it now looks dirtier rather than uniformly pale/new. However the visor join and overall rounded shape still need separate geometry QA. V16 is a candidate, not final artistic approval.
+- No automatic asset promotion, no changes to `development`, `main` or the official GLB asset directory.
