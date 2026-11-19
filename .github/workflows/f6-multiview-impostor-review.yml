@@ -31,7 +31,7 @@ jobs:
       run:
         shell: bash
     container:
-      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      image: ghcr.io/koda24-cell/kotama-blender5-clamav@sha256:ba931c88dc12dc44a604d8cc03ab6a06a8212e3bd3787d1b00d10dd1413068d1
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -40,6 +40,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Refresh ClamAV signatures
         run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Verify Blender 5 compatibility with V14 checkpoint
+        run: |
+          blender --version | head -n 1
+          python3 - <<'PY'
+          import subprocess
+          assert subprocess.check_output(['blender','--version'],text=True).startswith('Blender 5.')
+          PY
       - name: Scan Blender and QA scripts
         run: bash tools/security/clamav_scan_gate.sh scan tools/3d-performance qa/security/scripts.log
       - name: Get the verified unapproved original Blend checkpoint
@@ -68,7 +75,7 @@ jobs:
         run: |
           set -euo pipefail
           export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
-          blender -b source-tree/tree_mature.blend -t 2 --python tools/3d-performance/build_multiview_impostor.py -- --size 512 --directions 8 --out render-output/3d-performance/impostor 2>&1 | tee /tmp/impostor.log
+          HOME=/tmp/blender-home blender -b source-tree/tree_mature.blend -t 2 --python tools/3d-performance/build_multiview_impostor.py -- --size 512 --directions 8 --out render-output/3d-performance/impostor 2>&1 | tee /tmp/impostor.log
           grep -q IMPOSTOR_FRAMES_DONE /tmp/impostor.log
       - name: Check RGBA alpha and pack multi-direction atlas
         run: |
