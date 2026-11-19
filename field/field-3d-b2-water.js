@@ -19,7 +19,7 @@ import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometr
 import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=20261117-l2';   // 結晶（ユーザー確認済みの質感）
 import { createB2WaterTiles, B2V4W_REMOVE_STEPPING_STONES } from './b2-water-tiles.js?v=20261117-w3';   // [B2V4-W] 危険な水面（GPT 水面タイル）・床の模様
 import { createFlora, floraMaterial, floraMaterialClass, floraTint } from './b2-flora.js?v=20261117-f3';   // [B2V4-F] 花の配置と見た目
-import { createSetpieces, SP_ROLES } from './b2-setpieces.js?v=20261117-s2';   // [B2V4-S] 階段・橋・水門・柱群・背景モニュメント
+import { createSetpieces, SP_ROLES } from './b2-setpieces.js?v=20261119-s3';   // [B2V4-S] 階段・橋・水門・柱群・背景モニュメント
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
 export const B2_GLB = B2_BASE + 'models/floor2-water-source-quality-v3.glb';
@@ -1216,7 +1216,7 @@ export async function createTheme(api) {
     // [B2V4-S] 見せ場（階段・背景・水門・橋・柱群）。背景の窓・階段の口の壁はここで決め、下の壁の処理で立てない
     const sp = SP.begin({ a, roles, ch, wallCell, objAt, B, light, placeAsset, falls, openCells, zoneCells, monumentCells });
     sp.planStairs();
-    const backdrops = monumentFloor ? sp.planBackdrops(['bridge', 'waterwheel']) : [];
+    const backdrops = monumentFloor ? sp.planBackdrops(['bridge'])   /* [B2V4-S] 水車の中庭は窓越しに車輪と読めないため背景から外した */ : [];
     const assets = {};
     const wantAssets = [...monuments.map((m) => m.name), 'pillarA', 'pillarR', 'pillarG', ...backdrops.map((q) => q.name)];
     if (monuments.some((m) => m.name === 'bridge') || backdrops.some((q) => q.name === 'bridge')) wantAssets.push('aqueduct', 'shoreline');
@@ -1364,7 +1364,7 @@ export async function createTheme(api) {
         for (const c of cands) {
           if (anchors.length >= 3 || out.ruins >= 7) break;
           if (propCells.has(`${c.tx},${c.ty}`) || nearProp(c.tx, c.ty, 2) || anchors.some((q) => cheb(q, c) < 6)) continue;
-          const head = c.type === 'corr' ? (H(c.tx, c.ty, 546) < 0.5 ? 'ruinParapet' : 'ruinRubble') : (H(c.tx, c.ty, 547) < 0.55 ? 'ruinFallen' : 'ruinSpire');
+          const head = c.type === 'corr' ? (H(c.tx, c.ty, 546) < 0.5 ? 'ruinParapet' : 'ruinRubble') : (H(c.tx, c.ty, 547) < 0.55 ? 'ruinFallen' : 'ruinParapet');   // [B2V4-S] F5：単独で立つ柱（埋もれた尖塔）は置かない
           if (!placeRuin(c, head)) continue;
           propCells.add(`${c.tx},${c.ty}`); anchors.push(c); out.ruins++; out.cells.ruin.push(`${c.tx},${c.ty}:${c.ws[0]}`);
           let m = 0; const maxM = c.type === 'corr' ? 1 : 2;
