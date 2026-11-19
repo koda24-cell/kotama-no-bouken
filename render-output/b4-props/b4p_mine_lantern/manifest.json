@@ -1,0 +1,97 @@
+{
+  "asset": "b4p_mine_lantern",
+  "version": "v1",
+  "blender": "4.2.3 LTS",
+  "triangles": 2646,
+  "budget_triangles": 2500,
+  "materials": [
+    "b4p_mine_lantern_mat"
+  ],
+  "bake": {
+    "res": 512,
+    "emissive": true,
+    "maps": [
+      "basecolor",
+      "orm",
+      "normal",
+      "emissive"
+    ]
+  },
+  "bbox_m": [
+    0.171,
+    0.162,
+    0.378
+  ],
+  "origin": "bottom-center",
+  "up": "+Y (glTF)",
+  "glb": "b4p_mine_lantern.glb",
+  "glb_bytes": 271204,
+  "cc0_textures": {
+    "rusty_metal_03_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rusty_metal_03",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "6bb9ede80978c6c679cef3babec452157f3638c6a90526db617644e06ba1c068"
+    },
+    "rusty_metal_03_rough_1k.jpg": {
+      "source": "https://polyhaven.com/a/rusty_metal_03",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "f8c33af71fcd8bf6325517022bd6b703e76550cff5047df4e7a6a662c389c77a"
+    },
+    "rusty_metal_03_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/rusty_metal_03",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "9c9bb22e4e432e8460bcc3157c76b2a3072e7faa64ed8fe4bc213e8f2175c126"
+    },
+    "rust_coarse_01_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rust_coarse_01",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "369f69eb86a7dcc4e5b6e30b1f3a4da5ce6ba50cf417de937efb4f09101f88d4"
+    }
+  },
+  "pinterest_refs": [
+    84,
+    80
+  ],
+  "sha256": {
+    "b4p_mine_lantern.glb": "b1477cb097227b35854138913854e170d5b1ff65806f77ba4367d70d050304ac",
+    "b4p_mine_lantern_volcanic_front.png": "70d8c6ce87d6bbd690be566ed67099e85716823cd83df5d9b66de672b639b423",
+    "b4p_mine_lantern_volcanic_side.png": "cc12efccb3c3d6099c04f4e79821157acb2e34dde4e9adca5b95d10dd52301f5",
+    "b4p_mine_lantern_volcanic_angle.png": "f072674085e4fb10f06758ded4461da5b4ce61d03483667c01542f4c64e3b260",
+    "b4p_mine_lantern_volcanic_top.png": "df700ce7c4840a5759c7a79fe11d4e1dc0b261ea005b1d3df058ba6264659e23",
+    "b4p_mine_lantern_volcanic_close.png": "e99e4d1f3b597807fe87152a2c97dd508c46dbf70fee62abb85f4812bd98ad35",
+    "b4p_mine_lantern_volcanic_back.png": "7747692a36e9c553edfc7ee224464fbb949d37afb86deda9bc024dadade10a8e",
+    "b4p_mine_lantern_studio_front.png": "2e4838bb26f9f12d7967580ee7b3bfee2b66245f62381b1dc8dee3e6f3c3abf1",
+    "b4p_mine_lantern_studio_angle.png": "7e441c1f2c39b3e200051a4bc28cf9e43437a412bfae4b0ac7ab4e36ff6a8e6b",
+    "b4p_mine_lantern_studio_scale.png": "4e2e19960d2b856c2664c0f21def303494816062883ab868ca670a361287f56b"
+  },
+  "renders": [
+    "b4p_mine_lantern_volcanic_front.png",
+    "b4p_mine_lantern_volcanic_side.png",
+    "b4p_mine_lantern_volcanic_angle.png",
+    "b4p_mine_lantern_volcanic_top.png",
+    "b4p_mine_lantern_volcanic_close.png",
+    "b4p_mine_lantern_volcanic_back.png",
+    "b4p_mine_lantern_studio_front.png",
+    "b4p_mine_lantern_studio_angle.png",
+    "b4p_mine_lantern_studio_scale.png"
+  ],
+  "samples": 96,
+  "notes": "ハリケーン型の坑道ランタン（灯った状態）。潰れたガード線の部分でホヤが大きく割れ、芯と炎だけ発光。S字金具つき。",
+  "game_lights": [
+    {
+      "pos_blender_zup": [
+        0.0,
+        0.0,
+        0.102
+      ],
+      "watts": 3.0,
+      "color": [
+        1.0,
+        0.52,
+        0.18
+      ]
+    }
+  ],
+  "approval": "NOT_APPROVED",
+  "design": "docs/3d/B4_PROPS_DESIGN.md"
+}
