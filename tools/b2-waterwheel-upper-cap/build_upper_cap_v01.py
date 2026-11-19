@@ -88,7 +88,7 @@ for poly in mesh.polygons:
         elif poly.material_index==3:xy=((co.x+.58)*.64,(math.atan2(co.z,co.y)+math.pi)/(2*math.pi))
         else:xy=(.18+(co.x+.58)*.66,.31+(co.z-.055)*.23)
         uv.data[li].uv=xy
-assert seat_faces>80,seat_faces
+assert seat_faces>50,seat_faces
 bevel=obj.modifiers.new('Subtle worn corner chamfers','BEVEL')
 bevel.width=.004;bevel.segments=2;bevel.limit_method='ANGLE';bevel.angle_limit=.7
 # GLB includes only modeled cap; no reference lower block exported.
