@@ -61,3 +61,16 @@
 - **設計上の区別:** Cは *見た目のための近似的な逆光表現* であり、物理的な葉のSSSや透過光を証明するものではない。Blender Geometry Backfacingのマテリアルノード構成がGLB/Three.jsへそのまま輸出可能と仮定しない。GLB出力と実機表示は別の合格条件にする。
 - **検査:** 元V27のSHA256照合、既存Blender+ClamAVの固定digestを使用し、スクリプト/元GLB/出力の実ウイルス検査、3案の中心座標とファイルハッシュを検証。素材が取得できない/ジョブ失敗時は成功と報告しない。
 - **未完了:** このメモを書いた時点で新規runは未完了。実行後、**ジョブ結論・画像の目視・裏面明度差・失敗点**を追記すること。
+
+
+## 2026-11-19 45%法線固定・葉裏面A/B/C 実Blender検証結果
+
+- **成功run**: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44456579971
+- **Artifact ID**: 14497969054、名前 f6-foliage-backface-abc-NOT-APPROVED。GLB / Blend / PNG×6 / manifest / qa/security/。
+- V27の元GLBのSHA256を照合し、葉140枚を同じ形・位置・照明で3案に複製。半球法線45%で固定し、カスタム法線10,080コーナーを出力。BLENDER 4.0.2。各案のセンター間隔2.45mを自動検証。
+- A: 標準Principled BSDFの表裏。B: Geometry Backfacingにより裏側を暗めのDiffuseへ分岐しSpecularを抑制。C: Bへ緑暖色の非常に弱いEmission(強度0.035)を加えた非物理的逆光近似。
+- **実画像目視:** 正面/接写でAは葉が非常に明るく散在、BとCは緑が落ち着き葉群の明暗がまとまる。Bの抑制が最も直接的に改善。CはBとの違いが僅か。裏面ではBとCの明るさは低下するが、まだ形状・重なりの粒状感があり、正式採用できない。
+- **重要な実装制限:** Blenderの Backfacing→MixShader/Emission はglTF標準PBRへ同じノード構造で書き出せるとは限らない。GLB形式の出力成功はThree.jsでの同等表現を証明しない。実際にゲームのGLTFLoader/Three.jsで表示するまでは互換性未確認とする。
+- **安全:** GHCR固定Blender+ClamAV、ソースGLB SHA照合・ClamAV 1 source GLB / 1 python script / output各ファイルのスキャン成功、感染検出0（ログはartifact）。
+- **結論:** 45%の法線転写と裏面の過剰な光を抑える方向は有望。ただし現在の形状・Blenderの材質は**NOT_APPROVED**。V25で採用済みの樹冠の広がりと元の樹木は無変更。
+- **次:** まずBlenderからGLBへ輸出した葉のDoubleSide/背面の見た目をThree.jsに読み込んで比較（標準/カスタム）し、B相当の暗さを実ゲームでも得られるか検証。並行して葉束そのもののシルエット/枝接続を改善する別モデル実験。
