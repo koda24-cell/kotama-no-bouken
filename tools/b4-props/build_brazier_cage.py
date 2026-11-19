@@ -167,14 +167,14 @@ bed = C.obj_from_bm(bm, "ash_bed")
 parts.append(C.assign(bed, ash))
 
 # ---- 燠火（山盛りの炭）：下層ほど赤く、上は灰をかぶった炭 ----
-for j in range(46):
+for j in range(84):
     r = (R0 - 0.025) * math.sqrt(rnd.random())
     a = rnd.uniform(0, 2 * math.pi)
     d = r / (R0 + 0.02)
     layer = rnd.random()
     z = Z0 + 0.025 + 0.085 * (1 - d * d) + layer * 0.05
-    sz = rnd.uniform(0.016, 0.042) * (1.15 - 0.4 * layer)
-    ob = C.rock(f"coal_{j}", sz, detail=2 if sz > 0.026 else 1, rough=0.4, squash=(1, rnd.uniform(0.7, 1), rnd.uniform(0.5, 0.8)), seed=j, facet=2)
+    sz = rnd.uniform(0.014, 0.036) * (1.15 - 0.4 * layer)
+    ob = C.rock(f"coal_{j}", sz, detail=2 if sz > 0.031 else 1, rough=0.4, squash=(1, rnd.uniform(0.7, 1), rnd.uniform(0.5, 0.8)), seed=j, facet=2)
     C.xform(ob, (r * math.cos(a), r * math.sin(a), z), (rnd.uniform(0, 360), rnd.uniform(0, 360), rnd.uniform(0, 360)))
     parts.append(C.assign(ob, coal if (layer < 0.55 and d < 0.8) else coal_dead))
 
@@ -210,6 +210,6 @@ for j in range(4):
     C.xform(ob, (0.10 + rnd.uniform(-0.1, 0.15), -0.18 + rnd.uniform(-0.08, 0.08), 0.012), (rnd.uniform(0, 360), 0, rnd.uniform(0, 360)))
     parts.append(C.assign(ob, coal_dead))
 
-C.finish(NAME, parts, version="v3", lights=[((0.0, 0.0, 0.58), 18.0, (1.0, 0.42, 0.14))], tex_res=1024, budget_tris=10000,
+C.finish(NAME, parts, version="v4", lights=[((0.0, 0.0, 0.58), 18.0, (1.0, 0.42, 0.14))], tex_res=1024, budget_tris=10000,
          refs=[34, 39, 37, 103],
          notes="鍛鉄の籠型火鉢。欠落1本・折損1本・凹んだ上リング・曲がった脚1本。燠火は割れ目のみ発光。")

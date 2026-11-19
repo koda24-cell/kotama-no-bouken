@@ -576,7 +576,8 @@ def weathered_wood(name, char=0.3, soot_z=None, heat_center=None, heat_r=(0.1, 0
     cav = b.math("SUBTRACT", 1.0, b.cavity(0.03))
     ash = b.math("MAXIMUM", b.math("MULTIPLY", cav, 0.6), b.math("MULTIPLY", b.up_mask(0.65, 0.95), 0.4))
     ash = b.math("MULTIPLY", ash, b.ramp(n_big, [(0.3, 0.0), (0.7, 1.0)]))
-    col = b.mix(b.math("MULTIPLY", ash, 0.85), col, (0.07, 0.066, 0.062))
+    ash = b.math("MULTIPLY", ash, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", alli, charm)), clamp=True)  # 炭化の割れ目は灰の上でも黒く残る
+    col = b.mix(b.math("MULTIPLY", ash, 0.6), col, (0.06, 0.056, 0.053))
     r = b.mixf(charm, 0.82, 0.68)
     r = b.mixf(ash, r, 0.96)
     b.normal_from(nrm, 0.5, bump_height=b.math("ADD", b.math("MULTIPLY", grain, 0.6), b.math("MULTIPLY", alli, b.math("MULTIPLY", charm, -1.5))), bump_strength=0.5)
