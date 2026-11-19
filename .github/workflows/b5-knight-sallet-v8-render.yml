@@ -4,7 +4,7 @@ on:
     branches: [feature/gpt-b5-knight-statues-v1-20261116]
     paths:
       - 'tools/b5-knights/build_sallet_v8.py'
-      - '.github/workflows/b5-knight-sallet-v7-render.yml'
+      - '.github/workflows/b5-knight-sallet-v8-render.yml'
   workflow_dispatch:
 permissions:
   contents: read
