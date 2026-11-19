@@ -12,6 +12,7 @@ const server=http.createServer(async(req,res)=>{
  try{
  const u=new URL(req.url,'http://localhost');
  let file;
+ if(u.pathname==='/favicon.ico'){res.writeHead(204);res.end();return}
  if(u.pathname==='/') file=path.join(root,'index.html');
  else if(u.pathname==='/asset/foliage_normal_test_NOT_APPROVED.glb')file=glb;
  else if(u.pathname.startsWith('/node_modules/')){
