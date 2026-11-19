@@ -193,6 +193,43 @@ for name,direction in {"front":(0,-1,.35),"side":(1,0,.35),"angle":(1,-1,.8),"to
     p=out/(name+".png");scene.render.filepath=str(p)
     bpy.ops.render.render(write_still=True)
     files[p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
+# Six actual Blender Cycles renders from the same camera and geometry.
+# Preserve the baseline V8 render and GLB; these are unapproved color previews.
+colorways={
+    "purple":((.10,.025,.20),(.38,.16,.58),(.64,.30,1.0)),
+    "green":((.015,.09,.055),(.08,.32,.19),(.20,.92,.45)),
+    "white":((.17,.20,.24),(.60,.70,.77),(.75,.88,1.0)),
+    "blue":((.018,.055,.13),(.10,.27,.47),(.12,.63,1.0)),
+    "pink":((.16,.035,.10),(.52,.18,.34),(1.0,.38,.67)),
+    "red":((.15,.018,.015),(.44,.08,.07),(1.0,.20,.12)),
+}
+variant_files={}
+for color_name,(dark,light,emission) in colorways.items():
+    for m in crystal_mats:
+        nodes=m.node_tree.nodes
+        ramp=next(n for n in nodes if n.type=="VALTORGB")
+        ramp.color_ramp.elements[0].color=(*dark,1)
+        ramp.color_ramp.elements[1].color=(*light,1)
+        shader=nodes.get("Principled BSDF")
+        shader.inputs["Emission Color"].default_value=(*emission,1)
+    for obj in scene.objects:
+        if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
+            obj.data.color=emission
+    cam.location=center+Vector((1,-1,.8)).normalized()*scale*2.5
+    cam.rotation_euler=(center-cam.location).to_track_quat("-Z","Y").to_euler()
+    p=out/("color_"+color_name+".png")
+    scene.render.filepath=str(p)
+    bpy.ops.render.render(write_still=True)
+    variant_files[p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
+# Restore the blue material state for the GLB export.
+for m in crystal_mats:
+    ramp=next(n for n in m.node_tree.nodes if n.type=="VALTORGB")
+    ramp.color_ramp.elements[0].color=(.018,.055,.095,1)
+    ramp.color_ramp.elements[1].color=(.11,.29,.40,1)
+    m.node_tree.nodes.get("Principled BSDF").inputs["Emission Color"].default_value=(.12,.72,1.0,1)
+for obj in scene.objects:
+    if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
+        obj.data.color=(.12,.68,1.0)
 bpy.ops.object.select_all(action="DESELECT")
 for o in scene.objects:
     if o.type=="MESH" and not o.hide_render:o.select_set(True)
@@ -200,6 +237,6 @@ bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"render_variant":"V8_MINERAL_NOISE_SOFT_EMISSION","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files}
+manifest={"render_variant":"V8_MINERAL_NOISE_SOFT_EMISSION","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"files":files,"colorway_renders":variant_files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
