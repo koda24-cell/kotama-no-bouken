@@ -87,7 +87,7 @@ surface.file_format="PNG"
 surface.save()
 # V6 water: keep real transparency, restore legible surface through
 # Fresnel reflections and image-controlled pale optical highlights.
-watermat=bpy.data.materials.new("V8 variable translucent water / broken reflection mask")
+watermat=bpy.data.materials.new("V9 shallow refractive water / independent reflected ripples")
 watermat.use_nodes=True
 wn=watermat.node_tree.nodes
 wn.clear()
@@ -104,15 +104,26 @@ tex.extension="REPEAT"
 tex.interpolation="Linear"
 wl.new(mapping.outputs["Vector"],tex.inputs["Vector"])
 waterbump=wn.new("ShaderNodeBump")
-waterbump.inputs["Strength"].default_value=.18
-waterbump.inputs["Distance"].default_value=.017
+waterbump.inputs["Strength"].default_value=.24
+waterbump.inputs["Distance"].default_value=.028
 wl.new(tex.outputs["Color"],waterbump.inputs["Height"])
 reflection=wn.new("ShaderNodeBsdfGlossy")
 reflection.inputs["Color"].default_value=(.72,.89,.93,1)
-reflection.inputs["Roughness"].default_value=.14
+reflection.inputs["Roughness"].default_value=.18
 wl.new(waterbump.outputs["Normal"],reflection.inputs["Normal"])
+# V9 genuine shallow-water distortion: refraction is independent of colored ripples.
+# Mix a mostly-transparent sightline with physical IOR 1.333 refraction.
 clear=wn.new("ShaderNodeBsdfTransparent")
-clear.inputs["Color"].default_value=(.98,.995,1,1)
+clear.inputs["Color"].default_value=(.995,1,1,1)
+refract=wn.new("ShaderNodeBsdfRefraction")
+refract.inputs["Color"].default_value=(.91,.975,.99,1)
+refract.inputs["IOR"].default_value=1.333
+refract.inputs["Roughness"].default_value=.075
+wl.new(waterbump.outputs["Normal"],refract.inputs["Normal"])
+refr_mix=wn.new("ShaderNodeMixShader")
+refr_mix.inputs[0].default_value=.40
+wl.new(clear.outputs["BSDF"],refr_mix.inputs[1])
+wl.new(refract.outputs["BSDF"],refr_mix.inputs[2])
 fresnel=wn.new("ShaderNodeLayerWeight")
 fresnel.inputs["Blend"].default_value=.19
 # Visible, yet light, reflection even straight on.
@@ -120,11 +131,11 @@ fscale=wn.new("ShaderNodeMath");fscale.operation="MULTIPLY"
 fscale.inputs[1].default_value=.24
 wl.new(fresnel.outputs["Fresnel"],fscale.inputs[0])
 fbase=wn.new("ShaderNodeMath");fbase.operation="ADD"
-fbase.inputs[1].default_value=.055
+fbase.inputs[1].default_value=.082
 wl.new(fscale.outputs[0],fbase.inputs[0])
 mix=wn.new("ShaderNodeMixShader")
 wl.new(fbase.outputs[0],mix.inputs[0])
-wl.new(clear.outputs["BSDF"],mix.inputs[1])
+wl.new(refr_mix.outputs[0],mix.inputs[1])
 wl.new(reflection.outputs["BSDF"],mix.inputs[2])
 # A very thin, pale image-driven highlight mask makes the waterline
 # readable even if the scene is viewed head-on. Never tint the water volume.
@@ -170,7 +181,7 @@ wl.new(mapping.outputs["Vector"],coverage.inputs["Vector"])
 cover_map=wn.new("ShaderNodeMapRange")
 cover_map.inputs["From Min"].default_value=.38
 cover_map.inputs["From Max"].default_value=.72
-cover_map.inputs["To Min"].default_value=.12
+cover_map.inputs["To Min"].default_value=.22
 cover_map.inputs["To Max"].default_value=1.0
 wl.new(coverage.outputs["Fac"],cover_map.inputs["Value"])
 overlay_tex=wn.new("ShaderNodeTexImage")
@@ -183,7 +194,7 @@ overlay_light.inputs["Strength"].default_value=.42
 wl.new(overlay_tex.outputs["Color"],overlay_light.inputs["Color"])
 overlay_alpha=wn.new("ShaderNodeMath")
 overlay_alpha.operation="MULTIPLY"
-overlay_alpha.inputs[1].default_value=.47
+overlay_alpha.inputs[1].default_value=.52
 wl.new(overlay_tex.outputs["Alpha"],overlay_alpha.inputs[0])
 overlay_mix=wn.new("ShaderNodeMixShader")
 overlay_coverage=wn.new("ShaderNodeMath")
@@ -208,7 +219,7 @@ ai_emission.inputs["Strength"].default_value=.48
 wl.new(ai_tex.outputs["Color"],ai_emission.inputs["Color"])
 ai_mask=wn.new("ShaderNodeMath")
 ai_mask.operation="MULTIPLY"
-ai_mask.inputs[1].default_value=.29
+ai_mask.inputs[1].default_value=.34
 wl.new(ai_tex.outputs["Alpha"],ai_mask.inputs[0])
 ai_mix=wn.new("ShaderNodeMixShader")
 ai_coverage=wn.new("ShaderNodeMath")
@@ -226,7 +237,7 @@ for j in range(N+1):
         x=-7.9+15.8*i/N
         shoreline=2.8+.34*math.sin(x*.7)+.18*math.cos(x*1.9)
         y=-7.9+(7.9+shoreline)*j/N
-        z=.009*math.sin(1.7*x+1.2*y)+.006*math.sin(3.1*x-.7*y)+.004*math.cos(.52*x+2.9*y)
+        z=.018*math.sin(1.7*x+1.2*y)+.011*math.sin(3.1*x-.7*y)+.006*math.cos(.52*x+2.9*y)
         verts.append((x,y,z))
 for j in range(N):
     for i in range(N):
@@ -279,4 +290,4 @@ for n in ("front","side","angle"):
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
 (root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"]},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v8.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v9.blend").resolve()))
