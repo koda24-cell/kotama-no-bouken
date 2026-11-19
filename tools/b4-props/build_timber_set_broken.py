@@ -31,7 +31,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Vector  # noqa: E402
 
 NAME = "b4p_timber_set_broken"
-VERSION = "v3"
+VERSION = "v4"
 rnd = random.Random(5)
 C.reset(5)
 
@@ -74,18 +74,18 @@ RP0, RPk = Vector((1.12, 0.02, 0.0)), Vector((1.03, 0.03, 1.15))
 RPk2, RP1 = Vector((1.05, 0.05, 1.12)), Vector((1.24, 0.07, 2.00))
 add(L.beam_between("post_R_low", RP0, RPk, 0.24, 0.23, split_b=0.10, seed=3, bow=0.012, chip=0.035, segs=10, roll=7, mat=wood_v))
 add(L.beam_between("post_R_up", RPk2, RP1, 0.23, 0.23, split_a=0.12, seed=4, bow=0.012, chip=0.03, segs=10, roll=-5, mat=wood_v))
-add(L.splinters("spl_Rk_low", RPk + Vector((0, 0, 0.01)), (0.15, 0.1, 1), 0.12, n=8, length=0.12, seed=31, mat=wood_v))
-add(L.splinters("spl_Rk_up", RPk2 + Vector((0, 0, -0.01)), (-0.25, -0.1, -1), 0.12, n=7, length=0.11, seed=32, mat=wood_v))
+add(L.splinters("spl_Rk_low", RPk + Vector((0, 0, 0.01)), (0.15, 0.1, 1), 0.12, n=11, length=0.09, seed=31, mat=wood_v))
+add(L.splinters("spl_Rk_up", RPk2 + Vector((0, 0, -0.01)), (-0.25, -0.1, -1), 0.12, n=9, length=0.085, seed=32, mat=wood_v))
 
 # ---- 天井梁：中央で折れて V 字に落ちる。左半分は左脚の上で傾き、右半分は右脚の頭から落石の上へ ----
 CL0, CL1 = Vector((-1.19, 0.0, 2.25)), Vector((-0.06, 0.01, 1.64))
 add(L.beam_between("cap_L", CL0, CL1, 0.24, 0.24, split_b=0.12, seed=2, bow=0.012, chip=0.035, segs=12, roll=4, mat=wood_x))
 d = (CL1 - CL0).normalized()
-add(L.splinters("spl_capL", CL1 + d * 0.02, d + Vector((0, 0, -0.5)), 0.12, n=9, length=0.12, seed=21, mat=wood_x))
+add(L.splinters("spl_capL", CL1 + d * 0.02, d + Vector((0, 0, -0.5)), 0.12, n=12, length=0.09, seed=21, mat=wood_x))
 CR0, CR1 = Vector((0.22, 0.02, 0.62)), Vector((1.30, 0.07, 2.20))
 add(L.beam_between("cap_R", CR0, CR1, 0.24, 0.24, split_a=0.13, seed=5, bow=0.012, chip=0.035, segs=12, roll=-6, mat=wood_x))
 d = (CR0 - CR1).normalized()
-add(L.splinters("spl_capR", CR0 + d * 0.02, d + Vector((0, 0, 0.3)), 0.12, n=8, length=0.11, seed=51, mat=wood_x))
+add(L.splinters("spl_capR", CR0 + d * 0.02, d + Vector((0, 0, 0.3)), 0.12, n=11, length=0.085, seed=51, mat=wood_x))
 
 # ---- 楔（左の継手に2本、1本は抜けかけ。足元に落ちた1本） ----
 for j, (dx, out, tilt) in enumerate(((-0.06, 0.02, 0), (0.065, 0.08, 11))):
@@ -136,6 +136,20 @@ for j, ((x, y, zb), r, det) in enumerate(pile):
     ob = C.rock(f"rock_{j}", r, detail=det, rough=0.32, squash=sq, seed=100 + j, facet=5)
     z = zb + r * sq[2] * 0.7
     C.xform(ob, (x, y, z), (rnd.uniform(-20, 20), rnd.uniform(-20, 20), rnd.uniform(0, 360)))
+    add(C.assign(ob, rock))
+# 隙間を埋める中くらいの岩（山を一つの塊に見せる）
+fill = [(-0.15, 0.12, 0.10), (0.30, -0.15, 0.12), (-0.52, -0.16, 0.11), (0.74, 0.16, 0.10), (0.42, 0.14, 0.16),
+        (-0.22, -0.18, 0.09), (0.96, -0.08, 0.10), (-0.78, 0.04, 0.10), (0.18, 0.16, 0.12)]
+for j, (x, y, r) in enumerate(fill):
+    ob = C.rock(f"fill_{j}", r, detail=2, rough=0.3, squash=(1, 0.8, 0.62), seed=250 + j, facet=4)
+    C.xform(ob, (x, y, r * 0.42), (rnd.uniform(-15, 15), rnd.uniform(-15, 15), rnd.uniform(0, 360)))
+    add(C.assign(ob, rock))
+# 天井の板の上に乗った土砂の岩（折れ口の近く、今にも落ちそう）
+for j, t in enumerate((0.62, 0.78)):
+    p = CL0.lerp(CL1, t)
+    r = 0.07 + 0.02 * j
+    ob = C.rock(f"onlag_{j}", r, detail=1, rough=0.3, squash=(1, 0.8, 0.6), seed=270 + j, facet=3)
+    C.xform(ob, p + Vector((0.03, rnd.uniform(-0.12, 0.12), 0.12 + 0.032 + r * 0.45)), (0, 25, rnd.uniform(0, 360)))
     add(C.assign(ob, rock))
 for j in range(22):
     r = rnd.uniform(0.03, 0.09)
