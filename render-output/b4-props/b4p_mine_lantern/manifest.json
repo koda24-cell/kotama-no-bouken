@@ -1,8 +1,8 @@
 {
   "asset": "b4p_mine_lantern",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
-  "triangles": 2646,
+  "triangles": 2548,
   "budget_triangles": 2500,
   "materials": [
     "b4p_mine_lantern_mat"
@@ -19,13 +19,13 @@
   },
   "bbox_m": [
     0.171,
-    0.162,
+    0.157,
     0.378
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_mine_lantern.glb",
-  "glb_bytes": 271204,
+  "glb_bytes": 243736,
   "cc0_textures": {
     "rusty_metal_03_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rusty_metal_03",
@@ -53,16 +53,16 @@
     80
   ],
   "sha256": {
-    "b4p_mine_lantern.glb": "b1477cb097227b35854138913854e170d5b1ff65806f77ba4367d70d050304ac",
-    "b4p_mine_lantern_volcanic_front.png": "70d8c6ce87d6bbd690be566ed67099e85716823cd83df5d9b66de672b639b423",
-    "b4p_mine_lantern_volcanic_side.png": "cc12efccb3c3d6099c04f4e79821157acb2e34dde4e9adca5b95d10dd52301f5",
-    "b4p_mine_lantern_volcanic_angle.png": "f072674085e4fb10f06758ded4461da5b4ce61d03483667c01542f4c64e3b260",
-    "b4p_mine_lantern_volcanic_top.png": "df700ce7c4840a5759c7a79fe11d4e1dc0b261ea005b1d3df058ba6264659e23",
-    "b4p_mine_lantern_volcanic_close.png": "e99e4d1f3b597807fe87152a2c97dd508c46dbf70fee62abb85f4812bd98ad35",
-    "b4p_mine_lantern_volcanic_back.png": "7747692a36e9c553edfc7ee224464fbb949d37afb86deda9bc024dadade10a8e",
-    "b4p_mine_lantern_studio_front.png": "2e4838bb26f9f12d7967580ee7b3bfee2b66245f62381b1dc8dee3e6f3c3abf1",
-    "b4p_mine_lantern_studio_angle.png": "7e441c1f2c39b3e200051a4bc28cf9e43437a412bfae4b0ac7ab4e36ff6a8e6b",
-    "b4p_mine_lantern_studio_scale.png": "4e2e19960d2b856c2664c0f21def303494816062883ab868ca670a361287f56b"
+    "b4p_mine_lantern.glb": "9a24bb36ff216c5226973394ab728e5ff451559b03c6e68458c05bd4b7836616",
+    "b4p_mine_lantern_volcanic_front.png": "7ddd8be33b72edf4db2e47f53ff19a6c4fd5df000ce89672c50743cf4cd2069b",
+    "b4p_mine_lantern_volcanic_side.png": "0ac202d64403fc8418a7ae52d31b6c16308cb57d6db1298af6dd8580101c270b",
+    "b4p_mine_lantern_volcanic_angle.png": "ac6dee14c653a5e0873317c9eeaba0ce455d5f6c92f873fde9f1f105b46d6aa7",
+    "b4p_mine_lantern_volcanic_top.png": "0b6c46a16d05842b814b79591e0515ce261b29bd160fd1b5b362caf131dee42e",
+    "b4p_mine_lantern_volcanic_close.png": "5c1d6bed343e7da267679216e74a4447e4db1f9157db3034a795c1128f0e66a6",
+    "b4p_mine_lantern_volcanic_back.png": "d1c45f74a326cfa9a549c5cda3c0288c7a75b1a1e737d0240f023b7db1a9ee98",
+    "b4p_mine_lantern_studio_front.png": "ed7f6e9e53aecc9c4bca0dc4bc05a517b186044226fec7d834c1616c05ec3577",
+    "b4p_mine_lantern_studio_angle.png": "e4d571e628c61fe4652cda463b552f0faf558670c6d0ed13099cbce8c5a785f7",
+    "b4p_mine_lantern_studio_scale.png": "d8bbe3eb2b051f899b5bb2a28b84ee69a8b73241abad2e1cc510d1c8aa73faeb"
   },
   "renders": [
     "b4p_mine_lantern_volcanic_front.png",
@@ -84,7 +84,7 @@
         0.0,
         0.102
       ],
-      "watts": 3.0,
+      "watts": 0.9,
       "color": [
         1.0,
         0.52,
