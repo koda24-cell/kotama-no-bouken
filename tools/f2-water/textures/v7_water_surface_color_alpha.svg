@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<title>F2 V7 water surface: reusable color and alpha overlay</title>
+<desc>Original hand-authored tileable transparent water reflection pattern. No background fill; faint cyan soft ridges and discontinuous pearl-white specular streaks. Concept image generated separately.</desc>
+<defs>
+ <linearGradient id="river" x1="0" y1="0" x2="0.9" y2="1"><stop offset="0" stop-color="#e5ffff" stop-opacity=".12"/><stop offset=".50" stop-color="#7dcddc" stop-opacity=".29"/><stop offset="1" stop-color="#ffffff" stop-opacity=".04"/></linearGradient>
+ <linearGradient id="glint" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#eaffff" stop-opacity="0"/><stop offset=".26" stop-color="#c4f5ff" stop-opacity=".22"/><stop offset=".55" stop-color="#ffffff" stop-opacity=".49"/><stop offset="1" stop-color="#e4ffff" stop-opacity="0"/></linearGradient>
+ <filter id="soft" x="-15%" y="-100%" width="130%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+ <path id="flowA" d="M -90 80 C 100 12 185 173 350 114 S 631 43 756 118 S 945 185 1114 92"/>
+ <path id="flowB" d="M -90 272 C 155 169 223 343 391 276 S 677 218 815 285 S 1000 344 1114 274"/>
+ <path id="flowC" d="M -90 468 C 109 377 248 555 438 456 S 732 431 849 489 S 1015 522 1114 468"/>
+ <path id="flowD" d="M -90 657 C 96 601 229 719 409 647 S 704 592 842 675 S 1015 728 1114 657"/>
+ <path id="flowE" d="M -90 855 C 147 762 252 947 427 849 S 688 807 845 870 S 1009 931 1114 855"/>
+</defs>
+<g fill="none" stroke="url(#river)" stroke-width="26" filter="url(#soft)">
+ <use href="#flowA"/><use href="#flowB"/><use href="#flowC"/><use href="#flowD"/><use href="#flowE"/>
+</g>
+<g fill="none" stroke="url(#glint)" stroke-linecap="round">
+ <use href="#flowA" stroke-width="7"/><use href="#flowB" stroke-width="5"/><use href="#flowC" stroke-width="8"/><use href="#flowD" stroke-width="5"/><use href="#flowE" stroke-width="7"/>
+ <path d="M-30 190 Q176 106 374 186 T754 201 T1054 177" stroke-width="3"/>
+ <path d="M-30 374 Q220 308 398 384 T789 391 T1054 366" stroke-width="4"/>
+ <path d="M-30 565 Q206 495 394 559 T773 580 T1054 555" stroke-width="3"/>
+ <path d="M-30 752 Q180 688 377 743 T762 763 T1054 750" stroke-width="4"/>
+ <path d="M-30 965 Q200 887 376 960 T780 963 T1054 943" stroke-width="3"/>
+</g>
+</svg>

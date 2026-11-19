@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<title>F2 V7 disconnected shore foam alpha mask</title>
+<desc>Original transparent texture; broken soft foam loops intended for shore contact only.</desc>
+<defs><filter id="blur"><feGaussianBlur stdDeviation="2.3"/></filter><linearGradient id="foam"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".4" stop-color="#e5ffff" stop-opacity=".56"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><path id="a" d="M-80 110 Q78 30 204 96 T469 108 Q653 18 810 104 T1104 112"/><path id="b" d="M-80 462 Q82 385 212 451 T469 457 Q658 379 821 457 T1104 469"/><path id="c" d="M-80 806 Q99 731 246 799 T529 801 Q670 750 825 804 T1104 818"/></defs>
+<g fill="none" stroke="url(#foam)" stroke-linecap="round" filter="url(#blur)" stroke-width="8">
+<use href="#a"/><use href="#b"/><use href="#c"/></g>
+<g fill="none" stroke="#ecffff" stroke-opacity=".24" stroke-linecap="round" stroke-width="2.5">
+<path d="M19 117 Q97 66 170 114 M293 97 Q347 135 412 111 M577 107 Q652 66 722 96 M854 118 Q932 84 992 112"/>
+<path d="M35 449 Q94 422 160 455 M290 467 Q368 435 426 458 M564 473 Q642 420 711 468 M853 459 Q941 438 997 477"/>
+<path d="M24 796 Q91 779 163 808 M295 818 Q375 780 433 806 M562 797 Q634 779 711 813 M854 807 Q931 778 991 812"/>
+</g>
+</svg>
