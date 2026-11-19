@@ -74,3 +74,13 @@
 - **安全:** GHCR固定Blender+ClamAV、ソースGLB SHA照合・ClamAV 1 source GLB / 1 python script / output各ファイルのスキャン成功、感染検出0（ログはartifact）。
 - **結論:** 45%の法線転写と裏面の過剰な光を抑える方向は有望。ただし現在の形状・Blenderの材質は**NOT_APPROVED**。V25で採用済みの樹冠の広がりと元の樹木は無変更。
 - **次:** まずBlenderからGLBへ輸出した葉のDoubleSide/背面の見た目をThree.jsに読み込んで比較（標準/カスタム）し、B相当の暗さを実ゲームでも得られるか検証。並行して葉束そのもののシルエット/枝接続を改善する別モデル実験。
+
+
+## 2026-11-19 重要: Blenderの裏面分岐がGLBで消失（実ファイル検証）
+
+- 検証元: [Blender実レンダリングrun #44456579971](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44456579971)、artifact 14497969054 内の `foliage_normal_test_NOT_APPROVED.glb`。ZIP内のGLB JSON chunkをバイナリ解析。
+- glTFの材質3件（A:45%標準、B:45%裏面Diffuse、C:B+逆光）を実際に読んだ結果、**AとBのglTF `pbrMetallicRoughness` が完全一致**。双方とも `baseColorFactor=[0.21,0.39,0.20,1]` / `roughnessFactor=0.92` / `doubleSided=true` / `KHR_materials_specular.specularFactor≈0.26`。Blenderの`Geometry.Backfacing -> MixShader` 分岐はglTF標準材質に保存されていない。
+- Cでは `emissiveFactor≈[0.00455,0.0084,0.0028]` を確認。ただし**背面限定ではなく材質全体に適用**される。そのためBlenderのB/C画像をそのままThree.jsの互換性根拠にしてはいけない。
+- Khronos glTF材質仕様では `doubleSided=true` の背面は光計算前に法線が反転する。通常のglTF材質では独自の`gl_FrontFacing`を使った裏面分岐を表せないので、Three.js側の`onBeforeCompile`等で実装した候補を**独立のブラウザ描画**で比較する。
+- 試験Draft PR: https://github.com/koda24-cell/kotama-no-bouken/pull/585 、HTML/JSは独立 `tools/floor6/threejs-backface-review/` に隔離。Three.js v0.181.2 + Playwright Chrome。ゲーム本体のローダーは変更しない。
+- 本項は**GLBフォーマットの実物検証**であり、ブラウザの成功や美術品質を意味しない。検証ジョブと3方向のスクリーンショットは成功確認後に追記する。
