@@ -49,3 +49,9 @@ Claudeは出力されたGLB/PNG/manifestを受け取り、Blender操作は担当
 - Existing ambientCG Leaf001 PBR remains. Reference pins from Pinterest are reference-only, not texture sources.
 - V25 Actions: `.github/workflows/f6-cc0-leaf-auto-render.yml`; source `tools/floor6/apply_cc0_leaf_photo.py`. Render all 4 angles and compare PNGs to original V19. Source 1m root footprint preserved; extending canopy width is intentional.
 - No user approval yet; **NOT_APPROVED** and not in gameplay. Mark successful/quality only after downloading and inspecting real 4-view PNGs, GLB/Blend/manifest.
+
+## 2026-11-19 V27: user-approved canopy breadth and focused leaf/bark refinements
+- **User approved the existing V25 wide-spread canopy arrangement** (spread only). The earlier V25 and V24 aesthetic deficiencies in individual leaves and trunk remain; approval of the arrangement is not GLB production asset approval.
+- V26 long-standing Actions run #44445405191 did not complete and was cancelled on new push. Its geometry is not the accepted crown baseline.
+- V27 carefully retains the V25 outreach/reach and outer shell (170 outer group placements, 120 inner group placements, 48 oblique placements). V27 refines each curved leaf geometry with a moderate 1.32x expansion, applies Bark015 photogrammetry albedo/normal/roughness via original TrunkUV, uses dark grey-brown tone and adds 17 non-destructive uneven bark ridges to the original woody mesh. Original V19 wood/root geometry remains.
+- Latest automated four-view render initiated: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44447197961 . **No V27 quality acceptance without actual PNG and manifest inspection**. Retain NOT_APPROVED and no game integration.
