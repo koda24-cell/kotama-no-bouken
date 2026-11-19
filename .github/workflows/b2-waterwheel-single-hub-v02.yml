@@ -1,7 +1,7 @@
 name: B2 Single Wooden Hub V02 Blender Four View QA
 on:
   push:
-    branches: [feature/gpt-b2-single-wooden-hub-v02-20261119]
+    branches: [feature/gpt-b2-single-wooden-hub-v01-20261119]
     paths:
       - 'tools/b2-waterwheel-hub/**'
       - '.github/workflows/b2-waterwheel-single-hub-v02.yml'
@@ -24,12 +24,12 @@ jobs:
           echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > /tmp/hub-run.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin feature/gpt-b2-single-wooden-hub-v02-20261119
-          git reset --hard origin/feature/gpt-b2-single-wooden-hub-v02-20261119
+          git fetch origin feature/gpt-b2-single-wooden-hub-v01-20261119
+          git reset --hard origin/feature/gpt-b2-single-wooden-hub-v01-20261119
           cp /tmp/hub-run.json docs/3d/b2-waterwheel-hub/latest-v02.json
           git add docs/3d/b2-waterwheel-hub/latest-v02.json
           git commit -m "chore(b2): record wooden hub review run" || true
-          git push origin HEAD:feature/gpt-b2-single-wooden-hub-v02-20261119
+          git push origin HEAD:feature/gpt-b2-single-wooden-hub-v01-20261119
       - name: Restore V01 actual wooden hub checkpoint for V02 detail pass
         uses: actions/download-artifact@v4
         with:
@@ -46,7 +46,7 @@ jobs:
       - name: Generate actual single wooden hub and render 4 Cycles views
         run: |
           set -o pipefail
-          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-hub/build_single_hub_v02_resume.py -- render-output/b2-hub-v02 checkpoint/b2_waterwheel_single_rim_segment_v11.blend | tee /tmp/hub-blender.log
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-hub/build_single_hub_v02_resume.py -- render-output/b2-hub-v02 checkpoint/b2_waterwheel_single_wooden_hub_v01.blend | tee /tmp/hub-blender.log
           if grep -E 'Traceback \(most recent call last\)|Python script failed|Error: Python' /tmp/hub-blender.log; then exit 1; fi
           grep -q 'B2_HUB_V02_REAL_WEATHERING_RENDER_SUCCESS' /tmp/hub-blender.log
       - name: Validate real GLB Blend PNG and SHA records
