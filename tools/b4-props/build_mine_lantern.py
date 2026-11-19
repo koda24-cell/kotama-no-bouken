@@ -29,7 +29,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Vector  # noqa: E402
 
 NAME = "b4p_mine_lantern"
-VERSION = "v3"
+VERSION = "v4"
 rnd = random.Random(84)
 C.reset(84)
 
@@ -37,7 +37,7 @@ FLAME = (0.0, 0.0, 0.10)
 iron = C.weathered_iron("iron", heat_center=(0, 0, 0.16), heat_r=(0.03, 0.13), soot_z=(0.19, 0.30), rust=0.32, scale=0.35, wear=0.7)
 wire = C.weathered_iron("wire", heat_center=(0, 0, 0.16), heat_r=(0.03, 0.12), soot_z=(0.18, 0.30), rust=0.25, scale=0.35, wear=0.35)
 HOLE_A = -1.25
-glass = L.sooty_glass("glass", soot_z=(0.15, 0.215), scale=0.4,
+glass = L.sooty_glass("glass", soot_z=(0.15, 0.215), scale=0.4, tint=(0.012, 0.014, 0.011), tint2=(0.020, 0.015, 0.010),
                       crack_center=(0.06 * math.cos(HOLE_A), 0.06 * math.sin(HOLE_A), 0.145), crack_r=(0.03, 0.09))
 wick = L.wick_glow("wick", 0.079, 0.0825, 0.122, strength=5.0)
 
@@ -47,7 +47,7 @@ parts = []
 # 底のつば→わずかに膨らむ胴→プレスのビード→肩→上面（角はシャープに）
 tank_prof = [(0.0, 0.0), (0.073, 0.0), (0.078, 0.0035), (0.078, 0.008), (0.074, 0.0105), (0.0785, 0.028),
              (0.077, 0.041), (0.0705, 0.0485), (0.056, 0.0575), (0.040, 0.0635), (0.0, 0.065)]
-tank = L.lathe("tank", tank_prof, sides=16, sharp_deg=38,
+tank = L.lathe("tank", tank_prof, sides=14, sharp_deg=38,
                rfn=L.dent_fn([(3.6, 0.026, 0.011, 0.30, 0.012), (0.9, 0.047, 0.005, 0.22, 0.008)]))
 parts.append(C.assign(tank, iron))
 # 給油口のキャップ
@@ -164,15 +164,15 @@ for k in range(4):
     parts.append(C.assign(ob, wire))
 
 ring_pts = []
-for j in range(14):
-    a = 2 * math.pi * j / 14
+for j in range(12):
+    a = 2 * math.pi * j / 12
     r = globe_r(0.150) + 0.0095
     da = math.atan2(math.sin(a - (-math.pi / 4)), math.cos(a - (-math.pi / 4)))
     r -= 0.013 * math.exp(-(da / 0.35) ** 2)
     ring_pts.append(Vector((r * math.cos(a), r * math.sin(a), 0.150 + 0.002 * math.sin(a * 2))))
 ring = C.sweep("guard_ring", ring_pts, WIRE, closed=True)
 parts.append(C.assign(ring, wire))
-lowring = C.sweep("guard_lowring", [Vector((0.043 * math.cos(2 * math.pi * j / 12), 0.043 * math.sin(2 * math.pi * j / 12), 0.087)) for j in range(12)],
+lowring = C.sweep("guard_lowring", [Vector((0.043 * math.cos(2 * math.pi * j / 10), 0.043 * math.sin(2 * math.pi * j / 10), 0.087)) for j in range(10)],
                   WIRE, closed=True)
 parts.append(C.assign(lowring, wire))
 

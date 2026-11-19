@@ -191,7 +191,7 @@ def wedge(name, l, w, h, seed=0):
 # ---------------------------------------------------------------------------
 # 材質
 # ---------------------------------------------------------------------------
-def sooty_glass(name, soot_z=None, scale=1.0, tint=(0.034, 0.024, 0.014), crack_center=None, crack_r=(0.02, 0.08)):
+def sooty_glass(name, soot_z=None, scale=1.0, tint=(0.012, 0.014, 0.011), crack_center=None, crack_r=(0.02, 0.08), tint2=None):
     """煤けた不透明ガラス（透過はベイクできないため）。
     暗い琥珀色の地＋上方の煤（内側から付く黒い膜）＋細いひび（明るい線）＋灰。粗さで艶の島を残す。"""
     b = C.NB(name)
@@ -205,19 +205,20 @@ def sooty_glass(name, soot_z=None, scale=1.0, tint=(0.034, 0.024, 0.014), crack_
     cr2 = ridge(38.0 / scale, 0.016)
     near = b.dist_mask(crack_center, *crack_r) if crack_center is not None else 0.4
     crack = b.math("MULTIPLY", b.math("MAXIMUM", cr1, cr2), b.math("ADD", b.math("MULTIPLY", near, 0.85), 0.15), clamp=True)
-    col = b.mix(n_big, tint, (tint[0] * 1.6, tint[1] * 1.5, tint[2] * 1.3))
+    # 地：暗い灰緑〜茶のくすみ（明度は低く、艶で見せる）
+    col = b.mix(n_big, tint, tint2 or (tint[0] * 1.5, tint[1] * 1.3, tint[2] * 1.1))
     soot = b.ramp(n_big, [(0.25, 0.25), (0.75, 0.75)])
     if soot_z is not None:
         soot = b.math("MAXIMUM", soot, b.height_mask(*soot_z))
     soot = b.math("MULTIPLY", soot, b.ramp(n_fine, [(0.2, 0.7), (0.8, 1.0)]))
     col = b.mix(soot, col, (0.006, 0.0055, 0.005))
-    col = b.mix(b.math("MULTIPLY", crack, 0.9), col, (0.14, 0.125, 0.11))
+    col = b.mix(b.math("MULTIPLY", crack, 0.8), col, (0.075, 0.075, 0.068))
     # 割れ口（少し明るい断面）
     edge = b.edge_mask(0.0012, 0.08, 0.35)
     col = b.mix(b.math("MULTIPLY", edge, 0.35), col, (0.09, 0.085, 0.075))
     ash = b.math("MULTIPLY", b.up_mask(0.5, 0.9), b.ramp(n_big, [(0.35, 0.0), (0.7, 1.0)]))
     col = b.mix(b.math("MULTIPLY", ash, 0.8), col, (0.075, 0.07, 0.066))
-    r = b.mixf(soot, 0.06, 0.62)
+    r = b.mixf(soot, 0.04, 0.5)
     r = b.mixf(crack, r, 0.35)
     r = b.mixf(ash, r, 0.95)
     b.normal_from(None, bump_height=b.math("SUBTRACT", 1.0, crack), bump_strength=0.25, bump_dist=0.0008)
