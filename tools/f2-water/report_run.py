@@ -14,12 +14,15 @@ render=read_json("render_manifest.json")
 run=os.environ.get("GITHUB_RUN_ID","")
 url=(f"https://github.com/{os.environ.get('GITHUB_REPOSITORY')}/actions/runs/{run}" if run else None)
 scan_status=(scan or {}).get("status","NOT_EXECUTED_OR_NO_REPORT")
+scan_exit=((scan or {}).get("scan") or {}).get("exit_code")
+scan_confirmed=(scan_status=="SCANNED_OK_NOT_APPROVED" and scan_exit==0 and bool((scan or {}).get("sha256")) and bool((scan or {}).get("scanner_version")) and (root/"verified/river_small_rocks_diff_1k.jpg").is_file())
+safety_check="CONFIRMED_OK" if scan_confirmed else "BLOCKED_OR_UNVERIFIED"
 render_status=("RENDER_FILES_REPORTED_UNVERIFIED" if render else "NOT_RENDERED_OR_NO_REPORT")
-if scan_status!="SCANNED_OK_NOT_APPROVED":render_status="BLOCKED_BEFORE_RENDER"
-status="CANDIDATE_REVIEW_REQUIRED" if scan_status=="SCANNED_OK_NOT_APPROVED" and render else "BLOCKED_OR_UNVERIFIED"
+if not scan_confirmed:render_status="BLOCKED_BEFORE_RENDER"
+status="CANDIDATE_REVIEW_REQUIRED" if scan_confirmed and render else "BLOCKED_OR_UNVERIFIED"
 report={"status":status,"approval":"NOT_APPROVED","run_url":url,"run_id":run or None,
         "timestamp_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        "scan_status":scan_status,"render_status":render_status,
+        "scan_status":scan_status,"safety_check":safety_check,"render_status":render_status,
         "scanner_version":(scan or {}).get("scanner_version"),
         "asset_sha256":(scan or {}).get("sha256"),
         "scan_exit_code":((scan or {}).get("scan") or {}).get("exit_code"),
