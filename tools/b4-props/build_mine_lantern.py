@@ -29,7 +29,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Vector  # noqa: E402
 
 NAME = "b4p_mine_lantern"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(84)
 C.reset(84)
 
@@ -57,7 +57,7 @@ parts.append(C.assign(fc, iron))
 
 # ---- バーナーの襟（ギャラリー）と芯の調整つまみ ----
 coll = L.lathe("collar", [(0.030, 0.063), (0.037, 0.066), (0.037, 0.078), (0.040, 0.080), (0.040, 0.085), (0.034, 0.086)],
-               sides=12, rfn=L.dent_fn([], wobble=0.0006))
+               sides=10, rfn=L.dent_fn([], wobble=0.0006))
 parts.append(C.assign(coll, iron))
 knob = C.sweep("knob", [Vector((0.034, 0.0, 0.072)), Vector((0.055, 0.0, 0.072)), Vector((0.056, 0.0, 0.072)), Vector((0.062, 0.0, 0.072))],
                C.circle_profile(0.0028, 6), scale_fn=lambda u: 1.0 if u < 0.5 else 3.2)
@@ -104,7 +104,7 @@ for j, (a, z) in enumerate(((HOLE_A + 0.25, 0.060),)):
 # ---- 笠と煙突・通気キャップ（縁が凹む） ----
 cap = L.lathe("cap", [(0.040, 0.226), (0.068, 0.231), (0.0725, 0.2335), (0.0725, 0.2375), (0.067, 0.2395), (0.050, 0.252),
                       (0.030, 0.265), (0.026, 0.268), (0.026, 0.283), (0.038, 0.2875), (0.038, 0.2915), (0.031, 0.297),
-                      (0.0, 0.299)], sides=14, sharp_deg=35,
+                      (0.0, 0.299)], sides=18, sharp_deg=35,
               rfn=L.dent_fn([(-0.6, 0.236, 0.007, 0.30, 0.008), (2.2, 0.25, 0.003, 0.4, 0.01)], wobble=0.0008, seed=5))
 parts.append(C.assign(cap, iron))
 # 笠の内側（下から見て抜けないよう浅い皿）
@@ -120,7 +120,7 @@ for k, sx in enumerate((1, -1)):
     if k == 1:  # 片側は少し曲がっている
         pts[3] += Vector((0.0, 0.006, 0.0))
         pts[2] += Vector((0.0, 0.003, 0.0))
-    tube = C.sweep(f"tube_{k}", C.bezier(pts[0], pts[2], pts[4], pts[6], n=8), C.circle_profile(0.0052, 6))
+    tube = C.sweep(f"tube_{k}", C.bezier(pts[0], pts[2], pts[4], pts[6], n=8), C.circle_profile(0.0052, 5))
     C.displace_noise(tube, 0.0008, 60, seed=k)
     parts.append(C.assign(tube, iron))
     # 吊り手の軸受け（管に巻いた帯）
@@ -164,8 +164,8 @@ for k in range(4):
     parts.append(C.assign(ob, wire))
 
 ring_pts = []
-for j in range(16):
-    a = 2 * math.pi * j / 16
+for j in range(14):
+    a = 2 * math.pi * j / 14
     r = globe_r(0.150) + 0.0095
     da = math.atan2(math.sin(a - (-math.pi / 4)), math.cos(a - (-math.pi / 4)))
     r -= 0.013 * math.exp(-(da / 0.35) ** 2)
@@ -178,8 +178,8 @@ parts.append(C.assign(lowring, wire))
 
 # ---- 吊り手（ベイル）：軸受けから上へ弧、少し歪む ----
 bail_pts = []
-for j in range(15):
-    t = j / 14
+for j in range(13):
+    t = j / 12
     ang = math.pi * t
     x = 0.081 * math.cos(ang)
     z = 0.198 + 0.148 * math.sin(ang) ** 0.85
@@ -210,6 +210,6 @@ hk = C.sweep("s_hook", hook, C.circle_profile(0.0028, 4), scale_fn=lambda u: 1.0
 hk.rotation_euler = (0, 0, math.radians(14))
 parts.append(C.assign(hk, iron))
 
-C.finish(NAME, parts, version=VERSION, lights=[((0.0, 0.0, 0.102), 0.9, (1.0, 0.52, 0.18))], tex_res=512, budget_tris=2500,
+C.finish(NAME, parts, version=VERSION, lights=[((0.0, 0.0, 0.102), 0.45, (1.0, 0.52, 0.18))], tex_res=512, budget_tris=2500,
          refs=[84, 80],
          notes="ハリケーン型の坑道ランタン（灯った状態）。潰れたガード線の部分でホヤが大きく割れ、芯と炎だけ発光。S字金具つき。")

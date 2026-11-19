@@ -201,8 +201,8 @@ def sooty_glass(name, soot_z=None, scale=1.0, tint=(0.034, 0.024, 0.014), crack_
     def ridge(sc, w):
         n = b.noise(sc, 3, 0.45)
         return b.ramp(b.math("ABSOLUTE", b.math("SUBTRACT", n, 0.5)), [(0.0, 1.0), (w, 0.0)])
-    cr1 = ridge(14.0 / scale, 0.012)
-    cr2 = ridge(38.0 / scale, 0.010)
+    cr1 = ridge(14.0 / scale, 0.022)
+    cr2 = ridge(38.0 / scale, 0.016)
     near = b.dist_mask(crack_center, *crack_r) if crack_center is not None else 0.4
     crack = b.math("MULTIPLY", b.math("MAXIMUM", cr1, cr2), b.math("ADD", b.math("MULTIPLY", near, 0.85), 0.15), clamp=True)
     col = b.mix(n_big, tint, (tint[0] * 1.6, tint[1] * 1.5, tint[2] * 1.3))
@@ -211,7 +211,7 @@ def sooty_glass(name, soot_z=None, scale=1.0, tint=(0.034, 0.024, 0.014), crack_
         soot = b.math("MAXIMUM", soot, b.height_mask(*soot_z))
     soot = b.math("MULTIPLY", soot, b.ramp(n_fine, [(0.2, 0.7), (0.8, 1.0)]))
     col = b.mix(soot, col, (0.006, 0.0055, 0.005))
-    col = b.mix(b.math("MULTIPLY", crack, 0.8), col, (0.10, 0.09, 0.08))
+    col = b.mix(b.math("MULTIPLY", crack, 0.9), col, (0.14, 0.125, 0.11))
     # 割れ口（少し明るい断面）
     edge = b.edge_mask(0.0012, 0.08, 0.35)
     col = b.mix(b.math("MULTIPLY", edge, 0.35), col, (0.09, 0.085, 0.075))
@@ -270,3 +270,66 @@ def canvas(name, soot_z=None, scale=1.0, base=(0.085, 0.066, 0.045), heat_center
     r = b.mixf(ash, 0.92, 0.97)
     b.normal_from(None, bump_height=b.math("ADD", weave, b.math("MULTIPLY", n_mid, 2.0)), bump_strength=0.35, bump_dist=0.0015)
     return b.out(col, r, 0.0)
+
+
+def splinters(prefix, origin, direction, radius, n=4, length=0.12, seed=0, mat=None):
+    """折れ口のささくれ：細く尖った木片を direction 方向へ n 本（断面三角形、先端0）"""
+    rnd = random.Random(seed)
+    d = Vector(direction).normalized()
+    side = d.cross(Vector((0, 0, 1)))
+    if side.length < 1e-4:
+        side = d.cross(Vector((1, 0, 0)))
+    side.normalize()
+    up = side.cross(d).normalized()
+    out = []
+    for i in range(n):
+        a = rnd.uniform(0, 2 * math.pi)
+        rr = radius * rnd.uniform(0.2, 0.85)
+        base = Vector(origin) + (side * math.cos(a) + up * math.sin(a)) * rr - d * length * 0.15
+        L = length * rnd.uniform(0.45, 1.1)
+        bend = (side * rnd.uniform(-1, 1) + up * rnd.uniform(-1, 1)) * L * 0.18
+        pts = [base, base + d * L * 0.5 + bend * 0.4, base + d * L + bend]
+        w = radius * rnd.uniform(0.10, 0.22)
+        prof = [(-w, -w * 0.4), (w, -w * 0.4), (0.0, w * 0.8)]
+        ob = C.sweep(f"{prefix}_{i}", pts, prof, scale_fn=lambda u: max(0.02, 1.0 - u), smooth=False)
+        if mat is not None:
+            C.assign(ob, mat)
+        out.append(ob)
+    return out
+
+
+def mine_rock(name, scale=1.0):
+    """坑道の落石（玄武岩）：#1d1a19〜#2e2926、割れたばかりの面は少し明るく、上向き面と凹みに灰"""
+    b = C.NB(name)
+    diff = b.image(C.cc0("rock_face_02", "diff"), scale * 0.8)
+    nrm = b.image(C.cc0("rock_face_02", "nor_gl"), scale * 0.8)
+    n_big = b.noise(2.0 / scale, 6, 0.6)
+    n_fine = b.noise(30.0 / scale, 5, 0.55)
+    col = b.mix(n_big, (0.013, 0.011, 0.010), (0.026, 0.022, 0.020))
+    if diff is not None:
+        hs = b.n("ShaderNodeHueSaturation")
+        hs.inputs["Saturation"].default_value = 0.35
+        hs.inputs["Value"].default_value = 0.45
+        b.link(diff, hs.inputs["Color"])
+        col = b.mix(0.55, col, hs.outputs[0], "MULTIPLY")
+        col = b.mix(0.2, col, hs.outputs[0])
+    col = b.mix(b.math("MULTIPLY", n_fine, 0.4), col, (0.008, 0.007, 0.007))
+    edge = b.edge_mask(0.01, 0.03, 0.25)
+    col = b.mix(b.math("MULTIPLY", edge, 0.6), col, (0.045, 0.040, 0.036))
+    cav = b.math("SUBTRACT", 1.0, b.cavity(0.06))
+    ash = b.math("MAXIMUM", b.math("MULTIPLY", cav, 0.5), b.math("MULTIPLY", b.up_mask(0.55, 0.9), 0.6))
+    ash = b.math("MULTIPLY", ash, b.ramp(n_big, [(0.25, 0.1), (0.7, 1.0)]))
+    col = b.mix(b.math("MULTIPLY", ash, 0.75), col, (0.085, 0.079, 0.072))
+    r = b.mixf(ash, 0.82, 0.96)
+    r = b.mixf(edge, r, 0.7)
+    b.normal_from(nrm, 0.8, bump_height=n_fine, bump_strength=0.3, bump_dist=0.01)
+    return b.out(col, r, 0.0)
+
+
+def staple(name, center, axis_dir, width=0.08, leg=0.05, thick=0.008, seed=0):
+    """コの字の鉄の鎹（かすがい）。center=橋の中心、axis_dir=橋の向き。脚は -Z 側（後で回転して使う）"""
+    a = Vector(axis_dir).normalized()
+    c = Vector(center)
+    pts = [c - a * width / 2 + Vector((0, 0, -leg)), c - a * width / 2, c + a * width / 2, c + a * width / 2 + Vector((0, 0, -leg))]
+    pts = C.bezier(pts[0], pts[1] + Vector((0, 0, 0.0)), pts[2], pts[3], n=8)
+    return C.sweep(name, pts, C.rect_profile(thick * 1.6, thick, chamfer=thick * 0.25), up_fn=lambda k, p, t: (0, 0, 1))
