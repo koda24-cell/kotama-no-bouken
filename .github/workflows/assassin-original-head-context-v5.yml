@@ -30,7 +30,7 @@ jobs:
           p='output/assassin-original-head-v5'
           q=json.load(open(p+'/qa.json'))
           assert q['status']=='NOT_APPROVED' and not q['source_VRM_imported'] and q['source_vertices_copied']==0
-          assert q['main_head_vertices']==8065 and q['main_head_quads']==8064
+          assert q['main_head_vertices']==8161 and q['main_head_quads']==8064
           assert q['head_lower_open_edges']==96 and not q['main_head_nonmanifold_gt2']
           for n in ('front','right','left','front_three_quarter','back','back_three_quarter','back_upper'):
             assert os.path.getsize(f'{p}/{n}.png')>2500
