@@ -48,3 +48,11 @@
 - V12（causticsの格子削除のみ）は [run #44466555440](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44466555440) が起動したが、最新確認時は依存パッケージ導入段階で実PNG未取得。
 - V13でさらに、川底の画像テクスチャを保持しつつ、河床のY座標に応じて水没部分のみ最大16%程度の薄い青緑散乱色を加える。広いグラデーションで境界をぼかす。水面の微反射・透明・低屈折は別のレイヤーとし、V11のVoronoi光格子は再投入しない。
 - V13のコード保存・GitHub pushを確認。[V13 run #44468842269](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44468842269) は起動確認。**V13 ClamAV/Blender実成功、3方向PNG、美観は未検証**。本実験では模型を正式採用しない。
+
+
+## V13 実行完了・実画像レビュー（2026-11-19）
+- [Run #44468842269](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44468842269) **success**。ClamAV取得前の定義更新・実スキャン、素材変換、Cycles3方向、PNG形式検証、Artifactアップロード、実行結果報告の各ステップがsuccess。Artifact ID **14503113499**、ZIP **6,570,438 bytes**を実取得。
+- ZIP内 `scan_manifest.json`: `SCANNED_OK_NOT_APPROVED`、ClamAV 1.5.4/28187、exit 0、`river_small_rocks_diff_1k.jpg: OK`、SHA-256 `adbcaae1f1445d5b49797c71ea2c3f43ccaf7b109f933a427f0d0993d1dbbc51`。`execution_report.json`: `safety_check=CONFIRMED_OK`、`approval=NOT_APPROVED`。
+- 実ZIPを展開し、front/side/angleのSHA-256を`render_manifest.json`と各1件ずつ照合して**3枚すべて一致**。V13 `.blend`、透明水面テクスチャ、各種manifestの存在を確認。
+- **V13美術判定：不合格。** V11のひび割れ状Voronoi多角形格子は解消。一方、低コントラストの青緑の薄い膜が川底全体を均一に覆い、川底の石が水面に出ているように見える。屈折や柔らかい反射の質感が弱く、川の流れや深さが読みにくい。岸の岩も明るい単純形状で周囲となじみにくい。画像は角度・正面・側面で確認済。
+- 次の優先度：水色の底面着色をさらに減らす/場所によって浅い部分のみ、幅のある反射に方向性を与える、岸際接触帯を非一様にする。水面表面の規則的な線状パターンやVoronoi格子は再導入しない。既存モデル・素材は保持し、候補PR #517のままで正式保存しない。
