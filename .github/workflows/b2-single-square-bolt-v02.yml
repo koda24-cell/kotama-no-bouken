@@ -1,0 +1,65 @@
+name: B2 One Antique Square Iron Bearing Bolt V02 Blender
+on:
+  push:
+    branches: [feature/gpt-b2-forged-bearing-bolt-v01-20261119]
+    paths:
+      - 'tools/b2-waterwheel-bolt/build_square_forged_bolt_v02.py'
+      - '.github/workflows/b2-single-square-bolt-v02.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record actual run
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-forged-bearing-bolt-v01-20261119
+          git reset --hard origin/feature/gpt-b2-forged-bearing-bolt-v01-20261119
+          mkdir -p docs/3d/b2-waterwheel-bolt
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-bolt/latest-v02.json
+          git add docs/3d/b2-waterwheel-bolt/latest-v02.json
+          git commit -m "chore(b2): record forged bolt real Blender run"
+          git push origin HEAD:feature/gpt-b2-forged-bearing-bolt-v01-20261119
+      - name: Build iron bolt in Docker Blender and render
+        run: |
+          set -o pipefail
+          mkdir -p render-output/b2-square-bolt-v02
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-bolt/build_square_forged_bolt_v02.py -- render-output/b2-square-bolt-v02 | tee /tmp/bolt.log
+          grep -q 'B2_SQUARE_FORGED_BOLT_V02_REAL_RENDER_OK' /tmp/bolt.log
+      - name: Verify Blender generated outputs
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          root=Path('render-output/b2-square-bolt-v02')
+          m=json.loads((root/'b2_single_forged_square_bolt_v02_manifest.json').read_text())
+          assert m['independent_bolt_count']==1 and m['status']=='NOT_APPROVED'
+          assert m['thread_turns']==8 and m['geometry_faces']>500 and len(m['files'])==7
+          assert sum(n.endswith('_front.png') or n.endswith('_side.png') or n.endswith('_angle.png') or n.endswith('_back.png') for n in m['files'])==4
+          for n,meta in m['files'].items():
+            data=(root/n).read_bytes()
+            assert len(data)==meta['bytes'] and hashlib.sha256(data).hexdigest()==meta['sha256'],n
+            if n.endswith('.png'):assert data[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if n.endswith('.blend'):assert len(data)>100000
+            if n.endswith('.glb'):
+              assert data[:4]==b'glTF'
+              length=struct.unpack_from('<I',data,12)[0]
+              gltf=json.loads(data[20:20+length])
+              assert len(gltf.get('meshes',[]))==1 and len(gltf.get('images',[]))>=1
+          print('B2_BOLT_V02_GLTF_PNG_SHA_CHECKS_PASSED')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-forged-square-bolt-v02
+          path: render-output/b2-square-bolt-v02
+          retention-days: 14
+          if-no-files-found: warn
