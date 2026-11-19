@@ -343,8 +343,35 @@ export function createSetpieces(S) {
           const g = rockSheet(0.6, up ? 4.2 : 2.2, 2, 5, sd + 80 + side, 0.15); g.rotateY(side > 0 ? Math.PI / 2 : -Math.PI / 2);
           bag.add('sp:frostRock', at(g, side * (SW / 2 + 0.7), (up ? 4.2 : 2.2) / 2 - 0.1, bz - 0.05));
         }
-        { const g = new THREE.PlaneGeometry(SW - 0.2, up ? 2.4 : 1.0); noUv(g); bag.add('sp:tunnelGlow', at(g, 0, up ? (n * R) + 1.1 : -0.4, bz + 0.2)); }
-        for (let k = 0; k < 6; k++) bag.add('ice', at(icicle(0.05, 0.25 + rnd(sd + k) * 0.4, sd + k), (rnd(sd + k * 7) - 0.5) * SW, up ? 3.9 : 1.95, bz - 0.05));
+        // 口：平たい水色の光の板（岩に食い込んで変な形に見えた。ユーザー指摘 2026-11-19）をやめ、
+        // トンネル側と同じ見え方にする：アーチ形の暗い奥（凹み）＋霜の石のアーチ枠＋上に細く漏れる光
+        {
+          const aR = Math.min(1.05, SW / 2 - 0.1), y0 = up ? n * R - 0.05 : -0.6, rectH = up ? 1.7 : 1.0;
+          const sh = new THREE.Shape();
+          sh.moveTo(-aR, y0); sh.lineTo(aR, y0); sh.lineTo(aR, y0 + rectH);
+          for (let k = 1; k <= 12; k++) { const t0 = Math.PI * k / 12; sh.lineTo(Math.cos(t0) * aR, y0 + rectH + Math.sin(t0) * aR * 0.55); }
+          sh.lineTo(-aR, y0);
+          const g = new THREE.ShapeGeometry(sh, 1); g.rotateY(Math.PI);
+          bag.add('Deep cavern rock', at(g, 0, 0, bz + 0.12));
+          // 奥の上に細く漏れる光（トンネル側と同じ細さ）
+          { const gl = new THREE.PlaneGeometry(aR * 1.3, 0.16); noUv(gl); gl.rotateY(Math.PI); bag.add(up ? 'sp:tunnelGlow' : 'sp:tunnelGlowDeep', at(gl, 0, y0 + rectH + aR * 0.28, bz + 0.1)); }
+          // 枠：両脇の柱石と迫石のアーチ
+          for (const side of [-1, 1]) for (let y = y0, k = 0; y < y0 + rectH; k++) {
+            const h = Math.min(y0 + rectH - y, 0.4 + rnd(sd + k * 5 + side * 9) * 0.25);
+            bag.add('sp:stairStone', at(stone(0.42, h - 0.02, 0.5, sd + k * 7 + side * 13, 0.04), side * (aR + 0.18), y + h / 2, bz + 0.02));
+            y += h;
+          }
+          const nV = 8;
+          for (let k = 0; k < nV; k++) {
+            const t0 = Math.PI * (k + 0.5) / nV, px = Math.cos(t0) * (aR + 0.18), py = y0 + rectH + Math.sin(t0) * (aR + 0.18) * 0.55;
+            bag.add('sp:stairStone', at(stone(0.42, 0.32, 0.52, sd + k * 23, 0.03), px, py, bz + 0.02, 0, t0 - Math.PI / 2));
+          }
+          // アーチの下に垂れる氷柱
+          for (let k = 0; k < 6; k++) {
+            const t0 = Math.PI * (0.12 + 0.76 * rnd(sd + k * 37)), px = Math.cos(t0) * aR, py = y0 + rectH + Math.sin(t0) * aR * 0.55 - 0.1;
+            bag.add('ice', at(icicle(0.035 + rnd(sd + k) * 0.03, 0.18 + rnd(sd + k * 3) * 0.3, sd + k), px, py, bz - 0.08));
+          }
+        }
       }
       B.add('stairs', bag.piece('b2sp_stairs'), M4(ox, 0, oz, yaw), o.tx, o.ty);
       log.stairs.push({ dir: o.dir, tx: o.tx, ty: o.ty, back, tunnel, face: OPP[back] });
