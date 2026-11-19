@@ -1,8 +1,8 @@
 {
   "asset": "b4p_toolbag_garud",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
-  "triangles": 3816,
+  "triangles": 5612,
   "budget_triangles": 5000,
   "materials": [
     "b4p_toolbag_garud_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    0.557,
-    0.383,
-    0.459
+    0.564,
+    0.368,
+    0.47
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_toolbag_garud.glb",
-  "glb_bytes": 642764,
+  "glb_bytes": 735916,
   "cc0_textures": {
     "rusty_metal_03_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rusty_metal_03",
@@ -63,16 +63,16 @@
     83
   ],
   "sha256": {
-    "b4p_toolbag_garud.glb": "8c031e74ac7829d4d5840f8fdd48a9ab33970c45398c43e4a10684a58b0f1c91",
-    "b4p_toolbag_garud_volcanic_front.png": "a7849e96a8d0d4f8130afcb07edc2197048839ef4825be16e1f54d552756e27f",
-    "b4p_toolbag_garud_volcanic_side.png": "8e6bb0fed883bb6054565f9fe12b0758e4409c9259ccaa123d5d998c27feef80",
-    "b4p_toolbag_garud_volcanic_angle.png": "035d10e236a3494e915bbc526ac6811ec38c9e0a395acb670626cd55ded20b0f",
-    "b4p_toolbag_garud_volcanic_top.png": "8b290e51b33be3ee5277adc12dfdb3d05bb0ca45fa9f88b2b31b41e17fd3441f",
-    "b4p_toolbag_garud_volcanic_close.png": "e76a71f70a40da6dbd991f7aec8617f2f876d12a05a6a6a17b97e8ea761d8709",
-    "b4p_toolbag_garud_volcanic_back.png": "e58d0253ca3a86086222ad8c9675c62ec19eb889935089340ed9437d9450b72e",
-    "b4p_toolbag_garud_studio_front.png": "7add938c22f032c29d5eeeacd5ffcda680aa3c4fdbaf46c743e91af68f73480a",
-    "b4p_toolbag_garud_studio_angle.png": "46b86125d006609910a74e2eee43fe18c06eed9953e6c5d298728125f3a50a03",
-    "b4p_toolbag_garud_studio_scale.png": "05e6f8f794bd96f8da2175259c7bd596dbfd6848d13b8292226825ddadf93511"
+    "b4p_toolbag_garud.glb": "f13af4a24ebe5a4b5f16bdb49c1e3c75e322a6f3b6675454ad8e229e583fd821",
+    "b4p_toolbag_garud_volcanic_front.png": "d5bfa07a3f949ecba2011cb09c2e9b6ac0a3a5a5f8b6ced32ce28389a1f8b0e2",
+    "b4p_toolbag_garud_volcanic_side.png": "88cb83af263d67a740f019674939ec1be829bf207556b03dd4aa7462ac66641d",
+    "b4p_toolbag_garud_volcanic_angle.png": "bc08d0a7669c640aa9e2d3d78d17993cafa3fe07b940f0f75f4201262e432913",
+    "b4p_toolbag_garud_volcanic_top.png": "5278cdbf1f2b9f028ec4781fb5aeeb7ce4b0ab8567d08aff5692e96b4bec9684",
+    "b4p_toolbag_garud_volcanic_close.png": "f0395ef2b1987e9e4ec9e2845f39beb6a18384bf310caeeb4e9ffd234c27edb9",
+    "b4p_toolbag_garud_volcanic_back.png": "a779b9d20114a06403e3486d41b74a0ce3cebea00b88b6ff0366de8ca44ac9c7",
+    "b4p_toolbag_garud_studio_front.png": "f5d15cccfd2dadf6c6bc4686b2bde09f9fa5b46e4f518cd9530eb3639e19fe64",
+    "b4p_toolbag_garud_studio_angle.png": "14cc16053b3d7ed091bee811ee1b3949cda1fcbc40b4448c717c9308c0ff2ef2",
+    "b4p_toolbag_garud_studio_scale.png": "3c43c21d6232a44c2b5389bc246af59d06708f1fffba511258b4bff18278728b"
   },
   "renders": [
     "b4p_toolbag_garud_volcanic_front.png",
@@ -86,7 +86,7 @@
     "b4p_toolbag_garud_studio_scale.png"
   ],
   "samples": 96,
-  "notes": "ガルドの道具袋。煤けた帆布、焼け穴、つるはしの尖りが前面を突き破り、柄が口から突き出す。革の手袋と名札（縫い取りの代わり）。",
+  "notes": "ガルドの道具袋。煤けた帆布＋革の底、焼け穴、つるはしの尖りが前面を突き破り、柄が口から突き出す。革の持ち手2本、口に掛かった手袋、名札（縫い目と糸のつるはし印＝縫い取りの代わり、文字なし）。",
   "game_lights": [],
   "approval": "NOT_APPROVED",
   "design": "docs/3d/B4_PROPS_DESIGN.md"
