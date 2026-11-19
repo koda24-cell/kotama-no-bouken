@@ -170,7 +170,7 @@ def plank(name, length, width, thick, segs=6, split_a=None, split_b=None, seed=0
         if sp:
             # 折れ口：中心に突き出た裂け（ささくれ）の先端へ扇状に閉じる
             cx = sum(v.co.x for v in ring) / M
-            tip = bm.verts.new((cx + sign * sp * rnd.uniform(0.6, 1.3), rnd.uniform(-hw, hw) * 0.4, rnd.uniform(-ht, ht) * 0.4))
+            tip = bm.verts.new((cx + sign * sp * rnd.uniform(0.25, 0.6), rnd.uniform(-hw, hw) * 0.5, rnd.uniform(-ht, ht) * 0.5))
             for j in range(M):
                 a, b = ring[j], ring[(j + 1) % M]
                 bm.faces.new((a, b, tip) if sign > 0 else (b, a, tip))
@@ -292,10 +292,10 @@ def splinters(prefix, origin, direction, radius, n=4, length=0.12, seed=0, mat=N
         a = rnd.uniform(0, 2 * math.pi)
         rr = radius * rnd.uniform(0.2, 0.85)
         base = Vector(origin) + (side * math.cos(a) + up * math.sin(a)) * rr - d * length * 0.15
-        L = length * rnd.uniform(0.45, 1.1)
+        L = length * rnd.uniform(0.35, 1.0)
         bend = (side * rnd.uniform(-1, 1) + up * rnd.uniform(-1, 1)) * L * 0.18
         pts = [base, base + d * L * 0.5 + bend * 0.4, base + d * L + bend]
-        w = radius * rnd.uniform(0.10, 0.22)
+        w = radius * rnd.uniform(0.14, 0.30)
         prof = [(-w, -w * 0.4), (w, -w * 0.4), (0.0, w * 0.8)]
         ob = C.sweep(f"{prefix}_{i}", pts, prof, scale_fn=lambda u: max(0.02, 1.0 - u), smooth=False)
         if mat is not None:

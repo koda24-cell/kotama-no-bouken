@@ -31,7 +31,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Vector  # noqa: E402
 
 NAME = "b4p_timber_set_broken"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(5)
 C.reset(5)
 
@@ -51,7 +51,7 @@ def add(obs):
         parts.append(obs)
 
 
-def lay_board(name, b0, b1, t, beam_half=0.10, length=0.52, width=0.12, thick=0.032, dy=0.0, spin=0.0, **kw):
+def lay_board(name, b0, b1, t, beam_half=0.12, length=0.52, width=0.12, thick=0.032, dy=0.0, spin=0.0, **kw):
     """梁 b0→b1 の位置 t に、梁に直交して乗る矢板"""
     b0, b1 = Vector(b0), Vector(b1)
     d = (b1 - b0).normalized()
@@ -67,25 +67,25 @@ def lay_board(name, b0, b1, t, beam_half=0.10, length=0.52, width=0.12, thick=0.
 
 # ---- 左の脚（立っている、内へ傾く） ----
 LP0, LP1 = Vector((-1.05, 0.0, 0.0)), Vector((-0.90, 0.0, 2.10))
-add(L.beam_between("post_L", LP0, LP1, 0.20, 0.19, seed=1, bow=0.02, chip=0.03, segs=16, mat=wood_v))
+add(L.beam_between("post_L", LP0, LP1, 0.24, 0.23, seed=1, bow=0.02, chip=0.03, segs=16, mat=wood_v))
 
 # ---- 右の脚：荷重で z≈1.15 で座屈して折れ、上半分が外へ傾く ----
 RP0, RPk = Vector((1.12, 0.02, 0.0)), Vector((1.03, 0.03, 1.15))
 RPk2, RP1 = Vector((1.05, 0.05, 1.12)), Vector((1.24, 0.07, 2.00))
-add(L.beam_between("post_R_low", RP0, RPk, 0.20, 0.19, split_b=0.10, seed=3, bow=0.012, chip=0.035, segs=10, roll=7, mat=wood_v))
-add(L.beam_between("post_R_up", RPk2, RP1, 0.19, 0.19, split_a=0.12, seed=4, bow=0.012, chip=0.03, segs=10, roll=-5, mat=wood_v))
-add(L.splinters("spl_Rk_low", RPk + Vector((0, 0, 0.01)), (0.15, 0.1, 1), 0.10, n=5, length=0.15, seed=31, mat=wood_v))
-add(L.splinters("spl_Rk_up", RPk2 + Vector((0, 0, -0.01)), (-0.25, -0.1, -1), 0.10, n=4, length=0.13, seed=32, mat=wood_v))
+add(L.beam_between("post_R_low", RP0, RPk, 0.24, 0.23, split_b=0.10, seed=3, bow=0.012, chip=0.035, segs=10, roll=7, mat=wood_v))
+add(L.beam_between("post_R_up", RPk2, RP1, 0.23, 0.23, split_a=0.12, seed=4, bow=0.012, chip=0.03, segs=10, roll=-5, mat=wood_v))
+add(L.splinters("spl_Rk_low", RPk + Vector((0, 0, 0.01)), (0.15, 0.1, 1), 0.12, n=8, length=0.12, seed=31, mat=wood_v))
+add(L.splinters("spl_Rk_up", RPk2 + Vector((0, 0, -0.01)), (-0.25, -0.1, -1), 0.12, n=7, length=0.11, seed=32, mat=wood_v))
 
 # ---- 天井梁：中央で折れて V 字に落ちる。左半分は左脚の上で傾き、右半分は右脚の頭から落石の上へ ----
-CL0, CL1 = Vector((-1.17, 0.0, 2.24)), Vector((-0.06, 0.01, 1.64))
-add(L.beam_between("cap_L", CL0, CL1, 0.20, 0.20, split_b=0.12, seed=2, bow=0.012, chip=0.035, segs=12, roll=4, mat=wood_x))
+CL0, CL1 = Vector((-1.19, 0.0, 2.25)), Vector((-0.06, 0.01, 1.64))
+add(L.beam_between("cap_L", CL0, CL1, 0.24, 0.24, split_b=0.12, seed=2, bow=0.012, chip=0.035, segs=12, roll=4, mat=wood_x))
 d = (CL1 - CL0).normalized()
-add(L.splinters("spl_capL", CL1 + d * 0.02, d + Vector((0, 0, -0.5)), 0.10, n=6, length=0.17, seed=21, mat=wood_x))
+add(L.splinters("spl_capL", CL1 + d * 0.02, d + Vector((0, 0, -0.5)), 0.12, n=9, length=0.12, seed=21, mat=wood_x))
 CR0, CR1 = Vector((0.22, 0.02, 0.62)), Vector((1.30, 0.07, 2.20))
-add(L.beam_between("cap_R", CR0, CR1, 0.20, 0.20, split_a=0.13, seed=5, bow=0.012, chip=0.035, segs=12, roll=-6, mat=wood_x))
+add(L.beam_between("cap_R", CR0, CR1, 0.24, 0.24, split_a=0.13, seed=5, bow=0.012, chip=0.035, segs=12, roll=-6, mat=wood_x))
 d = (CR0 - CR1).normalized()
-add(L.splinters("spl_capR", CR0 + d * 0.02, d + Vector((0, 0, 0.3)), 0.10, n=6, length=0.16, seed=51, mat=wood_x))
+add(L.splinters("spl_capR", CR0 + d * 0.02, d + Vector((0, 0, 0.3)), 0.12, n=8, length=0.11, seed=51, mat=wood_x))
 
 # ---- 楔（左の継手に2本、1本は抜けかけ。足元に落ちた1本） ----
 for j, (dx, out, tilt) in enumerate(((-0.06, 0.02, 0), (0.065, 0.08, 11))):
@@ -105,10 +105,19 @@ st = C.sweep("staple_R", C.bezier(sp[0], sp[1], sp[2], sp[3], n=8), C.rect_profi
 add(C.assign(st, iron))
 
 # ---- 矢板：両半分の梁に乗る板、折れた板、落石に刺さった板 ----
-for j, (t, dy, sp_, spin) in enumerate(((0.10, 0.01, None, 3), (0.32, -0.02, None, -4), (0.55, 0.03, 0.05, 6), (0.80, -0.01, 0.07, -9))):
-    add(lay_board(f"lagL_{j}", CL0, CL1, t, dy=dy, spin=spin, seed=70 + j, chip=0.012, split_b=sp_))
-for j, (t, dy, sp_, spin) in enumerate(((0.62, 0.02, None, -5), (0.85, -0.02, 0.06, 4))):
-    add(lay_board(f"lagR_{j}", CR0, CR1, t, dy=dy, spin=spin, seed=80 + j, chip=0.012, split_a=sp_))
+# 天井の板張り：板を隙間少なく並べる（1枚欠落、先の2枚は折れ口）
+ts = [0.05 + 0.125 * k for k in range(7)]
+for j, t in enumerate(ts):
+    if j == 4:
+        continue
+    sp_ = 0.06 if j >= 5 else None
+    add(lay_board(f"lagL_{j}", CL0, CL1, t, width=0.14, dy=rnd.uniform(-0.03, 0.03), spin=rnd.uniform(-5, 5), seed=70 + j,
+                  chip=0.012, split_b=sp_, length=0.52 if j < 5 else rnd.uniform(0.34, 0.42)))
+for j, t in enumerate((0.60, 0.72, 0.84, 0.96)):
+    if j == 1:
+        continue
+    add(lay_board(f"lagR_{j}", CR0, CR1, t, width=0.14, dy=rnd.uniform(-0.03, 0.03), spin=rnd.uniform(-6, 6), seed=80 + j,
+                  chip=0.012, split_a=0.06 if j == 0 else None))
 for j, (p0, p1) in enumerate((((-0.45, -0.20, 0.05), (-0.18, 0.12, 0.62)), ((0.55, 0.20, 0.10), (0.78, -0.10, 0.50)))):
     p0, p1 = Vector(p0), Vector(p1)
     b = L.plank(f"lag_fallen_{j}", (p1 - p0).length, 0.12, 0.032, segs=4, split_b=0.07, seed=90 + j, round_edges=0.2, chip=0.012)
@@ -119,17 +128,17 @@ C.xform(b, (-0.62, 0.12, 0.018), (0, 4, 18))
 add(C.assign(b, wood_y))
 
 # ---- 落石（玄武岩）：V 字の下に崩れた土砂の山。大きな塊が積み重なり、破片が裾に散る ----
-pile = [((0.08, 0.00, 0.0), 0.33, 3), ((-0.32, 0.05, 0.0), 0.26, 2), ((0.50, -0.05, 0.0), 0.25, 2), ((-0.62, -0.08, 0.0), 0.17, 2),
-        ((0.84, 0.06, 0.0), 0.16, 2), ((0.30, 0.06, 0.30), 0.19, 2), ((-0.12, -0.10, 0.28), 0.15, 2), ((0.62, 0.12, 0.22), 0.13, 2),
-        ((-0.45, 0.14, 0.18), 0.12, 2)]
+pile = [((0.10, 0.00, 0.0), 0.38, 3), ((-0.32, 0.05, 0.0), 0.30, 2), ((0.52, -0.05, 0.0), 0.30, 2), ((-0.66, -0.06, 0.0), 0.20, 2),
+        ((0.88, 0.05, 0.0), 0.19, 2), ((0.28, 0.05, 0.38), 0.22, 2), ((-0.10, -0.08, 0.35), 0.18, 2), ((0.62, 0.10, 0.30), 0.16, 2),
+        ((-0.46, 0.12, 0.25), 0.15, 2), ((0.06, 0.12, 0.55), 0.13, 2), ((-0.85, 0.10, 0.0), 0.13, 2), ((0.72, -0.14, 0.0), 0.12, 1)]
 for j, ((x, y, zb), r, det) in enumerate(pile):
     sq = (1.0, rnd.uniform(0.62, 0.78), rnd.uniform(0.55, 0.72))
     ob = C.rock(f"rock_{j}", r, detail=det, rough=0.32, squash=sq, seed=100 + j, facet=5)
     z = zb + r * sq[2] * 0.7
     C.xform(ob, (x, y, z), (rnd.uniform(-20, 20), rnd.uniform(-20, 20), rnd.uniform(0, 360)))
     add(C.assign(ob, rock))
-for j in range(16):
-    r = rnd.uniform(0.03, 0.08)
+for j in range(22):
+    r = rnd.uniform(0.03, 0.09)
     x = rnd.uniform(-0.95, 1.05)
     y = rnd.uniform(-0.24, 0.24)
     ob = C.rock(f"frag_{j}", r, detail=1, rough=0.3, squash=(1, 0.8, 0.6), seed=200 + j, facet=3)
