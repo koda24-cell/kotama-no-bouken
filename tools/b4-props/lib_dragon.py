@@ -770,3 +770,32 @@ def bone_mat(name, soot_lo=0.0, soot_hi=0.5, scale=1.0):
     hgt = b.math("ADD", hgt, b.math("MULTIPLY", flake, 0.3))
     b.normal_from(None, bump_height=hgt, bump_strength=0.55, bump_dist=0.004)
     return b.out(col, r, 0.0)
+
+
+class _Wrap(C.NB):
+    """既存の材質（common の weathered_* で作ったもの）にノードを足すための NB"""
+    def __init__(self, mat):  # noqa: super を呼ばない
+        self.m = mat
+        self.nt = mat.node_tree
+        self.bsdf = next(n for n in self.nt.nodes if n.type == "BSDF_PRINCIPLED")
+        self.x = -1800
+
+
+def charred_wood(name, glow_strength=5.0, hot=(1.0, 0.22, 0.03), scale=0.6, grain_axis="Z"):
+    """炭化した木: common.weathered_wood(char=1.0)（亀甲割れ・黒・灰）をベースに、
+    glow 属性（うろの内側・芯）と cd 属性（芯への近さ）のある所だけ、亀甲割れの溝の中を赤熱させる。
+    表面（割れの間の炭の島）は黒いまま"""
+    m = C.weathered_wood(name, char=1.0, grain_axis=grain_axis, scale=scale)
+    b = _Wrap(m)
+    glow = attr(b, "glow")
+    cd = attr(b, "cd")
+    n_big = b.noise(2.0, 5, 0.6)
+    alli = b.ramp(b.voronoi(26.0 / scale * 0.7, "DISTANCE_TO_EDGE", vec=warp(b, 3.0, 0.05)), [(0.0, 1.0), (0.07, 0.0)])
+    # 赤熱してよい範囲: glow 面は全面の割れ、cd が高い所は割れの中だけ
+    zone = b.math("MAXIMUM", glow, b.math("MULTIPLY", b._map(cd, 0.45, 0.95), b.ramp(n_big, [(0.35, 0.2), (0.65, 1.0)])))
+    e = b.math("MULTIPLY", alli, zone)
+    e = b.math("MAXIMUM", e, b.math("MULTIPLY", glow, b.ramp(n_big, [(0.3, 0.15), (0.7, 0.45)])))  # うろの奥のぼんやりした赤
+    emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.25, 0.025, 0.004)), (0.6, (hot[0] * 0.8, hot[1] * 0.5, hot[2] * 0.4)), (1.0, hot)])
+    b.link(emit, b.bsdf.inputs["Emission Color"])
+    b.bsdf.inputs["Emission Strength"].default_value = glow_strength
+    return m
