@@ -32,7 +32,7 @@ jobs:
       run:
         shell: bash
     container:
-      image: ghcr.io/koda24-cell/kotama-blender5-clamav@sha256:ba931c88dc12dc44a604d8cc03ab6a06a8212e3bd3787d1b00d10dd1413068d1
+      image: ghcr.io/koda24-cell/kotama-blender5-clamav@sha256:05f93bdd5c2c0dc541c34b6f30e488f0c21a53c403c50311f26fd43357ce8047
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
