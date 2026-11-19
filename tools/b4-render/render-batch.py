@@ -30,6 +30,7 @@ for vec,power in [((3,-4,6),850),((-4,2,4),550)]:
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
 scene.cycles.samples=20
+scene.cycles.use_denoising=False
 scene.render.resolution_x=960
 scene.render.resolution_y=720
 scene.render.resolution_percentage=100
