@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - feature/shared-blender53-migration-wave2-20261119
       - feature/b4-docker-batch-render-20261112
       - feature/shared-container-b4-batch-20261119
     paths:

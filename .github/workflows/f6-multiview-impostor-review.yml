@@ -1,7 +1,7 @@
 name: F6 Multi-view Impostor Atlas Review
 on:
   push:
-    branches: [feature/gpt-shared-3d-optimization-actions-20261117]
+    branches: [feature/gpt-shared-3d-optimization-actions-20261117, feature/shared-blender53-migration-wave2-20261119]
     paths:
       - tools/3d-performance/build_multiview_impostor.py
       - tools/3d-performance/pack_multiview_atlas.py
