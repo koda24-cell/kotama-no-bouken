@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - feature/shared-blender53-migration-wave3-20261119
       - feature/b2-frozen-ancient-altar-20261112
     paths:
       - 'tools/b2-altar/**'

@@ -2,6 +2,7 @@ name: B2 Frozen Watergate Blender Docker
 on:
   push:
     branches:
+      - feature/shared-blender53-migration-wave3-20261119
       - feature/b2-frozen-watergate-docker-20261112
   workflow_dispatch:
 permissions:
