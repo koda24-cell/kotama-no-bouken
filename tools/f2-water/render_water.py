@@ -165,7 +165,28 @@ overlay_mix=wn.new("ShaderNodeMixShader")
 wl.new(overlay_alpha.outputs[0],overlay_mix.inputs[0])
 wl.new(mixhigh.outputs[0],overlay_mix.inputs[1])
 wl.new(overlay_light.outputs["Emission"],overlay_mix.inputs[2])
-wl.new(overlay_mix.outputs[0],outnode.inputs["Surface"])
+# V7 AI-generated source image is used directly as a second COLOR + ALPHA layer.
+# Git stores its 96px RGBA original; rasterizer prepares a smooth 1024px PNG.
+ai_path=root/"v7_ai_water_surface_color_alpha_1024.png"
+assert ai_path.is_file(), "Git-tracked AI-generated water image missing"
+ai_img=bpy.data.images.load(str(ai_path.resolve()))
+ai_tex=wn.new("ShaderNodeTexImage")
+ai_tex.image=ai_img
+ai_tex.extension="REPEAT"
+ai_tex.interpolation="Linear"
+wl.new(mapping.outputs["Vector"],ai_tex.inputs["Vector"])
+ai_emission=wn.new("ShaderNodeEmission")
+ai_emission.inputs["Strength"].default_value=.82
+wl.new(ai_tex.outputs["Color"],ai_emission.inputs["Color"])
+ai_mask=wn.new("ShaderNodeMath")
+ai_mask.operation="MULTIPLY"
+ai_mask.inputs[1].default_value=.56
+wl.new(ai_tex.outputs["Alpha"],ai_mask.inputs[0])
+ai_mix=wn.new("ShaderNodeMixShader")
+wl.new(ai_mask.outputs[0],ai_mix.inputs[0])
+wl.new(overlay_mix.outputs[0],ai_mix.inputs[1])
+wl.new(ai_emission.outputs[0],ai_mix.inputs[2])
+wl.new(ai_mix.outputs[0],outnode.inputs["Surface"])
 # Shape water to avoid hard straight shoreline, with randomised multifrequency normal from mesh.
 verts=[];faces=[];N=95
 for j in range(N+1):
