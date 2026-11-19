@@ -61,13 +61,90 @@ jobs:
               assert path.read_bytes()[:8]==bytes.fromhex("89504e470d0a1a0a")
               assert path.stat().st_size>10000
           PY
-      - name: Always write actual scan and render execution report\n        if: always()\n        run: python3 tools/f2-water/report_run.py\n      - name: Save scan report, renders and Blender file, including on failure
+      - name: Always write factual execution report
+        if: always()
+        run: python3 tools/f2-water/report_run.py
+      - name: Upload safe result reports and candidate render (never upload quarantine)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: f2-water-scan-render-candidate
           path: |
-            out/f2-water/
+            out/f2-water/scan_manifest.json
+            out/f2-water/execution_report.json
+            out/f2-water/render_manifest.json
+            out/f2-water/front.png
+            out/f2-water/side.png
+            out/f2-water/angle.png
+            out/f2-water/f2-water-v1.blend
             scan-version.txt
           retention-days: 14
           if-no-files-found: warn
+
+  publish-run-link:
+    needs: scan-render
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: write
+      actions: read
+    steps:
+      - name: Fetch only safe reports from this run
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: f2-water-scan-render-candidate
+          path: f2-report
+      - name: Publish or update run link on matching PR
+        uses: actions/github-script@v7
+        env:
+          SOURCE_BRANCH: feature/f2-safe-water-render-20261119
+          SCAN_JOB_RESULT: ${{ needs.scan-render.result }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const fs = require('fs');
+            const path = 'f2-report/out/f2-water/execution_report.json';
+            let report = null;
+            try {
+              report = JSON.parse(fs.readFileSync(path, 'utf8'));
+            } catch (err) {
+              core.warning('Execution report absent or invalid: ' + err.message);
+            }
+            const { owner, repo } = context.repo;
+            const runsUrl = 'https://github.com/' + owner + '/' + repo + '/actions/runs/' + context.runId;
+            const {data: prs} = await github.rest.pulls.list({
+              owner, repo, state: 'open', head: owner + ':' + process.env.SOURCE_BRANCH, per_page: 100
+            });
+            if (prs.length !== 1) {
+              core.warning('No unique open target PR, run URL: ' + runsUrl);
+              return;
+            }
+            const prNumber = prs[0].number;
+            const marker = '<!-- f2-water-run-status -->';
+            const body = [
+              marker,
+              '### 第2層・水 / 最新の実行結果',
+              '- **Run**: ' + runsUrl,
+              '- **GitHub Actions job**: ' + process.env.SCAN_JOB_RESULT,
+              '- **安全検査**: ' + (report?.safety_check ?? 'UNVERIFIED — report unavailable'),
+              '- **取得・スキャン状態**: ' + (report?.scan_status ?? 'UNKNOWN'),
+              '- **レンダリング状態**: ' + (report?.render_status ?? 'UNKNOWN'),
+              '- **成果物**: Run ページの Artifacts を確認（存在・品質は別検証）',
+              '- **品質承認**: NOT_APPROVED',
+              '- **実行時刻**: ' + new Date().toISOString(),
+              '',
+              '※ウイルス検査の合格だけで最終素材を承認しません。実行ログと実PNGの確認が必要です。'
+            ].join('\n');
+            const comments = await github.paginate(github.rest.issues.listComments,
+              {owner, repo, issue_number: prNumber, per_page: 100});
+            const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({owner, repo, comment_id: existing.id, body});
+            } else {
+              await github.rest.issues.createComment({owner, repo, issue_number: prNumber, body});
+            }
+            core.info('Run URL published to PR #' + prNumber + ': ' + runsUrl);
