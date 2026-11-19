@@ -22,3 +22,12 @@ Status: NOT_APPROVED. V16 preserved as the baseline. User requested cracks on *o
 - Run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44451186961 . Current state at first write: IN PROGRESS.
 - Review three mandatory images: side (rear patch), back (nape patch), front (must remain virtually unchanged). Inspect source vs V16, and make V18 independent if too subtle or too broad.
 - Both GLB geometry and PNG must be verified before claiming success. User artistic approval needed before asset promotion.
+
+## Actual execution and visual check (verified)
+- Run [44451186961](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44451186961) completed **success**; Artifact ID `14495682708`, `b5-sallet-v17-walters-NOT-APPROVED`.
+- Blender Cycles actually rendered six 800×800 front/left/right/back/angle/top PNG; GLB 633,884 bytes and Blend 1,739,276 bytes; 13 named output file SHA-256 entries locally recomputed and matched the manifest.
+- Image-derived cracks `crack_active_texels=915`, sparse and localized to precisely two UV ellipses. No change to front/visor steel material, separate material `visor untouched by cracks` present.
+- Side/back actual render review: cracks are visible primarily as short dark linear abrasions on the rear shell and lower nape. They do **not** cover the whole helmet.
+- Art limitation: the extracted image still looks partly like dark scraping rather than a deeply split metal plate. This is a **texture-only** hairline fracture effect; geometry has no actual mesh rupture. No artistic approval claimed.
+- The user can inspect `localized_cracks_mask_v17.png` and compare V16/V17 actual front/side/back screenshots.
+- Official asset folder, `development`, `main` and game code untouched; `NOT_APPROVED` remains.
