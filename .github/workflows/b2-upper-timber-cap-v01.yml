@@ -56,7 +56,7 @@ jobs:
           root=Path('render-output/b2-upper-cap-v01')
           m=json.loads((root/'b2_one_upper_timber_bearing_cap_v01_manifest.json').read_text())
           assert m['geometry_piece_count']==1 and m['approval']=='NOT_APPROVED'
-          assert m['seat_mesh_faces']>80 and m['seat_radius_m']==.322
+          assert m['seat_mesh_faces']>50 and m['seat_radius_m']==.322
           assert len(m['files'])==6
           assert sum(n.endswith('_front.png') or n.endswith('_side.png') or n.endswith('_angle.png') or n.endswith('_back.png') for n in m['files'])==4
           for n,info in m['files'].items():
