@@ -17,6 +17,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 import {createFloor5Backdrop} from './worldlocked-360-backdrop.mjs';
 import {createOriginalB5FogRing} from './original-fog-ring.mjs';
 import {createB5PathEdgeMist,createB5ArcaneSparks} from '../../field/b5-vfx-presets.js';
+import {createAbyssBackdrop} from '../../field/assets/b5-abyss-backdrop.js';
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x090516);
 scene.fog=new THREE.FogExp2(0x20122c,0.0025);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
@@ -28,6 +29,7 @@ scene.add(new THREE.HemisphereLight(0x8775ab,0x15101b,2.3));
 const backdrop=createFloor5Backdrop(THREE,{seed:51119,radius:150,groundY:-14});
 scene.add(backdrop.root);
 const originalFog=createOriginalB5FogRing(THREE,scene,{radius:145,height:88});
+const abyss=createAbyssBackdrop(THREE,scene,{starCount:340,rockCount:14});
 const pathMist=createB5PathEdgeMist();scene.add(pathMist.mesh);
 const sparks=createB5ArcaneSparks({count:72,seed:505});scene.add(sparks.points);
 const floor=new THREE.Mesh(new THREE.CircleGeometry(34,64),new THREE.MeshStandardMaterial({color:0x292036,roughness:1}));
