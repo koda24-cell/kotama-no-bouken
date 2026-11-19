@@ -268,7 +268,7 @@ def canvas(name, soot_z=None, scale=1.0, base=(0.085, 0.066, 0.045), heat_center
         burn = b.dist_mask(heat_center, *heat_r)
         col = b.mix(burn, col, (0.008, 0.006, 0.005))
     edge = b.edge_mask(0.006, 0.03, 0.3)
-    col = b.mix(b.math("MULTIPLY", edge, 0.45), col, (0.15, 0.125, 0.095))
+    col = b.mix(b.math("MULTIPLY", edge, 0.45), col, (min(0.07, base[0] * 1.7), min(0.06, base[1] * 1.7), min(0.045, base[2] * 1.7)))
     cav = b.math("SUBTRACT", 1.0, b.cavity(0.04))
     ash = b.math("MAXIMUM", b.math("MULTIPLY", cav, 0.5), b.math("MULTIPLY", b.up_mask(0.6, 0.95), 0.45))
     ash = b.math("MULTIPLY", ash, b.ramp(n_big, [(0.3, 0.0), (0.7, 1.0)]))
