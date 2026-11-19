@@ -20,7 +20,7 @@ jobs:
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender xvfb python3-numpy
       - name: Fetch original VRoid sample into ephemeral workspace
         run: |
-          mkdir -p /tmp/v18src output/assassin-v18-d
+          mkdir -p /tmp/v18src output/assassin-v18-e
           curl -fL --retry 3 --max-time 240 -o /tmp/v18src/Sendagaya_Shibu.vrm https://raw.githubusercontent.com/madjin/vrm-samples/master/vroid/beta/Sendagaya_Shibu.vrm
           test "$(stat -c%s /tmp/v18src/Sendagaya_Shibu.vrm)" -gt 1000000
           sha256sum /tmp/v18src/Sendagaya_Shibu.vrm > output/assassin-v18-e/source.sha256
