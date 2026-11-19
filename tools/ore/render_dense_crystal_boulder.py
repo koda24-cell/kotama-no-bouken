@@ -410,6 +410,128 @@ for o in crystal_objects:
     was_hidden,old_scale,old_rotation=crystal_state[o.name]
     o.hide_render=was_hidden;o.scale=old_scale;o.rotation_euler=old_rotation
 scene.render.resolution_x=800;scene.render.resolution_y=800;scene.cycles.samples=32
+# V14: fifteen neutral-color, geometry-distinct rock+crystal arrangements.
+# Uses the same original CC0 rock geometry and crystal-on-surface technique;
+# geometry copies only, source mesh and V13 approved colors remain intact.
+# Neutral palette allows later floor-specific color assignment.
+neutral_rock=bpy.data.materials.new("V14 neutral stone recolorable")
+neutral_rock.diffuse_color=(.24,.27,.28,1);neutral_rock.use_nodes=True
+neutral_bsdf=neutral_rock.node_tree.nodes.get("Principled BSDF")
+neutral_bsdf.inputs["Base Color"].default_value=(.24,.27,.28,1)
+neutral_bsdf.inputs["Roughness"].default_value=.87
+neutral_dark=(.004,.026,.050);neutral_bright=(.07,.44,.68)
+# Broad shapes: low flat, broad, tall, stacked-like, angular, and asymmetric.
+shape_specs=[
+ ("low_wide_a",1.45,.78,.52,.08,.06,.07,.72,.85),
+ ("low_wide_b",1.32,1.18,.48,.12,.13,.11,.56,.72),
+ ("flat_shelf",1.55,.86,.40,.20,.06,.15,.46,.70),
+ ("tall_spire_a",.74,.82,1.48,.12,.11,.09,.86,1.18),
+ ("tall_spire_b",.80,.67,1.64,.18,.12,.14,.68,.96),
+ ("narrow_shard",.65,1.12,1.42,.22,.16,.11,.51,1.23),
+ ("rounded_mound",1.14,1.12,.86,.04,.03,.06,.80,.76),
+ ("angular_chunk",1.05,.92,1.07,.26,.21,.18,.76,.99),
+ ("fractured_wedge",1.30,.72,.96,.30,.12,.17,.58,1.15),
+ ("sloped_plate",1.52,.80,.68,.24,.19,.15,.62,.77),
+ ("asymmetric_lobe",1.24,.92,.94,.23,.17,.12,.72,1.03),
+ ("deep_crevice",.98,1.24,.92,.32,.24,.16,.67,.84),
+ ("small_pebble",.64,.62,.57,.09,.08,.09,.43,.70),
+ ("medium_boulder",.96,.93,.88,.16,.14,.11,.74,.94),
+ ("large_outcrop",1.58,1.40,1.16,.23,.17,.16,.91,1.10),
+]
+# Preserve original objects, materials, crystals, and all V13 variants.
+for i,m in enumerate(crystal_mats):
+    sh=m.node_tree.nodes.get("Principled BSDF")
+    ramp=next(n for n in m.node_tree.nodes if n.type=="VALTORGB")
+    sh.inputs["Roughness"].default_value=.015
+    sh.inputs["Metallic"].default_value=0
+    sh.inputs["Transmission Weight"].default_value=.94
+    sh.inputs["IOR"].default_value=1.62
+    sh.inputs["Emission Strength"].default_value=.015
+    sh.inputs["Coat Weight"].default_value=1
+    sh.inputs["Coat Roughness"].default_value=.02
+    ramp.color_ramp.elements[0].color=(*neutral_dark,1)
+    ramp.color_ramp.elements[1].color=(*neutral_bright,1)
+for obj in scene.objects:
+    if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
+        obj.data.color=(.12,.68,1.0);obj.data.energy=450
+# Create a local duplicate of original LOD0; change only its own mesh vertices.
+base_rock=original[0]
+base_world=base_rock.matrix_world.copy()
+rock_copy=base_rock.copy();rock_copy.data=base_rock.data.copy()
+rock_copy.name="V14_VARIANT_ROCK"
+scene.collection.objects.link(rock_copy)
+rock_copy.data.materials.clear();rock_copy.data.materials.append(neutral_rock)
+base_vertices=[v.co.copy() for v in rock_copy.data.vertices]
+base_bounds=[base_world@v for v in base_vertices]
+base_min=Vector(tuple(min(p[j] for p in base_bounds) for j in range(3)))
+base_max=Vector(tuple(max(p[j] for p in base_bounds) for j in range(3)))
+base_c=(base_min+base_max)*.5
+base_extent=base_max-base_min
+orig_rock_visibility=base_rock.hide_render
+base_rock.hide_render=True
+v14_records=[]
+# Anchor crystals by nearest surface projection after each rock deformation.
+from mathutils.bvhtree import BVHTree
+for k,(name,sx,sy,sz,noise,crease,slope,density,crystal_size) in enumerate(shape_specs):
+    seed=random.Random(41000+k*101)
+    # Displace rock in local coordinates with multi-frequency ridges and asymmetry.
+    for v,source in zip(rock_copy.data.vertices,base_vertices):
+        p=base_world@source
+        rel=p-base_c
+        nx=rel.x/max(base_extent.x,.001)
+        ny=rel.y/max(base_extent.y,.001)
+        nz=rel.z/max(base_extent.z,.001)
+        phase=nx*(7.5+k*.27)+ny*(5.2+k*.13)+nz*3.4
+        ridge=abs(math.sin(phase+math.sin(ny*11.0+1.2*k)*.9))-.48
+        layered=math.sin(nz*15.0+nx*4.5+k)*math.cos(ny*8.0-k*.6)
+        chip=math.sin(nx*23.0+ny*17.0+k)*math.sin(nz*19.0-ny*13.0)
+        displacement=noise*ridge+crease*layered*.55+crease*chip*.24
+        world_p=base_c+Vector((rel.x*sx,rel.y*sy,rel.z*sz))
+        world_p+=Vector((nx*displacement,ny*displacement*.85,displacement*.55+slope*nx*rel.z))
+        v.co=base_world.inverted()@world_p
+    rock_copy.data.update()
+    # Nearest triangle BVH handles anchors on the new silhouette and prevents floating roots.
+    depsgraph=bpy.context.evaluated_depsgraph_get()
+    depsgraph.update()
+    bvh=BVHTree.FromObject(rock_copy,depsgraph)
+    assert bvh is not None
+    for i,obj in enumerate(crystal_objects):
+        old_hidden,old_scale,old_rotation=crystal_state[obj.name]
+        obj.hide_render=(((i*43+k*29)%107)/107.0>=density)
+        obj.scale=(crystal_size,)*3
+        obj.rotation_euler=old_rotation.copy()
+        obj.rotation_euler[1]+=((i%9)-4)*.026
+        # Crystal mesh is authored in world coordinates; move object to match new rock.
+        # Scale anchored tip displacement with rock footprint and project roots to mesh.
+        original_anchor=Vector(tuple(sum(v.co[j] for v in obj.data.vertices[:6])/6 for j in range(3)))
+        transformed=base_c+Vector(((original_anchor.x-base_c.x)*sx,(original_anchor.y-base_c.y)*sy,(original_anchor.z-base_c.z)*sz))
+        local_query=base_world.inverted()@transformed
+        nearest,normal,face_idx,dist=bvh.find_nearest(local_query)
+        if nearest is not None:
+            target=base_world@nearest
+            obj.location=target-original_anchor*crystal_size
+        else:obj.location=transformed-original_anchor*crystal_size
+    scene.render.resolution_x=640;scene.render.resolution_y=640;scene.cycles.samples=24
+    cam.location=center+Vector((1,-1,.8)).normalized()*scale*2.9
+    cam.rotation_euler=(center-cam.location).to_track_quat("-Z","Y").to_euler()
+    png=out/("v14_"+name+".png");scene.render.filepath=str(png)
+    bpy.ops.render.render(write_still=True)
+    bpy.ops.object.select_all(action="DESELECT")
+    rock_copy.select_set(True)
+    for obj in crystal_objects:
+        if not obj.hide_render:obj.select_set(True)
+    bpy.context.view_layer.objects.active=rock_copy
+    glb=out/("v14_"+name+".glb")
+    bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
+    v14_records.append({"name":name,"size_factors":[sx,sy,sz],"crystal_density":density,"crystal_size":crystal_size,"palette":"neutral_recolorable","png":png.name,"glb":glb.name,"png_sha256":hashlib.sha256(png.read_bytes()).hexdigest(),"glb_sha256":hashlib.sha256(glb.read_bytes()).hexdigest()})
+    for obj in crystal_objects:obj.location=(0,0,0)
+# Restore source object and remove only temporary geometry copy.
+base_rock.hide_render=orig_rock_visibility
+bpy.data.objects.remove(rock_copy,do_unlink=True)
+for o in crystal_objects:
+    was_hidden,old_scale,old_rotation=crystal_state[o.name]
+    o.hide_render=was_hidden;o.scale=old_scale;o.rotation_euler=old_rotation;o.location=(0,0,0)
+scene.render.resolution_x=800;scene.render.resolution_y=800;scene.cycles.samples=32
 # Restore spill intensity as well as material settings for GLB.
 for obj in scene.objects:
     if obj.type=="LIGHT" and obj.name.startswith("Quartz cyan spill"):
@@ -440,7 +562,7 @@ bpy.context.view_layer.objects.active=original[0]
 glb=out/"dense_crystal_on_original_boulder.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format="GLB",use_selection=True,export_apply=True)
 files[glb.name]=hashlib.sha256(glb.read_bytes()).hexdigest()
-manifest={"render_variant":"V10_PBR_COMPARISON_UNAPPROVED","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"vfx_mote_count":len(vfx_objects),"v10_comparison_renders":v10_files,"v11_exaggerated_comparison_renders":v11_files,"v12_hybrid_renders":v12_files,"v13_stage_variants":variant_records,"files":files,"colorway_renders":variant_files}
+manifest={"render_variant":"V10_PBR_COMPARISON_UNAPPROVED","emission_strengths":[0.12,0.22,0.36],"internal_core_emission":0.0,"status":"NOT_APPROVED","source":src.name,"original_mesh_count":len(all_original),"rendered_lod_count":len(original),"added_crystals":count,"missing_texture_images":missing,"growth":growth,"vfx_mote_count":len(vfx_objects),"v10_comparison_renders":v10_files,"v11_exaggerated_comparison_renders":v11_files,"v12_hybrid_renders":v12_files,"v13_stage_variants":variant_records,"v14_neutral_shape_variants":v14_records,"files":files,"colorway_renders":variant_files}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2))
 print("DENSE_ORE_RESULT",json.dumps(manifest))
 
