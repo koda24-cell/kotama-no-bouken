@@ -4,7 +4,7 @@ on:
     branches: [feature/gpt-assassin-v18-posterior-d-20261119]
     paths:
       - 'tools/character-mesh-research/build_v18_candidate_d.py'
-      - '.github/workflows/assassin-v18-dandidate-d.yml'
+      - '.github/workflows/assassin-v18-candidate-d.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -52,6 +52,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: assassin-v18-dandidate-d-NOT-APPROVED
+          name: assassin-v18-candidate-d-NOT-APPROVED
           path: output/assassin-v18-d/
           retention-days: 14
