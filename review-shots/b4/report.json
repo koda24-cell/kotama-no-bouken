@@ -1,0 +1,1727 @@
+{
+  "quality": "high",
+  "mobile": false,
+  "reports": [
+    {
+      "name": "b1-corridor",
+      "hasSurfaces": false,
+      "basaltPBR": false,
+      "animated": false,
+      "pixelsAnimated": null,
+      "imageWidths": [],
+      "lightPool": 14,
+      "render": {
+        "calls": 1322,
+        "triangles": 4053323,
+        "memory": {
+          "geometries": 57,
+          "textures": 172
+        }
+      }
+    },
+    {
+      "name": "b4-rig",
+      "hasSurfaces": true,
+      "basaltPBR": true,
+      "animated": true,
+      "pixelsAnimated": null,
+      "imageWidths": [
+        1024,
+        1024,
+        1024,
+        512,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "lightPool": 14,
+      "info": {
+        "placed": true,
+        "ornaments": 189,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "scenery": {
+          "mines": [
+            {
+              "tx": 3,
+              "ty": 12,
+              "dx": 1,
+              "dz": 0,
+              "wx": 4,
+              "wy": 12,
+              "key": "3,12:1,0"
+            },
+            {
+              "tx": 23,
+              "ty": 8,
+              "dx": 1,
+              "dz": 0,
+              "wx": 24,
+              "wy": 8,
+              "key": "23,8:1,0"
+            },
+            {
+              "tx": 19,
+              "ty": 1,
+              "dx": 0,
+              "dz": 1,
+              "wx": 19,
+              "wy": 2,
+              "key": "19,1:0,1"
+            },
+            {
+              "tx": 10,
+              "ty": 5,
+              "dx": 0,
+              "dz": -1,
+              "wx": 10,
+              "wy": 4,
+              "key": "10,5:0,-1"
+            }
+          ],
+          "vista": {
+            "tx": 13,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "wx": 13,
+            "wy": 0,
+            "key": "13,1:0,-1"
+          },
+          "detail": {
+            "basaltPanels": 46,
+            "coolingPlates": 48,
+            "embers": 32
+          },
+          "props": null
+        }
+      },
+      "render": {
+        "calls": 83,
+        "triangles": 363510,
+        "memory": {
+          "geometries": 116,
+          "textures": 236
+        }
+      }
+    },
+    {
+      "name": "b4-minecart",
+      "hasSurfaces": true,
+      "basaltPBR": true,
+      "animated": true,
+      "pixelsAnimated": null,
+      "imageWidths": [
+        1024,
+        1024,
+        1024,
+        512,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "lightPool": 14,
+      "info": {
+        "placed": true,
+        "ornaments": 189,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "scenery": {
+          "mines": [
+            {
+              "tx": 3,
+              "ty": 12,
+              "dx": 1,
+              "dz": 0,
+              "wx": 4,
+              "wy": 12,
+              "key": "3,12:1,0"
+            },
+            {
+              "tx": 23,
+              "ty": 8,
+              "dx": 1,
+              "dz": 0,
+              "wx": 24,
+              "wy": 8,
+              "key": "23,8:1,0"
+            },
+            {
+              "tx": 19,
+              "ty": 1,
+              "dx": 0,
+              "dz": 1,
+              "wx": 19,
+              "wy": 2,
+              "key": "19,1:0,1"
+            },
+            {
+              "tx": 10,
+              "ty": 5,
+              "dx": 0,
+              "dz": -1,
+              "wx": 10,
+              "wy": 4,
+              "key": "10,5:0,-1"
+            }
+          ],
+          "vista": {
+            "tx": 13,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "wx": 13,
+            "wy": 0,
+            "key": "13,1:0,-1"
+          },
+          "detail": {
+            "basaltPanels": 46,
+            "coolingPlates": 48,
+            "embers": 32
+          },
+          "props": {
+            "placed": 22,
+            "byId": {
+              "b4p_brazier_cage": 22
+            },
+            "missing": [],
+            "list": [
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 11,
+                "ty": 4,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.37
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 21,
+                "ty": 19,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.65
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 18,
+                "ty": 19,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.67
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 9,
+                "ty": 16,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.49
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 1,
+                "ty": 9,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.52
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 15,
+                "ty": 16,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.22
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 9,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.56
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 8,
+                "ty": 13,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.46
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 20,
+                "ty": 13,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.48
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 11,
+                "ty": 14,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.44
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 7,
+                "ty": 19,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.13
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.47
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 18,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.46
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 13,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.47
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 23,
+                "ty": 11,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.52
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 16,
+                "ty": 9,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.39
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 17,
+                "ty": 5,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.38
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 1,
+                "ty": 4,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.51
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 16,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.58
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 8,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.42
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 21,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.48
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 3,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.54
+              }
+            ]
+          }
+        }
+      },
+      "render": {
+        "calls": 39,
+        "triangles": 556028,
+        "memory": {
+          "geometries": 117,
+          "textures": 240
+        }
+      }
+    },
+    {
+      "name": "b4-citadel",
+      "hasSurfaces": true,
+      "basaltPBR": true,
+      "animated": true,
+      "pixelsAnimated": null,
+      "imageWidths": [
+        1024,
+        1024,
+        1024,
+        512,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "lightPool": 14,
+      "info": {
+        "placed": true,
+        "ornaments": 189,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "scenery": {
+          "mines": [
+            {
+              "tx": 3,
+              "ty": 12,
+              "dx": 1,
+              "dz": 0,
+              "wx": 4,
+              "wy": 12,
+              "key": "3,12:1,0"
+            },
+            {
+              "tx": 23,
+              "ty": 8,
+              "dx": 1,
+              "dz": 0,
+              "wx": 24,
+              "wy": 8,
+              "key": "23,8:1,0"
+            },
+            {
+              "tx": 19,
+              "ty": 1,
+              "dx": 0,
+              "dz": 1,
+              "wx": 19,
+              "wy": 2,
+              "key": "19,1:0,1"
+            },
+            {
+              "tx": 10,
+              "ty": 5,
+              "dx": 0,
+              "dz": -1,
+              "wx": 10,
+              "wy": 4,
+              "key": "10,5:0,-1"
+            }
+          ],
+          "vista": {
+            "tx": 13,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "wx": 13,
+            "wy": 0,
+            "key": "13,1:0,-1"
+          },
+          "detail": {
+            "basaltPanels": 46,
+            "coolingPlates": 48,
+            "embers": 32
+          },
+          "props": {
+            "placed": 22,
+            "byId": {
+              "b4p_brazier_cage": 22
+            },
+            "missing": [],
+            "list": [
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 11,
+                "ty": 4,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.37
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 21,
+                "ty": 19,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.65
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 18,
+                "ty": 19,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.67
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 9,
+                "ty": 16,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.49
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 1,
+                "ty": 9,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.52
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 15,
+                "ty": 16,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.22
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 9,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.56
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 8,
+                "ty": 13,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.46
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 20,
+                "ty": 13,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.48
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 11,
+                "ty": 14,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.44
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 7,
+                "ty": 19,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.13
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.47
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 18,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.46
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 13,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.47
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 23,
+                "ty": 11,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.52
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 16,
+                "ty": 9,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.39
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 17,
+                "ty": 5,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.38
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 1,
+                "ty": 4,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.51
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 16,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.58
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 8,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.42
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 21,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.48
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 3,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.54
+              }
+            ]
+          }
+        }
+      },
+      "render": {
+        "calls": 55,
+        "triangles": 560458,
+        "memory": {
+          "geometries": 117,
+          "textures": 240
+        }
+      }
+    },
+    {
+      "name": "b4-lava",
+      "hasSurfaces": true,
+      "basaltPBR": true,
+      "animated": true,
+      "pixelsAnimated": true,
+      "imageWidths": [
+        1024,
+        1024,
+        1024,
+        512,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "lightPool": 14,
+      "info": {
+        "placed": true,
+        "ornaments": 189,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "scenery": {
+          "mines": [
+            {
+              "tx": 3,
+              "ty": 12,
+              "dx": 1,
+              "dz": 0,
+              "wx": 4,
+              "wy": 12,
+              "key": "3,12:1,0"
+            },
+            {
+              "tx": 23,
+              "ty": 8,
+              "dx": 1,
+              "dz": 0,
+              "wx": 24,
+              "wy": 8,
+              "key": "23,8:1,0"
+            },
+            {
+              "tx": 19,
+              "ty": 1,
+              "dx": 0,
+              "dz": 1,
+              "wx": 19,
+              "wy": 2,
+              "key": "19,1:0,1"
+            },
+            {
+              "tx": 10,
+              "ty": 5,
+              "dx": 0,
+              "dz": -1,
+              "wx": 10,
+              "wy": 4,
+              "key": "10,5:0,-1"
+            }
+          ],
+          "vista": {
+            "tx": 13,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "wx": 13,
+            "wy": 0,
+            "key": "13,1:0,-1"
+          },
+          "detail": {
+            "basaltPanels": 46,
+            "coolingPlates": 48,
+            "embers": 32
+          },
+          "props": {
+            "placed": 22,
+            "byId": {
+              "b4p_brazier_cage": 22
+            },
+            "missing": [],
+            "list": [
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 11,
+                "ty": 4,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.37
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 21,
+                "ty": 19,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.65
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 18,
+                "ty": 19,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.67
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 9,
+                "ty": 16,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.49
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 1,
+                "ty": 9,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.52
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 15,
+                "ty": 16,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.22
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 9,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.56
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 8,
+                "ty": 13,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.46
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 20,
+                "ty": 13,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.48
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 11,
+                "ty": 14,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.44
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 7,
+                "ty": 19,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.13
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.47
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 18,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.46
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 13,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.47
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 23,
+                "ty": 11,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.52
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 16,
+                "ty": 9,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.39
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 17,
+                "ty": 5,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.38
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 1,
+                "ty": 4,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.51
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 16,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.58
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 8,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.42
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 21,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.48
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 3,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.54
+              }
+            ]
+          }
+        }
+      },
+      "render": {
+        "calls": 61,
+        "triangles": 562530,
+        "memory": {
+          "geometries": 122,
+          "textures": 252
+        }
+      }
+    },
+    {
+      "name": "b4-lava2",
+      "hasSurfaces": true,
+      "basaltPBR": true,
+      "animated": true,
+      "pixelsAnimated": null,
+      "imageWidths": [
+        1024,
+        1024,
+        1024,
+        512,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "lightPool": 14,
+      "info": {
+        "placed": true,
+        "ornaments": 189,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "scenery": {
+          "mines": [
+            {
+              "tx": 3,
+              "ty": 12,
+              "dx": 1,
+              "dz": 0,
+              "wx": 4,
+              "wy": 12,
+              "key": "3,12:1,0"
+            },
+            {
+              "tx": 19,
+              "ty": 1,
+              "dx": 0,
+              "dz": 1,
+              "wx": 19,
+              "wy": 2,
+              "key": "19,1:0,1"
+            },
+            {
+              "tx": 8,
+              "ty": 17,
+              "dx": 0,
+              "dz": -1,
+              "wx": 8,
+              "wy": 16,
+              "key": "8,17:0,-1"
+            },
+            {
+              "tx": 10,
+              "ty": 5,
+              "dx": 0,
+              "dz": -1,
+              "wx": 10,
+              "wy": 4,
+              "key": "10,5:0,-1"
+            }
+          ],
+          "vista": {
+            "tx": 13,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "wx": 13,
+            "wy": 0,
+            "key": "13,1:0,-1"
+          },
+          "detail": {
+            "basaltPanels": 46,
+            "coolingPlates": 60,
+            "embers": 40
+          },
+          "props": {
+            "placed": 22,
+            "byId": {
+              "b4p_brazier_cage": 22
+            },
+            "missing": [],
+            "list": [
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 15,
+                "ty": 2,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.44
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 11,
+                "ty": 4,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.51
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 23,
+                "ty": 4,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.29
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 5,
+                "ty": 2,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.66
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 21,
+                "ty": 19,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.57
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 18,
+                "ty": 19,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.61
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 19,
+                "ty": 12,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.69
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 1,
+                "ty": 9,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.8
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 13,
+                "ty": 16,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.69
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 5,
+                "ty": 6,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.61
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 9,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.35
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 8,
+                "ty": 13,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.89
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 11,
+                "ty": 14,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.71
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 15,
+                "ty": 19,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.7
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 1,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.67
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 18,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.39
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 13,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.88
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 23,
+                "ty": 11,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.4
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 17,
+                "ty": 5,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.8
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 1,
+                "ty": 4,
+                "dx": 1,
+                "dz": 0,
+                "t": 0.74
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 25,
+                "ty": 16,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.49
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 21,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.35
+              }
+            ]
+          }
+        }
+      },
+      "render": {
+        "calls": 65,
+        "triangles": 567639,
+        "memory": {
+          "geometries": 134,
+          "textures": 287
+        }
+      }
+    },
+    {
+      "name": "b4-chamber",
+      "hasSurfaces": true,
+      "basaltPBR": true,
+      "animated": true,
+      "pixelsAnimated": null,
+      "imageWidths": [
+        1024,
+        1024,
+        1024,
+        512,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        512,
+        512,
+        256,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "lightPool": 14,
+      "info": {
+        "placed": true,
+        "ornaments": 122,
+        "mode": "map-driven-3d",
+        "landmarkState": "glb-loaded",
+        "scenery": {
+          "mines": [
+            {
+              "tx": 3,
+              "ty": 12,
+              "dx": 0,
+              "dz": 1,
+              "wx": 3,
+              "wy": 13,
+              "key": "3,12:0,1"
+            },
+            {
+              "tx": 2,
+              "ty": 9,
+              "dx": 0,
+              "dz": -1,
+              "wx": 2,
+              "wy": 8,
+              "key": "2,9:0,-1"
+            },
+            {
+              "tx": 25,
+              "ty": 13,
+              "dx": 0,
+              "dz": -1,
+              "wx": 25,
+              "wy": 12,
+              "key": "25,13:0,-1"
+            },
+            {
+              "tx": 21,
+              "ty": 6,
+              "dx": 1,
+              "dz": 0,
+              "wx": 22,
+              "wy": 6,
+              "key": "21,6:1,0"
+            }
+          ],
+          "vista": {
+            "tx": 14,
+            "ty": 1,
+            "dx": 0,
+            "dz": -1,
+            "wx": 14,
+            "wy": 0,
+            "key": "14,1:0,-1"
+          },
+          "detail": {
+            "basaltPanels": 2,
+            "coolingPlates": 150,
+            "embers": 180
+          },
+          "props": {
+            "placed": 9,
+            "byId": {
+              "b4p_brazier_cage": 9
+            },
+            "missing": [],
+            "list": [
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 23,
+                "ty": 11,
+                "dx": 1,
+                "dz": 0,
+                "t": 1
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 4,
+                "ty": 13,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.76
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 5,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.59
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 11,
+                "ty": 1,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.7
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 22,
+                "ty": 15,
+                "dx": 0,
+                "dz": 1,
+                "t": 1
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 24,
+                "ty": 13,
+                "dx": 0,
+                "dz": -1,
+                "t": 1
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 12,
+                "ty": 15,
+                "dx": 0,
+                "dz": 1,
+                "t": 0.94
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 2,
+                "ty": 10,
+                "dx": -1,
+                "dz": 0,
+                "t": 0.74
+              },
+              {
+                "id": "b4p_brazier_cage",
+                "tx": 3,
+                "ty": 8,
+                "dx": 0,
+                "dz": -1,
+                "t": 0.68
+              }
+            ]
+          }
+        }
+      },
+      "render": {
+        "calls": 56,
+        "triangles": 268772,
+        "memory": {
+          "geometries": 125,
+          "textures": 287
+        }
+      }
+    },
+    {
+      "name": "b5-entry",
+      "hasSurfaces": false,
+      "basaltPBR": false,
+      "animated": false,
+      "pixelsAnimated": null,
+      "imageWidths": [],
+      "lightPool": 14,
+      "info": {
+        "placed": true,
+        "ornaments": 0,
+        "mode": "map-driven-3d",
+        "landmarkState": "pending",
+        "dressing": {
+          "hall": false,
+          "placements": [
+            {
+              "kind": "swordField",
+              "x": 76,
+              "z": 48,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  74.375,
+                  0,
+                  46.37706572635378
+                ],
+                "max": [
+                  77.625,
+                  2.6,
+                  49.62293427364622
+                ]
+              }
+            },
+            {
+              "kind": "brokenWarMachine",
+              "x": 20,
+              "z": 72,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  18.548886010015643,
+                  0,
+                  70.375
+                ],
+                "max": [
+                  21.451113989984357,
+                  2.1,
+                  73.625
+                ]
+              }
+            },
+            {
+              "kind": "brokenBridge",
+              "x": 48,
+              "z": 40,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  46.375,
+                  0,
+                  38.58807947677843
+                ],
+                "max": [
+                  49.625,
+                  1.8,
+                  41.41192052322157
+                ]
+              }
+            },
+            {
+              "kind": "swordField",
+              "x": 16,
+              "z": 8,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  14.375,
+                  0,
+                  6.478460601758972
+                ],
+                "max": [
+                  17.625,
+                  2.6,
+                  9.521539398241027
+                ]
+              }
+            },
+            {
+              "kind": "brokenWarMachine",
+              "x": 72,
+              "z": 72,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  70.375,
+                  0,
+                  70.58532840119628
+                ],
+                "max": [
+                  73.625,
+                  2.1,
+                  73.41467159880371
+                ]
+              }
+            },
+            {
+              "kind": "brokenBridge",
+              "x": 88,
+              "z": 52,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  87.13954354775005,
+                  0,
+                  50.375
+                ],
+                "max": [
+                  88.86045645224996,
+                  1.7999999999999998,
+                  53.625
+                ]
+              }
+            },
+            {
+              "kind": "swordField",
+              "x": 72,
+              "z": 24,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  70.375,
+                  0,
+                  22.401325839815964
+                ],
+                "max": [
+                  73.625,
+                  2.6,
+                  25.598674160184032
+                ]
+              }
+            },
+            {
+              "kind": "brokenWarMachine",
+              "x": 40,
+              "z": 56,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  38.375,
+                  0,
+                  54.79979978044098
+                ],
+                "max": [
+                  41.625,
+                  2.1,
+                  57.20020021955903
+                ]
+              }
+            },
+            {
+              "kind": "brokenBridge",
+              "x": 32,
+              "z": 8,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  30.639271040697547,
+                  0,
+                  6.375
+                ],
+                "max": [
+                  33.360728959302456,
+                  1.8000000000000003,
+                  9.625
+                ]
+              }
+            },
+            {
+              "kind": "swordField",
+              "x": 56,
+              "z": 20,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  54.375,
+                  0,
+                  18.51906598775195
+                ],
+                "max": [
+                  57.625,
+                  2.6,
+                  21.48093401224805
+                ]
+              }
+            },
+            {
+              "kind": "brokenWarMachine",
+              "x": 24,
+              "z": 44,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  22.375,
+                  0,
+                  43.0399937101341
+                ],
+                "max": [
+                  25.625,
+                  2.1,
+                  44.96000628986591
+                ]
+              }
+            },
+            {
+              "kind": "brokenBridge",
+              "x": 24,
+              "z": 56,
+              "bottom": 0,
+              "bounds": {
+                "min": [
+                  22.375,
+                  0,
+                  55.04961621848782
+                ],
+                "max": [
+                  25.625,
+                  1.8,
+                  56.95038378151219
+                ]
+              }
+            },
+            {
+              "kind": "brokenBridge",
+              "x": -12,
+              "z": 64,
+              "bottom": -5,
+              "bounds": {
+                "min": [
+                  -18.101443453831248,
+                  -5,
+                  59.49999999999999
+                ],
+                "max": [
+                  -5.89855654616875,
+                  0.3120173427027224,
+                  68.5
+                ]
+              }
+            },
+            {
+              "kind": "brokenWarMachine",
+              "x": 116,
+              "z": 24,
+              "bottom": -2,
+              "bounds": {
+                "min": [
+                  108.83932768683569,
+                  -2,
+                  19
+                ],
+                "max": [
+                  123.1606723131643,
+                  2.210749539729799,
+                  29
+                ]
+              }
+            }
+          ],
+          "mergedDraws": 32
+        }
+      },
+      "render": {
+        "calls": 113,
+        "triangles": 55469,
+        "memory": {
+          "geometries": 123,
+          "textures": 274
+        }
+      }
+    }
+  ],
+  "errors": []
+}
