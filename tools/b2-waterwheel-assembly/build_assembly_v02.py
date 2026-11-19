@@ -9,7 +9,7 @@ input_root=Path(args[0]).resolve()
 out=Path(args[1]).resolve();out.mkdir(parents=True,exist_ok=True)
 inputs={
  'hub':('hub','b2_waterwheel_single_wooden_hub_v11.glb'),
- 'ferrule':('ferrule','b2_single_iron_axle_ferrule_v02.glb'),
+ 'ferrule':('ferrule','b2_single_iron_axle_ferrule_v01.glb'),
  'lower':('lower','b2_single_timber_lower_axle_bearing_v03.glb'),
  'upper':('upper','b2_one_upper_timber_bearing_cap_v05.glb'),
  'axle':('axle','b2_single_oak_waterwheel_axle_v02.glb')}
