@@ -108,3 +108,19 @@ for name,d,showface in views:
     sc.render.filepath=os.path.join(out,name+'.png')
     bpy.ops.render.render(write_still=True)
 print('BODY_SCALP_AUDIT',json.dumps(audit))
+
+
+# Target both measured outlier vertices with matched *original source* closeups.
+# The source Face / Body are both visible; no geometry edits, no skinning loss.
+face.hide_render=False
+preview_positions=[(8,2071),(32,1506)]
+for rim_order,vid in preview_positions:
+    focus=face.matrix_world@face.data.vertices[vid].co
+    side=1 if focus.x>=0 else -1
+    for angle_name, direction in [('side',Vector((side,0,0))),('rear_angle',Vector((side,-.75,.18)))]:
+        cam.location=focus+direction.normalized()*0.9
+        cam.rotation_euler=(focus-cam.location).to_track_quat('-Z','Y').to_euler()
+        cam.data.ortho_scale=.105
+        sc.render.filepath=os.path.join(out,f'ear_seam_order_{rim_order}_{angle_name}.png')
+        bpy.ops.render.render(write_still=True)
+cam.data.ortho_scale=.43
