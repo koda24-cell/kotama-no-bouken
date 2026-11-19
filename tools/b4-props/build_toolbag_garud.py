@@ -32,7 +32,7 @@ import lib_mine as L  # noqa: E402
 from mathutils import Vector, noise  # noqa: E402
 
 NAME = "b4p_toolbag_garud"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(82)
 C.reset(82)
 
@@ -49,7 +49,7 @@ parts = []
 
 # ---- 帆布の袋（革の底つき） ----
 HX, HY, HZ = 0.24, 0.13, 0.15
-bm = L.soft_box_bm(HX, HY, HZ, cuts=9, n=4.0)
+bm = L.soft_box_bm(HX, HY, HZ, cuts=8, n=4.0)
 for v in bm.verts:
     v.co.z += HZ
 top = [f for f in bm.faces if f.calc_center_median().z > 2 * HZ - 0.014 and f.normal.z > 0.6]
@@ -94,7 +94,7 @@ parts.append(bag)
 verts = [v.co.copy() for v in bag.data.vertices]
 
 
-def contour(z, tol=0.014, bins=36, push=0.003):
+def contour(z, tol=0.014, bins=28, push=0.0):
     """高さ z 付近の外周（角度ごとに一番外側の頂点）→ 閉じた輪"""
     pts = []
     for k in range(bins):
@@ -126,7 +126,7 @@ def surface_point(x, z, side=-1):
 # 革の底の縁の玉縁（縫い目）
 bead = contour(0.056)
 if len(bead) > 8:
-    sb = C.sweep("bottom_bead", bead, C.circle_profile(0.0045, 5), closed=True)
+    sb = C.sweep("bottom_bead", bead, C.circle_profile(0.0035, 5), closed=True)
     parts.append(C.assign(sb, hide))
 # 両端の縦の縫い目（帆布の継ぎ目）
 for k, sx in enumerate((-1, 1)):
@@ -152,12 +152,12 @@ parts.append(C.assign(hem, cloth))
 
 # ---- つるはし：頭は袋の中で横向き、尖りが前面を突き破る。柄は口から斜め上へ ----
 EYE = Vector((-0.115, -0.005, 0.15))
-tipA = PIERCE + Vector((-0.012, -0.075, -0.012))
+tipA = PIERCE + Vector((-0.02, -0.10, -0.018))
 tipB = Vector((-0.075, 0.10, 0.20))
 head_pts = C.bezier(tipA, EYE + Vector((0, -0.07, 0.012)), EYE + Vector((0, 0.07, 0.012)), tipB, n=12)
-head = C.sweep("pick_head", head_pts, C.rect_profile(0.036, 0.028, chamfer=0.007),
+head = C.sweep("pick_head", head_pts, C.rect_profile(0.040, 0.032, chamfer=0.008),
                up_fn=lambda k, p, t: (1, 0, 0),
-               scale_fn=lambda u: (max(0.10, 1 - abs(u - 0.5) * 1.8) ** 0.8, max(0.14, 1 - abs(u - 0.5) * 1.65) ** 0.7))
+               scale_fn=lambda u: (max(0.12, 1 - abs(u - 0.5) * 1.6) ** 0.7, max(0.16, 1 - abs(u - 0.5) * 1.5) ** 0.6))
 C.displace_noise(head, 0.0015, 40, seed=8)
 parts.append(C.assign(head, iron))
 eye_c = C.sweep("pick_eye", [EYE + Vector((-0.004, 0, -0.032)), EYE + Vector((0.004, 0, 0.032))], C.circle_profile(0.027, 8), smooth=False)
@@ -181,51 +181,68 @@ for k in range(4):
                  up_fn=lambda i, p, t, aa=a: (-math.sin(aa), 0, math.cos(aa)))
     parts.append(C.assign(fl, cloth))
 
-# ---- 革の手袋（口の縁に掛かり、平たい指が前面へ垂れる） ----
-gp = rim_at(-2.05) + Vector((0, 0, 0.006))
-T_ = Vector((1, -0.25, 0)).normalized()          # 縁に沿った向き
-IN_ = Vector((0.15, 1, 0)).normalized()          # 袋の内側
-DOWN = Vector((0, -0.32, -1)).normalized()       # 前面に沿って下へ（胴の膨らみの分だけ前へ）
+# ---- 革の手袋（口の縁に掛かり、平たい指が前面へ垂れる：袋の表面に沿わせる） ----
+GX = -0.075
+gp = rim_at(math.atan2(-0.09, GX)) + Vector((0, 0, 0.004))
+T_ = Vector((1, 0, 0))
+IN_ = Vector((0, 1, 0))
+
+
+def front_y(x, z):
+    cand = [p for p in verts if p.y < 0 and abs(p.x - x) < 0.022 and abs(p.z - z) < 0.013]
+    return min(p.y for p in cand) if cand else -HY
+
+
+# 中心線（内側→縁の上→前面に沿って下へ）を点列で作り、弧長で引く
+_path = []
+for i in range(6, 0, -1):          # 内側：縁から奥へ、少し下がる
+    _path.append(gp + IN_ * (0.016 * i) + Vector((0, 0, 0.012 - 0.006 * i)))
+_path.append(gp + Vector((0, 0.0, 0.012)))
+_path.append(gp + Vector((0, -0.010, 0.008)))
+zz = gp.z - 0.004
+while zz > gp.z - 0.16:
+    _path.append(Vector((GX, front_y(GX, zz) - 0.009, zz)))
+    zz -= 0.012
+_s = [0.0]
+for i in range(1, len(_path)):
+    _s.append(_s[-1] + (_path[i] - _path[i - 1]).length)
+S0 = _s[6]   # 縁の頂点を s=0 に
 
 
 def gpath(s, v):
-    """手袋の中心線：s<0 は口の内側（少し下がる）、s>0 は前面を垂れる。縁の上は半径 r の弧で曲がる"""
-    r = 0.016
-    if s < 0:
-        p = gp + IN_ * (-s) + Vector((0, 0, 0.35 * s)) + Vector((0, 0, r))
-    elif s < r * math.pi / 2:
-        th = s / r
-        p = gp + Vector((0, -1, 0)) * (r * math.sin(th)) + Vector((0, 0, r * math.cos(th)))
-    else:
-        p = gp + Vector((0, -r, 0)) + DOWN * (s - r * math.pi / 2)
-    return p + T_ * v
+    s = s + S0
+    s = min(max(s, 0.0), _s[-1] - 1e-5)
+    i = max(k for k in range(len(_s)) if _s[k] <= s)
+    i = min(i, len(_s) - 2)
+    t = (s - _s[i]) / max(1e-6, _s[i + 1] - _s[i])
+    return _path[i].lerp(_path[i + 1], t) + T_ * v
 
 
 def finger(name, v, s0, s1, w, h, curl=0.0, n=7):
     pts = [gpath(s0 + (s1 - s0) * i / n, v + curl * (i / n) ** 2) for i in range(n + 1)]
-    ob = C.sweep(name, pts, [(x * w / 0.01, y * h / 0.01) for x, y in C.circle_profile(0.01, 8)],
-                 up_fn=lambda k, p, t: tuple(T_), scale_fn=lambda u: max(0.55, 1.0 - 0.35 * u ** 2))
-    C.displace_noise(ob, 0.0015, 60, seed=int(v * 1000) % 97)
+    ob = C.sweep(name, pts, [(x * w / 0.01, y * h / 0.01) for x, y in C.circle_profile(0.01, 6)],
+                 up_fn=lambda k, p, t: tuple(T_), scale_fn=lambda u: max(0.6, 1.0 - 0.3 * u ** 2))
+    C.displace_noise(ob, 0.0012, 60, seed=int(abs(v) * 1000) % 97)
     return C.assign(ob, glove_m)
 
 
 # 手のひら（平たい帯）と袖口（口の中へ）
-parts.append(finger("glove_palm", 0.0, -0.075, 0.04, 0.046, 0.011, n=8))
-cuff = C.sweep("glove_cuff", [gpath(-0.14, 0.004), gpath(-0.10, 0.002), gpath(-0.07, 0.0)],
+parts.append(finger("glove_palm", 0.0, -0.07, 0.045, 0.047, 0.008, n=8))
+cuff = C.sweep("glove_cuff", [gpath(-0.10, 0.004), gpath(-0.085, 0.002), gpath(-0.065, 0.0)],
                [(x * 5.0, y * 2.2) for x, y in C.circle_profile(0.01, 10)], up_fn=lambda k, p, t: tuple(T_),
                scale_fn=lambda u: 1.0 + 0.15 * (1 - u))
 parts.append(C.assign(cuff, glove_m))
 for f in range(4):
     v = -0.033 + f * 0.022
     L0 = 0.07 + (0.012 if f in (1, 2) else 0.0) + rnd.uniform(-0.004, 0.004)
-    parts.append(finger(f"glove_f{f}", v, 0.032, 0.032 + L0, 0.0105, 0.0075, curl=rnd.uniform(-0.006, 0.006)))
-th = C.sweep("glove_thumb", [gpath(0.0, 0.045), gpath(0.012, 0.062), gpath(0.04, 0.072), gpath(0.06, 0.07)],
-             [(x * 1.1, y * 0.8) for x, y in C.circle_profile(0.011, 8)], up_fn=lambda k, p, t: tuple(T_),
+    parts.append(finger(f"glove_f{f}", v, 0.04, 0.04 + L0, 0.0105, 0.0065, curl=rnd.uniform(-0.005, 0.005)))
+th = C.sweep("glove_thumb", [gpath(0.0, 0.045), gpath(0.012, 0.060), gpath(0.035, 0.068), gpath(0.055, 0.066)],
+             [(x * 1.05, y * 0.65) for x, y in C.circle_profile(0.011, 6)], up_fn=lambda k, p, t: tuple(T_),
              scale_fn=lambda u: 1.0 - 0.3 * u)
 parts.append(C.assign(th, glove_m))
 
 # ---- 前面の革の名札＋縫い取り ----
-pc = surface_point(0.085, 0.145, -1)
+pc = surface_point(0.11, 0.098, -1)
 patch = L.plank("name_patch", 0.12, 0.075, 0.006, segs=3, seed=31, round_edges=0.3, chip=0.004)
 C.xform(patch, pc + Vector((0, -0.002, 0)), (90 + rnd.uniform(-4, 4), 0, rnd.uniform(-6, 6)))
 parts.append(C.assign(patch, hide))
@@ -255,18 +272,9 @@ for side in range(4):
 arc = [on_patch(-0.032 + 0.064 * t, 0.014 - 0.022 * (2 * t - 1) ** 2 + 0.004) for t in (i / 8 for i in range(9))]
 parts.append(C.assign(C.sweep("emblem_head", arc, C.circle_profile(0.0019, 4)), thread))
 parts.append(C.assign(C.sweep("emblem_handle", [on_patch(0.0, 0.016), on_patch(0.004, -0.022)], C.circle_profile(0.0019, 4)), thread))
-for k, (u, v) in enumerate(((-0.05, -0.03), (0.05, -0.03), (-0.05, 0.03), (0.05, 0.03))):
-    rv = C.dome(f"patch_rivet_{k}", 0.0042, 0.003, sides=6)
-    C.place_on(rv, on_patch(u, v, 0.003), (0, -1, 0))
-    parts.append(C.assign(rv, iron))
-
 # ---- 革の持ち手：奥は立ったアーチ、手前は前へ倒れて垂れる。付け根に革のタブと鋲 ----
-for k, (a0, a1, side, lift, fwd) in enumerate(((1.95, 1.2, 1, 0.13, 0.02), (-1.92, -1.22, -1, -0.07, 0.07))):
-    p0, p1 = rim_at(a0), rim_at(a1)
-    mid = (p0 + p1) / 2 + Vector((0, side * fwd, lift))
-    q0 = p0 + Vector((0, side * 0.008, -0.03))
-    q1 = p1 + Vector((0, side * 0.008, -0.03))
-    pts = C.bezier(q0, q0 + (mid - q0) * 0.55 + Vector((0, 0, abs(lift) * 0.6 + 0.03)), q1 + (mid - q1) * 0.55 + Vector((0, 0, abs(lift) * 0.6 + 0.03)), q1, n=14)
+def strap(k, q0, q1, ctrl0, ctrl1, side):
+    pts = C.bezier(q0, ctrl0, ctrl1, q1, n=10)
     st = C.sweep(f"strap_{k}", pts, C.rect_profile(0.030, 0.007, chamfer=0.0015), up_fn=lambda i, p, t, s=side: (0, s, 0.2))
     C.displace_noise(st, 0.002, 20, seed=40 + k)
     parts.append(C.assign(st, hide))
@@ -277,6 +285,22 @@ for k, (a0, a1, side, lift, fwd) in enumerate(((1.95, 1.2, 1, 0.13, 0.02), (-1.9
         rv = C.dome(f"tab_rivet_{k}{j}", 0.005, 0.0035, sides=6)
         C.place_on(rv, q + Vector((0, side * 0.0065, -0.018)), (0, side, 0))
         parts.append(C.assign(rv, iron))
+
+
+# 奥：立ったアーチ（少し奥へ傾く）
+p0, p1 = rim_at(1.95), rim_at(1.2)
+q0, q1 = p0 + Vector((0, 0.008, -0.03)), p1 + Vector((0, 0.008, -0.03))
+strap(0, q0, q1, q0 + Vector((0.01, 0.02, 0.17)), q1 + Vector((-0.01, 0.02, 0.17)), 1)
+# 手前：前へ倒れ、前面に沿って U 字に垂れる（手袋の右）
+xa, xb = 0.02, 0.15
+za = rim_at(math.atan2(-0.09, xa)).z - 0.03
+zb = rim_at(math.atan2(-0.09, xb)).z - 0.03
+q0 = Vector((xa, front_y(xa, za) - 0.006, za))
+q1 = Vector((xb, front_y(xb, zb) - 0.006, zb))
+zm = min(za, zb) - 0.10
+c0 = Vector((xa + 0.005, front_y(xa, zm) - 0.012, zm))
+c1 = Vector((xb - 0.005, front_y(xb, zm) - 0.012, zm))
+strap(1, q0, q1, c0, c1, -1)
 
 C.finish(NAME, parts, version=VERSION, tex_res=1024, budget_tris=5000, refs=[82, 83],
          notes="ガルドの道具袋。煤けた帆布＋革の底、焼け穴、つるはしの尖りが前面を突き破り、柄が口から突き出す。革の持ち手2本、口に掛かった手袋、名札（縫い目と糸のつるはし印＝縫い取りの代わり、文字なし）。")
