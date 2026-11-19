@@ -189,7 +189,7 @@ def recenter(parts):
 # 形状：玄武岩の塊
 # ---------------------------------------------------------------------------
 def basalt_bm(radii, center=(0, 0, 0), seed=0, subdiv=4, lumpy=0.12, facets=8, facet_depth=(0.62, 0.9),
-              fresh_ratio=0.35, up_bias=0.3, fine=(0.012, 7.0), ground=0.0, extra_planes=(), hook=None):
+              fresh_ratio=0.35, up_bias=0.3, fine=(0.012, 7.0), ground=0.0, extra_planes=(), hook=None, notches=0, notch_depth=(0.72, 0.9)):
     """角ばった玄武岩: 楕円体＋低周波のこぶ＋平面の割れ面（facets）＋細かい凹凸＋平らな底。
     割れ面の一部は fresh（新しい断面）としてコーナー属性に記録"""
     rnd = random.Random(seed)
@@ -212,6 +212,15 @@ def basalt_bm(radii, center=(0, 0, 0), seed=0, subdiv=4, lumpy=0.12, facets=8, f
         d = Vector(d).normalized()
         sup = math.sqrt((d.x * rx) ** 2 + (d.y * ry) ** 2 + (d.z * rz) ** 2)
         planes.append((d, sup * frac, fr))
+    # 段差（欠けた角の塊）: 2つの平面の両方の外側だけを d 面へ押し込む → 平らな棚＋急な壁
+    steps = []
+    for i in range(notches):
+        d = Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(0.0, 1.2))).normalized()
+        e = Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(-0.5, 0.5)))
+        e = (e - d * e.dot(d)).normalized()
+        sd = math.sqrt((d.x * rx) ** 2 + (d.y * ry) ** 2 + (d.z * rz) ** 2)
+        se = math.sqrt((e.x * rx) ** 2 + (e.y * ry) ** 2 + (e.z * rz) ** 2)
+        steps.append((d, sd * rnd.uniform(*notch_depth), e, se * rnd.uniform(-0.1, 0.45)))
     tag = {}
     for v in bm.verts:
         for k, (d, dist, _) in enumerate(planes):
@@ -219,6 +228,14 @@ def basalt_bm(radii, center=(0, 0, 0), seed=0, subdiv=4, lumpy=0.12, facets=8, f
             if h > dist:
                 v.co -= d * (h - dist)
                 tag[v] = k
+    for j, (d, dist, e, edist) in enumerate(steps):
+        k = len(planes) + j
+        for v in bm.verts:
+            h = v.co.dot(d)
+            if h > dist and v.co.dot(e) > edist:
+                v.co -= d * (h - dist)
+                tag[v] = k
+    planes = planes + [(d, dist, True) for d, dist, e, edist in steps]
     for f in bm.faces:
         ks = {tag.get(v, -1) for v in f.verts}
         if len(ks) == 1:
@@ -374,8 +391,8 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     fcol = b.mix(n_fine, (0.0155, 0.0150, 0.0148), (0.023, 0.0222, 0.0218))
     col = b.mix(b.math("MULTIPLY", fresh, 0.85), col, fcol)
     # 角の欠け（新しい断面が角に出る）
-    edge = b.math("MULTIPLY", b.edge_mask(0.012, 0.03, 0.22), b.ramp(n_fine, [(0.3, 0.2), (0.65, 1.0)]), clamp=True)
-    col = b.mix(b.math("MULTIPLY", edge, 0.7), col, (0.030, 0.0275, 0.026))
+    edge = b.math("MULTIPLY", b.edge_mask(0.018, 0.025, 0.2), b.ramp(n_fine, [(0.3, 0.25), (0.6, 1.0)]), clamp=True)
+    col = b.mix(b.math("MULTIPLY", edge, 0.85), col, (0.031, 0.0285, 0.027))
     # 割れ目まわり: 広めの煤 → 縁のごく近くだけ赤茶に焼ける
     soot = b.math("MULTIPLY", b._map(cd, 0.35, 0.85), b.ramp(n_mid, [(0.2, 0.55), (0.7, 1.0)]))
     col = b.mix(b.math("MULTIPLY", soot, 0.7), col, (0.0055, 0.0048, 0.0045))
@@ -386,8 +403,8 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     col = b.mix(b.math("MULTIPLY", heat, 0.6), col, (0.030, 0.009, 0.0045))
     # 灰: 上向き面と凹み（割れ面・熱い縁には積もらない）
     cav = b.math("SUBTRACT", 1.0, b.cavity(0.05))
-    ashm = b.math("MAXIMUM", b.math("MULTIPLY", b.up_mask(0.72, 0.96), 0.6), b.math("MULTIPLY", cav, 0.7))
-    ashm = b.math("MULTIPLY", ashm, b.ramp(n_mid, [(0.35, 0.0), (0.72, 1.0)]))
+    ashm = b.math("MAXIMUM", b.math("MULTIPLY", b.up_mask(0.62, 0.92), 0.65), b.math("MULTIPLY", cav, 0.85))
+    ashm = b.math("MULTIPLY", ashm, b.ramp(n_mid, [(0.28, 0.0), (0.62, 1.0)]))
     ashm = b.math("MULTIPLY", ashm, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", fresh, 0.85)))
     ashm = b.math("MULTIPLY", ashm, b.math("SUBTRACT", 1.0, b._map(cd, 0.6, 0.95)))
     ashm = b.math("MULTIPLY", ashm, ash_amt, clamp=True)
@@ -422,8 +439,8 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
 
 
-def dragon_crystal(name, glow_strength=4.0, body_dark=(0.026, 0.0020, 0.0019), body_mid=(0.056, 0.0036, 0.0031),
-                   body_hi=(0.10, 0.0062, 0.0050), inner=0.32, metallic=0.3):
+def dragon_crystal(name, glow_strength=3.0, body_dark=(0.026, 0.0020, 0.0019), body_mid=(0.056, 0.0036, 0.0031),
+                   body_hi=(0.10, 0.0062, 0.0050), inner=0.28, metallic=0.3, rough_lo=0.3):
     """炎竜鉱の結晶: 暗い赤の艶のある面＋角は欠けて明るく＋根元は煤と灰。
     発光は「内部」だけ: 根元ほど強く、面の中央で強く角で弱い（厚みの見え方）＋内部のひび＋包有物＋折れ口"""
     b = C.NB(name)
@@ -441,8 +458,8 @@ def dragon_crystal(name, glow_strength=4.0, body_dark=(0.026, 0.0020, 0.0019), b
     ashm = b.math("MULTIPLY", ashm, b.math("SUBTRACT", 1.0, fresh))
     col = b.mix(b.math("MULTIPLY", ashm, 0.65), col, ASH)
     # 粗さ: 面は艶、角の欠け・灰・根元は粗い
-    r = b.mixf(n2, 0.07, 0.2)
-    r = b.mixf(edge, r, 0.38)
+    r = b.mixf(n2, rough_lo, rough_lo + 0.14)
+    r = b.mixf(edge, r, 0.5)
     r = b.mixf(fresh, r, 0.28)
     r = b.mixf(root, r, 0.7)
     r = b.mixf(ashm, r, 0.92)
