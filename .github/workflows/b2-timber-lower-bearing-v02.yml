@@ -1,7 +1,7 @@
 name: B2 Timber Lower Bearing V02 Real Blender 4 View Review
 on:
   push:
-    branches: [feature/gpt-b2-single-timber-axle-bearing-v02-20261119]
+    branches: [feature/gpt-b2-single-timber-axle-bearing-v01-20261119]
     paths:
       - 'tools/b2-waterwheel-bearing/build_lower_bearing_v02_resume.py'
       - '.github/workflows/b2-timber-lower-bearing-v02.yml'
@@ -22,13 +22,13 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin feature/gpt-b2-single-timber-axle-bearing-v02-20261119
-          git reset --hard origin/feature/gpt-b2-single-timber-axle-bearing-v02-20261119
+          git fetch origin feature/gpt-b2-single-timber-axle-bearing-v01-20261119
+          git reset --hard origin/feature/gpt-b2-single-timber-axle-bearing-v01-20261119
           mkdir -p docs/3d/b2-waterwheel-bearing
           echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-bearing/latest-v02.json
           git add docs/3d/b2-waterwheel-bearing/latest-v02.json
           git commit -m "chore(b2): record timber lower bearing Blender run"
-          git push origin HEAD:feature/gpt-b2-single-timber-axle-bearing-v02-20261119
+          git push origin HEAD:feature/gpt-b2-single-timber-axle-bearing-v01-20261119
       - name: Restore V01 actual lower bearing Blender checkpoint with SHA
         uses: actions/download-artifact@v4
         with:
@@ -45,7 +45,7 @@ jobs:
       - name: Real Blender 4 view render and GLB
         run: |
           set -o pipefail
-          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-bearing/build_lower_bearing_v02.py -- render-output/b2-lower-bearing-v02 checkpoint/b2_single_timber_lower_axle_bearing_v01.blend | tee /tmp/b2-bearing.log
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-bearing/build_lower_bearing_v02_resume.py -- render-output/b2-lower-bearing-v02 checkpoint/b2_single_timber_lower_axle_bearing_v01.blend | tee /tmp/b2-bearing.log
           if grep -E 'Traceback \(most recent call last\)|Python script failed|Error: Python' /tmp/b2-bearing.log; then exit 1; fi
           grep -q 'B2_BEARING_V02_SIDE_PBR_RENDER_SUCCESS' /tmp/b2-bearing.log
       - name: Check four real PNG GLB BLEND and SHA256
