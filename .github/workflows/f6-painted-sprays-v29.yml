@@ -20,6 +20,9 @@ jobs:
   render-qa:
     runs-on: ubuntu-24.04
     timeout-minutes: 55
+    defaults:
+      run:
+        shell: bash
     container:
       image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
       credentials:
