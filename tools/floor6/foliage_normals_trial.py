@@ -17,6 +17,12 @@ scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 scene.view_settings.view_transform="Standard"
 
+# A preview imported from verified V27 GLB can be used on the prebuilt
+# common Blender container, avoiding a costly per-run Blender install.
+source_glb=os.environ.get("F6_SOURCE_GLB")
+if source_glb:
+    assert Path(source_glb).is_file()
+    bpy.ops.import_scene.gltf(filepath=str(Path(source_glb).resolve()))
 source=[o for o in bpy.data.objects if o.type=="MESH" and (o.name.startswith("tree_mature_leaf_") or o.name.startswith("tree_mature_v25_canopy_"))]
 assert len(source)>500, "V27 foliage leaves missing"
 def centroid(obj):
@@ -74,7 +80,7 @@ for pidx,shift in enumerate(panels):
         for face in m.polygons: face.use_smooth=True
         if pidx>0:
             normals=[]
-            original=[Vector(c.normal).copy() for c in m.corner_normals]
+            original=[Vector(c.normal).copy() for c in m.corner_normals] if hasattr(m,"corner_normals") else [Vector(c.normal).copy() for c in m.loops]
             # Compute hemisphere-like normals in the ORIGINAL tree's
             # coordinates, then transform them back to mesh-local space.
             inv=(ob.matrix_world.to_3x3().inverted()).transposed()
@@ -92,7 +98,7 @@ for pidx,shift in enumerate(panels):
                 changed+=1
             m.normals_split_custom_set(normals)
             m.update()
-            assert len(m.corner_normals)==len(normals)
+            assert len(m.loops)==len(normals)
         if pidx==2:
             col=m.color_attributes.new(name="F6_SoftAO",type="FLOAT_COLOR",domain="POINT")
             for vert in m.vertices:
