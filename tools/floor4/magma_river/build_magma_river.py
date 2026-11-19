@@ -643,7 +643,7 @@ area('MAGMA_LIGHT_WARM',(0,1.65,.9),420,(1,.24,.045),5.4)
 area('UPSTREAM_CASCADE_LIGHT',(-.4,2.4,-2.9),340,(1,.35,.075),3.2)
 area('COLD_CAVE_FILL',(2.2,5,3.5),1150,(.25,.36,.58),6)
 scene=bpy.context.scene
-scene.render.engine='CYCLES';scene.cycles.samples=24
+scene.render.engine='CYCLES';scene.cycles.samples=24;scene.cycles.use_denoising=False;bpy.context.view_layer.cycles.use_denoising=False
 scene.render.resolution_x=1024;scene.render.resolution_y=768;scene.render.resolution_percentage=100
 scene.view_settings.view_transform='Filmic';scene.view_settings.look='Medium High Contrast'
 scene.camera=None

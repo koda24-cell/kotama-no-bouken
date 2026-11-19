@@ -257,7 +257,7 @@ def area(name,loc,power,color,size):
 area('Lava_warm_light',(0,0,3.8),650,(1,.37,.12),5)
 area('Cave_cold_fill',(3.8,-1.5,4.2),900,(.38,.48,.70),6)
 scene=bpy.context.scene
-scene.render.engine='CYCLES';scene.cycles.samples=18
+scene.render.engine='CYCLES';scene.cycles.samples=18;scene.cycles.use_denoising=False;bpy.context.view_layer.cycles.use_denoising=False
 scene.render.resolution_x=840;scene.render.resolution_y=630;scene.render.resolution_percentage=100
 scene.view_settings.view_transform='Filmic'
 def camera(name,loc,target,lens=41):
