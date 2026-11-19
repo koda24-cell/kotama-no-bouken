@@ -1,4 +1,4 @@
-name: B2 Reuse Tested Ferrule Pipeline V02
+name: B2 Reused Ferrule V02 Exact Photo PBR Render
 on:
   push:
     branches: [feature/gpt-b2-iron-axle-ferrule-v02-20261119]
