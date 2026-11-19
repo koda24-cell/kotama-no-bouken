@@ -1,0 +1,10 @@
+# B2 Timber Lower Bearing V03 real Blender and material iteration review
+
+2026-11-19 JST / PR #568 / **NOT_APPROVED**
+- User instruction was to advance to the next single model. Chosen: independent old oak **lower axle bearing block**, not a new waterwheel or paddle. V11 rim and other prior models preserved.
+- V01 Actions [44456466568](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44456466568) **success**, artifact 14497822305. Real half-round U seat, axis X, shaft radius 0.300m, seat 0.318m, 1.2m length. GLB/Blend/4 PNG and SHA manifest extracted; six files verified.
+- V02 Actions [44457226670](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44457226670) **success**, artifact 14499065245. Original V01 Blender checkpoint `c404c9187e1c029e789237453e2beac5cb2eb3fba19d54eb58d7260b5e787cf3` SHA-verified. 23 side faces UV/material edited, geometry unchanged. All six SHA manifest values verified. Visual result rejected: washed side photo and obvious bright horizontal strips.
+- V03 Actions [44458096045](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44458096045) **success**, artifact 14498986607. V01 SHA-verified checkpoint read, shape unchanged, 71 side + bevel polygons assigned visually more consistent photo PBR. GLB/Blend/4 Cycles PNG all six manifest bytes/hashes verified after real ZIP download.
+- Face-on side comparison shows V03 is a more appropriate dark aged oak than V02; however horizontal bright stripe **still remains**, and small end-edge chips read like holes. Do not call the art quality finished. Rounded U is visibly correct but no actual trial fit to game shaft/hub; dimensions are design values only.
+- Retain V03 as latest independent candidate and V01 as recoverable original. No asset promotion, no development/main merge, no in-game integration. GitHub Actions artifacts expire around 2026-12-03; permanent saving after explicit approval remains separate.
+- Cross-floor GLB Performance Audit Action, ClamAV on external files and game FPS not executed in this isolated task. The V11 photo PBR came from an already verified packed Blend rather than a new internet download.

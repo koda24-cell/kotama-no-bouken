@@ -1,0 +1,82 @@
+name: B2 One Bearing V03 Unified Antique Wood Grain Render
+on:
+  push:
+    branches: [feature/gpt-b2-single-timber-axle-bearing-v01-20261119]
+    paths:
+      - 'tools/b2-waterwheel-bearing/build_lower_bearing_v03_resume.py'
+      - '.github/workflows/b2-timber-lower-bearing-v03.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record actual run ID for review
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-single-timber-axle-bearing-v01-20261119
+          git reset --hard origin/feature/gpt-b2-single-timber-axle-bearing-v01-20261119
+          mkdir -p docs/3d/b2-waterwheel-bearing
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-bearing/latest-v03.json
+          git add docs/3d/b2-waterwheel-bearing/latest-v03.json
+          git commit -m "chore(b2): record timber lower bearing Blender run"
+          git push origin HEAD:feature/gpt-b2-single-timber-axle-bearing-v01-20261119
+      - name: Restore V01 actual lower bearing Blender checkpoint with SHA
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-single-lower-timber-axle-bearing-v01
+          run-id: 44456466568
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: checkpoint
+      - name: Verify source and make output folder
+        run: |
+          set -e
+          echo "c404c9187e1c029e789237453e2beac5cb2eb3fba19d54eb58d7260b5e787cf3  checkpoint/b2_single_timber_lower_axle_bearing_v01.blend" | sha256sum -c
+          mkdir -p render-output/b2-lower-bearing-v03
+      - name: Real Blender 4 view render and GLB
+        run: |
+          set -o pipefail
+          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-bearing/build_lower_bearing_v03_resume.py -- render-output/b2-lower-bearing-v03 checkpoint/b2_single_timber_lower_axle_bearing_v01.blend | tee /tmp/b2-bearing.log
+          if grep -E 'Traceback \(most recent call last\)|Python script failed|Error: Python' /tmp/b2-bearing.log; then exit 1; fi
+          grep -q 'B2_BEARING_V03_UNIFIED_WOOD_SIDE_RENDER_SUCCESS' /tmp/b2-bearing.log
+      - name: Check four real PNG GLB BLEND and SHA256
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          p=Path("render-output/b2-lower-bearing-v03")
+          m=json.loads((p/"b2_single_timber_lower_axle_bearing_v03_manifest.json").read_text())
+          assert m["approval"]=="NOT_APPROVED"
+          assert m["geometry_unchanged"] and m["side_photo_correction_polygons"]>=12
+          assert m["original_saddle_radius_m"]==.318
+          assert len(m["files"])==6
+          assert sum(n.endswith('_front.png') or n.endswith('_side.png') or n.endswith('_angle.png') or n.endswith('_back.png') for n in m['files'])==4
+          for name,meta in m["files"].items():
+              data=(p/name).read_bytes()
+              assert len(data)==meta["bytes"] and hashlib.sha256(data).hexdigest()==meta["sha256"]
+              if name.endswith(".png"):assert data[:8]==bytes.fromhex("89504e470d0a1a0a")
+              if name.endswith(".glb"):
+                  assert data[:4]==b"glTF"
+                  k=struct.unpack_from("<I",data,12)[0]
+                  j=json.loads(data[20:20+k])
+                  assert len(j.get("meshes",[]))==1
+                  assert len(j.get("images",[]))>=3
+              if name.endswith(".blend"):assert len(data)>100000
+          print("B2_BEARING_V03_ARTIFACTS_VERIFIED")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-single-lower-timber-axle-bearing-v03
+          path: render-output/b2-lower-bearing-v03
+          retention-days: 14
+          if-no-files-found: warn
