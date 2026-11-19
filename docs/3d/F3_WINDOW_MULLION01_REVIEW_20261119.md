@@ -21,3 +21,11 @@
 ## 途中保存
 - 各生成段階でBlend/GLB/PNGをActions Artifactへ出力した。実manifestのハッシュを検証済み。Artifactは14日間の一時保管。
 - 第3層の窓枠専用のジョブ間自動復旧はまだ検証していない。再開時はcommit SHA・run ID・manifestを突合する。
+
+## V5 UVペイント／Roughness比較（2026-11-19）
+- [GitHub Actions run #44450317443](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44450317443) **success**。Artifact `f3-window-mullion01-v5-textured`, ID `14495033109`。GLB/Blend/正面・側面・斜め・拡大PNG、カラー・Roughness PNGの計8ファイルを実取得しmanifestのSHA-256全一致を確認。
+- 同じ中空金属縦材を保持し、V4の浮いた板状塗膜メッシュをV5では使用しない。モデル構造は実GLBで1メッシュ/236三角形（V4は10メッシュ/416三角形）。FPS実測ではない。
+- `F3_WINDOW_ENAMEL_RUST_V5.png`: 256×512、SHA-256 `e1e76aa48c6a55fe1d1e7bfb2919148bc3c63d5b72a7dbf30d8330579a0c3628`。
+- `F3_WINDOW_ROUGHNESS_V5.png`: 256×512、SHA-256 `9dcb8e20ad4bbeb39a2369366c0479023fad435a900cf4e0be8e665e91f1da58`。non-color dataとして使用。
+- **美術QA未合格**：以前の板状剥離問題は減少。大部分の塗装が残り、錆は局所化したが、拡大では細長い縦筋に見える。次は錆の面分布・角の欠損・端面の違いを小規模修正する。
+- この時点で独立したV5素材のClamAV実スキャンは未確認。ゲーム統合/ユーザー承認/正式保存は未実施。旧V1〜V4の成果は変更していない。
