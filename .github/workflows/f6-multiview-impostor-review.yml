@@ -1,7 +1,7 @@
 name: F6 Multi-view Impostor Atlas Review
 on:
   push:
-    branches: [feature/gpt-shared-3d-optimization-actions-20261117]
+    branches: [feature/gpt-shared-3d-optimization-actions-20261117, feature/shared-container-cross-floor-batch-20261119]
     paths:
       - tools/3d-performance/build_multiview_impostor.py
       - tools/3d-performance/pack_multiview_atlas.py
@@ -22,13 +22,26 @@ on:
         default: '44053620503'
 permissions:
   contents: read
+  packages: read
   actions: read
 jobs:
   bake:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Blender and QA scripts
+        run: bash tools/security/clamav_scan_gate.sh scan tools/3d-performance qa/security/scripts.log
       - name: Get the verified unapproved original Blend checkpoint
         uses: actions/download-artifact@v4
         with:
@@ -49,12 +62,8 @@ jobs:
             assert hashlib.sha256(data).hexdigest()==f['sha256']
           print('IMPOSTOR_SOURCE_V14_VERIFIED')
           PY
-      - name: Install Blender and Pillow in venv
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libopengl0 libgl1-mesa-dri
-          python3 -m venv /tmp/impostor-venv
-          /tmp/impostor-venv/bin/pip install --quiet Pillow
+      - name: Scan downloaded Blend checkpoint before Blender import
+        run: bash tools/security/clamav_scan_gate.sh scan source-tree qa/security/input.log
       - name: Render 8 transparent tree views from original 3D mesh
         run: |
           set -euo pipefail
@@ -63,11 +72,15 @@ jobs:
           grep -q IMPOSTOR_FRAMES_DONE /tmp/impostor.log
       - name: Check RGBA alpha and pack multi-direction atlas
         run: |
-          /tmp/impostor-venv/bin/python tools/3d-performance/pack_multiview_atlas.py render-output/3d-performance/impostor
+          python3 tools/3d-performance/pack_multiview_atlas.py render-output/3d-performance/impostor
+      - name: Scan generated candidates
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/3d-performance/impostor qa/security/output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: f6-tree-8view-impostor-UNAPPROVED-review
-          path: render-output/3d-performance/impostor/
+          path: |
+            render-output/3d-performance/impostor/
+            qa/security/
           retention-days: 14
           if-no-files-found: warn
