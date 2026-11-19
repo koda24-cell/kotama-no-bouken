@@ -1,7 +1,7 @@
 name: B2 One Antique Square Iron Bearing Bolt V02 Blender
 on:
   push:
-    branches: [feature/gpt-b2-forged-bearing-bolt-v02-20261119]
+    branches: [feature/gpt-b2-forged-bearing-bolt-v01-20261119]
     paths:
       - 'tools/b2-waterwheel-bolt/build_square_forged_bolt_v02.py'
       - '.github/workflows/b2-single-square-bolt-v02.yml'
@@ -21,13 +21,13 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin feature/gpt-b2-forged-bearing-bolt-v02-20261119
-          git reset --hard origin/feature/gpt-b2-forged-bearing-bolt-v02-20261119
+          git fetch origin feature/gpt-b2-forged-bearing-bolt-v01-20261119
+          git reset --hard origin/feature/gpt-b2-forged-bearing-bolt-v01-20261119
           mkdir -p docs/3d/b2-waterwheel-bolt
           echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-bolt/latest-v02.json
           git add docs/3d/b2-waterwheel-bolt/latest-v02.json
           git commit -m "chore(b2): record forged bolt real Blender run"
-          git push origin HEAD:feature/gpt-b2-forged-bearing-bolt-v02-20261119
+          git push origin HEAD:feature/gpt-b2-forged-bearing-bolt-v01-20261119
       - name: Build iron bolt in Docker Blender and render
         run: |
           set -o pipefail
