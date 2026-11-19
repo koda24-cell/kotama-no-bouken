@@ -1,0 +1,46 @@
+name: Floor3 Window Mullion01 V4 Textured Review
+on:
+  push:
+    branches: [feature/gpt-f3-window-mullion01-20261119]
+    paths: ['tools/floor3/window_mullion01/build_v4.py', '.github/workflows/f3-window-mullion01-v4-render.yml']
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m py_compile tools/floor3/window_mullion01/build_v4.py
+      - name: Blender render the textured mullion
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_window_mullion01
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python /work/tools/floor3/window_mullion01/build_v4.py 2>&1 | tee out/f3_window_mullion01/blender.log
+          grep -q F3_MULLION_V4_ALL_COMPLETE out/f3_window_mullion01/blender.log
+      - name: Verify V4 source material and outputs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,os,struct
+          p=Path('out/f3_window_mullion01')
+          names=['F3_WINDOW_AGED_PAINT_RUST_01.png','f3_window_mullion01_v4.glb','f3_window_mullion01_v4.blend']+['f3_window_mullion01_v4-'+x+'.png' for x in ('front','side','angle','detail')]
+          files={}
+          for name in names:
+              b=(p/name).read_bytes()
+              assert len(b)>200, name
+              if name.endswith('.png'):assert b.startswith(bytes.fromhex('89504e470d0a1a0a')),name
+              if name.endswith('.glb'):assert b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b),name
+              if name.endswith('.blend'):assert b.startswith(b'BLENDER') or b.startswith(bytes.fromhex('28b52ffd')),name
+              files[name]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}
+          (p/'manifest_v4.json').write_text(json.dumps({'asset':'F3_WINDOW_MULLION01','version':4,'approval':'NOT_APPROVED','source_sha':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],'files':files},indent=2))
+          print('F3_MULLION_V4_QA_OK',len(files))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f3-window-mullion01-v4-textured
+          path: out/f3_window_mullion01/
+          retention-days: 14
