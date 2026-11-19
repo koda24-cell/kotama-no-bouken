@@ -10,7 +10,6 @@ on:
       - feature/b2-waterwheel-cave-ridges-pass6-20261112
       - feature/b2-waterwheel-deep-recess-pass7-20261112
       - feature/b2-waterwheel-topology-pass8-20261112
-      - feature/shared-container-b2-waterwheel-20261119
   workflow_dispatch:
 permissions:
   contents: read
