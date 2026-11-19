@@ -1,0 +1,56 @@
+name: Floor3 Window Mullion01 Blender Three-Pass Render
+on:
+  push:
+    branches: [feature/gpt-f3-window-mullion01-20261119]
+    paths:
+      - 'tools/floor3/window_mullion01/**'
+      - '.github/workflows/f3-window-mullion01-render.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify script syntax
+        run: python3 -m py_compile tools/floor3/window_mullion01/build.py
+      - name: Blender generate checkpoint GLB and 9 PNGs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_window_mullion01
+          printf '{"asset":"F3_WINDOW_MULLION01","state":"STARTED","approval":"NOT_APPROVED","run_id":"%s","source_sha":"%s"}\n' "$GITHUB_RUN_ID" "$GITHUB_SHA" > out/f3_window_mullion01/progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 \
+            --python /work/tools/floor3/window_mullion01/build.py 2>&1 | tee out/f3_window_mullion01/blender.log
+          grep -q F3_MULLION_ALL_COMPLETE out/f3_window_mullion01/blender.log
+      - name: Verify output files SHA-256 and basic format
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,struct,os
+          base=pathlib.Path('out/f3_window_mullion01')
+          records={}
+          for v in (1,2,3):
+              stem=f'f3_window_mullion01_v{v}'
+              for suffix in ['.glb','.blend','-front.png','-side.png','-angle.png']:
+                  p=base/(stem+suffix)
+                  data=p.read_bytes()
+                  assert len(data)>500,p
+                  if suffix=='.glb':
+                      assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data),p
+                  if suffix=='.blend':
+                      assert data.startswith(b'BLENDER') or data.startswith(bytes.fromhex('28b52ffd')),p
+                  if suffix.endswith('.png'):
+                      assert data[:8]==bytes.fromhex('89504e470d0a1a0a'),p
+                  records[p.name]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+          (base/'manifest.json').write_text(json.dumps({'asset':'F3_WINDOW_MULLION01','approval':'NOT_APPROVED','source_sha':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],'files':records},indent=2))
+          print('F3_MULLION_VERIFIED',len(records))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f3-window-mullion01-v1-v3
+          path: out/f3_window_mullion01/
+          retention-days: 14
