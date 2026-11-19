@@ -28,7 +28,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Vector, noise  # noqa: E402
 
 NAME = "b4p_claw_rock"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(1111)
 C.reset(1111)
 
@@ -83,7 +83,7 @@ def dist_fn(co):
 
 def carve(bm):
     L = D.bm_layers(bm)
-    D.bm_refine_near(bm, dist_fn, (0.075, 0.035, 0.0))
+    D.bm_refine_near(bm, dist_fn, (0.06, 0.028, -0.012))
     chipped = set()
     for v in bm.verts:
         h, p2 = local(v.co)
@@ -119,9 +119,9 @@ def carve(bm):
             D.set_face_corner([f], L["fresh"], 1.0)
 
 
-bm = D.basalt_bm(RAD, CEN, seed=21, subdiv=4, lumpy=0.12, facets=12, facet_depth=(0.6, 0.86), fresh_ratio=0.35,
-                 up_bias=0.1, fine=(0.010, 6.0), ground=0.0, extra_planes=[(tuple(NF), FRAC, False)],
-                 hook=carve, notches=5, notch_depth=(0.78, 0.92))
+bm = D.basalt_bm(RAD, CEN, seed=21, subdiv=4, lumpy=0.16, facets=15, facet_depth=(0.55, 0.85), fresh_ratio=0.35,
+                 up_bias=0.3, fine=(0.010, 6.0), ground=0.0, extra_planes=[(tuple(NF), FRAC, False)],
+                 hook=carve, notches=9, notch_depth=(0.7, 0.9))
 slab = D.sharp_by_angle(C.obj_from_bm(bm, "slab"), 40)
 parts = [slab]
 
@@ -129,7 +129,7 @@ parts = [slab]
 for k in range(6):
     u = rnd.uniform(-0.45, 0.75)
     y = -0.42 - rnd.uniform(0.0, 0.3)
-    sz = rnd.uniform(0.04, 0.11)
+    sz = rnd.uniform(0.06, 0.15)
     ob = D.chip_rock(f"chip_{k}", sz, (u, y), seed=60 + k, subdiv=1,
                      squash=(1.0, rnd.uniform(0.7, 0.95), rnd.uniform(0.45, 0.7)), rot_z=rnd.uniform(0, 6.28))
     parts.append(ob)
@@ -137,7 +137,7 @@ for k in range(6):
 for o in parts:
     D.ensure_attrs(o)
 off = D.recenter(parts)
-mat = D.basalt("basalt", hairline=0.5, prox_soot=0.7, heat_range=(0.45, 0.95), heat_amt=0.8, glow_strength=4.0)
+mat = D.basalt("basalt", hairline=0.7, prox_soot=0.75, heat_range=(0.3, 0.85), heat_amt=1.0, glow_strength=4.0)
 for o in parts:
     C.assign(o, mat)
 
