@@ -20,6 +20,9 @@
 
 | `F3_WINDOW_AGED_PAINT_RUST_01` | 第3層・廃ビル金属窓枠縦材の塗装剥離・錆カラー | 256×512 PNG / sRGB | 縦長の金属面用、シームレスではない。現状は縦縞が強く改善要 | 自作Blender生成スクリプト `tools/floor3/window_mullion01/build_v4.py`、[PR #540](https://github.com/koda24-cell/kotama-no-bouken/pull/540)、[run #44448888071](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448888071) | `3ecfab0e24a56aed12b6cd1ddd5b1aa7bf5e7a13222458d1c2f74c082ee6cfee` | 実PNG/GLB/Blend/4方向PNGのSHA256一致。Artifact ID `14494134047`。**PNG本体はGitHub正式素材フォルダには未保存**。美術品質未承認、ウイルススキャン未実施 |
 
+| `F3_WINDOW_ENAMEL_RUST_V5` | 第3層窓枠縦材01 V5の塗装・局所酸化・露出金属アルベド | 256×512 PNG / sRGB | 単体縦材用。無限タイル不適。V4より面の変化を局所化 | 自作コード `tools/floor3/window_mullion01/build_v5.py`（PR #540）、[成功run #44450317443](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44450317443) | `e1e76aa48c6a55fe1d1e7bfb2919148bc3c63d5b72a7dbf30d8330579a0c3628` | Artifact #14495033109 実体とSHA一致。画像バイナリ正式Git保存未実施、未承認。実ClamAVスキャン未確認 |
+| `F3_WINDOW_ROUGHNESS_V5` | 上記塗装・錆・露出金属を識別する粗さデータ | 256×512 PNG / non-color | V5カラーと同UV専用。タイル不可 | 同一V5自作コード・run #44450317443 | `9dcb8e20ad4bbeb39a2369366c0479023fad435a900cf4e0be8e665e91f1da58` | Artifact #14495033109 実体とSHA一致。画像バイナリ正式Git保存未実施、未承認。実ClamAVスキャン未確認 |
+
 ## モデルとの関係・承認境界
 
 - 第3層の壁01 V4（段差剥離）はユーザーが造形を了承済み。候補GLBの検証時SHA-256: `44e995b1ee843ad3bffba078c532158011effef6d6245cd0bced9f25082a8981`。
