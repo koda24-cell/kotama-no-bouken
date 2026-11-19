@@ -34,3 +34,10 @@
 - `render_water.py` の屈折混合率 23%→11%、屈折 Roughness .008→.002、水面Bump .13/.012→.075/.006に変更。IOR 1.333は維持。
 - 川底マテリアルだけに `Voronoi Distance to Edge` + 緩やかなNoise変形 + 水域マスク（概ねY<2.6）を適用して、薄い疑似カースティクスを付加。素材として保存済みの川底写真/石/水面SVG/AI画像は保持。**カースティクスは物理的に追跡した光ではなく、画像的な補助表現**。
 - `f2-water-v11.blend` をArtifact対象に変更。実行: [run #44464758746](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44464758746)。**この記録時点で起動確認のみ**。ClamAV実検査、PNG3方向、品質評価のV11成功は未確認。今回も安全確認と美術承認を区別する。
+
+
+## V11実行結果とV12修正（2026-11-19）
+- [V11 run #44464758746](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44464758746) **success**。ClamAVのfreshclam＋実スキャンexit 0/検出0、`safety_check=CONFIRMED_OK`。Artifact ID 14501843301、13ファイル、Blender .blend、3方向PNG、テクスチャ、manifestを実取得。3方向PNGのSHA256を検証してすべて一致。
+- V11の実PNGを正面/斜めから目視。**美観不合格**：曇りガラス風の歪みは減った一方で、水底に明るい均一な多角形グリッドが全面に出て、ひび割れた石畳のように見える。原因は `Voronoi DISTANCE_TO_EDGE` を高コントラストで河床色へ加算した偽caustics表現。特に水底の広い面に規則的な閉ループを作ることが失敗。
+- **V12修正**：原因が明確なVoronoi系のcausticsノード群のみ取り除く。既存の透過・弱い屈折・水面カラー/アルファ画像・石や川底のメッシュ・安全取得機構を保持。次のcaustics候補は、模様が閉じた多角形にならない断続的なワープ帯を独立A/Bで検査する。
+- 修正のGit保存と、V12の実描画成功・画像の改善は区別する。V12は実レンダ確認前に合格扱いしない。
