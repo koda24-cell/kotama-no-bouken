@@ -10,9 +10,9 @@ b4p_dragon_ore_cluster — 炎竜鉱：割れた玄武岩の塊から暗赤の�
   #41 割れた黒岩と溶岩の亀裂：亀裂幅の変化、端の黒い冷却部
 形・寸法の要点:
   - 母岩：幅約1.5m×奥行1.0m×高さ0.65mの黒い玄武岩。1つの塊を平面で割り、右側の片(B)を
-    底の線を軸に約13°外へ傾けて「結晶が岩を押し割った」V字の割れ目を作る（割れ目の内側が赤く光る）
-  - 結晶：割れ目の底から扇状に13本。大2（0.95m/0.72m、うち1本は先が折れる）・中3（0.4〜0.52m）・
-    小8（0.12〜0.26m、割れ目に沿って点々と顔を出す）。六角柱の太さ・面幅は不揃い、先端の錐面は偏る
+    底の線を軸に約17°外へ傾けて「結晶が岩を押し割った」V字の割れ目を作る（割れ目の内側が赤く光る）
+  - 結晶：割れ目の底から扇状に14本。大2（1.0m/0.74m、うち1本は先が折れる）・中3（0.4〜0.52m）・
+    小9（0.14〜0.30m、割れ目に沿って点々と顔を出す）。六角柱の太さ・面幅は不揃い、先端の錐面は偏る
   - 足元：割れて落ちた岩片5つ（新しい断面が多い）と、折れて転がった結晶1本
 劣化（設計書3章）:
   欠け＝割れて傾いた片・角を落とす平面の割れ面・結晶の折れ口と角の欠け／
@@ -31,7 +31,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_dragon_ore_cluster"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(808)
 C.reset(808)
 
@@ -44,24 +44,25 @@ def add(ob, key):
 
 
 # ---- 母岩：1つの塊を作って割る ----
-full = D.basalt_bm((0.74, 0.52, 0.46), (0, 0, 0.20), seed=3, subdiv=4, lumpy=0.13, facets=9,
-                   facet_depth=(0.66, 0.9), fresh_ratio=0.3, up_bias=0.25, fine=(0.012, 6.5), ground=0.0)
-CO = Vector((0.16, 0.0, 0.0))
-N = Vector((1.0, 0.28, 0.10)).normalized()
+full = D.basalt_bm((0.74, 0.56, 0.46), (0, 0, 0.20), seed=3, subdiv=5, lumpy=0.16, facets=13,
+                   facet_depth=(0.6, 0.88), fresh_ratio=0.3, up_bias=0.2, fine=(0.018, 5.5), ground=0.0)
+D.bm_vnoise(full, 0.006, 16.0, seed=9, z0=0.0)
+CO = Vector((0.12, -0.04, 0.0))
+N = Vector((0.80, -0.55, 0.10)).normalized()  # 割れ目は斜め：正面からも横からも V 字が見える
 W = (Vector((0, 0, 1)) - N * N.z).normalized()  # 割れ目の面内の「上」
 V = W.cross(N).normalized()                     # 割れ目の面内の「横」（ほぼ Y）
 bmA = full.copy()
 bmB = full.copy()
 full.free()
-D.bm_cut(bmA, CO, N, keep="inner", fresh=0.0, glow=1.0, poke=0.03)
-D.bm_cut(bmB, CO, N, keep="outer", fresh=0.0, glow=1.0, poke=0.03)
+D.bm_cut(bmA, CO, N, keep="inner", fresh=0.0, glow=1.0, poke=0.07, glow_rim=0.0)
+D.bm_cut(bmB, CO, N, keep="outer", fresh=0.0, glow=1.0, poke=0.07, glow_rim=0.0)
 for bm in (bmA, bmB):
     L = D.bm_layers(bm)
     for v in bm.verts:
         d = abs((v.co - CO).dot(N))
         v[L["cd"]] = max(0.0, 1.0 - d / 0.32)
-TILT = math.radians(-13.0)
-GAP0 = 0.035
+TILT = math.radians(-17.0)
+GAP0 = 0.05
 MB = Matrix.Translation(N * GAP0) @ D.rot_about_line(CO, N.cross(Vector((0, 0, 1))), TILT)
 D.bm_transform(bmB, MB)
 D.bm_ground(bmB, 0.0, dissolve=False)
@@ -87,19 +88,20 @@ def gdir(a_deg, b_deg):
 # ---- 結晶 ----
 # (s, h, 長さ, 半径, a, b, broken, chips)
 CRY = [
-    (0.00, 0.28, 0.95, 0.115, -12, 10, None, 2),
-    (0.07, 0.29, 0.72, 0.090, 24, 16, (0.78, 0.5), 1),
-    (-0.08, 0.31, 0.52, 0.068, -38, 4, None, 1),
-    (0.11, 0.33, 0.46, 0.060, 50, -6, None, 1),
-    (-0.02, 0.35, 0.40, 0.055, 8, -24, (0.7, 0.6), 0),
-    (-0.17, 0.40, 0.24, 0.035, -60, 10, None, 1),
-    (0.20, 0.42, 0.26, 0.038, 62, 5, None, 0),
-    (-0.26, 0.42, 0.16, 0.026, -35, 25, None, 0),
-    (0.29, 0.41, 0.18, 0.028, 40, -20, (0.75, 0.4), 0),
-    (-0.34, 0.36, 0.12, 0.022, -70, 0, None, 0),
-    (0.37, 0.34, 0.13, 0.022, 75, 15, None, 0),
-    (0.05, 0.38, 0.20, 0.030, -5, -42, None, 0),
-    (0.14, 0.38, 0.17, 0.026, 20, 42, None, 0),
+    (0.00, 0.24, 1.00, 0.125, -10, 14, None, 2),
+    (0.09, 0.26, 0.74, 0.095, 26, 24, (0.78, 0.5), 1),
+    (-0.10, 0.28, 0.56, 0.075, -36, 20, None, 1),
+    (0.14, 0.30, 0.50, 0.066, 52, 4, None, 1),
+    (-0.03, 0.30, 0.44, 0.060, 6, -26, (0.7, 0.6), 1),
+    (-0.20, 0.36, 0.28, 0.040, -58, 30, None, 1),
+    (0.23, 0.38, 0.30, 0.042, 64, 26, None, 0),
+    (-0.29, 0.38, 0.18, 0.029, -38, -28, None, 0),
+    (0.31, 0.37, 0.20, 0.031, 42, -22, (0.75, 0.4), 0),
+    (-0.37, 0.32, 0.14, 0.024, -70, 12, None, 0),
+    (0.40, 0.30, 0.14, 0.024, 76, 20, None, 0),
+    (0.05, 0.34, 0.24, 0.034, -6, -46, None, 0),
+    (0.15, 0.34, 0.20, 0.030, 18, 48, None, 0),
+    (-0.13, 0.34, 0.16, 0.026, -20, 50, None, 0),
 ]
 for i, (s, h, ln, r, a, b, brk, ch) in enumerate(CRY):
     ob = D.crystal(f"cry_{i}", gap_point(s, h), gdir(a, b), ln, r, seed=100 + i, spin=rnd.uniform(0, 6.28),
@@ -107,16 +109,16 @@ for i, (s, h, ln, r, a, b, brk, ch) in enumerate(CRY):
     add(ob, "crystal")
 
 # 折れて転がった結晶（岩片にもたれて先が少し浮く）
-shard = D.crystal("cry_fallen", (0.30, -0.66, 0.035), (0.92, 0.25, 0.16), 0.24, 0.040, seed=150, spin=0.4,
+shard = D.crystal("cry_fallen", (0.22, -0.74, 0.035), (0.92, 0.25, 0.16), 0.24, 0.040, seed=150, spin=0.4,
                   embed=0.0, broken=None, chips=1)
 D.mesh_ground(shard, 0.0)
 add(shard, "crystal")
 
 # ---- 足元の岩片 ----
-CHIPS = [((0.62, -0.50), 0.11, 1), ((0.86, -0.08), 0.14, 2), ((-0.36, -0.58), 0.08, 3),
-         ((0.14, 0.62), 0.10, 4), ((-0.82, 0.22), 0.09, 5), ((0.50, -0.70), 0.05, 6)]
+CHIPS = [((0.70, -0.55), 0.12, 1), ((0.92, 0.05), 0.15, 2), ((-0.36, -0.62), 0.08, 3),
+         ((0.10, 0.66), 0.10, 4), ((-0.84, 0.22), 0.09, 5), ((0.48, -0.76), 0.05, 6)]
 for k, ((x, y), sz, sd) in enumerate(CHIPS):
-    ob = D.chip_rock(f"chip_{k}", sz, (x, y), seed=40 + sd, subdiv=2 if sz > 0.09 else 1,
+    ob = D.chip_rock(f"chip_{k}", sz, (x, y), seed=40 + sd, subdiv=2 if sz > 0.11 else 1,
                      squash=(1.0, rnd.uniform(0.7, 0.95), rnd.uniform(0.5, 0.75)), rot_z=rnd.uniform(0, 6.28))
     add(ob, "basalt")
 
@@ -130,10 +132,10 @@ mats = {"basalt": D.basalt("basalt"), "crystal": D.dragon_crystal("crystal")}
 for o, key in parts.values():
     C.assign(o, mats[key])
 
-lights = [
-    (tuple(gap_point(0.0, 0.38) - off), 22.0, (1.0, 0.22, 0.06)),
-    (tuple(gap_point(0.0, 0.52) - off + Vector((0, -0.22, 0))), 8.0, (1.0, 0.16, 0.05)),
+lights = [  # 割れ目の奥（結晶の根元より下）だけに置く
+    (tuple(gap_point(0.0, 0.20) - off), 18.0, (1.0, 0.22, 0.06)),
+    (tuple(gap_point(0.28, 0.26) - off), 5.0, (1.0, 0.18, 0.05)),
 ]
 C.finish(NAME, objs, version=VERSION, lights=lights, tex_res=1024, budget_tris=8000, refs=[60, 61, 64, 41],
-         notes="炎竜鉱の結晶群。割れて傾いた玄武岩のV字の割れ目から13本の結晶が扇状に出る。"
+         notes="炎竜鉱の結晶群。割れて傾いた玄武岩のV字の割れ目から14本の結晶が扇状に出る。"
                "発光は割れ目の内側・縁の細いひび・結晶の内部のみ。")

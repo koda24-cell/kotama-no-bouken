@@ -57,7 +57,7 @@ def attr(b, name):
 # ---------------------------------------------------------------------------
 # bmesh 操作
 # ---------------------------------------------------------------------------
-def bm_cut(bm, co, no, keep="inner", fresh=1.0, glow=0.0, poke=0.0):
+def bm_cut(bm, co, no, keep="inner", fresh=1.0, glow=0.0, poke=0.0, glow_rim=None):
     """平面 (co, no) で切り、断面を塞ぐ。keep='inner' は no の反対側を残す。
     断面のコーナー属性 fresh/glow を設定。poke>0 なら断面中央を内側へ凹ませる"""
     L = bm_layers(bm)
@@ -69,11 +69,17 @@ def bm_cut(bm, co, no, keep="inner", fresh=1.0, glow=0.0, poke=0.0):
     if edges:
         faces = bmesh.ops.holes_fill(bm, edges=edges, sides=0)["faces"]
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    centers = set()
     if faces and poke > 0:
         r = bmesh.ops.poke(bm, faces=faces, offset=-poke, center_mode="MEAN_WEIGHTED")
         faces = r["faces"]
+        centers = set(r["verts"])
     set_face_corner(faces, L["fresh"], fresh)
     set_face_corner(faces, L["glow"], glow)
+    if glow_rim is not None and centers:  # 断面の奥（中央）ほど光り、縁は暗い
+        for f in faces:
+            for lp in f.loops:
+                lp[L["glow"]] = glow if lp.vert in centers else glow_rim
     return faces
 
 
@@ -286,6 +292,12 @@ def warp(b, scale, amt, vec=None):
     return add.outputs[0]
 
 
+def ridge(b, scale, vec=None, detail=4):
+    """1-|2n-1|: 曲がりくねった細い線（溶岩の筋・ひび）。1に近いほど線の中心"""
+    n = b.noise(scale, detail, 0.5, vec=vec)
+    return b.math("SUBTRACT", 1.0, b.math("ABSOLUTE", b.math("SUBTRACT", b.math("MULTIPLY", n, 2.0), 1.0)))
+
+
 def bw(b, color):
     nd = b.n("ShaderNodeRGBToBW")
     b.link(color, nd.inputs[0])
@@ -343,18 +355,19 @@ def basalt(name, tex_scale=0.9, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     ashm = b.math("MULTIPLY", ashm, ash_amt, clamp=True)
     col = b.mix(b.math("MULTIPLY", ashm, 0.8), col, ASH)
     # 割れ目の内側（glow 面）: 黒い殻＋溶けた筋
-    crust = b.voronoi(13.0, "DISTANCE_TO_EDGE", vec=warp(b, 4.0, 0.12))
-    veins = b.ramp(b.math("ADD", crust, b.math("MULTIPLY", n_fine, 0.03)), [(0.0, 1.0), (0.05, 0.6), (0.13, 0.10), (0.25, 0.04)])
-    col = b.mix(glow, col, (0.010, 0.0055, 0.004))
-    # 割れ目の近くの細いひび（発光）
-    hv = b.voronoi(4.2, "DISTANCE_TO_EDGE", vec=warp(b, 2.5, 0.18))
-    hl = b.ramp(hv, [(0.0, 1.0), (0.011, 0.0)])
-    hair_m = b.math("MULTIPLY", hl, b._map(cd, 0.5, 0.95))
-    hair_m = b.math("MULTIPLY", hair_m, b.ramp(n_big, [(0.35, 0.0), (0.6, 1.0)]))
+    crust = ridge(b, 7.0, vec=warp(b, 3.0, 0.15))
+    veins = b.ramp(crust, [(0.0, 0.05), (0.80, 0.25), (0.93, 1.0)])
+    veins = b.math("MULTIPLY", veins, b.ramp(glow, [(0.0, 0.0), (0.35, 0.3), (1.0, 1.0)]))
+    col = b.mix(b.math("MINIMUM", b.math("MULTIPLY", glow, 4.0), 1.0), col, (0.010, 0.0055, 0.004))
+    # 割れ目の縁から伸びる短い細いひび（発光）
+    hv = ridge(b, 5.0, vec=warp(b, 2.0, 0.25))
+    hl = b.ramp(hv, [(0.955, 0.0), (0.985, 1.0)])
+    hair_m = b.math("MULTIPLY", hl, b._map(cd, 0.78, 0.97))
+    hair_m = b.math("MULTIPLY", hair_m, b.ramp(n_big, [(0.4, 0.0), (0.6, 1.0)]))
     hair_m = b.math("MULTIPLY", hair_m, b.math("SUBTRACT", 1.0, glow))
     hair_m = b.math("MULTIPLY", hair_m, hairline, clamp=True)
     col = b.mix(hair_m, col, (0.006, 0.004, 0.0035))
-    e = b.math("MAXIMUM", b.math("MULTIPLY", glow, veins), b.math("MULTIPLY", hair_m, 0.85))
+    e = b.math("MAXIMUM", veins, b.math("MULTIPLY", hair_m, 0.75))
     emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.2, (0.22, 0.02, 0.004)), (0.6, (hot[0] * 0.85, hot[1] * 0.55, hot[2] * 0.5)), (1.0, hot)])
     # 粗さ
     r = b.val(0.82)
@@ -371,8 +384,8 @@ def basalt(name, tex_scale=0.9, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
 
 
-def dragon_crystal(name, glow_strength=5.0, body_dark=(0.040, 0.0028, 0.0026), body_mid=(0.085, 0.0048, 0.0042),
-                   body_hi=(0.15, 0.0085, 0.0068), inner=0.55):
+def dragon_crystal(name, glow_strength=4.0, body_dark=(0.026, 0.0020, 0.0019), body_mid=(0.056, 0.0036, 0.0031),
+                   body_hi=(0.10, 0.0062, 0.0050), inner=0.32):
     """炎竜鉱の結晶: 暗い赤の艶のある面＋角は欠けて明るく＋根元は煤と灰。
     発光は「内部」だけ: 根元ほど強く、面の中央で強く角で弱い（厚みの見え方）＋内部のひび＋包有物＋折れ口"""
     b = C.NB(name)
@@ -382,7 +395,7 @@ def dragon_crystal(name, glow_strength=5.0, body_dark=(0.040, 0.0028, 0.0026), b
     n2 = b.noise(16.0, 4, 0.5)
     edge = b.edge_mask(0.005, 0.02, 0.25)
     body = b.ramp(n1, [(0.2, body_dark), (0.55, body_mid), (0.9, body_hi)])
-    col = b.mix(b.math("MULTIPLY", edge, 0.55), body, (0.13, 0.028, 0.022))
+    col = b.mix(b.math("MULTIPLY", edge, 0.55), body, (0.085, 0.020, 0.016))
     root = b._map(tip, 0.0, 0.16, 1.0, 0.0)
     col = b.mix(b.math("MULTIPLY", root, 0.75), col, (0.010, 0.0065, 0.006))
     ashm = b.math("MULTIPLY", b.up_mask(0.55, 0.95), b.ramp(n1, [(0.4, 0.0), (0.75, 1.0)]))
@@ -405,9 +418,9 @@ def dragon_crystal(name, glow_strength=5.0, body_dark=(0.040, 0.0028, 0.0026), b
     cr = b.math("MULTIPLY", cr, b.math("SUBTRACT", 1.0, edge))
     spots = b.ramp(b.noise(7.0, 4, 0.55), [(0.64, 0.0), (0.76, 1.0)])
     spots = b.math("MULTIPLY", spots, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", tip, 0.6)))
-    e = b.math("MAXIMUM", body_e, b.math("MULTIPLY", cr, 0.85))
-    e = b.math("MAXIMUM", e, b.math("MULTIPLY", spots, 0.45))
-    e = b.math("MAXIMUM", e, b.math("MULTIPLY", fresh, 0.6))
+    e = b.math("MAXIMUM", body_e, b.math("MULTIPLY", cr, 0.75))
+    e = b.math("MAXIMUM", e, b.math("MULTIPLY", spots, 0.35))
+    e = b.math("MAXIMUM", e, b.math("MULTIPLY", fresh, 0.5))
     e = b.math("MULTIPLY", e, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", ashm, 0.8)))
     # 内部の発光色 #ff3b1f（linear 1.0,0.044,0.014）を中心に
     emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.30, 0.010, 0.004)), (0.65, (0.85, 0.040, 0.012)), (1.0, (1.0, 0.12, 0.03))])
