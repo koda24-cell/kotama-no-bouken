@@ -30,7 +30,8 @@ const errors=[];
 page.on('pageerror',e=>errors.push(String(e)));
 page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
 await page.goto('http://127.0.0.1:'+port, {waitUntil:'load'});
-await page.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('方位'),{timeout:25000});
+try { await page.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('方位'),{timeout:12000}); }
+catch(e) { await mkdir('f5-360-renders',{recursive:true}); await page.screenshot({path:'f5-360-renders/startup-failure.png'}); await writeFile('f5-360-renders/startup-errors.json',JSON.stringify({errors,html:await page.content(),message:String(e)},null,2)); throw new Error('Preview failed to initialize: '+JSON.stringify(errors)+' / '+e); }
 await mkdir('f5-360-renders',{recursive:true});
 const records=[];
 for (const angle of [0,45,90,135,180,225,270,315]) {
