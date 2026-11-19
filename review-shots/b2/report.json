@@ -437,8 +437,8 @@
         "b2:water_tiles:20",
         "b2:water_foam:2",
         "b2:crystal_zone:8",
-        "b2:monuments:16",
-        "b2:backdrop:43",
+        "b2:monuments:15",
+        "b2:backdrop:27",
         "b2:bridge:10",
         "b2:stairs:14"
       ],
@@ -558,12 +558,6 @@
           "x": -3.75,
           "z": 5.25,
           "ry": 1.57
-        },
-        {
-          "name": "waterwheel",
-          "x": 21,
-          "z": -3,
-          "ry": 5.76
         },
         {
           "name": "pillarA",
@@ -1020,9 +1014,9 @@
             "dir": "up",
             "tx": 1,
             "ty": 19,
-            "back": "left",
+            "back": "down",
             "tunnel": true,
-            "face": "right"
+            "face": "up"
           }
         ],
         "backdrops": [
@@ -1039,22 +1033,6 @@
             "sight": 8,
             "view": [
               3,
-              3
-            ]
-          },
-          {
-            "name": "waterwheel",
-            "tx": 21,
-            "ty": 1,
-            "d": "up",
-            "cells": [
-              "21,1",
-              "20,1",
-              "22,1"
-            ],
-            "sight": 6,
-            "view": [
-              21,
               3
             ]
           }
@@ -1248,8 +1226,8 @@
         "b2:frost_ledge:4",
         "b2:water_tiles:20",
         "b2:crystal_zone:12",
-        "b2:monuments:28",
-        "b2:backdrop:45",
+        "b2:monuments:27",
+        "b2:backdrop:28",
         "b2:bridge:10",
         "b2:stairs:5"
       ],
@@ -1349,10 +1327,10 @@
           "ry": 0.91
         },
         {
-          "name": "ruinSpire",
+          "name": "ruinParapet",
           "x": 5.89,
-          "z": 9.54,
-          "ry": 1.15
+          "z": 9.51,
+          "ry": 3.14
         },
         {
           "name": "ruinRubble",
@@ -1413,12 +1391,6 @@
           "x": -3.75,
           "z": 9.25,
           "ry": 1.57
-        },
-        {
-          "name": "waterwheel",
-          "x": 15,
-          "z": -3,
-          "ry": 5.76
         },
         {
           "name": "watergate",
@@ -1861,7 +1833,7 @@
         "bankR": true,
         "shrine": true
       },
-      "ownedDisposed": 1176,
+      "ownedDisposed": 1159,
       "setpieces": {
         "stairs": [
           {
@@ -1887,21 +1859,6 @@
             "view": [
               3,
               7
-            ]
-          },
-          {
-            "name": "waterwheel",
-            "tx": 15,
-            "ty": 1,
-            "d": "up",
-            "cells": [
-              "15,1",
-              "14,1"
-            ],
-            "sight": 8,
-            "view": [
-              15,
-              3
             ]
           }
         ],
@@ -2106,7 +2063,7 @@
     },
     "b2f1_obj_stairs_9_1": {
       "calls": 68,
-      "triangles": 244017,
+      "triangles": 244487,
       "geometries": 207,
       "textures": 52,
       "lights": 34
@@ -2196,214 +2153,214 @@
       "lights": 34
     },
     "b2f2_01_enter": {
-      "calls": 197,
-      "triangles": 859281,
-      "geometries": 241,
+      "calls": 195,
+      "triangles": 863077,
+      "geometries": 239,
       "textures": 66,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_obj_door_a2-gate": {
       "calls": 270,
       "triangles": 1142104,
-      "geometries": 291,
+      "geometries": 289,
       "textures": 67,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_obj_cache_a2-cache": {
-      "calls": 219,
-      "triangles": 830175,
-      "geometries": 382,
+      "calls": 205,
+      "triangles": 777317,
+      "geometries": 367,
       "textures": 83,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_obj_sign_a2-plaque": {
-      "calls": 233,
-      "triangles": 770266,
-      "geometries": 382,
+      "calls": 223,
+      "triangles": 729586,
+      "geometries": 367,
       "textures": 83,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_obj_save_10_13": {
       "calls": 165,
-      "triangles": 503766,
-      "geometries": 427,
+      "triangles": 504118,
+      "geometries": 414,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_obj_switch_a2-stone-west": {
       "calls": 113,
-      "triangles": 333276,
-      "geometries": 427,
+      "triangles": 333628,
+      "geometries": 414,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_obj_switch_a2-stone-east": {
       "calls": 109,
-      "triangles": 269773,
-      "geometries": 454,
+      "triangles": 270255,
+      "geometries": 441,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_door_after_switches": {
       "calls": 266,
       "triangles": 1142064,
-      "geometries": 454,
+      "geometries": 441,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_waterfall_1": {
-      "calls": 207,
-      "triangles": 742316,
-      "geometries": 465,
+      "calls": 196,
+      "triangles": 689474,
+      "geometries": 453,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_waterfall_2": {
-      "calls": 240,
-      "triangles": 931730,
-      "geometries": 466,
+      "calls": 235,
+      "triangles": 919248,
+      "geometries": 454,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_crystals_1_cyan": {
       "calls": 71,
       "triangles": 207179,
-      "geometries": 488,
+      "geometries": 476,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_crystals_2_cyan": {
-      "calls": 181,
-      "triangles": 868180,
-      "geometries": 489,
+      "calls": 179,
+      "triangles": 869116,
+      "geometries": 476,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_crystals_3_violet": {
       "calls": 168,
       "triangles": 920740,
-      "geometries": 489,
+      "geometries": 476,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_atrium_from_south": {
-      "calls": 103,
-      "triangles": 368178,
-      "geometries": 493,
+      "calls": 85,
+      "triangles": 305540,
+      "geometries": 476,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f2_atrium_center": {
-      "calls": 88,
-      "triangles": 344139,
-      "geometries": 493,
+      "calls": 70,
+      "triangles": 281741,
+      "geometries": 476,
       "textures": 99,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_01_enter": {
-      "calls": 46,
-      "triangles": 126830,
-      "geometries": 125,
+      "calls": 41,
+      "triangles": 112038,
+      "geometries": 121,
       "textures": 98,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_obj_npc_merchant": {
-      "calls": 117,
-      "triangles": 368466,
-      "geometries": 212,
+      "calls": 98,
+      "triangles": 306138,
+      "geometries": 194,
       "textures": 104,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_obj_npc_watchman": {
-      "calls": 107,
-      "triangles": 257489,
-      "geometries": 218,
+      "calls": 89,
+      "triangles": 193285,
+      "geometries": 200,
       "textures": 104,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_obj_sign_1_13": {
       "calls": 136,
-      "triangles": 562536,
-      "geometries": 275,
+      "triangles": 562432,
+      "geometries": 257,
       "textures": 113,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_obj_save_24_15": {
-      "calls": 421,
-      "triangles": 1373142,
-      "geometries": 389,
+      "calls": 419,
+      "triangles": 1376486,
+      "geometries": 370,
       "textures": 113,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_obj_gate_25_16": {
       "calls": 44,
       "triangles": 29251,
-      "geometries": 399,
+      "geometries": 380,
       "textures": 113,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_open_water": {
-      "calls": 223,
-      "triangles": 687155,
-      "geometries": 441,
+      "calls": 212,
+      "triangles": 635673,
+      "geometries": 423,
       "textures": 114,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_waterfall_1": {
       "calls": 101,
-      "triangles": 269858,
-      "geometries": 461,
+      "triangles": 269806,
+      "geometries": 443,
       "textures": 114,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_waterfall_2": {
       "calls": 70,
       "triangles": 151810,
-      "geometries": 462,
+      "geometries": 444,
       "textures": 114,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_monument_altar_n": {
-      "calls": 476,
-      "triangles": 1268268,
-      "geometries": 489,
+      "calls": 474,
+      "triangles": 1271924,
+      "geometries": 471,
       "textures": 114,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_crystals_1_cyan": {
-      "calls": 473,
-      "triangles": 1591762,
-      "geometries": 493,
+      "calls": 446,
+      "triangles": 1489954,
+      "geometries": 475,
       "textures": 114,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_crystals_2_violet": {
-      "calls": 477,
-      "triangles": 1428388,
-      "geometries": 493,
+      "calls": 442,
+      "triangles": 1307124,
+      "geometries": 475,
       "textures": 114,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_crystals_3_blue": {
-      "calls": 351,
-      "triangles": 1160712,
-      "geometries": 504,
+      "calls": 345,
+      "triangles": 1134980,
+      "geometries": 486,
       "textures": 114,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_atrium_from_south": {
-      "calls": 321,
-      "triangles": 1287986,
-      "geometries": 504,
+      "calls": 290,
+      "triangles": 1167222,
+      "geometries": 486,
       "textures": 114,
-      "lights": 60
+      "lights": 57
     },
     "b2f3_atrium_center": {
-      "calls": 301,
-      "triangles": 1105016,
-      "geometries": 504,
+      "calls": 270,
+      "triangles": 984356,
+      "geometries": 486,
       "textures": 114,
-      "lights": 60
+      "lights": 57
     },
     "b1_after_b2": {
       "calls": 1116,
@@ -2414,8 +2371,8 @@
     }
   },
   "buildMs": {
-    "2-2F": 6151,
-    "2-3F": 4199
+    "2-2F": 4860,
+    "2-3F": 4029
   },
   "missing": [],
   "log": [
@@ -2487,7 +2444,7 @@
       },
       "dir": "right",
       "active": true,
-      "near": "chest:2-0:19:1",
+      "near": "",
       "floor": 0,
       "area": 2
     },
@@ -2499,7 +2456,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "chest:2-0:5:5",
+      "near": "chest:2-0:19:1",
       "floor": 0,
       "area": 2
     },
@@ -2583,7 +2540,7 @@
       },
       "dir": "down",
       "active": true,
-      "near": "switch:2:a2-stone-west",
+      "near": "save:2-1:10:13",
       "floor": 1,
       "area": 2
     },
@@ -2607,7 +2564,7 @@
       },
       "dir": "left",
       "active": true,
-      "near": "switch:2:a2-stone-east",
+      "near": "",
       "floor": 1,
       "area": 2
     },
@@ -2667,7 +2624,7 @@
       },
       "dir": "up",
       "active": true,
-      "near": "sign:2-2:1:13",
+      "near": "save:2-2:24:15",
       "floor": 2,
       "area": 2
     },
