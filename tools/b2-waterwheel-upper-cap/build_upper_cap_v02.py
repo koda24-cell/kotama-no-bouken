@@ -33,7 +33,7 @@ for material in (wood,end):
         new.colorspace_settings.name=old.colorspace_settings.name
         node.image=new
         new.pack()
-        assert new.has_data and new.size[0]>0
+        assert restored.stat().st_size>1000, 'restored oak source file empty'
 
 # Section deliberately retains flat joining plane at z=.055, asymmetric upper worn rim.
 prof=[(-.502,.055),(.500,.055),(.521,.078),(.516,.505),
