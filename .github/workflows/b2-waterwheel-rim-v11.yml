@@ -29,7 +29,7 @@ jobs:
           git add docs/3d/b2-waterwheel-rim/latest-v11.json
           git commit -m "chore(b2): V11 rim single wood run" || true
           git push origin HEAD:feature/gpt-b2-waterwheel-rim-segment-v01-20261118
-      - name: Restore V02 checkpoint
+      - name: Restore SHA-verified V10 checkpoint
         uses: actions/download-artifact@v4
         with:
           name: b2-waterwheel-single-rim-v10
