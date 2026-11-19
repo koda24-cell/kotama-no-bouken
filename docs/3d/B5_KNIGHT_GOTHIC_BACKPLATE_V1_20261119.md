@@ -22,3 +22,14 @@ Status: **NOT_APPROVED**, no game integration, branch `feature/gpt-b5-knight-sta
 - 6 actual 800px Cycles PNG (front, left, right, angle, back, top), GLB + Blend, two PBR PNGs, manifest 10 SHA256 entries, ClamAV on source and output.
 - Verify back silhouette and shoulder notch; side curve enough to be a rigid forged plate rather than a strip; no floating trim or mesh spikes. Check waist edges against breastplate in later assembly.
 - Real GLB and screenshot verification mandatory before saying complete. Technical pass is not art approval. Old models preserved.
+
+## Actual V1–V2 execution and visual QA
+- V1 run [44517120521](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44517120521): Blender generated GLB/Blend/six PNG and 10 manifest checksums, but workflow marked FAILURE because PBR output filenames retained `_v2` from source generator while workflow expected `_v1`. Fixed source output naming, retaining original V1 mesh.
+- V1 corrected run [44517590092](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44517590092): SUCCESS. Downloaded artifact `14526570814`; real six directions, GLB and Blend present; **10/10 SHA-256 matches** locally. ClamAV gates success.
+- V1 visual issue: back and front have too much continuous smooth metal slab; shallow low-level panel relief does not show Gothic armor language distinctly.
+- V2 independent generator `tools/b5-knights/build_gothic_backplate_v2.py` kept all previous geometry and adds six curved tapered / radiating forged flutes directly as local mesh deformation across back plate. No extra cylindrical rods.
+- V2 run [44518192273](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44518192273): **SUCCESS**, artifact `14526467690` `b5-gothic-backplate-v2-NOT-APPROVED`.
+- Independently extracted artifact and matched **10/10 SHA-256** against actual GLB/Blend/6 PNG/2 maps. GLB **651,988 bytes**, Blend **1,966,828 bytes**. ClamAV output 12 scanned, zero infected.
+- Visual comparison: V2 exhibits clearer diagonal Gothic pressed-plate folds on left/right back and an articulated shoulder blade feeling. The V1 convex shell/curved waist remains; V22 aging image and PBR remain. Side views still appear to be a single sheet—not a completed torso assembly, which is the intended modular design.
+- Remaining art gap: two visible broad folds could be refined toward actual museum backplate fan structure; chest V6 / fauld V2 joint assembly is not yet rendered. Upper corner can look needle-like in oblique view and needs future spot assessment.
+- **NOT_APPROVED**, no official asset promotion or game integration, old V1 retained.
