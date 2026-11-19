@@ -26,3 +26,11 @@
 - 外部素材のGLBは今回直接導入しておらず、ライセンス/ウイルススキャン済みとも扱わない。使った汚れ画像は完全自作。
 - 実GLB/PNG/Blendの存在、SHA一致、アート品質はActionsとArtifactの取得後に判定する。
 - 完成・正式保存・ゲーム実装はユーザーの承認後。V5が不合格なら次のバージョンで局所修正する。
+
+## 実行ログと評価（追記）
+- 初回 run [#44463751813](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44463751813) は Blender 5.3 の `mesh.uv_layers.new()` の位置引数がエラーになり失敗。キーワード引数へ修正。
+- 次のrun [#44463924609](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44463924609) はアセット出力成功したが、初期Cubeが残りGLB・レンダリングに混入。**不合格**として、シーン開始時に初期オブジェクトを全削除し、GLBにCube/描画用背景を混入させない検査追加。
+- 修正後の [#44464482739](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44464482739) は **success**。Artifact #14500769738。GLB、Blend、4方向PNG、Roughness PNGの7ファイルのSHA-256を実取得し照合成功。実GLBのKHR_materials_transmissionの存在も検査済み。
+- 正面、側面、斜め、破断面拡大の画像QA：中央の穴と周辺に残るガラス、薄い実断面は確認できた。しかし**ガラス全体が白っぽく透過が弱く、破断面の反射も不足**。破断輪郭も幾何学的な直線が多いので美術未承認。
+- 粗さマスク `F3_GLASS_WEATHERING_ROUGHNESS_A_V5.png` は256×256 PNG、SHA256 `431a4468faa0b6e64f3e166268c6239d4a9ec3d90dbf94136e011d79511c7c77`。自作で外部素材は未導入。
+- V6は `tools/floor3/broken_glass01/build_type_a_v6.py`、`.github/workflows/f3-broken-glass01-type-a-v6.yml` で透過率・露出・明暗を再調整。run [#44465072113](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465072113)。**完了と実画像の視覚QAは未確認の段階でこの記録を追加**。
