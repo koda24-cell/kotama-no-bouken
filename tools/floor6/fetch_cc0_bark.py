@@ -31,6 +31,13 @@ with urllib.request.urlopen(request, timeout=60) as response:
     blob = response.read(MAX_ARCHIVE + 1)
 if not blob.startswith(b"PK") or len(blob) > MAX_ARCHIVE:
     raise ValueError("Invalid or oversized zip")
+# Scan downloaded ZIP before opening or extracting untrusted archive.
+import subprocess
+raw_archive=OUT/"Bark015_1K-PNG_unscanned.zip"
+raw_archive.write_bytes(blob)
+scan=subprocess.run(["clamscan","--infected","--no-summary",str(raw_archive)],capture_output=True,text=True)
+if scan.returncode!=0:
+    raise RuntimeError("ClamAV ZIP validation failed: "+(scan.stdout+scan.stderr)[-1000:])
 archive_sha = hashlib.sha256(blob).hexdigest()
 archive = zipfile.ZipFile(io.BytesIO(blob))
 candidates = {}
