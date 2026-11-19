@@ -7,6 +7,9 @@ on:
       - 'tools/f2-water/**'
       - '.github/workflows/f2-safe-water-render.yml'
   workflow_dispatch:
+concurrency:
+  group: f2-water-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
