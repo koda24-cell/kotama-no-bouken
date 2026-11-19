@@ -28,7 +28,7 @@ body=next((o for o in meshes if o.name.lower()=='body'),None)
 if face is None or body is None:raise RuntimeError('Body or Face object missing')
 mat=bpy.data.materials.new('Shibu_source_audit_clay');mat.use_nodes=True
 shader=mat.node_tree.nodes.get('Principled BSDF');shader.inputs['Base Color'].default_value=(.72,.68,.65,1)
-bpy.context.view_layers[0].material_override=mat
+bpy.context.view_layer.material_override=mat
 for ob in meshes:
     ob.hide_render=ob not in [face,body]
     if ob in [face,body]:
