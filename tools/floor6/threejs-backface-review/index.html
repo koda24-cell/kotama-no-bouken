@@ -31,7 +31,7 @@ function patchMaterial(material,kind){
     const tweak=kind==='B'
       ? 'if ( !gl_FrontFacing ) { diffuseColor.rgb *= 0.58; }'
       : 'if ( !gl_FrontFacing ) { diffuseColor.rgb = diffuseColor.rgb * 0.56 + vec3(0.008,0.014,0.002); }';
-    shader.fragmentShader=shader.fragmentShader.replace(anchor,anchor+'\\n'+tweak);
+    shader.fragmentShader=shader.fragmentShader.replace(anchor,anchor+'\n'+tweak);
     status.shaderPatched++;
   };
   material.customProgramCacheKey=()=> 'f6-backface-'+kind+'-v1';
