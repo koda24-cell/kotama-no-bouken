@@ -1,8 +1,8 @@
 {
   "asset": "b4p_toolbag_garud",
-  "version": "v2",
+  "version": "v3",
   "blender": "4.2.3 LTS",
-  "triangles": 5612,
+  "triangles": 4622,
   "budget_triangles": 5000,
   "materials": [
     "b4p_toolbag_garud_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    0.564,
-    0.368,
+    0.562,
+    0.405,
     0.47
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_toolbag_garud.glb",
-  "glb_bytes": 735916,
+  "glb_bytes": 753992,
   "cc0_textures": {
     "rusty_metal_03_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rusty_metal_03",
@@ -63,16 +63,16 @@
     83
   ],
   "sha256": {
-    "b4p_toolbag_garud.glb": "f13af4a24ebe5a4b5f16bdb49c1e3c75e322a6f3b6675454ad8e229e583fd821",
-    "b4p_toolbag_garud_volcanic_front.png": "d5bfa07a3f949ecba2011cb09c2e9b6ac0a3a5a5f8b6ced32ce28389a1f8b0e2",
-    "b4p_toolbag_garud_volcanic_side.png": "88cb83af263d67a740f019674939ec1be829bf207556b03dd4aa7462ac66641d",
-    "b4p_toolbag_garud_volcanic_angle.png": "bc08d0a7669c640aa9e2d3d78d17993cafa3fe07b940f0f75f4201262e432913",
-    "b4p_toolbag_garud_volcanic_top.png": "5278cdbf1f2b9f028ec4781fb5aeeb7ce4b0ab8567d08aff5692e96b4bec9684",
-    "b4p_toolbag_garud_volcanic_close.png": "f0395ef2b1987e9e4ec9e2845f39beb6a18384bf310caeeb4e9ffd234c27edb9",
-    "b4p_toolbag_garud_volcanic_back.png": "a779b9d20114a06403e3486d41b74a0ce3cebea00b88b6ff0366de8ca44ac9c7",
-    "b4p_toolbag_garud_studio_front.png": "f5d15cccfd2dadf6c6bc4686b2bde09f9fa5b46e4f518cd9530eb3639e19fe64",
-    "b4p_toolbag_garud_studio_angle.png": "14cc16053b3d7ed091bee811ee1b3949cda1fcbc40b4448c717c9308c0ff2ef2",
-    "b4p_toolbag_garud_studio_scale.png": "3c43c21d6232a44c2b5389bc246af59d06708f1fffba511258b4bff18278728b"
+    "b4p_toolbag_garud.glb": "46e8a0032b5c8ff2d50d36dca2ce87111da875617345c5f441b6c2af13e86d69",
+    "b4p_toolbag_garud_volcanic_front.png": "42b9654be186cd5da7c2c1db79500fa5561f1e447144f0a6e22f2f4ddd8064d8",
+    "b4p_toolbag_garud_volcanic_side.png": "9dee675c546f27faad1a4825bc620044e2a05faef025c19b58a49bd8a492031a",
+    "b4p_toolbag_garud_volcanic_angle.png": "82ceffd585e52887a6bd49c7dccbb81004a162a8ca7859a82b5a415694f2e273",
+    "b4p_toolbag_garud_volcanic_top.png": "219795474ab9977d93577f47290a1465c532a7216843ba588fe471c62d344acb",
+    "b4p_toolbag_garud_volcanic_close.png": "45b6b4b831c442a5b6c248d5ef2eb5d33560bc5e1a333c9c8a87a8a68f758d38",
+    "b4p_toolbag_garud_volcanic_back.png": "b27a07590a8cfd30c4f1413de62dbe74427cb4f4760ff0f772e4606ee98656db",
+    "b4p_toolbag_garud_studio_front.png": "2dc1f171be49afbb828f8fe1ae7dd1aa811a93f48b147354300866ef66d0f358",
+    "b4p_toolbag_garud_studio_angle.png": "5e679447dd3abc3d15b2429eadf3ea046c71d2c96d51689046546454d7575d05",
+    "b4p_toolbag_garud_studio_scale.png": "17e2cf577512e7d9efbd763f34068cc21c331a8a3e321a3311703ab4c442fa22"
   },
   "renders": [
     "b4p_toolbag_garud_volcanic_front.png",
