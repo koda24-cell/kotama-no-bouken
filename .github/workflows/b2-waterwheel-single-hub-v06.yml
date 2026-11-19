@@ -1,4 +1,4 @@
-name: B2 Single Wooden Hub V06 Procedural Torn Oak Texture Review
+name: B2 Single Wooden Hub V06 Applied Generated Crack PBR Review
 on:
   push:
     branches: [feature/gpt-b2-single-wooden-hub-v01-20261119]
