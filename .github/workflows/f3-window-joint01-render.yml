@@ -1,0 +1,48 @@
+name: Floor3 Window Joint01 Blender Three Variant Review
+on:
+  push:
+    branches: [feature/gpt-f3-window-joint01-20261119]
+    paths: ['tools/floor3/window_joint01/**', '.github/workflows/f3-window-joint01-render.yml']
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m py_compile tools/floor3/window_joint01/build.py
+      - name: Blender render joint models
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_window_joint01
+          printf '{"asset":"F3_WINDOW_JOINT01","approval":"NOT_APPROVED","source_sha":"%s","run_id":"%s","phase":"STARTED"}\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > out/f3_window_joint01/progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python /work/tools/floor3/window_joint01/build.py 2>&1 | tee out/f3_window_joint01/blender.log
+          grep -q F3_WINDOW_JOINT_ALL_COMPLETE out/f3_window_joint01/blender.log
+      - name: Verify actual GLB, PNG, Blend and SHA
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,struct,os
+          root=Path('out/f3_window_joint01')
+          records={}
+          for v in (1,2,3):
+              stem=f'f3_window_joint01_v{v}'
+              for suffix in ('.glb','.blend','-front.png','-side.png','-angle.png'):
+                  p=root/(stem+suffix);b=p.read_bytes()
+                  assert len(b)>400,p
+                  if suffix=='.glb':assert b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b),p
+                  if suffix=='.blend':assert b.startswith(b'BLENDER') or b.startswith(bytes.fromhex('28b52ffd')),p
+                  if suffix.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a'),p
+                  records[p.name]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}
+          (root/'manifest.json').write_text(json.dumps({'asset':'F3_WINDOW_JOINT01','approval':'NOT_APPROVED','run_id':os.environ['GITHUB_RUN_ID'],'source_sha':os.environ['GITHUB_SHA'],'files':records},indent=2))
+          print('JOINT_QA_SUCCESS',len(records))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f3-window-joint01-v1-v3
+          path: out/f3_window_joint01/
+          retention-days: 14

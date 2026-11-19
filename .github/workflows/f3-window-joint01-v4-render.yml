@@ -1,0 +1,45 @@
+name: Floor3 Window Joint01 V4 Weld Correction
+on:
+  push:
+    branches: [feature/gpt-f3-window-joint01-20261119]
+    paths: ['tools/floor3/window_joint01/build_v4.py','.github/workflows/f3-window-joint01-v4-render.yml']
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m py_compile tools/floor3/window_joint01/build_v4.py
+      - name: Render corrected welds and checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_window_joint01
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python /work/tools/floor3/window_joint01/build_v4.py 2>&1 | tee out/f3_window_joint01/blender_v4.log
+          grep -q F3_WINDOW_JOINT_V4_ALL_COMPLETE out/f3_window_joint01/blender_v4.log
+      - name: Verify models and render outputs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,struct,json,hashlib,os
+          p=pathlib.Path('out/f3_window_joint01')
+          names=['f3_window_joint01_v4'+s for s in ('.glb','.blend','-front.png','-side.png','-angle.png','-weld_detail.png')]
+          files={}
+          for n in names:
+              b=(p/n).read_bytes()
+              assert len(b)>400,n
+              if n.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+              if n.endswith('.glb'):assert b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b)
+              if n.endswith('.blend'):assert b.startswith(b'BLENDER') or b.startswith(bytes.fromhex('28b52ffd'))
+              files[n]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}
+          (p/'manifest_v4.json').write_text(json.dumps({'asset':'F3_WINDOW_JOINT01','version':4,'approval':'NOT_APPROVED','run_id':os.environ['GITHUB_RUN_ID'],'source_sha':os.environ['GITHUB_SHA'],'files':files},indent=2))
+          print('JOINT_V4_QA_OK',len(files))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f3-window-joint01-v4
+          path: out/f3_window_joint01/
+          retention-days: 14
