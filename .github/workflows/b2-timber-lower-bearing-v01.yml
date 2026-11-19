@@ -3,7 +3,7 @@ on:
   push:
     branches: [feature/gpt-b2-single-timber-axle-bearing-v01-20261119]
     paths:
-      - 'tools/b2-waterwheel-bearing/**'
+      - 'tools/b2-waterwheel-bearing/build_lower_bearing_v01.py'
       - '.github/workflows/b2-timber-lower-bearing-v01.yml'
   workflow_dispatch:
 permissions:
