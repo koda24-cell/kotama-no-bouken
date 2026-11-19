@@ -10,9 +10,9 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 const BASE = './assets/models/floor4/props/';
 // side: how far from tile centre towards the wall (m). human: 0 = dragon trace, 1 = human trace.
 export const B4_PROP_REGISTRY = {
-  b4p_brazier_cage: { human: 1, weight: 1.0, side: 1.25, scale: [0.95, 1.08], light: { y: 0.6, color: 0xff7a2e, intensity: 1.6, range: 4.5 } },
+  b4p_brazier_cage: { human: 1, weight: 1.0, radius: 0.34, height: 0.9, scale: [0.95, 1.08], light: { y: 0.6, color: 0xff7a2e, intensity: 1.6, range: 4.5 } },
   // hung from a nail in the rock at head height
-  b4p_mine_lantern: { human: 1, weight: 1.3, side: 1.82, y: 1.55, scale: [0.95, 1.05], light: { y: 0.2, color: 0xffb070, intensity: 0.9, range: 3.2 } },
+  b4p_mine_lantern: { human: 1, weight: 1.3, radius: 0.1, height: 0.4, y: 1.55, scale: [0.95, 1.05], light: { y: 0.2, color: 0xffb070, intensity: 0.9, range: 3.2 } },
 };
 
 // Approved GPT models reused as-is (docs/3d/B4_GPT_MODEL_INVENTORY.md).
@@ -74,6 +74,23 @@ function instance(group, owned, asset, matrices, name) {
 }
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+
+// Distance from the tile centre to the B4 volcanic wall skin at lateral offset 0, for heights y0..y1.
+// Mirrors wallGeo + volcanicWallGeo displacement in field-3d-b4-b5-map.js (wall centre 2.0, half thickness 0.325).
+function wallSkinDistance(y0, y1) {
+  let minD = Infinity;
+  for (let h = y0; h <= y1 + 1e-6; h += 0.05) {
+    const y = h - 2;
+    const d = Math.sin(y * 1.7) * Math.cos(y * 3.3) * 0.12 + Math.sin(y * 4.3) * 0.045;
+    const height = THREE.MathUtils.smoothstep(2.1 - Math.abs(y), 0, 0.48);
+    const large = Math.sin(y * 0.63) * Math.cos(y * 0.94), small = Math.sin(-y * 2.18) * Math.cos(y * 1.83);
+    const fracture = Math.pow(Math.abs(Math.sin(y * 0.7)), 10);
+    const over = (large * 0.26 + small * 0.11 - fracture * 0.07) * height;
+    minD = Math.min(minD, 2 - 0.325 - d - over);
+  }
+  return minD;
+}
+const sideFor = R => R.side ?? (wallSkinDistance(R.y || 0, (R.y || 0) + R.height) - R.radius - 0.04);
 
 export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY);
@@ -137,7 +154,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     if (!asset) { info.missing.push(id); continue; }
     const R = B4_PROP_REGISTRY[id];
     const mats = list.map(c => {
-      const x = c.tx * CELL + c.dx * R.side, z = c.ty * CELL + c.dz * R.side;
+      const side = sideFor(R), x = c.tx * CELL + c.dx * side, z = c.ty * CELL + c.dz * side;
       const yaw = Math.atan2(-c.dx, -c.dz) + (hash(c.tx, c.ty, 814) - 0.5) * 0.9;
       const s = R.scale[0] + (R.scale[1] - R.scale[0]) * hash(c.tx, c.ty, 815);
       const y0 = (R.y || 0) * (0.95 + 0.1 * hash(c.tx, c.ty, 816));
@@ -150,7 +167,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     });
     instance(group, owned, asset, mats, `b4:prop:${id}`);
     info.byId[id] = list.length; info.placed += list.length;
-    for (const c of list) info.list.push({ id, tx: c.tx, ty: c.ty, dx: c.dx, dz: c.dz, t: +c.t.toFixed(2), x: c.tx * CELL + c.dx * R.side, y: R.y || 0, z: c.ty * CELL + c.dz * R.side });
+    for (const c of list) info.list.push({ id, tx: c.tx, ty: c.ty, dx: c.dx, dz: c.dz, t: +c.t.toFixed(2), x: c.tx * CELL + c.dx * sideFor(R), y: R.y || 0, z: c.ty * CELL + c.dz * sideFor(R) });
   }
   // ---- mine recesses: the user-approved GPT minecart V32 replaces the procedural cart ----
   if (mines.length) {
