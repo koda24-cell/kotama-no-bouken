@@ -118,3 +118,18 @@ the container is trusted.
 - New **Blender 5.0.1 + ClamAV** separate Ubuntu26.04 GHCR image: [build+smoke run #44452374577](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44452374577) success. Exact verified digest: `ghcr.io/koda24-cell/kotama-blender5-clamav@sha256:05f93bdd5c2c0dc541c34b6f30e488f0c21a53c403c50311f26fd43357ce8047`. Real PNG/GLB, freshclam, EICAR, 1 source/2 output files ClamAV infected 0. [PR #555](https://github.com/koda24-cell/kotama-no-bouken/pull/555) merged. This image is required for Blender5-written F6 V14 checkpoint; Blender4.0.2 cannot open it.
 - F6 V14 foliage batching on Blender5: [run #44452794170](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44452794170), success, source scripts 15/input checkpoint 7/output 7 files scanned, infected 0; 9108 original mesh nodes -> 145 batched candidate. Impostor migration remains under verification in PR #550.
 - All candidate assets are NOT_APPROVED and temporary. Malware scan is not a safety guarantee; rendering/technical success is not artistic approval. Other legacy workflows still need individual migration and QA.
+
+## Four legacy B2 renders migrated and verified (2026-11-19)
+PR [#557](https://github.com/koda24-cell/kotama-no-bouken/pull/557) merged into `development`. Existing Blender4 image reused, no repeated apt/Docker installation; freshclam + actual source/import/output ClamAV scans (all infected 0):
+- Bridge variants [run #44453043062](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453043062): source script 1, source bridge GLB 1, output 14 files.
+- Stone ruins V2 [run #44453048148](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453048148): source script 1, output 18 files.
+- Stone ruins V3 [run #44453053265](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453053265): source script 1, source bridge GLB 1, output 18 files.
+- Ice bridge side [run #44453070117](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44453070117): source script 1, output 33 files. OIDN unsupported by Blender4 and disabled in review-only renderer.
+No geometry/gameplay modifications; artifacts and renders remain unapproved.
+
+### Remaining migration groups (not all complete)
+- B2 legacy: frozen ancient altar, frozen pillars V1/V2/V3, frozen waterwheel, glacial shoreline, ice bridge adjacent, floor2 waterfall.
+- B4: magma bank modules P1–P3, P3 V5, approved V16 derived candidate workflow. Their current Blender installations are not yet replaced by shared images.
+- B5 fog preview uses **Playwright/Chromium**, not Blender; do not blindly replace its browser image with a Blender image. Third-party texture download and npm scan need a separate safety integration.
+- Remaining archive/promotion and generated-texture workflows must be assessed by operation type; do not migrate a job that has no Blender to a Blender container merely for uniformity.
+- Each migration requires its own real Actions pass and scan evidence. F6 Blender5 foliage/impostor candidates remain unapproved; PR #550 is separate.
