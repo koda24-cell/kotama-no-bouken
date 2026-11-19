@@ -1,0 +1,46 @@
+name: Assassin Original V10 Full Head Context Blender
+on:
+  push:
+    branches: [feature/gpt-assassin-original-head-v10-profile-facial-plane-20261119]
+    paths:
+      - 'tools/character-mesh-research/build_original_head_context_v10.py'
+      - '.github/workflows/assassin-original-head-context-v10.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender xvfb python3-numpy
+      - name: Generate original full head and render seven views
+        run: |
+          mkdir -p output/assassin-original-head-v10
+          python3 -m py_compile tools/character-mesh-research/build_original_head_context_v10.py
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a blender -b -t 2 --python-exit-code 1 --python tools/character-mesh-research/build_original_head_context_v10.py -- output/assassin-original-head-v10
+      - name: Confirm no reference mesh used and real model outputs
+        run: |
+          python3 - <<'PY'
+          import json,os
+          p='output/assassin-original-head-v10'
+          q=json.load(open(p+'/qa.json'))
+          assert q['status']=='NOT_APPROVED' and not q['source_VRM_imported'] and q['source_vertices_copied']==0
+          assert q['main_head_vertices']==8545 and q['main_head_quads']==8448
+          assert q['head_lower_open_edges']==96 and not q['main_head_nonmanifold_gt2']
+          for n in ('front','right','left','front_three_quarter','back','back_three_quarter','back_upper'):
+            assert os.path.getsize(f'{p}/{n}.png')>2500
+          for f in ('assassin_original_head_v10_review.glb','assassin_original_head_v10_review.blend','manifest.json'):
+            assert os.path.getsize(f'{p}/{f}')>1000
+          PY
+      - name: Upload review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assassin-original-head-v10-context-NOT-APPROVED
+          path: output/assassin-original-head-v10
+          retention-days: 14
