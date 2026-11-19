@@ -29,19 +29,19 @@ jobs:
         run: |
           mkdir -p ore-cc0-review
           python3 tools/ore/intake_cc0_assets.py --out ore-cc0-review
-      - name: Install ClamAV signatures (fail closed)
+      - name: Install ClamAV and Blender for preflight
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y clamav clamav-freshclam
+          sudo apt-get install -y clamav clamav-freshclam blender
           sudo systemctl stop clamav-freshclam || true
           sudo freshclam
           clamscan --version
-      - name: Malware scan downloads before publishing to render jobs
+      - name: Scan downloaded assets before Blender can open them
         run: |
           set -euo pipefail
-          clamscan --recursive --infected --scan-archive=yes --max-filesize=200M --max-scansize=500M --max-recursion=20 ore-cc0-review | tee ore-cc0-review/clamav-scan.log
-          grep -q '^Infected files: 0
+          clamscan -r -i --scan-archive=yes --max-filesize=200M --max-scansize=500M ore-cc0-review | tee ore-cc0-review/clamav-scan.log
+          grep -Eq '^Infected files: 0
         if: always()
         run: |
           python3 - <<'PY'
@@ -268,15 +268,12 @@ jobs:
               await github.rest.issues.createComment({owner,repo,issue_number,body});
             }
  ore-cc0-review/clamav-scan.log
-          echo "CLAMAV_SCAN_PASSED=true" >> "$GITHUB_ENV"
-      - name: Install Blender for isolated no-autoexec inspection
-        run: |
-          sudo apt-get install -y blender
-      - name: Reject embedded Python execution in untrusted Blender files
+          echo 'CLAMAV_SCAN_PASSED=true' >> "$GITHUB_ENV"
+      - name: Reject embedded Blender Python and scripted drivers
         run: |
           set -euo pipefail
           blender -b --disable-autoexec --python tools/ore/check_blend_python_safety.py -- ore-cc0-review
-          echo "BLEND_PYTHON_SAFETY_PASSED=true" >> "$GITHUB_ENV"
+          echo 'BLEND_PYTHON_SAFETY_PASSED=true' >> "$GITHUB_ENV"
       - name: Verify SHA256 and file signatures
         run: |
           python3 - <<'PY'
