@@ -1,6 +1,6 @@
 # Blender 5.3.0 adoption evaluation — 2026-11-19
 
-**Status: official 5.3.0 Docker build, ClamAV smoke and actual B4 P1 render VERIFIED; B2 water compatibility VERIFIED; F6 foliage and per-workflow migration still being evaluated.** This is not blanket approval of all Blender workflows or any 3D asset.
+**Status: official 5.3.0 image and B2 water, B4 magma P1/P2/P3/P3V5/V16, and F6 foliage compatibility plus original workflow migration VERIFIED and merged.** Other legacy workflows remain pinned until individually verified; no 3D candidate is artistically approved by this technical migration.
 
 ## Verified image and evidence (2026-11-19)
 
@@ -9,7 +9,22 @@
 - Official SHA256 and independently pinned SHA256 matched. The initial naive ClamAV xz archive scan failed because the decompressor hit its 500 MiB cap; the corrected build verifies SHA first, scans archive bytes before extraction and **5,597 extracted files before running Blender**. Both scans infected 0. This avoids claiming a truncated decompression scan was complete.
 - Actual runtime checks: exact `Blender 5.3.0`, freshclam update, EICAR detected, smoke GLB+PNG signatures and output scans, B4 magma P1 GLB/Blend/four PNGs with manifest SHA256. Runtime source scans 1+5 scripts, imported PBR textures 14, smoke outputs 2, B4 outputs 7: all infected 0. [Temporary QA artifact](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44466267564/artifacts/14502612250).
 - [PR #606](https://github.com/koda24-cell/kotama-no-bouken/pull/606) verified Blender5.3 compatibility for existing B2 water: [run #44467090675](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44467090675) produced **16 GLBs and 3 PNGs**, all signatures and hashes passed; source 1/output 21 scanned with 0 infected. It is a **separate QA job**, not evidence that every production B2 workflow was switched.
-- F6 V14 foliage [PR #607](https://github.com/koda24-cell/kotama-no-bouken/pull/607) and original B2/B4 workflow image-switch PRs #608/#609 are separate; **do not call them verified until their Actions succeed**.
+- F6 V14 foliage [PR #607](https://github.com/koda24-cell/kotama-no-bouken/pull/607) and original B2/B4 workflow image-switch PRs #608/#609 are **now all actually verified and merged**; see details below.
+
+## Original workflow migrations — all actually verified
+
+| Existing production-style workflow | Verified Blender 5.3.0 run | Result |
+| --- | --- | --- |
+| `b2-modular-water-tiles-render.yml` [PR #608](https://github.com/koda24-cell/kotama-no-bouken/pull/608) | [#44467617635](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44467617635) | 16 GLB, 3 PNG; source 1/output 20 ClamAV 0 infected |
+| `b4-magma-bank-modules-review.yml` [PR #609](https://github.com/koda24-cell/kotama-no-bouken/pull/609) | [#44467661876](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44467661876) | P1/P2/P3: 3 GLB, 3 Blend, 12 PNG; source 5/PBR 14/output 21, 0 infected |
+| `f6-tree-foliage-batch-review.yml` [PR #611](https://github.com/koda24-cell/kotama-no-bouken/pull/611) | [#44467921230](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44467921230) | Original V14: 8,967 leaf meshes batched to 4; GLB scene nodes 9,108 → 145; pixel/structural QA pass; scripts 15/download 7/output 7 scanned, 0 infected |
+| `b4-magma-bank-p3-v5-review.yml` [PR #612](https://github.com/koda24-cell/kotama-no-bouken/pull/612) | [#44468240248](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44468240248) | P3 V5: 538 meshes/9 images, GLB/Blend/4 PNG; scripts 5+1/PBR 14+4/output 7 scanned, 0 infected |
+| `b4-magma-bank-v16-derived-render.yml` [PR #612](https://github.com/koda24-cell/kotama-no-bouken/pull/612) | [#44468247441](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44468247441) | Approved V16 source preserved, P1/P2/P3: 3 GLB/3 Blend/12 PNG, SHA256 manifests; scripts 5+1/PBR 14+4/output 22 scanned, 0 infected |
+
+- All five original workflows now reference the immutable Blender 5.3 digest and retain their original branch triggers; temporary migration test triggers removed. Previous Blender4/5 images remain available for other workflows.
+- Independent compatibility jobs also succeeded: B2 water [#44467090675](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44467090675), F6 V14 [#44467151529](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44467151529).
+- All candidate renders remain `NOT_APPROVED`; only technical, structural, signature and automated pixel comparisons have passed. No user visual-art approval or official asset promotion occurred.
+- The 5.3 container's ClamAV archive raw-byte scan and 5,597 extracted-file scan do not guarantee malware-free software. Continue per-run freshclam and fail-closed input/output scans.
 
 ## Official sources
 - Blender 5.3.0 stable released November 10, 2026: https://www.blender.org/releases/5-3/

@@ -7,7 +7,7 @@
 - **新規3D制作はBlender 5.3.0を第一候補**にする。ただし互換性未確認の既存ジョブは、実レンダリングとClamAV検査に合格するまで元のBlender4/5のdigestを保持し、勝手に一括置換しない。
 - [Blender5.3評価・実証ログ](BLENDER_53_UPGRADE_EVALUATION_20261119.md)、[成功Actions run #44466267564](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44466267564)、[PR #603](https://github.com/koda24-cell/kotama-no-bouken/pull/603)。
 - **digest固定の公式5.3環境**：`ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99`。正確なバージョン、EICAR検出、ClamAV検査、実GLB/PNG、B4マグマP1の4方向PNGを確認済み。
-- B2水面16GLB/3PNGの5.3互換性も[run #44467090675](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44467090675)で確認済み。F6樹木と既存ジョブ切替は別途検証中。
+- **既存の5ワークフローを実レンダリングで検証後、5.3へ移行済み**：B2水面（PR #608）、B4マグマ岸P1〜P3（PR #609）、F6樹木葉群バッチ（PR #611）、B4 P3V5とV16派生（PR #612）。各成功runと生成ファイル数・ClamAV件数は[5.3評価・実証ログ](BLENDER_53_UPGRADE_EVALUATION_20261119.md)を参照。未検証の他ジョブは引き続き旧環境を保持。
 - **ClamAVで検出0は安全保証ではない**。外部ダウンロードは取得直後・解凍前、展開後・Blender取込前に検査し、出力GLB/Blend/PNGも再検査。素材の正式保存は美術品質の承認後のみ。
 - PCのBlender MCPへの自動切替はしない。通常チャットはGitHub Actionsを標準とし、PC実行はユーザーが明示した場合に限る。
 
