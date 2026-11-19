@@ -356,3 +356,12 @@
 - [石造遺跡 run #44448970296](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448970296): success。ClamAV source script 1件・source GLB 1件・出力18件、感染0。GLB4点/3方向PNG12枚を実生成しヘッダとSHA256検証。
 - 両ワークフローでBlender/ClamAVのaptインストールを除去し、検証済みGHCR digest固定・freshclam毎ジョブ更新・取得/読み込み前と生成後の実スキャンを使用。
 - 画像の**目視評価は未実施**。素材は未承認で、GitHub Actions Artifactsの14日間一時保存のみ。Draco圧縮なしのGLB出力。
+
+### B4小物：手続き劣化材質の単一アトラス・ベイク＋Poly Haven公式API取得（Claude、2026-11-19）
+- 名称: `tools/b4-props/common.py`（Claudeチーム用ハーネス）＋ `.github/workflows/b4-props-render.yml`。ブランチ `feature/ai-claude-b4-props-20261119`（未マージ）。設計: `docs/3d/B4_PROPS_DESIGN.md`（同ブランチ）。
+- 内容: Blenderの手続き材質（Bevelノードによる角の摩耗、AOによる凹みの灰、高さ・熱源距離による煤と熱変色、ボロノイの炭化割れ、割れ目だけの発光）を、1オブジェクトに結合→Smart UV→Cycles EMIT/NORMAL/AOベイクで **BaseColor（AO乗算）／ORM／Normal／Emissive の1枚アトラス・1マテリアル** に焼き、JPEGテクスチャ埋め込みGLBに書き出す。ベイク後の見た目を「暗い溶岩洞（溶岩の照り返し＋ゲーム内でも置く点光源）」とstudioでレンダー。点光源は manifest の `game_lights` としてゲーム側に渡す。
+- 素材取得: Poly Haven公式API `https://api.polyhaven.com/files/<id>` から1K JPG（Diffuse/Rough/nor_gl）を取得。ライセンス CC0（https://polyhaven.com/license）。使用ID: rusty_metal_03、rust_coarse_01、wood_planks、raw_plank_wall、rock_face_02。SHA-256はrunログに出力し、各アセット manifest の `cc0_textures` に記録。
+- 環境: GitHub Actions ubuntu-latest、公式tarball Blender 4.2.3 LTS（キャッシュ）、Cycles CPU。**共有のBlender 5.3＋ClamAVコンテナには未移行**（外部画像の取得後ClamAV検査はまだ入っていない。移行は今後の課題）。
+- 実動作確認: 火鉢 `b4p_brazier_cage` run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44534782085 （v1、成功）、https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44539842585 （v3、成功）。GLB 1.3MB（PNG埋め込み時は3.7MB→JPEG化で削減）、約9,770三角形、1マテリアル、レンダー9枚をブランチへコミット。
+- 失敗と修正: 半径計算の負数べき乗で complex 例外（clamp で修正）。灰の板は地面と馴染まないため廃止。照明が強すぎて錆が橙一色に見えた→溶岩照り返しを約1/4に。
+- 状態: **NOT_APPROVED**（ユーザー未承認）。ゲームへの統合・Three.jsでの実描画は未検証。
