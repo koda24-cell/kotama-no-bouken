@@ -1,8 +1,8 @@
 {
   "asset": "b4p_ore_vein_wall",
-  "version": "v2",
+  "version": "v3",
   "blender": "4.2.3 LTS",
-  "triangles": 6312,
+  "triangles": 19194,
   "budget_triangles": 10000,
   "materials": [
     "b4p_ore_vein_wall_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    2.217,
-    0.847,
-    2.084
+    2.406,
+    0.835,
+    2.202
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_ore_vein_wall.glb",
-  "glb_bytes": 2536756,
+  "glb_bytes": 2863716,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -51,16 +51,16 @@
     30
   ],
   "sha256": {
-    "b4p_ore_vein_wall.glb": "1226a142597d8ac9c30cbb228f74c7341eafb2006ae03b5a77c3dfc29a827b42",
-    "b4p_ore_vein_wall_volcanic_front.png": "250380db963ba961d5aa298a23decc0746aaddb1a08fab39631cb1c906c06bfd",
-    "b4p_ore_vein_wall_volcanic_side.png": "2c2c8952127d40c215b411718fbd90919567c58b5d4818cd5fb25ee911204532",
-    "b4p_ore_vein_wall_volcanic_angle.png": "c12b193102666ef3f88a146fe11a3c0eeeb6b94067d932cd2e97759fe812f038",
-    "b4p_ore_vein_wall_volcanic_top.png": "44960018b97c4bea1c715891e8e1e464ee0379c33c8a358b910d142652a7481f",
-    "b4p_ore_vein_wall_volcanic_close.png": "98c43817203d19878eecd539987a1cd114361a9594558d3ca953cea48c6aec33",
-    "b4p_ore_vein_wall_volcanic_back.png": "a6daa12f155db086e23bbdd14220501e15604f077e9801dfeab2e03a13c664d1",
-    "b4p_ore_vein_wall_studio_front.png": "f88b2ff294c2b88e3f0f87dc15c92d478821e0e95477d95566ecd747dba5f521",
-    "b4p_ore_vein_wall_studio_angle.png": "a51c3b5c1c9614a528710f157e04071c6e0908c7bf8a8f8a0ed5d4eeccb1b4db",
-    "b4p_ore_vein_wall_studio_scale.png": "77e92a344a48175b590864d3e6ba36865faa1f0c40ddebfd4cecc51b21a56190"
+    "b4p_ore_vein_wall.glb": "48136b062ff86233b327ec0da5d4d14f4fecc67e7b64f6cc4b85448e684b0dea",
+    "b4p_ore_vein_wall_volcanic_front.png": "e1687b0d9963fd42c1afc874dfba7c837cfd4c147978f8f1043d150be1716631",
+    "b4p_ore_vein_wall_volcanic_side.png": "a649e9417b48e246d70ea1ba29bcd6d678bec50aea929e78997b8b5b2e25162b",
+    "b4p_ore_vein_wall_volcanic_angle.png": "f5944b4dcbeed7115c2bc5812e5be2c2789c438a6091b9cc86eece7936fe0fa1",
+    "b4p_ore_vein_wall_volcanic_top.png": "c3c13294cdb44faa50737ccc15c4400efc2a7d3b71b15cb4b27c7db91c283c33",
+    "b4p_ore_vein_wall_volcanic_close.png": "14ea7cd3b8707a6e38c1ea0a67c5a69ee5f00c97dcdbf537f9f2e280ab7e74f0",
+    "b4p_ore_vein_wall_volcanic_back.png": "3be40764e0628f20a6bd35efbe686ce28d6db43caf61c24b85d7065d9bfa601d",
+    "b4p_ore_vein_wall_studio_front.png": "dc4cd8855ef08891b36516f6dd4dcb19225067c7dd7b40eadef5219e1d627120",
+    "b4p_ore_vein_wall_studio_angle.png": "a7d339dbf72b625647de1aff673578dd752042bee7d6a051a8e9a64efc7d3f0c",
+    "b4p_ore_vein_wall_studio_scale.png": "d65298336ede8946639fd7d14d5f528677018766bd5ed6dc07fc215b510b6ea1"
   },
   "renders": [
     "b4p_ore_vein_wall_volcanic_front.png",
@@ -78,8 +78,8 @@
   "game_lights": [
     {
       "pos_blender_zup": [
-        -0.578162431716919,
-        -0.18559277057647705,
+        -0.5788779854774475,
+        -0.18852275609970093,
         0.5872695446014404
       ],
       "watts": 3.5,
@@ -91,8 +91,8 @@
     },
     {
       "pos_blender_zup": [
-        -0.16411855816841125,
-        -0.2176985740661621,
+        -0.16483411192893982,
+        -0.20248907804489136,
         0.9505627155303955
       ],
       "watts": 3.5,
@@ -104,8 +104,8 @@
     },
     {
       "pos_blender_zup": [
-        0.19147250056266785,
-        -0.19125115871429443,
+        0.19075694680213928,
+        -0.19149917364120483,
         1.3347904682159424
       ],
       "watts": 3.5,
@@ -117,8 +117,8 @@
     },
     {
       "pos_blender_zup": [
-        0.6126023530960083,
-        -0.062442079186439514,
+        0.6118867993354797,
+        -0.1704750657081604,
         1.7621500492095947
       ],
       "watts": 3.5,
