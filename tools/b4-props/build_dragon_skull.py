@@ -13,7 +13,7 @@ b4p_dragon_skull — 半分埋もれた竜の頭骨（巣の手前の見せ場�
   - 眉の張り出し・頬骨弓（側頭窓の下の骨の棒）・上顎の歯列の稜
   - 後頭部から大きな角2本が後ろ上へ反る（左は途中で折れる）。頭頂と後頭に小さな棘4本
   - 牙：上顎に左右9本ずつ（欠落4、先の欠け3）。下顎は大半が灰と岩に埋まり、片側だけ覗く
-  - 全体を約30°回し、吻を少し上げ、横に12°傾けて地面へ0.26m沈める。接地線に沿って岩14個。まわりに玄武岩の欠片
+  - 全体を約30°回し、吻を少し上げ、横に12°傾けて地面へ0.10m沈め（吻を15°上げて上顎の牙列を見せる）。接地線に沿って岩14個。まわりに玄武岩の欠片
 作り方: 楕円体と管の和をボクセルで1つの面にし（2cm）、窓・眼窩・欠けた穴をブーリアンで引き、
   風化の凹凸（ひび・穴）を頂点で入れてから約13k三角形へ減らす
 劣化（設計書3章・2章「骨は真っ白にしない」）:
@@ -32,7 +32,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_dragon_skull"
-VERSION = "v5"
+VERSION = "v6"
 rnd = random.Random(1313)
 C.reset(1313)
 
@@ -78,7 +78,7 @@ for k, (p0, d, ln, r) in enumerate((((0.55, 0.0, 0.86), (0.6, 0, 0.8), 0.30, 0.0
 REAR = [((1.20, 0.0, 0.50), (0.40, 0.75, 0.75), (0, 18, 0))]   # 後ろを斜めに落として平らな後頭面に（x>0.8）
 body = D.voxel_union(pos, "skull_body", voxel=0.022)
 D.bool_diff(body, [E(f"_r{k}", c, r, rot=ro, subdiv=3) for k, (c, r, ro) in enumerate(REAR)])
-skull = D.voxel_union([body] + late, "skull", voxel=0.02)
+skull = D.voxel_union([body] + late, "skull", voxel=0.016)
 
 # 穴：眼窩・前眼窩窓・側頭窓・頭頂窓・鼻孔・欠けた穴
 CUT = []
@@ -146,8 +146,8 @@ for s in (-1, 1):
         parts.append(tb)
 
 # ---- 回して埋める ----
-M = Matrix.Translation((0, 0, -0.18)) @ Matrix.Rotation(math.radians(-30), 4, "Z") @ \
-    Matrix.Rotation(math.radians(-11), 4, "Y") @ Matrix.Rotation(math.radians(-12), 4, "X")
+M = Matrix.Translation((0, 0, -0.10)) @ Matrix.Rotation(math.radians(-30), 4, "Z") @ \
+    Matrix.Rotation(math.radians(-15), 4, "Y") @ Matrix.Rotation(math.radians(-10), 4, "X")
 MI = M.inverted()
 for o in parts:
     o.data.transform(M)
