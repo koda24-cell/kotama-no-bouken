@@ -1,7 +1,7 @@
 name: B2 Stone Ruins Props V3 Original Bridge Colors
 on:
   push:
-    branches: [feature/b2-bridge-v04-vfx-20261115, feature/shared-container-b2-legacy-render-20261119]
+    branches: [feature/b2-bridge-v04-vfx-20261115, feature/shared-container-b2-legacy-render-20261119, feature/shared-blender53-migration-wave4-20261120]
     paths:
       - tools/b2-render/build-stone-ruins-v3.py
       - .github/workflows/b2-stone-ruins-v3-render.yml
@@ -16,12 +16,14 @@ jobs:
       run:
         shell: bash
     container:
-      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 35
     steps:
+      - name: Assert Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
       - uses: actions/checkout@v4
       - name: Refresh ClamAV definitions
         run: bash tools/security/clamav_scan_gate.sh update qa/security
