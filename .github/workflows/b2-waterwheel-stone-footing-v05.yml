@@ -1,0 +1,58 @@
+name: B2 Single Stone Footing V05 Blender 5.3 Review
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-single-stone-footing-v01-20261120]
+    paths:
+      - 'tools/b2-waterwheel-footing/**'
+      - '.github/workflows/b2-waterwheel-stone-footing-v05.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update ClamAV database and scan source BEFORE Blender
+        run: |
+          set -euo pipefail
+          mkdir -p security/clamdb && chmod 777 security/clamdb
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'set -e; freshclam --stdout --datadir=/workspace/security/clamdb; clamscan --database=/workspace/security/clamdb -r --infected tools/b2-waterwheel-footing'
+      - name: Render actual Blender 5.3 Cycles four views
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b2-stone-footing-v05
+          docker run --rm -v "$PWD:/workspace" -w /workspace ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-footing/build_v05.py -- render-output/b2-stone-footing-v05 | tee /tmp/footing.log
+          grep -q B2_FOOTING_V05_RENDER_SUCCESS /tmp/footing.log
+      - name: Verify real PNG GLB Blend and hashes
+        run: |
+          python3 - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          p=Path("render-output/b2-stone-footing-v05")
+          m=json.loads((p/"manifest.json").read_text())
+          assert m["approval"]=="NOT_APPROVED" and m["embedded_images"]>=3
+          assert len(m["files"])==9, len(m["files"])
+          assert len(list(p.glob("b2_footing_v05_*.png")))==4
+          for name,meta in m["files"].items():
+              data=(p/name).read_bytes()
+              assert len(data)==meta["bytes"] and hashlib.sha256(data).hexdigest()==meta["sha256"]
+              if name.endswith(".png"):assert data.startswith(bytes.fromhex("89504e470d0a1a0a"))
+              if name.endswith(".glb"):assert data[:4]==b"glTF" and len(data)==struct.unpack_from("<I",data,8)[0]
+          print("B2_FOOTING_V05_MANIFEST_SHA_VERIFIED")
+          PY
+      - name: Shared GLB structural performance audit
+        run: python3 tools/3d-performance/audit_glb.py 'render-output/b2-stone-footing-v05/*.glb' --output render-output/b2-stone-footing-v05/performance_audit.json
+      - name: ClamAV scan of generated files
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'clamscan --database=/workspace/security/clamdb -r --infected render-output/b2-stone-footing-v05'
+      - name: Upload temporary unapproved output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-stone-footing-v05-review
+          path: render-output/b2-stone-footing-v05/
+          retention-days: 14
+          if-no-files-found: warn
