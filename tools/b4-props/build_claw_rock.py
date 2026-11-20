@@ -28,7 +28,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Vector, noise  # noqa: E402
 
 NAME = "b4p_claw_rock"
-VERSION = "v5"
+VERSION = "v6"
 rnd = random.Random(1111)
 C.reset(1111)
 
@@ -137,10 +137,16 @@ for k in range(6):
 for o in parts:
     D.ensure_attrs(o)
 off = D.recenter(parts)
-mat = D.basalt("basalt", hairline=0.7, prox_soot=0.75, heat_range=(0.3, 0.85), heat_amt=1.0, glow_strength=4.0,
-               hair_cd=(0.6, 0.92))
+mat = D.basalt("basalt", hairline=1.2, prox_soot=0.75, heat_range=(0.25, 0.8), heat_amt=1.0, glow_strength=5.0,
+               hair_cd=(0.5, 0.88))
 for o in parts:
     C.assign(o, mat)
 
-C.finish(NAME, parts, version=VERSION, tex_res=1024, budget_tris=6000, refs=[40, 41],
+# 溝の最も深い所の前に弱い点光源（溝の底の赤熱が周りの縁を照らす）
+lights = []
+for g in G:
+    mid = g["pts"][len(g["pts"]) // 2]
+    p3 = F0 + EX * mid.x + EZ * mid.y + NF * 0.10 - off
+    lights.append((tuple(p3), 2.0, (1.0, 0.25, 0.07)))
+C.finish(NAME, parts, version=VERSION, tex_res=1024, budget_tris=6000, refs=[40, 41], lights=lights,
          notes="竜の爪痕の岩板。3本の深い溝（縁の欠け、底は赤黒く焼けて最深部だけ細い赤熱）。")
