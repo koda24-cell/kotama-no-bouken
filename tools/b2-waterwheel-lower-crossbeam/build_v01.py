@@ -1,4 +1,4 @@
-"""One B2 waterwheel oak brace. Review-only geometry; Blender 5.3."""
+"""One B2 waterwheel lower oak crossbeam. Review-only geometry; Blender 5.3."""
 import bpy,math,random,hashlib,json,struct,sys
 from pathlib import Path
 from mathutils import Vector
@@ -6,7 +6,7 @@ args=sys.argv[sys.argv.index("--")+1:] if "--" in sys.argv else []
 out=Path(args[0] if args else "render-output/b2-lower-crossbeam-v01").resolve();out.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 rng=random.Random(20261120)
-# Local axis Z length 1.15m; orientation of actual assembly deliberately left uncommitted.
+# Local axis Z length 1.16m; orientation of actual assembly deliberately left uncommitted.
 L=1.16; N=8; R=23
 outline=[(-.097,-.083),(.077,-.091),(.110,-.058),(.116,.065),(.082,.092),(-.084,.089),(-.111,.056),(-.115,-.049)]
 verts=[];faces=[]
@@ -17,7 +17,7 @@ for k in range(R):
     for j,(x,y) in enumerate(outline):
         w=1+.028*math.sin(j*3.2+k*.81)+.014*math.sin(j*7.9-k*1.71)
         zz=z+.0027*math.sin(j*2.7+k*.43)
-        if k==0: zz+=.016*(x/.077)+.009*(y/.059)
+        if k==0: zz+=.016*(x/.116)+.009*(y/.092)
         if k==R-1: zz-=.012*(x/.077)-.007*(y/.059)
         if j in (0,6) and k in (1,2,17,18):w-=.11
         verts.append((x*w+bendx,y*w+bendy,zz))
@@ -64,9 +64,9 @@ def create_image(name,pix,noncolor=False):
     i.file_format="PNG";i.filepath_raw=str(out/(name+".png"));i.save()
     if noncolor:i.colorspace_settings.name="Non-Color"
     return i
-col=create_image("b2_brace_aged_oak_albedo_v01",colors)
-rou=create_image("b2_brace_aged_oak_roughness_v01",roughs,True)
-end=create_image("b2_brace_endgrain_v01",endpx)
+col=create_image("b2_crossbeam_aged_oak_albedo_v01",colors)
+rou=create_image("b2_crossbeam_aged_oak_roughness_v01",roughs,True)
+end=create_image("b2_crossbeam_endgrain_v01",endpx)
 def mat_with_image(name,image,roughness=None):
     mat=bpy.data.materials.new(name);mat.use_nodes=True
     nodes=mat.node_tree.nodes;links=mat.node_tree.links;bsdf=nodes.get("Principled BSDF")
@@ -81,7 +81,7 @@ side=mat_with_image("Weathered_oak_side_PBR",col,rou)
 tip=mat_with_image("Endgrain_old_oak_PBR",end)
 obj.data.materials.clear();obj.data.materials.append(side);obj.data.materials.append(tip)
 for p in obj.data.polygons:p.material_index=1 if abs(p.normal.z)>.9 else 0
-# Tilt only the temporary Blender review pose to convey its diagonal brace purpose.
+# Tilt only the temporary Blender review pose to convey its diagonal crossbeam purpose.
 # Keep original model coordinates for assembly exports.
 obj.rotation_euler[1]=math.radians(90)
 # Stage intentionally not exported
@@ -109,15 +109,15 @@ obj.rotation_euler[1]=0.0
 for o in list(bpy.data.objects):
     if o.type in ('LIGHT','CAMERA'):bpy.data.objects.remove(o,do_unlink=True)
 bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);bpy.context.view_layer.objects.active=obj
-glb=out/"b2_single_diagonal_oak_brace_v01.glb"
+glb=out/"b2_single_diagonal_oak_crossbeam_v01.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format='GLB',use_selection=True,export_materials='EXPORT')
-bpy.ops.wm.save_as_mainfile(filepath=str(out/"b2_single_diagonal_oak_brace_v01.blend"))
+bpy.ops.wm.save_as_mainfile(filepath=str(out/"b2_single_diagonal_oak_crossbeam_v01.blend"))
 raw=glb.read_bytes();n=struct.unpack_from("<I",raw,12)[0];gltf=json.loads(raw[20:20+n])
 assert len(gltf.get("images",[]))>=3 and len(gltf.get("materials",[]))>=2
 files={}
 for f in sorted(out.iterdir()):
     if f.is_file():
         data=f.read_bytes();files[f.name]={"bytes":len(data),"sha256":hashlib.sha256(data).hexdigest()}
-report={"approval":"NOT_APPROVED","component":"single weathered oak diagonal brace","views":list(views),"images_embedded":len(gltf['images']),"materials":len(gltf['materials']),"vertices":len(obj.data.vertices),"faces":len(obj.data.polygons),"fit_to_support_post":"NOT_TESTED","length_m":1.16,"width_m":0.22,"height_m":0.18,"review_pose":"90 degrees about Y, horizontal review; axis local Z for independent game placement","files":files}
+report={"approval":"NOT_APPROVED","component":"single weathered oak diagonal crossbeam","views":list(views),"images_embedded":len(gltf['images']),"materials":len(gltf['materials']),"vertices":len(obj.data.vertices),"faces":len(obj.data.polygons),"fit_to_support_post":"NOT_TESTED","length_m":1.16,"width_m":0.22,"height_m":0.18,"review_pose":"90 degrees about Y, horizontal review; axis local Z for independent game placement","files":files}
 (out/"manifest.json").write_text(json.dumps(report,indent=2))
 print("B2_LOWER_CROSSBEAM_V01_RENDER_SUCCESS",len(obj.data.vertices),len(obj.data.polygons),flush=True)
