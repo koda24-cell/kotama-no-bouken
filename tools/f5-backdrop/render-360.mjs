@@ -27,7 +27,8 @@ const server = http.createServer(async (req, res) => {
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const port=server.address().port;
 const browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-webgl','--disable-web-security']});
-const page=await browser.newPage({viewport:{width:1280,height:720},deviceScaleFactor:1});
+const page=await browser.newPage({viewport:{width:960,height:540},deviceScaleFactor:1});
+page.setDefaultTimeout(90000);
 const errors=[];
 page.on('pageerror',e=>errors.push(String(e)));
 page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
@@ -37,18 +38,18 @@ catch(e) { await mkdir('f5-360-renders',{recursive:true}); await page.screenshot
 await mkdir('f5-360-renders',{recursive:true});
 const records=[];
 for (const angle of [0,45,90,135,180,225,270,315]) {
-  await page.locator('[data-angle="'+Math.floor(angle/90)*90+'"]').click();
+  await page.evaluate(a => document.querySelector('[data-angle="'+a+'"]').click(),Math.floor(angle/90)*90);
   if(angle%90!==0) await page.evaluate(() => {for(let i=0;i<3;i++)document.querySelector('#right').click()});
   await page.waitForTimeout(250);
   const name='f5-view-'+String(angle).padStart(3,'0')+'.png';
-  const buf=await page.locator('canvas').screenshot({path:'f5-360-renders/'+name});
+  const buf=await page.screenshot({path:'f5-360-renders/'+name,timeout:90000});
   records.push({angle,file:name,sha256:createHash('sha256').update(buf).digest('hex'),bytes:buf.length});
 }
-await page.locator('[data-angle="0"]').click();
-const before=await page.locator('canvas').screenshot();
-for(let i=0;i<8;i++) await page.locator('#forward').click();
+await page.evaluate(() => document.querySelector('[data-angle="0"]').click());
+const before=await page.screenshot({timeout:90000});
+for(let i=0;i<8;i++) await page.evaluate(() => document.querySelector('#forward').click());
 await page.waitForTimeout(200);
-const after=await page.locator('canvas').screenshot({path:'f5-360-renders/f5-moved-forward.png'});
+const after=await page.screenshot({path:'f5-360-renders/f5-moved-forward.png',timeout:90000});
 const parallax= !before.equals(after);
 const unique=new Set(records.map(r=>r.sha256)).size;
 const report={status:errors.length?'ERROR':'RENDERED',uniqueViews:unique,parallaxChanged:parallax,errors,records};
