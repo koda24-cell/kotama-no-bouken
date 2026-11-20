@@ -1,0 +1,58 @@
+name: F3 Fractured Concrete Beam V02 Blender 5.3
+on:
+  push:
+    branches: [feature/gpt-f3-fractured-concrete-beam-v02-20261120]
+    paths:
+      - tools/floor3/broken_beam/build_v02.py
+      - .github/workflows/f3-fractured-beam-v02.yml
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - name: Validate generator
+        run: python3 -m py_compile tools/floor3/broken_beam/build_v02.py
+      - name: Render Blender 5.3 real five angles
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_fractured_beam_v02
+          docker pull ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/local/bin/blender \
+            -v "$PWD:/work" -w /work \
+            ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 \
+            -b -t 2 --python /work/tools/floor3/broken_beam/build_v02.py \
+            2>&1 | tee out/f3_fractured_beam_v02/blender.log
+          grep -q F3_BEAM_V02_ALL_COMPLETE out/f3_fractured_beam_v02/blender.log
+      - name: Verify GLB Blend five real PNGs and hashes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import os,json,hashlib,struct
+          p=Path('out/f3_fractured_beam_v02')
+          stem='f3_fractured_beam_v02'
+          names=[stem+'.glb',stem+'.blend']+[stem+'-'+v+'.png' for v in ('front','side','angle','top','break_detail')]+['f3_beam_v02_cast_albedo.png','f3_beam_v02_fracture_albedo.png']
+          rec={}
+          for name in names:
+            data=(p/name).read_bytes();assert len(data)>300,name
+            if name.endswith('.png'):assert data[:8]==bytes.fromhex('89504e470d0a1a0a')
+            elif name.endswith('.blend'):assert data[:7]==b'BLENDER' or data[:4]==bytes.fromhex('28b52ffd')
+            elif name.endswith('.glb'):
+              assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data)
+              n=struct.unpack_from('<I',data,12)[0];g=json.loads(data[20:20+n])
+              assert len(g.get('meshes',[]))>=1
+              assert len(g.get('materials',[]))>=2
+              assert len(g.get('images',[]))>=2,'PBR images must be embedded'
+            rec[name]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+          (p/'manifest.json').write_text(json.dumps({'asset':'F3_FRACTURED_BEAM_V02','approval':'NOT_APPROVED','run':os.environ['GITHUB_RUN_ID'],'commit':os.environ['GITHUB_SHA'],'files':rec},indent=2))
+          print('F3_BEAM_QA_OK',len(rec))
+          PY
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: f3-fractured-beam-v02
+          path: out/f3_fractured_beam_v02/
+          retention-days: 14
