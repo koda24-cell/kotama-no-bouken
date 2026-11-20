@@ -28,13 +28,13 @@ from mathutils import Matrix, Vector  # noqa: E402
 from mathutils.bvhtree import BVHTree  # noqa: E402
 
 NAME = "b4p_rock_rubble"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(1919)
 C.reset(1919)
 
 # 設計図の数値: (群, 個数, 最大径の範囲, 置く半径の範囲, 分割)
-GROUPS = [("big", 3, (0.55, 0.75), (0.0, 0.35), 4), ("mid", 8, (0.25, 0.40), (0.2, 0.62), 3),
-          ("small", 16, (0.08, 0.18), (0.45, 0.95), 2)]
+GROUPS = [("big", 3, (0.60, 0.80), 0.18, 4), ("mid", 12, (0.24, 0.40), 0.30, 2),
+          ("small", 18, (0.08, 0.18), 0.48, 2)]   # (群, 個数, 最大径, 置く位置の広がり σ, 分割)
 SINK = 0.25
 
 placed_v, placed_f = [], []
@@ -59,11 +59,11 @@ def support_z(bm, x, y):
 
 
 def add_rock(name, size, x, y, seed, subdiv, tilt=None):
-    sq = (1.0, rnd.uniform(0.65, 0.9), rnd.uniform(0.45, 0.7))
+    sq = (1.0, rnd.uniform(0.6, 0.9), rnd.uniform(0.35, 0.6))
     if tilt is not None:
         sq = (1.0, 0.8, 0.28)  # 板状
     bm = D.basalt_bm((size * 0.5 * sq[0], size * 0.5 * sq[1], size * 0.5 * sq[2]), (0, 0, 0), seed=seed, subdiv=subdiv,
-                     lumpy=0.16, facets=7 if subdiv > 2 else 5, facet_depth=(0.5, 0.82), fresh_ratio=0.55, up_bias=0.0,
+                     lumpy=0.14, facets=9 if subdiv > 2 else 6, facet_depth=(0.45, 0.8), fresh_ratio=0.55, up_bias=0.0,
                      fine=(size * 0.015, 7.0 / size), ground=None, notches=2 if subdiv > 2 else 0)
     R = Matrix.Rotation(rnd.uniform(0, 6.3), 4, "Z") @ Matrix.Rotation(math.radians(tilt if tilt is not None else rnd.uniform(-20, 20)), 4, "X")
     D.bm_transform(bm, R)
@@ -81,11 +81,10 @@ def add_rock(name, size, x, y, seed, subdiv, tilt=None):
 
 
 rocks = []
-for g, n, (s0, s1), (r0, r1), sub in GROUPS:
+for g, n, (s0, s1), sig, sub in GROUPS:
     for k in range(n):
-        a = rnd.uniform(0, 2 * math.pi)
-        rr = rnd.uniform(r0, r1)
-        x, y = math.cos(a) * rr * 1.0, math.sin(a) * rr * 0.8
+        x, y = rnd.gauss(0, sig), rnd.gauss(0, sig * 0.8)
+        x, y = max(-0.85, min(0.85, x)), max(-0.68, min(0.68, y))
         tilt = 38 if (g == "big" and k == 2) else None
         rocks.append(add_rock(f"{g}_{k}", rnd.uniform(s0, s1), x, y, seed=1000 + len(rocks), subdiv=sub if not (g == "big" and k == 2) else 3, tilt=tilt))
 
