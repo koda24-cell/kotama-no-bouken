@@ -40,3 +40,18 @@
 3. 原本再現とコタマ向け応用（岩、樹木、建築）を別のレンダーとして保存する。
 4. GLB/Three.jsではEevee独自シェーダーがそのまま移植できるとは限らないため、ベイクまたはThree.jsカスタムシェーダーを別途検証する。
 5. 作者の配布条件・再配布可否を確認するまでは、配布Blendや作者の素材をGitHubにコミットしない。制作物はNOT_APPROVEDを維持。
+
+## ユーザー提供の原本Blend静的検査（2026-11-20）
+
+ユーザーがチャットに添付した原本をローカルで読み取り専用検査。**原本はGitHubへアップロードしない**。
+
+| 原本 | SHA-256（圧縮ファイル） | 圧縮サイズ | 展開サイズ | Blenderヘッダー |
+|---|---|---:|---:|---|
+| Lassyla_Material.blend | `ecda84d13cf48e98e571d434cba4dc49d30f01aeaabc93e118fa7fed1ec4d2c0` | 約223KiB | 約1.2MiB | `BLENDER17-01v050` |
+| Palm_Tree_Demo.blend | `da01d11a6ad24032bcc63e48cc2f0e8c9dc068f4e7a56bd7176aaebf1de7d44e` | 約361KiB | 約2.9MiB | `BLENDER17-01v050` |
+
+Zstandardを解凍してBlendヘッダーを確認。両方のファイルのバイナリ中に `ShaderNodeShaderToRGB` / `ShaderNodeTexNoise` / `ShaderNodeTexVoronoi` / `ShaderNodeFresnel` が存在。これはノード定義名の存在を示す**静的な証拠**であり、接続状態・各マテリアルでの使用・設定値・見た目の忠実性を証明しない。
+
+**未実施**: Blender 5.3でのファイル読み込み、ドライバー/スクリプト検査、ClamAV実スキャン、Eevee実レンダー、ノードリンクの抽出、著者デモとの視覚比較。今回のチャット実行環境にはBlender/ClamAV実行コマンドがなく、原本をGitHubへ転載しない方針のためActions側へ原本を渡していない。
+
+**次の安全な検査手順**: Blender 5.3環境で外部原本を隔離し、ClamAV検査→`blender -b --disable-autoexec <原本> --python <read-only inspector>` でノードリンク・マテリアル・レンダー設定をJSON化→Eeveeで原本の複数視点PNGをレンダリング。元ファイルのスクリプトは自動実行しない。レンダー結果だけ研究用の証拠として共有し、著作権・再配布条件が未確認の原本Blendはコミットしない。
