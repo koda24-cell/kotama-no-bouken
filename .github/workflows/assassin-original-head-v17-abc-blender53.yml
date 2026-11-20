@@ -1,0 +1,75 @@
+name: Assassin V17 Nose A B C Blender 5.3 Render
+on:
+  push:
+    branches: [feature/gpt-assassin-original-head-v17-nose-abc-render-20261120]
+    paths:
+      - '.github/workflows/assassin-original-head-v17-abc-blender53.yml'
+      - 'tools/character-mesh-research/build_original_head_v17_abc.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [A, B, C]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh ClamAV and scan source
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/character-mesh-research/build_original_head_v17_abc.py qa/security/input.log
+      - name: Render 10 views per nose variation with Blender 5.3
+        env:
+          HEAD_V17_VARIANT: ${{ matrix.variant }}
+        run: |
+          set -euo pipefail
+          mkdir -p "output/assassin-head-v17-${HEAD_V17_VARIANT}"
+          blender --version | head -n 2
+          HOME=/tmp/blender-home blender -b -t 2 --python-exit-code 1 --python tools/character-mesh-research/build_original_head_v17_abc.py -- "output/assassin-head-v17-${HEAD_V17_VARIANT}"
+      - name: Verify 10 view PNGs, GLB, Blend, and manifest
+        env:
+          HEAD_V17_VARIANT: ${{ matrix.variant }}
+        run: |
+          python3 - <<'PY'
+          import json,os,hashlib
+          v=os.environ["HEAD_V17_VARIANT"]
+          d=f"output/assassin-head-v17-{v}"
+          q=json.load(open(d+"/qa.json"))
+          assert q["status"]=="NOT_APPROVED" and q["nose_variant"]==v
+          assert not q["source_VRM_imported"] and q["source_vertices_copied"]==0
+          assert len(q["auricle_mesh_statistics"])==2
+          for n in ("front","left","right","front_three_quarter","back","back_three_quarter","back_upper","front_soft","right_soft","front_three_quarter_soft"):
+              assert os.path.getsize(f"{d}/{n}.png")>2500,n
+          files=json.load(open(d+"/manifest.json"))["files"]
+          for fn,metadata in files.items():
+              data=open(d+"/"+fn,"rb").read()
+              assert len(data)==metadata["bytes"]
+              assert hashlib.sha256(data).hexdigest()==metadata["sha256"]
+          assert any(fn.endswith(".glb") for fn in files)
+          assert any(fn.endswith(".blend") for fn in files)
+          print("V17 VARIANT",v,"PNG COUNT",10,"MANIFEST FILE COUNT",len(files))
+          PY
+      - name: Scan exported geometry and images
+        if: success()
+        env:
+          HEAD_V17_VARIANT: ${{ matrix.variant }}
+        run: bash tools/security/clamav_scan_gate.sh scan "output/assassin-head-v17-${HEAD_V17_VARIANT}" qa/security/output.log
+      - name: Save actual outputs as review-only artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assassin-v17-${{ matrix.variant }}-NOT-APPROVED
+          path: |
+            output/assassin-head-v17-${{ matrix.variant }}/
+            qa/security/
+          retention-days: 14
