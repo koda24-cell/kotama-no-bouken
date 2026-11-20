@@ -12,3 +12,5 @@
 | b4lod_lava_pool_v3 | LOD of GPT V3 (user-approved) | 5,952 | run 44658937724 |
 | b4p_dragon_ore_cluster | v12 | 5,804 | dragon team（feature/ai-claude-b4p-dragon-20261119） |
 | b4p_ore_vein_wall | v7 | 7,728 | dragon team |
+| b4p_basalt_wall_panel_a | v3 | 5,156 | lead run 44684004571 |
+| b4p_basalt_wall_panel_b | v3 | 5,394 | lead run 44684004571 |

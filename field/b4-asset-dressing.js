@@ -93,7 +93,7 @@ const ORE_READY = true;
 // Basalt wall panels (lead asset, blueprint docs/3d/b4-props/blueprints/b4p_basalt_wall_panel.md) over the plain wall boxes.
 // (The GPT V33 rock wall was tried as an LOD first: its basalt exports white and the shape reads as a box at game scale.)
 const OVERLAY_IDS = ['b4p_basalt_wall_panel_a', 'b4p_basalt_wall_panel_b'];
-const OVERLAY_READY = false;
+const OVERLAY_READY = true;
 const OVERLAY_FRONT_Z = 1;     // glTF +Z faces the corridor (Blender -Y)   // flips to true when the dragon team's ore cluster GLB is promoted
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
