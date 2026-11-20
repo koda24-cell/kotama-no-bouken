@@ -1,8 +1,8 @@
 {
   "asset": "b4p_basalt_columns",
-  "version": "v2",
+  "version": "v3",
   "blender": "4.2.3 LTS",
-  "triangles": 2632,
+  "triangles": 2536,
   "budget_triangles": 6000,
   "materials": [
     "b4p_basalt_columns_mat"
@@ -25,7 +25,7 @@
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_basalt_columns.glb",
-  "glb_bytes": 658680,
+  "glb_bytes": 654988,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -49,16 +49,16 @@
     33
   ],
   "sha256": {
-    "b4p_basalt_columns.glb": "63f5cf62b24eb21b921cabb9ff0cfdfeb8930a8d59d578976b989e3bc8a9bca6",
-    "b4p_basalt_columns_volcanic_front.png": "4958fa370c17d35e41e394bc5c765aa04fc76ea01853fd9401784c156e99df10",
-    "b4p_basalt_columns_volcanic_side.png": "6a36b8dca323f8803201d01207729a6a16e27da3e72289c398e64fb9dedaa590",
-    "b4p_basalt_columns_volcanic_angle.png": "a83a842e3f3069701673f38a2194368d13fd81edc021c796b6cab713fd9810f8",
-    "b4p_basalt_columns_volcanic_top.png": "e43f25799877817538deef4ed75fcf207b477af7bfbf1f87ba467fa60833b1b3",
-    "b4p_basalt_columns_volcanic_close.png": "67774b9763b13fb558062ac8ef0935a9f53526b97f0e4152149ee5fc4e105d99",
-    "b4p_basalt_columns_volcanic_back.png": "59b7c3c3f75341227605473756e008b832fea43d594a8f6fe9eaf63094f84b5f",
-    "b4p_basalt_columns_studio_front.png": "3fd2d6589e294d5366c64395e375dd85bd585f928f8830cb24e05eaedef528c6",
-    "b4p_basalt_columns_studio_angle.png": "1bfe10a75145d9ea53de14a31f1f878f021fe96bc9213a33f9353222bb5c7577",
-    "b4p_basalt_columns_studio_scale.png": "d6b544de76d7f937184ac571d469b3c14374454d2f65ba8d88050bcb34dcd663"
+    "b4p_basalt_columns.glb": "640fdfb445626ddbffb528ec998009e876bce1583b1656e8d1d5b6e53678a833",
+    "b4p_basalt_columns_volcanic_front.png": "8b4909381a1ae47b430309c04efa64240a011c1ef8c96e39e39ef6985463000b",
+    "b4p_basalt_columns_volcanic_side.png": "a368ce9bcdc4c9910f4ec91548b145cc88d3c3e17c4e21e7dd148c5b4601b02d",
+    "b4p_basalt_columns_volcanic_angle.png": "46fe7e1bbe59a45c904ac9799dcf6b07254e80bcbc916c334e6b7f0c28a83ec1",
+    "b4p_basalt_columns_volcanic_top.png": "2e0b6a13cd25d3d391612e5b674cb18dca3773266e49fcf3ce09eb554a4d94d1",
+    "b4p_basalt_columns_volcanic_close.png": "dbd7b902c0af0fd6dfe35242c2f714c0bf0c71fd401fcc39d3635a167fd21b69",
+    "b4p_basalt_columns_volcanic_back.png": "8e6c21999cc6af15ca721d1a2ab1cdc66d7cdc32dc9ad7839a818ee30f16d17b",
+    "b4p_basalt_columns_studio_front.png": "0fa6b0a71fa05f5b5e972c1340ed70579d25ccce982f50f06aea15198a9b0907",
+    "b4p_basalt_columns_studio_angle.png": "df649b816bb1d6505fc5366b1f8dce4f6c3ea93f8ddb1f000f456dd0f334e810",
+    "b4p_basalt_columns_studio_scale.png": "209d6fcee13f9bb1db45cf4d7824e880d27294280882c886a4a54d7b7145db34"
   },
   "renders": [
     "b4p_basalt_columns_volcanic_front.png",
