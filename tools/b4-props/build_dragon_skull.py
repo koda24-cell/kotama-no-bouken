@@ -32,14 +32,16 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_dragon_skull"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(1313)
 C.reset(1313)
 
 pos = []   # 骨の和（ボクセル化）
 E = D.ellipsoid
 # 頭蓋と後頭
-pos += [E("cranium", (0.45, 0, 0.50), (0.48, 0.40, 0.34)), E("occiput", (0.86, 0, 0.56), (0.20, 0.30, 0.26))]
+pos += [E("cranium", (0.42, 0, 0.50), (0.50, 0.35, 0.30)), E("occiput", (0.80, 0, 0.54), (0.16, 0.30, 0.22))]
+for s_ in (-1, 1):  # 後頭の張り出し（フリルの角）: 丸い後頭部をやめて角ばった骨の板に
+    pos.append(D.tube(f"flange_{s_}", C.bezier((0.62, 0.26 * s_, 0.66), (0.86, 0.40 * s_, 0.58), (1.04, 0.50 * s_, 0.44), n=8), 0.075, 0.03))
 # 頭頂の稜（矢状稜）: 丸い頭蓋を骨らしく引き締める
 pos.append(D.tube("crest", C.bezier((0.15, 0, 0.80), (0.55, 0, 0.90), (0.98, 0, 0.74), n=10), 0.06, 0.05))
 # 吻（先細り）
@@ -82,6 +84,8 @@ for s in (-1, 1):
             ((0.62, 0.43 * s, 0.40), (0.17, 0.13, 0.12), (0, 0, 0)),
             ((0.66, 0.17 * s, 0.84), (0.13, 0.075, 0.09), (0, 0, 0)),
             ((-1.12, 0.075 * s, 0.33), (0.085, 0.045, 0.05), (0, -20, 0))]
+CUT += [((1.36, 0.0, 0.48), (0.36, 0.62, 0.55), (0, 0, 0)),     # 後ろを凹ませて平らな後頭面に
+        ((0.98, 0.0, 0.33), (0.12, 0.085, 0.085), (0, 0, 0))]   # 大後頭孔
 DAMAGE = [((-0.72, -0.27, 0.40), (0.17, 0.10, 0.12), (0, 0, -10)), ((0.40, 0.18, 0.92), (0.16, 0.14, 0.08), (0, 10, 0))]
 cutters = [E(f"_c{k}", c, r, rot=ro, subdiv=3) for k, (c, r, ro) in enumerate(CUT + DAMAGE)]
 D.bool_diff(skull, cutters)
@@ -201,7 +205,7 @@ allp = parts + rocks
 for o in allp:
     D.ensure_attrs(o)
 off = D.recenter(allp)
-bone = D.bone_mat("bone", soot_lo=0.0, soot_hi=0.75)
+bone = D.bone_mat("bone", soot_lo=0.05, soot_hi=0.9)
 basalt = D.basalt("basalt", hairline=0.0)
 for o in parts:
     C.assign(o, bone)

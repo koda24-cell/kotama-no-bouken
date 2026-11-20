@@ -774,7 +774,7 @@ def bone_mat(name, soot_lo=0.0, soot_hi=0.5, scale=1.0):
     col = b.mix(b.math("MULTIPLY", pits, 0.6), col, (0.08, 0.065, 0.048))
     # 全体の汚れ（灰と煤の薄い膜）＋まだらな焦げ: 真っ白にしない
     col = b.mix(b.ramp(n_big, [(0.2, 0.5), (0.8, 0.25)]), col, (0.11, 0.095, 0.075))
-    char = b.ramp(b.noise(2.5 / scale, 6, 0.65), [(0.56, 0.0), (0.68, 1.0)])
+    char = b.ramp(b.noise(2.5 / scale, 6, 0.65), [(0.50, 0.0), (0.64, 1.0)])
     col = b.mix(b.math("MULTIPLY", char, 0.85), col, (0.025, 0.020, 0.017))
     # 角の摩耗（擦れて少し明るく滑らか）
     edge = b.math("MULTIPLY", b.edge_mask(0.015, 0.03, 0.25), b.ramp(n_fine, [(0.3, 0.3), (0.65, 1.0)]), clamp=True)
