@@ -35,17 +35,17 @@ const originalFog=createOriginalB5FogRing(THREE,scene,{radius:145,height:88});
 const windowGroup=new THREE.Group();windowGroup.name='B5_VISIBLE_DISTANT_WINDOWS';scene.add(windowGroup);
 let ws=77519;const wr=()=>((ws=(Math.imul(ws,1664525)+1013904223)>>>0)/4294967296);
 const windowGeo=new THREE.PlaneGeometry(1,1);
-const windowMats=[new THREE.MeshBasicMaterial({color:0xf6a36c,transparent:true,opacity:.85,depthWrite:false,side:THREE.DoubleSide,fog:false}),new THREE.MeshBasicMaterial({color:0xce7cb8,transparent:true,opacity:.78,depthWrite:false,side:THREE.DoubleSide,fog:false})];
+const windowMats=[new THREE.MeshBasicMaterial({color:0xf6a36c,transparent:true,opacity:.98,depthWrite:false,side:THREE.DoubleSide,fog:false}),new THREE.MeshBasicMaterial({color:0xce7cb8,transparent:true,opacity:.9,depthWrite:false,side:THREE.DoubleSide,fog:false})];
 const windows=[];
-for(let face=0;face<4;face++)for(let patch=0;patch<16;patch++){
- const center=(wr()-.5)*265,base=-4+wr()*27,cols=3+Math.floor(wr()*8),rows=2+Math.floor(wr()*7),dx=1.0+wr()*1.8,dy=1.1+wr()*1.6;
+for(let face=0;face<4;face++)for(let patch=0;patch<28;patch++){
+ const center=(wr()-.5)*265,base=-5+wr()*33,cols=4+Math.floor(wr()*11),rows=3+Math.floor(wr()*9),dx=1.0+wr()*1.8,dy=1.1+wr()*1.6;
  for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
-  if(wr()<.68 || (col>cols*.5 && wr()<.35))continue;
+  if(wr()<.56 || (col>cols*.5 && wr()<.35))continue;
   const offset=center+(col-cols/2)*dx, h=base+row*dy;
   const mesh=new THREE.Mesh(windowGeo,windowMats[wr()<.65?0:1]);
   mesh.position.set(face===1?143:face===3?-143:offset,h,face===0?-143:face===2?143:offset);
   mesh.rotation.y=face*Math.PI/2;
-  mesh.scale.set(.22+wr()*.42,.28+wr()*.55,1);
+  mesh.scale.set(.35+wr()*.55,.4+wr()*.7,1);
   mesh.userData.phase=wr()*6.28;mesh.userData.speed=.25+wr()*1.2;
   windowGroup.add(mesh);windows.push(mesh);
  }
@@ -53,7 +53,20 @@ for(let face=0;face<4;face++)for(let patch=0;patch<16;patch++){
 const abyss=createAbyssBackdrop(THREE,scene,{starCount:340,rockCount:14});
 const pathMist=createB5PathEdgeMist();scene.add(pathMist.mesh);
 const sparks=createB5ArcaneSparks({count:72,seed:505});scene.add(sparks.points);
-const floor=new THREE.Mesh(new THREE.CircleGeometry(48,64),new THREE.MeshStandardMaterial({color:0x493853,roughness:1}));
+// Broad, softly feathered ground mist: irregular overlapping pools rather than a flat purple disc.
+const mistCanvas=document.createElement('canvas');mistCanvas.width=128;mistCanvas.height=128;
+const mc=mistCanvas.getContext('2d');const grad=mc.createRadialGradient(64,64,5,64,64,64);
+grad.addColorStop(0,'rgba(155,78,178,.32)');grad.addColorStop(.45,'rgba(104,51,140,.19)');grad.addColorStop(1,'rgba(70,30,100,0)');
+mc.fillStyle=grad;mc.fillRect(0,0,128,128);
+const mistTexture=new THREE.CanvasTexture(mistCanvas);mistTexture.colorSpace=THREE.SRGBColorSpace;
+const groundMist=new THREE.Group();scene.add(groundMist);
+const mistMat=new THREE.MeshBasicMaterial({map:mistTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide,fog:false});
+for(let i=0;i<52;i++){const a=wr()*Math.PI*2,dist=6+wr()*95;
+ const p=new THREE.Mesh(new THREE.PlaneGeometry(1,1),mistMat);p.rotation.x=-Math.PI/2;
+ p.position.set(Math.cos(a)*dist,-.08+wr()*.12,Math.sin(a)*dist);
+ p.scale.set(12+wr()*43,10+wr()*36,1);groundMist.add(p);
+}
+const floor=new THREE.Mesh(new THREE.CircleGeometry(105,96),new THREE.MeshStandardMaterial({color:0x30253c,roughness:1}));
 floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
 // V6 diagnostic lighting only: retain original B5 fog and window shaders unchanged.
 // Grid hidden in beauty renders: it is a debug-only aid, not part of B5 scenery.
