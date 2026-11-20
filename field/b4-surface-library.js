@@ -28,7 +28,7 @@ export function createB4SurfaceLibrary({high=true}={}) {
   const metalMap=load('blackened_bronze_albedo.png',true),metalNormal=load('blackened_bronze_normal.png'),metalRough=load('blackened_bronze_roughness.png');
   const lavaMap=load('molten_lava_albedo.png',true),lavaNormal=load('molten_lava_normal.png'),lavaRough=load('molten_lava_roughness.png'),lavaGlow=load('molten_lava_emissive.png',true);
   const basalt=material('basalt',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.8,.8),roughnessMap:basaltRough,roughness:1,color:0xffffff,flatShading:true});
-  const ash=material('ash-stone',{map:ashMap,normalMap:ashNormal,normalScale:new THREE.Vector2(.65,.65),roughnessMap:ashRough,roughness:1,color:0xffffff});
+  const ash=material('ash-stone',{map:ashMap,normalMap:ashNormal,normalScale:new THREE.Vector2(.65,.65),roughnessMap:ashRough,roughness:1,color:0x8a7468});  // 2026-11-20: darker ashen floor so props and lava read against it
   const ceiling=material('basalt-ceiling',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.6,.6),roughnessMap:basaltRough,roughness:1,color:0xc2b8b0,side:THREE.DoubleSide});
   const iron=material('blackened-bronze',{map:metalMap,normalMap:metalNormal,roughnessMap:metalRough,roughness:.9,metalness:.3,color:0xd4cfca});
   const ore=material('copper-ore',{map:ashMap,normalMap:ashNormal,roughness:.9,metalness:0.02,color:0xe7b888,flatShading:true});

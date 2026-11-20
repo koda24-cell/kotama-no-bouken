@@ -35,7 +35,7 @@ const ZONE_OVERLAY = { deposit: 0.55, dragon: 0.45, mine: 0.22, plain: 0.38 };  
 export const B4_GPT_MODELS = {
   // V32's packed metal/roughness images are a magenta placeholder (G=0 -> mirror-like roughness 0 in three.js).
   // Ignore those maps and use the material factors with a matte floor instead (reported to GPT in the handoff).
-  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82, tint: 0.42 },  // its albedo is a light tan; darken to the B4 soot-wood range
+  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82, tint: 0.3 },  // its albedo is a light tan; darken to the B4 soot-wood range
 };
 
 const cache = new Map();
@@ -254,7 +254,10 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     if (pool && !isStale()) {
       const size = pool.box.getSize(new THREE.Vector3()), centre = pool.box.getCenter(new THREE.Vector3());
       const base = 4.6 / Math.max(size.x, size.z);
-      const pm = lavaSites.map(({ tx, ty }) => new THREE.Matrix4().compose(
+      const isLava = (x, y) => { const c = ch(x, y); return c === '*' || c === '~'; };
+      const sites = lavaSites.filter(({ tx, ty }) => DIRS.some(([dx, dz]) => !isLava(tx + dx, ty + dz)) || hash(tx, ty, 844) < 0.25)
+        .sort((p, q) => hash(p.tx, p.ty, 845) - hash(q.tx, q.ty, 845)).slice(0, 40);
+      const pm = sites.map(({ tx, ty }) => new THREE.Matrix4().compose(
         new THREE.Vector3(tx * CELL + (hash(tx, ty, 840) - 0.5) * 0.6, 0.02, ty * CELL + (hash(tx, ty, 841) - 0.5) * 0.6),
         new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hash(tx, ty, 842) * Math.PI * 2, 0)),
         new THREE.Vector3().setScalar(base * (0.92 + 0.2 * hash(tx, ty, 843))))
@@ -289,12 +292,14 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   if (oreSites.length && ORE_READY) {
     const ore = await loadProp('b4p_dragon_ore_cluster');
     if (ore && !isStale()) {
-      const om = oreSites.map(o => new THREE.Matrix4().compose(
+      const tileOf = o => [Math.round(o.x / CELL), Math.round(o.z / CELL)];
+      const picked = oreSites.filter(o => { const [x, y] = tileOf(o); const th = themeAt(x, y); return th === 'deposit' || (th === 'dragon' && o.k < 0.09); }).slice(0, 24);
+      const om = picked.map(o => new THREE.Matrix4().compose(
         new THREE.Vector3(o.x - o.dx * 0.25, 0, o.z - o.dz * 0.25),
         new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.atan2(-o.dx, -o.dz) + Math.PI + (o.k - 0.08) * 3, 0)),
         new THREE.Vector3().setScalar(0.9 + o.k * 2.2)));
       instance(group, owned, ore, om, 'b4:prop:b4p_dragon_ore_cluster');
-      info.byId.b4p_dragon_ore_cluster = om.length;
+      info.oreSites = om.length;
       if (crystalGeo) for (const ch of root.children) if (ch.geometry === crystalGeo) ch.visible = false;
     }
   }
