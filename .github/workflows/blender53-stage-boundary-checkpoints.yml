@@ -105,3 +105,57 @@ jobs:
           path: render-output/b2-watergate-resumed/
           retention-days: 14
           if-no-files-found: error
+
+  notify-recovery:
+    needs: [stage-one, stage-two]
+    if: ${{ always() && needs.stage-one.result == 'success' && needs.stage-two.result == 'failure' && github.ref == 'refs/heads/development' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check cross-repository notification credentials
+        id: credentials
+        env:
+          APP_ID: ${{ vars.KOTAMA_RECOVERY_EVENT_APP_ID }}
+          PRIVATE_KEY: ${{ secrets.KOTAMA_RECOVERY_EVENT_APP_PRIVATE_KEY }}
+        run: |
+          if [ -n "$APP_ID" ] && [ -n "$PRIVATE_KEY" ]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo 'EVENT_NOTIFY_SKIPPED=missing_app_credentials'
+          fi
+      - uses: actions/create-github-app-token@v2
+        if: ${{ steps.credentials.outputs.configured == 'true' }}
+        id: app
+        with:
+          app-id: ${{ vars.KOTAMA_RECOVERY_EVENT_APP_ID }}
+          private-key: ${{ secrets.KOTAMA_RECOVERY_EVENT_APP_PRIVATE_KEY }}
+          owner: koda24-cell
+          repositories: 3d-asset-studio
+          permission-contents: write
+      - name: Dispatch recovery notification
+        if: ${{ steps.credentials.outputs.configured == 'true' }}
+        env:
+          TARGET_TOKEN: ${{ steps.app.outputs.token }}
+          SOURCE_RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          payload = {'event_type': 'kotama_blender_run_completed',
+                     'client_payload': {
+                         'source_run_id': os.environ['SOURCE_RUN_ID'],
+                         'source_repository': 'koda24-cell/kotama-no-bouken',
+                         'source_workflow': 'blender53-stage-boundary-checkpoints.yml',
+                         'conclusion': 'failure'}}
+          req = urllib.request.Request(
+              'https://api.github.com/repos/koda24-cell/3d-asset-studio/dispatches',
+              data=json.dumps(payload).encode(),
+              headers={'Authorization': 'Bearer ' + os.environ['TARGET_TOKEN'],
+                       'Accept': 'application/vnd.github+json',
+                       'X-GitHub-Api-Version': '2022-11-28',
+                       'User-Agent': 'kotama-recovery-event-notifier'},
+              method='POST')
+          with urllib.request.urlopen(req, timeout=30) as response:
+              assert response.status == 204
+              print('EVENT_NOTIFY_HTTP=204')
+          PY
