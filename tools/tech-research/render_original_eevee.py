@@ -8,7 +8,11 @@ assert not bpy.context.preferences.filepaths.use_scripts_auto_execute
 output = Path(os.environ["AUDIT_OUTPUT_DIR"])
 output.mkdir(parents=True, exist_ok=True)
 scene = bpy.context.scene
-scene.render.engine = "BLENDER_EEVEE_NEXT"
+engine_values = {item.identifier for item in scene.render.bl_rna.properties["engine"].enum_items}
+eevee = next((e for e in ("BLENDER_EEVEE", "BLENDER_EEVEE_NEXT") if e in engine_values), None)
+if eevee is None:
+    raise RuntimeError(f"No Eevee engine available: {sorted(engine_values)}")
+scene.render.engine = eevee
 scene.render.resolution_percentage = 75
 scene.render.image_settings.file_format = "PNG"
 scene.render.filepath = str(output / "original_scene_eevee.png")
