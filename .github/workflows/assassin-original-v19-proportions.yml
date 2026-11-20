@@ -1,7 +1,7 @@
 name: Assassin V19 Original Proportions Blender 5.3 Review
 on:
   push:
-    branches: [feature/gpt-assassin-original-head-v19-proportions-blockout-20261120]
+    branches: [feature/gpt-assassin-original-head-v19-proportions-20261120]
     paths:
       - '.github/workflows/assassin-original-v19-proportions.yml'
       - 'tools/character-mesh-research/build_assassin_original_v19_proportions.py'
