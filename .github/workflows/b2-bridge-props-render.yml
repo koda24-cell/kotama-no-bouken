@@ -2,6 +2,7 @@ name: B2 Bridge Related Props Render
 on:
   push:
     branches:
+      - feature/b2-blender53-rerender-review-20261120
       - feature/b2-bridge-v04-vfx-20261115
       - feature/shared-container-b2-props-20261119
     paths:
