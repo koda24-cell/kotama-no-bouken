@@ -20,7 +20,7 @@ export const B4_PROP_REGISTRY = {
   b4p_tools_scatter: { ready: false, themes: { mine: 1.0, deposit: 1.1 }, radius: 0.55, height: 0.3, scale: [0.95, 1.05] },
   b4p_dragon_ore_cluster: { ready: true, themes: { deposit: 2.2, dragon: 0.5 }, radius: 0.75, height: 1.3, scale: [0.8, 1.25], tris: 5804, light: { y: 0.35, color: 0xff3a12, intensity: 1.4, range: 3.6 } },
   b4p_ore_vein_wall: { ready: true, wall: true, themes: { deposit: 2.0, dragon: 0.4 }, radius: 1.25, height: 2.1, y: 0.15, scale: [0.9, 1.1], tris: 7728, light: { y: 1.0, z: 0.4, color: 0xff4a18, intensity: 1.3, range: 3.5 } },
-  b4p_rock_rubble: { ready: false, themes: { deposit: 1.4, dragon: 0.7, plain: 0.5 }, radius: 0.9, height: 0.8, scale: [0.8, 1.2] },
+  b4p_rock_rubble: { ready: true, themes: { deposit: 1.4, dragon: 0.8, plain: 0.9, mine: 0.4 }, radius: 0.8, height: 0.55, scale: [0.8, 1.2], tris: 5290 },
   b4p_basalt_columns: { ready: false, themes: { deposit: 1.0, plain: 0.6 }, radius: 0.7, height: 2.2, scale: [0.85, 1.15] },
   b4p_claw_rock: { ready: false, wall: true, themes: { dragon: 1.6 }, radius: 0.35, height: 1.4, scale: [0.9, 1.1] },
   b4p_dragon_scale: { ready: false, themes: { dragon: 1.2, deposit: 0.3 }, radius: 0.4, height: 0.15, scale: [0.9, 1.1] },
