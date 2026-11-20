@@ -39,7 +39,7 @@ jobs:
           import json,hashlib,os,struct
           p=Path('out/f3_concrete_rubble01_v5')
           stem='f3_concrete_rubble01_v5'
-          names=[stem+'.glb',stem+'.blend','F3_RUBBLE01_CONCRETE_ALBEDO.png','F3_RUBBLE01_CONCRETE_ROUGHNESS.png']+[stem+'-'+x+'.png' for x in ('front','side','angle','fracture_detail')]
+          names=[stem+'.glb',stem+'.blend','F3_RUBBLE01_V5_ALBEDO_512.png','F3_RUBBLE01_V5_ROUGHNESS_512.png']+[stem+'-'+x+'.png' for x in ('front','side','angle','fracture_detail')]
           rec={}
           for name in names:
               d=(p/name).read_bytes()
