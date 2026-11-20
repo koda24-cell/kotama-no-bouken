@@ -94,6 +94,7 @@ const ORE_READY = true;
 // (The GPT V33 rock wall was tried as an LOD first: its basalt exports white and the shape reads as a box at game scale.)
 const OVERLAY_IDS = ['b4p_basalt_wall_panel_a', 'b4p_basalt_wall_panel_b'];
 const OVERLAY_READY = true;
+const OVERLAY_MAX = 64;
 const OVERLAY_FRONT_Z = 1;     // glTF +Z faces the corridor (Blender -Y)   // flips to true when the dragon team's ore cluster GLB is promoted
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -277,8 +278,11 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     const rocks = (await Promise.all(OVERLAY_IDS.map(loadProp))).filter(Boolean);
     if (rocks.length && !isStale()) {
       const per = rocks.map(() => []);
-      for (const f of faces) {
-        if (hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 830) > ZONE_OVERLAY[f.theme]) continue;
+      // budget: ~64 panels (≈340k tris) per floor, deposit/dragon zones first
+      const prio = { deposit: 0, dragon: 1, plain: 2, mine: 3 };
+      const paneled = faces.filter(f => hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 830) <= ZONE_OVERLAY[f.theme])
+        .sort((p, q) => prio[p.theme] - prio[q.theme] || hash(p.tx, p.ty, 834) - hash(q.tx, q.ty, 834)).slice(0, OVERLAY_MAX);
+      for (const f of paneled) {
         const k = Math.floor(hash(f.tx, f.ty * 7 + f.dx, 833) * rocks.length), rock = rocks[k];
         const size = rock.box.getSize(new THREE.Vector3()), centre = rock.box.getCenter(new THREE.Vector3());
         const sx = 4.15 / size.x, sz = Math.min(1, 0.85 / size.z), sy = 4.0 / size.y;
