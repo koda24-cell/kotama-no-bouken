@@ -109,15 +109,15 @@ obj.rotation_euler[1]=0.0
 for o in list(bpy.data.objects):
     if o.type in ('LIGHT','CAMERA'):bpy.data.objects.remove(o,do_unlink=True)
 bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);bpy.context.view_layer.objects.active=obj
-glb=out/"b2_single_diagonal_oak_crossbeam_v01.glb"
+glb=out/"b2_single_lower_oak_crossbeam_v01.glb"
 bpy.ops.export_scene.gltf(filepath=str(glb),export_format='GLB',use_selection=True,export_materials='EXPORT')
-bpy.ops.wm.save_as_mainfile(filepath=str(out/"b2_single_diagonal_oak_crossbeam_v01.blend"))
+bpy.ops.wm.save_as_mainfile(filepath=str(out/"b2_single_lower_oak_crossbeam_v01.blend"))
 raw=glb.read_bytes();n=struct.unpack_from("<I",raw,12)[0];gltf=json.loads(raw[20:20+n])
 assert len(gltf.get("images",[]))>=3 and len(gltf.get("materials",[]))>=2
 files={}
 for f in sorted(out.iterdir()):
     if f.is_file():
         data=f.read_bytes();files[f.name]={"bytes":len(data),"sha256":hashlib.sha256(data).hexdigest()}
-report={"approval":"NOT_APPROVED","component":"single weathered oak diagonal crossbeam","views":list(views),"images_embedded":len(gltf['images']),"materials":len(gltf['materials']),"vertices":len(obj.data.vertices),"faces":len(obj.data.polygons),"fit_to_support_post":"NOT_TESTED","length_m":1.16,"width_m":0.22,"height_m":0.18,"review_pose":"90 degrees about Y, horizontal review; axis local Z for independent game placement","files":files}
+report={"approval":"NOT_APPROVED","component":"single weathered oak lower crossbeam","views":list(views),"images_embedded":len(gltf['images']),"materials":len(gltf['materials']),"vertices":len(obj.data.vertices),"faces":len(obj.data.polygons),"fit_to_support_post":"NOT_TESTED","length_m":1.16,"width_m":0.22,"height_m":0.18,"review_pose":"90 degrees about Y, horizontal review; axis local Z for independent game placement","files":files}
 (out/"manifest.json").write_text(json.dumps(report,indent=2))
 print("B2_LOWER_CROSSBEAM_V01_RENDER_SUCCESS",len(obj.data.vertices),len(obj.data.polygons),flush=True)
