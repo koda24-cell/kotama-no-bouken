@@ -10,8 +10,10 @@ on:
   push:
     branches:
       - feature/blender53-stage-boundary-checkpoints-20261120
+      - development
     paths:
       - '.github/workflows/blender53-stage-boundary-checkpoints.yml'
+      - 'docs/3d/recovery-drills/blender53-cross-run-drill-20261120.md'
 permissions:
   contents: read
   actions: read
@@ -63,7 +65,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Intentional failure for external recovery drill
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.recovery_drill == true }}
+        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.recovery_drill == true) || (github.event_name == 'push' && github.ref == 'refs/heads/development' && contains(github.event.head_commit.message, '[blender53-recovery-drill]')) }}
         run: |
           echo 'RECOVERY_DRILL_EXPECTED_FAILURE: stage-one artifact is already uploaded'
           exit 1
