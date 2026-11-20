@@ -1,0 +1,56 @@
+name: Floor3 Glazing Clip01 Blender V1
+on:
+  push:
+    branches: [feature/gpt-f3-glazing-clip01-20261120]
+    paths: ['tools/floor3/glazing_clip01/**','.github/workflows/f3-glazing-clip01-render.yml']
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source
+        run: python3 -m py_compile tools/floor3/glazing_clip01/build_v1.py
+      - name: Blender real GLB, Blend and four-angle capture
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_glazing_clip01
+          docker pull ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/local/blender/blender \
+            -v "$PWD:/work" -w /work \
+            ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 \
+            -b -t 2 --python /work/tools/floor3/glazing_clip01/build_v1.py 2>&1 | tee out/f3_glazing_clip01/blender.log
+          grep -q F3_GLAZING_CLIP01_ALL_COMPLETE out/f3_glazing_clip01/blender.log
+      - name: Verify 3D and image files plus SHA manifest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct,os
+          d=Path('out/f3_glazing_clip01')
+          stem='f3_glazing_clip01_v1'
+          files=[stem+'.glb',stem+'.blend','F3_GLAZING_CLIP_PAINT_RUST_01.png','F3_GLAZING_CLIP_ROUGHNESS_01.png']+[stem+'-'+v+'.png' for v in ('front','side','angle','edge_detail')]
+          rec={}
+          for name in files:
+              b=(d/name).read_bytes()
+              assert len(b)>300,name
+              if name.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a'),name
+              if name.endswith('.glb'):
+                  assert b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b)
+                  n=struct.unpack_from('<I',b,12)[0]
+                  g=json.loads(b[20:20+n])
+                  assert len(g.get('meshes',[]))==3,'Expected clip + 2 fasteners only'
+                  assert not any('Cube' in x.get('name','') or 'BACKDROP' in x.get('name','') for x in g.get('nodes',[]))
+              if name.endswith('.blend'):assert b[:7]==b'BLENDER' or b[:4]==bytes.fromhex('28b52ffd')
+              rec[name]={'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b)}
+          (d/'manifest.json').write_text(json.dumps({'asset':'F3_GLAZING_CLIP01','approval':'NOT_APPROVED','run_id':os.environ['GITHUB_RUN_ID'],'commit':os.environ['GITHUB_SHA'],'files':rec},indent=2))
+          print('F3_GLAZING_CLIP01_QA_OK',len(rec))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f3-glazing-clip01-v1
+          path: out/f3_glazing_clip01/
+          retention-days: 14
