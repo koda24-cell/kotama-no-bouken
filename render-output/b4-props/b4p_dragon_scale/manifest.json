@@ -1,8 +1,8 @@
 {
   "asset": "b4p_dragon_scale",
-  "version": "v2",
+  "version": "v3",
   "blender": "4.2.3 LTS",
-  "triangles": 2016,
+  "triangles": 2304,
   "budget_triangles": 3000,
   "materials": [
     "b4p_dragon_scale_mat"
@@ -18,30 +18,30 @@
     ]
   },
   "bbox_m": [
-    0.998,
+    1.0,
     0.826,
-    0.11
+    0.112
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_dragon_scale.glb",
-  "glb_bytes": 177748,
+  "glb_bytes": 196864,
   "cc0_textures": {},
   "pinterest_refs": [
     43,
     50
   ],
   "sha256": {
-    "b4p_dragon_scale.glb": "19c47cd64a7a897d0e0a8d6ed0de0ec563b0eaddc48c05ad889d8adb4ba0e86b",
-    "b4p_dragon_scale_volcanic_front.png": "cd90f685b25c1e051a8d3cde1e72009e769e665db7fd38e1a55e30cd64d2ce84",
-    "b4p_dragon_scale_volcanic_side.png": "1d72b5afaaeeabf3a873d37bcdabdf015a336029d5741aeaa4cf904158629a60",
-    "b4p_dragon_scale_volcanic_angle.png": "909585ba5ce699cc2dafbe0d7533bc6365f6c95118ac707ec342bbed9aa14bb9",
-    "b4p_dragon_scale_volcanic_top.png": "e03fb40bde4af616bc75d6e873001b1b48f51d2498b71a0be17c266283cc8081",
-    "b4p_dragon_scale_volcanic_close.png": "14bc79b37ded9dfa28a84b301a7736d55d479f26ba3232f6ca2c6d4588240708",
-    "b4p_dragon_scale_volcanic_back.png": "6f8f9e0e223ea28318711bf884257121d328da33b0f8f44b57fc17270571599e",
-    "b4p_dragon_scale_studio_front.png": "812d0660365f409fe36b4df49a0df279379a16bdd7513d319392e0d1dacad735",
-    "b4p_dragon_scale_studio_angle.png": "4dc17f189d775f3773dc91660a28d6c22233832e171367bc4947a880e9e23f68",
-    "b4p_dragon_scale_studio_scale.png": "5e0135800bd8ed66a8f4b4a5ec7c260b1031b6b1c191b54ab67a148848189c47"
+    "b4p_dragon_scale.glb": "e106cf5b60a654109f5fb2d30602c1e7552ceb53feff67b8b2c348a5d78a0120",
+    "b4p_dragon_scale_volcanic_front.png": "bc65fe3d921cddaad2065d64743b9ff460136da6dffab9b66d23069e2f4dcbfe",
+    "b4p_dragon_scale_volcanic_side.png": "8eb6441487d97aae971428e6d56ac3a213800d57ec1e4f48deb3e3d146b2aad2",
+    "b4p_dragon_scale_volcanic_angle.png": "590d1e81cb578988e3c81f2b25e61ad6c8ba6edb9e5ce85ae83cb0bac2681950",
+    "b4p_dragon_scale_volcanic_top.png": "048937e9e1317ab4f2359d28e09c768793d9318fc3191baac5e2aaa373af6d8c",
+    "b4p_dragon_scale_volcanic_close.png": "f1d36c302de0f600674b6dc0ab46c3f53c9becfe5e8a930c55bcf72b68088318",
+    "b4p_dragon_scale_volcanic_back.png": "91923f6659de7e50998415355cbc3bc6de095d20453b5aa5a8fe7b37870eb30e",
+    "b4p_dragon_scale_studio_front.png": "0cc88a05d6934775b73d496a614cb49412f31129df391b91cbf4ddc21822f49d",
+    "b4p_dragon_scale_studio_angle.png": "0d4c4d5769ffd942be56d89cf8a3d9c9402bf2bf73cd71c0bf9cf53bd83531ab",
+    "b4p_dragon_scale_studio_scale.png": "aa75d849601def1ca9ba80f990ef9a4dee72c1cedb8bc837f17fb79bd5ec2d34"
   },
   "renders": [
     "b4p_dragon_scale_volcanic_front.png",
