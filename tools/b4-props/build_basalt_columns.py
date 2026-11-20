@@ -28,7 +28,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_basalt_columns"
-VERSION = "v4"
+VERSION = "v5"
 rnd = random.Random(2020)
 C.reset(2020)
 
@@ -36,7 +36,7 @@ SPACING = 0.47
 HEIGHTS = [2.20, 1.85, 1.55, 1.30, 1.05, 0.82, 0.60]
 FLAT = (0.38, 0.50)
 CHAMFER = 0.015
-STEPPED = {0, 2, 4}
+STEPPED = {0, 2, 4, 5}
 
 
 def column_bm(flat, H, seed, joints=()):
@@ -63,7 +63,7 @@ def column_bm(flat, H, seed, joints=()):
         zs += [(j - 0.008, 1.0), (j, 0.93), (j + 0.008, 1.0)]
     zs.sort()
     bm = bmesh.new()
-    lean = Vector((r.uniform(-1, 1), r.uniform(-1, 1))) * 0.012
+    lean = Vector((r.uniform(-1, 1), r.uniform(-1, 1))) * 0.03
     rings = []
     off = r.uniform(0, 100)
     for z, s in zs:
@@ -82,7 +82,7 @@ def column_bm(flat, H, seed, joints=()):
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
     D.bm_layers(bm)
     # 天端の傾き（新しい断面ではない＝古い割れ面）
-    tilt = math.radians(r.uniform(3, 10))
+    tilt = math.radians(r.uniform(4, 12) if r.random() < 0.6 else r.uniform(18, 30))  # 4割は大きく斜めに折れた天端
     d = r.uniform(0, 6.3)
     nrm = Vector((math.cos(d) * math.sin(tilt), math.sin(d) * math.sin(tilt), math.cos(tilt)))
     D.bm_cut(bm, (0, 0, H - R * math.tan(tilt) * 0.8), nrm, keep="inner", fresh=0.0)
@@ -115,12 +115,12 @@ for k, (p, H) in enumerate(zip(pos, HEIGHTS)):
     top = max(v.co.z for v in ob.data.vertices)
     if k in STEPPED:  # 天端の段差：上の角を箱で落とす
         a = rnd.uniform(0, 6.3)
-        st = rnd.uniform(0.06, 0.15)
-        c = Vector((p.x + math.cos(a) * R * 0.9, p.y + math.sin(a) * R * 0.9, top))
-        cuts.append(box(f"_s{k}", c, (R * 1.4, R * 1.4, st * 2), (rnd.uniform(-0.1, 0.1), rnd.uniform(-0.1, 0.1), a)))
+        st = rnd.uniform(0.10, 0.22)
+        c = Vector((p.x + math.cos(a) * R * 0.85, p.y + math.sin(a) * R * 0.85, top))
+        cuts.append(box(f"_s{k}", c, (R * 1.5, R * 1.5, st * 2), (rnd.uniform(-0.15, 0.15), rnd.uniform(-0.15, 0.15), a)))
     for j in range(rnd.randint(2, 4)):  # 角の欠け（天端の角＋柱の途中の稜）
         a = rnd.uniform(0, 6.3)
-        sz = rnd.uniform(0.07, 0.14)
+        sz = rnd.uniform(0.11, 0.2)
         z = top - rnd.uniform(0.0, 0.25) if j < 2 else rnd.uniform(0.25, top - 0.2)
         c = Vector((p.x + math.cos(a) * R, p.y + math.sin(a) * R, z))
         cuts.append(box(f"_k{k}_{j}", c, (sz, sz, sz * 1.3), (rnd.uniform(0, 1), rnd.uniform(0, 1), a)))

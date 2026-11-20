@@ -673,6 +673,7 @@ def bool_diff(ob, cutters, min_keep=0.4):
     m = ob.modifiers.new("bool", "BOOLEAN")
     m.operation = "DIFFERENCE"
     m.solver = "EXACT"
+    m.use_self = True  # 重なった切り抜き同士でも失敗しない
     m.object = cut
     C.apply_mods(ob)
     n1 = len(ob.data.polygons)
