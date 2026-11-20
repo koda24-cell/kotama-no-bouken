@@ -28,7 +28,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_basalt_columns"
-VERSION = "v3"
+VERSION = "v4"
 rnd = random.Random(2020)
 C.reset(2020)
 
@@ -106,7 +106,10 @@ for k, (p, H) in enumerate(zip(pos, HEIGHTS)):
     bm, R = column_bm(flat, H, seed=50 + k, joints=joints)
     D.bm_transform(bm, Matrix.Translation(Vector((p.x, p.y, 0))) @ Matrix.Rotation(rnd.uniform(-0.1, 0.1), 4, "Z"))
     ob = C.obj_from_bm(bm, f"col_{k}", smooth=True)
-    C.log(f"column {k}: H={H} faces={len(ob.data.polygons)}")
+    import bmesh as _b
+    _t = _b.new(); _t.from_mesh(ob.data)
+    C.log(f"column {k}: H={H} faces={len(ob.data.polygons)} nonmanifold_edges={sum(1 for e in _t.edges if not e.is_manifold)} joints={len(joints)}")
+    _t.free()
     D.sharp_by_angle(ob, 25)
     cuts = []
     top = max(v.co.z for v in ob.data.vertices)

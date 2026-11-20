@@ -676,6 +676,17 @@ def bool_diff(ob, cutters, min_keep=0.4):
     m.object = cut
     C.apply_mods(ob)
     n1 = len(ob.data.polygons)
+    if n1 < n0 * min_keep:  # EXACT が失敗したら FAST で再試行
+        C.log(f"WARN bool_diff {ob.name}: EXACT {n0} -> {n1} faces, retry FAST")
+        old = ob.data
+        ob.data = before.copy()
+        bpy.data.meshes.remove(old)
+        m = ob.modifiers.new("bool", "BOOLEAN")
+        m.operation = "DIFFERENCE"
+        m.solver = "FAST"
+        m.object = cut
+        C.apply_mods(ob)
+        n1 = len(ob.data.polygons)
     if n1 < n0 * min_keep:
         C.log(f"WARN bool_diff {ob.name}: {n0} -> {n1} faces, reverted")
         old = ob.data
