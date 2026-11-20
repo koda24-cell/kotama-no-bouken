@@ -85,9 +85,9 @@ def bottom_z(x,y):
 bedverts=[];bedfaces=[];beduv=[]
 GRID=76
 for j in range(GRID+1):
-    y=-8.0+16.0*j/GRID
+    y=-13.0+21.0*j/GRID
     for i in range(GRID+1):
-        x=-8.0+16.0*i/GRID
+        x=-12.0+24.0*i/GRID
         bedverts.append((x,y,bottom_z(x,y)))
         beduv.append((i/GRID,j/GRID))
 for j in range(GRID):
@@ -146,7 +146,7 @@ surface.file_format="PNG"
 surface.save()
 # V6 water: keep real transparency, restore legible surface through
 # Fresnel reflections and image-controlled pale optical highlights.
-watermat=bpy.data.materials.new("V15 anisotropic broad water reflections and retained bathymetry")
+watermat=bpy.data.materials.new("V16 shoreline-parallel broad reflected ripples with V14 depth")
 watermat.use_nodes=True
 wn=watermat.node_tree.nodes
 wn.clear()
@@ -324,23 +324,23 @@ wl.new(depth_range.outputs["Result"],deep_mix.inputs[0])
 wl.new(ai_mix.outputs[0],deep_mix.inputs[1])
 wl.new(deepwater.outputs["BSDF"],deep_mix.inputs[2])
 # V15: Broad and nonuniform reflection fields stretched along the
-# longitudinal water flow (the Y axis), rather than repeated white ribbons.
+# shoreline-parallel horizontal bands (X axis), rather than vertical ribbons.
 # This is real glossy reflection from scene lighting, NOT emissive white paint.
 # The water depth mask from V14 is preserved and applied before this layer.
 reflect_coords=wn.new("ShaderNodeVectorMath")
 reflect_coords.operation="MULTIPLY"
-reflect_coords.inputs[1].default_value=(1.28,.32,.12)
+reflect_coords.inputs[1].default_value=(.33,1.22,.12)
 wl.new(depth_geo.outputs["Position"],reflect_coords.inputs[0])
 reflect_noise=wn.new("ShaderNodeTexNoise")
-reflect_noise.inputs["Scale"].default_value=1.45
+reflect_noise.inputs["Scale"].default_value=1.12
 reflect_noise.inputs["Detail"].default_value=2.0
 reflect_noise.inputs["Roughness"].default_value=.58
 wl.new(reflect_coords.outputs["Vector"],reflect_noise.inputs["Vector"])
 reflect_ramp=wn.new("ShaderNodeMapRange")
-reflect_ramp.inputs["From Min"].default_value=.45
-reflect_ramp.inputs["From Max"].default_value=.69
+reflect_ramp.inputs["From Min"].default_value=.47
+reflect_ramp.inputs["From Max"].default_value=.70
 reflect_ramp.inputs["To Min"].default_value=0.0
-reflect_ramp.inputs["To Max"].default_value=.34
+reflect_ramp.inputs["To Max"].default_value=.29
 reflect_ramp.clamp=True
 reflect_ramp.interpolation_type="SMOOTHSTEP"
 wl.new(reflect_noise.outputs["Fac"],reflect_ramp.inputs["Value"])
@@ -358,13 +358,13 @@ wl.new(reflect_depth.outputs["Result"],reflect_amount.inputs[1])
 # A separate low-frequency normal controls reflections. The fine V14
 # ripple normal still independently controls the small refractive distortion.
 reflect_bump=wn.new("ShaderNodeBump")
-reflect_bump.inputs["Strength"].default_value=.11
-reflect_bump.inputs["Distance"].default_value=.017
+reflect_bump.inputs["Strength"].default_value=.085
+reflect_bump.inputs["Distance"].default_value=.013
 wl.new(reflect_noise.outputs["Fac"],reflect_bump.inputs["Height"])
 wl.new(waterbump.outputs["Normal"],reflect_bump.inputs["Normal"])
 broad_gloss=wn.new("ShaderNodeBsdfGlossy")
 broad_gloss.inputs["Color"].default_value=(.64,.85,.89,1)
-broad_gloss.inputs["Roughness"].default_value=.19
+broad_gloss.inputs["Roughness"].default_value=.17
 wl.new(reflect_bump.outputs["Normal"],broad_gloss.inputs["Normal"])
 broad_mix=wn.new("ShaderNodeMixShader")
 wl.new(reflect_amount.outputs[0],broad_mix.inputs[0])
@@ -375,9 +375,9 @@ wl.new(broad_mix.outputs[0],outnode.inputs["Surface"])
 verts=[];faces=[];N=95
 for j in range(N+1):
     for i in range(N+1):
-        x=-7.9+15.8*i/N
+        x=-11.85+23.7*i/N
         shoreline=2.8+.34*math.sin(x*.7)+.18*math.cos(x*1.9)
-        y=-7.9+(7.9+shoreline)*j/N
+        y=-12.8+(12.8+shoreline)*j/N
         z=.018*math.sin(1.7*x+1.2*y)+.011*math.sin(3.1*x-.7*y)+.006*math.cos(.52*x+2.9*y)
         verts.append((x,y,z))
 for j in range(N):
@@ -412,7 +412,7 @@ volume.inputs["Color"].default_value=(.54,.76,.75,1)
 volume.inputs["Density"].default_value=.0003
 fog.node_tree.links.new(volume.outputs["Volume"],output.inputs["Volume"])
 bpy.ops.mesh.primitive_cube_add(size=1,location=(0,5,2.5))
-mist=bpy.context.object;mist.name="Distance_mist";mist.scale=(16,7,6);mist.data.materials.append(fog)
+mist=bpy.context.object;mist.name="Distance_mist";mist.scale=(24,12,6);mist.data.materials.append(fog)
 world=bpy.data.worlds.new("Cool cavern ambient");scene.world=world;world.use_nodes=True
 world.node_tree.nodes["Background"].inputs["Color"].default_value=(.22,.38,.45,1)
 world.node_tree.nodes["Background"].inputs["Strength"].default_value=.7
@@ -429,6 +429,6 @@ results={}
 for n in ("front","side","angle"):
     f=root/(n+".png");assert f.stat().st_size>10000
     results[n]={"path":str(f),"sha256":hashlib.sha256(f.read_bytes()).hexdigest(),"size":f.stat().st_size}
-(root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"],"depth_m":{"shore":round(depth_at(0,2.7),3),"middle":round(depth_at(0,-2.0),3),"deep":round(depth_at(0,-7.0),3)},"depth_absorption":"V14 bathymetry-matched shader opacity, visual approximation not true volume absorption","surface_reflection":"V15 directional 2-scale normals, noise-masked wide glossy reflections, no white emittance grid"},indent=2))
+(root/"render_manifest.json").write_text(json.dumps({"status":"NOT_APPROVED","render_engine":"Blender Cycles","images":results,"scan_source":manifest["sha256"],"depth_m":{"shore":round(depth_at(0,2.7),3),"middle":round(depth_at(0,-2.0),3),"deep":round(depth_at(0,-7.0),3)},"depth_absorption":"V14 bathymetry-matched shader opacity, visual approximation not true volume absorption","surface_reflection":"V16 shore-parallel X-oriented smooth noise broad glossy ripples; V14 deep opacity retained","reflection_axis":"shore-parallel-X","expanded_water_domain_x":[-11.85,11.85],"expanded_bed_domain_x":[-12.0,12.0]},indent=2))
 bpy.ops.file.pack_all()
-bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v15.blend").resolve()))
+bpy.ops.wm.save_as_mainfile(filepath=str((root/"f2-water-v16.blend").resolve()))
