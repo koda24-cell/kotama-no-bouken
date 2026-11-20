@@ -513,7 +513,7 @@ def dragon_crystal(name, glow_strength=5.0, body_dark=(0.060, 0.0040, 0.0030), b
 # 形状：竜の鱗（抜け落ちた1枚）
 # ---------------------------------------------------------------------------
 def scale_plate_bm(length, seed, width=0.78, ns=28, nr=6, thick=0.022, edge=0.004, keel=0.010, cup=0.035,
-                   notches=2, chord=None, root_tear=0.07):
+                   notches=2, chord=None, root_tear=0.07, tip_amp=0.75, tip_w=0.5):
     """涙形の盾のような鱗。局所座標: +Y が先端、原点が外形の中心付近、+Z が表。
     notches 個の縁の欠け、chord=(角度, 比) で縁が直線に割れ落ちる。根元は裂けて不揃い。
     tip 属性=中心からの比 ρ（成長線用）、cd=横方向の位置（0..1、条線用）、欠けの縁は fresh"""
@@ -524,7 +524,7 @@ def scale_plate_bm(length, seed, width=0.78, ns=28, nr=6, thick=0.022, edge=0.00
 
     def outline(th):
         t = math.atan2(math.sin(th), math.cos(th))
-        r = R0 * (1 + 0.75 * math.exp(-(t / 0.5) ** 2))
+        r = R0 * (1 + tip_amp * math.exp(-(t / tip_w) ** 2))
         rootw = max(0.0, -math.cos(th)) ** 2
         r *= 1 + root_tear * noise.noise(Vector((th * 3.0 + off, 0.3, 0.7))) * rootw * 2.0
         fr = 0.0
@@ -589,7 +589,7 @@ def scale_plate_bm(length, seed, width=0.78, ns=28, nr=6, thick=0.022, edge=0.00
     return bm
 
 
-def dragon_scale_mat(name, glow_strength=0.0):
+def dragon_scale_mat(name, glow_strength=3.0):
     """竜の鱗: 黒い鈍い艶（玄武岩より少しだけ冷たい黒）＋同心の成長線＋縦の条線＋細かい引っかき傷＋
     縁の摩耗と欠けた断面（層状の暗い赤茶）＋成長線の溝と上向き面に灰"""
     b = C.NB(name)
@@ -601,8 +601,8 @@ def dragon_scale_mat(name, glow_strength=0.0):
     growth = b.math("SINE", b.math("ADD", b.math("MULTIPLY", tip, 46.0), b.math("MULTIPLY", n_big, 3.0)))
     gr = b._map(growth, 0.55, 1.0)
     stria = b._map(b.math("SINE", b.math("ADD", b.math("MULTIPLY", lat, 120.0), b.math("MULTIPLY", n_big, 4.0))), 0.7, 1.0)
-    col = b.ramp(n_big, [(0.2, (0.0095, 0.0090, 0.0092)), (0.6, (0.016, 0.0145, 0.0142)), (0.95, (0.024, 0.021, 0.020))])
-    col = b.mix(b.math("MULTIPLY", gr, 0.5), col, (0.026, 0.016, 0.012))  # 成長線の山は少し赤茶
+    col = b.ramp(n_big, [(0.2, (0.0095, 0.0092, 0.0098)), (0.6, (0.015, 0.0142, 0.0148)), (0.95, (0.022, 0.020, 0.021))])
+    col = b.mix(b.math("MULTIPLY", gr, 0.18), col, (0.022, 0.016, 0.014))  # 成長線はごく弱く（木の年輪に見せない）
     # 細かい引っかき傷（2方向の細い線）
     scr = None
     for k, (sx, sy) in enumerate(((18.0, 0.6), (0.7, 22.0))):
@@ -623,16 +623,21 @@ def dragon_scale_mat(name, glow_strength=0.0):
     ashm = b.math("MAXIMUM", ashm, b.math("MULTIPLY", b.math("SUBTRACT", 1.0, gr), b.math("MULTIPLY", b.up_mask(0.5, 0.9), 0.3)))
     ashm = b.math("MULTIPLY", ashm, b.ramp(b.noise(9.0, 5, 0.6), [(0.35, 0.0), (0.7, 1.0)]))
     col = b.mix(b.math("MULTIPLY", ashm, 0.75), col, ASH)
-    r = b.mixf(n_big, 0.36, 0.5)
+    r = b.mixf(n_big, 0.26, 0.4)
     r = b.mixf(scr, r, 0.62)
     r = b.mixf(edge, r, 0.55)
     r = b.mixf(fresh, r, 0.8)
     r = b.mixf(ashm, r, 0.95)
-    hgt = b.math("ADD", b.math("MULTIPLY", gr, 0.5), b.math("MULTIPLY", stria, 0.15))
+    hgt = b.math("ADD", b.math("MULTIPLY", gr, 0.2), b.math("MULTIPLY", stria, 0.25))
     hgt = b.math("SUBTRACT", hgt, b.math("MULTIPLY", scr, 0.6))
     hgt = b.math("ADD", hgt, b.math("MULTIPLY", n_fine, 0.1))
     b.normal_from(None, bump_height=hgt, bump_strength=0.35, bump_dist=0.0015)
-    return b.out(col, r, 0.0)
+    # 「熱を帯びた鱗」: 欠けた縁の断面の層の間だけ、まだ赤く光る
+    layers = b._map(b.math("SINE", b.math("MULTIPLY", tip, 160.0)), 0.6, 1.0)
+    e = b.math("MULTIPLY", fresh, b.math("ADD", 0.25, b.math("MULTIPLY", layers, 0.75)))
+    e = b.math("MULTIPLY", e, b.ramp(b.noise(6.0, 3, 0.5), [(0.35, 0.2), (0.65, 1.0)]))
+    emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.3, (0.3, 0.02, 0.005)), (1.0, (1.0, 0.18, 0.035))])
+    return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
 
 
 # ---------------------------------------------------------------------------
