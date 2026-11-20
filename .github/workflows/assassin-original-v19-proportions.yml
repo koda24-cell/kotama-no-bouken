@@ -48,7 +48,7 @@ jobs:
             data=open(f'{d}/{fn}','rb').read()
             assert len(data)==v['bytes']
             assert hashlib.sha256(data).hexdigest()==v['sha256']
-          assert open(f'{d}/assassin_v19_original_anatomy_study.glb','rb').read(4)==b'glTF'
+          assert open(f'{d}/assassin_v19_original_proportions_study.glb','rb').read(4)==b'glTF'
           print('VERIFIED',len(names),'actual PNGs and original head GLB/Blend')
           PY
       - name: Scan generated images and models
