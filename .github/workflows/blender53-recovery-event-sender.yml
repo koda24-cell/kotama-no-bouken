@@ -33,7 +33,7 @@ jobs:
           private-key: ${{ secrets.KOTAMA_RECOVERY_EVENT_APP_PRIVATE_KEY }}
           owner: koda24-cell
           repositories: 3d-asset-studio
-          permission-contents: read
+          permission-contents: write
       - name: Notify validation-only receiver
         if: ${{ steps.credential.outputs.configured == 'true' }}
         env:
