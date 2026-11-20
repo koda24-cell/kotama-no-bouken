@@ -1,0 +1,104 @@
+name: B2 Waterwheel Four Original GLB Assembly V01
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-four-part-fit-v01-20261120]
+    paths:
+      - 'tools/b2-waterwheel-four-part/**'
+      - '.github/workflows/b2-waterwheel-four-part-v01.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download four original artifact ZIPs with authenticated GitHub API
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source-zips source-glbs
+          for id in 14591853832 14600384453 14601168044 14604858565; do
+            curl --fail --show-error --silent --location --retry 3 \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip" \
+              -o "source-zips/${id}.zip"
+            unzip -t "source-zips/${id}.zip"
+          done
+      - name: ClamAV scan downloaded ZIPs before extraction
+        run: |
+          set -euo pipefail
+          mkdir -p security/clamdb && chmod 777 security/clamdb
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'set -e; freshclam --stdout --datadir=/workspace/security/clamdb; clamscan --database=/workspace/security/clamdb -r --infected source-zips tools/b2-waterwheel-four-part'
+      - name: Extract and verify exactly four named GLBs
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,hashlib,json
+          mapping={
+            '14591853832':'b2_single_timber_support_post_v03.glb',
+            '14600384453':'b2_single_diagonal_oak_brace_v02.glb',
+            '14601168044':'b2_single_oak_drawbore_peg_v02.glb',
+            '14604858565':'b2_single_lower_oak_crossbeam_v01.glb',
+          }
+          report={}
+          for aid,name in mapping.items():
+              with zipfile.ZipFile('source-zips/'+aid+'.zip') as z:
+                  matches=[i for i in z.infolist() if Path(i.filename).name==name and not i.is_dir()]
+                  assert len(matches)==1,(aid,name,z.namelist())
+                  info=matches[0]
+                  assert 1000<info.file_size<100_000_000,(name,info.file_size)
+                  data=z.read(info)
+                  assert data[:4]==b'glTF',name
+                  (Path('source-glbs')/name).write_bytes(data)
+                  report[name]={'artifact_id':aid,'sha256':hashlib.sha256(data).hexdigest(),'bytes':len(data)}
+          Path('source-glbs/source_manifest.json').write_text(json.dumps(report,indent=2))
+          print('FOUR_ORIGINAL_GLBS_VERIFIED',json.dumps(report))
+          PY
+      - name: ClamAV scan extracted GLBs before Blender
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'clamscan --database=/workspace/security/clamdb -r --infected source-glbs'
+      - name: Blender 5.3 real four-part assembly and six-view Cycles render
+        run: |
+          set -euo pipefail
+          mkdir -p render-output/b2-four-part-v01
+          docker run --rm -v "$PWD:/workspace" -w /workspace ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-four-part/build_v01.py -- source-glbs render-output/b2-four-part-v01 | tee /tmp/blender.log
+          grep -q B2_FOUR_PART_REAL_GLB_RENDER_SUCCESS /tmp/blender.log
+      - name: Verify six PNGs and source hashes
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          out=Path('render-output/b2-four-part-v01')
+          m=json.loads((out/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED'
+          assert len(m['sources'])==4 and len(list(out.glob('b2_four_part_*.png')))==6
+          for src in m['sources'].values():
+              assert hashlib.sha256((Path('source-glbs')/src['file']).read_bytes()).hexdigest()==src['sha256']
+          for name,info in m['files'].items():
+              p=out/name
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==info['sha256']
+          print('FOUR_PART_OUTPUT_QA_PASSED')
+          PY
+      - name: Shared GLB structural audit
+        run: python3 tools/3d-performance/audit_glb.py 'render-output/b2-four-part-v01/*.glb' --output render-output/b2-four-part-v01/performance_audit.json
+      - name: ClamAV output scan
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'clamscan --database=/workspace/security/clamdb -r --infected render-output/b2-four-part-v01'
+      - name: Upload NOT_APPROVED review candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-four-part-v01-NOT-APPROVED
+          path: |
+            render-output/b2-four-part-v01/
+            source-glbs/source_manifest.json
+          retention-days: 14
+          if-no-files-found: warn
