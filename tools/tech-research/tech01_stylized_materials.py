@@ -4,7 +4,8 @@ OUT=os.environ.get("OUTPUT_DIR","/work/outputs/tech01")
 os.makedirs(OUT,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT"); bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
-scene.render.engine="BLENDER_EEVEE"
+scene.render.engine="CYCLES"
+scene.cycles.samples=16
 scene.render.resolution_x=768;scene.render.resolution_y=768;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 scene.world.color=(.25,.25,.25)
