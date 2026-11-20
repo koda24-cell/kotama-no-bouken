@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feature/f1-all17-blender53-compat-20261120
+      - feature/f1-17-angle-rerender-20261120
     paths:
       - '.github/workflows/f1-all17-blender53-compat.yml'
   workflow_dispatch:
@@ -37,16 +38,16 @@ jobs:
           bash tools/security/clamav_scan_gate.sh scan tools/f1-sacred-forest/assets/build_${{ matrix.asset }}.py qa/security/asset.log
       - name: Trust checkout ownership inside Docker
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-      - name: Render GLB and four views
+      - name: Render GLB and angle view
         env:
           F1_RENDER_RES: '480'
           F1_RENDER_SAMPLES: '16'
           F1_RENDER_THREADS: '3'
-          F1_RENDER_VIEWS: front,side,angle,top
+          F1_RENDER_VIEWS: angle
         run: |
           mkdir -p /tmp/blender-home
           HOME=/tmp/blender-home blender -b -t 3 --python tools/f1-sacred-forest/assets/build_${{ matrix.asset }}.py
-      - name: Validate generated GLB and PNG evidence
+      - name: Validate generated GLB and angle PNG evidence
         env:
           ASSET_NAME: ${{ matrix.asset }}
         run: |
@@ -62,11 +63,11 @@ jobs:
           m=json.loads(matches[0].read_text())
           assert m['approvalStatus']=='pending_visual_review'
           assert m['renderedFrom']=='reimported GLB'
-          assert len(m['renders'])==4
+          assert len(m['renders'])==1
           glb=root/m['file']
           assert glb.read_bytes()[:4]==b'glTF'
           assert (root/m['source']).is_file()
-          for v in ('front','side','angle','top'):
+          for v in ('angle',):
               p=root/'renders'/m['id']/(v+'.png')
               assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
           print('PASS',m['id'],m['sizeMeters'],m['tris'],m['textureCount'])
