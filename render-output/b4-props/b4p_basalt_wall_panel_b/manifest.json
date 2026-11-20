@@ -1,8 +1,8 @@
 {
   "asset": "b4p_basalt_wall_panel_b",
-  "version": "v2",
+  "version": "v3",
   "blender": "4.2.3 LTS",
-  "triangles": 5240,
+  "triangles": 5394,
   "budget_triangles": 9000,
   "materials": [
     "b4p_basalt_wall_panel_b_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    4.1,
-    1.015,
-    4.169
+    4.102,
+    0.996,
+    4.07
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_basalt_wall_panel_b.glb",
-  "glb_bytes": 959404,
+  "glb_bytes": 980404,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -45,16 +45,16 @@
     41
   ],
   "sha256": {
-    "b4p_basalt_wall_panel_b.glb": "9f8505cab3bea9f24820e6b2b4ef396b48a075317e7a3417e9508aa3eb0ef9f4",
-    "b4p_basalt_wall_panel_b_volcanic_front.png": "2fd865f4edaf4a5d290636559dc95ec04ed5c39ca7c189d2877380b50fc9fa1c",
-    "b4p_basalt_wall_panel_b_volcanic_side.png": "83831f1238e1c821f0458d5ce8f1fc6a57577793664fe3c9863fb8ffcc250996",
-    "b4p_basalt_wall_panel_b_volcanic_angle.png": "07729339785d376bfd377ab5129c392d6041f74011e2a721b5a8e5a1ed53b3db",
-    "b4p_basalt_wall_panel_b_volcanic_top.png": "24cc1a937c1c050957eeec081193307575bb4803b4bf310f57c9d598dec90c96",
-    "b4p_basalt_wall_panel_b_volcanic_close.png": "d32cd005e7c49c775639c8dae7d20daffc8af6cfe2e10e0ac27ef71aabe07b3c",
-    "b4p_basalt_wall_panel_b_volcanic_back.png": "74730db05b69cfb86fb2aac94afa5263bbea4b5da3dc2d6d1c4199d93581d3a6",
-    "b4p_basalt_wall_panel_b_studio_front.png": "0e659d838bf85c71afc3044230af8267837759ce9a6ac23bb7c6402a9863caff",
-    "b4p_basalt_wall_panel_b_studio_angle.png": "e0d70a3663a19315992894396bb0e9bdc9d030cc4141814dfa01b2d6cfc7d761",
-    "b4p_basalt_wall_panel_b_studio_scale.png": "433dd296d3d01c258627e1b9463d04ed4af3114b6a4d8f9b1199b0ee64422c95"
+    "b4p_basalt_wall_panel_b.glb": "029f52158caee786e2e333d62e1163621f5aee1f8f0549f3b88df349ee86ea8d",
+    "b4p_basalt_wall_panel_b_volcanic_front.png": "18fabd32129e2e5c773897a3601834015e3e4016a84099d448837b76e0021800",
+    "b4p_basalt_wall_panel_b_volcanic_side.png": "77cef94eda87145038293126f06ad544c253a33cecf23d0e9d6796395495942d",
+    "b4p_basalt_wall_panel_b_volcanic_angle.png": "84e091f6aa018d129391b29add4d3e2f253240a0cd79d07041beb7ff27cc4cd0",
+    "b4p_basalt_wall_panel_b_volcanic_top.png": "69167b69c8825cb98418b5a857437ecbc6ed26fea214bec5d39cd646afecd289",
+    "b4p_basalt_wall_panel_b_volcanic_close.png": "f02da536fc38bd12bc4f1a11dd81ec694dad4d28ed3aaa42ec1109970d4c3444",
+    "b4p_basalt_wall_panel_b_volcanic_back.png": "99c63644f564ebbd3736ffb91af35ee46c075758b62fcac7760ca0f610eb561c",
+    "b4p_basalt_wall_panel_b_studio_front.png": "e976016e0d3623c2dab78cf6e153e585a407d71660cee2ee23d8f9760dd76aa6",
+    "b4p_basalt_wall_panel_b_studio_angle.png": "bb233452c663398f4e672d45c9914edf98799d1836cf22e5e31b9eed5b40c1c5",
+    "b4p_basalt_wall_panel_b_studio_scale.png": "bcb86f63c976dd06b63d925a262c171f700fc87eb7a2a39676e6cbaf2b442312"
   },
   "renders": [
     "b4p_basalt_wall_panel_b_volcanic_front.png",
