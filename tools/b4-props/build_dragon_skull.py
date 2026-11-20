@@ -32,7 +32,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_dragon_skull"
-VERSION = "v4"
+VERSION = "v5"
 rnd = random.Random(1313)
 C.reset(1313)
 
@@ -40,7 +40,7 @@ pos = []   # 骨の和（ボクセル化）
 late = []  # 後頭を平らにした後で足す部品（角・棘・フリルの角）
 E = D.ellipsoid
 # 頭蓋と後頭
-pos += [E("cranium", (0.42, 0, 0.50), (0.50, 0.35, 0.30)), E("occiput", (0.80, 0, 0.54), (0.16, 0.30, 0.22))]
+pos += [E("cranium", (0.42, 0, 0.50), (0.50, 0.30, 0.30)), E("occiput", (0.80, 0, 0.54), (0.16, 0.30, 0.22))]
 for s_ in (-1, 1):  # 後頭の張り出し（フリルの角）: 丸い後頭部をやめて角ばった骨の板に
     late.append(D.tube(f"flange_{s_}", C.bezier((0.62, 0.26 * s_, 0.66), (0.86, 0.40 * s_, 0.58), (1.04, 0.50 * s_, 0.44), n=8), 0.075, 0.03))
 # 頭頂の稜（矢状稜）: 丸い頭蓋を骨らしく引き締める
@@ -61,7 +61,7 @@ for s in (-1, 1):
 HORN_BREAK = 0.48
 horn_tips = {}
 for s in (-1, 1):
-    pts = C.bezier((0.72, 0.25 * s, 0.76), (1.10, 0.36 * s, 1.08), (1.52, 0.44 * s, 1.08), (1.78, 0.40 * s, 0.88), n=16)
+    pts = C.bezier((0.72, 0.25 * s, 0.76), (1.02, 0.36 * s, 1.12), (1.40, 0.44 * s, 1.14), (1.58, 0.40 * s, 0.96), n=16)
     if s < 0:
         pts = pts[:int(16 * HORN_BREAK) + 1]
         horn_tips[s] = (pts[-1], (pts[-1] - pts[-2]).normalized())
@@ -85,7 +85,7 @@ CUT = []
 for s in (-1, 1):
     CUT += [((0.20, 0.37 * s, 0.53), (0.19, 0.17, 0.17), (0, 0, 18 * s)),
             ((-0.33, 0.29 * s, 0.37), (0.21, 0.10, 0.085), (0, 6, 8 * s)),
-            ((0.62, 0.43 * s, 0.40), (0.17, 0.13, 0.12), (0, 0, 0)),
+            ((0.60, 0.40 * s, 0.42), (0.21, 0.14, 0.14), (0, 0, 0)),
             ((0.66, 0.17 * s, 0.84), (0.13, 0.075, 0.09), (0, 0, 0)),
             ((-1.12, 0.075 * s, 0.33), (0.085, 0.045, 0.05), (0, -20, 0))]
 CUT += [((0.82, 0.0, 0.34), (0.12, 0.085, 0.085), (0, 0, 0))]   # 大後頭孔
@@ -111,11 +111,14 @@ def ell_q(p, c, r, ro):
 def weather(co, nrm):
     n1 = noise.noise(co * 3.0)
     rid = 1 - abs(noise.noise(co * 7.0 + Vector((3, 1, 2))))
-    d = 0.010 * n1
-    if rid > 0.93:
-        d -= 0.012 * (rid - 0.93) / 0.07
-    if noise.noise(co * 9.0 + Vector((7, 7, 7))) > 0.35:
-        d -= 0.004
+    d = 0.012 * n1
+    if rid > 0.92:
+        d -= 0.020 * (rid - 0.92) / 0.08          # 乾燥割れの溝
+    pit = noise.noise(co * 14.0 + Vector((7, 7, 7)))
+    if pit > 0.4:
+        d -= 0.010 * (pit - 0.4) / 0.6             # 風化の穴
+    if noise.noise(co * 4.0 + Vector((2, 9, 4))) > 0.45:
+        d -= 0.006                                 # 剥離した段
     return d
 
 
@@ -133,7 +136,7 @@ for s in (-1, 1):
             continue
         t = i / 8
         p = Vector((-1.10 + 1.08 * t, (0.095 + 0.22 * t) * s, 0.14 + 0.04 * t))
-        ln = 0.08 + 0.10 * math.sin(math.pi * min(1.0, t * 1.6)) + (0.06 if i == 2 else 0.0)
+        ln = 0.12 + 0.13 * math.sin(math.pi * min(1.0, t * 1.6)) + (0.08 if i == 2 else 0.0)
         if (s, i) in BROKEN:
             ln *= 0.55
         r = 0.022 + 0.018 * math.sin(math.pi * min(1.0, t * 1.4)) + (0.008 if i == 2 else 0.0)
@@ -143,8 +146,8 @@ for s in (-1, 1):
         parts.append(tb)
 
 # ---- 回して埋める ----
-M = Matrix.Translation((0, 0, -0.26)) @ Matrix.Rotation(math.radians(-30), 4, "Z") @ \
-    Matrix.Rotation(math.radians(-6), 4, "Y") @ Matrix.Rotation(math.radians(-12), 4, "X")
+M = Matrix.Translation((0, 0, -0.18)) @ Matrix.Rotation(math.radians(-30), 4, "Z") @ \
+    Matrix.Rotation(math.radians(-11), 4, "Y") @ Matrix.Rotation(math.radians(-12), 4, "X")
 MI = M.inverted()
 for o in parts:
     o.data.transform(M)
