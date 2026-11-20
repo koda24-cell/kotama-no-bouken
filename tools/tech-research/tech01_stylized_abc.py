@@ -11,7 +11,7 @@ scene.render.image_settings.file_format="PNG"
 scene.world.color=(.25,.25,.25)
 assert bpy.app.version[:2] == (5,3), f"Blender 5.3 required, got {bpy.app.version_string}"
 def mat(stylized):
- m=bpy.data.materials.new(""rock_style_"+str(stylized));m.diffuse_color=(.34,.32,.28,1);m.use_nodes=True
+ m=bpy.data.materials.new("rock_style_"+str(stylized));m.diffuse_color=(.34,.32,.28,1);m.use_nodes=True
  nt=m.node_tree;bs=nt.nodes.get("Principled BSDF");bs.inputs["Base Color"].default_value=(.34,.32,.28,1);bs.inputs["Roughness"].default_value=.7
  if stylized:
   tex=nt.nodes.new("ShaderNodeTexNoise");tex.inputs["Scale"].default_value=3;tex.inputs["Detail"].default_value=4;tex.inputs["Roughness"].default_value=.55
