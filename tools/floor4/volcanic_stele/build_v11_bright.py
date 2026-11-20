@@ -131,7 +131,7 @@ sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=40
 sc.render.resolution_x=920;sc.render.resolution_y=920;sc.render.resolution_percentage=100
 sc.render.image_settings.file_format="PNG"
 sc.view_settings.view_transform="AgX"
-sc.view_settings.look="Medium High Contrast"
+sc.view_settings.look="AgX - Medium High Contrast"
 sc.view_settings.exposure=0.65
 # export model, no preview plane or lights
 bpy.ops.object.select_all(action="DESELECT")
