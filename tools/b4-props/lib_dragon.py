@@ -513,7 +513,7 @@ def dragon_crystal(name, glow_strength=5.0, body_dark=(0.060, 0.0040, 0.0030), b
 # 形状：竜の鱗（抜け落ちた1枚）
 # ---------------------------------------------------------------------------
 def scale_plate_bm(length, seed, width=0.78, ns=28, nr=6, thick=0.022, edge=0.004, keel=0.010, cup=0.035,
-                   notches=2, chord=None, root_tear=0.07, tip_amp=0.75, tip_w=0.5):
+                   notches=2, chord=None, root_tear=0.07, tip_amp=0.75, tip_w=0.5, keel_w=0.16):
     """涙形の盾のような鱗。局所座標: +Y が先端、原点が外形の中心付近、+Z が表。
     notches 個の縁の欠け、chord=(角度, 比) で縁が直線に割れ落ちる。根元は裂けて不揃い。
     tip 属性=中心からの比 ρ（成長線用）、cd=横方向の位置（0..1、条線用）、欠けの縁は fresh"""
@@ -549,7 +549,7 @@ def scale_plate_bm(length, seed, width=0.78, ns=28, nr=6, thick=0.022, edge=0.00
 
     def ztop(x, y, rho):
         z = thick * 0.5 * (1 - rho ** 2) ** 0.7
-        z += keel * math.exp(-(x / (R0 * 0.16)) ** 2) * (1 - rho * 0.6) * (1 if y > -R0 * 0.3 else 0.6)
+        z += keel * math.exp(-abs(x / (R0 * keel_w))) * (1 - rho * 0.45) * (1 if y > -R0 * 0.3 else 0.55)
         z += cup * rho ** 2
         return z
 

@@ -26,7 +26,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_dragon_scale"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(909)
 C.reset(909)
 
@@ -41,18 +41,18 @@ def place(bm, loc, rz=0.0, rx=0.0, ry=0.0):
 
 
 parts = []
-bmA = D.scale_plate_bm(0.60, seed=1, notches=2, chord=(2.3, 0.72), thick=0.05, keel=0.03, cup=-0.03, tip_amp=1.0, tip_w=0.38, edge=0.006)
+bmA = D.scale_plate_bm(0.60, seed=1, notches=2, chord=(2.3, 0.72), thick=0.05, cup=-0.03, tip_amp=1.0, tip_w=0.38, edge=0.006, keel=0.04, keel_w=0.09, ns=36)
 place(bmA, (0.0, 0.0, 0.0), rz=18, rx=3)
 parts.append(C.obj_from_bm(bmA, "scale_big"))
 
-bmB = D.scale_plate_bm(0.44, seed=2, notches=3, thick=0.04, keel=0.024, cup=-0.024, tip_amp=1.0, tip_w=0.38, edge=0.005)
+bmB = D.scale_plate_bm(0.44, seed=2, notches=3, thick=0.04, keel=0.024, cup=-0.024, tip_amp=1.0, tip_w=0.38, edge=0.005, keel_w=0.09, ns=32)
 place(bmB, (0.30, -0.06, 0.0), rz=-32, ry=16)
 obB = C.obj_from_bm(bmB, "scale_mid")
 for v in obB.data.vertices:  # 大の縁にもたれる分だけ持ち上げる（片側の縁は地面に接したまま）
     v.co.z += 0.012 * max(0.0, (0.34 - v.co.x) / 0.2)
 parts.append(obB)
 
-bmC = D.scale_plate_bm(0.30, seed=3, notches=1, chord=(-0.6, 0.8), thick=0.03, keel=0.018, cup=-0.018, tip_amp=1.0, tip_w=0.38, edge=0.004)
+bmC = D.scale_plate_bm(0.30, seed=3, notches=1, chord=(-0.6, 0.8), thick=0.03, keel=0.018, cup=-0.018, tip_amp=1.0, tip_w=0.38, edge=0.004, keel_w=0.10)
 place(bmC, (-0.40, -0.26, 0.0), rz=130, rx=180)
 parts.append(C.obj_from_bm(bmC, "scale_small"))
 
