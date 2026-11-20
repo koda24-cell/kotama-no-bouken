@@ -26,3 +26,13 @@
 1. 古いチャットの添付ZIPへアクセスできれば、SHAでV02/V08を検証してそのまま継続。
 2. 別経路では、**真正のV27 GLB+Blend、GitHub PR #631にある `tools/floor6/painted_leaf_bunch_review.py`、V31にある6種別葉束PNGと生成Python** を利用して構造を再現する。ただし、元の6枚の生成画像およびV02→V08のローカルPythonの完全な数値配置は未保存のため、**V08のバイト同一復元はできない**。
 3. 復元候補はV08と別名で管理し、実Blender5.3レンダリングで比較してからユーザーに提示する。美術未承認、ゲームに統合しない。
+
+
+## 追加調査：Blender 5.3への移行前（旧Blender系統）
+- 移行の公式5.3検証run [44466267564](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44466267564) は2026-11-19。V08 PR #651（2026-11-20）より**前**。V08自体はVTK/EGLローカル編集・レンダリングであり、5.3によるV08レンダリングは未実施。したがって「5.3へ上げたせいでV08モデルが変質/消失した」とする根拠はない。
+- **V25を回収**：旧木の樹冠横幅を承認した基準系。run [44444418918](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44444418918)、artifact ID **14493091411**、有効な約69MB ZIPのダウンロード成功。 `nature/tree_mature_photo_v25/tree_mature_photo_v20.glb` (29,903,796 bytes) と同名Blend (20,600,426 bytes)、angle/front/side/top PNG、manifest。加えて `nature/tree_mature/tree_mature.glb` (9,342,628 bytes) とBlend (4,017,106 bytes) の旧元モデルも入っている。
+- **V27も回収済み**：run [44447197961](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44447197961)、artifact ID **14494297032**、 `nature/tree_mature_photo_v27/tree_mature_photo_v20.glb` (29,946,288 bytes) とBlend (20,607,675 bytes)、PNG。このV27が624葉束V08の祖先。
+- **V28も保管先特定**：run [44448510813](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448510813)、artifact ID **14495459843** が現在有効。
+- V25/V27はいずれも元の木データを保存しており、新しいV31への移行で上書きされていない。
+- 重要：V25/V27/V28は**624枚葉束V08そのものではない**。V08に使った6枚の独自画像ファイルと葉束の一意な配置・縮小・間引きデータは、依然回収できていない。バイト同一の「完全復旧」は未達。
+- 2026-11-20、旧V25の実レンダリングと回収済みV27・V31実レンダリングを同一一覧に整理。原本ZIPは会話用アーティファクトに回収し、SHA/原本を保持。全て未承認素材であり、正式フォルダへは昇格しない。
