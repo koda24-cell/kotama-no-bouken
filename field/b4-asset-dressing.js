@@ -20,9 +20,9 @@ export const B4_PROP_REGISTRY = {
   b4p_tools_scatter: { ready: false, themes: { mine: 1.0, deposit: 1.1 }, radius: 0.55, height: 0.3, scale: [0.95, 1.05] },
   b4p_dragon_ore_cluster: { ready: true, themes: { deposit: 2.2, dragon: 0.5 }, radius: 0.75, height: 1.3, scale: [0.8, 1.25], tris: 5804, light: { y: 0.35, color: 0xff3a12, intensity: 1.4, range: 3.6 } },
   b4p_ore_vein_wall: { ready: true, wall: true, themes: { deposit: 2.0, dragon: 0.4 }, radius: 1.25, height: 2.1, y: 0.15, scale: [0.9, 1.1], tris: 7728, light: { y: 1.0, z: 0.4, color: 0xff4a18, intensity: 1.3, range: 3.5 } },
-  b4p_rock_rubble: { ready: false, themes: { deposit: 1.4, dragon: 0.7, plain: 0.5 }, radius: 0.9, height: 0.8, scale: [0.8, 1.2] },
-  b4p_basalt_columns: { ready: false, themes: { deposit: 1.0, plain: 0.6 }, radius: 0.7, height: 2.2, scale: [0.85, 1.15] },
-  b4p_claw_rock: { ready: false, wall: true, themes: { dragon: 1.6 }, radius: 0.35, height: 1.4, scale: [0.9, 1.1] },
+  b4p_rock_rubble: { ready: true, themes: { deposit: 1.4, dragon: 0.8, plain: 0.9, mine: 0.4 }, radius: 0.8, height: 0.55, scale: [0.8, 1.2], tris: 5290 },
+  b4p_basalt_columns: { ready: true, themes: { deposit: 1.0, plain: 1.0, dragon: 0.4 }, radius: 0.8, height: 2.2, scale: [0.85, 1.15], tris: 3116 },
+  b4p_claw_rock: { ready: true, wall: true, themes: { dragon: 1.8, deposit: 0.2 }, radius: 1.0, height: 1.3, scale: [0.95, 1.2], tris: 4004, light: { y: 0.6, z: 0.6, color: 0xff3a10, intensity: 0.8, range: 2.8 } },
   b4p_dragon_scale: { ready: false, themes: { dragon: 1.2, deposit: 0.3 }, radius: 0.4, height: 0.15, scale: [0.9, 1.1] },
   b4p_charred_stump: { ready: false, themes: { dragon: 0.9 }, radius: 0.45, height: 1.2, scale: [0.9, 1.1] },
   b4p_egg_shells: { ready: false, themes: { dragon: 0.8 }, radius: 0.5, height: 0.5, scale: [0.9, 1.1] },
@@ -60,7 +60,8 @@ function loadModel(key, url, opts = {}) {
         material.needsUpdate = true;
       }
       if (opts.tint && material.color) material.color.multiplyScalar(opts.tint);
-      if (material.emissiveMap) material.emissiveIntensity = Math.max(material.emissiveIntensity, 2.2);
+      if (material.emissiveMap) material.emissiveIntensity = opts.emissive ?? Math.max(material.emissiveIntensity, 2.2);
+      if (opts.tintRGB && material.color) material.color.multiply(new THREE.Color(...opts.tintRGB));
       material.userData.b4PropCached = true;
       let merged = null;
       if (geos.length > 1) {
@@ -77,7 +78,7 @@ function loadModel(key, url, opts = {}) {
   }).catch(err => { console.warn('[b4-dressing] missing', key, err?.message); return null; }));
   return cache.get(key);
 }
-const loadProp = id => loadModel(id, `${BASE}${id}.glb`);
+const loadProp = (id, opts) => loadModel(id, `${BASE}${id}.glb`, opts);
 
 function instance(group, owned, asset, matrices, name) {
   for (const m of asset.meshes) {
@@ -275,7 +276,8 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   }
   // ---- rock-face overlays: GPT V33 magma basalt (LOD) on part of the wall faces, denser in deposit/dragon zones ----
   if (OVERLAY_READY && faces.length) {
-    const rocks = (await Promise.all(OVERLAY_IDS.map(loadProp))).filter(Boolean);
+    // panels sit right beside the camera: warmer albedo to match the volcanic wall boxes, joint lava kept modest
+    const rocks = (await Promise.all(OVERLAY_IDS.map(id => loadProp(id, { tintRGB: [0.95, 0.72, 0.6], emissive: 0.9 })))).filter(Boolean);
     if (rocks.length && !isStale()) {
       const per = rocks.map(() => []);
       // budget: ~64 panels (≈340k tris) per floor, deposit/dragon zones first
