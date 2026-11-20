@@ -1,7 +1,7 @@
 name: Shared Rigid GLB LOD Review
 on:
   push:
-    branches: [feature/gpt-shared-3d-optimization-actions-20261117, feature/shared-blender53-migration-wave2-20261119]
+    branches: [feature/gpt-shared-3d-optimization-actions-20261117]
     paths:
       - tools/3d-performance/build_rigid_lod_review.py
       - .github/workflows/shared-rigid-lod-review.yml

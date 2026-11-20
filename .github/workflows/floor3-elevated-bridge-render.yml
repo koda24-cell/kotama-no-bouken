@@ -1,7 +1,7 @@
 name: Floor3 Elevated Bridge Modular Render
 on:
   push:
-    branches: [feature/floor3-elevated-ruin-tiles-20261114, feature/shared-blender53-migration-wave2-20261119]
+    branches: [feature/floor3-elevated-ruin-tiles-20261114]
     paths:
       - 'tools/floor3/elevated_bridge/**'
       - '.github/workflows/floor3-elevated-bridge-render.yml'

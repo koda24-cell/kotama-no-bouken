@@ -2,7 +2,6 @@ name: B2 Ruined Aqueduct Blender Docker
 on:
   push:
     branches:
-      - feature/shared-blender53-migration-wave2-20261119
       - feature/b2-ruined-aqueduct-20261112
   workflow_dispatch:
 permissions:

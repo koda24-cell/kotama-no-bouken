@@ -3,7 +3,6 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/shared-blender53-migration-wave2-20261119
       - feature/floor2-frozen-waterfall-open-cavern-20261112
     paths:
       - 'tools/floor2/waterfall/**'
