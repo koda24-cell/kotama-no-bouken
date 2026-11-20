@@ -4,7 +4,7 @@ on:
     branches: [feature/gpt-b2-waterwheel-lower-crossbeam-v01-20261120]
     paths:
       - 'tools/b2-waterwheel-lower-crossbeam/**'
-      - '.github/workflows/b2-waterwheel-lower-crossbeam-v02.yml'
+      - '.github/workflows/b2-waterwheel-lower-crossbeam-v01.yml'
   workflow_dispatch:
 permissions:
   contents: read
