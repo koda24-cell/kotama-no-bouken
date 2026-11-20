@@ -1,6 +1,6 @@
 {
   "asset": "b4p_claw_rock",
-  "version": "v5",
+  "version": "v6",
   "blender": "4.2.3 LTS",
   "triangles": 4004,
   "budget_triangles": 6000,
@@ -25,7 +25,7 @@
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_claw_rock.glb",
-  "glb_bytes": 945404,
+  "glb_bytes": 952204,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -48,16 +48,16 @@
     41
   ],
   "sha256": {
-    "b4p_claw_rock.glb": "db4429e00aff42dac80a38a4c03c1f7e0006334d1b708f86f023f26d95a287c7",
-    "b4p_claw_rock_volcanic_front.png": "64b8c0b5dfb4286a5225861bffa9fd3e11609559ebe74596e4d95c8b4628c331",
-    "b4p_claw_rock_volcanic_side.png": "bf6bfa2518ee70b474c81e7891497956ead61239c71ead024d18d9a95f609740",
-    "b4p_claw_rock_volcanic_angle.png": "d6fbf9573f53846f29dc5e703feedc6118c6e2403d54bdaf596572083fc5ef0c",
-    "b4p_claw_rock_volcanic_top.png": "a3487e8968cd5b9724fd673c0050a3c1b862c594f8f9b580736a622b290a0083",
-    "b4p_claw_rock_volcanic_close.png": "12be98e92911be1857efdf6cff013bb351f1d8ee84b07df689ed0dba2df24fe9",
-    "b4p_claw_rock_volcanic_back.png": "cb735d07d7eaa2ecb353fbf1acec2960601f01c7b73da00388a9dea22dd9511e",
-    "b4p_claw_rock_studio_front.png": "76bcb47f6f7fd17a90375fae1063508fe6097b7eb924c4215d81bc5b64bd81ce",
-    "b4p_claw_rock_studio_angle.png": "e1534553664e035d4e180cb12a2cefd5d55d8449f3c9452ad3bc415618437ce3",
-    "b4p_claw_rock_studio_scale.png": "639ff97ef967557d53ce030ec3abd2ac190f9464da4d64c2b3604beae22abd66"
+    "b4p_claw_rock.glb": "4ba8ec7cd15207702080f122b2c03264d01558dacda30df752f6359439c6184b",
+    "b4p_claw_rock_volcanic_front.png": "ccf3f93e4f83b3c67df735b695b3d67d0416f98c67c9d08c99973c30a755ff70",
+    "b4p_claw_rock_volcanic_side.png": "91ceecfa73cfe6f38613c3997dbd6d9e86fe83a9ac6c67887f8361fb3dede7e2",
+    "b4p_claw_rock_volcanic_angle.png": "800971ee58e5529bfe5cdbb8fcc0db43209dbcb10a020233aef3d986f735ca54",
+    "b4p_claw_rock_volcanic_top.png": "c1205d3984129de73865af3451f0e279804c144b49ae148b0badf35368c76989",
+    "b4p_claw_rock_volcanic_close.png": "043ff6b695fc6aa4226cdbb3a33a4eddfaadd68bcd4bebb12cfc0c047c2adff7",
+    "b4p_claw_rock_volcanic_back.png": "c80ecbb6e97d4994aa9a900f32ddaf6accb4a0aa854f9b6e7c453b63db29e1d1",
+    "b4p_claw_rock_studio_front.png": "5ce77ebee3d63edbb03ab3f23b8abcc755a98c681d9dd521696aa1b9f27fa1fc",
+    "b4p_claw_rock_studio_angle.png": "4ba84d40393bb0cec1c0d4281440bdbd22445d6a492155e403e6aec9dd28aa50",
+    "b4p_claw_rock_studio_scale.png": "79f303e400d9fd63dfe013f35fd6de6b3af3084838d3f7cb26e1f4d2ac66d16f"
   },
   "renders": [
     "b4p_claw_rock_volcanic_front.png",
@@ -72,7 +72,47 @@
   ],
   "samples": 96,
   "notes": "竜の爪痕の岩板。3本の深い溝（縁の欠け、底は赤黒く焼けて最深部だけ細い赤熱）。",
-  "game_lights": [],
+  "game_lights": [
+    {
+      "pos_blender_zup": [
+        -0.24215155839920044,
+        -0.14192774891853333,
+        0.8477985262870789
+      ],
+      "watts": 2.0,
+      "color": [
+        1.0,
+        0.25,
+        0.07
+      ]
+    },
+    {
+      "pos_blender_zup": [
+        -0.01819603145122528,
+        -0.1104494035243988,
+        0.9557242393493652
+      ],
+      "watts": 2.0,
+      "color": [
+        1.0,
+        0.25,
+        0.07
+      ]
+    },
+    {
+      "pos_blender_zup": [
+        0.08953002095222473,
+        -0.0597202330827713,
+        1.1296528577804565
+      ],
+      "watts": 2.0,
+      "color": [
+        1.0,
+        0.25,
+        0.07
+      ]
+    }
+  ],
   "approval": "NOT_APPROVED",
   "design": "docs/3d/B4_PROPS_DESIGN.md"
 }
