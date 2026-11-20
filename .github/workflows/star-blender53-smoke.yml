@@ -22,9 +22,12 @@ jobs:
           blender --version | head -n 2
           clamscan --version
           blender -b --factory-startup --python-expr 'import bpy; assert bpy.app.version[:2] == (5,3), bpy.app.version_string'
+      - name: Update ClamAV definitions
+        shell: bash
+        run: bash tools/security/clamav_scan_gate.sh update qa/star-smoke
       - name: Scan source
         shell: bash
-        run: clamscan --infected --recursive tools/star-smoke
+        run: bash tools/security/clamav_scan_gate.sh scan tools/star-smoke qa/star-smoke/source-scan.log
       - name: Render star in Blender 5.3
         shell: bash
         env:
@@ -33,7 +36,7 @@ jobs:
       - name: Scan and verify outputs
         shell: bash
         run: |
-          clamscan --infected --recursive render-output/star-smoke
+          bash tools/security/clamav_scan_gate.sh scan render-output/star-smoke qa/star-smoke/output-scan.log
           for f in star.glb star.blend front.png side.png angle.png manifest.json; do test -s "render-output/star-smoke/$f" || exit 1; done
       - uses: actions/upload-artifact@v4
         if: always()
