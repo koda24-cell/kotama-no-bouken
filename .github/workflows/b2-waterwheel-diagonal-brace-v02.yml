@@ -1,7 +1,7 @@
 name: B2 Single Diagonal Oak Brace V02 Blender 5.3
 on:
   push:
-    branches: [feature/gpt-b2-waterwheel-diagonal-oak-brace-v02-20261120]
+    branches: [feature/gpt-b2-waterwheel-diagonal-oak-brace-v01-20261120]
     paths:
       - 'tools/b2-waterwheel-diagonal-brace/**'
       - '.github/workflows/b2-waterwheel-diagonal-brace-v02.yml'
