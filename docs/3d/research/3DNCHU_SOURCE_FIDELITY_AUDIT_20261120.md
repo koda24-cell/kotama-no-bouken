@@ -66,3 +66,13 @@ Zstandardを解凍してBlendヘッダーを確認。両方のファイルのバ
 - 現在の実行コンテナに `blender` と `clamscan` がなく、apt取得もタイムアウトしたため、ClamAV・Blender 5.3での実際のファイル読み込み・レンダリングは未実施。
 - 研究用の読み取り専用インスペクター `tools/tech-research/inspect_original_blend.py` を追加。**Python構文チェック済み**。実行時は `blender -b --disable-autoexec <source.blend> --python tools/tech-research/inspect_original_blend.py`、原本は隔離し再配布しない。検査出力JSONに作者由来の外部ファイルパスが含まれる可能性があるため公開前に精査する。
 - **次のゲート**: ClamAV実検査→Blender 5.3原本読込→ノードリンクと外部依存の検査→Eeveeレンダー→原本と比較。未実施の段階を成功と扱わない。
+
+## 2026-11-20 Blender 5.2 新形式のブロック完全性検査（重要訂正）
+
+公式Blenderのファイル形式仕様では5.0以降、17バイトヘッダー `BLENDER17-01v0502` と32バイトのLargeBHead8を使用する。旧12バイトヘッダーで異常とした一時判定は**誤り・撤回**。出典: https://github.com/blender/blender/blob/main/source/blender/blenloader_core/BLO_core_blend_header.hh
+
+ローカルのZstandard展開済み原本を新形式に合わせて全ブロック走査し、次を確認。
+- `Lassyla_Material.blend`: **2,739ブロック**、OB 5、ME 3、MA 3、NT 1、IM 2、DNA1 1、ENDB 1。
+- `Palm_Tree_Demo.blend`: **7,599ブロック**、OB 34、ME 26、MA 10、NT 7、IM 2、DNA1 1、ENDB 1。
+- 両方ともブロック長はファイル範囲内、ENDBまで完全走査、**余剰バイト0・構造パースエラー0**。
+- これはファイル構造の整合性であり、Blenderで開けること、シェーダーが正常に機能すること、ウイルスがないことは保証しない。ClamAV実スキャン・Blender 5.3読み込み・レンダリングは未実施。前回の「5.0.2」表記も誤りで、ヘッダーは**5.2形式**。
