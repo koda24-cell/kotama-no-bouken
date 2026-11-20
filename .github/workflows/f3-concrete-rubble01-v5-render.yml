@@ -49,7 +49,7 @@ jobs:
               if name.endswith('.glb'):
                   assert d[:4]==b'glTF' and struct.unpack_from('<I',d,8)[0]==len(d)
                   n=struct.unpack_from('<I',d,12)[0];g=json.loads(d[20:20+n])
-                  assert len(g.get('meshes',[]))==2,('Expected 1 slab + 1 batched aggregates mesh',len(g.get('meshes',[])))
+                  assert len(g.get('meshes',[]))==3,('Expected 2 concrete material groups + 1 aggregate batch',len(g.get('meshes',[])))
                   assert any('F3_CONCRETE_RUBBLE01_V5' in x.get('name','') for x in g.get('nodes',[]))
                   assert not any('Cube' in x.get('name','') or 'BACKDROP' in x.get('name','') for x in g.get('nodes',[]))
               rec[name]={'bytes':len(d),'sha256':hashlib.sha256(d).hexdigest()}
