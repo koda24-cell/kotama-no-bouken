@@ -18,3 +18,10 @@ Continue knight series on top of culet V1 review branch, retaining sallet V22, b
 
 ### Art evaluation
 Compare frontal taper, plate overlap, side wrap, off-centre keel and roughness with V6/V22. Next work: assembly render fauld V2 + tassets V1, then improve without overwriting original generator.
+
+## Verified technical render (2026-11-20)
+- Initial run [#44682381179](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44682381179) failed at Blender 5.3 version-check regex escaping (before the Blender scene ran). Preserved the failure for history; corrected the check without touching old models.
+- Subsequent [#44682515055](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44682515055) **SUCCESS** for Blender 5.3 verification, actual six-view Cycles render, GLB/Blend/PBR + manifest hash checks, ClamAV input/output scan and temporary artifact upload.
+- Same run PNG-only publisher **SUCCESS**. Actual `render-preview/run-44682515055-1` branch inspected: front.png, left.png, right.png, angle.png, back.png, top.png and review-manifest.json. No GLB or Blend were copied into the preview branch.
+- [Front](https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/render-preview/run-44682515055-1/front.png) / [Angle](https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/render-preview/run-44682515055-1/angle.png) / [Side](https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/render-preview/run-44682515055-1/left.png) / [Back](https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/render-preview/run-44682515055-1/back.png).
+- **Artistic quality not independently inspected in Blender in this chat**. Numbers and links alone do not prove silhouette, seam, or patina acceptance; obtain user visual review from actual PNGs and then plan a joined fauld/tasset test.
