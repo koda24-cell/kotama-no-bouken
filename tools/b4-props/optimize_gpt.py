@@ -51,25 +51,34 @@ def import_high(path):
     for o in list(bpy.data.objects):
         if o.type != "MESH":
             bpy.data.objects.remove(o, do_unlink=True)
-    # 落下中の破片・火の粉など小さな離れた塊を除く（LODでは点になるだけで、ベイクの邪魔になる）
-    bpy.ops.object.select_all(action="DESELECT")
-    hi.select_set(True)
-    bpy.context.view_layer.objects.active = hi
-    bpy.ops.mesh.separate(type="LOOSE")
-    parts = [o for o in bpy.context.selected_objects]
-    total = sum(len(o.data.vertices) for o in parts)
-    keep = [o for o in parts if len(o.data.vertices) >= max(60, total * 0.0004)]
-    for o in parts:
-        if o not in keep:
-            bpy.data.objects.remove(o, do_unlink=True)
-    bpy.ops.object.select_all(action="DESELECT")
-    for o in keep:
-        o.select_set(True)
-    bpy.context.view_layer.objects.active = keep[0]
-    bpy.ops.object.join()
-    hi = bpy.context.view_layer.objects.active
-    hi.name = "HIGH"
-    C.log(f"kept {len(keep)}/{len(parts)} loose parts")
+    # 落下中の破片・火の粉など小さな離れた塊を除く（separate LOOSE は数万オブジェクトになり極端に遅いので bmesh で連結成分を数える）
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(hi.data)
+    bm.verts.ensure_lookup_table()
+    seen = set()
+    comps = []
+    for v in bm.verts:
+        if v.index in seen:
+            continue
+        stack = [v]
+        seen.add(v.index)
+        comp = []
+        while stack:
+            u = stack.pop()
+            comp.append(u)
+            for e in u.link_edges:
+                w = e.other_vert(u)
+                if w.index not in seen:
+                    seen.add(w.index)
+                    stack.append(w)
+        comps.append(comp)
+    total = len(bm.verts)
+    small = [c for c in comps if len(c) < max(60, total * 0.0004)]
+    bmesh.ops.delete(bm, geom=[v for c in small for v in c], context="VERTS")
+    bm.to_mesh(hi.data)
+    bm.free()
+    C.log(f"removed {len(small)}/{len(comps)} small islands")
     # 色が書き出されていない（白）の玄武岩マテリアルを、B4の配色の風化玄武岩に差し替える
     rock = basalt_material()
     for i, m in enumerate(hi.data.materials):
