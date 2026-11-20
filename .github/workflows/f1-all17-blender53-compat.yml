@@ -35,6 +35,8 @@ jobs:
         run: |
           bash tools/security/clamav_scan_gate.sh scan tools/f1-sacred-forest/common.py qa/security/common.log
           bash tools/security/clamav_scan_gate.sh scan tools/f1-sacred-forest/assets/build_${{ matrix.asset }}.py qa/security/asset.log
+      - name: Trust checkout ownership inside Docker
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Render GLB and four views
         env:
           F1_RENDER_RES: '480'
@@ -45,14 +47,19 @@ jobs:
           mkdir -p /tmp/blender-home
           HOME=/tmp/blender-home blender -b -t 3 --python tools/f1-sacred-forest/assets/build_${{ matrix.asset }}.py
       - name: Validate generated GLB and PNG evidence
+        env:
+          ASSET_NAME: ${{ matrix.asset }}
         run: |
           python3 - <<'PY'
           import json
           from pathlib import Path
           root=Path('assets/3d/dungeons/b1_sacred_forest_candidates')
-          files=list((root/'metrics').glob('*.json'))
-          assert len(files)==1,files
-          m=json.loads(files[0].read_text())
+          import os
+          asset=os.environ['ASSET_NAME']
+          files=[p for p in (root/'metrics').glob('*.json') if p.stat().st_mtime >= (root/'renders').stat().st_mtime - 3600]
+          matches=[p for p in files if asset in p.stem]
+          assert len(matches)==1,matches
+          m=json.loads(matches[0].read_text())
           assert m['approvalStatus']=='pending_visual_review'
           assert m['renderedFrom']=='reimported GLB'
           assert len(m['renders'])==4
