@@ -1,7 +1,7 @@
-# 全制作ブランチ向け Blender 5.3 共通入口（導入候補）
+# 全制作ブランチ向け Blender 5.3 共通入口（実行検証済み・段階展開中）
 
 ## 現状
-Blender 5.3.0 + ClamAV 固定Dockerイメージは既存の成功実績あり。新しい `.github/workflows/shared-blender53-render.yml` は共通実行の **未検証候補**。既存制作ジョブは変更しない。
+Blender 5.3.0 + ClamAV 固定Dockerイメージは既存の成功実績あり。`.github/workflows/shared-blender53-render.yml` は **2026-11-20 run #44660839692で別ブランチからの呼び出し、Blender 5.3実レンダリング、入力・出力ClamAV、成果物QA、Artifact保存が全成功**。ただし既存制作ジョブは未変更で、全ブランチ適用済みではない。
 
 ## 重要なGitHub Actionsの制約
 - **全ブランチへの一括適用は、このファイルを一つのブランチに置いただけでは成立しない。**
@@ -32,9 +32,25 @@ jobs:
 ```
 
 ## 検証順序
-1. このDraft PRをレビューして `development` に統合する（ユーザー承認前は統合しない）。
-2. 一つの検証用callerで実際にpush起動し、5.3.0/ClamAV/PNG/GLB/Artifactを確認する。
+1. **完了**: PR #652を `development` に統合。QA修正PR #653・#654も統合済み。
+2. **実行成功**: 別ブランチ `test/shared-blender53-gateway-smoke-20261120` のpushで [run #44660839692](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44660839692) 全工程成功。実際に生成したのはPNG・Blend・JSONで、**GLB出力の共通ゲートウェイ検証は未実施**。Artifact #14596140858。PNGの美観確認は別途必要。
 3. 成功後に各既存制作ブランチを調査して対応するcallerを追加する。未検証の古いワークフローは保持。
 4. 新規ブランチはdevelopmentから作成し、制作開始時にcallerを配置する運用をAGENTSに適用する。
 
 実証済みの別ワークフロー: R01 run https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44655908253
+
+## 既存ワークフローの実査（2026-11-20）
+
+| 既存ワークフロー | 5.3 Docker確認 | 共通ゲートウェイへの直接置換 | 理由 |
+| --- | --- | --- | --- |
+| `b2-frozen-waterwheel-render.yml` | 確認 | **不可・要アダプタ** | Node 22/Three.jsで実シーンGLBを事前生成し、ClamAVでインポート前検査する多段工程 |
+| `floor3-elevated-bridge-render.yml` | 確認 | **不可・要アダプタ** | CC0テクスチャ取得・検査、複数Blenderスクリプト、独自出力ディレクトリが必要 |
+| `b2-ruined-aqueduct-render.yml` | 確認 | **候補・要実検証** | 単一Blender Pythonスクリプト。出力先を`OUTPUT_DIR`に対応させる必要がある |
+
+**移行方針**: すでに5.3を使う上記既存ジョブはそのまま稼働可能に保ち、共通ゲートウェイへの強制置換はしない。新規単一スクリプト型ジョブから採用し、複雑な工程には別途共通アダプタを設計する。既存ブランチへの反映はブランチ固有のコード・PR・成果物の確認後。
+
+## 実モデルでの共通ゲートウェイ検証（2026-11-20）
+
+- **成功**: [B2古代水路 run #44661269090](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44661269090)。Blender 5.3、ClamAV入力/出力、成果物QA、Artifactアップロード全成功。
+- Artifact: `shared-blender53-NOT-APPROVED-44661269090`（約5.6MB）。既存 `tools/b2-render/build-aqueduct.py` を複製し、`OUTPUT_DIR` だけ対応した `tools/b2-render/build-aqueduct-shared-qa.py` を検証ブランチに配置。元モデル・Claudeの最新版は変更していない。
+- この検証は**共通環境の互換性**を証明するもので、Claude制作の最新B2モデルと同一であることや、視覚的品質の承認を意味しない。次に最新のClaude作業ブランチ・PRを特定し、モデルを維持したまま適用する。
