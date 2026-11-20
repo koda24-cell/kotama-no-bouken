@@ -35,17 +35,30 @@ const originalFog=await createOriginalB5FogRing(THREE,scene,{radius:145,height:8
 const windowGroup=new THREE.Group();windowGroup.name='B5_VISIBLE_DISTANT_WINDOWS';scene.add(windowGroup);
 let ws=77519;const wr=()=>((ws=(Math.imul(ws,1664525)+1013904223)>>>0)/4294967296);
 const windowGeo=new THREE.PlaneGeometry(1,1);
+// V12: two-layer soft emission halo around windows, preserving their silhouettes.
+const glowCanvas=document.createElement('canvas');glowCanvas.width=64;glowCanvas.height=64;
+const gc=glowCanvas.getContext('2d'),gg=gc.createRadialGradient(32,32,1,32,32,32);
+gg.addColorStop(0,'rgba(255,205,155,.72)');gg.addColorStop(.28,'rgba(238,143,192,.30)');gg.addColorStop(1,'rgba(150,65,155,0)');
+gc.fillStyle=gg;gc.fillRect(0,0,64,64);
+const glowTexture=new THREE.CanvasTexture(glowCanvas);
+const glowMaterial=new THREE.MeshBasicMaterial({map:glowTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide,fog:false,blending:THREE.AdditiveBlending});
 const windowMats=[new THREE.MeshBasicMaterial({color:0xf6a36c,transparent:true,opacity:.98,depthWrite:false,side:THREE.DoubleSide,fog:false}),new THREE.MeshBasicMaterial({color:0xce7cb8,transparent:true,opacity:.9,depthWrite:false,side:THREE.DoubleSide,fog:false})];
 const windows=[];
 for(let face=0;face<4;face++)for(let patch=0;patch<28;patch++){
- const center=(wr()-.5)*265,base=-5+wr()*33,cols=4+Math.floor(wr()*11),rows=3+Math.floor(wr()*9),dx=1.0+wr()*1.8,dy=1.1+wr()*1.6;
+ const center=(wr()-.5)*265,base=-5+wr()*33,cols=4+Math.floor(wr()*11),rows=3+Math.floor(wr()*9),dx=1.65+wr()*2.1,dy=1.7+wr()*2.0;
  for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
   if(wr()<.56 || (col>cols*.5 && wr()<.35))continue;
   const offset=center+(col-cols/2)*dx, h=base+row*dy;
   const mesh=new THREE.Mesh(windowGeo,windowMats[wr()<.65?0:1]);
   mesh.position.set(face===1?143:face===3?-143:offset,h,face===0?-143:face===2?143:offset);
   mesh.rotation.y=face*Math.PI/2;
-  mesh.scale.set(.35+wr()*.55,.4+wr()*.7,1);
+  mesh.scale.set(.85+wr()*.9,1.0+wr()*1.1,1);
+  const glow=new THREE.Mesh(windowGeo,glowMaterial);
+  glow.position.copy(mesh.position);glow.rotation.copy(mesh.rotation);
+  glow.position.x+=(face===1?-.09:face===3?.09:0);
+  glow.position.z+=(face===0?.09:face===2?-.09:0);
+  glow.scale.set(mesh.scale.x*3.5,mesh.scale.y*3.1,1);
+  windowGroup.add(glow);mesh.userData.glow=glow;
   mesh.userData.phase=wr()*6.28;mesh.userData.speed=.25+wr()*1.2;
   windowGroup.add(mesh);windows.push(mesh);
  }
@@ -73,7 +86,7 @@ floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
 let yaw=0,pitch=0,dragging=false,px=0,keys=new Set();
 function renderView(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;backdrop.update(camera);originalFog.update(performance.now()/1000);pathMist.update(performance.now()/1000,camera);sparks.update(performance.now()/1000,camera.position);
 document.querySelector('#status').textContent='方位 '+((yaw*180/Math.PI%360+360)%360).toFixed(0)+'° / 位置 X '+camera.position.x.toFixed(1)+' Z '+camera.position.z.toFixed(1);
-for(const w of windows)w.visible=Math.sin(performance.now()*.001*w.userData.speed+w.userData.phase) > -.75;
+for(const w of windows){w.visible=Math.sin(performance.now()*.001*w.userData.speed+w.userData.phase) > -.75;if(w.userData.glow)w.userData.glow.visible=w.visible;}
 renderer.render(scene,camera)}
 document.querySelectorAll('[data-angle]').forEach(b=>b.onclick=()=>{yaw=Number(b.dataset.angle)*Math.PI/180;renderView()});
 document.querySelector('#left').onclick=()=>{yaw-=Math.PI/12;renderView()};
