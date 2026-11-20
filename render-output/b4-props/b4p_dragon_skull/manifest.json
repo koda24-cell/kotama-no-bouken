@@ -1,8 +1,8 @@
 {
   "asset": "b4p_dragon_skull",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
-  "triangles": 14683,
+  "triangles": 14816,
   "budget_triangles": 18000,
   "materials": [
     "b4p_dragon_skull_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    2.965,
-    1.645,
-    0.83
+    3.052,
+    1.601,
+    0.972
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_dragon_skull.glb",
-  "glb_bytes": 2896504,
+  "glb_bytes": 2656952,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -49,16 +49,16 @@
     13
   ],
   "sha256": {
-    "b4p_dragon_skull.glb": "d0fbedf0ecea4a785acbcf7163aaf5b32207e509081e9547cc44feb4b481856f",
-    "b4p_dragon_skull_volcanic_front.png": "6e69c020bfeab868b15ae9ebceacd9407650853b121ed9399a141170a7e4bbd0",
-    "b4p_dragon_skull_volcanic_side.png": "f672f22809d095ffd32d4edf12e7e4326f813c3693feede2afe423cfaf9ce3e2",
-    "b4p_dragon_skull_volcanic_angle.png": "0e9d87a9b257ff142e4e563d8a13e41e05cbd42d0447175f8dc3a2a79d5a3d66",
-    "b4p_dragon_skull_volcanic_top.png": "9c21b651484c7df00c83cca676da735cac1b5ea180aa52651436c605811c3da4",
-    "b4p_dragon_skull_volcanic_close.png": "27ee5abdc145e8404207319bf5482fff5f173347482be0a95d77e0c55ab080e6",
-    "b4p_dragon_skull_volcanic_back.png": "c86d52c41d16f43925023afa94aef945b2a2d5a82f3343437352243d487dab69",
-    "b4p_dragon_skull_studio_front.png": "7f909cde2dc97a468d2780bccf69eee94a56a1bfd0902063f5301bc71ba547ee",
-    "b4p_dragon_skull_studio_angle.png": "248d3b7a9764071dc50c2985e6382ecb8b200a9a83498a8a7cd60cad7a65952e",
-    "b4p_dragon_skull_studio_scale.png": "9a1630c83a972aa5384049833e19764986041a5644b7e8668ab4931034402b48"
+    "b4p_dragon_skull.glb": "2735008f1c76175204bc01fe7e08fa57f90b85fe03c4d14ba18aa744816f297a",
+    "b4p_dragon_skull_volcanic_front.png": "3f637c17fa9cc937f14f7900db52e94e36acae4272d373c36098cade570b73a6",
+    "b4p_dragon_skull_volcanic_side.png": "f61d38718411eb17154a30df678f3c1e1b5aba4732313972b9835307dc22db7d",
+    "b4p_dragon_skull_volcanic_angle.png": "26666297536400b108f8ee51f418d980bdeefafc9617921226fd90725d97bcda",
+    "b4p_dragon_skull_volcanic_top.png": "04707c63bcd51d9d3a1203f2a7642df4a9d2efb2869834073ab52ae00572cd74",
+    "b4p_dragon_skull_volcanic_close.png": "922a632737fe949acde43873f11109f741d60b5b32662509da73015c98f07a5c",
+    "b4p_dragon_skull_volcanic_back.png": "9c42611fcdb2af5abe7e071d8fce7d0a1517fb598d99ea95ef6ff9faf592fea2",
+    "b4p_dragon_skull_studio_front.png": "cddb62c85638a60dfa439fd39f6857b331de70ed1d83d15d17cbeb609a9e9938",
+    "b4p_dragon_skull_studio_angle.png": "8c68645fe15652f52e89fe6483dd23cb5f5b78a7913dda06f4841d9bb60fb4c0",
+    "b4p_dragon_skull_studio_scale.png": "f20bf2faeebb52e3cd395c5d1c7d9dc0c21cae064c47fe143862a1b77b2f3eba"
   },
   "renders": [
     "b4p_dragon_skull_volcanic_front.png",
