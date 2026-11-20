@@ -34,6 +34,8 @@
 
 | `F3_GLASS_WEATHERING_ROUGHNESS_A_V5` | 第3層の廃墟窓ガラスA型中央大欠損用、枠沿いの埃/雨筋による粗さ | 256×256 PNG / non-color | V5/V6/V7で同一自作マップを再利用、UVベース。シームレス未検証 | 自作生成 `tools/floor3/broken_glass01/build_type_a_v5.py`、PR #565、[V7成功run #44465494696](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44465494696) | `431a4468faa0b6e64f3e166268c6239d4a9ec3d90dbf94136e011d79511c7c77` | Artifact #14502345703のPNG実体・SHA確認。バイナリのGit正式保存なし、アート未承認、ClamAV未実施 |
 
+| `F3_GENERATED_GLASS_DIRT_V10` | 第3層・ガラス破片01の汚れ・曇り／指紋・雨筋を含む画像生成テクスチャの軽量化版 | 128×128 PNG / non-color data（Base ColorとRoughnessに使用） | 小さな独立破片のUV投影、シームレスは未検証 | チャット生成元1254×1254 PNG SHA256 `c8937570b1be8541811a62cc0213584c085dc2276afbe5efa850f1c2d0babbd6` を縮小・16階調化。`tools/floor3/broken_glass01/build_detached_shard_dirt_v10.py`、PR #565、run #44644156219 | `c215878a23c6bfae3b96a77301c1599addd0566424bf544994cc082af716f185` | Artifact #14587893097から実PNG・GLB内埋込み確認。正式素材フォルダへ未昇格、ユーザー未承認、V10個別ClamAV未検証 |
+
 ## モデルとの関係・承認境界
 
 - 第3層の壁01 V4（段差剥離）はユーザーが造形を了承済み。候補GLBの検証時SHA-256: `44e995b1ee843ad3bffba078c532158011effef6d6245cd0bced9f25082a8981`。
