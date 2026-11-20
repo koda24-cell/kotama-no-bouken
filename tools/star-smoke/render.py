@@ -32,7 +32,7 @@ def point_light(name,loc,power):
  o=bpy.data.objects.new(name,data);bpy.context.collection.objects.link(o);o.location=loc
 point_light("Key",(1,-3,5),550);point_light("Fill",(-3,2,2),350)
 bpy.ops.object.camera_add();cam=bpy.context.object;bpy.context.scene.camera=cam
-scene=bpy.context.scene;scene.render.engine="BLENDER_EEVEE_NEXT"
+scene=bpy.context.scene;scene.render.engine="BLENDER_EEVEE"
 scene.render.resolution_x=640;scene.render.resolution_y=640;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG";scene.render.film_transparent=True
 for name,loc in [("front",(0,-0.01,5)),("side",(4,-0.01,0.25)),("angle",(2.5,-3,4))]:
