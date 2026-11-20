@@ -174,7 +174,7 @@ def build(variant, seed):
         cx, w, d, z1 = cols[k]
         zc = rnd.uniform(1.5, 2.2)
         sl = C.rock(f"crack_glow_{k}", 0.05, detail=1, rough=0.2, squash=(w * 9, 0.6, 0.35), seed=k + seed)
-        C.xform(sl, (cx, -d * 0.55, zc), (0, rnd.uniform(-20, 20), 0))
+        C.xform(sl, (cx, -0.31 - d * 1.0, zc), (0, rnd.uniform(-20, 20), 0))
         parts.append(C.assign(sl, lava))
     # 下層：崩れた岩の裾
     for i in range(rnd.randint(13, 17)):
@@ -216,7 +216,7 @@ def build(variant, seed):
             bm.faces.new(list(reversed(ring)))
             cr = C.obj_from_bm(bm, f"ore_{zz}_{j}", smooth=False)
             dirv = Vector((rnd.uniform(-0.6, 0.6), -1.0, rnd.uniform(-0.2, 0.9))).normalized()
-            C.place_on(cr, (gx + rnd.uniform(-0.05, 0.05), -d * rnd.uniform(0.2, 0.5), zz + rnd.uniform(-0.12, 0.12)), dirv, rnd.uniform(0, 6.28))
+            C.place_on(cr, (gx + rnd.uniform(-0.05, 0.05), -0.31 - d * rnd.uniform(0.3, 0.8), zz + rnd.uniform(-0.12, 0.12)), dirv, rnd.uniform(0, 6.28))
             parts.append(C.assign(cr, ore))
     name = f"b4p_basalt_wall_panel_{variant}"
     return C.finish(name, parts, version="v2", tex_res=1024, budget_tris=9000, refs=[30, 31, 33, 41],
