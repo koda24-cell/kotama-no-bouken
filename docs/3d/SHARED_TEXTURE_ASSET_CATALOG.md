@@ -36,6 +36,9 @@
 
 | `F3_GENERATED_GLASS_DIRT_V10` | 第3層・ガラス破片01の汚れ・曇り／指紋・雨筋を含む画像生成テクスチャの軽量化版 | 128×128 PNG / non-color data（Base ColorとRoughnessに使用） | 小さな独立破片のUV投影、シームレスは未検証 | チャット生成元1254×1254 PNG SHA256 `c8937570b1be8541811a62cc0213584c085dc2276afbe5efa850f1c2d0babbd6` を縮小・16階調化。`tools/floor3/broken_glass01/build_detached_shard_dirt_v10.py`、PR #565、run #44644156219 | `c215878a23c6bfae3b96a77301c1599addd0566424bf544994cc082af716f185` | Artifact #14587893097から実PNG・GLB内埋込み確認。正式素材フォルダへ未昇格、ユーザー未承認、V10個別ClamAV未検証 |
 
+| `F3_GLAZING_CLIP_PAINT_RUST_01` | 第3層窓ガラス押さえ金具01 塗膜剥離/局所錆のカラー画像 | 256×256 PNG / sRGB | 金属金具用UV、単独利用、タイル検証なし | Blender自作 `tools/floor3/glazing_clip01/build_v1.py`、PR #637、[run #44645562340](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44645562340) | `df8b1b5001f181a132ada7f75eb4576a5bb9df7275bbfe756dfcc31964a32080` | Artifact #14587778798で実PNGのSHA確認。正式GitのPNG未保存。造形未承認、固有ClamAV実検査なし |
+| `F3_GLAZING_CLIP_ROUGHNESS_01` | 第3層窓ガラス押さえ金具01 表面の荒れと酸化の非カラー粗さ画像 | 256×256 PNG / non-color | 金属金具用UV、カラーと同位置、タイル検証なし | Blender自作 `tools/floor3/glazing_clip01/build_v1.py`、PR #637、[run #44645562340](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44645562340) | `236d3d13eef346a9d5ec879f878dc35a74118cc17ab9379ea687c19abb70c7ad` | Artifact #14587778798で実PNGのSHA確認。正式GitのPNG未保存。造形未承認、固有ClamAV実検査なし |
+
 ## モデルとの関係・承認境界
 
 - 第3層の壁01 V4（段差剥離）はユーザーが造形を了承済み。候補GLBの検証時SHA-256: `44e995b1ee843ad3bffba078c532158011effef6d6245cd0bced9f25082a8981`。
