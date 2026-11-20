@@ -78,28 +78,38 @@ for(let face=0;face<4;face++)for(let panelIndex=0;panelIndex<2;panelIndex++){
  const atlas=document.createElement('canvas');atlas.width=1024;atlas.height=768;
  const ac=atlas.getContext('2d');ac.clearRect(0,0,1024,768);
  const rand=()=>wr();
- // A jagged, mostly dark ruined facade with broad windows, sparse enough to read from afar.
- ac.fillStyle='rgba(13,9,22,.78)';
- ac.beginPath();ac.moveTo(0,768);ac.lineTo(0,105+rand()*160);
- for(let x=0;x<=1024;x+=64){ac.lineTo(x,80+rand()*185);}
+ // V16: preserve original B5's torn luminous clusters; no window frames or crossbars.
+ // Dark silhouette remains subordinate to the original fog shader.
+ ac.fillStyle='rgba(12,8,23,.43)';
+ ac.beginPath();ac.moveTo(0,768);ac.lineTo(0,220+rand()*95);
+ for(let x=0;x<=1024;x+=32)ac.lineTo(x,195+rand()*170);
  ac.lineTo(1024,768);ac.closePath();ac.fill();
- for(let row=0;row<4;row++)for(let col=0;col<6;col++){
-  if(rand()<.43)continue;
-  const x=65+col*157+(rand()-.5)*22,y=215+row*122+(rand()-.5)*19;
-  const w=63+rand()*30,h=75+rand()*25;
-  ac.fillStyle='rgba(3,2,9,.94)';ac.fillRect(x-9,y-10,w+18,h+20);
-  const grad=ac.createLinearGradient(x,y,x+w,y+h);
-  const strength=.42+rand()*.33;
-  grad.addColorStop(0,'rgba(96,51,85,'+strength+')');
-  grad.addColorStop(.5,'rgba(191,122,108,'+strength+')');
-  grad.addColorStop(1,'rgba(65,36,72,'+strength+')');
-  ac.fillStyle=grad;ac.fillRect(x,y,w,h);
-  ac.strokeStyle='rgba(17,10,23,.85)';ac.lineWidth=5;
-  ac.strokeRect(x,y,w,h);
-  ac.beginPath();ac.moveTo(x+w*.5,y);ac.lineTo(x+w*.5,y+h);
-  ac.moveTo(x,y+h*.5);ac.lineTo(x+w,y+h*.5);ac.stroke();
-  ac.fillStyle='rgba(8,5,17,.28)';
-  for(let k=0;k<8;k++)ac.fillRect(x+rand()*w,y+rand()*h,3+rand()*14,3+rand()*12);
+ const clusters=2+Math.floor(rand()*2);
+ for(let cluster=0;cluster<clusters;cluster++){
+  const cx=150+rand()*710,cy=250+rand()*315,rx=100+rand()*125,ry=75+rand()*115;
+  for(let i=0;i<320;i++){
+   const x=cx+(rand()*2-1)*rx,y=cy+(rand()*2-1)*ry;
+   const nx=(x-cx)/rx,ny=(y-cy)/ry;
+   const torn=Math.sin(x*.047+cluster*3)*.18+Math.cos(y*.059+cluster)*.15;
+   if(nx*nx+ny*ny> .83+torn || rand()<.47)continue;
+   const w=4+rand()*18,h=3+rand()*16;
+   const v=rand(),alpha=.16+rand()*.48;
+   ac.fillStyle=v<.45?'rgba(215,121,96,'+alpha+')':v<.8?'rgba(151,64,130,'+alpha+')':'rgba(246,173,125,'+alpha+')';
+   ac.fillRect(x,y,w,h);
+  }
+  // Broad torn dark holes erase parts of each cluster.
+  for(let k=0;k<9;k++){
+   const hx=cx+(rand()*2-1)*rx*.85,hy=cy+(rand()*2-1)*ry*.8;
+   ac.fillStyle='rgba(11,7,22,.87)';
+   ac.beginPath();ac.ellipse(hx,hy,8+rand()*40,7+rand()*29,rand()*3,0,Math.PI*2);ac.fill();
+  }
+ }
+ // Purple haze veils portions of the light, like the approved B5 distant shader.
+ for(let k=0;k<12;k++){
+  const x=rand()*1024,y=190+rand()*520,rad=70+rand()*170;
+  const fog=ac.createRadialGradient(x,y,0,x,y,rad);
+  fog.addColorStop(0,'rgba(51,24,68,.26)');fog.addColorStop(1,'rgba(51,24,68,0)');
+  ac.fillStyle=fog;ac.fillRect(x-rad,y-rad,rad*2,rad*2);
  }
  const texture=new THREE.CanvasTexture(atlas);texture.colorSpace=THREE.SRGBColorSpace;
  const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:.78,depthWrite:false,side:THREE.DoubleSide,fog:true});
