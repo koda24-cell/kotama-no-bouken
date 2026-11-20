@@ -1,0 +1,89 @@
+{
+  "asset": "b4p_basalt_wall_panel_b",
+  "version": "v1",
+  "blender": "4.2.3 LTS",
+  "triangles": 2736,
+  "budget_triangles": 7000,
+  "materials": [
+    "b4p_basalt_wall_panel_b_mat"
+  ],
+  "bake": {
+    "res": 1024,
+    "emissive": true,
+    "maps": [
+      "basecolor",
+      "orm",
+      "normal",
+      "emissive"
+    ]
+  },
+  "bbox_m": [
+    4.051,
+    1.101,
+    4.02
+  ],
+  "origin": "bottom-center",
+  "up": "+Y (glTF)",
+  "glb": "b4p_basalt_wall_panel_b.glb",
+  "glb_bytes": 861076,
+  "cc0_textures": {
+    "rock_face_02_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "d777f2c9b598773c2143751c34913cf5eef0ae392af31fb73c28b98afab6fb7b"
+    },
+    "rock_face_02_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "a9dc200810f5488395fdc928b5a9441c007c33047d0375d946f33dcd2ff1c853"
+    }
+  },
+  "pinterest_refs": [
+    30,
+    31,
+    33,
+    41
+  ],
+  "sha256": {
+    "b4p_basalt_wall_panel_b.glb": "f272d02b6f8439e381525330d2a2dd483aa8f77ef783e94b36c620bb34c1fde5",
+    "b4p_basalt_wall_panel_b_volcanic_front.png": "9bbabfd3da23a28bd8c57cffcbfda54464a5a8333c1fdb34cece7678cb189a8a",
+    "b4p_basalt_wall_panel_b_volcanic_side.png": "3e4bfb00898f5a7c6751ea2941b3a095b5c89a4ad49a0b577625efd7f153d1dc",
+    "b4p_basalt_wall_panel_b_volcanic_angle.png": "b455d661cae00b1c5bf36b45ee9b0e66a2f0e010560d449eab3bbdb6a9e4e33f",
+    "b4p_basalt_wall_panel_b_volcanic_top.png": "80e35cd8ff5381b4a5743be86c905d55395b9bb2ce88c43531b5b1fc84928224",
+    "b4p_basalt_wall_panel_b_volcanic_close.png": "f21af4c850715de67fad10544de56161a5a124aedff29ebdbf01b3d321bea595",
+    "b4p_basalt_wall_panel_b_volcanic_back.png": "de63a55dd030a511f7c08deb15c23e904868608afad978d9afa8335fdadb10a7",
+    "b4p_basalt_wall_panel_b_studio_front.png": "e00957a8e4e41c641dea6c58904cc334abc8c8139ae2b5da482885f140ae5502",
+    "b4p_basalt_wall_panel_b_studio_angle.png": "1473d50034256227a258c96f06b2b65d4dc07b4fe6aae8294edaf80795f9aa10",
+    "b4p_basalt_wall_panel_b_studio_scale.png": "aa48d0648d1a50115655375572fc52ba87222d9312d8752ff85e6b27e7b8a799"
+  },
+  "renders": [
+    "b4p_basalt_wall_panel_b_volcanic_front.png",
+    "b4p_basalt_wall_panel_b_volcanic_side.png",
+    "b4p_basalt_wall_panel_b_volcanic_angle.png",
+    "b4p_basalt_wall_panel_b_volcanic_top.png",
+    "b4p_basalt_wall_panel_b_volcanic_close.png",
+    "b4p_basalt_wall_panel_b_volcanic_back.png",
+    "b4p_basalt_wall_panel_b_studio_front.png",
+    "b4p_basalt_wall_panel_b_studio_angle.png",
+    "b4p_basalt_wall_panel_b_studio_scale.png"
+  ],
+  "samples": 96,
+  "notes": "壁面パネル。中層の柱の隙間の奥で溶岩が光る。左右の端は張り出しを絞って隣とつなぐ。",
+  "game_lights": [
+    {
+      "pos_blender_zup": [
+        0.0,
+        -0.9,
+        1.6
+      ],
+      "watts": 30.0,
+      "color": [
+        1.0,
+        0.35,
+        0.1
+      ]
+    }
+  ],
+  "approval": "NOT_APPROVED",
+  "design": "docs/3d/B4_PROPS_DESIGN.md"
+}
