@@ -19,7 +19,7 @@ export const B4_PROP_REGISTRY = {
   b4p_barrel_broken: { ready: false, themes: { mine: 0.9 }, radius: 0.45, height: 0.9, scale: [0.95, 1.05] },
   b4p_tools_scatter: { ready: false, themes: { mine: 1.0, deposit: 1.1 }, radius: 0.55, height: 0.3, scale: [0.95, 1.05] },
   b4p_dragon_ore_cluster: { ready: true, themes: { deposit: 2.2, dragon: 0.5 }, radius: 0.75, height: 1.3, scale: [0.8, 1.25], tris: 5804, light: { y: 0.35, color: 0xff3a12, intensity: 1.4, range: 3.6 } },
-  b4p_ore_vein_wall: { ready: false, wall: true, themes: { deposit: 2.0 }, radius: 0.3, height: 2.2, scale: [0.9, 1.1] },
+  b4p_ore_vein_wall: { ready: true, wall: true, themes: { deposit: 2.0, dragon: 0.4 }, radius: 1.25, height: 2.1, y: 0.15, scale: [0.9, 1.1], tris: 7728, light: { y: 1.0, z: 0.4, color: 0xff4a18, intensity: 1.3, range: 3.5 } },
   b4p_rock_rubble: { ready: false, themes: { deposit: 1.4, dragon: 0.7, plain: 0.5 }, radius: 0.9, height: 0.8, scale: [0.8, 1.2] },
   b4p_basalt_columns: { ready: false, themes: { deposit: 1.0, plain: 0.6 }, radius: 0.7, height: 2.2, scale: [0.85, 1.15] },
   b4p_claw_rock: { ready: false, wall: true, themes: { dragon: 1.6 }, radius: 0.35, height: 1.4, scale: [0.9, 1.1] },
@@ -204,11 +204,14 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       const y0 = (R.y || 0) * (0.95 + 0.1 * hash(c.tx, c.ty, 816));
       tmp.position.set(x, y0, z); tmp.rotation.set(0, yaw, 0); tmp.scale.setScalar(s); tmp.updateMatrix();
       if (R.light && lights.length < 30) {
-        const L = { world: new THREE.Vector3(x, y0 + R.light.y * s, z), color: R.light.color, intensity: R.light.intensity, range: R.light.range, off: false };
+        const lz = R.light.z || 0;
+        const L = { world: new THREE.Vector3(x - c.dx * lz, y0 + R.light.y * s, z - c.dz * lz), color: R.light.color, intensity: R.light.intensity, range: R.light.range, off: false };
         lights.push(L); gLights.push(L);
       }
       return tmp.matrix.clone();
     });
+    // wall-mounted pieces: put the flat back (glTF min z) on the instance origin so it sits on the wall skin
+    if (R.wall) { const back = new THREE.Matrix4().makeTranslation(0, 0, -asset.box.min.z); mats.forEach(M => M.multiply(back)); }
     instance(group, owned, asset, mats, `b4:prop:${id}`);
     info.byId[id] = list.length; info.placed += list.length;
     for (const c of list) info.list.push({ id, tx: c.tx, ty: c.ty, dx: c.dx, dz: c.dz, t: +c.t.toFixed(2), x: c.tx * CELL + c.dx * sideFor(R, c.lateral) - c.dz * c.lateral, y: R.y || 0, z: c.ty * CELL + c.dz * sideFor(R, c.lateral) + c.dx * c.lateral, theme: c.theme });
