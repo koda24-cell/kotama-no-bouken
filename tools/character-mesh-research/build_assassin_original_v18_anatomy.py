@@ -107,7 +107,9 @@ def curve(name,points,r,material):
  o=bpy.data.objects.new(name,c);bpy.context.collection.objects.link(o);o.data.materials.append(material)
 curve('mouth neutral draft',[(-.030,.070,.292),(0,.079,.290),(.030,.070,.292)],.0007,lip)
 # Scene and 10 actual view exports.
-sc=bpy.context.scene;sc.render.engine='BLENDER_EEVEE_NEXT'
+sc=bpy.context.scene
+engines={x.identifier for x in bpy.types.RenderSettings.bl_rna.properties['engine'].enum_items}
+sc.render.engine='BLENDER_EEVEE_NEXT' if 'BLENDER_EEVEE_NEXT' in engines else 'BLENDER_EEVEE'
 sc.render.resolution_x=720;sc.render.resolution_y=720;sc.render.resolution_percentage=100
 sc.render.image_settings.file_format='PNG';sc.render.film_transparent=True
 sc.world.color=(.24,.24,.24)
