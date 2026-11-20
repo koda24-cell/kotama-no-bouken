@@ -60,7 +60,8 @@ function loadModel(key, url, opts = {}) {
         material.needsUpdate = true;
       }
       if (opts.tint && material.color) material.color.multiplyScalar(opts.tint);
-      if (material.emissiveMap) material.emissiveIntensity = Math.max(material.emissiveIntensity, 2.2);
+      if (material.emissiveMap) material.emissiveIntensity = opts.emissive ?? Math.max(material.emissiveIntensity, 2.2);
+      if (opts.tintRGB && material.color) material.color.multiply(new THREE.Color(...opts.tintRGB));
       material.userData.b4PropCached = true;
       let merged = null;
       if (geos.length > 1) {
@@ -77,7 +78,7 @@ function loadModel(key, url, opts = {}) {
   }).catch(err => { console.warn('[b4-dressing] missing', key, err?.message); return null; }));
   return cache.get(key);
 }
-const loadProp = id => loadModel(id, `${BASE}${id}.glb`);
+const loadProp = (id, opts) => loadModel(id, `${BASE}${id}.glb`, opts);
 
 function instance(group, owned, asset, matrices, name) {
   for (const m of asset.meshes) {
@@ -275,7 +276,8 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   }
   // ---- rock-face overlays: GPT V33 magma basalt (LOD) on part of the wall faces, denser in deposit/dragon zones ----
   if (OVERLAY_READY && faces.length) {
-    const rocks = (await Promise.all(OVERLAY_IDS.map(loadProp))).filter(Boolean);
+    // panels sit right beside the camera: warmer albedo to match the volcanic wall boxes, joint lava kept modest
+    const rocks = (await Promise.all(OVERLAY_IDS.map(id => loadProp(id, { tintRGB: [0.95, 0.72, 0.6], emissive: 0.9 })))).filter(Boolean);
     if (rocks.length && !isStale()) {
       const per = rocks.map(() => []);
       // budget: ~64 panels (≈340k tris) per floor, deposit/dragon zones first
