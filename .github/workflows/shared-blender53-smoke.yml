@@ -19,3 +19,4 @@ jobs:
     permissions:
       contents: read
       packages: read
+# Re-run after shared gateway QA fix in development (PR #653)
