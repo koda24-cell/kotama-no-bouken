@@ -2,7 +2,7 @@ import bpy, math, random, os
 from mathutils import Vector
 random.seed(42)
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
-out='/work/render-output/b2-aqueduct';os.makedirs(out,exist_ok=True)
+out=os.environ.get('OUTPUT_DIR','render-output/b2-aqueduct');os.makedirs(out,exist_ok=True)
 def mat(n,c,metal=0,rough=.65):
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True
  p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*c,1);p.inputs['Metallic'].default_value=metal;p.inputs['Roughness'].default_value=rough;return m
