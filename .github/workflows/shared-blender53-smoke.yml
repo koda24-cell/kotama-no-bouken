@@ -1,0 +1,21 @@
+name: Shared Blender 5.3 Gateway Smoke
+on:
+  push:
+    branches:
+      - test/shared-blender53-gateway-smoke-20261120
+    paths:
+      - 'tools/tech-research/shared_gateway_smoke.py'
+      - '.github/workflows/shared-blender53-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  smoke:
+    uses: koda24-cell/kotama-no-bouken/.github/workflows/shared-blender53-render.yml@development
+    with:
+      script: tools/tech-research/shared_gateway_smoke.py
+      output_dir: render-output/shared-blender53-smoke
+    permissions:
+      contents: read
+      packages: read
