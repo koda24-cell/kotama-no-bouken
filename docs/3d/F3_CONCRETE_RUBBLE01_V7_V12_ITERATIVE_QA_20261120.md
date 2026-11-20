@@ -37,3 +37,11 @@ glTF座標のY-upをBlender側の板厚Zへ換算し、`trimesh` で実GLB bound
 - 8〜16mm骨材12点は色斑のみから**粒子の露出面積・断面テクスチャ**として改善し、凸の白い点は復活させない。
 - 同方向の暗帯/横縞を禁止。ライセンス確認済みのPBR写真の採用は安全検査と作風照合後のみ。
 - 画像確認までは「合格」と宣言しない。
+
+## V13 実行検証（2026-11-20）
+- 旧V12の外周から、**幅約90mm・奥行約35mmの主欠け1か所**と左側の小欠けを独立して追加。新規コード `tools/floor3/concrete_rubble01/build_v13.py` と専用Workflow。
+- [Blender 5.3 Actions #44660555946](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44660555946): **success**。Artifact `f3-concrete-rubble01-v13`、ID `14595107431`。GLB/Blend/4実PNG/Albedo・Roughness・断面Albedo・Normal PNGを実取得し、manifestの**10ファイルSHA256を全件確認**。
+- **GLB実寸**: 幅 **459.42mm**、奥行 **320.39mm**、厚さ **120.14mm**。**756 tris / 1 glTF mesh / 2 material primitives**。設計許容435〜465 × 295〜325 × 95〜145mmおよび1200tris以下に収まる。
+- **美術評価**: V12より大きな側面の欠損が明確に見える。特に斜め方向で破損した縁が出た。ただし、破断側面はまだ大きな三角面の帯の集合で、実写や高品質スキャンのコンクリート断面ほど骨材と細かいクラックの情報量がない。**美術未承認**。
+- 今回の反復（V7〜V13）は完了を意味しない。比較画像を見て再設計が必要。次は実物の露出骨材の構造へ重点を移し、単なる不規則な押し出し断面ではなく2〜3種類の破断平面の重なりを設計する。
+- 保存境界: GitHub Actions Artifactは一時保存。**正式GLB/PNG保存、ゲーム実装、V13個別ClamAV検査、Three.js性能測定は未実施**。
