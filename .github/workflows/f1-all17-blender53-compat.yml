@@ -44,6 +44,9 @@ jobs:
           F1_RENDER_SAMPLES: '16'
           F1_RENDER_THREADS: '3'
           F1_RENDER_VIEWS: angle
+          GIT_CONFIG_COUNT: '1'
+          GIT_CONFIG_KEY_0: safe.directory
+          GIT_CONFIG_VALUE_0: ${{ github.workspace }}
         run: |
           mkdir -p /tmp/blender-home
           HOME=/tmp/blender-home blender -b -t 3 --python tools/f1-sacred-forest/assets/build_${{ matrix.asset }}.py
