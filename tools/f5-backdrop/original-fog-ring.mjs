@@ -30,6 +30,8 @@ export async function createOriginalB5FogRing(THREE,scene,{radius=145,height=88,
   let windowTexture=new THREE.CanvasTexture(canvas);
   let emissionLoaded=false;
   try {
+    const emissionStatus=await fetch('/emission-status').then(r=>r.text());
+    if(emissionStatus!=='available') throw new Error('Original emission unavailable; render procedural candidate');
     const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src='/facade020c-emission.png';});
     const source=document.createElement('canvas');source.width=1024;source.height=1024;
     source.getContext('2d').drawImage(image,0,0,1024,1024);
