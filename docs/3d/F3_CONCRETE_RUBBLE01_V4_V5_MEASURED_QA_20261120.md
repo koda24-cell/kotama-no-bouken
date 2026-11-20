@@ -34,3 +34,11 @@
 - 参考: https://github.com/koda24-cell/pinterest-reference-library/blob/main/references/f3-concrete-rubble-dimensions-20261120.md
 - 本体: Draft PR #642 / V4–V5実行ログ
 - 素材は一時Artifact。ゲーム統合・正式アセット昇格なし。ClamAV個別スキャンとゲーム中FPS測定は未完了。
+
+## V6 実行結果（追記）
+- 造形ソース: `tools/floor3/concrete_rubble01/build_v6.py`。数値設計書V4を先行コミットした上で独立版として制作。
+- [Actions run #44655674840](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44655674840): Blender 5.3で4方向実レンダリング＋GLB出力。Artifact `f3-concrete-rubble01-v6` ID `14593137421`、10点（manifest+ログ含む）取得。manifestの対象GLB/Blend/4PNG/2PBR PNG、合計8点SHA256照合全一致。
+- **GLB実測**: X幅 **454.65mm**、奥行 **316.81mm**、厚み **119.80mm**。2 glTF meshes、3 material primitives、**564三角形**。寸法許容435–465/295–325/95–145mmをすべて満たす。骨材12点のバッチを含む。
+- V6は従来側面3リング→5リング、主な16mm陥没3か所を実メッシュに追加。512×512カラー/Roughness PNG2枚を継承するが、具体的な見た目の検査ではまだ**直線的な大きな板の印象が強く、破断側面の凹凸/石粒の表現不足**。画像は4視点で実際に目視し、**美術不合格**。
+- Blender 5.3出力成功とファイル形式/ハッシュの検証成功は、美術品質承認を意味しない。ClamAVのV6固有スキャン、Three.jsの動作/性能確認は未実施。
+- 今後: カメラ近傍で読める20–40mm幅の不規則破断面を実造形し、8–16mmの骨材を断面から露出した平らな多角形パッチとして配置する。上面中央65%の平坦性は保持。V1〜V6の既存モデルは保持し、正式GLB/PNG保存・ゲーム組込はユーザー承認後。
