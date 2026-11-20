@@ -2,6 +2,18 @@
 
 This file is an entry point for ChatGPT, Claude and other AI development sessions.
 
+## Shared Blender 5.3 default for all current and future 3D work (2026-11-20)
+
+- **Default**: Use the proven GitHub Actions Blender **5.3.0 + ClamAV** pinned Docker environment for all new 3D model/render tasks, regardless of ChatGPT normal/Work or AI assistant. Do not claim any particular chat has Blender MCP or direct workflow dispatch permissions.
+- **Start of each task**: inspect `development`, this `AGENTS.md`, `docs/3d/BLENDER_DOCKER_HANDOFF.md`, `docs/3d/ASSET_PROMOTION_POLICY.md`, and `docs/3d/BLENDER_SHARED_EXECUTION_ENTRYPOINT.md`; locate the actual current asset branch/PR and workflow. Preserve all prior assets and functionality.
+- **Reusable gateway**: after it is reviewed, merged into `development`, and successfully tested, use `.github/workflows/shared-blender53-render.yml` as the common `workflow_call` entry. Follow `docs/3d/SHARED_BLENDER53_ALL_BRANCHES_ROLLOUT.md`. Do **not** describe this gateway as deployed or verified before that happens.
+- **New branches**: branch from `development` and add a task-specific push-triggered caller for the actual Blender script. Trigger on relevant script/workflow paths, **not every repository push**. If the gateway is not yet integrated, continue using a proven branch-local workflow.
+- **Existing branches**: migrate their workflows only after comparing their current script, output paths, container compatibility and existing successful runs. Never bulk overwrite branch contents, switch all legacy Blender versions without QA, or auto-merge.
+- **Verification**: inspect actual GitHub Actions run ID, job status/logs, Blender version, ClamAV input/output scan results, generated multi-angle PNG and GLB/Blend, hashes and Artifacts. A committed workflow or successful step alone is not evidence of visual quality.
+- **Security and approval**: scan external downloads immediately before extraction, extracted contents before Blender import, and outputs before use. Keep new GLB/PNG as `NOT_APPROVED` until the user has reviewed images; never automatically promote into game assets or `main`.
+- **Execution limitations**: GitHub Actions is not an always-running PC. A reusable workflow must be called from an eligible workflow; adding this rule to AGENTS does not itself install or trigger a workflow on every existing branch. `workflow_dispatch` may require default-branch registration; do not alter `main` merely to expose it.
+- **Cross-chat handoff**: use the latest source files, PR and run evidence in GitHub, not a previous assistant's unsupported success claim. When push runs are missing from PR-only queries, inspect GitHub Actions REST run collections.
+
 ## Start here
 1. Read `docs/3d/BLENDER_DOCKER_HANDOFF.md` for 3D asset creation, Blender Docker render, workflow URLs, verification and troubleshooting.
 2. Inspect the latest GitHub `development` branch, related feature branches and PRs before editing. Do not assume a previous chat's state is current.
