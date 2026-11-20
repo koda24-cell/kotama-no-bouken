@@ -28,7 +28,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_basalt_columns"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(2020)
 C.reset(2020)
 
@@ -53,7 +53,7 @@ def column_bm(flat, H, seed, joints=()):
         prof.append(p + (pp - p).normalized() * CHAMFER)
         prof.append(p + (pn - p).normalized() * CHAMFER)
     zs = []
-    n = max(3, int(H / 0.28))
+    n = max(4, int(H / 0.12))
     for k in range(n + 1):
         zs.append((H * k / n, 1.0))
     for j in joints:
@@ -66,7 +66,8 @@ def column_bm(flat, H, seed, joints=()):
     for z, s in zs:
         ring = []
         for p in prof:
-            q = p * s * (1 + 0.012 * noise.noise(Vector((p.x * 4 + off, p.y * 4, z * 3)))) + lean * z
+            wob = 0.022 * noise.noise(Vector((p.x * 3 + off, p.y * 3, z * 2.2))) + 0.010 * noise.noise(Vector((p.x * 9, p.y * 9 + off, z * 9)))
+            q = p * s * (1 + wob) + lean * z
             ring.append(bm.verts.new((q.x, q.y, z)))
         rings.append(ring)
     M = len(prof)
@@ -102,6 +103,7 @@ for k, (p, H) in enumerate(zip(pos, HEIGHTS)):
     bm, R = column_bm(flat, H, seed=50 + k, joints=joints)
     D.bm_transform(bm, Matrix.Translation(Vector((p.x, p.y, 0))) @ Matrix.Rotation(rnd.uniform(-0.1, 0.1), 4, "Z"))
     ob = C.obj_from_bm(bm, f"col_{k}", smooth=True)
+    C.log(f"column {k}: H={H} faces={len(ob.data.polygons)}")
     D.sharp_by_angle(ob, 25)
     cuts = []
     top = max(v.co.z for v in ob.data.vertices)
@@ -110,10 +112,10 @@ for k, (p, H) in enumerate(zip(pos, HEIGHTS)):
         st = rnd.uniform(0.06, 0.15)
         c = Vector((p.x + math.cos(a) * R * 0.9, p.y + math.sin(a) * R * 0.9, top))
         cuts.append(box(f"_s{k}", c, (R * 1.4, R * 1.4, st * 2), (rnd.uniform(-0.1, 0.1), rnd.uniform(-0.1, 0.1), a)))
-    for j in range(rnd.randint(1, 2)):  # 角の欠け
+    for j in range(rnd.randint(2, 4)):  # 角の欠け（天端の角＋柱の途中の稜）
         a = rnd.uniform(0, 6.3)
-        sz = rnd.uniform(0.07, 0.13)
-        z = top - rnd.uniform(0.0, 0.25)
+        sz = rnd.uniform(0.07, 0.14)
+        z = top - rnd.uniform(0.0, 0.25) if j < 2 else rnd.uniform(0.25, top - 0.2)
         c = Vector((p.x + math.cos(a) * R, p.y + math.sin(a) * R, z))
         cuts.append(box(f"_k{k}_{j}", c, (sz, sz, sz * 1.3), (rnd.uniform(0, 1), rnd.uniform(0, 1), a)))
     if cuts:

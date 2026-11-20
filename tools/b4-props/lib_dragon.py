@@ -665,13 +665,24 @@ def voxel_union(objs, name, voxel=0.02):
     return ob
 
 
-def bool_diff(ob, cutters):
-    cut = C.join(cutters, "_cutters_tmp")
+def bool_diff(ob, cutters, min_keep=0.4):
+    """ブーリアン差。結果の面が元の min_keep 未満に減ったら失敗とみなして元に戻す（ログに残す）"""
+    cut = C.join(cutters, "_cutters_tmp") if len(cutters) > 1 else cutters[0]
+    before = ob.data.copy()
+    n0 = len(ob.data.polygons)
     m = ob.modifiers.new("bool", "BOOLEAN")
     m.operation = "DIFFERENCE"
     m.solver = "EXACT"
     m.object = cut
     C.apply_mods(ob)
+    n1 = len(ob.data.polygons)
+    if n1 < n0 * min_keep:
+        C.log(f"WARN bool_diff {ob.name}: {n0} -> {n1} faces, reverted")
+        old = ob.data
+        ob.data = before
+        bpy.data.meshes.remove(old)
+    else:
+        bpy.data.meshes.remove(before)
     bpy.data.objects.remove(cut, do_unlink=True)
     return ob
 
