@@ -1,7 +1,7 @@
 name: B2 Stone Ruins Props V3 Original Bridge Colors
 on:
   push:
-    branches: [feature/b2-bridge-v04-vfx-20261115, feature/shared-container-b2-legacy-render-20261119, feature/shared-blender53-migration-wave4-20261120]
+    branches: [feature/b2-bridge-v04-vfx-20261115, feature/shared-container-b2-legacy-render-20261119]
     paths:
       - tools/b2-render/build-stone-ruins-v3.py
       - .github/workflows/b2-stone-ruins-v3-render.yml

@@ -2,7 +2,6 @@ name: B2 Stone Ruins Props V4 Irregular Masonry
 on:
   push:
     branches:
-      - feature/shared-blender53-migration-wave4-20261120
       - feature/b2-bridge-v04-vfx-20261115
       - feature/shared-container-b2-props-20261119
     paths:

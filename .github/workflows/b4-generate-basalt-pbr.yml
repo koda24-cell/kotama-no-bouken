@@ -2,7 +2,6 @@ name: Generate and commit floor4 basalt PBR textures
 on:
   push:
     branches:
-      - feature/shared-blender53-migration-wave4-20261120
       - feature/b4-procedural-basalt-pbr-library-20261114
     paths:
       - '.github/workflows/b4-generate-basalt-pbr.yml'

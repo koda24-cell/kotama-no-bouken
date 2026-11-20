@@ -1,7 +1,7 @@
 name: B2 Bridge Rubble Frozen Pillar Variant Renders
 on:
   push:
-    branches: [feature/b2-bridge-v04-vfx-20261115, feature/shared-container-b2-legacy-render-20261119, feature/shared-blender53-migration-wave4-20261120]
+    branches: [feature/b2-bridge-v04-vfx-20261115, feature/shared-container-b2-legacy-render-20261119]
     paths:
       - tools/b2-render/build-bridge-variants.py
       - .github/workflows/b2-bridge-variants-render.yml
