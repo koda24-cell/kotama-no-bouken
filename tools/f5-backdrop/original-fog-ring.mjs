@@ -3,7 +3,7 @@
  * with large uninterrupted panels instead of narrow strips. Review-only.
  */
 import {createB5DistantFogBackground} from '../../field/b5-distant-fog-background.js';
-export function createOriginalB5FogRing(THREE,scene,{radius=145,height=88,seed=514}={}) {
+export async function createOriginalB5FogRing(THREE,scene,{radius=145,height=88,seed=514}={}) {
   const group=new THREE.Group();
   group.name='B5_V4_FLAT_ABYSS_VISTAS';
   scene.add(group);
@@ -27,7 +27,16 @@ export function createOriginalB5FogRing(THREE,scene,{radius=145,height=88,seed=5
       ctx.fillRect(bx+x*stepX,by+y*stepY,1+random()*2.5,1+random()*2.7);
     }
   }
-  const windowTexture=new THREE.CanvasTexture(canvas);
+  let windowTexture=new THREE.CanvasTexture(canvas);
+  let emissionLoaded=false;
+  try {
+    const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src='/facade020c-emission.png';});
+    const source=document.createElement('canvas');source.width=1024;source.height=1024;
+    source.getContext('2d').drawImage(image,0,0,1024,1024);
+    windowTexture.dispose();windowTexture=new THREE.CanvasTexture(source);
+    emissionLoaded=true;
+  } catch(e){console.warn('Facade020C original emission unavailable; procedural QA fallback',e);}
+  document.body.dataset.emissionSource=emissionLoaded?'facade020c-original':'procedural-fallback';
   windowTexture.colorSpace=THREE.SRGBColorSpace;
   windowTexture.wrapS=windowTexture.wrapT=THREE.RepeatWrapping;
   const parts=[];
