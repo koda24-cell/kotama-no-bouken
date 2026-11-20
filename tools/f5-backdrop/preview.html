@@ -64,45 +64,50 @@ const silhouetteGroup=new THREE.Group();silhouetteGroup.name='B5_V14_SHADOWED_FA
 const silhouetteMat=new THREE.MeshBasicMaterial({color:0x110d1b,transparent:true,opacity:.56,depthWrite:false,side:THREE.DoubleSide,fog:true});
 const silhouetteGeo=new THREE.PlaneGeometry(1,1);
 const veilMat=new THREE.MeshBasicMaterial({color:0x35213d,transparent:true,opacity:.16,depthWrite:false,side:THREE.DoubleSide,fog:true});
-for(let face=0;face<4;face++)for(let j=0;j<22;j++){
+for(let face=0;face<4;face++)for(let j=0;j<8;j++){
  const cx=(wr()-.5)*278, width=8+wr()*22, height=18+wr()*50;
  const panel=new THREE.Mesh(silhouetteGeo,silhouetteMat);
  panel.position.set(face===1?143.35:face===3?-143.35:cx,height*.5-10,face===0?-143.35:face===2?143.35:cx);
  panel.rotation.y=face*Math.PI/2;panel.scale.set(width,height,1);silhouetteGroup.add(panel);
  if(j%3===0){const veil=new THREE.Mesh(silhouetteGeo,veilMat);veil.position.copy(panel.position);veil.rotation.copy(panel.rotation);veil.position.y-=height*.15;veil.scale.set(width*1.8,height*.8,1);silhouetteGroup.add(veil);}
 }
+// V15: EXACTLY TWO large facade texture panels per cardinal direction.
+// Each atlas contains recognizable, irregularly lit windows rather than hundreds of tiny planes.
 const windows=[];
-for(let face=0;face<4;face++)for(let patch=0;patch<28;patch++){
- const center=(wr()-.5)*265,base=-5+wr()*33,cols=4+Math.floor(wr()*11),rows=3+Math.floor(wr()*9),dx=1.65+wr()*2.1,dy=1.7+wr()*2.0;
- for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
-  if(wr()<.56 || (col>cols*.5 && wr()<.35))continue;
-  const offset=center+(col-cols/2)*dx, h=base+row*dy;
-  const mesh=new THREE.Mesh(windowGeo,windowMats[wr()<.65?0:1]);
-  mesh.position.set(face===1?143:face===3?-143:offset,h,face===0?-143:face===2?143:offset);
-  mesh.rotation.y=face*Math.PI/2;
-  mesh.scale.set(1.05+wr()*.9,1.25+wr()*1.2,1);
-  const frame=new THREE.Mesh(windowGeo,frameMaterial);
-  frame.position.copy(mesh.position);frame.rotation.copy(mesh.rotation);
-  frame.scale.set(mesh.scale.x*1.2,mesh.scale.y*1.16,1);
-  frame.position.x+=(face===1?.035:face===3?-.035:0);
-  frame.position.z+=(face===0?-.035:face===2?.035:0);
-  windowGroup.add(frame);
-  const mullion=new THREE.Mesh(windowGeo,mullionMaterial);
-  mullion.position.copy(mesh.position);mullion.rotation.copy(mesh.rotation);
-  mullion.scale.set(mesh.scale.x*.09,mesh.scale.y,1);
-  mullion.position.x+=(face===1?-.04:face===3?.04:0);
-  mullion.position.z+=(face===0?.04:face===2?-.04:0);
-  windowGroup.add(mullion);
-  mesh.userData.frame=frame;mesh.userData.mullion=mullion;
-  const glow=new THREE.Mesh(windowGeo,glowMaterial);
-  glow.position.copy(mesh.position);glow.rotation.copy(mesh.rotation);
-  glow.position.x+=(face===1?-.09:face===3?.09:0);
-  glow.position.z+=(face===0?.09:face===2?-.09:0);
-  glow.scale.set(mesh.scale.x*2.3,mesh.scale.y*2.2,1);
-  windowGroup.add(glow);mesh.userData.glow=glow;
-  mesh.userData.phase=wr()*6.28;mesh.userData.speed=.25+wr()*1.2;
-  windowGroup.add(mesh);windows.push(mesh);
+for(let face=0;face<4;face++)for(let panelIndex=0;panelIndex<2;panelIndex++){
+ const atlas=document.createElement('canvas');atlas.width=1024;atlas.height=768;
+ const ac=atlas.getContext('2d');ac.clearRect(0,0,1024,768);
+ const rand=()=>wr();
+ // A jagged, mostly dark ruined facade with broad windows, sparse enough to read from afar.
+ ac.fillStyle='rgba(13,9,22,.78)';
+ ac.beginPath();ac.moveTo(0,768);ac.lineTo(0,105+rand()*160);
+ for(let x=0;x<=1024;x+=64){ac.lineTo(x,80+rand()*185);}
+ ac.lineTo(1024,768);ac.closePath();ac.fill();
+ for(let row=0;row<4;row++)for(let col=0;col<6;col++){
+  if(rand()<.43)continue;
+  const x=65+col*157+(rand()-.5)*22,y=215+row*122+(rand()-.5)*19;
+  const w=63+rand()*30,h=75+rand()*25;
+  ac.fillStyle='rgba(3,2,9,.94)';ac.fillRect(x-9,y-10,w+18,h+20);
+  const grad=ac.createLinearGradient(x,y,x+w,y+h);
+  const strength=.42+rand()*.33;
+  grad.addColorStop(0,'rgba(96,51,85,'+strength+')');
+  grad.addColorStop(.5,'rgba(191,122,108,'+strength+')');
+  grad.addColorStop(1,'rgba(65,36,72,'+strength+')');
+  ac.fillStyle=grad;ac.fillRect(x,y,w,h);
+  ac.strokeStyle='rgba(17,10,23,.85)';ac.lineWidth=5;
+  ac.strokeRect(x,y,w,h);
+  ac.beginPath();ac.moveTo(x+w*.5,y);ac.lineTo(x+w*.5,y+h);
+  ac.moveTo(x,y+h*.5);ac.lineTo(x+w,y+h*.5);ac.stroke();
+  ac.fillStyle='rgba(8,5,17,.28)';
+  for(let k=0;k<8;k++)ac.fillRect(x+rand()*w,y+rand()*h,3+rand()*14,3+rand()*12);
  }
+ const texture=new THREE.CanvasTexture(atlas);texture.colorSpace=THREE.SRGBColorSpace;
+ const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:.78,depthWrite:false,side:THREE.DoubleSide,fog:true});
+ const panel=new THREE.Mesh(new THREE.PlaneGeometry(116,84),material);
+ const sideOffset=(panelIndex===0?-60:60);
+ panel.position.set(face===1?142.6:face===3?-142.6:sideOffset,24,face===0?-142.6:face===2?142.6:sideOffset);
+ panel.rotation.y=face*Math.PI/2;panel.renderOrder=-25;
+ windowGroup.add(panel);windows.push(panel);
 }
 const abyss=createAbyssBackdrop(THREE,scene,{starCount:340,rockCount:14});
 const pathMist=createB5PathEdgeMist();scene.add(pathMist.mesh);
@@ -127,7 +132,7 @@ floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
 let yaw=0,pitch=0,dragging=false,px=0,keys=new Set();
 function renderView(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;backdrop.update(camera);originalFog.update(performance.now()/1000);pathMist.update(performance.now()/1000,camera);sparks.update(performance.now()/1000,camera.position);
 document.querySelector('#status').textContent='方位 '+((yaw*180/Math.PI%360+360)%360).toFixed(0)+'° / 位置 X '+camera.position.x.toFixed(1)+' Z '+camera.position.z.toFixed(1);
-for(const w of windows){w.visible=Math.sin(performance.now()*.001*w.userData.speed+w.userData.phase) > -.75;if(w.userData.glow)w.userData.glow.visible=w.visible;if(w.userData.frame)w.userData.frame.visible=w.visible;if(w.userData.mullion)w.userData.mullion.visible=w.visible;}
+// V15 facade atlas: keep panels stable; shader-driven distant fog animates separately.
 renderer.render(scene,camera)}
 document.querySelectorAll('[data-angle]').forEach(b=>b.onclick=()=>{yaw=Number(b.dataset.angle)*Math.PI/180;renderView()});
 document.querySelector('#left').onclick=()=>{yaw-=Math.PI/12;renderView()};
