@@ -2,15 +2,15 @@
   "asset": "b4lod_v33_rockwall_3k",
   "source": "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb",
   "source_sha256": "dfa861b95f08c8f799cacb426ad389c3acb7b0c8d0bf8e9416a323505aa72e8b",
-  "source_triangles": 400570,
-  "triangles": 3119,
+  "source_triangles": 286200,
+  "triangles": 3199,
   "bbox_m": [
-    49.764,
-    23.793,
-    56.843
+    47.571,
+    21.833,
+    55.008
   ],
   "emissive": true,
-  "glb_bytes": 973240,
+  "glb_bytes": 791368,
   "renders": [
     "b4lod_v33_rockwall_3k_volcanic_front.png",
     "b4lod_v33_rockwall_3k_volcanic_angle.png",
