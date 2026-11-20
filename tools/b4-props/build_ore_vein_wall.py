@@ -29,7 +29,7 @@ from mathutils import Vector  # noqa: E402
 from mathutils.bvhtree import BVHTree  # noqa: E402
 
 NAME = "b4p_ore_vein_wall"
-VERSION = "v6"
+VERSION = "v7"
 rnd = random.Random(2121)
 C.reset(2121)
 
@@ -64,9 +64,13 @@ BR2 = wavy([(0.38, 1.55), (0.72, 1.40), (0.98, 1.10)], 0.03, 3.0, n=14)       # 
 PATHS = [{"pts": MAIN, "depth": 0.06, "w": 0.042, "seed": 1.0, "glow_var": 0.6},
          {"pts": BR1, "depth": 0.03, "w": 0.024, "seed": 2.0, "glow_var": 0.8},
          {"pts": BR2, "depth": 0.03, "w": 0.024, "seed": 3.0, "glow_var": 0.8}]
+# 光らない古い割れ目（冷えた黒いひび）: 岩の面を割る
+for k, cp in enumerate(([(-1.0, 1.55), (-0.55, 1.75), (-0.05, 2.0)], [(0.35, 0.15), (0.6, 0.55), (1.0, 0.75)],
+                        [(-0.2, 0.1), (-0.05, 0.45), (0.25, 0.7)], [(0.55, 1.95), (0.85, 1.65), (1.05, 1.45)])):
+    PATHS.append({"pts": wavy(cp, 0.03, 10.0 + k, n=12), "depth": 0.022, "w": 0.014, "seed": 10.0 + k, "glow": False})
 
 bm = D.basalt_bm(RAD, CEN, seed=77, subdiv=5, lumpy=0.17, facets=14, facet_depth=(0.80, 0.95), fresh_ratio=0.35,
-                 up_bias=0.0, fine=(0.010, 5.0), ground=0.0, notches=0, box_p=4.0,
+                 up_bias=0.0, fine=(0.026, 2.8), ground=0.0, notches=0, box_p=4.0,
                  extra_planes=[((0, 1, 0), BACK_Y / RAD[1], False), ((0, -1, 0.04), 1.0, False),
                                ((0.35, -1, 0.25), 0.97, True), ((-0.4, -1, 0.2), 0.96, False), ((0.25, -1, -0.35), 0.97, False),
                                ((-0.3, -1, -0.3), 0.98, True), ((0.05, -1, 0.5), 0.95, False), ((-0.6, -1, 0.0), 0.97, True)],
