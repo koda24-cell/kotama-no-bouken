@@ -21,6 +21,7 @@ import common as C  # noqa: E402
 JOBS = [
     # name, source glb, target tris, texture res
     ("b4lod_v33_rockwall", "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb", 9000, 2048),
+    ("b4lod_v33_rockwall_3k", "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb", 3200, 1024),
     ("b4lod_lava_pool_v3", "assets/models/floor4/b4-lava-pool-v3.glb", 6000, 1024),
 ]
 if os.environ.get("B4P_OPT"):
