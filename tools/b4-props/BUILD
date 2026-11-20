@@ -1,1 +1,1 @@
-build_basalt_columns.py
+build_claw_rock.py
