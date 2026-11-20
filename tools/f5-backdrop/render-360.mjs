@@ -5,10 +5,27 @@ import { createHash } from 'node:crypto';
 import { resolve, extname } from 'node:path';
 
 const root = process.cwd();
+// Source: ambientCG Facade020C 8K Emission (CC0), mirrored on Wikimedia Commons.
+// Download to the temporary Actions workspace, never silently treat fallback as original.
+let emissionBytes=null,emissionError=null;
+try {
+ const url='https://commons.wikimedia.org/wiki/Special:Redirect/file/Facade020C_8K_Emission.png';
+ const response=await fetch(url,{signal:AbortSignal.timeout(30000),headers:{'User-Agent':'Kotama3DRenderQA/1.0 (CC0 texture validation)'}});
+ if(!response.ok)throw new Error('HTTP '+response.status);
+ const bytes=Buffer.from(await response.arrayBuffer());
+ if(bytes.length<1000||bytes.subarray(0,8).toString('hex')!=='89504e470d0a1a0a')throw new Error('Invalid PNG');
+ emissionBytes=bytes;
+ console.log('FACADE020C_EMISSION_VERIFIED bytes='+bytes.length+' sha256='+createHash('sha256').update(bytes).digest('hex'));
+} catch(e){emissionError=String(e);console.warn('FACADE020C_EMISSION_UNAVAILABLE '+emissionError);}
+
 const server = http.createServer(async (req, res) => {
   try {
     const path = new URL(req.url, 'http://localhost').pathname;
     let file;
+    if (path === '/facade020c-emission.png') {
+      if(!emissionBytes){res.writeHead(404);res.end('Emission unavailable: '+emissionError);return;}
+      res.writeHead(200,{'content-type':'image/png','cache-control':'no-store'});res.end(emissionBytes);return;
+    }
     if (path === '/three.module.js') file = resolve(root, 'node_modules/three/build/three.module.js');
     else if (path === '/worldlocked-360-backdrop.mjs') file = resolve(root, 'tools/f5-backdrop/worldlocked-360-backdrop.mjs');
     else if (path === '/original-fog-ring.mjs') file = resolve(root, 'tools/f5-backdrop/original-fog-ring.mjs');
@@ -52,7 +69,7 @@ await page.waitForTimeout(200);
 const after=await page.screenshot({path:'f5-360-renders/f5-moved-forward.png',timeout:90000});
 const parallax= !before.equals(after);
 const unique=new Set(records.map(r=>r.sha256)).size;
-const report={status:errors.length?'ERROR':'RENDERED',uniqueViews:unique,parallaxChanged:parallax,errors,records};
+const report={status:errors.length?'ERROR':'RENDERED',emissionSource:emissionBytes?'Wikimedia Commons CC0 Facade020C 8K Emission':'FALLBACK_NOT_ORIGINAL',emissionError,uniqueViews:unique,parallaxChanged:parallax,errors,records};
 await writeFile('f5-360-renders/report.json',JSON.stringify(report,null,2));
 console.log(JSON.stringify(report));
 await browser.close();
