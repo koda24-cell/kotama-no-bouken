@@ -20,7 +20,7 @@ import common as C  # noqa: E402
 
 JOBS = [
     # name, source glb, target tris, texture res
-    ("b4lod_v33_rockwall", "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb", 9000, 2048),
+    ("b4lod_v33_rockwall", "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb", 9000, 1024),
     ("b4lod_v33_rockwall_3k", "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb", 3200, 1024),
     # ("b4lod_lava_pool_v3", ...) done in run 44658937724
 ]
@@ -95,11 +95,10 @@ def basalt_material():
     # 酸化した赤茶の斑（溶岩洞の壁の焼け）
     ox = b.ramp(n_big, [(0.55, 0.0), (0.72, 1.0)])
     base = b.mix(b.math("MULTIPLY", ox, 0.7), base, (0.075, 0.030, 0.016))
-    edge = b.edge_mask(0.25, 0.03, 0.25)
-    base = b.mix(b.math("MULTIPLY", edge, 0.45), base, (0.085, 0.078, 0.072))
-    cav = b.math("SUBTRACT", 1.0, b.cavity(1.5))
-    base = b.mix(b.math("MULTIPLY", cav, 0.5), base, (0.055, 0.051, 0.048))
-    r = b.mixf(edge, 0.9, 0.75)
+    # Bevel/AO ノードは 40万面の selected-to-active ベイクで極端に遅いので使わない（形の陰影は法線ベイクで出る）
+    hi_m = b.ramp(n_mid, [(0.62, 0.0), (0.8, 1.0)])
+    base = b.mix(b.math("MULTIPLY", hi_m, 0.35), base, (0.075, 0.069, 0.064))
+    r = b.mixf(hi_m, 0.9, 0.78)
     b.normal_from(nrm, 0.8, bump_height=n_mid, bump_strength=0.25, bump_dist=0.2)
     return b.out(base, r, 0.0)
 
