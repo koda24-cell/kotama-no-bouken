@@ -9,7 +9,8 @@ b4p_ore_vein_wall — 壁に貼る炎竜鉱の鉱脈の岩板（#21、ユーザ�
   #60 / #61 赤い結晶の束・単結晶（脈から出る小結晶）
   #30 柱状節理の段差（正面の割れ面と棚の段差）
 形・寸法の要点:
-  - 幅2.4×高さ2.2×厚み0.5m。裏面は平ら（y=+0.25）で壁に密着、正面は割れ面と段差でごつごつ
+  - 幅2.4×高さ2.2×厚み0.5m。裏面は平ら（y=+0.25）で壁に密着。正面は26の塊に割れた崖の面
+    （塊ごとに傾いた平面＝段差と棚）、外形は角の丸い四角を揺らした不揃いな輪郭、外周は裏へ回り込む
   - 左下から右上へ波打つ主脈と2本の枝。溝の底が赤橙に光り、縁は黒く冷えている
   - 主脈の3か所に結晶の束（4〜6本）、脈に沿って小結晶が点在
 劣化（設計書3章）:
@@ -28,7 +29,7 @@ from mathutils import Vector  # noqa: E402
 from mathutils.bvhtree import BVHTree  # noqa: E402
 
 NAME = "b4p_ore_vein_wall"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(2121)
 C.reset(2121)
 
@@ -64,15 +65,12 @@ PATHS = [{"pts": MAIN, "depth": 0.065, "w": 0.048, "seed": 1.0},
          {"pts": BR1, "depth": 0.035, "w": 0.028, "seed": 2.0},
          {"pts": BR2, "depth": 0.035, "w": 0.028, "seed": 3.0}]
 
-bm = D.basalt_bm(RAD, CEN, seed=77, subdiv=4, lumpy=0.08, facets=12, facet_depth=(0.72, 0.92), fresh_ratio=0.35,
-                 up_bias=0.0, fine=(0.012, 5.0), ground=0.0, notches=9, notch_depth=(0.62, 0.8),
-                 extra_planes=[((0, 1, 0), BACK_Y / RAD[1], False), ((0, -1, 0.05), 0.80, False),
-                               ((-1, 0, 0.12), 0.86, False), ((1, 0, -0.15), 0.84, False), ((0.15, 0, 1), 0.88, False),
-                               ((0.7, 0, 0.7), 0.80, True), ((-0.75, -0.2, -0.6), 0.84, True)],
-                 hook=lambda b: D.carve_paths(b, F0, EX, EZ, NF, PATHS, refine=(0.06, 0.025, -0.015)))
+bm = D.rock_face_bm(2.4, 2.2, BACK_Y, seed=77, nx=50, nz=46, cells=26, relief=0.10, base_y=-0.20)
+D.carve_paths(bm, F0, EX, EZ, NF, PATHS, refine=(0.05, 0.02, -0.02))
+D.bm_vnoise(bm, 0.006, 9.0, seed=5, z0=0.0)
 wall = C.obj_from_bm(bm, "wall")
 for v in wall.data.vertices:  # 裏面を壁に密着する平面にそろえる
-    if v.co.y > BACK_Y - 0.025:
+    if v.co.y > BACK_Y - 0.004:
         v.co.y = BACK_Y
 D.sharp_by_angle(wall, 40)
 parts = {"wall": (wall, "basalt")}

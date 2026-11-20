@@ -851,3 +851,79 @@ def carve_paths(bm, F0, EX, EZ, NF, paths, refine=(0.05, 0.02, -0.02), front_dot
         for lp in f.loops:
             lp[L["glow"]] = min(1.0, frac.get(lp.vert, 0.0)) ** glow_pow
     return bm
+
+
+# ---------------------------------------------------------------------------
+# 形状：壁に貼る岩の面（ブロック状に割れた崖の面＋平らな裏）
+# ---------------------------------------------------------------------------
+def rock_face_bm(width, height, back_y, seed, nx=50, nz=46, cells=26, relief=0.10, base_y=-0.22, edge_round=0.28,
+                 outline_jit=0.10):
+    """正面（-Y）がブロック状の割れ面でできた崖の面、裏（y=back_y）は平ら。外形は不揃い、底は z=0 で直線。
+    各ボロノイの塊に別々の傾いた平面を与える→段差と棚ができる（柱状節理・崖の割れ方）"""
+    rnd = random.Random(seed)
+    bm = bmesh.new()
+    L = bm_layers(bm)
+    seeds = [(Vector((rnd.uniform(-width / 2, width / 2), rnd.uniform(0, height))),
+              rnd.uniform(-relief, relief * 0.6), rnd.uniform(-0.18, 0.18), rnd.uniform(-0.25, 0.12), rnd.random() < 0.35)
+             for _ in range(cells)]
+    off = rnd.uniform(0, 100)
+    cx, cz = 0.0, height * 0.5
+
+    def outline_r(u, w):
+        """外形の内外: 1 未満が内側（底は切らない）"""
+        a = math.atan2((w - cz) / (height / 2), u / (width / 2))
+        k = 1 + outline_jit * noise.noise(Vector((math.cos(a) * 2 + off, math.sin(a) * 2, 0.3))) + \
+            outline_jit * 0.5 * noise.noise(Vector((math.cos(a) * 6 + off, math.sin(a) * 6, 0.9)))
+        p = 3.2  # 角の丸い四角
+        return ((abs(u) / (width / 2)) ** p + (abs(w - cz) / (height / 2)) ** p) ** (1 / p) / k
+
+    def depth(u, w):
+        q = Vector((u, w))
+        ds = sorted(((q - c).length, i) for i, (c, *_r) in enumerate(seeds))
+        (d0, i0), (d1, i1) = ds[0], ds[1]
+        def plane(i):
+            c, cy, a, b, fr = seeds[i]
+            return cy + a * (u - c.x) + b * (w - c.y)
+        t = max(0.0, min(1.0, 0.5 + (d1 - d0) / 0.06))  # 境目 3cm だけなじませる
+        y = plane(i0) * t + plane(i1) * (1 - t)
+        y += 0.025 * noise.noise(Vector((u * 3 + off, w * 3, 0.5))) + 0.008 * noise.noise(Vector((u * 12, w * 12 + off, 0.2)))
+        r = outline_r(u, w)
+        e = max(0.0, (r - (1 - edge_round)) / edge_round)  # 外周へ向かって裏側へ回り込む
+        y = base_y + y + (back_y - base_y - 0.05) * e ** 2
+        return y, (seeds[i0][4] and t > 0.9)
+
+    grid = {}
+    for i in range(nx + 1):
+        for j in range(nz + 1):
+            u = -width / 2 + width * i / nx
+            w = height * j / nz
+            if outline_r(u, w) > 1.0 and w > 0.001:
+                continue
+            y, fr = depth(u, w)
+            grid[(i, j)] = (bm.verts.new((u, y, w)), fr)
+    for i in range(nx):
+        for j in range(nz):
+            ks = [(i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1)]
+            if all(k in grid for k in ks):
+                f = bm.faces.new([grid[k][0] for k in ks])
+                if all(grid[k][1] for k in ks):
+                    set_face_corner([f], L["fresh"], 1.0)
+    loose = [v for v in bm.verts if not v.link_faces]
+    if loose:
+        bmesh.ops.delete(bm, geom=loose, context="VERTS")
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    for f in bm.faces:  # 正面は -Y 向き
+        if f.normal.y > 0:
+            f.normal_flip()
+    bnd = [e for e in bm.edges if e.is_boundary]
+    ext = bmesh.ops.extrude_edge_only(bm, edges=bnd)
+    nv = [v for v in ext["geom"] if isinstance(v, bmesh.types.BMVert)]
+    for v in nv:
+        v.co.y = back_y
+    bnd2 = [e for e in bm.edges if e.is_boundary]
+    bmesh.ops.holes_fill(bm, edges=bnd2, sides=0)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    for v in bm.verts:
+        if v.co.z < 0:
+            v.co.z = 0.0
+    return bm
