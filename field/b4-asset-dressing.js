@@ -19,7 +19,7 @@ export const B4_PROP_REGISTRY = {
   b4p_barrel_broken: { ready: false, themes: { mine: 0.9 }, radius: 0.45, height: 0.9, scale: [0.95, 1.05] },
   b4p_tools_scatter: { ready: false, themes: { mine: 1.0, deposit: 1.1 }, radius: 0.55, height: 0.3, scale: [0.95, 1.05] },
   b4p_dragon_ore_cluster: { ready: true, themes: { deposit: 2.2, dragon: 0.5 }, radius: 0.75, height: 1.3, scale: [0.8, 1.25], tris: 5804, light: { y: 0.35, color: 0xff3a12, intensity: 1.4, range: 3.6 } },
-  b4p_ore_vein_wall: { ready: false, wall: true, themes: { deposit: 2.0 }, radius: 0.3, height: 2.2, scale: [0.9, 1.1] },
+  b4p_ore_vein_wall: { ready: true, wall: true, themes: { deposit: 2.0, dragon: 0.4 }, radius: 1.25, height: 2.1, y: 0.15, scale: [0.9, 1.1], tris: 7728, light: { y: 1.0, z: 0.4, color: 0xff4a18, intensity: 1.3, range: 3.5 } },
   b4p_rock_rubble: { ready: false, themes: { deposit: 1.4, dragon: 0.7, plain: 0.5 }, radius: 0.9, height: 0.8, scale: [0.8, 1.2] },
   b4p_basalt_columns: { ready: false, themes: { deposit: 1.0, plain: 0.6 }, radius: 0.7, height: 2.2, scale: [0.85, 1.15] },
   b4p_claw_rock: { ready: false, wall: true, themes: { dragon: 1.6 }, radius: 0.35, height: 1.4, scale: [0.9, 1.1] },
@@ -29,13 +29,13 @@ export const B4_PROP_REGISTRY = {
   b4p_chain_anchor: { ready: false, wall: true, y: 0.6, themes: { dragon: 0.6, mine: 0.3 }, radius: 0.2, height: 1.8, scale: [0.95, 1.05] },
 };
 const ZONE_FILL = { deposit: 0.62, mine: 0.55, dragon: 0.45, plain: 0.1 };
-const ZONE_OVERLAY = { deposit: 0.55, dragon: 0.45, mine: 0.22, plain: 0.38 };   // V33 rock-face overlays per wall face
+const ZONE_OVERLAY = { deposit: 0.42, dragon: 0.36, mine: 0.16, plain: 0.5 };   // V33 rock-face overlays per wall face
 
 // Approved GPT models reused as-is (docs/3d/B4_GPT_MODEL_INVENTORY.md).
 export const B4_GPT_MODELS = {
   // V32's packed metal/roughness images are a magenta placeholder (G=0 -> mirror-like roughness 0 in three.js).
   // Ignore those maps and use the material factors with a matte floor instead (reported to GPT in the handoff).
-  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82, tint: 0.42 },  // its albedo is a light tan; darken to the B4 soot-wood range
+  minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82, tint: 0.3 },  // its albedo is a light tan; darken to the B4 soot-wood range
 };
 
 const cache = new Map();
@@ -90,9 +90,11 @@ function instance(group, owned, asset, matrices, name) {
 }
 
 const ORE_READY = true;
-const OVERLAY_URL = './assets/models/floor4/props/b4lod_v33_rockwall_3k.glb';
-const OVERLAY_READY = false;  // GPT V33 magma rock face (LOD by Claude) over the plain wall boxes
-const OVERLAY_FRONT_Z = 1;     // which local axis of the LOD faces the corridor (+1: +Z, -1: -Z)   // flips to true when the dragon team's ore cluster GLB is promoted
+// Basalt wall panels (lead asset, blueprint docs/3d/b4-props/blueprints/b4p_basalt_wall_panel.md) over the plain wall boxes.
+// (The GPT V33 rock wall was tried as an LOD first: its basalt exports white and the shape reads as a box at game scale.)
+const OVERLAY_IDS = ['b4p_basalt_wall_panel_a', 'b4p_basalt_wall_panel_b'];
+const OVERLAY_READY = true;
+const OVERLAY_FRONT_Z = 1;     // glTF +Z faces the corridor (Blender -Y)   // flips to true when the dragon team's ore cluster GLB is promoted
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
 // Distance from the tile centre to the B4 volcanic wall skin at lateral offset 0, for heights y0..y1.
@@ -110,7 +112,7 @@ function wallSkinDistance(y0, y1, lateral = 0) {
   }
   return minD;
 }
-const sideFor = (R, lateral = 0) => R.side ?? (wallSkinDistance(R.y || 0, (R.y || 0) + R.height, lateral) - (R.wall ? 0.02 : R.radius + 0.04));
+const sideFor = (R, lateral = 0) => R.side ?? (R.wall ? 1.58 : wallSkinDistance(R.y || 0, (R.y || 0) + R.height, lateral) - R.radius - 0.04);   // wall pieces sink into the displaced skin rather than float off it
 
 export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY).filter(id => B4_PROP_REGISTRY[id].ready);
@@ -168,6 +170,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       if (ch(tx + dx, ty + dz) !== '#') continue;
       faces.push({ tx, ty, dx, dz, theme });
       if (blocked(tx, ty)) continue;
+      if (OVERLAY_READY && hash(tx * 5 + dx, ty * 5 + dz, 830) <= ZONE_OVERLAY[theme]) continue;   // that face gets a rock panel instead
       for (const lateral of [-1.05, 0, 1.05]) {
         const r = hash(tx * 3 + dx + 7, ty * 3 + dz + 7, 803 + Math.round(lateral * 10));
         if (r > ZONE_FILL[theme] / 2.2) continue;          // ~ZONE_FILL of faces get something, 1–2 props each
@@ -201,11 +204,14 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       const y0 = (R.y || 0) * (0.95 + 0.1 * hash(c.tx, c.ty, 816));
       tmp.position.set(x, y0, z); tmp.rotation.set(0, yaw, 0); tmp.scale.setScalar(s); tmp.updateMatrix();
       if (R.light && lights.length < 30) {
-        const L = { world: new THREE.Vector3(x, y0 + R.light.y * s, z), color: R.light.color, intensity: R.light.intensity, range: R.light.range, off: false };
+        const lz = R.light.z || 0;
+        const L = { world: new THREE.Vector3(x - c.dx * lz, y0 + R.light.y * s, z - c.dz * lz), color: R.light.color, intensity: R.light.intensity, range: R.light.range, off: false };
         lights.push(L); gLights.push(L);
       }
       return tmp.matrix.clone();
     });
+    // wall-mounted pieces: put the flat back (glTF min z) on the instance origin so it sits on the wall skin
+    if (R.wall) { const back = new THREE.Matrix4().makeTranslation(0, 0, -asset.box.min.z); mats.forEach(M => M.multiply(back)); }
     instance(group, owned, asset, mats, `b4:prop:${id}`);
     info.byId[id] = list.length; info.placed += list.length;
     for (const c of list) info.list.push({ id, tx: c.tx, ty: c.ty, dx: c.dx, dz: c.dz, t: +c.t.toFixed(2), x: c.tx * CELL + c.dx * sideFor(R, c.lateral) - c.dz * c.lateral, y: R.y || 0, z: c.ty * CELL + c.dz * sideFor(R, c.lateral) + c.dx * c.lateral, theme: c.theme });
@@ -254,7 +260,10 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     if (pool && !isStale()) {
       const size = pool.box.getSize(new THREE.Vector3()), centre = pool.box.getCenter(new THREE.Vector3());
       const base = 4.6 / Math.max(size.x, size.z);
-      const pm = lavaSites.map(({ tx, ty }) => new THREE.Matrix4().compose(
+      const isLava = (x, y) => { const c = ch(x, y); return c === '*' || c === '~'; };
+      const sites = lavaSites.filter(({ tx, ty }) => DIRS.some(([dx, dz]) => !isLava(tx + dx, ty + dz)) || hash(tx, ty, 844) < 0.25)
+        .sort((p, q) => hash(p.tx, p.ty, 845) - hash(q.tx, q.ty, 845)).slice(0, 40);
+      const pm = sites.map(({ tx, ty }) => new THREE.Matrix4().compose(
         new THREE.Vector3(tx * CELL + (hash(tx, ty, 840) - 0.5) * 0.6, 0.02, ty * CELL + (hash(tx, ty, 841) - 0.5) * 0.6),
         new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hash(tx, ty, 842) * Math.PI * 2, 0)),
         new THREE.Vector3().setScalar(base * (0.92 + 0.2 * hash(tx, ty, 843))))
@@ -265,36 +274,38 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   }
   // ---- rock-face overlays: GPT V33 magma basalt (LOD) on part of the wall faces, denser in deposit/dragon zones ----
   if (OVERLAY_READY && faces.length) {
-    const rock = await loadModel('v33_overlay', OVERLAY_URL);
-    if (rock && !isStale()) {
-      const size = rock.box.getSize(new THREE.Vector3()), centre = rock.box.getCenter(new THREE.Vector3());
-      const sx = 4.15 / size.x, sz = Math.min(1, 0.85 / size.z), sy = 4.0 / size.y;
-      const om = [];
+    const rocks = (await Promise.all(OVERLAY_IDS.map(loadProp))).filter(Boolean);
+    if (rocks.length && !isStale()) {
+      const per = rocks.map(() => []);
       for (const f of faces) {
         if (hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 830) > ZONE_OVERLAY[f.theme]) continue;
-        const flip = 1;   // no mirroring: negative instance scale would turn the faces inside out
+        const k = Math.floor(hash(f.tx, f.ty * 7 + f.dx, 833) * rocks.length), rock = rocks[k];
+        const size = rock.box.getSize(new THREE.Vector3()), centre = rock.box.getCenter(new THREE.Vector3());
+        const sx = 4.15 / size.x, sz = Math.min(1, 0.85 / size.z), sy = 4.0 / size.y;
         const skin = 2 - 0.325 - 0.12;
-        const M = new THREE.Matrix4().compose(
+        per[k].push(new THREE.Matrix4().compose(
           new THREE.Vector3(f.tx * CELL + f.dx * skin, -0.05, f.ty * CELL + f.dz * skin),
           new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.atan2(-f.dx, -f.dz) + (OVERLAY_FRONT_Z > 0 ? 0 : Math.PI), 0)),
           new THREE.Vector3(1, 1, 1))
-          .multiply(new THREE.Matrix4().makeScale(sx * flip, sy * (0.92 + 0.16 * hash(f.tx, f.ty, 832)), sz))
-          .multiply(new THREE.Matrix4().makeTranslation(-centre.x, -rock.box.min.y, -(OVERLAY_FRONT_Z > 0 ? rock.box.min.z : rock.box.max.z)));
-        om.push(M);
+          .multiply(new THREE.Matrix4().makeScale(sx, sy * (0.94 + 0.12 * hash(f.tx, f.ty, 832)), sz))
+          .multiply(new THREE.Matrix4().makeTranslation(-centre.x, -rock.box.min.y, -(OVERLAY_FRONT_Z > 0 ? rock.box.min.z : rock.box.max.z))));
       }
-      if (om.length) { instance(group, owned, rock, om, 'b4:v33-rock-overlay'); info.overlays = om.length; }
+      info.overlays = 0;
+      rocks.forEach((rock, k) => { if (per[k].length) { instance(group, owned, rock, per[k], `b4:wall-panel-${k}`); info.overlays += per[k].length; } });
     }
   }
   // ---- wall crystal sites: the dragon team's ore cluster replaces the cone placeholders ----
   if (oreSites.length && ORE_READY) {
     const ore = await loadProp('b4p_dragon_ore_cluster');
     if (ore && !isStale()) {
-      const om = oreSites.map(o => new THREE.Matrix4().compose(
+      const tileOf = o => [Math.round(o.x / CELL), Math.round(o.z / CELL)];
+      const picked = oreSites.filter(o => { const [x, y] = tileOf(o); const th = themeAt(x, y); return th === 'deposit' || (th === 'dragon' && o.k < 0.09); }).slice(0, 24);
+      const om = picked.map(o => new THREE.Matrix4().compose(
         new THREE.Vector3(o.x - o.dx * 0.25, 0, o.z - o.dz * 0.25),
         new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.atan2(-o.dx, -o.dz) + Math.PI + (o.k - 0.08) * 3, 0)),
         new THREE.Vector3().setScalar(0.9 + o.k * 2.2)));
       instance(group, owned, ore, om, 'b4:prop:b4p_dragon_ore_cluster');
-      info.byId.b4p_dragon_ore_cluster = om.length;
+      info.oreSites = om.length;
       if (crystalGeo) for (const ch of root.children) if (ch.geometry === crystalGeo) ch.visible = false;
     }
   }

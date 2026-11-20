@@ -1,128 +1,128 @@
 [b4-props] optimize b4lod_v33_rockwall <- assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb
-02:20:36 | INFO: Data are loaded, start creating Blender stuff
-02:20:36 | INFO: Blender create Mesh node Mesh_0
-02:20:36 | INFO: Blender create Mesh node Icosphere
-02:20:36 | INFO: Blender create Mesh node Icosphere.001
-02:20:36 | INFO: Blender create Mesh node Icosphere.002
-02:20:36 | INFO: Blender create Mesh node Icosphere.003
-02:20:36 | INFO: Blender create Mesh node rock_face_section_2_proxy.003
-02:20:36 | INFO: Blender create Mesh node rock_face_section_2_proxy.004
-02:20:36 | INFO: Blender create Mesh node rock_face_section_2_proxy.005
-02:20:36 | INFO: Blender create Mesh node rock_face_section_2_proxy.006
-02:20:36 | INFO: Blender create Mesh node rock_face_section_2_proxy.007
-02:20:36 | INFO: Blender create Mesh node rock_face_section_2_proxy.008
-02:20:37 | INFO: Blender create Mesh node Icosphere.010
-02:20:37 | INFO: Blender create Mesh node Icosphere.011
-02:20:37 | INFO: Blender create Mesh node Icosphere.012
-02:20:37 | INFO: Blender create Mesh node Icosphere.013
-02:20:37 | INFO: Blender create Mesh node Icosphere.014
-02:20:37 | INFO: Blender create Mesh node Icosphere.015
-02:20:37 | INFO: Blender create Mesh node Icosphere.016
-02:20:37 | INFO: Blender create Mesh node Icosphere.017
-02:20:37 | INFO: Blender create Mesh node Icosphere.018
-02:20:37 | INFO: Blender create Mesh node Icosphere.019
-02:20:37 | INFO: Blender create Mesh node Icosphere.020
-02:20:37 | INFO: Blender create Mesh node Icosphere.021
-02:20:37 | INFO: Blender create Mesh node Icosphere.022
-02:20:37 | INFO: Blender create Mesh node Icosphere.023
-02:20:37 | INFO: Blender create Mesh node Icosphere.024
-02:20:37 | INFO: Blender create Mesh node Icosphere.025
-02:20:37 | INFO: Blender create Mesh node Icosphere.026
-02:20:37 | INFO: Blender create Mesh node Icosphere.027
-02:20:37 | INFO: Blender create Mesh node Icosphere.028
-02:20:37 | INFO: Blender create Mesh node Icosphere.029
-02:20:37 | INFO: Blender create Mesh node Icosphere.030
-02:20:37 | INFO: Blender create Mesh node Icosphere.031
-02:20:37 | INFO: Blender create Mesh node Icosphere.032
-02:20:37 | INFO: Blender create Mesh node Icosphere.033
-02:20:37 | INFO: Blender create Mesh node Icosphere.034
-02:20:37 | INFO: Blender create Mesh node Icosphere.035
-02:20:37 | INFO: Blender create Mesh node Icosphere.036
-02:20:37 | INFO: Blender create Mesh node Icosphere.037
-02:20:37 | INFO: Blender create Mesh node Icosphere.038
-02:20:37 | INFO: Blender create Mesh node Icosphere.039
-02:20:37 | INFO: Blender create Mesh node Icosphere.040
-02:20:37 | INFO: Blender create Mesh node Icosphere.041
-02:20:37 | INFO: Blender create Mesh node Icosphere.042
-02:20:37 | INFO: Blender create Mesh node Icosphere.043
-02:20:37 | INFO: Blender create Mesh node Icosphere.044
-02:20:37 | INFO: Blender create Mesh node Icosphere.045
-02:20:37 | INFO: Blender create Mesh node Icosphere.046
-02:20:37 | INFO: Blender create Mesh node Icosphere.047
-02:20:37 | INFO: Blender create Mesh node Icosphere.048
-02:20:37 | INFO: Blender create Mesh node Icosphere.049
-02:20:37 | INFO: Blender create Mesh node Icosphere.050
-02:20:37 | INFO: Blender create Mesh node Icosphere.051
-02:20:37 | INFO: Blender create Mesh node Icosphere.052
-02:20:37 | INFO: Blender create Mesh node Icosphere.053
-02:20:37 | INFO: Blender create Mesh node Icosphere.054
-02:20:37 | INFO: Blender create Mesh node Icosphere.055
-02:20:37 | INFO: Blender create Mesh node Icosphere.056
-02:20:37 | INFO: Blender create Mesh node Icosphere.057
-02:20:37 | INFO: Blender create Mesh node Icosphere.058
-02:20:37 | INFO: Blender create Mesh node Icosphere.059
-02:20:37 | INFO: Blender create Mesh node Icosphere.060
-02:20:37 | INFO: Blender create Mesh node Icosphere.061
-02:20:37 | INFO: Blender create Mesh node Icosphere.062
-02:20:37 | INFO: Blender create Mesh node Icosphere.063
-02:20:37 | INFO: Blender create Mesh node Icosphere.064
-02:20:37 | INFO: Blender create Mesh node Sphere
-02:20:37 | INFO: Blender create Mesh node Sphere.001
-02:20:37 | INFO: Blender create Mesh node Sphere.002
-02:20:37 | INFO: Blender create Mesh node Sphere.003
-02:20:37 | INFO: Blender create Mesh node Sphere.004
-02:20:37 | INFO: Blender create Mesh node Sphere.005
-02:20:37 | INFO: Blender create Mesh node Sphere.006
-02:20:37 | INFO: Blender create Mesh node Sphere.007
-02:20:37 | INFO: Blender create Mesh node Sphere.008
-02:20:37 | INFO: Blender create Mesh node Sphere.009
-02:20:37 | INFO: Blender create Mesh node Sphere.010
-02:20:37 | INFO: Blender create Mesh node Sphere.011
-02:20:37 | INFO: Blender create Mesh node Sphere.012
-02:20:37 | INFO: Blender create Mesh node Sphere.013
-02:20:37 | INFO: Blender create Mesh node Sphere.014
-02:20:37 | INFO: Blender create Mesh node Sphere.015
-02:20:37 | INFO: Blender create Mesh node Sphere.016
-02:20:37 | INFO: Blender create Mesh node Sphere.017
-02:20:37 | INFO: Blender create Mesh node Sphere.018
-02:20:37 | INFO: Blender create Mesh node Sphere.019
-02:20:37 | INFO: Blender create Mesh node Sphere.020
-02:20:37 | INFO: Blender create Mesh node Sphere.021
-02:20:37 | INFO: Blender create Mesh node Sphere.022
-02:20:37 | INFO: Blender create Mesh node Sphere.023
-02:20:37 | INFO: Blender create Mesh node V33 magma rim 0-0
-02:20:37 | INFO: Blender create Mesh node V33 magma river 0-0
-02:20:37 | INFO: Blender create Mesh node V33 magma core 0-0
-02:20:37 | INFO: Blender create Mesh node V33 magma rim 1-0
-02:20:37 | INFO: Blender create Mesh node V33 magma river 1-0
-02:20:37 | INFO: Blender create Mesh node V33 magma core 1-0
-02:20:37 | INFO: Blender create Mesh node V33 magma rim 2-0
-02:20:37 | INFO: Blender create Mesh node V33 magma river 2-0
-02:20:37 | INFO: Blender create Mesh node V33 magma core 2-0
-02:20:37 | INFO: glTF import finished in 0.64s
+04:49:09 | INFO: Data are loaded, start creating Blender stuff
+04:49:09 | INFO: Blender create Mesh node Mesh_0
+04:49:09 | INFO: Blender create Mesh node Icosphere
+04:49:09 | INFO: Blender create Mesh node Icosphere.001
+04:49:09 | INFO: Blender create Mesh node Icosphere.002
+04:49:09 | INFO: Blender create Mesh node Icosphere.003
+04:49:09 | INFO: Blender create Mesh node rock_face_section_2_proxy.003
+04:49:09 | INFO: Blender create Mesh node rock_face_section_2_proxy.004
+04:49:09 | INFO: Blender create Mesh node rock_face_section_2_proxy.005
+04:49:09 | INFO: Blender create Mesh node rock_face_section_2_proxy.006
+04:49:09 | INFO: Blender create Mesh node rock_face_section_2_proxy.007
+04:49:09 | INFO: Blender create Mesh node rock_face_section_2_proxy.008
+04:49:09 | INFO: Blender create Mesh node Icosphere.010
+04:49:09 | INFO: Blender create Mesh node Icosphere.011
+04:49:09 | INFO: Blender create Mesh node Icosphere.012
+04:49:09 | INFO: Blender create Mesh node Icosphere.013
+04:49:09 | INFO: Blender create Mesh node Icosphere.014
+04:49:09 | INFO: Blender create Mesh node Icosphere.015
+04:49:09 | INFO: Blender create Mesh node Icosphere.016
+04:49:09 | INFO: Blender create Mesh node Icosphere.017
+04:49:09 | INFO: Blender create Mesh node Icosphere.018
+04:49:09 | INFO: Blender create Mesh node Icosphere.019
+04:49:09 | INFO: Blender create Mesh node Icosphere.020
+04:49:09 | INFO: Blender create Mesh node Icosphere.021
+04:49:09 | INFO: Blender create Mesh node Icosphere.022
+04:49:09 | INFO: Blender create Mesh node Icosphere.023
+04:49:09 | INFO: Blender create Mesh node Icosphere.024
+04:49:09 | INFO: Blender create Mesh node Icosphere.025
+04:49:09 | INFO: Blender create Mesh node Icosphere.026
+04:49:09 | INFO: Blender create Mesh node Icosphere.027
+04:49:09 | INFO: Blender create Mesh node Icosphere.028
+04:49:09 | INFO: Blender create Mesh node Icosphere.029
+04:49:09 | INFO: Blender create Mesh node Icosphere.030
+04:49:09 | INFO: Blender create Mesh node Icosphere.031
+04:49:09 | INFO: Blender create Mesh node Icosphere.032
+04:49:09 | INFO: Blender create Mesh node Icosphere.033
+04:49:09 | INFO: Blender create Mesh node Icosphere.034
+04:49:09 | INFO: Blender create Mesh node Icosphere.035
+04:49:09 | INFO: Blender create Mesh node Icosphere.036
+04:49:09 | INFO: Blender create Mesh node Icosphere.037
+04:49:09 | INFO: Blender create Mesh node Icosphere.038
+04:49:09 | INFO: Blender create Mesh node Icosphere.039
+04:49:09 | INFO: Blender create Mesh node Icosphere.040
+04:49:09 | INFO: Blender create Mesh node Icosphere.041
+04:49:09 | INFO: Blender create Mesh node Icosphere.042
+04:49:09 | INFO: Blender create Mesh node Icosphere.043
+04:49:09 | INFO: Blender create Mesh node Icosphere.044
+04:49:09 | INFO: Blender create Mesh node Icosphere.045
+04:49:09 | INFO: Blender create Mesh node Icosphere.046
+04:49:09 | INFO: Blender create Mesh node Icosphere.047
+04:49:09 | INFO: Blender create Mesh node Icosphere.048
+04:49:09 | INFO: Blender create Mesh node Icosphere.049
+04:49:09 | INFO: Blender create Mesh node Icosphere.050
+04:49:09 | INFO: Blender create Mesh node Icosphere.051
+04:49:09 | INFO: Blender create Mesh node Icosphere.052
+04:49:09 | INFO: Blender create Mesh node Icosphere.053
+04:49:09 | INFO: Blender create Mesh node Icosphere.054
+04:49:09 | INFO: Blender create Mesh node Icosphere.055
+04:49:09 | INFO: Blender create Mesh node Icosphere.056
+04:49:09 | INFO: Blender create Mesh node Icosphere.057
+04:49:09 | INFO: Blender create Mesh node Icosphere.058
+04:49:09 | INFO: Blender create Mesh node Icosphere.059
+04:49:09 | INFO: Blender create Mesh node Icosphere.060
+04:49:09 | INFO: Blender create Mesh node Icosphere.061
+04:49:09 | INFO: Blender create Mesh node Icosphere.062
+04:49:09 | INFO: Blender create Mesh node Icosphere.063
+04:49:09 | INFO: Blender create Mesh node Icosphere.064
+04:49:09 | INFO: Blender create Mesh node Sphere
+04:49:09 | INFO: Blender create Mesh node Sphere.001
+04:49:09 | INFO: Blender create Mesh node Sphere.002
+04:49:09 | INFO: Blender create Mesh node Sphere.003
+04:49:09 | INFO: Blender create Mesh node Sphere.004
+04:49:09 | INFO: Blender create Mesh node Sphere.005
+04:49:09 | INFO: Blender create Mesh node Sphere.006
+04:49:09 | INFO: Blender create Mesh node Sphere.007
+04:49:09 | INFO: Blender create Mesh node Sphere.008
+04:49:09 | INFO: Blender create Mesh node Sphere.009
+04:49:09 | INFO: Blender create Mesh node Sphere.010
+04:49:09 | INFO: Blender create Mesh node Sphere.011
+04:49:09 | INFO: Blender create Mesh node Sphere.012
+04:49:09 | INFO: Blender create Mesh node Sphere.013
+04:49:09 | INFO: Blender create Mesh node Sphere.014
+04:49:09 | INFO: Blender create Mesh node Sphere.015
+04:49:09 | INFO: Blender create Mesh node Sphere.016
+04:49:09 | INFO: Blender create Mesh node Sphere.017
+04:49:09 | INFO: Blender create Mesh node Sphere.018
+04:49:09 | INFO: Blender create Mesh node Sphere.019
+04:49:09 | INFO: Blender create Mesh node Sphere.020
+04:49:09 | INFO: Blender create Mesh node Sphere.021
+04:49:09 | INFO: Blender create Mesh node Sphere.022
+04:49:09 | INFO: Blender create Mesh node Sphere.023
+04:49:09 | INFO: Blender create Mesh node V33 magma rim 0-0
+04:49:09 | INFO: Blender create Mesh node V33 magma river 0-0
+04:49:09 | INFO: Blender create Mesh node V33 magma core 0-0
+04:49:09 | INFO: Blender create Mesh node V33 magma rim 1-0
+04:49:09 | INFO: Blender create Mesh node V33 magma river 1-0
+04:49:09 | INFO: Blender create Mesh node V33 magma core 1-0
+04:49:09 | INFO: Blender create Mesh node V33 magma rim 2-0
+04:49:09 | INFO: Blender create Mesh node V33 magma river 2-0
+04:49:09 | INFO: Blender create Mesh node V33 magma core 2-0
+04:49:09 | INFO: glTF import finished in 0.37s
+[b4-props] removed 104028/104163 small islands
 Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)
-Fra:1 Mem:524.60M (Peak 568.75M) | Time:498650:20:47.91 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:554.72M (Peak 623.24M) | Time:498650:20:48.09 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:554.72M (Peak 623.24M) | Time:498650:20:48.09 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_basecolor
-Fra:1 Mem:549.78M (Peak 1233.86M) | Time:498650:20:53.01 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:570.74M (Peak 1233.86M) | Time:498650:20:53.16 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:570.73M (Peak 1233.86M) | Time:498650:20:53.16 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_roughness
-Fra:1 Mem:565.79M (Peak 1249.53M) | Time:498650:20:57.94 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:586.75M (Peak 1249.53M) | Time:498650:20:58.08 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:586.74M (Peak 1249.53M) | Time:498650:20:58.08 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_metallic
-Fra:1 Mem:581.80M (Peak 1249.53M) | Time:498650:21:01.78 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:602.76M (Peak 1249.53M) | Time:498650:21:01.91 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:602.76M (Peak 1249.53M) | Time:498650:21:01.91 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_emissive
-Fra:1 Mem:597.74M (Peak 1249.53M) | Time:498650:21:06.25 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:625.92M (Peak 1249.53M) | Time:498650:21:06.40 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:625.92M (Peak 1249.53M) | Time:498650:21:06.40 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_normal
-02:21:09 | INFO: Starting glTF 2.0 export
-02:21:09 | WARNING: Mesh Mesh_0.001 is not valid, and may be exported wrongly
-02:21:09 | INFO: Extracting primitive: Mesh_0.001
-02:21:10 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
-02:21:10 | INFO: Primitives created: 1
-02:21:10 | INFO: Finished glTF 2.0 export in 0.2986307144165039 s
-Info: Removed 269487 vertices
+Fra:1 Mem:206.93M (Peak 366.02M) | Time:498652:49:15.02 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:222.81M (Peak 366.02M) | Time:498652:49:15.10 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:222.80M (Peak 366.02M) | Time:498652:49:15.10 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_basecolor
+Fra:1 Mem:217.49M (Peak 438.94M) | Time:498652:49:16.75 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:226.81M (Peak 438.94M) | Time:498652:49:16.81 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:226.81M (Peak 438.94M) | Time:498652:49:16.81 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_roughness
+Fra:1 Mem:221.49M (Peak 438.95M) | Time:498652:49:18.15 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:230.82M (Peak 438.95M) | Time:498652:49:18.21 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:230.82M (Peak 438.95M) | Time:498652:49:18.21 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_metallic
+Fra:1 Mem:225.51M (Peak 438.95M) | Time:498652:49:18.98 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:234.83M (Peak 438.95M) | Time:498652:49:19.05 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:234.83M (Peak 438.95M) | Time:498652:49:19.05 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_emissive
+Fra:1 Mem:229.45M (Peak 438.95M) | Time:498652:49:19.92 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:257.50M (Peak 438.95M) | Time:498652:49:20.05 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:257.50M (Peak 438.95M) | Time:498652:49:20.05 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_normal
+04:49:21 | INFO: Starting glTF 2.0 export
+04:49:21 | INFO: Extracting primitive: Mesh_0.001
+04:49:21 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+04:49:21 | INFO: Primitives created: 1
+04:49:21 | INFO: Finished glTF 2.0 export in 0.08172893524169922 s
+Info: Removed 7170 vertices
 Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
@@ -131,282 +131,278 @@ Info: Baking map saved to internal image, save it externally or pack it
 INFO Draco mesh compression is available, use library at /home/runner/blender/4.2/python/lib/python3.11/site-packages/libextern_draco.so
 
 [b4-props] render b4lod_v33_rockwall_volcanic_front.png
-Fra:1 Mem:136.66M (Peak 200.29M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall
-Fra:1 Mem:136.67M (Peak 200.29M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:137.76M (Peak 200.29M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:137.42M (Peak 200.29M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:137.42M (Peak 200.29M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:137.42M (Peak 200.29M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:137.42M (Peak 200.29M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:137.51M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:137.64M (Peak 200.29M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:138.32M (Peak 200.29M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:138.32M (Peak 200.29M) | Time:00:00.01 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:138.32M (Peak 200.29M) | Time:00:00.01 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:138.32M (Peak 200.29M) | Time:00:00.01 | Mem:0.95M, Peak:0.95M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:138.32M (Peak 200.29M) | Time:00:00.01 | Mem:1.28M, Peak:1.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:138.32M (Peak 200.29M) | Time:00:00.01 | Mem:1.28M, Peak:1.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:138.64M (Peak 200.29M) | Time:00:00.01 | Mem:1.28M, Peak:1.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:138.64M (Peak 200.29M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:138.64M (Peak 200.29M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:138.64M (Peak 200.29M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:138.64M (Peak 200.29M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_emissive.png
-Fra:1 Mem:138.64M (Peak 200.29M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_normal.png
-Fra:1 Mem:202.65M (Peak 202.65M) | Time:00:00.10 | Mem:65.60M, Peak:65.60M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:202.65M (Peak 202.65M) | Time:00:00.10 | Mem:65.60M, Peak:65.60M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:202.65M (Peak 202.65M) | Time:00:00.10 | Mem:65.68M, Peak:65.68M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:202.65M (Peak 202.65M) | Time:00:00.10 | Mem:65.69M, Peak:65.69M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:204.32M (Peak 205.41M) | Time:00:00.13 | Mem:67.35M, Peak:67.35M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:204.32M (Peak 205.41M) | Time:00:00.13 | Mem:67.35M, Peak:67.35M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:204.33M (Peak 205.41M) | Time:00:00.13 | Mem:67.27M, Peak:67.35M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:204.33M (Peak 205.41M) | Time:00:00.13 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:204.33M (Peak 205.41M) | Time:00:00.13 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:204.33M (Peak 205.41M) | Time:00:00.13 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:204.33M (Peak 205.41M) | Time:00:00.13 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Sample 0/64
-Fra:1 Mem:280.34M (Peak 280.34M) | Time:00:01.37 | Remaining:01:18.08 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 1/64
-Fra:1 Mem:280.34M (Peak 280.34M) | Time:00:40.65 | Remaining:00:38.06 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 33/64
-Fra:1 Mem:312.34M (Peak 360.35M) | Time:01:29.96 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 64/64
-Fra:1 Mem:312.34M (Peak 360.35M) | Time:01:29.96 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Finished
+Fra:1 Mem:85.89M (Peak 101.52M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall
+Fra:1 Mem:85.89M (Peak 101.52M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:86.99M (Peak 101.52M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:86.65M (Peak 101.52M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:86.66M (Peak 101.52M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:86.66M (Peak 101.52M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:86.66M (Peak 101.52M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:86.74M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:86.88M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:87.56M (Peak 101.52M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:87.56M (Peak 101.52M) | Time:00:00.00 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:87.56M (Peak 101.52M) | Time:00:00.00 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:87.56M (Peak 101.52M) | Time:00:00.00 | Mem:0.96M, Peak:0.96M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:87.56M (Peak 101.52M) | Time:00:00.00 | Mem:1.32M, Peak:1.59M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:87.56M (Peak 101.52M) | Time:00:00.00 | Mem:1.32M, Peak:1.59M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:87.88M (Peak 101.52M) | Time:00:00.00 | Mem:1.32M, Peak:1.59M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:87.88M (Peak 101.52M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:87.88M (Peak 101.52M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:87.88M (Peak 101.52M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:87.88M (Peak 101.52M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_emissive.png
+Fra:1 Mem:91.88M (Peak 101.52M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_normal.png
+Fra:1 Mem:103.90M (Peak 103.90M) | Time:00:00.02 | Mem:17.64M, Peak:17.64M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:103.90M (Peak 103.90M) | Time:00:00.02 | Mem:17.64M, Peak:17.64M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:103.90M (Peak 103.90M) | Time:00:00.02 | Mem:17.72M, Peak:17.72M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:103.90M (Peak 103.90M) | Time:00:00.02 | Mem:17.72M, Peak:17.72M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:105.58M (Peak 106.68M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:105.58M (Peak 106.68M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:105.58M (Peak 106.68M) | Time:00:00.04 | Mem:19.33M, Peak:19.41M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:105.58M (Peak 106.68M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:105.58M (Peak 106.68M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:105.58M (Peak 106.68M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:105.58M (Peak 106.68M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Sample 0/64
+Fra:1 Mem:181.60M (Peak 181.60M) | Time:00:00.90 | Remaining:00:53.93 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Sample 1/64
+Fra:1 Mem:181.60M (Peak 181.60M) | Time:00:26.08 | Remaining:00:24.46 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Sample 33/64
+Fra:1 Mem:213.60M (Peak 261.60M) | Time:00:55.53 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Sample 64/64
+Fra:1 Mem:213.60M (Peak 261.60M) | Time:00:55.53 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4lod_v33_rockwall/b4lod_v33_rockwall_volcanic_front.png'
-Time: 01:30.25 (Saving: 00:00.29)
+Time: 00:55.74 (Saving: 00:00.20)
 
 [b4-props] render b4lod_v33_rockwall_volcanic_angle.png
-Fra:1 Mem:136.74M (Peak 136.74M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall
-Fra:1 Mem:136.76M (Peak 136.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:137.83M (Peak 137.84M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:137.49M (Peak 137.84M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:137.49M (Peak 137.84M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:137.49M (Peak 137.84M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:137.49M (Peak 137.84M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:137.58M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:137.72M (Peak 137.84M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:138.39M (Peak 138.39M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:138.39M (Peak 138.39M) | Time:00:00.00 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:138.39M (Peak 138.39M) | Time:00:00.00 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:138.39M (Peak 138.39M) | Time:00:00.00 | Mem:0.95M, Peak:0.95M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:138.39M (Peak 138.39M) | Time:00:00.01 | Mem:1.28M, Peak:1.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:138.39M (Peak 138.39M) | Time:00:00.01 | Mem:1.28M, Peak:1.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:138.72M (Peak 138.72M) | Time:00:00.01 | Mem:1.28M, Peak:1.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:138.72M (Peak 138.72M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:138.72M (Peak 138.72M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:138.72M (Peak 138.72M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:138.72M (Peak 138.72M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_emissive.png
-Fra:1 Mem:138.72M (Peak 138.72M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_basecolor.png
-Fra:1 Mem:202.73M (Peak 202.73M) | Time:00:00.09 | Mem:65.60M, Peak:65.60M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:202.73M (Peak 202.73M) | Time:00:00.09 | Mem:65.60M, Peak:65.60M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:202.73M (Peak 202.73M) | Time:00:00.09 | Mem:65.68M, Peak:65.68M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:202.73M (Peak 202.73M) | Time:00:00.09 | Mem:65.69M, Peak:65.69M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:204.40M (Peak 205.49M) | Time:00:00.12 | Mem:67.35M, Peak:67.35M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:204.40M (Peak 205.49M) | Time:00:00.12 | Mem:67.35M, Peak:67.35M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:204.40M (Peak 205.49M) | Time:00:00.12 | Mem:67.27M, Peak:67.35M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:204.40M (Peak 205.49M) | Time:00:00.12 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:204.40M (Peak 205.49M) | Time:00:00.12 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:204.40M (Peak 205.49M) | Time:00:00.12 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:204.40M (Peak 205.49M) | Time:00:00.12 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Sample 0/64
-Fra:1 Mem:280.42M (Peak 280.42M) | Time:00:01.54 | Remaining:01:29.13 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 1/64
-Fra:1 Mem:280.42M (Peak 280.42M) | Time:00:23.74 | Remaining:01:05.29 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 17/64
-Fra:1 Mem:280.42M (Peak 280.42M) | Time:00:45.80 | Remaining:00:42.91 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 33/64
-Fra:1 Mem:280.42M (Peak 280.42M) | Time:01:08.09 | Remaining:00:20.80 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 49/64
-Fra:1 Mem:312.42M (Peak 360.42M) | Time:01:40.25 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 64/64
-Fra:1 Mem:312.42M (Peak 360.42M) | Time:01:40.25 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Finished
+Fra:1 Mem:85.97M (Peak 85.97M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall
+Fra:1 Mem:85.97M (Peak 85.97M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:87.07M (Peak 87.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:86.73M (Peak 87.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:86.73M (Peak 87.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:86.73M (Peak 87.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:86.73M (Peak 87.07M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:86.82M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:86.95M (Peak 87.07M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:87.63M (Peak 87.63M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:87.63M (Peak 87.63M) | Time:00:00.00 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:87.63M (Peak 87.63M) | Time:00:00.00 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:87.63M (Peak 87.63M) | Time:00:00.00 | Mem:0.96M, Peak:0.96M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:87.63M (Peak 87.63M) | Time:00:00.00 | Mem:1.32M, Peak:1.59M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:87.63M (Peak 87.63M) | Time:00:00.00 | Mem:1.32M, Peak:1.59M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:87.96M (Peak 87.96M) | Time:00:00.00 | Mem:1.32M, Peak:1.59M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:87.96M (Peak 87.96M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:87.96M (Peak 87.96M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:87.96M (Peak 87.96M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:87.96M (Peak 87.96M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_emissive.png
+Fra:1 Mem:91.96M (Peak 91.96M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_normal.png
+Fra:1 Mem:103.97M (Peak 103.97M) | Time:00:00.02 | Mem:17.64M, Peak:17.64M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:103.97M (Peak 103.97M) | Time:00:00.02 | Mem:17.64M, Peak:17.64M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:103.97M (Peak 103.97M) | Time:00:00.02 | Mem:17.72M, Peak:17.72M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:103.97M (Peak 103.97M) | Time:00:00.02 | Mem:17.72M, Peak:17.72M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:105.65M (Peak 106.75M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:105.65M (Peak 106.75M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:105.66M (Peak 106.75M) | Time:00:00.04 | Mem:19.33M, Peak:19.41M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:105.66M (Peak 106.75M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:105.66M (Peak 106.75M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:105.66M (Peak 106.75M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:105.66M (Peak 106.75M) | Time:00:00.04 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Sample 0/64
+Fra:1 Mem:181.67M (Peak 181.67M) | Time:00:00.87 | Remaining:00:52.00 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Sample 1/64
+Fra:1 Mem:181.67M (Peak 181.67M) | Time:00:27.17 | Remaining:00:25.47 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Sample 33/64
+Fra:1 Mem:213.67M (Peak 261.68M) | Time:00:57.36 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Sample 64/64
+Fra:1 Mem:213.67M (Peak 261.68M) | Time:00:57.36 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4lod_v33_rockwall/b4lod_v33_rockwall_volcanic_angle.png'
-Time: 01:40.44 (Saving: 00:00.19)
+Time: 00:57.51 (Saving: 00:00.14)
 
 [b4-props] render b4lod_v33_rockwall_volcanic_close.png
-Fra:1 Mem:136.80M (Peak 136.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall
-Fra:1 Mem:136.80M (Peak 136.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:137.89M (Peak 137.89M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:137.55M (Peak 137.89M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:137.55M (Peak 137.89M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:137.55M (Peak 137.89M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:137.55M (Peak 137.89M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:137.64M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:137.78M (Peak 137.89M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:138.45M (Peak 138.45M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:138.45M (Peak 138.45M) | Time:00:00.01 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:138.45M (Peak 138.45M) | Time:00:00.01 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:138.45M (Peak 138.45M) | Time:00:00.01 | Mem:0.95M, Peak:0.95M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:138.45M (Peak 138.45M) | Time:00:00.01 | Mem:1.28M, Peak:1.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:138.45M (Peak 138.45M) | Time:00:00.01 | Mem:1.28M, Peak:1.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:138.77M (Peak 138.77M) | Time:00:00.01 | Mem:1.28M, Peak:1.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:138.77M (Peak 138.77M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:138.77M (Peak 138.77M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:138.77M (Peak 138.77M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:138.77M (Peak 138.77M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_emissive.png
-Fra:1 Mem:138.77M (Peak 138.77M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_basecolor.png
-Fra:1 Mem:138.77M (Peak 138.77M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_normal.png
-Fra:1 Mem:202.79M (Peak 202.79M) | Time:00:00.10 | Mem:65.60M, Peak:65.60M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:202.79M (Peak 202.79M) | Time:00:00.10 | Mem:65.60M, Peak:65.60M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:202.79M (Peak 202.79M) | Time:00:00.10 | Mem:65.68M, Peak:65.68M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:202.79M (Peak 202.79M) | Time:00:00.10 | Mem:65.69M, Peak:65.69M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:204.45M (Peak 205.54M) | Time:00:00.13 | Mem:67.35M, Peak:67.35M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:204.45M (Peak 205.54M) | Time:00:00.13 | Mem:67.35M, Peak:67.35M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:204.46M (Peak 205.54M) | Time:00:00.13 | Mem:67.27M, Peak:67.35M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:204.46M (Peak 205.54M) | Time:00:00.13 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:204.46M (Peak 205.54M) | Time:00:00.13 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:204.46M (Peak 205.54M) | Time:00:00.13 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:204.46M (Peak 205.54M) | Time:00:00.13 | Mem:67.36M, Peak:67.36M | Scene, ViewLayer | Sample 0/64
-Fra:1 Mem:280.47M (Peak 280.47M) | Time:00:01.99 | Remaining:01:57.47 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 1/64
-Fra:1 Mem:280.47M (Peak 280.47M) | Time:00:31.29 | Remaining:01:26.16 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 17/64
-Fra:1 Mem:280.47M (Peak 280.47M) | Time:01:00.85 | Remaining:00:57.03 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 33/64
-Fra:1 Mem:280.47M (Peak 280.47M) | Time:01:30.28 | Remaining:00:27.59 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 49/64
-Fra:1 Mem:312.48M (Peak 360.48M) | Time:02:09.06 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Sample 64/64
-Fra:1 Mem:312.48M (Peak 360.48M) | Time:02:09.06 | Mem:143.37M, Peak:143.37M | Scene, ViewLayer | Finished
+Fra:1 Mem:86.02M (Peak 86.02M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall
+Fra:1 Mem:86.03M (Peak 86.03M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:87.12M (Peak 87.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:86.78M (Peak 87.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:86.79M (Peak 87.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:86.79M (Peak 87.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:86.79M (Peak 87.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:86.87M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:86.87M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:86.87M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:86.87M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:86.87M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:86.87M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:86.88M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:86.88M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:86.88M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:86.88M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:87.01M (Peak 87.13M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:87.69M (Peak 87.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:87.69M (Peak 87.69M) | Time:00:00.00 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:87.69M (Peak 87.69M) | Time:00:00.00 | Mem:0.68M, Peak:0.68M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:87.69M (Peak 87.69M) | Time:00:00.00 | Mem:0.96M, Peak:0.96M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:87.69M (Peak 87.69M) | Time:00:00.00 | Mem:1.32M, Peak:1.59M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:87.69M (Peak 87.69M) | Time:00:00.00 | Mem:1.32M, Peak:1.59M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:88.02M (Peak 88.02M) | Time:00:00.00 | Mem:1.32M, Peak:1.59M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:88.02M (Peak 88.02M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:88.02M (Peak 88.02M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:88.02M (Peak 88.02M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:88.02M (Peak 88.02M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_emissive.png
+Fra:1 Mem:92.02M (Peak 92.02M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_basecolor.png
+Fra:1 Mem:96.02M (Peak 96.02M) | Time:00:00.00 | Mem:1.64M, Peak:1.64M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_normal.png
+Fra:1 Mem:104.03M (Peak 104.03M) | Time:00:00.03 | Mem:17.64M, Peak:17.64M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:104.03M (Peak 104.03M) | Time:00:00.03 | Mem:17.64M, Peak:17.64M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:104.03M (Peak 104.03M) | Time:00:00.03 | Mem:17.72M, Peak:17.72M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:104.03M (Peak 104.03M) | Time:00:00.03 | Mem:17.72M, Peak:17.72M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:105.71M (Peak 106.81M) | Time:00:00.05 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:105.71M (Peak 106.81M) | Time:00:00.05 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:105.71M (Peak 106.81M) | Time:00:00.05 | Mem:19.33M, Peak:19.41M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:105.71M (Peak 106.81M) | Time:00:00.05 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:105.71M (Peak 106.81M) | Time:00:00.05 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:105.71M (Peak 106.81M) | Time:00:00.05 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:105.71M (Peak 106.81M) | Time:00:00.05 | Mem:19.41M, Peak:19.41M | Scene, ViewLayer | Sample 0/64
+Fra:1 Mem:181.73M (Peak 181.73M) | Time:00:01.28 | Remaining:01:17.42 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Sample 1/64
+Fra:1 Mem:181.73M (Peak 181.73M) | Time:00:41.71 | Remaining:00:39.14 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Sample 33/64
+Fra:1 Mem:213.73M (Peak 261.73M) | Time:01:25.30 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Sample 64/64
+Fra:1 Mem:213.73M (Peak 261.73M) | Time:01:25.30 | Mem:95.42M, Peak:95.42M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4lod_v33_rockwall/b4lod_v33_rockwall_volcanic_close.png'
-Time: 02:09.27 (Saving: 00:00.20)
+Time: 01:25.47 (Saving: 00:00.16)
 
-[b4-props] done b4lod_v33_rockwall: 400570 -> 8920 tris, 3171884 B, bbox [48.58, 23.837, 56.843]
+[b4-props] done b4lod_v33_rockwall: 286200 -> 8998 tris, 1181360 B, bbox [47.693, 21.818, 54.899]
 [b4-props] optimize b4lod_v33_rockwall_3k <- assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb
-02:26:30 | INFO: Data are loaded, start creating Blender stuff
-02:26:30 | INFO: Blender create Mesh node Mesh_0
-02:26:30 | INFO: Blender create Mesh node Icosphere
-02:26:30 | INFO: Blender create Mesh node Icosphere.001
-02:26:30 | INFO: Blender create Mesh node Icosphere.002
-02:26:30 | INFO: Blender create Mesh node Icosphere.003
-02:26:30 | INFO: Blender create Mesh node rock_face_section_2_proxy.003
-02:26:30 | INFO: Blender create Mesh node rock_face_section_2_proxy.004
-02:26:30 | INFO: Blender create Mesh node rock_face_section_2_proxy.005
-02:26:30 | INFO: Blender create Mesh node rock_face_section_2_proxy.006
-02:26:30 | INFO: Blender create Mesh node rock_face_section_2_proxy.007
-02:26:30 | INFO: Blender create Mesh node rock_face_section_2_proxy.008
-02:26:30 | INFO: Blender create Mesh node Icosphere.010
-02:26:30 | INFO: Blender create Mesh node Icosphere.011
-02:26:30 | INFO: Blender create Mesh node Icosphere.012
-02:26:30 | INFO: Blender create Mesh node Icosphere.013
-02:26:30 | INFO: Blender create Mesh node Icosphere.014
-02:26:30 | INFO: Blender create Mesh node Icosphere.015
-02:26:30 | INFO: Blender create Mesh node Icosphere.016
-02:26:30 | INFO: Blender create Mesh node Icosphere.017
-02:26:30 | INFO: Blender create Mesh node Icosphere.018
-02:26:30 | INFO: Blender create Mesh node Icosphere.019
-02:26:30 | INFO: Blender create Mesh node Icosphere.020
-02:26:30 | INFO: Blender create Mesh node Icosphere.021
-02:26:30 | INFO: Blender create Mesh node Icosphere.022
-02:26:30 | INFO: Blender create Mesh node Icosphere.023
-02:26:30 | INFO: Blender create Mesh node Icosphere.024
-02:26:30 | INFO: Blender create Mesh node Icosphere.025
-02:26:30 | INFO: Blender create Mesh node Icosphere.026
-02:26:30 | INFO: Blender create Mesh node Icosphere.027
-02:26:30 | INFO: Blender create Mesh node Icosphere.028
-02:26:30 | INFO: Blender create Mesh node Icosphere.029
-02:26:30 | INFO: Blender create Mesh node Icosphere.030
-02:26:30 | INFO: Blender create Mesh node Icosphere.031
-02:26:30 | INFO: Blender create Mesh node Icosphere.032
-02:26:30 | INFO: Blender create Mesh node Icosphere.033
-02:26:30 | INFO: Blender create Mesh node Icosphere.034
-02:26:30 | INFO: Blender create Mesh node Icosphere.035
-02:26:30 | INFO: Blender create Mesh node Icosphere.036
-02:26:30 | INFO: Blender create Mesh node Icosphere.037
-02:26:30 | INFO: Blender create Mesh node Icosphere.038
-02:26:30 | INFO: Blender create Mesh node Icosphere.039
-02:26:30 | INFO: Blender create Mesh node Icosphere.040
-02:26:30 | INFO: Blender create Mesh node Icosphere.041
-02:26:30 | INFO: Blender create Mesh node Icosphere.042
-02:26:30 | INFO: Blender create Mesh node Icosphere.043
-02:26:30 | INFO: Blender create Mesh node Icosphere.044
-02:26:30 | INFO: Blender create Mesh node Icosphere.045
-02:26:30 | INFO: Blender create Mesh node Icosphere.046
-02:26:30 | INFO: Blender create Mesh node Icosphere.047
-02:26:30 | INFO: Blender create Mesh node Icosphere.048
-02:26:30 | INFO: Blender create Mesh node Icosphere.049
-02:26:30 | INFO: Blender create Mesh node Icosphere.050
-02:26:30 | INFO: Blender create Mesh node Icosphere.051
-02:26:30 | INFO: Blender create Mesh node Icosphere.052
-02:26:30 | INFO: Blender create Mesh node Icosphere.053
-02:26:30 | INFO: Blender create Mesh node Icosphere.054
-02:26:30 | INFO: Blender create Mesh node Icosphere.055
-02:26:30 | INFO: Blender create Mesh node Icosphere.056
-02:26:30 | INFO: Blender create Mesh node Icosphere.057
-02:26:30 | INFO: Blender create Mesh node Icosphere.058
-02:26:30 | INFO: Blender create Mesh node Icosphere.059
-02:26:30 | INFO: Blender create Mesh node Icosphere.060
-02:26:30 | INFO: Blender create Mesh node Icosphere.061
-02:26:30 | INFO: Blender create Mesh node Icosphere.062
-02:26:30 | INFO: Blender create Mesh node Icosphere.063
-02:26:30 | INFO: Blender create Mesh node Icosphere.064
-02:26:30 | INFO: Blender create Mesh node Sphere
-02:26:30 | INFO: Blender create Mesh node Sphere.001
-02:26:30 | INFO: Blender create Mesh node Sphere.002
-02:26:30 | INFO: Blender create Mesh node Sphere.003
-02:26:30 | INFO: Blender create Mesh node Sphere.004
-02:26:30 | INFO: Blender create Mesh node Sphere.005
-02:26:30 | INFO: Blender create Mesh node Sphere.006
-02:26:30 | INFO: Blender create Mesh node Sphere.007
-02:26:30 | INFO: Blender create Mesh node Sphere.008
-02:26:30 | INFO: Blender create Mesh node Sphere.009
-02:26:30 | INFO: Blender create Mesh node Sphere.010
-02:26:30 | INFO: Blender create Mesh node Sphere.011
-02:26:30 | INFO: Blender create Mesh node Sphere.012
-02:26:30 | INFO: Blender create Mesh node Sphere.013
-02:26:30 | INFO: Blender create Mesh node Sphere.014
-02:26:30 | INFO: Blender create Mesh node Sphere.015
-02:26:30 | INFO: Blender create Mesh node Sphere.016
-02:26:30 | INFO: Blender create Mesh node Sphere.017
-02:26:30 | INFO: Blender create Mesh node Sphere.018
-02:26:30 | INFO: Blender create Mesh node Sphere.019
-02:26:30 | INFO: Blender create Mesh node Sphere.020
-02:26:30 | INFO: Blender create Mesh node Sphere.021
-02:26:30 | INFO: Blender create Mesh node Sphere.022
-02:26:30 | INFO: Blender create Mesh node Sphere.023
-02:26:30 | INFO: Blender create Mesh node V33 magma rim 0-0
-02:26:30 | INFO: Blender create Mesh node V33 magma river 0-0
-02:26:30 | INFO: Blender create Mesh node V33 magma core 0-0
-02:26:30 | INFO: Blender create Mesh node V33 magma rim 1-0
-02:26:30 | INFO: Blender create Mesh node V33 magma river 1-0
-02:26:30 | INFO: Blender create Mesh node V33 magma core 1-0
-02:26:30 | INFO: Blender create Mesh node V33 magma rim 2-0
-02:26:30 | INFO: Blender create Mesh node V33 magma river 2-0
-02:26:30 | INFO: Blender create Mesh node V33 magma core 2-0
-02:26:30 | INFO: glTF import finished in 0.57s
-Fra:1 Mem:247.59M (Peak 551.66M) | Time:02:18.83 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:277.72M (Peak 551.66M) | Time:02:18.98 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:277.71M (Peak 551.66M) | Time:02:18.98 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_basecolor
-Fra:1 Mem:260.77M (Peak 551.66M) | Time:02:21.47 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:281.73M (Peak 551.66M) | Time:02:21.62 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:281.72M (Peak 551.66M) | Time:02:21.62 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_roughness
-Fra:1 Mem:264.78M (Peak 551.66M) | Time:02:24.13 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:285.74M (Peak 551.66M) | Time:02:24.27 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:285.74M (Peak 551.66M) | Time:02:24.28 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_metallic
-Fra:1 Mem:268.80M (Peak 551.66M) | Time:02:25.69 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:289.75M (Peak 551.66M) | Time:02:25.83 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:289.75M (Peak 551.66M) | Time:02:25.83 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_emissive
-Fra:1 Mem:272.73M (Peak 551.66M) | Time:02:27.41 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:300.92M (Peak 551.66M) | Time:02:27.56 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:300.91M (Peak 551.66M) | Time:02:27.56 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_normal
-02:26:49 | INFO: Starting glTF 2.0 export
-02:26:49 | WARNING: Mesh Mesh_0.001 is not valid, and may be exported wrongly
-02:26:49 | INFO: Extracting primitive: Mesh_0.001
-02:26:49 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
-02:26:49 | INFO: Primitives created: 1
-02:26:49 | INFO: Finished glTF 2.0 export in 0.09282183647155762 s
-Info: Removed 269487 vertices
+04:52:40 | INFO: Data are loaded, start creating Blender stuff
+04:52:40 | INFO: Blender create Mesh node Mesh_0
+04:52:40 | INFO: Blender create Mesh node Icosphere
+04:52:40 | INFO: Blender create Mesh node Icosphere.001
+04:52:40 | INFO: Blender create Mesh node Icosphere.002
+04:52:40 | INFO: Blender create Mesh node Icosphere.003
+04:52:40 | INFO: Blender create Mesh node rock_face_section_2_proxy.003
+04:52:40 | INFO: Blender create Mesh node rock_face_section_2_proxy.004
+04:52:40 | INFO: Blender create Mesh node rock_face_section_2_proxy.005
+04:52:40 | INFO: Blender create Mesh node rock_face_section_2_proxy.006
+04:52:40 | INFO: Blender create Mesh node rock_face_section_2_proxy.007
+04:52:40 | INFO: Blender create Mesh node rock_face_section_2_proxy.008
+04:52:40 | INFO: Blender create Mesh node Icosphere.010
+04:52:40 | INFO: Blender create Mesh node Icosphere.011
+04:52:40 | INFO: Blender create Mesh node Icosphere.012
+04:52:40 | INFO: Blender create Mesh node Icosphere.013
+04:52:40 | INFO: Blender create Mesh node Icosphere.014
+04:52:40 | INFO: Blender create Mesh node Icosphere.015
+04:52:40 | INFO: Blender create Mesh node Icosphere.016
+04:52:40 | INFO: Blender create Mesh node Icosphere.017
+04:52:40 | INFO: Blender create Mesh node Icosphere.018
+04:52:40 | INFO: Blender create Mesh node Icosphere.019
+04:52:40 | INFO: Blender create Mesh node Icosphere.020
+04:52:40 | INFO: Blender create Mesh node Icosphere.021
+04:52:40 | INFO: Blender create Mesh node Icosphere.022
+04:52:40 | INFO: Blender create Mesh node Icosphere.023
+04:52:40 | INFO: Blender create Mesh node Icosphere.024
+04:52:40 | INFO: Blender create Mesh node Icosphere.025
+04:52:40 | INFO: Blender create Mesh node Icosphere.026
+04:52:40 | INFO: Blender create Mesh node Icosphere.027
+04:52:40 | INFO: Blender create Mesh node Icosphere.028
+04:52:40 | INFO: Blender create Mesh node Icosphere.029
+04:52:40 | INFO: Blender create Mesh node Icosphere.030
+04:52:40 | INFO: Blender create Mesh node Icosphere.031
+04:52:40 | INFO: Blender create Mesh node Icosphere.032
+04:52:40 | INFO: Blender create Mesh node Icosphere.033
+04:52:40 | INFO: Blender create Mesh node Icosphere.034
+04:52:40 | INFO: Blender create Mesh node Icosphere.035
+04:52:40 | INFO: Blender create Mesh node Icosphere.036
+04:52:40 | INFO: Blender create Mesh node Icosphere.037
+04:52:40 | INFO: Blender create Mesh node Icosphere.038
+04:52:40 | INFO: Blender create Mesh node Icosphere.039
+04:52:40 | INFO: Blender create Mesh node Icosphere.040
+04:52:40 | INFO: Blender create Mesh node Icosphere.041
+04:52:40 | INFO: Blender create Mesh node Icosphere.042
+04:52:40 | INFO: Blender create Mesh node Icosphere.043
+04:52:40 | INFO: Blender create Mesh node Icosphere.044
+04:52:40 | INFO: Blender create Mesh node Icosphere.045
+04:52:40 | INFO: Blender create Mesh node Icosphere.046
+04:52:40 | INFO: Blender create Mesh node Icosphere.047
+04:52:40 | INFO: Blender create Mesh node Icosphere.048
+04:52:40 | INFO: Blender create Mesh node Icosphere.049
+04:52:40 | INFO: Blender create Mesh node Icosphere.050
+04:52:40 | INFO: Blender create Mesh node Icosphere.051
+04:52:40 | INFO: Blender create Mesh node Icosphere.052
+04:52:40 | INFO: Blender create Mesh node Icosphere.053
+04:52:40 | INFO: Blender create Mesh node Icosphere.054
+04:52:40 | INFO: Blender create Mesh node Icosphere.055
+04:52:40 | INFO: Blender create Mesh node Icosphere.056
+04:52:40 | INFO: Blender create Mesh node Icosphere.057
+04:52:40 | INFO: Blender create Mesh node Icosphere.058
+04:52:40 | INFO: Blender create Mesh node Icosphere.059
+04:52:40 | INFO: Blender create Mesh node Icosphere.060
+04:52:40 | INFO: Blender create Mesh node Icosphere.061
+04:52:40 | INFO: Blender create Mesh node Icosphere.062
+04:52:40 | INFO: Blender create Mesh node Icosphere.063
+04:52:40 | INFO: Blender create Mesh node Icosphere.064
+04:52:40 | INFO: Blender create Mesh node Sphere
+04:52:40 | INFO: Blender create Mesh node Sphere.001
+04:52:40 | INFO: Blender create Mesh node Sphere.002
+04:52:40 | INFO: Blender create Mesh node Sphere.003
+04:52:40 | INFO: Blender create Mesh node Sphere.004
+04:52:40 | INFO: Blender create Mesh node Sphere.005
+04:52:40 | INFO: Blender create Mesh node Sphere.006
+04:52:40 | INFO: Blender create Mesh node Sphere.007
+04:52:40 | INFO: Blender create Mesh node Sphere.008
+04:52:40 | INFO: Blender create Mesh node Sphere.009
+04:52:40 | INFO: Blender create Mesh node Sphere.010
+04:52:40 | INFO: Blender create Mesh node Sphere.011
+04:52:40 | INFO: Blender create Mesh node Sphere.012
+04:52:40 | INFO: Blender create Mesh node Sphere.013
+04:52:40 | INFO: Blender create Mesh node Sphere.014
+04:52:40 | INFO: Blender create Mesh node Sphere.015
+04:52:40 | INFO: Blender create Mesh node Sphere.016
+04:52:40 | INFO: Blender create Mesh node Sphere.017
+04:52:40 | INFO: Blender create Mesh node Sphere.018
+04:52:40 | INFO: Blender create Mesh node Sphere.019
+04:52:40 | INFO: Blender create Mesh node Sphere.020
+04:52:40 | INFO: Blender create Mesh node Sphere.021
+04:52:40 | INFO: Blender create Mesh node Sphere.022
+04:52:40 | INFO: Blender create Mesh node Sphere.023
+04:52:40 | INFO: Blender create Mesh node V33 magma rim 0-0
+04:52:40 | INFO: Blender create Mesh node V33 magma river 0-0
+04:52:40 | INFO: Blender create Mesh node V33 magma core 0-0
+04:52:40 | INFO: Blender create Mesh node V33 magma rim 1-0
+04:52:40 | INFO: Blender create Mesh node V33 magma river 1-0
+04:52:40 | INFO: Blender create Mesh node V33 magma core 1-0
+04:52:40 | INFO: Blender create Mesh node V33 magma rim 2-0
+04:52:40 | INFO: Blender create Mesh node V33 magma river 2-0
+04:52:40 | INFO: Blender create Mesh node V33 magma core 2-0
+04:52:40 | INFO: glTF import finished in 0.38s
+[b4-props] removed 104028/104163 small islands
+Fra:1 Mem:205.92M (Peak 368.03M) | Time:01:31.69 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:221.80M (Peak 368.03M) | Time:01:31.76 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:221.79M (Peak 368.03M) | Time:01:31.76 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_basecolor
+Fra:1 Mem:216.47M (Peak 437.93M) | Time:01:33.80 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:225.80M (Peak 437.93M) | Time:01:33.86 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:225.80M (Peak 437.93M) | Time:01:33.86 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_roughness
+Fra:1 Mem:220.48M (Peak 437.94M) | Time:01:35.44 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:229.81M (Peak 437.94M) | Time:01:35.50 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:229.81M (Peak 437.94M) | Time:01:35.50 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_metallic
+Fra:1 Mem:224.49M (Peak 437.94M) | Time:01:36.36 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:233.82M (Peak 437.94M) | Time:01:36.43 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:233.82M (Peak 437.94M) | Time:01:36.43 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_emissive
+Fra:1 Mem:228.44M (Peak 437.94M) | Time:01:37.41 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
+Fra:1 Mem:256.49M (Peak 437.94M) | Time:01:37.57 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:256.48M (Peak 437.94M) | Time:01:37.57 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_v33_rockwall_3k_normal
+04:52:53 | INFO: Starting glTF 2.0 export
+04:52:53 | INFO: Extracting primitive: Mesh_0.001
+04:52:53 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+04:52:53 | INFO: Primitives created: 1
+04:52:53 | INFO: Finished glTF 2.0 export in 0.0724179744720459 s
+Info: Removed 7170 vertices
 Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
@@ -414,419 +410,153 @@ Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
 
 [b4-props] render b4lod_v33_rockwall_3k_volcanic_front.png
-Fra:1 Mem:111.66M (Peak 127.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall_3k
-Fra:1 Mem:111.66M (Peak 127.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:112.05M (Peak 127.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:111.71M (Peak 127.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:111.71M (Peak 127.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:111.71M (Peak 127.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:111.71M (Peak 127.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:111.80M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:111.85M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:112.09M (Peak 127.28M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:112.08M (Peak 127.28M) | Time:00:00.00 | Mem:0.24M, Peak:0.24M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:112.08M (Peak 127.28M) | Time:00:00.00 | Mem:0.24M, Peak:0.24M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:112.08M (Peak 127.28M) | Time:00:00.00 | Mem:0.34M, Peak:0.34M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:112.08M (Peak 127.28M) | Time:00:00.00 | Mem:0.46M, Peak:0.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:112.08M (Peak 127.28M) | Time:00:00.00 | Mem:0.46M, Peak:0.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:112.21M (Peak 127.28M) | Time:00:00.00 | Mem:0.46M, Peak:0.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:112.21M (Peak 127.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:112.21M (Peak 127.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:112.21M (Peak 127.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:112.21M (Peak 127.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_emissive.png
-Fra:1 Mem:112.21M (Peak 127.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_normal.png
-Fra:1 Mem:128.22M (Peak 128.22M) | Time:00:00.03 | Mem:16.58M, Peak:16.58M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:128.22M (Peak 128.22M) | Time:00:00.03 | Mem:16.58M, Peak:16.58M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:128.22M (Peak 128.22M) | Time:00:00.03 | Mem:16.66M, Peak:16.66M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:128.22M (Peak 128.22M) | Time:00:00.03 | Mem:16.66M, Peak:16.66M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:128.80M (Peak 128.80M) | Time:00:00.05 | Mem:17.24M, Peak:17.24M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:128.80M (Peak 128.80M) | Time:00:00.05 | Mem:17.24M, Peak:17.24M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:128.81M (Peak 128.81M) | Time:00:00.05 | Mem:17.16M, Peak:17.24M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:128.81M (Peak 128.81M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:128.81M (Peak 128.81M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:128.81M (Peak 128.81M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:128.81M (Peak 128.81M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Sample 0/64
-Fra:1 Mem:204.82M (Peak 204.82M) | Time:00:01.20 | Remaining:01:12.35 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 1/64
-Fra:1 Mem:204.82M (Peak 204.82M) | Time:00:37.70 | Remaining:00:35.37 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 33/64
-Fra:1 Mem:236.82M (Peak 284.83M) | Time:01:24.38 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 64/64
-Fra:1 Mem:236.82M (Peak 284.83M) | Time:01:24.38 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Finished
+Fra:1 Mem:84.64M (Peak 100.27M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall_3k
+Fra:1 Mem:84.65M (Peak 100.27M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:85.04M (Peak 100.27M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:84.70M (Peak 100.27M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:84.70M (Peak 100.27M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:84.70M (Peak 100.27M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:84.70M (Peak 100.27M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:84.79M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:84.84M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:85.08M (Peak 100.27M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:85.08M (Peak 100.27M) | Time:00:00.00 | Mem:0.25M, Peak:0.25M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:85.08M (Peak 100.27M) | Time:00:00.00 | Mem:0.25M, Peak:0.25M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:85.08M (Peak 100.27M) | Time:00:00.00 | Mem:0.35M, Peak:0.35M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:85.08M (Peak 100.27M) | Time:00:00.00 | Mem:0.48M, Peak:0.57M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:85.08M (Peak 100.27M) | Time:00:00.00 | Mem:0.48M, Peak:0.57M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:85.20M (Peak 100.27M) | Time:00:00.00 | Mem:0.48M, Peak:0.57M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:85.20M (Peak 100.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:85.20M (Peak 100.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:85.20M (Peak 100.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:85.20M (Peak 100.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_basecolor.png
+Fra:1 Mem:89.20M (Peak 100.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_normal.png
+Fra:1 Mem:101.21M (Peak 101.21M) | Time:00:00.02 | Mem:16.60M, Peak:16.60M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:101.21M (Peak 101.21M) | Time:00:00.02 | Mem:16.60M, Peak:16.60M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:101.21M (Peak 101.21M) | Time:00:00.02 | Mem:16.68M, Peak:16.68M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:101.21M (Peak 101.21M) | Time:00:00.02 | Mem:16.68M, Peak:16.68M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:101.81M (Peak 101.81M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:101.81M (Peak 101.81M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:101.82M (Peak 101.82M) | Time:00:00.03 | Mem:17.19M, Peak:17.28M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:101.82M (Peak 101.82M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:101.82M (Peak 101.82M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:101.82M (Peak 101.82M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:101.82M (Peak 101.82M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Sample 0/64
+Fra:1 Mem:177.83M (Peak 177.83M) | Time:00:00.80 | Remaining:00:48.46 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 1/64
+Fra:1 Mem:177.83M (Peak 177.83M) | Time:00:24.20 | Remaining:00:22.70 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 33/64
+Fra:1 Mem:209.83M (Peak 257.84M) | Time:00:51.47 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 64/64
+Fra:1 Mem:209.83M (Peak 257.84M) | Time:00:51.47 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4lod_v33_rockwall_3k/b4lod_v33_rockwall_3k_volcanic_front.png'
-Time: 01:24.58 (Saving: 00:00.20)
+Time: 00:51.62 (Saving: 00:00.14)
 
 [b4-props] render b4lod_v33_rockwall_3k_volcanic_angle.png
-Fra:1 Mem:111.73M (Peak 111.73M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall_3k
-Fra:1 Mem:111.73M (Peak 111.73M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:112.12M (Peak 112.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:111.78M (Peak 112.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:111.79M (Peak 112.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:111.79M (Peak 112.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:111.79M (Peak 112.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:111.87M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:111.92M (Peak 112.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:112.16M (Peak 112.16M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:112.16M (Peak 112.16M) | Time:00:00.00 | Mem:0.24M, Peak:0.24M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:112.16M (Peak 112.16M) | Time:00:00.00 | Mem:0.24M, Peak:0.24M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:112.16M (Peak 112.16M) | Time:00:00.00 | Mem:0.34M, Peak:0.34M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:112.16M (Peak 112.16M) | Time:00:00.00 | Mem:0.46M, Peak:0.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:112.16M (Peak 112.16M) | Time:00:00.00 | Mem:0.46M, Peak:0.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:112.28M (Peak 112.28M) | Time:00:00.00 | Mem:0.46M, Peak:0.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:112.28M (Peak 112.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:112.28M (Peak 112.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:112.28M (Peak 112.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:112.28M (Peak 112.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_emissive.png
-Fra:1 Mem:112.28M (Peak 112.28M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_normal.png
-Fra:1 Mem:128.29M (Peak 128.29M) | Time:00:00.03 | Mem:16.58M, Peak:16.58M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:128.29M (Peak 128.29M) | Time:00:00.03 | Mem:16.58M, Peak:16.58M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:128.29M (Peak 128.29M) | Time:00:00.03 | Mem:16.66M, Peak:16.66M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:128.29M (Peak 128.29M) | Time:00:00.03 | Mem:16.66M, Peak:16.66M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:128.88M (Peak 128.88M) | Time:00:00.05 | Mem:17.24M, Peak:17.24M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:128.88M (Peak 128.88M) | Time:00:00.05 | Mem:17.24M, Peak:17.24M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:128.88M (Peak 128.88M) | Time:00:00.05 | Mem:17.16M, Peak:17.24M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:128.88M (Peak 128.88M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:128.88M (Peak 128.88M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:128.88M (Peak 128.88M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:128.88M (Peak 128.88M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Sample 0/64
-Fra:1 Mem:204.90M (Peak 204.90M) | Time:00:01.38 | Remaining:01:23.74 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 1/64
-Fra:1 Mem:204.90M (Peak 204.90M) | Time:00:22.34 | Remaining:01:01.63 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 17/64
-Fra:1 Mem:204.90M (Peak 204.90M) | Time:00:43.19 | Remaining:00:40.52 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 33/64
-Fra:1 Mem:204.90M (Peak 204.90M) | Time:01:04.05 | Remaining:00:19.59 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 49/64
-Fra:1 Mem:236.90M (Peak 284.90M) | Time:01:35.11 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 64/64
-Fra:1 Mem:236.90M (Peak 284.90M) | Time:01:35.11 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Finished
+Fra:1 Mem:84.72M (Peak 84.72M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall_3k
+Fra:1 Mem:84.72M (Peak 84.72M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:85.11M (Peak 85.11M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:84.77M (Peak 85.11M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:84.78M (Peak 85.11M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:84.78M (Peak 85.11M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:84.78M (Peak 85.11M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:84.86M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:84.91M (Peak 85.11M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:85.16M (Peak 85.16M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:85.15M (Peak 85.16M) | Time:00:00.00 | Mem:0.25M, Peak:0.25M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:85.16M (Peak 85.16M) | Time:00:00.00 | Mem:0.25M, Peak:0.25M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:85.16M (Peak 85.16M) | Time:00:00.00 | Mem:0.35M, Peak:0.35M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:85.16M (Peak 85.16M) | Time:00:00.00 | Mem:0.48M, Peak:0.57M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:85.16M (Peak 85.16M) | Time:00:00.00 | Mem:0.48M, Peak:0.57M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:85.27M (Peak 85.27M) | Time:00:00.00 | Mem:0.48M, Peak:0.57M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:85.27M (Peak 85.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:85.27M (Peak 85.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:85.27M (Peak 85.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:85.27M (Peak 85.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_emissive.png
+Fra:1 Mem:85.27M (Peak 85.27M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_normal.png
+Fra:1 Mem:101.29M (Peak 101.29M) | Time:00:00.02 | Mem:16.60M, Peak:16.60M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:101.29M (Peak 101.29M) | Time:00:00.02 | Mem:16.60M, Peak:16.60M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:101.29M (Peak 101.29M) | Time:00:00.02 | Mem:16.68M, Peak:16.68M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:101.29M (Peak 101.29M) | Time:00:00.02 | Mem:16.68M, Peak:16.68M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:101.89M (Peak 101.89M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:101.89M (Peak 101.89M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:101.89M (Peak 101.89M) | Time:00:00.03 | Mem:17.19M, Peak:17.28M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:101.89M (Peak 101.89M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:101.89M (Peak 101.89M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:101.89M (Peak 101.89M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:101.89M (Peak 101.89M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Sample 0/64
+Fra:1 Mem:177.90M (Peak 177.90M) | Time:00:00.85 | Remaining:00:51.35 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 1/64
+Fra:1 Mem:177.90M (Peak 177.90M) | Time:00:26.38 | Remaining:00:24.75 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 33/64
+Fra:1 Mem:209.91M (Peak 257.91M) | Time:00:55.86 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 64/64
+Fra:1 Mem:209.91M (Peak 257.91M) | Time:00:55.86 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4lod_v33_rockwall_3k/b4lod_v33_rockwall_3k_volcanic_angle.png'
-Time: 01:35.31 (Saving: 00:00.20)
+Time: 00:56.01 (Saving: 00:00.15)
 
 [b4-props] render b4lod_v33_rockwall_3k_volcanic_close.png
-Fra:1 Mem:111.79M (Peak 111.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall_3k
-Fra:1 Mem:111.79M (Peak 111.79M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:112.18M (Peak 112.18M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:111.84M (Peak 112.18M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:111.84M (Peak 112.18M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:111.84M (Peak 112.18M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:111.84M (Peak 112.18M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:111.93M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:111.98M (Peak 112.18M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:112.22M (Peak 112.22M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:112.22M (Peak 112.22M) | Time:00:00.00 | Mem:0.24M, Peak:0.24M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:112.22M (Peak 112.22M) | Time:00:00.00 | Mem:0.24M, Peak:0.24M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:112.22M (Peak 112.22M) | Time:00:00.00 | Mem:0.34M, Peak:0.34M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:112.22M (Peak 112.22M) | Time:00:00.00 | Mem:0.46M, Peak:0.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:112.22M (Peak 112.22M) | Time:00:00.00 | Mem:0.46M, Peak:0.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:112.34M (Peak 112.34M) | Time:00:00.00 | Mem:0.46M, Peak:0.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:112.34M (Peak 112.34M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:112.34M (Peak 112.34M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:112.34M (Peak 112.34M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:112.34M (Peak 112.34M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_emissive.png
-Fra:1 Mem:116.34M (Peak 116.34M) | Time:00:00.00 | Mem:0.58M, Peak:0.58M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_normal.png
-Fra:1 Mem:128.35M (Peak 128.35M) | Time:00:00.03 | Mem:16.58M, Peak:16.58M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:128.35M (Peak 128.35M) | Time:00:00.03 | Mem:16.58M, Peak:16.58M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:128.35M (Peak 128.35M) | Time:00:00.03 | Mem:16.66M, Peak:16.66M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:128.35M (Peak 128.35M) | Time:00:00.03 | Mem:16.66M, Peak:16.66M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:128.93M (Peak 128.93M) | Time:00:00.05 | Mem:17.24M, Peak:17.24M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:128.93M (Peak 128.93M) | Time:00:00.05 | Mem:17.24M, Peak:17.24M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:128.94M (Peak 128.94M) | Time:00:00.05 | Mem:17.16M, Peak:17.24M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:128.94M (Peak 128.94M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:128.94M (Peak 128.94M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:128.94M (Peak 128.94M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:128.94M (Peak 128.94M) | Time:00:00.05 | Mem:17.25M, Peak:17.25M | Scene, ViewLayer | Sample 0/64
-Fra:1 Mem:204.95M (Peak 204.95M) | Time:00:01.79 | Remaining:01:49.96 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 1/64
-Fra:1 Mem:204.95M (Peak 204.95M) | Time:00:29.21 | Remaining:01:20.61 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 17/64
-Fra:1 Mem:204.95M (Peak 204.95M) | Time:00:56.59 | Remaining:00:53.11 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 33/64
-Fra:1 Mem:204.95M (Peak 204.95M) | Time:01:23.87 | Remaining:00:25.66 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 49/64
-Fra:1 Mem:236.96M (Peak 284.96M) | Time:02:00.97 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Sample 64/64
-Fra:1 Mem:236.96M (Peak 284.96M) | Time:02:00.97 | Mem:93.26M, Peak:93.26M | Scene, ViewLayer | Finished
+Fra:1 Mem:84.78M (Peak 84.78M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_v33_rockwall_3k
+Fra:1 Mem:84.78M (Peak 84.78M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:85.17M (Peak 85.17M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:84.83M (Peak 85.17M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:84.83M (Peak 85.17M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:84.83M (Peak 85.17M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:84.83M (Peak 85.17M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:84.92M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:84.97M (Peak 85.17M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:85.21M (Peak 85.21M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:85.21M (Peak 85.21M) | Time:00:00.00 | Mem:0.25M, Peak:0.25M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:85.21M (Peak 85.21M) | Time:00:00.00 | Mem:0.25M, Peak:0.25M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:85.21M (Peak 85.21M) | Time:00:00.00 | Mem:0.35M, Peak:0.35M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:85.21M (Peak 85.21M) | Time:00:00.00 | Mem:0.48M, Peak:0.57M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:85.21M (Peak 85.21M) | Time:00:00.00 | Mem:0.48M, Peak:0.57M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:85.33M (Peak 85.33M) | Time:00:00.00 | Mem:0.48M, Peak:0.57M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:85.33M (Peak 85.33M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:85.33M (Peak 85.33M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:85.33M (Peak 85.33M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:85.33M (Peak 85.33M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_emissive.png
+Fra:1 Mem:85.33M (Peak 85.33M) | Time:00:00.00 | Mem:0.60M, Peak:0.60M | Scene, ViewLayer | Updating Images | Loading b4lod_v33_rockwall_3k_normal.png
+Fra:1 Mem:101.34M (Peak 101.34M) | Time:00:00.02 | Mem:16.60M, Peak:16.60M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:101.34M (Peak 101.34M) | Time:00:00.02 | Mem:16.60M, Peak:16.60M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:101.34M (Peak 101.34M) | Time:00:00.02 | Mem:16.68M, Peak:16.68M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:101.34M (Peak 101.34M) | Time:00:00.02 | Mem:16.68M, Peak:16.68M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:101.94M (Peak 101.94M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:101.94M (Peak 101.94M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:101.95M (Peak 101.95M) | Time:00:00.03 | Mem:17.19M, Peak:17.28M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:101.95M (Peak 101.95M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:101.95M (Peak 101.95M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:101.95M (Peak 101.95M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:101.95M (Peak 101.95M) | Time:00:00.03 | Mem:17.28M, Peak:17.28M | Scene, ViewLayer | Sample 0/64
+Fra:1 Mem:177.96M (Peak 177.96M) | Time:00:01.34 | Remaining:01:22.14 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 1/64
+Fra:1 Mem:177.96M (Peak 177.96M) | Time:00:20.95 | Remaining:00:57.81 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 17/64
+Fra:1 Mem:177.96M (Peak 177.96M) | Time:00:59.53 | Remaining:00:18.21 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 49/64
+Fra:1 Mem:209.97M (Peak 257.97M) | Time:01:21.41 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Sample 64/64
+Fra:1 Mem:209.97M (Peak 257.97M) | Time:01:21.41 | Mem:93.29M, Peak:93.29M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4lod_v33_rockwall_3k/b4lod_v33_rockwall_3k_volcanic_close.png'
-Time: 02:01.20 (Saving: 00:00.22)
+Time: 01:21.56 (Saving: 00:00.15)
 
-[b4-props] done b4lod_v33_rockwall_3k: 400570 -> 3119 tris, 973240 B, bbox [49.764, 23.793, 56.843]
-[b4-props] optimize b4lod_lava_pool_v3 <- assets/models/floor4/b4-lava-pool-v3.glb
-02:31:50 | INFO: Data are loaded, start creating Blender stuff
-02:31:50 | INFO: Blender create Mesh node C_IRREGULAR_MOLTEN_LAKE
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_0
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_1
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_2
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_3
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_4
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_5
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_6
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_7
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_8
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_9
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_10
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_11
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_12
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_13
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_14
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_15
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_16
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_17
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_18
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_19
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_20
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_21
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_22
-02:31:50 | INFO: Blender create Mesh node C_COOLING_RAFT_CRUST_23
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_0
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_1
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_2
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_4
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_5
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_6
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_7
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_9
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_10
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_11
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_12
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_-1_14
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_0
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_1
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_2
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_4
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_5
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_6
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_7
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_9
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_10
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_11
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_12
-02:31:50 | INFO: Blender create Mesh node C_POOL_OUTLET_COOLED_EDGE_1_14
-02:31:50 | INFO: glTF import finished in 0.04s
-Fra:1 Mem:119.34M (Peak 284.96M) | Time:02:01.92 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:120.49M (Peak 284.96M) | Time:02:01.92 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:120.49M (Peak 284.96M) | Time:02:01.92 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_lava_pool_v3_basecolor
-Fra:1 Mem:120.49M (Peak 284.96M) | Time:02:01.92 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_albedo
-Fra:1 Mem:124.49M (Peak 284.96M) | Time:02:01.92 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_normal
-Fra:1 Mem:136.51M (Peak 284.96M) | Time:02:01.93 | Mem:4.00M, Peak:4.00M | Scene | Updating Images | Loading molten_lava_normal
-Fra:1 Mem:140.51M (Peak 284.96M) | Time:02:01.95 | Mem:8.00M, Peak:8.00M | Scene | Updating Images | Loading b4_lava_thermal_emission
-Fra:1 Mem:149.52M (Peak 284.96M) | Time:02:01.95 | Mem:12.00M, Peak:12.00M | Scene | Updating Images | Loading b4_lava_thermal_base
-Fra:1 Mem:142.51M (Peak 284.96M) | Time:02:01.95 | Mem:16.00M, Peak:16.00M | Scene | Updating Images | Loading molten_lava_roughness
-Fra:1 Mem:123.69M (Peak 284.96M) | Time:02:03.28 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:124.51M (Peak 284.96M) | Time:02:03.28 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:124.51M (Peak 284.96M) | Time:02:03.28 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_lava_pool_v3_roughness
-Fra:1 Mem:124.51M (Peak 284.96M) | Time:02:03.28 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_roughness
-Fra:1 Mem:128.51M (Peak 284.96M) | Time:02:03.28 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_normal
-Fra:1 Mem:140.52M (Peak 284.96M) | Time:02:03.28 | Mem:4.00M, Peak:4.00M | Scene | Updating Images | Loading molten_lava_normal
-Fra:1 Mem:144.52M (Peak 284.96M) | Time:02:03.31 | Mem:8.00M, Peak:8.00M | Scene | Updating Images | Loading b4_lava_thermal_emission
-Fra:1 Mem:145.52M (Peak 284.96M) | Time:02:03.31 | Mem:12.00M, Peak:12.00M | Scene | Updating Images | Loading b4_lava_thermal_base
-Fra:1 Mem:146.52M (Peak 284.96M) | Time:02:03.31 | Mem:16.00M, Peak:16.00M | Scene | Updating Images | Loading molten_lava_roughness
-Fra:1 Mem:127.70M (Peak 284.96M) | Time:02:04.59 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:128.19M (Peak 284.96M) | Time:02:04.59 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:128.19M (Peak 284.96M) | Time:02:04.59 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_lava_pool_v3_metallic
-Fra:1 Mem:128.19M (Peak 284.96M) | Time:02:04.59 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_albedo
-Fra:1 Mem:132.19M (Peak 284.96M) | Time:02:04.59 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_normal
-Fra:1 Mem:144.21M (Peak 284.96M) | Time:02:04.59 | Mem:4.00M, Peak:4.00M | Scene | Updating Images | Loading molten_lava_normal
-Fra:1 Mem:148.21M (Peak 284.96M) | Time:02:04.62 | Mem:8.00M, Peak:8.00M | Scene | Updating Images | Loading b4_lava_thermal_emission
-Fra:1 Mem:149.21M (Peak 284.96M) | Time:02:04.62 | Mem:12.00M, Peak:12.00M | Scene | Updating Images | Loading b4_lava_thermal_base
-Fra:1 Mem:158.22M (Peak 284.96M) | Time:02:04.63 | Mem:13.00M, Peak:13.00M | Scene | Updating Images | Loading molten_lava_roughness
-Fra:1 Mem:131.71M (Peak 284.96M) | Time:02:05.64 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:132.53M (Peak 284.96M) | Time:02:05.64 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:132.53M (Peak 284.96M) | Time:02:05.64 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_lava_pool_v3_emissive
-Fra:1 Mem:132.53M (Peak 284.96M) | Time:02:05.64 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_roughness
-Fra:1 Mem:136.53M (Peak 284.96M) | Time:02:05.64 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_normal
-Fra:1 Mem:148.55M (Peak 284.96M) | Time:02:05.65 | Mem:4.00M, Peak:4.00M | Scene | Updating Images | Loading molten_lava_normal
-Fra:1 Mem:152.55M (Peak 284.96M) | Time:02:05.67 | Mem:8.00M, Peak:8.00M | Scene | Updating Images | Loading b4_lava_thermal_emission
-Fra:1 Mem:153.55M (Peak 284.96M) | Time:02:05.67 | Mem:12.00M, Peak:12.00M | Scene | Updating Images | Loading b4_lava_thermal_base
-Fra:1 Mem:154.55M (Peak 284.96M) | Time:02:05.67 | Mem:16.00M, Peak:16.00M | Scene | Updating Images | Loading molten_lava_roughness
-Fra:1 Mem:135.70M (Peak 284.96M) | Time:02:07.03 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | HIGH
-Fra:1 Mem:137.47M (Peak 284.96M) | Time:02:07.04 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:137.47M (Peak 284.96M) | Time:02:07.04 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4lod_lava_pool_v3_normal
-Fra:1 Mem:137.47M (Peak 284.96M) | Time:02:07.04 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_albedo
-Fra:1 Mem:141.47M (Peak 284.96M) | Time:02:07.04 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading volcanic_basalt_normal
-Fra:1 Mem:153.48M (Peak 284.96M) | Time:02:07.04 | Mem:4.00M, Peak:4.00M | Scene | Updating Images | Loading molten_lava_normal
-Fra:1 Mem:157.48M (Peak 284.96M) | Time:02:07.07 | Mem:8.00M, Peak:8.00M | Scene | Updating Images | Loading b4_lava_thermal_emission
-Fra:1 Mem:166.49M (Peak 284.96M) | Time:02:07.07 | Mem:12.00M, Peak:12.00M | Scene | Updating Images | Loading b4_lava_thermal_base
-Fra:1 Mem:159.48M (Peak 284.96M) | Time:02:07.07 | Mem:16.00M, Peak:16.00M | Scene | Updating Images | Loading molten_lava_roughness
-02:31:58 | INFO: Starting glTF 2.0 export
-02:31:58 | INFO: Extracting primitive: C_COOLING_RAFT_CRUST_0.001
-02:31:58 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
-02:31:58 | INFO: Primitives created: 1
-02:31:58 | INFO: Finished glTF 2.0 export in 0.11066055297851562 s
-Info: Removed 168 vertices
-Info: Baking map saved to internal image, save it externally or pack it
-Info: Baking map saved to internal image, save it externally or pack it
-Info: Baking map saved to internal image, save it externally or pack it
-Info: Baking map saved to internal image, save it externally or pack it
-Info: Baking map saved to internal image, save it externally or pack it
-
-[b4-props] render b4lod_lava_pool_v3_volcanic_front.png
-Fra:1 Mem:33.98M (Peak 49.61M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_lava_pool_v3
-Fra:1 Mem:33.99M (Peak 49.61M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:34.72M (Peak 49.61M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:34.39M (Peak 49.61M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:34.39M (Peak 49.61M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:34.39M (Peak 49.61M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:34.39M (Peak 49.61M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:34.47M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:34.47M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:34.47M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:34.47M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:34.47M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:34.47M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:34.48M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:34.48M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:34.48M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:34.48M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:34.57M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:35.02M (Peak 49.61M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:35.02M (Peak 49.61M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:35.02M (Peak 49.61M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:35.02M (Peak 49.61M) | Time:00:00.00 | Mem:0.64M, Peak:0.64M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:35.02M (Peak 49.61M) | Time:00:00.00 | Mem:0.88M, Peak:1.06M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:35.02M (Peak 49.61M) | Time:00:00.00 | Mem:0.88M, Peak:1.06M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:35.24M (Peak 49.61M) | Time:00:00.00 | Mem:0.88M, Peak:1.06M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:35.24M (Peak 49.61M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:35.24M (Peak 49.61M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:35.24M (Peak 49.61M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:35.24M (Peak 49.61M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images | Loading b4lod_lava_pool_v3_emissive.png
-Fra:1 Mem:35.24M (Peak 49.61M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images | Loading b4lod_lava_pool_v3_normal.png
-Fra:1 Mem:51.25M (Peak 51.25M) | Time:00:00.03 | Mem:17.10M, Peak:17.10M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:51.25M (Peak 51.25M) | Time:00:00.03 | Mem:17.10M, Peak:17.10M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:51.25M (Peak 51.25M) | Time:00:00.03 | Mem:17.19M, Peak:17.19M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:51.25M (Peak 51.25M) | Time:00:00.03 | Mem:17.19M, Peak:17.19M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:52.37M (Peak 53.10M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:52.37M (Peak 53.10M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:52.37M (Peak 53.10M) | Time:00:00.07 | Mem:18.22M, Peak:18.30M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:52.37M (Peak 53.10M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:52.37M (Peak 53.10M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:52.37M (Peak 53.10M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:52.37M (Peak 53.10M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Sample 0/64
-Fra:1 Mem:128.39M (Peak 128.39M) | Time:00:01.03 | Remaining:01:00.51 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 1/64
-Fra:1 Mem:128.39M (Peak 128.39M) | Time:00:31.16 | Remaining:00:29.20 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 33/64
-Fra:1 Mem:160.39M (Peak 208.39M) | Time:01:12.01 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 64/64
-Fra:1 Mem:160.39M (Peak 208.39M) | Time:01:12.01 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Finished
-Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4lod_lava_pool_v3/b4lod_lava_pool_v3_volcanic_front.png'
-Time: 01:12.20 (Saving: 00:00.19)
-
-[b4-props] render b4lod_lava_pool_v3_volcanic_angle.png
-Fra:1 Mem:34.03M (Peak 34.03M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_lava_pool_v3
-Fra:1 Mem:34.03M (Peak 34.03M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:34.77M (Peak 35.04M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:34.43M (Peak 35.04M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:34.43M (Peak 35.04M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:34.43M (Peak 35.04M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:34.43M (Peak 35.04M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:34.52M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:34.61M (Peak 35.04M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:35.06M (Peak 35.06M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:35.06M (Peak 35.06M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:35.06M (Peak 35.06M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:35.06M (Peak 35.06M) | Time:00:00.00 | Mem:0.64M, Peak:0.64M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:35.06M (Peak 35.06M) | Time:00:00.00 | Mem:0.88M, Peak:1.06M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:35.06M (Peak 35.06M) | Time:00:00.00 | Mem:0.88M, Peak:1.06M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:35.29M (Peak 35.29M) | Time:00:00.00 | Mem:0.88M, Peak:1.06M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:35.29M (Peak 35.29M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:35.29M (Peak 35.29M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:35.29M (Peak 35.29M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:35.29M (Peak 35.29M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images | Loading b4lod_lava_pool_v3_emissive.png
-Fra:1 Mem:39.29M (Peak 39.29M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images | Loading b4lod_lava_pool_v3_normal.png
-Fra:1 Mem:51.30M (Peak 51.30M) | Time:00:00.03 | Mem:17.10M, Peak:17.10M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:51.30M (Peak 51.30M) | Time:00:00.03 | Mem:17.10M, Peak:17.10M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:51.30M (Peak 51.30M) | Time:00:00.03 | Mem:17.19M, Peak:17.19M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:51.30M (Peak 51.30M) | Time:00:00.03 | Mem:17.19M, Peak:17.19M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:52.41M (Peak 53.14M) | Time:00:00.06 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:52.41M (Peak 53.14M) | Time:00:00.06 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:52.42M (Peak 53.14M) | Time:00:00.06 | Mem:18.22M, Peak:18.30M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:52.42M (Peak 53.14M) | Time:00:00.06 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:52.42M (Peak 53.14M) | Time:00:00.06 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:52.42M (Peak 53.14M) | Time:00:00.06 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:52.42M (Peak 53.14M) | Time:00:00.06 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Sample 0/64
-Fra:1 Mem:128.43M (Peak 128.43M) | Time:00:01.48 | Remaining:01:29.50 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 1/64
-Fra:1 Mem:128.43M (Peak 128.43M) | Time:00:23.94 | Remaining:01:06.01 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 17/64
-Fra:1 Mem:128.43M (Peak 128.43M) | Time:00:46.39 | Remaining:00:43.51 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 33/64
-Fra:1 Mem:128.43M (Peak 128.43M) | Time:01:08.77 | Remaining:00:21.03 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 49/64
-Fra:1 Mem:160.44M (Peak 208.44M) | Time:01:41.27 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 64/64
-Fra:1 Mem:160.44M (Peak 208.44M) | Time:01:41.27 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Finished
-Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4lod_lava_pool_v3/b4lod_lava_pool_v3_volcanic_angle.png'
-Time: 01:41.48 (Saving: 00:00.20)
-
-[b4-props] render b4lod_lava_pool_v3_volcanic_close.png
-Fra:1 Mem:34.10M (Peak 34.10M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4lod_lava_pool_v3
-Fra:1 Mem:34.11M (Peak 34.11M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:34.84M (Peak 35.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:34.50M (Peak 35.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:34.51M (Peak 35.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:34.51M (Peak 35.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:34.51M (Peak 35.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:34.59M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:34.68M (Peak 35.12M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:35.14M (Peak 35.14M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:35.14M (Peak 35.14M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:35.14M (Peak 35.14M) | Time:00:00.00 | Mem:0.46M, Peak:0.46M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:35.14M (Peak 35.14M) | Time:00:00.00 | Mem:0.64M, Peak:0.64M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:35.14M (Peak 35.14M) | Time:00:00.00 | Mem:0.88M, Peak:1.06M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:35.14M (Peak 35.14M) | Time:00:00.00 | Mem:0.88M, Peak:1.06M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:35.36M (Peak 35.36M) | Time:00:00.00 | Mem:0.88M, Peak:1.06M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:35.36M (Peak 35.36M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:35.36M (Peak 35.36M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:35.36M (Peak 35.36M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:35.36M (Peak 35.36M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images | Loading b4lod_lava_pool_v3_emissive.png
-Fra:1 Mem:35.36M (Peak 35.36M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images | Loading b4lod_lava_pool_v3_normal.png
-Fra:1 Mem:43.36M (Peak 43.36M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Images | Loading b4lod_lava_pool_v3_orm.png
-Fra:1 Mem:51.37M (Peak 51.37M) | Time:00:00.04 | Mem:17.10M, Peak:17.10M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:51.37M (Peak 51.37M) | Time:00:00.04 | Mem:17.10M, Peak:17.10M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:51.37M (Peak 51.37M) | Time:00:00.04 | Mem:17.19M, Peak:17.19M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:51.37M (Peak 51.37M) | Time:00:00.04 | Mem:17.19M, Peak:17.19M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:52.49M (Peak 53.21M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:52.49M (Peak 53.21M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:52.49M (Peak 53.21M) | Time:00:00.07 | Mem:18.22M, Peak:18.30M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:52.49M (Peak 53.21M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:52.49M (Peak 53.21M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:52.49M (Peak 53.21M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:52.49M (Peak 53.21M) | Time:00:00.07 | Mem:18.30M, Peak:18.30M | Scene, ViewLayer | Sample 0/64
-Fra:1 Mem:128.51M (Peak 128.51M) | Time:00:01.63 | Remaining:01:38.27 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 1/64
-Fra:1 Mem:128.51M (Peak 128.51M) | Time:00:26.30 | Remaining:01:12.50 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 17/64
-Fra:1 Mem:128.51M (Peak 128.51M) | Time:00:50.83 | Remaining:00:47.68 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 33/64
-Fra:1 Mem:128.51M (Peak 128.51M) | Time:01:15.42 | Remaining:00:23.06 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 49/64
-Fra:1 Mem:160.51M (Peak 208.51M) | Time:01:49.81 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Sample 64/64
-Fra:1 Mem:160.51M (Peak 208.51M) | Time:01:49.81 | Mem:94.32M, Peak:94.32M | Scene, ViewLayer | Finished
-Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4lod_lava_pool_v3/b4lod_lava_pool_v3_volcanic_close.png'
-Time: 01:50.01 (Saving: 00:00.19)
-
-[b4-props] done b4lod_lava_pool_v3: 14296 -> 5952 tris, 556360 B, bbox [5.034, 4.921, 0.081]
+[b4-props] done b4lod_v33_rockwall_3k: 286200 -> 3199 tris, 791368 B, bbox [47.571, 21.833, 55.008]
 
 Blender quit
