@@ -1,0 +1,11 @@
+# 第4層 火山石碑 V1 制作記録
+- 状態: **試作・未承認**。実レンダリング成功はActionsで要確認。
+- 造形: 一枚岩の不規則な玄武岩石碑、欠けた輪郭、基礎石、崩落破片、表面の火山灰、古代文字、部分的な橙色の熱光、非直線亀裂。
+- 既存のマグマ河川V16/P1 V4/P2 V4/P3 V5は変更しない。
+- Pinterest参照: https://github.com/koda24-cell/pinterest-reference-library/blob/main/handoff/b4-volcanic-steles-temple-20261117.md
+- 制作コード: `tools/floor4/volcanic_stele/build_v1.py`
+- レンダー: `.github/workflows/b4-volcanic-stele-v1-review.yml`。GLB、Blend、front/side/angle/top PNG、SHA256付きmanifestを14日Artifactへ保存。
+- 実際の文字は表面への曲線メッシュ（黒い溝と発光芯）による表現。**Booleanで石を削った実凹刻ではない**。造形品質確認後に改善予定。
+- マテリアル: Blenderノードの手続きNoise/Bump。外部Pinterest画像のテクスチャ転用はなし。
+- ゲーム統合: 未実施。Claudeはユーザー承認後にGLB/PNG/manifestを確認してThree.jsに統合。
+- 次: 実レンダーの4方向を目視評価、文字の凹刻化・石肌の写真PBR・台座の自然な破損・接地の修正、再レンダリング。
