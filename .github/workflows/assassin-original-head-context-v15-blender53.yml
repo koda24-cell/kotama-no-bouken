@@ -1,0 +1,62 @@
+name: Assassin V15 Original Head Blender 5.3 ClamAV Review
+on:
+  push:
+    branches: [feature/gpt-assassin-original-head-v15-integrated-nose-20261119]
+    paths:
+      - '.github/workflows/assassin-original-head-context-v15-blender53.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan original generation source
+        run: bash tools/security/clamav_scan_gate.sh scan tools/character-mesh-research/build_original_head_context_v15.py qa/security/input.log
+      - name: Render seven angles with Blender 5.3
+        run: |
+          set -euo pipefail
+          mkdir -p output/assassin-original-head-v15
+          blender --version | head -n 2
+          HOME=/tmp/blender-home blender -b -t 2 --python-exit-code 1 --python tools/character-mesh-research/build_original_head_context_v15.py -- output/assassin-original-head-v15
+      - name: Verify seven views and topology
+        run: |
+          python3 - <<'PY'
+          import json,os
+          p="output/assassin-original-head-v15"
+          q=json.load(open(p+"/qa.json"))
+          assert q["status"]=="NOT_APPROVED"
+          assert q["source_VRM_imported"] is False
+          assert q["nose_method"]=="C1_compact_support_in_original_head_quads_no_separate_shell"
+          assert len(q["auricle_mesh_statistics"])==2
+          assert all(x["vertices"]==241 and x["quads"]==192 for x in q["auricle_mesh_statistics"])
+          assert len(q["orbital_mesh_statistics"])==2
+          assert all(x["verts"]==192 and x["quads"]==144 for x in q["orbital_mesh_statistics"])
+          for n in ("front","left","right","front_three_quarter","back","back_three_quarter","back_upper"):
+              assert os.path.getsize(f"{p}/{n}.png")>2500
+          for n in ("assassin_original_head_v15_review.glb","assassin_original_head_v15_review.blend","manifest.json"):
+              assert os.path.getsize(p+"/"+n)>1000
+          PY
+      - name: Scan exported Blend, GLB, PNG and QA
+        run: bash tools/security/clamav_scan_gate.sh scan output/assassin-original-head-v15 qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assassin-original-v15-53-clamav-NOT-APPROVED
+          path: |
+            output/assassin-original-head-v15/
+            qa/security/
+          retention-days: 14
