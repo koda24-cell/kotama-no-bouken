@@ -1,0 +1,80 @@
+name: B2 Frame Assembly V02 Blender 5.3 Original GLB Fit Check
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-frame-assembly-fit-v01-20261120]
+    paths:
+      - 'tools/b2-waterwheel-frame-assembly/**'
+      - '.github/workflows/b2-waterwheel-frame-assembly-v02.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  packages: read
+jobs:
+  real-glb-assembly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download original three prior-run GitHub artifacts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p input-glbs render-output/b2-waterwheel-frame-assembly-v02
+          for id in 14591853832 14600384453 14601168044; do
+            curl --fail --location --retry 3 --connect-timeout 15 --max-time 120 \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -o "/tmp/asset-${id}.zip" \
+              "https://api.github.com/repos/koda24-cell/kotama-no-bouken/actions/artifacts/${id}/zip"
+            python3 -c 'import zipfile,sys;z=zipfile.ZipFile(sys.argv[1]);z.testzip();print("VALID_ZIP",sys.argv[1])' "/tmp/asset-${id}.zip"
+            unzip -o -q "/tmp/asset-${id}.zip" -d input-glbs
+          done
+          test -s input-glbs/b2_single_timber_support_post_v03.glb
+          test -s input-glbs/b2_single_diagonal_oak_brace_v02.glb
+          test -s input-glbs/b2_single_oak_drawbore_peg_v02.glb
+          find input-glbs -maxdepth 1 -name '*.glb' -printf '%f %s bytes\n'
+      - name: ClamAV scan of source and all downloaded assets before import
+        run: |
+          set -euo pipefail
+          mkdir -p security/clamdb && chmod 777 security/clamdb
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'set -e; freshclam --stdout --datadir=/workspace/security/clamdb; clamscan --database=/workspace/security/clamdb -r --infected tools/b2-waterwheel-frame-assembly input-glbs'
+      - name: Real Blender 5.3 render three existing GLBs in one scene
+        run: |
+          set -euo pipefail
+          docker run --rm -v "$PWD:/workspace" -w /workspace ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-frame-assembly/build_v02.py -- input-glbs render-output/b2-waterwheel-frame-assembly-v02 | tee /tmp/assembly.log
+          grep -q B2_FRAME_ASSEMBLY_V02_RENDER_SUCCESS /tmp/assembly.log
+      - name: SHA, GLB and 4 view validation
+        run: |
+          python3 - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          p=Path('render-output/b2-waterwheel-frame-assembly-v02')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and m['fit_status']=='NOT_TESTED_HOLES_UNCUT'
+          assert m['meshes_exported']>=3 and m['embedded_images']>=3
+          assert len(m['files'])==7 and len(list(p.glob('b2_waterwheel_frame_assembly_v02_*.png')))==5
+          for name,val in m['files'].items():
+              b=(p/name).read_bytes()
+              assert len(b)==val['bytes'] and hashlib.sha256(b).hexdigest()==val['sha256']
+              if name.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+              if name.endswith('.glb'):assert b[:4]==b'glTF' and len(b)==struct.unpack_from('<I',b,8)[0]
+          for part,name in m['original_glb_names'].items():
+              raw=(Path('input-glbs')/name).read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==m['original_glb_sha256'][part]
+          print('ASSEMBLY_SHA_AND_ORIGINAL_GLBS_VERIFIED')
+          PY
+      - name: Shared structural audit
+        run: python3 tools/3d-performance/audit_glb.py 'render-output/b2-waterwheel-frame-assembly-v02/*.glb' --output render-output/b2-waterwheel-frame-assembly-v02/performance_audit.json
+      - name: ClamAV output scan
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'clamscan --database=/workspace/security/clamdb -r --infected render-output/b2-waterwheel-frame-assembly-v02'
+      - name: Upload review only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-waterwheel-frame-assembly-v02-review
+          path: render-output/b2-waterwheel-frame-assembly-v02/
+          retention-days: 14
+          if-no-files-found: warn
