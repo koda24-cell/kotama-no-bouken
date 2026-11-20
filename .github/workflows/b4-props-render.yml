@@ -83,6 +83,22 @@ jobs:
               print('got', url)
           PY
           done < tools/b4-props/cc0.txt
+          # 壁用のタイリング素材は2Kも取得（ゲームのテクスチャとしてリポジトリへ返す）
+          for id in rock_face_02; do
+            [ -f "/tmp/b4p-cc0/${id}_diff_2k.jpg" ] && continue
+            curl -fsSL --retry 3 "https://api.polyhaven.com/files/${id}" -o /tmp/ph.json || continue
+            python3 - "$id" <<'PY'
+          import json, sys, urllib.request
+          i = sys.argv[1]
+          j = json.load(open('/tmp/ph.json'))
+          for k, key in (('diff', 'Diffuse'), ('rough', 'Rough'), ('nor_gl', 'nor_gl')):
+              try:
+                  url = j[key]['2k']['jpg']['url']
+              except Exception:
+                  continue
+              urllib.request.urlretrieve(url, f'/tmp/b4p-cc0/{i}_{k}_2k.jpg'); print('got', url)
+          PY
+          done
           ls -la /tmp/b4p-cc0 && sha256sum /tmp/b4p-cc0/*
 
       - name: Build, bake and render

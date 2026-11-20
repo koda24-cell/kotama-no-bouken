@@ -182,6 +182,18 @@ def bake_high_to_low(hi, lo, name, res):
     return has_emit
 
 
+# 壁のタイリング用CC0テクスチャをゲーム側へ渡す（出典・sha256つき）
+_wall_dir = os.path.join(C.OUT_ROOT, "cc0_wall_textures")
+os.makedirs(_wall_dir, exist_ok=True)
+_wall = {}
+for _f in sorted(os.listdir(C.TEX_DIR)) if os.path.isdir(C.TEX_DIR) else []:
+    if _f.startswith("rock_face_02_") and _f.endswith("_2k.jpg"):
+        import shutil
+        shutil.copy(os.path.join(C.TEX_DIR, _f), os.path.join(_wall_dir, _f))
+        _wall[_f] = {"source": "https://polyhaven.com/a/rock_face_02", "license": "CC0 (https://polyhaven.com/license)", "sha256": C._sha(os.path.join(_wall_dir, _f))}
+with open(os.path.join(_wall_dir, "manifest.json"), "w", encoding="utf-8") as _fh:
+    json.dump(_wall, _fh, ensure_ascii=False, indent=2)
+
 for name, src, target_tris, res in JOBS:
     C.reset(3)
     C.log(f"optimize {name} <- {src}")
