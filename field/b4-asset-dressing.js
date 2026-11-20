@@ -112,7 +112,7 @@ function wallSkinDistance(y0, y1, lateral = 0) {
   }
   return minD;
 }
-const sideFor = (R, lateral = 0) => R.side ?? (wallSkinDistance(R.y || 0, (R.y || 0) + R.height, lateral) - (R.wall ? 0.02 : R.radius + 0.04));
+const sideFor = (R, lateral = 0) => R.side ?? (R.wall ? 1.58 : wallSkinDistance(R.y || 0, (R.y || 0) + R.height, lateral) - R.radius - 0.04);   // wall pieces sink into the displaced skin rather than float off it
 
 export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY).filter(id => B4_PROP_REGISTRY[id].ready);
