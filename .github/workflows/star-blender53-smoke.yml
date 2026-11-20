@@ -21,7 +21,7 @@ jobs:
         run: |
           blender --version | head -n 2
           clamscan --version
-          test "$(blender -b --factory-startup --python-expr 'import bpy; assert bpy.app.version[:2] == (5,3)')" = ""
+          blender -b --factory-startup --python-expr 'import bpy; assert bpy.app.version[:2] == (5,3), bpy.app.version_string'
       - name: Scan source
         shell: bash
         run: clamscan --infected --recursive tools/star-smoke
