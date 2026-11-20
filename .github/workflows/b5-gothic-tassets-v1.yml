@@ -1,0 +1,112 @@
+name: B5 Gothic Tassets V1 Six-View Blender Review
+on:
+  push:
+    branches: [feature/b5-knight-tassets-v1-20261120]
+    paths:
+      - 'tools/b5-knights/build_gothic_tassets_v1.py'
+      - 'tools/render-preview/publish.mjs'
+      - '.github/workflows/b5-gothic-tassets-v1.yml'
+      - 'tools/b5-knights/textures/grime_imagegen_v15_256.webp.b64'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Blender 5.3 runtime
+        run: blender --version | grep -m1 'Blender 5.3'
+      - name: Update ClamAV signatures and verify real source scan
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/b5-knights/build_gothic_tassets_v1.py qa/security/tassets-source.log
+      - name: Decode source ImageGen grime used by accepted sallet V22
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import hashlib,base64,io
+          from PIL import Image
+          from pathlib import Path
+          p=Path('tools/b5-knights/textures/grime_imagegen_v15_256.webp.b64')
+          raw=base64.b64decode(p.read_text().strip(),validate=True)
+          digest=hashlib.sha256(raw).hexdigest()
+          assert digest=='7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23',digest
+          im=Image.open(io.BytesIO(raw)).convert('RGBA')
+          assert im.size==(256,256)
+          q=Path('render-output/b5-knights/helmet_grime_source_tassets_v1.png')
+          q.parent.mkdir(parents=True,exist_ok=True)
+          im.save(q)
+          print('PASS: V22 source texture verified',digest)
+          PY
+      - name: Blender six-camera full geometry/material export
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_gothic_tassets_v1.py
+      - name: Verify outputs, hashes, material and six images
+        run: |
+          /usr/bin/python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          from PIL import Image,ImageStat
+          p=Path('render-output/b5-knights/gothic_tassets_v1')
+          m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED' and not m['game_integrated']
+          assert m['source_sha'] and m['run_id']
+          assert len(m['views'])==6 and len(m['files_sha256'])==10
+          for name,expected in m['files_sha256'].items():
+              data=(p/name).read_bytes()
+              assert hashlib.sha256(data).hexdigest()==expected,name
+          raw=(p/'gothic_tassets_v1.glb').read_bytes()
+          assert raw[:4]==b'glTF'
+          assert struct.unpack_from('<I',raw,8)[0]==len(raw)
+          n=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+n])
+          nodes=[x.get('name','') for x in doc.get('nodes',[]) if 'mesh' in x]
+          assert sum('articulated Gothic tasset' in x for x in nodes)==4,nodes
+          assert doc.get('materials') and doc.get('meshes')
+          assert doc.get('images') and doc.get('textures')
+          assert any(x.get('pbrMetallicRoughness',{}).get('baseColorTexture') for x in doc['materials'])
+          assert m['source_texture_sha256']=='7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23'
+          assert m['lame_count']==4
+          for name in ('v22_matched_tassets_albedo_v1.png','v22_matched_tassets_roughness_v1.png'):
+              assert Image.open(p/name).size==(256,256)
+          for name in m['views']:
+              im=Image.open(p/(name+'.png')).convert('RGB')
+              assert im.size==(800,800)
+              assert max(ImageStat.Stat(im).stddev)>3
+          print('PASS six real Blender images, GLB, Blend, 10 hashes + embedded PBR')
+          PY
+      - name: ClamAV scan generated material and 3D assets
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b5-knights/gothic_tassets_v1 qa/security/tassets-output.log
+      - name: Temporary NOT_APPROVED review checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-gothic-tassets-v1-NOT-APPROVED
+          path: |
+            render-output/b5-knights/gothic_tassets_v1/
+            qa/security/
+          retention-days: 14
+
+  publish-preview:
+    name: Publish verified PNG-only review link
+    needs: render
+    if: ${{ needs.render.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: b5-gothic-tassets-v1-NOT-APPROVED
+          path: review-download
+      - name: Publish NOT_APPROVED six-view PNG previews only
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node tools/render-preview/publish.mjs review-download/render-output/b5-knights/gothic_tassets_v1
