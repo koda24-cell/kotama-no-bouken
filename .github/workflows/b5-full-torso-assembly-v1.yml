@@ -1,0 +1,128 @@
+name: B5 Gothic Fauld+Tassets Assembly V1 Six-View Blender Review
+on:
+  push:
+    branches: [feature/b5-knight-full-torso-assembly-v1-20261120]
+    paths:
+      - 'tools/b5-knights/build_full_torso_assembly_v1.py'
+      - '.github/workflows/b5-full-torso-assembly-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert Blender 5.3
+        run: blender --version | grep -m1 'Blender 5.3'
+      - name: Retrieve breastplate V6 actual GLB
+        uses: actions/download-artifact@v4
+        with:
+          name: b5-gothic-breastplate-v6-NOT-APPROVED
+          run-id: 44513263807
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: inputs/breastplate
+      - name: Retrieve backplate V2 actual GLB
+        uses: actions/download-artifact@v4
+        with:
+          name: b5-gothic-backplate-v2-NOT-APPROVED
+          run-id: 44518192273
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: inputs/backplate
+      - name: Retrieve culet V1 actual GLB
+        uses: actions/download-artifact@v4
+        with:
+          name: b5-gothic-culet-v1-NOT-APPROVED
+          run-id: 44681535827
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: inputs/culet
+      - name: Retrieve fauld V2 actual GLB from successful prior render
+        uses: actions/download-artifact@v4
+        with:
+          name: b5-gothic-fauld-v2-NOT-APPROVED
+          run-id: 44515259679
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: inputs/fauld
+      - name: Retrieve tassets V1 actual GLB from successful prior render
+        uses: actions/download-artifact@v4
+        with:
+          name: b5-gothic-tassets-v1-NOT-APPROVED
+          run-id: 44682515055
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: inputs/tassets
+      - name: Update ClamAV and scan downloaded GLB before importing into Blender
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan inputs/breastplate qa/security/breastplate-input.log
+          bash tools/security/clamav_scan_gate.sh scan inputs/backplate qa/security/backplate-input.log
+          bash tools/security/clamav_scan_gate.sh scan inputs/culet qa/security/culet-input.log
+          bash tools/security/clamav_scan_gate.sh scan inputs/fauld qa/security/fauld-input.log
+          bash tools/security/clamav_scan_gate.sh scan inputs/tassets qa/security/tassets-input.log
+          bash tools/security/clamav_scan_gate.sh scan tools/b5-knights/build_full_torso_assembly_v1.py qa/security/assembly-source.log
+      - name: Blender actual imported GLBs assembly and 6-view PNG export
+        run: blender -b -t 2 --python-exit-code 1 --python tools/b5-knights/build_full_torso_assembly_v1.py
+      - name: Verify exact original GLB hashes, assembly outputs and 6 PNGs
+        run: |
+          /usr/bin/python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          p=Path('render-output/b5-knights/full_torso_assembly_v1')
+          d=json.loads((p/'manifest.json').read_text())
+          assert d['approval']=='NOT_APPROVED' and not d['game_integrated']
+          assert len(d['views'])==6 and d['part_count']>=10
+          assert d['input_assets']['fauld_v2']['source_sha256'] and d['input_assets']['tassets_v1']['source_sha256']
+          assert d['input_assets']['joint']['z_overlap']>0
+          assert d['input_assets']['joint_breastplate_v6_fauld_v2']['z_overlap']>0
+          assert d['input_assets']['joint_backplate_v2_culet_v1']['z_overlap']>0
+          for filename,h in d['files_sha256'].items():
+              assert hashlib.sha256((p/filename).read_bytes()).hexdigest()==h,filename
+          src={'breastplate_v6':'inputs/breastplate/render-output/b5-knights/gothic_breastplate_v6/gothic_breastplate_v6.glb',
+          'backplate_v2':'inputs/backplate/render-output/b5-knights/gothic_backplate_v2/gothic_backplate_v2.glb',
+          'culet_v1':'inputs/culet/render-output/b5-knights/gothic_culet_v1/gothic_culet_v1.glb',
+          'fauld_v2':'inputs/fauld/render-output/b5-knights/gothic_fauld_v2/gothic_fauld_v2.glb',
+          'tassets_v1':'inputs/tassets/render-output/b5-knights/gothic_tassets_v1/gothic_tassets_v1.glb'}
+          for name,filepath in src.items():
+              assert hashlib.sha256(Path(filepath).read_bytes()).hexdigest()==d['input_assets'][name]['source_sha256']
+          glb=(p/'full_torso_assembly_v1.glb').read_bytes()
+          assert glb[:4]==b'glTF' and struct.unpack_from('<I',glb,8)[0]==len(glb)
+          for view in d['views']:
+              im=Image.open(p/(view+'.png')).convert('RGB')
+              assert im.size==(800,800) and max(ImageStat.Stat(im).stddev)>3
+          print('PASS unchanged input GLBs, six real render PNGs, manifest and joint AABB')
+          PY
+      - name: Scan assembled GLB, Blend and rendered PNG
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b5-knights/full_torso_assembly_v1 qa/security/assembly-output.log
+      - name: Save unapproved temporary assembly artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b5-full-torso-assembly-v1-NOT-APPROVED
+          path: |
+            render-output/b5-knights/full_torso_assembly_v1/
+            qa/security/
+          retention-days: 14
+  publish-preview:
+    needs: render
+    if: ${{ needs.render.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: b5-full-torso-assembly-v1-NOT-APPROVED
+          path: review-download
+      - name: Publish verified actual PNG only
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node tools/render-preview/publish.mjs review-download/render-output/b5-knights/full_torso_assembly_v1
