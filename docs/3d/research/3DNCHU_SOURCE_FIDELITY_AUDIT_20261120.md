@@ -55,3 +55,14 @@ Zstandardを解凍してBlendヘッダーを確認。両方のファイルのバ
 **未実施**: Blender 5.3でのファイル読み込み、ドライバー/スクリプト検査、ClamAV実スキャン、Eevee実レンダー、ノードリンクの抽出、著者デモとの視覚比較。今回のチャット実行環境にはBlender/ClamAV実行コマンドがなく、原本をGitHubへ転載しない方針のためActions側へ原本を渡していない。
 
 **次の安全な検査手順**: Blender 5.3環境で外部原本を隔離し、ClamAV検査→`blender -b --disable-autoexec <原本> --python <read-only inspector>` でノードリンク・マテリアル・レンダー設定をJSON化→Eeveeで原本の複数視点PNGをレンダリング。元ファイルのスクリプトは自動実行しない。レンダー結果だけ研究用の証拠として共有し、著作権・再配布条件が未確認の原本Blendはコミットしない。
+
+## 2026-11-20 追加静的安全確認と実行準備
+
+添付原本をGitHubへ転載せず、手元でZstandard展開しバイト列を検査。両方ともヘッダーは `BLENDER17-01v0502`（Blender 5.0.2相当）で、展開成功。原本SHA-256は上表と一致。
+
+- `Lassyla_Material.blend`: 圧縮228,069 bytes、展開1,213,013 bytes。ノード型マーカーの出現回数: Shader to RGB 3 / Noise 5 / Voronoi 1 / Fresnel 3。
+- `Palm_Tree_Demo.blend`: 圧縮369,426 bytes、展開3,010,111 bytes。同マーカー: Shader to RGB 10 / Noise 15 / Voronoi 2 / Fresnel 10。
+- 文字列パターン `bpy.`, `os.system`, `subprocess.Popen`, `__import__`, `exec(`, `eval(`, `http://`, `https://` は両ファイルで出現0。ただし**文字列検索はウイルス検査ではなく、安全の保証ではない**。ノード型名の出現回数は実ノード個数とは限らない。
+- 現在の実行コンテナに `blender` と `clamscan` がなく、apt取得もタイムアウトしたため、ClamAV・Blender 5.3での実際のファイル読み込み・レンダリングは未実施。
+- 研究用の読み取り専用インスペクター `tools/tech-research/inspect_original_blend.py` を追加。**Python構文チェック済み**。実行時は `blender -b --disable-autoexec <source.blend> --python tools/tech-research/inspect_original_blend.py`、原本は隔離し再配布しない。検査出力JSONに作者由来の外部ファイルパスが含まれる可能性があるため公開前に精査する。
+- **次のゲート**: ClamAV実検査→Blender 5.3原本読込→ノードリンクと外部依存の検査→Eeveeレンダー→原本と比較。未実施の段階を成功と扱わない。
