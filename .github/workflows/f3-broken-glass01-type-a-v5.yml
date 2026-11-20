@@ -1,0 +1,58 @@
+name: Floor3 Ruined Broken Glass Type A V5 Real Opening Review
+on:
+  push:
+    branches: [feature/gpt-f3-broken-window-glass01-20261119]
+    paths: ['tools/floor3/broken_glass01/build_type_a_v5.py','.github/workflows/f3-broken-glass01-type-a-v5.yml']
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Type A script syntax
+        run: python3 -m py_compile tools/floor3/broken_glass01/build_type_a_v5.py
+      - name: Produce Blender real renders GLB Blend
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_broken_glass01_type_a
+          printf '{"asset":"F3_BROKEN_GLASS01","type":"A","version":5,"approval":"NOT_APPROVED","run_id":"%s","source_sha":"%s"}\n' "$GITHUB_RUN_ID" "$GITHUB_SHA" > out/f3_broken_glass01_type_a/progress.json
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python /work/tools/floor3/broken_glass01/build_type_a_v5.py 2>&1 | tee out/f3_broken_glass01_type_a/blender.log
+          grep -q F3_GLASS_A_V5_ALL_COMPLETE out/f3_broken_glass01_type_a/blender.log
+      - name: Verify files GLB and manifest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct,hashlib,os
+          root=Path('out/f3_broken_glass01_type_a')
+          stem='f3_broken_glass01_type_a_v5'
+          names=['F3_GLASS_WEATHERING_ROUGHNESS_A_V5.png',stem+'.glb',stem+'.blend']+[stem+'-'+v+'.png' for v in ('front','side','angle','broken_edge_detail')]
+          files={}
+          for name in names:
+              raw=(root/name).read_bytes()
+              assert len(raw)>500,name
+              if name.endswith('.png'):assert raw[:8]==bytes.fromhex('89504e470d0a1a0a'),name
+              if name.endswith('.glb'):
+                  assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw),name
+                  n=struct.unpack_from('<I',raw,12)[0]
+                  assert raw[16:20]==b'JSON',name
+                  g=json.loads(raw[20:20+n])
+                  node_names=[v.get('name','') for v in g.get('nodes',[])]
+                  assert not any('BACKDROP' in v or v in ('Cube','Camera','Light') for v in node_names),node_names
+                  assert any('F3_RUINED_GLASS01' in v for v in node_names),node_names
+                  assert any(m.get('extensions',{}).get('KHR_materials_transmission') for m in g.get('materials',[])), 'Transmission material missing'
+              if name.endswith('.blend'):assert raw[:7]==b'BLENDER' or raw[:4]==bytes.fromhex('28b52ffd'),name
+              files[name]={'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+          (root/'manifest.json').write_text(json.dumps({'asset':'F3_BROKEN_GLASS01_TYPE_A_V5','approval':'NOT_APPROVED','run_id':os.environ['GITHUB_RUN_ID'],'source_sha':os.environ['GITHUB_SHA'],'files':files},indent=2))
+          print('GLASS_TYPE_A_V5_QA_OK',len(files))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f3-broken-glass-type-a-v5
+          path: out/f3_broken_glass01_type_a/
+          retention-days: 14

@@ -1,0 +1,58 @@
+name: Floor3 Glass Detached Corner Shard V9 Blender
+on:
+  push:
+    branches: [feature/gpt-f3-broken-window-glass01-20261119]
+    paths:
+      - tools/floor3/broken_glass01/build_detached_shard_v9.py
+      - .github/workflows/f3-glass-detached-shard-v9.yml
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax
+        run: python3 -m py_compile tools/floor3/broken_glass01/build_detached_shard_v9.py
+      - name: Blender render actual model
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_glass_corner_chip_v9
+          docker pull lscr.io/linuxserver/blender:latest
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
+            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 \
+            --python /work/tools/floor3/broken_glass01/build_detached_shard_v9.py \
+            2>&1 | tee out/f3_glass_corner_chip_v9/blender.log
+          grep -q F3_GLASS_SINGLE_CHIP_V9_ALL_COMPLETE out/f3_glass_corner_chip_v9/blender.log
+      - name: GLB 1 mesh, PNG, Blend, provenance QA
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,struct,os
+          p=pathlib.Path('out/f3_glass_corner_chip_v9')
+          name='f3_glass_detached_shard01_v9'
+          names=[name+'.glb',name+'.blend','F3_GLASS_SINGLE_CHIP_ROUGHNESS_01.png']+[name+'-'+d+'.png' for d in ['front','side','angle','chip_detail']]
+          record={}
+          for n in names:
+              b=(p/n).read_bytes()
+              assert len(b)>400,n
+              if n.endswith('.png'):assert b[:8]==bytes.fromhex('89504e470d0a1a0a')
+              if n.endswith('.blend'):assert b[:7]==b'BLENDER' or b[:4]==bytes.fromhex('28b52ffd')
+              if n.endswith('.glb'):
+                  assert b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b)
+                  jlen=struct.unpack_from('<I',b,12)[0]
+                  j=json.loads(b[20:20+jlen])
+                  assert len(j.get('meshes',[]))==1,'GLB should hold only single glass mesh'
+                  assert all('Cube' not in x.get('name','') and 'BACKDROP' not in x.get('name','') for x in j.get('nodes',[]))
+                  assert any(x.get('extensions',{}).get('KHR_materials_transmission') for x in j.get('materials',[]))
+              record[n]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}
+          (p/'manifest.json').write_text(json.dumps({'asset':'F3_GLASS_DETACHED_SHARD01_V9','approval':'NOT_APPROVED','run_id':os.environ['GITHUB_RUN_ID'],'sha':os.environ['GITHUB_SHA'],'files':record},indent=2))
+          print('F3_GLASS_SINGLE_CHIP_V9_QA_OK',len(record))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f3-glass-detached-shard-v9
+          path: out/f3_glass_corner_chip_v9/
+          retention-days: 14
