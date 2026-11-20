@@ -77,7 +77,7 @@ const hash = (x, z, s = 0) => { let h = (x * 374761393 + z * 668265263 + s * 982
 const fieldOk = () => typeof fieldState !== 'undefined' && typeof fieldArea === 'function';
 // 第1階層は3D専用。設定保存値にかかわらず3Dを優先し、WebGL等の利用不能時だけ既存2Dへフォールバックする。
 const eligible = () => fieldOk() && (g.pref || AREAS_3D.has(Number(fieldState.area))) && !g.failed && g.webgl && areaOn(Number(fieldState.area));
-const curKey = () => (fieldOk() ? fieldArea()?.key : '') || '';
+const curKey = () => (fieldOk() ? (fieldArea()?.buildKey || fieldArea()?.key) : '') || '';   // [RANDOM-MAZE] ランダム階は迷宮ごとのキー（同じフロアでも形が変われば作り直す）
 
 /* ------------------------------------------------------------
    描画の土台
@@ -149,7 +149,7 @@ function applyEnv(area, env) {
 function loadTheme2() {
   // 以前の階層から戻った場合にも、破棄済みのテーマを再利用しない。
   if (g.theme?.area === 2) return Promise.resolve(g.theme);
-  return import('./field-3d-b2-water.js?v=20261110-b2q').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES }));
+  return import('./field-3d-b2-water.js?v=20261116-rm3').then((m) => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, dimObj, removeObj, npcFile, FILES }));
 }
 function loadTheme3() {
   if (g.theme?.area === 3) return Promise.resolve(g.theme);
@@ -207,7 +207,7 @@ function doorSig(a) { return a.objects.filter((o) => o.kind === 'door' && o.hidd
 
 async function buildFloor() {
   const a = fieldArea(); if (!a) return;
-  const key = a.key, token = ++g.buildToken;
+  const key = a.buildKey || a.key, token = ++g.buildToken;   // [RANDOM-MAZE]
   g.buildingKey = key;
   showBadge('3D表示を準備中…');
   const area = Number(fieldState.area);

@@ -1,0 +1,73 @@
+name: Claude floor review shots (B2-B5)
+
+# 既存の各層ゲームテスト(tools/b2-3d〜b5-3d)を実ブラウザで実行し、スクリーンショットを
+# ブランチへコミットして返す（Claudeが git 経由で確認するため）。ゲーム本体は変更しない。
+on:
+  push:
+    branches: ["feature/ai-claude-floor-review**"]
+    paths: [".github/workflows/claude-floor-review-shots.yml", "tools/claude-review/**", "field/**", "field-3d*", "index.html", "assets/**", "css/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: floor-review-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Install three r180 + playwright (no browser download)
+        env: { PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1" }
+        run: |
+          mkdir -p /tmp/deps && cd /tmp/deps && npm init -y >/dev/null
+          npm i --no-audit --no-fund three@0.180.0 playwright@1.48.2 playwright-core@1.48.2 >/dev/null
+          sudo ln -sf "$(which google-chrome)" /usr/bin/chromium
+          echo "THREE_DIR=/tmp/deps/node_modules/three" >> $GITHUB_ENV
+          echo "PLAYWRIGHT=/tmp/deps/node_modules/playwright-core" >> $GITHUB_ENV
+          echo "NODE_PATH=/tmp/deps/node_modules" >> $GITHUB_ENV
+          echo "CHROME=$(which google-chrome)" >> $GITHUB_ENV
+          F=$(cat $GITHUB_WORKSPACE/tools/claude-review/floors.txt 2>/dev/null || echo "B2 B3 B4 B5"); echo "FLOORS=$F" >> $GITHUB_ENV
+          rm -rf $GITHUB_WORKSPACE/review-shots
+      - name: B2
+        if: contains(env.FLOORS, 'B2')
+        continue-on-error: true
+        timeout-minutes: 15
+        run: node tools/b2-3d/game-test-b2.js review-shots/b2 1280 800 2>&1 | tail -40
+      - name: B2 random-floor props (5F/6F)
+        if: contains(env.FLOORS, 'B2') && hashFiles('tools/claude-review/b2-random-props-shots.cjs') != ''
+        continue-on-error: true
+        timeout-minutes: 40
+        run: node tools/claude-review/b2-random-props-shots.cjs review-shots/b2/props 2>&1 | tail -60
+      - name: B3
+        if: contains(env.FLOORS, 'B3')
+        continue-on-error: true
+        timeout-minutes: 15
+        run: OUT=$PWD/review-shots/b3 node tools/b3-3d/game-test.cjs 2>&1 | tail -40
+      - name: B4
+        if: contains(env.FLOORS, 'B4')
+        continue-on-error: true
+        timeout-minutes: 15
+        run: QUALITY=high node tools/b4-3d/visual-test.cjs review-shots/b4 2>&1 | tail -40
+      - name: B5
+        if: contains(env.FLOORS, 'B5')
+        continue-on-error: true
+        timeout-minutes: 15
+        run: node tools/b5-3d/game-test.cjs review-shots/b5 2>&1 | tail -40
+      - name: Shrink and commit shots
+        if: always()
+        run: |
+          mkdir -p review-shots && find review-shots -type f | sort | head -300
+          # 画像だけ残す（大きいPNGはJPEG化）
+          find review-shots -name "*.png" -size +400k -exec sh -c 'convert "$1" -quality 80 "${1%.png}.jpg" && rm "$1"' _ {} \; || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add -f review-shots
+          git diff --cached --quiet && exit 0
+          git commit -m "review shots B2-B5 (run ${{ github.run_id }})"
+          git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push
