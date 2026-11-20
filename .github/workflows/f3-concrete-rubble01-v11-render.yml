@@ -1,0 +1,65 @@
+name: Floor3 Concrete Rubble01 V11 Blender 5.3
+on:
+  push:
+    branches: [feature/gpt-f3-concrete-rubble01-20261120]
+    paths: ['tools/floor3/concrete_rubble01/**','.github/workflows/f3-concrete-rubble01-v11-render.yml']
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v5
+      - name: Validate Python source
+        run: python3 -m py_compile tools/floor3/concrete_rubble01/build_v11.py
+      - name: Run Blender 5.3 multi-angle GLB render
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/f3_concrete_rubble01_v11
+          docker pull ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+          set +e
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/local/bin/blender \
+            -v "$PWD:/work" -w /work \
+            ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 \
+            -b -t 2 --python /work/tools/floor3/concrete_rubble01/build_v11.py 2>&1 | tee out/f3_concrete_rubble01_v11/blender.log
+          blender_exit=${PIPESTATUS[0]}
+          set -e
+          grep -q F3_RUBBLE_V11_ALL_COMPLETE out/f3_concrete_rubble01_v11/blender.log
+          for f in f3_concrete_rubble01_v11.glb f3_concrete_rubble01_v11.blend f3_concrete_rubble01_v11-front.png f3_concrete_rubble01_v11-side.png f3_concrete_rubble01_v11-angle.png f3_concrete_rubble01_v11-fracture_detail.png; do
+            test -s "out/f3_concrete_rubble01_v11/$f" || exit 1
+          done
+          echo "Blender process exit=$blender_exit (must be reviewed if nonzero); completed output proof validated"
+
+      - name: Validate outputs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,os,struct
+          p=Path('out/f3_concrete_rubble01_v11')
+          stem='f3_concrete_rubble01_v11'
+          names=[stem+'.glb',stem+'.blend','F3_RUBBLE01_V11_ALBEDO_512.png','F3_RUBBLE01_V11_ROUGHNESS_512.png','F3_RUBBLE01_V11_FRACTURE_ALBEDO_512.png','F3_RUBBLE01_V11_GRAIN_NORMAL_512.png']+[stem+'-'+x+'.png' for x in ('front','side','angle','fracture_detail')]
+          rec={}
+          for name in names:
+              d=(p/name).read_bytes()
+              assert len(d)>300,name
+              if name.endswith('.png'):assert d[:8]==bytes.fromhex('89504e470d0a1a0a')
+              if name.endswith('.blend'):assert d[:7]==b'BLENDER' or d[:4]==bytes.fromhex('28b52ffd')
+              if name.endswith('.glb'):
+                  assert d[:4]==b'glTF' and struct.unpack_from('<I',d,8)[0]==len(d)
+                  n=struct.unpack_from('<I',d,12)[0];g=json.loads(d[20:20+n])
+                  assert len(g.get('meshes',[]))==1,('Only one concrete asset mesh expected',len(g.get('meshes',[])))
+                  assert sum(len(x.get('primitives',[])) for x in g['meshes'])==2,'Expected main-surface and fracture PBR material primitives'
+                  assert any('F3_CONCRETE_RUBBLE01_V11' in x.get('name','') for x in g.get('nodes',[]))
+                  assert not any('Cube' in x.get('name','') or 'BACKDROP' in x.get('name','') for x in g.get('nodes',[]))
+              rec[name]={'bytes':len(d),'sha256':hashlib.sha256(d).hexdigest()}
+          (p/'manifest.json').write_text(json.dumps({'asset':'F3_CONCRETE_RUBBLE01','approval':'NOT_APPROVED','run_id':os.environ['GITHUB_RUN_ID'],'commit':os.environ['GITHUB_SHA'],'files':rec},indent=2))
+          print('F3_RUBBLE01_QA_OK',len(rec))
+          PY
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: f3-concrete-rubble01-v11
+          path: out/f3_concrete_rubble01_v11/
+          retention-days: 14

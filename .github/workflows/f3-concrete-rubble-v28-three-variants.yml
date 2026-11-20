@@ -1,0 +1,67 @@
+name: Floor3 Concrete Rubble V28 Three Models Blender 5.3
+on:
+  push:
+    branches: [feature/gpt-f3-concrete-rubble01-20261120]
+    paths:
+      - tools/floor3/concrete_rubble01/build_v28_variants.py
+      - .github/workflows/f3-concrete-rubble-v28-three-variants.yml
+  workflow_dispatch:
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - name: Validate versioned generator
+        run: python3 -m py_compile tools/floor3/concrete_rubble01/build_v28_variants.py
+      - name: Render all three GLBs with pinned Blender 5.3 Docker
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+          for variant in small medium large; do
+            mkdir -p "out/f3_concrete_rubble_v28_${variant}"
+            docker run --rm --user "$(id -u):$(id -g)" \
+              --entrypoint /usr/local/bin/blender \
+              -e F3_RUBBLE_VARIANT="$variant" \
+              -v "$PWD:/work" -w /work \
+              ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 \
+              -b -t 2 --python /work/tools/floor3/concrete_rubble01/build_v28_variants.py \
+              2>&1 | tee "out/f3_concrete_rubble_v28_${variant}/blender.log"
+            grep -q "F3_RUBBLE_V28_ALL_COMPLETE ${variant}" "out/f3_concrete_rubble_v28_${variant}/blender.log"
+          done
+      - name: Verify 3 meshes and actual PNG, Blend, PBR outputs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,struct,os
+          sha={}
+          for variant in ('small','medium','large'):
+            p=Path('out/f3_concrete_rubble_v28_'+variant)
+            stem='f3_concrete_rubble_v28_'+variant
+            names=[stem+'.glb',stem+'.blend']+[stem+'-'+x+'.png' for x in ('front','side','angle','top','fracture_detail')]
+            names += ['F3_RUBBLE01_V28_'+x+'_512.png' for x in ('ALBEDO','ROUGHNESS','FRACTURE_ALBEDO','GRAIN_NORMAL')]
+            for name in names:
+              data=(p/name).read_bytes()
+              assert len(data)>300,(variant,name)
+              if name.endswith('.png'): assert data[:8]==bytes.fromhex('89504e470d0a1a0a')
+              if name.endswith('.blend'): assert data[:7]==b'BLENDER' or data[:4]==bytes.fromhex('28b52ffd')
+              if name.endswith('.glb'):
+                assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data)
+                n=struct.unpack_from('<I',data,12)[0]
+                g=json.loads(data[20:20+n])
+                assert len(g.get('meshes',[]))==1
+                assert sum(len(mesh['primitives']) for mesh in g['meshes'])==2
+                assert any(stem.split('_v28_')[1] in node.get('name','') for node in g.get('nodes',[]))
+              sha[variant+'/'+name]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+          o=Path('out/f3_concrete_rubble_v28_manifest.json')
+          o.write_text(json.dumps({'approval':'NOT_APPROVED','generator':'V23 derived 3 geometry variants','run_id':os.environ['GITHUB_RUN_ID'],'commit':os.environ['GITHUB_SHA'],'files':sha},indent=2))
+          print('F3_V28_TRIPLE_QA_OK',len(sha))
+          PY
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: f3-concrete-rubble-v28-three-variants
+          path: out/f3_concrete_rubble_v28_*
+          retention-days: 14
