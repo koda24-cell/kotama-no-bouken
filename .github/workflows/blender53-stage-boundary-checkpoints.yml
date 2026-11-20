@@ -14,6 +14,7 @@ on:
     paths:
       - '.github/workflows/blender53-stage-boundary-checkpoints.yml'
       - 'docs/3d/recovery-drills/blender53-cross-run-drill-20261120.md'
+      - 'docs/3d/recovery-drills/second-trigger-20261120.md'
 permissions:
   contents: read
   actions: read
