@@ -1,0 +1,79 @@
+{
+  "asset": "b4p_basalt_columns",
+  "version": "v1",
+  "blender": "4.2.3 LTS",
+  "triangles": 912,
+  "budget_triangles": 6000,
+  "materials": [
+    "b4p_basalt_columns_mat"
+  ],
+  "bake": {
+    "res": 1024,
+    "emissive": true,
+    "maps": [
+      "basecolor",
+      "orm",
+      "normal",
+      "emissive"
+    ]
+  },
+  "bbox_m": [
+    1.328,
+    1.542,
+    1.85
+  ],
+  "origin": "bottom-center",
+  "up": "+Y (glTF)",
+  "glb": "b4p_basalt_columns.glb",
+  "glb_bytes": 581196,
+  "cc0_textures": {
+    "rock_face_02_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "d777f2c9b598773c2143751c34913cf5eef0ae392af31fb73c28b98afab6fb7b"
+    },
+    "rock_face_02_rough_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "8744f00d5b576dfeff31d554bcf8f92b6709b95309a48f0b7d9974e18d802e81"
+    },
+    "rock_face_02_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/rock_face_02",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "a9dc200810f5488395fdc928b5a9441c007c33047d0375d946f33dcd2ff1c853"
+    }
+  },
+  "pinterest_refs": [
+    30,
+    31,
+    33
+  ],
+  "sha256": {
+    "b4p_basalt_columns.glb": "d0899b38d70b4d10015cce0d97f26a44e0e8a9602966da06a58fa438ef756639",
+    "b4p_basalt_columns_volcanic_front.png": "e8f758b93e23f7cb474dc582f52caacacbc9b32b5fa44d953d2cfd895a570060",
+    "b4p_basalt_columns_volcanic_side.png": "fcc7cf8d72bda66b99a997fab3051ce32484ebc7e42bb2ecfe55e21b3717ded3",
+    "b4p_basalt_columns_volcanic_angle.png": "5e2a2d1939c3475fd38897a993e1dfef68c3e0fbda23aba580e073fec0972db0",
+    "b4p_basalt_columns_volcanic_top.png": "eb20f61bbc66290689cba143fd7ab88b277844eca7bddc7d2b3de3cc785eea8e",
+    "b4p_basalt_columns_volcanic_close.png": "b46f82eb87a2c569ba74f58cf7c08193bbf980ef2febfc4e07aaf731655e0ff3",
+    "b4p_basalt_columns_volcanic_back.png": "8b79d1c7fbe6c6018c666ece45af6aad548d8408d995b78c6fdf030272e151a1",
+    "b4p_basalt_columns_studio_front.png": "6634abda33241445a8f287827c4d6fae5ed24bdc949ffaebb384bd328e44752f",
+    "b4p_basalt_columns_studio_angle.png": "3093b5fc5405d40084faa2c34f98051008b748b5b7932e984f6de7cd454c3d8d",
+    "b4p_basalt_columns_studio_scale.png": "d4ba4a3e28863cfb5664720a4d8e9c1de4b89d44b8da8db5864487c33492ba2c"
+  },
+  "renders": [
+    "b4p_basalt_columns_volcanic_front.png",
+    "b4p_basalt_columns_volcanic_side.png",
+    "b4p_basalt_columns_volcanic_angle.png",
+    "b4p_basalt_columns_volcanic_top.png",
+    "b4p_basalt_columns_volcanic_close.png",
+    "b4p_basalt_columns_volcanic_back.png",
+    "b4p_basalt_columns_studio_front.png",
+    "b4p_basalt_columns_studio_angle.png",
+    "b4p_basalt_columns_studio_scale.png"
+  ],
+  "samples": 96,
+  "notes": "柱状節理7本（2.20〜0.60m）＋転がった節。天端の段差・角の欠け・横の節理。",
+  "game_lights": [],
+  "approval": "NOT_APPROVED",
+  "design": "docs/3d/B4_PROPS_DESIGN.md"
+}
