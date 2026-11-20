@@ -1,7 +1,7 @@
 name: B2 Ice Bridge Left Right Tile Preview
 on:
   push:
-    branches: [feature/b2-ice-bridge-side-tiles-20261114, feature/shared-container-b2-legacy-render-20261119, feature/shared-blender53-migration-wave3-20261119]
+    branches: [feature/b2-ice-bridge-side-tiles-20261114, feature/shared-container-b2-legacy-render-20261119]
     paths:
       - tools/b2-ice-bridge-side/**
       - .github/workflows/b2-ice-bridge-side-preview.yml
