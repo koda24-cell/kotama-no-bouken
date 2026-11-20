@@ -459,8 +459,8 @@ def basalt(name, tex_scale=1.5, glow_strength=6.0, hot=(1.0, 0.20, 0.04), hairli
     return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
 
 
-def dragon_crystal(name, glow_strength=4.0, body_dark=(0.024, 0.0016, 0.0015), body_mid=(0.036, 0.0021, 0.0019),
-                   body_hi=(0.052, 0.0030, 0.0026), inner=0.85, metallic=0.0, rough_lo=0.20, root_len=0.2):
+def dragon_crystal(name, glow_strength=5.0, body_dark=(0.060, 0.0040, 0.0030), body_mid=(0.095, 0.0070, 0.0045),
+                   body_hi=(0.14, 0.0120, 0.0065), inner=0.9, metallic=0.0, rough_lo=0.22, root_len=0.28, crack_amt=0.85):
     """炎竜鉱の結晶: 暗い赤の艶のある面＋角は欠けて明るく＋根元は煤と灰。
     発光は「内部」だけ: 根元ほど強く、面の中央で強く角で弱い（厚みの見え方）＋内部のひび＋包有物＋折れ口"""
     b = C.NB(name)
@@ -470,7 +470,7 @@ def dragon_crystal(name, glow_strength=4.0, body_dark=(0.024, 0.0016, 0.0015), b
     n2 = b.noise(16.0, 4, 0.5)
     edge = b.edge_mask(0.005, 0.02, 0.25)
     body = b.ramp(n1, [(0.2, body_dark), (0.55, body_mid), (0.9, body_hi)])
-    col = b.mix(b.math("MULTIPLY", edge, 0.55), body, (0.060, 0.016, 0.013))
+    col = b.mix(b.math("MULTIPLY", edge, 0.55), body, (0.15, 0.035, 0.022))
     col = b.mix(b.math("MULTIPLY", fresh, 0.6), col, (0.075, 0.020, 0.016))  # 新しい欠け口は白っぽく曇る
     root = b._map(tip, 0.0, 0.16, 1.0, 0.0)
     col = b.mix(b.math("MULTIPLY", root, 0.75), col, (0.010, 0.0065, 0.006))
@@ -489,14 +489,14 @@ def dragon_crystal(name, glow_strength=4.0, body_dark=(0.024, 0.0016, 0.0015), b
     body_e = b.math("MULTIPLY", body_e, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", edge, 0.9)))
     body_e = b.math("MULTIPLY", body_e, b.ramp(n1, [(0.3, 0.45), (0.7, 1.0)]))
     body_e = b.math("MULTIPLY", body_e, inner)
-    cr = b.ramp(b.voronoi(6.5, "DISTANCE_TO_EDGE", vec=warp(b, 3.0, 0.2)), [(0.0, 1.0), (0.010, 0.0)])
-    cr = b.math("MULTIPLY", cr, b.ramp(b.noise(2.2, 3, 0.5), [(0.5, 0.0), (0.64, 1.0)]))
+    cr = b.ramp(b.voronoi(6.5, "DISTANCE_TO_EDGE", vec=warp(b, 3.0, 0.2)), [(0.0, 1.0), (0.012, 0.0)])
+    cr = b.math("MULTIPLY", cr, b.ramp(b.noise(2.2, 3, 0.5), [(0.44, 0.0), (0.6, 1.0)]))
     cr = b.math("MULTIPLY", cr, b.math("SUBTRACT", 1.0, edge))
     cr = b.math("MULTIPLY", cr, b._map(tip, 0.15, 0.85, 1.0, 0.25))
-    e = b.math("MAXIMUM", body_e, b.math("MULTIPLY", cr, 0.8))
+    e = b.math("MAXIMUM", body_e, b.math("MULTIPLY", cr, crack_amt))
     e = b.math("MULTIPLY", e, b.math("SUBTRACT", 1.0, b.math("MULTIPLY", ashm, 0.8)))
     # 内部の発光色 #ff3b1f（linear 1.0,0.044,0.014）を中心に
-    emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.26, 0.006, 0.003)), (0.65, (0.72, 0.024, 0.008)), (1.0, (1.0, 0.065, 0.02))])
+    emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.25, (0.30, 0.012, 0.004)), (0.65, (0.85, 0.06, 0.012)), (1.0, (1.0, 0.16, 0.035))])
     # 反射を暗い赤に寄せる（白っぽいハイライトでピンクに見えるのを防ぐ）
     metal = b.mixf(b.math("MAXIMUM", ashm, root), metallic, 0.0)
     # 柱面の横すじ（成長条線）: 反射を帯状に割り、面全体が一様に光るのを防ぐ

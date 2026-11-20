@@ -31,7 +31,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_dragon_ore_cluster"
-VERSION = "v11"
+VERSION = "v12"
 rnd = random.Random(808)
 C.reset(808)
 
@@ -109,6 +109,26 @@ for i, (s, h, ln, r, a, b, brk, ch) in enumerate(CRY):
                    embed=0.10 + r, broken=brk, chips=ch)
     add(ob, "crystal")
 
+# 副鉱脈：片 A の正面左の小さな割れ目から小結晶が顔を出す（鉱石多め・前人未踏感）
+from mathutils.bvhtree import BVHTree  # noqa: E402
+_dg = C.bpy.context.evaluated_depsgraph_get()
+bvhA = BVHTree.FromObject(rockA, _dg)
+SUB = []
+for k, d in enumerate([Vector((-0.55, -0.80, 0.35)), Vector((-0.45, -0.85, 0.30)), Vector((-0.62, -0.72, 0.42)),
+                       Vector((-0.50, -0.82, 0.22)), Vector((-0.58, -0.78, 0.30)), Vector((-0.40, -0.88, 0.38))]):
+    d = d.normalized()
+    org = Vector((-0.25, 0.0, 0.30))
+    hit, nrm, _, _ = bvhA.ray_cast(org + d * 2.5, -d)
+    if hit is None:
+        continue
+    ax = (nrm * 0.7 + Vector((0, 0, 0.5)) + Vector((rnd.uniform(-0.3, 0.3), rnd.uniform(-0.3, 0.3), 0))).normalized()
+    ln = (0.28, 0.20, 0.16, 0.12, 0.10, 0.14)[k]
+    r = (0.045, 0.035, 0.03, 0.024, 0.02, 0.026)[k]
+    ob = D.crystal(f"cry_sub_{k}", hit - nrm * 0.02, ax, ln, r, seed=300 + k, spin=rnd.uniform(0, 6.28),
+                   embed=0.06 + r, broken=(0.7, 0.5) if k == 2 else None, chips=1)
+    add(ob, "crystal")
+    SUB.append(hit)
+
 # 折れて転がった結晶（岩片にもたれて先が少し浮く）
 shard = D.crystal("cry_fallen", (0.22, -0.74, 0.035), (0.92, 0.25, 0.16), 0.24, 0.040, seed=150, spin=0.4,
                   embed=0.0, broken=None, chips=1)
@@ -130,14 +150,18 @@ for o in objs:
 off = D.recenter(objs)
 D.attr_report([o for o in objs if o.name in ("rock_a", "cry_0", "cry_1", "cry_20")], " pre")
 
-mats = {"basalt": D.basalt("basalt"), "crystal": D.dragon_crystal("crystal")}
+mats = {"basalt": D.basalt("basalt", hairline=1.3), "crystal": D.dragon_crystal("crystal")}
 for o, key in parts.values():
     C.assign(o, mats[key])
 
 lights = [  # 割れ目の奥（結晶の根元より下）だけに置く
-    (tuple(gap_point(0.0, 0.18) - off), 11.0, (1.0, 0.20, 0.06)),
-    (tuple(gap_point(0.30, 0.24) - off), 3.5, (1.0, 0.18, 0.05)),
+    (tuple(gap_point(0.0, 0.18) - off), 16.0, (1.0, 0.24, 0.07)),
+    (tuple(gap_point(0.30, 0.24) - off), 5.0, (1.0, 0.22, 0.06)),
+    (tuple(gap_point(-0.25, 0.26) - off), 4.0, (1.0, 0.22, 0.06)),
 ]
+if SUB:  # 副鉱脈の根元を照らす弱い光（岩から少し離す）
+    c = sum(SUB, Vector()) / len(SUB)
+    lights.append((tuple(c + (c - Vector((-0.25, 0, 0.3))).normalized() * 0.12 - off), 3.0, (1.0, 0.25, 0.07)))
 M = C.finish(NAME, objs, version=VERSION, lights=lights, tex_res=1024, budget_tris=8000, refs=[60, 61, 64, 41],
          notes="炎竜鉱の結晶群。割れて傾いた玄武岩のV字の割れ目から26本の結晶が放射状に出る。"
                "発光は割れ目の内側・縁の細いひび・結晶の内部のみ。")
