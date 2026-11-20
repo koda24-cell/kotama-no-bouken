@@ -102,7 +102,7 @@ def verify(args):
     files = data.get("files")
     if not isinstance(files, dict) or not files:
         raise ValueError("Missing file inventory")
-    actual = dict(safe_files(root))
+    actual = {rel: path for path, rel in safe_files(root)}
     if set(actual) != set(files):
         raise ValueError("Checkpoint file set mismatch")
     for rel, path in actual.items():
