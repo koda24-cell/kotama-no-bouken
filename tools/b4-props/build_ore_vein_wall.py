@@ -10,7 +10,7 @@ b4p_ore_vein_wall — 壁に貼る炎竜鉱の鉱脈の岩板（#21、ユーザ�
   #30 柱状節理の段差（正面の割れ面と棚の段差）
 形・寸法の要点:
   - 幅2.4×高さ2.2×厚み0.5m。裏面は平ら（y=+0.25）で壁に密着。角の丸い箱（超楕円体 p=4）を
-    割れ面10・段差12で崩した板。正面は平らな割れ面に段差と棚、外形は角が欠けて不揃い
+    こぶ（±17%）の頂だけを割れ面で平らに落とした板（割れ面14＋正面の斜めの割れ面7）。外形は角が欠けて不揃い
   - 左下から右上へ波打つ主脈と2本の枝。溝の底が赤橙に光り、縁は黒く冷えている
   - 主脈の3か所に結晶の束（4〜6本）、脈に沿って小結晶が点在
 劣化（設計書3章）:
@@ -29,7 +29,7 @@ from mathutils import Vector  # noqa: E402
 from mathutils.bvhtree import BVHTree  # noqa: E402
 
 NAME = "b4p_ore_vein_wall"
-VERSION = "v5"
+VERSION = "v6"
 rnd = random.Random(2121)
 C.reset(2121)
 
@@ -65,11 +65,11 @@ PATHS = [{"pts": MAIN, "depth": 0.06, "w": 0.042, "seed": 1.0, "glow_var": 0.6},
          {"pts": BR1, "depth": 0.03, "w": 0.024, "seed": 2.0, "glow_var": 0.8},
          {"pts": BR2, "depth": 0.03, "w": 0.024, "seed": 3.0, "glow_var": 0.8}]
 
-bm = D.basalt_bm(RAD, CEN, seed=77, subdiv=5, lumpy=0.06, facets=10, facet_depth=(0.78, 0.94), fresh_ratio=0.35,
-                 up_bias=0.0, fine=(0.010, 5.0), ground=0.0, notches=8, notch_depth=(0.62, 0.8), box_p=4.0,
-                 extra_planes=[((0, 1, 0), BACK_Y / RAD[1], False), ((0, -1, 0.04), 0.93, False),
-                               ((0.35, -1, 0.25), 0.88, True), ((-0.4, -1, 0.2), 0.86, False), ((0.25, -1, -0.35), 0.87, False),
-                               ((-0.3, -1, -0.3), 0.89, True), ((0.05, -1, 0.5), 0.84, False)],
+bm = D.basalt_bm(RAD, CEN, seed=77, subdiv=5, lumpy=0.17, facets=14, facet_depth=(0.80, 0.95), fresh_ratio=0.35,
+                 up_bias=0.0, fine=(0.010, 5.0), ground=0.0, notches=0, box_p=4.0,
+                 extra_planes=[((0, 1, 0), BACK_Y / RAD[1], False), ((0, -1, 0.04), 1.0, False),
+                               ((0.35, -1, 0.25), 0.97, True), ((-0.4, -1, 0.2), 0.96, False), ((0.25, -1, -0.35), 0.97, False),
+                               ((-0.3, -1, -0.3), 0.98, True), ((0.05, -1, 0.5), 0.95, False), ((-0.6, -1, 0.0), 0.97, True)],
                  hook=lambda b: D.carve_paths(b, F0, EX, EZ, NF, PATHS, refine=(0.018,)))
 wall = C.obj_from_bm(bm, "wall")
 for v in wall.data.vertices:  # 裏面を壁に密着する平面にそろえる
