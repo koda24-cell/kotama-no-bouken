@@ -37,11 +37,12 @@ rnd = random.Random(1313)
 C.reset(1313)
 
 pos = []   # 骨の和（ボクセル化）
+late = []  # 後頭を平らにした後で足す部品（角・棘・フリルの角）
 E = D.ellipsoid
 # 頭蓋と後頭
 pos += [E("cranium", (0.42, 0, 0.50), (0.50, 0.35, 0.30)), E("occiput", (0.80, 0, 0.54), (0.16, 0.30, 0.22))]
 for s_ in (-1, 1):  # 後頭の張り出し（フリルの角）: 丸い後頭部をやめて角ばった骨の板に
-    pos.append(D.tube(f"flange_{s_}", C.bezier((0.62, 0.26 * s_, 0.66), (0.86, 0.40 * s_, 0.58), (1.04, 0.50 * s_, 0.44), n=8), 0.075, 0.03))
+    late.append(D.tube(f"flange_{s_}", C.bezier((0.62, 0.26 * s_, 0.66), (0.86, 0.40 * s_, 0.58), (1.04, 0.50 * s_, 0.44), n=8), 0.075, 0.03))
 # 頭頂の稜（矢状稜）: 丸い頭蓋を骨らしく引き締める
 pos.append(D.tube("crest", C.bezier((0.15, 0, 0.80), (0.55, 0, 0.90), (0.98, 0, 0.74), n=10), 0.06, 0.05))
 # 吻（先細り）
@@ -65,16 +66,19 @@ for s in (-1, 1):
         pts = pts[:int(16 * HORN_BREAK) + 1]
         horn_tips[s] = (pts[-1], (pts[-1] - pts[-2]).normalized())
     rr = (0.125, 0.125 - (0.125 - 0.022) * HORN_BREAK) if s < 0 else (0.125, 0.022)
-    pos.append(D.tube(f"horn_{s}", pts, rr[0], rr[1], sides=12, pw=0.9))
+    late.append(D.tube(f"horn_{s}", pts, rr[0], rr[1], sides=12, pw=0.9))
 # 小さな棘（頭頂・後頭）
 for k, (p0, d, ln, r) in enumerate((((0.55, 0.0, 0.86), (0.6, 0, 0.8), 0.30, 0.06), ((0.85, 0.0, 0.80), (0.8, 0, 0.6), 0.34, 0.06),
                                     ((1.02, 0.18, 0.66), (0.9, 0.3, 0.3), 0.28, 0.05), ((1.02, -0.18, 0.66), (0.9, -0.3, 0.3), 0.24, 0.05))):
     p0 = Vector(p0)
     d = Vector(d).normalized()
     pts = C.bezier(p0, p0 + d * ln * 0.5 + Vector((0, 0, 0.04)), p0 + d * ln, n=6)
-    pos.append(D.tube(f"spike_{k}", pts, r, r * 0.18, sides=8))
+    late.append(D.tube(f"spike_{k}", pts, r, r * 0.18, sides=8))
 
-skull = D.voxel_union(pos, "skull", voxel=0.02)
+REAR = [((1.20, 0.0, 0.50), (0.40, 0.75, 0.75), (0, 18, 0))]   # 後ろを斜めに落として平らな後頭面に（x>0.8）
+body = D.voxel_union(pos, "skull_body", voxel=0.022)
+D.bool_diff(body, [E(f"_r{k}", c, r, rot=ro, subdiv=3) for k, (c, r, ro) in enumerate(REAR)])
+skull = D.voxel_union([body] + late, "skull", voxel=0.02)
 
 # 穴：眼窩・前眼窩窓・側頭窓・頭頂窓・鼻孔・欠けた穴
 CUT = []
@@ -84,8 +88,7 @@ for s in (-1, 1):
             ((0.62, 0.43 * s, 0.40), (0.17, 0.13, 0.12), (0, 0, 0)),
             ((0.66, 0.17 * s, 0.84), (0.13, 0.075, 0.09), (0, 0, 0)),
             ((-1.12, 0.075 * s, 0.33), (0.085, 0.045, 0.05), (0, -20, 0))]
-CUT += [((1.20, 0.0, 0.50), (0.40, 0.75, 0.75), (0, 18, 0)),     # 後ろを斜めに凹ませて平らな後頭面に（x>0.8）
-        ((0.82, 0.0, 0.34), (0.12, 0.085, 0.085), (0, 0, 0))]   # 大後頭孔
+CUT += [((0.82, 0.0, 0.34), (0.12, 0.085, 0.085), (0, 0, 0))]   # 大後頭孔
 DAMAGE = [((-0.72, -0.27, 0.40), (0.17, 0.10, 0.12), (0, 0, -10)), ((0.40, 0.18, 0.92), (0.16, 0.14, 0.08), (0, 10, 0))]
 cutters = [E(f"_c{k}", c, r, rot=ro, subdiv=3) for k, (c, r, ro) in enumerate(CUT + DAMAGE)]
 D.bool_diff(skull, cutters)
