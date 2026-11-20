@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Verify Blender 5.3 runtime
-        run: blender --version | head -n 1 | grep -E '^Blender 5\\.3\\.'
+        run: blender --version | grep -m1 'Blender 5.3'
       - name: Update ClamAV signatures and verify real source scan
         run: |
           bash tools/security/clamav_scan_gate.sh update qa/security
