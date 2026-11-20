@@ -68,7 +68,11 @@ bm = D.basalt_bm(RAD, CEN, seed=77, subdiv=4, lumpy=0.12, facets=13, facet_depth
                  up_bias=0.0, fine=(0.012, 5.0), ground=0.0, notches=6, notch_depth=(0.78, 0.92),
                  extra_planes=[((0, 1, 0), BACK_Y / RAD[1], False), ((0.7, 0, 0.7), 0.83, True), ((-0.75, -0.2, -0.6), 0.86, True)],
                  hook=lambda b: D.carve_paths(b, F0, EX, EZ, NF, PATHS, refine=(0.06, 0.025, -0.015)))
-wall = D.sharp_by_angle(C.obj_from_bm(bm, "wall"), 40)
+wall = C.obj_from_bm(bm, "wall")
+for v in wall.data.vertices:  # 裏面を壁に密着する平面にそろえる
+    if v.co.y > BACK_Y - 0.025:
+        v.co.y = BACK_Y
+D.sharp_by_angle(wall, 40)
 parts = {"wall": (wall, "basalt")}
 
 # ---- 結晶：主脈の3か所に束、点在 ----
@@ -127,6 +131,9 @@ for o, key in parts.values():
 lights = []
 for t in (0.2, 0.45, 0.7, 0.92):
     c2 = path_point(MAIN, t)
-    lights.append(((c2.x - off.x, -0.42 - off.y, c2.y - off.z), 4.5, (1.0, 0.26, 0.07)))
+    hit, nrm = surface(c2.x, c2.y)
+    if hit is not None:
+        lp = hit + Vector((0, -0.14, 0)) - off
+        lights.append((tuple(lp), 4.5, (1.0, 0.26, 0.07)))
 C.finish(NAME, objs, version=VERSION, lights=lights, tex_res=2048, budget_tris=10000, refs=[64, 41, 60, 61, 30],
          notes="壁に貼る鉱脈の岩板。裏面は平ら（y=+0.25）。脈の溝の底と結晶の根元・ひびだけ発光。")
