@@ -76,7 +76,8 @@ jobs:
           assert files,'No output generated'
           for p in files:
               b=p.read_bytes()
-              assert len(b)>0,p\n              if p.suffix.lower() in ('.png','.glb','.blend'): assert len(b)>100,p
+              assert len(b)>0,p
+              if p.suffix.lower() in ('.png','.glb','.blend'): assert len(b)>100,p
               if p.suffix.lower()=='.png': assert b.startswith(bytes.fromhex('89504e470d0a1a0a')),p
               if p.suffix.lower()=='.glb': assert b[:4]==b'glTF',p
           manifest={'status':'NOT_APPROVED','blender':'5.3.0','files':{str(p.relative_to(d)):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in files}}
