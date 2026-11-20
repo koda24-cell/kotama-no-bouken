@@ -29,7 +29,7 @@ from mathutils import Vector  # noqa: E402
 from mathutils.bvhtree import BVHTree  # noqa: E402
 
 NAME = "b4p_ore_vein_wall"
-VERSION = "v4"
+VERSION = "v5"
 rnd = random.Random(2121)
 C.reset(2121)
 
@@ -66,9 +66,11 @@ PATHS = [{"pts": MAIN, "depth": 0.06, "w": 0.042, "seed": 1.0, "glow_var": 0.6},
          {"pts": BR2, "depth": 0.03, "w": 0.024, "seed": 3.0, "glow_var": 0.8}]
 
 bm = D.basalt_bm(RAD, CEN, seed=77, subdiv=5, lumpy=0.06, facets=10, facet_depth=(0.78, 0.94), fresh_ratio=0.35,
-                 up_bias=0.0, fine=(0.010, 5.0), ground=0.0, notches=12, notch_depth=(0.55, 0.78), box_p=4.0,
-                 extra_planes=[((0, 1, 0), BACK_Y / RAD[1], False), ((0, -1, 0.04), 0.86, False)],
-                 hook=lambda b: D.carve_paths(b, F0, EX, EZ, NF, PATHS, refine=(0.035, 0.0)))
+                 up_bias=0.0, fine=(0.010, 5.0), ground=0.0, notches=8, notch_depth=(0.62, 0.8), box_p=4.0,
+                 extra_planes=[((0, 1, 0), BACK_Y / RAD[1], False), ((0, -1, 0.04), 0.93, False),
+                               ((0.35, -1, 0.25), 0.88, True), ((-0.4, -1, 0.2), 0.86, False), ((0.25, -1, -0.35), 0.87, False),
+                               ((-0.3, -1, -0.3), 0.89, True), ((0.05, -1, 0.5), 0.84, False)],
+                 hook=lambda b: D.carve_paths(b, F0, EX, EZ, NF, PATHS, refine=(0.018,)))
 wall = C.obj_from_bm(bm, "wall")
 for v in wall.data.vertices:  # 裏面を壁に密着する平面にそろえる
     if v.co.y > BACK_Y - 0.004:
@@ -93,7 +95,7 @@ def surface(u, w):
 
 
 cid = 0
-for t, nb in ((0.28, 6), (0.55, 7), (0.82, 5)):
+for t, nb in ((0.28, 7), (0.55, 8), (0.82, 6)):
     c2 = path_point(MAIN, t)
     for k in range(nb):
         u = c2.x + rnd.uniform(-0.05, 0.05)
@@ -101,7 +103,7 @@ for t, nb in ((0.28, 6), (0.55, 7), (0.82, 5)):
         hit, nrm = surface(u, w)
         if hit is None:
             continue
-        ln = rnd.uniform(0.22, 0.42) if k < 3 else rnd.uniform(0.10, 0.22)
+        ln = rnd.uniform(0.28, 0.50) if k < 3 else rnd.uniform(0.12, 0.26)
         r = ln * rnd.uniform(0.15, 0.19)
         ax = (Vector((0, -1, 0)) + Vector((rnd.uniform(-0.45, 0.45), 0, rnd.uniform(0.35, 0.8)))).normalized()
         ob = D.crystal(f"cry_{cid}", hit + Vector((0, 0.03, 0)), ax, ln, r, seed=400 + cid, spin=rnd.uniform(0, 6.3),
