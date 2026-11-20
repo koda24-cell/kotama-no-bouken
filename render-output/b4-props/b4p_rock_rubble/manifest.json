@@ -1,8 +1,8 @@
 {
   "asset": "b4p_rock_rubble",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
-  "triangles": 6760,
+  "triangles": 5298,
   "budget_triangles": 8000,
   "materials": [
     "b4p_rock_rubble_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    1.662,
-    1.352,
-    0.728
+    1.67,
+    1.283,
+    0.575
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_rock_rubble.glb",
-  "glb_bytes": 1008416,
+  "glb_bytes": 965084,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -52,16 +52,16 @@
     64
   ],
   "sha256": {
-    "b4p_rock_rubble.glb": "d0e67efdfa3187b1bcf6f7a391c0ade4ad4d3ca06f0b9cf0708aa9796259b3cd",
-    "b4p_rock_rubble_volcanic_front.png": "5ca23ec5a321ca4064a957bbb0b4f53c10463d8049a48861ca1b4ecbee33c3f3",
-    "b4p_rock_rubble_volcanic_side.png": "1a2dbed5ed482318cdc73257ab845ae87293660a8f5798cb4e7e17df32f9ecfb",
-    "b4p_rock_rubble_volcanic_angle.png": "d47e6756368f5b79cebaa4636aa24a2b7d83155e2ec5d9c824a4c818ebb18738",
-    "b4p_rock_rubble_volcanic_top.png": "249d120348c1f0363b090bba4cf955f9f7dd0d0e352b50a07b30bfae9377f91c",
-    "b4p_rock_rubble_volcanic_close.png": "2c95d2310746adb92b3feb86a78b9a8534e12917cff62a32c3dede7ec66d1dcb",
-    "b4p_rock_rubble_volcanic_back.png": "b7050628d09674275468b49e5c2f6fdd1083008fcde707a685077f6c5054ec59",
-    "b4p_rock_rubble_studio_front.png": "d9bfd7f8fd0e9efe7a9e20bb503fc1bbd46730108372919460faa5d16bb6bc05",
-    "b4p_rock_rubble_studio_angle.png": "58f1db6f2c125d1ee5e41e8c8774643463544dfafe7642ffd1ffc1877af714d1",
-    "b4p_rock_rubble_studio_scale.png": "55835887895f5fc92e3d848e0e7cad0cb852777f33e5eed1ca020a19133c4e08"
+    "b4p_rock_rubble.glb": "dccc363cca303f4559d6bba6742fabe58cd8dbf2047a005621ade33957410943",
+    "b4p_rock_rubble_volcanic_front.png": "74a50639caca0afac30f63711ceddbb6ae3b7a3443d6436d8e62999f94e8cfcd",
+    "b4p_rock_rubble_volcanic_side.png": "f86c1b6238809ab8c079a4934392ab3050ef772074147add1aaf6824f88f4132",
+    "b4p_rock_rubble_volcanic_angle.png": "20fe3fbd6824ce8858bd6c703a3aa0b478040a322fbda7a94c0c40d9d2f0beb0",
+    "b4p_rock_rubble_volcanic_top.png": "7e2e3b6fb66c1db05bdc4d5280a0f44f13b102c0a5e1955091cb0ea34eee41f1",
+    "b4p_rock_rubble_volcanic_close.png": "dfa3481e9bedace1136ea505c438bbd3da7a39dfabc503af8de7a6ff98a6c8ad",
+    "b4p_rock_rubble_volcanic_back.png": "09145e29ea2398f2235d554749b5e9e41795cb1cd99cbb1f4d056b4fe29df7a5",
+    "b4p_rock_rubble_studio_front.png": "18c0f44b222a8aa03bb81d747a79aebb2d99bf2a0c229728845177e1c48d2ba9",
+    "b4p_rock_rubble_studio_angle.png": "9ee63ed792daafcca4e2cc0ebe893791c1765788f61351628cf4b55f7d4c7261",
+    "b4p_rock_rubble_studio_scale.png": "12ebd3ae3da0146f8743baf6356c128b8b124b6652c13404e703ca1970e9c2c4"
   },
   "renders": [
     "b4p_rock_rubble_volcanic_front.png",
@@ -79,9 +79,9 @@
   "game_lights": [
     {
       "pos_blender_zup": [
-        0.09793819487094879,
-        0.027386024594306946,
-        0.7374902367591858
+        0.20342643558979034,
+        -0.003705918788909912,
+        0.438699334859848
       ],
       "watts": 3.0,
       "color": [
@@ -92,9 +92,9 @@
     },
     {
       "pos_blender_zup": [
-        -0.14297333359718323,
-        0.29716193675994873,
-        0.2553583085536957
+        -0.21392033994197845,
+        -0.012780651450157166,
+        0.3625856339931488
       ],
       "watts": 2.5,
       "color": [
