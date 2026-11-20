@@ -28,7 +28,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_basalt_columns"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(2020)
 C.reset(2020)
 
@@ -55,7 +55,10 @@ def column_bm(flat, H, seed, joints=()):
     zs = []
     n = max(4, int(H / 0.12))
     for k in range(n + 1):
-        zs.append((H * k / n, 1.0))
+        z = H * k / n
+        if 0 < k < n and any(abs(z - j) < 0.035 for j in joints):
+            continue  # 節理の溝の輪と重ならない（自己交差するとブーリアンが失敗する）
+        zs.append((z, 1.0))
     for j in joints:
         zs += [(j - 0.008, 1.0), (j, 0.93), (j + 0.008, 1.0)]
     zs.sort()
