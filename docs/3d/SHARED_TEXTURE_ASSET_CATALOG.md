@@ -46,6 +46,9 @@
 | `F3_PUTTY01_AGED_ALBEDO_V3` | 第3層・劣化した窓パテ01、着色・黒ずみカラー・V3 | 256×256 PNG / sRGB | くさび状の小パテ1本にUV適用。シームレス未検証 | 自作 `tools/floor3/window_putty01/build_v3.py`、PR #640、run #44648863840 | `6099c03c853e9372ee16272095d785d951e5d5f65276f1b3cf92c8aec5ad4d31` | V3 Artifact実体SHA確認。実ファイル名は全版共通 `F3_PUTTY01_AGED_ALBEDO.png`。正式Gitバイナリなし、未承認、ClamAV固有検査未実施 |
 | `F3_PUTTY01_ROUGHNESS_V3` | 第3層・劣化した窓パテ01、非カラーの粗さ・V3 | 256×256 PNG / non-color | くさび状の小パテ1本にUV適用。シームレス未検証 | 自作 `tools/floor3/window_putty01/build_v3.py`、PR #640、run #44648863840 | `67228b8391f43ae3cbf4bce78e1cada5194f1f2b65d25c42df9859f5df97d8fd` | V3 Artifact実体SHA確認。実ファイル名は全版共通 `F3_PUTTY01_ROUGHNESS.png`。正式Gitバイナリなし、未承認、ClamAV固有検査未実施 |
 
+| `F3_RUBBLE01_CONCRETE_ALBEDO_V3` | 第3層崩落コンクリート瓦礫01の汚れ・コンクリート色 | 256×256 PNG / sRGB | 1個のコンクリート瓦礫UV用。シームレス未検証 | Blender 5.3自作 `tools/floor3/concrete_rubble01/build_v3.py`、PR #642、[run #44652457581](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44652457581) | `50f91cbde203fc6525c3ca4ad8d35a8f73207396bf9eba57756217003a3afd01` | Artifact #14591816424で実PNG SHA一致。正式Gitバイナリ未保存、美術未承認、固有ClamAV未実施 |
+| `F3_RUBBLE01_CONCRETE_ROUGHNESS_V3` | 第3層崩落コンクリート瓦礫01の粗さ・埃のムラ | 256×256 PNG / non-color | 上記と同じUV。シームレス未検証 | Blender 5.3自作 `tools/floor3/concrete_rubble01/build_v3.py`、PR #642、[run #44652457581](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44652457581) | `87f343a86c0faeafb81243d9cbd7bb2da0f9191213f319920a8d698c139ba664` | Artifact #14591816424で実PNG SHA一致。正式Gitバイナリ未保存、美術未承認、固有ClamAV未実施 |
+
 ## モデルとの関係・承認境界
 
 - 第3層の壁01 V4（段差剥離）はユーザーが造形を了承済み。候補GLBの検証時SHA-256: `44e995b1ee843ad3bffba078c532158011effef6d6245cd0bced9f25082a8981`。
