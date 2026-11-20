@@ -1,8 +1,8 @@
 {
   "asset": "b4p_dragon_ore_cluster",
-  "version": "v11",
+  "version": "v12",
   "blender": "4.2.3 LTS",
-  "triangles": 5582,
+  "triangles": 5804,
   "budget_triangles": 8000,
   "materials": [
     "b4p_dragon_ore_cluster_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    1.908,
-    1.522,
+    1.933,
+    1.53,
     1.264
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_dragon_ore_cluster.glb",
-  "glb_bytes": 832852,
+  "glb_bytes": 895092,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -50,16 +50,16 @@
     41
   ],
   "sha256": {
-    "b4p_dragon_ore_cluster.glb": "794f0ad570b024cbc99729ab581e27e108c28f83c3dd082f67ad632b253de811",
-    "b4p_dragon_ore_cluster_volcanic_front.png": "39157b3d62162d02f5d840155440117c47c20edf0ee933cbe2813d6262100db3",
-    "b4p_dragon_ore_cluster_volcanic_side.png": "cdc405d4d1033bee4bfc5851f86d9b59931437e9bbe5a8072015d5c4f284f41e",
-    "b4p_dragon_ore_cluster_volcanic_angle.png": "14c9e23def62a8569c2e3e10564b3bab0b56dbca3323e900837fff241d406820",
-    "b4p_dragon_ore_cluster_volcanic_top.png": "67f826584a63a80b45439d77ded731d3dd821959d4c25ad1829c9f65b244d7a6",
-    "b4p_dragon_ore_cluster_volcanic_close.png": "bb22fefef3abe8b1a361b145553790a08a1648a69a35935a601cfcb0e731dff3",
-    "b4p_dragon_ore_cluster_volcanic_back.png": "9381dea6f8289958c640d6dd578bbd4db53397eeef9764b5755733cf38b3dae1",
-    "b4p_dragon_ore_cluster_studio_front.png": "92ba046b201a8647522b9bac7068b12a815ecaaa5d80d247528f170624e6d3b2",
-    "b4p_dragon_ore_cluster_studio_angle.png": "0a46b114afb7c0f26431ff8744975c2f7d15a0074950497b021e7d9b5d671a98",
-    "b4p_dragon_ore_cluster_studio_scale.png": "2270dc15d3be488f145ade95d7d18a079b11394838b562ad93f062d9e5394257"
+    "b4p_dragon_ore_cluster.glb": "8281cb8d563fc8e2052a1b41b06f4b99df4d1562c8d46ec899273d65f78f6e5c",
+    "b4p_dragon_ore_cluster_volcanic_front.png": "b9ca3cac3449a57af81d7997de8074eec23b26c03d069af17d1875d0d4d81f7b",
+    "b4p_dragon_ore_cluster_volcanic_side.png": "01f31dfe8729b750f6812af9cbfffe906aeac75a43ca896a85765769b8d93b53",
+    "b4p_dragon_ore_cluster_volcanic_angle.png": "8486b6652bdb29ea262b6e3e9c6636bc1e4299e7221e7f79ba9d451cbe044cec",
+    "b4p_dragon_ore_cluster_volcanic_top.png": "491e4ca53e62293bf808f1dd06323923a475874148422ba9537647f4a15be272",
+    "b4p_dragon_ore_cluster_volcanic_close.png": "c70490fc5947d671a6db9e23fde4e1d1e4b0fc814a3bc0de80ac09f85292435c",
+    "b4p_dragon_ore_cluster_volcanic_back.png": "a10acd7b0c7adc2b458435822f803e6dd07c8619f465bd01fb91a8c63f2c5727",
+    "b4p_dragon_ore_cluster_studio_front.png": "ea314ce04eb535ad2046768a0f23a3009bf6c6ac395ad79963bda059081c0792",
+    "b4p_dragon_ore_cluster_studio_angle.png": "3f8cce7cb7505ceb35acf3dc92f6445e50290b3af2bf8e6c0278c2d84da91e4f",
+    "b4p_dragon_ore_cluster_studio_scale.png": "7ac65abdc7f1f4f64bd25ebcd17f8d52cc48bb25d4e0a284c447321c37ab4356"
   },
   "renders": [
     "b4p_dragon_ore_cluster_volcanic_front.png",
@@ -77,28 +77,54 @@
   "game_lights": [
     {
       "pos_blender_zup": [
-        0.08330558240413666,
-        -0.025753378868103027,
+        0.07459770143032074,
+        -0.02357792854309082,
         0.2122509479522705
       ],
-      "watts": 11.0,
+      "watts": 16.0,
       "color": [
         1.0,
-        0.2,
+        0.24,
+        0.07
+      ]
+    },
+    {
+      "pos_blender_zup": [
+        0.24668008089065552,
+        0.22217459976673126,
+        0.2728338837623596
+      ],
+      "watts": 5.0,
+      "color": [
+        1.0,
+        0.22,
         0.06
       ]
     },
     {
       "pos_blender_zup": [
-        0.25538796186447144,
-        0.21999914944171906,
-        0.2728338837623596
+        -0.06420287489891052,
+        -0.2315351665019989,
+        0.2930281460285187
       ],
-      "watts": 3.5,
+      "watts": 4.0,
       "color": [
         1.0,
-        0.18,
-        0.05
+        0.22,
+        0.06
+      ]
+    },
+    {
+      "pos_blender_zup": [
+        -0.46326878666877747,
+        -0.186464324593544,
+        0.4170377254486084
+      ],
+      "watts": 3.0,
+      "color": [
+        1.0,
+        0.25,
+        0.07
       ]
     }
   ],
