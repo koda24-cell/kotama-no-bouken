@@ -1,32 +1,33 @@
-[b4-props] voxel_union skull: verts=30640
-[b4-props] decimate skull: 61016 -> 12995
-[b4-props] recenter offset=(0.2278, 0.0077, 0.0) size=(3.063, 1.767, 0.972)
-[b4-props] b4p_dragon_skull: tris=14773 materials=2
+[b4-props] voxel_union skull_body: verts=20950
+[b4-props] voxel_union skull: verts=29240
+[b4-props] decimate skull: 58772 -> 12995
+[b4-props] recenter offset=(0.2675, 0.0277, 0.0) size=(2.983, 1.749, 0.972)
+[b4-props] b4p_dragon_skull: tris=14809 materials=2
 Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)
-Fra:1 Mem:244.83M (Peak 717.43M) | Time:498660:48:55.82 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:245.71M (Peak 717.43M) | Time:498660:48:55.82 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:245.71M (Peak 717.43M) | Time:498660:48:55.82 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_basecolor
-Fra:1 Mem:260.79M (Peak 829.81M) | Time:498660:49:20.44 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:261.66M (Peak 829.81M) | Time:498660:49:20.44 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:261.66M (Peak 829.81M) | Time:498660:49:20.44 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_roughness
-Fra:1 Mem:276.76M (Peak 842.71M) | Time:498660:49:28.11 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:277.23M (Peak 842.71M) | Time:498660:49:28.11 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:277.23M (Peak 842.71M) | Time:498660:49:28.11 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_metallic
-Fra:1 Mem:292.79M (Peak 854.10M) | Time:498660:49:28.92 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:293.43M (Peak 854.10M) | Time:498660:49:28.92 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:293.43M (Peak 854.10M) | Time:498660:49:28.92 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_emissive
-Fra:1 Mem:308.95M (Peak 870.65M) | Time:498660:49:30.83 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:310.79M (Peak 870.65M) | Time:498660:49:30.84 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:310.78M (Peak 870.65M) | Time:498660:49:30.84 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_normal
-Fra:1 Mem:324.96M (Peak 898.14M) | Time:498660:49:44.58 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:326.80M (Peak 898.14M) | Time:498660:49:44.59 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:326.80M (Peak 898.14M) | Time:498660:49:44.59 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_ao
-12:52:30 | INFO: Starting glTF 2.0 export
-12:52:30 | WARNING: Mesh b4p_dragon_skull is not valid, and may be exported wrongly
-12:52:30 | INFO: Extracting primitive: b4p_dragon_skull
-12:52:30 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
-12:52:30 | INFO: Primitives created: 1
-12:52:30 | INFO: Finished glTF 2.0 export in 0.2838428020477295 s
+Fra:1 Mem:244.83M (Peak 704.27M) | Time:498661:05:33.18 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:245.71M (Peak 704.27M) | Time:498661:05:33.18 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:245.70M (Peak 704.27M) | Time:498661:05:33.18 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_basecolor
+Fra:1 Mem:260.78M (Peak 829.81M) | Time:498661:06:14.27 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:261.66M (Peak 829.81M) | Time:498661:06:14.28 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:261.65M (Peak 829.81M) | Time:498661:06:14.28 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_roughness
+Fra:1 Mem:276.75M (Peak 842.71M) | Time:498661:06:26.98 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:277.23M (Peak 842.71M) | Time:498661:06:26.98 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:277.23M (Peak 842.71M) | Time:498661:06:26.98 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_metallic
+Fra:1 Mem:292.78M (Peak 854.09M) | Time:498661:06:28.28 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:293.43M (Peak 854.09M) | Time:498661:06:28.28 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:293.42M (Peak 854.09M) | Time:498661:06:28.28 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_emissive
+Fra:1 Mem:308.94M (Peak 870.66M) | Time:498661:06:31.16 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:310.79M (Peak 870.66M) | Time:498661:06:31.17 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:310.78M (Peak 870.66M) | Time:498661:06:31.17 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_normal
+Fra:1 Mem:324.96M (Peak 898.15M) | Time:498661:06:54.79 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:326.80M (Peak 898.15M) | Time:498661:06:54.80 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:326.80M (Peak 898.15M) | Time:498661:06:54.80 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_dragon_skull_ao
+13:11:37 | INFO: Starting glTF 2.0 export
+13:11:37 | WARNING: Mesh b4p_dragon_skull is not valid, and may be exported wrongly
+13:11:37 | INFO: Extracting primitive: b4p_dragon_skull
+13:11:37 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+13:11:37 | INFO: Primitives created: 1
+13:11:37 | INFO: Finished glTF 2.0 export in 0.3519003391265869 s
 Info: Total files 7 | Changed 7 | Failed 0
 Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
@@ -38,458 +39,467 @@ INFO Draco mesh compression is available, use library at /home/runner/blender/4.
 
 Info: Saved "b4p_dragon_skull.blend"
 [b4-props] render b4p_dragon_skull_volcanic_front.png
-Fra:1 Mem:64.83M (Peak 128.45M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:64.83M (Peak 128.45M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:66.77M (Peak 128.45M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:66.42M (Peak 128.45M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:66.43M (Peak 128.45M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:66.43M (Peak 128.45M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:66.43M (Peak 128.45M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:66.51M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:66.74M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:67.84M (Peak 128.45M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:67.84M (Peak 128.45M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:67.84M (Peak 128.45M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:67.84M (Peak 128.45M) | Time:00:00.00 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:67.84M (Peak 128.45M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:67.84M (Peak 128.45M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:68.36M (Peak 128.45M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:68.36M (Peak 128.45M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:68.36M (Peak 128.45M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:68.36M (Peak 128.45M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:68.36M (Peak 128.45M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
-Fra:1 Mem:68.36M (Peak 128.45M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_orm.png
-Fra:1 Mem:68.36M (Peak 128.45M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
-Fra:1 Mem:132.37M (Peak 132.37M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:132.37M (Peak 132.37M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:132.37M (Peak 132.37M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:132.37M (Peak 132.37M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:135.13M (Peak 136.93M) | Time:00:00.09 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:135.13M (Peak 136.93M) | Time:00:00.09 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:135.13M (Peak 136.93M) | Time:00:00.09 | Mem:69.37M, Peak:69.45M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:135.13M (Peak 136.93M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:135.13M (Peak 136.93M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:135.13M (Peak 136.93M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:135.13M (Peak 136.93M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:211.15M (Peak 211.15M) | Time:00:00.67 | Remaining:00:54.98 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:211.15M (Peak 211.15M) | Time:00:36.43 | Remaining:00:17.33 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:211.15M (Peak 211.15M) | Time:00:44.83 | Remaining:00:08.94 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:243.15M (Peak 291.15M) | Time:00:53.45 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:243.15M (Peak 291.15M) | Time:00:53.45 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Finished
+Fra:1 Mem:64.82M (Peak 128.44M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:64.82M (Peak 128.44M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:66.77M (Peak 128.44M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:66.42M (Peak 128.44M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:66.43M (Peak 128.44M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:66.43M (Peak 128.44M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:66.43M (Peak 128.44M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:66.51M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:66.74M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:67.84M (Peak 128.44M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:67.84M (Peak 128.44M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:67.84M (Peak 128.44M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:67.84M (Peak 128.44M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:67.84M (Peak 128.44M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:67.84M (Peak 128.44M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:68.36M (Peak 128.44M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:68.36M (Peak 128.44M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:68.36M (Peak 128.44M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:68.36M (Peak 128.44M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:68.36M (Peak 128.44M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
+Fra:1 Mem:68.36M (Peak 128.44M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
+Fra:1 Mem:68.36M (Peak 128.44M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
+Fra:1 Mem:132.38M (Peak 132.38M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:132.38M (Peak 132.38M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:132.38M (Peak 132.38M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:132.38M (Peak 132.38M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:135.14M (Peak 136.94M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:135.14M (Peak 136.94M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:135.14M (Peak 136.94M) | Time:00:00.10 | Mem:69.39M, Peak:69.47M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:135.14M (Peak 136.94M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:135.14M (Peak 136.94M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:135.14M (Peak 136.94M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:135.14M (Peak 136.94M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:211.16M (Peak 211.16M) | Time:00:00.81 | Remaining:01:06.85 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:211.16M (Peak 211.16M) | Time:00:22.91 | Remaining:00:43.53 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:211.16M (Peak 211.16M) | Time:00:45.26 | Remaining:00:21.53 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:211.16M (Peak 211.16M) | Time:00:55.83 | Remaining:00:11.14 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:243.16M (Peak 291.16M) | Time:01:07.21 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:243.16M (Peak 291.16M) | Time:01:07.21 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_dragon_skull/b4p_dragon_skull_volcanic_front.png'
-Time: 00:53.65 (Saving: 00:00.19)
+Time: 01:07.44 (Saving: 00:00.22)
 
 [b4-props] render b4p_dragon_skull_volcanic_side.png
 Fra:1 Mem:65.06M (Peak 65.06M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
 Fra:1 Mem:65.06M (Peak 65.06M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:66.84M (Peak 68.47M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:66.50M (Peak 68.47M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:66.50M (Peak 68.47M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:66.50M (Peak 68.47M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:66.50M (Peak 68.47M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:66.84M (Peak 68.47M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:66.50M (Peak 68.47M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:66.50M (Peak 68.47M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:66.50M (Peak 68.47M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:66.50M (Peak 68.47M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:66.59M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
 Fra:1 Mem:66.81M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
 Fra:1 Mem:67.92M (Peak 68.47M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:67.91M (Peak 68.47M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:67.91M (Peak 68.47M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:67.91M (Peak 68.47M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:67.91M (Peak 68.47M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:67.91M (Peak 68.47M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:68.43M (Peak 68.47M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:68.43M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:68.43M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:68.43M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:68.43M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
-Fra:1 Mem:68.43M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
-Fra:1 Mem:68.43M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
-Fra:1 Mem:132.45M (Peak 132.45M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:132.45M (Peak 132.45M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:132.45M (Peak 132.45M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:132.45M (Peak 132.45M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:135.20M (Peak 137.00M) | Time:00:00.09 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:135.20M (Peak 137.00M) | Time:00:00.09 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:135.20M (Peak 137.00M) | Time:00:00.09 | Mem:69.37M, Peak:69.45M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:135.20M (Peak 137.00M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:135.20M (Peak 137.00M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:135.20M (Peak 137.00M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:135.20M (Peak 137.00M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:211.22M (Peak 211.22M) | Time:00:00.64 | Remaining:00:52.76 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:211.22M (Peak 211.22M) | Time:00:35.53 | Remaining:00:16.90 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:211.22M (Peak 211.22M) | Time:00:43.72 | Remaining:00:08.72 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:243.22M (Peak 291.23M) | Time:00:52.62 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:243.22M (Peak 291.23M) | Time:00:52.62 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Finished
+Fra:1 Mem:67.92M (Peak 68.47M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:67.92M (Peak 68.47M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:67.92M (Peak 68.47M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:67.92M (Peak 68.47M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:67.92M (Peak 68.47M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:68.44M (Peak 68.47M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:68.44M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:68.44M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:68.44M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:68.44M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
+Fra:1 Mem:68.44M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
+Fra:1 Mem:68.44M (Peak 68.47M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
+Fra:1 Mem:132.45M (Peak 132.45M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:132.45M (Peak 132.45M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:132.45M (Peak 132.45M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:132.45M (Peak 132.45M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:135.21M (Peak 137.02M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:135.21M (Peak 137.02M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:135.22M (Peak 137.02M) | Time:00:00.10 | Mem:69.39M, Peak:69.47M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:135.22M (Peak 137.02M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:135.22M (Peak 137.02M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:135.22M (Peak 137.02M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:135.22M (Peak 137.02M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:211.23M (Peak 211.23M) | Time:00:00.80 | Remaining:01:06.20 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:211.23M (Peak 211.23M) | Time:00:22.83 | Remaining:00:43.38 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:211.23M (Peak 211.23M) | Time:00:44.85 | Remaining:00:21.34 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:211.23M (Peak 211.23M) | Time:00:55.25 | Remaining:00:11.02 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:243.24M (Peak 291.24M) | Time:01:06.98 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:243.24M (Peak 291.24M) | Time:01:06.98 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_dragon_skull/b4p_dragon_skull_volcanic_side.png'
-Time: 00:52.75 (Saving: 00:00.13)
+Time: 01:07.13 (Saving: 00:00.15)
 
 [b4-props] render b4p_dragon_skull_volcanic_angle.png
-Fra:1 Mem:65.14M (Peak 65.14M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:65.14M (Peak 65.14M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:66.91M (Peak 68.54M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:66.57M (Peak 68.54M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:66.57M (Peak 68.54M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:66.57M (Peak 68.54M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:66.57M (Peak 68.54M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:66.66M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:66.89M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:67.99M (Peak 68.54M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:67.99M (Peak 68.54M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:67.99M (Peak 68.54M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:67.99M (Peak 68.54M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:67.99M (Peak 68.54M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:67.99M (Peak 68.54M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:68.51M (Peak 68.54M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:68.51M (Peak 68.54M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:68.51M (Peak 68.54M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:68.51M (Peak 68.54M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:68.51M (Peak 68.54M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
-Fra:1 Mem:68.51M (Peak 68.54M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
-Fra:1 Mem:68.51M (Peak 68.54M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
-Fra:1 Mem:132.52M (Peak 132.52M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:132.52M (Peak 132.52M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:132.52M (Peak 132.52M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:132.52M (Peak 132.52M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:135.27M (Peak 137.07M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:135.27M (Peak 137.07M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:135.28M (Peak 137.07M) | Time:00:00.08 | Mem:69.37M, Peak:69.45M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:135.28M (Peak 137.07M) | Time:00:00.08 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:135.28M (Peak 137.07M) | Time:00:00.08 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:135.28M (Peak 137.07M) | Time:00:00.08 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:135.28M (Peak 137.07M) | Time:00:00.08 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:211.29M (Peak 211.29M) | Time:00:00.91 | Remaining:01:18.49 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:211.29M (Peak 211.29M) | Time:00:26.79 | Remaining:00:50.99 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:211.29M (Peak 211.29M) | Time:00:52.69 | Remaining:00:25.09 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:211.29M (Peak 211.29M) | Time:01:04.86 | Remaining:00:12.95 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:243.30M (Peak 291.30M) | Time:01:13.90 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:243.30M (Peak 291.30M) | Time:01:13.90 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Finished
+Fra:1 Mem:65.13M (Peak 65.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:65.13M (Peak 65.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:66.91M (Peak 68.55M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:66.57M (Peak 68.55M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:66.57M (Peak 68.55M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:66.57M (Peak 68.55M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:66.57M (Peak 68.55M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:66.66M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:66.89M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:67.99M (Peak 68.55M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:67.99M (Peak 68.55M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:67.99M (Peak 68.55M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:67.99M (Peak 68.55M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:67.99M (Peak 68.55M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:67.99M (Peak 68.55M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:68.51M (Peak 68.55M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:68.51M (Peak 68.55M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:68.51M (Peak 68.55M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:68.51M (Peak 68.55M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:68.51M (Peak 68.55M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
+Fra:1 Mem:68.51M (Peak 68.55M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
+Fra:1 Mem:68.51M (Peak 68.55M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
+Fra:1 Mem:132.52M (Peak 132.52M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:132.52M (Peak 132.52M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:132.52M (Peak 132.52M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:132.52M (Peak 132.52M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:135.29M (Peak 137.09M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:135.29M (Peak 137.09M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:135.29M (Peak 137.09M) | Time:00:00.10 | Mem:69.39M, Peak:69.47M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:135.29M (Peak 137.09M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:135.29M (Peak 137.09M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:135.29M (Peak 137.09M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:135.29M (Peak 137.09M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:211.31M (Peak 211.31M) | Time:00:01.15 | Remaining:01:39.34 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:211.31M (Peak 211.31M) | Time:00:33.70 | Remaining:01:04.14 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:211.31M (Peak 211.31M) | Time:01:06.14 | Remaining:00:31.49 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:211.31M (Peak 211.31M) | Time:01:21.50 | Remaining:00:16.27 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:243.31M (Peak 291.31M) | Time:01:33.39 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:243.31M (Peak 291.31M) | Time:01:33.39 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_dragon_skull/b4p_dragon_skull_volcanic_angle.png'
-Time: 01:14.05 (Saving: 00:00.14)
+Time: 01:33.55 (Saving: 00:00.15)
 
 [b4-props] render b4p_dragon_skull_volcanic_top.png
 Fra:1 Mem:65.21M (Peak 65.21M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
 Fra:1 Mem:65.21M (Peak 65.21M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:66.99M (Peak 68.62M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:66.64M (Peak 68.62M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:66.65M (Peak 68.62M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:66.65M (Peak 68.62M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:66.65M (Peak 68.62M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:66.96M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.00 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.00 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.00 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.00 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.00 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.00 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.00 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.00 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
-Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.00 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_orm.png
-Fra:1 Mem:132.59M (Peak 132.59M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:132.59M (Peak 132.59M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:132.59M (Peak 132.59M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:132.59M (Peak 132.59M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:135.35M (Peak 137.15M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:135.35M (Peak 137.15M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:135.35M (Peak 137.15M) | Time:00:00.08 | Mem:69.37M, Peak:69.45M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:135.35M (Peak 137.15M) | Time:00:00.08 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:135.35M (Peak 137.15M) | Time:00:00.08 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:135.35M (Peak 137.15M) | Time:00:00.08 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:135.35M (Peak 137.15M) | Time:00:00.08 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:211.37M (Peak 211.37M) | Time:00:00.99 | Remaining:01:25.79 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:211.37M (Peak 211.37M) | Time:00:29.32 | Remaining:00:55.82 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:211.37M (Peak 211.37M) | Time:00:57.62 | Remaining:00:27.44 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:211.37M (Peak 211.37M) | Time:01:10.95 | Remaining:00:14.17 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:243.37M (Peak 291.37M) | Time:01:20.70 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:243.37M (Peak 291.37M) | Time:01:20.70 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Finished
+Fra:1 Mem:66.99M (Peak 68.62M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:66.64M (Peak 68.62M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:66.65M (Peak 68.62M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:66.65M (Peak 68.62M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:66.65M (Peak 68.62M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:66.73M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:66.96M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:68.06M (Peak 68.62M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
+Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
+Fra:1 Mem:68.58M (Peak 68.62M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
+Fra:1 Mem:132.60M (Peak 132.60M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:132.60M (Peak 132.60M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:132.60M (Peak 132.60M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:132.60M (Peak 132.60M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:135.36M (Peak 137.16M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:135.36M (Peak 137.16M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:135.36M (Peak 137.16M) | Time:00:00.10 | Mem:69.39M, Peak:69.47M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:135.36M (Peak 137.16M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:135.36M (Peak 137.16M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:135.36M (Peak 137.16M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:135.36M (Peak 137.16M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:211.38M (Peak 211.38M) | Time:00:01.26 | Remaining:01:50.30 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:211.38M (Peak 211.38M) | Time:00:37.47 | Remaining:01:11.34 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:211.38M (Peak 211.38M) | Time:01:14.24 | Remaining:00:35.35 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:211.38M (Peak 211.38M) | Time:01:31.54 | Remaining:00:18.28 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:243.38M (Peak 291.38M) | Time:01:44.62 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:243.38M (Peak 291.38M) | Time:01:44.62 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_dragon_skull/b4p_dragon_skull_volcanic_top.png'
-Time: 01:20.84 (Saving: 00:00.13)
+Time: 01:44.78 (Saving: 00:00.15)
 
 [b4-props] render b4p_dragon_skull_volcanic_close.png
 Fra:1 Mem:65.28M (Peak 65.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:65.29M (Peak 65.29M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:67.06M (Peak 68.69M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:66.72M (Peak 68.69M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:66.72M (Peak 68.69M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:66.72M (Peak 68.69M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:66.72M (Peak 68.69M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:67.03M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:65.28M (Peak 65.28M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:67.06M (Peak 68.69M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:66.72M (Peak 68.69M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:66.72M (Peak 68.69M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:66.72M (Peak 68.69M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:66.72M (Peak 68.69M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:66.81M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:67.04M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
 Fra:1 Mem:68.14M (Peak 68.69M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
 Fra:1 Mem:68.14M (Peak 68.69M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
 Fra:1 Mem:68.14M (Peak 68.69M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
 Fra:1 Mem:68.14M (Peak 68.69M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
 Fra:1 Mem:68.14M (Peak 68.69M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
 Fra:1 Mem:68.14M (Peak 68.69M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:68.65M (Peak 68.69M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:68.65M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:68.65M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:68.65M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:68.65M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
-Fra:1 Mem:68.65M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
-Fra:1 Mem:132.67M (Peak 132.67M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:132.67M (Peak 132.67M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:132.67M (Peak 132.67M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:132.67M (Peak 132.67M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:135.42M (Peak 137.22M) | Time:00:00.09 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:135.42M (Peak 137.22M) | Time:00:00.09 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:135.43M (Peak 137.22M) | Time:00:00.09 | Mem:69.37M, Peak:69.45M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:135.43M (Peak 137.22M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:135.43M (Peak 137.22M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:135.43M (Peak 137.22M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:135.43M (Peak 137.22M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:211.44M (Peak 211.44M) | Time:00:01.06 | Remaining:01:32.06 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:211.44M (Peak 211.44M) | Time:00:31.16 | Remaining:00:59.32 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:211.44M (Peak 211.44M) | Time:01:01.32 | Remaining:00:29.20 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:211.44M (Peak 211.44M) | Time:01:15.48 | Remaining:00:15.07 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:243.44M (Peak 291.45M) | Time:01:27.41 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:243.44M (Peak 291.45M) | Time:01:27.41 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Finished
+Fra:1 Mem:68.66M (Peak 68.69M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:68.66M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:68.66M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:68.66M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:68.66M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
+Fra:1 Mem:68.66M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
+Fra:1 Mem:68.66M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_orm.png
+Fra:1 Mem:68.66M (Peak 68.69M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
+Fra:1 Mem:132.67M (Peak 132.67M) | Time:00:00.08 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:132.67M (Peak 132.67M) | Time:00:00.08 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:132.67M (Peak 132.67M) | Time:00:00.08 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:132.67M (Peak 132.67M) | Time:00:00.08 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:135.43M (Peak 137.24M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:135.43M (Peak 137.24M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:135.44M (Peak 137.24M) | Time:00:00.10 | Mem:69.39M, Peak:69.47M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:135.44M (Peak 137.24M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:135.44M (Peak 137.24M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:135.44M (Peak 137.24M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:135.44M (Peak 137.24M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:211.45M (Peak 211.45M) | Time:00:01.34 | Remaining:01:57.70 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:211.45M (Peak 211.45M) | Time:00:39.79 | Remaining:01:15.76 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:211.45M (Peak 211.45M) | Time:01:18.91 | Remaining:00:37.58 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:211.45M (Peak 211.45M) | Time:01:37.35 | Remaining:00:19.44 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:243.46M (Peak 291.46M) | Time:01:53.53 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:243.46M (Peak 291.46M) | Time:01:53.53 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_dragon_skull/b4p_dragon_skull_volcanic_close.png'
-Time: 01:27.55 (Saving: 00:00.14)
+Time: 01:53.69 (Saving: 00:00.16)
 
 [b4-props] render b4p_dragon_skull_volcanic_back.png
-Fra:1 Mem:65.36M (Peak 65.36M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
-Fra:1 Mem:65.36M (Peak 65.36M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:67.13M (Peak 68.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:66.79M (Peak 68.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:66.80M (Peak 68.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:66.80M (Peak 68.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:66.80M (Peak 68.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:66.88M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:67.11M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:68.21M (Peak 68.76M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:68.21M (Peak 68.76M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:68.21M (Peak 68.76M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:68.21M (Peak 68.76M) | Time:00:00.00 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:68.21M (Peak 68.76M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:68.21M (Peak 68.76M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:68.73M (Peak 68.76M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:68.73M (Peak 68.76M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:68.73M (Peak 68.76M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:68.73M (Peak 68.76M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:68.73M (Peak 68.76M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
-Fra:1 Mem:68.73M (Peak 68.76M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
-Fra:1 Mem:132.74M (Peak 132.74M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:132.74M (Peak 132.74M) | Time:00:00.06 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:132.74M (Peak 132.74M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:132.74M (Peak 132.74M) | Time:00:00.06 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:135.50M (Peak 137.29M) | Time:00:00.09 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:135.50M (Peak 137.29M) | Time:00:00.09 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:135.50M (Peak 137.29M) | Time:00:00.09 | Mem:69.37M, Peak:69.45M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:135.50M (Peak 137.29M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:135.50M (Peak 137.29M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:135.50M (Peak 137.29M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:135.50M (Peak 137.29M) | Time:00:00.09 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:211.52M (Peak 211.52M) | Time:00:00.72 | Remaining:01:00.33 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:211.52M (Peak 211.52M) | Time:00:20.55 | Remaining:00:39.06 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:211.52M (Peak 211.52M) | Time:00:49.67 | Remaining:00:09.91 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:243.52M (Peak 291.52M) | Time:00:59.13 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:243.52M (Peak 291.52M) | Time:00:59.13 | Mem:145.47M, Peak:145.47M | Scene, ViewLayer | Finished
+Fra:1 Mem:65.35M (Peak 65.35M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:65.35M (Peak 65.35M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:67.13M (Peak 68.77M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:66.79M (Peak 68.77M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:66.80M (Peak 68.77M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:66.80M (Peak 68.77M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:66.80M (Peak 68.77M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:66.88M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:67.11M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:68.21M (Peak 68.77M) | Time:00:00.01 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:68.21M (Peak 68.77M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:68.21M (Peak 68.77M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:68.21M (Peak 68.77M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:68.21M (Peak 68.77M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:68.21M (Peak 68.77M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:68.73M (Peak 68.77M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:68.73M (Peak 68.77M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:68.73M (Peak 68.77M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:68.73M (Peak 68.77M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:68.73M (Peak 68.77M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
+Fra:1 Mem:68.73M (Peak 68.77M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
+Fra:1 Mem:68.73M (Peak 68.77M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
+Fra:1 Mem:132.74M (Peak 132.74M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:132.74M (Peak 132.74M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:132.74M (Peak 132.74M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:132.75M (Peak 132.75M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.10 | Mem:69.39M, Peak:69.47M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:211.53M (Peak 211.53M) | Time:00:00.90 | Remaining:01:15.80 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:211.53M (Peak 211.53M) | Time:00:26.02 | Remaining:00:49.47 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:211.53M (Peak 211.53M) | Time:00:50.95 | Remaining:00:24.25 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:211.53M (Peak 211.53M) | Time:01:02.72 | Remaining:00:12.52 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:243.53M (Peak 291.53M) | Time:01:15.13 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:243.53M (Peak 291.53M) | Time:01:15.13 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_dragon_skull/b4p_dragon_skull_volcanic_back.png'
-Time: 00:59.27 (Saving: 00:00.13)
+Time: 01:15.29 (Saving: 00:00.15)
 
 [b4-props] render b4p_dragon_skull_studio_front.png
 Fra:1 Mem:65.34M (Peak 65.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
 Fra:1 Mem:65.34M (Peak 65.34M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:67.12M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:66.81M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:66.81M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:66.81M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:66.81M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:67.12M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:68.22M (Peak 68.75M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:68.22M (Peak 68.75M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:68.22M (Peak 68.75M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:68.22M (Peak 68.75M) | Time:00:00.00 | Mem:1.55M, Peak:1.55M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:68.22M (Peak 68.75M) | Time:00:00.00 | Mem:2.09M, Peak:2.54M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:68.22M (Peak 68.75M) | Time:00:00.00 | Mem:2.09M, Peak:2.54M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:68.74M (Peak 68.75M) | Time:00:00.00 | Mem:2.09M, Peak:2.54M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:68.74M (Peak 68.75M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:68.74M (Peak 68.75M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:68.74M (Peak 68.75M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:68.74M (Peak 68.75M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
-Fra:1 Mem:68.74M (Peak 68.75M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
-Fra:1 Mem:132.75M (Peak 132.75M) | Time:00:00.05 | Mem:66.61M, Peak:66.61M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:132.75M (Peak 132.75M) | Time:00:00.05 | Mem:66.61M, Peak:66.61M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:132.75M (Peak 132.75M) | Time:00:00.05 | Mem:66.69M, Peak:66.69M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:132.75M (Peak 132.75M) | Time:00:00.05 | Mem:66.69M, Peak:66.69M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.08 | Mem:69.37M, Peak:69.45M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:135.51M (Peak 137.31M) | Time:00:00.08 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:211.53M (Peak 211.53M) | Time:00:00.52 | Remaining:00:20.33 | Mem:145.46M, Peak:145.46M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:243.53M (Peak 291.53M) | Time:00:24.35 | Mem:145.46M, Peak:145.46M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:243.53M (Peak 291.53M) | Time:00:24.35 | Mem:145.46M, Peak:145.46M | Scene, ViewLayer | Finished
+Fra:1 Mem:67.12M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:66.81M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:66.81M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:66.81M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:66.81M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:66.90M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:67.12M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:68.23M (Peak 68.75M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:68.23M (Peak 68.75M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:68.23M (Peak 68.75M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:68.23M (Peak 68.75M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:68.23M (Peak 68.75M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:68.23M (Peak 68.75M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:68.75M (Peak 68.75M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:68.75M (Peak 68.75M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:68.75M (Peak 68.75M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:68.75M (Peak 68.75M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:68.75M (Peak 68.75M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
+Fra:1 Mem:68.75M (Peak 68.75M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
+Fra:1 Mem:68.75M (Peak 68.75M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
+Fra:1 Mem:132.76M (Peak 132.76M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:132.76M (Peak 132.76M) | Time:00:00.07 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:132.76M (Peak 132.76M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:132.76M (Peak 132.76M) | Time:00:00.07 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:135.52M (Peak 137.32M) | Time:00:00.10 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:135.52M (Peak 137.32M) | Time:00:00.10 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:135.52M (Peak 137.32M) | Time:00:00.10 | Mem:69.38M, Peak:69.46M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:135.52M (Peak 137.32M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:135.52M (Peak 137.32M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:135.52M (Peak 137.32M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:135.52M (Peak 137.32M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:211.54M (Peak 211.54M) | Time:00:00.65 | Remaining:00:25.60 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:243.54M (Peak 291.54M) | Time:00:31.28 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:243.54M (Peak 291.54M) | Time:00:31.28 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_dragon_skull/b4p_dragon_skull_studio_front.png'
-Time: 00:24.49 (Saving: 00:00.13)
+Time: 00:31.44 (Saving: 00:00.15)
 
 [b4-props] render b4p_dragon_skull_studio_angle.png
-Fra:1 Mem:65.40M (Peak 65.40M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
+Fra:1 Mem:65.39M (Peak 65.39M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
 Fra:1 Mem:65.40M (Peak 65.40M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:67.17M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:66.87M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:66.87M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:66.87M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:66.87M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:66.95M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:67.18M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:68.28M (Peak 68.80M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:68.28M (Peak 68.80M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:68.28M (Peak 68.80M) | Time:00:00.00 | Mem:1.10M, Peak:1.10M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:68.28M (Peak 68.80M) | Time:00:00.00 | Mem:1.55M, Peak:1.55M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:68.28M (Peak 68.80M) | Time:00:00.00 | Mem:2.09M, Peak:2.54M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:68.28M (Peak 68.80M) | Time:00:00.00 | Mem:2.09M, Peak:2.54M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:68.80M (Peak 68.80M) | Time:00:00.00 | Mem:2.09M, Peak:2.54M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:68.80M (Peak 68.80M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:68.80M (Peak 68.80M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:68.80M (Peak 68.80M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:68.80M (Peak 68.80M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
-Fra:1 Mem:68.80M (Peak 68.80M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
-Fra:1 Mem:68.80M (Peak 68.80M) | Time:00:00.00 | Mem:2.61M, Peak:2.61M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
-Fra:1 Mem:132.81M (Peak 132.81M) | Time:00:00.08 | Mem:66.61M, Peak:66.61M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:132.81M (Peak 132.81M) | Time:00:00.08 | Mem:66.61M, Peak:66.61M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:132.81M (Peak 132.81M) | Time:00:00.08 | Mem:66.69M, Peak:66.69M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:132.81M (Peak 132.81M) | Time:00:00.08 | Mem:66.69M, Peak:66.69M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:135.56M (Peak 137.36M) | Time:00:00.11 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:135.56M (Peak 137.36M) | Time:00:00.11 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:135.57M (Peak 137.36M) | Time:00:00.11 | Mem:69.37M, Peak:69.45M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:135.57M (Peak 137.36M) | Time:00:00.11 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:135.57M (Peak 137.36M) | Time:00:00.11 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:135.57M (Peak 137.36M) | Time:00:00.11 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:135.57M (Peak 137.36M) | Time:00:00.11 | Mem:69.45M, Peak:69.45M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:211.58M (Peak 211.58M) | Time:00:00.74 | Remaining:00:29.37 | Mem:145.46M, Peak:145.46M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:243.59M (Peak 291.59M) | Time:00:33.06 | Mem:145.46M, Peak:145.46M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:243.59M (Peak 291.59M) | Time:00:33.06 | Mem:145.46M, Peak:145.46M | Scene, ViewLayer | Finished
+Fra:1 Mem:67.17M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:66.87M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:66.87M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:66.87M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:66.87M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:66.95M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:67.18M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:68.28M (Peak 68.81M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:68.28M (Peak 68.81M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:68.28M (Peak 68.81M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:68.28M (Peak 68.81M) | Time:00:00.01 | Mem:1.56M, Peak:1.56M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:68.28M (Peak 68.81M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:68.28M (Peak 68.81M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:68.80M (Peak 68.81M) | Time:00:00.01 | Mem:2.10M, Peak:2.55M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:68.80M (Peak 68.81M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:68.80M (Peak 68.81M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:68.80M (Peak 68.81M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:68.80M (Peak 68.81M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
+Fra:1 Mem:68.80M (Peak 68.81M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_orm.png
+Fra:1 Mem:68.80M (Peak 68.81M) | Time:00:00.01 | Mem:2.62M, Peak:2.62M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
+Fra:1 Mem:132.81M (Peak 132.81M) | Time:00:00.08 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:132.81M (Peak 132.81M) | Time:00:00.08 | Mem:66.62M, Peak:66.62M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:132.81M (Peak 132.81M) | Time:00:00.08 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:132.81M (Peak 132.81M) | Time:00:00.08 | Mem:66.70M, Peak:66.70M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:135.58M (Peak 137.38M) | Time:00:00.10 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:135.58M (Peak 137.38M) | Time:00:00.10 | Mem:69.46M, Peak:69.46M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:135.58M (Peak 137.38M) | Time:00:00.10 | Mem:69.38M, Peak:69.46M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:135.58M (Peak 137.38M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:135.58M (Peak 137.38M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:135.58M (Peak 137.38M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:135.58M (Peak 137.38M) | Time:00:00.10 | Mem:69.47M, Peak:69.47M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:211.60M (Peak 211.60M) | Time:00:00.90 | Remaining:00:37.38 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:211.60M (Peak 211.60M) | Time:00:25.30 | Remaining:00:11.45 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 33/48
+Fra:1 Mem:243.60M (Peak 291.60M) | Time:00:42.17 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:243.60M (Peak 291.60M) | Time:00:42.17 | Mem:145.48M, Peak:145.48M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_dragon_skull/b4p_dragon_skull_studio_angle.png'
-Time: 00:33.20 (Saving: 00:00.14)
+Time: 00:42.33 (Saving: 00:00.16)
 
 [b4-props] render b4p_dragon_skull_studio_scale.png
 Fra:1 Mem:65.76M (Peak 65.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_dragon_skull
 Fra:1 Mem:65.76M (Peak 65.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _fig_head
 Fra:1 Mem:65.76M (Peak 65.76M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
-Fra:1 Mem:67.62M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
-Fra:1 Mem:67.21M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
-Fra:1 Mem:67.21M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
-Fra:1 Mem:67.21M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
-Fra:1 Mem:67.21M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
-Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
-Fra:1 Mem:67.54M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
-Fra:1 Mem:68.64M (Peak 69.25M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
-Fra:1 Mem:68.64M (Peak 69.25M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
-Fra:1 Mem:68.64M (Peak 69.25M) | Time:00:00.00 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
-Fra:1 Mem:68.64M (Peak 69.25M) | Time:00:00.00 | Mem:1.59M, Peak:1.59M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
-Fra:1 Mem:68.64M (Peak 69.25M) | Time:00:00.00 | Mem:2.17M, Peak:2.66M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
-Fra:1 Mem:68.64M (Peak 69.25M) | Time:00:00.00 | Mem:2.17M, Peak:2.66M | Scene, ViewLayer | Updating Mesh | Computing normals
-Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.17M, Peak:2.66M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
-Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.73M, Peak:2.73M | Scene, ViewLayer | Updating Objects Flags
-Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.73M, Peak:2.73M | Scene, ViewLayer | Updating Primitive Offsets
-Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.73M, Peak:2.73M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.73M, Peak:2.73M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
-Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.73M, Peak:2.73M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
-Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.73M, Peak:2.73M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_normal.png
-Fra:1 Mem:133.21M (Peak 133.21M) | Time:00:00.06 | Mem:66.73M, Peak:66.73M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:133.21M (Peak 133.21M) | Time:00:00.06 | Mem:66.73M, Peak:66.73M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:133.21M (Peak 133.21M) | Time:00:00.06 | Mem:66.81M, Peak:66.81M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:133.21M (Peak 133.21M) | Time:00:00.06 | Mem:66.81M, Peak:66.81M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:135.97M (Peak 137.77M) | Time:00:00.08 | Mem:69.56M, Peak:69.56M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:135.97M (Peak 137.77M) | Time:00:00.08 | Mem:69.56M, Peak:69.56M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:135.97M (Peak 137.77M) | Time:00:00.08 | Mem:69.48M, Peak:69.56M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:135.97M (Peak 137.77M) | Time:00:00.08 | Mem:69.57M, Peak:69.57M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:135.97M (Peak 137.77M) | Time:00:00.08 | Mem:69.57M, Peak:69.57M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:135.97M (Peak 137.77M) | Time:00:00.08 | Mem:69.57M, Peak:69.57M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:135.97M (Peak 137.77M) | Time:00:00.08 | Mem:69.57M, Peak:69.57M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:211.99M (Peak 211.99M) | Time:00:00.50 | Remaining:00:19.39 | Mem:145.58M, Peak:145.58M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:243.99M (Peak 291.99M) | Time:00:23.60 | Mem:145.58M, Peak:145.58M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:243.99M (Peak 291.99M) | Time:00:23.60 | Mem:145.58M, Peak:145.58M | Scene, ViewLayer | Finished
+Fra:1 Mem:67.62M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:67.21M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:67.21M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:67.21M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:67.21M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:67.29M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:67.54M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:68.65M (Peak 69.25M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:68.65M (Peak 69.25M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:68.65M (Peak 69.25M) | Time:00:00.01 | Mem:1.11M, Peak:1.11M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:68.65M (Peak 69.25M) | Time:00:00.01 | Mem:1.60M, Peak:1.60M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:68.65M (Peak 69.25M) | Time:00:00.01 | Mem:2.18M, Peak:2.66M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:68.65M (Peak 69.25M) | Time:00:00.01 | Mem:2.18M, Peak:2.66M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.18M, Peak:2.66M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.74M, Peak:2.74M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.74M, Peak:2.74M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.74M, Peak:2.74M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.74M, Peak:2.74M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_emissive.png
+Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.74M, Peak:2.74M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_basecolor.png
+Fra:1 Mem:69.20M (Peak 69.25M) | Time:00:00.01 | Mem:2.74M, Peak:2.74M | Scene, ViewLayer | Updating Images | Loading b4p_dragon_skull_orm.png
+Fra:1 Mem:133.22M (Peak 133.22M) | Time:00:00.07 | Mem:66.74M, Peak:66.74M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:133.22M (Peak 133.22M) | Time:00:00.07 | Mem:66.74M, Peak:66.74M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:133.22M (Peak 133.22M) | Time:00:00.07 | Mem:66.82M, Peak:66.82M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:133.22M (Peak 133.22M) | Time:00:00.07 | Mem:66.82M, Peak:66.82M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:135.98M (Peak 137.78M) | Time:00:00.10 | Mem:69.58M, Peak:69.58M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:135.98M (Peak 137.78M) | Time:00:00.10 | Mem:69.58M, Peak:69.58M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:135.98M (Peak 137.78M) | Time:00:00.10 | Mem:69.50M, Peak:69.58M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:135.98M (Peak 137.78M) | Time:00:00.10 | Mem:69.58M, Peak:69.58M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:135.98M (Peak 137.78M) | Time:00:00.10 | Mem:69.58M, Peak:69.58M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:135.98M (Peak 137.78M) | Time:00:00.10 | Mem:69.58M, Peak:69.58M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:135.98M (Peak 137.78M) | Time:00:00.10 | Mem:69.58M, Peak:69.58M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:212.00M (Peak 212.00M) | Time:00:00.61 | Remaining:00:23.73 | Mem:145.59M, Peak:145.59M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:244.00M (Peak 292.00M) | Time:00:29.28 | Mem:145.59M, Peak:145.59M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:244.00M (Peak 292.00M) | Time:00:29.28 | Mem:145.59M, Peak:145.59M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_dragon_skull/b4p_dragon_skull_studio_scale.png'
-Time: 00:23.74 (Saving: 00:00.13)
+Time: 00:29.44 (Saving: 00:00.15)
 
-[b4-props] done b4p_dragon_skull: tris=14773 bbox=[3.063, 1.767, 0.972] glb=2654224B
+[b4-props] done b4p_dragon_skull: tris=14809 bbox=[2.983, 1.749, 0.972] glb=2572816B
 
 Blender quit
