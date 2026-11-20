@@ -15,3 +15,4 @@
 | b4p_basalt_wall_panel_a | v3 | 5,156 | lead run 44684004571 |
 | b4p_basalt_wall_panel_b | v3 | 5,394 | lead run 44684004571 |
 | b4p_rock_rubble | v3 | 5,290 | dragon run 44683515274 |
+| b4p_basalt_columns | v6 | 3,116 | dragon run 44693769678 |
