@@ -19,6 +19,7 @@ jobs:
         run: |
           mkdir -p "$PWD/outputs/tech01"
           docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 /bin/bash -euc '
+            blender --version | head -n 1
             blender --background --factory-startup --python tools/tech-research/tech01_stylized_materials.py
           ' 
         env:
