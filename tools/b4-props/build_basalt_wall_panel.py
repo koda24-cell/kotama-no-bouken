@@ -21,10 +21,10 @@ EDGE = 0.25                      # 左右の絞り込み幅
 LOW_Z, MID_Z0, MID_Z1, TOP_Z0 = 1.05, 1.00, 2.75, 2.70
 LOW_DEPTH = (0.45, 0.85)
 COL_W = (0.36, 0.52)
-COL_DEPTH = (0.30, 0.62)
-GAP = (0.02, 0.05)
+COL_DEPTH = (0.22, 0.45)
+GAP = (0.012, 0.032)
 LEDGE_LEN = (1.1, 1.6)
-LEDGE_DEPTH = (0.45, 0.75)
+LEDGE_DEPTH = (0.35, 0.6)
 
 
 def depth_limit(x):
@@ -68,10 +68,10 @@ def lava_glow(name):
     b = C.NB(name)
     n = b.noise(1.6, 6, 0.6)
     n2 = b.noise(7.0, 4, 0.5)
-    m = b.ramp(b.math("ADD", n, b.math("MULTIPLY", n2, 0.3)), [(0.45, 0.0), (0.62, 0.6), (0.8, 1.0)])
+    m = b.ramp(b.math("ADD", n, b.math("MULTIPLY", n2, 0.3)), [(0.58, 0.0), (0.7, 0.5), (0.85, 1.0)])
     col = b.mix(m, (0.03, 0.008, 0.004), (0.35, 0.06, 0.01))
     emit = b.ramp(m, [(0.0, (0, 0, 0)), (0.5, (0.6, 0.12, 0.02)), (1.0, (1.0, 0.36, 0.05))])
-    return b.out(col, 0.6, 0.0, emit=emit, emit_strength=5.0)
+    return b.out(col, 0.6, 0.0, emit=emit, emit_strength=3.2)
 
 
 def ore_crystal(name):
@@ -92,7 +92,7 @@ def prism(name, cx, w, d, z0, z1, rnd, top_tilt, bot_tilt, sides=6):
     for i in range(sides):
         a = 2 * math.pi * i / sides + rnd.uniform(-0.12, 0.12)
         prof.append((math.cos(a) * w / 2 * rnd.uniform(0.88, 1.08), math.sin(a) * d / 2 * rnd.uniform(0.88, 1.08)))
-    cy = -d / 2 + 0.05
+    cy = -d / 2 - 0.31
     tdx, tdy = math.tan(math.radians(top_tilt)), rnd.uniform(-0.15, 0.15)
     bdx = math.tan(math.radians(bot_tilt))
     bot = [bm.verts.new((cx + x, cy + y, z0 + x * bdx)) for x, y in prof]
@@ -122,25 +122,50 @@ def build(variant, seed):
     lava = lava_glow("lava")
     ore = ore_crystal("ore")
     parts = []
+    # 背面の岩肌：隙間から向こうが抜けないよう、全面に起伏のある岩の面を張る（大きなうねり＋割れの段差）
+    bm = bmesh.new()
+    NX, NZ = 34, 32
+    grid = []
+    off = Vector((seed * 1.7, seed * 0.3, 0))
+    for j in range(NZ + 1):
+        row = []
+        for i in range(NX + 1):
+            x = -W / 2 + W * i / NX
+            z = H * j / NZ
+            n1 = C.noise.fractal(Vector((x * 0.7, z * 0.7, 0)) + off, 0.6, 2.0, 4)
+            n2 = C.noise.noise(Vector((x * 2.6, z * 2.2, 3.0)) + off)
+            step = 0.06 if C.noise.noise(Vector((x * 1.3, z * 0.9, 7.0)) + off) > 0.25 else 0.0   # 割れの段差
+            y = -(0.10 + 0.16 * (n1 + 0.5) + 0.05 * n2 + step) * depth_limit(x)
+            row.append(bm.verts.new((x, y, z)))
+        grid.append(row)
+    for j in range(NZ):
+        for i in range(NX):
+            bm.faces.new((grid[j][i], grid[j][i + 1], grid[j + 1][i + 1], grid[j + 1][i]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    for f in bm.faces:                       # 法線を通路側（-Y）へ
+        if f.normal.y > 0:
+            f.normal_flip()
+    back = C.obj_from_bm(bm, "backing", smooth=True)
+    parts.append(C.assign(back, rock))
     # 溶岩の発光板（中層の隙間の奥＋斜めの割れ目）
     bm = bmesh.new()
     for (x0, z0, x1, z1) in ((-W / 2 + 0.3, MID_Z0 - 0.05, W / 2 - 0.3, MID_Z1 - 0.4),):
-        vs = [bm.verts.new(p) for p in ((x0, -0.04, z0), (x1, -0.04, z0), (x1, -0.04, z1), (x0, -0.04, z1))]
+        vs = [bm.verts.new(p) for p in ((x0, -0.30, z0), (x1, -0.30, z0), (x1, -0.30, z1), (x0, -0.30, z1))]
         bm.faces.new(vs)
     lavaplate = C.obj_from_bm(bm, "lava_plate", smooth=False)
     parts.append(C.assign(lavaplate, lava))
     # 中層：柱状節理
-    x = -W / 2 + 0.05
+    x = -W / 2 + 0.45
     cols = []
-    while x < W / 2 - 0.1:
+    while x < W / 2 - 0.5:
         w = rnd.uniform(*COL_W)
         if x + w > W / 2:
             w = W / 2 - x
         cx = x + w / 2
         d = rnd.uniform(*COL_DEPTH) * depth_limit(cx)
         z0 = MID_Z0 + rnd.uniform(-0.05, 0.12)
-        z1 = MID_Z1 + rnd.uniform(-0.25, 0.08)
-        ob = prism(f"col_{len(cols)}", cx, w, max(0.22, d), z0, z1, rnd, rnd.uniform(-25, 25), rnd.uniform(-8, 8))
+        z1 = MID_Z1 + rnd.uniform(-0.25, 0.08) if rnd.random() > 0.25 else rnd.uniform(1.55, 2.2)   # 4本に1本は折れて短い
+        ob = prism(f"col_{len(cols)}", cx, w, max(0.18, d), z0, z1, rnd, rnd.uniform(-25, 25), rnd.uniform(-8, 8))
         parts.append(C.assign(ob, rock))
         cols.append((cx, w, d, z1))
         x += w + rnd.uniform(*GAP)
@@ -152,12 +177,16 @@ def build(variant, seed):
         C.xform(sl, (cx, -d * 0.55, zc), (0, rnd.uniform(-20, 20), 0))
         parts.append(C.assign(sl, lava))
     # 下層：崩れた岩の裾
-    for i in range(rnd.randint(9, 12)):
+    for i in range(rnd.randint(13, 17)):
         rx = rnd.uniform(-W / 2 + 0.25, W / 2 - 0.25)
         r = rnd.uniform(0.18, 0.42)
         dlim = depth_limit(rx)
-        ob = C.rock(f"rubble_{i}", r, detail=2, rough=0.28, squash=(1.0, rnd.uniform(0.7, 1.0) * dlim, rnd.uniform(0.6, 0.95)), seed=seed * 10 + i, facet=4)
-        C.xform(ob, (rx, -min(rnd.uniform(*LOW_DEPTH), 0.85 * dlim) + r * 0.6, rnd.uniform(0.05, LOW_Z - r) + r * 0.4), (rnd.uniform(0, 360), rnd.uniform(0, 360), rnd.uniform(0, 360)))
+        sq = (1.0, rnd.uniform(0.7, 1.0) * dlim, rnd.uniform(0.55, 0.85))
+        ob = C.rock(f"rubble_{i}", r, detail=2, rough=0.28, squash=sq, seed=seed * 10 + i, facet=4)
+        # 地面に載せる（底を z≈0 に）。奥の岩ほど高く積む
+        yy = -0.3 - rnd.uniform(0.0, min(0.5, 0.55 * dlim))
+        zz = r * sq[2] * 0.75 + (0.35 if yy > -0.5 and rnd.random() < 0.4 else 0.0)
+        C.xform(ob, (rx, yy, zz), (rnd.uniform(-20, 20), rnd.uniform(-20, 20), rnd.uniform(0, 360)))
         parts.append(C.assign(ob, rock))
     # 上層：張り出した岩棚
     x = -W / 2 + 0.1
@@ -168,7 +197,7 @@ def build(variant, seed):
         d = rnd.uniform(*LEDGE_DEPTH) * depth_limit(cx)
         th = rnd.uniform(0.45, 0.8)
         ob = C.rock(f"ledge_{i}", 0.5, detail=2, rough=0.22, squash=(L, d * 1.6, th * 1.3), seed=seed * 20 + i, facet=5)
-        C.xform(ob, (cx, -d * 0.45, rnd.uniform(TOP_Z0 + th * 0.45, H - th * 0.45)), (rnd.uniform(-6, 6), rnd.uniform(-5, 5), rnd.uniform(-4, 4)))
+        C.xform(ob, (cx, -0.18 - d * 0.35, rnd.uniform(TOP_Z0 + th * 0.4, H - th * 0.35)), (rnd.uniform(-6, 6), rnd.uniform(-5, 5), rnd.uniform(-4, 4)))
         parts.append(C.assign(ob, rock))
         x += L * rnd.uniform(0.82, 0.95)
         i += 1
@@ -190,7 +219,7 @@ def build(variant, seed):
             C.place_on(cr, (gx + rnd.uniform(-0.05, 0.05), -d * rnd.uniform(0.2, 0.5), zz + rnd.uniform(-0.12, 0.12)), dirv, rnd.uniform(0, 6.28))
             parts.append(C.assign(cr, ore))
     name = f"b4p_basalt_wall_panel_{variant}"
-    return C.finish(name, parts, version="v1", tex_res=1024, budget_tris=7000, refs=[30, 31, 33, 41],
+    return C.finish(name, parts, version="v2", tex_res=1024, budget_tris=9000, refs=[30, 31, 33, 41],
                     lights=[((0.0, -0.9, 1.6), 30.0, (1.0, 0.35, 0.1))],
                     notes="壁面パネル。中層の柱の隙間の奥で溶岩が光る。左右の端は張り出しを絞って隣とつなぐ。")
 
