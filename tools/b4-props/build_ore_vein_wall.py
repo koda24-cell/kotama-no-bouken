@@ -28,13 +28,13 @@ from mathutils import Vector  # noqa: E402
 from mathutils.bvhtree import BVHTree  # noqa: E402
 
 NAME = "b4p_ore_vein_wall"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(2121)
 C.reset(2121)
 
 # 設計図の数値
-RAD = (1.25, 0.34, 1.15)
-CEN = Vector((0, 0, 1.08))
+RAD = (1.28, 0.36, 1.22)
+CEN = Vector((0, 0, 1.12))
 BACK_Y = 0.25
 NF = Vector((0, -1, 0))
 F0 = Vector((0, -0.2, 0))
@@ -57,16 +57,18 @@ def wavy(pts, amp, seed, n=28):
     return out
 
 
-MAIN = wavy([(-0.95, 0.25), (-0.30, 0.90), (0.15, 1.25), (0.85, 1.95)], 0.05, 1.0)
-BR1 = wavy([(-0.36, 0.86), (-0.55, 1.20), (-0.75, 1.55)], 0.035, 2.0, n=14)
-BR2 = wavy([(0.12, 1.22), (0.45, 1.00), (0.75, 0.75)], 0.035, 3.0, n=14)
+MAIN = wavy([(-0.95, 0.30), (-0.35, 0.80), (0.10, 1.30), (0.78, 1.90)], 0.05, 1.0)
+BR1 = wavy([(-0.62, 0.55), (-0.80, 0.95), (-0.88, 1.30)], 0.03, 2.0, n=14)    # 下の方から左上へ短く
+BR2 = wavy([(0.38, 1.55), (0.72, 1.40), (0.98, 1.10)], 0.03, 3.0, n=14)       # 上の方から右下へ短く
 PATHS = [{"pts": MAIN, "depth": 0.065, "w": 0.048, "seed": 1.0},
          {"pts": BR1, "depth": 0.035, "w": 0.028, "seed": 2.0},
          {"pts": BR2, "depth": 0.035, "w": 0.028, "seed": 3.0}]
 
-bm = D.basalt_bm(RAD, CEN, seed=77, subdiv=4, lumpy=0.12, facets=13, facet_depth=(0.6, 0.88), fresh_ratio=0.35,
-                 up_bias=0.0, fine=(0.012, 5.0), ground=0.0, notches=6, notch_depth=(0.78, 0.92),
-                 extra_planes=[((0, 1, 0), BACK_Y / RAD[1], False), ((0.7, 0, 0.7), 0.83, True), ((-0.75, -0.2, -0.6), 0.86, True)],
+bm = D.basalt_bm(RAD, CEN, seed=77, subdiv=4, lumpy=0.08, facets=12, facet_depth=(0.72, 0.92), fresh_ratio=0.35,
+                 up_bias=0.0, fine=(0.012, 5.0), ground=0.0, notches=9, notch_depth=(0.62, 0.8),
+                 extra_planes=[((0, 1, 0), BACK_Y / RAD[1], False), ((0, -1, 0.05), 0.80, False),
+                               ((-1, 0, 0.12), 0.86, False), ((1, 0, -0.15), 0.84, False), ((0.15, 0, 1), 0.88, False),
+                               ((0.7, 0, 0.7), 0.80, True), ((-0.75, -0.2, -0.6), 0.84, True)],
                  hook=lambda b: D.carve_paths(b, F0, EX, EZ, NF, PATHS, refine=(0.06, 0.025, -0.015)))
 wall = C.obj_from_bm(bm, "wall")
 for v in wall.data.vertices:  # 裏面を壁に密着する平面にそろえる
@@ -92,7 +94,7 @@ def surface(u, w):
 
 
 cid = 0
-for t, nb in ((0.30, 5), (0.55, 6), (0.80, 4)):
+for t, nb in ((0.28, 6), (0.55, 7), (0.82, 5)):
     c2 = path_point(MAIN, t)
     for k in range(nb):
         u = c2.x + rnd.uniform(-0.05, 0.05)
@@ -100,14 +102,14 @@ for t, nb in ((0.30, 5), (0.55, 6), (0.80, 4)):
         hit, nrm = surface(u, w)
         if hit is None:
             continue
-        ln = rnd.uniform(0.10, 0.38) if k < 3 else rnd.uniform(0.08, 0.18)
-        r = ln * rnd.uniform(0.13, 0.17)
+        ln = rnd.uniform(0.22, 0.42) if k < 3 else rnd.uniform(0.10, 0.22)
+        r = ln * rnd.uniform(0.15, 0.19)
         ax = (Vector((0, -1, 0)) + Vector((rnd.uniform(-0.45, 0.45), 0, rnd.uniform(0.35, 0.8)))).normalized()
         ob = D.crystal(f"cry_{cid}", hit + Vector((0, 0.03, 0)), ax, ln, r, seed=400 + cid, spin=rnd.uniform(0, 6.3),
                        embed=0.05 + r, broken=(0.7, 0.5) if cid % 5 == 2 else None, chips=1 if k < 2 else 0)
         parts[ob.name] = (ob, "crystal")
         cid += 1
-for k in range(8):
+for k in range(4):
     pts = (MAIN, BR1, BR2)[k % 3]
     c2 = path_point(pts, rnd.uniform(0.1, 0.9))
     hit, nrm = surface(c2.x, c2.y)
@@ -124,7 +126,7 @@ objs = [o for o, _ in parts.values()]
 for o in objs:
     D.ensure_attrs(o)
 off = D.recenter(objs)
-mats = {"basalt": D.basalt("basalt", hairline=1.0, hair_cd=(0.55, 0.9), heat_range=(0.75, 1.0)),
+mats = {"basalt": D.basalt("basalt", hairline=0.8, hair_cd=(0.7, 0.95), heat_range=(0.8, 1.0), glow_strength=4.0),
         "crystal": D.dragon_crystal("crystal")}
 for o, key in parts.values():
     C.assign(o, mats[key])
@@ -134,6 +136,6 @@ for t in (0.2, 0.45, 0.7, 0.92):
     hit, nrm = surface(c2.x, c2.y)
     if hit is not None:
         lp = hit + Vector((0, -0.14, 0)) - off
-        lights.append((tuple(lp), 4.5, (1.0, 0.26, 0.07)))
+        lights.append((tuple(lp), 3.5, (1.0, 0.26, 0.07)))
 C.finish(NAME, objs, version=VERSION, lights=lights, tex_res=2048, budget_tris=10000, refs=[64, 41, 60, 61, 30],
          notes="壁に貼る鉱脈の岩板。裏面は平ら（y=+0.25）。脈の溝の底と結晶の根元・ひびだけ発光。")
