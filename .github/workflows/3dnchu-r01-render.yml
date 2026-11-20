@@ -1,0 +1,35 @@
+name: 3dnchu R01 Blender 5.3 A-B render
+on:
+  push:
+    branches:
+      - research/3dnchu-20-techniques-20261120
+    paths:
+      - 'tools/tech-research/**'
+      - '.github/workflows/3dnchu-r01-render.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render in existing Blender 5.3 and ClamAV image
+        run: |
+          mkdir -p "$PWD/outputs/tech01"
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 /bin/bash -euc '
+            blender --background --factory-startup --python tools/tech-research/tech01_stylized_materials.py
+          ' 
+        env:
+          OUTPUT_DIR: /work/outputs/tech01
+      - name: Verify generated images
+        run: |
+          test "$(find outputs/tech01 -maxdepth 1 -name '*.png' | wc -l)" -eq 8
+          test -s outputs/tech01/manifest.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 3dnchu-r01-render-evidence
+          path: outputs/tech01/
+          retention-days: 14
