@@ -78,46 +78,56 @@ for(let face=0;face<4;face++)for(let panelIndex=0;panelIndex<2;panelIndex++){
  const atlas=document.createElement('canvas');atlas.width=1024;atlas.height=768;
  const ac=atlas.getContext('2d');ac.clearRect(0,0,1024,768);
  const rand=()=>wr();
- // V17: three LARGE vertical textured panes per opening, not thousands of light dots.
- // The original CC0 emission file is still unavailable; this is a visual reconstruction.
- ac.fillStyle='rgba(12,8,23,.23)';ac.fillRect(0,0,1024,768);
- const openingCount=2;
- for(let opening=0;opening<openingCount;opening++){
-  const x0=105+opening*478+(rand()-.5)*25,y0=180+rand()*80;
-  const width=245+rand()*35,height=300+rand()*65;
-  // Shadowed architectural recess, deliberately irregular at its edges.
-  ac.fillStyle='rgba(5,3,12,.84)';
-  ac.beginPath();ac.moveTo(x0-15,y0+height+16);
-  ac.lineTo(x0-15,y0+35);ac.quadraticCurveTo(x0+width*.5,y0-60,x0+width+15,y0+35);
-  ac.lineTo(x0+width+15,y0+height+16);ac.closePath();ac.fill();
-  const paneGap=12,paneWidth=(width-paneGap*2)/3;
-  for(let pane=0;pane<3;pane++){
-   const x=x0+pane*(paneWidth+paneGap);
-   const glow=ac.createLinearGradient(x,y0,x+paneWidth,y0+height);
-   glow.addColorStop(0,'rgba(65,30,77,.42)');
-   glow.addColorStop(.28,'rgba(187,95,111,.67)');
-   glow.addColorStop(.57,'rgba(223,143,115,.78)');
-   glow.addColorStop(1,'rgba(74,32,77,.37)');
-   ac.fillStyle=glow;ac.fillRect(x,y0+24,paneWidth,height-30);
-   // Broad texture strokes and stains, not point-sized window lights.
-   for(let i=0;i<90;i++){
-    const tx=x+rand()*paneWidth,ty=y0+25+rand()*(height-55);
-    ac.fillStyle=rand()<.5?'rgba(18,8,33,.19)':'rgba(255,188,151,.12)';
-    ac.fillRect(tx,ty,5+rand()*42,6+rand()*57);
+ // V19: far-city backdrop. Each three-part window is ONE FIFTH of V18's
+ // linear width/height; repeat at varied heights on uneven distant buildings.
+ // Keep the two atlas panels per direction, never individual giant window planes.
+ ac.fillStyle='rgba(12,8,23,.20)';ac.fillRect(0,0,1024,768);
+ const buildings=[{x:25,w:178,roof:205},{x:215,w:160,roof:125},{x:390,w:185,roof:235},{x:585,w:175,roof:155},{x:770,w:205,roof:190}];
+ for(const b of buildings){
+  const roof=b.roof+(rand()-.5)*65;
+  ac.fillStyle='rgba(7,5,17,.76)';
+  ac.beginPath();ac.moveTo(b.x,768);ac.lineTo(b.x,roof+18);
+  ac.lineTo(b.x+b.w*.23,roof+8);ac.lineTo(b.x+b.w*.38,roof-15);
+  ac.lineTo(b.x+b.w*.61,roof+11);ac.lineTo(b.x+b.w*.81,roof-5);
+  ac.lineTo(b.x+b.w,roof+22);ac.lineTo(b.x+b.w,768);ac.closePath();ac.fill();
+  // Facade details remain darker than windows to preserve distant silhouettes.
+  for(let k=0;k<7;k++){const xx=b.x+rand()*b.w,yy=roof+rand()*(760-roof);ac.fillStyle='rgba(49,29,58,.14)';ac.fillRect(xx,yy,2+rand()*12,16+rand()*65);}
+ }
+ for(let bIndex=0;bIndex<buildings.length;bIndex++){
+  const b=buildings[bIndex];
+  const rows=3+Math.floor(rand()*2);
+  const cols=b.w>180?3:2;
+  for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
+   if(rand()<.16)continue;
+   const width=49+rand()*7,height=60+rand()*13;
+   const x0=b.x+12+col*((b.w-24)/cols)+(rand()-.5)*10;
+   const y0=b.roof+65+row*116+(rand()-.5)*20;
+   if(y0+height>745)continue;
+   ac.fillStyle='rgba(5,3,12,.75)';
+   ac.fillRect(x0-3,y0-3,width+6,height+6);
+   const gap=2.5,paneWidth=(width-gap*2)/3;
+   for(let pane=0;pane<3;pane++){
+    const x=x0+pane*(paneWidth+gap);
+    const glow=ac.createLinearGradient(x,y0,x+paneWidth,y0+height);
+    glow.addColorStop(0,'rgba(60,26,76,.38)');
+    glow.addColorStop(.3,'rgba(185,90,110,.67)');
+    glow.addColorStop(.6,'rgba(224,145,119,.73)');
+    glow.addColorStop(1,'rgba(66,28,74,.30)');
+    ac.fillStyle=glow;ac.fillRect(x,y0,paneWidth,height);
+    for(let i=0;i<13;i++){
+     ac.fillStyle=rand()<.55?'rgba(17,8,32,.25)':'rgba(255,192,156,.17)';
+     ac.fillRect(x+rand()*paneWidth,y0+rand()*height,2+rand()*8,2+rand()*12);
+    }
+    for(let i=0;i<3;i++){
+     ac.fillStyle='rgba(13,8,29,.37)';
+     ac.beginPath();ac.ellipse(x+rand()*paneWidth,y0+rand()*height,2+rand()*5,3+rand()*8,rand()*3,0,Math.PI*2);ac.fill();
+    }
    }
-   // Local opaque losses and fog occlude irregular regions of each pane.
-   for(let i=0;i<11;i++){
-    const tx=x+rand()*paneWidth,ty=y0+rand()*height;
-    ac.fillStyle='rgba(13,8,29,.36)';
-    ac.beginPath();ac.ellipse(tx,ty,7+rand()*27,13+rand()*43,rand()*3,0,Math.PI*2);ac.fill();
-   }
+   ac.fillStyle='rgba(10,6,20,.90)';
+   for(let seam=1;seam<3;seam++)ac.fillRect(x0+seam*paneWidth+(seam-1)*gap,y0,gap,height);
+   // Sparse damage breaks the repetitive appearance.
+   if(rand()<.32){ac.fillStyle='rgba(7,5,17,.90)';ac.fillRect(x0+rand()*width,y0,5+rand()*15,8+rand()*20);}
   }
-  // Three-pane division is formed by two substantial dark vertical mullions.
-  ac.fillStyle='rgba(11,7,21,.94)';
-  for(let seam=1;seam<3;seam++)ac.fillRect(x0+seam*paneWidth+(seam-1)*paneGap,y0+16,paneGap,height-8);
-  // Broken upper contour, no square window frame or cross-shaped sash.
-  ac.fillStyle='rgba(10,6,20,.9)';
-  for(let i=0;i<18;i++){const sx=x0+rand()*width;ac.fillRect(sx,y0+10,8+rand()*31,rand()*45);}
  }
  // Wispy overlapping darkness gives the openings uneven visibility.
  for(let i=0;i<18;i++){
