@@ -1,0 +1,36 @@
+name: Shared PNG render preview publishing
+on:
+  workflow_call:
+    inputs:
+      artifact_name:
+        description: Successful render artifact name
+        required: true
+        type: string
+      artifact_subdirectory:
+        description: Relative artifact folder containing manifest.json and rendered PNG
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: preview-input
+      - name: Validate and publish NOT_APPROVED PNG previews
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTIFACT_SUBDIRECTORY: ${{ inputs.artifact_subdirectory }}
+        run: |
+          case "$ARTIFACT_SUBDIRECTORY" in
+            /*|*..*|*\\*) echo "Unsafe artifact path"; exit 1 ;;
+          esac
+          test -d "preview-input/$ARTIFACT_SUBDIRECTORY"
+          node tools/render-preview/publish.mjs "preview-input/$ARTIFACT_SUBDIRECTORY"
