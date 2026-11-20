@@ -4,10 +4,11 @@ OUT=os.environ.get("OUTPUT_DIR","/work/outputs/tech01")
 os.makedirs(OUT,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT"); bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
-scene.render.engine="BLENDER_EEVEE_NEXT"
+scene.render.engine="BLENDER_EEVEE"
 scene.render.resolution_x=768;scene.render.resolution_y=768;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 scene.world.color=(.25,.25,.25)
+assert bpy.app.version[:2] == (5,3), f"Blender 5.3 required, got {bpy.app.version_string}"
 def mat(stylized):
  m=bpy.data.materials.new("rock_stylized" if stylized else "rock_baseline");m.diffuse_color=(.34,.32,.28,1);m.use_nodes=True
  nt=m.node_tree;bs=nt.nodes.get("Principled BSDF");bs.inputs["Base Color"].default_value=(.34,.32,.28,1);bs.inputs["Roughness"].default_value=.7
