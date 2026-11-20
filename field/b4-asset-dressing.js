@@ -22,7 +22,7 @@ export const B4_PROP_REGISTRY = {
   b4p_ore_vein_wall: { ready: true, wall: true, themes: { deposit: 2.0, dragon: 0.4 }, radius: 1.25, height: 2.1, y: 0.15, scale: [0.9, 1.1], tris: 7728, light: { y: 1.0, z: 0.4, color: 0xff4a18, intensity: 1.3, range: 3.5 } },
   b4p_rock_rubble: { ready: true, themes: { deposit: 1.4, dragon: 0.8, plain: 0.9, mine: 0.4 }, radius: 0.8, height: 0.55, scale: [0.8, 1.2], tris: 5290 },
   b4p_basalt_columns: { ready: true, themes: { deposit: 1.0, plain: 1.0, dragon: 0.4 }, radius: 0.8, height: 2.2, scale: [0.85, 1.15], tris: 3116 },
-  b4p_claw_rock: { ready: false, wall: true, themes: { dragon: 1.6 }, radius: 0.35, height: 1.4, scale: [0.9, 1.1] },
+  b4p_claw_rock: { ready: true, wall: true, themes: { dragon: 1.8, deposit: 0.2 }, radius: 1.0, height: 1.3, scale: [0.95, 1.2], tris: 4004, light: { y: 0.6, z: 0.6, color: 0xff3a10, intensity: 0.8, range: 2.8 } },
   b4p_dragon_scale: { ready: false, themes: { dragon: 1.2, deposit: 0.3 }, radius: 0.4, height: 0.15, scale: [0.9, 1.1] },
   b4p_charred_stump: { ready: false, themes: { dragon: 0.9 }, radius: 0.45, height: 1.2, scale: [0.9, 1.1] },
   b4p_egg_shells: { ready: false, themes: { dragon: 0.8 }, radius: 0.5, height: 0.5, scale: [0.9, 1.1] },
