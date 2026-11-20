@@ -28,7 +28,7 @@ from mathutils import Matrix, Vector  # noqa: E402
 from mathutils.bvhtree import BVHTree  # noqa: E402
 
 NAME = "b4p_rock_rubble"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(1919)
 C.reset(1919)
 
@@ -63,7 +63,7 @@ def add_rock(name, size, x, y, seed, subdiv, tilt=None):
     if tilt is not None:
         sq = (1.0, 0.8, 0.28)  # 板状
     bm = D.basalt_bm((size * 0.5 * sq[0], size * 0.5 * sq[1], size * 0.5 * sq[2]), (0, 0, 0), seed=seed, subdiv=subdiv,
-                     lumpy=0.14, facets=9 if subdiv > 2 else 6, facet_depth=(0.45, 0.8), fresh_ratio=0.55, up_bias=0.0,
+                     lumpy=0.12, facets=9 if subdiv > 2 else 8, facet_depth=(0.4, 0.75), fresh_ratio=0.55, up_bias=0.0,
                      fine=(size * 0.015, 7.0 / size), ground=None, notches=2 if subdiv > 2 else 0)
     R = Matrix.Rotation(rnd.uniform(0, 6.3), 4, "Z") @ Matrix.Rotation(math.radians(tilt if tilt is not None else rnd.uniform(-20, 20)), 4, "X")
     D.bm_transform(bm, R)
@@ -77,7 +77,7 @@ def add_rock(name, size, x, y, seed, subdiv, tilt=None):
     placed_v.extend([v.co.copy() for v in bm.verts])
     placed_f.extend([[base + v.index for v in f.verts] for f in bm.faces])
     ob = C.obj_from_bm(bm, name)
-    return D.sharp_by_angle(ob, 40)
+    return D.sharp_by_angle(ob, 28)
 
 
 rocks = []
@@ -101,13 +101,13 @@ for k in range(5):
             hit, nrm, _, _ = bvh.ray_cast(Vector((x, y, 5)), Vector((0, 0, -1)))
         root = hit + Vector((0, 0, -0.04))
         ax = (Vector((0, 0, 1)) + nrm * 0.5 + Vector((rnd.uniform(-0.4, 0.4), rnd.uniform(-0.4, 0.4), 0))).normalized()
-        ln = rnd.uniform(0.10, 0.16)
-        ob = D.crystal(f"ore_{k}", root, ax, ln, ln * 0.2, seed=500 + k, embed=0.05, chips=1)
+        ln = rnd.uniform(0.16, 0.24)
+        ob = D.crystal(f"ore_{k}", root, ax, ln, ln * 0.2, seed=500 + k, embed=0.06, chips=1)
     else:
         a = rnd.uniform(-2.4, -0.7)
         x, y = math.cos(a) * 0.95, math.sin(a) * 0.7
-        ln = rnd.uniform(0.07, 0.1)
-        ob = D.crystal(f"ore_{k}", (x, y, 0.018), (math.cos(a + 1.3), math.sin(a + 1.3), 0.12), ln, 0.022, seed=500 + k,
+        ln = rnd.uniform(0.12, 0.16)
+        ob = D.crystal(f"ore_{k}", (x, y, 0.024), (math.cos(a + 1.3), math.sin(a + 1.3), 0.12), ln, 0.03, seed=500 + k,
                        embed=0.0, broken=(0.75, 0.5))
         D.mesh_ground(ob, 0.0)
         root = Vector((x, y, 0.02))
