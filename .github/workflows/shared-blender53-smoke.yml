@@ -20,3 +20,4 @@ jobs:
       contents: read
       packages: read
 # Re-run after shared gateway QA fix in development (PR #653)
+# Rerun after PR #654 fixes Python QA newline
