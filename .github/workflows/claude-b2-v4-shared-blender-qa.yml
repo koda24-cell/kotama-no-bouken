@@ -1,0 +1,19 @@
+name: Claude B2 V4 Shared Blender 5.3 Isolated QA
+on:
+  push:
+    branches: ['test/claude-b2-v4-shared-blender53-20261120']
+    paths:
+      - 'tools/b2-render/claude-b2-shared-gateway-qa.py'
+      - '.github/workflows/claude-b2-v4-shared-blender-qa.yml'
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    uses: koda24-cell/kotama-no-bouken/.github/workflows/shared-blender53-render.yml@development
+    with:
+      script: tools/b2-render/claude-b2-shared-gateway-qa.py
+      output_dir: render-output/claude-b2-v4-shared-qa
+    permissions:
+      contents: read
+      packages: read
