@@ -1,6 +1,6 @@
 import bpy, math, json, os, hashlib
 from mathutils import Vector
-OUT=os.environ.get("OUTPUT_DIR","/tmp/tech01")
+OUT=os.environ.get("OUTPUT_DIR","/work/outputs/tech01")
 os.makedirs(OUT,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT"); bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
