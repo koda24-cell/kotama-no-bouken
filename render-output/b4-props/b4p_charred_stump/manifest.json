@@ -1,0 +1,88 @@
+{
+  "asset": "b4p_charred_stump",
+  "version": "v1",
+  "blender": "4.2.3 LTS",
+  "triangles": 4918,
+  "budget_triangles": 5000,
+  "materials": [
+    "b4p_charred_stump_mat"
+  ],
+  "bake": {
+    "res": 1024,
+    "emissive": true,
+    "maps": [
+      "basecolor",
+      "orm",
+      "normal",
+      "emissive"
+    ]
+  },
+  "bbox_m": [
+    0.913,
+    0.875,
+    1.196
+  ],
+  "origin": "bottom-center",
+  "up": "+Y (glTF)",
+  "glb": "b4p_charred_stump.glb",
+  "glb_bytes": 1084228,
+  "cc0_textures": {
+    "wood_planks_diff_1k.jpg": {
+      "source": "https://polyhaven.com/a/wood_planks",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "3b0669f683e4bf10f5a55a381cfa9669a7b8dfd921901829daa3b35acc2bbdec"
+    },
+    "wood_planks_nor_gl_1k.jpg": {
+      "source": "https://polyhaven.com/a/wood_planks",
+      "license": "CC0 (https://polyhaven.com/license)",
+      "sha256": "d02abf113e17a8abe97e1be3e9d6d88add242e8c2291e2200d37aa8c68909f25"
+    }
+  },
+  "pinterest_refs": [
+    57,
+    55,
+    58
+  ],
+  "sha256": {
+    "b4p_charred_stump.glb": "8cf76cee7b7111243f690b2116ae691bedce7e26f2a69d71fe5e2ed35074befb",
+    "b4p_charred_stump_volcanic_front.png": "520b0204939133bc4a02c7661cfaf5b37cc0d77939eb95408b196c158e9a7781",
+    "b4p_charred_stump_volcanic_side.png": "67b3c44283b8ea3c9f57088f8bc2a3c6ac22a82da7669390a9a07ba46888e120",
+    "b4p_charred_stump_volcanic_angle.png": "f5e37c04e81c5bd6526c5ac3f6416bd1b62b6349c26d11d42fc60a5956eb6292",
+    "b4p_charred_stump_volcanic_top.png": "6e04359bbab6bc6f3292f8522f62984e964b8ece5745743c86a7b52205f1f9b5",
+    "b4p_charred_stump_volcanic_close.png": "885a6b9cec6a2ce155f4d1fdb3521c4ee35ec9421de1ba09e3640914e81da549",
+    "b4p_charred_stump_volcanic_back.png": "c5abd513f3e74700bd324feb77254935379f5355bf039f7a5bfe79e6ba1958c4",
+    "b4p_charred_stump_studio_front.png": "ad773e8d8b3ae08db19587408bfa729bff1ec7e44bd64df134a89c691b0ccb53",
+    "b4p_charred_stump_studio_angle.png": "5e340e4c18fa373302ce2070d1be1130769932c24b3d9825a8a743d0cb6a54f7",
+    "b4p_charred_stump_studio_scale.png": "ffcf8a3107a220a7972bc4827a99dab12f24c35e67ac80d7956625eeaa972856"
+  },
+  "renders": [
+    "b4p_charred_stump_volcanic_front.png",
+    "b4p_charred_stump_volcanic_side.png",
+    "b4p_charred_stump_volcanic_angle.png",
+    "b4p_charred_stump_volcanic_top.png",
+    "b4p_charred_stump_volcanic_close.png",
+    "b4p_charred_stump_volcanic_back.png",
+    "b4p_charred_stump_studio_front.png",
+    "b4p_charred_stump_studio_angle.png",
+    "b4p_charred_stump_studio_scale.png"
+  ],
+  "samples": 96,
+  "notes": "炭化した切り株。上は裂け木5本、うろの内側と芯の亀甲割れだけ赤熱。足元に燃え残りの炭。",
+  "game_lights": [
+    {
+      "pos_blender_zup": [
+        0.07496561110019684,
+        -0.10840827226638794,
+        0.4099999964237213
+      ],
+      "watts": 9.0,
+      "color": [
+        1.0,
+        0.32,
+        0.08
+      ]
+    }
+  ],
+  "approval": "NOT_APPROVED",
+  "design": "docs/3d/B4_PROPS_DESIGN.md"
+}
