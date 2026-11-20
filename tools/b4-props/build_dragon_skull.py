@@ -155,6 +155,8 @@ def cd_fn(co):
     p = MI @ co
     best = 0.0
     for c, r, ro in CUT:
+        if max(r) > 0.3:  # 後頭を平らにする大きな切り抜きは「穴の奥」ではない
+            continue
         q = ell_q(p, c, r, ro)
         best = max(best, min(1.0, max(0.0, (1.3 - q) / 0.45)))
     return best
