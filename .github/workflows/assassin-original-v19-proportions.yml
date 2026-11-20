@@ -1,0 +1,63 @@
+name: Assassin V19 Original Proportions Blender 5.3 Review
+on:
+  push:
+    branches: [feature/gpt-assassin-original-head-v19-proportions-blockout-20261120]
+    paths:
+      - '.github/workflows/assassin-original-v19-proportions.yml'
+      - 'tools/character-mesh-research/build_assassin_original_v19_proportions.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update ClamAV and scan original generator
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/character-mesh-research/build_assassin_original_v19_proportions.py qa/security/input.log
+      - name: Render original V19 head in Blender 5.3
+        run: |
+          set -euo pipefail
+          mkdir -p output/assassin-v19-original
+          blender --version | head -n 2
+          HOME=/tmp/blender-home blender -b -t 2 --python-exit-code 1 --python tools/character-mesh-research/build_assassin_original_v19_proportions.py -- output/assassin-v19-original
+      - name: Verify actual PNG, GLB, Blend, manifest and topology
+        run: |
+          python3 - <<'PY'
+          import os,json,hashlib
+          d='output/assassin-v19-original'
+          q=json.load(open(d+'/qa.json'))
+          assert q['approval']=='NOT_APPROVED' and q['copied_source_vertices']==0
+          assert q['head_nonmanifold_gt2']==0 and q['head_lower_open_edges']==144
+          names=('front','front_three_quarter','left_profile','right_profile','back','back_three_quarter','up_oblique','down_oblique','front_no_shadow','profile_no_shadow')
+          for n in names: assert os.path.getsize(f'{d}/{n}.png')>2500,n
+          m=json.load(open(d+'/manifest.json'))
+          for fn,v in m['files'].items():
+            data=open(f'{d}/{fn}','rb').read()
+            assert len(data)==v['bytes']
+            assert hashlib.sha256(data).hexdigest()==v['sha256']
+          assert open(f'{d}/assassin_v19_original_anatomy_study.glb','rb').read(4)==b'glTF'
+          print('VERIFIED',len(names),'actual PNGs and original head GLB/Blend')
+          PY
+      - name: Scan generated images and models
+        run: bash tools/security/clamav_scan_gate.sh scan output/assassin-v19-original qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assassin-v19-original-anatomy-NOT-APPROVED
+          path: |
+            output/assassin-v19-original/
+            qa/security/
+          retention-days: 14
