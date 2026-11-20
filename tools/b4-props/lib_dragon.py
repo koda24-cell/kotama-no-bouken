@@ -799,3 +799,55 @@ def charred_wood(name, glow_strength=5.0, hot=(1.0, 0.22, 0.03), scale=0.6, grai
     b.link(emit, b.bsdf.inputs["Emission Color"])
     b.bsdf.inputs["Emission Strength"].default_value = glow_strength
     return m
+
+
+# ---------------------------------------------------------------------------
+# 面に溝（鉱脈・爪痕）を刻む
+# ---------------------------------------------------------------------------
+def carve_paths(bm, F0, EX, EZ, NF, paths, refine=(0.05, 0.02, -0.02), front_dot=0.15, glow_pow=0.7):
+    """正面（法線 NF 側）の頂点を、2D 経路 paths に沿って NF の逆へ押し込む。
+    paths: [{"pts": [Vector2], "depth": m, "w": 半幅, "seed": 数, "glow": bool}]
+    cd(POINT)=経路への近さ、glow(CORNER)=溝の深さ比（glow=True の経路だけ）を入れる"""
+    F0, EX, EZ, NF = Vector(F0), Vector(EX), Vector(EZ), Vector(NF)
+
+    def loc2(co):
+        q = co - F0
+        return Vector((q.dot(EX), q.dot(EZ)))
+
+    bm.normal_update()
+
+    def dist_fn(co):
+        p2 = loc2(co)
+        return min(polyline_nearest(g["pts"], p2)[0] - g["w"] for g in paths)
+
+    def is_front(v):
+        return v.normal.dot(NF) > front_dot
+
+    bm_refine_near(bm, lambda co: dist_fn(co), refine)
+    bm.normal_update()
+    L = bm_layers(bm)
+    frac = {}
+    for v in bm.verts:
+        if not is_front(v):
+            continue
+        p2 = loc2(v.co)
+        cut, gl, prox = 0.0, 0.0, 0.0
+        for g in paths:
+            d, t, side = polyline_nearest(g["pts"], p2)
+            w = g["w"] * (0.6 + 0.4 * math.sin(math.pi * min(1.0, 0.1 + t * 0.9)) ** 0.5)
+            w *= 1.0 + 0.35 * noise.noise(Vector((t * 11 + g["seed"], side * 2.3, 0.4)))
+            dep = g["depth"] * (0.75 + 0.25 * noise.noise(Vector((t * 6 + g["seed"], 2.1, 0.7))))
+            dep *= min(1.0, t / 0.06, (1 - t) / 0.06) if g.get("taper", True) else 1.0
+            if d < w:
+                c = dep * (1 - (d / w) ** 2) ** 1.1
+                if c > cut:
+                    cut = c
+                    gl = (c / max(g["depth"], 1e-4)) if g.get("glow", True) else 0.0
+            prox = max(prox, max(0.0, 1 - d / (g["w"] * 5.0)))
+        v.co -= NF * cut
+        v[L["cd"]] = prox
+        frac[v] = gl
+    for f in bm.faces:
+        for lp in f.loops:
+            lp[L["glow"]] = min(1.0, frac.get(lp.vert, 0.0)) ** glow_pow
+    return bm
