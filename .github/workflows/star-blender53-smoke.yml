@@ -1,0 +1,46 @@
+name: Blender 5.3 Star Smoke Test
+on:
+  push:
+    branches:
+      - feature/blender53-star-smoke-20261120
+    paths:
+      - 'tools/star-smoke/**'
+      - '.github/workflows/star-blender53-smoke.yml'
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Blender and ClamAV
+        shell: bash
+        run: |
+          blender --version | head -n 2
+          clamscan --version
+          blender -b --factory-startup --python-expr 'import bpy; assert bpy.app.version[:2] == (5,3), bpy.app.version_string'
+      - name: Update ClamAV definitions
+        shell: bash
+        run: bash tools/security/clamav_scan_gate.sh update qa/star-smoke
+      - name: Scan source
+        shell: bash
+        run: bash tools/security/clamav_scan_gate.sh scan tools/star-smoke qa/star-smoke/source-scan.log
+      - name: Render star in Blender 5.3
+        shell: bash
+        env:
+          OUTPUT_DIR: render-output/star-smoke
+        run: blender -b --factory-startup --python tools/star-smoke/render.py
+      - name: Scan and verify outputs
+        shell: bash
+        run: |
+          bash tools/security/clamav_scan_gate.sh scan render-output/star-smoke qa/star-smoke/output-scan.log
+          for f in star.glb star.blend front.png side.png angle.png manifest.json; do test -s "render-output/star-smoke/$f" || exit 1; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blender53-star-smoke
+          path: render-output/star-smoke/
+          retention-days: 14
