@@ -7,7 +7,7 @@ import re
 import sys
 
 ID = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$")
-SCRIPT = re.compile(r"^tools/[a-zA-Z0-9_./-]+\\.py$")
+SCRIPT = re.compile(r"^tools/[a-zA-Z0-9_./-]+\.py$")
 ALLOWED = {"build", "resume", "render", "export", "qa"}
 
 
