@@ -30,5 +30,5 @@
 - [V3 Actions #44652457581](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44652457581) **success**。Artifact #14591816424を実ダウンロード、8ファイルのmanifest SHA256全一致確認。GLB実測**2 mesh / 418 triangles / 184,612 bytes**。
 - V3では上面に実形状の起伏を加え、小さな骨材14点を2番目の1メッシュへバッチ化。GLB 2メッシュでサブパーツを保持しながらメッシュ数を減らした。ただし**上面に白い石粒が浮いて見え、コンクリート内に埋まった骨材に見えにくい**。外観全体も薄い円盤形が強い。美術品質は**不合格・未承認**。
 - 次の修正候補は、上面石粒ではなく**破断側面内部の粒子露出**へ移動、側面の複数階層を不規則な破断・陥没面に変更、コンクリートの実破壊面参考と比較すること。以前のV1〜V3は全て非破壊に保持。
-- V3テクスチャ自作のSHA256は `F3_RUBBLE01_CONCRETE_ALBEDO.png`: `a5ccb3f3a835f6cd0d6cef453d62c67ba7ab646b3f249bc0b09b98d15dcaf84f`、`F3_RUBBLE01_CONCRETE_ROUGHNESS.png`: `0d7fdab5fdcc4555a7263b77aaee0e30957cfe88b3b09e6970d1ec070b5bc5`。
+- V3テクスチャ自作のSHA256は `F3_RUBBLE01_CONCRETE_ALBEDO.png`: `50f91cbde203fc6525c3ca4ad8d35a8f73207396bf9eba57756217003a3afd01`、`F3_RUBBLE01_CONCRETE_ROUGHNESS.png`: `87f343a86c0faeafb81243d9cbd7bb2da0f9191213f319920a8d698c139ba664`。
 - Blender環境は5.3.0のdigest固定。V3固有のClamAVスキャンとThree.js FPS測定は未実施。未承認GLBの正式フォルダ保存・ゲーム統合なし。
