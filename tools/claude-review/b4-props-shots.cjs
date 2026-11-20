@@ -67,14 +67,19 @@ let browser;
         fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=DIRN[o[2]+','+o[3]];fieldState.view=null;g.cam.ready=false;
         fieldUpdateVision(true);fieldUpdateNear();performance.now=()=>10000;
         fieldRender();g.renderer.info.autoReset=false;g.renderer.info.reset();KotamaField3D.frame();
+        return {at:o,render:KotamaField3D.renderInfo(),phase:'game'};
+      },{it,DIRN});
+      {const clip=await p.locator('.field-3d-canvas').boundingBox();
+       await p.screenshot({path:path.join(out,`f${f}-${String(k).padStart(2,'0')}-game.png`),clip,timeout:120000});}
+      await p.evaluate(({it})=>{
+        const {g}=__b4visual;
         // close-up: free camera 2.3m in front of the prop (towards the corridor), eye height 1.35m
         if(it.x!==undefined){
           const cam=g.camera;cam.position.set(it.x-it.dx*2.3+it.dz*0.6,1.35,it.z-it.dz*2.3-it.dx*0.6);
           cam.lookAt(it.x,(it.y||0)+0.45,it.z);cam.updateMatrixWorld(true);
           if(g.composer)g.composer.render();else g.renderer.render(g.scene,cam);
         }
-        return {at:o,render:KotamaField3D.renderInfo()};
-      },{it,DIRN});
+      },{it});
       const clip=await p.locator('.field-3d-canvas').boundingBox();
       const name=`f${f}-${String(k).padStart(2,'0')}-${it.id}`;
       await p.screenshot({path:path.join(out,name+'.png'),clip,timeout:120000});
