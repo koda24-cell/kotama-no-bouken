@@ -964,3 +964,108 @@ def rock_face_bm(width, height, back_y, seed, nx=50, nz=46, cells=26, relief=0.1
         if v.co.z < 0:
             v.co.z = 0.0
     return bm
+
+
+# ---------------------------------------------------------------------------
+# 形状：竜の卵の殻
+# ---------------------------------------------------------------------------
+def egg_radius(z, H, R):
+    """卵形の断面半径（下が太く上が細い）。z∈[0,H]"""
+    t = max(0.0, min(1.0, z / H))
+    base = math.sin(math.pi * t) ** 0.9
+    return R * base * (1.0 + 0.18 * (0.5 - t))
+
+
+def egg_patch_bm(H, R, seed, th_range=(0.0, 2 * math.pi), z_lo_fn=None, z_hi_fn=None, nseg=40, nring=22, bumps=0.004):
+    """卵の殻の一部（外面だけ、後で solidify）。各縦列 θ ごとに z_lo(θ)〜z_hi(θ) の範囲を張る→不揃いな割れ口"""
+    rnd = random.Random(seed)
+    off = rnd.uniform(0, 50)
+    bm = bmesh.new()
+    th0, th1 = th_range
+    full = abs((th1 - th0) - 2 * math.pi) < 1e-6
+    cols = nseg if full else nseg + 1
+    grid = []
+    for i in range(cols):
+        th = th0 + (th1 - th0) * i / nseg
+        zl = z_lo_fn(th) if z_lo_fn else 0.0
+        zh = z_hi_fn(th) if z_hi_fn else H
+        col = []
+        for j in range(nring + 1):
+            z = zl + (zh - zl) * j / nring
+            r = egg_radius(z, H, R)
+            r *= 1 + bumps / R * noise.noise(Vector((math.cos(th) * 3 + off, math.sin(th) * 3, z * 6)))
+            col.append(bm.verts.new((math.cos(th) * r, math.sin(th) * r, z)))
+        grid.append(col)
+    for i in range(nseg):
+        a, b = grid[i], grid[(i + 1) % cols] if full else grid[i + 1]
+        for j in range(nring):
+            try:
+                bm.faces.new((a[j], b[j], b[j + 1], a[j + 1]))
+            except ValueError:
+                pass
+    # 退化した頂点（極）をまとめる
+    bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=1e-5)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    return bm
+
+
+def jagged(seed, base, amp, teeth=9, fine=0.3):
+    """割れ口の高さ関数 θ→z: のこぎり状の大きな歯＋細かいぎざぎざ"""
+    rnd = random.Random(seed)
+    ph = [rnd.uniform(0, 6.3) for _ in range(3)]
+    ks = [rnd.uniform(0.6, 1.4) for _ in range(teeth)]
+
+    def f(th):
+        u = (th / (2 * math.pi)) * teeth
+        k = int(u) % teeth
+        frac = u - int(u)
+        saw = (1 - abs(2 * frac - 1)) * ks[k]           # 三角の歯
+        z = base + amp * (saw - 0.5)
+        z += amp * fine * math.sin(th * 23 + ph[0]) * math.sin(th * 7 + ph[1])
+        return z
+    return f
+
+
+def solidify(ob, thick):
+    m = ob.modifiers.new("solid", "SOLIDIFY")
+    m.thickness = thick
+    m.offset = -1.0
+    m.use_rim = True
+    m.use_even_offset = True
+    return C.apply_mods(ob)
+
+
+def egg_mat(name, glow_strength=4.0):
+    """竜の卵の殻: 外は黒い殻（赤茶のまだら・鈍い艶・灰）＋細い赤熱の亀裂（所々）、
+    内側（cd=1）は焦げた赤茶の膜、底（tip が低い）ほど燠のように赤い。割れ口（fresh）は層の断面"""
+    b = C.NB(name)
+    inner = attr(b, "cd")
+    fresh = attr(b, "fresh")
+    tip = attr(b, "tip")
+    n_big = b.noise(3.0, 6, 0.6)
+    n_mid = b.noise(11.0, 5, 0.55)
+    outer = b.ramp(n_big, [(0.25, (0.010, 0.0088, 0.0086)), (0.6, (0.020, 0.014, 0.012)), (0.85, (0.032, 0.018, 0.012))])
+    spots = b.ramp(b.voronoi(30.0, "F1", "Distance"), [(0.0, 1.0), (0.25, 0.0)])
+    outer = b.mix(b.math("MULTIPLY", spots, 0.4), outer, (0.006, 0.005, 0.005))
+    crk = b.ramp(b.voronoi(5.0, "DISTANCE_TO_EDGE", vec=warp(b, 3.0, 0.25)), [(0.0, 1.0), (0.014, 0.0)])
+    crk = b.math("MULTIPLY", crk, b.ramp(b.noise(2.0, 3, 0.5), [(0.45, 0.0), (0.6, 1.0)]))
+    crk = b.math("MULTIPLY", crk, b.math("SUBTRACT", 1.0, inner))
+    outer = b.mix(crk, outer, (0.005, 0.003, 0.003))
+    ashm = b.math("MULTIPLY", b.up_mask(0.55, 0.92), b.ramp(n_mid, [(0.4, 0.0), (0.7, 1.0)]))
+    ashm = b.math("MAXIMUM", ashm, b.math("MULTIPLY", b.math("SUBTRACT", 1.0, b.cavity(0.03)), 0.6))
+    outer = b.mix(b.math("MULTIPLY", ashm, 0.7), outer, ASH)
+    inn = b.ramp(n_mid, [(0.3, (0.035, 0.010, 0.006)), (0.7, (0.075, 0.022, 0.012))])
+    col = b.mix(inner, outer, inn)
+    fcol = b.mix(b._map(b.math("SINE", b.math("MULTIPLY", tip, 300.0)), -1, 1), (0.05, 0.03, 0.022), (0.10, 0.07, 0.05))
+    col = b.mix(b.math("MULTIPLY", fresh, 0.85), col, fcol)
+    r = b.mixf(n_big, 0.38, 0.55)
+    r = b.mixf(inner, r, 0.75)
+    r = b.mixf(ashm, r, 0.95)
+    r = b.mixf(fresh, r, 0.85)
+    ember = b.math("MULTIPLY", inner, b._map(tip, 0.05, 0.45, 1.0, 0.0))
+    ember = b.math("MULTIPLY", ember, b.ramp(b.noise(8.0, 4, 0.6), [(0.35, 0.15), (0.7, 1.0)]))
+    e = b.math("MAXIMUM", b.math("MULTIPLY", crk, 0.85), b.math("MULTIPLY", ember, 0.7))
+    emit = b.ramp(e, [(0.0, (0, 0, 0)), (0.3, (0.3, 0.025, 0.005)), (0.7, (0.85, 0.12, 0.02)), (1.0, (1.0, 0.25, 0.05))])
+    hgt = b.math("SUBTRACT", b.math("MULTIPLY", n_mid, 0.2), b.math("MULTIPLY", crk, 0.6))
+    b.normal_from(None, bump_height=hgt, bump_strength=0.3, bump_dist=0.002)
+    return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
