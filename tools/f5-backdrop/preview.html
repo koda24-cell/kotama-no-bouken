@@ -41,8 +41,10 @@ const gc=glowCanvas.getContext('2d'),gg=gc.createRadialGradient(32,32,1,32,32,32
 gg.addColorStop(0,'rgba(255,205,155,.72)');gg.addColorStop(.28,'rgba(238,143,192,.30)');gg.addColorStop(1,'rgba(150,65,155,0)');
 gc.fillStyle=gg;gc.fillRect(0,0,64,64);
 const glowTexture=new THREE.CanvasTexture(glowCanvas);
-const glowMaterial=new THREE.MeshBasicMaterial({map:glowTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide,fog:false,blending:THREE.AdditiveBlending});
-const windowMats=[new THREE.MeshBasicMaterial({color:0xf6a36c,transparent:true,opacity:.98,depthWrite:false,side:THREE.DoubleSide,fog:false}),new THREE.MeshBasicMaterial({color:0xce7cb8,transparent:true,opacity:.9,depthWrite:false,side:THREE.DoubleSide,fog:false})];
+const glowMaterial=new THREE.MeshBasicMaterial({map:glowTexture,transparent:true,opacity:.18,depthWrite:false,side:THREE.DoubleSide,fog:false,blending:THREE.AdditiveBlending});
+const frameMaterial=new THREE.MeshBasicMaterial({color:0x120f1c,transparent:true,opacity:.82,depthWrite:false,side:THREE.DoubleSide,fog:false});
+const mullionMaterial=new THREE.MeshBasicMaterial({color:0x241a30,transparent:true,opacity:.8,depthWrite:false,side:THREE.DoubleSide,fog:false});
+const windowMats=[new THREE.MeshBasicMaterial({color:0xb8795e,transparent:true,opacity:.72,depthWrite:false,side:THREE.DoubleSide,fog:false}),new THREE.MeshBasicMaterial({color:0x92547f,transparent:true,opacity:.64,depthWrite:false,side:THREE.DoubleSide,fog:false})];
 const windows=[];
 for(let face=0;face<4;face++)for(let patch=0;patch<28;patch++){
  const center=(wr()-.5)*265,base=-5+wr()*33,cols=4+Math.floor(wr()*11),rows=3+Math.floor(wr()*9),dx=1.65+wr()*2.1,dy=1.7+wr()*2.0;
@@ -52,12 +54,25 @@ for(let face=0;face<4;face++)for(let patch=0;patch<28;patch++){
   const mesh=new THREE.Mesh(windowGeo,windowMats[wr()<.65?0:1]);
   mesh.position.set(face===1?143:face===3?-143:offset,h,face===0?-143:face===2?143:offset);
   mesh.rotation.y=face*Math.PI/2;
-  mesh.scale.set(.85+wr()*.9,1.0+wr()*1.1,1);
+  mesh.scale.set(1.05+wr()*.9,1.25+wr()*1.2,1);
+  const frame=new THREE.Mesh(windowGeo,frameMaterial);
+  frame.position.copy(mesh.position);frame.rotation.copy(mesh.rotation);
+  frame.scale.set(mesh.scale.x*1.2,mesh.scale.y*1.16,1);
+  frame.position.x+=(face===1?.035:face===3?-.035:0);
+  frame.position.z+=(face===0?-.035:face===2?.035:0);
+  windowGroup.add(frame);
+  const mullion=new THREE.Mesh(windowGeo,mullionMaterial);
+  mullion.position.copy(mesh.position);mullion.rotation.copy(mesh.rotation);
+  mullion.scale.set(mesh.scale.x*.09,mesh.scale.y,1);
+  mullion.position.x+=(face===1?-.04:face===3?.04:0);
+  mullion.position.z+=(face===0?.04:face===2?-.04:0);
+  windowGroup.add(mullion);
+  mesh.userData.frame=frame;mesh.userData.mullion=mullion;
   const glow=new THREE.Mesh(windowGeo,glowMaterial);
   glow.position.copy(mesh.position);glow.rotation.copy(mesh.rotation);
   glow.position.x+=(face===1?-.09:face===3?.09:0);
   glow.position.z+=(face===0?.09:face===2?-.09:0);
-  glow.scale.set(mesh.scale.x*3.5,mesh.scale.y*3.1,1);
+  glow.scale.set(mesh.scale.x*2.3,mesh.scale.y*2.2,1);
   windowGroup.add(glow);mesh.userData.glow=glow;
   mesh.userData.phase=wr()*6.28;mesh.userData.speed=.25+wr()*1.2;
   windowGroup.add(mesh);windows.push(mesh);
@@ -86,7 +101,7 @@ floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
 let yaw=0,pitch=0,dragging=false,px=0,keys=new Set();
 function renderView(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;backdrop.update(camera);originalFog.update(performance.now()/1000);pathMist.update(performance.now()/1000,camera);sparks.update(performance.now()/1000,camera.position);
 document.querySelector('#status').textContent='方位 '+((yaw*180/Math.PI%360+360)%360).toFixed(0)+'° / 位置 X '+camera.position.x.toFixed(1)+' Z '+camera.position.z.toFixed(1);
-for(const w of windows){w.visible=Math.sin(performance.now()*.001*w.userData.speed+w.userData.phase) > -.75;if(w.userData.glow)w.userData.glow.visible=w.visible;}
+for(const w of windows){w.visible=Math.sin(performance.now()*.001*w.userData.speed+w.userData.phase) > -.75;if(w.userData.glow)w.userData.glow.visible=w.visible;if(w.userData.frame)w.userData.frame.visible=w.visible;if(w.userData.mullion)w.userData.mullion.visible=w.visible;}
 renderer.render(scene,camera)}
 document.querySelectorAll('[data-angle]').forEach(b=>b.onclick=()=>{yaw=Number(b.dataset.angle)*Math.PI/180;renderView()});
 document.querySelector('#left').onclick=()=>{yaw-=Math.PI/12;renderView()};
