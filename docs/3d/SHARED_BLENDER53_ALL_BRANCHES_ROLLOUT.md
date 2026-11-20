@@ -48,3 +48,9 @@ jobs:
 | `b2-ruined-aqueduct-render.yml` | 確認 | **候補・要実検証** | 単一Blender Pythonスクリプト。出力先を`OUTPUT_DIR`に対応させる必要がある |
 
 **移行方針**: すでに5.3を使う上記既存ジョブはそのまま稼働可能に保ち、共通ゲートウェイへの強制置換はしない。新規単一スクリプト型ジョブから採用し、複雑な工程には別途共通アダプタを設計する。既存ブランチへの反映はブランチ固有のコード・PR・成果物の確認後。
+
+## 実モデルでの共通ゲートウェイ検証（2026-11-20）
+
+- **成功**: [B2古代水路 run #44661269090](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44661269090)。Blender 5.3、ClamAV入力/出力、成果物QA、Artifactアップロード全成功。
+- Artifact: `shared-blender53-NOT-APPROVED-44661269090`（約5.6MB）。既存 `tools/b2-render/build-aqueduct.py` を複製し、`OUTPUT_DIR` だけ対応した `tools/b2-render/build-aqueduct-shared-qa.py` を検証ブランチに配置。元モデル・Claudeの最新版は変更していない。
+- この検証は**共通環境の互換性**を証明するもので、Claude制作の最新B2モデルと同一であることや、視覚的品質の承認を意味しない。次に最新のClaude作業ブランチ・PRを特定し、モデルを維持したまま適用する。
