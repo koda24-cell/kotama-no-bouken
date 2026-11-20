@@ -45,6 +45,32 @@ const glowMaterial=new THREE.MeshBasicMaterial({map:glowTexture,transparent:true
 const frameMaterial=new THREE.MeshBasicMaterial({color:0x120f1c,transparent:true,opacity:.82,depthWrite:false,side:THREE.DoubleSide,fog:false});
 const mullionMaterial=new THREE.MeshBasicMaterial({color:0x241a30,transparent:true,opacity:.8,depthWrite:false,side:THREE.DoubleSide,fog:false});
 const windowMats=[new THREE.MeshBasicMaterial({color:0xb8795e,transparent:true,opacity:.72,depthWrite:false,side:THREE.DoubleSide,fog:false}),new THREE.MeshBasicMaterial({color:0x92547f,transparent:true,opacity:.64,depthWrite:false,side:THREE.DoubleSide,fog:false})];
+
+// V14: irregular stained glass emission, not a uniform emissive rectangle.
+const glassCanvas=document.createElement('canvas');glassCanvas.width=128;glassCanvas.height=192;
+const glassCtx=glassCanvas.getContext('2d');
+const glassGrad=glassCtx.createLinearGradient(0,0,128,192);
+glassGrad.addColorStop(0,'#3d223c');glassGrad.addColorStop(.23,'#b27665');
+glassGrad.addColorStop(.55,'#d6a184');glassGrad.addColorStop(.83,'#70445e');glassGrad.addColorStop(1,'#211526');
+glassCtx.fillStyle=glassGrad;glassCtx.fillRect(0,0,128,192);
+let glassSeed=2214;const gr=()=>((glassSeed=(Math.imul(glassSeed,1664525)+1013904223)>>>0)/4294967296);
+for(let i=0;i<320;i++){const x=gr()*128,y=gr()*192,s=1+gr()*18;glassCtx.fillStyle=gr()<.53?'rgba(12,8,22,.22)':'rgba(255,212,158,.13)';glassCtx.fillRect(x,y,s,1+gr()*8);}
+glassCtx.strokeStyle='rgba(17,10,25,.8)';glassCtx.lineWidth=5;glassCtx.strokeRect(4,4,120,184);
+glassCtx.lineWidth=3;glassCtx.beginPath();glassCtx.moveTo(64,3);glassCtx.lineTo(64,189);glassCtx.moveTo(4,95);glassCtx.lineTo(124,95);glassCtx.stroke();
+const glassTexture=new THREE.CanvasTexture(glassCanvas);glassTexture.colorSpace=THREE.SRGBColorSpace;
+windowMats.forEach(m=>{m.map=glassTexture;m.color.set(0xffffff);m.opacity=.8;m.needsUpdate=true;});
+// Silhouette walls sit just behind lit windows, with uneven rooflines and recessed dark gaps.
+const silhouetteGroup=new THREE.Group();silhouetteGroup.name='B5_V14_SHADOWED_FACADES';scene.add(silhouetteGroup);
+const silhouetteMat=new THREE.MeshBasicMaterial({color:0x110d1b,transparent:true,opacity:.56,depthWrite:false,side:THREE.DoubleSide,fog:true});
+const silhouetteGeo=new THREE.PlaneGeometry(1,1);
+const veilMat=new THREE.MeshBasicMaterial({color:0x35213d,transparent:true,opacity:.16,depthWrite:false,side:THREE.DoubleSide,fog:true});
+for(let face=0;face<4;face++)for(let j=0;j<22;j++){
+ const cx=(wr()-.5)*278, width=8+wr()*22, height=18+wr()*50;
+ const panel=new THREE.Mesh(silhouetteGeo,silhouetteMat);
+ panel.position.set(face===1?143.35:face===3?-143.35:cx,height*.5-10,face===0?-143.35:face===2?143.35:cx);
+ panel.rotation.y=face*Math.PI/2;panel.scale.set(width,height,1);silhouetteGroup.add(panel);
+ if(j%3===0){const veil=new THREE.Mesh(silhouetteGeo,veilMat);veil.position.copy(panel.position);veil.rotation.copy(panel.rotation);veil.position.y-=height*.15;veil.scale.set(width*1.8,height*.8,1);silhouetteGroup.add(veil);}
+}
 const windows=[];
 for(let face=0;face<4;face++)for(let patch=0;patch<28;patch++){
  const center=(wr()-.5)*265,base=-5+wr()*33,cols=4+Math.floor(wr()*11),rows=3+Math.floor(wr()*9),dx=1.65+wr()*2.1,dy=1.7+wr()*2.0;
@@ -94,7 +120,7 @@ for(let i=0;i<52;i++){const a=wr()*Math.PI*2,dist=6+wr()*145;
  p.position.set(Math.cos(a)*dist,-.08+wr()*.12,Math.sin(a)*dist);
  p.scale.set(22+wr()*55,18+wr()*45,1);groundMist.add(p);
 }
-const floor=new THREE.Mesh(new THREE.CircleGeometry(280,128),new THREE.MeshStandardMaterial({color:0x3b2b4b,roughness:1}));
+const floor=new THREE.Mesh(new THREE.CircleGeometry(280,128),new THREE.MeshStandardMaterial({color:0x191323,roughness:1}));
 floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
 // V6 diagnostic lighting only: retain original B5 fog and window shaders unchanged.
 // Grid hidden in beauty renders: it is a debug-only aid, not part of B5 scenery.
