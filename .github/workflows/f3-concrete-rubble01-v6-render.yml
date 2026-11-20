@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 75
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v5
       - name: Validate Python source
         run: python3 -m py_compile tools/floor3/concrete_rubble01/build_v6.py
       - name: Run Blender 5.3 multi-angle GLB render
@@ -57,7 +57,7 @@ jobs:
           (p/'manifest.json').write_text(json.dumps({'asset':'F3_CONCRETE_RUBBLE01','approval':'NOT_APPROVED','run_id':os.environ['GITHUB_RUN_ID'],'commit':os.environ['GITHUB_SHA'],'files':rec},indent=2))
           print('F3_RUBBLE01_QA_OK',len(rec))
           PY
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: f3-concrete-rubble01-v6
