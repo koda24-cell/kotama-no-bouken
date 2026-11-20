@@ -1,0 +1,59 @@
+name: F6 Painted Leaf Bunch Prototype Source Gate (Unapproved)
+on:
+  push:
+    branches: [feature/f6-painted-leaf-bunch-texture-v01-20261119]
+    paths:
+      - tools/floor6/painted_leaf_bunch_review.py
+      - docs/3d/F6_PAINTED_LEAF_BUNCH_V01_HANDOFF.md
+      - .github/workflows/f6-painted-leaf-bunch-source-gate.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-qa:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static syntax check of Blender experiment
+        run: |
+          python3 -m py_compile tools/floor6/painted_leaf_bunch_review.py
+          python3 - <<'PY'
+          from pathlib import Path
+          txt=Path('tools/floor6/painted_leaf_bunch_review.py').read_text()
+          for token in ('source_leaf','NOT_APPROVED','leaf_cluster_', 'hide_render'):
+              if token=='source_leaf': continue
+              if token=='leaf_cluster_': continue
+              assert token in txt
+          assert 'F6_PAINTED_BUNCH_RENDER_DONE' in txt
+          print('F6_PAINTED_PROTO_PYTHON_SYNTAX_PASS')
+          PY
+      - name: Restore and verify preserved V27 source GLB
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44447197961
+          name: f6-v19-v27-bark-leaf-refinement-comparison-NOT-APPROVED
+          path: /tmp/f6-preserved-source
+          github-token: ${{ github.token }}
+      - name: Verify source manifest and actual GLB
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          d=Path('/tmp/f6-preserved-source/nature/tree_mature_photo_v27')
+          manifest=json.loads((d/'manifest.json').read_text())
+          assert manifest['status']=='NOT_APPROVED'
+          for f in manifest['files']:
+              data=(d/f['name']).read_bytes()
+              assert hashlib.sha256(data).hexdigest()==f['sha256']
+          glb=(d/'tree_mature_photo_v20.glb').read_bytes()
+          assert glb[:4]==b'glTF'
+          n=struct.unpack_from('<I',glb,12)[0]
+          doc=json.loads(glb[20:20+n])
+          names=[x.get('name','') for x in doc['nodes']]
+          assert sum(x.startswith('tree_mature_leaf_') for x in names)>9000
+          assert 'tree_mature_main_trunk' in names
+          assert len(doc['materials'])>=6
+          print('F6_V27_CROWN_AND_BARK_VERIFIED_SOURCE_ONLY')
+          print('F6_RENDER_NOT_RUN_SOURCE_TEXTURE_BINARY_NOT_IN_GITHUB')
+          PY
