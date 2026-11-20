@@ -22,6 +22,7 @@ const server = http.createServer(async (req, res) => {
   try {
     const path = new URL(req.url, 'http://localhost').pathname;
     let file;
+    if (path === '/emission-status') {res.writeHead(200,{'content-type':'text/plain'});res.end(emissionBytes?'available':'unavailable');return;}
     if (path === '/facade020c-emission.png') {
       if(!emissionBytes){res.writeHead(404);res.end('Emission unavailable: '+emissionError);return;}
       res.writeHead(200,{'content-type':'image/png','cache-control':'no-store'});res.end(emissionBytes);return;
