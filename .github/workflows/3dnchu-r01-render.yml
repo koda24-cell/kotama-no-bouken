@@ -1,4 +1,5 @@
 name: 3dnchu R01 Blender 5.3 A-B render
+# Research-only A/B evidence; never promotes production assets.
 on:
   push:
     branches:
