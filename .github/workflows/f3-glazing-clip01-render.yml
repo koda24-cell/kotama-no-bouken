@@ -18,7 +18,7 @@ jobs:
           set -euo pipefail
           mkdir -p out/f3_glazing_clip01
           docker pull ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
-          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/local/blender/blender \
+          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/local/bin/blender \
             -v "$PWD:/work" -w /work \
             ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 \
             -b -t 2 --python /work/tools/floor3/glazing_clip01/build_v1.py 2>&1 | tee out/f3_glazing_clip01/blender.log
