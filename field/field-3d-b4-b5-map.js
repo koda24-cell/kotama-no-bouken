@@ -6,7 +6,7 @@ import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261120-floor
 import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261120-zc';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261120-zd';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -17,7 +17,7 @@ export function createTheme(api, area) {
     ? { background: 0x182a26, fog: { color: 0x536c67, density: 0.066 }, hemi: { sky: 0x9bbdb3, ground: 0x253e31, high: 1.55, low: 1.85 } }
     : magma
     // 2026-11-20 user: 暗い → 赤・オレンジ系で見やすく。熱い空気（暖色の霧）と溶岩の照り返し（下からの赤）
-    ? { background: 0x2a0d06, fog: { color: 0x5a2010, density: 0.02 }, hemi: { sky: 0xffb08a, ground: 0xa83a14, high: 2.9, low: 3.3 } }
+    ? { background: 0x3a140a, fog: { color: 0x6e2c14, density: 0.017 }, hemi: { sky: 0xffbc94, ground: 0xb8441a, high: 3.7, low: 4.1 } }
     : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x9d9bd6, ground: 0x292541, high: 1.75, low: 2.05 } };
   function rockTexture(seed) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
@@ -183,7 +183,7 @@ export function createTheme(api, area) {
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
     b4Plan = magma ? addB4GameScenery({root,map:a,ch,wallCell,hash,CELL,surfaces}) : null;
     if (b4Plan) {
-      cameraLamp={world:new THREE.Vector3(),color:0xffc890,intensity:5.2,range:7,off:false};
+      cameraLamp={world:new THREE.Vector3(),color:0xffc890,intensity:6.6,range:8.5,off:false};
       lights.push(cameraLamp,...b4Plan.lights); g.lights.push(cameraLamp,...b4Plan.lights);
     }
     if (b4Plan) for (const s of [...b4Plan.mines, ...b4Plan.vistaFaces]) objAt.add(s.tx+','+s.ty);

@@ -277,7 +277,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   // ---- rock-face overlays: GPT V33 magma basalt (LOD) on part of the wall faces, denser in deposit/dragon zones ----
   if (OVERLAY_READY && faces.length) {
     // panels sit right beside the camera: warmer albedo to match the volcanic wall boxes, joint lava kept modest
-    const rocks = (await Promise.all(OVERLAY_IDS.map(id => loadProp(id, { tintRGB: [0.95, 0.72, 0.6], emissive: 0.9 })))).filter(Boolean);
+    const rocks = (await Promise.all(OVERLAY_IDS.map(id => loadProp(id, { tintRGB: [0.95, 0.72, 0.6], emissive: 0.35 })))).filter(Boolean);
     if (rocks.length && !isStale()) {
       const per = rocks.map(() => []);
       // budget: ~64 panels (≈340k tris) per floor, deposit/dragon zones first
