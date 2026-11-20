@@ -206,7 +206,7 @@ def recenter(parts):
 # 形状：玄武岩の塊
 # ---------------------------------------------------------------------------
 def basalt_bm(radii, center=(0, 0, 0), seed=0, subdiv=4, lumpy=0.12, facets=8, facet_depth=(0.62, 0.9),
-              fresh_ratio=0.35, up_bias=0.3, fine=(0.012, 7.0), ground=0.0, extra_planes=(), hook=None, notches=0, notch_depth=(0.72, 0.9)):
+              fresh_ratio=0.35, up_bias=0.3, fine=(0.012, 7.0), ground=0.0, extra_planes=(), hook=None, notches=0, notch_depth=(0.72, 0.9), box_p=2.0):
     """角ばった玄武岩: 楕円体＋低周波のこぶ＋平面の割れ面（facets）＋細かい凹凸＋平らな底。
     割れ面の一部は fresh（新しい断面）としてコーナー属性に記録"""
     rnd = random.Random(seed)
@@ -217,7 +217,9 @@ def basalt_bm(radii, center=(0, 0, 0), seed=0, subdiv=4, lumpy=0.12, facets=8, f
     off = Vector((seed * 11.3, seed * 5.7, seed * 2.9))
     for v in bm.verts:
         d = v.co.normalized()
-        n = noise.fractal(d * 1.7 + off, 0.55, 2.0, 4)
+        if box_p != 2.0:  # 角の丸い箱（超楕円体）: 板・壁向き
+            d = d / ((abs(d.x) ** box_p + abs(d.y) ** box_p + abs(d.z) ** box_p) ** (1.0 / box_p))
+        n = noise.fractal(v.co.normalized() * 1.7 + off, 0.55, 2.0, 4)
         s = 1.0 + lumpy * n
         v.co = Vector((d.x * rx, d.y * ry, d.z * rz)) * s
     planes = []
@@ -843,6 +845,9 @@ def carve_paths(bm, F0, EX, EZ, NF, paths, refine=(0.05, 0.02, -0.02), front_dot
                 if c > cut:
                     cut = c
                     gl = (c / max(g["depth"], 1e-4)) if g.get("glow", True) else 0.0
+                    gv = g.get("glow_var", 0.0)
+                    if gv > 0:  # 脈の途中で光が途切れる（冷えて黒い区間）
+                        gl *= max(0.0, min(1.0, 0.55 + gv * 1.8 * noise.noise(Vector((t * 7 + g["seed"], 0.3, 4.1)))))
             prox = max(prox, max(0.0, 1 - d / (g["w"] * 5.0)))
         v.co -= NF * cut
         v[L["cd"]] = prox
