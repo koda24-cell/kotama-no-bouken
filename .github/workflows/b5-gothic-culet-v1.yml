@@ -4,6 +4,7 @@ on:
     branches: [feature/b5-knight-culet-v1-20261119]
     paths:
       - 'tools/b5-knights/build_gothic_culet_v1.py'
+      - 'tools/render-preview/publish.mjs'
       - '.github/workflows/b5-gothic-culet-v1.yml'
       - 'tools/b5-knights/textures/grime_imagegen_v15_256.webp.b64'
   workflow_dispatch:
@@ -88,3 +89,22 @@ jobs:
             render-output/b5-knights/gothic_culet_v1/
             qa/security/
           retention-days: 14
+
+  publish-preview:
+    name: Publish verified PNG-only review link
+    needs: render
+    if: ${{ needs.render.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: b5-gothic-culet-v1-NOT-APPROVED
+          path: review-download
+      - name: Publish NOT_APPROVED six-view PNG previews only
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node tools/render-preview/publish.mjs review-download/render-output/b5-knights/gothic_culet_v1
