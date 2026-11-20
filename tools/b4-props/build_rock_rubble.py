@@ -72,6 +72,7 @@ def add_rock(name, size, x, y, seed, subdiv, tilt=None):
     z0 = support_z(bm, x, y)
     D.bm_transform(bm, Matrix.Translation(Vector((x, y, z0 - mz - h * SINK * (1.0 if z0 > 0 else 0.6)))))
     D.bm_ground(bm, 0.0)
+    bm.verts.index_update()
     base = len(placed_v)
     placed_v.extend([v.co.copy() for v in bm.verts])
     placed_f.extend([[base + v.index for v in f.verts] for f in bm.faces])
@@ -94,9 +95,11 @@ crys = []
 shard_pos = []
 for k in range(5):
     if k < 3:
-        a = rnd.uniform(0, 6.3)
-        x, y = math.cos(a) * rnd.uniform(0.15, 0.45), math.sin(a) * rnd.uniform(0.1, 0.35)
-        hit, nrm, _, _ = bvh.ray_cast(Vector((x, y, 5)), Vector((0, 0, -1)))
+        hit = None
+        while hit is None:
+            a = rnd.uniform(0, 6.3)
+            x, y = math.cos(a) * rnd.uniform(0.15, 0.45), math.sin(a) * rnd.uniform(0.1, 0.35)
+            hit, nrm, _, _ = bvh.ray_cast(Vector((x, y, 5)), Vector((0, 0, -1)))
         root = hit + Vector((0, 0, -0.04))
         ax = (Vector((0, 0, 1)) + nrm * 0.5 + Vector((rnd.uniform(-0.4, 0.4), rnd.uniform(-0.4, 0.4), 0))).normalized()
         ln = rnd.uniform(0.10, 0.16)
