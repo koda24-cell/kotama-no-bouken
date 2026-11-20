@@ -66,89 +66,7 @@ def mesh(name,verts,faces,material=steel):
 # Backplate V2 lower boundary z ~0.872, halfwidth ~0.172.
 # Three independent overlapping rear sheets; lower ones flare over hips.
 # Y rear is positive, and uppermost lame tucks underneath the V2 backplate.
-N=80;H=9
-bands=[
- {"upper":.902,"lower":.807,"wtop":.171,"wbottom":.185,"fwd":.105,"flare":.014},
- {"upper":.831,"lower":.736,"wtop":.181,"wbottom":.208,"fwd":.109,"flare":.025},
- {"upper":.760,"lower":.658,"wtop":.204,"wbottom":.230,"fwd":.113,"flare":.039}
-]
-for b,par in enumerate(bands):
- verts=[];faces=[]
- for j in range(H):
-  zf=j/(H-1);z=par["lower"]+(par["upper"]-par["lower"])*zf
-  width=par["wbottom"]+(par["wtop"]-par["wbottom"])*zf
-  for i in range(N+1):
-   t=2*i/N-1
-   # Forged front wraps pelvis rather than flat front. Flared distal lip.
-   # V2: actual C-shaped waist wrap instead of V1 almost planar strip.
-   # As the angle reaches the flank, the metal curls backwards around the hips.
-   theta=t*1.19
-   x=width*math.sin(theta)/math.sin(1.19)
-   wrap_depth=.081+.018*(1-zf)
-   forward=par["fwd"]-.015+wrap_depth*math.cos(theta)+par["flare"]*(1-zf)**2
-   # Restrained Gothic forward-forged ridge, integrated into the metal mesh.
-   keel=.0048*(1-abs(t))**3*(.22+.78*(1-zf))
-   broad_planes=.005*math.sin(math.pi*zf)*math.cos(3.0*theta)*(1-abs(t)**3)
-   y=forward+keel+broad_planes
-   lower_arch=.010*(1-abs(t))**2*(1-zf)
-   # Lower tip wraps away from body, top rim fits beneath breastplate.
-   verts.append((x,y,z+lower_arch))
- for j in range(H-1):
-  for i in range(N):
-   k=j*(N+1)+i;faces.append((k,k+1,k+N+2,k+N+1))
- mesh("0%d articulated overlapping Gothic waist lame"%(b+1),verts,faces)
- # each horizontal plate has a real rear-facing thickness, overlap 2–3 cm.
- # small under-lap liner to emphasize dark natural separation at gaps
- def rivet(pos,name):
-  bpy.ops.mesh.primitive_uv_sphere_add(segments=12,ring_count=6,radius=.0037,location=pos)
-  o=bpy.context.object;o.name=name;o.scale=(1,.45,1);o.data.materials.append(rivetmat);parts.append(o)
- for side in (-1,1):
-  t=side*.86;z=par["upper"]-.014
-  w=par["wtop"]+(par["wbottom"]-par["wtop"])*(.014/(par["upper"]-par["lower"]))
-  zf=1-.014/(par["upper"]-par["lower"])
-  theta=t*1.19
-  y=par["fwd"]-.015+(.081+.018*(1-zf))*math.cos(theta)+par["flare"]*(1-zf)**2
-  rivet((w*math.sin(theta)/math.sin(1.19),y+.004,z),"0%d sliding pivot side %s"%(b+1,side))
-# Separation QA: each band is structurally independent and overlaps the next.
-assert all(bands[k]["upper"]>bands[k-1]["lower"] for k in (1,2))
-assert bands[0]["upper"]>.872 and bands[-1]["lower"]>.64
-bpy.ops.object.select_all(action="DESELECT")
-for ob in parts:ob.select_set(True)
-bpy.context.view_layer.objects.active=next(ob for ob in parts if ob.type=="MESH")
-bpy.ops.export_scene.gltf(filepath=str(out/"gothic_tassets_v1.glb"),export_format="GLB",use_selection=True)
-bpy.ops.wm.save_as_mainfile(filepath=str(out/"gothic_tassets_v1.blend"))
-for ob in parts:ob.select_set(False)
-floor=mat("preview only stage floor",(.07,.075,.09),0,.93)
-bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,.22))
-g=bpy.context.object;g.dimensions=(1.5,1.5,.025);g.data.materials.append(floor)
-bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
-world=bpy.context.scene.world or bpy.data.worlds.new("dark stage")
-bpy.context.scene.world=world;world.use_nodes=True
-world.node_tree.nodes["Background"].inputs["Color"].default_value=(.21,.23,.27,1)
-world.node_tree.nodes["Background"].inputs["Strength"].default_value=.65
-for name,loc,power,size in [("large soft key",(-.95,-1.4,1.65),72,1.25),("fill",(1.2,-.6,1.4),36,1.1),("rim",(0,1.2,1.7),77,1.1)]:
- ld=bpy.data.lights.new(name,'AREA');ld.energy=power;ld.size=size
- ob=bpy.data.objects.new(name,ld);bpy.context.collection.objects.link(ob)
- ob.location=loc;ob.rotation_euler=(Vector((0,-.13,.78))-ob.location).to_track_quat("-Z","Y").to_euler()
-bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.type="ORTHO";cam.data.ortho_scale=.75
-scene=bpy.context.scene;scene.camera=cam;scene.render.engine="CYCLES";scene.cycles.samples=36
-scene.cycles.use_denoising=False
-for layer in scene.view_layers:
- if hasattr(layer,"cycles"):layer.cycles.use_denoising=False
-scene.render.resolution_x=800;scene.render.resolution_y=800;scene.render.resolution_percentage=100
-scene.render.image_settings.file_format="PNG";scene.view_settings.view_transform="Standard"
-views=[("front",(0,-1.6,.78)),("left",(-1.5,0,.77)),("right",(1.5,0,.77)),
- ("angle",(1.2,-1.45,.85)),("back",(0,1.6,.78)),("top",(0,-.2,1.52))]
-for n,pos in views:
- cam.location=pos;cam.rotation_euler=(Vector((0,-.20,.54))-cam.location).to_track_quat("-Z","Y").to_euler()
- scene.render.filepath=str(out/(n+".png"));bpy.ops.render.render(write_still=True)
-files=["gothic_tassets_v1.glb","gothic_tassets_v1.blend","v22_matched_tassets_albedo_v1.png","v22_matched_tassets_roughness_v1.png"]+[n+".png" for n,_ in views]
-hashes={f:hashlib.sha256((out/f).read_bytes()).hexdigest() for f in files}
-manifest={"asset":"gothic_tassets","version":1,"approval":"NOT_APPROVED","game_integrated":False,"source":"tools/b5-knights/build_gothic_tassets_v1.py",
-"source_sha":os.environ.get("GITHUB_SHA"),"run_id":os.environ.get("GITHUB_RUN_ID"),"reference":"Late Gothic continuous overlapping waist lames","chest_compatibility":"Fauld V2 bottom Z0.665, upper tassets start Z0.690, lower tassets Z0.347","source_texture_sha256":"7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23","lame_count":len(tassets),"views":[n for n,_ in views],"files_sha256":hashes,"parts":len(parts),"limitations":"V1 independent paired articulated thigh tassets; requires assembly check with fauld V2. Artist approval pending."}
-(out/"manifest.json").write_text(json.dumps(manifest,indent=2),encoding="utf8")
-(out/"progress.json").write_text(json.dumps({"approval":"NOT_APPROVED","next":"Real-image inspect lap separation, front curvature, side profile and chestline matching; refine before artistic approval"},indent=2))
-print("TASSETS_V1_REAL_SIX_VIEWS",hashes)# Front-facing paired tassets, first separate component after fauld V2.
+# Front-facing paired tassets, first separate component after fauld V2.
 # Coordinate +Z up, -Y front; upper hinge tucks below fauld's lowest edge z=.665.
 # Each thigh gets two organic forged lames, with sideways flaring and pointed hem.
 N=64; H=20
@@ -200,7 +118,7 @@ bpy.ops.export_scene.gltf(filepath=str(out/"gothic_tassets_v1.glb"),export_forma
 bpy.ops.wm.save_as_mainfile(filepath=str(out/"gothic_tassets_v1.blend"))
 for ob in parts:ob.select_set(False)
 floor=mat("preview only stage floor",(.07,.075,.09),0,.93)
-bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,.57))
+bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,.22))
 g=bpy.context.object;g.dimensions=(1.5,1.5,.025);g.data.materials.append(floor)
 bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
 world=bpy.context.scene.world or bpy.data.worlds.new("dark stage")
@@ -211,22 +129,22 @@ for name,loc,power,size in [("large soft key",(-.95,-1.4,1.65),72,1.25),("fill",
  ld=bpy.data.lights.new(name,'AREA');ld.energy=power;ld.size=size
  ob=bpy.data.objects.new(name,ld);bpy.context.collection.objects.link(ob)
  ob.location=loc;ob.rotation_euler=(Vector((0,-.13,.78))-ob.location).to_track_quat("-Z","Y").to_euler()
-bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.type="ORTHO";cam.data.ortho_scale=.72
+bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.type="ORTHO";cam.data.ortho_scale=.75
 scene=bpy.context.scene;scene.camera=cam;scene.render.engine="CYCLES";scene.cycles.samples=36
 scene.cycles.use_denoising=False
 for layer in scene.view_layers:
  if hasattr(layer,"cycles"):layer.cycles.use_denoising=False
 scene.render.resolution_x=800;scene.render.resolution_y=800;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG";scene.view_settings.view_transform="Standard"
-views=[("front",(0,-1.6,1.03)),("left",(-1.5,0,1.02)),("right",(1.5,0,1.02)),
- ("angle",(1.2,1.45,1.16)),("back",(0,1.6,1.03)),("top",(0,-.2,1.85))]
+views=[("front",(0,-1.6,.78)),("left",(-1.5,0,.77)),("right",(1.5,0,.77)),
+ ("angle",(1.2,-1.45,.85)),("back",(0,1.6,.78)),("top",(0,-.2,1.52))]
 for n,pos in views:
- cam.location=pos;cam.rotation_euler=(Vector((0,.16,.77))-cam.location).to_track_quat("-Z","Y").to_euler()
+ cam.location=pos;cam.rotation_euler=(Vector((0,-.20,.54))-cam.location).to_track_quat("-Z","Y").to_euler()
  scene.render.filepath=str(out/(n+".png"));bpy.ops.render.render(write_still=True)
 files=["gothic_tassets_v1.glb","gothic_tassets_v1.blend","v22_matched_tassets_albedo_v1.png","v22_matched_tassets_roughness_v1.png"]+[n+".png" for n,_ in views]
 hashes={f:hashlib.sha256((out/f).read_bytes()).hexdigest() for f in files}
 manifest={"asset":"gothic_tassets","version":1,"approval":"NOT_APPROVED","game_integrated":False,"source":"tools/b5-knights/build_gothic_tassets_v1.py",
-"source_sha":os.environ.get("GITHUB_SHA"),"run_id":os.environ.get("GITHUB_RUN_ID"),"reference":"Late Gothic continuous overlapping waist lames","chest_compatibility":"Backplate V2 lower edge Z0.872, upper tassets lame Z0.902","source_texture_sha256":"7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23","lame_count":len(bands),"views":[n for n,_ in views],"files_sha256":hashes,"parts":len(parts),"limitations":"V2 C-shaped waist wrap; front fauld/tassets separate, preview without backplate. Artist approval pending."}
+"source_sha":os.environ.get("GITHUB_SHA"),"run_id":os.environ.get("GITHUB_RUN_ID"),"reference":"Late Gothic continuous overlapping waist lames","chest_compatibility":"Fauld V2 bottom Z0.665, upper tassets start Z0.690, lower tassets Z0.347","source_texture_sha256":"7287744136ebb3c4e43854306131fd215bdc396fd9aaa57ae7c32099190d8a23","lame_count":len(tassets),"views":[n for n,_ in views],"files_sha256":hashes,"parts":len(parts),"limitations":"V1 independent paired articulated thigh tassets; requires assembly check with fauld V2. Artist approval pending."}
 (out/"manifest.json").write_text(json.dumps(manifest,indent=2),encoding="utf8")
 (out/"progress.json").write_text(json.dumps({"approval":"NOT_APPROVED","next":"Real-image inspect lap separation, front curvature, side profile and chestline matching; refine before artistic approval"},indent=2))
 print("TASSETS_V1_REAL_SIX_VIEWS",hashes)
