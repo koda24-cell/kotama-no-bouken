@@ -1,7 +1,7 @@
 name: F3 Fractured Concrete Beam V02 Blender 5.3
 on:
   push:
-    branches: [feature/gpt-f3-fractured-concrete-beam-v02-20261120]
+    branches: [feature/gpt-f3-fractured-concrete-beam-v01-20261120]
     paths:
       - tools/floor3/broken_beam/build_v02.py
       - .github/workflows/f3-fractured-beam-v02.yml
