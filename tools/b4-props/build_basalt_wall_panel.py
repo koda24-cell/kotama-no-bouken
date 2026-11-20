@@ -135,7 +135,8 @@ def build(variant, seed):
             n1 = C.noise.fractal(Vector((x * 0.7, z * 0.7, 0)) + off, 0.6, 2.0, 4)
             n2 = C.noise.noise(Vector((x * 2.6, z * 2.2, 3.0)) + off)
             step = 0.06 if C.noise.noise(Vector((x * 1.3, z * 0.9, 7.0)) + off) > 0.25 else 0.0   # 割れの段差
-            y = -(0.10 + 0.16 * (n1 + 0.5) + 0.05 * n2 + step) * depth_limit(x)
+            band = 1.0 if MID_Z0 - 0.1 < z < MID_Z1 + 0.05 and abs(x) < W / 2 - 0.2 else 0.0
+            y = -(0.10 + 0.16 * (n1 + 0.5) + 0.05 * n2 + step) * depth_limit(x) * (1.0 - 0.75 * band)   # 柱の帯は奥へ凹ませる
             row.append(bm.verts.new((x, y, z)))
         grid.append(row)
     for j in range(NZ):
@@ -147,17 +148,10 @@ def build(variant, seed):
             f.normal_flip()
     back = C.obj_from_bm(bm, "backing", smooth=True)
     parts.append(C.assign(back, rock))
-    # 溶岩の発光板（中層の隙間の奥＋斜めの割れ目）
-    bm = bmesh.new()
-    for (x0, z0, x1, z1) in ((-W / 2 + 0.3, MID_Z0 - 0.05, W / 2 - 0.3, MID_Z1 - 0.4),):
-        vs = [bm.verts.new(p) for p in ((x0, -0.30, z0), (x1, -0.30, z0), (x1, -0.30, z1), (x0, -0.30, z1))]
-        bm.faces.new(vs)
-    lavaplate = C.obj_from_bm(bm, "lava_plate", smooth=False)
-    parts.append(C.assign(lavaplate, lava))
     # 中層：柱状節理
-    x = -W / 2 + 0.45
+    x = -W / 2 + 0.2
     cols = []
-    while x < W / 2 - 0.5:
+    while x < W / 2 - 0.25:
         w = rnd.uniform(*COL_W)
         if x + w > W / 2:
             w = W / 2 - x
@@ -169,6 +163,19 @@ def build(variant, seed):
         parts.append(C.assign(ob, rock))
         cols.append((cx, w, d, z1))
         x += w + rnd.uniform(*GAP)
+    # 柱の隙間の奥だけ溶岩が光る：隙間ごとに細い発光帯（4割の隙間）。柱の背面(-0.28)と凹ませた岩肌(約-0.08)の間
+    for k in range(len(cols) - 1):
+        if rnd.random() > 0.45:
+            continue
+        cx, w, d, z1 = cols[k]
+        gx = cx + w / 2 + 0.012
+        zt = min(z1, cols[k + 1][3]) - rnd.uniform(0.1, 0.5)
+        zb = MID_Z0 + rnd.uniform(0.0, 0.3)
+        bm = bmesh.new()
+        vs = [bm.verts.new(p) for p in ((gx - 0.05, -0.2, zb), (gx + 0.05, -0.2, zb), (gx + 0.05, -0.2, zt), (gx - 0.05, -0.2, zt))]
+        bm.faces.new(list(reversed(vs)))
+        st = C.obj_from_bm(bm, f"joint_glow_{k}", smooth=False)
+        parts.append(C.assign(st, lava))
     # 斜めの割れ目：2本の柱を途中で切って段差（割れた位置に発光）
     for k in rnd.sample(range(len(cols)), min(2, len(cols))):
         cx, w, d, z1 = cols[k]
@@ -219,7 +226,7 @@ def build(variant, seed):
             C.place_on(cr, (gx + rnd.uniform(-0.05, 0.05), -0.31 - d * rnd.uniform(0.3, 0.8), zz + rnd.uniform(-0.12, 0.12)), dirv, rnd.uniform(0, 6.28))
             parts.append(C.assign(cr, ore))
     name = f"b4p_basalt_wall_panel_{variant}"
-    return C.finish(name, parts, version="v2", tex_res=1024, budget_tris=9000, refs=[30, 31, 33, 41],
+    return C.finish(name, parts, version="v3", tex_res=1024, budget_tris=9000, refs=[30, 31, 33, 41],
                     lights=[((0.0, -0.9, 1.6), 30.0, (1.0, 0.35, 0.1))],
                     notes="壁面パネル。中層の柱の隙間の奥で溶岩が光る。左右の端は張り出しを絞って隣とつなぐ。")
 
