@@ -18,7 +18,7 @@ export const B4_PROP_REGISTRY = {
   b4p_crate_set: { ready: false, themes: { mine: 1.2 }, radius: 0.75, height: 0.9, scale: [0.95, 1.05] },
   b4p_barrel_broken: { ready: false, themes: { mine: 0.9 }, radius: 0.45, height: 0.9, scale: [0.95, 1.05] },
   b4p_tools_scatter: { ready: false, themes: { mine: 1.0, deposit: 1.1 }, radius: 0.55, height: 0.3, scale: [0.95, 1.05] },
-  b4p_dragon_ore_cluster: { ready: false, themes: { deposit: 2.2, dragon: 0.5 }, radius: 0.7, height: 1.6, scale: [0.8, 1.25] },
+  b4p_dragon_ore_cluster: { ready: true, themes: { deposit: 2.2, dragon: 0.5 }, radius: 0.75, height: 1.3, scale: [0.8, 1.25], tris: 5804, light: { y: 0.35, color: 0xff3a12, intensity: 1.4, range: 3.6 } },
   b4p_ore_vein_wall: { ready: false, wall: true, themes: { deposit: 2.0 }, radius: 0.3, height: 2.2, scale: [0.9, 1.1] },
   b4p_rock_rubble: { ready: false, themes: { deposit: 1.4, dragon: 0.7, plain: 0.5 }, radius: 0.9, height: 0.8, scale: [0.8, 1.2] },
   b4p_basalt_columns: { ready: false, themes: { deposit: 1.0, plain: 0.6 }, radius: 0.7, height: 2.2, scale: [0.85, 1.15] },
@@ -89,7 +89,7 @@ function instance(group, owned, asset, matrices, name) {
   }
 }
 
-const ORE_READY = false;
+const ORE_READY = true;
 const OVERLAY_URL = './assets/models/floor4/props/b4lod_v33_rockwall_3k.glb';
 const OVERLAY_READY = false;  // GPT V33 magma rock face (LOD by Claude) over the plain wall boxes
 const OVERLAY_FRONT_Z = 1;     // which local axis of the LOD faces the corridor (+1: +Z, -1: -Z)   // flips to true when the dragon team's ore cluster GLB is promoted
