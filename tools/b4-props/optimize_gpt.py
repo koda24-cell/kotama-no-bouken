@@ -22,7 +22,7 @@ JOBS = [
     # name, source glb, target tris, texture res
     ("b4lod_v33_rockwall", "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb", 9000, 2048),
     ("b4lod_v33_rockwall_3k", "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb", 3200, 1024),
-    ("b4lod_lava_pool_v3", "assets/models/floor4/b4-lava-pool-v3.glb", 6000, 1024),
+    # ("b4lod_lava_pool_v3", ...) done in run 44658937724
 ]
 if os.environ.get("B4P_OPT"):
     JOBS = []
@@ -51,7 +51,57 @@ def import_high(path):
     for o in list(bpy.data.objects):
         if o.type != "MESH":
             bpy.data.objects.remove(o, do_unlink=True)
+    # 落下中の破片・火の粉など小さな離れた塊を除く（LODでは点になるだけで、ベイクの邪魔になる）
+    bpy.ops.object.select_all(action="DESELECT")
+    hi.select_set(True)
+    bpy.context.view_layer.objects.active = hi
+    bpy.ops.mesh.separate(type="LOOSE")
+    parts = [o for o in bpy.context.selected_objects]
+    total = sum(len(o.data.vertices) for o in parts)
+    keep = [o for o in parts if len(o.data.vertices) >= max(60, total * 0.0004)]
+    for o in parts:
+        if o not in keep:
+            bpy.data.objects.remove(o, do_unlink=True)
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in keep:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = keep[0]
+    bpy.ops.object.join()
+    hi = bpy.context.view_layer.objects.active
+    hi.name = "HIGH"
+    C.log(f"kept {len(keep)}/{len(parts)} loose parts")
+    # 色が書き出されていない（白）の玄武岩マテリアルを、B4の配色の風化玄武岩に差し替える
+    rock = basalt_material()
+    for i, m in enumerate(hi.data.materials):
+        if m and "Basalt" in m.name:
+            hi.data.materials[i] = rock
     return hi
+
+
+def basalt_material():
+    b = C.NB("b4_basalt_rebuilt")
+    sc = 0.08  # 元モデルは数十m規模（最終的に約1/10へ縮める）ので大きめのスケールで投影
+    diff = b.image(C.cc0("rock_face_02", "diff"), sc)
+    nrm = b.image(C.cc0("rock_face_02", "nor_gl"), sc)
+    n_big = b.noise(0.06, 6, 0.6)
+    n_mid = b.noise(0.4, 6, 0.6)
+    base = b.mix(n_mid, (0.020, 0.017, 0.016), (0.040, 0.034, 0.030))
+    if diff is not None:
+        hs = b.n("ShaderNodeHueSaturation")
+        hs.inputs["Saturation"].default_value = 0.5
+        hs.inputs["Value"].default_value = 0.42
+        b.link(diff, hs.inputs["Color"])
+        base = b.mix(0.55, base, hs.outputs[0], "MULTIPLY")
+    # 酸化した赤茶の斑（溶岩洞の壁の焼け）
+    ox = b.ramp(n_big, [(0.55, 0.0), (0.72, 1.0)])
+    base = b.mix(b.math("MULTIPLY", ox, 0.7), base, (0.075, 0.030, 0.016))
+    edge = b.edge_mask(0.25, 0.03, 0.25)
+    base = b.mix(b.math("MULTIPLY", edge, 0.45), base, (0.085, 0.078, 0.072))
+    cav = b.math("SUBTRACT", 1.0, b.cavity(1.5))
+    base = b.mix(b.math("MULTIPLY", cav, 0.5), base, (0.055, 0.051, 0.048))
+    r = b.mixf(edge, 0.9, 0.75)
+    b.normal_from(nrm, 0.8, bump_height=n_mid, bump_strength=0.25, bump_dist=0.2)
+    return b.out(base, r, 0.0)
 
 
 def make_low(hi, target):
@@ -103,8 +153,8 @@ def bake_high_to_low(hi, lo, name, res):
     bk = s.render.bake
     bk.use_selected_to_active = True
     bk.use_cage = False
-    bk.cage_extrusion = dims * 0.012
-    bk.max_ray_distance = dims * 0.03
+    bk.cage_extrusion = dims * 0.006
+    bk.max_ray_distance = dims * 0.015
     bk.margin = 8
     bk.use_clear = True
     imgs = {}
