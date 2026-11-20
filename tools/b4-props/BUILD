@@ -1,1 +1,1 @@
-build_claw_rock.py
+build_dragon_scale.py
