@@ -28,7 +28,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_basalt_columns"
-VERSION = "v5"
+VERSION = "v6"
 rnd = random.Random(2020)
 C.reset(2020)
 
@@ -123,7 +123,7 @@ for k, (p, H) in enumerate(zip(pos, HEIGHTS)):
         sz = rnd.uniform(0.11, 0.2)
         z = top - rnd.uniform(0.0, 0.25) if j < 2 else rnd.uniform(0.25, top - 0.2)
         c = Vector((p.x + math.cos(a) * R, p.y + math.sin(a) * R, z))
-        cuts.append(box(f"_k{k}_{j}", c, (sz, sz, sz * 1.3), (rnd.uniform(0, 1), rnd.uniform(0, 1), a)))
+        cuts.append(box(f"_k{k}_{j}", c, (sz, sz * rnd.uniform(0.7, 1.2), sz * 1.3), (rnd.uniform(-0.9, 0.9), rnd.uniform(-0.9, 0.9), a + rnd.uniform(-0.6, 0.6))))
     if cuts:
         D.bool_diff(ob, cuts)
     cols.append(ob)
@@ -135,6 +135,15 @@ D.bm_transform(bm, Matrix.Translation(Vector((0.35, -0.78, 0.42 / 2 * 0.9))) @ M
 D.bm_ground(bm, 0.0, dissolve=False)
 seg = D.sharp_by_angle(C.obj_from_bm(bm, "segment"), 25)
 cols.append(seg)
+
+
+# ---- 割れ落ちた欠片（天端の段差から） ----
+for j in range(5):
+    a = rnd.uniform(-2.6, -0.4)
+    rr = rnd.uniform(0.62, 0.85)
+    ob = D.chip_rock(f"chip_{j}", rnd.uniform(0.07, 0.16), (math.cos(a) * rr, math.sin(a) * rr), seed=900 + j, subdiv=1,
+                     squash=(1.0, 0.8, 0.55), rot_z=rnd.uniform(0, 6.3))
+    cols.append(ob)
 
 
 # 属性: fresh はブーリアンで出来た面（どの列の元の面にも当たらない＝法線が水平・鉛直から外れた面）を近似で判定
@@ -155,7 +164,7 @@ for o in cols:
     mark_fresh(o)
     D.set_attr_fn(o, "tip", lambda co: max(0.0, min(1.0, 1 - co.z / 0.35)))
 off = D.recenter(cols)
-mat = D.basalt("basalt", hairline=0.0, prox_soot=0.8, tex_scale=1.2, ash_amt=1.2)
+mat = D.basalt("basalt", hairline=0.0, prox_soot=0.8, tex_scale=1.2, ash_amt=1.5)
 for o in cols:
     C.assign(o, mat)
 C.finish(NAME, cols, version=VERSION, tex_res=1024, budget_tris=6000, refs=[30, 31, 33],
