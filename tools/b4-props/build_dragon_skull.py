@@ -13,7 +13,7 @@ b4p_dragon_skull — 半分埋もれた竜の頭骨（巣の手前の見せ場�
   - 眉の張り出し・頬骨弓（側頭窓の下の骨の棒）・上顎の歯列の稜
   - 後頭部から大きな角2本が後ろ上へ反る（左は途中で折れる）。頭頂と後頭に小さな棘4本
   - 牙：上顎に左右9本ずつ（欠落4、先の欠け3）。下顎は大半が灰と岩に埋まり、片側だけ覗く
-  - 全体を約30°回し、吻を少し下げ、横に傾けて地面へ0.16m沈める。まわりに玄武岩の欠片
+  - 全体を約30°回し、吻を少し上げ、横に12°傾けて地面へ0.26m沈める。接地線に沿って岩14個。まわりに玄武岩の欠片
 作り方: 楕円体と管の和をボクセルで1つの面にし（2cm）、窓・眼窩・欠けた穴をブーリアンで引き、
   風化の凹凸（ひび・穴）を頂点で入れてから約13k三角形へ減らす
 劣化（設計書3章・2章「骨は真っ白にしない」）:
@@ -32,14 +32,16 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_dragon_skull"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(1313)
 C.reset(1313)
 
 pos = []   # 骨の和（ボクセル化）
 E = D.ellipsoid
 # 頭蓋と後頭
-pos += [E("cranium", (0.45, 0, 0.50), (0.52, 0.44, 0.40)), E("occiput", (0.86, 0, 0.56), (0.22, 0.34, 0.30))]
+pos += [E("cranium", (0.45, 0, 0.50), (0.48, 0.40, 0.34)), E("occiput", (0.86, 0, 0.56), (0.20, 0.30, 0.26))]
+# 頭頂の稜（矢状稜）: 丸い頭蓋を骨らしく引き締める
+pos.append(D.tube("crest", C.bezier((0.15, 0, 0.80), (0.55, 0, 0.90), (0.98, 0, 0.74), n=10), 0.06, 0.05))
 # 吻（先細り）
 for k, (x, ry, rz, z) in enumerate(((0.0, 0.36, 0.30, 0.42), (-0.45, 0.28, 0.22, 0.36), (-0.88, 0.20, 0.17, 0.31),
                                      (-1.14, 0.13, 0.12, 0.27))):
@@ -48,7 +50,7 @@ for k, (x, ry, rz, z) in enumerate(((0.0, 0.36, 0.30, 0.42), (-0.45, 0.28, 0.22,
 pos.append(D.tube("nasal", C.bezier((-1.18, 0, 0.36), (-0.5, 0, 0.56), (0.25, 0, 0.82), n=10), 0.05, 0.09))
 for s in (-1, 1):
     pos.append(E(f"brow_{s}", (0.22, 0.31 * s, 0.70), (0.27, 0.13, 0.10), rot=(0, -8, 14 * s)))
-    pos.append(D.tube(f"cheek_{s}", C.bezier((-0.08, 0.32 * s, 0.27), (0.45, 0.50 * s, 0.26), (0.92, 0.40 * s, 0.38), n=10), 0.075, 0.06))
+    pos.append(D.tube(f"cheek_{s}", C.bezier((-0.08, 0.34 * s, 0.27), (0.45, 0.54 * s, 0.25), (0.92, 0.42 * s, 0.38), n=10), 0.09, 0.07))
     pos.append(D.tube(f"maxilla_{s}", C.bezier((-1.16, 0.09 * s, 0.17), (-0.55, 0.22 * s, 0.17), (0.05, 0.33 * s, 0.22), n=10), 0.055, 0.085))
     # 下顎（大半が埋まる）
     pos.append(D.tube(f"mandible_{s}", C.bezier((-1.02, 0.13 * s, 0.06), (0.15, 0.38 * s, 0.00), (0.72, 0.42 * s, 0.16), n=10), 0.06, 0.09))
@@ -134,8 +136,8 @@ for s in (-1, 1):
         parts.append(tb)
 
 # ---- 回して埋める ----
-M = Matrix.Translation((0, 0, -0.16)) @ Matrix.Rotation(math.radians(-30), 4, "Z") @ \
-    Matrix.Rotation(math.radians(7), 4, "Y") @ Matrix.Rotation(math.radians(-9), 4, "X")
+M = Matrix.Translation((0, 0, -0.26)) @ Matrix.Rotation(math.radians(-30), 4, "Z") @ \
+    Matrix.Rotation(math.radians(-6), 4, "Y") @ Matrix.Rotation(math.radians(-12), 4, "X")
 MI = M.inverted()
 for o in parts:
     o.data.transform(M)
@@ -175,13 +177,23 @@ for tb, broken, end in teeth:
 
 # ---- まわりの玄武岩の欠片（頭骨の根元を埋める） ----
 rocks = []
-for k in range(11):
-    a = rnd.uniform(0, 2 * math.pi)
-    rr = rnd.uniform(0.25, 0.75)
-    loc = M @ Vector((0.1 + math.cos(a) * rr * 1.5, math.sin(a) * rr * 0.9, 0))
-    sz = rnd.uniform(0.07, 0.2)
-    ob = D.chip_rock(f"rock_{k}", sz, (loc.x, loc.y), seed=200 + k, subdiv=2 if sz > 0.14 else 1,
-                     squash=(1.0, rnd.uniform(0.7, 0.95), rnd.uniform(0.45, 0.75)), rot_z=rnd.uniform(0, 6.28), sink=0.35)
+# 頭骨が地面に沈む線（z≈0 の頂点）に沿って岩を寄せ、埋もれた感じを出す
+contact = [v.co.copy() for v in skull.data.vertices if v.co.z < 0.02]
+rnd.shuffle(contact)
+picked = []
+for c in contact:
+    if all((c - p).length > 0.28 for p in picked):
+        picked.append(c)
+    if len(picked) >= 14:
+        break
+for k, c in enumerate(picked):
+    cen = Vector((0.1, 0, 0))
+    d = Vector((c.x, c.y, 0)) - (M @ cen).to_2d().to_3d()
+    d = d.normalized() if d.length > 1e-4 else Vector((1, 0, 0))
+    sz = rnd.uniform(0.12, 0.30)
+    loc = c + d * sz * 0.25
+    ob = D.chip_rock(f"rock_{k}", sz, (loc.x, loc.y), seed=200 + k, subdiv=2 if sz > 0.18 else 1,
+                     squash=(1.0, rnd.uniform(0.7, 0.95), rnd.uniform(0.4, 0.65)), rot_z=rnd.uniform(0, 6.28), sink=0.3)
     D.ensure_attrs(ob)
     rocks.append(ob)
 
@@ -189,7 +201,7 @@ allp = parts + rocks
 for o in allp:
     D.ensure_attrs(o)
 off = D.recenter(allp)
-bone = D.bone_mat("bone", soot_lo=0.0, soot_hi=0.42)
+bone = D.bone_mat("bone", soot_lo=0.0, soot_hi=0.75)
 basalt = D.basalt("basalt", hairline=0.0)
 for o in parts:
     C.assign(o, bone)

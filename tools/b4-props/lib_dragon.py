@@ -763,16 +763,19 @@ def bone_mat(name, soot_lo=0.0, soot_hi=0.5, scale=1.0):
     col = b.ramp(b.math("ADD", b.math("MULTIPLY", n_big, 0.6), b.math("MULTIPLY", n_mid, 0.4)),
                  [(0.25, (0.25, 0.21, 0.15)), (0.5, BONE_LO), (0.8, BONE_HI)])
     # 乾燥割れ（骨の繊維に沿う細かいひび）＋剥離した面の段差
-    crk = b.ramp(ridge(b, 9.0 / scale, vec=warp(b, 3.0, 0.2)), [(0.94, 0.0), (0.985, 1.0)])
-    crk2 = b.ramp(b.voronoi(14.0 / scale, "DISTANCE_TO_EDGE", vec=warp(b, 6.0, 0.08)), [(0.0, 1.0), (0.02, 0.0)])
-    crk2 = b.math("MULTIPLY", crk2, b.ramp(n_mid, [(0.5, 0.0), (0.65, 1.0)]))
-    cracks = b.math("MAXIMUM", crk, crk2)
+    crk = b.ramp(ridge(b, 6.0 / scale, vec=warp(b, 3.0, 0.2)), [(0.965, 0.0), (0.99, 1.0)])
+    crk = b.math("MULTIPLY", crk, b.ramp(n_mid, [(0.35, 0.0), (0.55, 1.0)]))  # ひびは所々に（網目にしない）
+    cracks = crk
     col = b.mix(b.math("MULTIPLY", cracks, 0.85), col, (0.035, 0.028, 0.022))
     flake = b.ramp(b.noise(7.0 / scale, 4, 0.5), [(0.58, 0.0), (0.62, 1.0)])
     col = b.mix(b.math("MULTIPLY", flake, 0.35), col, (0.20, 0.165, 0.115))
     pits = b.ramp(b.voronoi(60.0 / scale, "F1", "Distance"), [(0.0, 1.0), (0.12, 0.0)])
     pits = b.math("MULTIPLY", pits, b.ramp(n_mid, [(0.35, 0.2), (0.7, 1.0)]))
     col = b.mix(b.math("MULTIPLY", pits, 0.6), col, (0.08, 0.065, 0.048))
+    # 全体の汚れ（灰と煤の薄い膜）＋まだらな焦げ: 真っ白にしない
+    col = b.mix(b.ramp(n_big, [(0.2, 0.5), (0.8, 0.25)]), col, (0.11, 0.095, 0.075))
+    char = b.ramp(b.noise(2.5 / scale, 6, 0.65), [(0.56, 0.0), (0.68, 1.0)])
+    col = b.mix(b.math("MULTIPLY", char, 0.85), col, (0.025, 0.020, 0.017))
     # 角の摩耗（擦れて少し明るく滑らか）
     edge = b.math("MULTIPLY", b.edge_mask(0.015, 0.03, 0.25), b.ramp(n_fine, [(0.3, 0.3), (0.65, 1.0)]), clamp=True)
     col = b.mix(b.math("MULTIPLY", edge, 0.4), col, BONE_HI)
