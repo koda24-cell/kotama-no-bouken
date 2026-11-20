@@ -1,7 +1,7 @@
 name: B2 Single Timber Support Post V02 Blender 5.3
 on:
   push:
-    branches: [feature/gpt-b2-waterwheel-single-timber-support-post-v02-20261120]
+    branches: [feature/gpt-b2-waterwheel-single-timber-support-post-v01-20261120]
     paths:
       - 'tools/b2-waterwheel-support-post/**'
       - '.github/workflows/b2-waterwheel-single-support-post-v02.yml'
