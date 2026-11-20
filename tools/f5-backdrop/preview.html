@@ -30,7 +30,7 @@ const backdrop=createFloor5Backdrop(THREE,{seed:51119,radius:150,groundY:-14});
 scene.add(backdrop.root);
 // B5 art direction: no solid building facades, only distant irregular lights.
 backdrop.buildings.visible=false;
-const originalFog=createOriginalB5FogRing(THREE,scene,{radius:145,height:88});
+const originalFog=await createOriginalB5FogRing(THREE,scene,{radius:145,height:88});
 // V7: world-fixed emissive window clusters, independent of the faint fog atlas.
 const windowGroup=new THREE.Group();windowGroup.name='B5_VISIBLE_DISTANT_WINDOWS';scene.add(windowGroup);
 let ws=77519;const wr=()=>((ws=(Math.imul(ws,1664525)+1013904223)>>>0)/4294967296);
