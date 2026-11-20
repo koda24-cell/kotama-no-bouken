@@ -112,7 +112,7 @@ function wallSkinDistance(y0, y1, lateral = 0) {
 }
 const sideFor = (R, lateral = 0) => R.side ?? (wallSkinDistance(R.y || 0, (R.y || 0) + R.height, lateral) - (R.wall ? 0.02 : R.radius + 0.04));
 
-export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], crystalGeo = null, isStale = () => false, maxProps = 22 }) {
+export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY).filter(id => B4_PROP_REGISTRY[id].ready);
   const group = new THREE.Group(); group.name = 'b4:asset-dressing'; group.userData.b4Cached = true;
   const owned = [];
@@ -247,6 +247,21 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       if (proc) proc.visible = false;                         // procedural stand-in no longer needed
       info.mineCarts = mats.length;
     } else info.missing.push('minecart_v32');
+  }
+  // ---- lava tiles: GPT lava pool V3 (user-approved, LOD by Claude) breaks up the square lava planes ----
+  if (lavaSites.length) {
+    const pool = await loadProp('b4lod_lava_pool_v3');
+    if (pool && !isStale()) {
+      const size = pool.box.getSize(new THREE.Vector3()), centre = pool.box.getCenter(new THREE.Vector3());
+      const base = 4.6 / Math.max(size.x, size.z);
+      const pm = lavaSites.map(({ tx, ty }) => new THREE.Matrix4().compose(
+        new THREE.Vector3(tx * CELL + (hash(tx, ty, 840) - 0.5) * 0.6, 0.02, ty * CELL + (hash(tx, ty, 841) - 0.5) * 0.6),
+        new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hash(tx, ty, 842) * Math.PI * 2, 0)),
+        new THREE.Vector3().setScalar(base * (0.92 + 0.2 * hash(tx, ty, 843))))
+        .multiply(new THREE.Matrix4().makeTranslation(-centre.x, -pool.box.min.y, -centre.z)));
+      instance(group, owned, pool, pm, 'b4:gpt-lava-pool-v3');
+      info.lavaPools = pm.length;
+    }
   }
   // ---- rock-face overlays: GPT V33 magma basalt (LOD) on part of the wall faces, denser in deposit/dragon zones ----
   if (OVERLAY_READY && faces.length) {

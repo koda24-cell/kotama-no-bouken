@@ -9,3 +9,4 @@
 | b4p_brazier_cage | v5 | 9,770 | brazier v5（feature/ai-claude-b4-props-20261119） |
 | b4p_mine_lantern | v6 | 2,480 | run 44555193523（feature/ai-claude-b4p-mine-20261119） |
 | b4p_timber_set_broken | v4 | 5,270 | run 44565512146（feature/ai-claude-b4p-mine-20261119） |
+| b4lod_lava_pool_v3 | LOD of GPT V3 (user-approved) | 5,952 | run 44658937724 |

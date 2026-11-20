@@ -6,7 +6,7 @@ import { createB4SurfaceLibrary } from './b4-surface-library.js';
 import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261120-z1';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261120-z2';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -102,7 +102,7 @@ export function createTheme(api, area) {
   let dressing = null, ownedModels = [], ownedModelGeometry = [];
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   let b4Dressing = null;
-  let oreSites = [];
+  let oreSites = [], lavaSites = [];
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -177,7 +177,7 @@ export function createTheme(api, area) {
     dispose();
     root = new THREE.Group(); root.name = mist ? 'b3_mist_forest_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
     const { ch, wallCell, facing, open } = info;
-    const buildRoot = root; oreSites = [];
+    const buildRoot = root; oreSites = []; lavaSites = [];
     const b5 = area === 5, hall = b5 && isB5Hall(a, ch);
     const b4Vault = magma && a.f === 2;
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
@@ -194,6 +194,7 @@ export function createTheme(api, area) {
       mesh(floorGeo, mat.floor, x, -0.17, z);
       if (magma && (c === '*' || c === '~')) {
         mesh(lavaGeo, surfaces.lava, x, 0.009, z);
+        lavaSites.push({ tx, ty });
       }
       // 地熱の亀裂／古代星界の紋様。通行判定には影響させない。
       if (!b5 && !magma && !objAt.has(tx + ',' + ty) && hash(tx, ty, 31) < 0.28) {
@@ -324,7 +325,7 @@ export function createTheme(api, area) {
     batchStatic();
     if (b4Plan) {
       // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
-      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, mines: b4Plan.mines.slice(1), oreSites, crystalGeo, isStale: () => root !== buildRoot })
+      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, mines: b4Plan.mines.slice(1), oreSites, lavaSites, crystalGeo, isStale: () => root !== buildRoot })
         .then(d => { if (root !== buildRoot) d.dispose(); else b4Dressing = d; })
         .catch(err => console.warn('[b4-dressing]', err));
     }
