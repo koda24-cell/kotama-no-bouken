@@ -1,0 +1,7 @@
+# Blender 5.3 staged recovery — status and constraints
+
+- Reusable workflow: `.github/workflows/shared-blender53-recovery.yml`. Caller must provide source run ID, artifact name, source script/commit, checkpoint directory and Blend filename, and a repository-local resume script. Resume script consumes `RESUME_BLEND` and `RESUME_OUTPUT`, emits Blend, GLB, and front/side/angle PNG. The workflow verifies SHA-256, scans with ClamAV, runs Blender with autoexec disabled, runs technical QA, creates the next immutable checkpoint and uploads a 14-day NOT_APPROVED artifact.
+- `tools/3d_checkpoint/stages.py` validates a strictly limited JSON stage declaration for future multi-stage adapters; it does not execute arbitrary shell commands. Stage-by-stage adapters and aesthetic QA remain unverified.
+- **Critical limitation:** GitHub Actions cannot upload an in-memory or local-only checkpoint from a runner killed without a prior upload. Crash recovery requires an artifact from an earlier successful upload, or external durable storage. An `if: always()` upload does not survive abrupt runner loss. No claim of instantaneous recovery is made.
+- Current reusable recovery workflow has no generic automatic discovery of last good artifact or autonomous retry dispatch. This must be built and tested separately with strict run provenance and bounded retries before enabling.
+- No automatic approval or promotion to `main` or production asset folders.
