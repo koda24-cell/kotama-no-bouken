@@ -61,12 +61,12 @@ mc.fillStyle=grad;mc.fillRect(0,0,128,128);
 const mistTexture=new THREE.CanvasTexture(mistCanvas);mistTexture.colorSpace=THREE.SRGBColorSpace;
 const groundMist=new THREE.Group();scene.add(groundMist);
 const mistMat=new THREE.MeshBasicMaterial({map:mistTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide,fog:false});
-for(let i=0;i<52;i++){const a=wr()*Math.PI*2,dist=6+wr()*95;
+for(let i=0;i<52;i++){const a=wr()*Math.PI*2,dist=6+wr()*145;
  const p=new THREE.Mesh(new THREE.PlaneGeometry(1,1),mistMat);p.rotation.x=-Math.PI/2;
  p.position.set(Math.cos(a)*dist,-.08+wr()*.12,Math.sin(a)*dist);
- p.scale.set(12+wr()*43,10+wr()*36,1);groundMist.add(p);
+ p.scale.set(22+wr()*55,18+wr()*45,1);groundMist.add(p);
 }
-const floor=new THREE.Mesh(new THREE.CircleGeometry(105,96),new THREE.MeshStandardMaterial({color:0x30253c,roughness:1}));
+const floor=new THREE.Mesh(new THREE.CircleGeometry(280,128),new THREE.MeshStandardMaterial({color:0x3b2b4b,roughness:1}));
 floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
 // V6 diagnostic lighting only: retain original B5 fog and window shaders unchanged.
 // Grid hidden in beauty renders: it is a debug-only aid, not part of B5 scenery.
