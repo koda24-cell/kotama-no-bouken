@@ -20,8 +20,8 @@ export function createFloor5Backdrop(THREE, options = {}) {
     depthWrite: false,
     uniforms: {
       topColor: { value: new THREE.Color('#17102a') },
-      horizonColor: { value: new THREE.Color('#644475') },
-      bottomColor: { value: new THREE.Color('#352343') }
+      horizonColor: { value: new THREE.Color('#443052') },
+      bottomColor: { value: new THREE.Color('#24192f') }
     },
     vertexShader: `varying vec3 vWorldDir;
       void main() {
@@ -40,7 +40,7 @@ export function createFloor5Backdrop(THREE, options = {}) {
         float az = atan(vWorldDir.z, vWorldDir.x);
         float veil = sin(az*7.0 + h*15.0)*sin(az*13.0-h*9.0);
         float low = 1.0-smoothstep(-0.35,0.1,h);
-        c += vec3(0.10,0.025,0.13)*low*(0.4+0.6*veil*veil);
+        c += vec3(0.025,0.008,0.035)*low*(0.4+0.6*veil*veil);
         gl_FragColor = vec4(c, 1.0);
       }`
   });
