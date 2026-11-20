@@ -1,8 +1,8 @@
 {
   "asset": "b4p_ore_vein_wall",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
-  "triangles": 7104,
+  "triangles": 6312,
   "budget_triangles": 10000,
   "materials": [
     "b4p_ore_vein_wall_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    2.234,
-    0.849,
-    1.864
+    2.217,
+    0.847,
+    2.084
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_ore_vein_wall.glb",
-  "glb_bytes": 2596476,
+  "glb_bytes": 2536756,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -51,16 +51,16 @@
     30
   ],
   "sha256": {
-    "b4p_ore_vein_wall.glb": "367b353dacb8510824bb71e74cbbc2ff768b909664e5c1a646de2b8b1c706a1d",
-    "b4p_ore_vein_wall_volcanic_front.png": "9e8283e43b64c8929d0fadfa41790e9755c1f2b80e6494c942200bec696286c4",
-    "b4p_ore_vein_wall_volcanic_side.png": "7a4228113b95da815799a8515b91891683c19ec24f9a0a186878fc0ee8cd7c82",
-    "b4p_ore_vein_wall_volcanic_angle.png": "ff83fb7c4f88ba6ec354495dd47b91644206a22055e00a0af9608b522a82a142",
-    "b4p_ore_vein_wall_volcanic_top.png": "060b0a703b5dd2a2e9fd8e02e9959d51412ac453d9dce444c5a622a3e207eb8d",
-    "b4p_ore_vein_wall_volcanic_close.png": "59390783a001385ffa8f3a2840ceab2611487e7b5dd8f6e3f3a3a1273d88c9d0",
-    "b4p_ore_vein_wall_volcanic_back.png": "c500b3e6c172b70559300bec9f0380e16ad938480feedf49c709143d77a1d52c",
-    "b4p_ore_vein_wall_studio_front.png": "96d0b53f2e83efc762295273c91ed07687ac975a32279d7c88a314458b96828c",
-    "b4p_ore_vein_wall_studio_angle.png": "5e2ed2e048bbe441dc4cdeb4736ef9ac4bc198d97edc24113496d46edaac92bf",
-    "b4p_ore_vein_wall_studio_scale.png": "8ee52771825d5e6159c95956a467b6f89aaa20ca0395b7579eb845b10ceeb63b"
+    "b4p_ore_vein_wall.glb": "1226a142597d8ac9c30cbb228f74c7341eafb2006ae03b5a77c3dfc29a827b42",
+    "b4p_ore_vein_wall_volcanic_front.png": "250380db963ba961d5aa298a23decc0746aaddb1a08fab39631cb1c906c06bfd",
+    "b4p_ore_vein_wall_volcanic_side.png": "2c2c8952127d40c215b411718fbd90919567c58b5d4818cd5fb25ee911204532",
+    "b4p_ore_vein_wall_volcanic_angle.png": "c12b193102666ef3f88a146fe11a3c0eeeb6b94067d932cd2e97759fe812f038",
+    "b4p_ore_vein_wall_volcanic_top.png": "44960018b97c4bea1c715891e8e1e464ee0379c33c8a358b910d142652a7481f",
+    "b4p_ore_vein_wall_volcanic_close.png": "98c43817203d19878eecd539987a1cd114361a9594558d3ca953cea48c6aec33",
+    "b4p_ore_vein_wall_volcanic_back.png": "a6daa12f155db086e23bbdd14220501e15604f077e9801dfeab2e03a13c664d1",
+    "b4p_ore_vein_wall_studio_front.png": "f88b2ff294c2b88e3f0f87dc15c92d478821e0e95477d95566ecd747dba5f521",
+    "b4p_ore_vein_wall_studio_angle.png": "a51c3b5c1c9614a528710f157e04071c6e0908c7bf8a8f8a0ed5d4eeccb1b4db",
+    "b4p_ore_vein_wall_studio_scale.png": "77e92a344a48175b590864d3e6ba36865faa1f0c40ddebfd4cecc51b21a56190"
   },
   "renders": [
     "b4p_ore_vein_wall_volcanic_front.png",
@@ -78,11 +78,11 @@
   "game_lights": [
     {
       "pos_blender_zup": [
-        -0.5878485441207886,
-        -0.1861887276172638,
-        0.6282823085784912
+        -0.578162431716919,
+        -0.18559277057647705,
+        0.5872695446014404
       ],
-      "watts": 4.5,
+      "watts": 3.5,
       "color": [
         1.0,
         0.26,
@@ -91,11 +91,11 @@
     },
     {
       "pos_blender_zup": [
-        -0.15963900089263916,
-        -0.250723272562027,
-        0.9936648607254028
+        -0.16411855816841125,
+        -0.2176985740661621,
+        0.9505627155303955
       ],
-      "watts": 4.5,
+      "watts": 3.5,
       "color": [
         1.0,
         0.26,
@@ -104,11 +104,24 @@
     },
     {
       "pos_blender_zup": [
-        0.20420654118061066,
-        -0.21758082509040833,
-        1.296227216720581
+        0.19147250056266785,
+        -0.19125115871429443,
+        1.3347904682159424
       ],
-      "watts": 4.5,
+      "watts": 3.5,
+      "color": [
+        1.0,
+        0.26,
+        0.07
+      ]
+    },
+    {
+      "pos_blender_zup": [
+        0.6126023530960083,
+        -0.062442079186439514,
+        1.7621500492095947
+      ],
+      "watts": 3.5,
       "color": [
         1.0,
         0.26,
