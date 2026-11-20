@@ -28,7 +28,28 @@ camera.position.set(0,2,0);
 scene.add(new THREE.HemisphereLight(0x8775ab,0x32243d,3.2));
 const backdrop=createFloor5Backdrop(THREE,{seed:51119,radius:150,groundY:-14});
 scene.add(backdrop.root);
+// B5 art direction: no solid building facades, only distant irregular lights.
+backdrop.buildings.visible=false;
 const originalFog=createOriginalB5FogRing(THREE,scene,{radius:145,height:88});
+// V7: world-fixed emissive window clusters, independent of the faint fog atlas.
+const windowGroup=new THREE.Group();windowGroup.name='B5_VISIBLE_DISTANT_WINDOWS';scene.add(windowGroup);
+let ws=77519;const wr=()=>((ws=(Math.imul(ws,1664525)+1013904223)>>>0)/4294967296);
+const windowGeo=new THREE.PlaneGeometry(1,1);
+const windowMats=[new THREE.MeshBasicMaterial({color:0xf6a36c,transparent:true,opacity:.85,depthWrite:false,side:THREE.DoubleSide,fog:false}),new THREE.MeshBasicMaterial({color:0xce7cb8,transparent:true,opacity:.78,depthWrite:false,side:THREE.DoubleSide,fog:false})];
+const windows=[];
+for(let face=0;face<4;face++)for(let patch=0;patch<16;patch++){
+ const center=(wr()-.5)*265,base=-4+wr()*27,cols=3+Math.floor(wr()*8),rows=2+Math.floor(wr()*7),dx=1.0+wr()*1.8,dy=1.1+wr()*1.6;
+ for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
+  if(wr()<.68 || (col>cols*.5 && wr()<.35))continue;
+  const offset=center+(col-cols/2)*dx, h=base+row*dy;
+  const mesh=new THREE.Mesh(windowGeo,windowMats[wr()<.65?0:1]);
+  mesh.position.set(face===1?143:face===3?-143:offset,h,face===0?-143:face===2?143:offset);
+  mesh.rotation.y=face*Math.PI/2;
+  mesh.scale.set(.22+wr()*.42,.28+wr()*.55,1);
+  mesh.userData.phase=wr()*6.28;mesh.userData.speed=.25+wr()*1.2;
+  windowGroup.add(mesh);windows.push(mesh);
+ }
+}
 const abyss=createAbyssBackdrop(THREE,scene,{starCount:340,rockCount:14});
 const pathMist=createB5PathEdgeMist();scene.add(pathMist.mesh);
 const sparks=createB5ArcaneSparks({count:72,seed:505});scene.add(sparks.points);
@@ -39,6 +60,7 @@ floor.rotation.x=-Math.PI/2;floor.position.y=-0.2;scene.add(floor);
 let yaw=0,pitch=0,dragging=false,px=0,keys=new Set();
 function renderView(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;backdrop.update(camera);originalFog.update(performance.now()/1000);pathMist.update(performance.now()/1000,camera);sparks.update(performance.now()/1000,camera.position);
 document.querySelector('#status').textContent='方位 '+((yaw*180/Math.PI%360+360)%360).toFixed(0)+'° / 位置 X '+camera.position.x.toFixed(1)+' Z '+camera.position.z.toFixed(1);
+for(const w of windows)w.visible=Math.sin(performance.now()*.001*w.userData.speed+w.userData.phase) > -.75;
 renderer.render(scene,camera)}
 document.querySelectorAll('[data-angle]').forEach(b=>b.onclick=()=>{yaw=Number(b.dataset.angle)*Math.PI/180;renderView()});
 document.querySelector('#left').onclick=()=>{yaw-=Math.PI/12;renderView()};
