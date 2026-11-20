@@ -81,7 +81,10 @@ side=mat_with_image("Weathered_oak_side_PBR",col,rou)
 tip=mat_with_image("Endgrain_old_oak_PBR",end)
 obj.data.materials.clear();obj.data.materials.append(side);obj.data.materials.append(tip)
 for p in obj.data.polygons:p.material_index=1 if abs(p.normal.z)>.9 else 0
-# Tilt only the temporary Blender review pose to convey its diagonal brace purpose.\n# Keep original model coordinates for assembly exports.\nobj.rotation_euler[1]=math.radians(34)\n# Stage intentionally not exported
+# Tilt only the temporary Blender review pose to convey its diagonal brace purpose.
+# Keep original model coordinates for assembly exports.
+obj.rotation_euler[1]=math.radians(34)
+# Stage intentionally not exported
 bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,-.65))
 floor=bpy.context.object;floor.name="RENDER_STAGE_NOT_ASSET";floor.scale=(2.5,2.5,.1)
 stage=bpy.data.materials.new("dark_neutral_stage");stage.use_nodes=True
@@ -101,7 +104,8 @@ for name,pos in views.items():
     camera.location=pos;look(camera,(0,0,0))
     sc.render.filepath=str(out/("b2_diagonal_brace_v02_"+name+".png"))
     bpy.ops.render.render(write_still=True)
-bpy.data.objects.remove(floor,do_unlink=True)\nobj.rotation_euler[1]=0.0
+bpy.data.objects.remove(floor,do_unlink=True)
+obj.rotation_euler[1]=0.0
 for o in list(bpy.data.objects):
     if o.type in ('LIGHT','CAMERA'):bpy.data.objects.remove(o,do_unlink=True)
 bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);bpy.context.view_layer.objects.active=obj
