@@ -19,3 +19,11 @@
 - Blender 5.3.0のdigest固定Dockerを利用。GLB、Blend、正面・側面・斜め・端部拡大の4 PNG、カラー/Roughness 2 PNGを生成する。
 - **完了/美術合格は実行結果・画像取得・GLB検証後にのみ記録する。** 
 - バイナリのGitHub正式保存・ゲーム組み込みはユーザーの承認後。Actions Artifactsは一時保存として扱う。
+
+## 実レンダリング評価（2026-11-20）
+- [run #44645562340](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44645562340): **success**。Blender 5.3の固定digestで GLB/Blend/4方向PNG/カラー＋Roughness PNGを作成。
+- Artifact: `f3-glazing-clip01-v1` ID `14587778798`。zipを実ダウンロードし、manifest記載の**8ファイル**すべてSHA256一致を確認。
+- GLB構造を実解析：**3 meshes / 232 triangles**。デフォルトCube、描画用背景はGLBに含まれない。
+- 正面・側面・斜め・端部拡大を実画像で目視確認。折曲板の断面と固定位置は視認できる。やや新品寄りで、ボルト頭の造形は単純。塗装傷みと錆の分布も薄く、**現時点では美術品質未承認**。
+- 新規自作PNGテクスチャ2枚あり。正式素材フォルダとゲーム本体は未変更。ClamAVのV1固有実スキャンは未実行（Dockerにバンドルされていることと実検査は別）、Three.js動作/FPSも未測定。
+- 次のV2は端部の塗膜剥離や固定部の凹凸、色の局所的な傷みを重点的に改善し、近景のゲームスクリーンショットで判断する。
