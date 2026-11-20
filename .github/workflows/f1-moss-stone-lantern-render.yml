@@ -1,0 +1,75 @@
+name: F1 Moss Stone Lantern Blender 5.3 Render
+on:
+  push:
+    branches:
+      - feature/f1-lantern-render-20261120
+    paths:
+      - '.github/workflows/f1-moss-stone-lantern-render.yml'
+      - 'tools/f1-sacred-forest/common.py'
+      - 'tools/f1-sacred-forest/assets/build_moss_stone_lantern.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify Blender version
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Update ClamAV
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan source before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/f1-sacred-forest qa/security/f1-source.log
+      - name: Generate GLB and four real PNG views
+        env:
+          F1_RENDER_RES: '768'
+          F1_RENDER_SAMPLES: '32'
+          F1_RENDER_THREADS: '4'
+          F1_RENDER_VIEWS: front,side,angle,top
+        run: |
+          mkdir -p /tmp/blender-home
+          HOME=/tmp/blender-home blender -b -t 4 --python tools/f1-sacred-forest/assets/build_moss_stone_lantern.py
+      - name: Validate outputs and capture hashes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          p=Path('assets/3d/dungeons/b1_sacred_forest_candidates')
+          metrics=list((p/'metrics').glob('*lantern*.json'))
+          assert len(metrics)==1,metrics
+          data=json.loads(metrics[0].read_text())
+          assert data['approvalStatus']=='pending_visual_review'
+          glb=p/data['file']
+          assert glb.read_bytes()[:4]==b'glTF'
+          assert set(data['renders'])=={'renders/'+data['id']+'/'+v+'.png' for v in ('front','side','angle','top')}
+          files=[glb,p/data['source']]+[p/x for x in data['renders']]
+          for f in files:
+              assert f.is_file() and f.stat().st_size>100
+              if f.suffix=='.png':assert f.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          (p/'render_sha256.json').write_text(json.dumps({str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in files},indent=2))
+          print('Verified real GLB, blend, 4 PNG; NOT_APPROVED')
+          PY
+      - name: Scan output files
+        if: always()
+        run: |
+          if [ -d assets/3d/dungeons/b1_sacred_forest_candidates ]; then
+            bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b1_sacred_forest_candidates qa/security/f1-output.log
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f1-moss-stone-lantern-review
+          path: |
+            assets/3d/dungeons/b1_sacred_forest_candidates/
+            qa/security/
+          retention-days: 14
