@@ -18,7 +18,7 @@ def smooth(u):
 def lerp(a,b,t):return a+(b-a)*t
 # Explicit author-drawn silhouette sections: (height, half-width, front-depth, rear-depth)
 # Normalized original head; regions are chin, lower jaw, cheekbone, temple, forehead, crown.
-sections=[(.03,.027,.022,.030),(.10,.040,.038,.044),(.19,.060,.057,.061),(.30,.082,.069,.084),(.40,.100,.079,.100),(.50,.109,.077,.109),(.59,.111,.079,.114),(.70,.110,.075,.116),(.80,.100,.071,.107),(.89,.083,.064,.089),(.96,.049,.043,.055),(.995,.012,.014,.016),(1.,.0002,.0002,.0002)]
+sections=[(.03,.037,.027,.033),(.10,.052,.043,.047),(.19,.060,.057,.061),(.30,.082,.069,.084),(.40,.100,.079,.100),(.50,.109,.077,.109),(.59,.111,.079,.114),(.70,.110,.075,.116),(.80,.100,.071,.107),(.89,.083,.064,.089),(.96,.049,.043,.055),(.995,.027,.024,.026),(1.,.0002,.0002,.0002)]
 def section(t):
  for i in range(len(sections)-1):
   if t<=sections[i+1][0]:break
@@ -106,6 +106,13 @@ def curve(name,points,r,material):
   p.co=co;p.handle_left_type='AUTO';p.handle_right_type='AUTO'
  o=bpy.data.objects.new(name,c);bpy.context.collection.objects.link(o);o.data.materials.append(material)
 curve('mouth neutral draft',[(-.030,.070,.292),(0,.079,.290),(.030,.070,.292)],.0007,lip)
+# V18.1 actual-view correction: V18 was visibly far too narrow in all views.
+# Re-proportion the independently authored geometry in head-local XY; do not
+# change Z/height or import any reference mesh. All objects are ours.
+for shape in tuple(bpy.context.scene.objects):
+ if shape.type in ('MESH','CURVE'):
+  shape.scale.x *= 2.36
+  shape.scale.y *= 2.15
 # Scene and 10 actual view exports.
 sc=bpy.context.scene
 engines={x.identifier for x in bpy.types.RenderSettings.bl_rna.properties['engine'].enum_items}
@@ -139,7 +146,7 @@ edges=collections.Counter()
 for face in me.polygons:
  seq=list(face.vertices)
  for a,b in zip(seq,seq[1:]+seq[:1]):edges[tuple(sorted((a,b)))]+=1
-qa={'approval':'NOT_APPROVED','copied_source_vertices':0,'reference_mesh_loaded':False,'head_vertices':len(me.vertices),'head_quads':R*S,'head_lower_open_edges':sum(x==1 for x in edges.values()),'head_nonmanifold_gt2':sum(x>2 for x in edges.values()),'views':len(views)+2,'known_incomplete':['ear skull weld','real eyelid topology','mouth topology','hair','texture'],'method':'original independent manually specified profile sections and bounded semantic facial planes'}
+qa={'approval':'NOT_APPROVED','copied_source_vertices':0,'reference_mesh_loaded':False,'head_vertices':len(me.vertices),'head_quads':R*S,'head_lower_open_edges':sum(x==1 for x in edges.values()),'head_nonmanifold_gt2':sum(x>2 for x in edges.values()),'views':len(views)+2,'known_incomplete':['ear skull weld','real eyelid topology','mouth topology','hair','texture'],'method':'original authored profile sections, semantic facial planes, corrected XY silhouette ratio V18.1'}
 assert qa['head_lower_open_edges']==S and qa['head_nonmanifold_gt2']==0
 with open(os.path.join(out,'qa.json'),'w') as h:json.dump(qa,h,indent=2)
 files={}
