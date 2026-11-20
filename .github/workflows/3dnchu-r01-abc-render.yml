@@ -30,6 +30,8 @@ jobs:
         run: bash tools/security/clamav_scan_gate.sh update qa/security
       - name: Scan source before Blender execution
         run: bash tools/security/clamav_scan_gate.sh scan tools/tech-research/tech01_stylized_abc.py qa/security/source.log
+      - name: Validate Blender Python script syntax
+        run: python3 -m py_compile tools/tech-research/tech01_stylized_abc.py
       - name: Render R01 before and after in Blender 5.3
         env:
           OUTPUT_DIR: ${{ github.workspace }}/outputs/tech01_abc
