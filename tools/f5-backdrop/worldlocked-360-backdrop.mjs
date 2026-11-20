@@ -19,9 +19,9 @@ export function createFloor5Backdrop(THREE, options = {}) {
     side: THREE.BackSide,
     depthWrite: false,
     uniforms: {
-      topColor: { value: new THREE.Color('#090516') },
-      horizonColor: { value: new THREE.Color('#35223f') },
-      bottomColor: { value: new THREE.Color('#090711') }
+      topColor: { value: new THREE.Color('#17102a') },
+      horizonColor: { value: new THREE.Color('#644475') },
+      bottomColor: { value: new THREE.Color('#21172e') }
     },
     vertexShader: `varying vec3 vWorldDir;
       void main() {
@@ -47,8 +47,8 @@ export function createFloor5Backdrop(THREE, options = {}) {
   const buildings = new THREE.Group();
   buildings.name = 'F5_WORLD_FIXED_BUILDINGS';
   root.add(buildings);
-  const material = new THREE.MeshStandardMaterial({ color: 0x17121e, roughness: 0.94, metalness: 0.06 });
-  const highlight = new THREE.MeshBasicMaterial({ color: 0x5d3d75 });
+  const material = new THREE.MeshStandardMaterial({ color: 0x44354d, roughness: 0.94, metalness: 0.06 });
+  const highlight = new THREE.MeshBasicMaterial({ color: 0xb783d0 });
   const meshes = [];
   const geo = new THREE.BoxGeometry(1, 1, 1);
   // Far ring: full 360 degrees; deterministic varied silhouettes.
