@@ -1,6 +1,6 @@
 {
   "asset": "b4p_charred_stump",
-  "version": "v2",
+  "version": "v3",
   "blender": "4.2.3 LTS",
   "triangles": 4918,
   "budget_triangles": 5000,
@@ -25,7 +25,7 @@
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_charred_stump.glb",
-  "glb_bytes": 1088756,
+  "glb_bytes": 1088416,
   "cc0_textures": {
     "wood_planks_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/wood_planks",
@@ -44,16 +44,16 @@
     58
   ],
   "sha256": {
-    "b4p_charred_stump.glb": "15add42d834e95d2696d4de76a4cc6830a8895d07d33ed216d9183625481f409",
-    "b4p_charred_stump_volcanic_front.png": "7c2e241d2d2c8e3fb90c33ec5074c8efc5260df5798b374c49ee26ab6cb23d1b",
-    "b4p_charred_stump_volcanic_side.png": "004fa4fa11b9160b13dbabb052fa279588f11b6981e5e6317675475efbddd5e8",
-    "b4p_charred_stump_volcanic_angle.png": "5ccd2653bc3d5e4c2d9e3dba536005f74b05b5d757ae13377c1d7db668bd41a0",
-    "b4p_charred_stump_volcanic_top.png": "c625814f8a2acf17bf1fe0a7a529b8a0d3d5c35581fa74a7068c90a73b44ced3",
-    "b4p_charred_stump_volcanic_close.png": "7688ba093eb949d1b670e046640971f4aa505c9afcff4c279be9c519b820f634",
-    "b4p_charred_stump_volcanic_back.png": "d605d872140bdab04c9abb6200fed2d611afba0218ff3593c2efb64564eff316",
-    "b4p_charred_stump_studio_front.png": "54a4ec861ba2f4691fb131fb1888a26e6bb86d1dc7d06f73e280171281dfab9f",
-    "b4p_charred_stump_studio_angle.png": "5d81081bd58d3bf74fc31df1a10b726114ad1ee85939f77b888b67a0d3eda845",
-    "b4p_charred_stump_studio_scale.png": "750246a89721eb808f1e2fe5a626efe602830be15e1f754e0d2c3e57718750ec"
+    "b4p_charred_stump.glb": "51f61ef0155170a21d751b9259b753178a4aa3c2ef94adf990ccefec23ee9a46",
+    "b4p_charred_stump_volcanic_front.png": "d090d3df727b397d61abd015c3cd296f099e4efc5bfa5c712bd86c7915a2655e",
+    "b4p_charred_stump_volcanic_side.png": "08dec18640b3d4c8c8ab711accb913d1e0f67f3a0b0c11c290a80abd675a9d7c",
+    "b4p_charred_stump_volcanic_angle.png": "4e28e7ff1a181b58219083daf940fa58a110f0d8325fec5051dfffa9a970e51d",
+    "b4p_charred_stump_volcanic_top.png": "509aed9d8d31160fd084d60e5f23258f0c1d22128106b196a2e08caf44b27336",
+    "b4p_charred_stump_volcanic_close.png": "e40aabb8a2df31047fcdd43c9218d8ab19947f4d980854c4e18873834fa75046",
+    "b4p_charred_stump_volcanic_back.png": "c5c849b51d5575cb41f99bb05184dd48be0640d09c7d8fa85c4c21adc015f819",
+    "b4p_charred_stump_studio_front.png": "bb91aaf35b762c13b1218d2d9cd91913edb2f33fb645727d05ec33c208eb34a1",
+    "b4p_charred_stump_studio_angle.png": "c660858422e17f1d957cf2b45f0e0da67c840c4848e340f38b9838281b6c23ef",
+    "b4p_charred_stump_studio_scale.png": "5cf5f4ebfc658dca2422e37fbc457a0f2bd73e17115b90bd09546316c78f48ea"
   },
   "renders": [
     "b4p_charred_stump_volcanic_front.png",
@@ -75,7 +75,7 @@
         -0.07840827107429504,
         0.3799999952316284
       ],
-      "watts": 3.5,
+      "watts": 2.0,
       "color": [
         1.0,
         0.3,

@@ -3,29 +3,29 @@
 [b4-props] recenter offset=(-0.0146, -0.0316, 0.0) size=(0.914, 0.875, 1.196)
 [b4-props] b4p_charred_stump: tris=4918 materials=2
 Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)
-Fra:1 Mem:71.76M (Peak 344.29M) | Time:498672:01:05.35 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
-Fra:1 Mem:72.11M (Peak 344.29M) | Time:498672:01:05.35 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:72.11M (Peak 344.29M) | Time:498672:01:05.35 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_basecolor
-Fra:1 Mem:75.95M (Peak 344.29M) | Time:498672:01:14.95 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
-Fra:1 Mem:76.11M (Peak 344.29M) | Time:498672:01:14.95 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:76.11M (Peak 344.29M) | Time:498672:01:14.95 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_roughness
-Fra:1 Mem:79.95M (Peak 344.29M) | Time:498672:01:17.12 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
-Fra:1 Mem:80.11M (Peak 344.29M) | Time:498672:01:17.12 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:80.10M (Peak 344.29M) | Time:498672:01:17.12 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_metallic
-Fra:1 Mem:84.00M (Peak 344.29M) | Time:498672:01:17.45 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
-Fra:1 Mem:84.22M (Peak 344.29M) | Time:498672:01:17.45 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:84.22M (Peak 344.29M) | Time:498672:01:17.46 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_emissive
-Fra:1 Mem:88.05M (Peak 344.29M) | Time:498672:01:20.46 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
-Fra:1 Mem:88.59M (Peak 344.29M) | Time:498672:01:20.47 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:88.59M (Peak 344.29M) | Time:498672:01:20.47 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_normal
-Fra:1 Mem:92.06M (Peak 344.29M) | Time:498672:01:26.21 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
-Fra:1 Mem:92.60M (Peak 344.29M) | Time:498672:01:26.21 | Mem:0.00M, Peak:0.00M | Scene | Initializing
-Fra:1 Mem:92.60M (Peak 344.29M) | Time:498672:01:26.21 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_ao
-00:02:34 | INFO: Starting glTF 2.0 export
-00:02:34 | INFO: Extracting primitive: b4p_charred_stump
-00:02:34 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
-00:02:34 | INFO: Primitives created: 1
-00:02:34 | INFO: Finished glTF 2.0 export in 0.11419343948364258 s
+Fra:1 Mem:71.76M (Peak 344.29M) | Time:498672:12:39.61 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
+Fra:1 Mem:72.11M (Peak 344.29M) | Time:498672:12:39.61 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:72.11M (Peak 344.29M) | Time:498672:12:39.61 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_basecolor
+Fra:1 Mem:75.95M (Peak 344.29M) | Time:498672:12:51.77 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
+Fra:1 Mem:76.11M (Peak 344.29M) | Time:498672:12:51.77 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:76.11M (Peak 344.29M) | Time:498672:12:51.77 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_roughness
+Fra:1 Mem:79.95M (Peak 344.29M) | Time:498672:12:54.40 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
+Fra:1 Mem:80.11M (Peak 344.29M) | Time:498672:12:54.40 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:80.10M (Peak 344.29M) | Time:498672:12:54.40 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_metallic
+Fra:1 Mem:84.00M (Peak 344.29M) | Time:498672:12:54.80 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
+Fra:1 Mem:84.22M (Peak 344.29M) | Time:498672:12:54.80 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:84.22M (Peak 344.29M) | Time:498672:12:54.80 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_emissive
+Fra:1 Mem:88.05M (Peak 344.29M) | Time:498672:12:58.21 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
+Fra:1 Mem:88.59M (Peak 344.29M) | Time:498672:12:58.21 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:88.59M (Peak 344.29M) | Time:498672:12:58.21 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_normal
+Fra:1 Mem:92.06M (Peak 344.29M) | Time:498672:13:04.97 | Mem:0.00M, Peak:0.00M | Scene | Synchronizing object | b4p_charred_stump
+Fra:1 Mem:92.60M (Peak 344.29M) | Time:498672:13:04.98 | Mem:0.00M, Peak:0.00M | Scene | Initializing
+Fra:1 Mem:92.60M (Peak 344.29M) | Time:498672:13:04.98 | Mem:0.00M, Peak:0.00M | Scene | Updating Images | Loading b4p_charred_stump_ao
+00:14:25 | INFO: Starting glTF 2.0 export
+00:14:25 | INFO: Extracting primitive: b4p_charred_stump
+00:14:25 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+00:14:25 | INFO: Primitives created: 1
+00:14:25 | INFO: Finished glTF 2.0 export in 0.1267228126525879 s
 Info: Total files 6 | Changed 6 | Failed 0
 Info: Baking map saved to internal image, save it externally or pack it
 Info: Baking map saved to internal image, save it externally or pack it
@@ -66,12 +66,11 @@ Fra:1 Mem:27.45M (Peak 42.12M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, 
 Fra:1 Mem:27.45M (Peak 42.12M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.45M (Peak 42.12M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:27.45M (Peak 42.12M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_emissive.png
-Fra:1 Mem:31.45M (Peak 42.12M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_basecolor.png
 Fra:1 Mem:31.45M (Peak 42.12M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
-Fra:1 Mem:43.46M (Peak 43.46M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.46M (Peak 43.46M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.46M (Peak 43.46M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.46M (Peak 43.46M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:43.46M (Peak 43.46M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.46M (Peak 43.46M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.46M (Peak 43.46M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.46M (Peak 43.46M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
 Fra:1 Mem:44.38M (Peak 44.98M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Integrator
 Fra:1 Mem:44.38M (Peak 44.98M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Film
 Fra:1 Mem:44.38M (Peak 44.98M) | Time:00:00.04 | Mem:17.80M, Peak:17.88M | Scene, ViewLayer | Updating Lookup Tables
@@ -79,17 +78,17 @@ Fra:1 Mem:44.38M (Peak 44.98M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene
 Fra:1 Mem:44.38M (Peak 44.98M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:44.38M (Peak 44.98M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:44.38M (Peak 44.98M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:120.40M (Peak 120.40M) | Time:00:00.55 | Remaining:00:48.31 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:120.40M (Peak 120.40M) | Time:00:33.20 | Remaining:00:15.81 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:120.40M (Peak 120.40M) | Time:00:41.05 | Remaining:00:08.20 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:152.40M (Peak 200.41M) | Time:00:49.23 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:152.40M (Peak 200.41M) | Time:00:49.23 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
+Fra:1 Mem:120.40M (Peak 120.40M) | Time:00:00.61 | Remaining:00:53.60 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:120.40M (Peak 120.40M) | Time:00:36.06 | Remaining:00:17.17 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:120.40M (Peak 120.40M) | Time:00:44.42 | Remaining:00:08.87 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:152.40M (Peak 200.41M) | Time:00:53.87 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:152.40M (Peak 200.41M) | Time:00:53.87 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_charred_stump/b4p_charred_stump_volcanic_front.png'
-Time: 00:49.43 (Saving: 00:00.20)
+Time: 00:54.10 (Saving: 00:00.22)
 
 [b4-props] render b4p_charred_stump_volcanic_side.png
 Fra:1 Mem:26.59M (Peak 26.59M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_charred_stump
-Fra:1 Mem:26.59M (Peak 26.59M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
+Fra:1 Mem:26.60M (Peak 26.60M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | _ground
 Fra:1 Mem:27.18M (Peak 27.18M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
 Fra:1 Mem:26.82M (Peak 27.18M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
 Fra:1 Mem:26.83M (Peak 27.18M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
@@ -129,13 +128,13 @@ Fra:1 Mem:44.46M (Peak 45.06M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene
 Fra:1 Mem:44.46M (Peak 45.06M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:44.46M (Peak 45.06M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:44.46M (Peak 45.06M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:120.48M (Peak 120.48M) | Time:00:00.56 | Remaining:00:49.66 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:120.48M (Peak 120.48M) | Time:00:32.80 | Remaining:00:15.62 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:120.48M (Peak 120.48M) | Time:00:40.50 | Remaining:00:08.09 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:152.48M (Peak 200.48M) | Time:00:48.83 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:152.48M (Peak 200.48M) | Time:00:48.83 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
+Fra:1 Mem:120.48M (Peak 120.48M) | Time:00:00.59 | Remaining:00:51.60 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:120.48M (Peak 120.48M) | Time:00:34.80 | Remaining:00:16.57 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:120.48M (Peak 120.48M) | Time:00:42.87 | Remaining:00:08.56 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:152.48M (Peak 200.48M) | Time:00:52.54 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:152.48M (Peak 200.48M) | Time:00:52.54 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_charred_stump/b4p_charred_stump_volcanic_side.png'
-Time: 00:48.99 (Saving: 00:00.15)
+Time: 00:52.69 (Saving: 00:00.14)
 
 [b4-props] render b4p_charred_stump_volcanic_angle.png
 Fra:1 Mem:26.67M (Peak 26.67M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_charred_stump
@@ -166,27 +165,28 @@ Fra:1 Mem:27.60M (Peak 27.60M) | Time:00:00.00 | Mem:0.71M, Peak:0.86M | Scene, 
 Fra:1 Mem:27.60M (Peak 27.60M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:27.60M (Peak 27.60M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.60M (Peak 27.60M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:27.60M (Peak 27.60M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_orm.png
-Fra:1 Mem:27.60M (Peak 27.60M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
-Fra:1 Mem:43.61M (Peak 43.61M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.61M (Peak 43.61M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.61M (Peak 43.61M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.61M (Peak 43.61M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:44.53M (Peak 45.13M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:44.53M (Peak 45.13M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.04 | Mem:17.80M, Peak:17.88M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:120.55M (Peak 120.55M) | Time:00:00.78 | Remaining:01:10.94 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:120.55M (Peak 120.55M) | Time:00:24.09 | Remaining:00:45.92 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:120.55M (Peak 120.55M) | Time:00:47.21 | Remaining:00:22.49 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:120.55M (Peak 120.55M) | Time:00:58.09 | Remaining:00:11.61 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:152.55M (Peak 200.56M) | Time:01:06.78 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:152.55M (Peak 200.56M) | Time:01:06.78 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
+Fra:1 Mem:27.60M (Peak 27.60M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_emissive.png
+Fra:1 Mem:31.60M (Peak 31.60M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_orm.png
+Fra:1 Mem:35.60M (Peak 35.60M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
+Fra:1 Mem:43.61M (Peak 43.61M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.61M (Peak 43.61M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.61M (Peak 43.61M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.61M (Peak 43.61M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:44.53M (Peak 45.13M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:44.53M (Peak 45.13M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.05 | Mem:17.80M, Peak:17.88M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:44.54M (Peak 45.13M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:120.55M (Peak 120.55M) | Time:00:00.82 | Remaining:01:13.18 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:120.55M (Peak 120.55M) | Time:00:25.14 | Remaining:00:47.90 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:120.55M (Peak 120.55M) | Time:00:49.38 | Remaining:00:23.52 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:120.55M (Peak 120.55M) | Time:01:00.78 | Remaining:00:12.14 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:152.55M (Peak 200.56M) | Time:01:10.68 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:152.55M (Peak 200.56M) | Time:01:10.68 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_charred_stump/b4p_charred_stump_volcanic_angle.png'
-Time: 01:06.94 (Saving: 00:00.15)
+Time: 01:10.83 (Saving: 00:00.15)
 
 [b4-props] render b4p_charred_stump_volcanic_top.png
 Fra:1 Mem:26.74M (Peak 26.74M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_charred_stump
@@ -219,25 +219,25 @@ Fra:1 Mem:27.67M (Peak 27.67M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, 
 Fra:1 Mem:27.67M (Peak 27.67M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:27.67M (Peak 27.67M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_emissive.png
 Fra:1 Mem:31.67M (Peak 31.67M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
-Fra:1 Mem:43.68M (Peak 43.68M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.68M (Peak 43.68M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.68M (Peak 43.68M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.68M (Peak 43.68M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.04 | Mem:17.80M, Peak:17.88M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:120.62M (Peak 120.62M) | Time:00:00.96 | Remaining:01:27.48 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:120.62M (Peak 120.62M) | Time:00:28.83 | Remaining:00:54.96 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:120.62M (Peak 120.62M) | Time:00:56.17 | Remaining:00:26.77 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:120.62M (Peak 120.62M) | Time:01:08.94 | Remaining:00:13.78 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:152.63M (Peak 200.63M) | Time:01:18.48 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:152.63M (Peak 200.63M) | Time:01:18.48 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
+Fra:1 Mem:43.68M (Peak 43.68M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.68M (Peak 43.68M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.68M (Peak 43.68M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.68M (Peak 43.68M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.05 | Mem:17.80M, Peak:17.88M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:44.61M (Peak 45.21M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/96
+Fra:1 Mem:120.62M (Peak 120.62M) | Time:00:00.96 | Remaining:01:26.80 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:120.62M (Peak 120.62M) | Time:00:29.80 | Remaining:00:56.80 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:120.62M (Peak 120.62M) | Time:00:58.82 | Remaining:00:28.03 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:120.62M (Peak 120.62M) | Time:01:12.53 | Remaining:00:14.49 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:152.63M (Peak 200.63M) | Time:01:23.55 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:152.63M (Peak 200.63M) | Time:01:23.55 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_charred_stump/b4p_charred_stump_volcanic_top.png'
-Time: 01:18.63 (Saving: 00:00.15)
+Time: 01:23.70 (Saving: 00:00.15)
 
 [b4-props] render b4p_charred_stump_volcanic_close.png
 Fra:1 Mem:26.82M (Peak 26.82M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_charred_stump
@@ -268,12 +268,12 @@ Fra:1 Mem:27.75M (Peak 27.75M) | Time:00:00.00 | Mem:0.71M, Peak:0.86M | Scene, 
 Fra:1 Mem:27.75M (Peak 27.75M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:27.75M (Peak 27.75M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.75M (Peak 27.75M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:27.75M (Peak 27.75M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_basecolor.png
-Fra:1 Mem:27.75M (Peak 27.75M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
-Fra:1 Mem:43.76M (Peak 43.76M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.76M (Peak 43.76M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.76M (Peak 43.76M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.76M (Peak 43.76M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:27.75M (Peak 27.75M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_emissive.png
+Fra:1 Mem:31.75M (Peak 31.75M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_orm.png
+Fra:1 Mem:43.76M (Peak 43.76M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.76M (Peak 43.76M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.76M (Peak 43.76M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.76M (Peak 43.76M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
 Fra:1 Mem:44.68M (Peak 45.28M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Integrator
 Fra:1 Mem:44.68M (Peak 45.28M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Film
 Fra:1 Mem:44.69M (Peak 45.28M) | Time:00:00.04 | Mem:17.80M, Peak:17.88M | Scene, ViewLayer | Updating Lookup Tables
@@ -281,14 +281,14 @@ Fra:1 Mem:44.69M (Peak 45.28M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene
 Fra:1 Mem:44.69M (Peak 45.28M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:44.69M (Peak 45.28M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:44.69M (Peak 45.28M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:120.70M (Peak 120.70M) | Time:00:00.79 | Remaining:01:11.52 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:120.70M (Peak 120.70M) | Time:00:25.00 | Remaining:00:47.65 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 33/96
-Fra:1 Mem:120.70M (Peak 120.70M) | Time:00:48.91 | Remaining:00:23.30 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:120.70M (Peak 120.70M) | Time:01:00.46 | Remaining:00:12.08 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:152.70M (Peak 200.71M) | Time:01:09.33 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:152.70M (Peak 200.71M) | Time:01:09.33 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
+Fra:1 Mem:120.70M (Peak 120.70M) | Time:00:00.87 | Remaining:01:18.61 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:120.70M (Peak 120.70M) | Time:00:27.00 | Remaining:00:51.46 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 33/96
+Fra:1 Mem:120.70M (Peak 120.70M) | Time:00:52.94 | Remaining:00:25.22 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:120.70M (Peak 120.70M) | Time:01:05.16 | Remaining:00:13.02 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:152.70M (Peak 200.71M) | Time:01:15.60 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:152.70M (Peak 200.71M) | Time:01:15.60 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_charred_stump/b4p_charred_stump_volcanic_close.png'
-Time: 01:09.48 (Saving: 00:00.15)
+Time: 01:15.76 (Saving: 00:00.15)
 
 [b4-props] render b4p_charred_stump_volcanic_back.png
 Fra:1 Mem:26.89M (Peak 26.89M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_charred_stump
@@ -319,13 +319,13 @@ Fra:1 Mem:27.82M (Peak 27.82M) | Time:00:00.00 | Mem:0.71M, Peak:0.86M | Scene, 
 Fra:1 Mem:27.82M (Peak 27.82M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Objects Flags
 Fra:1 Mem:27.82M (Peak 27.82M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.82M (Peak 27.82M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images
-Fra:1 Mem:27.82M (Peak 27.82M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_emissive.png
-Fra:1 Mem:31.82M (Peak 31.82M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_basecolor.png
-Fra:1 Mem:35.82M (Peak 35.82M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
-Fra:1 Mem:43.83M (Peak 43.83M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.83M (Peak 43.83M) | Time:00:00.02 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.83M (Peak 43.83M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.83M (Peak 43.83M) | Time:00:00.02 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:27.82M (Peak 27.82M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_basecolor.png
+Fra:1 Mem:31.82M (Peak 31.82M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_orm.png
+Fra:1 Mem:31.82M (Peak 31.82M) | Time:00:00.00 | Mem:0.88M, Peak:0.88M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
+Fra:1 Mem:43.83M (Peak 43.83M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.83M (Peak 43.83M) | Time:00:00.03 | Mem:16.88M, Peak:16.88M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.83M (Peak 43.83M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.83M (Peak 43.83M) | Time:00:00.03 | Mem:16.96M, Peak:16.96M | Scene, ViewLayer | Updating Lights | Computing tree
 Fra:1 Mem:44.76M (Peak 45.36M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Integrator
 Fra:1 Mem:44.76M (Peak 45.36M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Film
 Fra:1 Mem:44.76M (Peak 45.36M) | Time:00:00.04 | Mem:17.80M, Peak:17.88M | Scene, ViewLayer | Updating Lookup Tables
@@ -333,13 +333,13 @@ Fra:1 Mem:44.76M (Peak 45.36M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene
 Fra:1 Mem:44.76M (Peak 45.36M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:44.76M (Peak 45.36M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:44.76M (Peak 45.36M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/96
-Fra:1 Mem:120.77M (Peak 120.77M) | Time:00:00.60 | Remaining:00:53.75 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
-Fra:1 Mem:120.77M (Peak 120.77M) | Time:00:36.44 | Remaining:00:17.35 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
-Fra:1 Mem:120.77M (Peak 120.77M) | Time:00:44.81 | Remaining:00:08.95 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
-Fra:1 Mem:152.78M (Peak 200.78M) | Time:00:53.45 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
-Fra:1 Mem:152.78M (Peak 200.78M) | Time:00:53.45 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
+Fra:1 Mem:120.77M (Peak 120.77M) | Time:00:00.64 | Remaining:00:56.18 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/96
+Fra:1 Mem:120.77M (Peak 120.77M) | Time:00:38.06 | Remaining:00:18.13 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 65/96
+Fra:1 Mem:120.77M (Peak 120.77M) | Time:00:46.94 | Remaining:00:09.37 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 80/96
+Fra:1 Mem:152.78M (Peak 200.78M) | Time:00:56.84 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 96/96
+Fra:1 Mem:152.78M (Peak 200.78M) | Time:00:56.84 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_charred_stump/b4p_charred_stump_volcanic_back.png'
-Time: 00:53.60 (Saving: 00:00.14)
+Time: 00:56.99 (Saving: 00:00.15)
 
 [b4-props] render b4p_charred_stump_studio_front.png
 Fra:1 Mem:26.87M (Peak 26.87M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_charred_stump
@@ -371,11 +371,11 @@ Fra:1 Mem:27.83M (Peak 27.83M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, 
 Fra:1 Mem:27.83M (Peak 27.83M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.83M (Peak 27.83M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:27.83M (Peak 27.83M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_emissive.png
-Fra:1 Mem:31.83M (Peak 31.83M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_orm.png
-Fra:1 Mem:43.85M (Peak 43.85M) | Time:00:00.02 | Mem:16.87M, Peak:16.87M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.85M (Peak 43.85M) | Time:00:00.02 | Mem:16.87M, Peak:16.87M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.85M (Peak 43.85M) | Time:00:00.02 | Mem:16.95M, Peak:16.95M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.85M (Peak 43.85M) | Time:00:00.02 | Mem:16.95M, Peak:16.95M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:31.83M (Peak 31.83M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
+Fra:1 Mem:43.85M (Peak 43.85M) | Time:00:00.03 | Mem:16.87M, Peak:16.87M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.85M (Peak 43.85M) | Time:00:00.03 | Mem:16.87M, Peak:16.87M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.85M (Peak 43.85M) | Time:00:00.03 | Mem:16.95M, Peak:16.95M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.85M (Peak 43.85M) | Time:00:00.03 | Mem:16.95M, Peak:16.95M | Scene, ViewLayer | Updating Lights | Computing tree
 Fra:1 Mem:44.77M (Peak 45.37M) | Time:00:00.04 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Integrator
 Fra:1 Mem:44.77M (Peak 45.37M) | Time:00:00.04 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Film
 Fra:1 Mem:44.77M (Peak 45.37M) | Time:00:00.04 | Mem:17.79M, Peak:17.87M | Scene, ViewLayer | Updating Lookup Tables
@@ -383,11 +383,11 @@ Fra:1 Mem:44.77M (Peak 45.37M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene
 Fra:1 Mem:44.77M (Peak 45.37M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
 Fra:1 Mem:44.77M (Peak 45.37M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
 Fra:1 Mem:44.77M (Peak 45.37M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:120.79M (Peak 120.79M) | Time:00:00.44 | Remaining:00:18.81 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:152.79M (Peak 200.79M) | Time:00:23.57 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:152.79M (Peak 200.79M) | Time:00:23.57 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
+Fra:1 Mem:120.79M (Peak 120.79M) | Time:00:00.48 | Remaining:00:20.28 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:152.79M (Peak 200.79M) | Time:00:25.60 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:152.79M (Peak 200.79M) | Time:00:25.60 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_charred_stump/b4p_charred_stump_studio_front.png'
-Time: 00:23.72 (Saving: 00:00.14)
+Time: 00:25.76 (Saving: 00:00.15)
 
 [b4-props] render b4p_charred_stump_studio_angle.png
 Fra:1 Mem:26.93M (Peak 26.93M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_charred_stump
@@ -419,24 +419,23 @@ Fra:1 Mem:27.89M (Peak 27.89M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, 
 Fra:1 Mem:27.89M (Peak 27.89M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:27.89M (Peak 27.89M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:27.89M (Peak 27.89M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_emissive.png
-Fra:1 Mem:27.89M (Peak 27.89M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_orm.png
 Fra:1 Mem:31.89M (Peak 31.89M) | Time:00:00.00 | Mem:0.87M, Peak:0.87M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
-Fra:1 Mem:43.90M (Peak 43.90M) | Time:00:00.02 | Mem:16.87M, Peak:16.87M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:43.90M (Peak 43.90M) | Time:00:00.02 | Mem:16.87M, Peak:16.87M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:43.90M (Peak 43.90M) | Time:00:00.02 | Mem:16.95M, Peak:16.95M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:43.90M (Peak 43.90M) | Time:00:00.02 | Mem:16.95M, Peak:16.95M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:44.82M (Peak 45.42M) | Time:00:00.04 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:44.82M (Peak 45.42M) | Time:00:00.04 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.04 | Mem:17.79M, Peak:17.87M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.04 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:120.84M (Peak 120.84M) | Time:00:00.59 | Remaining:00:25.79 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:152.84M (Peak 200.85M) | Time:00:29.38 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:152.84M (Peak 200.85M) | Time:00:29.38 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
+Fra:1 Mem:43.90M (Peak 43.90M) | Time:00:00.03 | Mem:16.87M, Peak:16.87M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:43.90M (Peak 43.90M) | Time:00:00.03 | Mem:16.87M, Peak:16.87M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:43.90M (Peak 43.90M) | Time:00:00.03 | Mem:16.95M, Peak:16.95M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:43.90M (Peak 43.90M) | Time:00:00.03 | Mem:16.95M, Peak:16.95M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:44.82M (Peak 45.42M) | Time:00:00.05 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:44.82M (Peak 45.42M) | Time:00:00.05 | Mem:17.87M, Peak:17.87M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.05 | Mem:17.79M, Peak:17.87M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:44.83M (Peak 45.42M) | Time:00:00.05 | Mem:17.88M, Peak:17.88M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:120.84M (Peak 120.84M) | Time:00:00.62 | Remaining:00:26.99 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:152.84M (Peak 200.85M) | Time:00:32.45 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:152.84M (Peak 200.85M) | Time:00:32.45 | Mem:93.89M, Peak:93.89M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_charred_stump/b4p_charred_stump_studio_angle.png'
-Time: 00:29.53 (Saving: 00:00.15)
+Time: 00:32.61 (Saving: 00:00.15)
 
 [b4-props] render b4p_charred_stump_studio_scale.png
 Fra:1 Mem:27.30M (Peak 27.30M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | b4p_charred_stump
@@ -469,24 +468,25 @@ Fra:1 Mem:28.31M (Peak 28.31M) | Time:00:00.00 | Mem:0.99M, Peak:0.99M | Scene, 
 Fra:1 Mem:28.31M (Peak 28.31M) | Time:00:00.00 | Mem:0.99M, Peak:0.99M | Scene, ViewLayer | Updating Primitive Offsets
 Fra:1 Mem:28.31M (Peak 28.31M) | Time:00:00.00 | Mem:0.99M, Peak:0.99M | Scene, ViewLayer | Updating Images
 Fra:1 Mem:28.31M (Peak 28.31M) | Time:00:00.00 | Mem:0.99M, Peak:0.99M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_emissive.png
-Fra:1 Mem:32.31M (Peak 32.31M) | Time:00:00.00 | Mem:0.99M, Peak:0.99M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_normal.png
-Fra:1 Mem:44.32M (Peak 44.32M) | Time:00:00.02 | Mem:16.99M, Peak:16.99M | Scene, ViewLayer | Updating Camera Volume
-Fra:1 Mem:44.32M (Peak 44.32M) | Time:00:00.02 | Mem:16.99M, Peak:16.99M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:44.32M (Peak 44.32M) | Time:00:00.02 | Mem:17.07M, Peak:17.07M | Scene, ViewLayer | Updating Lights
-Fra:1 Mem:44.32M (Peak 44.32M) | Time:00:00.02 | Mem:17.07M, Peak:17.07M | Scene, ViewLayer | Updating Lights | Computing tree
-Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.04 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Updating Integrator
-Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.04 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Updating Film
-Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.04 | Mem:17.91M, Peak:17.99M | Scene, ViewLayer | Updating Lookup Tables
-Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.04 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Updating Baking
-Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.04 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Updating Device | Writing constant memory
-Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.04 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
-Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.04 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Sample 0/48
-Fra:1 Mem:121.26M (Peak 121.26M) | Time:00:00.43 | Remaining:00:18.44 | Mem:94.01M, Peak:94.01M | Scene, ViewLayer | Sample 1/48
-Fra:1 Mem:153.26M (Peak 201.26M) | Time:00:23.07 | Mem:94.01M, Peak:94.01M | Scene, ViewLayer | Sample 48/48
-Fra:1 Mem:153.26M (Peak 201.26M) | Time:00:23.07 | Mem:94.01M, Peak:94.01M | Scene, ViewLayer | Finished
+Fra:1 Mem:32.31M (Peak 32.31M) | Time:00:00.00 | Mem:0.99M, Peak:0.99M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_basecolor.png
+Fra:1 Mem:36.31M (Peak 36.31M) | Time:00:00.00 | Mem:0.99M, Peak:0.99M | Scene, ViewLayer | Updating Images | Loading b4p_charred_stump_orm.png
+Fra:1 Mem:44.32M (Peak 44.32M) | Time:00:00.03 | Mem:16.99M, Peak:16.99M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:44.32M (Peak 44.32M) | Time:00:00.03 | Mem:16.99M, Peak:16.99M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:44.32M (Peak 44.32M) | Time:00:00.03 | Mem:17.07M, Peak:17.07M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:44.32M (Peak 44.32M) | Time:00:00.03 | Mem:17.07M, Peak:17.07M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.05 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.05 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.05 | Mem:17.91M, Peak:17.99M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.05 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.05 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.05 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:45.24M (Peak 45.84M) | Time:00:00.05 | Mem:17.99M, Peak:17.99M | Scene, ViewLayer | Sample 0/48
+Fra:1 Mem:121.26M (Peak 121.26M) | Time:00:00.48 | Remaining:00:20.62 | Mem:94.01M, Peak:94.01M | Scene, ViewLayer | Sample 1/48
+Fra:1 Mem:153.26M (Peak 201.26M) | Time:00:25.89 | Mem:94.01M, Peak:94.01M | Scene, ViewLayer | Sample 48/48
+Fra:1 Mem:153.26M (Peak 201.26M) | Time:00:25.89 | Mem:94.01M, Peak:94.01M | Scene, ViewLayer | Finished
 Saved: '/home/runner/work/kotama-no-bouken/kotama-no-bouken/render-output/b4-props/b4p_charred_stump/b4p_charred_stump_studio_scale.png'
-Time: 00:23.22 (Saving: 00:00.14)
+Time: 00:26.05 (Saving: 00:00.16)
 
-[b4-props] done b4p_charred_stump: tris=4918 bbox=[0.914, 0.875, 1.196] glb=1088756B
+[b4-props] done b4p_charred_stump: tris=4918 bbox=[0.914, 0.875, 1.196] glb=1088416B
 
 Blender quit
