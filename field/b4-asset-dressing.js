@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { buildTemplePass } from './b4-temple-fx.js?v=20261121-t4';
+import { buildTemplePass } from './b4-temple-fx.js?v=20261122-g2';
 
 const BASE = './assets/models/floor4/props/';
 // Zone themes (user 2026-11-20: cluster things that naturally gather — ore deposits, old mine workings, pickaxes):
@@ -294,7 +294,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   }
   // ---- lava tiles: GPT lava pool V3 (user-approved, LOD by Claude) breaks up the square lava planes ----
   if (lavaSites.length) {
-    const pool = await loadProp('b4lod_lava_pool_v3');
+    const pool = await loadProp('b4lod_lava_pool_v3', { emissive: 0.5, tintRGB: [0.8, 0.7, 0.65] });
     if (pool && !isStale()) {
       const size = pool.box.getSize(new THREE.Vector3()), centre = pool.box.getCenter(new THREE.Vector3());
       const base = 4.6 / Math.max(size.x, size.z);

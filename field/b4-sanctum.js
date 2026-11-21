@@ -16,8 +16,8 @@
  *   ・艶のある黒い床＋魔法陣（半径 5.5 m）、光の筋 2 本、金色の火の粉。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261121-v4';
-import { addUplight } from './b4-chasm.js?v=20261121-c5';
+import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261122-g2';
+import { addUplight } from './b4-chasm.js?v=20261122-g2';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -285,7 +285,7 @@ export function buildSanctum({ root, sanctum, CELL, hash, mats, lights, gLights 
   // 光の筋：龕の上から床の魔法陣へ
   const rayG = new THREE.PlaneGeometry(3.6, 13); rayG.translate(0, -6.5, 0); owned.push(rayG);
   for (const [i, side] of [-1, 1].entries()) {
-    const m = lightShaftMaterial({ seed: 3 + i, intensity: 0.22, color: 0xffa050 }); owned.push(m);
+    const m = lightShaftMaterial({ seed: 3 + i, intensity: 0.12, color: 0xffa050 }); owned.push(m);
     for (const rot of [0, Math.PI / 2]) {
       const ray = new THREE.Mesh(rayG, m); ray.position.set(cx + side * 1.6, 8.1, faceZ - 0.5); ray.rotation.set(-0.62, rot, side * 0.12); ray.renderOrder = 8; ray.name = 'b4:sanctum-ray'; group.add(ray);
     }

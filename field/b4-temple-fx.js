@@ -4,7 +4,7 @@
  * どれも見た目だけ。通行判定・イベントには触れない。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall } from './b4-vfx.js?v=20261121-v4';
+import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall } from './b4-vfx.js?v=20261122-g2';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -182,7 +182,7 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
   const shaftTiles = [];
   for (let ty = 1; ty < map.h - 1; ty++) for (let tx = 1; tx < map.w - 1; tx++) if (walk(tx, ty) && hash(tx, ty, 930) < 0.06) shaftTiles.push([tx, ty]);
   for (const [tx, ty] of shaftTiles.slice(0, 10)) {
-    const mat = lightShaftMaterial({ seed: hash(tx, ty, 931) * 10, intensity: 0.16, color: 0xff6a24 });
+    const mat = lightShaftMaterial({ seed: hash(tx, ty, 931) * 10, intensity: 0.08, color: 0xff6a24 });
     for (const rot of [0, Math.PI / 2]) {
       const m = new THREE.Mesh(shaftGeo, mat); m.position.set(tx * CELL + (hash(tx, ty, 932) - 0.5), -0.1, ty * CELL); m.rotation.y = rot + hash(tx, ty, 933);
       m.rotation.z = (hash(tx, ty, 934) - 0.5) * 0.25; m.name = 'b4:light-shaft'; m.renderOrder = 8; group.add(m);

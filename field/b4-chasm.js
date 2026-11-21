@@ -4,7 +4,7 @@
  * 通行判定は変えない（# は # のまま。見た目だけ壁が開く）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261121-v4';
+import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261122-g2';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 export const CHASM_BOTTOM = -26, CHASM_TOP = 16;
@@ -79,7 +79,7 @@ function hazeMaterial() {
         float a = fbm(p + vec2(uTime * 0.11, -uTime * 0.07)) * fbm(p * 1.7 - vec2(uTime * 0.05, uTime * 0.13));
         a = smoothstep(0.08, 0.5, a);
         vec3 col = mix(vec3(0.9, 0.18, 0.03), vec3(1.0, 0.6, 0.2), a);
-        gl_FragColor = vec4(col * a * 0.55, 1.0);
+        gl_FragColor = vec4(col * a * 0.32, 1.0);
       }`,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
   });
