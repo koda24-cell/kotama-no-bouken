@@ -64,7 +64,7 @@ export function createFlames(sites, kind = 'fire') {
         vUv = uv; vSeed = iSeed; vInt = iInt;
         vec3 right = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
         float sway = ${fire ? '0.06' : '0.25'} * sin(uTime * ${fire ? '3.1' : '0.7'} + iSeed * 40.0) * position.y;
-        vec3 wp = iPos + right * (position.x * iSize.x + sway) + vec3(0.0, 1.0, 0.0) * position.y * iSize.y;
+        vec3 wp = (modelMatrix * vec4(iPos, 1.0)).xyz + right * (position.x * iSize.x + sway) + vec3(0.0, 1.0, 0.0) * position.y * iSize.y;
         gl_Position = projectionMatrix * viewMatrix * vec4(wp, 1.0);
       }`,
     fragmentShader: /* glsl */`

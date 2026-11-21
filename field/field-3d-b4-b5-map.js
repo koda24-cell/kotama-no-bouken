@@ -8,9 +8,10 @@ import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
 import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t7';
 import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t3';
+import { createB4Kit } from './b4-kit.js?v=20261121-k2';
 import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261121-s2';
 import { planChasms, buildChasms } from './b4-chasm.js?v=20261121-c5';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a4';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a6';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -60,6 +61,7 @@ export function createTheme(api, area) {
   const isTempleFace = makeTempleFacePicker(hash);
   if (temple) mat.floor = temple.floor;
   const templeWallGeo = magma ? new THREE.BoxGeometry(4.08, 4.2, 0.65, 1, 1, 1) : null;
+  let b4Kit = null;
   const templeWallGeoTall = magma ? (() => { const b = new THREE.BoxGeometry(4.08, 8.2, 0.65, 1, 1, 1); const uv = b.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setY(i, uv.getY(i) * 8.2 / 4.2); return b; })() : null;
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02, magma ? 4 : 1, 1, magma ? 4 : 1);
   if (magma) {
@@ -193,7 +195,7 @@ export function createTheme(api, area) {
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
     b4Plan = magma ? addB4GameScenery({root,map:a,ch,wallCell,hash,CELL,surfaces}) : null;
     if (b4Plan) {
-      cameraLamp={world:new THREE.Vector3(),color:0xffc890,intensity:6.6,range:8.5,off:false};
+      cameraLamp={world:new THREE.Vector3(),color:0xffc890,intensity:8.2,range:11,off:false};
       lights.push(cameraLamp,...b4Plan.lights); g.lights.push(cameraLamp,...b4Plan.lights);
     }
     if (b4Plan) for (const s of [...b4Plan.mines, ...b4Plan.vistaFaces]) objAt.add(s.tx+','+s.ty);
@@ -209,7 +211,7 @@ export function createTheme(api, area) {
         deepLavaTiles.push({ tx, ty });
         continue;
       }
-      mesh(floorGeo, mat.floor, x, -0.17, z);
+      if (!(magma && c === '>')) mesh(floorGeo, mat.floor, x, -0.17, z);   // 4層の下り階段は口の開いた床を自前で持つ
       if (magma && c === '*') {
         mesh(lavaGeo, surfaces.lava, x, 0.009, z);
         lavaSites.push({ tx, ty });
@@ -367,13 +369,14 @@ export function createTheme(api, area) {
     }
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
+    const K = magma && temple ? (b4Kit ||= createB4Kit(temple)) : null;
     for (const o of a.objects) {
       if (!o.onWall || (o.kind !== 'switch' && o.kind !== 'sign')) continue;
       const f = facing(o.tx, o.ty), [dx, dz] = DIR_VEC[f];
       const x = o.tx * CELL + dx * 1.55, z = o.ty * CELL + dz * 1.55;
       const ry = FACE_YAW[f];
       const src = o.kind === 'switch' ? S.guardian : S.sign;
-      const obj = place(g.world, src || S.sign, x, 0, z, ry, o.kind === 'switch' ? 0.55 : 0.8);
+      const obj = place(g.world, (o.kind === 'sign' && K?.sign) || src || S.sign, x, 0, z, ry, o.kind === 'switch' ? 0.55 : K ? 1 : 0.8);
       g.entries.push({ o, kind: o.kind, obj, state: null, at: new THREE.Vector3(x, 1.5, z), ry });
     }
     for (const o of a.objects) {
@@ -381,12 +384,12 @@ export function createTheme(api, area) {
       const e = { o, kind: o.kind, obj: null, state: null, at: new THREE.Vector3(x, 1.2, z), ry };
       switch (o.kind) {
         case 'stairs':
-          e.obj = place(g.world, o.dir === 'down' ? S.stairsDown : S.stairsUp, x, 0, z, ry, o.dir === 'down' ? 1 : 0.75); break;
+          e.obj = K ? place(g.world, o.dir === 'down' ? K.stairsDown : K.stairsUp, x, 0, z, ry, 1) : place(g.world, o.dir === 'down' ? S.stairsDown : S.stairsUp, x, 0, z, ry, o.dir === 'down' ? 1 : 0.75); break;
         case 'save':
-          place(g.world, S.seal, x, 0.005, z, 0, 0.8); e.obj = place(g.world, S.torch, x, 0, z); e.at.y = 1.9; break;
-        case 'sign': e.obj = place(g.world, S.sign, x, 0, z, ry); e.at.y = 1.8; break;
-        case 'gate': e.obj = place(g.world, S.runeDoor, x - DIR_VEC[f][0] * 1.9, 0, z - DIR_VEC[f][1] * 1.9, ry); break;
-        case 'exit': e.obj = place(g.world, S.rootArch, x, 0, z, (f === 'up' || f === 'down') ? 0 : Math.PI / 2, 0.92); break;
+          if (K) e.obj = place(g.world, K.torch, x, 0, z); else { place(g.world, S.seal, x, 0.005, z, 0, 0.8); e.obj = place(g.world, S.torch, x, 0, z); } e.at.y = 1.9; break;
+        case 'sign': e.obj = place(g.world, K?.sign || S.sign, x, 0, z, ry); e.at.y = 1.8; break;
+        case 'gate': e.obj = place(g.world, K?.runeDoor || S.runeDoor, x - DIR_VEC[f][0] * 1.9, 0, z - DIR_VEC[f][1] * 1.9, ry); break;
+        case 'exit': e.obj = place(g.world, K?.rootArch || S.rootArch, x, 0, z, (f === 'up' || f === 'down') ? 0 : Math.PI / 2, K ? 1 : 0.92); break;
         case 'npc': e.obj = place(g.world, S.npcTraveler, x, 0, z, ry); e.at.y = 2.2; break;
         case 'door':
           if (!o.hidden) e.ry = open(o.tx, o.ty - 1) || open(o.tx, o.ty + 1) ? 0 : Math.PI / 2;
@@ -452,6 +455,18 @@ export function createTheme(api, area) {
       p.mesh.scale.setScalar(0.75 + 0.25 * Math.sin(now * 0.003 + p.phase));
     }
   }
-  async function sync() { return false; }
+  // 4層：宝箱と扉は専用の部品で置く（森の部品を使わない）
+  async function sync(e, st) {
+    if (!magma || !b4Kit || !root) return false;
+    const o = e.o, x = o.tx * CELL, z = o.ty * CELL;
+    const drop = obj => { if (!obj) return; obj.parent?.remove(obj); for (const L of obj.userData.lights || []) L.off = true; };
+    if (o.kind === 'chest' || o.kind === 'cache') { drop(e.obj); e.obj = place(g.world, st === 'open' ? b4Kit.chestOpen : b4Kit.chest, x, 0, z, e.ry); return true; }
+    if (o.kind === 'door' && !o.hidden) {
+      if (!e.obj) e.obj = place(g.world, b4Kit.gate, x, 0, z, e.ry, 1);
+      e.obj.position.y = st === 'open' ? 3.7 : 0; e.obj.updateMatrix(); e.obj.updateMatrixWorld(true);
+      return true;
+    }
+    return false;
+  }
   return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info, props: b4Dressing?.info() || null, chasms: chasms?.info, vault: { hall: vaultHall?.info, sanctum: vaultSanctum?.info } || null } } : {}) }) };
 }

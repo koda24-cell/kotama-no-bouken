@@ -5,7 +5,7 @@
  *  - 化粧材：台座（巾木）・コーニス・付け柱・彫り込まれたルーンの溝（発光）・天井の梁
  * 壁 1 面ごとに「神殿の壁」か「洞窟の岩肌（従来）」かを決める。通行判定には触れない。 */
 import * as THREE from 'three';
-import { glyphMaterial } from './b4-vfx.js?v=20261121-v3';
+import { glyphMaterial } from './b4-vfx.js?v=20261121-v4';
 
 const TEX = './assets/textures/floor4/cc0/';
 const loader = new THREE.TextureLoader();
@@ -23,18 +23,22 @@ export function createTempleMaterials() {
     roughnessMap: cc0('rock_wall_16', 'rough', '1k', { repeat: [1.6, 1.6] }),
     color: 0xb88272, roughness: 1, metalness: 0,
   });
+  // 2026-11-21 明るさ：石の地色を少し持ち上げ、暗部にも赤い地熱の色が残るように（emissiveMap＝地色）
+  wall.color.setRGB(1.12, 0.72, 0.6); wall.emissive = new THREE.Color(0x301005); wall.emissiveMap = wall.map; wall.emissiveIntensity = 1.0;
   const trim = new THREE.MeshStandardMaterial({
     map: cc0('stone_block_wall', 'diff', '1k', { srgb: true, repeat: [2, 0.5] }),
     normalMap: cc0('stone_block_wall', 'nor_gl', '1k', { repeat: [2, 0.5] }),
     roughnessMap: cc0('stone_block_wall', 'rough', '1k', { repeat: [2, 0.5] }),
     color: 0x5a3e36, roughness: 1, metalness: 0,
   });
+  trim.color.setRGB(0.55, 0.38, 0.33); trim.emissive = new THREE.Color(0x2a0c05); trim.emissiveMap = trim.map;
   const floor = new THREE.MeshStandardMaterial({
     map: cc0('volcanic_rock_tiles', 'diff', '2k', { srgb: true, repeat: [1, 1] }),
     normalMap: cc0('volcanic_rock_tiles', 'nor_gl', '2k', { repeat: [1, 1] }), normalScale: new THREE.Vector2(1.1, 1.1),
     roughnessMap: cc0('volcanic_rock_tiles', 'rough', '2k', { repeat: [1, 1] }),
     color: 0xb08070, roughness: 1, metalness: 0,
   });
+  floor.color.setRGB(1.15, 0.78, 0.64); floor.emissive = new THREE.Color(0x2e0e05); floor.emissiveMap = floor.map;
   const slot = new THREE.MeshStandardMaterial({ color: 0x1a0804, emissive: 0xff5a12, emissiveIntensity: 2.4, roughness: 0.6 });
   const beam = trim;
   return { wall, trim, floor, slot, beam, dispose() { for (const m of [wall, trim, floor, slot]) { for (const k of ['map', 'normalMap', 'roughnessMap']) m[k]?.dispose(); m.dispose(); } } };
