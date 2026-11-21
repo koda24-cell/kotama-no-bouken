@@ -229,7 +229,7 @@ export function createB4Kit({ wall, trim }) {
       if (!empty) { const b = new THREE.SphereGeometry(0.055 + (i % 3) * 0.015, 8, 6); b.scale(1, 1.3, 1); b.translate(x + (i % 2 ? -1 : 1) * h * 0.18, h + 0.03, z); buds.push(b); }
     }
     g.add(mesh(merge(stems), wood, 'stems'));
-    if (buds.length) { g.add(mesh(merge(buds), hot, 'fire-buds')); light(g, [0, 0.6, 0], 0xff6a1a, 1.1, 3); }
+    if (buds.length) { const budMat = ember.clone(); budMat.emissiveIntensity = 0.6; owned.push(budMat); g.add(mesh(merge(buds), budMat, 'fire-buds')); light(g, [0, 0.6, 0], 0xff5a14, 0.35, 2.5); }   // 2026-11-22 燠火程度に
     const pebbles = []; rockLump(pebbles, 4.2, 5, 0.12, 0.7, 0.2); g.add(mesh(merge(pebbles), rockMat, 'pebbles'));
     return g;
   };

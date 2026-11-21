@@ -402,7 +402,8 @@ export function createTheme(api, area) {
       const iron = new THREE.MeshStandardMaterial({ color: 0x2a2220, roughness: 0.45, metalness: 0.85 }); localGeometries.push(iron);
       if (b4Plan?.vista) vistaWorld = buildVista({ root: buildRoot, site: b4Plan.vista, CELL, mats: temple, hash });
       if (!b4Vault) rockPass = buildRockPass({ root: buildRoot, map: a, ch, wallCell, hash, CELL, reserved: objAt, openFaces: new Set(chasms?.parapetFaces.map(f => `${f.tx},${f.ty},${f.dx},${f.dz}`) || []), rocky, mats: temple, lights, gLights: g.lights, nearCull: kitNearCull });
-      templeDecor = buildTempleDecor({ root: buildRoot, faces: templeFaces, tiles: decorTiles, beams: templeTiles, CELL, hash, ironMaterial: iron, ceiling: a.f === 2 ? 8.1 : 4.05 });
+      kitNearCull(iron, 1.5);
+      templeDecor = buildTempleDecor({ root: buildRoot, faces: templeFaces, tiles: decorTiles, beams: templeTiles, CELL, hash, ironMaterial: iron, ceiling: a.f === 2 ? 8.1 : 4.05, nearCull: kitNearCull });
     }
     if (temple && a.f === 2) {
       const rooms = findVaultRooms(a, ch);

@@ -118,7 +118,7 @@ export function buildRockPass({ root, map, ch, wallCell, hash, CELL, reserved = 
     const ew = wallCell(tx, ty - 1) && wallCell(tx, ty + 1) && walk(tx - 1, ty) && walk(tx + 1, ty);
     if (zone && !busy && (ns || ew) && hash(tx, ty, 1330) < 0.3 && frameParts.length < 22) {
       const near = frameParts.some(f => Math.abs(f.tx - tx) + Math.abs(f.ty - ty) < 3); if (!near) {
-        frameParts.push({ tx, ty, rot: ns ? Math.PI / 2 : 0, s: hash(tx, ty, 1331) });
+        frameParts.push({ tx, ty, rot: ns ? 0 : Math.PI / 2, s: hash(tx, ty, 1331) });   // 柱（ローカル x=±1.5）は通路を挟む両側の壁ぎわ
         info.frames++;
       }
     }

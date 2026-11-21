@@ -49,7 +49,7 @@ function crackMaterial({ floor = false } = {}) {
   });
 }
 
-export function buildTempleDecor({ root, faces, tiles, beams, CELL, hash, ironMaterial, ceiling = 4.05 }) {
+export function buildTempleDecor({ root, faces, tiles, beams, CELL, hash, ironMaterial, ceiling = 4.05, nearCull = null }) {
   const group = new THREE.Group(); group.name = 'b4:temple-decor';
   const owned = [], info = { wallCracks: 0, floorCracks: 0, chains: 0, cages: 0 };
   // 壁の亀裂
@@ -84,9 +84,9 @@ export function buildTempleDecor({ root, faces, tiles, beams, CELL, hash, ironMa
     const link = new THREE.TorusGeometry(0.075, 0.018, 5, 10); owned.push(link);
     const ms = [], cageMs = [], fire = [];
     beams.filter(b => hash(b.tx, b.ty, 1121) < 0.3).slice(0, 26).forEach((b, k) => {
-      const off = (hash(b.tx, b.ty, 1122) - 0.5) * 2.4;
+      const off = (hash(b.tx, b.ty, 1122) < 0.5 ? -1 : 1) * (1.15 + hash(b.tx, b.ty, 1127) * 0.3);   // 2026-11-22：通路の中心線を避け、壁寄りに吊る
       const x = b.tx * CELL + (b.rot ? 0 : off), z = b.ty * CELL + (b.rot ? off : 0);
-      const n = 9 + Math.floor(hash(b.tx, b.ty, 1123) * 6), yaw0 = hash(b.tx, b.ty, 1124) * 3;
+      const n = 2 + Math.floor(hash(b.tx, b.ty, 1123) * 2), yaw0 = hash(b.tx, b.ty, 1124) * 3;   // 籠の下端が 2.9 m 以上に来る長さ
       for (let i = 0; i < n; i++) ms.push(new THREE.Matrix4().compose(new THREE.Vector3(x, ceiling - 0.45 - i * 0.125, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, yaw0 + (i % 2) * Math.PI / 2, 0)), new THREE.Vector3(1, 1, 1)));
       info.chains++;
       if (hash(b.tx, b.ty, 1125) < 0.35) {
