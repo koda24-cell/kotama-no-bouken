@@ -1,0 +1,99 @@
+name: Shared Blender 5.3 render gateway
+on:
+  workflow_call:
+    inputs:
+      script:
+        description: Repo-relative Blender Python script under tools/
+        type: string
+        required: true
+      output_dir:
+        description: Repo-relative output folder under render-output/
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      script:
+        description: Repo-relative Blender Python script under tools/
+        type: string
+        required: true
+      output_dir:
+        description: Repo-relative output folder under render-output/
+        type: string
+        required: true
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate requested paths
+        env:
+          SCRIPT: ${{ inputs.script }}
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+        run: |
+          python3 - <<'PY'
+          import os,re
+          from pathlib import Path
+          script=os.environ['SCRIPT']
+          out=os.environ['OUTPUT_DIR']
+          assert re.fullmatch(r'tools/[a-zA-Z0-9_./-]+\.py',script) and '..' not in script.split('/'),script
+          assert re.fullmatch(r'render-output/[a-zA-Z0-9_./-]+',out) and '..' not in out.split('/'),out
+          assert Path(script).is_file(),script
+          Path(out).mkdir(parents=True,exist_ok=True)
+          PY
+      - name: Assert Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Refresh ClamAV
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan script before execution
+        env:
+          SCRIPT: ${{ inputs.script }}
+        run: bash tools/security/clamav_scan_gate.sh scan "$SCRIPT" qa/security/source.log
+      - name: Run Blender
+        env:
+          SCRIPT: ${{ inputs.script }}
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+        run: blender -b --disable-autoexec -t 2 --python "$SCRIPT"
+      - name: Verify output and record hashes
+        env:
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          d=Path(os.environ['OUTPUT_DIR'])
+          files=sorted(p for p in d.rglob('*') if p.is_file())
+          assert files,'No output generated'
+          for p in files:
+              b=p.read_bytes()
+              assert len(b)>0,p
+              if p.suffix.lower() in ('.png','.glb','.blend'): assert len(b)>100,p
+              if p.suffix.lower()=='.png': assert b.startswith(bytes.fromhex('89504e470d0a1a0a')),p
+              if p.suffix.lower()=='.glb': assert b[:4]==b'glTF',p
+          manifest={'status':'NOT_APPROVED','blender':'5.3.0','files':{str(p.relative_to(d)):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in files}}
+          (d/'SHARED_BLENDER53_QA_NOT_APPROVED.json').write_text(json.dumps(manifest,indent=2))
+          print('SHARED_BLENDER53_OUTPUT_VERIFIED',len(files))
+          PY
+      - name: Scan generated output
+        env:
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+        run: bash tools/security/clamav_scan_gate.sh scan "$OUTPUT_DIR" qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-blender53-NOT-APPROVED-${{ github.run_id }}
+          path: |
+            ${{ inputs.output_dir }}/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn

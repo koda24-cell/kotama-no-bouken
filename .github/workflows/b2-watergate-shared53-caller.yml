@@ -1,0 +1,17 @@
+name: B2 Watergate Shared Blender 5.3 Compatibility Test
+on:
+  push:
+    branches:
+      - feature/b2-watergate-shared53-caller-20261120
+    paths:
+      - '.github/workflows/b2-watergate-shared53-caller.yml'
+      - 'tools/b2-render/build-watergate.py'
+jobs:
+  render:
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/shared-blender53-render.yml
+    with:
+      script: tools/b2-render/build-watergate.py
+      output_dir: render-output/b2-watergate

@@ -8,7 +8,7 @@
    ------------------------------------------------------------ */
 function fieldShow({ returning = false } = {}) {
   const a = fieldArea();
-  if (fieldState.built !== a.key || !$("field-map")?.children.length) fieldBuildDom();
+  if (fieldState.built !== (a.buildKey || a.key) || !$("field-map")?.children.length) fieldBuildDom();   // [RANDOM-MAZE] 迷宮ごとに作り直す
   if (!fieldState.positioned) fieldPlaceAtStart();
   fieldSnapToTile(); fieldState.view = null; fieldState.stepUntil = 0; fieldInput.tap = null;   // [GRID]
   fieldState.lock = false; fieldState.mapOpen = false; if ($("field-fullmap")) $("field-fullmap").hidden = true;
@@ -39,7 +39,7 @@ async function fieldEnterArea(n, opts = {}) {
   if (!opts.adminSkip && n > (state.maxUnlockedStage || 1)) n = state.maxUnlockedStage || 1;
   let f = Math.max(0, Math.min(fieldFloorCount(n) - 1, Number(opts.floor) || 0));
   if (!opts.adminSkip && f > 0 && !fieldState.flags[`floor:${n}-${f}`]) f = 0;
-  if (opts.fromHome || opts.afterBoss) { fieldFullHeal(); if (typeof fieldLootOnDeparture === "function") fieldLootOnDeparture(); else fieldState.gatherUsed = {}; fieldState.foeDefeated = {}; }   // [LOOT] 採集点の期限切れを確認
+  if (opts.fromHome || opts.afterBoss) { fieldFullHeal(); if (typeof fieldLootOnDeparture === "function") fieldLootOnDeparture(); else fieldState.gatherUsed = {}; fieldState.foeDefeated = {}; if (typeof fieldRandomMazeOnDeparture === "function") fieldRandomMazeOnDeparture(); }   // [LOOT] 採集点の期限切れを確認／[RANDOM-MAZE] 5F・6Fの踏破マップ・宝箱を新しい迷宮用に
   fieldState.area = n; fieldState.floor = f; fieldState.positioned = false;
   fieldState.flags[`floor:${n}-${f}`] = true;
   state.firstStageStarted = true;
