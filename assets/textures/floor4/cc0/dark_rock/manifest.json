@@ -1,0 +1,22 @@
+{
+ "source": "https://polyhaven.com/a/dark_rock",
+ "license": "CC0 (https://polyhaven.com/license)",
+ "files": {
+  "dark_rock_diff_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dark_rock/dark_rock_diff_2k.jpg",
+   "sha256": "0f01bfec36ec4546e23576a10c52ef073f9eb815826c5fce2a1cdb08cd8188b8"
+  },
+  "dark_rock_rough_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dark_rock/dark_rock_rough_2k.jpg",
+   "sha256": "de4dc9e276ea769f0eb58faae8c3bc04b512ad62ca49301a0287efe35d26b058"
+  },
+  "dark_rock_nor_gl_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dark_rock/dark_rock_nor_gl_2k.jpg",
+   "sha256": "abb3c5f1f932693537333a6d467c3e79bb810afa84416d0deaa10ead9fb4f628"
+  },
+  "dark_rock_ao_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dark_rock/dark_rock_ao_2k.jpg",
+   "sha256": "ab74e7bd4d52bbc66bcf6955430f88b5bc34525cb570873897e20237504090c2"
+  }
+ }
+}
