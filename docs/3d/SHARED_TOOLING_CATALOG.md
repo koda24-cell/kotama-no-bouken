@@ -357,3 +357,8 @@
 - [石造遺跡 run #44448970296](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448970296): success。ClamAV source script 1件・source GLB 1件・出力18件、感染0。GLB4点/3方向PNG12枚を実生成しヘッダとSHA256検証。
 - 両ワークフローでBlender/ClamAVのaptインストールを除去し、検証済みGHCR digest固定・freshclam毎ジョブ更新・取得/読み込み前と生成後の実スキャンを使用。
 - 画像の**目視評価は未実施**。素材は未承認で、GitHub Actions Artifactsの14日間一時保存のみ。Draco圧縮なしのGLB出力。
+
+### Three.js インスタンス連番ビルボード（B4 12F、2026-11-22、Claude）
+- 実装: `field/b4-fx12.js` の `flipbook(sites, {sheet, cols, rows, fps})`。InstancedBufferGeometry 1 つで複数の炎を描き、時間＋インスタンスごとの seed でコマを選ぶ。縦軸固定のビルボード、カメラ 1.6 m 以内でフェード。
+- 素材: OpenGameArt の CC0 連番（Mikodrak fire 1b/1f、animated flame sheet、tauran flame）を Actions で取得し、Pillow で 1 枚のアトラスに詰め直した `assets/vfx/flipbooks/`（出典・ライセンスは manifest.json）。
+- 検証: ローカル SwiftShader 撮影と `tools/b4-3d/game-test.cjs`（GPU 資源の増加なし・dispose 1 回）。実機での見た目は未確認。**NOT_APPROVED**。

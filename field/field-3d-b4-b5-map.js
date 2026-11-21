@@ -2,20 +2,21 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-quality';
-import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-k2';
-import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-k2';
+import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-m2';
+import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-m2';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-k2';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-k2';
-import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-k2';
-import { createUpperKit } from './b4-upper.js?v=20261122-k2';
-import { buildVista } from './b4-vista.js?v=20261122-k2';
-import { buildRockPass, makeRockyZone } from './b4-rocks.js?v=20261122-k2';
-import { createB4Kit, nearCull as kitNearCull } from './b4-kit.js?v=20261122-k2';
-import { findVaultRooms, buildAntigravHall, buildSanctum, buildCauseway, buildPitRail } from './b4-sanctum.js?v=20261122-k2';
-import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-k2';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-k2';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-m2';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-m2';
+import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-m2';
+import { createUpperKit } from './b4-upper.js?v=20261122-m2';
+import { buildVista } from './b4-vista.js?v=20261122-m2';
+import { buildRockPass, makeRockyZone } from './b4-rocks.js?v=20261122-m2';
+import { createB4Kit, nearCull as kitNearCull } from './b4-kit.js?v=20261122-m2';
+import { findVaultRooms, buildAntigravHall, buildSanctum, buildCauseway, buildPitRail } from './b4-sanctum.js?v=20261122-m2';
+import { build12FFX } from './b4-fx12.js?v=20261122-m2';
+import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-m2';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-m2';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -126,7 +127,7 @@ export function createTheme(api, area) {
   let dressing = null, ownedModels = [], ownedModelGeometry = [];
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   let b4Dressing = null, deepLava = null;
-  let oreSites = [], lavaSites = [], deepLavaTiles = [], templeFaces = [], templeTiles = [], templeTrims = null, templeBeams = null, chasmPlan = null, chasms = null, vaultHall = null, vaultSanctum = null, templeDecor = null, rockPass = null, statueOwned = [], causeway = null, pitRail = null, vistaWorld = null, upper = null;
+  let oreSites = [], lavaSites = [], deepLavaTiles = [], templeFaces = [], templeTiles = [], templeTrims = null, templeBeams = null, chasmPlan = null, chasms = null, vaultHall = null, vaultSanctum = null, templeDecor = null, rockPass = null, statueOwned = [], causeway = null, pitRail = null, vistaWorld = null, upper = null, fx12 = null;
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -448,6 +449,15 @@ export function createTheme(api, area) {
       causeway = buildCauseway({ root: buildRoot, map: a, ch, CELL, hash, mats: temple, lights, gLights: g.lights });
       if (rooms.hall) pitRail = buildPitRail({ root: buildRoot, hall: rooms.hall, ch, CELL, hash, mats: temple });
       if (rooms.sanctum) vaultSanctum = buildSanctum({ root: buildRoot, sanctum: rooms.sanctum, CELL, hash, mats: temple, lights, gLights: g.lights });
+      // 新しい VFX 10 種＋炎 5 種（柱の間・参道・聖域）
+      fx12 = build12FFX({ root: buildRoot, hash, lights, gLights: g.lights, areas: vaultAreas.map(({ kind, r }) => {
+        const x0 = (r[0] - 0.5) * CELL, z0 = (r[1] - 0.5) * CELL, x1 = (r[2] + 0.5) * CELL, z1 = (r[3] + 0.5) * CELL, lava = [];
+        for (let y = r[1]; y <= r[3]; y++) for (let x = r[0]; x <= r[2]; x++) if ('~*'.includes(ch(x, y))) lava.push([x * CELL, y * CELL]);
+        const alongZ = z1 - z0 >= x1 - x0, walls = kind === 'sanctum' ? [] : alongZ
+          ? [[x0 + 0.4, (z0 + z1) / 2, Math.PI / 2, z1 - z0 - 2], [x1 - 0.4, (z0 + z1) / 2, -Math.PI / 2, z1 - z0 - 2]]
+          : [[(x0 + x1) / 2, z0 + 0.4, 0, x1 - x0 - 2], [(x0 + x1) / 2, z1 - 0.4, Math.PI, x1 - x0 - 2]];
+        return { kind, x0, z0, x1, z1, lava, walls, top: kind === 'sanctum' ? 20 : 17, braziers: kind === 'sanctum' ? vaultSanctum?.braziers || [] : [] };
+      }) });
     }
     if (b4Plan) {
       // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
@@ -514,7 +524,7 @@ export function createTheme(api, area) {
       } else root.traverse(o => { if (o.isInstancedMesh) o.dispose(); });
       root.parent?.remove(root);
     }
-    dressing?.dispose(); dressing = null; b4Dressing?.dispose(); b4Dressing = null; deepLava?.dispose(); deepLava = null; templeTrims?.dispose(); templeTrims = null; templeBeams?.dispose(); templeBeams = null; chasms?.dispose(); chasms = null; chasmPlan = null; vaultHall?.dispose(); vaultHall = null; vaultSanctum?.dispose(); vaultSanctum = null; templeDecor?.dispose(); templeDecor = null; rockPass?.dispose(); rockPass = null; statueOwned.forEach(o => o.dispose()); statueOwned = []; causeway?.dispose(); causeway = null; pitRail?.dispose(); pitRail = null; vistaWorld?.dispose(); vistaWorld = null; upper?.dispose(); upper = null; ownedModels = []; ownedModelGeometry = [];
+    dressing?.dispose(); dressing = null; b4Dressing?.dispose(); b4Dressing = null; deepLava?.dispose(); deepLava = null; templeTrims?.dispose(); templeTrims = null; templeBeams?.dispose(); templeBeams = null; chasms?.dispose(); chasms = null; chasmPlan = null; vaultHall?.dispose(); vaultHall = null; vaultSanctum?.dispose(); vaultSanctum = null; templeDecor?.dispose(); templeDecor = null; rockPass?.dispose(); rockPass = null; statueOwned.forEach(o => o.dispose()); statueOwned = []; causeway?.dispose(); causeway = null; pitRail?.dispose(); pitRail = null; vistaWorld?.dispose(); vistaWorld = null; upper?.dispose(); upper = null; fx12?.dispose(); fx12 = null; ownedModels = []; ownedModelGeometry = [];
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; volcanicDetail = null; cameraLamp = null; landmarkState = 'pending';
     // build() can reuse this theme's base resources; theme replacement releases them.
@@ -536,7 +546,7 @@ export function createTheme(api, area) {
       b5Sparks?.update(now * .001,eye.position);
       b5EdgeMist?.update(now * .001,eye);
     }
-    if (magma) { advanceVfxTime(now); b4Dressing?.update?.(now); vaultHall?.update(); }
+    if (magma) { advanceVfxTime(now); b4Dressing?.update?.(now); vaultHall?.update(); fx12?.update(); }
     if (surfaces) {
       surfaces.tick(now); volcanicDetail?.tick(now);
       if (cameraLamp && camera) { cameraLamp.world.copy(camera);cameraLamp.world.y+=.75; }

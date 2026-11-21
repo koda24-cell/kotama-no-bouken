@@ -1,0 +1,26 @@
+{
+ "mikodrak_fire_1b_8x5.png": {
+  "from": "oga/fire-fx-mikodrak/fire_1b_40_*.png",
+  "license": "CC0 (Martin Jelinek / nyrthos.com)",
+  "cols": 8,
+  "rows": 5
+ },
+ "mikodrak_fire_1f_8x5.png": {
+  "from": "oga/fire-fx-mikodrak/fire_1f_40_*.png",
+  "license": "CC0 (Martin Jelinek / nyrthos.com)",
+  "cols": 8,
+  "rows": 5
+ },
+ "flame_5x5.png": {
+  "from": "oga/animated-flame-sheet/fireSheet5x5.png",
+  "license": "CC0",
+  "cols": 5,
+  "rows": 5
+ },
+ "tauran_flame_12x6.png": {
+  "from": "oga/flame-texture-tauran/flame_0.png",
+  "license": "CC0 (tauran)",
+  "cols": 12,
+  "rows": 6
+ }
+}

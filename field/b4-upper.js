@@ -7,8 +7,8 @@
  *   ・上の戸口 doorway：縦穴の壁の高い位置（y 6.5）に開いた灯のともる戸口（上の道があることを示す）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createFlames, createEmbers, deepLavaMaterial } from './b4-vfx.js?v=20261122-k2';
-import { lavafallMaterial, parapetGeometry } from './b4-chasm.js?v=20261122-k2';
+import { createFlames, createEmbers, deepLavaMaterial } from './b4-vfx.js?v=20261122-m2';
+import { lavafallMaterial, parapetGeometry } from './b4-chasm.js?v=20261122-m2';
 
 const M = (parts) => { const g = mergeGeometries(parts.map(p => (p.index ? p.toNonIndexed() : p)), false); parts.forEach(p => p.dispose()); return g; };
 

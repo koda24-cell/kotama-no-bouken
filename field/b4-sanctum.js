@@ -16,8 +16,8 @@
  *   ・艶のある黒い床＋魔法陣（半径 5.5 m）、光の筋 2 本、金色の火の粉。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261122-k2';
-import { addUplight, hazeMaterial, parapetGeometry } from './b4-chasm.js?v=20261122-k2';
+import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261122-m2';
+import { addUplight, hazeMaterial, parapetGeometry } from './b4-chasm.js?v=20261122-m2';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -305,7 +305,7 @@ function backlightMaterial() {
         vec2 c = fract(q) - 0.5; float eye = smoothstep(0.1, 0.06, abs(length(c) - 0.22));
         float edge = smoothstep(0.0, 0.03, p.x) * smoothstep(1.0, 0.7, p.x) * smoothstep(0.0, 0.04, p.y) * smoothstep(1.0, 0.95, p.y);
         float pulse = 0.85 + 0.15 * sin(uTime * 1.3 - p.x * 4.0);
-        vec3 hot = vec3(1.0, 0.62, 0.28), warm = vec3(0.95, 0.3, 0.06), deep = vec3(0.35, 0.05, 0.01);
+        vec3 hot = vec3(1.0, 0.93, 0.72), warm = vec3(1.0, 0.62, 0.2), deep = vec3(0.32, 0.12, 0.03);
         vec3 col = mix(deep, warm, smoothstep(0.05, 0.4, core)); col = mix(col, hot, smoothstep(0.45, 0.95, core));
         float vig = smoothstep(1.0, 0.55, p.y) * smoothstep(0.0, 0.18, p.y);
         float a = (0.18 + 0.95 * core) * (0.35 + 0.65 * lat + 0.4 * eye) * pulse * edge * (0.45 + 0.55 * vig);
@@ -331,7 +331,9 @@ export function buildSanctum({ root, sanctum, CELL, hash, mats, lights, gLights 
   const roomCz = (sz0 + sz1) / 2 * CELL, roomW = (sx1 - sx0 + 1) * CELL;
   const black = new THREE.MeshStandardMaterial({ color: 0x0b0807, roughness: 0.55, metalness: 0.25 });
   const trim = mats.trim.clone(); trim.color = new THREE.Color(0x5a4440);
-  owned.push(black, trim);
+  // 神々しさ（2026-11-22）：金の縁取りと白金の光。参道までの黒と赤から、ここだけ金と白へ
+  const gold = new THREE.MeshStandardMaterial({ color: 0xc8963c, roughness: 0.28, metalness: 1.0, emissive: 0x3a2008, emissiveIntensity: 0.6 });
+  owned.push(black, trim, gold);
   // アーチ
   const archG = archGeometry(); owned.push(archG);
   const arch = new THREE.Mesh(archG, trim); arch.position.set(cx, 0, faceZ - 0.75); arch.name = 'b4:sanctum-arch'; group.add(arch);
@@ -358,57 +360,85 @@ export function buildSanctum({ root, sanctum, CELL, hash, mats, lights, gLights 
     const m = new THREE.Mesh(g, trim); m.position.set(cx, h / 2, bz - CELL / 2 + 0.0 + i * 0.45 + d / 2); m.name = 'b4:sanctum-step'; group.add(m);
   }
   // 光輪（竜の背後）
-  for (const [R, I, s] of [[2.1, 1.9, 0.5], [2.9, 0.8, -0.3]]) {
-    const g = new THREE.PlaneGeometry(R * 2, R * 2), m = glyphMaterial({ style: 1, seed: R, intensity: I, speed: s, color: 0xffa040 }); owned.push(g, m);
+  for (const [R, I, s] of [[2.1, 1.7, 0.5], [3.2, 1.0, -0.3], [4.6, 0.55, 0.15]]) {
+    const g = new THREE.PlaneGeometry(R * 2, R * 2), m = glyphMaterial({ style: R > 4 ? 5 : 1, seed: R, intensity: I, speed: s, color: R > 3 ? 0xffe2a0 : 0xffc060 }); owned.push(g, m);
     const mesh = new THREE.Mesh(g, m); mesh.position.set(cx, 4.4, bz + CELL / 2 - 0.4); mesh.rotation.y = Math.PI; mesh.renderOrder = 4; mesh.name = 'b4:sanctum-halo'; group.add(mesh);
   }
   // 柱（側壁沿い）と火鉢
-  const pillarParts = [];
+  const pillarParts = [], goldParts = [], PH = 15.5;
   const sideX = [(sx0 - 0.5) * CELL + 0.33 + 0.6, (sx1 + 0.5) * CELL - 0.33 - 0.6];
   const pz = [sz0 * CELL + 1.0, roomCz, sz1 * CELL - 1.0];
-  const flameSites = [], emberSrc = [];
+  const emberSrc = [], holySites = [];
   for (const x of sideX) for (const [k, z] of pz.entries()) {
-    const sh = new THREE.CylinderGeometry(0.45 * Math.SQRT2, 0.5 * Math.SQRT2, 7.0, 4); sh.rotateY(Math.PI / 4); sh.translate(x, 0.5 + 3.5, z); pillarParts.push(sh);
+    const sh = new THREE.CylinderGeometry(0.45 * Math.SQRT2, 0.5 * Math.SQRT2, PH, 4); sh.rotateY(Math.PI / 4); sh.translate(x, 0.5 + PH / 2, z); pillarParts.push(sh);
+    for (const y of [0.62, 3.6, 7.6, 11.6, PH + 0.38]) { const r = new THREE.BoxGeometry(1.22, 0.16, 1.22); r.translate(x, y, z); goldParts.push(r); }
+    { const f = new THREE.BoxGeometry(0.1, PH - 1.2, 0.1); f.translate(x + (x < cx ? 0.66 : -0.66), 0.5 + PH / 2, z); goldParts.push(f); }
     const b = new THREE.BoxGeometry(1.3, 0.5, 1.3); b.translate(x, 0.25, z); pillarParts.push(b);
     const b2 = new THREE.BoxGeometry(1.1, 0.12, 1.1); b2.translate(x, 0.56, z); pillarParts.push(b2);
-    const c = new THREE.BoxGeometry(1.3, 0.45, 1.3); c.translate(x, 7.72, z); pillarParts.push(c);
-    const c2 = new THREE.BoxGeometry(1.1, 0.14, 1.1); c2.translate(x, 7.44, z); pillarParts.push(c2);
+    const c = new THREE.BoxGeometry(1.5, 0.55, 1.5); c.translate(x, PH + 0.78, z); pillarParts.push(c);
+    const c2 = new THREE.BoxGeometry(1.25, 0.14, 1.25); c2.translate(x, PH + 0.44, z); goldParts.push(c2);
     if (k !== 1) {
       const inward = x < cx ? 1 : -1;
       const arm = new THREE.BoxGeometry(0.9, 0.14, 0.18); arm.translate(x + inward * 0.75, 4.9, z); pillarParts.push(arm);
-      const bowl = new THREE.CylinderGeometry(0.42, 0.22, 0.34, 8); bowl.translate(x + inward * 1.15, 5.05, z); pillarParts.push(bowl);
-      flameSites.push({ x: x + inward * 1.15, y: 5.2, z, w: 0.9, h: 1.7, seed: hash(k, x, 995), intensity: 1.15 });
+      const bowl = new THREE.CylinderGeometry(0.42, 0.22, 0.34, 8); bowl.translate(x + inward * 1.15, 5.05, z); goldParts.push(bowl);
+      holySites.push([x + inward * 1.15, 5.15, z]);
       emberSrc.push({ x: x + inward * 1.15, z, y0: 5.4, spread: 0.25, rise: 2.6, count: 18, hot: 1 });
-      if (lights.length < 44) { const L = { world: new THREE.Vector3(x + inward * 1.3, 5.6, z), color: 0xff8a34, intensity: 2.2, range: 8, off: false }; lights.push(L); gLights.push(L); }
+      if (lights.length < 90) { const L = { world: new THREE.Vector3(x + inward * 1.3, 5.6, z), color: 0xffd28a, intensity: 2.6, range: 9, off: false }; lights.push(L); gLights.push(L); }
     }
   }
   const pillarG = mergeGeometries(pillarParts.map(p => p.index ? p.toNonIndexed() : p), false); pillarParts.forEach(p => p.dispose()); owned.push(pillarG);
   const pillars = new THREE.Mesh(pillarG, trim); pillars.name = 'b4:sanctum-pillars'; group.add(pillars);
-  const pBand = glyphMaterial({ style: 2, seed: 9.2, intensity: 1.2, speed: 0.4 }); owned.push(pBand);
-  const pbG = bandGeometry(); owned.push(pbG);
-  for (const x of sideX) for (const z of pz) for (const y of [2.3, 6.2]) { const m = new THREE.Mesh(pbG, pBand); m.position.set(x, y, z); m.scale.set(1.0, 1, 1.0); m.renderOrder = 5; group.add(m); }
-  const flames = createFlames(flameSites, 'fire'); flames.mesh.name = 'b4:sanctum-flames'; group.add(flames.mesh); owned.push(flames);
-  // 床：艶のある黒＋魔法陣
-  const fg = new THREE.PlaneGeometry(roomW - 0.7, (sz1 - sz0 + 1) * CELL - 0.7).rotateX(-Math.PI / 2); owned.push(fg);
-  const fm = new THREE.MeshStandardMaterial({ color: 0x100a08, roughness: 0.16, metalness: 0.55, transparent: true, opacity: 0.62, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }); owned.push(fm);
-  const floor = new THREE.Mesh(fg, fm); floor.position.set((sx0 + sx1) / 2 * CELL, 0.004, roomCz); floor.name = 'b4:sanctum-floor'; group.add(floor);
-  const cg = new THREE.PlaneGeometry(11, 11).rotateX(-Math.PI / 2), cm = glyphMaterial({ style: 0, seed: 4.4, intensity: 1.1, speed: 0.5 }); owned.push(cg, cm);
-  const circle = new THREE.Mesh(cg, cm); circle.position.set(cx, 0.02, roomCz); circle.renderOrder = 3; circle.name = 'b4:sanctum-circle'; group.add(circle);
-  // 光の筋：龕の上から床の魔法陣へ
-  const rayG = new THREE.PlaneGeometry(3.6, 13); rayG.translate(0, -6.5, 0); owned.push(rayG);
-  for (const [i, side] of [-1, 1].entries()) {
-    const m = lightShaftMaterial({ seed: 3 + i, intensity: 0.12, color: 0xffa050 }); owned.push(m);
-    for (const rot of [0, Math.PI / 2]) {
-      const ray = new THREE.Mesh(rayG, m); ray.position.set(cx + side * 1.6, 8.1, faceZ - 0.5); ray.rotation.set(-0.62, rot, side * 0.12); ray.renderOrder = 8; ray.name = 'b4:sanctum-ray'; group.add(ray);
+  const goldG = mergeGeometries(goldParts.map(p => p.index ? p.toNonIndexed() : p), false); goldParts.forEach(p => p.dispose()); owned.push(goldG);
+  const goldM = new THREE.Mesh(goldG, gold); goldM.name = 'b4:sanctum-gold'; group.add(goldM);
+  arch.material = gold;
+  // 側壁の金縁パネル（黒い艶石＋金の枠＋縦の光の象嵌）：レンガ面を隠し、ここだけ別世界の壁にする
+  {
+    const panelM = new THREE.MeshStandardMaterial({ color: 0x0d0907, roughness: 0.14, metalness: 0.6 }); owned.push(panelM);
+    const inlay = glyphMaterial({ style: 2, seed: 2.7, intensity: 0.7, speed: 0.35, color: 0xffd080, dissolve: 2.2 }); owned.push(inlay);
+    const pParts = [], fParts = [], inl = [];
+    const wallX = [(sx0 - 0.5) * CELL + 0.36, (sx1 + 0.5) * CELL - 0.36];
+    const zs = [pz[0], pz[1], pz[2]];
+    for (const wx of wallX) for (let i = 0; i < 2; i++) {
+      const za = zs[i] + 0.8, zb = zs[i + 1] - 0.8, zm = (za + zb) / 2, len = zb - za; if (len < 1) continue;
+      const pnl = new THREE.BoxGeometry(0.06, 13.2, len); pnl.translate(wx, 0.6 + 6.6, zm); pParts.push(pnl);
+      for (const [y, h] of [[0.6, 0.14], [13.8, 0.14], [6.0, 0.08]]) { const f = new THREE.BoxGeometry(0.12, h, len + 0.1); f.translate(wx + (wx < cx ? 0.04 : -0.04), y, zm); fParts.push(f); }
+      for (const dz of [-len / 2, len / 2]) { const f = new THREE.BoxGeometry(0.12, 13.3, 0.14); f.translate(wx + (wx < cx ? 0.04 : -0.04), 7.2, zm + dz); fParts.push(f); }
+      inl.push([wx + (wx < cx ? 0.08 : -0.08), zm, wx < cx ? Math.PI / 2 : -Math.PI / 2]);
+    }
+    if (pParts.length) {
+      const pg = mergeGeometries(pParts.map(p => p.toNonIndexed()), false), fg = mergeGeometries(fParts.map(p => p.toNonIndexed()), false); pParts.forEach(p => p.dispose()); fParts.forEach(p => p.dispose()); owned.push(pg, fg);
+      const pm = new THREE.Mesh(pg, panelM); pm.name = 'b4:sanctum-panels'; group.add(pm);
+      const fm2 = new THREE.Mesh(fg, gold); fm2.name = 'b4:sanctum-panel-frames'; group.add(fm2);
+      const ig = new THREE.PlaneGeometry(10.5, 0.42); owned.push(ig);
+      for (const [x, z, yaw] of inl) for (const off of [-0.9, 0.9]) { const m = new THREE.Mesh(ig, inlay); m.position.set(x, 7.2, z + off); m.rotation.set(0, yaw, Math.PI / 2); m.renderOrder = 4; group.add(m); }
     }
   }
+  const pBand = glyphMaterial({ style: 2, seed: 9.2, intensity: 1.2, speed: 0.4 }); owned.push(pBand);
+  const pbG = bandGeometry(); owned.push(pbG);
+  for (const x of sideX) for (const z of pz) for (const y of [2.3, 9.6]) { const m = new THREE.Mesh(pbG, pBand); m.position.set(x, y, z); m.scale.set(1.0, 1, 1.0); m.renderOrder = 5; group.add(m); }
+  // 床：艶のある黒＋魔法陣
+  const fg = new THREE.PlaneGeometry(roomW - 0.7, (sz1 - sz0 + 1) * CELL - 0.7).rotateX(-Math.PI / 2); owned.push(fg);
+  const fm = new THREE.MeshStandardMaterial({ color: 0x16100a, roughness: 0.1, metalness: 0.7, transparent: true, opacity: 0.7, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }); owned.push(fm);
+  const floor = new THREE.Mesh(fg, fm); floor.position.set((sx0 + sx1) / 2 * CELL, 0.004, roomCz); floor.name = 'b4:sanctum-floor'; group.add(floor);
+  const cg = new THREE.PlaneGeometry(11, 11).rotateX(-Math.PI / 2), cm = glyphMaterial({ style: 0, seed: 4.4, intensity: 1.0, speed: 0.5, color: 0xffc870 }); owned.push(cg, cm);
+  const circle = new THREE.Mesh(cg, cm); circle.position.set(cx, 0.02, roomCz); circle.renderOrder = 3; circle.name = 'b4:sanctum-circle'; group.add(circle);
+  // 光の筋：龕の上から床の魔法陣へ
+  // 天窓（y 20）から斜めに差し込む神の光：太い 3 本＋細い 4 本、白金
+  const rayG = new THREE.PlaneGeometry(1, 22); rayG.translate(0, -11, 0); owned.push(rayG);
+  [[0, 4.2, 0.2], [-0.32, 2.4, 0.16], [0.32, 2.4, 0.16], [-0.6, 1.2, 0.12], [0.6, 1.2, 0.12], [-0.15, 0.9, 0.14], [0.18, 1.0, 0.14]].forEach(([off, w, I], i) => {
+    const m = lightShaftMaterial({ seed: 3 + i, intensity: I, color: i < 3 ? 0xfff0c8 : 0xffd890 }); owned.push(m);
+    for (const rot of [0, Math.PI / 2]) {
+      const ray = new THREE.Mesh(rayG, m); ray.scale.x = w; ray.position.set(cx + off * roomW * 0.5, 20.5, roomCz + 2.5); ray.rotation.set(0.32, rot, off * 0.25); ray.renderOrder = 8; ray.name = 'b4:sanctum-ray'; group.add(ray);
+    }
+  });
   // 光
   for (const L of [
-    { world: new THREE.Vector3(cx, 4.6, bz + 1.0), color: 0xffb060, intensity: 7.5, range: 16, off: false },
-    { world: new THREE.Vector3(cx, 5.0, faceZ - 1.6), color: 0xff7a30, intensity: 4.2, range: 20, off: false },
+    { world: new THREE.Vector3(cx, 4.6, bz + 1.0), color: 0xffd8a0, intensity: 8.5, range: 18, off: false },
+    { world: new THREE.Vector3(cx, 5.0, faceZ - 1.6), color: 0xffb060, intensity: 4.6, range: 22, off: false },
+    { world: new THREE.Vector3(cx, 14, roomCz), color: 0xfff0d0, intensity: 5.0, range: 26, off: false },
   ]) { lights.push(L); gLights.push(L); }
   emberSrc.push({ x: cx, z: bz, y0: 0.6, spread: 1.6, rise: 8, count: 70, hot: 1 }, { x: cx, z: roomCz, y0: 0.1, spread: 5, rise: 6, count: 60, hot: 0.6 });
   const embers = createEmbers(emberSrc); embers.mesh.name = 'b4:sanctum-embers'; group.add(embers.mesh); owned.push(embers);
   root.add(group);
-  return { group, update() {}, dragon: { x: cx, y: 0.54, z: bz + 0.5, size: 4.8 }, info: { pillars: sideX.length * pz.length, braziers: flameSites.length }, dispose() { owned.forEach(o => o.dispose()); group.removeFromParent(); } };
+  return { group, update() {}, dragon: { x: cx, y: 0.54, z: bz + 0.5, size: 4.8 }, braziers: holySites, info: { pillars: sideX.length * pz.length, braziers: holySites.length }, dispose() { owned.forEach(o => o.dispose()); group.removeFromParent(); } };
 }
