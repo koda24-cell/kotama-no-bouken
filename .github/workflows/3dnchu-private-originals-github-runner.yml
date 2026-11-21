@@ -1,0 +1,92 @@
+name: 3dnchu private originals audit (GitHub-hosted)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  inspect-and-render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check private input configuration
+        env:
+          PRIVATE_REPO: ${{ secrets.R01_PRIVATE_ASSETS_REPO }}
+          PRIVATE_TOKEN: ${{ secrets.R01_PRIVATE_ASSETS_TOKEN }}
+        run: |
+          test -n "$PRIVATE_REPO" && test -n "$PRIVATE_TOKEN" || { echo "Private repo/token secrets not configured"; exit 1; }
+          case "$PRIVATE_REPO" in
+            *[!a-zA-Z0-9._/-]*|'') echo "Invalid private repo name"; exit 1;;
+          esac
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.R01_PRIVATE_ASSETS_REPO }}
+          token: ${{ secrets.R01_PRIVATE_ASSETS_TOKEN }}
+          persist-credentials: false
+          path: private-originals
+      - name: Validate SHA256 before parsing
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          d=Path('private-originals')
+          expected={
+            'Lassyla_Material.blend':'ecda84d13cf48e98e571d434cba4dc49d30f01aeaabc93e118fa7fed1ec4d2c0',
+            'Palm_Tree_Demo.blend':'da01d11a6ad24032bcc63e48cc2f0e8c9dc068f4e7a56bd7176aaebf1de7d44e',
+          }
+          for name,sha in expected.items():
+            p=d/name
+            assert p.is_file(),f'Missing {name}'
+            assert hashlib.sha256(p.read_bytes()).hexdigest()==sha,f'SHA mismatch {name}'
+          print('BOTH_ORIGINAL_SHA256_MATCH')
+          PY
+      - name: Update ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan originals before opening
+        run: bash tools/security/clamav_scan_gate.sh scan private-originals qa/security/originals.log
+      - name: Scan inspection scripts
+        run: bash tools/security/clamav_scan_gate.sh scan tools/tech-research qa/security/scripts.log
+      - name: Inspect and render originals with autoexec disabled
+        run: |
+          set -eu
+          for name in Lassyla_Material Palm_Tree_Demo; do
+            mkdir -p "outputs/$name"
+            export AUDIT_OUTPUT_DIR="$GITHUB_WORKSPACE/outputs/$name"
+            blender -b --factory-startup --disable-autoexec -t 2 "private-originals/$name.blend" --python tools/tech-research/inspect_original_blend.py
+            blender -b --factory-startup --disable-autoexec -t 2 "private-originals/$name.blend" --python tools/tech-research/render_original_eevee.py
+          done
+      - name: Validate outputs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          for name in ('Lassyla_Material','Palm_Tree_Demo'):
+            d=Path('outputs')/name
+            j=json.loads((d/'inspection.json').read_text())
+            assert j['source_filename']==name+'.blend'
+            m=json.loads((d/'render_manifest.json').read_text())
+            assert m['status']=='UNREVIEWED_NOT_APPROVED'
+            p=d/'original_scene_eevee.png'
+            assert p.stat().st_size>1000
+            assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          print('BOTH_ORIGINAL_INSPECTION_AND_RENDER_VERIFIED_NOT_APPROVED')
+          PY
+      - name: Scan outputs
+        run: bash tools/security/clamav_scan_gate.sh scan outputs qa/security/outputs.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 3dnchu-originals-private-source-results-NOT-APPROVED
+          path: |
+            outputs/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn
