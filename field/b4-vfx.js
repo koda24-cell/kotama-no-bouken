@@ -79,16 +79,16 @@ export function createFlames(sites, kind = 'fire') {
         vec2 d = vec2((n1 - 0.5) * 0.28, (n2 - 0.5) * 0.18) * (0.25 + uv.y);
         vec2 q = uv + d;
         // 涙形：下が太く上が細い
-        float width = mix(0.42, 0.02, pow(clamp(q.y, 0.0, 1.0), 0.8));
+        float width = mix(0.48, 0.05, pow(clamp(q.y, 0.0, 1.0), 0.75));
         float body = smoothstep(width, width * 0.35, abs(q.x - 0.5)) * smoothstep(0.0, 0.08, q.y) * smoothstep(1.0, 0.55, q.y);
         float tex = texture2D(uShape, q * vec2(0.9, 0.9) + vec2(0.05, 0.0)).r * 0.6 + texture2D(uShape2, q + vec2(0.0, -t * 0.08)).r * 0.4;
         float shape = body * (0.55 + 0.75 * tex);
         float erode = smoothstep(q.y * 0.75 - 0.05, q.y * 0.75 + 0.25, n2 * shape + 0.18);
         float a = clamp(shape * erode * 1.6, 0.0, 1.0);
-        float core = smoothstep(0.35, 0.9, a) * (1.0 - q.y);
+        float core = smoothstep(0.55, 0.95, a) * (1.0 - q.y) * 0.7;
         vec3 col = mix(vec3(0.85, 0.12, 0.02), vec3(1.0, 0.55, 0.12), smoothstep(0.1, 0.6, a));
-        col = mix(col, vec3(1.0, 0.92, 0.6), core);
-        gl_FragColor = vec4(col * a * vInt * 1.6, 1.0);` : `
+        col = mix(col, vec3(1.0, 0.78, 0.38), core);
+        gl_FragColor = vec4(col * a * vInt * 1.05, 1.0);` : `
         float n1 = b4fbm(vec2(uv.x * 2.5 + vSeed * 7.0, uv.y * 1.8 - t * 0.35));
         vec2 q = uv + (n1 - 0.5) * 0.25;
         float tex = texture2D(uShape, q).r;
@@ -162,11 +162,18 @@ export function createEmbers(sources) {
 // style: 0 床の魔法陣 / 1 細い輪（柱のまわり）/ 2 壁のルーン帯（横長）
 export function glyphMaterial({ style = 0, seed = 0, intensity = 1, color = 0xff7a1e, speed = 1 } = {}) {
   return new THREE.ShaderMaterial({
-    uniforms: { uTime: B4_VFX_TIME, uSeed: { value: seed }, uInt: { value: intensity }, uCol: { value: new THREE.Color(color) }, uSpeed: { value: speed } },
-    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    uniforms: { uTime: B4_VFX_TIME, uSeed0: { value: seed }, uInt: { value: intensity }, uCol: { value: new THREE.Color(color) }, uSpeed: { value: speed } },
+    vertexShader: /* glsl */`
+      varying vec2 vUv; varying float vIS;
+      void main(){ vUv = uv; vec4 p = vec4(position, 1.0); vIS = 0.0;
+        #ifdef USE_INSTANCING
+        p = instanceMatrix * p; vIS = fract(sin(dot(instanceMatrix[3].xz, vec2(12.9898, 78.233))) * 43758.5453);
+        #endif
+        gl_Position = projectionMatrix * modelViewMatrix * p; }`,
     fragmentShader: /* glsl */`
-      uniform float uTime; uniform float uSeed; uniform float uInt; uniform vec3 uCol; uniform float uSpeed;
-      varying vec2 vUv;
+      uniform float uTime; uniform float uInt; uniform vec3 uCol; uniform float uSpeed; uniform float uSeed0;
+      varying vec2 vUv; varying float vIS;
+      #define uSeed (uSeed0 + vIS * 10.0)
       ${NOISE}
       float ring(float r, float R, float w){ return smoothstep(w, 0.0, abs(r - R)); }
       float glyphCell(vec2 c, float id){
@@ -178,10 +185,9 @@ export function glyphMaterial({ style = 0, seed = 0, intensity = 1, color = 0xff
         return v;
       }
       void main() {
-        float t = uTime * uSpeed + uSeed * 10.0;
+        float t = uTime * uSpeed * (0.8 + 0.4 * vIS) + uSeed * 10.0;
         float glow = 0.0;
         ${'' /* style switch */}
-        if (${'uSeed'} < -999.0) discard;
         vec2 p = vUv * 2.0 - 1.0;
         float r = length(p), a = atan(p.y, p.x);
         float TAU = 6.2831853;

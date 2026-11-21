@@ -4,7 +4,7 @@
  * どれも見た目だけ。通行判定・イベントには触れない。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall } from './b4-vfx.js?v=20261121-v1';
+import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall } from './b4-vfx.js?v=20261121-v2';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -86,7 +86,7 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
   // ---- たいまつ：壁 2〜3 面に1つ（灯 70% / 折れ 15% / 消え 15%）----
   const P = torchParts();
   const ironMat = new THREE.MeshStandardMaterial({ color: 0x1c1816, roughness: 0.55, metalness: 0.7 });
-  const woodMat = new THREE.MeshStandardMaterial({ color: 0x2a1a10, roughness: 0.85, metalness: 0 });
+  const woodMat = new THREE.MeshStandardMaterial({ color: 0x170e08, roughness: 0.85, metalness: 0 });
   const headLit = new THREE.MeshStandardMaterial({ color: 0x140c08, roughness: 0.9, emissive: 0xff4a10, emissiveIntensity: 1.6 });
   const headOut = new THREE.MeshStandardMaterial({ color: 0x0c0908, roughness: 0.95 });
   const M = { bracket: [], handle: [], headLit: [], headOut: [], stub: [], fallen: [] };
@@ -95,8 +95,8 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
   const placed = [];
   for (const f of faces) {
     if (paneled.has(key(f)) || reserved.has(f.tx + ',' + f.ty)) continue;
-    if (hash(f.tx * 5 + f.dx + 3, f.ty * 5 + f.dz + 3, 901) > (f.theme === 'mine' ? 0.5 : 0.42)) continue;
-    if (placed.some(p => Math.abs(p.tx - f.tx) + Math.abs(p.ty - f.ty) < 2 && p.dx === f.dx && p.dz === f.dz)) continue;
+    if (hash(f.tx * 5 + f.dx + 3, f.ty * 5 + f.dz + 3, 901) > (f.theme === 'mine' ? 0.3 : 0.22)) continue;
+    if (placed.some(p => Math.abs(p.tx - f.tx) + Math.abs(p.ty - f.ty) < 3)) continue;
     placed.push(f);
     const yaw = Math.atan2(-f.dx, -f.dz);
     const along = (hash(f.tx, f.ty, 902) - 0.5) * 1.6;
@@ -110,7 +110,7 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
     if (state === 'lit') {
       M.handle.push(mtx); M.headLit.push(mtx);
       const tip = local(new THREE.Vector3(0, 0.44, 0.335));
-      fireSites.push({ x: tip.x, y: tip.y - 0.05, z: tip.z, w: 0.34, h: 0.62, seed: hash(f.tx, f.ty, 904), intensity: 1 });
+      fireSites.push({ x: tip.x, y: tip.y - 0.06, z: tip.z, w: 0.46, h: 0.72, seed: hash(f.tx, f.ty, 904), intensity: 1 });
       fireSites.push({ x: tip.x, y: tip.y - 0.04, z: tip.z, w: 0.22, h: 0.4, seed: hash(f.tx, f.ty, 905) + 0.5, intensity: 0.8 });
       torchEmbers.push({ x: tip.x, z: tip.z, y0: tip.y + 0.15, spread: 0.08, rise: 1.6, count: 8, hot: 1 });
       if (lights.length < 34) {
@@ -144,28 +144,37 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
   // ---- 床の魔法陣：交差点（3方向以上に開いた床）と、行き止まりの一部 ----
   const glyphGeo = new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2);
   owned.push(glyphGeo);
+  const glyphMs = [];
   for (let ty = 1; ty < map.h - 1; ty++) for (let tx = 1; tx < map.w - 1; tx++) {
     if (!walk(tx, ty) || ch(tx, ty) === '*' || reserved.has(tx + ',' + ty)) continue;
     const open = DIRS.filter(([dx, dz]) => walk(tx + dx, ty + dz)).length;
-    const want = open >= 3 ? 0.75 : open === 1 ? 0.35 : 0.0;
-    if (hash(tx, ty, 910) > want) continue;
-    const mat = glyphMaterial({ style: 0, seed: hash(tx, ty, 911) * 10, intensity: 0.9 + hash(tx, ty, 912) * 0.5, speed: 0.8 + hash(tx, ty, 913) * 0.6 });
-    const m = new THREE.Mesh(glyphGeo, mat); const sz = open >= 3 ? 3.3 : 2.4;
-    m.scale.set(sz, 1, sz); m.position.set(tx * CELL, 0.025, ty * CELL); m.rotation.y = hash(tx, ty, 914) * 6.28;
-    m.name = 'b4:glyph-floor'; m.renderOrder = 4; group.add(m); owned.push(mat); info.glyphs++;
+    const want = open >= 3 ? 0.7 : open === 1 ? 0.3 : open === 4 ? 0.2 : 0.0;
+    if (hash(tx, ty, 910) > want || glyphMs.length >= 40) continue;
+    const sz = open >= 3 ? 3.3 : 2.4;
+    glyphMs.push(new THREE.Matrix4().compose(new THREE.Vector3(tx * CELL, 0.025, ty * CELL), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hash(tx, ty, 914) * 6.28, 0)), new THREE.Vector3(sz, 1, sz)));
+  }
+  if (glyphMs.length) {
+    const mat = glyphMaterial({ style: 0, seed: 1.3, intensity: 1.05, speed: 1.0 });
+    const im = new THREE.InstancedMesh(glyphGeo, mat, glyphMs.length); glyphMs.forEach((m, i) => im.setMatrixAt(i, m));
+    im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere(); im.name = 'b4:glyph-floor'; im.renderOrder = 4;
+    group.add(im); owned.push(im, mat); info.glyphs = glyphMs.length;
   }
   // ---- 宙に浮くルーン帯：壁の手前 0.3 m、高さ 1.6〜2.4 m（パネル・たいまつの無い面の 3 割）----
   const bandGeo = new THREE.PlaneGeometry(3.4, 0.36);
   owned.push(bandGeo);
+  const bandMs = [];
   for (const f of faces) {
-    if (paneled.has(key(f)) || placed.includes(f)) continue;
-    if (hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 920) > (f.theme === 'dragon' || f.theme === 'deposit' ? 0.36 : 0.24)) continue;
-    const mat = glyphMaterial({ style: 2, seed: hash(f.tx, f.ty, 921) * 10, intensity: 0.85, speed: 0.6 });
-    const m = new THREE.Mesh(bandGeo, mat);
+    if (paneled.has(key(f)) || placed.includes(f) || bandMs.length >= 36) continue;
+    if (hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 920) > (f.theme === 'dragon' || f.theme === 'deposit' ? 0.22 : 0.14)) continue;
     const d = 2 - 0.325 - 0.5;
-    m.position.set(f.tx * CELL + f.dx * d, 1.65 + hash(f.tx, f.ty, 922) * 0.7, f.ty * CELL + f.dz * d);
-    m.rotation.y = Math.atan2(-f.dx, -f.dz);
-    m.name = 'b4:glyph-band'; m.renderOrder = 4; group.add(m); owned.push(mat); info.runeBands++;
+    bandMs.push(new THREE.Matrix4().compose(new THREE.Vector3(f.tx * CELL + f.dx * d, 1.75 + hash(f.tx, f.ty, 922) * 0.6, f.ty * CELL + f.dz * d),
+      new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.atan2(-f.dx, -f.dz), 0)), new THREE.Vector3(1, 1, 1)));
+  }
+  if (bandMs.length) {
+    const mat = glyphMaterial({ style: 2, seed: 4.2, intensity: 0.7, speed: 0.6 });
+    const im = new THREE.InstancedMesh(bandGeo, mat, bandMs.length); bandMs.forEach((m, i) => im.setMatrixAt(i, m));
+    im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere(); im.name = 'b4:glyph-band'; im.renderOrder = 4;
+    group.add(im); owned.push(im, mat); info.runeBands = bandMs.length;
   }
   // ---- 光の筋（天井の割れ目から）----
   const shaftGeo = new THREE.PlaneGeometry(1.5, 4.3); shaftGeo.translate(0, 2.15, 0);
