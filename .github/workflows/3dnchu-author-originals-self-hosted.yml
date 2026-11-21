@@ -1,0 +1,67 @@
+name: 3dnchu author originals local runner audit (opt-in)
+# Dedicated Windows self-hosted runner only. No original Blend is uploaded to GitHub.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  author-originals:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: [self-hosted, Windows, X64, original-blend-audit]
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      AUDIT_SOURCE_DIR: ${{ secrets.ORIGINAL_BLEND_AUDIT_SOURCE_DIR }}
+      BLENDER_EXE: ${{ secrets.ORIGINAL_BLEND_AUDIT_BLENDER_EXE }}
+      CLAMSCAN_EXE: ${{ secrets.ORIGINAL_BLEND_AUDIT_CLAMSCAN_EXE }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert private local configuration
+        run: |
+          foreach ($key in @('AUDIT_SOURCE_DIR','BLENDER_EXE','CLAMSCAN_EXE')) {
+            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($key))) { throw "Missing local configuration: $key" }
+          }
+          foreach ($name in @('Lassyla_Material.blend','Palm_Tree_Demo.blend')) {
+            if (!(Test-Path -LiteralPath (Join-Path $env:AUDIT_SOURCE_DIR $name) -PathType Leaf)) {throw "Missing original: $name"}
+          }
+      - name: Verify original hashes, ClamAV scan and inspect
+        run: |
+          & ./tools/tech-research/run_safe_original_check.ps1 -BlenderExe $env:BLENDER_EXE -ClamScanExe $env:CLAMSCAN_EXE -SourceDir $env:AUDIT_SOURCE_DIR -OutputDir "$env:RUNNER_TEMP/original-audit"
+      - name: Render both cleared originals
+        run: |
+          foreach ($name in @('Lassyla_Material.blend','Palm_Tree_Demo.blend')) {
+            $source=Join-Path $env:AUDIT_SOURCE_DIR $name
+            $target=Join-Path "$env:RUNNER_TEMP/original-audit" ([IO.Path]::GetFileNameWithoutExtension($name))
+            $env:AUDIT_OUTPUT_DIR=$target
+            & $env:BLENDER_EXE --background --factory-startup --disable-autoexec $source --python "$env:GITHUB_WORKSPACE/tools/tech-research/render_original_eevee.py"
+            if ($LASTEXITCODE -ne 0) {throw "Eevee render failed: $name"}
+          }
+      - name: Scan generated output
+        run: |
+          & $env:CLAMSCAN_EXE --recursive --infected "$env:RUNNER_TEMP/original-audit"
+          if ($LASTEXITCODE -ne 0) {throw "Output antivirus scan failed"}
+      - name: Validate report and PNG outputs
+        run: |
+          foreach ($name in @('Lassyla_Material','Palm_Tree_Demo')) {
+            $dir=Join-Path "$env:RUNNER_TEMP/original-audit" $name
+            foreach ($file in @('inspection.json','render_manifest.json','original_scene_eevee.png')) {
+              $p=Join-Path $dir $file
+              if (!(Test-Path -LiteralPath $p -PathType Leaf)) {throw "Missing output: $name/$file"}
+            }
+            $png=Join-Path $dir 'original_scene_eevee.png'
+            if ((Get-Item -LiteralPath $png).Length -lt 1000) {throw "PNG too small: $name"}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 3dnchu-author-originals-inspection-NOT-APPROVED
+          path: |
+            ${{ runner.temp }}/original-audit/*/inspection.json
+            ${{ runner.temp }}/original-audit/*/render_manifest.json
+            ${{ runner.temp }}/original-audit/*/original_scene_eevee.png
+          retention-days: 14
+          if-no-files-found: warn

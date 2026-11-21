@@ -1,0 +1,73 @@
+name: 3dnchu original Blend safe pipeline smoke test
+on:
+  push:
+    branches: [research/3dnchu-20-techniques-20261120]
+    paths:
+      - '.github/workflows/3dnchu-original-pipeline-smoke.yml'
+      - 'tools/tech-research/inspect_original_blend.py'
+      - 'tools/tech-research/render_original_eevee.py'
+      - 'tools/tech-research/create_synthetic_fixture.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert Blender 5.3
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Python syntax
+        run: python3 -m py_compile tools/tech-research/create_synthetic_fixture.py tools/tech-research/inspect_original_blend.py tools/tech-research/render_original_eevee.py
+      - name: Refresh antivirus definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan pipeline source
+        run: bash tools/security/clamav_scan_gate.sh scan tools/tech-research qa/security/source.log
+      - name: Create synthetic test blend
+        env:
+          FIXTURE_DIR: ${{ github.workspace }}/outputs/fixture
+        run: blender -b --factory-startup --disable-autoexec -t 2 --python tools/tech-research/create_synthetic_fixture.py
+      - name: Scan test blend before opening
+        run: bash tools/security/clamav_scan_gate.sh scan outputs/fixture qa/security/fixture.log
+      - name: Inspect synthetic blend safely
+        env:
+          AUDIT_OUTPUT_DIR: ${{ github.workspace }}/outputs/inspection
+        run: blender -b --factory-startup --disable-autoexec -t 2 outputs/fixture/synthetic_fixture.blend --python tools/tech-research/inspect_original_blend.py
+      - name: Render synthetic scene in Eevee
+        env:
+          AUDIT_OUTPUT_DIR: ${{ github.workspace }}/outputs/render
+        run: blender -b --factory-startup --disable-autoexec -t 2 outputs/fixture/synthetic_fixture.blend --python tools/tech-research/render_original_eevee.py
+      - name: Validate inspection and image
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          j=json.loads(Path("outputs/inspection/inspection.json").read_text())
+          assert j["source_filename"]=="synthetic_fixture.blend"
+          assert any(m["name"]=="synthetic_painterly_test" for m in j["materials"])
+          p=Path("outputs/render/original_scene_eevee.png")
+          assert p.read_bytes().startswith(bytes.fromhex("89504e470d0a1a0a0a")[:8])
+          assert p.stat().st_size>1000
+          print("SYNTHETIC_PIPELINE_SMOKE_PASS_NOT_ORIGINAL")
+          PY
+      - name: Scan output
+        run: bash tools/security/clamav_scan_gate.sh scan outputs qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 3dnchu-synthetic-pipeline-smoke-NOT-ORIGINAL
+          path: |
+            outputs/inspection/
+            outputs/render/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn
