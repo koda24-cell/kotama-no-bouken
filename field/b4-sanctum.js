@@ -16,8 +16,8 @@
  *   ・艶のある黒い床＋魔法陣（半径 5.5 m）、光の筋 2 本、金色の火の粉。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261122-h1';
-import { addUplight } from './b4-chasm.js?v=20261122-h1';
+import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261122-h3';
+import { addUplight } from './b4-chasm.js?v=20261122-h3';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 

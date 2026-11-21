@@ -8,7 +8,7 @@
  * 1 種類 1 draw（InstancedMesh）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME } from './b4-vfx.js?v=20261122-h1';
+import { B4_VFX_TIME } from './b4-vfx.js?v=20261122-h3';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -60,7 +60,7 @@ export function buildRockPass({ root, map, ch, wallCell, hash, CELL, reserved = 
   const group = new THREE.Group(); group.name = 'b4:rock-pass';
   const owned = [], info = { boulders: 0, ores: 0, frames: 0, mists: 0 };
   const walk = (x, y) => x >= 0 && y >= 0 && x < map.w && y < map.h && !wallCell(x, y);
-  const rockMat = mats.rock;
+  const rockMat = mats.boulder || mats.rock;
   const oreMat = new THREE.MeshStandardMaterial({ color: 0x4a0804, roughness: 0.22, metalness: 0.2, emissive: 0xff260a, emissiveIntensity: 1.1 });
   const haloMat = new THREE.MeshBasicMaterial({ color: 0xff3010, transparent: true, opacity: 0.22, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.BackSide });
   const woodMat = new THREE.MeshStandardMaterial({ color: 0x3a2418, roughness: 0.86 });
