@@ -10,9 +10,12 @@ on:
   push:
     branches:
       - feature/blender53-stage-boundary-checkpoints-20261120
+      - feature/blender53-stage-budget-guard-20261121
       - development
     paths:
       - '.github/workflows/blender53-stage-boundary-checkpoints.yml'
+      - 'tools/3d_checkpoint/stage_budget.py'
+      - 'tools/3d_checkpoint/test_stage_budget.py'
       - 'docs/3d/recovery-drills/blender53-cross-run-drill-20261120.md'
       - 'docs/3d/recovery-drills/second-trigger-20261120.md'
 permissions:
@@ -20,6 +23,15 @@ permissions:
   actions: read
   packages: read
 jobs:
+  budget-unit-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Test budget boundary and failure cases
+        run: python3 tools/3d_checkpoint/test_stage_budget.py
   stage-one:
     outputs:
       handoff_required: ${{ steps.stage_budget.outputs.handoff_required }}
