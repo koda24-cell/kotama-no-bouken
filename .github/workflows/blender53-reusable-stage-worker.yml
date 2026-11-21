@@ -138,7 +138,7 @@ jobs:
         id: route
         env:
           START_EPOCH: ${{ steps.start.outputs.epoch }}
-          BUDGET_DRILL_ALLOWED: ${{ github.ref == 'refs/heads/feature/blender53-reusable-12-stage-chain-20261122' }}
+          BUDGET_DRILL_ALLOWED: ${{ github.ref == 'refs/heads/feature/blender53-six-stage-validation-20261122' }}
           STAGE: ${{ inputs.stage }}
           MAX_STAGES: ${{ inputs.max_stages }}
           SIMULATE: ${{ inputs.simulated_minutes }}
