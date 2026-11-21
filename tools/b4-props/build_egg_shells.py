@@ -44,12 +44,14 @@ def finish_shell(bm, name):
         rad = Vector((c.x, c.y, (c.z - H * 0.45) * 0.6))
         rad = rad.normalized() if rad.length > 1e-5 else Vector((0, 0, 1))
         d = p.normal.dot(rad)
-        inner = 1.0 if d < -0.45 else 0.0
         rim = 1.0 if abs(d) < 0.45 else 0.0
         for li in p.loop_indices:
-            a_cd.data[li].value = inner
             a_fr.data[li].value = rim
-    for i, v in enumerate(me.vertices):
+    for i, v in enumerate(me.vertices):  # cd（POINT）= 内側の面の頂点
+        c = v.co
+        rad = Vector((c.x, c.y, (c.z - H * 0.45) * 0.6))
+        rad = rad.normalized() if rad.length > 1e-5 else Vector((0, 0, 1))
+        a_cd.data[i].value = 1.0 if v.normal.dot(rad) < -0.3 else 0.0
         a_tip.data[i].value = max(0.0, min(1.0, v.co.z / H))
     return ob
 
