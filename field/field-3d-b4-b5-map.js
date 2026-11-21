@@ -9,7 +9,7 @@ import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
 import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t4';
 import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t3';
 import { planChasms, buildChasms } from './b4-chasm.js?v=20261121-c5';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a3';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a4';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -59,6 +59,7 @@ export function createTheme(api, area) {
   const isTempleFace = makeTempleFacePicker(hash);
   if (temple) mat.floor = temple.floor;
   const templeWallGeo = magma ? new THREE.BoxGeometry(4.08, 4.2, 0.65, 1, 1, 1) : null;
+  const templeWallGeoTall = magma ? (() => { const b = new THREE.BoxGeometry(4.08, 8.2, 0.65, 1, 1, 1); const uv = b.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setY(i, uv.getY(i) * 8.2 / 4.2); return b; })() : null;
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02, magma ? 4 : 1, 1, magma ? 4 : 1);
   if (magma) {
     const p=floorGeo.getAttribute('position');
@@ -219,7 +220,7 @@ export function createTheme(api, area) {
         ornaments++;
       }
       if ((!b5 || hall) && c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, hall ? 16 : b4Vault ? 8.1 : 4.05, z);
-      if (temple && !b4Vault && c !== '>' && c !== '<' && hash(tx, ty, 783) < 0.7) templeTiles.push({ tx, ty, rot: !wallCell(tx + 1, ty) || !wallCell(tx - 1, ty) });
+      if (temple && c !== '>' && c !== '<' && hash(tx, ty, 783) < 0.7) templeTiles.push({ tx, ty, rot: !wallCell(tx + 1, ty) || !wallCell(tx - 1, ty) });
       // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
       if (!b5 && !objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
         const h = magma ? .5 + hash(tx,ty,46)*1.1 : 0.8 + hash(tx, ty, 46) * 1.7;
@@ -237,8 +238,8 @@ export function createTheme(api, area) {
         // outside the recess instead of letting displaced rock cut through its back/sides.
         const recessSide = b4Plan?.excludedWalls.has(`${tx+dx},${ty+dz}`);
         const tallHallWall = hall && (tx + dx <= 3 || tx + dx >= a.w - 4 || ty + dz === 0 || ty + dz >= a.h - 1);
-        if (temple && !recessSide && !b4Vault && isTempleFace(tx, ty, dx, dz)) {
-          mesh(templeWallGeo, temple.wall, ex, 2, ez, ry, 1, 1, 1);
+        if (temple && !recessSide && (b4Vault || isTempleFace(tx, ty, dx, dz))) {
+          if (b4Vault) mesh(templeWallGeoTall, temple.wall, ex, 4.1, ez, ry, 1, 1, 1); else mesh(templeWallGeo, temple.wall, ex, 2, ez, ry, 1, 1, 1);
           templeFaces.push({ x: ex, z: ez, ry, dx, dz, rune: hash(tx * 3 + dx, ty * 3 + dz, 781) < 0.4, seed: hash(tx, ty, 782 + dx * 2 + dz) });
           continue;
         }
@@ -347,12 +348,12 @@ export function createTheme(api, area) {
     if (b5) { dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall }); installB5Fog(); }
     batchStatic();
     if (chasmPlan) chasms = buildChasms({ root: buildRoot, plan: chasmPlan, CELL, hash, trimMaterial: temple.trim, wallMaterial: temple.wall, lights, gLights: g.lights });
-    if (temple) { templeTrims = buildTempleTrims(buildRoot, templeFaces, temple, hash); templeBeams = buildCeilingBeams(buildRoot, templeTiles, temple, CELL); }
+    if (temple) { templeTrims = buildTempleTrims(buildRoot, templeFaces, temple, hash, a.f === 2 ? 8.2 : 4.2); templeBeams = buildCeilingBeams(buildRoot, templeTiles, temple, CELL, a.f === 2 ? 8.1 : 4.05); }
     if (b4Plan) {
       // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
       deepLava = buildDeepLava({ root: buildRoot, tiles: deepLavaTiles, ch, CELL, hash });
       const fallRock = new THREE.MeshStandardMaterial({ color: 0x2a221e, roughness: 0.9, flatShading: true }); localGeometries.push(fallRock);
-      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, extraEmbers: [...deepLava.embers, ...(chasms?.embers || [])], openFaces: new Set(chasms?.parapetFaces.map(f => `${f.tx},${f.ty},${f.dx},${f.dz}`) || []), rockMaterial: fallRock, isTempleFace: (tx, ty, dx, dz) => !a.f || a.f < 2 ? isTempleFace(tx, ty, dx, dz) : false, mines: b4Plan.mines.slice(1), oreSites, lavaSites, crystalGeo, isStale: () => root !== buildRoot })
+      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, extraEmbers: [...deepLava.embers, ...(chasms?.embers || [])], openFaces: new Set(chasms?.parapetFaces.map(f => `${f.tx},${f.ty},${f.dx},${f.dz}`) || []), rockMaterial: fallRock, isTempleFace: (tx, ty, dx, dz) => a.f === 2 || isTempleFace(tx, ty, dx, dz), mines: b4Plan.mines.slice(1), oreSites, lavaSites, crystalGeo, isStale: () => root !== buildRoot })
         .then(d => { if (root !== buildRoot) d.dispose(); else b4Dressing = d; })
         .catch(err => console.warn('[b4-dressing]', err));
     }

@@ -46,7 +46,8 @@ export function makeTempleFacePicker(hash) {
 }
 
 // faces: [{ x, z, ry, dx, dz, rune, seed }]（壁の中心座標と向き）。化粧材をインスタンスで置く
-export function buildTempleTrims(root, faces, mats, hash) {
+export function buildTempleTrims(root, faces, mats, hash, height = 4.2) {
+  const dyTop = height - 4.2, sPil = height / 4.2;
   const group = new THREE.Group(); group.name = 'b4:temple-trims';
   const owned = [];
   if (!faces.length) { root.add(group); return { group, dispose() {} }; }
@@ -55,10 +56,10 @@ export function buildTempleTrims(root, faces, mats, hash) {
   const parts = {
     plinth: { geo: new THREE.BoxGeometry(4.1, 0.42, 0.2), mat: mats.trim, y: 0.21, d: 0.1 },
     plinthCap: { geo: new THREE.BoxGeometry(4.1, 0.08, 0.28), mat: mats.trim, y: 0.46, d: 0.14 },
-    cornice: { geo: new THREE.BoxGeometry(4.1, 0.34, 0.36), mat: mats.trim, y: 3.98, d: 0.18 },
-    corniceLow: { geo: new THREE.BoxGeometry(4.1, 0.12, 0.24), mat: mats.trim, y: 3.74, d: 0.12 },
-    pilaster: { geo: new THREE.BoxGeometry(0.46, 4.2, 0.26), mat: mats.trim, y: 2.1, d: 0.13, lateral: [-1.82, 1.82] },
-    pilasterCap: { geo: new THREE.BoxGeometry(0.62, 0.22, 0.36), mat: mats.trim, y: 3.45, d: 0.18, lateral: [-1.82, 1.82] },
+    cornice: { geo: new THREE.BoxGeometry(4.1, 0.34, 0.36), mat: mats.trim, y: 3.98, d: 0.18, top: 1 },
+    corniceLow: { geo: new THREE.BoxGeometry(4.1, 0.12, 0.24), mat: mats.trim, y: 3.74, d: 0.12, top: 1 },
+    pilaster: { geo: new THREE.BoxGeometry(0.46, 4.2, 0.26), mat: mats.trim, y: 2.1, d: 0.13, lateral: [-1.82, 1.82], stretch: 1 },
+    pilasterCap: { geo: new THREE.BoxGeometry(0.62, 0.22, 0.36), mat: mats.trim, y: 3.45, d: 0.18, lateral: [-1.82, 1.82], top: 1 },
     // 彫り込まれたルーンの帯（光るルーン文字が流れる。前版の光る棒は単調だったので置き換え）
     slot: { geo: new THREE.PlaneGeometry(3.0, 0.34), mat: mats.runeCarve, y: 1.8, d: 0.032, runeOnly: true },
     slotFrame: { geo: new THREE.BoxGeometry(3.2, 0.5, 0.05), mat: mats.trim, y: 1.8, d: 0.0, runeOnly: true },
@@ -74,7 +75,7 @@ export function buildTempleTrims(root, faces, mats, hash) {
         const off = SK + P.d;
         const px = f.x + nx * off + (-nz) * lat, pz = f.z + nz * off + nx * lat;
         const tilt = name.startsWith('pilaster') ? 0 : (hash(f.seed * 13, name.length, 779) - 0.5) * 0.02;
-        ms.push(new THREE.Matrix4().compose(new THREE.Vector3(px, P.y, pz), new THREE.Quaternion().setFromEuler(new THREE.Euler(tilt, f.ry, 0)), new THREE.Vector3(1, 1, 1)));
+        ms.push(new THREE.Matrix4().compose(new THREE.Vector3(px, P.stretch ? P.y * sPil : P.y + (P.top ? dyTop : 0), pz), new THREE.Quaternion().setFromEuler(new THREE.Euler(tilt, f.ry, 0)), new THREE.Vector3(1, P.stretch ? sPil : 1, 1)));
       }
     }
     if (!ms.length) continue;
