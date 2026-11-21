@@ -1,0 +1,14 @@
+Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)
+Array iterator out of range: FloatAttribute_data_lookup_int (index 1226)
+Traceback (most recent call last):
+  File "/home/runner/work/kotama-no-bouken/kotama-no-bouken/tools/b4-props/build_egg_shells.py", line 67, in <module>
+    cup = finish_shell(D.egg_patch_bm(H, R, seed=1, z_hi_fn=D.jagged(2, 0.52, 0.16, teeth=7), nseg=34, nring=18), "egg_cup")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/kotama-no-bouken/kotama-no-bouken/tools/b4-props/build_egg_shells.py", line 50, in finish_shell
+    a_cd.data[li].value = inner
+    ~~~~~~~~~^^^^
+IndexError: bpy_prop_collection[index]: index 1226 out of range, size 1226
+
+Error: script failed, file: 'tools/b4-props/build_egg_shells.py', exiting.
+
+Blender quit
