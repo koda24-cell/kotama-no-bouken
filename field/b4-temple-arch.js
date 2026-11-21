@@ -5,7 +5,7 @@
  *  - 化粧材：台座（巾木）・コーニス・付け柱・彫り込まれたルーンの溝（発光）・天井の梁
  * 壁 1 面ごとに「神殿の壁」か「洞窟の岩肌（従来）」かを決める。通行判定には触れない。 */
 import * as THREE from 'three';
-import { glyphMaterial } from './b4-vfx.js?v=20261122-g2';
+import { glyphMaterial } from './b4-vfx.js?v=20261122-g4';
 
 const TEX = './assets/textures/floor4/cc0/';
 const loader = new THREE.TextureLoader();

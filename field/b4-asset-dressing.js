@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { buildTemplePass } from './b4-temple-fx.js?v=20261122-g2';
+import { buildTemplePass } from './b4-temple-fx.js?v=20261122-g4';
 
 const BASE = './assets/models/floor4/props/';
 // Zone themes (user 2026-11-20: cluster things that naturally gather — ore deposits, old mine workings, pickaxes):
@@ -84,7 +84,7 @@ function loadModel(key, url, opts = {}) {
       if (material.emissiveMap) material.emissiveIntensity = opts.emissive ?? Math.max(material.emissiveIntensity, 2.2);
       if (opts.tintRGB && material.color) material.color.multiply(new THREE.Color(...opts.tintRGB));
       material.userData.b4PropCached = true;
-      nearCull(material, opts.near ?? 1.0);
+      nearCull(material, opts.near ?? 1.6);   // 2026-11-22 背中側の物が視界をふさがない
       let merged = null;
       if (geos.length > 1) {
         const keys = g => Object.keys(g.attributes).sort().join(',') + '|' + !!g.index;

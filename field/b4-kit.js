@@ -9,16 +9,32 @@
  *   出口      ：4.0×4.2 m の神殿の門（柱＋まぐさ＋ルーン帯）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { glyphMaterial, createFlames } from './b4-vfx.js?v=20261122-g2';
+import { glyphMaterial, createFlames } from './b4-vfx.js?v=20261122-g4';
 
 const merge = parts => { const g = mergeGeometries(parts.map(p => (p.index ? p.toNonIndexed() : p)), false); parts.forEach(p => p.dispose()); return g; };
 const box = (w, h, d, x, y, z, ry = 0, rz = 0) => { const b = new THREE.BoxGeometry(w, h, d); if (rz) b.rotateZ(rz); if (ry) b.rotateY(ry); b.translate(x, y, z); return b; };
 const light = (obj, pos, color, intensity, range) => { (obj.userData.b1 ||= {}).lights = [...(obj.userData.b1.lights || []), { pos, color, intensity, range }]; };
 
+// カメラから near m 以内の面を描かない（立ち位置の後ろ 1.1 m のカメラが物の中に入っても視界をふさがない）
+function nearCull(material, near = 1.3) {
+  const prev = material.onBeforeCompile;
+  material.onBeforeCompile = (sh, r) => {
+    prev?.call(material, sh, r);
+    sh.uniforms.uKitNear = { value: near };
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vKitW;').replace('#include <project_vertex>', '#include <project_vertex>\nvKitW = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vKitW; uniform float uKitNear;').replace('void main() {', 'void main() {\n  if (distance(vKitW, cameraPosition) < uKitNear) discard;');
+  };
+  const key = material.customProgramCacheKey?.bind(material);
+  material.customProgramCacheKey = () => (key ? key() : '') + 'kitnear' + near;
+  material.needsUpdate = true;
+  return material;
+}
+
 export function createB4Kit({ wall, trim }) {
   const owned = [];
-  const stone = trim.clone(); stone.color = new THREE.Color(0x4a3a36);
-  const darkStone = wall.clone(); darkStone.color = new THREE.Color(0x6a4c42);
+  // 周りの神殿の石（地色＋emissiveMap の地熱色）と同じ明るさにそろえる（2026-11-22：階段が黒く浮いていた）
+  const stone = trim.clone(); stone.color.setRGB(0.78, 0.55, 0.47);
+  const darkStone = wall.clone();
   const obsidian = new THREE.MeshStandardMaterial({ color: 0x0d0909, roughness: 0.22, metalness: 0.35 });
   const iron = new THREE.MeshStandardMaterial({ color: 0x2b2421, roughness: 0.42, metalness: 0.85 });
   const wood = new THREE.MeshStandardMaterial({ color: 0x1c130f, roughness: 0.78 });
@@ -28,6 +44,7 @@ export function createB4Kit({ wall, trim }) {
   const ringM = glyphMaterial({ style: 1, seed: 6.1, intensity: 1.6, speed: 0.5 });
   const circleM = glyphMaterial({ style: 0, seed: 8.8, intensity: 1.25, speed: 0.6, color: 0xff8a2a });
   owned.push(stone, darkStone, obsidian, iron, wood, hot, ember, runeV, ringM, circleM);
+  for (const m of [stone, darkStone, obsidian, iron, wood, hot, ember]) nearCull(m);
   const mesh = (geo, mat, name) => { owned.push(geo); const m = new THREE.Mesh(geo, mat); m.name = name; return m; };
   const flame = (sites) => { const f = createFlames(sites, 'fire'); owned.push(f); return f.mesh; };
 
@@ -50,7 +67,7 @@ export function createB4Kit({ wall, trim }) {
     // 口の内側の壁（奥と左右）と、枠の縁石・角柱
     const sh = [box(0.2, 3.6, 3.6, -1.4, -1.8, -0.2), box(0.2, 3.6, 3.6, 1.4, -1.8, -0.2), box(2.6, 3.6, 0.2, 0, -1.8, -2.0)];
     const rim = [box(0.18, 0.16, 3.6, -1.39, 0.08, -0.2), box(0.18, 0.16, 3.6, 1.39, 0.08, -0.2), box(2.96, 0.16, 0.18, 0, 0.08, 1.69)];
-    for (const [x, z] of [[-1.48, 1.78], [1.48, 1.78], [-1.48, -1.82], [1.48, -1.82]]) rim.push(box(0.36, 0.7, 0.36, x, 0.35, z), box(0.44, 0.08, 0.44, x, 0.74, z));
+    for (const [x, z] of [[-1.48, -1.82], [1.48, -1.82]]) rim.push(box(0.36, 0.7, 0.36, x, 0.35, z), box(0.44, 0.08, 0.44, x, 0.74, z));
     const br = [...brazierParts(-1.65, 1.55 - 3.2), ...brazierParts(1.65, 1.55 - 3.2)];
     stairsDown.add(mesh(merge(fl), darkStone, 'floor'), mesh(merge(st), stone, 'steps'), mesh(merge(noses), hot, 'step-glow'), mesh(merge(sh), darkStone, 'shaft'), mesh(merge(rim), stone, 'rim'), mesh(merge(br), iron, 'braziers'));
     stairsDown.add(flame([{ x: -1.65, y: 1.22, z: -1.65, w: 0.7, h: 1.25, seed: 0.3 }, { x: 1.65, y: 1.22, z: -1.65, w: 0.7, h: 1.25, seed: 0.7 }]));
@@ -59,28 +76,27 @@ export function createB4Kit({ wall, trim }) {
     light(stairsDown, [0, -1.2, -0.6], 0xff5a1a, 2.6, 6); light(stairsDown, [0, 1.6, -1.65], 0xff8a34, 1.8, 6);
   }
 
-  // ---------------- 上り階段
+  // ---------------- 上り階段（2026-11-22：手前 1.8 m は空ける。段は奥寄せ、幅 2.8 m、0.32 m×8 段）
   const stairsUp = new THREE.Group(); stairsUp.name = 'b4kit:stairs-up';
   {
-    const st = [], cheek = [], rub = [];
-    for (let i = 0; i < 9; i++) {
-      const top = 0.3 * (i + 1), z1 = 1.5 - 0.38 * i, z0 = z1 - 0.38;
-      if (i === 8) { st.push(box(1.5, top, 0.38, -0.6, top / 2, (z0 + z1) / 2)); continue; }   // 最上段は半分崩落
-      st.push(box(2.8, top, 0.38, 0, top / 2, (z0 + z1) / 2));
+    const st = [], cheek = [], rub = [], noses = [];
+    const Z0 = 0.2, D = 0.275;
+    for (let i = 0; i < 8; i++) {
+      const top = 0.32 * (i + 1), z1 = Z0 - D * i, z0 = z1 - D;
+      if (i === 7) { st.push(box(1.5, top, D, -0.6, top / 2, (z0 + z1) / 2)); continue; }   // 最上段は半分崩落
+      st.push(box(2.8, top, D, 0, top / 2, (z0 + z1) / 2));
+      noses.push(box(2.7, 0.03, 0.04, 0, top + 0.01, z1 - 0.02));
     }
     for (const sx of [-1.55, 1.55]) {
-      cheek.push(box(0.3, 1.1, 3.6, sx, 0.55, -0.3));
-      const ramp = new THREE.BoxGeometry(0.3, 0.5, 4.2); ramp.rotateX(0.62); ramp.translate(sx, 1.65, -0.5); cheek.push(ramp);
+      const len = Math.hypot(2.2, 2.56), ramp = new THREE.BoxGeometry(0.3, 0.45, len); ramp.rotateX(Math.atan2(2.56, 2.2)); ramp.translate(sx, 1.28 + 0.2, Z0 - 1.1); cheek.push(ramp);
+      cheek.push(box(0.3, 0.5, 0.3, sx, 0.25, Z0 + 0.05));
       cheek.push(box(0.42, 3.4, 0.42, sx, 1.7, -1.85), box(0.52, 0.16, 0.52, sx, 3.45, -1.85));
     }
-    for (let i = 0; i < 9; i++) { const r = new THREE.IcosahedronGeometry(0.16 + (i % 3) * 0.07, 0); r.translate(0.4 + (i % 3) * 0.3, 2.6 + (i % 2) * 0.1, -1.3 - (i % 4) * 0.12); rub.push(r); }
-    stairsUp.add(mesh(merge(st), stone, 'steps'), mesh(merge(cheek), darkStone, 'cheeks'), mesh(merge(rub), stone, 'rubble'));
-    const bandG = new THREE.PlaneGeometry(3.4, 0.28);
-    for (const sx of [-1.71, 1.71]) { const b = mesh(bandG.clone(), runeV, 'rune'); b.position.set(sx, 0.62, -0.3); b.rotation.y = sx < 0 ? -Math.PI / 2 : Math.PI / 2; stairsUp.add(b); }
-    bandG.dispose();
-    const br = [...brazierParts(-1.6, 1.75), ...brazierParts(1.6, 1.75)];
-    stairsUp.add(mesh(merge(br), iron, 'braziers'), flame([{ x: -1.6, y: 1.22, z: 1.75, w: 0.7, h: 1.25, seed: 0.2 }, { x: 1.6, y: 1.22, z: 1.75, w: 0.7, h: 1.25, seed: 0.9 }]));
-    light(stairsUp, [0, 1.7, 1.6], 0xff8a34, 2.2, 7);
+    for (let i = 0; i < 9; i++) { const r = new THREE.IcosahedronGeometry(0.16 + (i % 3) * 0.07, 0); r.translate(0.4 + (i % 3) * 0.3, 2.56 + (i % 2) * 0.1, -1.55 - (i % 3) * 0.1); rub.push(r); }
+    stairsUp.add(mesh(merge(st), stone, 'steps'), mesh(merge(cheek), darkStone, 'cheeks'), mesh(merge(rub), stone, 'rubble'), mesh(merge(noses), ember, 'step-glow'));
+    const bowls = [-1.55, 1.55].map(x => { const c = new THREE.CylinderGeometry(0.28, 0.16, 0.22, 8); c.translate(x, 3.64, -1.85); return c; });
+    stairsUp.add(mesh(merge(bowls), iron, 'post-bowls'), flame([{ x: -1.55, y: 3.72, z: -1.85, w: 0.55, h: 1.0, seed: 0.2 }, { x: 1.55, y: 3.72, z: -1.85, w: 0.55, h: 1.0, seed: 0.9 }]));
+    light(stairsUp, [0, 2.2, -0.6], 0xff8a34, 2.0, 7);
   }
 
   // ---------------- セーブ地点（魔法陣＋火の祭壇）

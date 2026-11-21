@@ -2,17 +2,17 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-quality';
-import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-g2';
-import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-g2';
+import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-g4';
+import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-g4';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-g2';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-g2';
-import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-g2';
-import { createB4Kit } from './b4-kit.js?v=20261122-g2';
-import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261122-g2';
-import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-g2';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-g2';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-g4';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-g4';
+import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-g4';
+import { createB4Kit } from './b4-kit.js?v=20261122-g4';
+import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261122-g4';
+import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-g4';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-g4';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -65,9 +65,9 @@ export function createTheme(api, area) {
   const temple = magma ? createTempleMaterials() : null;
   const isTempleFace = makeTempleFacePicker(hash);
   if (temple) mat.floor = temple.floor;
-  const templeWallGeo = magma ? new THREE.BoxGeometry(4.08, 4.2, 0.65, 1, 1, 1) : null;
+  const templeWallGeo = magma ? fixEndUV(new THREE.BoxGeometry(4.08, 4.2, 0.65, 1, 1, 1), 4.08) : null;
   if (templeWallGeo) templeWallGeo.userData.b4Shared = true;
-  const templeWallGeoTall = magma ? (() => { const b = new THREE.BoxGeometry(4.08, 8.2, 0.65, 1, 1, 1); b.userData.b4Shared = true; const uv = b.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setY(i, uv.getY(i) * 8.2 / 4.2); return b; })() : null;
+  const templeWallGeoTall = magma ? (() => { const b = fixEndUV(new THREE.BoxGeometry(4.08, 8.2, 0.65, 1, 1, 1), 4.08); b.userData.b4Shared = true; const uv = b.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setY(i, uv.getY(i) * 8.2 / 4.2); return b; })() : null;
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02, magma ? 4 : 1, 1, magma ? 4 : 1);
   if (magma) {
     const p=floorGeo.getAttribute('position');
@@ -88,6 +88,9 @@ export function createTheme(api, area) {
   // 第4階層専用：溶岩流で削れた玄武岩の張り出しを追加。
   // 壁の両端と上下端を固定し、隣接するマスや天井との継ぎ目を抑える。
   // 第3・第5階層には適用しない。
+  // 壁の箱の端（厚さ 0.65 m）に正面と同じ UV が押し込まれて縦じまになる → 端の面の u を厚さに合わせる（2026-11-22）
+  function fixEndUV(geo, w) { if (!geo) return geo; const n = geo.attributes.normal, uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) if (Math.abs(n.getX(i)) > 0.9) uv.setX(i, uv.getX(i) * 0.65 / w); uv.needsUpdate = true; return geo; }
+  if (magma) fixEndUV(wallGeo, 4.08);
   const volcanicWallGeo = magma ? wallGeo.clone() : null;
   const recessWallGeo = magma ? new THREE.BoxGeometry(4.08, 4.2, 0.22) : null;
   if (volcanicWallGeo) {

@@ -4,7 +4,7 @@
  * 通行判定は変えない（# は # のまま。見た目だけ壁が開く）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261122-g2';
+import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261122-g4';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 export const CHASM_BOTTOM = -26, CHASM_TOP = 16;
