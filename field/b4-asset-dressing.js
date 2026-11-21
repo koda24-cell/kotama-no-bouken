@@ -38,6 +38,26 @@ export const B4_GPT_MODELS = {
   minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82, tint: 0.3 },  // its albedo is a light tan; darken to the B4 soot-wood range
 };
 
+// Fragments closer than `near` metres to the camera are discarded, so a prop or wall panel beside the player never
+// fills the screen when the player turns their back to it or brushes past it (user feedback 2026-11-21).
+function nearCull(material, near) {
+  if (material.userData.b4NearCull) return;
+  material.userData.b4NearCull = near;
+  const prev = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    prev?.call(material, shader, renderer);
+    shader.uniforms.uB4Near = { value: near };
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vB4World;')
+      .replace('#include <project_vertex>', '#include <project_vertex>\n{ vec4 b4w = vec4(transformed, 1.0);\n#ifdef USE_INSTANCING\n b4w = instanceMatrix * b4w;\n#endif\n vB4World = (modelMatrix * b4w).xyz; }');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vB4World;\nuniform float uB4Near;')
+      .replace('void main() {', 'void main() {\n  if (distance(vB4World, cameraPosition) < uB4Near) discard;');
+  };
+  material.customProgramCacheKey = () => 'b4near' + near;
+  material.needsUpdate = true;
+}
+
 const cache = new Map();
 const loader = new GLTFLoader();
 // Load once; bake node transforms into geometry and merge per material so a 192-mesh model costs one draw per material.
@@ -63,6 +83,7 @@ function loadModel(key, url, opts = {}) {
       if (material.emissiveMap) material.emissiveIntensity = opts.emissive ?? Math.max(material.emissiveIntensity, 2.2);
       if (opts.tintRGB && material.color) material.color.multiply(new THREE.Color(...opts.tintRGB));
       material.userData.b4PropCached = true;
+      nearCull(material, opts.near ?? 1.0);
       let merged = null;
       if (geos.length > 1) {
         const keys = g => Object.keys(g.attributes).sort().join(',') + '|' + !!g.index;
@@ -277,7 +298,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   // ---- rock-face overlays: GPT V33 magma basalt (LOD) on part of the wall faces, denser in deposit/dragon zones ----
   if (OVERLAY_READY && faces.length) {
     // panels sit right beside the camera: warmer albedo to match the volcanic wall boxes, joint lava kept modest
-    const rocks = (await Promise.all(OVERLAY_IDS.map(id => loadProp(id, { tintRGB: [0.95, 0.72, 0.6], emissive: 0.35 })))).filter(Boolean);
+    const rocks = (await Promise.all(OVERLAY_IDS.map(id => loadProp(id, { tintRGB: [0.95, 0.72, 0.6], emissive: 0.35, near: 1.15 })))).filter(Boolean);
     if (rocks.length && !isStale()) {
       const per = rocks.map(() => []);
       // budget: ~64 panels (≈340k tris) per floor, deposit/dragon zones first
@@ -287,7 +308,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       for (const f of paneled) {
         const k = Math.floor(hash(f.tx, f.ty * 7 + f.dx, 833) * rocks.length), rock = rocks[k];
         const size = rock.box.getSize(new THREE.Vector3()), centre = rock.box.getCenter(new THREE.Vector3());
-        const sx = 4.15 / size.x, sz = Math.min(1, 0.85 / size.z), sy = 4.0 / size.y;
+        const sx = 4.15 / size.x, sz = Math.min(1, 0.45 / size.z), sy = 4.0 / size.y;   // max 0.45 m into the corridor
         const skin = 2 - 0.325 - 0.12;
         per[k].push(new THREE.Matrix4().compose(
           new THREE.Vector3(f.tx * CELL + f.dx * skin, -0.05, f.ty * CELL + f.dz * skin),
