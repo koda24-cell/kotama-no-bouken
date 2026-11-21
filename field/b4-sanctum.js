@@ -16,8 +16,8 @@
  *   ・艶のある黒い床＋魔法陣（半径 5.5 m）、光の筋 2 本、金色の火の粉。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261122-m2';
-import { addUplight, hazeMaterial, parapetGeometry } from './b4-chasm.js?v=20261122-m2';
+import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261122-n2';
+import { addUplight, hazeMaterial, parapetGeometry } from './b4-chasm.js?v=20261122-n2';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -366,20 +366,20 @@ export function buildSanctum({ root, sanctum, CELL, hash, mats, lights, gLights 
   }
   // 柱（側壁沿い）と火鉢
   const pillarParts = [], goldParts = [], PH = 15.5;
-  const sideX = [(sx0 - 0.5) * CELL + 0.33 + 0.6, (sx1 + 0.5) * CELL - 0.33 - 0.6];
+  const sideX = [(sx0 - 0.5) * CELL + 0.33 + 0.08, (sx1 + 0.5) * CELL - 0.33 - 0.08];   // 壁に半分埋めた付け柱（近くで振り向いても視界を塞がない。2026-11-22 指摘）
   const pz = [sz0 * CELL + 1.0, roomCz, sz1 * CELL - 1.0];
   const emberSrc = [], holySites = [];
   for (const x of sideX) for (const [k, z] of pz.entries()) {
     const sh = new THREE.CylinderGeometry(0.45 * Math.SQRT2, 0.5 * Math.SQRT2, PH, 4); sh.rotateY(Math.PI / 4); sh.translate(x, 0.5 + PH / 2, z); pillarParts.push(sh);
     for (const y of [0.62, 3.6, 7.6, 11.6, PH + 0.38]) { const r = new THREE.BoxGeometry(1.22, 0.16, 1.22); r.translate(x, y, z); goldParts.push(r); }
-    { const f = new THREE.BoxGeometry(0.1, PH - 1.2, 0.1); f.translate(x + (x < cx ? 0.66 : -0.66), 0.5 + PH / 2, z); goldParts.push(f); }
+    { const f = new THREE.BoxGeometry(0.1, PH - 1.2, 0.1); f.translate(x + (x < cx ? 0.46 : -0.46), 0.5 + PH / 2, z); goldParts.push(f); }
     const b = new THREE.BoxGeometry(1.3, 0.5, 1.3); b.translate(x, 0.25, z); pillarParts.push(b);
     const b2 = new THREE.BoxGeometry(1.1, 0.12, 1.1); b2.translate(x, 0.56, z); pillarParts.push(b2);
     const c = new THREE.BoxGeometry(1.5, 0.55, 1.5); c.translate(x, PH + 0.78, z); pillarParts.push(c);
     const c2 = new THREE.BoxGeometry(1.25, 0.14, 1.25); c2.translate(x, PH + 0.44, z); goldParts.push(c2);
     if (k !== 1) {
       const inward = x < cx ? 1 : -1;
-      const arm = new THREE.BoxGeometry(0.9, 0.14, 0.18); arm.translate(x + inward * 0.75, 4.9, z); pillarParts.push(arm);
+      const arm = new THREE.BoxGeometry(0.9, 0.14, 0.18); arm.translate(x + inward * 0.85, 4.9, z); pillarParts.push(arm);
       const bowl = new THREE.CylinderGeometry(0.42, 0.22, 0.34, 8); bowl.translate(x + inward * 1.15, 5.05, z); goldParts.push(bowl);
       holySites.push([x + inward * 1.15, 5.15, z]);
       emberSrc.push({ x: x + inward * 1.15, z, y0: 5.4, spread: 0.25, rise: 2.6, count: 18, hot: 1 });
@@ -396,10 +396,10 @@ export function buildSanctum({ root, sanctum, CELL, hash, mats, lights, gLights 
     const panelM = new THREE.MeshStandardMaterial({ color: 0x0d0907, roughness: 0.14, metalness: 0.6 }); owned.push(panelM);
     const inlay = glyphMaterial({ style: 2, seed: 2.7, intensity: 0.7, speed: 0.35, color: 0xffd080, dissolve: 2.2 }); owned.push(inlay);
     const pParts = [], fParts = [], inl = [];
-    const wallX = [(sx0 - 0.5) * CELL + 0.36, (sx1 + 0.5) * CELL - 0.36];
+    const wallX = [(sx0 - 0.5) * CELL + 0.35, (sx1 + 0.5) * CELL - 0.35];
     const zs = [pz[0], pz[1], pz[2]];
     for (const wx of wallX) for (let i = 0; i < 2; i++) {
-      const za = zs[i] + 0.8, zb = zs[i + 1] - 0.8, zm = (za + zb) / 2, len = zb - za; if (len < 1) continue;
+      const za = zs[i] + 0.75, zb = zs[i + 1] - 0.75, zm = (za + zb) / 2, len = zb - za; if (len < 1) continue;
       const pnl = new THREE.BoxGeometry(0.06, 13.2, len); pnl.translate(wx, 0.6 + 6.6, zm); pParts.push(pnl);
       for (const [y, h] of [[0.6, 0.14], [13.8, 0.14], [6.0, 0.08]]) { const f = new THREE.BoxGeometry(0.12, h, len + 0.1); f.translate(wx + (wx < cx ? 0.04 : -0.04), y, zm); fParts.push(f); }
       for (const dz of [-len / 2, len / 2]) { const f = new THREE.BoxGeometry(0.12, 13.3, 0.14); f.translate(wx + (wx < cx ? 0.04 : -0.04), 7.2, zm + dz); fParts.push(f); }

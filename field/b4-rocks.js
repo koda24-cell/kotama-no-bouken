@@ -9,7 +9,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { B4_VFX_TIME } from './b4-vfx.js?v=20261122-m2';
+import { B4_VFX_TIME } from './b4-vfx.js?v=20261122-n2';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 

@@ -4,7 +4,7 @@
  *  VFX 10 種：V1 陽炎の帯 / V2 床から立つ光の柱 / V3 舞う灰と燃えかす / V4 柱の間の電弧 / V5 火の粉の竜巻 /
  *             V6 溶岩の噴き上げ / V7 上から降る光の粒 / V8 壁を流れる炎の文字 / V9 床に広がる衝撃波の輪 / V10 重なる霧の層 */
 import * as THREE from 'three';
-import { B4_VFX_TIME, glyphMaterial } from './b4-vfx.js?v=20261122-m2';
+import { B4_VFX_TIME, glyphMaterial } from './b4-vfx.js?v=20261122-n2';
 
 const loader = new THREE.TextureLoader();
 const TEX = {};
@@ -100,6 +100,49 @@ function shaderPlane(geo, frag, uniforms = {}, { additive = true, side = THREE.D
   return new THREE.Mesh(geo, mat);
 }
 
+// 浮かんでは消える一文字のルーン（ダウンロードした CC0 の encircled-runes から文字だけ抜いたアトラス runes_6x6）
+// 1 文字ごとに周期で現れて消え、消えるたびに別の場所・別の文字になる。カメラ 2.2 m 以内では見えない
+export function floatingRunes(count, { area, color = [1, 0.6, 0.2], size = [0.35, 0.7], intensity = 1, seed = 0 }) {
+  const base = new THREE.PlaneGeometry(1, 1);
+  const geo = new THREE.InstancedBufferGeometry(); geo.index = base.index; geo.attributes.position = base.attributes.position; geo.attributes.uv = base.attributes.uv;
+  const R = new Float32Array(count * 4);
+  for (let i = 0; i < count; i++) { const h = (k) => { const x = Math.sin((i + 1) * 91.17 + k * 17.31 + seed * 5.7) * 43758.5453; return x - Math.floor(x); }; R.set([h(1), h(2), h(3), h(4)], i * 4); }
+  geo.setAttribute('aR', new THREE.InstancedBufferAttribute(R, 4)); geo.instanceCount = count;
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uTime: B4_VFX_TIME, uMap: { value: tex('runes_6x6') }, uCol: { value: new THREE.Color(...color) }, uInt: { value: intensity },
+      uMin: { value: new THREE.Vector3(area.x0, area.y0, area.z0) }, uMax: { value: new THREE.Vector3(area.x1, area.y1, area.z1) }, uSize: { value: new THREE.Vector2(...size) } },
+    vertexShader: /* glsl */`
+      attribute vec4 aR; uniform float uTime; uniform vec3 uMin; uniform vec3 uMax; uniform vec2 uSize;
+      varying vec2 vUv; varying float vA; varying float vCell;
+      float h1(float n){ return fract(sin(n * 12.9898) * 43758.5453); }
+      void main(){
+        float per = 4.0 + aR.x * 5.0, t = uTime / per + aR.y * 7.0, c = floor(t), life = fract(t);
+        float k = c * 7.13 + aR.z * 113.0;
+        vec3 p = mix(uMin, uMax, vec3(h1(k + 1.0), h1(k + 2.0), h1(k + 3.0)));
+        p.y += life * 0.6; p.x += sin(uTime * 0.6 + aR.w * 6.0) * 0.08;
+        vCell = floor(h1(k + 4.0) * 36.0);
+        vA = smoothstep(0.0, 0.25, life) * smoothstep(1.0, 0.6, life);
+        vA *= smoothstep(2.2, 3.4, distance(p, cameraPosition));
+        float sz = mix(uSize.x, uSize.y, h1(k + 5.0));
+        vec3 right = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]), up = vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
+        vUv = uv;
+        gl_Position = projectionMatrix * viewMatrix * vec4(p + (right * position.x + up * position.y) * sz, 1.0);
+      }`,
+    fragmentShader: /* glsl */`
+      uniform sampler2D uMap; uniform vec3 uCol; uniform float uInt; varying vec2 vUv; varying float vA; varying float vCell;
+      void main(){
+        vec2 cell = vec2(mod(vCell, 6.0), 5.0 - floor(vCell / 6.0));
+        float g = texture2D(uMap, (cell + vUv) / 6.0).a;
+        float glow = texture2D(uMap, (cell + vUv) / 6.0, 2.5).a;
+        vec3 col = uCol * (g * 1.4 + glow * 0.5) + vec3(1.0, 0.9, 0.7) * g * 0.35;
+        gl_FragColor = vec4(col * vA * uInt, 1.0);
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  });
+  const mesh = new THREE.Mesh(geo, mat); mesh.frustumCulled = false; mesh.renderOrder = 7;
+  return { mesh, dispose() { geo.dispose(); base.dispose(); mat.dispose(); } };
+}
+
 // area: { x0, z0, x1, z1, lavaCells?: [[x,z]...], pillars?: [[x,z]...], walls?: [{x,z,yaw,len}], kind }
 export function build12FFX({ root, areas, hash, lights, gLights }) {
   const group = new THREE.Group(); group.name = 'b4:fx12';
@@ -179,6 +222,8 @@ export function build12FFX({ root, areas, hash, lights, gLights }) {
       const g = new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2); const m = new THREE.Mesh(g, mat); m.position.set(cx, 0.06, cz); m.renderOrder = 4; group.add(m); owned.push(g, mat);
       update.push((t) => { const p = (t * 0.25) % 1; const s = 1 + p * Math.min(W, D) * 0.9; m.scale.set(s, 1, s); mat.uniforms.uInt.value = 1.3 * (1 - p) * (1 - p); });
     }
+    // V11 浮かんでは消える一文字のルーン
+    add(floatingRunes(A.kind === 'sanctum' ? 46 : 38, { area: { x0: A.x0 + 0.8, y0: 1.0, z0: A.z0 + 0.8, x1: A.x1 - 0.8, y1: A.kind === 'sanctum' ? 9 : 6.5, z1: A.z1 - 0.8 }, color: A.kind === 'sanctum' ? [1, 0.78, 0.4] : [1, 0.45, 0.12], seed: H(6) * 10 }));
     // V10 霧の層（3 段）
     for (const [y, k] of [[0.35, 0], [5.2, 1], [10.5, 2]]) {
       const g = new THREE.PlaneGeometry(W, D).rotateX(-Math.PI / 2); const m = shaderPlane(g, `void main(){ vec2 p = vW.xz * ${(0.12 + k * 0.05).toFixed(2)}; float a = ff(p + vec2(uTime * 0.02, -uTime * 0.015)) * ff(p * 1.7 - uTime * 0.01); a = smoothstep(0.15, 0.55, a) * smoothstep(0.08, 0.45, vFace);

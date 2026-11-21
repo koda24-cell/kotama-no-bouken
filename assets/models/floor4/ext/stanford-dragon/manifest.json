@@ -1,0 +1,10 @@
+{
+ "dragon_29k.glb": {
+  "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/DragonAttenuation (mesh 'Dragon' only; cloth backdrop removed)",
+  "original": "Stanford University Computer Graphics Laboratory, Stanford 3D Scanning Repository (1996); conversion by Morgan McGuire, Computer Graphics Archive",
+  "license": "Stanford Graphics Library terms (LicenseRef-Stanford-Graphics in glTF-Sample-Assets): free for research / non-commercial use with credit; not for commercial products. Kotama is personal and non-commercial.",
+  "processing": "91,216 -> 29,188 triangles with three.js r180 SimplifyModifier; rotated to Y-up, normalized to height 1, origin at bottom centre; vertex normals recomputed",
+  "tris": 29188,
+  "status": "NOT_APPROVED"
+ }
+}

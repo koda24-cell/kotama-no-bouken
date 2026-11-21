@@ -4,7 +4,7 @@
  *   ・天井の梁から下がる鎖：梁のあるマスの 30%。輪 0.16 m × 9〜14 個、下端に火の籠（35%）。
  * すべて 1 種類につき 1 draw（InstancedMesh）。 */
 import * as THREE from 'three';
-import { B4_VFX_TIME, createFlames } from './b4-vfx.js?v=20261122-m2';
+import { B4_VFX_TIME, createFlames } from './b4-vfx.js?v=20261122-n2';
 
 const NOISE = /* glsl */`
   float dh(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }

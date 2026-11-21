@@ -2,25 +2,26 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-quality';
-import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-m2';
-import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-m2';
+import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-n2';
+import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-n2';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-m2';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-m2';
-import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-m2';
-import { createUpperKit } from './b4-upper.js?v=20261122-m2';
-import { buildVista } from './b4-vista.js?v=20261122-m2';
-import { buildRockPass, makeRockyZone } from './b4-rocks.js?v=20261122-m2';
-import { createB4Kit, nearCull as kitNearCull } from './b4-kit.js?v=20261122-m2';
-import { findVaultRooms, buildAntigravHall, buildSanctum, buildCauseway, buildPitRail } from './b4-sanctum.js?v=20261122-m2';
-import { build12FFX } from './b4-fx12.js?v=20261122-m2';
-import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-m2';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-m2';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-n2';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-n2';
+import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-n2';
+import { createUpperKit } from './b4-upper.js?v=20261122-n2';
+import { buildVista } from './b4-vista.js?v=20261122-n2';
+import { buildRockPass, makeRockyZone } from './b4-rocks.js?v=20261122-n2';
+import { createB4Kit, nearCull as kitNearCull } from './b4-kit.js?v=20261122-n2';
+import { findVaultRooms, buildAntigravHall, buildSanctum, buildCauseway, buildPitRail } from './b4-sanctum.js?v=20261122-n2';
+import { build12FFX } from './b4-fx12.js?v=20261122-n2';
+import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-n2';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-n2';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
 // 4層専用の配置物はページ全体で1組（g.world に置かれ、読み込みキャッシュの部品と同じ扱い）
+const DRAGON_HEAD_YAW = -Math.PI / 2;
 let B4_KIT = null;
 const getB4Kit = () => (B4_KIT ||= createB4Kit(createTempleMaterials()));
 
@@ -343,7 +344,8 @@ export function createTheme(api, area) {
             if (!magma) ownedModels.push(model); root.add(model); landmarkState = 'glb-loaded';
             if (magma) {
               try {
-                const dragon = (await gltfLoader.loadAsync('./assets/3d/dungeons/b4_dragonfire/models/floor4_dragon_boss_v1.glb')).scene;
+                // 12F の守護像：Stanford Dragon（Khronos glTF-Sample-Assets 経由、29k 三角形に間引き。出典は assets/models/floor4/ext/stanford-dragon/manifest.json）
+                const dragon = (await gltfLoader.loadAsync(a.f === 2 ? './assets/models/floor4/ext/stanford-dragon/dragon_29k.glb' : './assets/3d/dungeons/b4_dragonfire/models/floor4_dragon_boss_v1.glb')).scene;
                 if (root !== buildRoot) { disposeB4Owned(dragon); return; }
                 dragon.userData.b4Owned = true;
                 const dragonBounds = new THREE.Box3().setFromObject(dragon);
@@ -355,28 +357,31 @@ export function createTheme(api, area) {
                     // 素材は Z-up のまま（頭 +Y）なので X 軸で -90° 起こす → 頭は -Z。外側の Y 回転で通路の中心へ向ける。
                     const rooms = findVaultRooms(a, ch), R = rooms.sanctum?.room;
                     if (R || true) {
-                      const stone = new THREE.MeshStandardMaterial({ color: 0x2a2220, roughness: 0.5, metalness: 0.15, emissive: 0x1c0502 });
-                      const eye = new THREE.MeshStandardMaterial({ color: 0x2a2220, roughness: 0.5, metalness: 0.15, emissive: 0x7a1a06, emissiveIntensity: 0.55 });   // 頭はほのかに熱を帯びた石
+                      // 金青銅の像（聖域の金と白の配色に合わせる）。下からの熱の照り返しを emissive で少し
+                      const stone = new THREE.MeshStandardMaterial({ color: 0x8a6430, roughness: 0.32, metalness: 0.9, emissive: 0x2a1004, emissiveIntensity: 0.7 });
+                      const eye = stone;
                       const origM = new Set(); dragon.traverse(o => { if (o.isMesh) { origM.add(o.material); o.material = /head/i.test(o.name) ? eye : stone; if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); } });   // 法線の無い部品があると照明が NaN になり、ブルームで画面が黒くなる
                       origM.forEach(m => { for (const v of Object.values(m)) if (v?.isTexture) v.dispose(); m.dispose?.(); });
                       const cxS = boss.tx * CELL, sites = [];
                       for (let yy = 0; yy < a.h; yy++) for (let xx = 0; xx < a.w; xx++) if (ch(xx, yy) === 'D') sites.push([xx, yy]);   // 像のマス（通れない）
                       const plinthG = new THREE.BoxGeometry(2.8, 1.0, 3.8);
                       const capG = new THREE.BoxGeometry(3.1, 0.16, 4.0);
-                      statueOwned.push(stone, eye, plinthG, capG); dragon.traverse(o => { if (o.geometry) statueOwned.push(o.geometry); });
+                      statueOwned.push(stone, plinthG, capG); dragon.traverse(o => { if (o.geometry) statueOwned.push(o.geometry); });
                       sites.forEach(([sx, sy], k) => {
                         const xS = sx * CELL, zS = sy * CELL;
                         const holder = new THREE.Group(); holder.name = 'b4:dragon-guardian';
                         const body = k === 0 ? dragon : dragon.clone(true);
-                        body.rotation.set(-Math.PI / 2, 0, 0); body.scale.setScalar(0.33);   // 全長約 3.9 m（1 マスに収める）
+                        body.scale.setScalar(2.7);   // 高さ 2.7 m・全長 3.8 m・奥行 1.7 m（モデルは高さ 1 に正規化済み）
                         const inner = new THREE.Group(); inner.add(body);
                         const bb = new THREE.Box3().setFromObject(inner), c = bb.getCenter(new THREE.Vector3());
                         body.position.set(-c.x, 1.16 - bb.min.y, -c.z);
                         holder.add(inner);
-                        const fx = Math.sign(cxS - xS), theta = Math.atan2(-fx, 0);     // R_y(θ)·(0,0,-1) = (fx,0,0)
-                        inner.rotation.y = theta;
-                        const pl = new THREE.Mesh(plinthG, temple.trim); pl.position.set(0, 0.5, 0); pl.rotation.y = Math.PI / 2; holder.add(pl);
-                        const cap = new THREE.Mesh(capG, temple.trim); cap.position.set(0, 1.08, 0); cap.rotation.y = Math.PI / 2; holder.add(cap);
+                        // 体の長さを壁沿い（Z）に、横顔が通路から見えるように。頭は入口（北）へ、左右で鏡写し
+                        const fx = Math.sign(cxS - xS);
+                        inner.rotation.y = DRAGON_HEAD_YAW; if (fx < 0) inner.scale.x = -1;
+                        const pl = new THREE.Mesh(plinthG, temple.trim); pl.position.set(0, 0.5, 0); holder.add(pl);
+                        const cap = new THREE.Mesh(capG, temple.trim); cap.position.set(0, 1.08, 0); holder.add(cap);
+                        if (lights.length < 100) { const L = { world: new THREE.Vector3(xS + fx * 1.6, 0.6, zS), color: 0xffc070, intensity: 2.4, range: 6, off: false }; lights.push(L); g.lights.push(L); }
                         holder.position.set(xS, 0, zS); root.add(holder);
                       });
                     }

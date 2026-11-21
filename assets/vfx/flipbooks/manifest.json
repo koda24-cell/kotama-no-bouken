@@ -22,5 +22,11 @@
   "license": "CC0 (tauran)",
   "cols": 12,
   "rows": 6
+ },
+ "runes_6x6.png": {
+  "from": "oga/encircled-runes/*.png (first 36, sorted)",
+  "license": "CC0 (https://opengameart.org/node/69739)",
+  "cols": 6,
+  "rows": 6
  }
 }
