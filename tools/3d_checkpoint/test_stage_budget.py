@@ -6,6 +6,9 @@ class BudgetTests(unittest.TestCase):
     def test_early_iteration_allowed(self):
         self.assertTrue(decide(5 * 60)["continue"])
 
+    def test_one_second_before_reserve_continues(self):
+        self.assertTrue(decide(70 * 60 - 1)["continue"])
+
     def test_reserve_boundary_stops(self):
         self.assertFalse(decide(70 * 60)["continue"])
 
