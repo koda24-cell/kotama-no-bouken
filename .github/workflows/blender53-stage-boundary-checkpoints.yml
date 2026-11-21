@@ -72,7 +72,14 @@ jobs:
         if: ${{ success() }}
         env:
           START_EPOCH: ${{ steps.stage_one_start.outputs.epoch }}
+          BUDGET_DRILL: ${{ github.event_name == 'push' && github.ref == 'refs/heads/feature/blender53-stage-budget-guard-20261121' && contains(github.event.head_commit.message, '[blender53-budget-drill]') }}
         run: |
+          # Test only: simulate 71 elapsed minutes after finishing and verifying the real render.
+          # Production always uses the actual measured start epoch.
+          if [ "$BUDGET_DRILL" = "true" ]; then
+            START_EPOCH="$(python3 -c 'import time; print(time.time()-71*60)')"
+            echo "BUDGET_DRILL_SIMULATED_ELAPSED_MINUTES=71"
+          fi
           python3 tools/3d_checkpoint/stage_budget.py --start-epoch "$START_EPOCH" > stage-budget.json.log || rc=$?
           cat stage-budget.json.log
           if [ "${rc:-0}" -ne 0 ] && [ "${rc:-0}" -ne 2 ]; then
@@ -116,6 +123,15 @@ jobs:
           echo "CHECKPOINT_HANDOFF_REQUIRED=$HANDOFF_REQUIRED"
           echo "PREVIOUS_JOB_REMAINING_SECONDS=$PREVIOUS_REMAINING_SECONDS"
           echo "Stage two runs in a fresh job and must verify the uploaded stage-one artifact."
+      - name: Assert simulated time limit triggers verified cross-job handoff
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/feature/blender53-stage-budget-guard-20261121' && contains(github.event.head_commit.message, '[blender53-budget-drill]') }}
+        env:
+          HANDOFF_REQUIRED: ${{ needs.stage-one.outputs.handoff_required }}
+          PREVIOUS_REMAINING_SECONDS: ${{ needs.stage-one.outputs.remaining_seconds }}
+        run: |
+          test "$HANDOFF_REQUIRED" = true
+          test "$PREVIOUS_REMAINING_SECONDS" -le 600
+          echo "BUDGET_DRILL_HANDOFF_CONFIRMED=true"
       - name: Intentional failure for external recovery drill
         if: ${{ (github.event_name == 'workflow_dispatch' && inputs.recovery_drill == true) || (github.event_name == 'push' && github.ref == 'refs/heads/development' && contains(github.event.head_commit.message, '[blender53-recovery-drill]')) }}
         run: |
