@@ -83,7 +83,7 @@ def import_high(path):
     # 色が書き出されていない（白）の玄武岩マテリアルを、B4の配色の風化玄武岩に差し替える
     rock = basalt_material()
     for i, m in enumerate(hi.data.materials):
-        if m and "Basalt" in m.name:
+        if m and "Basalt" in m.name and not any(n.type == "TEX_IMAGE" for n in m.node_tree.nodes):   # 色が抜けた（画像なし）ものだけ
             hi.data.materials[i] = rock
     return hi
 
