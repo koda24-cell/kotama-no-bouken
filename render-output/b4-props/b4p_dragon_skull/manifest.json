@@ -1,8 +1,8 @@
 {
   "asset": "b4p_dragon_skull",
-  "version": "v6",
+  "version": "v7",
   "blender": "4.2.3 LTS",
-  "triangles": 14704,
+  "triangles": 13349,
   "budget_triangles": 18000,
   "materials": [
     "b4p_dragon_skull_mat"
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    2.571,
-    1.589,
-    1.267
+    2.53,
+    1.467,
+    1.084
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_dragon_skull.glb",
-  "glb_bytes": 2871032,
+  "glb_bytes": 2264796,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -49,16 +49,16 @@
     13
   ],
   "sha256": {
-    "b4p_dragon_skull.glb": "8d05e85c4e54368b31c449013a7237b02b7978e0ba6d122db023f9c13c8b9d87",
-    "b4p_dragon_skull_volcanic_front.png": "318cfb99243268e9e9b3b6681de9f2742bcdb8d0dc83fb673086844c09ac5af5",
-    "b4p_dragon_skull_volcanic_side.png": "70aadfe08e2ace53e89622b98c4c524a918873f14167dd162c1451c5227b8458",
-    "b4p_dragon_skull_volcanic_angle.png": "a3c06c70c666c528ebbea39517eea6cdd8cd4272ed66293f6ae97f151e55b10f",
-    "b4p_dragon_skull_volcanic_top.png": "b000a332e25b0516028def1fa5dd00253b272156ae9d01c0e7aedc17e63517b3",
-    "b4p_dragon_skull_volcanic_close.png": "ae39ca2d90faa3a2e4a1b0135a90f3a560eecbe71fffe97cf7e9a91b26931eb0",
-    "b4p_dragon_skull_volcanic_back.png": "a7405e8e7b294a6b502816779e0395c3b0e90a4e68a6fac7b61380e6eb41c3d1",
-    "b4p_dragon_skull_studio_front.png": "c8078dfea71038701fb2de2a6fe09d8d138c7661c7d92a25f090eb5252c8c91c",
-    "b4p_dragon_skull_studio_angle.png": "a47c5fa791ec30fa15ab044f4c407bc78f82fa3bae6e1d8d96bc35b446962eba",
-    "b4p_dragon_skull_studio_scale.png": "f044827ffd314bf99eacef023a7cd6675a825e0b8ff9c2e382de0ec9ce89553a"
+    "b4p_dragon_skull.glb": "a6205947df6633389c212eb0b30b7a67fc9edfba8af3f1b5ba5387ba36bc0b1b",
+    "b4p_dragon_skull_volcanic_front.png": "36691db0b30fdab0358a486e73969686ef6321dc7e17f79ff06371772400d2fe",
+    "b4p_dragon_skull_volcanic_side.png": "5f892ab0b2a151b78ad73377a6eea096eae83ca8c354b97c2ee50cc26e9fcf6f",
+    "b4p_dragon_skull_volcanic_angle.png": "2973cf99a287d1040ff8e6bcf11bb180f76fd3ace6aa23d696b37a378d736574",
+    "b4p_dragon_skull_volcanic_top.png": "ff3801e1e94e37d2faec9230c997c2bcf6d9730e39e3ac0274323372e1e27a5e",
+    "b4p_dragon_skull_volcanic_close.png": "21bf9ab9f706f3f2f592512311d81f6a4baba697549d82c8e0dee6a365185e12",
+    "b4p_dragon_skull_volcanic_back.png": "bbf49640a8a630538f862bafe35fcaeb52756a606ec59260e3b7b04ead95387b",
+    "b4p_dragon_skull_studio_front.png": "8ab91f0056d88ef8bd81c558dcbcd88d706fb11fea999c847092dd600a1c3e8b",
+    "b4p_dragon_skull_studio_angle.png": "f1601e5afbafeaf42b743b7e99039c5464a8eab52bead5ef7367e5e00eda5594",
+    "b4p_dragon_skull_studio_scale.png": "dc2e190bd13d2675d9f8cddf5132eda993a8a02145069a96b7976f63a731dcdc"
   },
   "renders": [
     "b4p_dragon_skull_volcanic_front.png",
@@ -72,7 +72,7 @@
     "b4p_dragon_skull_studio_scale.png"
   ],
   "samples": 96,
-  "notes": "半分埋もれた竜の頭骨。左の角は折れ、牙は欠落4・欠け3。眼窩・窓の奥は黒、下ほど煤、上向き面と凹みに灰。",
+  "notes": "v7: 断面 loft の頭蓋に眼窩・窓・鼻孔を貫通、円錐の歯（欠落4・欠け4）、別部品の下顎（大半が埋まる）、ねじれた三日月の角（年輪状の段、左は折れる）。煤と灰で汚した骨。",
   "game_lights": [],
   "approval": "NOT_APPROVED",
   "design": "docs/3d/B4_PROPS_DESIGN.md"
