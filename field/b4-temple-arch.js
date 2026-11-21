@@ -49,6 +49,7 @@ export function createTempleMaterials() {
   ruin.color.setRGB(0.24, 0.17, 0.155); ruin.emissive = new THREE.Color(0x160603); ruin.emissiveMap = ruin.map;
   const slot = new THREE.MeshStandardMaterial({ color: 0x1a0804, emissive: 0xff5a12, emissiveIntensity: 2.4, roughness: 0.6 });
   const beam = trim;
+  for (const m of [wall, trim, floor, slot, ruin]) m.userData.b4Shared = true;   // モジュール単位で使い回す（再構築ごとに破棄しない）
   return { wall, trim, floor, slot, beam, ruin, dispose() { for (const m of [wall, trim, floor, slot, ruin]) { for (const k of ['map', 'normalMap', 'roughnessMap', 'aoMap']) m[k]?.dispose(); m.dispose(); } } };
 }
 
@@ -64,7 +65,7 @@ export function buildTempleTrims(root, faces, mats, hash, height = 4.2) {
   const owned = [];
   if (!faces.length) { root.add(group); return { group, dispose() {} }; }
   const SK = 0.325;
-  if (!mats.runeCarve) mats.runeCarve = glyphMaterial({ style: 2, seed: 7.7, intensity: 0.95, speed: 0.45 });   // 壁の箱の半分の厚み：箱の中心から通路側の表面まで
+  if (!mats.runeCarve) { mats.runeCarve = glyphMaterial({ style: 2, seed: 7.7, intensity: 0.95, speed: 0.45 }); mats.runeCarve.userData.b4Shared = true; }   // 壁の箱の半分の厚み：箱の中心から通路側の表面まで
   const parts = {
     plinth: { geo: new THREE.BoxGeometry(4.1, 0.42, 0.2), mat: mats.trim, y: 0.21, d: 0.1 },
     plinthCap: { geo: new THREE.BoxGeometry(4.1, 0.08, 0.28), mat: mats.trim, y: 0.46, d: 0.14 },

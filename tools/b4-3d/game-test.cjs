@@ -141,7 +141,9 @@ let browser;
     await p.evaluate(()=>{
       const {g}=__b4test,owned=new Set(),cached=new Set();
       const root=g.world.children.find(o=>o.name==='b4_magma_map');
-      root.traverse(o=>{if(o.geometry)owned.add(o.geometry);for(const m of (Array.isArray(o.material)?o.material:[o.material]))if(m)owned.add(m);});
+      // Resources deliberately kept across rebuilds (loader cache, module-level temple materials) are flagged and excluded.
+      const keep=o=>{for(let q=o;q;q=q.parent)if(q.userData&&q.userData.b4Cached)return true;return false;};
+      root.traverse(o=>{if(keep(o))return;if(o.geometry&&!o.geometry.userData.b4Shared)owned.add(o.geometry);for(const m of (Array.isArray(o.material)?o.material:[o.material]))if(m&&!m.userData.b4Shared&&!m.userData.b4PropCached)owned.add(m);});
       for(const child of g.world.children)if(child!==root)child.traverse(o=>{if(o.geometry)cached.add(o.geometry);});
       window.__b4disposed={counts:Array.from(owned,()=>0),cached:0};
       Array.from(owned).forEach((o,i)=>o.addEventListener('dispose',()=>__b4disposed.counts[i]++));

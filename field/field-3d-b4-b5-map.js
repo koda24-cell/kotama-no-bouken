@@ -12,10 +12,14 @@ import { buildTempleDecor } from './b4-temple-decor.js?v=20261121-d2';
 import { createB4Kit } from './b4-kit.js?v=20261121-k2';
 import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261121-s2';
 import { planChasms, buildChasms } from './b4-chasm.js?v=20261121-c5';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a11';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a12';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
+// 4層専用の配置物はページ全体で1組（g.world に置かれ、読み込みキャッシュの部品と同じ扱い）
+let B4_KIT = null;
+const getB4Kit = () => (B4_KIT ||= createB4Kit(createTempleMaterials()));
+
 export function createTheme(api, area) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile, FILES } = api;
   const magma = area === 4, mist = area === 3;
@@ -62,8 +66,8 @@ export function createTheme(api, area) {
   const isTempleFace = makeTempleFacePicker(hash);
   if (temple) mat.floor = temple.floor;
   const templeWallGeo = magma ? new THREE.BoxGeometry(4.08, 4.2, 0.65, 1, 1, 1) : null;
-  let b4Kit = null;
-  const templeWallGeoTall = magma ? (() => { const b = new THREE.BoxGeometry(4.08, 8.2, 0.65, 1, 1, 1); const uv = b.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setY(i, uv.getY(i) * 8.2 / 4.2); return b; })() : null;
+  if (templeWallGeo) templeWallGeo.userData.b4Shared = true;
+  const templeWallGeoTall = magma ? (() => { const b = new THREE.BoxGeometry(4.08, 8.2, 0.65, 1, 1, 1); b.userData.b4Shared = true; const uv = b.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setY(i, uv.getY(i) * 8.2 / 4.2); return b; })() : null;
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02, magma ? 4 : 1, 1, magma ? 4 : 1);
   if (magma) {
     const p=floorGeo.getAttribute('position');
@@ -376,7 +380,7 @@ export function createTheme(api, area) {
     }
     // 壁に埋め込まれたスイッチ・碑文は通常の歩行マスと異なるため専用配置。
     // 第5階層の4騎士像の謎解きも、このエントリがないと3D上で操作できない。
-    const K = magma && temple ? (b4Kit ||= createB4Kit(temple)) : null;
+    const K = magma && temple ? getB4Kit() : null;
     for (const o of a.objects) {
       if (!o.onWall || (o.kind !== 'switch' && o.kind !== 'sign')) continue;
       const f = facing(o.tx, o.ty), [dx, dz] = DIR_VEC[f];
@@ -440,6 +444,7 @@ export function createTheme(api, area) {
       for (const material of [...Object.values(mat),trunkMat,leafMat,flameMat]) if (!material.userData.b4SurfaceShared) material.dispose();
       surfaces?.dispose();
       rockMap?.dispose(); floorMap?.dispose();
+      temple?.dispose?.(); templeWallGeo?.dispose(); templeWallGeoTall?.dispose();
     }
   }
   function tick(dt, now, camera) {
@@ -464,7 +469,8 @@ export function createTheme(api, area) {
   }
   // 4層：宝箱と扉は専用の部品で置く（森の部品を使わない）
   async function sync(e, st) {
-    if (!magma || !b4Kit || !root) return false;
+    const b4Kit = magma ? getB4Kit() : null;
+    if (!magma || !root) return false;
     const o = e.o, x = o.tx * CELL, z = o.ty * CELL;
     const drop = obj => { if (!obj) return; obj.parent?.remove(obj); for (const L of obj.userData.lights || []) L.off = true; };
     if (o.kind === 'chest' || o.kind === 'cache') { drop(e.obj); e.obj = place(g.world, st === 'open' ? b4Kit.chestOpen : b4Kit.chest, x, 0, z, e.ry); return true; }
