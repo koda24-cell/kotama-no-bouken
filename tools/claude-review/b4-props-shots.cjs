@@ -44,6 +44,18 @@ let browser;
     report.push({floor:f,info});
     if(!info)continue;
     const seen=new Set();let k=0;
+    const chf=await p.evaluate(()=>KotamaField3D.themeInfo()?.scenery?.chasms?.faces||[]);
+    for(const [ci,c] of chf.slice(0,4).entries()){
+      await p.evaluate(({c,DIRN})=>{
+        const {g}=__b4visual;cancelAnimationFrame(fieldRaf);fieldRaf=null;g.maxFps=0;
+        const ct=fieldTileCenter(c.tx,c.ty);fieldState.x=ct.x;fieldState.y=ct.y;fieldState.dir=DIRN[c.dx+','+c.dz];fieldState.view=null;g.cam.ready=false;
+        fieldUpdateVision(true);fieldUpdateNear();performance.now=()=>10000;fieldRender();KotamaField3D.frame();
+        const cam=g.camera;const cx=c.tx*4+c.dx*1.2, cz=c.ty*4+c.dz*1.2;cam.position.set(cx,1.6,cz);cam.lookAt(cx+c.dx*4,-6,cz+c.dz*4);cam.updateMatrixWorld(true);
+        if(g.composer)g.composer.render();else g.renderer.render(g.scene,cam);
+      },{c,DIRN});
+      const clip=await p.locator('.field-3d-canvas').boundingBox();
+      await p.screenshot({path:path.join(out,`f${f}-chasm${ci}.png`),clip,timeout:120000});
+    }
     const mines=await p.evaluate(()=>KotamaField3D.themeInfo()?.scenery?.mines||[]);
     for(const [mi,m] of mines.slice(1).entries()){
       await p.evaluate(({m,DIRN})=>{
