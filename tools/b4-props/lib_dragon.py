@@ -749,7 +749,7 @@ BONE_LO = (0.39, 0.33, 0.22)
 BONE_HI = (0.54, 0.46, 0.31)
 
 
-def bone_mat(name, soot_lo=0.0, soot_hi=0.5, scale=1.0):
+def bone_mat(name, soot_lo=0.0, soot_hi=0.5, scale=1.0, grime=0.5, char_lo=0.50, ash_amt=0.8):
     """風化した骨: 2章の骨色を基準に、細かいひび割れ（乾燥割れ）・剥離・小さな穴・角の摩耗・
     下ほど濃い煤（tip 属性＝高さ比 0..1 で soot_lo→soot_hi が黒→骨色）・凹み/上向き面の灰・
     凹部（cd 属性＝眼窩などの奥）の黒。新しい折れ口（fresh）は白っぽく多孔質"""
@@ -773,8 +773,8 @@ def bone_mat(name, soot_lo=0.0, soot_hi=0.5, scale=1.0):
     pits = b.math("MULTIPLY", pits, b.ramp(n_mid, [(0.35, 0.2), (0.7, 1.0)]))
     col = b.mix(b.math("MULTIPLY", pits, 0.6), col, (0.08, 0.065, 0.048))
     # 全体の汚れ（灰と煤の薄い膜）＋まだらな焦げ: 真っ白にしない
-    col = b.mix(b.ramp(n_big, [(0.2, 0.5), (0.8, 0.25)]), col, (0.11, 0.095, 0.075))
-    char = b.ramp(b.noise(2.5 / scale, 6, 0.65), [(0.50, 0.0), (0.64, 1.0)])
+    col = b.mix(b.ramp(n_big, [(0.2, grime), (0.8, grime * 0.5)]), col, (0.11, 0.095, 0.075))
+    char = b.ramp(b.noise(2.5 / scale, 6, 0.65), [(char_lo, 0.0), (char_lo + 0.14, 1.0)])
     col = b.mix(b.math("MULTIPLY", char, 0.85), col, (0.025, 0.020, 0.017))
     # 角の摩耗（擦れて少し明るく滑らか）
     edge = b.math("MULTIPLY", b.edge_mask(0.015, 0.03, 0.25), b.ramp(n_fine, [(0.3, 0.3), (0.65, 1.0)]), clamp=True)
@@ -794,7 +794,7 @@ def bone_mat(name, soot_lo=0.0, soot_hi=0.5, scale=1.0):
     cav = b.math("SUBTRACT", 1.0, b.cavity(0.04))
     ashm = b.math("MAXIMUM", b.math("MULTIPLY", b.up_mask(0.6, 0.92), 0.7), b.math("MULTIPLY", cav, 0.5))
     ashm = b.math("MULTIPLY", ashm, b.ramp(b.noise(4.0, 6, 0.65), [(0.38, 0.0), (0.66, 1.0)]))
-    col = b.mix(b.math("MULTIPLY", ashm, 0.8), col, ASH)
+    col = b.mix(b.math("MULTIPLY", ashm, ash_amt), col, ASH)
     r = b.mixf(n_fine, 0.72, 0.88)
     r = b.mixf(edge, r, 0.55)
     r = b.mixf(ashm, r, 0.97)
@@ -1069,3 +1069,32 @@ def egg_mat(name, glow_strength=4.0):
     hgt = b.math("SUBTRACT", b.math("MULTIPLY", n_mid, 0.2), b.math("MULTIPLY", crk, 0.6))
     b.normal_from(None, bump_height=hgt, bump_strength=0.3, bump_dist=0.002)
     return b.out(col, r, 0.0, emit=emit, emit_strength=glow_strength)
+
+
+# ---------------------------------------------------------------------------
+# 断面をつなぐ（loft）: 骨の頭蓋など
+# ---------------------------------------------------------------------------
+def loft(name, rings, cap=True, smooth=True):
+    """rings: 同じ点数の断面（Vector のリスト）の列。隣どうしを四角形でつなぎ、両端を塞ぐ"""
+    bm = bmesh.new()
+    vr = [[bm.verts.new(p) for p in ring] for ring in rings]
+    M = len(rings[0])
+    for a, b in zip(vr[:-1], vr[1:]):
+        for i in range(M):
+            bm.faces.new((a[i], a[(i + 1) % M], b[(i + 1) % M], b[i]))
+    if cap:
+        f0 = bm.faces.new(list(reversed(vr[0])))
+        f1 = bm.faces.new(vr[-1])
+        bmesh.ops.poke(bm, faces=[f0, f1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    return C.obj_from_bm(bm, name, smooth)
+
+
+def catmull(ps, t):
+    """Catmull-Rom で数値列（またはタプル）を補間。t∈[0, len-1]"""
+    n = len(ps)
+    i = max(0, min(n - 2, int(t)))
+    u = t - i
+    p0, p1, p2, p3 = ps[max(0, i - 1)], ps[i], ps[i + 1], ps[min(n - 1, i + 2)]
+    return tuple(0.5 * ((2 * b) + (-a + c) * u + (2 * a - 5 * b + 4 * c - d) * u * u + (-a + 3 * b - 3 * c + d) * u ** 3)
+                 for a, b, c, d in zip(p0, p1, p2, p3))
