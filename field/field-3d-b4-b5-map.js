@@ -2,17 +2,17 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-quality';
-import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-g4';
-import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-g4';
+import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-g6';
+import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-g6';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-g4';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-g4';
-import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-g4';
-import { createB4Kit } from './b4-kit.js?v=20261122-g4';
-import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261122-g4';
-import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-g4';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-g4';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-g6';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-g6';
+import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-g6';
+import { createB4Kit } from './b4-kit.js?v=20261122-g6';
+import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261122-g6';
+import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-g6';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-g6';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -477,6 +477,11 @@ export function createTheme(api, area) {
     const o = e.o, x = o.tx * CELL, z = o.ty * CELL;
     const drop = obj => { if (!obj) return; obj.parent?.remove(obj); for (const L of obj.userData.lights || []) L.off = true; };
     if (o.kind === 'chest' || o.kind === 'cache') { drop(e.obj); e.obj = place(g.world, st === 'open' ? b4Kit.chestOpen : b4Kit.chest, x, 0, z, e.ry); return true; }
+    if (o.kind === 'gather') {   // 4層の採取ポイント（1層の苔の採掘点・草を使わない）
+      const [kind, left] = st.split(':'), k = kind === 'chop' ? 'chop' : kind === 'mine' ? 'mine' : 'herb';
+      drop(e.obj); e.obj = place(g.world, b4Kit.gather[left === 'empty' ? k + 'Empty' : k], x, 0, z, e.ry, 1.35);
+      return true;
+    }
     if (o.kind === 'door' && !o.hidden) {
       if (!e.obj) e.obj = place(g.world, b4Kit.gate, x, 0, z, e.ry, 1);
       e.obj.position.y = st === 'open' ? 3.7 : 0; e.obj.updateMatrix(); e.obj.updateMatrixWorld(true);

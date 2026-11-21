@@ -130,5 +130,34 @@ export function createB2Kit() {
     const rp = new THREE.TorusGeometry(0.42, 0.025, 5, 16); rp.rotateX(Math.PI / 2); rp.translate(-0.35, 0.5, 0); crate.add(mesh(rp, rope, 'rope'));
     crate.add(mesh(icicles([[-0.7, 0.7, 0.1], [-0.5, 0.7, 0.38], [-0.2, 0.7, 0.42], [0.2, 0.55, 0.45], [0.6, 0.55, 0.3]], 0.2), frost, 'icicles'));
   }
-  return { save, sign, chest, chestOpen, crate, dispose() { owned.forEach(o => o.dispose()); } };
+  // 採取ポイント（2026-11-22）：採掘＝青石に氷晶の鉱脈、採取＝霜の百合、伐採＝凍った流木。尽きたときの暗さは共通処理の dimObj
+  const lump = (n, r0, spread, seed) => { const out = []; for (let i = 0; i < n; i++) { const a = i * 2.399 + seed, rr = spread * Math.sqrt((i + 0.5) / n), sc = r0 * (1.15 - i / n * 0.5); const g = new THREE.IcosahedronGeometry(1, 1); g.scale(sc, sc * 0.75, sc); g.rotateY(a); g.translate(Math.cos(a) * rr, sc * 0.3 + 0.05, Math.sin(a) * rr); out.push(g); } return merge(out); };
+  const gMine = new THREE.Group(); gMine.name = 'b2kit:gather-mine';
+  {
+    gMine.add(mesh(lump(7, 0.4, 0.5, 2.1), iceStone, 'rock'));
+    const sh = []; for (let i = 0; i < 6; i++) { const o = new THREE.OctahedronGeometry(0.09, 0); o.scale(0.8, 3.6 + (i % 3), 0.8); o.rotateZ((i - 2.5) * 0.25); o.rotateX((i % 2 ? 1 : -1) * 0.3); o.translate(-0.25 + i * 0.1, 0.55 + (i % 2) * 0.08, (i % 3 - 1) * 0.15); sh.push(o); }
+    gMine.add(mesh(merge(sh), crystal, 'ice-ore'));
+    gMine.add(mesh(merge([box(0.9, 0.04, 0.7, 0, 0.6, 0, 0.3)].map(b => { b.scale(0.6, 1, 0.6); return b; })), frost, 'frost'));
+    light(gMine, [0, 0.8, 0.3], 0x7fdcff, 0.9, 3);
+  }
+  const gHerb = new THREE.Group(); gHerb.name = 'b2kit:gather-herb';
+  {
+    const st = [], pe = [];
+    for (let i = 0; i < 7; i++) {
+      const a = i * 2.399, r = 0.1 + (i % 3) * 0.13, h = 0.3 + (i % 3) * 0.12, x = Math.cos(a) * r, z = Math.sin(a) * r;
+      const c = new THREE.CylinderGeometry(0.008, 0.014, h, 4); c.translate(x, h / 2, z); st.push(c);
+      for (let k = 0; k < 5; k++) { const p = new THREE.SphereGeometry(0.05, 6, 4); p.scale(0.45, 0.12, 1); p.translate(0, 0, 0.05); p.rotateX(-0.5); p.rotateY(k * 1.257); p.translate(x, h, z); pe.push(p); }
+    }
+    gHerb.add(mesh(merge(st), new THREE.MeshStandardMaterial({ color: 0x4f7a78, roughness: 0.7 }), 'stems'));
+    gHerb.add(mesh(merge(pe), crystal, 'frost-lily'));
+    const snow = new THREE.CircleGeometry(0.6, 12).rotateX(-Math.PI / 2); snow.translate(0, 0.012, 0); gHerb.add(mesh(snow, frost, 'snow'));
+    light(gHerb, [0, 0.5, 0], 0x7fdcff, 0.8, 2.6);
+  }
+  const gChop = new THREE.Group(); gChop.name = 'b2kit:gather-driftwood';
+  {
+    const t = new THREE.CylinderGeometry(0.16, 0.2, 1.6, 8); t.rotateZ(Math.PI / 2); t.rotateY(0.4); t.translate(0, 0.2, 0); gChop.add(mesh(t, paleWood, 'log'));
+    const t2 = new THREE.CylinderGeometry(0.1, 0.13, 1.0, 7); t2.rotateZ(Math.PI / 2); t2.rotateY(-0.7); t2.translate(0.15, 0.48, 0.1); gChop.add(mesh(t2, paleWood, 'log2'));
+    gChop.add(mesh(icicles([[-0.5, 0.05, 0.1], [-0.2, 0.05, 0.2], [0.2, 0.05, -0.05], [0.5, 0.05, -0.2]], 0.18), frost, 'icicles'));
+  }
+  return { save, sign, chest, chestOpen, crate, gather: { mine: gMine, herb: gHerb, chop: gChop }, dispose() { owned.forEach(o => o.dispose()); } };
 }

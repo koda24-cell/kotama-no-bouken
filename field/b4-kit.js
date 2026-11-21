@@ -9,7 +9,7 @@
  *   出口      ：4.0×4.2 m の神殿の門（柱＋まぐさ＋ルーン帯）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { glyphMaterial, createFlames } from './b4-vfx.js?v=20261122-g4';
+import { glyphMaterial, createFlames } from './b4-vfx.js?v=20261122-g6';
 
 const merge = parts => { const g = mergeGeometries(parts.map(p => (p.index ? p.toNonIndexed() : p)), false); parts.forEach(p => p.dispose()); return g; };
 const box = (w, h, d, x, y, z, ry = 0, rz = 0) => { const b = new THREE.BoxGeometry(w, h, d); if (rz) b.rotateZ(rz); if (ry) b.rotateY(ry); b.translate(x, y, z); return b; };
@@ -187,5 +187,62 @@ export function createB4Kit({ wall, trim }) {
     light(exit, [0, 3.2, 0.8], 0xff8a34, 1.8, 6);
   }
 
-  return { stairsDown, stairsUp, seal: null, torch: save, sign, runeDoor: door, gate: door, rootArch: exit, chest, chestOpen, dispose() { owned.forEach(o => o.dispose()); } };
+  // ---------------- 採取ポイント（2026-11-22：1層の苔の採掘点・草を使わない）
+  // 採掘：黒い岩塊（φ1.4×0.9 m）に赤く光る鉱石の結晶、溶岩の筋、刺さったつるはし。尽きると結晶が消え、筋が冷える
+  const rockLump = (parts, seed, n, r0, spread, y0 = 0.3) => {
+    for (let i = 0; i < n; i++) {
+      const a = i * 2.399 + seed, rr = spread * Math.sqrt((i + 0.5) / n), sc = r0 * (1.15 - i / n * 0.5);
+      const g = new THREE.IcosahedronGeometry(1, 1); const pa = g.attributes.position;
+      for (let k = 0; k < pa.count; k++) { const f = 1 + (Math.sin(pa.getX(k) * 7.1 + seed) * Math.cos(pa.getY(k) * 5.3 + i) * 0.16); pa.setXYZ(k, pa.getX(k) * f, pa.getY(k) * f * 0.72, pa.getZ(k) * f); }
+      g.computeVertexNormals(); g.scale(sc, sc, sc); g.rotateY(a); g.translate(Math.cos(a) * rr, y0 * sc + 0.05, Math.sin(a) * rr); parts.push(g);
+    }
+  };
+  const shard = (x, y, z, h, tx, tz) => { const g = new THREE.OctahedronGeometry(0.1, 0); g.scale(0.9, h * 5, 0.9); g.rotateX(tx); g.rotateZ(tz); g.translate(x, y, z); return g; };
+  const oreMat = new THREE.MeshStandardMaterial({ color: 0x5a0c06, roughness: 0.25, metalness: 0.15, emissive: 0xff2a0a, emissiveIntensity: 1.25 });
+  const coldMat = new THREE.MeshStandardMaterial({ color: 0x2a1c18, roughness: 0.9 });
+  const rockMat = darkStone.clone(); rockMat.color.setRGB(0.55, 0.4, 0.36);
+  owned.push(oreMat, coldMat, rockMat); for (const m of [oreMat, coldMat, rockMat]) nearCull(m);
+  const makeMine = (empty) => {
+    const g = new THREE.Group(); g.name = empty ? 'b4kit:gather-mine-empty' : 'b4kit:gather-mine';
+    const rp = []; rockLump(rp, 1.7, 7, 0.42, 0.55); g.add(mesh(merge(rp), rockMat, 'rock'));
+    const seam = []; for (let i = 0; i < 5; i++) seam.push(box(0.035, 0.02, 0.5 + (i % 3) * 0.2, -0.3 + i * 0.15, 0.36 + (i % 2) * 0.08, 0.1 * (i - 2), (i - 2) * 0.5));
+    g.add(mesh(merge(seam), empty ? coldMat : ember, 'seam'));
+    if (!empty) {
+      const sh = [shard(0.1, 0.55, 0.05, 0.11, 0.2, -0.3), shard(-0.18, 0.5, 0.15, 0.08, -0.35, 0.4), shard(0.3, 0.42, -0.1, 0.07, 0.1, -0.6), shard(-0.05, 0.62, -0.2, 0.09, 0.4, 0.15), shard(0.22, 0.38, 0.28, 0.05, -0.5, -0.4)];
+      g.add(mesh(merge(sh), oreMat, 'ore'));
+      light(g, [0, 0.8, 0.3], 0xff3a12, 1.2, 3.2);
+    }
+    const pick = [box(0.04, 0.8, 0.04, 0, 0.4, 0, 0, 0)];
+    const head = new THREE.CylinderGeometry(0.03, 0.012, 0.5, 6); head.rotateZ(Math.PI / 2); head.translate(0, 0.8, 0); pick.push(head);
+    const pg = merge(pick); pg.rotateZ(-0.9); pg.rotateY(0.6); pg.translate(-0.45, 0.35, 0.35);
+    g.add(mesh(pg, iron, 'pickaxe'));
+    return g;
+  };
+  // 採取：焦げた茎に橙に光る火の花（実 φ0.12）、灰の地面。尽きると花が消える
+  const makeHerb = (empty) => {
+    const g = new THREE.Group(); g.name = empty ? 'b4kit:gather-herb-empty' : 'b4kit:gather-herb';
+    const ash = new THREE.CircleGeometry(0.75, 14).rotateX(-Math.PI / 2); ash.translate(0, 0.012, 0); g.add(mesh(ash, coldMat, 'ash'));
+    const stems = [], buds = [];
+    for (let i = 0; i < 9; i++) {
+      const a = i * 2.399, r = 0.12 + (i % 4) * 0.12, h = 0.35 + (i % 3) * 0.16, x = Math.cos(a) * r, z = Math.sin(a) * r;
+      const st = new THREE.CylinderGeometry(0.008, 0.016, h, 4); st.translate(0, h / 2, 0); st.rotateZ((i % 2 ? 1 : -1) * 0.18); st.translate(x, 0, z); stems.push(st);
+      if (!empty) { const b = new THREE.SphereGeometry(0.055 + (i % 3) * 0.015, 8, 6); b.scale(1, 1.3, 1); b.translate(x + (i % 2 ? -1 : 1) * h * 0.18, h + 0.03, z); buds.push(b); }
+    }
+    g.add(mesh(merge(stems), wood, 'stems'));
+    if (buds.length) { g.add(mesh(merge(buds), hot, 'fire-buds')); light(g, [0, 0.6, 0], 0xff6a1a, 1.1, 3); }
+    const pebbles = []; rockLump(pebbles, 4.2, 5, 0.12, 0.7, 0.2); g.add(mesh(merge(pebbles), rockMat, 'pebbles'));
+    return g;
+  };
+  // 伐採：炭になった倒木の切り株（φ0.7×0.9 m）、割れ目に残り火
+  const makeChop = (empty) => {
+    const g = new THREE.Group(); g.name = 'b4kit:gather-stump';
+    const t = new THREE.CylinderGeometry(0.3, 0.42, 0.9, 9); t.translate(0, 0.45, 0); g.add(mesh(t, wood, 'stump'));
+    const roots = []; for (let i = 0; i < 5; i++) { const a = i * 1.257, r = new THREE.CylinderGeometry(0.04, 0.09, 0.7, 5); r.rotateZ(Math.PI / 2 - 0.35); r.translate(0.32, 0.1, 0); r.rotateY(a); roots.push(r); } g.add(mesh(merge(roots), wood, 'roots'));
+    const cr = []; for (let i = 0; i < 4; i++) cr.push(box(0.03, 0.5, 0.02, Math.cos(i * 1.6) * 0.33, 0.45, Math.sin(i * 1.6) * 0.33, i * 1.6));
+    g.add(mesh(merge(cr), empty ? coldMat : ember, 'embers'));
+    return g;
+  };
+  const gather = { mine: makeMine(false), mineEmpty: makeMine(true), herb: makeHerb(false), herbEmpty: makeHerb(true), chop: makeChop(false), chopEmpty: makeChop(true) };
+
+  return { stairsDown, stairsUp, seal: null, gather, torch: save, sign, runeDoor: door, gate: door, rootArch: exit, chest, chestOpen, dispose() { owned.forEach(o => o.dispose()); } };
 }
