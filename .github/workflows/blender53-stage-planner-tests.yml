@@ -1,0 +1,30 @@
+name: Blender bounded stage planner tests
+on:
+  push:
+    branches:
+      - feature/blender53-bounded-stage-planner-20261121
+    paths:
+      - 'tools/3d_checkpoint/stage_plan.py'
+      - 'tools/3d_checkpoint/test_stage_plan.py'
+      - '.github/workflows/blender53-stage-planner-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stage-planner-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python stage decision tests
+        run: |
+          python3 tools/3d_checkpoint/test_stage_budget.py
+          python3 tools/3d_checkpoint/test_stage_plan.py
+      - name: Simulated 71-minute stage handoff
+        run: |
+          python3 tools/3d_checkpoint/stage_plan.py --completed-stage 2 --max-stages 4 --elapsed-seconds 4260
+      - name: Maximum stages never loop
+        run: |
+          python3 tools/3d_checkpoint/stage_plan.py --completed-stage 4 --max-stages 4 --elapsed-seconds 4260
