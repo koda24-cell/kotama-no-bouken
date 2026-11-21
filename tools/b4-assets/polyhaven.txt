@@ -1,0 +1,2 @@
+# Poly Haven CC0 textures fetched into assets/textures/floor4/cc0/<id>/ (2k jpg: diff, rough, nor_gl, disp/ao if present)
+rock_face_02
