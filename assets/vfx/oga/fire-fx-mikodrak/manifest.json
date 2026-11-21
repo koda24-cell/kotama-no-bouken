@@ -1,0 +1,339 @@
+{
+ "page": "https://opengameart.org/content/fire-fx-burning-fire-animation",
+ "license": "see-page",
+ "author": "Mikodrak",
+ "files": {
+  "fire_1b_40_1.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_1.png",
+   "sha256": "3230778d0d4ce6eae9a1692e26af3b0f31ac040c92cf20de9a8491a231fced4a"
+  },
+  "fire_1b_40_10.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_10.png",
+   "sha256": "0cf483b49995744603ce621925ae645df100ac21a65d81580afd9484450a8e81"
+  },
+  "fire_1b_40_11.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_11.png",
+   "sha256": "c8a717cc00293c8b1c22ed5c8b4af90ccbb91ad46f95e9eeb945f86e223b313c"
+  },
+  "fire_1b_40_12.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_12.png",
+   "sha256": "167a35b71878a190cb76957d603ed1a0ec780c61ec661d7f2cd5e97a58b546e2"
+  },
+  "fire_1b_40_13.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_13.png",
+   "sha256": "6059550d74eeed4d57deee82b7f05ee66d6913eae2decceff1fcc4baa45f50f0"
+  },
+  "fire_1b_40_14.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_14.png",
+   "sha256": "0ea07be46351dd6b1574532de1dd9fa508c640755372cd6dd4f93dc100fc10f2"
+  },
+  "fire_1b_40_15.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_15.png",
+   "sha256": "5e51fecffca59152b5c23ee134d3a7f0b9e07b5cf6e8a37e15a82e2551d49360"
+  },
+  "fire_1b_40_16.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_16.png",
+   "sha256": "3ddef03bcfe2ad8aacb430980e32c0f9c148312f2624f96c0effc6701c4d87eb"
+  },
+  "fire_1b_40_17.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_17.png",
+   "sha256": "72d8f23cdf9ce27b0cc46339395b737ef307616e27b2e50bbaa9c34badb403c5"
+  },
+  "fire_1b_40_18.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_18.png",
+   "sha256": "25af044249579e7ee7785a4db7cf57a75b6555e28ad27f2c534a7097e6b7907f"
+  },
+  "fire_1b_40_19.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_19.png",
+   "sha256": "8d657ba68541d4245999663971991bd3ab1e7fcd54589872deb93889cc2e04d3"
+  },
+  "fire_1b_40_2.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_2.png",
+   "sha256": "1866f5684a7aeed4b4d6303a0dd2aa31611fefac4e371d928ecce99fd7236649"
+  },
+  "fire_1b_40_20.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_20.png",
+   "sha256": "ad6103aa07a847992fdf51d55267bb843e02755112c4e7628fbe294adf540f56"
+  },
+  "fire_1b_40_21.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_21.png",
+   "sha256": "ddbe8160e7dbd0d41b7f3c530e0a83ee4e51443ebc248f8175f15dc8b8baf24c"
+  },
+  "fire_1b_40_22.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_22.png",
+   "sha256": "918fdfa717e57ca69749e4a0ea772b3a888a3e4abe650c2d74f6e346bcc1b526"
+  },
+  "fire_1b_40_23.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_23.png",
+   "sha256": "a823e4a665fcec9b8baca5fd74843760a0cb437421b7045c519cbb1839ae0e3c"
+  },
+  "fire_1b_40_24.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_24.png",
+   "sha256": "b7021cb2fb8420a868d23bab8e02adb13ff9ac562fcb88bf75f7f6b3676a7e4f"
+  },
+  "fire_1b_40_25.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_25.png",
+   "sha256": "c2b1c7a197aef1ee7ec1c75b2baad3c99050ccd4f01ed11d4c793d027fcbcf5b"
+  },
+  "fire_1b_40_26.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_26.png",
+   "sha256": "da81db3c527ad1c4f16166b891f89975145103998cf325493815805da6f4600e"
+  },
+  "fire_1b_40_27.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_27.png",
+   "sha256": "f244c10a5757a040884437191a5e4ca26fbb7b14adacbdbad0b509fec198e387"
+  },
+  "fire_1b_40_28.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_28.png",
+   "sha256": "73bbfe571f254a316557ada407110fc91c66b7606402d4fb53718ab53cca31bf"
+  },
+  "fire_1b_40_29.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_29.png",
+   "sha256": "0b8bae1a620825bf5fc3d80ca2881ca70f5e7a2789eb8e0809e61a39fe21ba24"
+  },
+  "fire_1b_40_3.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_3.png",
+   "sha256": "c7c2f884891ef742384fdf3d0268935c2460ca2566d98c8f2118949defe8bb61"
+  },
+  "fire_1b_40_30.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_30.png",
+   "sha256": "2a29028144dc3bea567386d8dad7dd26db4c95a03e0f8a906500eb371e288409"
+  },
+  "fire_1b_40_31.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_31.png",
+   "sha256": "d20ec0336a20204d09e2d37e38582fb40ef9cd9fd868a763fcd239d4d5ac9025"
+  },
+  "fire_1b_40_32.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_32.png",
+   "sha256": "3badc53aa71a4a5ea7df03433f35d6e6b0e33bd222c8b90740cbee688a65e37b"
+  },
+  "fire_1b_40_33.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_33.png",
+   "sha256": "4e44205292bb2ceeb98574ef3797ca4d82dd4f7b36d61b8422f06d7785fa6e27"
+  },
+  "fire_1b_40_34.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_34.png",
+   "sha256": "d118cb240fe70247ee0b3eda76b4ae81d983075916936c015fa3548ceba4c907"
+  },
+  "fire_1b_40_35.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_35.png",
+   "sha256": "d303de0a3e0520ed5ca853a280496058187b0ea5e2de41899e9a4da7b908dea0"
+  },
+  "fire_1b_40_36.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_36.png",
+   "sha256": "7389abc1408b486ddfae777c15bcff1c5cc83b099f4d4241106e378c8a8efe9b"
+  },
+  "fire_1b_40_37.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_37.png",
+   "sha256": "94fceadeca3f8131d9e71ac20f95f493176138620c34449ee2594ba96c60cd93"
+  },
+  "fire_1b_40_38.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_38.png",
+   "sha256": "89c3ce6a84e0479b363f040241f34f496a6bc15228ef394d5c057c34836375fa"
+  },
+  "fire_1b_40_39.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_39.png",
+   "sha256": "672c322202647f27c4965fe0d2a323b6b6c284f491c51a7bf12025c5c00db9b4"
+  },
+  "fire_1b_40_4.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_4.png",
+   "sha256": "bb777659708abe7eaa5f42750caa6f1e6788ab7c75fc2fbb81206e02ca57f490"
+  },
+  "fire_1b_40_40.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_40.png",
+   "sha256": "42307a8b4c7dd78b08f0bb0b828a271eae910793dd1c50dca818658bb8084b50"
+  },
+  "fire_1b_40_5.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_5.png",
+   "sha256": "9e3b22cf8d1f55974b6d6ac3d2ce5f89c4f4207ca6d80284bfee79b7917102b2"
+  },
+  "fire_1b_40_6.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_6.png",
+   "sha256": "19118d5cded5061fab8b436360d2057d516168ea5cfe5bdd526b7ec8616a660d"
+  },
+  "fire_1b_40_7.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_7.png",
+   "sha256": "4fb346c98fffce45b61af1d1af0b04106e6692510735038f24df51325737fae5"
+  },
+  "fire_1b_40_8.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_8.png",
+   "sha256": "0622ad8bda6a06da8f091a379890255c927cd1435eb8116e30df4749a8deeed1"
+  },
+  "fire_1b_40_9.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1b_40_9.png",
+   "sha256": "f41a22c3713b07223831af00a6d89c153369bc5f1498527d4a49cb61f9e6d951"
+  },
+  "fire_1f_40_1.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_1.png",
+   "sha256": "42307a8b4c7dd78b08f0bb0b828a271eae910793dd1c50dca818658bb8084b50"
+  },
+  "fire_1f_40_10.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_10.png",
+   "sha256": "d20ec0336a20204d09e2d37e38582fb40ef9cd9fd868a763fcd239d4d5ac9025"
+  },
+  "fire_1f_40_11.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_11.png",
+   "sha256": "2a29028144dc3bea567386d8dad7dd26db4c95a03e0f8a906500eb371e288409"
+  },
+  "fire_1f_40_12.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_12.png",
+   "sha256": "0b8bae1a620825bf5fc3d80ca2881ca70f5e7a2789eb8e0809e61a39fe21ba24"
+  },
+  "fire_1f_40_13.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_13.png",
+   "sha256": "73bbfe571f254a316557ada407110fc91c66b7606402d4fb53718ab53cca31bf"
+  },
+  "fire_1f_40_14.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_14.png",
+   "sha256": "f244c10a5757a040884437191a5e4ca26fbb7b14adacbdbad0b509fec198e387"
+  },
+  "fire_1f_40_15.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_15.png",
+   "sha256": "da81db3c527ad1c4f16166b891f89975145103998cf325493815805da6f4600e"
+  },
+  "fire_1f_40_16.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_16.png",
+   "sha256": "c2b1c7a197aef1ee7ec1c75b2baad3c99050ccd4f01ed11d4c793d027fcbcf5b"
+  },
+  "fire_1f_40_17.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_17.png",
+   "sha256": "b7021cb2fb8420a868d23bab8e02adb13ff9ac562fcb88bf75f7f6b3676a7e4f"
+  },
+  "fire_1f_40_18.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_18.png",
+   "sha256": "a823e4a665fcec9b8baca5fd74843760a0cb437421b7045c519cbb1839ae0e3c"
+  },
+  "fire_1f_40_19.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_19.png",
+   "sha256": "918fdfa717e57ca69749e4a0ea772b3a888a3e4abe650c2d74f6e346bcc1b526"
+  },
+  "fire_1f_40_2.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_2.png",
+   "sha256": "672c322202647f27c4965fe0d2a323b6b6c284f491c51a7bf12025c5c00db9b4"
+  },
+  "fire_1f_40_20.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_20.png",
+   "sha256": "ddbe8160e7dbd0d41b7f3c530e0a83ee4e51443ebc248f8175f15dc8b8baf24c"
+  },
+  "fire_1f_40_21.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_21.png",
+   "sha256": "ad6103aa07a847992fdf51d55267bb843e02755112c4e7628fbe294adf540f56"
+  },
+  "fire_1f_40_22.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_22.png",
+   "sha256": "8d657ba68541d4245999663971991bd3ab1e7fcd54589872deb93889cc2e04d3"
+  },
+  "fire_1f_40_23.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_23.png",
+   "sha256": "25af044249579e7ee7785a4db7cf57a75b6555e28ad27f2c534a7097e6b7907f"
+  },
+  "fire_1f_40_24.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_24.png",
+   "sha256": "72d8f23cdf9ce27b0cc46339395b737ef307616e27b2e50bbaa9c34badb403c5"
+  },
+  "fire_1f_40_25.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_25.png",
+   "sha256": "3ddef03bcfe2ad8aacb430980e32c0f9c148312f2624f96c0effc6701c4d87eb"
+  },
+  "fire_1f_40_26.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_26.png",
+   "sha256": "5e51fecffca59152b5c23ee134d3a7f0b9e07b5cf6e8a37e15a82e2551d49360"
+  },
+  "fire_1f_40_27.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_27.png",
+   "sha256": "0ea07be46351dd6b1574532de1dd9fa508c640755372cd6dd4f93dc100fc10f2"
+  },
+  "fire_1f_40_28.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_28.png",
+   "sha256": "6059550d74eeed4d57deee82b7f05ee66d6913eae2decceff1fcc4baa45f50f0"
+  },
+  "fire_1f_40_29.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_29.png",
+   "sha256": "167a35b71878a190cb76957d603ed1a0ec780c61ec661d7f2cd5e97a58b546e2"
+  },
+  "fire_1f_40_3.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_3.png",
+   "sha256": "89c3ce6a84e0479b363f040241f34f496a6bc15228ef394d5c057c34836375fa"
+  },
+  "fire_1f_40_30.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_30.png",
+   "sha256": "c8a717cc00293c8b1c22ed5c8b4af90ccbb91ad46f95e9eeb945f86e223b313c"
+  },
+  "fire_1f_40_31.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_31.png",
+   "sha256": "0cf483b49995744603ce621925ae645df100ac21a65d81580afd9484450a8e81"
+  },
+  "fire_1f_40_32.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_32.png",
+   "sha256": "f41a22c3713b07223831af00a6d89c153369bc5f1498527d4a49cb61f9e6d951"
+  },
+  "fire_1f_40_33.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_33.png",
+   "sha256": "0622ad8bda6a06da8f091a379890255c927cd1435eb8116e30df4749a8deeed1"
+  },
+  "fire_1f_40_34.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_34.png",
+   "sha256": "4fb346c98fffce45b61af1d1af0b04106e6692510735038f24df51325737fae5"
+  },
+  "fire_1f_40_35.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_35.png",
+   "sha256": "19118d5cded5061fab8b436360d2057d516168ea5cfe5bdd526b7ec8616a660d"
+  },
+  "fire_1f_40_36.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_36.png",
+   "sha256": "9e3b22cf8d1f55974b6d6ac3d2ce5f89c4f4207ca6d80284bfee79b7917102b2"
+  },
+  "fire_1f_40_37.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_37.png",
+   "sha256": "bb777659708abe7eaa5f42750caa6f1e6788ab7c75fc2fbb81206e02ca57f490"
+  },
+  "fire_1f_40_38.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_38.png",
+   "sha256": "c7c2f884891ef742384fdf3d0268935c2460ca2566d98c8f2118949defe8bb61"
+  },
+  "fire_1f_40_39.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_39.png",
+   "sha256": "1866f5684a7aeed4b4d6303a0dd2aa31611fefac4e371d928ecce99fd7236649"
+  },
+  "fire_1f_40_4.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_4.png",
+   "sha256": "94fceadeca3f8131d9e71ac20f95f493176138620c34449ee2594ba96c60cd93"
+  },
+  "fire_1f_40_40.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_40.png",
+   "sha256": "3230778d0d4ce6eae9a1692e26af3b0f31ac040c92cf20de9a8491a231fced4a"
+  },
+  "fire_1f_40_5.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_5.png",
+   "sha256": "7389abc1408b486ddfae777c15bcff1c5cc83b099f4d4241106e378c8a8efe9b"
+  },
+  "fire_1f_40_6.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_6.png",
+   "sha256": "d303de0a3e0520ed5ca853a280496058187b0ea5e2de41899e9a4da7b908dea0"
+  },
+  "fire_1f_40_7.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_7.png",
+   "sha256": "d118cb240fe70247ee0b3eda76b4ae81d983075916936c015fa3548ceba4c907"
+  },
+  "fire_1f_40_8.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_8.png",
+   "sha256": "4e44205292bb2ceeb98574ef3797ca4d82dd4f7b36d61b8422f06d7785fa6e27"
+  },
+  "fire_1f_40_9.png": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#fire_1_40/fire_1f_40_9.png",
+   "sha256": "3badc53aa71a4a5ea7df03433f35d6e6b0e33bd222c8b90740cbee688a65e37b"
+  },
+  "YoudBetterReadMe.txt": {
+   "from": "https://opengameart.org/sites/default/files/FIRE.zip#YoudBetterReadMe.txt",
+   "sha256": "960c88954f86c9018a9537e6a4453ee8495c91a9fb2b6448a069eaf40e375570"
+  },
+  "betterfiredemo.png": {
+   "from": "https://opengameart.org/sites/default/files/betterfiredemo.png",
+   "sha256": "ccc1a9daed1a031c68f2fc8049862ef1e1c94fbdde469fa5f184e90d1583884c"
+  },
+  "cc0.png": {
+   "from": "https://opengameart.org/sites/default/files/license_images/cc0.png",
+   "sha256": "b2faab78467c006e7a8ce914d932dca6c9660145ae73ba885c19e39f3f0747e1"
+  }
+ }
+}

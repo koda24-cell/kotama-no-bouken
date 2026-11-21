@@ -1,0 +1,19 @@
+{
+ "page": "https://opengameart.org/content/teleport-circle-sprite-sheet",
+ "license": "CC0",
+ "author": "gfroad",
+ "files": {
+  "cc0.png": {
+   "from": "https://opengameart.org/sites/default/files/license_images/cc0.png",
+   "sha256": "b2faab78467c006e7a8ce914d932dca6c9660145ae73ba885c19e39f3f0747e1"
+  },
+  "teleportCircle.png": {
+   "from": "https://opengameart.org/sites/default/files/teleportCircle.png",
+   "sha256": "c2cbe70ace8a2a2d4859ec421ebc8f5ac22c4380da4e9d26af9c99cadbebfd87"
+  },
+  "teleportCircle_0.png": {
+   "from": "https://opengameart.org/sites/default/files/teleportCircle_0.png",
+   "sha256": "c2cbe70ace8a2a2d4859ec421ebc8f5ac22c4380da4e9d26af9c99cadbebfd87"
+  }
+ }
+}

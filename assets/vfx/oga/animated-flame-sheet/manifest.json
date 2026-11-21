@@ -1,0 +1,123 @@
+{
+ "page": "https://www.opengameart.org/content/animated-flame-fire-sprite-sheet",
+ "license": "see-page",
+ "author": "unknown",
+ "files": {
+  "firesheet5x5.png": {
+   "from": "https://opengameart.org/sites/default/files/firesheet5x5.png",
+   "sha256": "4205af4b9b312b394704b200df687712d3e1322a74be30bb50803f2c55dff2dd"
+  },
+  "fireB0001.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0001.png",
+   "sha256": "bf559c738954353a39cf3f80aea6b797709e0ff828fe2523e9e1b0c989a9004b"
+  },
+  "fireB0002.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0002.png",
+   "sha256": "13375391e7dfb7d4a904bc3731f800ffb83b8da60550ae304401abb1abfb8c8e"
+  },
+  "fireB0003.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0003.png",
+   "sha256": "19f1d0dcf89d5f23ff7ba002750b1c7fb3f668e7481989f56f6a796ac77aa4b4"
+  },
+  "fireB0004.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0004.png",
+   "sha256": "534ffbe537f6140f81e89e2add02a81ecb91e73c842a976f4faf8aa674dc23f0"
+  },
+  "fireB0005.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0005.png",
+   "sha256": "cf6729d5283581e64346a89f947f26acda4fb27d6205dea94140c36f238c38ce"
+  },
+  "fireB0006.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0006.png",
+   "sha256": "7da36df5f07a804c0ecd324ff92eccffd8f9adaa0a889ef72e387a594efb822a"
+  },
+  "fireB0007.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0007.png",
+   "sha256": "be9482054dc1bf40bf0b6bb07a24dc994fc96c162da895d2959d8ea0276dff16"
+  },
+  "fireB0008.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0008.png",
+   "sha256": "ff7e124496b4e6f012909986003fd30b174231524c336d8ffbfec1c4dc6fc9f6"
+  },
+  "fireB0009.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0009.png",
+   "sha256": "10985746f7a23dbdb585095458e3d9207a4757354791d4dc51a18eac49982dd8"
+  },
+  "fireB0010.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0010.png",
+   "sha256": "f9db6ab90ec3c6454d11f173114b55506b2679e707fa71dfe16c195ecd4b9d50"
+  },
+  "fireB0011.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0011.png",
+   "sha256": "11ee7714b758a5c75d0e532d502f6a4982741b19984ae4f372e81860222cf849"
+  },
+  "fireB0012.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0012.png",
+   "sha256": "6e15089798f903223a24e7231651f945d5f272bdc6dbf3f2a9aae372ef8f036d"
+  },
+  "fireB0013.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0013.png",
+   "sha256": "6293e6a0c0176069b441373251a38c7dbd34a5e8594bba483bf22f8e56112f36"
+  },
+  "fireB0014.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0014.png",
+   "sha256": "9b6a2787233509c9a814b53589100e815779a63dc8f683a8a938af9786e50f81"
+  },
+  "fireB0015.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0015.png",
+   "sha256": "f4ab98ec8eb1d4d474faafe520e56582f58f20d6d26bb748475042ede77ae248"
+  },
+  "fireB0016.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0016.png",
+   "sha256": "87e317af9c78f9bfbd7d411437f3af36c8763e6fb7218f84a391c7af9ae4ef70"
+  },
+  "fireB0017.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0017.png",
+   "sha256": "f26b2b4b80b440d58d3cdc7e7ad17da957f3f89bf3856ffabbd4d67f73682f8f"
+  },
+  "fireB0018.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0018.png",
+   "sha256": "15887d406ab3dba2b34b595e8d63047ba211aa9e530d4f4620bf9c18537099f2"
+  },
+  "fireB0019.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0019.png",
+   "sha256": "67ce5c6f1ae96bd5407b0fba29c8583d36cb040a92d30f1d32b9ee79819d7b8e"
+  },
+  "fireB0020.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0020.png",
+   "sha256": "b280aa05a6e50702cc2f17f58624bf7eb976684a44abf8ab424d423097ca68de"
+  },
+  "fireB0021.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0021.png",
+   "sha256": "6e70ff3198fd9cd91574e87b46a3e2e0b722980405bde78812710bfde0333a31"
+  },
+  "fireB0022.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0022.png",
+   "sha256": "bf56cefbd03a21e7e4d0ee04d1115d48c47deabcaabcc7aa9a978c0be542b6dd"
+  },
+  "fireB0023.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0023.png",
+   "sha256": "2bace8d2dc38256eed4c47ae1456bf9873d36a967e2b96c7295e18f1ab431b5a"
+  },
+  "fireB0024.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0024.png",
+   "sha256": "906daca922b771215671c37f69eb2841bdbe4dcc98a09ca9c383cc852b4a7166"
+  },
+  "fireB0025.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireb/fireB0025.png",
+   "sha256": "d50af1e0c545bd4a722f2cc55799bf68707640cd72abdd59f1b8fb945a69d60e"
+  },
+  "fireSheet.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireSheet.png",
+   "sha256": "eae5c050b833d45c446d33862109e8570add349b399559a26283cc3f72cbd436"
+  },
+  "fireSheet5x5.png": {
+   "from": "https://opengameart.org/sites/default/files/firespritesheet.zip#fireSheet5x5.png",
+   "sha256": "4205af4b9b312b394704b200df687712d3e1322a74be30bb50803f2c55dff2dd"
+  },
+  "cc0.png": {
+   "from": "https://opengameart.org/sites/default/files/license_images/cc0.png",
+   "sha256": "b2faab78467c006e7a8ce914d932dca6c9660145ae73ba885c19e39f3f0747e1"
+  }
+ }
+}

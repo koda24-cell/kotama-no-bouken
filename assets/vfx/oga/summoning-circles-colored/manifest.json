@@ -1,0 +1,27 @@
+{
+ "page": "https://opengameart.org/content/colored-summoning-circles",
+ "license": "CC-BY-3.0",
+ "author": "johndh",
+ "files": {
+  "circle4a.png": {
+   "from": "https://opengameart.org/sites/default/files/circle4a.png",
+   "sha256": "59925685efa4c1e6ff1e5abcae615eec15b0af233a5a16de873057d71f707c01"
+  },
+  "circle5a.png": {
+   "from": "https://opengameart.org/sites/default/files/circle5a.png",
+   "sha256": "c7737fb1284c05bc3da5fe1c6d67ec2ea3a0ba774f8a23048e558e3b1c1c7da4"
+  },
+  "circle6a.png": {
+   "from": "https://opengameart.org/sites/default/files/circle6a.png",
+   "sha256": "91e9a49c66f9bc8768c578ce20ca329ec613d26516554a88b7941fd3949f481f"
+  },
+  "circle7a.png": {
+   "from": "https://opengameart.org/sites/default/files/circle7a.png",
+   "sha256": "272e62dd53f5a34356b535858240e8272f5eec67e6c7647412f973c1ff282385"
+  },
+  "cc-by.png": {
+   "from": "https://opengameart.org/sites/default/files/license_images/cc-by.png",
+   "sha256": "27b8bc90586997cd048aa31c2338ce28ba2404aa76dc36fdca0a52f42c804ebf"
+  }
+ }
+}
