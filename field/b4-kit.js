@@ -9,7 +9,7 @@
  *   出口      ：4.0×4.2 m の神殿の門（柱＋まぐさ＋ルーン帯）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { glyphMaterial, createFlames } from './b4-vfx.js?v=20261122-h3';
+import { glyphMaterial, createFlames } from './b4-vfx.js?v=20261122-h6';
 
 const merge = parts => { const g = mergeGeometries(parts.map(p => (p.index ? p.toNonIndexed() : p)), false); parts.forEach(p => p.dispose()); return g; };
 const box = (w, h, d, x, y, z, ry = 0, rz = 0) => { const b = new THREE.BoxGeometry(w, h, d); if (rz) b.rotateZ(rz); if (ry) b.rotateY(ry); b.translate(x, y, z); return b; };

@@ -4,7 +4,7 @@
  * 通行判定は変えない（# は # のまま。見た目だけ壁が開く）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261122-h3';
+import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261122-h6';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 export const CHASM_BOTTOM = -26, CHASM_TOP = 16;
@@ -65,7 +65,7 @@ export function addUplight(material, { color = 0xff5a1c, base = 0.16, k = 0.11, 
   return material;
 }
 
-function hazeMaterial() {
+export function hazeMaterial() {
   return new THREE.ShaderMaterial({
     uniforms: { uTime: B4_VFX_TIME },
     vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
@@ -113,7 +113,7 @@ function lavafallMaterial() {
 
 // 欄干（黒き神殿の手すり）：幅 4.0 m（セル境界）、高さ 1.05 m。
 // 台座 3.7×0.22×0.56 / 手すり子 0.2×0.6×0.2 を 0.42 m 間隔（欠け・傾きあり）/ 笠木 3 分割（1つ欠ける）/ 端柱 0.5×1.32×0.5＋四角錐の頂部
-function parapetGeometry(hash, seed) {
+export function parapetGeometry(hash, seed) {
   const parts = [];
   const box = (w, h, d, x, y, z, rz = 0, rx = 0) => { const b = new THREE.BoxGeometry(w, h, d); if (rz || rx) b.rotateZ(rz).rotateX(rx); b.translate(x, y, z); parts.push(b); };
   box(3.7, 0.22, 0.56, 0, 0.11, 0);

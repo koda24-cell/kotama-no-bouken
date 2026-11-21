@@ -20,7 +20,7 @@ import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=202
 import { createB2WaterTiles, B2V4W_REMOVE_STEPPING_STONES } from './b2-water-tiles.js?v=20261119-w4';   // [B2V4-W] 危険な水面（GPT 水面タイル）・床の模様
 import { createFlora, floraMaterial, floraMaterialClass, floraTint } from './b2-flora.js?v=20261119-f4';   // [B2V4-F] 花の配置と見た目
 import { createSetpieces, SP_ROLES } from './b2-setpieces.js?v=20261119-s4';   // [B2V4-S] 階段・橋・水門・柱群・背景モニュメント
-import { createB2Kit } from './b2-kit.js?v=20261122-h3';   // 2層専用の配置物（セーブ・石碑・宝箱・補給の木箱）
+import { createB2Kit } from './b2-kit.js?v=20261122-h6';   // 2層専用の配置物（セーブ・石碑・宝箱・補給の木箱）
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
 export const B2_GLB = B2_BASE + 'models/floor2-water-source-quality-v3.glb';

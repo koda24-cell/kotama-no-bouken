@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { buildTemplePass } from './b4-temple-fx.js?v=20261122-h3';
+import { buildTemplePass } from './b4-temple-fx.js?v=20261122-h6';
 
 const BASE = './assets/models/floor4/props/';
 // Zone themes (user 2026-11-20: cluster things that naturally gather — ore deposits, old mine workings, pickaxes):
@@ -336,10 +336,16 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
         const k = hash(seedX, seedY, 852) < 0.45 ? 0 : 1 + Math.floor(hash(seedX, seedY, 853) * 3);
         per[k].push(new THREE.Matrix4().compose(new THREE.Vector3(cx, -0.5, cz), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, theta, 0)), new THREE.Vector3(sc, sc * (0.92 + hash(seedX, seedY, 855) * 0.16), sc)));
       };
+      // 参道（,）に接する溶岩の塊だけ原寸の 2×2 を使う。広間の穴などは欄干で囲うので、段差の低い小さい版にする（裏が見えない）
+      const nearPath = new Set();
+      { const seen = new Set(); for (const t of deepTiles) { const k0 = t.tx + ',' + t.ty; if (seen.has(k0)) continue;
+          const comp = [], q = [[t.tx, t.ty]]; seen.add(k0); let touch = false;
+          while (q.length) { const [x, y] = q.pop(); comp.push(x + ',' + y); for (const [dx, dz] of DIRS) { const nk = (x + dx) + ',' + (y + dz); if (ch(x + dx, y + dz) === ',') touch = true; if (deep.has(nk) && !seen.has(nk)) { seen.add(nk); q.push([x + dx, y + dz]); } } }
+          if (touch) comp.forEach(k => nearPath.add(k)); } }
       // 2×2 blocks first at the piece's native scale (8.5 m ≈ two cells)
       const sorted = deepTiles.slice().sort((a, b) => a.ty - b.ty || a.tx - b.tx);
       for (const { tx, ty } of sorted) {
-        if (!isDeep(tx, ty) || !isDeep(tx + 1, ty) || !isDeep(tx, ty + 1) || !isDeep(tx + 1, ty + 1)) continue;
+        if (!isDeep(tx, ty) || !isDeep(tx + 1, ty) || !isDeep(tx, ty + 1) || !isDeep(tx + 1, ty + 1) || !nearPath.has(tx + ',' + ty)) continue;
         const cells = [[tx, ty], [tx + 1, ty], [tx, ty + 1], [tx + 1, ty + 1]];
         cells.forEach(([x, y]) => used.add(x + ',' + y));
         place((tx + 0.5) * CELL, (ty + 0.5) * CELL, ledgeDir(cells, 856), 8.3 / 8.5, tx, ty);
