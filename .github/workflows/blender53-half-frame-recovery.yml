@@ -1,4 +1,5 @@
 name: Blender 5.3 durable half-frame render recovery test
+# Revalidate Blender ancillary PNG chunk parsing after observed real renderer output.
 on:
   push:
     branches:
