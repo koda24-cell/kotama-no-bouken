@@ -31,7 +31,7 @@ jobs:
           bash tools/security/clamav_scan_gate.sh update qa/security
           bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-watergate.py qa/security/source.log
       - name: Generate original 3D Blender checkpoint
-        run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
+        run: blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/b2-render/build-watergate.py
       - name: QA, pack, verify and scan original
         env:
           COMMIT: ${{ github.sha }}
@@ -79,7 +79,7 @@ jobs:
           RENDER_OUTPUT: render-output/left-half
           RENDER_VIEW: front
           RENDER_TILE: left
-        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/render_half_frame.py
+        run: blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/3d_checkpoint/render_half_frame.py
       - name: Validate, pack and scan left half independently
         env:
           COMMIT: ${{ github.sha }}
@@ -132,7 +132,7 @@ jobs:
         run: |
           mkdir -p qa
           set +e
-          blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/render_half_frame.py
+          blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/3d_checkpoint/render_half_frame.py
           rc=$?
           set -e
           echo "RIGHT_HALF_KILL_EXIT=$rc"
@@ -181,7 +181,7 @@ jobs:
           RENDER_OUTPUT: render-output/recovered-frame
           RENDER_VIEW: front
           RENDER_TILE: right
-        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/render_half_frame.py
+        run: blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/3d_checkpoint/render_half_frame.py
       - name: Stitch front from two verified half-images
         run: python3 tools/3d_checkpoint/stitch_half_frame.py --left render-output/recovered-frame/left.png --right render-output/recovered-frame/right.png --output render-output/recovered-frame/front.png
       - name: QA all 3 directions and pack final checkpoint
