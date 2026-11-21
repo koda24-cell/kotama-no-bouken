@@ -67,25 +67,26 @@ jobs:
           PY
       - name: Poly Haven textures (2K)
         run: |
-          while read -r id; do
+          while read -r id res; do
             [ -z "$id" ] && continue; case "$id" in \#*) continue;; esac
+            res=${res:-1k}
             D="assets/textures/floor4/cc0/$id"
             [ -f "$D/manifest.json" ] && continue
             mkdir -p "$D"
             curl -fsSL "https://api.polyhaven.com/files/$id" -o /tmp/f.json || { echo "::warning::$id"; continue; }
-            python3 - "$id" "$D" <<'PY'
+            python3 - "$id" "$D" "$res" <<'PY'
           import hashlib, json, sys, urllib.request
-          i, D = sys.argv[1], sys.argv[2]
+          i, D, R = sys.argv[1], sys.argv[2], sys.argv[3]
           j = json.load(open('/tmp/f.json'))
           out = {"source": f"https://polyhaven.com/a/{i}", "license": "CC0 (https://polyhaven.com/license)", "files": {}}
-          for k, key in (('diff', 'Diffuse'), ('rough', 'Rough'), ('nor_gl', 'nor_gl'), ('ao', 'AO'), ('disp', 'Displacement'), ('arm', 'arm')):
+          for k, key in (('diff', 'Diffuse'), ('rough', 'Rough'), ('nor_gl', 'nor_gl'), ('ao', 'AO')):
               try:
-                  url = j[key]['2k']['jpg']['url'] if key != 'Displacement' else j[key]['2k']['png']['url']
+                  url = j[key][R]['jpg']['url'] if key != 'Displacement' else j[key][R]['png']['url']
               except Exception:
-                  try: url = j[key]['2k']['jpg']['url']
+                  try: url = j[key][R]['jpg']['url']
                   except Exception: continue
               ext = url.rsplit('.', 1)[-1]
-              dst = f"{D}/{i}_{k}_2k.{ext}"
+              dst = f"{D}/{i}_{k}_{R}.{ext}"
               urllib.request.urlretrieve(url, dst)
               out["files"][dst.split('/')[-1]] = {"url": url, "sha256": hashlib.sha256(open(dst, 'rb').read()).hexdigest()}
           json.dump(out, open(f"{D}/manifest.json", 'w'), indent=1)

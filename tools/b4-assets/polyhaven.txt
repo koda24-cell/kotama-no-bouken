@@ -1,2 +1,9 @@
-# Poly Haven CC0 textures fetched into assets/textures/floor4/cc0/<id>/ (2k jpg: diff, rough, nor_gl, disp/ao if present)
-rock_face_02
+# Poly Haven CC0 textures -> assets/textures/floor4/cc0/<id>/   format: <id> <res>
+rock_face_02 1k
+castle_brick_07 2k
+castle_brick_broken_06 1k
+medieval_blocks_05 1k
+stone_block_wall 1k
+volcanic_rock_tiles 2k
+monastery_stone_floor 1k
+rock_wall_16 1k
