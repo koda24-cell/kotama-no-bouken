@@ -1,0 +1,9 @@
+# OpenGameArt packs -> assets/vfx/oga/<dest>/   format: <dest> <license> <page_url> <author>
+summoning-circles-4 CC0 https://opengameart.org/content/4-summoning-circles Luke.RUSTLTD
+summoning-circles-colored CC-BY-3.0 https://opengameart.org/content/colored-summoning-circles johndh
+magic-summoning-circle CC0 https://opengameart.org/node/66658 City_Building_Game_Art
+teleport-circle CC0 https://opengameart.org/content/teleport-circle-sprite-sheet gfroad
+encircled-runes see-page https://opengameart.org/node/69739 unknown
+flame-texture-tauran CC0 https://opengameart.org/node/16791 tauran
+fire-fx-mikodrak see-page https://opengameart.org/content/fire-fx-burning-fire-animation Mikodrak
+animated-flame-sheet see-page https://www.opengameart.org/content/animated-flame-fire-sprite-sheet unknown

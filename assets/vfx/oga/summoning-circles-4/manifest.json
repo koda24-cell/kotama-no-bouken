@@ -1,0 +1,51 @@
+{
+ "page": "https://opengameart.org/content/4-summoning-circles",
+ "license": "CC0",
+ "author": "Luke.RUSTLTD",
+ "files": {
+  "circle4.png": {
+   "from": "https://opengameart.org/sites/default/files/summoning_circles.zip#circle4.png",
+   "sha256": "368729d4ee4ac17de8758cb41154e02b916671c92768e96313c86dcf4cf4e4b0"
+  },
+  "circle5.png": {
+   "from": "https://opengameart.org/sites/default/files/summoning_circles.zip#circle5.png",
+   "sha256": "de83d9eb5a78cfde41c440c5e70ddf3fa63e311db1fdf2b2ca5b7542835d75ba"
+  },
+  "circle6.png": {
+   "from": "https://opengameart.org/sites/default/files/summoning_circles.zip#circle6.png",
+   "sha256": "d2d829fd75e8efcc134a1432cb9ea0bf96289da669a068b476c094183c33c2bb"
+  },
+  "circle7.png": {
+   "from": "https://opengameart.org/sites/default/files/summoning_circles.zip#circle7.png",
+   "sha256": "d2b2fc4fa51e9f58e9b67f3f2b7acf727360b5942ff067b1e9f6bd0934ae6cf6"
+  },
+  "cc0.png": {
+   "from": "https://opengameart.org/sites/default/files/license_images/cc0.png",
+   "sha256": "b2faab78467c006e7a8ce914d932dca6c9660145ae73ba885c19e39f3f0747e1"
+  },
+  "summoner.jpg": {
+   "from": "https://opengameart.org/sites/default/files/summoner.jpg",
+   "sha256": "d663a0bc21c8dbbbc078211f9fde889a096aea3f9d1bd37e23ad7d01c60e1b29"
+  },
+  "circle7.svg": {
+   "from": "https://opengameart.org/sites/default/files/summoning_circles.zip#circle7.svg",
+   "sha256": "11c694646e8779427c93a6e8e2b72892bb7cbe9c91a54728dc76eea56e654729"
+  },
+  "circle6.svg": {
+   "from": "https://opengameart.org/sites/default/files/summoning_circles.zip#circle6.svg",
+   "sha256": "ef4606e4f5e7f82fc0e351f5e11ef5d7701415ca0b46675e279c833a0571c128"
+  },
+  "circle5.svg": {
+   "from": "https://opengameart.org/sites/default/files/summoning_circles.zip#circle5.svg",
+   "sha256": "00175d37b1cc093ee42cbcbe2bd59b1de1bcf0d2a92864a9479ee3ea52f7e42f"
+  },
+  "circle4.svg": {
+   "from": "https://opengameart.org/sites/default/files/summoning_circles.zip#circle4.svg",
+   "sha256": "6d3481c2188e8e2ca17b47aab21faa8c5a7c32f9a60ccf2fbdb80e11b75d520a"
+  },
+  "summoning_circles.zip.preview.jpg": {
+   "from": "https://opengameart.org/sites/default/files/summoning_circles.zip.preview.jpg",
+   "sha256": "7555a557769d71efd74b426b2c61137eba45f94bcecfeef723303a97aa07009d"
+  }
+ }
+}

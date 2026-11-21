@@ -1,0 +1,22 @@
+{
+ "source": "https://polyhaven.com/a/stone_block_wall",
+ "license": "CC0 (https://polyhaven.com/license)",
+ "files": {
+  "stone_block_wall_diff_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/stone_block_wall/stone_block_wall_diff_1k.jpg",
+   "sha256": "00a7acbcc46db2917a4d42640cab860031714ff5ab51a7397b4f70aa6d63ea72"
+  },
+  "stone_block_wall_rough_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/stone_block_wall/stone_block_wall_rough_1k.jpg",
+   "sha256": "5cdbd70cc4d1285dc75af0acca350fbde2dea9921418fc594ae5525482b32c7f"
+  },
+  "stone_block_wall_nor_gl_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/stone_block_wall/stone_block_wall_nor_gl_1k.jpg",
+   "sha256": "a676e1f7e99207c60f1c75539f1bc19402867cf9393956a6cd02aefd45855507"
+  },
+  "stone_block_wall_ao_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/stone_block_wall/stone_block_wall_ao_1k.jpg",
+   "sha256": "c6a00e2be3058daf65d80388c0fc42c27f9c4cb9603a29707fb41c2273149c02"
+  }
+ }
+}

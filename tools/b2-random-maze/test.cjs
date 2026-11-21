@@ -20,7 +20,7 @@ const foeSrc = fs.readFileSync(path.join(ROOT, "field/field-movement-foe.js"), "
 const pick = (name) => { const m = fieldSrc.match(new RegExp(`function ${name}\\([^]*?\\n}\\n`)); if (!m) throw new Error("field.js に " + name + " が見つからない"); return m[0]; };
 vm.runInContext(`
   const FIELD_TILE = 32;
-  const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);
+  const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G", "D"]);
   const FIELD_SAFE = new Set(["_", "P", "E", "B", "<", ">"]);
   let fieldState = { area: 2, floor: 1, expedition: 0, flags: {}, explored: {}, discovered: {} };
   const fieldAreaCache = {};
@@ -35,7 +35,7 @@ vm.runInContext(`
   ${foeSrc.match(/^function fieldFoeWalkable.*$/m)[0]}
 `, ctx);
 const R = (code) => vm.runInContext(code, ctx);
-if (!fieldSrc.includes('const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);')) throw new Error("field.js の FIELD_SOLID が変わった（テストの写しを直すこと）");
+if (!fieldSrc.includes('const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G", "D"]);')) throw new Error("field.js の FIELD_SOLID が変わった（テストの写しを直すこと）");
 
 let fails = 0;
 const ok = (name, cond, extra = "") => { if (cond) console.log("  OK  " + name); else { fails++; console.log("  NG  " + name + (extra ? " … " + extra : "")); } };

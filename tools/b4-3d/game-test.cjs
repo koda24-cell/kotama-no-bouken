@@ -63,11 +63,11 @@ let browser;
       assert.equal(plan.mines.length,4);assert.ok(plan.vista);
       // Check actual rendered instance bounds against the complete player camera lane,
       // including +/-1.1m behind the tile center; the existing boss-gate model
-      // intentionally occupies B itself, so only that interaction tile is excluded.
+      // intentionally occupies B itself, so only that interaction tile is excluded. D (statue) is a solid tile nobody stands on.
       const overlap=await p.evaluate(()=>{
         const {g,THREE,cellInfo}=__b4test,a=fieldArea(),{wallCell}=cellInfo(a),bad=[];
         const lanes=[];
-        for(let y=0;y<a.h;y++)for(let x=0;x<a.w;x++)if(!wallCell(x,y) && fieldTileAt(a,x,y)!=='B')lanes.push({x,y,b:new THREE.Box3(new THREE.Vector3(x*4-1.15,1.3,y*4-1.15),new THREE.Vector3(x*4+1.15,1.9,y*4+1.15))});
+        for(let y=0;y<a.h;y++)for(let x=0;x<a.w;x++)if(!wallCell(x,y) && !['B','D'].includes(fieldTileAt(a,x,y)))lanes.push({x,y,b:new THREE.Box3(new THREE.Vector3(x*4-1.15,1.3,y*4-1.15),new THREE.Vector3(x*4+1.15,1.9,y*4+1.15))});
         g.world.updateMatrixWorld(true);
         g.world.traverse(o=>{
           if(!o.isMesh || !o.visible)return;
@@ -141,7 +141,9 @@ let browser;
     await p.evaluate(()=>{
       const {g}=__b4test,owned=new Set(),cached=new Set();
       const root=g.world.children.find(o=>o.name==='b4_magma_map');
-      root.traverse(o=>{if(o.geometry)owned.add(o.geometry);for(const m of (Array.isArray(o.material)?o.material:[o.material]))if(m)owned.add(m);});
+      // Resources deliberately kept across rebuilds (loader cache, module-level temple materials) are flagged and excluded.
+      const keep=o=>{for(let q=o;q;q=q.parent)if(q.userData&&q.userData.b4Cached)return true;return false;};
+      root.traverse(o=>{if(keep(o))return;if(o.geometry&&!o.geometry.userData.b4Shared)owned.add(o.geometry);for(const m of (Array.isArray(o.material)?o.material:[o.material]))if(m&&!m.userData.b4Shared&&!m.userData.b4PropCached)owned.add(m);});
       for(const child of g.world.children)if(child!==root)child.traverse(o=>{if(o.geometry)cached.add(o.geometry);});
       window.__b4disposed={counts:Array.from(owned,()=>0),cached:0};
       Array.from(owned).forEach((o,i)=>o.addEventListener('dispose',()=>__b4disposed.counts[i]++));

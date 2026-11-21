@@ -1,0 +1,142 @@
+name: B4 props Blender render (Claude team)
+
+# 第4層の小物: Blender 4.2 LTS を Actions 上でヘッドレス実行し、Poly Haven CC0 テクスチャを取得、
+# 手続き材質をベイクした GLB・実レンダーPNG・manifest をブランチへコミットして返す（Claude が git 経由で確認）
+on:
+  push:
+    branches:
+      - "feature/ai-claude-b4p**"
+      - "feature/ai-claude-b4-props**"
+    paths:
+      - "tools/b4-props/**"
+      - ".github/workflows/b4-props-render.yml"
+  workflow_dispatch:
+    inputs:
+      builders:
+        description: "実行する build_*.py（空欄=tools/b4-props/BUILD の内容）"
+        default: ""
+
+concurrency:
+  group: b4-props-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  BLENDER_MAJOR: "4.2"
+  BLENDER_VERSION: "4.2.3"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Blender
+        id: cache-blender
+        uses: actions/cache@v4
+        with:
+          path: ~/blender
+          key: blender-${{ env.BLENDER_VERSION }}-linux-x64
+
+      - name: Download Blender
+        if: steps.cache-blender.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/blender
+          curl -fL --retry 3 -o blender.tar.xz \
+            "https://download.blender.org/release/Blender${BLENDER_MAJOR}/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
+          tar -xf blender.tar.xz -C ~/blender --strip-components=1
+          rm blender.tar.xz
+
+      - name: Install runtime libraries
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libegl1 libxkbcommon0 libsm6
+
+      - name: Cache CC0 textures
+        uses: actions/cache@v4
+        with:
+          path: /tmp/b4p-cc0
+          key: b4p-cc0-${{ hashFiles('tools/b4-props/cc0.txt') }}
+
+      - name: Fetch Poly Haven CC0 textures (official API)
+        run: |
+          mkdir -p /tmp/b4p-cc0
+          while read -r id; do
+            [ -z "$id" ] && continue
+            case "$id" in \#*) continue;; esac
+            if [ -f "/tmp/b4p-cc0/${id}_diff_1k.jpg" ]; then echo "cached $id"; continue; fi
+            curl -fsSL --retry 3 "https://api.polyhaven.com/files/${id}" -o /tmp/ph.json || { echo "::warning::api failed $id"; continue; }
+            python3 - "$id" <<'PY'
+          import json, sys, urllib.request
+          i = sys.argv[1]
+          j = json.load(open('/tmp/ph.json'))
+          m = {'diff': j.get('Diffuse'), 'rough': j.get('Rough'), 'nor_gl': j.get('nor_gl')}
+          for k, v in m.items():
+              try:
+                  url = v['1k']['jpg']['url']
+              except Exception:
+                  print('missing', i, k); continue
+              dst = f'/tmp/b4p-cc0/{i}_{k}_1k.jpg'
+              urllib.request.urlretrieve(url, dst)
+              print('got', url)
+          PY
+          done < tools/b4-props/cc0.txt
+          # 壁用のタイリング素材は2Kも取得（ゲームのテクスチャとしてリポジトリへ返す）
+          for id in rock_face_02; do
+            [ -f "/tmp/b4p-cc0/${id}_diff_2k.jpg" ] && continue
+            curl -fsSL --retry 3 "https://api.polyhaven.com/files/${id}" -o /tmp/ph.json || continue
+            python3 - "$id" <<'PY'
+          import json, sys, urllib.request
+          i = sys.argv[1]
+          j = json.load(open('/tmp/ph.json'))
+          for k, key in (('diff', 'Diffuse'), ('rough', 'Rough'), ('nor_gl', 'nor_gl')):
+              try:
+                  url = j[key]['2k']['jpg']['url']
+              except Exception:
+                  continue
+              urllib.request.urlretrieve(url, f'/tmp/b4p-cc0/{i}_{k}_2k.jpg'); print('got', url)
+          PY
+          done
+          ls -la /tmp/b4p-cc0 && sha256sum /tmp/b4p-cc0/*
+
+      - name: Build, bake and render
+        env:
+          B4P_OUT: render-output/b4-props
+          B4P_TEX: /tmp/b4p-cc0
+        run: |
+          set -e
+          if [ -n "${{ github.event.inputs.builders }}" ]; then
+            B="${{ github.event.inputs.builders }}"
+          else
+            B=$(cat tools/b4-props/BUILD)
+          fi
+          for b in $B; do
+            echo "::group::$b"
+            set +e
+            ~/blender/blender -b --factory-startup --python-exit-code 1 -t 0 -P "tools/b4-props/$b" > "/tmp/${b%.py}.log" 2>&1
+            rc=$?
+            set -e
+            grep -v -E "^Fra:|Sample [0-9]+/" "/tmp/${b%.py}.log" | tail -150
+            mkdir -p render-output/b4-props/logs && cp "/tmp/${b%.py}.log" render-output/b4-props/logs/ || true
+            test "$rc" -eq 0 || { echo "::error::$b failed (rc=$rc)"; FAILED=1; }
+            echo "::endgroup::"
+          done
+          ls -laR render-output/b4-props | head -100
+          test -z "$FAILED"
+
+      - name: Commit renders back to branch
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          mkdir -p render-output/b4-props
+          git add -f render-output/b4-props/
+          git diff --cached --quiet && exit 0
+          git commit -m "render: b4 props (run ${{ github.run_id }})"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+            sleep 5
+          done
+          exit 1

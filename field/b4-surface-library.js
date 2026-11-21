@@ -28,13 +28,13 @@ export function createB4SurfaceLibrary({high=true}={}) {
   const metalMap=load('blackened_bronze_albedo.png',true),metalNormal=load('blackened_bronze_normal.png'),metalRough=load('blackened_bronze_roughness.png');
   const lavaMap=load('molten_lava_albedo.png',true),lavaNormal=load('molten_lava_normal.png'),lavaRough=load('molten_lava_roughness.png'),lavaGlow=load('molten_lava_emissive.png',true);
   const basalt=material('basalt',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.8,.8),roughnessMap:basaltRough,roughness:1,color:0xffffff,flatShading:true});
-  const ash=material('ash-stone',{map:ashMap,normalMap:ashNormal,normalScale:new THREE.Vector2(.65,.65),roughnessMap:ashRough,roughness:1,color:0xffffff});
+  const ash=material('ash-stone',{map:ashMap,normalMap:ashNormal,normalScale:new THREE.Vector2(.65,.65),roughnessMap:ashRough,roughness:1,color:0x8a7468});  // 2026-11-20: darker ashen floor so props and lava read against it
   const ceiling=material('basalt-ceiling',{map:basaltMap,normalMap:basaltNormal,normalScale:new THREE.Vector2(.6,.6),roughnessMap:basaltRough,roughness:1,color:0xc2b8b0,side:THREE.DoubleSide});
   const iron=material('blackened-bronze',{map:metalMap,normalMap:metalNormal,roughnessMap:metalRough,roughness:.9,metalness:.3,color:0xd4cfca});
   const ore=material('copper-ore',{map:ashMap,normalMap:ashNormal,roughness:.9,metalness:0.02,color:0xe7b888,flatShading:true});
   const crystal=material('ember-crystal',{map:metalMap,normalMap:metalNormal,roughness:.35,metalness:.22,color:0xb85024,emissive:0xa52c08,emissiveIntensity:.45});
-  const lava=material('flowing-lava',{map:lavaMap,normalMap:lavaNormal,normalScale:new THREE.Vector2(.6,.6),roughnessMap:lavaRough,roughness:.7,emissive:0xffffff,emissiveMap:lavaGlow,emissiveIntensity:1.25});
-  const ember=material('ember-seams',{color:0xf49646,emissive:0xff4b09,emissiveIntensity:1.6,roughness:1});
+  const lava=material('flowing-lava',{map:lavaMap,normalMap:lavaNormal,normalScale:new THREE.Vector2(.6,.6),roughnessMap:lavaRough,roughness:.7,emissive:0xff9a5a,emissiveMap:lavaGlow,emissiveIntensity:.7});   // 2026-11-22 まぶしさ対策（旧 白×1.25）
+  const ember=material('ember-seams',{color:0x6a2a12,emissive:0xff4b09,emissiveIntensity:.55,roughness:1});   // 玄武岩の隙間：奥にこもった光
   const timberCanvas=document.createElement('canvas');timberCanvas.width=timberCanvas.height=256;
   const ctx=timberCanvas.getContext('2d'),data=ctx.createImageData(256,256);
   for(let y=0;y<256;y++)for(let x=0;x<256;x++){
@@ -64,7 +64,7 @@ export function createB4SurfaceLibrary({high=true}={}) {
   let disposed=false;
   return {basalt,ash,ceiling,iron,ore,crystal,lava,ember,wood,rope,materials,textures,apply,
     ready:Promise.all(pending),
-    tick(now){const seconds=now*.001;lavaMap.offset.y=lavaGlow.offset.y=lavaNormal.offset.y=lavaRough.offset.y=seconds*.018;lava.emissiveIntensity=1.1+Math.sin(seconds*.8)*.12;},
+    tick(now){const seconds=now*.001;lavaMap.offset.y=lavaGlow.offset.y=lavaNormal.offset.y=lavaRough.offset.y=seconds*.018;lava.emissiveIntensity=.66+Math.sin(seconds*.8)*.07;},
     dispose(){if(disposed)return;disposed=true;materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}
   };
 }

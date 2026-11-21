@@ -1,0 +1,23 @@
+{
+ "page": "https://opengameart.org/node/66658",
+ "license": "CC0",
+ "author": "City_Building_Game_Art",
+ "files": {
+  "03 Summoning Circle.PNG": {
+   "from": "https://opengameart.org/sites/default/files/SummoningCircle.zip#SummoningCircle/03 Summoning Circle.PNG",
+   "sha256": "63fef0a06c6062efcf528045caa36e525666820324fd9339f671b709f3c828e0"
+  },
+  "README.txt": {
+   "from": "https://opengameart.org/sites/default/files/SummoningCircle.zip#SummoningCircle/README.txt",
+   "sha256": "5b296691922d9bb421c1480b1f1948b039809b7130784db222e224ff9a94cb30"
+  },
+  "cc0.png": {
+   "from": "https://opengameart.org/sites/default/files/license_images/cc0.png",
+   "sha256": "b2faab78467c006e7a8ce914d932dca6c9660145ae73ba885c19e39f3f0747e1"
+  },
+  "magic-summoning-circle.jpg": {
+   "from": "https://opengameart.org/sites/default/files/magic-summoning-circle.jpg",
+   "sha256": "f369623351b3ff81972da8907eab83803cdb94309f7ea0d74594e31c0bdbcf1a"
+  }
+ }
+}

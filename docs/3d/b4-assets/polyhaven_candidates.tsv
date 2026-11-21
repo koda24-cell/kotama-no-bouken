@@ -1,0 +1,701 @@
+aerial_asphalt_01	asphalt,outdoor,floor,road,man made,aerial	road,flat,cracked
+aerial_grass_rock	terrain,rock,outdoor,natural,aerial	moss,grass,cliff,cave,rock face
+aerial_ground_rock	terrain,outdoor,natural,aerial	mud,rocks,stones,dirt,dry
+aerial_rocks_01	terrain,outdoor,natural,rock,aerial	rocks,moss,cliff,rock face,cave
+aerial_rocks_02	terrain,outdoor,natural,rock,aerial	rocks,rough,moss,cliff,rock face,cave
+aerial_rocks_04	terrain,outdoor,natural,rock,aerial	rough,rocks,moss,cliff,rock face,cave
+anti_skid_tiles	floor,man made	antislip,antiskid,tiles,patio,nonslip,grip,slipresistant,durable
+anti_slip_concrete	floor,man made,concrete,plaster-concrete	rough,concrete,antislip,outdoor,weathered,exterior,scuffed,chipped
+asbestos_sheet	wall,man made	asbestos,corrugated,dirty,sheet,corrugation,industrial,material,fireresistant
+asbestos_sheet_02	wall,man made	asbestos,sheet,asbestos sheet,corrugated,dirty,fireresistant,building material,durable
+asphalt_01	asphalt,floor,outdoor,road	rough,dirty,asphalt,road,worn
+asphalt_02	terrain,road,man made,outdoor,floor	asphalt,cracked,flat,road,asphalt road,tarmac road,gritty,weathered
+asphalt_03	outdoor,man made,dirty,road,asphalt	rough,worn,dirty,floor,road,asphalt,city,urban
+asphalt_05	floor,asphalt	rough,floor,road,asphalt,coarse,brown,street,roadway
+asphalt_06	asphalt,outdoor,floor,road	rough,dirty,scuffed,driveway texture,sidewalk,hard surface,handmade,raw
+asphalt_07	floor,asphalt,man made,road	rough,weathered,asphalt,chipped,granular,abrasive,road,paving
+asphalt_floor	outdoor,man made,floor,clean,concrete,road,asphalt,plaster-concrete	flat,asphalt,brown,even,dry,smooth,ground
+asphalt_pit_lane	floor,asphalt,road	asphalt,asphalt road,road,roadway,tarmac road,race track,pit lane
+asphalt_snow	outdoor,man made,asphalt,snow	rough,asphalt,road,snow,urban,floor
+bamboo_wall	wall,wood,raw wood	wood,raw,bamboo,wood wall,wooden,culm,bamboo culm,bamboo pole
+bamboo_wall_02	wood	wood,raw,bamboo,wood wall,wooden,culm,bamboo culm,bamboo pole
+bamboo_wall_03	wood	wood,raw,bamboo,wood wall,wooden,culm,bamboo culm,bamboo pole
+beam_wall_01	wood,outdoor,man made,wall	wall,stacked,cabin,house,hut,forest
+beige_wall_001	man made,wall,plaster,outdoor,indoor,plaster-concrete	beige,painted,smooth,suburb,house,home
+beige_wall_002	man made,wall,plaster,outdoor,indoor,plaster-concrete	beige,painted,suburb,house,spikey,textured,home
+bi_stretch	fabric,stretchy	yellow,fine,flexible,bi-stretch,polyester,textile ,woven
+bicolour_gravel	floor,gravel	gravel,gravelly,driveway gravel,driveway stones,driveway,garden walkway,stones,garden path gravel
+blue_floor_tiles_01	floor,man made,outdoor,dirty,brick	floor,moss,damp,wet,bright,walkway,pavement
+blue_metal_plate	metal,industrial	scratched,metal sheet,metal,painted,industrial,scratches,scuffed,steel panel
+blue_painted_planks	wood,wall,man made,dirty	planks,painted,house,wooden,peeling
+blue_plaster_wall	outdoor,wall,plaster-concrete	rough,painted,cracking paint,cracks,bumpy,cracking,plaster,blue
+blue_plaster_weathered	wall,man made,plaster,outdoor	old,weathered,worn,discolored,chipped,damaged,wall,plaster
+book_pattern	fabric,cotton	plain,book,cover,textile ,olive,olive green,woven
+box_profile_metal_sheet	wall,outdoor,roofing	sheet,metal sheet,box profile,industrial,corrugated,steel,red,roofing material
+brick_4	wall,man made,dirty,outdoor,brick	red,moss,urban,city,damp,wet
+brick_crosswalk	floor,brick	brick,bricks,multicoloured,pedestrian crossing ,crosswalk,street,sidewalk,urban
+brick_floor	floor,man made,dirty,outdoor,brick	herringbone,diagonal,brick,paving,repeat pattern,aged
+brick_floor_003	floor,brick,man made,outdoor,indoor,clean,wall	brown,floor,pavement
+brick_floor_02	floor,man made	weathered,worn,brick,bricks,red brick,outdoor,weatherbeaten,exterior
+brick_floor_04	outdoor,wall,brick,dirty,man made	dark,weathered,scratched,dirty,smooth,rough,grout,staggered
+brick_gravel	outdoor,gravel,brick	rough,uneven,brick,gravel,broken pieces,rubble,fragmented,crushed
+brick_moss_001	outdoor,floor,man made,brick,road	moss,pavement,dirty,discolored,damp,pattern
+brick_pavement	brick,cobblestone,dirty,man made,road	brick,pavement,sidewalk,bricks,red brick,interlocking bricks,pavement patterned,patterned
+brick_pavement_02	floor,man made,brick	old,rough,brick,bricks,pavement,gray,outdoor flooring,urban
+brick_pavement_03	floor,brick,man made	rough,uneven,brick,bricks,pavement,paving,interlocking bricks,pavement patterned
+brick_pavement_04	outdoor,man made,floor	rough,brick,bricks,pavement,exterior,rough  ,outdoor walkway
+brick_villa_floor	floor,man made,outdoor	rough,brick,bricks,interlocking bricks,pattern,patterned,floor,outdoor flooring
+brick_wall_001	brick,man made,outdoor,indoor,clean,wall	red,rough,industrial,plain,baked
+brick_wall_003	brick,wall,man made,outdoor,indoor,clean	wall,modern,pavement
+brick_wall_005	man made,wall,brick	rough,uneven,wall,chipped,damaged,concrete,brick,bricks
+brick_wall_006	outdoor,man made,wall,brick	rough,wall,chipped,worn,cracked,discolored,dry,red
+brick_wall_02	wall,brick,outdoor,man made	weathered,cracked,concrete,scratched,brick,bricks,wall,exterior
+brick_wall_04	outdoor,man made,wall,brick,plaster-concrete	rough,uneven,wall,chipped,damaged,rock,rocks,concrete
+brick_wall_07	wall,brick,man made	rough,old,brick,bricks,walling,coarse,outdoors,outdoor
+brick_wall_08	brick,wall,outdoor,man made	rough,mortar,raw,grey,coarse
+brick_wall_09	wall,man made,brick	rough,wall,exterior,outdoor,brick,red brick,construction,building
+brick_wall_10	wall,brick	brick,bricks,wall,brick wall,dark,weathered,walling,rough surface
+brick_wall_11	wall,brick	brick,wall,bricks,brick wall,walling,weathered,weatherbeaten,exterior
+brick_wall_12	wall,brick	rough,brick,wall,brick wall,coarse,outdoor,walling,masonry
+brick_wall_13	wall,brick,indoor	rough,old,discolored,brick,bricks,brick wall,walling,wall
+broken_brick_wall	wall,brick	weathered,broken,brick,wall,bricks,crumbling,timeworn,exterior
+broken_wall	rock,outdoor,indoor,wall,man made	rough,wall,stacked,stones,castle,old,ancient,modern
+brown_brick_02	brick,wall,outdoor,indoor,clean,man made	brown,rough,sandy,urban,yellow
+brown_floor_tiles	tiles,floor	tiles,ceramic,square,outdoor flooring,flat,continuous,consistent,brown
+brown_leather	fabric,leather	leather,brown,chair,seat,upholstery,vintage,matte,wrinkled
+brown_mud	terrain,natural,outdoor	mud,dirt,stones,dry,ground,soil,plant debris,granular
+brown_mud_02	terrain,natural,outdoor	mud,dirt,stones,dry,ground,footprints,soil,compact soil
+brown_mud_03	terrain,natural,outdoor	mud,dirt,stones,dry,ground,soil,wet soil,footprints
+brown_mud_dry	terrain,natural,outdoor,collection: the_shed	mud,dirt,stones,dry,ground
+brown_mud_leaves_01	terrain,natural,outdoor	grass,mud,moss,stones,orange,forest
+brown_mud_rocks_01	terrain,natural,outdoor	gravel,mud,moss,stones,forest,rocks,loose stones,plants
+brown_planks_03	wood,man made,indoor,outdoor,clean,wall	planks,untreated,boat,costal,dry,old,withered
+brown_planks_04	wood,man made,indoor,outdoor,clean,wall	planks,old,untreated,shed,cabin,cottage,rough
+brown_planks_05	wood,outdoor,indoor,clean,wall,man made	planks,painted,shed,house,suburb
+brown_planks_07	wood,outdoor,indoor,clean,wall,man made	planks,shed,house,suburb,untreated
+brown_planks_08	wood,outdoor,indoor,clean,wall,man made	planks,rough,shed,untreated
+brown_planks_09	wood,outdoor,indoor,clean,wall,man made	brown,planks,shed,deck,raw wood,nail holes,horizontal layout,weathered wood
+brushed_concrete	man made,dirty,floor,plaster-concrete,concrete	rough,weathered,dirty,floor,ground,discolored,stained
+brushed_concrete_03	outdoor,man made,floor,plaster-concrete,concrete	rough,weathered,dirty,dry,worn,scratched,brown,concrete
+brushed_concrete_2	man made,dirty,concrete,floor,plaster-concrete	rough,weathered,dirty,discolored,ground,stained,floor
+burned_ground_01	terrain,outdoor,natural	mud,burned,fire,dirt,ash,plant debris,plant litter,leaves
+caban	fabric,wool,fleece	orange,fluffy,textile ,fabric,fleece,soft,fuzzy,fibrous
+castle_brick_01	brick,outdoor,man made,wall,dirty	rough,moss,sewer,damp,dark,wet,old,uneven
+castle_brick_02_red	brick,outdoor,man made,wall,dirty	rough,red,sewer,damp,old,uneven
+castle_brick_02_white	brick,outdoor,indoor,wall,dirty,man made	rough,painted,uneven
+castle_brick_07	brick,outdoor,man made,indoor,wall,dirty	rough,uneven,loose,gaps,old,castle
+castle_brick_broken_06	brick,outdoor,man made,indoor,wall	rough,uneven,cracked,loose,gaps,old,castle
+castle_wall_slates	rock,outdoor,wall,clean,man made	wall,rough,blocks,stacked,old,castle,medieval
+castle_wall_varriation	rock,wall,outdoor,clean,man made	wall,rough,blocks,old,castle
+ceramic_roof_01	roofing,outdoor,man made,dirty	ceramic,tiles,roof,old,city,moss
+checkered_pavement_tiles	floor,man made,tiles	rough,outdoor,outdoor flooring,concrete,tiled,pavement,urban,sidewalk
+chipped_concrete	floor,man made,plaster-concrete	rough,pitted,weathered,concrete,chipped,cement,stippled,rough  
+church_bricks_02	brick,man made,outdoor	red,rough,old,city,factory,industrial
+church_bricks_03	brick,man made,outdoor	rough,red,uneven,industrial,factory,brick,bricks,red brick
+clay_block_wall	wall,man made	clay,traditional,blocks,uneven,rough,bumpy,cracked,cracks
+clay_floor_001	floor,man made,plaster-concrete,dirty	flat,cracked,floor,plain,brown,discolored,clay,yellow
+clay_plaster	wall,man made,plaster-concrete,outdoor	rough,wall,plaster,plastered,cracked,exterior,cracks,scratched
+clay_roof_tiles	roofing	weathered,rough,worn,uneven,discolored,clay,roof,roofing
+clay_roof_tiles_02	man made,roofing,outdoor	weathered,old,interlocking,roof,roofing,tile roofing,clay,clay tiles
+clay_roof_tiles_03	man made,outdoor,roofing	weathered,uneven,clay,clay tiles,roof,roofing,tile roofing,overlapping tiles
+clean_asphalt	floor,asphalt	rough,asphalt,grey,gray,course,gritty,fine-grained,road
+clean_pebbles	rock,natural,outdoor	rock,gravel,pebbles,stones,uneven,path
+cliff_side	outdoor,rock,natural,collection: namaqualand	cliff,rock face,rugged,eroded,boulder,landscape,mountain,terrain
+climbing_wall	wall,man made,indoor	rough,even,climbing,handholds,flat,foothold,grip,sport
+climbing_wall_02	wall,man made,concrete,indoor,plaster-concrete	rough,foothold,handholds,climbing,rock climbing,grip,climbing holds,gym
+climbing_wall_base	wall,man made,indoor	bouldering,rock climbing,grip,concrete,climbing surface,climbing,holes,climbing gym
+coast_land_rocks_01	outdoor,natural,terrain,aerial,sand,collection: smugglers_cove	rough,uneven,stones,moss,rock,dirt,cracked,seaside
+coast_sand_01	outdoor,terrain,sand,natural,aerial,collection: smugglers_cove,collection: verdant_trail	beach,costal,ocean,seaside,sand,brown,rough,gravel
+coast_sand_02	outdoor,terrain,sand,natural,collection: smugglers_cove,aerial	beach,sand,seaside,rough,coastal,ocean,uneven,stones
+coast_sand_03	sand,terrain,rock,outdoor,natural,collection: smugglers_cove	sand,pebbles,stones,beach,seaside,ocean,costal,brown
+coast_sand_04	outdoor,terrain,sand,natural	stones,pebbles,sand,coastal,coast,dirt,ocean,beach
+coast_sand_05	sand,natural,terrain,dirty,rock,outdoor,aerial	costal,seaside,stones,ground,brown,gravel,beach,coastal
+coast_sand_rocks_02	outdoor,natural,terrain,aerial,rock,collection: smugglers_cove	grass,rock face,rock,moss,rough,uneven,weathered,stones
+cobblestone_01	floor,man made,outdoor,dirty,cobblestone	cobblestone,old,garden,moss
+cobblestone_02	man made,floor,outdoor,cobblestone	cobblestone,path,footpath,stones,pebbles,dirty,walkway,garden walkway
+cobblestone_03	floor,man made,dirty,cobblestone	rough,weathered,concrete,cobblestone,walkway,pavement,outdoor,floor
+cobblestone_04	floor,man made,cobblestone,plaster-concrete,concrete	rough,concrete,uneven,weathered,exterior,cobblestone,paving,stonework
+cobblestone_05	floor,man made,outdoor,dirty,road,cobblestone	cobblestone,old,garden,pathway,moss,pavement
+cobblestone_color	floor,man made,outdoor,dirty,cobblestone	cobblestone,old,moss,pavement
+cobblestone_embedded_asphalt	floor,man made,asphalt	rocks,asphalt,rocky,stone,coarse,gravelly,gravelly ground,gritty texture
+cobblestone_floor_001	road,man made,outdoor,dirty,floor,cobblestone	cobblestone,mud,path,pathway,uneven,medieval
+cobblestone_floor_01	outdoor,floor,man made,dirty,cobblestone	cobblestone,mud,path,pavement
+cobblestone_floor_02	floor,outdoor,man made,cobblestone	cobblestone,plastered,cracked,fixed,smooth,pavement
+cobblestone_floor_03	floor,outdoor,dirty,man made,cobblestone	cobblestone,plastered,mud,moss,pavement
+cobblestone_floor_04	floor,outdoor,dirty,man made,cobblestone	cobblestone,moss,damp,wet
+cobblestone_floor_05	floor,outdoor,dirty,man made,road,cobblestone	cobblestone,uneven,old,pavement
+cobblestone_floor_06	floor,cobblestone,man made,dirty	old,rough,weathered,dirty,pavement
+cobblestone_floor_07	floor,outdoor,man made,dirty,cobblestone	cobblestone,stacked,moss,old,damp,garden,pavement
+cobblestone_floor_08	road,floor,man made,dirty,cobblestone	cobblestone,smooth,old,moss,pavement
+cobblestone_floor_09	floor,cobblestone	weathered,uneven,floor,cobblestone,cobblestones,stone pavement,gritty,stones
+cobblestone_floor_13	floor,outdoor,man made,dirty,cobblestone	cobblestone,farm,rural,old
+cobblestone_large_01	floor,outdoor,man made,road,cobblestone	cobblestone,farm,old,village,path,dry,mud
+cobblestone_pavement	floor,cobblestone	cobblestone,cobblestones,rocks,squares,stone slabs,stone pavement,grout lines,rough
+cobblestone_square	floor,outdoor,man made,dirty,cobblestone	cobblestone,mud,moss,smooth
+concrete	plaster-concrete,man made,dirty,outdoor,wall,concrete	bare,old,weathered,panels
+concrete_block_wall	wall,man made,concrete,plaster-concrete	masonry,concrete,rough,coarse,exterior,blocks,outdoor,stonework
+concrete_block_wall_02	wall,man made,concrete,plaster-concrete,dirty	masonry,concrete,rough,coarse,exterior,blocks,outdoor,stonework
+concrete_block_wall_03	outdoor,man made,concrete,plaster-concrete	rough,weathered,worn,uneven,wall,discolored,concrete,exterior
+concrete_brick_wall_001	sandstone,wall,man made,outdoor,indoor,brick	wall,blocks,modern,slab
+concrete_debris	man made,plaster-concrete,concrete,plaster	stones,dry,debris,crumbling,concrete,broken,grey,plaster
+concrete_floor	outdoor,man made,floor,plaster-concrete,concrete	rough,concrete,floor,old,brown,wall,dirty,cement
+concrete_floor_01	concrete,clean,plaster-concrete,man made,outdoor	rough,park,concrete,cement,rough  ,stone embedded,gravel embedded,weathered
+concrete_floor_02	concrete,plaster-concrete,dirty,man made,outdoor,indoor,wall,floor	rough,moss,plain
+concrete_floor_03	man made,floor,outdoor	rough,weathered,concrete,cement,scratched,cemented floor,exterior,gritty
+concrete_floor_damaged_01	floor,man made,concrete,plaster-concrete	rough,uneven,weathered,chipped,cracked,damaged,dry,concrete
+concrete_floor_painted	concrete,outdoor,wall,floor,plaster-concrete,dirty,plaster,man made	painted,rough,textured,urban,worn,weathered
+concrete_floor_worn_001	floor,man made,indoor,dirty,concrete,plaster-concrete	worn,old,plain,grey,weathered,bare,discolored
+concrete_floor_worn_02	floor,man made,concrete,plaster-concrete	rough,uneven,weathered,chipped,cracked,damaged,exterior,dry
+concrete_layers	wall,plaster-concrete,outdoor	rough,old,concrete,cracked,chipped,cement,cracked cement,worn
+concrete_layers_02	man made,concrete,plaster-concrete	worn,chipped,rough,weathered,cracked,damaged,wall,discolored
+concrete_moss	floor,concrete,plaster-concrete	concrete,moss,mossy,mosscovered,scratched,worn,timeworn,weatherbeaten
+concrete_panels	man made,outdoor,wall,plaster-concrete	rough,weathered,wall,concrete,stamped concrete,patterned concrete,timeworn,building material
+concrete_pavement	floor,man made,concrete,plaster-concrete	rough,urban,concrete,floor,rough  ,exterior,pavers,outdoor flooring
+concrete_pavement_02	outdoor,road,cobblestone	concrete,sidewalk,urban,city,pavement,street,cityscape,infrastructure
+concrete_pavement_03	floor,man made,concrete,outdoor,plaster-concrete	rough,outdoor,outdoor flooring,concrete,tiled,pavement,urban,sidewalk
+concrete_pavers	floor,man made	interlocking,pavers,pavement,outdoor,interlocking bricks,concrete,stamped concrete,precast
+concrete_pavers_02	concrete,outdoor,floor	weathered,rough,old,concrete,exterior,cement,coarse,outdoor
+concrete_pavers_03	concrete,outdoor,floor,plaster-concrete	weathered,rough,old,concrete,exterior,cement,coarse,outdoor
+concrete_rock_path	outdoor,man made,dirty,floor,concrete,rock,plaster-concrete	rough,uneven,old,weathered,brown,rock,dirty,ground
+concrete_slab_wall	wall,concrete,plaster-concrete	rough,old,concrete,cracked,chipped,cement,cracked cement,worn
+concrete_slab_wall_02	outdoor,man made,plaster-concrete,concrete,wall	rough,weathered,wall,concrete,precast,concrete panel,exterior,dirty
+concrete_tile_facade	wall,man made,concrete,plaster-concrete	concrete,wall,walling,tiles,tiled wall,grooved,square tiles,square
+concrete_tiles	floor,man made,outdoor,concrete,plaster-concrete	rough,old,weathered,concrete,pattern,pavement patterned,coarse,outdoor flooring
+concrete_tiles_02	floor,tiles,concrete,plaster-concrete	concrete,rough concrete,outdoor,pavement,walkway,sidewalk texture,sidewalk,urban
+concrete_wall_001	outdoor,man made,wall,plaster,concrete,plaster-concrete,collection: the_shed	cracked,plaster,white,trimsheet,painted,chipped,clean,damaged
+concrete_wall_003	man made,wall,concrete,plaster,outdoor,dirty,plaster-concrete	worn,painted,discolored,dirty,yellow,white,weathered,cracked
+concrete_wall_004	man made,wall,plaster-concrete,concrete,collection: the_shed	worn,painted,dry,flat,wall,stained,dirty,weathered
+concrete_wall_005	outdoor,wall,concrete,plaster-concrete	wall,worn,chipped,dirty,cracked,damaged,weathered,discolored
+concrete_wall_006	man made,wall,dirty,plaster-concrete,concrete	rough,weathered,damaged,chipped,wall,stained,dirty,scratched
+concrete_wall_007	outdoor,man made,wall,plaster-concrete,concrete,plaster	rough,old,weathered,wall,worn,damaged,chipped,discolored
+concrete_wall_008	outdoor,man made,wall,plaster-concrete,concrete,plaster	weathered,chipped,wall,damaged,cracked,stained,dry,plaster
+concrete_wall_009	outdoor,man made,wall,plaster-concrete	rough,old,concrete,wall,exterior,discolored,damaged,chipped
+container_side	man made,metal	damaged,worn,metal,container,shipping container,battered,green,industrial
+coral_fort_wall_01	wall,outdoor,man made,rock,plaster,plaster-concrete,dirty	ocean,coastal,coral,fort,wall,weathered,damaged,damp
+coral_fort_wall_02	wall,man made,outdoor,dirty,plaster-concrete,concrete,plaster	ocean,coral,fort,wall,rough,uneven,weathered,old
+coral_fort_wall_03	outdoor,wall,man made,rock	rough,wall,dirty,weathered,stones,rocks,old,worn
+coral_gravel	terrain,outdoor,rock,natural	gravel,coral,ground,stones,costal
+coral_ground_02	terrain,outdoor,rock,natural	coral,ground,costal,stones,ocean,gravel,debris,sandy
+coral_mud_01	terrain,outdoor,road,natural	coral,ground,costal,stones,gravel,gravelly,coastal sediment,rock fragments
+coral_stone_wall	wall,man made	rough,wall,chipped,coral,stone,rocks,rock,fort
+corrugated_iron	man made,roofing,wall,metal	metal,corrugated,roof,roofing,steel,metallic,sheet,metal sheet
+corrugated_iron_02	man made,wall,metal	metal,metallic,metal sheet,steel sheeting,corrugation,galvanized,sheet,roofing
+corrugated_iron_03	wall,man made,metal	corrugated,corrugation,corrugated iron,sheet metal,industrial,roofing,galvanized steel,steel sheeting
+cotton_jersey	fabric,cotton,stretchy	beige,rough,fabric,textile ,matte,woven,weave,cotton
+cracked_concrete	floor,man made,concrete,plaster-concrete	weathered,cracked,cracks,concrete,damaged,flat,floor,cracked cement
+cracked_concrete_02	man made,floor,plaster-concrete	uneven,rough,weathered,gritty,exterior,cracked,concrete,worn
+cracked_concrete_wall	outdoor,man made,wall,dirty,brick,plaster-concrete,plaster	rough,uneven,old,weathered,wall,worn,discolored,cracked
+cracked_red_ground	outdoor,natural,dirty,floor,sand	rough,uneven,old,weathered,worn,cracked,brown,dirty
+crepe_satin	fabric,crepe,satin	gold,shiny,fine,luxury,crepe,satin finish,silky,soft
+curly_teddy_checkered	fabric,fur	fluffy,teal,blanket,fleece,plush,soft,fuzzy,shaggy
+curly_teddy_natural	fabric,fur	beige,fluffy,blanket,fleece,plush,softbox,fuzzy,shaggy
+damaged_concrete_floor	floor,concrete,dirty,man made,plaster-concrete	rough,old,concrete,damaged,cracked,scratched,weathered,chipped
+damaged_concrete_floor_02	concrete,floor,plaster-concrete	old,damaged,chipped,concrete,scratched,scuffed,rough,industrial
+damaged_concrete_floor_03	floor,concrete,plaster-concrete	old,damaged,chipped,concrete,floor,dilapidated,cemented floor,battered
+damaged_plaster	wall,brick,plaster-concrete	brick,bricks,plaster,plasterconcrete,chipped,deteriorating,weathered,cracked
+dark_brick_wall	outdoor,man made,wall,brick	rough,uneven,wall,dry,bricks,brick,dark
+dark_planks	wood,outdoor,wall,man made	planks,cabin,shed,overlapping planks ,nail holes,weathered,distressed,knots
+dark_rock	natural,outdoor,rock	uneven,rough,weathered,rock,fissured,cracked,craggy,striated
+dark_rock_02	outdoor,natural,rock	rough,rock face,rock,weathered,fractured,stratified,craggy,striated
+dark_wooden_planks	floor,man made,indoor,wood,raw wood	rough,old,weathered,cracked,damaged,brown,wood,wooden
+decrepit_wallpaper	wall,man made	weathered,wall,discolored,peeling,scratched,wallpaper,dilapidated,worn
+defense_wall	wall,rock,outdoor,man made	wall,castle,fort,fortress walls,stone wall,aged,weathered
+defense_wall_02	outdoor,wall,rock,man made,aerial	rough,wall,bricks,castle,fort
+denim_fabric	fabric,denim	jeans,pants,cloth,clothing,denim,stitching,textile,fashion
+denim_fabric_03	fabric,denim	jeans,light,blue,denim,twill,matte,durable,textile
+denim_fabric_04	fabric,denim	jeans,light,blue,denim,twill,matte,durable,textile 
+denim_fabric_05	fabric,denim	jeans,dark,grey,denim,twill,matte,durable,textile 
+denim_fabric_06	fabric,denim	dark,worn,jeans,denim,twill,matte,durable,textile 
+denmin_fabric_02	fabric,denim	jeans,pants,cloth,clothing,denim,textile ,creased,folds
+diagonal_parquet	floor,man made,wood,indoor	parquet flooring,wood,floor,shiny,coated,interior design,polished,interior
+dirt	floor,dirty,sand	dirt,dirty,ground,nature,earth,dusty,rocky,debris
+dirt_aerial_03	terrain,outdoor,sand,natural,aerial	mud,gravel,stones,dry,organic,ground,rock fragments
+dirt_floor	outdoor,natural,terrain,collection: verdant_trail	dirt,ground,brown,nature,uneven,mud,debris,forest
+dirty_carpet	floor,fabric,carpet	carpet,dirty,floor,textile ,rug,discolored,faded
+dirty_concrete	concrete,outdoor,floor,man made,sand,dirty,plaster-concrete	rough,mud
+dirty_tiles	floor,tiles	dirty,tiles,indoor,indoor flooring,grout,scuffed,square tiles,square
+distressed_painted_planks	man made,wood	weathered,old,wood,planks,wooden planks,rustic,distressed,distressed wood
+double_brick_floor	man made,plaster-concrete,brick	rough,uneven,weathered,chipped,cracked,worn,brick,bricks
+dry_ground_rocks	terrain,outdoor,natural	mud,rocks,cracked,ground,dry,parched,soil,dirt
+dry_river_pebbles	outdoor,natural,rock	river,rocks,pebbles,loose stones,loose rocks,rounded rocks,rounded pebbles,debris
+dry_riverbed_rock	floor,natural,terrain,rock,outdoor	rough,rock face,uneven,weathered,cracked,stone
+embedded_plank_flooring	floor,man made,plaster-concrete,wood	rough,uneven,wood,embedded planks,wood planks,cement,wooden planks,planks
+embedded_rock_floor	floor,man made,plaster-concrete,rock	rough,weathered,uneven,stone,exterior,cement,rocky,rocks
+excavated_soil_wall	outdoor,wall,sand	sand,wall,cracks,excavation,soil,earth,dirt,dusty
+exterior_wall_cladding	outdoor,man made,brick	exterior,cladding,wall,brick,faux brick,outdoor facade,building facade
+exterior_wall_cladding_02	outdoor,man made,wall,brick	smooth,brick,bricks,red brick,exterior siding,cladding,red-brown,brick design
+exterior_wall_cladding_03	outdoor,man made,wall,plaster-concrete	rough,grooved,concrete,plaster,plastered,painted,painted concrete,facade
+fabric_leather_01	fabric,leather	leather,couch,seat,chair,wrinkled,aged,vintage,textile 
+fabric_pattern_05	fabric,cotton	plain,cloth,towel,checker,checkered,plaid,grid pattern,windowpane plaid
+fabric_pattern_07	fabric,cotton	towel,plain,cloth,checkered,woven,textile,picnic
+factory_brick	brick,man made,clean,indoor,outdoor	brown,fatory,bricks,weathered,brick wall,worndown,rough,industrial
+factory_wall	metal,outdoor,wall,clean,roofing,man made	wall,fence,industrial,corrugated
+farm_furrows	outdoor,floor	rough,uneven,dirt,dirty,dirt soil,soil,farm,sticks
+farm_soil	floor,natural,dirty	uneven,sand,sandy,dusty,ploughed,soil,earth,ground
+faux_fur_geometric	fabric,fur	pink,luxury,fluffy,textile ,fabric,blanket,geometric,diamond
+floor_bricks_02	floor,outdoor,man made,dirty,brick	bricks,moss,pavement,scattered plants ,weeds,mosscovered,aged bricks,cracked bricks
+floor_klinkers_01	floor,brick,outdoor,dirty,man made	bricks,moss,rough,weathered,aged,uneven,mosscovered,weatherbeaten
+floor_klinkers_04	floor,brick,outdoor,dirty,man made,wall	smooth,aged,worn,brown,yellow
+floor_pattern_01	floor,road,outdoor,man made,dirty,cobblestone	cobblestone,moss,castle,fort,pavement
+floor_pattern_02	floor,road,outdoor,man made,cobblestone	pavement,cobblestone,patterned stone,pavement patterned,pavers,decorative paving,historical style,sidewalk
+floor_pavement	man made,dirty,brick,floor,outdoor	ground,sidewalk,cracked,damaged,floor,pavement,cement,square
+floor_pebbles_01	terrain,outdoor,natural	pebbles,pathway,stones,walkway,driveway stones,stony,pebbly,gravelly
+floor_tiles_02	floor,wall,outdoor,indoor,clean,man made	marble,floor,square tiles,smooth surface,stone,wall,dirty,uneven
+floor_tiles_04	floor,wall,outdoor,indoor,clean,man made	tiles,floor,stone blocks,uneven,smooth finish,square,marble,masonry
+floor_tiles_06	floor,indoor,clean,man made	marble,tiles,checkerboard,checkered,floor,tiled,square tiles,dirty
+floor_tiles_08	floor,clean,indoor,outdoor,man made	tiles,square,ceramic,regular,grid,beige
+floor_tiles_09	floor,outdoor,man made,clean	regular,square,pavement,soviet,sidewalk texture,concrete,concrete tiles,grid pattern
+floral_jacquard	fabric,jacquard	decorative,dark,pattern,fabric,textile ,cloth,floral,embossed
+flower_scattered_asphalt	floor,asphalt	asphalt,asphalt road,petals,plant debris,outdoor,cracked,driveway,sticks
+flower_scattered_dirt	floor,outdoor,natural,sand	dirt,dirty,ground,petals,sand,flowers,jacaranda,scattered
+flower_scattered_gravel	floor,gravel	gravel,stones,driveway gravel,gravelly ground,petals,scattered,scattered petals,jacaranda
+forest_floor	outdoor,natural,terrain	sand,leaves,autumn,forest,dirt,nature,dry,mud
+forest_ground_04	outdoor,natural,terrain,rock,collection: pine_forest,collection: verdant_trail	rough,uneven,stones,ground,forest,dry,brown,gravel
+forest_ground_05	outdoor,terrain,natural,sand	rough,uneven,dirt,soil,compact soil,scattered rocks,scattered leaves,forest debris
+forest_ground_06	outdoor,natural,terrain,floor	dirt,dirty,soil,compact soil,loose earth,scattered leaves,forest soil,forest
+forest_leaves_02	outdoor,terrain,natural	moss,sticks,leaves,twigs,autumn,mossy,mosscovered,mossy patches
+ganges_river_pebbles	natural,rock,outdoor,terrain	rough,uneven,rock,pebbles,pebble,scattered pebbles,scattered,river
+garage_floor	man made,plaster-concrete,indoor,floor,concrete	weathered,chipped,cracked,damaged,discolored,scratched,concrete,grungy
+gingham_check	fabric,cotton	checker,green,table cloth,picnic,pattern,textile ,checkered,plaid
+granite_tile	floor,man made	granite,tiles,tiled,stone tile,granite tile,flooring,interior,home decor
+granite_tile_02	floor,man made	home decor,tiled,decorative tiles,grid,interior,square tiles,stone tile,flooring
+granite_tile_03	wall,tiles	granite,granite tile,granite blocks,wall,urban,speckled ,slab,outdoor
+granite_tile_04	floor,outdoor	rough,weathered,granite,stone tile,stone tiles,square tiles,grout lines,natural stone
+granite_wall	wall,outdoor	granite,granite blocks,rough,coarse,uneven,wall,monument,fortress walls
+granular_concrete	concrete,man made,floor,plaster-concrete	rough,stones,rock,gravel,dirt,ground
+grass_concrete_pavement	man made,outdoor,cobblestone	rough,uneven,weathered,old,discolored,grass,dead grass,dry
+grass_path_2	terrain,natural,outdoor	grass,pathway,path,ground,stones,sidewalk,rural,farm
+grass_path_3	terrain,outdoor,natural	grass,pathway,path,ground,stones,sidewalk,rural,farm
+grassy_cobblestone	natural,sand,outdoor,floor,cobblestone	ground,dirt,rock,grass,dirty,path,trampled,pathway
+gravel	floor,outdoor	rock,stones,driveway gravel,gravel,gravelly,gravelly ground,stony,scattered leaves
+gravel_concrete	floor,outdoor,man made,concrete,plaster-concrete	rough,uneven,stones,gravel,dry,concrete,cement
+gravel_concrete_02	outdoor,man made,floor,plaster-concrete,concrete	rough,uneven,stones,ground,chipped,pavement,pebble,gravel
+gravel_concrete_03	floor,man made,concrete,plaster-concrete	rough,weathered,old,urban,sidewalk,gravel,concrete,coarse
+gravel_concrete_04	floor,man made,concrete,plaster-concrete	rough,weathered,old,urban,sidewalk,gravel,concrete,coarse
+gravel_embedded_concrete	outdoor,man made,plaster-concrete,concrete,floor	pavement,rough,concrete,cement,gravel,coarse,stony,gravelly
+gravel_embedded_concrete_02	floor,plaster-concrete,man made	rough,concrete,pavement,coarse,cement,sidewalk,urban,stone embedded
+gravel_floor	outdoor,gravel	rough,uneven,stones,gravel,pathway,driveway stones,path,pebbles
+gravel_floor_02	floor,gravel	rough,rocks,gravel,gravelly,gravelly ground,driveway gravel,driveway,stones
+gravel_floor_03	floor,outdoor	rough,gravel,gravelly,gravelly ground,driveway texture,driveway gravel,stones,driveway stones
+gravel_floor_04	floor,gravel	rough,uneven,granular,gravel,gravelly,coarse,gritty,gravelly ground
+gravel_ground_01	terrain,outdoor,natural	gravel,pathway,path,stones,ground,sidewalk,rural,farm
+gravel_road	outdoor,natural,terrain,rock,road,asphalt,dirty,man made	old,worn,rough,aged,stone,gravel,gravelly,gravelly texture
+gravel_stones	outdoor,gravel,natural	rough,uneven,stones,gravel,gritty,grey,pebbles,coarse
+gray_rocks	outdoor,terrain,natural,rock	uneven,rocks,rocky,rock,gray,rough
+green_metal_rust	metal,outdoor,indoor,man made,dirty	painted,ship,tank,industrial,canister
+green_rough_planks	wood,outdoor,man made,dirty,wall	planks,painted,peeling,weathered
+grey_cartago_01	floor,tiles	rock,tiles,marble,flooring,cartago,smooth,stone,stone tile
+grey_cartago_02	floor,man made	tiles,grey,cartago,stones,smooth,hard,modern,durable
+grey_cartago_03	floor,tiles	rock,tiles,marble,flooring,cartago,smooth,stone,stone tile
+grey_plaster	plaster,outdoor,indoor,man made,wall,floor,plaster-concrete	moss,plain,bare
+grey_plaster_02	plaster,outdoor,indoor,man made,dirty,wall,floor,plaster-concrete,collection: the_shed	rough,worn,cracked
+grey_plaster_03	plaster,outdoor,indoor,man made,dirty,wall,floor,plaster-concrete	rough,grey,uneven
+grey_roof_01	roofing,outdoor,man made,clean	modern,tiles,roofing material,gray,gray roof,tiled roofing,interlocking tiles,slate roofing
+grey_roof_tiles	roofing,outdoor,man made,clean	grey,moss,damp,mosscovered,ceramic tiles,overlapping,weathered,overlapping tiles
+grey_roof_tiles_02	roofing,outdoor,man made,clean	slates,moss,tiles,cottage,roofing material,lichen,housing material,gray
+grey_stone_path	man made,outdoor	rocks,exterior,stonework,outdoors,path,pathway,footpath,concrete
+grey_tiles	outdoor,floor,man made	weathered,old,discolored,grey,gray,exterior pavement,pavement,concrete tiles
+grooved_concrete_driveway	man made,concrete,plaster-concrete	driveway,concrete,rough,gritty,driveway texture,cement,grooved,coarse
+hacked_concrete	wall,plaster-concrete,man made	rough,weathered,uneven,chipped,concrete,cement,rough  ,pitted
+hangar_concrete_floor	floor,man made,concrete,indoor,plaster-concrete	rough,scratched,flat,concrete,cracked,damaged,chipped,scuffed
+herringbone_brick	man made,outdoor,floor,brick	herringbone,interlocking bricks,worndown,brick,bricks,pavement,sidewalk,street
+herringbone_brick_02	floor,brick	brick,bricks,interlocking bricks,paving,street,herringbone,herringbone pattern,pavement
+herringbone_brick_03	floor,man made,brick	rough,herringbone pattern,brick,bricks,herringbone,herringbone brick,outdoor,paving
+herringbone_concrete_tile	concrete,outdoor,man made,plaster-concrete	weathered,rough,discolored,concrete,herringbone,herringbone pattern,patterned concrete,weatherbeaten
+herringbone_concrete_tile_02	wall,concrete,plaster-concrete	rough,uneven,weathered,wall,concrete,concrete blocks,retaining wall,urban
+herringbone_concrete_tile_03	man made,outdoor,plaster-concrete	herringbone,weathered,wet patches,herringbone pattern,exterior,urban,concrete pavers,concrete blocks
+herringbone_parquet	man made,floor,wood	smooth,wood,coated,shiny,plank,herringbone,wooden planks,parquet flooring
+herringbone_pavement	floor,man made,brick,outdoor	rough,herringbone,brick,bricks,pavement,pavement patterned,patterned,urban
+herringbone_pavement_03	dirty,brick,outdoor	weathered,worn,rough,discolored,damaged,dirty,aged,timeworn
+hessian_230	fabric,hessian	burlap,rough,brown,natural,coarse,sack,hessian,jute
+hessian_380	fabric,hessian	burlap,rough,brown,natural,fine,sack,hessian,jute
+hexagonal_concrete_paving	outdoor,floor,concrete,plaster-concrete	hexagon,tiles,bricks,pavement,paving,courtyard
+interior_tiles	floor,man made,tiles	tiles,tiled,floor,indoor flooring,grout lines,square tiles,ceramic,ceramic tiles
+interlocking_concrete_pavers	floor,concrete,plaster-concrete	rough,dirt,concrete,pavers,concrete pavers,patterned,geometric,interlocking
+japanese_stone_wall	outdoor,man made,rock	uneven,stones,wall,rocks,stone,rock
+jersey_melange	fabric,stretchy,knitted	blue,patchey,melange,knit,textile ,fabric,heathered,mottled
+jogging_melange	fabric,fleece,stretchy	white,grey,tracksuit,joggers,melange,sweatpants,cozy,comfortable
+knitted_fleece	fabric,knitted,fleece,wool	brown,jersey,warm,knitted,fleece,textile ,knit,dense weave
+laminate_floor	floor,man made,wood	damaged,wood,wooden,dirty,scratched,stained,flat,floor
+laminate_floor_02	floor,man made,indoor,clean,wood	even,flat,wooden,floor,laminate,smooth,tiles,brown
+laminate_floor_03	man made,floor,wood	flat,planks,wood,floor,even,lines,synthetic,varnished
+large_floor_tiles_02	floor,man made,outdoor,dirty	tiles,flat,large,square,even
+large_grey_tiles	floor,man made,outdoor,dirty	grey,tiles,large,uneven,weathered,damaged
+large_pebbles	outdoor,natural,man made,road	old,worn,dirty,pebbles,large,sidewalk,parking,stones
+large_red_bricks	brick,wall,man made,outdoor,indoor,clean	red,large,rough
+large_sandstone_blocks	wall,outdoor,sandstone,man made,dirty	grey,discolored,blocks,sandstone,wall,trimsheet,urban,stained
+large_sandstone_blocks_01	wall,floor,man made,dirty,brick	wall,stones,rough,uneven,old,large
+large_square_pattern_01	floor,man made,outdoor,clean	tiles,concrete,large,even,concrete pavers,concrete blocks,urban,urban design
+leaf_scattered_gravel	outdoor,natural,terrain,gravel,rock	forest,nature,stones,autumn,leaves,stone-fragments,organic-debris,organic-debris
+leafy_grass	outdoor,floor	grass,green,nature,ground,foliage,leaves,plants,outdoors
+leather_red_02	fabric,leather	leather,even,smooth,new,creased,wrinkled,semi-gloss,upholstery
+leather_red_03	fabric,leather	leather,red,even,smooth,new,lustrous,textile ,upholstery
+leather_white	fabric,leather	leather,white,smooth,new,even,textile ,upholstery,fashion
+lichen_rock	collection: verdant_trail,rock,terrain,natural	rock,cliff,lichen,moss,rock face,boulder,mossy,stone
+linoleum_brown	floor,man made	linolium,wood,wood look,flooring,synthetic,vinyl,canvas,weathered
+long_white_tiles	floor,man made	wall,weathered,chipped,discolored,damaged,long,white,tiles
+low_tide_rocks	floor,outdoor,natural,sand	rocks,scattered rocks,pebbles,wet,wet ground,low tide,granular,scattered pebbles
+marble_01	floor,man made,indoor,clean,wall	marble,smooth,even,tiles
+marble_cliff_01	natural,rock,aerial	uneven,weathered,marble,cliff,discolored,cracked,fractured,metamorphic
+marble_cliff_02	natural,rock,outdoor,aerial	rough,weathered,uneven,rock,cracked,sedimentary,sedimentary,fissured
+marble_cliff_03	outdoor,rock,natural,aerial	rough,weathered,uneven,cliff,marble,rock,craggy,sedimentary
+marble_cliff_04	outdoor,natural,rock,aerial	uneven,rough,weathered,cracked,rock face,rock,cliff,stratified
+marble_cliff_05	aerial,rock,natural,outdoor	rough,weathered,uneven,rock,chipped,stone,marble,striated
+marble_cliff_06	outdoor,aerial,natural,rock	rough,uneven,rock,cracked,stone,marble,cliff,veined
+marble_mosaic_tiles	floor,man made	tiles,floor,ceramic,mosaic,marble,decorative,square,tiled
+marble_rock_01	outdoor,rock,natural	uneven,rock,rock face,geological,cracked,boulder,craggy,marble
+marble_rock_02	outdoor,natural,rock	uneven,rock,cracked,weathered,marble,craggy,stone,rock face
+marble_rock_03	rock,outdoor,natural	uneven,weathered,cracked,worn,rock face,rock,dirty,marble
+marble_tiles	floor,man made,outdoor,dirty	floor,tiles,marble,dirty,ceramic,decorative,consistent,square
+medieval_blocks_02	wall,man made,dirty,outdoor,rock	stones,sandstone,old,weathered,rough,uneven
+medieval_blocks_03	wall,brick,man made,outdoor,indoor,clean	blocks,large,old,rough
+medieval_blocks_05	wall,rock,man made,outdoor,dirty,floor	blocks,road,stones,gaps
+medieval_blocks_06	wall,man made,rock,dirty,outdoor	wall,blocks,rocks,fortress walls,stonework,ancient walls,dungeon,fort
+medieval_red_brick	wall,brick,man made	concrete,medieval,red,brick,bricks,red brick,walling,building material
+medieval_wall_01	plaster-concrete,wall,man made,outdoor,indoor,dirty	wall,rough,uneven,plastered
+medieval_wall_02	wall,man made,rock,outdoor	rough,uneven,weathered,old,wall,worn,chipped,damaged
+medieval_wood	wood,wall,man made,outdoor,indoor	planks,weathered,old,uneven
+metal_grate_rusty	man made,metal,outdoor	rusty,rust,metallic,grate,weathered,worn,old,manhole
+metal_plate	metal,floor,man made,indoor,outdoor,dirty	bare,painted,rusty,pattern,iron,factory,industrial,steel
+metal_plate_02	man made,metal	worn,metal sheet,corroded metal sheet,metal sheet ,steel sheeting,rusted,rusty,iron
+mixed_brick_wall	wall,brick	brick,bricks,masonry,brick wall,worndown,walling,mortar,red brick
+mixed_rock_tiles	floor,rock	rough,uneven,old,pebbles,rocks,stone tiles,embedded rock,dirty
+mixed_stone_tiles	floor,man made	tiles,floor,embedded pebble,stone embedded,tiled,square tiles,pebble finish ,mixed stone
+monastery_stone_floor	rock,outdoor,floor,man made	rock,rocks,stone,floor,pathway,slates,slate,path
+moon_meteor_01	outdoor,sand,terrain,collection: moon	rough,dirt,course,exterior,regolith,dusted,meteor,craters
+moon_meteor_02	outdoor,sand,terrain,collection: moon	rough,dirt,course,exterior,regolith,dusted,meteor,craters
+moss_wood	wood,wall,floor,man made,outdoor	moss,planks,rough,old,green
+mossy_brick	brick	brick,moss,mossy,mosscovered,outdoor,wall,green,weathered
+mossy_brick_floor	floor,brick,man made	weathered,worn,brick,bricks,moss,pattern,outdoor,worndown
+mossy_cobblestone	floor,outdoor,man made,cobblestone	weathered,stone,earthy,moss,cobblestone,walkway,stonework,outdoor flooring
+mossy_rock	rock,natural,outdoor,terrain	rough,moss,rock face,cracked,lichen,striations,striated,mosscovered
+mossy_sandstone	wall,man made,sandstone	rough,weathered,uneven,old,worn,wall,mosscovered,mossy
+mossy_stone_wall	wall,man made,rock	discolored,weathered,uneven,exterior,moss,concrete,weatherbeaten,aged
+mud_forest	outdoor,floor,natural,dirty	brown,ground,dirty,leaves,mud,forest,sticks
+muddy_tracks	floor,natural,outdoor,sand,dirty	mud,muddy surface,tracks,tire tracks,wet,organic,outdoor,earth
+multicolored_pebble_floor	outdoor,floor,man made,cobblestone	pebble mosaic,rounded stones,stone paving,street,embedded stones,natural stone
+oak_wood_planks	wood	wood,planks,oak,wooden floor,wooden flooring ,wooden planks,varnished,timber
+old_linoleum_flooring_01	floor,man made	smooth,linolium,linoleum,glossy,vinyl,vinyl flooring,patterned,vintage
+old_mosaic_floor	floor,plaster-concrete,concrete	road,weathered,terrazzo,mosaic,tiles,gritty,rough surface,stone chips
+old_planks_02	wood,wall,floor,man made,outdoor,indoor	planks,old,damaged,worn
+old_sandstone_02	outdoor,man made,sandstone,wall	rough,weathered,wall,stone,sandstone,old,worn,chipped
+old_stone_wall	wall,outdoor	stone,wall,rock wall,stone wall,fortress walls,stonework,ancient walls,fort
+old_stone_wall_02	wall,rock	rough,weathered,uneven,old,worn,wall,discolored,cracked
+old_wood_floor	outdoor,man made,floor,wood,dirty	wood,wooden,deck,planks,old,uneven,weathered,worn
+old_wooden_floor_01	wood	wood,hardwood,hardwood floors,wooden flooring ,wooden planks,wooden floor,grain,aged wood
+old_wooden_floor_02	wood	wood,hardwood,hardwood floors,wooden flooring ,wooden planks,wooden floor,grain,aged wood
+old_wooden_floor_03	floor,wood	wood,hardwood,hardwood floors,wooden flooring ,wooden planks,wooden floor,grain,aged wood
+overgrown_concrete_pavers	outdoor,floor	rough,weathered,uneven,old,plant debris,dirt,overgrown,concrete pavers
+painted_brick	wall,brick,plaster,man made,outdoor,indoor	old,worn,wall,rough,exterior,plaster,painted,paint
+painted_concrete	floor,indoor,plaster-concrete,concrete	weathered,worn,dirty,damaged,chipped,cracked,stained,painted
+painted_concrete_02	floor,man made,concrete,plaster-concrete	concrete,scratched,painted,weatherbeaten,grunge,cemented floor,worn,urban
+painted_metal_shutter	man made,metal	weathered,worn,dirty,stained,scratched,discolored,painted,metal
+painted_plaster_wall	wall,plaster-concrete,outdoor	rough,weathered,worn,wall,discolored,plaster,plastered,damaged
+painted_worn_brick	wall,brick,outdoor,man made	yellow,dirty,weathered,worn,grungy
+patio_tiles	man made,floor,clean,indoor,outdoor	tiles,ceramic,square,outdoor flooring,flat,continuous,consistent,patio
+patterned_brick_floor	man made,outdoor,floor	bricks,gray,grey,concrete,pattern,pavement patterned,walkway
+patterned_brick_floor_02	floor,outdoor,brick	pattern,brick,bricks,paving,sidewalk,patterned,pavement,urban
+patterned_brick_floor_03	floor,outdoor	brick,bricks,pattern,pavement patterned,driveway,paving,outdoor flooring,exterior
+patterned_brick_wall	man made,brick,wall	road,rough,wall,damaged,chipped,dry,bricks,brick
+patterned_brick_wall_02	outdoor,man made,wall,brick,plaster-concrete	stones,wall,chipped,rocks,pattern,weathered,concrete,bricks
+patterned_brick_wall_03	wall,brick	rough,brick,bricks,patterned,interlocking bricks,building facade,urban,outdoor
+patterned_clay_plaster	wall,outdoor,plaster-concrete,man made	weathered,rough,wall,pattern,clay,patterned,lines,decorative
+patterned_clay_wall	outdoor,man made,wall	uneven,weathered,damaged,cracked,worn,discolored,chipped,stained
+patterned_cobblestone	man made,outdoor,cobblestone,floor,brick	uneven,weathered,cobblestone,walkway,bricks,pattern,pavement,ground
+patterned_cobblestone_02	floor,cobblestone	weathered,rough,cobblestone,cobblestones,pattern,pavement patterned,patterned,stones
+patterned_concrete_pavers	man made,outdoor,concrete,plaster-concrete	interlocking,pavement,pavers,city,concrete,sidewalk,cement,paving
+patterned_concrete_pavers_02	man made,outdoor,floor	worn,cracked,patterned,pavers,weathered,paving,concrete,discolored
+patterned_concrete_pavers_03	man made,outdoor,floor	concrete,pavers,pavement patterned,patterned concrete,walkway,dirt,grass,dead grass
+patterned_concrete_wall	wall,concrete,plaster-concrete	concrete,wall,patterned,patterned concrete,plasterconcrete,exterior,rough,rough concrete
+patterned_paving	floor,man made,outdoor	footpath,pavement,sidewalk,sidewalk texture,pavement patterned,walkway,urban,city
+patterned_paving_02	floor,outdoor	paving,driveway stones,stone paving,outdoor,outdoor flooring,decorative paving,pattern,pavement patterned
+patterned_plaster_wall	wall,plaster	plaster,plastered,concrete,pattern,patterned,patterned concrete,dirty,exterior
+patterned_slate_tiles	floor,man made	weathered,rough,tiles,slates,slate,exterior,tiled,outdoor
+patterned_terracotta_tiling	floor,man made,clean	terracotta,tiles,grout lines,grout,ceramic tiles,indoor flooring,indoor,geometric pattern
+pavement_01	floor,outdoor,man made	pavement,square,pattern,worn,uneven,stone,stone tiles,grid
+pavement_02	outdoor,man made,floor,plaster-concrete,plaster	worn,floor,sidewalk,pavement,flat,dirty,city,textured
+pavement_03	outdoor,man made,floor,brick	rough,weathered,sidewalk,brick,bricks,cement,pavement
+pavement_04	outdoor,man made,floor,brick	grey,brick,bricks,pavement,floor,sidewalk,dry,synthetic
+pavement_05	outdoor,man made,floor,brick,cobblestone	stones,path,floor,pavement,sidewalk,pathway,cobblestone,stone
+pavement_06	dirty,brick,floor,man made	rough,exterior,outdoor,walkway,pavers,outdoor flooring,urban,footpath
+pebble_bricks	floor,man made,brick	rough,uneven,weathered,embedded pebble,brick,bricks,herringbone,interlocking pattern
+pebble_cemented_floor	outdoor,man made,floor,road	pebble,cement,floor,flat,rough,stones,small,gravel
+pebble_embedded_concrete	floor,outdoor,man made	embedded pebble,concrete,pavers,rough,outdoor,durable,pavement,coarse
+pebble_embedded_concrete_02	floor,outdoor,man made	embedded pebble,concrete,concrete tiles,pavers,rough,outdoor,durable,pavement
+pebble_embedded_pavement	floor,man made,outdoor,concrete,plaster-concrete	pebbles,pebble,concrete,bumpy,walkway,outdoor,embedded pebble,cemented floor
+pebble_ground_01	terrain,outdoor,natural,road	pebble,stones,even,pebbles,pebbly,sticks,scattered pebbles,small stones
+peeling_painted_wall	wall,man made	painted,peeling,peeling paint,wall,concrete,cracked,scuffed,scratched
+plank_flooring	floor,wood,indoor	brown,worn,dirty,stained,damaged,smooth,scratched,floor
+plank_flooring_02	floor,wood,indoor	flat,planks,scratched,yellow,wood,floor,varnished
+plank_flooring_03	floor,wood,raw wood	rough,weathered,old,worn,wood,wooden planks,planks,cabin
+plank_flooring_04	floor,wood	wooden planks,plank flooring ,wooden flooring ,plank,timber,coated,varnished,wooden floor
+planks_brown_10	wood,wall,man made,outdoor	planks,old,discolored,weathered,rough
+plaster_brick_01	brick,plaster-concrete,wall,man made,dirty,outdoor	plaster,rough,old,moss,sewer,tunnel,trimsheet
+plaster_brick_pattern	wall,man made,plaster,brick,plaster-concrete	rough,weathered,wall,plastered,outdoor,patterned concrete,patterned,coarse
+plaster_grey_04	plaster-concrete,wall,man made,clean,outdoor,indoor	rough,even,plastered
+plaster_stone_wall_01	wall,plaster,plaster-concrete	rough,uneven,wall,rocks,weathered,old,stone embedded,coarse
+plaster_stone_wall_02	plaster-concrete,plaster,concrete	rough,uneven,weathered,old,stone embedded,embedded rock,concrete,plaster
+plastered_stone_wall	wall,man made,plaster-concrete,rock	rough,weathered,chipped,wall,damaged,cracked,discolored,worn
+plastered_wall	wall,plaster	rough,concrete,discolored,damaged,scratched,plaster,plastered,exterior
+plastered_wall_02	wall,man made,outdoor,plaster,plaster-concrete	rough,weathered,wall,discolored,flat,plastered,plaster,urban
+plastered_wall_03	wall,plaster-concrete	plaster,plastered,chipped,concrete,scuffed,discolored,scratched,plasterconcrete
+plastered_wall_04	wall,plaster-concrete,indoor	rough,scratched,gray,plaster,plastered,concrete,plasterconcrete,industrial
+plastered_wall_05	wall,man made,outdoor,plaster,plaster-concrete	rough,scratched,gray,plaster,plastered,concrete,plasterconcrete,industrial
+playground_sand	outdoor,floor,sand	brown,sand,floor,rough,ground,playground,dirty,wet
+poly_wool_herringbone	fabric,wool	grey,rough,textile ,poly wool,fabric blend,polyester,wool,woven
+precast_concrete_wall	wall,man made,plaster-concrete	wall,worn,concrete,stamped concrete,exterior,outdoor,weathered,weatherbeaten
+precast_stone_paving	floor,man made,outdoor	worn,concrete,patterned concrete,floor,outdoor,outdoor walkway,outdoor flooring,precast
+preconcrete_wall_001	concrete,wall,outdoor,man made,dirty,plaster,plaster-concrete	cracked,rough,damaged,house,beige,stained,painted,chipped
+preconcrete_wall_001_long	wall,plaster-concrete,concrete,outdoor,man made,dirty	cracked,rough,damaged,house,beige,painted,stained,chipped
+quarry_wall	outdoor,natural,rock	rough,rock face,wall,rock,quarry,solid,stonework,exterior
+quarry_wall_02	wall,outdoor,rock	rough,wall,rock,quarry,quarry stone,rock face,roughhewn,solid rock
+rabdentse_ruins_wall	outdoor,man made,rock	chipped,wall,weathered,damaged,worn,rocks,rock,dilapidated
+raked_dirt	outdoor,natural,dirty,floor	brown,nature,ground,sand,leaves,dirt,floor,dirty
+random_bricks_thick	outdoor,wall,dirty,man made,brick	rough,old,uneven,discolored,damaged
+raw_plank_wall	wall,man made,raw wood,wood	weathered,chipped,worn,scratched,wooden,discolored,damaged,wood
+raw_wooden_floor_01	wood,floor,man made,raw wood,dirty	wood,planks,weathered,rough-sawn,unfinished,knotty,nail holes,worn
+rectangular_facade_tiles	wall,tiles	tiles,rectangular,building facade,wall,walling,urban design,exterior,concrete
+rectangular_facade_tiles_02	wall,tiles	tiles,rectangular,building facade,wall,walling,urban design,exterior,concrete
+rectangular_parquet	floor,wood,indoor,man made	flat,rectangular,parquet flooring,parquet,wood,varnished,wooden flooring ,wooden floor
+rectangular_paving	floor,outdoor,man made	coarse,driveway texture,paving,driveway stones,stone paving,multicoloured,outdoor flooring,decorative paving
+recycled_brick_floor	floor,brick	weathered,worn,chipped,damaged,old,dirty,timeworn,weatherbeaten
+red_brick	wall,brick,man made	brick,bricks,wall,red brick,brick wall,rough,exterior
+red_brick_03	outdoor,wall,clean,man made,brick	red,industrial,factory,brown
+red_brick_pavers	floor,man made,outdoor	uneven,red brick,brick,pavers,interlocking bricks,sidewalk texture,outdoor paving,cityscape
+red_brick_plaster_patch_02	outdoor,wall,dirty,man made,brick	red,rough,broken,bricks,crumbling,timeworn,worn down,exposed brick
+red_bricks_02	outdoor,wall,dirty,man made,brick	rough,broken,red,bricks,brick wall,old brick,brick,exposed brick
+red_bricks_04	outdoor,man made,wall,brick	textured,bricks,baked,rough,uneven,urban,clean,red
+red_laterite_soil_stones	outdoor,natural,terrain,rock,road,sand	rough,red,laterite,stones,ground,dirt,pebbles,rocks
+red_mud_stones	terrain,outdoor,natural	mud,dirt,flat,dry,rocks,compact soil,organic debris,roots
+red_plaster_weathered	outdoor,man made,wall,dirty,plaster-concrete,plaster	weathered,red,wall,old,worn,damaged,discolored,stained
+red_sand	floor,sand,outdoor	red,sand,outdoor,footprints,dusty,ground,tracks,tyre tracks
+red_sandstone_pavement	outdoor,floor,sandstone,man made,rock	weathered,plaster,rock,sandstone,concrete,pavement,floor,dirty
+red_sandstone_tiles	floor,outdoor,man made	rough,paving,sandstone,coarse,exterior,rough  ,gritty,stone tiles
+red_sandstone_wall	man made,wall,outdoor,dirty,sandstone	rough,uneven,old,weathered,wall,worn,chipped,damaged
+red_slate_roof_tiles_01	roofing,outdoor,man made,dirty	old,slate,moss,roofing material,roof tiles,tiled roofing,overlapping,weathered
+ribbed_block_wall	wall,man made,outdoor,plaster-concrete	wall,weathered,rough,concrete,uneven,exterior,discolored,cement
+ribbed_concrete_wall	wall,concrete,plaster-concrete	grooved,outdoor,patterned,patterned concrete,urban,vertical lines,rough concrete,gritty
+ribbed_corduroy	fabric,corduroy	green,striped,fabric,textile ,corduroy,woven,corded velveteen,wales
+river_small_rocks	terrain,rock,natural,outdoor	rough,uneven,stones,rock,pebbles,river,pathway,debris
+rock_01	rock,outdoor,terrain,natural	grey,smooth,rock,stone,gray,weathered,rock face,solid rock
+rock_04	rock,outdoor,terrain,natural	rough,uneven,stone,bumpy,rock,rock formation,weathered,dirty
+rock_05	rock,outdoor,terrain,natural	rough,uneven,old,stone,geological,irregular,rock,pitted
+rock_06	rock,outdoor,terrain,natural	yellow,cliff,rough,rock face,solid rock,rock,striated,geological
+rock_08	rock,outdoor,terrain,natural	rough,rock face,bare,rock,boulder,coarse,geological,stone
+rock_2	rock,outdoor,terrain,natural	rough,stone,dirty,rock face,rock,coarse,geological,uneven
+rock_3	rock,outdoor,terrain,natural	grey,seaside,rough,rock face,rock,uneven,boulder,mossy
+rock_boulder_cracked	outdoor,terrain,rock,natural	rough,weathered,rock face,rock,orange,cliff,cave,stone
+rock_boulder_dry	rock,outdoor,natural,terrain	weathered,chipped,rocks,boulder,stone,flat,damaged,eroded
+rock_embedded_concrete	floor,man made,cobblestone	rocks,embedded rock,pebbles,stone embedded,embedded pebble,coarse,concrete,rounded pebbles
+rock_embedded_concrete_wall	man made,outdoor,rock,concrete,plaster-concrete	rough,uneven,old,wall,worn,chipped,cracked,discolored
+rock_embedded_floor	floor,rock,cobblestone	rough,uneven,stone embedded,embedded rock,concrete,embedded pebble,bumpy
+rock_embedded_tiles	wall,rock	rocks,rock,tiles,outdoor,city,wall,tiled wall,exterior
+rock_face	outdoor,terrain,natural,rock,collection: namaqualand	terrain,landscape,rock face,solid rock,cliff,solid
+rock_face_03	natural,terrain,rock,outdoor,collection: verdant_trail	rough,rock,cliff,uneven,weathered,wall,cracked,stone
+rock_face_04	outdoor,natural,rock	rough,uneven,weathered,old,cracked,chipped,rock face,rock
+rock_ground	terrain,natural,rock,outdoor	gravel,rough,broken,rock,ground
+rock_ground_02	terrain,natural,rock,outdoor	rough,broken,gravel,ground,scattered plants ,stones,loose stones,dirt
+rock_path	natural,outdoor,floor	rough,weathered,leaves,rocks,rocky,grass,path,pathway
+rock_pitted_mossy	outdoor,rock,terrain,natural,sandstone	cracked,weathered,rock face,rock,boulder,red,discolored,eroded
+rock_surface	natural,rock	rough,weathered,discolored,dirty,stone,rock,boulder,coarse
+rock_tile_floor	outdoor,floor,rock,man made	stone,rough,rock,rocks,gray,rugged,floor,stonework
+rock_tile_floor_02	floor,man made,rock	rough,weathered,worn,walkway,rocks,rock,grass,dead grass
+rock_wall	wall,rock,outdoor	rough,uneven,wall,chipped,rocks,rock,discolored,weathered
+rock_wall_02	rock,natural,terrain,outdoor	rough,rock face,bare,rock,uneven,rough  ,discolored,coastal landscape
+rock_wall_03	outdoor,wall,rock,man made	rough,uneven,old,weathered,cracked,wall,discolored,stones
+rock_wall_04	outdoor,wall,rock,man made	old,rough,wall,stones,worn,rocks,dirty,weathered
+rock_wall_05	wall,rock,outdoor	uneven,rough,weathered,stones,worn,discolored,rocks,wall
+rock_wall_06	wall,dirty,rock,outdoor	rough,uneven,stones,wall,rock,chipped,rocks,dry
+rock_wall_07	outdoor,man made,wall,rock	rough,uneven,weathered,wall,worn,rock,concrete,exterior
+rock_wall_08	outdoor,man made,wall,rock	uneven,rock,rocks,wall,weathered,stone,timeworn,worn
+rock_wall_09	wall,rock,man made,dirty	rough,uneven,wall,rock,rocks,fort,dry,weathered
+rock_wall_10	outdoor,wall,rock	uneven,rock,rocks,wall,rocky,cracks,dirt,exterior
+rock_wall_11	man made,wall,rock	weathered,wall,discolored,worn,stonework,fortress walls,rocks,rock
+rock_wall_12	floor,man made,rock	rock,wall,fortress walls,exterior,weatherbeaten,dungeon,stonework,concrete
+rock_wall_13	wall,man made,rock	outdoor,weathered,weatherbeaten,concrete,rocks,rock,stone,rugged
+rock_wall_14	wall,rock,man made	rough,rocks,rock,concrete,wall,embedded rock,stonework,coarse
+rock_wall_15	wall,rock,man made	rough,rocks,rock,concrete,wall,embedded rock,stonework,coarse
+rock_wall_16	wall,outdoor,rock	rough,weathered,uneven,wall,rock wall,stone blocks,stonework,rock
+rock_wall_17	wall,rock,plaster-concrete	rough,uneven,rock,rocks,embedded rocks,coarse,stonework,fortress walls
+rocks_ground_01	terrain,natural,outdoor,rock,collection: verdant_trail	rough,rock,cracked,stones
+rocks_ground_02	terrain,natural,outdoor,rock	rough,mud,rock,stones,uneven,rocks,scattered rocks,gravel
+rocks_ground_03	terrain,natural,outdoor,rock	rocks,rough,stones,uneven,pebbles,pebbly,scattered pebbles,scattered rocks
+rocks_ground_04	terrain,outdoor,rock,natural	rocks,rough,smooth,stones,gravel,gravelly,rock,rocky
+rocks_ground_05	terrain,outdoor,rock,natural	rough,rock,gravel,dirt,rocky,soil,uneven,stony
+rocks_ground_06	terrain,outdoor,rock,natural	rocks,rough,broken,rock,uneven,gravel,scattered pebbles,scattered rocks
+rocks_ground_08	terrain,natural,outdoor	mud,rough,dry,damp,dirt,rocks,scattered rocks,muddy surface
+rocks_ground_09	terrain,natural,outdoor	rough,rock,stones,broken,gravel,gravelly,scattered pebbles,scattered rocks
+rocky_gravel	outdoor,floor,gravel,dirty	rough,stones,rocks,gravel,dirt,path,nature,leaves
+rocky_terrain	outdoor,terrain,natural,rock,aerial	rock face,rocky,solid rock,nature,grass,terrain,wilderness,uneven terrain
+rocky_terrain_02	outdoor,terrain,natural,aerial	rocky,terrain,uneven terrain,grass,drone,landscape,nature,nature
+rocky_terrain_03	outdoor,natural,rock,aerial,terrain	rocks,aerial,terrain,landscape,natural landscape,nature,boulders,landform
+rocky_trail	outdoor,natural,terrain,rock,collection: pine_forest	rough,uneven,stones,rock,gravel,chipped,rocks,nature
+rocky_trail_02	outdoor,natural,dirty,sand,floor	stones,earthy,rugged,rough,terrain,gravelly,pathway,gritty
+roof_07	roofing,man made,outdoor,dirty	ceramic,tiles,old,worn,damaged,discolored,roofing material,roof
+roof_09	roofing,man made,outdoor,dirty	ceramic,old,worn,tiles,roofing material,roofing,roof,clay tiles
+roof_3	roofing,man made,outdoor,dirty	ceramic,old,worn,tiles,moss
+roof_planks	wood	weathered,wood,wooden,wooden flooring ,wooden planks,wooden floor,planks,plank
+roof_slates_02	roofing,man made,outdoor	slates,uneven,old,tiles,weathered,discolored,slate roofing,slate
+roof_slates_03	roofing,man made,outdoor,clean	slates,even,tiles,slate,roof tiles,overlapping,roofing material,aged
+roof_tiles	roofing,man made	roofing material,roof tiles,durable roofing,ceramic tiles,tiled roofing,traditional roof tiles,clay roof tiles,roofing
+roof_tiles_14	roofing,man made,outdoor,dirty	ceramic,tiles,moss,old,discolored,weathered
+roots	outdoor,natural,floor	uneven,old,weathered,brown,dirty,ground,dry,nature
+rough_block_wall	man made,outdoor,brick,wall	rough,uneven,stone,blocks,patterned,weathered,jagged,precast
+rough_linen	fabric,cotton,hessian	blue,fine,textile ,fabric,woven,linen,weave,crosshatch
+rough_pine_door	wood,outdoor	rough,weathered,weatherbeaten,outdoor,pine,pine wood,wood,roughhewn
+rough_plaster_03	plaster-concrete,man made,outdoor,brick,wall	rough,uneven,plaster,brick,old,weathered
+rough_plaster_brick	plaster-concrete,man made,outdoor,brick,wall	rough,uneven,plaster,old,dirty,weathered,moss,sewer
+rough_plaster_brick_02	plaster-concrete,man made,brick,wall,outdoor,dirty	rough,uneven,weathered,plaster,discolored,patchey,damaged,worn
+rough_plaster_brick_04	plaster-concrete,man made,wall,outdoor,dirty	rough,grey,weathered,plaster,old
+rough_plaster_broken	plaster-concrete,man made,wall,outdoor,dirty	rough,brown,weathered,uneven,old,peeling,patches,cement
+rough_plasterbrick_05	plaster-concrete,man made,wall,outdoor,floor	rough,grey,flat,even
+rounded_square_tiled_wall	wall	wall,tiles,rounded square,ceramic,building facade,small tiles,cladding,patterned cladding
+rubber_tiles	floor,man made	tiles,smooth,rubber,durable flooring,waterproof tiles,gym floor,gym,square
+rubberized_track	floor,man made	rubber,gym,gym floor,athletics,track,running,rubberized
+rubble	floor,dirty,indoor	rubble,debris,concrete,waste,building materials,demolition,broken,crumbling
+running_track	man made,floor,outdoor,indoor	tracks,track,athletics,running,rubber,synthetic,flat,floor
+rust_coarse_01	metal,outdoor,man made,dirty,wall	coarse,rusty,rust,red,stained,grunge,old,weathered
+rusted_shutter	outdoor,metal	rusted,weathered,weatherbeaten,metal,corroded,corroded metal sheet,peeling paint,cracking paint
+rustic_stone_wall	outdoor,wall,rock,man made	weathered,old,uneven,wall,rock,rocks
+rustic_stone_wall_02	man made,outdoor,wall,rock	rough,uneven,weathered,wall,rock,old,worn,chipped
+rusty_corrugated_iron	metal,industrial	rough,old,corrugated,corrugation,rusted,rusty,rust,corroded metal sheet
+rusty_metal	metal,man made,wall,dirty,outdoor	rust,old,rusty,shutter,metal shutter,corrosion,weathered,dented
+rusty_metal_02	metal,man made,dirty,wall,indoor,outdoor	rust,old,weathered,painted
+rusty_metal_03	man made,metal	rough,weathered,worn,old,metal,rusted,rusty,rust
+rusty_metal_04	man made,metal	metal sheet,metal,rusted,rusty,rust,steel,oxidized,corrosion
+rusty_metal_05	metal,man made	rough,rusted,metal sheet,metal,sheet metal,corroded,corroded metal sheet,corroded surface
+rusty_metal_grid	wall,metal	rusted,metal sheet,metal,painted,rusty,rust,corroded metal sheet,rusty metal
+rusty_metal_sheet	man made,metal	metal,rusty,rust,rusted,corroded,sheet,tarnished,oxidized
+rusty_metal_shutter	metal,outdoor	weathered,rusted,metal shutter,corrugated iron,corrosion,painted,horizontal ridges,corroded metal sheet
+rusty_painted_metal	man made,metal	weathered,worn,discolored,rough,metal sheet,rusty,rust,rusted
+sand_02	floor,sand	dirty,sand,sandy,beach,gritty,coast,shore,granular
+sand_03	floor,sand	sand,sandy,beach,seaside,gritty,shore,costal,sandy beach
+sandstone_blocks_04	wall,man made,outdoor,clean,brick	rough,sandstone,flat,uneven,old
+sandstone_blocks_05	wall,man made,outdoor,brick	blocks,old,rough,uneven,large,sandstone
+sandstone_blocks_08	wall,floor,man made,outdoor,clean,indoor	blocks,uneven,large,sandstone
+sandstone_brick_wall_01	wall,brick,man made,outdoor,sandstone	red,rough,uneven,industrial,baked,urban,weathered
+sandstone_cracks	wall,floor,natural,man made,outdoor,road,terrain	rough,dirt,ground,sandstone,cracked,plaster
+sandy_gravel	outdoor,sand,gravel	rough,weathered,stones,sand,sandy,gravel,gravelly ground,gravelly texture
+scuffed_cement	man made,floor,indoor,plaster-concrete,concrete	weathered,worn,chipped,plaster,concrete,paving,scratched,grey
+seaside_rock	natural,rock	rough,weathered,seaside,rock face,rock,coastal,cliff,shore
+seaworn_sandstone_brick	brick,sandstone,outdoor,wall,man made	rough,worn,precast,concrete,blocks,brick,bricks,sandstone
+seaworn_stone_tiles	sandstone,brick,wall,man made	rough,stonework,stone blocks,cast stone blocks,timeworn,wall,exterior,coarse
+shell_floor_01	terrain,natural,outdoor	shells,seaside,uneven,rough,broken shells,gravel,gravelly,gravelly ground
+short_bricks_floor	man made,outdoor,floor,brick	rough,brick,bricks,red brick,paving,sidewalk,weathered,worn
+slab_tiles	floor,man made,rock,indoor	flat,rocks,smooth,floor,stone,slates,tiles
+slate_driveway	man made,outdoor,floor	rough,old,worn,concrete,slate,slates,rock,exterior
+slate_floor	floor,man made	slates,slate,shiny,coated,polished,reflective,stone,flooring
+slate_floor_02	floor,cobblestone,rock	old,weathered,worn,slates,slate,floor,vintage,rustic
+slate_floor_03	floor,man made,indoor	slates,slate,floor,rustic architecture,vintage,stone floor,rustic,mosaic
+slumped_mortar_brick	outdoor,man made,wall,brick,plaster-concrete	concrete,cement,plasterconcrete,mortar,brick,bricks,weathered,deteriorating
+smooth_concrete_floor	floor,indoor,concrete,plaster-concrete	worn,scratched,cracked,dirty,floor,scuffed,grungy
+snow_floor	outdoor,man made,floor,snow,asphalt	rough,snow,floor,asphalt
+sparse_grass	floor,natural	grass,nature,sparse,roots,root,vegetation,greenery,landscape
+square_brick_floor	indoor,brick,man made	rough,uneven,weathered,chipped,brick,bricks,grouted,scratched
+square_brick_paving	floor,man made,brick	weathered,rough,brick,bricks,paving,driveway texture,driveway,old brick
+square_cobblestone	outdoor,rock,floor,man made,cobblestone	weathered,worn,chipped,discolored,grey,concrete,cobblestone,cement
+square_concrete_pavers	man made,floor,outdoor,concrete,plaster-concrete	pavement,tiles,square,cement,concrete,pattern,weathered,brown
+square_floor	floor,man made,indoor,outdoor,clean,wall	tiles,square
+square_floor_patern_01	floor,man made,outdoor,clean,road	regular,tiles,square,uneven,pattern
+square_pavers	floor,man made,outdoor,brick	brick,bricks,pavement,weathered,floor,paving,paving stones,recessed seams
+square_tiled_wall	wall,man made,outdoor	patterned,brick,square tiles,outdoor,pattern,decorative tiles,decorative,walling
+square_tiles	floor,man made,outdoor,indoor,dirty	rough,sidewalk,station,urban,pavers,patterned,city,pavement patterned
+square_tiles_02	floor,man made	uneven,rough,tiles,multicoloured,patterned,outdoor,square,square tiles
+square_tiles_03	outdoor,road,floor	exterior,outdoor,pavement patterned,outdoor flooring,outdoor walkway,parking,walkway design,stone paving
+stacked_brick_wall	outdoor,wall,man made,brick	rough,weathered,uneven,old,coarse,brick,bricks,stacked bricks
+stacked_stone_wall	wall,rock	rock,stonework,wall,exterior wall,stone wall,stone,layered rock,stacked stones
+stair_planks	wood	planks,wooden,wooden flooring ,wood,wooden planks,varnished,grain,wood grain
+stenciled_brick_floor	outdoor,man made,floor,brick	worn,old,damaged,dry,brick,bricks,floor,outdoor flooring
+stone_block_wall	wall,outdoor	rough,stone,wall,stone blocks,ancient walls,fortress walls,stonework,stone wall
+stone_brick_wall_001	outdoor,wall,brick	stones,bricks,blocks,castle,fort,dungeon,dark
+stone_embedded_concrete	outdoor,wall,man made,cobblestone	rough,weathered,wall,rock,concrete,stone,stonework,dungeon
+stone_embedded_tiles	floor,man made,tiles	tiles,outdoor,embedded pebble,stone embedded,mixed stone,speckled ,speckled tiles ,square tiles
+stone_floor	outdoor,man made,floor,rock,cobblestone	rough,old,uneven,worn,brown,dirty,dry,rock
+stone_pathway	outdoor,man made,rock	weathered,rock,pathway,path,uneven,rocks,discolored,dry
+stone_pathway_02	floor,outdoor,cobblestone	rough,weathered,leaves,fallen leaves,plant debris,stones,cobblestone,garden walkway
+stone_pavers	floor,man made	pavers,concrete,cracked,rough,coarse,weathered,stone,stonework
+stone_tile_wall	wall,man made	stone,wall,walling,stonework,rough,roughhewn,exterior,masonry
+stone_tiles	man made,wall,floor,indoor,outdoor	tiles,stones,flat,rocks,shiny,reflective,uneven,rock
+stone_tiles_02	floor,rock,outdoor,wall	uneven,rock,stones,stone,floor,tiles,rocks,slates
+stone_tiles_03	outdoor,man made,floor,rock	rough,weathered,dirty,stones,dirt,leaves,pathway,rocks
+stone_wall	outdoor,rock,wall	rough,uneven,weathered,cracked,stones,worn,chipped,dry
+stone_wall_02	wall,man made,rock	cracked,damaged,weathered,dirty,wall,brown,rough,chipped
+stone_wall_03	outdoor,man made,plaster-concrete,concrete,rock	rough,uneven,weathered,wall,chipped,cracked,worn,discolored
+stone_wall_04	wall,rock,man made	weathered,rough,worn,wall,uneven,rocks,rock,fortress walls
+stone_wall_05	wall,outdoor	rough,stone,stonework,wall,ancient walls,worn,timeworn,weatherbeaten
+stony_dirt_path	dirty,floor,outdoor,natural	brown,ground,leaves,rocks,stones,dirt,pathway,path
+stretch_poplin	fabric,stretchy	green,fine,flexible,tight weave,textile ,cotton,stretch cotton,poplin
+synthetic_wood	man made,wall,wood,outdoor	wall,planks,wood,wooden,brown,flat,square
+t_brick_floor_002	floor,outdoor,man made,clean,brick	concrete,stones,tiles,floor,pattern
+t_concrete_wall_002	brick,wall,man made,outdoor	wall,concrete,rough,bricks,slits,grid,cement,weathered
+tarred_gravel	asphalt,gravel	rough,weathered,uneven,old,worn,floor,tar,gravel
+tatami_mat	floor,woven	floor,mat ,tatami,japanese,woven,traditional,padding,cultural
+terlenka	fabric,stretchy	beige,fine,flexible,cream,terlenka,weave,woven,synthetic
+terracotta_floor_tiles	man made,indoor,tiles	terracotta,tiles,ceramic,square,consistent,grout lines,indoor flooring,chipped
+terrain_red_01	terrain,natural,outdoor,road,rock	gravel,stones,rough,pebbles,railroad,pathway,path
+terrazzo_tiles	tiles	floor,home decor,flooring,terrazzo,decorative tiles,speckled tiles ,speckled ,square tiles
+terry_cloth	fabric,knitted	blue,absorbent,microfiber,terry cloth,terry,woven,textile ,soft
+tiger_rock	collection: namaqualand,rock,terrain,natural,outdoor	cliff,boulder,rock face,cave,weathered,landscape,solid rock,mountain
+tiled_floor_001	floor,indoor,man made,outdoor,clean,wall	tiles,clean,uneven,smooth,square,large
+volcanic_herringbone_01	outdoor,man made,rock	weathered,rough,wall,floor,concrete,rocks,exterior,damaged
+volcanic_rock_tiles	wall,man made	wall,rocks,rock,mosaic,rough,volcanic rock
+waffle_pique_cotton	fabric,cotton	yellow,squares,cotton,woven,waffle weave,waffle pique,grid pattern,grid
+wall_bricks_plaster	plaster-concrete,brick,man made,outdoor,dirty,wall	rough,uneven,damaged,plastered,chipped
+weathered_brown_planks	man made,wood,dirty,wall,outdoor,floor	wood,planks,old,worn,brown,maroon,painted,chipped
+weathered_peeling_timber	outdoor,wood,man made	rough,weathered,wood,wood planks,peeling,peeling paint,wooden planks,rustic
+weathered_plank_siding	outdoor,wall,wood	rough,wood,wooden planks,exterior,rustic,plank siding,weathered,weatherbeaten
+weathered_planks	outdoor,wood,man made,wall,floor	wood,wooden,bridge,planks,old,weathered,worn,damaged
+white_bricks	brick,wall,outdoor,man made,dirty	rough,old,uneven,damaged,worn,painted,peeling
+white_planks_clean	wall,wood	painted,painted wood,wood,wood wall,wooden,wooden planks,white,paneling
+white_plaster_02	plaster-concrete,wall,man made,outdoor,indoor,clean,floor	smooth,flat,even
+white_plaster_rough_01	plaster-concrete,wall,floor,man made,outdoor	moss,smooth,flat,even,patches
+white_plaster_rough_02	plaster-concrete,wall,man made,outdoor,dirty	rough,broken,cracked,moss,uneven,cement,damaged,old
+white_rough_plaster	plaster-concrete,man made,wall,outdoor,indoor,dirty	broken,chipped,damaged,rough
+white_sandstone_blocks_02	brick,man made,outdoor,wall,collection: the_shed	blocks,sandstone,uneven,damaged
+white_sandstone_bricks	brick,man made,outdoor,wall	blocks,sandstone,uneven,damaged,worn,plastered,old,crumbling
+white_sandstone_bricks_03	brick,man made,outdoor,wall,clean	blocks,white,standstone,uneven
+white_stucco	wall,man made,wall,man made,plaster,indoor	rough,wall,painted,stucco,white,granular,matte,uneven
+white_stucco_02	outdoor,wall,plaster,plaster-concrete,man made	stucco,rough,coarse,exterior,architectural,rendered,skim-coat
+whitewashed_brick	wall,brick,man made	rough,old,old brick,white,whitewashed,weathered,aged,distressed
+winter_leaves	outdoor,floor,natural	leaves,forest,dry,sticks,winter,dead grass,twigs,nature
+withered_grass	natural,outdoor,floor	old,weathered,grass,dead grass,discolored,driedup,dry
+wood_cabinet_worn_long	man made,wood,indoor,wall,floor	wood,planks,cabinet,worn,non square,long,rough,old
+wood_floor	floor,wood,man made,clean	wood,floor,wooden,wooden flooring ,grain,wood grain,interior design,interior
+wood_floor_deck	man made,wood,floor,outdoor	brown,worn,chipped,stained,wood,scratched,planks,floor
+wood_floor_worn	floor,wood,man made	old,weathered,rough,worn,discolored,flat,pine,wood
+wood_inlaid_concrete_wall	wall,concrete,plaster-concrete,wood	wood,concrete,rough,inlaid,aged wood,decorative,brick pattern,rustic
+wood_inlaid_stone_wall	wall,rock,outdoor	wood,concrete,rough,inlaid,aged wood,decorative,brick pattern,rustic
+wood_peeling_paint_weathered	outdoor,man made,wall,wood,dirty	rough,old,weathered,wood,planks,painted,chipped,flaked
+wood_plank_wall	outdoor,wall,wood,man made,dirty	planks,varnished,dusty,dirty,brown,wood,cabin
+wood_planks	floor,wood,raw wood,man made	rough,weathered,old,discolored,wood,floor,wooden planks,wooden flooring 
+wood_planks_dirt	wood,wall,man made,outdoor,indoor,clean	planks,even,weathered
+wood_planks_grey	floor,wall,wood,outdoor,man made	planks,worn,old,grey,flat,seaside,costal,ocean
+wood_stone_pathway	outdoor,man made,rock,raw wood	dirt,path,pathway,rocks,rock,wood,dusty,worn
+wood_table_large	wood	wood,damaged,weathered,wooden,wooden planks,furniture,table,rustic
+wood_textured_concrete	outdoor,wall,concrete,plaster-concrete,plaster	rough,concrete,plaster,plastered,wood grain,stamped concrete,grain stamped ,grainy
+wood_trunk_wall	outdoor,wall,wood,man made	tree trunk,wood,wall,trunk,logs,log cabin,brown,timber
+wooden_barrel	man made,wood	rough,weathered,discolored,aged,metal hoops,barrel,wood,wood planks
+wooden_floor_01	floor,wood	weathered,wood,wooden plank,lacquered,coated finish,coated wood,coated,indoor
+wooden_floor_02	floor,wood,raw wood	wood planks,hardwood,wooden,wood,wooden flooring ,wooden plank,wooden floor,wooden knots
+wooden_rough_planks	wood,wall,man made,outdoor	moss,rough,logs,planks,uneven,round,shed,cabin
+wool_boucle	fabric,wool,knitted	checker,blanket,boucle,wool,textile ,woven,upholstery,wool boucle
+worn_asphalt	floor,asphalt	asphalt,asphalt road,petals,plant debris,outdoor,cracked,driveway,sticks
+worn_brick_floor	floor,brick	old,weathered,weatherbeaten,brick,bricks,broken,cracked,crumbling
+worn_brick_path	outdoor,floor,brick	rough,brick,bricks,herringbone,herringbone pattern,worn,old,pathway
+worn_brick_wall	wall,man made,brick	rough,weathered,old,uneven,worn,weatherbeaten,concrete,rough  
+worn_concrete_floor	floor,concrete,plaster-concrete	rough,weathered,uneven,old,cracked,concrete,chipped surface,distressed
+worn_corrugated_iron	outdoor,man made,metal	rough,weathered,worn,chipped,corrugated,corrugation,metal,metal sheet
+worn_cracked_plaster	wall,man made,plaster-concrete,plaster	rough,weathered,cracked,cracks,damaged,old,worn,wall
+worn_mossy_plasterwall	wall,outdoor,plaster,plaster-concrete	rough,weathered,weatherbeaten,moss,aged,exterior,worn,discolored
+worn_patterned_pavers	man made,floor	old,weathered,worn,concrete,chipped,discolored,scratched,deteriorated
+worn_planks	wood	aged wood,distressed,wood,wooden planks,wooden,wooden flooring ,wooden floor,peeling
+worn_plaster_wall	wall,concrete,plaster-concrete,plaster	uneven,rough,plaster,concrete,wall,crumbling,chipped,weathered
+worn_rock_natural_01	outdoor,natural,terrain,rock,sandstone	weathered,yellow,rock face,rock,flat,brown,boulder,cliff
+worn_shutter	man made,metal	weathered,metal sheet,metal,shutter,corrugated,metal shutter,corrugation
+worn_tile_floor	floor,man made,tiles	old,weathered,worn,rough,tiles,tiled,distressed,discolored
+yellow_brick	brick,wall,man made,outdoor,indoor,clean	yellow,rough,lines,neat
+yellow_bricks	brick,wall,man made,outdoor,dirty	wall,rough,uneven,moss,sewer,tunnel,old
+yellow_flower_mulch	floor,bark	scattered flowers,mulch,plant debris,floral debris,scattered petals,petals,mulch bed,bark
+yellow_plaster	wall,plaster-concrete,man made,indoor,outdoor,dirty	yellow,plastered,worn,scratched,smooth,concrete,cement,moss
+yellow_plaster_02	outdoor,man made,wall,plaster-concrete,wood,concrete,plaster	rough,old,yellow,wall,wood,plastered,cracks,weathered
+yellow_stone_wall	outdoor,rock,man made	wall,damaged,old,cracked,chipped,worn,yellow,concrete

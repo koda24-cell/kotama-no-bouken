@@ -20,6 +20,7 @@ import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=202
 import { createB2WaterTiles, B2V4W_REMOVE_STEPPING_STONES } from './b2-water-tiles.js?v=20261119-w4';   // [B2V4-W] 危険な水面（GPT 水面タイル）・床の模様
 import { createFlora, floraMaterial, floraMaterialClass, floraTint } from './b2-flora.js?v=20261119-f4';   // [B2V4-F] 花の配置と見た目
 import { createSetpieces, SP_ROLES } from './b2-setpieces.js?v=20261119-s4';   // [B2V4-S] 階段・橋・水門・柱群・背景モニュメント
+import { createB2Kit } from './b2-kit.js?v=20261122-n2';   // 2層専用の配置物（セーブ・石碑・宝箱・補給の木箱）
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
 export const B2_GLB = B2_BASE + 'models/floor2-water-source-quality-v3.glb';
@@ -761,6 +762,10 @@ function pieceGroup(piece, mats, name) {
    テーマ本体
    api：field-3d-view.js から渡される共通の道具（place・load・g など）
    ------------------------------------------------------------ */
+// 2層専用の配置物（ページ全体で1組。g.world に置かれ、読み込みキャッシュの部品と同じ扱い）
+let B2_KIT = null;
+const getB2Kit = () => (B2_KIT ||= createB2Kit());
+
 export async function createTheme(api) {
   const opaqueWater = (() => { try { return localStorage.getItem(WATER_KEY) === 'opaque'; } catch (_) { return false; } })();
   const kit = await loadKit();
@@ -993,7 +998,7 @@ export async function createTheme(api) {
   }
   // 共通処理の dimObj（採り尽くした採集点を暗くする）が素材を差し替えても、毎フレーム霜の素材に戻す
   function frostify(obj) {
-    if (!obj) return obj;
+    if (!obj || obj.userData.b2Kit) return obj;   // 2層専用の部品は最初から霜の素材
     obj.userData.b2Frost = true;
     obj.traverse((o) => {
       if (!o.isMesh) return;
@@ -1705,9 +1710,9 @@ export async function createTheme(api) {
         case 'stairs':   // [B2V4-S] 霜の青い石と氷の段（第1階層の苔の石段は使わない）。上りは背中側へ上り、下りは奥へ降りる
           e.obj = sp.buildStairs(o);
           break;
-        case 'save': softGlow(frostify(api.place(g.world, s.seal, x, 0.005, z, 0, 0.8)), 0.4, 0.5); e.obj = softGlow(api.place(g.world, s.torch, x, 0, z), 0.35, 0.45, 0.6); e.at.y = 1.9; break;   // [B2V4-L] F1：導きの灯を控えめに
+        case 'save': e.obj = api.place(g.world, getB2Kit().save, x, 0, z); e.obj.userData.b2Kit = true; e.at.y = 1.9; break;   // 霜の魔法陣と氷晶の祭壇（1層の封印石・青い灯は使わない）
         case 'chest': case 'cache': case 'gather': case 'event': e.ry = ry; break;   // 状態に応じて sync で置く
-        case 'sign': e.obj = frostify(api.place(g.world, s.sign, x, 0, z, ry)); e.at.y = 1.8; break;
+        case 'sign': e.obj = api.place(g.world, getB2Kit().sign, x, 0, z, ry); e.obj.userData.b2Kit = true; e.at.y = 1.8; break;   // 霜の石碑（1層の道標は使わない）
         case 'gate': {   // ボス門：紫の光を帯びた水門（マスの奥側）
           B.add('walls', proc.lintel, M4(x - DIR_VEC[f][0] * 1.7, 0, z - DIR_VEC[f][1] * 1.7, ry), o.tx, o.ty);
           const sc = (CELL - 0.2) / kit.gate.size.x;
@@ -2283,10 +2288,22 @@ export async function createTheme(api) {
       if (e.bars) { e.bars.position.y = st === 'open' ? 3.0 : 0; e.bars.updateMatrix(); e.bars.updateMatrixWorld(true); }
       return true;
     }
+    if (o.kind === 'gather') {   // 霜の採取ポイント（1層の苔の採掘点・草・丸太を使わない）
+      const kind = st.split(':')[0], k = kind === 'chop' ? 'chop' : kind === 'mine' ? 'mine' : 'herb';
+      if (!e.obj) { e.obj = api.place(g.world, getB2Kit().gather[k], x, 0, z, e.ry, 1); e.obj.userData.b2Kit = true; }
+      api.dimObj(e.obj, st.endsWith('empty'));
+      return true;
+    }
+    if (o.kind === 'chest' || o.kind === 'cache') {   // 青鉄と霜の宝箱（1層の宝箱は使わない）
+      if (e.obj) { e.obj.parent?.remove(e.obj); for (const L of e.obj.userData.lights || []) L.off = true; }
+      const K = getB2Kit();
+      e.obj = api.place(g.world, st === 'open' ? K.chestOpen : K.chest, x, 0, z, e.ry); e.obj.userData.b2Kit = true;
+      return true;
+    }
     if (o.kind === 'event') {
       if (!e.obj) {
         if (o.hidden) e.obj = api.place(g.world, kit.thorns.length ? pieceGroup(kit.thorns[0], mats) : await api.load(api.FILES.roots), x, 0, z, e.ry, 0.5);
-        else e.obj = api.place(g.world, await api.load('props/abandoned_mine_cart.glb'), x, 0, z, e.ry, 0.7);   // 壊れた木箱の代わり（専用素材が無いので仮）
+        else { e.obj = api.place(g.world, getB2Kit().crate, x, 0, z, e.ry); e.obj.userData.b2Kit = true; }   // 置き去りの補給の木箱（4層のトロッコは使わない）
       }
       if (!o.hidden) api.dimObj(e.obj, st === 'done');
       return true;

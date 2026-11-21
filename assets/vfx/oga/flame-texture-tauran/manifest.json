@@ -1,0 +1,15 @@
+{
+ "page": "https://opengameart.org/node/16791",
+ "license": "CC0",
+ "author": "tauran",
+ "files": {
+  "flame_0.png": {
+   "from": "https://opengameart.org/sites/default/files/flame_0.png",
+   "sha256": "2e7739daddfc7bcfd70ef65a264ad56ef6c7addf8781010eb82c99031e473733"
+  },
+  "cc0.png": {
+   "from": "https://opengameart.org/sites/default/files/license_images/cc0.png",
+   "sha256": "b2faab78467c006e7a8ce914d932dca6c9660145ae73ba885c19e39f3f0747e1"
+  }
+ }
+}

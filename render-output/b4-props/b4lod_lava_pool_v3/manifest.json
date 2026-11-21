@@ -1,0 +1,20 @@
+{
+  "asset": "b4lod_lava_pool_v3",
+  "source": "assets/models/floor4/b4-lava-pool-v3.glb",
+  "source_sha256": "948348a8fc2b79bad28302a775814c93850b4d2b8cf7a566b2d13bb0d7e9ce6a",
+  "source_triangles": 14296,
+  "triangles": 5952,
+  "bbox_m": [
+    5.034,
+    4.921,
+    0.081
+  ],
+  "emissive": true,
+  "glb_bytes": 556360,
+  "renders": [
+    "b4lod_lava_pool_v3_volcanic_front.png",
+    "b4lod_lava_pool_v3_volcanic_angle.png",
+    "b4lod_lava_pool_v3_volcanic_close.png"
+  ],
+  "approval": "SOURCE_USER_APPROVED (GPT); LOD derived by Claude, NOT_APPROVED"
+}
