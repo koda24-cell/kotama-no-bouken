@@ -66,9 +66,11 @@ function fieldFloorKey(n = fieldState.area, f = fieldState.floor) { return `${n}
 function fieldArea(n = fieldState.area, f = fieldState.floor) {
   n = Number(n) || 1; f = Math.max(0, Math.min(fieldFloorCount(n) - 1, Number(f) || 0));
   const key = `${n}-${f}`;
-  if (fieldAreaCache[key]) return fieldAreaCache[key];
+  // [RANDOM-MAZE] 第2階層5F・6Fは探索ごとに作り直す迷宮（field/field-random-maze.js）。キャッシュは迷宮ごと
+  const rnd = typeof fieldRandomFloor === "function" ? fieldRandomFloor(n, f) : null, cacheKey = rnd ? `${key}@${rnd.tag}` : key;
+  if (fieldAreaCache[cacheKey]) return fieldAreaCache[cacheKey];
   const def = FIELD_AREAS[n]; if (!def) return null;
-  const floor = def.floors[f];
+  const floor = rnd ? rnd.floor : def.floors[f];
   const grid = floor.map.map(row => row.split(""));
   const h = grid.length, w = Math.max(...grid.map(r => r.length));
   const objects = []; let start = { tx: 1, ty: 1 }, up = null, down = null, chestIndex = 0;
@@ -94,7 +96,9 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
   }));
   // P が無いフロアは、出口（1F）または上り階段の上から始める
   if (!grid.some(r => r.includes("P"))) { const exit = objects.find(o => o.kind === "exit"); if (exit) start = { tx: exit.tx, ty: exit.ty }; else if (up) start = { ...up }; }
-  return (fieldAreaCache[key] = { n, f, key, def, floor, grid, w, h, start, up, down, objects });
+  const a = { n, f, key, def, floor, grid, w, h, start, up, down, objects };
+  if (rnd) { for (const k of Object.keys(fieldAreaCache)) if (k.startsWith(`${key}@`)) delete fieldAreaCache[k]; fieldRandomMazeDecorate(a, rnd); }   // [RANDOM-MAZE] キー・tileRoles
+  return (fieldAreaCache[cacheKey] = a);
 }
 function fieldTileAt(a, tx, ty) { return (a.grid[ty] && a.grid[ty][tx]) || "#"; }
 function fieldIsSolidChar(c) { return FIELD_SOLID.has(c) || /[a-z]/.test(c); }

@@ -6,6 +6,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { buildTemplePass } from './b4-temple-fx.js?v=20261121-t1';
 
 const BASE = './assets/models/floor4/props/';
 // Zone themes (user 2026-11-20: cluster things that naturally gather — ore deposits, old mine workings, pickaxes):
@@ -24,8 +25,8 @@ export const B4_PROP_REGISTRY = {
   b4p_basalt_columns: { ready: true, themes: { deposit: 1.0, plain: 1.0, dragon: 0.4 }, radius: 0.8, height: 2.2, scale: [0.85, 1.15], tris: 3116 },
   b4p_claw_rock: { ready: true, wall: true, themes: { dragon: 1.8, deposit: 0.2 }, radius: 1.0, height: 1.3, scale: [0.95, 1.2], tris: 4004, light: { y: 0.6, z: 0.6, color: 0xff3a10, intensity: 0.8, range: 2.8 } },
   b4p_dragon_scale: { ready: false, themes: { dragon: 1.2, deposit: 0.3 }, radius: 0.4, height: 0.15, scale: [0.9, 1.1] },
-  b4p_charred_stump: { ready: false, themes: { dragon: 0.9 }, radius: 0.45, height: 1.2, scale: [0.9, 1.1] },
-  b4p_egg_shells: { ready: false, themes: { dragon: 0.8 }, radius: 0.5, height: 0.5, scale: [0.9, 1.1] },
+  b4p_charred_stump: { ready: true, themes: { dragon: 1.0, plain: 0.3 }, radius: 0.48, height: 1.2, scale: [0.9, 1.15], tris: 4918, light: { y: 0.4, color: 0xff5a1a, intensity: 1.0, range: 3 } },
+  b4p_egg_shells: { ready: true, themes: { dragon: 0.9 }, radius: 0.7, height: 0.6, scale: [0.9, 1.1], tris: 4300, light: { y: 0.2, color: 0xff4a14, intensity: 0.9, range: 2.6 } },
   b4p_chain_anchor: { ready: false, wall: true, y: 0.6, themes: { dragon: 0.6, mine: 0.3 }, radius: 0.2, height: 1.8, scale: [0.95, 1.05] },
 };
 const ZONE_FILL = { deposit: 0.62, mine: 0.55, dragon: 0.45, plain: 0.1 };
@@ -37,6 +38,26 @@ export const B4_GPT_MODELS = {
   // Ignore those maps and use the material factors with a matte floor instead (reported to GPT in the handoff).
   minecart_v32: { url: './assets/models/floor4/b4-minecart-v32.glb', length: 1.7, fixRoughness: 0.82, tint: 0.3 },  // its albedo is a light tan; darken to the B4 soot-wood range
 };
+
+// Fragments closer than `near` metres to the camera are discarded, so a prop or wall panel beside the player never
+// fills the screen when the player turns their back to it or brushes past it (user feedback 2026-11-21).
+function nearCull(material, near) {
+  if (material.userData.b4NearCull) return;
+  material.userData.b4NearCull = near;
+  const prev = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    prev?.call(material, shader, renderer);
+    shader.uniforms.uB4Near = { value: near };
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vB4World;')
+      .replace('#include <project_vertex>', '#include <project_vertex>\n{ vec4 b4w = vec4(transformed, 1.0);\n#ifdef USE_INSTANCING\n b4w = instanceMatrix * b4w;\n#endif\n vB4World = (modelMatrix * b4w).xyz; }');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vB4World;\nuniform float uB4Near;')
+      .replace('void main() {', 'void main() {\n  if (distance(vB4World, cameraPosition) < uB4Near) discard;');
+  };
+  material.customProgramCacheKey = () => 'b4near' + near;
+  material.needsUpdate = true;
+}
 
 const cache = new Map();
 const loader = new GLTFLoader();
@@ -63,6 +84,7 @@ function loadModel(key, url, opts = {}) {
       if (material.emissiveMap) material.emissiveIntensity = opts.emissive ?? Math.max(material.emissiveIntensity, 2.2);
       if (opts.tintRGB && material.color) material.color.multiply(new THREE.Color(...opts.tintRGB));
       material.userData.b4PropCached = true;
+      nearCull(material, opts.near ?? 1.0);
       let merged = null;
       if (geos.length > 1) {
         const keys = g => Object.keys(g.attributes).sort().join(',') + '|' + !!g.index;
@@ -116,7 +138,7 @@ function wallSkinDistance(y0, y1, lateral = 0) {
 }
 const sideFor = (R, lateral = 0) => R.side ?? (R.wall ? 1.58 : wallSkinDistance(R.y || 0, (R.y || 0) + R.height, lateral) - R.radius - 0.04);   // wall pieces sink into the displaced skin rather than float off it
 
-export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, isStale = () => false, maxProps = 22 }) {
+export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, extraEmbers = [], rockMaterial = null, isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY).filter(id => B4_PROP_REGISTRY[id].ready);
   const group = new THREE.Group(); group.name = 'b4:asset-dressing'; group.userData.b4Cached = true;
   const owned = [];
@@ -163,6 +185,19 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     const c = ch(x, y);
     return c !== '.' || reserved.has(x + ',' + y) || (map.objects || []).some(o => Math.abs(o.tx - x) + Math.abs(o.ty - y) <= 1);
   };
+  // ---- which wall faces get a basalt panel (decided first so props/torches avoid them) ----
+  const panelPrio = { deposit: 0, dragon: 1, plain: 2, mine: 3 };
+  const panelFaces = [];
+  if (OVERLAY_READY) {
+    for (let ty = 1; ty < H - 1; ty++) for (let tx = 1; tx < W - 1; tx++) {
+      if (!walk(tx, ty)) continue;
+      const theme = themeAt(tx, ty);
+      for (const [dx, dz] of DIRS) if (ch(tx + dx, ty + dz) === '#' && hash(tx * 5 + dx, ty * 5 + dz, 830) <= ZONE_OVERLAY[theme]) panelFaces.push({ tx, ty, dx, dz, theme });
+    }
+    panelFaces.sort((p, q) => panelPrio[p.theme] - panelPrio[q.theme] || hash(p.tx, p.ty, 834) - hash(q.tx, q.ty, 834));
+    panelFaces.length = Math.min(panelFaces.length, OVERLAY_MAX);
+  }
+  const paneled = new Set(panelFaces.map(f => `${f.tx},${f.ty},${f.dx},${f.dz}`));
   const chosen = [], faces = [];
   let triBudget = 260000;
   for (let ty = 1; ty < H - 1; ty++) for (let tx = 1; tx < W - 1; tx++) {
@@ -172,7 +207,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       if (ch(tx + dx, ty + dz) !== '#') continue;
       faces.push({ tx, ty, dx, dz, theme });
       if (blocked(tx, ty)) continue;
-      if (OVERLAY_READY && hash(tx * 5 + dx, ty * 5 + dz, 830) <= ZONE_OVERLAY[theme]) continue;   // that face gets a rock panel instead
+      if (paneled.has(`${tx},${ty},${dx},${dz}`)) continue;   // that face gets a rock panel instead
       for (const lateral of [-1.05, 0, 1.05]) {
         const r = hash(tx * 3 + dx + 7, ty * 3 + dz + 7, 803 + Math.round(lateral * 10));
         if (r > ZONE_FILL[theme] / 2.2) continue;          // ~ZONE_FILL of faces get something, 1–2 props each
@@ -275,19 +310,15 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     }
   }
   // ---- rock-face overlays: GPT V33 magma basalt (LOD) on part of the wall faces, denser in deposit/dragon zones ----
-  if (OVERLAY_READY && faces.length) {
+  if (OVERLAY_READY && panelFaces.length) {
     // panels sit right beside the camera: warmer albedo to match the volcanic wall boxes, joint lava kept modest
-    const rocks = (await Promise.all(OVERLAY_IDS.map(id => loadProp(id, { tintRGB: [0.95, 0.72, 0.6], emissive: 0.35 })))).filter(Boolean);
+    const rocks = (await Promise.all(OVERLAY_IDS.map(id => loadProp(id, { tintRGB: [0.95, 0.72, 0.6], emissive: 0.35, near: 1.15 })))).filter(Boolean);
     if (rocks.length && !isStale()) {
       const per = rocks.map(() => []);
-      // budget: ~64 panels (≈340k tris) per floor, deposit/dragon zones first
-      const prio = { deposit: 0, dragon: 1, plain: 2, mine: 3 };
-      const paneled = faces.filter(f => hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 830) <= ZONE_OVERLAY[f.theme])
-        .sort((p, q) => prio[p.theme] - prio[q.theme] || hash(p.tx, p.ty, 834) - hash(q.tx, q.ty, 834)).slice(0, OVERLAY_MAX);
-      for (const f of paneled) {
+      for (const f of panelFaces) {
         const k = Math.floor(hash(f.tx, f.ty * 7 + f.dx, 833) * rocks.length), rock = rocks[k];
         const size = rock.box.getSize(new THREE.Vector3()), centre = rock.box.getCenter(new THREE.Vector3());
-        const sx = 4.15 / size.x, sz = Math.min(1, 0.85 / size.z), sy = 4.0 / size.y;
+        const sx = 4.15 / size.x, sz = Math.min(1, 0.45 / size.z), sy = 4.0 / size.y;   // max 0.45 m into the corridor
         const skin = 2 - 0.325 - 0.12;
         per[k].push(new THREE.Matrix4().compose(
           new THREE.Vector3(f.tx * CELL + f.dx * skin, -0.05, f.ty * CELL + f.dz * skin),
@@ -315,10 +346,14 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       if (crystalGeo) for (const ch of root.children) if (ch.geometry === crystalGeo) ch.visible = false;
     }
   }
+  // ---- temple pass: torches, floor glyphs, rune bands, light shafts, rockfall, embers ----
+  const temple = buildTemplePass({ root: group, map, ch, wallCell, hash, CELL, lights, gLights, reserved, faces, paneled, extraEmbers, rockMaterial });
+  info.temple = temple.info();
   root.add(group);
   return {
+    update: now => temple.update(now),
     group,
-    dispose() { owned.forEach(i => i.dispose()); group.removeFromParent(); },   // cached geometry/material stay for reuse
+    dispose() { temple.dispose(); owned.forEach(i => i.dispose()); group.removeFromParent(); },   // cached geometry/material stay for reuse
     info: () => info,
   };
 }

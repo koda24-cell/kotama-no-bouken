@@ -17,3 +17,5 @@
 | b4p_rock_rubble | v3 | 5,290 | dragon run 44683515274 |
 | b4p_basalt_columns | v6 | 3,116 | dragon run 44693769678 |
 | b4p_claw_rock | v6 | 4,004 | dragon run 44722975573 |
+| b4p_charred_stump | v3 | 4,918 | dragon run 44842094458 |
+| b4p_egg_shells | v2 | 4,300 | dragon run 44846429057 |

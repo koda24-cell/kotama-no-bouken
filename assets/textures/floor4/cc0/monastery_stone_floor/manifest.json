@@ -1,0 +1,22 @@
+{
+ "source": "https://polyhaven.com/a/monastery_stone_floor",
+ "license": "CC0 (https://polyhaven.com/license)",
+ "files": {
+  "monastery_stone_floor_diff_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/monastery_stone_floor/monastery_stone_floor_diff_1k.jpg",
+   "sha256": "8e52ec982469ce9da312cefe3126c1dff05b7150234971bc6dff6e31c3c584ae"
+  },
+  "monastery_stone_floor_rough_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/monastery_stone_floor/monastery_stone_floor_rough_1k.jpg",
+   "sha256": "8d987222b727442c11c30cd4d8a32ed48f02e46683acd088d994baef5bf311a9"
+  },
+  "monastery_stone_floor_nor_gl_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/monastery_stone_floor/monastery_stone_floor_nor_gl_1k.jpg",
+   "sha256": "f2f1c3e8d52c1e3a49ef59695743872f2adaa57bc0d3f64b129ce988966162c1"
+  },
+  "monastery_stone_floor_ao_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/monastery_stone_floor/monastery_stone_floor_ao_1k.jpg",
+   "sha256": "c7b0d90cf7c33c683efc0dcebd55a3ecc2e700689aa96879ed86032f9f0598fc"
+  }
+ }
+}

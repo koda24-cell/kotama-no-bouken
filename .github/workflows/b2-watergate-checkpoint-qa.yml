@@ -1,0 +1,70 @@
+name: B2 watergate Blender 5.3 checkpoint QA pipeline
+on:
+  push:
+    branches:
+      - feature/blender53-pipeline-qa-resume-20261120
+    paths:
+      - 'tools/3d_checkpoint/**'
+      - '.github/workflows/b2-watergate-checkpoint-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render-checkpoint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify Blender
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Update ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan sources
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-watergate.py qa/security/source.log
+      - name: Render real watergate
+        run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
+      - name: Verify three views and model formats
+        run: python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate
+      - name: Pack immutable checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate --asset-id b2-watergate --iteration 1 --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+      - name: Scan output
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-watergate-checkpoint-NOT-APPROVED-${{ github.run_id }}
+          path: |
+            render-output/b2-watergate/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn
+  resume-verification:
+    needs: render-checkpoint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: b2-watergate-checkpoint-NOT-APPROVED-${{ github.run_id }}
+          path: recovered
+      - name: Verify checkpoint in a separate job
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory recovered/render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/render_qa.py --directory recovered/render-output/b2-watergate

@@ -1,0 +1,26 @@
+{
+ "source": "https://polyhaven.com/a/rock_face_02",
+ "license": "CC0 (https://polyhaven.com/license)",
+ "files": {
+  "rock_face_02_diff_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/rock_face_02/rock_face_02_diff_2k.jpg",
+   "sha256": "928fe2b96672ed5104abbeb5eaa7611ac65218d6b4e392f523549426284e2379"
+  },
+  "rock_face_02_rough_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/rock_face_02/rock_face_02_rough_2k.jpg",
+   "sha256": "e51a180290454a86fa2b3649b8fe029281b46aeaba104e20fd3d3a06de51d692"
+  },
+  "rock_face_02_nor_gl_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/rock_face_02/rock_face_02_nor_gl_2k.jpg",
+   "sha256": "bb1a4cd13b02346f90efc95e71f9e019a7bc4169bd5f5d2b38825694b3c81253"
+  },
+  "rock_face_02_ao_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/rock_face_02/rock_face_02_ao_2k.jpg",
+   "sha256": "45a8b5c79d0d04abd832765f6beb01f8f4b56922948266ad1df7a36423fa3609"
+  },
+  "rock_face_02_arm_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/rock_face_02/rock_face_02_arm_2k.jpg",
+   "sha256": "06e106bf0d1c885cb245b5a85fb283d00e5871116c5bc8cc39bea150799dd4b8"
+  }
+ }
+}

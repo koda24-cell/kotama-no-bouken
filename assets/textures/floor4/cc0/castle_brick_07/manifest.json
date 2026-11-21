@@ -1,0 +1,22 @@
+{
+ "source": "https://polyhaven.com/a/castle_brick_07",
+ "license": "CC0 (https://polyhaven.com/license)",
+ "files": {
+  "castle_brick_07_diff_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/castle_brick_07/castle_brick_07_diff_2k.jpg",
+   "sha256": "d478972c2f72fba4c22d687cc7007a26a99768bde4aaab2fa619d4b42adfc1c4"
+  },
+  "castle_brick_07_rough_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/castle_brick_07/castle_brick_07_rough_2k.jpg",
+   "sha256": "67a7965a727cda3e117ecf0e6faf7cf0406e8cfc4bcf515600ffc19725470480"
+  },
+  "castle_brick_07_nor_gl_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/castle_brick_07/castle_brick_07_nor_gl_2k.jpg",
+   "sha256": "b322696a55e0501c636167de95eb6a749b1d4f50511160615ed8f3d12aeffca7"
+  },
+  "castle_brick_07_ao_2k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/castle_brick_07/castle_brick_07_ao_2k.jpg",
+   "sha256": "26d1f4b2abba168f9cb1220cbdaa9cff070b4d573f6a19372c410d5013391f97"
+  }
+ }
+}

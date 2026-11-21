@@ -1,0 +1,88 @@
+name: F1 All 17 Assets Blender 5.3 Compatibility
+on:
+  push:
+    branches:
+      - feature/f1-all17-blender53-compat-20261120
+    paths:
+      - '.github/workflows/f1-all17-blender53-compat.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  compatibility:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        asset: ["broken_votive_stele","fallen_cedar_log","forest_fern_cluster","forest_shrub_cluster","hanging_forest_vines","mod_root_soil_floor_4m","mod_sacred_arch_4m","mod_sacred_collapsed_wall_4m","mod_sacred_stone_floor_4m","mod_sacred_wall_4m","moss_stone_lantern","mossy_granite_boulder","ofuda_seal_cluster","sacred_cedar_tree","sacred_hokora_shrine","weathered_torii_gate","white_wildflower_patch"]
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Update ClamAV
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan scripts
+        run: |
+          bash tools/security/clamav_scan_gate.sh scan tools/f1-sacred-forest/common.py qa/security/common.log
+          bash tools/security/clamav_scan_gate.sh scan tools/f1-sacred-forest/assets/build_${{ matrix.asset }}.py qa/security/asset.log
+      - name: Trust checkout ownership inside Docker
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Render GLB and four views
+        env:
+          F1_RENDER_RES: '480'
+          F1_RENDER_SAMPLES: '16'
+          F1_RENDER_THREADS: '3'
+          F1_RENDER_VIEWS: front,side,angle,top
+        run: |
+          mkdir -p /tmp/blender-home
+          HOME=/tmp/blender-home blender -b -t 3 --python tools/f1-sacred-forest/assets/build_${{ matrix.asset }}.py
+      - name: Validate generated GLB and PNG evidence
+        env:
+          ASSET_NAME: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('assets/3d/dungeons/b1_sacred_forest_candidates')
+          import os
+          asset=os.environ['ASSET_NAME']
+          files=[p for p in (root/'metrics').glob('*.json') if p.stat().st_mtime >= (root/'renders').stat().st_mtime - 3600]
+          matches=[p for p in files if asset in p.stem]
+          assert len(matches)==1,matches
+          m=json.loads(matches[0].read_text())
+          assert m['approvalStatus']=='pending_visual_review'
+          assert m['renderedFrom']=='reimported GLB'
+          assert len(m['renders'])==4
+          glb=root/m['file']
+          assert glb.read_bytes()[:4]==b'glTF'
+          assert (root/m['source']).is_file()
+          for v in ('front','side','angle','top'):
+              p=root/'renders'/m['id']/(v+'.png')
+              assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          print('PASS',m['id'],m['sizeMeters'],m['tris'],m['textureCount'])
+          PY
+      - name: Scan generated assets
+        if: always()
+        run: |
+          if [ -d assets/3d/dungeons/b1_sacred_forest_candidates ]; then
+            bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b1_sacred_forest_candidates qa/security/output.log
+          fi
+      - name: Upload per-asset review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f1-blender53-${{ matrix.asset }}
+          path: |
+            assets/3d/dungeons/b1_sacred_forest_candidates/
+            qa/security/
+          retention-days: 14

@@ -1,0 +1,20 @@
+name: Blender 5.3 checkpoint and render QA unit tests
+on:
+  push:
+    branches:
+      - feature/blender53-pipeline-qa-resume-20261120
+    paths:
+      - 'tools/3d_checkpoint/**'
+      - '.github/workflows/blender53-render-qa-tests.yml'
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run checkpoint and technical QA unit tests
+        run: python3 -m unittest discover -s tools/3d_checkpoint -p 'test_*.py' -v
