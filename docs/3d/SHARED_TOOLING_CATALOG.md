@@ -357,3 +357,12 @@
 - [石造遺跡 run #44448970296](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44448970296): success。ClamAV source script 1件・source GLB 1件・出力18件、感染0。GLB4点/3方向PNG12枚を実生成しヘッダとSHA256検証。
 - 両ワークフローでBlender/ClamAVのaptインストールを除去し、検証済みGHCR digest固定・freshclam毎ジョブ更新・取得/読み込み前と生成後の実スキャンを使用。
 - 画像の**目視評価は未実施**。素材は未承認で、GitHub Actions Artifactsの14日間一時保存のみ。Draco圧縮なしのGLB出力。
+
+### Claude：ローカル headless Chrome での3D実画面確認・B4手続きVFX一式（2026-11-21）
+- **ローカル実画面撮影**：Claude の作業環境にある `/usr/bin/google-chrome`（SwiftShader）と `playwright-core`、three r180（ローカルコピー）で、ゲームを http 配信し、任意のマス・向き・自由カメラで撮影する。1フロアあたり約25秒（Actions の約10分に対し）。手順は `tools/claude-review/b4-props-shots.cjs` と同じ（`fieldEnterArea`→`fieldTileCenter`→`KotamaField3D.frame`）。**状態：実行・検証済み（B4 10F〜12F・B2 1F/3F）**。GPU は SwiftShader なので FPS は実機の参考にならない。draw calls・三角形数・GPU資源数は有効。
+- **B4手続きVFX**（`field/b4-vfx.js`・`b4-chasm.js`・`b4-sanctum.js`・`b4-temple-decor.js`）：
+  - 侵食付き炎ビルボード（Kenney Particle Pack CC0）、GPU Points の火の粉、極座標SDFの紋章（床・輪・ルーン帯）、流れる深部溶岩、溶岩の滝、熱の霞。
+  - ワールド高さで発光する照り返し `addUplight`（onBeforeCompile）、InstancedMesh の亀裂デカール。
+  - **状態：ゲームに組み込み済み（PR #701、未承認）。**
+- **確認方法**：`tools/b4-3d/game-test.cjs` で GPU 資源が横ばいになることを確認。`userData.b4Shared`／`b4Cached` は「意図して再構築をまたいで使う資源」の印として扱う。
+- **権利**：テクスチャは Poly Haven CC0、パーティクルは Kenney CC0。シェーダーは自作。BotW は公開講演の技術的知見（UV歪み＋アルファ侵食、レイヤー）のみを参照し、コードや画像は使っていない。
