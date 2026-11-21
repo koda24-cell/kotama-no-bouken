@@ -38,7 +38,11 @@ jobs:
         run: |
           bash tools/security/clamav_scan_gate.sh update qa/security
           bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-watergate.py qa/security/stage1-source.log
+      - name: Record stage-one start
+        id: stage_one_start
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
       - name: Generate first checkpoint with actual Blender
+        id: stage_one_build
         run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
       - name: QA and pack stage one
         env:
@@ -48,6 +52,17 @@ jobs:
           python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate --asset-id b2-watergate --iteration 1 --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
           python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
           bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate qa/security/stage1-output.log
+      - name: Record stage-one budget decision (never blocks durable upload)
+        if: ${{ always() && steps.stage_one_build.outcome == 'success' }}
+        env:
+          START_EPOCH: ${{ steps.stage_one_start.outputs.epoch }}
+        run: |
+          python3 tools/3d_checkpoint/stage_budget.py --start-epoch "$START_EPOCH" || rc=$?
+          if [ "${rc:-0}" -eq 2 ]; then
+            echo 'STAGE_BUDGET_HANDOFF_REQUIRED=true'
+          elif [ "${rc:-0}" -ne 0 ]; then
+            exit "$rc"
+          fi
       - name: DURABLE stage-one upload
         uses: actions/upload-artifact@v4
         with:
