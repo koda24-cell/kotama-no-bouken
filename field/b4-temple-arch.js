@@ -5,7 +5,7 @@
  *  - 化粧材：台座（巾木）・コーニス・付け柱・彫り込まれたルーンの溝（発光）・天井の梁
  * 壁 1 面ごとに「神殿の壁」か「洞窟の岩肌（従来）」かを決める。通行判定には触れない。 */
 import * as THREE from 'three';
-import { glyphMaterial } from './b4-vfx.js?v=20261122-i5';
+import { glyphMaterial } from './b4-vfx.js?v=20261122-j2';
 
 const TEX = './assets/textures/floor4/cc0/';
 const loader = new THREE.TextureLoader();
@@ -81,7 +81,7 @@ export function buildTempleTrims(root, faces, mats, hash, height = 4.2) {
   if (!faces.length) { root.add(group); return { group, dispose() {} }; }
   const SK = 0.325;
   // 2026-11-22 控えめな彫り込み（かすれ）
-  if (!mats.runeCarve) { mats.runeCarve = glyphMaterial({ style: 2, seed: 7.7, intensity: 0.38, speed: 0.25, broken: 0.75, color: 0xd8501a }); mats.runeCarve.userData.b4Shared = true; }
+  if (!mats.runeCarve) { mats.runeCarve = glyphMaterial({ style: 2, seed: 7.7, intensity: 0.38, speed: 0.25, broken: 0.75, color: 0xd8501a, dissolve: 2.6 }); mats.runeCarve.userData.b4Shared = true; }
   const parts = {
     plinth: { geo: new THREE.BoxGeometry(4.1, 0.42, 0.2), mat: mats.trim, y: 0.21, d: 0.1 },
     plinthCap: { geo: new THREE.BoxGeometry(4.1, 0.08, 0.28), mat: mats.trim, y: 0.46, d: 0.14 },

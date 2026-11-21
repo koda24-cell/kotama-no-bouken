@@ -1,0 +1,31 @@
+{
+ "circle4_mask.png": {
+  "from": "oga/summoning-circles-4/circle4.png",
+  "license": "CC0",
+  "author": "Luke.RUSTLTD",
+  "op": "ink->luminance mask 1024"
+ },
+ "circle5_mask.png": {
+  "from": "oga/summoning-circles-4/circle5.png",
+  "license": "CC0",
+  "author": "Luke.RUSTLTD",
+  "op": "ink->luminance mask 1024"
+ },
+ "circle6_mask.png": {
+  "from": "oga/summoning-circles-4/circle6.png",
+  "license": "CC0",
+  "author": "Luke.RUSTLTD",
+  "op": "ink->luminance mask 1024"
+ },
+ "circle7_mask.png": {
+  "from": "oga/summoning-circles-4/circle7.png",
+  "license": "CC0",
+  "author": "Luke.RUSTLTD",
+  "op": "ink->luminance mask 1024"
+ },
+ "rune_bands_strip.png": {
+  "from": "glyphs/circle4..7_mask.png (polar unwrap of the outer glyph ring, 4 rows)",
+  "license": "CC0",
+  "author": "Luke.RUSTLTD"
+ }
+}

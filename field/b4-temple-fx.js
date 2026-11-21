@@ -4,7 +4,7 @@
  * どれも見た目だけ。通行判定・イベントには触れない。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall, GLYPH_STYLES } from './b4-vfx.js?v=20261122-i5';
+import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall, GLYPH_STYLES } from './b4-vfx.js?v=20261122-j2';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -147,39 +147,42 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
   owned.push(glyphGeo, vGeo);
   const byStyle = new Map();
   const push = (style, M, geo, opts) => { const k = style + '|' + geo.uuid + '|' + opts.key; if (!byStyle.has(k)) byStyle.set(k, { style, geo, opts, ms: [] }); byStyle.get(k).ms.push(M); };
-  let floorN = 0;
-  for (let ty = 1; ty < map.h - 1; ty++) for (let tx = 1; tx < map.w - 1; tx++) {
-    if (!walk(tx, ty) || ch(tx, ty) === '*' || reserved.has(tx + ',' + ty)) continue;
-    const open = DIRS.filter(([dx, dz]) => walk(tx + dx, ty + dz)).length;
-    if (open < 3 || hash(tx, ty, 910) > 0.28 || floorN >= 7) continue;
-    const style = GLYPH_STYLES[Math.floor(hash(tx, ty, 911) * GLYPH_STYLES.length)];
-    push(style, new THREE.Matrix4().compose(new THREE.Vector3(tx * CELL, 0.025, ty * CELL), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hash(tx, ty, 914) * 6.28, 0)), new THREE.Vector3(3.2, 1, 3.2)), glyphGeo, { key: 'floor', intensity: 0.75, dissolve: 5.5 });
+  // 2026-11-22：魔法陣のある場所を限定する。セーブ・階段・扉・看板のまわり（半径 2 マス）だけ。1 か所につき床 1・頭上 1・浮く紋章 ≤3・帯 ≤2
+  const anchors = (map.objects || []).filter(o => ['save', 'stairs', 'gate', 'door', 'sign'].includes(o.kind) && !o.hidden).slice(0, 5);
+  const near = (tx, ty) => anchors.find(o => Math.max(Math.abs(o.tx - tx), Math.abs(o.ty - ty)) <= 2);
+  let floorN = 0, bands = 0, sigils = 0;
+  const perArea = new Map();
+  for (const o of anchors) {
+    // 床の魔法陣：物の隣の歩けるマス（物の上には置かない）
+    const spot = DIRS.map(([dx, dz]) => [o.tx + dx, o.ty + dz]).find(([x, y]) => walk(x, y) && !reserved.has(x + ',' + y) && ch(x, y) !== '*');
+    if (!spot) continue;
+    const [tx, ty] = spot, style = GLYPH_STYLES[Math.floor(hash(tx, ty, 911) * GLYPH_STYLES.length)];
+    push(style, new THREE.Matrix4().compose(new THREE.Vector3(tx * CELL, 0.025, ty * CELL), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hash(tx, ty, 914) * 6.28, 0)), new THREE.Vector3(3.0, 1, 3.0)), glyphGeo, { key: 'floor', intensity: 0.6, dissolve: 5.0 });
     floorN++;
-    // 広い交差点の上には、頭上 2.6–3.2 m に傾いて回る魔法陣（半分）
-    if (hash(tx, ty, 915) < 0.5) push(GLYPH_STYLES[Math.floor(hash(tx, ty, 916) * GLYPH_STYLES.length)], new THREE.Matrix4().compose(new THREE.Vector3(tx * CELL, 2.6 + hash(tx, ty, 917) * 0.6, ty * CELL), new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2 + (hash(tx, ty, 918) - 0.5) * 0.7, hash(tx, ty, 919) * 6.28, 0, 'YXZ')), new THREE.Vector3(1.9, 1.9, 1.9)), vGeo, { key: 'air', intensity: 0.65, dissolve: 3.0 });
+    push(GLYPH_STYLES[Math.floor(hash(tx, ty, 916) * GLYPH_STYLES.length)], new THREE.Matrix4().compose(new THREE.Vector3(tx * CELL, 2.8 + hash(tx, ty, 917) * 0.4, ty * CELL), new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2 + 0.55, hash(tx, ty, 919) * 6.28, 0, 'YXZ')), new THREE.Vector3(1.8, 1.8, 1.8)), vGeo, { key: 'air', intensity: 0.8, dissolve: 3.2 });
   }
   info.glyphs = floorN;
-  // ---- 宙に浮く模様（壁の手前 0.45–0.75 m）：ルーン帯と、8 種の紋章板。近くを通ると崩れる ----
   const bandGeo = new THREE.PlaneGeometry(3.4, 0.36);
   owned.push(bandGeo);
-  let bands = 0, sigils = 0;
   for (const f of faces) {
     if (paneled.has(key(f)) || placed.includes(f)) continue;
+    const o = near(f.tx, f.ty); if (!o) continue;
+    const c = perArea.get(o) || { b: 0, s: 0 }; perArea.set(o, c);
     const r = hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 920);
-    const d = 2 - 0.325 - (0.45 + hash(f.tx, f.ty, 921) * 0.3);
-    const yaw = Math.atan2(-f.dx, -f.dz);
-    if (r < 0.16 && bands < 40) {
-      push(2, new THREE.Matrix4().compose(new THREE.Vector3(f.tx * CELL + f.dx * d, 1.75 + hash(f.tx, f.ty, 922) * 0.6, f.ty * CELL + f.dz * d), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, yaw, 0)), new THREE.Vector3(1, 1, 1)), bandGeo, { key: 'band', intensity: 0.6, dissolve: 2.4 });
-      bands++;
-    } else if (r < 0.36 && sigils < 60) {
-      const styles = [3, 4, 5, 6, 7, 8, 9, 10, 0];
-      const style = styles[Math.floor(hash(f.tx, f.ty * 3 + f.dx, 923) * styles.length)];
-      const sz = style === 10 ? 1 : 0.9 + hash(f.tx, f.ty, 924) * 0.8;
-      const lat = (hash(f.tx, f.ty, 925) - 0.5) * 2.2;
-      const pos = new THREE.Vector3(f.tx * CELL + f.dx * d - f.dz * lat, 1.5 + hash(f.tx, f.ty, 926) * 1.0, f.ty * CELL + f.dz * d + f.dx * lat);
-      const sc = style === 10 ? new THREE.Vector3(0.5, 2.2, 1) : new THREE.Vector3(sz, sz, 1);
-      push(style, new THREE.Matrix4().compose(pos, new THREE.Quaternion().setFromEuler(new THREE.Euler((hash(f.tx, f.ty, 927) - 0.5) * 0.3, yaw + (hash(f.tx, f.ty, 928) - 0.5) * 0.5, 0, 'YXZ')), sc), vGeo, { key: 'sigil', intensity: 0.7, dissolve: 2.6 });
-      sigils++;
+    const d = 2 - 0.325 - (0.5 + hash(f.tx, f.ty, 921) * 0.25);
+    // 壁に平行だと通路から真横になる → 通路の奥（開いている方向）へ 35° 振る
+    const side = [[-f.dz, f.dx], [f.dz, -f.dx]].find(([sx, sz]) => walk(f.tx + sx, f.ty + sz)) || [-f.dz, f.dx];
+    const yaw = Math.atan2(-f.dx, -f.dz) + Math.sign(side[0] * -f.dz + side[1] * f.dx || 1) * 0.6;
+    if (r < 0.35 && c.b < 2) {
+      push(2, new THREE.Matrix4().compose(new THREE.Vector3(f.tx * CELL + f.dx * d, 1.8 + hash(f.tx, f.ty, 922) * 0.5, f.ty * CELL + f.dz * d), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, yaw, 0)), new THREE.Vector3(0.8, 1, 1)), bandGeo, { key: 'band', intensity: 0.75, dissolve: 2.6 });
+      bands++; c.b++;
+    } else if (c.s < 3) {
+      const style = GLYPH_STYLES[Math.floor(hash(f.tx, f.ty * 3 + f.dx, 923) * GLYPH_STYLES.length)];
+      const sz = 0.9 + hash(f.tx, f.ty, 924) * 0.6;
+      const lat = (hash(f.tx, f.ty, 925) - 0.5) * 1.6;
+      const pos = new THREE.Vector3(f.tx * CELL + f.dx * d - f.dz * lat, 1.6 + hash(f.tx, f.ty, 926) * 0.8, f.ty * CELL + f.dz * d + f.dx * lat);
+      push(style, new THREE.Matrix4().compose(pos, new THREE.Quaternion().setFromEuler(new THREE.Euler(0, yaw, 0, 'YXZ')), new THREE.Vector3(sz, sz, 1)), vGeo, { key: 'sigil', intensity: 0.9, dissolve: 2.8 });
+      sigils++; c.s++;
     }
   }
   info.runeBands = bands; info.sigils = sigils;

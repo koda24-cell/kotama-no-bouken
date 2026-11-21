@@ -164,134 +164,65 @@ export function createEmbers(sources) {
 // dissolve: >0 ならカメラがその距離(m)より近づくと、外側から欠片になって崩れて消える（離れると戻る）
 // broken: 0..1 彫り込みのかすれ（ルーン帯がところどころ途切れる）
 export const GLYPH_STYLES = [0, 3, 4, 5, 6, 7, 8, 9];
+// 2026-11-22 ユーザー指示「魔法陣は自分で作らず、必ずダウンロードしたものを」：
+// 図案はすべて OpenGameArt の CC0「4 summoning circles」（Luke.RUSTLTD）由来の画像（assets/vfx/glyphs/、出典は manifest.json）。
+// style → 画像：円形 4 種（circle4〜7）、帯（2 / 10）は外周の文字の輪を展開した帯（4 行）。シェーダーは回転・発光・崩れだけ。
+const GLYPH_TEX = {};
+function glyphTex(name) {
+  if (!GLYPH_TEX[name]) {
+    const t = new THREE.TextureLoader().load(`assets/vfx/glyphs/${name}.png`);
+    t.colorSpace = THREE.NoColorSpace; t.anisotropy = 4;
+    if (name === 'rune_bands_strip') { t.wrapS = THREE.RepeatWrapping; }
+    GLYPH_TEX[name] = t;
+  }
+  return GLYPH_TEX[name];
+}
+const STYLE_TEX = { 0: 'circle7', 1: 'circle4', 3: 'circle5', 4: 'circle7', 5: 'circle6', 6: 'circle4', 7: 'circle5', 8: 'circle6', 9: 'circle4' };
+// dissolve: >0 ならカメラがその距離(m)まで近づくと、縁から燃え尽きるように消え、距離の 55% 以内では完全に消える（点ごとの距離で判定）
+// broken: 0..1 彫り込みのかすれ
 export function glyphMaterial({ style = 0, seed = 0, intensity = 1, color = 0xff7a1e, speed = 1, dissolve = 0, broken = 0 } = {}) {
+  const band = style === 2 || style === 10;
+  const map = glyphTex(band ? 'rune_bands_strip' : `${STYLE_TEX[style] || 'circle7'}_mask`);
   return new THREE.ShaderMaterial({
-    uniforms: { uTime: B4_VFX_TIME, uSeed0: { value: seed }, uInt: { value: intensity }, uCol: { value: new THREE.Color(color) }, uSpeed: { value: speed }, uDis: { value: dissolve }, uBroken: { value: broken } },
+    uniforms: { uTime: B4_VFX_TIME, uMap: { value: map }, uSeed0: { value: seed }, uInt: { value: intensity }, uCol: { value: new THREE.Color(color) }, uSpeed: { value: speed }, uDis: { value: dissolve }, uBroken: { value: broken }, uRow: { value: Math.floor(seed * 7.3) % 4 } },
     vertexShader: /* glsl */`
-      varying vec2 vUv; varying float vIS; varying vec3 vCenter;
-      void main(){ vUv = uv; vec4 p = vec4(position, 1.0); vIS = 0.0; vec4 c = vec4(0.0, 0.0, 0.0, 1.0);
+      varying vec2 vUv; varying float vIS; varying vec3 vW;
+      void main(){ vUv = uv; vec4 p = vec4(position, 1.0); vIS = 0.0;
         #ifdef USE_INSTANCING
-        p = instanceMatrix * p; c = instanceMatrix * c; vIS = fract(sin(dot(instanceMatrix[3].xz, vec2(12.9898, 78.233))) * 43758.5453);
+        p = instanceMatrix * p; vIS = fract(sin(dot(instanceMatrix[3].xz, vec2(12.9898, 78.233))) * 43758.5453);
         #endif
-        vCenter = (modelMatrix * c).xyz;
-        gl_Position = projectionMatrix * modelViewMatrix * p; }`,
+        vec4 w = modelMatrix * p; vW = w.xyz;
+        gl_Position = projectionMatrix * viewMatrix * w; }`,
     fragmentShader: /* glsl */`
-      uniform float uTime; uniform float uInt; uniform vec3 uCol; uniform float uSpeed; uniform float uSeed0; uniform float uDis; uniform float uBroken;
-      varying vec2 vUv; varying float vIS; varying vec3 vCenter;
-      #define uSeed (uSeed0 + vIS * 10.0)
+      uniform float uTime; uniform sampler2D uMap; uniform float uInt; uniform vec3 uCol; uniform float uSpeed; uniform float uSeed0; uniform float uDis; uniform float uBroken; uniform float uRow;
+      varying vec2 vUv; varying float vIS; varying vec3 vW;
       ${NOISE}
-      float ring(float r, float R, float w){ return smoothstep(w, 0.0, abs(r - R)); }
-      float seg(float d, float w){ return smoothstep(w, w * 0.3, d); }
-      float glyphCell(vec2 c, float id){
-        vec2 g = c * 3.0; vec2 f = fract(g); vec2 i = floor(g); float v = 0.0;
-        float h = b4h(vec2(id, i.x * 3.0 + i.y));
-        if (h > 0.45) v = max(v, smoothstep(0.16, 0.06, abs(f.x - 0.5)));
-        if (b4h(vec2(id + 7.0, i.y)) > 0.55) v = max(v, smoothstep(0.16, 0.06, abs(f.y - 0.5)));
-        return v;
-      }
-      float polyEdge(vec2 p, float N, float R, float rot, float w){ float a = atan(p.y, p.x) + rot; float r = length(p); float an = mod(a, 6.2831853 / N) - 3.14159265 / N; return ring(r * cos(an), R * cos(3.14159265 / N), w); }
       void main() {
-        float t = uTime * uSpeed * (0.8 + 0.4 * vIS) + uSeed * 10.0;
-        float glow = 0.0;
-        vec2 p = vUv * 2.0 - 1.0;
-        float r = length(p), a = atan(p.y, p.x);
-        float TAU = 6.2831853;
-        int st = ${'int(' + style + ')'};
-        if (st == 2) {
-          float y = vUv.y, x = vUv.x * 18.0 + t * 0.15;
-          float lines = ring(y, 0.12, 0.03) + ring(y, 0.88, 0.03);
-          float id = floor(x); vec2 c = vec2(fract(x), (y - 0.22) / 0.56);
-          float rune = (c.y > 0.0 && c.y < 1.0) ? glyphCell(vec2(c.x * 0.8 + 0.1, c.y), id + uSeed * 13.0) : 0.0;
-          float flick = 0.55 + 0.45 * sin(t * 1.7 + id * 1.3);
-          glow = lines * 0.8 + rune * flick;
-          glow *= smoothstep(0.0, 0.04, vUv.x) * smoothstep(1.0, 0.96, vUv.x);
-        } else if (st == 1) {
-          float aa = mod(a + t * 0.4, TAU);
-          glow = ring(r, 0.92, 0.035) + ring(r, 0.80, 0.012) * 0.7;
-          float ticks = step(0.5, fract(aa / TAU * 64.0)) * smoothstep(0.86, 0.84, r) * smoothstep(0.82, 0.84, r);
-          float dash = step(0.35, fract(aa / TAU * 12.0 - t * 0.3)) * ring(r, 0.70, 0.01);
-          glow += ticks * 0.6 + dash * 0.8;
-        } else if (st == 3) {
-          // 六角格子：セルごとに明滅、外周は円で切る
-          vec2 q = p * 4.0; vec2 h2 = vec2(1.0, 1.7320508);
-          vec2 A = mod(q, h2) - h2 * 0.5, B = mod(q - h2 * 0.5, h2) - h2 * 0.5; vec2 g = dot(A, A) < dot(B, B) ? A : B;
-          vec2 id = q - g; float e = max(abs(g.x) * 0.866 + abs(g.y) * 0.5, abs(g.y));
-          float cellOn = step(0.35, b4h(floor(id * 3.0) + uSeed)) * (0.5 + 0.5 * sin(t * 1.3 + b4h(id) * 20.0));
-          glow = seg(abs(e - 0.5), 0.05) * (0.45 + cellOn * 0.9) + ring(r, 0.96, 0.02);
-          glow *= step(r, 0.98);
-        } else if (st == 4) {
-          // 入れ子の多角形（四角・八角・三角が交互に逆回転）
-          for (int k = 0; k < 5; k++) { float fk = float(k); float N = fk == 1.0 || fk == 3.0 ? 8.0 : (fk == 4.0 ? 3.0 : 4.0);
-            glow += polyEdge(p, N, 0.95 - fk * 0.18, t * 0.15 * (mod(fk, 2.0) < 0.5 ? 1.0 : -1.0) + fk * 0.4, 0.012) * (1.0 - fk * 0.12); }
-          glow += ring(r, 0.05, 0.03);
-        } else if (st == 5) {
-          // 星の結晶：8 芒星＋放射線＋小さな輪
-          float N = 8.0; float an = mod(a + t * 0.1, TAU / N) - TAU / N * 0.5;
-          float star = ring(r * (0.55 + 0.45 * abs(cos(an * N * 0.5))), 0.62, 0.012);
-          float rays = smoothstep(0.01, 0.0, abs(sin((a - t * 0.05) * 8.0)) * r) * step(0.15, r) * step(r, 0.95);
-          glow = star + rays * 0.55 + ring(r, 0.95, 0.012) + ring(r, 0.25, 0.01) + polyEdge(p, 4.0, 0.42, -t * 0.2, 0.01) * 0.8;
-        } else if (st == 6) {
-          // 竜の鱗：重なる半円の列（縁だけ光る）
-          vec2 q = vec2(vUv.x * 6.0, vUv.y * 6.0 - t * 0.08); float row = floor(q.y); q.x += mod(row, 2.0) * 0.5;
-          vec2 f = fract(q) - vec2(0.5, 0.0); float d = length(f);
-          float scale = seg(abs(d - 0.5), 0.05) * step(0.0, f.y) * (0.5 + 0.5 * b4h(vec2(floor(q.x), row) + uSeed));
-          glow = scale * 0.9 * smoothstep(1.0, 0.85, r) + ring(r, 0.97, 0.015);
-          glow *= step(r, 0.99);
-        } else if (st == 7) {
-          // 組紐：3 本の正弦が交差して円を描く
-          float rr = r * 3.0;
-          for (int k = 0; k < 3; k++) { float fk = float(k); float w = sin(a * 6.0 + fk * 2.094 + t * 0.3) * 0.18; glow += ring(r, 0.6 + w, 0.012); }
-          glow += ring(r, 0.93, 0.012) + ring(r, 0.28, 0.012) * 0.8;
-        } else if (st == 8) {
-          // 重なる円（花の文様）
-          for (int k = 0; k < 6; k++) { float fk = float(k); vec2 c = vec2(cos(fk * 1.0472 + t * 0.05), sin(fk * 1.0472 + t * 0.05)) * 0.33; glow += ring(length(p - c), 0.33, 0.01); }
-          glow += ring(r, 0.33, 0.01) + ring(r, 0.66, 0.01) + ring(r, 0.96, 0.015);
-        } else if (st == 9) {
-          // 欠けた円弧が重なって回る
-          for (int k = 0; k < 6; k++) { float fk = float(k); float R = 0.25 + fk * 0.13; float sp = (mod(fk, 2.0) < 0.5 ? 1.0 : -1.0) * (0.2 + fk * 0.05);
-            float aa = mod(a + t * sp + fk, TAU); float on = step(0.35 + 0.1 * b4h(vec2(fk, uSeed)), fract(aa / TAU * (2.0 + fk)));
-            glow += ring(r, R, 0.012 + fk * 0.002) * on; }
-        } else if (st == 10) {
-          // 縦のルーン柱
-          float x = vUv.x, y = vUv.y * 7.0 - t * 0.12; float id = floor(y); vec2 c = vec2((x - 0.2) / 0.6, fract(y));
-          float rune = (c.x > 0.0 && c.x < 1.0) ? glyphCell(vec2(c.x, c.y * 0.8 + 0.1), id + uSeed * 7.0) : 0.0;
-          glow = rune * (0.6 + 0.4 * sin(t * 1.5 + id)) + ring(x, 0.1, 0.02) + ring(x, 0.9, 0.02);
-          glow *= smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
-        } else {
-          float rot1 = t * 0.12, rot2 = -t * 0.08;
-          float rings = ring(r, 0.96, 0.012) + ring(r, 0.90, 0.006) + ring(r, 0.64, 0.010) + ring(r, 0.58, 0.004) + ring(r, 0.28, 0.008);
-          float aa = mod(a + rot1, TAU);
-          float sg = floor(aa / TAU * 40.0); float cu = fract(aa / TAU * 40.0);
-          float band = (r > 0.905 && r < 0.955) ? glyphCell(vec2(cu, (r - 0.905) / 0.05), sg + uSeed * 31.0) : 0.0;
-          float ticks = (r > 0.66 && r < 0.88) ? step(0.85, fract(mod(a + rot2, TAU) / TAU * 48.0)) * smoothstep(0.88, 0.80, r) : 0.0;
-          float N = 6.0 + floor(b4h(vec2(uSeed, 3.0)) * 3.0);
-          float poly = polyEdge(p, N, 0.56, rot2, 0.008) * step(r, 0.62);
-          float poly2 = polyEdge(p, N, 0.27 / cos(3.14159 / N), -rot1 * 1.5, 0.006) * step(r, 0.33);
-          float spokes = smoothstep(0.012, 0.0, abs(sin((a + rot2) * N * 0.5)) * r) * step(0.28, r) * step(r, 0.58) * 0.5;
-          glow = rings + band + ticks * 0.7 + poly + poly2 + spokes;
-          glow *= 0.75 + 0.25 * sin(t * 1.6 - r * 7.0);
-          glow += smoothstep(0.25, 0.0, r) * 0.25;
-          glow *= smoothstep(1.0, 0.97, r);
-        }
-        float n = b4fbm(p * 6.0 + t * 0.2);
-        glow *= 0.75 + 0.5 * n;
-        // かすれた彫り込み
-        if (uBroken > 0.0) glow *= smoothstep(uBroken * 0.7, uBroken * 0.7 + 0.15, b4fbm(vec2(vUv.x * 9.0 + uSeed, vUv.y * 2.0)));
-        // 近づくと崩れる：外側から格子の欠片が順に消え、消える直前の欠片の縁が明るく燃える
-        float edgeHot = 0.0;
+        float t = uTime * uSpeed * (0.8 + 0.4 * vIS) + uSeed0 * 10.0 + vIS * 30.0;
+        float g;
+        ${band ? `
+        float row = mod(uRow + floor(vIS * 4.0), 4.0);
+        vec2 uv = vec2(vUv.x * 0.9 + t * 0.012 + vIS, (3.0 - row + vUv.y) / 4.0);
+        g = texture2D(uMap, uv).r;
+        g *= smoothstep(0.0, 0.05, vUv.x) * smoothstep(1.0, 0.95, vUv.x);` : `
+        vec2 p = vUv - 0.5; float sp = (${style === 1 ? '0.35' : '0.06'}) * (mod(floor(vIS * 10.0), 2.0) < 0.5 ? 1.0 : -1.0);
+        float c = cos(t * sp), s2 = sin(t * sp); p = mat2(c, -s2, s2, c) * p;
+        g = texture2D(uMap, p + 0.5).r * step(length(p), 0.5);`}
+        g *= 0.8 + 0.25 * sin(t * 1.3 + vUv.x * 6.0);
+        if (uBroken > 0.0) g *= smoothstep(uBroken * 0.7, uBroken * 0.7 + 0.15, b4fbm(vec2(vUv.x * 9.0 + uSeed0, vUv.y * 2.0)));
+        float hot = 0.0;
         if (uDis > 0.0) {
-          float d = distance(vCenter.xz, cameraPosition.xz);
-          float k = smoothstep(uDis, uDis * 0.45, d);
-          vec2 cell = floor(vUv * 22.0); float cr = b4h(cell + uSeed * 3.1);
-          float order = cr * 0.55 + clamp(1.0 - r, 0.0, 1.0) * 0.45;
-          float thr = k * 1.08;
-          if (order < thr - 0.02) discard;
-          edgeHot = smoothstep(0.12, 0.0, order - thr) * k;
-          vec2 f = fract(vUv * 22.0); glow *= mix(1.0, smoothstep(0.0, 0.12, min(min(f.x, 1.0 - f.x), min(f.y, 1.0 - f.y))), k);
+          float d = distance(vW, cameraPosition);
+          float k = smoothstep(uDis, uDis * 0.55, d);                 // 0 = 遠い, 1 = 完全に消える距離
+          float n = b4fbm(vW.xz * 2.3 + vW.y * 1.7);
+          float thr = k * 1.15;
+          if (n < thr) discard;
+          hot = smoothstep(0.08, 0.0, n - thr) * k * step(0.08, g);
+          g *= 1.0 - k * 0.6;
         }
-        vec3 col = mix(uCol, vec3(1.0, 0.88, 0.55), smoothstep(0.9, 1.6, glow));
-        col = mix(col, vec3(1.0, 0.7, 0.3), edgeHot);
-        gl_FragColor = vec4(col * (glow + edgeHot * 1.2 * step(0.05, glow + edgeHot)) * uInt, 1.0);
+        vec3 col = mix(uCol, vec3(1.0, 0.85, 0.55), smoothstep(0.75, 1.0, g) * 0.5);
+        col = mix(col, vec3(1.0, 0.6, 0.25), hot);
+        gl_FragColor = vec4(col * (g + hot * 0.6) * uInt, 1.0);
       }`,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
     polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
