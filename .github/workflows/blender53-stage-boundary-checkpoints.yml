@@ -122,6 +122,7 @@ jobs:
             echo 'configured=true' >> "$GITHUB_OUTPUT"
           else
             echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo '::error title=Recovery event not configured::KOTAMA_RECOVERY_EVENT_APP_ID or KOTAMA_RECOVERY_EVENT_APP_PRIVATE_KEY is missing; cross-repository event notification cannot run. Scheduled recovery monitor is independent.'
             echo 'EVENT_NOTIFY_SKIPPED=missing_app_credentials'
           fi
       - uses: actions/create-github-app-token@v2
