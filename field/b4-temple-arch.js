@@ -5,6 +5,7 @@
  *  - 化粧材：台座（巾木）・コーニス・付け柱・彫り込まれたルーンの溝（発光）・天井の梁
  * 壁 1 面ごとに「神殿の壁」か「洞窟の岩肌（従来）」かを決める。通行判定には触れない。 */
 import * as THREE from 'three';
+import { glyphMaterial } from './b4-vfx.js?v=20261121-v2';
 
 const TEX = './assets/textures/floor4/cc0/';
 const loader = new THREE.TextureLoader();
@@ -20,7 +21,7 @@ export function createTempleMaterials() {
     map: cc0('rock_wall_16', 'diff', '1k', { srgb: true, repeat: [1.6, 1.6] }),
     normalMap: cc0('rock_wall_16', 'nor_gl', '1k', { repeat: [1.6, 1.6] }), normalScale: new THREE.Vector2(1.3, 1.3),
     roughnessMap: cc0('rock_wall_16', 'rough', '1k', { repeat: [1.6, 1.6] }),
-    color: 0x9a6a5c, roughness: 1, metalness: 0,
+    color: 0xb88272, roughness: 1, metalness: 0,
   });
   const trim = new THREE.MeshStandardMaterial({
     map: cc0('stone_block_wall', 'diff', '1k', { srgb: true, repeat: [2, 0.5] }),
@@ -49,7 +50,8 @@ export function buildTempleTrims(root, faces, mats, hash) {
   const group = new THREE.Group(); group.name = 'b4:temple-trims';
   const owned = [];
   if (!faces.length) { root.add(group); return { group, dispose() {} }; }
-  const SK = 0.325;   // 壁の箱の半分の厚み：箱の中心から通路側の表面まで
+  const SK = 0.325;
+  if (!mats.runeCarve) mats.runeCarve = glyphMaterial({ style: 2, seed: 7.7, intensity: 0.95, speed: 0.45 });   // 壁の箱の半分の厚み：箱の中心から通路側の表面まで
   const parts = {
     plinth: { geo: new THREE.BoxGeometry(4.1, 0.42, 0.2), mat: mats.trim, y: 0.21, d: 0.1 },
     plinthCap: { geo: new THREE.BoxGeometry(4.1, 0.08, 0.28), mat: mats.trim, y: 0.46, d: 0.14 },
@@ -57,8 +59,9 @@ export function buildTempleTrims(root, faces, mats, hash) {
     corniceLow: { geo: new THREE.BoxGeometry(4.1, 0.12, 0.24), mat: mats.trim, y: 3.74, d: 0.12 },
     pilaster: { geo: new THREE.BoxGeometry(0.46, 4.2, 0.26), mat: mats.trim, y: 2.1, d: 0.13, lateral: [-1.82, 1.82] },
     pilasterCap: { geo: new THREE.BoxGeometry(0.62, 0.22, 0.36), mat: mats.trim, y: 3.45, d: 0.18, lateral: [-1.82, 1.82] },
-    slot: { geo: new THREE.BoxGeometry(3.0, 0.045, 0.03), mat: mats.slot, y: 1.72, d: 0.004, runeOnly: true },
-    slot2: { geo: new THREE.BoxGeometry(3.0, 0.03, 0.03), mat: mats.slot, y: 1.86, d: 0.004, runeOnly: true },
+    // 彫り込まれたルーンの帯（光るルーン文字が流れる。前版の光る棒は単調だったので置き換え）
+    slot: { geo: new THREE.PlaneGeometry(3.0, 0.34), mat: mats.runeCarve, y: 1.8, d: 0.032, runeOnly: true },
+    slotFrame: { geo: new THREE.BoxGeometry(3.2, 0.5, 0.05), mat: mats.trim, y: 1.8, d: 0.0, runeOnly: true },
   };
   // 欠け：化粧材の一部をランダムに抜く（壊れた神殿）
   for (const [name, P] of Object.entries(parts)) {
@@ -66,7 +69,7 @@ export function buildTempleTrims(root, faces, mats, hash) {
     for (const f of faces) {
       if (P.runeOnly && !f.rune) continue;
       for (const lat of P.lateral || [0]) {
-        if (name !== 'slot' && name !== 'slot2' && hash(f.seed * 97 + lat * 3, name.length, 778) < 0.12) continue;
+        if (name !== 'slot' && name !== 'slotFrame' && hash(f.seed * 97 + lat * 3, name.length, 778) < 0.12) continue;
         const nx = -f.dx, nz = -f.dz;   // 通路側の法線
         const off = SK + P.d;
         const px = f.x + nx * off + (-nz) * lat, pz = f.z + nz * off + nx * lat;
