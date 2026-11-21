@@ -8,7 +8,7 @@
  * 1 種類 1 draw（InstancedMesh）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME } from './b4-vfx.js?v=20261122-h6';
+import { B4_VFX_TIME } from './b4-vfx.js?v=20261122-i3';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 

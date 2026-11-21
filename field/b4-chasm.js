@@ -4,7 +4,7 @@
  * 通行判定は変えない（# は # のまま。見た目だけ壁が開く）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261122-h6';
+import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261122-i3';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 export const CHASM_BOTTOM = -26, CHASM_TOP = 16;
@@ -26,7 +26,7 @@ export function planChasms({ map, ch, wallCell, hash, reservedCells = new Set(),
         seen.add(nk); q.push([nx, ny]);
       }
     }
-    if (!border && cells.length >= 2 && cells.length <= 18) regions.push(cells);
+    if (!border && cells.length >= 3 && cells.length <= 18) regions.push(cells);   // 1〜2マスの細い穴は下が見えないので使わない
   }
   regions.sort((a, b) => b.length - a.length || hash(a[0][0], a[0][1], 960) - hash(b[0][0], b[0][1], 960));
   const chosen = regions.slice(0, maxRegions);
@@ -47,7 +47,7 @@ export function planChasms({ map, ch, wallCell, hash, reservedCells = new Set(),
 
 
 // 下（溶岩）からの照り返し：ワールド y が低いほど橙に発光する。奈落の側壁・欄干に使う
-export function addUplight(material, { color = 0xff5a1c, base = 0.16, k = 0.11, max = 2.4, under = 0.9 } = {}) {
+export function addUplight(material, { color = 0xff5a1c, base = 0.16, k = 0.11, max = 2.4, under = 0.9, topDark = null } = {}) {
   const c = new THREE.Color(color);
   material.onBeforeCompile = (sh) => {
     sh.uniforms.uUpCol = { value: c }; sh.uniforms.uUpTime = B4_VFX_TIME;
@@ -58,9 +58,10 @@ export function addUplight(material, { color = 0xff5a1c, base = 0.16, k = 0.11, 
         { float heat = clamp(${base.toFixed(3)} * exp(-vUpW.y * ${k.toFixed(3)}), 0.0, ${max.toFixed(2)});
           heat *= 1.0 + ${under.toFixed(2)} * max(0.0, -vUpN.y);
           float flick = 0.75 + 0.5 * upN(vec2(vUpW.x * 0.35 + vUpW.z * 0.35, vUpW.y * 0.25 - uUpTime * 0.6));
-          totalEmissiveRadiance += uUpCol * heat * flick; }`);
+          totalEmissiveRadiance += uUpCol * heat * flick; }
+        ${topDark ? `{ float td = mix(1.0, ${(topDark[2] ?? 0.1).toFixed(2)}, smoothstep(${topDark[0].toFixed(2)}, ${topDark[1].toFixed(2)}, vUpW.y)); diffuseColor.rgb *= td; totalEmissiveRadiance *= td; }` : ''}`);
   };
-  material.customProgramCacheKey = () => 'b4-uplight-' + base + k + max + under;
+  material.customProgramCacheKey = () => 'b4-uplight-' + base + k + max + under + (topDark || '');
   material.needsUpdate = true;
   return material;
 }
@@ -135,23 +136,36 @@ export function parapetGeometry(hash, seed) {
   return mergeGeometries(parts.map(p => (p.index ? p.toNonIndexed() : p)), false);
 }
 
-export function buildChasms({ root, plan, CELL, hash, trimMaterial, wallMaterial, lights, gLights }) {
+export function buildChasms({ root, plan, CELL, hash, trimMaterial, wallMaterial, lights, gLights, isWalk = () => false }) {
   const group = new THREE.Group(); group.name = 'b4:chasms';
   const owned = [];
   const info = { regions: plan.regions.length, parapets: plan.parapets.size };
   if (!plan.regions.length) { root.add(group); return { group, info, embers: [], parapetFaces: [], dispose() {} }; }
-  const shaftMat = addUplight(wallMaterial ? wallMaterial.clone() : new THREE.MeshStandardMaterial({ color: 0x2a201c, roughness: 0.95 }));
+  // 2026-11-22：上下の色の切れ目をなくす。上（4.2 m〜）は暗い天井へ溶け、下は深いほど溶岩の照り返しが強い
+  const mk = () => { const m = wallMaterial ? wallMaterial.clone() : new THREE.MeshStandardMaterial({ color: 0x2a201c, roughness: 0.95 }); m.emissive = new THREE.Color(0x140604); return m; };
+  const shaftMat = addUplight(mk(), { base: 0.05, k: 0.13, max: 1.6, under: 0.6, topDark: [-6.0, -1.0, 0.5] });
+  const shaftTopMat = addUplight(mk(), { base: 0.04, k: 0.13, max: 0.4, under: 0.3, topDark: [4.0, 11.0] });
   shaftMat.side = THREE.DoubleSide;
-  const parMat = addUplight(trimMaterial.clone(), { base: 0.035, under: 6 });
+  const parMat = addUplight(trimMaterial.clone(), { base: 0.02, under: 2.0 }); parMat.color.setRGB(1.1, 0.85, 0.75);
   const haze = hazeMaterial();
+  const glowVol = new THREE.ShaderMaterial({
+    uniforms: { uTime: B4_VFX_TIME },
+    vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+    fragmentShader: `uniform float uTime; varying vec3 vW;
+      void main(){ float d = clamp(-vW.y / 26.0, 0.0, 1.0);
+        float g = pow(d, 1.1) * 1.0 + smoothstep(0.0, 0.08, d) * 0.5;
+        float flick = 0.85 + 0.15 * sin(uTime * 0.9 + vW.x * 0.3 + vW.z * 0.2);
+        gl_FragColor = vec4(mix(vec3(0.5, 0.06, 0.01), vec3(1.0, 0.42, 0.08), d) * g * flick, 1.0); }`,
+    side: THREE.BackSide, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  });
   const ceilMat = new THREE.MeshStandardMaterial({ color: 0x120c0b, roughness: 1, emissive: 0x2a0802, emissiveIntensity: 0.6, side: THREE.DoubleSide });
   const lava = deepLavaMaterial({ flow: new THREE.Vector2(0.03, 0.05), scale: 0.18 });
   const fall = lavafallMaterial();
-  owned.push(shaftMat, ceilMat, lava, fall, parMat, haze);
+  owned.push(shaftMat, shaftTopMat, ceilMat, lava, fall, parMat, haze, glowVol);
   const embers = [];
   plan.regions.forEach((cells, ri) => {
     const set = new Set(cells.map(c => c + ''));
-    const shaft = [];
+    const shaft = [], shaftHi = [], ledges = [];
     let minx = 1e9, maxx = -1e9, minz = 1e9, maxz = -1e9;
     for (const [cx, cy] of cells) {
       minx = Math.min(minx, cx); maxx = Math.max(maxx, cx); minz = Math.min(minz, cy); maxz = Math.max(maxz, cy);
@@ -159,19 +173,52 @@ export function buildChasms({ root, plan, CELL, hash, trimMaterial, wallMaterial
         if (set.has([cx + dx, cy + dy] + '')) continue;
         // 縦穴の側壁：セル境界に、溶岩の面から天井の裂け目まで（通路の壁の 0〜4.2 m は既存の壁箱/欄干が受け持つ）
         const ex = cx * CELL + dx * CELL / 2, ez = cy * CELL + dy * CELL / 2, yaw = Math.atan2(dx, dy);
-        for (const [y0, y1] of [[CHASM_BOTTOM - 1, -0.3], [4.2, CHASM_TOP]]) {
+        // 隣が壁（通路に面していない外周）は 0〜4.2 m も側壁で埋める（縁から見て向こう側が黒い穴にならない）
+        const solidSide = !isWalk(cx + dx, cy + dy);
+        for (const [y0, y1] of solidSide ? [[CHASM_BOTTOM - 1, -0.3], [-0.3, 4.2], [4.2, CHASM_TOP]] : [[CHASM_BOTTOM - 1, -0.3], [4.2, CHASM_TOP]]) {
           const p = new THREE.PlaneGeometry(CELL + 0.1, y1 - y0, 6, 10);
           const pa = p.attributes.position;
           for (let i = 0; i < pa.count; i++) pa.setZ(i, (hash(cx * 31 + i, cy * 17 + dx * 3 + dy, 972) - 0.5) * 0.25);
           const uv = p.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * (CELL + 0.1) / 4.08, uv.getY(i) * (y1 - y0) / 4.2);
           p.rotateY(yaw).translate(ex - dx * 0.2, (y0 + y1) / 2, ez - dy * 0.2);
-          shaft.push(p);
+          (y0 > -0.5 ? shaftHi : shaft).push(p);
         }
       }
       embers.push({ x: cx * CELL, z: cy * CELL, y0: CHASM_BOTTOM + 0.5, spread: 1.8, rise: 34, count: 40, hot: 1 });
     }
     const g = mergeGeometries(shaft.map(p => p.toNonIndexed()), false); shaft.forEach(p => p.dispose());
     const m = new THREE.Mesh(g, shaftMat); m.name = `b4:chasm-shaft-${ri}`; group.add(m); owned.push(g);
+    const gh = mergeGeometries(shaftHi.map(p => p.toNonIndexed()), false); shaftHi.forEach(p => p.dispose());
+    const mh = new THREE.Mesh(gh, shaftTopMat); mh.name = `b4:chasm-shaft-top-${ri}`; group.add(mh); owned.push(gh);
+    // 深さの手がかり：側壁から張り出した崩れた床（y −4 / −9 / −15）と、途中で折れた橋桁
+    {
+      const per = [];
+      for (const [cx, cy] of cells) for (const [dx, dy] of DIRS) if (!set.has([cx + dx, cy + dy] + '')) per.push([cx, cy, dx, dy]);
+      [-2.4, -6, -11, -18].forEach((y, li) => {
+        const [cx, cy, dx, dy] = per[Math.floor(hash(ri, li, 975) * per.length)];
+        const dep = 1.0 + hash(ri, li, 976) * 0.9, wid = CELL * (0.5 + hash(ri, li, 977) * 0.4);
+        const b = dx ? new THREE.BoxGeometry(dep, 0.45, wid) : new THREE.BoxGeometry(wid, 0.45, dep);
+        b.rotateY((hash(ri, li, 978) - 0.5) * 0.15);
+        b.translate(cx * CELL + dx * (CELL / 2 - dep / 2 - 0.15) + (dy ? (hash(ri, li, 979) - 0.5) * 1.2 : 0), y, cy * CELL + dy * (CELL / 2 - dep / 2 - 0.15) + (dx ? (hash(ri, li, 979) - 0.5) * 1.2 : 0));
+        ledges.push(b);
+        for (let k = 0; k < 3; k++) { const r = new THREE.IcosahedronGeometry(0.18 + hash(ri, li * 5 + k, 980) * 0.2, 0); r.translate(cx * CELL + dx * (CELL / 2 - dep) + (hash(ri, k, 981) - 0.5), y + 0.3, cy * CELL + dy * (CELL / 2 - dep) + (hash(ri, k, 982) - 0.5)); ledges.push(r); }
+      });
+      if (maxx - minx >= 1 || maxz - minz >= 1) {
+        const alongX = maxx - minx >= maxz - minz, L = ((alongX ? maxx - minx : maxz - minz) + 1) * CELL * 0.55;
+        const beam = alongX ? new THREE.BoxGeometry(L, 0.55, 0.9) : new THREE.BoxGeometry(0.9, 0.55, L);
+        beam.rotateZ(alongX ? -0.12 : 0); beam.rotateX(alongX ? 0 : 0.12);
+        beam.translate(alongX ? minx * CELL - CELL / 2 + L / 2 : (minx + maxx) / 2 * CELL, -6.5, alongX ? (minz + maxz) / 2 * CELL : minz * CELL - CELL / 2 + L / 2);
+        ledges.push(beam);
+      }
+      const lg2 = mergeGeometries(ledges.map(p => p.index ? p.toNonIndexed() : p), false); ledges.forEach(p => p.dispose());
+      const lm2 = new THREE.Mesh(lg2, parMat); lm2.name = `b4:chasm-ledges-${ri}`; group.add(lm2); owned.push(lg2);
+    }
+    // 奈落の中の光の霞：内向きの箱。深いほど橙が濃く、縁の近くでほぼ透明（縁から見ると下から光が満ちている）
+    {
+      const vg = new THREE.BoxGeometry((maxx - minx + 1) * CELL - 0.6, -CHASM_BOTTOM + 0.5, (maxz - minz + 1) * CELL - 0.6);
+      vg.translate((minx + maxx) / 2 * CELL, CHASM_BOTTOM / 2 + 0.25, (minz + maxz) / 2 * CELL); owned.push(vg);
+      const vm = new THREE.Mesh(vg, glowVol); vm.name = `b4:chasm-glow-${ri}`; vm.renderOrder = 2; group.add(vm);
+    }
     // 底の溶岩と天井
     const w = (maxx - minx + 1) * CELL + 2, d = (maxz - minz + 1) * CELL + 2, cxw = (minx + maxx) / 2 * CELL, czw = (minz + maxz) / 2 * CELL;
     const lg = new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2); const lm = new THREE.Mesh(lg, lava); lm.position.set(cxw, CHASM_BOTTOM, czw); group.add(lm); owned.push(lg);
@@ -203,7 +250,7 @@ export function buildChasms({ root, plan, CELL, hash, trimMaterial, wallMaterial
   for (const [key] of plan.parapets) {
     const [tx, ty, dx, dz] = key.split(',').map(Number);
     const ex = tx * CELL + dx * CELL / 2, ez = ty * CELL + dz * CELL / 2;
-    const geo = parapetGeometry(hash, tx * 31 + ty);
+    const geo = parapetGeometry(hash, tx * 31 + ty); geo.scale(1, 0.72, 1);   // 低めの欄干（目線から縁の下まで見える）
     const pm = new THREE.Mesh(geo, parMat); pm.position.set(ex - dx * 0.1, 0, ez - dz * 0.1); pm.rotation.y = Math.atan2(dx, dz) + Math.PI / 2 * 0;
     pm.rotation.y = dx !== 0 ? Math.PI / 2 : 0;
     pm.name = 'b4:parapet'; group.add(pm); owned.push(geo);

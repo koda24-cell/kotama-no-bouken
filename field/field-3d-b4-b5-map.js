@@ -2,18 +2,18 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-quality';
-import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-h6';
-import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-h6';
+import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-i3';
+import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-i3';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-h6';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-h6';
-import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-h6';
-import { buildRockPass, makeRockyZone } from './b4-rocks.js?v=20261122-h6';
-import { createB4Kit, nearCull as kitNearCull } from './b4-kit.js?v=20261122-h6';
-import { findVaultRooms, buildAntigravHall, buildSanctum, buildCauseway, buildPitRail } from './b4-sanctum.js?v=20261122-h6';
-import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-h6';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-h6';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-i3';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-i3';
+import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-i3';
+import { buildRockPass, makeRockyZone } from './b4-rocks.js?v=20261122-i3';
+import { createB4Kit, nearCull as kitNearCull } from './b4-kit.js?v=20261122-i3';
+import { findVaultRooms, buildAntigravHall, buildSanctum, buildCauseway, buildPitRail } from './b4-sanctum.js?v=20261122-i3';
+import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-i3';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-i3';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -392,7 +392,7 @@ export function createTheme(api, area) {
     }
     if (b5) { dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall }); installB5Fog(); }
     batchStatic();
-    if (chasmPlan) chasms = buildChasms({ root: buildRoot, plan: chasmPlan, CELL, hash, trimMaterial: temple.trim, wallMaterial: temple.wall, lights, gLights: g.lights });
+    if (chasmPlan) chasms = buildChasms({ root: buildRoot, plan: chasmPlan, CELL, hash, trimMaterial: temple.boulder, wallMaterial: temple.wall, lights, gLights: g.lights, isWalk: (x, y) => x >= 0 && y >= 0 && x < a.w && y < a.h && !wallCell(x, y) });
     if (temple) { templeTrims = buildTempleTrims(buildRoot, templeFaces, temple, hash, a.f === 2 ? 8.2 : 4.2); templeBeams = buildCeilingBeams(buildRoot, templeTiles, temple, CELL, a.f === 2 ? 8.1 : 4.05); }
     if (temple) {
       const decorTiles = [];
