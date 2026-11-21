@@ -19,10 +19,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 import common as C  # noqa: E402
 
 JOBS = [
-    # name, source glb, target tris, texture res
-    ("b4lod_v33_rockwall", "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb", 9000, 1024),
-    ("b4lod_v33_rockwall_3k", "assets/models/floor4/gpt-import/rockwall-magma/b4-v33-magma-rockwall.glb", 3200, 1024),
-    # ("b4lod_lava_pool_v3", ...) done in run 44658937724
+    # name, source glb, target tris, texture res  — 2026-11-21: GPT の溶岩の川 V16 と岸 P1〜P3（ユーザー指示：もっと使う）
+    ("b4lod_magma_river_v16", "assets/models/floor4/b4-magma-river-v16.glb", 22000, 2048),
+    ("b4lod_magma_bank_p1", "assets/models/floor4/b4-magma-river-p1-v4.glb", 7000, 1024),
+    ("b4lod_magma_bank_p2", "assets/models/floor4/b4-magma-river-p2-v4.glb", 7000, 1024),
+    ("b4lod_magma_bank_p3", "assets/models/floor4/b4-magma-river-p3-v5.glb", 7000, 1024),
 ]
 if os.environ.get("B4P_OPT"):
     JOBS = []
