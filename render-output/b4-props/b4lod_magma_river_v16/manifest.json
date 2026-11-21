@@ -1,0 +1,20 @@
+{
+  "asset": "b4lod_magma_river_v16",
+  "source": "assets/models/floor4/b4-magma-river-v16.glb",
+  "source_sha256": "359fb4a68960e624ab955abe57d6afd9c3a1dbe44b7e7b37c8067b8567834918",
+  "source_triangles": 226872,
+  "triangles": 21997,
+  "bbox_m": [
+    8.495,
+    8.136,
+    3.315
+  ],
+  "emissive": true,
+  "glb_bytes": 4241640,
+  "renders": [
+    "b4lod_magma_river_v16_volcanic_front.png",
+    "b4lod_magma_river_v16_volcanic_angle.png",
+    "b4lod_magma_river_v16_volcanic_close.png"
+  ],
+  "approval": "SOURCE_USER_APPROVED (GPT); LOD derived by Claude, NOT_APPROVED"
+}
