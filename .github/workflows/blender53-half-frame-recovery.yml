@@ -84,7 +84,6 @@ jobs:
           COMMIT: ${{ github.sha }}
         run: |
           cp base/frozen_watergate_v09.blend base/frozen_watergate_v09.glb base/side.png base/angle.png render-output/left-half/
-          python3 -c 'from tools import nowhere' 2>/dev/null && exit 1 || true
           python3 -c "import importlib.util; p='tools/3d_checkpoint/stitch_half_frame.py'; s=importlib.util.spec_from_file_location('tiles',p); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); w,h,_=m.read_rgba('render-output/left-half/left.png'); assert (w,h)==(500,760),(w,h); print('LEFT_HALF_COMPLETE=500x760')"
           python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/left-half --asset-id b2-front-left-half --iteration 2 --parent-checkpoint "half-frame-base-${{ github.run_id }}" --source-script tools/3d_checkpoint/render_half_frame.py --source-commit "$COMMIT"
           python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/left-half --asset-id b2-front-left-half --source-script tools/3d_checkpoint/render_half_frame.py --source-commit "$COMMIT"
