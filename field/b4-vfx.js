@@ -291,7 +291,7 @@ export function lightShaftMaterial({ color = 0xff8a3a, intensity = 0.5, seed = 0
       uniform float uTime; uniform vec3 uCol; uniform float uInt; uniform float uSeed; varying vec2 vUv;
       ${NOISE}
       void main() {
-        float side = smoothstep(0.0, 0.35, vUv.x) * smoothstep(1.0, 0.65, vUv.x);
+        float side = exp(-pow((vUv.x - 0.5) * 3.6, 2.0));
         float vert = smoothstep(0.0, 0.25, vUv.y) * (0.4 + 0.6 * vUv.y);
         float streak = 0.6 + 0.4 * b4n(vec2(vUv.x * 9.0 + uSeed, uTime * 0.3));
         float dust = b4fbm(vec2(vUv.x * 4.0, vUv.y * 3.0 - uTime * 0.15) + uSeed);

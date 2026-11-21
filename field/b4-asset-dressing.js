@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { buildTemplePass } from './b4-temple-fx.js?v=20261121-t1';
+import { buildTemplePass } from './b4-temple-fx.js?v=20261121-t3';
 
 const BASE = './assets/models/floor4/props/';
 // Zone themes (user 2026-11-20: cluster things that naturally gather — ore deposits, old mine workings, pickaxes):

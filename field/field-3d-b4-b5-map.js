@@ -3,13 +3,13 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-quality';
 import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261120-floor';
-import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
+import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261121-c2';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t3';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t2';
-import { planChasms, buildChasms } from './b4-chasm.js?v=20261121-c1';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a2';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t4';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t3';
+import { planChasms, buildChasms } from './b4-chasm.js?v=20261121-c5';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a3';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -197,6 +197,7 @@ export function createTheme(api, area) {
     if (b4Plan) for (const s of [...b4Plan.mines, ...b4Plan.vistaFaces]) objAt.add(s.tx+','+s.ty);
     // 奈落（上下の空間、2026-11-21）：12F 以外で、壁の塊を最大 3 つ縦穴にする
     chasmPlan = magma && a.f !== 2 ? planChasms({ map: a, ch, wallCell, hash, reservedCells: new Set([...(b4Plan?.excludedWalls || [])]) }) : null;
+    if (b4Plan) b4Plan.chasmCells = chasmPlan?.cellSet || new Set();
 
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
@@ -338,14 +339,14 @@ export function createTheme(api, area) {
     }
     // Authored procedural scenery replaces three unbounded GLB environment overlays.
     // Those overlays crossed corridor cells and duplicated the mine/citadel silhouettes.
-    if (magma) createB4RockForms({root,map:a,wallCell,hash,CELL,objects:a.objects,excludedWalls:b4Plan.excludedWalls,surfaces});
+    if (magma) createB4RockForms({root,map:a,wallCell,hash,CELL,objects:a.objects,excludedWalls:new Set([...b4Plan.excludedWalls,...(b4Plan.chasmCells||[])]),surfaces});
     if (magma) {
       volcanicDetail=addB4VolcanicDetail({root,map:a,ch,wallCell,hash,CELL,plan:b4Plan,surfaces});
       lights.push(...volcanicDetail.lights);g.lights.push(...volcanicDetail.lights);
     }
     if (b5) { dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall }); installB5Fog(); }
     batchStatic();
-    if (chasmPlan) chasms = buildChasms({ root: buildRoot, plan: chasmPlan, CELL, hash, trimMaterial: temple.trim, lights, gLights: g.lights });
+    if (chasmPlan) chasms = buildChasms({ root: buildRoot, plan: chasmPlan, CELL, hash, trimMaterial: temple.trim, wallMaterial: temple.wall, lights, gLights: g.lights });
     if (temple) { templeTrims = buildTempleTrims(buildRoot, templeFaces, temple, hash); templeBeams = buildCeilingBeams(buildRoot, templeTiles, temple, CELL); }
     if (b4Plan) {
       // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
