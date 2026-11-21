@@ -157,7 +157,7 @@ function loadTheme3() {
 }
 async function loadTheme45(area) {
   if (area !== 4 && g.theme?.area === area) return g.theme;
-  const m = await import('./field-3d-b4-b5-map.js?v=20261121-b4-vfx1');
+  const m = await import('./field-3d-b4-b5-map.js?v=20261121-b4-temple1');
   return m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES }, area);
 }
 function place(parent, src, x, y, z, ry = 0, s = 1) {

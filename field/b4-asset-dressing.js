@@ -117,7 +117,7 @@ const ORE_READY = true;
 // (The GPT V33 rock wall was tried as an LOD first: its basalt exports white and the shape reads as a box at game scale.)
 const OVERLAY_IDS = ['b4p_basalt_wall_panel_a', 'b4p_basalt_wall_panel_b'];
 const OVERLAY_READY = true;
-const OVERLAY_MAX = 64;
+const OVERLAY_MAX = 40;
 const OVERLAY_FRONT_Z = 1;     // glTF +Z faces the corridor (Blender -Y)   // flips to true when the dragon team's ore cluster GLB is promoted
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -138,7 +138,7 @@ function wallSkinDistance(y0, y1, lateral = 0) {
 }
 const sideFor = (R, lateral = 0) => R.side ?? (R.wall ? 1.58 : wallSkinDistance(R.y || 0, (R.y || 0) + R.height, lateral) - R.radius - 0.04);   // wall pieces sink into the displaced skin rather than float off it
 
-export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, extraEmbers = [], rockMaterial = null, isStale = () => false, maxProps = 22 }) {
+export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, extraEmbers = [], rockMaterial = null, isTempleFace = null, isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY).filter(id => B4_PROP_REGISTRY[id].ready);
   const group = new THREE.Group(); group.name = 'b4:asset-dressing'; group.userData.b4Cached = true;
   const owned = [];
@@ -192,7 +192,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     for (let ty = 1; ty < H - 1; ty++) for (let tx = 1; tx < W - 1; tx++) {
       if (!walk(tx, ty)) continue;
       const theme = themeAt(tx, ty);
-      for (const [dx, dz] of DIRS) if (ch(tx + dx, ty + dz) === '#' && hash(tx * 5 + dx, ty * 5 + dz, 830) <= ZONE_OVERLAY[theme]) panelFaces.push({ tx, ty, dx, dz, theme });
+      for (const [dx, dz] of DIRS) if (ch(tx + dx, ty + dz) === '#' && !(isTempleFace && isTempleFace(tx, ty, dx, dz)) && hash(tx * 5 + dx, ty * 5 + dz, 830) <= ZONE_OVERLAY[theme] * 1.6) panelFaces.push({ tx, ty, dx, dz, theme });   // basalt panels only on the cave-rock faces
     }
     panelFaces.sort((p, q) => panelPrio[p.theme] - panelPrio[q.theme] || hash(p.tx, p.ty, 834) - hash(q.tx, q.ty, 834));
     panelFaces.length = Math.min(panelFaces.length, OVERLAY_MAX);
