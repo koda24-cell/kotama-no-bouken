@@ -6,8 +6,9 @@ import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261120-floor
 import { addB4VolcanicDetail } from './b4-volcanic-detail.js';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t1';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t1';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t2';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t2';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a1';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -52,6 +53,11 @@ export function createTheme(api, area) {
       mat[name].dispose(); mat[name]=material;
     }
   }
+  // 黒き神殿（2026-11-21）：神殿の壁・床・化粧材の材質（CC0 スキャン）
+  const temple = magma ? createTempleMaterials() : null;
+  const isTempleFace = makeTempleFacePicker(hash);
+  if (temple) mat.floor = temple.floor;
+  const templeWallGeo = magma ? new THREE.BoxGeometry(4.08, 4.2, 0.65, 1, 1, 1) : null;
   const floorGeo = new THREE.BoxGeometry(4.02, 0.32, 4.02, magma ? 4 : 1, 1, magma ? 4 : 1);
   if (magma) {
     const p=floorGeo.getAttribute('position');
@@ -103,7 +109,7 @@ export function createTheme(api, area) {
   let dressing = null, ownedModels = [], ownedModelGeometry = [];
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   let b4Dressing = null, deepLava = null;
-  let oreSites = [], lavaSites = [], deepLavaTiles = [];
+  let oreSites = [], lavaSites = [], deepLavaTiles = [], templeFaces = [], templeTiles = [], templeTrims = null, templeBeams = null;
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -178,7 +184,7 @@ export function createTheme(api, area) {
     dispose();
     root = new THREE.Group(); root.name = mist ? 'b3_mist_forest_map' : magma ? 'b4_magma_map' : 'b5_abyss_map'; g.world.add(root);
     const { ch, wallCell, facing, open } = info;
-    const buildRoot = root; oreSites = []; lavaSites = []; deepLavaTiles = [];
+    const buildRoot = root; oreSites = []; lavaSites = []; deepLavaTiles = []; templeFaces = []; templeTiles = [];
     const b5 = area === 5, hall = b5 && isB5Hall(a, ch);
     const b4Vault = magma && a.f === 2;
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
@@ -209,6 +215,7 @@ export function createTheme(api, area) {
         ornaments++;
       }
       if ((!b5 || hall) && c !== '>' && c !== '<') mesh(ceilingGeo, mat.ceiling, x, hall ? 16 : b4Vault ? 8.1 : 4.05, z);
+      if (temple && !b4Vault && c !== '>' && c !== '<' && hash(tx, ty, 783) < 0.7) templeTiles.push({ tx, ty, rot: !wallCell(tx + 1, ty) || !wallCell(tx - 1, ty) });
       // 洞窟の天井に不規則な鍾乳石、奈落では垂れ下がる古代構造物。
       if (!b5 && !objAt.has(tx + ',' + ty) && hash(tx, ty, 45) < 0.32) {
         const h = magma ? .5 + hash(tx,ty,46)*1.1 : 0.8 + hash(tx, ty, 46) * 1.7;
@@ -225,6 +232,11 @@ export function createTheme(api, area) {
         // outside the recess instead of letting displaced rock cut through its back/sides.
         const recessSide = b4Plan?.excludedWalls.has(`${tx+dx},${ty+dz}`);
         const tallHallWall = hall && (tx + dx <= 3 || tx + dx >= a.w - 4 || ty + dz === 0 || ty + dz >= a.h - 1);
+        if (temple && !recessSide && !b4Vault && isTempleFace(tx, ty, dx, dz)) {
+          mesh(templeWallGeo, temple.wall, ex, 2, ez, ry, 1, 1, 1);
+          templeFaces.push({ x: ex, z: ez, ry, dx, dz, rune: hash(tx * 3 + dx, ty * 3 + dz, 781) < 0.4, seed: hash(tx, ty, 782 + dx * 2 + dz) });
+          continue;
+        }
         mesh(recessSide ? recessWallGeo : (b5WallGeo || volcanicWallGeo || wallGeo), mat.wall, ex, b5 ? (tallHallWall ? 7.3 : 0.35) : b4Vault ? 4 : 2, ez, ry, 1, b5 ? (tallHallWall ? 3.5 : 0.25) : b4Vault ? 2 : 1, 1);
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (!b5 && k < 0.17 && !objAt.has(tx + ',' + ty)) {
@@ -329,11 +341,12 @@ export function createTheme(api, area) {
     }
     if (b5) { dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall }); installB5Fog(); }
     batchStatic();
+    if (temple) { templeTrims = buildTempleTrims(buildRoot, templeFaces, temple, hash); templeBeams = buildCeilingBeams(buildRoot, templeTiles, temple, CELL); }
     if (b4Plan) {
       // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
       deepLava = buildDeepLava({ root: buildRoot, tiles: deepLavaTiles, ch, CELL, hash });
       const fallRock = new THREE.MeshStandardMaterial({ color: 0x2a221e, roughness: 0.9, flatShading: true }); localGeometries.push(fallRock);
-      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, extraEmbers: deepLava.embers, rockMaterial: fallRock, mines: b4Plan.mines.slice(1), oreSites, lavaSites, crystalGeo, isStale: () => root !== buildRoot })
+      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, extraEmbers: deepLava.embers, rockMaterial: fallRock, isTempleFace: (tx, ty, dx, dz) => !a.f || a.f < 2 ? isTempleFace(tx, ty, dx, dz) : false, mines: b4Plan.mines.slice(1), oreSites, lavaSites, crystalGeo, isStale: () => root !== buildRoot })
         .then(d => { if (root !== buildRoot) d.dispose(); else b4Dressing = d; })
         .catch(err => console.warn('[b4-dressing]', err));
     }
@@ -393,7 +406,7 @@ export function createTheme(api, area) {
       } else root.traverse(o => { if (o.isInstancedMesh) o.dispose(); });
       root.parent?.remove(root);
     }
-    dressing?.dispose(); dressing = null; b4Dressing?.dispose(); b4Dressing = null; deepLava?.dispose(); deepLava = null; ownedModels = []; ownedModelGeometry = [];
+    dressing?.dispose(); dressing = null; b4Dressing?.dispose(); b4Dressing = null; deepLava?.dispose(); deepLava = null; templeTrims?.dispose(); templeTrims = null; templeBeams?.dispose(); templeBeams = null; ownedModels = []; ownedModelGeometry = [];
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; volcanicDetail = null; cameraLamp = null; landmarkState = 'pending';
     // build() can reuse this theme's base resources; theme replacement releases them.
