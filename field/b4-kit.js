@@ -9,14 +9,14 @@
  *   出口      ：4.0×4.2 m の神殿の門（柱＋まぐさ＋ルーン帯）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { glyphMaterial, createFlames } from './b4-vfx.js?v=20261122-g6';
+import { glyphMaterial, createFlames } from './b4-vfx.js?v=20261122-g8';
 
 const merge = parts => { const g = mergeGeometries(parts.map(p => (p.index ? p.toNonIndexed() : p)), false); parts.forEach(p => p.dispose()); return g; };
 const box = (w, h, d, x, y, z, ry = 0, rz = 0) => { const b = new THREE.BoxGeometry(w, h, d); if (rz) b.rotateZ(rz); if (ry) b.rotateY(ry); b.translate(x, y, z); return b; };
 const light = (obj, pos, color, intensity, range) => { (obj.userData.b1 ||= {}).lights = [...(obj.userData.b1.lights || []), { pos, color, intensity, range }]; };
 
 // カメラから near m 以内の面を描かない（立ち位置の後ろ 1.1 m のカメラが物の中に入っても視界をふさがない）
-function nearCull(material, near = 1.3) {
+export function nearCull(material, near = 1.3) {
   const prev = material.onBeforeCompile;
   material.onBeforeCompile = (sh, r) => {
     prev?.call(material, sh, r);

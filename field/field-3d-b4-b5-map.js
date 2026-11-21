@@ -2,17 +2,18 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-quality';
-import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-g6';
-import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-g6';
+import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-g8';
+import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-g8';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-g6';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-g6';
-import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-g6';
-import { createB4Kit } from './b4-kit.js?v=20261122-g6';
-import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261122-g6';
-import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-g6';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-g6';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-g8';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-g8';
+import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-g8';
+import { buildRockPass, makeRockyZone } from './b4-rocks.js?v=20261122-g8';
+import { createB4Kit, nearCull as kitNearCull } from './b4-kit.js?v=20261122-g8';
+import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261122-g8';
+import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-g8';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-g8';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -64,6 +65,7 @@ export function createTheme(api, area) {
   // 黒き神殿（2026-11-21）：神殿の壁・床・化粧材の材質（CC0 スキャン）
   const temple = magma ? createTempleMaterials() : null;
   const isTempleFace = makeTempleFacePicker(hash);
+  const rockyZone = makeRockyZone(hash);   // 岩盤・炭鉱の区域（10F・11F）
   if (temple) mat.floor = temple.floor;
   const templeWallGeo = magma ? fixEndUV(new THREE.BoxGeometry(4.08, 4.2, 0.65, 1, 1, 1), 4.08) : null;
   if (templeWallGeo) templeWallGeo.userData.b4Shared = true;
@@ -122,7 +124,7 @@ export function createTheme(api, area) {
   let dressing = null, ownedModels = [], ownedModelGeometry = [];
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   let b4Dressing = null, deepLava = null;
-  let oreSites = [], lavaSites = [], deepLavaTiles = [], templeFaces = [], templeTiles = [], templeTrims = null, templeBeams = null, chasmPlan = null, chasms = null, vaultHall = null, vaultSanctum = null, templeDecor = null;
+  let oreSites = [], lavaSites = [], deepLavaTiles = [], templeFaces = [], templeTiles = [], templeTrims = null, templeBeams = null, chasmPlan = null, chasms = null, vaultHall = null, vaultSanctum = null, templeDecor = null, rockPass = null;
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -200,6 +202,7 @@ export function createTheme(api, area) {
     const buildRoot = root; oreSites = []; lavaSites = []; deepLavaTiles = []; templeFaces = []; templeTiles = [];
     const b5 = area === 5, hall = b5 && isB5Hall(a, ch);
     const b4Vault = magma && a.f === 2;
+    const rocky = (tx, ty) => magma && !b4Vault && rockyZone(tx + a.f * 11, ty + a.f * 7);
     const objAt = new Set(a.objects.map(o => o.tx + ',' + o.ty));
     b4Plan = magma ? addB4GameScenery({root,map:a,ch,wallCell,hash,CELL,surfaces}) : null;
     if (b4Plan) {
@@ -249,12 +252,12 @@ export function createTheme(api, area) {
         // outside the recess instead of letting displaced rock cut through its back/sides.
         const recessSide = b4Plan?.excludedWalls.has(`${tx+dx},${ty+dz}`);
         const tallHallWall = hall && (tx + dx <= 3 || tx + dx >= a.w - 4 || ty + dz === 0 || ty + dz >= a.h - 1);
-        if (temple && !recessSide && (b4Vault || isTempleFace(tx, ty, dx, dz))) {
+        if (temple && !recessSide && (b4Vault || (isTempleFace(tx, ty, dx, dz) && !rocky(tx, ty)))) {
           if (b4Vault) mesh(templeWallGeoTall, temple.wall, ex, 4.1, ez, ry, 1, 1, 1); else mesh(templeWallGeo, temple.wall, ex, 2, ez, ry, 1, 1, 1);
           templeFaces.push({ x: ex, z: ez, ry, dx, dz, rune: hash(tx * 3 + dx, ty * 3 + dz, 781) < 0.4, seed: hash(tx, ty, 782 + dx * 2 + dz) });
           continue;
         }
-        mesh(recessSide ? recessWallGeo : (b5WallGeo || volcanicWallGeo || wallGeo), temple && !recessSide ? temple.wall : mat.wall, ex, b5 ? (tallHallWall ? 7.3 : 0.35) : b4Vault ? 4 : 2, ez, ry, 1, b5 ? (tallHallWall ? 3.5 : 0.25) : b4Vault ? 2 : 1, 1);
+        mesh(recessSide ? recessWallGeo : (b5WallGeo || volcanicWallGeo || wallGeo), temple && !recessSide ? (rocky(tx, ty) ? temple.rock : temple.wall) : mat.wall, ex, b5 ? (tallHallWall ? 7.3 : 0.35) : b4Vault ? 4 : 2, ez, ry, 1, b5 ? (tallHallWall ? 3.5 : 0.25) : b4Vault ? 2 : 1, 1);
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (!b5 && k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, magma ? surfaces.crystal : mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
@@ -366,6 +369,7 @@ export function createTheme(api, area) {
       const decorTiles = [];
       for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) if ('.,'.includes(ch(tx, ty)) && !objAt.has(tx + ',' + ty)) decorTiles.push({ tx, ty });
       const iron = new THREE.MeshStandardMaterial({ color: 0x2a2220, roughness: 0.45, metalness: 0.85 }); localGeometries.push(iron);
+      if (!b4Vault) rockPass = buildRockPass({ root: buildRoot, map: a, ch, wallCell, hash, CELL, reserved: objAt, openFaces: new Set(chasms?.parapetFaces.map(f => `${f.tx},${f.ty},${f.dx},${f.dz}`) || []), rocky, mats: temple, lights, gLights: g.lights, nearCull: kitNearCull });
       templeDecor = buildTempleDecor({ root: buildRoot, faces: templeFaces, tiles: decorTiles, beams: templeTiles, CELL, hash, ironMaterial: iron, ceiling: a.f === 2 ? 8.1 : 4.05 });
     }
     if (temple && a.f === 2) {
@@ -377,7 +381,7 @@ export function createTheme(api, area) {
       // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
       deepLava = buildDeepLava({ root: buildRoot, tiles: deepLavaTiles, ch, CELL, hash });
       const fallRock = new THREE.MeshStandardMaterial({ color: 0x2a221e, roughness: 0.9, flatShading: true }); localGeometries.push(fallRock);
-      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, extraEmbers: [...deepLava.embers, ...(chasms?.embers || [])], openFaces: new Set(chasms?.parapetFaces.map(f => `${f.tx},${f.ty},${f.dx},${f.dz}`) || []), rockMaterial: fallRock, isTempleFace: (tx, ty, dx, dz) => a.f === 2 || isTempleFace(tx, ty, dx, dz), mines: b4Plan.mines.slice(1), oreSites, lavaSites, deepTiles: deepLavaTiles, crystalGeo, isStale: () => root !== buildRoot })
+      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, extraEmbers: [...deepLava.embers, ...(chasms?.embers || [])], openFaces: new Set(chasms?.parapetFaces.map(f => `${f.tx},${f.ty},${f.dx},${f.dz}`) || []), rockMaterial: fallRock, isTempleFace: (tx, ty, dx, dz) => a.f === 2 || (isTempleFace(tx, ty, dx, dz) && !rocky(tx, ty)), mines: b4Plan.mines.slice(1), oreSites, lavaSites, deepTiles: deepLavaTiles, crystalGeo, isStale: () => root !== buildRoot })
         .then(d => { if (root !== buildRoot) d.dispose(); else b4Dressing = d; })
         .catch(err => console.warn('[b4-dressing]', err));
     }
@@ -438,7 +442,7 @@ export function createTheme(api, area) {
       } else root.traverse(o => { if (o.isInstancedMesh) o.dispose(); });
       root.parent?.remove(root);
     }
-    dressing?.dispose(); dressing = null; b4Dressing?.dispose(); b4Dressing = null; deepLava?.dispose(); deepLava = null; templeTrims?.dispose(); templeTrims = null; templeBeams?.dispose(); templeBeams = null; chasms?.dispose(); chasms = null; chasmPlan = null; vaultHall?.dispose(); vaultHall = null; vaultSanctum?.dispose(); vaultSanctum = null; templeDecor?.dispose(); templeDecor = null; ownedModels = []; ownedModelGeometry = [];
+    dressing?.dispose(); dressing = null; b4Dressing?.dispose(); b4Dressing = null; deepLava?.dispose(); deepLava = null; templeTrims?.dispose(); templeTrims = null; templeBeams?.dispose(); templeBeams = null; chasms?.dispose(); chasms = null; chasmPlan = null; vaultHall?.dispose(); vaultHall = null; vaultSanctum?.dispose(); vaultSanctum = null; templeDecor?.dispose(); templeDecor = null; rockPass?.dispose(); rockPass = null; ownedModels = []; ownedModelGeometry = [];
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; volcanicDetail = null; cameraLamp = null; landmarkState = 'pending';
     // build() can reuse this theme's base resources; theme replacement releases them.
@@ -489,5 +493,5 @@ export function createTheme(api, area) {
     }
     return false;
   }
-  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info, props: b4Dressing?.info() || null, chasms: chasms?.info, vault: { hall: vaultHall?.info, sanctum: vaultSanctum?.info }, decor: templeDecor?.info || null } } : {}) }) };
+  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info, props: b4Dressing?.info() || null, chasms: chasms?.info, vault: { hall: vaultHall?.info, sanctum: vaultSanctum?.info }, decor: templeDecor?.info, rocks: rockPass?.info || null } } : {}) }) };
 }

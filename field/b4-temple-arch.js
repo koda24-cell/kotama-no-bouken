@@ -5,7 +5,7 @@
  *  - 化粧材：台座（巾木）・コーニス・付け柱・彫り込まれたルーンの溝（発光）・天井の梁
  * 壁 1 面ごとに「神殿の壁」か「洞窟の岩肌（従来）」かを決める。通行判定には触れない。 */
 import * as THREE from 'three';
-import { glyphMaterial } from './b4-vfx.js?v=20261122-g6';
+import { glyphMaterial } from './b4-vfx.js?v=20261122-g8';
 
 const TEX = './assets/textures/floor4/cc0/';
 const loader = new THREE.TextureLoader();
@@ -47,10 +47,18 @@ export function createTempleMaterials() {
     aoMap: cc0('medieval_blocks_05', 'ao', '1k', { repeat: [1, 1] }), roughness: 1, metalness: 0,
   });
   ruin.color.setRGB(0.24, 0.17, 0.155); ruin.emissive = new THREE.Color(0x160603); ruin.emissiveMap = ruin.map;
+  // 岩盤（炭鉱・鉱床の区域）：rock_face_02（Poly Haven CC0）を暗い赤茶に
+  const rock = new THREE.MeshStandardMaterial({
+    map: cc0('rock_face_02', 'diff', '2k', { srgb: true, repeat: [1.7, 1.7] }),
+    normalMap: cc0('rock_face_02', 'nor_gl', '2k', { repeat: [1.7, 1.7] }), normalScale: new THREE.Vector2(1.6, 1.6),
+    roughnessMap: cc0('rock_face_02', 'rough', '2k', { repeat: [1.7, 1.7] }),
+    aoMap: cc0('rock_face_02', 'ao', '2k', { repeat: [1.7, 1.7] }), roughness: 1, metalness: 0,
+  });
+  rock.color.setRGB(0.4, 0.27, 0.23); rock.emissive = new THREE.Color(0x160502); rock.emissiveMap = rock.map;
   const slot = new THREE.MeshStandardMaterial({ color: 0x1a0804, emissive: 0xff5a12, emissiveIntensity: 2.4, roughness: 0.6 });
   const beam = trim;
-  for (const m of [wall, trim, floor, slot, ruin]) m.userData.b4Shared = true;   // モジュール単位で使い回す（再構築ごとに破棄しない）
-  return { wall, trim, floor, slot, beam, ruin, dispose() { for (const m of [wall, trim, floor, slot, ruin]) { for (const k of ['map', 'normalMap', 'roughnessMap', 'aoMap']) m[k]?.dispose(); m.dispose(); } } };
+  for (const m of [wall, trim, floor, slot, ruin, rock]) m.userData.b4Shared = true;   // モジュール単位で使い回す（再構築ごとに破棄しない）
+  return { wall, trim, floor, slot, beam, ruin, rock, dispose() { for (const m of [wall, trim, floor, slot, ruin, rock]) { for (const k of ['map', 'normalMap', 'roughnessMap', 'aoMap']) m[k]?.dispose(); m.dispose(); } } };
 }
 
 // 神殿の壁にする面か（壁 6.5 割、ゾーンや面ごとのばらつきは hash で決める）
