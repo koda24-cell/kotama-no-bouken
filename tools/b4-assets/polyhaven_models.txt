@@ -1,0 +1,8 @@
+# Poly Haven CC0 models -> assets/models/floor4/cc0/<id>/ (glTF)   format: <id> <res>
+rock_moss_set_01 1k
+rock_moss_set_02 1k
+namaqualand_boulder_02 1k
+namaqualand_boulder_05 1k
+boulder_01 1k
+rock_07 1k
+rock_09 1k

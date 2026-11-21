@@ -93,11 +93,74 @@ jobs:
           print(i, len(out["files"]))
           PY
           done < tools/b4-assets/polyhaven.txt
+      - name: Poly Haven model catalogue (rocks) and models (glTF 1K)
+        run: |
+          mkdir -p docs/3d/b4-assets
+          curl -fsSL "https://api.polyhaven.com/assets?t=models" -o /tmp/ph_models.json
+          python3 - <<'PY'
+          import json
+          j = json.load(open('/tmp/ph_models.json'))
+          rows = [f"{k}\t{','.join(v.get('categories', []))}\t{','.join(v.get('tags', [])[:10])}" for k, v in sorted(j.items())
+                  if any(x in ' '.join([k] + v.get('categories', []) + v.get('tags', [])).lower() for x in ('rock', 'boulder', 'stone', 'cliff', 'crystal', 'pillar', 'statue', 'ruin', 'column', 'brazier', 'chain'))]
+          open('docs/3d/b4-assets/polyhaven_model_candidates.tsv', 'w').write('\n'.join(rows) + '\n'); print(len(rows))
+          PY
+          [ -f tools/b4-assets/polyhaven_models.txt ] || exit 0
+          while read -r id res; do
+            [ -z "$id" ] && continue; case "$id" in \#*) continue;; esac
+            res=${res:-1k}; D="assets/models/floor4/cc0/$id"
+            [ -f "$D/manifest.json" ] && continue
+            curl -fsSL "https://api.polyhaven.com/files/$id" -o /tmp/m.json || { echo "::warning::missing $id"; continue; }
+            mkdir -p "$D"
+            python3 - "$id" "$D" "$res" <<'PY'
+          import hashlib, json, os, sys, urllib.request
+          i, D, R = sys.argv[1], sys.argv[2], sys.argv[3]
+          j = json.load(open('/tmp/m.json'))
+          g = j['gltf'][R]['gltf']
+          out = {"source": f"https://polyhaven.com/a/{i}", "license": "CC0 (https://polyhaven.com/license)", "files": {}}
+          items = [(os.path.basename(g['url']), g['url'])] + [(k, v['url']) for k, v in g.get('include', {}).items()]
+          for rel, url in items:
+              dst = os.path.join(D, rel); os.makedirs(os.path.dirname(dst), exist_ok=True)
+              urllib.request.urlretrieve(url, dst)
+              out["files"][rel] = {"url": url, "sha256": hashlib.sha256(open(dst, 'rb').read()).hexdigest()}
+          json.dump(out, open(f"{D}/manifest.json", 'w'), indent=1); print(i, len(out['files']))
+          PY
+          done < tools/b4-assets/polyhaven_models.txt
+      - name: OpenGameArt packs (CC0 / CC-BY, recorded per pack)
+        run: |
+          [ -f tools/b4-assets/oga.txt ] || exit 0
+          while read -r dest license page rest; do
+            [ -z "$dest" ] && continue; case "$dest" in \#*) continue;; esac
+            D="assets/vfx/oga/$dest"; [ -f "$D/manifest.json" ] && continue
+            mkdir -p "$D" /tmp/oga/$dest
+            curl -fsSL -A "Mozilla/5.0" "$page" -o /tmp/oga/$dest/page.html || { echo "::warning::page $page"; continue; }
+            grep -oE 'https?://opengameart\.org/sites/default/files/[^"]+\.(zip|png|jpg|svg)' /tmp/oga/$dest/page.html | sort -u > /tmp/oga/$dest/files.txt
+            cat /tmp/oga/$dest/files.txt
+            python3 - "$D" "$page" "$license" "$rest" <<'PY'
+          import hashlib, json, os, sys, urllib.parse, urllib.request, zipfile, io
+          D, page, lic, author = sys.argv[1:5]
+          out = {"page": page, "license": lic, "author": author, "files": {}}
+          for url in open(f"/tmp/oga/{os.path.basename(D)}/files.txt").read().split():
+              if '/styles/' in url or 'thumbnail' in url: continue
+              req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+              data = urllib.request.urlopen(req).read()
+              name = urllib.parse.unquote(url.rsplit('/', 1)[-1])
+              if name.lower().endswith('.zip'):
+                  z = zipfile.ZipFile(io.BytesIO(data))
+                  for n in z.namelist():
+                      if n.endswith('/') or '__MACOSX' in n or not n.lower().endswith(('.png', '.jpg', '.svg', '.txt', '.md')): continue
+                      dst = os.path.join(D, os.path.basename(n))
+                      open(dst, 'wb').write(z.read(n)); out["files"][os.path.basename(n)] = {"from": url + '#' + n, "sha256": hashlib.sha256(z.read(n)).hexdigest()}
+              else:
+                  dst = os.path.join(D, name); open(dst, 'wb').write(data)
+                  out["files"][name] = {"from": url, "sha256": hashlib.sha256(data).hexdigest()}
+          json.dump(out, open(os.path.join(D, 'manifest.json'), 'w'), indent=1, ensure_ascii=False); print(D, len(out['files']))
+          PY
+          done < tools/b4-assets/oga.txt
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add -A assets/vfx assets/textures/floor4/cc0 docs/3d/b4-assets
+          git add -A assets/vfx assets/textures/floor4/cc0 assets/models/floor4/cc0 docs/3d/b4-assets
           git diff --cached --quiet && exit 0
           git commit -m "assets: B4 CC0 fetch (run ${{ github.run_id }})"
           for i in 1 2 3; do git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0; sleep 5; done
