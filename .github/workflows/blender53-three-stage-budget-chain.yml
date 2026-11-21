@@ -76,7 +76,7 @@ jobs:
         id: route
         env:
           START_EPOCH: ${{ steps.start.outputs.epoch }}
-          BUDGET_DRILL_ALLOWED: ${{ github.ref == 'refs/heads/feature/blender53-budget-routed-handoff-20261121' }}
+          BUDGET_DRILL_ALLOWED: ${{ github.ref == 'refs/heads/feature/blender53-three-stage-budget-chain-20261122' }}
           DISPATCH_SIMULATION: ${{ github.event_name == 'workflow_dispatch' && inputs.simulated_elapsed_minutes || '0' }}
           INLINE_DRILL: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[blender53-inline-drill]') }}
         run: |
