@@ -30,7 +30,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_charred_stump"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(1212)
 C.reset(1212)
 
@@ -55,7 +55,9 @@ stump = D.voxel_union(pos, "stump", voxel=0.015)
 HOLLOW = ((0.06, -0.16, 0.46), (0.13, 0.16, 0.30), (0, 0, 20))
 TOP = ((0.02, 0.0, 0.98), (0.15, 0.14, 0.32), (0, 0, 0))
 GASH = ((-0.24, 0.10, 0.40), (0.07, 0.10, 0.24), (0, 0, 25))
-D.bool_diff(stump, [D.ellipsoid(f"_c{k}", c, r, rot=ro) for k, (c, r, ro) in enumerate((HOLLOW, TOP, GASH))])
+EDGE = [((0.13, -0.20, 0.66), (0.08, 0.10, 0.10), (0, 0, 40)), ((-0.02, -0.21, 0.28), (0.09, 0.09, 0.08), (0, 0, -20)),
+        ((0.16, -0.17, 0.42), (0.06, 0.09, 0.12), (0, 0, 60))]   # うろの縁を不揃いに焼け欠けさせる
+D.bool_diff(stump, [D.ellipsoid(f"_c{k}", c, r, rot=ro) for k, (c, r, ro) in enumerate((HOLLOW, TOP, GASH) + tuple(EDGE))])
 
 
 def ell_q(p, c, r, ro):
@@ -80,7 +82,7 @@ D.mesh_ground(stump, 0.0)
 
 
 def glow_fn(co):
-    return 1.0 if ell_q(co, *HOLLOW) < 1.08 else 0.0
+    return 1.0 if (ell_q(co, *HOLLOW) < 1.08 or any(ell_q(co, *e) < 1.08 for e in EDGE)) else 0.0
 
 
 def cd_fn(co):
@@ -115,6 +117,6 @@ coal = C.ember_coal("coal", glow=0.35)
 C.assign(stump, wood)
 for o in coals:
     C.assign(o, coal)
-light = (tuple(Vector(HOLLOW[0]) - off + Vector((0.0, 0.02, -0.05))), 9.0, (1.0, 0.32, 0.08))
+light = (tuple(Vector(HOLLOW[0]) - off + Vector((0.0, 0.05, -0.08))), 3.5, (1.0, 0.30, 0.07))
 C.finish(NAME, allp, version=VERSION, tex_res=1024, budget_tris=5000, refs=[57, 55, 58], lights=[light],
          notes="炭化した切り株。上は裂け木5本、うろの内側と芯の亀甲割れだけ赤熱。足元に燃え残りの炭。")
