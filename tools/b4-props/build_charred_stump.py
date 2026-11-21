@@ -30,7 +30,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_charred_stump"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(1212)
 C.reset(1212)
 
@@ -112,11 +112,11 @@ allp = [stump] + coals
 for o in allp:
     D.ensure_attrs(o)
 off = D.recenter(allp)
-wood = D.charred_wood("charred", glow_strength=5.0)
+wood = D.charred_wood("charred", glow_strength=4.5)
 coal = C.ember_coal("coal", glow=0.35)
 C.assign(stump, wood)
 for o in coals:
     C.assign(o, coal)
-light = (tuple(Vector(HOLLOW[0]) - off + Vector((0.0, 0.05, -0.08))), 3.5, (1.0, 0.30, 0.07))
+light = (tuple(Vector(HOLLOW[0]) - off + Vector((0.0, 0.05, -0.08))), 2.0, (1.0, 0.30, 0.07))
 C.finish(NAME, allp, version=VERSION, tex_res=1024, budget_tris=5000, refs=[57, 55, 58], lights=[light],
          notes="炭化した切り株。上は裂け木5本、うろの内側と芯の亀甲割れだけ赤熱。足元に燃え残りの炭。")
