@@ -160,12 +160,12 @@ for s in (-1, 1):
     if s < 0:
         ctrl = ctrl[:int(len(ctrl) * HORN_BREAK)]
         horn_break_end = ctrl[-1].copy()
-    full = 36
+    full = 37  # bezier(n=36) は 37 点
     n = len(ctrl)
     prof = [(math.cos(2 * math.pi * i / 12) * (1.0 + 0.08 * math.cos(2 * 2 * math.pi * i / 12)),
              math.sin(2 * math.pi * i / 12) * 0.86) for i in range(12)]  # わずかに扁平
     def scl(u, n=n):
-        uu = u * (n - 1) / (full - 1)
+        uu = min(1.0, u * (n - 1) / (full - 1))
         r = 0.13 * (1 - uu) ** 1.15 + 0.015
         r *= 1.0 - 0.06 * max(0.0, math.sin(uu * 14 * math.pi)) ** 4   # 年輪状の段
         return r
