@@ -1,0 +1,140 @@
+name: Blender 5.3 mid-render SIGKILL and durable checkpoint recovery drill
+on:
+  push:
+    branches:
+      - feature/blender53-midrender-kill-recovery-20261122
+    paths:
+      - '.github/workflows/blender53-midrender-kill-recovery.yml'
+      - 'tools/3d_checkpoint/kill_during_render_probe.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  packages: read
+jobs:
+  checkpoint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Confirm pinned Blender and scan source
+        run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-watergate.py qa/security/source.log
+      - name: Generate original Blender 5.3 checkpoint
+        run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
+      - name: Validate, pack and ClamAV-scan checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate --asset-id b2-watergate --iteration 1 --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate qa/security/output.log
+      - name: Upload immutable checkpoint BEFORE deliberate crash
+        uses: actions/upload-artifact@v4
+        with:
+          name: kill-drill-stage1-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate/
+          if-no-files-found: error
+          retention-days: 14
+
+  kill-probe:
+    needs: checkpoint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: kill-drill-stage1-NOT-APPROVED-${{ github.run_id }}
+          path: recovered-for-kill
+      - name: Verify checkpoint and scan kill-probe source and input
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory recovered-for-kill --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan recovered-for-kill qa/security/checkpoint.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/kill_during_render_probe.py qa/security/kill-script.log
+      - name: Intentionally SIGKILL Blender during render and require real failure
+        env:
+          RESUME_BLEND: recovered-for-kill/frozen_watergate_v09.blend
+          KILL_PROBE_SENTINEL: qa/kill-probe-reached.txt
+        run: |
+          mkdir -p qa
+          # Invoke Blender as the child process. SIGKILL never targets the runner,
+          # Docker daemon, shell, user files or the already uploaded Artifact.
+          set +e
+          blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/kill_during_render_probe.py
+          rc=$?
+          set -e
+          echo "BLENDER_KILL_PROBE_EXIT=$rc"
+          test -f qa/kill-probe-reached.txt
+          grep -Fx 'BLENDER_RENDER_PRE_REACHED' qa/kill-probe-reached.txt
+          test "$rc" -eq 137
+          echo "EXPECTED_MID_RENDER_KILL_CONFIRMED=true"
+          # Fail this job on purpose so downstream tests real failure routing.
+          exit 1
+
+  recovery-after-failure:
+    needs: [checkpoint, kill-probe]
+    if: ${{ always() && needs.checkpoint.result == 'success' && needs.kill-probe.result == 'failure' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: kill-drill-stage1-NOT-APPROVED-${{ github.run_id }}
+          path: restored
+      - name: Verify saved source and ClamAV-scan before import
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory restored --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan restored qa/security/recovered.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/resume_watergate.py qa/security/resume-script.log
+      - name: Actually resume Blender after failed predecessor
+        env:
+          RESUME_BLEND: restored/frozen_watergate_v09.blend
+          RESUME_OUTPUT: render-output/b2-watergate-recovered-after-kill
+        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/resume_watergate.py
+      - name: QA, pack, verify and scan recovered checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate-recovered-after-kill
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate-recovered-after-kill --asset-id b2-watergate-recovered-after-kill --iteration 2 --parent-checkpoint "kill-drill-stage1-${{ github.run_id }}" --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate-recovered-after-kill --asset-id b2-watergate-recovered-after-kill --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate-recovered-after-kill qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kill-drill-stage2-RECOVERED-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate-recovered-after-kill/
+          if-no-files-found: error
+          retention-days: 14
