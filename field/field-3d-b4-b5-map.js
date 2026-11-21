@@ -8,6 +8,7 @@ import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
 import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t8';
 import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t4';
+import { buildTempleDecor } from './b4-temple-decor.js?v=20261121-d2';
 import { createB4Kit } from './b4-kit.js?v=20261121-k2';
 import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261121-s2';
 import { planChasms, buildChasms } from './b4-chasm.js?v=20261121-c5';
@@ -114,7 +115,7 @@ export function createTheme(api, area) {
   let dressing = null, ownedModels = [], ownedModelGeometry = [];
   let root = null, lights = [], ornaments = 0, dynamic = [], localGeometries = [], landmarkState = 'pending';
   let b4Dressing = null, deepLava = null;
-  let oreSites = [], lavaSites = [], deepLavaTiles = [], templeFaces = [], templeTiles = [], templeTrims = null, templeBeams = null, chasmPlan = null, chasms = null, vaultHall = null, vaultSanctum = null;
+  let oreSites = [], lavaSites = [], deepLavaTiles = [], templeFaces = [], templeTiles = [], templeTrims = null, templeBeams = null, chasmPlan = null, chasms = null, vaultHall = null, vaultSanctum = null, templeDecor = null;
   const gltfLoader = new GLTFLoader();
   const localGeo = geo => (localGeometries.push(geo), geo);
   const shardGeo = localGeo(new THREE.ConeGeometry(0.22, 1.1, 5));
@@ -354,6 +355,12 @@ export function createTheme(api, area) {
     batchStatic();
     if (chasmPlan) chasms = buildChasms({ root: buildRoot, plan: chasmPlan, CELL, hash, trimMaterial: temple.trim, wallMaterial: temple.wall, lights, gLights: g.lights });
     if (temple) { templeTrims = buildTempleTrims(buildRoot, templeFaces, temple, hash, a.f === 2 ? 8.2 : 4.2); templeBeams = buildCeilingBeams(buildRoot, templeTiles, temple, CELL, a.f === 2 ? 8.1 : 4.05); }
+    if (temple) {
+      const decorTiles = [];
+      for (let ty = 1; ty < a.h - 1; ty++) for (let tx = 1; tx < a.w - 1; tx++) if ('.,'.includes(ch(tx, ty)) && !objAt.has(tx + ',' + ty)) decorTiles.push({ tx, ty });
+      const iron = new THREE.MeshStandardMaterial({ color: 0x2a2220, roughness: 0.45, metalness: 0.85 }); localGeometries.push(iron);
+      templeDecor = buildTempleDecor({ root: buildRoot, faces: templeFaces, tiles: decorTiles, beams: templeTiles, CELL, hash, ironMaterial: iron, ceiling: a.f === 2 ? 8.1 : 4.05 });
+    }
     if (temple && a.f === 2) {
       const rooms = findVaultRooms(a, ch);
       if (rooms.hall) vaultHall = buildAntigravHall({ root: buildRoot, hall: rooms.hall, CELL, hash, mats: temple, lights, gLights: g.lights });
@@ -424,7 +431,7 @@ export function createTheme(api, area) {
       } else root.traverse(o => { if (o.isInstancedMesh) o.dispose(); });
       root.parent?.remove(root);
     }
-    dressing?.dispose(); dressing = null; b4Dressing?.dispose(); b4Dressing = null; deepLava?.dispose(); deepLava = null; templeTrims?.dispose(); templeTrims = null; templeBeams?.dispose(); templeBeams = null; chasms?.dispose(); chasms = null; chasmPlan = null; vaultHall?.dispose(); vaultHall = null; vaultSanctum?.dispose(); vaultSanctum = null; ownedModels = []; ownedModelGeometry = [];
+    dressing?.dispose(); dressing = null; b4Dressing?.dispose(); b4Dressing = null; deepLava?.dispose(); deepLava = null; templeTrims?.dispose(); templeTrims = null; templeBeams?.dispose(); templeBeams = null; chasms?.dispose(); chasms = null; chasmPlan = null; vaultHall?.dispose(); vaultHall = null; vaultSanctum?.dispose(); vaultSanctum = null; templeDecor?.dispose(); templeDecor = null; ownedModels = []; ownedModelGeometry = [];
     for (const L of lights) L.off = true;
     lights = []; dynamic = []; root = null; ornaments = 0; b4Plan = null; volcanicDetail = null; cameraLamp = null; landmarkState = 'pending';
     // build() can reuse this theme's base resources; theme replacement releases them.
@@ -468,5 +475,5 @@ export function createTheme(api, area) {
     }
     return false;
   }
-  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info, props: b4Dressing?.info() || null, chasms: chasms?.info, vault: { hall: vaultHall?.info, sanctum: vaultSanctum?.info } || null } } : {}) }) };
+  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info, props: b4Dressing?.info() || null, chasms: chasms?.info, vault: { hall: vaultHall?.info, sanctum: vaultSanctum?.info }, decor: templeDecor?.info || null } } : {}) }) };
 }
