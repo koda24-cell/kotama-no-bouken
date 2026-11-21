@@ -1,1 +1,1 @@
-optimize_gpt.py
+decimate_cc0.py
