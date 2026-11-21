@@ -1,0 +1,146 @@
+name: Blender 5.3 checkpoint stage worker (isolated QA)
+on:
+  workflow_call:
+    inputs:
+      stage:
+        type: number
+        required: true
+      max_stages:
+        type: number
+        required: true
+      simulated_minutes:
+        type: number
+        required: true
+    outputs:
+      handoff_required:
+        value: ${{ jobs.stage.outputs.handoff_required }}
+      action:
+        value: ${{ jobs.stage.outputs.action }}
+permissions:
+  contents: read
+  packages: read
+  actions: read
+jobs:
+  stage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    outputs:
+      handoff_required: ${{ steps.route.outputs.handoff_required }}
+      action: ${{ steps.route.outputs.action }}
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate requested stage before any Blender execution
+        env:
+          STAGE: ${{ inputs.stage }}
+          MAX_STAGES: ${{ inputs.max_stages }}
+          SIMULATE: ${{ inputs.simulated_minutes }}
+        run: |
+          python3 - <<'PY'
+          import os
+          stage=int(os.environ["STAGE"]); maximum=int(os.environ["MAX_STAGES"])
+          simulation=int(os.environ["SIMULATE"])
+          assert 1 <= stage <= maximum <= 12
+          assert simulation in (0,71)
+          print("STAGE_MAX_VALIDATED", stage, maximum)
+          PY
+      - name: Record stage start
+        id: start
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
+      - name: Confirm Blender and scan sources
+        run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-watergate.py qa/security/source.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/resume_watergate.py qa/security/resume.log
+      - name: Download preceding checkpoint when resuming
+        if: ${{ inputs.stage > 1 }}
+        uses: actions/download-artifact@v4
+        with:
+          name: reusable-stage-${{ inputs.stage - 1 }}-NOT-APPROVED-${{ github.run_id }}
+          path: recovered
+      - name: Verify preceding checkpoint and scan before import
+        if: ${{ inputs.stage > 1 }}
+        env:
+          STAGE: ${{ inputs.stage }}
+          COMMIT: ${{ github.sha }}
+        run: |
+          PARENT=$((STAGE-1))
+          if [ "$PARENT" -eq 1 ]; then
+            ASSET="b2-watergate"
+            SCRIPT="tools/b2-render/build-watergate.py"
+          else
+            ASSET="b2-watergate-stage-$PARENT"
+            SCRIPT="tools/3d_checkpoint/resume_watergate.py"
+          fi
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory recovered --asset-id "$ASSET" --source-script "$SCRIPT" --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan recovered qa/security/previous-checkpoint.log
+      - name: Generate initial Blender model
+        if: ${{ inputs.stage == 1 }}
+        run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
+      - name: Resume actual previous Blender model
+        if: ${{ inputs.stage > 1 }}
+        env:
+          STAGE: ${{ inputs.stage }}
+          RESUME_OUTPUT: render-output/b2-watergate-stage-${{ inputs.stage }}
+        run: |
+          if [ "$STAGE" -eq 2 ]; then
+            export RESUME_BLEND="recovered/frozen_watergate_v09.blend"
+          else
+            export RESUME_BLEND="recovered/watergate_resumed_v02.blend"
+          fi
+          blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/resume_watergate.py
+      - name: QA, pack, verify and scan own output
+        env:
+          STAGE: ${{ inputs.stage }}
+          COMMIT: ${{ github.sha }}
+        run: |
+          if [ "$STAGE" -eq 1 ]; then
+            DIR="render-output/b2-watergate"
+            ASSET="b2-watergate"
+            SCRIPT="tools/b2-render/build-watergate.py"
+            PARENT_ARG=""
+          else
+            DIR="render-output/b2-watergate-stage-$STAGE"
+            ASSET="b2-watergate-stage-$STAGE"
+            SCRIPT="tools/3d_checkpoint/resume_watergate.py"
+            PARENT=$((STAGE-1))
+            PARENT_ARG="reusable-stage-$PARENT-${{ github.run_id }}"
+          fi
+          python3 tools/3d_checkpoint/render_qa.py --directory "$DIR"
+          if [ -n "$PARENT_ARG" ]; then
+            python3 tools/3d_checkpoint/checkpoint.py pack --directory "$DIR" --asset-id "$ASSET" --iteration "$STAGE" --parent-checkpoint "$PARENT_ARG" --source-script "$SCRIPT" --source-commit "$COMMIT"
+          else
+            python3 tools/3d_checkpoint/checkpoint.py pack --directory "$DIR" --asset-id "$ASSET" --iteration "$STAGE" --source-script "$SCRIPT" --source-commit "$COMMIT"
+          fi
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory "$DIR" --asset-id "$ASSET" --source-script "$SCRIPT" --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan "$DIR" qa/security/output.log
+      - name: Upload verified checkpoint before making continuation decision
+        uses: actions/upload-artifact@v4
+        with:
+          name: reusable-stage-${{ inputs.stage }}-NOT-APPROVED-${{ github.run_id }}
+          path: ${{ inputs.stage == 1 && 'render-output/b2-watergate/' || format('render-output/b2-watergate-stage-{0}/', inputs.stage) }}
+          if-no-files-found: error
+          retention-days: 14
+      - name: Decide handoff or finish using bounded stage plan
+        id: route
+        env:
+          START_EPOCH: ${{ steps.start.outputs.epoch }}
+          BUDGET_DRILL_ALLOWED: ${{ github.ref == 'refs/heads/feature/blender53-reusable-12-stage-chain-20261122' }}
+          STAGE: ${{ inputs.stage }}
+          MAX_STAGES: ${{ inputs.max_stages }}
+          SIMULATE: ${{ inputs.simulated_minutes }}
+        run: |
+          python3 tools/3d_checkpoint/stage_route.py --completed-stage "$STAGE" --max-stages "$MAX_STAGES" --start-epoch "$START_EPOCH" --simulate-minutes "$SIMULATE"
+          if [ "$STAGE" -eq "$MAX_STAGES" ]; then
+            test "$(sed -n 's/^action=//p' "$GITHUB_OUTPUT" | tail -1)" = finish
+            echo "BOUNDED_CHAIN_FINISHED=$STAGE"
+          else
+            test "$(sed -n 's/^handoff_required=//p' "$GITHUB_OUTPUT" | tail -1)" = true
+          fi
