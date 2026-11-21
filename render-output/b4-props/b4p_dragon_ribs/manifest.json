@@ -1,6 +1,6 @@
 {
   "asset": "b4p_dragon_ribs",
-  "version": "v2",
+  "version": "v3",
   "blender": "4.2.3 LTS",
   "triangles": 11396,
   "budget_triangles": 20000,
@@ -19,13 +19,13 @@
   },
   "bbox_m": [
     4.362,
-    2.889,
-    3.174
+    2.83,
+    3.128
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_dragon_ribs.glb",
-  "glb_bytes": 2453596,
+  "glb_bytes": 2393412,
   "cc0_textures": {
     "rock_face_02_diff_1k.jpg": {
       "source": "https://polyhaven.com/a/rock_face_02",
@@ -49,16 +49,16 @@
     15
   ],
   "sha256": {
-    "b4p_dragon_ribs.glb": "09504d1346b496a325d940e13c1fe83e4ff915e22ac56f1b088879a621082495",
-    "b4p_dragon_ribs_volcanic_front.png": "53fe4825ac8db6424ffa1db8aa08b70409de5986ab554c63e16dc94bc8335c2a",
-    "b4p_dragon_ribs_volcanic_side.png": "1aac95186dbf7e385a1f9c08c59014cbcb96f8d160b400b8b1f2d9704e719d22",
-    "b4p_dragon_ribs_volcanic_angle.png": "e2419682526353b41f261cdb83531d9c86561757f4de005f7de62c644579252b",
-    "b4p_dragon_ribs_volcanic_top.png": "2883e6a7687b4e3174bee4f9456082e7fe7c36eb5c082c31c2cb9955b7204a3f",
-    "b4p_dragon_ribs_volcanic_close.png": "dc571db2b6b0a8d8054341b32763799087fa0b942413f9cb9b9bc4b3f80bc831",
-    "b4p_dragon_ribs_volcanic_back.png": "4d9dadf05f4bebcd43eec34fe624cc67920d0427d5a3b02bd9daa0e6a4b4e8d6",
-    "b4p_dragon_ribs_studio_front.png": "4b5de38a3f1b3c62eee0ce9146cb06278c7a3d82aa95f7c7a7861ef5b8be5d11",
-    "b4p_dragon_ribs_studio_angle.png": "dc7f97c002cd72f7a77d64063cdfe87c944dd9e0321711c882d9dda7d8212ef2",
-    "b4p_dragon_ribs_studio_scale.png": "d4c096bd8592239a45359f239afd97425e696c9dd08191a1b9113f8ca1906d98"
+    "b4p_dragon_ribs.glb": "24556e8bd5fcda71a8982b746208a0114fc6cc7afb44d41b1bdd5bc54595026e",
+    "b4p_dragon_ribs_volcanic_front.png": "1d11a0a6d6b83fc425b935353bb0037deaf886698f681392048ebd16aa70a205",
+    "b4p_dragon_ribs_volcanic_side.png": "1548feb31748c005d7c0e5abc73a4551839d433c4cfa9c97aaaba2b472152564",
+    "b4p_dragon_ribs_volcanic_angle.png": "504419028f86e38d70bc2340b2ee465d4aacee40d7b48aeb8c8af9c681b69b35",
+    "b4p_dragon_ribs_volcanic_top.png": "a82670875f3bc9e657368dba57b78276a898eece2d956dbf80e688e1fef17626",
+    "b4p_dragon_ribs_volcanic_close.png": "29dd564bfa6dc8a13fdf13149a628242311a5b323eec10193bc79dbe52078bdf",
+    "b4p_dragon_ribs_volcanic_back.png": "371f2e1bafea3758e8253fc0fde175f8283844d647d442f5db822d5ab5295b9f",
+    "b4p_dragon_ribs_studio_front.png": "17c9dccb960b357ddd80270e6557f3c299ef1e74219f41c91ccec878aa2907c3",
+    "b4p_dragon_ribs_studio_angle.png": "77ac688410b2cf4e58fd11e7294fe0ce8950c63f8c4170b6e3b15a71ea83b134",
+    "b4p_dragon_ribs_studio_scale.png": "e3a881f8c1da4e8112ce2201452878c43341d00f7660fe2de27d0b3b7a8dfe89"
   },
   "renders": [
     "b4p_dragon_ribs_volcanic_front.png",
