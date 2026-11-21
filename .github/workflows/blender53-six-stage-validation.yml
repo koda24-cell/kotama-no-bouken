@@ -1,4 +1,5 @@
-name: Blender 5.3 six-stage checkpoint endurance validation
+name: Blender 5.3 six-stage checkpoint continuation validation
+# Isolated QA: six stages use 71-minute simulated decisions, not actual endurance.
 on:
   push:
     branches:
