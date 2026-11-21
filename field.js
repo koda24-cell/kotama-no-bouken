@@ -26,9 +26,9 @@ const FIELD_FOE_SPEED = { patrol: 52, chase: 84 };   // 旧：自由移動時の
 // graceSteps：逃走後にFOEを止める歩数。世界樹の迷宮どおり「FOEが移動前のマスへ戻る」だけにしたため 0（止めない）
 const FIELD_FOE_RULES = { loseTurns: 3, graceSteps: 0, nearSight: 1.5 };
 const FIELD_GATHER_USES = 2;
-const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G"]);
+const FIELD_SOLID = new Set(["#", "~", "S", "T", "?", "G", "D"]);   // D = 像などの飾り（通れない床。4層12Fの竜の守護像）
 const FIELD_SAFE = new Set(["_", "P", "E", "B", "<", ">"]);
-const FIELD_TILE_CLASS = { "#":"tile-wall", ".":"tile-floor", ",":"tile-path", "*":"tile-grass", "~":"tile-water", "_":"tile-safe", "P":"tile-safe", "E":"tile-exit", "B":"tile-gate", "S":"tile-safe", "T":"tile-floor", "?":"tile-floor", "G":"tile-floor", "<":"tile-stairs-up", ">":"tile-stairs-down" };
+const FIELD_TILE_CLASS = { "#":"tile-wall", ".":"tile-floor", ",":"tile-path", "*":"tile-grass", "~":"tile-water", "_":"tile-safe", "P":"tile-safe", "E":"tile-exit", "B":"tile-gate", "S":"tile-safe", "T":"tile-floor", "?":"tile-floor", "G":"tile-floor", "D":"tile-wall", "<":"tile-stairs-up", ">":"tile-stairs-down" };
 const FIELD_DIRS = { up:{dx:0,dy:-1}, down:{dx:0,dy:1}, left:{dx:-1,dy:0}, right:{dx:1,dy:0} };
 const FIELD_ENCOUNTER_DELAY = 900;
 const FIELD_MATERIAL_FALLBACK = { slime_jelly: "スライムゼリー" };
