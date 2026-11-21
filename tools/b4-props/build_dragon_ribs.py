@@ -25,7 +25,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_dragon_ribs"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(1414)
 C.reset(1414)
 
@@ -33,7 +33,7 @@ SPINE_X = -1.85
 N_VERT = 6
 YS = [-0.95 + 1.9 * k / (N_VERT - 1) for k in range(N_VERT)]
 TOP_Z = 3.2
-TIP_X = 1.95
+TIP_X = 1.75
 BROKEN = {1: 0.55, 4: 0.62}
 
 
@@ -54,11 +54,11 @@ vparts = []
 for k, y in enumerate(YS):
     yy = y + rnd.uniform(-0.03, 0.03)
     z = 0.12 + rnd.uniform(-0.03, 0.03)
-    vparts.append(E(f"vb_{k}", (SPINE_X, yy, z), (0.20, 0.15, 0.19), rot=(rnd.uniform(-8, 8), 0, rnd.uniform(-10, 10))))
-    vparts.append(E(f"vd_{k}", (SPINE_X, yy - 0.16, z), (0.17, 0.05, 0.17)))  # 椎間の円盤の縁
-    ln = rnd.uniform(0.38, 0.5) if k != 3 else 0.22  # 1本は棘突起が折れている
-    vparts.append(D.tube(f"vs_{k}", C.bezier((SPINE_X, yy, z + 0.12), (SPINE_X - 0.03, yy + 0.06, z + 0.12 + ln * 0.6),
-                                             (SPINE_X - 0.08, yy + 0.12, z + 0.12 + ln), n=6), 0.075, 0.03 if k != 3 else 0.06, sides=8))
+    vparts.append(E(f"vb_{k}", (SPINE_X, yy, z), (0.26, 0.16, 0.24), rot=(rnd.uniform(-8, 8), 0, rnd.uniform(-10, 10))))
+    vparts.append(E(f"vd_{k}", (SPINE_X, yy - 0.17, z), (0.22, 0.05, 0.21)))  # 椎間の円盤の縁
+    ln = rnd.uniform(0.45, 0.6) if k != 3 else 0.25  # 1本は棘突起が折れている
+    vparts.append(D.tube(f"vs_{k}", C.bezier((SPINE_X, yy, z + 0.15), (SPINE_X - 0.04, yy + 0.07, z + 0.15 + ln * 0.6),
+                                             (SPINE_X - 0.10, yy + 0.14, z + 0.15 + ln), n=6), 0.09, 0.035 if k != 3 else 0.07, sides=8))
     for s in (-1, 1):
         vparts.append(D.tube(f"vt_{k}_{s}", C.bezier((SPINE_X, yy, z + 0.05), (SPINE_X + 0.13 * s, yy, z + 0.08),
                                                        (SPINE_X + 0.26 * s, yy + 0.03, z + 0.02), n=5), 0.05, 0.025, sides=7))
@@ -71,11 +71,12 @@ ribs = []
 frags = []
 for k, y in enumerate(YS):
     yy = y + rnd.uniform(-0.04, 0.04)
-    top = TOP_Z * rnd.uniform(0.93, 1.0) * (1 - 0.06 * abs(y))
-    p0 = Vector((SPINE_X + 0.08, yy, 0.30))
-    p1 = Vector((SPINE_X + 0.35, yy, top * 0.85))
-    p2 = Vector((0.4, yy + rnd.uniform(-0.05, 0.05), top * 1.1))
-    p3 = Vector((TIP_X + rnd.uniform(-0.1, 0.1), yy + rnd.uniform(-0.08, 0.08), -0.15))
+    top = TOP_Z * rnd.uniform(0.94, 1.0) * (1 - 0.05 * abs(y))
+    splay = yy * 0.22  # 肋骨は外へ少し開き、後ろへ傾く
+    p0 = Vector((SPINE_X + 0.10, yy, 0.32))
+    p1 = Vector((SPINE_X + 0.15, yy + splay * 0.3, top * 1.22))
+    p2 = Vector((0.55, yy + splay + rnd.uniform(-0.05, 0.05), top * 1.30))
+    p3 = Vector((TIP_X + rnd.uniform(-0.1, 0.1), yy + splay * 1.2 + rnd.uniform(-0.08, 0.08), -0.15))
     pts = C.bezier(p0, p1, p2, p3, n=34)
     cut = BROKEN.get(k)
     keep = pts[:int(len(pts) * cut)] if cut else pts
@@ -83,9 +84,10 @@ for k, y in enumerate(YS):
     def up(i, p, t):
         return Vector((0, 1, 0)).cross(t)
 
-    prof = [(0.09 * math.cos(2 * math.pi * i / 10), 0.05 * math.sin(2 * math.pi * i / 10)) for i in range(10)]
+    prof = [(0.13 * math.cos(2 * math.pi * i / 10), 0.07 * math.sin(2 * math.pi * i / 10)) for i in range(10)]
     n = len(keep)
-    ob = C.sweep(f"rib_{k}", keep, prof, up_fn=up, scale_fn=lambda u, n=n, full=len(pts): 1.0 - 0.5 * (u * n / full))
+    ob = C.sweep(f"rib_{k}", keep, prof, up_fn=up,
+                 scale_fn=lambda u, n=n, full=len(pts): (1.0 - 0.55 * (u * n / full)) * (1.0 + 0.25 * max(0.0, 0.12 - u * n / full) / 0.12))
     D.displace_along_normal(ob, lambda co, nr: 0.5 * weather(co, nr))
     D.mesh_ground(ob, 0.0)
     ribs.append(ob)
@@ -96,7 +98,7 @@ for k, y in enumerate(YS):
         start = Vector((0.6 + rnd.uniform(-0.3, 0.3), yy + rnd.uniform(-0.5, 0.5), 0.07))
         d = Vector((math.cos(a), math.sin(a), 0))
         seg = [start + d * (L * 0.5) * i / 8 + Vector((0, 0, 0.05 * math.sin(math.pi * i / 8))) for i in range(9)]
-        fr = C.sweep(f"rib_frag_{k}", seg, [(0.06 * math.cos(2 * math.pi * i / 8), 0.04 * math.sin(2 * math.pi * i / 8)) for i in range(8)],
+        fr = C.sweep(f"rib_frag_{k}", seg, [(0.085 * math.cos(2 * math.pi * i / 8), 0.05 * math.sin(2 * math.pi * i / 8)) for i in range(8)],
                      up_fn=lambda i, p, t: Vector((0, 0, 1)), scale_fn=lambda u: 1.0 - 0.4 * u)
         D.mesh_ground(fr, 0.0)
         frags.append((fr, start))
@@ -127,7 +129,7 @@ for k in range(12):
 
 allp = bones + rocks
 off = D.recenter(allp)
-bone = D.bone_mat("bone", soot_lo=0.0, soot_hi=0.4, scale=1.4)
+bone = D.bone_mat("bone", soot_lo=0.0, soot_hi=0.6, scale=1.4)
 basalt = D.basalt("basalt", hairline=0.0)
 for o in bones:
     C.assign(o, bone)
