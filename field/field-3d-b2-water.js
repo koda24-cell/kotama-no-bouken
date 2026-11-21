@@ -20,7 +20,7 @@ import { makeCrystalCluster, makeCrystalMaterials } from './b2-crystals.js?v=202
 import { createB2WaterTiles, B2V4W_REMOVE_STEPPING_STONES } from './b2-water-tiles.js?v=20261119-w4';   // [B2V4-W] 危険な水面（GPT 水面タイル）・床の模様
 import { createFlora, floraMaterial, floraMaterialClass, floraTint } from './b2-flora.js?v=20261119-f4';   // [B2V4-F] 花の配置と見た目
 import { createSetpieces, SP_ROLES } from './b2-setpieces.js?v=20261119-s4';   // [B2V4-S] 階段・橋・水門・柱群・背景モニュメント
-import { createB2Kit } from './b2-kit.js?v=20261121-3';   // 2層専用の配置物（セーブ・石碑・宝箱・補給の木箱）
+import { createB2Kit } from './b2-kit.js?v=20261122-i5';   // 2層専用の配置物（セーブ・石碑・宝箱・補給の木箱）
 
 export const B2_BASE = './assets/3d/dungeons/b2_water_source/';
 export const B2_GLB = B2_BASE + 'models/floor2-water-source-quality-v3.glb';
@@ -2286,6 +2286,12 @@ export async function createTheme(api) {
         e.bars = e.obj.getObjectByName('Water_Gate_Bars');
       }
       if (e.bars) { e.bars.position.y = st === 'open' ? 3.0 : 0; e.bars.updateMatrix(); e.bars.updateMatrixWorld(true); }
+      return true;
+    }
+    if (o.kind === 'gather') {   // 霜の採取ポイント（1層の苔の採掘点・草・丸太を使わない）
+      const kind = st.split(':')[0], k = kind === 'chop' ? 'chop' : kind === 'mine' ? 'mine' : 'herb';
+      if (!e.obj) { e.obj = api.place(g.world, getB2Kit().gather[k], x, 0, z, e.ry, 1); e.obj.userData.b2Kit = true; }
+      api.dimObj(e.obj, st.endsWith('empty'));
       return true;
     }
     if (o.kind === 'chest' || o.kind === 'cache') {   // 青鉄と霜の宝箱（1層の宝箱は使わない）

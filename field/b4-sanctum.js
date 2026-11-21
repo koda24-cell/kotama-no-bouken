@@ -16,8 +16,8 @@
  *   ・艶のある黒い床＋魔法陣（半径 5.5 m）、光の筋 2 本、金色の火の粉。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261121-v4';
-import { addUplight } from './b4-chasm.js?v=20261121-c5';
+import { B4_VFX_TIME, glyphMaterial, createFlames, createEmbers, lightShaftMaterial } from './b4-vfx.js?v=20261122-i5';
+import { addUplight, hazeMaterial, parapetGeometry } from './b4-chasm.js?v=20261122-i5';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -76,7 +76,14 @@ export function buildAntigravHall({ root, hall, CELL, hash, mats, lights, gLight
   const cx = (px0 + px1) / 2 * CELL, cz = (pz0 + pz1) / 2 * CELL;
   const halfX = (px1 - px0 + 1) * CELL / 2 - 0.9, halfZ = (pz1 - pz0 + 1) * CELL / 2 - 0.9;
   const stone = addUplight(mats.trim.clone(), { base: 0.06, k: 0.55, max: 0.5, under: 2 });
-  stone.color = new THREE.Color(0x3a2a26); stone.roughness = 0.35; stone.metalness = 0.2;   // 黒曜の艶
+  stone.color = new THREE.Color(0x2a1e1c); stone.roughness = 0.3; stone.metalness = 0.25;   // 黒曜の艶
+  // 黒曜の割れ目の発光＋表面を上へ流れるルーンの光（ワールド座標のノイズ。2026-11-22「ただの物感」対策）
+  { const prev = stone.onBeforeCompile; stone.onBeforeCompile = (sh, r) => { prev?.call(stone, sh, r);
+      sh.fragmentShader = sh.fragmentShader.replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+        { vec3 w = vUpW; float cr = abs(upN(w.xz * 1.7 + w.y * 0.9) - 0.5) + abs(upN(w.zy * 2.3 + 4.0) - 0.5) * 0.6;
+          float crack = smoothstep(0.06, 0.0, cr) ;
+          float flow = smoothstep(0.92, 1.0, sin(w.y * 2.6 - uUpTime * 2.2 + upN(w.xz * 0.8) * 6.0)) * step(0.55, upN(w.xz * 3.0 + floor(w.y * 1.3)));
+          totalEmissiveRadiance += vec3(1.0, 0.32, 0.06) * (crack * 1.4 + flow * 0.9); }`); }; }
   const shaftG = obeliskGeometry(), capG = capGeometry(), bandG = bandGeometry();
   const band = glyphMaterial({ style: 2, seed: 3.3, intensity: 1.35, speed: 0.6 });
   owned.push(stone, shaftG, capG, bandG, band);
@@ -117,10 +124,19 @@ export function buildAntigravHall({ root, hall, CELL, hash, mats, lights, gLight
     group.add(mesh); owned.push(g, m); rings.push({ mesh, spin: (i % 2 ? -1 : 1) * (0.06 + i * 0.02), tilt });
   }
   embersSrc.push({ x: cx, z: cz, y0: -0.4, spread: Math.min(halfX, halfZ) + 0.6, rise: 9, count: 140, hot: 1 });
+  // 柱の根元から吸い上げられる光の粒
+  floaters.filter(f => !f.flip).forEach(f => embersSrc.push({ x: f.x, z: f.z, y0: f.y0 - 0.2, spread: f.w * 0.45, rise: f.h + 1.5, count: 26, hot: 1 }));
+  // 穴の上の熱の霞（2層）
+  { const hm = hazeMaterial(); owned.push(hm); for (const y of [0.3]) { const g = new THREE.PlaneGeometry((px1 - px0 + 1) * CELL, (pz1 - pz0 + 1) * CELL).rotateX(-Math.PI / 2); owned.push(g); const m = new THREE.Mesh(g, hm); m.position.set(cx, y, cz); m.renderOrder = 3; group.add(m); } }
   const L1 = { world: new THREE.Vector3(cx, 1.4, cz), color: 0xff6a22, intensity: 4.5, range: 15, off: false };
   const L2 = { world: new THREE.Vector3(cx, 6.2, cz), color: 0xff8a3a, intensity: 2.6, range: 12, off: false };
   for (const L of [L1, L2]) { lights.push(L); gLights.push(L); }
   const embers = createEmbers(embersSrc); embers.mesh.name = 'b4:antigrav-embers'; group.add(embers.mesh); owned.push(embers);
+  // 破片と柱を結ぶ光の糸（毎フレーム更新）
+  const threadPos = new Float32Array(shards.length * 2 * 3), threadG = new THREE.BufferGeometry(); threadG.setAttribute('position', new THREE.BufferAttribute(threadPos, 3));
+  const threadM = new THREE.LineBasicMaterial({ color: 0xff7a2a, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false });
+  const threads = new THREE.LineSegments(threadG, threadM); threads.frustumCulled = false; threads.name = 'b4:antigrav-threads'; group.add(threads); owned.push(threadG, threadM);
+  const ringBase = rings.map(r => r.mesh.material.uniforms.uInt.value);
 
   const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), E = new THREE.Euler(), P = new THREE.Vector3(), S = new THREE.Vector3(), V = new THREE.Vector3();
   function update() {
@@ -144,12 +160,108 @@ export function buildAntigravHall({ root, hall, CELL, hash, mats, lights, gLight
       E.set(t * 0.3 + i, t * 0.2, i); Q.setFromEuler(E);
       shardI.setMatrixAt(i, M.compose(P.set(cx + Math.cos(a) * s.r, s.y + Math.sin(t * 0.5 + i) * 0.4, cz + Math.sin(a) * s.r * (halfZ / halfX)), Q, S.setScalar(s.s)));
     });
-    for (const r of rings) r.mesh.rotation.y = t * r.spin;
+    rings.forEach((r, i) => { r.mesh.rotation.y = t * r.spin; r.mesh.material.uniforms.uInt.value = ringBase[i] * (0.65 + 0.45 * Math.max(0, Math.sin(t * 6.2832 / floaters[i % floaters.length].per + floaters[i % floaters.length].ph))); });
+    shards.forEach((sh, i) => {
+      const a = sh.a + t * sh.w, sx = cx + Math.cos(a) * sh.r, sy = sh.y + Math.sin(t * 0.5 + i) * 0.4, sz = cz + Math.sin(a) * sh.r * (halfZ / halfX);
+      const f = floaters[i % 9], fy = f.y0 + Math.sin(t * 6.2832 / f.per + f.ph) * f.amp + f.h * (0.3 + 0.4 * ((i * 0.37) % 1));
+      threadPos.set([sx, sy, sz, f.x, fy, f.z], i * 6);
+    });
+    threadG.attributes.position.needsUpdate = true;
+    threadM.opacity = 0.3 + 0.2 * Math.sin(t * 3.1);
     shaftI.instanceMatrix.needsUpdate = capI.instanceMatrix.needsUpdate = bandI.instanceMatrix.needsUpdate = shardI.instanceMatrix.needsUpdate = true;
   }
   update();
   root.add(group);
   return { group, update, info: { floaters: floaters.length, rings: rings.length }, dispose() { owned.forEach(o => o.dispose()); group.removeFromParent(); } };
+}
+
+// ---------------------------------------------------------------- 参道（溶岩に挟まれた道）を神殿の回廊にする
+// 両側の溶岩の帯の外に、高さ 8.2 m の連続した神殿の壁（柱形 4 m ごと、尖頭の壁龕に火鉢とルーン柱を交互、上下の化粧材）。
+// 参道と溶岩の境に低い縁石（0.35 m）、入口に神殿の門。
+function nicheArchGeo() {
+  const s = new THREE.Shape();
+  s.moveTo(-1.25, 0); s.lineTo(-1.25, 3.6); s.quadraticCurveTo(-1.25, 5.0, 0, 5.4); s.quadraticCurveTo(1.25, 5.0, 1.25, 3.6); s.lineTo(1.25, 0);
+  s.lineTo(1.0, 0); s.lineTo(1.0, 3.6); s.quadraticCurveTo(1.0, 4.8, 0, 5.1); s.quadraticCurveTo(-1.0, 4.8, -1.0, 3.6); s.lineTo(-1.0, 0); s.lineTo(-1.25, 0);
+  return new THREE.ExtrudeGeometry(s, { depth: 0.22, bevelEnabled: false, curveSegments: 10 });
+}
+export function buildCauseway({ root, map, ch, CELL, hash, mats, lights, gLights }) {
+  const group = new THREE.Group(); group.name = 'b4:causeway-temple';
+  const owned = [];
+  const cw = []; for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) if (ch(x, y) === ',') cw.push([x, y]);
+  if (!cw.length) { root.add(group); return { group, info: {}, dispose() {} }; }
+  const band = new Set();
+  for (const [x, y] of cw) for (const [dx] of [[1], [-1]]) for (let k = 1; k <= 3 && ch(x + dx * k, y) === '~'; k++) band.add((x + dx * k) + ',' + y);
+  const bx = [...band].map(k => +k.split(',')[0]), by = [...band].map(k => +k.split(',')[1]);
+  const x0 = Math.min(...bx), x1 = Math.max(...bx), z0 = Math.min(...by), z1 = Math.max(...by);
+  const len = (z1 - z0 + 1) * CELL, zc = (z0 + z1) / 2 * CELL, H = 8.2;
+  const wallM = mats.wall.clone(); if (wallM.map) { wallM.map = wallM.map.clone(); wallM.map.repeat.set(len / 4.08 * 1.6, H / 4.2 * 1.6); wallM.map.needsUpdate = true; }
+  const trim = mats.trim, dark = new THREE.MeshStandardMaterial({ color: 0x120b0a, roughness: 0.8 });
+  owned.push(wallM, dark); if (wallM.map !== mats.wall.map) owned.push(wallM.map);
+  const parts = { trim: [], dark: [] }, flameSites = [], emberSrc = [];
+  const runeCol = glyphMaterial({ style: 10, seed: 2.7, intensity: 0.7, speed: 0.5 }); owned.push(runeCol);
+  const runeG = new THREE.PlaneGeometry(0.7, 3.0); owned.push(runeG);
+  const archG = nicheArchGeo(); owned.push(archG);
+  for (const side of [-1, 1]) {
+    const xw = side < 0 ? (x0 - 0.5) * CELL : (x1 + 0.5) * CELL, inward = -side;
+    const wg = new THREE.BoxGeometry(0.8, H, len + 0.8); wg.translate(xw, H / 2, zc); owned.push(wg);   // 内側の面が xw に来るよう外へ 0.4 m ずらす
+    const wall = new THREE.Mesh(wg, wallM); wall.position.x = side * 0.4; wall.name = 'b4:causeway-wall'; group.add(wall);
+    const face = xw + inward * 0.0;
+    parts.trim.push(new THREE.BoxGeometry(0.5, 0.55, len + 0.8).translate(face + inward * 0.25, 0.275, zc));
+    parts.trim.push(new THREE.BoxGeometry(0.6, 0.45, len + 0.8).translate(face + inward * 0.3, H - 0.6, zc));
+    parts.trim.push(new THREE.BoxGeometry(0.4, 0.16, len + 0.8).translate(face + inward * 0.2, 4.6, zc));
+    for (let k = 0; k <= z1 - z0 + 1; k++) {
+      const z = (z0 - 0.5 + k) * CELL;
+      parts.trim.push(new THREE.BoxGeometry(0.75, H - 0.4, 0.75).translate(face + inward * 0.37, (H - 0.4) / 2, z));
+      parts.trim.push(new THREE.BoxGeometry(1.0, 0.5, 1.0).translate(face + inward * 0.45, 0.25, z), new THREE.BoxGeometry(1.0, 0.4, 1.0).translate(face + inward * 0.45, H - 1.0, z));
+      if (k > z1 - z0) continue;
+      const zm = z + CELL / 2;
+      const a = archG.clone(); a.rotateY(inward > 0 ? Math.PI / 2 : -Math.PI / 2); a.translate(face + inward * 0.02, 0.55, zm); parts.trim.push(a);
+      parts.dark.push(new THREE.BoxGeometry(0.06, 4.4, 2.0).translate(face + inward * 0.02, 0.55 + 2.2, zm));
+      if ((k + (side > 0 ? 1 : 0)) % 2 === 0) {
+        parts.trim.push(new THREE.BoxGeometry(0.7, 1.0, 0.7).translate(face + inward * 0.5, 0.5 + 0.55, zm), new THREE.CylinderGeometry(0.42, 0.24, 0.3, 8).translate(face + inward * 0.5, 1.75, zm));
+        flameSites.push({ x: face + inward * 0.5, y: 1.85, z: zm, w: 0.9, h: 1.7, seed: hash(k, side, 1401), intensity: 1.0 });
+        emberSrc.push({ x: face + inward * 0.5, z: zm, y0: 2.2, spread: 0.3, rise: 4, count: 16, hot: 1 });
+        if (lights.length < 60) { const L = { world: new THREE.Vector3(face + inward * 1.2, 2.6, zm), color: 0xff7a2a, intensity: 2.4, range: 9, off: false }; lights.push(L); gLights.push(L); }
+      } else {
+        const r = new THREE.Mesh(runeG, runeCol); r.position.set(face + inward * 0.06, 2.9, zm); r.rotation.y = inward > 0 ? Math.PI / 2 : -Math.PI / 2; r.renderOrder = 4; group.add(r);
+      }
+    }
+  }
+  // 縁石（溶岩と歩ける床の境）
+  for (const k of band) {
+    const [x, y] = k.split(',').map(Number);
+    for (const [dx, dz] of DIRS) {
+      const c = ch(x + dx, y + dz); if (!c || c === '#' || c === '~') continue;
+      const ex = x * CELL + dx * CELL / 2, ez = y * CELL + dz * CELL / 2;
+      const g = dx ? new THREE.BoxGeometry(0.45, 0.35, CELL) : new THREE.BoxGeometry(CELL, 0.35, 0.45); g.translate(ex, 0.12, ez); parts.trim.push(g);
+    }
+  }
+  const tg = mergeGeometries(parts.trim.map(g => g.index ? g.toNonIndexed() : g), false), dg = mergeGeometries(parts.dark.map(g => g.index ? g.toNonIndexed() : g), false);
+  [...parts.trim, ...parts.dark].forEach(g => g.dispose()); owned.push(tg, dg);
+  const tm = new THREE.Mesh(tg, trim); tm.name = 'b4:causeway-trim'; const dm = new THREE.Mesh(dg, dark); dm.name = 'b4:causeway-niches'; group.add(tm, dm);
+  const fl = createFlames(flameSites, 'fire'); fl.mesh.name = 'b4:causeway-flames'; group.add(fl.mesh); owned.push(fl);
+  const em = createEmbers(emberSrc); em.mesh.name = 'b4:causeway-embers'; group.add(em.mesh); owned.push(em);
+  root.add(group);
+  return { group, band, info: { length: len, braziers: flameSites.length }, dispose() { owned.forEach(o => o.dispose()); group.removeFromParent(); } };
+}
+
+// 柱の間の穴：まわりを欄干で囲う（GPT 溶岩の段差の裏を隠す。段差は小さい版だけにする）
+export function buildPitRail({ root, hall, ch, CELL, hash, mats }) {
+  const group = new THREE.Group(); group.name = 'b4:pit-rail'; const owned = [];
+  const [px0, pz0, px1, pz1] = hall.pit;
+  const geos = [];
+  for (let y = pz0; y <= pz1; y++) for (let x = px0; x <= px1; x++) {
+    if (ch(x, y) !== '~') continue;
+    for (const [dx, dz] of DIRS) {
+      const c = ch(x + dx, y + dz); if (!c || c === '~' || c === '#') continue;
+      const g = parapetGeometry(hash, x * 31 + y * 7 + dx * 3 + dz);
+      if (dx) g.rotateY(Math.PI / 2);
+      g.translate(x * CELL + dx * (CELL / 2 - 0.1), 0, y * CELL + dz * (CELL / 2 - 0.1)); geos.push(g);
+    }
+  }
+  if (geos.length) { const g = mergeGeometries(geos, false); geos.forEach(q => q.dispose()); owned.push(g); const m = new THREE.Mesh(g, mats.boulder || mats.trim); m.name = 'b4:pit-rail'; group.add(m); }
+  root.add(group);
+  return { group, dispose() { owned.forEach(o => o.dispose()); group.removeFromParent(); } };
 }
 
 // ---------------------------------------------------------------- 竜の聖域
@@ -285,7 +397,7 @@ export function buildSanctum({ root, sanctum, CELL, hash, mats, lights, gLights 
   // 光の筋：龕の上から床の魔法陣へ
   const rayG = new THREE.PlaneGeometry(3.6, 13); rayG.translate(0, -6.5, 0); owned.push(rayG);
   for (const [i, side] of [-1, 1].entries()) {
-    const m = lightShaftMaterial({ seed: 3 + i, intensity: 0.22, color: 0xffa050 }); owned.push(m);
+    const m = lightShaftMaterial({ seed: 3 + i, intensity: 0.12, color: 0xffa050 }); owned.push(m);
     for (const rot of [0, Math.PI / 2]) {
       const ray = new THREE.Mesh(rayG, m); ray.position.set(cx + side * 1.6, 8.1, faceZ - 0.5); ray.rotation.set(-0.62, rot, side * 0.12); ray.renderOrder = 8; ray.name = 'b4:sanctum-ray'; group.add(ray);
     }

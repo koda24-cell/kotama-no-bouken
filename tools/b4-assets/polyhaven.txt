@@ -7,3 +7,6 @@ stone_block_wall 1k
 volcanic_rock_tiles 2k
 monastery_stone_floor 1k
 rock_wall_16 1k
+dark_rock_02 2k
+dark_rock 2k
+rock_boulder_cracked 1k

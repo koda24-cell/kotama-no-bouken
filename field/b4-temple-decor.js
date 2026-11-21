@@ -4,7 +4,7 @@
  *   ・天井の梁から下がる鎖：梁のあるマスの 30%。輪 0.16 m × 9〜14 個、下端に火の籠（35%）。
  * すべて 1 種類につき 1 draw（InstancedMesh）。 */
 import * as THREE from 'three';
-import { B4_VFX_TIME, createFlames } from './b4-vfx.js?v=20261121-v4';
+import { B4_VFX_TIME, createFlames } from './b4-vfx.js?v=20261122-i5';
 
 const NOISE = /* glsl */`
   float dh(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -13,14 +13,14 @@ const NOISE = /* glsl */`
 
 function crackMaterial({ floor = false } = {}) {
   return new THREE.ShaderMaterial({
-    uniforms: { uTime: B4_VFX_TIME },
+    uniforms: { uTime: B4_VFX_TIME, uInt: { value: floor ? 0.42 : 0.85 } },
     vertexShader: /* glsl */`
       varying vec2 vUv; varying float vS;
       void main(){ vUv = uv; vec4 p = instanceMatrix * vec4(position, 1.0);
         vS = fract(sin(dot(instanceMatrix[3].xz, vec2(12.9898, 78.233))) * 43758.5453);
         gl_Position = projectionMatrix * modelViewMatrix * p; }`,
     fragmentShader: /* glsl */`
-      uniform float uTime; varying vec2 vUv; varying float vS;
+      uniform float uTime; uniform float uInt; varying vec2 vUv; varying float vS;
       ${NOISE}
       float crack(vec2 uv, float seed, float w){
         float off = (dfbm(vec2(uv.y * 5.0, seed * 17.0)) - 0.5) * 0.55 + (dn(vec2(uv.y * 22.0, seed)) - 0.5) * 0.06;
@@ -40,8 +40,8 @@ function crackMaterial({ floor = false } = {}) {
         float halo = smoothstep(0.16, 0.0, abs(uv.x - 0.5 - (dfbm(vec2(uv.y * 5.0, vS * 17.0)) - 0.5) * 0.55)) * 0.22;
         float ends = smoothstep(0.0, 0.12, uv.y) * smoothstep(1.0, 0.86, uv.y);
         float pulse = 0.7 + 0.3 * sin(uTime * 1.6 + uv.y * 6.0 + vS * 20.0) + 0.25 * dn(vec2(uv.y * 8.0 - uTime * 0.8, vS));
-        float a = (g * 2.4 + halo * 1.6) * ends * pulse;
-        vec3 col = mix(vec3(0.9, 0.16, 0.02), vec3(1.0, 0.62, 0.2), g);
+        float a = (g * 1.6 + halo * 0.9) * ends * pulse * uInt;
+        vec3 col = mix(vec3(0.8, 0.12, 0.02), vec3(1.0, 0.5, 0.14), g * 0.8);
         gl_FragColor = vec4(col * a, 1.0);
       }`,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,

@@ -5,7 +5,7 @@
  *  - 化粧材：台座（巾木）・コーニス・付け柱・彫り込まれたルーンの溝（発光）・天井の梁
  * 壁 1 面ごとに「神殿の壁」か「洞窟の岩肌（従来）」かを決める。通行判定には触れない。 */
 import * as THREE from 'three';
-import { glyphMaterial } from './b4-vfx.js?v=20261121-v4';
+import { glyphMaterial } from './b4-vfx.js?v=20261122-i5';
 
 const TEX = './assets/textures/floor4/cc0/';
 const loader = new THREE.TextureLoader();
@@ -47,10 +47,25 @@ export function createTempleMaterials() {
     aoMap: cc0('medieval_blocks_05', 'ao', '1k', { repeat: [1, 1] }), roughness: 1, metalness: 0,
   });
   ruin.color.setRGB(0.24, 0.17, 0.155); ruin.emissive = new THREE.Color(0x160603); ruin.emissiveMap = ruin.map;
+  // 岩盤（炭鉱・鉱床の区域）：dark_rock_02（Poly Haven CC0、層状に割れた暗い岩肌）
+  const rock = new THREE.MeshStandardMaterial({
+    map: cc0('dark_rock_02', 'diff', '2k', { srgb: true, repeat: [1.2, 1.2] }),
+    normalMap: cc0('dark_rock_02', 'nor_gl', '2k', { repeat: [1.2, 1.2] }), normalScale: new THREE.Vector2(1.5, 1.5),
+    roughnessMap: cc0('dark_rock_02', 'rough', '2k', { repeat: [1.2, 1.2] }),
+    aoMap: cc0('dark_rock_02', 'ao', '2k', { repeat: [1.2, 1.2] }), roughness: 1, metalness: 0,
+  });
+  rock.color.setRGB(0.95, 0.66, 0.56); rock.emissive = new THREE.Color(0x240803); rock.emissiveMap = rock.map;
+  // 岩塊：dark_rock（黒地に金茶の筋）
+  const boulder = new THREE.MeshStandardMaterial({
+    map: cc0('dark_rock', 'diff', '2k', { srgb: true, repeat: [1, 1] }),
+    normalMap: cc0('dark_rock', 'nor_gl', '2k', { repeat: [1, 1] }), normalScale: new THREE.Vector2(1.3, 1.3),
+    roughnessMap: cc0('dark_rock', 'rough', '2k', { repeat: [1, 1] }), roughness: 1, metalness: 0,
+  });
+  boulder.color.setRGB(1.5, 1.05, 0.9); boulder.emissive = new THREE.Color(0x3a0e04); boulder.emissiveMap = boulder.map;
   const slot = new THREE.MeshStandardMaterial({ color: 0x1a0804, emissive: 0xff5a12, emissiveIntensity: 2.4, roughness: 0.6 });
   const beam = trim;
-  for (const m of [wall, trim, floor, slot, ruin]) m.userData.b4Shared = true;   // モジュール単位で使い回す（再構築ごとに破棄しない）
-  return { wall, trim, floor, slot, beam, ruin, dispose() { for (const m of [wall, trim, floor, slot, ruin]) { for (const k of ['map', 'normalMap', 'roughnessMap', 'aoMap']) m[k]?.dispose(); m.dispose(); } } };
+  for (const m of [wall, trim, floor, slot, ruin, rock, boulder]) m.userData.b4Shared = true;   // モジュール単位で使い回す（再構築ごとに破棄しない）
+  return { wall, trim, floor, slot, beam, ruin, rock, boulder, dispose() { for (const m of [wall, trim, floor, slot, ruin, rock, boulder]) { for (const k of ['map', 'normalMap', 'roughnessMap', 'aoMap']) m[k]?.dispose(); m.dispose(); } } };
 }
 
 // 神殿の壁にする面か（壁 6.5 割、ゾーンや面ごとのばらつきは hash で決める）
@@ -65,7 +80,8 @@ export function buildTempleTrims(root, faces, mats, hash, height = 4.2) {
   const owned = [];
   if (!faces.length) { root.add(group); return { group, dispose() {} }; }
   const SK = 0.325;
-  if (!mats.runeCarve) { mats.runeCarve = glyphMaterial({ style: 2, seed: 7.7, intensity: 0.95, speed: 0.45 }); mats.runeCarve.userData.b4Shared = true; }   // 壁の箱の半分の厚み：箱の中心から通路側の表面まで
+  // 2026-11-22 控えめな彫り込み（かすれ）
+  if (!mats.runeCarve) { mats.runeCarve = glyphMaterial({ style: 2, seed: 7.7, intensity: 0.38, speed: 0.25, broken: 0.75, color: 0xd8501a }); mats.runeCarve.userData.b4Shared = true; }
   const parts = {
     plinth: { geo: new THREE.BoxGeometry(4.1, 0.42, 0.2), mat: mats.trim, y: 0.21, d: 0.1 },
     plinthCap: { geo: new THREE.BoxGeometry(4.1, 0.08, 0.28), mat: mats.trim, y: 0.46, d: 0.14 },

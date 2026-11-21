@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { buildTemplePass } from './b4-temple-fx.js?v=20261121-t4';
+import { buildTemplePass } from './b4-temple-fx.js?v=20261122-i5';
 
 const BASE = './assets/models/floor4/props/';
 // Zone themes (user 2026-11-20: cluster things that naturally gather — ore deposits, old mine workings, pickaxes):
@@ -84,7 +84,7 @@ function loadModel(key, url, opts = {}) {
       if (material.emissiveMap) material.emissiveIntensity = opts.emissive ?? Math.max(material.emissiveIntensity, 2.2);
       if (opts.tintRGB && material.color) material.color.multiply(new THREE.Color(...opts.tintRGB));
       material.userData.b4PropCached = true;
-      nearCull(material, opts.near ?? 1.0);
+      nearCull(material, opts.near ?? 1.6);   // 2026-11-22 背中側の物が視界をふさがない
       let merged = null;
       if (geos.length > 1) {
         const keys = g => Object.keys(g.attributes).sort().join(',') + '|' + !!g.index;
@@ -294,7 +294,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
   }
   // ---- lava tiles: GPT lava pool V3 (user-approved, LOD by Claude) breaks up the square lava planes ----
   if (lavaSites.length) {
-    const pool = await loadProp('b4lod_lava_pool_v3');
+    const pool = await loadProp('b4lod_lava_pool_v3', { emissive: 0.5, tintRGB: [0.8, 0.7, 0.65] });
     if (pool && !isStale()) {
       const size = pool.box.getSize(new THREE.Vector3()), centre = pool.box.getCenter(new THREE.Vector3());
       const base = 4.6 / Math.max(size.x, size.z);
@@ -336,10 +336,16 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
         const k = hash(seedX, seedY, 852) < 0.45 ? 0 : 1 + Math.floor(hash(seedX, seedY, 853) * 3);
         per[k].push(new THREE.Matrix4().compose(new THREE.Vector3(cx, -0.5, cz), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, theta, 0)), new THREE.Vector3(sc, sc * (0.92 + hash(seedX, seedY, 855) * 0.16), sc)));
       };
+      // 参道（,）に接する溶岩の塊だけ原寸の 2×2 を使う。広間の穴などは欄干で囲うので、段差の低い小さい版にする（裏が見えない）
+      const nearPath = new Set();
+      { const seen = new Set(); for (const t of deepTiles) { const k0 = t.tx + ',' + t.ty; if (seen.has(k0)) continue;
+          const comp = [], q = [[t.tx, t.ty]]; seen.add(k0); let touch = false;
+          while (q.length) { const [x, y] = q.pop(); comp.push(x + ',' + y); for (const [dx, dz] of DIRS) { const nk = (x + dx) + ',' + (y + dz); if (ch(x + dx, y + dz) === ',') touch = true; if (deep.has(nk) && !seen.has(nk)) { seen.add(nk); q.push([x + dx, y + dz]); } } }
+          if (touch) comp.forEach(k => nearPath.add(k)); } }
       // 2×2 blocks first at the piece's native scale (8.5 m ≈ two cells)
       const sorted = deepTiles.slice().sort((a, b) => a.ty - b.ty || a.tx - b.tx);
       for (const { tx, ty } of sorted) {
-        if (!isDeep(tx, ty) || !isDeep(tx + 1, ty) || !isDeep(tx, ty + 1) || !isDeep(tx + 1, ty + 1)) continue;
+        if (!isDeep(tx, ty) || !isDeep(tx + 1, ty) || !isDeep(tx, ty + 1) || !isDeep(tx + 1, ty + 1) || !nearPath.has(tx + ',' + ty)) continue;
         const cells = [[tx, ty], [tx + 1, ty], [tx, ty + 1], [tx + 1, ty + 1]];
         cells.forEach(([x, y]) => used.add(x + ',' + y));
         place((tx + 0.5) * CELL, (ty + 0.5) * CELL, ledgeDir(cells, 856), 8.3 / 8.5, tx, ty);
