@@ -25,7 +25,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
 NAME = "b4p_egg_shells"
-VERSION = "v1"
+VERSION = "v2"
 rnd = random.Random(1515)
 C.reset(1515)
 
@@ -56,6 +56,25 @@ def finish_shell(bm, name):
     return ob
 
 
+def lay_flat(ob, x, y, up=True, spin=0.0):
+    """破片の外面の平均法線を上（凸面を上）または下へ向けて地面に寝かせる"""
+    me = ob.data
+    acd = me.attributes["cd"]
+    n = Vector()
+    c = Vector()
+    for p in me.polygons:
+        if all(acd.data[v].value < 0.5 for v in p.vertices):
+            n += p.normal * p.area
+            c += p.center * p.area
+    c /= max(sum(p.area for p in me.polygons), 1e-6)
+    q = n.normalized().rotation_difference(Vector((0, 0, 1 if up else -1)))
+    M = Matrix.Translation((x, y, 0)) @ Matrix.Rotation(spin, 4, "Z") @ q.to_matrix().to_4x4() @ Matrix.Translation(-c)
+    me.transform(M)
+    mz = min(v.co.z for v in me.vertices)
+    me.transform(Matrix.Translation((0, 0, -mz)))
+    return ob
+
+
 def place(ob, M, sink=0.0):
     ob.data.transform(M)
     mz = min(v.co.z for v in ob.data.vertices)
@@ -72,13 +91,12 @@ parts.append(cup)
 # ---- 頂部の破片（凸面を上） ----
 top = finish_shell(D.egg_patch_bm(H, R, seed=3, th_range=(0.0, 1.4), z_lo_fn=D.jagged(4, 0.56, 0.08, teeth=3),
                                   z_hi_fn=lambda th: H - 0.002, nseg=12, nring=9), "frag_top")
-place(top, Matrix.Translation((0.55, 0.10, 0)) @ Matrix.Rotation(math.radians(100), 4, "Y") @ Matrix.Translation((0, 0, -0.66)))
+lay_flat(top, 0.55, 0.10, up=True, spin=0.7)
 parts.append(top)
 # ---- 側面の破片（凹面を上：内側の赤） ----
 side = finish_shell(D.egg_patch_bm(H, R, seed=5, th_range=(0.0, 1.1), z_lo_fn=D.jagged(6, 0.24, 0.06, teeth=3),
                                    z_hi_fn=D.jagged(7, 0.56, 0.06, teeth=3), nseg=12, nring=9), "frag_side")
-place(side, Matrix.Translation((-0.45, -0.30, 0)) @ Matrix.Rotation(math.radians(-92), 4, "Y") @
-      Matrix.Rotation(-0.55, 4, "Z") @ Matrix.Translation((-R * 0.85, 0, -0.40)))
+lay_flat(side, -0.45, -0.30, up=False, spin=-0.5)
 parts.append(side)
 # ---- 小さな破片 ----
 for k in range(5):
@@ -90,16 +108,13 @@ for k in range(5):
                                      z_hi_fn=D.jagged(40 + k, z0 + hz, 0.04, teeth=2), nseg=6, nring=5), f"frag_{k}")
     a = rnd.uniform(0, 6.3)
     rr = rnd.uniform(0.45, 0.75)
-    up = rnd.random() < 0.5
-    M = (Matrix.Translation((math.cos(a) * rr, math.sin(a) * rr, 0)) @ Matrix.Rotation(rnd.uniform(0, 6.3), 4, "Z") @
-         Matrix.Rotation(math.radians(90 if up else -90), 4, "Y") @ Matrix.Translation((-math.cos(th0 + w / 2) * R, -math.sin(th0 + w / 2) * R, -z0)))
-    place(fr, M)
+    lay_flat(fr, math.cos(a) * rr, math.sin(a) * rr, up=rnd.random() < 0.6, spin=rnd.uniform(0, 6.3))
     parts.append(fr)
 
 off = D.recenter(parts)
 mat = D.egg_mat("egg")
 for o in parts:
     C.assign(o, mat)
-light = (tuple(Vector((0, 0, 0.16)) + (Vector((sum(v.co.x for v in cup.data.vertices), sum(v.co.y for v in cup.data.vertices), 0)) / len(cup.data.vertices))), 4.0, (1.0, 0.28, 0.07))
+light = (tuple(Vector((0, 0, 0.16)) + (Vector((sum(v.co.x for v in cup.data.vertices), sum(v.co.y for v in cup.data.vertices), 0)) / len(cup.data.vertices))), 2.0, (1.0, 0.28, 0.07))
 C.finish(NAME, parts, version=VERSION, tex_res=1024, budget_tris=6000, refs=[86, 88, 89], lights=[light],
          notes="割れた竜の卵（下半分）と破片7。外は黒い殻に細い赤熱の亀裂、内側は焦げた赤で底ほど燠。")
