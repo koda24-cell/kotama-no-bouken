@@ -65,7 +65,7 @@ if os.environ.get("KILL_AT_RENDER_PRE") == "1":
     sentinel = Path(os.environ["KILL_PROBE_SENTINEL"]).resolve()
     sentinel.parent.mkdir(parents=True, exist_ok=True)
     def on_render_pre(_scene):
-        sentinel.write_text("KILL_DURING_" + view.upper() + "_RENDER_PRE\n", encoding="ascii")
+        sentinel.write_text("KILL_DURING_" + tile.upper() + "_RENDER_PRE\n", encoding="ascii")
         print("KILL_DURING_TILE=" + tile, flush=True)
         os.kill(os.getpid(), signal.SIGKILL)
     bpy.app.handlers.render_pre.append(on_render_pre)
