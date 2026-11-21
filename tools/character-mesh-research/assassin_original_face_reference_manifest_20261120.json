@@ -1,0 +1,103 @@
+{
+  "schema": "kotama.assassin.original_face_reference.v1",
+  "state": "REFERENCE_STUDY_ONLY",
+  "goal": "Independently authored Assassin head from scratch; geometry/UV/texture copying forbidden",
+  "references": [
+    {
+      "id": "sketchfab_genshin_stylized",
+      "url": "https://sketchfab.com/3d-models/genshin-style-anime-female-base-mesh-for-blender-c2d6727e8c9742feb9a4a3bccac6e0e0",
+      "priority": 1,
+      "focus": [
+        "front_face",
+        "profile",
+        "oblique"
+      ],
+      "geometry_downloaded": false,
+      "license_verified": false,
+      "measured": false
+    },
+    {
+      "id": "sketchfab_anime_head_base",
+      "url": "https://sketchfab.com/3d-models/anime-head-base-mesh-58e291934379438584012d09faefedf6",
+      "priority": 2,
+      "focus": [
+        "nose",
+        "ears",
+        "jaw",
+        "back"
+      ],
+      "geometry_downloaded": false,
+      "license_verified": false,
+      "measured": false
+    },
+    {
+      "id": "sketchfab_anime_head_practice",
+      "url": "https://sketchfab.com/3d-models/anime-head-pratice-free-download-3fd6a9ccdcaf444aaf01d55b58ea50d8",
+      "priority": 3,
+      "focus": [
+        "eyes",
+        "nose",
+        "jaw",
+        "neck"
+      ],
+      "geometry_downloaded": false,
+      "license_verified": false,
+      "measured": false
+    },
+    {
+      "id": "pinterest_wireframe",
+      "url": "https://www.pinterest.com/pin/1089519334868982509/",
+      "priority": 4,
+      "focus": [
+        "eye_loops",
+        "cheeks"
+      ],
+      "geometry_downloaded": false,
+      "license_verified": false,
+      "measured": false
+    },
+    {
+      "id": "pinterest_face_topology",
+      "url": "https://www.pinterest.com/pin/426997608415794638/",
+      "priority": 5,
+      "focus": [
+        "nose_loops",
+        "mouth_loops"
+      ],
+      "geometry_downloaded": false,
+      "license_verified": false,
+      "measured": false
+    }
+  ],
+  "prototyping_design_landmarks_normalized": {
+    "chin": 0.1,
+    "mouth": 0.24,
+    "nose_base": 0.37,
+    "eye_center": 0.54,
+    "brow": 0.62,
+    "crown": 0.96
+  },
+  "landmark_values_are_measured": false,
+  "required_views": [
+    "front",
+    "front_three_quarter",
+    "left_profile",
+    "right_profile",
+    "back",
+    "back_three_quarter",
+    "up_oblique",
+    "down_oblique",
+    "front_unlit",
+    "side_unlit"
+  ],
+  "geometry_policy": {
+    "allow_import_reference_geometry": false,
+    "allow_copy_vertices": false,
+    "allow_copy_uv_texture": false,
+    "allow_source_model_export": false,
+    "require_from_scratch": true,
+    "output_approval": "NOT_APPROVED"
+  },
+  "measured_ratios": null,
+  "notes": "Reference links and target landmarks are design proposals, not verified anatomy data or source-model measurements"
+}
