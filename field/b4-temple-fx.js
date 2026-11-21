@@ -4,7 +4,7 @@
  * どれも見た目だけ。通行判定・イベントには触れない。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall } from './b4-vfx.js?v=20261122-g8';
+import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall, GLYPH_STYLES } from './b4-vfx.js?v=20261122-h1';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -141,40 +141,53 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
   inst(P.fallen, woodMat, M.fallen, 'b4:torch-fallen');
   owned.push(P.bracket, P.handle, P.head, P.stub, P.fallen, ironMat, woodMat, headLit, headOut);
 
-  // ---- 床の魔法陣：交差点（3方向以上に開いた床）と、行き止まりの一部 ----
+  // ---- 床の魔法陣（2026-11-22：意味のある場所だけ。広い交差点のみ・最大7、図案はばらばら。近づくと外側から崩れて消える）----
   const glyphGeo = new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2);
-  owned.push(glyphGeo);
-  const glyphMs = [];
+  const vGeo = new THREE.PlaneGeometry(1, 1);
+  owned.push(glyphGeo, vGeo);
+  const byStyle = new Map();
+  const push = (style, M, geo, opts) => { const k = style + '|' + geo.uuid + '|' + opts.key; if (!byStyle.has(k)) byStyle.set(k, { style, geo, opts, ms: [] }); byStyle.get(k).ms.push(M); };
+  let floorN = 0;
   for (let ty = 1; ty < map.h - 1; ty++) for (let tx = 1; tx < map.w - 1; tx++) {
     if (!walk(tx, ty) || ch(tx, ty) === '*' || reserved.has(tx + ',' + ty)) continue;
     const open = DIRS.filter(([dx, dz]) => walk(tx + dx, ty + dz)).length;
-    const want = open >= 3 ? 0.7 : open === 1 ? 0.3 : open === 4 ? 0.2 : 0.0;
-    if (hash(tx, ty, 910) > want || glyphMs.length >= 40) continue;
-    const sz = open >= 3 ? 3.3 : 2.4;
-    glyphMs.push(new THREE.Matrix4().compose(new THREE.Vector3(tx * CELL, 0.025, ty * CELL), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hash(tx, ty, 914) * 6.28, 0)), new THREE.Vector3(sz, 1, sz)));
+    if (open < 3 || hash(tx, ty, 910) > 0.28 || floorN >= 7) continue;
+    const style = GLYPH_STYLES[Math.floor(hash(tx, ty, 911) * GLYPH_STYLES.length)];
+    push(style, new THREE.Matrix4().compose(new THREE.Vector3(tx * CELL, 0.025, ty * CELL), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hash(tx, ty, 914) * 6.28, 0)), new THREE.Vector3(3.2, 1, 3.2)), glyphGeo, { key: 'floor', intensity: 0.75, dissolve: 5.5 });
+    floorN++;
+    // 広い交差点の上には、頭上 2.6–3.2 m に傾いて回る魔法陣（半分）
+    if (hash(tx, ty, 915) < 0.5) push(GLYPH_STYLES[Math.floor(hash(tx, ty, 916) * GLYPH_STYLES.length)], new THREE.Matrix4().compose(new THREE.Vector3(tx * CELL, 2.6 + hash(tx, ty, 917) * 0.6, ty * CELL), new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2 + (hash(tx, ty, 918) - 0.5) * 0.7, hash(tx, ty, 919) * 6.28, 0, 'YXZ')), new THREE.Vector3(1.9, 1.9, 1.9)), vGeo, { key: 'air', intensity: 0.65, dissolve: 3.0 });
   }
-  if (glyphMs.length) {
-    const mat = glyphMaterial({ style: 0, seed: 1.3, intensity: 1.05, speed: 1.0 });
-    const im = new THREE.InstancedMesh(glyphGeo, mat, glyphMs.length); glyphMs.forEach((m, i) => im.setMatrixAt(i, m));
-    im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere(); im.name = 'b4:glyph-floor'; im.renderOrder = 4;
-    group.add(im); owned.push(im, mat); info.glyphs = glyphMs.length;
-  }
-  // ---- 宙に浮くルーン帯：壁の手前 0.3 m、高さ 1.6〜2.4 m（パネル・たいまつの無い面の 3 割）----
+  info.glyphs = floorN;
+  // ---- 宙に浮く模様（壁の手前 0.45–0.75 m）：ルーン帯と、8 種の紋章板。近くを通ると崩れる ----
   const bandGeo = new THREE.PlaneGeometry(3.4, 0.36);
   owned.push(bandGeo);
-  const bandMs = [];
+  let bands = 0, sigils = 0;
   for (const f of faces) {
-    if (paneled.has(key(f)) || placed.includes(f) || bandMs.length >= 64) continue;
-    if (hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 920) > (f.theme === 'dragon' || f.theme === 'deposit' ? 0.32 : 0.24)) continue;
-    const d = 2 - 0.325 - 0.5;
-    bandMs.push(new THREE.Matrix4().compose(new THREE.Vector3(f.tx * CELL + f.dx * d, 1.75 + hash(f.tx, f.ty, 922) * 0.6, f.ty * CELL + f.dz * d),
-      new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.atan2(-f.dx, -f.dz), 0)), new THREE.Vector3(1, 1, 1)));
+    if (paneled.has(key(f)) || placed.includes(f)) continue;
+    const r = hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 920);
+    const d = 2 - 0.325 - (0.45 + hash(f.tx, f.ty, 921) * 0.3);
+    const yaw = Math.atan2(-f.dx, -f.dz);
+    if (r < 0.16 && bands < 40) {
+      push(2, new THREE.Matrix4().compose(new THREE.Vector3(f.tx * CELL + f.dx * d, 1.75 + hash(f.tx, f.ty, 922) * 0.6, f.ty * CELL + f.dz * d), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, yaw, 0)), new THREE.Vector3(1, 1, 1)), bandGeo, { key: 'band', intensity: 0.6, dissolve: 2.4 });
+      bands++;
+    } else if (r < 0.36 && sigils < 60) {
+      const styles = [3, 4, 5, 6, 7, 8, 9, 10, 0];
+      const style = styles[Math.floor(hash(f.tx, f.ty * 3 + f.dx, 923) * styles.length)];
+      const sz = style === 10 ? 1 : 0.9 + hash(f.tx, f.ty, 924) * 0.8;
+      const lat = (hash(f.tx, f.ty, 925) - 0.5) * 2.2;
+      const pos = new THREE.Vector3(f.tx * CELL + f.dx * d - f.dz * lat, 1.5 + hash(f.tx, f.ty, 926) * 1.0, f.ty * CELL + f.dz * d + f.dx * lat);
+      const sc = style === 10 ? new THREE.Vector3(0.5, 2.2, 1) : new THREE.Vector3(sz, sz, 1);
+      push(style, new THREE.Matrix4().compose(pos, new THREE.Quaternion().setFromEuler(new THREE.Euler((hash(f.tx, f.ty, 927) - 0.5) * 0.3, yaw + (hash(f.tx, f.ty, 928) - 0.5) * 0.5, 0, 'YXZ')), sc), vGeo, { key: 'sigil', intensity: 0.7, dissolve: 2.6 });
+      sigils++;
+    }
   }
-  if (bandMs.length) {
-    const mat = glyphMaterial({ style: 2, seed: 4.2, intensity: 0.7, speed: 0.6 });
-    const im = new THREE.InstancedMesh(bandGeo, mat, bandMs.length); bandMs.forEach((m, i) => im.setMatrixAt(i, m));
-    im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere(); im.name = 'b4:glyph-band'; im.renderOrder = 4;
-    group.add(im); owned.push(im, mat); info.runeBands = bandMs.length;
+  info.runeBands = bands; info.sigils = sigils;
+  for (const { style, geo, opts, ms } of byStyle.values()) {
+    const mat = glyphMaterial({ style, seed: 1.3 + style * 0.71, intensity: opts.intensity, speed: 0.7, dissolve: opts.dissolve, color: style % 3 === 1 ? 0xff5a18 : 0xff7a1e });
+    const im = new THREE.InstancedMesh(geo, mat, ms.length); ms.forEach((m, i) => im.setMatrixAt(i, m));
+    im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere(); im.name = `b4:glyph-${opts.key}-${style}`; im.renderOrder = 4;
+    group.add(im); owned.push(im, mat);
   }
   // ---- 光の筋（天井の割れ目から）----
   const shaftGeo = new THREE.PlaneGeometry(2.8, 4.3); shaftGeo.translate(0, 2.15, 0);
