@@ -21,6 +21,9 @@ permissions:
   packages: read
 jobs:
   stage-one:
+    outputs:
+      handoff_required: ${{ steps.stage_budget.outputs.handoff_required }}
+      remaining_seconds: ${{ steps.stage_budget.outputs.remaining_seconds }}
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     container:
@@ -53,16 +56,28 @@ jobs:
           python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
           bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate qa/security/stage1-output.log
       - name: Record stage-one budget decision (never blocks durable upload)
-        if: ${{ always() && steps.stage_one_build.outcome == 'success' }}
+        id: stage_budget
+        if: ${{ success() }}
         env:
           START_EPOCH: ${{ steps.stage_one_start.outputs.epoch }}
         run: |
-          python3 tools/3d_checkpoint/stage_budget.py --start-epoch "$START_EPOCH" || rc=$?
-          if [ "${rc:-0}" -eq 2 ]; then
-            echo 'STAGE_BUDGET_HANDOFF_REQUIRED=true'
-          elif [ "${rc:-0}" -ne 0 ]; then
+          python3 tools/3d_checkpoint/stage_budget.py --start-epoch "$START_EPOCH" > stage-budget.json.log || rc=$?
+          cat stage-budget.json.log
+          if [ "${rc:-0}" -ne 0 ] && [ "${rc:-0}" -ne 2 ]; then
             exit "$rc"
           fi
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          lines = Path("stage-budget.json.log").read_text().splitlines()
+          matches = [line.removeprefix("STAGE_BUDGET ") for line in lines if line.startswith("STAGE_BUDGET ")]
+          if len(matches) != 1:
+              raise SystemExit("Missing or duplicate budget record")
+          data = json.loads(matches[0])
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"handoff_required={str(not data['continue']).lower()}\n")
+              out.write(f"remaining_seconds={data['remaining_seconds']}\n")
+          PY
       - name: DURABLE stage-one upload
         uses: actions/upload-artifact@v4
         with:
@@ -80,6 +95,15 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Announce job-to-job checkpoint handoff
+        env:
+          HANDOFF_REQUIRED: ${{ needs.stage-one.outputs.handoff_required }}
+          PREVIOUS_REMAINING_SECONDS: ${{ needs.stage-one.outputs.remaining_seconds }}
+        run: |
+          test "$HANDOFF_REQUIRED" = true -o "$HANDOFF_REQUIRED" = false
+          echo "CHECKPOINT_HANDOFF_REQUIRED=$HANDOFF_REQUIRED"
+          echo "PREVIOUS_JOB_REMAINING_SECONDS=$PREVIOUS_REMAINING_SECONDS"
+          echo "Stage two runs in a fresh job and must verify the uploaded stage-one artifact."
       - name: Intentional failure for external recovery drill
         if: ${{ (github.event_name == 'workflow_dispatch' && inputs.recovery_drill == true) || (github.event_name == 'push' && github.ref == 'refs/heads/development' && contains(github.event.head_commit.message, '[blender53-recovery-drill]')) }}
         run: |
