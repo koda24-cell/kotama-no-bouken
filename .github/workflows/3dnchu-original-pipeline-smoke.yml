@@ -27,7 +27,7 @@ jobs:
       - name: Assert Blender 5.3
         run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
       - name: Python syntax
-        run: python3 -m py_compile tools/tech-research/{create_synthetic_fixture,inspect_original_blend,render_original_eevee}.py
+        run: python3 -m py_compile tools/tech-research/create_synthetic_fixture.py tools/tech-research/inspect_original_blend.py tools/tech-research/render_original_eevee.py
       - name: Refresh antivirus definitions
         run: bash tools/security/clamav_scan_gate.sh update qa/security
       - name: Scan pipeline source
