@@ -4,7 +4,7 @@
  * どれも見た目だけ。通行判定・イベントには触れない。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall } from './b4-vfx.js?v=20261121-v2';
+import { B4_VFX_TIME, createFlames, createEmbers, glyphMaterial, deepLavaMaterial, lightShaftMaterial, createRockfall } from './b4-vfx.js?v=20261121-v4';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
@@ -95,13 +95,13 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
   const placed = [];
   for (const f of faces) {
     if (paneled.has(key(f)) || reserved.has(f.tx + ',' + f.ty)) continue;
-    if (hash(f.tx * 5 + f.dx + 3, f.ty * 5 + f.dz + 3, 901) > (f.theme === 'mine' ? 0.3 : 0.22)) continue;
-    if (placed.some(p => Math.abs(p.tx - f.tx) + Math.abs(p.ty - f.ty) < 3)) continue;
+    if (hash(f.tx * 5 + f.dx + 3, f.ty * 5 + f.dz + 3, 901) > (f.theme === 'mine' ? 0.5 : 0.42)) continue;   // 2026-11-21 マシマシ：たいまつ倍増
+    if (placed.some(p => Math.abs(p.tx - f.tx) + Math.abs(p.ty - f.ty) < 2)) continue;
     placed.push(f);
     const yaw = Math.atan2(-f.dx, -f.dz);
     const along = (hash(f.tx, f.ty, 902) - 0.5) * 1.6;
     const pos = new THREE.Vector3(f.tx * CELL + f.dx * SKIN - f.dz * along, 1.95, f.ty * CELL + f.dz * SKIN + f.dx * along);
-    const mtx = new THREE.Matrix4().compose(pos, new THREE.Quaternion().setFromEuler(new THREE.Euler(0, yaw, 0)), new THREE.Vector3(1, 1, 1));
+    const mtx = new THREE.Matrix4().compose(pos, new THREE.Quaternion().setFromEuler(new THREE.Euler(0, yaw, 0)), new THREE.Vector3(1.45, 1.45, 1.45));
     const r = hash(f.tx, f.ty * 3 + f.dx, 903);
     const state = r < 0.7 ? 'lit' : r < 0.85 ? 'broken' : 'out';
     info.torches[state]++;
@@ -111,10 +111,10 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
       M.handle.push(mtx); M.headLit.push(mtx);
       const tip = local(new THREE.Vector3(0, 0.44, 0.335));
       fireSites.push({ x: tip.x, y: tip.y - 0.06, z: tip.z, w: 0.46, h: 0.72, seed: hash(f.tx, f.ty, 904), intensity: 1 });
-      fireSites.push({ x: tip.x, y: tip.y - 0.04, z: tip.z, w: 0.22, h: 0.4, seed: hash(f.tx, f.ty, 905) + 0.5, intensity: 0.8 });
+      fireSites.push({ x: tip.x, y: tip.y - 0.04, z: tip.z, w: 0.34, h: 0.62, seed: hash(f.tx, f.ty, 905) + 0.5, intensity: 0.9 });
       torchEmbers.push({ x: tip.x, z: tip.z, y0: tip.y + 0.15, spread: 0.08, rise: 1.6, count: 8, hot: 1 });
-      if (lights.length < 34) {
-        const L = { world: local(new THREE.Vector3(0, 0.5, 0.55)), color: 0xff8a3a, intensity: 2.0, range: 6.0, off: false };
+      if (lights.length < 70) {
+        const L = { world: local(new THREE.Vector3(0, 0.5, 0.55)), color: 0xff8a3a, intensity: 2.4, range: 6.5, off: false };
         lights.push(L); gLights.push(L); flickers.push({ L, base: 2.0, seed: hash(f.tx, f.ty, 906) * 50 });
       }
     } else if (state === 'out') {
@@ -164,8 +164,8 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
   owned.push(bandGeo);
   const bandMs = [];
   for (const f of faces) {
-    if (paneled.has(key(f)) || placed.includes(f) || bandMs.length >= 36) continue;
-    if (hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 920) > (f.theme === 'dragon' || f.theme === 'deposit' ? 0.22 : 0.14)) continue;
+    if (paneled.has(key(f)) || placed.includes(f) || bandMs.length >= 64) continue;
+    if (hash(f.tx * 5 + f.dx, f.ty * 5 + f.dz, 920) > (f.theme === 'dragon' || f.theme === 'deposit' ? 0.32 : 0.24)) continue;
     const d = 2 - 0.325 - 0.5;
     bandMs.push(new THREE.Matrix4().compose(new THREE.Vector3(f.tx * CELL + f.dx * d, 1.75 + hash(f.tx, f.ty, 922) * 0.6, f.ty * CELL + f.dz * d),
       new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.atan2(-f.dx, -f.dz), 0)), new THREE.Vector3(1, 1, 1)));
@@ -177,12 +177,12 @@ export function buildTemplePass({ root, map, ch, wallCell, hash, CELL, lights, g
     group.add(im); owned.push(im, mat); info.runeBands = bandMs.length;
   }
   // ---- 光の筋（天井の割れ目から）----
-  const shaftGeo = new THREE.PlaneGeometry(1.5, 4.3); shaftGeo.translate(0, 2.15, 0);
+  const shaftGeo = new THREE.PlaneGeometry(2.8, 4.3); shaftGeo.translate(0, 2.15, 0);
   owned.push(shaftGeo);
   const shaftTiles = [];
   for (let ty = 1; ty < map.h - 1; ty++) for (let tx = 1; tx < map.w - 1; tx++) if (walk(tx, ty) && hash(tx, ty, 930) < 0.06) shaftTiles.push([tx, ty]);
   for (const [tx, ty] of shaftTiles.slice(0, 10)) {
-    const mat = lightShaftMaterial({ seed: hash(tx, ty, 931) * 10, intensity: 0.42 });
+    const mat = lightShaftMaterial({ seed: hash(tx, ty, 931) * 10, intensity: 0.16, color: 0xff6a24 });
     for (const rot of [0, Math.PI / 2]) {
       const m = new THREE.Mesh(shaftGeo, mat); m.position.set(tx * CELL + (hash(tx, ty, 932) - 0.5), -0.1, ty * CELL); m.rotation.y = rot + hash(tx, ty, 933);
       m.rotation.z = (hash(tx, ty, 934) - 0.5) * 0.25; m.name = 'b4:light-shaft'; m.renderOrder = 8; group.add(m);

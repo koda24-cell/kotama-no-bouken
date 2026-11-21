@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { buildTemplePass } from './b4-temple-fx.js?v=20261121-t1';
+import { buildTemplePass } from './b4-temple-fx.js?v=20261121-t4';
 
 const BASE = './assets/models/floor4/props/';
 // Zone themes (user 2026-11-20: cluster things that naturally gather — ore deposits, old mine workings, pickaxes):
@@ -138,7 +138,7 @@ function wallSkinDistance(y0, y1, lateral = 0) {
 }
 const sideFor = (R, lateral = 0) => R.side ?? (R.wall ? 1.58 : wallSkinDistance(R.y || 0, (R.y || 0) + R.height, lateral) - R.radius - 0.04);   // wall pieces sink into the displaced skin rather than float off it
 
-export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, extraEmbers = [], rockMaterial = null, isTempleFace = null, openFaces = new Set(), isStale = () => false, maxProps = 22 }) {
+export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], deepTiles = [], crystalGeo = null, extraEmbers = [], rockMaterial = null, isTempleFace = null, openFaces = new Set(), isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY).filter(id => B4_PROP_REGISTRY[id].ready);
   const group = new THREE.Group(); group.name = 'b4:asset-dressing'; group.userData.b4Cached = true;
   const owned = [];
@@ -309,6 +309,49 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
       instance(group, owned, pool, pm, 'b4:gpt-lava-pool-v3');
       info.lavaPools = pm.length;
     }
+  }
+  // ---- impassable lava (~): GPT magma river V16 / banks P1–P3 (user-approved; LOD by Claude), one per cell.
+  // 8.5 m piece → 4.15 m. The 3.3 m ledge (local −z) turns toward the neighbouring wall so lava pours off it into the channel.
+  if (deepTiles.length) {
+    const ids = ['b4lod_magma_river_v16', 'b4lod_magma_bank_p1', 'b4lod_magma_bank_p2', 'b4lod_magma_bank_p3'];
+    const pieces = await Promise.all(ids.map(id => loadProp(id, { emissive: 7, near: 0.6, tintRGB: [1.25, 1.0, 0.9] })));
+    if (pieces.every(Boolean) && !isStale()) {
+      const per = ids.map(() => []);
+      const deep = new Set(deepTiles.map(t => t.tx + ',' + t.ty)), used = new Set();
+      const isDeep = (x, y) => deep.has(x + ',' + y) && !used.has(x + ',' + y);
+      const walkC = c => c && c !== '#' && c !== '~';
+      // score a ledge direction for a set of cells: walls behind it good, walkway behind it bad
+      const ledgeDir = (cells, salt) => {
+        let best = DIRS[0], bs = -1e9;
+        DIRS.forEach(([dx, dz], di) => {
+          let sc = 0;
+          for (const [x, y] of cells) { const nx = x + dx, ny = y + dz; if (deep.has(nx + ',' + ny)) continue; const c = ch(nx, ny); sc += c === '#' ? 2 : (c === ',' || c === '_') ? -5 : walkC(c) ? -1 : 0; }
+          sc += hash(cells[0][0], cells[0][1], salt + di) * 0.5;
+          if (sc > bs) { bs = sc; best = [dx, dz]; }
+        });
+        return best;
+      };
+      const place = (cx, cz, [ox, oz], sc, seedX, seedY) => {
+        const theta = Math.atan2(-ox, -oz);   // R_y(θ)·(0,0,−1) = (ox,0,oz)
+        const k = hash(seedX, seedY, 852) < 0.45 ? 0 : 1 + Math.floor(hash(seedX, seedY, 853) * 3);
+        per[k].push(new THREE.Matrix4().compose(new THREE.Vector3(cx, -0.5, cz), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, theta, 0)), new THREE.Vector3(sc, sc * (0.92 + hash(seedX, seedY, 855) * 0.16), sc)));
+      };
+      // 2×2 blocks first at the piece's native scale (8.5 m ≈ two cells)
+      const sorted = deepTiles.slice().sort((a, b) => a.ty - b.ty || a.tx - b.tx);
+      for (const { tx, ty } of sorted) {
+        if (!isDeep(tx, ty) || !isDeep(tx + 1, ty) || !isDeep(tx, ty + 1) || !isDeep(tx + 1, ty + 1)) continue;
+        const cells = [[tx, ty], [tx + 1, ty], [tx, ty + 1], [tx + 1, ty + 1]];
+        cells.forEach(([x, y]) => used.add(x + ',' + y));
+        place((tx + 0.5) * CELL, (ty + 0.5) * CELL, ledgeDir(cells, 856), 8.3 / 8.5, tx, ty);
+      }
+      for (const { tx, ty } of deepTiles) {
+        if (!isDeep(tx, ty)) continue;
+        used.add(tx + ',' + ty);
+        place(tx * CELL, ty * CELL, ledgeDir([[tx, ty]], 850), 4.15 / 8.5 * (1 + hash(tx, ty, 854) * 0.04), tx, ty);
+      }
+      per.forEach((ms, k) => { if (ms.length) instance(group, owned, pieces[k], ms, 'b4:gpt-magma-' + ids[k]); });
+      info.gptMagma = deepTiles.length;
+    } else info.missing.push('gpt_magma_v16');
   }
   // ---- rock-face overlays: GPT V33 magma basalt (LOD) on part of the wall faces, denser in deposit/dragon zones ----
   if (OVERLAY_READY && panelFaces.length) {

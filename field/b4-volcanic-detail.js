@@ -37,7 +37,7 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
     if(c!=='.' || !safe(x,y) || panels>=46)continue;
     for(const [dx,dz]of[[0,-1],[1,0],[0,1],[-1,0]]){
       const wallKey=`${x+dx},${y+dz}`;
-      if(!wallCell(x+dx,y+dz)||ch(x+dx,y+dz)!=='#'||used.has(wallKey)||plan.excludedWalls.has(wallKey)||hash(x,y,760+dx+dz*3)>.19)continue;
+      if(!wallCell(x+dx,y+dz)||ch(x+dx,y+dz)!=='#'||used.has(wallKey)||plan.excludedWalls.has(wallKey)||plan.chasmCells?.has(wallKey)||hash(x,y,760+dx+dz*3)>.19)continue;
       used.add(wallKey);
       const face=new THREE.Group();face.position.set(wx+dx*2,0,wz+dz*2);face.rotation.y=Math.atan2(-dx,-dz);group.add(face);
       // Uneven hexagonal basalt organ pipes: their front stays <=0.65m from the wall.

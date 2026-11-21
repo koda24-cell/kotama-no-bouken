@@ -1,0 +1,137 @@
+name: Blender 5.3 three-stage durable resume experiment
+on:
+  push:
+    branches:
+      - feature/blender53-three-stage-resume-20261121
+    paths:
+      - '.github/workflows/blender53-three-stage-resume.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  packages: read
+
+jobs:
+  first:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Confirm Blender and scan script
+        run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-watergate.py qa/security/source.log
+      - name: Blender initial build
+        run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
+      - name: QA and seal checkpoint 1
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate --asset-id b2-watergate --iteration 1 --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: three-stage-1-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate/
+          if-no-files-found: error
+          retention-days: 14
+
+  second:
+    needs: first
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: three-stage-1-NOT-APPROVED-${{ github.run_id }}
+          path: recovered
+      - name: Verify checkpoint 1 and scan before import
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory recovered --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan recovered qa/security/recovered.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/resume_watergate.py qa/security/script.log
+      - name: Actual Blender resume 2
+        env:
+          RESUME_BLEND: recovered/frozen_watergate_v09.blend
+          RESUME_OUTPUT: render-output/b2-watergate-resumed
+        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/resume_watergate.py
+      - name: QA and seal checkpoint 2
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate-resumed
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate-resumed --asset-id b2-watergate-resumed --iteration 2 --parent-checkpoint "three-stage-1-${{ github.run_id }}" --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate-resumed --asset-id b2-watergate-resumed --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate-resumed qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: three-stage-2-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate-resumed/
+          if-no-files-found: error
+          retention-days: 14
+
+  third:
+    needs: second
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: three-stage-2-NOT-APPROVED-${{ github.run_id }}
+          path: recovered
+      - name: Verify checkpoint 2 and scan before import
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory recovered --asset-id b2-watergate-resumed --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan recovered qa/security/recovered.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/resume_watergate.py qa/security/script.log
+      - name: Actual Blender resume 3 from iteration 2, not original
+        env:
+          RESUME_BLEND: recovered/watergate_resumed_v02.blend
+          RESUME_OUTPUT: render-output/b2-watergate-resumed-third
+        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/resume_watergate.py
+      - name: QA and seal checkpoint 3
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate-resumed-third
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate-resumed-third --asset-id b2-watergate-resumed-third --iteration 3 --parent-checkpoint "three-stage-2-${{ github.run_id }}" --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate-resumed-third --asset-id b2-watergate-resumed-third --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate-resumed-third qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: three-stage-3-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate-resumed-third/
+          if-no-files-found: error
+          retention-days: 14
