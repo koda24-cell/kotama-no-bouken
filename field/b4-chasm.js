@@ -4,7 +4,7 @@
  * 通行判定は変えない（# は # のまま。見た目だけ壁が開く）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261122-j7';
+import { B4_VFX_TIME, deepLavaMaterial } from './b4-vfx.js?v=20261122-k2';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 export const CHASM_BOTTOM = -26, CHASM_TOP = 16;
@@ -86,7 +86,7 @@ export function hazeMaterial() {
   });
 }
 
-function lavafallMaterial() {
+export function lavafallMaterial() {
   return new THREE.ShaderMaterial({
     uniforms: { uTime: B4_VFX_TIME },
     vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
