@@ -38,8 +38,15 @@ def read_rgba(path):
     w, h, bit, mode, comp, filt, interlace = struct.unpack(">IIBBBBB", parts[0][1])
     if (bit, mode, comp, filt, interlace) != (8, 6, 0, 0, 0) or not (1 <= w <= 8192 and 1 <= h <= 8192):
         raise ValueError("Expected non-interlaced 8-bit RGBA tile")
-    if any(tag not in (b"IHDR", b"IDAT", b"IEND", b"sRGB", b"gAMA", b"pHYs", b"tEXt", b"iTXt") for tag, _ in parts):
-        raise ValueError("Unrecognized PNG chunk type")
+    # Blender may emit additional ancillary chunks (e.g. cHRM, iCCP, eXIf).
+    # PNG marks ancillary chunks by the lowercase first chunk-type byte.
+    # Reject unknown critical chunks; preserve strict CRC and pixel checks.
+    known_critical = (b"IHDR", b"IDAT", b"IEND")
+    for tag, _ in parts:
+        if len(tag) != 4 or not all((65 <= c <= 90 or 97 <= c <= 122) for c in tag):
+            raise ValueError("Invalid PNG chunk name")
+        if tag not in known_critical and not (tag[0] & 32):
+            raise ValueError(f"Unsupported critical PNG chunk: {tag!r}")
     raw = zlib.decompress(b"".join(data for tag, data in parts if tag == b"IDAT"))
     stride = w * 4
     if len(raw) != (stride + 1) * h:
