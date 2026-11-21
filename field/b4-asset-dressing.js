@@ -138,7 +138,7 @@ function wallSkinDistance(y0, y1, lateral = 0) {
 }
 const sideFor = (R, lateral = 0) => R.side ?? (R.wall ? 1.58 : wallSkinDistance(R.y || 0, (R.y || 0) + R.height, lateral) - R.radius - 0.04);   // wall pieces sink into the displaced skin rather than float off it
 
-export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, extraEmbers = [], rockMaterial = null, isTempleFace = null, isStale = () => false, maxProps = 22 }) {
+export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, lights, gLights, reserved = new Set(), mines = [], oreSites = [], lavaSites = [], crystalGeo = null, extraEmbers = [], rockMaterial = null, isTempleFace = null, openFaces = new Set(), isStale = () => false, maxProps = 22 }) {
   const ids = Object.keys(B4_PROP_REGISTRY).filter(id => B4_PROP_REGISTRY[id].ready);
   const group = new THREE.Group(); group.name = 'b4:asset-dressing'; group.userData.b4Cached = true;
   const owned = [];
@@ -205,6 +205,7 @@ export async function addB4AssetDressing({ root, map, ch, wallCell, hash, CELL, 
     const theme = themeAt(tx, ty);
     for (const [dx, dz] of DIRS) {
       if (ch(tx + dx, ty + dz) !== '#') continue;
+      if (openFaces.has(`${tx},${ty},${dx},${dz}`)) continue;   // parapet over a chasm: nothing on it
       faces.push({ tx, ty, dx, dz, theme });
       if (blocked(tx, ty)) continue;
       if (paneled.has(`${tx},${ty},${dx},${dz}`)) continue;   // that face gets a rock panel instead
