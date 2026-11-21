@@ -1,6 +1,6 @@
 {
   "asset": "b4p_egg_shells",
-  "version": "v1",
+  "version": "v2",
   "blender": "4.2.3 LTS",
   "triangles": 4300,
   "budget_triangles": 6000,
@@ -18,14 +18,14 @@
     ]
   },
   "bbox_m": [
-    1.332,
-    1.184,
+    1.366,
+    1.18,
     0.598
   ],
   "origin": "bottom-center",
   "up": "+Y (glTF)",
   "glb": "b4p_egg_shells.glb",
-  "glb_bytes": 523196,
+  "glb_bytes": 469144,
   "cc0_textures": {},
   "pinterest_refs": [
     86,
@@ -33,16 +33,16 @@
     89
   ],
   "sha256": {
-    "b4p_egg_shells.glb": "52a2013b1eff9045ee9a4fc00ed326a2d77044679b8f7c5a6f9f154416064dfd",
-    "b4p_egg_shells_volcanic_front.png": "bda8c1804d03938b0f3fa9f568c01e42c90c6c20f2159b928967aed6f8f08147",
-    "b4p_egg_shells_volcanic_side.png": "373ac8eacd49f892ecd2a34eb19d12894db93b82cf8d64b4c50a3b3ff990cf14",
-    "b4p_egg_shells_volcanic_angle.png": "fcda70798c8c93dbaee09ca4041d39e5c9725a94822c4d54ad5cb7080a6c33ec",
-    "b4p_egg_shells_volcanic_top.png": "641c2c4f16a385065f1f00f969cc727f928e175e2506ac5ee93a7e90cccc1965",
-    "b4p_egg_shells_volcanic_close.png": "2217575f1107920fc87ad75bdb6a40dc047ec2f598b661798edcec536acdcf8d",
-    "b4p_egg_shells_volcanic_back.png": "6c58c6f68ed56a5caa7014f9cf63325cfa770abed2a159c762aaa625725dff44",
-    "b4p_egg_shells_studio_front.png": "aadd0628e0c646eef7bc3ff536bc4f0e5858a62a35d2e4518bed406d72571ddd",
-    "b4p_egg_shells_studio_angle.png": "845dfa522be8e5407e8c07f43d936dc6b2501f1aaa86c253b0fc463335347b53",
-    "b4p_egg_shells_studio_scale.png": "aa974728cae13d5fedfe99a03963fbff3431b7562cd213c9a9738832233e7ae7"
+    "b4p_egg_shells.glb": "13e3071fa56c84672671ebd4aae32f17ee2b3e86332f4a8bdd59b01108cff603",
+    "b4p_egg_shells_volcanic_front.png": "7ea44a2ff793ef41ce009af5077d0cc9ba76d4e04b12f688fdfaf176d0e59540",
+    "b4p_egg_shells_volcanic_side.png": "8c9975f8d4e4f5d8da48f974bc9d87f20cbccb44cc62cbafb9948e909c3b7db3",
+    "b4p_egg_shells_volcanic_angle.png": "f595aa98f8dfd5b940f4dd1ea8ec174452a699c779acd21aeec14b36a8a40df7",
+    "b4p_egg_shells_volcanic_top.png": "d83f2d23d43e6b45eefa8e5d95422a55e1f8f84c514369cfc3b334fbdcf89f8d",
+    "b4p_egg_shells_volcanic_close.png": "efdbfb2cfc3a52f7569f07bafe02d1b727ae8501673ef04f5a965b7033dad6f1",
+    "b4p_egg_shells_volcanic_back.png": "ea20e2158734c020cb657f65fd31747c2cdaec9546ab18c0a13e237ac60af20d",
+    "b4p_egg_shells_studio_front.png": "fba55fa714210912d4abd750cb4fb17741fd5fe612bb60d8c81d864a68a321f0",
+    "b4p_egg_shells_studio_angle.png": "414edff91808b7da6bfb382dafa62e40d8ef4a598a986832da8d4e7a3766f4d5",
+    "b4p_egg_shells_studio_scale.png": "12d00192eea769e626322067206a4f2398835867ddef4fcf7c1306eb5e7a4039"
   },
   "renders": [
     "b4p_egg_shells_volcanic_front.png",
@@ -60,11 +60,11 @@
   "game_lights": [
     {
       "pos_blender_zup": [
-        -0.03951650112867355,
-        -0.26513007283210754,
+        -0.012012862600386143,
+        -0.06614305824041367,
         0.1599999964237213
       ],
-      "watts": 4.0,
+      "watts": 2.0,
       "color": [
         1.0,
         0.28,
