@@ -6,12 +6,12 @@ import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261120-floor
 import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261121-c2';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t7';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t3';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t8';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t4';
 import { createB4Kit } from './b4-kit.js?v=20261121-k2';
 import { findVaultRooms, buildAntigravHall, buildSanctum } from './b4-sanctum.js?v=20261121-s2';
 import { planChasms, buildChasms } from './b4-chasm.js?v=20261121-c5';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a6';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a11';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -246,7 +246,7 @@ export function createTheme(api, area) {
           templeFaces.push({ x: ex, z: ez, ry, dx, dz, rune: hash(tx * 3 + dx, ty * 3 + dz, 781) < 0.4, seed: hash(tx, ty, 782 + dx * 2 + dz) });
           continue;
         }
-        mesh(recessSide ? recessWallGeo : (b5WallGeo || volcanicWallGeo || wallGeo), mat.wall, ex, b5 ? (tallHallWall ? 7.3 : 0.35) : b4Vault ? 4 : 2, ez, ry, 1, b5 ? (tallHallWall ? 3.5 : 0.25) : b4Vault ? 2 : 1, 1);
+        mesh(recessSide ? recessWallGeo : (b5WallGeo || volcanicWallGeo || wallGeo), temple && !recessSide ? temple.wall : mat.wall, ex, b5 ? (tallHallWall ? 7.3 : 0.35) : b4Vault ? 4 : 2, ez, ry, 1, b5 ? (tallHallWall ? 3.5 : 0.25) : b4Vault ? 2 : 1, 1);
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (!b5 && k < 0.17 && !objAt.has(tx + ',' + ty)) {
           mesh(crystalGeo, magma ? surfaces.crystal : mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);

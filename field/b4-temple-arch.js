@@ -39,9 +39,17 @@ export function createTempleMaterials() {
     color: 0xb08070, roughness: 1, metalness: 0,
   });
   floor.color.setRGB(1.15, 0.78, 0.64); floor.emissive = new THREE.Color(0x2e0e05); floor.emissiveMap = floor.map;
+  // 崩れかけた神殿の壁（神殿の面以外）：歪んだ古い石積み（medieval_blocks_05）
+  const ruin = new THREE.MeshStandardMaterial({
+    map: cc0('medieval_blocks_05', 'diff', '1k', { srgb: true, repeat: [1, 1] }),
+    normalMap: cc0('medieval_blocks_05', 'nor_gl', '1k', { repeat: [1, 1] }), normalScale: new THREE.Vector2(1.4, 1.4),
+    roughnessMap: cc0('medieval_blocks_05', 'rough', '1k', { repeat: [1, 1] }),
+    aoMap: cc0('medieval_blocks_05', 'ao', '1k', { repeat: [1, 1] }), roughness: 1, metalness: 0,
+  });
+  ruin.color.setRGB(0.24, 0.17, 0.155); ruin.emissive = new THREE.Color(0x160603); ruin.emissiveMap = ruin.map;
   const slot = new THREE.MeshStandardMaterial({ color: 0x1a0804, emissive: 0xff5a12, emissiveIntensity: 2.4, roughness: 0.6 });
   const beam = trim;
-  return { wall, trim, floor, slot, beam, dispose() { for (const m of [wall, trim, floor, slot]) { for (const k of ['map', 'normalMap', 'roughnessMap']) m[k]?.dispose(); m.dispose(); } } };
+  return { wall, trim, floor, slot, beam, ruin, dispose() { for (const m of [wall, trim, floor, slot, ruin]) { for (const k of ['map', 'normalMap', 'roughnessMap', 'aoMap']) m[k]?.dispose(); m.dispose(); } } };
 }
 
 // 神殿の壁にする面か（壁 6.5 割、ゾーンや面ごとのばらつきは hash で決める）
