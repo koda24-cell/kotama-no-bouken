@@ -25,7 +25,7 @@ import lib_dragon as D  # noqa: E402
 from mathutils import Matrix, Vector, noise  # noqa: E402
 
 NAME = "b4p_dragon_ribs"
-VERSION = "v2"
+VERSION = "v3"
 rnd = random.Random(1414)
 C.reset(1414)
 
@@ -71,7 +71,7 @@ ribs = []
 frags = []
 for k, y in enumerate(YS):
     yy = y + rnd.uniform(-0.04, 0.04)
-    top = TOP_Z * rnd.uniform(0.94, 1.0) * (1 - 0.05 * abs(y))
+    top = TOP_Z * rnd.uniform(0.86, 1.0) * (1 - 0.06 * abs(y))
     splay = yy * 0.22  # 肋骨は外へ少し開き、後ろへ傾く
     p0 = Vector((SPINE_X + 0.10, yy, 0.32))
     p1 = Vector((SPINE_X + 0.15, yy + splay * 0.3, top * 1.22))
@@ -84,11 +84,11 @@ for k, y in enumerate(YS):
     def up(i, p, t):
         return Vector((0, 1, 0)).cross(t)
 
-    prof = [(0.13 * math.cos(2 * math.pi * i / 10), 0.07 * math.sin(2 * math.pi * i / 10)) for i in range(10)]
+    prof = [(0.17 * math.cos(2 * math.pi * i / 10) * (1 + 0.12 * math.cos(4 * math.pi * i / 10)), 0.085 * math.sin(2 * math.pi * i / 10)) for i in range(10)]
     n = len(keep)
     ob = C.sweep(f"rib_{k}", keep, prof, up_fn=up,
-                 scale_fn=lambda u, n=n, full=len(pts): (1.0 - 0.55 * (u * n / full)) * (1.0 + 0.25 * max(0.0, 0.12 - u * n / full) / 0.12))
-    D.displace_along_normal(ob, lambda co, nr: 0.5 * weather(co, nr))
+                 scale_fn=lambda u, n=n, full=len(pts): (1.0 - 0.45 * (u * n / full)) * (1.0 + 0.25 * max(0.0, 0.12 - u * n / full) / 0.12))
+    D.displace_along_normal(ob, lambda co, nr: 0.9 * weather(co, nr))
     D.mesh_ground(ob, 0.0)
     ribs.append(ob)
     if cut:  # 折れた先が地面に転がる
@@ -129,7 +129,7 @@ for k in range(12):
 
 allp = bones + rocks
 off = D.recenter(allp)
-bone = D.bone_mat("bone", soot_lo=0.0, soot_hi=0.6, scale=1.4)
+bone = D.bone_mat("bone", soot_lo=0.0, soot_hi=0.75, scale=1.4, grime=0.65, char_lo=0.46, ash_amt=0.9)
 basalt = D.basalt("basalt", hairline=0.0)
 for o in bones:
     C.assign(o, bone)
