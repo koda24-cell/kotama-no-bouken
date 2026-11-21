@@ -6,7 +6,7 @@ import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261120-floor
 import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261121-c2';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t4';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261121-t7';
 import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261121-t3';
 import { planChasms, buildChasms } from './b4-chasm.js?v=20261121-c5';
 import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261121-a4';
@@ -353,7 +353,7 @@ export function createTheme(api, area) {
       // Claude B4 prop GLBs (docs/3d/B4_PROPS_DESIGN.md). Loaded in the background; exploring never waits for them.
       deepLava = buildDeepLava({ root: buildRoot, tiles: deepLavaTiles, ch, CELL, hash });
       const fallRock = new THREE.MeshStandardMaterial({ color: 0x2a221e, roughness: 0.9, flatShading: true }); localGeometries.push(fallRock);
-      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, extraEmbers: [...deepLava.embers, ...(chasms?.embers || [])], openFaces: new Set(chasms?.parapetFaces.map(f => `${f.tx},${f.ty},${f.dx},${f.dz}`) || []), rockMaterial: fallRock, isTempleFace: (tx, ty, dx, dz) => a.f === 2 || isTempleFace(tx, ty, dx, dz), mines: b4Plan.mines.slice(1), oreSites, lavaSites, crystalGeo, isStale: () => root !== buildRoot })
+      addB4AssetDressing({ root: buildRoot, map: a, ch, wallCell, hash, CELL, lights, gLights: g.lights, reserved: objAt, extraEmbers: [...deepLava.embers, ...(chasms?.embers || [])], openFaces: new Set(chasms?.parapetFaces.map(f => `${f.tx},${f.ty},${f.dx},${f.dz}`) || []), rockMaterial: fallRock, isTempleFace: (tx, ty, dx, dz) => a.f === 2 || isTempleFace(tx, ty, dx, dz), mines: b4Plan.mines.slice(1), oreSites, lavaSites, deepTiles: deepLavaTiles, crystalGeo, isStale: () => root !== buildRoot })
         .then(d => { if (root !== buildRoot) d.dispose(); else b4Dressing = d; })
         .catch(err => console.warn('[b4-dressing]', err));
     }
