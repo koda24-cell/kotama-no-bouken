@@ -8,9 +8,40 @@
  * 1 種類 1 draw（InstancedMesh）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME } from './b4-vfx.js?v=20261122-j2';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { B4_VFX_TIME } from './b4-vfx.js?v=20261122-j7';
 
 const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+
+// ---- ダウンロードした本物の岩（Poly Haven CC0 スキャン、tools/b4-props/decimate_cc0.py で軽量化）と、承認済みの鉱石クラスター ----
+// 2026-11-22 ユーザー指摘：手作りの岩・結晶は質が悪い。苔の色は輝度に置き換えて黒い溶岩岩の色にし、割れ目に弱い赤の発光を足す。
+const ROCK_BASE = 'assets/models/floor4/props/cc0rocks/';
+const BIG = ['rock_moss_set_01_0', 'rock_moss_set_01_1', 'rock_moss_set_01_2', 'rock_moss_set_01_3', 'rock_moss_set_01_4', 'rock_moss_set_01_5', 'namaqualand_boulder_02_0', 'namaqualand_boulder_05_0'];
+const SMALL = ['rock_moss_set_02_0', 'rock_moss_set_02_1', 'rock_moss_set_02_2', 'rock_moss_set_02_3', 'rock_moss_set_02_4', 'rock_moss_set_02_5', 'rock_moss_set_02_6', 'rock_07_0'];
+const ORE = 'assets/models/floor4/props/b4p_dragon_ore_cluster.glb';
+const rockCache = new Map(), loader = new GLTFLoader();
+function volcanicRock(m) {
+  // 2026-11-22 ユーザー指摘「岩の色明るくない？」：元の明るい岩肌テクスチャに暗い赤茶を掛けて黒い溶岩岩に（模様はテクスチャのまま残る）
+  m.color = new THREE.Color(0.2, 0.14, 0.12);
+  m.roughness = 1; m.metalness = 0;
+  if (m.normalScale) m.normalScale.set(1.4, 1.4);
+  m.emissive = new THREE.Color(0x120402); m.emissiveMap = m.map; m.emissiveIntensity = 1;
+  m.userData.b4Shared = true; m.needsUpdate = true;
+  return m;
+}
+function loadPiece(url, ore = false) {
+  if (!rockCache.has(url)) rockCache.set(url, loader.loadAsync(url).then(g => {
+    g.scene.updateMatrixWorld(true);
+    let mesh = null; g.scene.traverse(o => { if (o.isMesh && !mesh) mesh = o; });
+    if (!mesh) return null;
+    const geo = mesh.geometry.clone().applyMatrix4(mesh.matrixWorld); geo.computeBoundingBox(); geo.userData.b4Shared = true;
+    const mat = ore ? mesh.material : volcanicRock(mesh.material);
+    if (ore) { mat.emissiveIntensity = Math.max(mat.emissiveIntensity || 1, 1.6); mat.userData.b4Shared = true; }
+    const size = geo.boundingBox.getSize(new THREE.Vector3());
+    return { geo, mat, size, minY: geo.boundingBox.min.y };
+  }).catch(() => null));
+  return rockCache.get(url);
+}
 
 export function makeRockyZone(hash) {
   const S = 5;
@@ -92,7 +123,7 @@ export function buildRockPass({ root, map, ch, wallCell, hash, CELL, reserved = 
       const nrm = new THREE.Vector3(-dx, 0, -dz), lat = new THREE.Vector3(-dz, 0, dx);
       if (!busy && hash(k, 1, 1320) < (zone ? 0.55 : 0.18)) {
         const along = (hash(k, 2, 1320) - 0.5) * 2.4;
-        const big = 0.55 + hash(k, 3, 1320) * 0.55;
+        const big = 0.8 + hash(k, 3, 1320) * 0.9;
         const base = new THREE.Vector3(tx * CELL + dx * (SKIN - big * 0.35), 0, ty * CELL + dz * (SKIN - big * 0.35)).addScaledVector(lat, along);
         E.set(0, hash(k, 4, 1320) * 6.28, (hash(k, 5, 1320) - 0.5) * 0.3); Q.setFromEuler(E);
         bM[Math.floor(hash(k, 6, 1320) * 3)].push(new THREE.Matrix4().compose(base.clone().setY(big * 0.32), Q.clone(), new THREE.Vector3(big * (1 + hash(k, 7, 1320) * 0.4), big, big)));
@@ -123,18 +154,38 @@ export function buildRockPass({ root, map, ch, wallCell, hash, CELL, reserved = 
       }
     }
   }
-  bM.forEach((ms, i) => {
-    if (!ms.length) return;
-    const im = new THREE.InstancedMesh(bGeos[i], rockMat, ms.length); ms.forEach((m, j) => im.setMatrixAt(j, m));
-    im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere(); im.name = 'b4:boulders-' + i; group.add(im); owned.push(im);
+  // 岩：大きい岩 → BIG、小石 → SMALL。行列の scale.y を「目標の高さ」として実寸から倍率を出す
+  let alive = true;
+  const placeSet = async (urls, mats, name) => {
+    const pieces = (await Promise.all(urls.map(u => loadPiece(ROCK_BASE + u + '.glb')))).filter(Boolean);
+    if (!alive || !pieces.length) return;
+    const per = pieces.map(() => []);
+    mats.forEach((M, j) => per[j % pieces.length].push(M));
+    pieces.forEach((pc, k) => {
+      if (!per[k].length) return;
+      const im = new THREE.InstancedMesh(pc.geo, pc.mat, per[k].length);
+      const P = new THREE.Vector3(), Qq = new THREE.Quaternion(), Sc = new THREE.Vector3();
+      per[k].forEach((M, j) => { M.decompose(P, Qq, Sc); const f = Sc.y / Math.max(pc.size.y, 0.05); const fx = Math.min(f * 1.15, Sc.x * 1.6 / Math.max(pc.size.x, pc.size.z, 0.05));
+        im.setMatrixAt(j, new THREE.Matrix4().compose(P.clone().setY(-pc.minY * f - Sc.y * 0.15), Qq, new THREE.Vector3(fx, f, fx))); });
+      im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere(); im.name = name + '-' + k; if (nearCull) nearCull(pc.mat, 1.2);
+      group.add(im); owned.push(im);
+    });
+  };
+  const scaleY = M => { const s = new THREE.Vector3(); M.decompose(new THREE.Vector3(), new THREE.Quaternion(), s); return s.y; };
+  placeSet(BIG, bM.flat().filter(M => scaleY(M) >= 0.45), 'b4:scan-boulder');
+  placeSet(SMALL, bM.flat().filter(M => scaleY(M) < 0.45), 'b4:scan-rock');
+  // 鉱石：承認済みの鉱石クラスター（b4p_dragon_ore_cluster）を鉱脈ごとに 1 つ
+  const oreSites = oreM.filter((_, j) => j % 5 === 0).slice(0, 34);
+  loadPiece(ORE, true).then(pc => {
+    if (!alive || !pc || !oreSites.length) return;
+    const im = new THREE.InstancedMesh(pc.geo, pc.mat, oreSites.length);
+    const P = new THREE.Vector3(), Qq = new THREE.Quaternion(), Sc = new THREE.Vector3();
+    oreSites.forEach((M, j) => { M.decompose(P, Qq, Sc); const f = (0.45 + hash(j, 3, 1350) * 0.35) / Math.max(pc.size.y, 0.05);
+      im.setMatrixAt(j, new THREE.Matrix4().compose(P.clone().setY(Math.max(0, P.y - 0.35)), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hash(j, 4, 1350) * 6.28, 0)), new THREE.Vector3(f, f, f))); });
+    im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere(); im.name = 'b4:ore-cluster'; if (nearCull) nearCull(pc.mat, 1.2);
+    group.add(im); owned.push(im);
   });
-  if (oreM.length) {
-    const im = new THREE.InstancedMesh(shardG, oreMat, oreM.length); oreM.forEach((m, j) => im.setMatrixAt(j, m));
-    im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere(); im.name = 'b4:red-ore'; group.add(im); owned.push(im);
-    const halo = new THREE.InstancedMesh(shardG, haloMat, oreM.length);
-    oreM.forEach((m, j) => { const M = m.clone(); const pos = new THREE.Vector3(), q = new THREE.Quaternion(), sc = new THREE.Vector3(); M.decompose(pos, q, sc); halo.setMatrixAt(j, M.compose(pos, q, sc.multiply(new THREE.Vector3(1.7, 1.12, 1.7)))); });
-    halo.instanceMatrix.needsUpdate = true; halo.computeBoundingSphere(); halo.name = 'b4:red-ore-halo'; halo.renderOrder = 4; group.add(halo); owned.push(halo);
-  }
+  info.ores = oreSites.length;
   // 鉱石の赤い光（近い順に使われるので多めに登録）と床の霞
   let nL = 0;
   for (const key of oreTiles) {
@@ -168,5 +219,5 @@ export function buildRockPass({ root, map, ch, wallCell, hash, CELL, reserved = 
     group.add(wm, imesh); owned.push(wg, ig);
   }
   root.add(group);
-  return { group, info, dispose() { owned.forEach(o => o.dispose()); group.removeFromParent(); } };
+  return { group, info, dispose() { alive = false; owned.forEach(o => o.dispose()); group.removeFromParent(); } };
 }

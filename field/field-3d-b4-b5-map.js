@@ -2,19 +2,19 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createB4RockForms } from './b4-fractured-rock-ore.js?v=20261110-quality';
-import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-j2';
-import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-j2';
+import { createB4SurfaceLibrary } from './b4-surface-library.js?v=20261122-j7';
+import { addB4VolcanicDetail } from './b4-volcanic-detail.js?v=20261122-j7';
 import { addB4GameScenery } from './b4-game-scenery.js?v=20261110-quality';
 import { faceKey, disposeB4Owned } from './b4-placement.js?v=20261110-quality';
-import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-j2';
-import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-j2';
-import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-j2';
-import { buildVista } from './b4-vista.js?v=20261122-j2';
-import { buildRockPass, makeRockyZone } from './b4-rocks.js?v=20261122-j2';
-import { createB4Kit, nearCull as kitNearCull } from './b4-kit.js?v=20261122-j2';
-import { findVaultRooms, buildAntigravHall, buildSanctum, buildCauseway, buildPitRail } from './b4-sanctum.js?v=20261122-j2';
-import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-j2';
-import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-j2';
+import { addB4AssetDressing } from './b4-asset-dressing.js?v=20261122-j7';
+import { buildDeepLava, advanceVfxTime } from './b4-temple-fx.js?v=20261122-j7';
+import { buildTempleDecor } from './b4-temple-decor.js?v=20261122-j7';
+import { buildVista } from './b4-vista.js?v=20261122-j7';
+import { buildRockPass, makeRockyZone } from './b4-rocks.js?v=20261122-j7';
+import { createB4Kit, nearCull as kitNearCull } from './b4-kit.js?v=20261122-j7';
+import { findVaultRooms, buildAntigravHall, buildSanctum, buildCauseway, buildPitRail } from './b4-sanctum.js?v=20261122-j7';
+import { planChasms, buildChasms } from './b4-chasm.js?v=20261122-j7';
+import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCeilingBeams } from './b4-temple-arch.js?v=20261122-j7';
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
@@ -261,11 +261,9 @@ export function createTheme(api, area) {
         mesh(recessSide ? recessWallGeo : (b5WallGeo || volcanicWallGeo || wallGeo), temple && !recessSide ? (rocky(tx, ty) ? temple.rock : temple.wall) : mat.wall, ex, b5 ? (tallHallWall ? 7.3 : 0.35) : b4Vault ? 4 : 2, ez, ry, 1, b5 ? (tallHallWall ? 3.5 : 0.25) : b4Vault ? 2 : 1, 1);
         const k = hash(tx, ty, DIR_ORDER.indexOf(d) + 29);
         if (!b5 && k < 0.17 && !objAt.has(tx + ',' + ty)) {
-          mesh(crystalGeo, magma ? surfaces.crystal : mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
+          // 4層：手作りの円錐の結晶はやめ、鉱石はダウンロード／承認済みのモデル（b4-asset-dressing・b4-rocks）に任せる（2026-11-22）
+          if (!magma) mesh(crystalGeo, mat.glow, ex - dx * 0.42, 0.6, ez - dz * 0.42, ry, 0.6, 1.1 + k, 0.6);
           if (magma) oreSites.push({ x: ex - dx * 0.42, z: ez - dz * 0.42, dx, dz, k });
-          if (magma) for(const side of [-1,1]) {
-            const c=mesh(crystalGeo,surfaces.crystal,ex-dx*.48+dz*side*.24,.35,ez-dz*.48-dx*side*.24,ry,.32,.65,.32);c.rotation.z=side*.16;
-          }
           if (lights.length < 28) {
             const L = { world: new THREE.Vector3(ex - dx * 0.4, 1.2, ez - dz * 0.4), color: mist ? 0x92dfc1 : magma ? 0xff6726 : 0x8d6bff, intensity: 0.9, range: 4, off: false };
             g.lights.push(L); lights.push(L);

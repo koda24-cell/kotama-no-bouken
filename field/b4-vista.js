@@ -7,8 +7,8 @@
  * 窓の位置・向きは b4-game-scenery.js の vista（mine-alcove と同じ規則）。 */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { B4_VFX_TIME, deepLavaMaterial, glyphMaterial } from './b4-vfx.js?v=20261122-j2';
-import { parapetGeometry } from './b4-chasm.js?v=20261122-j2';
+import { B4_VFX_TIME, deepLavaMaterial, glyphMaterial } from './b4-vfx.js?v=20261122-j7';
+import { parapetGeometry } from './b4-chasm.js?v=20261122-j7';
 
 const NOISE = /* glsl */`
   float vh(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
