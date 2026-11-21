@@ -78,11 +78,15 @@ jobs:
           START_EPOCH: ${{ steps.start.outputs.epoch }}
           BUDGET_DRILL_ALLOWED: ${{ github.ref == 'refs/heads/feature/blender53-budget-routed-handoff-20261121' }}
           DISPATCH_SIMULATION: ${{ github.event_name == 'workflow_dispatch' && inputs.simulated_elapsed_minutes || '0' }}
+          INLINE_DRILL: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[blender53-inline-drill]') }}
         run: |
           # Push runs force a 71-minute budget decision for reproducible CI;
           # other branches cannot use the simulation guard.
           SIMULATE=71
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [ "$INLINE_DRILL" = "true" ]; then
+            SIMULATE=0
+            echo "INLINE_DRILL_REAL_CLOCK=true"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             SIMULATE="$DISPATCH_SIMULATION"
           fi
           python3 tools/3d_checkpoint/stage_route.py --completed-stage 1 --max-stages 2 --start-epoch "$START_EPOCH" --simulate-minutes "$SIMULATE"
