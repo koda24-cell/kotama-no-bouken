@@ -47,15 +47,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Record stage-one start
+        id: stage_one_start
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
       - name: Verify Blender
         run: blender --version | head -1 | grep -Fx 'Blender 5.3.0'
       - name: Update definitions and scan source
         run: |
           bash tools/security/clamav_scan_gate.sh update qa/security
           bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-watergate.py qa/security/stage1-source.log
-      - name: Record stage-one start
-        id: stage_one_start
-        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
       - name: Generate first checkpoint with actual Blender
         id: stage_one_build
         run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
