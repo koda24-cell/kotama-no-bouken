@@ -1,0 +1,132 @@
+{
+  "runId": 45051036648,
+  "url": "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45051036648",
+  "headSHA": "847874edc30e5e6ec6b22a689047d1d15ea7a93a",
+  "status": "completed",
+  "conclusion": "success",
+  "scope": "Read-only reimport and security scan of the five existing individual V3 assets; archived PNGs are copies of the earlier actual renders, not new renders",
+  "securityJob": {
+    "id": 137295977723,
+    "conclusion": "success",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:43:29Z",
+        "completed_at": "2026-11-22T17:43:30Z"
+      },
+      {
+        "name": "Initialize containers",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:43:30Z",
+        "completed_at": "2026-11-22T17:43:50Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:43:50Z",
+        "completed_at": "2026-11-22T17:44:20Z"
+      },
+      {
+        "name": "Validate requested paths",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:44:20Z",
+        "completed_at": "2026-11-22T17:44:21Z"
+      },
+      {
+        "name": "Assert Blender 5.3.0",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:44:21Z",
+        "completed_at": "2026-11-22T17:44:21Z"
+      },
+      {
+        "name": "Refresh ClamAV",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:44:21Z",
+        "completed_at": "2026-11-22T17:44:29Z"
+      },
+      {
+        "name": "Scan script before execution",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:44:29Z",
+        "completed_at": "2026-11-22T17:44:38Z"
+      },
+      {
+        "name": "Run Blender",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:44:38Z",
+        "completed_at": "2026-11-22T17:44:52Z"
+      },
+      {
+        "name": "Verify output and record hashes",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:44:52Z",
+        "completed_at": "2026-11-22T17:44:52Z"
+      },
+      {
+        "name": "Scan generated output",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:44:52Z",
+        "completed_at": "2026-11-22T17:45:03Z"
+      },
+      {
+        "name": "Run actions/upload-artifact@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:45:03Z",
+        "completed_at": "2026-11-22T17:45:05Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:45:05Z",
+        "completed_at": "2026-11-22T17:45:05Z"
+      },
+      {
+        "name": "Stop containers",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:45:05Z",
+        "completed_at": "2026-11-22T17:45:05Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-22T17:45:05Z",
+        "completed_at": "2026-11-22T17:45:05Z"
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "id": 14765995600,
+      "name": "shared-blender53-NOT-APPROVED-45051036648",
+      "sizeBytes": 30528512,
+      "expired": false
+    },
+    {
+      "id": 14765436687,
+      "name": "shared-3d-glb-performance-audit",
+      "sizeBytes": 2066,
+      "expired": false
+    }
+  ],
+  "retrievalNote": "Run/job metadata verified via GitHub API. Raw job-log redirected download returned HTTP403 in this environment; archive contents were not downloaded. Original GLBs/Blend/20 PNG and local reimport/format receipts remain permanently in Git.",
+  "automaticLODReview": {
+    "runId": 45051033409,
+    "conclusion": "startup_failure",
+    "note": "No automatic LOD result claimed. Dedicated shared structure audit and security/reimport job succeeded; originals unchanged."
+  }
+}
