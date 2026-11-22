@@ -42,7 +42,9 @@ cam.data.type = "ORTHO"
 cam.data.ortho_scale = 20
 scene.camera = cam
 scene.render.engine = "CYCLES"
-scene.cycles.samples = 24
+scene.cycles.samples = int(os.environ.get("RENDER_SAMPLES", "24"))
+if not 1 <= scene.cycles.samples <= 512:
+    raise RuntimeError("RENDER_SAMPLES outside safe range 1..512")
 scene.render.resolution_x = 1000
 scene.render.resolution_y = 760
 scene.render.resolution_percentage = 100
