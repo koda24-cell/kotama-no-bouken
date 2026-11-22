@@ -170,6 +170,8 @@ async function teleport(session,tx,ty,direction){
  return state(session,`camera-${tx}-${ty}-${direction}`);
 }
 async function screenshot(session,name){
+ const only=process.env.V3_CAPTURE_ONLY?.split(',');
+ if(only && !only.includes(name))return state(session,'uncaptured-'+name);
  const checkpointFile=process.env.V3_VISUAL_CHECKPOINT;
  let reused=null;
  if(checkpointFile){
