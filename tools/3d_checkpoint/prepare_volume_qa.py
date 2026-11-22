@@ -27,7 +27,7 @@ def volume(name,color,density,loc,scale):
  v=n.new("ShaderNodeVolumePrincipled")
  v.inputs["Color"].default_value=(*color,1)
  v.inputs["Density"].default_value=density
- n.links.new(v.outputs["Volume"],o.inputs["Volume"])
+ m.node_tree.links.new(v.outputs["Volume"],o.inputs["Volume"])
  bpy.ops.mesh.primitive_cube_add(size=1,location=loc)
  obj=bpy.context.object;obj.name=name;obj.scale=scale;obj.data.materials.append(m)
 volume("violet-miasma",(0.23,0.08,0.35),0.11,(0,-1.0,3.2),(9,3.5,5.4))
