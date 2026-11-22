@@ -1,0 +1,85 @@
+name: B4 P3 V5 Thick Secondary Magmafall Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
+    paths:
+      - tools/floor4/magma_banks/build_p3_v5.py
+      - tools/floor4/magma_banks/p3_v5_additions.py
+      - .github/workflows/b4-magma-bank-p3-v5-review.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Update ClamAV definitions before reading project assets
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan review scripts before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/floor4/magma_banks qa/security/input-0.log
+      - name: Scan imported source 1 before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/floor4/magma_river/build_magma_river.py qa/security/input-1.log
+      - name: Scan imported source 2 before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b4_dragonfire/textures qa/security/input-2.log
+      - name: Scan imported source 3 before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan assets/textures/floor4/basalt-charcoal-01 qa/security/input-3.log
+      - name: Render P3 V5 with V16 and V4 geometry preserved
+        run: |
+          set -euo pipefail
+          mkdir -p render-output
+          HOME=/tmp/blender-home blender -b -t 2 --python tools/floor4/magma_banks/build_p3_v5.py -- --variant p3-v5 --out render-output
+      - name: Validate GLB and four actual renders
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,hashlib,struct
+          d=pathlib.Path('render-output')
+          m=json.loads((d/'manifest-p3-v5.json').read_text())
+          assert m['approval']=='NOT_APPROVED'
+          stem='b4-magma-river-p3-v5'
+          expected={stem+'.glb',stem+'.blend'}|{stem+'-'+v+'.png' for v in ('angle','front','side','top')}
+          assert {x['file'] for x in m['files']}==expected
+          for x in m['files']:
+              p=d/x['file']
+              assert p.is_file() and p.stat().st_size==x['size'] and p.stat().st_size>4000
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==x['sha256']
+          glb=d/(stem+'.glb')
+          with glb.open('rb') as f:
+              assert f.read(4)==b'glTF'
+              version,length=struct.unpack('<II',f.read(8))
+              assert version==2 and length==glb.stat().st_size
+              chunk_len,chunk_type=struct.unpack('<II',f.read(8))
+              assert chunk_type==0x4e4f534a
+              scene=json.loads(f.read(chunk_len))
+          assert len(scene['meshes'])>=516
+          assert len(scene['images'])>=9 and len(scene['materials'])>=7
+          nodes=[n.get('name','') for n in scene['nodes']]
+          assert any('P3_V5_THICKER_SECONDARY_MOLTEN_FRONT' in n for n in nodes)
+          assert any('P3_V5_SECONDARY_IMPACT_MOLTEN_BASIN' in n for n in nodes)
+          for v in ('angle','front','side','top'):
+              assert (d/(stem+'-'+v+'.png')).read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          print('P3 V5 verified',len(scene['meshes']),'meshes',len(scene['images']),'images')
+          PY
+      - name: Scan generated GLB, Blend, PNG and manifests
+        run: bash tools/security/clamav_scan_gate.sh scan render-output qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-magma-p3-v5-secondary-cascade
+          path: |
+            render-output/
+            qa/security/
+          retention-days: 14

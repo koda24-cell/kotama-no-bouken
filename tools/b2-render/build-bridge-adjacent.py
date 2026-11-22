@@ -69,7 +69,7 @@ for loc,power,size in [((span, -span,span),1800,span),((-span,-span,span),1200,s
     bpy.ops.object.light_add(type="AREA",location=loc)
     lamp=bpy.context.object;lamp.data.energy=power;lamp.data.shape="DISK";lamp.data.size=size
 scene=bpy.context.scene
-scene.render.engine="BLENDER_EEVEE_NEXT"
+scene.render.engine="BLENDER_EEVEE"
 scene.render.resolution_x=1100;scene.render.resolution_y=780;scene.render.resolution_percentage=100
 scene.world.color=(0.22,0.25,0.29)
 for name,location in [("angle",(span*1.0,-span*1.5,span*0.9)),("front",(0,-span*1.7,span*0.5)),("side",(span*1.7,0,span*0.5))]:

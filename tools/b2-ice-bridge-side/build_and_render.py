@@ -136,7 +136,7 @@ def create(side):
  # review cameras and lighting only after exporting geometry
  bpy.ops.object.light_add(type="AREA",location=(3,-4,6));bpy.context.object.data.energy=800;bpy.context.object.data.size=4
  bpy.ops.object.camera_add();cam=bpy.context.object;bpy.context.scene.camera=cam
- sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=48;sc.render.resolution_x=800;sc.render.resolution_y=600;sc.render.resolution_percentage=100
+ sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=48;sc.cycles.use_denoising=False;bpy.context.view_layer.cycles.use_denoising=False;sc.render.resolution_x=800;sc.render.resolution_y=600;sc.render.resolution_percentage=100
  sc.world.color=(.22,.25,.28)
  # Test three ice shaders on the same original bank geometry.
  bs=ice.node_tree.nodes.get("Principled BSDF")

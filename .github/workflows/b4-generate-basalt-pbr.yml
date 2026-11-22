@@ -3,26 +3,63 @@ on:
   push:
     branches:
       - feature/b4-procedural-basalt-pbr-library-20261114
+    paths:
+      - '.github/workflows/b4-generate-basalt-pbr.yml'
+      - 'tools/b4-render/generate-basalt-pbr.py'
   workflow_dispatch:
 permissions:
   contents: write
+  packages: read
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Assert Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: python tools/b4-render/generate-basalt-pbr.py
-      - name: Validate PNG signatures
+      - name: Update ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan procedural PBR generator before executing
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b4-render/generate-basalt-pbr.py qa/security/source.log
+      - name: Generate original tileable basalt maps (stdlib only)
+        run: python3 tools/b4-render/generate-basalt-pbr.py
+      - name: Validate exactly three 256x256 PNG maps and write SHA256 manifest
         run: |
-          for f in assets/textures/floor4/basalt-charcoal-01/*.png; do test -s "$f"; done
-          python -c "from pathlib import Path; assert all(p.read_bytes().startswith(bytes.fromhex('89504e470d0a1a0a')) for p in Path('assets/textures/floor4/basalt-charcoal-01').glob('*.png'))"
-      - name: Commit texture maps to review branch
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json, struct
+          d=Path('assets/textures/floor4/basalt-charcoal-01')
+          names={'basecolor.png','roughness.png','normal.png'}
+          files={p.name for p in d.glob('*.png')}
+          assert files==names,(files,names)
+          hashes={}
+          for p in sorted(d.glob('*.png')):
+              data=p.read_bytes()
+              assert len(data)>100 and data[:8]==bytes.fromhex('89504e470d0a1a0a'),p
+              assert struct.unpack('>II',data[16:24])==(256,256),p
+              hashes[p.name]=hashlib.sha256(data).hexdigest()
+          Path('qa/security').mkdir(parents=True,exist_ok=True)
+          Path('qa/security/basalt-pbr-sha256.json').write_text(json.dumps({'approval':'NOT_APPROVED','files':hashes},indent=2))
+          print('B4_BASALT_3_PNG_256_QA_PASS',len(hashes))
+          PY
+      - name: Scan all generated maps BEFORE any Git commit
+        run: bash tools/security/clamav_scan_gate.sh scan assets/textures/floor4/basalt-charcoal-01 qa/security/output.log
+      - name: Commit texture maps to original review branch only
+        if: github.ref == 'refs/heads/feature/b4-procedural-basalt-pbr-library-20261114'
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/textures/floor4/basalt-charcoal-01/
@@ -31,7 +68,11 @@ jobs:
             git push
           fi
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: floor4-basalt-pbr-maps
-          path: assets/textures/floor4/basalt-charcoal-01/*.png
+          path: |
+            assets/textures/floor4/basalt-charcoal-01/*.png
+            qa/security/
           retention-days: 14
+          if-no-files-found: warn

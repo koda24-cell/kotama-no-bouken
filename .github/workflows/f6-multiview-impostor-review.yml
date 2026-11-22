@@ -1,0 +1,95 @@
+name: F6 Multi-view Impostor Atlas Review
+on:
+  push:
+    branches: [feature/gpt-shared-3d-optimization-actions-20261117]
+    paths:
+      - tools/3d-performance/build_multiview_impostor.py
+      - tools/3d-performance/pack_multiview_atlas.py
+      - .github/workflows/f6-multiview-impostor-review.yml
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Existing successful V14 tree source run'
+        required: false
+        default: '44053620503'
+        type: string
+  workflow_call:
+    inputs:
+      source_run_id:
+        description: 'Successful V14 source Blender Actions run'
+        required: false
+        type: string
+        default: '44053620503'
+permissions:
+  contents: read
+  packages: read
+  actions: read
+jobs:
+  bake:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert shared Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Verify Blender 5.3 compatibility with V14 checkpoint
+        run: |
+          blender --version | head -n 1
+          python3 - <<'PY'
+          import subprocess
+          assert subprocess.check_output(['blender','--version'],text=True).startswith('Blender 5.3.0')
+          PY
+      - name: Scan Blender and QA scripts
+        run: bash tools/security/clamav_scan_gate.sh scan tools/3d-performance qa/security/scripts.log
+      - name: Get the verified unapproved original Blend checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.source_run_id || '44053620503' }}
+          github-token: ${{ github.token }}
+          name: f6-tree-mature-v1-NOT-APPROVED
+          path: source-tree
+      - name: Verify unmodified source input
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          root=Path('source-tree')
+          doc=json.loads((root/'manifest.json').read_text())
+          assert doc['version']=='V14' and doc['status']=='NOT_APPROVED'
+          for f in doc['files']:
+            data=(root/f['name']).read_bytes()
+            assert hashlib.sha256(data).hexdigest()==f['sha256']
+          print('IMPOSTOR_SOURCE_V14_VERIFIED')
+          PY
+      - name: Scan downloaded Blend checkpoint before Blender import
+        run: bash tools/security/clamav_scan_gate.sh scan source-tree qa/security/input.log
+      - name: Render 8 transparent tree views from original 3D mesh
+        run: |
+          set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+          HOME=/tmp/blender-home blender -b source-tree/tree_mature.blend -t 2 --python tools/3d-performance/build_multiview_impostor.py -- --size 512 --directions 8 --out render-output/3d-performance/impostor 2>&1 | tee /tmp/impostor.log
+          grep -q IMPOSTOR_FRAMES_DONE /tmp/impostor.log
+      - name: Check RGBA alpha and pack multi-direction atlas
+        run: |
+          python3 tools/3d-performance/pack_multiview_atlas.py render-output/3d-performance/impostor
+      - name: Scan generated candidates
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/3d-performance/impostor qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f6-tree-8view-impostor-UNAPPROVED-review
+          path: |
+            render-output/3d-performance/impostor/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn

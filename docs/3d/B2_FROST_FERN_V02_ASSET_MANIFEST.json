@@ -1,0 +1,43 @@
+{
+  "asset_id": "b2_frost_fern_v02",
+  "stage": "floor2",
+  "art_approval": "APPROVED_BY_USER_2026-11-17",
+  "recommended_variant": "balanced",
+  "asset_binary_in_github": false,
+  "status_note": "Approval record and transfer checksums only; GLB/PNG source binary remains in local handoff ZIP, not in the GitHub repo.",
+  "rendering_verified": "VTK GLB geometry -> 3 angle PNG. Blender/Three.js not verified",
+  "pbr_photographs": "not embedded; procedural color and frost caps",
+  "model_files": [
+    {
+      "variant": "light",
+      "name": "b2_frost_fern_v02_light.glb",
+      "bytes": 17876880,
+      "sha256": "dc8c49e95a6b5efb9720d77bcff2802134b325f360862556b224ae8d386cd7c2"
+    },
+    {
+      "variant": "balanced",
+      "name": "b2_frost_fern_v02_balanced.glb",
+      "bytes": 19481616,
+      "sha256": "888985842887aeb3aad8b992201529f9f01ea113b251b5642ebf62a2d7aab083"
+    },
+    {
+      "variant": "heavy",
+      "name": "b2_frost_fern_v02_heavy.glb",
+      "bytes": 21302160,
+      "sha256": "966413615249a8b2d4fc7ecbe3aa8a54a69af3d684df8c9ed2e701052f21e00c"
+    }
+  ],
+  "render_sha256": {
+    "balanced_front.png": "ce8092fcc5bf75206d31d4aaba7f722e66c0824fc9a24f9fbcde2c502148bea7",
+    "balanced_side.png": "08009a3217eeebc5b2750cc36025f9bcf8bcc5210d7a016edde9e7b5a5828da6",
+    "balanced_angle.png": "5e8656571d97ece68d969a511a1fc5e2ca0440438e457eb7551bf22045e639e0",
+    "light_front.png": "b08e2a1146c447c9a93510daf5ee30ea4ac18707ce2dcaeaff1bd73a203cc807",
+    "light_side.png": "11ff61f47649f942a95b728795e929aa1aeac4addade6b94b74a48877c278679",
+    "light_angle.png": "90f88fb6a6c73f6d55db6c713dec5dc5b74dc0ff62eb33176f1093e6722bb003",
+    "heavy_front.png": "5abc2e0c1e287963f0aa46297848ca159018bacf508fc54ddf3d8f165c2eb5cc",
+    "heavy_side.png": "cc927705326e6bfd8f674a7ed7926e35942011130eca74be83e930a3dd394fad",
+    "heavy_angle.png": "992b9bca9c7142c0a243249cfa9292b681a0b0cf887238aaec5550002bc58cba"
+  },
+  "original_pr": "https://github.com/koda24-cell/kotama-no-bouken/pull/451",
+  "claude_handoff_reference": "docs/3d/B2_FROST_FERN_V02_CLAUDE_HANDOFF.md"
+}

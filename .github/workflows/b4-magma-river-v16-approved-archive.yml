@@ -1,0 +1,92 @@
+name: B4 Approved Magma River V16 Archive
+on:
+  push:
+    branches:
+      - feature/gpt-b4-magma-river-v16-approved-archive-20261117
+    paths:
+      - .github/workflows/b4-magma-river-v16-approved-archive.yml
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify original render and download artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/koda24-cell/kotama-no-bouken/actions/runs/44027612542" > /tmp/b4-run.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/b4-run.json'))
+          assert d['status']=='completed' and d['conclusion']=='success'
+          assert d['head_branch']=='feature/gpt-b4-magma-viscosity-contact-v14-20261117'
+          assert d['head_sha']=='d31c3fd88ff2ea5fdb942e193235e62647633690'
+          assert d['path']=='.github/workflows/b4-magma-river-iterative-render.yml'
+          PY
+          mkdir -p /tmp/b4-v16
+          gh run download 44027612542 --repo "koda24-cell/kotama-no-bouken" --name b4-magma-river-v16-review --dir /tmp/b4-v16
+      - name: Verify all file hashes and archive GLB, Blend, four PNGs
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,hashlib,shutil,struct
+          src=pathlib.Path('/tmp/b4-v16')
+          m=json.loads((src/'manifest-v16.json').read_text())
+          assert m['run_id']=='44027612542' and m['source_sha']=='d31c3fd88ff2ea5fdb942e193235e62647633690'
+          expected={'b4-magma-river-v16.glb','b4-magma-river-v16.blend'}
+          expected|={f'b4-magma-river-v16-{v}.png' for v in ('front','side','angle','top')}
+          assert {x['file'] for x in m['files']}==expected
+          for entry in m['files']:
+              f=src/entry['file']
+              assert f.is_file() and f.stat().st_size==entry['size']
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==entry['sha256']
+          glb=src/'b4-magma-river-v16.glb'
+          assert hashlib.sha256(glb.read_bytes()).hexdigest()=='359fb4a68960e624ab955abe57d6afd9c3a1dbe44b7e7b37c8067b8567834918'
+          with glb.open('rb') as f:
+              assert f.read(4)==b'glTF'
+              version,length=struct.unpack('<II',f.read(8))
+              assert version==2 and length==glb.stat().st_size
+              size,kind=struct.unpack('<II',f.read(8))
+              assert kind==0x4e4f534a
+              scene=json.loads(f.read(size))
+              assert len(scene.get('meshes',[]))>=100 and len(scene.get('images',[]))>=4
+          assert (src/'b4-magma-river-v16.blend').read_bytes()[:7]==b'BLENDER' or (src/'b4-magma-river-v16.blend').read_bytes()[:4]==bytes.fromhex('28b52ffd')
+          for v in ('front','side','angle','top'):
+              assert (src/f'b4-magma-river-v16-{v}.png').read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          dst=pathlib.Path('assets/models/floor4/reviews/b4-magma-river-v16')
+          dst.mkdir(parents=True,exist_ok=True)
+          shutil.copy2(glb,'assets/models/floor4/b4-magma-river-v16.glb')
+          shutil.copy2(src/'b4-magma-river-v16.blend',dst/'source.blend')
+          for v in ('front','side','angle','top'):
+              shutil.copy2(src/f'b4-magma-river-v16-{v}.png',dst/f'{v}.png')
+          shutil.copy2(src/'manifest-v16.json',dst/'source-manifest.json')
+          paths=['assets/models/floor4/b4-magma-river-v16.glb',str(dst/'source.blend')]
+          paths.extend(str(dst/f'{v}.png') for v in ('front','side','angle','top'))
+          files=[{'path':p,'bytes':pathlib.Path(p).stat().st_size,
+                  'sha256':hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()} for p in paths]
+          approved={'asset_id':'b4_magma_river_v16','approval':'USER_APPROVED',
+              'approved_at_jst':'2026-11-17','scope':'static visual quality only',
+              'source_run_id':44027612542,'source_artifact_id':14303622918,
+              'source_sha':'d31c3fd88ff2ea5fdb942e193235e62647633690',
+              'game_integration':'NOT_STARTED','files':files,
+              'source_manifest':'source-manifest.json'}
+          (dst/'manifest.json').write_text(json.dumps(approved,indent=2,ensure_ascii=False)+'\n')
+          (dst/'SHA256SUMS.txt').write_text(''.join(f"{f['sha256']}  {pathlib.Path(f['path']).name}\n" for f in files[1:]))
+          print('Verified',len(files),'approved files')
+          PY
+      - name: Commit permanent approved assets
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/models/floor4/b4-magma-river-v16.glb assets/models/floor4/reviews/b4-magma-river-v16/
+          git diff --cached --quiet && exit 0
+          git commit -m 'assets(b4): archive approved magma river V16 and review data'
+          git push origin HEAD:feature/gpt-b4-magma-river-v16-approved-archive-20261117

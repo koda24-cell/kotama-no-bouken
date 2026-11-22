@@ -1,21 +1,36 @@
 name: B2 Bridge Rubble Frozen Pillar Variant Renders
 on:
   push:
-    branches: [feature/b2-bridge-v04-vfx-20261115]
+    branches: [feature/b2-bridge-v04-vfx-20261115, feature/shared-container-b2-legacy-render-20261119]
     paths:
       - tools/b2-render/build-bridge-variants.py
       - .github/workflows/b2-bridge-variants-render.yml
   workflow_dispatch:
 permissions:
   contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 35
     steps:
+      - name: Assert Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
       - uses: actions/checkout@v4
-      - name: Install Blender
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1 libopengl0
+      - name: Refresh ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Blender script before execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-bridge-variants.py qa/security/source.log
+      - name: Scan source GLB before Blender import
+        run: bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b2_water_source/models/ancient_ice_bridge/ancient_ice_bridge_v04.glb qa/security/source-glb.log
       - name: Render three bridge variants
         run: blender -b -t 2 --python tools/b2-render/build-bridge-variants.py
       - name: Validate 3 GLBs and 9 PNGs
@@ -27,9 +42,13 @@ jobs:
             for angle in front side angle; do test -s "${variant}_${angle}.png"; done
           done
           sha256sum *.glb *.png > SHA256SUMS.txt
+      - name: Scan generated GLBs and PNGs
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-bridge-variants qa/security/output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: b2-bridge-variants-renders
-          path: render-output/b2-bridge-variants/
+          path: |
+            render-output/b2-bridge-variants/
+            qa/security/
           retention-days: 14

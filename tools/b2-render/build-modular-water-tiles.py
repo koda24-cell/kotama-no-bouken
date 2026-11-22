@@ -1,19 +1,22 @@
 import bpy,math,random,os
 from mathutils import Vector
-OUT='/work/render-output/b2-water-tiles'
+OUT='render-output/b2-water-tiles'
 os.makedirs(OUT,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 def mat(name,col,rough=.6,metal=0,alpha=1):
  m=bpy.data.materials.new(name);m.diffuse_color=(*col,alpha);m.use_nodes=True
  p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*col,alpha);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal;p.inputs['Alpha'].default_value=alpha
- if alpha<1:m.surface_render_method='DITHERED'
+ if alpha<1:
+  if hasattr(m,'surface_render_method'):m.surface_render_method='DITHERED'
+  else:m.blend_method='HASHED'
  return m
 water=mat('Clear glacial turquoise water',(.045,.36,.44),.16,0,.52)
 water.use_nodes=True
 wp=water.node_tree.nodes.get('Principled BSDF')
 wp.inputs['Transmission Weight'].default_value=.34
 wp.inputs['IOR'].default_value=1.333
-water.surface_render_method='DITHERED'
+if hasattr(water,'surface_render_method'):water.surface_render_method='DITHERED'
+else:water.blend_method='HASHED'
 shallow=mat('Pale mineral shallows',(.16,.38,.39),.88)
 deepbed=mat('Deep riverbed teal',(.025,.10,.12),.91)
 ripple=mat('Soft turquoise water caustic lines',(.07,.32,.41),.22,0,.10)
@@ -156,7 +159,7 @@ for loc,power,size in [((0,-5,9),750,7),((-4,4,7),420,6)]:
  o.rotation_euler=(Vector((0,0,0))-o.location).to_track_quat('-Z','Y').to_euler()
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
-scene.cycles.samples=40
+scene.cycles.samples=40;scene.cycles.use_denoising=False
 scene.view_settings.view_transform='Standard'
 scene.view_settings.look='Medium High Contrast'
 scene.view_settings.exposure=-0.5

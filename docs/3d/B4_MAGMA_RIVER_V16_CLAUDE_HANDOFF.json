@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "asset_id": "b4_magma_river_v16",
+  "display_name": "第4層 マグマ河川 V16",
+  "approval": {
+    "status": "USER_APPROVED",
+    "date_jst": "2026-11-17",
+    "scope": "static 3D visual quality",
+    "user_message": "これでおｋとします"
+  },
+  "source": {
+    "repository": "koda24-cell/kotama-no-bouken",
+    "branch": "feature/gpt-b4-magma-viscosity-contact-v14-20261117",
+    "run_id": 44027612542,
+    "artifact_id": 14303622918,
+    "run_sha": "d31c3fd88ff2ea5fdb942e193235e62647633690",
+    "source_script": "tools/floor4/magma_river/build_magma_river.py"
+  },
+  "assets": {
+    "glb": "assets/models/floor4/b4-magma-river-v16.glb",
+    "review_dir": "assets/models/floor4/reviews/b4-magma-river-v16",
+    "manifest": "assets/models/floor4/reviews/b4-magma-river-v16/manifest.json",
+    "views": [
+      "front.png",
+      "side.png",
+      "angle.png",
+      "top.png"
+    ],
+    "blend": "source.blend",
+    "sha256_glb": "359fb4a68960e624ab955abe57d6afd9c3a1dbe44b7e7b37c8067b8567834918",
+    "size_bytes_glb": 12865484
+  },
+  "content": [
+    "meandering river",
+    "basalt banks",
+    "magma cascade",
+    "lava pool",
+    "cooling crust"
+  ],
+  "related_approved_assets": [
+    "assets/models/floor4/b4-lava-pool-v3.glb",
+    "assets/models/floor4/b4-minecart-v32.glb"
+  ],
+  "claude_role": "GLTFLoader integration and verification, no Blender modeling",
+  "integration": {
+    "status": "NOT_STARTED",
+    "target_branch": "development",
+    "verify": [
+      "GLB/PNG manifest hashes",
+      "bbox/origin/scale",
+      "tile connections",
+      "emissive/materials",
+      "runtime FPS",
+      "save compatibility"
+    ]
+  },
+  "next_patterns": [
+    "thin tributary",
+    "basalt bank variants",
+    "cascading ledge",
+    "pool shoreline",
+    "volcanic VFX"
+  ],
+  "notes": "Do not infer tile size. Original source-manifest may say NOT_APPROVED because it predates user acceptance."
+}

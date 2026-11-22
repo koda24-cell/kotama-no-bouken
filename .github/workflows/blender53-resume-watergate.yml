@@ -1,0 +1,63 @@
+name: Blender 5.3 verified Blend resume and rerender
+on:
+  push:
+    branches:
+      - feature/blender53-resume-edit-rerender-20261120
+    paths:
+      - 'tools/3d_checkpoint/resume_watergate.py'
+      - '.github/workflows/blender53-resume-watergate.yml'
+permissions:
+  contents: read
+  actions: read
+  packages: read
+jobs:
+  resume-real-blend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 44667118125
+          name: b2-watergate-checkpoint-NOT-APPROVED-44667118125
+          path: recovered
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify original source and checkpoint integrity before opening Blend
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory recovered/render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit 3640b077548c0967b511bdc417166e810f0c8dc4
+      - name: Scan recovered checkpoint and resume script before Blender opens files
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan recovered/render-output/b2-watergate qa/security/recovered.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/resume_watergate.py qa/security/resume_script.log
+      - name: Open recovered Blend, add geometry, save new Blend and GLB, render three views
+        env:
+          RESUME_BLEND: recovered/render-output/b2-watergate/frozen_watergate_v09.blend
+          RESUME_OUTPUT: render-output/b2-watergate-resumed
+        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/resume_watergate.py
+      - name: Verify newly rendered outputs
+        run: python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate-resumed
+      - name: Save and verify new immutable checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate-resumed --asset-id b2-watergate-resumed --iteration 2 --parent-checkpoint 44667118125 --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate-resumed --asset-id b2-watergate-resumed --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+      - name: Scan output
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate-resumed qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2-watergate-resumed-NOT-APPROVED-${{ github.run_id }}
+          path: |
+            render-output/b2-watergate-resumed/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn

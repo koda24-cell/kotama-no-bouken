@@ -1,0 +1,155 @@
+{
+ "page": "https://opengameart.org/node/69739",
+ "license": "CC0 (badge on page)",
+ "author": "unknown",
+ "files": {
+  "14_2.png": {
+   "from": "https://opengameart.org/sites/default/files/14_2.png",
+   "sha256": "7b76449e9a597824a0c29dd1a467ba862a70ec69ee48cef62e1e4689367e1e83"
+  },
+  "25.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#25.png",
+   "sha256": "5d6dc23689ee03553e1f8917a13a34a763e2e4c4f96c71402894ac760e464101"
+  },
+  "2_59.png": {
+   "from": "https://opengameart.org/sites/default/files/2_59.png",
+   "sha256": "b8060e2d7cdf3e95341212eb31ed4c9a694f7dfedf4fcbd514f3111ea860ba7f"
+  },
+  "cc0.png": {
+   "from": "https://opengameart.org/sites/default/files/license_images/cc0.png",
+   "sha256": "b2faab78467c006e7a8ce914d932dca6c9660145ae73ba885c19e39f3f0747e1"
+  },
+  "1.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#1.png",
+   "sha256": "440ea23772bbda73fe751c6a864d330252f6279a4253a21713387403b646b6e5"
+  },
+  "10.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#10.png",
+   "sha256": "918a06f1426a62e867ffdf1998f83928b3d4879fa96e671bded19a92b0e19a90"
+  },
+  "11.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#11.png",
+   "sha256": "d335b626981466b737e7c9f90f21a6fc5fff73afc5654acb208cb0b3999ace3c"
+  },
+  "12.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#12.png",
+   "sha256": "3d481c1634afc65fd057fa21ae2af3b9f0c76bb9e2ed4f5e4578457cea9cd902"
+  },
+  "13.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#13.png",
+   "sha256": "1f0f6ee08b5128af5b12d69ee21fac688bd77ce919ae204cf84a0ecb2818539a"
+  },
+  "14.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#14.png",
+   "sha256": "7b76449e9a597824a0c29dd1a467ba862a70ec69ee48cef62e1e4689367e1e83"
+  },
+  "15.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#15.png",
+   "sha256": "c923a38d5d1d7b440044907b2c7466fb67ead29a9585b2db6b48274c90411d1d"
+  },
+  "16.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#16.png",
+   "sha256": "496052a72e7676112ca91f7ffadb5466d5403cf6e029a49c70fd0401614b75fe"
+  },
+  "17.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#17.png",
+   "sha256": "9c7a04d02c827c7bb73c91ee7bcda5cf87891f8919b021163afd1498a331726a"
+  },
+  "18.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#18.png",
+   "sha256": "84ffb07c13252a9131601d515b8eeb8dc0babc948e94a758e135a0285c5de203"
+  },
+  "19.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#19.png",
+   "sha256": "084c0d831e182c1d31172cbef6d17fb755c7ffbaca8a9819544f7748c7d24b21"
+  },
+  "2.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#2.png",
+   "sha256": "b8060e2d7cdf3e95341212eb31ed4c9a694f7dfedf4fcbd514f3111ea860ba7f"
+  },
+  "20.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#20.png",
+   "sha256": "ceea5daeffa20c6699eed309f207079400881c8608707fdb13654f0abec4a2e1"
+  },
+  "21.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#21.png",
+   "sha256": "3b82608479e51f06c953eb5174d00129fc1696fb4bf14c7710dab2ffb3f6d337"
+  },
+  "22.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#22.png",
+   "sha256": "a232b7917896baaeb5b834c9b99a98566753d6d00ca42031cc636139ff3d3123"
+  },
+  "23.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#23.png",
+   "sha256": "a72625196993521940725b6af5d8409d1b317e275ce1a0e78efc6a803f58616b"
+  },
+  "24.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#24.png",
+   "sha256": "e82610b48b1a757fcea56a84a06d9a26863560b9405e01d4565c57b6563334c5"
+  },
+  "26.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#26.png",
+   "sha256": "71b080552277ac8b914508d37a4715df048c5495332e87f779c290a15341d0c0"
+  },
+  "27.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#27.png",
+   "sha256": "630950213706bc8418ac4321b21508e31527a99a60ccd10fd2fb3d2d268ad052"
+  },
+  "28.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#28.png",
+   "sha256": "416fffa1e24da051cfa01790b15ac32387d3bc9455462d9ee97acc912d6103fa"
+  },
+  "29.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#29.png",
+   "sha256": "a714fe15ed46520abeb4bb1cbc6e483bf47e68248457e96946ab5393579dbf5d"
+  },
+  "3.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#3.png",
+   "sha256": "1f67594ad445b88253cc863fc03e083fdca2e8146a374ad17185c86935866cec"
+  },
+  "30.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#30.png",
+   "sha256": "f8f0ae594396ac8735ce6f336807d2568e02b11f56be7b3a6b0d66bfb801d94c"
+  },
+  "31.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#31.png",
+   "sha256": "277c4500db7cdf78f91a9af6c6244fe6e84b5921896bd10eacd2787f8a4368a5"
+  },
+  "32.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#32.png",
+   "sha256": "b052594953bd035a4f3456f579f969c61e6a7fc9af06cdc0adc3786f8f65b277"
+  },
+  "33.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#33.png",
+   "sha256": "1173a00e97523097a4b7550a1bea0dd4aa263236f6e5a6dd7a18162ed5fb1c74"
+  },
+  "34.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#34.png",
+   "sha256": "08c3b53f308c5156cbe1ad461379f354b34d689dd5f23fe51ea4fbb003ebb437"
+  },
+  "4.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#4.png",
+   "sha256": "6d2eb7e6a2a63ece9a41fbc2dba30f2c450230b21e350ecacd1f27c71ab47fab"
+  },
+  "5.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#5.png",
+   "sha256": "1f26a0597b71f35902769308179d8cc3f5c0a4fcf27ee335064b8ce1519df15f"
+  },
+  "6.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#6.png",
+   "sha256": "0acf7891c8c2f1e8de1c155d628f042a4e018428abc1a0da935d8dfcef8fcd4e"
+  },
+  "7.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#7.png",
+   "sha256": "5ee32ac97c59ae92ddabf170a8d82b57bd1a20464be6d63f986de1db1f4c1966"
+  },
+  "8.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#8.png",
+   "sha256": "6cb24472bce5228b3eb49d041381999fdf815c04b106cedf76f28d5cc3279fb5"
+  },
+  "9.png": {
+   "from": "https://opengameart.org/sites/default/files/runes-circular.zip#9.png",
+   "sha256": "9e906fb9a4729890439233c9d281c9d2f0e4b0d7de1974d4a608bc72dc4ceb75"
+  }
+ }
+}

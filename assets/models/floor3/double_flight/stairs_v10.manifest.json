@@ -1,0 +1,147 @@
+{
+  "asset_id": "floor3_double_flight_stairs_v10",
+  "status": "USER_APPROVED_PENDING_GAME_INTEGRATION",
+  "approval": {
+    "approved": true,
+    "date": "2026-11-17",
+    "scope": "double flight staircase V10"
+  },
+  "source": {
+    "run_id": "44035057067",
+    "artifact_id": "14306454068",
+    "commit": "c38f46e6bdeff39be2ea0b0d693cccd98603a69b"
+  },
+  "model": "assets/models/floor3/double_flight/stairs_v10.glb",
+  "blender": "assets/models/floor3/double_flight/sources/stairs_v10.blend",
+  "views": {
+    "front": "assets/models/floor3/double_flight/reviews/stairs_v10/front.png",
+    "side": "assets/models/floor3/double_flight/reviews/stairs_v10/side.png",
+    "angle": "assets/models/floor3/double_flight/reviews/stairs_v10/angle.png",
+    "detail": "assets/models/floor3/double_flight/reviews/stairs_v10/detail.png"
+  },
+  "embedded_pbr": true,
+  "pbr_sources": {
+    "supplier": "Poly Haven",
+    "attribution": "Powered by Poly Haven",
+    "license": "CC0",
+    "license_url": "https://polyhaven.com/license",
+    "retrieved_utc": "2026-11-17T06:57:58.915050+00:00",
+    "maps": {
+      "chipped_concrete": {
+        "diffuse": {
+          "path": "pbr_sources/chipped_concrete_diffuse.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_diff_1k.jpg",
+          "api_key": "Diffuse",
+          "bytes": 716081,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        "normal": {
+          "path": "pbr_sources/chipped_concrete_normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_nor_gl_1k.jpg",
+          "api_key": "nor_gl",
+          "bytes": 990005,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        "roughness": {
+          "path": "pbr_sources/chipped_concrete_roughness.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_rough_1k.jpg",
+          "api_key": "Rough",
+          "bytes": 336460,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        }
+      },
+      "concrete_moss": {
+        "diffuse": {
+          "path": "pbr_sources/concrete_moss_diffuse.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_diff_1k.jpg",
+          "api_key": "Diffuse",
+          "bytes": 697265,
+          "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+        },
+        "normal": {
+          "path": "pbr_sources/concrete_moss_normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_nor_gl_1k.jpg",
+          "api_key": "nor_gl",
+          "bytes": 898376,
+          "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+        },
+        "roughness": {
+          "path": "pbr_sources/concrete_moss_roughness.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_rough_1k.jpg",
+          "api_key": "Rough",
+          "bytes": 320901,
+          "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+        }
+      }
+    }
+  },
+  "files": {
+    "assets/models/floor3/double_flight/stairs_v10.glb": {
+      "size": 7532428,
+      "sha256": "337f4aaf08f1998b55c1101a61662dcb193a39bd256d758b59a599dd8a9de606"
+    },
+    "assets/models/floor3/double_flight/sources/stairs_v10.blend": {
+      "size": 9994245,
+      "sha256": "d56567e76958963483bc0322b97eabcd9b469640e7250ef6bfbe98d3a85d7480"
+    },
+    "assets/models/floor3/double_flight/reviews/stairs_v10/front.png": {
+      "size": 742953,
+      "sha256": "423c59d5cfbd18401eda11295f34bc55a4d1505f90bf4172e8755f19ca585cda"
+    },
+    "assets/models/floor3/double_flight/reviews/stairs_v10/side.png": {
+      "size": 733637,
+      "sha256": "c0ea157fe6c68108d0a034008aa245e21d0a275eaebd63f1196388f2b046ae6d"
+    },
+    "assets/models/floor3/double_flight/reviews/stairs_v10/angle.png": {
+      "size": 786199,
+      "sha256": "f8382eec20f84385ebb227b2c5f0576b66402b2625667e61df28b2e75bd5ef27"
+    },
+    "assets/models/floor3/double_flight/reviews/stairs_v10/detail.png": {
+      "size": 1070508,
+      "sha256": "1c020feb1bba5b048d480aad15f77ef5c297dca2357c8b19b6683fc33c00976f"
+    },
+    "assets/models/floor3/double_flight/textures/chipped_concrete_diffuse.jpg": {
+      "path": "pbr_sources/chipped_concrete_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_diff_1k.jpg",
+      "api_key": "Diffuse",
+      "bytes": 716081,
+      "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+    },
+    "assets/models/floor3/double_flight/textures/chipped_concrete_normal.jpg": {
+      "path": "pbr_sources/chipped_concrete_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_nor_gl_1k.jpg",
+      "api_key": "nor_gl",
+      "bytes": 990005,
+      "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+    },
+    "assets/models/floor3/double_flight/textures/chipped_concrete_roughness.jpg": {
+      "path": "pbr_sources/chipped_concrete_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_rough_1k.jpg",
+      "api_key": "Rough",
+      "bytes": 336460,
+      "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+    },
+    "assets/models/floor3/double_flight/textures/concrete_moss_diffuse.jpg": {
+      "path": "pbr_sources/concrete_moss_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_diff_1k.jpg",
+      "api_key": "Diffuse",
+      "bytes": 697265,
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+    },
+    "assets/models/floor3/double_flight/textures/concrete_moss_normal.jpg": {
+      "path": "pbr_sources/concrete_moss_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_nor_gl_1k.jpg",
+      "api_key": "nor_gl",
+      "bytes": 898376,
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+    },
+    "assets/models/floor3/double_flight/textures/concrete_moss_roughness.jpg": {
+      "path": "pbr_sources/concrete_moss_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_rough_1k.jpg",
+      "api_key": "Rough",
+      "bytes": 320901,
+      "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+    }
+  },
+  "game_integration": "NOT_VERIFIED"
+}

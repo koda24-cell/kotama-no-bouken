@@ -6,25 +6,50 @@ on:
       - 'tools/floor3/elevated_bridge/**'
       - '.github/workflows/floor3-elevated-bridge-render.yml'
   workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+      - name: Refresh ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan source scripts before running them
+        run: bash tools/security/clamav_scan_gate.sh scan tools/floor3/elevated_bridge qa/security/source.log
       - name: Acquire CC0 textures (fallback procedural if unavailable)
         run: |
           mkdir -p tools/floor3/elevated_bridge/textures
           python3 tools/floor3/elevated_bridge/fetch_textures.py
+      - name: Scan acquired third-party textures before Blender import
+        run: |
+          set -euo pipefail
+          if find tools/floor3/elevated_bridge/textures -type f -print -quit | grep -q .; then
+            bash tools/security/clamav_scan_gate.sh scan tools/floor3/elevated_bridge/textures qa/security/download.log
+          else
+            echo "NO_TEXTURES_DOWNLOADED_PROCEDURAL_FALLBACK" | tee qa/security/download.log
+          fi
       - name: Blender render
         run: |
           mkdir -p "$GITHUB_WORKSPACE/out"
-          docker pull lscr.io/linuxserver/blender:latest
+          ln -sfn "$GITHUB_WORKSPACE/tools" /work/tools
+          ln -sfn "$GITHUB_WORKSPACE/out" /work/out
+          export HOME=/tmp/blender-home
           set -o pipefail
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/elevated_bridge/build_v2.py 2>&1 | tee "$GITHUB_WORKSPACE/blender-render.log"
-          grep -q 'V2_RENDER_COMPLETE' "$GITHUB_WORKSPACE/blender-render.log"
-          docker run --rm -v "$GITHUB_WORKSPACE:/work" lscr.io/linuxserver/blender:latest blender -b -t 2 --python /work/tools/floor3/elevated_bridge/build_v3.py 2>&1 | tee "$GITHUB_WORKSPACE/blender-v3-render.log"
-          grep -q 'V3_RENDER_COMPLETE' "$GITHUB_WORKSPACE/blender-v3-render.log"
+          blender -b -t 2 --python tools/floor3/elevated_bridge/build_v2.py 2>&1 | tee blender-render.log
+          grep -q 'V2_RENDER_COMPLETE' blender-render.log
+          blender -b -t 2 --python tools/floor3/elevated_bridge/build_v3.py 2>&1 | tee blender-v3-render.log
+          grep -q 'V3_RENDER_COMPLETE' blender-v3-render.log
       - name: Verify V1 V2 and V3 GLBs and renders
         run: |
           for tile in straight end collapse support; do
@@ -37,8 +62,12 @@ jobs:
               test -s "out/floor3_elevated_bridge_${tile}_v3-${view}.png"
             done
           done
+      - name: Scan all generated candidates
+        run: bash tools/security/clamav_scan_gate.sh scan out qa/security/output.log
       - uses: actions/upload-artifact@v4
         with:
           name: floor3-elevated-bridge-tiles-v1-v2-v3
-          path: out/
+          path: |
+            out/
+            qa/security/
           retention-days: 14

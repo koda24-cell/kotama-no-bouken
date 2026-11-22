@@ -1,21 +1,34 @@
 name: B2 Ice Bridge Left Right Tile Preview
 on:
   push:
-    branches: [feature/b2-ice-bridge-side-tiles-20261114]
+    branches: [feature/b2-ice-bridge-side-tiles-20261114, feature/shared-container-b2-legacy-render-20261119]
     paths:
       - tools/b2-ice-bridge-side/**
       - .github/workflows/b2-ice-bridge-side-preview.yml
   workflow_dispatch:
 permissions:
   contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 30
     steps:
+      - name: Assert Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
       - uses: actions/checkout@v4
-      - name: Install Blender
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1 libopengl0
+      - name: Refresh ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Blender script before execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-ice-bridge-side/build_and_render.py qa/security/source.log
       - name: Render GLBs and 6 views
         run: blender -b --python tools/b2-ice-bridge-side/build_and_render.py
       - name: Validate
@@ -27,9 +40,13 @@ jobs:
             test -s "ice_bridge_${side}_bank.glb"
           done
           sha256sum *.png *.glb > SHA256SUMS.txt
+      - name: Scan generated GLBs and PNGs
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-ice-bridge-side/reviews qa/security/output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: b2-ice-bridge-side-tile-review
-          path: tools/b2-ice-bridge-side/reviews/
+          path: |
+            tools/b2-ice-bridge-side/reviews/
+            qa/security/
           retention-days: 14

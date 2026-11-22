@@ -1,29 +1,63 @@
 name: B2 Glacial Shoreline Blender Render
 on:
+  workflow_dispatch:
   push:
     branches:
       - feature/b2-glacial-shoreline-20261112
     paths:
-      - tools/b2-render/build-glacial-shoreline.py
-      - .github/workflows/b2-glacial-shoreline-render.yml
+      - 'tools/b2-render/build-glacial-shoreline.py'
+      - '.github/workflows/b2-glacial-shoreline-render.yml'
+permissions:
+  contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Assert Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
       - uses: actions/checkout@v4
-      - name: Pull Blender Docker
-        run: docker pull lscr.io/linuxserver/blender:latest
-      - name: Generate GLB and three actual PNG renders
+        with:
+          persist-credentials: false
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan source script before executing
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-glacial-shoreline.py qa/security/source.log
+      - name: Generate GLB and multi-view Blender PNG
         run: |
           set -euo pipefail
-          mkdir -p render-output/b2-shoreline
-          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python tools/b2-render/build-glacial-shoreline.py
-          for f in b2_glacial_shoreline_v04.glb front.png side.png angle.png mesh_stats.txt; do
-            test -s "render-output/b2-shoreline/$f"
-          done
+          mkdir -p 'render-output/b2-shoreline'
+          HOME=/tmp/blender-home blender -b -t 2 --python tools/b2-render/build-glacial-shoreline.py 2>&1 | tee qa/security/blender.log
+      - name: Verify real GLB and PNG signatures and SHA256
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('render-output/b2-shoreline')
+          glbs=list(root.glob('*.glb'))
+          pngs=list(root.glob('*.png'))
+          assert len(glbs)==1 and len(pngs)==3,(len(glbs),len(pngs))
+          for f in glbs: assert f.stat().st_size>32 and f.read_bytes()[:4]==b'glTF',f
+          for f in pngs: assert f.stat().st_size>32 and f.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a'),f
+          print('GLB_PNG_SIGNATURES_PASS',len(glbs),len(pngs))
+          PY
+          (cd 'render-output/b2-shoreline' && sha256sum *.glb *.png > SHA256SUMS.txt)
+      - name: Scan generated output
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-shoreline qa/security/output.log
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: b2-glacial-shoreline-v04
-          path: render-output/b2-shoreline/
-          if-no-files-found: error
+          path: |
+            render-output/b2-shoreline/
+            qa/security/
           retention-days: 14
+          if-no-files-found: warn

@@ -1,0 +1,26 @@
+{
+ "source": "https://polyhaven.com/a/namaqualand_boulder_05",
+ "license": "CC0 (https://polyhaven.com/license)",
+ "files": {
+  "namaqualand_boulder_05_1k.gltf": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/namaqualand_boulder_05/namaqualand_boulder_05_1k.gltf",
+   "sha256": "f8e5fd8fd981e889d621ba4e53170a52c47cd3053b8748ee7025ed1083f36a5f"
+  },
+  "textures/namaqualand_boulder_05_arm_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/namaqualand_boulder_05/namaqualand_boulder_05_arm_1k.jpg",
+   "sha256": "1466c8467188f54c2fb655b05f9e1d0a9a93a366f3cd45878bcf6905487c5f3e"
+  },
+  "textures/namaqualand_boulder_05_nor_gl_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/namaqualand_boulder_05/namaqualand_boulder_05_nor_gl_1k.jpg",
+   "sha256": "027359a8a79febee925cc29af3106cc12bdeed5bc91cb26f1d88f589c77f448d"
+  },
+  "namaqualand_boulder_05.bin": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/namaqualand_boulder_05/namaqualand_boulder_05.bin",
+   "sha256": "a60ade71de8612c873f9112159ed5d93dcba58979007a0915bc10d551a9ed03c"
+  },
+  "textures/namaqualand_boulder_05_diff_1k.jpg": {
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/namaqualand_boulder_05/namaqualand_boulder_05_diff_1k.jpg",
+   "sha256": "58d1fba55e16a56fe2d6e016ac75bcddfbc3bb2273ca8c9127f1de497c54db2a"
+  }
+ }
+}

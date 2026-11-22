@@ -1,0 +1,163 @@
+name: Blender 5.3 basalt columns tiled render seam validation
+on:
+  push:
+    branches:
+      - feature/blender53-basalt-tile-qa-20261122
+    paths:
+      - '.github/workflows/blender53-basalt-tile-qa.yml'
+      - 'tools/3d_checkpoint/prepare_basalt_qa.py'
+permissions:
+  contents: read
+  actions: read
+  packages: read
+jobs:
+  baseline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 80
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - name: Validate Blender version and scan source GLB and scripts
+        run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan assets/models/floor4/props/b4p_basalt_columns.glb qa/security/basalt-source.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/prepare_basalt_qa.py qa/security/prepare-script.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/render_one_view.py qa/security/view-script.log
+      - name: Prepare separate basalt scene retaining original GLB
+        run: blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/3d_checkpoint/prepare_basalt_qa.py
+      - name: Render single-pass reference front camera
+        env:
+          RESUME_BLEND: render-output/qa-basalt-tiles/normalized_basalt_qa.blend
+          RENDER_OUTPUT: render-output/qa-basalt-tiles
+          RENDER_VIEW: front
+        run: blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/3d_checkpoint/render_one_view.py
+      - name: Verify baseline PNG and pack + scan immutable checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/verify_one_view.py --file render-output/qa-basalt-tiles/front.png --view front
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/qa-basalt-tiles --asset-id b4-basalt-tile-qa --iteration 1 --source-script tools/3d_checkpoint/prepare_basalt_qa.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/qa-basalt-tiles --asset-id b4-basalt-tile-qa --source-script tools/3d_checkpoint/prepare_basalt_qa.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/qa-basalt-tiles qa/security/baseline.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: basalt-reference-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/qa-basalt-tiles/
+          retention-days: 14
+          if-no-files-found: error
+
+  left:
+    needs: baseline
+    runs-on: ubuntu-24.04
+    timeout-minutes: 80
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/download-artifact@v4
+        with:
+          name: basalt-reference-NOT-APPROVED-${{ github.run_id }}
+          path: baseline
+      - name: Verify, scan source and Blender scripts before import
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory baseline --asset-id b4-basalt-tile-qa --source-script tools/3d_checkpoint/prepare_basalt_qa.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan baseline qa/security/baseline.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/render_half_frame.py qa/security/half-script.log
+      - name: Render left half of basalt image
+        env:
+          RESUME_BLEND: baseline/normalized_basalt_qa.blend
+          RENDER_OUTPUT: render-output/basalt-left
+          RENDER_VIEW: front
+          RENDER_TILE: left
+        run: blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/3d_checkpoint/render_half_frame.py
+      - name: Validate left PNG and pack immutable checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          cp baseline/normalized_basalt_qa.blend baseline/original_basalt_source.glb render-output/basalt-left/
+          python3 -c "import importlib.util; s=importlib.util.spec_from_file_location('tiles','tools/3d_checkpoint/stitch_half_frame.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m);assert m.read_rgba('render-output/basalt-left/left.png')[:2]==(500,760)"
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/basalt-left --asset-id b4-basalt-left --iteration 2 --parent-checkpoint "basalt-reference-${{ github.run_id }}" --source-script tools/3d_checkpoint/render_half_frame.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/basalt-left --asset-id b4-basalt-left --source-script tools/3d_checkpoint/render_half_frame.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/basalt-left qa/security/left.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: basalt-left-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/basalt-left/
+          retention-days: 14
+          if-no-files-found: error
+
+  right-and-qa:
+    needs: left
+    runs-on: ubuntu-24.04
+    timeout-minutes: 80
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/download-artifact@v4
+        with:
+          name: basalt-left-NOT-APPROVED-${{ github.run_id }}
+          path: saved-left
+      - uses: actions/download-artifact@v4
+        with:
+          name: basalt-reference-NOT-APPROVED-${{ github.run_id }}
+          path: reference
+      - name: Verify both prior checkpoints and scan
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory saved-left --asset-id b4-basalt-left --source-script tools/3d_checkpoint/render_half_frame.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory reference --asset-id b4-basalt-tile-qa --source-script tools/3d_checkpoint/prepare_basalt_qa.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan saved-left qa/security/left.log
+          bash tools/security/clamav_scan_gate.sh scan reference qa/security/reference.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/seam_qa.py qa/security/seam-script.log
+      - name: Reuse durable left half unchanged
+        run: |
+          mkdir -p render-output/basalt-combined
+          cp saved-left/left.png saved-left/normalized_basalt_qa.blend saved-left/original_basalt_source.glb render-output/basalt-combined/
+          test "$(sha256sum saved-left/left.png | cut -d' ' -f1)" = "$(sha256sum render-output/basalt-combined/left.png | cut -d' ' -f1)"
+          echo "BASALT_LEFT_REUSED=true"
+      - name: Render right half with existing Blender tiling pipeline
+        env:
+          RESUME_BLEND: saved-left/normalized_basalt_qa.blend
+          RENDER_OUTPUT: render-output/basalt-combined
+          RENDER_VIEW: front
+          RENDER_TILE: right
+        run: blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/3d_checkpoint/render_half_frame.py
+      - name: Stitch both actual basalt renders
+        run: python3 tools/3d_checkpoint/stitch_half_frame.py --left render-output/basalt-combined/left.png --right render-output/basalt-combined/right.png --output render-output/basalt-combined/front.png
+      - name: Run seam QA against real single-pass basalt render
+        run: |
+          python3 tools/3d_checkpoint/seam_qa.py --stitched render-output/basalt-combined/front.png --reference reference/front.png --report render-output/basalt-combined/seam_qa.json
+      - name: Verify, pack and scan completed result
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/verify_one_view.py --file render-output/basalt-combined/front.png --view front
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/basalt-combined --asset-id b4-basalt-stitched-qa --iteration 3 --parent-checkpoint "basalt-left-${{ github.run_id }}" --source-script tools/3d_checkpoint/render_half_frame.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/basalt-combined --asset-id b4-basalt-stitched-qa --source-script tools/3d_checkpoint/render_half_frame.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/basalt-combined qa/security/out.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: basalt-tiled-PASS-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/basalt-combined/
+          retention-days: 14
+          if-no-files-found: error

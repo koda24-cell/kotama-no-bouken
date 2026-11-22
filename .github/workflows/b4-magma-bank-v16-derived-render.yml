@@ -1,0 +1,101 @@
+name: B4 Magma Bank V4 - Approved V16 Derived Variants
+on:
+  push:
+    branches:
+      - feature/gpt-b4-magma-bank-modules-p1-p3-20261117
+    paths:
+      - tools/floor4/magma_banks/build_from_approved_v16.py
+      - tools/floor4/magma_banks/variant_additions.py
+      - .github/workflows/b4-magma-bank-v16-derived-render.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Update ClamAV definitions before reading project assets
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan review scripts before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/floor4/magma_banks qa/security/input-0.log
+      - name: Scan imported source 1 before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/floor4/magma_river/build_magma_river.py qa/security/input-1.log
+      - name: Scan imported source 2 before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b4_dragonfire/textures qa/security/input-2.log
+      - name: Scan imported source 3 before Blender execution
+        run: bash tools/security/clamav_scan_gate.sh scan assets/textures/floor4/basalt-charcoal-01 qa/security/input-3.log
+      - name: Verify approved source and PBR dependencies
+        run: |
+          set -euo pipefail
+          test -f tools/floor4/magma_river/build_magma_river.py
+          test -f assets/textures/floor4/basalt-charcoal-01/basecolor.png
+          test -f assets/3d/dungeons/b4_dragonfire/textures/molten_lava_albedo.png
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('tools/floor4/magma_river/build_magma_river.py').read_text()
+          assert 'V16: irregular cell-boundary fractures' in s
+          assert 'V15_THICK_CASCADE_COOLING_SIDEWALL' in s
+          assert s.count('# The modeling convention above uses Y-up (as in Three.js).')==1
+          print('V16 source and project PBR assets verified')
+          PY
+      - name: Render P1 P2 P3 from the exact approved V16 source
+        run: |
+          set -euo pipefail
+          mkdir -p render-output
+          for p in p1 p2 p3; do
+            HOME=/tmp/blender-home blender -b -t 2 --python tools/floor4/magma_banks/build_from_approved_v16.py -- --variant "${p}-v4" --out render-output
+          done
+      - name: Verify GLB, Blend, four PNGs and source hashes
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,struct
+          d=pathlib.Path('render-output')
+          for p in ('p1','p2','p3'):
+              stem=f'b4-magma-river-{p}-v4'
+              m=json.loads((d/f'manifest-{p}-v4.json').read_text())
+              assert m['approval']=='NOT_APPROVED'
+              expected={stem+'.glb',stem+'.blend'}|{stem+'-'+v+'.png' for v in ('angle','front','side','top')}
+              assert {x['file'] for x in m['files']}==expected
+              for f in m['files']:
+                  fp=d/f['file']
+                  assert fp.is_file() and fp.stat().st_size==f['size'] and fp.stat().st_size>4000
+                  assert hashlib.sha256(fp.read_bytes()).hexdigest()==f['sha256']
+              with (d/(stem+'.glb')).open('rb') as f:
+                  assert f.read(4)==b'glTF'
+                  ver,size=struct.unpack('<II',f.read(8))
+                  assert ver==2 and size==(d/(stem+'.glb')).stat().st_size
+              for v in ('angle','front','side','top'):
+                  assert (d/(stem+'-'+v+'.png')).read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+              print(p,'verified')
+          (d/'source-trace.json').write_text(json.dumps({
+            'approval':'NOT_APPROVED',
+            'derived_from':'assets/models/floor4/b4-magma-river-v16.glb',
+            'source_base':'tools/floor4/magma_river/build_magma_river.py',
+            'source_additions':'tools/floor4/magma_banks/variant_additions.py',
+            'base_sha256':hashlib.sha256(pathlib.Path('tools/floor4/magma_river/build_magma_river.py').read_bytes()).hexdigest(),
+            'additions_sha256':hashlib.sha256(pathlib.Path('tools/floor4/magma_banks/variant_additions.py').read_bytes()).hexdigest()
+          },indent=2))
+          PY
+      - name: Scan generated GLB, Blend, PNG and manifests
+        run: bash tools/security/clamav_scan_gate.sh scan render-output qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-magma-v16-derived-p1-p3-v4
+          path: |
+            render-output/
+            qa/security/
+          retention-days: 14

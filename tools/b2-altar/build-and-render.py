@@ -176,7 +176,7 @@ world=bpy.context.scene.world;world.color=(.12,.16,.23)
 def area(name,loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.name=name;o.data.energy=power;o.data.shape='DISK';o.data.size=size
 area('large softbox',(-5,-6,9),2200,8);area('cold rim light',(3,5,9),1800,7)
-scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=24
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=24;scene.cycles.use_denoising=False;bpy.context.view_layer.cycles.use_denoising=False
 scene.render.resolution_x=1152;scene.render.resolution_y=864;scene.render.resolution_percentage=100
 scene.view_settings.view_transform='AgX'
 def render(name,loc,target=(0,0,1.6)):

@@ -7,19 +7,46 @@ on:
     paths:
       - 'tools/floor2/waterfall/**'
       - '.github/workflows/floor2-waterfall-render.yml'
+permissions:
+  contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 55
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert shared Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Update ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Python and Blender source before executing
+        run: bash tools/security/clamav_scan_gate.sh scan tools/floor2/waterfall qa/security/source.log
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install dependencies
-        run: pip install 'numpy>=1.26,<3' 'trimesh>=4,<5'
-      - name: Build GLB
+      - name: Download binary-only Python wheels without installation
         run: |
+          set -euo pipefail
+          mkdir -p qa/wheels
+          python -m pip download --only-binary=:all: --dest qa/wheels 'numpy>=1.26,<3' 'trimesh>=4,<5'
+      - name: Scan downloaded third-party wheels BEFORE installation
+        run: bash tools/security/clamav_scan_gate.sh scan qa/wheels qa/security/wheels.log
+      - name: Install only scanned local wheels
+        run: python -m pip install --no-index --find-links qa/wheels 'numpy>=1.26,<3' 'trimesh>=4,<5'
+      - name: Build GLB with scanned Python dependencies
+        run: |
+          set -euo pipefail
           mkdir -p render-output
           python tools/floor2/waterfall/build.py
           mv floor2_frozen_waterfall.glb render-output/
@@ -29,19 +56,33 @@ jobs:
           assert len(s.geometry)>50,len(s.geometry)
           print('GEOMETRIES',len(s.geometry))
           PY
-      - name: Pull Blender Docker
-        run: docker pull lscr.io/linuxserver/blender:latest
-      - name: Render front side angle
+      - name: Scan generated GLB BEFORE Blender import
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/floor2_frozen_waterfall.glb qa/security/input-glb.log
+      - name: Render front side angle in shared Blender
         run: |
-          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
-            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
-            -b -t 2 --python tools/floor2/waterfall/render.py -- render-output/floor2_frozen_waterfall.glb render-output
-          for view in front side angle; do
-            test -s "render-output/floor2_frozen_waterfall-${view}.png"
-          done
+          set -euo pipefail
+          HOME=/tmp/blender-home blender -b -t 2 --python tools/floor2/waterfall/render.py -- render-output/floor2_frozen_waterfall.glb render-output
+          for view in front side angle; do test -s "render-output/floor2_frozen_waterfall-${view}.png"; done
+      - name: Verify GLB and PNG signatures
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          d=Path('render-output')
+          glbs=list(d.glob('*.glb'));pngs=list(d.glob('*.png'))
+          assert len(glbs)==1 and len(pngs)==3,(len(glbs),len(pngs))
+          assert glbs[0].read_bytes()[:4]==b'glTF'
+          for p in pngs: assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a'),p
+          print('F2_WATERFALL_GLB_PNG_QA_PASS')
+          PY
+          (cd render-output && sha256sum *.glb *.png > SHA256SUMS.txt)
+      - name: Scan all generated candidate files
+        run: bash tools/security/clamav_scan_gate.sh scan render-output qa/security/output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: floor2-frozen-waterfall-preview
-          path: render-output/
+          path: |
+            render-output/
+            qa/security/
           retention-days: 14
+          if-no-files-found: warn

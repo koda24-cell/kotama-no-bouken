@@ -4,25 +4,42 @@ on:
     branches:
       - feature/b2-ruined-aqueduct-20261112
   workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
-      - name: Pull Blender Docker
-        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: Assert shared Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Blender source before execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-aqueduct.py qa/security/source.log
       - name: Build B2 aqueduct and render 3 views
         run: |
           set -euo pipefail
           mkdir -p render-output/b2-aqueduct
-          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
-            -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
-            -b -t 2 --python tools/b2-render/build-aqueduct.py
+          HOME=/tmp/blender-home blender -b -t 2 --python tools/b2-render/build-aqueduct.py
+      - name: Scan generated GLB and PNG candidates
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-aqueduct qa/security/output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: b2-ruined-aqueduct-blender
-          path: render-output/b2-aqueduct/
+          path: |
+            render-output/b2-aqueduct/
+            qa/security/
           if-no-files-found: error
           retention-days: 14

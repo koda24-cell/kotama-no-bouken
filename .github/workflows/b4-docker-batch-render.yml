@@ -4,32 +4,84 @@ on:
   push:
     branches:
       - feature/b4-docker-batch-render-20261112
+      - feature/shared-container-b4-batch-20261119
+    paths:
+      - .github/workflows/b4-docker-batch-render.yml
+      - tools/b4-render/**
+permissions:
+  contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 55
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert shared Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Update ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan local source before execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b4-render qa/security/source.log
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install Three.js
+      - name: Download Three.js without running dependency scripts
         run: npm install --no-save --ignore-scripts --no-package-lock three@0.160.1
+      - name: Scan downloaded third-party JS before executing
+        run: bash tools/security/clamav_scan_gate.sh scan node_modules qa/security/npm.log
       - name: Export B4 cart, furnace and mine-rig (before and after)
         run: node tools/b4-render/export-batch.mjs
-      - name: Pull Blender-ready Docker image
-        run: docker pull lscr.io/linuxserver/blender:latest
-      - name: Render 3 angles for every GLB in Blender container
+      - name: Scan generated GLBs before Blender import
+        run: bash tools/security/clamav_scan_gate.sh scan render-output qa/security/input-glbs.log
+      - name: Render 3 angles for every GLB in shared Blender container
         run: |
-          for glb in render-output/*.glb; do
+          set -euo pipefail
+          shopt -s nullglob
+          glbs=(render-output/*.glb)
+          test "${#glbs[@]}" -eq 6
+          for glb in "${glbs[@]}"; do
             echo "Rendering $glb"
-            docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender \
-              -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest \
-              -b -t 2 --python tools/b4-render/render-batch.py -- "$glb" render-output
+            HOME=/tmp/blender-home blender -b -t 2 --python tools/b4-render/render-batch.py -- "$glb" render-output
           done
+      - name: Verify 6 GLBs and 18 PNGs
+        run: |
+          set -euo pipefail
+          for type in cart furnace mine-rig; do
+            for state in before after; do
+              stem="b4-${type}-${state}"
+              test -s "render-output/${stem}.glb"
+              for view in front side angle; do test -s "render-output/${stem}-${view}.png"; done
+            done
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          glbs=list(Path('render-output').glob('*.glb'))
+          pngs=list(Path('render-output').glob('*.png'))
+          assert len(glbs)==6 and len(pngs)==18,(len(glbs),len(pngs))
+          for p in glbs: assert p.read_bytes()[:4]==b'glTF',p
+          for p in pngs: assert p.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a'),p
+          print('B4_6_GLB_18_PNG_QA_PASS')
+          PY
+          (cd render-output && sha256sum *.glb *.png > SHA256SUMS.txt)
+      - name: Scan generated candidates
+        run: bash tools/security/clamav_scan_gate.sh scan render-output qa/security/output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: b4-blender-docker-batch
-          path: render-output/
+          path: |
+            render-output/
+            qa/security/
           retention-days: 14
+          if-no-files-found: warn

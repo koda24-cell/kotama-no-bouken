@@ -37,7 +37,7 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
     if(c!=='.' || !safe(x,y) || panels>=46)continue;
     for(const [dx,dz]of[[0,-1],[1,0],[0,1],[-1,0]]){
       const wallKey=`${x+dx},${y+dz}`;
-      if(!wallCell(x+dx,y+dz)||ch(x+dx,y+dz)!=='#'||used.has(wallKey)||plan.excludedWalls.has(wallKey)||hash(x,y,760+dx+dz*3)>.19)continue;
+      if(!wallCell(x+dx,y+dz)||ch(x+dx,y+dz)!=='#'||used.has(wallKey)||plan.excludedWalls.has(wallKey)||plan.chasmCells?.has(wallKey)||hash(x,y,760+dx+dz*3)>.19)continue;
       used.add(wallKey);
       const face=new THREE.Group();face.position.set(wx+dx*2,0,wz+dz*2);face.rotation.y=Math.atan2(-dx,-dz);group.add(face);
       // Uneven hexagonal basalt organ pipes: their front stays <=0.65m from the wall.
@@ -52,7 +52,7 @@ export function addB4VolcanicDetail({root,map,ch,wallCell,hash,CELL,plan,surface
       for(let i=0;i<3;i++)put(face,rock,surfaces.basalt,-1.28+i*1.24,3.8+(i%2)*.12,.06,.74,.35,.40);
       // Three scorched claw scars, carved as broken glowing seams, not an enemy trigger.
       if(hash(x,y,780)<.22)for(let i=0;i<3;i++){
-        const crack=put(face,box,surfaces.ember,(i-1)*.32,2.2,.65,.025,1.05,.018,(i-1)*.10);
+        const crack=put(face,box,surfaces.ember,(i-1)*.32,2.2,.62,.05,1.05,.018,(i-1)*.10);
         crack.rotation.x=.05;
       }
       if(map.f===2)for(const height of [4.5,6.4])for(let i=0;i<3;i++)put(face,rock,surfaces.basalt,-1.25+i*1.2,height,.08,.8,.55,.42,(i-1)*.17);

@@ -2,30 +2,62 @@ name: B2 Frozen Ancient Altar Blender Preview
 on:
   workflow_dispatch:
   push:
-    branches: [feature/b2-frozen-ancient-altar-20261112]
+    branches:
+      - feature/b2-frozen-ancient-altar-20261112
     paths:
       - 'tools/b2-altar/**'
       - '.github/workflows/b2-frozen-ancient-altar.yml'
 permissions:
   contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Assert Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
       - uses: actions/checkout@v4
-      - name: Generate GLB and three real Blender renders
+        with:
+          persist-credentials: false
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan source script before executing
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-altar/build-and-render.py qa/security/source.log
+      - name: Generate GLB and multi-view Blender PNG
         run: |
-          docker run --rm -v "$PWD:/work" -w /work --entrypoint /bin/bash lscr.io/linuxserver/blender:latest -lc '
-            set -e
-            blender -b -t 2 --python tools/b2-altar/build-and-render.py
-          '
-      - name: Check output
+          set -euo pipefail
+          mkdir -p 'render-output'
+          HOME=/tmp/blender-home blender -b -t 2 --python tools/b2-altar/build-and-render.py 2>&1 | tee qa/security/blender.log
+      - name: Verify real GLB and PNG signatures and SHA256
         run: |
-          test -s render-output/b2-frozen-ancient-altar.glb
-          for view in front side high-angle; do test -s "render-output/b2-frozen-ancient-altar-$view.png"; done
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('render-output')
+          glbs=list(root.glob('*.glb'))
+          pngs=list(root.glob('*.png'))
+          assert len(glbs)==1 and len(pngs)==3,(len(glbs),len(pngs))
+          for f in glbs: assert f.stat().st_size>32 and f.read_bytes()[:4]==b'glTF',f
+          for f in pngs: assert f.stat().st_size>32 and f.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a'),f
+          print('GLB_PNG_SIGNATURES_PASS',len(glbs),len(pngs))
+          PY
+          (cd 'render-output' && sha256sum *.glb *.png > SHA256SUMS.txt)
+      - name: Scan generated output
+        run: bash tools/security/clamav_scan_gate.sh scan render-output qa/security/output.log
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: b2-frozen-ancient-altar-preview
-          path: render-output/
+          path: |
+            render-output/
+            qa/security/
           retention-days: 14
+          if-no-files-found: warn

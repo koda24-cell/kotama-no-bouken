@@ -60,7 +60,8 @@ function fieldBuildDom() {
     return `<div class="field-object${opened}${stateClass}${fog}" data-kind="${esc(o.kind)}" data-object-id="${esc(o.id || o.key)}" data-key="${esc(o.key)}" data-sprite="${esc(o.sprite || "")}" data-tx="${o.tx}" data-ty="${o.ty}" style="left:${o.tx * FIELD_TILE}px;top:${o.ty * FIELD_TILE}px"><span class="field-object-sprite"></span>${o.name ? `<b class="field-object-label">${esc(o.name)}</b>` : ""}</div>`;
   }).join("");
   map.innerHTML = `<div class="field-tiles">${tiles.join("")}</div>${objs}<div id="field-foes" class="field-foes"></div><div id="field-player" class="field-player" data-dir="down" data-moving="false" data-step="0"><span class="field-player-shadow"></span><span class="field-player-sprite"></span></div>`;
-  fieldState.built = a.key; fieldState.nearKey = ""; fieldState.lastTileKey = "";
+  fieldState.built = a.buildKey || a.key; fieldState.nearKey = "";   // [RANDOM-MAZE] ランダム階は迷宮ごとのキー
+  fieldState.lastTileKey = "";
   fieldSpawnFoes();
   fieldMiniDirty = true;
   if (window.KotamaField3D) window.KotamaField3D.build();   // [FIELD-3D] 第1階層の一人称3D表示（field/field-3d-view.js）

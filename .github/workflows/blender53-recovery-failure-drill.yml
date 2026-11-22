@@ -1,0 +1,94 @@
+name: Blender 5.3 checkpoint failure drill
+on:
+  push:
+    branches:
+      - feature/blender53-recovery-failure-drill-20261120
+    paths:
+      - '.github/workflows/blender53-recovery-failure-drill.yml'
+permissions:
+  contents: read
+  packages: read
+jobs:
+  checkpoint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+      - name: Render original checkpoint
+        run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
+      - name: Verify and virus scan checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate --asset-id b2-watergate --iteration 1 --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate qa/security/checkpoint.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: failure-drill-checkpoint-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate/
+          retention-days: 14
+          if-no-files-found: error
+  injected-failure:
+    needs: checkpoint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Deliberately fail AFTER checkpoint upload
+        run: |
+          echo "INTENTIONAL_FAILURE: checkpoint was uploaded by the preceding job"
+          exit 17
+  recover:
+    if: ${{ always() && needs.checkpoint.result == 'success' && needs.injected-failure.result == 'failure' }}
+    needs: [checkpoint, injected-failure]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: failure-drill-checkpoint-NOT-APPROVED-${{ github.run_id }}
+          path: recovered
+      - name: Verify SHA manifest and scan restored checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory recovered --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan recovered qa/security/recovered.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/resume_watergate.py qa/security/resume-script.log
+      - name: Resume Blender after intentional failure
+        env:
+          RESUME_BLEND: recovered/frozen_watergate_v09.blend
+          RESUME_OUTPUT: render-output/b2-watergate-resumed
+        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/resume_watergate.py
+      - name: Verify recovered render and pack
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate-resumed
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate-resumed --asset-id b2-watergate-resumed --iteration 2 --parent-checkpoint "failure-drill-${{ github.run_id }}" --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate-resumed --asset-id b2-watergate-resumed --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate-resumed qa/security/resumed-output.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: failure-drill-recovered-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate-resumed/
+          retention-days: 14
+          if-no-files-found: error

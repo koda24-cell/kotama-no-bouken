@@ -135,7 +135,7 @@ def render(kind):
  bpy.ops.object.camera_add();camera=bpy.context.object;camera.data.type='ORTHO';camera.data.ortho_scale=size*1.65;bpy.context.scene.camera=camera
  for vec,power in [((3,-4,6),1200),((-4,2,4),800)]:
   bpy.ops.object.light_add(type='AREA',location=center+Vector(vec)*size);l=bpy.context.object;l.data.energy=power*size;l.data.size=size*1.7;aim(l)
- scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=24;scene.render.resolution_x=900;scene.render.resolution_y=900;scene.render.resolution_percentage=100;scene.render.image_settings.file_format='PNG'
+ scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=24;scene.cycles.use_denoising=False;bpy.context.view_layer.cycles.use_denoising=False;scene.render.resolution_x=900;scene.render.resolution_y=900;scene.render.resolution_percentage=100;scene.render.image_settings.file_format='PNG'
  stem=['b2-ancient-pillar','b2-ruined-pillar','b2-glaciated-pillar'][kind]
  for name,vec in [('front',(0,-1,.35)),('side',(1,0,.35)),('angle',(1,-1,.6))]:
   camera.location=center+Vector(vec).normalized()*size*2.5;aim(camera);scene.render.filepath=os.path.join(OUT,stem+'-'+name+'.png');bpy.ops.render.render(write_still=True)

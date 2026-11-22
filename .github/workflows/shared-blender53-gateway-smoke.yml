@@ -1,0 +1,18 @@
+name: Shared Blender 5.3 gateway integration smoke
+on:
+  push:
+    branches:
+      - feature/shared-blender53-gateway-smoke-20261120
+    paths:
+      - 'tools/shared-blender53-smoke/**'
+      - '.github/workflows/shared-blender53-gateway-smoke.yml'
+  workflow_dispatch:
+jobs:
+  render:
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/shared-blender53-render.yml
+    with:
+      script: tools/shared-blender53-smoke/render.py
+      output_dir: render-output/star-smoke

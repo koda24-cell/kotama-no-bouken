@@ -51,7 +51,7 @@ for vec,power in [((3,-4,6),850),((-4,2,4),550)]:
  aim(light,center)
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
-scene.cycles.samples=48
+scene.cycles.samples=48;scene.cycles.use_denoising=False;bpy.context.view_layer.cycles.use_denoising=False
 scene.render.resolution_x=1100
 scene.render.resolution_y=820
 scene.render.resolution_percentage=100

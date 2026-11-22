@@ -1,0 +1,205 @@
+name: Blender 5.3 per-view durable recovery test (front survives side crash)
+on:
+  push:
+    branches:
+      - feature/blender53-per-view-recovery-20261122
+    paths:
+      - '.github/workflows/blender53-per-view-recovery.yml'
+      - 'tools/3d_checkpoint/render_one_view.py'
+      - 'tools/3d_checkpoint/verify_one_view.py'
+permissions:
+  contents: read
+  actions: read
+  packages: read
+jobs:
+  original:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Confirm Blender and scan source
+        run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-watergate.py qa/security/original-source.log
+      - name: Build original Blender checkpoint
+        run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
+      - name: Verify original and scan
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate --asset-id b2-watergate --iteration 1 --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate qa/security/original-out.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: view-base-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate/
+          retention-days: 14
+          if-no-files-found: error
+
+  front-checkpoint:
+    needs: original
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: view-base-NOT-APPROVED-${{ github.run_id }}
+          path: original
+      - name: Verify original and scan import/script
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory original --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan original qa/security/base.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/render_one_view.py qa/security/render-source.log
+      - name: Render just front view
+        env:
+          RESUME_BLEND: original/frozen_watergate_v09.blend
+          RENDER_OUTPUT: render-output/durable-views
+          RENDER_VIEW: front
+        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/render_one_view.py
+      - name: Verify, pack and scan partial front checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          cp original/frozen_watergate_v09.blend render-output/durable-views/
+          cp original/frozen_watergate_v09.glb render-output/durable-views/
+          python3 tools/3d_checkpoint/verify_one_view.py --file render-output/durable-views/front.png --view front
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/durable-views --asset-id b2-views-front --iteration 2 --parent-checkpoint "view-base-${{ github.run_id }}" --source-script tools/3d_checkpoint/render_one_view.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/durable-views --asset-id b2-views-front --source-script tools/3d_checkpoint/render_one_view.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/durable-views qa/security/front.log
+      - name: Durably upload front PNG before next camera
+        uses: actions/upload-artifact@v4
+        with:
+          name: view-front-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/durable-views/
+          retention-days: 14
+          if-no-files-found: error
+
+  kill-side:
+    needs: front-checkpoint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: view-front-NOT-APPROVED-${{ github.run_id }}
+          path: front-saved
+      - name: Verify front checkpoint and ClamAV scan
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory front-saved --asset-id b2-views-front --source-script tools/3d_checkpoint/render_one_view.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/verify_one_view.py --file front-saved/front.png --view front
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan front-saved qa/security/verified-front.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/render_one_view.py qa/security/view-script.log
+      - name: SIGKILL only side Blender child and assert true process failure
+        env:
+          RESUME_BLEND: front-saved/frozen_watergate_v09.blend
+          RENDER_OUTPUT: discarded-side-output
+          RENDER_VIEW: side
+          KILL_AT_RENDER_PRE: '1'
+          KILL_PROBE_SENTINEL: qa/side-crash.txt
+        run: |
+          mkdir -p qa
+          set +e
+          blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/render_one_view.py
+          rc=$?
+          set -e
+          echo "SIDE_RENDER_KILL_EXIT=$rc"
+          test -f qa/side-crash.txt
+          grep -Fx 'KILL_DURING_SIDE_RENDER_PRE' qa/side-crash.txt
+          test "$rc" -eq 137
+          echo "EXPECTED_SIDE_RENDER_FAILURE_CONFIRMED=true"
+          exit 1
+
+  continue-other-views:
+    needs: [front-checkpoint,kill-side]
+    if: ${{ always() && needs.front-checkpoint.result == 'success' && needs.kill-side.result == 'failure' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: view-front-NOT-APPROVED-${{ github.run_id }}
+          path: front-saved
+      - name: Verify and scan durable front before opening Blender
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory front-saved --asset-id b2-views-front --source-script tools/3d_checkpoint/render_one_view.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/verify_one_view.py --file front-saved/front.png --view front
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan front-saved qa/security/recovered-front.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/render_one_view.py qa/security/render-script.log
+      - name: Reuse front PNG byte for byte without rerender
+        run: |
+          mkdir -p render-output/recovered-views
+          cp front-saved/front.png front-saved/frozen_watergate_v09.blend front-saved/frozen_watergate_v09.glb render-output/recovered-views/
+          sha256sum front-saved/front.png render-output/recovered-views/front.png
+          test "$(sha256sum front-saved/front.png | cut -d' ' -f1)" = "$(sha256sum render-output/recovered-views/front.png | cut -d' ' -f1)"
+          echo 'FRONT_VIEW_REUSED_WITHOUT_RENDER=true'
+      - name: Retry only failed side camera
+        env:
+          RESUME_BLEND: front-saved/frozen_watergate_v09.blend
+          RENDER_OUTPUT: render-output/recovered-views
+          RENDER_VIEW: side
+        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/render_one_view.py
+      - name: Render only remaining angle camera
+        env:
+          RESUME_BLEND: front-saved/frozen_watergate_v09.blend
+          RENDER_OUTPUT: render-output/recovered-views
+          RENDER_VIEW: angle
+        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/render_one_view.py
+      - name: Verify complete multiview checkpoint and scan
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/recovered-views
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/recovered-views --asset-id b2-views-recovered --iteration 3 --parent-checkpoint "view-front-${{ github.run_id }}" --source-script tools/3d_checkpoint/render_one_view.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/recovered-views --asset-id b2-views-recovered --source-script tools/3d_checkpoint/render_one_view.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/recovered-views qa/security/recovered-all-views.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: view-all-RECOVERED-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/recovered-views/
+          retention-days: 14
+          if-no-files-found: error

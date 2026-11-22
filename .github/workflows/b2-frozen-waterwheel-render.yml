@@ -13,23 +13,46 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert shared Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Update ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan source scripts before executing
+        run: |
+          bash tools/security/clamav_scan_gate.sh scan tools/b2-waterwheel-render qa/security/source.log
+          bash tools/security/clamav_scan_gate.sh scan field/assets/b2-frozen-waterwheel-scene.js qa/security/source-scene.log
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Export actual scene GLB
         run: |
-          npm install --no-save --no-package-lock three@0.181.2
+          npm install --no-save --no-package-lock --ignore-scripts three@0.181.2
+          bash tools/security/clamav_scan_gate.sh scan node_modules qa/security/npm.log
           node tools/b2-waterwheel-render/export.mjs
-      - name: Render in Blender Docker
+      - name: Scan exported GLB before Blender import
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-waterwheel/frozen-waterwheel-courtyard.glb qa/security/input-glb.log
+      - name: Render in shared Blender container
         run: |
+          set -euo pipefail
           mkdir -p render-output/b2-waterwheel/png
-          docker run --rm -v "$PWD:/workspace" -w /workspace lscr.io/linuxserver/blender:latest /blender/blender -b -t 2 --python tools/b2-waterwheel-render/render.py -- render-output/b2-waterwheel/frozen-waterwheel-courtyard.glb render-output/b2-waterwheel/png
+          HOME=/tmp/blender-home blender -b -t 2 --python tools/b2-waterwheel-render/render.py -- render-output/b2-waterwheel/frozen-waterwheel-courtyard.glb render-output/b2-waterwheel/png
       - name: Validate GLB and three actual PNGs
         run: |
           python3 - <<'PY'
@@ -42,8 +65,12 @@ jobs:
           for f in pngs: assert f.read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
           print('verified',g,*pngs)
           PY
+      - name: Scan generated GLB and PNG outputs
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-waterwheel qa/security/output.log
       - uses: actions/upload-artifact@v4
         with:
           name: b2-frozen-waterwheel-courtyard-glb-png
-          path: render-output/b2-waterwheel/
+          path: |
+            render-output/b2-waterwheel/
+            qa/security/
           retention-days: 14

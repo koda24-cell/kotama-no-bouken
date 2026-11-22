@@ -1,0 +1,42 @@
+{
+  "asset": "b4-v33-magma-rockwall",
+  "approval_status": "user-approved-2026-11-15",
+  "source_run_id": 43723072680,
+  "source_pr": 379,
+  "source_branch": "feature/b4-v33-three-magma-streams-20261115",
+  "format": "glTF 2.0 binary (GLB)",
+  "animated": false,
+  "license_notes": "Original V13 + Poly Haven Rock Face 02 CC0 reference",
+  "files": [
+    {
+      "path": "assets/models/floor4/b4-v33-magma-rockwall.glb",
+      "size_bytes": 15093524,
+      "sha256": "dfa861b95f08c8f799cacb426ad389c3acb7b0c8d0bf8e9416a323505aa72e8b"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-v33-magma-rockwall/b4-v33-angle-lit.png",
+      "size_bytes": 827609,
+      "sha256": "8e3578c463d053c781cefb5918eb812a9b1696d8c99a32a712cce54bead15206"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-v33-magma-rockwall/b4-v33-back-lit.png",
+      "size_bytes": 754477,
+      "sha256": "cf38ffb8b5faadbf380adeb361aace47cd12f218f4e258d505bdb9e06b1b41f3"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-v33-magma-rockwall/b4-v33-front-level.png",
+      "size_bytes": 873951,
+      "sha256": "84ebe42929f340386d9f21745f4dd941a2610989b4c4e17d0da3549d7c291de8"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-v33-magma-rockwall/b4-v33-front-lit.png",
+      "size_bytes": 880997,
+      "sha256": "625536b1e5c5a24ec7800e030064910163ef5a2f5f4f85adceee387ec70ffcb7"
+    },
+    {
+      "path": "assets/models/floor4/reviews/b4-v33-magma-rockwall/b4-v33-side-lit.png",
+      "size_bytes": 626895,
+      "sha256": "0a2a6794c9db22107d86d4c8e74ce02bc22a00916854be7008451b0cdaa7c0cd"
+    }
+  ]
+}

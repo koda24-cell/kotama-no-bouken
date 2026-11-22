@@ -2,7 +2,7 @@ import bpy, math, random, os, sys
 from mathutils import Vector
 random.seed(24)
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
-out='/work/render-output/b2-watergate'; os.makedirs(out,exist_ok=True)
+out='render-output/b2-watergate'; os.makedirs(out,exist_ok=True)
 def mat(name,color,metal=0,rough=.7):
  m=bpy.data.materials.new(name); m.diffuse_color=(*color,1); m.use_nodes=True
  p=m.node_tree.nodes.get('Principled BSDF'); p.inputs['Base Color'].default_value=(*color,1);p.inputs['Metallic'].default_value=metal;p.inputs['Roughness'].default_value=rough
@@ -429,7 +429,7 @@ world=bpy.context.scene.world or bpy.data.worlds.new('World');bpy.context.scene.
 def area(loc,power,size):
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,3))-o.location).to_track_quat('-Z','Y').to_euler()
 area((1,-5,12),2100,9);area((-8,2,7),1200,7)
-bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=24
+bpy.context.scene.render.engine='CYCLES';bpy.context.scene.cycles.samples=24;bpy.context.scene.cycles.use_denoising=False
 bpy.context.scene.render.resolution_x=1000;bpy.context.scene.render.resolution_y=760;bpy.context.scene.render.resolution_percentage=100
 for name,pos in [('front',(0,-23,10)),('side',(22,-3,10)),('angle',(17,-21,12))]:
  bpy.ops.object.camera_add(location=pos);cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,3.8))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=20;bpy.context.scene.camera=cam

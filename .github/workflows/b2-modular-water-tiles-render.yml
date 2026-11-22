@@ -6,23 +6,40 @@ on:
     paths:
       - tools/b2-render/build-modular-water-tiles.py
       - .github/workflows/b2-modular-water-tiles-render.yml
+permissions:
+  contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - name: Pull Blender Docker
-        run: docker pull lscr.io/linuxserver/blender:latest
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Blender source before execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-modular-water-tiles.py qa/security/source.log
       - name: Export 16 modular GLBs and three renders
         run: |
           set -euo pipefail
           mkdir -p render-output/b2-water-tiles
-          docker run --rm --user "$(id -u):$(id -g)" --entrypoint /usr/bin/blender -v "$PWD:/work" -w /work lscr.io/linuxserver/blender:latest -b -t 2 --python tools/b2-render/build-modular-water-tiles.py
+          HOME=/tmp/blender-home blender -b -t 2 --python tools/b2-render/build-modular-water-tiles.py
           for i in $(seq -w 0 15); do test -s "render-output/b2-water-tiles/water_tile_$i.glb"; done
           for f in top.png side.png angle.png README.txt; do test -s "render-output/b2-water-tiles/$f"; done
+      - name: Scan generated GLB and PNG candidates
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-water-tiles qa/security/output.log
       - uses: actions/upload-artifact@v4
         with:
           name: b2-modular-water-tiles-v01
-          path: render-output/b2-water-tiles/
+          path: |
+            render-output/b2-water-tiles/
+            qa/security/
           if-no-files-found: error
           retention-days: 14

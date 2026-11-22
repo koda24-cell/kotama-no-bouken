@@ -1,0 +1,49 @@
+name: Candidate asset safety audit
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "assets/**"
+      - "tools/security/**"
+      - "docs/security/**"
+      - ".github/workflows/candidate-asset-safety-audit.yml"
+permissions:
+  contents: read
+  packages: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender-clamav@sha256:9ec560f7c668ae63802cd144728df628ca1beb8eebb3772d128c684b5e0f4b2b
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Update ClamAV signatures (no apt install)
+        run: bash tools/security/clamav_scan_gate.sh update security-audit-output
+      - name: Inventory and non-executing ZIP structure check
+        run: python3 tools/security/inventory_scan.py
+      - name: Signature scan of checked-out files
+        shell: bash
+        run: |
+          set +e
+          clamscan -r -i --max-filesize=100M --max-scansize=300M --max-recursion=12 --max-files=20000 --exclude-dir='^./.git' . > security-audit-output/clamscan.log 2>&1
+          scan_rc=$?
+          echo "clamscan_exit=$scan_rc" > security-audit-output/scan-exit.txt
+          tail -n 30 security-audit-output/clamscan.log
+          if [ "$scan_rc" -ne 0 ]; then echo "::error::ClamAV detection or scan error ($scan_rc)"; exit 1; fi
+          if grep -Eq '^(ERROR|WARNING):' security-audit-output/clamscan.log; then echo "::error::ClamAV reported errors or warnings"; exit 1; fi
+      - name: Upload logs (not a safety certificate)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asset-safety-audit
+          path: security-audit-output
+          retention-days: 14

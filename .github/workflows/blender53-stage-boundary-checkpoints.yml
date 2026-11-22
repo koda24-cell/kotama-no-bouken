@@ -1,0 +1,229 @@
+name: Blender 5.3 durable stage-boundary checkpoint test
+on:
+  workflow_dispatch:
+    inputs:
+      recovery_drill:
+        description: 'After durable stage-one upload, intentionally fail stage-two for external recovery test'
+        required: true
+        type: boolean
+        default: false
+  push:
+    branches:
+      - feature/blender53-stage-boundary-checkpoints-20261120
+      - feature/blender53-stage-budget-guard-20261121
+      - development
+    paths:
+      - '.github/workflows/blender53-stage-boundary-checkpoints.yml'
+      - 'tools/3d_checkpoint/stage_budget.py'
+      - 'tools/3d_checkpoint/test_stage_budget.py'
+      - 'docs/3d/recovery-drills/blender53-cross-run-drill-20261120.md'
+      - 'docs/3d/recovery-drills/second-trigger-20261120.md'
+permissions:
+  contents: read
+  actions: read
+  packages: read
+jobs:
+  budget-unit-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Test budget boundary and failure cases
+        run: python3 tools/3d_checkpoint/test_stage_budget.py
+  stage-one:
+    outputs:
+      handoff_required: ${{ steps.stage_budget.outputs.handoff_required }}
+      remaining_seconds: ${{ steps.stage_budget.outputs.remaining_seconds }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record stage-one start
+        id: stage_one_start
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
+      - name: Verify Blender
+        run: blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+      - name: Update definitions and scan source
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-watergate.py qa/security/stage1-source.log
+      - name: Generate first checkpoint with actual Blender
+        id: stage_one_build
+        run: blender -b --disable-autoexec -t 2 --python tools/b2-render/build-watergate.py
+      - name: QA and pack stage one
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate --asset-id b2-watergate --iteration 1 --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate qa/security/stage1-output.log
+      - name: Record stage-one budget decision (never blocks durable upload)
+        id: stage_budget
+        if: ${{ success() }}
+        env:
+          START_EPOCH: ${{ steps.stage_one_start.outputs.epoch }}
+          BUDGET_DRILL: ${{ github.event_name == 'push' && github.ref == 'refs/heads/feature/blender53-stage-budget-guard-20261121' && contains(github.event.head_commit.message, '[blender53-budget-drill]') }}
+        run: |
+          # Test only: simulate 71 elapsed minutes after finishing and verifying the real render.
+          # Production always uses the actual measured start epoch.
+          if [ "$BUDGET_DRILL" = "true" ]; then
+            START_EPOCH="$(python3 -c 'import time; print(time.time()-71*60)')"
+            echo "BUDGET_DRILL_SIMULATED_ELAPSED_MINUTES=71"
+          fi
+          python3 tools/3d_checkpoint/stage_budget.py --start-epoch "$START_EPOCH" > stage-budget.json.log || rc=$?
+          cat stage-budget.json.log
+          if [ "${rc:-0}" -ne 0 ] && [ "${rc:-0}" -ne 2 ]; then
+            exit "$rc"
+          fi
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          lines = Path("stage-budget.json.log").read_text().splitlines()
+          matches = [line.removeprefix("STAGE_BUDGET ") for line in lines if line.startswith("STAGE_BUDGET ")]
+          if len(matches) != 1:
+              raise SystemExit("Missing or duplicate budget record")
+          data = json.loads(matches[0])
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"handoff_required={str(not data['continue']).lower()}\n")
+              out.write(f"remaining_seconds={data['remaining_seconds']}\n")
+          PY
+      - name: DURABLE stage-one upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage-one-b2-watergate-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate/
+          retention-days: 14
+          if-no-files-found: error
+  stage-two:
+    needs: stage-one
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Announce job-to-job checkpoint handoff
+        env:
+          HANDOFF_REQUIRED: ${{ needs.stage-one.outputs.handoff_required }}
+          PREVIOUS_REMAINING_SECONDS: ${{ needs.stage-one.outputs.remaining_seconds }}
+        run: |
+          test "$HANDOFF_REQUIRED" = true -o "$HANDOFF_REQUIRED" = false
+          echo "CHECKPOINT_HANDOFF_REQUIRED=$HANDOFF_REQUIRED"
+          echo "PREVIOUS_JOB_REMAINING_SECONDS=$PREVIOUS_REMAINING_SECONDS"
+          echo "Stage two runs in a fresh job and must verify the uploaded stage-one artifact."
+      - name: Assert simulated time limit triggers verified cross-job handoff
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/feature/blender53-stage-budget-guard-20261121' && contains(github.event.head_commit.message, '[blender53-budget-drill]') }}
+        env:
+          HANDOFF_REQUIRED: ${{ needs.stage-one.outputs.handoff_required }}
+          PREVIOUS_REMAINING_SECONDS: ${{ needs.stage-one.outputs.remaining_seconds }}
+        run: |
+          test "$HANDOFF_REQUIRED" = true
+          test "$PREVIOUS_REMAINING_SECONDS" -le 600
+          echo "BUDGET_DRILL_HANDOFF_CONFIRMED=true"
+      - name: Intentional failure for external recovery drill
+        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.recovery_drill == true) || (github.event_name == 'push' && github.ref == 'refs/heads/development' && contains(github.event.head_commit.message, '[blender53-recovery-drill]')) }}
+        run: |
+          echo 'RECOVERY_DRILL_EXPECTED_FAILURE: stage-one artifact is already uploaded'
+          exit 1
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: stage-one-b2-watergate-NOT-APPROVED-${{ github.run_id }}
+          path: recovered
+      - name: Verify and scan durable checkpoint
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory recovered --asset-id b2-watergate --source-script tools/b2-render/build-watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan recovered qa/security/recovered.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/resume_watergate.py qa/security/script.log
+      - name: Resume from durable stage boundary and rerender
+        env:
+          RESUME_BLEND: recovered/frozen_watergate_v09.blend
+          RESUME_OUTPUT: render-output/b2-watergate-resumed
+        run: blender -b --disable-autoexec -t 2 --python tools/3d_checkpoint/resume_watergate.py
+      - name: QA, checkpoint, scan stage two
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/render_qa.py --directory render-output/b2-watergate-resumed
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory render-output/b2-watergate-resumed --asset-id b2-watergate-resumed --iteration 2 --parent-checkpoint "stage-one-${{ github.run_id }}" --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory render-output/b2-watergate-resumed --asset-id b2-watergate-resumed --source-script tools/3d_checkpoint/resume_watergate.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh scan render-output/b2-watergate-resumed qa/security/stage2-output.log
+      - name: DURABLE stage-two upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage-two-b2-watergate-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/b2-watergate-resumed/
+          retention-days: 14
+          if-no-files-found: error
+
+  notify-recovery:
+    needs: [stage-one, stage-two]
+    if: ${{ always() && needs.stage-one.result == 'success' && needs.stage-two.result == 'failure' && github.ref == 'refs/heads/development' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check cross-repository notification credentials
+        id: credentials
+        env:
+          APP_ID: ${{ vars.KOTAMA_RECOVERY_EVENT_APP_ID }}
+          PRIVATE_KEY: ${{ secrets.KOTAMA_RECOVERY_EVENT_APP_PRIVATE_KEY }}
+        run: |
+          if [ -n "$APP_ID" ] && [ -n "$PRIVATE_KEY" ]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo '::error title=Recovery event not configured::KOTAMA_RECOVERY_EVENT_APP_ID or KOTAMA_RECOVERY_EVENT_APP_PRIVATE_KEY is missing; cross-repository event notification cannot run. Scheduled recovery monitor is independent.'
+            echo 'EVENT_NOTIFY_SKIPPED=missing_app_credentials'
+          fi
+      - uses: actions/create-github-app-token@v2
+        if: ${{ steps.credentials.outputs.configured == 'true' }}
+        id: app
+        with:
+          app-id: ${{ vars.KOTAMA_RECOVERY_EVENT_APP_ID }}
+          private-key: ${{ secrets.KOTAMA_RECOVERY_EVENT_APP_PRIVATE_KEY }}
+          owner: koda24-cell
+          repositories: 3d-asset-studio
+          permission-contents: write
+      - name: Dispatch recovery notification
+        if: ${{ steps.credentials.outputs.configured == 'true' }}
+        env:
+          TARGET_TOKEN: ${{ steps.app.outputs.token }}
+          SOURCE_RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          payload = {'event_type': 'kotama_blender_run_completed',
+                     'client_payload': {
+                         'source_run_id': os.environ['SOURCE_RUN_ID'],
+                         'source_repository': 'koda24-cell/kotama-no-bouken',
+                         'source_workflow': 'blender53-stage-boundary-checkpoints.yml',
+                         'conclusion': 'failure'}}
+          req = urllib.request.Request(
+              'https://api.github.com/repos/koda24-cell/3d-asset-studio/dispatches',
+              data=json.dumps(payload).encode(),
+              headers={'Authorization': 'Bearer ' + os.environ['TARGET_TOKEN'],
+                       'Accept': 'application/vnd.github+json',
+                       'X-GitHub-Api-Version': '2022-11-28',
+                       'User-Agent': 'kotama-recovery-event-notifier'},
+              method='POST')
+          with urllib.request.urlopen(req, timeout=30) as response:
+              assert response.status == 204
+              print('EVENT_NOTIFY_HTTP=204')
+          PY

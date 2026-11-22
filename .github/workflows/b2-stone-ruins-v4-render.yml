@@ -1,24 +1,43 @@
 name: B2 Stone Ruins Props V4 Irregular Masonry
 on:
   push:
-    branches: [feature/b2-bridge-v04-vfx-20261115]
+    branches:
+      - feature/b2-bridge-v04-vfx-20261115
+      - feature/shared-container-b2-props-20261119
     paths:
       - tools/b2-render/build-stone-ruins-v4.py
       - .github/workflows/b2-stone-ruins-v4-render.yml
   workflow_dispatch:
 permissions:
   contents: read
+  packages: read
 jobs:
   render:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Assert Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
       - uses: actions/checkout@v4
-      - name: Install Blender
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq blender python3-numpy libegl1 libgl1 libopengl0
-      - name: Render original bridge color matched stone props
-        run: blender -b -t 2 --python tools/b2-render/build-stone-ruins-v4.py
-      - name: Validate
+        with:
+          persist-credentials: false
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Blender script before execution
+        run: bash tools/security/clamav_scan_gate.sh scan tools/b2-render/build-stone-ruins-v4.py qa/security/source.log
+      - name: Scan source GLB before import
+        run: bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b2_water_source/models/ancient_ice_bridge/ancient_ice_bridge_v04.glb qa/security/source-glb.log
+      - name: Generate B2 standalone GLBs and actual three-view PNGs
+        run: HOME=/tmp/blender-home blender -b -t 2 --python tools/b2-render/build-stone-ruins-v4.py
+      - name: Verify generated GLB/PNG and SHA256
         run: |
           set -euo pipefail
           cd render-output/b2-stone-ruins-v4
@@ -26,10 +45,23 @@ jobs:
             test -s "${variant}.glb"
             for view in front side angle; do test -s "${variant}_${view}.png"; done
           done
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('.')
+          for p in list(root.glob('*.glb'))+list(root.glob('*.png')):
+              b=p.read_bytes()
+              assert b[:4]==b'glTF' if p.suffix=='.glb' else b[:8]==bytes.fromhex('89504e470d0a1a0a'), p
+          print('B2_GLBS_AND_PNGS_VERIFIED')
+          PY
           sha256sum *.glb *.png > SHA256SUMS.txt
+      - name: Real ClamAV scan of candidate outputs
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/b2-stone-ruins-v4 qa/security/output.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: b2-stone-ruins-v4-bridge-colors
-          path: render-output/b2-stone-ruins-v4/
+          path: |
+            render-output/b2-stone-ruins-v4/
+            qa/security/
           retention-days: 14
+          if-no-files-found: warn

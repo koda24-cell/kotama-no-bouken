@@ -1,0 +1,167 @@
+name: Build official Blender 5.3.0 + ClamAV QA image
+on:
+  push:
+    branches:
+      - development
+      - feature/shared-blender53-clamav-20261119
+    paths:
+      - '.github/docker/blender53-clamav/**'
+      - '.github/workflows/build-shared-blender53-clamav-image.yml'
+      - '.github/docker/blender-clamav/smoke.py'
+      - 'tools/security/clamav_scan_gate.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shared-blender53-clamav-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish independent Blender 5.3 image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .github/docker/blender53-clamav/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/koda24-cell/kotama-blender53-clamav:5.3.0-v1
+            ghcr.io/koda24-cell/kotama-blender53-clamav:sha-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true
+      - name: Record actual digest for future pinning
+        run: |
+          set -euo pipefail
+          echo "ghcr.io/koda24-cell/kotama-blender53-clamav@${{ steps.build.outputs.digest }}"
+          test -n "${{ steps.build.outputs.digest }}"
+
+  smoke-and-b4-real-render:
+    needs: publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 85
+    permissions:
+      contents: read
+      packages: read
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@${{ needs.publish.outputs.digest }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert exactly Blender 5.3.0 and preinstalled tools
+        run: |
+          set -euo pipefail
+          blender --version | head -n 2
+          python3 - <<'PY'
+          import subprocess
+          v=subprocess.check_output(['blender','--version'],text=True).splitlines()[0]
+          assert v=='Blender 5.3.0',v
+          print('EXACT_BLENDER_53_VERSION_PASS',v)
+          PY
+          clamscan --version
+          freshclam --version
+          python3 --version
+      - name: Refresh ClamAV definitions
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Blender smoke and real B4 scripts before execution
+        run: |
+          bash tools/security/clamav_scan_gate.sh scan .github/docker/blender-clamav/smoke.py qa/security/smoke-source.log
+          bash tools/security/clamav_scan_gate.sh scan tools/floor4/magma_banks qa/security/b4-source.log
+          bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b4_dragonfire/textures qa/security/b4-textures.log
+      - name: Confirm real EICAR detection
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          s = 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'
+          Path('/tmp/kotama-eicar.com').write_bytes(s.encode('ascii'))
+          PY
+          set +e
+          clamscan --no-summary /tmp/kotama-eicar.com > qa/security/eicar.log 2>&1
+          rc=$?
+          set -e
+          cat qa/security/eicar.log
+          rm -f /tmp/kotama-eicar.com
+          test "$rc" -eq 1
+          grep -q 'FOUND' qa/security/eicar.log
+          echo 'EICAR_DETECTION_PASS'
+      - name: Actual PNG and GLB smoke with Blender 5.3
+        run: |
+          set -euo pipefail
+          blender -b --disable-autoexec -t 2 --python .github/docker/blender-clamav/smoke.py
+          python3 - <<'PY'
+          from pathlib import Path
+          png=Path('qa/container-smoke/smoke.png').read_bytes()
+          glb=Path('qa/container-smoke/smoke.glb').read_bytes()
+          assert png[:8]==bytes.fromhex('89504e470d0a1a0a') and len(png)>100
+          assert glb[:4]==b'glTF' and len(glb)>100
+          print('BLENDER53_SMOKE_GLTF_PNG_PASS')
+          PY
+          bash tools/security/clamav_scan_gate.sh scan qa/container-smoke qa/security/smoke-output.log
+      - name: Real existing B4 magma P1 geometry and four-view render
+        run: |
+          set -euo pipefail
+          mkdir -p qa/blender53-b4
+          blender -b --disable-autoexec -t 2 --python tools/floor4/magma_banks/build_bank_modules.py -- --pattern p1 --out qa/blender53-b4
+      - name: Validate B4 original GLB, Blend, four PNGs and SHA256 manifest
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          d=Path('qa/blender53-b4')
+          stem='b4-magma-bank-p1-v2'
+          manifest=json.loads((d/'manifest-p1.json').read_text())
+          assert manifest['approval']=='NOT_APPROVED'
+          expected={stem+'.glb',stem+'.blend'}|{stem+'-'+v+'.png' for v in ('front','side','angle','top')}
+          assert {e['file'] for e in manifest['files']}==expected
+          for e in manifest['files']:
+              p=d/e['file']
+              assert p.is_file() and p.stat().st_size>3000 and p.stat().st_size==e['bytes'],p
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==e['sha256'],p
+          glb=(d/(stem+'.glb')).read_bytes()
+          assert glb[:4]==b'glTF' and struct.unpack('<I',glb[4:8])[0]==2
+          for v in ('front','side','angle','top'):
+              assert (d/(stem+'-'+v+'.png')).read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          print('BLENDER53_B4_REAL_FOUR_VIEW_QA_PASS')
+          PY
+      - name: ClamAV scan real B4 generated candidates before upload
+        run: bash tools/security/clamav_scan_gate.sh scan qa/blender53-b4 qa/security/b4-output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blender53-official-clamav-b4-qa-not-approved
+          path: |
+            qa/security/
+            qa/container-smoke/
+            qa/blender53-b4/
+          retention-days: 14

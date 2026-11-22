@@ -1,0 +1,99 @@
+name: Shared Rigid GLB LOD Review
+on:
+  push:
+    branches: [feature/gpt-shared-3d-optimization-actions-20261117]
+    paths:
+      - tools/3d-performance/build_rigid_lod_review.py
+      - .github/workflows/shared-rigid-lod-review.yml
+  workflow_dispatch:
+    inputs:
+      source_glb:
+        description: 'Opaque static rigid GLB within repository'
+        required: false
+        default: assets/3d/dungeons/b1_ancient_forest/props/moss_boulder_cluster.glb
+        type: string
+  workflow_call:
+    inputs:
+      source_glb:
+        required: false
+        type: string
+        default: assets/3d/dungeons/b1_ancient_forest/props/moss_boulder_cluster.glb
+permissions:
+  contents: read
+  packages: read
+jobs:
+  candidate:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert shared Blender 5.3.0
+        run: blender --version | head -n 1 | grep -Fx 'Blender 5.3.0'
+      - name: Refresh ClamAV signatures
+        run: bash tools/security/clamav_scan_gate.sh update qa/security
+      - name: Scan Blender and QA scripts
+        run: bash tools/security/clamav_scan_gate.sh scan tools/3d-performance qa/security/scripts.log
+      - name: Validate source asset path and type (read only)
+        env:
+          ASSET_SOURCE: ${{ inputs.source_glb || 'assets/3d/dungeons/b1_ancient_forest/props/moss_boulder_cluster.glb' }}
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          root=Path.cwd().resolve()
+          src=(root/os.environ['ASSET_SOURCE']).resolve()
+          assert src.is_relative_to(root) and src.suffix=='.glb' and src.is_file()
+          print('RIGID_LOD_SOURCE',src.relative_to(root),src.stat().st_size)
+          PY
+      - name: Scan original GLB before Blender import
+        env:
+          ASSET_SOURCE: ${{ inputs.source_glb || 'assets/3d/dungeons/b1_ancient_forest/props/moss_boulder_cluster.glb' }}
+        run: bash tools/security/clamav_scan_gate.sh scan "$ASSET_SOURCE" qa/security/input.log
+      - name: Generate three independent review-only LOD candidates and actual renders
+        env:
+          ASSET_SOURCE: ${{ inputs.source_glb || 'assets/3d/dungeons/b1_ancient_forest/props/moss_boulder_cluster.glb' }}
+        run: |
+          set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+          blender -b -t 2 --python tools/3d-performance/build_rigid_lod_review.py -- --source "$ASSET_SOURCE" --out render-output/3d-performance/rigid-lod 2>&1 | tee /tmp/rigid-lod.log
+          grep -q RIGID_LOD_CANDIDATES_DONE /tmp/rigid-lod.log
+      - name: Audit and SHA-verify three GLB files, 12 PNGs, and manifest
+        run: |
+          python3 tools/3d-performance/audit_glb.py 'render-output/3d-performance/rigid-lod/*.glb' --output render-output/3d-performance/rigid-lod-audit.json
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('render-output/3d-performance/rigid-lod')
+          m=json.loads((root/'manifest.json').read_text())
+          assert m['status']=='NOT_APPROVED' and not m['original_modified']
+          assert len(m['variants'])==3
+          tri=[v['triangle_equivalent'] for v in m['variants']]
+          assert tri[0]>=tri[1]>=tri[2]>0
+          for v in m['variants']:
+            assert len(v['files'])==5
+            for f in v['files']:
+              data=(root/f['name']).read_bytes()
+              assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256']
+              if f['name'].endswith('.glb'): assert data[:4]==b'glTF'
+              if f['name'].endswith('.png'): assert data[:8]==b'\x89PNG\r\n\x1a\n'
+          print('RIGID_LOD_QA_PASS',tri)
+          PY
+      - name: Scan generated candidates
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/3d-performance/rigid-lod qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-rigid-lod-${{ hashFiles(inputs.source_glb) }}-UNAPPROVED-review
+          path: |
+            render-output/3d-performance/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: warn
