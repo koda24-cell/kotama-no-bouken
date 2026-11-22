@@ -1,7 +1,7 @@
 name: B5 Knight Helmet+Body Layout V1 Eight-View Blender Review
 on:
   push:
-    branches: [feature/b5-knight-knight-helmet-body-layout-v1-20261122]
+    branches: [feature/b5-knight-helmet-fullbody-layout-v1-20261123]
     paths:
       - 'tools/b5-knights/build_knight_helmet_body_layout_v1.py'
       - '.github/workflows/b5-knight-helmet-body-layout-v1.yml'
