@@ -114,7 +114,9 @@ jobs:
           'tassets_v1':'inputs/tassets/render-output/b5-knights/gothic_tassets_v1/gothic_tassets_v1.glb'}
           for name,filepath in src.items():
               assert hashlib.sha256(Path(filepath).read_bytes()).hexdigest()==d['input_assets'][name]['source_sha256']
-          sent=Path('inputs/sentinel/render-output/b5-knights/sentinel_v14/sentinel_v14.glb')
+          matches=list(Path('inputs/sentinel').rglob('sentinel_v14.glb'))
+          assert len(matches)==1,matches
+          sent=matches[0]
           assert hashlib.sha256(sent.read_bytes()).hexdigest()==d['input_assets']['sentinel_full_body_reference']['source_sha256']
           glb=(p/'knight_helmet_body_layout_v1.glb').read_bytes()
           assert glb[:4]==b'glTF' and struct.unpack_from('<I',glb,8)[0]==len(glb)
