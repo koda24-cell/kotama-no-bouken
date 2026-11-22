@@ -48,6 +48,9 @@ jobs:
       - name: Scan external downloads before Blender import
         run: |
           sudo apt-get install -y clamav
+          sudo systemctl stop clamav-freshclam || true
+          sudo freshclam --stdout
+          test -n "$(find /var/lib/clamav -maxdepth 1 -type f \( -name '*.cvd' -o -name '*.cld' \) -print -quit)"
           if find /tmp/b4-quarantine -type f | grep -q .; then
             clamscan --infected --recursive /tmp/b4-quarantine
             cp /tmp/b4-quarantine/* /tmp/b4-verified-textures/
