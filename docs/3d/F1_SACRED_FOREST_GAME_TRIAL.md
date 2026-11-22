@@ -28,3 +28,5 @@
 ## 現行V3
 
 天井504・開口3・far40m。苔が横断する床、根付き瓦礫/低木/下草、不定形岸、水面normal、水底/藻、鳥居から祠へ6mの同軸配置を追加。既存map/機能を保持。新5GLBと元17GLBの確認、編集Blend再open、104経路の実形状検査はpass。最終実ゲームQAは `tools/f1-closed-ruins-v3/verify-game-v3.cjs`、結果は `docs/reviews/f1-closed-ruins-v3-game/`。実機FPS・最終美術承認は別。
+
+V3の最終実行は3 sessions / 18 checks / 実ゲーム画像16枚でpass。通常1F/2F、移動/宝箱/NPC/灯/階段/戦闘帰還/不一致fallbackを確認。page/console errors0、WebGL upload警告0。実geometry rayは歩行床2466点で天井被覆100%、局所3開口は実空洞。詳細な履歴・再利用画像のSHA証明は上記review folderへ保存。

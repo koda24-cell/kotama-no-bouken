@@ -21,8 +21,9 @@ map、ナビゲーション、固定7対象、FOE、NPC/宝箱/階段/戦闘/セ
 
 - 新5GLBのKhronos errors0/warnings0。合計6694tris、GLB再import20枚。5編集Blendの全FILE画像pack/再open/decode成功。
 - GLB実三角形＋全祖先/配置変換で104経路、幅1.8m/Y.12..2.1mを検査。25sourceのSHA一致、硬い932配置で交差0。苔・草・花・蔓・札など1377配置は明示的に別扱い。
+- 追加の天井実geometry ray:274歩行床×3×3=2466上向きrayの全てに天井hit。指定3開口の中心はhitなし。壁/木/alpha/cullingを含まない幾何検査であり、画像での閉塞感も別に確認。
 - 水の独立WebGL再検証はエラー・警告0、時間差画像を実比較。dispose時に元の11水材/geometryとGPU baselineへ復帰。旧色の結果は `../f1-closed-water-v3/history-before-teal-water/` に保持。
-- 最終実ゲームの通し検証は隣接 `../f1-closed-ruins-v3-game/` に保存する。検証中の段階を完成扱いしない。
+- 最終実ゲーム検証は `../f1-closed-ruins-v3-game/`。3 sessions / 18 checks / 実画像16枚でPASS。初回9画像は全入力/PNG SHA一致で再利用し、機能はfresh contextから再実行。実機FPS・最終美術承認には拡張しない。
 
 `iterations` の暗い入口は初期配置/照明、緑の水場は色分離前で、最終画像ではない。途中の水面撮影と並行して配置/苔を編集したため入力不変guardが失敗したreceiptも保存する（`water-preview-inputs-changed.json`）。その撮影を機能suite合格とは扱わず、最終素材を固定してsuiteを最初から実行する。
 
