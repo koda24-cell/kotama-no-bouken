@@ -14,3 +14,9 @@ V2 reimports the **same five source GLBs** directly from their successful Action
 
 ## QA requirements
 Blender 5.3 pinned Docker, existing five original Artifacts, ClamAV scan before importing, actual six Cycles PNGs, GLB/Blend, hashes and input source identity. Publish ONLY review PNG to `render-preview/run-*`, leave GLB NOT_APPROVED in temporary artifact. Verify real run, then compare front/side/back of V1 vs V2 and iterate.
+
+## Execution evidence (2026-11-22)
+- [Actual Actions run #44965554605](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44965554605): render success, source GLB download success, Blender 5.3 pass, six-camera PNG/hash QA pass, ClamAV input/output pass, artifact `b5-full-torso-assembly-v2-NOT-APPROVED` id 14731068952 uploaded.
+- Postrender PNG-only preview publisher success; verified branch [render-preview/run-44965554605-1](https://github.com/koda24-cell/kotama-no-bouken/tree/render-preview/run-44965554605-1) contains six 800×800 images and review-manifest.json, *no GLB/Blend*.
+- Compare V1 [front](https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/render-preview/run-44686999964-1/front.png) vs V2 [front](https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/render-preview/run-44965554605-1/front.png); V1 [angle](https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/render-preview/run-44686999964-1/angle.png) vs V2 [angle](https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/render-preview/run-44965554605-1/angle.png).
+- This validates technical generation, **not artistic acceptance**. Actual visible change may be subtle because underlays are deliberately hidden behind original metal, and image was not visually inspected in this tool environment. No user approval, asset promotion or merge.
