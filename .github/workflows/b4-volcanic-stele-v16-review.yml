@@ -1,0 +1,69 @@
+name: B4 Volcanic Stele V16 Blender Review
+on:
+  push:
+    branches:
+      - feature/gpt-b4-volcanic-stele-v1-20261117
+    paths:
+      - tools/floor4/volcanic_stele/**
+      - .github/workflows/b4-volcanic-stele-v16-review.yml
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+          blender -b --python-expr "import sys; print('BLENDER_PYTHON',sys.version); import numpy; print('NUMPY',numpy.__version__)"
+          blender --version
+      - name: Retrieve existing B4 basalt PBR from latest development
+        run: |
+          mkdir -p /tmp/b4-quarantine /tmp/b4-verified-textures
+          git fetch --depth=1 origin development
+          for channel in albedo normal roughness; do
+            git show "FETCH_HEAD:assets/3d/dungeons/b4_dragonfire/textures/volcanic_basalt_${channel}.png" > "/tmp/b4-quarantine/${channel}.png"
+            test -s "/tmp/b4-quarantine/${channel}.png"
+          done
+          cp /tmp/b4-quarantine/albedo.png /tmp/b4-quarantine/diff.png
+          cp /tmp/b4-quarantine/normal.png /tmp/b4-quarantine/nor_gl.png
+          cp /tmp/b4-quarantine/roughness.png /tmp/b4-quarantine/rough.png
+      - name: Scan external downloads before Blender import
+        run: |
+          sudo apt-get install -y clamav
+          sudo systemctl stop clamav-freshclam || true
+          sudo freshclam --stdout
+          test -n "$(find /var/lib/clamav -maxdepth 1 -type f \( -name '*.cvd' -o -name '*.cld' \) -print -quit)"
+          if find /tmp/b4-quarantine -type f | grep -q .; then
+            clamscan --infected --recursive /tmp/b4-quarantine
+            cp /tmp/b4-quarantine/* /tmp/b4-verified-textures/
+          fi
+      - name: Build GLB and render four views
+        run: |
+          mkdir -p /tmp/b4-volcanic-stele
+          PYTHONPATH=/usr/lib/python3/dist-packages B4_VERIFIED_TEXTURES=/tmp/b4-verified-textures OUT_DIR=/tmp/b4-volcanic-stele blender -b -t 2 --python-exit-code 1 --python tools/floor4/volcanic_stele/build_v16.py
+      - name: Validate GLB PNG Blend and manifest
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,hashlib,struct
+          p=pathlib.Path('/tmp/b4-volcanic-stele');m=json.loads((p/'manifest.json').read_text())
+          assert m['approval']=='NOT_APPROVED'
+          for a in m['files']:
+            f=p/a['file'];assert f.is_file() and f.stat().st_size==a['size'] and hashlib.sha256(f.read_bytes()).hexdigest()==a['sha256']
+          glb=p/'b4-volcanic-stele-v16.glb'
+          with glb.open('rb') as f:
+            assert f.read(4)==b'glTF'
+            version,length=struct.unpack('<II',f.read(8));assert version==2 and length==glb.stat().st_size
+          for view in ('front','side','angle','top'):
+            assert (p/f'b4-volcanic-stele-v16-{view}.png').read_bytes()[:8]==bytes.fromhex('89504e470d0a1a0a')
+          assert (p/'b4-volcanic-stele-v16.blend').stat().st_size>10000
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b4-volcanic-stele-v16-review
+          path: /tmp/b4-volcanic-stele/
+          retention-days: 14
