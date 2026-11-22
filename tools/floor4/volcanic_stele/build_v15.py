@@ -79,6 +79,15 @@ for k in range(len(rings)-1):
   j=(i+1)%8
   faces.append((k*8+i,k*8+j,(k+1)*8+j,(k+1)*8+i))
 slab=mesh("V15 full-width chamfered basalt column",verts,faces,basalt)
+# UV unwrap for real texture mapping
+bpy.ops.object.select_all(action="DESELECT")
+slab.select_set(True)
+bpy.context.view_layer.objects.active=slab
+bpy.ops.object.mode_set(mode="EDIT")
+bpy.ops.mesh.select_all(action="SELECT")
+bpy.ops.uv.smart_project(island_margin=0.025)
+bpy.ops.object.mode_set(mode="OBJECT")
+print("V15_UV_LAYERS",len(slab.data.uv_layers))
 
 # The V2 slab used nonplanar n-gons, which can cause invalid Boolean topology.
 # Rebuild it as a closed watertight voxel mesh before any subtraction.
