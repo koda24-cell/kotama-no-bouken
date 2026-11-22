@@ -97,7 +97,10 @@ jobs:
           assert d['input_assets']['fauld_v2']['source_sha256'] and d['input_assets']['tassets_v1']['source_sha256']
           assert d['input_assets']['V2_added_connectors']['source_meshes_unchanged'] is True
           assert d['input_assets']['V3_side_joint_upgrade']['count']==6
-          assert d['input_assets']['V4_neck_and_hip']['count']==5\n          assert d['input_assets']['V4_neck_and_hip']['source_meshes_unchanged'] is True\n          assert 0.06 < d['input_assets']['V4_neck_and_hip']['source_gap_z_m'] < 0.08\n          assert d['metal_components']==6
+          assert d['input_assets']['V4_neck_and_hip']['count']==5
+          assert d['input_assets']['V4_neck_and_hip']['source_meshes_unchanged'] is True
+          assert 0.06 < d['input_assets']['V4_neck_and_hip']['source_gap_z_m'] < 0.08
+          assert d['metal_components']==6
           assert d['input_assets']['sentinel_full_body_reference']['exported_to_armor'] is False
           assert d['input_assets']['sentinel_full_body_reference']['world_space_uniform_transform'] is True
           assert d['input_assets']['helmet_fit']['rotation_z_degrees']==180
