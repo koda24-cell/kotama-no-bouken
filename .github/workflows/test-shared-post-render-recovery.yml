@@ -1,0 +1,42 @@
+name: Test shared post-render recovery against saved V4 artifact
+on:
+  push:
+    branches: [feature/blender53-post-render-artifact-recovery-20261123]
+    paths:
+      - '.github/workflows/test-shared-post-render-recovery.yml'
+permissions:
+  actions: read
+  contents: read
+  packages: read
+jobs:
+  qa-only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: b5-knight-helmet-body-layout-v4-NOT-APPROVED
+          run-id: 45040178679
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: recovered
+      - name: Update and scan input
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan recovered qa/security/input.log
+      - name: Run actual reusable QA verifier without Blender
+        run: python3 tools/3d_checkpoint/verify_saved_render_artifact.py --root recovered --glb knight_helmet_body_layout_v4.glb --width 800 --height 800
+      - name: Scan output
+        run: bash tools/security/clamav_scan_gate.sh scan recovered qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shared-recovery-qa-test-NOT-APPROVED-${{ github.run_id }}
+          path: |
+            recovered/
+            qa/security/
+          retention-days: 14
