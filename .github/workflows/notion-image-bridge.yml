@@ -1,0 +1,35 @@
+name: Notion image bridge (reference only)
+on:
+  push:
+    branches:
+      - feature/notion-image-bridge-20261122
+    paths:
+      - 'tools/notion-image-bridge/**'
+      - '.github/workflows/notion-image-bridge.yml'
+  workflow_dispatch:
+    inputs:
+      page_id:
+        description: 'Notion page ID containing the image'
+        required: true
+        default: '41f6cf84a0b181da9e4de8122ab71249'
+permissions:
+  contents: read
+jobs:
+  fetch-reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch and validate reference
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          PAGE_ID: ${{ inputs.page_id || '41f6cf84a0b181da9e4de8122ab71249' }}
+        run: python tools/notion-image-bridge/fetch.py --page-id "$PAGE_ID"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: notion-reference-verified
+          path: notion-image-output/
+          retention-days: 7
