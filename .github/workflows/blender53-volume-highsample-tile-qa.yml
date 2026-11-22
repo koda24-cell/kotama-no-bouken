@@ -98,6 +98,99 @@ jobs:
           path: render-output/volume-left/
           retention-days: 14
           if-no-files-found: error
+  kill-right:
+    needs: left
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/download-artifact@v4
+        with:
+          name: volume-left-NOT-APPROVED-${{ github.run_id }}
+          path: saved-left
+      - name: Verify and scan completed left tile before interruption
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory saved-left --asset-id volume-left --source-script tools/3d_checkpoint/render_half_frame.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan saved-left qa/security/left.log
+      - name: Intentionally SIGKILL right 128-sample render
+        env:
+          RESUME_BLEND: saved-left/volume_probe.blend
+          RENDER_OUTPUT: interrupted-right
+          RENDER_VIEW: front
+          RENDER_TILE: right
+          RENDER_SAMPLES: '128'
+          KILL_AT_RENDER_PRE: '1'
+          KILL_PROBE_SENTINEL: qa/right-kill.txt
+        run: |
+          mkdir -p qa
+          set +e
+          blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/3d_checkpoint/render_half_frame.py
+          rc=$?
+          set -e
+          grep -Fx 'KILL_DURING_RIGHT_RENDER_PRE' qa/right-kill.txt
+          test "$rc" -eq 137
+          echo 'EXPECTED_VOLUME_RIGHT_KILL=true'
+          exit 1
+  resume-after-kill:
+    needs: [left, kill-right]
+    if: ${{ always() && needs.left.result == 'success' && needs.kill-right.result == 'failure' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 80
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/download-artifact@v4
+        with:
+          name: volume-left-NOT-APPROVED-${{ github.run_id }}
+          path: saved-left
+      - name: Verify checkpoint and scan before recovery
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory saved-left --asset-id volume-left --source-script tools/3d_checkpoint/render_half_frame.py --source-commit "$COMMIT"
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan saved-left qa/security/left.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint/render_half_frame.py qa/security/render.log
+      - name: Reuse exact left tile without rendering
+        run: |
+          mkdir -p render-output/volume-recovered
+          cp saved-left/left.png saved-left/volume_probe.blend render-output/volume-recovered/
+          test "$(sha256sum saved-left/left.png | cut -d' ' -f1)" = "$(sha256sum render-output/volume-recovered/left.png | cut -d' ' -f1)"
+          echo 'LEFT_TILE_REUSED_SHA256_IDENTICAL=true'
+      - name: Restart only right 128-sample tile
+        env:
+          RESUME_BLEND: saved-left/volume_probe.blend
+          RENDER_OUTPUT: render-output/volume-recovered
+          RENDER_VIEW: front
+          RENDER_TILE: right
+          RENDER_SAMPLES: '128'
+        run: blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/3d_checkpoint/render_half_frame.py
+      - name: Stitch and verify recovered image dimensions
+        run: |
+          python3 tools/3d_checkpoint/stitch_half_frame.py --left render-output/volume-recovered/left.png --right render-output/volume-recovered/right.png --output render-output/volume-recovered/front.png
+          python3 tools/3d_checkpoint/verify_one_view.py --file render-output/volume-recovered/front.png --view front
+      - name: Scan recovered output
+        run: bash tools/security/clamav_scan_gate.sh scan render-output/volume-recovered qa/security/recovered.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: volume-RECOVERED-NOT-APPROVED-${{ github.run_id }}
+          path: render-output/volume-recovered/
+          retention-days: 14
+          if-no-files-found: error
   right-and-qa:
     needs: left
     runs-on: ubuntu-24.04
