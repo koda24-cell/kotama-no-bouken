@@ -1,0 +1,22 @@
+{
+  "approval": "NOT_APPROVED",
+  "source_sha": "f812065157f1d3c9fe8ddda53f70527d7416bdc7",
+  "source_run": "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44965554605",
+  "views": [
+    "front.png",
+    "left.png",
+    "right.png",
+    "angle.png",
+    "back.png",
+    "top.png"
+  ],
+  "sha256": {
+    "front.png": "6e21b22fb53900528904189556ff8506b05e908a14c7ce62ad27c658193bf29c",
+    "left.png": "8ce608af72d1d74d198e7314629424944135b4d66ecdf1122ed2620082025b59",
+    "right.png": "c64b9af784fde8794824d2cc6808a47239616d57281633c9aabd832a76b85b87",
+    "angle.png": "43aeffe0a0862c93e0e2ef4eed3be706c8f967e9434d4e0be815644ed3752094",
+    "back.png": "9869f67576260177d487794c70e62af20f7db3843dd8d08e58c398d4d6d364e7",
+    "top.png": "5111767dbaedb6f80dab2eb777a3f69637606b0af504449fa3c74ed14dd69c7b"
+  },
+  "note": "Review-only. Do not merge this preview branch into development or main."
+}
