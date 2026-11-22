@@ -1,0 +1,21 @@
+name: F1 Closed V3 Existing Asset Audit
+on:
+  push:
+    branches: [feature/f1-closed-ruins-v3-20261117]
+    paths:
+      - .github/workflows/f1-closed-v3-audit.yml
+      - tools/f1-closed-ruins-v3/audit_gateway.py
+      - assets/3d/dungeons/b1_closed_ruins_v3/props/*.glb
+permissions:
+  contents: read
+  packages: read
+jobs:
+  existing-output-security:
+    uses: ./.github/workflows/shared-blender53-render.yml
+    with:
+      script: tools/f1-closed-ruins-v3/audit_gateway.py
+      output_dir: render-output/f1-closed-v3-existing-audit
+  structure:
+    uses: ./.github/workflows/shared-3d-performance-audit.yml
+    with:
+      asset_glob: assets/3d/dungeons/b1_closed_ruins_v3/props/*.glb

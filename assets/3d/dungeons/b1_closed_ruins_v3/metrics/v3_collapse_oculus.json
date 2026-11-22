@@ -1,0 +1,52 @@
+{
+  "bytes": 2305352,
+  "sha256": "fc2f2b724b9b61aef30f6e055eced1d25dd630771736e0158aea86767d154797",
+  "tris": 2004,
+  "verts": 3174,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "v3_deep_moss",
+    "v3_wet_root",
+    "v3_wet_stone"
+  ],
+  "textureCount": 9,
+  "textureBytes": 2135294,
+  "sizeMeters": [
+    4.04,
+    0.6301,
+    4.04
+  ],
+  "bboxMin": [
+    -2.02,
+    0.0158,
+    -2.02
+  ],
+  "bboxMax": [
+    2.02,
+    0.6459,
+    2.02
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "v3_collapse_oculus",
+  "file": "props/v3_collapse_oculus.glb",
+  "category": "props",
+  "desc_ja": "4.04m角、厚さ最大0.65mの独立した天井崩落孔縁。公称直径2.5mの不規則な実開口、広い石破断面、薄い土根層、連続した上面苔と付着する垂れ根。中央を面で埋めず、半径1.05m以上の空洞を三角形投影で検査。stone/moss/barkの3材質、2500tris以下。配置Y3.5m、外周は4m vaultへ片側2cm重ねる。新規単体asset、旧素材は変更しない。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "46f218a43b333ead92e6783a2b7104191a6a71b5",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/v3_collapse_oculus.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v3_collapse_oculus/front.png",
+    "renders/v3_collapse_oculus/side.png",
+    "renders/v3_collapse_oculus/angle.png",
+    "renders/v3_collapse_oculus/top.png"
+  ]
+}

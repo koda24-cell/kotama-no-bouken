@@ -1,0 +1,52 @@
+{
+  "bytes": 2300740,
+  "sha256": "55afb554b94e205e142a748b9d45711ce9fb571a16a20cb106df9383cad5c950",
+  "tris": 1556,
+  "verts": 3142,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "v3_deep_moss",
+    "v3_wet_root",
+    "v3_wet_stone"
+  ],
+  "textureCount": 9,
+  "textureBytes": 2135294,
+  "sizeMeters": [
+    2.3914,
+    0.8189,
+    0.9656
+  ],
+  "bboxMin": [
+    -1.1886,
+    0.0,
+    -0.5018
+  ],
+  "bboxMax": [
+    1.2028,
+    0.8189,
+    0.4639
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "v3_root_rubble",
+  "file": "props/v3_root_rubble.glb",
+  "category": "props",
+  "desc_ja": "約2.4×1.0×0.8m、底面接地の根付き崩落石材。大破片7塊と角形小礫12、巻き根と頂面の苔。角張った破断面、写真CC0既存PBR3材質、2500tris以下。壁・柱・岸際のpocket用。中央の歩行帯へ置かず原点は地面中央。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "bcce42cddda7f7af60d645660c3452fba2efee5d",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/v3_root_rubble.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v3_root_rubble/front.png",
+    "renders/v3_root_rubble/side.png",
+    "renders/v3_root_rubble/angle.png",
+    "renders/v3_root_rubble/top.png"
+  ]
+}

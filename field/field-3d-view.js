@@ -258,7 +258,7 @@ async function buildFloor() {
     try {
       const { buildSacredForestTrial } = await import('./field-3d-b1-sacred-trial.js?v=20261117-1');
       const trial = await buildSacredForestTrial({ world: g.world, area: a,
-        layoutUrl: new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-trial.json', import.meta.url).href });
+        layoutUrl: new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v3.json', import.meta.url).href });
       if (token !== g.buildToken || curKey() !== key) { trial.dispose(); if (token === g.buildToken) g.buildingKey = ''; return; }
       g.sacredTrial = trial; sacred = true;
       applyEnv(area, trial.env); g.camera.far = trial.far; g.camera.updateProjectionMatrix();
@@ -303,6 +303,9 @@ async function buildFloor() {
   } else {
     // Keep the existing water presentation and interaction objects.
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) if (ch(tx,ty) === '~') addWater(X(tx),Z(ty));
+    try { if (g.sacredTrial.info().presentationRevision === 'closed_ruins_v3') await g.sacredTrial.attachWater?.(g.world.children.filter(o => o.isMesh && o.geometry === waterGeo)); }
+    catch (error) { console.warn('[field-3d] 地下水の試験材を読めないため従来の水面を使います:', error); }
+    if (token !== g.buildToken || curKey() !== key) return;
   }
   // 物（宝箱・採集・灯・NPC・イベント・仕掛け・階段など）
   for (const o of a.objects) {
@@ -569,6 +572,7 @@ function frame() {
   for (const e of g.entries) syncEntry(e);
   syncFoes(now);
   updateCamera(dt);
+  g.sacredTrial?.update?.(now / 1000);
   if (g.theme?.area === 4 && g.envArea === 4) g.theme.tick(dt, now, g.camera.position);
   updatePool(g.camera.position, g.envArea === 4);
   if (g.theme && g.envArea === g.theme.area && g.envArea !== 4) g.theme.tick(dt, now, g.camera.position);

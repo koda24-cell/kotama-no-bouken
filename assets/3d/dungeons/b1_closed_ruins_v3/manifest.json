@@ -1,0 +1,325 @@
+{
+  "revision": 3,
+  "status": "candidate_pending_user_art_review",
+  "count": 5,
+  "original17Unchanged": true,
+  "individualReimportViews": 20,
+  "geometryTriangles": 6694,
+  "production": "Each asset generated in a separate sequential Blender invocation; actual reimported GLB views reviewed",
+  "assets": [
+    {
+      "bytes": 2305352,
+      "sha256": "fc2f2b724b9b61aef30f6e055eced1d25dd630771736e0158aea86767d154797",
+      "tris": 2004,
+      "verts": 3174,
+      "meshes": 3,
+      "drawCalls": 3,
+      "materials": [
+        "v3_deep_moss",
+        "v3_wet_root",
+        "v3_wet_stone"
+      ],
+      "textureCount": 9,
+      "textureBytes": 2135294,
+      "sizeMeters": [
+        4.04,
+        0.6301,
+        4.04
+      ],
+      "bboxMin": [
+        -2.02,
+        0.0158,
+        -2.02
+      ],
+      "bboxMax": [
+        2.02,
+        0.6459,
+        2.02
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "v3_collapse_oculus",
+      "file": "props/v3_collapse_oculus.glb",
+      "category": "props",
+      "desc_ja": "4.04m角、厚さ最大0.65mの独立した天井崩落孔縁。公称直径2.5mの不規則な実開口、広い石破断面、薄い土根層、連続した上面苔と付着する垂れ根。中央を面で埋めず、半径1.05m以上の空洞を三角形投影で検査。stone/moss/barkの3材質、2500tris以下。配置Y3.5m、外周は4m vaultへ片側2cm重ねる。新規単体asset、旧素材は変更しない。",
+      "approvalStatus": "pending_visual_review",
+      "sourceCommit": "46f218a43b333ead92e6783a2b7104191a6a71b5",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/v3_collapse_oculus.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/v3_collapse_oculus/front.png",
+        "renders/v3_collapse_oculus/side.png",
+        "renders/v3_collapse_oculus/angle.png",
+        "renders/v3_collapse_oculus/top.png"
+      ],
+      "sourceSha256": "6496ab467e7c85e44cfba86c7d7d7f7802662ec43512b96b29e91e4476e790b0",
+      "renderSHA256": {
+        "renders/v3_collapse_oculus/front.png": "7144602ec570bbea3a822b045cfc3832d31112319bd9a2da69830decfc0daf90",
+        "renders/v3_collapse_oculus/side.png": "99153fff91a2239858b64f696431a75c4676524c047169499cd4557792f5fe42",
+        "renders/v3_collapse_oculus/angle.png": "bfde2e55c29f9120666e825945aa525cefbdfdf9b027d593170073418a1493c0",
+        "renders/v3_collapse_oculus/top.png": "3d5b8681d9e9dd818cffac7db03fb216c6f64ae75d61f45946fb6f4a1fd3afd8"
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_collapse_oculus.py",
+      "buildScriptSha256": "467be85ce63ae3c3235221ffad57c99df925fe1f78f5ab67310463546ec7d619",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
+    },
+    {
+      "bytes": 2251616,
+      "sha256": "2506dfd653b47abf6d0d0b453c1b97c80ee14c9a2a720e215b2843d07d51d39a",
+      "tris": 962,
+      "verts": 2192,
+      "meshes": 3,
+      "drawCalls": 3,
+      "materials": [
+        "v3_deep_moss",
+        "v3_wet_root",
+        "v3_wet_stone"
+      ],
+      "textureCount": 9,
+      "textureBytes": 2135294,
+      "sizeMeters": [
+        3.38,
+        0.7485,
+        0.9353
+      ],
+      "bboxMin": [
+        -1.7885,
+        -0.48,
+        -0.2489
+      ],
+      "bboxMax": [
+        1.5916,
+        0.2685,
+        0.6864
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "v3_eroded_bank",
+      "file": "props/v3_eroded_bank.glb",
+      "category": "props",
+      "desc_ja": "幅4m以内の非対称な侵食岸。原点=地表の岸中心。Blender-Xは岸沿い、-Yが水側（glTF+Z）、+Yが陸側（glTF-Z）。水側最大0.75m/陸側最大0.35m、下0.5m/上0.28m。大小3つの角形破断岩と偏った小礫、途切れた泥苔棚、水面下まで続く細根。水がworld+X側ならrotationY=+pi/2、-X側=-pi/2、+Z側=0、-Z側=pi。単純な4m棒や均一玉石列ではなく、隙間を残して配置する。",
+      "approvalStatus": "pending_visual_review",
+      "sourceCommit": "b352d152eaea1651e86f415a32de112a48936f09",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/v3_eroded_bank.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/v3_eroded_bank/front.png",
+        "renders/v3_eroded_bank/side.png",
+        "renders/v3_eroded_bank/angle.png",
+        "renders/v3_eroded_bank/top.png"
+      ],
+      "sourceSha256": "bf26533332dd9ad6117d8eae0920e612f902a34623413e8d5feccf907490980a",
+      "renderSHA256": {
+        "renders/v3_eroded_bank/front.png": "076c8995442423b9f68ea69cbba30c61598b63548fb3eecbdfa09485411b53ca",
+        "renders/v3_eroded_bank/side.png": "77e57dd1e260bfdacb8c6e824531a4fb8c625105892ebb1ca2fcdf46ff842be0",
+        "renders/v3_eroded_bank/angle.png": "a41aa5aec0ddd4ccc2edd84d1d7a4d024ae75691f41e82f37e4675c556b451fa",
+        "renders/v3_eroded_bank/top.png": "dc827ae3854222d1e77b5c20bb2e0a4d95b473b2a06bbf4588deab0392ca10b2"
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_eroded_bank.py",
+      "buildScriptSha256": "d203357cba228741cdd0acc8338395891d70e427ee6f38bdc3013967b18bb786",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
+    },
+    {
+      "bytes": 2996972,
+      "sha256": "598f53fc672756154a551876368624c5c26c338dd2386e27e74a3f671aedd0ef",
+      "tris": 652,
+      "verts": 1754,
+      "meshes": 2,
+      "drawCalls": 2,
+      "materials": [
+        "v3_feathered_moss",
+        "v3_wet_stone"
+      ],
+      "textureCount": 6,
+      "textureBytes": 2905046,
+      "sizeMeters": [
+        3.5402,
+        0.0404,
+        2.3992
+      ],
+      "bboxMin": [
+        -1.6957,
+        0.007,
+        -1.0667
+      ],
+      "bboxMax": [
+        1.8445,
+        0.0474,
+        1.3325
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "v3_moss_veil",
+      "file": "props/v3_moss_veil.glb",
+      "category": "props",
+      "desc_ja": "幅約3.8mの不定形苔cap。4m床境界を跨いで薄く重ねる。自作形状、既存CC0土写真から緑色調派生。歩行面高さ最大6cm未満。",
+      "approvalStatus": "pending_visual_review",
+      "sourceCommit": "49cf9659016760613b21cee31c8bd041fbabec88",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/v3_moss_veil.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/v3_moss_veil/front.png",
+        "renders/v3_moss_veil/side.png",
+        "renders/v3_moss_veil/angle.png",
+        "renders/v3_moss_veil/top.png"
+      ],
+      "sourceSha256": "100033fe02db8637fdf918e7a22d663dc48b865047dfbe55d855cfdf3adb26bf",
+      "renderSHA256": {
+        "renders/v3_moss_veil/front.png": "ae850355093cbbdeeb2a6d4723f5594ce2f39bfe437df41e9c357676457c1cbe",
+        "renders/v3_moss_veil/side.png": "c235d053282c078f2ef6694d8f79434f5d9d6eb2ee1b1b1fe23ebb720896df4d",
+        "renders/v3_moss_veil/angle.png": "39d6424a9d17691b0fab67fb0577654ccecb4b065034f4fd8ae14a1cc2512698",
+        "renders/v3_moss_veil/top.png": "e1e991ad458cfa52af604d4589d5b9d8d81246e4969c7ae8ef91e363a9e14282"
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_moss_veil.py",
+      "buildScriptSha256": "71f71a04ecb3bc0acba647a086d8aa4b36f70369f6e57c20711201605aaa00a0",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
+    },
+    {
+      "bytes": 2300740,
+      "sha256": "55afb554b94e205e142a748b9d45711ce9fb571a16a20cb106df9383cad5c950",
+      "tris": 1556,
+      "verts": 3142,
+      "meshes": 3,
+      "drawCalls": 3,
+      "materials": [
+        "v3_deep_moss",
+        "v3_wet_root",
+        "v3_wet_stone"
+      ],
+      "textureCount": 9,
+      "textureBytes": 2135294,
+      "sizeMeters": [
+        2.3914,
+        0.8189,
+        0.9656
+      ],
+      "bboxMin": [
+        -1.1886,
+        0.0,
+        -0.5018
+      ],
+      "bboxMax": [
+        1.2028,
+        0.8189,
+        0.4639
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "v3_root_rubble",
+      "file": "props/v3_root_rubble.glb",
+      "category": "props",
+      "desc_ja": "約2.4×1.0×0.8m、底面接地の根付き崩落石材。大破片7塊と角形小礫12、巻き根と頂面の苔。角張った破断面、写真CC0既存PBR3材質、2500tris以下。壁・柱・岸際のpocket用。中央の歩行帯へ置かず原点は地面中央。",
+      "approvalStatus": "pending_visual_review",
+      "sourceCommit": "bcce42cddda7f7af60d645660c3452fba2efee5d",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/v3_root_rubble.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/v3_root_rubble/front.png",
+        "renders/v3_root_rubble/side.png",
+        "renders/v3_root_rubble/angle.png",
+        "renders/v3_root_rubble/top.png"
+      ],
+      "sourceSha256": "598021594bf61cef0add2cc85d31da6a1d8d428b81d343336aae4597d3081b2e",
+      "renderSHA256": {
+        "renders/v3_root_rubble/front.png": "fd243cf638e0cbdf9f547947ca91be71d7033044e8ceeaff13975c3055f358b8",
+        "renders/v3_root_rubble/side.png": "c6a2e5953bed5bed1d90f4982ab8fd3c12cf80183eedf6ff9889c7809a774705",
+        "renders/v3_root_rubble/angle.png": "b757aa9a26bf6b42cc8df4981a9d77a04f9181ac225363b8d49c68e138248499",
+        "renders/v3_root_rubble/top.png": "65547b7cdef7d539998a9d21dd2d086a09dcc60818b32c8293acce2361757468"
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_root_rubble.py",
+      "buildScriptSha256": "4bb8802bd141c353e447c47bf52d5b3ae9acb67b07fb007ef97ec95da6575286",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
+    },
+    {
+      "bytes": 846040,
+      "sha256": "c591fae01ce3612b40842619734ce19801e099d0e65cd091148dfb7d431a2679",
+      "tris": 1520,
+      "verts": 3232,
+      "meshes": 3,
+      "drawCalls": 3,
+      "materials": [
+        "v3_fresh_leaf",
+        "v3_shade_leaf",
+        "v3_wet_root"
+      ],
+      "textureCount": 9,
+      "textureBytes": 676343,
+      "sizeMeters": [
+        1.3541,
+        0.3255,
+        1.1429
+      ],
+      "bboxMin": [
+        -0.6212,
+        0.0062,
+        -0.629
+      ],
+      "bboxMax": [
+        0.7329,
+        0.3317,
+        0.5139
+      ],
+      "extensions": [],
+      "animations": [],
+      "pointLights": 0,
+      "emitters": 0,
+      "valid": true,
+      "zeroTangentFallbackVertices": 0,
+      "id": "v3_shade_understory",
+      "file": "props/v3_shade_understory.glb",
+      "category": "props",
+      "desc_ja": "低い小シダ・カヤ・広葉の混生株。高さ約0.3m、密度用の低負荷実形状。方向/scaleを変え根際と壁際の苔に重ねる。",
+      "approvalStatus": "pending_visual_review",
+      "sourceCommit": "796dcd358334fd7f0bf6377d6a58dfb07494c02a",
+      "workflowRun": null,
+      "verificationEnvironment": "Local Blender 5.3.0",
+      "source": "sources/v3_shade_understory.blend",
+      "renderedFrom": "reimported GLB",
+      "renders": [
+        "renders/v3_shade_understory/front.png",
+        "renders/v3_shade_understory/side.png",
+        "renders/v3_shade_understory/angle.png",
+        "renders/v3_shade_understory/top.png"
+      ],
+      "sourceSha256": "6c177ad8815724fa4362250e29ec1f851392dd3bcdeed07364d2bd96f78299d3",
+      "renderSHA256": {
+        "renders/v3_shade_understory/front.png": "96d29c2c5b3cbe4327e0059314a0addd0758ac7ea78b95c8b9ee2d83d693151f",
+        "renders/v3_shade_understory/side.png": "c911e651c3d95d7011fff4e0e16992d79563c840c03b07b3143c5437b58cca57",
+        "renders/v3_shade_understory/angle.png": "419d18a43b14882a7e47d464454a6e8caa76caf16b3ee798b5897b3c883b08d1",
+        "renders/v3_shade_understory/top.png": "08098de225c9f7e426d99e89abbc7158b7483abb7322dd06196d816d726c5dee"
+      },
+      "buildScript": "tools/f1-closed-ruins-v3/assets/build_shade_understory.py",
+      "buildScriptSha256": "d9cfacd3a55a0a58110d71389e56801645f4d5737cb1feefc5ae26c0f515ad64",
+      "commonAdapterSha256": "07216e5e5b4b3be70891b1dacbfd9c632d4c90214f3e26c7a04cb66964fa6d11"
+    }
+  ],
+  "verification": {
+    "formatErrors": 0,
+    "formatWarnings": 0,
+    "packedSourceReopen": true
+  }
+}

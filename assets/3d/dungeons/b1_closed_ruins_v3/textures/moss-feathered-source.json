@@ -1,0 +1,8 @@
+{
+  "source": "moss_color.jpg",
+  "sourceSha256": "d1973f079114535d794cd7f5fe2772b34a291c5f7a623526a8a0bdffac233490",
+  "file": "moss_feathered.png",
+  "sha256": "42aac847a152d856bacd4e7a4cad0ca1cfbe1278dcc7fcca5780fabafb9c2f9d",
+  "mask": "Original seeded multi-scale Gaussian field and radial feather; threshold 0.45; RGB preserves recorded CC0 photo derivative",
+  "license": "RGB source CC0-1.0; mask original"
+}

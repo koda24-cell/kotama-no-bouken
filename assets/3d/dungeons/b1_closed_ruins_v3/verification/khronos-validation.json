@@ -1,0 +1,707 @@
+{
+  "validator": "2.0.0-dev.3.10",
+  "source": "https://github.com/KhronosGroup/glTF-Validator",
+  "errors": 0,
+  "warnings": 0,
+  "reports": [
+    {
+      "id": "v3_collapse_oculus",
+      "sha256": "fc2f2b724b9b61aef30f6e055eced1d25dd630771736e0158aea86767d154797",
+      "report": {
+        "uri": "props/v3_collapse_oculus.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-17T04:50:25.262Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 2299680
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 1024,
+                "height": 1024,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 3,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 3,
+          "totalVertexCount": 3174,
+          "totalTriangleCount": 2004,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "v3_eroded_bank",
+      "sha256": "2506dfd653b47abf6d0d0b453c1b97c80ee14c9a2a720e215b2843d07d51d39a",
+      "report": {
+        "uri": "props/v3_eroded_bank.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-17T04:50:25.375Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 2246292
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 1024,
+                "height": 1024,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 3,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 3,
+          "totalVertexCount": 2192,
+          "totalTriangleCount": 962,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "v3_moss_veil",
+      "sha256": "598f53fc672756154a551876368624c5c26c338dd2386e27e74a3f671aedd0ef",
+      "report": {
+        "uri": "props/v3_moss_veil.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-17T04:50:25.464Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 2993156
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 1024,
+                "height": 1024,
+                "format": "rgba",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 2,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 2,
+          "totalVertexCount": 1754,
+          "totalTriangleCount": 652,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "v3_root_rubble",
+      "sha256": "55afb554b94e205e142a748b9d45711ce9fb571a16a20cb106df9383cad5c950",
+      "report": {
+        "uri": "props/v3_root_rubble.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-17T04:50:25.537Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 2295456
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 1024,
+                "height": 1024,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 3,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 3,
+          "totalVertexCount": 3142,
+          "totalTriangleCount": 1556,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    },
+    {
+      "id": "v3_shade_understory",
+      "sha256": "c591fae01ce3612b40842619734ce19801e099d0e65cd091148dfb7d431a2679",
+      "report": {
+        "uri": "props/v3_shade_understory.glb",
+        "mimeType": "model/gltf-binary",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "validatedAt": "2026-11-17T04:50:25.574Z",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [],
+          "truncated": false
+        },
+        "info": {
+          "version": "2.0",
+          "generator": "Khronos glTF Blender I/O v5.3.43",
+          "resources": [
+            {
+              "pointer": "/buffers/0",
+              "mimeType": "application/gltf-buffer",
+              "storage": "glb",
+              "byteLength": 840608
+            },
+            {
+              "pointer": "/images/0",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/1",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/2",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/3",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/4",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/5",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 256,
+                "height": 256,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/6",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/7",
+              "mimeType": "image/jpeg",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "bits": 8
+              }
+            },
+            {
+              "pointer": "/images/8",
+              "mimeType": "image/png",
+              "storage": "buffer-view",
+              "image": {
+                "width": 512,
+                "height": 512,
+                "format": "rgb",
+                "primaries": "srgb",
+                "transfer": "srgb",
+                "bits": 8
+              }
+            }
+          ],
+          "animationCount": 0,
+          "materialCount": 3,
+          "hasMorphTargets": false,
+          "hasSkins": false,
+          "hasTextures": true,
+          "hasDefaultScene": true,
+          "drawCallCount": 3,
+          "totalVertexCount": 3232,
+          "totalTriangleCount": 1520,
+          "maxUVs": 1,
+          "maxInfluences": 0,
+          "maxAttributes": 4
+        }
+      }
+    }
+  ],
+  "scope": "Actual GLB format validation; not art approval"
+}

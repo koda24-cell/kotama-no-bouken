@@ -160,14 +160,19 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
   const [layout, manifest] = await Promise.all([fetchJSON(layoutAddress), fetchJSON(new URL('../manifest.json', layoutAddress))]);
   validateContract(layout);
   const before = verifyArea(layout, area);
+  const closedV3 = layout.presentationRevision === 'closed_ruins_v3';
+  const revisionSources = layout.revisionSources ?? [];
+  check(Array.isArray(revisionSources) && revisionSources.length <= 64
+    && (closedV3 || revisionSources.length === 0), 'unexpected revision sources');
   check(manifest.count === 17 && manifest.assets?.length === 17 && new Set(manifest.assets.map(a => a.id)).size === 17, 'unexpected asset manifest');
   check(await digest(new TextEncoder().encode(stable(before.map))) === layout.beforeFingerprint.mapSha256, 'stored map fingerprint mismatch');
   const expected = new Map(), byId = new Map(), records = new Map(), retained = new Set();
   const batches = [], ownGeometry = new Set(), root = new THREE.Group();
   root.name = 'f1-sacred-forest-opt-in-trial';
-  let disposed = false;
+  let disposed = false, water = null, waterPromise = null;
   function dispose() {
-    if (disposed) return; disposed = true; root.removeFromParent();
+    if (disposed) return; disposed = true;
+    water?.dispose(); water = null; root.removeFromParent();
     for (const batch of batches) batch.dispose(); // Instance buffers only; cached prototypes remain shared.
     for (const g of ownGeometry) g.dispose();
     root.clear();
@@ -179,10 +184,25 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
       fileURL(file); check(isHash(a.sha256), 'missing manifest SHA');
       expected.set(file, a.sha256); byId.set(a.id, { ...a, file });
     }
+    const revisionIds = new Set();
+    for (const a of revisionSources) {
+      check(a && typeof a.id === 'string' && /^[a-zA-Z0-9_-]+$/.test(a.id)
+        && !byId.has(a.id) && !revisionIds.has(a.id), 'duplicate/invalid revision asset ID');
+      fileURL(a.file);
+      check(isHash(a.sha256) && !expected.has(a.file), 'duplicate/invalid revision source');
+      revisionIds.add(a.id); expected.set(a.file, a.sha256); byId.set(a.id, { ...a });
+    }
     for (const row of layout.ceilingPlacements) {
-      check(row.file === LEGACY_CEILING && row.reuseExisting === true && isHash(row.sourceSha256), 'legacy ceiling must be explicitly hash-pinned');
-      if (expected.has(row.file)) check(expected.get(row.file) === row.sourceSha256, 'conflicting ceiling SHA');
-      expected.set(row.file, row.sourceSha256);
+      if (row.file === LEGACY_CEILING) {
+        check(row.reuseExisting === true && isHash(row.sourceSha256), 'legacy ceiling must be explicitly hash-pinned');
+        if (expected.has(row.file)) check(expected.get(row.file) === row.sourceSha256, 'conflicting ceiling SHA');
+        expected.set(row.file, row.sourceSha256);
+      } else {
+        const source = byId.get(row.assetId);
+        check(closedV3 && revisionIds.has(row.assetId) && source?.file === row.file
+          && isHash(row.sourceSha256) && source.sha256 === row.sourceSha256,
+        'revision ceiling must match an explicit revision source');
+      }
     }
     // Bounded parallel loading verifies every candidate source, even an unused asset.
     const queue = [...expected]; let next = 0;
@@ -249,10 +269,22 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
       batch.instanceMatrix.needsUpdate = true; batch.computeBoundingBox(); batch.computeBoundingSphere();
       batch.userData.f1SacredTrial = true; root.add(batch); batches.push(batch);
     }
-    const sun = new THREE.DirectionalLight(0xffe2b8, 2.0);
+    const sun = new THREE.DirectionalLight(closedV3 ? 0xb7c8a5 : 0xffe2b8, closedV3 ? 1.05 : 2.0);
     sun.name = 'f1-sacred:daylight'; sun.position.set(20, 90, -30); sun.target.position.set(52, 0, 32);
     root.add(sun, sun.target);
+    const lightPockets = closedV3 ? (layout.closedRuinsV3?.lightPockets ?? []) : [];
+    check(Array.isArray(lightPockets) && lightPockets.length <= 8, 'invalid light pockets');
+    for (const [i, pocket] of lightPockets.entries()) {
+      check(pocket && Array.isArray(pocket.position) && pocket.position.length === 3 && pocket.position.every(Number.isFinite)
+        && Number.isInteger(pocket.color) && pocket.color >= 0 && pocket.color <= 0xffffff
+        && Number.isFinite(pocket.intensity) && pocket.intensity > 0 && pocket.intensity <= 30
+        && Number.isFinite(pocket.distance) && pocket.distance > 0 && pocket.distance <= 64, 'invalid light pocket');
+      const light = new THREE.PointLight(pocket.color, pocket.intensity, pocket.distance, 2);
+      light.name = 'f1-closed:light-pocket-' + i; light.position.set(...pocket.position); root.add(light);
+    }
     const info = { scope: 'opt_in_visual_game_trial', schemaVersion: layout.schemaVersion, capabilities: [...CAPABILITIES],
+      presentationRevision: layout.presentationRevision ?? null, revisionSourceCount: revisionSources.length,
+      roof: closedV3 ? layout.closedRuinsV3?.roof ?? null : null, lightPockets: lightPockets.length,
       target: layout.target, placements: ids.size, ...counters, profileCounts, soilSurfaceFloors: profileCounts.soil_surface_only || 0,
       batches: batches.length, instances, instanceTriangles, spatialBucketMeters: 16, sourceCount: records.size,
       sourceSHA: Object.fromEntries([...records].map(([file, r]) => [file, r.sha256])), sourceHashesVerified: true,
@@ -260,7 +292,27 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
       foliageAlphaCutoffPreserved: true, realDevicePerformanceApproved: false };
     verifyArea(layout, area); // A stale native floor never receives a partially built trial.
     world.add(root);
-    return { root, env: { background: 0x9eafa3, fog: { color: 0x8fa096, density: .009 },
-      hemi: { sky: 0xc0d2bb, ground: 0x3d4432, high: 1.0, low: 1.2 } }, far: 96, info: () => ({ ...info }), dispose };
+    async function attachWater(meshes) {
+      check(closedV3, 'water attachment requires closed ruins v3');
+      if (disposed) return null;
+      if (!waterPromise) waterPromise = (async () => {
+        const { createClosedWaterV3 } = await import('./f1-closed-water-v3.js');
+        if (disposed) return null;
+        const created = await createClosedWaterV3({ meshes, root, map: before.map });
+        if (disposed) { created.dispose(); return null; }
+        water = created;
+        return water.info();
+      })();
+      return waterPromise;
+    }
+    const env = closedV3
+      ? { background: 0x101f18, fog: { color: 0x172c20, density: .045 },
+        hemi: { sky: 0x91a58c, ground: 0x263426, high: .95, low: 1.25 } }
+      : { background: 0x9eafa3, fog: { color: 0x8fa096, density: .009 },
+        hemi: { sky: 0xc0d2bb, ground: 0x3d4432, high: 1.0, low: 1.2 } };
+    return { root, env, far: closedV3 ? 40 : 96,
+      info: () => ({ ...info, water: water?.info() ?? null }), attachWater,
+      update: seconds => { if (!disposed && Number.isFinite(seconds)) water?.update(seconds); }, dispose };
+
   } catch (error) { dispose(); throw error; }
 }

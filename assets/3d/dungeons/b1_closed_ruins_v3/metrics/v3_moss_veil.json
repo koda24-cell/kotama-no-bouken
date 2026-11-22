@@ -1,0 +1,51 @@
+{
+  "bytes": 2996972,
+  "sha256": "598f53fc672756154a551876368624c5c26c338dd2386e27e74a3f671aedd0ef",
+  "tris": 652,
+  "verts": 1754,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "v3_feathered_moss",
+    "v3_wet_stone"
+  ],
+  "textureCount": 6,
+  "textureBytes": 2905046,
+  "sizeMeters": [
+    3.5402,
+    0.0404,
+    2.3992
+  ],
+  "bboxMin": [
+    -1.6957,
+    0.007,
+    -1.0667
+  ],
+  "bboxMax": [
+    1.8445,
+    0.0474,
+    1.3325
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "v3_moss_veil",
+  "file": "props/v3_moss_veil.glb",
+  "category": "props",
+  "desc_ja": "幅約3.8mの不定形苔cap。4m床境界を跨いで薄く重ねる。自作形状、既存CC0土写真から緑色調派生。歩行面高さ最大6cm未満。",
+  "approvalStatus": "pending_visual_review",
+  "sourceCommit": "49cf9659016760613b21cee31c8bd041fbabec88",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/v3_moss_veil.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v3_moss_veil/front.png",
+    "renders/v3_moss_veil/side.png",
+    "renders/v3_moss_veil/angle.png",
+    "renders/v3_moss_veil/top.png"
+  ]
+}

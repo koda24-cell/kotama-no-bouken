@@ -1,0 +1,10 @@
+{
+  "license": "CC0-1.0",
+  "source": "assets/3d/dungeons/b1_sacred_forest_candidates/textures/soil_color.jpg",
+  "sourcePage": "https://polyhaven.com/a/forrest_ground_01",
+  "sourceReceipt": "../b1_sacred_forest_candidates/textures/texture-sources.json",
+  "sourceSha256": "662322224fc815a5648492dd60d80fbded1f65eca10316cad8f1336abd8bde99",
+  "derivation": "luminance-preserving dark moss palette, not a new moss scan",
+  "file": "moss_color.jpg",
+  "sha256": "d1973f079114535d794cd7f5fe2772b34a291c5f7a623526a8a0bdffac233490"
+}
