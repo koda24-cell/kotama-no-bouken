@@ -145,6 +145,18 @@ jobs:
         run: |
           python3 tools/3d_checkpoint/stitch_half_frame.py --left render-output/volume-combined/left.png --right render-output/volume-combined/right.png --output render-output/volume-combined/front.png
           python3 tools/3d_checkpoint/seam_qa.py --stitched render-output/volume-combined/front.png --reference reference/front.png --report render-output/volume-combined/seam_qa.json
+      - name: Preserve actual stitched PNG and seam report on QA failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: volume-seam-diagnostics-NOT-APPROVED-${{ github.run_id }}
+          path: |
+            render-output/volume-combined/front.png
+            render-output/volume-combined/left.png
+            render-output/volume-combined/right.png
+            render-output/volume-combined/seam_qa.json
+          retention-days: 14
+          if-no-files-found: warn
       - name: Pack and scan final checkpoint
         env:
           COMMIT: ${{ github.sha }}
