@@ -362,3 +362,10 @@
 - 実装: `field/b4-fx12.js` の `flipbook(sites, {sheet, cols, rows, fps})`。InstancedBufferGeometry 1 つで複数の炎を描き、時間＋インスタンスごとの seed でコマを選ぶ。縦軸固定のビルボード、カメラ 1.6 m 以内でフェード。
 - 素材: OpenGameArt の CC0 連番（Mikodrak fire 1b/1f、animated flame sheet、tauran flame）を Actions で取得し、Pillow で 1 枚のアトラスに詰め直した `assets/vfx/flipbooks/`（出典・ライセンスは manifest.json）。
 - 検証: ローカル SwiftShader 撮影と `tools/b4-3d/game-test.cjs`（GPU 資源の増加なし・dispose 1 回）。実機での見た目は未確認。**NOT_APPROVED**。
+
+### 一層閉鎖神域V3: 最終ゲーム・実天井・共通監査の完了追記
+- 制作PR #465。固定入力で実ゲームfresh3条件/18項目がpass、実画像16枚（初回9画像は入力/PNG SHA一致で再利用、機能はfreshから再実行）。水の固定250ms待ち誤判定は実frame時計を待つハーネスへ修正し、失敗履歴も保存。page/console errors0、WebGL upload警告0。通常preloadや外部font接続問題は別記録。
+- development2572845とのマージ後もfresh3条件/18項目pass、追加実画面2枚。元17GLB・新5GLBの形状と画像不変。証跡はPR465の docs/reviews/f1-closed-v3-current-development/ と f1-closed-ruins-v3-game/。
+- 天井は実GLB三角形rayで274歩行床×9=2466点全hit、指定3開口の中心/周辺は非hit。配置数だけの屋根主張ではない。proof: docs/reviews/f1-closed-ruins-v3/roof-ray-coverage.json。壁/木/alpha/実画面の美術承認は別。
+- 共有Blender5.3+ClamAV/security/reimportと構造監査の両jobが成功: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45051036648 。既存出力の再import/packed画像decodeと原本/従来20PNGのhash不変archiveを行うrunで、新規20レンダーではない。入力/出力scanの各step成功をGitHub API receiptへ記録。rawログdownloadは環境からHTTP403で、artifact内容を取得したとは扱わない。
+- 同構造監査のローカル結果は5GLB/6694tri/14primitive instances、全てfoliage-or-transparency review分類。汎用Auto Review run45051033409はstartup_failure、そこからのLOD生成成功やゲーム自動最適化は未実証。元GLBを自動decimate/置換しない。実機FPS/全GPU/長期進行/最終美術承認/通常main公開は範囲外。
