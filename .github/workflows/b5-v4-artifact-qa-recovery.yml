@@ -1,0 +1,71 @@
+name: B5 V4 recover QA from saved artifact without Blender rerender
+on:
+  push:
+    branches: [feature/b5-v4-artifact-qa-recovery-20261123]
+    paths:
+      - '.github/workflows/b5-v4-artifact-qa-recovery.yml'
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+jobs:
+  recover-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover previously generated V4 artifact (no Blender render)
+        uses: actions/download-artifact@v4
+        with:
+          name: b5-knight-helmet-body-layout-v4-NOT-APPROVED
+          run-id: 45040178679
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: recovered
+      - name: Update ClamAV and scan recovered files before validation
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan recovered qa/security/recovered-input.log
+      - name: Verify saved V4 GLB PNG hashes and manifest
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, struct
+          from pathlib import Path
+          from PIL import Image, ImageStat
+          roots=list(Path('recovered').rglob('manifest.json'))
+          assert len(roots)==1, roots
+          p=roots[0].parent
+          d=json.loads(roots[0].read_text())
+          assert d['approval']=='NOT_APPROVED' and not d['game_integrated']
+          assert len(d['views'])==8 and d['part_count']>=30
+          assert d['input_assets']['V4_neck_and_hip']['count']==5
+          assert d['input_assets']['V4_neck_and_hip']['source_meshes_unchanged'] is True
+          assert 0.06 < d['input_assets']['V4_neck_and_hip']['source_gap_z_m'] < 0.08
+          assert d['metal_components']==6
+          for filename, expected in d['files_sha256'].items():
+              actual=hashlib.sha256((p/filename).read_bytes()).hexdigest()
+              assert actual==expected, filename
+          glb=(p/'knight_helmet_body_layout_v4.glb').read_bytes()
+          assert glb[:4]==b'glTF'
+          assert struct.unpack_from('<I',glb,8)[0]==len(glb)
+          for view in d['views']:
+              im=Image.open(p/(view+'.png')).convert('RGB')
+              assert im.size==(800,800) and max(ImageStat.Stat(im).stddev)>3, view
+          print('ARTIFACT_ONLY_QA_PASS=true')
+          print('BLENDER_RERENDER=false')
+          print('NOTE: original input GLB cross-check requires separate source artifacts')
+          PY
+      - name: Scan validated outputs
+        run: bash tools/security/clamav_scan_gate.sh scan recovered qa/security/recovered-output.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b5-v4-RECOVERED-QA-NOT-APPROVED-${{ github.run_id }}
+          path: |
+            recovered/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: error
