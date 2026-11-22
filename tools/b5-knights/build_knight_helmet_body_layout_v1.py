@@ -165,7 +165,9 @@ reports["V3_side_joint_upgrade"]={"count":len(v3_added),"side_plates":2,"pivot_h
 
 # Optional original complete stone sentinel V14 is a distinct comparison reference.
 # It is NOT part of the metal armor GLB; arms/legs/weapon from statue are not claimed as fitted metal armor.
-reference_path=Path("inputs/sentinel/render-output/b5-knights/sentinel_v14/sentinel_v14.glb")
+reference_matches=list(Path("inputs/sentinel").rglob("sentinel_v14.glb"))
+assert len(reference_matches)==1,("Unexpected sentinel reference inventory", [str(p) for p in reference_matches])
+reference_path=reference_matches[0]
 assert reference_path.exists(),reference_path
 reference_hash=hashlib.sha256(reference_path.read_bytes()).hexdigest()
 previous={o.name for o in bpy.data.objects}
