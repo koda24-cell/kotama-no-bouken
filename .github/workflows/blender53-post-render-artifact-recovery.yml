@@ -1,0 +1,69 @@
+name: Blender 5.3 post-render artifact QA recovery
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Completed run containing NOT_APPROVED render artifact"
+        required: true
+        type: string
+      artifact_name:
+        description: "Exact artifact name from source run"
+        required: true
+        type: string
+      glb_name:
+        description: "GLB filename within manifest directory"
+        required: true
+        type: string
+      width:
+        description: "Expected PNG width"
+        required: true
+        type: number
+      height:
+        description: "Expected PNG height"
+        required: true
+        type: number
+permissions:
+  actions: read
+  contents: read
+  packages: read
+jobs:
+  qa-only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download existing artifact; never rerender
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          run-id: ${{ inputs.source_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: recovered
+      - name: Scan recovered files before inspection
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan recovered qa/security/recovered-input.log
+      - name: Validate original PNG and GLB hashes
+        env:
+          GLB_NAME: ${{ inputs.glb_name }}
+          WIDTH: ${{ inputs.width }}
+          HEIGHT: ${{ inputs.height }}
+        run: |
+          python3 tools/3d_checkpoint/verify_saved_render_artifact.py --root recovered --glb "$GLB_NAME" --width "$WIDTH" --height "$HEIGHT"
+      - name: Scan outputs after validation
+        run: bash tools/security/clamav_scan_gate.sh scan recovered qa/security/recovered-output.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: post-render-qa-RECOVERED-NOT-APPROVED-${{ github.run_id }}
+          path: |
+            recovered/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: error
