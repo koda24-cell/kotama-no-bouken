@@ -1,7 +1,7 @@
-name: B5 Gothic Fauld+Tassets Assembly V1 Six-View Blender Review
+name: B5 Knight Full Torso V2 Seam Detail Six-View Blender Review
 on:
   push:
-    branches: [feature/b5-knight-full-torso-assembly-v2-20261120]
+    branches: [feature/b5-knight-full-torso-assembly-v2-20261122]
     paths:
       - 'tools/b5-knights/build_full_torso_assembly_v2.py'
       - '.github/workflows/b5-full-torso-assembly-v2.yml'
