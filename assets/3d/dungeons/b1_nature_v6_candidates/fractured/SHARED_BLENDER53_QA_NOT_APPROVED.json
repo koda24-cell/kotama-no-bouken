@@ -3,56 +3,56 @@
   "blender": "5.3.0",
   "files": {
     "manifest.json": {
-      "bytes": 1463,
-      "sha256": "b4bed0e6dfc1914fbc167fee4d5112c5efa6b553789876b4ae0f1ef91e9d6aca"
+      "bytes": 1465,
+      "sha256": "e8065e273e6563a14f5959ee9d2357cf1f91535707309ca9decb50dd2e5f60cd"
     },
     "metrics/v6_fractured.json": {
-      "bytes": 1251,
-      "sha256": "fe2e879d52c0ff2a71e14325c057f463c818a80b8b3ef099f59a3e2d62748c76"
+      "bytes": 1253,
+      "sha256": "c246a564da5fee85691e4b595b36b8ec15af745c7bd03984c0de915421e66d1e"
     },
     "props/v6_fractured.glb": {
-      "bytes": 3108160,
-      "sha256": "48ee2af3b8c7916cf3967670f675693a7b039fc1bc555c17982a3c057b04c958"
+      "bytes": 3087248,
+      "sha256": "c5290c5f8490228faf3154e3d6bfede006edcbd4cad4d2e2cc318acc757a122f"
     },
     "renders/v6_fractured/angle.png": {
-      "bytes": 468584,
-      "sha256": "573d8c3aa079d226300b5536b1a706794a7f97915abca7c90ab1b7d79334d3a7"
+      "bytes": 479272,
+      "sha256": "cf58cee6de6c8242a18a35ba83f404a147de974e770d4c5bc23f9450f92fc8c9"
     },
     "renders/v6_fractured/back.png": {
-      "bytes": 432834,
-      "sha256": "c8ffb923cd5e733deedeaac82770c1df4b2ef8a7af1bcd1a16f0d4f44c0c81d0"
+      "bytes": 494035,
+      "sha256": "a7051bfbffda8d155572676a41c77e2bdaaae58f130e5c58b35be10046e4a659"
     },
     "renders/v6_fractured/front.png": {
-      "bytes": 441702,
-      "sha256": "41155022ef965a169f6c6beece6195de9a0f8d8a59e908f93ea548809395714e"
+      "bytes": 491332,
+      "sha256": "6e4d899cca9cdc06ae93e5b97a21da6d4b55fba049129d66688d02d9278cd39a"
     },
     "renders/v6_fractured/side.png": {
-      "bytes": 471020,
-      "sha256": "39dc69ee9989f16d173bc4d064cfdcc6c72e8b169f10081af1ba0183076864f8"
+      "bytes": 506962,
+      "sha256": "43eb2bdfe8b54a1eef9a53ff857c0b7660d6eb27ae9aa5a2a3ddc2ba5d3295c7"
     },
     "renders/v6_fractured/top.png": {
-      "bytes": 549569,
-      "sha256": "d3157a4ddc5d700ed67edd00ca88beedc7c8ec6db74fa41a7c612840d2f261ac"
+      "bytes": 553904,
+      "sha256": "c9a0faf4c140166373e69b6029900d4ba06517f6f4930a0ffc6899dc69f237d7"
     },
     "security/moss-textures.log": {
       "bytes": 289,
-      "sha256": "7917c7be4a0e4629d093b4508edff2616349ea30321a3eb1a678ce86ae280508"
+      "sha256": "70937d316fbc6e40eaf68948f5886985ea7a7d38d1852acf6b211cb1a8f050f9"
     },
     "security/renderer.log": {
       "bytes": 293,
-      "sha256": "40c61b047b3fc3247cbc2808221898a4eb607d88cf7ebe62d7959c53481a11c6"
+      "sha256": "bbdba4c7b35ba30470f527267d7ac37bb9de022298ebdd9c024dce4c71182901"
     },
     "security/shared.log": {
       "bytes": 294,
-      "sha256": "ee3ef0c2200791a8f7c0c7c6b47647bd9f8ed6bd55d1edc92fab775fc6712181"
+      "sha256": "f0624bbc5bdc709c6e9bd59e4360f7c6db7569cc40dc291c5405cf0408a36b39"
     },
     "security/textures.log": {
       "bytes": 292,
-      "sha256": "b71308a9c8b5dc57957b35ed1140b7bd564b5645ee085dde955e70a131ea2a4c"
+      "sha256": "76c8a7c0822062e0f5eba85438d78e2d7b7ab97a8485af453271fe75feb30c69"
     },
     "security/v6.log": {
       "bytes": 293,
-      "sha256": "ef09c3f07c2c7acf7c7b1f9968e6043e5b3e828b3eabf9abe50eb3e9a64c4295"
+      "sha256": "09cd6eb0efd4721f945d4d9cccec1e13b2970280c1b5860cbc7eb9237cf9e1dd"
     },
     "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_basecolor.jpg": {
       "bytes": 7369,
@@ -91,12 +91,12 @@
       "sha256": "36fbb808328024432930f74eb047c3a79af6de49400a6019558a9a05938c8eff"
     },
     "sources/v6_fractured.blend": {
-      "bytes": 3332391,
-      "sha256": "7aaccafe5212926b59f07c6e7a26e8735d28794adc5d9704abf63a11990381a3"
+      "bytes": 3329255,
+      "sha256": "7a0ab2ace448bea96ba4fe15c9233b7ed4fbeafeff1bfaa9542650be7f0c830c"
     },
     "structural-audit.json": {
       "bytes": 1083,
-      "sha256": "834108422dde39c6e0a00ee9f609fc0c4f07f4cb4d8599f93d3f5278da03f5a9"
+      "sha256": "eafac8cbf769238658cf31b67220bb176c6f60a302b25d1e211533cf0b599a05"
     }
   }
 }

@@ -1,8 +1,8 @@
 {
-  "bytes": 3108160,
-  "sha256": "48ee2af3b8c7916cf3967670f675693a7b039fc1bc555c17982a3c057b04c958",
-  "tris": 4776,
-  "verts": 3555,
+  "bytes": 3087248,
+  "sha256": "c5290c5f8490228faf3154e3d6bfede006edcbd4cad4d2e2cc318acc757a122f",
+  "tris": 4626,
+  "verts": 3138,
   "meshes": 2,
   "drawCalls": 2,
   "materials": [
@@ -12,19 +12,19 @@
   "textureCount": 6,
   "textureBytes": 2905046,
   "sizeMeters": [
-    0.732,
-    0.2555,
-    0.6052
+    0.4948,
+    0.2599,
+    0.3952
   ],
   "bboxMin": [
-    -0.3524,
+    -0.2269,
     0.002,
-    -0.3537
+    -0.4186
   ],
   "bboxMax": [
-    0.3796,
-    0.2575,
-    0.2515
+    0.2679,
+    0.2619,
+    -0.0234
   ],
   "extensions": [],
   "animations": [],
@@ -37,8 +37,8 @@
   "category": "props",
   "desc_ja": "Individually authored V6 fractured; first-stratum damp moss palette; review only.",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "152fefbe9fdabcfc6fe19a70741f64e8422cb91f",
-  "workflowRun": "45215795705",
+  "sourceCommit": "dee055c9367d6b838ce5713b088a4923855bc822",
+  "workflowRun": "45220723124",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/v6_fractured.blend",
   "renderedFrom": "reimported GLB",

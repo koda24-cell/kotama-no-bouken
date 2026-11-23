@@ -3,13 +3,13 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b1_nature_v6_candidates/fractured/props/v6_fractured.glb",
-      "file_bytes": 3108160,
+      "file_bytes": 3087248,
       "glb_meshes": 2,
       "total_mesh_primitives": 2,
       "scene_nodes": 3,
       "scene_mesh_nodes": 2,
       "scene_primitive_instances": 2,
-      "estimated_scene_triangles": 4776,
+      "estimated_scene_triangles": 4626,
       "materials": 2,
       "material_names": [
         "sacred_weathered_stone",
