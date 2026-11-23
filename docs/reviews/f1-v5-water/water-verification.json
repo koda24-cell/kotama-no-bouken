@@ -2,8 +2,8 @@
   "passed": true,
   "sourceSHA256": "1478db6384e1acdf78c216d3797257ddba121cc0c26e304123ef0ca8bfe6ab6b",
   "apertureSourceSHA256": "d687780abe2a9204553a6d3079b867dba67d32410dd6d7e5b5b0ec07f744502d",
-  "lightOnlyScreenshotSHA256": "68a0fea8bb0810fa3b8e01c24bd08d055436c2ea7768f04ef879d3173fbadbc4",
-  "ceilingSealSourceSHA256": "3abddbd2c001008d4ffa8f2ed49e276f280f02eaccdf3bbe6d5521cae32d63eb",
+  "lightOnlyScreenshotSHA256": "1c637f6a967b81b525bab9f654c69b790daad26edfb63a4d57e6ebfd02699068",
+  "ceilingSealSourceSHA256": "fb9a839042a5ad83c08a26e93bc3d45acf500440850844ceed84fa9606399555",
   "scope": "Independent WebGL water module, not actual-game integration or real-device FPS",
   "init": {
     "info": {
@@ -33,7 +33,7 @@
       "animatedTimeSeconds": 0,
       "disposed": false
     },
-    "seamHits": 5,
+    "seamHits": 9,
     "baseline": {
       "geometries": 1,
       "textures": 0
@@ -98,7 +98,7 @@
   "errors": [],
   "warnings": [],
   "screenshotSHA256": [
-    "cfcfee939f18101fb53c3c6284f0e6adb6b706aeb1f6965bb3aea39fdfb90e3d",
-    "6a38eb97ba7cb8c0544704b013acfa3a87e20da85246c2bf0fc17852147bf209"
+    "173b671ff6efefc834978af7c103358feb08c2ff109361ba839a6f7445100d37",
+    "5f1c43876d1a53d3eb068e70c09224caba78842f0f2fbac803df0acb6f4f88f1"
   ]
 }

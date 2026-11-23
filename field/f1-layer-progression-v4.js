@@ -53,7 +53,7 @@ export async function buildFirstLayerProgression({world,area}){
     const {createCeilingSealV5}=await import('./f1-ceiling-seal-v5.js');
     const opens=new Set(area.reviewOpenTiles.map(t=>t.join(','))),caps=[];
     for(const[x,z]of area.reviewOpenTiles)for(const[dx,dz,rot]of[[0,-1,0],[1,0,-Math.PI/2],[0,1,Math.PI],[-1,0,Math.PI/2]])if(!opens.has((x+dx)+','+(z+dz)))caps.push({position:[x*4+dx*2,0,z*4+dz*2],rotationY:rot});
-    seal=createCeilingSealV5({root,tiles:Array.from({length:area.h},(_,z)=>Array.from({length:area.w},(_,x)=>[x,z])).flat(),walls:caps,source:sources.get('v4_passage_arch')});
+    seal=createCeilingSealV5({root,tiles:Array.from({length:area.h},(_,z)=>Array.from({length:area.w},(_,x)=>[x,z])).flat(),walls:caps,fullBacking:true,source:sources.get('v4_passage_arch')});
     world.add(root);
     return{dispose,info:()=>({version:4,floor:area.f,sourceHashesVerified:true,counts,stoneDetailBlend:detailBlend,stoneMaterials:ownMaterials.length,ceilingSeal:seal?.info(),batches:batches.length,nativeMapUnchanged:true,disposed}),env:{background:0x0d1715,fog:{color:stage===0?0x11221d:0x15271e,density:.044},hemi:{sky:stage===0?0x95aaa2:0x9daa99,ground:0x263426,high:1.1,low:1.45}}};
   }catch(error){dispose();throw error;}
