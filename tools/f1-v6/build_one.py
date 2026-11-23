@@ -71,12 +71,13 @@ def main():
             obj.data.materials.append(stone);obj.data.update()
             for face in obj.data.polygons:face.material_index=0;face.use_smooth=True
             if asset=='fractured':
-                bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(loc[0]+sx*.55,loc[1]-sy*.66,sz*.66))
-                cutter=bpy.context.object;cutter.name='removed_rock_corner';cutter.scale=(sx*.42,sy*.42,sz*.42)
+                bpy.ops.mesh.primitive_cube_add(size=1,location=(loc[0]+sx*.78,loc[1]-sy*.7,sz*.9))
+                cutter=bpy.context.object;cutter.name='removed_open_upper_corner';cutter.scale=(sx*.75,sy*.85,sz*.9);cutter.rotation_euler=(0,.25,.3)
                 bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
                 bpy.context.view_layer.objects.active=obj
                 modifier=obj.modifiers.new('actual chipped corner','BOOLEAN');modifier.operation='DIFFERENCE';modifier.object=cutter;modifier.solver='EXACT'
                 bpy.ops.object.modifier_apply(modifier=modifier.name);bpy.data.objects.remove(cutter,do_unlink=True)
+                obj.rotation_euler.z=rng.uniform(-.8,.8)
             c.uv_world(obj,3);bpy.context.view_layer.update()
             # Reuse the existing licensed feathered moss texture, draped on actual stone.
             # Every grid vertex raycasts to the final sculpt: no floating button caps.
