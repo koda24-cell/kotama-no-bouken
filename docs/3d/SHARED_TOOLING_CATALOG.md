@@ -382,3 +382,11 @@
 - 原本GLB/Blend/5PNG/scan receiptはPR728の `assets/3d/dungeons/b1_layer_v4_candidates/` に永続保存、NOT_APPROVED。GLB SHA256 `0a2bbcf4b0b470f3b615e771dfdc2034a8bc68fc5224cd8d44c0cdf5eaaa3dca`、11784tri/4primitive/2673540bytes。Khronos形式検査errors/warnings/infos/hints全0。共通性能監査 [run45149374790](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45149374790) 成功。元品質を落とす自動decimationは未適用、実機FPS/最終美術承認は別。
 - 失敗を隠さない: 初回run45144416128はBlender Python例外でもprocess exit0で共通jobだけgreenとなった。タスクwrapperでtraceback保存・os._exit(1)・GLB/5PNGの実在検査を追加。Git ownership対処は一時container内の対象checkoutだけsafe.directory指定。jobのgreenだけを画像完成とみなさない。
 - 水/光/3階層の実ゲームQAはPR728側で継続中。この情報のみの追記はゲームコードやモデルの承認・本番適用ではない。
+
+
+### 第一層V4・反射/採光/段階石材の実ブラウザー検証（2026-11-23）
+- PR728/source95e4dc35a7dd80583fde592882cb815c6e063387。Three.js r180 Reflectorの単一256px targetを11水面で共有。localXYの結合平面を水平回転し、world座標へtextureMatrixを変換。移動時2frame/静止時6frameの更新間隔。実ゲーム画面で天井の反射/低彩度水/水底を確認。3開口にdepth-testedの光の筋とSpotLight、水場1か所だけ512px shadow。
+- 独立WebGL実行で水/採光2回dispose後、native material/geometryとrenderer.shadow設定を復元、GPU geometry1/texture0がbaselineと一致、GL error/shader警告0。これは全GPU/実機FPSの保証ではない。
+- 1F/2Fの元の石形状/UVを保持したclone材へ38%→68%の同じ石肌/normal/roughnessを追加、3Fへ段階移行。prototype材を直接変更せず復元/解放。実画面を撮影、fresh3条件の実ゲームQA、別freshで実階段/会話/回復/戦闘帰還pass。
+- 実マップ106歩行/11行き止まり/11分岐、固定7物不変。実形状757硬配置×106移動帯の衝突0、天井945/954hit（残りは指定穴）。旧歩行位置182点の既存save fallbackとflags保持pass。通常保存領域に置いたsentinelを保持し、iframeが独立Mapを使うwrapperも実ブラウザーpass。
+- 原本・失敗画像・誤った検査条件（wrapperメモリー保存もnullと仮定した初回）を隠さず、docs/reviews/f1-v4*/ と docs/3d/F1_LAYER_V4_REVIEW_HANDOFF.md に保存。通常main公開/実機FPS/最終美術承認なし、NOT_APPROVEDを保持。汎用Auto Reviewのstartup_failureをLOD成功としない。
