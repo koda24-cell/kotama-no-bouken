@@ -19,18 +19,28 @@ def main():
     def finish_arch(_id,category,desc,*args,**kwargs):
         original=[o for o in bpy.context.scene.objects if o.type=='MESH']
         for o in original:
+            if any(m and m.name=='sacred_earth_mortar' for m in o.data.materials):continue
             # Mirror authored front stones/roots, not a blank backing plane.
             clone=o.copy();clone.data=o.data.copy();clone.name='reverse_'+o.name;bpy.context.collection.objects.link(clone)
             bpy.context.view_layer.update()
             for v in clone.data.vertices:
                 w=clone.matrix_world@v.co;w.y=.84-w.y;v.co=clone.matrix_world.inverted()@w
             bm=bmesh.new();bm.from_mesh(clone.data);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(clone.data);bm.free()
+            if any(m and m.name=='sacred_weathered_stone' for m in o.data.materials):
+                # Unify matching closed stone volumes. No coplanar duplicate
+                # top/inner faces may remain to blacken the arch from the side.
+                bm=bmesh.new();bm.from_mesh(o.data);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(o.data);bm.free()
+                bpy.context.view_layer.objects.active=o
+                mod=o.modifiers.new('one solid weathered stone','BOOLEAN');mod.operation='UNION';mod.solver='EXACT';mod.object=clone
+                bpy.ops.object.modifier_apply(modifier=mod.name)
+                bpy.data.objects.remove(clone,do_unlink=True);c.uv_world(o,3.0)
         stone,fracture,earth,moss,root=details.stone_materials()
         for sign in [-1,1]:
             a,b=(2,2.4) if sign>0 else (-2.4,-2)
             for i in range(8):details.wall_block('attached_wall_pier',a,b,i*.5,(i+1)*.5-.015,stone,800+i+sign,front=-.12,back=.92,damage=.028)
         for im in bpy.data.images:
             if im.source=='FILE':_=im.pixels[0];im.pack()
+        bpy.context.preferences.filepaths.save_version=0
         m=original_finish('v4_passage_arch','modules','既存アーチ正面を保持し、裏面にも実石組/目地/根を追加。左右は4m高の控え柱で壁体へ接続。開口2m×3mを保持。')
         assert len(m['renders'])==5 and all((OUT/r).is_file() for r in m['renders'])
         m['approvalStatus']='NOT_APPROVED';m['retainedSource']='mod_sacred_arch_4m original authored geometry';m['sourceScript']='tools/f1-layer-v4/build_passage_arch.py'
