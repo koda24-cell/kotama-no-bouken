@@ -1,0 +1,104 @@
+{
+  "passed": true,
+  "sourceSHA256": "1478db6384e1acdf78c216d3797257ddba121cc0c26e304123ef0ca8bfe6ab6b",
+  "apertureSourceSHA256": "d687780abe2a9204553a6d3079b867dba67d32410dd6d7e5b5b0ec07f744502d",
+  "lightOnlyScreenshotSHA256": "1c637f6a967b81b525bab9f654c69b790daad26edfb63a4d57e6ebfd02699068",
+  "ceilingSealSourceSHA256": "fb9a839042a5ad83c08a26e93bc3d45acf500440850844ceed84fa9606399555",
+  "scope": "Independent WebGL water module, not actual-game integration or real-device FPS",
+  "init": {
+    "info": {
+      "version": 4,
+      "nativeWaterMeshes": 11,
+      "waterTiles": 11,
+      "shoreBoundaryEdges": 16,
+      "submergedStoneInstances": 55,
+      "algaePatches": 11,
+      "shaderCompiled": true,
+      "worldCoordinateNormals": true,
+      "reflectionRenderTargets": 1,
+      "reflectionResolution": 256,
+      "reflectionUpdates": 1,
+      "reflectionFrame": 1,
+      "animatedTimeSeconds": 0,
+      "disposed": false
+    },
+    "aperture": {
+      "version": 5,
+      "apertures": 1,
+      "spotLights": 1,
+      "softShafts": 1,
+      "shadowMaps": 1,
+      "visibleEmitterMeshes": 0,
+      "animatedLeafProjection": true,
+      "animatedTimeSeconds": 0,
+      "disposed": false
+    },
+    "seamHits": 9,
+    "baseline": {
+      "geometries": 1,
+      "textures": 0
+    }
+  },
+  "second": {
+    "version": 4,
+    "nativeWaterMeshes": 11,
+    "waterTiles": 11,
+    "shoreBoundaryEdges": 16,
+    "submergedStoneInstances": 55,
+    "algaePatches": 11,
+    "shaderCompiled": true,
+    "worldCoordinateNormals": true,
+    "reflectionRenderTargets": 1,
+    "reflectionResolution": 256,
+    "reflectionUpdates": 1,
+    "reflectionFrame": 2,
+    "animatedTimeSeconds": 5,
+    "disposed": false,
+    "aperture": {
+      "version": 5,
+      "apertures": 1,
+      "spotLights": 1,
+      "softShafts": 1,
+      "shadowMaps": 1,
+      "visibleEmitterMeshes": 0,
+      "animatedLeafProjection": true,
+      "animatedTimeSeconds": 5,
+      "disposed": false
+    }
+  },
+  "teardown": {
+    "restored": true,
+    "memory": {
+      "geometries": 1,
+      "textures": 0
+    },
+    "baseline": {
+      "geometries": 1,
+      "textures": 0
+    },
+    "shadowRestored": true,
+    "info": {
+      "version": 4,
+      "nativeWaterMeshes": 11,
+      "waterTiles": 11,
+      "shoreBoundaryEdges": 16,
+      "submergedStoneInstances": 55,
+      "algaePatches": 11,
+      "shaderCompiled": true,
+      "worldCoordinateNormals": true,
+      "reflectionRenderTargets": 1,
+      "reflectionResolution": 256,
+      "reflectionUpdates": 1,
+      "reflectionFrame": 3,
+      "animatedTimeSeconds": 5,
+      "disposed": true
+    },
+    "glError": 0
+  },
+  "errors": [],
+  "warnings": [],
+  "screenshotSHA256": [
+    "173b671ff6efefc834978af7c103358feb08c2ff109361ba839a6f7445100d37",
+    "5f1c43876d1a53d3eb068e70c09224caba78842f0f2fbac803df0acb6f4f88f1"
+  ]
+}

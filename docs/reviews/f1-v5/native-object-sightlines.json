@@ -1,0 +1,140 @@
+{
+  "layoutSha256": "70dcb935d4568f2f87bc54a00a2594e44d23167e2f34ca8e903a6ac5fe35e019",
+  "passed": true,
+  "method": "Moller-Trumbore segment intersections against actual pinned boundary-wall triangles; native object models and foliage acceptance remain separate.",
+  "objects": [
+    {
+      "key": "gate:1",
+      "approaches": [
+        {
+          "from": [
+            22,
+            2
+          ],
+          "wallOccluded": false
+        },
+        {
+          "from": [
+            23,
+            1
+          ],
+          "wallOccluded": false
+        }
+      ],
+      "visibleApproach": true
+    },
+    {
+      "key": "save:1-2:24:3",
+      "approaches": [
+        {
+          "from": [
+            25,
+            3
+          ],
+          "wallOccluded": false
+        },
+        {
+          "from": [
+            23,
+            3
+          ],
+          "wallOccluded": false
+        }
+      ],
+      "visibleApproach": true
+    },
+    {
+      "key": "chest:1-2:10:6",
+      "approaches": [
+        {
+          "from": [
+            10,
+            5
+          ],
+          "wallOccluded": false
+        },
+        {
+          "from": [
+            9,
+            6
+          ],
+          "wallOccluded": false
+        }
+      ],
+      "visibleApproach": true
+    },
+    {
+      "key": "sign:1-2:22:9",
+      "approaches": [
+        {
+          "from": [
+            23,
+            9
+          ],
+          "wallOccluded": false
+        },
+        {
+          "from": [
+            21,
+            9
+          ],
+          "wallOccluded": false
+        }
+      ],
+      "visibleApproach": true
+    },
+    {
+      "key": "npc:1:herb-girl",
+      "approaches": [
+        {
+          "from": [
+            23,
+            13
+          ],
+          "wallOccluded": false
+        },
+        {
+          "from": [
+            23,
+            11
+          ],
+          "wallOccluded": false
+        }
+      ],
+      "visibleApproach": true
+    },
+    {
+      "key": "npc:1:woodcutter",
+      "approaches": [
+        {
+          "from": [
+            3,
+            15
+          ],
+          "wallOccluded": false
+        },
+        {
+          "from": [
+            3,
+            13
+          ],
+          "wallOccluded": false
+        }
+      ],
+      "visibleApproach": true
+    },
+    {
+      "key": "up:1-2",
+      "approaches": [
+        {
+          "from": [
+            1,
+            15
+          ],
+          "wallOccluded": false
+        }
+      ],
+      "visibleApproach": true
+    }
+  ]
+}
