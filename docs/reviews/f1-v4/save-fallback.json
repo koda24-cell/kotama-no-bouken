@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "changedPositionsChecked": 182,
+  "flagsPreserved": true,
+  "existingDeserializerAndStartPlacement": true,
+  "limitations": "In-memory read-only fixture; disk persistence and full loot state are separate from this positional fallback check."
+}

@@ -1,7 +1,7 @@
 {
   "scope": "V3 actual static GLB body-band conservative clearance",
   "layout": "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v4.json",
-  "layoutSha256": "d1078068ae0aa51eb9c408dc6cb52eca068ebc391956baf7fcb961b391590d9e",
+  "layoutSha256": "e939e757a9ae6fd5c2999c3b3a574325fb7066c6f7256b804be801331ddceb4c",
   "routeWidthMeters": 1.8,
   "heightBandMeters": [
     0.12,

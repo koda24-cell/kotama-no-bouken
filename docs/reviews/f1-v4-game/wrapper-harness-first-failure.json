@@ -1,0 +1,7 @@
+{
+  "scope": "Synthetic browser fixture only; no user save data",
+  "firstAssertionFailed": "iframe memory save should be null",
+  "parentBackendSentinelUnchanged": true,
+  "observed": "Game boot writes a new default save into the isolated memory Map. This is permitted trial state, not a normal-save backend write.",
+  "correction": "Assert backend sentinel unchanged and inaccessible from iframe; assert iframe contains independently generated memory saveVersion12. No product code changed for this assertion correction."
+}

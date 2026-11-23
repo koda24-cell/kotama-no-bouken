@@ -31209,9 +31209,9 @@
           13
         ]
       ],
-      "coveredWalkFloorCells": 106,
+      "coveredWalkFloorCells": 105,
       "walkFloorCells": 106,
-      "walkFloorCoverage": 1,
+      "walkFloorCoverage": 0.9905660377358491,
       "eyeMeters": 1.6
     },
     "lightPockets": [

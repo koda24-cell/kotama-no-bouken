@@ -30,7 +30,15 @@ assert (22,1) in seen and (1,16) in seen
 oldtext='\n'.join('        '+json.dumps(r) + (',' if i<len(old)-1 else '') for i,r in enumerate(old))
 file=ROOT/'data/field-maps.js';s=file.read_text()
 newtext='\n'.join('        '+json.dumps(r) + (',' if i<len(rows)-1 else '') for i,r in enumerate(rows));assert s.count(oldtext)==1 or s.count(newtext)==1
-if oldtext in s:file.write_text(s.replace(oldtext,newtext))
+if oldtext in s:s=s.replace(oldtext,newtext)
+# Keep the topology generator reproducible from V3, including the native patrol.
+patrol=[[21,9],[21,10],[21,11],[22,11],[23,11],[23,10],[23,9],[23,10],[23,11],[22,11],[21,11],[21,10]]
+start=s.index('chests: [ { gold: 80 } ]');end=s.index('map: [',start)
+fragment=s[start:end];old_patrol='path: [[22, 9], [23, 10]], sight: 6'
+new_patrol='path: '+json.dumps(patrol)+', sight: 6'
+assert fragment.count(old_patrol)==1 or fragment.count(new_patrol)==1
+s=s[:start]+fragment.replace(old_patrol,new_patrol)+s[end:]
+if s!=file.read_text():file.write_text(s)
 degree=lambda p:sum(n in walk for n in [(p[0]-1,p[1]),(p[0]+1,p[1]),(p[0],p[1]-1),(p[0],p[1]+1)])
 report={'scope':'Authored topology; original fixed object identities/positions retained','map':rows,'reachableWalkCells':len(walk),'deadEnds':sum(degree(p)==1 for p in walk),'junctionCells':sum(degree(p)>=3 for p in walk),'waterCells':11,'nativeSaveLoadFallback':'Existing field-persistence rejects saved positions inside walls and uses native start; save schema unchanged','shrineDeadEnd':{'playerTile':[12,3],'shrineWorld':[44,0,12],'toriiWorld':[50,0,12]},'bossConnected':True}
 (ROOT/'tools/f1-layer-v4/map-plan.json').write_text(json.dumps(report,ensure_ascii=False,indent=2));print(json.dumps({k:v for k,v in report.items() if k!='map'}))

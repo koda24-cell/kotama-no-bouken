@@ -309,7 +309,7 @@ async function buildFloor() {
   }
   if(area===1&&a.f<2&&(new URLSearchParams(location.search).get('f1sacred')==='1'||window.KotamaSacredPlaytest===true)){
     try{const {buildFirstLayerProgression}=await import('./f1-layer-progression-v4.js');
-      const dressing=await buildFirstLayerProgression({world:g.world,area:a});
+      const dressing=await buildFirstLayerProgression({world:g.world,area:{...a,reviewWalkableTiles:Array.from({length:a.h},(_,z)=>Array.from({length:a.w},(_,x)=>[x,z])).flat().filter(([x,z])=>!fieldCharSolid(a,ch(x,z)))}});
       if(token!==g.buildToken||curKey()!==key){dressing.dispose();return;}
       g.firstLayerDress=dressing;applyEnv(area,dressing.env);
     }catch(error){console.warn('[field-3d] 一層の段階装飾を読み込めません:',error);}

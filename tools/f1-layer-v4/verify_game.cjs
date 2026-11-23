@@ -1,4 +1,4 @@
-/* Real index.html smoke/regression checks for the opt-in F1/3F closed-ruins V3 trial.
+/* Real index.html smoke/regression checks for the opt-in F1/3F closed-ruins V4 trial.
  * Usage: node tools/f1-closed-ruins-v3/verify-game-v3.cjs
  * Uses isolated browser contexts; suppresses game save writes in the harness.
  * Never edits the game, map, candidate descriptor or individual model files.
@@ -49,7 +49,7 @@ function frozenInputs(){
 }
 const sourceRecord={commit:cp.execFileSync('git',['rev-parse','HEAD'],{cwd:ROOT,encoding:'utf8'}).trim(),
  inputs:frozenInputs(),candidateMapSha256:candidate.beforeFingerprint.mapSha256};
-const report={scope:'Real index.html closed ruins V3 opt-in visual trial; gameplay smoke checks with isolated fixtures, not full game certification or real-device FPS approval',
+const report={scope:'Real index.html closed ruins V4 opt-in visual trial; gameplay smoke checks with isolated fixtures, not full game certification or real-device FPS approval',
  engine:'Chromium SwiftShader / Three.js r180',source:sourceRecord,autoSaveDisabled:true,
  fixtureNotes:['Fresh browser contexts only; no user browser profile or existing saves.',
   'Party/tutorial/unlock flags are test fixtures. Camera review points use validated walk cells.',
@@ -247,17 +247,18 @@ async function main(){
  fs.mkdirSync(OUT,{recursive:true});await new Promise(resolve=>server.listen(PORT,'127.0.0.1',resolve));
  browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
  try{
+  if(process.argv.includes('--supplementary')){await supplementary();return;}
   const trial=await createSession('v4-trial',true);const third=await enter(trial,2,true);assertNativeFloor(third,2);
   assert.equal(third.trial.aperture.spotLights,3);assert.equal(third.trial.water.reflectionRenderTargets,1);
   await teleport(trial,5,15,'up');await singleInput(trial,'w',{tile:[5,14],turnDelta:1});
   await teleport(trial,5,14,'right');await singleInput(trial,'w',{tile:[5,14],turnDelta:0});
-  for(const[x,z,dir,name]of[[5,15,'up','01-v4-root-passage'],[13,3,'left','02-v4-shrine-dead-end'],[14,11,'up','03-v4-water-reflection'],[13,8,'right','04-v4-water-shaft'],[7,3,'right','05-v4-arch-front'],[8,3,'left','06-v4-arch-back']]){
+  for(const[x,z,dir,name]of[[5,15,'up','01-v4-root-passage'],[13,3,'left','02-v4-shrine-dead-end'],[13,7,'right','03-v4-water-reflection'],[13,8,'right','04-v4-water-shaft'],[6,3,'right','05-v4-arch-front'],[8,3,'left','06-v4-arch-back']]){
     await teleport(trial,x,z,dir);
     await trial.page.waitForFunction(()=>{const t=window.KotamaField3D.sacredTrialInfo();return t?.water?.shaderCompiled&&t.water.reflectionUpdates>0;},null,{timeout:180000});
     await screenshot(trial,name);
   }
   await teleport(trial,9,6,'right');await settle(trial);let pre=await state(trial,'chest-before');
-  if(pre.nearKey!=='chest:10,6')console.error('Chest near key',pre.nearKey);
+  if(pre.nearKey!=='chest:1-2:10:6')console.error('Chest near key',pre.nearKey);
   await action(trial);await settle(trial);let post=await state(trial,'chest-after');
   assert.equal(post.gold-pre.gold,80,'Chest reward changed');await action(trial);await settle(trial);assert.equal((await state(trial,'chest-repeat')).gold,post.gold,'Chest pays twice');
   report.checks.push({case:'native-chest-once',reward:80});
@@ -277,3 +278,23 @@ async function main(){
  finally{await browser.close();await new Promise(resolve=>server.close(resolve));}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});
+
+async function supplementary(){
+ report.scope='V4 supplementary corrected cameras, real stairs, native interactions and encounter return';
+ const trial=await createSession('v4-supplementary',true);await enter(trial,2,true);
+ for(const[x,z,dir,name]of[[13,7,'right','09-v4-water-corrected-view'],[6,3,'right','10-v4-arch-front-corrected-view']]){await teleport(trial,x,z,dir);await screenshot(trial,name);}
+ await teleport(trial,3,13,'down');assert.equal((await state(trial,'npc')).nearKey,'npc:1:woodcutter');await action(trial);await settle(trial);
+ await teleport(trial,21,9,'right');assert.equal((await state(trial,'sign')).nearKey,'sign:1-2:22:9');await action(trial);await settle(trial);
+ await teleport(trial,23,3,'right');assert.equal((await state(trial,'lamp')).nearKey,'save:1-2:24:3');
+ await trial.page.evaluate(()=>{for(const c of getParty())c.hp=Math.max(1,effectiveStats(c).maxHp-5);});await action(trial);await settle(trial,{choice:'cancel'});
+ const heal=await trial.page.evaluate(()=>({checkpoint:fieldState.checkpoint,fullyHealed:getParty().every(c=>c.hp===effectiveStats(c).maxHp),saveDialogHidden:document.getElementById('save-dialog').hidden}));assert.equal(heal.checkpoint.floor,2);assert(heal.fullyHealed&&heal.saveDialogHidden);report.checks.push({case:'npc-sign-healing-checkpoint',...heal});
+ await teleport(trial,1,15,'down');await singleInput(trial,'ArrowUp',{tile:[1,16],direction:'down'});await settle(trial,{choice:'accept'});await waitFloor(trial,1,false);
+ const two=await state(trial,'actual-stair-to-2f');assertNativeFloor(two,1);assert(two.review.firstLayerProgressionInfo);
+ await teleport(trial,25,2,'up');await singleInput(trial,'ArrowUp',{tile:[25,1],direction:'up'});await settle(trial,{choice:'accept'});await waitFloor(trial,2,true);assertNativeFloor(await state(trial,'actual-stair-return'),2);
+ report.checks.push({case:'native-stairs-both-directions',passed:true});
+ await teleport(trial,5,14,'up');const before=await state(trial,'before-encounter');await trial.page.evaluate(()=>fieldStartEncounterBattle('stray-slime'));
+ await trial.page.waitForFunction(()=>state.screen==='battle'&&battleState.encounterMode===true,null,{timeout:90000});
+ await trial.page.evaluate(()=>fieldReturnFromBattle({retreat:true}));await settle(trial);await waitFloor(trial,2,true);const returned=await state(trial,'encounter-return');assert.equal(returned.screen,'field');assert.deepEqual(returned.tile,before.tile);assertNativeFloor(returned,2);report.checks.push({case:'native-encounter-and-return',passed:true});
+ await storageProof(trial);assert.deepEqual(trial.record.pageErrors,[]);assert.deepEqual(trial.record.consoleErrors,[]);await trial.context.close();
+ assert.deepEqual(frozenInputs(),sourceRecord.inputs);report.passed=true;fs.writeFileSync(path.join(OUT,'supplementary-verification.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({passed:true,scope:report.scope,checks:report.checks.length,screenshots:report.screenshots.length}));
+}
