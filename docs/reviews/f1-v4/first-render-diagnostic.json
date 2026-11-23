@@ -1,0 +1,6 @@
+{
+  "scope": "Prior failed asset attempt, no new model generated",
+  "run": 45144416128,
+  "logReturnCode": 1,
+  "excerpt": "the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway\n"
+}
