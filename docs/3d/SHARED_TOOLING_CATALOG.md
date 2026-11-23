@@ -369,3 +369,16 @@
 - 天井は実GLB三角形rayで274歩行床×9=2466点全hit、指定3開口の中心/周辺は非hit。配置数だけの屋根主張ではない。proof: docs/reviews/f1-closed-ruins-v3/roof-ray-coverage.json。壁/木/alpha/実画面の美術承認は別。
 - 共有Blender5.3+ClamAV/security/reimportと構造監査の両jobが成功: https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45051036648 。既存出力の再import/packed画像decodeと原本/従来20PNGのhash不変archiveを行うrunで、新規20レンダーではない。入力/出力scanの各step成功をGitHub API receiptへ記録。rawログdownloadは環境からHTTP403で、artifact内容を取得したとは扱わない。
 - 同構造監査のローカル結果は5GLB/6694tri/14primitive instances、全てfoliage-or-transparency review分類。汎用Auto Review run45051033409はstartup_failure、そこからのLOD生成成功やゲーム自動最適化は未実証。元GLBを自動decimate/置換しない。実機FPS/全GPU/長期進行/最終美術承認/通常main公開は範囲外。
+
+### 第一層V4: 単独逐次制作・反射と採光の改修計画
+- PR728。ユーザーが並行チームを避け一つずつ制作するよう指定。3Fは見た目の圧縮だけでなく実mapを手設計の一本道/分岐/行き止まりへ変更する。固定ID/報酬/保存形式は保持し、既存loadの壁内位置検査/fallbackを確認。制作前設計: docs/3d/F1_LAYER_V4_DESIGN.md。
+- 一つ目は既存正面を保持した両面石組アーチ。左右の控え柱と背面に石/根を加える。共有Blender5.3+ClamAVで単体→書出GLB再import正面/裏/横/斜め/上を撮影し、hash確認済みNOT_APPROVED候補だけを同branchへ恒久archiveする。run45144416128は実行中、成功/美術合格は未確認。新有料API/アドオンなし。
+- 次段階の技法候補: Three.js公式Reflector（https://threejs.org/docs/#examples/en/objects/Reflector 、MIT）を連結11水面で一つだけ共有し、低彩度の動的水面へ天井/柱を反射。画面外や静止時の更新を抑え11回reflectionpassを避ける。崩落孔にはSpotLightと自作のsoft light-volume/塵。まだV4で実装/実GPU未検証。既存共通VFX資料を参照し外部画像を転用しない。
+- 1F→2F→3Fは同じ素材を段階的に増やし、元の1F/2Fのmapとゲーム進行を維持。技術QAと芸術承認/実機FPS/通常main公開を区別する。
+
+
+### 第一層V4・両面アーチ1点の逐次制作: 実出力確認（2026-11-23）
+- ユーザー指定により同時agent/複数モデル生成を使わず、既存アーチ正面を保持した両面接続アーチ1点を制作。共通Blender5.3+ClamAV [run45147327732](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45147327732) 成功。生成GLB再importの正面/背面/側面/斜め/上面5PNGを実際に目視。最初のcoplanar黒面を検出・不採用とし、石ごとのBoolean EXACT UNIONで修正・撮り直した。
+- 原本GLB/Blend/5PNG/scan receiptはPR728の `assets/3d/dungeons/b1_layer_v4_candidates/` に永続保存、NOT_APPROVED。GLB SHA256 `0a2bbcf4b0b470f3b615e771dfdc2034a8bc68fc5224cd8d44c0cdf5eaaa3dca`、11784tri/4primitive/2673540bytes。Khronos形式検査errors/warnings/infos/hints全0。共通性能監査 [run45149374790](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45149374790) 成功。元品質を落とす自動decimationは未適用、実機FPS/最終美術承認は別。
+- 失敗を隠さない: 初回run45144416128はBlender Python例外でもprocess exit0で共通jobだけgreenとなった。タスクwrapperでtraceback保存・os._exit(1)・GLB/5PNGの実在検査を追加。Git ownership対処は一時container内の対象checkoutだけsafe.directory指定。jobのgreenだけを画像完成とみなさない。
+- 水/光/3階層の実ゲームQAはPR728側で継続中。この情報のみの追記はゲームコードやモデルの承認・本番適用ではない。
