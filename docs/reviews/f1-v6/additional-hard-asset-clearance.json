@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "scope": "Additional V6 rocks and 2F replacement walls only. Actual placements read from real game; all ancestor GLB transforms retained. Conservative transformed source AABBs versus native 1.8m-wide routes at Y=.12..2.1m. Existing scene clearance, soft foliage and stairs are checked separately.",
+  "sourceGameReportSha256": "07953260f755ab35ae2aee4ee08186dbafe78f24ea3893fe3fb2352985468f25",
+  "floors": [
+    {
+      "floor": 3,
+      "hardPlacements": 195,
+      "nativeRouteSweeps": 181,
+      "overlaps": []
+    },
+    {
+      "floor": 2,
+      "hardPlacements": 766,
+      "nativeRouteSweeps": 246,
+      "overlaps": []
+    },
+    {
+      "floor": 1,
+      "hardPlacements": 260,
+      "nativeRouteSweeps": 248,
+      "overlaps": []
+    }
+  ]
+}

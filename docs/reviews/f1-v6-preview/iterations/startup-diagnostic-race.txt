@@ -1,0 +1,1 @@
+Curated-start preview check encountered gameReviewState before g.world initialization: TypeError reading children. Fixed only readonly waterMeshCount diagnostic with optional world access and zero before mount. This did not alter rendering or gameplay. Fresh preview check follows.
