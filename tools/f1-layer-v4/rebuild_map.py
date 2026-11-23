@@ -28,8 +28,9 @@ assert seen==walk,sorted(walk-seen)
 for x,z in [(24,3),(10,6),(22,9),(23,12),(3,14)]:assert any(p in walk for p in [(x-1,z),(x+1,z),(x,z-1),(x,z+1)])
 assert (22,1) in seen and (1,16) in seen
 oldtext='\n'.join('        '+json.dumps(r) + (',' if i<len(old)-1 else '') for i,r in enumerate(old))
-file=ROOT/'data/field-maps.js';s=file.read_text();assert s.count(oldtext)==1
-newtext='\n'.join('        '+json.dumps(r) + (',' if i<len(rows)-1 else '') for i,r in enumerate(rows));file.write_text(s.replace(oldtext,newtext))
+file=ROOT/'data/field-maps.js';s=file.read_text()
+newtext='\n'.join('        '+json.dumps(r) + (',' if i<len(rows)-1 else '') for i,r in enumerate(rows));assert s.count(oldtext)==1 or s.count(newtext)==1
+if oldtext in s:file.write_text(s.replace(oldtext,newtext))
 degree=lambda p:sum(n in walk for n in [(p[0]-1,p[1]),(p[0]+1,p[1]),(p[0],p[1]-1),(p[0],p[1]+1)])
 report={'scope':'Authored topology; original fixed object identities/positions retained','map':rows,'reachableWalkCells':len(walk),'deadEnds':sum(degree(p)==1 for p in walk),'junctionCells':sum(degree(p)>=3 for p in walk),'waterCells':11,'nativeSaveLoadFallback':'Existing field-persistence rejects saved positions inside walls and uses native start; save schema unchanged','shrineDeadEnd':{'playerTile':[12,3],'shrineWorld':[44,0,12],'toriiWorld':[50,0,12]},'bossConnected':True}
 (ROOT/'tools/f1-layer-v4/map-plan.json').write_text(json.dumps(report,ensure_ascii=False,indent=2));print(json.dumps({k:v for k,v in report.items() if k!='map'}))

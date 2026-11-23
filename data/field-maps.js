@@ -84,7 +84,7 @@ const FIELD_AREAS = {
         "###########################"
       ] },
       { encounter: { min: 15, max: 26, scale: 1.3, table: [ { enemy: "stray-slime", weight: 40 }, { enemy: "mushroom", weight: 40 }, { enemy: "forest-goblin", weight: 20 } ] },
-        chests: [ { gold: 80 } ], gathers: [ ["slime_jelly", 60], ["monster_hide", 40] ], foes: [ { enemy: "foe-crystal-guardian", path: [[21, 9], [21, 10], [21, 11], [22, 11], [23, 11], [23, 10], [23, 9]], sight: 6 } ], map: [
+        chests: [ { gold: 80 } ], gathers: [ ["slime_jelly", 60], ["monster_hide", 40] ], foes: [ { enemy: "foe-crystal-guardian", path: [[21, 9], [21, 10], [21, 11], [22, 11], [23, 11], [23, 10], [23, 9], [23, 10], [23, 11], [22, 11], [21, 11], [21, 10]], sight: 6 } ], map: [
         "############################",
         "#######,,,###,,,,,,,##B,,,##",
         "#########,###,###,#,##__#,##",
