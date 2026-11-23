@@ -1,0 +1,94 @@
+{
+  "status": "NOT_APPROVED",
+  "blender": "5.3.0",
+  "files": {
+    "manifest.json": {
+      "bytes": 1734,
+      "sha256": "5fa7b8eb83ae278005cb4f59ecbb8b06c539dd440d6051270b34a9bf5ac63a6f"
+    },
+    "metrics/v4_passage_arch.json": {
+      "bytes": 1489,
+      "sha256": "e0c1d8db01e3c6be41cefab29b5a1f1068680bc1b970f80da10287ebe7ce5cef"
+    },
+    "modules/v4_passage_arch.glb": {
+      "bytes": 2969416,
+      "sha256": "4b72dd22669b78becb6f6aa1c36aa7c1d06a840cf406aa7e7295fbd18f2041b6"
+    },
+    "renders/v4_passage_arch/angle.png": {
+      "bytes": 557749,
+      "sha256": "b8641f65de67e13a655091cc085cad5a058d7af66a9e049cc2fea0f920db38ee"
+    },
+    "renders/v4_passage_arch/back.png": {
+      "bytes": 598939,
+      "sha256": "2c830195d453a1b464c78466052803d0c03dfb4be0f9e464ea979591ada22b3c"
+    },
+    "renders/v4_passage_arch/front.png": {
+      "bytes": 578712,
+      "sha256": "3cfb8c90615727e18223f14d8eb18a4812acf7e513033ba071f9cbef5426df47"
+    },
+    "renders/v4_passage_arch/side.png": {
+      "bytes": 500568,
+      "sha256": "e244be57a7a28469e81b8a89fe392a0987d66014e1b74af1a7d7b762e5d46f00"
+    },
+    "renders/v4_passage_arch/top.png": {
+      "bytes": 406497,
+      "sha256": "9d12c9c9eda66c7eb36306de92fa92fb8c1c86e03e6be24ecb7bda86e8d1dc58"
+    },
+    "security/existing-textures.log": {
+      "bytes": 292,
+      "sha256": "5ed157cad335856d16e546442ec9a160343cb9ee3f07d87198e68eb611de7e6b"
+    },
+    "security/existing-tools.log": {
+      "bytes": 294,
+      "sha256": "ddd8904514081496cbd0925a4371810ae8a8f61c15b898bf0bbaf6c96e6848a7"
+    },
+    "security/v4-tools.log": {
+      "bytes": 291,
+      "sha256": "d16e407c8aef384088c728f6ea3b28caa21dda7f3535717944b6b752911cf8b1"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_basecolor.jpg": {
+      "bytes": 7369,
+      "sha256": "6f03bd6c4e8ec104a4a4db67b4e9bac89bd34d246e2342f010831a529870fd14"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_normal.jpg": {
+      "bytes": 6815,
+      "sha256": "b101f8a2c348f96b2aef72301da06e8c6aea3bf26eeddeb59e355ccc0466eff0"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_orm.jpg": {
+      "bytes": 6163,
+      "sha256": "cdc698bf7bb16880d5c6cd6dd2df7edccdb26b003f2c522acef3bcc002464114"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_basecolor.jpg": {
+      "bytes": 9363,
+      "sha256": "4f73705d9ddaf1e0197f3fb945acedaa83939c808a0f22fc618ec208295bbdee"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_normal.jpg": {
+      "bytes": 6741,
+      "sha256": "4c1c7a61309412d6a39f1329853a76a61a6b5b6934441aacfd737879ce28b9a6"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_orm.jpg": {
+      "bytes": 6317,
+      "sha256": "2ae6e8f6cdae7c431e328fb1959a682cc4583d2948f3766af77720a0f184b192"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_basecolor.jpg": {
+      "bytes": 7562,
+      "sha256": "13cde201b094361aec10751caf975b072a45901369302535cb4f93d73df218cb"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_normal.jpg": {
+      "bytes": 6860,
+      "sha256": "8d81fe337e0d81fce7b783440f415815231c2050ed08207d569fbd59855dc1c4"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_orm.jpg": {
+      "bytes": 6273,
+      "sha256": "36fbb808328024432930f74eb047c3a79af6de49400a6019558a9a05938c8eff"
+    },
+    "sources/v4_passage_arch.blend": {
+      "bytes": 1420926,
+      "sha256": "57c0d8051c38768d2d777fe3bba0ec68dd9a72541688291c38d4c9024aae7b96"
+    },
+    "structural-audit.json": {
+      "bytes": 1172,
+      "sha256": "b96c828595d0e5d7da5bc189b97ee8996e518ba3dd7ebf62426a9984b5125125"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b1_layer_v4_candidates/modules/v4_passage_arch.glb",
+      "file_bytes": 2969416,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 12352,
+      "materials": 4,
+      "material_names": [
+        "sacred_earth_mortar",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "mesh_names": [
+        "Cube",
+        "outer_jamb_root",
+        "Icosphere",
+        "jamb_-1_stone_00"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

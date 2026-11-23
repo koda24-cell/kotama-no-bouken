@@ -1,0 +1,56 @@
+{
+  "bytes": 2969416,
+  "sha256": "4b72dd22669b78becb6f6aa1c36aa7c1d06a840cf406aa7e7295fbd18f2041b6",
+  "tris": 12352,
+  "verts": 32370,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "sacred_earth_mortar",
+    "sacred_root_bark",
+    "sacred_velvet_moss",
+    "sacred_weathered_stone"
+  ],
+  "textureCount": 12,
+  "textureBytes": 1334308,
+  "sizeMeters": [
+    4.8,
+    4.0,
+    1.04
+  ],
+  "bboxMin": [
+    -2.4,
+    0.0,
+    -0.92
+  ],
+  "bboxMax": [
+    2.4,
+    4.0,
+    0.12
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 38,
+  "id": "v4_passage_arch",
+  "file": "modules/v4_passage_arch.glb",
+  "category": "modules",
+  "desc_ja": "既存アーチ正面を保持し、裏面にも実石組/目地/根を追加。左右は4m高の控え柱で壁体へ接続。開口2m×3mを保持。",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "6acfd2ff23fab6b1c90b462c131c0609990e748a",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/v4_passage_arch.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v4_passage_arch/front.png",
+    "renders/v4_passage_arch/back.png",
+    "renders/v4_passage_arch/side.png",
+    "renders/v4_passage_arch/angle.png",
+    "renders/v4_passage_arch/top.png"
+  ],
+  "retainedSource": "mod_sacred_arch_4m original authored geometry",
+  "sourceScript": "tools/f1-layer-v4/build_passage_arch.py"
+}
