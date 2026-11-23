@@ -1,0 +1,53 @@
+{
+  "bytes": 229028,
+  "sha256": "873917d946541229bdf8bc2de70ee1bd80d82b4f87e6cbf19750527f1c6f5f11",
+  "tris": 4320,
+  "verts": 3480,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "forest_leaf",
+    "forest_new_leaf",
+    "forest_old_leaf"
+  ],
+  "textureCount": 5,
+  "textureBytes": 31122,
+  "sizeMeters": [
+    0.9077,
+    0.6231,
+    0.821
+  ],
+  "bboxMin": [
+    -0.4664,
+    0.005,
+    -0.4447
+  ],
+  "bboxMax": [
+    0.4413,
+    0.6281,
+    0.3763
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "v6_sedge",
+  "file": "props/v6_sedge.glb",
+  "category": "props",
+  "desc_ja": "Individually authored V6 sedge; first-stratum damp moss palette; review only.",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "872d89905cba04fce67cf14ebbadf64ba800d985",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/v6_sedge.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v6_sedge/front.png",
+    "renders/v6_sedge/back.png",
+    "renders/v6_sedge/side.png",
+    "renders/v6_sedge/angle.png",
+    "renders/v6_sedge/top.png"
+  ]
+}

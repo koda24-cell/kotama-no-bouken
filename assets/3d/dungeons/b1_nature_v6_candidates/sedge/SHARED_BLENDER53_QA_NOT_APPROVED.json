@@ -1,0 +1,142 @@
+{
+  "status": "NOT_APPROVED",
+  "blender": "5.3.0",
+  "files": {
+    "manifest.json": {
+      "bytes": 1391,
+      "sha256": "3c479a358ef035a337588ebee02dd03d832a4d90b36c2608a76ab8760d6cdc64"
+    },
+    "metrics/v6_sedge.json": {
+      "bytes": 1198,
+      "sha256": "5b259efbd202ec914decfdfda4b999ffadb92949df740455918b187320cc12a5"
+    },
+    "props/v6_sedge.glb": {
+      "bytes": 229028,
+      "sha256": "873917d946541229bdf8bc2de70ee1bd80d82b4f87e6cbf19750527f1c6f5f11"
+    },
+    "renders/v6_sedge/angle.png": {
+      "bytes": 456117,
+      "sha256": "03ef9800e54549638905bd8ce4402c42e935ce486d3868e068c300ce0a1e21e5"
+    },
+    "renders/v6_sedge/back.png": {
+      "bytes": 482708,
+      "sha256": "d723fa17ffd3e00ea1ef5ec2b6fbd2f2b0459028cfee2182a533c11d83c5edba"
+    },
+    "renders/v6_sedge/front.png": {
+      "bytes": 487212,
+      "sha256": "3bf5c60a682e2602ac3c3e0b86c7c24fa0068afb96d195f119c78f66d48dd71e"
+    },
+    "renders/v6_sedge/side.png": {
+      "bytes": 489356,
+      "sha256": "47852313fa3aa6edc6ca343e4f9a8172c70c400394dc9e4c3cc967a571487d1f"
+    },
+    "renders/v6_sedge/top.png": {
+      "bytes": 498881,
+      "sha256": "c14b612b60175170d0d0c247dfccfb5bdfb104bc5a46dd459d08ff41b12db472"
+    },
+    "security/renderer.log": {
+      "bytes": 293,
+      "sha256": "7c2c00bf449a67112aa9d10a6d182b5cbcbe1bd40e5e3d98d9c0690953a85e84"
+    },
+    "security/shared.log": {
+      "bytes": 294,
+      "sha256": "e0f8ec3a15816c82c976354b55e65973dd5bf43483fecdbfd3cd1d0833230cc5"
+    },
+    "security/textures.log": {
+      "bytes": 292,
+      "sha256": "fc88eeb72a7a1f95b0a924f1427c7b42f6965f4594190b1ee6b620241d8803cc"
+    },
+    "security/v6.log": {
+      "bytes": 290,
+      "sha256": "2fb0e5b74eae83e6e1f4cc59189076fcb09c836ab8cd6f3659704129ce0a0ffe"
+    },
+    "sources/generated_materials/cedar_cavity_shadow_d7c3795db051_basecolor.jpg": {
+      "bytes": 3961,
+      "sha256": "63090d932f9d2b991fa1c0bc861e45ab4cb0a017864b557370e3c598fc70af88"
+    },
+    "sources/generated_materials/cedar_cavity_shadow_d7c3795db051_normal.jpg": {
+      "bytes": 3965,
+      "sha256": "70e31e9de86a3d4b124c7f4ec9ae30b60b104713f0d4e8ebe228193d14d01cbb"
+    },
+    "sources/generated_materials/cedar_cavity_shadow_d7c3795db051_orm.jpg": {
+      "bytes": 4249,
+      "sha256": "9fc44429d909822af57f1e4df172676fa314c59d3e50f1b82f4b7a0320d70947"
+    },
+    "sources/generated_materials/cedar_old_heartwood_13c02feb653d_basecolor.jpg": {
+      "bytes": 5843,
+      "sha256": "1633c3b78be7be01636bca5e0e73e9a62fc8afb3570cc8787f1782bcf28c84d1"
+    },
+    "sources/generated_materials/cedar_old_heartwood_13c02feb653d_normal.jpg": {
+      "bytes": 4057,
+      "sha256": "052f8f463dfd80b38932ab51371b9e91683cad11ec797776a29fefc8db1f42d7"
+    },
+    "sources/generated_materials/cedar_old_heartwood_13c02feb653d_orm.jpg": {
+      "bytes": 4899,
+      "sha256": "a1d97e3ab63dd4a52d8803efcf5aac9bddb2682b00ceebabedfe4fe6f94a993c"
+    },
+    "sources/generated_materials/cedar_shade_moss_8182ca73dc8d_basecolor.jpg": {
+      "bytes": 5484,
+      "sha256": "72dd758344c5bfe6e69ae26eb8e5e210b39cce378dd0ac90ef9b61e0cf1831f5"
+    },
+    "sources/generated_materials/cedar_shade_moss_8182ca73dc8d_normal.jpg": {
+      "bytes": 4011,
+      "sha256": "a22b483de5becced981fe137569bdba3a6577b19a8cbc7424569cf0723a44efe"
+    },
+    "sources/generated_materials/cedar_shade_moss_8182ca73dc8d_orm.jpg": {
+      "bytes": 4841,
+      "sha256": "48f249812f29cf36105ef4c715efad59b16687559e5d0f3b60ead10e8225ac1b"
+    },
+    "sources/generated_materials/cedar_weathered_bark_d7eaeaeda078_basecolor.jpg": {
+      "bytes": 5495,
+      "sha256": "cb24a41e698de1f7262f4d648f278a30ccf065adc896a6ead2236a7d0038f7b9"
+    },
+    "sources/generated_materials/cedar_weathered_bark_d7eaeaeda078_normal.jpg": {
+      "bytes": 4073,
+      "sha256": "5146e4252baca92e3db968544a4d84318e5d4e86181f6aea094f3adced37914d"
+    },
+    "sources/generated_materials/cedar_weathered_bark_d7eaeaeda078_orm.jpg": {
+      "bytes": 4913,
+      "sha256": "80dc287812bf9b6b389a83c8b82107e847af5a23cdf622430e6bfcd513e21beb"
+    },
+    "sources/generated_materials/forest_flexible_stem_a91a07929c1b_basecolor.jpg": {
+      "bytes": 6925,
+      "sha256": "d47dbe0480ea21453d2cc883b9c546613167333e273293ad90375b72e9b999bb"
+    },
+    "sources/generated_materials/forest_flexible_stem_a91a07929c1b_normal.jpg": {
+      "bytes": 6739,
+      "sha256": "1e8e5195f88a994fd35e1230d3e19b907e6177994ba6562e2d3521ca1a7f0a5e"
+    },
+    "sources/generated_materials/forest_flexible_stem_a91a07929c1b_orm.jpg": {
+      "bytes": 6213,
+      "sha256": "7be46487b2ae1948c087bd83eeed1483e2efb719de7979399eeac4634ebb554a"
+    },
+    "sources/generated_materials/woodland_leaf_light_veins_v2_basecolor.jpg": {
+      "bytes": 5425,
+      "sha256": "2c7d875c91512c2124934ced9193d2cc191979fcfc4e9fb725e30e2d464b45e0"
+    },
+    "sources/generated_materials/woodland_leaf_old_veins_v2_basecolor.jpg": {
+      "bytes": 4907,
+      "sha256": "db40d002980c3ffba5a017e7fd24335328ed4c26a404139e1e425f5fa2ac9400"
+    },
+    "sources/generated_materials/woodland_leaf_veins_v2_basecolor.jpg": {
+      "bytes": 4923,
+      "sha256": "833a09fe6e998bcdeb38cafbbf56a001994d8cc672141b730b8fa31bbfadcbb3"
+    },
+    "sources/generated_materials/woodland_leaf_veins_v2_normal.jpg": {
+      "bytes": 7140,
+      "sha256": "d1da4a6749d8add5b5d747148c73504d474fef44bf99d96175d1217a239a2081"
+    },
+    "sources/generated_materials/woodland_leaf_veins_v2_orm.jpg": {
+      "bytes": 8727,
+      "sha256": "8b57bdbcbd106901522e907c043da54a30232187a7135db8a5096142149aa6e2"
+    },
+    "sources/v6_sedge.blend": {
+      "bytes": 278253,
+      "sha256": "234365357ae99526833e0c20bd7f9d78fc7ebf6b3d070a211433a1f0fde43d27"
+    },
+    "structural-audit.json": {
+      "bytes": 1126,
+      "sha256": "4ed3f7443cb448c8b5734abf4f7076dd189da5368152768bdc9d7860dbcd687c"
+    }
+  }
+}
