@@ -271,7 +271,7 @@ export async function buildSacredForestTrial({ world, layoutUrl, area, renderer 
       batch.castShadow=closedV4; batch.receiveShadow=closedV4; batch.userData.f1SacredTrial = true; root.add(batch); batches.push(batch);
     }
     if(closedV4){
-      if(layout.natureRevision===5){const {createApertureLightV5}=await import('./f1-aperture-light-v5.js');aperture=createApertureLightV5({root,openings:layout.closedRuinsV3.roof.openings,renderer});
+      if(layout.natureRevision>=5){const {createApertureLightV5}=await import('./f1-aperture-light-v5.js');aperture=createApertureLightV5({root,openings:layout.closedRuinsV3.roof.openings,renderer});
         const {createCeilingSealV5}=await import('./f1-ceiling-seal-v5.js');const arch=byId.get('v4_passage_arch');seal=createCeilingSealV5({root,tiles:layout.cells.map(c=>c.tile),walls:layout.boundaryWallPlacements,source:records.get(arch.file).source,openings:layout.closedRuinsV3.roof.openings,height:5.3,boss:true});
       }else{const {createApertureLightV4}=await import('./f1-aperture-light-v4.js');aperture=createApertureLightV4({root,openings:layout.closedRuinsV3.roof.openings,renderer});}
     }

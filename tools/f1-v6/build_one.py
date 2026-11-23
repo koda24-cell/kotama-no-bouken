@@ -12,7 +12,7 @@ def main():
     assert asset in allowed,asset
     for path,label in [('tools/f1-v6','v6'),('tools/f1-sacred-forest','shared'),('tools/f1-layer-v4','renderer'),('assets/3d/dungeons/b1_sacred_forest_candidates/textures','textures')]:
         subprocess.run(['bash',str(ROOT/'tools/security/clamav_scan_gate.sh'),'scan',str(ROOT/path),str(delivery/'security'/f'{label}.log')],check=True)
-    sys.path[:0]=[str(ROOT/'tools/f1-sacred-forest'),str(ROOT/'tools/f1-sacred-forest/assets'),str(ROOT/'tools/f1-layer-v4')]
+    sys.path[:0]=[str(ROOT/'tools/f1-sacred-forest'),str(ROOT/'tools/f1-sacred-forest/assets'),str(ROOT/'tools/f1-layer-v4'),str(Path(__file__).parent)]
     import bpy
     import common as c,natural as n,architecture_details as d,render_asset
     from mathutils import Vector
@@ -86,11 +86,16 @@ def main():
     metrics=c.finish(id,category,'Individually authored V6 '+asset+'; first-stratum damp moss palette; review only.')
     assert len(metrics['renders'])==5
     assert all((OUT/p).is_file() for p in metrics['renders'])
+    if asset in allowed[:3]:
+        from grass_cards import build_cards
+        cards=build_cards(OUT/category/(id+'.glb'),id,OUT,c)
+        assert cards['tris']==6 and len(cards['renders'])==5
+        subprocess.run(['python3',str(ROOT/'tools/3d-performance/audit_glb.py'),str(OUT/'props'/(id+'_cards.glb')),'--output',str(OUT/'metrics'/(id+'_cards-audit.json'))],check=True)
     metrics['approvalStatus']='NOT_APPROVED'
     (OUT/'metrics'/f'{id}.json').write_text(json.dumps(metrics,indent=2))
     for folder in ['props','modules','sources','renders','metrics']:
         if (OUT/folder).exists():shutil.copytree(OUT/folder,delivery/folder,dirs_exist_ok=True)
-    (delivery/'manifest.json').write_text(json.dumps({'status':'NOT_APPROVED','asset':metrics,'assetName':asset,'sequential':True},indent=2))
+    (delivery/'manifest.json').write_text(json.dumps({'status':'NOT_APPROVED','asset':metrics,'cards':cards if asset in allowed[:3] else None,'assetName':asset,'sequential':True},indent=2))
     subprocess.run(['python3',str(ROOT/'tools/3d-performance/audit_glb.py'),str(OUT/category/(id+'.glb')),'--output',str(delivery/'structural-audit.json')],check=True)
 
 if __name__=='__main__':
