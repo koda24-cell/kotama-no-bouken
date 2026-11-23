@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "method": "Actual final MASK GLB triangles/UVs sampled against actual RGBA atlas alpha >= .35. All walk cells at camera Y1.6m/backoff1.1m/FOV68/aspect1.6, four headings. Samples in lower viewport y60..98.5%, within5m. Same-cell plants stay inside wall planes. Artistic tone and GPU pixels are independently reviewed.",
+  "method": "Actual final MASK GLB triangles/UVs sampled against actual RGBA atlas alpha >= .35. All walk cells at camera Y1.6m/backoff1.1m/FOV68/aspect1.6, four headings. Samples in lower viewport y60..98.5%, within5m. Conservative minimum using only four core corner plants; companion clumps and wall-bank plants are additional. Artistic tone and GPU pixels are independently reviewed.",
   "floors": [
     {
       "floor": 1,

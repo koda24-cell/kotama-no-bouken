@@ -1,0 +1,65 @@
+{
+  "passed": true,
+  "models": [
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern_cards.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/fractured/props/v6_fractured.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/riverstones/props/v6_riverstones.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/schist/props/v6_schist.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge_cards.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate_cards.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/wall_a/modules/v6_wall_a.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/wall_b/modules/v6_wall_b.glb",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/wall_c/modules/v6_wall_c.glb",
+      "errors": 0,
+      "warnings": 0
+    }
+  ]
+}
