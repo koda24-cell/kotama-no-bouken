@@ -19,7 +19,7 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
    if(!['sedge','trifoliate','fern'].includes(id))hardPlacements.push({assetId:id,position:[x,y,z],rotationY:ry,scale:[sx,sy,sz]});
    const source=sources.get(id),matrix=new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),ry),new THREE.Vector3(sx,sy,sz));
    source.updateMatrixWorld(true);const inv=source.matrixWorld.clone().invert();
-   source.traverse(o=>{if(!o.isMesh)return;const key=id+':'+o.uuid+':'+Math.floor(x/16)+':'+Math.floor(z/16);if(!groups.has(key))groups.set(key,{o,matrices:[],wall:id.startsWith('wall_')});groups.get(key).matrices.push(matrix.clone().multiply(inv).multiply(o.matrixWorld));});
+   source.traverse(o=>{if(!o.isMesh)return;const key=id+':'+o.uuid+':'+Math.floor(x/16)+':'+Math.floor(z/16);if(!groups.has(key))groups.set(key,{o,matrices:[],wall:id.startsWith('wall_'),id});groups.get(key).matrices.push(matrix.clone().multiply(inv).multiply(o.matrixWorld));});
   };
   for(const[x,z]of walkTiles){
    const seed=x*17+z*31+area.f*41,stair=area.objects.some(o=>o.kind==='stairs'&&o.tx===x&&o.ty===z);
@@ -46,8 +46,19 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
     for(const[dx,dz,ry]of [[0,-1,0],[1,0,-Math.PI/2],[0,1,Math.PI],[-1,0,Math.PI/2]])if(!opens.has((x+dx)+','+(z+dz))){add(id,x*4+dx*2,0,z*4+dz*2,ry);counts.walls[id]++;}
    }
   }
-  for(const{o,matrices,wall}of groups.values()){
-   const b=new THREE.InstancedMesh(o.geometry,(()=>{if(!/v6_(sedge|trifoliate|fern)_cutout/.test(o.material.name))return o.material;if(!materials.has(o.material)){const m=grassCutoutMaterialV6(o.material);materials.set(o.material,m);ownedMaterials.push(m);}return materials.get(o.material);})(),matrices.length);matrices.forEach((m,i)=>b.setMatrixAt(i,m));b.computeBoundingBox();b.computeBoundingSphere();b.userData.v6Wall=wall;root.add(b);batches.push(b);
+  function reviewMaterial(id,original){
+   const grass=/v6_(sedge|trifoliate|fern)_cutout/.test(original.name);
+   const tintedWall=id.startsWith('wall_')&&original.name==='sacred_weathered_stone';
+   if(!grass&&!tintedWall)return original;
+   if(!materials.has(original)){
+    const m=grass?grassCutoutMaterialV6(original):original.clone();
+    if(tintedWall){const tint={wall_a:[.84,.95,.82],wall_b:[.93,.98,.92],wall_c:[1,1,1]}[id];m.color.multiply(new THREE.Color().setRGB(...tint));}
+    materials.set(original,m);ownedMaterials.push(m);
+   }
+   return materials.get(original);
+  }
+  for(const{o,matrices,wall,id}of groups.values()){
+   const b=new THREE.InstancedMesh(o.geometry,reviewMaterial(id,o.material),matrices.length);matrices.forEach((m,i)=>b.setMatrixAt(i,m));b.computeBoundingBox();b.computeBoundingSphere();b.userData.v6Wall=wall;root.add(b);batches.push(b);
   }
   // Commit only once every asset and batch is ready. Failed loads leave native walls visible.
   if(area.f===1)world.traverse(o=>{if(o.userData.firstStratumNativeWall&&o.visible){hidden.push(o);o.visible=false;}});
