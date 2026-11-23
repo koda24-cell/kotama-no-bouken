@@ -423,3 +423,9 @@
 - 利用者から「草は画像を貼る方が軽い」と指摘。原本4320triのsedgeを各所に大量配置する計画を変更。実行45205382187は直列キューの最初の草の段階で中止（完了扱いにしない）。
 - 自作原本GLBを再取込し、照明を焼き込まないbasecolor+透過の3方向512px画像を自作。1枚1536×512アトラスへまとめ、3交差板/6tri/1材質の候補を作る。既存multi-view impostor実装の考え方を近い草向けに限定利用。原本は別GLB/Blendとして保持。板も実GLB再取込5方向、alpha MASK/閾値/黒縁/斜め上からの薄さ/被覆率mipを確認予定。
 - 新しいgrass_cards.pyと試験組込みは未検証。既存foliage coverage helperを再利用する予定。枝・岩・壁を画像板へ一括置換しない。画像の権利は自作造形/自作葉脈からの焼出しのみ。
+
+#### V6透過草の初回実証と裏面照明（2026-11-24）
+- run45206056039成功、候補archive829a30d。原本sedge GLB4320tri/3材質を保持し、別v6_sedge_cards.glbを実生成。6tri/1材質/1透過アトラス1536×512、alpha MASK .35、両面。GLB再取込5PNGを実確認。上からは縦板が薄くなる制約あり、固定目高のダンジョン用候補であって全視点向けの原本代替ではない。
+- 独立実WebGLで同じ25株比較: 草のみ108000→150tri、3→1draw、5→1texture。床込み108002/152tri、4/2draw。glTF-validator errors0、GL errors0。CPU送出時間は揺れるため実FPS改善率に読み替えない。元GLB229KBに対しカードGLB567KBであり、ダウンロード容量の削減とは主張しない。
+- 初回比較で裏面の上向きnormalがThreeのDOUBLE_SIDEDによって下へ反転し、交差板の一部が黒く見えた。草限定のclone材質でnormal_fragment_beginのfaceDirection反転だけ除き、両面を同じ葉冠として照明。MSAA alphaToCoverageを追加し、既存coverage mipを保持。元材質/GLB/alpha閾値は変更しない。独立WebGLで再比較し黒い面を補修したPNGを確認。ゲーム組込み・全草種・実機FPSはまだ未検証。
+- 実装候補field/f1-grass-cutout-lighting-v6.js、証跡docs/reviews/f1-v6-grass/。原本と軽量候補の双方NOT_APPROVED。後続8assetはmax-parallel1のrun45207192804で順次生成中、全完了とはしない。
