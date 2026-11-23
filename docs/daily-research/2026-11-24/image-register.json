@@ -1,0 +1,101 @@
+{
+  "checked_at": "2026-11-24T08:26:00+09:00",
+  "new_images_created": 0,
+  "new_images_downloaded": 0,
+  "visually_verified_this_run": 0,
+  "publication": "NOT_PUBLIC",
+  "items": [
+    {
+      "id": "ARTICLE-PROTO01-FOLIAGE",
+      "article": "試作01",
+      "status": "存在は記録済みだが未取得",
+      "sources": [
+        "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44059729505"
+      ],
+      "needed": [
+        "同条件4方向before/after原PNG",
+        "要比較加工",
+        "材質/形状照合"
+      ],
+      "rights": "原本・外部texture権利要確認",
+      "spoiler": "第6層"
+    },
+    {
+      "id": "ARTICLE-PROTO02-MOSS",
+      "article": "試作02",
+      "status": "存在は記録済みだが未取得",
+      "sources": [
+        "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44062318352"
+      ],
+      "needed": [
+        "初期LOD2欠落原画像の特定、なければ要撮影",
+        "同角度修正版",
+        "要比較加工/赤丸拡大"
+      ],
+      "rights": "元モデル・texture要確認",
+      "spoiler": "第1層"
+    },
+    {
+      "id": "ARTICLE-PROTO03-STORAGE",
+      "article": "試作03",
+      "status": "要撮影・要図解制作",
+      "needed": [
+        "生成/一時保管/確認/承認/正式保存/導入の説明図",
+        "匿名化GitHub実画面"
+      ],
+      "rights": "画面内第三者情報・識別情報要確認",
+      "spoiler": "素材名を必要に応じマスク"
+    },
+    {
+      "id": "ARTICLE-GRASS-CARD-V6",
+      "article": "草の6tri化と容量",
+      "status": "存在は記録済みだが未取得",
+      "source_branch": "feature/f1-sightline-flora-v6-20261124",
+      "source_sha": "b3f86ba5bfebe7c96414999941d6b529ff614d0b",
+      "relative_path": "docs/reviews/f1-v6-grass/source-and-cutout-ground-level.png",
+      "file_size": 120314,
+      "measurement_path": "docs/reviews/f1-v6-grass/verification.json",
+      "needed": [
+        "安全取得/原本保持",
+        "元/カード同条件の注釈比較",
+        "真上の薄さの図または原PNG"
+      ],
+      "rights": "自作造形/自作atlasの記録あり。掲載個別確認待ち",
+      "spoiler": "第1層試験素材",
+      "scan_evidence_run": 45267597594,
+      "approval": "NOT_APPROVED"
+    },
+    {
+      "id": "F1-V6-GAME-20261124",
+      "article": "視界・壁・配置の日誌",
+      "status": "存在は記録済みだが未取得",
+      "source_branch": "feature/f1-sightline-flora-v6-20261124",
+      "source_sha": "b3f86ba5bfebe7c96414999941d6b529ff614d0b",
+      "relative_paths": [
+        "docs/reviews/f1-v6-game/01-3f-arch-down.png",
+        "docs/reviews/f1-v6-game/01-3f-arch-left.png",
+        "docs/reviews/f1-v6-game/01-3f-arch-right.png",
+        "docs/reviews/f1-v6-game/01-3f-arch-up.png",
+        "docs/reviews/f1-v6-game/02-npc-dead-end.png",
+        "docs/reviews/f1-v6-game/03-lamp-dead-end.png",
+        "docs/reviews/f1-v6-game/04-1f-stair-down.png",
+        "docs/reviews/f1-v6-game/04-2f-stair-down.png",
+        "docs/reviews/f1-v6-game/04-2f-stair-up.png",
+        "docs/reviews/f1-v6-game/04-3f-stair-up.png",
+        "docs/reviews/f1-v6-game/05-1f-floor-1-5.png",
+        "docs/reviews/f1-v6-game/05-2f-floor-1-10.png",
+        "docs/reviews/f1-v6-game/05-2f-floor-15-4.png",
+        "docs/reviews/f1-v6-game/05-2f-floor-25-6.png",
+        "docs/reviews/f1-v6-game/05-3f-floor-13-10.png"
+      ],
+      "needed": [
+        "V5同条件カメラのbefore特定",
+        "移動中視界の連続画像/GIFは要撮影",
+        "公開承認/権利確認"
+      ],
+      "rights": "未公開本編/外部textureの個別確認",
+      "spoiler": "一層3F神域/配置",
+      "approval": "NOT_APPROVED"
+    }
+  ]
+}
