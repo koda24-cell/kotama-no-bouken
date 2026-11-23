@@ -1,0 +1,102 @@
+{
+  "status": "NOT_APPROVED",
+  "blender": "5.3.0",
+  "files": {
+    "manifest.json": {
+      "bytes": 1484,
+      "sha256": "a8b37e76c1a844e46cb24cb98530797a9e6e210fb4a3ec7d4c4d85704e1df383"
+    },
+    "metrics/v6_riverstones.json": {
+      "bytes": 1270,
+      "sha256": "06af344350dc3ef4bd105f876717ce2f9c512955923f726f3d620bee69e142a0"
+    },
+    "props/v6_riverstones.glb": {
+      "bytes": 3284744,
+      "sha256": "1b89077076427fcead0b202585009e75dfc99f4859e16ab00e63fc978b75eaa4"
+    },
+    "renders/v6_riverstones/angle.png": {
+      "bytes": 452453,
+      "sha256": "01caab411d68034c710100a2a5da0734e2c27e6d69e544374820d1b7d6149b36"
+    },
+    "renders/v6_riverstones/back.png": {
+      "bytes": 434271,
+      "sha256": "d0a010d29c43ac1d79da2fa7236306f492930f1dc9122613955d0cfca18d9924"
+    },
+    "renders/v6_riverstones/front.png": {
+      "bytes": 431504,
+      "sha256": "84ca65a58ad20e412c5d702a5df8e1659e44182dac51d5061913f1ca2e219605"
+    },
+    "renders/v6_riverstones/side.png": {
+      "bytes": 456068,
+      "sha256": "539aa34d4f2c0ef5488789d0d0a26dfd0c446150deb6eb699ec40df3f4578a25"
+    },
+    "renders/v6_riverstones/top.png": {
+      "bytes": 559090,
+      "sha256": "6f7c242fed4f3402fac9d34a28eba1a431253bbd4d919a78134a93ba0d163eff"
+    },
+    "security/moss-textures.log": {
+      "bytes": 289,
+      "sha256": "1c85670a5af72818d8062205fd3e6debbda901754e7ad87ad484676313237ee3"
+    },
+    "security/renderer.log": {
+      "bytes": 293,
+      "sha256": "6d238fe928c336a915909296f1f54a8d67719c782f5473b42e11f11dd6a1bd58"
+    },
+    "security/shared.log": {
+      "bytes": 294,
+      "sha256": "39a1cff5cc04d170db61112fd1673d21ce8609f5ea0532fcd0c0c780b316553e"
+    },
+    "security/textures.log": {
+      "bytes": 292,
+      "sha256": "3d813876f310c91b935f10941131081488ab31a9c4ccc5ec9778a174621da411"
+    },
+    "security/v6.log": {
+      "bytes": 293,
+      "sha256": "45ef5f8b49946327c0b02e19ce5e765880f798faddaaa14a138743a5f08c80bd"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_basecolor.jpg": {
+      "bytes": 7369,
+      "sha256": "6f03bd6c4e8ec104a4a4db67b4e9bac89bd34d246e2342f010831a529870fd14"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_normal.jpg": {
+      "bytes": 6815,
+      "sha256": "b101f8a2c348f96b2aef72301da06e8c6aea3bf26eeddeb59e355ccc0466eff0"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_orm.jpg": {
+      "bytes": 6163,
+      "sha256": "cdc698bf7bb16880d5c6cd6dd2df7edccdb26b003f2c522acef3bcc002464114"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_basecolor.jpg": {
+      "bytes": 9363,
+      "sha256": "4f73705d9ddaf1e0197f3fb945acedaa83939c808a0f22fc618ec208295bbdee"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_normal.jpg": {
+      "bytes": 6741,
+      "sha256": "4c1c7a61309412d6a39f1329853a76a61a6b5b6934441aacfd737879ce28b9a6"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_orm.jpg": {
+      "bytes": 6317,
+      "sha256": "2ae6e8f6cdae7c431e328fb1959a682cc4583d2948f3766af77720a0f184b192"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_basecolor.jpg": {
+      "bytes": 7562,
+      "sha256": "13cde201b094361aec10751caf975b072a45901369302535cb4f93d73df218cb"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_normal.jpg": {
+      "bytes": 6860,
+      "sha256": "8d81fe337e0d81fce7b783440f415815231c2050ed08207d569fbd59855dc1c4"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_orm.jpg": {
+      "bytes": 6273,
+      "sha256": "36fbb808328024432930f74eb047c3a79af6de49400a6019558a9a05938c8eff"
+    },
+    "sources/v6_riverstones.blend": {
+      "bytes": 3487227,
+      "sha256": "629007ac49a5ddd2d5fffee875675121d0b2e618b3eccf36d6cbb0e5626e660f"
+    },
+    "structural-audit.json": {
+      "bytes": 1088,
+      "sha256": "e8e3e7c07eaaeb789c06ba0955e673ebb88c76eb63db17c547af1e90242985c8"
+    }
+  }
+}
