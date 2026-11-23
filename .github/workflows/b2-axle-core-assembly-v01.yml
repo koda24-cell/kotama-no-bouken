@@ -1,0 +1,141 @@
+name: B2 Axle Hub Bearing Assembly V01 Real Blender BVH QA
+on:
+  push:
+    branches: [feature/gpt-b2-waterwheel-axle-assembly-fit-v01-20261119]
+    paths:
+      - 'tools/b2-waterwheel-assembly/build_assembly_v01.py'
+      - '.github/workflows/b2-axle-core-assembly-v01.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record assembly review run ID
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/gpt-b2-waterwheel-axle-assembly-fit-v01-20261119
+          git reset --hard origin/feature/gpt-b2-waterwheel-axle-assembly-fit-v01-20261119
+          mkdir -p docs/3d/b2-waterwheel-assembly
+          echo "{\"run_id\":${RUN_ID},\"status\":\"RUNNING_NOT_APPROVED\"}" > docs/3d/b2-waterwheel-assembly/latest-v01.json
+          git add docs/3d/b2-waterwheel-assembly/latest-v01.json
+          git commit -m "chore(b2): track real assembly review run"
+          git push origin HEAD:feature/gpt-b2-waterwheel-axle-assembly-fit-v01-20261119
+      - name: Restore original hub V11
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-waterwheel-single-wooden-hub-v11
+          run-id: 44452329534
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: assembly-input/hub
+      - name: Restore original iron ferrule V01
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-iron-axle-ferrule-v01
+          run-id: 44454120299
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: assembly-input/ferrule
+      - name: Restore original lower bearing V03
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-single-lower-timber-axle-bearing-v03
+          run-id: 44458096045
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: assembly-input/lower
+      - name: Restore original upper cap V05
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-upper-timber-bearing-cap-v05
+          run-id: 44462233737
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: assembly-input/upper
+      - name: Restore original wooden axle V02
+        uses: actions/download-artifact@v4
+        with:
+          name: b2-single-oak-waterwheel-axle-v02
+          run-id: 44520064091
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: assembly-input/axle
+      - name: Verify all input manifests SHA256 and bytes BEFORE Blender import
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          root=Path('assembly-input')
+          req={'hub':'b2_waterwheel_single_wooden_hub_v11.glb',
+            'ferrule':'b2_single_iron_axle_ferrule_v01.glb',
+            'lower':'b2_single_timber_lower_axle_bearing_v03.glb',
+            'upper':'b2_one_upper_timber_bearing_cap_v05.glb',
+            'axle':'b2_single_oak_waterwheel_axle_v02.glb'}
+          for group,name in req.items():
+            folder=root/group
+            mfiles=list(folder.glob('*manifest.json'))
+            assert len(mfiles)==1,(group,mfiles)
+            m=json.loads(mfiles[0].read_text())
+            assert m['approval']=='NOT_APPROVED'
+            assert name in m['files']
+            for filename,meta in m['files'].items():
+              blob=(folder/filename).read_bytes()
+              assert len(blob)==meta['bytes'] and hashlib.sha256(blob).hexdigest()==meta['sha256'],(group,filename)
+            print('SOURCE_SHA256_PASS',group,len(m['files']))
+          PY
+      - name: Obtain ClamAV signatures and scan source files before importing
+        run: |
+          mkdir -p security/clamdb && chmod 777 security/clamdb
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'set -e; freshclam --stdout --datadir=/workspace/security/clamdb; clamscan --database=/workspace/security/clamdb -r --infected assembly-input'
+      - name: Actual Blender 5.3 import five GLBs, BVH intersections, four Cycles PNGs
+        run: |
+          set -o pipefail
+          mkdir -p render-output/b2-assembly-v01
+          docker run --rm -v "$PWD:/workspace" -w /workspace ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 blender -b -t 2 --python-exit-code 1 --python tools/b2-waterwheel-assembly/build_assembly_v01.py -- assembly-input render-output/b2-assembly-v01 | tee /tmp/assembly.log
+          grep -q 'B2_ASSEMBLY_V01_REAL_RENDER_SUCCESS' /tmp/assembly.log
+      - name: Verify generated assembly outputs and actual geometric report
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,struct
+          folder=Path('render-output/b2-assembly-v01')
+          m=json.loads((folder/'b2_axle_core_assembly_v01_review_manifest.json').read_text())
+          assert m['input_model_types']==5 and m['rendered_components']==7
+          assert len(m['files'])==7
+          for name,v in m['files'].items():
+            data=(folder/name).read_bytes()
+            assert len(data)==v['bytes'] and hashlib.sha256(data).hexdigest()==v['sha256'],name
+            if name.endswith('.png'):assert data[:8]==bytes.fromhex('89504e470d0a1a0a')
+            if name.endswith('.glb'):
+              assert data[:4]==b'glTF'
+              n=struct.unpack_from('<I',data,12)[0]
+              j=json.loads(data[20:20+n])
+              assert len(j.get('meshes',[]))>=5
+          report=json.loads((folder/'b2_axle_core_assembly_v01_collision_report.json').read_text())
+          assert len(report['bvh_triangle_intersection_checks'])==15
+          assert all(x['min_nominal_radial_gap_m']>0 for x in report['radial_vertex_checks'].values() if x['count'])
+          print('ASSEMBLY_MANIFEST_AND_GAPS_VERIFIED')
+          PY
+      - name: Run shared 3D GLB performance audit on actual assembled scene
+        run: |
+          python3 tools/3d-performance/audit_glb.py 'render-output/b2-assembly-v01/*.glb' --output render-output/b2-assembly-v01/b2_assembly_perf_audit.json
+      - name: ClamAV scan generated GLB Blend PNG and QA
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace --entrypoint sh ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -c 'clamscan --database=/workspace/security/clamdb -r --infected render-output/b2-assembly-v01'
+      - name: Temporary review artifact (NOT_APPROVED)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2-axle-core-assembly-v01-review
+          path: render-output/b2-assembly-v01
+          retention-days: 14
+          if-no-files-found: warn
