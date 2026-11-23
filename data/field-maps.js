@@ -19,7 +19,7 @@
 const FIELD_AREAS = {
   1: {
     stage: 1, name: "はじまりの樹海", theme: "forest",
-    bgm: "assets/music/仕分け雨/蒼獣シーガー.mp3",
+    bgm: "assets/music/exploration/floor1/instrumental-fantasy-dungeon-exploration_bgm_20261123-225115.mp3",
     enterScene: "a1-enter", bossScene: "a1-boss", signScene: "a1-sign",
     objects: {
       a: { kind: "npc", id: "woodcutter", name: "木こりボルド", sprite: "npc-woodcutter", scene: "a1-woodcutter", sideEvents: ["a1-axe-return"] },
@@ -380,7 +380,7 @@ const FIELD_AREAS = {
   },
   5: {
     stage: 5, name: "魔王城・回廊", theme: "castle",
-    bgm: "assets/music/仕分け雨/Sunny_day_shopping.mp3",
+    bgm: "assets/music/exploration/floor5/dark-instrumental-jrpg-exploration-bgm_20261123-230609.mp3",
     enterScene: "a5-enter", bossScene: "a5-boss", signScene: "a5-sign",
     objects: {
       a: { kind: "npc", id: "ghost-knight", name: "亡霊の騎士", sprite: "npc-ghost", scene: "a5-ghost-knight", sideEvents: ["a5-knights-rest"] },
