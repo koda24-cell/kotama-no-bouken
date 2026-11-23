@@ -435,3 +435,11 @@
 - アーチを境界へ移すだけでは横移動の途中でカメラが柱へ寄る。自作f1-camera-clearance-v6.jsがレビューアーチ近傍だけ眼の横ずれを滑らかに制限する（プレイヤー移動/当たり判定変更なし）。実GLBへの1008眼位置のray検査で旧78交差→修正0、90度回転同値も確認。ゲーム全画面検証は未完了。
 - 岩試作schistは苔が面ごとの緑色になり、実PNGで三角形の塗り分けに見えたため不採用。run45208952908は草3種と旧schistまで保存後、中止。連続した石のPBR/彫刻と、実表面ray上に座る小さな苔の厚みへ改修し、run45212714189でschist一体を再検証中。後続岩/壁の完了・美術承認とはしない。
 - GitHub job metadataのBlender5.3/入力検査/出力検査/保存成功は確認したが、CloudからAzureに転送されるjobログの直接取得が403。ログを取得済みとは主張しない。最終候補全部に共有Performance Auditと追加ClamAVを実行し、ログとハッシュをGitへ保存する予定。候補NOT_APPROVEDを維持。
+
+
+#### 第一層V6: 透過画像植生と最終検証（2026-11-24）
+- PR #736、試験コード b3f86ba5bfebe7c96414999941d6b529ff614d0b。既存V6登録（PR737–740）の最終追記。共有Blender5.3+ClamAVで9種類を順番に制作、並行agentなし。草3種は原本を残し、自作アルベドatlas・3枚交差カード（1株6tri/1材質）を別候補として生成。MASK .35/両面法線補正/MSAA alphaToCoverage、16mインスタンス/距離カリングを試験。汎用decimation/外部画像転用なし。
+- 個別制作run45206056039、45208952908（草2種の個別job成功後に後続岩を中止）、45214438865、45215795705、45220723124。共有最終監査 [45267597594](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45267597594) 成功。12GLB/62410triは原本を含む単体合計、ゲームFPSではない。ClamAV1.5.4:296ファイル/検出0、glTF-validator12点errors0/warnings0、60方向PNG/Blend/ハッシュをGitへ恒久保存。
+- 実ゲーム15PNG・会話/回復/宝箱一回/階段4リンク/戦闘帰還/通常表示/hash不一致fallback pass、page/console errors0。721セル×4方向の草投影、1008移動眼位置のアーチ交差0、追加硬物1221配置の通路干渉0。別起動の試験iframeで通常セーブsentinel不変を確認。起動前診断のnullガード補修後もfresh wrapper pass。
+- 原本と候補GLB/PNGはNOT_APPROVED。試験表示だけで、正式美術昇格/main変更/全端末FPS認定なし。草カードの容量は一部原本より増加、真上から薄い制限あり。詳細・再現スクリプト・実画像は feature の docs/3d/F1_SIGHTLINE_NATURE_V6_REVIEW.md と docs/reviews/f1-v6*/。
+- 固定SHA試遊URL: https://raw.githack.com/koda24-cell/kotama-no-bouken/b3f86ba5bfebe7c96414999941d6b529ff614d0b/preview/f1-sacred-playtest.html （未マージの試験版）。
