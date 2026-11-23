@@ -390,3 +390,10 @@
 - 1F/2Fの元の石形状/UVを保持したclone材へ38%→68%の同じ石肌/normal/roughnessを追加、3Fへ段階移行。prototype材を直接変更せず復元/解放。実画面を撮影、fresh3条件の実ゲームQA、別freshで実階段/会話/回復/戦闘帰還pass。
 - 実マップ106歩行/11行き止まり/11分岐、固定7物不変。実形状757硬配置×106移動帯の衝突0、天井945/954hit（残りは指定穴）。旧歩行位置182点の既存save fallbackとflags保持pass。通常保存領域に置いたsentinelを保持し、iframeが独立Mapを使うwrapperも実ブラウザーpass。
 - 原本・失敗画像・誤った検査条件（wrapperメモリー保存もnullと仮定した初回）を隠さず、docs/reviews/f1-v4*/ と docs/3d/F1_LAYER_V4_REVIEW_HANDOFF.md に保存。通常main公開/実機FPS/最終美術承認なし、NOT_APPROVEDを保持。汎用Auto Reviewのstartup_failureをLOD成功としない。
+
+
+### 第一層V5: 光源円盤の除去・局所木漏れ日VFX調査（2026-11-23）
+- ユーザー実画面の白い円盤はV4のvisible-sky-aperture mesh。V5はこの発光形状を作らず、見える光源なしの局所的な光の筋へ改修中。制作はroot単独・逐次、元モデルを保持。
+- 調査: [pmndrs/drei SpotLight](https://github.com/pmndrs/drei/blob/master/src/core/SpotLight.tsx)、[MIT](https://github.com/pmndrs/drei/blob/master/LICENSE)をGitHub APIで確認。React依存の追加/コード転用はせず、局所volume設計の参考。[three-good-godrays](https://github.com/Ameobea/three-good-godrays) READMEも確認。postprocessing依存とライセンスNOASSERTIONのため導入/再配布しない。既存のThree ShaderMaterial/SpotLight(MIT)で独自実装。
+- 試作は各開口の小さなbox内10sample積分・柔らかいray/noise移流と、独自生成の葉影cookieを使う。SpotLight.mapはThree r180 WebGLLights実装で影なしでもmap投影行列を更新することを確認。外部画像取得/texture転用なし。実ブラウザー描画/資源解放はこれから検証。
+- 天井と壁の隙間を上部石帯/裏側の連続した石面で閉鎖。F3は191歩行セル・31分岐に増やし既存7固定物/11水セルを保持、既存の苔石/草花/蔓を壁際に群配置。新規GLB造形/自動decimationなし。既存候補はNOT_APPROVEDの試遊表示のみ、mainは変更しない。
