@@ -1,13 +1,14 @@
 /* Opt-in, hash-pinned review dressing. Whole source meshes retained near camera. */
 import * as THREE from 'three';
+import {grassCutoutMaterialV6} from './f1-grass-cutout-lighting-v6.js';
 import {retainFirstLayerSource} from './field-3d-b1-sacred-trial.js';
 export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
  const response=await fetch(new URL('../assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',import.meta.url));
  if(!response.ok)throw Error('V6 nature catalog unavailable');
- const catalog=await response.json(),root=new THREE.Group(),held=[],sources=new Map(),groups=new Map(),batches=[],hidden=[];
+ const catalog=await response.json(),root=new THREE.Group(),held=[],sources=new Map(),groups=new Map(),batches=[],hidden=[],ownedMaterials=[],materials=new Map();
  root.name='f1-v6:understory-and-wall-transition';let disposed=false;
  const counts={plants:{sedge:0,trifoliate:0,fern:0},rocks:{schist:0,fractured:0,riverstones:0},walls:{wall_a:0,wall_b:0,wall_c:0}};
- function dispose(){if(disposed)return;disposed=true;root.removeFromParent();hidden.forEach(o=>o.visible=true);batches.forEach(o=>o.dispose());held.forEach(o=>o.release());root.clear();}
+ function dispose(){if(disposed)return;disposed=true;root.removeFromParent();hidden.forEach(o=>o.visible=true);batches.forEach(o=>o.dispose());ownedMaterials.forEach(m=>m.dispose());held.forEach(o=>o.release());root.clear();}
  try{
   for(const name of ['sedge','trifoliate','fern','schist','fractured','riverstones',...(area.f===1?['wall_a','wall_b','wall_c']:[])]){
    const d=catalog.sources.find(s=>s.name===name);if(!d)throw Error('Missing V6 asset '+name);
@@ -41,7 +42,7 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
    }
   }
   for(const{o,matrices,wall}of groups.values()){
-   const b=new THREE.InstancedMesh(o.geometry,o.material,matrices.length);matrices.forEach((m,i)=>b.setMatrixAt(i,m));b.computeBoundingBox();b.computeBoundingSphere();b.userData.v6Wall=wall;root.add(b);batches.push(b);
+   const b=new THREE.InstancedMesh(o.geometry,(()=>{if(!/v6_(sedge|trifoliate|fern)_cutout/.test(o.material.name))return o.material;if(!materials.has(o.material)){const m=grassCutoutMaterialV6(o.material);materials.set(o.material,m);ownedMaterials.push(m);}return materials.get(o.material);})(),matrices.length);matrices.forEach((m,i)=>b.setMatrixAt(i,m));b.computeBoundingBox();b.computeBoundingSphere();b.userData.v6Wall=wall;root.add(b);batches.push(b);
   }
   // Commit only once every asset and batch is ready. Failed loads leave native walls visible.
   if(area.f===1)world.traverse(o=>{if(o.userData.firstStratumNativeWall&&o.visible){hidden.push(o);o.visible=false;}});

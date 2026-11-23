@@ -1,0 +1,93 @@
+{
+  "passed": true,
+  "scope": "Independent actual WebGL cutout comparison, 25 plants; CPU/SwiftShader timings are diagnostics and not real-device FPS.",
+  "validations": {
+    "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge.glb": {
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge_cards.glb": {
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 2,
+      "numHints": 0,
+      "messages": [
+        {
+          "code": "UNUSED_MESH_TANGENT",
+          "message": "Tangents are not used because the material has no normal texture.",
+          "severity": 2,
+          "pointer": "/meshes/0/primitives/0/attributes/TANGENT"
+        },
+        {
+          "code": "IMAGE_NPOT_DIMENSIONS",
+          "message": "Image has non-power-of-two dimensions: 1536x512.",
+          "severity": 2,
+          "pointer": "/images/0"
+        }
+      ],
+      "truncated": false
+    }
+  },
+  "result": [
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge.glb",
+      "renderedPlants": 25,
+      "drawCalls": 4,
+      "triangles": 108002,
+      "textures": 5,
+      "diagnosticCpuFrameMs": 1.199999999254942,
+      "glError": 0,
+      "coverage": [],
+      "alphaMaterials": [
+        {
+          "name": "forest_leaf",
+          "alphaTest": 0,
+          "transparent": false,
+          "side": 2
+        },
+        {
+          "name": "forest_new_leaf",
+          "alphaTest": 0,
+          "transparent": false,
+          "side": 2
+        },
+        {
+          "name": "forest_old_leaf",
+          "alphaTest": 0,
+          "transparent": false,
+          "side": 2
+        }
+      ]
+    },
+    {
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge_cards.glb",
+      "renderedPlants": 25,
+      "drawCalls": 2,
+      "triangles": 152,
+      "textures": 1,
+      "diagnosticCpuFrameMs": 1.5999999977648258,
+      "glError": 0,
+      "coverage": [
+        {
+          "material": "v6_sedge_cutout:canopy-lighting",
+          "cutoff": 0.35,
+          "sourceCoverage": 0.16738382975260416,
+          "levels": 11
+        }
+      ],
+      "alphaMaterials": [
+        {
+          "name": "v6_sedge_cutout:canopy-lighting",
+          "alphaTest": 0.35,
+          "transparent": false,
+          "side": 2
+        }
+      ]
+    }
+  ],
+  "errors": []
+}
