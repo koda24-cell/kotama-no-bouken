@@ -406,3 +406,9 @@
 - 3Fは191歩行/31分岐、旧106歩行位置と固定7物/11水セルを保持。苔石65/下草205/草花43/シダ30/蔓98/倒木8などの群配置。実GLB984硬配置×181移動帯（幅1.8m）の衝突0。柔らかい葉/紙と頭上のruntime閉鎖geometryを区別する。
 - 最終fresh3条件の表示/移動/壁/宝箱一回/hash不一致fallback、別freshの実階段/会話/回復/戦闘帰還、保存領域sentinel不変のwrapperをpass。page/console errors0、入力52件のSHAが実行後も一致。証跡 docs/reviews/f1-v5*/、説明 docs/3d/F1_NATURE_LIGHT_V5_REVIEW.md。
 - 実画面を見た岩の単体感・内壁過露出の不採用、実行中の美術変更を検出した入力guardの失敗もiterationとして保存。候補はNOT_APPROVED、原本GLBの変更/新規一括生成/並行agent/汎用decimationなし。実機FPS/長期進行/最終美術承認/main公開は別。
+
+
+#### V5追加確認: 低い崩落壁の裏当て（2026-11-23）
+- 既存壁は一律4m高ではなく、1F/2Fの崩落壁では上端帯だけだと低い隙間が残る。PR733の閉鎖helperへfullBackingを追加し、元の崩落形状を残したまま背面の石組みを床から天井まで連続させた。native hidden doorの開閉は既存doorSigによる再buildを維持し、通行/固定物を変えない。
+- 独立実WebGLのrayを5本から9本へ拡張（低い隙間の高さ4本を追加）し全hit。開口中心は開放・縁はhit、2回dispose後baselineのgeometry1/texture0と影設定へ復元、GL error/警告0。最新のfresh3条件、別freshの実階段/会話/回復/戦闘帰還もpass。
+- 実画面の1F/2Fと補助構造の有効数を保存。1F508/2F504の壁背面と各567の屋根裏当て。表示中の壁/天井接続の補修であり、新規GLB生成・元assetの置換・美術承認/実機FPS承認ではない。証跡はPR733 docs/reviews/f1-v5-game/ と f1-v5-water/、説明はF1_NATURE_LIGHT_V5_REVIEW.md。
