@@ -47,6 +47,6 @@ for floor in floors:
    counts.append(count)
    if count<4:failures.append({'floor':floor['floor']+1,'tile':[x,z],'direction':direction,'opaqueSamplesInLowerViewport':count})
  results.append({'floor':floor['floor']+1,'walkCells':len(floor['walk']),'cardinalViews':len(counts),'minimumOpaqueForegroundSamples':min(counts),'passed':min(counts)>=4})
-result={'passed':not failures,'method':'Actual final MASK GLB triangles/UVs sampled against actual RGBA atlas alpha >= .35. All walk cells at camera Y1.6m/backoff1.1m/FOV68/aspect1.6, four headings. Samples in lower viewport y60..98.5%, within5m. Same-cell plants stay inside wall planes. Artistic tone and GPU pixels are independently reviewed.','floors':results,'failures':failures,'opacityPointSamples':{k:len(v)for k,v in points.items()}}
+result={'passed':not failures,'method':'Actual final MASK GLB triangles/UVs sampled against actual RGBA atlas alpha >= .35. All walk cells at camera Y1.6m/backoff1.1m/FOV68/aspect1.6, four headings. Samples in lower viewport y60..98.5%, within5m. Conservative minimum using only four core corner plants; companion clumps and wall-bank plants are additional. Artistic tone and GPU pixels are independently reviewed.','floors':results,'failures':failures,'opacityPointSamples':{k:len(v)for k,v in points.items()}}
 (ROOT/'docs/reviews/f1-v6/foreground-projection.json').write_text(json.dumps(result,indent=2));print(result)
 assert not failures

@@ -28,9 +28,11 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
     const tall=i===0||i===3,id=tall?(seed+i)%4===0?'fern':'sedge':'trifoliate';
     const jitter=((seed+i*7)%7-3)*.02,offset=stair?1.65:tall?1.5:1.43,scale=stair?.6:(tall?.86:.9)+(seed+i)%5*.025;
     add(id,x*4+dx*(offset+jitter),0,z*4+dz*(offset-jitter),seed+i*1.7,scale);counts.plants[id]++;
+    if(!stair){add('trifoliate',x*4+dx*1.2,0,z*4+dz*1.62,seed+i*2.3,.65+(seed+i)%3*.035);counts.plants.trifoliate++;const companion=id==='fern'?'sedge':'fern';add(companion,x*4+dx*1.64,0,z*4+dz*1.19,seed+i*2.7,.56+(seed+i)%3*.035);counts.plants[companion]++;}
    }
    if(stair)continue;
    if(seed%3!==0){const side=[[1,0],[-1,0],[0,1],[0,-1]].find(([dx,dz])=>!opens.has((x+dx)+','+(z+dz)));if(side){const[dx,dz]=side;add('trifoliate',x*4+dx*1.62+dz*((seed%7)-3)*.12,0,z*4+dz*1.62-dx*((seed%7)-3)*.12,seed,.8);counts.plants.trifoliate++;}}
+   for(const[dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]])if(!opens.has((x+dx)+','+(z+dz)))for(const t of[-.55,.55]){const id=(seed+(t>0?1:0))%3===0?'fern':'sedge';add(id,x*4+dx*1.5+dz*t,0,z*4+dz*1.5-dx*t,seed+t,.78+(seed%4)*.025);counts.plants[id]++;}
    const i=seed%4,[dx,dz]=[[-1,-1],[1,-1],[-1,1],[1,1]][i],id=['schist','fractured','riverstones'][seed%3];
    add(id,x*4+dx*1.59,0,z*4+dz*1.59,seed,.72);counts.rocks[id]++;
   }

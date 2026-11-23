@@ -104,17 +104,17 @@ def main():
     else:
         category='modules';stone,fracture,earth,moss,root=d.stone_materials();index=allowed.index(asset)-6
         c.cube('continuous opaque mortar core',(0,.68,2),(4,.16,4),earth,0)
-        heights=[.4,.5,.6666666667][index];rows=round(4/heights)
+        heights=[.5,4/7,2/3][index];rows=round(4/heights)
         for row in range(rows):
             za=row*4/rows+.012;zb=(row+1)*4/rows-.012
-            width=[.8,1.0,1.3333333333][index];cuts=[-2];cursor=-2+width*(.45 if row%2 else 1)
+            width=[1.0,1.16,4/3][index];cuts=[-2];cursor=-2+width*(.45 if row%2 else 1)
             while cursor<1.95:cuts.append(cursor);cursor+=width*rng.uniform(.9,1.1)
             cuts.append(2)
             for col,(xa,xb) in enumerate(zip(cuts,cuts[1:])):
                 if xb-xa<.08:continue
-                d.wall_block('transition_course',xa+.008,xb-.008,za,zb,stone,row*37+col,front=.012,back=.65,damage=[.018,.03,.045][index])
+                d.prism('transition_course',d.chipped_rect(xa+.008,xb-.008,za,zb,row*37+col,[.018,.03,.045][index]),.012,.65,stone,axis='y',bevel=[.045,.03,.018][index])
                 if (row+col)%3==0:d.moss_lobe('wet joint',(xa+.1,-.005,za),(.12,.025,.03),moss,row*17+col)
-        for sign in [-1,1]:c.tube('wall hugging roots',[(sign*1.86,-.03,0),(sign*1.8,-.04,1),(sign*1.9,-.03,2),(sign*1.75,-.025,3.3)],[.025,.02,.013,.003],root,6)
+        for sign in [-1,1]:c.tube('wall hugging roots',[(sign*1.86,.005,0),(sign*1.8,.005,1),(sign*1.9,.005,2),(sign*1.75,.005,3.3)],[.025,.02,.013,.003],root,6)
         for obj in list(bpy.context.scene.objects):
             if obj.type=='MESH':c.uv_world(obj,3)
     for im in bpy.data.images:
