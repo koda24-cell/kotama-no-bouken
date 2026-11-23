@@ -230,7 +230,7 @@ async function buildFloor() {
   }   // 待っている間にフロアが変わった
   const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
   // The URL-only sacred trial owns no save or interaction state.
-  g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
+  g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
   // 片付け
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
@@ -257,8 +257,8 @@ async function buildFloor() {
   if (area === 1 && a.f === 2 && (new URLSearchParams(location.search).get('f1sacred') === '1' || window.KotamaSacredPlaytest === true)) {
     try {
       const { buildSacredForestTrial } = await import('./field-3d-b1-sacred-trial.js?v=20261117-1');
-      const trial = await buildSacredForestTrial({ world: g.world, area: a,
-        layoutUrl: new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v3.json', import.meta.url).href });
+      const trial = await buildSacredForestTrial({ world: g.world, area: a, renderer:g.renderer,
+        layoutUrl: new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v4.json', import.meta.url).href });
       if (token !== g.buildToken || curKey() !== key) { trial.dispose(); if (token === g.buildToken) g.buildingKey = ''; return; }
       g.sacredTrial = trial; sacred = true;
       applyEnv(area, trial.env); g.camera.far = trial.far; g.camera.updateProjectionMatrix();
@@ -303,9 +303,16 @@ async function buildFloor() {
   } else {
     // Keep the existing water presentation and interaction objects.
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) if (ch(tx,ty) === '~') addWater(X(tx),Z(ty));
-    try { if (g.sacredTrial.info().presentationRevision === 'closed_ruins_v3') await g.sacredTrial.attachWater?.(g.world.children.filter(o => o.isMesh && o.geometry === waterGeo)); }
+    try { if (['closed_ruins_v3','closed_ruins_v4'].includes(g.sacredTrial.info().presentationRevision)) await g.sacredTrial.attachWater?.(g.world.children.filter(o => o.isMesh && o.geometry === waterGeo)); }
     catch (error) { console.warn('[field-3d] 地下水の試験材を読めないため従来の水面を使います:', error); }
     if (token !== g.buildToken || curKey() !== key) return;
+  }
+  if(area===1&&a.f<2&&(new URLSearchParams(location.search).get('f1sacred')==='1'||window.KotamaSacredPlaytest===true)){
+    try{const {buildFirstLayerProgression}=await import('./f1-layer-progression-v4.js');
+      const dressing=await buildFirstLayerProgression({world:g.world,area:a});
+      if(token!==g.buildToken||curKey()!==key){dressing.dispose();return;}
+      g.firstLayerDress=dressing;applyEnv(area,dressing.env);
+    }catch(error){console.warn('[field-3d] 一層の段階装飾を読み込めません:',error);}
   }
   // 物（宝箱・採集・灯・NPC・イベント・仕掛け・階段など）
   for (const o of a.objects) {
@@ -604,7 +611,7 @@ function gameReviewState() {
     entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
     waterMeshCount:g.world.children.filter(o=>o.isMesh&&o.geometry===waterGeo).length,
     foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),
-    staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
+    firstLayerProgressionInfo:g.firstLayerDress?.info()||null,staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
 }
 window.KotamaField3D = { active, input, build, frame, toggle, gameReviewState, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
   // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）

@@ -153,14 +153,15 @@ function selectMeshes(record, profile) {
 }
 
 /** All candidate work is transactional: no native world changes before success. */
-export async function buildSacredForestTrial({ world, layoutUrl, area }) {
+export async function buildSacredForestTrial({ world, layoutUrl, area, renderer }) {
   check(world?.isObject3D && layoutUrl, 'world and layoutUrl are required');
   const layoutAddress = new URL(layoutUrl, document.baseURI);
   check(layoutAddress.origin === REPO.origin && layoutAddress.pathname.startsWith(REPO.pathname), 'layout must be in this repository');
   const [layout, manifest] = await Promise.all([fetchJSON(layoutAddress), fetchJSON(new URL('../manifest.json', layoutAddress))]);
   validateContract(layout);
   const before = verifyArea(layout, area);
-  const closedV3 = layout.presentationRevision === 'closed_ruins_v3';
+  const closedV4 = layout.presentationRevision === 'closed_ruins_v4';
+  const closedV3 = closedV4 || layout.presentationRevision === 'closed_ruins_v3';
   const revisionSources = layout.revisionSources ?? [];
   check(Array.isArray(revisionSources) && revisionSources.length <= 64
     && (closedV3 || revisionSources.length === 0), 'unexpected revision sources');
@@ -169,10 +170,10 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
   const expected = new Map(), byId = new Map(), records = new Map(), retained = new Set();
   const batches = [], ownGeometry = new Set(), root = new THREE.Group();
   root.name = 'f1-sacred-forest-opt-in-trial';
-  let disposed = false, water = null, waterPromise = null;
+  let disposed = false, water = null, waterPromise = null, aperture = null;
   function dispose() {
     if (disposed) return; disposed = true;
-    water?.dispose(); water = null; root.removeFromParent();
+    water?.dispose(); aperture?.dispose(); water = null; root.removeFromParent();
     for (const batch of batches) batch.dispose(); // Instance buffers only; cached prototypes remain shared.
     for (const g of ownGeometry) g.dispose();
     root.clear();
@@ -267,8 +268,9 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
       const inverse = new THREE.Matrix4().makeTranslation(-batch.position.x, 0, -batch.position.z);
       group.matrices.forEach((m, i) => batch.setMatrixAt(i, inverse.clone().multiply(m)));
       batch.instanceMatrix.needsUpdate = true; batch.computeBoundingBox(); batch.computeBoundingSphere();
-      batch.userData.f1SacredTrial = true; root.add(batch); batches.push(batch);
+      batch.castShadow=closedV4; batch.receiveShadow=closedV4; batch.userData.f1SacredTrial = true; root.add(batch); batches.push(batch);
     }
+    if(closedV4){const {createApertureLightV4}=await import('./f1-aperture-light-v4.js');aperture=createApertureLightV4({root,openings:layout.closedRuinsV3.roof.openings,renderer});}
     const sun = new THREE.DirectionalLight(closedV3 ? 0xb7c8a5 : 0xffe2b8, closedV3 ? 1.05 : 2.0);
     sun.name = 'f1-sacred:daylight'; sun.position.set(20, 90, -30); sun.target.position.set(52, 0, 32);
     root.add(sun, sun.target);
@@ -296,9 +298,10 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
       check(closedV3, 'water attachment requires closed ruins v3');
       if (disposed) return null;
       if (!waterPromise) waterPromise = (async () => {
-        const { createClosedWaterV3 } = await import('./f1-closed-water-v3.js');
+        const module = await import(closedV4 ? './f1-closed-water-v4.js' : './f1-closed-water-v3.js');
+        const createWater = closedV4 ? module.createClosedWaterV4 : module.createClosedWaterV3;
         if (disposed) return null;
-        const created = await createClosedWaterV3({ meshes, root, map: before.map });
+        const created = await createWater({ meshes, root, map: before.map });
         if (disposed) { created.dispose(); return null; }
         water = created;
         return water.info();
@@ -311,8 +314,15 @@ export async function buildSacredForestTrial({ world, layoutUrl, area }) {
       : { background: 0x9eafa3, fog: { color: 0x8fa096, density: .009 },
         hemi: { sky: 0xc0d2bb, ground: 0x3d4432, high: 1.0, low: 1.2 } };
     return { root, env, far: closedV3 ? 40 : 96,
-      info: () => ({ ...info, water: water?.info() ?? null }), attachWater,
-      update: seconds => { if (!disposed && Number.isFinite(seconds)) water?.update(seconds); }, dispose };
+      info: () => ({ ...info, water: water?.info() ?? null, aperture: aperture?.info() ?? null }), attachWater,
+      update: seconds => { if (!disposed && Number.isFinite(seconds)) { water?.update(seconds); aperture?.update(seconds); } }, dispose };
 
   } catch (error) { dispose(); throw error; }
+}
+
+// Same verified immutable prototype cache for staged first-stratum dressing.
+export async function retainFirstLayerSource(file,sha256){
+  const {entry,record}=await sharedSource(file,sha256);entry.refs++;
+  let released=false;
+  return{source:record.source,release(){if(released)return;released=true;entry.refs=Math.max(0,entry.refs-1);}};
 }

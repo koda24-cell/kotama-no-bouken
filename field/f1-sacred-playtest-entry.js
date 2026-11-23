@@ -26,7 +26,8 @@
       for(let f=0;f<3;f++)fieldState.flags[`floor:1-${f}`]=true;
       if(typeof eventRead!=='undefined')for(const e of stageEvents||[])eventRead[e.id]=true;
       window.persistAutoSave=()=>true;
-      fieldEnterArea(1,{floor:2,fromHome:true});
+      const startFloor=Number.isInteger(window.KotamaSacredPlaytestStartFloor)&&window.KotamaSacredPlaytestStartFloor>=0&&window.KotamaSacredPlaytestStartFloor<=2?window.KotamaSacredPlaytestStartFloor:2;
+      fieldEnterArea(1,{floor:startFloor,fromHome:true});
       window.KotamaSacredPlaytestReady=true;
     } catch(error){window.KotamaSacredPlaytestError=String(error.message||error);console.error('[sacred-playtest]',error);}
   },100);
