@@ -375,3 +375,10 @@
 - 一つ目は既存正面を保持した両面石組アーチ。左右の控え柱と背面に石/根を加える。共有Blender5.3+ClamAVで単体→書出GLB再import正面/裏/横/斜め/上を撮影し、hash確認済みNOT_APPROVED候補だけを同branchへ恒久archiveする。run45144416128は実行中、成功/美術合格は未確認。新有料API/アドオンなし。
 - 次段階の技法候補: Three.js公式Reflector（https://threejs.org/docs/#examples/en/objects/Reflector 、MIT）を連結11水面で一つだけ共有し、低彩度の動的水面へ天井/柱を反射。画面外や静止時の更新を抑え11回reflectionpassを避ける。崩落孔にはSpotLightと自作のsoft light-volume/塵。まだV4で実装/実GPU未検証。既存共通VFX資料を参照し外部画像を転用しない。
 - 1F→2F→3Fは同じ素材を段階的に増やし、元の1F/2Fのmapとゲーム進行を維持。技術QAと芸術承認/実機FPS/通常main公開を区別する。
+
+
+### 第一層V4・両面アーチ1点の逐次制作: 実出力確認（2026-11-23）
+- ユーザー指定により同時agent/複数モデル生成を使わず、既存アーチ正面を保持した両面接続アーチ1点を制作。共通Blender5.3+ClamAV [run45147327732](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45147327732) 成功。生成GLB再importの正面/背面/側面/斜め/上面5PNGを実際に目視。最初のcoplanar黒面を検出・不採用とし、石ごとのBoolean EXACT UNIONで修正・撮り直した。
+- 原本GLB/Blend/5PNG/scan receiptはPR728の `assets/3d/dungeons/b1_layer_v4_candidates/` に永続保存、NOT_APPROVED。GLB SHA256 `0a2bbcf4b0b470f3b615e771dfdc2034a8bc68fc5224cd8d44c0cdf5eaaa3dca`、11784tri/4primitive/2673540bytes。Khronos形式検査errors/warnings/infos/hints全0。共通性能監査 [run45149374790](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45149374790) 成功。元品質を落とす自動decimationは未適用、実機FPS/最終美術承認は別。
+- 失敗を隠さない: 初回run45144416128はBlender Python例外でもprocess exit0で共通jobだけgreenとなった。タスクwrapperでtraceback保存・os._exit(1)・GLB/5PNGの実在検査を追加。Git ownership対処は一時container内の対象checkoutだけsafe.directory指定。jobのgreenだけを画像完成とみなさない。
+- 水/光/3階層の実ゲームQAはPR728側で継続中。この情報のみの追記はゲームコードやモデルの承認・本番適用ではない。
