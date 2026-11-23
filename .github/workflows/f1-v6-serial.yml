@@ -1,0 +1,27 @@
+name: F1 V6 serial asset production
+on:
+  push:
+    branches: [feature/f1-sightline-flora-v6-20261124]
+    paths: [tools/f1-v6/queue.json, tools/f1-v6/build_one.py, .github/workflows/f1-v6-serial.yml, .github/workflows/f1-v6-one-asset.yml]
+permissions:
+  contents: write
+  packages: read
+jobs:
+  queue:
+    runs-on: ubuntu-24.04
+    outputs:
+      assets: ${{ steps.list.outputs.assets }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        run: echo "assets=$(cat tools/f1-v6/queue.json)" >> "$GITHUB_OUTPUT"
+  individual:
+    needs: queue
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+      matrix:
+        asset: ${{ fromJSON(needs.queue.outputs.assets) }}
+    uses: ./.github/workflows/f1-v6-one-asset.yml
+    with:
+      asset: ${{ matrix.asset }}
