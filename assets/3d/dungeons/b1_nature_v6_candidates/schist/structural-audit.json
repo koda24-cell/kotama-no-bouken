@@ -3,21 +3,21 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b1_nature_v6_candidates/schist/props/v6_schist.glb",
-      "file_bytes": 786832,
+      "file_bytes": 991748,
       "glb_meshes": 2,
       "total_mesh_primitives": 2,
       "scene_nodes": 3,
       "scene_mesh_nodes": 2,
       "scene_primitive_instances": 2,
-      "estimated_scene_triangles": 700,
+      "estimated_scene_triangles": 7600,
       "materials": 2,
       "material_names": [
         "sacred_velvet_moss",
         "sacred_weathered_stone"
       ],
       "mesh_names": [
-        "Icosphere",
-        "Icosphere.020"
+        "Icosphere.001",
+        "Icosphere"
       ],
       "skins": 0,
       "animations": 0,
