@@ -429,3 +429,9 @@
 - 独立実WebGLで同じ25株比較: 草のみ108000→150tri、3→1draw、5→1texture。床込み108002/152tri、4/2draw。glTF-validator errors0、GL errors0。CPU送出時間は揺れるため実FPS改善率に読み替えない。元GLB229KBに対しカードGLB567KBであり、ダウンロード容量の削減とは主張しない。
 - 初回比較で裏面の上向きnormalがThreeのDOUBLE_SIDEDによって下へ反転し、交差板の一部が黒く見えた。草限定のclone材質でnormal_fragment_beginのfaceDirection反転だけ除き、両面を同じ葉冠として照明。MSAA alphaToCoverageを追加し、既存coverage mipを保持。元材質/GLB/alpha閾値は変更しない。独立WebGLで再比較し黒い面を補修したPNGを確認。ゲーム組込み・全草種・実機FPSはまだ未検証。
 - 実装候補field/f1-grass-cutout-lighting-v6.js、証跡docs/reviews/f1-v6-grass/。原本と軽量候補の双方NOT_APPROVED。後続8assetはmax-parallel1のrun45207192804で順次生成中、全完了とはしない。
+
+#### V6途中の追加検証と不採用（2026-11-24）
+- 全721歩行セル×4方向=2884視点を、最終3草GLBの実UV/実RGBA alphaに対して投影。足元領域に不透明サンプルが全視点で残った（最小147、148、148）。これは幾何投影であり、全画面の美術・遮蔽・実FPS合格ではない。
+- アーチを境界へ移すだけでは横移動の途中でカメラが柱へ寄る。自作f1-camera-clearance-v6.jsがレビューアーチ近傍だけ眼の横ずれを滑らかに制限する（プレイヤー移動/当たり判定変更なし）。実GLBへの1008眼位置のray検査で旧78交差→修正0、90度回転同値も確認。ゲーム全画面検証は未完了。
+- 岩試作schistは苔が面ごとの緑色になり、実PNGで三角形の塗り分けに見えたため不採用。run45208952908は草3種と旧schistまで保存後、中止。連続した石のPBR/彫刻と、実表面ray上に座る小さな苔の厚みへ改修し、run45212714189でschist一体を再検証中。後続岩/壁の完了・美術承認とはしない。
+- GitHub job metadataのBlender5.3/入力検査/出力検査/保存成功は確認したが、CloudからAzureに転送されるjobログの直接取得が403。ログを取得済みとは主張しない。最終候補全部に共有Performance Auditと追加ClamAVを実行し、ログとハッシュをGitへ保存する予定。候補NOT_APPROVEDを維持。
