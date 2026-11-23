@@ -3,11 +3,11 @@ import * as THREE from 'three';
 import {retainFirstLayerSource} from './field-3d-b1-sacred-trial.js';
 export async function buildFirstLayerProgression({world,area}){
   if(area.n!==1||![0,1].includes(area.f))throw new Error('Progression dressing only accepts first-stratum 1F/2F');
-  const url=new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v4.json',import.meta.url);
+  const url=new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v5.json',import.meta.url);
   const response=await fetch(url);if(!response.ok)throw new Error('Progression catalog unavailable');
   const catalog=await response.json(),ids=['v3_moss_veil','v3_shade_understory','legacy_pillar','v4_passage_arch'];
-  const ownMaterials=[],materialRestores=new Map(),held=[],root=new THREE.Group(),sources=new Map(),batches=[];root.name='f1-v4:gradual-progression';let disposed=false;
-  function dispose(){if(disposed)return;disposed=true;root.removeFromParent();for(const [mesh,material]of materialRestores)mesh.material=material;for(const m of ownMaterials)m.dispose();for(const b of batches)b.dispose();root.clear();held.forEach(s=>s.release());}
+  const ownMaterials=[],materialRestores=new Map(),held=[],root=new THREE.Group(),sources=new Map(),batches=[];root.name='f1-v4:gradual-progression';let disposed=false,seal=null;
+  function dispose(){if(disposed)return;disposed=true;seal?.dispose();root.removeFromParent();for(const [mesh,material]of materialRestores)mesh.material=material;for(const m of ownMaterials)m.dispose();for(const b of batches)b.dispose();root.clear();held.forEach(s=>s.release());}
   try{
     // Serial asset load: source cache is shared with the later 3F trial.
     for(const id of ids){const descriptor=catalog.revisionSources.find(s=>s.id===id);if(!descriptor)throw new Error('Missing progression source '+id);const source=await retainFirstLayerSource(descriptor.file,descriptor.sha256);held.push(source);sources.set(id,source.source);}
@@ -50,7 +50,11 @@ export async function buildFirstLayerProgression({world,area}){
       replacements.set(original,material);ownMaterials.push(material);return material;
     }
     world.traverse(mesh=>{if(!mesh.isMesh)return;const original=mesh.material;const changed=Array.isArray(original)?original.map(detailed):detailed(original);if(changed!==original){materialRestores.set(mesh,original);mesh.material=changed;}});
+    const {createCeilingSealV5}=await import('./f1-ceiling-seal-v5.js');
+    const opens=new Set(area.reviewOpenTiles.map(t=>t.join(','))),caps=[];
+    for(const[x,z]of area.reviewOpenTiles)for(const[dx,dz,rot]of[[0,-1,0],[1,0,-Math.PI/2],[0,1,Math.PI],[-1,0,Math.PI/2]])if(!opens.has((x+dx)+','+(z+dz)))caps.push({position:[x*4+dx*2,0,z*4+dz*2],rotationY:rot});
+    seal=createCeilingSealV5({root,tiles:Array.from({length:area.h},(_,z)=>Array.from({length:area.w},(_,x)=>[x,z])).flat(),walls:caps,source:sources.get('v4_passage_arch')});
     world.add(root);
-    return{dispose,info:()=>({version:4,floor:area.f,sourceHashesVerified:true,counts,stoneDetailBlend:detailBlend,stoneMaterials:ownMaterials.length,batches:batches.length,nativeMapUnchanged:true,disposed}),env:{background:0x0d1715,fog:{color:stage===0?0x11221d:0x15271e,density:.044},hemi:{sky:stage===0?0x95aaa2:0x9daa99,ground:0x263426,high:1.1,low:1.45}}};
+    return{dispose,info:()=>({version:4,floor:area.f,sourceHashesVerified:true,counts,stoneDetailBlend:detailBlend,stoneMaterials:ownMaterials.length,ceilingSeal:seal?.info(),batches:batches.length,nativeMapUnchanged:true,disposed}),env:{background:0x0d1715,fog:{color:stage===0?0x11221d:0x15271e,density:.044},hemi:{sky:stage===0?0x95aaa2:0x9daa99,ground:0x263426,high:1.1,low:1.45}}};
   }catch(error){dispose();throw error;}
 }

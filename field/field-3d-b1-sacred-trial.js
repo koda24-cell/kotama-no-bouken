@@ -170,10 +170,10 @@ export async function buildSacredForestTrial({ world, layoutUrl, area, renderer 
   const expected = new Map(), byId = new Map(), records = new Map(), retained = new Set();
   const batches = [], ownGeometry = new Set(), root = new THREE.Group();
   root.name = 'f1-sacred-forest-opt-in-trial';
-  let disposed = false, water = null, waterPromise = null, aperture = null;
+  let disposed = false, water = null, waterPromise = null, aperture = null, seal = null;
   function dispose() {
     if (disposed) return; disposed = true;
-    water?.dispose(); aperture?.dispose(); water = null; root.removeFromParent();
+    water?.dispose(); aperture?.dispose(); seal?.dispose(); water = null; root.removeFromParent();
     for (const batch of batches) batch.dispose(); // Instance buffers only; cached prototypes remain shared.
     for (const g of ownGeometry) g.dispose();
     root.clear();
@@ -270,7 +270,11 @@ export async function buildSacredForestTrial({ world, layoutUrl, area, renderer 
       batch.instanceMatrix.needsUpdate = true; batch.computeBoundingBox(); batch.computeBoundingSphere();
       batch.castShadow=closedV4; batch.receiveShadow=closedV4; batch.userData.f1SacredTrial = true; root.add(batch); batches.push(batch);
     }
-    if(closedV4){const {createApertureLightV4}=await import('./f1-aperture-light-v4.js');aperture=createApertureLightV4({root,openings:layout.closedRuinsV3.roof.openings,renderer});}
+    if(closedV4){
+      if(layout.natureRevision===5){const {createApertureLightV5}=await import('./f1-aperture-light-v5.js');aperture=createApertureLightV5({root,openings:layout.closedRuinsV3.roof.openings,renderer});
+        const {createCeilingSealV5}=await import('./f1-ceiling-seal-v5.js');const arch=byId.get('v4_passage_arch');seal=createCeilingSealV5({root,tiles:layout.cells.map(c=>c.tile),walls:layout.boundaryWallPlacements,source:records.get(arch.file).source,openings:layout.closedRuinsV3.roof.openings,height:5.3,boss:true});
+      }else{const {createApertureLightV4}=await import('./f1-aperture-light-v4.js');aperture=createApertureLightV4({root,openings:layout.closedRuinsV3.roof.openings,renderer});}
+    }
     const sun = new THREE.DirectionalLight(closedV3 ? 0xb7c8a5 : 0xffe2b8, closedV3 ? 1.05 : 2.0);
     sun.name = 'f1-sacred:daylight'; sun.position.set(20, 90, -30); sun.target.position.set(52, 0, 32);
     root.add(sun, sun.target);
@@ -314,7 +318,7 @@ export async function buildSacredForestTrial({ world, layoutUrl, area, renderer 
       : { background: 0x9eafa3, fog: { color: 0x8fa096, density: .009 },
         hemi: { sky: 0xc0d2bb, ground: 0x3d4432, high: 1.0, low: 1.2 } };
     return { root, env, far: closedV3 ? 40 : 96,
-      info: () => ({ ...info, water: water?.info() ?? null, aperture: aperture?.info() ?? null }), attachWater,
+      info: () => ({ ...info, water: water?.info() ?? null, aperture: aperture?.info() ?? null, ceilingSeal: seal?.info() ?? null }), attachWater,
       update: seconds => { if (!disposed && Number.isFinite(seconds)) { water?.update(seconds); aperture?.update(seconds); } }, dispose };
 
   } catch (error) { dispose(); throw error; }
