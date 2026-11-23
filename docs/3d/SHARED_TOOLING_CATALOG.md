@@ -397,3 +397,12 @@
 - 調査: [pmndrs/drei SpotLight](https://github.com/pmndrs/drei/blob/master/src/core/SpotLight.tsx)、[MIT](https://github.com/pmndrs/drei/blob/master/LICENSE)をGitHub APIで確認。React依存の追加/コード転用はせず、局所volume設計の参考。[three-good-godrays](https://github.com/Ameobea/three-good-godrays) READMEも確認。postprocessing依存とライセンスNOASSERTIONのため導入/再配布しない。既存のThree ShaderMaterial/SpotLight(MIT)で独自実装。
 - 試作は各開口の小さなbox内10sample積分・柔らかいray/noise移流と、独自生成の葉影cookieを使う。SpotLight.mapはThree r180 WebGLLights実装で影なしでもmap投影行列を更新することを確認。外部画像取得/texture転用なし。実ブラウザー描画/資源解放はこれから検証。
 - 天井と壁の隙間を上部石帯/裏側の連続した石面で閉鎖。F3は191歩行セル・31分岐に増やし既存7固定物/11水セルを保持、既存の苔石/草花/蔓を壁際に群配置。新規GLB造形/自動decimationなし。既存候補はNOT_APPROVEDの試遊表示のみ、mainは変更しない。
+
+
+### 第一層V5: 木漏れ日・閉鎖屋根・視線の実検証追記（2026-11-23）
+- 制作PR733、source15a7060/0f62345。光源CircleGeometryを生成せず、10sample局所volume/移流する筋/独自葉影cookieを実装。石の光井戸の内壁まで白くしていた旧PointLight補助灯も撤去。下向きSpotLight3、shadow map1。水を固定して光だけ進めた実PNGが異なり、時間変化を確認。外部VFX package/画像の導入なし、Three.js r180上の独自実装。
+- 上部石帯/背面屋根/中心が開いた光井戸で天井と壁の隙間を閉じる。独立WebGLの実geometry5方向ray hit、穴中心は非hit・縁はhit。2回dispose後のgeometry1/texture0はbaselineと一致、native材とshadow設定を復元、GL error/警告0。
+- 実GLB三角形の視線検査で、通行不可のNPC/箱など5物を壁で隠していた問題を発見。通行と描画を分離し、旧2/7→7/7に遮られない接近方向を確認。原本モデルは保持。
+- 3Fは191歩行/31分岐、旧106歩行位置と固定7物/11水セルを保持。苔石65/下草205/草花43/シダ30/蔓98/倒木8などの群配置。実GLB984硬配置×181移動帯（幅1.8m）の衝突0。柔らかい葉/紙と頭上のruntime閉鎖geometryを区別する。
+- 最終fresh3条件の表示/移動/壁/宝箱一回/hash不一致fallback、別freshの実階段/会話/回復/戦闘帰還、保存領域sentinel不変のwrapperをpass。page/console errors0、入力52件のSHAが実行後も一致。証跡 docs/reviews/f1-v5*/、説明 docs/3d/F1_NATURE_LIGHT_V5_REVIEW.md。
+- 実画面を見た岩の単体感・内壁過露出の不採用、実行中の美術変更を検出した入力guardの失敗もiterationとして保存。候補はNOT_APPROVED、原本GLBの変更/新規一括生成/並行agent/汎用decimationなし。実機FPS/長期進行/最終美術承認/main公開は別。
