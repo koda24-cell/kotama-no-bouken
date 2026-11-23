@@ -48,22 +48,47 @@ def main():
                         for sign in [-1,1]:n.leaf('rounded alternating pinna',center(t),center(t)+side*sign*ll+v*.025,.023,m['leaf'],curve=.008)
                 n.stem('young coiled frond',[o,o+Vector((0,0,.2)),o+Vector((.025,0,.24)),o+Vector((.05,0,.21)),o+Vector((.025,0,.195))],.005,m['leaf_light'],5)
     elif asset in allowed[3:6]:
+        from mathutils.noise import noise,noise_vector
         stone,fracture,earth,moss,root=d.stone_materials()
         count={'schist':5,'fractured':3,'riverstones':7}[asset]
         for i in range(count):
             loc=(rng.uniform(-.25,.25),rng.uniform(-.24,.24),0)
-            bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3 if asset!='schist' else 2,radius=1,location=loc)
-            obj=bpy.context.object;obj.name=asset+'_weathered_stone_'+str(i)
+            bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=4,radius=1,location=loc)
+            obj=bpy.context.object;obj.name=asset+'_continuous_weathered_stone_'+str(i)
             sx=rng.uniform(.16,.29);sy=rng.uniform(.13,.24);sz=rng.uniform(.08,.15) if asset=='schist' else rng.uniform(.12,.27)
             for v in obj.data.vertices:
-                v.co*=rng.uniform(.89,1.09);v.co.x*=sx;v.co.y*=sy;v.co.z=max(.001,(v.co.z+1)*sz*.5)
-                if asset=='fractured':v.co.x=min(v.co.x,sx*.53)
-            obj.data.materials.append(stone);obj.data.materials.append(moss);obj.data.materials.append(fracture)
-            for p in obj.data.polygons:
-                p.material_index=1 if p.normal.z>.45 and rng.random()<.52 else 2 if asset=='fractured' and p.normal.x>.75 else 0
-                p.use_smooth=asset=='riverstones'
-            c.uv_world(obj,3)
-            for k in range(3):d.moss_lobe('sheltered basal moss',(loc[0]+rng.uniform(-sx*.6,sx*.6),loc[1]+rng.uniform(-sy*.6,sy*.6),sz*.75),(.07,.06,.018),moss,100+i*3+k)
+                p=v.co.copy();n0=noise_vector(p*3+Vector((i*7,0,0)),noise_basis='PERLIN_ORIGINAL')
+                amount=.025 if asset=='riverstones' else .065
+                v.co.x=(p.x+n0.x*amount)*sx;v.co.y=(p.y+n0.y*amount)*sy
+                v.co.z=max(.002,(p.z+n0.z*amount+1)*sz*.5)
+                if asset=='schist':v.co.x+=.004*math.sin(v.co.z*160+p.y*4)
+                if asset=='fractured':v.co.x=min(v.co.x,sx*.64+.12*v.co.z)
+            obj.data.materials.append(stone);obj.data.update()
+            for face in obj.data.polygons:face.material_index=0;face.use_smooth=True
+            if asset=='fractured':
+                bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(loc[0]+sx*.55,loc[1]-sy*.66,sz*.66))
+                cutter=bpy.context.object;cutter.name='removed_rock_corner';cutter.scale=(sx*.42,sy*.42,sz*.42)
+                bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+                bpy.context.view_layer.objects.active=obj
+                modifier=obj.modifiers.new('actual chipped corner','BOOLEAN');modifier.operation='DIFFERENCE';modifier.object=cutter;modifier.solver='EXACT'
+                bpy.ops.object.modifier_apply(modifier=modifier.name);bpy.data.objects.remove(cutter,do_unlink=True)
+            c.uv_world(obj,3);bpy.context.view_layer.update()
+            # Moss is a small rounded surface growth, never a face-sized green polygon.
+            # Raycast onto the actual final sculpt, so the patch is seated on stone.
+            for k in range(3):
+                px=rng.uniform(-sx*.48,sx*.48);py=rng.uniform(-sy*.48,sy*.48)
+                hit,point,normal,_=obj.ray_cast(Vector((px,py,2)),Vector((0,0,-1)))
+                if not hit or normal.z<.6:continue
+                surface=obj.matrix_world@point;normal=(obj.matrix_world.to_3x3()@normal).normalized()
+                bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=surface+normal*.0015)
+                patch=bpy.context.object;patch.name='seated_soft_moss_growth';radius=rng.uniform(.025,.052)
+                for v in patch.data.vertices:
+                    n1=noise(v.co*4+Vector((i,k,0)),noise_basis='PERLIN_ORIGINAL')
+                    v.co*=.92+n1*.15
+                patch.scale=(radius,radius*rng.uniform(.65,1),.008)
+                patch.rotation_euler=normal.to_track_quat('Z','Y').to_euler();patch.data.materials.append(moss)
+                for face in patch.data.polygons:face.use_smooth=True
+                c.uv_world(patch,.2)
     else:
         category='modules';stone,fracture,earth,moss,root=d.stone_materials();index=allowed.index(asset)-6
         c.cube('continuous opaque mortar core',(0,.68,2),(4,.16,4),earth,0)
