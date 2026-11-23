@@ -76,3 +76,12 @@ Current source of truth: `feature/gpt-character-mesh-reference-study-20261116` a
 ## Assassin original modeling end goal (2026-11-19, USER-CORRECTED; supersedes the 'retain native Shibu Body as final mesh' interpretation)
 The user’s **actual final goal is an independently modeled original Assassin head, created from scratch**. Shibu/Vita `Body` and `Face` are **temporary anatomical measurement and visual references only**; they must **not** be the final production head or be copied directly as output geometry. The previous Shibu Body recovery is a valuable *reference audit*, not a permanent geometry directive.
 Build a separately versioned original rear cranium first, then own temporal/ear/face/jaw/neck pieces, review front/side/back/oblique actual Blender renders and QA each stage, and progressively replace any reference-only components as original parts pass visual quality. Avoid rejected V18 A-F cap topology and full jaw-to-back caps. Preserve existing game models, previous research and all unrelated features; use isolated branch/Draft PR, and do not promote incomplete parts or merge to main without explicit approval. Current original experiment: `feature/gpt-assassin-original-occiput-v1-20261119`, PR #570. Shibu-specific material licenses remain unverified.
+
+## Browser verification URLs for all AI chats (2026-11-24)
+
+- When presenting a playable browser verification link for this repository, **prefer a fixed commit-SHA raw.githack.com URL** rather than a moving branch URL, GitHub blob URL, or GitHub Pages URL:
+  `https://raw.githack.com/koda24-cell/kotama-no-bouken/<full-commit-SHA>/<path-to-HTML>`
+- For the full game use `index.html`; for a task-specific preview use the relevant existing `preview/*.html` entry point. Preserve supported query parameters (for example `?floor=0`) if needed.
+- Before submitting a link, verify that the commit exists and the target HTML is present at that exact commit; verify referenced assets where practical. Use the merged `development` commit SHA after integration, or clearly label a feature-branch commit as a pre-merge preview.
+- Give a directly clickable URL and identify what it opens. Do not claim that the browser, audio, or rendering was tested unless it was actually tested. A file-existence check alone does not establish runtime behavior.
+- This is a shared convention for **ChatGPT, Claude, Codex, and future sessions**. Follow it for all game and HTML preview handoffs.
