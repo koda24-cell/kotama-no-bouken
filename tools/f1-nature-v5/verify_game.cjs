@@ -133,7 +133,7 @@ async function state(session,label){
  const value=await session.page.evaluate(()=>({tile:fieldPlayerTile(),direction:fieldState.dir,turn:fieldState.turn,
   area:fieldState.area,floor:fieldState.floor,screen:state.screen,lock:fieldState.lock,
   active:window.KotamaField3D.active(),trial:window.KotamaField3D.sacredTrialInfo(),
-  review:window.KotamaField3D.gameReviewState(),gold:state.gold,nearKey:fieldState.nearKey,
+  review:window.KotamaField3D.gameReviewState(),render:window.KotamaField3D.renderInfo(),gold:state.gold,nearKey:fieldState.nearKey,
   toggleHidden:document.getElementById('field-3d-toggle')?.hidden,
   objects:JSON.parse(JSON.stringify(fieldArea().objects)),foeDefinitions:JSON.parse(JSON.stringify(fieldArea().floor.foes)),map:fieldArea().floor.map}));
  session.record.states.push({label,...value});return value;
@@ -283,9 +283,9 @@ async function main(){
 main().catch(e=>{console.error(e);process.exitCode=1;});
 
 async function supplementary(){
- report.scope='V4 supplementary corrected cameras, real stairs, native interactions and encounter return';
+ report.scope='V5 supplementary corrected cameras, real stairs, native interactions and encounter return';
  const trial=await createSession('v4-supplementary',true);await enter(trial,2,true);
- for(const[x,z,dir,name]of[[13,7,'right','09-v4-water-corrected-view'],[6,3,'right','10-v4-arch-front-corrected-view']]){await teleport(trial,x,z,dir);await screenshot(trial,name);}
+ for(const[x,z,dir,name]of[[13,7,'right','09-v4-water-corrected-view'],[6,3,'right','10-v4-arch-front-corrected-view']]){if(process.env.V3_CAPTURE_ONLY&&!process.env.V3_CAPTURE_ONLY.split(',').includes(name))continue;await teleport(trial,x,z,dir);await screenshot(trial,name);}
  await teleport(trial,3,13,'down');assert.equal((await state(trial,'npc')).nearKey,'npc:1:woodcutter');await action(trial);await settle(trial);
  await teleport(trial,21,9,'right');assert.equal((await state(trial,'sign')).nearKey,'sign:1-2:22:9');await action(trial);await settle(trial);
  await teleport(trial,23,3,'right');assert.equal((await state(trial,'lamp')).nearKey,'save:1-2:24:3');

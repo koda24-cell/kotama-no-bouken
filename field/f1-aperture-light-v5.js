@@ -19,7 +19,7 @@ export function createApertureLightV5({root,openings,renderer}){
       float radial=length(p.xz-sway)/radius;float feather=1.0-smoothstep(.16,1.0,radial);
       float ribbons=.5+.25*sin(p.x*14.0+p.z*8.0+time*.34+h*1.3)+.25*sin(p.z*19.0-p.x*5.0-time*.21);
       float ends=smoothstep(0.0,.16,h)*(1.0-smoothstep(.86,1.0,h));sum+=feather*ends*(.16+.84*ribbons*ribbons)*stepLength;
-    }gl_FragColor=vec4(vec3(.86,.87,.69),min(.24,sum*.105));}`});materials.push(material);
+    }gl_FragColor=vec4(vec3(.86,.87,.69),min(.24,sum*.14));}`});materials.push(material);
   const beam=new THREE.Mesh(geometry,material);beam.position.copy(center);beam.name='f1-v5:soft-flowing-sun-rays';group.add(beam);
   const spot=new THREE.SpotLight(0xe4e2ca,205,7,.38,1,1.5);spot.position.set(x*4,4.3,z*4);spot.target.position.set(x*4,-.3,z*4);spot.map=cookie;
   spot.castShadow=x===15&&!!renderer;spot.shadow.mapSize.set(512,512);spot.shadow.bias=-.0004;spot.shadow.normalBias=.025;spot.userData.origin=[x*4,z*4];group.add(spot,spot.target);spots.push(spot);

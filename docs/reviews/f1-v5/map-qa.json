@@ -2,6 +2,7 @@
   "passed": true,
   "scope": "Native data comparison and actual reachable corridor topology; not artistic/FPS approval",
   "floor1and2Unchanged": true,
+  "previousV4WalkingPositionsPreserved": 106,
   "fixedObjectsUnchanged": 7,
   "reachableWalkingCells": 191,
   "deadEnds": [

@@ -2,9 +2,9 @@
   "scope": "Actual ceiling geometry coverage only; not artistic approval, renderer alpha visibility or full-sky view certification.",
   "method": "Vertical Y-positive rays from 1.6m. Exact projected-triangle barycentric test, complete glTF ancestor transforms, inverse placement Y rotation and nonuniform scale. Double-sided geometry; walls/trees/other props excluded.",
   "layout": "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v5.json",
-  "layoutSha256": "176f4f18513d5efed062eb0b5d6e83dbaadf6b01dbcead9a82a36b49a692442e",
+  "layoutSha256": "70dcb935d4568f2f87bc54a00a2594e44d23167e2f34ca8e903a6ac5fe35e019",
   "guardedInputs": {
-    "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v5.json": "176f4f18513d5efed062eb0b5d6e83dbaadf6b01dbcead9a82a36b49a692442e",
+    "assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v5.json": "70dcb935d4568f2f87bc54a00a2594e44d23167e2f34ca8e903a6ac5fe35e019",
     "assets/3d/dungeons/b1_sacred_forest_candidates/manifest.json": "c11c469da86619ebf4c266f3e54eb383db86c52e3e001d7818638bafb5139553",
     "tools/f1-closed-ruins-v3/verify_roof_rays.py": "d69fe7a23690ee05b30abad4679baaef300f149712e3081756235e3147ccf85a",
     "tools/f1-closed-ruins-v3/verify_clearance.py": "944463c778e4964eb9e0ca731d8bf33d54d07415e0afde3eaf6e436c8b66ad48",

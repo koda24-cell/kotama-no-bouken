@@ -51,11 +51,12 @@ for(let z=1;z<h-1;z++)for(let x=1;x<w-1;x++){
  if(!walk(x,z)||a.objects.some(o=>Math.abs(o.tx-x)+Math.abs(o.ty-z)<=1))continue;
  const seed=x*17+z*31,sides=dirs.filter(([dx,dz])=>!open(x+dx,z+dz));if(!sides.length)continue;
  const[dx,dz,rot]=sides[seed%sides.length],side=[x*4+dx*1.72,0,z*4+dz*1.72];
- if(seed%3===0||heroVerge.has(x+','+z))props.push(row('nature_rock_'+x+'_'+z,'mossy_granite_boulder',[side[0],-.15,side[2]],rot,[.34,.38,.34]));
+ if(heroVerge.has(x+','+z))props.push(row('nature_log_'+x+'_'+z,'fallen_cedar_log',[side[0]+dz*.4,-.05,side[2]-dx*.4],rot,[.55,.55,.55]));
+ if(seed%3===0||heroVerge.has(x+','+z))props.push(row('nature_rock_'+x+'_'+z,'mossy_granite_boulder',[side[0],-.15,side[2]],rot,[.43,.62,.43]));
  if(seed%2===0||seed%3===0||heroVerge.has(x+','+z))props.push(row('nature_growth_'+x+'_'+z,'v3_shade_understory',[side[0]-dz*.35,0,side[2]+dx*.35],seed,[.85,.9,.85]));
- if(seed%7===0||heroVerge.has(x+','+z))props.push(row('nature_fern_'+x+'_'+z,'forest_fern_cluster',[side[0]+dz*.45,0,side[2]-dx*.45],seed,[.68,.8,.68]));
+ if(seed%7===0||heroVerge.has(x+','+z))props.push(row('nature_fern_'+x+'_'+z,'forest_fern_cluster',[side[0]+dz*.45,0,side[2]-dx*.45],seed,heroVerge.has(x+','+z)?[.9,1.2,.9]:[.68,.8,.68]));
  if(seed%5===0||heroVerge.has(x+','+z))props.push(row('nature_flower_'+x+'_'+z,'white_wildflower_patch',[side[0]-dz*.55,0,side[2]+dx*.55],seed,[.7,.8,.7]));
- if(seed%2===1)props.push(row('nature_vine_'+x+'_'+z,'hanging_forest_vines',[side[0],4.45,side[2]],rot,[.9,.68+(seed%3)*.07,.9]));
+ if(seed%2===1)props.push(row('nature_vine_'+x+'_'+z,'hanging_forest_vines',[side[0],4.1,side[2]],rot,[.9,1.0+(seed%3)*.06,.9]));
 }
 // Thresholds connect lateral walls and never act as isolated garden props.
 for(const[x,z]of[[5,13],[4,11],[1,8],[5,4],[8,3],[11,5],[19,3],[23,4]]){
@@ -78,7 +79,7 @@ props.push(row('flood_partition_arch','v4_passage_arch',[62,-.15,32],Math.PI/2))
 for(const[x,z]of waterTiles)for(const[dx,dz,rot,name]of dirs)if(!water(x+dx,z+dz)&&walk(x+dx,z+dz))props.push(row('bank_'+x+'_'+z+'_'+name,'v3_eroded_bank',[x*4+dx*2,0,z*4+dz*2],rot));
 l.navigation={source:'actual V4 native map',walkableTileCount:w*h-solid.length,navigationSolidTiles:solid,preservedWaterTiles:waterTiles,reservedObjectAndFoeNeighbourhoods:[],clearanceSweptRectangles:[]};
 l.preservedFoes.definitions=a.floor.foes;
-l.closedRuinsV3={roof:{roofModules:w*h,openingCount:holes.length,openings:holes,coveredWalkFloorCells:w*h-solid.length-holes.filter(([x,z])=>walk(x,z)).length,walkFloorCells:w*h-solid.length,walkFloorCoverage:(w*h-solid.length-holes.filter(([x,z])=>walk(x,z)).length)/(w*h-solid.length),eyeMeters:1.6},lightPockets:holes.map(([x,z])=>({position:[x*4,3.2,z*4],color:0xd9d4bd,intensity:26,distance:13})),visualApproval:'pending_user_review'};
+l.closedRuinsV3={roof:{roofModules:w*h,openingCount:holes.length,openings:holes,coveredWalkFloorCells:w*h-solid.length-holes.filter(([x,z])=>walk(x,z)).length,walkFloorCells:w*h-solid.length,walkFloorCoverage:(w*h-solid.length-holes.filter(([x,z])=>walk(x,z)).length)/(w*h-solid.length),eyeMeters:1.6},lightPockets:[],visualApproval:'pending_user_review'};
 for(const k of['omittedUnsafePropPlacements','authoredArtPockets','authoredForestDensity','integrationHandoff','omittedUnsafeDressingGroundPlacements'])delete l[k];
 l.performanceEstimate={status:'not_measured_for_v4',realDevicePerformanceApproved:false};l.assetGeometryVerification={status:'pending_v4_actual_geometry_clearance'};
 l.closedRuinsV4={design:'narrow branching labyrinth, sealed dead-end shrine, divided flooded chamber',approval:'NOT_APPROVED',archSource:assets.get('v4_passage_arch'),sequentialProduction:true};

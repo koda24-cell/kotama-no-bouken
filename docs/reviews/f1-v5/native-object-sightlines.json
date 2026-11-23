@@ -1,5 +1,5 @@
 {
-  "layoutSha256": "176f4f18513d5efed062eb0b5d6e83dbaadf6b01dbcead9a82a36b49a692442e",
+  "layoutSha256": "70dcb935d4568f2f87bc54a00a2594e44d23167e2f34ca8e903a6ac5fe35e019",
   "passed": true,
   "method": "Moller-Trumbore segment intersections against actual pinned boundary-wall triangles; native object models and foliage acceptance remain separate.",
   "objects": [
