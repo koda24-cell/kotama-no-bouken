@@ -26,10 +26,11 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
    for(const[i,[dx,dz]]of [[-1,-1],[1,-1],[-1,1],[1,1]].entries()){
     // Every cardinal view has a tall corner plant. Central 1.8m lane stays clear.
     const tall=i===0||i===3,id=tall?(seed+i)%4===0?'fern':'sedge':'trifoliate';
-    const jitter=((seed+i*7)%5-2)*.025;
-    add(id,x*4+dx*((stair?1.65:1.32)+jitter),0,z*4+dz*((stair?1.65:1.32)-jitter),seed+i*1.7,stair?.6:tall?.92:.95);counts.plants[id]++;
+    const jitter=((seed+i*7)%7-3)*.02,offset=stair?1.65:tall?1.5:1.43,scale=stair?.6:(tall?.86:.9)+(seed+i)%5*.025;
+    add(id,x*4+dx*(offset+jitter),0,z*4+dz*(offset-jitter),seed+i*1.7,scale);counts.plants[id]++;
    }
    if(stair)continue;
+   if(seed%3!==0){const side=[[1,0],[-1,0],[0,1],[0,-1]].find(([dx,dz])=>!opens.has((x+dx)+','+(z+dz)));if(side){const[dx,dz]=side;add('trifoliate',x*4+dx*1.62+dz*((seed%7)-3)*.12,0,z*4+dz*1.62-dx*((seed%7)-3)*.12,seed,.8);counts.plants.trifoliate++;}}
    const i=seed%4,[dx,dz]=[[-1,-1],[1,-1],[-1,1],[1,1]][i],id=['schist','fractured','riverstones'][seed%3];
    add(id,x*4+dx*1.59,0,z*4+dz*1.59,seed,.72);counts.rocks[id]++;
   }

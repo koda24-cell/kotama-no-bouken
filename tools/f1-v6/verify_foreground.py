@@ -35,7 +35,7 @@ for floor in floors:
  for x,z in floor['walk']:
   seed=x*17+z*31+floor['floor']*41;stair=any(o['kind']=='stairs'and o['tx']==x and o['ty']==z for o in floor['objects']);opaque=[]
   for i,(dx,dz)in enumerate(corners):
-   tall=i in [0,3];name=('fern'if(seed+i)%4==0 else'sedge')if tall else'trifoliate';scale=.6 if stair else .92 if tall else .95;jitter=((seed+i*7)%5-2)*.025;rad=1.65 if stair else 1.32;a=seed+i*1.7;c,s=math.cos(a),math.sin(a)
+   tall=i in [0,3];name=('fern'if(seed+i)%4==0 else'sedge')if tall else'trifoliate';scale=.6 if stair else (.86 if tall else .9)+(seed+i)%5*.025;jitter=((seed+i*7)%7-3)*.02;rad=1.65 if stair else 1.5 if tall else 1.43;a=seed+i*1.7;c,s=math.cos(a),math.sin(a)
    for px,py,pz in points[name]:opaque.append((dx*(rad+jitter)+(c*px+s*pz)*scale,py*scale,dz*(rad-jitter)+(-s*px+c*pz)*scale))
   for direction,(fx,fz)in enumerate([[0,-1],[1,0],[0,1],[-1,0]]):
    count=0

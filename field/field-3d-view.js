@@ -230,7 +230,7 @@ async function buildFloor() {
   }   // 待っている間にフロアが変わった
   const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
   // The URL-only sacred trial owns no save or interaction state.
-  g.natureV6?.dispose();g.natureV6=null; g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
+  g.natureV6?.dispose();g.natureV6=null;g.natureV6Error=null; g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
   // 片付け
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
@@ -320,7 +320,7 @@ async function buildFloor() {
       const tiles=Array.from({length:a.h},(_,z)=>Array.from({length:a.w},(_,x)=>[x,z])).flat();
       const nature=await buildFirstLayerNatureV6({world:g.world,area:a,openTiles:tiles.filter(([x,z])=>!wallCell(x,z)),walkTiles:tiles.filter(([x,z])=>!fieldCharSolid(a,ch(x,z)))});
       if(token!==g.buildToken||curKey()!==key){nature.dispose();return;}g.natureV6=nature;
-    }catch(error){console.warn('[field-3d] V6の自然装飾を読み込めません:',error);}
+    }catch(error){g.natureV6Error=String(error.message||error);console.warn('[field-3d] V6の自然装飾を読み込めません:',error);}
   }
   // 物（宝箱・採集・灯・NPC・イベント・仕掛け・階段など）
   for (const o of a.objects) {
@@ -575,7 +575,6 @@ function build() {
 }
 
 function frame() {
-  if(g.natureV6&&g.camera)g.natureV6.update(g.camera.position.x,g.camera.position.z);
   if (!fieldOk()) return;
   if (!active()) { if (g.canvas && !g.canvas.hidden) applyMode(); if (eligible() && !g.buildingKey && g.builtKey !== curKey()) build(); return; }
   const now = performance.now();
@@ -588,6 +587,7 @@ function frame() {
   for (const e of g.entries) syncEntry(e);
   syncFoes(now);
   updateCamera(dt);
+  g.natureV6?.update(g.camera.position.x,g.camera.position.z);
   g.sacredTrial?.update?.(now / 1000);
   if (g.theme?.area === 4 && g.envArea === 4) g.theme.tick(dt, now, g.camera.position);
   updatePool(g.camera.position, g.envArea === 4);
@@ -617,10 +617,10 @@ function gameReviewState() {
   return { builtKey:g.builtKey, buildingKey:g.buildingKey,
     environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far},
     camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
-    entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
+    entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelRotationY:e.obj?.rotation.y??null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
     waterMeshCount:g.world.children.filter(o=>o.isMesh&&o.geometry===waterGeo).length,
     foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),
-    natureV6Info:g.natureV6?.info()||null,firstLayerProgressionInfo:g.firstLayerDress?.info()||null,staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
+    natureV6Info:g.natureV6?.info()||null,natureV6Error:g.natureV6Error||null,firstLayerProgressionInfo:g.firstLayerDress?.info()||null,staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
 }
 window.KotamaField3D = { active, input, build, frame, toggle, gameReviewState, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
   // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）

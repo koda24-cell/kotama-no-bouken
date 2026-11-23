@@ -9,6 +9,6 @@ for(const name of names){
  assert.equal(m.sha256,sha(bytes));assert(['NOT_APPROVED','pending_visual_review'].includes(m.approvalStatus));assert.equal(m.renders.length,5);
  for(const render of m.renders)assert(fs.readFileSync(path.join(dir,render)).subarray(0,8).equals(Buffer.from('89504e470d0a1a0a','hex')));
  if(grass){assert.equal(m.tris,6);assert.equal(doc.materials.length,1);assert.equal(doc.materials[0].alphaMode,'MASK');assert(doc.materials[0].doubleSided);assert.equal(doc.materials[0].alphaCutoff,.35);}
- sources.push({name,id,file,sha256:sha(bytes),triangles:m.tris,primitives:m.drawCalls,approvalStatus:'NOT_APPROVED',...(grass?{method:'3 crossed cutout cards',originalFile:path.join(dir,m.originalFile),textureAtlas:[1536,512]}:{})});
+ sources.push({name,id,file,sha256:sha(bytes),triangles:m.tris,primitives:m.drawCalls,approvalStatus:'NOT_APPROVED',...(grass?{method:'3 crossed cutout cards',runtimeMaterial:'field/f1-grass-cutout-lighting-v6.js',fullGeometryFile:path.join(dir,'props','v6_'+name+'.glb'),originalFile:path.join(dir,m.originalFile),textureAtlas:[1536,512]}:{})});
 }
 fs.writeFileSync(path.join(base,'catalog.json'),JSON.stringify({version:6,status:'NOT_APPROVED',sequentialProduction:true,sources},null,2)+'\n');console.log(sources);
