@@ -3,84 +3,84 @@
   "blender": "5.3.0",
   "files": {
     "manifest.json": {
-      "bytes": 2932,
-      "sha256": "55ea0630e3e8d15bbfe6cd62c1bf0c9b0bdc4c6e87081350cdae5b6d2b47b106"
+      "bytes": 2933,
+      "sha256": "39df4055485569503af2fa290d514b3b81c921dfd3cc797053101aca9f6c048e"
     },
     "metrics/v6_trifoliate.json": {
       "bytes": 1277,
-      "sha256": "f04d3335ce4e606633e098287390fdf7575614f593c7fcc4143685f9beecf16b"
+      "sha256": "7887168678fa483cadca1d7e64dfc75ca89717b171af7e114a089f76a5355232"
     },
     "metrics/v6_trifoliate_cards-audit.json": {
       "bytes": 1033,
-      "sha256": "ed5cd578d29f86cdf79a07ed3be95b186c5adb1e7093ba67b1e213982e4760e3"
+      "sha256": "adabaa8f7ba5a291fb64d5d51a3b31778362018b2d49dfea6c0a2003fbb6defc"
     },
     "metrics/v6_trifoliate_cards.json": {
-      "bytes": 1340,
-      "sha256": "174e194c3b7e306ce55664d7c92d698d6c54249584deef8038c2ab34b896c2bd"
+      "bytes": 1341,
+      "sha256": "e128c94f4ed3880d26a90ea6c76326b67960ec42ec946612c61e7e7ee6579444"
     },
     "props/v6_trifoliate.glb": {
       "bytes": 158876,
       "sha256": "6001c217bf64e0757dd0258a3f6c428cc173355e5e73949e1c1b17957c72c9e7"
     },
     "props/v6_trifoliate_cards.glb": {
-      "bytes": 393764,
-      "sha256": "5accd442577a1e87049c08063d715c1f4e9ae0bf5d8a1f19e3373cf0e7cfdc9b"
+      "bytes": 455220,
+      "sha256": "c2f3c444e7b90cb6ee97c7086dd7aa5d262129cc248b8f0dd033f0088fdc3732"
     },
     "renders/v6_trifoliate/angle.png": {
       "bytes": 428295,
-      "sha256": "01162dde3a7eb995e5e672ce95c27f6a2b0c6d4cd8aefa2a6cb8d05f02c106d3"
+      "sha256": "1fa010539803649943b68581ecb107f4a21f29ee76974aee9a41941f4540b23a"
     },
     "renders/v6_trifoliate/back.png": {
       "bytes": 426760,
-      "sha256": "5feae636e0b41153e0a15c6cf2a787cbf232ff1e470e12ab1ddd4e96f48dbae5"
+      "sha256": "a0a00cc7dd896210e18e84c3ea4812511f7619b7febaa220456c2e4dae4ebec2"
     },
     "renders/v6_trifoliate/front.png": {
       "bytes": 430129,
-      "sha256": "09d2e9b09588f19d7ae8dd2a8699e2c2f521eab4147191ea8aedc94a6b3464b0"
+      "sha256": "8e50c5cee8ca598f44084ea450ad1010ca4744a241423c14ebbbc125c407e611"
     },
     "renders/v6_trifoliate/side.png": {
       "bytes": 455351,
-      "sha256": "89149581c8c1b5783850c9736514c43346cae60b43104986e7b3dd069f4a9bd5"
+      "sha256": "383df801030ec5003d32c7e3c142e9c305dc8fbb30f917744c7c4ec21e375c27"
     },
     "renders/v6_trifoliate/top.png": {
       "bytes": 454583,
-      "sha256": "a980c0febf42d8edeadeb182a9d18b38295dec85e7c4a6e219de7097ea425ca0"
+      "sha256": "1e78ae7a39421307882383a32eea2939594780bc53b0493dd6854b86b995c5b3"
     },
     "renders/v6_trifoliate_cards/angle.png": {
-      "bytes": 411950,
-      "sha256": "62dc190f3cf8169f5587cd2eb8a62a9fe4b534d313df74e51e9b7c407e374ed3"
+      "bytes": 413614,
+      "sha256": "9b0f2287dbd473754027ffc47977b83ff9395ec0ce8da088c12da1125f11afa5"
     },
     "renders/v6_trifoliate_cards/back.png": {
-      "bytes": 424401,
-      "sha256": "1b8c118632f5fd534d83de0e1341450184259d3b0d7af260137b62ee91d2ba6a"
+      "bytes": 427672,
+      "sha256": "7693120bf49bd3217b4b2f8eddd61693b1885ca9b69c8da6b1b9eb7a9ecb1d81"
     },
     "renders/v6_trifoliate_cards/front.png": {
-      "bytes": 439434,
-      "sha256": "6941e5fb88cdcfa106ff80a2b86f58dc11d6e324d8b8ce724eef8b600348fb87"
+      "bytes": 445325,
+      "sha256": "91c35d67c70b285bff3d2b5395405d565933fb5344e62607510ebe3be2864727"
     },
     "renders/v6_trifoliate_cards/side.png": {
-      "bytes": 424773,
-      "sha256": "24a0253f7d4e49d4f56b36d6a6062b7be619e0f2b13a8ad179879a3be7a45c03"
+      "bytes": 429861,
+      "sha256": "7a747ff9d0412148ded30e4f6814e727ba4a0ca835b65ddb3437053280297669"
     },
     "renders/v6_trifoliate_cards/top.png": {
-      "bytes": 386093,
-      "sha256": "a2dc62a8cf471c2897cf08b95f07300ba86a1db38168ffdfd004320d578f0ec2"
+      "bytes": 389150,
+      "sha256": "727c2c9cc07b95606f6cfb61c635b5596ef61b94f9ca851f45ea70cd142a5c94"
     },
     "security/renderer.log": {
       "bytes": 293,
-      "sha256": "93c00223efb3a841745a35a8eb09b302ea48603d2d91be050fb141376069704c"
+      "sha256": "4cb267fcd615668a166e57390cea1db9ca92f276fa46fb660a8e2cd22cbe74b1"
     },
     "security/shared.log": {
       "bytes": 294,
-      "sha256": "68dfc9b94cad2db6656e5ff7b374dc785130f7e569d9f23abd3e3f5fae425491"
+      "sha256": "60c23dca64e445917ea5d1206bb7c455c6065354e277aa44a1f768de04e5eba7"
     },
     "security/textures.log": {
       "bytes": 292,
-      "sha256": "2319581d12aec29eacdd718a652e946e19e59a4e915bcc1837075bdeff88126e"
+      "sha256": "f1b196d8873858d313b016137146ff8636f06a0743b86342215138426fb85fd6"
     },
     "security/v6.log": {
-      "bytes": 292,
-      "sha256": "5cd20afbd75bc4cbc07fe3e20e49feeeda4bb3737044ca94abf2357935a6aa7a"
+      "bytes": 293,
+      "sha256": "b3cec797e619c146887e477b156c063271b012dc667c9e592f526d9699ff5f16"
     },
     "sources/generated_materials/cedar_cavity_shadow_d7c3795db051_basecolor.jpg": {
       "bytes": 3961,
@@ -143,20 +143,20 @@
       "sha256": "7be46487b2ae1948c087bd83eeed1483e2efb719de7979399eeac4634ebb554a"
     },
     "sources/generated_materials/v6_trifoliate_cutout_0.png": {
-      "bytes": 136824,
-      "sha256": "3997fad904d26b0aab03559d0dd6c1f07b4a1a3ca51f7c79e9800003c105cd72"
+      "bytes": 154137,
+      "sha256": "f77a3c307b146269fc14bb16db44550df3c25953164c3ebdb71f0efe85c03a37"
     },
     "sources/generated_materials/v6_trifoliate_cutout_1.png": {
-      "bytes": 131446,
-      "sha256": "83db33aa474565b35eb60eadb75f837d73c6d341c5520b2fa332618365ed5d7f"
+      "bytes": 148587,
+      "sha256": "84545083a9d3d0328059cf4a25cdf485f90e52a552e4f595af64c777c5667d8b"
     },
     "sources/generated_materials/v6_trifoliate_cutout_2.png": {
-      "bytes": 134607,
-      "sha256": "fc0a013dd21946847e135b00ab8f5b9e9fbdbebfcbc32ad541989a1eb820d607"
+      "bytes": 152003,
+      "sha256": "616986c96f578162da71db84155ad59077db4b9b2bf685dea84adfb29d6d1e1b"
     },
     "sources/generated_materials/v6_trifoliate_cutout_atlas.png": {
-      "bytes": 391047,
-      "sha256": "7dd3093679c711c5dc98cfd7e7bf337a88bab94c8fc8ad7f689fe3576c998889"
+      "bytes": 452508,
+      "sha256": "0f2deb966ef4a3eec2c57180299d6ed3f62fc701403feb4cf95a3d620eecaf95"
     },
     "sources/generated_materials/woodland_leaf_light_veins_v2_basecolor.jpg": {
       "bytes": 5425,
@@ -180,9 +180,13 @@
     },
     "sources/v6_trifoliate.blend": {
       "bytes": 234394,
-      "sha256": "c8b202db96dea67c5b24a2db7b006ded2666a05a22c302bfc733fc3cbe415059"
+      "sha256": "4d521b37ed84e227a3b69f38b4f10179439ee3839c29f9b669ff386507bdb391"
     },
     "sources/v6_trifoliate_cards.blend": {
+      "bytes": 539039,
+      "sha256": "76392213697abb8974531e7310dfdf5e15a7f6df8870ee9c08eefa5cdf047570"
+    },
+    "sources/v6_trifoliate_cards.blend1": {
       "bytes": 475626,
       "sha256": "4d43f9a9b9bcdf73fb82370930639e774440b94eec65817d13a416e1ee17507b"
     },

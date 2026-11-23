@@ -40,8 +40,8 @@
     "category": "props",
     "desc_ja": "Individually authored V6 trifoliate; first-stratum damp moss palette; review only.",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "61609c6749b8af6185b919d778b6ff90d6c6a679",
-    "workflowRun": "45207192804",
+    "sourceCommit": "d71b22f16799b53b62d38cdd8322fd13d478ca12",
+    "workflowRun": "45208952908",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/v6_trifoliate.blend",
     "renderedFrom": "reimported GLB",
@@ -54,8 +54,8 @@
     ]
   },
   "cards": {
-    "bytes": 393764,
-    "sha256": "5accd442577a1e87049c08063d715c1f4e9ae0bf5d8a1f19e3373cf0e7cfdc9b",
+    "bytes": 455220,
+    "sha256": "c2f3c444e7b90cb6ee97c7086dd7aa5d262129cc248b8f0dd033f0088fdc3732",
     "tris": 6,
     "verts": 18,
     "meshes": 1,
@@ -64,20 +64,20 @@
       "v6_trifoliate_cutout"
     ],
     "textureCount": 1,
-    "textureBytes": 391047,
+    "textureBytes": 452508,
     "sizeMeters": [
       0.871,
-      0.871,
+      0.8928,
       0.7543
     ],
     "bboxMin": [
       -0.4355,
-      -0.2652,
+      -0.3927,
       -0.3771
     ],
     "bboxMax": [
       0.4355,
-      0.6057,
+      0.5001,
       0.3771
     ],
     "extensions": [],
@@ -85,13 +85,13 @@
     "pointLights": 0,
     "emitters": 0,
     "valid": true,
-    "zeroTangentFallbackVertices": 5,
+    "zeroTangentFallbackVertices": 4,
     "id": "v6_trifoliate_cards",
     "file": "props/v6_trifoliate_cards.glb",
     "category": "props",
     "desc_ja": "3 crossed cutout cards, 6 triangles, self-authored albedo atlas baked from preserved original GLB; NOT_APPROVED.",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "61609c6749b8af6185b919d778b6ff90d6c6a679",
+    "sourceCommit": "d71b22f16799b53b62d38cdd8322fd13d478ca12",
     "workflowRun": null,
     "verificationEnvironment": "Local Blender 5.3.0",
     "source": "sources/v6_trifoliate_cards.blend",
