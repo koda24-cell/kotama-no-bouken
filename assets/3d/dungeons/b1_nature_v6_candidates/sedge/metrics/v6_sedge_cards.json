@@ -1,0 +1,53 @@
+{
+  "bytes": 566824,
+  "sha256": "3386b562a4b65492b2105f1ce499f6130eb4f891120cd3022260584186499671",
+  "tris": 6,
+  "verts": 18,
+  "meshes": 1,
+  "drawCalls": 1,
+  "materials": [
+    "v6_sedge_cutout"
+  ],
+  "textureCount": 1,
+  "textureBytes": 564144,
+  "sizeMeters": [
+    1.0166,
+    1.0166,
+    0.8804
+  ],
+  "bboxMin": [
+    -0.5083,
+    -0.1918,
+    -0.4402
+  ],
+  "bboxMax": [
+    0.5083,
+    0.8249,
+    0.4402
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 5,
+  "id": "v6_sedge_cards",
+  "file": "props/v6_sedge_cards.glb",
+  "category": "props",
+  "desc_ja": "3 crossed cutout cards, 6 triangles, self-authored albedo atlas baked from preserved original GLB; NOT_APPROVED.",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "4b97b6d1747668528724c267e02f3066ba7164c5",
+  "workflowRun": null,
+  "verificationEnvironment": "Local Blender 5.3.0",
+  "source": "sources/v6_sedge_cards.blend",
+  "renderedFrom": null,
+  "renders": [
+    "renders/v6_sedge_cards/front.png",
+    "renders/v6_sedge_cards/back.png",
+    "renders/v6_sedge_cards/side.png",
+    "renders/v6_sedge_cards/angle.png",
+    "renders/v6_sedge_cards/top.png"
+  ],
+  "originalFile": "props/v6_sedge.glb",
+  "albedoOnlyBake": true
+}
