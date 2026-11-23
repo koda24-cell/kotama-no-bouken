@@ -1,0 +1,91 @@
+{
+  "passed": true,
+  "floors": [
+    {
+      "floor": 1,
+      "moves": [],
+      "walking": 261,
+      "reachable": 259,
+      "oldReachable": 259,
+      "stableKeys": true,
+      "rewardsPreserved": true,
+      "oldPositionsPreserved": true
+    },
+    {
+      "floor": 2,
+      "moves": [],
+      "walking": 264,
+      "reachable": 264,
+      "oldReachable": 264,
+      "stableKeys": true,
+      "rewardsPreserved": true,
+      "oldPositionsPreserved": true
+    },
+    {
+      "floor": 3,
+      "moves": [
+        {
+          "char": "S",
+          "from": [
+            24,
+            3
+          ],
+          "to": [
+            26,
+            3
+          ]
+        },
+        {
+          "char": "T",
+          "from": [
+            10,
+            6
+          ],
+          "to": [
+            10,
+            8
+          ]
+        },
+        {
+          "char": "?",
+          "from": [
+            22,
+            9
+          ],
+          "to": [
+            22,
+            6
+          ]
+        },
+        {
+          "char": "b",
+          "from": [
+            23,
+            12
+          ],
+          "to": [
+            20,
+            12
+          ]
+        },
+        {
+          "char": "a",
+          "from": [
+            3,
+            14
+          ],
+          "to": [
+            2,
+            13
+          ]
+        }
+      ],
+      "walking": 196,
+      "reachable": 196,
+      "oldReachable": 191,
+      "stableKeys": true,
+      "rewardsPreserved": true,
+      "oldPositionsPreserved": true
+    }
+  ]
+}

@@ -70,7 +70,8 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
   const rnd = typeof fieldRandomFloor === "function" ? fieldRandomFloor(n, f) : null, cacheKey = rnd ? `${key}@${rnd.tag}` : key;
   if (fieldAreaCache[cacheKey]) return fieldAreaCache[cacheKey];
   const def = FIELD_AREAS[n]; if (!def) return null;
-  const floor = rnd ? rnd.floor : def.floors[f];
+  let floor = rnd ? rnd.floor : def.floors[f];
+  if(n===1 && !rnd && typeof fieldFirstStratumReviewFloorV6==='function' && typeof window!=='undefined' && (window.KotamaSacredPlaytest===true || new URLSearchParams(location.search).get('f1sacred')==='1')) floor=fieldFirstStratumReviewFloorV6(def,floor,f);
   const grid = floor.map.map(row => row.split(""));
   const h = grid.length, w = Math.max(...grid.map(r => r.length));
   const objects = []; let start = { tx: 1, ty: 1 }, up = null, down = null, chestIndex = 0;
@@ -79,7 +80,7 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
     if (c === "<") { up = { tx, ty }; objects.push({ key: `up:${key}`, kind: "stairs", dir: "up", tx, ty, sprite: "stairs-up", name: "上り階段", walk: true }); }
     else if (c === ">") { down = { tx, ty }; objects.push({ key: `down:${key}`, kind: "stairs", dir: "down", tx, ty, sprite: "stairs-down", name: "下り階段", walk: true }); }
     else if (c === "S") objects.push({ key: `save:${key}:${tx}:${ty}`, kind: "save", tx, ty, sprite: "save-lamp", name: "導きの灯" });
-    else if (c === "T") { const reward = (floor.chests || [])[chestIndex++] || { gold: 10 }; objects.push({ key: `chest:${key}:${tx}:${ty}`, kind: "chest", tx, ty, sprite: "chest", name: "宝箱", reward }); }
+    else if (c === "T") { const reward = floor.reviewChestRewards?.[tx+','+ty] || (floor.chests || [])[chestIndex] || { gold: 10 }; chestIndex++; objects.push({ key: `chest:${key}:${tx}:${ty}`, kind: "chest", tx, ty, sprite: "chest", name: "宝箱", reward }); }
     else if (c === "G") objects.push({ key: `gather:${key}:${tx}:${ty}`, kind: "gather", tx, ty, sprite: "gather", name: "採取ポイント" });
     else if (c === "?") objects.push({ key: `sign:${key}:${tx}:${ty}`, kind: "sign", tx, ty, sprite: "sign", name: "看板", scene: def.signScene });
     else if (c === "B") objects.push({ key: `gate:${n}`, kind: "gate", tx, ty, sprite: "boss-gate", name: "", walk: true });
@@ -94,6 +95,7 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
         oneWay: o.oneWay || null, requires: o.requires || null, lockedText: o.lockedText || "", askText: o.askText || "", openScene: o.openScene || "" });
     }
   }));
+  for(const o of objects) { const alias=floor.reviewKeyAliases?.[o.kind+':'+o.tx+':'+o.ty]; if(alias)o.key=alias; }
   // P が無いフロアは、出口（1F）または上り階段の上から始める
   if (!grid.some(r => r.includes("P"))) { const exit = objects.find(o => o.kind === "exit"); if (exit) start = { tx: exit.tx, ty: exit.ty }; else if (up) start = { ...up }; }
   const a = { n, f, key, def, floor, grid, w, h, start, up, down, objects };

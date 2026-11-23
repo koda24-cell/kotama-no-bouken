@@ -25,7 +25,7 @@ export async function buildFirstLayerProgression({world,area}){
       if(corners.length&&seed%(stage===0?13:5)===0){const[dx,dz]=corners[0];add('legacy_pillar',x*4+dx*1.65,0,z*4+dz*1.65,0,.7,1,.7);counts.pillars++;}
       if(seed%(stage===0?17:7)===0){const side=[[1,0],[-1,0],[0,1],[0,-1]].find(([dx,dz])=>!walk(x+dx,z+dz));if(side){add('v3_shade_understory',x*4+side[0]*1.65,0,z*4+side[1]*1.65,seed,.55,.7,.55);counts.understory++;}}
       const vertical=walk(x,z-1)&&walk(x,z+1)&&!walk(x-1,z)&&!walk(x+1,z),horizontal=walk(x-1,z)&&walk(x+1,z)&&!walk(x,z-1)&&!walk(x,z+1);
-      if(counts.arches<(stage===0?1:3)&&seed%5===0&&(vertical||horizontal)){add('v4_passage_arch',x*4,0,z*4,vertical?0:Math.PI/2,1,1,1);counts.arches++;}
+      if(counts.arches<(stage===0?1:3)&&seed%5===0&&(vertical||horizontal)){add('v4_passage_arch',x*4+(horizontal?2:0),0,z*4+(vertical?2:0),vertical?0:Math.PI/2,1,1,1);counts.arches++;}
     }
     for(const{o,matrices}of groups.values()){const b=new THREE.InstancedMesh(o.geometry,o.material,matrices.length);matrices.forEach((m,i)=>b.setMatrixAt(i,m));b.computeBoundingBox();b.computeBoundingSphere();b.userData.f1Progression=true;root.add(b);batches.push(b);}
     // Retain the native stone silhouettes/UVs; progressively add the verified stone surface.
