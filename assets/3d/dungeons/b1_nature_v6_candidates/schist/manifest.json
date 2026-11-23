@@ -1,0 +1,58 @@
+{
+  "status": "NOT_APPROVED",
+  "asset": {
+    "bytes": 786832,
+    "sha256": "fb25be137073b217f20063a2a3a7848a88d6a90ba5c2da9f594be806b26e8099",
+    "tris": 700,
+    "verts": 2100,
+    "meshes": 2,
+    "drawCalls": 2,
+    "materials": [
+      "sacred_velvet_moss",
+      "sacred_weathered_stone"
+    ],
+    "textureCount": 6,
+    "textureBytes": 677952,
+    "sizeMeters": [
+      0.7083,
+      0.1482,
+      0.7568
+    ],
+    "bboxMin": [
+      -0.3072,
+      0.001,
+      -0.379
+    ],
+    "bboxMax": [
+      0.4011,
+      0.1492,
+      0.3778
+    ],
+    "extensions": [],
+    "animations": [],
+    "pointLights": 0,
+    "emitters": 0,
+    "valid": true,
+    "zeroTangentFallbackVertices": 0,
+    "id": "v6_schist",
+    "file": "props/v6_schist.glb",
+    "category": "props",
+    "desc_ja": "Individually authored V6 schist; first-stratum damp moss palette; review only.",
+    "approvalStatus": "NOT_APPROVED",
+    "sourceCommit": "d71b22f16799b53b62d38cdd8322fd13d478ca12",
+    "workflowRun": "45208952908",
+    "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+    "source": "sources/v6_schist.blend",
+    "renderedFrom": "reimported GLB",
+    "renders": [
+      "renders/v6_schist/front.png",
+      "renders/v6_schist/back.png",
+      "renders/v6_schist/side.png",
+      "renders/v6_schist/angle.png",
+      "renders/v6_schist/top.png"
+    ]
+  },
+  "cards": null,
+  "assetName": "schist",
+  "sequential": true
+}
