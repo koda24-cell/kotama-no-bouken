@@ -40,7 +40,8 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
    const near=(x,z)=>[[x+1,z],[x-1,z],[x,z+1],[x,z-1]];
    function distances(origin){const d=new Map([[origin.tx+','+origin.ty,0]]),q=[[origin.tx,origin.ty]];for(let i=0;i<q.length;i++)for(const p of near(...q[i])){const k=p.join(',');if(walk.has(k)&&!d.has(k)){d.set(k,d.get(q[i].join(','))+1);q.push(p);}}return d;}
    const up=distances(area.up),down=distances(area.down);
-   for(const[x,z]of openTiles){const k=x+','+z,du=up.get(k)??0,dd=down.get(k)??0,t=du/Math.max(1,du+dd),id=t<.34?'wall_a':t<.67?'wall_b':'wall_c';
+   const distanceAt=(dist,x,z)=>dist.get(x+','+z)??Math.min(...near(x,z).map(p=>(dist.get(p.join(','))??1e6)+1));
+   for(const[x,z]of openTiles){const k=x+','+z,du=distanceAt(up,x,z),dd=distanceAt(down,x,z),t=du/Math.max(1,du+dd),id=t<.34?'wall_a':t<.67?'wall_b':'wall_c';
     for(const[dx,dz,ry]of [[0,-1,0],[1,0,-Math.PI/2],[0,1,Math.PI],[-1,0,Math.PI/2]])if(!opens.has((x+dx)+','+(z+dz))){add(id,x*4+dx*2,0,z*4+dz*2,ry);counts.walls[id]++;}
    }
   }
