@@ -412,3 +412,9 @@
 - 既存壁は一律4m高ではなく、1F/2Fの崩落壁では上端帯だけだと低い隙間が残る。PR733の閉鎖helperへfullBackingを追加し、元の崩落形状を残したまま背面の石組みを床から天井まで連続させた。native hidden doorの開閉は既存doorSigによる再buildを維持し、通行/固定物を変えない。
 - 独立実WebGLのrayを5本から9本へ拡張（低い隙間の高さ4本を追加）し全hit。開口中心は開放・縁はhit、2回dispose後baselineのgeometry1/texture0と影設定へ復元、GL error/警告0。最新のfresh3条件、別freshの実階段/会話/回復/戦闘帰還もpass。
 - 実画面の1F/2Fと補助構造の有効数を保存。1F508/2F504の壁背面と各567の屋根裏当て。表示中の壁/天井接続の補修であり、新規GLB生成・元assetの置換・美術承認/実機FPS承認ではない。証跡はPR733 docs/reviews/f1-v5-game/ と f1-v5-water/、説明はF1_NATURE_LIGHT_V5_REVIEW.md。
+
+### F1 V6 一体ずつの直列制作とカメラ退避域（2026-11-24）
+- 作業PR736 / feature/f1-sightline-flora-v6-20261124。自作Python、既存共有Blender5.3/ClamAV、既存自作葉脈・石PBRを再利用。外部新規素材なし。
+- 提案: shared gatewayへ省略可能artifact_suffixを追加（空なら旧名保持）。matrix max-parallel:1で一つのモデルの造形→GLB再取込5方向PNG→検査→ハッシュ照合→候補保存が終わってから次へ。初回はsedge一体のみ。実行45204260835開始、実PNG/GLBは未確認。実行コードの承認・導入済みとの主張ではない。
+- 視界診断: 2m開口アーチを歩行マス中央へ置くと1.1m後退するカメラが横向き時に柱へ入る。マス境界への移設と旋回範囲の実画面確認を予定。体幅だけのclearanceでは不十分。現時点で修正・検証未完了。
+- 草3種、岩3種、移行壁3種を各一体ずつ制作予定。NOT_APPROVEDを維持。main/正式素材昇格なし。参考: https://github.com/koda24-cell/kotama-no-bouken/pull/736 。
