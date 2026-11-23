@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "result": {
+    "parentNormalSave": "unchanged-normal-save-sentinel",
+    "iframeReadsNormalSentinel": false,
+    "iframeMemorySaveVersion": 12,
+    "status": "試験表示中・通常セーブへの保存なし",
+    "floor": 0,
+    "selectors": [
+      "?floor=0",
+      "?floor=1",
+      "?floor=2"
+    ]
+  },
+  "source": [
+    {
+      "file": "preview/f1-sacred-playtest.html",
+      "sha256": "f0a57f4f70e7c92b0d7f6a4be7f38b39ade8ef3f6f00003faa223b0dfbe3799f"
+    },
+    {
+      "file": "field/f1-sacred-playtest-entry.js",
+      "sha256": "6411839cb37f8c4ab48ab3f83821fcf40929b3c5b9956db39584145ae4d10049"
+    },
+    {
+      "file": "field/f1-layer-progression-v4.js",
+      "sha256": "a8ae04da9eaae6cf9da6bfa70847662983b1c277dd717cd54b90c68860feb662"
+    }
+  ],
+  "errors": []
+}

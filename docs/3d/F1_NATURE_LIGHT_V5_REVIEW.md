@@ -25,4 +25,4 @@
 
 Drei SpotLightのMITとthree-good-godrays READMEを調査したが、React/postprocessing依存やライセンス未確定のコード/画像は導入しない。既存Three.js r180と独自のshader/葉影を使用。資料はSHARED_TOOLING_CATALOGのV5項目。外部画像のtexture転用やPinterest保存/投稿はしていない。
 
-階段/会話/回復/戦闘帰還とwrapperの最終検査を別receiptへ追加する。実機FPS、長期進行、最終美術レビュー、main公開は未実施。
+実階段2F↔3F、NPC/看板/回復灯とcheckpoint、戦闘開始/retreat帰還を別freshでpass。`supplementary-verification.json`。通常保存領域sentinelが不変で、iframeは独立したメモリー保存を使うwrapperもpass、`wrapper-verification.json` と画面11。補助検査にはThree.jsのdraw/triangle/memoryカウンターも記録するが、反射内部passのresetやソフトウェアGPUの制約があり実機FPSの承認値にしない。実機FPS、長期進行、最終美術レビュー、main公開は未実施。
