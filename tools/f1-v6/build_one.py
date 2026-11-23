@@ -10,7 +10,7 @@ def main():
     asset=delivery.name.removeprefix('f1-v6-')
     allowed=['sedge','trifoliate','fern','schist','fractured','riverstones','wall_a','wall_b','wall_c']
     assert asset in allowed,asset
-    for path,label in [('tools/f1-v6','v6'),('tools/f1-sacred-forest','shared'),('tools/f1-layer-v4','renderer'),('assets/3d/dungeons/b1_sacred_forest_candidates/textures','textures')]:
+    for path,label in [('tools/f1-v6','v6'),('tools/f1-sacred-forest','shared'),('tools/f1-layer-v4','renderer'),('assets/3d/dungeons/b1_sacred_forest_candidates/textures','textures'),('assets/3d/dungeons/b1_closed_ruins_v3/textures','moss-textures')]:
         subprocess.run(['bash',str(ROOT/'tools/security/clamav_scan_gate.sh'),'scan',str(ROOT/path),str(delivery/'security'/f'{label}.log')],check=True)
     sys.path[:0]=[str(ROOT/'tools/f1-sacred-forest'),str(ROOT/'tools/f1-sacred-forest/assets'),str(ROOT/'tools/f1-layer-v4'),str(Path(__file__).parent)]
     import bpy
@@ -50,6 +50,11 @@ def main():
     elif asset in allowed[3:6]:
         from mathutils.noise import noise,noise_vector
         stone,fracture,earth,moss,root=d.stone_materials()
+        moss=c.material('v6_surface_moss',texture_set={'basecolor':ROOT/'assets/3d/dungeons/b1_closed_ruins_v3/textures/moss_feathered.png','normal':d.OUT/'textures/soil_normal.jpg','roughness':d.OUT/'textures/soil_roughness.jpg'})
+        nodes=moss.node_tree.nodes;links=moss.node_tree.links
+        color=next(n for n in nodes if n.type=='TEX_IMAGE' and n.image.name.startswith('moss_feathered'))
+        cutoff=nodes.new('ShaderNodeMath');cutoff.operation='GREATER_THAN';cutoff.inputs[1].default_value=.45
+        links.new(color.outputs['Alpha'],cutoff.inputs[0]);links.new(cutoff.outputs[0],nodes.get('Principled BSDF').inputs['Alpha']);moss.surface_render_method='DITHERED'
         count={'schist':5,'fractured':3,'riverstones':7}[asset]
         for i in range(count):
             loc=(rng.uniform(-.25,.25),rng.uniform(-.24,.24),0)
@@ -73,22 +78,29 @@ def main():
                 modifier=obj.modifiers.new('actual chipped corner','BOOLEAN');modifier.operation='DIFFERENCE';modifier.object=cutter;modifier.solver='EXACT'
                 bpy.ops.object.modifier_apply(modifier=modifier.name);bpy.data.objects.remove(cutter,do_unlink=True)
             c.uv_world(obj,3);bpy.context.view_layer.update()
-            # Moss is a small rounded surface growth, never a face-sized green polygon.
-            # Raycast onto the actual final sculpt, so the patch is seated on stone.
-            for k in range(3):
-                px=rng.uniform(-sx*.48,sx*.48);py=rng.uniform(-sy*.48,sy*.48)
-                hit,point,normal,_=obj.ray_cast(Vector((px,py,2)),Vector((0,0,-1)))
-                if not hit or normal.z<.6:continue
-                surface=obj.matrix_world@point;normal=(obj.matrix_world.to_3x3()@normal).normalized()
-                bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=surface+normal*.0015)
-                patch=bpy.context.object;patch.name='seated_soft_moss_growth';radius=rng.uniform(.025,.052)
-                for v in patch.data.vertices:
-                    n1=noise(v.co*4+Vector((i,k,0)),noise_basis='PERLIN_ORIGINAL')
-                    v.co*=.92+n1*.15
-                patch.scale=(radius,radius*rng.uniform(.65,1),.008)
-                patch.rotation_euler=normal.to_track_quat('Z','Y').to_euler();patch.data.materials.append(moss)
-                for face in patch.data.polygons:face.use_smooth=True
-                c.uv_world(patch,.2)
+            # Reuse the existing licensed feathered moss texture, draped on actual stone.
+            # Every grid vertex raycasts to the final sculpt: no floating button caps.
+            for k in range(2):
+                px=rng.uniform(-sx*.35,sx*.35);py=rng.uniform(-sy*.35,sy*.35);radius=rng.uniform(.08,.14)
+                verts=[];uvs=[];valid=[];N=8
+                for gy in range(N+1):
+                    for gx in range(N+1):
+                        u,v=gx/N,gy/N;x=px+(u-.5)*2*radius;y=py+(v-.5)*2*radius
+                        hit,point,normal,_=obj.ray_cast(Vector((x,y,2)),Vector((0,0,-1)))
+                        valid.append(hit and normal.z>.35)
+                        world=obj.matrix_world@point if hit else Vector((loc[0]+x,loc[1]+y,0))
+                        if hit:world+=(obj.matrix_world.to_3x3()@normal).normalized()*.0015
+                        verts.append(tuple(world));uvs.append((u,v))
+                faces=[]
+                for gy in range(N):
+                    for gx in range(N):
+                        a=gy*(N+1)+gx;ids=(a,a+1,a+N+2,a+N+1)
+                        if all(valid[t] for t in ids):faces.append(ids)
+                if not faces:continue
+                patch=c.mesh('draped_feathered_surface_moss',verts,faces,moss);layer=patch.data.uv_layers.new(name='UVMap')
+                for face in patch.data.polygons:
+                    face.use_smooth=True
+                    for li in face.loop_indices:layer.data[li].uv=uvs[patch.data.loops[li].vertex_index]
     else:
         category='modules';stone,fracture,earth,moss,root=d.stone_materials();index=allowed.index(asset)-6
         c.cube('continuous opaque mortar core',(0,.68,2),(4,.16,4),earth,0)
