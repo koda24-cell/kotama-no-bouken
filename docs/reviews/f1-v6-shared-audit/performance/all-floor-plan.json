@@ -1,0 +1,136 @@
+{
+  "schema": "kotama-all-floor-optimization-plan-v1",
+  "source": "GLB structure only, not actual WebGL FPS/draw calls",
+  "approved_for_game_integration": false,
+  "approval_required": true,
+  "scope": "all present repository GLBs, floor6 or uncommitted models are not assumed to exist",
+  "floors": {
+    "floor1": {
+      "models": 12,
+      "triangles": 62410,
+      "primitive_instances": 30,
+      "candidate_modes": {
+        "foliage_or_transparency_review": 10,
+        "transparency_specialized_review": 2
+      },
+      "high_priority": 0
+    }
+  },
+  "assets": [
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "medium",
+      "triangles": 14780,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern_cards.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 6,
+      "primitive_instances": 1
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/fractured/props/v6_fractured.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 4626,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/riverstones/props/v6_riverstones.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 10644,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/schist/props/v6_schist.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 7528,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 4320,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge_cards.glb",
+      "floor": "floor1",
+      "mode": "transparency_specialized_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 6,
+      "primitive_instances": 1
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 2278,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate_cards.glb",
+      "floor": "floor1",
+      "mode": "transparency_specialized_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 6,
+      "primitive_instances": 1
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/wall_a/modules/v6_wall_a.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 7572,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/wall_b/modules/v6_wall_b.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 5852,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/wall_c/modules/v6_wall_c.glb",
+      "floor": "floor1",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 4792,
+      "primitive_instances": 4
+    }
+  ],
+  "next_steps": [
+    "Keep source GLBs immutable and compare source/LOD screenshots",
+    "Use rigid LOD review only for static opaque eligible assets",
+    "Use leaf material batching and multiview impostors for vegetation",
+    "Keep water/magma/VFX and characters out of generic geometry simplification",
+    "Measure scene draw calls, frame time and visual popping in real Three.js before integration"
+  ]
+}
