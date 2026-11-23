@@ -1,0 +1,39 @@
+name: F1 V4 Read Existing Render Diagnostic
+on:
+  push:
+    branches: [feature/f1-layer-progression-v4-20261123]
+    paths: [.github/workflows/f1-v4-render-diagnostic.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  previous-log-only:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/f1-layer-progression-v4-20261123
+          filter: blob:none
+          sparse-checkout: docs/reviews/f1-v4
+      - name: Preserve Python error from prior existing run without rerender
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import subprocess,json,re,time
+          from pathlib import Path
+          r=subprocess.run(['gh','api','--allow-escape-sequences',f'repos/koda24-cell/kotama-no-bouken/actions/jobs/137590047415/logs?fresh={int(time.time())}'],text=True,capture_output=True)
+          lines=r.stdout.splitlines();chunks=[]
+          for i,l in enumerate(lines):
+            if any(s in l for s in ['Traceback','Error: Python','ModuleNotFoundError','ImportError','F1_ASSET_FINISHED','SHARED_BLENDER53_OUTPUT_VERIFIED']):chunks+=lines[max(0,i-2):i+18]
+          safe=re.sub(r'https://\S+','<url>', '\n'.join(chunks) if chunks else r.stderr)
+          safe=re.sub(r'\x1b\[[0-9;]*[a-zA-Z]','',safe)
+          p=Path('docs/reviews/f1-v4');p.mkdir(parents=True,exist_ok=True)
+          (p/'first-render-diagnostic.json').write_text(json.dumps({'scope':'Prior failed asset attempt, no new model generated','run':45144416128,'logReturnCode':r.returncode,'excerpt':safe},indent=2))
+          print(safe)
+          PY
+          git config user.name 'F1 render diagnostic'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/reviews/f1-v4
+          git commit -m 'docs(f1): preserve actual first render diagnostic'
+          git push origin HEAD:feature/f1-layer-progression-v4-20261123

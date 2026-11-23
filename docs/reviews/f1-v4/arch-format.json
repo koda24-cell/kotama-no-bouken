@@ -1,0 +1,12 @@
+{
+  "sha256": "0a2bbcf4b0b470f3b615e771dfdc2034a8bc68fc5224cd8d44c0cdf5eaaa3dca",
+  "issues": {
+    "numErrors": 0,
+    "numWarnings": 0,
+    "numInfos": 0,
+    "numHints": 0,
+    "messages": [],
+    "truncated": false
+  },
+  "validatorVersion": "2.0.0-dev.3.10"
+}

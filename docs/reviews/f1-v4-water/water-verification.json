@@ -1,0 +1,78 @@
+{
+  "passed": true,
+  "sourceSHA256": "1478db6384e1acdf78c216d3797257ddba121cc0c26e304123ef0ca8bfe6ab6b",
+  "scope": "Independent WebGL water module, not actual-game integration or real-device FPS",
+  "init": {
+    "info": {
+      "version": 4,
+      "nativeWaterMeshes": 11,
+      "waterTiles": 11,
+      "shoreBoundaryEdges": 16,
+      "submergedStoneInstances": 55,
+      "algaePatches": 11,
+      "shaderCompiled": true,
+      "worldCoordinateNormals": true,
+      "reflectionRenderTargets": 1,
+      "reflectionResolution": 256,
+      "reflectionUpdates": 1,
+      "reflectionFrame": 1,
+      "animatedTimeSeconds": 0,
+      "disposed": false
+    },
+    "baseline": {
+      "geometries": 1,
+      "textures": 0
+    }
+  },
+  "second": {
+    "version": 4,
+    "nativeWaterMeshes": 11,
+    "waterTiles": 11,
+    "shoreBoundaryEdges": 16,
+    "submergedStoneInstances": 55,
+    "algaePatches": 11,
+    "shaderCompiled": true,
+    "worldCoordinateNormals": true,
+    "reflectionRenderTargets": 1,
+    "reflectionResolution": 256,
+    "reflectionUpdates": 1,
+    "reflectionFrame": 2,
+    "animatedTimeSeconds": 5,
+    "disposed": false
+  },
+  "teardown": {
+    "restored": true,
+    "memory": {
+      "geometries": 1,
+      "textures": 0
+    },
+    "baseline": {
+      "geometries": 1,
+      "textures": 0
+    },
+    "shadowRestored": true,
+    "info": {
+      "version": 4,
+      "nativeWaterMeshes": 11,
+      "waterTiles": 11,
+      "shoreBoundaryEdges": 16,
+      "submergedStoneInstances": 55,
+      "algaePatches": 11,
+      "shaderCompiled": true,
+      "worldCoordinateNormals": true,
+      "reflectionRenderTargets": 1,
+      "reflectionResolution": 256,
+      "reflectionUpdates": 1,
+      "reflectionFrame": 2,
+      "animatedTimeSeconds": 5,
+      "disposed": true
+    },
+    "glError": 0
+  },
+  "errors": [],
+  "warnings": [],
+  "screenshotSHA256": [
+    "33a3044278592e6fca5a84e9801ae5a8c69fad07e2fc09b101c37027f7832940",
+    "317d3f6b8afecc070752cb5814fa7b40a373f13c4f0838216e9ef37a4bdbcea3"
+  ]
+}

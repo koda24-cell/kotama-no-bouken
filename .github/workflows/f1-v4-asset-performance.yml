@@ -1,0 +1,12 @@
+name: F1 V4 Individual Arch Performance Audit
+on:
+  push:
+    branches: [feature/f1-layer-progression-v4-20261123]
+    paths: [.github/workflows/f1-v4-asset-performance.yml]
+permissions:
+  contents: read
+jobs:
+  audit:
+    uses: ./.github/workflows/shared-3d-performance-audit.yml
+    with:
+      asset_glob: assets/3d/dungeons/b1_layer_v4_candidates/modules/v4_passage_arch.glb
