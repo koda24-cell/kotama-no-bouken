@@ -3,13 +3,13 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b1_layer_v4_candidates/modules/v4_passage_arch.glb",
-      "file_bytes": 2969416,
+      "file_bytes": 2673540,
       "glb_meshes": 4,
       "total_mesh_primitives": 4,
       "scene_nodes": 5,
       "scene_mesh_nodes": 4,
       "scene_primitive_instances": 4,
-      "estimated_scene_triangles": 12352,
+      "estimated_scene_triangles": 11784,
       "materials": 4,
       "material_names": [
         "sacred_earth_mortar",
