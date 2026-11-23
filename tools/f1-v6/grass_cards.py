@@ -9,6 +9,7 @@ def build_cards(source,id,out,c):
     bpy.ops.import_scene.gltf(filepath=str(source))
     obs=[o for o in bpy.context.scene.objects if o.type=='MESH']
     points=[o.matrix_world@Vector(v) for o in obs for v in o.bound_box]
+    ground_points=[o.matrix_world@v.co for o in obs for v in o.data.vertices if (o.matrix_world@v.co).z<.015]
     lo=Vector([min(v[i] for v in points) for i in range(3)])
     hi=Vector([max(v[i] for v in points) for i in range(3)])
     center=(lo+hi)*.5;width=max(hi.x-lo.x,hi.y-lo.y,hi.z-lo.z)*1.12
@@ -27,8 +28,13 @@ def build_cards(source,id,out,c):
     data=bpy.data.cameras.new('albedo_bake');camera=bpy.data.objects.new('albedo_bake',data);scene.collection.objects.link(camera);scene.camera=camera;data.type='ORTHO';data.ortho_scale=width
     texture_dir=out/'sources/generated_materials';texture_dir.mkdir(parents=True,exist_ok=True)
     atlas=np.zeros((512,1536,4),dtype=np.float32)
+    centers=[]
+    elevation=math.tan(math.radians(25 if 'trifoliate' in id else 15 if 'fern' in id else 0))
     for i in range(3):
-        a=i*math.pi/3;camera.location=center+Vector((math.sin(a),-math.cos(a),0))*width*3;camera.rotation_euler=(center-camera.location).to_track_quat('-Z','Y').to_euler()
+        a=i*math.pi/3;camera.location=center+Vector((math.sin(a),-math.cos(a),elevation))*width*3;camera.rotation_euler=(center-camera.location).to_track_quat('-Z','Y').to_euler()
+        up=camera.rotation_euler.to_matrix()@Vector((0,1,0))
+        embed=max(p.dot(up) for p in ground_points)+.005 if elevation else 0
+        centers.append(center.dot(up)-embed)
         scene.render.filepath=str(texture_dir/f'{id}_cutout_{i}.png');bpy.ops.render.render(write_still=True)
         # Blender Render Result alpha can be associated. Reopen saved straight-alpha PNG.
         im=bpy.data.images.load(scene.render.filepath);pixels=np.empty(512*512*4,dtype=np.float32);im.pixels.foreach_get(pixels);atlas[:,i*512:(i+1)*512,:]=pixels.reshape(512,512,4);bpy.data.images.remove(im)
@@ -43,7 +49,7 @@ def build_cards(source,id,out,c):
     verts=[];faces=[];uvs=[]
     for i in range(3):
         a=i*math.pi/3;v=Vector((math.cos(a),math.sin(a),0))*width*.5;base=len(verts)
-        bottom=center.z-width*.5;top=center.z+width*.5
+        bottom=centers[i]-width*.5;top=centers[i]+width*.5
         verts.extend([(-v.x,-v.y,bottom),(v.x,v.y,bottom),(v.x,v.y,top),(-v.x,-v.y,top)])
         faces.append((base,base+1,base+2,base+3));uvs.extend([(i/3,0),((i+1)/3,0),((i+1)/3,1),(i/3,1)])
     obj=c.mesh(id+'_cross_cards',verts,faces,material);layer=obj.data.uv_layers.new(name='UVMap')
