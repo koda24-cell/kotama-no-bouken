@@ -1,0 +1,54 @@
+{
+  "bytes": 2358416,
+  "sha256": "20ab19dd147727f25501c7a56d09698a04955d3a61f31311a732146eeda00e29",
+  "tris": 7572,
+  "verts": 20240,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "sacred_earth_mortar",
+    "sacred_root_bark",
+    "sacred_velvet_moss",
+    "sacred_weathered_stone"
+  ],
+  "textureCount": 12,
+  "textureBytes": 1334308,
+  "sizeMeters": [
+    4.0157,
+    4.0205,
+    0.789
+  ],
+  "bboxMin": [
+    -2.0157,
+    -0.0205,
+    -0.76
+  ],
+  "bboxMax": [
+    2.0,
+    4.0,
+    0.029
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 50,
+  "id": "v6_wall_a",
+  "file": "modules/v6_wall_a.glb",
+  "category": "modules",
+  "desc_ja": "Individually authored V6 wall_a; first-stratum damp moss palette; review only.",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "152fefbe9fdabcfc6fe19a70741f64e8422cb91f",
+  "workflowRun": "45215795705",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/v6_wall_a.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v6_wall_a/front.png",
+    "renders/v6_wall_a/back.png",
+    "renders/v6_wall_a/side.png",
+    "renders/v6_wall_a/angle.png",
+    "renders/v6_wall_a/top.png"
+  ]
+}
