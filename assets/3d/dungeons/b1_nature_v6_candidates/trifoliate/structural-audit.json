@@ -1,0 +1,39 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate.glb",
+      "file_bytes": 158876,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 2278,
+      "materials": 3,
+      "material_names": [
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf"
+      ],
+      "mesh_names": [
+        "branching petiole",
+        "three lobed woodland leaflet.003",
+        "three lobed woodland leaflet"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 7,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

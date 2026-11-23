@@ -1,0 +1,53 @@
+{
+  "bytes": 158876,
+  "sha256": "6001c217bf64e0757dd0258a3f6c428cc173355e5e73949e1c1b17957c72c9e7",
+  "tris": 2278,
+  "verts": 1955,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "forest_flexible_stem",
+    "forest_leaf",
+    "forest_new_leaf"
+  ],
+  "textureCount": 7,
+  "textureBytes": 46092,
+  "sizeMeters": [
+    0.7777,
+    0.3417,
+    0.5028
+  ],
+  "bboxMin": [
+    -0.4102,
+    -0.0006,
+    -0.2219
+  ],
+  "bboxMax": [
+    0.3674,
+    0.3411,
+    0.2808
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "v6_trifoliate",
+  "file": "props/v6_trifoliate.glb",
+  "category": "props",
+  "desc_ja": "Individually authored V6 trifoliate; first-stratum damp moss palette; review only.",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "61609c6749b8af6185b919d778b6ff90d6c6a679",
+  "workflowRun": "45207192804",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/v6_trifoliate.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v6_trifoliate/front.png",
+    "renders/v6_trifoliate/back.png",
+    "renders/v6_trifoliate/side.png",
+    "renders/v6_trifoliate/angle.png",
+    "renders/v6_trifoliate/top.png"
+  ]
+}
