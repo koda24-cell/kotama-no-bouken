@@ -1,0 +1,102 @@
+{
+  "status": "NOT_APPROVED",
+  "blender": "5.3.0",
+  "files": {
+    "manifest.json": {
+      "bytes": 1463,
+      "sha256": "b4bed0e6dfc1914fbc167fee4d5112c5efa6b553789876b4ae0f1ef91e9d6aca"
+    },
+    "metrics/v6_fractured.json": {
+      "bytes": 1251,
+      "sha256": "fe2e879d52c0ff2a71e14325c057f463c818a80b8b3ef099f59a3e2d62748c76"
+    },
+    "props/v6_fractured.glb": {
+      "bytes": 3108160,
+      "sha256": "48ee2af3b8c7916cf3967670f675693a7b039fc1bc555c17982a3c057b04c958"
+    },
+    "renders/v6_fractured/angle.png": {
+      "bytes": 468584,
+      "sha256": "573d8c3aa079d226300b5536b1a706794a7f97915abca7c90ab1b7d79334d3a7"
+    },
+    "renders/v6_fractured/back.png": {
+      "bytes": 432834,
+      "sha256": "c8ffb923cd5e733deedeaac82770c1df4b2ef8a7af1bcd1a16f0d4f44c0c81d0"
+    },
+    "renders/v6_fractured/front.png": {
+      "bytes": 441702,
+      "sha256": "41155022ef965a169f6c6beece6195de9a0f8d8a59e908f93ea548809395714e"
+    },
+    "renders/v6_fractured/side.png": {
+      "bytes": 471020,
+      "sha256": "39dc69ee9989f16d173bc4d064cfdcc6c72e8b169f10081af1ba0183076864f8"
+    },
+    "renders/v6_fractured/top.png": {
+      "bytes": 549569,
+      "sha256": "d3157a4ddc5d700ed67edd00ca88beedc7c8ec6db74fa41a7c612840d2f261ac"
+    },
+    "security/moss-textures.log": {
+      "bytes": 289,
+      "sha256": "7917c7be4a0e4629d093b4508edff2616349ea30321a3eb1a678ce86ae280508"
+    },
+    "security/renderer.log": {
+      "bytes": 293,
+      "sha256": "40c61b047b3fc3247cbc2808221898a4eb607d88cf7ebe62d7959c53481a11c6"
+    },
+    "security/shared.log": {
+      "bytes": 294,
+      "sha256": "ee3ef0c2200791a8f7c0c7c6b47647bd9f8ed6bd55d1edc92fab775fc6712181"
+    },
+    "security/textures.log": {
+      "bytes": 292,
+      "sha256": "b71308a9c8b5dc57957b35ed1140b7bd564b5645ee085dde955e70a131ea2a4c"
+    },
+    "security/v6.log": {
+      "bytes": 293,
+      "sha256": "ef09c3f07c2c7acf7c7b1f9968e6043e5b3e828b3eabf9abe50eb3e9a64c4295"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_basecolor.jpg": {
+      "bytes": 7369,
+      "sha256": "6f03bd6c4e8ec104a4a4db67b4e9bac89bd34d246e2342f010831a529870fd14"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_normal.jpg": {
+      "bytes": 6815,
+      "sha256": "b101f8a2c348f96b2aef72301da06e8c6aea3bf26eeddeb59e355ccc0466eff0"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_orm.jpg": {
+      "bytes": 6163,
+      "sha256": "cdc698bf7bb16880d5c6cd6dd2df7edccdb26b003f2c522acef3bcc002464114"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_basecolor.jpg": {
+      "bytes": 9363,
+      "sha256": "4f73705d9ddaf1e0197f3fb945acedaa83939c808a0f22fc618ec208295bbdee"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_normal.jpg": {
+      "bytes": 6741,
+      "sha256": "4c1c7a61309412d6a39f1329853a76a61a6b5b6934441aacfd737879ce28b9a6"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_orm.jpg": {
+      "bytes": 6317,
+      "sha256": "2ae6e8f6cdae7c431e328fb1959a682cc4583d2948f3766af77720a0f184b192"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_basecolor.jpg": {
+      "bytes": 7562,
+      "sha256": "13cde201b094361aec10751caf975b072a45901369302535cb4f93d73df218cb"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_normal.jpg": {
+      "bytes": 6860,
+      "sha256": "8d81fe337e0d81fce7b783440f415815231c2050ed08207d569fbd59855dc1c4"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_orm.jpg": {
+      "bytes": 6273,
+      "sha256": "36fbb808328024432930f74eb047c3a79af6de49400a6019558a9a05938c8eff"
+    },
+    "sources/v6_fractured.blend": {
+      "bytes": 3332391,
+      "sha256": "7aaccafe5212926b59f07c6e7a26e8735d28794adc5d9704abf63a11990381a3"
+    },
+    "structural-audit.json": {
+      "bytes": 1083,
+      "sha256": "834108422dde39c6e0a00ee9f609fc0c4f07f4cb4d8599f93d3f5278da03f5a9"
+    }
+  }
+}
