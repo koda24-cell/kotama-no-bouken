@@ -263,7 +263,7 @@ async function main(){
   report.checks.push({case:'relocated-native-events-and-stable-rewards',passed:true,chestGold:80});
   // Source-authored stair entrance faces +Z, rotated towards the accessible neighbor.
   for(const floor of [2,1,0]){
-   const snap=await enter(trial,floor,floor===2);assertNativeFloor(snap,floor);assert(snap.review.natureV6Info?.sourceHashesVerified);
+   const snap=await enter(trial,floor,floor===2);(report.natureGeometry??=[]).push(await trial.page.evaluate(()=>window.KotamaField3D.natureGeometryReview()));assertNativeFloor(snap,floor);assert(snap.review.natureV6Info?.sourceHashesVerified);
    for(const kind of ['sedge','trifoliate','fern'])assert(snap.review.natureV6Info.counts.plants[kind]>0);
    for(const o of sourceFloors[floor].objects.filter(o=>o.kind==='stairs')){
     await approach(trial,o.key);await screenshot(trial,'04-'+(floor+1)+'f-stair-'+o.dir);

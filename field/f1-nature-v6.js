@@ -5,7 +5,7 @@ import {retainFirstLayerSource} from './field-3d-b1-sacred-trial.js';
 export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
  const response=await fetch(new URL('../assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',import.meta.url));
  if(!response.ok)throw Error('V6 nature catalog unavailable');
- const catalog=await response.json(),root=new THREE.Group(),held=[],sources=new Map(),groups=new Map(),batches=[],hidden=[],ownedMaterials=[],materials=new Map();
+ const catalog=await response.json(),root=new THREE.Group(),held=[],sources=new Map(),groups=new Map(),batches=[],hidden=[],ownedMaterials=[],materials=new Map(),hardPlacements=[];
  root.name='f1-v6:understory-and-wall-transition';let disposed=false;
  const counts={plants:{sedge:0,trifoliate:0,fern:0},rocks:{schist:0,fractured:0,riverstones:0},walls:{wall_a:0,wall_b:0,wall_c:0}};
  function dispose(){if(disposed)return;disposed=true;root.removeFromParent();hidden.forEach(o=>o.visible=true);batches.forEach(o=>o.dispose());ownedMaterials.forEach(m=>m.dispose());held.forEach(o=>o.release());root.clear();}
@@ -16,6 +16,7 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
   }
   const walk=new Set(walkTiles.map(t=>t.join(','))),opens=new Set(openTiles.map(t=>t.join(',')));
   const add=(id,x,y,z,ry=0,sx=1,sy=sx,sz=sx)=>{
+   if(!['sedge','trifoliate','fern'].includes(id))hardPlacements.push({assetId:id,position:[x,y,z],rotationY:ry,scale:[sx,sy,sz]});
    const source=sources.get(id),matrix=new THREE.Matrix4().compose(new THREE.Vector3(x,y,z),new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),ry),new THREE.Vector3(sx,sy,sz));
    source.updateMatrixWorld(true);const inv=source.matrixWorld.clone().invert();
    source.traverse(o=>{if(!o.isMesh)return;const key=id+':'+o.uuid+':'+Math.floor(x/16)+':'+Math.floor(z/16);if(!groups.has(key))groups.set(key,{o,matrices:[],wall:id.startsWith('wall_')});groups.get(key).matrices.push(matrix.clone().multiply(inv).multiply(o.matrixWorld));});
@@ -51,6 +52,6 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
   // Commit only once every asset and batch is ready. Failed loads leave native walls visible.
   if(area.f===1)world.traverse(o=>{if(o.userData.firstStratumNativeWall&&o.visible){hidden.push(o);o.visible=false;}});
   world.add(root);
-  return{dispose,update:(x,z)=>{for(const b of batches){if(b.userData.v6Wall)continue;const s=b.boundingSphere;b.visible=Math.hypot(s.center.x-x,s.center.z-z)<30+s.radius;}},info:()=>({version:6,sourceHashesVerified:true,counts,batches:batches.length,hiddenNativeWalls:hidden.length,distanceCullMeters:30,wholeSourceMeshes:true,disposed})};
+  return{dispose,geometryReview:()=>({version:6,area:area.n,floor:area.f,map:area.floor.map.slice(),walkTiles:walkTiles.map(t=>t.slice()),sources:catalog.sources.filter(s=>sources.has(s.name)).map(s=>({...s})),placements:hardPlacements.map(r=>({...r,position:r.position.slice(),scale:r.scale.slice()}))}),update:(x,z)=>{for(const b of batches){if(b.userData.v6Wall)continue;const s=b.boundingSphere;b.visible=Math.hypot(s.center.x-x,s.center.z-z)<30+s.radius;}},info:()=>({version:6,sourceHashesVerified:true,counts,batches:batches.length,hiddenNativeWalls:hidden.length,distanceCullMeters:30,wholeSourceMeshes:true,disposed})};
  }catch(error){dispose();throw error;}
 }
