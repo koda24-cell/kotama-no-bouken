@@ -16,6 +16,7 @@
      通常の進行では第2階層は従来の2D表示のまま。第2階層の素材を読めなくても第1階層の3D表示は止めない。
    ============================================================ */
 import * as THREE from 'three';
+import {resolveFirstLayerCameraV6} from './f1-camera-clearance-v6.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -230,7 +231,7 @@ async function buildFloor() {
   }   // 待っている間にフロアが変わった
   const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
   // The URL-only sacred trial owns no save or interaction state.
-  g.natureV6?.dispose();g.natureV6=null;g.natureV6Error=null; g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
+  g.natureV6?.dispose();g.natureV6=null;g.natureV6Error=null;g.cameraPortals=[]; g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
   // 片付け
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
@@ -322,6 +323,7 @@ async function buildFloor() {
       if(token!==g.buildToken||curKey()!==key){nature.dispose();return;}g.natureV6=nature;
     }catch(error){g.natureV6Error=String(error.message||error);console.warn('[field-3d] V6の自然装飾を読み込めません:',error);}
   }
+  g.cameraPortals=[...(g.sacredTrial?.cameraPortals?.()||[]),...(g.firstLayerDress?.cameraPortals?.()||[])];
   // 物（宝箱・採集・灯・NPC・イベント・仕掛け・階段など）
   for (const o of a.objects) {
     const x = X(o.tx), z = Z(o.ty), f = facing(o.tx, o.ty), ry = FACE_YAW[f];
@@ -472,7 +474,9 @@ function updateCamera(dt) {
   const bob = moving ? Math.sin(performance.now() / 85) * 0.035 : 0;
   let bx = 0, bz = 0;
   if (c.bump > 0) { c.bump = Math.max(0, c.bump - dt); const s = Math.sin((1 - c.bump / 0.18) * Math.PI) * 0.14; bx = c.bumpDir[0] * s; bz = c.bumpDir[1] * s; }
-  g.camera.position.set(c.pos.x + bx, c.pos.y + bob, c.pos.z + bz);
+  const eye=resolveFirstLayerCameraV6(c.pos.x+bx,c.pos.z+bz,g.cameraPortals||[]);
+  g.lastCameraClearanceAdjustments=eye.adjusted;
+  g.camera.position.set(eye.x, c.pos.y + bob, eye.z);
   g.camera.rotation.set(-0.035, c.yaw, 0, 'YXZ');
 }
 
@@ -616,7 +620,7 @@ function setPreview(n, on) {
 function gameReviewState() {
   return { builtKey:g.builtKey, buildingKey:g.buildingKey,
     environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far},
-    camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
+    cameraClearanceAdjustments:g.lastCameraClearanceAdjustments||0,camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
     entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelRotationY:e.obj?.rotation.y??null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
     waterMeshCount:g.world.children.filter(o=>o.isMesh&&o.geometry===waterGeo).length,
     foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),

@@ -318,6 +318,7 @@ export async function buildSacredForestTrial({ world, layoutUrl, area, renderer 
       : { background: 0x9eafa3, fog: { color: 0x8fa096, density: .009 },
         hemi: { sky: 0xc0d2bb, ground: 0x3d4432, high: 1.0, low: 1.2 } };
     return { root, env, far: closedV3 ? 40 : 96,
+      cameraPortals:()=>layout.candidatePropPlacements.filter(r=>r.assetId==='v4_passage_arch').map(r=>({position:r.position,rotationY:r.rotationY})),
       info: () => ({ ...info, water: water?.info() ?? null, aperture: aperture?.info() ?? null, ceilingSeal: seal?.info() ?? null }), attachWater,
       update: seconds => { if (!disposed && Number.isFinite(seconds)) { water?.update(seconds); aperture?.update(seconds); } }, dispose };
 

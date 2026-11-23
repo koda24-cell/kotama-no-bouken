@@ -40,7 +40,7 @@ function frozenInputs(){
  const files=[KIT+'scene/game-layout-v6.json',KIT+'scene/game-layout-candidate.json',KIT+'manifest.json',
   ...manifest.assets.map(a=>KIT+a.file),
   ...(candidate.revisionSources||[]).map(a=>a.file),
-  'field/f1-nature-v6.js','field/f1-grass-cutout-lighting-v6.js','field/f1-review-layout-v6.js','assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',...JSON.parse(read('assets/3d/dungeons/b1_nature_v6_candidates/catalog.json')).sources.map(s=>s.file),'field/f1-closed-water-v4.js','field/f1-aperture-light-v4.js','field/f1-aperture-light-v5.js','field/f1-ceiling-seal-v5.js','field/f1-layer-progression-v4.js',
+  'field/f1-camera-clearance-v6.js','field/f1-nature-v6.js','field/f1-grass-cutout-lighting-v6.js','field/f1-review-layout-v6.js','assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',...JSON.parse(read('assets/3d/dungeons/b1_nature_v6_candidates/catalog.json')).sources.map(s=>s.file),'field/f1-closed-water-v4.js','field/f1-aperture-light-v4.js','field/f1-aperture-light-v5.js','field/f1-ceiling-seal-v5.js','field/f1-layer-progression-v4.js',
   ...fs.readdirSync(path.join(ROOT,V3KIT+'textures')).filter(f=>/\.(png|jpe?g|json)$/i.test(f)).map(f=>V3KIT+'textures/'+f),
   ...new Set(candidate.ceilingPlacements.map(c=>c.file)),
   'index.html','field.js','data/field-maps.js','field/field-3d-view.js','field/field-3d-b1-sacred-trial.js',
