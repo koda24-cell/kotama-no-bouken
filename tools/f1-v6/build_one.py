@@ -92,6 +92,9 @@ def main():
         assert cards['tris']==6 and len(cards['renders'])==5
         subprocess.run(['python3',str(ROOT/'tools/3d-performance/audit_glb.py'),str(OUT/'props'/(id+'_cards.glb')),'--output',str(OUT/'metrics'/(id+'_cards-audit.json'))],check=True)
     metrics['approvalStatus']='NOT_APPROVED'
+    metrics['workflowRun']=os.environ.get('GITHUB_RUN_ID')
+    metrics['verificationEnvironment']='Shared pinned Blender '+bpy.app.version_string+' + ClamAV'
+    (OUT/'metrics'/(id+'.json')).write_text(json.dumps(metrics,indent=2))
     (OUT/'metrics'/f'{id}.json').write_text(json.dumps(metrics,indent=2))
     for folder in ['props','modules','sources','renders','metrics']:
         if (OUT/folder).exists():shutil.copytree(OUT/folder,delivery/folder,dirs_exist_ok=True)

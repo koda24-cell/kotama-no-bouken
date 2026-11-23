@@ -21,15 +21,16 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
   };
   for(const[x,z]of walkTiles){
    const seed=x*17+z*31+area.f*41,stair=area.objects.some(o=>o.kind==='stairs'&&o.tx===x&&o.ty===z);
-   if(stair)continue;
+
    for(const[i,[dx,dz]]of [[-1,-1],[1,-1],[-1,1],[1,1]].entries()){
     // Every cardinal view has a tall corner plant. Central 1.8m lane stays clear.
     const tall=i===0||i===3,id=tall?(seed+i)%4===0?'fern':'sedge':'trifoliate';
     const jitter=((seed+i*7)%5-2)*.025;
-    add(id,x*4+dx*(1.32+jitter),0,z*4+dz*(1.32-jitter),seed+i*1.7,tall?.92:.95);counts.plants[id]++;
+    add(id,x*4+dx*((stair?1.65:1.32)+jitter),0,z*4+dz*((stair?1.65:1.32)-jitter),seed+i*1.7,stair?.6:tall?.92:.95);counts.plants[id]++;
    }
+   if(stair)continue;
    const i=seed%4,[dx,dz]=[[-1,-1],[1,-1],[-1,1],[1,1]][i],id=['schist','fractured','riverstones'][seed%3];
-   add(id,x*4+dx*1.59,0,z*4+dz*.69,seed,.72);counts.rocks[id]++;
+   add(id,x*4+dx*1.59,0,z*4+dz*1.59,seed,.72);counts.rocks[id]++;
   }
   if(area.f===1){
    const near=(x,z)=>[[x+1,z],[x-1,z],[x,z+1],[x,z-1]];
