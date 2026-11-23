@@ -1,0 +1,111 @@
+{
+  "status": "NOT_APPROVED",
+  "asset": {
+    "bytes": 701420,
+    "sha256": "4cb645937e34f81c1b955d1857b9dff449f0eb36cfe2175f1712a7cfd821ed3f",
+    "tris": 14780,
+    "verts": 11696,
+    "meshes": 3,
+    "drawCalls": 3,
+    "materials": [
+      "forest_flexible_stem",
+      "forest_leaf",
+      "forest_new_leaf"
+    ],
+    "textureCount": 7,
+    "textureBytes": 46092,
+    "sizeMeters": [
+      0.9693,
+      0.5474,
+      0.8398
+    ],
+    "bboxMin": [
+      -0.4783,
+      0.0,
+      -0.4262
+    ],
+    "bboxMax": [
+      0.491,
+      0.5474,
+      0.4136
+    ],
+    "extensions": [],
+    "animations": [],
+    "pointLights": 0,
+    "emitters": 0,
+    "valid": true,
+    "zeroTangentFallbackVertices": 0,
+    "id": "v6_fern",
+    "file": "props/v6_fern.glb",
+    "category": "props",
+    "desc_ja": "Individually authored V6 fern; first-stratum damp moss palette; review only.",
+    "approvalStatus": "NOT_APPROVED",
+    "sourceCommit": "d71b22f16799b53b62d38cdd8322fd13d478ca12",
+    "workflowRun": "45208952908",
+    "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+    "source": "sources/v6_fern.blend",
+    "renderedFrom": "reimported GLB",
+    "renders": [
+      "renders/v6_fern/front.png",
+      "renders/v6_fern/back.png",
+      "renders/v6_fern/side.png",
+      "renders/v6_fern/angle.png",
+      "renders/v6_fern/top.png"
+    ]
+  },
+  "cards": {
+    "bytes": 573032,
+    "sha256": "87c1252f01c0b900b880d71f0c80e65a39dcaa08031b43dffeabc3b9eba2645d",
+    "tris": 6,
+    "verts": 18,
+    "meshes": 1,
+    "drawCalls": 1,
+    "materials": [
+      "v6_fern_cutout"
+    ],
+    "textureCount": 1,
+    "textureBytes": 570354,
+    "sizeMeters": [
+      1.0856,
+      1.1009,
+      0.9402
+    ],
+    "bboxMin": [
+      -0.5428,
+      -0.3112,
+      -0.4701
+    ],
+    "bboxMax": [
+      0.5428,
+      0.7897,
+      0.4701
+    ],
+    "extensions": [],
+    "animations": [],
+    "pointLights": 0,
+    "emitters": 0,
+    "valid": true,
+    "zeroTangentFallbackVertices": 4,
+    "id": "v6_fern_cards",
+    "file": "props/v6_fern_cards.glb",
+    "category": "props",
+    "desc_ja": "3 crossed cutout cards, 6 triangles, self-authored albedo atlas baked from preserved original GLB; NOT_APPROVED.",
+    "approvalStatus": "NOT_APPROVED",
+    "sourceCommit": "d71b22f16799b53b62d38cdd8322fd13d478ca12",
+    "workflowRun": null,
+    "verificationEnvironment": "Local Blender 5.3.0",
+    "source": "sources/v6_fern_cards.blend",
+    "renderedFrom": null,
+    "renders": [
+      "renders/v6_fern_cards/front.png",
+      "renders/v6_fern_cards/back.png",
+      "renders/v6_fern_cards/side.png",
+      "renders/v6_fern_cards/angle.png",
+      "renders/v6_fern_cards/top.png"
+    ],
+    "originalFile": "props/v6_fern.glb",
+    "albedoOnlyBake": true
+  },
+  "assetName": "fern",
+  "sequential": true
+}

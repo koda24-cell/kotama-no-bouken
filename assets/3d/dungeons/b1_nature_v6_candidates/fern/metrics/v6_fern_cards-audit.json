@@ -1,0 +1,35 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern_cards.glb",
+      "file_bytes": 573032,
+      "glb_meshes": 1,
+      "total_mesh_primitives": 1,
+      "scene_nodes": 2,
+      "scene_mesh_nodes": 1,
+      "scene_primitive_instances": 1,
+      "estimated_scene_triangles": 6,
+      "materials": 1,
+      "material_names": [
+        "v6_fern_cutout"
+      ],
+      "mesh_names": [
+        "v6_fern_cross_cards"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 0,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 1,
+      "textures": 1,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}
