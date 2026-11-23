@@ -277,6 +277,13 @@ async function main(){
    await enter(trial,from,from===2);const p=await approach(trial,key);const target=sourceFloors[from].objects.find(o=>o.key===key);await singleInput(trial,'ArrowUp',{tile:[target.tx,target.ty]});await settle(trial,{choice:'accept'});await waitFloor(trial,to,to===2);assertNativeFloor(await state(trial,'real-stair-'+from+'-'+to),to);
   }
   report.checks.push({case:'actual-stairs-four-links',passed:true});
+  await enter(trial,2,true);await teleport(trial,5,14,'up');const beforeBattle=await state(trial,'before-encounter');
+  await trial.page.evaluate(()=>fieldStartEncounterBattle('stray-slime'));
+  await trial.page.waitForFunction(()=>state.screen==='battle'&&battleState.encounterMode===true,null,{timeout:90000});
+  await trial.page.evaluate(()=>fieldReturnFromBattle({retreat:true}));await settle(trial);await waitFloor(trial,2,true);const afterBattle=await state(trial,'encounter-return');
+  assert.equal(afterBattle.screen,'field');assert.deepEqual(afterBattle.tile,beforeBattle.tile);assert(afterBattle.review.natureV6Info?.sourceHashesVerified);assertNativeFloor(afterBattle,2);
+  report.checks.push({case:'native-encounter-and-return-with-v6-dressing',passed:true});
+
   await storageProof(trial);await trial.context.close();
   const legacy=await createSession('unflagged-native',false);const native=await enter(legacy,2,false);assertNativeFloor(native,2);assert.equal(native.review.natureV6Info,null);await storageProof(legacy);await legacy.context.close();
   const broken=await createSession('hash-fallback',true,{badManifest:true});const fallback=await enter(broken,2,false,{fallback:true});assertNativeFloor(fallback,2);assert.match(fallback.review.trialFallback,/sha|hash|pin|source/i);await storageProof(broken);await broken.context.close();
