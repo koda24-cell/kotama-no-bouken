@@ -1,0 +1,54 @@
+{
+  "bytes": 8104228,
+  "sha256": "aee386a64570351de3e2b841410cf063ece5cec85e835e8f04a0de5107f7240d",
+  "tris": 1372,
+  "verts": 3232,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "f3_broken_asphalt",
+    "f3_damp_concrete",
+    "f3_faded_safety_ochre",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 12,
+  "textureBytes": 7933511,
+  "sizeMeters": [
+    3.7147,
+    0.3324,
+    1.25
+  ],
+  "bboxMin": [
+    -1.8674,
+    -0.0174,
+    -0.725
+  ],
+  "bboxMax": [
+    1.8474,
+    0.315,
+    0.525
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_heaved_asphalt",
+  "file": "props/f3_heaved_asphalt.glb",
+  "category": "props",
+  "desc_ja": "\u6839\u3067\u6301\u3061\u4e0a\u304c\u3063\u305f\u8217\u88c5\u3068\u7e01\u77f3",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_heaved_asphalt.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_heaved_asphalt/front.png",
+    "renders/f3_heaved_asphalt/back.png",
+    "renders/f3_heaved_asphalt/side.png",
+    "renders/f3_heaved_asphalt/angle.png",
+    "renders/f3_heaved_asphalt/top.png"
+  ]
+}
