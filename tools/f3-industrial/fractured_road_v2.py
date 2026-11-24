@@ -3,6 +3,7 @@ def build(e):
  import math,hashlib,random
  c,bpy,rng,asphalt,fracture,moss=[e[k]for k in ['c','bpy','rng','asphalt','fracture','moss']]
  # Deterministic half-plane clipping needs no third-party geometry package.
+ cut=c.material('f3_porous_asphalt_fracture',(.045,.050,.046,1),.99)
  seeds=[(rng.uniform(-1.95,1.95),rng.uniform(-1.95,1.95))for _ in range(15)]
  def clip(poly,nx,ny,k):
   result=[]
@@ -34,13 +35,10 @@ def build(e):
   poly=[(x if abs(abs(x)-2)<1e-6 else cx+(x-cx)*.997,y if abs(abs(y)-2)<1e-6 else cy+(y-cy)*.997)for x,y in jagged]
   # Settled pieces have centimetres of relief, no raised traversable obstruction.
   lift=rng.uniform(-.008,.018);tiltx=rng.uniform(-.008,.008);tilty=rng.uniform(-.008,.008)
-  n=len(poly);verts=[(x,y,-.10)for x,y in poly]+[(x,y,lift+x*tiltx+y*tilty)for x,y in poly]
+  n=len(poly);verts=[(x,y,-.10)for x,y in poly]+[(x,y,(lift+x*tiltx+y*tilty)*max(0,min(1,(2-abs(x))*4,(2-abs(y))*4)))for x,y in poly]
   faces=[tuple(range(n-1,-1,-1)),tuple(range(n,n*2))]+[(k,(k+1)%n,n+(k+1)%n,n+k)for k in range(n)]
-  o=c.mesh('irregular weathered road plate',verts,faces,asphalt);o.data.materials.append(fracture)
+  o=c.mesh('irregular weathered road plate',verts,faces,asphalt);o.data.materials.append(cut)
   for p in list(o.data.polygons)[2:]:p.material_index=1
   c.uv_world(o)
- # Small gravel remains in the edge gutters rather than across the walking line.
- for i in range(45):
-  x=rng.uniform(-1.9,1.9);y=rng.choice([-1,1])*rng.uniform(1.60,1.96)
-  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(x,y,.012));o=bpy.context.object;o.name='settled gutter aggregate'
-  o.scale=(rng.uniform(.018,.055),rng.uniform(.02,.05),rng.uniform(.009,.026));o.data.materials.append(fracture if i%4 else moss);c.uv_world(o)
+ # The photo already carries aggregate. Keep geometry debris in actual runtime
+ # wall margins, so rotated road modules never create pebble rows across a lane.
