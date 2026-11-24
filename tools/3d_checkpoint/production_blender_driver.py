@@ -4,6 +4,7 @@ Caller must scan and verify all input files before invoking this driver.
 import hashlib,json,os,subprocess,time
 from pathlib import Path
 from production_tiles import plan_tiles
+from production_source_repair import repair_source
 from production_repair_loop import run_loop
 from stitch_production_tiles import assemble
 from production_seam_qa import evaluate
@@ -14,9 +15,11 @@ def run(settings,source,root,reference,deadline,estimate=30):
     if len(settings["views"])!=1 or len(settings["frames"])!=1:
         raise ValueError("one view and frame per session required")
     script=Path(__file__).with_name("render_production_tile.py").resolve()
+    active_script=script
     def remaining():
         return max(0,(deadline-time.time())/60)
     def execute(s,attempt):
+        nonlocal active_script
         folder=root/str(attempt)
         folder.mkdir()
         if s.get("qa_only_artifact"):
@@ -29,9 +32,14 @@ def run(settings,source,root,reference,deadline,estimate=30):
                 return dict(outcome="timeout",checkpoint_verified=False)
             env=dict(os.environ,RENDER_PLAN=str(plan),RENDER_UNIT=unit["id"],RESUME_BLEND=str(source),RENDER_OUTPUT=str(folder))
             with (folder/(unit["id"]+".log")).open("w") as log:
-                p=subprocess.run(["blender","-b","--disable-autoexec","--python-exit-code","1","--python",str(script)],env=env,stdout=log,stderr=subprocess.STDOUT)
+                p=subprocess.run(["blender","-b","--disable-autoexec","--python-exit-code","1","--python",str(active_script)],env=env,stdout=log,stderr=subprocess.STDOUT)
             if p.returncode:
-                return dict(outcome="render_failed",log=(folder/(unit["id"]+".log")).read_text(errors="replace")[-65536:])
+                log_text=(folder/(unit["id"]+".log")).read_text(errors="replace")[-65536:]
+                candidate=repair_source(active_script.read_text(),log_text)
+                if candidate is not None:
+                    # Keep the candidate for review; do not execute unscanned source.
+                    (folder/"repair-candidate.py").write_text(candidate)
+                return dict(outcome="render_failed",log=log_text)
             image=folder/(unit["id"]+".png")
             hashes[unit["id"]]=hashlib.sha256(image.read_bytes()).hexdigest()
         if len(s["views"])!=1 or len(s["frames"])!=1:
