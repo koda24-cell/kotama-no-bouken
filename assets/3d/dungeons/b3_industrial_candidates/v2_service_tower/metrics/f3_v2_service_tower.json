@@ -1,0 +1,64 @@
+{
+  "bytes": 13698052,
+  "sha256": "286d38060bcc656a461fadadfa7dd4acf1b96aa57c8e82fa16dbe4fd6ad166bb",
+  "tris": 43208,
+  "verts": 99884,
+  "meshes": 14,
+  "drawCalls": 14,
+  "materials": [
+    "f3_aged_rubber",
+    "f3_bare_worn_steel.001",
+    "f3_bare_worn_steel",
+    "f3_damp_concrete.001",
+    "f3_damp_concrete",
+    "f3_deep_crack.001",
+    "f3_deep_crack",
+    "f3_faded_safety_ochre",
+    "f3_ivy_woody_stem",
+    "f3_lobed_ivy_veined",
+    "f3_oxidized_iron.001",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete.001",
+    "v2_faded_iron_oxide_primer"
+  ],
+  "textureCount": 29,
+  "textureBytes": 8445761,
+  "sizeMeters": [
+    3.3623,
+    15.451,
+    3.535
+  ],
+  "bboxMin": [
+    -1.8123,
+    0.0,
+    -1.55
+  ],
+  "bboxMax": [
+    1.55,
+    15.451,
+    1.985
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v2_service_tower",
+  "file": "props/f3_v2_service_tower.glb",
+  "category": "props",
+  "desc_ja": "\u914d\u7ba1\u3068\u4f5c\u696d\u5e8a\u3092\u6301\u3064\u5de5\u696d\u6a5f\u68b0\u5854V2",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "4149167e8e7153d0a9354075c5e2eb32ee1eed00",
+  "workflowRun": "45415404490",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v2_service_tower.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v2_service_tower/front.png",
+    "renders/f3_v2_service_tower/back.png",
+    "renders/f3_v2_service_tower/side.png",
+    "renders/f3_v2_service_tower/angle.png",
+    "renders/f3_v2_service_tower/top.png"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v2_service_tower/props/f3_v2_service_tower.glb",
+      "file_bytes": 13698052,
+      "glb_meshes": 14,
+      "total_mesh_primitives": 14,
+      "scene_nodes": 15,
+      "scene_mesh_nodes": 14,
+      "scene_primitive_instances": 14,
+      "estimated_scene_triangles": 43208,
+      "materials": 14,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel.001",
+        "f3_bare_worn_steel",
+        "f3_damp_concrete.001",
+        "f3_damp_concrete",
+        "f3_deep_crack.001",
+        "f3_deep_crack",
+        "f3_faded_safety_ochre",
+        "f3_ivy_woody_stem",
+        "f3_lobed_ivy_veined",
+        "f3_oxidized_iron.001",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete.001",
+        "v2_faded_iron_oxide_primer"
+      ],
+      "mesh_names": [
+        "loose switchboard wire",
+        "oxidized bolt washer",
+        "Cylinder",
+        "Cube.252",
+        "Cube",
+        "Cylinder.081",
+        "bundled severed conduit",
+        "Cube.253",
+        "asymmetric climbing ivy leader",
+        "curled rounded five lobed ivy blade",
+        "Cube.254",
+        "Cube.001",
+        "Cube.255",
+        "Cube.036"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 14,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 29,
+      "textures": 41,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}
