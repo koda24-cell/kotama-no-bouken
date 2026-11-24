@@ -19,6 +19,8 @@ def render(plan,folder):
     objs={}
     for p in plan['parts']:
         o=b.build(p,mats);objs[p['id']]=o
+        o.data.materials.clear();o.data.materials.append(mats[p['material']])
+        for face in o.data.polygons:face.material_index=0
     bpy.context.view_layer.update()
     parts={}
     for k,o in objs.items():
