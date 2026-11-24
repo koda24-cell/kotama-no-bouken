@@ -205,16 +205,16 @@ export function createTheme(api) {
         // Continuous base identifies every solid boundary, including closed shortcuts.
         // Closed concrete back keeps skyline fractures and windows from exposing adjacent streets.
         const backing=add(cube, stone, ex, 3.05, ez, 4.07, 6.1, .30, ry);backing.userData.f3Keep=true;
-        const sequence=['retaining_wall','retaining_wall','shattered_window','roller_shutter','retaining_wall','factory_door'];
+        const sequence=['retaining_wall','retaining_wall','shattered_window','roller_shutter','retaining_wall','factory_door'].filter(id=>industrial.models.has(id));
         const id=sequence[Math.floor(hash(x,z,330+DIR_ORDER.indexOf(d))*sequence.length)];
         const model=industrial.models.get(id).clone(true),holder=new THREE.Group();holder.add(model);model.rotation.y=ry;
         let bb=new THREE.Box3().setFromObject(holder),ss=bb.getSize(new THREE.Vector3()),cc=bb.getCenter(new THREE.Vector3());
         const along=dx?ss.z:ss.x,scale=3.96/along;holder.scale.setScalar(scale);
         holder.position.set(ex-cc.x*scale-dx*.10,-bb.min.y*scale,ez-cc.z*scale-dz*.10);
-        root.add(holder);holder.updateMatrixWorld(true);holder.traverse(o=>{if(o.isMesh)o.userData.f3Keep=true;});count(id);
+        root.add(holder);holder.updateMatrixWorld(true);const facadeBounds=new THREE.Box3().setFromObject(holder),facadeRecord={min:facadeBounds.min.toArray(),max:facadeBounds.max.toArray()};holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=facadeRecord;});count(id);
         // Utility clusters repeat a structural language, while their combinations vary by block.
         if(!safe){
-          const ids=['broken_signal','broken_streetlamp','control_cabinet','flanged_pipe','pipe_rack','rebar_rubble','drain_channel','ivy_pocket','heaved_asphalt','column_joint','riveted_girder','buckled_portal','grating_catwalk','service_stair','landing_railing','bridge_abutment'];
+          const ids=['broken_signal','broken_streetlamp','control_cabinet','flanged_pipe','pipe_rack','rebar_rubble','drain_channel','ivy_pocket','heaved_asphalt','column_joint','riveted_girder','buckled_portal','grating_catwalk','service_stair','landing_railing','bridge_abutment'].filter(id=>industrial.models.has(id));
           const side=ids[Math.floor(hash(x,z,440+DIR_ORDER.indexOf(d))*ids.length)];
           edgeDetail(side,px,pz,dx,dz,ry,r);count(side);
         }

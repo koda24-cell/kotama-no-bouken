@@ -43,6 +43,7 @@ export function createCitySurfaces(THREE, high, photoMaterials=[]) {
   }
   const maps = { concrete: texture('concrete', 11), stone: texture('stone', 21), rust: texture('rust', 31), bark: texture('bark', 41), leaf: texture('leaf', 51), soil: texture('soil', 61) };
   // Reuse already hash-verified source images. Borrowed textures remain owned by the asset bundle.
+  maps.asphalt=maps.stone;
   const photoByName=new Map(photoMaterials.map(m=>[m.name,m]));
   for(const [kind,name]of Object.entries({concrete:'f3_weathered_concrete',stone:'f3_damp_concrete',rust:'f3_oxidized_iron',soil:'f3_damp_concrete',asphalt:'f3_broken_asphalt'})){
     const source=photoByName.get(name);if(source?.map)maps[kind]=source.map;
