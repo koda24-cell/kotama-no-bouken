@@ -198,5 +198,35 @@
       2.3
     ],
     "status": "PLANNED"
+  },
+  {
+    "id": "native_ruinedBuilding",
+    "name": "既存・崩壊した集合建築の質感強化",
+    "status": "PLANNED",
+    "existingUpgrade": true
+  },
+  {
+    "id": "native_collapsedOverpass",
+    "name": "既存・崩落高架の表面と接合部強化",
+    "status": "PLANNED",
+    "existingUpgrade": true
+  },
+  {
+    "id": "native_utilityPole",
+    "name": "既存・風化電柱の配線と金具強化",
+    "status": "PLANNED",
+    "existingUpgrade": true
+  },
+  {
+    "id": "native_steelWreck",
+    "name": "既存・鉄骨残骸の腐食強化",
+    "status": "PLANNED",
+    "existingUpgrade": true
+  },
+  {
+    "id": "native_abandonedTransitStop",
+    "name": "既存・廃バス停の屋根接合部強化",
+    "status": "PLANNED",
+    "existingUpgrade": true
   }
 ]

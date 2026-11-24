@@ -17,7 +17,8 @@
           2.774109454025705
         ]
       ],
-      "bytes": 553860
+      "bytes": 553860,
+      "sha256": "f5110f1769f031fa23283386f126fbe3375299f7ac31d490536bdb2ee035573d"
     },
     {
       "key": "collapsedOverpass",
@@ -33,7 +34,8 @@
           1.7000000000000002
         ]
       ],
-      "bytes": 311176
+      "bytes": 311176,
+      "sha256": "cefc8f866ca7743461f1d31eb54b8a36bdff3ac13ffdffd9174227b704c15651"
     },
     {
       "key": "utilityPole",
@@ -49,7 +51,8 @@
           0.5283353695016144
         ]
       ],
-      "bytes": 310360
+      "bytes": 310360,
+      "sha256": "b7a8f480359d060c7ebaa2a3d6dd64c8d5686c0dd2121058caf610345a1f82a0"
     },
     {
       "key": "steelWreck",
@@ -65,7 +68,8 @@
           1.2298527346011048
         ]
       ],
-      "bytes": 309284
+      "bytes": 309284,
+      "sha256": "996b9f3b18352bab3e3ffacb7d93632d21897513febef18d86d2851416b23d02"
     },
     {
       "key": "abandonedTransitStop",
@@ -81,7 +85,8 @@
           0.685
         ]
       ],
-      "bytes": 438888
+      "bytes": 438888,
+      "sha256": "4a81d52b5bd2d900c537fb182fc2460766b1932552c5cd6b2cb225e169c26675"
     }
   ]
 }

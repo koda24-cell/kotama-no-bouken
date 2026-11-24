@@ -93,6 +93,11 @@ def main():
     nx=x+rng.uniform(-.065,.075);nz=z-rng.uniform(.08,.17)
     rod('branching hairline fracture',(x,-.224,z),(nx,-.224,nz),.0032-k*.00035,dark,4);x,z=nx,nz
 
+ elif asset.startswith('native_'):
+  scan(candidate/'native_originals','preserved-native-inputs')
+  from upgrade_native import build
+  native_provenance=build(asset,dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector))
+  (OUT/'sources/native-provenance.json').write_text(json.dumps(native_provenance,indent=2))
  else:
   from parts import build
   build(asset,dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector))
