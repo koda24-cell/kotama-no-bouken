@@ -1,0 +1,87 @@
+{
+  "status": "NOT_APPROVED",
+  "sourceCommit": "c3ee27453eeea8fa3360b1c465f7199f53e7cba4",
+  "note": "Structural baseline of existing prototypes; world-projection shader is not baked. Lambert diffuse is exported through a Standard material adapter. Original runtime code remains unchanged; actual game baseline images are separate.",
+  "models": [
+    {
+      "key": "ruinedBuilding",
+      "bounds": [
+        [
+          -2.9837772652284293,
+          -0.43353860532179145,
+          -2.635
+        ],
+        [
+          3.952657884124249,
+          5.955974600074108,
+          2.774109454025705
+        ]
+      ],
+      "bytes": 553860
+    },
+    {
+      "key": "collapsedOverpass",
+      "bounds": [
+        [
+          -4.1567151049330375,
+          -0.16716190451972285,
+          -1.6
+        ],
+        [
+          4.175999161914153,
+          4.814534441853748,
+          1.7000000000000002
+        ]
+      ],
+      "bytes": 311176
+    },
+    {
+      "key": "utilityPole",
+      "bounds": [
+        [
+          -0.9999999999999998,
+          0,
+          -0.36
+        ],
+        [
+          1.5156843504227073,
+          5.2,
+          0.5283353695016144
+        ]
+      ],
+      "bytes": 310360
+    },
+    {
+      "key": "steelWreck",
+      "bounds": [
+        [
+          -1.6495930287256473,
+          -0.010000000000000009,
+          -0.9702543581262792
+        ],
+        [
+          1.7455675675675677,
+          2.651207172856794,
+          1.2298527346011048
+        ]
+      ],
+      "bytes": 309284
+    },
+    {
+      "key": "abandonedTransitStop",
+      "bounds": [
+        [
+          -2.73,
+          0,
+          -1.3291602039822472
+        ],
+        [
+          1.9000000000000001,
+          2.9809083466075976,
+          0.685
+        ]
+      ],
+      "bytes": 438888
+    }
+  ]
+}

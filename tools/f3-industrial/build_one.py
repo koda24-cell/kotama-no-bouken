@@ -33,6 +33,7 @@ def main():
  sys.path[:0]=[str(ROOT/'tools/f1-sacred-forest'),str(ROOT/'tools/f1-layer-v4'),str(Path(__file__).parent)]
  import bpy
  import common as c,render_asset
+ c.ALLOWED_EXTENSIONS.update({'KHR_materials_transmission','KHR_materials_ior','KHR_materials_volume'})
  from mathutils import Vector
  OUT=candidate/asset;c.OUT=OUT;render_asset.OUT=OUT;c.render_imported_glb=render_asset.render_imported_glb
  c.reset_scene();bpy.context.preferences.filepaths.save_version=0
@@ -63,7 +64,8 @@ def main():
    for poly in obj.data.polygons:
     for li in poly.loop_indices:
      co=obj.matrix_world@obj.data.vertices[obj.data.loops[li].vertex_index].co
-     uv.data[li].uv=(co.x/4+.5,co.z/6.5)
+     axis=max(range(3),key=lambda i:abs(poly.normal[i]));axes=((1,2),(0,2),(0,1))[axis]
+     uv.data[li].uv=(co[axes[0]]/4+.5,co[axes[1]]/(4 if axis==2 else 6.5)+(.72 if axis==2 else 0))
   def panel(name,profile):
    n=len(profile);verts=[(x,y,z)for y in[-.22,.22]for x,z in profile]
    faces=[tuple(range(n)),tuple(range(2*n-1,n-1,-1))]+[(i,n+i,n+(i+1)%n,(i+1)%n)for i in range(n)]
@@ -99,10 +101,12 @@ def main():
  metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset))
  metrics.update(approvalStatus='NOT_APPROVED',workflowRun=os.environ.get('GITHUB_RUN_ID'),verificationEnvironment='Shared pinned Blender '+bpy.app.version_string+' + ClamAV')
  (OUT/'metrics'/(model+'.json')).write_text(json.dumps(metrics,indent=2))
+ from pack_runtime import pack
+ runtime=pack(OUT/'props'/(model+'.glb'),delivery/'runtime'/(model+'.glb'),delivery/'shared_textures')
  for folder in ['props','modules','sources','renders','metrics']:
   if (OUT/folder).exists():shutil.copytree(OUT/folder,delivery/folder,dirs_exist_ok=True)
  shutil.copytree(textures,delivery/'textures',dirs_exist_ok=True)
- (delivery/'manifest.json').write_text(json.dumps({'status':'NOT_APPROVED','assetName':asset,'asset':metrics,'sequential':True,'textureSources':sources},ensure_ascii=False,indent=2))
+ (delivery/'manifest.json').write_text(json.dumps({'status':'NOT_APPROVED','assetName':asset,'asset':metrics,'sequential':True,'textureSources':sources,'runtime':runtime},ensure_ascii=False,indent=2))
  subprocess.run(['python3',str(ROOT/'tools/3d-performance/audit_glb.py'),str(OUT/'props'/(model+'.glb')),'--output',str(delivery/'structural-audit.json')],check=True)
 
 if __name__=='__main__':

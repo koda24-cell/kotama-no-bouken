@@ -33,6 +33,20 @@ def build(asset,e):
   a,b=Vector(a),Vector(b);rod('exposed deformed reinforcing bar',a,b,r,rust,10)
   for j in range(max(2,int((b-a).length/.07))):
    p=a.lerp(b,j/max(1,int((b-a).length/.07)));ring('rolled steel deformation',p,r*1.14,r*.92,.005,tuple((b-a).normalized()),rust,10)
+ def recovered(label,filename,name,center,size):
+  root=Path(__file__).resolve().parents[2];folder=root/'assets/3d/dungeons/b3_recovered_candidates'/label
+  source=next((folder/'original').rglob(filename));receipt=__import__('json').loads((folder/'recovery.json').read_text());rel=str(source.relative_to(folder/'original'))
+  assert __import__('hashlib').sha256(source.read_bytes()).hexdigest()==receipt['files'][rel]['sha256']
+  before=set(bpy.context.scene.objects);bpy.ops.import_scene.gltf(filepath=str(source));new=set(bpy.context.scene.objects)-before;meshes=[o for o in new if o.type=='MESH'];assert meshes
+  corners=[o.matrix_world@Vector(p)for o in meshes for p in o.bound_box];lo=Vector(tuple(min(p[k]for p in corners)for k in range(3)));hi=Vector(tuple(max(p[k]for p in corners)for k in range(3)));middle=(lo+hi)*.5
+  scale=Vector(tuple(size[k]/max(hi[k]-lo[k],.0001)for k in range(3)))
+  for o in meshes:
+   transform=o.matrix_world.copy();o.parent=None;o.matrix_world.identity();o.name=name
+   for v in o.data.vertices:
+    p=transform@v.co-middle;v.co=Vector(tuple(p[k]*scale[k]+center[k]for k in range(3)))
+  for o in new:
+   if o.type!='MESH':bpy.data.objects.remove(o,do_unlink=True)
+  return meshes
  def chip_edge(o,loc,size):
   scar(o,loc,size,(rng.uniform(-.22,.22),rng.uniform(-.2,.2),rng.uniform(-.25,.25)))
  def cable(name,points,r=.011):return c.tube(name,points,r,rubber,8)
@@ -112,13 +126,13 @@ def build(asset,e):
   for loc,size in [((-1.72,-.7,2.75),(.4,.45,.38)),((1.7,.14,2.2),(.28,.36,.7))]:chip_edge(wall,loc,size)
   for x in[-1.6,-1.4]:ribs((x,-.2,2.7),(x+.06,-.42,3.07))
  else:
-  build_small(asset,e,dict(beam=beam,disk=disk,ring=ring,bolt=bolt,plate=plate,ribs=ribs,cable=cable,paint=paint,rubber=rubber))
+  build_small(asset,e,dict(beam=beam,disk=disk,ring=ring,bolt=bolt,plate=plate,ribs=ribs,cable=cable,paint=paint,rubber=rubber,recovered=recovered))
 
 def build_small(asset,e,h):
  import math
  c,bpy,box,rod,scar=[e[k]for k in ['c','bpy','box','rod','scar']]
  concrete,moss,rust,asphalt,fracture,dark,steel,rng,Vector=[e[k]for k in ['concrete','moss','rust','asphalt','fracture','dark','steel','rng','Vector']]
- beam,disk,ring,bolt,plate,ribs,cable,paint,rubber=[h[k]for k in ['beam','disk','ring','bolt','plate','ribs','cable','paint','rubber']]
+ beam,disk,ring,bolt,plate,ribs,cable,paint,rubber,recovered=[h[k]for k in ['beam','disk','ring','bolt','plate','ribs','cable','paint','rubber','recovered']]
  if asset=='broken_signal':
   box('signal concrete footing',(0,0,.12),(.65,.65,.24),moss,.035)
   rod('leaning tubular signal mast',(0,0,.2),(.12,.04,3.4),.065,rust,14)
@@ -195,21 +209,14 @@ def build_small(asset,e,h):
   for z in[.18,2.97]:box('lintel or sill',(0,0,z),(3.7,.55,.3),concrete,.03)
   for x in[-1.51,-.5,.5,1.51]:box('steel mullion',(x,-.11,1.58),(.055,.095,2.53),rust,.007)
   for z in[1.05,2.05]:box('horizontal window transom',(0,-.11,z),(3.1,.095,.047),rust,.006)
-  glass=c.material('f3_clouded_glass',(.17,.23,.20,1),.34)
-  # Each shard is a closed thin prism; no transmission scene copy is needed.
   for j,(cx,cz)in enumerate([(-1.0,.64),(0,1.51),(1.0,2.48),(-1.0,2.45)]):
-   p=[(-.43,-.35),(.43,-.35),(.43,.29),(.16,.12),(-.08,.37),(-.43,.24)];n=len(p)
-   verts=[(cx+x,-.17+y,cz+z)for y in[-.004,.004]for x,z in p]
-   faces=[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]+[(k,(k+1)%n,n+(k+1)%n,n+k)for k in range(n)]
-   o=c.mesh('retained dirty glass shard',verts,faces,glass);c.uv_world(o)
+   recovered('glass_v10','f3_glass_detached_shard01_dirt_v10.glb','reused weathered glass shard',(cx,-.17,cz),(.82,.008,.74))
   # Dark closed interior prevents the window becoming a view through the maze wall.
   box('unlit interior back',(0,.28,1.57),(3.32,.04,2.55),dark,0)
  elif asset=='rebar_rubble':
-  for j,(x,y,z,scale)in enumerate([(-.7,.2,.28,.7),(.52,.1,.35,.75),(.05,-.48,.18,.48)]):
-   bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(x,y,z));o=bpy.context.object;o.name='fractured aggregate bearing concrete';o.scale=(scale,scale*.7,z*1.6)
-   for v in o.data.vertices:v.co*=rng.uniform(.8,1.1)
-   o.data.materials.append(fracture if j==1 else concrete);c.uv_world(o)
-  for j in range(4):ribs((-.75+j*.32,.15,.42),(-.6+j*.35,.02,.86+j%2*.13))
+  for filename,center,size in [('f3_concrete_rubble_v29_medium.glb',(-.58,.14,.31),(1.13,.95,.62)),('f3_concrete_rubble_v29_small.glb',(.61,.12,.22),(.86,.73,.44))]:
+   recovered('rubble_v29',filename,'reused fracture aggregate',center,size)
+  for j in range(2):recovered('rebar_v4','f3_rebar01_v4.glb','reused ribbed reinforcing bar',(-.38+j*.62,.04,.74),(.065,.065,.63+j*.12))
   box('ground contact grit',(0,0,.035),(2.1,1.3,.05),moss,.08)
  elif asset=='heaved_asphalt':
   for j in range(4):

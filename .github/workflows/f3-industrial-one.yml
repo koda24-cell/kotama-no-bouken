@@ -41,13 +41,14 @@ jobs:
             p=(folder/name).resolve();assert p.is_relative_to(folder.resolve())
             assert hashlib.sha256(p.read_bytes()).hexdigest()==r['sha256'],name
           dst=Path('assets/3d/dungeons/b3_industrial_candidates')/'${{ inputs.asset }}'
-          for name in ['props','modules','sources','renders','metrics']:
+          for name in ['props','modules','sources','renders','metrics','runtime']:
             
             if (folder/name).exists():shutil.copytree(folder/name,dst/name,dirs_exist_ok=True)
           for name in ['manifest.json','structural-audit.json','SHARED_BLENDER53_QA_NOT_APPROVED.json']:
             shutil.copyfile(folder/name,dst/name)
           shutil.copytree(folder/'security',dst/'security',dirs_exist_ok=True)
           shutil.copytree(folder/'textures',dst.parent/'textures',dirs_exist_ok=True)
+          shutil.copytree(folder/'shared_textures',dst.parent/'shared_textures',dirs_exist_ok=True)
           logs=list(base.rglob('output.log'));assert len(logs)==1
           shutil.copytree(logs[0].parent,dst/'security'/'shared-gateway',dirs_exist_ok=True)
           PY
