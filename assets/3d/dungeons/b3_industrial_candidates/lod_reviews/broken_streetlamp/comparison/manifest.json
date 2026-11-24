@@ -1,0 +1,125 @@
+{
+  "schema": "kotama-rigid-lod-review-v1",
+  "status": "NOT_APPROVED",
+  "source": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/broken_streetlamp/props/f3_broken_streetlamp.glb",
+  "original_modified": false,
+  "category": "rigid_opaque_only",
+  "comparison_cameras": [
+    "front",
+    "side",
+    "angle",
+    "top"
+  ],
+  "original_triangle_equivalent": 588,
+  "variants": [
+    {
+      "lod": 0,
+      "target_ratio": 1.0,
+      "triangle_equivalent": 588,
+      "mesh_objects": 5,
+      "files": [
+        {
+          "name": "lod0_NOT_APPROVED.glb",
+          "bytes": 4894016,
+          "sha256": "8b05e95a93550ad48305231c24b97f3c47767ed3bebe6ed64dc4cee16992c636"
+        },
+        {
+          "name": "lod0_front.png",
+          "bytes": 259871,
+          "sha256": "8a25cbd06db9e9c0b5268ef3e87aa209534c67fce6cc926cea870037751be36c"
+        },
+        {
+          "name": "lod0_side.png",
+          "bytes": 258028,
+          "sha256": "627663d2463dc1713929399441a26dbada33b3c79d3f1a1376cdbb37446278cf"
+        },
+        {
+          "name": "lod0_angle.png",
+          "bytes": 260881,
+          "sha256": "af8c70f90e8b0c9e4a7aa2b557bc1565cb2056d54a93af97b6e17b2126554aaf"
+        },
+        {
+          "name": "lod0_top.png",
+          "bytes": 257402,
+          "sha256": "6f0eb770a13437398c6dee5b67a6c60565247ee176f66fb74410b3745109e7a2"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 1,
+      "target_ratio": 0.55,
+      "triangle_equivalent": 341,
+      "mesh_objects": 5,
+      "files": [
+        {
+          "name": "lod1_NOT_APPROVED.glb",
+          "bytes": 4873472,
+          "sha256": "ca3e9a74c8bfb9c4c904ff5ab56fec5917579a2c1c2b51201f3f852b635c19df"
+        },
+        {
+          "name": "lod1_front.png",
+          "bytes": 259877,
+          "sha256": "d2371b127ee95df1a35ef5e608f89a8da9eae20cb9b8fabc6d09f3ede82a0603"
+        },
+        {
+          "name": "lod1_side.png",
+          "bytes": 258159,
+          "sha256": "b68920cc080134c3c84afed17b0cf276097a92637ff00e8248bc34c9f025e2f7"
+        },
+        {
+          "name": "lod1_angle.png",
+          "bytes": 260831,
+          "sha256": "22c1e5fd22262ee2b8ffaa9d11bfaaf4540d0e3f4eda01f3083946c090bf2dee"
+        },
+        {
+          "name": "lod1_top.png",
+          "bytes": 257460,
+          "sha256": "edf9147aec916bbcf4403d38fb4c8d688d385e83f230cdf3b57760866bce509d"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 2,
+      "target_ratio": 0.25,
+      "triangle_equivalent": 180,
+      "mesh_objects": 5,
+      "files": [
+        {
+          "name": "lod2_NOT_APPROVED.glb",
+          "bytes": 4855536,
+          "sha256": "6c61b75461f09e49a06779bc0f03a27d20e62cd88909adf5f21fd1f820ef2178"
+        },
+        {
+          "name": "lod2_front.png",
+          "bytes": 259538,
+          "sha256": "1c9c7c114fc091ca6d5d5ddfdcedc2d7ec33f32d15c965a119168dd294229d1d"
+        },
+        {
+          "name": "lod2_side.png",
+          "bytes": 258175,
+          "sha256": "01fb5ccbe75a168063150af548cf4481801787b458d54d6ebe5a48960607e4ed"
+        },
+        {
+          "name": "lod2_angle.png",
+          "bytes": 260512,
+          "sha256": "7ce670d52bfbe28323dcd4931467ce46ecc580aa3159ccb8ddf01b3280eee4b3"
+        },
+        {
+          "name": "lod2_top.png",
+          "bytes": 257461,
+          "sha256": "83d2b722357b0f348fdf67a4f900181b491c083e8b5f6e226846686c5e80e1ee"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    }
+  ],
+  "warning": "Not safe for foliage/glass/rigged meshes. Geometry LOD candidates are not visually approved and are not integrated into the game.",
+  "sourceSha256": "f69e47b610ae005ee19dc41314376a1abde0103e13b930b00cae4eeb566bab39",
+  "sourceCommit": "21cbdd634849b774fcf37e68cbbff98284ca79e1",
+  "workflowRun": "45372771290",
+  "assetId": "broken_streetlamp",
+  "blender": "5.3.0",
+  "artisticStatus": "NOT_APPROVED"
+}
