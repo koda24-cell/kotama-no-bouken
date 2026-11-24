@@ -43,10 +43,11 @@ jobs:
           PRODUCTION_FAULT_INJECT: indentation_once
           PYTHONPATH: tools/3d_checkpoint
         run: |
-          python3 tools/3d_checkpoint/production_run.py --plan fault-input/plan.json --source fault-input/scene.blend --references fault-input/references --output fault-output/recovered --minutes 55
-          grep -R 'TabError\|IndentationError' fault-output/recovered
-          grep -R 'REPAIR_CANDIDATE_ACCEPTED=safe_indentation_normalization' fault-output/recovered
-          grep -R 'AUTOMATIC_RETRY_SUCCEEDED=front-1' fault-output/recovered
+          set -o pipefail
+          python3 tools/3d_checkpoint/production_run.py --plan fault-input/plan.json --source fault-input/scene.blend --references fault-input/references --output fault-output/recovered --minutes 55 2>&1 | tee fault-output/recovery-console.log
+          grep -R 'TabError\\|IndentationError' fault-output/recovered
+          grep -F 'REPAIR_CANDIDATE_ACCEPTED=safe_indentation_normalization' fault-output/recovery-console.log
+          grep -F 'AUTOMATIC_RETRY_SUCCEEDED=front-1' fault-output/recovery-console.log
           grep -R '"status": "target_met"' fault-output/recovered/result.json
       - name: Export recovered scene and compare GLB geometry and render
         run: |
