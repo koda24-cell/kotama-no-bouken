@@ -1,0 +1,238 @@
+{
+  "status": "NOT_APPROVED",
+  "supplier": "Poly Haven",
+  "asset": "periwinkle_plant",
+  "assetURL": "https://polyhaven.com/a/periwinkle_plant",
+  "license": "CC0",
+  "licenseURL": "https://polyhaven.com/license",
+  "files": [
+    {
+      "file": "sources/polyhaven_periwinkle_plant_original/files-api.json",
+      "url": "https://api.polyhaven.com/files/periwinkle_plant",
+      "bytes": 30378,
+      "sha256": "42a5696a46c9f77a1271edcf05494da138beac99f96b6afb0c420f6ce5836fd4"
+    },
+    {
+      "file": "sources/polyhaven_periwinkle_plant_original/periwinkle_plant_1k.gltf",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/periwinkle_plant/periwinkle_plant_1k.gltf",
+      "bytes": 15189,
+      "sha256": "df781eea76123fc6eee97e6e8d466743e3a5fb08e1a2c3f5025a57e090d2cc55"
+    },
+    {
+      "file": "sources/polyhaven_periwinkle_plant_original/textures/periwinkle_plant_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/periwinkle_plant/periwinkle_plant_nor_gl_1k.jpg",
+      "bytes": 418428,
+      "sha256": "36d2464e7500f741500228b955c1fb0f26d954e869bd26f93dd25c0fafc5087d"
+    },
+    {
+      "file": "sources/polyhaven_periwinkle_plant_original/textures/periwinkle_plant_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/periwinkle_plant/periwinkle_plant_diff_1k.jpg",
+      "bytes": 349879,
+      "sha256": "32d61084e6c07fa3ca8e03b35b347a12717f971efc90e8fe1185931ee2298c56"
+    },
+    {
+      "file": "sources/polyhaven_periwinkle_plant_original/textures/periwinkle_plant_arm_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/periwinkle_plant/periwinkle_plant_arm_1k.jpg",
+      "bytes": 281673,
+      "sha256": "d964e2e1118c2ca88c137b45590f48d83d3471fef48e913cbd57bf7122bbe4a3"
+    },
+    {
+      "file": "sources/polyhaven_periwinkle_plant_original/periwinkle_plant.bin",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/periwinkle_plant/periwinkle_plant.bin",
+      "bytes": 1859752,
+      "sha256": "f039855d84d59f764838285c2b041a5cf255d103afc856e219a62482826d9655"
+    },
+    {
+      "file": "sources/polyhaven_periwinkle_plant_original/textures/periwinkle_plant_alpha_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/periwinkle_plant/periwinkle_plant_opacity_1k.png",
+      "bytes": 86094,
+      "sha256": "e1dc2746b641606ae2772667c719e2b593b548759a51d86ce093322c22e903de"
+    }
+  ],
+  "originalSourceKept": true,
+  "originalVertices": 31801,
+  "verticesRemoved": 0,
+  "uvPreserved": true,
+  "sourceMeshes": [
+    {
+      "name": "periwinkle_plant_01_LOD0",
+      "vertices": 10066,
+      "sourceMatrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.5499998331069946
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "periwinkle_plant_02_LOD0",
+      "vertices": 7917,
+      "sourceMatrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.2499999701976776
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "periwinkle_plant_03_LOD0",
+      "vertices": 5139,
+      "sourceMatrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "periwinkle_plant_04_LOD0",
+      "vertices": 4042,
+      "sourceMatrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.20000000298023224
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "periwinkle_plant_05_LOD0",
+      "vertices": 3001,
+      "sourceMatrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.3499999940395355
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "periwinkle_plant_06_LOD0",
+      "vertices": 1636,
+      "sourceMatrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.5
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    }
+  ]
+}
