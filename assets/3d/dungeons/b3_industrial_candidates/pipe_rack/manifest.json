@@ -2,10 +2,10 @@
   "status": "NOT_APPROVED",
   "assetName": "pipe_rack",
   "asset": {
-    "bytes": 2653692,
-    "sha256": "d44f19eab72f66f598bc2ded70075723d6c2f632e83e4583da8026ce06a22f28",
-    "tris": 1720,
-    "verts": 2704,
+    "bytes": 2677860,
+    "sha256": "6936c83b3482f848f4d49fc0e8683aa51510b8c95149d4ed164513a4b36235ee",
+    "tris": 2116,
+    "verts": 3158,
     "meshes": 3,
     "drawCalls": 3,
     "materials": [
@@ -41,8 +41,8 @@
     "category": "props",
     "desc_ja": "垂れ下がる配管ラック",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
-    "workflowRun": "45332418931",
+    "sourceCommit": "b777bf019444bc2255cc9e921547e5cad762f8ab",
+    "workflowRun": "45335192544",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_pipe_rack.blend",
     "renderedFrom": "reimported GLB",
@@ -161,10 +161,10 @@
   ],
   "runtime": {
     "file": "f3_pipe_rack.glb",
-    "sourceSha256": "d44f19eab72f66f598bc2ded70075723d6c2f632e83e4583da8026ce06a22f28",
-    "sha256": "90f239bd6f176c3dbb1c55b309bdea6bc2d44ec12a02ae4d85535b5968c85f36",
-    "bytes": 145860,
-    "embeddedOriginalBytes": 2653692,
+    "sourceSha256": "6936c83b3482f848f4d49fc0e8683aa51510b8c95149d4ed164513a4b36235ee",
+    "sha256": "70a8f5e168e0f35659253f9bab7685d2dadaf1daf25ec6d2d57dd417a6fb9233",
+    "bytes": 170032,
+    "embeddedOriginalBytes": 2677860,
     "images": [
       {
         "file": "1c6eebec9d8705018b69ab63c7f28f7fcdbac2a28fd4a5c489bfb391f922f736.jpg",

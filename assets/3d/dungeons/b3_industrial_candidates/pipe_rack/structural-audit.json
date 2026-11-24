@@ -3,13 +3,13 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/pipe_rack/props/f3_pipe_rack.glb",
-      "file_bytes": 2653692,
+      "file_bytes": 2677860,
       "glb_meshes": 3,
       "total_mesh_primitives": 3,
       "scene_nodes": 4,
       "scene_mesh_nodes": 3,
       "scene_primitive_instances": 3,
-      "estimated_scene_triangles": 1720,
+      "estimated_scene_triangles": 2116,
       "materials": 3,
       "material_names": [
         "f3_aged_rubber",
