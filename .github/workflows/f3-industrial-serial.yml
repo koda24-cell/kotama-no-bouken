@@ -39,6 +39,9 @@ jobs:
       assets: ${{ steps.list.outputs.assets }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: /tools/f3-industrial/queue.json
+          sparse-checkout-cone-mode: false
       - id: list
         run: |
           python3 - <<'PYQUEUE'

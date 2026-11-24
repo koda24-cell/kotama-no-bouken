@@ -2,6 +2,10 @@ name: Shared Blender 5.3 render gateway
 on:
   workflow_call:
     inputs:
+      checkout_paths:
+        description: Optional sparse checkout paths for the selected asset job
+        type: string
+        default: ""
       definitions_artifact:
         description: Optional same-run official signed ClamAV database seed
         type: string
@@ -48,6 +52,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          sparse-checkout: ${{ inputs.checkout_paths }}
+          sparse-checkout-cone-mode: false
       - name: Validate requested paths
         env:
           SCRIPT: ${{ inputs.script }}

@@ -51,7 +51,7 @@ export function createCitySurfaces(THREE, high, photoMaterials=[]) {
     const props = { color: tint, map: maps[kind], side: kind === 'leaf' ? THREE.DoubleSide : THREE.FrontSide };
     // Diffuse stone/foliage needs no metallic BRDF. Reserve PBR for exposed steel.
     const m = kind !== 'leaf' && kind !== 'bark'
-      ? new THREE.MeshStandardMaterial({ ...props, roughness: 0.78, metalness: 0.3 })
+      ? new THREE.MeshStandardMaterial({ ...props, roughness: kind === 'rust' ? .78 : .94, metalness: kind === 'rust' ? .3 : 0 })
       : new THREE.MeshLambertMaterial(props);
     if (high && world) { m.bumpMap = maps[kind]; m.bumpScale = kind === 'rust' ? 0.035 : 0.1; }
     if (world) {
