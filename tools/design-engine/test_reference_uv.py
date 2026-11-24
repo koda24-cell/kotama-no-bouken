@@ -4,11 +4,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from PIL import Image
+
 from reference_uv import draw_uv, read_glb, read_uv_accessor, read_indices
 
 
-def make_glb():
-    uv = struct.pack("<6f", 0.0, 0.0, 1.0, 0.0, 0.5, 1.0)
+def make_glb(coords=((0.0, 0.0), (1.0, 0.0), (0.5, 1.0))):
+    uv = struct.pack("<6f", *(value for pair in coords for value in pair))
     doc = {
         "asset": {"version": "2.0"},
         "buffers": [{"byteLength": len(uv)}],
@@ -40,6 +42,19 @@ class UVReviewTest(unittest.TestCase):
             self.assertEqual(report["primitives"][0]["status"], "GENERATED")
             self.assertEqual(report["primitives"][0]["triangles"], 1)
             self.assertTrue((Path(tmp) / "out" / "mesh-000-primitive-000.png").is_file())
+
+    def test_out_of_tile_uvs_are_visible(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "mesh.glb"
+            p.write_bytes(make_glb(((-0.7, -2.1), (4.0, -2.8), (2.0, 1.2))))
+            out = Path(tmp) / "out"
+            report = draw_uv(p, out, 256)
+            bounds = report["primitives"][0]["uv_bounds"]
+            self.assertAlmostEqual(bounds[0][0], -0.7, places=5)
+            self.assertAlmostEqual(bounds[1][0], 4.0, places=5)
+            image = Image.open(out / "mesh-000-primitive-000.png").convert("RGB")
+            blue_pixels = sum(1 for pixel in image.getdata() if pixel == (196, 219, 245))
+            self.assertGreater(blue_pixels, 100)
 
     def test_read_index_accessor(self):
         doc = {
