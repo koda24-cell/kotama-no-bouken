@@ -1,0 +1,67 @@
+name: Real asset visual review
+on:
+  pull_request:
+    branches: [development]
+    paths:
+      - 'tools/3d_checkpoint/production_real_asset_review.py'
+      - '.github/workflows/real-asset-visual-review.yml'
+permissions:
+  contents: read
+  packages: read
+jobs:
+  review:
+    strategy:
+      fail-fast: false
+      matrix:
+        asset: [modules/mod_pillar_corner, modules/mod_wall_collapsed_4m, props/ancient_sarcophagus, props/ancient_iron_gate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Scan and render real asset
+        env:
+          ASSET: ${{ matrix.asset }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          source="assets/3d/dungeons/b1_ancient_forest/$ASSET.glb"
+          mkdir -p review-input review-output qa/security
+          cp "$source" review-input/source.glb
+          sha256sum "$source" > qa/security/original.sha256
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan review-input qa/security/input.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint qa/security/scripts.log
+          for mode in baseline bevel normals roughness; do
+            blender -b --disable-autoexec --python-exit-code 1 --python tools/3d_checkpoint/production_real_asset_review.py -- review-input/source.glb "review-output/$mode" "$mode"
+          done
+          sha256sum -c qa/security/original.sha256
+          bash tools/security/clamav_scan_gate.sh scan review-output qa/security/output.log
+          PYTHONPATH=tools/3d_checkpoint python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from production_visual_quality import evaluate
+          root=Path("review-output")
+          baseline=json.loads((root/"baseline/geometry.json").read_text())
+          result={}
+          for mode in ("bevel","normals","roughness"):
+              g=json.loads((root/mode/"geometry.json").read_text())
+              assert g["preserved"] and g["mesh_hash"]==baseline["mesh_hash"]
+              result[mode]={v:evaluate(root/mode/(v+".png"),root/"baseline"/(v+".png")) for v in ("front","side","back","angle")}
+          (root/"review.json").write_text(json.dumps({"comparison":result,"meaning":"baseline similarity only; human aesthetic review required","approval":"NOT_APPROVED"},indent=2))
+          PY
+          echo "REAL_ASSET_REVIEW_COMPLETE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: review-${{ strategy.job-index }}-NOT-APPROVED
+          path: |
+            review-output
+            qa/security
+          retention-days: 14
