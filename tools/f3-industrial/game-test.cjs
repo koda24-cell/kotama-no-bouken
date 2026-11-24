@@ -35,14 +35,24 @@ await page.evaluate(()=>{
  g.renderer.render=(scene,camera)=>{const start=performance.now();render(scene,camera);if(scene===g.scene)window.__perf.push({time:performance.now(),ms:performance.now()-start,calls:g.renderer.info.render.calls,triangles:g.renderer.info.render.triangles});};
 });
 
-for(const floor of (process.argv.includes('--visual-only') ? [0,1,2] : [0,1,2,0])){
+for(const floor of (process.env.F3_TEST_FLOORS?process.env.F3_TEST_FLOORS.split(',').map(Number):(process.argv.includes('--visual-only') ? [0,1,2] : [0,1,2,0]))){
 console.log('floor '+floor);
 await page.evaluate(f=>fieldEnterArea(3,{floor:f,adminSkip:true}),floor);
 await page.waitForFunction(f=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.floor===`3-${f}`,floor,{timeout:120000});
 await page.waitForTimeout(600);
 const info=await page.evaluate(()=>{const {placements,edgePlacements,...x}=KotamaField3D.themeInfo();const a=fieldArea();const overlaps=[];
 for(const p of placements)for(let z=0;z<a.h;z++)for(let x=0;x<a.w;x++)if(fieldTileAt(a,x,z)!=='#'&&p.max[0]>x*4-2+0.001&&p.min[0]<x*4+2-0.001&&p.max[2]>z*4-2+0.001&&p.min[2]<z*4+2-0.001)overlaps.push({key:p.key,x,z});
-return {...x,edgePlacementCount:edgePlacements?.length,edgePlacements,overlaps,entryKinds:__test3d.g.entries.map(e=>({kind:e.kind,visible:!!e.obj,tx:e.o.tx,ty:e.o.ty}))};});logs.push(info);
+const edgeOverlaps=[];
+for(const p of edgePlacements||[]){
+ if(p.min[1]>=2.1||p.max[1]<=.15)continue;
+ for(let z=0;z<a.h;z++)for(let x=0;x<a.w;x++)if(fieldTileAt(a,x,z)!=='#'){
+  const rects=[[x*4-.9,z*4-.9,x*4+.9,z*4+.9]];
+  if(x+1<a.w&&fieldTileAt(a,x+1,z)!=='#')rects.push([x*4-.9,z*4-.9,(x+1)*4+.9,z*4+.9]);
+  if(z+1<a.h&&fieldTileAt(a,x,z+1)!=='#')rects.push([x*4-.9,z*4-.9,x*4+.9,(z+1)*4+.9]);
+  if(rects.some(r=>p.max[0]>r[0]+.001&&p.min[0]<r[2]-.001&&p.max[2]>r[1]+.001&&p.min[2]<r[3]-.001))edgeOverlaps.push({key:p.key,x,z});
+ }
+}
+return {...x,edgePlacementCount:edgePlacements?.length,edgePlacements,edgeOverlaps,overlaps,entryKinds:__test3d.g.entries.map(e=>({kind:e.kind,visible:!!e.obj,tx:e.o.tx,ty:e.o.ty}))};});logs.push(info);
 const pos=floor===2?[11,12,'up']:floor===1?[9,19,'right']:[8,19,'right'];
 await page.evaluate(([tx,ty,dir])=>{const c=fieldTileCenter(tx,ty);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=dir;fieldState.view=null;__test3d.g.cam.ready=false;fieldUpdateVision(true);},pos);
 await page.waitForTimeout(1200);
@@ -53,7 +63,8 @@ info.performance=await page.evaluate(()=>{const p=window.__perf,t=p.map(x=>x.tim
 }
 if (process.argv.includes('--visual-only')) {
  fs.writeFileSync(`${out}/${mobile?'mobile':'pc'}-results.json`,JSON.stringify({logs,errors},null,2));
- console.log(JSON.stringify({floors:logs.map(({edgePlacements,...x})=>x),errors},null,2));await browser.close();server.close();return;
+ const failures=logs.filter(r=>r.mode!=='b3-industrial-trial'||!r.industrialAssets?.sourceHashesVerified||r.fallbackReason||r.overlaps?.length||r.edgeOverlaps?.length).map(r=>({floor:r.floor,mode:r.mode,reason:r.fallbackReason,hardOverlaps:r.edgeOverlaps?.length}));
+ console.log(JSON.stringify({floors:logs.map(({edgePlacements,...x})=>x),errors,failures},null,2));await browser.close();server.close();if(failures.length)process.exitCode=1;return;
 }
 // Real input: move, turn without spending a turn, and bump into a solid boundary.
 const check=async()=>page.evaluate(()=>({tile:fieldPlayerTile(),dir:fieldState.dir,turn:fieldState.turn,foes:fieldState.foes.map(f=>({x:f.tx,y:f.ty})),near:fieldState.nearKey}));
@@ -113,7 +124,7 @@ const stairs=await page.evaluate(()=>{fieldState.lock=false;fieldOnStairs('down'
 await page.waitForFunction(()=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.floor==='3-1',null,{timeout:120000});
 logs.push({stairs:{floor:await page.evaluate(()=>fieldState.floor)}});
 const failures=[];
-for(const x of logs)if(x.overlaps?.length)failures.push('scenery overlaps '+x.floor);
+for(const x of logs){if(x.overlaps?.length)failures.push('scenery overlaps '+x.floor);if(x.edgeOverlaps?.length)failures.push('body-lane obstruction '+x.floor);}
 if(controls.move.tile.tx!==9||controls.move.turn!==controls.before.turn+1||controls.turn.turn!==controls.move.turn||controls.bump.tile.tx!==9||controls.bump.turn!==controls.move.turn)failures.push('controls');
 if(!interactions.find(x=>x.kind==='chest')?.after.flag)failures.push('chest');
 if(!interactions.find(x=>x.kind==='gather')?.after.used)failures.push('gather');

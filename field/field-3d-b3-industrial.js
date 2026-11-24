@@ -24,7 +24,7 @@ export function createTheme(api) {
   }
   function prototype(key, make) {
     if (!prototypes.has(key)) {
-      const sourceId=industrial.models.has(key)?key:key.endsWith("0")&&industrial.models.has("native_"+key.slice(0,-1))?"native_"+key.slice(0,-1):null;
+      const sourceId=industrial.models.has(key)?key:industrial.models.has(key.slice(0,-1))?key.slice(0,-1):key.endsWith("0")&&industrial.models.has("native_"+key.slice(0,-1))?"native_"+key.slice(0,-1):null;
       const model = sourceId ? industrial.models.get(sourceId).clone(true) : finish.dress(make(), key);
       prototypes.set(key, model);
     }
@@ -216,8 +216,8 @@ export function createTheme(api) {
           const gx = px + dx * (1.65 + k * 0.15) + dz * along;
           const gz = pz + dz * (1.65 + k * 0.15) - dx * along;
           const tuft=tufts[(i+x+z)%tufts.length];
-          const plant = add(tuft.geometry, tuft.material, gx, 0.1 + k * 0.13, gz, 0.6 + k, 0.5 + k * 0.5, 0.7);
-          plant.rotation.z = k * 0.45;
+          const plant = add(tuft.geometry, tuft.material, gx, .018 + k * .02, gz, 0.6 + k, 0.5 + k * 0.5, 0.7);
+          plant.rotation.z = (k-.5)*.12;
           if (i === 1) add(chip, stone, gx, 0.05, gz, 1.5, 0.7, 1, k * 6);
         }
       }
