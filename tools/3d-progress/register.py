@@ -27,7 +27,7 @@ def png_check(p):
 def register(root, meta, source):
     if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{0,79}",meta["id"]): raise ValueError("Invalid id")
     if meta.get("publication_cleared") is not True: raise ValueError("Publication clearance required")
-    if meta.get("status") not in ("制作中","承認待ち","完成"): raise ValueError("Invalid status")
+    if meta.get("status") not in ("設計中","制作中","承認待ち","完成"): raise ValueError("Invalid status")
     for k in ("name","floor","version"):
         if not isinstance(meta[k],str) or not meta[k]: raise ValueError(k)
     if type(meta["run_id"]) is not int or meta["run_id"]<=0: raise ValueError("run_id")
@@ -38,7 +38,12 @@ def register(root, meta, source):
     index=root/"index.json"
     data=json.loads(index.read_text(encoding="utf-8"))
     old=next((x for x in data["models"] if x["id"]==meta["id"]),None)
-    if old and datetime.fromisoformat(old["updated_at"])>=datetime.fromisoformat(stamp): return False
+    kind=meta.get("kind","render")
+    if kind not in ("render","design"): raise ValueError("Invalid kind")
+    field="designs" if kind=="design" else "images"
+    previous=(old or {}).get(kind+"_updated_at")
+    if not previous and kind=="render" and old and old.get("images"): previous=old["updated_at"]
+    if previous and datetime.fromisoformat(previous)>=datetime.fromisoformat(stamp): return False
     prepared=[]
     for v in meta["images"]:
         p=(source/v["file"]).resolve()
@@ -51,8 +56,16 @@ def register(root, meta, source):
         dest=root/path
         dest.parent.mkdir(parents=True,exist_ok=True)
         shutil.copyfile(p,dest)
-    row={k:meta[k] for k in ("id","name","floor","version","status","run_id","source_sha")}
-    row.update(updated_at=stamp,images=[v for _,_,v in prepared])
+    row=dict(old or {})
+    if kind=="render" or not row.get("images"):
+        row.update({k:meta[k] for k in ("id","name","floor","version","status","run_id","source_sha")})
+    row.setdefault("images",[])
+    row[field]=[v for _,_,v in prepared]
+    row[kind+"_updated_at"]=stamp
+    row[kind+"_version"]=meta["version"]
+    row[kind+"_source_sha"]=meta["source_sha"]
+    row[kind+"_run_id"]=meta["run_id"]
+    row["updated_at"]=max(stamp,row.get("updated_at",stamp))
     data["models"]=[x for x in data["models"] if x["id"]!=row["id"]]+[row]
     tmp=index.with_suffix(".tmp")
     tmp.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
