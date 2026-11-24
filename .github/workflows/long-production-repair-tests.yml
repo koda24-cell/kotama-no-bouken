@@ -1,0 +1,21 @@
+name: Long production repair regression
+on:
+  pull_request:
+    branches: [development]
+    paths:
+      - 'tools/3d_checkpoint/**'
+      - '.github/workflows/long-production-repair-tests.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Compile repair modules
+        run: python3 -m compileall -q tools/3d_checkpoint
+      - name: Run all checkpoint and production tests
+        run: python3 -m unittest discover -s tools/3d_checkpoint -p 'test_*.py' -v

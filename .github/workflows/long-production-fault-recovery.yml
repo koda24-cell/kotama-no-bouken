@@ -1,0 +1,103 @@
+name: Long production real Blender fault recovery
+on:
+  pull_request:
+    branches: [development]
+    paths:
+      - 'tools/3d_checkpoint/production_blender_driver.py'
+      - 'tools/3d_checkpoint/production_source_repair.py'
+      - 'tools/3d_checkpoint/production_safe_repair.py'
+      - 'tools/3d_checkpoint/production_repair_loop.py'
+      - 'tools/3d_checkpoint/render_production_tile.py'
+      - '.github/workflows/long-production-fault-recovery.yml'
+permissions:
+  contents: read
+  packages: read
+jobs:
+  fault-recovery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Create isolated Blender scene and baseline render
+        run: |
+          mkdir -p fault-input/references fault-output
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          blender -b --factory-startup --disable-autoexec --python-exit-code 1 --python-expr 'import bpy; s=bpy.context.scene; s.render.engine="CYCLES"; s.cycles.samples=4; s.render.resolution_x=128; s.render.resolution_y=96; s.render.resolution_percentage=100; s.render.image_settings.file_format="PNG"; s.render.image_settings.color_mode="RGBA"; s.render.filepath="//references/front-1.png"; bpy.ops.wm.save_as_mainfile(filepath="fault-input/scene.blend"); bpy.ops.render.render(write_still=True)'
+          test -s fault-input/references/front-1.png
+          cp fault-input/references/front-1.png fault-output/baseline-reference.png
+          blender -b fault-input/scene.blend --disable-autoexec --python-exit-code 1 --python-expr 'import bpy; bpy.ops.export_scene.gltf(filepath="fault-output/baseline.glb", export_format="GLB")'
+          test -s fault-output/baseline.glb
+          echo '{"width":128,"height":96,"columns":2,"rows":2,"views":["front"],"frames":[1],"cameras":{"front":"Camera"}}' > fault-input/plan.json
+      - name: Refresh signatures and scan all inputs and source
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan fault-input qa/security/input.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint qa/security/source.log
+      - name: Inject real Blender syntax failure and run automatic repair
+        env:
+          PRODUCTION_FAULT_INJECT: indentation_once
+          PYTHONPATH: tools/3d_checkpoint
+        run: |
+          set -o pipefail
+          python3 tools/3d_checkpoint/production_run.py --plan fault-input/plan.json --source fault-input/scene.blend --references fault-input/references --output fault-output/recovered --minutes 55 2>&1 | tee fault-output/recovery-console.log
+          grep -RE 'TabError|IndentationError' fault-output/recovered
+          grep -F 'REPAIR_CANDIDATE_ACCEPTED=safe_indentation_normalization' fault-output/recovery-console.log
+          grep -F 'AUTOMATIC_RETRY_SUCCEEDED=front-1-' fault-output/recovery-console.log
+          python3 -c 'import json; from pathlib import Path; r=json.loads(Path("fault-output/recovered/front-1/result.json").read_text()); assert r["status"]=="target_met",r'
+        shell: bash
+      - name: Export recovered scene and compare GLB geometry and render
+        run: |
+          blender -b fault-input/scene.blend --disable-autoexec --python-exit-code 1 --python-expr 'import bpy; bpy.ops.export_scene.gltf(filepath="fault-output/recovered.glb", export_format="GLB")'
+          cp fault-output/recovered/front-1/0/assembled.png fault-output/recovered-render.png
+          python3 - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          def chunks(path):
+              b=Path(path).read_bytes()
+              assert b[:4]==b'glTF' and struct.unpack_from('<I',b,4)[0]==2
+              total=struct.unpack_from('<I',b,8)[0]
+              assert total==len(b)
+              n,kind=struct.unpack_from('<II',b,12)
+              meta=json.loads(b[20:20+n].decode('utf-8').rstrip(' '))
+              pos=20+n
+              size,typ=struct.unpack_from('<II',b,pos)
+              assert typ==0x004E4942 and pos+8+size<=len(b)
+              binary=b[pos+8:pos+8+size]
+              return meta,binary
+          a,ab=chunks('fault-output/baseline.glb')
+          z,zb=chunks('fault-output/recovered.glb')
+          assert a.get('meshes',[])==z.get('meshes',[])
+          assert a.get('accessors',[])==z.get('accessors',[])
+          assert a.get('bufferViews',[])==z.get('bufferViews',[])
+          assert hashlib.sha256(ab).digest()==hashlib.sha256(zb).digest()
+          print('GLB_GEOMETRY_COMPARE=IDENTICAL')
+          print('BASELINE_GLB_SHA256='+hashlib.sha256(Path('fault-output/baseline.glb').read_bytes()).hexdigest())
+          print('RECOVERED_GLB_SHA256='+hashlib.sha256(Path('fault-output/recovered.glb').read_bytes()).hexdigest())
+          PY
+          PYTHONPATH=tools/3d_checkpoint python3 - <<'PY'
+          from production_image_score import score
+          import glob,json
+          after=glob.glob('fault-output/recovered/front-1/0/assembled.png')
+          assert len(after)==1,after
+          result=score(after[0],'fault-input/references/front-1.png')
+          print('RENDER_BEFORE_AFTER='+json.dumps(result,sort_keys=True))
+          assert result['technical_pass'],result
+          PY
+      - name: Scan every generated candidate
+        if: always()
+        run: |
+          if test -d fault-output; then bash tools/security/clamav_scan_gate.sh scan fault-output qa/security/output.log; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blender-fault-recovery-NOT-APPROVED-${{ github.run_id }}
+          path: fault-output
+          retention-days: 14
+          if-no-files-found: warn

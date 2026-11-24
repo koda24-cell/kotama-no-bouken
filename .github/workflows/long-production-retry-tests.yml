@@ -1,0 +1,20 @@
+name: Long production retry policy tests
+on:
+  pull_request:
+    branches: [development]
+    paths:
+      - 'tools/3d_checkpoint/production*.py'
+      - 'tools/3d_checkpoint/test_production*.py'
+      - '.github/workflows/long-production-retry-tests.yml'
+permissions:
+  contents: read
+jobs:
+  policy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s tools/3d_checkpoint -p 'test_production*.py' -v
+      - run: python3 -m unittest discover -s tools/3d_checkpoint -p 'test_*.py' -v
