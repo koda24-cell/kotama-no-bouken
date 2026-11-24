@@ -121,6 +121,8 @@ export function createTheme(api) {
     daylightPool.forEach(light => g.scene.remove(light));
     g.camera.far = 44; g.camera.updateProjectionMatrix();
     industrial=await loadIndustrialAssets();
+    const anisotropy=Math.min(g.high?8:4,g.renderer.capabilities.getMaxAnisotropy());
+    for(const material of industrial.materials)for(const texture of Object.values(material))if(texture?.isTexture)texture.anisotropy=anisotropy;
     city = createRuinedCityKit(THREE); urban = createB3UrbanProps(THREE);
     finish = createCitySurfaces(THREE, g.high,industrial.materials);
     // One shared overcast reflection for glass, corroded steel and worn hardware.
