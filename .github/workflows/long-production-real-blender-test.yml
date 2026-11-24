@@ -38,3 +38,4 @@ jobs:
       source_directory: render-output/b2-watergate
       blend_filename: frozen_watergate_v09.blend
       output_directory: render-output/long-production-test
+      gallery_spec: '{"id":"gallery-test-watergate","name":"Recovery test fixture","floor":"Test","version":"V02","kind":"progress","publication_cleared":true,"images":[{"view":"front","file":"front.png"},{"view":"side","file":"side.png"},{"view":"angle","file":"angle.png"}]}'
