@@ -167,7 +167,8 @@ export function createTheme(api) {
     const reserved = new Set();
     for (const o of a.objects) for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) reserved.add(`${o.tx + dx},${o.ty + dz}`);
     const occupied = new Set();
-    const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`);
+    const pilotWall=(x,z)=>v2&&a.f===0&&ch(x,z)==='#'&&Math.abs(x-8)<=5&&Math.abs(z-19)<=3;
+    const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`)&&!pilotWall(x,z);
     stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 representative street, work in progress':'V1',representativeFacadeCount:0 };
     const count = k => { stats.motifs[k] = (stats.motifs[k] || 0) + 1; };
     // Large paired blocks are confined to 2x2 solid cells. Distinct districts per floor.
@@ -226,11 +227,11 @@ export function createTheme(api) {
         const obj = prototype('paving' + (x % 3), () => urban.rootedPavement(x % 3 + 1));
         obj.scale.set(0.8, 0.18, 0.8); obj.position.set(px, -0.025, pz); root.add(obj); count('rootedPavement');
       }
-      if (!safe) {
+      if (!safe || v2) {
         // Follow actual street walls, including east-west streets, rather than
         // placing rows of tufts across the walking line.
         const edges = DIR_ORDER.filter(d => wallCell(x + DIR_VEC[d][0], z + DIR_VEC[d][1]));
-        const plantsPerEdge=v2?(g.high?12:8):(g.high?5:3);
+        const plantsPerEdge=v2?(safe?5:(g.high?12:8)):(g.high?5:3);
         for (const d of edges) for (let i = 0; i < plantsPerEdge; i++) {
           const [dx, dz] = DIR_VEC[d], k = hash(x * 9 + i, z, DIR_ORDER.indexOf(d) + 210);
           if (k < (v2 ? .12 : .35)) continue;
@@ -238,9 +239,9 @@ export function createTheme(api) {
           const gx = px + dx * (1.65 + k * 0.15) + dz * along;
           const gz = pz + dz * (1.65 + k * 0.15) - dx * along;
           const tuft=tufts[(i+x+z)%tufts.length];
-          const plant = add(tuft.geometry, tuft.material, gx, .018 + k * .02, gz, 0.6 + k, 0.5 + k * 0.5, 0.7);
+          const plant = add(tuft.geometry, tuft.material, gx, .018 + k * .02, gz, (0.6+k)*(safe?.7:1), (0.5+k*.5)*(safe?.65:1), 0.7);
           plant.rotation.z = (k-.5)*.12;
-          if (i === 1) add(chip, stone, gx, 0.05, gz, 1.5, 0.7, 1, k * 6);
+          if (!safe&&i === 1) add(chip, stone, gx, 0.05, gz, 1.5, 0.7, 1, k * 6);
         }
         if(edgeBlend)for(const d of edges){
           const [dx,dz]=DIR_VEC[d],patch=new THREE.Mesh(edgeBlend.geometry,edgeBlend.material);
@@ -250,18 +251,28 @@ export function createTheme(api) {
       for (const d of DIR_ORDER) {
         const [dx, dz] = DIR_VEC[d]; if (!wallCell(x + dx, z + dz)) continue;
         const ry = FACE_YAW[d] + Math.PI, ex = px + dx * 2.12, ez = pz + dz * 2.12;
+        const representative=pilotWall(x+dx,z+dz);
         // Continuous base identifies every solid boundary, including closed shortcuts.
         // Closed concrete back keeps skyline fractures and windows from exposing adjacent streets.
         const wallHeight=4.7+Math.floor(hash(Math.floor((x+dx)/4),Math.floor((z+dz)/4),837)*3)*.25;
-        const backing=add(cube, stone, ex+dx*.65, 1.9, ez+dz*.65, 4.07, 3.8, .30, ry);backing.userData.f3Keep=true;
+        if(!representative){const backing=add(cube, stone, ex+dx*.65, 1.9, ez+dz*.65, 4.07, 3.8, .30, ry);backing.userData.f3Keep=true;}
         const sequence=['retaining_wall','retaining_wall','shattered_window','roller_shutter','retaining_wall','factory_door'].filter(id=>industrial.models.has(id));
-        const representative=v2&&a.f===0&&Math.abs(x-8)<=5&&Math.abs(z-19)<=3;
         const id=representative?'v2_courtyard_facade':sequence[Math.floor(hash(x,z,330+DIR_ORDER.indexOf(d))*sequence.length)];
         const model=industrial.models.get(id).clone(true),holder=new THREE.Group();holder.add(model);model.rotation.y=ry;
         let bb=new THREE.Box3().setFromObject(holder),ss=bb.getSize(new THREE.Vector3()),cc=bb.getCenter(new THREE.Vector3());
-        const along=dx?ss.z:ss.x,scale=3.96/along,depth=(dx?ss.x:ss.z)*scale;
-        holder.scale.set(scale,representative?scale:Math.min(scale,wallHeight/ss.y),scale);
-        holder.position.set(ex-cc.x*scale+dx*(representative?depth/2+.03:-.10),-bb.min.y*holder.scale.y,ez-cc.z*scale+dz*(representative?depth/2+.03:-.10));
+        const along=dx?ss.z:ss.x,scale=3.96/along,depth=representative?1.70:(dx?ss.x:ss.z)*scale;
+        // Two opposing facade bays share a four-metre solid cell. Keep each
+        // recessed bay in its own half; an opposite rear wall must not fill it.
+        const sx=representative&&dx?depth/ss.x:scale,sz=representative&&dz?depth/ss.z:scale;
+        holder.scale.set(sx,representative?scale:Math.min(scale,wallHeight/ss.y),sz);
+        holder.position.set(ex-cc.x*sx+dx*(representative?depth/2+.03:-.10),-bb.min.y*holder.scale.y,ez-cc.z*sz+dz*(representative?depth/2+.03:-.10));
+        if(representative){
+          const height=ss.y*scale,concrete=industrial.materials.find(m=>m.name==='f3_v2_cast_floor')||stone;
+          for(const side of[-1,1]){
+            const joint=add(cube,concrete,ex+dx*1.64+dz*side*1.96,height/2,ez+dz*1.64-dx*side*1.96,.27,height,.18,ry);
+            const jb=new THREE.Box3().setFromObject(joint);joint.userData.f3Bounds={min:jb.min.toArray(),max:jb.max.toArray()};
+          }
+        }
         if(representative)stats.representativeFacadeCount++;
         root.add(holder);holder.updateMatrixWorld(true);const facadeBounds=new THREE.Box3().setFromObject(holder),facadeRecord={key:id+':facade',min:facadeBounds.min.toArray(),max:facadeBounds.max.toArray(),overhead:false};holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=facadeRecord;});
         if(representative)edgePlacements.push(facadeRecord);count(id);
@@ -271,9 +282,11 @@ export function createTheme(api) {
           const side=ids[Math.floor(hash(x,z,440+DIR_ORDER.indexOf(d))*ids.length)];
           edgeDetail(side,px,pz,dx,dz,ry,r);count(side);
         }
-        for (const side of [-1, 1]) add(cube, stone, ex + Math.cos(ry) * side * 1.83, 1.4 + r * 0.5, ez - Math.sin(ry) * side * 1.83, 0.32, 1.8 + r * 2, 0.27, ry);
-        if (r > 0.5) add(cube, steel, ex, 2.6 + r, ez, r > 0.8 ? 4 : 2.5, 0.16, 0.28, ry);
-        if (!safe && r < 0.35) {
+        if(!representative){
+          for (const side of [-1, 1]) add(cube, stone, ex + Math.cos(ry) * side * 1.83, 1.4 + r * 0.5, ez - Math.sin(ry) * side * 1.83, 0.32, 1.8 + r * 2, 0.27, ry);
+          if (r > 0.5) add(cube, steel, ex, 2.6 + r, ez, r > 0.8 ? 4 : 2.5, 0.16, 0.28, ry);
+        }
+        if (!representative && !safe && r < 0.35) {
           const obj = prototype('wallRoots', () => city.vines());
           obj.scale.set(0.55, 0.65, 0.35); obj.rotation.y = ry; obj.position.set(ex, 0, ez); root.add(obj);
         }

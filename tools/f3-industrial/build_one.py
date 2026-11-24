@@ -72,6 +72,9 @@ def main():
  elif asset=='v2_service_tower':
   from service_tower_v2 import build
   build(dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector,candidate=candidate,scan=scan))
+ elif asset=='v2_fern_colony':
+  from fern_colony_v2 import build
+  build(dict(c=c,bpy=bpy,rng=rng,scan=scan))
  elif asset=='retaining_wall':
   from weathering import wall_atlas
   diffuse,rough=wall_atlas(OUT/'sources/generated_materials',textures)
@@ -131,7 +134,10 @@ def main():
  authoring=OUT/'sources'/(model+'_authoring.blend')
  authoring_vertices=sum(len(o.data.vertices)for o in bpy.context.scene.objects if o.type=='MESH')
  bpy.ops.wm.save_as_mainfile(filepath=str(authoring),compress=True)
- metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset))
+ metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset),render=asset!='v2_fern_colony')
+ if asset=='v2_fern_colony':
+  from fern_colony_v2 import finalize
+  metrics=finalize(c,model,metrics)
  metrics.update(approvalStatus='NOT_APPROVED',workflowRun=os.environ.get('GITHUB_RUN_ID'),verificationEnvironment='Shared pinned Blender '+bpy.app.version_string+' + ClamAV')
  (OUT/'metrics'/(model+'.json')).write_text(json.dumps(metrics,indent=2))
  from pack_runtime import pack

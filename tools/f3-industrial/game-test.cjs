@@ -30,7 +30,7 @@ await page.evaluate(()=>{try{tutorialFinish();tutorialClose();}catch{};if(typeof
 await page.evaluate(()=>fieldEnterArea(3,{floor:0,adminSkip:true}));
 await page.waitForFunction(()=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.placed,null,{timeout:120000});
 await page.waitForTimeout(1500);
-await page.screenshot({timeout:120000,path:out+(mobile?'/mobile':'/pc')+'-entry.png'});
+if(!process.env.F3_INSPECT_VIEW)await page.screenshot({timeout:120000,path:out+(mobile?'/mobile':'/pc')+'-entry.png'});
 console.log('3D ready');
 // Sample street and plaza views on all floors.
 const logs=[];
@@ -41,7 +41,7 @@ await page.evaluate(()=>{
 
 for(const floor of (process.env.F3_TEST_FLOORS?process.env.F3_TEST_FLOORS.split(',').map(Number):(process.argv.includes('--visual-only') ? [0,1,2] : [0,1,2,0]))){
 console.log('floor '+floor);
-await page.evaluate(f=>fieldEnterArea(3,{floor:f,adminSkip:true}),floor);
+if(!process.env.F3_INSPECT_VIEW||floor!==0)await page.evaluate(f=>fieldEnterArea(3,{floor:f,adminSkip:true}),floor);
 await page.waitForFunction(f=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.floor===`3-${f}`,floor,{timeout:120000});
 await page.waitForTimeout(600);
 const info=await page.evaluate(()=>{const {placements,edgePlacements,...x}=KotamaField3D.themeInfo();const a=fieldArea();const overlaps=[];
@@ -59,6 +59,19 @@ for(const p of edgePlacements||[]){
 return {...x,edgePlacementCount:edgePlacements?.length,edgePlacements,edgeOverlaps,overlaps,entryKinds:__test3d.g.entries.map(e=>({kind:e.kind,visible:!!e.obj,tx:e.o.tx,ty:e.o.ty}))};});logs.push(info);
 const pos=floor===2?[11,12,'up']:floor===1?[9,19,'right']:[8,19,'right'];
 await page.evaluate(([tx,ty,dir])=>{const c=fieldTileCenter(tx,ty);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=dir;fieldState.view=null;__test3d.g.cam.ready=false;fieldUpdateVision(true);},pos);
+if(process.env.F3_INSPECT_VIEW){
+ info.viewProbe=await page.evaluate(async()=>{
+  const T=await import('three'),{g}=__test3d;
+  g.lastRender=0;KotamaField3D.frame();g.scene.updateMatrixWorld(true);
+  const cast=new T.Raycaster(),theme=KotamaField3D.themeInfo(),hits=[];
+  for(const [x,y]of [[-.7,0],[.7,0],[-.5,0],[.5,0],[-.5,.3],[.5,.3],[0,0],[.5,-.6]]){
+   cast.setFromCamera(new T.Vector2(x,y),g.camera);
+   hits.push({sample:[x,y],hits:cast.intersectObjects(g.world.children,true).slice(0,3).map(h=>({material:Array.isArray(h.object.material)?h.object.material[h.face.materialIndex]?.name:h.object.material?.name,point:h.point.toArray(),instance:h.instanceId,owners:[...(theme.placements||[]),...(theme.edgePlacements||[])].filter(p=>h.point.x>=p.min[0]-.01&&h.point.x<=p.max[0]+.01&&h.point.z>=p.min[2]-.01&&h.point.z<=p.max[2]+.01).map(p=>p.key)}))});
+  }
+  return {active:fieldIsActive(),raf:fieldRaf,camera:g.camera.position.toArray(),scene:g.scene.uuid,composerScene:g.composer?.passes[0]?.scene?.uuid,maxFps:g.maxFps,renderInfo:KotamaField3D.renderInfo(),hits};
+ });
+ console.log('viewProbe '+JSON.stringify(info.viewProbe));
+}
 await page.waitForTimeout(1200);
 await page.screenshot({timeout:120000,path:`${out}/${mobile?'mobile':'pc'}-floor${floor}.png`,fullPage:mobile});
 await page.evaluate(()=>window.__perf=[]);await page.waitForTimeout(4000);
