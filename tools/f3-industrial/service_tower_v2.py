@@ -74,7 +74,8 @@ def build(e):
  # Reuse the actual preserved V1 control cabinet; verify before Blender import.
  folder=e['candidate']/'control_cabinet';doc=json.loads((folder/'manifest.json').read_text());source=folder/doc['asset']['file'];assert hashlib.sha256(source.read_bytes()).hexdigest()==doc['asset']['sha256']
  e['scan'](source,'tower-reused-control-cabinet')
- before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(source));bpy.context.view_layer.update();objects=[o for o in set(bpy.data.objects)-before if o.type=='MESH']
+ from gltf_import_compat import import_gltf
+ before=set(bpy.data.objects);import_gltf(bpy,source);bpy.context.view_layer.update();objects=[o for o in set(bpy.data.objects)-before if o.type=='MESH']
  matrices={o:o.matrix_world.copy()for o in objects}
  for o in objects:o.parent=None
  transform=Matrix.Translation((.81,-.68,.33))@Matrix.Diagonal((.42,.42,.42,1))

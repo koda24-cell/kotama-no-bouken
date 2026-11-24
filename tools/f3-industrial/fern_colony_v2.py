@@ -26,7 +26,8 @@ def build(e):
  for item in raw.get('buffers',[])+raw.get('images',[]):
   relative=PurePosixPath(item['uri']);assert not relative.is_absolute()and'..'not in relative.parts and ':'not in item['uri'];assert(folder/relative).is_file()
  scan(folder,'fern-complete-source')
- before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(source));bpy.context.view_layer.update()
+ from gltf_import_compat import import_gltf
+ before=set(bpy.data.objects);import_gltf(bpy,source);bpy.context.view_layer.update()
  meshes=[o for o in set(bpy.data.objects)-before if o.type=='MESH'];assert len(meshes)==4
  original_vertices=sum(len(o.data.vertices)for o in meshes)
  # Retain every source vertex and original UV, arrange four plants as a bank.
