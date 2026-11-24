@@ -51,32 +51,52 @@ def main():
   modifier=obj.modifiers.new('localized edge spalling','BOOLEAN');modifier.operation='DIFFERENCE';modifier.solver='EXACT';modifier.object=cutter
   bpy.ops.object.modifier_apply(modifier=modifier.name);bpy.data.objects.remove(cutter,do_unlink=True);c.uv_world(obj)
  if asset=='retaining_wall':
-  for side in [-1,1]:
-   x=side*1.012;body=box('cast RC wall panel',(x,0,3.05),(2.012,.44,6.1),concrete,.022)
-   for j in range(3):
-    xx=x+side*(.62+j*.12);zz=6.06-j*.15
-    scar(body,(xx,-.20,zz),(.36,.28,.24),(.08*side,.14*j,.24*side))
-   box('damp plinth contact',(x,-.06,.20),(2.01,.57,.4),moss,.026)
-   for z in [1.4,3.65]:
-    for xx in [x-.63,x+.63]:
-     # Recessed shutter tie sockets, no arbitrary large perforations.
-     scar(body,(xx,-.22,z),(.055,.035,.055))
-   for k in range(3):
-    xx=x+side*(.60+k*.12)
-    c.tube('crooked exposed reinforcing bar',[(xx,.03,5.84),(xx+.025,.02,6.28),(xx+side*.11,-.04,6.38-k*.07)],.014,rust,8)
-  box('deep expansion joint',(0,.02,3.02),(.018,.38,6.04),dark,0)
-  for k in range(11):
-   z=5.9-k*.10;x=-1.67+k*.045
-   chip=box('angular exposed aggregate',(x,-.18,z),(.06,.06,.055),fracture,.008);chip.rotation_euler=(k*.6,k*.31,k*.42)
-  for start in [(-1.7,5.55),(.42,4.9),(-.55,2.3)]:
+  from weathering import wall_atlas
+  diffuse,rough=wall_atlas(OUT/'sources/generated_materials',textures)
+  aged=c.material('f3_rain_stained_wall',texture_set={'basecolor':diffuse,'normal':textures/'chipped_concrete_normal.jpg','roughness':rough})
+  for node in list(aged.node_tree.nodes):
+   if node.type=='TEX_IMAGE' and node.image.name=='chipped_concrete_normal.jpg':
+    uv=aged.node_tree.nodes.new('ShaderNodeTexCoord');mapping=aged.node_tree.nodes.new('ShaderNodeMapping');mapping.inputs['Scale'].default_value=(4,6.5,1)
+    aged.node_tree.links.new(uv.outputs['UV'],mapping.inputs['Vector']);aged.node_tree.links.new(mapping.outputs['Vector'],node.inputs['Vector'])
+  def atlas_uv(obj):
+   uv=obj.data.uv_layers.active or obj.data.uv_layers.new(name='UVMap')
+   for poly in obj.data.polygons:
+    for li in poly.loop_indices:
+     co=obj.matrix_world@obj.data.vertices[obj.data.loops[li].vertex_index].co
+     uv.data[li].uv=(co.x/4+.5,co.z/6.5)
+  def panel(name,profile):
+   n=len(profile);verts=[(x,y,z)for y in[-.22,.22]for x,z in profile]
+   faces=[tuple(range(n)),tuple(range(2*n-1,n-1,-1))]+[(i,n+i,n+(i+1)%n,(i+1)%n)for i in range(n)]
+   obj=c.mesh(name,verts,faces,aged);atlas_uv(obj);return obj
+  left=panel('irregular cast panel left',[(-2.02,0),(-.012,0),(-.012,6.08),(-.37,6.04),(-.69,6.22),(-1.05,6.12),(-1.27,5.98),(-1.43,6.17),(-1.79,5.96),(-2.02,5.70)])
+  right=panel('irregular cast panel right',[(.012,0),(2.02,0),(2.02,5.42),(1.83,5.53),(1.61,5.32),(1.42,5.67),(1.17,5.82),(.84,5.93),(.41,5.86),(.012,5.98)])
+  for body,xx,zz,sizes in [(left,-1.96,5.78,(.28,.26,.32)),(left,-1.94,.36,(.34,.27,.42)),(right,1.94,5.45,(.30,.25,.27)),(right,.06,5.85,(.27,.27,.34))]:
+   bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(xx,-.20,zz));cut=bpy.context.object;cut.name='temporary angular fracture';cut.scale=sizes
+   for v in cut.data.vertices:v.co*=rng.uniform(.83,1.14)
+   body.data.materials.append(fracture);cut.data.materials.append(aged);cut.data.materials.append(fracture)
+   for f in cut.data.polygons:f.material_index=1
+   bpy.context.view_layer.objects.active=body;mod=body.modifiers.new('edge fracture','BOOLEAN');mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=cut
+   bpy.ops.object.modifier_apply(modifier=mod.name);bpy.data.objects.remove(cut,do_unlink=True);atlas_uv(body)
+  for xx,zz in [(-1.79,5.88),(-1.40,6.06),(1.45,5.50)]:
+   c.tube('ribbed exposed reinforcing steel',[(xx,.025,zz-.25),(xx+.022,.005,zz+.29),(xx+.10,-.06,zz+.39)],.014,rust,10)
+   for k in range(8):
+    bpy.ops.mesh.primitive_torus_add(major_segments=10,minor_segments=4,location=(xx+.02,.01,zz+k*.033),major_radius=.0145,minor_radius=.0025)
+    bpy.context.object.name='raised rebar deformation rib';bpy.context.object.data.materials.append(rust)
+  box('deep expansion joint',(0,.02,2.98),(.016,.36,5.96),dark,0)
+  for start in [(-1.80,5.40),(.12,5.57),(-.65,.94)]:
    x,z=start
-   for k in range(5):
-    nx=x+rng.uniform(-.08,.10);nz=z-rng.uniform(.1,.23)
-    rod('capillary fracture',(x,-.224,z),(nx,-.224,nz),.006,dark,4);x,z=nx,nz
+   for k in range(6):
+    nx=x+rng.uniform(-.065,.075);nz=z-rng.uniform(.08,.17)
+    rod('branching hairline fracture',(x,-.224,z),(nx,-.224,nz),.0032-k*.00035,dark,4);x,z=nx,nz
+
  else:
   from parts import build
   build(asset,dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector))
- model='f3_'+asset;metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset))
+ model='f3_'+asset
+ for image in bpy.data.images:
+  if image.source=='FILE' and image.has_data:image.pack()
+ bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'sources'/(model+'_authoring.blend')))
+ metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset))
  metrics.update(approvalStatus='NOT_APPROVED',workflowRun=os.environ.get('GITHUB_RUN_ID'),verificationEnvironment='Shared pinned Blender '+bpy.app.version_string+' + ClamAV')
  (OUT/'metrics'/(model+'.json')).write_text(json.dumps(metrics,indent=2))
  for folder in ['props','modules','sources','renders','metrics']:
