@@ -36,7 +36,7 @@ def run(settings,source,root,reference,deadline,estimate=30):
         for unit in plan_tiles(s["width"],s["height"],s["columns"],s["rows"],s["views"],s["frames"]):
             if remaining()<15:
                 return dict(outcome="timeout",checkpoint_verified=False)
-            env=dict(os.environ,RENDER_PLAN=str(plan),RENDER_UNIT=unit["id"],RESUME_BLEND=str(source),RENDER_OUTPUT=str(folder))
+            env=dict(os.environ,RENDER_PLAN=str(plan),RENDER_UNIT=unit["id"],RESUME_BLEND=str(source),RENDER_OUTPUT=str(folder),PRODUCTION_SCRIPT_DIR=str(script.parent))
             image=folder/(unit["id"]+".png")
             log_path=folder/(unit["id"]+".log")
             with log_path.open("w") as log:
