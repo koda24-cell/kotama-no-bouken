@@ -72,6 +72,9 @@ def main():
  elif asset=='v2_service_tower':
   from service_tower_v2 import build
   build(dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector,candidate=candidate,scan=scan))
+ elif asset=='v2_factory_bay':
+  from factory_bay_v2 import build
+  build(dict(c=c,bpy=bpy,box=box,rod=rod,scan=scan,rng=rng,rust=rust,concrete=concrete,moss=moss,fracture=fracture,dark=dark))
  elif asset=='v2_fractured_road':
   from fractured_road_v2 import build
   build(dict(c=c,bpy=bpy,rng=rng,asphalt=asphalt,fracture=fracture,moss=moss))

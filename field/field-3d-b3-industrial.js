@@ -285,7 +285,8 @@ export function createTheme(api) {
         const wallHeight=4.7+Math.floor(hash(Math.floor((x+dx)/4),Math.floor((z+dz)/4),837)*3)*.25;
         if(!representative){const backing=add(cube, stone, ex+dx*.65, 1.9, ez+dz*.65, 4.07, 3.8, .30, ry);backing.userData.f3Keep=true;}
         const sequence=['retaining_wall','retaining_wall','shattered_window','roller_shutter','retaining_wall','factory_door'].filter(id=>industrial.models.has(id));
-        const id=representative?'v2_courtyard_facade':sequence[Math.floor(hash(x,z,330+DIR_ORDER.indexOf(d))*sequence.length)];
+        const factory=representative&&industrial.models.has('v2_factory_bay')&&hash(Math.floor((x+dx)/3),Math.floor((z+dz)/3),861)<(a.f===1?.65:a.f===2?.36:.20);
+        const id=representative?(factory?'v2_factory_bay':'v2_courtyard_facade'):sequence[Math.floor(hash(x,z,330+DIR_ORDER.indexOf(d))*sequence.length)];
         const model=industrial.models.get(id).clone(true),holder=new THREE.Group();holder.add(model);model.rotation.y=ry;
         let bb=new THREE.Box3().setFromObject(holder),ss=bb.getSize(new THREE.Vector3()),cc=bb.getCenter(new THREE.Vector3());
         const along=dx?ss.z:ss.x,scale=3.96/along,depth=representative?1.70:(dx?ss.x:ss.z)*scale;
