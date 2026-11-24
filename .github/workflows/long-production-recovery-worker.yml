@@ -146,6 +146,7 @@ jobs:
         run: python3 tools/3d_checkpoint/render_qa.py --directory "$OUTPUT_DIR"
       - name: Pack next checkpoint
         env:
+          STAGE: ${{ inputs.stage }}
           OUTPUT_DIR: ${{ inputs.output_directory }}
           ASSET_ID: ${{ inputs.asset_id }}
           SCRIPT: ${{ inputs.script }}
