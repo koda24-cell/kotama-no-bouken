@@ -1,31 +1,31 @@
 {
-  "bytes": 3682956,
-  "sha256": "6ac4a9add95a545e2102c79d1060822ac1d50f350f7230e088143a200d9493f9",
-  "tris": 2344,
-  "verts": 4352,
+  "bytes": 3930928,
+  "sha256": "a7617d2957bd1a40633e038a5d11895e6168a570a3b7093d66f42f4099ad459a",
+  "tris": 4300,
+  "verts": 9148,
   "meshes": 3,
   "drawCalls": 3,
   "materials": [
     "f3_damp_concrete",
-    "f3_deep_crack",
+    "f3_ivy_woody_stem",
     "f3_lobed_ivy_veined"
   ],
   "textureCount": 8,
-  "textureBytes": 3454625,
+  "textureBytes": 3460596,
   "sizeMeters": [
-    2.0105,
-    2.9957,
-    0.4493
+    1.7177,
+    2.7029,
+    0.3985
   ],
   "bboxMin": [
-    -0.9948,
-    -0.0018,
-    -0.34
+    -0.6501,
+    -0.0089,
+    -0.2833
   ],
   "bboxMax": [
-    1.0157,
-    2.9939,
-    0.1093
+    1.0676,
+    2.694,
+    0.1153
   ],
   "extensions": [],
   "animations": [],
@@ -38,8 +38,8 @@
   "category": "props",
   "desc_ja": "\u9244\u3068\u77f3\u3092\u8986\u3046\u8526\u30fb\u30b7\u30c0\u306e\u7fa4\u843d",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
-  "workflowRun": "45332418931",
+  "sourceCommit": "89e5719795ed97ee6075c642ffed377bf0fbf949",
+  "workflowRun": "45363706593",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/f3_ivy_pocket.blend",
   "renderedFrom": "reimported GLB",

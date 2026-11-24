@@ -2,33 +2,33 @@
   "status": "NOT_APPROVED",
   "assetName": "ivy_pocket",
   "asset": {
-    "bytes": 3682956,
-    "sha256": "6ac4a9add95a545e2102c79d1060822ac1d50f350f7230e088143a200d9493f9",
-    "tris": 2344,
-    "verts": 4352,
+    "bytes": 3930928,
+    "sha256": "a7617d2957bd1a40633e038a5d11895e6168a570a3b7093d66f42f4099ad459a",
+    "tris": 4300,
+    "verts": 9148,
     "meshes": 3,
     "drawCalls": 3,
     "materials": [
       "f3_damp_concrete",
-      "f3_deep_crack",
+      "f3_ivy_woody_stem",
       "f3_lobed_ivy_veined"
     ],
     "textureCount": 8,
-    "textureBytes": 3454625,
+    "textureBytes": 3460596,
     "sizeMeters": [
-      2.0105,
-      2.9957,
-      0.4493
+      1.7177,
+      2.7029,
+      0.3985
     ],
     "bboxMin": [
-      -0.9948,
-      -0.0018,
-      -0.34
+      -0.6501,
+      -0.0089,
+      -0.2833
     ],
     "bboxMax": [
-      1.0157,
-      2.9939,
-      0.1093
+      1.0676,
+      2.694,
+      0.1153
     ],
     "extensions": [],
     "animations": [],
@@ -41,8 +41,8 @@
     "category": "props",
     "desc_ja": "鉄と石を覆う蔦・シダの群落",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
-    "workflowRun": "45332418931",
+    "sourceCommit": "89e5719795ed97ee6075c642ffed377bf0fbf949",
+    "workflowRun": "45363706593",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_ivy_pocket.blend",
     "renderedFrom": "reimported GLB",
@@ -161,10 +161,10 @@
   ],
   "runtime": {
     "file": "f3_ivy_pocket.glb",
-    "sourceSha256": "6ac4a9add95a545e2102c79d1060822ac1d50f350f7230e088143a200d9493f9",
-    "sha256": "feb91ad26e78b4da25dec6f2b47b4079108437ceac3f6709d74c67a06d076ff0",
-    "bytes": 228548,
-    "embeddedOriginalBytes": 3682956,
+    "sourceSha256": "a7617d2957bd1a40633e038a5d11895e6168a570a3b7093d66f42f4099ad459a",
+    "sha256": "b4f269587e9c82f9f1212aec164f768d79c0dbbe9d5b47d00de44d76d6ef8749",
+    "bytes": 470544,
+    "embeddedOriginalBytes": 3930928,
     "images": [
       {
         "file": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b.jpg",
@@ -182,19 +182,19 @@
         "bytes": 708778
       },
       {
-        "file": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg",
-        "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2",
-        "bytes": 6785
+        "file": "48f3bdd981eb1b115a34e64432c3982cd25fc3f1aabd3b2ca46261dbf70706c5.jpg",
+        "sha256": "48f3bdd981eb1b115a34e64432c3982cd25fc3f1aabd3b2ca46261dbf70706c5",
+        "bytes": 3966
       },
       {
-        "file": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb.jpg",
-        "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb",
-        "bytes": 5836
+        "file": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949.jpg",
+        "sha256": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949",
+        "bytes": 4791
       },
       {
-        "file": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1.jpg",
-        "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1",
-        "bytes": 4832
+        "file": "d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f.jpg",
+        "sha256": "d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f",
+        "bytes": 5174
       },
       {
         "file": "44ef24a906346a95e5c47da7df1c41356a38ec1ab1b39e93cf609d6a69688b80.png",
@@ -202,9 +202,9 @@
         "bytes": 69781
       },
       {
-        "file": "0668dec27359897a7feafbfdd73cb044b3c3a0b9c0ca2921b34b166750f0b7c2.png",
-        "sha256": "0668dec27359897a7feafbfdd73cb044b3c3a0b9c0ca2921b34b166750f0b7c2",
-        "bytes": 1062972
+        "file": "23baec29082a094c8a5a830c2d69d35359dfdc631f048eb4da3fe4f988de95b9.png",
+        "sha256": "23baec29082a094c8a5a830c2d69d35359dfdc631f048eb4da3fe4f988de95b9",
+        "bytes": 1072465
       }
     ],
     "geometryAndMaterialDataUnchanged": true,
