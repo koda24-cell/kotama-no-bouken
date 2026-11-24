@@ -6,7 +6,9 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 from advanced_surface import apply
 from advanced_bake import bake_normal
 from advanced_cracks import add_cracks
-source,out,mode,samples=sys.argv[sys.argv.index("--")+1:]
+args=sys.argv[sys.argv.index("--")+1:]
+source,out,mode,samples=args[:4]
+if "--fault-test" in args[4:]:raise RuntimeError("CUDA error: out of memory (intentional recovery fixture)")
 out=Path(out).resolve();out.mkdir(parents=True,exist_ok=False)
 def load(path):
     bpy.ops.wm.read_factory_settings(use_empty=True)
