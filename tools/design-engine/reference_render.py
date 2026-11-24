@@ -1,5 +1,5 @@
 """Render committed reference assets and isolated material swatches."""
-import bpy, os, json, hashlib
+import bpy, bmesh, os, json, hashlib
 from pathlib import Path
 from mathutils import Vector
 ROOT=Path("assets/3d/dungeons/b1_ancient_forest")
@@ -32,7 +32,7 @@ def render(s,center,radius,out,points):
         c.data.clip_end=max(100,radius*20)
         s.render.filepath=str(out/(name+".png")); bpy.ops.render.render(write_still=True)
 def main():
-    for path in [ROOT/"props/blue_wisp_torch.glb",ROOT/"modules/mod_floor_stone_4m.glb"]:
+    for path in ([Path(os.environ['REFERENCE_GLB'])] if os.environ.get('REFERENCE_GLB') else [ROOT/"props/blue_wisp_torch.glb",ROOT/"modules/mod_floor_stone_4m.glb"]):
         out=OUT/path.stem; out.mkdir(parents=True,exist_ok=True)
         s=setup(); bpy.ops.import_scene.gltf(filepath=str(path))
         meshes=[o for o in s.objects if o.type=="MESH"]
@@ -45,10 +45,38 @@ def main():
         mats=sorted({m for o in meshes for m in o.data.materials if m},key=lambda m:m.name)
         rows=[]
         for i,mat in enumerate(mats):
-            for o in meshes: o.hide_render=mat not in list(o.data.materials)
-            # Mixed-material meshes remain intact; explicitly recorded.
+            copies=[]
+            for o in meshes:
+                o.hide_render=True
+                slots=[j for j,m in enumerate(o.data.materials) if m==mat]
+                if not slots: continue
+                clone=o.copy(); clone.data=o.data.copy(); s.collection.objects.link(clone)
+                clone.matrix_world=o.matrix_world.copy(); clone.hide_render=False
+                bm=bmesh.new(); bm.from_mesh(clone.data)
+                bmesh.ops.delete(bm,geom=[f for f in bm.faces if f.material_index not in slots],context="FACES")
+                bm.to_mesh(clone.data); bm.free()
+                copies.append(clone)
             folder=out/f"material-{i:03d}"; folder.mkdir()
             s.render.filepath=str(folder/"angle.png"); bpy.ops.render.render(write_still=True)
-            rows.append({"name":mat.name,"image":str(folder.relative_to(out)/"angle.png"),"mixed_material_meshes_retained":True})
+            rows.append({"name":mat.name,"image":str(folder.relative_to(out)/"angle.png"),"mixed_material_meshes_retained":False})
+            for clone in copies:
+                data=clone.data; bpy.data.objects.remove(clone,do_unlink=True); bpy.data.meshes.remove(data)
+        # Standardized UV sphere, camera and illumination for each material.
+        for o in list(s.objects): o.hide_render=True
+        for i,mat in enumerate(mats):
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=48,ring_count=24,radius=1)
+            sphere=bpy.context.object; sphere.data.materials.append(mat)
+            for f in sphere.data.polygons:f.use_smooth=True
+            for d,power in [((4,-4,6),900),((-4,-2,3),500)]:
+                bpy.ops.object.light_add(type="AREA",location=d)
+                light=bpy.context.object;light.data.energy=power;light.data.size=3
+                light.rotation_euler=(-light.location).to_track_quat("-Z","Y").to_euler()
+            bpy.ops.object.camera_add(location=(3,-5,3))
+            cam=bpy.context.object;cam.rotation_euler=(-cam.location).to_track_quat("-Z","Y").to_euler()
+            cam.data.type="ORTHO";cam.data.ortho_scale=2.5;s.camera=cam
+            file=out/f"material-{i:03d}"/"standard-sphere.png"
+            s.render.filepath=str(file);bpy.ops.render.render(write_still=True)
+            rows[i]["standard_sphere"]=str(file.relative_to(out))
+            for o in s.objects:o.hide_render=True
         (out/"render-report.json").write_text(json.dumps({"source_sha256":hashlib.sha256(path.read_bytes()).hexdigest(),"blender":bpy.app.version_string,"materials":rows,"status":"NOT_APPROVED"},indent=2))
 main()
