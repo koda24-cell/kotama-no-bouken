@@ -108,6 +108,87 @@ def read_indices(doc, binary, accessor_index):
     return [struct.unpack_from("<" + fmt, binary, start + i * stride)[0] for i in range(count)]
 
 
+
+def polygon_area(poly):
+    if len(poly) < 3:
+        return 0.0
+    return abs(sum(poly[i][0] * poly[(i + 1) % len(poly)][1] -
+                   poly[(i + 1) % len(poly)][0] * poly[i][1]
+                   for i in range(len(poly))) / 2.0)
+
+
+def triangle_intersection_area(subject, clip):
+    """Return the intersection area of two convex UV triangles."""
+    polygon = list(subject)
+    signed = sum(clip[i][0] * clip[(i + 1) % 3][1] -
+                 clip[(i + 1) % 3][0] * clip[i][1] for i in range(3))
+    orientation = 1.0 if signed >= 0 else -1.0
+    eps = 1e-10
+    for edge in range(3):
+        a, b = clip[edge], clip[(edge + 1) % 3]
+        def side(p):
+            return orientation * ((b[0] - a[0]) * (p[1] - a[1]) -
+                                  (b[1] - a[1]) * (p[0] - a[0]))
+        result = []
+        if not polygon:
+            return 0.0
+        previous = polygon[-1]
+        previous_inside = side(previous) >= -eps
+        for current in polygon:
+            current_inside = side(current) >= -eps
+            if current_inside != previous_inside:
+                dx1, dy1 = current[0] - previous[0], current[1] - previous[1]
+                dx2, dy2 = b[0] - a[0], b[1] - a[1]
+                denom = dx1 * dy2 - dy1 * dx2
+                if abs(denom) > eps:
+                    t = ((a[0] - previous[0]) * dy2 -
+                         (a[1] - previous[1]) * dx2) / denom
+                    result.append((previous[0] + t * dx1,
+                                   previous[1] + t * dy1))
+            if current_inside:
+                result.append(current)
+            previous, previous_inside = current, current_inside
+        polygon = result
+    return polygon_area(polygon)
+
+
+def analyze_uv_overlaps(uv, indices):
+    """Detect positive-area overlaps between UV triangles; edge contact is ignored."""
+    triangles = []
+    for i in range(0, len(indices), 3):
+        tri = [uv[indices[i]], uv[indices[i + 1]], uv[indices[i + 2]]]
+        area = polygon_area(tri)
+        if area <= 1e-12:
+            continue
+        xs, ys = [p[0] for p in tri], [p[1] for p in tri]
+        triangles.append((i // 3, tri, (min(xs), min(ys), max(xs), max(ys))))
+    ordered = sorted(triangles, key=lambda item: item[2][0])
+    active = []
+    pairs = []
+    total_area = 0.0
+    per_triangle = set()
+    for current in ordered:
+        tri_id, tri, bounds = current
+        active = [item for item in active if item[2][2] > bounds[0] + 1e-10]
+        for other_id, other, ob in active:
+            if ob[3] <= bounds[1] + 1e-10 or bounds[3] <= ob[1] + 1e-10:
+                continue
+            area = triangle_intersection_area(tri, other)
+            if area > 1e-8:
+                pair = [min(tri_id, other_id), max(tri_id, other_id)]
+                pairs.append({"triangles": pair, "intersection_area": area})
+                total_area += area
+                per_triangle.update(pair)
+        active.append(current)
+    return {
+        "status": "OVERLAP_FOUND" if pairs else "NO_POSITIVE_AREA_OVERLAP",
+        "overlap_pair_count": len(pairs),
+        "overlapping_triangle_ids": sorted(per_triangle),
+        "total_pairwise_intersection_area": total_area,
+        "pairs": pairs,
+        "note": "Positive-area UV triangle intersections only; shared edges are ignored. Overlap may be intentional (mirroring, stacking, or reuse) and requires visual review."
+    }
+
 def draw_uv(path, output, size=1024):
     if type(size) is not int or not 128 <= size <= 4096:
         raise ValueError("Image size must be 128..4096")
@@ -160,21 +241,27 @@ def draw_uv(path, output, size=1024):
                           fill=(224, 229, 237), width=1)
                 draw.line((min(c[0], d[0]), c[1], max(c[0], d[0]), d[1]),
                           fill=(224, 229, 237), width=1)
+            overlap = analyze_uv_overlaps(uv, indices)
+            overlap_ids = set(overlap["overlapping_triangle_ids"])
             for i in range(0, len(indices), 3):
+                tri_id = i // 3
                 tri = [point(uv[indices[i]]), point(uv[indices[i+1]]), point(uv[indices[i+2]])]
-                draw.polygon(tri, fill=(196, 219, 245), outline=(25, 78, 135), width=2)
+                fill = (250, 190, 185) if tri_id in overlap_ids else (196, 219, 245)
+                outline = (180, 35, 35) if tri_id in overlap_ids else (25, 78, 135)
+                draw.polygon(tri, fill=fill, outline=outline, width=2)
             filename = f"mesh-{mesh_index:03d}-primitive-{primitive_index:03d}.png"
             image.save(out / filename)
             records.append({"mesh": mesh_index, "primitive": primitive_index,
                             "status": "GENERATED", "uv_vertices": len(uv),
                             "triangles": len(indices)//3, "image": filename,
+                            "uv_overlap": overlap,
                             "sha256": hashlib.sha256((out / filename).read_bytes()).hexdigest(),
                             "uv_bounds": [[min(p[0] for p in uv), min(p[1] for p in uv)],
                                           [max(p[0] for p in uv), max(p[1] for p in uv)]]})
     report = {"source_sha256": hashlib.sha256(raw).hexdigest(),
               "status": "REFERENCE_ONLY", "image_size": size,
               "coordinate_note": "Complete UV bounds are fitted to the image; the conventional 0..1 texture tile is outlined for reference. Coordinates outside 0..1 are preserved and visible.",
-              "limitations": "First UV set only; triangle primitives; no texture/material compositing or island packing analysis.",
+              "limitations": "First UV set only; triangle primitives; overlap detection is geometric and cannot determine whether overlap is intentional; no texture/material compositing or island packing analysis.",
               "primitives": records}
     (out / "uv-report.json").write_text(json.dumps(report, indent=2, allow_nan=False))
     return report
