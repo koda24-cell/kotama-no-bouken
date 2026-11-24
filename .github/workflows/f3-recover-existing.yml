@@ -1,0 +1,44 @@
+name: F3 preserve existing unintegrated model sources
+on:
+  push:
+    branches: [feature/f3-industrial-ruins-20261124]
+    paths: [tools/f3-industrial/recover_existing.py, .github/workflows/f3-recover-existing.yml]
+permissions:
+  contents: write
+  actions: read
+  packages: read
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash tools/security/clamav_scan_gate.sh update qa/f3-recovery-security
+      - run: bash tools/security/clamav_scan_gate.sh scan tools/f3-industrial/recover_existing.py qa/f3-recovery-security/source.log
+      - run: python3 tools/f3-industrial/recover_existing.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Preserve scanned originals, not production promotion
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git fetch origin feature/f3-industrial-ruins-20261124
+          git checkout -B f3-recovery-archive origin/feature/f3-industrial-ruins-20261124
+          mkdir -p assets/3d/dungeons/b3_recovered_candidates
+          cp -a render-output/f3-recovered/. assets/3d/dungeons/b3_recovered_candidates/
+          git config user.name 'F3 source recovery'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/3d/dungeons/b3_recovered_candidates
+          git commit -m 'art(f3): preserve scanned original building wall glass rubble and rebar candidates'
+          git push origin HEAD:feature/f3-industrial-ruins-20261124
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f3-existing-source-recovery-${{ github.run_id }}
+          path: |
+            render-output/f3-recovered/
+            qa/f3-recovery-security/
