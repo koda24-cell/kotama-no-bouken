@@ -21,6 +21,12 @@ jobs:
       - run: |
           python tools/design-engine/blueprint.py tools/design-engine/example.json review-output
           python tools/design-engine/export_png.py review-output/V01
+      - name: Analyze a committed reference GLB
+        run: |
+          REF_GLB=assets/3d/dungeons/b1_ancient_forest/props/blue_wisp_torch.glb
+          python tools/design-engine/reference_materials.py "$REF_GLB" review-output/reference-materials.json
+          python tools/design-engine/reference_pixels.py "$REF_GLB" review-output/reference-pixels.json
+          python tools/design-engine/reference_uv.py "$REF_GLB" review-output/uv-preview 512
       - uses: actions/upload-artifact@v4
         with:
           name: design-blueprint-v1
