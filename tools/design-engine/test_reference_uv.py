@@ -6,7 +6,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from reference_uv import draw_uv, read_glb, read_uv_accessor, read_indices
+from reference_uv import draw_uv, read_glb, read_uv_accessor, read_indices, analyze_uv_overlaps, triangle_intersection_area
 
 
 def make_glb(coords=((0.0, 0.0), (1.0, 0.0), (0.5, 1.0))):
@@ -55,6 +55,28 @@ class UVReviewTest(unittest.TestCase):
             image = Image.open(out / "mesh-000-primitive-000.png").convert("RGB")
             blue_pixels = sum(1 for pixel in image.getdata() if pixel == (196, 219, 245))
             self.assertGreater(blue_pixels, 100)
+
+
+    def test_detect_positive_area_uv_overlap(self):
+        uv = [(0, 0), (1, 0), (0, 1), (0.2, 0.2), (1.2, 0.2), (0.2, 1.2)]
+        result = analyze_uv_overlaps(uv, [0, 1, 2, 3, 4, 5])
+        self.assertEqual(result["status"], "OVERLAP_FOUND")
+        self.assertEqual(result["overlap_pair_count"], 1)
+        self.assertAlmostEqual(result["total_pairwise_intersection_area"], 0.32, places=6)
+
+    def test_shared_edge_is_not_overlap(self):
+        left = [(0, 0), (1, 0), (0, 1)]
+        right = [(1, 0), (1, 1), (0, 1)]
+        self.assertAlmostEqual(triangle_intersection_area(left, right), 0.0, places=8)
+
+    def test_uv_report_contains_overlap_review(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "mesh.glb"
+            p.write_bytes(make_glb())
+            report = draw_uv(p, Path(tmp) / "out", 256)
+            self.assertIn("uv_overlap", report["primitives"][0])
+            self.assertEqual(report["primitives"][0]["uv_overlap"]["status"],
+                             "NO_POSITIVE_AREA_OVERLAP")
 
     def test_read_index_accessor(self):
         doc = {
