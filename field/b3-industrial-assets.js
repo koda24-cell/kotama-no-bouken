@@ -25,7 +25,7 @@ export async function loadIndustrialAssets() {
     for(const row of catalog.assets){
       const url=new URL(row.file,base),bytes=await verified(url,row.sha256);
       const result=await loader.parseAsync(bytes,new URL('.',url).href),doc=result.parser.json;
-      function texKey(index){const t=doc.textures[index],image=doc.images[t.source];return {image:{uri:new URL(image.uri,url).href,mimeType:image.mimeType,extensions:image.extensions||{}},sampler:doc.samplers?.[t.sampler]||{},extensions:t.extensions||{}};}
+      function texKey(index){const t=doc.textures[index],image=doc.images[t.source];return {image:{uri:image.uri?new URL(image.uri,url).href:url.href+'#embedded-image-'+t.source,mimeType:image.mimeType,extensions:image.extensions||{}},sampler:doc.samplers?.[t.sampler]||{},extensions:t.extensions||{}};}
       for(const texture of await result.parser.getDependencies('texture'))ownedTextures.add(texture);
       // Expand texture references before comparing materials from independent glTF files.
       function expand(raw,key=''){if(Array.isArray(raw))return raw.map(x=>expand(x,key));if(!raw||typeof raw!=='object')return raw;return Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,k==='index'&&/[Tt]exture/.test(key)?texKey(v):expand(v,k)]));}

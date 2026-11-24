@@ -56,6 +56,12 @@ export function createTheme(api) {
     holder.position.set(px+dx*(2-d/2)-c.x*scale,lift-b.min.y*scale,pz+dz*(2-d/2)-c.z*scale);
     root.add(holder);holder.updateMatrixWorld(true);const bb=new THREE.Box3().setFromObject(holder);
     const record={key:id,min:bb.min.toArray(),max:bb.max.toArray(),overhead};edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
+    if(['grating_catwalk','landing_railing'].includes(id)){
+      const pier=new THREE.Group(),member=industrial.models.get('column_joint').clone(true);member.rotation.y=ry;pier.add(member);
+      const pb=new THREE.Box3().setFromObject(pier),ps=pb.getSize(new THREE.Vector3()),pc=pb.getCenter(new THREE.Vector3()),factor=3.55/ps.y;
+      pier.scale.setScalar(factor);pier.position.set(px+dx*1.7-pc.x*factor,-pb.min.y*factor,pz+dz*1.7-pc.z*factor);root.add(pier);pier.updateMatrixWorld(true);
+      const bound=new THREE.Box3().setFromObject(pier),record={key:'column_joint:walkway-bearing',min:bound.min.toArray(),max:bound.max.toArray(),overhead:false};edgePlacements.push(record);pier.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
+    }
   }
   function batchStatic() {
     root.updateMatrixWorld(true);
@@ -141,7 +147,7 @@ export function createTheme(api) {
     const count = k => { stats.motifs[k] = (stats.motifs[k] || 0) + 1; };
     // Large paired blocks are confined to 2x2 solid cells. Distinct districts per floor.
     let landmark = 0;
-    const large = ['collapsedOverpass', 'derelictRailCorridor', 'collapsedSkybridge', 'temple', 'tower', 'arch'];
+    const large = ['collapsedOverpass', 'reused_stairs_v10', 'derelictRailCorridor', 'collapsedSkybridge', 'reused_stairs_v8', 'temple', 'tower', 'arch'];
     for (let z = 0; z < a.h - 1; z++) for (let x = 0; x < a.w - 1; x++) {
       if (![ [0, 0], [1, 0], [0, 1], [1, 1] ].every(([dx, dz]) => wall(x + dx, z + dz) && !occupied.has(`${x + dx},${z + dz}`))) continue;
       // Only dress blocks visible from a street; leave deep interiors empty.

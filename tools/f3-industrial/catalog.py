@@ -18,5 +18,12 @@ for part in parts:
   images[row['file']]={'file':'shared_textures/'+row['file'],'sha256':row['sha256'],'bytes':row['bytes']}
  assets.append({'id':part['id'],'name':part['name'],'existingUpgrade':part.get('existingUpgrade',False),'file':part['id']+'/runtime/'+runtime['file'],'sha256':runtime['sha256'],'bytes':runtime['bytes'],'triangles':doc['asset']['tris'],'sourceCommit':doc['asset']['sourceCommit'],'workflowRun':doc['asset']['workflowRun'],'embeddedOriginal':part['id']+'/'+doc['asset']['file'],'embeddedOriginalBytes':runtime['embeddedOriginalBytes']})
 if not args.partial:assert not missing,'Missing individual deliveries: '+','.join(missing)
-result={'status':'NOT_APPROVED','partial':bool(missing),'missing':missing,'units':'meters','gltfUp':'Y','gltfFront':'+Z','assets':assets,'sharedImages':list(images.values()),'totals':{'individualParts':sum(not a['existingUpgrade']for a in assets),'existingUpgrades':sum(a['existingUpgrade']for a in assets),'runtimeGeometryBytes':sum(a['bytes']for a in assets),'sharedImageBytes':sum(a['bytes']for a in images.values()),'embeddedOriginalBytes':sum(a['embeddedOriginalBytes']for a in assets)}}
+# Approved existing staircases are consumed unchanged; they do not count as new parts.
+for ident,relative,manifest in [
+ ('reused_stairs_v8','assets/models/floor3/ruined_connector/stairs_v8.glb','assets/models/floor3/ruined_connector/stairs_v8.manifest.json'),
+ ('reused_stairs_v10','assets/models/floor3/double_flight/stairs_v10.glb','assets/models/floor3/double_flight/stairs_v10.manifest.json')]:
+ approval=json.loads((root/manifest).read_text());assert approval['approval']['approved']
+ row=approval.get('assets',approval.get('files',{}))[relative];raw=(root/relative).read_bytes();assert hashlib.sha256(raw).hexdigest()==row['sha256']
+ assets.append({'id':ident,'name':ident,'reusedApproved':True,'existingUpgrade':False,'file':'../../../'+relative.removeprefix('assets/'),'sha256':row['sha256'],'bytes':len(raw),'embeddedOriginalBytes':len(raw),'sourceApprovalManifest':manifest})
+result={'status':'NOT_APPROVED','partial':bool(missing),'missing':missing,'units':'meters','gltfUp':'Y','gltfFront':'+Z','assets':assets,'sharedImages':list(images.values()),'totals':{'individualParts':sum(not a['existingUpgrade']and not a.get('reusedApproved')for a in assets),'existingUpgrades':sum(a['existingUpgrade']for a in assets),'reusedApproved':sum(bool(a.get('reusedApproved'))for a in assets),'runtimeGeometryBytes':sum(a['bytes']for a in assets),'sharedImageBytes':sum(a['bytes']for a in images.values()),'embeddedOriginalBytes':sum(a['embeddedOriginalBytes']for a in assets)}}
 (args.out or base/'catalog.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps(result['totals']))
