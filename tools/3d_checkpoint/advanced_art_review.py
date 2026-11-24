@@ -12,7 +12,7 @@ def packet(folder,reference=None):
     return {"schema":1,"images":evidence(folder),"reference":evidence(reference) if reference else None,"criteria":list(CRITERIA),"allowed_actions":list(ACTIONS),"status":"AWAITING_VISUAL_REVIEW","approval":"NOT_APPROVED"}
 def validate(review,expected):
     if review.get("images")!=expected["images"] or review.get("reference")!=expected["reference"]:raise ValueError("stale visual evidence")
-    if review.get("reviewer") not in ("GPT","HUMAN"):raise ValueError("unknown reviewer")
+    if review.get("reviewer") not in ("GPT","HUMAN","LOCAL_CLIP"):raise ValueError("unknown reviewer")
     views=review.get("views",{})
     if set(views)!=set(VIEWS):raise ValueError("missing views")
     for v in views.values():
