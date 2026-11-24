@@ -136,15 +136,30 @@ def draw_uv(path, output, size=1024):
                 raise ValueError("Triangle index references a missing UV vertex")
             image = Image.new("RGB", (size, size), (248, 249, 252))
             draw = ImageDraw.Draw(image)
-            draw.rectangle((margin, margin, size-margin, size-margin), outline=(80, 100, 130), width=2)
-            for tick in range(1, 10):
-                p = margin + (size - margin * 2) * tick / 10
-                draw.line((p, margin, p, size-margin), fill=(224, 229, 237), width=1)
-                draw.line((margin, p, size-margin, p), fill=(224, 229, 237), width=1)
+            min_u, min_v = min(p[0] for p in uv), min(p[1] for p in uv)
+            max_u, max_v = max(p[0] for p in uv), max(p[1] for p in uv)
+            span_u, span_v = max(max_u - min_u, 1e-6), max(max_v - min_v, 1e-6)
+            available = size - margin * 2
+            scale = min(available / span_u, available / span_v)
+            offset_x = (size - span_u * scale) / 2
+            offset_y = (size - span_v * scale) / 2
             def point(pair):
                 u, v = pair
-                return (margin + u * (size - margin * 2),
-                        margin + v * (size - margin * 2))
+                return (offset_x + (u - min_u) * scale,
+                        offset_y + (v - min_v) * scale)
+            # Show the conventional 0..1 texture tile even when UVs extend
+            # beyond it; fit the complete UV bounds into the image.
+            tile_a, tile_b = point((0.0, 0.0)), point((1.0, 1.0))
+            draw.rectangle((tile_a[0], tile_a[1], tile_b[0], tile_b[1]),
+                           outline=(80, 100, 130), width=2)
+            for tick in range(1, 10):
+                u = tick / 10
+                a, b = point((u, 0.0)), point((u, 1.0))
+                c, d = point((0.0, u)), point((1.0, u))
+                draw.line((a[0], min(a[1], b[1]), b[0], max(a[1], b[1])),
+                          fill=(224, 229, 237), width=1)
+                draw.line((min(c[0], d[0]), c[1], max(c[0], d[0]), d[1]),
+                          fill=(224, 229, 237), width=1)
             for i in range(0, len(indices), 3):
                 tri = [point(uv[indices[i]]), point(uv[indices[i+1]]), point(uv[indices[i+2]])]
                 draw.polygon(tri, fill=(196, 219, 245), outline=(25, 78, 135), width=2)
@@ -158,7 +173,7 @@ def draw_uv(path, output, size=1024):
                                           [max(p[0] for p in uv), max(p[1] for p in uv)]]})
     report = {"source_sha256": hashlib.sha256(raw).hexdigest(),
               "status": "REFERENCE_ONLY", "image_size": size,
-              "coordinate_note": "UV coordinates are drawn as stored; coordinates outside 0..1 remain visible outside the tile.",
+              "coordinate_note": "Complete UV bounds are fitted to the image; the conventional 0..1 texture tile is outlined for reference. Coordinates outside 0..1 are preserved and visible.",
               "limitations": "First UV set only; triangle primitives; no texture/material compositing or island packing analysis.",
               "primitives": records}
     (out / "uv-report.json").write_text(json.dumps(report, indent=2, allow_nan=False))
