@@ -3,5 +3,7 @@
   "sourceFile": "assets/3d/dungeons/b3_industrial_candidates/native_originals/collapsedOverpass.glb",
   "sourceSha256": "cefc8f866ca7743461f1d31eb54b8a36bdff3ac13ffdffd9174227b704c15651",
   "geometryPreserved": true,
-  "originalGeometryHash": "ec617d207d29b9fd598c2ed8a586c765fc394892c3d7acadb691b326e8cb838c"
+  "originalGeometryHash": "ec617d207d29b9fd598c2ed8a586c765fc394892c3d7acadb691b326e8cb838c",
+  "anchoredOriginalBars": 0,
+  "leafFinish": "original vein atlas with original leaf UVs retained"
 }
