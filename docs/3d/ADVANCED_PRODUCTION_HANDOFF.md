@@ -11,3 +11,6 @@ Verified predecessor: PR #761 and #772. Keep their entrypoints unchanged.
 - Claude: consume GLB/PNG/manifest and inspect browser integration; request GPT rendering when needed. Do not claim Blender execution.
 - No external paid API, automatic asset promotion or main merge.
 - Next: connect worker, implement crack geometry and baking, run fixture and real assets, verify resume and fallback, register actual evidence.
+
+## Added prototype gateway
+Caller: .github/workflows/advanced-production-gateway.yml, shared Blender 5.3 gateway. Fixture uses planar branching crack overlay (not carved fracture), UV tangent normal baking and GLB normalTexture assertion. Imported helper directory is scanned before import. Real asset generalization, GLB reimport visual comparison and execution evidence remain pending. Earlier statements about missing cracks/baking refer to the prior revision.
