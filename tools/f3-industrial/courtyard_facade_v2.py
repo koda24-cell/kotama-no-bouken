@@ -57,7 +57,16 @@ def build(e):
     for i,z in enumerate(levels[:-1]):
         box('rear room wall',(0,1.65,z+1.51),(3.66,.16,2.78),inner,.012)
         for side in [-1,1]:
-            box('room return wall',(side*1.96,.10,z+1.51),(.16,2.91,2.78),render,.018)
+            if side==1 and i==4:
+                # The upper return has fallen away with its front bearing.
+                box('surviving rear return pier',(side*1.96,1.30,z+1.51),(.16,.48,2.78),render,.018)
+                continue
+            if i in [1,3]:
+                for y in [-1.18,1.35]:box('side window bearing jamb',(side*1.96,y,z+1.51),(.16,.34,2.78),render,.015)
+                box('side window parapet',(side*1.96,.10,z+.44),(.16,2.28,.66),render,.015)
+                box('side window lintel',(side*1.96,.10,z+2.65),(.20,2.28,.25),concrete,.015)
+                for y in [-.91,1.06]:rod('side window rusted upright',(side*1.97,y,z+.90),(side*1.97,y,z+2.51),.018,rust,7)
+            else:box('room return wall',(side*1.96,.10,z+1.51),(.16,2.91,2.78),render,.018)
         if i<4:
             box('front lintel bearing',(0,-1.45,z+2.77),(3.85,.38,.29),concrete,.018)
         # Each window has a projecting sill, thick jambs and a dark real room.
@@ -117,6 +126,7 @@ def build(e):
     import ivy
     for x,z,scale in [(-.7,6.42,.78),(.55,12.50,.83)]:
         before=set(bpy.data.objects);ivy.build(e)
+        bpy.context.view_layer.update()
         transform=Matrix.Translation((x,-1.87,z))@Matrix.Diagonal((scale,scale,scale,1))
         for o in set(bpy.data.objects)-before:
             if o.type=='MESH':o.matrix_world=transform@o.matrix_world
