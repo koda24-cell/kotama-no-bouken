@@ -3,38 +3,36 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/retaining_wall/props/f3_retaining_wall.glb",
-      "file_bytes": 7485816,
-      "glb_meshes": 5,
-      "total_mesh_primitives": 5,
-      "scene_nodes": 6,
-      "scene_mesh_nodes": 5,
-      "scene_primitive_instances": 5,
-      "estimated_scene_triangles": 2358,
-      "materials": 5,
+      "file_bytes": 5191832,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 2528,
+      "materials": 4,
       "material_names": [
-        "f3_damp_concrete",
         "f3_deep_crack",
         "f3_exposed_aggregate",
         "f3_oxidized_iron",
-        "f3_weathered_concrete"
+        "f3_rain_stained_wall"
       ],
       "mesh_names": [
-        "Cube.004",
-        "Cube.018",
-        "Cube.019",
-        "crooked exposed reinforcing bar",
-        "Cube"
+        "Cube",
+        "irregular cast panel left",
+        "ribbed exposed reinforcing steel",
+        "irregular cast panel left.001"
       ],
       "skins": 0,
       "animations": 0,
       "morph_target_meshes": 0,
       "alpha_materials": {
-        "OPAQUE": 5,
+        "OPAQUE": 4,
         "MASK": 0,
         "BLEND": 0
       },
-      "images": 15,
-      "textures": 15,
+      "images": 12,
+      "textures": 12,
       "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
     }
   ],

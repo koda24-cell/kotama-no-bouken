@@ -1,13 +1,13 @@
-ClamAV update process started at Tue Nov 24 04:19:37 2026
-Tue Nov 24 04:19:37 2026 -> daily database available for download (remote version: 28192)
-Testing database: '/var/lib/clamav/tmp.66dcda4b3a/daily.cvd' ...
+ClamAV update process started at Tue Nov 24 04:44:35 2026
+Tue Nov 24 04:44:35 2026 -> daily database available for download (remote version: 28192)
+Testing database: '/var/lib/clamav/tmp.34cd55e2fa/daily.cvd' ...
 Database test passed.
-Tue Nov 24 04:19:41 2026 -> daily.cvd updated (version: 28192, sigs: 355843, f-level: 90, builder: svc.clamav-publisher)
-Tue Nov 24 04:19:41 2026 -> main database available for download (remote version: 63)
-Testing database: '/var/lib/clamav/tmp.66dcda4b3a/main.cvd' ...
+Tue Nov 24 04:44:39 2026 -> daily.cvd updated (version: 28192, sigs: 355843, f-level: 90, builder: svc.clamav-publisher)
+Tue Nov 24 04:44:39 2026 -> main database available for download (remote version: 63)
+Testing database: '/var/lib/clamav/tmp.34cd55e2fa/main.cvd' ...
 Database test passed.
-Tue Nov 24 04:19:45 2026 -> main.cvd updated (version: 63, sigs: 3287027, f-level: 90, builder: tomjudge)
-Tue Nov 24 04:19:45 2026 -> bytecode database available for download (remote version: 339)
-Testing database: '/var/lib/clamav/tmp.66dcda4b3a/bytecode.cvd' ...
+Tue Nov 24 04:44:43 2026 -> main.cvd updated (version: 63, sigs: 3287027, f-level: 90, builder: tomjudge)
+Tue Nov 24 04:44:43 2026 -> bytecode database available for download (remote version: 339)
+Testing database: '/var/lib/clamav/tmp.34cd55e2fa/bytecode.cvd' ...
 Database test passed.
-Tue Nov 24 04:19:45 2026 -> bytecode.cvd updated (version: 339, sigs: 80, f-level: 90, builder: nrandolp)
+Tue Nov 24 04:44:43 2026 -> bytecode.cvd updated (version: 339, sigs: 80, f-level: 90, builder: nrandolp)
