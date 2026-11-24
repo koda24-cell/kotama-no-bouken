@@ -1,6 +1,7 @@
 import argparse,json,time
 from pathlib import Path
 from production_blender_driver import run
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--plan",required=True)
@@ -22,7 +23,10 @@ def main():
             key=f"{view}-{frame}"
             result=run(dict(settings,views=[view],frames=[frame]),a.source,root/key,Path(a.references)/(key+".png"),deadline)
             results[key]=result
-            (root/"summary.json").write_text(json.dumps(results))
-            if result["status"]!="target_met": return 1
+            (root/"summary.json").write_text(json.dumps(results,default=str))
+            if result["status"]!="target_met":
+                print("PRODUCTION_STOP",key,result.get("status"),flush=True)
+                return 1
+    print("PRODUCTION_TARGET_MET",flush=True)
     return 0
 if __name__=="__main__": raise SystemExit(main())
