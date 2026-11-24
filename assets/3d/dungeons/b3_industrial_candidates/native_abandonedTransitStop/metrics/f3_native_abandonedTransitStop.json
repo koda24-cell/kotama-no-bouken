@@ -1,0 +1,56 @@
+{
+  "bytes": 5103184,
+  "sha256": "bda34dc4587d81de829b2dfd24d74543de9469f4cafa0fa61b749f32729c5916",
+  "tris": 1252,
+  "verts": 2636,
+  "meshes": 6,
+  "drawCalls": 6,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_deep_crack",
+    "f3_exposed_aggregate",
+    "f3_native_aged_bark",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 18,
+  "textureBytes": 4958186,
+  "sizeMeters": [
+    4.63,
+    2.9809,
+    2.0142
+  ],
+  "bboxMin": [
+    -2.73,
+    0.0,
+    -1.3292
+  ],
+  "bboxMax": [
+    1.9,
+    2.9809,
+    0.685
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_native_abandonedTransitStop",
+  "file": "props/f3_native_abandonedTransitStop.glb",
+  "category": "props",
+  "desc_ja": "\u65e2\u5b58\u30fb\u5ec3\u30d0\u30b9\u505c\u306e\u5c4b\u6839\u63a5\u5408\u90e8\u5f37\u5316",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "bba32c30b64ed10a431536dd7da9e1d97e11b3dc",
+  "workflowRun": "45363312146",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_native_abandonedTransitStop.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_native_abandonedTransitStop/front.png",
+    "renders/f3_native_abandonedTransitStop/back.png",
+    "renders/f3_native_abandonedTransitStop/side.png",
+    "renders/f3_native_abandonedTransitStop/angle.png",
+    "renders/f3_native_abandonedTransitStop/top.png"
+  ]
+}
