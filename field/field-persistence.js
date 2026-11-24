@@ -51,6 +51,15 @@ function fieldDeserialize(d) {
   if (d.positioned && d.floor !== undefined && Number.isFinite(Number(d.x)) && !fieldBoxBlocked(a, Number(d.x), Number(d.y)) && posOk) { fieldState.x = Number(d.x); fieldState.y = Number(d.y); fieldState.positioned = true; }
   if (d.enemyEncounters && typeof d.enemyEncounters === "object") for (const [name, count] of Object.entries(d.enemyEncounters)) enemyEncounterCounts[name] = Math.max(0, Math.floor(Number(count) || 0));
   fieldLootDeserialize(d);   // [LOOT] フラグ・踏破ビットを読み込んだ後に行う
+  // セーブした帰還地点も復元する。旧データ・不正な座標は従来通り未設定にする。
+  const cp = d.checkpoint;
+  if (cp && typeof cp === "object") {
+    const n = Number(cp.area), f = Number(cp.floor ?? 0), x = Number(cp.x), y = Number(cp.y);
+    if (Number.isInteger(n) && n >= 1 && n <= areaCount && Number.isInteger(f) && f >= 0 && f < fieldFloorCount(n) && Number.isFinite(x) && Number.isFinite(y)) {
+      const target = fieldArea(n, f);
+      if (!fieldBoxBlocked(target, x, y) && (typeof fieldRandomMazePosOk !== "function" || fieldRandomMazePosOk(target, x, y))) fieldState.checkpoint = { area: n, floor: f, x, y };
+    }
+  }
 }
 
 /* ------------------------------------------------------------

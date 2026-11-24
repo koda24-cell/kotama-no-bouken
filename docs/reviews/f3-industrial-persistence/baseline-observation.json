@@ -1,0 +1,21 @@
+{
+  "sourceFileSha256": "1b10fc3581cf2a3e3c00247b4e6e6a4a4464d49f7ed3223aab5c7d6afc6343ff",
+  "observedBeforeFix": true,
+  "differences": [
+    {
+      "path": ".checkpoint",
+      "before": {
+        "area": 3,
+        "floor": 0,
+        "x": 272,
+        "y": 628
+      },
+      "after": null
+    },
+    {
+      "path": ".flags.rmaze:e0",
+      "after": true
+    }
+  ],
+  "note": "Checkpoint was actually omitted on deserialize. The random-maze version flag is expected initialization in this admin-entry test, initialized before stable roundtrip comparison."
+}
