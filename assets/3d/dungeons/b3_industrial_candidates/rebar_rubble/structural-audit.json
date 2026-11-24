@@ -1,0 +1,47 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/rebar_rubble/props/f3_rebar_rubble.glb",
+      "file_bytes": 9352148,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
+      "estimated_scene_triangles": 42732,
+      "materials": 7,
+      "material_names": [
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES.001",
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES",
+        "f3_damp_concrete",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE.001",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE",
+        "oxidized_reinforcing_steel.001",
+        "oxidized_reinforcing_steel"
+      ],
+      "mesh_names": [
+        "F3_RUBBLE_V29_CORE_FRACTURE.001",
+        "F3_RUBBLE_V29_CORE_FRACTURE",
+        "Cube",
+        "F3_RUBBLE_V29_CORE_FRACTURE.003",
+        "F3_RUBBLE_V29_CORE_FRACTURE.002",
+        "bent_ribbed_rebar_mesh.001",
+        "bent_ribbed_rebar_mesh"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 7,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 13,
+      "textures": 19,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

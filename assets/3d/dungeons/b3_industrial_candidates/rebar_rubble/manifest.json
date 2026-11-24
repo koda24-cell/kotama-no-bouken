@@ -1,0 +1,242 @@
+{
+  "status": "NOT_APPROVED",
+  "assetName": "rebar_rubble",
+  "asset": {
+    "bytes": 9352148,
+    "sha256": "ef83be9f266262490eaf7535f843af74e63fae2e2629ad08738a5c1c5d3a8556",
+    "tris": 42732,
+    "verts": 83712,
+    "meshes": 7,
+    "drawCalls": 7,
+    "materials": [
+      "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES.001",
+      "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES",
+      "f3_damp_concrete",
+      "F3_OLD_CONCRETE_INTACT_AND_FRACTURE.001",
+      "F3_OLD_CONCRETE_INTACT_AND_FRACTURE",
+      "oxidized_reinforcing_steel.001",
+      "oxidized_reinforcing_steel"
+    ],
+    "textureCount": 13,
+    "textureBytes": 5066063,
+    "sizeMeters": [
+      2.195,
+      1.115,
+      1.3
+    ],
+    "bboxMin": [
+      -1.145,
+      -0.0,
+      -0.65
+    ],
+    "bboxMax": [
+      1.05,
+      1.115,
+      0.65
+    ],
+    "extensions": [],
+    "animations": [],
+    "pointLights": 0,
+    "emitters": 0,
+    "valid": true,
+    "zeroTangentFallbackVertices": 12,
+    "id": "f3_rebar_rubble",
+    "file": "props/f3_rebar_rubble.glb",
+    "category": "props",
+    "desc_ja": "鉄筋入り剥落コンクリート群",
+    "approvalStatus": "NOT_APPROVED",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "workflowRun": "45332418931",
+    "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+    "source": "sources/f3_rebar_rubble.blend",
+    "renderedFrom": "reimported GLB",
+    "renders": [
+      "renders/f3_rebar_rubble/front.png",
+      "renders/f3_rebar_rubble/back.png",
+      "renders/f3_rebar_rubble/side.png",
+      "renders/f3_rebar_rubble/angle.png",
+      "renders/f3_rebar_rubble/top.png"
+    ]
+  },
+  "sequential": true,
+  "textureSources": [
+    {
+      "asset": "chipped_concrete",
+      "role": "diffuse",
+      "file": "chipped_concrete_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_diff_1k.jpg",
+      "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "chipped_concrete",
+      "role": "normal",
+      "file": "chipped_concrete_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_nor_gl_1k.jpg",
+      "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "chipped_concrete",
+      "role": "roughness",
+      "file": "chipped_concrete_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_rough_1k.jpg",
+      "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "diffuse",
+      "file": "concrete_moss_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_diff_1k.jpg",
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "normal",
+      "file": "concrete_moss_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_nor_gl_1k.jpg",
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "roughness",
+      "file": "concrete_moss_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_rough_1k.jpg",
+      "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "diffuse",
+      "file": "rusty_iron_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_diff_1k.jpg",
+      "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb",
+      "license": "CC0"
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "normal",
+      "file": "rusty_iron_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_nor_gl_1k.jpg",
+      "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1",
+      "license": "CC0"
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "roughness",
+      "file": "rusty_iron_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_rough_1k.jpg",
+      "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "diffuse",
+      "file": "asphalt_02_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_diff_1k.jpg",
+      "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "normal",
+      "file": "asphalt_02_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_nor_gl_1k.jpg",
+      "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "roughness",
+      "file": "asphalt_02_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_rough_1k.jpg",
+      "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712",
+      "license": "CC0"
+    }
+  ],
+  "runtime": {
+    "file": "f3_rebar_rubble.glb",
+    "sourceSha256": "ef83be9f266262490eaf7535f843af74e63fae2e2629ad08738a5c1c5d3a8556",
+    "sha256": "c970be2fa26da6c03f06b47f500b35b1fde1429ed087b7e9224c44306e8b35d0",
+    "bytes": 4286448,
+    "embeddedOriginalBytes": 9352148,
+    "images": [
+      {
+        "file": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9.png",
+        "sha256": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9",
+        "bytes": 501219
+      },
+      {
+        "file": "23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23.png",
+        "sha256": "23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23",
+        "bytes": 368245
+      },
+      {
+        "file": "b40e07a23d7ab8e8e2d056fa29526d6e3cc1eb41633df9dae00aa647e801a645.png",
+        "sha256": "b40e07a23d7ab8e8e2d056fa29526d6e3cc1eb41633df9dae00aa647e801a645",
+        "bytes": 44844
+      },
+      {
+        "file": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9.png",
+        "sha256": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9",
+        "bytes": 501219
+      },
+      {
+        "file": "23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23.png",
+        "sha256": "23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23",
+        "bytes": 368245
+      },
+      {
+        "file": "b40e07a23d7ab8e8e2d056fa29526d6e3cc1eb41633df9dae00aa647e801a645.png",
+        "sha256": "b40e07a23d7ab8e8e2d056fa29526d6e3cc1eb41633df9dae00aa647e801a645",
+        "bytes": 44844
+      },
+      {
+        "file": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b.jpg",
+        "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b",
+        "bytes": 898376
+      },
+      {
+        "file": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc.jpg",
+        "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc",
+        "bytes": 697265
+      },
+      {
+        "file": "efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea.png",
+        "sha256": "efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea",
+        "bytes": 708778
+      },
+      {
+        "file": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae.png",
+        "sha256": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae",
+        "bytes": 367852
+      },
+      {
+        "file": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae.png",
+        "sha256": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae",
+        "bytes": 367852
+      },
+      {
+        "file": "a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58.png",
+        "sha256": "a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58",
+        "bytes": 98662
+      },
+      {
+        "file": "a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58.png",
+        "sha256": "a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58",
+        "bytes": 98662
+      }
+    ],
+    "geometryAndMaterialDataUnchanged": true,
+    "imageLayout": "../../shared_textures/<sha256>.jpg|png relative to candidate/<asset>/runtime/"
+  }
+}

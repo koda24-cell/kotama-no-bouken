@@ -1,0 +1,57 @@
+{
+  "bytes": 9352148,
+  "sha256": "ef83be9f266262490eaf7535f843af74e63fae2e2629ad08738a5c1c5d3a8556",
+  "tris": 42732,
+  "verts": 83712,
+  "meshes": 7,
+  "drawCalls": 7,
+  "materials": [
+    "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES.001",
+    "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES",
+    "f3_damp_concrete",
+    "F3_OLD_CONCRETE_INTACT_AND_FRACTURE.001",
+    "F3_OLD_CONCRETE_INTACT_AND_FRACTURE",
+    "oxidized_reinforcing_steel.001",
+    "oxidized_reinforcing_steel"
+  ],
+  "textureCount": 13,
+  "textureBytes": 5066063,
+  "sizeMeters": [
+    2.195,
+    1.115,
+    1.3
+  ],
+  "bboxMin": [
+    -1.145,
+    -0.0,
+    -0.65
+  ],
+  "bboxMax": [
+    1.05,
+    1.115,
+    0.65
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 12,
+  "id": "f3_rebar_rubble",
+  "file": "props/f3_rebar_rubble.glb",
+  "category": "props",
+  "desc_ja": "\u9244\u7b4b\u5165\u308a\u5265\u843d\u30b3\u30f3\u30af\u30ea\u30fc\u30c8\u7fa4",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_rebar_rubble.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_rebar_rubble/front.png",
+    "renders/f3_rebar_rubble/back.png",
+    "renders/f3_rebar_rubble/side.png",
+    "renders/f3_rebar_rubble/angle.png",
+    "renders/f3_rebar_rubble/top.png"
+  ]
+}
