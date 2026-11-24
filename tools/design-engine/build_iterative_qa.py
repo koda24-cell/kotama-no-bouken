@@ -5,6 +5,15 @@ from mathutils import Vector
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import build_blueprint as b
 
+def accept(best, score):
+    return best is None or score < best['score']
+
+def test_selection():
+    assert accept(None, 3)
+    assert accept({'score':3}, 2)
+    assert not accept({'score':2}, 3)
+    assert not accept({'score':2}, 2)
+
 def inspect(folder, target):
     bpy.ops.wm.open_mainfile(filepath=str(folder/'model.blend'))
     rows=[]
@@ -32,6 +41,7 @@ def inspect(folder, target):
 
 def main():
     out=Path(sys.argv[sys.argv.index('--')+1]).resolve();out.mkdir(parents=True,exist_ok=True)
+    test_selection()
     target=json.loads(Path(__file__).with_name('build-demo.json').read_text())
     candidate=copy.deepcopy(target)
     # Deliberate fixture defect to prove repair.
@@ -49,7 +59,7 @@ def main():
         rows=inspect(folder,target)
         score=sum(len(r['issues']) for r in rows)
         history.append({'iteration':i,'score':score,'parts':rows})
-        if best is not None and score>=best['score']:break
+        if not accept(best, score):break
         best=history[-1]
         if score==0:break
         for r in rows:
@@ -58,7 +68,7 @@ def main():
             if 'position' in r['issues']:p['position_mm']=t['position_mm'][:]
             if 'dimensions' in r['issues']:p['size_mm']=t['size_mm'][:]
             if 'circumferential_resolution' in r['issues']:p['segments']=min(128,p.get('segments',48)*2)
-    report={'approval_state':'NOT_APPROVED','history':history,'selected_iteration':best['iteration'],'pass':best['score']==0 and history[0]['score']>0}
+    report={'approval_state':'NOT_APPROVED','history':history,'selection_regression':'PASS','selected_iteration':best['iteration'],'pass':best['score']==0 and history[0]['score']>0}
     (out/'qa-report.json').write_text(json.dumps(report,indent=2))
     if not report['pass']:raise RuntimeError('fixture did not converge')
 if __name__=='__main__':main()
