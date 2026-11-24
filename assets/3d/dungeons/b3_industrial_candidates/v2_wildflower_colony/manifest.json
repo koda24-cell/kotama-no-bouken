@@ -3,7 +3,7 @@
   "assetName": "v2_wildflower_colony",
   "asset": {
     "bytes": 4110712,
-    "sha256": "549c3421a5a6bc009dff9c7386df623b4dc55e26daecebc7f2139bc44331d3dc",
+    "sha256": "3ab3ec8070c82d382415e777a27c21a0925dd9be6a3cde2d06b76400c72bb9d2",
     "tris": 34350,
     "verts": 35030,
     "meshes": 1,
@@ -14,19 +14,19 @@
     "textureCount": 3,
     "textureBytes": 1940442,
     "sizeMeters": [
-      2.7112,
+      1.4112,
       0.423,
-      0.3489
+      0.6623
     ],
     "bboxMin": [
-      -1.3832,
+      -0.7282,
       -0.0,
-      -0.1831
+      -0.3358
     ],
     "bboxMax": [
-      1.328,
+      0.683,
       0.423,
-      0.1658
+      0.3266
     ],
     "extensions": [],
     "animations": [],
@@ -39,8 +39,8 @@
     "category": "props",
     "desc_ja": "風化した路肩に根付く写真由来の野草花V2",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "e4cf4a4a866353185fb9eb5ec826439f029a4dac",
-    "workflowRun": "45428149216",
+    "sourceCommit": "69c2c50ca46bd06fb61afa2aaaa33af0e51ad559",
+    "workflowRun": "45432034546",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_v2_wildflower_colony.blend",
     "renderedFrom": "final alpha-MASK GLB reimport",
@@ -159,9 +159,9 @@
   ],
   "runtime": {
     "file": "f3_v2_wildflower_colony.glb",
-    "sourceSha256": "549c3421a5a6bc009dff9c7386df623b4dc55e26daecebc7f2139bc44331d3dc",
-    "sha256": "eae2f69574d539eedb6511e55205d723429c0a5910b557c1c942c9d320822b31",
-    "bytes": 2170360,
+    "sourceSha256": "3ab3ec8070c82d382415e777a27c21a0925dd9be6a3cde2d06b76400c72bb9d2",
+    "sha256": "c0a529bbca406ad3629dcf4189f839f2f764c22cb049cffa5ec7dd6f21ef07e4",
+    "bytes": 2170356,
     "embeddedOriginalBytes": 4110712,
     "images": [
       {

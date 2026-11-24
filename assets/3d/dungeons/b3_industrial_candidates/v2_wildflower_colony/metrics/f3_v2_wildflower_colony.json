@@ -1,6 +1,6 @@
 {
   "bytes": 4110712,
-  "sha256": "549c3421a5a6bc009dff9c7386df623b4dc55e26daecebc7f2139bc44331d3dc",
+  "sha256": "3ab3ec8070c82d382415e777a27c21a0925dd9be6a3cde2d06b76400c72bb9d2",
   "tris": 34350,
   "verts": 35030,
   "meshes": 1,
@@ -11,19 +11,19 @@
   "textureCount": 3,
   "textureBytes": 1940442,
   "sizeMeters": [
-    2.7112,
+    1.4112,
     0.423,
-    0.3489
+    0.6623
   ],
   "bboxMin": [
-    -1.3832,
+    -0.7282,
     -0.0,
-    -0.1831
+    -0.3358
   ],
   "bboxMax": [
-    1.328,
+    0.683,
     0.423,
-    0.1658
+    0.3266
   ],
   "extensions": [],
   "animations": [],
@@ -36,8 +36,8 @@
   "category": "props",
   "desc_ja": "\u98a8\u5316\u3057\u305f\u8def\u80a9\u306b\u6839\u4ed8\u304f\u5199\u771f\u7531\u6765\u306e\u91ce\u8349\u82b1V2",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "e4cf4a4a866353185fb9eb5ec826439f029a4dac",
-  "workflowRun": "45428149216",
+  "sourceCommit": "69c2c50ca46bd06fb61afa2aaaa33af0e51ad559",
+  "workflowRun": "45432034546",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/f3_v2_wildflower_colony.blend",
   "renderedFrom": "final alpha-MASK GLB reimport",

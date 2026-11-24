@@ -4,91 +4,91 @@
   "files": {
     "manifest.json": {
       "bytes": 6750,
-      "sha256": "69ff6588bb28902fd8e0890c08ec3f1abcd5f5316e1c92c761b8849e2a0fed24"
+      "sha256": "36460fe96d1635a821f6a1062635a4a7a6002aa6c56ba0bbf86de335473a8a88"
     },
     "metrics/f3_v2_wildflower_colony.json": {
       "bytes": 1369,
-      "sha256": "6e8c8db473a13bcdb119e45ae17514152e0d8b408ebb8515f971425637204cc2"
+      "sha256": "3430f21af5307a5cf56ebe764d897df7f6b540b56d7e94b5fdacd9bd5c706ef7"
     },
     "props/f3_v2_wildflower_colony.glb": {
       "bytes": 4110712,
-      "sha256": "549c3421a5a6bc009dff9c7386df623b4dc55e26daecebc7f2139bc44331d3dc"
+      "sha256": "3ab3ec8070c82d382415e777a27c21a0925dd9be6a3cde2d06b76400c72bb9d2"
     },
     "renders/f3_v2_wildflower_colony/angle.png": {
-      "bytes": 417950,
-      "sha256": "dc0ac7cac0c9578c00ab24506be1fcfb600f3d72417eaa20d386f945abf57196"
+      "bytes": 430421,
+      "sha256": "0ffba7967e2bc7b5f1d9ea67fc3e231cf270daabea1ed2338781cd22f22c9c0c"
     },
     "renders/f3_v2_wildflower_colony/back.png": {
-      "bytes": 398733,
-      "sha256": "9239d6feca4296e45917bad5d3801580b544adfb85b8c8273ee922025e321455"
+      "bytes": 410002,
+      "sha256": "68ecce3cc24a9c024ae9b0dd31bdf3c21487df1cdde59404a5a3ebd3dccd7f54"
     },
     "renders/f3_v2_wildflower_colony/front.png": {
-      "bytes": 400776,
-      "sha256": "0a1c08254fffdccc84788e1a8f2c5e6f76407e6c4e0e974a5edf12db29b3d3d7"
+      "bytes": 413934,
+      "sha256": "13a79869bff2af8957cd085f47a85e75ee83e2e0dfb9f3761f7e930274308489"
     },
     "renders/f3_v2_wildflower_colony/side.png": {
-      "bytes": 470074,
-      "sha256": "47b287ad508eb22dcc7868e942ac18d2b89f45ccc6cc2ffefb61a17addf44cba"
+      "bytes": 478695,
+      "sha256": "1e18d20f082aa1ee11b992ff2d1b604b68cb270aa0e4b096221f1b12cd60f627"
     },
     "renders/f3_v2_wildflower_colony/top.png": {
-      "bytes": 407469,
-      "sha256": "28ad9d1466b0b54a44a917b1db3f98362057242292ac96065cf967f748092ab7"
+      "bytes": 429648,
+      "sha256": "6759cd83dfd7a16786d77787ca5075f6b38357f106eba7013c9226d892b71c38"
     },
     "runtime/f3_v2_wildflower_colony.glb": {
-      "bytes": 2170360,
-      "sha256": "eae2f69574d539eedb6511e55205d723429c0a5910b557c1c942c9d320822b31"
+      "bytes": 2170356,
+      "sha256": "c0a529bbca406ad3629dcf4189f839f2f764c22cb049cffa5ec7dd6f21ef07e4"
     },
     "security/all-texture-inputs.log": {
       "bytes": 292,
-      "sha256": "8d2dfa8de7d2aaa343d5bf7c0d105d63d8a0856d1edc1ac0bd3c064467cd9284"
+      "sha256": "f87dcf9b9c0489c2bdd16b1704d031c327b29e1a8ce90709d8b6a56479d07302"
     },
     "security/existing-cc0-inputs.log": {
       "bytes": 289,
-      "sha256": "c5e18ba140c0f65d8fc8026720a9b68acf926117c74913f937da2db8720bc293"
+      "sha256": "c5a336c80ca06dc18d8c9159a17de97dbd357cc43c7f99b183af333de3adbd4f"
     },
     "security/fern-complete-source.log": {
       "bytes": 289,
-      "sha256": "98c8f7284cb5d1a4b7148f8192212c41488d91cac96620d9cef6bb64e7cefbb4"
+      "sha256": "872b85d001221f3af7e01e9c32c51b1a9402cd7beb42d11e3faee0f65d51c7d8"
     },
     "security/fern-input-0.log": {
       "bytes": 291,
-      "sha256": "91b7410353f233c156e769c5c205c624a2c3f4411a8ab7644b9b6ae43611deaa"
+      "sha256": "0902baa5f6d44a4ffcde13b201f6f43fa824bff238792ba52e4a96ef837cdd7c"
     },
     "security/fern-input-1.log": {
       "bytes": 291,
-      "sha256": "9a502eae37d42af368a0eb9f6371aeec1562f0b527867a8b2e6b832efdb15099"
+      "sha256": "ddf9e04bb79c962df4f6b24c751cb5be90407ad8b2f3b426b107461c546506e6"
     },
     "security/fern-input-2.log": {
       "bytes": 293,
-      "sha256": "1d913af9f7fda82b27205c3fb00bba20a7ce8bfadcccb31e309b962cc464141b"
+      "sha256": "0749a0782e405930c4f7d43344e8ffe1f9a33d6e55d120c9f4d9295e98c9cc45"
     },
     "security/fern-input-3.log": {
       "bytes": 293,
-      "sha256": "f0447168f8bf3b583fa846d94211c5016225335d3d8d5f2bd728f336e5b189a7"
+      "sha256": "d00b4acbb2b714e06b9e87e94feed1c0dfb4ab265c5231a9cdcf5cc87eed7201"
     },
     "security/fern-input-4.log": {
       "bytes": 293,
-      "sha256": "f52a818485c0a08e287e9eec1db575141455edbd13a7b4dac00794d8ff4ab030"
+      "sha256": "daa591a9a26dd72ea160f2ee14a8bbaeb96229b16397b178e314e710415edf2b"
     },
     "security/fern-input-5.log": {
       "bytes": 289,
-      "sha256": "9abc3d1a0f5c006cc803bde55e25770d38a0058f0b43382837b38f1aa5e729e3"
+      "sha256": "6cb6de6cede47623f085147b0210163d8dd2e64f14bfcf6fcab424a195af945a"
     },
     "security/fern-input-6.log": {
       "bytes": 291,
-      "sha256": "2ba662e92650ea97c5dbfcd2b3240938352bf4aa0185645e95c30f75109660d8"
+      "sha256": "85bce9b878bb548fd8d674392eb4b34318a42d815cb45230e545c13ce5251177"
     },
     "security/renderer-source.log": {
       "bytes": 289,
-      "sha256": "bc28a241edc43e9a320674252401b45a5af1698c0718de821863279ce16c1f41"
+      "sha256": "073b9e5c89d955add2f1e5a3f35d01f6affab97ddf0caec711ade1066049c576"
     },
     "security/shared-source.log": {
       "bytes": 294,
-      "sha256": "f51b8036b1fc423e77278ab0abb90bfa371ebf2266cefc99ec494b7602195950"
+      "sha256": "f74f2821125aade0f01942bd8d094d4b03bd284f65b5cb6f625fa39fba24b15b"
     },
     "security/source.log": {
       "bytes": 294,
-      "sha256": "ff44efce6671af5f6da6853d33969bd2cd06c90d42874eafac9d60a5049282b7"
+      "sha256": "a50f8244fec7df4a7833d6ce3763523cca56548e27d4bd361ee7fe98641ab53b"
     },
     "shared_textures/36d2464e7500f741500228b955c1fb0f26d954e869bd26f93dd25c0fafc5087d.jpg": {
       "bytes": 418428,
@@ -104,15 +104,15 @@
     },
     "sources/authoring-portability.json": {
       "bytes": 2869,
-      "sha256": "a86a4dedddaff091c893c39cc8ebf1efc4645b53a80ce8a5d03b6a1087abb247"
+      "sha256": "573c3da8359847147367ad67a71e89b683bc9e40f5c72b922e43b5dccb9b20a8"
     },
     "sources/f3_v2_wildflower_colony.blend": {
-      "bytes": 11042754,
-      "sha256": "e1daa5d40b142fa5d08d273bcd4a844d65e84229b9ffae0a6b0298fa2abbbe39"
+      "bytes": 11035999,
+      "sha256": "79331e82ed2960703a1b6cefa1717c2bb8982bca644b5a1eb5cfa050fe3373f4"
     },
     "sources/f3_v2_wildflower_colony_authoring.blend": {
-      "bytes": 11040106,
-      "sha256": "3f500921b1ae70d1f3d08615c5a0617427da86ed36b72418cdcb5b074dcbc931"
+      "bytes": 11040255,
+      "sha256": "e5f81b22dff6761a3c1c8acb1868ba14de7484a0ed4dee471190c536d85f62a5"
     },
     "sources/fern-provenance.json": {
       "bytes": 5236,
