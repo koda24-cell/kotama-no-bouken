@@ -1,0 +1,38 @@
+name: Gallery manifest contract tests
+on:
+  push:
+    branches: [feature/gallery-manifest-export-20261124]
+    paths: ['tools/3d-progress/**', '.github/workflows/gallery-manifest-test.yml']
+  pull_request:
+    paths: ['tools/3d-progress/**', '.github/workflows/gallery-manifest-test.yml']
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test all three stages and metadata
+        run: |
+          python3 - <<'PY'
+          import sys,tempfile,json,base64,hashlib
+          from pathlib import Path
+          sys.path.insert(0,'tools/3d-progress')
+          from export_gallery_manifest import export
+          with tempfile.TemporaryDirectory() as d:
+              root=Path(d)
+              src=root/'src';src.mkdir()
+              png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aF1sAAAAASUVORK5CYII=')
+              (src/'front.png').write_bytes(png)
+              for kind in ('design','progress','render'):
+                  meta=dict(id='test-model',name='test',floor='test',version='V01',kind=kind,publication_cleared=True,run_id=1,source_sha='a'*40,updated_at='2026-11-24T00:00:00Z')
+                  export(src,root/kind,meta,[('front','front.png')])
+                  m=json.loads((root/kind/'manifest.json').read_text())
+                  assert m['kind']==kind and m['approval_state']=='NOT_APPROVED'
+                  assert m['images'][0]['sha256']==hashlib.sha256(png).hexdigest()
+                  assert m['run_id']==1 and m['version']=='V01'
+              meta['publication_cleared']=False
+              try: export(src,root/'denied',meta,[('front','front.png')])
+              except ValueError: pass
+              else: raise AssertionError('clearance bypass')
+          PY

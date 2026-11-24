@@ -21,6 +21,15 @@ jobs:
       - run: |
           python tools/design-engine/blueprint.py tools/design-engine/example.json review-output
           python tools/design-engine/export_png.py review-output/V01
+      - name: Export blueprint contract fixture
+        run: |
+          python3 tools/3d-progress/export_gallery_manifest.py --id design-engine-test-fixture --name 'Design engine test fixture' --floor 'Test' --version V01 --kind design --source review-output/V01 --dest gallery-test-output --image blueprint blueprint.png --publication-cleared
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gallery-test-blueprint
+          path: gallery-test-output/
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         with:
           name: design-blueprint-v1
