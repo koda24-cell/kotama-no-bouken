@@ -78,6 +78,9 @@ def main():
  elif asset=='v2_truss_bridge':
   from truss_bridge_v2 import build
   build(dict(c=c,bpy=bpy,box=box,rod=rod,rust=rust,steel=steel,moss=moss,dark=dark,rng=rng))
+ elif asset=='v2_wildflower_colony':
+  from fern_colony_v2 import build
+  build(dict(c=c,bpy=bpy,rng=rng,scan=scan,licensedPlant='periwinkle_plant',opacity='opacity',meshCount=6))
  elif asset=='v2_fern_colony':
   from fern_colony_v2 import build
   build(dict(c=c,bpy=bpy,rng=rng,scan=scan))
@@ -140,8 +143,8 @@ def main():
  authoring=OUT/'sources'/(model+'_authoring.blend')
  authoring_vertices=sum(len(o.data.vertices)for o in bpy.context.scene.objects if o.type=='MESH')
  bpy.ops.wm.save_as_mainfile(filepath=str(authoring),compress=True)
- metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset),render=asset!='v2_fern_colony')
- if asset=='v2_fern_colony':
+ metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset),render=asset not in ['v2_fern_colony','v2_wildflower_colony'])
+ if asset in ['v2_fern_colony','v2_wildflower_colony']:
   from fern_colony_v2 import finalize
   metrics=finalize(c,model,metrics)
  metrics.update(approvalStatus='NOT_APPROVED',workflowRun=os.environ.get('GITHUB_RUN_ID'),verificationEnvironment='Shared pinned Blender '+bpy.app.version_string+' + ClamAV')

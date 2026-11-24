@@ -4,7 +4,8 @@ def build(e):
  from pathlib import Path,PurePosixPath
  from mathutils import Vector,Matrix
  c,bpy,rng,scan=[e[k]for k in ['c','bpy','rng','scan']]
- folder=c.OUT/'sources/polyhaven_fern02_original';folder.mkdir(parents=True,exist_ok=True)
+ asset=e.get('licensedPlant','fern_02');opacity=e.get('opacity','Alpha');count=e.get('meshCount',4)
+ folder=c.OUT/('sources/polyhaven_'+asset+'_original');folder.mkdir(parents=True,exist_ok=True)
  receipt=[]
  def retrieve(url,path,row=None):
   assert url.startswith(('https://api.polyhaven.com/','https://dl.polyhaven.org/file/ph-assets/'))
@@ -16,30 +17,30 @@ def build(e):
   if row:
    assert len(data)==row['size'];assert hashlib.md5(data).hexdigest()==row['md5']
   receipt.append({'file':str(path.relative_to(c.OUT)),'url':url,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
- meta=folder/'files-api.json';retrieve('https://api.polyhaven.com/files/fern_02',meta)
- doc=json.loads(meta.read_text());row=doc['gltf']['1k']['gltf'];source=folder/'fern_02_1k.gltf';retrieve(row['url'],source,row)
+ meta=folder/'files-api.json';retrieve('https://api.polyhaven.com/files/'+asset,meta)
+ doc=json.loads(meta.read_text());row=doc['gltf']['1k']['gltf'];source=folder/(asset+'_1k.gltf');retrieve(row['url'],source,row)
  for name,item in row['include'].items():
   relative=PurePosixPath(name);assert not relative.is_absolute()and'..'not in relative.parts
   retrieve(item['url'],folder/relative,item)
- alpha=folder/'textures/fern_02_alpha_1k.png';retrieve(doc['Alpha']['1k']['png']['url'],alpha,doc['Alpha']['1k']['png'])
+ alpha=folder/('textures/'+asset+'_alpha_1k.png');retrieve(doc[opacity]['1k']['png']['url'],alpha,doc[opacity]['1k']['png'])
  raw=json.loads(source.read_text())
  for item in raw.get('buffers',[])+raw.get('images',[]):
   relative=PurePosixPath(item['uri']);assert not relative.is_absolute()and'..'not in relative.parts and ':'not in item['uri'];assert(folder/relative).is_file()
  scan(folder,'fern-complete-source')
  from gltf_import_compat import import_gltf
  before=set(bpy.data.objects);import_gltf(bpy,source);bpy.context.view_layer.update()
- meshes=[o for o in set(bpy.data.objects)-before if o.type=='MESH'];assert len(meshes)==4
+ meshes=[o for o in set(bpy.data.objects)-before if o.type=='MESH'];assert len(meshes)==count
  original_vertices=sum(len(o.data.vertices)for o in meshes)
  # Retain every source vertex and original UV, arrange four plants as a bank.
  source_meshes=[]
  for i,o in enumerate(sorted(meshes,key=lambda o:o.name)):
   world=o.matrix_world.copy();corners=[world@Vector(p)for p in o.bound_box];lo=Vector([min(p[k]for p in corners)for k in range(3)]);hi=Vector([max(p[k]for p in corners)for k in range(3)]);center=(lo+hi)*.5
-  scale=[.83,1.03,.82,.94][i]
+  scale=[.83,1.03,.82,.94][i%4]
   source_meshes.append({'name':o.name,'vertices':len(o.data.vertices),'sourceMatrix':[[*r]for r in world]})
-  o.parent=None;o.matrix_world=Matrix.Translation(((-.76+i*.51)-center.x*scale,(-.05 if i%2 else .05)-center.y*scale,-lo.z*scale))@Matrix.Diagonal((scale,scale,scale,1))@world
+  o.parent=None;o.matrix_world=Matrix.Translation((((i-(count-1)/2)*.51)-center.x*scale,(-.05 if i%2 else .05)-center.y*scale,-lo.z*scale))@Matrix.Diagonal((scale,scale,scale,1))@world
   # Separate official alpha is explicitly connected; no black rectangular cards.
   for material in o.data.materials:
-   material.name='f3_v2_polyhaven_fern02';material.use_backface_culling=False;material.surface_render_method='DITHERED'
+   material.name='f3_v2_polyhaven_'+asset;material.use_backface_culling=False;material.surface_render_method='DITHERED'
    p=next(n for n in material.node_tree.nodes if n.type=='BSDF_PRINCIPLED')
    node=next((n for n in material.node_tree.nodes if n.name=='official_fern_opacity'),None)
    if node is None:
@@ -48,7 +49,7 @@ def build(e):
    p.inputs['Roughness'].default_value=.88
    material['alphaMode']='MASK';material['alphaCutoff']=.45
  assert sum(len(o.data.vertices)for o in meshes)==original_vertices
- (c.OUT/'sources/fern-provenance.json').write_text(json.dumps({'status':'NOT_APPROVED','supplier':'Poly Haven','asset':'fern_02','assetURL':'https://polyhaven.com/a/fern_02','license':'CC0','licenseURL':'https://polyhaven.com/license','files':receipt,'originalSourceKept':True,'originalVertices':original_vertices,'verticesRemoved':0,'uvPreserved':True,'sourceMeshes':source_meshes},indent=2))
+ (c.OUT/'sources/fern-provenance.json').write_text(json.dumps({'status':'NOT_APPROVED','supplier':'Poly Haven','asset':asset,'assetURL':'https://polyhaven.com/a/'+asset,'license':'CC0','licenseURL':'https://polyhaven.com/license','files':receipt,'originalSourceKept':True,'originalVertices':original_vertices,'verticesRemoved':0,'uvPreserved':True,'sourceMeshes':source_meshes},indent=2))
 
 def finalize(c,model,metrics):
  """Use the proven F1 alpha-MASK export patch, then render the final GLB."""
