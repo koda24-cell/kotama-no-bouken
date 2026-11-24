@@ -2,10 +2,10 @@
   "status": "NOT_APPROVED",
   "assetName": "retaining_wall",
   "asset": {
-    "bytes": 5191832,
-    "sha256": "7b76eedb7fd28251abcdb3c2081240721437072c9774fa251cebd09dff39a87d",
+    "bytes": 5190488,
+    "sha256": "00874ce4e02f5cf5a18acd1b953e539006a4738dcc5838a8893f51ed32924a95",
     "tris": 2528,
-    "verts": 6023,
+    "verts": 5995,
     "meshes": 4,
     "drawCalls": 4,
     "materials": [
@@ -44,8 +44,8 @@
     "category": "props",
     "desc_ja": "剥落した鉄筋コンクリート壁",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "c3ee27453eeea8fa3360b1c465f7199f53e7cba4",
-    "workflowRun": "45328168466",
+    "sourceCommit": "0e85bfd39b776642cff4a2acedc493b5efa7272e",
+    "workflowRun": "45331023029",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_retaining_wall.blend",
     "renderedFrom": "reimported GLB",
@@ -161,5 +161,76 @@
       "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712",
       "license": "CC0"
     }
-  ]
+  ],
+  "runtime": {
+    "file": "f3_retaining_wall.glb",
+    "sourceSha256": "00874ce4e02f5cf5a18acd1b953e539006a4738dcc5838a8893f51ed32924a95",
+    "sha256": "f023e9857f2cdd1b194bec30a1a2047099c6a9480dcadde8aa28c6ee7ff6c804",
+    "bytes": 310632,
+    "embeddedOriginalBytes": 5190488,
+    "images": [
+      {
+        "file": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg",
+        "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2",
+        "bytes": 6785
+      },
+      {
+        "file": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb.jpg",
+        "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb",
+        "bytes": 5836
+      },
+      {
+        "file": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1.jpg",
+        "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1",
+        "bytes": 4832
+      },
+      {
+        "file": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710.jpg",
+        "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710",
+        "bytes": 6746
+      },
+      {
+        "file": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098.jpg",
+        "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098",
+        "bytes": 5400
+      },
+      {
+        "file": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c.jpg",
+        "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c",
+        "bytes": 8996
+      },
+      {
+        "file": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1.jpg",
+        "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1",
+        "bytes": 489576
+      },
+      {
+        "file": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb.jpg",
+        "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb",
+        "bytes": 733167
+      },
+      {
+        "file": "b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182.png",
+        "sha256": "b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182",
+        "bytes": 1244933
+      },
+      {
+        "file": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg",
+        "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304",
+        "bytes": 990005
+      },
+      {
+        "file": "e96bc7b0f93cabfa2cf22475e14e157488a5a750037c2ca3524bd36e74d71e49.jpg",
+        "sha256": "e96bc7b0f93cabfa2cf22475e14e157488a5a750037c2ca3524bd36e74d71e49",
+        "bytes": 671617
+      },
+      {
+        "file": "2f0d5c143f2e78877a7d9dec481817a0a049d09eda7cd87967a4b4a0f2170c40.png",
+        "sha256": "2f0d5c143f2e78877a7d9dec481817a0a049d09eda7cd87967a4b4a0f2170c40",
+        "bytes": 712309
+      }
+    ],
+    "geometryAndMaterialDataUnchanged": true,
+    "imageLayout": "../../shared_textures/<sha256>.jpg|png relative to candidate/<asset>/runtime/"
+  }
 }

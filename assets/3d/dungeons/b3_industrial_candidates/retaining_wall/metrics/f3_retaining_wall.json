@@ -1,8 +1,8 @@
 {
-  "bytes": 5191832,
-  "sha256": "7b76eedb7fd28251abcdb3c2081240721437072c9774fa251cebd09dff39a87d",
+  "bytes": 5190488,
+  "sha256": "00874ce4e02f5cf5a18acd1b953e539006a4738dcc5838a8893f51ed32924a95",
   "tris": 2528,
-  "verts": 6023,
+  "verts": 5995,
   "meshes": 4,
   "drawCalls": 4,
   "materials": [
@@ -41,8 +41,8 @@
   "category": "props",
   "desc_ja": "\u5265\u843d\u3057\u305f\u9244\u7b4b\u30b3\u30f3\u30af\u30ea\u30fc\u30c8\u58c1",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "c3ee27453eeea8fa3360b1c465f7199f53e7cba4",
-  "workflowRun": "45328168466",
+  "sourceCommit": "0e85bfd39b776642cff4a2acedc493b5efa7272e",
+  "workflowRun": "45331023029",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/f3_retaining_wall.blend",
   "renderedFrom": "reimported GLB",
