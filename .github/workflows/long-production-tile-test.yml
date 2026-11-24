@@ -232,6 +232,19 @@ jobs:
           if decision != "start_unit":
               raise SystemExit("Render deferred: "+decision)
           PY
+      - name: Apply bounded retry policy after verified checkpoint
+        env:
+          SESSION_START: ${{ needs.clock.outputs.epoch }}
+        run: |
+          PYTHONPATH=tools/3d_checkpoint python3 - <<'PY'
+          import os,time,math
+          from production_retry import recovery_action
+          remaining=360-math.ceil((time.time()-int(os.environ["SESSION_START"]))/60)
+          action=recovery_action(outcome="render_failed",checkpoint_verified=True,retries=0,remaining_minutes=max(0,remaining),estimate_minutes=30)
+          print("RECOVERY_ACTION",action)
+          if action != "resume_checkpoint":
+              raise SystemExit("Recovery deferred: "+action)
+          PY
       - name: Restart only right-hand HALF of front image
         env:
           RESUME_BLEND: left-saved/frozen_watergate_v09.blend
