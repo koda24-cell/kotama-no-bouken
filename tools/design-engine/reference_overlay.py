@@ -16,6 +16,30 @@ def evidence(uv, indices):
         groups.setdefault(key,[]).append(sign>0)
     return {"coincident_groups":sum(len(g)>1 for g in groups.values()),"opposite_winding_groups":sum(len(set(g))>1 for g in groups.values()),"outside_tile_triangles":outside,"intent":"UNKNOWN_REVIEW_REQUIRED"}
 
+def wrapped_preview(img, uv, idx, sampler, size=768):
+    # Sample full UV bounds with the glTF sampler addressing modes.
+    import numpy as np
+    lo=[min(0,min(p[i] for p in uv)) for i in range(2)]
+    hi=[max(1,max(p[i] for p in uv)) for i in range(2)]
+    span=[hi[i]-lo[i] for i in range(2)]
+    scale=(size-1)/max(span)
+    w,h=[max(2,round(s*scale)+1) for s in span]
+    def address(v,mode):
+        if mode==10497: return v%1
+        if mode==33648: return 1-abs(v%2-1)
+        if mode==33071: return np.clip(v,0,1)
+        raise ValueError("Unsupported sampler wrap")
+    u=address(np.linspace(lo[0],hi[0],w),sampler.get("wrapS",10497))
+    v=address(np.linspace(lo[1],hi[1],h),sampler.get("wrapT",10497))
+    a=np.asarray(img)
+    preview=Image.fromarray(a[np.rint(v*(img.height-1)).astype(int)[:,None],np.rint(u*(img.width-1)).astype(int)[None,:]])
+    draw=ImageDraw.Draw(preview)
+    def point(p): return tuple((p[i]-lo[i])/span[i]*([w,h][i]-1) for i in range(2))
+    for i in range(0,len(idx),3):
+        pts=[point(uv[j]) for j in idx[i:i+3]]
+        draw.line(pts+[pts[0]],fill=(255,80,30,255),width=1)
+    return preview,{"bounds":[lo,hi],"wrapS":sampler.get("wrapS",10497),"wrapT":sampler.get("wrapT",10497),"filter":"nearest preview"}
+
 def run(path,out):
     raw,doc,binary=read_glb(path)
     out=Path(out); out.mkdir(parents=True,exist_ok=False)
@@ -44,6 +68,7 @@ def run(path,out):
                 with Image.open(io.BytesIO(binary[start:end])) as src:
                     if src.width*src.height>16777216: raise ValueError("Image too large")
                     img=src.convert("RGBA"); img.thumbnail((1024,1024))
+                clean=img.copy()
                 draw=ImageDraw.Draw(img)
                 for i in range(0,len(idx),3):
                     tri=[uv[j] for j in idx[i:i+3]]
@@ -52,6 +77,12 @@ def run(path,out):
                     pts=[(u*(img.width-1),v*(img.height-1)) for u,v in tri]
                     draw.line(pts+[pts[0]],fill=(255,80,30,255),width=1)
                 name=f"m{m}-p{p}-{slot}.png"
-                img.save(out/name); row.update(status="SINGLE_TILE_OVERLAY",image=name)
+                img.save(out/name)
+                sampler_index=b.get("sampler_index")
+                sampler=doc["samplers"][sampler_index] if isinstance(sampler_index,int) else {}
+                wrapped,meta=wrapped_preview(clean,uv,idx,sampler)
+                wrapped_name=name.replace(".png","-wrapped.png")
+                wrapped.save(out/wrapped_name)
+                row.update(status="WRAPPED_OVERLAY",image=name,wrapped_image=wrapped_name,wrap_preview=meta)
     (out/"report.json").write_text(json.dumps(rows,indent=2))
 if __name__=="__main__": run(*sys.argv[1:])
