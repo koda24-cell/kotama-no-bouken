@@ -462,10 +462,17 @@
       4.0,
       16.2
     ],
-    "status": "DESIGNED_NOT_APPROVED",
+    "status": "RENDERED_NOT_APPROVED",
     "existingUpgrade": true,
     "revisionOf": "retaining_wall",
-    "phase": "V2 visual-quality revision, original retained"
+    "phase": "V2 visual-quality revision, original retained",
+    "workflowRun": "45425172072",
+    "sourceCommit": "7f50b334d1c62f0213dbfd7010fc70e1712aee7d",
+    "actualGltfSizeMeters": [
+      4.12,
+      16.2053,
+      4.1106
+    ]
   },
   {
     "id": "v2_service_tower",
@@ -475,10 +482,17 @@
       3.8,
       15.0
     ],
-    "status": "DESIGNED_NOT_APPROVED",
+    "status": "RENDERED_NOT_APPROVED",
     "existingUpgrade": true,
     "revisionOf": "native_utilityPole / pipe_rack / column_joint composition",
-    "phase": "V2 individual quality revision"
+    "phase": "V2 individual quality revision",
+    "workflowRun": "45415404490",
+    "sourceCommit": "4149167e8e7153d0a9354075c5e2eb32ee1eed00",
+    "actualGltfSizeMeters": [
+      3.3623,
+      15.451,
+      3.535
+    ]
   },
   {
     "id": "v2_fern_colony",
@@ -488,10 +502,17 @@
       0.8,
       0.45
     ],
-    "status": "DESIGNED_NOT_APPROVED",
+    "status": "RENDERED_NOT_APPROVED",
     "existingUpgrade": true,
     "revisionOf": "low grass and ledge ecology",
-    "phase": "V2 individual CC0 foliage revision"
+    "phase": "V2 individual CC0 foliage revision",
+    "workflowRun": "45416559718",
+    "sourceCommit": "3d4b00119ab06a34a0377402dda1f8f97550cb2d",
+    "actualGltfSizeMeters": [
+      2.0283,
+      0.4405,
+      0.9205
+    ]
   },
   {
     "id": "v2_truss_bridge",
@@ -501,10 +522,17 @@
       2.5,
       7.25
     ],
-    "status": "DESIGNED_NOT_APPROVED",
+    "status": "RENDERED_NOT_APPROVED",
     "existingUpgrade": true,
     "revisionOf": "grating_catwalk / riveted_girder / column_joint",
-    "phase": "V2 individual structural crossing"
+    "phase": "V2 individual structural crossing",
+    "workflowRun": "45419450512",
+    "sourceCommit": "015c86c2e188c2d62a7851ebd723430313c8c8ab",
+    "actualGltfSizeMeters": [
+      8.94,
+      8.7843,
+      2.46
+    ]
   },
   {
     "id": "v2_fractured_road",
@@ -514,10 +542,17 @@
       4,
       0.16
     ],
-    "status": "DESIGNED_NOT_APPROVED",
+    "status": "RENDERED_NOT_APPROVED",
     "existingUpgrade": true,
     "revisionOf": "regular nine-square runtime paving",
-    "phase": "V2 ground surface revision"
+    "phase": "V2 ground surface revision",
+    "workflowRun": "45422753105",
+    "sourceCommit": "d8052bf022724d20104b5ce848118fa63172b4ea",
+    "actualGltfSizeMeters": [
+      4.0,
+      0.1378,
+      4.0
+    ]
   },
   {
     "id": "v2_factory_bay",
@@ -527,9 +562,16 @@
       3.5,
       12.6
     ],
-    "status": "DESIGNED_NOT_APPROVED",
+    "status": "RENDERED_NOT_APPROVED",
     "existingUpgrade": true,
     "revisionOf": "industrial street facade composition",
-    "phase": "V2 selected licensed components and original structure"
+    "phase": "V2 selected licensed components and original structure",
+    "workflowRun": "45423622575",
+    "sourceCommit": "81e69a86713c15ce38074c2e21f2b63dd04ca24c",
+    "actualGltfSizeMeters": [
+      3.465,
+      12.43,
+      3.449
+    ]
   }
 ]
