@@ -14,3 +14,6 @@ Verified predecessor: PR #761 and #772. Keep their entrypoints unchanged.
 
 ## Added prototype gateway
 Caller: .github/workflows/advanced-production-gateway.yml, shared Blender 5.3 gateway. Fixture uses planar branching crack overlay (not carved fracture), UV tangent normal baking and GLB normalTexture assertion. Imported helper directory is scanned before import. Real asset generalization, GLB reimport visual comparison and execution evidence remain pending. Earlier statements about missing cracks/baking refer to the prior revision.
+
+## Real asset integration prototype
+advanced_real_session.py invokes advanced_real_worker.py with isolated candidates, CPU render fallback, per-candidate hash checkpoints, ClamAV and four-view GLB roundtrip. Workflow advanced-real-production.yml runs pillar and iron gate in parallel and checks resume. Baseline similarity is not artistic improvement; external reference images, cross-job resume and forced real failure are not yet integrated. No automatic selection or promotion. Execution pending.
