@@ -1,0 +1,53 @@
+{
+  "bytes": 5680484,
+  "sha256": "ad974e850c8da64f8c5ba2c43bd41ad33f26005a11a45ab20fe63f68fdddbcad",
+  "tris": 1152,
+  "verts": 3168,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "f3_broken_asphalt",
+    "f3_damp_concrete",
+    "f3_exposed_aggregate"
+  ],
+  "textureCount": 9,
+  "textureBytes": 5515928,
+  "sizeMeters": [
+    3.9938,
+    0.1378,
+    3.9932
+  ],
+  "bboxMin": [
+    -1.9955,
+    -0.1,
+    -1.9963
+  ],
+  "bboxMax": [
+    1.9983,
+    0.0378,
+    1.9969
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v2_fractured_road",
+  "file": "props/f3_v2_fractured_road.glb",
+  "category": "props",
+  "desc_ja": "\u4e0d\u898f\u5247\u306b\u5272\u308c\u6c88\u4e0b\u3057\u305f\u30a2\u30b9\u30d5\u30a1\u30eb\u30c8\u8def\u9762V2",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "5d7df6eecbca5dd0ede6b45b4ff4cfed3e061012",
+  "workflowRun": "45420391969",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v2_fractured_road.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v2_fractured_road/front.png",
+    "renders/f3_v2_fractured_road/back.png",
+    "renders/f3_v2_fractured_road/side.png",
+    "renders/f3_v2_fractured_road/angle.png",
+    "renders/f3_v2_fractured_road/top.png"
+  ]
+}
