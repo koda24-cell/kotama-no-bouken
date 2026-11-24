@@ -129,6 +129,8 @@ jobs:
           if-no-files-found: error
   kill-right:
     needs: [clock, left-half]
+    outputs:
+      expected_kill: ${{ steps.kill_probe.outputs.expected_kill }}
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     container:
@@ -166,6 +168,7 @@ jobs:
               raise SystemExit("Render deferred: "+decision)
           PY
       - name: Intentionally SIGKILL the RIGHT Blender child
+        id: kill_probe
         env:
           RESUME_BLEND: left-saved/frozen_watergate_v09.blend
           RENDER_OUTPUT: lost-right
@@ -183,10 +186,10 @@ jobs:
           grep -Fx 'KILL_DURING_RIGHT_RENDER_PRE' qa/right-kill.txt
           test "$rc" -eq 137
           echo "EXPECTED_RIGHT_HALF_KILL=true"
-          exit 1
+          echo "expected_kill=true" >> "$GITHUB_OUTPUT"
   resume-right:
     needs: [clock, left-half, kill-right]
-    if: ${{ always() && needs.left-half.result == 'success' && needs.kill-right.result == 'failure' }}
+    if: ${{ needs.left-half.result == 'success' && needs.kill-right.result == 'success' && needs.kill-right.outputs.expected_kill == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     container:
