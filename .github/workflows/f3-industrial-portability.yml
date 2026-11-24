@@ -1,4 +1,4 @@
-name: F3 portable authoring source packaging
+name: F3 portable authoring source packaging and verification
 on:
   push:
     branches: [feature/f3-industrial-ruins-20261124]
