@@ -1,0 +1,76 @@
+{
+  "checked_at": "2026-11-23T08:14:53+09:00",
+  "repository": "koda24-cell/kotama-no-bouken",
+  "branch": "development",
+  "head_sha": "fb8a7769ed149c94fe4ef2565642a6c07b23cdfa",
+  "period": {
+    "from": "2026-11-22T08:00:00+09:00",
+    "to": "2026-11-23T08:00:00+09:00"
+  },
+  "method": "GitHub REST commits?sha=development&since=2026-11-21T23:00:00Z&until=2026-11-22T23:00:00Z&per_page=100 と search/issues（repo全体PR created/merged、open current）。時刻はcommitのcommitter date。merge commitを含む到達可能なコミット。",
+  "counts": {
+    "development_reachable_commits_in_period": 11,
+    "repository_pr_created_in_period": 15,
+    "repository_pr_merged_in_period": 6,
+    "repository_open_pr_at_observation": 345
+  },
+  "count_caveats": "PR数は全baseのrepo全体。開いている数は取得時点の値で、過去時点における未マージ数ではない。本タスクの新規PRは集計終了後。",
+  "previous_comparable_snapshot": null,
+  "delta_status": "今回を比較基準として保存。確認済み過去同方式snapshotなし。差分を捏造しない。",
+  "origin": {
+    "project_conception_start": null,
+    "production_start": null,
+    "github_full_development_start": null,
+    "days_since_start": null,
+    "verification": "initialコミット検索は0件。全履歴の最古到達可能コミットを確定しておらず制作開始日は未確定。"
+  },
+  "library_index": {
+    "repository": "koda24-cell/3d-asset-studio",
+    "source_path": "library/INDEX.tsv",
+    "indexed_rows": 726,
+    "types": {
+      "hdris": 12,
+      "models": 227,
+      "packs": 26,
+      "textures": 461
+    },
+    "caveat": "台帳行を集計した数。実ファイル/実描画/品質承認の独立再検証数ではない。HDRIがmodelsに入る分類誤りの既存記録もあるため再分類は今回行わない。"
+  },
+  "milestones": [
+    {
+      "id": "PR465",
+      "url": "https://github.com/koda24-cell/kotama-no-bouken/pull/465",
+      "merged_at": "2026-11-22T17:55:16Z",
+      "verified": "PR統合と永続PNGファイルの存在・README・shared-actions-audit.json確認",
+      "reported_not_rerun": "一層3F opt-in閉鎖神域、fresh3/18checks PASS、既存17GLB保持、新5素材。今回QA再実行や画像デコードなし",
+      "user_art_approval": "未完了とPRに記録"
+    },
+    {
+      "id": "PR714",
+      "url": "https://github.com/koda24-cell/kotama-no-bouken/pull/714",
+      "verified": "run44965880886の3job successとright-and-qa実ログ、Blender5.3.0、定義daily28190/main63/bytecode339、scan各Infected files0/SCAN_PASS、継ぎ目QA PASS、Artifact存在/未失効",
+      "metrics": {
+        "width": 1000,
+        "height": 760,
+        "mae": 0.2085,
+        "seam_ratio": 1.6326,
+        "aesthetic_qa": "NOT_TESTED"
+      },
+      "images": "未取得・未目視"
+    }
+  ],
+  "unresolved": [
+    {
+      "run_id": 45052125830,
+      "conclusion": "startup_failure",
+      "jobs": 0,
+      "url": "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45052125830",
+      "meaning": "一般Auto Reviewは起動しておらずLOD成功は数えない。F1専用監査記録と区別。"
+    }
+  ],
+  "iteration_counts": null,
+  "implemented_floor_total": null,
+  "approved_model_total": null,
+  "rendered_model_total": null,
+  "formally_saved_model_total": null
+}

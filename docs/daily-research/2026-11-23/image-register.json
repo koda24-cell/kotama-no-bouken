@@ -1,0 +1,98 @@
+{
+  "checked_at": "2026-11-23T08:14:53+09:00",
+  "publication": "NOT_PUBLIC",
+  "new_images_created": 0,
+  "actual_images_visually_verified_this_run": 0,
+  "items": [
+    {
+      "id": "ARTICLE-PROTO01-FOLIAGE",
+      "article": "既存試作01",
+      "status": "存在は記録済みだが未取得",
+      "sources": [
+        "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44059729505"
+      ],
+      "needs": [
+        "before/after同条件4方向原PNGの取得・安全検査",
+        "比較加工",
+        "材質/形状の同一条件照合"
+      ],
+      "rights": "元モデル・texture出典再確認",
+      "spoiler": "第6層・公開要確認"
+    },
+    {
+      "id": "ARTICLE-PROTO02-MOSS",
+      "article": "既存試作02",
+      "status": "存在は記録済みだが未取得",
+      "sources": [
+        "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44062318352"
+      ],
+      "needs": [
+        "失敗LOD2の問題原PNGを特定、無ければ要撮影",
+        "保護後の同角度原PNG",
+        "要比較加工/赤丸拡大"
+      ],
+      "rights": "元モデル出典要確認",
+      "spoiler": "階層詳細・公開要確認"
+    },
+    {
+      "id": "ARTICLE-PROTO03-STORAGE",
+      "article": "既存試作03",
+      "status": "要撮影・要図解制作",
+      "sources": [
+        "https://github.com/koda24-cell/kotama-no-bouken/pull/716"
+      ],
+      "needs": [
+        "生成→一時保管→確認→承認→恒久保存→導入の説明図",
+        "個人情報/未公開素材名をマスクしたGitHub実画面"
+      ],
+      "rights": "画面内第三者情報の公開可否要確認",
+      "spoiler": "素材名マスク"
+    },
+    {
+      "id": "ARTICLE-TILE-QA",
+      "article": "分割レンダー復旧",
+      "status": "存在は記録済みだが未取得",
+      "sources": [
+        "https://github.com/koda24-cell/kotama-no-bouken/actions/runs/44965880886"
+      ],
+      "artifacts": [
+        {
+          "id": 14731268719,
+          "expired": false,
+          "role": "reference/front.png"
+        },
+        {
+          "id": 14730953574,
+          "expired": false,
+          "role": "stitched/front.png"
+        }
+      ],
+      "needs": [
+        "安全取得/スキャン",
+        "通常と分割の同尺度横並び",
+        "x500拡大",
+        "要比較加工"
+      ],
+      "rights": "検証専用シーンの原本出典・承認確認",
+      "spoiler": "低いが公開承認必要"
+    },
+    {
+      "id": "F1-CLOSED-V3-20261123",
+      "article": "将来の品質改善日誌",
+      "status": "存在は記録済みだが未取得",
+      "relative_paths": [
+        "docs/reviews/f1-closed-ruins-v3-game/04-trial-approach.png",
+        "docs/reviews/f1-closed-ruins-v3-game/16-v3-enclosed-root-vault.png",
+        "docs/reviews/f1-closed-v3-current-development/14-v3-water-facing-north.png",
+        "docs/reviews/f1-closed-v3-current-development/15-v3-torii-shrine-axis.png"
+      ],
+      "needs": [
+        "安全検査と取得",
+        "修正前後のcamera/lighting照合",
+        "掲載権利確認"
+      ],
+      "rights": "外部CC0出典とゲーム所有権の確認",
+      "spoiler": "一層3F・神域ネタバレ注意"
+    }
+  ]
+}
