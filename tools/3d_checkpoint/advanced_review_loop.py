@@ -17,7 +17,7 @@ def decide(base,candidates,provider):
     for c in candidates:
         r=provider(c)
         if r is None:return base,[],"AWAITING_VISUAL_REVIEW"
-        r["technical_eligible"]=select(base,[c]) is c
+        r["technical_eligible"]=bool(c["pass"] and c.get("verified") and c.get("preserved") and all(c["views"][v]["metrics"]["silhouette"]>=.95 for v in c["views"]))
         reviewed.append(r)
     best=choose_reviewed(b,reviewed)
     actions=list(dict.fromkeys(x for x in best["summary"]["actions"] if x in MODES))
