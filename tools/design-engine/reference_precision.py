@@ -1,5 +1,6 @@
 """Measured samples and explicitly qualified geometric fits, in Z-up mm."""
 import numpy as np
+from reference_curves import cylinder_fit,repetition,section_controls,surface_controls
 import trimesh
 import json,sys,hashlib
 from pathlib import Path
@@ -54,8 +55,8 @@ def analyze(path):
                 lines=trimesh.intersections.mesh_plane(m,np.eye(3)[axis],origin)
                 if len(lines):
                     points=np.unique(lines.reshape(-1,3).round(6),axis=0)
-                    sections.append({"axis":axis,"fraction":fraction,"segments_mm":lines.tolist(),"circle_fit":circle_fit(points)})
-        rows.append({"node":node,"bounds_mm":m.bounds.tolist(),"dimensions_mm":m.extents.tolist(),"source_transform_gltf":t.tolist(),"thickness":thickness(m),"rotational_symmetry":symmetry,"sections":sections})
+                    sections.append({"axis":axis,"fraction":fraction,"segments_mm":lines.tolist(),"circle_fit":circle_fit(points),"controls":section_controls(lines)})
+        rows.append({"node":node,"bounds_mm":m.bounds.tolist(),"dimensions_mm":m.extents.tolist(),"source_transform_gltf":t.tolist(),"cylinder_candidates":cylinder_fit(v),"surface_controls":surface_controls(m),"thickness":thickness(m),"rotational_symmetry":symmetry,"sections":sections})
     for i,(a,m,_) in enumerate(parts):
         for b,n,_ in parts[:i]:
             gap=np.maximum(np.maximum(m.bounds[0]-n.bounds[1],n.bounds[0]-m.bounds[1]),0)
@@ -64,6 +65,6 @@ def analyze(path):
             closest,dist,_=trimesh.proximity.closest_point(n,sample)
             k=int(np.argmin(dist))
             contacts.append({"parts":[a,b],"sampled_surface_gap_mm":float(dist[k]),"points_mm":[sample[k].tolist(),closest[k].tolist()],"status":"SAMPLED_CONTACT_CANDIDATE"})
-    return {"source_sha256":hashlib.sha256(Path(path).read_bytes()).hexdigest(),"parts":rows,"contacts":contacts,"status":"REFERENCE_ONLY"}
+    return {"source_sha256":hashlib.sha256(Path(path).read_bytes()).hexdigest(),"parts":rows,"contacts":contacts,"repetition":repetition(parts),"status":"REFERENCE_ONLY"}
 if __name__=="__main__":
     Path(sys.argv[2]).write_text(json.dumps(analyze(sys.argv[1]),indent=2,allow_nan=False))
