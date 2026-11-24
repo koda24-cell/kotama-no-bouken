@@ -189,6 +189,35 @@ def analyze_uv_overlaps(uv, indices):
         "note": "Positive-area UV triangle intersections only; shared edges are ignored. Overlap may be intentional (mirroring, stacking, or reuse) and requires visual review."
     }
 
+
+def material_texture_bindings(doc, primitive):
+    material_index = primitive.get("material")
+    materials = doc.get("materials", [])
+    if type(material_index) is not int or not 0 <= material_index < len(materials):
+        return None
+    material = materials[material_index]
+    pbr = material.get("pbrMetallicRoughness", {})
+    slots = {**pbr, **material}
+    textures = doc.get("textures", [])
+    bindings = {}
+    for slot, value in slots.items():
+        if not slot.endswith("Texture") or not isinstance(value, dict):
+            continue
+        texture_index = value.get("index")
+        if type(texture_index) is not int or not 0 <= texture_index < len(textures):
+            bindings[slot] = {"status": "INVALID_TEXTURE_REFERENCE"}
+            continue
+        texture = textures[texture_index]
+        bindings[slot] = {
+            "texture_index": texture_index,
+            "image_index": texture.get("source"),
+            "sampler_index": texture.get("sampler"),
+            "tex_coord_set": value.get("texCoord", 0),
+            "extension_overrides": value.get("extensions", {})
+        }
+    return {"material_index": material_index, "material_name": material.get("name"),
+            "texture_bindings": bindings}
+
 def draw_uv(path, output, size=1024):
     if type(size) is not int or not 128 <= size <= 4096:
         raise ValueError("Image size must be 128..4096")
@@ -254,6 +283,7 @@ def draw_uv(path, output, size=1024):
             records.append({"mesh": mesh_index, "primitive": primitive_index,
                             "status": "GENERATED", "uv_vertices": len(uv),
                             "triangles": len(indices)//3, "image": filename,
+                            "material_binding": material_texture_bindings(doc, primitive),
                             "uv_overlap": overlap,
                             "sha256": hashlib.sha256((out / filename).read_bytes()).hexdigest(),
                             "uv_bounds": [[min(p[0] for p in uv), min(p[1] for p in uv)],
