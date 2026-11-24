@@ -1,0 +1,127 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-rebar_rubble/comparison/lod0_NOT_APPROVED.glb",
+      "file_bytes": 7093316,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 7,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
+      "estimated_scene_triangles": 42864,
+      "materials": 7,
+      "material_names": [
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES.001",
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES",
+        "f3_exposed_aggregate",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE.001",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE",
+        "oxidized_reinforcing_steel.001",
+        "oxidized_reinforcing_steel"
+      ],
+      "mesh_names": [
+        "F3_RUBBLE_V29_CORE_FRACTURE.001",
+        "F3_RUBBLE_V29_CORE_FRACTURE",
+        "Icosphere",
+        "F3_RUBBLE_V29_CORE_FRACTURE.003",
+        "F3_RUBBLE_V29_CORE_FRACTURE.002",
+        "bent_ribbed_rebar_mesh.001",
+        "bent_ribbed_rebar_mesh"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 7,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 13,
+      "textures": 19,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-rebar_rubble/comparison/lod1_NOT_APPROVED.glb",
+      "file_bytes": 5646732,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 7,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
+      "estimated_scene_triangles": 23574,
+      "materials": 7,
+      "material_names": [
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES.002",
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES.003",
+        "f3_exposed_aggregate.001",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE.002",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE.003",
+        "oxidized_reinforcing_steel.002",
+        "oxidized_reinforcing_steel.003"
+      ],
+      "mesh_names": [
+        "F3_RUBBLE_V29_CORE_FRACTURE.004",
+        "F3_RUBBLE_V29_CORE_FRACTURE.005",
+        "Icosphere.001",
+        "F3_RUBBLE_V29_CORE_FRACTURE.006",
+        "F3_RUBBLE_V29_CORE_FRACTURE.007",
+        "bent_ribbed_rebar_mesh.002",
+        "bent_ribbed_rebar_mesh.003"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 7,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 13,
+      "textures": 19,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-rebar_rubble/comparison/lod2_NOT_APPROVED.glb",
+      "file_bytes": 4098416,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 7,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
+      "estimated_scene_triangles": 10714,
+      "materials": 7,
+      "material_names": [
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES.004",
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES.005",
+        "f3_exposed_aggregate.002",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE.004",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE.005",
+        "oxidized_reinforcing_steel.004",
+        "oxidized_reinforcing_steel.005"
+      ],
+      "mesh_names": [
+        "F3_RUBBLE_V29_CORE_FRACTURE.008",
+        "F3_RUBBLE_V29_CORE_FRACTURE.009",
+        "Icosphere.002",
+        "F3_RUBBLE_V29_CORE_FRACTURE.010",
+        "F3_RUBBLE_V29_CORE_FRACTURE.011",
+        "bent_ribbed_rebar_mesh.004",
+        "bent_ribbed_rebar_mesh.005"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 7,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 13,
+      "textures": 19,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}
