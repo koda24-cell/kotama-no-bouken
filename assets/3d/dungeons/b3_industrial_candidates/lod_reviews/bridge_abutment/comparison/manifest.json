@@ -1,0 +1,125 @@
+{
+  "schema": "kotama-rigid-lod-review-v1",
+  "status": "NOT_APPROVED",
+  "source": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/bridge_abutment/props/f3_bridge_abutment.glb",
+  "original_modified": false,
+  "category": "rigid_opaque_only",
+  "comparison_cameras": [
+    "front",
+    "side",
+    "angle",
+    "top"
+  ],
+  "original_triangle_equivalent": 1980,
+  "variants": [
+    {
+      "lod": 0,
+      "target_ratio": 1.0,
+      "triangle_equivalent": 1980,
+      "mesh_objects": 5,
+      "files": [
+        {
+          "name": "lod0_NOT_APPROVED.glb",
+          "bytes": 7453092,
+          "sha256": "b6636c6a3850d56d5a6aa1431196349271d90926b200af01c2dbbc4fcda01eb9"
+        },
+        {
+          "name": "lod0_front.png",
+          "bytes": 281532,
+          "sha256": "3e5b2ada80a89ded482fe9dac35186f56f0f0c6e42eef9c750b84343566cef1d"
+        },
+        {
+          "name": "lod0_side.png",
+          "bytes": 273841,
+          "sha256": "40d7a2c7fdb3266cd599eee462f9ac023d07a760102db9de9d7680129d87ab92"
+        },
+        {
+          "name": "lod0_angle.png",
+          "bytes": 293715,
+          "sha256": "cdfbec0dd1e7e81bfec16d0912d3284e10f0765783e8e1923baeff06ac89795a"
+        },
+        {
+          "name": "lod0_top.png",
+          "bytes": 271674,
+          "sha256": "bf3a6ddabb46d2c4d68b4d8e6651560b7cb9888b55b467bab7aeb156064361ea"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 1,
+      "target_ratio": 0.55,
+      "triangle_equivalent": 1087,
+      "mesh_objects": 5,
+      "files": [
+        {
+          "name": "lod1_NOT_APPROVED.glb",
+          "bytes": 7355556,
+          "sha256": "a6ddea99d09d3648f41bcdd140753b573be166039da3f4ba0f068a8ee6f7ba6c"
+        },
+        {
+          "name": "lod1_front.png",
+          "bytes": 281485,
+          "sha256": "7cb407eeebdf5c2d6f2e9706f817474692c88103c35d3fb9393f5d6bd2d21c8b"
+        },
+        {
+          "name": "lod1_side.png",
+          "bytes": 273831,
+          "sha256": "1f2e82d01801117de6db8aa7d5a2306310f4ef0cd61886be5b9cfcad65fa6199"
+        },
+        {
+          "name": "lod1_angle.png",
+          "bytes": 293552,
+          "sha256": "a063953c90392a2d8ed4f04e3e7d379b6b3b53ac7aa1fff0989d8e1071f21edb"
+        },
+        {
+          "name": "lod1_top.png",
+          "bytes": 271611,
+          "sha256": "f4ceb8bf01b08c7a407bd30803a062f4b42179ddf4523a15df5fd10e2dcca74b"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 2,
+      "target_ratio": 0.25,
+      "triangle_equivalent": 495,
+      "mesh_objects": 5,
+      "files": [
+        {
+          "name": "lod2_NOT_APPROVED.glb",
+          "bytes": 7290732,
+          "sha256": "d252c4fe9406177d355d7e537b6552e8ef51a5bd61758b84da0bf6636ff4446c"
+        },
+        {
+          "name": "lod2_front.png",
+          "bytes": 281496,
+          "sha256": "2571e57c44ccb96079664da50fa691a4583a8ca7eea9b56aa145b7b0c5d6c6e8"
+        },
+        {
+          "name": "lod2_side.png",
+          "bytes": 274003,
+          "sha256": "440c90043eb84973569d250f161f7ae7e0c2293f0976d497d8d92878fba2b29a"
+        },
+        {
+          "name": "lod2_angle.png",
+          "bytes": 294969,
+          "sha256": "d3d8b0c2ecd6a18173cbf4f4ac145da520e961c2b11e520822f986448f2625f8"
+        },
+        {
+          "name": "lod2_top.png",
+          "bytes": 271107,
+          "sha256": "8303430f382582f58885aa28b0add84efa0b197e0d5cfbd1acfc61b3692777da"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    }
+  ],
+  "warning": "Not safe for foliage/glass/rigged meshes. Geometry LOD candidates are not visually approved and are not integrated into the game.",
+  "sourceSha256": "02d0ebae5ae4553cbba5e747148ab8b04b9732a1dae00b0ac8bd88d5f563f11f",
+  "sourceCommit": "21cbdd634849b774fcf37e68cbbff98284ca79e1",
+  "workflowRun": "45372771290",
+  "assetId": "bridge_abutment",
+  "blender": "5.3.0",
+  "artisticStatus": "NOT_APPROVED"
+}
