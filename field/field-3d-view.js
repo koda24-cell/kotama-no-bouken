@@ -214,6 +214,8 @@ async function buildFloor() {
   const a = fieldArea(); if (!a) return;
   const key = a.buildKey || a.key, token = ++g.buildToken;   // [RANDOM-MAZE]
   g.buildingKey = key;
+  const report=(n,label)=>{if(token===g.buildToken&&curKey()===key)window.Kotama3DLoading?.progress(n,label);};
+  report(5,'3Dテーマ準備');
   showBadge('3D表示を準備中…');
   const area = Number(fieldState.area);
   let th = null;
@@ -223,7 +225,8 @@ async function buildFloor() {
   }
   try {
     const list = Object.values(FILES); let done = 0;
-    await Promise.all(list.map((f) => load(f).then(() => { done++; showBadge(`3D表示を準備中… ${done}/${list.length}`); })));
+    report(20,'共通素材読み込み');
+    await Promise.all(list.map((f) => load(f).then(() => { done++; report(20+50*done/list.length,`素材 ${done}/${list.length}`); showBadge(`3D表示を準備中… ${done}/${list.length}`); })));
     for (const o of a.objects) if (o.kind === 'npc') await load(npcFile(o));
   } catch (e) {
     console.warn('[field-3d] 素材を読めなかったため2D表示に戻します:', e); g.failed = true; showBadge(''); applyMode(); return;
@@ -233,6 +236,7 @@ async function buildFloor() {
     if (token === g.buildToken) g.buildingKey = '';
     return;
   }   // 待っている間にフロアが変わった
+  report(75,'マップ組み立て');
   const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
   // The URL-only sacred trial owns no save or interaction state.
   g.natureV6?.dispose();g.natureV6=null;g.natureV6Error=null;g.cameraPortals=[]; g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
@@ -351,6 +355,7 @@ async function buildFloor() {
     if (o.kind !== 'switch') g.entries.push(e);
   }
   }   // 第1階層の組み立てここまで
+  report(95,'初回描画待ち');
   g.sig = doorSig(a);
   g.builtKey = key; g.buildingKey = ''; g.cam.ready = false; g.lastLightKey = '';
   for (const e of g.entries) syncEntry(e, S);
