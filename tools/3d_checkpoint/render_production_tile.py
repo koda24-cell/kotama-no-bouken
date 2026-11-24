@@ -4,7 +4,7 @@ Caller must verify and scan scene and settings before invoking Blender.
 import bpy
 import os,sys,json
 from pathlib import Path
-sys.path.insert(0,str(Path(__file__).resolve().parent))
+sys.path.insert(0,os.environ.get("PRODUCTION_SCRIPT_DIR",str(Path(__file__).resolve().parent)))
 from production_tiles import plan_tiles
 settings=json.loads(Path(os.environ["RENDER_PLAN"]).read_text())
 units=plan_tiles(settings["width"],settings["height"],settings["columns"],settings["rows"],settings["views"],settings["frames"])
