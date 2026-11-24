@@ -1,0 +1,35 @@
+name: 3D progress real render smoke
+on:
+  push:
+    branches: [feature/3d-progress-gallery-20261124]
+    paths: ['.github/workflows/3d-progress-render-smoke.yml']
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render and register isolated test model
+        shell: bash
+        run: |
+          mkdir -p smoke/output smoke/registry
+          printf '{"schema":1,"models":[]}' > smoke/registry/index.json
+          blender -b -t 2 --python-expr "import bpy; s=bpy.context.scene; s.render.resolution_x=320; s.render.resolution_y=240; s.render.resolution_percentage=100; s.render.image_settings.file_format='PNG'; s.render.filepath='//smoke/output/front.png'; bpy.ops.wm.save_as_mainfile(filepath='/tmp/progress-smoke.blend'); s.render.filepath='$PWD/smoke/output/front.png'; bpy.ops.render.render(write_still=True)"
+          freshclam
+          clamscan --infected smoke/output
+          python3 - <<'PY'
+          import json, os, datetime
+          from pathlib import Path
+          m=dict(id="smoke-cube",name="Smoke test",floor="その他",version="V01",status="制作中",publication_cleared=True,run_id=int(os.environ["GITHUB_RUN_ID"]),source_sha=os.environ["GITHUB_SHA"],updated_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),images=[dict(view="front",file="front.png")])
+          Path("smoke/output/manifest.json").write_text(json.dumps(m))
+          PY
+          python3 tools/3d-progress/register.py --registry smoke/registry --manifest smoke/output/manifest.json --source smoke/output
+          python3 -c 'import json,pathlib; p=pathlib.Path("smoke/registry"); x=json.loads((p/"index.json").read_text())["models"]; assert len(x)==1 and (p/x[0]["images"][0]["path"]).is_file()'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isolated-gallery-smoke
+          path: smoke/
+          retention-days: 14
