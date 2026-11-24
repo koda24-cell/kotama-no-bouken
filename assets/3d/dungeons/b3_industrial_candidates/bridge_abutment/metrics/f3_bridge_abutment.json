@@ -1,0 +1,55 @@
+{
+  "bytes": 7450820,
+  "sha256": "02d0ebae5ae4553cbba5e747148ab8b04b9732a1dae00b0ac8bd88d5f563f11f",
+  "tris": 1980,
+  "verts": 4185,
+  "meshes": 5,
+  "drawCalls": 5,
+  "materials": [
+    "f3_aged_rubber",
+    "f3_bare_worn_steel",
+    "f3_damp_concrete",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 15,
+  "textureBytes": 7228951,
+  "sizeMeters": [
+    3.85,
+    3.64,
+    2.275
+  ],
+  "bboxMin": [
+    -1.925,
+    0.0,
+    -1.225
+  ],
+  "bboxMax": [
+    1.925,
+    3.64,
+    1.05
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_bridge_abutment",
+  "file": "props/f3_bridge_abutment.glb",
+  "category": "props",
+  "desc_ja": "\u5d29\u58ca\u6a4b\u53f0\u3068\u9732\u51fa\u652f\u627f",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_bridge_abutment.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_bridge_abutment/front.png",
+    "renders/f3_bridge_abutment/back.png",
+    "renders/f3_bridge_abutment/side.png",
+    "renders/f3_bridge_abutment/angle.png",
+    "renders/f3_bridge_abutment/top.png"
+  ]
+}
