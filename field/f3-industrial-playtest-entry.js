@@ -2,7 +2,8 @@
 (() => {
   'use strict';
   window.KotamaIndustrialPlaytest = true;
-  const local = new Map([['kotama.field3d.quality','low'],['kotama.field3d.maxFps','20']]);
+  const compact=window.matchMedia('(pointer:coarse)').matches||window.innerWidth<700;
+  const local = new Map([['kotama.field3d.quality',compact?'low':'high'],['kotama.field3d.maxFps',compact?'20':'30']]);
   const session = new Map();
   const store = receiver => receiver === window.sessionStorage ? session : local;
   Object.defineProperties(Storage.prototype, {

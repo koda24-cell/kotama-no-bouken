@@ -16,7 +16,13 @@ for part in parts:
  for row in runtime['images']:
   path=base/'shared_textures'/row['file'];assert hashlib.sha256(path.read_bytes()).hexdigest()==row['sha256']
   images[row['file']]={'file':'shared_textures/'+row['file'],'sha256':row['sha256'],'bytes':row['bytes']}
- assets.append({'id':part['id'],'name':part['name'],'existingUpgrade':part.get('existingUpgrade',False),'file':part['id']+'/runtime/'+runtime['file'],'sha256':runtime['sha256'],'bytes':runtime['bytes'],'triangles':doc['asset']['tris'],'sourceCommit':doc['asset']['sourceCommit'],'workflowRun':doc['asset']['workflowRun'],'embeddedOriginal':part['id']+'/'+doc['asset']['file'],'embeddedOriginalBytes':runtime['embeddedOriginalBytes'],'sizeMeters':doc['asset']['sizeMeters'],'portableAuthoring':part.get('portableAuthoring'),'portableSha256':part.get('portableSha256')})
+ portable,portable_sha=part.get('portableAuthoring'),part.get('portableSha256')
+ proof=folder/'sources/authoring-portability.json'
+ if proof.exists():
+  packed=json.loads(proof.read_text());authoring=folder/'sources'/('f3_'+part['id']+'_authoring.blend')
+  assert packed['reopened']and hashlib.sha256(authoring.read_bytes()).hexdigest()==packed['blendSha256']
+  portable=str(authoring.relative_to(base));portable_sha=packed['blendSha256']
+ assets.append({'id':part['id'],'name':part['name'],'existingUpgrade':part.get('existingUpgrade',False),'revisionOf':part.get('revisionOf'),'file':part['id']+'/runtime/'+runtime['file'],'sha256':runtime['sha256'],'bytes':runtime['bytes'],'triangles':doc['asset']['tris'],'sourceCommit':doc['asset']['sourceCommit'],'workflowRun':doc['asset']['workflowRun'],'embeddedOriginal':part['id']+'/'+doc['asset']['file'],'embeddedOriginalBytes':runtime['embeddedOriginalBytes'],'sizeMeters':doc['asset']['sizeMeters'],'portableAuthoring':portable,'portableSha256':portable_sha})
 if not args.partial:assert not missing,'Missing individual deliveries: '+','.join(missing)
 # Approved existing staircases are consumed unchanged; they do not count as new parts.
 for ident,relative,manifest in [

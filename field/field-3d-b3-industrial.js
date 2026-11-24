@@ -263,7 +263,8 @@ export function createTheme(api) {
         holder.scale.set(scale,representative?scale:Math.min(scale,wallHeight/ss.y),scale);
         holder.position.set(ex-cc.x*scale+dx*(representative?depth/2+.03:-.10),-bb.min.y*holder.scale.y,ez-cc.z*scale+dz*(representative?depth/2+.03:-.10));
         if(representative)stats.representativeFacadeCount++;
-        root.add(holder);holder.updateMatrixWorld(true);const facadeBounds=new THREE.Box3().setFromObject(holder),facadeRecord={min:facadeBounds.min.toArray(),max:facadeBounds.max.toArray()};holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=facadeRecord;});count(id);
+        root.add(holder);holder.updateMatrixWorld(true);const facadeBounds=new THREE.Box3().setFromObject(holder),facadeRecord={key:id+':facade',min:facadeBounds.min.toArray(),max:facadeBounds.max.toArray(),overhead:false};holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=facadeRecord;});
+        if(representative)edgePlacements.push(facadeRecord);count(id);
         // Utility clusters repeat a structural language, while their combinations vary by block.
         if(!safe){
           const ids=['broken_signal','broken_streetlamp','control_cabinet','flanged_pipe','pipe_rack','rebar_rubble','drain_channel','ivy_pocket','heaved_asphalt','column_joint','riveted_girder','buckled_portal','grating_catwalk','service_stair','landing_railing','bridge_abutment'].filter(id=>industrial.models.has(id));
