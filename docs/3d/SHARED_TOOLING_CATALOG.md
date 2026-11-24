@@ -465,3 +465,6 @@
 - runtime checkpoint2744ad727f3b44140b8438e5d663db1f4affce9b。実index/GLBの同位置before/after14PNGと通常表示をpass。66入力がcheckpointと一致、前後SHA不変。2F504壁は元壁291/A52/B104/C42/実3F壁15。7組の8bit平均輝度は2.20–3.01倍で、測光/FPSではない。通常表示は露出1.3/hemi1.7/追加fill0を確認。岩/置換壁930配置・675経路の幅1.8m干渉0。説明F1_LIGHT_TRANSITION_V7_REVIEW.md、証跡docs/reviews/f1-v7/。
 - 新しい配信SHAを実ネットで確認中、Fastly側のgather_logging_point.glbに403を実測し起動停止を再現。失敗JSONはf1-v7-delivery/iterations/initial-model-403.json。preview専用installAssetRecoveryで固定repo/SHA内GETのみ、Fastly→CDN jsDelivr→raw.githubusercontentへfetchを再試行する。Request設定・abortを維持し、他URL/非GETは元fetchへ委譲。第三者packageなし、ゲーム本体/素材byteを変更しない。元のhash検証も継続する。
 - スクリプト取得/保存隔離の先行配置は前回の回復helperを維持。モデルの初回503を故障注入し、成功するGLBは実ネットの別経路から取得して検査中。2Fは試験表示中/素材hash確認へ到達、2F/3F・通常保存保護の最終結果は追記予定。検査用proxy証明書例外だけを使用し、配布ページのTLS検査は無効化しない。
+
+- 最終実ネット結果: 2F/3Fをpass。Fastly採集GLBの503注入2回を実CDNの代替GLBで回復、各floorの素材hash・露出1.48/fill.32・通常保存sentinel不変/子memory saveVersion12を確認。隔離entryを全3経路503にした時はiframe空/通常保存不変、page errors0。成功応答のローカルGLB/Three差し替えは行わない。f1-v7-delivery/live-verification.json/実PNG/source-hashes.jsonへ恒久保存。
+- 完成した試験入口（2F開始・正式昇格前）: https://raw.githack.com/koda24-cell/kotama-no-bouken/f14eb3f2d1a72ca048db07d25a1f4f71ecf4eb78/preview/f1-sacred-playtest.html?floor=1 。runtime/modelsは2744ad7に固定、loaderだけに配信回復を追加。NOT_APPROVED/main不変更を維持。
