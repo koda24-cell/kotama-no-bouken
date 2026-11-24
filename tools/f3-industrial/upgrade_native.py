@@ -9,6 +9,8 @@ def build(asset,e):
  assert hashlib.sha256(path.read_bytes()).hexdigest()==row['sha256']
  bpy.ops.import_scene.gltf(filepath=str(path));original=[o for o in bpy.context.scene.objects if o.type=='MESH'];assert original
  raw_positions=sum(len(o.data.vertices)for o in original)
+ def positions_hash():return hashlib.sha256(json.dumps([[[*v.co]for v in o.data.vertices]+[[*row]for row in o.matrix_world]for o in original]).encode()).hexdigest()
+ original_geometry_hash=positions_hash()
  bark=c.material('f3_native_aged_bark',(.145,.12,.08,1),.98)
  leaf=c.material('f3_native_olive_leaf',(.10,.19,.07,1),.92)
  # Material replacement and metric UVs leave every original vertex and component intact.
@@ -53,4 +55,5 @@ def build(asset,e):
   for j in range(4):
    c.tube('frayed reinforcing cable',[(j*.24-.4,.05,1.4),(j*.22-.4,-.05,.9),(j*.19-.4,-.09,.4)],.01,rust,8)
  assert sum(len(o.data.vertices)for o in original)==raw_positions
- return {'preservedNativeVertices':raw_positions,'sourceFile':str(path.relative_to(root)),'sourceSha256':row['sha256'],'geometryPreserved':True}
+ assert positions_hash()==original_geometry_hash
+ return {'preservedNativeVertices':raw_positions,'sourceFile':str(path.relative_to(root)),'sourceSha256':row['sha256'],'geometryPreserved':True,'originalGeometryHash':original_geometry_hash}
