@@ -479,5 +479,18 @@
     "existingUpgrade": true,
     "revisionOf": "native_utilityPole / pipe_rack / column_joint composition",
     "phase": "V2 individual quality revision"
+  },
+  {
+    "id": "v2_fern_colony",
+    "name": "写真由来の葉と立体シルエットを持つシダ群落V2",
+    "dimensions": [
+      2.1,
+      0.8,
+      0.45
+    ],
+    "status": "DESIGNED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "revisionOf": "low grass and ledge ecology",
+    "phase": "V2 individual CC0 foliage revision"
   }
 ]
