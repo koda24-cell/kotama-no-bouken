@@ -1,0 +1,241 @@
+{
+  "schema": "kotama-build-v1",
+  "units": "mm",
+  "materials": {
+    "stone": {
+      "rgba": [
+        0.5,
+        0.5,
+        0.5,
+        1
+      ],
+      "roughness": 0.8,
+      "checker": true
+    },
+    "metal": {
+      "rgba": [
+        0.3,
+        0.2,
+        0.1,
+        1
+      ],
+      "metallic": 0.7
+    }
+  },
+  "parts": [
+    {
+      "id": "base",
+      "shape": "box",
+      "size_mm": [
+        500,
+        400,
+        80
+      ],
+      "position_mm": [
+        0,
+        0,
+        40
+      ],
+      "material": "stone",
+      "bevel_mm": 8,
+      "features": [
+        {
+          "shape": "box",
+          "size_mm": [
+            100,
+            100,
+            120
+          ],
+          "position_mm": [
+            0,
+            0,
+            0
+          ],
+          "operation": "hole"
+        },
+        {
+          "shape": "box",
+          "size_mm": [
+            500,
+            30,
+            20
+          ],
+          "position_mm": [
+            0,
+            100,
+            40
+          ],
+          "operation": "groove"
+        },
+        {
+          "shape": "box",
+          "size_mm": [
+            80,
+            80,
+            40
+          ],
+          "position_mm": [
+            150,
+            0,
+            40
+          ],
+          "operation": "raised"
+        }
+      ]
+    },
+    {
+      "id": "pillar",
+      "shape": "revolve",
+      "profile_mm": [
+        [
+          55,
+          0
+        ],
+        [
+          55,
+          30
+        ],
+        [
+          35,
+          60
+        ],
+        [
+          35,
+          300
+        ],
+        [
+          60,
+          340
+        ]
+      ],
+      "position_mm": [
+        150,
+        0,
+        80
+      ],
+      "material": "metal",
+      "mirror_axis": 0
+    },
+    {
+      "id": "rib",
+      "shape": "extrude",
+      "profile_mm": [
+        [
+          -20,
+          -30
+        ],
+        [
+          20,
+          -30
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          -30,
+          30
+        ]
+      ],
+      "height_mm": 120,
+      "position_mm": [
+        -150,
+        -150,
+        80
+      ],
+      "repeat": {
+        "count": 4,
+        "step_mm": [
+          100,
+          0,
+          0
+        ]
+      },
+      "material": "stone"
+    },
+    {
+      "id": "cap",
+      "shape": "loft",
+      "rings_mm": [
+        [
+          [
+            -100,
+            -100,
+            0
+          ],
+          [
+            100,
+            -100,
+            0
+          ],
+          [
+            100,
+            100,
+            0
+          ],
+          [
+            -100,
+            100,
+            0
+          ]
+        ],
+        [
+          [
+            -60,
+            -60,
+            80
+          ],
+          [
+            60,
+            -60,
+            80
+          ],
+          [
+            60,
+            60,
+            80
+          ],
+          [
+            -60,
+            60,
+            80
+          ]
+        ]
+      ],
+      "position_mm": [
+        0,
+        0,
+        420
+      ],
+      "rotation_deg": [
+        0,
+        0,
+        15
+      ],
+      "material": "stone"
+    },
+    {
+      "id": "arch",
+      "shape": "curve",
+      "points_mm": [
+        [
+          -150,
+          0,
+          380
+        ],
+        [
+          0,
+          0,
+          540
+        ],
+        [
+          150,
+          0,
+          380
+        ]
+      ],
+      "radius_mm": 15,
+      "material": "metal"
+    }
+  ]
+}
