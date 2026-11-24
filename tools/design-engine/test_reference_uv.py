@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from reference_uv import draw_uv, read_glb, read_uv_accessor
+from reference_uv import draw_uv, read_glb, read_uv_accessor, read_indices
 
 
 def make_glb():
@@ -40,6 +40,14 @@ class UVReviewTest(unittest.TestCase):
             self.assertEqual(report["primitives"][0]["status"], "GENERATED")
             self.assertEqual(report["primitives"][0]["triangles"], 1)
             self.assertTrue((Path(tmp) / "out" / "mesh-000-primitive-000.png").is_file())
+
+    def test_read_index_accessor(self):
+        doc = {
+            "accessors": [{"bufferView": 0, "componentType": 5123, "count": 3, "type": "SCALAR"}],
+            "bufferViews": [{"buffer": 0, "byteOffset": 0, "byteLength": 6}]
+        }
+        binary = struct.pack("<3H", 0, 2, 1)
+        self.assertEqual(read_indices(doc, binary, 0), [0, 2, 1])
 
     def test_reject_truncated_glb(self):
         with tempfile.TemporaryDirectory() as tmp:
