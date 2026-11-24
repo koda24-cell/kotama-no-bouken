@@ -931,9 +931,9 @@ function setupNavigation(){
     }else if(phase==="battle-guard"){
       tutorialClose();tutorialOverlay("全員で防御しよう","コマンドから防御を選択してね。チュートリアルでは味方全員が防御するよ。");tutorialHighlight('#battle-commands [data-action="guard"]');tutorialState.phase="battle-guard-command";
     }else if(phase==="battle-union"){
-      tutorialClose();tutorialState.phase="battle-union-command";tutorialHighlight("#battle-commands .union-command");
+      tutorialClose();tutorialState.phase="battle-union-command";tutorialHighlight("#battle-commands [data-preview-union-toggle]");
     }else if(phase==="battle-union-command"){
-      tutorialClose();tutorialHighlight("#battle-commands .union-command");
+      tutorialClose();tutorialHighlight("#battle-commands [data-preview-union-toggle]");
     }else if(phase==="battle-retreat"){
       tutorialClose();tutorialHighlight("#retreat-button");
     }else if(phase==="formation-intro"){
@@ -988,7 +988,7 @@ function setupNavigation(){
     else if(phase==="battle-command")allowed=allowed||(battleState.menuMode==="target"?hit("#battle-commands [data-enemy-target]"):hit('#battle-commands [data-action="attack"]'));
     else if(phase==="battle-sp-command")allowed=allowed||(battleState.menuMode==="target"?hit("#battle-commands [data-enemy-target]"):battleState.menuMode==="skill"?hit("#battle-commands [data-skill]"):hit('#battle-commands [data-action="skill"]'));
     else if(phase==="battle-guard-command")allowed=allowed||hit('#battle-commands [data-action="guard"]');
-    else if(phase==="battle-union-command")allowed=allowed||hit("#battle-commands .union-command")||hit("#battle-commands [data-union]");
+    else if(phase==="battle-union-command")allowed=allowed||hit("#battle-commands [data-preview-union-toggle]")||hit("#battle-commands [data-union]");
     else if(phase==="battle-retreat")allowed=allowed||hit("#retreat-button")||hit("#retreat-yes")||hit("#retreat-no");
     else if(phase==="formation-remove")allowed=allowed||hit('[data-remove-character="healer"]');
     else if(phase==="formation-add")allowed=allowed||hit('[data-toggle-character="healer"]');
@@ -1792,7 +1792,7 @@ async function executeTurn(){
     // スライムの赤文字の予告が表示された直後に、赤い警告表示の説明を行う。
     tutorialState.phase="battle-event-warning";tutorialOverlay("赤い警告表示について","いま表示された赤い文字が警告表示だよ。赤い警告は、敵が次の行動で強力な攻撃や特殊行動を行う合図です。表示されたら敵の属性や攻撃範囲を確認し、防御・回復・ユニオンスキルなどで備えましょう。警告はイベント欄に追加されるので、見逃さないようにしてください。");tutorialHighlight(".event-window");tutorialSave();
   }else if(battleState.tutorialMode&&tutorialState.battlePhase==="union"){
-    tutorialState.phase="battle-union-command";tutorialOverlay("ユニオンスキルを使おう","コタマのユニオンゲージが満タンになったよ。通常行動とは異なる特別な技を使ってみよう。");tutorialHighlight("#battle-commands .union-command");tutorialSave();
+    tutorialState.phase="battle-union-command";tutorialOverlay("ユニオンスキルを使おう","コタマのユニオンゲージが満タンになったよ。通常行動とは異なる特別な技を使ってみよう。");tutorialHighlight("#battle-commands [data-preview-union-toggle]");tutorialSave();
   }
 }
 function enemyHitTargetNode(target){
