@@ -48,6 +48,19 @@ async function prepareScripts(documentCopy){
  return urls;
 }
 let activeBlobs=[];
+function installAssetRecovery(roots){
+ const original=window.fetch.bind(window);
+ window.fetch=async function(input,init){
+  const request=new Request(input,init),prefix=roots.find(root=>request.url.startsWith(root));
+  if(!prefix||request.method!=='GET')return original(request);
+  const file=request.url.slice(prefix.length);let response,error;
+  for(const root of [prefix,...roots.filter(r=>r!==prefix)]){
+   try{response=await original(new Request(root+file,request));if(response.ok)return response;}
+   catch(e){error=e;if(request.signal.aborted)throw e;}
+  }
+  if(response)return response;throw error;
+ };
+}
 async function start(){
  const attempt=++startId;startedAt=Date.now();
  frame.srcdoc='';activeBlobs.forEach(url=>URL.revokeObjectURL(url));activeBlobs=[];
@@ -75,7 +88,9 @@ async function start(){
   const diagnostic="window.addEventListener('error',function(e){if(e.target&&e.target.tagName==='SCRIPT')window.KotamaSacredPlaytestError='スクリプトを取得できませんでした：'+e.target.src.split('/').pop();else if(e.message)window.KotamaSacredPlaytestError='起動エラー：'+e.message;},true);";
   // Fetch isolation first, then embed it before any game script can run.
   // A failed isolation download must never start an ordinary, save-writing game.
-  const injected='<base href="'+root.href+'"><scr'+'ipt>'+diagnostic+'window.KotamaSacredPlaytestStartFloor='+floor+';'+entryCode.replace(/<\/script/gi,'<\\/script')+'</scr'+'ipt>';
+  const roots=[gameRoot.href,'https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@'+reviewedRevision+'/','https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/'+reviewedRevision+'/'];
+  const recovery=useCDN?'('+installAssetRecovery.toString()+')('+JSON.stringify(roots)+');':'';
+  const injected='<base href="'+root.href+'"><scr'+'ipt>'+diagnostic+recovery+'window.KotamaSacredPlaytestStartFloor='+floor+';'+entryCode.replace(/<\/script/gi,'<\\/script')+'</scr'+'ipt>';
   frame.srcdoc=html.replace(/<head(?:\s[^>]*)?>/i,head=>head+injected);
   activeBlobs.forEach(url=>URL.revokeObjectURL(url));activeBlobs=blobs;
  }catch(error){if(attempt===startId){startedAt=0;status.textContent=error.name==='TimeoutError'?'配信先が応答しません。「試験をやり直す」で再試行できます。':error.message;}}

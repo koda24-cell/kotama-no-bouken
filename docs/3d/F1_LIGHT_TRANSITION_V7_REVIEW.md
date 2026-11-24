@@ -38,3 +38,11 @@ native石材の詳細テクスチャ混合も前半は1Fと同じ.38/normalScale
 同位置の7組で8bitグレースケール平均は2.20〜3.01倍（1F2.64倍/3F2.49倍）。これは同条件のスクリーンショット内の指標で、測光/FPS/全視点の画質認定ではない。床・壁の凹凸を実画像で確認した。通常表示は露出1.3/hemi1.7/追加fill0、候補表示なしを確認。
 
 verify_v7_clearance.pyは既存の実GLB/経路検査器に今回の実配置記録を入力し、岩/置換壁930配置・675経路の保守的boundsで幅1.8m通路との重なり0。元壁と既存の軟植生/階段は別扱い。追加の角柱は既存mod_pillar_cornerの実bounds±.587mをscale.7で角±1.65mに置き、中心帯との余裕は少なくとも約.339m。原本の作り直しや不可視化で通路を確保したものではない。
+
+## 実ネット検査と配信補修
+
+新しい固定SHAの実ネット検査でnativeの採集ポイントGLBが403となり、起動を阻害するケースを再現（f1-v7-delivery/iterations/initial-model-403.json）。親previewだけへ、固定repo/SHA内GETを別CDNへ再試行するinstallAssetRecoveryを追加。ゲーム/モデルのbyteはcheckpointから変更せず、GLBのhash確認も維持。他のURL/非GET/abortは元の契約に従う。
+
+再現はローカルHTTP8839でparentを配信し、`BROWSER_IGNORE_PROXY_CERT=1 DELIVERY_BASE=http://127.0.0.1:8839 DELIVERY_OUT=docs/reviews/f1-v7-delivery DELIVERY_FLOORS='[1,2]' node tools/f1-v6/verify_delivery.cjs`。管理proxy証明書例外は検査用ブラウザだけ。配布コードではTLS検査を無効にしない。
+
+採集GLBのFastly応答を503にする故障注入後、成功するモデルは実ネットの別経路から取得し、2F/3Fの描画・全候補hash・通常保存sentinel不変・子のmemory saveVersion12をpass。隔離entryを3配信先すべて503にした場合はiframe空/通常保存不変をpass。page errors0、実PNG/JSONをf1-v7-deliveryへ恒久保存。親HTMLはローカル配信で、raw.githackのHTML自体をこの環境で開けたという証跡ではない。モデル故障を注入しないローカル1F〜3Fの比較は前述の独立検査。

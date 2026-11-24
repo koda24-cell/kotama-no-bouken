@@ -10,13 +10,14 @@ const OUT=path.resolve(process.env.DELIVERY_OUT||'docs/reviews/f1-v6-delivery');
  const context=await browser.newContext({ignoreHTTPSErrors:process.env.BROWSER_IGNORE_PROXY_CERT==='1',viewport:{width:1280,height:900}});
  const page=await context.newPage(),errors=[],responses=[],failures=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400)responses.push({url:r.url(),status:r.status()})});page.on('requestfailed',r=>failures.push({url:r.url(),error:r.failure()?.errorText}));
- const progress=setInterval(()=>console.log('delivery checks running'),20000);
- const report={scope:'Live CDN through local launcher, not direct raw.githack HTML availability or all-device certification',ignoreProxyCert:process.env.BROWSER_IGNORE_PROXY_CERT==='1',floors:[],errors,responses,failures};
+ const progress=setInterval(async()=>{try{console.log('delivery status',await page.locator('#status').textContent())}catch{}},20000);
+ await context.route('https://fastly.jsdelivr.net/**/modules/gather_logging_point.glb',r=>r.fulfill({status:503,body:'injected model failure'}));
+ const report={injectedModelFailure:'Fastly gather_logging_point.glb returns 503; successful alternate GLB response remains real network',scope:'Live CDN through local launcher, not direct raw.githack HTML availability or all-device certification',ignoreProxyCert:process.env.BROWSER_IGNORE_PROXY_CERT==='1',floors:[],errors,responses,failures};
  try{
-  await page.goto(BASE+'/preview/f1-sacred-playtest.html?delivery=cdn');
+  await page.goto(BASE+'/preview/');
   await page.evaluate(()=>localStorage.setItem('fantasyRpgSave','preserved-delivery-sentinel'));
   for(const floor of JSON.parse(process.env.DELIVERY_FLOORS||'[2,0,1]')){
-   if(floor!==2)await page.goto(BASE+'/preview/f1-sacred-playtest.html?delivery=cdn&floor='+floor);
+   await page.goto(BASE+'/preview/f1-sacred-playtest.html?delivery=cdn&floor='+floor);
    await page.waitForFunction(f=>{const w=document.querySelector('#game').contentWindow,d=w.KotamaField3D?.gameReviewState();return document.querySelector('#status').textContent.includes('試験表示中')&&d?.builtKey==='1-'+f&&d.natureV6Info?.sourceHashesVerified;},floor,{timeout:240000});
    const record=await page.evaluate(()=>{const w=document.querySelector('#game').contentWindow;return {status:document.querySelector('#status').textContent,parent:localStorage.getItem('fantasyRpgSave'),childSeesSentinel:w.localStorage.getItem('fantasyRpgSave')==='preserved-delivery-sentinel',saveVersion:JSON.parse(w.localStorage.getItem('fantasyRpgSave'))?.saveVersion,review:w.KotamaField3D.gameReviewState()};});
    assert.equal(record.parent,'preserved-delivery-sentinel');assert.equal(record.childSeesSentinel,false);assert.equal(record.saveVersion,12);assert.equal(record.review.builtKey,'1-'+floor);

@@ -1,0 +1,42 @@
+{
+  "scope": "Live CDN through local launcher, not direct raw.githack HTML availability or all-device certification",
+  "ignoreProxyCert": true,
+  "floors": [],
+  "errors": [],
+  "responses": [
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@2744ad727f3b44140b8438e5d663db1f4affce9b/data/field-enemies.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@2744ad727f3b44140b8438e5d663db1f4affce9b/field.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@2744ad727f3b44140b8438e5d663db1f4affce9b/field/f1-aperture-light-v5.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@2744ad727f3b44140b8438e5d663db1f4affce9b/battle-water-map.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@2744ad727f3b44140b8438e5d663db1f4affce9b/data/field-enemies.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@2744ad727f3b44140b8438e5d663db1f4affce9b/assets/3d/dungeons/b1_ancient_forest/modules/gather_logging_point.glb",
+      "status": 403
+    }
+  ],
+  "failures": [
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@2744ad727f3b44140b8438e5d663db1f4affce9b/index.html",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@2744ad727f3b44140b8438e5d663db1f4affce9b/field/f1-sacred-playtest-entry.js",
+      "error": "net::ERR_ABORTED"
+    }
+  ]
+}
