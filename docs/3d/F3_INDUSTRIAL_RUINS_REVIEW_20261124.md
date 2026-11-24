@@ -62,12 +62,14 @@ Blender5.3.0 + ClamAVの固定コンテナで、1点ずつ造形・GLB再取り�
 - 追加画像のSHA不一致を故障注入すると従来の都市へ戻り、イベント12/都市root1/far80/JS errors0。[fallback](../reviews/f3-industrial-runtime/hash-failure-existing-city.json)。専用フラグなしでは候補の取得0/従来表示を確認。[通常表示](../reviews/f3-industrial-runtime/default-existing-city.json)
 - 実CDNの7–9F表示と全モデルSHAを確認。最初の画像配信先503から別の実配信先へ復旧、通常保存sentinel不変、隔離entryを全配信先503にするとゲームを起動しない。成功する応答のローカル差し替えなし。[実ネット検証](../reviews/f3-industrial-live/live-verification.json)
 
+新しい入口の[最終7–9F配信検査](../reviews/f3-industrial-final-delivery/live-verification.json)でも元開始地点・前方通行可・導入lockなし、画像取得先503からの回復・通常保存隔離を全てpass。[実公開URL](../reviews/f3-industrial-public/public-verification.json)はraw.githackの案内ボタン後に200/27モデルSHA/通常保存隔離/pageerrors0まで確認した。
+
 Google Fontsの管理proxy証明書失敗1件を記録。検査用Chromiumの一部だけproxy証明書例外を使い、配布ページのTLS検査は無効化しない。音楽再生の聴感・長期攻略・全端末FPSは未認定。SwiftShaderの描画値は実機性能の保証ではない。
 
 ## 共有監査と軽量版比較
 
 [共有25-GLB構造監査](../reviews/f3-industrial-final/shared-audit/summary.json)はrun45372771290で成功。106559三角形相当/101primitive instanceは単体素材の構造合計でありゲーム描画負荷とは異なる。
 
-同runで18種類の不透明剛体を一体ずつLOD0/1/2・各4視点へ比較中。元モデルを保持し、ガラス・蔦・植生を含む既存組立品には汎用decimationを適用しない。軽量候補はゲームへ採用しない。正常な比較画像は独立進捗サイトへ個別登録する。全比較の完了状態と目視所見は追記する。
+同runで18種類の不透明剛体を一体ずつLOD0/1/2・各4視点へ比較中。元モデルを保持し、ガラス・蔦・植生を含む既存組立品には汎用decimationを適用しない。軽量候補はゲームへ採用しない。正常な比較画像は独立進捗サイトへ個別登録する。現時点で壁/柱接合/I桁/座屈門型の4比較が完了・共有検査済み・独立進捗サイトへ登録済み。残る14比較は同runの直列キューで継続しており、完了とは扱わない。[実GLB検査](../reviews/f3-industrial-final/lod-validation.json)は完了分12GLBのerrors0/warnings0。[同一カメラの画像差分](../reviews/f3-industrial-final/lod-image-observations.json)も保存するが、背景・影を含む画像差分を美術承認に使わない。
 
 描画改善は共有PBR画像、材質別静的バッチ、可視インスタンスのみ描画、既存植物LODで実施。独自の柔らかな接地影と曇天反射を追加し、原本を失う圧縮は行っていない。

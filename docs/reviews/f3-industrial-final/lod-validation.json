@@ -1,7 +1,46 @@
 {
   "scope": "Actual archived rigid LOD GLBs, not runtime adoption or visual acceptance",
-  "models": 3,
+  "models": 4,
   "variants": [
+    {
+      "id": "buckled_portal",
+      "lod": 0,
+      "triangles": 1748,
+      "sourceTriangles": 1748,
+      "sha256": "d2eb3487091a63470dcea8799d7dc7a0555e46ea2dfa3a32aae068c3c64f456d",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "buckled_portal",
+      "lod": 1,
+      "triangles": 980,
+      "sourceTriangles": 1748,
+      "sha256": "479fedcfb0ff8d1e0da54906552c86c293a4df93a01e6a8b79bd1e120ad460cf",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "buckled_portal",
+      "lod": 2,
+      "triangles": 470,
+      "sourceTriangles": 1748,
+      "sha256": "55a6447ff17ffd1d1b64c42dde31626c5166f342deb205cecd7ddc5784864258",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
     {
       "id": "column_joint",
       "lod": 0,

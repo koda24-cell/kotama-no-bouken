@@ -1,0 +1,293 @@
+{
+  "scope": "Identical-camera whole-image RGB differences, including background/shadows. Review signals only; not silhouette measurement, artistic acceptance or runtime adoption.",
+  "models": [
+    {
+      "asset": "buckled_portal",
+      "originalTriangles": 1748,
+      "variants": [
+        {
+          "lod": 0,
+          "triangles": 1748,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            }
+          }
+        },
+        {
+          "lod": 1,
+          "triangles": 980,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.021759033203125,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.000759124755859375
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.005528767903645833,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.00017547607421875
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.0021387736002604165,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 1.52587890625e-05
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.019491831461588543,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.000469207763671875
+            }
+          }
+        },
+        {
+          "lod": 2,
+          "triangles": 470,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.041889190673828125,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.00092315673828125
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.5628890991210938,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.007640838623046875
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.031106313069661457,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.000568389892578125
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.3456013997395833,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0048980712890625
+            }
+          }
+        }
+      ]
+    },
+    {
+      "asset": "column_joint",
+      "originalTriangles": 3460,
+      "variants": [
+        {
+          "lod": 0,
+          "triangles": 3460,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            }
+          }
+        },
+        {
+          "lod": 1,
+          "triangles": 1902,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.125640869140625,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.00424957275390625
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.18619283040364584,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.004360198974609375
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.04247283935546875,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.00197601318359375
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.006313323974609375,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.000148773193359375
+            }
+          }
+        },
+        {
+          "lod": 2,
+          "triangles": 865,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.2800000508626302,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0062408447265625
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.29002634684244794,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.006275177001953125
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.10788345336914062,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0052947998046875
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.16833114624023438,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.003170013427734375
+            }
+          }
+        }
+      ]
+    },
+    {
+      "asset": "retaining_wall",
+      "originalTriangles": 2528,
+      "variants": [
+        {
+          "lod": 0,
+          "triangles": 2528,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            }
+          }
+        },
+        {
+          "lod": 1,
+          "triangles": 1389,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.2189763387044271,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.005218505859375
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.008825937906901041,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0001373291015625
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.09582901000976562,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.001743316650390625
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.004647572835286458,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 7.62939453125e-05
+            }
+          }
+        },
+        {
+          "lod": 2,
+          "triangles": 632,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.48892847696940106,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.00955963134765625
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.3157602945963542,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.00799560546875
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.3134002685546875,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0052947998046875
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.4640312194824219,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.007160186767578125
+            }
+          }
+        }
+      ]
+    },
+    {
+      "asset": "riveted_girder",
+      "originalTriangles": 3156,
+      "variants": [
+        {
+          "lod": 0,
+          "triangles": 3156,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.0,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            }
+          }
+        },
+        {
+          "lod": 1,
+          "triangles": 1735,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.0014063517252604167,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.011455535888671875,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.00051116943359375
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.0016759236653645833,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.0061492919921875,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.0002288818359375
+            }
+          }
+        },
+        {
+          "lod": 2,
+          "triangles": 789,
+          "views": {
+            "front": {
+              "wholeImageMeanAbsoluteRgb8": 0.007310231526692708,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.000148773193359375
+            },
+            "side": {
+              "wholeImageMeanAbsoluteRgb8": 0.025511423746744793,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.000823974609375
+            },
+            "angle": {
+              "wholeImageMeanAbsoluteRgb8": 0.007497151692708333,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 9.5367431640625e-05
+            },
+            "top": {
+              "wholeImageMeanAbsoluteRgb8": 0.01297760009765625,
+              "fractionPixelsWithAnyChannelDifferenceAbove10": 0.000396728515625
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
