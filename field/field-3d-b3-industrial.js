@@ -29,7 +29,7 @@ export function createTheme(api) {
   }
   function prototype(key, make) {
     if (!prototypes.has(key)) {
-      const sourceId=industrial.models.has(key)?key:industrial.models.has(key.slice(0,-1))?key.slice(0,-1):key.endsWith("0")&&industrial.models.has("native_"+key.slice(0,-1))?"native_"+key.slice(0,-1):null;
+      const sourceId=key==='statue'&&industrial.models.has('v2_memory_statue')?'v2_memory_statue':industrial.models.has(key)?key:industrial.models.has(key.slice(0,-1))?key.slice(0,-1):key.endsWith("0")&&industrial.models.has("native_"+key.slice(0,-1))?"native_"+key.slice(0,-1):null;
       const model = sourceId ? industrial.models.get(sourceId).clone(true) : finish.dress(make(), key);
       prototypes.set(key, model);
     }
@@ -130,7 +130,7 @@ export function createTheme(api) {
     // Daylight carries the city: keep only a few nearby interactive point lights.
     daylightPool.forEach(light => g.scene.remove(light));
     g.camera.far = 44; g.camera.updateProjectionMatrix();
-    industrial=await loadIndustrialAssets({legacyModels:a.f===2?['reused_stairs_v10']:[]});
+    industrial=await loadIndustrialAssets({legacyModels:a.f===2?['reused_stairs_v10']:[],excludeModels:a.f===2?[]:['v2_memory_statue']});
     v2=industrial.models.has('v2_courtyard_facade');
     if(v2){
       env.hemi={sky:0xd6dfdb,ground:0x8d9687,high:.90,low:1.15};

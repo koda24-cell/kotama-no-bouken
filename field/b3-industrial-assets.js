@@ -10,13 +10,13 @@ async function verified(url, sha) {
   if(digest!==sha)throw Error('Industrial asset hash mismatch: '+url.pathname);
   return b;
 }
-export async function loadIndustrialAssets({allReviewSources=false,legacyModels=[]}={}) {
+export async function loadIndustrialAssets({allReviewSources=false,legacyModels=[],excludeModels=[]}={}) {
   const r=await fetch(new URL('catalog.json',base));if(!r.ok)throw Error('Industrial catalog unavailable');
   const catalog=await r.json();if(catalog.status!=='NOT_APPROVED')throw Error('Unexpected trial catalog state');
   const v2=catalog.assets.some(a=>a.id==='v2_courtyard_facade');
   // The V2 wall composition supersedes the seven legacy background prototypes.
   // Keep them in the review catalog and originals, load only actual runtime users.
-  const selectedAssets=catalog.assets.filter(a=>allReviewSources||!v2||legacyModels.includes(a.id)||(!a.id.startsWith('native_')&&!a.id.startsWith('reused_stairs_')));
+  const selectedAssets=catalog.assets.filter(a=>allReviewSources||(!excludeModels.includes(a.id)&&(!v2||legacyModels.includes(a.id)||(!a.id.startsWith('native_')&&!a.id.startsWith('reused_stairs_')))));
   const blobs=new Map(),urlAliases=new Map(),models=new Map(),materialPool=new Map(),texturePool=new Map();
   const ownedGeometries=new Set(),ownedMaterials=new Set(),ownedTextures=new Set(),ownedBitmaps=new Set();let disposed=false;
   const manager=new THREE.LoadingManager();manager.setURLModifier(url=>urlAliases.get(new URL(url,base).href)||url);
