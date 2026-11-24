@@ -28,7 +28,22 @@
       window.persistAutoSave=()=>true;
       if(window.KotamaIndustrialBattleEnabled!==true)window.kotamaAdminEncounterSettings={...(window.kotamaAdminEncounterSettings||{}),disableRandom:true,forceNext:false};
       const startFloor=Number.isInteger(window.KotamaIndustrialPlaytestStartFloor)&&window.KotamaIndustrialPlaytestStartFloor>=0&&window.KotamaIndustrialPlaytestStartFloor<=2?window.KotamaIndustrialPlaytestStartFloor:0;
-      await fieldEnterArea(3,{floor:startFloor,fromHome:true});
+      const inspection=window.KotamaIndustrialBattleEnabled!==true;
+      await fieldEnterArea(3,{floor:startFloor,fromHome:true,adminSkip:inspection});
+      // The original spawn faces north, which is a wall on some city floors.
+      // Turn only the inspection camera toward the existing walkable corridor;
+      // retain the original tile, map, event placements and turn counter.
+      if(inspection){
+        const a=fieldArea(),p=fieldPlayerTile();
+        const directions=[fieldState.dir,...Object.keys(FIELD_DIRS).filter(d=>d!==fieldState.dir)];
+        let best=fieldState.dir,score=-1;
+        for(const dir of directions){
+          const d=FIELD_DIRS[dir];let length=0;
+          while(length<8&&fieldCanEnter(a,p.tx+d.dx*(length+1),p.ty+d.dy*(length+1),'player'))length++;
+          if(length>score){best=dir;score=length;}
+        }
+        fieldState.dir=best;fieldState.view=null;fieldUpdateVision(true);fieldUpdateNear();
+      }
       window.KotamaIndustrialPlaytestReady=true;
     } catch(error){window.KotamaIndustrialPlaytestError=String(error.message||error);console.error('[industrial-playtest]',error);}
   },100);
