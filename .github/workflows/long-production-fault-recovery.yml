@@ -7,6 +7,7 @@ on:
       - 'tools/3d_checkpoint/production_source_repair.py'
       - 'tools/3d_checkpoint/production_safe_repair.py'
       - 'tools/3d_checkpoint/production_repair_loop.py'
+      - 'tools/3d_checkpoint/render_production_tile.py'
       - '.github/workflows/long-production-fault-recovery.yml'
 permissions:
   contents: read
@@ -30,6 +31,7 @@ jobs:
           blender --version | head -1 | grep -Fx 'Blender 5.3.0'
           blender -b --factory-startup --disable-autoexec --python-exit-code 1 --python-expr 'import bpy; s=bpy.context.scene; s.render.engine="CYCLES"; s.cycles.samples=4; s.render.resolution_x=128; s.render.resolution_y=96; s.render.resolution_percentage=100; s.render.image_settings.file_format="PNG"; s.render.image_settings.color_mode="RGBA"; s.render.filepath="//references/front-1.png"; bpy.ops.wm.save_as_mainfile(filepath="fault-input/scene.blend"); bpy.ops.render.render(write_still=True)'
           test -s fault-input/references/front-1.png
+          cp fault-input/references/front-1.png fault-output/baseline-reference.png
           blender -b fault-input/scene.blend --disable-autoexec --python-exit-code 1 --python-expr 'import bpy; bpy.ops.export_scene.gltf(filepath="fault-output/baseline.glb", export_format="GLB")'
           test -s fault-output/baseline.glb
           echo '{"width":128,"height":96,"columns":2,"rows":2,"views":["front"],"frames":[1],"cameras":{"front":"Camera"}}' > fault-input/plan.json
@@ -47,12 +49,13 @@ jobs:
           python3 tools/3d_checkpoint/production_run.py --plan fault-input/plan.json --source fault-input/scene.blend --references fault-input/references --output fault-output/recovered --minutes 55 2>&1 | tee fault-output/recovery-console.log
           grep -R 'TabError\\|IndentationError' fault-output/recovered
           grep -F 'REPAIR_CANDIDATE_ACCEPTED=safe_indentation_normalization' fault-output/recovery-console.log
-          grep -F 'AUTOMATIC_RETRY_SUCCEEDED=front-1' fault-output/recovery-console.log
+          grep -F 'AUTOMATIC_RETRY_SUCCEEDED=front-1-' fault-output/recovery-console.log
           grep -R '"status": "target_met"' fault-output/recovered/result.json
         shell: bash
       - name: Export recovered scene and compare GLB geometry and render
         run: |
           blender -b fault-input/scene.blend --disable-autoexec --python-exit-code 1 --python-expr 'import bpy; bpy.ops.export_scene.gltf(filepath="fault-output/recovered.glb", export_format="GLB")'
+          cp fault-output/recovered/front-1/0/assembled.png fault-output/recovered-render.png
           python3 - <<'PY'
           import json,struct,hashlib
           from pathlib import Path
