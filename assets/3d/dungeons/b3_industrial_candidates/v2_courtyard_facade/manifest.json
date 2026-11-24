@@ -2,10 +2,10 @@
   "status": "NOT_APPROVED",
   "assetName": "v2_courtyard_facade",
   "asset": {
-    "bytes": 21303184,
-    "sha256": "3d6b24c4c5fa38e35b1f21f4e02bf52fc5d13d8c22e7770a542a5d1b01c51746",
+    "bytes": 22379900,
+    "sha256": "3cdee26b37df52679227c40be2866fa5bfa5a37a4c8901277741ba186b264aa2",
     "tris": 29106,
-    "verts": 64182,
+    "verts": 67557,
     "meshes": 13,
     "drawCalls": 13,
     "materials": [
@@ -23,8 +23,8 @@
       "v2_exposed_infill_brick",
       "v2_unlit_room_concrete"
     ],
-    "textureCount": 38,
-    "textureBytes": 18024701,
+    "textureCount": 39,
+    "textureBytes": 18396803,
     "sizeMeters": [
       4.12,
       16.2053,
@@ -51,8 +51,8 @@
     "category": "props",
     "desc_ja": "崩落した集合住宅の立体ファサードV2",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "f125a4446bad19af49b1f4f33a5b8d5f232254e2",
-    "workflowRun": "45417826812",
+    "sourceCommit": "7f50b334d1c62f0213dbfd7010fc70e1712aee7d",
+    "workflowRun": "45425172072",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_v2_courtyard_facade.blend",
     "renderedFrom": "reimported GLB",
@@ -267,10 +267,10 @@
   ],
   "runtime": {
     "file": "f3_v2_courtyard_facade.glb",
-    "sourceSha256": "3d6b24c4c5fa38e35b1f21f4e02bf52fc5d13d8c22e7770a542a5d1b01c51746",
-    "sha256": "aae239fbd78c4354912b63d01da9c5f6e93df8c4f08462a0204d8cc8642b0437",
-    "bytes": 3279492,
-    "embeddedOriginalBytes": 21303184,
+    "sourceSha256": "3cdee26b37df52679227c40be2866fa5bfa5a37a4c8901277741ba186b264aa2",
+    "sha256": "9ad401ffb7eb3128b5a2135f8f133b7549cafb8d60c8621fa198a076f8acb401",
+    "bytes": 3984120,
+    "embeddedOriginalBytes": 22379900,
     "images": [
       {
         "file": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5.jpg",
@@ -278,14 +278,19 @@
         "bytes": 6755
       },
       {
-        "file": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8.jpg",
-        "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8",
-        "bytes": 6217
+        "file": "0a7749ef18c1f9d24b987596df211d454fd83e7745b85b2b4a8733f93afca137.png",
+        "sha256": "0a7749ef18c1f9d24b987596df211d454fd83e7745b85b2b4a8733f93afca137",
+        "bytes": 372102
       },
       {
         "file": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57.jpg",
         "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57",
         "bytes": 8773
+      },
+      {
+        "file": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8.jpg",
+        "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8",
+        "bytes": 6217
       },
       {
         "file": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b.jpg",
@@ -308,14 +313,14 @@
         "bytes": 6785
       },
       {
-        "file": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb.jpg",
-        "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb",
-        "bytes": 5836
-      },
-      {
         "file": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1.jpg",
         "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1",
         "bytes": 4832
+      },
+      {
+        "file": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb.jpg",
+        "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb",
+        "bytes": 5836
       },
       {
         "file": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710.jpg",
@@ -323,14 +328,14 @@
         "bytes": 6746
       },
       {
-        "file": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098.jpg",
-        "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098",
-        "bytes": 5400
-      },
-      {
         "file": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c.jpg",
         "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c",
         "bytes": 8996
+      },
+      {
+        "file": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098.jpg",
+        "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098",
+        "bytes": 5400
       },
       {
         "file": "48f3bdd981eb1b115a34e64432c3982cd25fc3f1aabd3b2ca46261dbf70706c5.jpg",
@@ -338,14 +343,14 @@
         "bytes": 3966
       },
       {
-        "file": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949.jpg",
-        "sha256": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949",
-        "bytes": 4791
-      },
-      {
         "file": "d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f.jpg",
         "sha256": "d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f",
         "bytes": 5174
+      },
+      {
+        "file": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949.jpg",
+        "sha256": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949",
+        "bytes": 4791
       },
       {
         "file": "44ef24a906346a95e5c47da7df1c41356a38ec1ab1b39e93cf609d6a69688b80.png",
@@ -423,14 +428,14 @@
         "bytes": 4006
       },
       {
-        "file": "a7c63631f4b79c2d083b4f1156e37f0b937f227ebbf398d7f2047256b81fc12a.jpg",
-        "sha256": "a7c63631f4b79c2d083b4f1156e37f0b937f227ebbf398d7f2047256b81fc12a",
-        "bytes": 4825
-      },
-      {
         "file": "89ca1aaf1c130d22d59c4dc7b42438a684ce500667d8a030fcb441acc7c44374.jpg",
         "sha256": "89ca1aaf1c130d22d59c4dc7b42438a684ce500667d8a030fcb441acc7c44374",
         "bytes": 4947
+      },
+      {
+        "file": "a7c63631f4b79c2d083b4f1156e37f0b937f227ebbf398d7f2047256b81fc12a.jpg",
+        "sha256": "a7c63631f4b79c2d083b4f1156e37f0b937f227ebbf398d7f2047256b81fc12a",
+        "bytes": 4825
       },
       {
         "file": "d9f232f0e53090b7fab24c74f9ff3f927edc0683d354a31fac65af4dde9b7b94.jpg",
@@ -438,14 +443,14 @@
         "bytes": 6778
       },
       {
-        "file": "2c8f3068acec37eee8a2566d22df7c4e36ea62138ee6ad1e1ade612deeabe7ca.jpg",
-        "sha256": "2c8f3068acec37eee8a2566d22df7c4e36ea62138ee6ad1e1ade612deeabe7ca",
-        "bytes": 6251
-      },
-      {
         "file": "f1db263e3f889524d1877894e9ae887b8a0637ee6e954bc72eefeb644ec8cc73.jpg",
         "sha256": "f1db263e3f889524d1877894e9ae887b8a0637ee6e954bc72eefeb644ec8cc73",
         "bytes": 7595
+      },
+      {
+        "file": "2c8f3068acec37eee8a2566d22df7c4e36ea62138ee6ad1e1ade612deeabe7ca.jpg",
+        "sha256": "2c8f3068acec37eee8a2566d22df7c4e36ea62138ee6ad1e1ade612deeabe7ca",
+        "bytes": 6251
       },
       {
         "file": "44b6149bc492c43f8c0d7e596858c7b63ffe57267a9cea320ad72329009f4619.jpg",
@@ -453,14 +458,14 @@
         "bytes": 6763
       },
       {
-        "file": "6eeeb03e45bdc8540d70afe43fd8f70cd60e66291064260214a07868b8788b09.jpg",
-        "sha256": "6eeeb03e45bdc8540d70afe43fd8f70cd60e66291064260214a07868b8788b09",
-        "bytes": 5884
-      },
-      {
         "file": "35c9dcb991610f45e9bf8b74eb06c7c0c1a1dad960aa898716e581cc7d04d551.jpg",
         "sha256": "35c9dcb991610f45e9bf8b74eb06c7c0c1a1dad960aa898716e581cc7d04d551",
         "bytes": 7308
+      },
+      {
+        "file": "6eeeb03e45bdc8540d70afe43fd8f70cd60e66291064260214a07868b8788b09.jpg",
+        "sha256": "6eeeb03e45bdc8540d70afe43fd8f70cd60e66291064260214a07868b8788b09",
+        "bytes": 5884
       }
     ],
     "geometryAndMaterialDataUnchanged": true,

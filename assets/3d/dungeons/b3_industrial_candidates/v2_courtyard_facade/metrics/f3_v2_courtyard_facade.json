@@ -1,8 +1,8 @@
 {
-  "bytes": 21303184,
-  "sha256": "3d6b24c4c5fa38e35b1f21f4e02bf52fc5d13d8c22e7770a542a5d1b01c51746",
+  "bytes": 22379900,
+  "sha256": "3cdee26b37df52679227c40be2866fa5bfa5a37a4c8901277741ba186b264aa2",
   "tris": 29106,
-  "verts": 64182,
+  "verts": 67557,
   "meshes": 13,
   "drawCalls": 13,
   "materials": [
@@ -20,8 +20,8 @@
     "v2_exposed_infill_brick",
     "v2_unlit_room_concrete"
   ],
-  "textureCount": 38,
-  "textureBytes": 18024701,
+  "textureCount": 39,
+  "textureBytes": 18396803,
   "sizeMeters": [
     4.12,
     16.2053,
@@ -48,8 +48,8 @@
   "category": "props",
   "desc_ja": "\u5d29\u843d\u3057\u305f\u96c6\u5408\u4f4f\u5b85\u306e\u7acb\u4f53\u30d5\u30a1\u30b5\u30fc\u30c9V2",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "f125a4446bad19af49b1f4f33a5b8d5f232254e2",
-  "workflowRun": "45417826812",
+  "sourceCommit": "7f50b334d1c62f0213dbfd7010fc70e1712aee7d",
+  "workflowRun": "45425172072",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/f3_v2_courtyard_facade.blend",
   "renderedFrom": "reimported GLB",
