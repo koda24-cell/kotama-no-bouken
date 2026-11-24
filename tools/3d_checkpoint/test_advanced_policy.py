@@ -59,4 +59,26 @@ class Tests(unittest.TestCase):
             rejected=copy.deepcopy(good);rejected["views"]["side"]["metrics"]["silhouette"]=.1
             self.assertIs(select(base,[rejected]),base)
             self.assertEqual(good["approval"],"NOT_APPROVED")
+    def test_art_review(self):
+        import copy
+        from advanced_art_review import packet,validate,choose_reviewed,VIEWS,CRITERIA
+        with tempfile.TemporaryDirectory() as d:
+            folder=Path(d)
+            for v in VIEWS:(folder/(v+".png")).write_bytes(v.encode())
+            p=packet(folder)
+            review={"images":p["images"],"reference":None,"reviewer":"GPT","views":{v:{"scores":{k:3 for k in CRITERIA},"observation":"fixture only"} for v in VIEWS},"actions":["surface"],"approval":"NOT_APPROVED"}
+            base={"review":review,"summary":validate(review,p)}
+            self.assertEqual(base["summary"]["mean"],3)
+            improved=copy.deepcopy(review)
+            improved["views"]["front"]["scores"]["craftsmanship"]=4
+            candidate={"review":improved,"summary":validate(improved,p),"technical_eligible":True}
+            self.assertIs(choose_reviewed(base,[candidate]),candidate)
+            candidate["technical_eligible"]=False
+            self.assertIs(choose_reviewed(base,[candidate]),base)
+            invalid=copy.deepcopy(review);invalid["views"]["front"]["scores"]["craftsmanship"]=6
+            with self.assertRaises(ValueError):validate(invalid,p)
+            invalid=copy.deepcopy(review);invalid["approval"]="APPROVED"
+            with self.assertRaises(ValueError):validate(invalid,p)
+            (folder/"front.png").write_bytes(b"changed")
+            with self.assertRaises(ValueError):validate(review,packet(folder))
 if __name__=="__main__":unittest.main()
