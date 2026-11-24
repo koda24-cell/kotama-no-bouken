@@ -89,3 +89,6 @@ Build a separately versioned original rear cranium first, then own temporal/ear/
 
 ## 全3D制作の進捗サイト共有（2026-11-24）
 全AI・全チャット・全作業ブランチの3Dモデル、壁・天井・小部品、設計図を [独立進捗リポジトリ](https://github.com/koda24-cell/kotama-3d-progress) に集約する。作業前に同Repoの AGENTS.md を確認。未マージ・未承認も公開許可と安全検査を満たす場合は状態を明示して掲載する。各正常レンダリング・設計出力・途中チェックポイントごとに安定ID、版、run ID、元commit、日時、公開許可を添えて登録し、失敗時は前回正常画像を保持する。自動登録未対応の場合は手動登録または未登録の引継ぎを行い、実行未確認を完了と報告しない。正式素材承認は別。ゲーム本体に旧ギャラリー・公開台帳を再設置しない。
+
+## Gallery production export contract (all AI assistants)
+GPT, Claude and Codex must use stable per-part IDs across all floors, and provide reviewed gallery_spec for design, progress and render exports through the shared gateway when available. Include exact run and source commit, image SHA256 and publication clearance. Never infer approval from a successful render. Legacy callers require individual migration and verification; preserve existing assets and report missing exports.
