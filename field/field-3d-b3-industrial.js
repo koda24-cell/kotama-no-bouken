@@ -170,8 +170,13 @@ export function createTheme(api) {
     solid=(x,z)=>x<0||z<0||x>=a.w||z>=a.h||wallCell(x,z);
     const reserved = new Set();
     for (const o of a.objects) for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) reserved.add(`${o.tx + dx},${o.ty + dz}`);
+    let cedarVerified=false;
+    if(v2&&a.f===2){
+      const held=await retainFirstLayerSource('assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb','60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb');
+      heldGrass.push(held);prototypes.set('reused_cedar',held.source);cedarVerified=true;
+    }
     const occupied = new Set();
-    const stairCells=new Set(),stairFront=new Set();
+    const stairCells=new Set(),stairFront=new Set();let stairCourtCount=0,treeCourtCount=0;
     if(v2&&a.f===2&&industrial.models.has('reused_stairs_v10')){
       const candidates=[];
       for(let z=1;z<a.h-2;z++)for(let x=1;x<a.w-2;x++){
@@ -180,7 +185,20 @@ export function createTheme(api) {
       }
       candidates.sort((a,b)=>a.score-b.score);
       if(candidates.length){
-        const {x,z}=candidates[0];scenery('reused_stairs_v10',null,x+.5,z+.5,7.5,7.5,null,0);
+        stairCourtCount=1;const {x,z}=candidates[0];scenery('reused_stairs_v10',null,x+.5,z+.5,7.5,7.5,null,0);
+        for(const [tx,tz]of [[x,z],[x+1,z],[x,z+1],[x+1,z+1]]){stairCells.add(`${tx},${tz}`);occupied.add(`${tx},${tz}`);}
+        stairFront.add(`${x},${z+1}`);stairFront.add(`${x+1},${z+1}`);
+      }
+    }
+    if(cedarVerified){
+      const candidates=[];
+      for(let z=1;z<a.h-2;z++)for(let x=1;x<a.w-2;x++){
+        const cells=[[x,z],[x+1,z],[x,z+1],[x+1,z+1]];
+        if(cells.every(([tx,tz])=>ch(tx,tz)==='#'&&!reserved.has(`${tx},${tz}`)&&!occupied.has(`${tx},${tz}`))&&(open(x,z+2)||open(x+1,z+2)))candidates.push({x,z,score:Math.abs(x-13)+Math.abs(z-11)});
+      }
+      candidates.sort((a,b)=>a.score-b.score);
+      if(candidates.length){
+        treeCourtCount=1;const {x,z}=candidates[0];scenery('reused_cedar',null,x+.5,z+.5,7.5,7.5,null,0);
         for(const [tx,tz]of [[x,z],[x+1,z],[x,z+1],[x+1,z+1]]){stairCells.add(`${tx},${tz}`);occupied.add(`${tx},${tz}`);}
         stairFront.add(`${x},${z+1}`);stairFront.add(`${x+1},${z+1}`);
       }
@@ -198,7 +216,7 @@ export function createTheme(api) {
     for(const cell of machineCells)occupied.add(cell);
     const pilotWall=(x,z)=>v2&&ch(x,z)==='#'&&!machineCells.has(`${x},${z}`)&&!stairCells.has(`${x},${z}`);
     const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`)&&!pilotWall(x,z);
-    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 city structural revision, work in progress':'V1',representativeFacadeCount:0,serviceTowers:machineCells.size,reusedStairCourtyard:stairCells.size?1:0 };
+    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 city structural revision, work in progress':'V1',representativeFacadeCount:0,serviceTowers:machineCells.size,reusedStairCourtyard:stairCourtCount,reclaimedTreeCourtyard:treeCourtCount,cedarSourceVerified:cedarVerified };
     const count = k => { stats.motifs[k] = (stats.motifs[k] || 0) + 1; };
     function softColony(id,x,z,rotation,depth=.60,ground=.04){
       if(!industrial.models.has(id))return;
@@ -282,8 +300,8 @@ export function createTheme(api) {
         count('reclaimedGroundPocket');
       }else if(v2&&a.f===2){
         // Low soft plants occupy cell corners, outside both central movement strips.
-        for(let k=0;k<(safe?1:3);k++){
-          const q=hash(x*7+k,z,924),tuft=tufts[(x+z+k)%3],plant=add(tuft.geometry,tuft.material,px+(k%2?1:-1)*(1.30+q*.3),.02,pz+(k>1?1:-1)*(1.28+q*.3),.55,.28+q*.30,.55);
+        for(let k=0;k<(safe?2:(g.high?10:7));k++){
+          const q=hash(x*7+k,z,924),tuft=tufts[(x+z+k)%3],plant=add(tuft.geometry,tuft.material,px+(k%2?1:-1)*(1.30+q*.3),.02,pz+(k>1?1:-1)*(1.28+q*.3),.75,safe?.32:.85+q*.45,.75);
           plant.rotation.y=q*6.28;
         }
       }
@@ -331,7 +349,7 @@ export function createTheme(api) {
             const holder=new THREE.Group(),rail=industrial.models.get('landing_railing').clone(true);rail.rotation.y=ry;holder.add(rail);
             const b=new THREE.Box3().setFromObject(holder),ss=b.getSize(new THREE.Vector3()),cc=b.getCenter(new THREE.Vector3()),along=dx?ss.z:ss.x,depth=dx?ss.x:ss.z;
             const scale=Math.min(3.9/along,.45/depth,1.05/ss.y);holder.scale.setScalar(scale);holder.position.set(ex-cc.x*scale+dx*.28,-b.min.y*scale,ez-cc.z*scale+dz*.28);root.add(holder);holder.updateMatrixWorld(true);
-            const bb=new THREE.Box3().setFromObject(holder),record={key:'stair-courtyard:closed-railing',min:bb.min.toArray(),max:bb.max.toArray(),overhead:false};edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
+            const bb=new THREE.Box3().setFromObject(holder),record={key:'ruin-courtyard:closed-railing',min:bb.min.toArray(),max:bb.max.toArray(),overhead:false};edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
           }else{
             const backing=add(cube,stone,ex+dx*.03,6,ez+dz*.03,4.04,12,.16,ry),bb=new THREE.Box3().setFromObject(backing);
             backing.userData.f3Bounds={min:bb.min.toArray(),max:bb.max.toArray()};
