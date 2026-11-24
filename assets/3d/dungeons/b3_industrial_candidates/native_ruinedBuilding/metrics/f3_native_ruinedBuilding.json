@@ -1,0 +1,55 @@
+{
+  "bytes": 5168932,
+  "sha256": "680c701047b63394be0429c437686c4cf63bc8267397ce9c6230d174258a3b7b",
+  "tris": 1954,
+  "verts": 4337,
+  "meshes": 5,
+  "drawCalls": 5,
+  "materials": [
+    "f3_exposed_aggregate",
+    "f3_native_aged_bark",
+    "f3_native_olive_leaf",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 15,
+  "textureBytes": 4939824,
+  "sizeMeters": [
+    6.9364,
+    6.3895,
+    5.4091
+  ],
+  "bboxMin": [
+    -2.9838,
+    -0.4335,
+    -2.635
+  ],
+  "bboxMax": [
+    3.9527,
+    5.956,
+    2.7741
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_native_ruinedBuilding",
+  "file": "props/f3_native_ruinedBuilding.glb",
+  "category": "props",
+  "desc_ja": "\u65e2\u5b58\u30fb\u5d29\u58ca\u3057\u305f\u96c6\u5408\u5efa\u7bc9\u306e\u8cea\u611f\u5f37\u5316",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "bba32c30b64ed10a431536dd7da9e1d97e11b3dc",
+  "workflowRun": "45363312146",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_native_ruinedBuilding.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_native_ruinedBuilding/front.png",
+    "renders/f3_native_ruinedBuilding/back.png",
+    "renders/f3_native_ruinedBuilding/side.png",
+    "renders/f3_native_ruinedBuilding/angle.png",
+    "renders/f3_native_ruinedBuilding/top.png"
+  ]
+}
