@@ -466,5 +466,18 @@
     "existingUpgrade": true,
     "revisionOf": "retaining_wall",
     "phase": "V2 visual-quality revision, original retained"
+  },
+  {
+    "id": "v2_service_tower",
+    "name": "配管と作業床を持つ工業機械塔V2",
+    "dimensions": [
+      3.6,
+      3.8,
+      15.0
+    ],
+    "status": "DESIGNED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "revisionOf": "native_utilityPole / pipe_rack / column_joint composition",
+    "phase": "V2 individual quality revision"
   }
 ]
