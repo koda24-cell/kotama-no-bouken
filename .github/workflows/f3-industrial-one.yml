@@ -1,0 +1,56 @@
+name: F3 industrial one asset and checkpoint
+on:
+  workflow_call:
+    inputs:
+      asset:
+        type: string
+        required: true
+permissions:
+  contents: write
+  packages: read
+jobs:
+  render:
+    uses: ./.github/workflows/shared-blender53-render.yml
+    with:
+      script: tools/f3-industrial/build_one.py
+      output_dir: render-output/f3-industrial-${{ inputs.asset }}
+      artifact_suffix: -${{ inputs.asset }}
+  archive-candidate:
+    needs: render
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/f3-industrial-ruins-20261124
+      - uses: actions/download-artifact@v4
+        with:
+          name: shared-blender53-NOT-APPROVED-${{ github.run_id }}-${{ inputs.asset }}
+          path: downloaded-verified-output
+      - name: Archive previously scanned original outputs as NOT_APPROVED
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,shutil
+          base=Path('downloaded-verified-output')
+          matches=list(base.rglob('SHARED_BLENDER53_QA_NOT_APPROVED.json'));assert len(matches)==1
+          folder=matches[0].parent;receipt=json.loads(matches[0].read_text())
+          assert receipt['status']=='NOT_APPROVED'
+          for name,r in receipt['files'].items():
+            p=(folder/name).resolve();assert p.is_relative_to(folder.resolve())
+            assert hashlib.sha256(p.read_bytes()).hexdigest()==r['sha256'],name
+          dst=Path('assets/3d/dungeons/b3_industrial_candidates')/'${{ inputs.asset }}'
+          for name in ['props','modules','sources','renders','metrics']:
+            
+            if (folder/name).exists():shutil.copytree(folder/name,dst/name,dirs_exist_ok=True)
+          for name in ['manifest.json','structural-audit.json','SHARED_BLENDER53_QA_NOT_APPROVED.json']:
+            shutil.copyfile(folder/name,dst/name)
+          shutil.copytree(folder/'security',dst/'security',dirs_exist_ok=True)
+          shutil.copytree(folder/'textures',dst.parent/'textures',dirs_exist_ok=True)
+          PY
+          git config user.name 'F1 asset archive'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/3d/dungeons/b3_industrial_candidates
+          git commit -m 'art(f3): archive individual industrial ${{ inputs.asset }} candidate'
+          git push origin HEAD:feature/f3-industrial-ruins-20261124
