@@ -1,6 +1,6 @@
 {
   "scope": "Actual archived rigid LOD GLBs, not runtime adoption or visual acceptance",
-  "models": 2,
+  "models": 3,
   "variants": [
     {
       "id": "column_joint",
@@ -73,6 +73,45 @@
       "triangles": 632,
       "sourceTriangles": 2528,
       "sha256": "e09bbb9b498fbc54fea9d736e38b4f87d6943334caa7c032b24d7a89c682728a",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "riveted_girder",
+      "lod": 0,
+      "triangles": 3156,
+      "sourceTriangles": 3156,
+      "sha256": "25f23db295db1e0bbf14e0f7c53c5a5cde481e89e2ecf4cd08e4c8007d1d2d86",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "riveted_girder",
+      "lod": 1,
+      "triangles": 1735,
+      "sourceTriangles": 3156,
+      "sha256": "a90ffbcd661ded4a6e53f1d7f6b77006b667ed851ae9df133f5344782e6246f2",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "riveted_girder",
+      "lod": 2,
+      "triangles": 789,
+      "sourceTriangles": 3156,
+      "sha256": "4636701c71b5cca49537fb6ecbe90f930361cc03361b215d2d3feb9253b13c34",
       "numErrors": 0,
       "numWarnings": 0,
       "numInfos": 0,

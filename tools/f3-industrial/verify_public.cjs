@@ -14,6 +14,11 @@ const {chromium}=require('/workspace/work/browser/node_modules/playwright-core')
  const progress=setInterval(async()=>{try{console.log(await page.locator('#status').textContent({timeout:1000}))}catch{}},15000);
  try{
   const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:90000});report.httpStatus=response.status();assert.equal(response.status(),200);
+  if((await page.title()).includes('External Content Notice')){
+   report.externalContentNotice=true;
+   await page.getByRole('button',{name:'Open the page',exact:true}).click();
+   await page.locator('#status').waitFor({timeout:90000});
+  }
   await page.waitForFunction(()=>{const w=document.querySelector('#game')?.contentWindow,t=w?.KotamaField3D?.themeInfo();return t?.mode==='b3-industrial-trial'&&t.industrialAssets?.sourceHashesVerified&&document.querySelector('#status').textContent.includes('試験表示中');},null,{timeout:360000});
   report.result=await page.evaluate(()=>{const w=document.querySelector('#game').contentWindow,t=w.KotamaField3D.themeInfo();return {mode:t.mode,floor:t.floor,sourceHashesVerified:t.industrialAssets.sourceHashesVerified,models:t.industrialAssets.models,builtKey:w.KotamaField3D.gameReviewState().builtKey,randomSuppressed:w.kotamaAdminEncounterSettings.disableRandom,storageIsolated:w.localStorage.getItem('f3-public-normal-save-probe')===null&&localStorage.getItem('f3-public-normal-save-probe')==='preserved'};});
   assert.equal(report.result.models,27);assert.equal(report.result.storageIsolated,true);assert.deepEqual(errors,[]);
