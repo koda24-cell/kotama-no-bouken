@@ -118,14 +118,27 @@ def main():
   from parts import build
   build(asset,dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector))
  model='f3_'+asset
- for image in bpy.data.images:
-  if image.source=='FILE' and image.has_data:image.pack()
- bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'sources'/(model+'_authoring.blend')))
+ used_images={node.image for material in bpy.data.materials if material.use_nodes for node in material.node_tree.nodes if node.type=='TEX_IMAGE' and node.image}
+ packed_images={}
+ for image in used_images:
+  if image.source=='FILE':
+   if not image.packed_file:image.pack()
+   assert image.packed_file,'Unpacked authoring image '+image.name
+   packed_images[image.name]=hashlib.sha256(image.packed_file.data).hexdigest()
+ authoring=OUT/'sources'/(model+'_authoring.blend')
+ authoring_vertices=sum(len(o.data.vertices)for o in bpy.context.scene.objects if o.type=='MESH')
+ bpy.ops.wm.save_as_mainfile(filepath=str(authoring),compress=True)
  metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset))
  metrics.update(approvalStatus='NOT_APPROVED',workflowRun=os.environ.get('GITHUB_RUN_ID'),verificationEnvironment='Shared pinned Blender '+bpy.app.version_string+' + ClamAV')
  (OUT/'metrics'/(model+'.json')).write_text(json.dumps(metrics,indent=2))
  from pack_runtime import pack
  runtime=pack(OUT/'props'/(model+'.glb'),delivery/'runtime'/(model+'.glb'),delivery/'shared_textures')
+ # A self-contained authoring source is tested by reopening, not by file existence.
+ bpy.ops.wm.open_mainfile(filepath=str(authoring))
+ assert sum(len(o.data.vertices)for o in bpy.context.scene.objects if o.type=='MESH')==authoring_vertices
+ for name,sha in packed_images.items():
+  image=bpy.data.images[name];assert image.packed_file and hashlib.sha256(image.packed_file.data).hexdigest()==sha,name
+ (OUT/'sources/authoring-portability.json').write_text(json.dumps({'status':'NOT_APPROVED','reopened':True,'vertices':authoring_vertices,'packedImageSha256':packed_images,'blendSha256':hashlib.sha256(authoring.read_bytes()).hexdigest()},indent=2))
  for folder in ['props','modules','sources','renders','metrics']:
   if (OUT/folder).exists():shutil.copytree(OUT/folder,delivery/folder,dirs_exist_ok=True)
  shutil.copytree(textures,delivery/'textures',dirs_exist_ok=True)
