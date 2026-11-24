@@ -14,6 +14,7 @@ export function createTheme(api) {
   const originalFar = g.camera.far;
   const originalShadow={enabled:g.renderer.shadowMap.enabled,type:g.renderer.shadowMap.type};
   let v2=false,edgeBlend=null,cloudSun=null,shadowEnabled=false;
+  const viewFrustum=new THREE.Frustum(),viewMatrix=new THREE.Matrix4();
   const daylightPool = g.pool.slice(g.high ? 4 : 2);
   const env = { background: 0x929d9d, fog: { color: 0x929d9d, density: 0.037 },
     hemi: { sky: 0xd6dfdb, ground: 0x92988a, high: 1.9, low: 2.1 } };
@@ -87,7 +88,7 @@ export function createTheme(api) {
       if(v2){batch.castShadow=g.high&&!first.material.transparent&&!first.material.transmission;batch.receiveShadow=true;}
       batch.name = 'b3:city-batch';
       const matrices=items.map(m=>m.matrixWorld.clone()),bounds=items.map(m=>m.userData.f3Bounds||(()=>{const b=new THREE.Box3().setFromObject(m);return {min:b.min.toArray(),max:b.max.toArray()};})());
-      const vg={batch,far:null,matrices,bounds,keep:!!first.userData.f3Keep};visibilityGroups.push(vg);
+      const vg={batch,far:null,matrices,bounds,boxes:bounds.map(b=>new THREE.Box3(new THREE.Vector3(...b.min),new THREE.Vector3(...b.max))),keep:!!first.userData.f3Keep};visibilityGroups.push(vg);
       items.forEach((m, i) => batch.setMatrixAt(i, m.matrixWorld));
       batch.computeBoundingSphere(); batch.instanceMatrix.needsUpdate = true;
       batches.push(batch);
@@ -349,7 +350,7 @@ export function createTheme(api) {
     sun.target.position.set(a.w * 2, 0, a.h * 2); root.add(sun, sun.target);
     if(v2&&g.high){
       g.renderer.shadowMap.enabled=true;g.renderer.shadowMap.type=THREE.PCFSoftShadowMap;shadowEnabled=true;
-      sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-16;sun.shadow.camera.right=16;sun.shadow.camera.top=16;sun.shadow.camera.bottom=-16;sun.shadow.camera.near=.5;sun.shadow.camera.far=65;sun.shadow.normalBias=.035;sun.shadow.bias=-.0001;cloudSun=sun;
+      sun.castShadow=true;sun.shadow.autoUpdate=false;sun.shadow.needsUpdate=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-16;sun.shadow.camera.right=16;sun.shadow.camera.top=16;sun.shadow.camera.bottom=-16;sun.shadow.camera.near=.5;sun.shadow.camera.far=65;sun.shadow.normalBias=.035;sun.shadow.bias=-.0001;cloudSun=sun;
     }
     // Keep the established entry/sync contract for all interactive objects.
     for (const o of a.objects) {
@@ -389,12 +390,13 @@ export function createTheme(api) {
     if(fallback){fallback.tick(...args);return;}
     if(skyMesh)skyMesh.position.copy(g.camera.position);
     if(!solid)return;
-    const camera=g.camera.position,key=`${Math.floor(camera.x*2)},${Math.floor(camera.z*2)}`;if(key===lastVisibility)return;lastVisibility=key;
-    if(cloudSun){const x=Math.floor(camera.x/2)*2,z=Math.floor(camera.z/2)*2;cloudSun.position.set(x-14,28,z+12);cloudSun.target.position.set(x,4,z);cloudSun.target.updateMatrixWorld();}
+    const camera=g.camera.position,key=`${Math.floor(camera.x*2)},${Math.floor(camera.z*2)},${Math.round(g.camera.quaternion.y*100)},${Math.round(g.camera.quaternion.w*100)}`;if(key===lastVisibility)return;lastVisibility=key;
+    if(cloudSun){const x=Math.floor(camera.x/2)*2,z=Math.floor(camera.z/2)*2;cloudSun.position.set(x-14,28,z+12);cloudSun.target.position.set(x,4,z);cloudSun.target.updateMatrixWorld();cloudSun.shadow.needsUpdate=true;}
+    g.camera.updateMatrixWorld(true);viewMatrix.multiplyMatrices(g.camera.projectionMatrix,g.camera.matrixWorldInverse);viewFrustum.setFromProjectionMatrix(viewMatrix);
     let visible=0,total=0;
     for(const group of visibilityGroups){
       if(group.keep)continue;let count=0;
-      group.matrices.forEach((m,i)=>{total++;if(cityVisibility(camera,group.bounds[i],solid,44,CELL)){group.batch.setMatrixAt(count,m);group.far?.setMatrixAt(count,m);count++;}});
+      group.matrices.forEach((m,i)=>{total++;if((!v2||group.boxes[i].distanceToPoint(camera)<12||viewFrustum.intersectsBox(group.boxes[i]))&&cityVisibility(camera,group.bounds[i],solid,44,CELL)){group.batch.setMatrixAt(count,m);group.far?.setMatrixAt(count,m);count++;}});
       for(const batch of [group.batch,group.far].filter(Boolean)){batch.count=count;batch.instanceMatrix.needsUpdate=true;}
       visible+=count;
     }

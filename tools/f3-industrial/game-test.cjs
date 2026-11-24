@@ -17,7 +17,7 @@ const page=await context.newPage(), errors=[];
 
 page.on('requestfailed',r=>console.log('request failed: '+r.url()+' '+r.failure()?.errorText));
 page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
-await page.addInitScript(q=>{localStorage.setItem('kotama.field3d.quality',q);},mobile?'low':'high');
+await page.addInitScript(({q,cap})=>{localStorage.setItem('kotama.field3d.quality',q);if(cap)localStorage.setItem('kotama.field3d.maxFps',cap);},{q:mobile?'low':'high',cap:process.env.F3_TEST_MAX_FPS||null});
 if(process.env.F3_CATALOG)await context.route('**/b3_industrial_candidates/catalog.json',r=>r.fulfill({path:process.env.F3_CATALOG,contentType:'application/json'}));
 if(process.env.F3_ASSET_SNAPSHOT)await context.route('**/assets/3d/dungeons/b3_industrial_candidates/**',route=>{
  const relative=decodeURIComponent(new URL(route.request().url()).pathname.split('/b3_industrial_candidates/')[1]),file=path.resolve(process.env.F3_ASSET_SNAPSHOT,relative);
