@@ -117,7 +117,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success() && inputs.gallery_spec != ''
         with:
-          name: gallery-${{ github.run_id }}${{ inputs.artifact_suffix }}
+          name: gallery-production-${{ github.run_id }}${{ inputs.artifact_suffix }}
           path: gallery-output/
           if-no-files-found: error
           retention-days: 14
