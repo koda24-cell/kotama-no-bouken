@@ -3,5 +3,7 @@
   "sourceFile": "assets/3d/dungeons/b3_industrial_candidates/native_originals/ruinedBuilding.glb",
   "sourceSha256": "f5110f1769f031fa23283386f126fbe3375299f7ac31d490536bdb2ee035573d",
   "geometryPreserved": true,
-  "originalGeometryHash": "4741f59e34b167d083976755f93d1bc9da9ea68f26f817040e5f14fb28adabd7"
+  "originalGeometryHash": "4741f59e34b167d083976755f93d1bc9da9ea68f26f817040e5f14fb28adabd7",
+  "anchoredOriginalBars": 18,
+  "leafFinish": "original vein atlas with original leaf UVs retained"
 }

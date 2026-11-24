@@ -3,18 +3,18 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/native_ruinedBuilding/props/f3_native_ruinedBuilding.glb",
-      "file_bytes": 5168932,
+      "file_bytes": 5390092,
       "glb_meshes": 5,
       "total_mesh_primitives": 5,
       "scene_nodes": 6,
       "scene_mesh_nodes": 5,
       "scene_primitive_instances": 5,
-      "estimated_scene_triangles": 1954,
+      "estimated_scene_triangles": 2602,
       "materials": 5,
       "material_names": [
         "f3_exposed_aggregate",
-        "f3_native_aged_bark",
-        "f3_native_olive_leaf",
+        "f3_native_bark",
+        "f3_native_veined_leaf",
         "f3_oxidized_iron",
         "f3_weathered_concrete"
       ],
@@ -33,8 +33,8 @@
         "MASK": 0,
         "BLEND": 0
       },
-      "images": 15,
-      "textures": 15,
+      "images": 12,
+      "textures": 12,
       "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
     }
   ],
