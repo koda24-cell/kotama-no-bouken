@@ -1,0 +1,80 @@
+name: F3 portable authoring source packaging
+on:
+  push:
+    branches: [feature/f3-industrial-ruins-20261124]
+    paths: [.github/workflows/f3-industrial-portability.yml]
+concurrency:
+  group: f3-industrial-production
+  cancel-in-progress: false
+permissions:
+  contents: write
+  packages: read
+jobs:
+  signature-seed:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Retrieve signed definitions from pinned official preloaded image
+        run: |
+          set -euo pipefail
+          image='clamav/clamav@sha256:9b2f34be1f8be02f58edb1c8868dca99d6e04f8f8daf191f8448c762f563dde3'
+          docker pull "$image"
+          container=$(docker create "$image")
+          trap 'docker rm -f "$container" >/dev/null' EXIT
+          mkdir -p definitions
+          docker cp "$container:/var/lib/clamav/." definitions/
+          find definitions -maxdepth 1 -type f -printf "%f\n"
+          test -s definitions/daily.cvd
+          test -s definitions/daily-28191.cvd.sign
+          cd definitions
+          sha256sum *.cvd *.cvd.sign > SHA256SUMS
+          printf '%s\n' "$image" > official-image.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: f3-official-clamav-seed-${{ github.run_id }}
+          path: definitions/
+          retention-days: 3
+  pack:
+    needs: signature-seed
+    uses: ./.github/workflows/shared-blender53-render.yml
+    with:
+      script: tools/f3-industrial/make_portable.py
+      output_dir: render-output/f3-portable-sources
+      artifact_suffix: -portable-blends
+      definitions_artifact: f3-official-clamav-seed-${{ github.run_id }}
+      checkout_paths: |
+        /tools/
+        /assets/3d/dungeons/b3_industrial_candidates/
+  archive:
+    needs: pack
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/f3-industrial-ruins-20261124
+          sparse-checkout: /assets/3d/dungeons/b3_industrial_candidates/
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: shared-blender53-NOT-APPROVED-${{ github.run_id }}-portable-blends
+          path: verified-package
+      - name: Preserve originals and archive separately packed authoring sources
+        run: |
+          python3 - <<'PYARCHIVE'
+          from pathlib import Path
+          import json,hashlib,shutil
+          base=Path('verified-package');matches=list(base.rglob('SHARED_BLENDER53_QA_NOT_APPROVED.json'));assert len(matches)==1
+          folder=matches[0].parent;receipt=json.loads(matches[0].read_text());assert receipt['status']=='NOT_APPROVED'
+          for name,row in receipt['files'].items():
+            p=(folder/name).resolve();assert p.is_relative_to(folder.resolve());assert hashlib.sha256(p.read_bytes()).hexdigest()==row['sha256']
+          doc=json.loads((folder/'portability.json').read_text());dst=Path('assets/3d/dungeons/b3_industrial_candidates')
+          for row in doc['files']:
+            target=dst/row['portableFile'];target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(folder/row['portableFile'],target)
+          qa=dst/'portable_authoring_qa';qa.mkdir(exist_ok=True);shutil.copyfile(folder/'portability.json',qa/'portability.json');shutil.copyfile(matches[0],qa/'SHARED_BLENDER53_QA_NOT_APPROVED.json')
+          shutil.copytree(folder/'security',qa/'security',dirs_exist_ok=True)
+          logs=list(base.rglob('output.log'));assert len(logs)==1;shutil.copytree(logs[0].parent,qa/'security/shared-gateway',dirs_exist_ok=True)
+          PYARCHIVE
+          git config user.name 'F3 source archive'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/3d/dungeons/b3_industrial_candidates
+          git commit -m 'art(f3): preserve portable packed authoring sources beside immutable originals'
+          git push origin HEAD:feature/f3-industrial-ruins-20261124
