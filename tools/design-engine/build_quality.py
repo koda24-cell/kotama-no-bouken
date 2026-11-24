@@ -2,6 +2,7 @@ import bpy, sys, json, math
 from pathlib import Path
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_blueprint as b
 
 def tree(o):
