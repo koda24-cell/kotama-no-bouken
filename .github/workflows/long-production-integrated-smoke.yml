@@ -25,7 +25,8 @@ jobs:
         run: |
           mkdir -p smoke-input/references
           blender --version | head -1 | grep -Fx 'Blender 5.3.0'
-          blender -b --factory-startup --disable-autoexec --python-exit-code 1 --python-expr 'import bpy; s=bpy.context.scene; s.render.engine="CYCLES"; s.cycles.samples=4; s.render.resolution_x=128; s.render.resolution_y=96; s.render.resolution_percentage=100; s.render.image_settings.file_format="PNG"; s.render.image_settings.color_mode="RGBA"; r=bpy.data.images.new("reference",width=128,height=96,alpha=True); r.pixels.foreach_set([0.0,0.0,0.0,1.0]*128*96); r.filepath_raw="//references/front-1.png"; r.file_format="PNG"; r.save(); bpy.ops.wm.save_as_mainfile(filepath="smoke-input/scene.blend")'
+          blender -b --factory-startup --disable-autoexec --python-exit-code 1 --python-expr 'import bpy; s=bpy.context.scene; s.render.engine="CYCLES"; s.cycles.samples=4; s.render.resolution_x=128; s.render.resolution_y=96; s.render.resolution_percentage=100; s.render.image_settings.file_format="PNG"; s.render.image_settings.color_mode="RGBA"; s.render.filepath="//references/front-1.png"; bpy.ops.wm.save_as_mainfile(filepath="smoke-input/scene.blend"); bpy.ops.render.render(write_still=True)'
+          test -s smoke-input/references/front-1.png
           echo '{"width":128,"height":96,"columns":2,"rows":2,"views":["front"],"frames":[1],"cameras":{"front":"Camera"}}' > smoke-input/plan.json
       - name: Scan input and production scripts
         run: |
