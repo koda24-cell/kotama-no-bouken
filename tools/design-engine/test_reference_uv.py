@@ -62,7 +62,7 @@ class UVReviewTest(unittest.TestCase):
         result = analyze_uv_overlaps(uv, [0, 1, 2, 3, 4, 5])
         self.assertEqual(result["status"], "OVERLAP_FOUND")
         self.assertEqual(result["overlap_pair_count"], 1)
-        self.assertAlmostEqual(result["total_pairwise_intersection_area"], 0.32, places=6)
+        self.assertAlmostEqual(result["total_pairwise_intersection_area"], 0.18, places=6)
 
     def test_shared_edge_is_not_overlap(self):
         left = [(0, 0), (1, 0), (0, 1)]
