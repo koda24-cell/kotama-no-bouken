@@ -23,7 +23,54 @@ function tutorialOverlay(title,message,button="次へ"){
 // 光っている対象を直接操作させる。
 const TUTORIAL_NO_NEXT=["welcome","battle-command","battle-sp-command","battle-guard-command","battle-union-command","battle-retreat","formation-intro","formation-remove","formation-add","equip-hero-sword","shop-nav","shop-armor","shop-potion","complete"];
 function tutorialSyncNextButton(){const b=$("tutorial-next");if(!b)return;const hide=TUTORIAL_NO_NEXT.includes(tutorialState.phase);b.hidden=hide;if(b.parentElement)b.parentElement.hidden=hide;}
-function syncTutorialActive(){document.body.classList.toggle("tutorial-active",!!(tutorialState.started&&!tutorialState.completed));}
+function syncTutorialActive(){
+  const active=!!(tutorialState.started&&!tutorialState.completed);
+  document.body.classList.toggle("tutorial-active",active);
+  let button=$("tutorial-skip");
+  if(!button&&active){
+    button=document.createElement("button");
+    button.id="tutorial-skip";button.type="button";button.textContent="チュートリアルをスキップ";
+    button.style.cssText="position:fixed;right:max(12px, env(safe-area-inset-right));bottom:max(12px, env(safe-area-inset-bottom));z-index:2147483647;pointer-events:auto;min-height:44px;padding:10px 14px;border:1px solid #aab5c6;border-radius:6px;background:#172131;color:#fff;font:inherit;font-size:13px;cursor:pointer;";
+    document.body.appendChild(button);
+    // Window capture precedes the document-level tutorial input lock.
+    window.addEventListener("click",e=>{
+      if(!button.hidden&&button.contains(e.target)){e.preventDefault();e.stopImmediatePropagation();skipTutorial();}
+    },true);
+    window.addEventListener("keydown",e=>{
+      if(!button.hidden&&e.target===button&&(e.key==="Enter"||e.key===" ")){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat)skipTutorial();}
+    },true);
+  }
+  if(button)button.hidden=!active;
+}
+function skipTutorial(){
+  if(!tutorialState.started||tutorialState.completed)return;
+  if(!window.confirm("チュートリアルを終了して拠点に戻りますか？"))return;
+  // Save a completed snapshot, then reload to cancel any pending tutorial battle timers.
+  // Do not mutate live state until the save succeeds.
+  try{
+    const data=createSaveData();
+    data.tutorial={...data.tutorial,started:false,completed:true,phase:"complete",battlePhase:"done",heroSwordGranted:true};
+    if(!tutorialState.heroSwordGranted)data.inventory["hero-sword"]=(data.inventory["hero-sword"]||0)+1;
+    if(!data.equipment.kotama.weapon){
+      data.inventory["hero-sword"]=Math.max(1,data.inventory["hero-sword"]||0);
+      data.equipment.kotama.weapon="hero-sword";
+    }
+    if(!data.equipment.kotama.armor){
+      data.inventory["leather-armor"]=Math.max(1,data.inventory["leather-armor"]||0);
+      data.equipment.kotama.armor="leather-armor";
+    }
+    if(tutorialState.healerRemoved&&!tutorialState.healerReadded&&!data.state.party.includes("healer")){
+      const slot=data.state.party.findIndex(id=>!id);
+      if(slot>=0)data.state.party[slot]="healer";else if(data.state.party.length<4)data.state.party.push("healer");
+    }
+    for(const c of data.combatants){
+      const actor=getCharacter(c.id);
+      if(actor){c.hp=effectiveStats(actor).maxHp;c.sp=actor.maxSp;}
+    }
+    localStorage.setItem("fantasyRpgSave",JSON.stringify(data));
+  }catch(error){window.alert("保存できなかったため、スキップを中止しました。");return;}
+  window.location.reload();
+}
 // 初期装備：コタマ以外は最初から装備している状態にする（空きスロットのみ補完）。
 function ensureStarterGear(){
   const starters={knight:{weapon:"sword",armor:"leather-armor"},warrior:{weapon:"sword",armor:"leather-armor"},mage:{weapon:"mage-staff",armor:"linen-robe"},healer:{weapon:"mage-staff",armor:"linen-robe"},samurai:{katana1:"katana"}};
