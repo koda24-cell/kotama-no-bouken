@@ -1,4 +1,4 @@
-name: F3 individual serial LOD and shared structural review
+name: F3 individual serial tangent-preserving LOD and shared structural review
 on:
   push:
     branches: [feature/f3-industrial-ruins-20261124]

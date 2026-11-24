@@ -16,8 +16,12 @@ jobs:
       output_dir: render-output/f3-industrial-lod-${{ inputs.asset }}
       artifact_suffix: -lod-${{ inputs.asset }}
       checkout_paths: |
-        /tools/
-        /assets/3d/dungeons/b3_industrial_candidates/${{ inputs.asset }}/
+        /tools/3d-performance/
+        /tools/f3-industrial/review_one_lod.py
+        /tools/f1-sacred-forest/common.py
+        /tools/security/clamav_scan_gate.sh
+        /assets/3d/dungeons/b3_industrial_candidates/${{ inputs.asset }}/manifest.json
+        /assets/3d/dungeons/b3_industrial_candidates/${{ inputs.asset }}/props/
       definitions_artifact: f3-official-clamav-seed-${{ github.run_id }}
   archive-candidate:
     needs: render
@@ -28,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feature/f3-industrial-ruins-20261124
-          sparse-checkout: /assets/3d/dungeons/b3_industrial_candidates/
+          sparse-checkout: /assets/3d/dungeons/b3_industrial_candidates/lod_reviews/${{ inputs.asset }}/
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@v4
         with:
@@ -53,6 +57,10 @@ jobs:
           PY
           git config user.name 'F1 asset archive'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/3d/dungeons/b3_industrial_candidates
+          git add assets/3d/dungeons/b3_industrial_candidates/lod_reviews/${{ inputs.asset }}
           git commit -m 'art(f3): archive individual rigid LOD review ${{ inputs.asset }} candidate'
-          git push origin HEAD:feature/f3-industrial-ruins-20261124
+          for attempt in 1 2 3; do
+            git pull --rebase origin feature/f3-industrial-ruins-20261124
+            if git push origin HEAD:feature/f3-industrial-ruins-20261124; then exit 0; fi
+          done
+          exit 1
