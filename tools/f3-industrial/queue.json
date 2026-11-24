@@ -1,4 +1,7 @@
 [
-  "flanged_pipe",
-  "pipe_rack"
+  "native_ruinedBuilding",
+  "native_collapsedOverpass",
+  "native_utilityPole",
+  "native_steelWreck",
+  "native_abandonedTransitStop"
 ]
