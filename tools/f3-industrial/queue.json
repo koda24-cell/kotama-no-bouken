@@ -1,1 +1,8 @@
-["ivy_pocket"]
+[
+  "rebar_rubble",
+  "native_ruinedBuilding",
+  "native_collapsedOverpass",
+  "native_utilityPole",
+  "native_steelWreck",
+  "native_abandonedTransitStop"
+]
