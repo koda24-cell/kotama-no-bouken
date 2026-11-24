@@ -5,6 +5,8 @@ import { createB3UrbanProps } from './b3-ruined-city-urban-props.js';
 import { createCitySurfaces } from './b3-industrial-surfaces.js';
 import { loadIndustrialAssets } from './b3-industrial-assets.js';
 import { cityVisibility } from './b3-industrial-visibility.js';
+import {retainFirstLayerSource} from './field-3d-b1-sacred-trial.js';
+import {grassCutoutMaterialV6} from './f1-grass-cutout-lighting-v6.js';
 
 export function createTheme(api) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile } = api;
@@ -14,7 +16,7 @@ export function createTheme(api) {
     hemi: { sky: 0xd6dfdb, ground: 0x92988a, high: 1.9, low: 2.1 } };
   let root, city, urban, finish, skyMesh, materials = [], geometries = [], batches = [], placements = [], stats = {};
   const prototypes = new Map();
-  let industrial, solid, visibilityGroups=[],lastVisibility="",edgePlacements=[],fallback=null,fallbackReason=null;
+  let industrial, solid, visibilityGroups=[],lastVisibility="",edgePlacements=[],fallback=null,fallbackReason=null,heldGrass=[];
   const geo = x => (geometries.push(x), x);
   const mat = x => { const m = g.high ? new THREE.MeshStandardMaterial(x) : new THREE.MeshLambertMaterial({ color: x.color, flatShading: x.flatShading }); materials.push(m); return m; };
   function add(shape, material, x, y, z, sx, sy, sz, ry = 0) {
@@ -117,7 +119,16 @@ export function createTheme(api) {
     finish = createCitySurfaces(THREE, g.high,industrial.materials);
     const cube = geo(new THREE.BoxGeometry(1, 1, 1));
     const { paving, stone, soil, rust: steel, leaf: grass } = finish.palette;
-    const tuft = finish.fern;
+    // Reuse the already scanned original cutout plants, with unchanged geometry and atlas bytes.
+    const nature=await fetch(new URL('../assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',import.meta.url));if(!nature.ok)throw Error('Ground vegetation catalog unavailable');
+    const grassCatalog=await nature.json(),tufts=[];
+    for(const name of ['sedge','fern','trifoliate']){
+      const row=grassCatalog.sources.find(r=>r.name===name),held=await retainFirstLayerSource(row.file,row.sha256);heldGrass.push(held);
+      let mesh;held.source.updateMatrixWorld(true);held.source.traverse(o=>{if(o.isMesh)mesh=o;});
+      const geometry=geo(mesh.geometry.clone().applyMatrix4(mesh.matrixWorld)),material=grassCutoutMaterialV6(mesh.material);materials.push(material);tufts.push({geometry,material});
+    }
+
+
     const chip = geo(new THREE.IcosahedronGeometry(0.18, 0));
     const water = mat({ color: 0x354f4b, roughness: 0.22, metalness: 0.1 });
     const { ch, wallCell, open, facing } = info;
@@ -126,7 +137,7 @@ export function createTheme(api) {
     for (const o of a.objects) for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) reserved.add(`${o.tx + dx},${o.ty + dz}`);
     const occupied = new Set();
     const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`);
-    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low' };
+    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3 };
     const count = k => { stats.motifs[k] = (stats.motifs[k] || 0) + 1; };
     // Large paired blocks are confined to 2x2 solid cells. Distinct districts per floor.
     let landmark = 0;
@@ -194,7 +205,8 @@ export function createTheme(api) {
           const along = (i / 5 - 0.4) * 3 + (k - 0.5) * 0.3;
           const gx = px + dx * (1.65 + k * 0.15) + dz * along;
           const gz = pz + dz * (1.65 + k * 0.15) - dx * along;
-          const plant = add(tuft, grass, gx, 0.1 + k * 0.13, gz, 0.6 + k, 0.5 + k * 0.5, 0.7);
+          const tuft=tufts[(i+x+z)%tufts.length];
+          const plant = add(tuft.geometry, tuft.material, gx, 0.1 + k * 0.13, gz, 0.6 + k, 0.5 + k * 0.5, 0.7);
           plant.rotation.z = k * 0.45;
           if (i === 1) add(chip, stone, gx, 0.05, gz, 1.5, 0.7, 1, k * 6);
         }
@@ -257,7 +269,7 @@ export function createTheme(api) {
     daylightPool.forEach(light => g.scene.add(light));
     g.camera.far = originalFar; g.camera.updateProjectionMatrix();
     for (const batch of batches) batch.dispose();
-    industrial?.dispose();industrial=null;visibilityGroups=[];lastVisibility="";solid=null;edgePlacements=[];
+    heldGrass.forEach(h=>h.release());heldGrass=[];industrial?.dispose();industrial=null;visibilityGroups=[];lastVisibility="";solid=null;edgePlacements=[];
     city?.dispose(); urban?.dispose(); finish?.dispose(); finish = null; skyMesh = null;
     geometries.forEach(x => x.dispose()); materials.forEach(x => x.dispose());
     root = city = urban = null; batches = []; geometries = []; materials = []; placements = []; prototypes.clear(); stats = {};
