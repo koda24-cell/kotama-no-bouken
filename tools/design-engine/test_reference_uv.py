@@ -6,7 +6,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from reference_uv import draw_uv, read_glb, read_uv_accessor, read_indices, analyze_uv_overlaps, triangle_intersection_area
+from reference_uv import draw_uv, read_glb, read_uv_accessor, read_indices, analyze_uv_overlaps, triangle_intersection_area, material_texture_bindings
 
 
 def make_glb(coords=((0.0, 0.0), (1.0, 0.0), (0.5, 1.0))):
@@ -77,6 +77,19 @@ class UVReviewTest(unittest.TestCase):
             self.assertIn("uv_overlap", report["primitives"][0])
             self.assertEqual(report["primitives"][0]["uv_overlap"]["status"],
                              "NO_POSITIVE_AREA_OVERLAP")
+
+
+    def test_resolve_material_texture_binding(self):
+        doc = {
+            "materials": [{"name": "stone", "pbrMetallicRoughness": {
+                "baseColorTexture": {"index": 0, "texCoord": 1}
+            }}],
+            "textures": [{"source": 2, "sampler": 1}]
+        }
+        result = material_texture_bindings(doc, {"material": 0})
+        self.assertEqual(result["material_name"], "stone")
+        self.assertEqual(result["texture_bindings"]["baseColorTexture"]["image_index"], 2)
+        self.assertEqual(result["texture_bindings"]["baseColorTexture"]["tex_coord_set"], 1)
 
     def test_read_index_accessor(self):
         doc = {
