@@ -79,6 +79,35 @@ def read_uv_accessor(doc, binary, accessor_index):
     return values
 
 
+def read_indices(doc, binary, accessor_index):
+    accessors = doc.get("accessors", [])
+    views = doc.get("bufferViews", [])
+    if type(accessor_index) is not int or not 0 <= accessor_index < len(accessors):
+        raise ValueError("Invalid index accessor")
+    accessor = accessors[accessor_index]
+    component = accessor.get("componentType")
+    if accessor.get("type") != "SCALAR" or component not in (5121, 5123, 5125):
+        raise ValueError("Indices must be unsigned byte/short/int SCALAR")
+    if "sparse" in accessor:
+        raise ValueError("Sparse index accessors are unsupported")
+    view_index = accessor.get("bufferView")
+    if type(view_index) is not int or not 0 <= view_index < len(views):
+        raise ValueError("Index accessor has no valid bufferView")
+    view = views[view_index]
+    if view.get("buffer", 0) != 0:
+        raise ValueError("Only embedded GLB buffer 0 is supported")
+    fmt, width = COMPONENTS[component]
+    count = accessor.get("count")
+    stride = view.get("byteStride", width)
+    if type(count) is not int or count < 1 or type(stride) is not int or stride < width:
+        raise ValueError("Invalid index accessor layout")
+    start = view.get("byteOffset", 0) + accessor.get("byteOffset", 0)
+    end = start + (count - 1) * stride + width
+    if start < 0 or end > len(binary):
+        raise ValueError("Index accessor exceeds binary buffer")
+    return [struct.unpack_from("<" + fmt, binary, start + i * stride)[0] for i in range(count)]
+
+
 def draw_uv(path, output, size=1024):
     if type(size) is not int or not 128 <= size <= 4096:
         raise ValueError("Image size must be 128..4096")
@@ -100,10 +129,11 @@ def draw_uv(path, output, size=1024):
                 records.append({"mesh": mesh_index, "primitive": primitive_index,
                                 "status": "UNSUPPORTED_PRIMITIVE_MODE", "mode": mode})
                 continue
-            if "indices" in primitive:
-                raise ValueError("Indexed UV topology is not yet supported; provide non-indexed triangles")
-            if len(uv) % 3:
-                raise ValueError("Non-indexed triangle UV count must be divisible by 3")
+            indices = read_indices(doc, binary, primitive["indices"]) if "indices" in primitive else list(range(len(uv)))
+            if len(indices) % 3:
+                raise ValueError("Triangle index count must be divisible by 3")
+            if any(type(index) is not int or index < 0 or index >= len(uv) for index in indices):
+                raise ValueError("Triangle index references a missing UV vertex")
             image = Image.new("RGB", (size, size), (248, 249, 252))
             draw = ImageDraw.Draw(image)
             draw.rectangle((margin, margin, size-margin, size-margin), outline=(80, 100, 130), width=2)
@@ -115,21 +145,21 @@ def draw_uv(path, output, size=1024):
                 u, v = pair
                 return (margin + u * (size - margin * 2),
                         margin + v * (size - margin * 2))
-            for i in range(0, len(uv), 3):
-                tri = [point(uv[i]), point(uv[i+1]), point(uv[i+2])]
+            for i in range(0, len(indices), 3):
+                tri = [point(uv[indices[i]]), point(uv[indices[i+1]]), point(uv[indices[i+2]])]
                 draw.polygon(tri, fill=(196, 219, 245), outline=(25, 78, 135), width=2)
             filename = f"mesh-{mesh_index:03d}-primitive-{primitive_index:03d}.png"
             image.save(out / filename)
             records.append({"mesh": mesh_index, "primitive": primitive_index,
                             "status": "GENERATED", "uv_vertices": len(uv),
-                            "triangles": len(uv)//3, "image": filename,
+                            "triangles": len(indices)//3, "image": filename,
                             "sha256": hashlib.sha256((out / filename).read_bytes()).hexdigest(),
                             "uv_bounds": [[min(p[0] for p in uv), min(p[1] for p in uv)],
                                           [max(p[0] for p in uv), max(p[1] for p in uv)]]})
     report = {"source_sha256": hashlib.sha256(raw).hexdigest(),
               "status": "REFERENCE_ONLY", "image_size": size,
               "coordinate_note": "UV coordinates are drawn as stored; coordinates outside 0..1 remain visible outside the tile.",
-              "limitations": "First UV set only; non-indexed triangle primitives only; no texture/material compositing or island packing analysis.",
+              "limitations": "First UV set only; triangle primitives; no texture/material compositing or island packing analysis.",
               "primitives": records}
     (out / "uv-report.json").write_text(json.dumps(report, indent=2, allow_nan=False))
     return report
