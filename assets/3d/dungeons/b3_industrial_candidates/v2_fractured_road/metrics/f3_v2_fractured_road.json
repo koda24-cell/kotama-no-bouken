@@ -1,20 +1,19 @@
 {
-  "bytes": 5731284,
-  "sha256": "037d2c991e9076f21cc7c9dd8cdffbdd7dbb13d2101679fa2ba094fdfb5023a6",
-  "tris": 1800,
-  "verts": 4148,
-  "meshes": 3,
-  "drawCalls": 3,
+  "bytes": 3291484,
+  "sha256": "dd34dfe148e42306ccb7d6525d7594aab8f70cc268d489324f672b173155f05e",
+  "tris": 900,
+  "verts": 1566,
+  "meshes": 2,
+  "drawCalls": 2,
   "materials": [
     "f3_broken_asphalt",
-    "f3_damp_concrete",
-    "f3_exposed_aggregate"
+    "f3_porous_asphalt_fracture"
   ],
-  "textureCount": 9,
-  "textureBytes": 5515928,
+  "textureCount": 6,
+  "textureBytes": 3207171,
   "sizeMeters": [
     4.0,
-    0.1378,
+    0.1218,
     4.0
   ],
   "bboxMin": [
@@ -24,7 +23,7 @@
   ],
   "bboxMax": [
     2.0,
-    0.0378,
+    0.0218,
     2.0
   ],
   "extensions": [],
@@ -38,8 +37,8 @@
   "category": "props",
   "desc_ja": "\u4e0d\u898f\u5247\u306b\u5272\u308c\u6c88\u4e0b\u3057\u305f\u30a2\u30b9\u30d5\u30a1\u30eb\u30c8\u8def\u9762V2",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "d8052bf022724d20104b5ce848118fa63172b4ea",
-  "workflowRun": "45422753105",
+  "sourceCommit": "f9d88e4c3f61b261819ee90d817279e04bf5879e",
+  "workflowRun": "45426982715",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/f3_v2_fractured_road.blend",
   "renderedFrom": "reimported GLB",
