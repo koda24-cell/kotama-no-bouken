@@ -395,7 +395,7 @@ export function createTheme(api) {
     crossings.sort((a,b)=>v2?((Math.abs(a.x-focal[0])+Math.abs(a.z-focal[1]))*.12+a.score*.2)-((Math.abs(b.x-focal[0])+Math.abs(b.z-focal[1]))*.12+b.score*.2):a.score-b.score);const selected=[];
     const mount=(id,x,z,lift,rotation,height=null)=>{
       const holder=new THREE.Group(),model=industrial.models.get(id).clone(true);model.rotation.y=rotation;holder.add(model);const b=new THREE.Box3().setFromObject(holder),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3());
-      const scale=height?height/size.y:4.12/Math.max(size.x,size.z);holder.scale.setScalar(scale);holder.position.set(x-center.x*scale,lift-b.min.y*scale,z-center.z*scale);root.add(holder);holder.updateMatrixWorld(true);
+      const scale=id==='v2_truss_bridge'?1:height?height/size.y:4.12/Math.max(size.x,size.z);holder.scale.setScalar(scale);holder.position.set(x-center.x*scale,lift-b.min.y*scale,z-center.z*scale);root.add(holder);holder.updateMatrixWorld(true);
       const bounds=new THREE.Box3().setFromObject(holder),record={key:id+':crosswalk',min:bounds.min.toArray(),max:bounds.max.toArray(),overhead:lift>=3.5};
       if(id==='v2_truss_bridge'){
         const checked=bridgeSupportBounds(THREE,holder,x,z,rotation);
