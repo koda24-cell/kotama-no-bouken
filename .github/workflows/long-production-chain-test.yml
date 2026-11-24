@@ -1,0 +1,53 @@
+name: Long production chained recovery test
+on:
+  pull_request:
+    branches: [development]
+    paths:
+      - '.github/workflows/long-production-chain-test.yml'
+      - '.github/workflows/long-production-recovery-worker.yml'
+permissions:
+  contents: read
+  actions: read
+  packages: read
+jobs:
+  clock:
+    runs-on: ubuntu-24.04
+    outputs:
+      epoch: ${{ steps.clock.outputs.epoch }}
+    steps:
+      - id: clock
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
+  stage-2:
+    needs: clock
+    uses: ./.github/workflows/long-production-recovery-worker.yml
+    with:
+      session_start_epoch: ${{ needs.clock.outputs.epoch }}
+      estimated_render_minutes: 30
+      stage: 2
+      artifact_suffix: '-stage2'
+      asset_id: b2-watergate
+      script: tools/3d_checkpoint/resume_watergate.py
+      source_script: tools/b2-render/build-watergate.py
+      source_commit: 3640b077548c0967b511bdc417166e810f0c8dc4
+      source_run_id: '44667118125'
+      source_artifact: b2-watergate-checkpoint-NOT-APPROVED-44667118125
+      source_directory: render-output/b2-watergate
+      blend_filename: frozen_watergate_v09.blend
+      output_directory: render-output/long-chain-stage2
+  stage-3:
+    needs: [clock, stage-2]
+    uses: ./.github/workflows/long-production-recovery-worker.yml
+    with:
+      session_start_epoch: ${{ needs.clock.outputs.epoch }}
+      estimated_render_minutes: 30
+      stage: 3
+      artifact_suffix: '-stage3'
+      asset_id: b2-watergate
+      script: tools/3d_checkpoint/resume_watergate.py
+      source_script: tools/3d_checkpoint/resume_watergate.py
+      source_commit: ${{ github.sha }}
+      source_run_id: ${{ format('{0}', github.run_id) }}
+      source_artifact: long-production-recovery-NOT-APPROVED-${{ github.run_id }}-stage2
+      source_directory: render-output/long-chain-stage2
+      blend_filename: watergate_resumed_v02.blend
+      output_directory: render-output/long-chain-stage3
