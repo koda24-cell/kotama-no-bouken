@@ -42,6 +42,7 @@ class UVReviewTest(unittest.TestCase):
             self.assertEqual(report["primitives"][0]["status"], "GENERATED")
             self.assertEqual(report["primitives"][0]["triangles"], 1)
             self.assertTrue((Path(tmp) / "out" / "mesh-000-primitive-000.png").is_file())
+            self.assertTrue((Path(tmp) / "out" / "mesh-000-primitive-000-overlap.png").is_file())
 
     def test_out_of_tile_uvs_are_visible(self):
         with tempfile.TemporaryDirectory() as tmp:
