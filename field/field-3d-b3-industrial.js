@@ -153,7 +153,7 @@ export function createTheme(api) {
       // Only dress blocks visible from a street; leave deep interiors empty.
       if (![[-1, 0], [0, -1], [2, 0], [0, 2]].some(([dx, dz]) => !wallCell(x + dx, z + dz))) continue;
       const kind = large[landmark++ % large.length], v = landmark % 3;
-      scenery(`${kind}${v}`, () => city[kind] ? city[kind]() : urban[kind](v), x + 0.5, z + 0.5, 7.5, 7.5, kind === 'temple' ? 7 : 6, v * Math.PI / 2);
+      scenery(`${kind}${v}`, () => city[kind] ? city[kind]() : urban[kind](v), x + 0.5, z + 0.5, 7.5, 7.5, kind.startsWith('reused_stairs') ? 8.5 : kind === 'temple' ? 7 : 6, v * Math.PI / 2);
       count(kind);
       for (const [dx, dz] of [[0, 0], [1, 0], [0, 1], [1, 1]]) occupied.add(`${x + dx},${z + dz}`);
     }
@@ -222,13 +222,14 @@ export function createTheme(api) {
         const ry = FACE_YAW[d] + Math.PI, ex = px + dx * 2.12, ez = pz + dz * 2.12;
         // Continuous base identifies every solid boundary, including closed shortcuts.
         // Closed concrete back keeps skyline fractures and windows from exposing adjacent streets.
-        const backing=add(cube, stone, ex, 3.05, ez, 4.07, 6.1, .30, ry);backing.userData.f3Keep=true;
+        const wallHeight=4.7+Math.floor(hash(Math.floor((x+dx)/4),Math.floor((z+dz)/4),837)*3)*.25;
+        const backing=add(cube, stone, ex, (wallHeight-.15)/2, ez, 4.07, wallHeight-.15, .30, ry);backing.userData.f3Keep=true;
         const sequence=['retaining_wall','retaining_wall','shattered_window','roller_shutter','retaining_wall','factory_door'].filter(id=>industrial.models.has(id));
         const id=sequence[Math.floor(hash(x,z,330+DIR_ORDER.indexOf(d))*sequence.length)];
         const model=industrial.models.get(id).clone(true),holder=new THREE.Group();holder.add(model);model.rotation.y=ry;
         let bb=new THREE.Box3().setFromObject(holder),ss=bb.getSize(new THREE.Vector3()),cc=bb.getCenter(new THREE.Vector3());
-        const along=dx?ss.z:ss.x,scale=3.96/along;holder.scale.setScalar(scale);
-        holder.position.set(ex-cc.x*scale-dx*.10,-bb.min.y*scale,ez-cc.z*scale-dz*.10);
+        const along=dx?ss.z:ss.x,scale=3.96/along;holder.scale.set(scale,Math.min(scale,wallHeight/ss.y),scale);
+        holder.position.set(ex-cc.x*scale-dx*.10,-bb.min.y*holder.scale.y,ez-cc.z*scale-dz*.10);
         root.add(holder);holder.updateMatrixWorld(true);const facadeBounds=new THREE.Box3().setFromObject(holder),facadeRecord={min:facadeBounds.min.toArray(),max:facadeBounds.max.toArray()};holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=facadeRecord;});count(id);
         // Utility clusters repeat a structural language, while their combinations vary by block.
         if(!safe){
