@@ -5,12 +5,15 @@ import { createB3UrbanProps } from './b3-ruined-city-urban-props.js';
 import { createCitySurfaces } from './b3-industrial-surfaces.js';
 import { loadIndustrialAssets } from './b3-industrial-assets.js';
 import { cityVisibility } from './b3-industrial-visibility.js';
+import {createStreetEdgeBlend} from './b3-city-v2-art.js';
 import {retainFirstLayerSource} from './field-3d-b1-sacred-trial.js';
 import {grassCutoutMaterialV6} from './f1-grass-cutout-lighting-v6.js';
 
 export function createTheme(api) {
   const { g, CELL, DIR_ORDER, DIR_VEC, FACE_YAW, hash, place, load, npcFile } = api;
   const originalFar = g.camera.far;
+  const originalShadow={enabled:g.renderer.shadowMap.enabled,type:g.renderer.shadowMap.type};
+  let v2=false,edgeBlend=null,cloudSun=null,shadowEnabled=false;
   const daylightPool = g.pool.slice(g.high ? 4 : 2);
   const env = { background: 0x929d9d, fog: { color: 0x929d9d, density: 0.037 },
     hemi: { sky: 0xd6dfdb, ground: 0x92988a, high: 1.9, low: 2.1 } };
@@ -81,6 +84,7 @@ export function createTheme(api) {
     stats.lodPairs = 0;
     for (const items of groups.values()) {
       const first = items[0], batch = new THREE.InstancedMesh(first.geometry, first.material, items.length);
+      if(v2){batch.castShadow=g.high&&!first.material.transparent&&!first.material.transmission;batch.receiveShadow=true;}
       batch.name = 'b3:city-batch';
       const matrices=items.map(m=>m.matrixWorld.clone()),bounds=items.map(m=>m.userData.f3Bounds||(()=>{const b=new THREE.Box3().setFromObject(m);return {min:b.min.toArray(),max:b.max.toArray()};})());
       const vg={batch,far:null,matrices,bounds,keep:!!first.userData.f3Keep};visibilityGroups.push(vg);
@@ -125,10 +129,16 @@ export function createTheme(api) {
     daylightPool.forEach(light => g.scene.remove(light));
     g.camera.far = 44; g.camera.updateProjectionMatrix();
     industrial=await loadIndustrialAssets();
+    v2=industrial.models.has('v2_courtyard_facade');
+    if(v2){
+      env.hemi={sky:0xd6dfdb,ground:0x8d9687,high:1.35,low:1.45};
+      api.setEnvironment?.(env);
+    }
     const anisotropy=Math.min(g.high?8:4,g.renderer.capabilities.getMaxAnisotropy());
     for(const material of industrial.materials)for(const texture of Object.values(material))if(texture?.isTexture)texture.anisotropy=anisotropy;
     city = createRuinedCityKit(THREE); urban = createB3UrbanProps(THREE);
     finish = createCitySurfaces(THREE, g.high,industrial.materials);
+    if(v2)edgeBlend=createStreetEdgeBlend(THREE,industrial.materials);
     // One shared overcast reflection for glass, corroded steel and worn hardware.
     previousEnvironment=g.scene.environment;previousEnvironmentIntensity=g.scene.environmentIntensity;
     const environmentScene=new THREE.Scene();environmentScene.add(finish.sky());const pmrem=new THREE.PMREMGenerator(g.renderer);
@@ -157,7 +167,7 @@ export function createTheme(api) {
     for (const o of a.objects) for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) reserved.add(`${o.tx + dx},${o.ty + dz}`);
     const occupied = new Set();
     const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`);
-    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3 };
+    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 representative street, work in progress':'V1',representativeFacadeCount:0 };
     const count = k => { stats.motifs[k] = (stats.motifs[k] || 0) + 1; };
     // Large paired blocks are confined to 2x2 solid cells. Distinct districts per floor.
     let landmark = 0;
@@ -219,16 +229,21 @@ export function createTheme(api) {
         // Follow actual street walls, including east-west streets, rather than
         // placing rows of tufts across the walking line.
         const edges = DIR_ORDER.filter(d => wallCell(x + DIR_VEC[d][0], z + DIR_VEC[d][1]));
-        for (const d of edges) for (let i = 0; i < (g.high ? 5 : 3); i++) {
+        const plantsPerEdge=v2?(g.high?12:8):(g.high?5:3);
+        for (const d of edges) for (let i = 0; i < plantsPerEdge; i++) {
           const [dx, dz] = DIR_VEC[d], k = hash(x * 9 + i, z, DIR_ORDER.indexOf(d) + 210);
-          if (k < 0.35) continue;
-          const along = (i / 5 - 0.4) * 3 + (k - 0.5) * 0.3;
+          if (k < (v2?.12:.35)) continue;
+          const along = v2?((i+.5)/plantsPerEdge-.5)*3.8+(k-.5)*.15:(i/5-.4)*3+(k-.5)*.3;
           const gx = px + dx * (1.65 + k * 0.15) + dz * along;
           const gz = pz + dz * (1.65 + k * 0.15) - dx * along;
           const tuft=tufts[(i+x+z)%tufts.length];
           const plant = add(tuft.geometry, tuft.material, gx, .018 + k * .02, gz, 0.6 + k, 0.5 + k * 0.5, 0.7);
           plant.rotation.z = (k-.5)*.12;
           if (i === 1) add(chip, stone, gx, 0.05, gz, 1.5, 0.7, 1, k * 6);
+        }
+        if(edgeBlend)for(const d of edges){
+          const [dx,dz]=DIR_VEC[d],patch=new THREE.Mesh(edgeBlend.geometry,edgeBlend.material);
+          patch.position.set(px+dx*1.65,.078,pz+dz*1.65);patch.rotation.y=dx?Math.PI/2:0;patch.receiveShadow=true;root.add(patch);
         }
       }
       for (const d of DIR_ORDER) {
@@ -239,11 +254,14 @@ export function createTheme(api) {
         const wallHeight=4.7+Math.floor(hash(Math.floor((x+dx)/4),Math.floor((z+dz)/4),837)*3)*.25;
         const backing=add(cube, stone, ex+dx*.65, 1.9, ez+dz*.65, 4.07, 3.8, .30, ry);backing.userData.f3Keep=true;
         const sequence=['retaining_wall','retaining_wall','shattered_window','roller_shutter','retaining_wall','factory_door'].filter(id=>industrial.models.has(id));
-        const id=sequence[Math.floor(hash(x,z,330+DIR_ORDER.indexOf(d))*sequence.length)];
+        const representative=v2&&a.f===0&&Math.abs(x-8)<=5&&Math.abs(z-19)<=3;
+        const id=representative?'v2_courtyard_facade':sequence[Math.floor(hash(x,z,330+DIR_ORDER.indexOf(d))*sequence.length)];
         const model=industrial.models.get(id).clone(true),holder=new THREE.Group();holder.add(model);model.rotation.y=ry;
         let bb=new THREE.Box3().setFromObject(holder),ss=bb.getSize(new THREE.Vector3()),cc=bb.getCenter(new THREE.Vector3());
-        const along=dx?ss.z:ss.x,scale=3.96/along;holder.scale.set(scale,Math.min(scale,wallHeight/ss.y),scale);
-        holder.position.set(ex-cc.x*scale-dx*.10,-bb.min.y*holder.scale.y,ez-cc.z*scale-dz*.10);
+        const along=dx?ss.z:ss.x,scale=3.96/along,depth=(dx?ss.x:ss.z)*scale;
+        holder.scale.set(scale,representative?scale:Math.min(scale,wallHeight/ss.y),scale);
+        holder.position.set(ex-cc.x*scale+dx*(representative?depth/2+.03:-.10),-bb.min.y*holder.scale.y,ez-cc.z*scale+dz*(representative?depth/2+.03:-.10));
+        if(representative)stats.representativeFacadeCount++;
         root.add(holder);holder.updateMatrixWorld(true);const facadeBounds=new THREE.Box3().setFromObject(holder),facadeRecord={min:facadeBounds.min.toArray(),max:facadeBounds.max.toArray()};holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=facadeRecord;});count(id);
         // Utility clusters repeat a structural language, while their combinations vary by block.
         if(!safe){
@@ -281,9 +299,13 @@ export function createTheme(api) {
     }
     batchStatic();
     skyMesh = finish.sky(); root.add(skyMesh);
-    const sun = new THREE.DirectionalLight(0xe6e9e2, .85);
+    const sun = new THREE.DirectionalLight(0xe6e9e2, v2?1.10:.85);
     sun.position.set(a.w * 2 - 35, 65, a.h * 2 - 25);
     sun.target.position.set(a.w * 2, 0, a.h * 2); root.add(sun, sun.target);
+    if(v2&&g.high){
+      g.renderer.shadowMap.enabled=true;g.renderer.shadowMap.type=THREE.PCFSoftShadowMap;shadowEnabled=true;
+      sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-16;sun.shadow.camera.right=16;sun.shadow.camera.top=16;sun.shadow.camera.bottom=-16;sun.shadow.camera.near=.5;sun.shadow.camera.far=65;sun.shadow.normalBias=.035;sun.shadow.bias=-.0001;cloudSun=sun;
+    }
     // Keep the established entry/sync contract for all interactive objects.
     for (const o of a.objects) {
       const f = facing(o.tx, o.ty), [dx, dz] = DIR_VEC[f], ry = FACE_YAW[f];
@@ -306,6 +328,8 @@ export function createTheme(api) {
   }
   function dispose() {
     fallback?.dispose();fallback=null;fallbackReason=null;
+    if(shadowEnabled){g.renderer.shadowMap.enabled=originalShadow.enabled;g.renderer.shadowMap.type=originalShadow.type;shadowEnabled=false;}
+    cloudSun?.shadow.dispose();cloudSun=null;edgeBlend?.dispose();edgeBlend=null;v2=false;
     if(environmentTarget){if(g.scene.environment===environmentTarget.texture){g.scene.environment=previousEnvironment;g.scene.environmentIntensity=previousEnvironmentIntensity;}environmentTarget.dispose();environmentTarget=null;}
     root?.parent?.remove(root);
     daylightPool.forEach(light => g.scene.add(light));
@@ -321,6 +345,7 @@ export function createTheme(api) {
     if(skyMesh)skyMesh.position.copy(g.camera.position);
     if(!solid)return;
     const camera=g.camera.position,key=`${Math.floor(camera.x*2)},${Math.floor(camera.z*2)}`;if(key===lastVisibility)return;lastVisibility=key;
+    if(cloudSun){const x=Math.floor(camera.x/2)*2,z=Math.floor(camera.z/2)*2;cloudSun.position.set(x-14,28,z+12);cloudSun.target.position.set(x,4,z);cloudSun.target.updateMatrixWorld();}
     let visible=0,total=0;
     for(const group of visibilityGroups){
       if(group.keep)continue;let count=0;
