@@ -3,68 +3,72 @@
   "blender": "5.3.0",
   "files": {
     "manifest.json": {
-      "bytes": 9050,
-      "sha256": "28f2e79727a0ebb6e50a062ddc402c7cc6389aa99e2d68a09106962f4e4e24de"
+      "bytes": 9057,
+      "sha256": "e27fe5844bfee2485ba04123acebcd14d419a613304455fd1c0a15f616bd21e0"
     },
     "metrics/f3_rebar_rubble.json": {
-      "bytes": 1512,
-      "sha256": "a7448b7637eeed8c7d5ee5ce886be6057c299892e94de72004098b7ff1c9c424"
+      "bytes": 1525,
+      "sha256": "68d86c7ff5caae3ee00b902357f3f3af5ca53707f4b1d6d54279bb8e04e31760"
     },
     "props/f3_rebar_rubble.glb": {
-      "bytes": 9352148,
-      "sha256": "ef83be9f266262490eaf7535f843af74e63fae2e2629ad08738a5c1c5d3a8556"
+      "bytes": 7091088,
+      "sha256": "f5fff40a8bc57c84c06cdfd098cfe5d0556b883d6f10b69f7424bb9c8500414e"
     },
     "renders/f3_rebar_rubble/angle.png": {
-      "bytes": 457901,
-      "sha256": "c39143d57d75cf21eb6ec94b8616c49f3779da68a1009afdb33c0eababadf2af"
+      "bytes": 445425,
+      "sha256": "c4f93101d6c29559d53ecac7ad91f4b93c49637d85c7a8f8a0da9b0369a5d0c9"
     },
     "renders/f3_rebar_rubble/back.png": {
-      "bytes": 422312,
-      "sha256": "4ec96f3d502d9b68c674ace5fc916d7cd2a23de6b8ed9b3462d1a5aa30292109"
+      "bytes": 422774,
+      "sha256": "6a2162fd03693c077e752ecd4000500662f88140ca9e437406c05ca238ab1abe"
     },
     "renders/f3_rebar_rubble/front.png": {
-      "bytes": 431303,
-      "sha256": "cbbf2a468405db5192e905e804b18d5dc0b602ac9da51e79ff1a46f2df1663c7"
+      "bytes": 430622,
+      "sha256": "be379476590b244efbf1ea3c7d36db25bfb54ddbb9e9f196d02c38b358704fa3"
     },
     "renders/f3_rebar_rubble/side.png": {
-      "bytes": 467122,
-      "sha256": "0c70a5b2b61412b2adfe14152833dae87612ce9223118592ab120b1d0d04f64b"
+      "bytes": 470510,
+      "sha256": "0e848e454f3c6dc07e71e71e3fae983174344a81800c3bbb507d3a4d17fabbee"
     },
     "renders/f3_rebar_rubble/top.png": {
-      "bytes": 515641,
-      "sha256": "51d7bbc6391e7acfbad60d9f4f5e243cd76a669993155c61eefd70ac763a4d8d"
+      "bytes": 453778,
+      "sha256": "31456a0cbf3954e35f4c82dc0f452a8eba2839bd405f2970efc55fd209a88f5b"
     },
     "runtime/f3_rebar_rubble.glb": {
-      "bytes": 4286448,
-      "sha256": "c970be2fa26da6c03f06b47f500b35b1fde1429ed087b7e9224c44306e8b35d0"
+      "bytes": 4308676,
+      "sha256": "9f809cb5681b4bcfc544fe0b0ae6077db5b4e46191e924b20a5e88ba67b8a6c2"
     },
     "security/all-texture-inputs.log": {
       "bytes": 290,
-      "sha256": "a3656b849276b2b69d47e2d1d23bbc954613101eefb91e61b45769f3171372e0"
+      "sha256": "12f9e844597ac9450994ed56b32b7a8fe36874dc9d55704204c7a36d47e47e9d"
     },
     "security/existing-cc0-inputs.log": {
       "bytes": 289,
-      "sha256": "4d4f6bfcdbffd5c4749b3aeaac995ac7d4eefe426fcc27e68dbe4021a7c7ddb5"
+      "sha256": "ba51cd2c7f0ab290d8691e1eedccb1974762de5ecbdaeba0ff583041eba385a7"
     },
     "security/recovered-inputs.log": {
       "bytes": 295,
-      "sha256": "2c15531214d5f365c35793ad6dc764c1364b89ff8e355034c5e4eca05291ce55"
+      "sha256": "415bbbb94825ce4e1b4a3c63a1c1a99af35ab08036642c53bcb6b84f7568c4de"
     },
     "security/renderer-source.log": {
       "bytes": 289,
-      "sha256": "8a20dd3c57488e30f86649030c32155aee4124aa5aa39c68c5b5418f6f6b7ce8"
+      "sha256": "c13ee6187bc66bd2b48124dfc4932e2d530fa27859efec5d5ddbff07df515262"
     },
     "security/shared-source.log": {
       "bytes": 294,
-      "sha256": "556170cddb84d91cf8667315f40bcc594d4e7c889dc9127b1d0412a8fafb2322"
+      "sha256": "2b1cfd150005127dd141221f4ee53b039b28f7066458b592f10ddaba6b020317"
     },
     "security/source.log": {
       "bytes": 293,
-      "sha256": "8f2cd1d0450c37000661d2006386823301d62252435325823a0933d5cf968755"
+      "sha256": "18ac455c3a82d53e038a50599904767883491fc77dde7ac18ed98a9ca9b6f759"
     },
     "shared_textures/0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9.png": {
       "bytes": 501219,
       "sha256": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9"
+    },
+    "shared_textures/109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c.jpg": {
+      "bytes": 8996,
+      "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
     },
     "shared_textures/23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23.png": {
       "bytes": 368245,
@@ -74,33 +78,29 @@
       "bytes": 367852,
       "sha256": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae"
     },
-    "shared_textures/7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc.jpg": {
-      "bytes": 697265,
-      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
-    },
     "shared_textures/a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58.png": {
       "bytes": 98662,
       "sha256": "a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58"
+    },
+    "shared_textures/b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098.jpg": {
+      "bytes": 5400,
+      "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
     },
     "shared_textures/b40e07a23d7ab8e8e2d056fa29526d6e3cc1eb41633df9dae00aa647e801a645.png": {
       "bytes": 44844,
       "sha256": "b40e07a23d7ab8e8e2d056fa29526d6e3cc1eb41633df9dae00aa647e801a645"
     },
-    "shared_textures/ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b.jpg": {
-      "bytes": 898376,
-      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
-    },
-    "shared_textures/efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea.png": {
-      "bytes": 708778,
-      "sha256": "efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea"
+    "shared_textures/ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710.jpg": {
+      "bytes": 6746,
+      "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
     },
     "sources/f3_rebar_rubble.blend": {
-      "bytes": 2823037,
-      "sha256": "47af3aee59c51e65b31a6a1d9e8e46ad4d0f23d8d076270b3b5b76cf1593b7e7"
+      "bytes": 2826568,
+      "sha256": "c5d8e10414002c3be8deb9edf9ba091248ebe52f62df70163e9734c80884b5c2"
     },
     "sources/f3_rebar_rubble_authoring.blend": {
-      "bytes": 3469903,
-      "sha256": "fca8f75d21ebfd2f61739c3352a712350dec9ffa9ed0030ac8b92d3a6a533c45"
+      "bytes": 3479480,
+      "sha256": "9c653cda5b7f0255217534fefa091ff95b283da810b308b0941e3afd9d7e9d01"
     },
     "sources/generated_materials/f3_aged_rubber_48c34e3e4044_basecolor.jpg": {
       "bytes": 5607,
@@ -163,8 +163,8 @@
       "sha256": "c95688534e72d7e38edbd5e987849733b3d433765dab514da8acd5d61b8a207c"
     },
     "structural-audit.json": {
-      "bytes": 1556,
-      "sha256": "775f3c88a57ab77d26a7bc31247aa6342d433f6217bd259bd53cb075169cb155"
+      "bytes": 1565,
+      "sha256": "7094c2d72347e81e32a24881678dbb3995b2582d2091c0982845ee4ffa33ce9f"
     },
     "textures/asphalt_02-api.json": {
       "bytes": 27252,

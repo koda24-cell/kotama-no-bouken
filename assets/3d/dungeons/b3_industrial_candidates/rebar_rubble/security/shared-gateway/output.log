@@ -5,8 +5,8 @@ Engine version: 1.5.4
 Scanned directories: 12
 Scanned files: 57
 Infected files: 0
-Data scanned: 53.74 MiB
-Data read: 33.06 MiB (ratio 1.63:1)
-Time: 10.553 sec (0 m 10 s)
-Start Date: 2026:11:24 05:56:27
-End Date:   2026:11:24 05:56:38
+Data scanned: 48.43 MiB
+Data read: 28.69 MiB (ratio 1.69:1)
+Time: 10.250 sec (0 m 10 s)
+Start Date: 2026:11:24 09:42:09
+End Date:   2026:11:24 09:42:19
