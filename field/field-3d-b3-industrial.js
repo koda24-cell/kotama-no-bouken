@@ -6,6 +6,7 @@ import { createCitySurfaces } from './b3-industrial-surfaces.js';
 import { loadIndustrialAssets } from './b3-industrial-assets.js';
 import { cityVisibility } from './b3-industrial-visibility.js';
 import {createStreetEdgeBlend} from './b3-city-v2-art.js';
+import {bridgeSupportBounds} from './b3-city-v2-clearance.js';
 import {retainFirstLayerSource} from './field-3d-b1-sacred-trial.js';
 import {grassCutoutMaterialV6} from './f1-grass-cutout-lighting-v6.js';
 
@@ -337,7 +338,12 @@ export function createTheme(api) {
     const mount=(id,x,z,lift,rotation,height=null)=>{
       const holder=new THREE.Group(),model=industrial.models.get(id).clone(true);model.rotation.y=rotation;holder.add(model);const b=new THREE.Box3().setFromObject(holder),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3());
       const scale=height?height/size.y:4.12/Math.max(size.x,size.z);holder.scale.setScalar(scale);holder.position.set(x-center.x*scale,lift-b.min.y*scale,z-center.z*scale);root.add(holder);holder.updateMatrixWorld(true);
-      const bounds=new THREE.Box3().setFromObject(holder),record={key:id+':crosswalk',min:bounds.min.toArray(),max:bounds.max.toArray(),overhead:lift>=3.5};edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
+      const bounds=new THREE.Box3().setFromObject(holder),record={key:id+':crosswalk',min:bounds.min.toArray(),max:bounds.max.toArray(),overhead:lift>=3.5};
+      if(id==='v2_truss_bridge'){
+        const checked=bridgeSupportBounds(THREE,holder,x,z,rotation);
+        edgePlacements.push({...record,key:id+':upper-structure',min:[record.min[0],3.5,record.min[2]],overhead:true,checkedLowTriangles:checked.checkedTriangles},...checked.supports);
+      }else edgePlacements.push(record);
+      holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
     };
     for(const p of crossings){
       if(selected.length>=(a.f===2?2:4)||selected.some(q=>Math.abs(p.x-q.x)+Math.abs(p.z-q.z)<7))continue;selected.push(p);
