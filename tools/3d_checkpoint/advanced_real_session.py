@@ -8,7 +8,7 @@ from advanced_art_review import packet
 from advanced_review_loop import read_review,decide
 VIEWS=("front","side","back","angle")
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--source",required=True);p.add_argument("--output",required=True);p.add_argument("--minutes",type=int,default=45);p.add_argument("--reference");p.add_argument("--rounds",type=int,default=2);p.add_argument("--pause-after",type=int,default=0);p.add_argument("--fault-test",action="store_true");p.add_argument("--review-dir");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("--source",required=True);p.add_argument("--output",required=True);p.add_argument("--minutes",type=int,default=45);p.add_argument("--reference");p.add_argument("--rounds",type=int,default=2);p.add_argument("--pause-after",type=int,default=0);p.add_argument("--fault-test",action="store_true");p.add_argument("--review-dir");p.add_argument("--vision-model");a=p.parse_args()
     if not 1<=a.minutes<=360:p.error("minutes 1..360")
     root=Path(a.output).resolve();root.mkdir(parents=True,exist_ok=True);source=Path(a.source).resolve()
     worker=Path(__file__).with_name("advanced_real_worker.py")
@@ -52,6 +52,11 @@ def main():
         if status!="COMPLETE":return 1
         target=locate(root,"reference")/"reimport"
     else:target=None
+    vision=None
+    if a.vision_model:
+        from advanced_local_vision import LocalVision
+        scan(Path(a.vision_model),root/"vision-model-scan.log",deadline)
+        vision=LocalVision(a.vision_model)
     modes=["material","surface","chips","cracks"]
     for i in range(a.rounds):
         rr=root/("round-"+str(i))
@@ -70,11 +75,11 @@ def main():
         candidates=[assess(s) for s in steps[1:]]
         best=select(baseline,candidates) if target else baseline
         review_status="NUMERIC_ONLY"
-        if a.review_dir:
-            best,next_modes,review_status=decide(baseline,candidates,lambda item:read_review(a.review_dir,item))
+        if a.review_dir or vision:
+            best,next_modes,review_status=decide(baseline,candidates,vision.review if vision else lambda item:read_review(a.review_dir,item))
         history.append({"review_status":review_status,"round":i,"selected":best,"baseline":baseline,"candidates":candidates,"approval":"NOT_APPROVED"})
         tmp=root/"selection.tmp";tmp.write_text(json.dumps(history,indent=2));tmp.replace(root/"selection.json")
-        if a.review_dir:
+        if a.review_dir or vision:
             if review_status!="REVIEWED" or not next_modes or best is baseline:break
             modes=next_modes
         elif best is baseline:break
