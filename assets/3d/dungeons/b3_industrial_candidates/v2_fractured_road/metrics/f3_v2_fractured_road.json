@@ -1,8 +1,8 @@
 {
-  "bytes": 5680484,
-  "sha256": "ad974e850c8da64f8c5ba2c43bd41ad33f26005a11a45ab20fe63f68fdddbcad",
-  "tris": 1152,
-  "verts": 3168,
+  "bytes": 5731284,
+  "sha256": "037d2c991e9076f21cc7c9dd8cdffbdd7dbb13d2101679fa2ba094fdfb5023a6",
+  "tris": 1800,
+  "verts": 4148,
   "meshes": 3,
   "drawCalls": 3,
   "materials": [
@@ -13,19 +13,19 @@
   "textureCount": 9,
   "textureBytes": 5515928,
   "sizeMeters": [
-    3.9938,
+    4.0,
     0.1378,
-    3.9932
+    4.0
   ],
   "bboxMin": [
-    -1.9955,
+    -2.0,
     -0.1,
-    -1.9963
+    -2.0
   ],
   "bboxMax": [
-    1.9983,
+    2.0,
     0.0378,
-    1.9969
+    2.0
   ],
   "extensions": [],
   "animations": [],
@@ -38,8 +38,8 @@
   "category": "props",
   "desc_ja": "\u4e0d\u898f\u5247\u306b\u5272\u308c\u6c88\u4e0b\u3057\u305f\u30a2\u30b9\u30d5\u30a1\u30eb\u30c8\u8def\u9762V2",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "5d7df6eecbca5dd0ede6b45b4ff4cfed3e061012",
-  "workflowRun": "45420391969",
+  "sourceCommit": "d8052bf022724d20104b5ce848118fa63172b4ea",
+  "workflowRun": "45422753105",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/f3_v2_fractured_road.blend",
   "renderedFrom": "reimported GLB",

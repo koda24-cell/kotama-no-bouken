@@ -1,7 +1,7 @@
 {
   "status": "NOT_APPROVED",
   "reopened": true,
-  "vertices": 696,
+  "vertices": 1020,
   "packedImageSha256": {
     "asphalt_02_normal.jpg": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3",
     "concrete_moss_normal.jpg": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b",
@@ -25,5 +25,5 @@
     "f3_deep_crack_9d554bcb78e9_normal.jpg": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2",
     "rusty_iron_normal.jpg": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
   },
-  "blendSha256": "a4c78f18da06466ece829fc1b7d5afe64b836d8e36dd9ec1eda5f38ce06d5b8a"
+  "blendSha256": "a6265c211ecb69ff4b5f5006519c2fdc5de5cdadb591f2c3ff7e761a72baf712"
 }

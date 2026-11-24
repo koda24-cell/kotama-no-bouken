@@ -2,10 +2,10 @@
   "status": "NOT_APPROVED",
   "assetName": "v2_fractured_road",
   "asset": {
-    "bytes": 5680484,
-    "sha256": "ad974e850c8da64f8c5ba2c43bd41ad33f26005a11a45ab20fe63f68fdddbcad",
-    "tris": 1152,
-    "verts": 3168,
+    "bytes": 5731284,
+    "sha256": "037d2c991e9076f21cc7c9dd8cdffbdd7dbb13d2101679fa2ba094fdfb5023a6",
+    "tris": 1800,
+    "verts": 4148,
     "meshes": 3,
     "drawCalls": 3,
     "materials": [
@@ -16,19 +16,19 @@
     "textureCount": 9,
     "textureBytes": 5515928,
     "sizeMeters": [
-      3.9938,
+      4.0,
       0.1378,
-      3.9932
+      4.0
     ],
     "bboxMin": [
-      -1.9955,
+      -2.0,
       -0.1,
-      -1.9963
+      -2.0
     ],
     "bboxMax": [
-      1.9983,
+      2.0,
       0.0378,
-      1.9969
+      2.0
     ],
     "extensions": [],
     "animations": [],
@@ -41,8 +41,8 @@
     "category": "props",
     "desc_ja": "不規則に割れ沈下したアスファルト路面V2",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "5d7df6eecbca5dd0ede6b45b4ff4cfed3e061012",
-    "workflowRun": "45420391969",
+    "sourceCommit": "d8052bf022724d20104b5ce848118fa63172b4ea",
+    "workflowRun": "45422753105",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_v2_fractured_road.blend",
     "renderedFrom": "reimported GLB",
@@ -161,10 +161,10 @@
   ],
   "runtime": {
     "file": "f3_v2_fractured_road.glb",
-    "sourceSha256": "ad974e850c8da64f8c5ba2c43bd41ad33f26005a11a45ab20fe63f68fdddbcad",
-    "sha256": "069bf4857ad68ed696e023ce4123bf07c2b542986f38d5bbc6cdd25a11b850a3",
-    "bytes": 164792,
-    "embeddedOriginalBytes": 5680484,
+    "sourceSha256": "037d2c991e9076f21cc7c9dd8cdffbdd7dbb13d2101679fa2ba094fdfb5023a6",
+    "sha256": "6dbc69e33efe63fe802b1a2769abac7c4c9284a471b2a99a2e64430510af3c3e",
+    "bytes": 215592,
+    "embeddedOriginalBytes": 5731284,
     "images": [
       {
         "file": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3.jpg",
