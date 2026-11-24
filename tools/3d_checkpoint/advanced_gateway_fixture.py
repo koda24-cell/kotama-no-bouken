@@ -1,9 +1,10 @@
 """Shared gateway fixture for crack geometry and normal baking."""
-import os,sys,json,hashlib,struct
+import os,sys,json,hashlib,struct,subprocess
 from pathlib import Path
 import bpy
 from mathutils import Vector
 sys.path.insert(0,str(Path(__file__).resolve().parent))
+subprocess.run(["bash","tools/security/clamav_scan_gate.sh","scan","tools/3d_checkpoint","qa/security/advanced-dependencies.log"],check=True)
 from advanced_surface import apply
 from advanced_cracks import add_cracks
 from advanced_bake import bake_normal
