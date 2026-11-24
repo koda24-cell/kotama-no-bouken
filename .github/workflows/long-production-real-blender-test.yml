@@ -1,11 +1,11 @@
 name: Long production real Blender recovery test
 on:
-  push:
-    branches:
-      - feature/long-production-integration-20261124
+  pull_request:
+    branches: [development]
     paths:
       - '.github/workflows/long-production-real-blender-test.yml'
       - '.github/workflows/long-production-recovery-worker.yml'
+      - 'tools/3d_checkpoint/*production*.py'
 permissions:
   contents: read
   actions: read
