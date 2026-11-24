@@ -10,3 +10,19 @@
 制作側の register.py を保持し、別 checkout の 3d-progress-data を対象に python3 register.py --registry /path/to/registry --manifest /path/to/manifest.json --source /path/to/render-output を実行する。
 画像と台帳を同一コミットで push する。競合時は最新台帳を再取得し登録処理を再実行する。force push 禁止。失敗時は旧画像を保持。完成承認は既存ポリシーに従う。
 現状: サイトと登録スクリプトの初期実装。既存Artifact取り込み、Actions呼び出し、公開範囲確認、実画像・ブラウザ試験は未実施。
+
+## 共通Actions接続
+正常なレンダリング・検査・Artifact保存ジョブの後に、呼び出し元で contents: write を明示し、次の再利用ワークフローを呼ぶ。公開範囲の確認が前提。長時間制作では反復単位で呼ぶ。
+```yaml
+  register_preview:
+    needs: render
+    uses: ./.github/workflows/3d-progress-register.yml
+    permissions:
+      contents: write
+    with:
+      artifact: reviewed-render-preview
+      publication_cleared: true
+```
+Artifactのルートに manifest.json と対象PNGを置く。run_id と source_sha は呼び出し元実行と一致させる。
+既存成果物は取得・展開・ClamAV検査後、公開可能な画像だけを明示した配列 [{"directory":"artifact-folder","manifest":{...}}] を backfill.py --registry ... --batch ... --source ... に渡す。自動推測で画像を公開しない。
+2026-11-24: 回帰テスト run 45312857287 成功、実Blender 5.3・ClamAV・隔離台帳登録 run 45312846758 成功。Artifact 14884710234。実モデルの公開台帳登録、ブラウザ試験、各制作ジョブへの接続は未検証。
