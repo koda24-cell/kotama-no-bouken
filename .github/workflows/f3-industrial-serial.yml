@@ -3,6 +3,9 @@ on:
   push:
     branches: [feature/f3-industrial-ruins-20261124]
     paths: [tools/f3-industrial/queue.json, tools/f3-industrial/build_one.py, tools/f3-industrial/parts.py, .github/workflows/f3-industrial-serial.yml, .github/workflows/f3-industrial-one.yml]
+concurrency:
+  group: f3-industrial-production
+  cancel-in-progress: false
 permissions:
   contents: write
   packages: read
@@ -14,7 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: list
-        run: echo "assets=$(cat tools/f3-industrial/queue.json)" >> "$GITHUB_OUTPUT"
+        run: |
+          python3 - <<'PYQUEUE'
+          import json,os
+          with open(os.environ['GITHUB_OUTPUT'],'a')as out:
+              out.write('assets='+json.dumps(json.load(open('tools/f3-industrial/queue.json')))+'\n')
+          PYQUEUE
   individual:
     needs: queue
     strategy:
