@@ -11,6 +11,8 @@ def run(settings,source,root,reference,deadline,estimate=30):
     source=Path(source).resolve(strict=True)
     root=Path(root).resolve()
     root.mkdir(parents=True,exist_ok=False)
+    if len(settings["views"])!=1 or len(settings["frames"])!=1:
+        raise ValueError("one view and frame per session required")
     script=Path(__file__).with_name("render_production_tile.py").resolve()
     def remaining():
         return max(0,(deadline-time.time())/60)
