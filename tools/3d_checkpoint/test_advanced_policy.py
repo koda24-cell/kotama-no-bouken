@@ -31,4 +31,32 @@ class Tests(unittest.TestCase):
             self.assertEqual(len(calls),4)
             (p/"a").write_text("corrupt")
             with self.assertRaises(ValueError):run(p/"state",src,ref,["a","b"],worker)
+    def test_aesthetic_selection(self):
+        import struct,zlib,copy
+        from stitch_half_frame import SIGNATURE,png_chunk
+        from advanced_aesthetic import compare
+        from advanced_selection import score,select,VIEWS
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            def images(name,color):
+                folder=root/name;folder.mkdir()
+                raw=b"".join(b"\x00"+b"".join(bytes((*color,255)) if 2<=x<14 and 2<=y<14 else bytes(4) for x in range(16)) for y in range(16))
+                data=SIGNATURE+png_chunk(b"IHDR",struct.pack(">IIBBBBB",16,16,8,6,0,0,0))+png_chunk(b"IDAT",zlib.compress(raw))+png_chunk(b"IEND",b"")
+                for v in VIEWS:(folder/(v+".png")).write_bytes(data)
+                return folder
+            ref=images("ref",(180,120,60))
+            bad=images("bad",(20,20,20))
+            a=compare(ref/"front.png",ref/"front.png")
+            b=compare(bad/"front.png",ref/"front.png")
+            self.assertEqual(len(a["metrics"]),9)
+            self.assertAlmostEqual(a["score"],1)
+            self.assertFalse(a["instructions"])
+            self.assertTrue(b["instructions"])
+            base=score(bad,ref)
+            good=score(ref,ref);good.update(verified=True,preserved=True)
+            self.assertIs(select(base,[good]),good)
+            self.assertIs(select(good,[base]),good)
+            rejected=copy.deepcopy(good);rejected["views"]["side"]["metrics"]["silhouette"]=.1
+            self.assertIs(select(base,[rejected]),base)
+            self.assertEqual(good["approval"],"NOT_APPROVED")
 if __name__=="__main__":unittest.main()
