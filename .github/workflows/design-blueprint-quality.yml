@@ -1,0 +1,40 @@
+name: Blueprint quality review
+on:
+  push:
+    branches: ['feature/blueprint-quality-20261124']
+    paths: ['tools/design-engine/build_quality.py', '.github/workflows/design-blueprint-quality.yml']
+  pull_request:
+    paths: ['tools/design-engine/build_quality.py', '.github/workflows/design-blueprint-quality.yml']
+permissions:
+  contents: read
+  packages: read
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [hole, contact, smooth]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: |
+          mkdir -p qa/security quality-output
+          docker run --rm --entrypoint bash -e MODE=${{ matrix.mode }} -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -euo pipefail -c '
+            blender --version | head -n 1 | grep -Fx "Blender 5.3.0"
+            bash tools/security/clamav_scan_gate.sh update qa/security
+            bash tools/security/clamav_scan_gate.sh scan tools/design-engine qa/security/source.log
+            blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/design-engine/build_quality.py -- "$MODE" quality-output
+            bash tools/security/clamav_scan_gate.sh scan quality-output qa/security/output.log
+          '
+          sudo chown -R "$(id -u):$(id -g)" quality-output qa/security
+          cat quality-output/quality.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quality-${{ matrix.mode }}-NOT-APPROVED
+          path: |
+            quality-output/
+            qa/security/
+          if-no-files-found: error
+      - run: python -c "import json; assert json.load(open('quality-output/quality.json'))['pass']"
