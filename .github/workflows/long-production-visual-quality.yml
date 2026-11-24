@@ -1,0 +1,37 @@
+name: Long production visual improvement integration
+on:
+  pull_request:
+    branches: [development]
+    paths:
+      - 'tools/3d_checkpoint/production_visual*.py'
+      - '.github/workflows/long-production-visual-quality.yml'
+permissions:
+  contents: read
+  packages: read
+jobs:
+  visual:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify environment and scan source
+        run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint qa/security/visual-source.log
+          python3 -m py_compile tools/3d_checkpoint/production_visual*.py
+      - name: Real Blender four-view iterative improvement
+        run: python3 tools/3d_checkpoint/production_visual_loop.py --output visual-output --rounds 2 --minutes 40
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-improvement-NOT-APPROVED
+          path: visual-output
+          retention-days: 14
