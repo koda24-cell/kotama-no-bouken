@@ -1,0 +1,47 @@
+name: Design reference integrated review
+on:
+  pull_request:
+    paths: ['tools/design-engine/**', '.github/workflows/design-reference-review.yml']
+permissions:
+  contents: read
+  packages: read
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install Pillow==11.3.0 numpy==2.2.6
+      - name: Scan inputs and render in pinned Blender
+        run: |
+          mkdir -p render-output/design-reference qa/security
+          docker run --rm --entrypoint bash -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -euo pipefail -c '
+            blender --version | head -n 1 | grep -Fx "Blender 5.3.0"
+            bash tools/security/clamav_scan_gate.sh update qa/security
+            bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b1_ancient_forest/props/blue_wisp_torch.glb qa/security/torch.log
+            bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b1_ancient_forest/modules/mod_floor_stone_4m.glb qa/security/floor.log
+            bash tools/security/clamav_scan_gate.sh scan tools/design-engine qa/security/source.log
+            blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/design-engine/reference_render.py
+            bash tools/security/clamav_scan_gate.sh scan render-output/design-reference qa/security/render.log
+          '
+          sudo chown -R "$(id -u):$(id -g)" render-output qa/security
+      - name: Analyze and assemble sheets
+        run: |
+          python tools/design-engine/reference_suite.py analyze review-output
+          for d in render-output/design-reference/*; do
+            cp -r "$d" "review-output/$(basename "$d")/render"
+          done
+          python tools/design-engine/reference_suite.py sheet review-output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: design-reference-integrated-NOT-APPROVED
+          path: |
+            review-output/
+            qa/security/
+          if-no-files-found: error
+          retention-days: 14
