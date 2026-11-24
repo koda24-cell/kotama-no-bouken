@@ -21,6 +21,8 @@ jobs:
         /assets/3d/dungeons/b3_recovered_candidates/
         /assets/3d/dungeons/b3_industrial_candidates/textures/
         /assets/3d/dungeons/b3_industrial_candidates/native_originals/
+        /assets/3d/dungeons/b3_industrial_candidates/control_cabinet/props/
+        /assets/3d/dungeons/b3_industrial_candidates/control_cabinet/manifest.json
       definitions_artifact: f3-official-clamav-seed-${{ github.run_id }}
   archive-candidate:
     needs: render

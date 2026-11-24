@@ -133,6 +133,7 @@ export function createTheme(api) {
     if(v2){
       env.hemi={sky:0xd6dfdb,ground:0x8d9687,high:1.35,low:1.45};
       api.setEnvironment?.(env);
+      g.camera.far=44;g.camera.updateProjectionMatrix();
     }
     const anisotropy=Math.min(g.high?8:4,g.renderer.capabilities.getMaxAnisotropy());
     for(const material of industrial.materials)for(const texture of Object.values(material))if(texture?.isTexture)texture.anisotropy=anisotropy;
@@ -232,7 +233,7 @@ export function createTheme(api) {
         const plantsPerEdge=v2?(g.high?12:8):(g.high?5:3);
         for (const d of edges) for (let i = 0; i < plantsPerEdge; i++) {
           const [dx, dz] = DIR_VEC[d], k = hash(x * 9 + i, z, DIR_ORDER.indexOf(d) + 210);
-          if (k < (v2?.12:.35)) continue;
+          if (k < (v2 ? .12 : .35)) continue;
           const along = v2?((i+.5)/plantsPerEdge-.5)*3.8+(k-.5)*.15:(i/5-.4)*3+(k-.5)*.3;
           const gx = px + dx * (1.65 + k * 0.15) + dz * along;
           const gz = pz + dz * (1.65 + k * 0.15) - dx * along;

@@ -69,6 +69,9 @@ def main():
  if asset=='v2_courtyard_facade':
   from courtyard_facade_v2 import build
   build(dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector))
+ elif asset=='v2_service_tower':
+  from service_tower_v2 import build
+  build(dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector,candidate=candidate,scan=scan))
  elif asset=='retaining_wall':
   from weathering import wall_atlas
   diffuse,rough=wall_atlas(OUT/'sources/generated_materials',textures)
