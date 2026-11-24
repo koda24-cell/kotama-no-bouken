@@ -1,0 +1,34 @@
+name: Detailed reference drawings
+on:
+  pull_request:
+    paths: ['tools/design-engine/**', '.github/workflows/design-reference-detail.yml']
+permissions:
+  contents: read
+jobs:
+  detail:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: torch
+            glb: assets/3d/dungeons/b1_ancient_forest/props/blue_wisp_torch.glb
+          - id: floor
+            glb: assets/3d/dungeons/b1_ancient_forest/modules/mod_floor_stone_4m.glb
+          - id: combined
+            glb: assets/3d/dungeons/b1_ancient_forest/props/blue_wisp_torch.glb assets/3d/dungeons/b1_ancient_forest/modules/mod_floor_stone_4m.glb
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install Pillow==11.3.0 numpy==2.2.6 trimesh==4.7.4 rtree==1.4.1
+      - run: python tools/design-engine/reference_detail.py detail-output ${{ matrix.glb }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: detail-${{ matrix.id }}-REFERENCE-ONLY
+          path: detail-output/
+          if-no-files-found: error
