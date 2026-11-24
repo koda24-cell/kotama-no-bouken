@@ -96,6 +96,6 @@ async function start(){
  }catch(error){if(attempt===startId){startedAt=0;status.textContent=error.name==='TimeoutError'?'配信先が応答しません。「試験をやり直す」で再試行できます。':error.message;}}
 }
 document.getElementById('restart').onclick=start;
-setInterval(()=>{try{const w=frame.contentWindow;if(w.KotamaIndustrialPlaytestError){status.textContent=w.KotamaIndustrialPlaytestError;return;}const info=w.KotamaField3D?.themeInfo();if(info?.industrialAssets?.sourceHashesVerified&&info?.placed){status.textContent='試験表示中・通常セーブへの保存なし';}else if(startedAt&&Date.now()-startedAt>90000){status.textContent='読み込みに時間がかかっています。「試験をやり直す」で再試行できます。';}}catch(_){}},500);
+setInterval(()=>{try{const w=frame.contentWindow;if(w.KotamaIndustrialPlaytestError){status.textContent=w.KotamaIndustrialPlaytestError;return;}const info=w.KotamaField3D?.themeInfo();if(info?.fallbackReason){status.textContent='追加素材を読み込めず従来表示に戻りました。再試行できます。';}else if(info?.industrialAssets?.sourceHashesVerified&&info?.placed){status.textContent='試験表示中・通常セーブへの保存なし';}else if(startedAt&&Date.now()-startedAt>90000){status.textContent='読み込みに時間がかかっています。「試験をやり直す」で再試行できます。';}}catch(_){}},500);
 start();
 </script></body></html>

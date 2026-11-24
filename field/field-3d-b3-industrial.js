@@ -14,7 +14,7 @@ export function createTheme(api) {
     hemi: { sky: 0xd6dfdb, ground: 0x92988a, high: 1.9, low: 2.1 } };
   let root, city, urban, finish, skyMesh, materials = [], geometries = [], batches = [], placements = [], stats = {};
   const prototypes = new Map();
-  let industrial, solid, visibilityGroups=[],lastVisibility="",edgePlacements=[];
+  let industrial, solid, visibilityGroups=[],lastVisibility="",edgePlacements=[],fallback=null,fallbackReason=null;
   const geo = x => (geometries.push(x), x);
   const mat = x => { const m = g.high ? new THREE.MeshStandardMaterial(x) : new THREE.MeshLambertMaterial({ color: x.color, flatShading: x.flatShading }); materials.push(m); return m; };
   function add(shape, material, x, y, z, sx, sy, sz, ry = 0) {
@@ -95,7 +95,18 @@ export function createTheme(api) {
     stats.allocatedBatches = batches.length;
     stats.instances = meshes.length;
   }
-  async function build(a, S, info) {
+  async function build(a,S,info){
+    const before=new Set(g.world.children),entryCount=g.entries.length;
+    try{await buildIndustrial(a,S,info);}
+    catch(error){
+      dispose();for(const child of [...g.world.children])if(!before.has(child))child.removeFromParent();g.entries.splice(entryCount);
+      fallbackReason=String(error.message||error);
+      const legacy=await import('./field-3d-b3-city.js?v=20261110-quality-1');fallback=legacy.createTheme(api);
+      api.setEnvironment?.(fallback.env);await fallback.build(a,S,info);
+      console.warn('[industrial-review] Restored existing city after failed candidate load:',fallbackReason);
+    }
+  }
+  async function buildIndustrial(a, S, info) {
     dispose();
     root = new THREE.Group(); root.name = 'b3_ruined_city_map'; g.world.add(root);
     // Daylight carries the city: keep only a few nearby interactive point lights.
@@ -241,6 +252,7 @@ export function createTheme(api) {
     stats.objects = g.entries.length; stats.scenery = placements.length;
   }
   function dispose() {
+    fallback?.dispose();fallback=null;fallbackReason=null;
     root?.parent?.remove(root);
     daylightPool.forEach(light => g.scene.add(light));
     g.camera.far = originalFar; g.camera.updateProjectionMatrix();
@@ -250,7 +262,8 @@ export function createTheme(api) {
     geometries.forEach(x => x.dispose()); materials.forEach(x => x.dispose());
     root = city = urban = null; batches = []; geometries = []; materials = []; placements = []; prototypes.clear(); stats = {};
   }
-  function tick(){
+  function tick(...args){
+    if(fallback){fallback.tick(...args);return;}
     if(skyMesh)skyMesh.position.copy(g.camera.position);
     if(!solid)return;
     const camera=g.camera.position,key=`${Math.floor(camera.x*2)},${Math.floor(camera.z*2)}`;if(key===lastVisibility)return;lastVisibility=key;
@@ -264,5 +277,5 @@ export function createTheme(api) {
     stats.visibleInstances=visible;stats.occlusionCandidates=total;
   }
   return { area: 3, env, build, dispose, tick, async sync() { return false; },
-    info: () => ({ ...stats, placed: !!root, surfaceTextures: finish?.textureCount || 0, industrialAssets:industrial?.info(), edgePlacements, placements, memory: { ...g.renderer.info.memory } }) };
+    info: () => fallback ? {...fallback.info(),fallbackReason} : ({ ...stats, placed: !!root, surfaceTextures: finish?.textureCount || 0, industrialAssets:industrial?.info(), edgePlacements, placements, memory: { ...g.renderer.info.memory } }) };
 }
