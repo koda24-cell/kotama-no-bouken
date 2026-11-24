@@ -243,12 +243,6 @@ def build_small(asset,e,h):
   box('dark closed abandoned vestibule',(0,.36,1.95),(3.03,.04,3.75),dark,0)
   for x in[1.28,1.47,1.65]:ribs((x,.01,3.94),(x-.04,-.03,4.35))
  elif asset=='ivy_pocket':
-  leaf=c.material('f3_shaded_ivy_leaf',(.08,.17,.055,1),.91)
-  for k in range(4):
-   x=k*.42-.65;pts=[(x+math.sin(j*1.3+k)*.07,0,j*.29)for j in range(8)];c.tube('climbing ivy supporting stem',pts,.008,rubber,6)
-   for j in range(1,8):
-    px,py,pz=pts[j];side=(-1)**(j+k);end=(px+side*.23,-.03,pz+.06)
-    verts=[(px,-.025,pz),(end[0],-.025,end[2]-.1),(end[0]+side*.07,-.055,end[2]+.025),(end[0],-.04,end[2]+.14),(px+side*.055,-.025,pz+.13)]
-    o=c.mesh('lobed ivy leaf',verts,[(0,1,2),(0,2,3),(0,3,4)],leaf);c.uv_world(o)
-  for j in range(3):box('root pocket stone',(j*.48-.5,.1,.08),(.55,.48,.16),moss,.07)
+  from ivy import build
+  build(e)
  else:raise ValueError('Unimplemented individual industrial asset '+asset)
