@@ -50,7 +50,7 @@ jobs:
           grep -RE 'TabError|IndentationError' fault-output/recovered
           grep -F 'REPAIR_CANDIDATE_ACCEPTED=safe_indentation_normalization' fault-output/recovery-console.log
           grep -F 'AUTOMATIC_RETRY_SUCCEEDED=front-1-' fault-output/recovery-console.log
-          grep -R '"status": "target_met"' fault-output/recovered/result.json
+          python3 -c 'import json; from pathlib import Path; r=json.loads(Path("fault-output/recovered/front-1/result.json").read_text()); assert r["status"]=="target_met",r'
         shell: bash
       - name: Export recovered scene and compare GLB geometry and render
         run: |
