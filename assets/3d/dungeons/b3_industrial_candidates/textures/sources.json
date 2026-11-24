@@ -176,6 +176,30 @@
       "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_debris/concrete_debris_rough_1k.jpg",
       "sha256": "bbdf4da5c579b1d7282021e265a0bda3df87ca2cb9972f93d0caa5c3aeca47e4",
       "license": "CC0"
+    },
+    {
+      "asset": "worn_mossy_plasterwall",
+      "role": "diffuse",
+      "file": "worn_mossy_plasterwall_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/worn_mossy_plasterwall/worn_mossy_plasterwall_diff_1k.jpg",
+      "sha256": "415cbcbe8f70269569aa4f2f1efc13ca1bd5f2fabc791dff428ef0fa243e1e9e",
+      "license": "CC0"
+    },
+    {
+      "asset": "worn_mossy_plasterwall",
+      "role": "normal",
+      "file": "worn_mossy_plasterwall_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/worn_mossy_plasterwall/worn_mossy_plasterwall_nor_gl_1k.jpg",
+      "sha256": "0fdf1e22066c4f6fc2c820ae9b11aa5f9ea6ea131ccf3abb65f37251ab9f6a5d",
+      "license": "CC0"
+    },
+    {
+      "asset": "worn_mossy_plasterwall",
+      "role": "roughness",
+      "file": "worn_mossy_plasterwall_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/worn_mossy_plasterwall/worn_mossy_plasterwall_rough_1k.jpg",
+      "sha256": "b33938d0ac7889b7b8580b8e3920958c0aa13a1154d6ad783676a540afd628e9",
+      "license": "CC0"
     }
   ]
 }
