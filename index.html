@@ -77,6 +77,14 @@
     #kotama-3d-loading .loading-dots{display:inline-block;min-width:3ch;text-align:left}
     #kotama-3d-loading .loading-dots::after{content:'';animation:kotama-loading-dots 1.4s steps(1,end) infinite}
     @keyframes kotama-loading-dots{0%,100%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+
+    #kotama-3d-loading .loading-inner{display:grid!important;grid-template-columns:19px minmax(160px,220px);gap:8px 12px!important;align-items:center!important}
+    #kotama-3d-loading .loading-progress{grid-column:1/-1;width:100%;height:3px;appearance:none;border:0;background:#333;display:block}
+    #kotama-3d-loading .loading-progress::-webkit-progress-bar{background:#333}
+    #kotama-3d-loading .loading-progress::-webkit-progress-value{background:#fff}
+    #kotama-3d-loading .loading-progress::-moz-progress-bar{background:#fff}
+    #kotama-3d-loading [data-loading-stage]{grid-column:1/-1;font-size:11px;color:#bbb;text-align:right}
+    #kotama-3d-loading [data-loading-dismiss]{grid-column:1/-1;margin-top:4px}
     @media(prefers-reduced-motion:reduce){#kotama-3d-loading .loading-spinner{animation:none!important}#kotama-3d-loading .loading-dots::after{animation:none!important;content:'...'!important}}
   </style>
   <script>
@@ -84,8 +92,10 @@
     let timeout;
     const get=()=>document.getElementById('kotama-3d-loading');
     function hide(){clearTimeout(timeout);const el=get();if(el)el.hidden=true;}
+    function progress(value,stage){const el=get();if(!el)return;const bar=el.querySelector('progress');const label=el.querySelector('[data-loading-stage]');const n=Math.max(0,Math.min(100,Math.round(value)));if(bar)bar.value=n;if(label)label.textContent=n+'% · '+stage;}
     function show(){
       const el=get();if(!el)return;
+      if(el.hidden)progress(0,'初期化');
       el.hidden=false;
       const message=el.querySelector('[data-loading-message]');
       const retry=el.querySelector('[data-loading-dismiss]');
@@ -96,9 +106,11 @@
         if(el.hidden)return;
         if(message)message.textContent='読み込みに時間がかかっています。通信環境を確認してください。';
         if(retry)retry.hidden=false;
+        const label=el.querySelector('[data-loading-stage]');if(label)label.textContent+=' · 読み込み待機中';
       },30000);
     }
-    window.Kotama3DLoading={show,hide,ready:()=>{
+    window.Kotama3DLoading={show,hide,progress,ready:()=>{
+      progress(100,'描画完了');
       if(document.body.dataset.screen==='field')hide();
     }};
     document.addEventListener('DOMContentLoaded',()=>{
@@ -109,7 +121,7 @@
 </head>
 <body>
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
-    <div class="loading-inner"><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p><button type="button" data-loading-dismiss hidden>探索画面を表示</button></div>
+    <div class="loading-inner"><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><progress class="loading-progress" max="100" value="0" aria-label="3D読み込み進捗"></progress><span data-loading-stage>0% · 初期化</span><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p><button type="button" data-loading-dismiss hidden>探索画面を表示</button></div>
   </div>
   <div class="game">
 
