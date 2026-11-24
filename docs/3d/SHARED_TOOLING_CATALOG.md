@@ -453,3 +453,9 @@
 
 - 最終検査追記: fix/f1-preview-delivery-20261124 / ca532ed66f518627c5bdf1272310261c5934b147。実ネットの3F/1F/2F起動・描画・素材ハッシュをpass、page errors0。保存sentinel不変/子のメモリsaveVersion12を確認。隔離entryの全3配信先503注入でiframe空/通常保存不変をpass。証跡 docs/reviews/f1-v6-delivery/live-verification.json と3枚の実PNG。直接raw.githack HTMLはクラウドから403のため配信先自体の表示確認とは区別。
 - 新しい固定SHA試遊URL: https://raw.githack.com/koda24-cell/kotama-no-bouken/ca532ed66f518627c5bdf1272310261c5934b147/preview/f1-sacred-playtest.html 。旧SHAのURLは内容を更新できないため、この入口を使用。
+
+
+### 第一層V7: 明視性と2F後半の石組み推移（2026-11-24）
+- ユーザー修正: 暗くて見にくい、2F入口で壁の品質が急変。新規ツール/package/外部素材/モデル制作なし。既存9候補を保持し、経路距離による推移helper f1-transition-v7.jsで2F前半のnative壁を残し、後半だけnative→中間A/B/C→実3F壁へ隣接段階で分配する。1F同等の石表面処理から後半だけ詳細度を上げ、苔/下草の配置密度も同じ経路に沿って推移。
+- 既存Three.js r180のHemisphereLight/低強度AmbientLight/exposureのみで足元の明視性を調整。試験表示のみ、通常表示の露出1.3/追加fill0を保持。天井/霧/マップ/保存/原本GLBを変更せず、NOT_APPROVEDを維持。
+- ソースbranch fix/f1-light-and-f2-transition-20261124。実画面の同位置before/afterと全壁の保持条件・実通路干渉を検証中。前半の歩行148セルでnative、後半にA26/B63/C20/3F7セル（全264）という実マップの方針検査はpass。美術承認や全端末FPS評価とは別。
