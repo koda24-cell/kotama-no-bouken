@@ -19,10 +19,15 @@ export async function loadIndustrialAssets() {
   const loader=new GLTFLoader(manager);
   function dispose(){if(disposed)return;disposed=true;ownedGeometries.forEach(x=>x.dispose());ownedMaterials.forEach(x=>x.dispose());ownedTextures.forEach(x=>x.dispose());if(!THREE.Cache.enabled)ownedBitmaps.forEach(x=>x.close());ownedBitmaps.clear();blobs.forEach(x=>URL.revokeObjectURL(x));models.clear();}
   try {
-    for (const row of catalog.sharedImages) {
-      const url=new URL(row.file,base),bytes=await verified(url,row.sha256);
-      const blob=URL.createObjectURL(new Blob([bytes],{type:row.file.endsWith('.png')?'image/png':'image/jpeg'}));blobs.set(url.href,blob);urlAliases.set(url.href,blob);
-    }
+    let cursor=0,imageFailure=null;
+    const workers=Array.from({length:Math.min(3,catalog.sharedImages.length)},async()=>{
+      while(!imageFailure&&cursor<catalog.sharedImages.length){
+        const row=catalog.sharedImages[cursor++];
+        try{const url=new URL(row.file,base),bytes=await verified(url,row.sha256),blob=URL.createObjectURL(new Blob([bytes],{type:row.file.endsWith('.png')?'image/png':'image/jpeg'}));blobs.set(url.href,blob);urlAliases.set(url.href,blob);}
+        catch(error){imageFailure=error;throw error;}
+      }
+    });
+    await Promise.allSettled(workers);if(imageFailure)throw imageFailure;
     for(const row of catalog.assets){
       const url=new URL(row.file,base),bytes=await verified(url,row.sha256);
       const result=await loader.parseAsync(bytes,new URL('.',url).href),doc=result.parser.json;
