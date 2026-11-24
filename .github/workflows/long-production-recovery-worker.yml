@@ -2,6 +2,12 @@ name: Long production Blender 5.3 recovery worker
 on:
   workflow_call:
     inputs:
+      stage:
+        type: number
+        default: 2
+      artifact_suffix:
+        type: string
+        default: ''
       session_start_epoch:
         required: true
         type: string
@@ -57,6 +63,8 @@ jobs:
         run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
       - name: Validate input paths and asset ID
         env:
+          STAGE: ${{ inputs.stage }}
+          SUFFIX: ${{ inputs.artifact_suffix }}
           ASSET_ID: ${{ inputs.asset_id }}
           SCRIPT: ${{ inputs.script }}
           SOURCE_SCRIPT: ${{ inputs.source_script }}
@@ -67,6 +75,8 @@ jobs:
           python3 - <<'PY'
           import os,re,pathlib
           a=os.environ
+          assert 2 <= int(a['STAGE']) <= 12
+          assert re.fullmatch(r'[-a-zA-Z0-9_]{0,40}',a['SUFFIX'])
           assert re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}',a['ASSET_ID'])
           for key in ('SCRIPT','SOURCE_SCRIPT'):
               s=a[key]
@@ -142,7 +152,7 @@ jobs:
           COMMIT: ${{ github.sha }}
           PARENT: ${{ inputs.source_run_id }}
         run: |
-          python3 tools/3d_checkpoint/checkpoint.py pack --directory "$OUTPUT_DIR" --asset-id "$ASSET_ID" --iteration 2 --source-script "$SCRIPT" --source-commit "$COMMIT" --parent-checkpoint "$PARENT"
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory "$OUTPUT_DIR" --asset-id "$ASSET_ID" --iteration "$STAGE" --source-script "$SCRIPT" --source-commit "$COMMIT" --parent-checkpoint "$PARENT"
           python3 tools/3d_checkpoint/checkpoint.py verify --directory "$OUTPUT_DIR" --asset-id "$ASSET_ID" --source-script "$SCRIPT" --source-commit "$COMMIT"
       - name: Scan generated files
         env:
@@ -151,7 +161,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: long-production-recovery-NOT-APPROVED-${{ github.run_id }}
+          name: long-production-recovery-NOT-APPROVED-${{ github.run_id }}${{ inputs.artifact_suffix }}
           path: |
             ${{ inputs.output_directory }}/
             qa/security/
