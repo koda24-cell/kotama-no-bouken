@@ -1,0 +1,79 @@
+name: Publish next eleven model families
+on:
+  push:
+    branches: [feature/3d-progress-gallery-20261124]
+    paths: ['.github/workflows/3d-progress-next-publish.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download selected archives
+        run: |
+          mkdir -p qa/archives qa/source qa/registry
+          for id in 14842115312 14839853183 14839094690 14838898562 14838058216 14837393465 14835339026 14834982983 14834501722 14763285656 14732061110; do
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$id/zip" > "qa/archives/$id.zip"
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$id" > "qa/archives/$id.json"
+          done
+      - name: Scan archives and extract only selected renders
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 bash -ec 'freshclam; clamscan --infected qa/archives'
+          python3 - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          rows=[]
+          specs=[
+            (14842115312,"f1-fractured","破断岩","第1層","V6","render-output/f1-v6-fractured/renders/v6_fractured/"),
+            (14839853183,"f1-wall_b","石壁B","第1層","V6","render-output/f1-v6-wall_b/renders/v6_wall_b/"),
+            (14839094690,"f1-wall_c","石壁C","第1層","V6","render-output/f1-v6-wall_c/renders/v6_wall_c/"),
+            (14838898562,"f1-wall_a","石壁A","第1層","V6","render-output/f1-v6-wall_a/renders/v6_wall_a/"),
+            (14838058216,"f1-riverstones","川石","第1層","V6","render-output/f1-v6-riverstones/renders/v6_riverstones/"),
+            (14837393465,"f1-schist","片岩","第1層","V6","render-output/f1-v6-schist/renders/v6_schist/"),
+            (14835339026,"f1-fern","シダ","第1層","V6","render-output/f1-v6-fern/renders/v6_fern/"),
+            (14834982983,"f1-trifoliate","三つ葉","第1層","V6","render-output/f1-v6-trifoliate/renders/v6_trifoliate/"),
+            (14834501722,"f1-sedge","草株","第1層","V6","render-output/f1-v6-sedge/renders/v6_sedge/"),
+            (14763285656,"b5-knight-armor","騎士鎧","第5層","V5","render-output/b5-knights/knight_helmet_body_layout_v5/"),
+            (14732061110,"b4-volcanic-stele","火山石碑","第4層","V15","b4-volcanic-stele-v15-")
+          ]
+          for aid,mid,name,floor,version,prefix in specs:
+              meta=json.loads(Path(f"qa/archives/{aid}.json").read_text())
+              run=meta["workflow_run"]
+              folder=Path("qa/source")/mid
+              folder.mkdir()
+              images=[]
+              with zipfile.ZipFile(f"qa/archives/{aid}.zip") as z:
+                  for view in (("front","left","angle","top") if mid=="b5-knight-armor" else ("front","side","angle","top")):
+                      info=z.getinfo(prefix+view+".png")
+                      assert 0<info.file_size<=20_000_000
+                      (folder/(view+".png")).write_bytes(z.read(info))
+                      images.append(dict(view=view,file=view+".png"))
+              rows.append(dict(directory=mid,manifest=dict(id=mid,name=name,floor=floor,version=version,status="制作中",publication_cleared=True,run_id=run["id"],source_sha=run["head_sha"],updated_at=meta["created_at"],images=images)))
+          Path("qa/batch.json").write_text(json.dumps(rows,ensure_ascii=False))
+          Path("qa/registry/index.json").write_text('{"schema":1,"models":[]}')
+          PY
+          docker run --rm -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 bash -ec 'freshclam; clamscan --infected -r qa/source'
+          python3 tools/3d-progress/backfill.py --registry qa/registry --batch qa/batch.json --source qa/source
+          python3 -c 'import json; m=json.load(open("qa/registry/index.json"))["models"]; assert len(m)==11 and sum(len(x["images"]) for x in m)==44'
+      - name: Publish verified previews without replacing newer records
+        run: |
+          git fetch origin 3d-progress-data
+          git worktree add --detach /tmp/gallery-data origin/3d-progress-data
+          python3 tools/3d-progress/backfill.py --registry /tmp/gallery-data --batch qa/batch.json --source qa/source
+          cd /tmp/gallery-data
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.json renders
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish cleared work-in-progress render previews'
+            git push origin HEAD:3d-progress-data
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: next-model-registry
+          path: qa/registry/
+          retention-days: 14
