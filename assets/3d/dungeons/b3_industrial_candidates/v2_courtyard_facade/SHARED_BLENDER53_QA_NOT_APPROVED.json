@@ -1,0 +1,538 @@
+{
+  "status": "NOT_APPROVED",
+  "blender": "5.3.0",
+  "files": {
+    "manifest.json": {
+      "bytes": 17726,
+      "sha256": "dd3b122cf9b62b7b3d859758c19113fa192690abc7ba727803f029a7a8e7220d"
+    },
+    "metrics/f3_v2_courtyard_facade.json": {
+      "bytes": 1647,
+      "sha256": "c9f251ee86c6a1b55e26935924a73311f231f4489d509789055367f1beb101da"
+    },
+    "props/f3_v2_courtyard_facade.glb": {
+      "bytes": 17378736,
+      "sha256": "b7bac76ca568fe79f5cfa29e6217694e23708097ecd516b63a91e8f251278159"
+    },
+    "renders/f3_v2_courtyard_facade/angle.png": {
+      "bytes": 506505,
+      "sha256": "dc0ff783b6fbe8c868c512fa83841b17e04d305f06ba8fc9c93af5d99cc5a1e6"
+    },
+    "renders/f3_v2_courtyard_facade/back.png": {
+      "bytes": 444489,
+      "sha256": "e7ac7204970bb3206fdb0ce0e6c1a9e0b163db062f71957d1a3f3732eb1971ff"
+    },
+    "renders/f3_v2_courtyard_facade/front.png": {
+      "bytes": 466423,
+      "sha256": "85b98c29d9a45a35f1de618bd9946c9889655cad509a8341385ecf542b98d01d"
+    },
+    "renders/f3_v2_courtyard_facade/side.png": {
+      "bytes": 497758,
+      "sha256": "a4ab64cf2de0dd94645a573fd13ab5b12f404e9521dd7a99d456537bb99416f8"
+    },
+    "renders/f3_v2_courtyard_facade/top.png": {
+      "bytes": 523083,
+      "sha256": "d6fe909ccf9e95919dc423a58abf27a710241bd59892859d6b40240fba54cde1"
+    },
+    "runtime/f3_v2_courtyard_facade.glb": {
+      "bytes": 3105164,
+      "sha256": "d7d0551e0b8a26c016de200f666025574d1b92fa81449088612cbaded3a57402"
+    },
+    "security/all-texture-inputs.log": {
+      "bytes": 292,
+      "sha256": "8681b6ba36eb47403f1cc505de163d8b4153ab84ac286d9569ff8ea937ad712a"
+    },
+    "security/concrete_debris-api-input.log": {
+      "bytes": 291,
+      "sha256": "e577df043994759984d53711ba48981a4348759032c60f27e22f93c959148d7f"
+    },
+    "security/concrete_debris-api.log": {
+      "bytes": 291,
+      "sha256": "7af5c9527bfcbcac21ce7adf24e70a6d95fe27b93bc4e545d87f8af86299032d"
+    },
+    "security/concrete_debris-diffuse-input.log": {
+      "bytes": 293,
+      "sha256": "f77e857f97073397c4db4b7ee2ae403184b6e8f4da8a64934f81971c718fff3c"
+    },
+    "security/concrete_debris-diffuse.log": {
+      "bytes": 293,
+      "sha256": "6d3da0e191686418631304865296e5a2f2657330c1463509db9277a5f83b4443"
+    },
+    "security/concrete_debris-normal-input.log": {
+      "bytes": 289,
+      "sha256": "49538438dbadbcbfdf2b1b37211764b4c5c2715e68cc60e0b2db903484e4067c"
+    },
+    "security/concrete_debris-normal.log": {
+      "bytes": 289,
+      "sha256": "3364f144f50b2c94dfca7846cfd3ad4719533b0634c1834a7321129f87b06402"
+    },
+    "security/concrete_debris-roughness-input.log": {
+      "bytes": 293,
+      "sha256": "d2501b985af56177c6dfb00a76e09da6d831fbb7b14b25d1c0db62a6c4850cd9"
+    },
+    "security/concrete_debris-roughness.log": {
+      "bytes": 293,
+      "sha256": "555d9156ca57df87930cf6eaae18139ea4251d60e2524f8a330bbbf2debf91e0"
+    },
+    "security/concrete_slab_wall-api-input.log": {
+      "bytes": 291,
+      "sha256": "1beafee86d056c4667f14dc9b47f465f13a69a76b2103385c04dfb3f74d0d814"
+    },
+    "security/concrete_slab_wall-api.log": {
+      "bytes": 291,
+      "sha256": "152051baf53a0f130fb0de1262d66fa6eb760a2007f37c2f4d1051ed9f6aa6e4"
+    },
+    "security/concrete_slab_wall-diffuse-input.log": {
+      "bytes": 293,
+      "sha256": "15dec0984de4960c98c9c618b7fadcb6730905d67d39ac44c80bb86fc267f90b"
+    },
+    "security/concrete_slab_wall-diffuse.log": {
+      "bytes": 293,
+      "sha256": "e4ae62f36c3cf39ba620c67f6d1144b0026dbe8812252a28cf0b8ef691c71e9c"
+    },
+    "security/concrete_slab_wall-normal-input.log": {
+      "bytes": 293,
+      "sha256": "d53f5ebb5ec12c594bde530f3faab703666866395817f32c26603de69a16102a"
+    },
+    "security/concrete_slab_wall-normal.log": {
+      "bytes": 293,
+      "sha256": "2a6a32f8f3944c7f04aea6c145dc11d12fa2a7c4b13e1804dd2ab866acebf3d8"
+    },
+    "security/concrete_slab_wall-roughness-input.log": {
+      "bytes": 293,
+      "sha256": "65284b387deca773e5e8f38a9f6bfdafdea48faf9eb0ae1c37d110421389ccae"
+    },
+    "security/concrete_slab_wall-roughness.log": {
+      "bytes": 293,
+      "sha256": "119deef8bec4a0ae957c88791da62ee627021c6115461a5c0a526decf65b00c0"
+    },
+    "security/cracked_concrete_wall-api-input.log": {
+      "bytes": 291,
+      "sha256": "6eb5062943f6eb025dda0c5840b8a1d449784d4c1d846aa15be5072e2d1041b5"
+    },
+    "security/cracked_concrete_wall-api.log": {
+      "bytes": 291,
+      "sha256": "263b1e2b498198dd8857391b2b2254c97438600516ae4335d14121a6de5efe66"
+    },
+    "security/cracked_concrete_wall-diffuse-input.log": {
+      "bytes": 289,
+      "sha256": "c67b81f77679d2c4c5f903ef28ed6c5b5b47546f6814b63d314ad7b86f063845"
+    },
+    "security/cracked_concrete_wall-diffuse.log": {
+      "bytes": 289,
+      "sha256": "1283a496590cdd90f2d9c5fd8a3eca4df117a062b603a6c5b26aafce3476f786"
+    },
+    "security/cracked_concrete_wall-normal-input.log": {
+      "bytes": 293,
+      "sha256": "75e84f1b19488c62e25ac1c852abf1d334820b352648362cdef7e579246037a5"
+    },
+    "security/cracked_concrete_wall-normal.log": {
+      "bytes": 293,
+      "sha256": "b083834932f6bef642259a2802f513016f75292cb69cf616bb654f00cab97c38"
+    },
+    "security/cracked_concrete_wall-roughness-input.log": {
+      "bytes": 293,
+      "sha256": "de1ff92bef6f2cdc9c3164e1c06349874d672ea03b2748f6328a18135bd61217"
+    },
+    "security/cracked_concrete_wall-roughness.log": {
+      "bytes": 293,
+      "sha256": "36adb971ee8d028ed19b863c4186f54e944f233df5675830b5f941e0a106b846"
+    },
+    "security/existing-cc0-inputs.log": {
+      "bytes": 289,
+      "sha256": "f84bd819ba060b9cbb235e06846fbf096bef2c2c60672e0311348c796fa07996"
+    },
+    "security/renderer-source.log": {
+      "bytes": 289,
+      "sha256": "1f56c461f98d7c044c0419b1417aeae3c1707ca3d441ae981778c465c2803c38"
+    },
+    "security/shared-source.log": {
+      "bytes": 294,
+      "sha256": "a2af58267a8f0e3f9a522491931108956e49e116c7bf7c06224c6e01167c2e13"
+    },
+    "security/source.log": {
+      "bytes": 294,
+      "sha256": "9ad864c265e7c8814e6144e1345dc8b76f8755e481a18768f930b47e59d0a841"
+    },
+    "shared_textures/04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb.jpg": {
+      "bytes": 733167,
+      "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+    },
+    "shared_textures/0ae0197567385fef299f88979eadce59976a777d9c29ebbc92adce83e9af2eaf.jpg": {
+      "bytes": 4006,
+      "sha256": "0ae0197567385fef299f88979eadce59976a777d9c29ebbc92adce83e9af2eaf"
+    },
+    "shared_textures/0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8.jpg": {
+      "bytes": 6217,
+      "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+    },
+    "shared_textures/109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c.jpg": {
+      "bytes": 8996,
+      "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+    },
+    "shared_textures/23baec29082a094c8a5a830c2d69d35359dfdc631f048eb4da3fe4f988de95b9.png": {
+      "bytes": 1072465,
+      "sha256": "23baec29082a094c8a5a830c2d69d35359dfdc631f048eb4da3fe4f988de95b9"
+    },
+    "shared_textures/2c8f3068acec37eee8a2566d22df7c4e36ea62138ee6ad1e1ade612deeabe7ca.jpg": {
+      "bytes": 6251,
+      "sha256": "2c8f3068acec37eee8a2566d22df7c4e36ea62138ee6ad1e1ade612deeabe7ca"
+    },
+    "shared_textures/35c9dcb991610f45e9bf8b74eb06c7c0c1a1dad960aa898716e581cc7d04d551.jpg": {
+      "bytes": 7308,
+      "sha256": "35c9dcb991610f45e9bf8b74eb06c7c0c1a1dad960aa898716e581cc7d04d551"
+    },
+    "shared_textures/39cdf70225f4f09780af88b6ab0637c4346f429ae3db2ce900a158041ddfdceb.jpg": {
+      "bytes": 1462829,
+      "sha256": "39cdf70225f4f09780af88b6ab0637c4346f429ae3db2ce900a158041ddfdceb"
+    },
+    "shared_textures/44b6149bc492c43f8c0d7e596858c7b63ffe57267a9cea320ad72329009f4619.jpg": {
+      "bytes": 6763,
+      "sha256": "44b6149bc492c43f8c0d7e596858c7b63ffe57267a9cea320ad72329009f4619"
+    },
+    "shared_textures/44ef24a906346a95e5c47da7df1c41356a38ec1ab1b39e93cf609d6a69688b80.png": {
+      "bytes": 69781,
+      "sha256": "44ef24a906346a95e5c47da7df1c41356a38ec1ab1b39e93cf609d6a69688b80"
+    },
+    "shared_textures/48f3bdd981eb1b115a34e64432c3982cd25fc3f1aabd3b2ca46261dbf70706c5.jpg": {
+      "bytes": 3966,
+      "sha256": "48f3bdd981eb1b115a34e64432c3982cd25fc3f1aabd3b2ca46261dbf70706c5"
+    },
+    "shared_textures/53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5.jpg": {
+      "bytes": 6755,
+      "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+    },
+    "shared_textures/5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9.jpg": {
+      "bytes": 811730,
+      "sha256": "5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9"
+    },
+    "shared_textures/5eaccddc4c15dfcab06d6d7a79f1884bde76cf5eed9b892a188ec2acf373de72.jpg": {
+      "bytes": 576735,
+      "sha256": "5eaccddc4c15dfcab06d6d7a79f1884bde76cf5eed9b892a188ec2acf373de72"
+    },
+    "shared_textures/6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg": {
+      "bytes": 6785,
+      "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+    },
+    "shared_textures/6eeeb03e45bdc8540d70afe43fd8f70cd60e66291064260214a07868b8788b09.jpg": {
+      "bytes": 5884,
+      "sha256": "6eeeb03e45bdc8540d70afe43fd8f70cd60e66291064260214a07868b8788b09"
+    },
+    "shared_textures/702b3c4abeccafb8b20d19b79297c9058bbfa386ba21278134cb71c34b9aa13a.png": {
+      "bytes": 940660,
+      "sha256": "702b3c4abeccafb8b20d19b79297c9058bbfa386ba21278134cb71c34b9aa13a"
+    },
+    "shared_textures/7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc.jpg": {
+      "bytes": 697265,
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+    },
+    "shared_textures/7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1.jpg": {
+      "bytes": 489576,
+      "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+    },
+    "shared_textures/7fdfe954fbff16da7888fe68b9b56ed1e0bb7e1d87c18ff4180e4073f74c71ba.jpg": {
+      "bytes": 740730,
+      "sha256": "7fdfe954fbff16da7888fe68b9b56ed1e0bb7e1d87c18ff4180e4073f74c71ba"
+    },
+    "shared_textures/808c3e22d01d23bcacee61a4f6a8271db39583552f57aa0ecda8c1280fcc4aab.png": {
+      "bytes": 997893,
+      "sha256": "808c3e22d01d23bcacee61a4f6a8271db39583552f57aa0ecda8c1280fcc4aab"
+    },
+    "shared_textures/89ca1aaf1c130d22d59c4dc7b42438a684ce500667d8a030fcb441acc7c44374.jpg": {
+      "bytes": 4947,
+      "sha256": "89ca1aaf1c130d22d59c4dc7b42438a684ce500667d8a030fcb441acc7c44374"
+    },
+    "shared_textures/90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57.jpg": {
+      "bytes": 8773,
+      "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+    },
+    "shared_textures/a7c63631f4b79c2d083b4f1156e37f0b937f227ebbf398d7f2047256b81fc12a.jpg": {
+      "bytes": 4825,
+      "sha256": "a7c63631f4b79c2d083b4f1156e37f0b937f227ebbf398d7f2047256b81fc12a"
+    },
+    "shared_textures/acb55491c3a9fc29dcfb0752cfae48e24fa739ed0c5205722bfc64c17300a9e0.png": {
+      "bytes": 676305,
+      "sha256": "acb55491c3a9fc29dcfb0752cfae48e24fa739ed0c5205722bfc64c17300a9e0"
+    },
+    "shared_textures/b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098.jpg": {
+      "bytes": 5400,
+      "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+    },
+    "shared_textures/b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182.png": {
+      "bytes": 1244933,
+      "sha256": "b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182"
+    },
+    "shared_textures/ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710.jpg": {
+      "bytes": 6746,
+      "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+    },
+    "shared_textures/d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f.jpg": {
+      "bytes": 5174,
+      "sha256": "d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f"
+    },
+    "shared_textures/d247bdc21f3d37eb514d058aaa3c2193a6955d12191d1190cedf5285985f8604.jpg": {
+      "bytes": 950747,
+      "sha256": "d247bdc21f3d37eb514d058aaa3c2193a6955d12191d1190cedf5285985f8604"
+    },
+    "shared_textures/d9f232f0e53090b7fab24c74f9ff3f927edc0683d354a31fac65af4dde9b7b94.jpg": {
+      "bytes": 6778,
+      "sha256": "d9f232f0e53090b7fab24c74f9ff3f927edc0683d354a31fac65af4dde9b7b94"
+    },
+    "shared_textures/dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb.jpg": {
+      "bytes": 5836,
+      "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+    },
+    "shared_textures/ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b.jpg": {
+      "bytes": 898376,
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+    },
+    "shared_textures/efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea.png": {
+      "bytes": 708778,
+      "sha256": "efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea"
+    },
+    "shared_textures/f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1.jpg": {
+      "bytes": 4832,
+      "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+    },
+    "shared_textures/f1db263e3f889524d1877894e9ae887b8a0637ee6e954bc72eefeb644ec8cc73.jpg": {
+      "bytes": 7595,
+      "sha256": "f1db263e3f889524d1877894e9ae887b8a0637ee6e954bc72eefeb644ec8cc73"
+    },
+    "shared_textures/f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949.jpg": {
+      "bytes": 4791,
+      "sha256": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949"
+    },
+    "shared_textures/f910cbaff5a0fbd778a8c41947ac826f2313e70e9b4077bc39221a417fa8d5b4.jpg": {
+      "bytes": 1073985,
+      "sha256": "f910cbaff5a0fbd778a8c41947ac826f2313e70e9b4077bc39221a417fa8d5b4"
+    },
+    "sources/authoring-portability.json": {
+      "bytes": 5424,
+      "sha256": "44fb4b527d27e09bbb067fdf81d80859f8734c9ace81886f8d62628ca408137c"
+    },
+    "sources/f3_v2_courtyard_facade.blend": {
+      "bytes": 17613073,
+      "sha256": "c211b54998a100bf78ce4399e3a283a9f17195c8acff65abb770b8ccce47876f"
+    },
+    "sources/f3_v2_courtyard_facade_authoring.blend": {
+      "bytes": 17429993,
+      "sha256": "08ba87b25bb0b577a29e95c7e67aecf00b6984ddad52c229024796e8d1d7e60b"
+    },
+    "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_basecolor.jpg": {
+      "bytes": 8773,
+      "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+    },
+    "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_normal.jpg": {
+      "bytes": 6755,
+      "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+    },
+    "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_orm.jpg": {
+      "bytes": 6217,
+      "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+    },
+    "sources/generated_materials/f3_deep_crack_9d554bcb78e9_basecolor.jpg": {
+      "bytes": 4832,
+      "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+    },
+    "sources/generated_materials/f3_deep_crack_9d554bcb78e9_normal.jpg": {
+      "bytes": 6785,
+      "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+    },
+    "sources/generated_materials/f3_deep_crack_9d554bcb78e9_orm.jpg": {
+      "bytes": 5836,
+      "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+    },
+    "sources/generated_materials/f3_exposed_aggregate_010b21ab9520_basecolor.jpg": {
+      "bytes": 8996,
+      "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+    },
+    "sources/generated_materials/f3_exposed_aggregate_010b21ab9520_normal.jpg": {
+      "bytes": 6746,
+      "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+    },
+    "sources/generated_materials/f3_exposed_aggregate_010b21ab9520_orm.jpg": {
+      "bytes": 5400,
+      "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+    },
+    "sources/generated_materials/f3_ivy_woody_stem_2f9e94ea1486_basecolor.jpg": {
+      "bytes": 5174,
+      "sha256": "d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f"
+    },
+    "sources/generated_materials/f3_ivy_woody_stem_2f9e94ea1486_normal.jpg": {
+      "bytes": 3966,
+      "sha256": "48f3bdd981eb1b115a34e64432c3982cd25fc3f1aabd3b2ca46261dbf70706c5"
+    },
+    "sources/generated_materials/f3_ivy_woody_stem_2f9e94ea1486_orm.jpg": {
+      "bytes": 4791,
+      "sha256": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949"
+    },
+    "sources/generated_materials/original_ivy_vein_color.png": {
+      "bytes": 1072465,
+      "sha256": "23baec29082a094c8a5a830c2d69d35359dfdc631f048eb4da3fe4f988de95b9"
+    },
+    "sources/generated_materials/original_ivy_vein_normal.png": {
+      "bytes": 69781,
+      "sha256": "44ef24a906346a95e5c47da7df1c41356a38ec1ab1b39e93cf609d6a69688b80"
+    },
+    "sources/generated_materials/v2_dry_woody_liana_885763c64375_basecolor.jpg": {
+      "bytes": 4947,
+      "sha256": "89ca1aaf1c130d22d59c4dc7b42438a684ce500667d8a030fcb441acc7c44374"
+    },
+    "sources/generated_materials/v2_dry_woody_liana_885763c64375_normal.jpg": {
+      "bytes": 4006,
+      "sha256": "0ae0197567385fef299f88979eadce59976a777d9c29ebbc92adce83e9af2eaf"
+    },
+    "sources/generated_materials/v2_dry_woody_liana_885763c64375_orm.jpg": {
+      "bytes": 4825,
+      "sha256": "a7c63631f4b79c2d083b4f1156e37f0b937f227ebbf398d7f2047256b81fc12a"
+    },
+    "sources/generated_materials/v2_exposed_infill_brick_11f7b0306391_basecolor.jpg": {
+      "bytes": 7595,
+      "sha256": "f1db263e3f889524d1877894e9ae887b8a0637ee6e954bc72eefeb644ec8cc73"
+    },
+    "sources/generated_materials/v2_exposed_infill_brick_11f7b0306391_normal.jpg": {
+      "bytes": 6778,
+      "sha256": "d9f232f0e53090b7fab24c74f9ff3f927edc0683d354a31fac65af4dde9b7b94"
+    },
+    "sources/generated_materials/v2_exposed_infill_brick_11f7b0306391_orm.jpg": {
+      "bytes": 6251,
+      "sha256": "2c8f3068acec37eee8a2566d22df7c4e36ea62138ee6ad1e1ade612deeabe7ca"
+    },
+    "sources/generated_materials/v2_remaining_oxide_primer_4caf298892be_basecolor.jpg": {
+      "bytes": 7640,
+      "sha256": "55ed4eaa37fbb3d09fa2b9f52fedaefc07913a057504b7a5c79e2714041d6728"
+    },
+    "sources/generated_materials/v2_remaining_oxide_primer_4caf298892be_normal.jpg": {
+      "bytes": 6809,
+      "sha256": "b5254b318ea5fb30aa75337c5126c86a6e974a2d4c6632eba29f270302803bd9"
+    },
+    "sources/generated_materials/v2_remaining_oxide_primer_4caf298892be_orm.jpg": {
+      "bytes": 6175,
+      "sha256": "bd3d37588eafe1296424b7e28c0b1e3a2852d9e10fe44bc9d58719367b642828"
+    },
+    "sources/generated_materials/v2_unlit_room_concrete_b58f71fd66fc_basecolor.jpg": {
+      "bytes": 7308,
+      "sha256": "35c9dcb991610f45e9bf8b74eb06c7c0c1a1dad960aa898716e581cc7d04d551"
+    },
+    "sources/generated_materials/v2_unlit_room_concrete_b58f71fd66fc_normal.jpg": {
+      "bytes": 6763,
+      "sha256": "44b6149bc492c43f8c0d7e596858c7b63ffe57267a9cea320ad72329009f4619"
+    },
+    "sources/generated_materials/v2_unlit_room_concrete_b58f71fd66fc_orm.jpg": {
+      "bytes": 5884,
+      "sha256": "6eeeb03e45bdc8540d70afe43fd8f70cd60e66291064260214a07868b8788b09"
+    },
+    "structural-audit.json": {
+      "bytes": 1785,
+      "sha256": "b5188948ac0ff5ee045759561d8210132cbebce14c58ab4080b581ad6d7ec2af"
+    },
+    "textures/asphalt_02-api.json": {
+      "bytes": 27252,
+      "sha256": "1249520977b7ba990db96a9b4dea2d7d5b8ff6d70c61a7d348310e92f68130d2"
+    },
+    "textures/asphalt_02_diffuse.jpg": {
+      "bytes": 731707,
+      "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed"
+    },
+    "textures/asphalt_02_normal.jpg": {
+      "bytes": 1240122,
+      "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3"
+    },
+    "textures/asphalt_02_roughness.jpg": {
+      "bytes": 544032,
+      "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712"
+    },
+    "textures/chipped_concrete_diffuse.jpg": {
+      "bytes": 716081,
+      "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+    },
+    "textures/chipped_concrete_normal.jpg": {
+      "bytes": 990005,
+      "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+    },
+    "textures/chipped_concrete_roughness.jpg": {
+      "bytes": 336460,
+      "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+    },
+    "textures/concrete_debris-api.json": {
+      "bytes": 26898,
+      "sha256": "340c3b6b1d0f547f8d85a0b27e50f43218ce8c6889a8cc5a9a4a2b85cd9b62a9"
+    },
+    "textures/concrete_debris_diffuse.jpg": {
+      "bytes": 811730,
+      "sha256": "5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9"
+    },
+    "textures/concrete_debris_normal.jpg": {
+      "bytes": 1462829,
+      "sha256": "39cdf70225f4f09780af88b6ab0637c4346f429ae3db2ce900a158041ddfdceb"
+    },
+    "textures/concrete_debris_roughness.jpg": {
+      "bytes": 530326,
+      "sha256": "bbdf4da5c579b1d7282021e265a0bda3df87ca2cb9972f93d0caa5c3aeca47e4"
+    },
+    "textures/concrete_moss_diffuse.jpg": {
+      "bytes": 697265,
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+    },
+    "textures/concrete_moss_normal.jpg": {
+      "bytes": 898376,
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+    },
+    "textures/concrete_moss_roughness.jpg": {
+      "bytes": 320901,
+      "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+    },
+    "textures/concrete_slab_wall-api.json": {
+      "bytes": 27880,
+      "sha256": "32767ba84eeb6000779c5ee52049e1cdc32d549c288636ae1a12ec032d14898a"
+    },
+    "textures/concrete_slab_wall_diffuse.jpg": {
+      "bytes": 576735,
+      "sha256": "5eaccddc4c15dfcab06d6d7a79f1884bde76cf5eed9b892a188ec2acf373de72"
+    },
+    "textures/concrete_slab_wall_normal.jpg": {
+      "bytes": 740730,
+      "sha256": "7fdfe954fbff16da7888fe68b9b56ed1e0bb7e1d87c18ff4180e4073f74c71ba"
+    },
+    "textures/concrete_slab_wall_roughness.jpg": {
+      "bytes": 305483,
+      "sha256": "0108afabf6b9ad59f9d63668e5a80be08435453fe382a7d749576d82f3b9fea8"
+    },
+    "textures/cracked_concrete_wall-api.json": {
+      "bytes": 28917,
+      "sha256": "a173adc1ce4deaf5d8fc4e677795f26872644326eecc4875d98d2c9d3d902c90"
+    },
+    "textures/cracked_concrete_wall_diffuse.jpg": {
+      "bytes": 1073985,
+      "sha256": "f910cbaff5a0fbd778a8c41947ac826f2313e70e9b4077bc39221a417fa8d5b4"
+    },
+    "textures/cracked_concrete_wall_normal.jpg": {
+      "bytes": 950747,
+      "sha256": "d247bdc21f3d37eb514d058aaa3c2193a6955d12191d1190cedf5285985f8604"
+    },
+    "textures/cracked_concrete_wall_roughness.jpg": {
+      "bytes": 591307,
+      "sha256": "0f18937de6a05b34797d2ddaac5a3996e922696431161d312b7304ac1b110312"
+    },
+    "textures/rusty_iron-api.json": {
+      "bytes": 25191,
+      "sha256": "8968aeea82c1dfeab7a138f128511e348f449f29acc7e426bebfcd0624eb5a6d"
+    },
+    "textures/rusty_iron_diffuse.jpg": {
+      "bytes": 733167,
+      "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+    },
+    "textures/rusty_iron_normal.jpg": {
+      "bytes": 489576,
+      "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+    },
+    "textures/rusty_iron_roughness.jpg": {
+      "bytes": 873519,
+      "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+    },
+    "textures/sources.json": {
+      "bytes": 7398,
+      "sha256": "e1eba996b1015178276a9a23bbe8694d1bd28f115931825c6aeef0266a5cb2a8"
+    }
+  }
+}

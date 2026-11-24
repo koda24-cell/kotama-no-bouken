@@ -1,0 +1,59 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v2_courtyard_facade/props/f3_v2_courtyard_facade.glb",
+      "file_bytes": 17378736,
+      "glb_meshes": 13,
+      "total_mesh_primitives": 13,
+      "scene_nodes": 14,
+      "scene_mesh_nodes": 13,
+      "scene_primitive_instances": 13,
+      "estimated_scene_triangles": 27618,
+      "materials": 13,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_deep_crack",
+        "f3_exposed_aggregate",
+        "f3_ivy_woody_stem",
+        "f3_lobed_ivy_veined",
+        "f3_oxidized_iron",
+        "f3_v2_cast_floor",
+        "f3_v2_crumbling_render",
+        "f3_v2_crushed_aggregate",
+        "v2_dry_woody_liana",
+        "v2_exposed_infill_brick",
+        "v2_unlit_room_concrete"
+      ],
+      "mesh_names": [
+        "Cube.126",
+        "Icosphere.038",
+        "opaque dirt-coated broken glazing remnant",
+        "storey slab 4",
+        "asymmetric climbing ivy leader",
+        "curled rounded five lobed ivy blade",
+        "exposed slab reinforcing bar",
+        "storey slab 0",
+        "Cube.021",
+        "Icosphere",
+        "woody root gripping slab",
+        "Cube.027",
+        "Cube.006"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 13,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 38,
+      "textures": 38,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}
