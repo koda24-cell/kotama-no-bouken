@@ -205,29 +205,38 @@
     const meterFill = document.createElement("i");
     meterTrack.appendChild(meterFill);
     meter.append(meterLabel, meterTrack);
+    const executionLabel = document.createElement("span");
+    executionLabel.className = "battle-execution-label";
+    executionLabel.textContent = "行動実行中…";
+    executionLabel.setAttribute("role","status");
+    executionLabel.hidden = true;
+    portrait.appendChild(executionLabel);
     hud.append(portrait, name);
     arena?.appendChild(hud);
     // Gauge is arena-anchored, not portrait-anchored: ready effects cannot move it.
     arena?.appendChild(meter);
     function updateHero() {
       if (!battle.classList.contains("active")) return;
+      const executing = !!battleState.busy && !battleState.stageFinished && battleState.enemy && document.getElementById("battle-result")?.hidden !== false && !(battleState.tutorialMode && tutorialState.phase === "battle-retreat");
+      battle.classList.toggle("battle-execution-view", !!executing);
+      executionLabel.hidden = !executing;
       const members = typeof getParty === "function" ? getParty() : [];
       const title = document.getElementById("command-title")?.textContent || "";
-      const activeId = typeof battleState !== "undefined" ? battleState.turnOrder?.[battleState.currentActorIndex] : null;
+      const activeId = typeof battleState !== "undefined" ? (battleState.busy ? battleState.actingIds?.[0] : battleState.turnOrder?.[battleState.currentActorIndex]) : null;
       const actor = members.find(c => c.id === activeId) || members.find(c => title.includes(c.name)) || members[0];
       if (!actor) { hud.hidden = true; return; }
       hud.hidden = false;
       if (hud.dataset.actorId !== actor.id) {
         hud.dataset.actorId = actor.id;
-        portrait.replaceChildren();
+        portrait.replaceChildren(executionLabel);
         const portraitSrc = actor.image;
         if (portraitSrc) {
           const img = document.createElement("img");
           img.src = portraitSrc;
           img.alt = "";
-          img.onerror = () => { img.remove(); portrait.textContent = actor.emblem || "◇"; };
+          img.onerror = () => { img.remove(); portrait.append(document.createTextNode(actor.emblem || "◇")); };
           portrait.appendChild(img);
-        } else portrait.textContent = actor.emblem || "◇";
+        } else portrait.append(document.createTextNode(actor.emblem || "◇"));
         name.textContent = actor.name;
       }
       const skill = typeof unionSkills !== "undefined" ? unionSkills[actor.id] : null;
@@ -251,6 +260,10 @@
     const commands = document.getElementById("battle-commands");
     const sync = new MutationObserver(updateHero);
     if (title) sync.observe(title, { childList: true, subtree: true, characterData: true });
+    const turnNode = document.getElementById("turn-counter");
+    if(turnNode) sync.observe(turnNode,{childList:true,subtree:true,characterData:true});
+    const resultNode = document.getElementById("battle-result");
+    if(resultNode) sync.observe(resultNode,{attributes:true,attributeFilter:["hidden"]});
     if (commands) sync.observe(commands, { childList: true, subtree: false });
     const partySync = new MutationObserver(updateHero);
     partySync.observe(party, { childList: true });
@@ -364,7 +377,7 @@
       primaryRail.querySelectorAll(".battle-preview-rail-button").forEach(button => {
         if (button.textContent.includes("ユニオンスキル")) button.classList.toggle("battle-union-command-ready", ready);
       });
-      railTitle.textContent = (typeof currentActor === "function" ? currentActor()?.name : "") + "　どうする？";
+      railTitle.textContent = actor ? actor.name + "　どうする？" : "行動選択";
       const unionPanel = box.querySelector(".union-panel");
       const existingToggle = box.querySelector("[data-preview-union-toggle]");
       if (!main || !unionPanel) {
