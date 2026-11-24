@@ -1,0 +1,24 @@
+name: Long production budget policy tests
+on:
+  push:
+    branches:
+      - feature/long-production-integration-20261124
+      - development
+    paths:
+      - 'tools/3d_checkpoint/*production_budget.py'
+      - '.github/workflows/long-production-budget-tests.yml'
+  pull_request:
+    paths:
+      - 'tools/3d_checkpoint/*production_budget.py'
+      - '.github/workflows/long-production-budget-tests.yml'
+permissions:
+  contents: read
+jobs:
+  policy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s tools/3d_checkpoint -p test_production_budget.py -v

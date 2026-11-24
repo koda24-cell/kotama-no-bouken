@@ -1,0 +1,159 @@
+name: Long production Blender 5.3 recovery worker
+on:
+  workflow_call:
+    inputs:
+      session_start_epoch:
+        required: true
+        type: string
+      estimated_render_minutes:
+        required: true
+        type: number
+      asset_id:
+        required: true
+        type: string
+      script:
+        required: true
+        type: string
+      source_script:
+        required: true
+        type: string
+      source_commit:
+        required: true
+        type: string
+      source_run_id:
+        required: true
+        type: string
+      source_artifact:
+        required: true
+        type: string
+      source_directory:
+        required: true
+        type: string
+      blend_filename:
+        required: true
+        type: string
+      output_directory:
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+  packages: read
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record worker start
+        id: clock
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
+      - name: Validate input paths and asset ID
+        env:
+          ASSET_ID: ${{ inputs.asset_id }}
+          SCRIPT: ${{ inputs.script }}
+          SOURCE_SCRIPT: ${{ inputs.source_script }}
+          SOURCE_DIR: ${{ inputs.source_directory }}
+          BLEND_FILE: ${{ inputs.blend_filename }}
+          OUTPUT_DIR: ${{ inputs.output_directory }}
+        run: |
+          python3 - <<'PY'
+          import os,re,pathlib
+          a=os.environ
+          assert re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}',a['ASSET_ID'])
+          for key in ('SCRIPT','SOURCE_SCRIPT'):
+              s=a[key]
+              assert re.fullmatch(r'tools/[a-zA-Z0-9_./-]+\.py',s) and '..' not in s.split('/')
+              p=pathlib.Path(s)
+              assert p.is_file() and not p.is_symlink()
+          for key in ('SOURCE_DIR','OUTPUT_DIR'):
+              s=a[key]
+              assert re.fullmatch(r'render-output/[a-zA-Z0-9_./-]+',s) and '..' not in s.split('/')
+          assert re.fullmatch(r'[a-zA-Z0-9_.-]+\.blend',a['BLEND_FILE'])
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.source_run_id }}
+          name: ${{ inputs.source_artifact }}
+          path: recovered
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify immutable checkpoint before opening
+        env:
+          ASSET_ID: ${{ inputs.asset_id }}
+          SOURCE_SCRIPT: ${{ inputs.source_script }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          SOURCE_DIR: ${{ inputs.source_directory }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory "recovered/$SOURCE_DIR" --asset-id "$ASSET_ID" --source-script "$SOURCE_SCRIPT" --source-commit "$SOURCE_COMMIT"
+      - name: ClamAV scan recovered inputs
+        env:
+          SOURCE_DIR: ${{ inputs.source_directory }}
+          SCRIPT: ${{ inputs.script }}
+        run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan "recovered/$SOURCE_DIR" qa/security/source.log
+          bash tools/security/clamav_scan_gate.sh scan "$SCRIPT" qa/security/script.log
+      - name: Check remaining budget before starting Blender
+        env:
+          SESSION_START: ${{ inputs.session_start_epoch }}
+          JOB_START: ${{ steps.clock.outputs.epoch }}
+          ESTIMATE: ${{ inputs.estimated_render_minutes }}
+        run: |
+          PYTHONPATH=tools/3d_checkpoint python3 - <<'PY'
+          import os,time,math
+          from production_budget import Budget,route
+          now=time.time()
+          elapsed=math.ceil((now-int(os.environ["SESSION_START"]))/60)
+          job=math.ceil((now-int(os.environ["JOB_START"]))/60)
+          estimate=int(os.environ["ESTIMATE"])
+          if estimate <= 0:
+              raise SystemExit("Positive conservative estimate required")
+          decision=route(Budget(),elapsed,job,"idle",estimate)
+          print("PRODUCTION_ROUTE",decision)
+          if decision != "start_unit":
+              raise SystemExit("Render deferred: "+decision)
+          PY
+      - name: Resume and render
+        env:
+          SOURCE_DIR: ${{ inputs.source_directory }}
+          BLEND_FILE: ${{ inputs.blend_filename }}
+          RESUME_OUTPUT: ${{ inputs.output_directory }}
+          SCRIPT: ${{ inputs.script }}
+        run: |
+          export RESUME_BLEND="recovered/$SOURCE_DIR/$BLEND_FILE"
+          test -f "$RESUME_BLEND"
+          blender -b --disable-autoexec -t 2 --python-exit-code 1 --python "$SCRIPT"
+      - name: Technical QA
+        env:
+          OUTPUT_DIR: ${{ inputs.output_directory }}
+        run: python3 tools/3d_checkpoint/render_qa.py --directory "$OUTPUT_DIR"
+      - name: Pack next checkpoint
+        env:
+          OUTPUT_DIR: ${{ inputs.output_directory }}
+          ASSET_ID: ${{ inputs.asset_id }}
+          SCRIPT: ${{ inputs.script }}
+          COMMIT: ${{ github.sha }}
+          PARENT: ${{ inputs.source_run_id }}
+        run: |
+          python3 tools/3d_checkpoint/checkpoint.py pack --directory "$OUTPUT_DIR" --asset-id "$ASSET_ID" --iteration 2 --source-script "$SCRIPT" --source-commit "$COMMIT" --parent-checkpoint "$PARENT"
+          python3 tools/3d_checkpoint/checkpoint.py verify --directory "$OUTPUT_DIR" --asset-id "$ASSET_ID" --source-script "$SCRIPT" --source-commit "$COMMIT"
+      - name: Scan generated files
+        env:
+          OUTPUT_DIR: ${{ inputs.output_directory }}
+        run: bash tools/security/clamav_scan_gate.sh scan "$OUTPUT_DIR" qa/security/output.log
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: long-production-recovery-NOT-APPROVED-${{ github.run_id }}
+          path: |
+            ${{ inputs.output_directory }}/
+            qa/security/
+          retention-days: 14
+          if-no-files-found: error
