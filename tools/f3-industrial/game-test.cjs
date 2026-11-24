@@ -66,8 +66,9 @@ info.performance=await page.evaluate(()=>{const p=window.__perf,t=p.map(x=>x.tim
 
 }
 if (process.argv.includes('--visual-only')) {
- fs.writeFileSync(`${out}/${mobile?'mobile':'pc'}-results.json`,JSON.stringify({logs,errors},null,2));
  const failures=logs.filter(r=>r.mode!=='b3-industrial-trial'||!r.industrialAssets?.sourceHashesVerified||r.fallbackReason||r.overlaps?.length||r.edgeOverlaps?.length).map(r=>({floor:r.floor,mode:r.mode,reason:r.fallbackReason,hardOverlaps:r.edgeOverlaps?.length}));
+ if(errors.some(e=>!e.includes('ERR_CERT_AUTHORITY_INVALID')))failures.push({reason:'browser errors'});
+ fs.writeFileSync(`${out}/${mobile?'mobile':'pc'}-results.json`,JSON.stringify({logs,errors,failures},null,2));
  console.log(JSON.stringify({floors:logs.map(({edgePlacements,...x})=>x),errors,failures},null,2));await browser.close();server.close();if(failures.length)process.exitCode=1;return;
 }
 // Real input: move, turn without spending a turn, and bump into a solid boundary.

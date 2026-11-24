@@ -16018,5 +16018,7 @@
   ],
   "errors": [
     "Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
-  ]
+  ],
+  "failures": [],
+  "failureSummaryProvenance": "Recomputed from the preserved actual logs with the final visual-check predicate; no rerender or edited result inputs."
 }

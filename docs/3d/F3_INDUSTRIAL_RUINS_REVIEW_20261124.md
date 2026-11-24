@@ -4,9 +4,9 @@
 
 ## 試験入口
 
-[7Fから試す](https://raw.githack.com/koda24-cell/kotama-no-bouken/f51ef90e61644a9fde3e180498fafc0e7418c276/preview/f3-industrial-playtest.html)。ヘッダーの7F/8F/9Fから切り替えられる。素材・ゲームコードは固定SHA `860feb7f883f3655923f07695513c76d3e6602c5` に固定。
+[7Fから試す](https://raw.githack.com/koda24-cell/kotama-no-bouken/cdf79cddbc45bd077ce13a1f9fa4ea6e6ed47270/preview/f3-industrial-playtest.html)。raw.githackの案内が出た場合は「Open the page」を押す。ヘッダーの7F/8F/9Fから切り替えられる。素材・ゲームコードは固定SHA `f2645ec8e619940464d7072a308338e75ac63d66` に固定。
 
-通常セーブを読み書きしないメモリ保存の試験画面。再読み込みで試験の進行はリセットされる。見学時はランダム戦闘を止め、FOE接触は通常どおり。通常戦闘へ切り替えるリンクもある。
+通常セーブを読み書きしないメモリ保存の試験画面。見学時は開始地点を変えず既存の通れる街路へ向き、導入会話を省く。再読み込みで試験の進行はリセットされる。見学時はランダム戦闘を止め、FOE接触は通常どおり。通常戦闘へ切り替えるリンクもある。
 
 ## 調査・空間構成
 
@@ -57,7 +57,7 @@ Blender5.3.0 + ClamAVの固定コンテナで、1点ずつ造形・GLB再取り�
 - 27GLBの実バリデーションは全てerrors0。追加・既存強化25点はwarnings0、元の承認済み階段2点は既存warnings9/46（未使用要素・実行時接線生成など）を保持。[検査](../reviews/f3-industrial-final/gltf-validation.json)
 - 全27点を実描画する2回のロード・解放でgeometryは0へ復帰。ガラス透過用rendererキャッシュのtexture1は残るが増えない。素材34/texture58/shared画像50、推定decoded RGBA111542272bytes。[実検査](../reviews/f3-industrial-final/actual-27-model-lifecycle.json)
 - PC7–9Fは各27モデルのSHA確認、追加硬物と非歩行領域の不正重なり0、中央1.8m移動帯への干渉0。[実画面と結果](../reviews/f3-industrial-final-pc/pc-results.json)
-- 実操作による移動・旋回・壁停止・宝箱・採集・灯籠パズル/門・階段・保存往復・第1層↔第3層の繰り返し遷移を確認。[PC操作](../reviews/f3-industrial-full-controls/pc-results.json)。スマートフォンの最終結果は別途追記する。
+- 実操作による移動・旋回・壁停止・宝箱・採集・灯籠パズル/門・階段・保存往復・第1層↔第3層の繰り返し遷移を確認。[PC操作](../reviews/f3-industrial-full-controls/pc-results.json)。[スマートフォン実操作](../reviews/f3-industrial-final-mobile/mobile-results.json)もpass。低速描画時の扉表示を固定500ms待ちで判定した初回だけ失敗し、実際の開放を待つ再検査で全項目pass。失敗記録はiterationsへ保持。[モバイル7–9F実表示](../reviews/f3-industrial-mobile-views/mobile-results.json)も全モデルSHA・通行干渉・失敗項目0。
 - メモリ保存のcheckpointをdeserializeが復元しない既存不具合を確認し、この機能ブランチ内で補修。正常座標の往復差分0、不正area/floor/非有限/範囲外座標は除外。[保存検査](../reviews/f3-industrial-persistence/checkpoint-restored.json)
 - 追加画像のSHA不一致を故障注入すると従来の都市へ戻り、イベント12/都市root1/far80/JS errors0。[fallback](../reviews/f3-industrial-runtime/hash-failure-existing-city.json)。専用フラグなしでは候補の取得0/従来表示を確認。[通常表示](../reviews/f3-industrial-runtime/default-existing-city.json)
 - 実CDNの7–9F表示と全モデルSHAを確認。最初の画像配信先503から別の実配信先へ復旧、通常保存sentinel不変、隔離entryを全配信先503にするとゲームを起動しない。成功する応答のローカル差し替えなし。[実ネット検証](../reviews/f3-industrial-live/live-verification.json)
