@@ -3,5 +3,7 @@
   "sourceFile": "assets/3d/dungeons/b3_industrial_candidates/native_originals/abandonedTransitStop.glb",
   "sourceSha256": "4a81d52b5bd2d900c537fb182fc2460766b1932552c5cd6b2cb225e169c26675",
   "geometryPreserved": true,
-  "originalGeometryHash": "4a8c0ab09fa9042a09bf99c976604f225c34bc814b547e2edbefdc0e13c15f47"
+  "originalGeometryHash": "4a8c0ab09fa9042a09bf99c976604f225c34bc814b547e2edbefdc0e13c15f47",
+  "anchoredOriginalBars": 0,
+  "leafFinish": "original vein atlas with original leaf UVs retained"
 }

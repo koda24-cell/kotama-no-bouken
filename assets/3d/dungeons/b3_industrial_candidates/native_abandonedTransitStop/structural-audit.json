@@ -3,7 +3,7 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/native_abandonedTransitStop/props/f3_native_abandonedTransitStop.glb",
-      "file_bytes": 5103184,
+      "file_bytes": 5215272,
       "glb_meshes": 6,
       "total_mesh_primitives": 6,
       "scene_nodes": 7,
@@ -15,7 +15,7 @@
         "f3_bare_worn_steel",
         "f3_deep_crack",
         "f3_exposed_aggregate",
-        "f3_native_aged_bark",
+        "f3_native_bark",
         "f3_oxidized_iron",
         "f3_weathered_concrete"
       ],
@@ -35,8 +35,8 @@
         "MASK": 0,
         "BLEND": 0
       },
-      "images": 18,
-      "textures": 18,
+      "images": 16,
+      "textures": 16,
       "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
     }
   ],

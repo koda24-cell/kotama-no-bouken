@@ -3,64 +3,64 @@
   "blender": "5.3.0",
   "files": {
     "manifest.json": {
-      "bytes": 10113,
-      "sha256": "772df9c9a6645213f3b7304725fe03aa1c59e84c2d8175eeedc666fec28933f9"
+      "bytes": 9684,
+      "sha256": "789bf48dbe42d168b20a88237f7486225c33ba5df6a30e406c689131f1f05ee5"
     },
     "metrics/f3_native_abandonedTransitStop.json": {
-      "bytes": 1498,
-      "sha256": "72585402265debac00b6735ee3d4e72da59e88f6994bcc8abcf53a90f834bbcc"
+      "bytes": 1493,
+      "sha256": "e04a0651461f6a489b9094dfdedfc80b0829a7ecdc65db06a621f0e7dfbed12d"
     },
     "props/f3_native_abandonedTransitStop.glb": {
-      "bytes": 5103184,
-      "sha256": "bda34dc4587d81de829b2dfd24d74543de9469f4cafa0fa61b749f32729c5916"
+      "bytes": 5215272,
+      "sha256": "b370242f869840dd35f191b777e186d30eeeec9a9252566ecbb676190524d3a8"
     },
     "renders/f3_native_abandonedTransitStop/angle.png": {
-      "bytes": 485088,
-      "sha256": "ed9011c9ba401b622f9e405e1e032986208eea665861cf9dbcf4f5f1a7daeeda"
+      "bytes": 483755,
+      "sha256": "638d5160b0eaf991dad7031d76bbcf8686b75e458d55f22d793a7a535e2c21cc"
     },
     "renders/f3_native_abandonedTransitStop/back.png": {
-      "bytes": 451691,
-      "sha256": "c781c86d4ad83b92ed74f68c568952d4fa9182935d25a54da908f00ccff8a30a"
+      "bytes": 450851,
+      "sha256": "66ca0b95713da9c5498ebf58cf80c68f8b00fdd02d832175a5ab86b388b22672"
     },
     "renders/f3_native_abandonedTransitStop/front.png": {
-      "bytes": 457700,
-      "sha256": "f654d3c168893771afd25bc2bce099e56f6c92c75bfa7025405c0ed2e805bf4b"
+      "bytes": 457702,
+      "sha256": "1c3cdfe8311d203f710810c50e0c50f74438f305b04a4a496507966886a7cbec"
     },
     "renders/f3_native_abandonedTransitStop/side.png": {
-      "bytes": 497661,
-      "sha256": "4a6882adc59afbdaf4d9e4b7e742d2dea83de26649a935cb4aecc5e312523a99"
+      "bytes": 496717,
+      "sha256": "eca67828167a1e2274e608b581f3e18f94bc1749d7054946838898c638cd8e99"
     },
     "renders/f3_native_abandonedTransitStop/top.png": {
-      "bytes": 468228,
-      "sha256": "194fec6219d65050dc0a764c3faf1fde854fb2e2c057d5570c22bb1755beb497"
+      "bytes": 467602,
+      "sha256": "31dea071fd730cdf698df4cf3a3838503aed684adb47a506688a3638fff90658"
     },
     "runtime/f3_native_abandonedTransitStop.glb": {
-      "bytes": 145528,
-      "sha256": "975339e9c5ed5d2e2e054c7567694749088cfe4d06fdb472e4a2205a7f50cedc"
+      "bytes": 143216,
+      "sha256": "cd7e5bd5cf11112a94a6fe371f37882fd47b80aaed144f5ce8a3b0de34ac7d81"
     },
     "security/all-texture-inputs.log": {
       "bytes": 290,
-      "sha256": "d9b3486745b58130e2960f472da47c42f640b4261fcefbc7c49c3b8d3abcb4e5"
+      "sha256": "06b1db0f7c42b961edb1e5592dbeba489aa9bc0b1ff6824457bb0b476976532c"
     },
     "security/existing-cc0-inputs.log": {
       "bytes": 289,
-      "sha256": "7b1199fa6de0f5c118fd41815b24965d095b226244659d20ba4c60e9ed65d4e7"
+      "sha256": "c509f09627665ce48005d3f99ba385944eda38c24fb5e978b620e6cb82fc6bf9"
     },
     "security/preserved-native-inputs.log": {
       "bytes": 289,
-      "sha256": "9204731d4f463b23564cb7809e0db9e1b22b1a468a8935ece8c2d75d37dac357"
+      "sha256": "2ba489b4c1e3392101279f6abb46bc4f1007d6cf54e562f0666e73b2625a8c00"
     },
     "security/renderer-source.log": {
       "bytes": 289,
-      "sha256": "e4fe1368b8f646286e3acb34cea747142d81578486069aadbfbf1063389c9966"
+      "sha256": "666eafdd1a8731d9a5da149bbf3fa7fba159f2ca9960457f918642177827c029"
     },
     "security/shared-source.log": {
       "bytes": 294,
-      "sha256": "3da68da6aba0e7e9b9c4f312059fcac1329a94fd6f0f791bb38081f32588d3bf"
+      "sha256": "a8560b291b15919ce842f36df4db20eafdee73885f9fad7b2e118b3ae8a911f5"
     },
     "security/source.log": {
       "bytes": 293,
-      "sha256": "f5af976510425938bfb6206010a42479f7911ae514199db54fe29d0edde18158"
+      "sha256": "50e091263d559db3a0e1b61bcd10c9ab66d6eb87749d34055562229e0183d45d"
     },
     "shared_textures/04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb.jpg": {
       "bytes": 733167,
@@ -78,14 +78,6 @@
       "bytes": 716081,
       "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
     },
-    "shared_textures/2cfde693b043c723c786d3623ccf564621df492297e10401598ccb8f9fefac36.jpg": {
-      "bytes": 4030,
-      "sha256": "2cfde693b043c723c786d3623ccf564621df492297e10401598ccb8f9fefac36"
-    },
-    "shared_textures/3a9f5b52b56afd809d876fe82657f9e149f4f7c70b9ac46b9478501bae37c05d.jpg": {
-      "bytes": 5534,
-      "sha256": "3a9f5b52b56afd809d876fe82657f9e149f4f7c70b9ac46b9478501bae37c05d"
-    },
     "shared_textures/531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg": {
       "bytes": 990005,
       "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
@@ -93,10 +85,6 @@
     "shared_textures/53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5.jpg": {
       "bytes": 6755,
       "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
-    },
-    "shared_textures/6c6ef80852879539a0904e36961c1283ba5e4e4b8db276982c96e42b26bd9b87.jpg": {
-      "bytes": 4173,
-      "sha256": "6c6ef80852879539a0904e36961c1283ba5e4e4b8db276982c96e42b26bd9b87"
     },
     "shared_textures/6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg": {
       "bytes": 6785,
@@ -109,6 +97,10 @@
     "shared_textures/90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57.jpg": {
       "bytes": 8773,
       "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+    },
+    "shared_textures/a40a44e1e3af3a903ff6750d217cc36902dbb38ef09f826a527e5e8f4a534f0e.png": {
+      "bytes": 128076,
+      "sha256": "a40a44e1e3af3a903ff6750d217cc36902dbb38ef09f826a527e5e8f4a534f0e"
     },
     "shared_textures/b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098.jpg": {
       "bytes": 5400,
@@ -135,12 +127,12 @@
       "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
     },
     "sources/f3_native_abandonedTransitStop.blend": {
-      "bytes": 563515,
-      "sha256": "7c8885e4905a5539af12a061ac098cebf143e46b019820265e3a84c280a2f68e"
+      "bytes": 561525,
+      "sha256": "4a84fbaff358af649146043c1166e9f0c8fcb6b2c5aaafa5416625e98fbc91d5"
     },
     "sources/f3_native_abandonedTransitStop_authoring.blend": {
-      "bytes": 557047,
-      "sha256": "8e1c6eaab36c770ca47b648a1165db8a1228b8bfa16979a9246f3b8018075b03"
+      "bytes": 555195,
+      "sha256": "dc840e531c193fec9a91f9a7dbdb7ae30d7130d6c9bd05bdef6192c05ba7a280"
     },
     "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_basecolor.jpg": {
       "bytes": 8773,
@@ -190,25 +182,21 @@
       "bytes": 4173,
       "sha256": "6c6ef80852879539a0904e36961c1283ba5e4e4b8db276982c96e42b26bd9b87"
     },
-    "sources/generated_materials/f3_native_olive_leaf_08d94f3c6cf3_basecolor.jpg": {
-      "bytes": 7929,
-      "sha256": "c4b8621be181eb62db3121b12b282d7af375dea8704c77a28944f85f8e244d77"
+    "sources/generated_materials/native_veined_leaf_basecolor.png": {
+      "bytes": 80771,
+      "sha256": "8c94695bbe50c2a8943c348aec2478fcb9faed3e11f9e5e6c16081f750c84a03"
     },
-    "sources/generated_materials/f3_native_olive_leaf_08d94f3c6cf3_normal.jpg": {
-      "bytes": 6727,
-      "sha256": "147734152458ecb142c8bc95956c154e2d5e0f19ca4c1710246fe181dc82599c"
-    },
-    "sources/generated_materials/f3_native_olive_leaf_08d94f3c6cf3_orm.jpg": {
-      "bytes": 6180,
-      "sha256": "33696237a8855a77bc3763cc51ff1f05d43236b5e98aeaa3d751ec9717b2e337"
+    "sources/generated_materials/native_veined_leaf_normal.png": {
+      "bytes": 9266,
+      "sha256": "0006551c4b8983ef395fff0093ba4a2b4e50bcdbdd6b3de746f838d5f1f025dd"
     },
     "sources/native-provenance.json": {
-      "bytes": 351,
-      "sha256": "2e2e461df1a7af530fc584fed21b50274a8fb8d9e879e8d08160f48a66efb357"
+      "bytes": 451,
+      "sha256": "93072fd567174679c8aadff264b48f40d02d43e9126ad5edc9ddb53d91e47991"
     },
     "structural-audit.json": {
-      "bytes": 1338,
-      "sha256": "be4ae9c21c0f409229a0b91874462ee0aaea4b4d85a5277df63b89b4a0e16cbd"
+      "bytes": 1333,
+      "sha256": "72414190956a56f3f2cce371a9cb0b92999a1be18cedf5f8684df0ec9df68c40"
     },
     "textures/asphalt_02-api.json": {
       "bytes": 27252,
