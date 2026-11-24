@@ -4,7 +4,7 @@ import os,traceback
 def main():
  import sys,json,hashlib,subprocess,shutil,urllib.request,math,random
  from pathlib import Path
- ROOT=Path(__file__).resolve().parents[2];delivery=ROOT/os.environ['OUTPUT_DIR'];delivery.mkdir(parents=True,exist_ok=True)
+ ROOT=Path(__file__).resolve().parents[2];subprocess.run(['git','config','--global','--add','safe.directory',str(ROOT)],check=True);delivery=ROOT/os.environ['OUTPUT_DIR'];delivery.mkdir(parents=True,exist_ok=True)
  asset=delivery.name.removeprefix('f3-industrial-');parts=json.loads((ROOT/'tools/f3-industrial/parts.json').read_text());assert asset in [p['id']for p in parts]
  candidate=ROOT/'assets/3d/dungeons/b3_industrial_candidates';textures=candidate/'textures';textures.mkdir(parents=True,exist_ok=True)
  def scan(path,label):subprocess.run(['bash',str(ROOT/'tools/security/clamav_scan_gate.sh'),'scan',str(path),str(delivery/'security'/(label+'.log'))],check=True)
