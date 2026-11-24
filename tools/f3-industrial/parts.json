@@ -573,5 +573,18 @@
       12.43,
       3.449
     ]
+  },
+  {
+    "id": "v2_wildflower_colony",
+    "name": "風化した路肩に根付く写真由来の野草花V2",
+    "dimensions": [
+      3.2,
+      0.8,
+      0.8
+    ],
+    "status": "DESIGNED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "revisionOf": "sparse ground flowers / reclaimed pockets",
+    "phase": "V2 individual licensed foliage source"
   }
 ]
