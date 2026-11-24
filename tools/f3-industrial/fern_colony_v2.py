@@ -37,7 +37,8 @@ def build(e):
   world=o.matrix_world.copy();corners=[world@Vector(p)for p in o.bound_box];lo=Vector([min(p[k]for p in corners)for k in range(3)]);hi=Vector([max(p[k]for p in corners)for k in range(3)]);center=(lo+hi)*.5
   scale=[.83,1.03,.82,.94][i%4]
   source_meshes.append({'name':o.name,'vertices':len(o.data.vertices),'sourceMatrix':[[*r]for r in world]})
-  o.parent=None;o.matrix_world=Matrix.Translation((((i-(count-1)/2)*.51)-center.x*scale,(-.05 if i%2 else .05)-center.y*scale,-lo.z*scale))@Matrix.Diagonal((scale,scale,scale,1))@world
+  px,py=([(-.62,-.09),(-.44,.22),(-.15,.03),(.05,-.24),(.42,.08),(.63,-.14)][i] if asset=='periwinkle_plant' else ((i-(count-1)/2)*.51,(-.05 if i%2 else .05)))
+  o.parent=None;o.matrix_world=Matrix.Translation((px-center.x*scale,py-center.y*scale,-lo.z*scale))@Matrix.Diagonal((scale,scale,scale,1))@world
   # Separate official alpha is explicitly connected; no black rectangular cards.
   for material in o.data.materials:
    material.name='f3_v2_polyhaven_'+asset;material.use_backface_culling=False;material.surface_render_method='DITHERED'

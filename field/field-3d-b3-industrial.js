@@ -173,7 +173,9 @@ export function createTheme(api) {
     let cedarVerified=false;
     if(v2&&a.f===2){
       const held=await retainFirstLayerSource('assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb','60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb');
-      heldGrass.push(held);prototypes.set('reused_cedar',held.source);cedarVerified=true;
+      heldGrass.push(held);const cedar=held.source.clone(true);
+      cedar.traverse(o=>{if(o.isMesh&&o.material.alphaTest>0){o.material=grassCutoutMaterialV6(o.material);materials.push(o.material);}});
+      prototypes.set('reused_cedar',cedar);cedarVerified=true;
     }
     const occupied = new Set();
     const stairCells=new Set(),stairFront=new Set();let stairCourtCount=0,treeCourtCount=0;
