@@ -132,7 +132,9 @@ export function createTheme(api) {
     industrial=await loadIndustrialAssets();
     v2=industrial.models.has('v2_courtyard_facade');
     if(v2){
-      env.hemi={sky:0xd6dfdb,ground:0x8d9687,high:1.35,low:1.45};
+      env.hemi={sky:0xd6dfdb,ground:0x8d9687,high:.90,low:1.15};
+      // Closed rooms receive little skylight; constant hemi must not wash them out.
+      for(const m of industrial.materials)if(m.name==='v2_unlit_room_concrete')m.color.setRGB(.19,.22,.21);
       api.setEnvironment?.(env);
       g.camera.far=44;g.camera.updateProjectionMatrix();
     }
@@ -349,7 +351,7 @@ export function createTheme(api) {
     }
     batchStatic();
     skyMesh = finish.sky(); root.add(skyMesh);
-    const sun = new THREE.DirectionalLight(0xe6e9e2, v2?1.10:.85);
+    const sun = new THREE.DirectionalLight(0xe6e9e2, v2?1.85:.85);
     sun.position.set(a.w * 2 - 35, 65, a.h * 2 - 25);
     sun.target.position.set(a.w * 2, 0, a.h * 2); root.add(sun, sun.target);
     if(v2&&g.high){
