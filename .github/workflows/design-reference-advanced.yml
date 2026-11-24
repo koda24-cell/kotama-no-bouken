@@ -1,0 +1,59 @@
+name: Advanced reference analysis
+on:
+  pull_request:
+    paths: ['tools/design-engine/**', '.github/workflows/design-reference-advanced.yml']
+permissions:
+  contents: read
+  packages: read
+jobs:
+  metrics:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install Pillow==11.3.0 numpy==2.2.6 trimesh==4.7.4
+      - run: python tools/design-engine/reference_advanced.py advanced-output assets/3d/dungeons/b1_ancient_forest/props/blue_wisp_torch.glb assets/3d/dungeons/b1_ancient_forest/modules/mod_floor_stone_4m.glb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: advanced-metrics
+          path: advanced-output/
+          if-no-files-found: error
+  material:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: torch
+            glb: assets/3d/dungeons/b1_ancient_forest/props/blue_wisp_torch.glb
+          - id: floor
+            glb: assets/3d/dungeons/b1_ancient_forest/modules/mod_floor_stone_4m.glb
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Scan and render
+        env:
+          REFERENCE_GLB: ${{ matrix.glb }}
+        run: |
+          mkdir -p qa/security render-output
+          docker run --rm --entrypoint bash -e REFERENCE_GLB -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -euo pipefail -c '
+            blender --version | head -n 1 | grep -Fx "Blender 5.3.0"
+            bash tools/security/clamav_scan_gate.sh update qa/security
+            bash tools/security/clamav_scan_gate.sh scan "$REFERENCE_GLB" qa/security/input.log
+            bash tools/security/clamav_scan_gate.sh scan tools/design-engine qa/security/source.log
+            blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/design-engine/reference_render.py
+            bash tools/security/clamav_scan_gate.sh scan render-output qa/security/render.log
+          '
+          sudo chown -R "$(id -u):$(id -g)" render-output qa/security
+      - uses: actions/upload-artifact@v4
+        with:
+          name: material-${{ matrix.id }}-NOT-APPROVED
+          path: |
+            render-output/
+            qa/security/
+          if-no-files-found: error
