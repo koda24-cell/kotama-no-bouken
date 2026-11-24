@@ -44,7 +44,7 @@ export function createCitySurfaces(THREE, high, photoMaterials=[]) {
   const maps = { concrete: texture('concrete', 11), stone: texture('stone', 21), rust: texture('rust', 31), bark: texture('bark', 41), leaf: texture('leaf', 51), soil: texture('soil', 61) };
   // Reuse already hash-verified source images. Borrowed textures remain owned by the asset bundle.
   const photoByName=new Map(photoMaterials.map(m=>[m.name,m]));
-  for(const [kind,name]of Object.entries({concrete:'f3_weathered_concrete',stone:'f3_damp_concrete',rust:'f3_oxidized_iron',soil:'f3_damp_concrete'})){
+  for(const [kind,name]of Object.entries({concrete:'f3_weathered_concrete',stone:'f3_damp_concrete',rust:'f3_oxidized_iron',soil:'f3_damp_concrete',asphalt:'f3_broken_asphalt'})){
     const source=photoByName.get(name);if(source?.map)maps[kind]=source.map;
   }
   function surface(kind, tint = 0xffffff, { world = true, scale = 0.72 } = {}) {
@@ -93,7 +93,7 @@ export function createCitySurfaces(THREE, high, photoMaterials=[]) {
     concrete: surface('concrete'), stone: surface('stone'), rust: surface('rust'), bark: surface('bark'),
     leaf: surface('leaf', 0xffffff, { world: false }), soil: surface('soil'),
     dark: surface('rust', 0x65716b), gold: surface('rust', 0xbba777),
-    paving: [surface('stone', 0xb6b4a3), surface('stone', 0x9ca798), surface('stone', 0xc1b8a5)]
+    paving: [surface('asphalt', 0xffffff), surface('asphalt', 0xdce0da), surface('asphalt', 0xe5dfd5)]
   };
   const geo = x => (geometries.push(x), x);
   // Curled, folded leaf blades: geometry, not a transparent upright billboard.

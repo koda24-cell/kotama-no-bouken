@@ -8,6 +8,7 @@ for part in parts:
  if not file.exists():missing.append(part['id']);continue
  doc=json.loads(file.read_text());assert doc['status']=='NOT_APPROVED'
  receipt=json.loads((folder/'SHARED_BLENDER53_QA_NOT_APPROVED.json').read_text());assert receipt['status']=='NOT_APPROVED'
+ assert hashlib.sha256(file.read_bytes()).hexdigest()==receipt['files']['manifest.json']['sha256']
  log=(folder/'security/shared-gateway/output.log').read_text();assert re.search(r'^Infected files: 0\s*$',log,re.M)and re.search(r'^Scanned files: [1-9]',log,re.M)and not re.search(r'^Total errors: [1-9]|ERROR:',log,re.M)
  runtime=doc.get('runtime');assert runtime,part['id']
  for name in [doc['asset']['file'],'runtime/'+runtime['file'],*doc['asset']['renders']]:

@@ -40,7 +40,7 @@ export async function loadIndustrialAssets() {
             const texture=m[prop];ownedTextures.add(texture);
             const assoc=result.parser.associations.get(texture),ti=assoc?.textures;
             const tk=JSON.stringify(stable({source:ti===undefined?{uuid:texture.uuid}:texKey(ti),colorSpace:texture.colorSpace,channel:texture.channel,matrix:texture.matrix.toArray(),flipY:texture.flipY,wrapS:texture.wrapS,wrapT:texture.wrapT,mag:texture.magFilter,min:texture.minFilter}));
-            if(texturePool.has(tk)){m[prop]=texturePool.get(tk);texture.dispose();ownedTextures.delete(texture);}else texturePool.set(tk,texture);
+            if(texturePool.has(tk))m[prop]=texturePool.get(tk);else texturePool.set(tk,texture);
           }
           materialPool.set(key,m);return m;
         };

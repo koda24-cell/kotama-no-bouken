@@ -9,6 +9,7 @@ for part in parts:
  if not mp.exists():continue
  m=json.loads(mp.read_text());asset=m['asset'];receipt=json.loads((folder/'SHARED_BLENDER53_QA_NOT_APPROVED.json').read_text())
  assert m['status']==receipt['status']=='NOT_APPROVED'
+ assert hashlib.sha256(mp.read_bytes()).hexdigest()==receipt['files']['manifest.json']['sha256']
  log=(folder/'security/shared-gateway/output.log').read_text();assert re.search(r'^Infected files: 0\s*$',log,re.M)and re.search(r'^Scanned files: [1-9]',log,re.M)and not re.search(r'^Total errors: [1-9]|ERROR:',log,re.M)
  images=[]
  for name in asset['renders']:
