@@ -453,5 +453,18 @@
     ],
     "portableAuthoring": "native_abandonedTransitStop/portable_sources/f3_native_abandonedTransitStop_authoring.blend",
     "portableSha256": "06e0aca0eadffe302c99fadb7fa63e3d0d75e86fca7fa8c2b3534f53116b3a79"
+  },
+  {
+    "id": "v2_courtyard_facade",
+    "name": "崩落した集合住宅の立体ファサードV2",
+    "dimensions": [
+      4,
+      4.0,
+      16.2
+    ],
+    "status": "DESIGNED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "revisionOf": "retaining_wall",
+    "phase": "V2 visual-quality revision, original retained"
   }
 ]

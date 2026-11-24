@@ -30,6 +30,19 @@ def main():
    row=j[key]['1k']['jpg'];path=textures/(kind+'_'+role+'.jpg')
    if not path.exists():download(row['url'],path,kind+'-'+role)
    sources.append(dict(asset=kind,role=role,file=path.name,url=row['url'],sha256=hashlib.sha256(path.read_bytes()).hexdigest(),license='CC0'))
+ if asset.startswith('v2_'):
+  # New photographic surfaces are scanned immediately after each retrieval,
+  # before JSON parsing or Blender image decoding. Older deliveries unchanged.
+  for kind in ['concrete_slab_wall','cracked_concrete_wall','concrete_debris']:
+   meta=textures/(kind+'-api.json')
+   if not meta.exists():download('https://api.polyhaven.com/files/'+kind,meta,kind+'-api')
+   scan(meta,kind+'-api-input')
+   j=json.loads(meta.read_text())
+   for role,key in [('diffuse','Diffuse'),('normal','nor_gl'),('roughness','Rough')]:
+    row=j[key]['1k']['jpg'];path=textures/(kind+'_'+role+'.jpg')
+    if not path.exists():download(row['url'],path,kind+'-'+role)
+    scan(path,kind+'-'+role+'-input')
+    sources.append(dict(asset=kind,role=role,file=path.name,url=row['url'],sha256=hashlib.sha256(path.read_bytes()).hexdigest(),license='CC0'))
  scan(textures,'all-texture-inputs')
  (textures/'sources.json').write_text(json.dumps({'supplier':'Poly Haven','license':'CC0','licenseURL':'https://polyhaven.com/license','maps':sources},indent=2))
  sys.path[:0]=[str(ROOT/'tools/f1-sacred-forest'),str(ROOT/'tools/f1-layer-v4'),str(Path(__file__).parent)]
@@ -53,7 +66,10 @@ def main():
   bpy.context.view_layer.objects.active=obj
   modifier=obj.modifiers.new('localized edge spalling','BOOLEAN');modifier.operation='DIFFERENCE';modifier.solver='EXACT';modifier.object=cutter
   bpy.ops.object.modifier_apply(modifier=modifier.name);bpy.data.objects.remove(cutter,do_unlink=True);c.uv_world(obj)
- if asset=='retaining_wall':
+ if asset=='v2_courtyard_facade':
+  from courtyard_facade_v2 import build
+  build(dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector))
+ elif asset=='retaining_wall':
   from weathering import wall_atlas
   diffuse,rough=wall_atlas(OUT/'sources/generated_materials',textures)
   aged=c.material('f3_rain_stained_wall',texture_set={'basecolor':diffuse,'normal':textures/'chipped_concrete_normal.jpg','roughness':rough})
