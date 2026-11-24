@@ -1,0 +1,28 @@
+Failed to create secure directory (/defaults): Operation not permitted
+/work/tools/floor3/broken_glass01/build_detached_shard_dirt_v10.py:50: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  material.use_nodes=True
+INFO Draco is available, use library at /blender/lib/libbf_intern_draco_bridge.so
+INFO MeshOptimizer is available, use library at /blender/lib/libbf_intern_meshopt_bridge.so
+00:15:07 | INFO: Starting glTF 2.0 export
+00:15:07 | INFO: Extracting primitive: single_detached_corner_shard
+00:15:07 | INFO: Primitives created: 1
+00:15:07 | INFO: Finished glTF 2.0 export in 0.04397988319396973 s
+/work/tools/floor3/broken_glass01/build_detached_shard_dirt_v10.py:122: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  world.use_nodes=True
+/work/tools/floor3/broken_glass01/build_detached_shard_dirt_v10.py:131: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  bm.use_nodes=True
+00:01.784  image.write      | ERROR OpenImageIO write failed: Could not open file "/config/.cache/thumbnails/large/blender_1_26518f8ba8819555a59ce43effd9ee38.png.png"
+00:17.658  render           | Saved: '/work/out/f3_glass_shard_dirt_v10/f3_glass_detached_shard01_dirt_v10-front.png'
+
+Info: Saved as "f3_glass_detached_shard01_dirt_v10.blend"
+F3_GLASS_SINGLE_CHIP_V10_RENDER_OK front
+00:29.845  render           | Saved: '/work/out/f3_glass_shard_dirt_v10/f3_glass_detached_shard01_dirt_v10-side.png'
+F3_GLASS_SINGLE_CHIP_V10_RENDER_OK side
+00:44.099  render           | Saved: '/work/out/f3_glass_shard_dirt_v10/f3_glass_detached_shard01_dirt_v10-angle.png'
+F3_GLASS_SINGLE_CHIP_V10_RENDER_OK angle
+01:06.361  render           | Saved: '/work/out/f3_glass_shard_dirt_v10/f3_glass_detached_shard01_dirt_v10-chip_detail.png'
+F3_GLASS_SINGLE_CHIP_V10_RENDER_OK chip_detail
+F3_GLASS_SINGLE_CHIP_V10_ALL_COMPLETE
+Blender 5.3.0 (hash 02f0899d78e3 built 2026-11-10 01:31:18)
+
+Blender quit

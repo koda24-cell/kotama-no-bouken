@@ -1,0 +1,42 @@
+{
+  "status": "NOT_APPROVED",
+  "role": "Preserved pre-existing self-authored outputs, no Blender import or artistic acceptance yet",
+  "sourceRun": 44054029508,
+  "sourceArtifact": 14315372618,
+  "zipSha256": "8fddeab01c2743d587eed7d8cb9da81cf96bc24b125c442ee3254b4b29881325",
+  "recoveryRun": "45326058433",
+  "files": {
+    "ruined_building_v3-angle.png": {
+      "bytes": 639806,
+      "sha256": "a5d919748e35cd0f7bcaaa3a7c97a23f966331eff0b6d183f2d839b225b5a478"
+    },
+    "v3-manifest.json": {
+      "bytes": 1178,
+      "sha256": "24e27231ab54d75d71362b20d68dd5604a69a55105c6ea6f06ccb774095c2d61"
+    },
+    "blender-v3.log": {
+      "bytes": 257133,
+      "sha256": "9ee4a1123a787d53487a7fd715bee6075a13971e31f0b9d1f4af6ed68530ad09"
+    },
+    "ruined_building_v3.glb": {
+      "bytes": 7209044,
+      "sha256": "61bc2aa36a3c66a875f8f22675ca87ec0ede8982ecb3c69ef98cbacbe7ebb50e"
+    },
+    "ruined_building_v3-side.png": {
+      "bytes": 563321,
+      "sha256": "075942cdabd62b6d072fce2e91d9b914d7464e6ef3716cc3380f6606312d0e66"
+    },
+    "ruined_building_v3-front.png": {
+      "bytes": 575187,
+      "sha256": "84dcb9bd1027bdb103b24ebca466b4d09e7bdf81ff8998cd68c823f25e26c4ae"
+    },
+    "ruined_building_v2.glb": {
+      "bytes": 598368,
+      "sha256": "63ada750c791e2281f52828ceaa23d14755a562f6deb11831da470d1218e80ef"
+    },
+    "ruined_building_v3.blend": {
+      "bytes": 4574109,
+      "sha256": "bebb72c29290dc8f20f2b7d10268b37bd1d9ee45160e08558235ef0e9abaed7b"
+    }
+  }
+}

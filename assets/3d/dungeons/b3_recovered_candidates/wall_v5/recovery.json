@@ -1,0 +1,46 @@
+{
+  "status": "NOT_APPROVED",
+  "role": "Preserved pre-existing self-authored outputs, no Blender import or artistic acceptance yet",
+  "sourceRun": 44060951836,
+  "sourceArtifact": 14317353990,
+  "zipSha256": "0e18d47fbb49954b0faff5b88377e78a7b57ff6b8805156817967b69ff7279e2",
+  "recoveryRun": "45326058433",
+  "files": {
+    "f3_ruined_wall_floor1_v5.blend": {
+      "bytes": 4455683,
+      "sha256": "8a3235685cbf96293ece4ef646509d301140ece71b38d359d29126b58ba02b4c"
+    },
+    "f3_ruined_wall_floor1_v5-angle.png": {
+      "bytes": 606294,
+      "sha256": "62bc9d66e0845014636bdc952835b653acafdc685b4a31dda58006f289d2dba7"
+    },
+    "progress.json": {
+      "bytes": 95,
+      "sha256": "6517d38aa199e78a89720f6bce84454a30f8ae537f1debf84722db6b88cb4bcd"
+    },
+    "f3_ruined_wall_floor1_v5-side.png": {
+      "bytes": 474163,
+      "sha256": "8d7976f1102f0ede20949ff6e7d045937f18dd21e5feece89228ae435720a5b3"
+    },
+    "f3_ruined_wall_floor1_v5-front.png": {
+      "bytes": 622511,
+      "sha256": "fdfbe2277b16a8f43b4aab7b405c920d28b6cc45794bdaf24786bd9975fa0fd4"
+    },
+    "blender.log": {
+      "bytes": 6348,
+      "sha256": "67001148162883e3a17f2542f21392a23c0abb5a2981d74efef719875bf851e1"
+    },
+    "f3_ruined_wall_floor1_v5-game-eye.png": {
+      "bytes": 620547,
+      "sha256": "a85273a7662964bf4887b48db82184fa68c89bfd89e658d2dc61475846750653"
+    },
+    "f3_ruined_wall_floor1_v5.glb": {
+      "bytes": 2831364,
+      "sha256": "f098fad24987e49eb5471b59c9ff44553952d1a7eaa5fed83358e4808780cb78"
+    },
+    "manifest.json": {
+      "bytes": 1244,
+      "sha256": "1532648bdca5ecd88a1d1346598b32f629af3711442ac10f48abd61cca3fb028"
+    }
+  }
+}

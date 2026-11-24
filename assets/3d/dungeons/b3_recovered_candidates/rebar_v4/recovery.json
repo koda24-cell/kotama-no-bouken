@@ -1,0 +1,46 @@
+{
+  "status": "NOT_APPROVED",
+  "role": "Preserved pre-existing self-authored outputs, no Blender import or artistic acceptance yet",
+  "sourceRun": 44447231928,
+  "sourceArtifact": 14494485337,
+  "zipSha256": "60b410c674a6c1952f9b7c9f719ecbabd8f9538acae9701397580204e88d52c7",
+  "recoveryRun": "45326058433",
+  "files": {
+    "f3_rebar01_v4-angle.png": {
+      "bytes": 210567,
+      "sha256": "202475abb19040baf1bc721580a43b68ba6f47473c604597164305c41add866d"
+    },
+    "f3_rebar01_v4-side.png": {
+      "bytes": 211624,
+      "sha256": "793983f6ed7a1c8533bf7da1701cf70bb1cbec488cd1983c071b5afcb874d1d8"
+    },
+    "f3_rebar01_v4-detail.png": {
+      "bytes": 285152,
+      "sha256": "5677ec05d1298ef8ee853bfbc321950c9b5a3d58664cb14f93c62b3d4a476687"
+    },
+    "blender.log": {
+      "bytes": 1378,
+      "sha256": "a262ea6c8c5ce6a8d15198f1f34d10bcfd873c578a2bce54792c91e9fca30dd9"
+    },
+    "f3_rebar01_v4.blend": {
+      "bytes": 159698,
+      "sha256": "25dce6414606f0841bbef54a707d68edcace2e299e7f621eec8545f1ce0dcc1d"
+    },
+    "F3_REBAR_RUST_01.png": {
+      "bytes": 98662,
+      "sha256": "a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58"
+    },
+    "f3_rebar01_v4.glb": {
+      "bytes": 192984,
+      "sha256": "1036c0d458ff61d7a35022a12a5795e984cae7dc9d12cb378153859a03f4b93c"
+    },
+    "f3_rebar01_v4-front.png": {
+      "bytes": 217309,
+      "sha256": "2fc881a848f2c41f1f5277186173ed381bbedd12aa4b3d9948ce5a40e526693d"
+    },
+    "manifest.json": {
+      "bytes": 1197,
+      "sha256": "7aa32fac8ae8a36d4bc0f1e5c9702a3c720f5f92eae7172a26d85527ad6d116a"
+    }
+  }
+}

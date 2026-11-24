@@ -1,0 +1,40 @@
+{
+  "asset": "F3_GLASS_DETACHED_SHARD01_DIRT_V10",
+  "approval": "NOT_APPROVED",
+  "run_id": "44644156219",
+  "sha": "55fe80e6a6eaf701690ed1fa8e12c838ab838bdd",
+  "files": {
+    "f3_glass_detached_shard01_dirt_v10.glb": {
+      "bytes": 16356,
+      "sha256": "69d75608fa12c90024885f773336f8debadf5a06215bd6a7205a067be446883f"
+    },
+    "f3_glass_detached_shard01_dirt_v10.blend": {
+      "bytes": 99308,
+      "sha256": "20f11ed0a1ebab73c3e35ae0cb5e9161dfe5bc76b0980eb12713fc1032d6e4a6"
+    },
+    "F3_GLASS_SINGLE_CHIP_ROUGHNESS_01.png": {
+      "bytes": 47039,
+      "sha256": "b13cc55a8caf9f9c2f02aaec98ae51e0eb2c46c564bb2b0e96f184f8296f98f9"
+    },
+    "F3_GENERATED_GLASS_DIRT_V10.png": {
+      "bytes": 5225,
+      "sha256": "c215878a23c6bfae3b96a77301c1599addd0566424bf544994cc082af716f185"
+    },
+    "f3_glass_detached_shard01_dirt_v10-front.png": {
+      "bytes": 732255,
+      "sha256": "93fbd6a28e3890590e9a574dbf49021222f69be67542ec39acbae67971c7fa24"
+    },
+    "f3_glass_detached_shard01_dirt_v10-side.png": {
+      "bytes": 711408,
+      "sha256": "6bad2c437e7dfb2a69cbfe2cd64b6d4dbc48a9d37c23b7d14be0b4372d71f532"
+    },
+    "f3_glass_detached_shard01_dirt_v10-angle.png": {
+      "bytes": 736076,
+      "sha256": "eeceb9addca6db80994947eebcd3acdb55f6c60e9f0dc61f60545a57c5b657e8"
+    },
+    "f3_glass_detached_shard01_dirt_v10-chip_detail.png": {
+      "bytes": 752917,
+      "sha256": "a965fdd1ad589fb11ffe83a7d5062438c620152e0f4e638b21a9c998a94daacc"
+    }
+  }
+}
