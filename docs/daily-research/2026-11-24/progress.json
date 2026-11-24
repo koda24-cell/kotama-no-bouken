@@ -1,0 +1,154 @@
+{
+  "checked_at": "2026-11-24T08:26:00+09:00",
+  "repository": "koda24-cell/kotama-no-bouken",
+  "branch": "development",
+  "head_sha": "b8391aa53bf27cef0c38cbef8aadb5771f0da398",
+  "period": {
+    "from": "2026-11-23T08:00:00+09:00",
+    "to": "2026-11-24T08:00:00+09:00"
+  },
+  "method": "GitHub REST commits?sha=development&since=2026-11-22T23:00:00Z&until=2026-11-23T23:00:00Z&per_page=100 と search/issues（repo全体PR created/merged、open current）。時刻はcommitのcommitter date。merge commitを含む到達可能なコミット。",
+  "counts": {
+    "development_reachable_commits_in_period": 45,
+    "repository_pr_created_in_period": 18,
+    "repository_pr_merged_in_period": 16,
+    "repository_open_pr_at_observation": 347
+  },
+  "previous_snapshot": {
+    "branch": "docs/daily-research-20261123",
+    "path": "docs/daily-research/2026-11-23/progress.json",
+    "checked_at": "2026-11-23T08:14:53+09:00"
+  },
+  "day_over_day_count_difference": {
+    "development_reachable_commits_in_period": 34,
+    "repository_pr_created_in_period": 3,
+    "repository_pr_merged_in_period": 10,
+    "repository_open_pr_at_observation": 2
+  },
+  "head_comparison": {
+    "base": "fb8a7769ed149c94fe4ef2565642a6c07b23cdfa",
+    "head": "b8391aa53bf27cef0c38cbef8aadb5771f0da398",
+    "ahead_by": 45,
+    "behind_by": 0
+  },
+  "count_caveats": "日次commitsはmerge込みのdevelopment到達可能コミット、PRはrepo全base。日次数の差と累積head差を区別。openは取得時点、本タスクPR作成前。",
+  "origin": {
+    "project_conception_start": null,
+    "production_start": null,
+    "github_history_first_game_commit": "2026-11-05T21:17:24+09:00",
+    "github_full_development_start": null,
+    "first_game_commit": {
+      "reachable_commit_count": 1521,
+      "oldest_sha": "bd9edb22d43bab9555bb867b37208dd3453fa1e9",
+      "date": "2026-11-05T12:17:24Z",
+      "author_date": "2026-11-05T12:17:24Z",
+      "message": "ゲームファイルを追加",
+      "url": "https://github.com/koda24-cell/kotama-no-bouken/commit/bd9edb22d43bab9555bb867b37208dd3453fa1e9",
+      "parent_count": 0,
+      "head": "b8391aa53bf27cef0c38cbef8aadb5771f0da398",
+      "pagination_calls": 22
+    },
+    "days_since_first_game_commit": 18.464305555555555,
+    "interpretation": "固定headからGitHub commits per_page1を倍増/二分探索し1521件の最終ページを確認。root parent0、index.html/script.js/style.cssとassets追加を確認。GitHub履歴の起点であって制作/構想開始や本格化時点とは断定しない。"
+  },
+  "library_index": {
+    "repository": "koda24-cell/3d-asset-studio",
+    "path": "library/INDEX.tsv",
+    "indexed_rows": 726,
+    "types": {
+      "hdris": 12,
+      "models": 227,
+      "packs": 26,
+      "textures": 461
+    },
+    "delta_rows": 0,
+    "caveat": "INDEXの分類/行数のみ。実体や承認を新規検証した件数ではない。"
+  },
+  "milestones": [
+    {
+      "id": "PR728",
+      "merged": true,
+      "merged_at": "2026-11-23T10:08:58Z",
+      "scope": "一層V4、両面アーチ/反射水/閉鎖通路",
+      "evidence_url": "https://github.com/koda24-cell/kotama-no-bouken/pull/728"
+    },
+    {
+      "id": "PR733",
+      "merged": true,
+      "merged_at": "2026-11-23T14:45:02Z",
+      "scope": "V5木漏れ日/群配置/低い壁の裏当て",
+      "evidence_url": "https://github.com/koda24-cell/kotama-no-bouken/pull/733"
+    },
+    {
+      "id": "PR736",
+      "merged": false,
+      "source_sha": "b3f86ba5bfebe7c96414999941d6b529ff614d0b",
+      "scope": "V6透過草/岩/壁/視界・探索配置",
+      "quality_approved": false,
+      "evidence_url": "https://github.com/koda24-cell/kotama-no-bouken/pull/736",
+      "images": "15ゲームPNGと草比較PNGのAPI存在確認。今回は画素未取得/未目視。"
+    },
+    {
+      "id": "PR742",
+      "merged": true,
+      "scope": "第1/5層探索BGMの既存アップロード2MP3整理と参照変更。ブラウザ再生・利用条件・安全検査は今回未再検証",
+      "evidence_url": "https://github.com/koda24-cell/kotama-no-bouken/pull/742"
+    },
+    {
+      "id": "PR744",
+      "merged": true,
+      "scope": "V6実行証拠の文書統合。V6本体PR736がマージされたことを意味しない",
+      "evidence_url": "https://github.com/koda24-cell/kotama-no-bouken/pull/744"
+    }
+  ],
+  "audits": [
+    {
+      "run": 45267597594,
+      "source": "V6 feature",
+      "jobs": [
+        "security success",
+        "performance/audit success",
+        "archive-proof success"
+      ],
+      "raw_security_job": 138018530065,
+      "scanner": "ClamAV1.5.4",
+      "definitions": {
+        "daily": 28192,
+        "main": 63,
+        "bytecode": 339
+      },
+      "definition_status": "DEFINITIONS_UPDATED",
+      "scanned_files": 296,
+      "infected_files": 0,
+      "exit_status": "scan_gate.shはset-Eeuo-pipefailでclamscanの非0を伝播し、SCAN_PASSとstep successを実ログ確認。0終了として照合。",
+      "skip_error": "scan summaryにTotal errors/ERROR/skip報告なし。ただしClamAVの検査上限等の完全性を認証するものではない。",
+      "artifact_ids": [
+        14863567655,
+        14862928099
+      ],
+      "artifact_expired": false,
+      "png_visual_check_this_run": false
+    },
+    {
+      "run": 45153419891,
+      "conclusion": "startup_failure",
+      "scope": "developmentの一般Auto Review。LOD生成成功に数えない"
+    },
+    {
+      "run": 45153419874,
+      "conclusion": "success",
+      "scope": "developmentの構造性能監査。実機FPSや美術承認ではない"
+    }
+  ],
+  "implemented_floor_total": null,
+  "all_approved_model_total": null,
+  "all_rendered_model_total": null,
+  "all_formally_saved_model_total": null,
+  "iteration_counts": {
+    "global": null,
+    "observed_v6_failed_trials": "schistの面単位緑色/苔の厚み/欠け表現の不採用記録あり。画像原本未取得で回数の総数化はしない。"
+  },
+  "new_binary_assets_acquired_this_run": 0,
+  "new_images_created_this_run": 0,
+  "published": false
+}
