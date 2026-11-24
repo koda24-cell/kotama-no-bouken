@@ -1,5 +1,6 @@
 """One irregular, settled road surface. Voronoi fractures replace square tile seams."""
 def build(e):
+ import math,hashlib,random
  c,bpy,rng,asphalt,fracture,moss=[e[k]for k in ['c','bpy','rng','asphalt','fracture','moss']]
  # Deterministic half-plane clipping needs no third-party geometry package.
  seeds=[(rng.uniform(-1.95,1.95),rng.uniform(-1.95,1.95))for _ in range(15)]
@@ -17,7 +18,19 @@ def build(e):
    if i!=j:poly=clip(poly,tx-sx,ty-sy,(tx*tx+ty*ty-sx*sx-sy*sy)/2)
   if len(poly)<3:continue
   cx=sum(x for x,y in poly)/len(poly);cy=sum(y for x,y in poly)/len(poly)
-  poly=[(cx+(x-cx)*.988,cy+(y-cy)*.988)for x,y in poly]
+  jagged=[]
+  for a,b in zip(poly,poly[1:]+poly[:1]):
+   start,end=sorted([a,b]);dx=end[0]-start[0];dy=end[1]-start[1];length=math.hypot(dx,dy)
+   seed=hashlib.sha256(repr(tuple(round(v,5)for p in[start,end]for v in p)).encode()).digest();edge_rng=random.Random(int.from_bytes(seed[:8],'big'))
+   points=[start]
+   if length>.20:
+    for t in [.23,.49,.76]:
+     d=edge_rng.uniform(-1,1)*min(.032,length*.06)*math.sin(t*math.pi)
+     points.append((start[0]+dx*t-dy/max(length,.001)*d,start[1]+dy*t+dx/max(length,.001)*d))
+   points.append(end)
+   if a!=start:points.reverse()
+   jagged.extend(points[:-1])
+  poly=[(x if abs(abs(x)-2)<1e-6 else cx+(x-cx)*.997,y if abs(abs(y)-2)<1e-6 else cy+(y-cy)*.997)for x,y in jagged]
   # Settled pieces have centimetres of relief, no raised traversable obstruction.
   lift=rng.uniform(-.008,.018);tiltx=rng.uniform(-.008,.008);tilty=rng.uniform(-.008,.008)
   n=len(poly);verts=[(x,y,-.10)for x,y in poly]+[(x,y,lift+x*tiltx+y*tilty)for x,y in poly]
