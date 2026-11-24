@@ -136,6 +136,9 @@ def main():
   from parts import build
   build(asset,dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector))
  model='f3_'+asset
+ if asset=='v2_courtyard_facade':
+  from geometry_ao_v2 import bake
+  bake(c,bpy)
  used_images={node.image for material in bpy.data.materials if material.use_nodes for node in material.node_tree.nodes if node.type=='TEX_IMAGE' and node.image}
  packed_images={}
  for image in used_images:
@@ -153,6 +156,10 @@ def main():
  if asset=='v2_factory_bay':
   from fern_colony_v2 import finalize
   metrics=finalize(c,model,metrics,only_materials=['windows_glass'])
+ if asset=='v2_courtyard_facade':
+  import struct
+  raw=(OUT/'props'/(model+'.glb')).read_bytes();gltf=json.loads(raw[20:20+struct.unpack_from('<I',raw,12)[0]])
+  assert all(m.get('occlusionTexture',{}).get('texCoord')==1 for m in gltf['materials']),'Geometry AO must retain independent UV1 in exported GLB'
  metrics.update(approvalStatus='NOT_APPROVED',workflowRun=os.environ.get('GITHUB_RUN_ID'),verificationEnvironment='Shared pinned Blender '+bpy.app.version_string+' + ClamAV')
  (OUT/'metrics'/(model+'.json')).write_text(json.dumps(metrics,indent=2))
  from pack_runtime import pack
