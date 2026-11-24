@@ -286,7 +286,7 @@
       button.type = "button"; button.className = "battle-preview-rail-button"; button.textContent = label;
       button.dataset.railAction = action;
       button.addEventListener("click", () => {
-        if (battleState.busy) return;
+        if (battleState.busy || battleState.tutorialMode) return;
         expandedAction = action;
         primaryRail.querySelectorAll(".battle-preview-rail-button").forEach(item => {
           const selected = item.dataset.railAction === expandedAction;
@@ -336,8 +336,8 @@
       if (!box) return;
       const main = battleState.menuMode === "main";
       box.classList.toggle("battle-preview-main-menu", main);
-      battle.classList.toggle("battle-preview-side-open", !main && !battleState.tutorialMode);
-      primaryRail.hidden = main || !!battleState.tutorialMode;
+      battle.classList.toggle("battle-preview-side-open", !main);
+      primaryRail.hidden = main;
       const firstActor = !(battleState.currentActorIndex > 0);
       backActorButton.hidden = false;
       backActorButton.disabled = firstActor;
@@ -412,6 +412,7 @@
           const info = document.getElementById("command-description");
           if (info) info.textContent = "発動するユニオンスキルを選択してください。";
           updateCommandLayout();
+          if(typeof tutorialRefreshBattleGuide==="function") tutorialRefreshBattleGuide();
         });
         box.insertBefore(toggle, unionPanel);
       }
@@ -420,7 +421,7 @@
     const commandObserver = new MutationObserver(() => {
       if (commandSyncPending) return;
       commandSyncPending = true;
-      requestAnimationFrame(() => { commandSyncPending = false; updateCommandLayout(); });
+      requestAnimationFrame(() => { commandSyncPending = false; updateCommandLayout(); if(typeof tutorialRefreshBattleGuide==="function") tutorialRefreshBattleGuide(); });
     });
     if (commands) commandObserver.observe(commands, {childList:true});
     updateCommandLayout();
