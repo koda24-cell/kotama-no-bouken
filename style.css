@@ -543,3 +543,13 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 
 /* 開発用入口はゲーム画面のレイアウトや透明化処理より優先して表示する */
 #kotama-admin-launcher{position:fixed!important;right:max(10px,env(safe-area-inset-right))!important;bottom:max(10px,env(safe-area-inset-bottom))!important;z-index:2147483000!important;display:block!important;visibility:visible!important;opacity:.95!important;min-width:48px!important;min-height:30px!important;background:#14234a!important;color:#ffe8a3!important;border:1px solid #d6b96e!important;}
+
+/* Action playback: keep the arena clear, retain the actual battle controls for the next turn. */
+#battle.battle-ui-preview.battle-execution-view .command-window,
+#battle.battle-ui-preview.battle-execution-view .battle-preview-primary-rail { visibility:hidden!important; pointer-events:none!important; }
+#battle.battle-ui-preview .battle-execution-label { position:absolute; bottom:100%; left:50%; transform:translateX(-50%); color:#fff; font-size:clamp(12px,1.5vw,18px); font-weight:700; white-space:nowrap; text-shadow:0 2px 4px #001020; pointer-events:none; }
+#battle.battle-ui-preview .battle-preview-portrait { position:relative; }
+#battle.battle-ui-preview .battle-execution-label[hidden] { display:none!important; }
+body:has(#battle.active.battle-execution-view) .tutorial-overlay { background:transparent!important; }
+body:has(#battle.active.battle-execution-view) #tutorial-spotlight { visibility:hidden!important; }
+body:has(#battle.active.battle-execution-view) .tutorial-highlight { box-shadow:none!important; }
