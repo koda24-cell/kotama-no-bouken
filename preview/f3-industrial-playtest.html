@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>遺跡都市｜実ゲーム試験</title><style>
+*{box-sizing:border-box}body{margin:0;background:#111b16;color:#e1e9da;font:14px/1.5 system-ui,sans-serif}header{padding:12px 18px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #46563e}h1{font-size:17px;margin:0}p{margin:2px 0;color:#b7c7af;font-size:12px}a{color:#d7e4bd}button{background:#344c30;color:#edf0e5;border:1px solid #758265;padding:8px 14px;cursor:pointer}iframe{border:0;width:100%;height:calc(100dvh - 100px);min-height:550px;display:block}#status{font-size:12px;color:#d5ca95}header>div:first-child{flex:1}</style></head><body>
+<header><div><h1>第3層「遺跡都市」工業廃墟の改修試験版</h1><p>曇天と靄に包まれた街区、風化した鉄骨と廃設備を確認できます。通常セーブは読み書きしません。再読み込みで試験中の進行はリセットされます。</p><p>前進・後退：↑↓ / W・S　向き：←→ / A・D　横移動：Q・E　調べる：Z / Enter</p></div><nav><a href="?floor=0">1F</a> ／ <a href="?floor=1">2F</a> ／ <a href="?floor=2">3F</a></nav><span id="status">ゲームを準備中…</span><button id="restart">試験をやり直す</button></header><iframe id="game" title="通常セーブから独立した実ゲーム試験" allow="autoplay"></iframe>
+<script type="module">
+const frame=document.getElementById('game'),status=document.getElementById('status');
+// Keep every game resource on the exact, tested revision. raw.githack may
+// return HTML while rejecting its subordinate JS/GLB requests.
+const reviewedRevision='2744ad727f3b44140b8438e5d663db1f4affce9b';
+const useCDN=location.hostname.endsWith('githack.com')||new URLSearchParams(location.search).get('delivery')==='cdn';
+const gameRoot=useCDN?new URL('https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@'+reviewedRevision+'/'):new URL('../',location.href);
+let startedAt=0,startId=0;
+async function fetchCode(file){
+ const bases=[gameRoot,new URL('https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@'+reviewedRevision+'/'),new URL('https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/'+reviewedRevision+'/')];
+ for(const base of bases)try{const r=await fetch(new URL(file,base),{signal:AbortSignal.timeout(15000)});if(r.ok)return await r.text();}catch(_){}
+ throw new Error('必要なファイルを取得できません：'+file);
+}
+async function prepareScripts(documentCopy){
+ const modules=new Map(),aliases=new Map(),urls=[];
+ const makeBlob=text=>{const url=URL.createObjectURL(new Blob([text],{type:'text/javascript'}));urls.push(url);return url;};
+ async function moduleFile(specifier){
+  const address=new URL(specifier,gameRoot),file=address.pathname.split('@'+reviewedRevision+'/')[1];
+  if(!file)return;
+  const clean=file.split('?')[0];aliases.set(address.href,clean);
+  if(modules.has(clean))return;
+  modules.set(clean,null);
+  const code=await fetchCode(clean),dependencies=[];
+  const rewritten=code.replace(/(['"])(\.{1,2}\/[^'"\s]+\.js(?:\?[^'"\s]*)?)\1/g,(match,quote,relative)=>{
+   const target=new URL(relative,address);
+   if(target.href.startsWith(gameRoot.href)&&/\.js$/.test(target.pathname))dependencies.push(target.href);
+   return quote+target.href+quote;
+  }).replace(/\bimport\.meta\.url\b/g,JSON.stringify(address.href));
+  modules.set(clean,makeBlob(rewritten));
+  await Promise.all(dependencies.map(moduleFile));
+ }
+ const scripts=[...documentCopy.querySelectorAll('script[src]')];
+ await Promise.all(scripts.map(async element=>{
+  const address=new URL(element.getAttribute('src'),gameRoot);address.search='';
+  if(element.type==='module'){await moduleFile(address.href);element.src=modules.get(address.pathname.split('@'+reviewedRevision+'/')[1]);}
+  else element.src=makeBlob(await fetchCode(address.pathname.split('@'+reviewedRevision+'/')[1]));
+  element.removeAttribute('crossorigin');
+ }));
+ const map=documentCopy.querySelector('script[type="importmap"]'),configuration=JSON.parse(map.textContent);
+ for(const [address,file] of aliases)configuration.imports[address]=modules.get(file);
+ // Include unversioned aliases too: the shared source cache must have one module identity.
+ for(const [file,url] of modules)configuration.imports[new URL(file,gameRoot).href]=url;
+ map.textContent=JSON.stringify(configuration);
+ return urls;
+}
+let activeBlobs=[];
+function installAssetRecovery(roots){
+ const original=window.fetch.bind(window);
+ window.fetch=async function(input,init){
+  const request=new Request(input,init),prefix=roots.find(root=>request.url.startsWith(root));
+  if(!prefix||request.method!=='GET')return original(request);
+  const file=request.url.slice(prefix.length);let response,error;
+  for(const root of [prefix,...roots.filter(r=>r!==prefix)]){
+   try{response=await original(new Request(root+file,request));if(response.ok)return response;}
+   catch(e){error=e;if(request.signal.aborted)throw e;}
+  }
+  if(response)return response;throw error;
+ };
+}
+async function start(){
+ const attempt=++startId;startedAt=Date.now();
+ frame.srcdoc='';activeBlobs.forEach(url=>URL.revokeObjectURL(url));activeBlobs=[];
+ status.textContent='ゲームを準備中…';
+ try{
+  const root=gameRoot;
+  const contents=await Promise.all(['index.html','field/f3-industrial-playtest-entry.js'].map(async file=>{
+   if(useCDN)return fetchCode(file);
+   const response=await fetch(new URL(file,root),{signal:AbortSignal.timeout(20000)});
+   if(!response.ok)throw new Error('ゲームの取得に失敗しました（HTTP '+response.status+'）');
+   return response.text();
+  }));
+  const requested=Number(new URLSearchParams(location.search).get('floor')??0),floor=Number.isInteger(requested)&&requested>=0&&requested<=2?requested:0;
+  const [sourceHTML,entryCode]=contents;if(attempt!==startId)return;
+  const documentCopy=new DOMParser().parseFromString(sourceHTML,'text/html');
+  if(useCDN)for(const element of documentCopy.querySelectorAll('script[src],link[rel="stylesheet"]')){
+   const attribute=element.tagName==='SCRIPT'?'src':'href';
+   const address=new URL(element.getAttribute(attribute),root);
+   address.search=''; // The full commit SHA already provides immutable versioning.
+   element.setAttribute(attribute,address.href);element.setAttribute('crossorigin','anonymous');
+  }
+  const blobs=useCDN?await prepareScripts(documentCopy):[];
+  if(attempt!==startId){blobs.forEach(url=>URL.revokeObjectURL(url));return;}
+  const html='<!doctype html>'+documentCopy.documentElement.outerHTML;
+  const diagnostic="window.addEventListener('error',function(e){if(e.target&&e.target.tagName==='SCRIPT')window.KotamaIndustrialPlaytestError='スクリプトを取得できませんでした：'+e.target.src.split('/').pop();else if(e.message)window.KotamaIndustrialPlaytestError='起動エラー：'+e.message;},true);";
+  // Fetch isolation first, then embed it before any game script can run.
+  // A failed isolation download must never start an ordinary, save-writing game.
+  const roots=[gameRoot.href,'https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@'+reviewedRevision+'/','https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/'+reviewedRevision+'/'];
+  const recovery=useCDN?'('+installAssetRecovery.toString()+')('+JSON.stringify(roots)+');':'';
+  const injected='<base href="'+root.href+'"><scr'+'ipt>'+diagnostic+recovery+'window.KotamaIndustrialPlaytestStartFloor='+floor+';'+entryCode.replace(/<\/script/gi,'<\\/script')+'</scr'+'ipt>';
+  frame.srcdoc=html.replace(/<head(?:\s[^>]*)?>/i,head=>head+injected);
+  activeBlobs.forEach(url=>URL.revokeObjectURL(url));activeBlobs=blobs;
+ }catch(error){if(attempt===startId){startedAt=0;status.textContent=error.name==='TimeoutError'?'配信先が応答しません。「試験をやり直す」で再試行できます。':error.message;}}
+}
+document.getElementById('restart').onclick=start;
+setInterval(()=>{try{const w=frame.contentWindow;if(w.KotamaIndustrialPlaytestError){status.textContent=w.KotamaIndustrialPlaytestError;return;}const info=w.KotamaField3D?.themeInfo();if(info?.industrialAssets?.sourceHashesVerified&&info?.placed){status.textContent='試験表示中・通常セーブへの保存なし';}else if(startedAt&&Date.now()-startedAt>90000){status.textContent='読み込みに時間がかかっています。「試験をやり直す」で再試行できます。';}}catch(_){}},500);
+start();
+</script></body></html>

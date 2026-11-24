@@ -51,6 +51,6 @@ export async function loadIndustrialAssets() {
     // Dispose duplicate resources which no retained source uses, once the pool is complete.
     const usedMaterials=new Set(),usedTextures=new Set();models.forEach(root=>root.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material]){usedMaterials.add(m);Object.values(m).forEach(t=>{if(t?.isTexture)usedTextures.add(t);});}}));
     ownedMaterials.forEach(m=>{if(!usedMaterials.has(m)){m.dispose();ownedMaterials.delete(m);}});ownedTextures.forEach(t=>{if(!usedTextures.has(t)){t.dispose();ownedTextures.delete(t);}});
-    return {models,catalog,dispose,info:()=>({sourceHashesVerified:true,models:models.size,materials:ownedMaterials.size,textures:ownedTextures.size,sharedImages:blobs.size})};
+    return {models,catalog,materials:[...materialPool.values()],dispose,info:()=>({sourceHashesVerified:true,models:models.size,materials:ownedMaterials.size,textures:ownedTextures.size,sharedImages:blobs.size})};
   } catch(e){dispose();throw e;}
 }

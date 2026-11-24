@@ -1,5 +1,5 @@
 /* B3-only weathering and foliage. Generated locally; no external texture assets. */
-export function createCitySurfaces(THREE, high) {
+export function createCitySurfaces(THREE, high, photoMaterials=[]) {
   const textures = [], materials = [], geometries = [];
   const clamp = x => Math.max(0, Math.min(1, x));
   const rand = (x, y, s = 0) => { let n = Math.imul(x + s * 73, 374761393) ^ Math.imul(y + s, 668265263); n = Math.imul(n ^ n >>> 13, 1274126177); return ((n ^ n >>> 16) >>> 0) / 4294967296; };
@@ -42,10 +42,15 @@ export function createCitySurfaces(THREE, high) {
     t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = high ? 4 : 2; textures.push(t); return t;
   }
   const maps = { concrete: texture('concrete', 11), stone: texture('stone', 21), rust: texture('rust', 31), bark: texture('bark', 41), leaf: texture('leaf', 51), soil: texture('soil', 61) };
+  // Reuse already hash-verified source images. Borrowed textures remain owned by the asset bundle.
+  const photoByName=new Map(photoMaterials.map(m=>[m.name,m]));
+  for(const [kind,name]of Object.entries({concrete:'f3_weathered_concrete',stone:'f3_damp_concrete',rust:'f3_oxidized_iron',soil:'f3_damp_concrete'})){
+    const source=photoByName.get(name);if(source?.map)maps[kind]=source.map;
+  }
   function surface(kind, tint = 0xffffff, { world = true, scale = 0.72 } = {}) {
     const props = { color: tint, map: maps[kind], side: kind === 'leaf' ? THREE.DoubleSide : THREE.FrontSide };
     // Diffuse stone/foliage needs no metallic BRDF. Reserve PBR for exposed steel.
-    const m = high && kind === 'rust'
+    const m = kind !== 'leaf' && kind !== 'bark'
       ? new THREE.MeshStandardMaterial({ ...props, roughness: 0.78, metalness: 0.3 })
       : new THREE.MeshLambertMaterial(props);
     if (high && world) { m.bumpMap = maps[kind]; m.bumpScale = kind === 'rust' ? 0.035 : 0.1; }

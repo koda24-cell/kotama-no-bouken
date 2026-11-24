@@ -22,7 +22,8 @@ export function createTheme(api) {
   }
   function prototype(key, make) {
     if (!prototypes.has(key)) {
-      const model = industrial.models.has(key) ? industrial.models.get(key).clone(true) : finish.dress(make(), key);
+      const sourceId=industrial.models.has(key)?key:key.endsWith("0")&&industrial.models.has("native_"+key.slice(0,-1))?"native_"+key.slice(0,-1):null;
+      const model = sourceId ? industrial.models.get(sourceId).clone(true) : finish.dress(make(), key);
       prototypes.set(key, model);
     }
     return prototypes.get(key).clone(true);
@@ -102,7 +103,7 @@ export function createTheme(api) {
     g.camera.far = 44; g.camera.updateProjectionMatrix();
     industrial=await loadIndustrialAssets();
     city = createRuinedCityKit(THREE); urban = createB3UrbanProps(THREE);
-    finish = createCitySurfaces(THREE, g.high);
+    finish = createCitySurfaces(THREE, g.high,industrial.materials);
     const cube = geo(new THREE.BoxGeometry(1, 1, 1));
     const { paving, stone, soil, rust: steel, leaf: grass } = finish.palette;
     const tuft = finish.fern;
