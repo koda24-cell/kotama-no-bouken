@@ -16,7 +16,7 @@ export function createTheme(api) {
     hemi: { sky: 0xd6dfdb, ground: 0x92988a, high: 1.9, low: 2.1 } };
   let root, city, urban, finish, skyMesh, materials = [], geometries = [], batches = [], placements = [], stats = {};
   const prototypes = new Map();
-  let industrial, solid, visibilityGroups=[],lastVisibility="",edgePlacements=[],fallback=null,fallbackReason=null,heldGrass=[];
+  let industrial, solid, visibilityGroups=[],lastVisibility="",edgePlacements=[],fallback=null,fallbackReason=null,heldGrass=[],environmentTarget=null,previousEnvironment=null,previousEnvironmentIntensity=1;
   const geo = x => (geometries.push(x), x);
   const mat = x => { const m = g.high ? new THREE.MeshStandardMaterial(x) : new THREE.MeshLambertMaterial({ color: x.color, flatShading: x.flatShading }); materials.push(m); return m; };
   function add(shape, material, x, y, z, sx, sy, sz, ry = 0) {
@@ -123,6 +123,10 @@ export function createTheme(api) {
     industrial=await loadIndustrialAssets();
     city = createRuinedCityKit(THREE); urban = createB3UrbanProps(THREE);
     finish = createCitySurfaces(THREE, g.high,industrial.materials);
+    // One shared overcast reflection for glass, corroded steel and worn hardware.
+    previousEnvironment=g.scene.environment;previousEnvironmentIntensity=g.scene.environmentIntensity;
+    const environmentScene=new THREE.Scene();environmentScene.add(finish.sky());const pmrem=new THREE.PMREMGenerator(g.renderer);
+    environmentTarget=pmrem.fromScene(environmentScene,0,.1,200);pmrem.dispose();g.scene.environment=environmentTarget.texture;g.scene.environmentIntensity=.5;
     const cube = geo(new THREE.BoxGeometry(1, 1, 1));
     const { paving, stone, soil, rust: steel, leaf: grass } = finish.palette;
     // Reuse the already scanned original cutout plants, with unchanged geometry and atlas bytes.
@@ -272,6 +276,7 @@ export function createTheme(api) {
   }
   function dispose() {
     fallback?.dispose();fallback=null;fallbackReason=null;
+    if(environmentTarget){if(g.scene.environment===environmentTarget.texture){g.scene.environment=previousEnvironment;g.scene.environmentIntensity=previousEnvironmentIntensity;}environmentTarget.dispose();environmentTarget=null;}
     root?.parent?.remove(root);
     daylightPool.forEach(light => g.scene.add(light));
     g.camera.far = originalFar; g.camera.updateProjectionMatrix();
