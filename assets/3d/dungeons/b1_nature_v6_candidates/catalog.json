@@ -1,0 +1,134 @@
+{
+  "version": 6,
+  "status": "NOT_APPROVED",
+  "sequentialProduction": true,
+  "textureSources": [
+    "assets/3d/dungeons/b1_sacred_forest_candidates/textures/texture-sources.json",
+    "assets/3d/dungeons/b1_closed_ruins_v3/textures/moss-feathered-source.json"
+  ],
+  "sources": [
+    {
+      "name": "sedge",
+      "id": "v6_sedge_cards",
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge_cards.glb",
+      "sourceCommit": "4b97b6d1747668528724c267e02f3066ba7164c5",
+      "workflowRun": "45206056039",
+      "sha256": "3386b562a4b65492b2105f1ce499f6130eb4f891120cd3022260584186499671",
+      "triangles": 6,
+      "primitives": 1,
+      "approvalStatus": "NOT_APPROVED",
+      "method": "3 crossed cutout cards",
+      "runtimeMaterial": "field/f1-grass-cutout-lighting-v6.js",
+      "fullGeometryFile": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge.glb",
+      "originalFile": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge.glb",
+      "textureAtlas": [
+        1536,
+        512
+      ]
+    },
+    {
+      "name": "trifoliate",
+      "id": "v6_trifoliate_cards",
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate_cards.glb",
+      "sourceCommit": "d71b22f16799b53b62d38cdd8322fd13d478ca12",
+      "workflowRun": "45208952908",
+      "sha256": "c2f3c444e7b90cb6ee97c7086dd7aa5d262129cc248b8f0dd033f0088fdc3732",
+      "triangles": 6,
+      "primitives": 1,
+      "approvalStatus": "NOT_APPROVED",
+      "method": "3 crossed cutout cards",
+      "runtimeMaterial": "field/f1-grass-cutout-lighting-v6.js",
+      "fullGeometryFile": "assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate.glb",
+      "originalFile": "assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate.glb",
+      "textureAtlas": [
+        1536,
+        512
+      ]
+    },
+    {
+      "name": "fern",
+      "id": "v6_fern_cards",
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern_cards.glb",
+      "sourceCommit": "d71b22f16799b53b62d38cdd8322fd13d478ca12",
+      "workflowRun": "45208952908",
+      "sha256": "87c1252f01c0b900b880d71f0c80e65a39dcaa08031b43dffeabc3b9eba2645d",
+      "triangles": 6,
+      "primitives": 1,
+      "approvalStatus": "NOT_APPROVED",
+      "method": "3 crossed cutout cards",
+      "runtimeMaterial": "field/f1-grass-cutout-lighting-v6.js",
+      "fullGeometryFile": "assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern.glb",
+      "originalFile": "assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern.glb",
+      "textureAtlas": [
+        1536,
+        512
+      ]
+    },
+    {
+      "name": "schist",
+      "id": "v6_schist",
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/schist/props/v6_schist.glb",
+      "sourceCommit": "bdec47b22f322361fc2d7684421a6c85967172b4",
+      "workflowRun": "45214438865",
+      "sha256": "3adbfb1c689f8c111169dc2140fcd2d085490f49e5edcf2a7880de0947e7a9e5",
+      "triangles": 7528,
+      "primitives": 2,
+      "approvalStatus": "NOT_APPROVED"
+    },
+    {
+      "name": "fractured",
+      "id": "v6_fractured",
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/fractured/props/v6_fractured.glb",
+      "sourceCommit": "dee055c9367d6b838ce5713b088a4923855bc822",
+      "workflowRun": "45220723124",
+      "sha256": "c5290c5f8490228faf3154e3d6bfede006edcbd4cad4d2e2cc318acc757a122f",
+      "triangles": 4626,
+      "primitives": 2,
+      "approvalStatus": "NOT_APPROVED"
+    },
+    {
+      "name": "riverstones",
+      "id": "v6_riverstones",
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/riverstones/props/v6_riverstones.glb",
+      "sourceCommit": "152fefbe9fdabcfc6fe19a70741f64e8422cb91f",
+      "workflowRun": "45215795705",
+      "sha256": "1b89077076427fcead0b202585009e75dfc99f4859e16ab00e63fc978b75eaa4",
+      "triangles": 10644,
+      "primitives": 2,
+      "approvalStatus": "NOT_APPROVED"
+    },
+    {
+      "name": "wall_a",
+      "id": "v6_wall_a",
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/wall_a/modules/v6_wall_a.glb",
+      "sourceCommit": "152fefbe9fdabcfc6fe19a70741f64e8422cb91f",
+      "workflowRun": "45215795705",
+      "sha256": "20ab19dd147727f25501c7a56d09698a04955d3a61f31311a732146eeda00e29",
+      "triangles": 7572,
+      "primitives": 4,
+      "approvalStatus": "NOT_APPROVED"
+    },
+    {
+      "name": "wall_b",
+      "id": "v6_wall_b",
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/wall_b/modules/v6_wall_b.glb",
+      "sourceCommit": "152fefbe9fdabcfc6fe19a70741f64e8422cb91f",
+      "workflowRun": "45215795705",
+      "sha256": "0e3efc4694caaa9c6ef5ddaa887f7044273917239d67f4631dc534236200d7b1",
+      "triangles": 5852,
+      "primitives": 4,
+      "approvalStatus": "NOT_APPROVED"
+    },
+    {
+      "name": "wall_c",
+      "id": "v6_wall_c",
+      "file": "assets/3d/dungeons/b1_nature_v6_candidates/wall_c/modules/v6_wall_c.glb",
+      "sourceCommit": "152fefbe9fdabcfc6fe19a70741f64e8422cb91f",
+      "workflowRun": "45215795705",
+      "sha256": "20eeba733729db614fa15bc0cba52f31821d13eb8e6ef9b15269ed4249d06c37",
+      "triangles": 4792,
+      "primitives": 4,
+      "approvalStatus": "NOT_APPROVED"
+    }
+  ]
+}

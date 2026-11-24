@@ -16,6 +16,7 @@
      通常の進行では第2階層は従来の2D表示のまま。第2階層の素材を読めなくても第1階層の3D表示は止めない。
    ============================================================ */
 import * as THREE from 'three';
+import {resolveFirstLayerCameraV6} from './f1-camera-clearance-v6.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -138,7 +139,11 @@ function load(file) {
 }
 // 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
 function applyEnv(area, env) {
-  const E = env || ENV_B1;
+  const review=area===1&&(window.KotamaSacredPlaytest===true||new URLSearchParams(location.search).get('f1sacred')==='1');
+  const E = review?{...(env||ENV_B1),hemi:{sky:0xbac6b4,ground:0x626f58,high:1.9,low:2.2}}:(env||ENV_B1);
+  if(review&&!g.reviewFill){g.reviewFill=new THREE.AmbientLight(0xbac6ac,.32);g.scene.add(g.reviewFill);}
+  if(g.reviewFill)g.reviewFill.intensity=review?.32:0;
+  g.renderer.toneMappingExposure=review?1.48:1.3;
   g.scene.background.setHex(E.background); g.scene.fog.color.setHex(E.fog.color); g.scene.fog.density = E.fog.density;
   if (g.hemi) { g.hemi.color.setHex(E.hemi.sky); g.hemi.groundColor.setHex(E.hemi.ground); g.hemi.intensity = g.high ? E.hemi.high : E.hemi.low; }
   g.camera.far = area === 5 ? 180 : 48;
@@ -230,7 +235,7 @@ async function buildFloor() {
   }   // 待っている間にフロアが変わった
   const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
   // The URL-only sacred trial owns no save or interaction state.
-  g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
+  g.natureV6?.dispose();g.natureV6=null;g.natureV6Error=null;g.cameraPortals=[]; g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
   // 片付け
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
@@ -258,7 +263,7 @@ async function buildFloor() {
     try {
       const { buildSacredForestTrial } = await import('./field-3d-b1-sacred-trial.js?v=20261117-1');
       const trial = await buildSacredForestTrial({ world: g.world, area: a, renderer:g.renderer,
-        layoutUrl: new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v5.json', import.meta.url).href });
+        layoutUrl: new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v6.json', import.meta.url).href });
       if (token !== g.buildToken || curKey() !== key) { trial.dispose(); if (token === g.buildToken) g.buildingKey = ''; return; }
       g.sacredTrial = trial; sacred = true;
       applyEnv(area, trial.env); g.camera.far = trial.far; g.camera.updateProjectionMatrix();
@@ -282,7 +287,8 @@ async function buildFloor() {
     for (const d of DIR_ORDER) {
       const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
       const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, k = hash(tx * 4 + DIR_ORDER.indexOf(d), ty, 5), ry = FACE_YAW[d] + Math.PI;
-      place(g.world, k < 0.08 ? S.wallCollapsed : k < 0.36 ? S.wallMossy : S.wall, ex, 0, ez, ry);
+      const wall=place(g.world, k < 0.08 ? S.wallCollapsed : k < 0.36 ? S.wallMossy : S.wall, ex, 0, ez, ry);
+      wall.userData.firstStratumNativeWall=area===1;wall.userData.firstStratumNativeTile=[tx,ty];
       const n = def(ch(tx + dx, ty + dy));
       if (n && n.onWall && n.kind === 'switch') {
         const o = a.objects.find((q) => q.tx === tx + dx && q.ty === ty + dy);
@@ -314,6 +320,14 @@ async function buildFloor() {
       g.firstLayerDress=dressing;applyEnv(area,dressing.env);
     }catch(error){console.warn('[field-3d] 一層の段階装飾を読み込めません:',error);}
   }
+  if(area===1&&(new URLSearchParams(location.search).get('f1sacred')==='1'||window.KotamaSacredPlaytest===true)){
+    try{const {buildFirstLayerNatureV6}=await import('./f1-nature-v6.js');
+      const tiles=Array.from({length:a.h},(_,z)=>Array.from({length:a.w},(_,x)=>[x,z])).flat();
+      const nature=await buildFirstLayerNatureV6({world:g.world,area:a,openTiles:tiles.filter(([x,z])=>!wallCell(x,z)),walkTiles:tiles.filter(([x,z])=>!fieldCharSolid(a,ch(x,z)))});
+      if(token!==g.buildToken||curKey()!==key){nature.dispose();return;}g.natureV6=nature;
+    }catch(error){g.natureV6Error=String(error.message||error);console.warn('[field-3d] V6の自然装飾を読み込めません:',error);}
+  }
+  g.cameraPortals=[...(g.sacredTrial?.cameraPortals?.()||[]),...(g.firstLayerDress?.cameraPortals?.()||[])];
   // 物（宝箱・採集・灯・NPC・イベント・仕掛け・階段など）
   for (const o of a.objects) {
     const x = X(o.tx), z = Z(o.ty), f = facing(o.tx, o.ty), ry = FACE_YAW[f];
@@ -321,7 +335,7 @@ async function buildFloor() {
     switch (o.kind) {
       case 'stairs':
         if (o.dir === 'down') e.obj = place(g.world, S.stairsDown, x, 0, z, ry);
-        else { if (!sacred) place(g.world, S.floor, x, 0, z); e.obj = place(g.world, S.stairsUp, x, 0, z - 0, ry + Math.PI, 0.75); }
+        else { if (!sacred) place(g.world, S.floor, x, 0, z); e.obj = place(g.world, S.stairsUp, x, 0, z - 0, (area===1&&(window.KotamaSacredPlaytest===true||new URLSearchParams(location.search).get('f1sacred')==='1'))?ry:ry + Math.PI, 0.75); }
         break;
       case 'save': place(g.world, S.seal, x, 0.005, z, 0, 0.8); e.obj = place(g.world, S.torch, x, 0, z); e.at.y = 1.9; break;
       case 'chest': case 'cache': e.ry = ry; break;   // 開閉に応じて sync で置く
@@ -464,7 +478,9 @@ function updateCamera(dt) {
   const bob = moving ? Math.sin(performance.now() / 85) * 0.035 : 0;
   let bx = 0, bz = 0;
   if (c.bump > 0) { c.bump = Math.max(0, c.bump - dt); const s = Math.sin((1 - c.bump / 0.18) * Math.PI) * 0.14; bx = c.bumpDir[0] * s; bz = c.bumpDir[1] * s; }
-  g.camera.position.set(c.pos.x + bx, c.pos.y + bob, c.pos.z + bz);
+  const eye=resolveFirstLayerCameraV6(c.pos.x+bx,c.pos.z+bz,g.cameraPortals||[]);
+  g.lastCameraClearanceAdjustments=eye.adjusted;
+  g.camera.position.set(eye.x, c.pos.y + bob, eye.z);
   g.camera.rotation.set(-0.035, c.yaw, 0, 'YXZ');
 }
 
@@ -579,6 +595,7 @@ function frame() {
   for (const e of g.entries) syncEntry(e);
   syncFoes(now);
   updateCamera(dt);
+  g.natureV6?.update(g.camera.position.x,g.camera.position.z);
   g.sacredTrial?.update?.(now / 1000);
   if (g.theme?.area === 4 && g.envArea === 4) g.theme.tick(dt, now, g.camera.position);
   updatePool(g.camera.position, g.envArea === 4);
@@ -606,14 +623,14 @@ function setPreview(n, on) {
 }
 function gameReviewState() {
   return { builtKey:g.builtKey, buildingKey:g.buildingKey,
-    environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far},
-    camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
-    entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
-    waterMeshCount:g.world.children.filter(o=>o.isMesh&&o.geometry===waterGeo).length,
+    environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far,exposure:g.renderer?.toneMappingExposure,hemisphereIntensity:g.hemi?.intensity,fillIntensity:g.reviewFill?.intensity||0},
+    cameraClearanceAdjustments:g.lastCameraClearanceAdjustments||0,camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
+    entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelRotationY:e.obj?.rotation.y??null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
+    waterMeshCount:g.world?.children.filter(o=>o.isMesh&&o.geometry===waterGeo).length??0,
     foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),
-    firstLayerProgressionInfo:g.firstLayerDress?.info()||null,staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
+    natureV6Info:g.natureV6?.info()||null,natureV6Error:g.natureV6Error||null,firstLayerProgressionInfo:g.firstLayerDress?.info()||null,staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
 }
-window.KotamaField3D = { active, input, build, frame, toggle, gameReviewState, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
+window.KotamaField3D = { active, input, build, frame, toggle, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
   // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）
   stats: () => (g.renderer ? { calls: g.renderer.info.render.calls, triangles: g.renderer.info.render.triangles, geometries: g.renderer.info.memory.geometries, textures: g.renderer.info.memory.textures, lights: g.lights.length } : null) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる

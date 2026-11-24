@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "sourceGameReport": "docs/reviews/f1-v6-game/verification.json",
+  "unflaggedMapAndObjectIdentitiesMatchOriginal": true,
+  "trialNatureAbsent": true
+}

@@ -271,7 +271,7 @@ export async function buildSacredForestTrial({ world, layoutUrl, area, renderer 
       batch.castShadow=closedV4; batch.receiveShadow=closedV4; batch.userData.f1SacredTrial = true; root.add(batch); batches.push(batch);
     }
     if(closedV4){
-      if(layout.natureRevision===5){const {createApertureLightV5}=await import('./f1-aperture-light-v5.js');aperture=createApertureLightV5({root,openings:layout.closedRuinsV3.roof.openings,renderer});
+      if(layout.natureRevision>=5){const {createApertureLightV5}=await import('./f1-aperture-light-v5.js');aperture=createApertureLightV5({root,openings:layout.closedRuinsV3.roof.openings,renderer});
         const {createCeilingSealV5}=await import('./f1-ceiling-seal-v5.js');const arch=byId.get('v4_passage_arch');seal=createCeilingSealV5({root,tiles:layout.cells.map(c=>c.tile),walls:layout.boundaryWallPlacements,source:records.get(arch.file).source,openings:layout.closedRuinsV3.roof.openings,height:5.3,boss:true});
       }else{const {createApertureLightV4}=await import('./f1-aperture-light-v4.js');aperture=createApertureLightV4({root,openings:layout.closedRuinsV3.roof.openings,renderer});}
     }
@@ -318,6 +318,7 @@ export async function buildSacredForestTrial({ world, layoutUrl, area, renderer 
       : { background: 0x9eafa3, fog: { color: 0x8fa096, density: .009 },
         hemi: { sky: 0xc0d2bb, ground: 0x3d4432, high: 1.0, low: 1.2 } };
     return { root, env, far: closedV3 ? 40 : 96,
+      cameraPortals:()=>layout.candidatePropPlacements.filter(r=>r.assetId==='v4_passage_arch').map(r=>({position:r.position,rotationY:r.rotationY})),
       info: () => ({ ...info, water: water?.info() ?? null, aperture: aperture?.info() ?? null, ceilingSeal: seal?.info() ?? null }), attachWater,
       update: seconds => { if (!disposed && Number.isFinite(seconds)) { water?.update(seconds); aperture?.update(seconds); } }, dispose };
 

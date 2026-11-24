@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "scope": "Actual GLB eye-to-opening-axis segment rays. 21 interpolation positions across one representative threshold, 16 headings, three bob heights; 90deg rotation covariance checked. Other props and artistic obstruction use actual game PNGs.",
+  "eyeSamples": 1008,
+  "originalStoneCrossings": 78,
+  "fixedStoneCrossings": 0,
+  "cameraCorrections": 86,
+  "playerMovementChanged": false
+}

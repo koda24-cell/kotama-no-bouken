@@ -1,0 +1,37 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b1_nature_v6_candidates/schist/props/v6_schist.glb",
+      "file_bytes": 3191968,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 7528,
+      "materials": 2,
+      "material_names": [
+        "sacred_weathered_stone",
+        "v6_surface_moss"
+      ],
+      "mesh_names": [
+        "Icosphere",
+        "draped_feathered_surface_moss"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 1,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

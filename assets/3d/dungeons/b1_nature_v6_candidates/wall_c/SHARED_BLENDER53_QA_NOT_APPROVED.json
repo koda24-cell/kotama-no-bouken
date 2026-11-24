@@ -1,0 +1,102 @@
+{
+  "status": "NOT_APPROVED",
+  "blender": "5.3.0",
+  "files": {
+    "manifest.json": {
+      "bytes": 1494,
+      "sha256": "9108db1dda706cd58d28a89fc99bd5cb15f93197aff6d92df8440e3f87c92bbb"
+    },
+    "metrics/v6_wall_c.json": {
+      "bytes": 1281,
+      "sha256": "5e8c0f45155736dba669bc2144316c0cc08aef2614f54344c2b1fd4e38190a0b"
+    },
+    "modules/v6_wall_c.glb": {
+      "bytes": 1978276,
+      "sha256": "20eeba733729db614fa15bc0cba52f31821d13eb8e6ef9b15269ed4249d06c37"
+    },
+    "renders/v6_wall_c/angle.png": {
+      "bytes": 573061,
+      "sha256": "d2a5b0b933e39be99f8106b353fda61c11626e6c6ba3b4924118a5141a4fb98b"
+    },
+    "renders/v6_wall_c/back.png": {
+      "bytes": 425363,
+      "sha256": "da0f1c6786ee737a4728d1992e73b8e4fb865e5114025b61c977c44cef31cf0c"
+    },
+    "renders/v6_wall_c/front.png": {
+      "bytes": 657989,
+      "sha256": "82e6de4adef64fcfd9e4b90e97b7fb6f979f33052cdccd2b70dddf96e3fa8d2f"
+    },
+    "renders/v6_wall_c/side.png": {
+      "bytes": 477086,
+      "sha256": "f926b1e76ede3f3411beefbd6f7896e1509659f05d38332e4475df1dd935b38c"
+    },
+    "renders/v6_wall_c/top.png": {
+      "bytes": 449690,
+      "sha256": "4341d79c2ac1bf63a0d7fda17254bb91b2c2746111422e72acd1d37bcddadc01"
+    },
+    "security/moss-textures.log": {
+      "bytes": 289,
+      "sha256": "a2ebf23eb3c627571cb293167833d1609be576459ad6b3a5b03ad99c3e4bc464"
+    },
+    "security/renderer.log": {
+      "bytes": 293,
+      "sha256": "4dd55c96c871adc4f1bd90e2d8cb910b8538f2810614bc60f4e68fa427909c57"
+    },
+    "security/shared.log": {
+      "bytes": 294,
+      "sha256": "c181aa0e915e61aeda0579926e7bbedc07c33d304206fa47feb67e35b3b0c5e3"
+    },
+    "security/textures.log": {
+      "bytes": 292,
+      "sha256": "3c6e15a88a37a03ec6dae04f04d507c18bda67a4dc49c4f11f9d1227f812b53a"
+    },
+    "security/v6.log": {
+      "bytes": 293,
+      "sha256": "5cdca5fc1736ea1a3edaaa5481c8b3bb0e99efa8dd5d15b341ab0d2971203ceb"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_basecolor.jpg": {
+      "bytes": 7369,
+      "sha256": "6f03bd6c4e8ec104a4a4db67b4e9bac89bd34d246e2342f010831a529870fd14"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_normal.jpg": {
+      "bytes": 6815,
+      "sha256": "b101f8a2c348f96b2aef72301da06e8c6aea3bf26eeddeb59e355ccc0466eff0"
+    },
+    "sources/generated_materials/sacred_earth_mortar_dab6502aaeed_orm.jpg": {
+      "bytes": 6163,
+      "sha256": "cdc698bf7bb16880d5c6cd6dd2df7edccdb26b003f2c522acef3bcc002464114"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_basecolor.jpg": {
+      "bytes": 9363,
+      "sha256": "4f73705d9ddaf1e0197f3fb945acedaa83939c808a0f22fc618ec208295bbdee"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_normal.jpg": {
+      "bytes": 6741,
+      "sha256": "4c1c7a61309412d6a39f1329853a76a61a6b5b6934441aacfd737879ce28b9a6"
+    },
+    "sources/generated_materials/sacred_fresh_fracture_393b30e024f7_orm.jpg": {
+      "bytes": 6317,
+      "sha256": "2ae6e8f6cdae7c431e328fb1959a682cc4583d2948f3766af77720a0f184b192"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_basecolor.jpg": {
+      "bytes": 7562,
+      "sha256": "13cde201b094361aec10751caf975b072a45901369302535cb4f93d73df218cb"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_normal.jpg": {
+      "bytes": 6860,
+      "sha256": "8d81fe337e0d81fce7b783440f415815231c2050ed08207d569fbd59855dc1c4"
+    },
+    "sources/generated_materials/sacred_velvet_moss_240e5b7b849b_orm.jpg": {
+      "bytes": 6273,
+      "sha256": "36fbb808328024432930f74eb047c3a79af6de49400a6019558a9a05938c8eff"
+    },
+    "sources/v6_wall_c.blend": {
+      "bytes": 1252819,
+      "sha256": "3628c85d67669756c569cd981d88421726ecdce0a46a7642e35a2406b7f12566"
+    },
+    "structural-audit.json": {
+      "bytes": 1177,
+      "sha256": "7d6020eb6c72d9b68fe2472ae5e07ac1767fda78d6b71badd34ebe6d2313d44c"
+    }
+  }
+}

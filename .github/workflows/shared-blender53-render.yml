@@ -2,6 +2,10 @@ name: Shared Blender 5.3 render gateway
 on:
   workflow_call:
     inputs:
+      artifact_suffix:
+        description: Optional unique suffix for serial per-asset jobs
+        type: string
+        default: ""
       script:
         description: Repo-relative Blender Python script under tools/
         type: string
@@ -12,6 +16,10 @@ on:
         required: true
   workflow_dispatch:
     inputs:
+      artifact_suffix:
+        description: Optional unique suffix for serial per-asset jobs
+        type: string
+        default: ""
       script:
         description: Repo-relative Blender Python script under tools/
         type: string
@@ -40,10 +48,12 @@ jobs:
         env:
           SCRIPT: ${{ inputs.script }}
           OUTPUT_DIR: ${{ inputs.output_dir }}
+          ARTIFACT_SUFFIX: ${{ inputs.artifact_suffix }}
         run: |
           python3 - <<'PY'
           import os,re
           from pathlib import Path
+          assert re.fullmatch(r'[a-zA-Z0-9_-]*',os.environ['ARTIFACT_SUFFIX'])
           script=os.environ['SCRIPT']
           out=os.environ['OUTPUT_DIR']
           assert re.fullmatch(r'tools/[a-zA-Z0-9_./-]+\.py',script) and '..' not in script.split('/'),script
@@ -91,7 +101,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: shared-blender53-NOT-APPROVED-${{ github.run_id }}
+          name: shared-blender53-NOT-APPROVED-${{ github.run_id }}${{ inputs.artifact_suffix }}
           path: |
             ${{ inputs.output_dir }}/
             qa/security/

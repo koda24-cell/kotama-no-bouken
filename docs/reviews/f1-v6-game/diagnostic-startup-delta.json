@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "fullSuiteCommit": "60e704d158acd3121763a2ad226fb7fa3dda913c",
+  "changedFile": "field/field-3d-view.js",
+  "oldSha256": "e5e8365c662185a5bdd2d618d5b22d836bb5ac83524d4741cb0b407485b9c63d",
+  "newSha256": "4dbf6507443978a4d2481e3c1628e0ecbe41e43a8b67251f64443a84e9eb0037",
+  "exactChange": "Only readonly waterMeshCount tolerates absent world before mount, returning 0. Once mounted it returns identical values. Rendering/gameplay/asset inputs unchanged. Fresh preview covers new startup path.",
+  "allOtherFullSuiteInputsUnchanged": true
+}

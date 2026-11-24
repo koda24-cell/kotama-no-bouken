@@ -1,0 +1,379 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern.glb",
+      "file_bytes": 701420,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 14780,
+      "materials": 3,
+      "material_names": [
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf"
+      ],
+      "mesh_names": [
+        "curved spleenwort rachis",
+        "rounded alternating pinna",
+        "young coiled frond"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 7,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/fern/props/v6_fern_cards.glb",
+      "file_bytes": 573032,
+      "glb_meshes": 1,
+      "total_mesh_primitives": 1,
+      "scene_nodes": 2,
+      "scene_mesh_nodes": 1,
+      "scene_primitive_instances": 1,
+      "estimated_scene_triangles": 6,
+      "materials": 1,
+      "material_names": [
+        "v6_fern_cutout"
+      ],
+      "mesh_names": [
+        "v6_fern_cross_cards"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 0,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 1,
+      "textures": 1,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/fractured/props/v6_fractured.glb",
+      "file_bytes": 3087248,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 4626,
+      "materials": 2,
+      "material_names": [
+        "sacred_weathered_stone",
+        "v6_surface_moss"
+      ],
+      "mesh_names": [
+        "Icosphere",
+        "draped_feathered_surface_moss"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 1,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/riverstones/props/v6_riverstones.glb",
+      "file_bytes": 3284744,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 10644,
+      "materials": 2,
+      "material_names": [
+        "sacred_weathered_stone",
+        "v6_surface_moss"
+      ],
+      "mesh_names": [
+        "Icosphere",
+        "draped_feathered_surface_moss"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 1,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/schist/props/v6_schist.glb",
+      "file_bytes": 3191968,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 7528,
+      "materials": 2,
+      "material_names": [
+        "sacred_weathered_stone",
+        "v6_surface_moss"
+      ],
+      "mesh_names": [
+        "Icosphere",
+        "draped_feathered_surface_moss"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 1,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge.glb",
+      "file_bytes": 229028,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 4320,
+      "materials": 3,
+      "material_names": [
+        "forest_leaf",
+        "forest_new_leaf",
+        "forest_old_leaf"
+      ],
+      "mesh_names": [
+        "arched sedge blade.001",
+        "arched sedge blade.007",
+        "arched sedge blade"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 5,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/sedge/props/v6_sedge_cards.glb",
+      "file_bytes": 566824,
+      "glb_meshes": 1,
+      "total_mesh_primitives": 1,
+      "scene_nodes": 2,
+      "scene_mesh_nodes": 1,
+      "scene_primitive_instances": 1,
+      "estimated_scene_triangles": 6,
+      "materials": 1,
+      "material_names": [
+        "v6_sedge_cutout"
+      ],
+      "mesh_names": [
+        "v6_sedge_cross_cards"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 0,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 1,
+      "textures": 1,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate.glb",
+      "file_bytes": 158876,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 2278,
+      "materials": 3,
+      "material_names": [
+        "forest_flexible_stem",
+        "forest_leaf",
+        "forest_new_leaf"
+      ],
+      "mesh_names": [
+        "branching petiole",
+        "three lobed woodland leaflet.003",
+        "three lobed woodland leaflet"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 7,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/trifoliate/props/v6_trifoliate_cards.glb",
+      "file_bytes": 455220,
+      "glb_meshes": 1,
+      "total_mesh_primitives": 1,
+      "scene_nodes": 2,
+      "scene_mesh_nodes": 1,
+      "scene_primitive_instances": 1,
+      "estimated_scene_triangles": 6,
+      "materials": 1,
+      "material_names": [
+        "v6_trifoliate_cutout"
+      ],
+      "mesh_names": [
+        "v6_trifoliate_cross_cards"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 0,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 1,
+      "textures": 1,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/wall_a/modules/v6_wall_a.glb",
+      "file_bytes": 2358416,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 7572,
+      "materials": 4,
+      "material_names": [
+        "sacred_earth_mortar",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "mesh_names": [
+        "Cube",
+        "wall hugging roots",
+        "Icosphere",
+        "transition_course"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/wall_b/modules/v6_wall_b.glb",
+      "file_bytes": 2122112,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 5852,
+      "materials": 4,
+      "material_names": [
+        "sacred_earth_mortar",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "mesh_names": [
+        "Cube",
+        "wall hugging roots",
+        "Icosphere",
+        "transition_course"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b1_nature_v6_candidates/wall_c/modules/v6_wall_c.glb",
+      "file_bytes": 1978276,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 4792,
+      "materials": 4,
+      "material_names": [
+        "sacred_earth_mortar",
+        "sacred_root_bark",
+        "sacred_velvet_moss",
+        "sacred_weathered_stone"
+      ],
+      "mesh_names": [
+        "Cube",
+        "wall hugging roots",
+        "Icosphere",
+        "transition_course"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

@@ -1,0 +1,21 @@
+# V6試験ページの読み込み回復
+
+ユーザー報告: 最新・以前の固定SHAページが起動画面/LOADINGで停止。画像にはscript.jsの取得失敗表示。
+
+## 切り分けと変更
+
+クラウドからraw.githackのHTML/JSはHTTP403。固定SHAの同じJSをjsDelivrで200取得できたが、実ブラウザでは一部CDNリクエストに403/ORBも再現した。利用者全体の障害原因やブラウザキャッシュ破損とは断定しない。
+
+修正はpreview/f1-sacred-playtest.htmlのみ。ゲームとモデルは検査済みb3f86ba5bfebe7c96414999941d6b529ff614d0bへ固定し、raw.githack上では外部配信の取得経路を使用する。JSはFastly jsDelivr→CDN jsDelivr→raw.githubusercontentへ順に取得を試み、成功したものを同一originのBlobとして実行する。classic scriptのdefer順序とES moduleの共有identityを保持。相対module参照を元の固定URLに解決し、import.meta.urlは元のURLへ置換する。Three.js r180の既存importmapは維持する。新規ライブラリやモデル制作なし。
+
+隔離用entryを取得できるまでiframeにゲームを入れず、entryを全コードより前にinline実行する。再試行で旧iframe/Blobを破棄。HTTP/スクリプト失敗・90秒経過をヘッダーへ表示する。通常セーブを消したりリセットしたりしない。旧SHAの内容は不変なので、新しいSHAの試験ページを渡す。
+
+## 検証
+
+再現コマンド: リポジトリを127.0.0.1:8838でHTTP配信し、`BROWSER_IGNORE_PROXY_CERT=1 node tools/f1-v6/verify_delivery.cjs`。管理環境のHTTPS proxy証明書のみ検査用Chromiumで例外とする。配布コードでは証明書検査を無効にしない。
+
+親HTMLはローカル配信、ゲームJS/GLB/テクスチャは実ネットの固定SHAへ接続し、成功応答のモック/ローカルThree差し替えなし。結果はdocs/reviews/f1-v6-delivery/live-verification.json、実画面はlive-1f/2f/3f.png。直接raw.githackのHTML配信自体をこの環境で開けたという証跡ではない。全端末での動作保証でもない。
+
+最終検査結果はJSONを参照。最初の代替CDNのみ/単純crossorigin切替での失敗を経て再試行取得を導入しており、失敗した画面を成功画像として流用しない。新モデルは引き続きNOT_APPROVED、main変更なし。
+
+最終結果: 3F/1F/2Fの実CDN起動、固定素材のハッシュ検証、各フロア表示、親の通常セーブsentinel不変、子のメモリsaveVersion12、通常保存の不可視をpass。隔離entryを全配信先でHTTP503にする故障注入でiframe空/親保存不変をpass。page errors0。コード入力SHAは実行前後一致。実ネット検査で403を返したファイルは別配信先へ回復して表示を完了した。

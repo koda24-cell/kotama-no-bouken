@@ -13,7 +13,7 @@
     key: { configurable:true, value(index){ return [...store(this).keys()][Number(index)] ?? null; } },
     length: { configurable:true, get(){ return store(this).size; } }
   });
-  const timer=setInterval(() => {
+  const timer=setInterval(async () => {
     if(typeof fieldEnterArea!=='function'||!window.KotamaField3D)return;
     clearInterval(timer);
     try {
@@ -27,7 +27,14 @@
       if(typeof eventRead!=='undefined')for(const e of stageEvents||[])eventRead[e.id]=true;
       window.persistAutoSave=()=>true;
       const startFloor=Number.isInteger(window.KotamaSacredPlaytestStartFloor)&&window.KotamaSacredPlaytestStartFloor>=0&&window.KotamaSacredPlaytestStartFloor<=2?window.KotamaSacredPlaytestStartFloor:2;
-      fieldEnterArea(1,{floor:startFloor,fromHome:true});
+      await fieldEnterArea(1,{floor:startFloor,fromHome:true});
+      if(startFloor===2){
+        const a=fieldArea(1,2);
+        if(fieldCanEnter(a,5,15,'player')){
+          const p=fieldTileCenter(5,15);fieldState.x=p.x;fieldState.y=p.y;fieldState.dir='up';fieldState.positioned=true;fieldState.view=null;fieldState.stepUntil=0;fieldState.triggerTile='5,15';
+          fieldUpdateVision(true);fieldUpdateNear();window.KotamaField3D.build();
+        }
+      }
       window.KotamaSacredPlaytestReady=true;
     } catch(error){window.KotamaSacredPlaytestError=String(error.message||error);console.error('[sacred-playtest]',error);}
   },100);

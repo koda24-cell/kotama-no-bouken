@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "method": "Actual final MASK GLB triangles/UVs sampled against actual RGBA atlas alpha >= .35. All walk cells at camera Y1.6m/backoff1.1m/FOV68/aspect1.6, four headings. Samples in lower viewport y60..98.5%, within5m. Conservative minimum using only four core corner plants; companion clumps and wall-bank plants are additional. Artistic tone and GPU pixels are independently reviewed.",
+  "floors": [
+    {
+      "floor": 1,
+      "walkCells": 261,
+      "cardinalViews": 1044,
+      "minimumOpaqueForegroundSamples": 147,
+      "passed": true
+    },
+    {
+      "floor": 2,
+      "walkCells": 264,
+      "cardinalViews": 1056,
+      "minimumOpaqueForegroundSamples": 148,
+      "passed": true
+    },
+    {
+      "floor": 3,
+      "walkCells": 196,
+      "cardinalViews": 784,
+      "minimumOpaqueForegroundSamples": 148,
+      "passed": true
+    }
+  ],
+  "failures": [],
+  "opacityPointSamples": {
+    "sedge": 119,
+    "trifoliate": 77,
+    "fern": 85
+  }
+}

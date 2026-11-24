@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "method": "Exact point-to-triangle distance at eye height, 72 turn samples on both cells per authored arch. Near-plane radius 0.1m. Does not replace visual obstruction review.",
+  "arches": [
+    {
+      "id": "threshold_5_13",
+      "cameraSamples": 144,
+      "minimumTriangleDistanceMeters": 0.4457
+    },
+    {
+      "id": "threshold_4_11",
+      "cameraSamples": 144,
+      "minimumTriangleDistanceMeters": 0.4457
+    },
+    {
+      "id": "threshold_1_8",
+      "cameraSamples": 144,
+      "minimumTriangleDistanceMeters": 0.4457
+    },
+    {
+      "id": "threshold_5_4",
+      "cameraSamples": 144,
+      "minimumTriangleDistanceMeters": 0.4457
+    },
+    {
+      "id": "threshold_8_3",
+      "cameraSamples": 144,
+      "minimumTriangleDistanceMeters": 0.4457
+    },
+    {
+      "id": "threshold_11_5",
+      "cameraSamples": 144,
+      "minimumTriangleDistanceMeters": 0.4457
+    },
+    {
+      "id": "threshold_19_3",
+      "cameraSamples": 144,
+      "minimumTriangleDistanceMeters": 0.4457
+    },
+    {
+      "id": "threshold_23_4",
+      "cameraSamples": 144,
+      "minimumTriangleDistanceMeters": 0.4457
+    }
+  ],
+  "oldSidewaysSurfaceDistanceMeters": 0.012000000104308128
+}

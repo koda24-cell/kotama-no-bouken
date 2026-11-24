@@ -1,0 +1,82 @@
+name: F1 V6 final shared audit and security checkpoint
+on:
+  push:
+    branches: [feature/f1-sightline-flora-v6-20261124]
+    paths: [tools/f1-v6/run_final_audit.json]
+permissions:
+  contents: write
+  packages: read
+jobs:
+  performance:
+    uses: ./.github/workflows/shared-3d-performance-audit.yml
+    with:
+      asset_glob: assets/3d/dungeons/b1_nature_v6_candidates/**/*.glb
+  security:
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Inspect the actual final candidate set
+        run: |
+          mkdir -p v6-audit-output/security
+          blender --version > v6-audit-output/blender-version.txt
+          clamscan --version > v6-audit-output/clamav-version.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,os
+          base=Path('assets/3d/dungeons/b1_nature_v6_candidates')
+          catalog=json.loads((base/'catalog.json').read_text());assert len(catalog['sources'])==9
+          for s in catalog['sources']:
+              assert hashlib.sha256(Path(s['file']).read_bytes()).hexdigest()==s['sha256']
+              assert s['approvalStatus']=='NOT_APPROVED'
+          files={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(base.rglob('*')) if p.is_file()}
+          assert len(list(base.rglob('*.glb')))==12
+          Path('v6-audit-output/source-hashes.json').write_text(json.dumps({'status':'NOT_APPROVED','commit':os.environ['GITHUB_SHA'],'run':os.environ['GITHUB_RUN_ID'],'files':files},indent=2))
+          PY
+      - name: Refresh and scan actual final GLB Blend PNG texture and metadata files
+        run: |
+          bash tools/security/clamav_scan_gate.sh update v6-audit-output/security
+          bash tools/security/clamav_scan_gate.sh scan assets/3d/dungeons/b1_nature_v6_candidates v6-audit-output/security/final-candidates.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: f1-v6-final-security
+          path: v6-audit-output/
+          if-no-files-found: error
+  archive-proof:
+    needs: [performance, security]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/f1-sightline-flora-v6-20261124
+      - uses: actions/download-artifact@v4
+        with:
+          name: f1-v6-final-security
+          path: downloaded/security
+      - uses: actions/download-artifact@v4
+        with:
+          name: shared-3d-glb-performance-audit
+          path: downloaded/performance
+      - name: Persist actual audit logs and unchanged-source proof
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,shutil
+          report=json.loads(Path('downloaded/security/source-hashes.json').read_text())
+          for file,sha in report['files'].items():
+              assert hashlib.sha256(Path(file).read_bytes()).hexdigest()==sha,file
+          assert not json.loads(Path('downloaded/performance/glb-audit.json').read_text())['errors']
+          target=Path('docs/reviews/f1-v6-shared-audit')
+          shutil.copytree('downloaded',target,dirs_exist_ok=True)
+          PY
+          git config user.name 'F1 V6 QA checkpoint'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/reviews/f1-v6-shared-audit
+          git commit -m 'test(f1): archive shared final GLB audit and ClamAV evidence'
+          git push origin HEAD:feature/f1-sightline-flora-v6-20261124

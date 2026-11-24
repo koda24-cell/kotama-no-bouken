@@ -1,0 +1,52 @@
+{
+  "bytes": 3087248,
+  "sha256": "c5290c5f8490228faf3154e3d6bfede006edcbd4cad4d2e2cc318acc757a122f",
+  "tris": 4626,
+  "verts": 3138,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "sacred_weathered_stone",
+    "v6_surface_moss"
+  ],
+  "textureCount": 6,
+  "textureBytes": 2905046,
+  "sizeMeters": [
+    0.4948,
+    0.2599,
+    0.3952
+  ],
+  "bboxMin": [
+    -0.2269,
+    0.002,
+    -0.4186
+  ],
+  "bboxMax": [
+    0.2679,
+    0.2619,
+    -0.0234
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "v6_fractured",
+  "file": "props/v6_fractured.glb",
+  "category": "props",
+  "desc_ja": "Individually authored V6 fractured; first-stratum damp moss palette; review only.",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "dee055c9367d6b838ce5713b088a4923855bc822",
+  "workflowRun": "45220723124",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/v6_fractured.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/v6_fractured/front.png",
+    "renders/v6_fractured/back.png",
+    "renders/v6_fractured/side.png",
+    "renders/v6_fractured/angle.png",
+    "renders/v6_fractured/top.png"
+  ]
+}
