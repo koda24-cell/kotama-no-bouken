@@ -1,5 +1,5 @@
 """Fetch one original CC0 model bundle with per-file scanning before import."""
-def load(c,bpy,scan,asset):
+def load(c,bpy,scan,asset,extras=()):
  import json,hashlib,urllib.request
  from pathlib import PurePosixPath
  folder=c.OUT/('sources/polyhaven_'+asset+'_original');folder.mkdir(parents=True,exist_ok=True);files=[]
@@ -13,6 +13,8 @@ def load(c,bpy,scan,asset):
  meta=folder/'files-api.json';get('https://api.polyhaven.com/files/'+asset,meta);api=json.loads(meta.read_text());row=api['gltf']['1k']['gltf'];source=folder/(asset+'_1k.gltf');get(row['url'],source,row)
  for name,item in row['include'].items():
   relative=PurePosixPath(name);assert not relative.is_absolute()and'..'not in relative.parts and ':'not in name;get(item['url'],folder/relative,item)
+ for key in extras:
+  item=api[key]['1k']['png'];get(item['url'],folder/('textures/'+asset+'_'+key+'_1k.png'),item)
  raw=json.loads(source.read_text())
  for item in raw.get('buffers',[])+raw.get('images',[]):
   relative=PurePosixPath(item['uri']);assert not relative.is_absolute()and'..'not in relative.parts and ':'not in item['uri']and(folder/relative).is_file()

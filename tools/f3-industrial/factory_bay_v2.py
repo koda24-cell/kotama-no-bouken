@@ -8,7 +8,7 @@ def build(e):
  c,bpy,box,rod,scan,rng=[e[k]for k in ['c','bpy','box','rod','scan','rng']]
  rust,concrete,moss,fracture,dark=[e[k]for k in ['rust','concrete','moss','fracture','dark']]
  from licensed_gltf_v2 import load
- original,raw=load(c,bpy,scan,'modular_factory_facade');templates={o.name:o for o in original if o.type=='MESH'};nodes={n['name']:n for n in raw['nodes']if'mesh'in n};selected=[]
+ original,raw=load(c,bpy,scan,'modular_factory_facade',extras=['windows_alpha']);templates={o.name:o for o in original if o.type=='MESH'};nodes={n['name']:n for n in raw['nodes']if'mesh'in n};selected=[]
  def component(name,x,z):
   source=templates[name];old=source.matrix_world.copy();t=nodes[name].get('translation',[0,0,0]);offset=Vector((t[0],-t[2],t[1]))
   o=source.copy();o.data=source.data.copy();bpy.context.collection.objects.link(o);o.parent=None
@@ -40,6 +40,8 @@ def build(e):
   if not m.name.startswith('modular_factory_facade'):continue
   p=next((n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED'),None)
   if p is None:continue
+  if 'glass'in m.name:
+   alpha=m.node_tree.nodes.new('ShaderNodeTexImage');alpha.image=bpy.data.images.load(str(c.OUT/'sources/polyhaven_modular_factory_facade_original/textures/modular_factory_facade_windows_alpha_1k.png'),check_existing=True);alpha.image.colorspace_settings.name='Non-Color';m.node_tree.links.new(alpha.outputs['Color'],p.inputs['Alpha']);m.surface_render_method='DITHERED';m.use_backface_culling=False
   factor=(.68,.72,.68,1)if'brick'in m.name else(.50,.55,.51,1)
   socket=p.inputs['Base Color']
   if socket.is_linked:

@@ -51,12 +51,13 @@ def build(e):
  assert sum(len(o.data.vertices)for o in meshes)==original_vertices
  (c.OUT/'sources/fern-provenance.json').write_text(json.dumps({'status':'NOT_APPROVED','supplier':'Poly Haven','asset':asset,'assetURL':'https://polyhaven.com/a/'+asset,'license':'CC0','licenseURL':'https://polyhaven.com/license','files':receipt,'originalSourceKept':True,'originalVertices':original_vertices,'verticesRemoved':0,'uvPreserved':True,'sourceMeshes':source_meshes},indent=2))
 
-def finalize(c,model,metrics):
+def finalize(c,model,metrics,only_materials=None):
  """Use the proven F1 alpha-MASK export patch, then render the final GLB."""
  import json,struct
  path=c.OUT/'props'/(model+'.glb');raw=path.read_bytes();n=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+n]);binary=raw[20+n:]
  assert doc['materials']
  for material in doc['materials']:
+  if only_materials and not any(token in material.get('name','')for token in only_materials):continue
   material.update(alphaMode='MASK',alphaCutoff=.45,doubleSided=True)
  encoded=json.dumps(doc,separators=(',',':')).encode();encoded+=b' '*((-len(encoded))%4)
  path.write_bytes(struct.pack('<III',0x46546c67,2,20+len(encoded)+len(binary))+struct.pack('<II',len(encoded),0x4e4f534a)+encoded+binary)

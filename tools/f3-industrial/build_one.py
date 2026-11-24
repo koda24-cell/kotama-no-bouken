@@ -146,10 +146,13 @@ def main():
  authoring=OUT/'sources'/(model+'_authoring.blend')
  authoring_vertices=sum(len(o.data.vertices)for o in bpy.context.scene.objects if o.type=='MESH')
  bpy.ops.wm.save_as_mainfile(filepath=str(authoring),compress=True)
- metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset),render=asset not in ['v2_fern_colony','v2_wildflower_colony'])
+ metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset),render=asset not in ['v2_fern_colony','v2_wildflower_colony','v2_factory_bay'])
  if asset in ['v2_fern_colony','v2_wildflower_colony']:
   from fern_colony_v2 import finalize
   metrics=finalize(c,model,metrics)
+ if asset=='v2_factory_bay':
+  from fern_colony_v2 import finalize
+  metrics=finalize(c,model,metrics,only_materials=['windows_glass'])
  metrics.update(approvalStatus='NOT_APPROVED',workflowRun=os.environ.get('GITHUB_RUN_ID'),verificationEnvironment='Shared pinned Blender '+bpy.app.version_string+' + ClamAV')
  (OUT/'metrics'/(model+'.json')).write_text(json.dumps(metrics,indent=2))
  from pack_runtime import pack
