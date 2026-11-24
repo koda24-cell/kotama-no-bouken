@@ -14,13 +14,35 @@ def build(asset,e):
  def positions_hash():return hashlib.sha256(json.dumps([[[*v.co]for v in o.data.vertices]+[[*row]for row in o.matrix_world]for o in original]).encode()).hexdigest()
  original_geometry_hash=positions_hash()
  bark=c.material('f3_native_aged_bark',(.145,.12,.08,1),.98)
- leaf=c.material('f3_native_olive_leaf',(.10,.19,.07,1),.92)
+ from native_leaf import material as leaf_material
+ leaf=leaf_material(c)
  # Material replacement and metric UVs leave every original vertex and component intact.
  for o in original:
+  roles=[];layer=o.data.uv_layers.active;original_uv=[tuple(p.uv)for p in layer.data]if layer else None
   for slot in o.material_slots:
-   role=slot.material.name.removeprefix('f3_native_').split('.')[0]if slot.material else 'concrete'
-   slot.material={'concrete':concrete,'stone':moss,'paving':asphalt,'soil':moss,'rust':rust,'bark':bark,'leaf':leaf,'dark':dark,'gold':rust}.get(role,concrete)
+   role=slot.material.name.removeprefix('f3_native_').split('.')[0]if slot.material else 'concrete';roles.append(role)
+   if role!='bark':slot.material={'concrete':concrete,'stone':moss,'paving':asphalt,'soil':moss,'rust':rust,'leaf':leaf,'dark':dark,'gold':rust}.get(role,concrete)
   c.uv_world(o,1.35)
+  if original_uv:
+   for face in o.data.polygons:
+    if roles[face.material_index]in['leaf','bark']:
+     for li in face.loop_indices:o.data.uv_layers.active.data[li].uv=original_uv[li]
+ anchored=0
+ if key=='ruinedBuilding':
+  from mathutils.bvhtree import BVHTree
+  vertices=[];polygons=[]
+  for o in original:
+   if not any(s.material in[concrete,moss]for s in o.material_slots):continue
+   offset=len(vertices);vertices.extend(o.matrix_world@v.co for v in o.data.vertices);polygons.extend(tuple(offset+i for i in f.vertices)for f in o.data.polygons)
+  support=BVHTree.FromPolygons(vertices,polygons)
+  for o in original:
+   if not any(s.material==rust for s in o.material_slots):continue
+   corners=[o.matrix_world@Vector(v)for v in o.bound_box];lo=Vector(tuple(min(p[k]for p in corners)for k in range(3)));hi=Vector(tuple(max(p[k]for p in corners)for k in range(3)));size=hi-lo
+   if lo.z<.1 or size.z<max(size.x,size.y)*2:continue
+   bottom=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z));hit,normal,index,distance=support.ray_cast(bottom+Vector((0,0,.01)),Vector((0,0,-1)),6)
+   if hit is None:hit,normal,index,distance=support.find_nearest(bottom)
+   if hit is not None and (bottom-hit).length>.045:
+    radius=max(.006,min(size.x,size.y)*.42);c.tube('connected continuation of retained exposed steel',[hit-normal*.025,bottom+Vector((0,0,.025))],radius,rust,10);anchored+=1
  # Add hardware, spalling skin and contact debris onto the actual concrete faces.
  faces=[]
  for o in original:
@@ -58,4 +80,4 @@ def build(asset,e):
    c.tube('frayed reinforcing cable',[(j*.24-.4,.05,1.4),(j*.22-.4,-.05,.9),(j*.19-.4,-.09,.4)],.01,rust,8)
  assert sum(len(o.data.vertices)for o in original)==raw_positions
  assert positions_hash()==original_geometry_hash
- return {'preservedNativeVertices':raw_positions,'sourceFile':str(path.relative_to(root)),'sourceSha256':row['sha256'],'geometryPreserved':True,'originalGeometryHash':original_geometry_hash}
+ return {'preservedNativeVertices':raw_positions,'sourceFile':str(path.relative_to(root)),'sourceSha256':row['sha256'],'geometryPreserved':True,'originalGeometryHash':original_geometry_hash,'anchoredOriginalBars':anchored,'leafFinish':'original vein atlas with original leaf UVs retained'}

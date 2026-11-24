@@ -119,7 +119,9 @@ for(const area of [1,3,1,3]) {
  lifecycle.push(await page.evaluate(()=>({area:fieldState.area,far:__test3d.g.camera.far,roots:__test3d.g.world.children.filter(c=>c.name==='b3_ruined_city_map').length,points:__test3d.g.pool.filter(l=>l.parent).length,memory:{...__test3d.g.renderer.info.memory}})));
 }
 logs.push({lifecycle});
-const save=await page.evaluate(()=>{const saved=JSON.parse(JSON.stringify(fieldSerialize()));fieldDeserialize(saved);const round=fieldSerialize();return {same:JSON.stringify(saved)===JSON.stringify(round),area:round.area,floor:round.floor};});logs.push({save});
+const save=await page.evaluate(()=>{const saved=JSON.parse(JSON.stringify(fieldSerialize()));fieldDeserialize(saved);const round=fieldSerialize();const stable=value=>Array.isArray(value)?value.map(stable):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])])):value;
+const paths=[];function diff(a,b,path=''){if(JSON.stringify(stable(a))===JSON.stringify(stable(b)))return;if(a&&b&&typeof a==='object'&&typeof b==='object'){for(const key of new Set([...Object.keys(a),...Object.keys(b)]))diff(a[key],b[key],path+'.'+key);}else paths.push({path,before:a,after:b});}diff(saved,round);
+return {same:paths.length===0,keyOrderOnly:JSON.stringify(saved)!==JSON.stringify(round)&&paths.length===0,differences:paths,area:round.area,floor:round.floor};});logs.push({save});
 const stairs=await page.evaluate(()=>{fieldState.lock=false;fieldOnStairs('down');return true;});await settle();
 await page.waitForFunction(()=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.floor==='3-1',null,{timeout:120000});
 logs.push({stairs:{floor:await page.evaluate(()=>fieldState.floor)}});

@@ -15,7 +15,7 @@ for part in parts:
  for name in asset['renders']:
   row=receipt['files'][name];file=folder/name;assert hashlib.sha256(file.read_bytes()).hexdigest()==row['sha256']
   images.append({'view':Path(name).stem,'file':name})
- registry=json.loads((args.progress/'index.json').read_text());ident='f3-industrial-'+part['id'].replace('_','-')
+ registry=json.loads((args.progress/'index.json').read_text());ident='f3-industrial-'+part['id'].replace('_','-').lower()
  # Register tool itself rejects older timestamps; do not overwrite a later source.
  prior=next((r for r in registry['models']if r['id']==ident),None)
  if prior and str(prior.get('run_id'))==str(asset['workflowRun']):continue
