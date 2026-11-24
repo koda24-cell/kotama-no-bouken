@@ -54,3 +54,10 @@ Blender5.3固定共有Actions、入力/出力ClamAV、原本保存、1点ずつ�
 2026-11-24 JSTに https://polyhaven.com/a/modular_factory_facade 、https://polyhaven.com/a/modular_urban_apartments_facade 、https://polyhaven.com/a/shrub_01 の公式画像を実ブラウザで確認。いずれも公式CC0。工場キットは窓枠/煉瓦/荷捌き口/庇、住宅キットは扉/柱/窓/設備の整った近景部品。新品の見え方をそのまま採用せず、元のUVとNormal/AOを保持して用途が合う部品のみを風化改修する候補。原本パック全体を一つの完成アセットとして都市へ一括挿入しない。Shrub01は約282Ktriと高密度なので大量配置しない。まず6Ktri級のFern02を近景の群落として検証する。これら追加3件は公式ページ/プレビュー/ライセンス確認のみで、実バイナリの取込は未実施。
 
 作者の一からの単純造形に固執せず、適合する専門家のCC0部品や写真素材を優先比較する。原本/元URL/検査/採用範囲は別に残す。
+
+
+## Actual structural review checkpoint
+- Tower: source4149167e, run45415404490; five actual images reviewed. Supported I-sections, vessel, four platforms and alternating stairs read in silhouette, but dark studio metal cannot establish in-game near-surface acceptance.43,208tri; 15.451m. Source AO import compatibility retry preserved source geometry and AO.
+- Courtyard: source677b99c, run45407771986; actual street image still too white/regular. Weathering revision uses official worn_mossy_plasterwall after visual comparison with concrete_layers_02 and chipped_concrete. Bake macro rain at sill corners, downpipe streak and moist ledges into photographic atlases inside pinned Blender, preserving modeled damage and room depth. Pending render; not accepted.
+- Truss crossing design:8m span,7.2m high,5.3m deck, bearing piers x±3.25m inside solid wall cells, central walkway clear. Actual I-section chords/Warren diagonals/hex gusset bolts/open grating/attached broken rails. Individually authored source prepared; not rendered.
+- Fern: official Poly Haven fern_02 four source meshes and original UV retained, official separate alpha applied; per-download scan before import. Run45416559718 pending; must inspect final MASK GLB, not assume exporter alpha correctness.

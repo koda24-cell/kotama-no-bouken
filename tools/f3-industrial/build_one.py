@@ -30,10 +30,10 @@ def main():
    row=j[key]['1k']['jpg'];path=textures/(kind+'_'+role+'.jpg')
    if not path.exists():download(row['url'],path,kind+'-'+role)
    sources.append(dict(asset=kind,role=role,file=path.name,url=row['url'],sha256=hashlib.sha256(path.read_bytes()).hexdigest(),license='CC0'))
- if asset.startswith('v2_'):
+ if asset in ['v2_courtyard_facade','v2_service_tower']:
   # New photographic surfaces are scanned immediately after each retrieval,
   # before JSON parsing or Blender image decoding. Older deliveries unchanged.
-  for kind in ['concrete_slab_wall','cracked_concrete_wall','concrete_debris']:
+  for kind in (['concrete_slab_wall','cracked_concrete_wall','concrete_debris']+(['worn_mossy_plasterwall'] if asset=='v2_courtyard_facade' else [])):
    meta=textures/(kind+'-api.json')
    if not meta.exists():download('https://api.polyhaven.com/files/'+kind,meta,kind+'-api')
    scan(meta,kind+'-api-input')
@@ -68,10 +68,13 @@ def main():
   bpy.ops.object.modifier_apply(modifier=modifier.name);bpy.data.objects.remove(cutter,do_unlink=True);c.uv_world(obj)
  if asset=='v2_courtyard_facade':
   from courtyard_facade_v2 import build
-  build(dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector))
+  build(dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector,textures=textures))
  elif asset=='v2_service_tower':
   from service_tower_v2 import build
   build(dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector,candidate=candidate,scan=scan))
+ elif asset=='v2_truss_bridge':
+  from truss_bridge_v2 import build
+  build(dict(c=c,bpy=bpy,box=box,rod=rod,rust=rust,steel=steel,moss=moss,dark=dark,rng=rng))
  elif asset=='v2_fern_colony':
   from fern_colony_v2 import build
   build(dict(c=c,bpy=bpy,rng=rng,scan=scan))

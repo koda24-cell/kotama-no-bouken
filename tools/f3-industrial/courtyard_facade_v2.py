@@ -8,8 +8,8 @@ def build(e):
     from mathutils import Vector, Matrix
     c,bpy,box,rod,scar,pbr,rng=[e[k] for k in ['c','bpy','box','rod','scar','pbr','rng']]
     rust,moss,fracture,dark,steel=[e[k] for k in ['rust','moss','fracture','dark','steel']]
-    concrete=pbr('v2_cast_floor','concrete_slab_wall')
-    render=pbr('v2_crumbling_render','cracked_concrete_wall')
+    from facade_weathering_v2 import make,map_surfaces
+    aged=make(c,bpy,e['textures']);concrete=aged['structure'];render=aged['render']
     rubble=pbr('v2_crushed_aggregate','concrete_debris')
     inner=c.material('v2_unlit_room_concrete',(.105,.119,.108,1),.97)
     brick=c.material('v2_exposed_infill_brick',(.19,.105,.067,1),.94)
@@ -138,3 +138,5 @@ def build(e):
     for i in range(30):rod('rear fixed ladder rung',(-.24,1.90,.55+i*.30),(.24,1.90,.55+i*.30),.018,rust,8)
     for z in [1,4,7,9.5]:
         for x in [-.24,.24]:rod('ladder bearing anchor',(x,1.90,z),(x,1.70,z),.022,steel,8)
+
+    map_surfaces(bpy,{concrete,render})
