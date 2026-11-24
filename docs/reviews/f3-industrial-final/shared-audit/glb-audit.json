@@ -1,0 +1,859 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/bridge_abutment/props/f3_bridge_abutment.glb",
+      "file_bytes": 7450820,
+      "glb_meshes": 5,
+      "total_mesh_primitives": 5,
+      "scene_nodes": 6,
+      "scene_mesh_nodes": 5,
+      "scene_primitive_instances": 5,
+      "estimated_scene_triangles": 1980,
+      "materials": 5,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "Cube.003",
+        "Cylinder",
+        "Cube.001",
+        "Cube.004",
+        "Cube"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 5,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 15,
+      "textures": 15,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/broken_signal/props/f3_broken_signal.glb",
+      "file_bytes": 5036608,
+      "glb_meshes": 8,
+      "total_mesh_primitives": 8,
+      "scene_nodes": 9,
+      "scene_mesh_nodes": 8,
+      "scene_primitive_instances": 8,
+      "estimated_scene_triangles": 1540,
+      "materials": 8,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_dead_signal_2.28",
+        "f3_dead_signal_3.08",
+        "f3_deep_crack",
+        "f3_faded_safety_ochre",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "dangling supply cable",
+        "hanging broken lens retention wire",
+        "Cube",
+        "Cylinder",
+        "Cylinder.002",
+        "Cylinder.001",
+        "Cube.001",
+        "leaning tubular signal mast"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 8,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 24,
+      "textures": 24,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/broken_streetlamp/props/f3_broken_streetlamp.glb",
+      "file_bytes": 4894144,
+      "glb_meshes": 5,
+      "total_mesh_primitives": 5,
+      "scene_nodes": 6,
+      "scene_mesh_nodes": 5,
+      "scene_primitive_instances": 5,
+      "estimated_scene_triangles": 588,
+      "materials": 5,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_deep_crack",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "torn power conductor",
+        "Cylinder",
+        "Cube",
+        "Cube.003",
+        "tapered curved streetlamp mast"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 5,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 15,
+      "textures": 15,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/buckled_portal/props/f3_buckled_portal.glb",
+      "file_bytes": 2676240,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 1748,
+      "materials": 3,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "severed suspended wire",
+        "oxidized bolt washer",
+        "left column"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 9,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/column_joint/props/f3_column_joint.glb",
+      "file_bytes": 7588808,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 3460,
+      "materials": 4,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "oxidized bolt washer",
+        "Cube.006",
+        "exposed deformed reinforcing bar",
+        "Cube"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/control_cabinet/props/f3_control_cabinet.glb",
+      "file_bytes": 7606280,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
+      "estimated_scene_triangles": 3140,
+      "materials": 7,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_deep_crack",
+        "f3_faded_safety_ochre",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "loose switchboard wire",
+        "oxidized bolt washer",
+        "Cube",
+        "Cylinder.005",
+        "Cube.006",
+        "Cube.001",
+        "Cube.008"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 7,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 21,
+      "textures": 21,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/drain_channel/props/f3_drain_channel.glb",
+      "file_bytes": 5281936,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 3024,
+      "materials": 3,
+      "material_names": [
+        "f3_deep_crack",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "Cube.002",
+        "Cube.003",
+        "Cube"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 9,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/factory_door/props/f3_factory_door.glb",
+      "file_bytes": 5203836,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 2242,
+      "materials": 4,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_deep_crack",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "Cylinder",
+        "Cube.008",
+        "Cube.004",
+        "Cube"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/flanged_pipe/props/f3_flanged_pipe.glb",
+      "file_bytes": 5096700,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 2552,
+      "materials": 4,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "pipe gasket",
+        "Cylinder",
+        "open bore cast iron service elbow",
+        "Cube"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/grating_catwalk/props/f3_grating_catwalk.glb",
+      "file_bytes": 3057688,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 4896,
+      "materials": 2,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "oxidized bolt washer",
+        "perimeter channel"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 2,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/heaved_asphalt/props/f3_heaved_asphalt.glb",
+      "file_bytes": 8104228,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 1372,
+      "materials": 4,
+      "material_names": [
+        "f3_broken_asphalt",
+        "f3_damp_concrete",
+        "f3_faded_safety_ochre",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "Cube",
+        "root lifting pavement",
+        "Cube.001",
+        "Cube.007"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/ivy_pocket/props/f3_ivy_pocket.glb",
+      "file_bytes": 3930928,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 4300,
+      "materials": 3,
+      "material_names": [
+        "f3_damp_concrete",
+        "f3_ivy_woody_stem",
+        "f3_lobed_ivy_veined"
+      ],
+      "mesh_names": [
+        "Icosphere",
+        "asymmetric climbing ivy leader",
+        "curled rounded five lobed ivy blade"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 8,
+      "textures": 8,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/landing_railing/props/f3_landing_railing.glb",
+      "file_bytes": 4977196,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 928,
+      "materials": 2,
+      "material_names": [
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "guardrail upright",
+        "Cube"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 2,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_abandonedTransitStop/props/f3_native_abandonedTransitStop.glb",
+      "file_bytes": 5215272,
+      "glb_meshes": 6,
+      "total_mesh_primitives": 6,
+      "scene_nodes": 7,
+      "scene_mesh_nodes": 6,
+      "scene_primitive_instances": 6,
+      "estimated_scene_triangles": 1252,
+      "materials": 6,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_deep_crack",
+        "f3_exposed_aggregate",
+        "f3_native_bark",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "Cylinder",
+        "Mesh_3.001",
+        "localized exposed aggregate weather skin",
+        "Mesh_4.001",
+        "Mesh_0.001",
+        "Mesh_1.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 6,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 16,
+      "textures": 16,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_collapsedOverpass/props/f3_native_collapsedOverpass.glb",
+      "file_bytes": 5053740,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 1286,
+      "materials": 3,
+      "material_names": [
+        "f3_exposed_aggregate",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "localized exposed aggregate weather skin",
+        "Mesh_2.001",
+        "Mesh_0.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 9,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_ruinedBuilding/props/f3_native_ruinedBuilding.glb",
+      "file_bytes": 5390092,
+      "glb_meshes": 5,
+      "total_mesh_primitives": 5,
+      "scene_nodes": 6,
+      "scene_mesh_nodes": 5,
+      "scene_primitive_instances": 5,
+      "estimated_scene_triangles": 2602,
+      "materials": 5,
+      "material_names": [
+        "f3_exposed_aggregate",
+        "f3_native_bark",
+        "f3_native_veined_leaf",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "localized exposed aggregate weather skin",
+        "Mesh_3.001",
+        "Mesh_4.001",
+        "Mesh_1.001",
+        "Mesh_0.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 5,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_steelWreck/props/f3_native_steelWreck.glb",
+      "file_bytes": 4979584,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 741,
+      "materials": 3,
+      "material_names": [
+        "f3_exposed_aggregate",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "localized exposed aggregate weather skin",
+        "Mesh_0.001",
+        "Mesh_1.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 9,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_utilityPole/props/f3_native_utilityPole.glb",
+      "file_bytes": 5072220,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 1472,
+      "materials": 3,
+      "material_names": [
+        "f3_deep_crack",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "Mesh_2.001",
+        "Mesh_1.001",
+        "Mesh_0"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 9,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/pipe_rack/props/f3_pipe_rack.glb",
+      "file_bytes": 2677860,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 2116,
+      "materials": 3,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "hanging service bundle",
+        "U clamp saddle",
+        "pipe rack transverse frame"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 9,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/rebar_rubble/props/f3_rebar_rubble.glb",
+      "file_bytes": 7091088,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
+      "estimated_scene_triangles": 42864,
+      "materials": 7,
+      "material_names": [
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES.001",
+        "F3_CONCRETE_BROKEN_INTERIOR_WITH_EMBEDDED_STONES",
+        "f3_exposed_aggregate",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE.001",
+        "F3_OLD_CONCRETE_INTACT_AND_FRACTURE",
+        "oxidized_reinforcing_steel.001",
+        "oxidized_reinforcing_steel"
+      ],
+      "mesh_names": [
+        "F3_RUBBLE_V29_CORE_FRACTURE.001",
+        "F3_RUBBLE_V29_CORE_FRACTURE",
+        "Icosphere",
+        "F3_RUBBLE_V29_CORE_FRACTURE.003",
+        "F3_RUBBLE_V29_CORE_FRACTURE.002",
+        "bent_ribbed_rebar_mesh.001",
+        "bent_ribbed_rebar_mesh"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 7,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 13,
+      "textures": 19,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/retaining_wall/props/f3_retaining_wall.glb",
+      "file_bytes": 5190488,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 2528,
+      "materials": 4,
+      "material_names": [
+        "f3_deep_crack",
+        "f3_exposed_aggregate",
+        "f3_oxidized_iron",
+        "f3_rain_stained_wall"
+      ],
+      "mesh_names": [
+        "Cube",
+        "irregular cast panel left",
+        "ribbed exposed reinforcing steel",
+        "irregular cast panel left.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/riveted_girder/props/f3_riveted_girder.glb",
+      "file_bytes": 2785864,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 3156,
+      "materials": 2,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "oxidized bolt washer",
+        "continuous I girder"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 2,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/roller_shutter/props/f3_roller_shutter.glb",
+      "file_bytes": 3031948,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 4396,
+      "materials": 2,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "broken lock chain",
+        "shutter guide channel"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 2,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/service_stair/props/f3_service_stair.glb",
+      "file_bytes": 3878448,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 11060,
+      "materials": 2,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "Cube.001",
+        "inclined stair stringer"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 2,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/shattered_window/props/f3_shattered_window.glb",
+      "file_bytes": 5115816,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
+      "estimated_scene_triangles": 1316,
+      "materials": 7,
+      "material_names": [
+        "f3_deep_crack",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete",
+        "lightly_weathered_clear_glass.001",
+        "lightly_weathered_clear_glass.002",
+        "lightly_weathered_clear_glass.003",
+        "lightly_weathered_clear_glass"
+      ],
+      "mesh_names": [
+        "Cube.010",
+        "Cube.004",
+        "Cube",
+        "single_detached_corner_shard.001",
+        "single_detached_corner_shard.002",
+        "single_detached_corner_shard.003",
+        "single_detached_corner_shard"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 7,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 17,
+      "textures": 17,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

@@ -1,0 +1,84 @@
+{
+  "scope": "Actual archived rigid LOD GLBs, not runtime adoption or visual acceptance",
+  "models": 2,
+  "variants": [
+    {
+      "id": "column_joint",
+      "lod": 0,
+      "triangles": 3460,
+      "sourceTriangles": 3460,
+      "sha256": "4b9f772f8178ed888eda389ad8e0a3c1b74b7605a6c2faa218a8f16b66e95005",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "column_joint",
+      "lod": 1,
+      "triangles": 1902,
+      "sourceTriangles": 3460,
+      "sha256": "d05e6f863e1eaf2a4ff15f4fe396f94bc4d767be5c65b5a6246f0ffeb7ae19ab",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "column_joint",
+      "lod": 2,
+      "triangles": 865,
+      "sourceTriangles": 3460,
+      "sha256": "59679beb8f5a23a3dc7e52672ef3fc0cc41357a833bdc39743c1dfb13752685c",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "retaining_wall",
+      "lod": 0,
+      "triangles": 2528,
+      "sourceTriangles": 2528,
+      "sha256": "ad202340afbf8681f46c14c1e0104c476bbf83f2b17817fbbd96e5c976108ae9",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "retaining_wall",
+      "lod": 1,
+      "triangles": 1389,
+      "sourceTriangles": 2528,
+      "sha256": "e7ec12277d039a1d863d686ca3babd2b4ef580d2a61d239fc0a1635fc5e48c8d",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "retaining_wall",
+      "lod": 2,
+      "triangles": 632,
+      "sourceTriangles": 2528,
+      "sha256": "e09bbb9b498fbc54fea9d736e38b4f87d6943334caa7c032b24d7a89c682728a",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    }
+  ]
+}

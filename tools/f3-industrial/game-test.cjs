@@ -96,7 +96,7 @@ logs.push({interactions});
 for(const id of await page.evaluate(()=>fieldPuzzleDef('a3-lanterns').order)) {
  await page.evaluate(id=>{const a=fieldArea(),o=a.objects.find(o=>o.id===id);for(const [dir,dx,dz] of [['right',-1,0],['left',1,0],['down',0,-1],['up',0,1]])if(fieldCanEnter(a,o.tx+dx,o.ty+dz,'player')){const c=fieldTileCenter(o.tx+dx,o.ty+dz);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=dir;break;}fieldState.view=null;fieldUpdateVision(true);fieldUpdateNear();fieldActionPressed();},id);await settle();
 }
-await page.waitForTimeout(500);
+await page.waitForFunction(()=>fieldPuzzleSolved('a3-lanterns')&&__test3d.g.entries.find(e=>e.o.id==='a3-gate')?.state==='open',null,{timeout:30000});
 const puzzle=await page.evaluate(()=>({solved:fieldPuzzleSolved('a3-lanterns'),door:__test3d.g.entries.find(e=>e.o.id==='a3-gate')?.state}));logs.push({puzzle});
 if(mobile){
  await page.evaluate(()=>{const c=fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.lock=false;fieldUpdateVision(true);});
