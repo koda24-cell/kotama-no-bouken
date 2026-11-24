@@ -1,0 +1,46 @@
+name: 3D progress browser test
+on:
+  push:
+    branches: [feature/3d-progress-gallery-20261124]
+    paths: ['.github/workflows/3d-progress-browser-test.yml']
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install --no-save --prefix /tmp/gallery-test playwright
+          /tmp/gallery-test/node_modules/.bin/playwright install --with-deps chromium
+      - name: Test real data and refresh behavior
+        run: |
+          python3 -m http.server 8765 >/tmp/gallery-server.log 2>&1 &
+          NODE_PATH=/tmp/gallery-test/node_modules node <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            try{
+              const page=await browser.newPage();
+              await page.goto('http://127.0.0.1:8765/preview/3d-progress.html');
+              await page.waitForFunction(()=>document.querySelectorAll('article').length>=3);
+              await page.locator('article img').first().scrollIntoViewIfNeeded();
+              await page.waitForFunction(()=>document.querySelector('article img').naturalWidth>0);
+              const data=await (await page.request.get('https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/3d-progress-data/index.json')).json();
+              const row=structuredClone(data.models[0]);
+              row.version='TEST-REFRESH';row.id='browser-test-new';row.name='Browser test';
+              await page.route('**/3d-progress-data/index.json?*',route=>route.fulfill({json:{...data,models:[...data.models,row]},headers:{'access-control-allow-origin':'*'}}));
+              await page.locator('#refresh').click();
+              await page.getByRole('heading',{name:'Browser test',exact:true}).waitFor();
+              await page.unroute('**/3d-progress-data/index.json?*');
+              await page.locator('#refresh').click();
+              await page.getByRole('heading',{name:'Browser test',exact:true}).waitFor({state:'detached'});
+              await page.screenshot({path:'gallery-browser.png',fullPage:true});
+            }finally{await browser.close()}
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gallery-browser-proof
+          path: gallery-browser.png
+          retention-days: 14
