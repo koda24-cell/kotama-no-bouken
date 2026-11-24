@@ -259,6 +259,26 @@ export function createTheme(api) {
         }
       }
     }
+    // A few supported overhead crossings connect both sides of the industrial streets.
+    // Their piers stay against the walls; head clearance is at least3.55m.
+    const crossings=[];
+    for(let z=1;z<a.h-1;z++)for(let x=1;x<a.w-1;x++){
+      if(wallCell(x,z)||reserved.has(`${x},${z}`)||ch(x,z)==='~')continue;
+      const acrossX=wallCell(x-1,z)&&wallCell(x+1,z)&&open(x,z-1)&&open(x,z+1),acrossZ=wallCell(x,z-1)&&wallCell(x,z+1)&&open(x-1,z)&&open(x+1,z);
+      if(acrossX||acrossZ)crossings.push({x,z,acrossX,score:hash(x,z,681)});
+    }
+    crossings.sort((a,b)=>a.score-b.score);const selected=[];
+    const mount=(id,x,z,lift,rotation,height=null)=>{
+      const holder=new THREE.Group(),model=industrial.models.get(id).clone(true);model.rotation.y=rotation;holder.add(model);const b=new THREE.Box3().setFromObject(holder),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3());
+      const scale=height?height/size.y:4.12/Math.max(size.x,size.z);holder.scale.setScalar(scale);holder.position.set(x-center.x*scale,lift-b.min.y*scale,z-center.z*scale);root.add(holder);holder.updateMatrixWorld(true);
+      const bounds=new THREE.Box3().setFromObject(holder),record={key:id+':crosswalk',min:bounds.min.toArray(),max:bounds.max.toArray(),overhead:lift>=3.5};edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
+    };
+    for(const p of crossings){
+      if(selected.length>=(a.f===2?2:4)||selected.some(q=>Math.abs(p.x-q.x)+Math.abs(p.z-q.z)<7))continue;selected.push(p);
+      const x=p.x*CELL,z=p.z*CELL;mount('grating_catwalk',x,z,3.55,p.acrossX?0:Math.PI/2);
+      for(const side of[-1,1])mount('column_joint',x+(p.acrossX?side*1.7:0),z+(p.acrossX?0:side*1.7),0,p.acrossX?Math.PI/2:0,3.55);
+      count('supportedCrosswalk');
+    }
     batchStatic();
     skyMesh = finish.sky(); root.add(skyMesh);
     const sun = new THREE.DirectionalLight(0xe6e9e2, .85);
