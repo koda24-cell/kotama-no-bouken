@@ -7,7 +7,16 @@
       0.55,
       6.3
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45331023029",
+    "sourceCommit": "0e85bfd39b776642cff4a2acedc493b5efa7272e",
+    "actualGltfSizeMeters": [
+      4.04,
+      6.4596,
+      0.4472
+    ],
+    "portableAuthoring": "retaining_wall/portable_sources/f3_retaining_wall_authoring.blend",
+    "portableSha256": "d4a42854e9e6741c067b4c20a3c1955067c8fc98b6630896e08c972af9a51ddd"
   },
   {
     "id": "column_joint",
@@ -17,7 +26,16 @@
       1.1,
       5.8
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45331023029",
+    "sourceCommit": "0e85bfd39b776642cff4a2acedc493b5efa7272e",
+    "actualGltfSizeMeters": [
+      2.4,
+      5.6,
+      1.13
+    ],
+    "portableAuthoring": "column_joint/portable_sources/f3_column_joint_authoring.blend",
+    "portableSha256": "c37d28435cad69b6993d39d4680840e174c956e0bdb35ab5f2248bc551370622"
   },
   {
     "id": "riveted_girder",
@@ -27,7 +45,16 @@
       0.55,
       0.8
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45331023029",
+    "sourceCommit": "0e85bfd39b776642cff4a2acedc493b5efa7272e",
+    "actualGltfSizeMeters": [
+      4.09,
+      0.8934,
+      0.725
+    ],
+    "portableAuthoring": "riveted_girder/portable_sources/f3_riveted_girder_authoring.blend",
+    "portableSha256": "f80cdda752a77109edacf47b4d42064ad7e8ebb4a3bbdb721633f88ee474ff71"
   },
   {
     "id": "buckled_portal",
@@ -37,7 +64,16 @@
       1,
       5.4
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      4.21,
+      5.2073,
+      0.65
+    ],
+    "portableAuthoring": "buckled_portal/portable_sources/f3_buckled_portal_authoring.blend",
+    "portableSha256": "8afb4b6f5284d5fa0e7436c7291b2e24a5ee57039a145079de3cf9acec6609b6"
   },
   {
     "id": "grating_catwalk",
@@ -47,7 +83,16 @@
       1.8,
       1.3
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      4.0,
+      1.256,
+      1.8165
+    ],
+    "portableAuthoring": "grating_catwalk/portable_sources/f3_grating_catwalk_authoring.blend",
+    "portableSha256": "6ee5169c4237f6768636c0ac85ef07c97566705fcabf7f81338efee6e6ec2263"
   },
   {
     "id": "service_stair",
@@ -57,7 +102,16 @@
       3.7,
       3.4
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      1.62,
+      3.7554,
+      3.734
+    ],
+    "portableAuthoring": "service_stair/portable_sources/f3_service_stair_authoring.blend",
+    "portableSha256": "f84fcc64a5cb8f06901934eb1547d2ef255c006a486f6d7b8aa0d3b3cffb0ce9"
   },
   {
     "id": "landing_railing",
@@ -67,7 +121,16 @@
       2,
       1.3
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      2.6047,
+      1.3238,
+      2.055
+    ],
+    "portableAuthoring": "landing_railing/portable_sources/f3_landing_railing_authoring.blend",
+    "portableSha256": "870a4932ff4b198b016ba4afd73f1b291fafe2870e9094c3ba5fdafd36b5ea0e"
   },
   {
     "id": "bridge_abutment",
@@ -77,7 +140,16 @@
       2.7,
       3.8
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      3.85,
+      3.64,
+      2.275
+    ],
+    "portableAuthoring": "bridge_abutment/portable_sources/f3_bridge_abutment_authoring.blend",
+    "portableSha256": "096532d94bd67f4c0e611a863684d6122b0674b464b1bd84190d5a3af79ebfd2"
   },
   {
     "id": "broken_signal",
@@ -87,7 +159,16 @@
       0.8,
       3.7
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      0.665,
+      3.4025,
+      0.815
+    ],
+    "portableAuthoring": "broken_signal/portable_sources/f3_broken_signal_authoring.blend",
+    "portableSha256": "f631e88067637f2a47274b83ec44d83201629623adf69a6c8e534b98a9e68161"
   },
   {
     "id": "broken_streetlamp",
@@ -97,7 +178,16 @@
       1.0,
       4.8
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      1.8235,
+      4.5761,
+      0.55
+    ],
+    "portableAuthoring": "broken_streetlamp/portable_sources/f3_broken_streetlamp_authoring.blend",
+    "portableSha256": "7dc02bef42df0a25d498b173daf5d37a9eacfff2434af126b7229305a9b0e399"
   },
   {
     "id": "control_cabinet",
@@ -107,7 +197,16 @@
       0.8,
       2.0
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      1.7301,
+      1.86,
+      1.0285
+    ],
+    "portableAuthoring": "control_cabinet/portable_sources/f3_control_cabinet_authoring.blend",
+    "portableSha256": "dcf8f34b11c7aa699ed1150860c7caa6ec1ec564d2004528d30956d2dde75041"
   },
   {
     "id": "flanged_pipe",
@@ -117,7 +216,16 @@
       1.2,
       1.7
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45335192544",
+    "sourceCommit": "b777bf019444bc2255cc9e921547e5cad762f8ab",
+    "actualGltfSizeMeters": [
+      1.3575,
+      1.3575,
+      0.63
+    ],
+    "portableAuthoring": "flanged_pipe/portable_sources/f3_flanged_pipe_authoring.blend",
+    "portableSha256": "d9563574533557aec8f2355e1cab6111ca9a695b3ddfbdc45c23ebf5607c7b3b"
   },
   {
     "id": "pipe_rack",
@@ -127,7 +235,16 @@
       1.3,
       1.3
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45335192544",
+    "sourceCommit": "b777bf019444bc2255cc9e921547e5cad762f8ab",
+    "actualGltfSizeMeters": [
+      3.9675,
+      0.6609,
+      1.35
+    ],
+    "portableAuthoring": "pipe_rack/portable_sources/f3_pipe_rack_authoring.blend",
+    "portableSha256": "13302f66ae1e523a0c7b37a698848216f7f920c3ff747dd6e8fcdc56bc060250"
   },
   {
     "id": "roller_shutter",
@@ -137,7 +254,16 @@
       0.5,
       4.5
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      3.9,
+      4.46,
+      0.52
+    ],
+    "portableAuthoring": "roller_shutter/portable_sources/f3_roller_shutter_authoring.blend",
+    "portableSha256": "8106c52b558cbb9aefdb64ee167cbe28090b73999758b9825f31d1298e502413"
   },
   {
     "id": "shattered_window",
@@ -147,7 +273,16 @@
       0.5,
       3.2
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      3.71,
+      3.12,
+      0.575
+    ],
+    "portableAuthoring": "shattered_window/portable_sources/f3_shattered_window_authoring.blend",
+    "portableSha256": "ae9895191d1b7f7a427ff434cb328bd449cf741b2ea1923cbfb7ff18d4bca3be"
   },
   {
     "id": "rebar_rubble",
@@ -157,7 +292,16 @@
       1.7,
       1.0
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45367160754",
+    "sourceCommit": "624388b170f2210bd721145ac05e7d0576935fb0",
+    "actualGltfSizeMeters": [
+      2.2029,
+      1.1251,
+      1.17
+    ],
+    "portableAuthoring": "rebar_rubble/portable_sources/f3_rebar_rubble_authoring.blend",
+    "portableSha256": "0e5697bf93e1616a625944326c38752b1e76008ea0915b479728a87b5b4a581a"
   },
   {
     "id": "heaved_asphalt",
@@ -167,7 +311,16 @@
       1.2,
       0.65
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      3.7147,
+      0.3324,
+      1.25
+    ],
+    "portableAuthoring": "heaved_asphalt/portable_sources/f3_heaved_asphalt_authoring.blend",
+    "portableSha256": "bd2ba634c76f4924873a364172f23edde66df36461b0cd0048edae1d097a22bf"
   },
   {
     "id": "drain_channel",
@@ -177,7 +330,16 @@
       0.7,
       0.35
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      3.6,
+      0.33,
+      0.75
+    ],
+    "portableAuthoring": "drain_channel/portable_sources/f3_drain_channel_authoring.blend",
+    "portableSha256": "9ea6919879ac8d8ca1fb674d8f0c3ea61d3d01a5178470b6c494e52c778cb951"
   },
   {
     "id": "factory_door",
@@ -187,7 +349,16 @@
       0.8,
       4.4
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45332418931",
+    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+    "actualGltfSizeMeters": [
+      3.75,
+      4.3518,
+      0.9829
+    ],
+    "portableAuthoring": "factory_door/portable_sources/f3_factory_door_authoring.blend",
+    "portableSha256": "43ae71035526470fd79e04bb4c5039702416c2a04df518c17e0b1fbf9acd96ee"
   },
   {
     "id": "ivy_pocket",
@@ -197,36 +368,90 @@
       1.4,
       2.3
     ],
-    "status": "PLANNED"
+    "status": "RENDERED_NOT_APPROVED",
+    "workflowRun": "45363706593",
+    "sourceCommit": "89e5719795ed97ee6075c642ffed377bf0fbf949",
+    "actualGltfSizeMeters": [
+      1.7177,
+      2.7029,
+      0.3985
+    ],
+    "portableAuthoring": "ivy_pocket/portable_sources/f3_ivy_pocket_authoring.blend",
+    "portableSha256": "ccfe53647cd2ac0d240c30b7d4ad33340a9bd2f917ff6b1c5293a8c46903fb0d"
   },
   {
     "id": "native_ruinedBuilding",
     "name": "既存・崩壊した集合建築の質感強化",
-    "status": "PLANNED",
-    "existingUpgrade": true
+    "status": "RENDERED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "workflowRun": "45367160754",
+    "sourceCommit": "624388b170f2210bd721145ac05e7d0576935fb0",
+    "actualGltfSizeMeters": [
+      6.9364,
+      6.3895,
+      5.4091
+    ],
+    "portableAuthoring": "native_ruinedBuilding/portable_sources/f3_native_ruinedBuilding_authoring.blend",
+    "portableSha256": "0f0fbe05e4c33a72b87cb9f7febf0f108e39922792f1befa0824fd9df7b90e35"
   },
   {
     "id": "native_collapsedOverpass",
     "name": "既存・崩落高架の表面と接合部強化",
-    "status": "PLANNED",
-    "existingUpgrade": true
+    "status": "RENDERED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "workflowRun": "45367160754",
+    "sourceCommit": "624388b170f2210bd721145ac05e7d0576935fb0",
+    "actualGltfSizeMeters": [
+      8.3327,
+      4.9817,
+      3.312
+    ],
+    "portableAuthoring": "native_collapsedOverpass/portable_sources/f3_native_collapsedOverpass_authoring.blend",
+    "portableSha256": "c5f12c7fdebb75d68d64af259101d79f9e98915148732e7ed8073e4b084c37cc"
   },
   {
     "id": "native_utilityPole",
     "name": "既存・風化電柱の配線と金具強化",
-    "status": "PLANNED",
-    "existingUpgrade": true
+    "status": "RENDERED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "workflowRun": "45367160754",
+    "sourceCommit": "624388b170f2210bd721145ac05e7d0576935fb0",
+    "actualGltfSizeMeters": [
+      2.5111,
+      5.2,
+      0.8833
+    ],
+    "portableAuthoring": "native_utilityPole/portable_sources/f3_native_utilityPole_authoring.blend",
+    "portableSha256": "ba5cb17d34e12f0c3cd50b5faf7ee0572339eb5eaff96e7b853d1e7a772f519e"
   },
   {
     "id": "native_steelWreck",
     "name": "既存・鉄骨残骸の腐食強化",
-    "status": "PLANNED",
-    "existingUpgrade": true
+    "status": "RENDERED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "workflowRun": "45367160754",
+    "sourceCommit": "624388b170f2210bd721145ac05e7d0576935fb0",
+    "actualGltfSizeMeters": [
+      3.3861,
+      2.6521,
+      2.1996
+    ],
+    "portableAuthoring": "native_steelWreck/portable_sources/f3_native_steelWreck_authoring.blend",
+    "portableSha256": "e92b6b3ef1b73cf3581d2008829ae0f41bc02fcd6ce1750ce2c2acaaf7990b58"
   },
   {
     "id": "native_abandonedTransitStop",
     "name": "既存・廃バス停の屋根接合部強化",
-    "status": "PLANNED",
-    "existingUpgrade": true
+    "status": "RENDERED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "workflowRun": "45367160754",
+    "sourceCommit": "624388b170f2210bd721145ac05e7d0576935fb0",
+    "actualGltfSizeMeters": [
+      4.63,
+      2.9809,
+      2.0142
+    ],
+    "portableAuthoring": "native_abandonedTransitStop/portable_sources/f3_native_abandonedTransitStop_authoring.blend",
+    "portableSha256": "06e0aca0eadffe302c99fadb7fa63e3d0d75e86fca7fa8c2b3534f53116b3a79"
   }
 ]

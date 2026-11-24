@@ -26,9 +26,10 @@
       for(let f=0;f<3;f++)fieldState.flags[`floor:3-${f}`]=true;
       if(typeof eventRead!=='undefined')for(const e of stageEvents||[])eventRead[e.id]=true;
       window.persistAutoSave=()=>true;
+      if(window.KotamaIndustrialBattleEnabled!==true)window.kotamaAdminEncounterSettings={...(window.kotamaAdminEncounterSettings||{}),disableRandom:true,forceNext:false};
       const startFloor=Number.isInteger(window.KotamaIndustrialPlaytestStartFloor)&&window.KotamaIndustrialPlaytestStartFloor>=0&&window.KotamaIndustrialPlaytestStartFloor<=2?window.KotamaIndustrialPlaytestStartFloor:0;
       await fieldEnterArea(3,{floor:startFloor,fromHome:true});
       window.KotamaIndustrialPlaytestReady=true;
-    } catch(error){window.KotamaIndustrialPlaytestError=String(error.message||error);console.error('[sacred-playtest]',error);}
+    } catch(error){window.KotamaIndustrialPlaytestError=String(error.message||error);console.error('[industrial-playtest]',error);}
   },100);
 })();

@@ -16,7 +16,7 @@ for part in parts:
  for row in runtime['images']:
   path=base/'shared_textures'/row['file'];assert hashlib.sha256(path.read_bytes()).hexdigest()==row['sha256']
   images[row['file']]={'file':'shared_textures/'+row['file'],'sha256':row['sha256'],'bytes':row['bytes']}
- assets.append({'id':part['id'],'name':part['name'],'existingUpgrade':part.get('existingUpgrade',False),'file':part['id']+'/runtime/'+runtime['file'],'sha256':runtime['sha256'],'bytes':runtime['bytes'],'triangles':doc['asset']['tris'],'sourceCommit':doc['asset']['sourceCommit'],'workflowRun':doc['asset']['workflowRun'],'embeddedOriginal':part['id']+'/'+doc['asset']['file'],'embeddedOriginalBytes':runtime['embeddedOriginalBytes']})
+ assets.append({'id':part['id'],'name':part['name'],'existingUpgrade':part.get('existingUpgrade',False),'file':part['id']+'/runtime/'+runtime['file'],'sha256':runtime['sha256'],'bytes':runtime['bytes'],'triangles':doc['asset']['tris'],'sourceCommit':doc['asset']['sourceCommit'],'workflowRun':doc['asset']['workflowRun'],'embeddedOriginal':part['id']+'/'+doc['asset']['file'],'embeddedOriginalBytes':runtime['embeddedOriginalBytes'],'sizeMeters':doc['asset']['sizeMeters'],'portableAuthoring':part.get('portableAuthoring'),'portableSha256':part.get('portableSha256')})
 if not args.partial:assert not missing,'Missing individual deliveries: '+','.join(missing)
 # Approved existing staircases are consumed unchanged; they do not count as new parts.
 for ident,relative,manifest in [
