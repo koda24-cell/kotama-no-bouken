@@ -210,7 +210,8 @@
     executionLabel.textContent = "行動実行中…";
     executionLabel.setAttribute("role","status");
     executionLabel.hidden = true;
-    hud.append(portrait, name, executionLabel);
+    portrait.appendChild(executionLabel);
+    hud.append(portrait, name);
     arena?.appendChild(hud);
     // Gauge is arena-anchored, not portrait-anchored: ready effects cannot move it.
     arena?.appendChild(meter);
@@ -227,15 +228,15 @@
       hud.hidden = false;
       if (hud.dataset.actorId !== actor.id) {
         hud.dataset.actorId = actor.id;
-        portrait.replaceChildren();
+        portrait.replaceChildren(executionLabel);
         const portraitSrc = actor.image;
         if (portraitSrc) {
           const img = document.createElement("img");
           img.src = portraitSrc;
           img.alt = "";
-          img.onerror = () => { img.remove(); portrait.textContent = actor.emblem || "◇"; };
+          img.onerror = () => { img.remove(); portrait.append(document.createTextNode(actor.emblem || "◇")); };
           portrait.appendChild(img);
-        } else portrait.textContent = actor.emblem || "◇";
+        } else portrait.append(document.createTextNode(actor.emblem || "◇"));
         name.textContent = actor.name;
       }
       const skill = typeof unionSkills !== "undefined" ? unionSkills[actor.id] : null;
