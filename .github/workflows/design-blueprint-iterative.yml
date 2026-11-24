@@ -1,0 +1,35 @@
+name: Blueprint iterative QA
+on:
+  push:
+    branches: ['feature/blueprint-iterative-qa-20261124']
+    paths: ['tools/design-engine/build_iterative_qa.py', '.github/workflows/design-blueprint-iterative.yml']
+  pull_request:
+    paths: ['tools/design-engine/build_iterative_qa.py', '.github/workflows/design-blueprint-iterative.yml']
+permissions:
+  contents: read
+  packages: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: |
+          mkdir -p qa/security build-output
+          docker run --rm --entrypoint bash -e GITHUB_SHA -e GITHUB_RUN_ID -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 -euo pipefail -c '
+            blender --version | head -n 1 | grep -Fx "Blender 5.3.0"
+            bash tools/security/clamav_scan_gate.sh update qa/security
+            bash tools/security/clamav_scan_gate.sh scan tools/design-engine qa/security/source.log
+            blender -b --disable-autoexec --python-exit-code 1 -t 2 --python tools/design-engine/build_iterative_qa.py -- build-output
+            bash tools/security/clamav_scan_gate.sh scan build-output qa/security/output.log
+          '
+          sudo chown -R "$(id -u):$(id -g)" build-output qa/security
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blueprint-iterative-NOT-APPROVED
+          path: |
+            build-output/
+            qa/security/
+          if-no-files-found: error
