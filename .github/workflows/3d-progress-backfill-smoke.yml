@@ -1,10 +1,10 @@
-name: Existing render registry validation
+name: Publish cleared existing render previews
 on:
   push:
     branches: [feature/3d-progress-gallery-20261124]
     paths: ['.github/workflows/3d-progress-backfill-smoke.yml']
 permissions:
-  contents: read
+  contents: write
   actions: read
 jobs:
   backfill:
@@ -51,6 +51,19 @@ jobs:
           docker run --rm -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 bash -ec 'freshclam; clamscan --infected -r qa/source'
           python3 tools/3d-progress/backfill.py --registry qa/registry --batch qa/batch.json --source qa/source
           python3 -c 'import json; m=json.load(open("qa/registry/index.json"))["models"]; assert len(m)==3 and sum(len(x["images"]) for x in m)==12'
+      - name: Publish verified previews without replacing newer records
+        run: |
+          git fetch origin 3d-progress-data
+          git worktree add --detach /tmp/gallery-data origin/3d-progress-data
+          python3 tools/3d-progress/backfill.py --registry /tmp/gallery-data --batch qa/batch.json --source qa/source
+          cd /tmp/gallery-data
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.json renders
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish cleared work-in-progress render previews'
+            git push origin HEAD:3d-progress-data
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: isolated-existing-render-registry
