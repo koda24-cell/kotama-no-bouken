@@ -79,10 +79,11 @@ jobs:
           sha256sum --check SHA256SUMS
           for db in main daily bytecode; do
             test -s "$db.cvd"
-            test -s "$db.cvd.sign"
+            find . -maxdepth 1 -name "$db-*.cvd.sign" -type f | grep -q .
             sigtool --info "$db.cvd"
-            install -m 644 "$db.cvd" "$db.cvd.sign" /var/lib/clamav/
+            install -m 644 "$db.cvd" /var/lib/clamav/
           done
+          install -m 644 ./*.cvd.sign /var/lib/clamav/
           chown clamav:clamav /var/lib/clamav/*.cvd /var/lib/clamav/*.cvd.sign
       - name: Refresh ClamAV
         run: bash tools/security/clamav_scan_gate.sh update qa/security
