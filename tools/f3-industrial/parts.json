@@ -505,5 +505,18 @@
     "existingUpgrade": true,
     "revisionOf": "grating_catwalk / riveted_girder / column_joint",
     "phase": "V2 individual structural crossing"
+  },
+  {
+    "id": "v2_fractured_road",
+    "name": "不規則に割れ沈下したアスファルト路面V2",
+    "dimensions": [
+      4,
+      4,
+      0.16
+    ],
+    "status": "DESIGNED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "revisionOf": "regular nine-square runtime paving",
+    "phase": "V2 ground surface revision"
   }
 ]
