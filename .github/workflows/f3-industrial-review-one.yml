@@ -1,0 +1,58 @@
+name: F3 individual rigid LOD review and archive
+on:
+  workflow_call:
+    inputs:
+      asset:
+        type: string
+        required: true
+permissions:
+  contents: write
+  packages: read
+jobs:
+  render:
+    uses: ./.github/workflows/shared-blender53-render.yml
+    with:
+      script: tools/f3-industrial/review_one_lod.py
+      output_dir: render-output/f3-industrial-lod-${{ inputs.asset }}
+      artifact_suffix: -lod-${{ inputs.asset }}
+      checkout_paths: |
+        /tools/
+        /assets/3d/dungeons/b3_industrial_candidates/${{ inputs.asset }}/
+      definitions_artifact: f3-official-clamav-seed-${{ github.run_id }}
+  archive-candidate:
+    needs: render
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/f3-industrial-ruins-20261124
+          sparse-checkout: /assets/3d/dungeons/b3_industrial_candidates/
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: shared-blender53-NOT-APPROVED-${{ github.run_id }}-lod-${{ inputs.asset }}
+          path: downloaded-verified-output
+      - name: Archive previously scanned original outputs as NOT_APPROVED
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,shutil
+          base=Path('downloaded-verified-output')
+          matches=list(base.rglob('SHARED_BLENDER53_QA_NOT_APPROVED.json'));assert len(matches)==1
+          folder=matches[0].parent;receipt=json.loads(matches[0].read_text())
+          assert receipt['status']=='NOT_APPROVED'
+          for name,r in receipt['files'].items():
+            p=(folder/name).resolve();assert p.is_relative_to(folder.resolve())
+            assert hashlib.sha256(p.read_bytes()).hexdigest()==r['sha256'],name
+          dst=Path('assets/3d/dungeons/b3_industrial_candidates/lod_reviews')/'${{ inputs.asset }}'
+          shutil.copytree(folder,dst,dirs_exist_ok=True)
+          logs=list(base.rglob('output.log'));assert len(logs)==1
+          shutil.copytree(logs[0].parent,dst/'security'/'shared-gateway',dirs_exist_ok=True)
+          PY
+          git config user.name 'F1 asset archive'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/3d/dungeons/b3_industrial_candidates
+          git commit -m 'art(f3): archive individual rigid LOD review ${{ inputs.asset }} candidate'
+          git push origin HEAD:feature/f3-industrial-ruins-20261124

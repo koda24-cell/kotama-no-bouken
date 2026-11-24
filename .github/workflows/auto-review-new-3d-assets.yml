@@ -18,6 +18,8 @@ permissions:
   actions: read
 jobs:
   select:
+    # This task runs its Blender LOD reviews serially, via f3-industrial-review.yml.
+    if: github.head_ref != 'feature/f3-industrial-ruins-20261124'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
