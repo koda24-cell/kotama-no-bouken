@@ -1,0 +1,125 @@
+{
+  "passed": true,
+  "scope": "Matching framebuffer captures; mean 8-bit grayscale, not calibrated scene luminance or all-camera certification",
+  "comparisons": [
+    {
+      "after": "after-1f-0.png",
+      "before": "before-1f-0.png",
+      "beforeMetrics": {
+        "meanGray8": 18.42899286173416,
+        "darkFractionUnder24": 0.7533052538989817,
+        "nearWhiteFractionOver245": 5.074596569572719e-05
+      },
+      "afterMetrics": {
+        "meanGray8": 48.72461348489462,
+        "darkFractionUnder24": 0.09631753442268007,
+        "nearWhiteFractionOver245": 7.950201292330592e-05
+      },
+      "meanRatio": 2.6439108121890964,
+      "afterSha256": "bb24c8292bbcdf335bd4a9fc08f52a49e0080d202d12053ea11a5c2fb9b84cb7",
+      "beforeSha256": "a6a7cd8c362c2ff5a18dc583f5998bd6a029a56f41c45843f60699daadd16f2b"
+    },
+    {
+      "after": "after-2f-0.png",
+      "before": "before-2f-0.png",
+      "beforeMetrics": {
+        "meanGray8": 14.654814100612334,
+        "darkFractionUnder24": 0.8615244088094997,
+        "nearWhiteFractionOver245": 0.0
+      },
+      "afterMetrics": {
+        "meanGray8": 44.04163537332116,
+        "darkFractionUnder24": 0.12797794242024427,
+        "nearWhiteFractionOver245": 0.0
+      },
+      "meanRatio": 3.005267420722923,
+      "afterSha256": "1a881fdb93f5461e99f4eac6f44a46cd34e4ef35fbd166be36a6289920e5f180",
+      "beforeSha256": "39e2e5e17a0e26a795ca994ac1d005144fe5049c03302d6669bdcdafa84384a8"
+    },
+    {
+      "after": "after-2f-1.png",
+      "before": "before-2f-1.png",
+      "beforeMetrics": {
+        "meanGray8": 22.980234446361514,
+        "darkFractionUnder24": 0.663314049866369,
+        "nearWhiteFractionOver245": 0.0006038769917791535
+      },
+      "afterMetrics": {
+        "meanGray8": 52.57802023072499,
+        "darkFractionUnder24": 0.04966676815859806,
+        "nearWhiteFractionOver245": 0.0011942217260394465
+      },
+      "meanRatio": 2.2879670942195163,
+      "afterSha256": "2ef3c59624d4992758419db9514366d5af55f174a178302b279fa0ec568ac7e6",
+      "beforeSha256": "18b9d2fcd171bb001b66fc8dd4875ab458d49998390876f47b80540421879032"
+    },
+    {
+      "after": "after-2f-2.png",
+      "before": "before-2f-2.png",
+      "beforeMetrics": {
+        "meanGray8": 25.180334246760715,
+        "darkFractionUnder24": 0.5002452721675293,
+        "nearWhiteFractionOver245": 0.0
+      },
+      "afterMetrics": {
+        "meanGray8": 56.015976521533204,
+        "darkFractionUnder24": 0.04140701647552353,
+        "nearWhiteFractionOver245": 0.0
+      },
+      "meanRatio": 2.2245922541214598,
+      "afterSha256": "f3f5c2ed51fa1b166758e0c89d3bb923bfef242e0396b7702f10ea63c2e367bc",
+      "beforeSha256": "bb04fc0801d890da14597ee0f51bbafc91751a8c42c8b937f93f4f7702ca10c0"
+    },
+    {
+      "after": "after-2f-3.png",
+      "before": "before-2f-3.png",
+      "beforeMetrics": {
+        "meanGray8": 21.546852058594673,
+        "darkFractionUnder24": 0.615404783653033,
+        "nearWhiteFractionOver245": 0.0
+      },
+      "afterMetrics": {
+        "meanGray8": 53.3459809195169,
+        "darkFractionUnder24": 0.07045569877194763,
+        "nearWhiteFractionOver245": 0.0
+      },
+      "meanRatio": 2.4758132080940376,
+      "afterSha256": "0a74a1ed1df91a76eeb28bfbe331168ec69422436426aecdd40a8a222cf94356",
+      "beforeSha256": "19404187f75a8417741cf8ee5f9a35d88511ee5255a457c11af9e5bc6b52ae44"
+    },
+    {
+      "after": "after-2f-4.png",
+      "before": "before-2f-4.png",
+      "beforeMetrics": {
+        "meanGray8": 25.655996481613045,
+        "darkFractionUnder24": 0.4617781386379783,
+        "nearWhiteFractionOver245": 1.8606854088433303e-05
+      },
+      "afterMetrics": {
+        "meanGray8": 56.364778916742786,
+        "darkFractionUnder24": 0.06300280794343516,
+        "nearWhiteFractionOver245": 2.7064515037721168e-05
+      },
+      "meanRatio": 2.196943664111347,
+      "afterSha256": "696082235460ae49a724f192e98cd3d1916406c87d93b85dc291442cab5f83c2",
+      "beforeSha256": "70264279057bd48b96493c9919b4dae198341e473d46b11369d8c64060955c46"
+    },
+    {
+      "after": "after-3f-0.png",
+      "before": "before-3f-0.png",
+      "beforeMetrics": {
+        "meanGray8": 22.264890557867318,
+        "darkFractionUnder24": 0.645059034473426,
+        "nearWhiteFractionOver245": 0.0
+      },
+      "afterMetrics": {
+        "meanGray8": 55.493304915592546,
+        "darkFractionUnder24": 0.09682330254744748,
+        "nearWhiteFractionOver245": 0.0
+      },
+      "meanRatio": 2.492413100857751,
+      "afterSha256": "68d0a4de36b85a340a2ed4be594403f032a8db3676785dfdaad37753bdf1d8b1",
+      "beforeSha256": "6fdd0a3763a1ece4679f60cf5ac004c368e6dd7dd2331299f097f664c3babc41"
+    }
+  ]
+}
