@@ -130,12 +130,15 @@ export function createTheme(api) {
     // Daylight carries the city: keep only a few nearby interactive point lights.
     daylightPool.forEach(light => g.scene.remove(light));
     g.camera.far = 44; g.camera.updateProjectionMatrix();
-    industrial=await loadIndustrialAssets({legacyModels:a.f===2?['reused_stairs_v10']:[],excludeModels:a.f===2?[]:['v2_memory_statue']});
+    industrial=await loadIndustrialAssets({legacyModels:a.f===2?['reused_stairs_v10']:['native_abandonedTransitStop'],excludeModels:a.f===2?[]:['v2_memory_statue']});
     v2=industrial.models.has('v2_courtyard_facade');
     if(v2){
       env.hemi={sky:0xd6dfdb,ground:0x8d9687,high:.90,low:1.15};
       // Closed rooms receive little skylight; constant hemi must not wash them out.
-      for(const m of industrial.materials)if(m.name==='v2_unlit_room_concrete')m.color.setRGB(.19,.22,.21);
+      for(const m of industrial.materials){
+        if(m.name==='v2_unlit_room_concrete')m.color.setRGB(.19,.22,.21);
+        if(m.name.startsWith('f3_weathered_concrete'))m.color.multiply(new THREE.Color(.68,.72,.69));
+      }
       api.setEnvironment?.(env);
       g.camera.far=44;g.camera.updateProjectionMatrix();
     }
@@ -178,7 +181,7 @@ export function createTheme(api) {
       prototypes.set('reused_cedar',cedar);cedarVerified=true;
     }
     const occupied = new Set();
-    const stairCells=new Set(),stairFront=new Set(),courtOwners=new Map();let stairCourtCount=0,treeCourtCount=0;
+    const stairCells=new Set(),stairFront=new Set(),courtOwners=new Map();let stairCourtCount=0,treeCourtCount=0,transitCourtCount=0;
     if(v2&&a.f===2&&industrial.models.has('reused_stairs_v10')){
       const candidates=[];
       for(let z=1;z<a.h-2;z++)for(let x=1;x<a.w-2;x++){
@@ -205,6 +208,15 @@ export function createTheme(api) {
         stairFront.add(`${x},${z+1}`);stairFront.add(`${x+1},${z+1}`);
       }
     }
+    if(v2&&a.f<2&&industrial.models.has('native_abandonedTransitStop')){
+      const z=a.h-3,candidates=[];
+      for(let x=1;x<a.w-1;x++)if(ch(x,z)==='#'&&!reserved.has(`${x},${z}`)&&!occupied.has(`${x},${z}`)&&open(x,z+1))candidates.push(x);
+      candidates.sort((a,b)=>Math.abs(a-19)-Math.abs(b-19));
+      if(candidates.length){
+        const x=candidates[0],key=`${x},${z}`;scenery('native_abandonedTransitStop',null,x,z,3.65,3.65,null,0);transitCourtCount=1;
+        stairCells.add(key);stairFront.add(key);courtOwners.set(key,[x,z,x,z]);occupied.add(key);
+      }
+    }
     const machineCells=new Set();
     if(v2&&industrial.models.has('v2_service_tower')){
       const chosen=[];
@@ -218,7 +230,7 @@ export function createTheme(api) {
     for(const cell of machineCells)occupied.add(cell);
     const pilotWall=(x,z)=>v2&&ch(x,z)==='#'&&!machineCells.has(`${x},${z}`)&&!stairCells.has(`${x},${z}`);
     const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`)&&!pilotWall(x,z);
-    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 city structural revision, work in progress':'V1',representativeFacadeCount:0,serviceTowers:machineCells.size,reusedStairCourtyard:stairCourtCount,reclaimedTreeCourtyard:treeCourtCount,cedarSourceVerified:cedarVerified };
+    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 city structural revision, work in progress':'V1',representativeFacadeCount:0,serviceTowers:machineCells.size,reusedStairCourtyard:stairCourtCount,reclaimedTreeCourtyard:treeCourtCount,cedarSourceVerified:cedarVerified,reusedTransitStop:transitCourtCount };
     const count = k => { stats.motifs[k] = (stats.motifs[k] || 0) + 1; };
     function softColony(id,x,z,rotation,depth=.60,ground=.04){
       if(!industrial.models.has(id))return;
