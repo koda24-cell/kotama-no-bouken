@@ -14,6 +14,17 @@ def build(asset,e):
   o=c.mesh(name,verts,faces,mat);c.uv_world(o);return o
  def disk(name,center,r,depth,mat=rust,axis=(0,-1,0),sides=12):
   bpy.ops.mesh.primitive_cylinder_add(vertices=sides,radius=r,depth=depth,location=center);o=bpy.context.object;o.name=name;o.rotation_euler=Vector((0,0,1)).rotation_difference(Vector(axis)).to_euler();o.data.materials.append(mat);c.uv_world(o);return o
+ def hollow_pipe(name,points,radius,thickness=.016,mat=rust,sides=24):
+  outer=c.tube('temporary outer pipe shell',points,radius,mat,sides);inner=c.tube('temporary inner pipe shell',points,radius-thickness,mat,sides)
+  count=len(outer.data.vertices);verts=[tuple(v.co)for o in[outer,inner]for v in o.data.vertices]
+  faces=[tuple(f.vertices)for f in outer.data.polygons if len(f.vertices)==4]
+  faces.extend(tuple(count+i for i in reversed(f.vertices))for f in inner.data.polygons if len(f.vertices)==4)
+  last=count-sides
+  for j in range(sides):
+   k=(j+1)%sides;faces.append((j,count+j,count+k,k));faces.append((last+j,last+k,count+last+k,count+last+j))
+  obj=c.mesh(name,verts,faces,mat);c.uv_world(obj)
+  for f in obj.data.polygons:f.use_smooth=f.index<len(faces)-2*sides
+  bpy.data.objects.remove(outer,do_unlink=True);bpy.data.objects.remove(inner,do_unlink=True);return obj
  def ring(name,center,outer,inner,depth,axis=(0,-1,0),mat=rust,n=20):
   q=Vector((0,0,1)).rotation_difference(Vector(axis));origin=Vector(center)
   verts=[tuple(origin+q@Vector((r*math.cos(j*math.tau/n),r*math.sin(j*math.tau/n),z)))for z,r in[(-depth/2,outer),(depth/2,outer),(-depth/2,inner),(depth/2,inner)]for j in range(n)]
@@ -126,13 +137,13 @@ def build(asset,e):
   for loc,size in [((-1.72,-.7,2.75),(.4,.45,.38)),((1.7,.14,2.2),(.28,.36,.7))]:chip_edge(wall,loc,size)
   for x in[-1.6,-1.4]:ribs((x,-.2,2.7),(x+.06,-.42,3.07))
  else:
-  build_small(asset,e,dict(beam=beam,disk=disk,ring=ring,bolt=bolt,plate=plate,ribs=ribs,cable=cable,paint=paint,rubber=rubber,recovered=recovered))
+  build_small(asset,e,dict(beam=beam,disk=disk,ring=ring,bolt=bolt,plate=plate,ribs=ribs,cable=cable,paint=paint,rubber=rubber,recovered=recovered,hollow_pipe=hollow_pipe))
 
 def build_small(asset,e,h):
  import math
  c,bpy,box,rod,scar=[e[k]for k in ['c','bpy','box','rod','scar']]
  concrete,moss,rust,asphalt,fracture,dark,steel,rng,Vector=[e[k]for k in ['concrete','moss','rust','asphalt','fracture','dark','steel','rng','Vector']]
- beam,disk,ring,bolt,plate,ribs,cable,paint,rubber,recovered=[h[k]for k in ['beam','disk','ring','bolt','plate','ribs','cable','paint','rubber','recovered']]
+ beam,disk,ring,bolt,plate,ribs,cable,paint,rubber,recovered,hollow_pipe=[h[k]for k in ['beam','disk','ring','bolt','plate','ribs','cable','paint','rubber','recovered','hollow_pipe']]
  if asset=='broken_signal':
   box('signal concrete footing',(0,0,.12),(.65,.65,.24),moss,.035)
   rod('leaning tubular signal mast',(0,0,.2),(.12,.04,3.4),.065,rust,14)
@@ -178,7 +189,7 @@ def build_small(asset,e,h):
   for z in[.55,1.55]:disk('door hinge',(-.59,-.32,z),.035,.19,steel,(0,0,1),10)
  elif asset=='flanged_pipe':
   pts=[(-.9+math.sin(j*math.pi/2/12)*.95,0,.28+(1-math.cos(j*math.pi/2/12))*.95)for j in range(13)]
-  c.tube('cast iron service elbow',pts,.22,rust,24)
+  hollow_pipe('open bore cast iron service elbow',pts,.22,.025,rust,24)
   for p,axis in[(pts[0],(-1,0,0)),(pts[-1],(0,0,1))]:
    ring('pipe gasket',p,.292,.181,.025,axis,rubber,24);ring('eight bolt pipe flange',Vector(p)+Vector(axis)*.035,.315,.185,.065,axis,rust,24)
    q=Vector((0,0,1)).rotation_difference(Vector(axis))
@@ -190,7 +201,7 @@ def build_small(asset,e,h):
    beam('pipe rack transverse frame',(x,-.6,.18),(x,.6,.18),.12,.19,.02)
    for y in[-.55,.55]:box('rack mounting plate',(x,y,.08),(.25,.25,.08),rust,.005)
   for j,y in enumerate([-.38,0,.38]):
-   c.tube('sagging overhead process pipe',[(-2,y,.43),(-.6,y,.43-j*.03),(.4,y-.03,.29),(1.95,y,.44)],.09+j*.018,rust,16)
+   hollow_pipe('open bore sagging overhead process pipe',[(-2,y,.43),(-.6,y,.43-j*.03),(.4,y-.03,.29),(1.95,y,.44)],.09+j*.018,.012,rust,16)
    for x in[-1.6,1.6]:ring('U clamp saddle',(x,y,.43),.145,.126,.026,(1,0,0),steel,16)
   cable('hanging service bundle',[(-1.3,.5,.38),(-.5,.52,.13),(.8,.5,-.07),(1.5,.5,.32)],.016)
  elif asset=='roller_shutter':
