@@ -1,0 +1,13 @@
+# Advanced production handoff — 2026-11-24
+
+Status: prototype source only, NOT_APPROVED, no new execution evidence.
+Verified predecessor: PR #761 and #772. Keep their entrypoints unchanged.
+
+- advanced_material_policy.py: material hints, candidate plan, reference metrics.
+- advanced_surface.py: isolated static mesh surface nodes, roughness, additive chips/ornament. Procedural bump is Blend-only until baking and GLB reimport verification. Natural cracks not implemented.
+- advanced_recovery.py: bounded CPU fallback for memory/device errors, delegates syntax repair to existing gate. Unknown errors require review.
+- advanced_session.py: atomic per-candidate checkpoints with source/reference/output hashes; caller must enforce deadline, ClamAV and isolated output. Not yet connected to Blender worker.
+- GPT: run approved Blender Actions gateway, compare actual multi-angle PNG and GLB, record run IDs and hashes.
+- Claude: consume GLB/PNG/manifest and inspect browser integration; request GPT rendering when needed. Do not claim Blender execution.
+- No external paid API, automatic asset promotion or main merge.
+- Next: connect worker, implement crack geometry and baking, run fixture and real assets, verify resume and fallback, register actual evidence.
