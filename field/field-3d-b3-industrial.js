@@ -167,9 +167,20 @@ export function createTheme(api) {
     const reserved = new Set();
     for (const o of a.objects) for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) reserved.add(`${o.tx + dx},${o.ty + dz}`);
     const occupied = new Set();
-    const pilotWall=(x,z)=>v2&&a.f===0&&ch(x,z)==='#'&&Math.abs(x-8)<=5&&Math.abs(z-19)<=3;
+    const machineCells=new Set();
+    if(v2&&industrial.models.has('v2_service_tower')){
+      const chosen=[];
+      for(let z=1;z<a.h-1;z++)for(let x=1;x<a.w-1;x++){
+        if(ch(x,z)!=='#'||reserved.has(`${x},${z}`)||!DIR_ORDER.some(d=>open(x+DIR_VEC[d][0],z+DIR_VEC[d][1])))continue;
+        if(hash(x,z,917)>(a.f===1?.15:.065)||chosen.some(q=>Math.abs(q.x-x)+Math.abs(q.z-z)<6))continue;
+        chosen.push({x,z});machineCells.add(`${x},${z}`);
+        scenery('v2_service_tower',null,x,z,3.55,3.55,15.45,(chosen.length%4)*Math.PI/2);
+      }
+    }
+    for(const cell of machineCells)occupied.add(cell);
+    const pilotWall=(x,z)=>v2&&ch(x,z)==='#'&&!machineCells.has(`${x},${z}`);
     const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`)&&!pilotWall(x,z);
-    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 representative street, work in progress':'V1',representativeFacadeCount:0 };
+    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 city structural revision, work in progress':'V1',representativeFacadeCount:0,serviceTowers:machineCells.size };
     const count = k => { stats.motifs[k] = (stats.motifs[k] || 0) + 1; };
     // Large paired blocks are confined to 2x2 solid cells. Distinct districts per floor.
     let landmark = 0;
@@ -243,6 +254,15 @@ export function createTheme(api) {
           plant.rotation.z = (k-.5)*.12;
           if (!safe&&i === 1) add(chip, stone, gx, 0.05, gz, 1.5, 0.7, 1, k * 6);
         }
+        if(v2&&industrial.models.has('v2_fern_colony'))for(const d of edges){
+          if(hash(x,z,802+DIR_ORDER.indexOf(d))>.52)continue;
+          const [dx,dz]=DIR_VEC[d],holder=new THREE.Group(),model=industrial.models.get('v2_fern_colony').clone(true);
+          model.rotation.y=dx?Math.PI/2:0;holder.add(model);
+          const bounds=new THREE.Box3().setFromObject(holder),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());
+          const scale=Math.min(1, .50/(dx?size.x:size.z));holder.scale.setScalar(scale);
+          holder.position.set(px+dx*1.66-center.x*scale,.04-bounds.min.y*scale,pz+dz*1.66-center.z*scale);
+          root.add(holder);count('photographicFernColony');
+        }
         if(edgeBlend)for(const d of edges){
           const [dx,dz]=DIR_VEC[d],patch=new THREE.Mesh(edgeBlend.geometry,edgeBlend.material);
           patch.position.set(px+dx*1.65,.078,pz+dz*1.65);patch.rotation.y=dx?Math.PI/2:0;patch.receiveShadow=true;root.add(patch);
@@ -267,7 +287,7 @@ export function createTheme(api) {
         holder.scale.set(sx,representative?scale:Math.min(scale,wallHeight/ss.y),sz);
         holder.position.set(ex-cc.x*sx+dx*(representative?depth/2+.03:-.10),-bb.min.y*holder.scale.y,ez-cc.z*sz+dz*(representative?depth/2+.03:-.10));
         if(representative){
-          const height=ss.y*scale,concrete=industrial.materials.find(m=>m.name==='f3_v2_cast_floor')||stone;
+          const height=ss.y*scale,concrete=industrial.materials.find(m=>m.name==='f3_v2_aged_structure')||stone;
           for(const side of[-1,1]){
             const joint=add(cube,concrete,ex+dx*1.64+dz*side*1.96,height/2,ez+dz*1.64-dx*side*1.96,.27,height,.18,ry);
             const jb=new THREE.Box3().setFromObject(joint);joint.userData.f3Bounds={min:jb.min.toArray(),max:jb.max.toArray()};
@@ -308,7 +328,12 @@ export function createTheme(api) {
     };
     for(const p of crossings){
       if(selected.length>=(a.f===2?2:4)||selected.some(q=>Math.abs(p.x-q.x)+Math.abs(p.z-q.z)<7))continue;selected.push(p);
-      const x=p.x*CELL,z=p.z*CELL;mount('grating_catwalk',x,z,3.55,p.acrossX?0:Math.PI/2);
+      const x=p.x*CELL,z=p.z*CELL;
+      if(v2&&industrial.models.has('v2_truss_bridge')){
+        // Source piers at ±3.25m sit inside solid cells, deck underside5.2m.
+        mount('v2_truss_bridge',x,z,0,p.acrossX?0:Math.PI/2,7.2);count('supportedTrussBridge');continue;
+      }
+      mount('grating_catwalk',x,z,3.55,p.acrossX?0:Math.PI/2);
       for(const side of[-1,1])mount('column_joint',x+(p.acrossX?side*1.7:0),z+(p.acrossX?0:side*1.7),0,p.acrossX?Math.PI/2:0,3.55);
       count('supportedCrosswalk');
     }
