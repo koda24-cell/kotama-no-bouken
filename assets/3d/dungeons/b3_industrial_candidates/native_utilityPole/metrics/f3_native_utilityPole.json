@@ -1,0 +1,53 @@
+{
+  "bytes": 5072220,
+  "sha256": "e789eda6777b45023ce044c18befd314308e580623b26079bbc7fb9e689101e4",
+  "tris": 1472,
+  "verts": 3255,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "f3_deep_crack",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 9,
+  "textureBytes": 4901562,
+  "sizeMeters": [
+    2.5111,
+    5.2,
+    0.8833
+  ],
+  "bboxMin": [
+    -1.0,
+    0.0,
+    -0.36
+  ],
+  "bboxMax": [
+    1.5111,
+    5.2,
+    0.5233
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_native_utilityPole",
+  "file": "props/f3_native_utilityPole.glb",
+  "category": "props",
+  "desc_ja": "\u65e2\u5b58\u30fb\u98a8\u5316\u96fb\u67f1\u306e\u914d\u7dda\u3068\u91d1\u5177\u5f37\u5316",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "bba32c30b64ed10a431536dd7da9e1d97e11b3dc",
+  "workflowRun": "45363312146",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_native_utilityPole.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_native_utilityPole/front.png",
+    "renders/f3_native_utilityPole/back.png",
+    "renders/f3_native_utilityPole/side.png",
+    "renders/f3_native_utilityPole/angle.png",
+    "renders/f3_native_utilityPole/top.png"
+  ]
+}
