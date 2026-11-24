@@ -178,7 +178,7 @@ export function createTheme(api) {
       prototypes.set('reused_cedar',cedar);cedarVerified=true;
     }
     const occupied = new Set();
-    const stairCells=new Set(),stairFront=new Set();let stairCourtCount=0,treeCourtCount=0;
+    const stairCells=new Set(),stairFront=new Set(),courtOwners=new Map();let stairCourtCount=0,treeCourtCount=0;
     if(v2&&a.f===2&&industrial.models.has('reused_stairs_v10')){
       const candidates=[];
       for(let z=1;z<a.h-2;z++)for(let x=1;x<a.w-2;x++){
@@ -188,7 +188,7 @@ export function createTheme(api) {
       candidates.sort((a,b)=>a.score-b.score);
       if(candidates.length){
         stairCourtCount=1;const {x,z}=candidates[0];scenery('reused_stairs_v10',null,x+.5,z+.5,7.5,7.5,null,0);
-        for(const [tx,tz]of [[x,z],[x+1,z],[x,z+1],[x+1,z+1]]){stairCells.add(`${tx},${tz}`);occupied.add(`${tx},${tz}`);}
+        for(const [tx,tz]of [[x,z],[x+1,z],[x,z+1],[x+1,z+1]]){stairCells.add(`${tx},${tz}`);courtOwners.set(`${tx},${tz}`,[x,z,x+1,z+1]);occupied.add(`${tx},${tz}`);}
         stairFront.add(`${x},${z+1}`);stairFront.add(`${x+1},${z+1}`);
       }
     }
@@ -201,7 +201,7 @@ export function createTheme(api) {
       candidates.sort((a,b)=>a.score-b.score);
       if(candidates.length){
         treeCourtCount=1;const {x,z}=candidates[0];scenery('reused_cedar',null,x+.5,z+.5,7.5,7.5,null,0);
-        for(const [tx,tz]of [[x,z],[x+1,z],[x,z+1],[x+1,z+1]]){stairCells.add(`${tx},${tz}`);occupied.add(`${tx},${tz}`);}
+        for(const [tx,tz]of [[x,z],[x+1,z],[x,z+1],[x+1,z+1]]){stairCells.add(`${tx},${tz}`);courtOwners.set(`${tx},${tz}`,[x,z,x+1,z+1]);occupied.add(`${tx},${tz}`);}
         stairFront.add(`${x},${z+1}`);stairFront.add(`${x+1},${z+1}`);
       }
     }
@@ -354,7 +354,7 @@ export function createTheme(api) {
             const bb=new THREE.Box3().setFromObject(holder),record={key:'ruin-courtyard:closed-railing',min:bb.min.toArray(),max:bb.max.toArray(),overhead:false};edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
           }else{
             const backing=add(cube,stone,ex+dx*.03,6,ez+dz*.03,4.04,12,.16,ry),bb=new THREE.Box3().setFromObject(backing);
-            backing.userData.f3Bounds={min:bb.min.toArray(),max:bb.max.toArray()};
+            backing.userData.f3Bounds={min:bb.min.toArray(),max:bb.max.toArray(),ownerCells:courtOwners.get(boundaryKey)};
           }
           continue;
         }

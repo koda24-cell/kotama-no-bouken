@@ -27,7 +27,7 @@ export function cityVisibility(camera, bounds, solid, range=44, cell=4) {
   const cx=(bounds.min[0]+bounds.max[0])/2, cz=(bounds.min[2]+bounds.max[2])/2;
   const rx=(bounds.max[0]-bounds.min[0])/2, rz=(bounds.max[2]-bounds.min[2])/2;
   if (Math.hypot(cx-camera.x,cz-camera.z)>range+Math.hypot(rx,rz)) return false;
-  const owner=[Math.floor((bounds.min[0]+.001)/cell+.5),Math.floor((bounds.min[2]+.001)/cell+.5),Math.floor((bounds.max[0]-.001)/cell+.5),Math.floor((bounds.max[2]-.001)/cell+.5)];
+  const owner=bounds.ownerCells||[Math.floor((bounds.min[0]+.001)/cell+.5),Math.floor((bounds.min[2]+.001)/cell+.5),Math.floor((bounds.max[0]-.001)/cell+.5),Math.floor((bounds.max[2]-.001)/cell+.5)];
   return [[cx,cz],[cx-rx*.85,cz-rz*.85],[cx+rx*.85,cz-rz*.85],[cx-rx*.85,cz+rz*.85],[cx+rx*.85,cz+rz*.85]]
     .some(([x,z])=>cityLineOfSight(camera.x,camera.z,x,z,solid,owner,cell));
 }

@@ -14,5 +14,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  // Quarter-turn invariance catches one-axis rounding and negative-coordinate errors.
  const rotate=(x,z)=>[-z,x],rotSolid=(x,z)=>solid(z,-x);
  for(const [tx,tz]of [[8,0],[0,-8],[8,8],[-8,-8]]){const [rx,rz]=rotate(tx,tz);assert.equal(los(0,0,tx,tz,solid),los(0,0,rx,rz,rotSolid));}
+ assert.equal(visible({x:0,z:0},{min:[7,0,-.4],max:[9,12,.4],ownerCells:[1,0,2,0]},solid),true,'a physical courtyard rear closure remains visible through its own solid reserved cells');
+ assert.equal(visible({x:0,z:0},{min:[15,0,-.4],max:[17,12,.4],ownerCells:[3,0,4,0]},solid),false,'courtyard ownership does not reveal a different street behind it');
  console.log('Industrial sightlines: blocked streets, visible facade, corner closure, range and rotation passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});
