@@ -1,0 +1,202 @@
+[
+  {
+    "id": "retaining_wall",
+    "name": "剥落した鉄筋コンクリート壁",
+    "dimensions": [
+      4,
+      0.55,
+      6.3
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "column_joint",
+    "name": "露出した梁柱接合部",
+    "dimensions": [
+      2.3,
+      1.1,
+      5.8
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "riveted_girder",
+    "name": "リベット付き腐食I桁",
+    "dimensions": [
+      4,
+      0.55,
+      0.8
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "buckled_portal",
+    "name": "座屈した鉄骨門型フレーム",
+    "dimensions": [
+      4,
+      1,
+      5.4
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "grating_catwalk",
+    "name": "欠損グレーチング歩廊",
+    "dimensions": [
+      4,
+      1.8,
+      1.3
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "service_stair",
+    "name": "崩れた工場保守階段",
+    "dimensions": [
+      1.8,
+      3.7,
+      3.4
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "landing_railing",
+    "name": "踊り場と曲がった手摺",
+    "dimensions": [
+      2.6,
+      2,
+      1.3
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "bridge_abutment",
+    "name": "崩壊橋台と露出支承",
+    "dimensions": [
+      3.6,
+      2.7,
+      3.8
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "broken_signal",
+    "name": "破損三灯式信号機",
+    "dimensions": [
+      1.0,
+      0.8,
+      3.7
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "broken_streetlamp",
+    "name": "折れた街路灯と垂下配線",
+    "dimensions": [
+      2.6,
+      1.0,
+      4.8
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "control_cabinet",
+    "name": "扉が開いた腐食制御盤",
+    "dimensions": [
+      1.4,
+      0.8,
+      2.0
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "flanged_pipe",
+    "name": "フランジ付き破断配管",
+    "dimensions": [
+      2.3,
+      1.2,
+      1.7
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "pipe_rack",
+    "name": "垂れ下がる配管ラック",
+    "dimensions": [
+      4,
+      1.3,
+      1.3
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "roller_shutter",
+    "name": "破れた工場シャッター",
+    "dimensions": [
+      4,
+      0.5,
+      4.5
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "shattered_window",
+    "name": "割れた鉄製窓と腰壁",
+    "dimensions": [
+      3.8,
+      0.5,
+      3.2
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "rebar_rubble",
+    "name": "鉄筋入り剥落コンクリート群",
+    "dimensions": [
+      2.5,
+      1.7,
+      1.0
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "heaved_asphalt",
+    "name": "根で持ち上がった舗装と縁石",
+    "dimensions": [
+      3.8,
+      1.2,
+      0.65
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "drain_channel",
+    "name": "土砂の詰まった排水溝",
+    "dimensions": [
+      3.6,
+      0.7,
+      0.35
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "factory_door",
+    "name": "欠けた工場入口と歪んだ扉",
+    "dimensions": [
+      3.8,
+      0.8,
+      4.4
+    ],
+    "status": "PLANNED"
+  },
+  {
+    "id": "ivy_pocket",
+    "name": "鉄と石を覆う蔦・シダの群落",
+    "dimensions": [
+      2,
+      1.4,
+      2.3
+    ],
+    "status": "PLANNED"
+  }
+]
