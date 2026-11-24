@@ -42,7 +42,7 @@ export function createTheme(api) {
     model.rotation.y = ry; holder.add(model);
     const b = new THREE.Box3().setFromObject(holder), size = b.getSize(new THREE.Vector3()), center = b.getCenter(new THREE.Vector3());
     const scale = Math.min(width / size.x, depth / size.z);
-    holder.scale.set(scale, height / size.y, scale);
+    holder.scale.set(scale, height==null?scale:height / size.y, scale);
     holder.position.set(tx * CELL - center.x * scale, -b.min.y * holder.scale.y, ty * CELL - center.z * scale);
     root.add(holder); holder.updateMatrixWorld(true);
     const bounds = new THREE.Box3().setFromObject(holder);
@@ -130,7 +130,7 @@ export function createTheme(api) {
     // Daylight carries the city: keep only a few nearby interactive point lights.
     daylightPool.forEach(light => g.scene.remove(light));
     g.camera.far = 44; g.camera.updateProjectionMatrix();
-    industrial=await loadIndustrialAssets();
+    industrial=await loadIndustrialAssets({legacyModels:a.f===2?['reused_stairs_v10']:[]});
     v2=industrial.models.has('v2_courtyard_facade');
     if(v2){
       env.hemi={sky:0xd6dfdb,ground:0x8d9687,high:.90,low:1.15};
@@ -171,21 +171,43 @@ export function createTheme(api) {
     const reserved = new Set();
     for (const o of a.objects) for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) reserved.add(`${o.tx + dx},${o.ty + dz}`);
     const occupied = new Set();
+    const stairCells=new Set(),stairFront=new Set();
+    if(v2&&a.f===2&&industrial.models.has('reused_stairs_v10')){
+      const candidates=[];
+      for(let z=1;z<a.h-2;z++)for(let x=1;x<a.w-2;x++){
+        const cells=[[x,z],[x+1,z],[x,z+1],[x+1,z+1]];
+        if(cells.every(([tx,tz])=>ch(tx,tz)==='#'&&!reserved.has(`${tx},${tz}`))&&(open(x,z+2)||open(x+1,z+2)))candidates.push({x,z,score:Math.abs(x-17)+Math.abs(z-3)});
+      }
+      candidates.sort((a,b)=>a.score-b.score);
+      if(candidates.length){
+        const {x,z}=candidates[0];scenery('reused_stairs_v10',null,x+.5,z+.5,7.5,7.5,null,0);
+        for(const [tx,tz]of [[x,z],[x+1,z],[x,z+1],[x+1,z+1]]){stairCells.add(`${tx},${tz}`);occupied.add(`${tx},${tz}`);}
+        stairFront.add(`${x},${z+1}`);stairFront.add(`${x+1},${z+1}`);
+      }
+    }
     const machineCells=new Set();
     if(v2&&industrial.models.has('v2_service_tower')){
       const chosen=[];
       for(let z=1;z<a.h-1;z++)for(let x=1;x<a.w-1;x++){
-        if(ch(x,z)!=='#'||reserved.has(`${x},${z}`)||!DIR_ORDER.some(d=>open(x+DIR_VEC[d][0],z+DIR_VEC[d][1])))continue;
+        if(ch(x,z)!=='#'||occupied.has(`${x},${z}`)||reserved.has(`${x},${z}`)||!DIR_ORDER.some(d=>open(x+DIR_VEC[d][0],z+DIR_VEC[d][1])))continue;
         if((hash(x,z,917)>(a.f===1?.15:.065)&&!(z===18&&x===14&&a.f<2))||chosen.some(q=>Math.abs(q.x-x)+Math.abs(q.z-z)<6))continue;
         chosen.push({x,z});machineCells.add(`${x},${z}`);
         scenery('v2_service_tower',null,x,z,3.55,3.55,15.45,(chosen.length%4)*Math.PI/2);
       }
     }
     for(const cell of machineCells)occupied.add(cell);
-    const pilotWall=(x,z)=>v2&&ch(x,z)==='#'&&!machineCells.has(`${x},${z}`);
+    const pilotWall=(x,z)=>v2&&ch(x,z)==='#'&&!machineCells.has(`${x},${z}`)&&!stairCells.has(`${x},${z}`);
     const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`)&&!pilotWall(x,z);
-    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 city structural revision, work in progress':'V1',representativeFacadeCount:0,serviceTowers:machineCells.size };
+    stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 city structural revision, work in progress':'V1',representativeFacadeCount:0,serviceTowers:machineCells.size,reusedStairCourtyard:stairCells.size?1:0 };
     const count = k => { stats.motifs[k] = (stats.motifs[k] || 0) + 1; };
+    function softColony(id,x,z,rotation,depth=.60,ground=.04){
+      if(!industrial.models.has(id))return;
+      const holder=new THREE.Group(),model=industrial.models.get(id).clone(true);model.rotation.y=rotation;holder.add(model);
+      const bounds=new THREE.Box3().setFromObject(holder),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());
+      const alongX=Math.abs(Math.sin(rotation))>.7,scale=Math.min(1,depth/(alongX?size.x:size.z));holder.scale.setScalar(scale);
+      holder.position.set(x-center.x*scale,ground-bounds.min.y*scale,z-center.z*scale);root.add(holder);count(id+':soft-colony');
+    }
+
     // Large paired blocks are confined to 2x2 solid cells. Distinct districts per floor.
     let landmark = 0;
     const large = ['collapsedOverpass', 'reused_stairs_v10', 'derelictRailCorridor', 'collapsedSkybridge', 'reused_stairs_v8', 'temple', 'tower', 'arch'];
@@ -230,17 +252,40 @@ export function createTheme(api) {
       const px = x * CELL, pz = z * CELL, r = hash(x, z, 201), safe = reserved.has(`${x},${z}`);
       if (ch(x, z) === '~') { add(cube, water, px, -0.12, pz, 4, 0.15, 4); continue; }
       add(cube, soil, px, -0.25, pz, 4.02, 0.35, 4.02);
-      const road=v2&&industrial.models.has('v2_fractured_road');
+      const natural=v2&&ch(x,z)==='*'&&!safe;
+      const road=v2&&!natural&&industrial.models.has('v2_fractured_road');
       if(road){
         const holder=industrial.models.get('v2_fractured_road').clone(true);
         holder.position.set(px,.055,pz);holder.rotation.y=Math.floor(hash(x,z,780)*4)*Math.PI/2;root.add(holder);count('fracturedRoad');
       }
       const n = 3, unit = CELL / n;
-      for (let j = 0; !road&&j < n; j++) for (let i = 0; i < n; i++) {
+      for (let j = 0; !road&&!natural&&j < n; j++) for (let i = 0; i < n; i++) {
         const k = hash(x * n + i, z * n + j, 202), edge = i === 0 || j === 0 || i === n - 1 || j === n - 1;
         // Small surface relief only; avoid a false impassable crater on traversable tiles.
         const slab = add(finish.slabs[Math.floor(k * 3)], paving[Math.floor(k * 3)], px + (i + 0.5) * unit - 2, -0.07 + (safe ? 0 : k * 0.07), pz + (j + 0.5) * unit - 2, unit - 0.012, 0.14, unit - 0.012);
         if (!safe && !edge) slab.rotation.z = (k - 0.5) * 0.07;
+      }
+      if(natural){
+        add(cube,soil,px,-.080,pz,4.02,.03,4.02);
+        if(edgeBlend)for(let k=0;k<3;k++){
+          const q=hash(x,z,900+k),patch=new THREE.Mesh(edgeBlend.geometry,edgeBlend.material);
+          patch.position.set(px+(q-.5)*.8,-.057+k*.001,pz+(hash(x,z,905+k)-.5)*2.3);patch.rotation.y=q*Math.PI;
+          patch.scale.set(.78+q*.20,1,2.1+q*.8);patch.receiveShadow=true;root.add(patch);
+        }
+        for(let k=0;k<(g.high?18:10);k++){
+          const q=hash(x*31+k,z,910),rx=(q-.5)*3.8,rz=(hash(x,z*31+k,911)-.5)*3.8,central=Math.abs(rx)<.95||Math.abs(rz)<.95;
+          const tuft=tufts[(k+x+z)%3],plant=add(tuft.geometry,tuft.material,px+rx,-.058,pz+rz,.55+q*.55,central?.24:.6+q*.3,.65);
+          plant.rotation.y=q*6.28;
+        }
+        if(r<.55){const side=r<.275?-1:1;softColony('v2_fern_colony',px+side*1.5,pz,(side>0?1:-1)*Math.PI/2,.75,-.055);}
+        if(r>.73)softColony('v2_wildflower_colony',px,pz+1.5,0,.55,-.055);
+        count('reclaimedGroundPocket');
+      }else if(v2&&a.f===2){
+        // Low soft plants occupy cell corners, outside both central movement strips.
+        for(let k=0;k<(safe?1:3);k++){
+          const q=hash(x*7+k,z,924),tuft=tufts[(x+z+k)%3],plant=add(tuft.geometry,tuft.material,px+(k%2?1:-1)*(1.30+q*.3),.02,pz+(k>1?1:-1)*(1.28+q*.3),.55,.28+q*.30,.55);
+          plant.rotation.y=q*6.28;
+        }
       }
       if (!safe && r < 0.2) {
         // Use the supplied roots at ankle height, never as a raised obstacle.
@@ -280,6 +325,19 @@ export function createTheme(api) {
       for (const d of DIR_ORDER) {
         const [dx, dz] = DIR_VEC[d]; if (!wallCell(x + dx, z + dz)) continue;
         const ry = FACE_YAW[d] + Math.PI, ex = px + dx * 2.12, ez = pz + dz * 2.12;
+        const boundaryKey=`${x+dx},${z+dz}`;
+        if(stairCells.has(boundaryKey)){
+          if(stairFront.has(boundaryKey)&&dz===-1){
+            const holder=new THREE.Group(),rail=industrial.models.get('landing_railing').clone(true);rail.rotation.y=ry;holder.add(rail);
+            const b=new THREE.Box3().setFromObject(holder),ss=b.getSize(new THREE.Vector3()),cc=b.getCenter(new THREE.Vector3()),along=dx?ss.z:ss.x,depth=dx?ss.x:ss.z;
+            const scale=Math.min(3.9/along,.45/depth,1.05/ss.y);holder.scale.setScalar(scale);holder.position.set(ex-cc.x*scale+dx*.28,-b.min.y*scale,ez-cc.z*scale+dz*.28);root.add(holder);holder.updateMatrixWorld(true);
+            const bb=new THREE.Box3().setFromObject(holder),record={key:'stair-courtyard:closed-railing',min:bb.min.toArray(),max:bb.max.toArray(),overhead:false};edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
+          }else{
+            const backing=add(cube,stone,ex+dx*.03,6,ez+dz*.03,4.04,12,.16,ry),bb=new THREE.Box3().setFromObject(backing);
+            backing.userData.f3Bounds={min:bb.min.toArray(),max:bb.max.toArray()};
+          }
+          continue;
+        }
         const representative=pilotWall(x+dx,z+dz);
         // Continuous base identifies every solid boundary, including closed shortcuts.
         // Closed concrete back keeps skyline fractures and windows from exposing adjacent streets.
