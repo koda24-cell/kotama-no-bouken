@@ -42,7 +42,7 @@ def build(asset,e):
    bottom=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z));hit,normal,index,distance=support.ray_cast(bottom+Vector((0,0,.01)),Vector((0,0,-1)),6)
    if hit is None:hit,normal,index,distance=support.find_nearest(bottom)
    if hit is not None and (bottom-hit).length>.045:
-    radius=max(.006,min(size.x,size.y)*.42);c.tube('connected continuation of retained exposed steel',[hit-normal*.025,bottom+Vector((0,0,.025))],radius,rust,10);anchored+=1
+    radius=max(.006,min(size.x,size.y)*.42);c.tube('connected continuation of retained exposed steel',[hit-(bottom-hit).normalized()*.025,bottom+Vector((0,0,.025))],radius,rust,10);anchored+=1
  # Add hardware, spalling skin and contact debris onto the actual concrete faces.
  faces=[]
  for o in original:
