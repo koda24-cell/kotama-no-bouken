@@ -1,0 +1,47 @@
+name: Advanced real asset production integration
+on:
+  pull_request:
+    branches: [development]
+    paths:
+      - 'tools/3d_checkpoint/advanced_real_*.py'
+      - '.github/workflows/advanced-real-production.yml'
+permissions:
+  contents: read
+  packages: read
+jobs:
+  real:
+    strategy:
+      fail-fast: false
+      matrix:
+        asset:
+          - assets/3d/dungeons/b1_ancient_forest/modules/mod_pillar_corner.glb
+          - assets/3d/dungeons/b1_ancient_forest/props/ancient_iron_gate.glb
+    runs-on: ubuntu-24.04
+    timeout-minutes: 85
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: |
+          blender --version | head -1 | grep -Fx 'Blender 5.3.0'
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint qa/security/advanced-source.log
+      - name: Real candidate queue and GLB roundtrip
+        env:
+          SOURCE: ${{ matrix.asset }}
+        run: python3 tools/3d_checkpoint/advanced_real_session.py --source "$SOURCE" --output advanced-output --minutes 65
+      - name: Resume verified candidate queue
+        env:
+          SOURCE: ${{ matrix.asset }}
+        run: python3 tools/3d_checkpoint/advanced_real_session.py --source "$SOURCE" --output advanced-output --minutes 5
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: advanced-real-NOT-APPROVED-${{ strategy.job-index }}
+          path: advanced-output
+          retention-days: 14
