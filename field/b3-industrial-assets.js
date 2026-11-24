@@ -10,26 +10,42 @@ async function verified(url, sha) {
   if(digest!==sha)throw Error('Industrial asset hash mismatch: '+url.pathname);
   return b;
 }
-export async function loadIndustrialAssets() {
+export async function loadIndustrialAssets({allReviewSources=false}={}) {
   const r=await fetch(new URL('catalog.json',base));if(!r.ok)throw Error('Industrial catalog unavailable');
   const catalog=await r.json();if(catalog.status!=='NOT_APPROVED')throw Error('Unexpected trial catalog state');
+  const v2=catalog.assets.some(a=>a.id==='v2_courtyard_facade');
+  // The V2 wall composition supersedes the seven legacy background prototypes.
+  // Keep them in the review catalog and originals, load only actual runtime users.
+  const selectedAssets=catalog.assets.filter(a=>allReviewSources||!v2||(!a.id.startsWith('native_')&&!a.id.startsWith('reused_stairs_')));
   const blobs=new Map(),urlAliases=new Map(),models=new Map(),materialPool=new Map(),texturePool=new Map();
   const ownedGeometries=new Set(),ownedMaterials=new Set(),ownedTextures=new Set(),ownedBitmaps=new Set();let disposed=false;
   const manager=new THREE.LoadingManager();manager.setURLModifier(url=>urlAliases.get(new URL(url,base).href)||url);
   const loader=new GLTFLoader(manager);
   function dispose(){if(disposed)return;disposed=true;ownedGeometries.forEach(x=>x.dispose());ownedMaterials.forEach(x=>x.dispose());ownedTextures.forEach(x=>x.dispose());if(!THREE.Cache.enabled)ownedBitmaps.forEach(x=>x.close());ownedBitmaps.clear();blobs.forEach(x=>URL.revokeObjectURL(x));models.clear();}
   try {
+    const sourceBuffers=new Map(),neededImages=new Map(),declaredImages=new Map(catalog.sharedImages.map(row=>[new URL(row.file,base).href,row]));
+    for(const row of selectedAssets){
+      const url=new URL(row.file,base),bytes=await verified(url,row.sha256),view=new DataView(bytes);
+      if(view.getUint32(0,true)!==0x46546c67||view.getUint32(16,true)!==0x4e4f534a)throw Error('Invalid verified model header');
+      const doc=JSON.parse(new TextDecoder().decode(new Uint8Array(bytes,20,view.getUint32(12,true))));
+      for(const image of doc.images||[])if(image.uri){
+        const resolved=new URL(image.uri,url).href,declared=declaredImages.get(resolved);
+        if(!declared)throw Error('Undeclared model image: '+image.uri);neededImages.set(resolved,declared);
+      }
+      sourceBuffers.set(row.id,{url,bytes});
+    }
+    const selectedImages=[...neededImages.values()];
     let cursor=0,imageFailure=null;
-    const workers=Array.from({length:Math.min(3,catalog.sharedImages.length)},async()=>{
-      while(!imageFailure&&cursor<catalog.sharedImages.length){
-        const row=catalog.sharedImages[cursor++];
+    const workers=Array.from({length:Math.min(3,selectedImages.length)},async()=>{
+      while(!imageFailure&&cursor<selectedImages.length){
+        const row=selectedImages[cursor++];
         try{const url=new URL(row.file,base),bytes=await verified(url,row.sha256),blob=URL.createObjectURL(new Blob([bytes],{type:row.file.endsWith('.png')?'image/png':'image/jpeg'}));blobs.set(url.href,blob);urlAliases.set(url.href,blob);}
         catch(error){imageFailure=error;throw error;}
       }
     });
     await Promise.allSettled(workers);if(imageFailure)throw imageFailure;
-    for(const row of catalog.assets){
-      const url=new URL(row.file,base),bytes=await verified(url,row.sha256);
+    for(const row of selectedAssets){
+      const {url,bytes}=sourceBuffers.get(row.id);sourceBuffers.delete(row.id);
       const result=await loader.parseAsync(bytes,new URL('.',url).href),doc=result.parser.json;
       function texKey(index){const t=doc.textures[index],image=doc.images[t.source];return {image:{uri:image.uri?new URL(image.uri,url).href:url.href+'#embedded-image-'+t.source,mimeType:image.mimeType,extensions:image.extensions||{}},sampler:doc.samplers?.[t.sampler]||{},extensions:t.extensions||{}};}
       for(const texture of await result.parser.getDependencies('texture')){ownedTextures.add(texture);if(typeof texture.image?.close==='function')ownedBitmaps.add(texture.image);}
@@ -78,6 +94,6 @@ export async function loadIndustrialAssets() {
     // Dispose duplicate resources which no retained source uses, once the pool is complete.
     const usedMaterials=new Set(),usedTextures=new Set();models.forEach(root=>root.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material]){usedMaterials.add(m);Object.values(m).forEach(t=>{if(t?.isTexture)usedTextures.add(t);});}}));
     ownedMaterials.forEach(m=>{if(!usedMaterials.has(m)){m.dispose();ownedMaterials.delete(m);}});ownedTextures.forEach(t=>{if(!usedTextures.has(t)){t.dispose();ownedTextures.delete(t);}});
-    return {models,catalog,materials:[...materialPool.values()],dispose,info:()=>({sourceHashesVerified:true,models:models.size,materials:ownedMaterials.size,textures:ownedTextures.size,sharedImages:blobs.size,decodedImages:ownedBitmaps.size,estimatedDecodedImageBytes:[...ownedBitmaps].reduce((sum,b)=>sum+b.width*b.height*4,0)})};
+    return {models,catalog,materials:[...materialPool.values()],dispose,info:()=>({sourceHashesVerified:true,models:models.size,catalogModels:catalog.assets.length,skippedUnusedModels:catalog.assets.length-selectedAssets.length,materials:ownedMaterials.size,textures:ownedTextures.size,sharedImages:blobs.size,decodedImages:ownedBitmaps.size,estimatedDecodedImageBytes:[...ownedBitmaps].reduce((sum,b)=>sum+b.width*b.height*4,0)})};
   } catch(e){dispose();throw e;}
 }
