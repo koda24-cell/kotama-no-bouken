@@ -1,0 +1,55 @@
+name: Advanced local vision CPU integration
+on:
+  pull_request:
+    branches: [development]
+    paths:
+      - 'tools/3d_checkpoint/advanced_vision_*.py'
+      - 'tools/3d_checkpoint/advanced_local_vision.py'
+      - '.github/workflows/advanced-local-vision.yml'
+permissions:
+  contents: read
+  packages: read
+jobs:
+  vision:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 85
+    container:
+      image: ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: |
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint qa/security/vision-source.log
+          python3 tools/3d_checkpoint/advanced_vision_install.py /tmp/clip-model
+          bash tools/security/clamav_scan_gate.sh scan /tmp/clip-model qa/security/vision-model.log
+      - name: Install CPU inference dependencies
+        run: |
+          python3 -m venv --system-site-packages /tmp/vision-env
+          /tmp/vision-env/bin/python -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.6.0'
+          /tmp/vision-env/bin/python -m pip install 'transformers==4.49.0' 'Pillow==11.3.0' 'safetensors==0.5.3'
+      - name: Render real prop and evaluate candidates
+        run: |
+          /tmp/vision-env/bin/python tools/3d_checkpoint/advanced_real_session.py --source assets/3d/dungeons/b1_ancient_forest/modules/mod_pillar_corner.glb --output vision-output --minutes 55 --vision-model /tmp/clip-model --rounds 2
+      - name: Controlled degradation benchmark
+        run: |
+          BASE=$(/tmp/vision-env/bin/python -c 'import json;print(json.load(open("vision-output/selection.json"))[0]["baseline"]["path"])')
+          /tmp/vision-env/bin/python tools/3d_checkpoint/advanced_vision_benchmark.py /tmp/clip-model "$BASE" vision-benchmark
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-vision-NOT-APPROVED
+          path: |
+            vision-output
+            vision-benchmark
+            qa/security
+            /tmp/clip-model/manifest.json
+          retention-days: 14
