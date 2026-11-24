@@ -1,7 +1,7 @@
 """Download only known data files, never remote executable model code."""
 import urllib.request,json,hashlib,sys,re
 from pathlib import Path
-MODEL="openai/clip-vit-base-patch32"
+MODEL="laion/CLIP-ViT-B-32-laion2B-s34B-b79K"
 FILES=("config.json","preprocessor_config.json","tokenizer_config.json","vocab.json","merges.txt","special_tokens_map.json","model.safetensors")
 def get(url):
     return urllib.request.urlopen(url,timeout=120)
