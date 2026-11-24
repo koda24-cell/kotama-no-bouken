@@ -61,5 +61,22 @@ def main():
             rows.append({"name":mat.name,"image":str(folder.relative_to(out)/"angle.png"),"mixed_material_meshes_retained":False})
             for clone in copies:
                 data=clone.data; bpy.data.objects.remove(clone,do_unlink=True); bpy.data.meshes.remove(data)
+        # Standardized UV sphere, camera and illumination for each material.
+        for o in list(s.objects): o.hide_render=True
+        for i,mat in enumerate(mats):
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=48,ring_count=24,radius=1)
+            sphere=bpy.context.object; sphere.data.materials.append(mat)
+            for f in sphere.data.polygons:f.use_smooth=True
+            for d,power in [((4,-4,6),900),((-4,-2,3),500)]:
+                bpy.ops.object.light_add(type="AREA",location=d)
+                light=bpy.context.object;light.data.energy=power;light.data.size=3
+                light.rotation_euler=(-light.location).to_track_quat("-Z","Y").to_euler()
+            bpy.ops.object.camera_add(location=(3,-5,3))
+            cam=bpy.context.object;cam.rotation_euler=(-cam.location).to_track_quat("-Z","Y").to_euler()
+            cam.data.type="ORTHO";cam.data.ortho_scale=2.5;s.camera=cam
+            file=out/f"material-{i:03d}"/"standard-sphere.png"
+            s.render.filepath=str(file);bpy.ops.render.render(write_still=True)
+            rows[i]["standard_sphere"]=str(file.relative_to(out))
+            for o in s.objects:o.hide_render=True
         (out/"render-report.json").write_text(json.dumps({"source_sha256":hashlib.sha256(path.read_bytes()).hexdigest(),"blender":bpy.app.version_string,"materials":rows,"status":"NOT_APPROVED"},indent=2))
 main()
