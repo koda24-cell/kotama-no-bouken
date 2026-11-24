@@ -1,0 +1,53 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v2_factory_bay/props/f3_v2_factory_bay.glb",
+      "file_bytes": 20366044,
+      "glb_meshes": 10,
+      "total_mesh_primitives": 10,
+      "scene_nodes": 11,
+      "scene_mesh_nodes": 10,
+      "scene_primitive_instances": 10,
+      "estimated_scene_triangles": 33700,
+      "materials": 10,
+      "material_names": [
+        "f3_damp_concrete",
+        "f3_ivy_woody_stem",
+        "f3_lobed_ivy_veined",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete",
+        "modular_factory_facade_brick",
+        "modular_factory_facade_trim_01",
+        "modular_factory_facade_windows_glass",
+        "modular_factory_facade_windows",
+        "v2_factory_room_shadow"
+      ],
+      "mesh_names": [
+        "Icosphere",
+        "asymmetric climbing ivy leader",
+        "curled rounded five lobed ivy blade",
+        "Cube.013",
+        "Cube",
+        "Cube.002",
+        "Cube.006",
+        "Cube.086",
+        "Cube.022",
+        "Cube.011"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 9,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 27,
+      "textures": 29,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

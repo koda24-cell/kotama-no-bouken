@@ -1,0 +1,315 @@
+{
+  "status": "NOT_APPROVED",
+  "assetName": "v2_factory_bay",
+  "asset": {
+    "bytes": 20366044,
+    "sha256": "d7bc907deab97b89a62372a2279bf275713d2b8ebe7e628a9dc2386af0e02356",
+    "tris": 33700,
+    "verts": 51324,
+    "meshes": 10,
+    "drawCalls": 10,
+    "materials": [
+      "f3_damp_concrete",
+      "f3_ivy_woody_stem",
+      "f3_lobed_ivy_veined",
+      "f3_oxidized_iron",
+      "f3_weathered_concrete",
+      "modular_factory_facade_brick",
+      "modular_factory_facade_trim_01",
+      "modular_factory_facade_windows_glass",
+      "modular_factory_facade_windows",
+      "v2_factory_room_shadow"
+    ],
+    "textureCount": 27,
+    "textureBytes": 17682508,
+    "sizeMeters": [
+      3.465,
+      12.43,
+      3.449
+    ],
+    "bboxMin": [
+      -1.685,
+      0.085,
+      -1.56
+    ],
+    "bboxMax": [
+      1.78,
+      12.515,
+      1.889
+    ],
+    "extensions": [],
+    "animations": [],
+    "pointLights": 0,
+    "emitters": 0,
+    "valid": true,
+    "zeroTangentFallbackVertices": 186,
+    "id": "f3_v2_factory_bay",
+    "file": "props/f3_v2_factory_bay.glb",
+    "category": "props",
+    "desc_ja": "CC0工場窓枠を活かした崩落工業棟V2",
+    "approvalStatus": "NOT_APPROVED",
+    "sourceCommit": "81e69a86713c15ce38074c2e21f2b63dd04ca24c",
+    "workflowRun": "45423622575",
+    "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+    "source": "sources/f3_v2_factory_bay.blend",
+    "renderedFrom": "final alpha-MASK GLB reimport",
+    "renders": [
+      "renders/f3_v2_factory_bay/front.png",
+      "renders/f3_v2_factory_bay/back.png",
+      "renders/f3_v2_factory_bay/side.png",
+      "renders/f3_v2_factory_bay/angle.png",
+      "renders/f3_v2_factory_bay/top.png"
+    ]
+  },
+  "sequential": true,
+  "textureSources": [
+    {
+      "asset": "chipped_concrete",
+      "role": "diffuse",
+      "file": "chipped_concrete_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_diff_1k.jpg",
+      "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "chipped_concrete",
+      "role": "normal",
+      "file": "chipped_concrete_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_nor_gl_1k.jpg",
+      "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "chipped_concrete",
+      "role": "roughness",
+      "file": "chipped_concrete_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_rough_1k.jpg",
+      "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "diffuse",
+      "file": "concrete_moss_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_diff_1k.jpg",
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "normal",
+      "file": "concrete_moss_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_nor_gl_1k.jpg",
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "roughness",
+      "file": "concrete_moss_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_rough_1k.jpg",
+      "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "diffuse",
+      "file": "rusty_iron_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_diff_1k.jpg",
+      "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb",
+      "license": "CC0"
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "normal",
+      "file": "rusty_iron_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_nor_gl_1k.jpg",
+      "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1",
+      "license": "CC0"
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "roughness",
+      "file": "rusty_iron_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_rough_1k.jpg",
+      "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "diffuse",
+      "file": "asphalt_02_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_diff_1k.jpg",
+      "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "normal",
+      "file": "asphalt_02_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_nor_gl_1k.jpg",
+      "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "roughness",
+      "file": "asphalt_02_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_rough_1k.jpg",
+      "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712",
+      "license": "CC0"
+    }
+  ],
+  "runtime": {
+    "file": "f3_v2_factory_bay.glb",
+    "sourceSha256": "d7bc907deab97b89a62372a2279bf275713d2b8ebe7e628a9dc2386af0e02356",
+    "sha256": "a96f179e693b824196c4fb4b937f2ec8e27e004bcc31d86e6e13b9c41fd40738",
+    "bytes": 2684236,
+    "embeddedOriginalBytes": 20366044,
+    "images": [
+      {
+        "file": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b.jpg",
+        "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b",
+        "bytes": 898376
+      },
+      {
+        "file": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc.jpg",
+        "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc",
+        "bytes": 697265
+      },
+      {
+        "file": "efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea.png",
+        "sha256": "efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea",
+        "bytes": 708778
+      },
+      {
+        "file": "48f3bdd981eb1b115a34e64432c3982cd25fc3f1aabd3b2ca46261dbf70706c5.jpg",
+        "sha256": "48f3bdd981eb1b115a34e64432c3982cd25fc3f1aabd3b2ca46261dbf70706c5",
+        "bytes": 3966
+      },
+      {
+        "file": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949.jpg",
+        "sha256": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949",
+        "bytes": 4791
+      },
+      {
+        "file": "d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f.jpg",
+        "sha256": "d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f",
+        "bytes": 5174
+      },
+      {
+        "file": "44ef24a906346a95e5c47da7df1c41356a38ec1ab1b39e93cf609d6a69688b80.png",
+        "sha256": "44ef24a906346a95e5c47da7df1c41356a38ec1ab1b39e93cf609d6a69688b80",
+        "bytes": 69781
+      },
+      {
+        "file": "23baec29082a094c8a5a830c2d69d35359dfdc631f048eb4da3fe4f988de95b9.png",
+        "sha256": "23baec29082a094c8a5a830c2d69d35359dfdc631f048eb4da3fe4f988de95b9",
+        "bytes": 1072465
+      },
+      {
+        "file": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1.jpg",
+        "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1",
+        "bytes": 489576
+      },
+      {
+        "file": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb.jpg",
+        "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb",
+        "bytes": 733167
+      },
+      {
+        "file": "b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182.png",
+        "sha256": "b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182",
+        "bytes": 1244933
+      },
+      {
+        "file": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg",
+        "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304",
+        "bytes": 990005
+      },
+      {
+        "file": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff.jpg",
+        "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff",
+        "bytes": 716081
+      },
+      {
+        "file": "e820925c6886646c2d8db636b60b5c0721cd68c00bbc2feff3c1359d2e27fbdd.png",
+        "sha256": "e820925c6886646c2d8db636b60b5c0721cd68c00bbc2feff3c1359d2e27fbdd",
+        "bytes": 710347
+      },
+      {
+        "file": "1168796e949c5ce3957142e86bce1d09531466aaea90dc46cbc3f3225cbdd78e.jpg",
+        "sha256": "1168796e949c5ce3957142e86bce1d09531466aaea90dc46cbc3f3225cbdd78e",
+        "bytes": 1052229
+      },
+      {
+        "file": "852b01c61efc07fd8e60e59767657ef51112bf65f5eaf184f02c27ea5170582d.jpg",
+        "sha256": "852b01c61efc07fd8e60e59767657ef51112bf65f5eaf184f02c27ea5170582d",
+        "bytes": 1115986
+      },
+      {
+        "file": "8cf70f8625f24b3898d0beb7d9f8d7785e95c52055687070349c496df51af18a.png",
+        "sha256": "8cf70f8625f24b3898d0beb7d9f8d7785e95c52055687070349c496df51af18a",
+        "bytes": 823693
+      },
+      {
+        "file": "05441cf545c9d5f6786cd191e9b3b627668b1176e155d1fae7fbe28f6a8d3802.jpg",
+        "sha256": "05441cf545c9d5f6786cd191e9b3b627668b1176e155d1fae7fbe28f6a8d3802",
+        "bytes": 827556
+      },
+      {
+        "file": "beff49832938c5493a4b5bbb82eeabd138c29c6523e5228e006f702859bbc87f.jpg",
+        "sha256": "beff49832938c5493a4b5bbb82eeabd138c29c6523e5228e006f702859bbc87f",
+        "bytes": 617348
+      },
+      {
+        "file": "fbd6a4f60cc6613d80bda95afb674a7b71da0f810d6bc4f693c575714137864f.png",
+        "sha256": "fbd6a4f60cc6613d80bda95afb674a7b71da0f810d6bc4f693c575714137864f",
+        "bytes": 956429
+      },
+      {
+        "file": "4dc9e4a6b97d5384849faeebca87eae9f6736664971c6c10a41fc19bd01fc106.jpg",
+        "sha256": "4dc9e4a6b97d5384849faeebca87eae9f6736664971c6c10a41fc19bd01fc106",
+        "bytes": 612643
+      },
+      {
+        "file": "ebd0ad64580fa6ca7601b99ebe892b453a91af00b5fb53967beeac6e27161720.png",
+        "sha256": "ebd0ad64580fa6ca7601b99ebe892b453a91af00b5fb53967beeac6e27161720",
+        "bytes": 1737173
+      },
+      {
+        "file": "2f83d24c3e8f79d9df4e6ec63e99da3bbfe06148f4f70b1d8407e6377b372b82.png",
+        "sha256": "2f83d24c3e8f79d9df4e6ec63e99da3bbfe06148f4f70b1d8407e6377b372b82",
+        "bytes": 957808
+      },
+      {
+        "file": "d361dacbd23095dacf1d82eb5a509a305c44b007f8adfb221dc2e5efe56180e0.jpg",
+        "sha256": "d361dacbd23095dacf1d82eb5a509a305c44b007f8adfb221dc2e5efe56180e0",
+        "bytes": 619613
+      },
+      {
+        "file": "5d83de90532a6ea8818b6df211c48a60bcdbbbac0cc67eb1bc245d6077545cbc.jpg",
+        "sha256": "5d83de90532a6ea8818b6df211c48a60bcdbbbac0cc67eb1bc245d6077545cbc",
+        "bytes": 6827
+      },
+      {
+        "file": "ca3a164bf753862b1dda6aa7fc3727a66e6ae3a93b69895a36aac52a480c3191.jpg",
+        "sha256": "ca3a164bf753862b1dda6aa7fc3727a66e6ae3a93b69895a36aac52a480c3191",
+        "bytes": 5348
+      },
+      {
+        "file": "1af8108b39a7f858f40f7143eb2abdd028e26dd15af532065448192f3d10fe65.jpg",
+        "sha256": "1af8108b39a7f858f40f7143eb2abdd028e26dd15af532065448192f3d10fe65",
+        "bytes": 5150
+      }
+    ],
+    "geometryAndMaterialDataUnchanged": true,
+    "imageLayout": "../../shared_textures/<sha256>.jpg|png relative to candidate/<asset>/runtime/"
+  }
+}
