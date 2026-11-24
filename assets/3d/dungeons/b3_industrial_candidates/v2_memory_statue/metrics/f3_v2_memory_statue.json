@@ -1,0 +1,53 @@
+{
+  "bytes": 16858208,
+  "sha256": "c6f29adb4f9732d96a539983631614f1b8182babbbcd43cc10c744b8138d2c9a",
+  "tris": 28007,
+  "verts": 24870,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "f3_damp_concrete",
+    "f3_oxidized_iron",
+    "gothic_statue"
+  ],
+  "textureCount": 9,
+  "textureBytes": 15490859,
+  "sizeMeters": [
+    1.53,
+    1.7421,
+    1.443
+  ],
+  "bboxMin": [
+    -0.765,
+    0.0,
+    -0.715
+  ],
+  "bboxMax": [
+    0.765,
+    1.7421,
+    0.728
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 1,
+  "id": "f3_v2_memory_statue",
+  "file": "props/f3_v2_memory_statue.glb",
+  "category": "props",
+  "desc_ja": "\u98a8\u5316\u3057\u305f\u5f6b\u50cf\u3068\u6b20\u3051\u305f\u8a18\u61b6\u306e\u53f0\u5ea7V2",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "ddb958e0d5128f2d151c029a11c90488dff4dcd9",
+  "workflowRun": "45429934515",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v2_memory_statue.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v2_memory_statue/front.png",
+    "renders/f3_v2_memory_statue/back.png",
+    "renders/f3_v2_memory_statue/side.png",
+    "renders/f3_v2_memory_statue/angle.png",
+    "renders/f3_v2_memory_statue/top.png"
+  ]
+}
