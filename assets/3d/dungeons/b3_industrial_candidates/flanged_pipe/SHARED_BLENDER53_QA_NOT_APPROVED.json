@@ -4,59 +4,59 @@
   "files": {
     "manifest.json": {
       "bytes": 8618,
-      "sha256": "76319ea0574859309d03bc0a62fdf87521c710d3c5c4ba6057c052a91e502683"
+      "sha256": "cee50b5f728c152707e945e730221ef2d7c5c23c3d00e7f2025c35a0b857f873"
     },
     "metrics/f3_flanged_pipe.json": {
       "bytes": 1300,
-      "sha256": "fc1a34a25db75f4530d4d062f91e524fcf65832cb1fb1d63b20d2632d0793fd2"
+      "sha256": "d0c035c68f33de5a96120a872b733b8001034d0473b9d29d4dd45349d610530d"
     },
     "props/f3_flanged_pipe.glb": {
-      "bytes": 5069540,
-      "sha256": "f44bc71defc545011000f3b91e08902ae021f00bf61c9d88a4eb3a1bf3343276"
+      "bytes": 5096700,
+      "sha256": "d16e1d17f99042e6372a87009951ca9d582ca42bb926de1402102d98e8fd15d4"
     },
     "renders/f3_flanged_pipe/angle.png": {
-      "bytes": 446136,
-      "sha256": "e60bca0ab7cdc0d0247a0c1457104b9e7221d27aea950026c8a439eca3f22912"
+      "bytes": 447034,
+      "sha256": "8c2ea5020261297b3b96d4538440330fa78b8cbdff1c0494e2c0be632527043b"
     },
     "renders/f3_flanged_pipe/back.png": {
-      "bytes": 463437,
-      "sha256": "6bf51d172e416459fac937fbfef3ff7928302de256384c5a7aa5d1b3835fdd8d"
+      "bytes": 463176,
+      "sha256": "84bb80271403e47fd1100cc424f27185e1531d27281f43a242cd0e1ae178de26"
     },
     "renders/f3_flanged_pipe/front.png": {
-      "bytes": 457516,
-      "sha256": "1305ef2926d56a0b8a477cca61af3c37936bfe377302e296f3c46b3f5ea3fdb2"
+      "bytes": 462319,
+      "sha256": "378b312b8f22d58726296478b55eecf70547086978cceb207b6eb098239c80f5"
     },
     "renders/f3_flanged_pipe/side.png": {
-      "bytes": 434388,
-      "sha256": "39c0694a686b195836168b61f327b569804d34e532db6c3b692c3d8ec85b5e92"
+      "bytes": 435139,
+      "sha256": "2af631dab56e773a96bf5b7f3a74b67ca0460fc33173e3a3addde8fe06fe382c"
     },
     "renders/f3_flanged_pipe/top.png": {
-      "bytes": 450064,
-      "sha256": "3a7605f38b985ab237295550c257487c7a6c8437133c9881a8c7a4f70c7be2a8"
+      "bytes": 441476,
+      "sha256": "8f2a6cfce094d31591a688146face84c51053a344d707159759fef9524dfd050"
     },
     "runtime/f3_flanged_pipe.glb": {
-      "bytes": 145352,
-      "sha256": "bd4b82d9eaf5ca8cf4efad2836706dcaca06a16fdc21e275b5aeb0c6902af269"
+      "bytes": 172512,
+      "sha256": "39eb514c7b3dfafeb01678def8537b046432a72e9207a7f03da344776d503908"
     },
     "security/all-texture-inputs.log": {
       "bytes": 290,
-      "sha256": "209831952bb833d2652c66fb1a76ea27ae62bfc49e7952143355dcb1b412c224"
+      "sha256": "4fc991a5533a105eb35b620d36948bef9772cff7c8de303327b50c1b34e2dde9"
     },
     "security/existing-cc0-inputs.log": {
       "bytes": 289,
-      "sha256": "d83d0d4ab2ab1a15d9541943118fba052b7e30111be57b4d7c8f274b52098069"
+      "sha256": "fa0d3f801403c7056225cd721dfd15a3c0df6790814308cbaef11543edbfe80d"
     },
     "security/renderer-source.log": {
       "bytes": 289,
-      "sha256": "a9dc0895f383217dad6bca5f57560a4cb63f30aa16c73e8552d389ae2457d561"
+      "sha256": "8ad4a1a3ed3ca4ff0025add52e64343b3fc2774809564981b04ecf9ceee342bb"
     },
     "security/shared-source.log": {
       "bytes": 294,
-      "sha256": "238a29c0782ae3ca08ea38a2a12ff76176b2281a7720060a63f38be91a512a8e"
+      "sha256": "abb8f4a6642a107bded60e706627795e5b95f55a6c63aa05964738d4f2dbacc7"
     },
     "security/source.log": {
       "bytes": 293,
-      "sha256": "5b1c2fd1a8b45a456d42490051976d6f27a22ed73018e633bcc6fa3e0453007c"
+      "sha256": "8d6187c30d5f4a5efc2a07fd395f38de39e7317e4e809e0e59c0ef2cf52a2554"
     },
     "shared_textures/030a2a4189395d06bab0dc2bd58a58ed9305479bdcf16f0693432a47e92eb807.jpg": {
       "bytes": 5607,
@@ -107,12 +107,12 @@
       "sha256": "e820925c6886646c2d8db636b60b5c0721cd68c00bbc2feff3c1359d2e27fbdd"
     },
     "sources/f3_flanged_pipe.blend": {
-      "bytes": 140553,
-      "sha256": "588f26f2120caa0c8da9e9299255cf70808ab1368afb8cf2810b32664a6d8102"
+      "bytes": 158879,
+      "sha256": "649e6788361f006cd7af48daadd82cb1f440fd9f17821627c6bc7d5fd63c2d4c"
     },
     "sources/f3_flanged_pipe_authoring.blend": {
-      "bytes": 125281,
-      "sha256": "cff10b2464ebe0149661dc9aed7bb50d473b80b40bbae8fb181e69c4364c2466"
+      "bytes": 135178,
+      "sha256": "5742aca5d921b1a24baca3a3fd0c8572f77854b84b2c45a081590c46519a8b91"
     },
     "sources/generated_materials/f3_aged_rubber_48c34e3e4044_basecolor.jpg": {
       "bytes": 5607,
@@ -175,8 +175,8 @@
       "sha256": "c95688534e72d7e38edbd5e987849733b3d433765dab514da8acd5d61b8a207c"
     },
     "structural-audit.json": {
-      "bytes": 1180,
-      "sha256": "fabd3bd60b2ae2eb41474dc545fda668ef0c3ceb7e8734c18060b311a6b8babc"
+      "bytes": 1190,
+      "sha256": "cad2f80cfdb8848026b4e6d755de4d4de2004af7210fd6a410e13ffbed548bbb"
     },
     "textures/asphalt_02-api.json": {
       "bytes": 27252,

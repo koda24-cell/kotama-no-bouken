@@ -2,10 +2,10 @@
   "status": "NOT_APPROVED",
   "assetName": "flanged_pipe",
   "asset": {
-    "bytes": 5069540,
-    "sha256": "f44bc71defc545011000f3b91e08902ae021f00bf61c9d88a4eb3a1bf3343276",
-    "tris": 1924,
-    "verts": 2629,
+    "bytes": 5096700,
+    "sha256": "d16e1d17f99042e6372a87009951ca9d582ca42bb926de1402102d98e8fd15d4",
+    "tris": 2552,
+    "verts": 3116,
     "meshes": 4,
     "drawCalls": 4,
     "materials": [
@@ -42,8 +42,8 @@
     "category": "props",
     "desc_ja": "フランジ付き破断配管",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
-    "workflowRun": "45332418931",
+    "sourceCommit": "b777bf019444bc2255cc9e921547e5cad762f8ab",
+    "workflowRun": "45335192544",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_flanged_pipe.blend",
     "renderedFrom": "reimported GLB",
@@ -162,10 +162,10 @@
   ],
   "runtime": {
     "file": "f3_flanged_pipe.glb",
-    "sourceSha256": "f44bc71defc545011000f3b91e08902ae021f00bf61c9d88a4eb3a1bf3343276",
-    "sha256": "bd4b82d9eaf5ca8cf4efad2836706dcaca06a16fdc21e275b5aeb0c6902af269",
-    "bytes": 145352,
-    "embeddedOriginalBytes": 5069540,
+    "sourceSha256": "d16e1d17f99042e6372a87009951ca9d582ca42bb926de1402102d98e8fd15d4",
+    "sha256": "39eb514c7b3dfafeb01678def8537b046432a72e9207a7f03da344776d503908",
+    "bytes": 172512,
+    "embeddedOriginalBytes": 5096700,
     "images": [
       {
         "file": "1c6eebec9d8705018b69ab63c7f28f7fcdbac2a28fd4a5c489bfb391f922f736.jpg",

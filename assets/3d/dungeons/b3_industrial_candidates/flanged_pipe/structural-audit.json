@@ -3,13 +3,13 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/flanged_pipe/props/f3_flanged_pipe.glb",
-      "file_bytes": 5069540,
+      "file_bytes": 5096700,
       "glb_meshes": 4,
       "total_mesh_primitives": 4,
       "scene_nodes": 5,
       "scene_mesh_nodes": 4,
       "scene_primitive_instances": 4,
-      "estimated_scene_triangles": 1924,
+      "estimated_scene_triangles": 2552,
       "materials": 4,
       "material_names": [
         "f3_aged_rubber",
@@ -20,7 +20,7 @@
       "mesh_names": [
         "pipe gasket",
         "Cylinder",
-        "cast iron service elbow",
+        "open bore cast iron service elbow",
         "Cube"
       ],
       "skins": 0,

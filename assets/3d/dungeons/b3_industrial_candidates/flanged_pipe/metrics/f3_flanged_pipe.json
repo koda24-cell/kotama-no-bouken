@@ -1,8 +1,8 @@
 {
-  "bytes": 5069540,
-  "sha256": "f44bc71defc545011000f3b91e08902ae021f00bf61c9d88a4eb3a1bf3343276",
-  "tris": 1924,
-  "verts": 2629,
+  "bytes": 5096700,
+  "sha256": "d16e1d17f99042e6372a87009951ca9d582ca42bb926de1402102d98e8fd15d4",
+  "tris": 2552,
+  "verts": 3116,
   "meshes": 4,
   "drawCalls": 4,
   "materials": [
@@ -39,8 +39,8 @@
   "category": "props",
   "desc_ja": "\u30d5\u30e9\u30f3\u30b8\u4ed8\u304d\u7834\u65ad\u914d\u7ba1",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
-  "workflowRun": "45332418931",
+  "sourceCommit": "b777bf019444bc2255cc9e921547e5cad762f8ab",
+  "workflowRun": "45335192544",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/f3_flanged_pipe.blend",
   "renderedFrom": "reimported GLB",
