@@ -1,0 +1,39 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/native_steelWreck/props/f3_native_steelWreck.glb",
+      "file_bytes": 4979584,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 741,
+      "materials": 3,
+      "material_names": [
+        "f3_exposed_aggregate",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "localized exposed aggregate weather skin",
+        "Mesh_0.001",
+        "Mesh_1.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 9,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}
