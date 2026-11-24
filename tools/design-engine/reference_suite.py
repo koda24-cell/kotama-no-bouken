@@ -10,6 +10,8 @@ from reference_mesh import analyze as geometry
 from reference_report import report as geometry_report
 from reference_views import views
 from reference_edges import analyze_edges
+from reference_precision import analyze as precision
+from reference_advanced import analyze as advanced
 
 def write_json(p,data): p.write_text(json.dumps(data,indent=2,allow_nan=False))
 def analyze(src,out):
@@ -21,6 +23,8 @@ def analyze(src,out):
     geometry_report(geometry(src),out/"geometry")
     views(src,out/"silhouettes")
     write_json(out/"edges.json",analyze_edges(src))
+    write_json(out/"precision.json",precision(src))
+    write_json(out/"advanced.json",advanced(src))
 def sheet(root):
     for folder in sorted(p for p in root.iterdir() if p.is_dir()):
         images=sorted(p for p in folder.rglob("*.png") if p.name!="design-sheet.png")
@@ -33,9 +37,11 @@ def sheet(root):
         silhouettes=json.loads((folder/"silhouettes/views.json").read_text())
         edges=json.loads((folder/"edges.json").read_text())
         pixels_data=json.loads((folder/"pixels.json").read_text())
-        for data in (geom,silhouettes,edges,pixels_data,uv):
+        prec=json.loads((folder/"precision.json").read_text())
+        adv=json.loads((folder/"advanced.json").read_text())
+        for data in (geom,silhouettes,edges,pixels_data,uv,prec,adv):
             if data["source_sha256"]!=materials["source_sha256"]: raise ValueError("Source mismatch")
-        write_json(folder/"integrated-design.json",{"geometry":geom,"silhouettes":silhouettes,"edges":edges,"materials":materials,"pixels":pixels_data,"uv":uv,"overlay":json.loads((folder/"overlay/report.json").read_text()),"render":json.loads(render.read_text()) if render.exists() else None,"status":"REFERENCE_ONLY"})
+        write_json(folder/"integrated-design.json",{"precision":prec,"advanced":adv,"geometry":geom,"silhouettes":silhouettes,"edges":edges,"materials":materials,"pixels":pixels_data,"uv":uv,"overlay":json.loads((folder/"overlay/report.json").read_text()),"render":json.loads(render.read_text()) if render.exists() else None,"status":"REFERENCE_ONLY"})
         width=1200; cell=300; header=200
         canvas=Image.new("RGB",(width,header+340*((len(images)+3)//4)), "white")
         d=ImageDraw.Draw(canvas)
