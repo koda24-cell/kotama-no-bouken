@@ -1,0 +1,32 @@
+"""One irregular, settled road surface. Voronoi fractures replace square tile seams."""
+def build(e):
+ c,bpy,rng,asphalt,fracture,moss=[e[k]for k in ['c','bpy','rng','asphalt','fracture','moss']]
+ # Deterministic half-plane clipping needs no third-party geometry package.
+ seeds=[(rng.uniform(-1.95,1.95),rng.uniform(-1.95,1.95))for _ in range(15)]
+ def clip(poly,nx,ny,k):
+  result=[]
+  for a,b in zip(poly,poly[1:]+poly[:1]):
+   da=a[0]*nx+a[1]*ny-k;db=b[0]*nx+b[1]*ny-k
+   if da<=0:result.append(a)
+   if (da<=0)!=(db<=0):
+    t=da/(da-db);result.append((a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t))
+  return result
+ for i,(sx,sy)in enumerate(seeds):
+  poly=[(-2,-2),(2,-2),(2,2),(-2,2)]
+  for j,(tx,ty)in enumerate(seeds):
+   if i!=j:poly=clip(poly,tx-sx,ty-sy,(tx*tx+ty*ty-sx*sx-sy*sy)/2)
+  if len(poly)<3:continue
+  cx=sum(x for x,y in poly)/len(poly);cy=sum(y for x,y in poly)/len(poly)
+  poly=[(cx+(x-cx)*.988,cy+(y-cy)*.988)for x,y in poly]
+  # Settled pieces have centimetres of relief, no raised traversable obstruction.
+  lift=rng.uniform(-.008,.018);tiltx=rng.uniform(-.008,.008);tilty=rng.uniform(-.008,.008)
+  n=len(poly);verts=[(x,y,-.10)for x,y in poly]+[(x,y,lift+x*tiltx+y*tilty)for x,y in poly]
+  faces=[tuple(range(n-1,-1,-1)),tuple(range(n,n*2))]+[(k,(k+1)%n,n+(k+1)%n,n+k)for k in range(n)]
+  o=c.mesh('irregular weathered road plate',verts,faces,asphalt);o.data.materials.append(fracture)
+  for p in list(o.data.polygons)[2:]:p.material_index=1
+  c.uv_world(o)
+ # Small gravel remains in the edge gutters rather than across the walking line.
+ for i in range(45):
+  x=rng.uniform(-1.9,1.9);y=rng.choice([-1,1])*rng.uniform(1.60,1.96)
+  bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(x,y,.012));o=bpy.context.object;o.name='settled gutter aggregate'
+  o.scale=(rng.uniform(.018,.055),rng.uniform(.02,.05),rng.uniform(.009,.026));o.data.materials.append(fracture if i%4 else moss);c.uv_world(o)

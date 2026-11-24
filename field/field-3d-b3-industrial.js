@@ -226,8 +226,13 @@ export function createTheme(api) {
       const px = x * CELL, pz = z * CELL, r = hash(x, z, 201), safe = reserved.has(`${x},${z}`);
       if (ch(x, z) === '~') { add(cube, water, px, -0.12, pz, 4, 0.15, 4); continue; }
       add(cube, soil, px, -0.25, pz, 4.02, 0.35, 4.02);
+      const road=v2&&industrial.models.has('v2_fractured_road');
+      if(road){
+        const holder=industrial.models.get('v2_fractured_road').clone(true);
+        holder.position.set(px,.055,pz);holder.rotation.y=Math.floor(hash(x,z,780)*4)*Math.PI/2;root.add(holder);count('fracturedRoad');
+      }
       const n = 3, unit = CELL / n;
-      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+      for (let j = 0; !road&&j < n; j++) for (let i = 0; i < n; i++) {
         const k = hash(x * n + i, z * n + j, 202), edge = i === 0 || j === 0 || i === n - 1 || j === n - 1;
         // Small surface relief only; avoid a false impassable crater on traversable tiles.
         const slab = add(finish.slabs[Math.floor(k * 3)], paving[Math.floor(k * 3)], px + (i + 0.5) * unit - 2, -0.07 + (safe ? 0 : k * 0.07), pz + (j + 0.5) * unit - 2, unit - 0.012, 0.14, unit - 0.012);
