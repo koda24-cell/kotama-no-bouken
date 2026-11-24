@@ -9,8 +9,10 @@ export function createStreetEdgeBlend(THREE, photoMaterials) {
     const a=Math.max(0,Math.min(255,(edge*.65+broad*.52+fine*.20-.62)*650));
     data[i]=data[i+1]=data[i+2]=a;data[i+3]=255;
   }
-  const mask=new THREE.DataTexture(data,n,n,THREE.RGBAFormat);mask.wrapS=mask.wrapT=THREE.RepeatWrapping;mask.magFilter=mask.minFilter=THREE.LinearFilter;mask.needsUpdate=true;
+  const mask=new THREE.DataTexture(data,n,n,THREE.RGBAFormat);mask.wrapS=mask.wrapT=THREE.RepeatWrapping;mask.magFilter=mask.minFilter=THREE.LinearFilter;mask.channel=1;mask.needsUpdate=true;
   const material=source.clone();material.name='b3:v2-rooted-edge-blend';material.color.set(0x6a7858);material.alphaMap=mask;material.alphaTest=.34;material.side=THREE.DoubleSide;material.depthWrite=true;material.polygonOffset=true;material.polygonOffsetFactor=-1;material.roughness=.97;
   const geometry=new THREE.PlaneGeometry(4.04,.76);geometry.rotateX(-Math.PI/2);
+  geometry.setAttribute('uv1',geometry.attributes.uv.clone());
+  const uv=geometry.attributes.uv;for(let i=0;i<uv.count;i++)uv.setXY(i,uv.getX(i)*2.02,uv.getY(i)*.38);
   return {material,geometry,dispose(){material.dispose();geometry.dispose();mask.dispose();}};
 }
