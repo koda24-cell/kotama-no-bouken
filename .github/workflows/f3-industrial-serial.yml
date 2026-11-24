@@ -10,6 +10,28 @@ permissions:
   contents: write
   packages: read
 jobs:
+  signature-seed:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Retrieve signed definitions from pinned official preloaded image
+        run: |
+          set -euo pipefail
+          image='clamav/clamav@sha256:9b2f34be1f8be02f58edb1c8868dca99d6e04f8f8daf191f8448c762f563dde3'
+          docker pull "$image"
+          container=$(docker create "$image")
+          trap 'docker rm -f "$container" >/dev/null' EXIT
+          mkdir -p definitions
+          for db in main daily bytecode; do
+            docker cp "$container:/var/lib/clamav/$db.cvd" "definitions/$db.cvd"
+          done
+          cd definitions
+          sha256sum main.cvd daily.cvd bytecode.cvd > SHA256SUMS
+          printf '%s\n' "$image" > official-image.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: f3-official-clamav-seed-${{ github.run_id }}
+          path: definitions/
+          retention-days: 3
   queue:
     runs-on: ubuntu-24.04
     outputs:
@@ -24,7 +46,7 @@ jobs:
               out.write('assets='+json.dumps(json.load(open('tools/f3-industrial/queue.json')))+'\n')
           PYQUEUE
   individual:
-    needs: queue
+    needs: [queue, signature-seed]
     strategy:
       max-parallel: 1
       fail-fast: true
