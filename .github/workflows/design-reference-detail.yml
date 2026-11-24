@@ -1,5 +1,8 @@
 name: Detailed reference drawings
 on:
+  push:
+    branches: [development]
+    paths: ['tools/design-engine/**', '.github/workflows/design-reference-detail.yml']
   pull_request:
     paths: ['tools/design-engine/**', '.github/workflows/design-reference-detail.yml']
 permissions:
