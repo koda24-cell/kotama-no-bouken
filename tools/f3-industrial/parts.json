@@ -586,5 +586,18 @@
     "existingUpgrade": true,
     "revisionOf": "sparse ground flowers / reclaimed pockets",
     "phase": "V2 individual licensed foliage source"
+  },
+  {
+    "id": "v2_memory_statue",
+    "name": "風化した彫像と欠けた記憶の台座V2",
+    "dimensions": [
+      1.53,
+      1.43,
+      2.02
+    ],
+    "status": "DESIGNED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "revisionOf": "Existing area3 magical statue NPC appearance",
+    "phase": "V2 licensed original sculpt, original city interaction retained"
   }
 ]
