@@ -1,0 +1,56 @@
+name: Register cleared 3D render previews
+on:
+  workflow_call:
+    inputs:
+      artifact:
+        required: true
+        type: string
+      publication_cleared:
+        required: true
+        type: boolean
+permissions:
+  contents: write
+jobs:
+  register:
+    if: inputs.publication_cleared == true
+    runs-on: ubuntu-latest
+    concurrency:
+      group: 3d-progress-registry
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          path: source
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact }}
+          path: output
+      - uses: actions/checkout@v4
+        with:
+          ref: 3d-progress-data
+          path: registry
+      - name: Validate provenance and register
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path("output/manifest.json")
+          m=json.loads(p.read_text())
+          assert m["run_id"]==int(os.environ["RUN_ID"])
+          assert m["source_sha"]==os.environ["SOURCE_SHA"]
+          assert m["publication_cleared"] is True
+          PY
+          python3 source/tools/3d-progress/register.py --registry registry --manifest output/manifest.json --source output
+      - name: Commit registry without force push
+        working-directory: registry
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- index.json renders/
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Register cleared render previews"
+          git push origin HEAD:3d-progress-data
