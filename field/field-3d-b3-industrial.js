@@ -173,7 +173,7 @@ export function createTheme(api) {
       const chosen=[];
       for(let z=1;z<a.h-1;z++)for(let x=1;x<a.w-1;x++){
         if(ch(x,z)!=='#'||reserved.has(`${x},${z}`)||!DIR_ORDER.some(d=>open(x+DIR_VEC[d][0],z+DIR_VEC[d][1])))continue;
-        if(hash(x,z,917)>(a.f===1?.15:.065)||chosen.some(q=>Math.abs(q.x-x)+Math.abs(q.z-z)<6))continue;
+        if((hash(x,z,917)>(a.f===1?.15:.065)&&!(z===18&&x===14&&a.f<2))||chosen.some(q=>Math.abs(q.x-x)+Math.abs(q.z-z)<6))continue;
         chosen.push({x,z});machineCells.add(`${x},${z}`);
         scenery('v2_service_tower',null,x,z,3.55,3.55,15.45,(chosen.length%4)*Math.PI/2);
       }
@@ -305,7 +305,10 @@ export function createTheme(api) {
         // Utility clusters repeat a structural language, while their combinations vary by block.
         if(!safe){
           const ids=['broken_signal','broken_streetlamp','control_cabinet','flanged_pipe','pipe_rack','rebar_rubble','drain_channel','ivy_pocket','heaved_asphalt','column_joint','riveted_girder','buckled_portal','grating_catwalk','service_stair','landing_railing','bridge_abutment'].filter(id=>industrial.models.has(id));
-          const side=ids[Math.floor(hash(x,z,440+DIR_ORDER.indexOf(d))*ids.length)];
+          const degree=DIR_ORDER.filter(dir=>!wallCell(x+DIR_VEC[dir][0],z+DIR_VEC[dir][1])).length;
+          const straight=(open(x-1,z)&&open(x+1,z))||(open(x,z-1)&&open(x,z+1));
+          const candidates=v2&&degree===2&&straight?['drain_channel','ivy_pocket','rebar_rubble','heaved_asphalt'].filter(k=>industrial.models.has(k)):ids;
+          const side=candidates[Math.floor(hash(x,z,440+DIR_ORDER.indexOf(d))*candidates.length)];
           edgeDetail(side,px,pz,dx,dz,ry,r);count(side);
         }
         if(!representative){
@@ -326,7 +329,8 @@ export function createTheme(api) {
       const acrossX=wallCell(x-1,z)&&wallCell(x+1,z)&&open(x,z-1)&&open(x,z+1),acrossZ=wallCell(x,z-1)&&wallCell(x,z+1)&&open(x-1,z)&&open(x+1,z);
       if(acrossX||acrossZ)crossings.push({x,z,acrossX,score:hash(x,z,681)});
     }
-    crossings.sort((a,b)=>a.score-b.score);const selected=[];
+    const focal=a.f===2?[11,8]:[12,19];
+    crossings.sort((a,b)=>v2?((Math.abs(a.x-focal[0])+Math.abs(a.z-focal[1]))*.12+a.score*.2)-((Math.abs(b.x-focal[0])+Math.abs(b.z-focal[1]))*.12+b.score*.2):a.score-b.score);const selected=[];
     const mount=(id,x,z,lift,rotation,height=null)=>{
       const holder=new THREE.Group(),model=industrial.models.get(id).clone(true);model.rotation.y=rotation;holder.add(model);const b=new THREE.Box3().setFromObject(holder),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3());
       const scale=height?height/size.y:4.12/Math.max(size.x,size.z);holder.scale.setScalar(scale);holder.position.set(x-center.x*scale,lift-b.min.y*scale,z-center.z*scale);root.add(holder);holder.updateMatrixWorld(true);
