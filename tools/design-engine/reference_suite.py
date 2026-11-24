@@ -6,6 +6,10 @@ from reference_materials import analyze_materials
 from reference_pixels import pixels
 from reference_uv import draw_uv
 from reference_overlay import run as overlay
+from reference_mesh import analyze as geometry
+from reference_report import report as geometry_report
+from reference_views import views
+from reference_edges import analyze_edges
 
 def write_json(p,data): p.write_text(json.dumps(data,indent=2,allow_nan=False))
 def analyze(src,out):
@@ -14,6 +18,9 @@ def analyze(src,out):
     write_json(out/"pixels.json",pixels(src))
     draw_uv(src,out/"uv",512)
     overlay(src,out/"overlay")
+    geometry_report(geometry(src),out/"geometry")
+    views(src,out/"silhouettes")
+    write_json(out/"edges.json",analyze_edges(src))
 def sheet(root):
     for folder in sorted(p for p in root.iterdir() if p.is_dir()):
         images=sorted(p for p in folder.rglob("*.png") if p.name!="design-sheet.png")
@@ -22,11 +29,20 @@ def sheet(root):
         uv=json.loads((folder/"uv/uv-report.json").read_text())
         render=folder/"render/render-report.json"
         if render.exists() and json.loads(render.read_text())["source_sha256"]!=materials["source_sha256"]: raise ValueError("Source mismatch")
-        width=1200; cell=300; header=160
+        geom=json.loads((folder/"geometry/reference.json").read_text())
+        silhouettes=json.loads((folder/"silhouettes/views.json").read_text())
+        edges=json.loads((folder/"edges.json").read_text())
+        pixels_data=json.loads((folder/"pixels.json").read_text())
+        for data in (geom,silhouettes,edges,pixels_data,uv):
+            if data["source_sha256"]!=materials["source_sha256"]: raise ValueError("Source mismatch")
+        write_json(folder/"integrated-design.json",{"geometry":geom,"silhouettes":silhouettes,"edges":edges,"materials":materials,"pixels":pixels_data,"uv":uv,"overlay":json.loads((folder/"overlay/report.json").read_text()),"render":json.loads(render.read_text()) if render.exists() else None,"status":"REFERENCE_ONLY"})
+        width=1200; cell=300; header=200
         canvas=Image.new("RGB",(width,header+340*((len(images)+3)//4)), "white")
         d=ImageDraw.Draw(canvas)
         d.text((20,15),folder.name,fill="black")
         d.text((20,40),f"Materials: {len(materials['materials'])} | UV primitives: {len(uv['primitives'])}",fill="black")
+        d.text((20,150),"Dimensions (mm): "+" x ".join(f"{v:.2f}" for v in geom["dimensions_mm"]),fill="black")
+        d.text((20,170),f"Parts: {len(geom['parts'])} | Sections: {len(geom['sections'])} | Silhouettes: {len(silhouettes['views'])}",fill="black")
         for i,m in enumerate(materials["materials"][:5]):
             d.text((20,60+i*16),f"Material {i}: metallic={m['metallic']} roughness={m['roughness']} alpha={m['alpha_mode']}",fill="black")
         for i,p in enumerate(images):
