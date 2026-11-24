@@ -79,7 +79,7 @@ function ensureStarterGear(){
 function updateTutorialSpotlight(){
   const spot=$("tutorial-spotlight"),overlay=$("tutorial-overlay"),target=tutorialSpotlightTarget;
   if(!spot)return;
-  if(!target||!target.isConnected||!overlay||overlay.hidden){spot.hidden=true;return;}
+  if(!target||!target.isConnected||!target.getClientRects().length||!overlay||overlay.hidden){spot.hidden=true;return;}
   const r=target.getBoundingClientRect(),pad=7;
   spot.style.left=`${Math.max(3,r.left-pad)}px`;
   spot.style.top=`${Math.max(3,r.top-pad)}px`;
@@ -113,7 +113,7 @@ function tutorialCommandAllowed(button){
   if(phase==="battle-command")return mode==="target"?button.hasAttribute("data-enemy-target"):button.dataset.action==="attack";
   if(phase==="battle-sp-command")return mode==="target"?button.hasAttribute("data-enemy-target"):mode==="skill"?button.hasAttribute("data-skill"):button.dataset.action==="skill";
   if(phase==="battle-guard-command")return button.dataset.action==="guard";
-  if(phase==="battle-union-command")return button.matches(".union-command,[data-union]");
+  if(phase==="battle-union-command")return mode==="main"?button.matches("[data-preview-union-toggle], [data-union]"):button.matches("[data-union]");
   return false;
 }
 function tutorialSyncCommandLock(){
@@ -122,14 +122,26 @@ function tutorialSyncCommandLock(){
   box.querySelectorAll("button").forEach(b=>{
     if(!active){
       b.classList.remove("tutorial-command-allowed","tutorial-command-blocked");
-      if(b.dataset.tutorialLocked==="1"){b.disabled=b.dataset.tutorialWasDisabled==="1";delete b.dataset.tutorialLocked;delete b.dataset.tutorialWasDisabled;}
+      if(b.dataset.tutorialLocked!==undefined){b.disabled=b.dataset.tutorialWasDisabled==="1";delete b.dataset.tutorialLocked;delete b.dataset.tutorialWasDisabled;}
       return;
     }
     const allowed=tutorialCommandAllowed(b);
-    if(!b.dataset.tutorialLocked)b.dataset.tutorialWasDisabled=b.disabled?"1":"0";
+    if(b.dataset.tutorialLocked===undefined)b.dataset.tutorialWasDisabled=b.disabled?"1":"0";
     if(!allowed){b.dataset.tutorialLocked="1";b.disabled=true;b.classList.add("tutorial-command-blocked");b.classList.remove("tutorial-command-allowed");}
     else{b.dataset.tutorialLocked="0";b.disabled=b.dataset.tutorialWasDisabled==="1";b.classList.add("tutorial-command-allowed");b.classList.remove("tutorial-command-blocked");}
   });
+}
+function tutorialRefreshBattleGuide(){
+  if(!battleState.tutorialMode||!tutorialState.started||tutorialState.completed)return;
+  tutorialSyncCommandLock();
+  const phase=tutorialState.phase,mode=battleState.menuMode;
+  const selector=phase==="battle-union-command"?(mode==="main"?"[data-preview-union-toggle]":"[data-union]"):phase==="battle-command"?(mode==="target"?"[data-enemy-target]":"[data-action=attack]"):phase==="battle-sp-command"?(mode==="target"?"[data-enemy-target]":mode==="skill"?"[data-skill]":"[data-action=skill]"):phase==="battle-guard-command"?"[data-action=guard]":null;
+  if(!selector||battleState.busy)return;
+  const target=[...document.querySelectorAll("#battle-commands "+selector)].find(b=>!b.disabled&&b.getClientRects().length);
+  if(!target)return;
+  if(phase==="battle-union-command"&&mode==="union-preview"&&$("tutorial-overlay").hidden) tutorialOverlay("ユニオンスキルを選択","表示されたスキルを選んで発動しよう。");
+  if(tutorialSpotlightTarget!==target){document.querySelectorAll(".tutorial-highlight").forEach(n=>n.classList.remove("tutorial-highlight"));tutorialSpotlightTarget=target;target.classList.add("tutorial-highlight");}
+  updateTutorialSpotlight();
 }
 function tutorialHighlight(selector){
   document.querySelectorAll(".tutorial-highlight").forEach(n=>n.classList.remove("tutorial-highlight"));
