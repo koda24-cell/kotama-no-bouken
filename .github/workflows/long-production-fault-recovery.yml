@@ -35,9 +35,9 @@ jobs:
           echo '{"width":128,"height":96,"columns":2,"rows":2,"views":["front"],"frames":[1],"cameras":{"front":"Camera"}}' > fault-input/plan.json
       - name: Refresh signatures and scan all inputs and source
         run: |
-          bash tools/security/clamav_scan_gate.sh update fault-output/security
-          bash tools/security/clamav_scan_gate.sh scan fault-input fault-output/security/input.log
-          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint fault-output/security/source.log
+          bash tools/security/clamav_scan_gate.sh update qa/security
+          bash tools/security/clamav_scan_gate.sh scan fault-input qa/security/input.log
+          bash tools/security/clamav_scan_gate.sh scan tools/3d_checkpoint qa/security/source.log
       - name: Inject real Blender syntax failure and run automatic repair
         env:
           PRODUCTION_FAULT_INJECT: indentation_once
@@ -88,7 +88,7 @@ jobs:
       - name: Scan every generated candidate
         if: always()
         run: |
-          if test -d fault-output; then bash tools/security/clamav_scan_gate.sh scan fault-output fault-output/security/output.log; fi
+          if test -d fault-output; then bash tools/security/clamav_scan_gate.sh scan fault-output qa/security/output.log; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
