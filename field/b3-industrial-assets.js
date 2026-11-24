@@ -66,10 +66,13 @@ export async function loadIndustrialAssets() {
         originals.forEach(g=>{g.dispose();ownedGeometries.delete(g);});model=batched;
       }
       models.set(row.id,model);
+      // Repeated maps must not retain a decoded copy for every independently parsed GLB.
+      if(!THREE.Cache.enabled){const usedImages=new Set([...texturePool.values()].map(t=>t.image));for(const bitmap of ownedBitmaps)if(!usedImages.has(bitmap)){bitmap.close();ownedBitmaps.delete(bitmap);}}
+
     }
     // Dispose duplicate resources which no retained source uses, once the pool is complete.
     const usedMaterials=new Set(),usedTextures=new Set();models.forEach(root=>root.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material]){usedMaterials.add(m);Object.values(m).forEach(t=>{if(t?.isTexture)usedTextures.add(t);});}}));
     ownedMaterials.forEach(m=>{if(!usedMaterials.has(m)){m.dispose();ownedMaterials.delete(m);}});ownedTextures.forEach(t=>{if(!usedTextures.has(t)){t.dispose();ownedTextures.delete(t);}});
-    return {models,catalog,materials:[...materialPool.values()],dispose,info:()=>({sourceHashesVerified:true,models:models.size,materials:ownedMaterials.size,textures:ownedTextures.size,sharedImages:blobs.size})};
+    return {models,catalog,materials:[...materialPool.values()],dispose,info:()=>({sourceHashesVerified:true,models:models.size,materials:ownedMaterials.size,textures:ownedTextures.size,sharedImages:blobs.size,decodedImages:ownedBitmaps.size,estimatedDecodedImageBytes:[...ownedBitmaps].reduce((sum,b)=>sum+b.width*b.height*4,0)})};
   } catch(e){dispose();throw e;}
 }

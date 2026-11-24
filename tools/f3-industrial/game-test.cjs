@@ -136,6 +136,7 @@ if(!interactions.find(x=>x.kind==='chest')?.after.flag)failures.push('chest');
 if(!interactions.find(x=>x.kind==='gather')?.after.used)failures.push('gather');
 if(lifecycle.some(x=>x.roots!==(x.area===3?1:0)||x.far!==(x.area===3?44:48)))failures.push('lifecycle');
 if(lifecycle[1].memory.geometries!==lifecycle[3].memory.geometries)failures.push('geometry leak');
+if(lifecycle[1].memory.textures!==lifecycle[3].memory.textures)failures.push('texture leak');
 if(!save.same)failures.push('save roundtrip');
 if(!lodCheck.groups||lodCheck.invalid||lodCheck.nearTriangles<=lodCheck.farTriangles)failures.push('LOD');
 if(!puzzle.solved||puzzle.door!=='open')failures.push('puzzle door');

@@ -11,7 +11,7 @@ const server=http.createServer((q,r)=>{const p=decodeURIComponent(q.url.split('?
    const holder=model.clone(true),box=new THREE.Box3().setFromObject(holder),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3()),scale=5/Math.max(size.x,size.y,size.z);
    holder.scale.setScalar(scale);holder.position.copy(center).multiplyScalar(-scale);holder.position.y+=2;scene.add(holder);renderer.render(scene,camera);holder.removeFromParent();rendered++;
  }checks.push({...bundle.info(),renderedModels:rendered,memory:{...renderer.info.memory}});bundle.dispose();renderer.render(scene,camera);checks.push({disposedMemory:{...renderer.info.memory}});}
- return checks;});
+ renderer.dispose();checks.push({rendererDisposedMemory:{...renderer.info.memory}});return checks;});
  const leak=result[1].disposedMemory.geometries!==result[3].disposedMemory.geometries||result[1].disposedMemory.textures!==result[3].disposedMemory.textures;if(leak||errors.length)throw Error(JSON.stringify({result,errors,leak}));
  fs.writeFileSync('/tmp/f3-loader-results.json',JSON.stringify({result,errors,leak},null,2));console.log(JSON.stringify({result,errors,leak}));
  }finally{await browser.close();await new Promise(r=>server.close(r));}})().catch(e=>{console.error(e);process.exitCode=1});

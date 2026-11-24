@@ -237,7 +237,7 @@ export function createTheme(api) {
         // Continuous base identifies every solid boundary, including closed shortcuts.
         // Closed concrete back keeps skyline fractures and windows from exposing adjacent streets.
         const wallHeight=4.7+Math.floor(hash(Math.floor((x+dx)/4),Math.floor((z+dz)/4),837)*3)*.25;
-        const backing=add(cube, stone, ex, (wallHeight-.15)/2, ez, 4.07, wallHeight-.15, .30, ry);backing.userData.f3Keep=true;
+        const backing=add(cube, stone, ex+dx*.65, 1.9, ez+dz*.65, 4.07, 3.8, .30, ry);backing.userData.f3Keep=true;
         const sequence=['retaining_wall','retaining_wall','shattered_window','roller_shutter','retaining_wall','factory_door'].filter(id=>industrial.models.has(id));
         const id=sequence[Math.floor(hash(x,z,330+DIR_ORDER.indexOf(d))*sequence.length)];
         const model=industrial.models.get(id).clone(true),holder=new THREE.Group();holder.add(model);model.rotation.y=ry;
