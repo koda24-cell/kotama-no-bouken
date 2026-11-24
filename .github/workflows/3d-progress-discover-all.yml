@@ -1,0 +1,33 @@
+name: Discover all existing render previews
+on:
+  push:
+    branches: [feature/3d-progress-gallery-20261124]
+    paths: ['.github/workflows/3d-progress-discover-all.yml']
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Enumerate artifacts across all branches
+        run: |
+          mkdir -p inventory
+          gh api --paginate "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" --jq '.artifacts[] | select(.expired == false) | {id,name,size_in_bytes,created_at,workflow_run}' > inventory/all.jsonl
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          rows=[json.loads(s) for s in Path("inventory/all.jsonl").read_text().splitlines()]
+          candidates=[x for x in rows if re.search(r'render|blender|waterwheel|armor|knight|tree|foliage|magma|rubble|bridge|stair|rock|asset|preview|review',x["name"],re.I) and not re.search(r'dockerbuild|gallery|smoke|test|checkpoint',x["name"],re.I)]
+          Path("inventory/candidates.json").write_text(json.dumps(candidates,indent=2))
+          print("All:",len(rows),"Candidates:",len(candidates))
+          for x in candidates[:150]: print(x["id"],x["name"],x["workflow_run"]["head_branch"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: all-render-artifact-inventory
+          path: inventory/
+          retention-days: 14
