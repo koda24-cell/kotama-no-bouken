@@ -4,6 +4,7 @@ from pathlib import Path
 from advanced_session import run,digest
 from production_visual_quality import evaluate
 from advanced_selection import score,select
+from advanced_art_review import packet
 VIEWS=("front","side","back","angle")
 def main():
     p=argparse.ArgumentParser();p.add_argument("--source",required=True);p.add_argument("--output",required=True);p.add_argument("--minutes",type=int,default=45);p.add_argument("--reference");p.add_argument("--rounds",type=int,default=2);p.add_argument("--pause-after",type=int,default=0);p.add_argument("--fault-test",action="store_true");a=p.parse_args()
@@ -59,6 +60,8 @@ def main():
         target_view=target or base/"reimport"
         def assess(step):
             f=locate(rr,step);v=score(f/"reimport",target_view)
+            review=packet(f/"reimport",target_view)
+            v["art_review_packet"]=review
             v.update(path=str(f),verified=True,preserved=json.loads((f/"geometry.json").read_text())["preserved"])
             return v
         baseline=assess("baseline")
