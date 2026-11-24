@@ -34,7 +34,7 @@ jobs:
       - name: Install CPU inference dependencies
         run: |
           python3 -m venv --system-site-packages /tmp/vision-env
-          /tmp/vision-env/bin/python -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.6.0'
+          /tmp/vision-env/bin/python -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.8.0'
           /tmp/vision-env/bin/python -m pip install 'transformers==4.49.0' 'Pillow==11.3.0' 'safetensors==0.5.3'
       - name: Render real prop and evaluate candidates
         run: |
