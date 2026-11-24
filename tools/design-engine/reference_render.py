@@ -13,16 +13,23 @@ def setup():
     s.world.node_tree.nodes["Background"].inputs[0].default_value=(.3,.3,.3,1)
     s.world.node_tree.nodes["Background"].inputs[1].default_value=.6
     return s
-def render(s,center,radius,out):
+def render(s,center,radius,out,points):
     for direction,power in [((4,-4,6),900),((-4,-2,3),500)]:
         bpy.ops.object.light_add(type="AREA",location=center+Vector(direction)*radius)
         l=bpy.context.object; l.data.energy=power*radius**2; l.data.shape="DISK"; l.data.size=radius*3
         l.rotation_euler=(center-l.location).to_track_quat("-Z","Y").to_euler()
     bpy.ops.object.camera_add(); c=bpy.context.object; s.camera=c
     c.data.type="ORTHO"; c.data.ortho_scale=radius*3
-    for name,d in [("front",(0,-1,0)),("side",(1,0,0)),("angle",(1,-1,.7))]:
+    for name,d in [("front",(0,-1,0)),("side",(1,0,0)),("top",(0,0,1)),("angle",(1,-1,.7))]:
         c.location=center+Vector(d).normalized()*radius*5
         c.rotation_euler=(center-c.location).to_track_quat("-Z","Y").to_euler()
+        inv=c.rotation_euler.to_matrix().transposed()
+        projected=[inv@(p-center) for p in points]
+        x0,x1=min(p.x for p in projected),max(p.x for p in projected)
+        y0,y1=min(p.y for p in projected),max(p.y for p in projected)
+        c.location+=c.rotation_euler.to_matrix()@Vector(((x0+x1)/2,(y0+y1)/2,0))
+        c.data.ortho_scale=max(x1-x0,y1-y0,.001)*1.18
+        c.data.clip_end=max(100,radius*20)
         s.render.filepath=str(out/(name+".png")); bpy.ops.render.render(write_still=True)
 def main():
     for path in [ROOT/"props/blue_wisp_torch.glb",ROOT/"modules/mod_floor_stone_4m.glb"]:
@@ -33,7 +40,7 @@ def main():
         if not points: raise ValueError("No mesh")
         lo=Vector([min(p[i] for p in points) for i in range(3)])
         hi=Vector([max(p[i] for p in points) for i in range(3)])
-        render(s,(lo+hi)/2,max((hi-lo).length/2,.01),out)
+        render(s,(lo+hi)/2,max((hi-lo).length/2,.01),out,points)
         # Isolate each used material on original geometry, preserving its UVs.
         mats=sorted({m for o in meshes for m in o.data.materials if m},key=lambda m:m.name)
         rows=[]
