@@ -245,7 +245,9 @@ def draw_uv(path, output, size=1024):
             if any(type(index) is not int or index < 0 or index >= len(uv) for index in indices):
                 raise ValueError("Triangle index references a missing UV vertex")
             image = Image.new("RGB", (size, size), (248, 249, 252))
+            overlap_image = Image.new("RGB", (size, size), (248, 249, 252))
             draw = ImageDraw.Draw(image)
+            overlap_draw = ImageDraw.Draw(overlap_image)
             min_u, min_v = min(p[0] for p in uv), min(p[1] for p in uv)
             max_u, max_v = max(p[0] for p in uv), max(p[1] for p in uv)
             span_u, span_v = max(max_u - min_u, 1e-6), max(max_v - min_v, 1e-6)
@@ -260,29 +262,36 @@ def draw_uv(path, output, size=1024):
             # Show the conventional 0..1 texture tile even when UVs extend
             # beyond it; fit the complete UV bounds into the image.
             tile_a, tile_b = point((0.0, 0.0)), point((1.0, 1.0))
-            draw.rectangle((tile_a[0], tile_a[1], tile_b[0], tile_b[1]),
-                           outline=(80, 100, 130), width=2)
+            for canvas in (draw, overlap_draw):
+                canvas.rectangle((tile_a[0], tile_a[1], tile_b[0], tile_b[1]),
+                                 outline=(80, 100, 130), width=2)
             for tick in range(1, 10):
                 u = tick / 10
                 a, b = point((u, 0.0)), point((u, 1.0))
                 c, d = point((0.0, u)), point((1.0, u))
-                draw.line((a[0], min(a[1], b[1]), b[0], max(a[1], b[1])),
-                          fill=(224, 229, 237), width=1)
-                draw.line((min(c[0], d[0]), c[1], max(c[0], d[0]), d[1]),
-                          fill=(224, 229, 237), width=1)
+                for canvas in (draw, overlap_draw):
+                    canvas.line((a[0], min(a[1], b[1]), b[0], max(a[1], b[1])),
+                                fill=(224, 229, 237), width=1)
+                    canvas.line((min(c[0], d[0]), c[1], max(c[0], d[0]), d[1]),
+                                fill=(224, 229, 237), width=1)
             overlap = analyze_uv_overlaps(uv, indices)
             overlap_ids = set(overlap["overlapping_triangle_ids"])
             for i in range(0, len(indices), 3):
                 tri_id = i // 3
                 tri = [point(uv[indices[i]]), point(uv[indices[i+1]]), point(uv[indices[i+2]])]
-                fill = (250, 190, 185) if tri_id in overlap_ids else (196, 219, 245)
-                outline = (180, 35, 35) if tri_id in overlap_ids else (25, 78, 135)
-                draw.polygon(tri, fill=fill, outline=outline, width=2)
+                draw.polygon(tri, fill=(196, 219, 245), outline=(25, 78, 135), width=2)
+                if tri_id in overlap_ids:
+                    overlap_draw.polygon(tri, fill=(250, 190, 185), outline=(180, 35, 35), width=2)
+                else:
+                    overlap_draw.polygon(tri, fill=(196, 219, 245), outline=(25, 78, 135), width=2)
             filename = f"mesh-{mesh_index:03d}-primitive-{primitive_index:03d}.png"
+            overlap_filename = f"mesh-{mesh_index:03d}-primitive-{primitive_index:03d}-overlap.png"
             image.save(out / filename)
+            overlap_image.save(out / overlap_filename)
             records.append({"mesh": mesh_index, "primitive": primitive_index,
                             "status": "GENERATED", "uv_vertices": len(uv),
                             "triangles": len(indices)//3, "image": filename,
+                            "overlap_image": overlap_filename,
                             "material_binding": material_texture_bindings(doc, primitive),
                             "uv_overlap": overlap,
                             "sha256": hashlib.sha256((out / filename).read_bytes()).hexdigest(),
