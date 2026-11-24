@@ -49,5 +49,5 @@ class UVReviewTest(unittest.TestCase):
                 read_glb(p)
 
 
-if __a== "__main__":
+if __name__ == "__main__":
     unittest.main()
