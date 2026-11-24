@@ -8,7 +8,9 @@ def main():
  asset=delivery.name.removeprefix('f3-industrial-');parts=json.loads((ROOT/'tools/f3-industrial/parts.json').read_text());assert asset in [p['id']for p in parts]
  candidate=ROOT/'assets/3d/dungeons/b3_industrial_candidates';textures=candidate/'textures';textures.mkdir(parents=True,exist_ok=True)
  def scan(path,label):subprocess.run(['bash',str(ROOT/'tools/security/clamav_scan_gate.sh'),'scan',str(path),str(delivery/'security'/(label+'.log'))],check=True)
- scan(ROOT/'tools/f3-industrial','source');scan(ROOT/'tools/f1-sacred-forest','shared-source');scan(ROOT/'tools/f1-layer-v4/render_asset.py','renderer-source')
+ scan(ROOT/'tools/f3-industrial','source');
+ if asset in ['shattered_window','rebar_rubble']:scan(ROOT/'assets/3d/dungeons/b3_recovered_candidates','recovered-inputs')
+ scan(ROOT/'tools/f1-sacred-forest','shared-source');scan(ROOT/'tools/f1-layer-v4/render_asset.py','renderer-source')
  sources=[]
  old=ROOT/'assets/models/floor3/double_flight/textures';scan(old,'existing-cc0-inputs')
  existing=json.loads((old/'sources.json').read_text())
