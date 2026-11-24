@@ -1,0 +1,39 @@
+name: 3D progress existing artifact inventory
+on:
+  push:
+    branches: [feature/3d-progress-gallery-20261124]
+    paths: ['.github/workflows/3d-progress-inventory.yml']
+permissions:
+  actions: read
+  contents: read
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Inventory selected existing render archives
+        run: |
+          mkdir -p inventory
+          python3 - <<'PY'
+          import json, os, urllib.request, zipfile, io
+          from pathlib import Path
+          repo=os.environ["GITHUB_REPOSITORY"]
+          token=os.environ["GH_TOKEN"]
+          rows=[]
+          for aid in [14502612250,14496886140,14491057100]:
+              url=f"https://api.github.com/repos/{repo}/actions/artifacts/{aid}/zip"
+              # gh handles authenticated API redirects without forwarding credentials to storage.
+              import subprocess
+              archive=subprocess.check_output(["gh","api",url])
+              if len(archive)>100_000_000: raise ValueError("archive too large")
+              with zipfile.ZipFile(io.BytesIO(archive)) as z:
+                  rows.append({"artifact_id":aid,"pngs":[{"path":i.filename,"bytes":i.file_size} for i in z.infolist() if i.filename.lower().endswith(".png") and not i.is_dir()]})
+          Path("inventory/images.json").write_text(json.dumps(rows,indent=2))
+          print(json.dumps(rows,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: existing-render-inventory
+          path: inventory/
+          retention-days: 14
