@@ -8,6 +8,8 @@ def build(asset,e):
  key=asset.removeprefix('native_');root=Path(__file__).resolve().parents[2];folder=root/'assets/3d/dungeons/b3_industrial_candidates/native_originals';receipt=json.loads((folder/'manifest.json').read_text());row=next(r for r in receipt['models']if r['key']==key);path=folder/(key+'.glb')
  assert hashlib.sha256(path.read_bytes()).hexdigest()==row['sha256']
  bpy.ops.import_scene.gltf(filepath=str(path));original=[o for o in bpy.context.scene.objects if o.type=='MESH'];assert original
+ for o in original:
+  if o.data.users>1:o.data=o.data.copy()
  raw_positions=sum(len(o.data.vertices)for o in original)
  def positions_hash():return hashlib.sha256(json.dumps([[[*v.co]for v in o.data.vertices]+[[*row]for row in o.matrix_world]for o in original]).encode()).hexdigest()
  original_geometry_hash=positions_hash()
