@@ -1,0 +1,47 @@
+name: Notion image bridge (reference only)
+on:
+  push:
+    branches:
+      - feature/notion-image-bridge-20261122
+    paths:
+      - 'tools/notion-image-bridge/**'
+      - '.github/workflows/notion-image-bridge.yml'
+  workflow_dispatch:
+    inputs:
+      page_id:
+        description: 'Notion page ID containing the image'
+        required: true
+        default: '41f6cf84a0b181da9e4de8122ab71249'
+permissions:
+  contents: read
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run offline tests without Notion credentials
+        run: python -m unittest discover -s tools/notion-image-bridge -p 'test_*.py' -v
+  fetch-reference:
+    needs: offline-tests
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch and validate reference
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          PAGE_ID: ${{ inputs.page_id }}
+        run: python tools/notion-image-bridge/fetch.py --page-id "$PAGE_ID"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: notion-reference-verified
+          path: notion-image-output/
+          retention-days: 1
+          if-no-files-found: error
