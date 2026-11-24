@@ -29,7 +29,7 @@ def run(settings,source,root,reference,deadline,estimate=30):
         hashes={}
         if os.environ.get("PRODUCTION_FAULT_INJECT")=="indentation_once" and not fault_injected:
             broken=folder/"fault-injected-render.py"
-            broken.write_text(script.read_text()+"\n# isolated, deliberate syntax fault for recovery verification\ndef _injected_syntax_fault():\n\\treturn 1\n        return 2\n")
+            broken.write_text(script.read_text()+"\n# isolated, deliberate syntax fault for recovery verification\ndef _injected_syntax_fault():\n\treturn 1\n        return 2\n")
             active_script=broken
             fault_injected=True
             print("FAULT_INJECTION_ARMED=indentation_once",flush=True)
