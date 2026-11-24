@@ -26,7 +26,7 @@ await page.evaluate(()=>{try{tutorialFinish();tutorialClose();}catch{};if(typeof
 await page.evaluate(()=>fieldEnterArea(3,{floor:0,adminSkip:true}));
 await page.waitForFunction(()=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.placed,null,{timeout:120000});
 await page.waitForTimeout(1500);
-await page.screenshot({path:out+(mobile?'/mobile':'/pc')+'-entry.png'});
+await page.screenshot({timeout:120000,path:out+(mobile?'/mobile':'/pc')+'-entry.png'});
 console.log('3D ready');
 // Sample street and plaza views on all floors.
 const logs=[];
@@ -56,7 +56,7 @@ return {...x,edgePlacementCount:edgePlacements?.length,edgePlacements,edgeOverla
 const pos=floor===2?[11,12,'up']:floor===1?[9,19,'right']:[8,19,'right'];
 await page.evaluate(([tx,ty,dir])=>{const c=fieldTileCenter(tx,ty);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=dir;fieldState.view=null;__test3d.g.cam.ready=false;fieldUpdateVision(true);},pos);
 await page.waitForTimeout(1200);
-await page.screenshot({path:`${out}/${mobile?'mobile':'pc'}-floor${floor}.png`,fullPage:mobile});
+await page.screenshot({timeout:120000,path:`${out}/${mobile?'mobile':'pc'}-floor${floor}.png`,fullPage:mobile});
 await page.evaluate(()=>window.__perf=[]);await page.waitForTimeout(4000);
 info.performance=await page.evaluate(()=>{const p=window.__perf,t=p.map(x=>x.time);return {frames:p.length,fps:p.length>1?(p.length-1)*1000/(t.at(-1)-t[0]):0,calls:Math.max(...p.map(x=>x.calls)),triangles:Math.max(...p.map(x=>x.triangles)),memory:{...__test3d.g.renderer.info.memory}};});
 
@@ -85,7 +85,7 @@ for(const kind of ['chest','gather','switch']) {
  await page.waitForTimeout(500);await page.evaluate(()=>fieldActionPressed());await settle();await page.waitForTimeout(500);
  const after=await page.evaluate(key=>({flag:!!fieldState.flags[key],used:fieldState.gatherUsed[key]||0,entry:__test3d.g.entries.find(e=>e.o.key===key)?.state,progress:fieldPuzzleProgress}),before?.key);
  interactions.push({kind,before,after});
- if(kind==='switch')await page.screenshot({path:out+'/'+(mobile?'mobile':'pc')+'-switch.png'});
+ if(kind==='switch')await page.screenshot({timeout:120000,path:out+'/'+(mobile?'mobile':'pc')+'-switch.png'});
 }
 logs.push({interactions});
 // Finish the three-lantern puzzle through the same action/choice path as the UI.
@@ -97,7 +97,7 @@ const puzzle=await page.evaluate(()=>({solved:fieldPuzzleSolved('a3-lanterns'),d
 if(mobile){
  await page.evaluate(()=>{const c=fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.lock=false;fieldUpdateVision(true);});
  const before=await check();await page.locator('#field-pad [data-dir="up"]').tap();await page.waitForFunction(()=>fieldPlayerTile().tx===9,null,{timeout:10000});const after=await check();logs.push({touch:{before,after}});
- await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:out+'/mobile-controls.png',fullPage:true});
+ await page.evaluate(()=>scrollTo(0,0));await page.screenshot({timeout:120000,path:out+'/mobile-controls.png',fullPage:true});
 }
 
 const lodCheck=await page.evaluate(()=>{
@@ -115,7 +115,7 @@ for(const area of [1,3,1,3]) {
  await page.waitForFunction(n=>KotamaField3D.active()&&__test3d.g.builtKey===`${n}-0`,area,{timeout:120000});
  const frameStart=await page.evaluate(()=>__perf.length);
  await page.waitForFunction(n=>__perf.length>=n+2,frameStart,{timeout:120000});
- if (area === 1 && lifecycle.length === 0) await page.screenshot({path:out+'/'+(mobile?'mobile':'pc')+'-b1-reference.png',fullPage:mobile});
+ if (area === 1 && lifecycle.length === 0) await page.screenshot({timeout:120000,path:out+'/'+(mobile?'mobile':'pc')+'-b1-reference.png',fullPage:mobile});
  lifecycle.push(await page.evaluate(()=>({area:fieldState.area,far:__test3d.g.camera.far,roots:__test3d.g.world.children.filter(c=>c.name==='b3_ruined_city_map').length,points:__test3d.g.pool.filter(l=>l.parent).length,memory:{...__test3d.g.renderer.info.memory}})));
 }
 logs.push({lifecycle});

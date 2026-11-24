@@ -16,7 +16,7 @@ export function createTheme(api) {
     hemi: { sky: 0xd6dfdb, ground: 0x92988a, high: 1.9, low: 2.1 } };
   let root, city, urban, finish, skyMesh, materials = [], geometries = [], batches = [], placements = [], stats = {};
   const prototypes = new Map();
-  let industrial, solid, visibilityGroups=[],lastVisibility="",edgePlacements=[],fallback=null,fallbackReason=null,heldGrass=[],environmentTarget=null,previousEnvironment=null,previousEnvironmentIntensity=1;
+  let industrial, solid, visibilityGroups=[],lastVisibility="",edgePlacements=[],fallback=null,fallbackReason=null,heldGrass=[],ownedThemeTextures=[],contactGeometry=null,contactMaterial=null,environmentTarget=null,previousEnvironment=null,previousEnvironmentIntensity=1;
   const geo = x => (geometries.push(x), x);
   const mat = x => { const m = g.high ? new THREE.MeshStandardMaterial(x) : new THREE.MeshLambertMaterial({ color: x.color, flatShading: x.flatShading }); materials.push(m); return m; };
   function add(shape, material, x, y, z, sx, sy, sz, ry = 0) {
@@ -56,6 +56,10 @@ export function createTheme(api) {
     holder.position.set(px+dx*(2-d/2)-c.x*scale,lift-b.min.y*scale,pz+dz*(2-d/2)-c.z*scale);
     root.add(holder);holder.updateMatrixWorld(true);const bb=new THREE.Box3().setFromObject(holder);
     const record={key:id,min:bb.min.toArray(),max:bb.max.toArray(),overhead};edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
+    if(!overhead){
+      const shadow=new THREE.Mesh(contactGeometry,contactMaterial);shadow.rotation.x=-Math.PI/2;shadow.scale.set(Math.max(.22,bb.max.x-bb.min.x)*1.18,Math.max(.22,bb.max.z-bb.min.z)*1.18,1);
+      shadow.position.set((bb.min.x+bb.max.x)/2,.081,(bb.min.z+bb.max.z)/2);shadow.userData.f3Bounds=record;root.add(shadow);
+    }
     if(['grating_catwalk','landing_railing'].includes(id)){
       const pier=new THREE.Group(),member=industrial.models.get('column_joint').clone(true);member.rotation.y=ry;pier.add(member);
       const pb=new THREE.Box3().setFromObject(pier),ps=pb.getSize(new THREE.Vector3()),pc=pb.getCenter(new THREE.Vector3()),factor=3.55/ps.y;
@@ -130,6 +134,10 @@ export function createTheme(api) {
     const environmentScene=new THREE.Scene();environmentScene.add(finish.sky());const pmrem=new THREE.PMREMGenerator(g.renderer);
     environmentTarget=pmrem.fromScene(environmentScene,0,.1,200);pmrem.dispose();g.scene.environment=environmentTarget.texture;g.scene.environmentIntensity=.5;
     const cube = geo(new THREE.BoxGeometry(1, 1, 1));
+    const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=64;const context=shadowCanvas.getContext('2d'),gradient=context.createRadialGradient(32,32,2,32,32,31);
+    gradient.addColorStop(0,'rgba(7,12,9,.23)');gradient.addColorStop(.55,'rgba(7,12,9,.13)');gradient.addColorStop(1,'rgba(7,12,9,0)');context.fillStyle=gradient;context.fillRect(0,0,64,64);
+    const shadowTexture=new THREE.CanvasTexture(shadowCanvas);ownedThemeTextures.push(shadowTexture);contactGeometry=geo(new THREE.PlaneGeometry(1,1));
+    contactMaterial=new THREE.MeshBasicMaterial({map:shadowTexture,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});materials.push(contactMaterial);
     const { paving, stone, soil, rust: steel, leaf: grass } = finish.palette;
     // Reuse the already scanned original cutout plants, with unchanged geometry and atlas bytes.
     const nature=await fetch(new URL('../assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',import.meta.url));if(!nature.ok)throw Error('Ground vegetation catalog unavailable');
@@ -285,7 +293,7 @@ export function createTheme(api) {
     for (const batch of batches) batch.dispose();
     heldGrass.forEach(h=>h.release());heldGrass=[];industrial?.dispose();industrial=null;visibilityGroups=[];lastVisibility="";solid=null;edgePlacements=[];
     city?.dispose(); urban?.dispose(); finish?.dispose(); finish = null; skyMesh = null;
-    geometries.forEach(x => x.dispose()); materials.forEach(x => x.dispose());
+    geometries.forEach(x => x.dispose()); materials.forEach(x => x.dispose());ownedThemeTextures.forEach(x=>x.dispose());ownedThemeTextures=[];contactGeometry=contactMaterial=null;
     root = city = urban = null; batches = []; geometries = []; materials = []; placements = []; prototypes.clear(); stats = {};
   }
   function tick(...args){

@@ -228,7 +228,11 @@ def build_small(asset,e,h):
   for filename,center,size in [('f3_concrete_rubble_v29_medium.glb',(-.58,.14,.31),(1.13,.95,.62)),('f3_concrete_rubble_v29_small.glb',(.61,.12,.22),(.86,.73,.44))]:
    recovered('rubble_v29',filename,'reused fracture aggregate',center,size)
   for j in range(2):recovered('rebar_v4','f3_rebar01_v4.glb','reused ribbed reinforcing bar',(-.38+j*.62,.04,.74),(.065,.065,.63+j*.12))
-  box('ground contact grit',(0,0,.035),(2.1,1.3,.05),moss,.08)
+  # Loose rubble has irregular contact chips, never a rectangular display plinth.
+  for j in range(12):
+   bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(rng.uniform(-1.0,1.0),rng.uniform(-.46,.54),.025));o=bpy.context.object;o.name='loose aggregate and grounded concrete chips';o.scale=(rng.uniform(.045,.13),rng.uniform(.04,.11),rng.uniform(.018,.04));o.rotation_euler[2]=rng.random()*math.tau
+   for v in o.data.vertices:v.co*=rng.uniform(.8,1.15)
+   o.data.materials.append(fracture);c.uv_world(o,.25)
  elif asset=='heaved_asphalt':
   for j in range(4):
    x=-1.42+j*.94;slab=box('root-heaved asphalt slab',(x,0,.11+j%2*.055),(.89,1.05,.16),asphalt,.025);slab.rotation_euler[1]=(-1)**j*.055
