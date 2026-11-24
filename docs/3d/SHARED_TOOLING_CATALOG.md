@@ -443,3 +443,13 @@
 - 実ゲーム15PNG・会話/回復/宝箱一回/階段4リンク/戦闘帰還/通常表示/hash不一致fallback pass、page/console errors0。721セル×4方向の草投影、1008移動眼位置のアーチ交差0、追加硬物1221配置の通路干渉0。別起動の試験iframeで通常セーブsentinel不変を確認。起動前診断のnullガード補修後もfresh wrapper pass。
 - 原本と候補GLB/PNGはNOT_APPROVED。試験表示だけで、正式美術昇格/main変更/全端末FPS認定なし。草カードの容量は一部原本より増加、真上から薄い制限あり。詳細・再現スクリプト・実画像は feature の docs/3d/F1_SIGHTLINE_NATURE_V6_REVIEW.md と docs/reviews/f1-v6*/。
 - 固定SHA試遊URL: https://raw.githack.com/koda24-cell/kotama-no-bouken/b3f86ba5bfebe7c96414999941d6b529ff614d0b/preview/f1-sacred-playtest.html （未マージの試験版）。
+
+
+### 第一層試遊の配信障害対策（2026-11-24）
+- 対象: PR736のV6試験URL。ユーザーの起動停止報告を受け、raw.githackのHTML/JSに403を実測。jsDelivrでも一部JS取得失敗/ORBを実ブラウザで再現。世界共通の障害とは断定しない。
+- 新規packageなし。既存の固定SHA b3f86ba5bfebe7c96414999941d6b529ff614d0bのコードのみを、Fastly jsDelivr/CDN jsDelivr/raw.githubusercontentからCORS fetchで順次取得。成功したコードを同一originのJS Blobにし、defer順序/モジュールmapを維持。import.meta.urlは元の固定SHA URLへ解決して実GLB/テクスチャ参照を維持する。自前コードの配信回復helperで、第三者ライブラリの新規転用/素材制作なし。
+- 通常保存の隔離スクリプトは先に取得し、iframeの全ゲームコードより前にinline配置。隔離ファイルが取得できなければゲームを起動しない。HTTP/起動失敗と長時間待機をヘッダーへ表示。ゲーム本体/マップ/承認状態を変更しない。
+- 現時点: 実ネット経由の3FでsourceHashesVerifiedと試験表示中へ到達。別の全階リンク・失敗時の保存保護を検証中。クラウド検査用Chromiumのみ管理proxyの証明書例外を使用し、配布ページではTLS検査を無効化しない。最終結果は追記する。
+
+- 最終検査追記: fix/f1-preview-delivery-20261124 / ca532ed66f518627c5bdf1272310261c5934b147。実ネットの3F/1F/2F起動・描画・素材ハッシュをpass、page errors0。保存sentinel不変/子のメモリsaveVersion12を確認。隔離entryの全3配信先503注入でiframe空/通常保存不変をpass。証跡 docs/reviews/f1-v6-delivery/live-verification.json と3枚の実PNG。直接raw.githack HTMLはクラウドから403のため配信先自体の表示確認とは区別。
+- 新しい固定SHA試遊URL: https://raw.githack.com/koda24-cell/kotama-no-bouken/ca532ed66f518627c5bdf1272310261c5934b147/preview/f1-sacred-playtest.html 。旧SHAのURLは内容を更新できないため、この入口を使用。
