@@ -1,0 +1,52 @@
+{
+  "bytes": 4977196,
+  "sha256": "aeb03d9fea13b93fb476cc7f2409da836855935693c459cc53f977b71a483f51",
+  "tris": 928,
+  "verts": 1744,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 6,
+  "textureBytes": 4884109,
+  "sizeMeters": [
+    2.6047,
+    1.3238,
+    2.055
+  ],
+  "bboxMin": [
+    -1.3003,
+    0.01,
+    -1.065
+  ],
+  "bboxMax": [
+    1.3045,
+    1.3338,
+    0.99
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_landing_railing",
+  "file": "props/f3_landing_railing.glb",
+  "category": "props",
+  "desc_ja": "\u8e0a\u308a\u5834\u3068\u66f2\u304c\u3063\u305f\u624b\u647a",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_landing_railing.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_landing_railing/front.png",
+    "renders/f3_landing_railing/back.png",
+    "renders/f3_landing_railing/side.png",
+    "renders/f3_landing_railing/angle.png",
+    "renders/f3_landing_railing/top.png"
+  ]
+}
