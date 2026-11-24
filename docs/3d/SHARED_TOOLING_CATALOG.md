@@ -468,3 +468,11 @@
 
 - 最終実ネット結果: 2F/3Fをpass。Fastly採集GLBの503注入2回を実CDNの代替GLBで回復、各floorの素材hash・露出1.48/fill.32・通常保存sentinel不変/子memory saveVersion12を確認。隔離entryを全3経路503にした時はiframe空/通常保存不変、page errors0。成功応答のローカルGLB/Three差し替えは行わない。f1-v7-delivery/live-verification.json/実PNG/source-hashes.jsonへ恒久保存。
 - 完成した試験入口（2F開始・正式昇格前）: https://raw.githack.com/koda24-cell/kotama-no-bouken/f14eb3f2d1a72ca048db07d25a1f4f71ecf4eb78/preview/f1-sacred-playtest.html?floor=1 。runtime/modelsは2744ad7に固定、loaderだけに配信回復を追加。NOT_APPROVED/main不変更を維持。
+
+## 3D制作進捗ギャラリー
+- UI: preview/3d-progress.html
+- 台帳: 3d-progress-data ブランチの index.json / renders/
+- 登録: tools/3d-progress/register.py、再利用 Actions: .github/workflows/3d-progress-register.yml
+- 手順: docs/3d/PROGRESS_GALLERY_HANDOFF.md
+- 2026-11-24 ユーザー承認: 自作の制作途中レンダリングも公開可能。第三者素材の再配布制限は維持。正式素材承認とは別。
+- 実レンダリング・隔離台帳への既存3モデル12枚登録は検証済み。各制作Actions接続とブラウザ動作は別途検証する。
