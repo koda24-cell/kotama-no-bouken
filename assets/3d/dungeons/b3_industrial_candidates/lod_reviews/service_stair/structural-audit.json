@@ -1,0 +1,97 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-service_stair/comparison/lod0_NOT_APPROVED.glb",
+      "file_bytes": 3878324,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 2,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 11060,
+      "materials": 2,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "Cube.001",
+        "inclined stair stringer"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 2,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-service_stair/comparison/lod1_NOT_APPROVED.glb",
+      "file_bytes": 3142884,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 2,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 6082,
+      "materials": 2,
+      "material_names": [
+        "f3_bare_worn_steel.001",
+        "f3_oxidized_iron.001"
+      ],
+      "mesh_names": [
+        "Cube.002",
+        "inclined stair stringer.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 2,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-service_stair/comparison/lod2_NOT_APPROVED.glb",
+      "file_bytes": 2770020,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 2,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 2765,
+      "materials": 2,
+      "material_names": [
+        "f3_bare_worn_steel.002",
+        "f3_oxidized_iron.002"
+      ],
+      "mesh_names": [
+        "Cube.003",
+        "inclined stair stringer.002"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 2,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}
