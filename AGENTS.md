@@ -85,3 +85,6 @@ Build a separately versioned original rear cranium first, then own temporal/ear/
 - Before submitting a link, verify that the commit exists and the target HTML is present at that exact commit; verify referenced assets where practical. Use the merged `development` commit SHA after integration, or clearly label a feature-branch commit as a pre-merge preview.
 - Give a directly clickable URL and identify what it opens. Do not claim that the browser, audio, or rendering was tested unless it was actually tested. A file-existence check alone does not establish runtime behavior.
 - This is a shared convention for **ChatGPT, Claude, Codex, and future sessions**. Follow it for all game and HTML preview handoffs.
+
+## 3D制作進捗ギャラリー
+3D制作時は docs/3d/PROGRESS_GALLERY_HANDOFF.md を確認する。公開範囲を確認済みの正常レンダリングのみ共通台帳に登録する。長時間制作では保存済み反復単位で登録可能。未承認素材の正式昇格は禁止。既存制作Actionsへの接続は個別検証後に行う。
