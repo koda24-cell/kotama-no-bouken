@@ -23,7 +23,8 @@ def build(e):
    start,end=sorted([a,b]);dx=end[0]-start[0];dy=end[1]-start[1];length=math.hypot(dx,dy)
    seed=hashlib.sha256(repr(tuple(round(v,5)for p in[start,end]for v in p)).encode()).digest();edge_rng=random.Random(int.from_bytes(seed[:8],'big'))
    points=[start]
-   if length>.20:
+   boundary=(abs(a[0]-b[0])<1e-7 and abs(abs(a[0])-2)<1e-7)or(abs(a[1]-b[1])<1e-7 and abs(abs(a[1])-2)<1e-7)
+   if length>.20 and not boundary:
     for t in [.23,.49,.76]:
      d=edge_rng.uniform(-1,1)*min(.032,length*.06)*math.sin(t*math.pi)
      points.append((start[0]+dx*t-dy/max(length,.001)*d,start[1]+dy*t+dx/max(length,.001)*d))
