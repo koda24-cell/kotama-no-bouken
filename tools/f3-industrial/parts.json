@@ -518,5 +518,18 @@
     "existingUpgrade": true,
     "revisionOf": "regular nine-square runtime paving",
     "phase": "V2 ground surface revision"
+  },
+  {
+    "id": "v2_factory_bay",
+    "name": "CC0工場窓枠を活かした崩落工業棟V2",
+    "dimensions": [
+      3.3,
+      3.5,
+      12.6
+    ],
+    "status": "DESIGNED_NOT_APPROVED",
+    "existingUpgrade": true,
+    "revisionOf": "industrial street facade composition",
+    "phase": "V2 selected licensed components and original structure"
   }
 ]
