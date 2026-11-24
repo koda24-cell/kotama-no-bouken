@@ -547,7 +547,7 @@ body[data-screen="battle"] .gold-display{display:none!important;}
 /* Action playback: keep the arena clear, retain the actual battle controls for the next turn. */
 #battle.battle-ui-preview.battle-execution-view .command-window,
 #battle.battle-ui-preview.battle-execution-view .battle-preview-primary-rail { visibility:hidden!important; pointer-events:none!important; }
-#battle.battle-ui-preview .battle-execution-label { position:absolute; bottom:100%; left:50%; transform:translateX(-50%); color:#fff; font-size:clamp(12px,1.5vw,18px); font-weight:700; white-space:nowrap; text-shadow:0 2px 4px #001020; pointer-events:none; }
+#battle.battle-ui-preview .battle-execution-label { position:absolute; top:0; left:50%; transform:translateX(-50%); color:#fff; font-size:clamp(12px,1.5vw,18px); font-weight:700; white-space:nowrap; text-shadow:0 2px 4px #001020; pointer-events:none; }
 #battle.battle-ui-preview .battle-preview-portrait { position:relative; }
 #battle.battle-ui-preview .battle-execution-label[hidden] { display:none!important; }
 body:has(#battle.active.battle-execution-view) .tutorial-overlay { background:transparent!important; }
