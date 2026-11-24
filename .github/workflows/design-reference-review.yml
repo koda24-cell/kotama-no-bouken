@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install Pillow==11.3.0 numpy==2.2.6 trimesh==4.7.4 rtree==1.4.1
+      - run: pip install Pillow==11.3.0 numpy==2.2.6 trimesh==4.7.4 rtree==1.4.1 scipy==1.15.3
       - name: Scan inputs and render in pinned Blender
         run: |
           mkdir -p render-output/design-reference qa/security
