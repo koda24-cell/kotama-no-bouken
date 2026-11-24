@@ -1,8 +1,8 @@
 {
-  "bytes": 17378736,
-  "sha256": "b7bac76ca568fe79f5cfa29e6217694e23708097ecd516b63a91e8f251278159",
-  "tris": 27618,
-  "verts": 60736,
+  "bytes": 17553112,
+  "sha256": "2b69f5a0f8adf7e038ac14036b592858565fd953eda090d39c366fdd0f04abc3",
+  "tris": 29106,
+  "verts": 64182,
   "meshes": 13,
   "drawCalls": 13,
   "materials": [
@@ -23,19 +23,19 @@
   "textureCount": 38,
   "textureBytes": 14274583,
   "sizeMeters": [
-    4.08,
+    4.12,
     16.2053,
-    4.4895
+    4.1106
   ],
   "bboxMin": [
-    -2.04,
+    -2.06,
     0.0034,
     -1.9247
   ],
   "bboxMax": [
-    2.04,
+    2.06,
     16.2087,
-    2.5647
+    2.1859
   ],
   "extensions": [],
   "animations": [],
@@ -48,8 +48,8 @@
   "category": "props",
   "desc_ja": "\u5d29\u843d\u3057\u305f\u96c6\u5408\u4f4f\u5b85\u306e\u7acb\u4f53\u30d5\u30a1\u30b5\u30fc\u30c9V2",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "a7eddb84cc66a64a02e7f6a72828c1739f429943",
-  "workflowRun": "45406178172",
+  "sourceCommit": "677b99ca1f8c28120df310743ba9c01024613fcb",
+  "workflowRun": "45407771986",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/f3_v2_courtyard_facade.blend",
   "renderedFrom": "reimported GLB",

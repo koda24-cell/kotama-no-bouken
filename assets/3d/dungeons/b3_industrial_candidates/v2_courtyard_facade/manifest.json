@@ -2,10 +2,10 @@
   "status": "NOT_APPROVED",
   "assetName": "v2_courtyard_facade",
   "asset": {
-    "bytes": 17378736,
-    "sha256": "b7bac76ca568fe79f5cfa29e6217694e23708097ecd516b63a91e8f251278159",
-    "tris": 27618,
-    "verts": 60736,
+    "bytes": 17553112,
+    "sha256": "2b69f5a0f8adf7e038ac14036b592858565fd953eda090d39c366fdd0f04abc3",
+    "tris": 29106,
+    "verts": 64182,
     "meshes": 13,
     "drawCalls": 13,
     "materials": [
@@ -26,19 +26,19 @@
     "textureCount": 38,
     "textureBytes": 14274583,
     "sizeMeters": [
-      4.08,
+      4.12,
       16.2053,
-      4.4895
+      4.1106
     ],
     "bboxMin": [
-      -2.04,
+      -2.06,
       0.0034,
       -1.9247
     ],
     "bboxMax": [
-      2.04,
+      2.06,
       16.2087,
-      2.5647
+      2.1859
     ],
     "extensions": [],
     "animations": [],
@@ -51,8 +51,8 @@
     "category": "props",
     "desc_ja": "崩落した集合住宅の立体ファサードV2",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "a7eddb84cc66a64a02e7f6a72828c1739f429943",
-    "workflowRun": "45406178172",
+    "sourceCommit": "677b99ca1f8c28120df310743ba9c01024613fcb",
+    "workflowRun": "45407771986",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_v2_courtyard_facade.blend",
     "renderedFrom": "reimported GLB",
@@ -243,10 +243,10 @@
   ],
   "runtime": {
     "file": "f3_v2_courtyard_facade.glb",
-    "sourceSha256": "b7bac76ca568fe79f5cfa29e6217694e23708097ecd516b63a91e8f251278159",
-    "sha256": "d7d0551e0b8a26c016de200f666025574d1b92fa81449088612cbaded3a57402",
-    "bytes": 3105164,
-    "embeddedOriginalBytes": 17378736,
+    "sourceSha256": "2b69f5a0f8adf7e038ac14036b592858565fd953eda090d39c366fdd0f04abc3",
+    "sha256": "6b519537ccca1c23cc7e8aaab9eecd57d65c6793babd931bf1def4ec10d56634",
+    "bytes": 3279544,
+    "embeddedOriginalBytes": 17553112,
     "images": [
       {
         "file": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5.jpg",

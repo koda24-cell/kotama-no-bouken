@@ -4,155 +4,107 @@
   "files": {
     "manifest.json": {
       "bytes": 17726,
-      "sha256": "dd3b122cf9b62b7b3d859758c19113fa192690abc7ba727803f029a7a8e7220d"
+      "sha256": "1d5dc0496c73139ddc28deea32778470bc9b7a7b00f6c0633b498d9aab08be8d"
     },
     "metrics/f3_v2_courtyard_facade.json": {
       "bytes": 1647,
-      "sha256": "c9f251ee86c6a1b55e26935924a73311f231f4489d509789055367f1beb101da"
+      "sha256": "00bdd53b8ec9c848153fde1d8a415505364a15add756f97317cddc3b0ef0b82f"
     },
     "props/f3_v2_courtyard_facade.glb": {
-      "bytes": 17378736,
-      "sha256": "b7bac76ca568fe79f5cfa29e6217694e23708097ecd516b63a91e8f251278159"
+      "bytes": 17553112,
+      "sha256": "2b69f5a0f8adf7e038ac14036b592858565fd953eda090d39c366fdd0f04abc3"
     },
     "renders/f3_v2_courtyard_facade/angle.png": {
-      "bytes": 506505,
-      "sha256": "dc0ff783b6fbe8c868c512fa83841b17e04d305f06ba8fc9c93af5d99cc5a1e6"
+      "bytes": 505004,
+      "sha256": "5d3a9d63b80d2eacf67c202f348dfb5020b1c0f5312de43658957d741942c61b"
     },
     "renders/f3_v2_courtyard_facade/back.png": {
-      "bytes": 444489,
-      "sha256": "e7ac7204970bb3206fdb0ce0e6c1a9e0b163db062f71957d1a3f3732eb1971ff"
+      "bytes": 445574,
+      "sha256": "10160f9ecb996cc1cc5918dcfa338bf4a8f0233b5f99715e20a94009d14028f4"
     },
     "renders/f3_v2_courtyard_facade/front.png": {
-      "bytes": 466423,
-      "sha256": "85b98c29d9a45a35f1de618bd9946c9889655cad509a8341385ecf542b98d01d"
+      "bytes": 466677,
+      "sha256": "e950321df8240efe8b7fccd8231e5aad0d3469aeaeedfafc67e2289042b5bdac"
     },
     "renders/f3_v2_courtyard_facade/side.png": {
-      "bytes": 497758,
-      "sha256": "a4ab64cf2de0dd94645a573fd13ab5b12f404e9521dd7a99d456537bb99416f8"
+      "bytes": 486785,
+      "sha256": "28a10de69b40dbcb82c59b95644cb08f321870ae278c700c3b8f273aef56935b"
     },
     "renders/f3_v2_courtyard_facade/top.png": {
-      "bytes": 523083,
-      "sha256": "d6fe909ccf9e95919dc423a58abf27a710241bd59892859d6b40240fba54cde1"
+      "bytes": 525356,
+      "sha256": "109410bcd7d437ad5b739dc92cd1bd29ab236ca44353817ba7318bbd9f7ecb28"
     },
     "runtime/f3_v2_courtyard_facade.glb": {
-      "bytes": 3105164,
-      "sha256": "d7d0551e0b8a26c016de200f666025574d1b92fa81449088612cbaded3a57402"
+      "bytes": 3279544,
+      "sha256": "6b519537ccca1c23cc7e8aaab9eecd57d65c6793babd931bf1def4ec10d56634"
     },
     "security/all-texture-inputs.log": {
       "bytes": 292,
-      "sha256": "8681b6ba36eb47403f1cc505de163d8b4153ab84ac286d9569ff8ea937ad712a"
+      "sha256": "f9e315b914388a4cadd62541fe3c1880843e11145e5fba934a839210be80c2fe"
     },
     "security/concrete_debris-api-input.log": {
       "bytes": 291,
-      "sha256": "e577df043994759984d53711ba48981a4348759032c60f27e22f93c959148d7f"
-    },
-    "security/concrete_debris-api.log": {
-      "bytes": 291,
-      "sha256": "7af5c9527bfcbcac21ce7adf24e70a6d95fe27b93bc4e545d87f8af86299032d"
+      "sha256": "cb381ec2b5492eff2ba7ab90bbc322a700075022b0c40a7c867f131d20fa005e"
     },
     "security/concrete_debris-diffuse-input.log": {
       "bytes": 293,
-      "sha256": "f77e857f97073397c4db4b7ee2ae403184b6e8f4da8a64934f81971c718fff3c"
-    },
-    "security/concrete_debris-diffuse.log": {
-      "bytes": 293,
-      "sha256": "6d3da0e191686418631304865296e5a2f2657330c1463509db9277a5f83b4443"
+      "sha256": "d5a7f68d39bb7b6978b2886662c6414dc5a1dc99823ee47a205ef1759b3a31d9"
     },
     "security/concrete_debris-normal-input.log": {
       "bytes": 289,
-      "sha256": "49538438dbadbcbfdf2b1b37211764b4c5c2715e68cc60e0b2db903484e4067c"
-    },
-    "security/concrete_debris-normal.log": {
-      "bytes": 289,
-      "sha256": "3364f144f50b2c94dfca7846cfd3ad4719533b0634c1834a7321129f87b06402"
+      "sha256": "eb4b379f2990882c43441a66aa0cdc3da6e4a672c778c1f8478ed7ca8efb4b28"
     },
     "security/concrete_debris-roughness-input.log": {
       "bytes": 293,
-      "sha256": "d2501b985af56177c6dfb00a76e09da6d831fbb7b14b25d1c0db62a6c4850cd9"
-    },
-    "security/concrete_debris-roughness.log": {
-      "bytes": 293,
-      "sha256": "555d9156ca57df87930cf6eaae18139ea4251d60e2524f8a330bbbf2debf91e0"
+      "sha256": "b7d107bfc63379ae497c13be348b5ed4fb3fbb74c0d7355c51c31de8607e57d7"
     },
     "security/concrete_slab_wall-api-input.log": {
       "bytes": 291,
-      "sha256": "1beafee86d056c4667f14dc9b47f465f13a69a76b2103385c04dfb3f74d0d814"
-    },
-    "security/concrete_slab_wall-api.log": {
-      "bytes": 291,
-      "sha256": "152051baf53a0f130fb0de1262d66fa6eb760a2007f37c2f4d1051ed9f6aa6e4"
+      "sha256": "270e6a37dd1e9ad004035992ab5a7aaf66f6dd59e20ba6c1952bb7e62dc1b3fa"
     },
     "security/concrete_slab_wall-diffuse-input.log": {
       "bytes": 293,
-      "sha256": "15dec0984de4960c98c9c618b7fadcb6730905d67d39ac44c80bb86fc267f90b"
-    },
-    "security/concrete_slab_wall-diffuse.log": {
-      "bytes": 293,
-      "sha256": "e4ae62f36c3cf39ba620c67f6d1144b0026dbe8812252a28cf0b8ef691c71e9c"
+      "sha256": "0e9c804c2853bce00ab12c2e510ef814204ec30ec3a3aefc1a1d03461ce51a37"
     },
     "security/concrete_slab_wall-normal-input.log": {
       "bytes": 293,
-      "sha256": "d53f5ebb5ec12c594bde530f3faab703666866395817f32c26603de69a16102a"
-    },
-    "security/concrete_slab_wall-normal.log": {
-      "bytes": 293,
-      "sha256": "2a6a32f8f3944c7f04aea6c145dc11d12fa2a7c4b13e1804dd2ab866acebf3d8"
+      "sha256": "b853a0b1e1629f323d89fd463ebf7d6863fa790f8286387fe9dfd50c7d4bce28"
     },
     "security/concrete_slab_wall-roughness-input.log": {
       "bytes": 293,
-      "sha256": "65284b387deca773e5e8f38a9f6bfdafdea48faf9eb0ae1c37d110421389ccae"
-    },
-    "security/concrete_slab_wall-roughness.log": {
-      "bytes": 293,
-      "sha256": "119deef8bec4a0ae957c88791da62ee627021c6115461a5c0a526decf65b00c0"
+      "sha256": "6dc1e5b8fe05004217938071fa4f62cb71db50363157c1449809252ec6751ef1"
     },
     "security/cracked_concrete_wall-api-input.log": {
       "bytes": 291,
-      "sha256": "6eb5062943f6eb025dda0c5840b8a1d449784d4c1d846aa15be5072e2d1041b5"
-    },
-    "security/cracked_concrete_wall-api.log": {
-      "bytes": 291,
-      "sha256": "263b1e2b498198dd8857391b2b2254c97438600516ae4335d14121a6de5efe66"
+      "sha256": "ba3ad4a75d18f1904279eb3c424307d32d06800dd65f3a311a1303ff7a5580e6"
     },
     "security/cracked_concrete_wall-diffuse-input.log": {
       "bytes": 289,
-      "sha256": "c67b81f77679d2c4c5f903ef28ed6c5b5b47546f6814b63d314ad7b86f063845"
-    },
-    "security/cracked_concrete_wall-diffuse.log": {
-      "bytes": 289,
-      "sha256": "1283a496590cdd90f2d9c5fd8a3eca4df117a062b603a6c5b26aafce3476f786"
+      "sha256": "2601f502b576315db4202920cd6e561014c80a93c6b40c9b831855d96069bee8"
     },
     "security/cracked_concrete_wall-normal-input.log": {
       "bytes": 293,
-      "sha256": "75e84f1b19488c62e25ac1c852abf1d334820b352648362cdef7e579246037a5"
-    },
-    "security/cracked_concrete_wall-normal.log": {
-      "bytes": 293,
-      "sha256": "b083834932f6bef642259a2802f513016f75292cb69cf616bb654f00cab97c38"
+      "sha256": "6bff828d6749fa8cd7c7416d43d5b0e5dc61bc3f2d1b6ca7f6b7f30d93c64502"
     },
     "security/cracked_concrete_wall-roughness-input.log": {
       "bytes": 293,
-      "sha256": "de1ff92bef6f2cdc9c3164e1c06349874d672ea03b2748f6328a18135bd61217"
-    },
-    "security/cracked_concrete_wall-roughness.log": {
-      "bytes": 293,
-      "sha256": "36adb971ee8d028ed19b863c4186f54e944f233df5675830b5f941e0a106b846"
+      "sha256": "5e392c3506f1efb155541f7d9dacf8346dc2b2dcf86989c0bd3990cc75623f66"
     },
     "security/existing-cc0-inputs.log": {
       "bytes": 289,
-      "sha256": "f84bd819ba060b9cbb235e06846fbf096bef2c2c60672e0311348c796fa07996"
+      "sha256": "2811b4dacb39487f2c488f028944c185d896cbb5e8c40431a1dae26f6351d167"
     },
     "security/renderer-source.log": {
       "bytes": 289,
-      "sha256": "1f56c461f98d7c044c0419b1417aeae3c1707ca3d441ae981778c465c2803c38"
+      "sha256": "4ae39940d7b088fcfd37fb9fc8d3bd0491860a0c1357b595fcd1c9dc0ae62561"
     },
     "security/shared-source.log": {
       "bytes": 294,
-      "sha256": "a2af58267a8f0e3f9a522491931108956e49e116c7bf7c06224c6e01167c2e13"
+      "sha256": "26fec1b168f268d7dd2fad8b27d43b28ff11906548dc102e34e25c33f990a4e7"
     },
     "security/source.log": {
       "bytes": 294,
-      "sha256": "9ad864c265e7c8814e6144e1345dc8b76f8755e481a18768f930b47e59d0a841"
+      "sha256": "2c57307e33c2330da7fd4341598d11731ad07a176491a77a7d2687be91ce8771"
     },
     "shared_textures/04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb.jpg": {
       "bytes": 733167,
@@ -308,15 +260,15 @@
     },
     "sources/authoring-portability.json": {
       "bytes": 5424,
-      "sha256": "44fb4b527d27e09bbb067fdf81d80859f8734c9ace81886f8d62628ca408137c"
+      "sha256": "6685d6e4def2d8aa8e09d15635f6b160f09018c25e8d3c38202024c2633971c3"
     },
     "sources/f3_v2_courtyard_facade.blend": {
-      "bytes": 17613073,
-      "sha256": "c211b54998a100bf78ce4399e3a283a9f17195c8acff65abb770b8ccce47876f"
+      "bytes": 17644541,
+      "sha256": "e347968cd279245b733dc96fbf7e7b8174a749bc8abf19e95fc69b109eaeff39"
     },
     "sources/f3_v2_courtyard_facade_authoring.blend": {
-      "bytes": 17429993,
-      "sha256": "08ba87b25bb0b577a29e95c7e67aecf00b6984ddad52c229024796e8d1d7e60b"
+      "bytes": 17443807,
+      "sha256": "afd7d0d28c69c4540149d76f204f5057fd2e0688c28b452536922069fb4ad23f"
     },
     "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_basecolor.jpg": {
       "bytes": 8773,
@@ -424,7 +376,7 @@
     },
     "structural-audit.json": {
       "bytes": 1785,
-      "sha256": "b5188948ac0ff5ee045759561d8210132cbebce14c58ab4080b581ad6d7ec2af"
+      "sha256": "d85b81d9eaa8d701ec66c00a2b40a174ede714de42ff00d6124017c46326e189"
     },
     "textures/asphalt_02-api.json": {
       "bytes": 27252,

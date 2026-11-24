@@ -3,13 +3,13 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v2_courtyard_facade/props/f3_v2_courtyard_facade.glb",
-      "file_bytes": 17378736,
+      "file_bytes": 17553112,
       "glb_meshes": 13,
       "total_mesh_primitives": 13,
       "scene_nodes": 14,
       "scene_mesh_nodes": 13,
       "scene_primitive_instances": 13,
-      "estimated_scene_triangles": 27618,
+      "estimated_scene_triangles": 29106,
       "materials": 13,
       "material_names": [
         "f3_bare_worn_steel",
@@ -27,7 +27,7 @@
         "v2_unlit_room_concrete"
       ],
       "mesh_names": [
-        "Cube.126",
+        "Cube.138",
         "Icosphere.038",
         "opaque dirt-coated broken glazing remnant",
         "storey slab 4",
