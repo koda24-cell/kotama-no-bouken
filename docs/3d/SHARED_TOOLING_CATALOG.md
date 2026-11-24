@@ -468,3 +468,10 @@
 
 - 最終実ネット結果: 2F/3Fをpass。Fastly採集GLBの503注入2回を実CDNの代替GLBで回復、各floorの素材hash・露出1.48/fill.32・通常保存sentinel不変/子memory saveVersion12を確認。隔離entryを全3経路503にした時はiframe空/通常保存不変、page errors0。成功応答のローカルGLB/Three差し替えは行わない。f1-v7-delivery/live-verification.json/実PNG/source-hashes.jsonへ恒久保存。
 - 完成した試験入口（2F開始・正式昇格前）: https://raw.githack.com/koda24-cell/kotama-no-bouken/f14eb3f2d1a72ca048db07d25a1f4f71ecf4eb78/preview/f1-sacred-playtest.html?floor=1 。runtime/modelsは2744ad7に固定、loaderだけに配信回復を追加。NOT_APPROVED/main不変更を維持。
+
+### 第3層・工業遺跡都市の個別制作（2026-11-24）
+- ユーザー訂正: 当初4層と記載されたが、対象はarea3遺跡都市の強化であり階層移動なし。Pinterest接続の公開候補24件を検索し、実サムネイル確認。画像は参考のみ、ボード保存/ゲームへの転用なし。資料はpinterest-reference-library/references/f3-industrial-ruins-20261124.md、公開設計F3_INDUSTRIAL_RUINS_DESIGN_20261124.md。
+- 新規CLI/packageなし。既存のcommon.py、実GLB再import renderer、Blender5.3+ClamAV gatewayを使い、1プロセスで1個別アセットを制作するcallerをfeature/f3-industrial-ruins-20261124へ追加。20補完パーツを準備し、既存素材も強化する。候補はNOT_APPROVED。並行agentなし。
+- 材質はCC0 https://polyhaven.com/license 。既存chipped_concrete / concrete_mossのdiffuse/normal/roughnessを元SHAと照合して再利用。追加rusty_iron / asphalt_02は公式公開API→1K JPGを取得直後ClamAV、画像処理/Blender前に入力全体を再スキャン。初回run45324735177はGit所有権チェックで失敗、成功扱いにしない。safe.directoryを固定作業checkoutへ設定した再実行 [45325426373](https://github.com/koda24-cell/kotama-no-bouken/actions/runs/45325426373) は成功。壁GLB/Blend/5方向PNG、5材質/2358tri、出力48ファイル/検出0を実確認。材質の導入と美術的完成を区別し、壁V1はさらなる風化改善予定。
+- 旧ブランチの未統合 buildingV3/wallV5/glassV10/rubbleV29/rebarV4の元モデルを既存Artifactsから復旧。新規の純データrecovery helperは認証ヘッダーを外部redirectへ渡さず、ZIPをClamAV→サイズ/パス/リンク制限で展開→展開後スキャン、コード/Blendを実行せずNOT_APPROVEDの原本として保存。run45326058433成功、元run/Artifact ID/ZIP SHA/全ファイルSHAをrecovery.jsonに記録。未承認の旧制作PRを丸ごとマージしない。
+- 進捗サイト https://github.com/koda24-cell/kotama-3d-progress のAGENTSに従い、検査済み壁V1を安定ID f3-industrial-retaining-wall / 制作中として登録。data branch commit1168de5で既存14エントリーを保持し5PNG追加を確認。正式素材承認/ゲーム採用とは別。設計図PNGは未作成・未登録。
